@@ -1,0 +1,258 @@
+.wp-core-ui .meta_box_add_section,
+.wp-core-ui .meta_box_add_lesson {
+	margin-right: 10px;
+}
+
+.hide {
+	display: none;
+}
+
+.handle.dashicons {
+	cursor:       move;
+	margin-right: 0px;
+}
+
+.meta_box_remove .dashicons {
+	text-decoration: initial;
+}
+
+.meta_box_course_lesson_quiz li input,
+.meta_box_course_lesson_quiz li select {
+	min-width: 250px;
+}
+
+.rwmb-meta-box label {
+	color:       #222;
+	font-weight: bold;
+	display:     block;
+	margin:      16px 0;
+}
+
+.description {
+	margin-top: 5px;
+}
+
+.dashed-placeholder {
+	border:  2px dashed #999;
+	padding: 10px;
+}
+/*
+	TuNN added 21 03 2015
+	Modified 03 Apr 2015
+*/
+/* Course Curriculumn meta box section*/
+.lpr-course-curriculum{}
+.lpr-course-curriculum .lpr-curriculum-sections{
+	
+}
+.lpr-course-curriculum .lpr-curriculum-section{
+	transition: opacity 0.25s;
+    margin-bottom: 20px;
+    border: 1px solid #DDD;
+}
+.lpr-course-curriculum .lpr-curriculum-section.lpr-selected .lpr-curriculum-section-content{
+    background-color: #F5F5F5;
+}
+.lpr-course-curriculum .lpr-curriculum-section-content > p{
+    display: inline-block;
+}
+.lpr-course-curriculum .lpr-curriculum-section.lpr-selected > h3{
+    _border-bottom: 1px solid #DDD;
+}
+.lpr-course-curriculum .lpr-curriculum-section > h3{
+	padding: 10px ;
+	margin: 0;
+	background-color: #F5F5F5;
+	height: 62px;
+	position: relative;
+	cursor: move;
+}
+.lpr-course-curriculum .lpr-curriculum-section > h3 .lpr-section-name-wrapper{
+    top: 9px;
+}
+.lpr-course-curriculum .lpr-curriculum-section > h3 > span > input{
+	border: 1px solid #DDD;
+	border-radius: 3px;
+	font-size: 24px;
+	width: 100%;
+    color: #777;
+}
+.lpr-course-curriculum .lpr-curriculum-section > h3 > span.lpr-section-name-wrapper{
+	position: absolute;
+	display: inline-block;
+	right: 137px;
+	left: 71px;
+}
+.lpr-course-curriculum .lpr-curriculum-section > h3 .lpr-action{
+	display: block;
+	position: relative;
+	height: 62px;
+	width: 62px;
+	border-left: 1px solid #DDD;
+	-top: -8px;
+	-right: -11px;
+	cursor: pointer;	
+	float: right;
+}
+.lpr-course-curriculum .lpr-curriculum-section > h3 .lpr-action.lpr-sort{
+	display: none;
+}
+.lpr-course-curriculum .lpr-curriculum-section > h3 .lpr-action .dashicons{
+	font-size: 32px;
+	width: 100%;
+	height: 100%;
+	line-height: 62px;
+	color: #0073aa;
+}
+.lpr-course-curriculum .lpr-curriculum-section > h3 .lpr-action:hover .dashicons{
+	color: #009ED7;
+}
+.lpr-course-curriculum .lpr-curriculum-section > h3 .lpr-action.lpr-toggle{
+	_right: 62px;
+}
+.lpr-course-curriculum .lpr-curriculum-section > h3 .lpr-action.lpr-remove{
+	_right: 124px;
+}
+
+.lpr-course-curriculum .lpr-curriculum-section.closed .lpr-curriculum-section-content{
+    display: none;
+}
+
+.lpr-course-curriculum .sorting .ui-sortable-helper .lpr-curriculum-section-content{
+	display: none !important;
+}
+.lpr-course-curriculum .sorting .ui-sortable-placeholder,
+.lpr-section-quiz-less.sorting .ui-sortable-placeholder{
+	border: 3px dashed #DDD;
+	visibility: visible !important;
+	position: relative;
+}
+.lpr-course-curriculum .sorting .ui-sortable-placeholder:after,
+.lpr-section-quiz-less.sorting .ui-sortable-placeholder:after{
+	content: '';
+	display: block;
+	width: 0px;
+	height: 0px;
+	border: 28px solid transparent;
+	border-left-color: #999;
+	position: absolute;
+	top: 0;
+	left: -33px;
+	
+}
+
+.lpr-section-quiz-less.sorting .ui-sortable-placeholder:after{
+	border-width: 15px;
+	left: -20px;
+}
+.lpr-curriculum-section-content{
+	background-color: #F5F5F5;
+	background-color: #FFF;
+	_border-bottom: 2px dashed #DDD;
+	padding: 20px;
+	margin-bottom: 0px;
+    border-top: 1px solid #DDD;
+}
+.lpr-dynamic-form{
+	position: absolute;
+	padding: 0px;
+	background-color: transparent;
+	z-index: 210;
+	
+	/**/
+	height: 15px;
+	overflow: hidden;
+}
+.lpr-container-dropdown{
+	height: 15px;
+	vertical-align: top;
+}
+.lpr-container-dropdown > a{
+	background-image: none !important;
+	background-color: #FFF !important;
+}
+.lpr-container-dropdown.select2-drop-above > a{
+	height: 3px;
+}
+.lpr-select-dropdown{
+	margin-top: -6px;
+}
+.lpr-select-dropdown.select2-drop-above{
+	padding-bottom: 0;
+}
+
+.lpr-empty .lpr-curriculum-section-content{
+	display: none !important;
+}
+
+.lpr-section-quiz-less{
+    min-height: 20px;
+
+
+}
+.lpr-section-quiz-less > li{
+	padding: 5px;
+	border:1px dashed #DDD;
+	background-color: #FFF;
+	cursor: move;
+}
+.lpr-section-quiz-less > li .lpr-title{
+    cursor: auto;
+    padding: 3px 5px;
+    border: 1px solid transparent;
+    display: inline-block;
+    width: 80%;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+
+}
+.lpr-section-quiz-less > li:hover .lpr-title {
+    border-color: #DDD;
+    cursor: text;
+}
+.lpr-section-quiz-less > li input{
+    width: 80%;
+}
+.lpr-section-quiz-less > li a{
+	float: right;
+	margin-left: 5px;
+    margin-top: 3px;
+}
+.lpr-section-quiz-less > li:hover{
+	border-style: solid;
+}
+.lpr-section-icon{
+	position: absolute;
+	top:0;
+	left:0;
+	width: 62px;
+	height: 62px;
+	line-height: 54px;
+	border-right: 1px solid #DDD;
+	text-align:center;
+}
+.lpr-section-icon i{
+    height: 60px;
+    line-height: 60px;
+}
+.lpr-course-curriculum .dashicons{
+	vertical-align: middle;
+}
+
+.select2-drop.select2-drop-active{
+	padding: 5px 10px;
+}
+
+.rwmb-course_lesson_quiz-wrapper .rwmb-label{ display: none;}
+.rwmb-course_lesson_quiz-wrapper .rwmb-input{ float: none; width: auto; display: block;}
+
+.lpr-course-curriculum-toggle{
+    display: none;
+    padding: 0;
+    margin: 0;
+    float: right;
+}
+.lpr-course-curriculum-toggle .expand{
+    display: none;
+}

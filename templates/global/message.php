@@ -1,0 +1,1 @@
+<div class="message<?php echo $type != 'message' ? " {$type}" : '';?>"><?php echo $content;?></div>

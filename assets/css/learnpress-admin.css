@@ -1,0 +1,543 @@
+/**
+* Created by Hoang Ha
+*
+* Date: 11/03/2015
+*/
+.hide {
+	display: none;
+}
+
+.handle.dashicons {
+	cursor: move;
+	margin-right: 10px;
+}
+
+.meta_box_remove .dashicons {
+	text-decoration: initial;
+}
+
+.meta_box_course_lesson_quiz li input,
+.meta_box_course_lesson_quiz li select {
+	min-width: 250px;
+}
+
+.rwmb-meta-box label {
+	color: #222;
+	font-weight: bold;
+	display: block;
+	margin: 16px 0;
+}
+
+.description {
+	margin-top: 5px;
+}
+
+.dashed-placeholder {
+	border: 2px dashed #999;
+	padding: 10px;
+}
+
+/**
+* Course Metabox
+*/
+li.quiz, li.lesson, li.quick_lesson, li.quick_quiz {
+	margin-left: 30px;
+}
+
+.wp-core-ui .meta_box_add_section,
+.wp-core-ui .meta_box_add_lesson,
+.wp-core-ui .meta_box_add_quiz,
+.wp-core-ui .meta_box_quick_add_lesson,
+.wp-core-ui .meta_box_quick_add_quiz {
+	margin-right: 10px;
+}
+
+/**/
+#lpr-block {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: #000;
+	display: none;
+	z-index: 200;
+	opacity: 0.2;
+}
+
+.lpr-quick-add-form {
+	background-color: #FFF;
+	padding: 5px;
+	position: absolute;
+	z-index: 210;
+	border: 1px solid #DDD;
+}
+
+.lpr-quick-add-form input {
+	font-size: 15px;
+	border-radius: 3px;
+	border: 1px solid #DDD;
+	width: 350px;
+}
+
+.lpr-quick-add-form input,
+.lpr-quick-add-form select {
+	vertical-align: top;
+}
+
+.lpr-quick-add-form .lpr-ajaxload {
+	display: none;
+	background-image: url(../images/ajaxload.gif);
+	background-position: center;
+	background-repeat: no-repeat;
+	width: 30px;
+	color: #FFF;
+}
+
+.lpr-quick-add-form.working .lpr-ajaxload {
+	display: inline-block;
+}
+
+.lpr-quick-add-form.working button {
+	display: none;
+}
+
+.post-type-lpr_question .lpr-question-option-label {
+	display: none;
+}
+
+#lpr-question-options-wrap {
+	margin-top: 8px;
+}
+
+.lpr-question tr.lpr-disabled .dashicons-trash,
+.lpr-question tr.lpr-disabled .dashicons-sort {
+	display: none;
+}
+
+/*
+* Add on page
+*/
+
+.lpr-add-ons-wrapper .add-on-info {
+	width: 65%;
+	display: inline-block;
+}
+
+.lpr-add-ons-wrapper .add-on-action {
+	float: right;
+}
+
+.lpr-add-ons-wrapper .add-on-action a {
+	text-decoration: none;
+	padding: 20px;
+	height: 80px;
+	width: 100px;
+	background: #EBEBEB;
+	margin-right: 100px;
+}
+
+.lpr-add-ons-wrapper .add-on-action .add-on-enabled {
+	text-align: center;
+	margin: 40px;
+}
+
+.lpr-add-ons-wrapper .add-on-action .add-on-disabled {
+	text-align: center;
+	margin: 40px;
+}
+
+.lpr-add-ons-wrapper .add-on-action a:hover {
+	text-decoration: none;
+	content: attr(data-text-disable);
+}
+
+#lpr-quiz-questions-wrap .select2-container .select2-choice {
+	height: 29px;
+	padding-top: 3px;
+	font-size: 14px;
+}
+
+.post-title.column-title {
+	overflow: visible;
+}
+
+.lpr-row-actions {
+	display: inline-block;
+	position: relative;
+}
+
+.lpr-row-action-dropdown {
+	position: absolute;
+	top: 100%;
+	left: 0;
+	min-width: 150px;
+	background-color: #FFF;
+	border: 1px solid #DDD;
+	padding: 0;
+	margin: 0;
+	display: none;
+}
+
+.lpr-row-action-dropdown > li {
+	margin: 0;
+}
+
+.lpr-row-action-dropdown > li > a {
+	display: block;
+	padding: 5px;
+}
+
+.lpr-row-actions > a {
+	padding-right: 15px;
+	position: relative;
+}
+
+.lpr-row-actions > a:after {
+	display: block;
+	width: 0;
+	height: 0;
+	border: 5px solid transparent;
+	border-top-color: #DDD;
+	content: '';
+	display: inline-block;
+	position: absolute;
+	right: 0;
+	top: 6px;
+}
+
+.lpr-row-actions:hover > ul {
+	display: block;
+}
+
+/* addons page */
+#lpr-add-ons-wrapper {
+}
+
+#lpr-add-ons-wrapper .lpr-add-on-block {
+	border-bottom: 1px dashed #DDD;
+	padding-bottom: 20px;
+	width: 50%;
+	float: left;
+	margin-top: 20px;
+}
+
+#lpr-add-ons-wrapper .lpr-add-on-block:after {
+	content: '';
+	display: block;
+	clear: both;
+}
+
+#lpr-add-ons-wrapper .lpr-admin-thumbnail {
+	float: left;
+	width: 200px;
+}
+
+#lpr-add-ons-wrapper .lpr-admin-thumbnail img {
+	vertical-align: top;
+}
+
+#lpr-add-ons-wrapper .lpr-add-on-info {
+	margin-left: 220px;
+	margin-right: 20px;
+}
+
+#lpr-add-ons-wrapper .lpr-add-on-info > h3{
+    margin-top: 0;
+}
+
+#lpr-add-ons-wrapper .lpr-add-on-info > h3 > span {
+	display: inline-block;
+	padding: 0px 5px;
+	background-color: #7AD3FA;
+	color: #FFF;
+	border-radius: 3px;
+	margin-left: 10px;
+	font-size: 12px;
+	vertical-align: top;
+	font-weight: normal;
+}
+
+#lpr-add-ons-wrapper .lpr-add-on-action {
+	float: right;
+	width: 100px;
+}
+
+/* toggle */
+input.lpr-fancy-checkbox {
+	display: none;
+}
+
+.lpr-fancy-checkbox.tog {
+	border-radius: 20px;
+	display: block;
+	box-shadow: inset 0 0 4px rgba(0, 0, 0, .6);
+	margin: 0 auto;
+	height: 19px;
+	width: 50px;
+	position: relative;
+	cursor: pointer;
+	font: 11px/18px arial;
+	background: #ccc;
+	-webkit-transition: all .2s ease;
+	-moz-transition: all .2s ease;
+	-o-transition: all .2s ease;
+	transition: all .2s ease;
+	display: inline-block !important;
+}
+
+.lpr-fancy-checkbox.tog:after {
+	content: '';
+	box-shadow: 0px 2px 2px rgba(0, 0, 0, .6);
+	border-radius: 20px;
+	display: block;
+	height: 15px;
+	width: 15px;
+	background: #fff;
+	position: absolute;
+	top: 2px;
+	left: 2px;
+	-webkit-transition: all .2s ease;
+	-moz-transition: all .2s ease;
+	-o-transition: all .2s ease;
+	transition: all .2s ease;
+}
+
+.lpr-fancy-checkbox.tog:before {
+	content: 'OFF';
+	position: absolute;
+	right: 7px;
+	top: 1px;
+	color: #fff;
+}
+
+.lpr-fancy-checkbox.tog:hover:after {
+	left: 5px;
+}
+
+.lpr-fancy-checkbox.tog.on:before {
+	content: 'ON';
+	right: 28px;
+}
+
+.lpr-fancy-checkbox.tog.on {
+	background: #05B3FF;
+}
+
+.lpr-fancy-checkbox.tog.on:after {
+	left: 33px;
+}
+
+.lpr-fancy-checkbox.tog.on:hover:after {
+	left: 30px;
+}
+
+/**/
+.clearfix:after {
+	display: block;
+	content: '';
+	clear: both;
+}
+
+.clear {
+	display: block;
+	clear: both;
+	height: 0;
+}
+
+/* admin order details */
+.post-type-lpr_order #post-body-content,
+.post-type-lpr_order #postbox-container-1,
+#order_details .ui-sortable-handle,
+#order_details .handlediv {
+	display: none !important;
+}
+
+#order_details .inside {
+	padding: 20px;
+	margin: 0;
+}
+
+#order_details .order-user-avatar {
+	float: left;
+	margin-right: 20px;
+}
+
+#order_details .order-user-meta {
+	float: left;
+}
+
+#order_details .order-products table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 20px;
+}
+
+#order_details .order-products table tr {
+	border-bottom: 1px solid #EEE;
+}
+
+#order_details .order-products table thead th {
+	height: 30px;
+	text-align: left;
+	font-size: 16px;
+
+}
+
+#order_details .order-products table td {
+	padding: 15px 0;
+	font-size: 16px;
+}
+
+#order_details .order-products table .align-right {
+	text-align: right;
+}
+
+#order_details .order-data {
+	float: right;
+}
+
+#order_details .order-data {
+	text-align: right;
+}
+
+#order_details .order-data .order-data-number {
+	font-size: 24px;
+	font-weight: bold;
+	margin-bottom: 10px;
+}
+
+#order_details .order-data .order-data-date {
+	font-size: 14px;
+	font-style: italic;
+	margin-bottom: 5px;
+}
+
+#order_details .order-data .order-data-payment-method {
+	font-size: 16px;
+	font-weight: bold;
+	margin: 5px 0;
+}
+
+#order_details .order-data .order-data-status {
+	border-radius: 3px;
+	padding: 2px 5px;
+	display: inline-block;
+	color: #FFF;
+	font-size: 12px;
+
+}
+
+#order_details .order-data .order-data-status.completed {
+	background-color: #006400;
+}
+
+#order_details .order-data .order-data-status.pending {
+	background-color: #CCCCCC;
+}
+
+#order_details .total {
+	font-weight: bold;
+	font-size: 16px;
+}
+
+.post-type-lpr_order .column-title {
+	width: 120px;
+}
+
+.post-type-lpr_order .column-order_student {
+	width: 100px;
+}
+
+.post-type-lpr_order .column-order_date {
+	width: 150px;
+}
+
+.post-type-lpr_order .column-order_total {
+	width: 100px;
+	text-align: right;
+}
+
+.post-type-lpr_order .column-order_status {
+	width: 100px;
+}
+
+.lpr-curriculum-section > h3 {
+	padding: 0 !important;
+}
+
+.lpr-curriculum-section > h3 .lpr-action {
+	top: 0;
+	right: 0;
+}
+
+.lpr-curriculum-section.lpr-empty > h3 {
+	cursor: default !important;
+}
+
+.lpr-curriculum-section.lpr-empty .lpr-action {
+	display: none !important;
+}
+
+.lpr-course-curriculum button span {
+	text-decoration: underline;
+}
+
+.lpr-chart {
+	padding: 100px 300px;
+}
+
+.lpr-stats-time {
+	text-align: center;
+}
+
+.lpr-hidden {
+	display: none;
+}
+.lpr-chart-wrapper {
+	margin: 0 30px 0 10px;
+}
+#lpr-custom-time {
+	position: relative;
+	top: 4px;
+}
+.lpr-chart-wrapper canvas {
+	padding-top: 20px;
+	height: 70vh;
+	width: 100vw;
+}
+
+/* block page */
+#lpr-page-block{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #000;
+    opacity: 0.5;
+    display: none;
+    z-index: 9999;
+}
+
+#form-quick-add-lesson-link{
+    position: absolute;
+}
+
+#_lpr_course_price_description>span {
+	font-weight: bold;
+	font-size: 15px;
+}
+.lpr-ignore, .lpr-ignore:hover {
+	color: #dd3d36;
+}
+.lpr-ignore:hover {
+	cursor: pointer;
+}
+
+.lpr-quick-add-page-inline,
+.lpr-quick-actions-inline{
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 !important;
+}

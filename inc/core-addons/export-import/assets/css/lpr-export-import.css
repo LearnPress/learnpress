@@ -1,0 +1,19 @@
+/**/
+#lpr-import-upload-form{
+	display: none;
+    border: 1px solid #DDD;
+    padding: 20px;
+    background-color: #FFF;
+    margin: 0 0 10px;
+    border-radius: 4px;
+    position: relative;
+}
+#lpr-import-upload-form > a{
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    font-size: 40px;
+    text-decoration: none;
+    font-weight: normal;
+    color: red;
+}
