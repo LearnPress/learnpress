@@ -12,8 +12,7 @@ function learn_press_add_ons_page() {
     //Add action print page tab
     add_action('learn_press_print_add_on_page_tab', 'learn_press_print_enabled_tab');
     add_action('learn_press_print_add_on_page_tab', 'learn_press_print_disabled_tab');
-    // load more add on later 
-    // add_action('learn_press_print_add_on_page_tab', 'learn_press_print_get_more_tab');
+    add_action('learn_press_print_add_on_page_tab', 'learn_press_print_get_more_tab');
 
     //print add on page
     learn_press_add_ons_list();

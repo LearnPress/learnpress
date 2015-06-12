@@ -306,9 +306,8 @@ form button:hover {
     display: block;
 }
 .review-stars > li{
-    width: 40px;
-    height: 40px;
-    float: left;
+    display: inline-block;
+    margin: 0 -8px 0 0;
 }
 .review-stars > li span{
     text-decoration: none;
@@ -322,8 +321,7 @@ form button:hover {
     border: none;
 }
 .review-stars > li span:before{
-    width: 40px;
-    height: 40px;
+    width: 24px;
 }
 .review-stars > li span.hover:before{
     content: "\f155";
@@ -347,9 +345,7 @@ form button:hover {
     display: inline-block;
     position: relative;
 }
-.review-stars-rated .review-stars{
-    display: inline-block;
-}
+.review-stars-rated .review-stars{display: inline-block; }
 .review-stars-rated .review-stars.filled{
     position: absolute;
     top: 0;
@@ -358,23 +354,4 @@ form button:hover {
     white-space: nowrap;
     overflow: hidden;
     color: #F05A19;
-    height: 40px;
-}
-.review-stars.filled > li{
-    position: absolute;
-}
-.review-stars.filled > li:nth-child(2){
-    left: 40px;
-}
-.review-stars.filled > li:nth-child(3){
-    left: 80px;
-}
-.review-stars.filled > li:nth-child(4){
-    left: 120px;
-}
-.review-stars.filled > li:nth-child(5){
-    left: 160px;
-}
-#course-reviews .loading{
-    display: none;
 }

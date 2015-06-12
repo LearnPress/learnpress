@@ -22,20 +22,21 @@ function learn_press_profile_shortcode() {
 		return $output;
 	}
 
-	do_action( 'learn_press_before_profile_content', $user );
+	do_action( 'learn_press_before_profile_content' );
 
 	?>
 	<div id="profile-tabs">
 		<?php do_action( 'learn_press_add_profile_tab', $user ); ?>
 	</div>
-	<?php do_action( 'learn_press_after_profile_content',  $user ); ?>
 	<script>
 		jQuery(document).ready(function ($) {
 			$("#profile-tabs").tabs();
 			$( "#quiz-accordion" ).accordion();
 		});
 	</script>
-	<?php		       
+	<?php
+	do_action( 'learn_press_after_profile_content' );
+
 }
 
 add_shortcode( 'learn_press_profile', 'learn_press_profile_shortcode' );

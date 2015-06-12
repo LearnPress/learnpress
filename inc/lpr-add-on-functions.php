@@ -137,6 +137,10 @@ function learn_press_get_add_ons( $options=array() ) {
 
     }
 
+//    // Possibly filter by category
+//    if ( ! empty( $options['category'] ) )
+//        $add_ons = learn_press_filter_addons_by_category( $add_ons, $options['category'] );
+
     ksort( $add_ons );
     return apply_filters( 'learn_press_get_addons', $add_ons, $options );
 }
@@ -202,6 +206,9 @@ function learn_press_get_enabled_add_ons( $options=array() ) {
         }
     }
 
+//    if ( ! empty( $options['category'] ) )
+//        $enabled = learn_press_filter_addons_by_category( $enabled, $options['category'] );
+
     ksort( $enabled );
     return apply_filters( 'learn_press_get_enabled_addons', empty( $enabled ) ? array() : $enabled, $options );
 }
@@ -224,6 +231,9 @@ function learn_press_get_disabled_add_ons( $options=array() ) {
     foreach ( $registered as $slug => $params )
         if ( ! in_array( $slug, array_keys( $enabled_addons ) ) )
             $disabled[$slug] = $params;
+
+//    if ( ! empty( $options['category'] ) )
+//        $disabled = it_exchange_filter_addons_by_category( $disabled, $options['category'] );
 
     if ( ! empty( $disabled ) )
         ksort( $disabled );
@@ -270,6 +280,7 @@ function learn_press_enable_add_on( $add_on ) {
             include( $registered[$add_on]['file'] );
             echo $registered[$add_on]['file'];
             do_action( 'learn_press_add_on_enabled', $registered[$add_on] );
+//            update_option( '_learn_press-flush-rewrites', true );
             flush_rewrite_rules();
             $success = true;
         }
@@ -307,6 +318,7 @@ function learn_press_disable_add_on( $add_on ) {
         if ( update_option( 'enabled_add_ons', $enabled_addons ) ) {
             if ( ! empty( $registered[$add_on] ) )
                 do_action( 'learn_press_add_on_disabled', $registered[$add_on] );
+//            update_option( '_learn-press-flush-rewrites', true );
             flush_rewrite_rules();
             $success = true;
         }

@@ -888,7 +888,7 @@ function learn_press_template_loader( $template ) {
 		}
 		global $post;
 		$post->post_content = '[learn_press_confirm_order]';
-	} else if ( is_post_type_archive( 'lpr_course' ) || ( ( $page_id = learn_press_get_page_id( 'courses' ) ) && is_page( $page_id ) ) || ( is_tax('course_category')) ) {
+	} else if ( is_post_type_archive( 'lpr_course' ) || ( ( $page_id = learn_press_get_page_id( 'courses' ) ) && is_page( $page_id ) ) ) {
 		$file   = 'archive-course.php';
 		$find[] = $file;
 		//$find[] = learn_press_plugin_path( 'templates/' ) . $file;

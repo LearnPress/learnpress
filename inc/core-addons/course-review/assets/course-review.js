@@ -51,32 +51,6 @@ jQuery(document).ready(function ($){
         });
     })
 
-    $(document).on('click', '#course-review-load-more', function(){
-        var $button = $(this);
-        if( ! $button.is(':visible') ) return;
-        $button.hide();
-        var paged = parseInt($(this).attr('data-paged')) + 1;
-        $('#course-reviews .loading').show();
-        $.ajax({
-            type: "POST",
-            dataType: 'html',
-            url: window.location.href,
-            data: {
-                action: 'learn_press_load_course_review',
-                paged: paged
-            },
-            success: function (response) {
-                var $content = $(response),
-                    $loading = $('#course-reviews .loading').hide();
-                $content.find( '.course-reviews-list > li:not(.loading)').insertBefore( $loading );
-                if( $content.find( '#course-review-load-more').length ) {
-                    $button.show().attr('data-paged', paged);
-                }else{
-                    $button.remove();
-                }
-            }
-        });
-    });
     $('.submit-review').click(function (event){
     	event.preventDefault();
 
