@@ -1,17 +1,3 @@
-===  LearnPress - WordPress LMS Plugin ===  
-Contributors: thimpress, halink0803, thongta, kendy73, tunnhn  
-Donate link:  
-Tags: lms, elearning, e-learning, learning management system, education, course, courses, quiz, quizzes, questions, training, guru, sell courses  
-Requires at least: 3.8  
-Tested up to: 4.2.2  
-Stable tag: trunk  
-License: GPLv2 or later  
-License URI: http://www.gnu.org/licenses/gpl-2.0.html  
-
-LearnPress is a WordPress LMS Plugin complete solution for creating a Learning Management System. LearnPress is for creating course, lesson and quiz.
-
-== Description ==  
-
 <a href="http://thimpress.com/learnpress" target="_blank">LearnPress</a> is a comprehensive WordPress LMS Plugin for WordPress. This WordPress LMS Plugin can be used to easily create & sell courses online. Each course curriculum can be made with lessons & quizzes which can be managed with easy-to-use user interface, we really made it for lazy people.  
 
 **LearnPress LMS Plugin works with your theme**  
@@ -58,27 +44,35 @@ Any suggestions for this WordPress LMS Plugin? Send us [here](http://thimpress.c
 2. Activate the plugin through the 'Plugins' menu in WordPress Dashboard.  
 
 == Frequently Asked Questions ==  
+= What is LearnPress ? =  
+LearnPress is a plugin to create a LMS website, to spread out course, or sell course.  
+
+= Where can I find LearnPress documentation and user guides? =  
+If you want to use LearnPress to build a Learning Management Website, please refer to our user guides in <a href="http://docs.thimpress.com/learnpress/" target="_blank">LearnPress official site.</a>  
+And if you want to extending or theming LearnPress, see our <a href="">Developer Docs.</a>  
+
+= Where can I get support or talk to other users? =
+If you get troubles when using LearnPress you can ask for help on the LearnPres Support Forum
+
+For help with premium add-ons, use our helpdesk.
+
+= Where can I ask for new features or suggest ideas or themes for LearnPress? =  
+You can send us your ideas through form <a href="http://thimpress.com/learnpress-suggestion/" target="_blank">here.</a>here
+
+= Where can I report bugs or contribute to the project? =  
+You can also report bugs on LearnPress Support Forum or LearnPress <a href="https://github.com/LearnPress/LearnPress" target="_blank">Github Repository</a>.
+
+= Where can I find the REST API documentation? =  
+We will provide documentation about LearnPress REST API really soon.
+
+= LearnPress is great, can I contribute to it? =
+Yes, you can and we appreciate it. Join in our <a href="https://github.com/LearnPress/LearnPress" target="_blank">Github Repository</a>.
 
 = What is LearnPress ? =  
 LearnPress is a plugin to create a LMS website, to spread out course, or sell course.  
 
 = How can I create a course? =  
 You can check out "Documentation" in the [LearnPress official site](http://docs.thimpress.com/learnpress/).  
-
-== Screenshots ==  
-
-1. LearnPress Create Course Layout.  
-2. LearnPress Settings Layout.  
-3. LearnPress Course Front-end.  
-4. LearnPress Courses Statistics.  
-
-== Changelog ==
-
-= 0.9.1 =  
-The first beta release.
-
-== Upgrade Notice ==  
-Later :)
 
 == Other note ==  
 [Documentation](http://docs.thimpress.com/learnpress) is available in ThimPress site.
