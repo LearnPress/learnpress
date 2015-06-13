@@ -50,7 +50,7 @@ LearnPress is a plugin to create a LMS website, to spread out course, or sell co
 
 **Where can I find LearnPress documentation and user guides?**  
 If you want to use LearnPress to build a Learning Management Website, please refer to our user guides in <a href="http://docs.thimpress.com/learnpress/" target="_blank">LearnPress official site.</a>  
-And if you want to extending or theming LearnPress, see our <a href="">Wiki</a>  
+And if you want to extending or theming LearnPress, see our <a href="https://github.com/LearnPress/LearnPress/wiki">Wiki</a>  
 
 **Where can I get support or talk to other users?**  
 If you get troubles when using LearnPress you can ask for help on the LearnPres Support Forum
@@ -61,7 +61,7 @@ For help with premium add-ons, use our helpdesk.
 You can send us your ideas through form <a href="http://thimpress.com/learnpress-suggestion/" target="_blank">here.</a>here
 
 **Where can I report bugs or contribute to the project?**  
-You can also report bugs on LearnPress Support Forum or LearnPress <a href="https://github.com/LearnPress/LearnPress" target="_blank">Github Repository</a>.
+You can also report bugs on LearnPress Support Forum or LearnPress <a href="https://github.com/LearnPress/LearnPress/issues" target="_blank">Github Repository</a>.
 
 **Where can I find the REST API documentation?**  
 We will provide documentation about LearnPress REST API really soon.
