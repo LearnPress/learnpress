@@ -120,6 +120,38 @@ function learn_press_addon_register( $slug, $params ) {
  * @return mixed|string|void
  */
 function learn_press_get_add_ons( $options=array() ) {
+    $plugins = array();
+    if( ! function_exists( 'get_plugins' ) ){
+        require_once( ABSPATH . '/wp-admin/includes/plugin.php' );
+    }
+    $all_plugins = get_plugins();
+
+
+    if( $all_plugins ){
+        foreach( $all_plugins as $plugin_file => $plugin_data ){
+            if( ! empty( $plugin_data['Tags'] ) && preg_match( '!learnpress!', $plugin_data['Tags'] ) ){
+                $plugins[$plugin_file] = _get_plugin_data_markup_translate( $plugin_file, $plugin_data, false, true );
+
+                $plugins[$plugin_file]['Icons'] = array(
+                    '2x' => LPR_PLUGIN_URL . '/assets/images/icon-128x128.png',
+                    '1x' => LPR_PLUGIN_URL . '/assets/images/icon-128x128.png'
+                );
+
+                $plugins[$plugin_file]['rating'] = 0;
+                $plugins[$plugin_file]['num_ratings'] = 0;
+                $plugins[$plugin_file]['tested'] = null;
+                $plugins[$plugin_file]['requires'] = null;
+                $plugins[$plugin_file]['active_installs'] = 0;
+                $plugins[$plugin_file]['last_updated'] = gmdate ( 'Y-m-d h:iA', strtotime('last Friday', time() ) ) . ' GMT';
+            }
+            //print_r($plugins[$plugin_file]);
+        }
+    }
+
+    //learn_press_get_plugin_data( $plugins );
+
+    return $plugins;
+
     $defaults = array(
         'show_required' => true,
     );
@@ -137,12 +169,27 @@ function learn_press_get_add_ons( $options=array() ) {
 
     }
 
-//    // Possibly filter by category
-//    if ( ! empty( $options['category'] ) )
-//        $add_ons = learn_press_filter_addons_by_category( $add_ons, $options['category'] );
-
     ksort( $add_ons );
     return apply_filters( 'learn_press_get_addons', $add_ons, $options );
+}
+
+function learn_press_get_installed_plugin_slugs() {
+    $slugs = array();
+
+    $plugin_info = get_site_transient( 'update_plugins' );
+    if ( isset( $plugin_info->no_update ) ) {
+        foreach ( $plugin_info->no_update as $plugin ) {
+            $slugs[] = $plugin->slug;
+        }
+    }
+
+    if ( isset( $plugin_info->response ) ) {
+        foreach ( $plugin_info->response as $plugin ) {
+            $slugs[] = $plugin->slug;
+        }
+    }
+
+    return $slugs;
 }
 
 /**
@@ -206,9 +253,6 @@ function learn_press_get_enabled_add_ons( $options=array() ) {
         }
     }
 
-//    if ( ! empty( $options['category'] ) )
-//        $enabled = learn_press_filter_addons_by_category( $enabled, $options['category'] );
-
     ksort( $enabled );
     return apply_filters( 'learn_press_get_enabled_addons', empty( $enabled ) ? array() : $enabled, $options );
 }
@@ -231,9 +275,6 @@ function learn_press_get_disabled_add_ons( $options=array() ) {
     foreach ( $registered as $slug => $params )
         if ( ! in_array( $slug, array_keys( $enabled_addons ) ) )
             $disabled[$slug] = $params;
-
-//    if ( ! empty( $options['category'] ) )
-//        $disabled = it_exchange_filter_addons_by_category( $disabled, $options['category'] );
 
     if ( ! empty( $disabled ) )
         ksort( $disabled );
@@ -280,7 +321,6 @@ function learn_press_enable_add_on( $add_on ) {
             include( $registered[$add_on]['file'] );
             echo $registered[$add_on]['file'];
             do_action( 'learn_press_add_on_enabled', $registered[$add_on] );
-//            update_option( '_learn_press-flush-rewrites', true );
             flush_rewrite_rules();
             $success = true;
         }
@@ -318,7 +358,6 @@ function learn_press_disable_add_on( $add_on ) {
         if ( update_option( 'enabled_add_ons', $enabled_addons ) ) {
             if ( ! empty( $registered[$add_on] ) )
                 do_action( 'learn_press_add_on_disabled', $registered[$add_on] );
-//            update_option( '_learn-press-flush-rewrites', true );
             flush_rewrite_rules();
             $success = true;
         }
@@ -326,3 +365,162 @@ function learn_press_disable_add_on( $add_on ) {
 
     return $success;
 }
+
+function learn_press_get_core_add_ons(){
+    $add_ons = array(
+        'bbpress-add-on' => array(
+            'name'              => __( 'bbPress Integration', 'learn_press' ),
+            'description'       => sprintf( __( 'Using the forum for courses provided by bbPress.%s', 'learn_press' ), $m ),
+            'author'            => 'foobla',
+            'author_url'        => 'http://thimpress.com',
+            'file'              => LPR_BBP_PATH . '/init.php',
+            'category'          => 'courses',
+            'tag'               => 'core',
+            'settings-callback' => '',
+        ),
+        'buddypress-add-on' => array(
+            'name'              => __( 'BuddyPress Integration', 'learn_press' ),
+            'description'       => sprintf( __( 'Using the profile system provided by BuddyPress.%s', 'learn_press' ), $m ),
+            'author'            => 'foobla',
+            'author_url'        => 'http://thimpress.com',
+            'file'              => LPR_BP_PATH . '/init.php',
+            'category'          => 'courses',
+            'tag'               => 'core',
+            'settings-callback' => '',
+        ),
+        'learn-press-certificate' => array(
+            'name'              => __( 'Certificate', 'learn_press' ),
+            'description'       => __( 'Allow create a certificate for student after they finish a course', 'learn_press' ),
+            'author'            => 'foobla',
+            'author_url'        => 'http://thimpress.com',
+            'file'              => LPR_CERTIFICATE_PATH . '/incs/load.php',
+            'category'          => 'courses',
+            'tag'               => 'core',
+            'settings-callback' => '',
+        ),
+        array(
+            'collections-add-on' => array(
+                'name'              => __( 'Courses Collection', 'learn_press' ),
+                'description'       => __( 'Collecting related courses into one collection by administrator', 'learn_press' ),
+                'author'            => 'foobla',
+                'author_url'        => 'http://thimpress.com',
+                'file'              => LPR_COLLECTIONS_PATH . '/init.php',
+                'category'          => 'courses',
+                'tag'               => 'core',
+                'settings-callback' => '',
+            )
+        ),
+        'course-review-add-on' => array(
+            'name'              => __( 'Course Review', 'learn_press' ),
+            'description'       => __( 'Adding review for course ', 'learn_press' ),
+            'author'            => 'foobla',
+            'author_url'        => 'http://thimpress.com',
+            'file'              => LPR_COURSE_REVIEW_PATH . '/init.php',
+            'category'          => 'courses',
+            'tag'               => 'core',
+            'settings-callback' => '',
+        ),
+        array(
+            'name'              => __( 'Export/Import', 'learn_press' ),
+            'description'       => __( 'Export and Import your courses with all lesson and quiz in easiest way', 'learn_press' ),
+            'author'            => 'foobla',
+            'author_url'        => 'http://thimpress.com',
+            'file'              => LPR_EXPORT_IMPORT_PATH . '/init.php',
+            'category'          => 'courses',
+            'tag'               => 'core',
+            'settings-callback' => '',
+        ),
+        'prerequisite-add-on' => array(
+            'name'              => __( 'Prerequisite Courses', 'learn_press' ),
+            'description'       => __( 'Adding prerequisite course when add new a course ', 'learn_press' ),
+            'author'            => 'foobla',
+            'author_url'        => 'http://thimpress.com',
+            'file'              => LPR_PREREQUISITES_PLUGIN_PATH . '/init.php',
+            'category'          => 'courses',
+            'tag'               => 'core',
+            'settings-callback' => '',
+        ),
+        array(
+            'name'              => __( 'Stripe', 'learn_press' ),
+            'description'       => __( 'Make the payment with Stripe', 'learn_press' ),
+            'author'            => 'foobla',
+            'author_url'        => 'http://thimpress.com',
+            'file'              => LPR_STRIPE_PATH . '/incs/load.php',
+            'category'          => 'payment',
+            'tag'               => '',
+            'settings-callback' => '',
+        ),
+        'wishlist-add-on' => array(
+            'name'              => __( 'Courses Wishlist', 'learn_press' ),
+            'description'       => __( 'Wishlist feature', 'learn_press' ),
+            'author'            => 'foobla',
+            'author_url'        => 'http://thimpress.com',
+            'file'              => LPR_WISHLIST_PATH . '/init.php',
+            'category'          => 'courses',
+            'tag'               => 'core',
+            'settings-callback' => '',
+        ),
+        array(
+            'name'              => __( 'WooCommerce Payment', 'learn_press' ),
+            'description'       => sprintf( __( 'Using the payment system provided by WooCommerce.%s', 'learn_press' ), $m ),
+            'author'            => 'foobla',
+            'author_url'        => 'http://thimpress.com',
+            'file'              => LPR_WOO_PAYMENT_ADDON . '/init.php',
+            'category'          => 'courses',
+            'tag'               => 'core',
+            'settings-callback' => ''
+        )
+    );
+
+    $add_ons = apply_filters( 'learn_press_core_add_ons', $add_ons );
+
+    return $add_ons;
+}
+
+function learn_press_add_on_header( $headers ){
+    $headers['LearnPress'] = 'LearnPress';
+    $headers['Tags']        = 'Tags';
+    return $headers;
+}
+add_filter( 'extra_plugin_headers', 'learn_press_add_on_header' );
+
+function learn_press_get_plugin_data( $plugins ){
+    global $wp_version;
+    //$plugins = get_plugins();
+    $translations = wp_get_installed_translations( 'plugins' );
+
+    $active  = get_option( 'active_plugins', array() );
+    $current = get_site_transient( 'update_plugins' );
+
+    $to_send = compact( 'plugins', 'active' );
+
+    $locales = array( get_locale() );
+
+    $options = array(
+        'timeout' => 30,
+        'body' => array(
+            'plugins'      => wp_json_encode( $to_send ),
+            'translations' => wp_json_encode( $translations ),
+            'locale'       => wp_json_encode( $locales ),
+            'all'          => wp_json_encode( true ),
+        ),
+        'user-agent' => 'WordPress/' . $wp_version . '; ' . get_bloginfo( 'url' )
+    );
+
+    /*if ( $extra_stats ) {
+        $options['body']['update_stats'] = wp_json_encode( $extra_stats );
+    }*/
+
+    $url = $http_url = 'http://api.wordpress.org/plugins/update-check/1.1/';
+    if ( $ssl = wp_http_supports( array( 'ssl' ) ) )
+        $url = set_url_scheme( $url, 'https' );
+
+    $raw_response = wp_remote_post( $url, $options );
+    if ( $ssl && is_wp_error( $raw_response ) ) {
+        trigger_error( __( 'An unexpected error occurred. Something may be wrong with WordPress.org or this server&#8217;s configuration. If you continue to have problems, please try the <a href="https://wordpress.org/support/">support forums</a>.' ) . ' ' . __( '(WordPress could not establish a secure connection to WordPress.org. Please contact your server administrator.)' ), headers_sent() || WP_DEBUG ? E_USER_WARNING : E_USER_NOTICE );
+        $raw_response = wp_remote_post( $http_url, $options );
+    }
+    $response = json_decode( wp_remote_retrieve_body( $raw_response ), true );
+    //print_r($response);
+}
+

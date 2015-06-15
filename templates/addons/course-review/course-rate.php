@@ -8,25 +8,14 @@ $course_rate = learn_press_get_course_rate( $course_id );
 $total = learn_press_get_course_rate_total( $course_id );
 ?>
 <div class="course-rate">
-    <div class="review-stars-rated">
-        <ul class="review-stars">
-            <li><span class="dashicons dashicons-star-empty"></span> </li>
-            <li><span class="dashicons dashicons-star-empty"></span> </li>
-            <li><span class="dashicons dashicons-star-empty"></span> </li>
-            <li><span class="dashicons dashicons-star-empty"></span> </li>
-            <li><span class="dashicons dashicons-star-empty"></span> </li>
-        </ul>
-        <ul class="review-stars filled"  style="width:<?php echo $course_rate*20; ?>%;">
-            <li><span class="dashicons dashicons-star-filled"></span> </li>
-            <li><span class="dashicons dashicons-star-filled"></span> </li>
-            <li><span class="dashicons dashicons-star-filled"></span> </li>
-            <li><span class="dashicons dashicons-star-filled"></span> </li>
-            <li><span class="dashicons dashicons-star-filled"></span> </li>
-        </ul>
-    </div>
-<?php 
+<?php
+    learn_press_get_template( 'addons/course-review/rating-stars.php', array( 'rated' => $course_rate ) );
     $text=' ratings';
     if( $total <= 1 ) $text = ' rating'; 
 ?>
-    <p class="review-number"><?php echo $total . $text ; ?></p>
+    <p class="review-number">
+        <?php do_action( 'learn_press_before_total_review_number' );?>
+        <?php echo $total . $text ; ?>
+        <?php do_action( 'learn_press_after_total_review_number' );?>
+    </p>
 </div>

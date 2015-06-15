@@ -388,3 +388,14 @@ function learn_press_process_duplicate_action() {
 }
 add_action( 'load-edit.php', 'learn_press_process_duplicate_action' );
 
+function learn_press_admin_notice_bundle_activation() {
+    if( ! empty( $_REQUEST['tab'] ) && ( 'bundle_activate' != $_REQUEST['tab'] ) ) {
+        ?>
+        <div class="updated">
+            <p><?php printf(__('Want full free features? Click <a href="%s">here</a> to install LearnPress Add-ons Bundle for free!', 'learn_press'), admin_url('admin.php?page=learn_press_add_ons&tab=bundle_activate')); ?></p>
+        </div>
+        <?php
+    }
+}
+add_action( 'admin_notices', 'learn_press_admin_notice_bundle_activation' );
+

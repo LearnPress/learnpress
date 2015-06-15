@@ -21,7 +21,7 @@ if ( ! class_exists( 'LPR_Profile' ) ) {
 			add_filter( 'learn_press_user_quizzes_tab_content', array( $this, 'learn_press_user_quizzes_tab_content' ), 10, 2 );
 			add_action( 'learn_press_enrolled_course_after_title', array( $this, 'end_title_content' ), 10, 2 );
 		}
-
+	
 		/**
 		 * Process profile
 		 */

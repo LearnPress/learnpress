@@ -19,7 +19,7 @@ if ( $my_query->have_posts() ) :
 	endwhile;
 	if ( !$check ) :
 		do_action( 'learn_press_before_no_completed_quiz' );
-		echo '<p>' . __( 'You have not completed any quizzes yet!', 'learn_press' ) . '</p>';
+		echo '<p>' . __( 'You have not finished any quizzes yet!', 'learn_press' ) . '</p>';
 		do_action( 'learn_press_after_no_completed_quiz' );
 	endif;
 else :

@@ -23,6 +23,8 @@ if ( !class_exists( 'LPR_Admin_Ajax' ) ) {
                 'create_page'           => false,
                 'get_page_permalink'    => false,
                 'dummy_image'           => false,
+                'update_add_on_status'  => false,
+                'plugin_install'        => false
 			);
 			foreach ( $ajaxEvents as $ajaxEvent => $nopriv ) {
 				add_action( 'wp_ajax_learnpress_' . $ajaxEvent, array( __CLASS__, $ajaxEvent ) );
@@ -33,6 +35,71 @@ if ( !class_exists( 'LPR_Admin_Ajax' ) ) {
 				}
 			}
 		}
+
+        static function plugin_install(){
+            require_once( LPR_PLUGIN_PATH . '/inc/admin/class-lpr-upgrader.php' );
+            $upgrader = new LPR_Upgrader();
+            global $wp_filesystem;
+            $response = array();
+            $plugin_name = ! empty( $_REQUEST['plugin'] ) ? $_REQUEST['plugin'] : '';
+
+            $package = 'http://thimpress.com/lprepo/' . $plugin_name . '.zip';
+
+            $package = $upgrader->download_package( $package );
+            if( is_wp_error( $package ) ) {
+                $response['error'] = $package;
+            }else {
+                $working_dir = $upgrader->unpack_package($package, true, $plugin_name);
+                if (is_wp_error($working_dir)){
+                    $response['error'] = $working_dir;
+                }else {
+
+                    $wp_upgrader = new WP_Upgrader();
+                    $options = array(
+                        'source' => $working_dir,
+                        'destination' => WP_PLUGIN_DIR,
+                        'clear_destination' => false, // Do not overwrite files.
+                        'clear_working' => true,
+                        'hook_extra' => array(
+                            'type' => 'plugin',
+                            'action' => 'install'
+                        )
+                    );
+                    //$response = array();
+                    $result = $wp_upgrader->install_package($options);
+
+                    if (is_wp_error($result)) {
+                        $response['error'] = $result;
+                    }else{
+                        $response = $result;
+                        $response['text'] = __( 'Installed' );
+                    }
+                }
+            }
+            learn_press_send_json( $response );
+            die();
+        }
+        static function update_add_on_status()
+        {
+            $plugin = !empty($_REQUEST['plugin']) ? $_REQUEST['plugin'] : '';
+            $t = !empty($_REQUEST['t']) ? $_REQUEST['t'] : '';
+            $response = array();
+            if (!current_user_can('activate_plugins')){
+                $response['error'] = __('You do not have sufficient permissions to deactivate plugins for this site.');
+            }
+            if( $plugin && $t ){
+                if( $t == 'activate' ){
+                    activate_plugin($plugin, false, is_network_admin() );
+                }else{
+                    deactivate_plugins( $plugin, false, is_network_admin() );
+                }
+                $is_activate = is_plugin_active( $plugin );
+                $response['status'] = $is_activate ? 'activate' : 'deactivate';
+
+            }
+            wp_send_json( $response );
+            die();
+        }
 
         /**
          * Output the image to browser with text and params passed via $_GET

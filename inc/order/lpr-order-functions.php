@@ -346,7 +346,7 @@ function learn_press_send_user_email($status, $order_id){
 add_action( 'learn_press_update_order_status', 'learn_press_send_user_email', 50, 2 );*/
 
 function learn_press_get_course_price_text( $price, $course_id ){
-    if( !$price && is_single() && 'lpr_course' == get_post_type() ){
+    if( !$price && 'lpr_course' == get_post_type( $course_id ) ){
         $price = __( 'Free', 'learn_press' );
     }
     return $price;

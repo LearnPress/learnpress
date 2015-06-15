@@ -152,6 +152,134 @@ li.quiz, li.lesson, li.quick_lesson, li.quick_quiz {
 	content: attr(data-text-disable);
 }
 
+.learn-press-add-ons{
+    margin: 20px 0 0;
+}
+.learn-press-add-ons:after{
+    display: block;
+    clear: both;
+    content: '';
+}
+.learn-press-add-ons > li{
+    /*float: left;*/
+    /*width: 25%;*/
+    /*position: relative;*/
+}
+.learn-press-add-ons > li .add-on-inner{
+    margin: 0 20px 40px 20px;
+    border: 1px solid #DDD;
+    border-radius: 10px;
+    overflow: hidden;
+}
+.learn-press-add-ons > li .add-on-thumbnail{
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid #E3E3E3;
+}
+.learn-press-add-ons > li .add-on-thumbnail img{
+    width: 100%;
+    height: auto;
+    vertical-align: top;
+}
+.learn-press-add-ons > li .add-on-thumbnail .add-on-overlay{
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 100%;
+    top: 0%;
+    -webkit-transition: all 0.25s ;
+    background-color: #ADE6FF;
+    opacity: 0;
+}
+.learn-press-add-ons > li .add-on-thumbnail .add-on-description{
+    position: absolute;
+    left: 20px;
+    right: 20px;
+    bottom: 0%;
+    -webkit-transition: all 0.25s ;
+    color: #444;
+    opacity: 0;
+}
+.learn-press-add-ons > li:hover .add-on-overlay{
+    opacity: 0.3;
+}
+.learn-press-add-ons > li:hover .add-on-description{
+    opacity: 1;
+}
+.learn-press-add-ons > li .add-on-info{
+    min-height: 80px;
+    padding: 20px;
+    background-color: #F5F5F5;
+    border-top: 1px solid #FFF;
+}
+.learn-press-add-ons > li .add-on-info > h3{
+    margin-top: 0;
+}
+.learn-press-add-ons > li .add-on-actions{
+    position: absolute;
+    bottom: 43px;
+}
+.learn-press-add-ons > li .add-on-actions .add-on-state{
+    font-size: 36px;
+    vertical-align: top;
+    display: none;
+    margin-top: -8px;
+    color: #05B3FF;
+    margin-left: -9px;
+}
+.learn-press-add-ons > li .add-on-actions .add-on-state.change{
+    display: inline-block;
+}
+.learn-press-add-ons .plugin-card-top{
+    min-height: 180px;
+}
+.learn-press-add-ons .button.spinner{
+    background: url(../../../../wp-admin/images/spinner.gif) no-repeat 4px !important;
+    padding-left: 30px;
+    visibility: visible;
+    width: auto;
+}
+.learn-press-add-ons .action-links > span{
+    display: block;
+    text-align: right;
+    font-style: italic;
+}
+.learn-press-add-ons .action-links > span.enabled{
+    color: #7ad03a;
+}
+.learn-press-add-ons .action-links > span.disabled{
+    color: #FF0000;
+}
+#learn-press-add-on-state-changed-message{
+    position: fixed;
+    bottom: 0;
+    background-color: #F5F5F5;
+    padding: 10px;
+    border: 1px solid #DDD;
+    z-index: 1000;
+    display: none;
+}
+#learn-press-add-ons-wrap #name{
+    width: 30%;
+}
+
+@media (max-width: 1280px) {
+    .learn-press-add-ons > li{
+        width: 33.33%;
+    }
+}
+@media (max-width: 768px) {
+    .learn-press-add-ons > li{
+        width: 50%;
+    }
+}
+@media (max-width: 480px) {
+    .learn-press-add-ons > li{
+        width: 100%;
+    }
+}
+/**/
+
 #lpr-quiz-questions-wrap .select2-container .select2-choice {
 	height: 29px;
 	padding-top: 3px;

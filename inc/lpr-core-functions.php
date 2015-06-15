@@ -888,7 +888,7 @@ function learn_press_template_loader( $template ) {
 		}
 		global $post;
 		$post->post_content = '[learn_press_confirm_order]';
-	} else if ( is_post_type_archive( 'lpr_course' ) || ( ( $page_id = learn_press_get_page_id( 'courses' ) ) && is_page( $page_id ) ) ) {
+	} else if ( is_post_type_archive( 'lpr_course' ) || ( ( $page_id = learn_press_get_page_id( 'courses' ) ) && is_page( $page_id ) ) || ( is_tax('course_category')) ) {
 		$file   = 'archive-course.php';
 		$find[] = $file;
 		//$find[] = learn_press_plugin_path( 'templates/' ) . $file;
@@ -1460,6 +1460,7 @@ function learn_press_text_image( $text = null, $args = array() ) {
 	$font_size  = 1;
 	$background = 'FFFFFF';
 	$color      = '000000';
+    $padding     = 20;
 	extract( $args );
 
 	// Output to browser
@@ -1496,7 +1497,7 @@ function learn_press_text_image( $text = null, $args = array() ) {
 		$y = $bbox[1] + ( imagesy( $im ) / 2 ) - ( $bbox[5] / 2 );
 		$font_size ++;
 		if ( $loop ++ > 100 ) break;
-	} while ( $x > 20 );
+	} while ( $x > $padding );
 	// Write it
 	imagettftext( $im, $font_size, 0, $x - 5, $y, $color, $font, $text );
 	imagepng( $im );

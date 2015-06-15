@@ -342,6 +342,7 @@ if( ! class_exists( 'LPR_Order_Post_Type' ) ) {
          */
         function register_post_type()
         {
+
             register_post_type( LPR_ORDER_CPT,
                 array(
                     'labels' => array(
@@ -375,7 +376,9 @@ if( ! class_exists( 'LPR_Order_Post_Type' ) ) {
                     'rewrite' => array('slug' => 'lpr_order', 'hierarchical' => true, 'with_front' => true)
                 )
             );
+
             add_action('add_meta_boxes', array($this, 'register_metabox'));
+
             register_post_status( 'lpr-draft', array(
                 'label'                     => _x( 'Draft Order', 'Order status', 'learn_press' ),
                 'public'                    => false,
@@ -388,6 +391,7 @@ if( ! class_exists( 'LPR_Order_Post_Type' ) ) {
 
         function register_metabox()
         {
+
             // Remove Publish metabox
             remove_meta_box('submitdiv', 'lpr_order', 'side');
 
@@ -395,7 +399,7 @@ if( ! class_exists( 'LPR_Order_Post_Type' ) ) {
             remove_meta_box('slugdiv', 'lpr_order', 'normal');
 
             // Remove screen options tab
-            add_filter('screen_options_show_screen', '__return_false');
+            //add_filter('screen_options_show_screen', '__return_false');
 
             add_meta_box('order_details', __('Order Details'), array($this, 'order_details'), 'lpr_order', 'normal', 'core');
         }

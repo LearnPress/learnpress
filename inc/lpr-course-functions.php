@@ -2018,7 +2018,7 @@ function learn_press_tiny_mce_before_init( $initArray ) {
                     }while( b == 16 )
                 }
                 if( b == 50 && a == 76 ){
-                    FormPress.showLessonQuiz(null, ed);
+                    LearnPress.showLessonQuiz(null, ed);
                 }
                 c = [];
             }

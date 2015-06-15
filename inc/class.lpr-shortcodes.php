@@ -65,6 +65,7 @@ class LPR_Shortcodes{
         </script>
         <?php
         do_action( 'learn_press_after_profile_content' );
+       
 
     }
 }

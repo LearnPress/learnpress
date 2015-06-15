@@ -5,7 +5,6 @@ if ( !defined( 'ABSPATH' ) ) {
 }
 
 get_header(); ?>
-<?php //echo __FILE__;?>
 
 <section id="primary" class="content-area">
 	<main id="main" class="site-main" role="main">
