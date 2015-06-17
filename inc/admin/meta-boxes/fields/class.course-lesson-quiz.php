@@ -418,15 +418,16 @@ if ( !class_exists( 'RWMB_Course_lesson_Quiz_Field' ) ) {
 		}
 
 		static function quick_edit_lesson_quiz_name() {
-
 			$id = isset( $_POST['id'] ) ? intval( $_POST['id'] ) : 0;
 			echo '__LPR_JSON__';
 			if ( $id ) {
 				$name    = $_POST['name'];
+                $slug   = sanitize_title( $name );
 				$post_id = wp_update_post(
 					array(
 						'ID'         => $id,
-						'post_title' => $name
+						'post_title' => $name,
+                        'post_name'  => $slug
 					)
 				);
 				if ( $post_id ) {

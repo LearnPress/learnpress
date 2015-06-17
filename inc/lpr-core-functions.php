@@ -882,13 +882,18 @@ add_filter( 'template_include', 'learn_press_template_loader' );
 function learn_press_template_loader( $template ) {
 
 	$file = '';
+
 	if ( ( $page_id = learn_press_get_page_id( 'taken_course_confirm' ) ) && is_page( $page_id ) ) {
 		if ( !learn_press_user_can_view_order( !empty( $_REQUEST['order_id'] ) ? $_REQUEST['order_id'] : 0 ) ) {
 			learn_press_404_page();
 		}
 		global $post;
 		$post->post_content = '[learn_press_confirm_order]';
-	} else if ( is_post_type_archive( 'lpr_course' ) || ( ( $page_id = learn_press_get_page_id( 'courses' ) ) && is_page( $page_id ) ) || ( is_tax('course_category')) ) {
+	} elseif ( ( $page_id = learn_press_get_page_id( 'become_teacher_form' ) ) && is_page( $page_id ) ) {
+        global $post;
+
+        $post->post_content = '[learn_press_become_teacher_form]';
+    } else if ( is_post_type_archive( 'lpr_course' ) || ( ( $page_id = learn_press_get_page_id( 'courses' ) ) && is_page( $page_id ) ) || ( is_tax('course_category')) ) {
 		$file   = 'archive-course.php';
 		$find[] = $file;
 		//$find[] = learn_press_plugin_path( 'templates/' ) . $file;
@@ -1504,3 +1509,52 @@ function learn_press_text_image( $text = null, $args = array() ) {
 	//readfile( $cache );
 	imagedestroy( $im );
 }
+
+function become_a_teacher_handler(){
+    $name       = ! empty( $_POST['bat_name'] ) ? $_POST['bat_name'] : null;
+    $email      = ! empty( $_POST['bat_email'] ) ? $_POST['bat_email'] : null;
+    $phone      = ! empty( $_POST['bat_phone'] ) ? $_POST['bat_phone'] : null;
+
+    $response = array(
+        'error' => array()
+    );
+
+    if( ! $name ){
+        $response['error'][] = __( 'Please enter your name', 'learn_press' );
+    }
+
+    if( ! $email ){
+        $response['error'][] = __( 'Please enter your email address', 'learn_press' );
+    }
+
+    if( ! $phone ){
+        //$response['error'][] = __( 'Please enter your phone number', 'learn_press' );
+    }
+    global $current_user;
+    get_currentuserinfo();
+
+    $email              = 'tunnhn@gmail.com';//array( get_option( 'admin_email' ) );
+    $message_headers    = '';
+    $subject            = 'Please moderate';
+    $notify_message     = sprintf( __('The user <a href="%s">%s</a> want to be a teacher.'), admin_url( 'user-edit.php?user_id=' . $current_user->ID ), $current_user->data->user_login  ) . "\r\n";
+
+    $notify_message .= sprintf( __('Name: %s'), $name ) . "\r\n";
+    $notify_message .= sprintf( __('Email: %s'), $email ) . "\r\n";
+    $notify_message .= sprintf( __('Phone: %s'), $phone ) . "\r\n";
+    $notify_message .= wp_specialchars_decode( sprintf( __('Accept: %s'),  admin_url( 'user-edit.php?user_id=' . $current_user->ID ) . '&action=accept-to-be-teacher' ) ) . "\r\n";
+
+    $args = array(
+        $email,
+        ( $subject ),
+        $notify_message,
+        $message_headers
+    );
+
+    $return = @call_user_func_array( 'wp_mail', $args );// $email, wp_specialchars_decode( $subject ), $notify_message, $message_headers );
+    $response['return'] = $return;
+    //$response['args']   = $args;
+   // $response['user']   = $current_user;
+    learn_press_send_json( $response );
+    die();
+}
+add_action( 'learn_press_frontend_action_become_a_teacher', 'become_a_teacher_handler' );

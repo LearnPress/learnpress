@@ -562,9 +562,7 @@ function toggleSection( toggle, $sec ){
     //
 function processShortCutKey(e){
     var $li = $('.lpr-curriculum-section.lpr-selected');
-
     // 38 = Up, 40 = DOWN, 9 = TAB
-    console.log(e.keyCode)
     if(!e.shiftKey && ( e.keyCode == 38 || e.keyCode == 40 || e.keyCode == 9 ) ){
         var $next = null;
         if( $li.get(0) ) {

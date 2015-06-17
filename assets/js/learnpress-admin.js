@@ -332,14 +332,15 @@ lprHook.addAction('lpr_admin_quiz_question_html', _lprAdminQuestionHTML);
                 url: $link.attr('href'),
                 dataType: 'html',
                 success: function(response){
-                    if(action == 'install-now'){
+                    if(action == 'install-now' || action == 'update-now' || action == 'active-now'){
                         if( $link.hasClass('thimpress') ){
                             response = LearnPress.parse_json( response );
                             $link.removeClass( 'spinner' );
                             var message = null;
                             if( response.destination_name ){
-                                $link.addClass('disabled').html(response.text).removeAttr('href').removeAttr('data-action');
+                                $link.addClass('disabled').html('Installed').removeAttr('href').removeAttr('data-action');
                                 message = $(wp.template('add-on-install-success')({name: $link.attr('data-name')}));
+                                $('.addon-status', $link.closest('.action-links')).html(response.status_text).addClass('enabled');
                             }else{
                                 $link.removeClass('disabled');
                                 message = $(wp.template('add-on-install-error')({name: $link.attr('data-name')}));
@@ -348,6 +349,31 @@ lprHook.addAction('lpr_admin_quiz_question_html', _lprAdminQuestionHTML);
                         }
                     }
                     //$link.replaceWith( $(response.button) );
+                }
+            })
+        });
+
+        $('#learn-press-bundle-activate-add-ons').click(function(){
+            var $button = $(this);
+            $button.addClass('spinner').attr('disabled', 'disabled');
+            $.ajax({
+                url: ajaxurl,
+                data: {
+                    action: 'learnpress_bundle_activate_add_ons'
+                },
+                dataType: 'html',
+                success: function(response){
+                    response = LearnPress.parse_json( response );
+                    if( response.addons ){
+                        for(var slug in response.addons ){
+                            var plugin = response.addons[slug];
+                            if( 'activate' == plugin.status ){
+                                $('.plugin-card-'+slug).find('.install-now.thimpress').addClass('disabled').attr('href', '').html('Installed');
+                                $('.plugin-card-'+slug).find('.addon-status').html(plugin.status_text).removeClass('disabled').addClass('enabled');
+                            }
+                        }
+                    }
+                    $button.removeClass('spinner').removeAttr('disabled');
                 }
             })
         });
@@ -486,7 +512,7 @@ lprHook.addAction('lpr_admin_quiz_question_html', _lprAdminQuestionHTML);
                 } else {
                     response = JSON.parse(response)
                 }
-            }catch(e){ response = {} }
+            }catch(e){ response = false }
             return response;
         },
         block_page: function(args){

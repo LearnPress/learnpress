@@ -250,6 +250,9 @@ li.quiz, li.lesson, li.quick_lesson, li.quick_quiz {
 .learn-press-add-ons .action-links > span.disabled{
     color: #FF0000;
 }
+#learn-press-bundle-activate-add-ons.spinner{
+    float: left !important;
+}
 #learn-press-add-on-state-changed-message{
     position: fixed;
     bottom: 0;

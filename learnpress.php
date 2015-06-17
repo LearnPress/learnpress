@@ -79,6 +79,23 @@ if ( !class_exists( 'LearnPress' ) ) {
 			do_action( 'learn_press_loaded' );
 			do_action( 'learn_press_register_add_ons' );
 
+            global $learn_press_add_ons;
+
+            $learn_press_add_ons['bundle_activate'] = array(
+                'learnpress-course-review',
+                'learnpress-import-export',
+                'learnpress-prerequisites-courses',
+                'learnpress-wishlist'
+            );
+            $learn_press_add_ons['more'] = array(
+                'learnpress-bbpress',
+                'learnpress-buddypress',
+                'learnpress-course-review',
+                'learnpress-import-export',
+                'learnpress-prerequisites-courses',
+                'learnpress-wishlist'
+            );
+
 		}
 
 		/**

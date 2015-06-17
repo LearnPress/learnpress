@@ -399,3 +399,87 @@ function learn_press_admin_notice_bundle_activation() {
 }
 add_action( 'admin_notices', 'learn_press_admin_notice_bundle_activation' );
 
+/**
+ * Install a plugin
+ *
+ * @param string $plugin_name
+ * @return array
+ */
+function learn_press_install_add_on( $plugin_name ){
+    require_once( LPR_PLUGIN_PATH . '/inc/admin/class-lpr-upgrader.php' );
+    $upgrader = new LPR_Upgrader();
+    global $wp_filesystem;
+    $response = array();
+
+    $package = 'http://thimpress.com/lprepo/' . $plugin_name . '.zip';
+
+    $package = $upgrader->download_package( $package );
+    if( is_wp_error( $package ) ) {
+        $response['error'] = $package;
+    }else {
+        $working_dir = $upgrader->unpack_package($package, true, $plugin_name);
+        if (is_wp_error($working_dir)){
+            $response['error'] = $working_dir;
+        }else {
+
+            $wp_upgrader = new WP_Upgrader();
+            $options = array(
+                'source' => $working_dir,
+                'destination' => WP_PLUGIN_DIR,
+                'clear_destination' => false, // Do not overwrite files.
+                'clear_working' => true,
+                'hook_extra' => array(
+                    'type' => 'plugin',
+                    'action' => 'install'
+                )
+            );
+            //$response = array();
+            $result = $wp_upgrader->install_package($options);
+
+            if (is_wp_error($result)) {
+                $response['error'] = $result;
+            }else{
+                $response = $result;
+                $response['text'] = __( 'Installed' );
+            }
+        }
+    }
+    return $response;
+}
+
+function learn_press_accept_become_a_teacher(){
+    $action     = ! empty( $_REQUEST['action'] ) ? $_REQUEST['action'] : '';
+    $user_id    = ! empty( $_REQUEST['user_id'] ) ? $_REQUEST['user_id'] : '';
+    if( ! $action || ! $user_id || ( $action != 'accept-to-be-teacher' ) ) return;
+
+    $be_teacher = new WP_User( $user_id );
+    $be_teacher->set_role( 'lpr_teacher' );
+
+    do_action( 'learn_press_user_become_a_teacher', $user_id );
+}
+add_action( 'admin_notices', 'learn_press_accept_become_a_teacher' );
+
+function learn_press_user_become_a_teacher_notice( $user_id ){
+    $user = new WP_User( $user_id );
+?>
+    <div class="updated">
+        <p><?php printf( __( 'The user %s has become a teacher', 'learn_press' ), $user->user_login );?></p>
+    </div>
+<?php
+}
+add_action( 'learn_press_user_become_a_teacher', 'learn_press_user_become_a_teacher_notice' );
+
+function learn_press_is_plugin_install( $plugin ){
+    $installed_plugins = get_plugins();
+    return isset( $installed_plugins[ $plugin ] );
+}
+
+function learn_press_plugin_basename_from_slug( $slug ) {
+    $keys = array_keys( get_plugins() );
+    foreach ( $keys as $key ) {
+        if ( preg_match( '|^' . $slug . '/|', $key ) ) {
+            return $key;
+        }
+    }
+    return $slug;
+}

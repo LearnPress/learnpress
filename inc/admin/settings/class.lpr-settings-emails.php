@@ -16,10 +16,11 @@ class LPR_Settings_Emails extends LPR_Settings_Base {
 
 	function get_sections() {
 		$sections = array(
-			'general'          => __( 'General options', 'learn_press' ),
-			'published_course' => __( 'Published course', 'learn_press' ),
-			'enrolled_course'  => __( 'Enrolled course', 'learn_press' ),
-			'passed_course'    => __( 'Passed course', 'learn_press' )
+			'general'                   => __( 'General options', 'learn_press' ),
+			'published_course'          => __( 'Published course', 'learn_press' ),
+			'enrolled_course'           => __( 'Enrolled course', 'learn_press' ),
+			'passed_course'             => __( 'Passed course', 'learn_press' ),
+            //'become_a_teacher'          => __( 'Become a teacher', 'learn_press' )
 		);
 		return $sections = apply_filters( 'learn_press_settings_sections_' . $this->id, $sections );
 	}
@@ -207,6 +208,49 @@ class LPR_Settings_Emails extends LPR_Settings_Base {
 		</table>
 	<?php
 	}
+
+    function output_section_become_a_teacher(){
+        $this->_become_a_teacher_request();
+    }
+
+    private function _become_a_teacher_request(){
+        $settings        = LPR_Admin_Settings::instance( 'emails' );
+        $default_subject = 'Request to become a teacher';
+        $default_message = '<strong>Dear Administrator</strong>,
+
+        <p>An user want to be a teacher and has requested. Below is the information about requester</p>
+        ';
+        ?>
+        <table class="form-table">
+            <tbody>
+            <?php do_action( 'learn_press_before_' . $this->id . '_' . $this->section['id'] . '_settings_fields', $settings ); ?>
+            <tr>
+                <th scope="row"><label for="lpr_email_enable"><?php _e( 'Enable', 'learn_press' ); ?></label></th>
+                <td>
+                    <input id="lpr_email_enable" type="checkbox" name="lpr_settings[<?php echo $this->id; ?>][enable]" value="1" <?php checked( $settings->get( 'become_a_teacher_request.enable' ), 1 ); ?> />
+
+                    <p class="description"><?php _e( 'Send notification when a user want to be a teacher', 'learn_press' ); ?></p>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row"><label for="lpr_email_subject"><?php _e( 'Subject', 'learn_press' ); ?></label></th>
+                <td>
+                    <input id="lpr_email_subject" class="regular-text" type="text" name="lpr_settings[<?php echo $this->id; ?>][subject]" value="<?php echo $settings->get( 'become_a_teacher_request.subject', $default_subject ); ?>" />
+
+                    <p class="description"><?php _e( 'Email subject', 'learn_press' ); ?></p>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row"><label><?php _e( 'Message', 'learn_press' ); ?></label></th>
+                <td>
+                    <?php $this->message_editor( $default_message ); ?>
+                </td>
+            </tr>
+            <?php do_action( 'learn_press_after_' . $this->id . '_' . $this->section['id'] . '_settings_fields', $settings ); ?>
+            </tbody>
+        </table>
+        <?php
+    }
 
 	function save() {
 		$settings  = LPR_Admin_Settings::instance( 'emails' );

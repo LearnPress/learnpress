@@ -14,9 +14,10 @@ class LPR_Plugin_Install_List_Table extends WP_List_Table {
     public $groups = array();
 
     private $error;
-    private $test_mode = true;
+    private $test_mode = false;
     private $repo_url = 'http://thimpress.com/lprepo/';
     private $upgrader = false;
+    public $items; // extended from it parent
     public function ajax_user_can() {
         return current_user_can('install_plugins');
     }
@@ -51,47 +52,22 @@ class LPR_Plugin_Install_List_Table extends WP_List_Table {
     }
 
     private function _get_items_from_wp(){
+        $tab = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : '';
+        if( ! $tab ) return;
 
-        global $tabs, $tab, $paged, $type, $term;
-        $tab = 'search';
-
-        wp_reset_vars( array( 'tab' ) );
-
-        $paged = $this->get_pagenum();
-
-        $per_page = 30;
-
-
-        $args = array(
-            'page' => $paged,
-            'per_page' => $per_page,
-            'fields' => array(
-                'last_updated' => true,
-                'icons' => true,
-                'active_installs' => true
-            ),
-            // Send the locale and installed plugin slugs to the API so it can provide context-sensitive results.
-            'locale' => get_locale(),
-            'installed_plugins' => $this->get_installed_plugin_slugs(),
-            'search' => 'woocommerce'
-        );
-
-        $transient_key = "learn_press_add_ons" . md5( serialize( $args ) );
-
-        if( $plugins = get_transient( $transient_key ) ){
-            $this->items = $plugins;
-            return;
-        }
-
-        $api = plugins_api( 'query_plugins', $args );
-
-        if ( is_wp_error( $api ) ) {
-            $this->error = $api;
-            return;
-        }
-        if( is_array( $api->plugins ) ) {
-            $plugins = array_filter( $api->plugins, create_function( '$plugin', 'return $plugin->slug != \'learnpress\';' ));
-            set_transient( $transient_key, $plugins, 60 * 5 );
+        $plugins = learn_press_get_add_ons_from_wp();
+        if( ( $tab == 'bundle_activate' ) && sizeof( $plugins ) ) {
+            global $learn_press_add_ons;
+            $_plugins = array_values( $plugins );
+            $plugins = array();
+            $bundle_activate = $learn_press_add_ons['bundle_activate'];
+            for( $n = sizeof( $_plugins ), $i = $n - 1; $i >= 0; $i-- ){
+                foreach( $bundle_activate as $slug ){
+                    if( ( false !== strpos( $slug, $_plugins[$i]->slug ) ) || ( false !== strpos( $_plugins[$i]->slug, $slug ) ) ){
+                       $plugins[] = $_plugins[ $i ];
+                    }
+                }
+            }
         }
         $this->items = $plugins;
     }
@@ -105,6 +81,12 @@ class LPR_Plugin_Install_List_Table extends WP_List_Table {
             $repo_url = 'http://thimpress.com/lprepo/';
 
             foreach ($add_ons as $slug) {
+                if( false !== strpos( $slug, '.php' ) ){
+                    $filename = basename( $slug );
+                    $slug = dirname( $slug );
+                }else{
+                    $filename = "{$slug}.php";
+                }
                 $item = array(
                     'name' => '',
                     'slug' => '',
@@ -133,7 +115,7 @@ class LPR_Plugin_Install_List_Table extends WP_List_Table {
                         '1x' => LPR_PLUGIN_URL . '/assets/images/icon-128x128.png'
                     )
                 );
-                $readme = $this->upgrader->get_plugin_info($repo_url . "/{$slug}.zip");
+                $readme = $this->upgrader->get_plugin_info($repo_url . "/{$slug}.zip", $filename );
                 $item['name'] = $readme['name'];
                 $item['slug'] = $slug;
                 if (preg_match('!<h4>(.*)<\/h4>!', $readme['sections']['changelog'], $matches)) {
@@ -142,7 +124,7 @@ class LPR_Plugin_Install_List_Table extends WP_List_Table {
                 $item['requires'] = $readme['requires_at_least'];
                 $item['tested'] = $readme['tested_up_to'];
 
-                $items["$slug/$slug.php"] = (object)$item;
+                $items["{$slug}/{$filename}"] = (object)$item;
             }
             file_put_contents( $cache, serialize($items));
         }
@@ -357,6 +339,7 @@ class LPR_Plugin_Install_List_Table extends WP_List_Table {
             }
 
             $action_links = array();
+            $plugin_file = learn_press_plugin_basename_from_slug( $plugin['slug'] );
 
             if ( current_user_can( 'install_plugins' ) || current_user_can( 'update_plugins' ) ) {
 
@@ -373,20 +356,24 @@ class LPR_Plugin_Install_List_Table extends WP_List_Table {
                     case 'install':
                         if ( $status['url'] ) {
                             /* translators: 1: Plugin name and version. */
-                            $action_links[] = '<a class="install-now button thimpress" data-action="install-now" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url( $status['url'] ) . '" aria-label="' . esc_attr( sprintf( __( 'Install %s now' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '">' . __( 'Install Now' ) . '</a>';
+                            $action_links[] = '<a class="install-now button thimpress" data-action="install-now" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url( $status['url'] ) . '&learnpress=active" aria-label="' . esc_attr( sprintf( __( 'Install %s now' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '">' . __( 'Install Now' ) . '</a>';
                         }
 
                         break;
                     case 'update_available':
                         if ( $status['url'] ) {
                             /* translators: 1: Plugin name and version */
-                            $action_links[] = '<a class="update-now button" data-plugin="' . esc_attr( $status['file'] ) . '" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url( $status['url'] ) . '" aria-label="' . esc_attr( sprintf( __( 'Update %s now' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '">' . __( 'Update Now' ) . '</a>';
+                            $action_links[] = '<a class="update-now button thimpress" data-action="update-now" data-plugin="' . esc_attr( $status['file'] ) . '" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url( $status['url'] ) . '&learnpress=active" aria-label="' . esc_attr( sprintf( __( 'Update %s now' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '">' . __( 'Update Now' ) . '</a>';
                         }
 
                         break;
                     case 'latest_installed':
                     case 'newer_installed':
-                        $action_links[] = '<span class="button button-disabled" title="' . esc_attr__( 'This plugin is already installed and is up to date' ) . ' ">' . _x( 'Installed', 'plugin' ) . '</span>';
+                        if( is_plugin_active( $plugin_file ) ){
+                            $action_links[] = '<span class="button button-disabled" title="">' . _x('Enabled', 'plugin') . '</span>';
+                        }else {
+                            $action_links[] = '<a class="button thimpress" data-action="active-now" href="'.wp_nonce_url( 'plugins.php?action=activate&learnpress=active&plugin='.$plugin_file, 'activate-plugin_' . $plugin_file ) . '" >' . _x('Enable', 'plugin') . '</a>';
+                        }
                         break;
                 }
             }
@@ -421,16 +408,20 @@ class LPR_Plugin_Install_List_Table extends WP_List_Table {
             $last_updated_timestamp = strtotime( $plugin['last_updated'] );
             $details_link = "";
             $message = null;
+
             if( 'bundle_activate' == $tab ){
-                if( file_exists( WP_PLUGIN_DIR . '/' . $kk ) ) {
-                    if (is_plugin_active($kk)) {
-                        $message = sprintf('<span class="enabled">%s</span>', __('Enabled', 'learn_press'));
+
+                if( learn_press_is_plugin_install( $plugin_file ) ) {
+
+                    if (is_plugin_active( $plugin_file )) {
+                        $message = sprintf('<span class="addon-status enabled">%s</span>', __('Enabled', 'learn_press'));
                     } else {
-                        $message = sprintf('<span class="disabled">%s</span>', __('Disabled', 'learn_press'));
+                        $message = sprintf('<span class="addon-status disabled">%s</span>', __('Disabled', 'learn_press'));
                     }
+                }else{
+                    $message = sprintf('<span class="addon-status not_install">%s</span>', __('Not Install', 'learn_press'));
                 }
             }
-
             ?>
             <div class="plugin-card plugin-card-<?php echo sanitize_html_class( $plugin['slug'] ); ?>">
                 <div class="plugin-card-top">
@@ -443,7 +434,7 @@ class LPR_Plugin_Install_List_Table extends WP_List_Table {
                         if ( $action_links ) {
                             echo '<ul class="plugin-action-buttons"><li>' . implode( '</li><li>', $action_links ) . '</li></ul>';
                         }
-                        echo $message;
+                        //echo $message;
                         ?>
                     </div>
                     <div class="desc column-description">

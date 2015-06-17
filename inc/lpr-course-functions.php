@@ -943,7 +943,7 @@ function learn_press_is_free_course( $course_id = null ) {
 		global $course;
 		$course_id = $course ? $course->ID : 0;
 	}
-	return 'free' == get_post_meta( $course_id, '_lpr_course_payment', true );
+	return 'free' == get_post_meta( $course_id, '_lpr_course_payment', true ) || ( 0 >= intval( get_post_meta( $course_id, '_lpr_course_price', true ) ) ) ;
 }
 
 /**
@@ -1988,6 +1988,65 @@ function learn_press_admin_js_template() {
 add_action( 'admin_print_scripts', 'learn_press_admin_js_template' );
 
 /**
+ * Get related courses
+ * @param  int $number number of related courses you want to get
+ * @return array         id of related courses
+ */
+function learn_press_get_related_courses( $number ) {	
+	if( is_single() && 'lpr_course' == get_post_type() ) {		
+		$course_id = get_the_id();
+		$terms = get_the_terms( $course_id, 'course_category' );
+		$related_courses = array();				
+		if( $terms ) {
+			$terms_args = array();
+			foreach ($terms as $term ) {
+				array_push( $terms_args, $term->slug);
+			}				
+			$args = array( 
+				'post_type' => 'lpr_course',
+				'tax_query' => array (
+					array(
+						'taxonomy' 	=> 'course_category',
+						'field'		=> 'slug',
+						'terms'		=> $terms_args
+					)
+				),
+				'posts_per_page'=> $number,
+			);
+			$related_courses = get_posts( $args );
+			// print_r( $query );
+			// $related_courses = array_merge( $related_courses, $query );			
+		} else {
+			global $wpdb;
+			$arr_query = array(
+				'post_type'   => 'lpr_course',
+				'post_status' => 'publish',
+			);
+			$courses   = $wpdb->get_results(
+			$wpdb->prepare(
+					"SELECT p.ID, pm.meta_value FROM $wpdb->posts AS p
+					INNER JOIN $wpdb->postmeta AS pm ON p.ID = pm.post_id
+					WHERE pm.meta_key = %s",
+					'_lpr_course_user'
+				)
+			);
+			$course_in = array();
+			if ( $courses ) {
+				foreach ( $courses as $course ) {
+					$course_in[$course->ID] = count( unserialize( $course->meta_value ) );
+				}
+				arsort( $course_in );
+			}
+			$courses               = array_slice( $course_in, 0, 4, true );
+			$arr_query['post__in'] = array_keys( $courses );
+			$related_courses = get_posts( $arr_query );
+		}
+		return $related_courses;
+	}
+	return;
+}
+
+/**
  * tinymce options to process the keys user pressed
  *
  * @param  array
@@ -1995,7 +2054,7 @@ add_action( 'admin_print_scripts', 'learn_press_admin_js_template' );
  */
 function learn_press_tiny_mce_before_init( $initArray ) {
 	global $post_type;
-	if ( !in_array( $post_type, array( 'lpr_lesson' ) ) ) return $initArray;
+	if ( ! in_array( $post_type, array( 'lpr_lesson' ) ) ) return $initArray;
 
 	$initArray['setup'] = <<<JS
 [function(ed) {

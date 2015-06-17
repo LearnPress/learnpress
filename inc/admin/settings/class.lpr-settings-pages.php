@@ -99,6 +99,28 @@ class LPR_Settings_Pages extends LPR_Settings_Base{
                     </p>
                 </td>
             </tr>
+            <tr>
+                <th scope="row"><label><?php _e( 'Become a Teacher', 'learn_press' );?></label></th>
+                <td>
+                    <?php
+                    $page_id = $settings->get('general.become_teacher_form_page_id', 0);
+                    $output = preg_replace( array( '!{NAME}!', '!{ID}!' ), array( "lpr_settings[" . $this->id . "][become_teacher_form_page_id]", 'lpr_become_teacher_form_page_id' ), $dropdown_pages );
+                    $output = preg_replace( '!selected="selected"!', '', $output );
+                    $output = preg_replace( '!(value="' . $page_id . '")!', '$1 selected="selected"', $output );
+                    echo $output;
+                    ?>
+                    <p class="lpr-quick-add-page-inline hide-if-js">
+                        <input type="text" />
+                        <button class="button" type="button"><?php _e( 'Ok', 'learn_press' );?></button>
+                        <a href=""><?php _e( 'Cancel', 'learn_press' );?></a>
+                    </p>
+                    <p class="lpr-quick-actions-inline<?php echo $page_id ? '' : ' hide-if-js';?>">
+
+                        <a href="<?php echo get_edit_post_link( $page_id );?>" target="_blank"><?php _e( 'Edit Page', 'learn_press' );?></a>
+                        <a href="<?php echo get_permalink( $page_id );?>" target="_blank"><?php _e( 'View Page', 'learn_press' );?></a>
+                    </p>
+                </td>
+            </tr>
             <?php do_action( 'learn_press_after_' . $this->id . '_' . $this->section['id'] . '_settings_fields', $settings );?>
             </tbody>
         </table>

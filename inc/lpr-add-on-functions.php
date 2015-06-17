@@ -1,16 +1,7 @@
 <?php
-
-
 if ( !defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly
 }
-
-/**
- * Initiate add on page
- *
- */
-
-
 /**
  * Print all tab
  *
@@ -524,3 +515,135 @@ function learn_press_get_plugin_data( $plugins ){
     //print_r($response);
 }
 
+/**
+ * @return array
+ */
+function get_installed_plugin_slugs(){
+    $slugs = array();
+
+    $plugin_info = get_site_transient('update_plugins');
+    if (isset($plugin_info->no_update)) {
+        foreach ($plugin_info->no_update as $plugin) {
+            $slugs[] = $plugin->slug;
+        }
+    }
+
+    if (isset($plugin_info->response)) {
+        foreach ($plugin_info->response as $plugin) {
+            $slugs[] = $plugin->slug;
+        }
+    }
+
+    return $slugs;
+}
+/**
+ * Query the list of add-ons from wordpress.org with keyword 'learnpress'
+ * This requires have a keyword named 'learnpress' in plugin header Tags
+ *
+ * @param array
+ * @return array
+ */
+function learn_press_get_add_ons_from_wp( $args = null ){
+    $args = wp_parse_args(
+        $args,
+        array(
+            'search'    => 'learnpress',
+            'include'   => null,
+            'exclude'   => null
+        )
+    );
+    // the number of plugins on each page queried, when we can reach to this figure?
+    $per_page   = 300;
+    $paged      = 1;
+    $query_args = array(
+        'page' => $paged,
+        'per_page' => $per_page,
+        'fields' => array(
+            'last_updated' => true,
+            'icons' => true,
+            'active_installs' => true
+        ),
+        // Send the locale and installed plugin slugs to the API so it can provide context-sensitive results.
+        'locale' => get_locale(),
+        'installed_plugins' => get_installed_plugin_slugs(),
+        'search' => $args['search']
+    );
+
+    $transient_key = "learn_press_add_ons" . md5( serialize( $query_args ) );
+
+    if( $plugins = get_transient( $transient_key ) ){
+        $this->items = $plugins;
+        return;
+    }
+
+    $api = plugins_api( 'query_plugins', $query_args );
+
+    if ( is_wp_error( $api ) ) {
+        $this->error = $api;
+        return;
+    }
+    if( is_array( $api->plugins ) ) {
+        // filter plugins with tag contains 'learnpress'
+        $plugins = array_filter( $api->plugins, create_function( '$plugin', 'return $plugin->slug != \'learnpress\';' ));
+        set_transient( $transient_key, $plugins, 60 * 5 );
+    }
+    return $plugins;
+}
+
+function learn_press_install_and_active_add_on( $slug ){
+
+    include_once( ABSPATH . 'wp-admin/includes/plugin-install.php' ); //for plugins_api..
+    if ( ! class_exists( 'Plugin_Upgrader', false ) ) {
+        require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
+    }
+    $api    = plugins_api('plugin_information', array('slug' => $slug, 'fields' => array('sections' => false) ) );
+    $title  = sprintf( __('Installing Plugin: %s'), $api->name . ' ' . $api->version );
+    $nonce  = 'install-plugin_' . $slug;
+    $url    = 'update.php?action=install-plugin&plugin=' . urlencode( $slug );
+
+    $plugin = learn_press_plugin_basename_from_slug( $slug );
+    $return = array();
+    if ( ! learn_press_is_plugin_install( $plugin ) ) {
+
+        $upgrader = new Plugin_Upgrader( new Plugin_Installer_Skin( compact('title', 'url', 'nonce', 'plugin', 'api') ) );
+        $result = $upgrader->install( $api->download_link );
+
+        if ( ! is_wp_error( $result ) ) {
+            $return['status'] = 'not_install';
+            $return['status_text'] = __( 'Not install', 'learn_press' );
+        } else {
+            $return = $result;
+            $return['status'] = 'installed';
+            $return['status_text'] = __( 'Installed', 'learn_press' );
+        }
+    }
+
+    if ( learn_press_is_plugin_install( $plugin ) ) {
+        activate_plugin($plugin, false, is_network_admin());
+        // ensure that plugin is enabled
+        $is_activate = is_plugin_active( $plugin );
+        $return['status'] = $is_activate ? 'activate' : 'deactivate';
+        $return['status_text'] = $is_activate ? __( 'Enabled', 'learn_press' ) : __( 'Disabled', 'learn_press' );
+    }
+    return $return;
+}
+
+function learn_press_upgrader_post_install( $a, $b, $result){
+    if( ! empty( $_REQUEST['learnpress'] ) && $_REQUEST['learnpress'] == 'active' ) {
+        if( is_wp_error( $result ) ) {
+
+        }else{
+            $slug = $_REQUEST['plugin'];
+            $plugin = learn_press_plugin_basename_from_slug( $slug );
+
+
+            activate_plugin($plugin, false, is_network_admin());
+            // ensure that plugin is enabled
+            $is_activate = is_plugin_active( $plugin );
+            $result['status'] = $is_activate ? 'activate' : 'deactivate';
+            $result['status_text'] = $is_activate ? __('Enabled', 'learn_press') : __('Disabled', 'learn_press');
+        }
+        learn_press_send_json($result);
+    }
+}
+add_filter( 'upgrader_post_install', 'learn_press_upgrader_post_install', 10, 3 );

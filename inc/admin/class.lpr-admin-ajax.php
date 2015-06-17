@@ -24,7 +24,8 @@ if ( !class_exists( 'LPR_Admin_Ajax' ) ) {
                 'get_page_permalink'    => false,
                 'dummy_image'           => false,
                 'update_add_on_status'  => false,
-                'plugin_install'        => false
+                'plugin_install'        => false,
+                'bundle_activate_add_ons' => false
 			);
 			foreach ( $ajaxEvents as $ajaxEvent => $nopriv ) {
 				add_action( 'wp_ajax_learnpress_' . $ajaxEvent, array( __CLASS__, $ajaxEvent ) );
@@ -36,46 +37,47 @@ if ( !class_exists( 'LPR_Admin_Ajax' ) ) {
 			}
 		}
 
-        static function plugin_install(){
-            require_once( LPR_PLUGIN_PATH . '/inc/admin/class-lpr-upgrader.php' );
-            $upgrader = new LPR_Upgrader();
-            global $wp_filesystem;
-            $response = array();
-            $plugin_name = ! empty( $_REQUEST['plugin'] ) ? $_REQUEST['plugin'] : '';
+        /**
+         * Activate a bundle of add-ons, if an add-on is not installed then install it first
+         */
+        static function bundle_activate_add_ons(){
+            global $learn_press_add_ons;
+            include_once( ABSPATH . 'wp-admin/includes/plugin-install.php' ); //for plugins_api..
+            $response = array( 'addons' => array() );
 
-            $package = 'http://thimpress.com/lprepo/' . $plugin_name . '.zip';
-
-            $package = $upgrader->download_package( $package );
-            if( is_wp_error( $package ) ) {
-                $response['error'] = $package;
+            if (!current_user_can('activate_plugins')){
+                $response['error'] = __('You do not have sufficient permissions to deactivate plugins for this site.');
             }else {
-                $working_dir = $upgrader->unpack_package($package, true, $plugin_name);
-                if (is_wp_error($working_dir)){
-                    $response['error'] = $working_dir;
-                }else {
 
-                    $wp_upgrader = new WP_Upgrader();
-                    $options = array(
-                        'source' => $working_dir,
-                        'destination' => WP_PLUGIN_DIR,
-                        'clear_destination' => false, // Do not overwrite files.
-                        'clear_working' => true,
-                        'hook_extra' => array(
-                            'type' => 'plugin',
-                            'action' => 'install'
-                        )
-                    );
-                    //$response = array();
-                    $result = $wp_upgrader->install_package($options);
+                $add_ons = $learn_press_add_ons['bundle_activate'];
 
-                    if (is_wp_error($result)) {
-                        $response['error'] = $result;
-                    }else{
-                        $response = $result;
-                        $response['text'] = __( 'Installed' );
+                if ( $add_ons ) {
+                    foreach ( $add_ons as $slug ) {
+                        $response[] = learn_press_install_and_active_add_on( $slug );
                     }
                 }
             }
+            learn_press_send_json( $response );
+        }
+
+        /**
+         * Activate a bundle of add-ons, if an add-on is not installed then install it first
+         */
+        static function bundle_activate_add_on(){
+            $response = array();
+            include_once( ABSPATH . 'wp-admin/includes/plugin-install.php' ); //for plugins_api..
+            if (!current_user_can('activate_plugins')){
+                $response['error'] = __('You do not have sufficient permissions to deactivate plugins for this site.');
+            }else {
+                $slug = ! empty( $_REQUEST['plugin'] ) ? $_REQUEST['plugin'] : null;
+                $response[] = learn_press_install_and_active_add_on( $slug );
+            }
+            learn_press_send_json( $response );
+        }
+
+        static function plugin_install(){
+            $plugin_name = ! empty( $_REQUEST['plugin'] ) ? $_REQUEST['plugin'] : '';
+            $response = learn_press_install_add_on( $plugin_name );
             learn_press_send_json( $response );
             die();
         }

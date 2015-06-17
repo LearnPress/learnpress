@@ -1,5 +1,6 @@
 <?php
 class LPR_Upgrader{
+    private $strings;
     function __construct( $directories = array() ){
         require_once( ABSPATH . 'wp-admin/includes/class-wp-upgrader.php' );
         require_once( ABSPATH . 'wp-admin/includes/plugin-install.php' );
@@ -7,6 +8,27 @@ class LPR_Upgrader{
             require_once( ABSPATH . 'wp-admin/includes/class-wp-upgrader-skins.php' );
 
         }
+
+        $this->strings['bad_request'] = __('Invalid Data provided.');
+        $this->strings['fs_unavailable'] = __('Could not access filesystem.');
+        $this->strings['fs_error'] = __('Filesystem error.');
+        $this->strings['fs_no_root_dir'] = __('Unable to locate WordPress Root directory.');
+        $this->strings['fs_no_content_dir'] = __('Unable to locate WordPress Content directory (wp-content).');
+        $this->strings['fs_no_plugins_dir'] = __('Unable to locate WordPress Plugin directory.');
+        $this->strings['fs_no_themes_dir'] = __('Unable to locate WordPress Theme directory.');
+        /* translators: %s: directory name */
+        $this->strings['fs_no_folder'] = __('Unable to locate needed folder (%s).');
+
+        $this->strings['download_failed'] = __('Download failed.');
+        $this->strings['installing_package'] = __('Installing the latest version&#8230;');
+        $this->strings['no_files'] = __('The package contains no files.');
+        $this->strings['folder_exists'] = __('Destination folder already exists.');
+        $this->strings['mkdir_failed'] = __('Could not create directory.');
+        $this->strings['incompatible_archive'] = __('The package could not be installed.');
+
+        $this->strings['maintenance_start'] = __('Enabling Maintenance mode&#8230;');
+        $this->strings['maintenance_end'] = __('Disabling Maintenance mode&#8230;');
+
         $directories = wp_parse_args( $directories, array( WP_CONTENT_DIR ) );
 
         $this->fs_connect( $directories );
@@ -64,10 +86,10 @@ class LPR_Upgrader{
         return $working_dir;
     }
 
-    function get_plugin_info( $path ){
+    function get_plugin_info( $path, $filename = '' ){
         global $wp_filesystem;
 
-        $plugin_file = basename( $path );
+        $plugin_file = $filename ? basename( $path ) : $filename;
         $basename = basename( basename( $plugin_file, '.tmp' ), '.zip' );
 
         $download_path = WP_CONTENT_DIR . '/upgrade';

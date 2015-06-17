@@ -348,6 +348,11 @@ if ( !class_exists( 'LPR_Course_Post_Type' ) ) {
 							}
 						});
 					}
+                    if( $( 'input[name="_lpr_course_payment"]:checked').val() == 'not_free' && $('input[name="_lpr_course_price"]').val() <= 0 ){
+                        alert( '<?php _e( 'Please set a price for this course', 'learn_press' );?>' );
+                        is_error = true;
+                        $('input[name="_lpr_course_price"]').focus();
+                    }
 					if (true == is_error) {
 						evt.preventDefault();
 						return false;

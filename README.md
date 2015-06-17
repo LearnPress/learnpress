@@ -88,11 +88,21 @@ Yes, you can and we appreciate it. Join in our <a href="https://github.com/Learn
 
 ##Changelog
 
+**0.9.2**  
+- Update add-on management page.  
+- Add auto next lesson after complete a quiz feature.  
+- Fix course-review bugs.  
+- Fix bug on curriculum when use "shift + (" or "shift+&" ..... to edit Lesson title or Section title.  
+- Fix course result bug.  
+- Fix export/import addon - sometime the image is not imported.  
+- Fix bug show certificate after user finished a course.  
+
 **0.9.1**  
 The first beta release.  
 
 **Upgrade Notice**  
-Later :)
+*0.9.2*  
+We have changed directory structure and separated all out core add-ons to become independence plugins, so after upgrading version, if you face any add-ons problems, please completely delete the old version and re-install LearnPress. Thank!  
 
 **Other note**  
 <a href="http://docs.thimpress.com/learnpress" target="_blank">Documentation</a> is available in ThimPress site.  

@@ -3,23 +3,6 @@ if ( !defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly
 }
 
-global $learn_press_add_ons;
-
-$learn_press_add_ons['bundle_activate'] = array(
-    'learnpress-course-review',
-    'learnpress-import-export',
-    'learnpress-prerequisites',
-    'learnpress-wishlist'
-);
-$learn_press_add_ons['more'] = array(
-    'learnpress-bbpress',
-    'learnpress-buddypress',
-    'learnpress-course-review',
-    'learnpress-import-export',
-    'learnpress-prerequisites',
-    'learnpress-wishlist'
-);
-
 require_once( LPR_PLUGIN_PATH . '/inc/admin/class-lpr-upgrader.php');
 /**
  * Default tabs for add ons page
@@ -168,7 +151,7 @@ function learn_press_add_ons_content_tab_more( $current ){
     $list_table->display();
 
     if( 'bundle_activate' == $current ){
-        echo '<button class="button" type="button">' . __( 'Install and/or activate all', 'learn_press' ) . '</button>';
+        echo '<button class="button" type="button" id="learn-press-bundle-activate-add-ons">' . __( 'Install and/or activate all', 'learn_press' ) . '</button>';
     }
 
     echo '</div>';

@@ -1037,3 +1037,54 @@ function learn_press_page_title( $title, $sep ){
     return preg_replace('!(' . $course_title . ')!', '$1::' . get_the_title( $_REQUEST['lesson'] ), $title );
 }
 add_filter( 'wp_title', 'learn_press_page_title', 10, 2 );
+
+/**
+ * LearnPress Embed Video button
+ */
+function learn_press_embed_video_button() {
+    add_filter( 'mce_external_plugins', 'learn_press_add_buttons' );
+    add_filter( 'mce_buttons', 'learn_press_register_buttons' );
+}
+add_action( 'init', 'learn_press_embed_video_button' );
+
+/**
+ * Adđ embed button 
+ */
+function learn_press_add_buttons( $plugin_array ) {
+    $plugin_array[ 'embed' ] = LPR_PLUGIN_URL . '/assets/js/learnpress-embed-button.js';
+
+    return $plugin_array;
+}
+
+/**
+ * Register embed button
+ */
+function learn_press_register_buttons( $buttons ) {
+    array_push( $buttons , 'embed');
+    return $buttons;
+}
+
+/**
+ * Embed video shortcode 
+ */
+
+function learn_press_embed_video_shortcode( $atts ) {
+    $a = shortcode_atts(array(
+            'link' => ''
+        ), $atts);
+    $embed_link = wp_oembed_get($a['link']);
+    $html = '<div class="videoWrapper">';
+    $html .= $embed_link;
+    $html .= '</div>';
+    return $html;
+}
+add_shortcode( 'embed_video', 'learn_press_embed_video_shortcode' );
+
+/**
+ * Custom embed video 
+ */
+function learn_press_custom_embed_video($html, $url, $attr, $post_ID) {
+    $return = '<div class="videoWrapper">' . $html . '</div>';
+    return $return;
+}
+add_filter( 'embed_oembed_html', 'learn_press_custom_embed_video', 10, 4 );
