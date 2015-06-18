@@ -590,6 +590,12 @@ function learn_press_get_add_ons_from_wp( $args = null ){
     return $plugins;
 }
 
+/**
+ * Install and active a plugin from slug name
+ *
+ * @param $slug
+ * @return array
+ */
 function learn_press_install_and_active_add_on( $slug ){
 
     include_once( ABSPATH . 'wp-admin/includes/plugin-install.php' ); //for plugins_api..
@@ -608,26 +614,37 @@ function learn_press_install_and_active_add_on( $slug ){
         $upgrader = new Plugin_Upgrader( new Plugin_Installer_Skin( compact('title', 'url', 'nonce', 'plugin', 'api') ) );
         $result = $upgrader->install( $api->download_link );
 
-        if ( ! is_wp_error( $result ) ) {
+        if ( is_wp_error( $result ) ) {
+            $return['error'] = $result;
             $return['status'] = 'not_install';
             $return['status_text'] = __( 'Not install', 'learn_press' );
         } else {
-            $return = $result;
+
+            $return['result'] = $result;
             $return['status'] = 'installed';
             $return['status_text'] = __( 'Installed', 'learn_press' );
         }
     }
-
+    $plugin = learn_press_plugin_basename_from_slug( $slug );
+    //echo "[$plugin]";
     if ( learn_press_is_plugin_install( $plugin ) ) {
-        activate_plugin($plugin, false, is_network_admin());
+        activate_plugin( $plugin , false, is_network_admin());
         // ensure that plugin is enabled
         $is_activate = is_plugin_active( $plugin );
         $return['status'] = $is_activate ? 'activate' : 'deactivate';
         $return['status_text'] = $is_activate ? __( 'Enabled', 'learn_press' ) : __( 'Disabled', 'learn_press' );
     }
+    $return['plugin_file'] = $plugin;
     return $return;
 }
 
+/**
+ * Print plugin information after WP installed a plugin
+ *
+ * @param $a
+ * @param $b
+ * @param $result
+ */
 function learn_press_upgrader_post_install( $a, $b, $result){
     if( ! empty( $_REQUEST['learnpress'] ) && $_REQUEST['learnpress'] == 'active' ) {
         if( is_wp_error( $result ) ) {

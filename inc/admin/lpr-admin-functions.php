@@ -469,11 +469,23 @@ function learn_press_user_become_a_teacher_notice( $user_id ){
 }
 add_action( 'learn_press_user_become_a_teacher', 'learn_press_user_become_a_teacher_notice' );
 
+/**
+ * Check to see if a plugin is already installed or not
+ *
+ * @param $plugin
+ * @return bool
+ */
 function learn_press_is_plugin_install( $plugin ){
     $installed_plugins = get_plugins();
     return isset( $installed_plugins[ $plugin ] );
 }
 
+/**
+ * Get plugin file that contains the information from slug
+ *
+ * @param $slug
+ * @return mixed
+ */
 function learn_press_plugin_basename_from_slug( $slug ) {
     $keys = array_keys( get_plugins() );
     foreach ( $keys as $key ) {

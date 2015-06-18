@@ -337,13 +337,11 @@ lprHook.addAction('lpr_admin_quiz_question_html', _lprAdminQuestionHTML);
                             response = LearnPress.parse_json( response );
                             $link.removeClass( 'spinner' );
                             var message = null;
-                            if( response.destination_name ){
-                                $link.addClass('disabled').html('Installed').removeAttr('href').removeAttr('data-action');
-                                message = $(wp.template('add-on-install-success')({name: $link.attr('data-name')}));
+                            if( response.status == 'activate' ){
+                                $link.addClass('disabled').html(response.status_text).removeAttr('href').removeAttr('data-action');
                                 $('.addon-status', $link.closest('.action-links')).html(response.status_text).addClass('enabled');
                             }else{
                                 $link.removeClass('disabled');
-                                message = $(wp.template('add-on-install-error')({name: $link.attr('data-name')}));
                             }
                             message.insertBefore( $('> h2', '#learn-press-add-ons-wrap') )
                         }
@@ -368,8 +366,9 @@ lprHook.addAction('lpr_admin_quiz_question_html', _lprAdminQuestionHTML);
                         for(var slug in response.addons ){
                             var plugin = response.addons[slug];
                             if( 'activate' == plugin.status ){
-                                $('.plugin-card-'+slug).find('.install-now.thimpress').addClass('disabled').attr('href', '').html('Installed');
-                                $('.plugin-card-'+slug).find('.addon-status').html(plugin.status_text).removeClass('disabled').addClass('enabled');
+                                $('.plugin-card-'+slug).find('.install-now.thimpress, .active-now.thimpress').addClass('disabled').attr('href', '').html(plugin.status_text);
+                            }else{
+
                             }
                         }
                     }

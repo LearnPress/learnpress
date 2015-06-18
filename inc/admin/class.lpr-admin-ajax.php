@@ -53,7 +53,7 @@ if ( !class_exists( 'LPR_Admin_Ajax' ) ) {
 
                 if ( $add_ons ) {
                     foreach ( $add_ons as $slug ) {
-                        $response[] = learn_press_install_and_active_add_on( $slug );
+                        $response['addons'][ $slug ] = learn_press_install_and_active_add_on( $slug );
                     }
                 }
             }
@@ -70,7 +70,7 @@ if ( !class_exists( 'LPR_Admin_Ajax' ) ) {
                 $response['error'] = __('You do not have sufficient permissions to deactivate plugins for this site.');
             }else {
                 $slug = ! empty( $_REQUEST['plugin'] ) ? $_REQUEST['plugin'] : null;
-                $response[] = learn_press_install_and_active_add_on( $slug );
+                $response[$slug] = learn_press_install_and_active_add_on( $slug );
             }
             learn_press_send_json( $response );
         }

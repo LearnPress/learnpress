@@ -234,7 +234,7 @@ li.quiz, li.lesson, li.quick_lesson, li.quick_quiz {
     min-height: 180px;
 }
 .learn-press-add-ons .button.spinner{
-    background: url(../../../../wp-admin/images/spinner.gif) no-repeat 4px !important;
+    background: url(../../assets/images/spinner.gif) no-repeat 4px !important;
     padding-left: 30px;
     visibility: visible;
     width: auto;

@@ -356,7 +356,7 @@ class LPR_Plugin_Install_List_Table extends WP_List_Table {
                     case 'install':
                         if ( $status['url'] ) {
                             /* translators: 1: Plugin name and version. */
-                            $action_links[] = '<a class="install-now button thimpress" data-action="install-now" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url( $status['url'] ) . '&learnpress=active" aria-label="' . esc_attr( sprintf( __( 'Install %s now' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '">' . __( 'Install Now' ) . '</a>';
+                            $action_links[] = '<a class="install-now button thimpress" data-action="install-now" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url( $status['url'] ) . '&learnpress=active" aria-label="' . esc_attr( sprintf( __( 'Install %s now' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '">' . __( 'Install and Active' ) . '</a>';
                         }
 
                         break;
@@ -372,7 +372,7 @@ class LPR_Plugin_Install_List_Table extends WP_List_Table {
                         if( is_plugin_active( $plugin_file ) ){
                             $action_links[] = '<span class="button button-disabled" title="">' . _x('Enabled', 'plugin') . '</span>';
                         }else {
-                            $action_links[] = '<a class="button thimpress" data-action="active-now" href="'.wp_nonce_url( 'plugins.php?action=activate&learnpress=active&plugin='.$plugin_file, 'activate-plugin_' . $plugin_file ) . '" >' . _x('Enable', 'plugin') . '</a>';
+                            $action_links[] = '<a class="active-now button thimpress" data-action="active-now" href="'.wp_nonce_url( 'plugins.php?action=activate&learnpress=active&plugin='.$plugin_file, 'activate-plugin_' . $plugin_file ) . '" >' . _x('Enable', 'plugin') . '</a>';
                         }
                         break;
                 }
