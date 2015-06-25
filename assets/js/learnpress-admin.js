@@ -103,6 +103,45 @@ jQuery(document).ready(function($){
 		return false;
 	})
 
+    // admin notice install sample data
+    $(document).on('click', '#learn-press-install-sample-data-notice a', function(e){
+        e.preventDefault();
+        var yes = $(this).hasClass('yes') ? true : false;
+        if( yes ){
+            $(document.body).block_ui({
+                position: 'fixed',
+                zIndex: 999999,
+                backgroundImage: 'url(' + LearnPress_Settings.plugin_url + '/assets/images/spinner.gif)',
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'center'
+            });
+        }
+        $.ajax({
+            url: ajaxurl,
+            dataType: 'html',
+            type: 'post',
+            data:{
+                action: 'learnpress_install_sample_data',
+                yes: yes
+            },
+            success: function(response){
+                response = LearnPress.parse_json(response);
+                if( response.hide_notice ){
+                    $('#learn-press-install-sample-data-notice').fadeOut();
+                }else{
+                    if( response.error ){
+                        alert(response.error)
+                    }else if(response.success){
+                        alert( response.success );
+                        if( response.redirect )
+                            window.location.href = response.redirect;
+                    }
+                    $(document.body).unblock_ui()
+                }
+            }
+        })
+    })
+
 });
 
 //javascript hook functions

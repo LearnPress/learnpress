@@ -8,7 +8,12 @@ do_action( 'learn_press_before_course_thumbnail' );
 if ( is_singular() ) {
 	?>
 	<div class="course-thumbnail">
-		<?php the_post_thumbnail(); ?>
+		<?php 
+			$attr = array(
+				'itemprop' => 'image'
+			);
+			the_post_thumbnail( '', $attr );
+		?>
 	</div>
 <?php
 } else {

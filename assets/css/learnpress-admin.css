@@ -87,11 +87,12 @@ li.quiz, li.lesson, li.quick_lesson, li.quick_quiz {
 
 .lpr-quick-add-form .lpr-ajaxload {
 	display: none;
-	background-image: url(../images/ajaxload.gif);
+	background-image: url(../images/spinner.gif);
 	background-position: center;
 	background-repeat: no-repeat;
 	width: 30px;
 	color: #FFF;
+    margin-top: 6px;
 }
 
 .lpr-quick-add-form.working .lpr-ajaxload {

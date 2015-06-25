@@ -1,7 +1,12 @@
 <a href="http://thimpress.com/learnpress" target="_blank">LearnPress</a> is a comprehensive WordPress LMS Plugin for WordPress. This WordPress LMS Plugin can be used to easily create & sell courses online. Each course curriculum can be made with lessons & quizzes which can be managed with easy-to-use user interface, we really made it for lazy people.  
 
+[youtube https://www.youtube.com/watch?v=rRWPl5-Hb4k&hd=1&&cc_load_policy=1]
+
 **LearnPress LMS Plugin works with your theme**  
-We create LearnPress LMS Plugin to work with any WordPress themes.  
+We create LearnPress LMS Plugin to work with any WordPress themes.
+
+Here is a [premium LMS WordPress theme](http://themeforest.net/item/lms-wordpress-theme-elearning-wp/11797847). More will coming soon.
+
 
 **LearnPress Support WordPress Multisites**
 
@@ -30,16 +35,16 @@ Education should be free and we want you to bring it to as many people as you ca
 **LearnPress is actively developed**  
 We are developing and improving LearnPress day by day and bringing new features to you cos we want LearnPress to become the best WordPress plugin in LMS.
 
-**Free Plugins (add-ons) for LearnPress WordPress LMS Plugin**
+**Free add-ons for LearnPress WordPress LMS Plugin:**
 
-- Wishlist (waiting for approval on WordPress.org) - add courses to a wishlist for students.
-- Review (waiting for approval on WordPress.org) - review course for enrolled students.
-- Export/Import Courses (waiting for approval on WordPress.org) - export or import course or courses out-of-box.
-- Prerequisites Courses (waiting for approval on WordPress.org) - require student to pass some courses in order to enroll other course.
-- bbPress (waiting for approval on WordPress.org) - add bbPress Forum support for LearnPress.
-- BuddyPress (waiting for approval on WordPress.org) - add BuddyPress support for LearnPress.
+- [LearnPress Wishlist](https://wordpress.org/plugins/learnpress-wishlist) - add courses to a wishlist for students.
+- [LearnPress Course Review](https://wordpress.org/plugins/learnpress-course-review) - review course for enrolled students.
+- [LearnPress Import/Export](https://wordpress.org/plugins/learnpress-import-export) - export or import course or courses out-of-box.
+- [LearnPress Prerequisites Courses](https://wordpress.org/plugins/learnpress-prerequisites-courses) - require student to pass some courses in order to enroll other course.
+- [LearnPress bbPress Integration](https://wordpress.org/plugins/learnpress-bbpress) - add bbPress Forum support for LearnPress WordPress LMS Plugin.
+- [LearnPress BuddyPress Integration](https://wordpress.org/plugins/learnpress-buddypress) - add BuddyPress support for LearnPress WordPress LMS Plugin.
 
-**Premium Plugins (add-ons) for LearnPress WordPress LMS Plugin**
+**Premium add-ons for LearnPress WordPress LMS Plugin:**
 
 - [Certificates add-on for LearnPress](http://thimpress.com/shop/certificates-add-on-for-learnpress/) - adding drag & drop certificates builder as well as selecting designed certificate for each LMS course, your student will get particular certificate when they finished a course.
 - [Co-instructors add-on for LearnPress](http://thimpress.com/shop/co-instructors-add-on-for-learnpress/) - multiple instructors support for each LMS course.
@@ -47,7 +52,43 @@ We are developing and improving LearnPress day by day and bringing new features 
 - [Stripe Payment method for LearnPress](http://thimpress.com/shop/stripe-add-on-for-learnpress/) - Stripe payment method for LearnPress WordPress LMS Plugin.
 - [WooCommerce add-on for LearnPress](http://thimpress.com/shop/woocommerce-add-on-for-learnpress/) - using WooCommerce as payment gateway for LearnPrss WordPress LMS Plugin.
 
+**WordPress LMS Plugin - LearnPress ROADMAP:**
+
+- Payment Method support (first priority)
+	- Authorize.net
+	- Google Checkout
+	- Amazon Payments
+	- Dwolla
+	- Braintree
+	- Samurai by FeeFighters
+	- WePay
+	- 2Checkout
+- Assignment
+- Gradebook
+- Paid MemberShip Pro
+- Events
+- myCRED integration
+- Share Grade
+- BadgeOS
+- Content Drip
+- Manually reset quiz for retake
+- Create quiz from randoms questions in question bank
+- Attachment restriction for lesson
+- Mathjax support
+- Presentation support (maybe support SlideShare)
+- Show enrolled user
+- Student ranks
+- REST API for mobile app
+- No distraction mode (when doing quiz)
+- Report/feedback about a question/quiz/lesson
+- Commission for payment method
+- Instructor's note
+- Private message from Admin to teacher
+- Group payment
+- Announcement (come up with email)
+
 Any suggestions for this WordPress LMS Plugin? Send us <a href="http://thimpress.com/learnpress-suggestion/" target="_blank">here.</a>
+
 
 ##Installation
 
@@ -87,6 +128,19 @@ We will provide documentation about LearnPress REST API really soon.
 Yes, you can and we appreciate it. Join in our <a href="https://github.com/LearnPress/LearnPress" target="_blank">Github Repository</a>.
 
 ##Changelog
+
+**0.9.3**
+- Fix menu position problem (3.14).  
+- Fix bug shortcut key @l to insert lesson link when writing a lesson.  
+- Fix bug when add Lesson/Quiz into a section but it is not assigned to the course.  
+- List the addons from wordpress.org in addons page.  
+- Add new option into settings page lets to choose the page to display form "Become a teacher".  
+- Add shortcode to insert form "Become a teacher".  
+- Update lesson/quiz title also update its slug.  
+- Align review form to center of the page.  
+- Course review pagination.  
+- Provide related courses function.  
+- Support full width embed video. 
 
 **0.9.2**  
 - Update add-on management page.  

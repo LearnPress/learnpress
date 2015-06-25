@@ -1,0 +1,1115 @@
+	
+<!-- generator="WordPress/4.2.2" created="2015-06-22 07:58" -->
+	
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0"
+	xmlns:excerpt="http://wordpress.org/export/1.0/excerpt/"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:wp="http://wordpress.org/export/1.0/"
+>
+
+<channel>
+	<title>obHOME</title>
+	<link>http://home.foobla.com</link>
+	<description>foobla internal site</description>
+	<pubDate>Mon, 22 Jun 2015 07:58:18 +0000</pubDate>
+	<language>en-US</language>
+	<wp:wxr_version>1.0</wp:wxr_version>
+	<wp:base_site_url>http://home.foobla.com/</wp:base_site_url>
+	<wp:base_blog_url>http://home.foobla.com</wp:base_blog_url>
+
+
+<!-- START: Authors -->
+	<wp:author><wp:author_id>2</wp:author_id><wp:author_login>ha</wp:author_login><wp:author_email>ha@foobla.com</wp:author_email><wp:author_display_name><![CDATA[Hà Hoàng]]></wp:author_display_name><wp:author_first_name><![CDATA[Hà]]></wp:author_first_name><wp:author_last_name><![CDATA[Hoàng]]></wp:author_last_name></wp:author>
+
+<!-- END: Authors -->
+<!-- START: Courses -->
+
+<item>
+	<title>How to use LearnPress</title>
+	<link>http://home.foobla.com/courses/how-to-use-learnpress/</link>
+	<pubDate>Wed, 20 May 2015 10:43:00 +0000</pubDate>
+	<dc:creator><![CDATA[ha]]></dc:creator>
+	<guid isPermaLink="false">http://home.foobla.com/?post_type=lpr_course&#038;p=133</guid>
+	<description></description>
+	<content:encoded><![CDATA[Welcome our valued customers to LearnPress,
+
+LearnPress is perfect fit for designing a Learning Management System. Our intention in this course is to show you the way to use LearnPress to create a great Online Learning System where you can set up your own system and lessons.
+
+Thanks and regards,
+
+Ha Hoang
+
+<strong>What will this course bring to you?</strong>
+<ol>
+	<li>By the end of this course you will be able to control LearnPress plugin for your own demand.</li>
+	<li>You will understand the plugin workflow and how to extend its features via add-ons</li>
+</ol>
+<strong>Target Audience:</strong>
+<ol>
+	<li>The one who wants to create  an online learning system</li>
+	<li>Developer who wants to contribute to LearnPress</li>
+	<li>The one who wants to become an instructor in a LearnPress system</li>
+</ol>]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>133</wp:post_id>
+	<wp:post_date>2015-05-20 17:43:00</wp:post_date>
+	<wp:post_date_gmt>2015-05-20 10:43:00</wp:post_date_gmt>
+	<wp:comment_status>closed</wp:comment_status>
+	<wp:ping_status>closed</wp:ping_status>
+	<wp:post_name>how-to-use-learnpress</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lpr_course</wp:post_type>
+	<wp:post_password></wp:post_password>
+    <wp:post_author_id>2</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+			
+	<wp:postmeta>
+		<wp:meta_key>_edit_lock</wp:meta_key>
+		<wp:meta_value><![CDATA[1434959746:1]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_edit_last</wp:meta_key>
+		<wp:meta_value><![CDATA[13]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_course_lesson_quiz</wp:meta_key>
+		<wp:meta_value><![CDATA[a:4:{i:0;a:2:{s:4:"name";s:12:"Introduction";s:11:"lesson_quiz";a:2:{i:0;s:3:"134";i:1;s:3:"164";}}i:1;a:2:{s:4:"name";s:22:"Basic Using LearnPress";s:11:"lesson_quiz";a:6:{i:0;s:3:"135";i:1;s:3:"136";i:2;s:3:"138";i:3;s:3:"140";i:4;s:3:"148";i:5;s:3:"142";}}i:2;a:2:{s:4:"name";s:7:"Add-ons";s:11:"lesson_quiz";a:3:{i:0;s:3:"141";i:1;s:3:"143";i:2;s:3:"144";}}i:3;a:2:{s:4:"name";s:13:"For Developer";s:11:"lesson_quiz";a:2:{i:0;s:3:"145";i:1;s:3:"147";}}}]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_course_section_state</wp:meta_key>
+		<wp:meta_value><![CDATA[a:4:{i:0;s:1:"1";i:1;s:1:"1";i:2;s:1:"1";i:3;s:1:"1";}]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_course_duration</wp:meta_key>
+		<wp:meta_value><![CDATA[10]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_course_number_student</wp:meta_key>
+		<wp:meta_value><![CDATA[3]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_max_course_number_student</wp:meta_key>
+		<wp:meta_value><![CDATA[1000]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_course_condition</wp:meta_key>
+		<wp:meta_value><![CDATA[50]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_course_payment</wp:meta_key>
+		<wp:meta_value><![CDATA[free]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_course_forum</wp:meta_key>
+		<wp:meta_value><![CDATA[yes]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_course_forum_id</wp:meta_key>
+		<wp:meta_value><![CDATA[329]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_course_user</wp:meta_key>
+		<wp:meta_value><![CDATA[a:4:{i:0;s:1:"1";i:1;s:2:"13";i:2;s:2:"15";i:3;s:2:"15";}]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_course_review</wp:meta_key>
+		<wp:meta_value><![CDATA[a:5:{s:10:"rate_value";a:7:{i:0;i:0;i:1;i:1;i:2;i:0;i:3;i:0;i:4;i:0;i:5;i:0;i:6;i:0;}s:4:"user";a:1:{i:0;i:1;}s:4:"rate";a:1:{i:1;s:1:"1";}s:12:"review_title";a:1:{i:1;s:38:"The review add-on is way not completed";}s:14:"review_content";a:1:{i:1;s:51:"We need to make things perfect, not only work-able.";}}]]></wp:meta_value>
+	</wp:postmeta>
+</item>
+<!-- END: Courses -->
+<!-- START: Lessons and Quizzes -->
+
+<item>
+	<title>What is LearnPress?</title>
+	<link>http://home.foobla.com/lessons/what-is-learnpress/</link>
+	<pubDate>Sun, 17 May 2015 01:36:00 +0000</pubDate>
+	<dc:creator><![CDATA[ha]]></dc:creator>
+	<guid isPermaLink="false">http://home.foobla.com/lessons/what-is-learnpress/</guid>
+	<description></description>
+	<content:encoded><![CDATA[LearnPress is an extremely strong WordPress plugin which helps you create an Online Learning Management System Website.
+
+If you are an administrator who controls and manages an Online Learning System, LearnPress provides you with complete features for your work including Courses, Lessons, Quizzes and Question Management, Payment Solutions, Statistics and a lot of add-ons for you to extend your system scale.
+
+If you are a teacher who wants to create Courses and share your knowledge to everybody on the internet, LearnPress will help you create Courses, Lessons and Quizzes and manage them easily. You will find the easiest online teaching system here.
+
+If you are a student, you can access with courses, study and test with friendly user interfaces.
+
+LearnPress also provides tools for you to create forums that you can simply interact with your teacher and your peer.
+
+And LearnPress gives these advantages to you FREE OF CHARGE!!!]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>134</wp:post_id>
+	<wp:post_date>2015-05-17 08:36:00</wp:post_date>
+	<wp:post_date_gmt>2015-05-17 01:36:00</wp:post_date_gmt>
+	<wp:comment_status>closed</wp:comment_status>
+	<wp:ping_status>closed</wp:ping_status>
+	<wp:post_name>what-is-learnpress</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lpr_lesson</wp:post_type>
+	<wp:post_password></wp:post_password>
+    <wp:post_author_id>2</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+			
+	<wp:postmeta>
+		<wp:meta_key>_edit_lock</wp:meta_key>
+		<wp:meta_value><![CDATA[1433407905:13]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_edit_last</wp:meta_key>
+		<wp:meta_value><![CDATA[13]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_lesson_duration</wp:meta_key>
+		<wp:meta_value><![CDATA[12]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_lesson_preview</wp:meta_key>
+		<wp:meta_value><![CDATA[preview]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_course</wp:meta_key>
+		<wp:meta_value><![CDATA[133]]></wp:meta_value>
+	</wp:postmeta>
+</item>
+
+<item>
+	<title>How to create a course?</title>
+	<link>http://home.foobla.com/lessons/how-to-create-a-course/</link>
+	<pubDate>Sun, 17 May 2015 01:36:36 +0000</pubDate>
+	<dc:creator><![CDATA[ha]]></dc:creator>
+	<guid isPermaLink="false">http://home.foobla.com/lessons/how-to-create-a-course/</guid>
+	<description></description>
+	<content:encoded><![CDATA[LearnPress is a Learning Management System (LMS) with courses. First, let study a bit about a course in LearnPress.
+
+A course in LearnPress contains sections, each section will include lessons to present your knowledge and quiz(optional) in order for you to give questions to test your students.
+
+Following these steps to create a course:
+
+1. Give a course title
+
+2. Describe course content.
+
+<a href="http://home.foobla.com/wp-content/uploads/2015/05/create-a-course.png"><img class="alignnone wp-image-260 size-full" src="http://home.foobla.com/wp-content/uploads/2015/05/create-a-course.png" alt="create a course" width="1211" height="874" /></a>
+
+&nbsp;
+
+3 - Create course curriculum
+
+-The biggest title is the section name
+
+- Here you can find 4 buttons: add lesson, add quiz, quick add lesson, quick add quiz. The first and second button are to add existing lessons and quizzes into this section. If you don't have any lesson and quiz available to add, new lessons and quizzes can be quickly created to this section with 2 other buttons.
+
+Those quickly created lessons and quizzes  just have title, therefore the edit link on the right is used to add your lesson and quiz content.
+<a href="http://home.foobla.com/wp-content/uploads/2015/05/course-curriculum.png"><img class="aligncenter wp-image-267 size-full" src="http://home.foobla.com/wp-content/uploads/2015/05/course-curriculum.png" alt="course curriculum" width="1399" height="892" /></a>
+
+After completing your curriculum, now, you can take a look to your course settings where to set your course up. Let see what LearnPress provides for your course.
+
+<a href="http://home.foobla.com/wp-content/uploads/2015/05/course-settings.png"><img class="aligncenter wp-image-270 size-full" src="http://home.foobla.com/wp-content/uploads/2015/05/course-settings.png" alt="course settings" width="725" height="627" /></a>
+
+&nbsp;
+
+Course duration: The length of your course.
+
+Course time:
+
+Number of student enrolled:
+
+Maximum students an take the course:
+
+Co-instructor:
+
+Certificate:
+
+The next part is "Course assessment". Currently LearnPress supports two types of "Course assessment".
+
+<a href="http://home.foobla.com/wp-content/uploads/2015/05/course-assessment.png"><img class="aligncenter wp-image-268 size-full" src="http://home.foobla.com/wp-content/uploads/2015/05/course-assessment.png" alt="course assessment" width="1248" height="244" /></a>
+
+&nbsp;
+
+The last part is for commercial course. You can set your course free or not. If it is charged, a price should be set by the administrator as he reviews the course.
+
+<a href="http://home.foobla.com/wp-content/uploads/2015/05/course-payment.png"><img class="aligncenter wp-image-269 size-full" src="http://home.foobla.com/wp-content/uploads/2015/05/course-payment.png" alt="course payment" width="922" height="241" /></a>
+
+&nbsp;
+
+Congratulation ! Now, you can submit your course for review, after your LMS is published. It is now online ^_^
+
+&nbsp;]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>135</wp:post_id>
+	<wp:post_date>2015-05-17 08:36:36</wp:post_date>
+	<wp:post_date_gmt>2015-05-17 01:36:36</wp:post_date_gmt>
+	<wp:comment_status>closed</wp:comment_status>
+	<wp:ping_status>closed</wp:ping_status>
+	<wp:post_name>how-to-create-a-course</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lpr_lesson</wp:post_type>
+	<wp:post_password></wp:post_password>
+    <wp:post_author_id>2</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+			
+	<wp:postmeta>
+		<wp:meta_key>_edit_lock</wp:meta_key>
+		<wp:meta_value><![CDATA[1433479017:13]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_edit_last</wp:meta_key>
+		<wp:meta_value><![CDATA[13]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_lesson_duration</wp:meta_key>
+		<wp:meta_value><![CDATA[10]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_lesson_preview</wp:meta_key>
+		<wp:meta_value><![CDATA[not_preview]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_course</wp:meta_key>
+		<wp:meta_value><![CDATA[133]]></wp:meta_value>
+	</wp:postmeta>
+</item>
+
+<item>
+	<title>How to create a lesson?</title>
+	<link>http://home.foobla.com/lessons/how-to-create-a-lesson/</link>
+	<pubDate>Sun, 17 May 2015 01:36:52 +0000</pubDate>
+	<dc:creator><![CDATA[ha]]></dc:creator>
+	<guid isPermaLink="false">http://home.foobla.com/lessons/how-to-create-a-lesson/</guid>
+	<description></description>
+	<content:encoded><![CDATA[A lesson is an essential part of a course. It contains knowledge in a specific topic which teacher desires to teach students.
+
+A lesson in LearnPress can be text, video or audio.
+
+Just simply copy and paste your link of video to lesson content to show.
+
+<a href="http://home.foobla.com/wp-content/uploads/2015/05/lesson-content.png"><img class="aligncenter wp-image-286 size-full" src="http://home.foobla.com/wp-content/uploads/2015/05/lesson-content.png" alt="lesson content" width="961" height="795" /></a>
+
+There are 2 options in lesson settings
+
+1-  Lesson duration: to estimate how much time do you think students should need to study that lesson,
+
+2- Preview lesson: If your lesson is a preview, it is not necessary for your student to take course to view.
+
+<a href="http://home.foobla.com/wp-content/uploads/2015/05/lesson-settings.png"><img class="aligncenter wp-image-287 size-full" src="http://home.foobla.com/wp-content/uploads/2015/05/lesson-settings.png" alt="lesson settings" width="1046" height="244" /></a>
+
+&nbsp;]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>136</wp:post_id>
+	<wp:post_date>2015-05-17 08:36:52</wp:post_date>
+	<wp:post_date_gmt>2015-05-17 01:36:52</wp:post_date_gmt>
+	<wp:comment_status>closed</wp:comment_status>
+	<wp:ping_status>closed</wp:ping_status>
+	<wp:post_name>how-to-create-a-lesson</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lpr_lesson</wp:post_type>
+	<wp:post_password></wp:post_password>
+    <wp:post_author_id>2</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+			
+	<wp:postmeta>
+		<wp:meta_key>_edit_lock</wp:meta_key>
+		<wp:meta_value><![CDATA[1433485503:13]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_edit_last</wp:meta_key>
+		<wp:meta_value><![CDATA[13]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_lesson_duration</wp:meta_key>
+		<wp:meta_value><![CDATA[5]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_lesson_preview</wp:meta_key>
+		<wp:meta_value><![CDATA[not_preview]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_course</wp:meta_key>
+		<wp:meta_value><![CDATA[133]]></wp:meta_value>
+	</wp:postmeta>
+</item>
+
+<item>
+	<title>How to create a quiz?</title>
+	<link>http://home.foobla.com/lessons/how-to-create-a-quiz/</link>
+	<pubDate>Sun, 17 May 2015 01:38:34 +0000</pubDate>
+	<dc:creator><![CDATA[ha]]></dc:creator>
+	<guid isPermaLink="false">http://home.foobla.com/lessons/how-to-create-a-quiz/</guid>
+	<description></description>
+	<content:encoded><![CDATA[Quiz is a part of a course which is used to testing your student's understanding of your course.
+
+There are 2 ways to create a quiz:
+
+1. Go to "Quizzes&gt;add new" and "Add quiz" to a course later
+
+<a href="http://home.foobla.com/wp-content/uploads/2015/05/Add-Quizz.png"><img class="aligncenter wp-image-510 size-full" src="http://home.foobla.com/wp-content/uploads/2015/05/Add-Quizz.png" alt="Add Quizz" width="1340" height="223" /></a>
+
+2. Create a quiz by "Quick add quiz". There is only a title by this way therefore you need to "edit" it to add more questions to your quiz.
+
+<a href="http://home.foobla.com/wp-content/uploads/2015/05/quick-add-quiz.png"><img class="aligncenter wp-image-511 size-full" src="http://home.foobla.com/wp-content/uploads/2015/05/quick-add-quiz.png" alt="quick add quiz" width="1413" height="346" /></a>
+
+&nbsp;
+
+&nbsp;]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>138</wp:post_id>
+	<wp:post_date>2015-05-17 08:38:34</wp:post_date>
+	<wp:post_date_gmt>2015-05-17 01:38:34</wp:post_date_gmt>
+	<wp:comment_status>closed</wp:comment_status>
+	<wp:ping_status>closed</wp:ping_status>
+	<wp:post_name>how-to-create-a-quiz</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lpr_lesson</wp:post_type>
+	<wp:post_password></wp:post_password>
+    <wp:post_author_id>2</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+			
+	<wp:postmeta>
+		<wp:meta_key>_edit_lock</wp:meta_key>
+		<wp:meta_value><![CDATA[1433489901:13]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_edit_last</wp:meta_key>
+		<wp:meta_value><![CDATA[13]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_lesson_duration</wp:meta_key>
+		<wp:meta_value><![CDATA[30]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_lesson_preview</wp:meta_key>
+		<wp:meta_value><![CDATA[not_preview]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_course</wp:meta_key>
+		<wp:meta_value><![CDATA[133]]></wp:meta_value>
+	</wp:postmeta>
+</item>
+
+<item>
+	<title>How to create a question?</title>
+	<link>http://home.foobla.com/lessons/how-to-create-a-question/</link>
+	<pubDate>Sun, 17 May 2015 01:38:50 +0000</pubDate>
+	<dc:creator><![CDATA[ha]]></dc:creator>
+	<guid isPermaLink="false">http://home.foobla.com/lessons/how-to-create-a-question/</guid>
+	<description></description>
+	<content:encoded><![CDATA[Question is an essential part of quiz. There are plenty types of question but in LearnPress we first support 3 types: True or False, Single Choice and Multiple Choices question.
+
+You can also create a question while creating a quiz or go to "Questions&gt;add new"
+
+<a href="http://home.foobla.com/wp-content/uploads/2015/05/add-new-question.png"><img class="aligncenter wp-image-519 size-full" src="http://home.foobla.com/wp-content/uploads/2015/05/add-new-question.png" alt="add new question" width="1399" height="192" /></a>
+
+&nbsp;
+
+<a href="http://home.foobla.com/wp-content/uploads/2015/05/add-question.png"><img class="aligncenter wp-image-520 size-full" src="http://home.foobla.com/wp-content/uploads/2015/05/add-question.png" alt="add question" width="1416" height="850" /></a>]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>140</wp:post_id>
+	<wp:post_date>2015-05-17 08:38:50</wp:post_date>
+	<wp:post_date_gmt>2015-05-17 01:38:50</wp:post_date_gmt>
+	<wp:comment_status>closed</wp:comment_status>
+	<wp:ping_status>closed</wp:ping_status>
+	<wp:post_name>how-to-create-a-question</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lpr_lesson</wp:post_type>
+	<wp:post_password></wp:post_password>
+    <wp:post_author_id>2</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+			
+	<wp:postmeta>
+		<wp:meta_key>_edit_lock</wp:meta_key>
+		<wp:meta_value><![CDATA[1433497632:13]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_edit_last</wp:meta_key>
+		<wp:meta_value><![CDATA[13]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_lesson_duration</wp:meta_key>
+		<wp:meta_value><![CDATA[30]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_lesson_preview</wp:meta_key>
+		<wp:meta_value><![CDATA[not_preview]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_course</wp:meta_key>
+		<wp:meta_value><![CDATA[133]]></wp:meta_value>
+	</wp:postmeta>
+</item>
+
+<item>
+	<title>Statistic</title>
+	<link>http://home.foobla.com/lessons/statistic/</link>
+	<pubDate>Sun, 17 May 2015 01:38:57 +0000</pubDate>
+	<dc:creator><![CDATA[ha]]></dc:creator>
+	<guid isPermaLink="false">http://home.foobla.com/lessons/statistic/</guid>
+	<description></description>
+	<content:encoded><![CDATA[This is an advance feature for instructors, administrator to see how the courses  or sites are going on.
+
+<a href="http://home.foobla.com/wp-content/uploads/2015/05/statistic.png"><img class="aligncenter wp-image-743" src="http://home.foobla.com/wp-content/uploads/2015/05/statistic.png" alt="statistic" width="1000" height="463" /></a> <a href="http://home.foobla.com/wp-content/uploads/2015/05/statistic-course.png"><img class="aligncenter wp-image-744 size-full" src="http://home.foobla.com/wp-content/uploads/2015/05/statistic-course.png" alt="statistic-course" width="1744" height="789" /></a>]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>141</wp:post_id>
+	<wp:post_date>2015-05-17 08:38:57</wp:post_date>
+	<wp:post_date_gmt>2015-05-17 01:38:57</wp:post_date_gmt>
+	<wp:comment_status>closed</wp:comment_status>
+	<wp:ping_status>closed</wp:ping_status>
+	<wp:post_name>statistic</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lpr_lesson</wp:post_type>
+	<wp:post_password></wp:post_password>
+    <wp:post_author_id>2</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+			
+	<wp:postmeta>
+		<wp:meta_key>_edit_lock</wp:meta_key>
+		<wp:meta_value><![CDATA[1433495039:13]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_edit_last</wp:meta_key>
+		<wp:meta_value><![CDATA[13]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_lesson_duration</wp:meta_key>
+		<wp:meta_value><![CDATA[30]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_lesson_preview</wp:meta_key>
+		<wp:meta_value><![CDATA[not_preview]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_course</wp:meta_key>
+		<wp:meta_value><![CDATA[133]]></wp:meta_value>
+	</wp:postmeta>
+</item>
+
+<item>
+	<title>Basic using LearnPress</title>
+	<link>http://home.foobla.com/quizzes/basic-using-learnpress/</link>
+	<pubDate>Sun, 17 May 2015 01:39:25 +0000</pubDate>
+	<dc:creator><![CDATA[ha]]></dc:creator>
+	<guid isPermaLink="false">http://home.foobla.com/blog/quiz/basic-using-learnpress/</guid>
+	<description></description>
+	<content:encoded><![CDATA[How do you understand the basic using of LearnPress. Let check it !]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>142</wp:post_id>
+	<wp:post_date>2015-05-17 08:39:25</wp:post_date>
+	<wp:post_date_gmt>2015-05-17 01:39:25</wp:post_date_gmt>
+	<wp:comment_status>closed</wp:comment_status>
+	<wp:ping_status>closed</wp:ping_status>
+	<wp:post_name>basic-using-learnpress</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lpr_quiz</wp:post_type>
+	<wp:post_password></wp:post_password>
+    <wp:post_author_id>2</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+			
+	<wp:postmeta>
+		<wp:meta_key>_edit_lock</wp:meta_key>
+		<wp:meta_value><![CDATA[1433672874:1]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_quiz_questions</wp:meta_key>
+		<wp:meta_value><![CDATA[a:4:{i:252;a:1:{s:6:"toggle";s:1:"1";}i:251;a:1:{s:6:"toggle";s:1:"1";}i:276;a:1:{s:6:"toggle";s:1:"1";}i:277;a:1:{s:6:"toggle";s:1:"1";}}]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_edit_last</wp:meta_key>
+		<wp:meta_value><![CDATA[2]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_course</wp:meta_key>
+		<wp:meta_value><![CDATA[133]]></wp:meta_value>
+	</wp:postmeta>
+</item>
+
+<item>
+	<title>What is an add-on?</title>
+	<link>http://home.foobla.com/lessons/what-is-add-ons/</link>
+	<pubDate>Sun, 17 May 2015 01:40:05 +0000</pubDate>
+	<dc:creator><![CDATA[ha]]></dc:creator>
+	<guid isPermaLink="false">http://home.foobla.com/lessons/what-is-add-ons/</guid>
+	<description></description>
+	<content:encoded><![CDATA[Add-ons are extension parts of LearnPress. Add-on provides new functions and features to add to LearnPress. If you are an administrator of a LMS, you can easily select to turn add-on on or off
+
+<a href="http://home.foobla.com/wp-content/uploads/2015/05/addons.png"><img class="aligncenter wp-image-285 size-full" src="http://home.foobla.com/wp-content/uploads/2015/05/addons.png" alt="addons" width="731" height="600" /></a>
+
+In case of a developer, you can create an add-on for LearnPress by yourself. LearnPress is an open source project and a full documentation of how you can create an add-on for LearnPress will be provided to you.]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>143</wp:post_id>
+	<wp:post_date>2015-05-17 08:40:05</wp:post_date>
+	<wp:post_date_gmt>2015-05-17 01:40:05</wp:post_date_gmt>
+	<wp:comment_status>closed</wp:comment_status>
+	<wp:ping_status>closed</wp:ping_status>
+	<wp:post_name>what-is-add-ons</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lpr_lesson</wp:post_type>
+	<wp:post_password></wp:post_password>
+    <wp:post_author_id>2</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+			
+	<wp:postmeta>
+		<wp:meta_key>_edit_lock</wp:meta_key>
+		<wp:meta_value><![CDATA[1433497634:13]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_edit_last</wp:meta_key>
+		<wp:meta_value><![CDATA[13]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_lesson_duration</wp:meta_key>
+		<wp:meta_value><![CDATA[3]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_lesson_preview</wp:meta_key>
+		<wp:meta_value><![CDATA[not_preview]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_course</wp:meta_key>
+		<wp:meta_value><![CDATA[133]]></wp:meta_value>
+	</wp:postmeta>
+</item>
+
+<item>
+	<title>Add-ons</title>
+	<link>http://home.foobla.com/quizzes/add-ons/</link>
+	<pubDate>Sun, 17 May 2015 01:40:17 +0000</pubDate>
+	<dc:creator><![CDATA[ha]]></dc:creator>
+	<guid isPermaLink="false">http://home.foobla.com/blog/quiz/add-ons/</guid>
+	<description></description>
+	<content:encoded><![CDATA[This quiz is used to testing your understanding about Adds-on on LearnPress. Let start !
+
+&nbsp;]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>144</wp:post_id>
+	<wp:post_date>2015-05-17 08:40:17</wp:post_date>
+	<wp:post_date_gmt>2015-05-17 01:40:17</wp:post_date_gmt>
+	<wp:comment_status>closed</wp:comment_status>
+	<wp:ping_status>closed</wp:ping_status>
+	<wp:post_name>add-ons</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lpr_quiz</wp:post_type>
+	<wp:post_password></wp:post_password>
+    <wp:post_author_id>2</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+			
+	<wp:postmeta>
+		<wp:meta_key>_edit_lock</wp:meta_key>
+		<wp:meta_value><![CDATA[1433129466:13]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_quiz_questions</wp:meta_key>
+		<wp:meta_value><![CDATA[a:1:{i:317;a:1:{s:6:"toggle";s:1:"1";}}]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_edit_last</wp:meta_key>
+		<wp:meta_value><![CDATA[13]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_duration</wp:meta_key>
+		<wp:meta_value><![CDATA[10]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_show_quiz_result</wp:meta_key>
+		<wp:meta_value><![CDATA[0]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_course</wp:meta_key>
+		<wp:meta_value><![CDATA[133]]></wp:meta_value>
+	</wp:postmeta>
+</item>
+
+<item>
+	<title>How to create an add-ons?</title>
+	<link>http://home.foobla.com/lessons/how-to-create-an-add-ons/</link>
+	<pubDate>Sun, 17 May 2015 01:40:31 +0000</pubDate>
+	<dc:creator><![CDATA[ha]]></dc:creator>
+	<guid isPermaLink="false">http://home.foobla.com/lessons/how-to-create-an-add-ons/</guid>
+	<description></description>
+	<content:encoded><![CDATA[This lesson will provide tutorial instruction to create an add-on for LearnPress.
+
+Coming soon.
+
+Thank you,]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>145</wp:post_id>
+	<wp:post_date>2015-05-17 08:40:31</wp:post_date>
+	<wp:post_date_gmt>2015-05-17 01:40:31</wp:post_date_gmt>
+	<wp:comment_status>closed</wp:comment_status>
+	<wp:ping_status>closed</wp:ping_status>
+	<wp:post_name>how-to-create-an-add-ons</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lpr_lesson</wp:post_type>
+	<wp:post_password></wp:post_password>
+    <wp:post_author_id>2</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+			
+	<wp:postmeta>
+		<wp:meta_key>_edit_lock</wp:meta_key>
+		<wp:meta_value><![CDATA[1433497636:13]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_edit_last</wp:meta_key>
+		<wp:meta_value><![CDATA[13]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_lesson_duration</wp:meta_key>
+		<wp:meta_value><![CDATA[1]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_lesson_preview</wp:meta_key>
+		<wp:meta_value><![CDATA[not_preview]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_course</wp:meta_key>
+		<wp:meta_value><![CDATA[133]]></wp:meta_value>
+	</wp:postmeta>
+</item>
+
+<item>
+	<title>Developer</title>
+	<link>http://home.foobla.com/quizzes/developer/</link>
+	<pubDate>Sun, 17 May 2015 01:40:47 +0000</pubDate>
+	<dc:creator><![CDATA[ha]]></dc:creator>
+	<guid isPermaLink="false">http://home.foobla.com/blog/quiz/developer/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>147</wp:post_id>
+	<wp:post_date>2015-05-17 08:40:47</wp:post_date>
+	<wp:post_date_gmt>2015-05-17 01:40:47</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>developer</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lpr_quiz</wp:post_type>
+	<wp:post_password></wp:post_password>
+    <wp:post_author_id>2</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+			
+	<wp:postmeta>
+		<wp:meta_key>_edit_lock</wp:meta_key>
+		<wp:meta_value><![CDATA[1433129580:13]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_course</wp:meta_key>
+		<wp:meta_value><![CDATA[133]]></wp:meta_value>
+	</wp:postmeta>
+</item>
+
+<item>
+	<title>Orders and Payment</title>
+	<link>http://home.foobla.com/lessons/orders-and-payment/</link>
+	<pubDate>Sun, 17 May 2015 01:41:08 +0000</pubDate>
+	<dc:creator><![CDATA[ha]]></dc:creator>
+	<guid isPermaLink="false">http://home.foobla.com/lessons/orders-and-payment/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>148</wp:post_id>
+	<wp:post_date>2015-05-17 08:41:08</wp:post_date>
+	<wp:post_date_gmt>2015-05-17 01:41:08</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>orders-and-payment</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lpr_lesson</wp:post_type>
+	<wp:post_password></wp:post_password>
+    <wp:post_author_id>2</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+			
+	<wp:postmeta>
+		<wp:meta_key>_edit_lock</wp:meta_key>
+		<wp:meta_value><![CDATA[1433122037:13]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_course</wp:meta_key>
+		<wp:meta_value><![CDATA[133]]></wp:meta_value>
+	</wp:postmeta>
+</item>
+
+<item>
+	<title>What is LearnPress?</title>
+	<link>http://home.foobla.com/quizzes/what-is-learnpress/</link>
+	<pubDate>Thu, 21 May 2015 08:37:02 +0000</pubDate>
+	<dc:creator><![CDATA[ha]]></dc:creator>
+	<guid isPermaLink="false">http://home.foobla.com/blog/quiz/what-is-learnpress/</guid>
+	<description></description>
+	<content:encoded><![CDATA[This quiz is used to testing your understanding about your previous section about "What is LearnPress?".
+
+4 multiple choice questions will be contained]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>164</wp:post_id>
+	<wp:post_date>2015-05-21 15:37:02</wp:post_date>
+	<wp:post_date_gmt>2015-05-21 08:37:02</wp:post_date_gmt>
+	<wp:comment_status>closed</wp:comment_status>
+	<wp:ping_status>closed</wp:ping_status>
+	<wp:post_name>what-is-learnpress</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lpr_quiz</wp:post_type>
+	<wp:post_password></wp:post_password>
+    <wp:post_author_id>2</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+			
+	<wp:postmeta>
+		<wp:meta_key>_edit_lock</wp:meta_key>
+		<wp:meta_value><![CDATA[1433488757:13]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_quiz_questions</wp:meta_key>
+		<wp:meta_value><![CDATA[a:4:{i:167;a:1:{s:6:"toggle";s:1:"1";}i:169;a:1:{s:6:"toggle";s:1:"1";}i:170;a:1:{s:6:"toggle";s:1:"1";}i:171;a:1:{s:6:"toggle";s:1:"1";}}]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_edit_last</wp:meta_key>
+		<wp:meta_value><![CDATA[13]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_course</wp:meta_key>
+		<wp:meta_value><![CDATA[133]]></wp:meta_value>
+	</wp:postmeta>
+</item>
+<!-- END: Lessons and Quizzes -->
+<!-- START: Questions -->
+
+<item>
+	<title>What is LearnPress?</title>
+	<link>http://home.foobla.com/questions/what-is-learnpress/</link>
+	<pubDate>Thu, 21 May 2015 09:34:03 +0000</pubDate>
+	<dc:creator><![CDATA[ha]]></dc:creator>
+	<guid isPermaLink="false">http://home.foobla.com/questions/what-is-learnpress/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>167</wp:post_id>
+	<wp:post_date>2015-05-21 16:34:03</wp:post_date>
+	<wp:post_date_gmt>2015-05-21 09:34:03</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>what-is-learnpress</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lpr_question</wp:post_type>
+	<wp:post_password></wp:post_password>
+    <wp:post_author_id>2</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+			
+	<wp:postmeta>
+		<wp:meta_key>_lpr_question</wp:meta_key>
+		<wp:meta_value><![CDATA[a:4:{s:4:"text";s:19:"What is LearnPress?";s:6:"answer";a:3:{i:0;a:2:{s:4:"text";s:25:"an Online Learning System";s:7:"is_true";s:1:"0";}i:1;a:2:{s:4:"text";s:17:"a WordPress theme";s:7:"is_true";s:1:"0";}i:2;a:2:{s:4:"text";s:73:"a WordPress Plugin for you to create an Online Learning Management System";s:7:"is_true";s:1:"1";}}s:4:"type";s:12:"multi_choice";s:6:"toggle";s:1:"1";}]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_question_mark</wp:meta_key>
+		<wp:meta_value><![CDATA[1]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_duration</wp:meta_key>
+		<wp:meta_value><![CDATA[0]]></wp:meta_value>
+	</wp:postmeta>
+</item>
+
+<item>
+	<title>Who can use LearnPress?</title>
+	<link>http://home.foobla.com/questions/who-can-use-learnpress-2/</link>
+	<pubDate>Thu, 21 May 2015 09:36:05 +0000</pubDate>
+	<dc:creator><![CDATA[ha]]></dc:creator>
+	<guid isPermaLink="false">http://home.foobla.com/questions/who-can-use-learnpress-2/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>169</wp:post_id>
+	<wp:post_date>2015-05-21 16:36:05</wp:post_date>
+	<wp:post_date_gmt>2015-05-21 09:36:05</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>who-can-use-learnpress-2</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lpr_question</wp:post_type>
+	<wp:post_password></wp:post_password>
+    <wp:post_author_id>2</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+			
+	<wp:postmeta>
+		<wp:meta_key>_lpr_question</wp:meta_key>
+		<wp:meta_value><![CDATA[a:4:{s:4:"text";s:23:"Who can use LearnPress?";s:6:"answer";a:4:{i:0;a:2:{s:4:"text";s:37:"Online Learning System administrators";s:7:"is_true";s:1:"0";}i:1;a:2:{s:4:"text";s:20:"Teachers/Instructors";s:7:"is_true";s:1:"0";}i:2;a:2:{s:4:"text";s:8:"Students";s:7:"is_true";s:1:"0";}i:3;a:2:{s:4:"text";s:61:"Anyone who want to get benefit from an Online Learning System";s:7:"is_true";s:1:"1";}}s:4:"type";s:12:"multi_choice";s:6:"toggle";s:1:"1";}]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_question_mark</wp:meta_key>
+		<wp:meta_value><![CDATA[1]]></wp:meta_value>
+	</wp:postmeta>
+</item>
+
+<item>
+	<title>Do you have to pay to use LearnPress?</title>
+	<link>http://home.foobla.com/questions/do-you-have-to-pay-to-use-learnpress/</link>
+	<pubDate>Thu, 21 May 2015 09:39:24 +0000</pubDate>
+	<dc:creator><![CDATA[ha]]></dc:creator>
+	<guid isPermaLink="false">http://home.foobla.com/questions/do-you-have-to-pay-to-use-learnpress/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>170</wp:post_id>
+	<wp:post_date>2015-05-21 16:39:24</wp:post_date>
+	<wp:post_date_gmt>2015-05-21 09:39:24</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>do-you-have-to-pay-to-use-learnpress</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lpr_question</wp:post_type>
+	<wp:post_password></wp:post_password>
+    <wp:post_author_id>2</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+			
+	<wp:postmeta>
+		<wp:meta_key>_lpr_question</wp:meta_key>
+		<wp:meta_value><![CDATA[a:4:{s:4:"text";s:37:"Do you have to pay to use LearnPress?";s:6:"answer";a:2:{i:0;a:2:{s:4:"text";s:15:"Yes, I have to.";s:7:"is_true";s:1:"1";}i:1;a:2:{s:4:"text";s:21:"No, I can use it free";s:7:"is_true";s:1:"0";}}s:4:"type";s:13:"single_choice";s:6:"toggle";s:1:"1";}]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_question_mark</wp:meta_key>
+		<wp:meta_value><![CDATA[1]]></wp:meta_value>
+	</wp:postmeta>
+</item>
+
+<item>
+	<title>Can you contribute directly to LearnPress?</title>
+	<link>http://home.foobla.com/questions/can-you-contribute-directly-to-learnpress/</link>
+	<pubDate>Thu, 21 May 2015 09:40:09 +0000</pubDate>
+	<dc:creator><![CDATA[ha]]></dc:creator>
+	<guid isPermaLink="false">http://home.foobla.com/questions/can-you-contribute-directly-to-learnpress/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>171</wp:post_id>
+	<wp:post_date>2015-05-21 16:40:09</wp:post_date>
+	<wp:post_date_gmt>2015-05-21 09:40:09</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>can-you-contribute-directly-to-learnpress</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lpr_question</wp:post_type>
+	<wp:post_password></wp:post_password>
+    <wp:post_author_id>2</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+			
+	<wp:postmeta>
+		<wp:meta_key>_lpr_question</wp:meta_key>
+		<wp:meta_value><![CDATA[a:4:{s:4:"text";s:42:"Can you contribute directly to LearnPress?";s:6:"answer";a:2:{i:0;a:2:{s:4:"text";s:69:"Yes, LearnPress is an open source project, so I can contribute to it.";s:7:"is_true";s:1:"1";}i:1;a:2:{s:4:"text";s:45:"No, only the owner of LearnPress can do that.";s:7:"is_true";s:1:"0";}}s:4:"type";s:13:"single_choice";s:6:"toggle";s:1:"1";}]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_question_mark</wp:meta_key>
+		<wp:meta_value><![CDATA[1]]></wp:meta_value>
+	</wp:postmeta>
+</item>
+
+<item>
+	<title>How many type of question LearnPress supports?</title>
+	<link>http://home.foobla.com/questions/how-many-type-of-question-learnpress-supports/</link>
+	<pubDate>Fri, 22 May 2015 02:50:27 +0000</pubDate>
+	<dc:creator><![CDATA[ha]]></dc:creator>
+	<guid isPermaLink="false">http://home.foobla.com/questions/how-many-type-of-question-learnpress-supports/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>251</wp:post_id>
+	<wp:post_date>2015-05-22 09:50:27</wp:post_date>
+	<wp:post_date_gmt>2015-05-22 02:50:27</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>how-many-type-of-question-learnpress-supports</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lpr_question</wp:post_type>
+	<wp:post_password></wp:post_password>
+    <wp:post_author_id>2</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+			
+	<wp:postmeta>
+		<wp:meta_key>_lpr_question</wp:meta_key>
+		<wp:meta_value><![CDATA[a:4:{s:4:"text";s:46:"How many type of question LearnPress supports?";s:6:"answer";a:3:{i:0;a:2:{s:4:"text";s:6:"1 type";s:7:"is_true";s:1:"0";}i:1;a:2:{s:4:"text";s:7:"2 types";s:7:"is_true";s:1:"0";}i:2;a:2:{s:4:"text";s:7:"3 types";s:7:"is_true";s:1:"1";}}s:4:"type";s:13:"single_choice";s:6:"toggle";s:1:"1";}]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_question_mark</wp:meta_key>
+		<wp:meta_value><![CDATA[1]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_duration</wp:meta_key>
+		<wp:meta_value><![CDATA[0]]></wp:meta_value>
+	</wp:postmeta>
+</item>
+
+<item>
+	<title>Can a teacher publish a course by himself?</title>
+	<link>http://home.foobla.com/questions/can-a-teacher-publish-a-course-by-himself/</link>
+	<pubDate>Fri, 22 May 2015 02:51:16 +0000</pubDate>
+	<dc:creator><![CDATA[ha]]></dc:creator>
+	<guid isPermaLink="false">http://home.foobla.com/questions/can-a-teacher-publish-a-course-by-himself/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>252</wp:post_id>
+	<wp:post_date>2015-05-22 09:51:16</wp:post_date>
+	<wp:post_date_gmt>2015-05-22 02:51:16</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>can-a-teacher-publish-a-course-by-himself</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lpr_question</wp:post_type>
+	<wp:post_password></wp:post_password>
+    <wp:post_author_id>2</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+			
+	<wp:postmeta>
+		<wp:meta_key>_lpr_question</wp:meta_key>
+		<wp:meta_value><![CDATA[a:4:{s:4:"text";s:42:"Can a teacher publish a course by himself?";s:6:"answer";a:2:{i:0;a:2:{s:4:"text";s:69:"Yes, he can publish a course immediately after creating it completely";s:7:"is_true";s:1:"0";}i:1;a:2:{s:4:"text";s:72:"No, he just can submit for review and the administrator will publish it.";s:7:"is_true";s:1:"1";}}s:4:"type";s:13:"single_choice";s:6:"toggle";s:1:"1";}]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_question_mark</wp:meta_key>
+		<wp:meta_value><![CDATA[1]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_duration</wp:meta_key>
+		<wp:meta_value><![CDATA[10]]></wp:meta_value>
+	</wp:postmeta>
+</item>
+
+<item>
+	<title>Can a teacher set price for a his course?</title>
+	<link>http://home.foobla.com/questions/can-a-teacher-set-price-for-a-his-course/</link>
+	<pubDate>Fri, 22 May 2015 03:49:10 +0000</pubDate>
+	<dc:creator><![CDATA[ha]]></dc:creator>
+	<guid isPermaLink="false">http://home.foobla.com/questions/can-a-teacher-set-price-for-a-his-course/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>276</wp:post_id>
+	<wp:post_date>2015-05-22 10:49:10</wp:post_date>
+	<wp:post_date_gmt>2015-05-22 03:49:10</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>can-a-teacher-set-price-for-a-his-course</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lpr_question</wp:post_type>
+	<wp:post_password></wp:post_password>
+    <wp:post_author_id>2</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+			
+	<wp:postmeta>
+		<wp:meta_key>_lpr_question</wp:meta_key>
+		<wp:meta_value><![CDATA[a:4:{s:4:"text";s:41:"Can a teacher set price for a his course?";s:6:"answer";a:2:{i:0;a:2:{s:4:"text";s:12:"Yes, he can.";s:7:"is_true";s:1:"0";}i:1;a:2:{s:4:"text";s:35:"No, only administrator can do that.";s:7:"is_true";s:1:"1";}}s:4:"type";s:13:"single_choice";s:6:"toggle";s:1:"1";}]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_question_mark</wp:meta_key>
+		<wp:meta_value><![CDATA[1]]></wp:meta_value>
+	</wp:postmeta>
+</item>
+
+<item>
+	<title>How many ways are there a course can be assessed?</title>
+	<link>http://home.foobla.com/questions/how-many-ways-are-there-a-course-can-be-assessed/</link>
+	<pubDate>Fri, 22 May 2015 03:50:18 +0000</pubDate>
+	<dc:creator><![CDATA[ha]]></dc:creator>
+	<guid isPermaLink="false">http://home.foobla.com/questions/how-many-ways-are-there-a-course-can-be-assessed/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>277</wp:post_id>
+	<wp:post_date>2015-05-22 10:50:18</wp:post_date>
+	<wp:post_date_gmt>2015-05-22 03:50:18</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>how-many-ways-are-there-a-course-can-be-assessed</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lpr_question</wp:post_type>
+	<wp:post_password></wp:post_password>
+    <wp:post_author_id>2</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+			
+	<wp:postmeta>
+		<wp:meta_key>_lpr_question</wp:meta_key>
+		<wp:meta_value><![CDATA[a:4:{s:4:"text";s:49:"How many ways are there a course can be assessed?";s:6:"answer";a:3:{i:0;a:2:{s:4:"text";s:1:"1";s:7:"is_true";s:1:"0";}i:1;a:2:{s:4:"text";s:1:"2";s:7:"is_true";s:1:"1";}i:2;a:2:{s:4:"text";s:1:"3";s:7:"is_true";s:1:"0";}}s:4:"type";s:13:"single_choice";s:6:"toggle";s:1:"1";}]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_question_mark</wp:meta_key>
+		<wp:meta_value><![CDATA[1]]></wp:meta_value>
+	</wp:postmeta>
+</item>
+
+<item>
+	<title>Can you create a new add-on by yourself?</title>
+	<link>http://home.foobla.com/questions/can-you-create-a-new-add-on-by-yourself/</link>
+	<pubDate>Fri, 22 May 2015 07:06:00 +0000</pubDate>
+	<dc:creator><![CDATA[ha]]></dc:creator>
+	<guid isPermaLink="false">http://home.foobla.com/questions/can-you-create-a-new-add-on-by-yourself/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>317</wp:post_id>
+	<wp:post_date>2015-05-22 14:06:00</wp:post_date>
+	<wp:post_date_gmt>2015-05-22 07:06:00</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>can-you-create-a-new-add-on-by-yourself</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lpr_question</wp:post_type>
+	<wp:post_password></wp:post_password>
+    <wp:post_author_id>2</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+			
+	<wp:postmeta>
+		<wp:meta_key>_lpr_question</wp:meta_key>
+		<wp:meta_value><![CDATA[a:4:{s:4:"type";s:13:"single_choice";s:4:"text";s:40:"Can you create a new add-on by yourself?";s:6:"answer";a:2:{i:0;a:2:{s:4:"text";s:3:"Yes";s:7:"is_true";s:1:"0";}i:1;a:2:{s:4:"text";s:2:"No";s:7:"is_true";s:1:"0";}}s:6:"toggle";s:1:"1";}]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_question_mark</wp:meta_key>
+		<wp:meta_value><![CDATA[1]]></wp:meta_value>
+	</wp:postmeta>
+	<wp:postmeta>
+		<wp:meta_key>_lpr_duration</wp:meta_key>
+		<wp:meta_value><![CDATA[10]]></wp:meta_value>
+	</wp:postmeta>
+</item>
+<!-- END: Questions --></channel>

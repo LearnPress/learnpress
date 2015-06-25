@@ -53,7 +53,7 @@ class LPR_Gateway_Paypal extends LPR_Gateway_Abstract{
                     }else{
                         $rows.css("display", "none");
                     }
-                }).trigger('change')
+                }).trigger('change');
             </script>
             <?php
             $script = ob_get_clean();

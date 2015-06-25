@@ -11,6 +11,7 @@ if ( ! class_exists( 'RWMB_Question_Field' ) ) {
             //wp_register_script('select2', RWMB_JS_URL . 'select2/select2.min.js', array(), '3.2', true);
 
         }
+
         static function add_actions() {
             // Do same actions as file field
             parent::add_actions();
@@ -93,10 +94,12 @@ if ( ! class_exists( 'RWMB_Question_Field' ) ) {
             <?php LPR_Question_Type::instance( $question['type'], array('ID' => $post_id) )->admin_interface();?>
             <?php } ?>
             </div>
+            <?php if( in_array( $question['type'], array( 'true_or_false', 'multiple_choice', 'single_choice') ) ):?>
             <strong>Tips:</strong>
             <p><i>In <strong>Answer text</strong>, press Enter/Tab key to move to next</i></p>
             <p><i>In <strong>Answer text</strong>, when the text is empty press Delete/Back Space or click out side to remove</i></p>
             <p><i>In <strong>Answer text</strong>, press ESC to restore the text at the last time edited</i></p>
+            <?php endif;?>
         </div>
         <script type="text/javascript">
 

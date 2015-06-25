@@ -35,6 +35,41 @@ class LPR_Question_Type_Single_Choice extends LPR_Question_Type{
             </tr>
         </script>
     <?php
+
+    }
+
+    /**
+     * @param bool $enqueue
+     */
+    private function _admin_enqueue_script( $enqueue = true ){
+        ob_start();
+        $key = 'question_' . $this->get('ID');
+        ?>
+        <script type="text/javascript">
+            (function($) {
+                var $form = $('#post');
+                $form.unbind('learn_press_question_before_update.<?php echo $key;?>').on('learn_press_question_before_update.<?php echo $key;?>', function () {
+                    var $question = $( '.lpr-question-single-choice[data-id="<?php echo $this->get('ID');?>"]' );
+                    if( $question.length ) {
+                        var $input = $('.lpr-is-true-answer input[type="radio"]:checked', $question);
+                        if (0 == $input.length) {
+                            var message = $('.lpr-question-title input', $question).val();
+                            message += ": " + '<?php _e( 'No answer added to question or you must set an answer is correct!', 'learn_press' );?>'
+                            window.learn_press_before_update_quiz_message.push(message);
+                            return false;
+                        }
+                    }
+                });
+            })(jQuery);
+        </script>
+        <?php
+        $script = ob_get_clean();
+        if( $enqueue ) {
+            $script = preg_replace('!</?script.*>!', '', $script);
+            learn_press_enqueue_script($script);
+        }else{
+            echo $script;
+        }
     }
 
     function admin_interface( $args = array() ){
@@ -82,6 +117,7 @@ class LPR_Question_Type_Single_Choice extends LPR_Question_Type{
         <p><button type="button" class="button lpr-button-add-answer"><?php _e('Add answer', 'learnpress');?></button> </p>
         <?php
         $this->admin_interface_foot( $args );
+        $this->_admin_enqueue_script( false );
     }
 
     function save_post_action(){

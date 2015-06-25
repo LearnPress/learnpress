@@ -85,11 +85,10 @@
                 if (!$row.is(':last-child')) $row.remove();
             }
             return false;
-        } else {
+        } else if(evt.type == 'keydown'){
             var $row = $input.closest('tr'),
                 $rows = $row.parent().children(),
                 index = $rows.index($row);
-
 
             switch (evt.keyCode) {
                 default:
@@ -111,7 +110,6 @@
                     }
                     evt.preventDefault();
                     return false;
-                    break;
                 case 27: // esc
                     $input.val($input.data('value'));
                     $input.closest('.lpr-question').focus();
@@ -122,10 +120,8 @@
                     $('input.lpr-answer-text', $row.next()).focus();
                     evt.preventDefault();
                     return false;
-                    break;
                 case 8: // back space
                 case 46: // delete
-
                     if ($input.val().length == 0) {
                         $newrow = $row.prev();
 
@@ -356,10 +352,7 @@
             return this;
         })
     }
-
-
-
-
+/* global variables */
 var $doc    = $(document),
     $body   = $(document.body);
 

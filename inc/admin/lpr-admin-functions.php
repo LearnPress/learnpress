@@ -1,5 +1,6 @@
 <?php
 /**
+ * @file
  * Common functions used for admin
  */
 
@@ -495,3 +496,21 @@ function learn_press_plugin_basename_from_slug( $slug ) {
     }
     return $slug;
 }
+
+function learn_press_one_click_install_sample_data_notice(){
+    $courses = get_posts(
+        array(
+            'post_type' => 'lpr_course',
+            'post_status' => 'any'
+        )
+    );
+    if( ( 0 == sizeof( $courses ) ) && ( 'off' != get_transient( 'learn_press_install_sample_data' ) ) ){
+        _e('
+            <div class="updated" id="learn-press-install-sample-data-notice">
+                <p>You haven\'t got any courses yet! Would you like to install sample data?</p>
+                <p>If yes, it requires to install addon named <strong>LearnPress Import/Export</strong> but don\'t worry because it is completely automated. [<a href="" class="yes">Yes</a>]&nbsp;&nbsp;&nbsp;&nbsp;[<a href="" class="no">No thank!</a>]</p>
+            </div>'
+        );
+    }
+}
+add_action( 'admin_notices', 'learn_press_one_click_install_sample_data_notice' );

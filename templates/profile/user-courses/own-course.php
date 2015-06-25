@@ -6,9 +6,9 @@
 
 	do_action( 'learn_press_before_own_course_price' );
 	printf(
-		'<p class="course-price">%s: %d</p>',
+		'<p class="course-price">%s</p>',
 		__( 'Price', 'learn_press' ),
-		learn_press_get_course_price( null, true )
+		learn_press_get_course_price( get_the_ID(), true )
 	);
 	do_action( 'learn_press_after_own_course_price' );
 

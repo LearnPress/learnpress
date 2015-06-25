@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * @file
+ */
 
 add_action( 'learn_press_user_finished_course', 'learn_press_user_finished_course_send_email', 999, 2 );
 

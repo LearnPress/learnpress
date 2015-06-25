@@ -1,5 +1,7 @@
 <?php
 /**
+ * @file
+ * 
  * Check to see if a user can view the order
  * @param $order_id
  * @param null $user_id

@@ -25,7 +25,8 @@ if ( !class_exists( 'LPR_Admin_Ajax' ) ) {
                 'dummy_image'           => false,
                 'update_add_on_status'  => false,
                 'plugin_install'        => false,
-                'bundle_activate_add_ons' => false
+                'bundle_activate_add_ons' => false,
+                'install_sample_data'   => false
 			);
 			foreach ( $ajaxEvents as $ajaxEvent => $nopriv ) {
 				add_action( 'wp_ajax_learnpress_' . $ajaxEvent, array( __CLASS__, $ajaxEvent ) );
@@ -36,6 +37,54 @@ if ( !class_exists( 'LPR_Admin_Ajax' ) ) {
 				}
 			}
 		}
+
+        /**
+         * Install sample data or dismiss the notice depending on user's option
+         */
+        static function install_sample_data(){
+            $yes = ! empty( $_REQUEST['yes'] ) ? $_REQUEST['yes'] : '';
+            $response = array();
+            if( 'false' == $yes ){
+                set_transient( 'learn_press_install_sample_data', 'off', 12 * HOUR_IN_SECONDS );
+                $response['hide_notice'] = true;
+            }else{
+                $result = learn_press_install_and_active_add_on( 'learnpress-import-export' );
+                if( 'activate' == $result['status'] ){
+                    if( ! class_exists( 'LPR_Import' ) ) {
+                        $import_file_lib = WP_PLUGIN_DIR . "/learnpress-import-export/incs/lpr-import.php";
+                        if ( file_exists( $import_file_lib ) ) {
+                            include_once WP_PLUGIN_DIR . "/learnpress-import-export/incs/lpr-import.php";
+                        }
+                    }
+                    if( ! class_exists( 'LPR_Import' ) ) {
+                        $response['error'] = __('Import/Export addon not found');
+                    }else {
+                        $importer = new LPR_Import();
+                        $import_source = LPR_PLUGIN_PATH . '/dummy-data/learnpress-how-to-use-learnpress.xml';
+
+                        $upload_dir = wp_upload_dir();
+
+                        $copy = $upload_dir['path'] . '/learnpress-how-to-use-learnpress-copy.xml';
+                        @copy( $import_source, $copy );
+                        if( file_exists( $copy ) ) {
+                            $result = $importer->import( $copy );
+                            if ($result == 1) {
+                                $response['success'] = __('Import sample data successfully. The page will reload now!');
+                                $response['redirect'] = admin_url('edit.php?post_type=lpr_course');
+                            } else {
+                                $response['error'] = __('Unknown error when importing sample data. Please try again!');
+                            }
+                        }else{
+                            $response['error'] = __('Dummy sample data not found. Please try again!');
+                        }
+                    }
+                }else {
+                    $response['error'] = __('Unknown error when installing/activating Import/Export addon. Please try again!');
+                }
+            }
+            learn_press_send_json( $response );
+            die();
+        }
 
         /**
          * Activate a bundle of add-ons, if an add-on is not installed then install it first

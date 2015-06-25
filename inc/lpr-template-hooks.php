@@ -86,6 +86,7 @@ add_action( 'learn_press_after_single_quiz_summary', 'learn_press_display_course
 add_action( 'learn_press_quiz_questions_after_question_title_element', 'learn_press_quiz_hint' );
 
 add_filter( 'learn_press_get_template_part', 'learn_press_permission_to_view_page', 1000, 3 );
+add_filter( 'template_include', 'learn_press_permission_to_view_page' );
 // Confirm order
 add_action( 'learn_press_confirm_order', 'learn_press_order_details_table' );
 

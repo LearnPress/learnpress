@@ -7,7 +7,7 @@
 learn_press_prevent_access_directly();
 do_action( 'learn_press_before_course_curriculum' );
 ?>
-	<div class="course-curriculum" course-id="<?php //echo $course_id ?>">
+	<div class="course-curriculum">
 		<h3><?php _e( 'Course Curriculum', 'learn_press' ) ?></h3>
         <?php if( $curriculum ): ?>
         <ul class="curriculum-sections">

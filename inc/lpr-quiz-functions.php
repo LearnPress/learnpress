@@ -1,5 +1,7 @@
 <?php
 /**
+ * @file
+ *  
  * LearnPress Core Functions
  *
  * Common functions for both front-end and back-end
@@ -43,10 +45,12 @@ function lpr_check_is_question_answered( $quiz_id, $question_id ) {
     $user_id = get_current_user_id();
     $student_answer = get_user_meta( $user_id, '_lpr_quiz_question_answer', true );
 
-    if( !isset( $student_answer ) || !is_array( $student_answer ) ) {
+    if( ! isset( $student_answer ) || ! is_array( $student_answer ) ) {
         return false;
     }
-    if( !array_key_exists( $question_id, $student_answer ) || $student_answer[$quiz_id][$question_id] == '' ) {
+
+    if( empty( $student_answer[ $quiz_id ] ) ) return false;
+    if( ! array_key_exists( $question_id, $student_answer[ $quiz_id ] ) || $student_answer[$quiz_id][$question_id] == '' ) {
         return false;
     }
     return true;

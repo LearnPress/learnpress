@@ -117,8 +117,11 @@ if ( !class_exists( 'LPR_Question_Post_Type' ) ) {
 			return apply_filters( 'learn_press_question_meta_box_args', $meta_box );
 		}
 
+        /**
+         * Enqueue scripts
+         */
 		function enqueue_script() {
-			if ( ! in_array( get_post_type(), array( 'lpr_question', 'lpr_quiz' ) ) ) return;
+			if ( ! in_array( get_post_type(), array( 'lpr_question' ) ) ) return;
 			ob_start();
 			?>
 			<script>
@@ -152,8 +155,8 @@ if ( !class_exists( 'LPR_Question_Post_Type' ) ) {
 					<input type="text">
 					<select class="lpr-question-types lpr-select2" name="lpr_question[type]" id="lpr-quiz-question-type">
 						<?php if ( $questions = lpr_get_question_types() ): ?>
-							<?php foreach ( $questions as $type ): ?>
-								<option value="<?php echo $type; ?>"><?php echo LPR_Question_Type::instance( $type )->get_name(); ?></option>
+							<?php foreach ( $questions as $type ): $question = LPR_Question_Type::instance( $type ); if( ! $question ) continue; ?>
+								<option value="<?php echo $type; ?>"><?php echo $question->get_name(); ?></option>
 							<?php endforeach; ?>
 						<?php endif;?>
 					</select>

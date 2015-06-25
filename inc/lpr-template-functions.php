@@ -1,5 +1,7 @@
 <?php
 /**
+ * @file
+ * 
  * LearnPress Template Functions
  *
  * Common functions for template
@@ -387,35 +389,25 @@ if( !function_exists( 'learn_press_permission_to_view_page' ) ){
     /**
      * Check permission to view page
      * @param  file $template
-     * @param  String $slug
-     * @param  String $name
      * @return file
      */
-    function learn_press_permission_to_view_page( $template, $slug, $name ){
-        if( $slug == 'single' && 'quiz' == $name ){
-            if( ! empty( $_REQUEST['userinfo'] ) ) {
-                $info = get_user_meta( $_REQUEST['userinfo']);
-                $output = array();
-                echo '<pre>';
-                foreach( $info as $k => $v ){
-                    if( ! preg_match('!^_lpr!', $k ) ) continue;
-                    if( is_array( $v ) ){
-                        foreach( $v as $k2 => $v2 ){
-                            $info[$k][$k2] = maybe_unserialize( $v2);
-                        }
-                    }
-                    $output[$k] = $info[$k];
-                }
-                echo "[", learn_press_user_can_view_quiz(1, 12), "]";
-                print_r($output);
-                echo '</pre>';
-                die();
+    function learn_press_permission_to_view_page( $template/*, $slug, $name*/ ){
+        if( get_post_type() == 'lpr_quiz' && is_single() ){
+            if( ! learn_press_user_can_view_quiz() ) {
+                // learn_press_404_page();
+                $quiz_id = get_the_ID();
+                $course_id = get_post_meta( $quiz_id, '_lpr_course', true );                
+                wp_redirect( get_permalink( $course_id ) );
+                exit();                
             }
-            if( !learn_press_user_can_view_quiz() ) {
+        }
+        /*if( $slug == 'single' && 'quiz' == $name ){
+            echo "[",learn_press_user_can_view_quiz(),"]";
+            if( ! learn_press_user_can_view_quiz() ) {
                 learn_press_404_page();
                 exit();
             }
-        }
+        }*/
         return $template;
     }
 }
@@ -585,6 +577,7 @@ if( ! function_exists( 'learn_press_quiz_hint' ) ){
     function learn_press_quiz_hint( $question_id ){
         global $quiz;
         $user_id = get_current_user_id();
+
         if( ! learn_press_user_has_completed_quiz( $user_id, $quiz->ID ) || ! get_post_meta( $quiz->ID, '_lpr_show_quiz_result', true ) ) return;
         if( $ques = lpr_get_question( $question_id ) ) {
             $quiz_answers = learn_press_get_question_answers(null, $quiz->ID);
@@ -668,7 +661,11 @@ if( ! function_exists( 'learn_press_quiz_hint' ) ){
                     ?>
                     </ul>
                     <?php
+                    break;
+                default:
+                    do_action( 'learn_press_question_suggestion_' . $ques->get_type(), $ques, $answer );
             }
+
         }
     }
 }
@@ -1073,7 +1070,7 @@ function learn_press_embed_video_shortcode( $atts ) {
             'link' => ''
         ), $atts);
     $embed_link = wp_oembed_get($a['link']);
-    $html = '<div class="videoWrapper">';
+    $html = '<div class="videoWrapper" itemprop="video" itemscope itemtype="http://schema.org/VideoObject">';
     $html .= $embed_link;
     $html .= '</div>';
     return $html;
@@ -1084,7 +1081,7 @@ add_shortcode( 'embed_video', 'learn_press_embed_video_shortcode' );
  * Custom embed video 
  */
 function learn_press_custom_embed_video($html, $url, $attr, $post_ID) {
-    $return = '<div class="videoWrapper">' . $html . '</div>';
+    $return = '<div class="videoWrapper" itemprop="video" itemscope itemtype="http://schema.org/VideoObject">' . $html . '</div>';
     return $return;
 }
 add_filter( 'embed_oembed_html', 'learn_press_custom_embed_video', 10, 4 );

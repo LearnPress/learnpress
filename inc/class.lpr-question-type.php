@@ -134,12 +134,7 @@ class LPR_Question_Type{
             <span class="lpr-question-title"><input class="inactive" type="text" name="lpr_question[<?php echo $this->get('ID');?>][text]" value="<?php echo esc_attr( $this->get('post_title') );?>" /></span>
         </div>
         <div class="lpr-question-content<?php echo $is_collapse ? " hide-if-js" : "";?>">
-        <!--
-            <p class="lpr-question-option-label">
-                <?php _e( 'Question', 'learn_press' );?>
-                <input class="lpr-question-name-input" type="text" name="lpr_question[<?php echo $post_id;?>][text]" value="<?php echo $this->get('post_title');?>">
-            </p>
-        -->
+            <?php //do_action( 'learn_press_admin_before_question_answer', $this );?>
             <p class="lpr-question-option-label"><?php _e( 'Answer', 'learn_press' );?></p>
     <?php
     }

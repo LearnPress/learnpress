@@ -327,6 +327,7 @@
 
 .lpr-question-hint {
 	margin-top: 10px;
+    line-height: 1.5;
 }
 
 .lpr-question-hint .correct {
@@ -400,6 +401,7 @@
 	padding-bottom: 56.25%; /* 16:9 */
 	padding-top: 25px;
 	height: 0;
+	margin-bottom: 25px;
 }
 .videoWrapper iframe {
 	position: absolute;

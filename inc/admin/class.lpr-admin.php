@@ -17,10 +17,27 @@ if ( !class_exists( 'LPR_Admin' ) ) {
             require_once( dirname( __FILE__ ) . '/lpr-admin-functions.php' );
 
 			add_action( 'admin_enqueue_scripts', array( $this, 'admin_scripts' ) );
+            add_action( 'admin_print_scripts', array( $this, 'plugin_js_settings' ) );
 
             // redirect
             $this->_redirect();
 		}
+
+        /**
+         * Output common js settings in admin
+         *
+         * @since 0.9.4
+         */
+        function plugin_js_settings(){
+            static $did = false;
+            if( $did ) return;
+            $js = array(
+                'ajax' => admin_url( 'admin-ajax.php'),
+                'plugin_url' => LearnPress()->plugin_url()
+            );
+            echo '<script type="text/javascript">var LearnPress_Settings = ' . json_encode( $js ) . '</script>';
+            $did = true;
+        }
 
         /**
          * Redirect to admin settings page

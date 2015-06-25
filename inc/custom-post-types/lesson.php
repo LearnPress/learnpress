@@ -20,6 +20,7 @@ if ( !class_exists( 'LPR_Lesson_Post_Type' ) ) {
 			add_filter( 'manage_lpr_lesson_posts_columns', array( $this, 'columns_head' ) );
 			add_action( 'manage_lpr_lesson_posts_custom_column', array( $this, 'columns_content' ), 10, 2 );
 			add_action( 'save_post_lpr_lesson', array( $this, 'update_lesson_meta' ) );
+            add_filter( 'posts_fields', array( $this, 'posts_fields' ) );
 			add_filter( 'posts_join_paged', array( $this, 'posts_join_paged' ) );
 			add_filter( 'posts_where_paged', array( $this, 'posts_where_paged' ) );
 			add_filter( 'posts_orderby', array( $this, 'posts_orderby' ) );
@@ -208,6 +209,23 @@ if ( !class_exists( 'LPR_Lesson_Post_Type' ) ) {
 			}
 		}
 
+        function posts_fields( $fields ){
+            if ( !is_admin() ) {
+                return $fields;
+            }
+            global $pagenow;
+            if ( $pagenow != 'edit.php' ) {
+                return $fields;
+            }
+            global $post_type;
+            if ( 'lpr_lesson' != $post_type ) {
+                return $fields;
+            }
+
+            $fields = " DISTINCT " . $fields;
+            return $fields;
+        }
+
 		/**
 		 * @param $join
 		 *
@@ -226,7 +244,7 @@ if ( !class_exists( 'LPR_Lesson_Post_Type' ) ) {
 				return $join;
 			}
 			global $wpdb;
-			$join .= " INNER JOIN {$wpdb->postmeta} ON {$wpdb->posts}.ID = {$wpdb->postmeta}.post_id";
+			$join .= " LEFT JOIN {$wpdb->postmeta} ON {$wpdb->posts}.ID = {$wpdb->postmeta}.post_id";
 			$join .= " LEFT JOIN {$wpdb->posts} AS c ON c.ID = {$wpdb->postmeta}.meta_value";
 			return $join;
 		}
@@ -251,12 +269,13 @@ if ( !class_exists( 'LPR_Lesson_Post_Type' ) ) {
 			}
 			global $wpdb;
 
-			$where .= " AND (
-                {$wpdb->postmeta}.meta_key='_lpr_course'
-            )";
+
 			if ( isset ( $_GET['meta_course'] ) ) {
+                $where .= " AND (
+                    {$wpdb->postmeta}.meta_key='_lpr_course'
+                )";
 				$where .= " AND (
-                	{$wpdb->postmeta}.meta_value='{$_GET['meta_course']}'
+                	{$wpdb->postmeta}.meta_value='" . intval( $_GET['meta_course'] ) . "'
            		 )";
 			}
 			if ( isset( $_GET['s'] ) ) {
@@ -310,3 +329,4 @@ if ( !class_exists( 'LPR_Lesson_Post_Type' ) ) {
 	}// end LPR_Lesson_Post_Type
 }
 new LPR_Lesson_Post_Type();
+
