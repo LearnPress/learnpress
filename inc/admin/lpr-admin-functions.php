@@ -514,3 +514,4 @@ function learn_press_one_click_install_sample_data_notice(){
     }
 }
 add_action( 'admin_notices', 'learn_press_one_click_install_sample_data_notice' );
+

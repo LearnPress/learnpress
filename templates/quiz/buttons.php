@@ -7,7 +7,7 @@ learn_press_prevent_access_directly();
 ?>
 <?php do_action( 'learn_press_before_quiz_buttons' );?>
 <div class="quiz-buttons">
-    <?php if( !learn_press_user_has_started_quiz() ):?>
+    <?php if( ! learn_press_user_has_started_quiz() ):?>
     <?php do_action( 'learn_press_before_start_quiz_button' );?>
     <button class="button-start-quiz btn" quiz-id="<?php echo get_the_ID() ?>">
         <?php

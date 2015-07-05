@@ -75,6 +75,7 @@ add_action( 'learn_press_after_single_quiz_summary', 'learn_press_single_quiz_pe
 add_action( 'learn_press_after_single_quiz_summary', 'learn_press_single_quiz_sidebar' );
 
 add_action( 'learn_press_quiz_question_nav', 'learn_press_quiz_question_nav');
+add_action( 'learn_press_quiz_question_nav', 'learn_press_check_question_answer');
 add_action( 'learn_press_quiz_question_nav', 'learn_press_quiz_question_nav_buttons');
 
 add_action( 'learn_press_before_main_quiz_content', 'learn_press_before_main_quiz_content');

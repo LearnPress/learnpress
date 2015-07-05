@@ -20,11 +20,12 @@ if ( ! class_exists( 'LPR_Multi_Language' ) ) {
 		public static function load_textdomain() {
 			// l18n translation files
 			$locale = get_locale();
-			$dir    = trailingslashit( LPR_PLUGIN_PATH . 'lang' );
+			$dir    = trailingslashit( LPR_PLUGIN_PATH . '/lang' );
 			$mofile = "{$dir}{$locale}.mo";
 
-			// In themes/plugins/mu-plugins directory
+			// In themes/plugins/mu-plugins directory			
 			load_textdomain( 'learn_press', $mofile );
 		}
 	}
 }
+LPR_Multi_Language::on_load();

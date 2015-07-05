@@ -95,7 +95,7 @@ if( ! class_exists( 'LPR_Quiz_Post_Type' ) ){
                 )
             );
             $GLOBALS['learn_press_quiz_question_meta_box'] = new RW_Meta_Box( $meta_box );
-            new RWMB_Quiz_Question_Field();
+
             new RW_Meta_Box(
                 array(
                     'title'      => __( 'LearnPress Quiz Settings', 'learn_press' ),
@@ -119,12 +119,19 @@ if( ! class_exists( 'LPR_Quiz_Post_Type' ) ){
                             'min'   => 0
                         ),
                         array(
-                            'name' => __( 'Show quiz result', 'learn_press' ),
+                            'name' => __( 'Show correct answer', 'learn_press' ),
                             'id'   => "{$prefix}show_quiz_result",
                             'type' => 'checkbox',
                             'desc' => __( 'Show the correct answer in result of the quiz.', 'learn_press' ),
                             'std'   => 0
                         ),
+                        array(
+                            'name' => __( 'Show question answer immediately', 'learn_press' ),
+                            'id'   => "{$prefix}show_question_answer",
+                            'type' => 'checkbox',
+                            'desc' => __( 'Show the correct answer and explaination (if exists) of the question right after student answered.', 'learn_press' ),
+                            'std'   => 0
+                        ),                        
                     )
                 )
             );

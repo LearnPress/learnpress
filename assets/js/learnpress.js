@@ -160,6 +160,7 @@ if( typeof LearnPress == 'undefined' ) window.LearnPress = {};
         var $link = $(this),
             $parent = $link.parent(),
             permalink = $link.attr('href');
+        if( ! $link.data('id') ) return false;
         if( $parent.hasClass('current') ) return false;
         if( $parent.hasClass('course-lesson') ){
             $('.curriculum-sections .course-lesson.loading').removeClass('loading')
@@ -336,111 +337,6 @@ jQuery(document).ready(function ($) {
 				$this.addClass('current');
 			}
 		});
-	});
-});
-
-jQuery(document).ready(function ($) {
-	$('.button-next-question').click(function (event) {
-		event.preventDefault();
-		var $current = $('.quiz-questions').find('li.current').next();
-		var $temp = $(".question-form").serializeArray();
-		var $question_answer = "";
-		if (0 < $temp.length) {
-			$question_answer = $temp[0].value;
-		}
-
-		console.log();
-
-		$.ajax({
-			type   : "POST",
-			url    : ajaxurl,
-			data   : {
-				action          : 'learnpress_load_next_question',
-				next_question_id: $current.find('a').attr('question-id'),
-				question_id     : $current.prev().find('a').attr('question-id'),
-				question_answer : $question_answer,
-				time_remeaning  : window.quiz_time_remeaning,
-				quiz_id         : window.quiz_id,
-				course_id       : $('.quiz-main').attr('course-id')
-			},
-			success: function (html) {
-				$('.quiz-question').html(html);
-				$('.quiz-questions').find('li.current').removeClass('current');
-				$current.addClass('current');
-				var $next = $('.quiz-questions').find('li.current').next();
-				var $hidden = $('.quiz-questions').find('.hidden');
-				if ($hidden) {
-					$hidden.removeClass('hidden');
-				}
-				var index = parseInt($current.find('a').attr('question-index')) - 1;
-				var cl = ".qq:nth-child(" + index + ")";
-				$(cl).addClass('passed');
-
-				if (jQuery('.quiz-questions li').first().hasClass('current')) {
-					jQuery('.button-prev-question').addClass('hidden');
-				} else if ($('.button-prev-question').hasClass('hidden')) {
-					$('.button-prev-question').removeClass('hidden')
-				}
-
-
-				if (jQuery('.quiz-questions li').last().hasClass('current')) {
-					jQuery('.button-next-question').addClass('hidden');
-				} else if ($('.button-next-question').hasClass('hidden')) {
-					$('.button-next-question').removeClass('hidden');
-				}
-			}
-		})
-	});
-});
-
-jQuery(document).ready(function ($) {
-	$('.button-prev-question').click(function (event) {
-		event.preventDefault();
-		var $current = $('.quiz-questions').find('li.current').prev();
-		var $temp = $(".question-form").serializeArray();
-		var $question_answer = '';
-		if (0 < $temp.length) {
-			$question_answer = $temp[0].value;
-		}
-
-		$.ajax({
-			type   : "POST",
-			url    : ajaxurl,
-			data   : {
-				action          : 'learnpress_load_prev_question',
-				prev_question_id: $current.find('a').attr('question-id'),
-				question_id     : $current.next().find('a').attr('question-id'),
-				question_answer : $question_answer,
-				time_remeaning  : window.quiz_time_remeaning,
-				quiz_id         : window.quiz_id,
-				course_id       : $('.quiz-main').attr('course-id')
-			},
-			success: function (html) {
-				$('.quiz-question').html(html);
-				$('.quiz-questions').find('li.current').removeClass('current');
-				$current.addClass('current');
-				var $hidden = $('.quiz-questions').find('.hidden');
-				if ($hidden) {
-					$hidden.removeClass('hidden');
-				}
-				var index = $current.find('a').attr('question-index');
-				var cl = ".qq:nth-child(" + index + ")";
-				$(cl).addClass('passed');
-
-				if (jQuery('.quiz-questions li').first().hasClass('current')) {
-					jQuery('.button-prev-question').addClass('hidden');
-				} else if ($('.button-prev-question').hasClass('hidden')) {
-					$('.button-prev-question').removeClass('hidden')
-				}
-
-
-				if (jQuery('.quiz-questions li').last().hasClass('current')) {
-					jQuery('.button-next-question').addClass('hidden');
-				} else if ($('.button-next-question').hasClass('hidden')) {
-					$('.button-next-question').removeClass('hidden');
-				}
-			}
-		})
 	});
 });
 

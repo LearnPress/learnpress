@@ -661,15 +661,14 @@ function _ready(){
         var $button = $(this),
             action = $button.data('action');
         $('.lpr-question .lpr-question-head a[data-action="'+action+'"]').trigger('click');
-        $button.hide().siblings().show();
+        $button.hide().siblings('a[data-action="expand"], a[data-action="collapse"]').show();
     });
 
     if( $('.lpr-question .lpr-question-content:visible').length ){
-        $('.lpr-questions-toggle a[data-action="collapse"]').show().siblings().hide();
+        $('.lpr-questions-toggle a[data-action="collapse"]').show().siblings('a[data-action="expand"]').hide();
     }else{
-        $('.lpr-questions-toggle a[data-action="expand"]').show().siblings().hide();
+        $('.lpr-questions-toggle a[data-action="expand"]').show().siblings('a[data-action="collapse"]').hide();
     }
-
 
     lprHook.addFilter( 'lpr_admin_load_question_settings_args', function ( data, type, $old_question, old_type){
         data.options = {

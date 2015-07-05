@@ -13,6 +13,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 if( !function_exists( 'learn_press_is_enrolled_course' ) ) {
     /**
      * Verify course access
+     *
+     * @param int $course_id
+     * @param int $user_id
+     * @return boolean
      */
     function learn_press_is_enrolled_course( $course_id = null, $user_id = null ){
         if( ! $course_id ) {
@@ -21,6 +25,9 @@ if( !function_exists( 'learn_press_is_enrolled_course' ) ) {
         if( ! $user_id ) {
             $user_id = get_current_user_id();
         }
+
+
+
         $course_taken = get_user_meta($user_id, '_lpr_user_course', true);
         if ($course_taken) {
             if (in_array($course_id, $course_taken)) {
@@ -115,7 +122,7 @@ if( ! function_exists( 'learn_press_course_enroll_button' ) ) {
     function learn_press_course_enroll_button(){
         $course_status = learn_press_get_user_course_status();
         // only show enroll button if user had not enrolled
-        if ('' == $course_status) {
+        if ( '' == $course_status && learn_press_course_enroll_required() ) {
             learn_press_get_template('course/enroll-button.php');
         }
     }
@@ -305,14 +312,25 @@ if( !function_exists( 'learn_press_quiz_question_nav' ) ) {
      * Output the content of current question
      */
     function learn_press_quiz_question_nav(){
-        $question_id = 0;
-        $current_question = learn_press_get_question_position(null, null, $question_id);
+        $current_question = learn_press_get_question_position();
+        $question_id = $current_question['id'];
+        //echo rand() . "[$question_id]";
+        learn_press_get_template( 'quiz/form-question.php', array( 'question_id' => $question_id, 'course_id' => learn_press_get_course_by_quiz( get_the_ID() ) ) );
+    }
+}
 
-        if ($question_id) {
-            $question = LPR_Question_Type::instance($question_id);
-            $answers = learn_press_get_question_answers( null, learn_press_get_quiz_id( 0 ));
-
-            $question && $question->render( isset( $answers[$question_id] ) ? array( 'answer' => $answers[$question_id] ) : null  );
+if( ! function_exists( 'learn_press_output_question' ) ){
+    function learn_press_output_question( $question_id, $with_answered = true ){
+        if ( $question_id ) {
+            $question = LPR_Question_Type::instance( $question_id );
+            $answered = null;
+            if( $with_answered ) {
+                $answers = learn_press_get_question_answers( null, learn_press_get_quiz_id( 0 ) );
+                if( isset( $answers[$question_id] ) ) {
+                    $answered = array('answer' => $answers[$question_id]);
+                }
+            }
+            $question && $question->render( $answered  );
         }
     }
 }
@@ -341,6 +359,18 @@ if( !function_exists( 'learn_press_single_quiz_content_page' ) ){
      */
     function learn_press_single_quiz_content_page(){
         learn_press_get_template( 'content-quiz.php' );
+    }
+}
+
+if( !function_exists( 'learn_press_check_question_answer' ) ){
+    /**
+     * Output main content of a quiz
+     */
+    function learn_press_check_question_answer(){
+        $check_answer = get_post_meta( get_the_ID(), '_lpr_show_question_answer', true );        
+        if( $check_answer ) {
+            learn_press_get_template( 'quiz/button-check-answer.php' );
+        }        
     }
 }
 
@@ -506,6 +536,7 @@ if( ! function_exists( 'learn_press_404_page' ) ){
         $wp_query->set_404();
         status_header( 404 );
         get_template_part( 404 );
+        exit();
     }
 }
 
@@ -746,7 +777,8 @@ if( ! function_exists( 'learn_press_course_content_summary' ) ){
             if( isset( $user_courses ) && is_array( $user_courses ) ) {
                 $enrolled = in_array( $course_id, $user_courses );
             }                        
-            if( !$enrolled && ! learn_press_is_lesson_preview( $lesson_id ) ) {
+            //if( !$enrolled && ! learn_press_is_lesson_preview( $lesson_id ) ) {
+            if( ! learn_press_user_can_view_lesson( $lesson_id ) ){
                 echo "You have to enrolled to see lesson content";
                 do_action('learn_press_course_content_course');
                 return 0;             

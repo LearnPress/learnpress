@@ -49,8 +49,7 @@ if( typeof LearnPress == 'undefined' ) var LearnPress = {};
                     next_id: next_id
                 },
                 next_question = $('.quiz-question-nav .question-' + next_id);
-            $.post( ajaxurl, data, function(res){
-
+            $.post( ajaxurl, data, function(res){                
                 if( next_id ){
                     current_question_id = next_id;
                     next_question.show().siblings().filter(function(){return this.className.match(/question-[0-9]+/)}).hide();
@@ -82,8 +81,11 @@ if( typeof LearnPress == 'undefined' ) var LearnPress = {};
                 }
                 update_nav_buttons();
             }, 'json')
+            $('#nav-question-form').trigger('submit', {id: get_next_question_id()});
         }
         function prev_question(){
+            $('#nav-question-form').trigger('submit', {id: get_prev_question_id()});
+            return;
             var prev_id = get_prev_question_id(),
                 prev_question = $('.quiz-question-nav .question-'+prev_id);
             if( prev_question.get(0) ){
@@ -107,7 +109,7 @@ if( typeof LearnPress == 'undefined' ) var LearnPress = {};
                         $('.quiz-question-nav').prepend(new_question);
                     }
                     update_nav_buttons();
-                })
+                });
             }
         }
 
@@ -139,6 +141,7 @@ if( typeof LearnPress == 'undefined' ) var LearnPress = {};
                     quiz_id: self.args.quiz_id,
                     question_id: current_question_id,
                     question_answer: $('input, select, textarea', $('.quiz-question-nav .question-'+current_question_id)).toJSON(),
+                    data: $('#nav-question-form').children('input, select, textarea').toJSON(),
                     finish: true
                 };
                 $.post( ajaxurl, data, function(res){
@@ -172,15 +175,20 @@ if( typeof LearnPress == 'undefined' ) var LearnPress = {};
             }
         }
         function start_quiz(){
-            var url = window.location.href;
-            $.post( url, {action: 'learn_press_start_quiz', quiz_id: self.args.quiz_id}, function(res){
+            var url = window.location.href,
+                data = $.extend({
+                    action: 'learn_press_start_quiz',
+                    quiz_id: self.args.quiz_id
+                }, $('input, textarea, select', '#nav-question-form').toJSON() || {});
+
+            $.post( url, data, function(res){
 
                 var new_question = $('.quiz-question-nav .question-'+current_question_id, res),
                     last_question = $('.quiz-question-nav .lpr-question-wrap:last');
                 if( last_question.get(0) ){
                     new_question.insertAfter( last_question );
                 }else{
-                    $('.quiz-question-nav').prepend( new_question );
+                    $('#nav-question-form').prepend( new_question );
                 }
                 $(this).hide().siblings().show();
                 $('.button-start-quiz').hide();
@@ -190,6 +198,18 @@ if( typeof LearnPress == 'undefined' ) var LearnPress = {};
                 $('.single-quiz').addClass('quiz-started');
                 update_nav_buttons();
             });
+        }
+        function show_answer() {
+            var data = {
+                    action: 'learn_press_show_answer',
+                    quiz_id: self.args.quiz_id,
+                    question_id: current_question_id,
+                    question_answer: $('input, select, textarea', $('.quiz-question-nav .question-'+current_question_id)).toJSON(),                    
+                };
+             $.post( ajaxurl, data, function(res){               
+                question_answer_show = $(res.html);                 
+                 $('.question-'+current_question_id+' ul').replaceWith(question_answer_show);
+                }, 'json')
         }
 
         $(document).on('click', '.quiz-question-nav-buttons button', function(evt){
@@ -213,8 +233,47 @@ if( typeof LearnPress == 'undefined' ) var LearnPress = {};
             $.post( window.location.href, { retake_quiz: 1 }, function(){
                 window.location.href = window.location.href;
             })
+        }).on('click', '.check_answer', function(){
+            show_answer();
         });
 
+        $(document).on('submit', '#nav-question-form', function(evt, params){
+            var next_id = params.id,
+                $form = $(this);
+            if( $form.triggerHandler( 'post_question_answer' ) !== false ) {
+                var data = {
+                    action: 'learn_press_submit_answer',
+                    quiz_id: self.args.quiz_id,
+                    question_id: current_question_id,
+                    question_answer: $('input, select, textarea', $('.quiz-question-nav .question-' + current_question_id)).toJSON(),
+                    data: $form.children('input, select, textarea').toJSON(),
+                    next_id: next_id
+                },
+                next_question = $('.quiz-question-nav .question-' + next_id);
+                $.post(ajaxurl, data, function (res) {
+                    if (next_id) {
+                        current_question_id = next_id;
+                        next_question.show().siblings().filter(function () {
+                            return this.className.match(/question-[0-9]+/)
+                        }).hide();
+                        $form.replaceWith( $(res.html) );
+                    } else {
+                        countdown.backward_timer("cancel");
+                        if (res.quiz_completed) {
+                            window.location.href = window.location.href;
+                            return;
+                        }
+                        quiz_finished = true;
+                        $('.quiz-questions .current').removeClass('current');
+                        $('.quiz-question-nav .lp-question-wrap').hide();
+                        $('.quiz-question-nav').append(res.html);
+                        countdown.backward_timer("cancel");
+                    }
+                    update_nav_buttons();
+                }, 'json');
+                return false;
+            }
+        });
 
         $(document).on('click', '.button-start-quiz', function(){
             start_quiz.call( this )

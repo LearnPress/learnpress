@@ -724,7 +724,15 @@ function learn_press_edit_permalink() {
 		if ( empty( $wp_rewrite->permalink_structure ) ) {
 			echo '<div class="fade error"><p>';
 			echo sprintf(
-				__( '<strong>LearnPress Profile is almost ready</strong>. You must <a href="%s">update your permalink structure</a> to something other than the default for it to work.', 'learn_press' ),
+				wp_kses(
+					__( '<strong>LearnPress Profile is almost ready</strong>. You must <a href="%s">update your permalink structure</a> to something other than the default for it to work.', 'learn_press' ),
+					array(
+						'a' => array(
+							'href' => array()
+						),
+						'strong' => array()
+					)
+				),
 				admin_url( 'options-permalink.php' )
 			);
 			echo '</p></div>';
@@ -1505,7 +1513,7 @@ function learn_press_course_lesson_permalink_friendly( $permalink, $lesson_id, $
 
 	if ( '' != get_option( 'permalink_structure' ) ) {
 		if ( preg_match( '!\?lesson=([^\?\&]*)!', $permalink, $matches ) ) {
-			$permalink = preg_replace( '!\?lesson=([^\?\&]*)!', basename( get_permalink( $matches[1] ) ), $permalink );
+			$permalink = preg_replace( '!/?\?lesson=([^\?\&]*)!', '/' . basename( get_permalink( $matches[1] ) ), untrailingslashit( $permalink ) );
 		}
 	}
 
@@ -1593,7 +1601,7 @@ function become_a_teacher_handler() {
 	global $current_user;
 	get_currentuserinfo();
 
-	$email           = 'tunnhn@gmail.com';//array( get_option( 'admin_email' ) );
+	$to_email           = array( get_option( 'admin_email' ) );
 	$message_headers = '';
 	$subject         = 'Please moderate';
 	$notify_message  = sprintf( __( 'The user <a href="%s">%s</a> want to be a teacher.' ), admin_url( 'user-edit.php?user_id=' . $current_user->ID ), $current_user->data->user_login ) . "\r\n";
@@ -1604,7 +1612,7 @@ function become_a_teacher_handler() {
 	$notify_message .= wp_specialchars_decode( sprintf( __( 'Accept: %s' ), admin_url( 'user-edit.php?user_id=' . $current_user->ID ) . '&action=accept-to-be-teacher' ) ) . "\r\n";
 
 	$args = array(
-		$email,
+        $to_email,
 		( $subject ),
 		$notify_message,
 		$message_headers

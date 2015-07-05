@@ -485,6 +485,10 @@ function lpr_course_time_check( $link, $course_id ) {
 function learn_press_reset_user_quiz($user_id = null, $quiz_id = null){
     if( empty( $user_id ) ) $user_id = get_current_user_id();
     $quiz_id = learn_press_get_quiz_id($quiz_id);
+    if( ! apply_filters( 'learn_press_reset_user_quiz', true, $quiz_id, $user_id ) ){
+        return;
+    }
+
     $keys = array(
         '_lpr_quiz_start_time',
         '_lpr_quiz_completed',
@@ -519,6 +523,7 @@ function learn_press_reset_user_quiz($user_id = null, $quiz_id = null){
             }
         }
     }
+    do_action( 'learn_press_after_reset_user_quiz', $quiz_id, $user_id );
 }
 
 function learn_press_is_final_quiz( $quiz_id ) {

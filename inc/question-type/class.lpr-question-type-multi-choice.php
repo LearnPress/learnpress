@@ -62,7 +62,7 @@ class LPR_Question_Type_Multi_Choice extends LPR_Question_Type{
                     <input type="checkbox"  name="lpr_question[<?php echo $post_id;?>][answer][is_true][__INDEX__<?php echo $i;?>]" value="1" <?php checked( $this->get('options.answer.'.$i.'.is_true', 0) ? 1 : 0 );?> />
 
                 </td>
-                <td><input type="text" class="lpr-answer-text" name="lpr_question[<?php echo $post_id;?>][answer][text][__INDEX__<?php echo $i;?>]" value="<?php echo esc_attr( $this->get( 'options.answer.'.$i.'.text', __( '', 'learnpres' ) ) );?>" /></td>
+                <td><input type="text" class="lpr-answer-text" name="lpr_question[<?php echo $post_id;?>][answer][text][__INDEX__<?php echo $i;?>]" value="<?php echo esc_attr( $this->get( 'options.answer.'.$i.'.text', __( '', 'learnpress' ) ) );?>" /></td>
                 <td align="center" class="lpr-remove-answer"><i class="dashicons dashicons-trash"></td>
             </tr>
             <?php endforeach; endif;?>
@@ -82,6 +82,13 @@ class LPR_Question_Type_Multi_Choice extends LPR_Question_Type{
     </table>
     <input type="hidden" name="lpr_question[<?php echo $post_id;?>][type]" value="<?php echo $this->get_type();?>">
     <p><button type="button" class="button lpr-button-add-answer"><?php _e('Add answer', 'learnpress');?></button> </p>
+    <label><?php _e('Question Explaination') ?></label>
+    <?php if( $explaination = $this->get('options.explaination') ) {
+        echo '<textarea rows="4" name="lpr_question['. $post_id .'][explaination]">'. $explaination .'</textarea>';
+        }
+    else {
+        echo '<textarea rows="4" name="lpr_question['. $post_id .'][explaination]"></textarea>';
+    }?>
     <?php
         $this->admin_interface_foot( $args );
         $this->_admin_enqueue_script( false );
@@ -125,8 +132,9 @@ class LPR_Question_Type_Multi_Choice extends LPR_Question_Type{
     function save_post_action(){
 
         if( $post_id = $this->ID ){
-            $post_data = isset( $_POST['lpr_question'] ) ? $_POST['lpr_question'] : array();
+            $post_data = isset( $_POST['lpr_question'] ) ? $_POST['lpr_question'] : array();            
             $post_answers = array();
+            $post_explain = $post_data[$post_id]['explaination'];            
             if( isset( $post_data[$post_id] ) && $post_data = $post_data[$post_id] ){
                 $post_args = array(
                     'ID'            => $post_id,
@@ -146,6 +154,7 @@ class LPR_Question_Type_Multi_Choice extends LPR_Question_Type{
             }
             $post_data['answer']    = $post_answers;
             $post_data['type']      = $this->get_type();
+            $post_data['explaination'] = $post_explain;            
             update_post_meta( $post_id, '_lpr_question', $post_data );
         }
         return intval( $post_id );

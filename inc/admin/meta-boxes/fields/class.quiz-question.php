@@ -98,66 +98,77 @@ if ( ! class_exists( 'RWMB_Quiz_Question_Field' ) ) {
             update_post_meta( $post_id, '_lpr_quiz_questions', $postmeta );
         }
 
-        static function html($meta, $field){
+        static function html($meta, $field)
+        {
             global $post;
             $post_id = $post->ID;
-            $current_user   = get_current_user_id();
+            $current_user = get_current_user_id();
 
             $questions = lpr_get_question_types();
 
-            $lpr_questions = (array)get_post_meta( $post_id, '_lpr_quiz_questions', true );
-            $qids = array_keys( $lpr_questions );
-            $qoptions = array_values( $lpr_questions );
+            $lpr_questions = (array)get_post_meta($post_id, '_lpr_quiz_questions', true);
+            $qids = array_keys($lpr_questions);
+            $qoptions = array_values($lpr_questions);
+
+
             ob_start();
-        ?>
-        <script type="text/javascript">var lpr_quiz_id = <?php echo intval($post_id);?></script>
-        <div id="lpr-quiz-questions-wrap">
-            <p align="right" class="lpr-questions-toggle">
-                <a href="" data-action="expand"><?php _e( 'Expand All', 'learn_press' );?></a>
-                <a href="" data-action="collapse"><?php _e( 'Collapse All', 'learn_press' );?></a>
-            </p>
-            <div id="lpr-quiz-questions">
-            <?php if( $qids ): $index = 0;?>
-                <?php foreach( $qids as $question_id ):?>
-                <?php
-                    if( $question = LPR_Question_Type::instance( $question_id ) ){
-                        $question->admin_interface($qoptions[$index++]);
-                    }
-                ?>
-                <?php endforeach;?>
-            <?php endif;?>
-            </div>
-            <p style="vertical-align: middle;">
+            ?>
+            <script type="text/javascript">var lpr_quiz_id = <?php echo intval($post_id);?></script>
+
+
+            <div id="lpr-quiz-questions-wrap">
+                <p align="right" class="lpr-questions-toggle">
+                    <a href="" data-action="expand"><?php _e('Expand All', 'learn_press'); ?></a>
+                    <a href="" data-action="collapse"><?php _e('Collapse All', 'learn_press'); ?></a>
+                </p>
+
+                <div id="lpr-quiz-questions">
+                    <?php if ($qids): $index = 0; ?>
+                        <?php foreach ($qids as $question_id): ?>
+                            <?php
+                            if ($question = LPR_Question_Type::instance($question_id)) {
+                                $question->admin_interface($qoptions[$index++]);
+                            }
+                            ?>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
+                <p style="vertical-align: middle;">
+
                 <div class="btn-group" id="lpr-add-new-question-type">
-                    <button type="button" class="btn btn-default" data-type="single_choice"><?php _e('Add new Question', 'learnpress');?></button>
-                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                    <button type="button" class="btn btn-default"
+                            data-type="single_choice"><?php _e('Add new Question', 'learnpress'); ?></button>
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                            aria-expanded="false">
                         <span class="caret"></span>
-                        <span class="sr-only">Toggle Dropdown</span>
+                        <span class="sr-only"><?php _e('Toggle Dropdown', 'learn_press'); ?></span>
                     </button>
                     <ul class="dropdown-menu" role="menu">
-                        <?php if( $questions ):?>
-                            <?php foreach( $questions as $type ):?>
-                                <li><a href="" rel="<?php echo $type;?>"><?php echo LPR_Question_Type::instance( $type )->get_name();?></a></li>
-                            <?php endforeach;?>
-                        <?php endif;?>
+                        <?php if ($questions): ?>
+                            <?php foreach ($questions as $type): ?>
+                                <li><a href=""
+                                       rel="<?php echo $type; ?>"><?php echo LPR_Question_Type::instance($type)->get_name(); ?></a>
+                                </li>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
                     </ul>
                 </div>
 
                 -Or-
                 <select class="lpr-select2" name="" id="lpr-quiz-question-select-existing" style="width:300px">
-                    <option value=""><?php _e( '--Select existing question--', 'learnpress' );?></option>
+                    <option value=""><?php _e('--Select existing question--', 'learnpress'); ?></option>
                     <?php
 
                     $query_args = array(
-                        'post_type'      => 'lpr_question',
-                        'post_status'    => 'publish',
-                        'author'         => $current_user,
+                        'post_type' => 'lpr_question',
+                        'post_status' => 'publish',
+                        'author' => $current_user,
                         'posts_per_page' => -1,
-                        'post__not_in'   => $qids
+                        'post__not_in' => $qids
                     );
-                    $query      = new WP_Query( $query_args );
-                    if ( $query->have_posts() ) {
-                        while ( $query->have_posts() ) {
+                    $query = new WP_Query($query_args);
+                    if ($query->have_posts()) {
+                        while ($query->have_posts()) {
                             $p = $query->next_post();
                             echo '<option value="' . $p->ID . '" data-type="">' . $p->post_title . '</option>';
                         }
@@ -165,10 +176,9 @@ if ( ! class_exists( 'RWMB_Quiz_Question_Field' ) ) {
                     ?>
 
                 </select>
-            </p>
-        </div>
-
-        <?php
+                </p>
+            </div>
+            <?php
             return ob_get_clean();
         }
     }

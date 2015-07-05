@@ -14,13 +14,14 @@ LearnPress is a WordPress LMS Plugin complete solution for creating a Learning M
 
 <a href="http://thimpress.com/learnpress" target="_blank">LearnPress</a> is a comprehensive WordPress LMS Plugin for WordPress. This WordPress LMS Plugin can be used to easily create & sell courses online. Each course curriculum can be made with lessons & quizzes which can be managed with easy-to-use user interface, we really made it for lazy people.  
 
+LearnPress is free and always be free, but it has premium high quality WordPress Plugin, try and see how it is. LearnPress WordPress LMS Plugin is **lightweight** but **super powerful** with **lots of add-ons** to empower its core system.  
+
+Take a look at a [Premium LMS WordPress Theme](http://themeforest.net/item/lms-wordpress-theme-elearning-wp/11797847) we designed to work with LearnPress, more will comes soon.
+
 [youtube https://www.youtube.com/watch?v=rRWPl5-Hb4k&hd=1&&cc_load_policy=1]
 
 **LearnPress LMS Plugin works with your theme**  
-We create LearnPress LMS Plugin to work with any WordPress themes.
-
-Here is a [premium LMS WordPress theme](http://themeforest.net/item/lms-wordpress-theme-elearning-wp/11797847). More will coming soon.
-
+We create LearnPress LMS Plugin to work with any WordPress themes.  
 
 **LearnPress Support WordPress Multisites**
 
@@ -149,27 +150,45 @@ Yes, you can and we appreciate it. Join in our <a href="https://github.com/Learn
 
 == Changelog ==  
 
+= 0.9.5 =
+- Added showing question answer and explaination feature
+- Fixed bugs for addon Fill In Blank question 
+- Fixed bugs for addon Sorting Choice question
+- Fixed bugs for addon Certificates
+- Fixed bugs for addon WooCommerce Payment
+- Prevent access to lesson directly by using permalink
+- Random quiz questions addon (premium add-on)
+- Content Drip addon (premium add-on)
+- Support multi language
+
+= 0.9.4 =  
+- Set up sample data for LearnPress    
+- Provided sorting question type (you can find it in premium add-on list)  
+- Provided fill in blank question type (we are uploading it to WordPress.org so if you cannot find it, wait for it to be available soon)  
+- Fixed bug profile template  
+- Updated LearnPress profile method  
+
 = 0.9.3 =  
-- Fix menu position problem (3.14).  
-- Fix bug shortcut key @l to insert lesson link when writing a lesson.  
-- Fix bug when add Lesson/Quiz into a section but it is not assigned to the course.  
+- Fixed menu position problem (3.14).  
+- Fixed bug shortcut key @l to insert lesson link when writing a lesson.  
+- Fixed bug when add Lesson/Quiz into a section but it is not assigned to the course.  
 - List the addons from wordpress.org in addons page.  
-- Add new option into settings page lets to choose the page to display form "Become a teacher".  
-- Add shortcode to insert form "Become a teacher".  
-- Update lesson/quiz title also update its slug.  
+- Added new option into settings page lets to choose the page to display form "Become a teacher".  
+- Added shortcode to insert form "Become a teacher".  
+- Updated lesson/quiz title also update its slug.  
 - Align review form to center of the page.  
 - Course review pagination.  
-- Provide related courses function.  
-- Support full width embed video.  
+- Provided related courses function.  
+- Supported full width embed video.  
 
 = 0.9.2 =  
-- Update add-on management page.  
-- Add auto next lesson after complete a quiz feature.  
-- Fix course-review bugs.  
-- Fix bug on curriculum when use "shift + (" or "shift+&" ..... to edit Lesson title or Section title.  
-- Fix course result bug.  
-- Fix export/import addon - sometime the image is not imported.  
-- Fix bug show certificate after user finished a course.  
+- Updated add-on management page.  
+- Added auto next lesson after complete a quiz feature.  
+- Fixed course-review bugs.  
+- Fixed bug on curriculum when use "shift + (" or "shift+&" ..... to edit Lesson title or Section title.  
+- Fixed course result bug.  
+- Fixed export/import addon - sometime the image is not imported.  
+- Fixed bug show certificate after user finished a course.  
 
 = 0.9.1 =  
 - The first beta release.  

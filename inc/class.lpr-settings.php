@@ -1,7 +1,19 @@
 <?php
-class LPR_Settings{
 
+/**
+ * Class LPR_Settings
+ */
+class LPR_Settings{
+    /**
+     * @var array
+     */
     protected $_options = false;
+
+    /**
+     * Constructor
+     *
+     * @param bool $key
+     */
     function __construct( $key = false ){
         $settings_keys = array(
             'general', 'pages', 'payment', 'emails'
@@ -17,6 +29,12 @@ class LPR_Settings{
         }
     }
 
+    /**
+     * Set new value for a key
+     *
+     * @param $name
+     * @param $value
+     */
     function set( $name, $value ){
         $this->_set_option( $this->_options, $name, $value );
     }
@@ -87,7 +105,7 @@ class LPR_Settings{
     }
 }
 
-if( !function_exists( 'learn_press_settings' ) ){
+if( ! function_exists( 'learn_press_settings' ) ){
     function learn_press_settings( $setting = null, $key = false ){
         $settings = LPR_Settings::instance( $setting );
         if( $key ) return $settings->get( $key );

@@ -61,6 +61,13 @@ class LPR_Question_Type_Dropdown extends LPR_Question_Type{
     </table>
     <input type="hidden" name="lpr_question[<?php echo $post_id;?>][type]" value="<?php echo $this->get_type();?>">
     <p><button type="button" class="button lpr-button-add-answer"><?php _e('Add answer', 'learnpress');?></button> </p>
+    <label><?php _e('Question Explaination') ?></label>
+    <?php if( $explaination = $this->get('options.explaination') ) {
+        echo '<textarea rows="4" name="lpr_question['. $post_id .'][explaination]">'. $explaination .'</textarea>';
+        }
+    else {
+        echo '<textarea rows="4" name="lpr_question['. $post_id .'][explaination]"></textarea>';
+    }?>
      <?php
         $this->admin_interface_foot();
     }
@@ -70,6 +77,7 @@ class LPR_Question_Type_Dropdown extends LPR_Question_Type{
         if( $post_id = $this->get('ID') ){
             $post_data = isset( $_POST['lpr_question'] ) ? $_POST['lpr_question'] : array();
             $post_answers = array();
+            $post_explain = $post_data[$post_id]['explaination'];
             if( isset( $post_data[$post_id] ) && $post_data = $post_data[$post_id] ){
 
                 if( 'lpr_question' != get_post_type( $post->ID ) ){
@@ -95,7 +103,7 @@ class LPR_Question_Type_Dropdown extends LPR_Question_Type{
             }
             $post_data['answer']    = $post_answers;
             $post_data['type']      = $this->get_type();
-
+            $post_data['explaination'] = $post_explain;
             update_post_meta( $post_id, '_lpr_question', $post_data );
         }
         return $post_id;

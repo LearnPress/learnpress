@@ -251,3 +251,6 @@
 .dropdown-menu>li>a:hover {
     background-color: #EFEFEF;
 }
+.lpr-question-content textarea {
+    width: 100%;
+}

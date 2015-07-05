@@ -20,8 +20,15 @@ if ( !class_exists( 'LPR_Course_Post_Type' ) ) {
 			add_action( 'rwmb_course_curriculum_before_save_post', array( $this, 'before_save_curriculum' ) );
 			add_filter( 'manage_lpr_course_posts_columns', array( $this, 'columns_head' ) );
 
+            add_filter( "rwmb__lpr_course_price_html", array( $this, 'XXX' ), 5, 3 );
+
 			self::$loaded = true;
 		}
+
+        function XXX( $input_html, $field, $sub_meta ){
+
+            return $input_html . '<span class="lpr-course-price-symbol">' . learn_press_get_currency_symbol() . '</span>';
+        }
 
 		/**
 		 * Register course post type
@@ -249,16 +256,29 @@ if ( !class_exists( 'LPR_Course_Post_Type' ) ) {
 				'priority' 	=> 'high',
 				'pages'  	=> array( LPR_COURSE_CPT ),
 				'fields' 	=> array(
+                    array(
+                        'name'    => __( 'Enrolled Require', 'learn_press' ),
+                        'id'      => "{$prefix}course_enrolled_require",
+                        'type'    => 'radio',
+                        'desc'    => 'Require users logged in to study or public to all',
+                        'options' => array(
+                            'yes'     => __( 'Yes, enroll is required', 'learn_press' ),
+                            'no' => __( 'No', 'learn_press' ),
+                        ),
+                        'std'     => 'yes',
+                        'class' => 'hide-if-js'
+                    ),
 					array(
 						'name'    => __( 'Course Payment', 'learn_press' ),
 						'id'      => "{$prefix}course_payment",
 						'type'    => 'radio',
-						'desc'    => 'If Enrolled Require be checked, An administrator will review then set course price and commission',
+						'desc'    => 'If Paid be checked, An administrator will review then set course price and commission',
 						'options' => array(
 							'free'     => __( 'Free', 'learn_press' ),
-							'not_free' => __( 'Enrolled Require', 'learn_press' ),
+							'not_free' => __( 'Paid', 'learn_press' ),
 						),
-						'std'     => 'free'
+						'std'     => 'free',
+                        'class' => 'lpr-course-payment-field hide-if-js'
 					)
 				)
 			);
@@ -290,6 +310,7 @@ if ( !class_exists( 'LPR_Course_Post_Type' ) ) {
 						'step' => 0.01,
 						'desc' => $message,
 						'std'  => $price,
+                        'class' => 'lpr-course-price-field hide-if-js'
 					)
 				);
 			} else {
@@ -301,7 +322,9 @@ if ( !class_exists( 'LPR_Course_Post_Type' ) ) {
 						'type'	=> 'number',
 						'min'	=> 0,
 						'step'	=> 0.01,
-						'desc'	=> 'The course price you want to suggest for admin to set.'
+						'desc'	=> 'The course price you want to suggest for admin to set.',
+                        'class' => 'lpr-course-price-field hide-if-js',
+                        'std'   => 0
 					)
 					);
 			}

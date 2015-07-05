@@ -281,9 +281,6 @@ if ( ! class_exists( 'RW_Meta_Box' ) ) {
 			$id    = $this->meta_box['id'];
 			$nonce = isset( $_POST["nonce_{$id}"] ) ? sanitize_key( $_POST["nonce_{$id}"] ) : '';
 
-            $content = @file_get_contents( LPR_PLUGIN_PATH . '/test.txt');
-
-
 			if ( empty( $_POST["nonce_{$id}"] ) || ! wp_verify_nonce( $nonce, "rwmb-save-{$id}" ) ) {
 				return;
 			}

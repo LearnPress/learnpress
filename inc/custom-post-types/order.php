@@ -56,7 +56,7 @@ if( ! class_exists( 'LPR_Order_Post_Type' ) ) {
                     $user_courses = get_user_meta($user_order, '_lpr_user_course', true);
 
                     // find the position of the course in the array and remove it if find out
-                    if( false !== ( $pos = array_search( $course_id, $user_courses ) ) ){
+                    if( $user_courses && false !== ( $pos = array_search( $course_id, $user_courses ) ) ){
                         unset( $user_courses[$pos] );
 
                         // update the meta if we have the courses in the list else delete

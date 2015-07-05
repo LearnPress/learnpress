@@ -140,7 +140,24 @@ jQuery(document).ready(function($){
                 }
             }
         })
-    })
+    });
+    var $checked = null;
+    $checked = $('input[name="_lpr_course_enrolled_require"]').bind('click change', function(){
+        var payment_field = $('.lpr-course-payment-field').toggleClass('hide-if-js', ! ( $(this).val() != 'no' ) );
+        if( payment_field.is(':visible') ){
+            $('input[name="_lpr_course_payment"]:checked', payment_field).trigger('change')
+        }else{
+            $('.lpr-course-price-field').addClass('hide-if-js');
+        }
+
+    }).filter(':checked').trigger('change').get();
+    if( $checked.length == 0 ){
+        $('input[name="_lpr_course_enrolled_require"][value="yes"]').trigger('click');
+    }
+
+    $checked = $('input[name="_lpr_course_payment"]').bind('click change', function(){
+        $('.lpr-course-price-field').toggleClass('hide-if-js', ! ( $(this).val() != 'free' ) || ( $('input[name="_lpr_course_enrolled_require"]:checked').val() == 'no' ) );
+    }).filter(':checked').trigger('change').get();
 
 });
 
@@ -375,14 +392,14 @@ lprHook.addAction('lpr_admin_quiz_question_html', _lprAdminQuestionHTML);
                         if( $link.hasClass('thimpress') ){
                             response = LearnPress.parse_json( response );
                             $link.removeClass( 'spinner' );
-                            var message = null;
+                            //var message = null;
                             if( response.status == 'activate' ){
                                 $link.addClass('disabled').html(response.status_text).removeAttr('href').removeAttr('data-action');
                                 $('.addon-status', $link.closest('.action-links')).html(response.status_text).addClass('enabled');
                             }else{
                                 $link.removeClass('disabled');
                             }
-                            message.insertBefore( $('> h2', '#learn-press-add-ons-wrap') )
+                            //message.insertBefore( $('> h2', '#learn-press-add-ons-wrap') )
                         }
                     }
                     //$link.replaceWith( $(response.button) );
@@ -626,6 +643,6 @@ lprHook.addAction('lpr_admin_quiz_question_html', _lprAdminQuestionHTML);
             }).show();
             $('select', form).select2('open');
         }
-    })
+    });
 })(jQuery)
 

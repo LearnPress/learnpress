@@ -673,3 +673,13 @@ input.lpr-fancy-checkbox {
     vertical-align: middle;
     margin: 0 !important;
 }
+
+#lpr-toggle-quiz-mode{
+    background-color: #0077FF;
+    padding: 3px;
+    margin-left: 5px;
+    display: inline-block;
+    border-radius: 3px;
+    text-decoration: none;
+    color: #FFF;
+}
