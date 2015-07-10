@@ -97,7 +97,7 @@ if ( !class_exists( 'LPR_Lesson_Post_Type' ) ) {
 			$prefix     = '_lpr_';
 			$meta_boxes = array(
 				'id'     => 'lesson_settings',
-				'title'  => 'Lesson Settings',
+				'title'  => __('Lesson Settings', 'learn_press'),
 				'pages'  => array( LPR_LESSON_CPT ),
 				'fields' => array(
 					array(

@@ -28,8 +28,8 @@ class LPR_Question_Type_True_Or_False extends LPR_Question_Type{
     <table class="lpr-sortable lpr-question-option">
         <thead>
             <th width="20"></th>
-            <th><?php _e('Is Correct?', 'learnpress');?></th>
-            <th><?php _e('Answer Text', 'learnpress');?></th>
+            <th><?php _e('Is Correct?', 'learn_press');?></th>
+            <th><?php _e('Answer Text', 'learn_press');?></th>
         </thead>
         <tbody>
             <tr>
@@ -56,7 +56,7 @@ class LPR_Question_Type_True_Or_False extends LPR_Question_Type{
             </tr>
         </tbody>
     </table>
-    <label><?php _e('Question Explaination') ?></label>
+    <label><?php _e('Question Explanation') ?></label>
     <?php if( $explaination = $this->get('options.explaination') ) {
         echo '<textarea rows="4" name="lpr_question['. $post_id .'][explaination]">'. $explaination .'</textarea>';
         }

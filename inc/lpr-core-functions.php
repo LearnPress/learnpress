@@ -309,7 +309,7 @@ function learn_press_process_teacher() {
 		if ( in_array( $post_id, $quizzes ) ) {
 			return;
 		}
-		wp_die( __( 'Cheatin&#8217; uh?' ), 403 );
+		wp_die( __( 'Sorry! You don\'t have permission to do this action' ), 403 );
 	}
 }
 
@@ -943,6 +943,13 @@ function learn_press_template_loader( $template ) {
 					$find[] = $file;
 					//$find[] = learn_press_plugin_path( 'templates/' ) . $file;
 					$find[] = 'learnpress/' . $file;
+				} else {
+					if ( get_post_type() == 'lpr_assignment' ) {
+						die;
+						$file   = 'single-assignment.php';
+						$find[] = $file;					
+						$find[] = 'learnpress/' . $file;
+					}
 				}
 			}
 		}
@@ -1627,3 +1634,78 @@ function become_a_teacher_handler() {
 }
 
 add_action( 'learn_press_frontend_action_become_a_teacher', 'become_a_teacher_handler' );
+
+
+function wpdev_141551_translate_user_roles( $translations, $text, $context, $domain ) {
+
+    $plugin_domain = 'learn_press';
+
+    $roles = array(
+        'Instructor',                
+    );
+
+    if (
+        $context === 'User role'
+        && in_array( $text, $roles )
+        && $domain !== $plugin_domain
+    ) {
+        return translate_with_gettext_context( $text, $context, $plugin_domain );
+    }
+
+    return $translations;
+}
+add_filter( 'gettext_with_context', 'wpdev_141551_translate_user_roles', 10, 4 );
+
+/**
+ * @param mixed
+ * @param string
+ * @param string
+ */
+function learn_press_output_file( $data, $file, $path = null ){
+    if( ! $path ){
+        $path = LPR_PLUGIN_PATH;
+    }
+    ob_start();
+    print_r( $data );
+    $output = ob_get_clean();
+    file_put_contents( $path . '/' . $file, $output );
+}
+
+/**
+ * Modifies the statement $where to make the search works correct
+ *
+ * @param string
+ * @return string
+ */
+function learn_press_posts_where_statement_search( $where ) {
+    //gets the global query var object
+    global $wp_query, $wpdb;
+
+    /**
+     * Need to wrap this block into () in order to make it works correctly when filter by specific post type => maybe a bug :)
+     * from => ( wp_2_posts.post_status = 'publish' OR wp_2_posts.post_status = 'private') OR wp_2_terms.name LIKE '%s%'
+     * to => ( ( wp_2_posts.post_status = 'publish' OR wp_2_posts.post_status = 'private') OR wp_2_terms.name LIKE '%s%' )
+     */
+
+    // append ( to the start of the block
+    $where = preg_replace( '!(' . $wpdb->posts . '.post_status)!', '( $1', $where, 1 );
+
+    // appdn ) to the end of the block
+    $where = preg_replace( '!(OR\s+' . $wpdb->terms . '.name LIKE \'%' . $wp_query->get('s') . '%\')!', '$1 )', $where );
+
+    return $where;
+}
+
+/**
+ * Filter post type for search function
+ * Only search lpr_course if see the param ref=course in request
+ *
+ * @param $q
+ */
+function learn_press_filter_search( $q ){
+    if( $q->is_main_query() && $q->is_search() && ( ! empty( $_REQUEST['ref'] ) && $_REQUEST['ref'] == 'course' ) ){
+        $q->set( 'post_type', 'lpr_course' );
+        add_filter( 'posts_where' , 'learn_press_posts_where_statement_search' );
+    }
+}
+add_filter( 'pre_get_posts', 'learn_press_filter_search' );

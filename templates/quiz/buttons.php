@@ -12,7 +12,7 @@ learn_press_prevent_access_directly();
     <button class="button-start-quiz btn" quiz-id="<?php echo get_the_ID() ?>">
         <?php
         // allow doing quiz if enrolled
-        echo apply_filters( 'learn_press_start_quiz_button_text', esc_attr( "Start Quiz", "learn_press" ) );
+        echo apply_filters( 'learn_press_start_quiz_button_text', __( "Start Quiz", "learn_press" ) );
         ?>
     </button>
     <?php do_action( 'learn_press_after_start_quiz_button' );?>
@@ -22,7 +22,7 @@ learn_press_prevent_access_directly();
     <button class="button-finish-quiz btn hidden" quiz-id="<?php echo get_the_ID() ?>">
         <?php
         // allow doing quiz if enrolled
-        echo apply_filters( 'learn_press_finish_quiz_button_text', esc_attr( "Finish Quiz", "learn_press" ) );
+        echo apply_filters( 'learn_press_finish_quiz_button_text', __( "Finish Quiz", "learn_press" ) );
         ?>
     </button>
     <?php do_action( 'learn_press_after_finish_quiz_button' );?>

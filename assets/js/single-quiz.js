@@ -41,6 +41,8 @@ if( typeof LearnPress == 'undefined' ) var LearnPress = {};
         }
         function next_question(){
             var next_id = get_next_question_id();
+            $('#nav-question-form').trigger('submit', {id: get_next_question_id()});
+            return;
             var data = {
                     action: 'learn_press_submit_answer',
                     quiz_id: self.args.quiz_id,

@@ -141,23 +141,28 @@ jQuery(document).ready(function($){
             }
         })
     });
-    var $checked = null;
-    $checked = $('input[name="_lpr_course_enrolled_require"]').bind('click change', function(){
-        var payment_field = $('.lpr-course-payment-field').toggleClass('hide-if-js', ! ( $(this).val() != 'no' ) );
-        if( payment_field.is(':visible') ){
-            $('input[name="_lpr_course_payment"]:checked', payment_field).trigger('change')
-        }else{
-            $('.lpr-course-price-field').addClass('hide-if-js');
+
+        var $checked = null;
+        $checked = $('input[name="_lpr_course_enrolled_require"]').bind('click change', function () {
+
+            var payment_field = $('.lpr-course-payment-field').toggleClass('hide-if-js', !( $(this).val() != 'no' ));
+            if (payment_field.is(':visible')) {
+                $('input[name="_lpr_course_payment"]:checked', payment_field).trigger('change')
+            } else {
+                $('.lpr-course-price-field').addClass('hide-if-js');
+            }
+
+        });
+        $checked.filter(':checked').trigger('change');
+        if ($checked.length == 0) {
+            $('input[name="_lpr_course_enrolled_require"][value="yes"]').trigger('click');
         }
 
-    }).filter(':checked').trigger('change').get();
-    if( $checked.length == 0 ){
-        $('input[name="_lpr_course_enrolled_require"][value="yes"]').trigger('click');
-    }
+        $('input[name="_lpr_course_payment"]').bind('click change', function () {
+            $('.lpr-course-price-field').toggleClass('hide-if-js', !( $(this).val() != 'free' ) || ( $('input[name="_lpr_course_enrolled_require"]:checked').val() == 'no' ));
+        }).filter(':checked').trigger('change');
 
-    $checked = $('input[name="_lpr_course_payment"]').bind('click change', function(){
-        $('.lpr-course-price-field').toggleClass('hide-if-js', ! ( $(this).val() != 'free' ) || ( $('input[name="_lpr_course_enrolled_require"]:checked').val() == 'no' ) );
-    }).filter(':checked').trigger('change').get();
+        $checked.closest('.rwmb-field').removeClass('hide-if-js');
 
 });
 

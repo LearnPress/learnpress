@@ -292,10 +292,8 @@ jQuery(document).ready(function ($) {
 				$(cl).addClass('current');
 				//$this.attr('question-id').addClass('active');
 
-				if (jQuery('.quiz-questions li').first().hasClass('current')) {
-					console.log("something");
-					jQuery('.button-prev-question').addClass('hidden');
-					console.log("Something 2");
+				if (jQuery('.quiz-questions li').first().hasClass('current')) {					
+					jQuery('.button-prev-question').addClass('hidden');					
 				} else if ($('.button-prev-question').hasClass('hidden')) {
 					$('.button-prev-question').removeClass('hidden')
 				}
@@ -619,3 +617,9 @@ jQuery(document).ready(function ($) {
 		})
 	});
 });
+
+// jQuery(document).ready(function ($) {	
+// 	$('#question-hint').on('click', function(){		
+// 		$('.question-hint-content').fadeToggle();
+// 	});
+// });

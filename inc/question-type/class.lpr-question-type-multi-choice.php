@@ -47,8 +47,8 @@ class LPR_Question_Type_Multi_Choice extends LPR_Question_Type{
     <table class="lpr-question-option lpr-question-answer lpr-sortable">
         <thead>
             <th width="20"></th>
-            <th><?php _e('Is Correct?', 'learnpress');?></th>
-            <th><?php _e('Answer Text', 'learnpress');?></th>
+            <th><?php _e('Is Correct?', 'learn_press');?></th>
+            <th><?php _e('Answer Text', 'learn_press');?></th>
             <th class="lpr-remove-answer" width="40"></th>
         </thead>
         <tbody>
@@ -62,7 +62,7 @@ class LPR_Question_Type_Multi_Choice extends LPR_Question_Type{
                     <input type="checkbox"  name="lpr_question[<?php echo $post_id;?>][answer][is_true][__INDEX__<?php echo $i;?>]" value="1" <?php checked( $this->get('options.answer.'.$i.'.is_true', 0) ? 1 : 0 );?> />
 
                 </td>
-                <td><input type="text" class="lpr-answer-text" name="lpr_question[<?php echo $post_id;?>][answer][text][__INDEX__<?php echo $i;?>]" value="<?php echo esc_attr( $this->get( 'options.answer.'.$i.'.text', __( '', 'learnpress' ) ) );?>" /></td>
+                <td><input type="text" class="lpr-answer-text" name="lpr_question[<?php echo $post_id;?>][answer][text][__INDEX__<?php echo $i;?>]" value="<?php echo esc_attr( $this->get( 'options.answer.'.$i.'.text', __( '', 'learn_press' ) ) );?>" /></td>
                 <td align="center" class="lpr-remove-answer"><i class="dashicons dashicons-trash"></td>
             </tr>
             <?php endforeach; endif;?>
@@ -81,8 +81,8 @@ class LPR_Question_Type_Multi_Choice extends LPR_Question_Type{
         </tbody>
     </table>
     <input type="hidden" name="lpr_question[<?php echo $post_id;?>][type]" value="<?php echo $this->get_type();?>">
-    <p><button type="button" class="button lpr-button-add-answer"><?php _e('Add answer', 'learnpress');?></button> </p>
-    <label><?php _e('Question Explaination') ?></label>
+    <p><button type="button" class="button lpr-button-add-answer"><?php _e('Add answer', 'learn_press');?></button> </p>
+    <label><?php _e('Question Explanation') ?></label>
     <?php if( $explaination = $this->get('options.explaination') ) {
         echo '<textarea rows="4" name="lpr_question['. $post_id .'][explaination]">'. $explaination .'</textarea>';
         }
@@ -181,6 +181,21 @@ class LPR_Question_Type_Multi_Choice extends LPR_Question_Type{
                 </li>
                 <?php endforeach;?>
             </ul>
+            <?php 
+                $question = get_post( $this->get('ID') );
+                $question_content = $question->post_content;
+                echo $question_content;
+                if( !empty($question_content) ) :
+            ?>
+
+            <div id="question-hint" class="question-hint-wrap">
+                <h5 class="question-hint-title"><?php _e('Question hint', 'learn_press');?></h5>
+                <div class="question-hint-content hidden">
+                    <p><?php echo apply_filters('the_content', $question_content); ?></p>
+                </div>
+            </div>
+
+            <?php endif; ?>
         </div>
     <?php
     }

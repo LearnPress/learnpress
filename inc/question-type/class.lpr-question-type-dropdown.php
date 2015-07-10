@@ -38,8 +38,8 @@ class LPR_Question_Type_Dropdown extends LPR_Question_Type{
     <table class="lpr-sortable lpr-question-option">
         <thead>
         <th width="20"></th>
-        <th><?php _e('Is Correct?', 'learnpress');?></th>
-        <th><?php _e('Answer Text', 'learnpress');?></th>
+        <th><?php _e('Is Correct?', 'learn_press');?></th>
+        <th><?php _e('Answer Text', 'learn_press');?></th>
         <th></th>
         </thead>
         <tbody>
@@ -60,8 +60,8 @@ class LPR_Question_Type_Dropdown extends LPR_Question_Type{
         </tbody>
     </table>
     <input type="hidden" name="lpr_question[<?php echo $post_id;?>][type]" value="<?php echo $this->get_type();?>">
-    <p><button type="button" class="button lpr-button-add-answer"><?php _e('Add answer', 'learnpress');?></button> </p>
-    <label><?php _e('Question Explaination') ?></label>
+    <p><button type="button" class="button lpr-button-add-answer"><?php _e('Add answer', 'learn_press');?></button> </p>
+    <label><?php _e('Question Explanation') ?></label>
     <?php if( $explaination = $this->get('options.explaination') ) {
         echo '<textarea rows="4" name="lpr_question['. $post_id .'][explaination]">'. $explaination .'</textarea>';
         }

@@ -26,6 +26,22 @@ if ( ! class_exists( 'LPR_Multi_Language' ) ) {
 			// In themes/plugins/mu-plugins directory			
 			load_textdomain( 'learn_press', $mofile );
 		}
+
+		/**
+		 * Add links to Documentation and Extensions in plugin's list of action links
+		 *
+		 * @since 4.3.11
+		 *
+		 * @param array $links Array of action links
+		 *
+		 * @return array
+		 */
+		public static function plugin_links( $links ) {
+			$links[] = '<a href="#">' . __( 'Documentation', 'meta-box' ) . '</a>';
+			$links[] = '<a href="#">' . __( 'Extensions', 'meta-box' ) . '</a>';
+
+			return $links;
+		}
 	}
 }
 LPR_Multi_Language::on_load();

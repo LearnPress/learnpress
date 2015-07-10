@@ -125,9 +125,40 @@ You can also report bugs on LearnPress Support Forum or LearnPress <a href="http
 We will provide documentation about LearnPress REST API really soon.
 
 **LearnPress is great, can I contribute to it?**  
-Yes, you can and we appreciate it. Join in our <a href="https://github.com/LearnPress/LearnPress" target="_blank">Github Repository</a>.
+Yes, you can and we appreciate it. Join in our <a href="https://github.com/LearnPress/LearnPress" target="_blank">Github Repository</a>.  
 
-##Changelog
+**LearnPress Translation project**
+https://www.transifex.com/projects/p/learnpress/
+
+##Changelog  
+
+**0.9.6**
+- Fix translation textdomain error - Thank polischmen for your concern.  
+- Option to set course is public or enrolled require  
+- Certificates add-on:  
+ - Add more fonts  
+ - Option to display the full name with {firstname}=User first name and {lastname}=User last name  
+ - Option to format date  
+ - Created a sample Certificate when plugin is activated  
+
+
+**0.9.5**
+- Added showing question answer and explaination feature
+- Fixed bugs for addon Fill In Blank question 
+- Fixed bugs for addon Sorting Choice question
+- Fixed bugs for addon Certificates
+- Fixed bugs for addon WooCommerce Payment
+- Prevent access to lesson directly by using permalink
+- Random quiz questions addon (premium add-on)
+- Content Drip addon (premium add-on)
+- Support multi language
+
+**0.9.4**
+- Set up sample data for LearnPress    
+- Provided sorting question type (you can find it in premium add-on list)  
+- Provided fill in blank question type (we are uploading it to WordPress.org so if you cannot find it, wait for it to be available soon)  
+- Fixed bug profile template  
+- Updated LearnPress profile method  
 
 **0.9.3**
 - Fix menu position problem (3.14).  

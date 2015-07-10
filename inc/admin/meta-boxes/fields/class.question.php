@@ -90,8 +90,8 @@ if ( ! class_exists( 'RWMB_Question_Field' ) ) {
             <?php endif;?>
             </select>
             <div class="lpr-question-settings">
-            <?php if( isset( $question['type'] ) ){?>
-            <?php LPR_Question_Type::instance( $question['type'], array('ID' => $post_id) )->admin_interface();?>
+            <?php if( isset( $question['type'] ) && $q = LPR_Question_Type::instance( $question['type'], array('ID' => $post_id) ) ){?>
+            <?php $q->admin_interface();?>
             <?php } ?>
             </div>
             <?php if( in_array( $question['type'], array( 'true_or_false', 'multiple_choice', 'single_choice') ) ):?>

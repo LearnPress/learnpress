@@ -410,3 +410,11 @@
 	width: 100%;
 	height: 100%;
 }
+
+.question-hint-title {
+	
+}
+
+.question-hint-title:hover {
+	cursor: pointer;
+}

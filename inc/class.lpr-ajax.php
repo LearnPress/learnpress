@@ -20,7 +20,7 @@ if ( !class_exists( 'LPR_AJAX' ) ) {
 				'load_next_question'   => false,
 				'save_question_answer' => false,
 				'finish_quiz'          => false,
-				'retake_quiz'          => false,
+				'retake_quiz'          => true, // anonymous user can retake quiz
 				'take_free_course'     => false,
 				'load_lesson_content'  => false,
 				'load_next_lesson'     => false,

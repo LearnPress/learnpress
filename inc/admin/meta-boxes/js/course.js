@@ -95,13 +95,7 @@ var $doc = $(document),
             if( $('li:not(.lpr-empty-message)', this).length ){
                 $('.lpr-empty-message', this).hide();
             }
-        },
-        over: function(){
-            //$(this).css("border", "1px solid #FF0000")
-        },
-        out: function(){
-            //$(this).css("border", "none")
-        },
+        },       
         change: function(){
             $('.lpr-empty-message', this).html($(this).children().length );
         },

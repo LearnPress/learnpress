@@ -421,6 +421,7 @@ function learn_press_submit_answer(){
                 'answer' => isset( $quiz_answers[$next_id] ) ? $quiz_answers[$next_id] : null
             ));
         }*/
+        do_action( 'learn_press_submit_answer', $question_answer, $question_id, $quiz_id, $user_id, false );
         learn_press_get_template( 'quiz/form-question.php', array( 'question_id' => $next_id, 'course_id' => learn_press_get_course_by_quiz( $quiz_id ) ) );
     }else{
         $question_ids = learn_press_get_user_quiz_questions( $quiz_id, $user_id );
@@ -436,8 +437,9 @@ function learn_press_submit_answer(){
             }
         }
         learn_press_get_template( 'quiz/result.php' );
-
         $json['quiz_completed'] = true;
+
+        do_action( 'learn_press_submit_answer', $question_answer, $question_id, $quiz_id, $user_id, true );
     }
     $json['html'] = ob_get_clean();
 
@@ -565,7 +567,7 @@ function learn_press_show_answer() {
                 do_action( 'learn_press_question_suggestion_' . $ques->get_type(), $ques, $answer );
         }
     ?>
-    <h4><?php _e("Answer explaination") ?></h4>
+    <h4><?php _e("Answer explanation") ?></h4>
     <p><?php echo $ques->get('options.explaination') ?></p>    
     <?php
     $json['html'] = ob_get_clean();

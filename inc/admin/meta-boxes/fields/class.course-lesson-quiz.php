@@ -93,10 +93,10 @@ if ( !class_exists( 'RWMB_Course_lesson_Quiz_Field' ) ) {
 			<div class="lpr-course-curriculum">
 
                 <p class="lpr-course-curriculum-toggle">
-					<a href="" class="expand" data-action="expand"><?php _e( 'Expand All', 'learnpress' ); ?></a>
-					<a href="" class="close" data-action="close"><?php _e( 'Collapse All', 'learnpress' ); ?></a>
+					<a href="" class="expand" data-action="expand"><?php _e( 'Expand All', 'learn_press' ); ?></a>
+					<a href="" class="close" data-action="close"><?php _e( 'Collapse All', 'learn_press' ); ?></a>
 				</p>
-                <?php _e( 'Outline your course and add content with sections, lessons and quizzes.', 'learnpress');?>
+                <?php _e( 'Outline your course and add content with sections, lessons and quizzes.', 'learn_press');?>
 				<ul class="lpr-curriculum-sections">
 					<?php
 					global $post;
@@ -253,7 +253,7 @@ if ( !class_exists( 'RWMB_Course_lesson_Quiz_Field' ) ) {
                     $query      = new WP_Query( $query_args );
                     ?>
 					<select name="">
-						<option value=""><?php _e( '--Select a Lesson--' ); ?></option>
+						<option value=""><?php _e( '--Select a Lesson--', 'learn_press' ); ?></option>
 						<?php
 						if ( $query->have_posts() ) {
 							while ( $query->have_posts() ) {

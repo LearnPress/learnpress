@@ -94,7 +94,7 @@ if ( !class_exists( 'LPR_Question_Post_Type' ) ) {
 
 			$meta_box = array(
 				'id'     => 'question_settings',
-				'title'  => 'Type of question',
+				'title'  => __('Type of question','learn_press'),
 				'pages'  => array( LPR_QUESTION_CPT ),
 				'fields' => array(
 					array(
@@ -107,7 +107,7 @@ if ( !class_exists( 'LPR_Question_Post_Type' ) ) {
 						'id'    => "{$prefix}question_mark",
 						'type'  => 'number',
 						'clone' => false,
-						'desc'  => 'Mark for choosing the right answer',
+						'desc'  => __('Mark for choosing the right answer', 'learn_press'),
 						'min'   => 1,
 						'std'   => 1
 					)
@@ -160,8 +160,8 @@ if ( !class_exists( 'LPR_Question_Post_Type' ) ) {
 							<?php endforeach; ?>
 						<?php endif;?>
 					</select>
-					<button class="button" data-action="add" type="button"><?php _e( 'Add [Enter]', 'learnpress' );?></button>
-					<button data-action="cancel" class="button" type="button"><?php _e( 'Cancel [ESC]', 'learnpress' );?></button>
+					<button class="button" data-action="add" type="button"><?php _e( 'Add [Enter]', 'learn_press' );?></button>
+					<button data-action="cancel" class="button" type="button"><?php _e( 'Cancel [ESC]', 'learn_press' );?></button>
 					<span class="lpr-ajaxload">...</span>
 				</div>
 			</script>

@@ -99,19 +99,19 @@ if ( !class_exists( 'LPR_Course_Post_Type' ) ) {
 					'labels'                => array(
 						'name'                       => __( 'Course Tags', 'learn_press' ),
 						'singular_name'              => __( 'Tag', 'learn_press' ),
-						'search_items'               => __( 'Search Course Tags' ),
-						'popular_items'              => __( 'Popular Course Tags' ),
-						'all_items'                  => __( 'All Course Tags' ),
+						'search_items'               => __( 'Search Course Tags', 'learn_press' ),
+						'popular_items'              => __( 'Popular Course Tags', 'learn_press' ),
+						'all_items'                  => __( 'All Course Tags', 'learn_press' ),
 						'parent_item'                => null,
 						'parent_item_colon'          => null,
-						'edit_item'                  => __( 'Edit Course Tag' ),
-						'update_item'                => __( 'Update Course Tag' ),
-						'add_new_item'               => __( 'Add New Course Tag' ),
-						'new_item_name'              => __( 'New Course Tag Name' ),
-						'separate_items_with_commas' => __( 'Separate tags with commas' ),
-						'add_or_remove_items'        => __( 'Add or remove tags' ),
-						'choose_from_most_used'      => __( 'Choose from the most used tags' ),
-						'menu_name'                  => __( 'Tags' ),
+						'edit_item'                  => __( 'Edit Course Tag', 'learn_press' ),
+						'update_item'                => __( 'Update Course Tag', 'learn_press' ),
+						'add_new_item'               => __( 'Add New Course Tag', 'learn_press' ),
+						'new_item_name'              => __( 'New Course Tag Name', 'learn_press' ),
+						'separate_items_with_commas' => __( 'Separate tags with commas', 'learn_press' ),
+						'add_or_remove_items'        => __( 'Add or remove tags', 'learn_press' ),
+						'choose_from_most_used'      => __( 'Choose from the most used tags', 'learn_press' ),
+						'menu_name'                  => __( 'Tags', 'learn_press' ),
 					),
 					'public'                => true,
 					'hierarchical'          => false,
@@ -145,7 +145,7 @@ if ( !class_exists( 'LPR_Course_Post_Type' ) ) {
 
 			$meta_box = array(
 				'id'     	=> 'course_curriculum',
-				'title'  	=> 'Course Curriculum',
+				'title'  	=> __('Course Curriculum', 'learn_press'),
 				'priority'	=> 'high',
 				'pages'  	=> array( LPR_COURSE_CPT ),
 				'fields' 	=> array(
@@ -166,7 +166,7 @@ if ( !class_exists( 'LPR_Course_Post_Type' ) ) {
 
 			$meta_box = array(
 				'id'     	=> 'course_settings',
-				'title'  	=> 'Course Settings',
+				'title'  	=> __('Course Settings', 'learn_press'),
 				'pages'  	=> array( LPR_COURSE_CPT ),
 				'priority' 	=> 'high',
 				'fields' 	=> array(
@@ -174,7 +174,7 @@ if ( !class_exists( 'LPR_Course_Post_Type' ) ) {
 						'name' => __( 'Course Duration', 'learn_press' ),
 						'id'   => "{$prefix}course_duration",
 						'type' => 'number',
-						'desc' => 'The length of the course (by weeks)',
+						'desc' => __('The length of the course (by weeks)', 'learn_press'),
 						'std'  => 10,
 					),
 					// array(
@@ -187,21 +187,21 @@ if ( !class_exists( 'LPR_Course_Post_Type' ) ) {
 						'name' => __( 'Number of Students Enrolled', 'learn_press' ),
 						'id'   => "{$prefix}course_number_student",
 						'type' => 'number',
-						'desc' => 'The number of students took this course',
+						'desc' => __('The number of students took this course', 'learn_press'),
 						'std'  => 0,
 					),
 					array(
 						'name' => __( 'Maximum students can take the course', 'learn_press' ),
 						'id'   => "{$prefix}max_course_number_student",
 						'type' => 'number',
-						'desc' => 'Maximum Number Student of the Course',
+						'desc' => __('Maximum Number Student of the Course', 'learn_press'),
 						'std'  => 1000,
 					),
                     array(
                         'name' => __( 'Re-take course', 'learn_press' ),
                         'id'   => "{$prefix}retake_course",
                         'type' => 'number',
-                        'desc' => 'How many times the user can re-take this course. Set to 0 to disable',
+                        'desc' => __('How many times the user can re-take this course. Set to 0 to disable', 'learn_press'),
                         'std'  => '0',
                     ),
 
@@ -216,7 +216,7 @@ if ( !class_exists( 'LPR_Course_Post_Type' ) ) {
 
 			$meta_box = array(
 				'id'     	=> 'course_assessment',
-				'title'  	=> 'Course Assessment Settings',
+				'title'  	=> __('Course Assessment Settings', 'learn_press'),
 				'priority' 	=> 'high',
 				'pages'  	=> array( LPR_COURSE_CPT ),
 				'fields' 	=> array(
@@ -224,8 +224,8 @@ if ( !class_exists( 'LPR_Course_Post_Type' ) ) {
 						'name'    => __( 'Course Final Quiz', 'learn_press' ),
 						'id'      => "{$prefix}course_final",
 						'type'    => 'radio',
-						'desc'    => 'If Final Quiz option is checked, then the course will be assessed by result of the last quiz, else the course
-                                      will be assessed by the progress of learning lessons',
+						'desc'    => __('If Final Quiz option is checked, then the course will be assessed by result of the last quiz, else the course
+                                      will be assessed by the progress of learning lessons', 'learn_press'),
 						'options' => array(
 							'no'  => __( 'No Final Quiz', 'learn_press' ),
                             'yes' => __( 'Using Final Quiz', 'learn_press' )
@@ -238,7 +238,7 @@ if ( !class_exists( 'LPR_Course_Post_Type' ) ) {
 						'type' => 'number',
 						'min'  => 1,
 						'max'  => 100,
-						'desc' => 'The percentage of quiz result to finish the course',
+						'desc' => __('The percentage of quiz result to finish the course', 'learn_press'),
 						'std'  => 50
 					)
 				)
@@ -252,7 +252,7 @@ if ( !class_exists( 'LPR_Course_Post_Type' ) ) {
 
 			$meta_box = array(
 				'id'     	=> 'course_payment',
-				'title'  	=> 'Course Payment Settings',
+				'title'  	=> __('Course Payment Settings', 'learn_press'),
 				'priority' 	=> 'high',
 				'pages'  	=> array( LPR_COURSE_CPT ),
 				'fields' 	=> array(
@@ -260,7 +260,7 @@ if ( !class_exists( 'LPR_Course_Post_Type' ) ) {
                         'name'    => __( 'Enrolled Require', 'learn_press' ),
                         'id'      => "{$prefix}course_enrolled_require",
                         'type'    => 'radio',
-                        'desc'    => 'Require users logged in to study or public to all',
+                        'desc'    => __('Require users logged in to study or public to all', 'learn_press'),
                         'options' => array(
                             'yes'     => __( 'Yes, enroll is required', 'learn_press' ),
                             'no' => __( 'No', 'learn_press' ),
@@ -272,19 +272,19 @@ if ( !class_exists( 'LPR_Course_Post_Type' ) ) {
 						'name'    => __( 'Course Payment', 'learn_press' ),
 						'id'      => "{$prefix}course_payment",
 						'type'    => 'radio',
-						'desc'    => 'If Paid be checked, An administrator will review then set course price and commission',
+						'desc'    => __('If Paid be checked, An administrator will review then set course price and commission', 'learn_press'),
 						'options' => array(
 							'free'     => __( 'Free', 'learn_press' ),
 							'not_free' => __( 'Paid', 'learn_press' ),
 						),
 						'std'     => 'free',
-                        'class' => 'lpr-course-payment-field hide-if-js'
+                        'class' => 'lpr-course-payment-field'
 					)
 				)
 			);
 
 			if ( current_user_can( 'manage_options' ) ) {
-				$message = 'If free, this field is empty or set 0. (Only admin can edit this field)';
+				$message = __('If free, this field is empty or set 0. (Only admin can edit this field)', 'learn_press');
 				$price = 0;
 
 				if( isset($_GET['post']) ) {
@@ -293,11 +293,11 @@ if ( !class_exists( 'LPR_Course_Post_Type' ) ) {
 					if( $type != 'free' ) {
 						$suggest_price = get_post_meta( $course_id, '_lpr_course_suggestion_price', true );
 						if( isset( $suggest_price ) ) {
-							$message = 'This course is enrolled require and the suggestion price is ' . '<span>' . learn_press_get_currency_symbol() . $suggest_price . '</span>';
+							$message = __('This course is enrolled require and the suggestion price is ', 'learn_press') . '<span>' . learn_press_get_currency_symbol() . $suggest_price . '</span>';
 							$price = $suggest_price;
 						}
 					} else {
-						$message = 'This course is free.';
+						$message = __('This course is free.','learn_press');
 					};
 				}
 				array_push(
@@ -322,7 +322,7 @@ if ( !class_exists( 'LPR_Course_Post_Type' ) ) {
 						'type'	=> 'number',
 						'min'	=> 0,
 						'step'	=> 0.01,
-						'desc'	=> 'The course price you want to suggest for admin to set.',
+						'desc'	=> __('The course price you want to suggest for admin to set.', 'learn_press'),
                         'class' => 'lpr-course-price-field hide-if-js',
                         'std'   => 0
 					)

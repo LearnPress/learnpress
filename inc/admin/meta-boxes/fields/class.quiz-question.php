@@ -137,7 +137,7 @@ if ( ! class_exists( 'RWMB_Quiz_Question_Field' ) ) {
 
                 <div class="btn-group" id="lpr-add-new-question-type">
                     <button type="button" class="btn btn-default"
-                            data-type="single_choice"><?php _e('Add new Question', 'learnpress'); ?></button>
+                            data-type="single_choice"><?php _e('Add new Question', 'learn_press'); ?></button>
                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
                             aria-expanded="false">
                         <span class="caret"></span>
@@ -156,7 +156,7 @@ if ( ! class_exists( 'RWMB_Quiz_Question_Field' ) ) {
 
                 -Or-
                 <select class="lpr-select2" name="" id="lpr-quiz-question-select-existing" style="width:300px">
-                    <option value=""><?php _e('--Select existing question--', 'learnpress'); ?></option>
+                    <option value=""><?php _e('--Select existing question--', 'learn_press'); ?></option>
                     <?php
 
                     $query_args = array(

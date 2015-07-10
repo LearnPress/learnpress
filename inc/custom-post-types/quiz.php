@@ -129,7 +129,7 @@ if( ! class_exists( 'LPR_Quiz_Post_Type' ) ){
                             'name' => __( 'Show question answer immediately', 'learn_press' ),
                             'id'   => "{$prefix}show_question_answer",
                             'type' => 'checkbox',
-                            'desc' => __( 'Show the correct answer and explaination (if exists) of the question right after student answered.', 'learn_press' ),
+                            'desc' => __( 'Show the correct answer and explanation (if exists) of the question right after student answered.', 'learn_press' ),
                             'std'   => 0
                         ),                        
                     )
@@ -183,8 +183,8 @@ if( ! class_exists( 'LPR_Quiz_Post_Type' ) ){
                             <?php endforeach;?>
                         <?php endif;?>
                     </select>
-                    <button class="button" data-action="add" type="button"><?php _e('Add [Enter]', 'learnpress');?></button>
-                    <button  data-action="cancel" class="button" type="button"><?php _e('Cancel [ESC]', 'learnpress');?></button>
+                    <button class="button" data-action="add" type="button"><?php _e('Add [Enter]', 'learn_press');?></button>
+                    <button  data-action="cancel" class="button" type="button"><?php _e('Cancel [ESC]', 'learn_press');?></button>
                     <span class="lpr-ajaxload">...</span>
                 </div>
             </script>

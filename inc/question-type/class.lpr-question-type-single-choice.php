@@ -80,8 +80,8 @@ class LPR_Question_Type_Single_Choice extends LPR_Question_Type{
         <table class="lpr-sortable lpr-question-option">
             <thead>
             <th width="20"></th>
-            <th width="100"><?php _e('Is Correct?', 'learnpress');?></th>
-            <th><?php _e('Answer Text', 'learnpress');?></th>
+            <th width="100"><?php _e('Is Correct?', 'learn_press');?></th>
+            <th><?php _e('Answer Text', 'learn_press');?></th>
             <th width="40"></th>
             </thead>
             <tbody>
@@ -114,8 +114,8 @@ class LPR_Question_Type_Single_Choice extends LPR_Question_Type{
             </tbody>
         </table>
         <input type="hidden" name="lpr_question[<?php echo $post_id;?>][type]" value="<?php echo $this->get_type();?>">
-        <p><button type="button" class="button lpr-button-add-answer"><?php _e('Add answer', 'learnpress');?></button> </p>
-        <label><?php _e('Question Explaination') ?></label>
+        <p><button type="button" class="button lpr-button-add-answer"><?php _e('Add answer', 'learn_press');?></button> </p>
+        <label><?php _e('Question Explanation') ?></label>
         <?php if( $explaination = $this->get('options.explaination') ) {
         echo '<textarea rows="4" name="lpr_question['. $post_id .'][explaination]">'. $explaination .'</textarea>';
         }
@@ -176,6 +176,26 @@ class LPR_Question_Type_Single_Choice extends LPR_Question_Type{
                     </li>
                 <?php endforeach;?>
             </ul>
+            <?php 
+                $question = get_post( $this->get('ID') );
+                $question_content = $question->post_content;                
+                if( !empty($question_content) ) :
+            ?>
+
+            <div id="question-hint" class="question-hint-wrap">
+                <h5 class="question-hint-title"><?php _e('Question hint', 'learn_press');?></h5>
+                <div class="question-hint-content">
+                    <p><?php echo apply_filters('the_content', $question_content); ?></p>
+                </div>
+            </div>
+            <script type="text/javascript">
+                jQuery('.question-hint-content').hide();
+                jQuery('#question-hint').on('click', function(){     
+                    jQuery('.question-hint-content').fadeToggle();
+                });
+            </script>
+
+            <?php endif; ?>   
         </div>
     <?php
     }
