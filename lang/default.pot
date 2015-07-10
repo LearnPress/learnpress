@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-07 11:24+0700\n"
+"POT-Creation-Date: 2015-07-10 11:10+0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,27 +24,27 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: learnpress.php:353
+#: learnpress.php:352
 msgid "Learning Management System"
 msgstr ""
 
-#: learnpress.php:354 learnpress.php:374
+#: learnpress.php:353 learnpress.php:373
 msgid "LearnPress"
 msgstr ""
 
-#: learnpress.php:365 learnpress.php:366
+#: learnpress.php:364 learnpress.php:365
 msgid "Statistics"
 msgstr ""
 
-#: learnpress.php:373
+#: learnpress.php:372
 msgid "LearnPress Settings"
 msgstr ""
 
-#: learnpress.php:381 learnpress.php:382
+#: learnpress.php:380 learnpress.php:381
 msgid "Add-ons"
 msgstr ""
 
-#: learnpress.php:406
+#: learnpress.php:405
 msgctxt "User role"
 msgid "Instructor"
 msgstr ""
@@ -67,6 +67,14 @@ msgstr ""
 
 #: inc/class.lpr-ajax.php:457 inc/class.lpr-ajax.php:463
 msgid "Error"
+msgstr ""
+
+#: inc/class.lpr-multi-language.php:40 lib/meta-box/inc/common.php:48
+msgid "Documentation"
+msgstr ""
+
+#: inc/class.lpr-multi-language.php:41 lib/meta-box/inc/common.php:49
+msgid "Extensions"
 msgstr ""
 
 #: inc/class.lpr-question-type.php:119
@@ -104,7 +112,7 @@ msgid "Function %s should override from its child"
 msgstr ""
 
 #: inc/class.lpr-question-type.php:570
-msgid "Answer explaination"
+msgid "Answer explanation"
 msgstr ""
 
 #: inc/class.lpr-shortcodes.php:47
@@ -322,7 +330,7 @@ msgid "Order on "
 msgstr ""
 
 #: inc/lpr-core-functions.php:312
-msgid "Cheatin&#8217; uh?"
+msgid "Sorry! You don't have permission to do this action"
 msgstr ""
 
 #: inc/lpr-core-functions.php:357
@@ -383,104 +391,104 @@ msgid ""
 "for it to work."
 msgstr ""
 
-#: inc/lpr-core-functions.php:1064
+#: inc/lpr-core-functions.php:1071
 msgid "LearnPress webhook process Complete"
 msgstr ""
 
-#: inc/lpr-core-functions.php:1064
+#: inc/lpr-core-functions.php:1071
 msgid "iThemes Exchange Webhook Process Complete"
 msgstr ""
 
-#: inc/lpr-core-functions.php:1083
+#: inc/lpr-core-functions.php:1090
 msgid "Left"
 msgstr ""
 
-#: inc/lpr-core-functions.php:1084
+#: inc/lpr-core-functions.php:1091
 msgid "Right"
 msgstr ""
 
-#: inc/lpr-core-functions.php:1085
+#: inc/lpr-core-functions.php:1092
 msgid "Left with space"
 msgstr ""
 
-#: inc/lpr-core-functions.php:1086
+#: inc/lpr-core-functions.php:1093
 msgid "Right with space"
 msgstr ""
 
-#: inc/lpr-core-functions.php:1334
+#: inc/lpr-core-functions.php:1341
 msgid "Select Page"
 msgstr ""
 
-#: inc/lpr-core-functions.php:1348
+#: inc/lpr-core-functions.php:1355
 msgid "Select a page&hellip;"
 msgstr ""
 
-#: inc/lpr-core-functions.php:1424
+#: inc/lpr-core-functions.php:1431
 msgid "View Course Profile"
 msgstr ""
 
-#: inc/lpr-core-functions.php:1436
+#: inc/lpr-core-functions.php:1443
 msgid "Become An Instructor"
 msgstr ""
 
-#: inc/lpr-core-functions.php:1591
+#: inc/lpr-core-functions.php:1598
 msgid "Please enter your name"
 msgstr ""
 
-#: inc/lpr-core-functions.php:1595
+#: inc/lpr-core-functions.php:1602
 msgid "Please enter your email address"
 msgstr ""
 
-#: inc/lpr-core-functions.php:1607
+#: inc/lpr-core-functions.php:1614
 #, php-format
 msgid "The user <a href=\"%s\">%s</a> want to be a teacher."
 msgstr ""
 
-#: inc/lpr-core-functions.php:1609
+#: inc/lpr-core-functions.php:1616
 #, php-format
 msgid "Name: %s"
 msgstr ""
 
-#: inc/lpr-core-functions.php:1610
+#: inc/lpr-core-functions.php:1617
 #, php-format
 msgid "Email: %s"
 msgstr ""
 
-#: inc/lpr-core-functions.php:1611
+#: inc/lpr-core-functions.php:1618
 #, php-format
 msgid "Phone: %s"
 msgstr ""
 
-#: inc/lpr-core-functions.php:1612
+#: inc/lpr-core-functions.php:1619
 #, php-format
 msgid "Accept: %s"
 msgstr ""
 
-#: inc/lpr-course-functions.php:270 inc/lpr-course-functions.php:281
+#: inc/lpr-course-functions.php:273 inc/lpr-course-functions.php:284
 msgid "You have not permission to view this page"
 msgstr ""
 
-#: inc/lpr-course-functions.php:1002
+#: inc/lpr-course-functions.php:1065
 msgid "Congratulations! You have enrolled this course"
 msgstr ""
 
-#: inc/lpr-course-functions.php:1022
+#: inc/lpr-course-functions.php:1085
 msgid "Invalid payment method."
 msgstr ""
 
-#: inc/lpr-course-functions.php:1027
+#: inc/lpr-course-functions.php:1090
 msgid "Sorry! You can not enroll to this course"
 msgstr ""
 
-#: inc/lpr-course-functions.php:2023
+#: inc/lpr-course-functions.php:2099
 msgid "Be sure you want to retake this course! All your data will be deleted."
 msgstr ""
 
-#: inc/lpr-course-functions.php:2024
+#: inc/lpr-course-functions.php:2100
 msgid "Be sure you want to retake this quiz! All your data will be deleted."
 msgstr ""
 
-#: inc/lpr-course-functions.php:2025
+#: inc/lpr-course-functions.php:2101
 msgid "Are you sure you want to finish this quiz?"
 msgstr ""
 
@@ -1115,8 +1123,8 @@ msgstr ""
 msgid "Select a %s"
 msgstr ""
 
-#: inc/admin/pointers/pointers.php:66 inc/custom-post-types/course.php:153
-#: templates/course/curriculum.php:11
+#: inc/admin/pointers/pointers.php:66 inc/custom-post-types/course.php:148
+#: inc/custom-post-types/course.php:153 templates/course/curriculum.php:11
 msgid "Course Curriculum"
 msgstr ""
 
@@ -1483,246 +1491,6 @@ msgstr ""
 msgid "Students"
 msgstr ""
 
-#: inc/custom-post-types/assignment.php:23
-#: inc/custom-post-types/assignment.php:24
-msgid "Assignments"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:25
-msgid "Assignment"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:26
-msgid "Add New Assignment"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:27
-msgid "Edit Assignment"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:28
-msgid "All Assignments"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:54
-#: inc/custom-post-types/assignment.php:55
-#: inc/custom-post-types/assignment.php:56
-msgid "Assignment type"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:57
-msgid "Add New Assignment type"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:58
-msgid "All Assignment types"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:83
-msgid "LearnPress Assignment Settings"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:90
-#: inc/custom-post-types/assignment.php:92
-msgid "Assignment subtitle"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:96
-msgid "Assignment maximum mark"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:98
-msgid "Set maximum marks for the assignment"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:104
-msgid "Assignment duration time"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:106
-msgid "Set duration time for the assignment (in days)"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:110
-msgid "Include in Course Evaluation"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:116
-msgid "Include in Course"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:118
-msgid "Assignments marks will be shown/used in course evaluation"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:122
-msgid "Select a Course"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:129
-msgid "Submission Type"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:131
-msgid "Select type of assignment submissions"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:134
-msgid "File Upload"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:135
-msgid "Text Area"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:139
-msgid "Attachment Type"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:143
-msgid "Select allowed attachment type(s)"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:145
-msgid "JPG"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:146
-msgid "GIF"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:147
-msgid "PNG"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:148
-msgid "PDF"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:149
-msgid "DOC"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:150
-msgid "DOCX"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:151
-msgid "PPT"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:152
-msgid "PPTX"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:153
-msgid "PPS"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:154
-msgid "PPSX"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:155
-msgid "ODT"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:156
-msgid "XLS"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:157
-msgid "XLSX"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:158
-msgid "MP3"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:159
-msgid "M4A"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:160
-msgid "OGG"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:161
-msgid "WAV"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:162
-msgid "WMA"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:163
-msgid "MP4"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:164
-msgid "M4V"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:165
-msgid "MOV"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:166
-msgid "WMV"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:167
-msgid "AVI"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:168
-msgid "MPG"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:169
-msgid "OGV"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:170
-msgid "3GP"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:171
-msgid "3G2"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:172
-msgid "FLV"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:173
-msgid "WEBM"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:174
-msgid "APK"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:175
-msgid "RAR"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:176
-msgid "ZIP"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:180
-msgid "Attachment Size (in MB)"
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:181
-msgid "Set Maximum Attachment size for upload ( set less than "
-msgstr ""
-
-#: inc/custom-post-types/assignment.php:184
-msgid " MB"
-msgstr ""
-
 #: inc/custom-post-types/course.php:38
 msgctxt "Post Type General Name"
 msgid "Courses"
@@ -1836,24 +1604,56 @@ msgstr ""
 msgid "Choose from the most used tags"
 msgstr ""
 
+#: inc/custom-post-types/course.php:169
+msgid "Course Settings"
+msgstr ""
+
 #: inc/custom-post-types/course.php:174
 msgid "Course Duration"
+msgstr ""
+
+#: inc/custom-post-types/course.php:177
+msgid "The length of the course (by weeks)"
 msgstr ""
 
 #: inc/custom-post-types/course.php:187
 msgid "Number of Students Enrolled"
 msgstr ""
 
+#: inc/custom-post-types/course.php:190
+msgid "The number of students took this course"
+msgstr ""
+
 #: inc/custom-post-types/course.php:194
 msgid "Maximum students can take the course"
+msgstr ""
+
+#: inc/custom-post-types/course.php:197
+msgid "Maximum Number Student of the Course"
 msgstr ""
 
 #: inc/custom-post-types/course.php:201
 msgid "Re-take course"
 msgstr ""
 
+#: inc/custom-post-types/course.php:204
+msgid "How many times the user can re-take this course. Set to 0 to disable"
+msgstr ""
+
+#: inc/custom-post-types/course.php:219
+msgid "Course Assessment Settings"
+msgstr ""
+
 #: inc/custom-post-types/course.php:224
 msgid "Course Final Quiz"
+msgstr ""
+
+#: inc/custom-post-types/course.php:227
+msgid ""
+"If Final Quiz option is checked, then the course will be assessed by result "
+"of the last quiz, else the course\n"
+"                                      will be assessed by the progress of "
+"learning lessons"
 msgstr ""
 
 #: inc/custom-post-types/course.php:230
@@ -1868,8 +1668,20 @@ msgstr ""
 msgid "Passing Condition"
 msgstr ""
 
+#: inc/custom-post-types/course.php:241
+msgid "The percentage of quiz result to finish the course"
+msgstr ""
+
+#: inc/custom-post-types/course.php:255
+msgid "Course Payment Settings"
+msgstr ""
+
 #: inc/custom-post-types/course.php:260
 msgid "Enrolled Require"
+msgstr ""
+
+#: inc/custom-post-types/course.php:263
+msgid "Require users logged in to study or public to all"
 msgstr ""
 
 #: inc/custom-post-types/course.php:265
@@ -1884,12 +1696,30 @@ msgstr ""
 msgid "Course Payment"
 msgstr ""
 
+#: inc/custom-post-types/course.php:275
+msgid ""
+"If Paid be checked, An administrator will review then set course price and "
+"commission"
+msgstr ""
+
 #: inc/custom-post-types/course.php:277 inc/order/lpr-order-functions.php:352
 msgid "Free"
 msgstr ""
 
 #: inc/custom-post-types/course.php:278
 msgid "Paid"
+msgstr ""
+
+#: inc/custom-post-types/course.php:287
+msgid "If free, this field is empty or set 0. (Only admin can edit this field)"
+msgstr ""
+
+#: inc/custom-post-types/course.php:296
+msgid "This course is enrolled require and the suggestion price is "
+msgstr ""
+
+#: inc/custom-post-types/course.php:300
+msgid "This course is free."
 msgstr ""
 
 #: inc/custom-post-types/course.php:306
@@ -1900,19 +1730,23 @@ msgstr ""
 msgid "Course Suggestion Price"
 msgstr ""
 
-#: inc/custom-post-types/course.php:357
+#: inc/custom-post-types/course.php:325
+msgid "The course price you want to suggest for admin to set."
+msgstr ""
+
+#: inc/custom-post-types/course.php:356
 msgid "Please enter the title of the course"
 msgstr ""
 
-#: inc/custom-post-types/course.php:361
+#: inc/custom-post-types/course.php:360
 msgid "Please add at least one section for the course"
 msgstr ""
 
-#: inc/custom-post-types/course.php:368
+#: inc/custom-post-types/course.php:367
 msgid "Please enter the title of the section"
 msgstr ""
 
-#: inc/custom-post-types/course.php:376
+#: inc/custom-post-types/course.php:375
 msgid "Please set a price for this course"
 msgstr ""
 
@@ -1959,6 +1793,10 @@ msgstr ""
 
 #: inc/custom-post-types/lesson.php:84 inc/custom-post-types/question.php:66
 msgid "All Tags"
+msgstr ""
+
+#: inc/custom-post-types/lesson.php:100
+msgid "Lesson Settings"
 msgstr ""
 
 #: inc/custom-post-types/lesson.php:104
@@ -2139,8 +1977,16 @@ msgstr ""
 msgid "Question Tag"
 msgstr ""
 
+#: inc/custom-post-types/question.php:97
+msgid "Type of question"
+msgstr ""
+
 #: inc/custom-post-types/question.php:106
 msgid "Mark For This Question"
+msgstr ""
+
+#: inc/custom-post-types/question.php:110
+msgid "Mark for choosing the right answer"
 msgstr ""
 
 #: inc/custom-post-types/question.php:133
@@ -2198,7 +2044,7 @@ msgstr ""
 
 #: inc/custom-post-types/quiz.php:132
 msgid ""
-"Show the correct answer and explaination (if exists) of the question right "
+"Show the correct answer and explanation (if exists) of the question right "
 "after student answered."
 msgstr ""
 
@@ -2242,9 +2088,12 @@ msgid "Add answer"
 msgstr ""
 
 #: inc/question-type/class.lpr-question-type-dropdown.php:64
-#: inc/question-type/class.lpr-question-type-multi-choice.php:85
 #: inc/question-type/class.lpr-question-type-single-choice.php:118
 #: inc/question-type/class.lpr-question-type-true-or-false.php:59
+msgid "Question Explanation"
+msgstr ""
+
+#: inc/question-type/class.lpr-question-type-multi-choice.php:85
 msgid "Question Explaination"
 msgstr ""
 
@@ -2269,14 +2118,6 @@ msgstr ""
 #: inc/user/lpr-user-functions.php:29
 #, php-format
 msgid "%d%% of total"
-msgstr ""
-
-#: lib/meta-box/inc/common.php:48
-msgid "Documentation"
-msgstr ""
-
-#: lib/meta-box/inc/common.php:49
-msgid "Extensions"
 msgstr ""
 
 #: lib/meta-box/inc/field.php:217
@@ -2599,6 +2440,14 @@ msgstr ""
 msgid "Check answer"
 msgstr ""
 
+#: templates/quiz/buttons.php:15
+msgid "Start Quiz"
+msgstr ""
+
+#: templates/quiz/buttons.php:25
+msgid "Finish Quiz"
+msgstr ""
+
 #: templates/quiz/buttons.php:31
 msgid "Retake"
 msgstr ""
@@ -2621,4 +2470,12 @@ msgstr ""
 
 #: templates/quiz/result.php:7
 msgid "Your result"
+msgstr ""
+
+#: templates/quiz/time-counter.php:15
+msgid "Time remaining"
+msgstr ""
+
+#: templates/quiz/time-counter.php:17
+msgid "mins/secs"
 msgstr ""
