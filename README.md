@@ -133,7 +133,8 @@ https://www.transifex.com/projects/p/learnpress/
 ##Changelog  
 
 **0.9.6**
-- Fix translation textdomain error - Thank polischmen for your concern.  
+- Fix translation textdomain error - Thank polischmen for your concern.
+- Updated question hint
 - Option to set course is public or enrolled require  
 - Certificates add-on:  
  - Add more fonts  
