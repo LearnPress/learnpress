@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-26 23:21+0700\n"
+"POT-Creation-Date: 2015-07-07 11:24+0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,27 +24,28 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: learnpress.php:352
+#: learnpress.php:353
 msgid "Learning Management System"
 msgstr ""
 
-#: learnpress.php:353 learnpress.php:373
+#: learnpress.php:354 learnpress.php:374
 msgid "LearnPress"
 msgstr ""
 
-#: learnpress.php:364 learnpress.php:365
+#: learnpress.php:365 learnpress.php:366
 msgid "Statistics"
 msgstr ""
 
-#: learnpress.php:372
+#: learnpress.php:373
 msgid "LearnPress Settings"
 msgstr ""
 
-#: learnpress.php:380 learnpress.php:381
+#: learnpress.php:381 learnpress.php:382
 msgid "Add-ons"
 msgstr ""
 
 #: learnpress.php:406
+msgctxt "User role"
 msgid "Instructor"
 msgstr ""
 
@@ -100,6 +101,10 @@ msgstr ""
 #: inc/class.lpr-question-type.php:170 inc/class.lpr-question-type.php:181
 #, php-format
 msgid "Function %s should override from its child"
+msgstr ""
+
+#: inc/class.lpr-question-type.php:570
+msgid "Answer explaination"
 msgstr ""
 
 #: inc/class.lpr-shortcodes.php:47
@@ -349,8 +354,8 @@ msgid "Want to be an instructor?"
 msgstr ""
 
 #: inc/lpr-core-functions.php:605 inc/admin/class.lpr-profile.php:77
-#: inc/admin/sub-menus/statistics.php:17 inc/custom-post-types/course.php:33
-#: inc/custom-post-types/course.php:35 inc/custom-post-types/order.php:447
+#: inc/admin/sub-menus/statistics.php:17 inc/custom-post-types/course.php:40
+#: inc/custom-post-types/course.php:42 inc/custom-post-types/order.php:447
 msgid "Courses"
 msgstr ""
 
@@ -358,7 +363,7 @@ msgstr ""
 msgid "Categories"
 msgstr ""
 
-#: inc/lpr-core-functions.php:616 inc/custom-post-types/course.php:107
+#: inc/lpr-core-functions.php:616 inc/custom-post-types/course.php:114
 msgid "Tags"
 msgstr ""
 
@@ -370,7 +375,7 @@ msgid ""
 "you <a class=\"lpr-ignore lpr-set-up\">ignore</a> the message."
 msgstr ""
 
-#: inc/lpr-core-functions.php:727
+#: inc/lpr-core-functions.php:728
 #, php-format
 msgid ""
 "<strong>LearnPress Profile is almost ready</strong>. You must <a href=\"%s"
@@ -378,75 +383,75 @@ msgid ""
 "for it to work."
 msgstr ""
 
-#: inc/lpr-core-functions.php:1056
+#: inc/lpr-core-functions.php:1064
 msgid "LearnPress webhook process Complete"
 msgstr ""
 
-#: inc/lpr-core-functions.php:1056
+#: inc/lpr-core-functions.php:1064
 msgid "iThemes Exchange Webhook Process Complete"
 msgstr ""
 
-#: inc/lpr-core-functions.php:1075
+#: inc/lpr-core-functions.php:1083
 msgid "Left"
 msgstr ""
 
-#: inc/lpr-core-functions.php:1076
+#: inc/lpr-core-functions.php:1084
 msgid "Right"
 msgstr ""
 
-#: inc/lpr-core-functions.php:1077
+#: inc/lpr-core-functions.php:1085
 msgid "Left with space"
 msgstr ""
 
-#: inc/lpr-core-functions.php:1078
+#: inc/lpr-core-functions.php:1086
 msgid "Right with space"
 msgstr ""
 
-#: inc/lpr-core-functions.php:1326
+#: inc/lpr-core-functions.php:1334
 msgid "Select Page"
 msgstr ""
 
-#: inc/lpr-core-functions.php:1340
+#: inc/lpr-core-functions.php:1348
 msgid "Select a page&hellip;"
 msgstr ""
 
-#: inc/lpr-core-functions.php:1416
+#: inc/lpr-core-functions.php:1424
 msgid "View Course Profile"
 msgstr ""
 
-#: inc/lpr-core-functions.php:1428
+#: inc/lpr-core-functions.php:1436
 msgid "Become An Instructor"
 msgstr ""
 
-#: inc/lpr-core-functions.php:1583
+#: inc/lpr-core-functions.php:1591
 msgid "Please enter your name"
 msgstr ""
 
-#: inc/lpr-core-functions.php:1587
+#: inc/lpr-core-functions.php:1595
 msgid "Please enter your email address"
 msgstr ""
 
-#: inc/lpr-core-functions.php:1599
+#: inc/lpr-core-functions.php:1607
 #, php-format
 msgid "The user <a href=\"%s\">%s</a> want to be a teacher."
 msgstr ""
 
-#: inc/lpr-core-functions.php:1601
+#: inc/lpr-core-functions.php:1609
 #, php-format
 msgid "Name: %s"
 msgstr ""
 
-#: inc/lpr-core-functions.php:1602
+#: inc/lpr-core-functions.php:1610
 #, php-format
 msgid "Email: %s"
 msgstr ""
 
-#: inc/lpr-core-functions.php:1603
+#: inc/lpr-core-functions.php:1611
 #, php-format
 msgid "Phone: %s"
 msgstr ""
 
-#: inc/lpr-core-functions.php:1604
+#: inc/lpr-core-functions.php:1612
 #, php-format
 msgid "Accept: %s"
 msgstr ""
@@ -455,27 +460,27 @@ msgstr ""
 msgid "You have not permission to view this page"
 msgstr ""
 
-#: inc/lpr-course-functions.php:976
+#: inc/lpr-course-functions.php:1002
 msgid "Congratulations! You have enrolled this course"
 msgstr ""
 
-#: inc/lpr-course-functions.php:996
+#: inc/lpr-course-functions.php:1022
 msgid "Invalid payment method."
 msgstr ""
 
-#: inc/lpr-course-functions.php:1001
+#: inc/lpr-course-functions.php:1027
 msgid "Sorry! You can not enroll to this course"
 msgstr ""
 
-#: inc/lpr-course-functions.php:1973
+#: inc/lpr-course-functions.php:2023
 msgid "Be sure you want to retake this course! All your data will be deleted."
 msgstr ""
 
-#: inc/lpr-course-functions.php:1974
+#: inc/lpr-course-functions.php:2024
 msgid "Be sure you want to retake this quiz! All your data will be deleted."
 msgstr ""
 
-#: inc/lpr-course-functions.php:1975
+#: inc/lpr-course-functions.php:2025
 msgid "Are you sure you want to finish this quiz?"
 msgstr ""
 
@@ -564,72 +569,72 @@ msgstr ""
 msgid "Secs"
 msgstr ""
 
-#: inc/lpr-template-functions.php:384
+#: inc/lpr-template-functions.php:414
 msgid "Back to Course"
 msgstr ""
 
-#: inc/lpr-template-functions.php:544
+#: inc/lpr-template-functions.php:575
 #, php-format
 msgid "This course will end within %s next"
 msgstr ""
 
-#: inc/lpr-template-functions.php:556
+#: inc/lpr-template-functions.php:587
 #, php-format
 msgid ""
 "You have passed %d percent of course and now you can finish this course if "
 "you want"
 msgstr ""
 
-#: inc/lpr-template-functions.php:812
+#: inc/lpr-template-functions.php:844
 msgid "Congratulations! You have completed this lesson."
 msgstr ""
 
-#: inc/lpr-template-functions.php:816
+#: inc/lpr-template-functions.php:848
 msgid "Complete Lesson"
 msgstr ""
 
-#: inc/lpr-template-functions.php:874
+#: inc/lpr-template-functions.php:906
 msgid "Previous"
 msgstr ""
 
-#: inc/lpr-template-functions.php:875 templates/quiz/nav.php:4
+#: inc/lpr-template-functions.php:907 templates/quiz/nav.php:4
 msgid "Next"
 msgstr ""
 
-#: inc/lpr-template-functions.php:907
+#: inc/lpr-template-functions.php:939
 msgid "This is a quiz. Please enroll to do this quiz"
 msgstr ""
 
-#: inc/lpr-template-functions.php:909
+#: inc/lpr-template-functions.php:941
 msgid "This is a lesson. Please enroll to study this lesson"
 msgstr ""
 
-#: inc/lpr-template-functions.php:917
+#: inc/lpr-template-functions.php:949
 #, php-format
 msgid "%s and answered correctly %d out of %d total questions"
 msgstr ""
 
-#: inc/lpr-template-functions.php:918
+#: inc/lpr-template-functions.php:950
 msgid "You have finished this quiz"
 msgstr ""
 
-#: inc/lpr-template-functions.php:918
+#: inc/lpr-template-functions.php:950
 msgid "You have started this quiz"
 msgstr ""
 
-#: inc/lpr-template-functions.php:923
+#: inc/lpr-template-functions.php:955
 msgid "This is a quiz. Click on link to complete this quiz"
 msgstr ""
 
-#: inc/lpr-template-functions.php:928
+#: inc/lpr-template-functions.php:960
 msgid "Congratulations! You have completed this lesson"
 msgstr ""
 
-#: inc/lpr-template-functions.php:931
+#: inc/lpr-template-functions.php:963
 msgid "You are studying this lesson"
 msgstr ""
 
-#: inc/lpr-template-functions.php:932
+#: inc/lpr-template-functions.php:964
 msgid "This is a lesson. Click on link to complete this lesson"
 msgstr ""
 
@@ -909,7 +914,7 @@ msgid "Duplicate this course"
 msgstr ""
 
 #: inc/admin/lpr-admin-functions.php:302 inc/custom-post-types/lesson.php:171
-#: inc/custom-post-types/order.php:255 inc/custom-post-types/quiz.php:203
+#: inc/custom-post-types/order.php:255 inc/custom-post-types/quiz.php:210
 #: templates/order/order-details.php:19
 msgid "Course"
 msgstr ""
@@ -1006,12 +1011,12 @@ msgid "Click to quick edit name"
 msgstr ""
 
 #: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:96
-#: inc/admin/meta-boxes/fields/class.quiz-question.php:116
+#: inc/admin/meta-boxes/fields/class.quiz-question.php:121
 msgid "Expand All"
 msgstr ""
 
 #: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:97
-#: inc/admin/meta-boxes/fields/class.quiz-question.php:117
+#: inc/admin/meta-boxes/fields/class.quiz-question.php:122
 msgid "Collapse All"
 msgstr ""
 
@@ -1056,13 +1061,13 @@ msgstr ""
 
 #: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:193
 #: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:201
-#: inc/custom-post-types/question.php:164 inc/custom-post-types/quiz.php:180
+#: inc/custom-post-types/question.php:164 inc/custom-post-types/quiz.php:187
 msgid "Cancel [ESC]"
 msgstr ""
 
 #: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:194
 #: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:202
-#: inc/custom-post-types/question.php:163 inc/custom-post-types/quiz.php:179
+#: inc/custom-post-types/question.php:163 inc/custom-post-types/quiz.php:186
 msgid "Add [Enter]"
 msgstr ""
 
@@ -1086,11 +1091,15 @@ msgstr ""
 msgid "Can not create a question"
 msgstr ""
 
-#: inc/admin/meta-boxes/fields/class.quiz-question.php:132
+#: inc/admin/meta-boxes/fields/class.quiz-question.php:140
 msgid "Add new Question"
 msgstr ""
 
-#: inc/admin/meta-boxes/fields/class.quiz-question.php:148
+#: inc/admin/meta-boxes/fields/class.quiz-question.php:144
+msgid "Toggle Dropdown"
+msgstr ""
+
+#: inc/admin/meta-boxes/fields/class.quiz-question.php:159
 msgid "--Select existing question--"
 msgstr ""
 
@@ -1106,7 +1115,7 @@ msgstr ""
 msgid "Select a %s"
 msgstr ""
 
-#: inc/admin/pointers/pointers.php:66 inc/custom-post-types/course.php:146
+#: inc/admin/pointers/pointers.php:66 inc/custom-post-types/course.php:153
 #: templates/course/curriculum.php:11
 msgid "Course Curriculum"
 msgstr ""
@@ -1714,184 +1723,196 @@ msgstr ""
 msgid " MB"
 msgstr ""
 
-#: inc/custom-post-types/course.php:31
+#: inc/custom-post-types/course.php:38
 msgctxt "Post Type General Name"
 msgid "Courses"
 msgstr ""
 
-#: inc/custom-post-types/course.php:32
+#: inc/custom-post-types/course.php:39
 msgctxt "Post Type Singular Name"
 msgid "Course"
 msgstr ""
 
-#: inc/custom-post-types/course.php:34
+#: inc/custom-post-types/course.php:41
 msgid "Parent Item:"
 msgstr ""
 
-#: inc/custom-post-types/course.php:36
+#: inc/custom-post-types/course.php:43
 msgid "View Course"
 msgstr ""
 
-#: inc/custom-post-types/course.php:37
+#: inc/custom-post-types/course.php:44
 msgid "Add New Course"
 msgstr ""
 
-#: inc/custom-post-types/course.php:38 inc/custom-post-types/lesson.php:46
+#: inc/custom-post-types/course.php:45 inc/custom-post-types/lesson.php:46
 #: inc/custom-post-types/question.php:36
 msgid "Add New"
 msgstr ""
 
-#: inc/custom-post-types/course.php:39
+#: inc/custom-post-types/course.php:46
 msgid "Edit Course"
 msgstr ""
 
-#: inc/custom-post-types/course.php:40
+#: inc/custom-post-types/course.php:47
 msgid "Update Course"
 msgstr ""
 
-#: inc/custom-post-types/course.php:41
+#: inc/custom-post-types/course.php:48
 msgid "Search Course"
 msgstr ""
 
-#: inc/custom-post-types/course.php:42
+#: inc/custom-post-types/course.php:49
 msgid "No course found"
 msgstr ""
 
-#: inc/custom-post-types/course.php:43
+#: inc/custom-post-types/course.php:50
 msgid "No course found in Trash"
 msgstr ""
 
-#: inc/custom-post-types/course.php:67 inc/custom-post-types/course.php:69
+#: inc/custom-post-types/course.php:74 inc/custom-post-types/course.php:76
 msgid "Course Categories"
 msgstr ""
 
-#: inc/custom-post-types/course.php:70 inc/custom-post-types/course.php:71
+#: inc/custom-post-types/course.php:77 inc/custom-post-types/course.php:78
 msgid "Category"
 msgstr ""
 
-#: inc/custom-post-types/course.php:72
+#: inc/custom-post-types/course.php:79
 msgid "Add New Course Category"
 msgstr ""
 
-#: inc/custom-post-types/course.php:73
+#: inc/custom-post-types/course.php:80
 msgid "All Categories"
 msgstr ""
 
-#: inc/custom-post-types/course.php:93
+#: inc/custom-post-types/course.php:100
 msgid "Course Tags"
 msgstr ""
 
-#: inc/custom-post-types/course.php:94 inc/custom-post-types/lesson.php:80
+#: inc/custom-post-types/course.php:101 inc/custom-post-types/lesson.php:80
 #: inc/custom-post-types/lesson.php:81 inc/custom-post-types/lesson.php:82
 #: inc/custom-post-types/question.php:63 inc/custom-post-types/question.php:64
 msgid "Tag"
 msgstr ""
 
-#: inc/custom-post-types/course.php:95
+#: inc/custom-post-types/course.php:102
 msgid "Search Course Tags"
 msgstr ""
 
-#: inc/custom-post-types/course.php:96
+#: inc/custom-post-types/course.php:103
 msgid "Popular Course Tags"
 msgstr ""
 
-#: inc/custom-post-types/course.php:97
+#: inc/custom-post-types/course.php:104
 msgid "All Course Tags"
 msgstr ""
 
-#: inc/custom-post-types/course.php:100
+#: inc/custom-post-types/course.php:107
 msgid "Edit Course Tag"
 msgstr ""
 
-#: inc/custom-post-types/course.php:101
+#: inc/custom-post-types/course.php:108
 msgid "Update Course Tag"
 msgstr ""
 
-#: inc/custom-post-types/course.php:102
+#: inc/custom-post-types/course.php:109
 msgid "Add New Course Tag"
 msgstr ""
 
-#: inc/custom-post-types/course.php:103
+#: inc/custom-post-types/course.php:110
 msgid "New Course Tag Name"
 msgstr ""
 
-#: inc/custom-post-types/course.php:104
+#: inc/custom-post-types/course.php:111
 msgid "Separate tags with commas"
 msgstr ""
 
-#: inc/custom-post-types/course.php:105
+#: inc/custom-post-types/course.php:112
 msgid "Add or remove tags"
 msgstr ""
 
-#: inc/custom-post-types/course.php:106
+#: inc/custom-post-types/course.php:113
 msgid "Choose from the most used tags"
 msgstr ""
 
-#: inc/custom-post-types/course.php:167
+#: inc/custom-post-types/course.php:174
 msgid "Course Duration"
 msgstr ""
 
-#: inc/custom-post-types/course.php:180
+#: inc/custom-post-types/course.php:187
 msgid "Number of Students Enrolled"
 msgstr ""
 
-#: inc/custom-post-types/course.php:187
+#: inc/custom-post-types/course.php:194
 msgid "Maximum students can take the course"
 msgstr ""
 
-#: inc/custom-post-types/course.php:194
+#: inc/custom-post-types/course.php:201
 msgid "Re-take course"
 msgstr ""
 
-#: inc/custom-post-types/course.php:217
+#: inc/custom-post-types/course.php:224
 msgid "Course Final Quiz"
 msgstr ""
 
-#: inc/custom-post-types/course.php:223
+#: inc/custom-post-types/course.php:230
 msgid "No Final Quiz"
 msgstr ""
 
-#: inc/custom-post-types/course.php:224
+#: inc/custom-post-types/course.php:231
 msgid "Using Final Quiz"
 msgstr ""
 
-#: inc/custom-post-types/course.php:229
+#: inc/custom-post-types/course.php:236
 msgid "Passing Condition"
 msgstr ""
 
-#: inc/custom-post-types/course.php:253
-msgid "Course Payment"
-msgstr ""
-
-#: inc/custom-post-types/course.php:258 inc/order/lpr-order-functions.php:352
-msgid "Free"
-msgstr ""
-
-#: inc/custom-post-types/course.php:259
+#: inc/custom-post-types/course.php:260
 msgid "Enrolled Require"
 msgstr ""
 
-#: inc/custom-post-types/course.php:286
+#: inc/custom-post-types/course.php:265
+msgid "Yes, enroll is required"
+msgstr ""
+
+#: inc/custom-post-types/course.php:266 inc/custom-post-types/lesson.php:117
+msgid "No"
+msgstr ""
+
+#: inc/custom-post-types/course.php:272
+msgid "Course Payment"
+msgstr ""
+
+#: inc/custom-post-types/course.php:277 inc/order/lpr-order-functions.php:352
+msgid "Free"
+msgstr ""
+
+#: inc/custom-post-types/course.php:278
+msgid "Paid"
+msgstr ""
+
+#: inc/custom-post-types/course.php:306
 msgid "Course Price"
 msgstr ""
 
-#: inc/custom-post-types/course.php:299
+#: inc/custom-post-types/course.php:320
 msgid "Course Suggestion Price"
 msgstr ""
 
-#: inc/custom-post-types/course.php:333
+#: inc/custom-post-types/course.php:357
 msgid "Please enter the title of the course"
 msgstr ""
 
-#: inc/custom-post-types/course.php:337
+#: inc/custom-post-types/course.php:361
 msgid "Please add at least one section for the course"
 msgstr ""
 
-#: inc/custom-post-types/course.php:344
+#: inc/custom-post-types/course.php:368
 msgid "Please enter the title of the section"
 msgstr ""
 
-#: inc/custom-post-types/course.php:352
+#: inc/custom-post-types/course.php:376
 msgid "Please set a price for this course"
 msgstr ""
 
@@ -1962,15 +1983,11 @@ msgstr ""
 msgid "Yes"
 msgstr ""
 
-#: inc/custom-post-types/lesson.php:117
-msgid "No"
-msgstr ""
-
 #: inc/custom-post-types/lesson.php:140
 msgid "Please enter the title of the lesson"
 msgstr ""
 
-#: inc/custom-post-types/lesson.php:195 inc/custom-post-types/quiz.php:227
+#: inc/custom-post-types/lesson.php:195 inc/custom-post-types/quiz.php:234
 msgid "Not assigned yet"
 msgstr ""
 
@@ -2168,14 +2185,24 @@ msgid "Re-take quiz"
 msgstr ""
 
 #: inc/custom-post-types/quiz.php:122
-msgid "Show quiz result"
+msgid "Show correct answer"
 msgstr ""
 
 #: inc/custom-post-types/quiz.php:125
 msgid "Show the correct answer in result of the quiz."
 msgstr ""
 
-#: inc/custom-post-types/quiz.php:145
+#: inc/custom-post-types/quiz.php:129
+msgid "Show question answer immediately"
+msgstr ""
+
+#: inc/custom-post-types/quiz.php:132
+msgid ""
+"Show the correct answer and explaination (if exists) of the question right "
+"after student answered."
+msgstr ""
+
+#: inc/custom-post-types/quiz.php:152
 msgid "Please enter the title of the quiz"
 msgstr ""
 
@@ -2214,7 +2241,14 @@ msgstr ""
 msgid "Add answer"
 msgstr ""
 
-#: inc/question-type/class.lpr-question-type-multi-choice.php:106
+#: inc/question-type/class.lpr-question-type-dropdown.php:64
+#: inc/question-type/class.lpr-question-type-multi-choice.php:85
+#: inc/question-type/class.lpr-question-type-single-choice.php:118
+#: inc/question-type/class.lpr-question-type-true-or-false.php:59
+msgid "Question Explaination"
+msgstr ""
+
+#: inc/question-type/class.lpr-question-type-multi-choice.php:113
 msgid ""
 "No answer added to question or you must select at least one the answer is "
 "correct!"
@@ -2559,6 +2593,10 @@ msgstr ""
 
 #: templates/profile/user-courses/own-course.php:26
 msgid "Students passed"
+msgstr ""
+
+#: templates/quiz/button-check-answer.php:3
+msgid "Check answer"
 msgstr ""
 
 #: templates/quiz/buttons.php:31
