@@ -108,7 +108,7 @@ function learn_press_create_order( $args = false ){
         $order_data['ping_status']   = 'closed';
         $order_data['post_author']   = 1; // always is administrator
         $order_data['post_password'] = uniqid( 'order_' );
-        $order_data['post_title']    = sprintf( __( 'Order &ndash; %s', 'learn_press' ), strftime( _x( '%b %d, %Y @ %I:%M %p', 'Order date parsed by strftime', 'learn_press' ) ) );
+        $order_data['post_title']    = sprintf( __( 'Order &ndash; %s', 'learn_press' ), strftime( '%b %d, %Y @ %I:%M %p' ) );
         $order_data['post_parent']   = absint( $args['parent'] );
     }
 

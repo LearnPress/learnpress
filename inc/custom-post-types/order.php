@@ -385,7 +385,7 @@ if( ! class_exists( 'LPR_Order_Post_Type' ) ) {
                 'exclude_from_search'       => false,
                 'show_in_admin_all_list'    => true,
                 'show_in_admin_status_list' => true,
-                'label_count'               => _n_noop( 'Draf order <span class="count">(%s)</span>', 'Draf order <span class="count">(%s)</span>', 'learn_press' )
+                'label_count'               => _n_noop( 'Draft order <span class="count">(%s)</span>', 'Draft order <span class="count">(%s)</span>', 'learn_press' )
             ) );
         }
 

@@ -1,6 +1,6 @@
 <?php
 
-$result = learn_press_get_quiz_result( $quiz_id );
+$result = learn_press_get_quiz_result( $user_id, $quiz_id );
 ?>
 
 <div class="quiz-result">

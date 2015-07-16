@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-10 13:32+0700\n"
+"POT-Creation-Date: 2015-07-16 16:21+0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1900,8 +1900,8 @@ msgstr ""
 
 #: inc/custom-post-types/order.php:388
 #, php-format
-msgid "Draf order <span class=\"count\">(%s)</span>"
-msgid_plural "Draf order <span class=\"count\">(%s)</span>"
+msgid "Draft order <span class=\"count\">(%s)</span>"
+msgid_plural "Draft order <span class=\"count\">(%s)</span>"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -2062,11 +2062,6 @@ msgstr ""
 msgid "Order &ndash; %s"
 msgstr ""
 
-#: inc/order/lpr-order-functions.php:111
-msgctxt "Order date parsed by strftime"
-msgid "%b %d, %Y @ %I:%M %p"
-msgstr ""
-
 #: inc/question-type/class.lpr-question-type-dropdown.php:41
 #: inc/question-type/class.lpr-question-type-multi-choice.php:50
 #: inc/question-type/class.lpr-question-type-single-choice.php:83
@@ -2088,19 +2083,21 @@ msgid "Add answer"
 msgstr ""
 
 #: inc/question-type/class.lpr-question-type-dropdown.php:64
+#: inc/question-type/class.lpr-question-type-multi-choice.php:85
 #: inc/question-type/class.lpr-question-type-single-choice.php:118
 #: inc/question-type/class.lpr-question-type-true-or-false.php:59
 msgid "Question Explanation"
-msgstr ""
-
-#: inc/question-type/class.lpr-question-type-multi-choice.php:85
-msgid "Question Explaination"
 msgstr ""
 
 #: inc/question-type/class.lpr-question-type-multi-choice.php:113
 msgid ""
 "No answer added to question or you must select at least one the answer is "
 "correct!"
+msgstr ""
+
+#: inc/question-type/class.lpr-question-type-multi-choice.php:192
+#: inc/question-type/class.lpr-question-type-single-choice.php:186
+msgid "Question hint"
 msgstr ""
 
 #: inc/question-type/class.lpr-question-type-single-choice.php:57

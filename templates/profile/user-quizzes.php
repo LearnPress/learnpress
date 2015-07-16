@@ -12,7 +12,7 @@ if ( $my_query->have_posts() ) :
 		foreach ( $quizzes as $quiz ) {
 			if ( learn_press_user_has_completed_quiz( $user->ID, $quiz ) ) {
 				$check = 1;
-				learn_press_get_template( 'profile/quiz-content.php', array( 'quiz_id' => $quiz ) );
+				learn_press_get_template( 'profile/quiz-content.php', array( 'user_id' => $user->ID, 'quiz_id' => $quiz ) );
 			}
 		}
 		do_action( 'learn_press_after_quiz_result' );
