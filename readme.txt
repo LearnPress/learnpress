@@ -156,6 +156,24 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==  
 
+= 0.9.8 =  
+- Fixed wrong placeholder in email settings.  
+- Updated addon Certificates for GUI and functions with more options  
+	- Used Google Fonts instead of True Type Font (*.ttf)  
+	- Color picker  
+	- Text align (vertical and horizontal)  
+	- Text rotation  
+	- Text transform ( scale X and scale Y)  
+	- More options to display the name of a user:  
+		+ User login  
+		+ User nice name  
+		+ Nickname  
+		+ First name  
+		+ Last name  
+		+ First name then Last name  
+		+ Last name then First name  
+- Support Dutch and French (special thank to Bart Kleijheeg and fxbenard)
+
 = 0.9.7 =
 - Fixed wrong query of quizzes result in Profile.
 

@@ -762,7 +762,7 @@ function learn_press_send_mail( $to, $action, $vars ) {
 		//return;
 	}
 	// Set default template vars.
-	$vars['site_link'] = apply_filters( 'learn_press_site_url', get_home_url() );
+	$vars['log_in'] = apply_filters( 'learn_press_site_url', get_home_url() );
 
 	// Send email.
 	$email = new LPR_Email();

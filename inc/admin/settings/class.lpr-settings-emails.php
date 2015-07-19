@@ -78,7 +78,7 @@ class LPR_Settings_Emails extends LPR_Settings_Base {
 		$default_message = '<strong>Dear {user_name}</strong>,
 
 <p>Congratulation! The course you created (<a href="{course_link}">{course_name}</a>) is available now.</p>
-<p>Visit our website at {site_link}.</p>
+<p>Visit our website at {log_in}.</p>
 
 <p>Best regards,</p>
 <em>Administration</em>';
@@ -109,7 +109,7 @@ class LPR_Settings_Emails extends LPR_Settings_Base {
 				</th>
 				<td>
 					<?php $this->message_editor( $default_message ); ?>
-					<p class="description"><?php _e( 'Placeholders', 'learn_press' ); ?>: <?php echo apply_filters( 'learn_press_placeholders_' . $this->section['id'], '{site_link}, {user_name}, {course_name}, {course_link}' ) ?></p>
+					<p class="description"><?php _e( 'Placeholders', 'learn_press' ); ?>: <?php echo apply_filters( 'learn_press_placeholders_' . $this->section['id'], '{log_in}, {user_name}, {course_name}, {course_link}' ) ?></p>
 				</td>
 			</tr>
 			<?php do_action( 'learn_press_after_' . $this->id . '_' . $this->section['id'] . '_settings_fields', $settings ); ?>
@@ -124,7 +124,7 @@ class LPR_Settings_Emails extends LPR_Settings_Base {
 		$default_message = '<strong>Dear {user_name}</strong>,
 
 <p>You have been enrolled in <a href="{course_link}">{course_name}</a>.</p>
-<p>Visit our website at {site_link}.</p>
+<p>Visit our website at {log_in}.</p>
 
 <p>Best regards,</p>
 <em>Administration</em>';
@@ -154,7 +154,7 @@ class LPR_Settings_Emails extends LPR_Settings_Base {
 				<th scope="row"><label><?php _e( 'Message', 'learn_press' ); ?></label></th>
 				<td>
 					<?php $this->message_editor( $default_message ); ?>
-					<p class="description"><?php _e( 'Placeholders', 'learn_press' ); ?>: <?php echo apply_filters( 'learn_press_placeholders_' . $this->section['id'], '{site_link}, {user_name}, {course_name}, {course_link}' ) ?></p>
+					<p class="description"><?php _e( 'Placeholders', 'learn_press' ); ?>: <?php echo apply_filters( 'learn_press_placeholders_' . $this->section['id'], '{log_in}, {user_name}, {course_name}, {course_link}' ) ?></p>
 
 				</td>
 			</tr>
@@ -170,7 +170,7 @@ class LPR_Settings_Emails extends LPR_Settings_Base {
 		$default_message = '<strong>Dear {user_name}</strong>,
 
 <p>You have been finished in <a href="{course_link}">{course_name}</a> with {course_result}</p>
-<p>Visit our website at {site_link}.</p>
+<p>Visit our website at {log_in}.</p>
 
 <p>Best regards,</p>
 <em>Administration</em>';
@@ -200,7 +200,7 @@ class LPR_Settings_Emails extends LPR_Settings_Base {
 				<th scope="row"><label><?php _e( 'Message', 'learn_press' ); ?></label></th>
 				<td>
 					<?php $this->message_editor( $default_message ); ?>
-					<p class="description"><?php _e( 'Placeholders', 'learn_press' ); ?>: <?php echo apply_filters( 'learn_press_placeholders_' . $this->section['id'], '{site_link}, {user_name}, {course_name}, {course_link}, {course_result}' ) ?></p>
+					<p class="description"><?php _e( 'Placeholders', 'learn_press' ); ?>: <?php echo apply_filters( 'learn_press_placeholders_' . $this->section['id'], '{log_in}, {user_name}, {course_name}, {course_link}, {course_result}' ) ?></p>
 				</td>
 			</tr>
 			<?php do_action( 'learn_press_after_' . $this->id . '_' . $this->section['id'] . '_settings_fields', $settings ); ?>
