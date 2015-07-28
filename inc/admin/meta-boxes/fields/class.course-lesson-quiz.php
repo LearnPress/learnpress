@@ -91,7 +91,6 @@ if ( !class_exists( 'RWMB_Course_lesson_Quiz_Field' ) ) {
 			ob_start();
 			?><!-- -->
 			<div class="lpr-course-curriculum">
-
                 <p class="lpr-course-curriculum-toggle">
 					<a href="" class="expand" data-action="expand"><?php _e( 'Expand All', 'learn_press' ); ?></a>
 					<a href="" class="close" data-action="close"><?php _e( 'Collapse All', 'learn_press' ); ?></a>
@@ -116,20 +115,16 @@ if ( !class_exists( 'RWMB_Course_lesson_Quiz_Field' ) ) {
 								<span class="lpr-section-icon"><i class="dashicons dashicons-pressthis"></i></span>
 								<span class="lpr-section-name-wrapper"><input name="_lpr_course_lesson_quiz[__SECTION__][name]" type="text" placeholder="Enter the section name and hit enter" class="lpr-section-name" value="<?php echo esc_attr( $section['name'] ); ?>" /></span>
 							</h3>
-
 							<div class="lpr-curriculum-section-content">
 								<ul class="lpr-section-quiz-less">
 									<?php if ( isset( $section['lesson_quiz'] ) && is_array( $section['lesson_quiz'] ) ):
 										global $wpdb;
-
 										$query = "
                                             SELECT *
                                             FROM {$wpdb->posts} p
                                             WHERE p.ID IN(" . join( ',', $section['lesson_quiz'] ) . ")
                                         ";
-
 										if ( $items = $wpdb->get_results( $query, OBJECT_K ) ):
-
 											foreach ( $section['lesson_quiz'] as $id ):
                                                 if( empty( $items[$id] ) ) continue;
 												$item = $items[$id];

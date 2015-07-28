@@ -20,13 +20,12 @@ if ( !class_exists( 'LPR_Course_Post_Type' ) ) {
 			add_action( 'rwmb_course_curriculum_before_save_post', array( $this, 'before_save_curriculum' ) );
 			add_filter( 'manage_lpr_course_posts_columns', array( $this, 'columns_head' ) );
 
-            add_filter( "rwmb__lpr_course_price_html", array( $this, 'XXX' ), 5, 3 );
+            add_filter( "rwmb__lpr_course_price_html", array( $this, 'currency_symbol' ), 5, 3 );
 
 			self::$loaded = true;
 		}
 
-        function XXX( $input_html, $field, $sub_meta ){
-
+        function currency_symbol( $input_html, $field, $sub_meta ){
             return $input_html . '<span class="lpr-course-price-symbol">' . learn_press_get_currency_symbol() . '</span>';
         }
 
@@ -50,9 +49,11 @@ if ( !class_exists( 'LPR_Course_Post_Type' ) ) {
 				'not_found_in_trash' => __( 'No course found in Trash', 'learn_press' ),
 			);
 
+
 			$args = array(
 				'labels'             => $labels,
 				'public'             => true,
+                'query_var'          => true,
 				'publicly_queryable' => true,
 				'show_ui'            => true,
 				'has_archive'        => ( $page_id = learn_press_get_page_id( 'courses' ) ) && get_post( $page_id ) ? get_page_uri( $page_id ) : 'courses',
@@ -67,7 +68,6 @@ if ( !class_exists( 'LPR_Course_Post_Type' ) ) {
 				'rewrite'            => array( 'slug' => 'courses', 'hierarchical' => true, 'with_front' => false )
 			);
 			register_post_type( LPR_COURSE_CPT, $args );
-
 
 			register_taxonomy( 'course_category', array( LPR_COURSE_CPT ),
 				array(
@@ -125,7 +125,7 @@ if ( !class_exists( 'LPR_Course_Post_Type' ) ) {
                 LPR_Assets::enqueue_script( 'tipsy', LPR_PLUGIN_URL . '/assets/js/jquery.tipsy.js' );
                 LPR_Assets::enqueue_style( 'tipsy', LPR_PLUGIN_URL . '/assets/css/tipsy.css' );
             }
-
+            flush_rewrite_rules();
 		}
 
 		/**
@@ -224,8 +224,7 @@ if ( !class_exists( 'LPR_Course_Post_Type' ) ) {
 						'name'    => __( 'Course Final Quiz', 'learn_press' ),
 						'id'      => "{$prefix}course_final",
 						'type'    => 'radio',
-						'desc'    => __('If Final Quiz option is checked, then the course will be assessed by result of the last quiz, else the course
-                                      will be assessed by the progress of learning lessons', 'learn_press'),
+						'desc'    => __('If Final Quiz option is checked, then the course will be assessed by result of the last quiz, else the course will be assessed by the progress of learning lessons', 'learn_press'),
 						'options' => array(
 							'no'  => __( 'No Final Quiz', 'learn_press' ),
                             'yes' => __( 'Using Final Quiz', 'learn_press' )

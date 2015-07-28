@@ -56,7 +56,7 @@ class LPR_Question_Type_True_Or_False extends LPR_Question_Type{
             </tr>
         </tbody>
     </table>
-    <label><?php _e('Question Explanation') ?></label>
+    <label><?php _e('Question Explanation', 'learn_press') ?></label>
     <?php if( $explaination = $this->get('options.explaination') ) {
         echo '<textarea rows="4" name="lpr_question['. $post_id .'][explaination]">'. $explaination .'</textarea>';
         }

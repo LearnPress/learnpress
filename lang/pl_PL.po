@@ -1,48 +1,48 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# 
+# Translators:
+# Hoang Ha <halink0803@gmail.com>, 2015
+# Wojciech Ganicz <polischmen@gmail.com>, 2015
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
+"Project-Id-Version: LearnPress\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-08 08:09+0200\n"
-"PO-Revision-Date: 2015-07-09 20:34+0200\n"
-"Last-Translator: Wojciech Ganicz <polischmen@poczta.onet.pl>\n"
-"Language-Team: \n"
+"POT-Creation-Date: 2015-07-16 16:21+0700\n"
+"PO-Revision-Date: 2015-07-23 19:05+0000\n"
+"Last-Translator: Wojciech Ganicz <polischmen@gmail.com>\n"
+"Language-Team: Polish (Poland) (http://www.transifex.com/projects/p/learnpress/language/pl_PL/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
-"|| n%100>=20) ? 1 : 2);\n"
-"X-Generator: Poedit 1.8.2\n"
 "Language: pl_PL\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: learnpress.php:353
+#: learnpress.php:352
 msgid "Learning Management System"
 msgstr "System Zarządzania Nauczaniem"
 
-#: learnpress.php:354 learnpress.php:374
+#: learnpress.php:353 learnpress.php:373
 msgid "LearnPress"
 msgstr "LearnPress"
 
-#: learnpress.php:365 learnpress.php:366
+#: learnpress.php:364 learnpress.php:365
 msgid "Statistics"
 msgstr "Statystyki"
 
-#: learnpress.php:373
+#: learnpress.php:372
 msgid "LearnPress Settings"
 msgstr "Ustawienia LearnPress"
 
-#: learnpress.php:381 learnpress.php:382
+#: learnpress.php:380 learnpress.php:381
 msgid "Add-ons"
 msgstr "Dodatki"
 
-#: learnpress.php:406
+#: learnpress.php:405
 msgctxt "User role"
 msgid "Instructor"
-msgstr "Opiekun"
+msgstr "Opiekun: "
 
 #: inc/class.lpr-ajax.php:177
 msgid "Sorry! You can not retake this quiz"
@@ -63,6 +63,14 @@ msgstr "Przepraszamy! Nie możesz dokończyć teraz kursu"
 #: inc/class.lpr-ajax.php:457 inc/class.lpr-ajax.php:463
 msgid "Error"
 msgstr "Błąd"
+
+#: inc/class.lpr-multi-language.php:40 lib/meta-box/inc/common.php:48
+msgid "Documentation"
+msgstr "Dokumentacja"
+
+#: inc/class.lpr-multi-language.php:41 lib/meta-box/inc/common.php:49
+msgid "Extensions"
+msgstr "Dodatki"
 
 #: inc/class.lpr-question-type.php:119
 #: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:147
@@ -99,7 +107,7 @@ msgid "Function %s should override from its child"
 msgstr "Funkcja %s powinna nadpisać poprzednią wersję"
 
 #: inc/class.lpr-question-type.php:570
-msgid "Answer explaination"
+msgid "Answer explanation"
 msgstr "Wytłumaczenie odpowiedzi"
 
 #: inc/class.lpr-shortcodes.php:47
@@ -203,8 +211,7 @@ msgstr "Integracja z BuddyPress"
 #: inc/lpr-add-on-functions.php:378
 #, php-format
 msgid "Using the profile system provided by BuddyPress.%s"
-msgstr ""
-"Używanie podczas kursów systemu profilowego rozwijanego przez bbPress.%s"
+msgstr "Używanie podczas kursów systemu profilowego rozwijanego przez bbPress.%s"
 
 #: inc/lpr-add-on-functions.php:387
 msgid "Certificate"
@@ -236,9 +243,7 @@ msgstr "Eksport/Import"
 
 #: inc/lpr-add-on-functions.php:420
 msgid "Export and Import your courses with all lesson and quiz in easiest way"
-msgstr ""
-"Eksport oraz Import Twoich kursów wraz ze wszystkimi modułami oraz testami w "
-"najprostrzy sposób."
+msgstr "Eksport oraz Import Twoich kursów wraz ze wszystkimi modułami oraz testami w najprostrzy sposób."
 
 #: inc/lpr-add-on-functions.php:429
 msgid "Prerequisite Courses"
@@ -278,18 +283,13 @@ msgid ""
 "An unexpected error occurred. Something may be wrong with WordPress.org or "
 "this server&#8217;s configuration. If you continue to have problems, please "
 "try the <a href=\"https://wordpress.org/support/\">support forums</a>."
-msgstr ""
-"Nieznany błąd. Cos mogło pójsć nie tak z WordPress.org, lub z konfiguracją "
-"serwera. Jeżeli problem bedzie się powtarzać napisz na <a href=\"https://"
-"wordpress.org/support/\"> forum </a>."
+msgstr "Nieznany błąd. Cos mogło pójsć nie tak z WordPress.org, lub z konfiguracją serwera. Jeżeli problem bedzie się powtarzać napisz na <a href=\"https://wordpress.org/support/\"> forum </a>."
 
 #: inc/lpr-add-on-functions.php:515
 msgid ""
 "(WordPress could not establish a secure connection to WordPress.org. Please "
 "contact your server administrator.)"
-msgstr ""
-"(WordPress nie mógł ustalić bezpiecznego połączenia z WordPress.oeg. "
-"Skontaktuj się z administratorem serwera)"
+msgstr "(WordPress nie mógł ustalić bezpiecznego połączenia z WordPress.oeg. Skontaktuj się z administratorem serwera)"
 
 #: inc/lpr-add-on-functions.php:610
 #, php-format
@@ -325,8 +325,8 @@ msgid "Order on "
 msgstr "Zamówienie na"
 
 #: inc/lpr-core-functions.php:312
-msgid "Cheatin&#8217; uh?"
-msgstr "Cheatin&#8217; uh?"
+msgid "Sorry! You don't have permission to do this action"
+msgstr "Przepraszamy! Nie masz dostępu by wykonać tą akcję"
 
 #: inc/lpr-core-functions.php:357
 msgid "Published"
@@ -373,127 +373,117 @@ msgstr "Tagi"
 #: inc/lpr-core-functions.php:715
 #, php-format
 msgid ""
-"<strong>LearnPress is almost ready</strong>. <a class=\"lpr-set-up\" href="
-"\"%s\">Setting up</a> something right now is a good idea. That's better than "
-"you <a class=\"lpr-ignore lpr-set-up\">ignore</a> the message."
-msgstr ""
-"<strong>LearnPress jest prawie gotowy</strong>. <a class=\"lpr-set-up\" href="
-"\"%s\">Ustawienie</a> czegoś bedzie dobrym krokiem. To będzie lepsze niz <a "
-"class=\"lpr-ignore lpr-set-up\">zignorowanie</a> tej wiadomości."
+"<strong>LearnPress is almost ready</strong>. <a class=\"lpr-set-up\" "
+"href=\"%s\">Setting up</a> something right now is a good idea. That's better"
+" than you <a class=\"lpr-ignore lpr-set-up\">ignore</a> the message."
+msgstr "<strong>LearnPress jest prawie gotowy</strong>. <a class=\"lpr-set-up\" href=\"%s\">Ustawienie</a> czegoś bedzie dobrym krokiem. To będzie lepsze niz <a class=\"lpr-ignore lpr-set-up\">zignorowanie</a> tej wiadomości."
 
 #: inc/lpr-core-functions.php:728
 #, php-format
 msgid ""
-"<strong>LearnPress Profile is almost ready</strong>. You must <a href=\"%s"
-"\">update your permalink structure</a> to something other than the default "
-"for it to work."
-msgstr ""
-"<strong>LearnPress Profile jest prawie gotowy</strong>. Musisz tylko <a href="
-"\"%s\">poprawić strukturę linków</a> ustawiając coś innego niż podstawowe "
-"ustawienia."
+"<strong>LearnPress Profile is almost ready</strong>. You must <a "
+"href=\"%s\">update your permalink structure</a> to something other than the "
+"default for it to work."
+msgstr "<strong>LearnPress Profile jest prawie gotowy</strong>. Musisz tylko <a href=\"%s\">poprawić strukturę linków</a> ustawiając coś innego niż podstawowe ustawienia."
 
-#: inc/lpr-core-functions.php:1064
+#: inc/lpr-core-functions.php:1071
 msgid "LearnPress webhook process Complete"
 msgstr "Proces LearnPress webhook zakończony"
 
-#: inc/lpr-core-functions.php:1064
+#: inc/lpr-core-functions.php:1071
 msgid "iThemes Exchange Webhook Process Complete"
 msgstr "Proces  iThemes Exchange Webhook zakończony"
 
-#: inc/lpr-core-functions.php:1083
+#: inc/lpr-core-functions.php:1090
 msgid "Left"
 msgstr "Lewo"
 
-#: inc/lpr-core-functions.php:1084
+#: inc/lpr-core-functions.php:1091
 msgid "Right"
 msgstr "Prawo"
 
-#: inc/lpr-core-functions.php:1085
+#: inc/lpr-core-functions.php:1092
 msgid "Left with space"
 msgstr "Lewo z odstępem"
 
-#: inc/lpr-core-functions.php:1086
+#: inc/lpr-core-functions.php:1093
 msgid "Right with space"
 msgstr "Prawo z odstępem"
 
-#: inc/lpr-core-functions.php:1334
+#: inc/lpr-core-functions.php:1341
 msgid "Select Page"
 msgstr "Wybierz stronę"
 
-#: inc/lpr-core-functions.php:1348
+#: inc/lpr-core-functions.php:1355
 msgid "Select a page&hellip;"
 msgstr "Wybierz stronę&hellip;"
 
-#: inc/lpr-core-functions.php:1424
+#: inc/lpr-core-functions.php:1431
 msgid "View Course Profile"
 msgstr "Zobacz profil kursu"
 
-#: inc/lpr-core-functions.php:1436
+#: inc/lpr-core-functions.php:1443
 msgid "Become An Instructor"
 msgstr "Zostań Opiekunem"
 
-#: inc/lpr-core-functions.php:1591
+#: inc/lpr-core-functions.php:1598
 msgid "Please enter your name"
 msgstr "Wpisz swoje Imię i nazwisko"
 
-#: inc/lpr-core-functions.php:1595
+#: inc/lpr-core-functions.php:1602
 msgid "Please enter your email address"
 msgstr "Podaj swój adres e-mail"
 
-#: inc/lpr-core-functions.php:1607
+#: inc/lpr-core-functions.php:1614
 #, php-format
 msgid "The user <a href=\"%s\">%s</a> want to be a teacher."
 msgstr "Użytkownik <a href=\"%s\">%s</a> chciałby zostać opiekunem."
 
-#: inc/lpr-core-functions.php:1609
+#: inc/lpr-core-functions.php:1616
 #, php-format
 msgid "Name: %s"
 msgstr "Imię i nazwisko: %s"
 
-#: inc/lpr-core-functions.php:1610
+#: inc/lpr-core-functions.php:1617
 #, php-format
 msgid "Email: %s"
 msgstr "E-mail: %s"
 
-#: inc/lpr-core-functions.php:1611
+#: inc/lpr-core-functions.php:1618
 #, php-format
 msgid "Phone: %s"
 msgstr "Telefon: %s"
 
-#: inc/lpr-core-functions.php:1612
+#: inc/lpr-core-functions.php:1619
 #, php-format
 msgid "Accept: %s"
 msgstr "Akceptacja: %s"
 
-#: inc/lpr-course-functions.php:270 inc/lpr-course-functions.php:281
+#: inc/lpr-course-functions.php:273 inc/lpr-course-functions.php:284
 msgid "You have not permission to view this page"
 msgstr "Nie masz uprawnień by zobaczyć tą stronę"
 
-#: inc/lpr-course-functions.php:1002
+#: inc/lpr-course-functions.php:1065
 msgid "Congratulations! You have enrolled this course"
 msgstr "Gratulacje ! Dołączyłeś do kursu"
 
-#: inc/lpr-course-functions.php:1022
+#: inc/lpr-course-functions.php:1085
 msgid "Invalid payment method."
 msgstr "Błędna metoda płątności"
 
-#: inc/lpr-course-functions.php:1027
+#: inc/lpr-course-functions.php:1090
 msgid "Sorry! You can not enroll to this course"
 msgstr "Przepraszamy ! Nie możesz dołączyć do tego kursu "
 
-#: inc/lpr-course-functions.php:2023
+#: inc/lpr-course-functions.php:2099
 msgid "Be sure you want to retake this course! All your data will be deleted."
-msgstr ""
-"Na pewno chcesz wziąć udział ponownie w kursie? Wszystkie wcześniejsze dane "
-"zostaną skasowane."
+msgstr "Na pewno chcesz wziąć udział ponownie w kursie? Wszystkie wcześniejsze dane zostaną skasowane."
 
-#: inc/lpr-course-functions.php:2024
+#: inc/lpr-course-functions.php:2100
 msgid "Be sure you want to retake this quiz! All your data will be deleted."
-msgstr ""
-"Na pewno chcesz wziąć udział ponownie w teście? Wszystkie wcześniejsze dane "
-"zostaną skasowane."
+msgstr "Na pewno chcesz wziąć udział ponownie w teście? Wszystkie wcześniejsze dane zostaną skasowane."
 
-#: inc/lpr-course-functions.php:2025
+#: inc/lpr-course-functions.php:2101
 msgid "Are you sure you want to finish this quiz?"
 msgstr "Na pewno chcesz zakończyć test?"
 
@@ -596,12 +586,11 @@ msgstr "Kurs zostanie zakończony za %s."
 msgid ""
 "You have passed %d percent of course and now you can finish this course if "
 "you want"
-msgstr ""
-"Zakończyłeś %d procent kursu i możesz teraz zakończyć go jeśli tego chcesz."
+msgstr "Zakończyłeś %d procent kursu i możesz teraz zakończyć go jeśli tego chcesz."
 
 #: inc/lpr-template-functions.php:844
 msgid "Congratulations! You have completed this lesson."
-msgstr "Gratulacje ! Zakończyłeś moduł"
+msgstr "Gratulacje ! Zakończyłeś ten moduł."
 
 #: inc/lpr-template-functions.php:848
 msgid "Complete Lesson"
@@ -642,7 +631,7 @@ msgstr "To jest test. Kliknij na link, aby wziąć w nim udział."
 
 #: inc/lpr-template-functions.php:960
 msgid "Congratulations! You have completed this lesson"
-msgstr "Gratulacje ! Zakończyłeś ten moduł"
+msgstr "Gratulacje ! Zakończyłeś ten moduł. "
 
 #: inc/lpr-template-functions.php:963
 msgid "You are studying this lesson"
@@ -822,8 +811,7 @@ msgstr "Import/Eksport dodatków nie znaleziony. "
 
 #: inc/admin/class.lpr-admin-ajax.php:72
 msgid "Import sample data successfully. The page will reload now!"
-msgstr ""
-"Import prostych danych zakończony pomyślnie ! Strona zostanie przeładowana !"
+msgstr "Import prostych danych zakończony pomyślnie ! Strona zostanie przeładowana !"
 
 #: inc/admin/class.lpr-admin-ajax.php:75
 msgid "Unknown error when importing sample data. Please try again!"
@@ -837,9 +825,7 @@ msgstr "Nie znaleziono plików. Spróbuj ponownie!"
 msgid ""
 "Unknown error when installing/activating Import/Export addon. Please try "
 "again!"
-msgstr ""
-"Nieznany błąd podczas instalacji.aktywacji Dodatku Impor/Eksport. Spróbuj "
-"ponownie !"
+msgstr "Nieznany błąd podczas instalacji.aktywacji Dodatku Impor/Eksport. Spróbuj ponownie !"
 
 #: inc/admin/class.lpr-admin-ajax.php:98
 #: inc/admin/class.lpr-admin-ajax.php:119
@@ -947,11 +933,9 @@ msgstr "Przepraszamy ! Nie masz uprawnień by zduplikować ten kurs"
 #: inc/admin/lpr-admin-functions.php:396
 #, php-format
 msgid ""
-"Want full free features? Click <a href=\"%s\">here</a> to install LearnPress "
-"Add-ons Bundle for free!"
-msgstr ""
-"Chcesz więcej? Kliknij <a href=\"%s\">tutaj</a>, aby zainstalować LearnPress "
-"Add-ons Bundle za darmo !"
+"Want full free features? Click <a href=\"%s\">here</a> to install LearnPress"
+" Add-ons Bundle for free!"
+msgstr "Chcesz więcej? Kliknij <a href=\"%s\">tutaj</a>, aby zainstalować LearnPress Add-ons Bundle za darmo !"
 
 #: inc/admin/lpr-admin-functions.php:467
 #, php-format
@@ -961,26 +945,11 @@ msgstr "Użytkownik %s został opiekunem"
 #: inc/admin/lpr-admin-functions.php:508
 msgid ""
 "\n"
-"            <div class=\"updated\" id=\"learn-press-install-sample-data-"
-"notice\">\n"
-"                <p>You haven't got any courses yet! Would you like to "
-"install sample data?</p>\n"
-"                <p>If yes, it requires to install addon named "
-"<strong>LearnPress Import/Export</strong> but don't worry because it is "
-"completely automated. [<a href=\"\" class=\"yes\">Yes</a>]&nbsp;&nbsp;&nbsp;"
-"&nbsp;[<a href=\"\" class=\"no\">No thank!</a>]</p>\n"
+"            <div class=\"updated\" id=\"learn-press-install-sample-data-notice\">\n"
+"                <p>You haven't got any courses yet! Would you like to install sample data?</p>\n"
+"                <p>If yes, it requires to install addon named <strong>LearnPress Import/Export</strong> but don't worry because it is completely automated. [<a href=\"\" class=\"yes\">Yes</a>]&nbsp;&nbsp;&nbsp;&nbsp;[<a href=\"\" class=\"no\">No thank!</a>]</p>\n"
 "            </div>"
-msgstr ""
-"\n"
-"            <div class=\"updated\" id=\"learn-press-install-sample-data-"
-"notice\">\n"
-"                <p>Nie dodałeś jeszcze rzadnych kursów ! Niechciałbyś dodać "
-"jakiś sekcji?</p>\n"
-"                <p>Jeżeli tak to możesz zainstalować dodatek "
-"<strong>LearnPress Import/Export</strong>, ale nie martw się - jest to "
-"całkowicie automatyczne . [<a href=\"\" class=\"yes\">Tak</a>]&nbsp;&nbsp;"
-"&nbsp;&nbsp;[<a href=\"\" class=\"no\">Nie dzięki!</a>]</p>\n"
-"            </div>"
+msgstr "\n            <div class=\"updated\" id=\"learn-press-install-sample-data-notice\">\n                <p>Nie dodałeś jeszcze rzadnych kursów ! Niechciałbyś dodać jakiś sekcji?</p>\n                <p>Jeżeli tak to możesz zainstalować dodatek <strong>LearnPress Import/Export</strong>, ale nie martw się - jest to całkowicie automatyczne . [<a href=\"\" class=\"yes\">Tak</a>]&nbsp;&nbsp;&nbsp;&nbsp;[<a href=\"\" class=\"no\">Nie dzięki!</a>]</p>\n            </div>"
 
 #: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:31
 msgid "Do you want to remove this lesson permanently?"
@@ -1050,7 +1019,8 @@ msgid "Collapse All"
 msgstr "Zwiń wszystkie"
 
 #: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:99
-msgid "Outline your course and add content with sections, lessons and quizzes."
+msgid ""
+"Outline your course and add content with sections, lessons and quizzes."
 msgstr "Określ kurs i dodaj zawartość z sekcjami, modułami oraz testami."
 
 #: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:112
@@ -1144,8 +1114,8 @@ msgstr "Poczta"
 msgid "Select a %s"
 msgstr "Wybierz %s"
 
-#: inc/admin/pointers/pointers.php:66 inc/custom-post-types/course.php:153
-#: templates/course/curriculum.php:11
+#: inc/admin/pointers/pointers.php:66 inc/custom-post-types/course.php:148
+#: inc/custom-post-types/course.php:153 templates/course/curriculum.php:11
 msgid "Course Curriculum"
 msgstr "Program kursu"
 
@@ -1153,10 +1123,7 @@ msgstr "Program kursu"
 msgid ""
 "Build a course by selecting created lessons and quizzes or adding new ones. "
 "Sorting, editing, shortcuts (l and q), it never gets easier with LearnPress."
-msgstr ""
-"Stwórz kurs, poprzez zaznaczenie stworzonych lekcji i testów lub dodanie "
-"któregoś. Sortowanie, edytowanie oraz skróty (l i q), nigdy nie będzie "
-"łatwiej."
+msgstr "Stwórz kurs, poprzez zaznaczenie stworzonych lekcji i testów lub dodanie któregoś. Sortowanie, edytowanie oraz skróty (l i q), nigdy nie będzie łatwiej."
 
 #: inc/admin/settings/class.lpr-settings-emails.php:19
 msgid "General options"
@@ -1300,7 +1267,7 @@ msgstr "Potwierdzenie kursu"
 
 #: inc/admin/settings/class.lpr-settings-pages.php:137
 msgid "Retake course"
-msgstr "Przejdź kurs ponownie"
+msgstr "Liczba możliwych podejść do kursu"
 
 #: inc/admin/settings/class.lpr-settings-pages.php:140
 msgid "The number of times a user can re-take course. Set to 0 to disabled"
@@ -1308,7 +1275,7 @@ msgstr "Liczba jaką kursant może powtórzyć kurs. Wybierz 0, aby wyłączyć.
 
 #: inc/admin/settings/class.lpr-settings-pages.php:157
 msgid "Retake quiz"
-msgstr "Przejdź test ponownie"
+msgstr "Liczba możliwych podejść do testu"
 
 #: inc/admin/settings/class.lpr-settings-pages.php:160
 msgid "The number of times a user can re-take quiz. Set to 0 to disabled"
@@ -1418,18 +1385,15 @@ msgid "LearnPress Add-ons"
 msgstr "Dodatki LearnPress"
 
 #: inc/admin/sub-menus/add-ons.php:57
-msgid "Add-ons are features that you can add or remove depending on your needs"
-msgstr ""
-"Dodatki są narzędziami które możesz włączyć lub wyłączyć w zależności od "
-"potrzeb."
+msgid ""
+"Add-ons are features that you can add or remove depending on your needs"
+msgstr "Dodatki są narzędziami które możesz włączyć lub wyłączyć w zależności od potrzeb."
 
 #: inc/admin/sub-menus/add-ons.php:95
 msgid ""
 "One or more plugins state has changed to activate/deactivate. Click 'Apply' "
 "button to update"
-msgstr ""
-"Jeden lub więcej pluginów ma zmieniony status na aktywowany/nie aktywny. "
-"Kliknij \"Zatwierdź\" aby zaktualizować"
+msgstr "Jeden lub więcej pluginów ma zmieniony status na aktywowany/nie aktywny. Kliknij \"Zatwierdź\" aby zaktualizować"
 
 #: inc/admin/sub-menus/add-ons.php:158
 msgid "Install and/or activate all"
@@ -1437,8 +1401,7 @@ msgstr "Zainstaluj i.lub aktywuj wszystkie"
 
 #: inc/admin/sub-menus/add-ons.php:165
 msgid "Plugin <i>'{{data.name}}'</i> install failed! Please try again"
-msgstr ""
-"Instalacja pluginu <i>'{{data.name}}'</i> nie powiodła się. Spróbuj ponownie."
+msgstr "Instalacja pluginu <i>'{{data.name}}'</i> nie powiodła się. Spróbuj ponownie."
 
 #: inc/admin/sub-menus/add-ons.php:170
 msgid "Plugin <i>'{{data.name}}'</i> install completed!"
@@ -1519,246 +1482,6 @@ msgstr "Zapisz ustawienia"
 #: inc/admin/sub-menus/statistics.php:16
 msgid "Students"
 msgstr "Kursanci"
-
-#: inc/custom-post-types/assignment.php:23
-#: inc/custom-post-types/assignment.php:24
-msgid "Assignments"
-msgstr "Zadania"
-
-#: inc/custom-post-types/assignment.php:25
-msgid "Assignment"
-msgstr "Zadanie"
-
-#: inc/custom-post-types/assignment.php:26
-msgid "Add New Assignment"
-msgstr "Dodaj nowe zadanie"
-
-#: inc/custom-post-types/assignment.php:27
-msgid "Edit Assignment"
-msgstr "Edytuj zadanie"
-
-#: inc/custom-post-types/assignment.php:28
-msgid "All Assignments"
-msgstr "Wszystkie zadania"
-
-#: inc/custom-post-types/assignment.php:54
-#: inc/custom-post-types/assignment.php:55
-#: inc/custom-post-types/assignment.php:56
-msgid "Assignment type"
-msgstr "Typ zadań"
-
-#: inc/custom-post-types/assignment.php:57
-msgid "Add New Assignment type"
-msgstr "Dodaj nowy typ zadań"
-
-#: inc/custom-post-types/assignment.php:58
-msgid "All Assignment types"
-msgstr "Wszystkie typu zadań"
-
-#: inc/custom-post-types/assignment.php:83
-msgid "LearnPress Assignment Settings"
-msgstr "Ustawienia zadań LearnPress"
-
-#: inc/custom-post-types/assignment.php:90
-#: inc/custom-post-types/assignment.php:92
-msgid "Assignment subtitle"
-msgstr "Podtytuł zadania"
-
-#: inc/custom-post-types/assignment.php:96
-msgid "Assignment maximum mark"
-msgstr "Maksymalna ocena zadania"
-
-#: inc/custom-post-types/assignment.php:98
-msgid "Set maximum marks for the assignment"
-msgstr "Wybierz maksymalną ocenę za zadanie"
-
-#: inc/custom-post-types/assignment.php:104
-msgid "Assignment duration time"
-msgstr "Odsp czasowy między zadaniami"
-
-#: inc/custom-post-types/assignment.php:106
-msgid "Set duration time for the assignment (in days)"
-msgstr "Wybierz odstęp czasowy miedzy zadaniami (w dniach)"
-
-#: inc/custom-post-types/assignment.php:110
-msgid "Include in Course Evaluation"
-msgstr "Uwzględnienia w ocenie kursów"
-
-#: inc/custom-post-types/assignment.php:116
-msgid "Include in Course"
-msgstr "Zawarte w kursue"
-
-#: inc/custom-post-types/assignment.php:118
-msgid "Assignments marks will be shown/used in course evaluation"
-msgstr "Znaki będą pokazane/użyte podczas kursu"
-
-#: inc/custom-post-types/assignment.php:122
-msgid "Select a Course"
-msgstr "Zaznacz kurs"
-
-#: inc/custom-post-types/assignment.php:129
-msgid "Submission Type"
-msgstr "Typy zgłoszeń"
-
-#: inc/custom-post-types/assignment.php:131
-msgid "Select type of assignment submissions"
-msgstr "Wybierz rodzaj przydziału zgłoszeń"
-
-#: inc/custom-post-types/assignment.php:134
-msgid "File Upload"
-msgstr "Załaduj plik"
-
-#: inc/custom-post-types/assignment.php:135
-msgid "Text Area"
-msgstr "Obszar tekstu"
-
-#: inc/custom-post-types/assignment.php:139
-msgid "Attachment Type"
-msgstr "Typy plików"
-
-#: inc/custom-post-types/assignment.php:143
-msgid "Select allowed attachment type(s)"
-msgstr "Zaznacz akceptowane typu plików"
-
-#: inc/custom-post-types/assignment.php:145
-msgid "JPG"
-msgstr "JPG"
-
-#: inc/custom-post-types/assignment.php:146
-msgid "GIF"
-msgstr "GIF"
-
-#: inc/custom-post-types/assignment.php:147
-msgid "PNG"
-msgstr "PNG"
-
-#: inc/custom-post-types/assignment.php:148
-msgid "PDF"
-msgstr "PDF"
-
-#: inc/custom-post-types/assignment.php:149
-msgid "DOC"
-msgstr "DOC"
-
-#: inc/custom-post-types/assignment.php:150
-msgid "DOCX"
-msgstr "DOCX"
-
-#: inc/custom-post-types/assignment.php:151
-msgid "PPT"
-msgstr "PPT"
-
-#: inc/custom-post-types/assignment.php:152
-msgid "PPTX"
-msgstr "PPTX"
-
-#: inc/custom-post-types/assignment.php:153
-msgid "PPS"
-msgstr "PPS"
-
-#: inc/custom-post-types/assignment.php:154
-msgid "PPSX"
-msgstr "PPSX"
-
-#: inc/custom-post-types/assignment.php:155
-msgid "ODT"
-msgstr "ODT"
-
-#: inc/custom-post-types/assignment.php:156
-msgid "XLS"
-msgstr "XLS"
-
-#: inc/custom-post-types/assignment.php:157
-msgid "XLSX"
-msgstr "XLSX"
-
-#: inc/custom-post-types/assignment.php:158
-msgid "MP3"
-msgstr "MP3"
-
-#: inc/custom-post-types/assignment.php:159
-msgid "M4A"
-msgstr "M4A"
-
-#: inc/custom-post-types/assignment.php:160
-msgid "OGG"
-msgstr "OGG"
-
-#: inc/custom-post-types/assignment.php:161
-msgid "WAV"
-msgstr "WAV"
-
-#: inc/custom-post-types/assignment.php:162
-msgid "WMA"
-msgstr "WMA"
-
-#: inc/custom-post-types/assignment.php:163
-msgid "MP4"
-msgstr "MP4"
-
-#: inc/custom-post-types/assignment.php:164
-msgid "M4V"
-msgstr "M4V"
-
-#: inc/custom-post-types/assignment.php:165
-msgid "MOV"
-msgstr "MOV"
-
-#: inc/custom-post-types/assignment.php:166
-msgid "WMV"
-msgstr "WMV"
-
-#: inc/custom-post-types/assignment.php:167
-msgid "AVI"
-msgstr "AVI"
-
-#: inc/custom-post-types/assignment.php:168
-msgid "MPG"
-msgstr "MPG"
-
-#: inc/custom-post-types/assignment.php:169
-msgid "OGV"
-msgstr "OGV"
-
-#: inc/custom-post-types/assignment.php:170
-msgid "3GP"
-msgstr "3GP"
-
-#: inc/custom-post-types/assignment.php:171
-msgid "3G2"
-msgstr "3G2"
-
-#: inc/custom-post-types/assignment.php:172
-msgid "FLV"
-msgstr "FLV"
-
-#: inc/custom-post-types/assignment.php:173
-msgid "WEBM"
-msgstr "WEBM"
-
-#: inc/custom-post-types/assignment.php:174
-msgid "APK"
-msgstr "APK"
-
-#: inc/custom-post-types/assignment.php:175
-msgid "RAR"
-msgstr "RAR"
-
-#: inc/custom-post-types/assignment.php:176
-msgid "ZIP"
-msgstr "ZIP"
-
-#: inc/custom-post-types/assignment.php:180
-msgid "Attachment Size (in MB)"
-msgstr "Wielkość pliku (w MB)"
-
-#: inc/custom-post-types/assignment.php:181
-msgid "Set Maximum Attachment size for upload ( set less than "
-msgstr "Maksymalna wielkość plików (akceptuj mniejsze niż"
-
-#: inc/custom-post-types/assignment.php:184
-msgid " MB"
-msgstr "MB"
 
 #: inc/custom-post-types/course.php:38
 msgctxt "Post Type General Name"
@@ -1873,45 +1596,87 @@ msgstr "Dodaj lub usuń tagi"
 msgid "Choose from the most used tags"
 msgstr "Wybierz z najbardziej używanych tagów"
 
+#: inc/custom-post-types/course.php:169
+msgid "Course Settings"
+msgstr "Ustawienia kursu"
+
 #: inc/custom-post-types/course.php:174
 msgid "Course Duration"
 msgstr "Czas trwania kursu"
+
+#: inc/custom-post-types/course.php:177
+msgid "The length of the course (by weeks)"
+msgstr "Długość kursu (w tygodniach)"
 
 #: inc/custom-post-types/course.php:187
 msgid "Number of Students Enrolled"
 msgstr "Liczba kursantów, którzy dołączyli"
 
+#: inc/custom-post-types/course.php:190
+msgid "The number of students took this course"
+msgstr "Liczba kursantów, którzy wzięli udział w kursie"
+
 #: inc/custom-post-types/course.php:194
 msgid "Maximum students can take the course"
 msgstr "Maksymalna liczba kursantów jaka może wziąć udział w kursie"
 
+#: inc/custom-post-types/course.php:197
+msgid "Maximum Number Student of the Course"
+msgstr "Maksymalna liczba kursantów kursu"
+
 #: inc/custom-post-types/course.php:201
 msgid "Re-take course"
-msgstr "Przejdź kurs ponownie"
+msgstr "Liczba możliwych podejść do kursu"
+
+#: inc/custom-post-types/course.php:204
+msgid "How many times the user can re-take this course. Set to 0 to disable"
+msgstr "Ile razy kursant może wziąć udział w kursie. Wybierz 0, aby wyłączyć"
+
+#: inc/custom-post-types/course.php:219
+msgid "Course Assessment Settings"
+msgstr "Ustawienia zadań kursów"
 
 #: inc/custom-post-types/course.php:224
 msgid "Course Final Quiz"
 msgstr "Test kończący kurs"
 
+#: inc/custom-post-types/course.php:227
+msgid ""
+"If Final Quiz option is checked, then the course will be assessed by result of the last quiz, else the course\n"
+"                                      will be assessed by the progress of learning lessons"
+msgstr "Jeśli opcja \"test końcowy\" jest zaznaczona, to oczywiście będą oceniane przez wyniku ostatniego testu, ewentualnie kurs będzie rozstrzygany poprzez postęp nauki."
+
 #: inc/custom-post-types/course.php:230
 msgid "No Final Quiz"
-msgstr "Bez testu finalnego"
+msgstr "Bez testu kończącego"
 
 #: inc/custom-post-types/course.php:231
 msgid "Using Final Quiz"
-msgstr "Poprzez finalny test"
+msgstr "Test kończący"
 
 #: inc/custom-post-types/course.php:236
 msgid "Passing Condition"
 msgstr "Minimalny % do zaliczenia"
 
+#: inc/custom-post-types/course.php:241
+msgid "The percentage of quiz result to finish the course"
+msgstr "Procent z wyników testu, aby zatwierdzić zdanie kursu."
+
+#: inc/custom-post-types/course.php:255
+msgid "Course Payment Settings"
+msgstr "Ustawienia płatności za kurs"
+
 #: inc/custom-post-types/course.php:260
 msgid "Enrolled Require"
 msgstr "Wymagana rejestracja"
 
+#: inc/custom-post-types/course.php:263
+msgid "Require users logged in to study or public to all"
+msgstr "Wymagać zalogowania, czy dostępny dla wszystkich."
+
 #: inc/custom-post-types/course.php:265
 msgid "Yes, enroll is required"
-msgstr "Tak, kurs tylko dla zalogowanych użytkoników"
+msgstr "Tak, przystąpienie jest wymagane"
 
 #: inc/custom-post-types/course.php:266 inc/custom-post-types/lesson.php:117
 msgid "No"
@@ -1921,13 +1686,32 @@ msgstr "Nie"
 msgid "Course Payment"
 msgstr "Opłata za kurs"
 
+#: inc/custom-post-types/course.php:275
+msgid ""
+"If Paid be checked, An administrator will review then set course price and "
+"commission"
+msgstr "Jeżeli płatność jest zaznaczona, administrator przejrzy ustawienia i je potwierdzi"
+
 #: inc/custom-post-types/course.php:277 inc/order/lpr-order-functions.php:352
 msgid "Free"
-msgstr "Darmowy"
+msgstr "Darmowy. "
 
 #: inc/custom-post-types/course.php:278
 msgid "Paid"
 msgstr "Płatny"
+
+#: inc/custom-post-types/course.php:287
+msgid ""
+"If free, this field is empty or set 0. (Only admin can edit this field)"
+msgstr "Dla opcji \"darmowy\" zostaw puste lub wybierz 0. (tylko admin może edytować to pole)"
+
+#: inc/custom-post-types/course.php:296
+msgid "This course is enrolled require and the suggestion price is "
+msgstr "Kurs wymaga przystąpienia i proponowana cena wynosi"
+
+#: inc/custom-post-types/course.php:300
+msgid "This course is free."
+msgstr "Kurs jest bezpłatny"
 
 #: inc/custom-post-types/course.php:306
 msgid "Course Price"
@@ -1937,19 +1721,23 @@ msgstr "Cena kursu"
 msgid "Course Suggestion Price"
 msgstr "Sugestia ceny kursu"
 
-#: inc/custom-post-types/course.php:357
+#: inc/custom-post-types/course.php:325
+msgid "The course price you want to suggest for admin to set."
+msgstr "Sugestia dla admina jeżeli chodzi o cenę kursu"
+
+#: inc/custom-post-types/course.php:356
 msgid "Please enter the title of the course"
 msgstr "Proszę nadać tytuł dla kursu"
 
-#: inc/custom-post-types/course.php:361
+#: inc/custom-post-types/course.php:360
 msgid "Please add at least one section for the course"
 msgstr "Proszę dodać minimum jedną sekcję do kursu"
 
-#: inc/custom-post-types/course.php:368
+#: inc/custom-post-types/course.php:367
 msgid "Please enter the title of the section"
 msgstr "Proszę dodać tytuł sekcji"
 
-#: inc/custom-post-types/course.php:376
+#: inc/custom-post-types/course.php:375
 msgid "Please set a price for this course"
 msgstr "Proszę nadać cenę dla tego kursu"
 
@@ -1998,6 +1786,10 @@ msgstr "Dodaj nowy tag"
 msgid "All Tags"
 msgstr "Wszystkie tagi"
 
+#: inc/custom-post-types/lesson.php:100
+msgid "Lesson Settings"
+msgstr "Ustawienia modułu"
+
 #: inc/custom-post-types/lesson.php:104
 msgid "Lesson Duration"
 msgstr "Czas trwania kursu"
@@ -2014,9 +1806,7 @@ msgstr "Lekcja podglądowa"
 msgid ""
 "If this is a preview lesson, then student can view this lesson content "
 "without taking the course"
-msgstr ""
-"Jeżeli jest to lekcja podglądowa, student może zobaczyć ja bez dołączania do "
-"kursu"
+msgstr "Jeżeli jest to lekcja podglądowa, student może zobaczyć ja bez dołączania do kursu"
 
 #: inc/custom-post-types/lesson.php:116
 msgid "Yes"
@@ -2101,11 +1891,11 @@ msgstr "Podgląd zamówienia"
 
 #: inc/custom-post-types/order.php:388
 #, php-format
-msgid "Draf order <span class=\"count\">(%s)</span>"
-msgid_plural "Draf order <span class=\"count\">(%s)</span>"
-msgstr[0] "Podgląd zamówienia <span class=\"count\">(%s)</span>"
-msgstr[1] "Podgląd zamówienia <span class=\"count\">(%s)</span>"
-msgstr[2] "Podgląd zamówienia <span class=\"count\">(%s)</span>"
+msgid "Draft order <span class=\"count\">(%s)</span>"
+msgid_plural "Draft order <span class=\"count\">(%s)</span>"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
 
 #: inc/custom-post-types/order.php:432 inc/custom-post-types/order.php:436
 msgid "Unknow"
@@ -2179,9 +1969,17 @@ msgstr "Nie znaleziono pytań w śmieciach"
 msgid "Question Tag"
 msgstr "Tagi pytania"
 
+#: inc/custom-post-types/question.php:97
+msgid "Type of question"
+msgstr "Typ pytania"
+
 #: inc/custom-post-types/question.php:106
 msgid "Mark For This Question"
 msgstr "Oznacz dla tego pytania"
+
+#: inc/custom-post-types/question.php:110
+msgid "Mark for choosing the right answer"
+msgstr "Zaznacz dla wyboru poprawnej odpowiedzi."
 
 #: inc/custom-post-types/question.php:133
 msgid "Please enter the title of the question"
@@ -2217,10 +2015,9 @@ msgid "Quiz Duration"
 msgstr "Czas trwania kursu"
 
 #: inc/custom-post-types/quiz.php:108
-msgid "Quiz duration (in minutes). Auto submits when expire. Set 0 to disable."
-msgstr ""
-"Czas trwania kursu (w minutach). Auto zakończenie po upływie czasu. Wpisz 0, "
-"by wyłączyć."
+msgid ""
+"Quiz duration (in minutes). Auto submits when expire. Set 0 to disable."
+msgstr "Czas trwania kursu (w minutach). Auto zakończenie po upływie czasu. Wpisz 0, by wyłączyć."
 
 #: inc/custom-post-types/quiz.php:115
 msgid "Re-take quiz"
@@ -2228,7 +2025,7 @@ msgstr "Przystąp ponownie do testu"
 
 #: inc/custom-post-types/quiz.php:122
 msgid "Show correct answer"
-msgstr "Pokaż poprawną odpowiedź"
+msgstr "Pokaż poprawną odpowiedź."
 
 #: inc/custom-post-types/quiz.php:125
 msgid "Show the correct answer in result of the quiz."
@@ -2236,15 +2033,13 @@ msgstr "Pokaż poprawną odpowiedź na koniec testu."
 
 #: inc/custom-post-types/quiz.php:129
 msgid "Show question answer immediately"
-msgstr "Pokaż odpowiedź natychmiast"
+msgstr "Pokaż odpowiedź na pytanie natychmiastowo."
 
 #: inc/custom-post-types/quiz.php:132
 msgid ""
-"Show the correct answer and explaination (if exists) of the question right "
+"Show the correct answer and explanation (if exists) of the question right "
 "after student answered."
-msgstr ""
-"Pokaż poprawną odpowiedź i wytłumaczenie (jeżeli jest) po odpowiedzi "
-"kursanta."
+msgstr "Pokaż poprawną odpowiedź oraz wytłumaczenie (jeżeli istnieje) pytania tuz po oddaniu odpowiedzi."
 
 #: inc/custom-post-types/quiz.php:152
 msgid "Please enter the title of the quiz"
@@ -2259,11 +2054,6 @@ msgstr "Error: ID transakcji nie pasuje ! %s, %s"
 #, php-format
 msgid "Order &ndash; %s"
 msgstr "Zamówienie &ndash; %s"
-
-#: inc/order/lpr-order-functions.php:111
-msgctxt "Order date parsed by strftime"
-msgid "%b %d, %Y @ %I:%M %p"
-msgstr "%d %b, %Y @ %I:%M %p"
 
 #: inc/question-type/class.lpr-question-type-dropdown.php:41
 #: inc/question-type/class.lpr-question-type-multi-choice.php:50
@@ -2289,15 +2079,19 @@ msgstr "Dodaj odpowiedź"
 #: inc/question-type/class.lpr-question-type-multi-choice.php:85
 #: inc/question-type/class.lpr-question-type-single-choice.php:118
 #: inc/question-type/class.lpr-question-type-true-or-false.php:59
-msgid "Question Explaination"
+msgid "Question Explanation"
 msgstr "Opis pytania"
 
 #: inc/question-type/class.lpr-question-type-multi-choice.php:113
 msgid ""
 "No answer added to question or you must select at least one the answer is "
 "correct!"
-msgstr ""
-"Brak odpowiedzi lub musisz zaznaczyc przynajmniej jedną poprawną odpowiedź"
+msgstr "Brak odpowiedzi lub musisz zaznaczyc przynajmniej jedną poprawną odpowiedź"
+
+#: inc/question-type/class.lpr-question-type-multi-choice.php:192
+#: inc/question-type/class.lpr-question-type-single-choice.php:186
+msgid "Question hint"
+msgstr "Podpowiedź"
 
 #: inc/question-type/class.lpr-question-type-single-choice.php:57
 msgid "No answer added to question or you must set an answer is correct!"
@@ -2315,14 +2109,6 @@ msgstr "Fałsz"
 #, php-format
 msgid "%d%% of total"
 msgstr "%d%% z całości"
-
-#: lib/meta-box/inc/common.php:48
-msgid "Documentation"
-msgstr "Dokumentacja"
-
-#: lib/meta-box/inc/common.php:49
-msgid "Extensions"
-msgstr "Dodatki"
 
 #: lib/meta-box/inc/field.php:217
 msgid "+"
@@ -2482,11 +2268,9 @@ msgstr "Zdałeś kurs zdobywając %.2f%% z całości."
 #: templates/course/course-result.php:15 templates/quiz/percentage.php:13
 #, php-format
 msgid ""
-"Sorry, you have not passed this course. This course required you pass %.2f%% "
-"but your result is only %.2f%%"
-msgstr ""
-"Przepraszamy, ale nie zaliczyłeś tego kursu. Wymagane jest minimum %.2f%%, "
-"jednak zdobyłeś tylko %.2f%%."
+"Sorry, you have not passed this course. This course required you pass %.2f%%"
+" but your result is only %.2f%%"
+msgstr "Przepraszamy, ale nie zaliczyłeś tego kursu. Wymagane jest minimum %.2f%%, jednak zdobyłeś tylko %.2f%%."
 
 #: templates/course/curriculum.php:19
 msgid "Curriculum is empty"
@@ -2519,7 +2303,7 @@ msgid "You and one student enrolled"
 msgid_plural "You and %1$s students enrolled"
 msgstr[0] "Ty i jedna osba dołączyliście"
 msgstr[1] "Ty i %1$s osoby dołączyliście"
-msgstr[2] "Ty i %1$s osób dołączyło"
+msgstr[2] "Ty i wraz z %1$s osobami dołączyliście"
 
 #: templates/course/students.php:18
 #, php-format
@@ -2527,7 +2311,7 @@ msgctxt ""
 msgid "One student enrolled"
 msgid_plural "%1$s students enrolled"
 msgstr[0] "Jedna osoba dołączyła"
-msgstr[1] "%1$s osóby dołączyło"
+msgstr[1] "%1$s osóby dołączyły"
 msgstr[2] "%1$s osób dołączyło"
 
 #: templates/course/students.php:21
@@ -2536,11 +2320,9 @@ msgstr "Nikt nie dołączył"
 
 #: templates/order/confirm.php:5
 msgid ""
-"Unfortunately your order cannot be processed as the originating bank/"
-"merchant has declined your transaction."
-msgstr ""
-"Niestety zakup nie może zostać zakończony z powodu zablokowania transakcji "
-"przez bank."
+"Unfortunately your order cannot be processed as the originating "
+"bank/merchant has declined your transaction."
+msgstr "Niestety zakup nie może zostać zakończony z powodu zablokowania transakcji przez bank."
 
 #: templates/order/confirm.php:9
 msgid "Please attempt your purchase again or go to your account page."
@@ -2576,7 +2358,7 @@ msgstr "Razem:"
 
 #: templates/order/confirm.php:40
 msgid "Payment Method:"
-msgstr "Metoda płatności:"
+msgstr "Forma płatności:"
 
 #: templates/order/confirm.php:45
 msgid "Status:"
@@ -2588,7 +2370,7 @@ msgstr "Razem"
 
 #: templates/profile/quiz-content.php:13 templates/quiz/result.php:10
 msgid "point"
-msgstr "punkt"
+msgstr "punktów"
 
 #: templates/profile/quiz-content.php:17 templates/quiz/result.php:14
 msgid "Correct"
@@ -2600,7 +2382,7 @@ msgstr "Źle"
 
 #: templates/profile/quiz-content.php:25 templates/quiz/result.php:22
 msgid "Empty"
-msgstr "Pusty"
+msgstr "Pustych"
 
 #: templates/profile/quiz-content.php:29 templates/quiz/result.php:26
 msgid "Time"
@@ -2650,6 +2432,14 @@ msgstr "Studenci, którzy zdali"
 msgid "Check answer"
 msgstr "Sprawdź odpowiedzi"
 
+#: templates/quiz/buttons.php:15
+msgid "Start Quiz"
+msgstr "Zacznij test"
+
+#: templates/quiz/buttons.php:25
+msgid "Finish Quiz"
+msgstr "Zakończ test"
+
 #: templates/quiz/buttons.php:31
 msgid "Retake"
 msgstr "Jeszcze raz"
@@ -2673,3 +2463,11 @@ msgstr "Brak pytań w tym teście"
 #: templates/quiz/result.php:7
 msgid "Your result"
 msgstr "Twój wynik"
+
+#: templates/quiz/time-counter.php:15
+msgid "Time remaining"
+msgstr "Pozostały czas"
+
+#: templates/quiz/time-counter.php:17
+msgid "mins/secs"
+msgstr "min/sec"

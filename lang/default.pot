@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-16 16:21+0700\n"
+"POT-Creation-Date: 2015-07-25 15:12+0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -78,18 +78,18 @@ msgid "Extensions"
 msgstr ""
 
 #: inc/class.lpr-question-type.php:119
-#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:147
-#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:237
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:142
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:232
 #: templates/archive-course-content.php:25 templates/course_content.php:27
 msgid "Edit"
 msgstr ""
 
 #: inc/class.lpr-question-type.php:120
-#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:114
-#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:146
-#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:169
-#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:212
-#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:237
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:113
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:141
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:164
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:207
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:232
 #: lib/meta-box/inc/fields/file-input.php:38
 msgid "Remove"
 msgstr ""
@@ -362,8 +362,8 @@ msgid "Want to be an instructor?"
 msgstr ""
 
 #: inc/lpr-core-functions.php:605 inc/admin/class.lpr-profile.php:77
-#: inc/admin/sub-menus/statistics.php:17 inc/custom-post-types/course.php:40
-#: inc/custom-post-types/course.php:42 inc/custom-post-types/order.php:447
+#: inc/admin/sub-menus/statistics.php:17 inc/custom-post-types/course.php:39
+#: inc/custom-post-types/course.php:41 inc/custom-post-types/order.php:447
 msgid "Courses"
 msgstr ""
 
@@ -391,75 +391,91 @@ msgid ""
 "for it to work."
 msgstr ""
 
-#: inc/lpr-core-functions.php:1071
+#: inc/lpr-core-functions.php:1053
 msgid "LearnPress webhook process Complete"
 msgstr ""
 
-#: inc/lpr-core-functions.php:1071
+#: inc/lpr-core-functions.php:1053
 msgid "iThemes Exchange Webhook Process Complete"
 msgstr ""
 
-#: inc/lpr-core-functions.php:1090
+#: inc/lpr-core-functions.php:1072
 msgid "Left"
 msgstr ""
 
-#: inc/lpr-core-functions.php:1091
+#: inc/lpr-core-functions.php:1073
 msgid "Right"
 msgstr ""
 
-#: inc/lpr-core-functions.php:1092
+#: inc/lpr-core-functions.php:1074
 msgid "Left with space"
 msgstr ""
 
-#: inc/lpr-core-functions.php:1093
+#: inc/lpr-core-functions.php:1075
 msgid "Right with space"
 msgstr ""
 
-#: inc/lpr-core-functions.php:1341
+#: inc/lpr-core-functions.php:1323
 msgid "Select Page"
 msgstr ""
 
-#: inc/lpr-core-functions.php:1355
+#: inc/lpr-core-functions.php:1337
 msgid "Select a page&hellip;"
 msgstr ""
 
-#: inc/lpr-core-functions.php:1431
+#: inc/lpr-core-functions.php:1384
+msgid "week(s)"
+msgstr ""
+
+#: inc/lpr-core-functions.php:1388
+msgid "day(s)"
+msgstr ""
+
+#: inc/lpr-core-functions.php:1393
+msgid "hour(s)"
+msgstr ""
+
+#: inc/lpr-core-functions.php:1397
+msgid "min(s)"
+msgstr ""
+
+#: inc/lpr-core-functions.php:1414
 msgid "View Course Profile"
 msgstr ""
 
-#: inc/lpr-core-functions.php:1443
+#: inc/lpr-core-functions.php:1426
 msgid "Become An Instructor"
 msgstr ""
 
-#: inc/lpr-core-functions.php:1598
+#: inc/lpr-core-functions.php:1579
 msgid "Please enter your name"
 msgstr ""
 
-#: inc/lpr-core-functions.php:1602
+#: inc/lpr-core-functions.php:1583
 msgid "Please enter your email address"
 msgstr ""
 
-#: inc/lpr-core-functions.php:1614
+#: inc/lpr-core-functions.php:1595
 #, php-format
 msgid "The user <a href=\"%s\">%s</a> want to be a teacher."
 msgstr ""
 
-#: inc/lpr-core-functions.php:1616
+#: inc/lpr-core-functions.php:1597
 #, php-format
 msgid "Name: %s"
 msgstr ""
 
-#: inc/lpr-core-functions.php:1617
+#: inc/lpr-core-functions.php:1598
 #, php-format
 msgid "Email: %s"
 msgstr ""
 
-#: inc/lpr-core-functions.php:1618
+#: inc/lpr-core-functions.php:1599
 #, php-format
 msgid "Phone: %s"
 msgstr ""
 
-#: inc/lpr-core-functions.php:1619
+#: inc/lpr-core-functions.php:1600
 #, php-format
 msgid "Accept: %s"
 msgstr ""
@@ -468,27 +484,27 @@ msgstr ""
 msgid "You have not permission to view this page"
 msgstr ""
 
-#: inc/lpr-course-functions.php:1065
+#: inc/lpr-course-functions.php:1061
 msgid "Congratulations! You have enrolled this course"
 msgstr ""
 
-#: inc/lpr-course-functions.php:1085
+#: inc/lpr-course-functions.php:1081
 msgid "Invalid payment method."
 msgstr ""
 
-#: inc/lpr-course-functions.php:1090
+#: inc/lpr-course-functions.php:1086
 msgid "Sorry! You can not enroll to this course"
 msgstr ""
 
-#: inc/lpr-course-functions.php:2099
+#: inc/lpr-course-functions.php:2095
 msgid "Be sure you want to retake this course! All your data will be deleted."
 msgstr ""
 
-#: inc/lpr-course-functions.php:2100
+#: inc/lpr-course-functions.php:2096
 msgid "Be sure you want to retake this quiz! All your data will be deleted."
 msgstr ""
 
-#: inc/lpr-course-functions.php:2101
+#: inc/lpr-course-functions.php:2097
 msgid "Are you sure you want to finish this quiz?"
 msgstr ""
 
@@ -497,7 +513,7 @@ msgid "Payment"
 msgstr ""
 
 #: inc/lpr-js-template.php:7
-#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:256
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:251
 msgid "--Select a Lesson--"
 msgstr ""
 
@@ -1018,76 +1034,76 @@ msgstr ""
 msgid "Click to quick edit name"
 msgstr ""
 
-#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:96
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:95
 #: inc/admin/meta-boxes/fields/class.quiz-question.php:121
 msgid "Expand All"
 msgstr ""
 
-#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:97
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:96
 #: inc/admin/meta-boxes/fields/class.quiz-question.php:122
 msgid "Collapse All"
 msgstr ""
 
-#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:99
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:98
 msgid "Outline your course and add content with sections, lessons and quizzes."
 msgstr ""
 
-#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:112
-#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:167
-#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:210
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:111
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:162
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:205
 msgid "Expand/Close"
 msgstr ""
 
-#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:145
-#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:237
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:140
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:232
 msgid "Click to quick edit"
 msgstr ""
 
-#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:155
-#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:180
-#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:221
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:150
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:175
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:216
 msgid "Add Lesson"
 msgstr ""
 
-#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:156
-#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:181
-#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:222
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:151
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:176
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:217
 msgid "Add Quiz"
 msgstr ""
 
-#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:157
-#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:182
-#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:223
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:152
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:177
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:218
 msgid "Quick add <span>L</span>esson"
 msgstr ""
 
-#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:158
-#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:183
-#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:224
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:153
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:178
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:219
 msgid "Quick add <span>Q</span>uiz"
 msgstr ""
 
-#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:193
-#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:201
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:188
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:196
 #: inc/custom-post-types/question.php:164 inc/custom-post-types/quiz.php:187
 msgid "Cancel [ESC]"
 msgstr ""
 
-#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:194
-#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:202
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:189
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:197
 #: inc/custom-post-types/question.php:163 inc/custom-post-types/quiz.php:186
 msgid "Add [Enter]"
 msgstr ""
 
-#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:271
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:266
 msgid "--Select a Quiz--"
 msgstr ""
 
-#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:459
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:454
 msgid "The course is empty"
 msgstr ""
 
-#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:493
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:488
 msgid "Success"
 msgstr ""
 
@@ -1491,50 +1507,50 @@ msgstr ""
 msgid "Students"
 msgstr ""
 
-#: inc/custom-post-types/course.php:38
+#: inc/custom-post-types/course.php:37
 msgctxt "Post Type General Name"
 msgid "Courses"
 msgstr ""
 
-#: inc/custom-post-types/course.php:39
+#: inc/custom-post-types/course.php:38
 msgctxt "Post Type Singular Name"
 msgid "Course"
 msgstr ""
 
-#: inc/custom-post-types/course.php:41
+#: inc/custom-post-types/course.php:40
 msgid "Parent Item:"
 msgstr ""
 
-#: inc/custom-post-types/course.php:43
+#: inc/custom-post-types/course.php:42
 msgid "View Course"
 msgstr ""
 
-#: inc/custom-post-types/course.php:44
+#: inc/custom-post-types/course.php:43
 msgid "Add New Course"
 msgstr ""
 
-#: inc/custom-post-types/course.php:45 inc/custom-post-types/lesson.php:46
+#: inc/custom-post-types/course.php:44 inc/custom-post-types/lesson.php:46
 #: inc/custom-post-types/question.php:36
 msgid "Add New"
 msgstr ""
 
-#: inc/custom-post-types/course.php:46
+#: inc/custom-post-types/course.php:45
 msgid "Edit Course"
 msgstr ""
 
-#: inc/custom-post-types/course.php:47
+#: inc/custom-post-types/course.php:46
 msgid "Update Course"
 msgstr ""
 
-#: inc/custom-post-types/course.php:48
+#: inc/custom-post-types/course.php:47
 msgid "Search Course"
 msgstr ""
 
-#: inc/custom-post-types/course.php:49
+#: inc/custom-post-types/course.php:48
 msgid "No course found"
 msgstr ""
 
-#: inc/custom-post-types/course.php:50
+#: inc/custom-post-types/course.php:49
 msgid "No course found in Trash"
 msgstr ""
 

@@ -61,7 +61,7 @@ class LPR_Question_Type_Dropdown extends LPR_Question_Type{
     </table>
     <input type="hidden" name="lpr_question[<?php echo $post_id;?>][type]" value="<?php echo $this->get_type();?>">
     <p><button type="button" class="button lpr-button-add-answer"><?php _e('Add answer', 'learn_press');?></button> </p>
-    <label><?php _e('Question Explanation') ?></label>
+    <label><?php _e('Question Explanation', 'learn_press') ?></label>
     <?php if( $explaination = $this->get('options.explaination') ) {
         echo '<textarea rows="4" name="lpr_question['. $post_id .'][explaination]">'. $explaination .'</textarea>';
         }

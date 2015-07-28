@@ -8,8 +8,6 @@ class LPR_Install{
         if ( ! defined( 'IFRAME_REQUEST' ) && ( get_option( 'learnpress_version' ) != LearnPress()->version || get_option( 'learnpress_version' ) != LearnPress()->version ) ) {
             self::install();
         }
-
-        //print_r(learn_press_admin_settings('emails'));
     }
 
     static function install_options(){
@@ -32,7 +30,9 @@ class LPR_Install{
 <p><em>Administration</em></p>";}}'
         );
         foreach( $options as $k => $option ){
-            update_option( $k, maybe_unserialize( $option ) );
+            if( ! get_option( $k ) ) {
+                update_option( $k, maybe_unserialize( $option ) );
+            }
         }
     }
 

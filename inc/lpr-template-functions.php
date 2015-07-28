@@ -572,7 +572,7 @@ if( ! function_exists( 'learn_press_course_remaining_time' ) ){
      */
     function learn_press_course_remaining_time(){
         if( ! learn_press_user_has_finished_course() && $text = learn_press_get_course_remaining_time() ){
-            learn_press_message( sprintf( __( 'This course will end within %s next' ), $text ) );
+            learn_press_message( sprintf( __( 'This course will end within %s next', 'learn_press' ), $text ) );
         }
     }
 }

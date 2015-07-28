@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- *  
+ *
  * LearnPress Core Functions
  *
  * Common functions for both front-end and back-end
@@ -144,7 +144,7 @@ if ( !function_exists( 'learn_press_course_paging_nav' ) ) :
 				<?php echo $links; ?>
 			</div>
 			<!-- .pagination -->
-		<?php
+			<?php
 		endif;
 	}
 
@@ -415,7 +415,7 @@ function learn_press_edit_registration() {
 		</label>
 	</p>
 
-<?php
+	<?php
 }
 
 // process instructor registration button
@@ -668,7 +668,7 @@ function learn_press_show_menu() {
 				jQuery("#toplevel_page_learn_press .wp-first-item").addClass('current');
 			});
 		</script>
-	<?php
+		<?php
 	}
 }
 
@@ -727,7 +727,7 @@ function learn_press_edit_permalink() {
 				wp_kses(
 					__( '<strong>LearnPress Profile is almost ready</strong>. You must <a href="%s">update your permalink structure</a> to something other than the default for it to work.', 'learn_press' ),
 					array(
-						'a' => array(
+						'a'      => array(
 							'href' => array()
 						),
 						'strong' => array()
@@ -911,7 +911,7 @@ function learn_press_get_lessons( $course_id ) {
 
 add_filter( 'template_include', 'learn_press_template_loader' );
 function learn_press_template_loader( $template ) {
-
+    //return $template;
 	$file = '';
 
 	if ( ( $page_id = learn_press_get_page_id( 'taken_course_confirm' ) ) && is_page( $page_id ) ) {
@@ -928,26 +928,24 @@ function learn_press_template_loader( $template ) {
 		if ( is_post_type_archive( 'lpr_course' ) || ( ( $page_id = learn_press_get_page_id( 'courses' ) ) && is_page( $page_id ) ) || ( is_tax( 'course_category' ) ) ) {
 			$file   = 'archive-course.php';
 			$find[] = $file;
-			//$find[] = learn_press_plugin_path( 'templates/' ) . $file;
-			//$find[] = learn_press_locate_template( 'archive-course.php' );
 			$find[] = 'learnpress/' . $file;
+            global $wp_query;
+
 		} else {
 			if ( get_post_type() == 'lpr_course' ) {
 				$file   = 'single-course.php';
 				$find[] = $file;
-				//$find[] = learn_press_plugin_path( 'templates/' ) . $file;
 				$find[] = 'learnpress/' . $file;
 			} else {
 				if ( get_post_type() == 'lpr_quiz' ) {
 					$file   = 'single-quiz.php';
 					$find[] = $file;
-					//$find[] = learn_press_plugin_path( 'templates/' ) . $file;
 					$find[] = 'learnpress/' . $file;
 				} else {
 					if ( get_post_type() == 'lpr_assignment' ) {
 						die;
 						$file   = 'single-assignment.php';
-						$find[] = $file;					
+						$find[] = $file;
 						$find[] = 'learnpress/' . $file;
 					}
 				}
@@ -956,7 +954,6 @@ function learn_press_template_loader( $template ) {
 	}
 
 	if ( $file ) {
-		//print_r($find);
 		$template = locate_template( array_unique( $find ) );
 		if ( !$template ) {
 			$template = learn_press_plugin_path( 'templates/' ) . $file;
@@ -966,36 +963,21 @@ function learn_press_template_loader( $template ) {
 	return $template;
 }
 
-add_filter( 'pre_get_posts', 'learn_press_pre_get_post' );
+add_filter( 'pre_get_posts', 'learn_press_pre_get_post', 0 );
 function learn_press_pre_get_post( $q ) {
 	if ( is_admin() ) {
 		return $q;
 	}
-	global $post_type;
+	if ( $q->is_main_query() && $q->is_page() && ( $q->queried_object && $q->queried_object->ID == ( $page_id = learn_press_get_page_id( 'courses' ) ) && $page_id ) ) {
+        $q->set( 'post_type', 'lpr_course' );
+        $q->set( 'page', '' );
+        $q->set( 'pagename', '' );
 
-	if ( $q->is_page() && ( $q->get( 'page_id' ) == ( $page_id = learn_press_get_page_id( 'courses' ) ) && $page_id ) ) {
-
-
-		$q->set( 'post_type', 'lpr_course' );
-		$q->set( 'page_id', '' );
-		if ( isset( $q->query['paged'] ) ) {
-			$q->set( 'paged', $q->query['paged'] );
-		}
-
-		global $wp_post_types;
-
-		$courses_page = get_post( $page_id );
-
-		$wp_post_types['lpr_course']->ID         = $courses_page->ID;
-		$wp_post_types['lpr_course']->post_title = $courses_page->post_title;
-		$wp_post_types['lpr_course']->post_name  = $courses_page->post_name;
-		$wp_post_types['lpr_course']->post_type  = $courses_page->post_type;
-		$wp_post_types['lpr_course']->ancestors  = get_ancestors( $courses_page->ID, $courses_page->post_type );
-
-		$q->is_singular          = false;
-		$q->is_post_type_archive = true;
-		$q->is_archive           = true;
-		$q->is_page              = true;
+        // Fix conditional Functions
+        $q->is_archive           = true;
+        $q->is_post_type_archive = true;
+        $q->is_singular          = false;
+        $q->is_page              = false;
 	}
 
 	return $q;
@@ -1399,19 +1381,20 @@ function learn_press_seconds_to_weeks( $secs ) {
 	// format result
 	$result = '';
 	if ( $weeks ) {
-		$result .= "{$weeks} week(s) ";
+		$result .= $weeks . ' ' . __( 'week(s)', 'learn_press' ) . ' ';
 	}
 
 	if ( $days ) {
-		$result .= "{$days} day(s) ";
+		$result .= $days . ' ' . __( 'day(s)', 'learn_press' ) . ' ';
 	}
 
 	if ( !$weeks ) {
 		if ( $hours ) {
-			$result .= "{$hours} hour(s) ";
+			$result .= $hours . ' ' . __( 'hour(s)', 'learn_press' ) . ' ';
+
 		}
 		if ( $mins ) {
-			$result .= "{$mins} min(s) ";
+			$result .= $mins . ' ' . __( 'min(s)', 'learn_press' ) . ' ';
 		}
 	}
 	$result = rtrim( $result );
@@ -1471,8 +1454,6 @@ function learn_press_custom_rewrite_rule() {
 	$post_types = get_post_types( array( 'name' => 'lpr_course' ), 'objects' );
 	$slug       = $post_types['lpr_course']->rewrite['slug'];
 
-	//add_rewrite_rule('^courses/([^/]*)/([^/]*)/?','index.php','top');
-	//add_rewrite_rule('^'.$slug.'/([^/]*)/([^/]*)/?','index.php?lpr_course=$matches[1]&lesson=$matches[2]','top');
 	add_rewrite_rule( '^' . $slug . '/([^/]*)/([^/]*)/?([^/]*)?/?', 'index.php?lpr_course=$matches[1]&lesson=$matches[2]&section=$matches[3]', 'top' );
 
 }
@@ -1608,7 +1589,7 @@ function become_a_teacher_handler() {
 	global $current_user;
 	get_currentuserinfo();
 
-	$to_email           = array( get_option( 'admin_email' ) );
+	$to_email        = array( get_option( 'admin_email' ) );
 	$message_headers = '';
 	$subject         = 'Please moderate';
 	$notify_message  = sprintf( __( 'The user <a href="%s">%s</a> want to be a teacher.' ), admin_url( 'user-edit.php?user_id=' . $current_user->ID ), $current_user->data->user_login ) . "\r\n";
@@ -1619,7 +1600,7 @@ function become_a_teacher_handler() {
 	$notify_message .= wp_specialchars_decode( sprintf( __( 'Accept: %s' ), admin_url( 'user-edit.php?user_id=' . $current_user->ID ) . '&action=accept-to-be-teacher' ) ) . "\r\n";
 
 	$args = array(
-        $to_email,
+		$to_email,
 		( $subject ),
 		$notify_message,
 		$message_headers
@@ -1638,22 +1619,23 @@ add_action( 'learn_press_frontend_action_become_a_teacher', 'become_a_teacher_ha
 
 function wpdev_141551_translate_user_roles( $translations, $text, $context, $domain ) {
 
-    $plugin_domain = 'learn_press';
+	$plugin_domain = 'learn_press';
 
-    $roles = array(
-        'Instructor',                
-    );
+	$roles = array(
+		'Instructor',
+	);
 
-    if (
-        $context === 'User role'
-        && in_array( $text, $roles )
-        && $domain !== $plugin_domain
-    ) {
-        return translate_with_gettext_context( $text, $context, $plugin_domain );
-    }
+	if (
+		$context === 'User role'
+		&& in_array( $text, $roles )
+		&& $domain !== $plugin_domain
+	) {
+		return translate_with_gettext_context( $text, $context, $plugin_domain );
+	}
 
-    return $translations;
+	return $translations;
 }
+
 add_filter( 'gettext_with_context', 'wpdev_141551_translate_user_roles', 10, 4 );
 
 /**
@@ -1661,39 +1643,40 @@ add_filter( 'gettext_with_context', 'wpdev_141551_translate_user_roles', 10, 4 )
  * @param string
  * @param string
  */
-function learn_press_output_file( $data, $file, $path = null ){
-    if( ! $path ){
-        $path = LPR_PLUGIN_PATH;
-    }
-    ob_start();
-    print_r( $data );
-    $output = ob_get_clean();
-    file_put_contents( $path . '/' . $file, $output );
+function learn_press_output_file( $data, $file, $path = null ) {
+	if ( !$path ) {
+		$path = LPR_PLUGIN_PATH;
+	}
+	ob_start();
+	print_r( $data );
+	$output = ob_get_clean();
+	file_put_contents( $path . '/' . $file, $output );
 }
 
 /**
  * Modifies the statement $where to make the search works correct
  *
  * @param string
+ *
  * @return string
  */
 function learn_press_posts_where_statement_search( $where ) {
-    //gets the global query var object
-    global $wp_query, $wpdb;
+	//gets the global query var object
+	global $wp_query, $wpdb;
 
-    /**
-     * Need to wrap this block into () in order to make it works correctly when filter by specific post type => maybe a bug :)
-     * from => ( wp_2_posts.post_status = 'publish' OR wp_2_posts.post_status = 'private') OR wp_2_terms.name LIKE '%s%'
-     * to => ( ( wp_2_posts.post_status = 'publish' OR wp_2_posts.post_status = 'private') OR wp_2_terms.name LIKE '%s%' )
-     */
+	/**
+	 * Need to wrap this block into () in order to make it works correctly when filter by specific post type => maybe a bug :)
+	 * from => ( wp_2_posts.post_status = 'publish' OR wp_2_posts.post_status = 'private') OR wp_2_terms.name LIKE '%s%'
+	 * to => ( ( wp_2_posts.post_status = 'publish' OR wp_2_posts.post_status = 'private') OR wp_2_terms.name LIKE '%s%' )
+	 */
 
-    // append ( to the start of the block
-    $where = preg_replace( '!(' . $wpdb->posts . '.post_status)!', '( $1', $where, 1 );
+	// append ( to the start of the block
+	$where = preg_replace( '!(' . $wpdb->posts . '.post_status)!', '( $1', $where, 1 );
 
-    // appdn ) to the end of the block
-    $where = preg_replace( '!(OR\s+' . $wpdb->terms . '.name LIKE \'%' . $wp_query->get('s') . '%\')!', '$1 )', $where );
+	// appdn ) to the end of the block
+	$where = preg_replace( '!(OR\s+' . $wpdb->terms . '.name LIKE \'%' . $wp_query->get( 's' ) . '%\')!', '$1 )', $where );
 
-    return $where;
+	return $where;
 }
 
 /**
@@ -1702,10 +1685,11 @@ function learn_press_posts_where_statement_search( $where ) {
  *
  * @param $q
  */
-function learn_press_filter_search( $q ){
-    if( $q->is_main_query() && $q->is_search() && ( ! empty( $_REQUEST['ref'] ) && $_REQUEST['ref'] == 'course' ) ){
-        $q->set( 'post_type', 'lpr_course' );
-        add_filter( 'posts_where' , 'learn_press_posts_where_statement_search' );
-    }
+function learn_press_filter_search( $q ) {
+	if ( $q->is_main_query() && $q->is_search() && ( !empty( $_REQUEST['ref'] ) && $_REQUEST['ref'] == 'course' ) ) {
+		$q->set( 'post_type', 'lpr_course' );
+		add_filter( 'posts_where', 'learn_press_posts_where_statement_search' );
+	}
 }
+
 add_filter( 'pre_get_posts', 'learn_press_filter_search' );

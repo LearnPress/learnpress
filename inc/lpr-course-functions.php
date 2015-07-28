@@ -300,11 +300,7 @@ function learn_press_redirect_quiz_auth( $user_id = null, $quiz_id = null ) {
 			}
 		// redirect if user has not permission to view quiz
 		if ( !$access ) {
-			global $wp_query;
-			$wp_query->set_404();
-			status_header( 404 );
-			get_template_part( 404 );
-			exit();
+			learn_press_404_page();
 		}
 	}
 }
@@ -1012,8 +1008,8 @@ function learn_press_get_quiz_duration( $quiz_id = null ) {
  */
 function learn_press_get_course_price( $course_id = null, $with_currency = false ) {
 	if ( !$course_id ) {
-		global $course;
-		$course_id = $course ? $course->ID : 0;
+		global $post;
+		$course_id = $post ? $post->ID : 0;
 	}
 	if ( !learn_press_is_free_course( $course_id ) ) {
 		$price = floatval( get_post_meta( $course_id, '_lpr_course_price', true ) );
@@ -1034,10 +1030,10 @@ function learn_press_get_course_price( $course_id = null, $with_currency = false
  */
 function learn_press_is_free_course( $course_id = null ) {
 	if ( !$course_id ) {
-		global $course;
-		$course_id = $course ? $course->ID : 0;
+		global $post;
+		$course_id = $post ? $post->ID : 0;
 	}
-	return 'free' == get_post_meta( $course_id, '_lpr_course_payment', true ) || ( 0 >= intval( get_post_meta( $course_id, '_lpr_course_price', true ) ) ) ;
+	return ( 'free' == get_post_meta( $course_id, '_lpr_course_payment', true ) ) || ( 0 >= intval( get_post_meta( $course_id, '_lpr_course_price', true ) ) ) ;
 }
 
 /**
@@ -1062,7 +1058,7 @@ function learn_press_take_course( $course_id, $payment_method = '' ) {
                 )
 			) {
 				learn_press_update_order_status( $order_id, 'Completed' );
-				learn_press_add_message( 'message', __( 'Congratulations! You have enrolled this course' ) );
+				learn_press_add_message( 'message', __( 'Congratulations! You have enrolled this course', 'learn_press' ) );
 				$json = array(
 					'result'   => 'success',
 					'redirect' => ( ( $confirm_page_id = learn_press_get_page_id( 'taken_course_confirm' ) ) && get_post( $confirm_page_id ) ) ? learn_press_get_order_confirm_url( $order_id ) : get_permalink( $course_id )
