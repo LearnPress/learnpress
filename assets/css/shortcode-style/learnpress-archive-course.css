@@ -1,0 +1,26 @@
+a .archive-course:hover {
+	cursor: pointer;
+}
+
+.archive-course {
+	border: 1px solid black;
+	display: table;
+	margin-bottom: 10px;
+	width: 100%;
+}
+
+.course-cover {
+	display: table-cell;
+	height: 100px;
+	width: 100px;
+}
+
+.course-detail {
+	display: table-cell;
+    vertical-align: top;
+    padding-left: 10px;
+}
+
+.course-title {
+	font-weight: bold;
+}
