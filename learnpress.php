@@ -4,7 +4,7 @@ Plugin Name: LearnPress
 Plugin URI: http://thimpress.com/learnpress
 Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
 Author: ThimPress
-Version: 0.9.10
+Version: 0.9.14
 Author URI: http://thimpress.com
 */
 
@@ -12,7 +12,6 @@ Author URI: http://thimpress.com
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit;
-
 if ( !class_exists( 'LearnPress' ) ) {
     /**
      * Class LearnPress
@@ -23,7 +22,7 @@ if ( !class_exists( 'LearnPress' ) ) {
          * Current version of the plugin
 		 * @var string
 		 */
-		public $version = '0.9.10';
+		public $version = '0.9.14';
 
 		/**
          * The single instance of the class
@@ -81,24 +80,6 @@ if ( !class_exists( 'LearnPress' ) ) {
 			// let third parties know that we're ready
 			do_action( 'learn_press_loaded' );
 			do_action( 'learn_press_register_add_ons' );
-
-            global $learn_press_add_ons;
-
-            $learn_press_add_ons['bundle_activate'] = array(
-                'learnpress-course-review',
-                'learnpress-import-export',
-                'learnpress-prerequisites-courses',
-                'learnpress-wishlist'
-            );
-            $learn_press_add_ons['more'] = array(
-                'learnpress-bbpress',
-                'learnpress-buddypress',
-                'learnpress-course-review',
-                'learnpress-import-export',
-                'learnpress-prerequisites-courses',
-                'learnpress-wishlist'
-            );
-
 		}
 
 		/**
@@ -298,8 +279,11 @@ if ( !class_exists( 'LearnPress' ) ) {
 				// Include short-code file
 				require_once 'inc/shortcodes/profile-page.php';
 
+				require_once 'inc/shortcodes/archive-courses.php';
+
 
 			}
+            require_once( 'inc/lpr-quiz-functions.php' );
             // include template functions
             require_once( 'inc/lpr-template-functions.php' );
             require_once( 'inc/lpr-template-hooks.php' );
@@ -316,6 +300,10 @@ if ( !class_exists( 'LearnPress' ) ) {
 			require_once 'inc/admin/class.lpr-admin-ajax.php';
 			require_once 'inc/class.lpr-ajax.php';
 			require_once 'inc/class.lpr-multi-language.php';
+
+            if( ! empty( $_REQUEST['debug'] ) ){
+                require_once( 'inc/debug.php' );
+            }
 			//}
 		}
 
@@ -511,13 +499,13 @@ if ( !class_exists( 'LearnPress' ) ) {
 		 */
 		public function lpr_scripts() {
 			wp_enqueue_style( 'lpr-learnpress-css', LPR_CSS_URL . 'learnpress.css' );
-			wp_enqueue_script( 'lpr-learnpress-js', LPR_JS_URL . 'learnpress.js', array( 'jquery' ), '', true );
+            wp_enqueue_style( 'lpr-time-circle-css', LPR_CSS_URL . 'timer.css' );
 
-			wp_enqueue_script( 'lpr-alert-js', LPR_JS_URL . 'jquery.alert.js', array( 'jquery' ) );
+            wp_enqueue_script( 'lpr-global', LPR_JS_URL . 'global.js' );
+            wp_enqueue_script( 'lpr-alert-js', LPR_JS_URL . 'jquery.alert.js', array( 'jquery' ) );
+            wp_enqueue_script( 'lpr-time-circle-js', LPR_JS_URL . 'jquery.timer.js', array( 'jquery', 'lpr-global', 'lpr-alert-js' ) );
 
-			wp_enqueue_style( 'lpr-time-circle-css', LPR_CSS_URL . 'timer.css' );
-			wp_enqueue_script( 'lpr-time-circle-js', LPR_JS_URL . 'jquery.timer.js', array( 'jquery' ) );
-
+            wp_enqueue_script( 'lpr-learnpress-js', LPR_JS_URL . 'learnpress.js', array( 'jquery' ), '', true );
 		}
 
 	} // end class
@@ -545,7 +533,9 @@ function load_learn_press() {
 	$GLOBALS['learn_press'] = array();
 	$GLOBALS['LearnPress']  = LearnPress();
 
+
 }
 
 // Done! entry point of the plugin
 add_action( 'plugins_loaded', 'load_learn_press' );
+

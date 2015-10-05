@@ -28,20 +28,24 @@ if ( !class_exists( 'RWMB_Course_lesson_Quiz_Field' ) ) {
 
 			LPR_Admin_Assets::add_localize(
                 array(
-                    'confirm_remove_section_lesson' => __( 'Do you want to remove this lesson permanently?' ),
-                    'confirm_remove_section_quiz'   => __( 'Do you want to remove this quiz permanently?' ),
-                    'confirm_remove_section'        => __( 'Do you want to remove this section permanently?' ),
-                    'add_new_quiz'                  => __( 'New quiz added' ),
-                    'add_new_lesson'                => __( 'New lesson added' ),
-                    'add_new_section'               => __( 'New section added' ),
-                    'remove_section_lesson'         => __( 'The lesson removed' ),
-                    'remove_section_quiz'           => __( 'The quiz removed' ),
-                    'remove_section'                => __( 'The section removed' ),
-                    'section_ordered'               => __( 'The ordering completed' ),
-                    'add_lesson_to_section'         => __( 'Lesson added to section complete!' ),
-                    'add_quiz_to_section'           => __( 'Quiz added to section complete!' ),
-                    'update_lesson_quiz'            => __( '%s updated' ),
-                    'quick_edit_name'               => __( 'Click to quick edit name' )
+                    'confirm_remove_section_lesson' => __( 'Do you want to remove this lesson permanently?', 'learn_press' ),
+                    'confirm_remove_section_quiz'   => __( 'Do you want to remove this quiz permanently?', 'learn_press' ),                    
+                    'confirm_remove_section'        => __( 'Do you want to remove this section permanently?', 'learn_press' ),                    
+                    'add_new_quiz'                  => __( 'New quiz added', 'learn_press' ),
+                    'add_new_lesson'                => __( 'New lesson added', 'learn_press' ),
+                    'add_new_section'               => __( 'New section added', 'learn_press' ),
+                    'remove_section_lesson'         => __( 'The lesson removed', 'learn_press' ),
+                    'remove_section_quiz'           => __( 'The quiz removed', 'learn_press' ),
+                    'remove_section'                => __( 'The section removed', 'learn_press' ),
+                    'section_ordered'               => __( 'The ordering completed', 'learn_press' ),
+                    'add_lesson_to_section'         => __( 'Lesson added to section complete!', 'learn_press' ),
+                    'add_quiz_to_section'           => __( 'Quiz added to section complete!', 'learn_press' ),
+                    'update_lesson_quiz'            => __( '%s updated', 'learn_press' ),
+                    'quick_edit_name'               => __( 'Click to quick edit name', 'learn_press' ),
+                    'confirm_remove_section_assignment' => __( 'Do you want to remove this assignment permanently', 'learn_press' ),
+                    'add_new_assignment' 			=> __( 'New assignment added', 'learn_press' ),
+                    'remove_section_assignment'		=> __( 'The assignment removed', 'learn_press' ),
+                    'add_assignment_to_section'		=> __( 'Assignment added to section complete!', 'learn_press' )
                 ), null, 'thim-course'
             );
 		}
@@ -108,9 +112,9 @@ if ( !class_exists( 'RWMB_Course_lesson_Quiz_Field' ) ) {
 						<li class="lpr-curriculum-section<?php echo $is_open ? "" : " closed"; ?>">
 							<h3>
 								<!-- actions -->
-								<span class="lpr-action lpr-toggle" title="<?php _e( 'Expand/Close' ); ?>"><i class="dashicons <?php echo $is_open ? "dashicons-minus" : "dashicons-plus"; ?>"></i></span>
+								<span class="lpr-action lpr-toggle" title="<?php _e( 'Expand/Close', 'learn_press' ); ?>"><i class="dashicons <?php echo $is_open ? "dashicons-minus" : "dashicons-plus"; ?>"></i></span>
 								<span class="lpr-action lpr-sort"><i class="dashicons dashicons-sort"></i></span>
-								<span class="lpr-action lpr-remove" title="<?php _e( 'Remove' ); ?>"><i class="dashicons dashicons-no"></i></span>
+								<span class="lpr-action lpr-remove" title="<?php _e( 'Remove', 'learn_press' ); ?>"><i class="dashicons dashicons-no"></i></span>
 								<!-- // actions -->
 								<span class="lpr-section-icon"><i class="dashicons dashicons-pressthis"></i></span>
 								<span class="lpr-section-name-wrapper"><input name="_lpr_course_lesson_quiz[__SECTION__][name]" type="text" placeholder="Enter the section name and hit enter" class="lpr-section-name" value="<?php echo esc_attr( $section['name'] ); ?>" /></span>
@@ -130,6 +134,7 @@ if ( !class_exists( 'RWMB_Course_lesson_Quiz_Field' ) ) {
 												$item = $items[$id];
 												if ( 'lpr_quiz' == $item->post_type ) $exclude_quiz[] = $item->ID;
 												if ( 'lpr_lesson' == $item->post_type ) $exclude_lesson[] = $item->ID;
+												if ( 'lpr_assignment' == $item->post_type ) $exclude_lesson[] = $item->ID;
 												?>
 												<li class="lpr-<?php echo $item->post_type; ?>" data-id="<?php echo $item->ID; ?>" data-type="<?php echo $item->post_type; ?>">
 													<?php if ( 'lpr_quiz' == $item->post_type ) { ?>
@@ -137,9 +142,9 @@ if ( !class_exists( 'RWMB_Course_lesson_Quiz_Field' ) ) {
 													<?php } else { ?>
 														<span class="handle dashicons dashicons-media-document"></span>
 													<?php } ?>
-													<span class="lpr-title" title="<?php _e( 'Click to quick edit' ); ?>"><?php echo $item->post_title; ?></span>
-													<a href="" class="lpr-remove"><?php _e( 'Remove' ); ?></a>
-													<a href="<?php echo get_edit_post_link( $item->ID ); ?>" target="_blank"><?php _e( 'Edit' ); ?></a>
+													<span class="lpr-title" title="<?php _e( 'Click to quick edit', 'learn_press' ); ?>"><?php echo $item->post_title; ?></span>
+													<a href="" class="lpr-remove"><?php _e( 'Remove', 'learn_press' ); ?></a>
+													<a href="<?php echo get_edit_post_link( $item->ID ); ?>" target="_blank"><?php _e( 'Edit', 'learn_press' ); ?></a>
 													<input type="hidden" name="_lpr_course_lesson_quiz[__SECTION__][lesson_quiz][]" value="<?php echo $item->ID; ?>" />
 												</li>
 											<?php endforeach; ?>
@@ -147,10 +152,10 @@ if ( !class_exists( 'RWMB_Course_lesson_Quiz_Field' ) ) {
 									<?php endif; ?>
 								</ul>
 								<p class="lpr-add-buttons">
-									<button class="button button-primary" data-action="add-lesson"><?php _e( 'Add Lesson' ); ?></button>
-									<button class="button button-primary" data-action="add-quiz"><?php _e( 'Add Quiz' ); ?></button>
-									<button class="button button-primary" data-action="quick-add-lesson"><?php _e( 'Quick add <span>L</span>esson' ); ?></button>
-									<button class="button button-primary" data-action="quick-add-quiz"><?php _e( 'Quick add <span>Q</span>uiz' ); ?></button>
+									<button class="button button-primary" data-action="add-lesson"><?php _e( 'Add Lesson', 'learn_press' ); ?></button>
+									<button class="button button-primary" data-action="add-quiz"><?php _e( 'Add Quiz', 'learn_press' ); ?></button>
+									<button class="button button-primary" data-action="quick-add-lesson"><?php _e( 'Quick add <span>L</span>esson', 'learn_press' ); ?></button>
+									<button class="button button-primary" data-action="quick-add-quiz"><?php _e( 'Quick add <span>Q</span>uiz', 'learn_press' ); ?></button>
 								</p>
 							</div>
 
@@ -159,9 +164,9 @@ if ( !class_exists( 'RWMB_Course_lesson_Quiz_Field' ) ) {
 					<li class="lpr-curriculum-section lpr-empty">
 						<h3>
 							<!-- actions -->
-							<span class="lpr-action lpr-toggle" title="<?php _e( 'Expand/Close' ); ?>"><i class="dashicons dashicons-minus"></i></span>
+							<span class="lpr-action lpr-toggle" title="<?php _e( 'Expand/Close', 'learn_press' ); ?>"><i class="dashicons dashicons-minus"></i></span>
 							<span class="lpr-action lpr-sort"><i class="dashicons dashicons-sort"></i></span>
-							<span class="lpr-action lpr-remove" title="<?php _e( 'Remove' ); ?>"><i class="dashicons dashicons-no"></i></span>
+							<span class="lpr-action lpr-remove" title="<?php _e( 'Remove', 'learn_press' ); ?>"><i class="dashicons dashicons-no"></i></span>
 							<!-- // actions -->
 							<span class="lpr-section-icon"><i class="dashicons dashicons-pressthis"></i></span>
 							<span class="lpr-section-name-wrapper"><input name="_lpr_course_lesson_quiz[__SECTION__][name]" type="text" placeholder="Enter the section name and hit enter" class="lpr-section-name" /></span>
@@ -172,10 +177,10 @@ if ( !class_exists( 'RWMB_Course_lesson_Quiz_Field' ) ) {
 
 							</ul>
 							<p class="lpr-add-buttons">
-								<button class="button button-primary" data-action="add-lesson"><?php _e( 'Add Lesson' ); ?></button>
-								<button class="button button-primary" data-action="add-quiz"><?php _e( 'Add Quiz' ); ?></button>
-								<button class="button button-primary" data-action="quick-add-lesson"><?php _e( 'Quick add <span>L</span>esson' ); ?></button>
-								<button class="button button-primary" data-action="quick-add-quiz"><?php _e( 'Quick add <span>Q</span>uiz' ); ?></button>
+								<button class="button button-primary" data-action="add-lesson"><?php _e( 'Add Lesson', 'learn_press' ); ?></button>
+								<button class="button button-primary" data-action="add-quiz"><?php _e( 'Add Quiz', 'learn_press' ); ?></button>
+								<button class="button button-primary" data-action="quick-add-lesson"><?php _e( 'Quick add <span>L</span>esson', 'learn_press' ); ?></button>
+								<button class="button button-primary" data-action="quick-add-quiz"><?php _e( 'Quick add <span>Q</span>uiz', 'learn_press' ); ?></button>
 							</p>
 						</div>
 
@@ -185,16 +190,16 @@ if ( !class_exists( 'RWMB_Course_lesson_Quiz_Field' ) ) {
 			<script type="text/html" id="tmpl-quick-add-lesson">
 				<div id="lpr-quick-add-lesson-form" class="lpr-quick-add-form">
 					<input type="text" name="" />
-					<button type="button" class="button" data-action="cancel"><?php _e( 'Cancel [ESC]' ); ?></button>
-					<button type="button" class="button" data-action="add"><?php _e( 'Add [Enter]' ); ?></button>
+					<button type="button" class="button" data-action="cancel"><?php _e( 'Cancel [ESC]', 'learn_press' ); ?></button>
+					<button type="button" class="button" data-action="add"><?php _e( 'Add [Enter]', 'learn_press' ); ?></button>
 					<span class="lpr-ajaxload">...</span>
 				</div>
 			</script>
 			<script type="text/html" id="tmpl-quick-add-quiz">
 				<div id="lpr-quick-add-quiz-form" class="lpr-quick-add-form">
 					<input type="text" name="" />
-					<button type="button" class="button" data-action="cancel"><?php _e( 'Cancel [ESC]' ); ?></button>
-					<button type="button" class="button" data-action="add"><?php _e( 'Add [Enter]' ); ?></button>
+					<button type="button" class="button" data-action="cancel"><?php _e( 'Cancel [ESC]', 'learn_press' ); ?></button>
+					<button type="button" class="button" data-action="add"><?php _e( 'Add [Enter]', 'learn_press' ); ?></button>
 					<span class="lpr-ajaxload">...</span>
 				</div>
 			</script>
@@ -202,9 +207,9 @@ if ( !class_exists( 'RWMB_Course_lesson_Quiz_Field' ) ) {
 				<li class="lpr-curriculum-section lpr-empty">
 					<h3>
 						<!-- actions -->
-						<span class="lpr-action lpr-toggle" title="<?php _e( 'Expand/Close' ); ?>"><i class="dashicons dashicons-minus"></i></span>
+						<span class="lpr-action lpr-toggle" title="<?php _e( 'Expand/Close', 'learn_press' ); ?>"><i class="dashicons dashicons-minus"></i></span>
 						<span class="lpr-action lpr-sort"><i class="dashicons dashicons-sort"></i></span>
-						<span class="lpr-action lpr-remove" title="<?php _e( 'Remove' ); ?>"><i class="dashicons dashicons-no"></i></span>
+						<span class="lpr-action lpr-remove" title="<?php _e( 'Remove', 'learn_press' ); ?>"><i class="dashicons dashicons-no"></i></span>
 						<!-- // actions -->
 						<span class="lpr-section-icon"><i class="dashicons dashicons-pressthis"></i></span>
 						<span class="lpr-section-name-wrapper"><input name="_lpr_course_lesson_quiz[__SECTION__][name]" type="text" placeholder="Type section's name and hit enter" class="lpr-section-name" /></span>
@@ -213,10 +218,18 @@ if ( !class_exists( 'RWMB_Course_lesson_Quiz_Field' ) ) {
 					<div class="lpr-curriculum-section-content">
 						<ul class="lpr-section-quiz-less"></ul>
 						<p class="lpr-add-buttons">
-							<button class="button button-primary" data-action="add-lesson"><?php _e( 'Add Lesson' ); ?></button>
-							<button class="button button-primary" data-action="add-quiz"><?php _e( 'Add Quiz' ); ?></button>
-							<button class="button button-primary" data-action="quick-add-lesson"><?php _e( 'Quick add <span>L</span>esson' ); ?></button>
-							<button class="button button-primary" data-action="quick-add-quiz"><?php _e( 'Quick add <span>Q</span>uiz' ); ?></button>
+							<button class="button button-primary" data-action="add-lesson"><?php _e( 'Add Lesson', 'learn_press' ); ?></button>
+							<button class="button button-primary" data-action="add-quiz"><?php _e( 'Add Quiz', 'learn_press' ); ?></button>
+							<button class="button button-primary" data-action="quick-add-lesson"><?php _e( 'Quick add <span>L</span>esson', 'learn_press' ); ?></button>
+							<button class="button button-primary" data-action="quick-add-quiz"><?php _e( 'Quick add <span>Q</span>uiz', 'learn_press' ); ?></button>
+							<?php
+								if( class_exists( 'LPR_Assignment_Post_Type' ) ) {
+									?>
+										<button class="button button-primary" data-action="add-assignment"><?php _e( 'Add Assignment', 'learn_press' ); ?></button>
+										<button class="button button-primary" data-action="quick-add-assignment"><?php _e( 'Quick add Assigment', 'learn_press' ); ?></button>
+									<?php
+								}
+							?>
 						</p>
 					</div>
 				</li>
@@ -229,7 +242,7 @@ if ( !class_exists( 'RWMB_Course_lesson_Quiz_Field' ) ) {
 						<# }else{ #>
 							<span class="handle dashicons dashicons-media-document"></span>
 							<# } #>
-								<span class="lpr-title" title="<?php _e( 'Click to quick edit' ); ?>">{{data.title}}</span><a href="" class="lpr-remove"><?php _e( 'Remove' ); ?></a><a href="<?php echo admin_url( 'post.php?post={{data.id}}&action=edit' );?>" target="_blank"><?php _e( 'Edit' ); ?></a>
+								<span class="lpr-title" title="<?php _e( 'Click to quick edit', 'learn_press' ); ?>">{{data.title}}</span><a href="" class="lpr-remove"><?php _e( 'Remove', 'learn_press' ); ?></a><a href="<?php echo admin_url( 'post.php?post={{data.id}}&action=edit' );?>" target="_blank"><?php _e( 'Edit', 'learn_press' ); ?></a>
 								<input type="hidden" name="_lpr_course_lesson_quiz[__SECTION__][lesson_quiz][]" value="{{data.id}}" />
 				</li>
 			</script>
@@ -263,7 +276,7 @@ if ( !class_exists( 'RWMB_Course_lesson_Quiz_Field' ) ) {
 			<script type="text/html" id="tmpl-lpr-quiz-form">
 				<div id="lpr-quiz-form" class="lpr-dynamic-form">
 					<select name="">
-						<option value=""><?php _e( '--Select a Quiz--' ); ?></option>
+						<option value=""><?php _e( '--Select a Quiz--', 'learn_press' ); ?></option>
 						<?php
 						$query_args = array(
 							'post_type'      => 'lpr_quiz',
@@ -451,7 +464,7 @@ if ( !class_exists( 'RWMB_Course_lesson_Quiz_Field' ) ) {
 				echo '__LPR_JSON__';
 				wp_send_json(
 					array(
-						'message' => __( 'The course is empty' )
+						'message' => __( 'The course is empty', 'learn_press' )
 					)
 				);
 			}
@@ -485,7 +498,7 @@ if ( !class_exists( 'RWMB_Course_lesson_Quiz_Field' ) ) {
             if( ! $is_ajax ) return;
 			wp_send_json(
 				array(
-					'message' => __( 'Success' )
+					'message' => __( 'Success', 'learn_press' )
 				)
 			);
 		}

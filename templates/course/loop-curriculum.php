@@ -12,7 +12,7 @@
         <?php
         foreach ( $curriculum_course['lesson_quiz'] as $lesson_quiz ) {
             $post_type = str_replace( 'lpr_', '', get_post_type( $lesson_quiz ) );
-            if( ! in_array( $post_type, array( 'lesson', 'quiz' ) ) ) continue;
+            if( ! in_array( $post_type, array( 'lesson', 'quiz', 'assignment' ) ) ) continue;
             $args = array(
                 'lesson_quiz'   => $lesson_quiz
             );

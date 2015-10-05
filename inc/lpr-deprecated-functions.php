@@ -3,6 +3,7 @@
  * Place the function will be deprecated or may not used here
  */
 
+echo "This file will not included in anywhere";
 function learn_press_settings_payment()
 {
     ?>
@@ -210,4 +211,36 @@ if ( !function_exists( 'thim_get_currency_symbol' ) ) {
         return apply_filters( 'woocommerce_currency_symbol', $currency_symbol, $currency );
     }
 
+}
+
+add_action( 'wp_ajax_load_curriculum_template', 'load_curriculum_template' );
+function load_curriculum_template() {
+    global $post;
+    $user_id = get_current_user_id();
+
+    if ( isset( $_POST['security'] ) && wp_verify_nonce( $_POST['security'], 'user' . $user_id ) ) {
+        $id = intval( $_POST['id'] );
+
+        if ( get_post_type( $id ) != LPR_COURSE_CPT ) {
+            echo __( 'Invalid ID', 'learn_press' );
+            die();
+        }
+        load_template( LPR_PLUGIN_URL . '/templates/single-course-feature.php' );
+    } else {
+        echo __( 'Unable to take the course', 'learn_press' );
+    }
+
+    die();
+}
+
+// remove author metabox from teachers in editor screen.
+// add_action( 'admin_head-post-new.php', 'learn_press_remove_author_box' );
+// add_action( 'admin_head-post.php', 'learn_press_remove_author_box' );
+function learn_press_remove_author_box() {
+    if ( current_user_can( 'lpr_teacher' ) ) {
+        remove_meta_box( 'authordiv', 'lpr_course', 'normal' );
+        remove_meta_box( 'authordiv', 'lpr_lesson', 'normal' );
+        remove_meta_box( 'authordiv', 'lpr_quiz', 'normal' );
+        remove_meta_box( 'authordiv', 'lpr_question', 'normal' );
+    }
 }

@@ -119,9 +119,13 @@ function learn_press_get_add_ons( $options=array() ) {
     if( ! function_exists( 'get_plugins' ) ){
         require_once( ABSPATH . '/wp-admin/includes/plugin.php' );
     }
+    /*
+     * Delete cache so hook for extra plugin headers works
+     * Do not know why it worked before but now is not
+     */
+    wp_cache_delete( 'plugins', 'plugins' );
+
     $all_plugins = get_plugins();
-
-
     if( $all_plugins ){
         foreach( $all_plugins as $plugin_file => $plugin_data ){
             if( ! empty( $plugin_data['Tags'] ) && preg_match( '!learnpress!', $plugin_data['Tags'] ) ){
@@ -139,11 +143,8 @@ function learn_press_get_add_ons( $options=array() ) {
                 $plugins[$plugin_file]['active_installs'] = 0;
                 $plugins[$plugin_file]['last_updated'] = gmdate ( 'Y-m-d h:iA', strtotime('last Friday', time() ) ) . ' GMT';
             }
-            //print_r($plugins[$plugin_file]);
         }
     }
-
-    //learn_press_get_plugin_data( $plugins );
 
     return $plugins;
 
@@ -473,12 +474,11 @@ function learn_press_get_core_add_ons(){
 }
 
 function learn_press_add_on_header( $headers ){
-    $headers['LearnPress'] = 'LearnPress';
+    $headers['LearnPress']  = 'LearnPress';
     $headers['Tags']        = 'Tags';
     return $headers;
 }
 add_filter( 'extra_plugin_headers', 'learn_press_add_on_header' );
-
 function learn_press_get_plugin_data( $plugins ){
     global $wp_version;
     //$plugins = get_plugins();
@@ -512,7 +512,7 @@ function learn_press_get_plugin_data( $plugins ){
 
     $raw_response = wp_remote_post( $url, $options );
     if ( $ssl && is_wp_error( $raw_response ) ) {
-        trigger_error( __( 'An unexpected error occurred. Something may be wrong with WordPress.org or this server&#8217;s configuration. If you continue to have problems, please try the <a href="https://wordpress.org/support/">support forums</a>.' ) . ' ' . __( '(WordPress could not establish a secure connection to WordPress.org. Please contact your server administrator.)' ), headers_sent() || WP_DEBUG ? E_USER_WARNING : E_USER_NOTICE );
+        trigger_error( __( 'An unexpected error occurred. Something may be wrong with WordPress.org or this server&#8217;s configuration. If you continue to have problems, please try the <a href="https://wordpress.org/support/">support forums</a>.', 'learn_press' ) . ' ' . __( '(WordPress could not establish a secure connection to WordPress.org. Please contact your server administrator.)', 'learn_press' ), headers_sent() || WP_DEBUG ? E_USER_WARNING : E_USER_NOTICE );
         $raw_response = wp_remote_post( $http_url, $options );
     }
     $response = json_decode( wp_remote_retrieve_body( $raw_response ), true );
@@ -570,26 +570,33 @@ function learn_press_get_add_ons_from_wp( $args = null ){
         // Send the locale and installed plugin slugs to the API so it can provide context-sensitive results.
         'locale' => get_locale(),
         'installed_plugins' => get_installed_plugin_slugs(),
-        'search' => $args['search']
+        'search' => $args['search'],
+        'exclude'   => $args['exclude'] // not effect for search, only to build unique id for transient
     );
 
     $transient_key = "learn_press_add_ons" . md5( serialize( $query_args ) );
-
+    delete_transient($transient_key);
     if( $plugins = get_transient( $transient_key ) ){
-        $this->items = $plugins;
-        return;
-    }
 
-    $api = plugins_api( 'query_plugins', $query_args );
+    }else {
+        learn_press_require_plugins_api();
+        $api = plugins_api('query_plugins', $query_args);
 
-    if ( is_wp_error( $api ) ) {
-        $this->error = $api;
-        return;
-    }
-    if( is_array( $api->plugins ) ) {
-        // filter plugins with tag contains 'learnpress'
-        $plugins = array_filter( $api->plugins, create_function( '$plugin', 'return $plugin->slug != \'learnpress\';' ));
-        set_transient( $transient_key, $plugins, 60 * 5 );
+        if (is_wp_error($api)) {
+            return false;
+        }
+        if (is_array($api->plugins)) {
+            // filter plugins with tag contains 'learnpress'
+            $plugins = array_filter($api->plugins, create_function('$plugin', 'return $plugin->slug != \'learnpress\';'));
+            if( ! empty( $args['exclude'] ) ){
+                for( $n = sizeof( $plugins ), $i = $n - 1; $i >= 0; $i-- ){
+                    if( in_array( $plugins[ $i ]->slug, $args['exclude'] ) ){
+                        unset( $plugins[ $i ] );
+                    }
+                }
+            }
+            set_transient($transient_key, $plugins, 60 * 5);
+        }
     }
     return $plugins;
 }
@@ -602,12 +609,12 @@ function learn_press_get_add_ons_from_wp( $args = null ){
  */
 function learn_press_install_and_active_add_on( $slug ){
 
-    include_once( ABSPATH . 'wp-admin/includes/plugin-install.php' ); //for plugins_api..
+    learn_press_require_plugins_api();
     if ( ! class_exists( 'Plugin_Upgrader', false ) ) {
         require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
     }
     $api    = plugins_api('plugin_information', array('slug' => $slug, 'fields' => array('sections' => false) ) );
-    $title  = sprintf( __('Installing Plugin: %s'), $api->name . ' ' . $api->version );
+    $title  = sprintf( __('Installing Plugin: %s', 'learn_press'), $api->name . ' ' . $api->version );
     $nonce  = 'install-plugin_' . $slug;
     $url    = 'update.php?action=install-plugin&plugin=' . urlencode( $slug );
 
@@ -668,3 +675,9 @@ function learn_press_upgrader_post_install( $a, $b, $result){
     }
 }
 add_filter( 'upgrader_post_install', 'learn_press_upgrader_post_install', 10, 3 );
+
+function learn_press_require_plugins_api(){
+    if( ! function_exists( 'plugins_api' ) ){
+        include_once( ABSPATH . 'wp-admin/includes/plugin-install.php' );
+    }
+}

@@ -22,10 +22,30 @@ class LPR_Anonymous_User_Quiz{
         add_filter( 'learn_press_user_has_passed_course', array( $this, 'user_has_passed_course' ), 999, 3 );
         add_filter( 'learn_press_get_user_quiz_time', array( $this, 'user_quiz_time' ), 999, 3 );
 
+        add_filter( 'learn_press_get_user_quiz_questions', array( $this, 'user_quiz_questions' ), 10, 3 );
+        add_filter( 'learn_press_user_quiz_start_time', array( $this, 'quiz_start_time' ), 10, 3 );
         //add_filter( 'learn_press_reset_user_quiz', array( $this, 'reset_user_quiz'), 999, 3 );
 
     }
 
+    function quiz_start_time( $time, $quiz_id, $user_id ){
+        $course_id = learn_press_get_course_by_quiz( $quiz_id );
+        $session = LPR_Session::instance();
+        $quiz = $session->get('anonymous_quiz');
+        if( ( 'no' == get_post_meta( $course_id, '_lpr_course_enrolled_require', true ) ) && isset( $quiz['start'] ) ){
+            $time = $quiz['start'];
+        }
+        return $time;
+    }
+
+    function user_quiz_questions( $quiz_questions, $user_id, $quiz_id ){
+        $course_id = learn_press_get_course_by_quiz( $quiz_id );
+        if( 'no' == get_post_meta( $course_id, '_lpr_course_enrolled_require', true ) ){
+            $quiz_questions = $this->get_questions_for_anonymous_user();
+        }
+
+        return $quiz_questions;
+    }
     function user_quiz_time( $time, $quiz_id, $user_id ){
         if( $this->is_public_quiz( learn_press_get_course_by_quiz( $quiz_id ) ) ){
             $quiz = $this->get_session();
@@ -287,6 +307,7 @@ class LPR_Anonymous_User_Quiz{
                 )
             );
             $continue = false;
+            do_action( 'learn_press_user_start_quiz', $quiz_id, $user_id );
         }
         return $continue;
     }

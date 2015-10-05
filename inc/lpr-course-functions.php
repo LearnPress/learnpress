@@ -3,7 +3,7 @@
  * LearnPress Course Functions
  *
  * @file
- * 
+ *
  * Common functions to manipulate with course, lesson, quiz, questions, etc...
  * Author foobla
  * Created Mar 18 2015
@@ -15,7 +15,7 @@ if ( !defined( 'ABSPATH' ) ) {
 
 /**
  * Get number of lesson in one course
- * 
+ *
  * @param $course_id
  *
  * @return int
@@ -65,12 +65,14 @@ function lpr_get_final_quiz( $course_id ) {
  * @return float|int
  */
 function lpr_course_evaluation( $course_id ) {
-	$user_id          = get_current_user_id();
-	$lesson_completed = get_user_meta( $user_id, '_lpr_lesson_completed', true );
+	$user_id            = get_current_user_id();
+	$lesson_completed   = get_user_meta( $user_id, '_lpr_lesson_completed', true );
+    $all_lessons        = learn_press_get_lessons_in_course( $course_id );
+    $number_lesson      = sizeof( $all_lessons );
 
-	$number_lesson = sizeof( learn_press_get_lessons_in_course( $course_id ) );//lpr_get_number_lesson( $course_id );
 	if ( $lesson_completed && !empty( $lesson_completed[$course_id] ) && $number_lesson != 0 ) {
-		$course_result = sizeof( $lesson_completed[$course_id] ) / $number_lesson;
+        $not_complete = array_diff ( $all_lessons, $lesson_completed[$course_id] );
+		$course_result = ( $number_lesson - sizeof( $not_complete ) ) / $number_lesson;
 	} else {
 		$course_result = 0;
 	}
@@ -398,9 +400,11 @@ function learn_press_quiz_has_questions( $quiz_id = null ) {
 function learn_press_template_include( $template ) {
 	global $post_type;
 	do_action( 'learn_press_before_template_redirect', $post_type );
-	if ( !empty( $post_type ) ) {
+
+    if ( !empty( $post_type ) ) {
 		if ( false !== strpos( $post_type, 'lpr_' ) ) {
-			$lpr_post_type = str_replace( 'lpr_', '', $post_type );
+
+            $lpr_post_type = str_replace( 'lpr_', '', $post_type );
 			$template      = '';
 			if ( is_archive() ) {
 				$template = learn_press_locate_template( 'archive', $lpr_post_type );
@@ -621,21 +625,20 @@ function learn_press_get_quiz_time_remaining( $user_id = null, $quiz_id = null )
 	$meta           = get_user_meta( $user_id, '_lpr_quiz_start_time', true );
 	$quiz_duration  = get_post_meta( $quiz_id, '_lpr_duration', true );
 	$time_remaining = $quiz_duration * 60;
-	if ( !empty( $meta[$quiz_id] ) ) {
-		$quiz_start_time = $meta[$quiz_id];
+    $quiz_start_time = ! empty( $meta[$quiz_id] ) ? $meta[$quiz_id] : 0;
+	$quiz_start_time = apply_filters( 'learn_press_user_quiz_start_time', $quiz_start_time, $quiz_id, $user_id  );
 
-		if ( $quiz_duration ) {
-			$quiz_duration *= 60;
-			$now = time();
+    if ( $quiz_duration && learn_press_user_has_started_quiz( $user_id, $quiz_id ) ) {
+        $quiz_duration *= 60;
+        $now = time();
 
-			if ( $now < $quiz_start_time + $quiz_duration ) {
-				$time_remaining = $quiz_start_time + $quiz_duration - $now;
-			} else {
-				$time_remaining = 0;
-			}
+        if ( $now < $quiz_start_time + $quiz_duration ) {
+            $time_remaining = $quiz_start_time + $quiz_duration - $now;
+        } else {
+            $time_remaining = 0;
+        }
 
-		}
-	}
+    }
 	return apply_filters( 'learn_press_get_quiz_time_remaining', $time_remaining, $user_id, $quiz_id );
 }
 
@@ -813,6 +816,14 @@ function learn_press_frontend_action_start_quiz() {
 add_action( 'learn_press_frontend_action_start_quiz', 'learn_press_frontend_action_start_quiz' );
 add_action( 'learn_press_frontend_action', 'learn_press_update_quiz_time' );
 
+function learn_press_user_start_quiz( $quiz_id, $user_id ){
+    learn_press_send_json(
+        array(
+            'redirect' => learn_press_get_user_question_url( $quiz_id )
+        )
+    );
+}
+add_action( 'learn_press_user_start_quiz', 'learn_press_user_start_quiz', 99, 2 );
 /**
  * get position of current question is displaying in the quiz for user
  *
@@ -899,21 +910,6 @@ function learn_press_init_quiz() {
 add_action( 'wp', 'learn_press_init_quiz' );
 
 /**
- * Convert an object|array to json format and send it to the browser
- * @param $response
- */
-function learn_press_send_json( $response ) {
-	echo '<!--LPR_START-->';
-	@header( 'Content-Type: application/json; charset=' . get_option( 'blog_charset' ) );
-	echo wp_json_encode( $response );
-	echo '<!--LPR_END-->';
-	if ( defined( 'DOING_AJAX' ) && DOING_AJAX )
-		wp_die();
-	else
-		die;
-}
-
-/**
  * create a global variable $course if we found a request variable such as course_id
  */
 function learn_press_init_course() {
@@ -965,15 +961,20 @@ function learn_press_enqueue_script( $code, $script_tag = false ) {
 function learn_press_print_script() {
 	global $learn_press_queued_js, $learn_press_queued_js_tag;
 	if ( !empty( $learn_press_queued_js ) ) {
-		echo "<!-- LearnPress JavaScript -->\n<script type=\"text/javascript\">\njQuery(function($) {\n";
-
+		?>
+        <!-- LearnPress JavaScript -->
+        <script type="text/javascript">jQuery(function($) {
+        <?php
 		// Sanitize
 		$learn_press_queued_js = wp_check_invalid_utf8( $learn_press_queued_js );
 		$learn_press_queued_js = preg_replace( '/&#(x)?0*(?(1)27|39);?/i', "'", $learn_press_queued_js );
 		$learn_press_queued_js = str_replace( "\r", '', $learn_press_queued_js );
 
-		echo $learn_press_queued_js . "\n});\n</script>\n";
-
+		echo $learn_press_queued_js;
+        ?>
+        });
+        </script>
+        <?php
 		unset( $learn_press_queued_js );
 	}
 
@@ -1033,7 +1034,7 @@ function learn_press_is_free_course( $course_id = null ) {
 		global $post;
 		$course_id = $post ? $post->ID : 0;
 	}
-	return ( 'free' == get_post_meta( $course_id, '_lpr_course_payment', true ) ) || ( 0 >= intval( get_post_meta( $course_id, '_lpr_course_price', true ) ) ) ;
+	return ( 'free' == get_post_meta( $course_id, '_lpr_course_payment', true ) ) || ( 0 >= floatval( get_post_meta( $course_id, '_lpr_course_price', true ) ) ) ;
 }
 
 /**
@@ -1083,12 +1084,13 @@ function learn_press_take_course( $course_id, $payment_method = '' ) {
 
 		}
 	} else {
-		learn_press_add_message( 'error', __( 'Sorry! You can not enroll to this course' ) );
+		learn_press_add_message( 'error', __( 'Sorry! You can not enroll to this course', 'learn_press' ) );
 		$json = array(
 			'result'   => 'error',
 			'redirect' => get_permalink( $course_id )
 		);
-		echo '<!--LPR_START-->' . json_encode( $json ) . '<!--LPR_END-->';
+        learn_press_send_json( $json );
+		//echo '<!--LPR_START-->' . json_encode( $json ) . '<!--LPR_END-->';
 	}
 }
 add_filter( 'learn_press_take_course', 'learn_press_take_course', 5, 2 );
@@ -1211,7 +1213,12 @@ function learn_press_get_course_id( $course_id = null ) {
  */
 function learn_press_count_students_enrolled( $course_id = null ) {
 	$course_id = learn_press_get_course_id( $course_id );
-	$count = ( $users = get_post_meta( $course_id, '_lpr_course_user', true ) ) ? sizeof( $users ) : 0;
+	$student = get_post_meta( $course_id, '_lpr_course_student', true );
+	if( $student ) {
+		$count = $student;
+	} else {
+		$count = ( $users = get_post_meta( $course_id, '_lpr_course_user', true ) ) ? sizeof( $users ) : 0;
+	}
 	return apply_filters( 'learn_press_count_student_enrolled_course', $count, $course_id );
 }
 
@@ -1319,17 +1326,6 @@ function learn_press_decrement_user_enrolled( $course_id = null, $count = false 
 }
 
 /**
- * Detect to see if WooCommerce plugin is installed|activated
- * @return bool
- */
-function learn_press_is_woo_activate() {
-    if ( !function_exists( 'is_plugin_active' ) ) {
-        include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
-    }
-    return class_exists( 'WC_Install' ) && is_plugin_active( 'woocommerce/woocommerce.php' );
-}
-
-/**
  * Check to see if a user can retake a quiz they have completed
  * Only for the quiz that allows user can retake
  *
@@ -1342,10 +1338,11 @@ function learn_press_user_can_retake_quiz( $quiz_id = null, $user_id = null ) {
 	if ( !$user_id ) {
 		$user_id = get_current_user_id();
 	}
+
+
 	if ( !$quiz_id || !$user_id ){
         return apply_filters( 'learn_press_anonymous_user_can_retake_quiz', false, $quiz_id );
     }
-
 	if ( ! learn_press_user_has_completed_quiz( $user_id, $quiz_id ) ){
         //apply_filters( 'learn_press_user_can_retake_quiz', $can_retake, $quiz_id, $user_id, $taken, $available );
         return false;
@@ -1466,6 +1463,39 @@ function learn_press_user_can_view_quiz( $quiz_id = null, $user_id = null  ) {
 }
 
 /**
+ * Check to see if user can view a assignment or not
+ *
+ * @param int $user_id
+ * @param int $assignment_id
+ * @return boolean
+ */
+function learn_press_user_can_view_assignment( $assignment_id = null, $user_id = null  ) {
+	if ( !$user_id ) {
+		$user_id = get_current_user_id();
+	}
+	if ( !$assignment_id ) {
+		global $assignment;
+		$assignment_id = $assignment ? $assignment->ID : 0;
+	}
+
+	if ( !$assignment_id ) return false;
+	$course_id = get_post_meta( $assignment_id, '_lpr_course', true );
+
+    $return = false;
+    $enrolled_require = get_post_meta( $course_id, '_lpr_course_enrolled_require', true );
+
+    // check enrolled require
+    if( ! $enrolled_require || $enrolled_require == 'no' ){
+        $return = true;
+    }else{
+        if( learn_press_is_enrolled_course( $course_id ) ){ // user has enrolled course
+            $return = true;
+        }
+    }
+    return apply_filters( 'learn_press_user_can_view_assignment', $return, $assignment_id, $user_id );
+}
+
+/**
  * Short function to check if a lesson id is not passed to a function
  * then try to get it from $_REQUEST
  *
@@ -1508,15 +1538,20 @@ function learn_press_plugin_path( $sub = null ) {
 function learn_press_get_current_question( $quiz_id = null, $user_id = 0 ) {
 	$quiz_id = learn_press_get_quiz_id( $quiz_id );
     if( ! $user_id ) $user_id = get_current_user_id();
-
 	if ( ! $quiz_id ) return false;
+    if( $question_id = learn_press_get_request( 'question' ) ){
 
-	$questions = get_user_meta( $user_id, '_lpr_quiz_current_question', true );
-	$question_id = ( ! empty( $questions ) && ! empty( $questions[ $quiz_id ] ) ) ? $questions[ $quiz_id ] : 0;
-
+    }else {
+        $questions = get_user_meta($user_id, '_lpr_quiz_current_question', true);
+        if( ! empty( $questions ) && ! empty( $questions[ $quiz_id ] ) ){
+            $question_id = $questions[ $quiz_id ];
+        }else{
+            $questions = (array)learn_press_get_user_quiz_questions( $quiz_id, $user_id );
+            $question_id = reset( $questions );
+        }
+    }
     // ver 0.9.5
     $question_id = apply_filters( 'learn_press_get_current_question', $question_id, $quiz_id, $user_id );
-
 	return $question_id;
 }
 
@@ -1661,6 +1696,7 @@ function learn_press_user_has_completed_lesson( $lesson_id = null, $user_id = nu
  */
 function learn_press_get_lessons_in_course( $course_id = null ) {
 	static $lessons = array();
+    if( is_null( $course_id ) ) return array();
 	if ( empty( $lessons[$course_id] ) ) {
 		$course_lessons = array();
 		$curriculum     = get_post_meta( $course_id, '_lpr_course_lesson_quiz', true );
@@ -1957,10 +1993,8 @@ function learn_press_active_user_course( $status, $order_id ) {
 	} else {
 		delete_user_meta( $user->ID, '_lpr_course_time' );
 	}
-
 }
 add_action( 'learn_press_update_order_status', 'learn_press_active_user_course', 10, 2 );
-
 
 /**
  * Calculate the time remain for a course from it is started to now
@@ -1998,22 +2032,25 @@ function learn_press_get_course_remaining_time( $course_id = null, $user_id = nu
  * @param  int $user_id
  * @return array
  */
-function learn_press_get_user_quiz_questions( $quiz_id = null, $user_id = null ) {
+function learn_press_get_user_quiz_questions_deprecated( $quiz_id = null, $user_id = null ) {
 	$quiz_id = learn_press_get_quiz_id( $quiz_id );
 	if ( !$user_id ) $user_id = get_current_user_id();
 
 	$questions = get_user_meta( $user_id, '_lpr_quiz_questions', true );
+    $user_quiz_questions = array();
+    $quiz_questions = array();
 
-
-	if ( $questions && !empty( $questions[$quiz_id] ) ) {
+	if ( $questions && ! empty( $questions[$quiz_id] ) ) {
 		$user_quiz_questions = $questions[$quiz_id];
-		$quiz_questions      = get_post_meta( $quiz_id, '_lpr_quiz_questions', true );
-		if ( $quiz_questions ) $quiz_questions = array_keys( $quiz_questions );
-		else $quiz_questions = array();
-
-		return array_unique( array_merge( $user_quiz_questions, $quiz_questions ) );
 	}
-	return null;
+    if( $quiz_questions = (array)get_post_meta( $quiz_id, '_lpr_quiz_questions', true ) ) {
+        if ( $quiz_questions ){
+            $quiz_questions = array_keys( $quiz_questions );
+        }else {
+            $quiz_questions = array();
+        }
+    }
+    return array_unique( array_merge( $user_quiz_questions, $quiz_questions ) );
 }
 
 /**
@@ -2021,7 +2058,6 @@ function learn_press_get_user_quiz_questions( $quiz_id = null, $user_id = null )
  *
  * @param  int $course_id
  * @param  int $user_id
- *
  * @return boolean
  */
 function learn_press_user_has_passed_conditional( $course_id = null, $user_id = null ) {
@@ -2092,9 +2128,15 @@ function learn_press_get_course_result( $course_id = null, $user_id = null ){
 function learn_press_frontent_script() {
 	if ( defined( 'DOING_AJAX' ) || is_admin() ) return;
 	$translate = array(
-		'confirm_retake_course' => __( 'Be sure you want to retake this course! All your data will be deleted.', 'learn_press' ),
-		'confirm_retake_quiz'   => __( 'Be sure you want to retake this quiz! All your data will be deleted.', 'learn_press' ),
-		'confirm_finish_quiz'   => __( 'Are you sure you want to finish this quiz?', 'learn_press' )
+		'confirm_retake_course'         => __( 'Be sure you want to retake this course! All your data will be deleted.', 'learn_press' ),
+		'confirm_retake_quiz'           => __( 'Be sure you want to retake this quiz! All your data will be deleted.', 'learn_press' ),
+		'confirm_finish_quiz'           => __( 'Are you sure you want to finish this quiz?', 'learn_press' ),
+        'confirm_complete_lesson'       => __( 'Are you sure you want to mark this lesson as completed?', 'learn_press' ),
+        'confirm_finish_course'         => __( 'Are you sure you want to finish this course?', 'learn_press' ),
+        'no_payment_method'             => __( 'Please select a payment method', 'learn_press' ),
+        'you_are_instructor_now'        => __( 'You are an instructor now', 'learn_press' ),
+        'quiz_time_is_over_message'     => __( 'The time is over!', 'learn_press' ),
+        'quiz_time_is_over_title'       => __( 'Time up!', 'learn_press' )
 	);
 	LPR_Assets::add_localize( $translate );
 }
@@ -2116,20 +2158,21 @@ add_action( 'admin_print_scripts', 'learn_press_admin_js_template' );
 
 /**
  * Get related courses
+ *
  * @param  int $number number of related courses you want to get
  * @return array         id of related courses
  */
-function learn_press_get_related_courses( $number ) {	
-	if( is_single() && 'lpr_course' == get_post_type() ) {		
+function learn_press_get_related_courses( $number ) {
+	if( is_single() && 'lpr_course' == get_post_type() ) {
 		$course_id = get_the_id();
 		$terms = get_the_terms( $course_id, 'course_category' );
-		$related_courses = array();				
+		$related_courses = array();
 		if( $terms ) {
 			$terms_args = array();
 			foreach ($terms as $term ) {
 				array_push( $terms_args, $term->slug);
-			}				
-			$args = array( 
+			}
+			$args = array(
 				'post_type' => 'lpr_course',
 				'tax_query' => array (
 					array(
@@ -2180,24 +2223,19 @@ function learn_press_get_related_courses( $number ) {
 function learn_press_tiny_mce_before_init( $initArray ) {
 	global $post_type;
 	if ( ! in_array( $post_type, array( 'lpr_lesson' ) ) ) return $initArray;
-
 	$initArray['setup'] = <<<JS
 [function(ed) {
     ed.on('keyup', function(e) {
-        var ed = tinymce.activeEditor;
-
-        var c = window.char_code,
+        var ed = tinymce.activeEditor,
+            c = window.char_code,
             ed = tinymce.activeEditor;
         if( c == undefined ) c = [];
-
         if( e.keyCode == 76 || e.keyCode == 50 ){
             c.push(e.keyCode);
             console.log( c )
             if(e.keyCode == 50){
-
                 //ed.execCommand('mceInsertContent', false,'<span id="quick_add_link_bookmark"></span>');
             }else if( e.keyCode == 76 ){
-
                 var a = c.pop(), b = c.pop();
                 if( b != 50 ){
                     do{
@@ -2207,7 +2245,6 @@ function learn_press_tiny_mce_before_init( $initArray ) {
                 if( b == 50 && a == 76 ){
                     LearnPress.showLessonQuiz(null, ed);
                 }
-
                 c = [];
             }
         }else{
@@ -2215,7 +2252,6 @@ function learn_press_tiny_mce_before_init( $initArray ) {
                 c = []
             }
         }
-
         window.char_code = c;
     });
 

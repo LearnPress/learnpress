@@ -82,7 +82,7 @@ if ( ! class_exists( 'RWMB_Question_Field' ) ) {
         <script type="text/javascript">var lpr_question_id = <?php echo intval($post_id);?>;</script>
         <div id="lpr-question-options-wrap">
             <select class="lpr-question-types" name="lpr_question[type]" id="lpr_question-type" data-type="<?php echo $question['type'];?>">
-                <option value=""><?php _e('Select...');?></option>
+                <option value=""><?php _e('Select...', 'learn_press' );?></option>
             <?php if( $questions ):?>
                 <?php foreach( $questions as $type ):?>
                     <option value="<?php echo $type;?>" <?php selected( ( isset( $question['type'] ) && $type == $question['type'] ) ? 1 : 0, 1);?>><?php echo LPR_Question_Type::instance( $type )->get_name();?></option>

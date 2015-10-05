@@ -1,12 +1,6 @@
 <?php
 /**
- * @file
- *  
- * LearnPress Core Functions
- *
- * Common functions for both front-end and back-end
- * Created 19 Mar 2015
- * Author foobla
+ * Common functions to manipulate with the quiz
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -396,16 +390,16 @@ if ( !function_exists( 'the_quiz' ) ) {
                 if ( $key == 0 ) { // FIRST QUESTION
                     if ( $key != ( count( $questions['ques'] ) - 1 ) ) // First But not the Last
                     {
-                        echo '<a href="#" class="ques_link right quiz_question nextq" data-quiz="' . $quiz_id . '" data-qid="' . $questions['ques'][( $key + 1 )] . '">' . __( 'Next Question', 'vibe' ) . ' &rsaquo;</a>';
+                        echo '<a href="#" class="ques_link right quiz_question nextq" data-quiz="' . $quiz_id . '" data-qid="' . $questions['ques'][( $key + 1 )] . '">' . __( 'Next Question', 'learn_press' ) . ' &rsaquo;</a>';
                     }
 
                 } elseif ( $key == ( count( $questions['ques'] ) - 1 ) ) { // LAST QUESTION
 
-                    echo '<a href="#" class="ques_link left quiz_question prevq" data-quiz="' . $quiz_id . '" data-qid="' . $questions['ques'][( $key - 1 )] . '">&lsaquo; ' . __( 'Previous Question', 'vibe' ) . '</a>';
+                    echo '<a href="#" class="ques_link left quiz_question prevq" data-quiz="' . $quiz_id . '" data-qid="' . $questions['ques'][( $key - 1 )] . '">&lsaquo; ' . __( 'Previous Question', 'learn_press' ) . '</a>';
 
                 } else {
-                    echo '<a href="#" class="ques_link left quiz_question prevq" data-quiz="' . $quiz_id . '" data-qid="' . $questions['ques'][( $key - 1 )] . '">&lsaquo; ' . __( 'Previous Question', 'vibe' ) . '</a>';
-                    echo '<a href="#" class="ques_link right quiz_question nextq" data-quiz="' . $quiz_id . '" data-qid="' . $questions['ques'][( $key + 1 )] . '">' . __( 'Next Question', 'vibe' ) . ' &rsaquo;</a>';
+                    echo '<a href="#" class="ques_link left quiz_question prevq" data-quiz="' . $quiz_id . '" data-qid="' . $questions['ques'][( $key - 1 )] . '">&lsaquo; ' . __( 'Previous Question', 'learn_press' ) . '</a>';
+                    echo '<a href="#" class="ques_link right quiz_question nextq" data-quiz="' . $quiz_id . '" data-qid="' . $questions['ques'][( $key + 1 )] . '">' . __( 'Next Question', 'learn_press' ) . ' &rsaquo;</a>';
                 }
 
                 echo '</div>';
@@ -453,7 +447,7 @@ if ( !function_exists( 'the_quiz_timer' ) ) {
         } else {
             if ( !$minutes ) {
                 $minutes = 1;
-                echo __( "Duration not Set", "vibe" );
+                echo __( "Duration not Set", "learn_press" );
             } else {
                 $start = 0;
             }
@@ -465,8 +459,8 @@ if ( !function_exists( 'the_quiz_timer' ) ) {
         echo '<div class="quiz_timer ' . ( ( $start ) ? 'start' : '' ) . '" data-time="' . $minutes . '">
       <span class="timer" data-timer="' . $minutes . '"></span>
       <span class="countdown">' . minutes_to_hms( $minutes ) . '</span>
-      <span>' . __( 'Time Remaining', 'vibe' ) . '</span>
-      <span><strong>' . __( 'Mins', 'vibe' ) . '</strong> ' . __( 'Secs', 'vibe' ) . '</span>
+      <span>' . __( 'Time Remaining', 'learn_press' ) . '</span>
+      <span><strong>' . __( 'Mins', 'learn_press' ) . '</strong> ' . __( 'Secs', 'learn_press' ) . '</span>
       </div>';
 
     }
@@ -593,4 +587,149 @@ if ( !function_exists( 'learn_press_setup_quiz_data' ) ) {
         }
         return $quiz;
     }
+}
+
+function learn_press_get_user_question_url( $quiz_id, $current_question_id = 0, $user_id = 0 ){
+    if( ! $current_question_id ){
+        $current_question_id = learn_press_get_current_question( $quiz_id, $user_id );
+    }
+    $permalink = get_the_permalink( $quiz_id );
+    $question_name = get_post_field('post_name', $current_question_id);
+    if( '' != get_option( 'permalink_structure' ) ) {
+        $permalink .= get_post_field('post_name', $current_question_id);
+    }else{
+        $permalink .= ( strpos( $permalink, '?' ) === false ? "?" : "&" ) . "question={$question_name}";
+    }
+    return $permalink;
+}
+/**
+ * Get the permalink of a question with the quiz that contains the question
+ *
+ * @param int $quiz_id
+ * @param int $current_question_id - optional
+ * @param int $user_id - option
+ * @return string
+ */
+function learn_press_get_user_prev_question_url( $quiz_id, $current_question_id = 0, $user_id = 0 ){
+    if( ! $user_id ){
+        $user_id = get_current_user_id();
+    }
+    if( ! $current_question_id ){
+        if( $current_questions = get_user_meta( $user_id, '_lpr_quiz_current_question', true ) ){
+            $current_question_id = ! empty( $current_questions[ $quiz_id ] ) ? $current_questions[ $quiz_id ] : 0;
+        }
+    }
+    $prev_id = learn_press_get_prev_question( $current_question_id, $quiz_id, $user_id );
+    if( $prev_id ){
+        $permalink = get_the_permalink( $quiz_id );
+        $question_name = get_post_field('post_name', $prev_id);
+        if( '' != get_option( 'permalink_structure' ) ) {
+            $permalink .= get_post_field('post_name', $prev_id);
+        }else{
+            $permalink .= ( strpos( $permalink, '?' ) === false ? "?" : "&" ) . "question={$question_name}";
+        }
+    }else{
+        $permalink = '';
+    }
+    return $permalink;
+}
+
+/**
+ * Get the permalink of a question with the quiz that contains the question
+ *
+ * @param int $quiz_id
+ * @param int $current_question_id - optional
+ * @param int $user_id - option
+ * @return string
+ */
+function learn_press_get_user_next_question_url( $quiz_id, $current_question_id = 0, $user_id = 0 ){
+    if( ! $user_id ){
+        $user_id = get_current_user_id();
+    }
+    if( ! $current_question_id ){
+        if( $current_questions = get_user_meta( $user_id, '_lpr_quiz_current_question', true ) ){
+            $current_question_id = ! empty( $current_questions[ $quiz_id ] ) ? $current_questions[ $quiz_id ] : 0;
+        }
+    }
+    $next_id = learn_press_get_next_question( $current_question_id, $quiz_id, $user_id );
+
+    if( $next_id ){
+        $permalink = get_the_permalink( $quiz_id );
+        $question_name = get_post_field('post_name', $next_id);
+        if( '' != get_option( 'permalink_structure' ) ) {
+            $permalink .= get_post_field('post_name', $next_id);
+        }else{
+            $permalink .= ( strpos( $permalink, '?' ) === false ? "?" : "&" ) . "question={$question_name}";
+        }
+    }else{
+        $permalink = '';
+    }
+
+    return apply_filters( 'learn_press_get_user_next_question_url', $permalink, $quiz_id, $current_question_id , $user_id );
+}
+
+function learn_press_get_next_question( $current_question_id, $quiz_id = false, $user_id = false ){
+    if( ! $quiz_id ){
+        $quiz_id = get_the_ID();
+        if( get_post_type( $quiz_id ) != 'lpr_quiz' ){
+            return false;
+        }
+    }
+    if( ! $user_id ){
+        $user_id = get_current_user_id();
+    }
+    $next_id = false;
+    $quiz_questions = learn_press_get_user_quiz_questions( $quiz_id, $user_id );
+    if( ( is_array( $quiz_questions ) && ( $question_pos = array_search( $current_question_id, $quiz_questions ) ) !== false ) ){
+        $next_id = $question_pos < sizeof( $quiz_questions ) - 1 ? $quiz_questions[ $question_pos + 1 ] : false;
+    }
+    return $next_id;
+}
+
+function learn_press_get_prev_question( $current_question_id, $quiz_id = false, $user_id = false ){
+    if( ! $quiz_id ){
+        $quiz_id = get_the_ID();
+        if( get_post_type( $quiz_id ) != 'lpr_quiz' ){
+            return false;
+        }
+    }
+    if( ! $user_id ){
+        $user_id = get_current_user_id();
+    }
+    $quiz_questions = learn_press_get_user_quiz_questions( $quiz_id, $user_id );
+    $prev_id = false;
+    if( ( $question_pos = array_search( $current_question_id, $quiz_questions ) ) !== false ){
+        $prev_id = $question_pos > 0 ? $quiz_questions[ $question_pos - 1 ] : false;
+    }
+    return apply_filters( 'learn_press_get_prev_question', $prev_id, $current_question_id, $quiz_id, $user_id );
+}
+
+function learn_press_get_user_quiz_questions( $quiz_id = null, $user_id = null ){
+    if( ! $user_id ) {
+        $user_id = get_current_user_id();
+    }
+    if( ! $quiz_id ){
+        $quiz_id = get_the_ID();
+        if( get_post_type( $quiz_id ) != 'lpr_quiz' ){
+            return false;
+        }
+    }
+
+    $questions = get_user_meta( $user_id, '_lpr_quiz_questions', true );
+    $user_quiz_questions = array();
+    $quiz_questions = array();
+
+    if ( $questions && ! empty( $questions[$quiz_id] ) ) {
+        $user_quiz_questions = $questions[$quiz_id];
+    }
+    if( $quiz_questions = (array)get_post_meta( $quiz_id, '_lpr_quiz_questions', true ) ) {
+        if ( $quiz_questions ){
+            $quiz_questions = array_keys( $quiz_questions );
+        }else {
+            $quiz_questions = array();
+        }
+    }
+    $quiz_questions = array_unique( array_merge( $user_quiz_questions, $quiz_questions ) );
+
+    return apply_filters( 'learn_press_get_user_quiz_questions', $quiz_questions, $quiz_id, $user_id );
 }

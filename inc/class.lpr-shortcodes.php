@@ -52,14 +52,14 @@ class LPR_Shortcodes{
         }
 
         if( ! empty( $_REQUEST['become-a-teacher-send'] ) ){
-            return __( 'Your request has been sent! We will get in touch with you soon!' );
+            return __( 'Your request has been sent! We will get in touch with you soon!', 'learn_press' );
         }
         get_currentuserinfo();
         $atts = shortcode_atts(
             array(
                 'method'                => 'post',
                 'action'                => '',
-                'title'                 => __( 'Become a Teacher' ),
+                'title'                 => __( 'Become a Teacher', 'learn_press' ),
                 'description'           => __( 'Fill out your information and send to us to become a teacher', 'learn_press' ),
                 'submit_button_text'    => __( 'Submit', 'learn_press' )
             ),
@@ -111,6 +111,7 @@ class LPR_Shortcodes{
                         if ( code.indexOf( '<!--LPR_END-->' ) >= 0 )
                             code = code.split( '<!--LPR_END-->' )[0];
                         var result = $.parseJSON( code );
+                        return;
                         if( ! result.error.length ){
                             var url = window.location.href;
                             if( url.indexOf('?') != -1 ) url += '&'
@@ -166,8 +167,6 @@ class LPR_Shortcodes{
         </script>
         <?php
         do_action( 'learn_press_after_profile_content' );
-       
-
     }
 }
 LPR_Shortcodes::init();

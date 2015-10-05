@@ -9,25 +9,25 @@ class LPR_Upgrader{
 
         }
 
-        $this->strings['bad_request'] = __('Invalid Data provided.');
-        $this->strings['fs_unavailable'] = __('Could not access filesystem.');
-        $this->strings['fs_error'] = __('Filesystem error.');
-        $this->strings['fs_no_root_dir'] = __('Unable to locate WordPress Root directory.');
-        $this->strings['fs_no_content_dir'] = __('Unable to locate WordPress Content directory (wp-content).');
-        $this->strings['fs_no_plugins_dir'] = __('Unable to locate WordPress Plugin directory.');
-        $this->strings['fs_no_themes_dir'] = __('Unable to locate WordPress Theme directory.');
+        $this->strings['bad_request'] = __('Invalid Data provided.', 'learn_press' );
+        $this->strings['fs_unavailable'] = __('Could not access filesystem.', 'learn_press' );
+        $this->strings['fs_error'] = __('Filesystem error.', 'learn_press' );
+        $this->strings['fs_no_root_dir'] = __('Unable to locate WordPress Root directory.', 'learn_press' );
+        $this->strings['fs_no_content_dir'] = __('Unable to locate WordPress Content directory (wp-content).', 'learn_press' );
+        $this->strings['fs_no_plugins_dir'] = __('Unable to locate WordPress Plugin directory.', 'learn_press' );
+        $this->strings['fs_no_themes_dir'] = __('Unable to locate WordPress Theme directory.', 'learn_press' );
         /* translators: %s: directory name */
-        $this->strings['fs_no_folder'] = __('Unable to locate needed folder (%s).');
+        $this->strings['fs_no_folder'] = __('Unable to locate needed folder (%s).', 'learn_press' );
 
-        $this->strings['download_failed'] = __('Download failed.');
-        $this->strings['installing_package'] = __('Installing the latest version&#8230;');
-        $this->strings['no_files'] = __('The package contains no files.');
-        $this->strings['folder_exists'] = __('Destination folder already exists.');
-        $this->strings['mkdir_failed'] = __('Could not create directory.');
-        $this->strings['incompatible_archive'] = __('The package could not be installed.');
+        $this->strings['download_failed'] = __('Download failed.', 'learn_press' );
+        $this->strings['installing_package'] = __('Installing the latest version&#8230;', 'learn_press' );
+        $this->strings['no_files'] = __('The package contains no files.', 'learn_press' );
+        $this->strings['folder_exists'] = __('Destination folder already exists.', 'learn_press' );
+        $this->strings['mkdir_failed'] = __('Could not create directory.', 'learn_press' );
+        $this->strings['incompatible_archive'] = __('The package could not be installed.', 'learn_press' );
 
-        $this->strings['maintenance_start'] = __('Enabling Maintenance mode&#8230;');
-        $this->strings['maintenance_end'] = __('Disabling Maintenance mode&#8230;');
+        $this->strings['maintenance_start'] = __('Enabling Maintenance mode&#8230;', 'learn_press' );
+        $this->strings['maintenance_end'] = __('Disabling Maintenance mode&#8230;', 'learn_press' );
 
         $directories = wp_parse_args( $directories, array( WP_CONTENT_DIR ) );
 

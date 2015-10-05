@@ -183,8 +183,7 @@ class LPR_Question_Type_Multi_Choice extends LPR_Question_Type{
             </ul>
             <?php 
                 $question = get_post( $this->get('ID') );
-                $question_content = $question->post_content;
-                echo $question_content;
+                $question_content = $question->post_content;                
                 if( !empty($question_content) ) :
             ?>
 

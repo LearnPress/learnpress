@@ -7,6 +7,22 @@ if ( !defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly
 }
 
+global $learn_press_add_ons;
+
+$learn_press_add_ons['bundle_activate'] = array(
+    'learnpress-course-review',
+    'learnpress-import-export',
+    'learnpress-prerequisites-courses',
+    'learnpress-wishlist'
+);
+$wp_plugins = learn_press_get_add_ons_from_wp( array( 'exclude' => $learn_press_add_ons['bundle_activate'] ) );
+if( $wp_plugins ) {
+    $wp_plugins = array_map( create_function( '$a', 'return $a->slug;' ), $wp_plugins );
+    $learn_press_add_ons['more'] = $wp_plugins;
+}else{
+    $learn_press_add_ons['more'] = array();
+}
+
 require_once( LPR_PLUGIN_PATH . '/inc/admin/class-lpr-upgrader.php');
 /**
  * Default tabs for add ons page
@@ -147,9 +163,14 @@ function learn_press_add_ons_content_tab_disabled( $current ){
 add_action( 'learn_press_add_ons_content_tab_disabled', 'learn_press_add_ons_content_tab_disabled' );
 
 function learn_press_add_ons_content_tab_more( $current ){
+    global $learn_press_add_ons;
     require_once LPR_PLUGIN_PATH . '/inc/admin/class-lpr-plugin-install-list-table.php';
     $list_table = new LPR_Plugin_Install_List_Table();
-    $list_table->prepare_items();
+    if( 'more' == $current ) {
+        $list_table->prepare_items(array('exclude' => $learn_press_add_ons['bundle_activate']));
+    }else{
+        $list_table->prepare_items();
+    }
     $total_pages = $list_table->get_pagination_arg( 'total_pages' );
     echo '<div class="learn-press-add-ons">';
     $list_table->display();
@@ -194,7 +215,7 @@ function learn_press_output_add_ons_list( $add_ons, $tab = '' ){
             $action_links[] = '<input data-state="disabled" type="checkbox" class="lpr-fancy-checkbox" data-plugin="' . $file . '" data-url="'.wp_nonce_url( "plugins.php?action=activate&plugin={$file}", 'activate-plugin_' . $file ).'" />';
         }
 
-        $date_format = __( 'M j, Y @ H:i' );
+        $date_format = 'M j, Y @ H:i';
         $last_updated_timestamp = strtotime( $add_on['last_updated'] );
 
         ?>
@@ -213,7 +234,7 @@ function learn_press_output_add_ons_list( $add_ons, $tab = '' ){
                 </div>
 				<div class="desc column-description">
 					<p><?php echo $add_on['Description'];?></p>
-					<p class="authors"><?php printf( __( '<cite>By <a href="%s">%s</a></cite>' ), $add_on['AuthorURI'], $add_on['Author'] );?></p>
+					<p class="authors"><?php printf( __( '<cite>By <a href="%s">%s</a></cite>', 'learn_press'  ), $add_on['AuthorURI'], $add_on['Author'] );?></p>
 				</div>
 			</div>
 			<div class="plugin-card-bottom">
@@ -222,8 +243,8 @@ function learn_press_output_add_ons_list( $add_ons, $tab = '' ){
                         <span class="num-ratings">(<?php echo number_format_i18n( $add_on['num_ratings'] ); ?>)</span>
                     </div>
                     <div class="column-updated">
-                        <strong><?php _e( 'Last Updated:' ); ?></strong> <span title="<?php echo esc_attr( date_i18n( $date_format, $last_updated_timestamp ) ); ?>">
-						<?php printf( __( '%s ago' ), human_time_diff( $last_updated_timestamp ) ); ?>
+                        <strong><?php _e( 'Last Updated:', 'learn_press'  ); ?></strong> <span title="<?php echo esc_attr( date_i18n( $date_format, $last_updated_timestamp ) ); ?>">
+						<?php printf( __( '%s ago', 'learn_press'  ), human_time_diff( $last_updated_timestamp ) ); ?>
 					    </span>
                     </div>
                     <div class="column-downloaded">
@@ -233,17 +254,17 @@ function learn_press_output_add_ons_list( $add_ons, $tab = '' ){
                         } else {
                             $active_installs_text = number_format_i18n( $add_on['active_installs'] ) . '+';
                         }
-                        printf( __( '%s Active Installs' ), $active_installs_text );
+                        printf( __( '%s Active Installs', 'learn_press'  ), $active_installs_text );
                         ?>
                     </div>
                     <div class="column-compatibility">
                         <?php
                         if ( ! empty( $add_on['tested'] ) && version_compare( substr( $GLOBALS['wp_version'], 0, strlen( $add_on['tested'] ) ), $add_on['tested'], '>' ) ) {
-                            echo '<span class="compatibility-untested">' . __( 'Untested with your version of WordPress' ) . '</span>';
+                            echo '<span class="compatibility-untested">' . __( 'Untested with your version of WordPress', 'learn_press'  ) . '</span>';
                         } elseif ( ! empty( $plugin['requires'] ) && version_compare( substr( $GLOBALS['wp_version'], 0, strlen( $add_on['requires'] ) ), $add_on['requires'], '<' ) ) {
-                            echo '<span class="compatibility-incompatible">' . __( '<strong>Incompatible</strong> with your version of WordPress' ) . '</span>';
+                            echo '<span class="compatibility-incompatible">' . __( '<strong>Incompatible</strong> with your version of WordPress', 'learn_press'  ) . '</span>';
                         } else {
-                            echo '<span class="compatibility-compatible">' . __( '<strong>Compatible</strong> with your version of WordPress' ) . '</span>';
+                            echo '<span class="compatibility-compatible">' . __( '<strong>Compatible</strong> with your version of WordPress', 'learn_press'  ) . '</span>';
                         }
                         ?>
                     </div>
@@ -323,8 +344,8 @@ class LPR_Plugins_List_Table extends WP_List_Table {
 
         return array(
             'cb'          => !in_array( $status, array( 'mustuse', 'dropins' ) ) ? '<input type="checkbox" />' : '',
-            'name'        => __( 'Plugin' ),
-            'description' => __( 'Description' ),
+            'name'        => __( 'Plugin', 'learn_press'  ),
+            'description' => __( 'Description', 'learn_press'  ),
         );
     }
 
@@ -383,16 +404,16 @@ class LPR_Plugins_List_Table extends WP_List_Table {
         $actions = array();
 
         if ( 'active' != $status )
-            $actions['activate-selected'] = $this->screen->in_admin( 'network' ) ? __( 'Network Activate' ) : __( 'Activate' );
+            $actions['activate-selected'] = $this->screen->in_admin( 'network' ) ? __( 'Network Activate', 'learn_press'  ) : __( 'Activate', 'learn_press'  );
 
         if ( 'inactive' != $status && 'recent' != $status )
-            $actions['deactivate-selected'] = $this->screen->in_admin( 'network' ) ? __( 'Network Deactivate' ) : __( 'Deactivate' );
+            $actions['deactivate-selected'] = $this->screen->in_admin( 'network' ) ? __( 'Network Deactivate', 'learn_press'  ) : __( 'Deactivate', 'learn_press'  );
 
         if ( !is_multisite() || $this->screen->in_admin( 'network' ) ) {
             if ( current_user_can( 'update_plugins' ) )
-                $actions['update-selected'] = __( 'Update' );
+                $actions['update-selected'] = __( 'Update', 'learn_press'  );
             if ( current_user_can( 'delete_plugins' ) && ( 'active' != $status ) )
-                $actions['delete-selected'] = __( 'Delete' );
+                $actions['delete-selected'] = __( 'Delete', 'learn_press'  );
         }
 
         return $actions;
@@ -438,9 +459,9 @@ class LPR_Plugins_List_Table extends WP_List_Table {
 
 
         if ( $is_active ) {
-            $actions['deactivate'] = '<a href="' . wp_nonce_url('plugins.php?action=deactivate&amp;plugin=' . $plugin_file . '&amp;plugin_status=' . $context . '&amp;paged=' . $page . '&amp;s=' . $s, 'deactivate-plugin_' . $plugin_file) . '" title="' . esc_attr__('Disable this plugin') . '">' . __('Disable') . '</a>';
+            $actions['deactivate'] = '<a href="' . wp_nonce_url('plugins.php?action=deactivate&amp;plugin=' . $plugin_file . '&amp;plugin_status=' . $context . '&amp;paged=' . $page . '&amp;s=' . $s, 'deactivate-plugin_' . $plugin_file) . '" title="' . esc_attr__('Disable this plugin', 'learn_press' ) . '">' . __('Disable', 'learn_press' ) . '</a>';
         } else {
-            $actions['activate'] = '<a href="' . wp_nonce_url('plugins.php?action=activate&amp;plugin=' . $plugin_file . '&amp;plugin_status=' . $context . '&amp;paged=' . $page . '&amp;s=' . $s, 'activate-plugin_' . $plugin_file) . '" title="' . esc_attr__('Enable this plugin') . '" class="edit">' . __('Enable') . '</a>';
+            $actions['activate'] = '<a href="' . wp_nonce_url('plugins.php?action=activate&amp;plugin=' . $plugin_file . '&amp;plugin_status=' . $context . '&amp;paged=' . $page . '&amp;s=' . $s, 'activate-plugin_' . $plugin_file) . '" title="' . esc_attr__('Enable this plugin', 'learn_press' ) . '" class="edit">' . __('Enable', 'learn_press' ) . '</a>';
         }
 
         $actions = apply_filters( $prefix . 'plugin_action_links', array_filter( $actions ), $plugin_file, $plugin_data, $context );
@@ -453,7 +474,7 @@ class LPR_Plugins_List_Table extends WP_List_Table {
                 $style = ' style="display:none;"';
 
             $checkbox_id =  "checkbox_" . md5($plugin_data['Name']);
-            $checkbox = "<label class='screen-reader-text' for='" . $checkbox_id . "' >" . sprintf( __( 'Select %s' ), $plugin_data['Name'] ) . "</label>"
+            $checkbox = "<label class='screen-reader-text' for='" . $checkbox_id . "' >" . sprintf( __( 'Select %s', 'learn_press'  ), $plugin_data['Name'] ) . "</label>"
                 . "<input type='checkbox' name='checked[]' value='" . esc_attr( $plugin_file ) . "' id='" . $checkbox_id . "' />";
 
             switch ($column_name) {

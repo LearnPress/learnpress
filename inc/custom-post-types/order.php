@@ -296,16 +296,16 @@ if( ! class_exists( 'LPR_Order_Post_Type' ) ) {
                     break;
                 case 'order_date' :
 
-                    $t_time = get_the_time( __( 'Y/m/d g:i:s a' ) );
+                    $t_time = get_the_time( 'Y/m/d g:i:s a' );
                     $m_time = $post->post_date;
                     $time = get_post_time( 'G', true, $post );
 
                     $time_diff = time() - $time;
 
                     if ( $time_diff > 0 && $time_diff < DAY_IN_SECONDS )
-                        $h_time = sprintf( __( '%s ago' ), human_time_diff( $time ) );
+                        $h_time = sprintf( __( '%s ago', 'learn_press' ), human_time_diff( $time ) );
                     else
-                        $h_time = mysql2date( __( 'Y/m/d' ), $m_time );
+                        $h_time = mysql2date( 'Y/m/d', $m_time );
 
                     echo '<abbr title="' . esc_attr($t_time) . '">' . esc_html(apply_filters('learn_press_order_column_time', $h_time, $the_order)) . '</abbr>';
 
@@ -318,7 +318,7 @@ if( ! class_exists( 'LPR_Order_Post_Type' ) ) {
                         }
                         echo join("<br />", $links);
                     else:
-                        _e( "Course has been removed");
+                        _e( "Course has been removed", 'learn_press' );
                     endif;
 
                     break;
@@ -401,7 +401,7 @@ if( ! class_exists( 'LPR_Order_Post_Type' ) ) {
             // Remove screen options tab
             //add_filter('screen_options_show_screen', '__return_false');
 
-            add_meta_box('order_details', __('Order Details'), array($this, 'order_details'), 'lpr_order', 'normal', 'core');
+            add_meta_box('order_details', __('Order Details', 'learn_press' ), array($this, 'order_details'), 'lpr_order', 'normal', 'core');
         }
 
         function order_details($post)
@@ -429,14 +429,14 @@ if( ! class_exists( 'LPR_Order_Post_Type' ) ) {
                     </div>
                     <div class="order-user-meta">
                         <h2 class="user-display-name">
-                            <?php esc_attr_e(empty($user->display_name) ? 'Unknow' : $user->display_name); ?>
+                            <?php echo empty($user->display_name) ? __('Unknown', 'learn_press') : $user->display_name; ?>
                         </h2>
 
                         <div class="user-email">
-                            <?php esc_attr_e(empty($user->user_email) ? 'Unknow' : $user->user_email); ?>
+                            <?php echo empty($user->user_email) ? __('Unknown', 'learn_press') : $user->user_email; ?>
                         </div>
                         <div class="user-ip-address">
-                            <?php esc_attr_e(get_post_meta($post->ID, '_learn_press_customer_ip', true)); ?>
+                            <?php echo get_post_meta($post->ID, '_learn_press_customer_ip', true);  ?>
                         </div>
                     </div>
                 </div>

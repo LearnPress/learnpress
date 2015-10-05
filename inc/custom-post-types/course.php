@@ -185,7 +185,7 @@ if ( !class_exists( 'LPR_Course_Post_Type' ) ) {
 					// ),
 					array(
 						'name' => __( 'Number of Students Enrolled', 'learn_press' ),
-						'id'   => "{$prefix}course_number_student",
+						'id'   => "{$prefix}course_student",
 						'type' => 'number',
 						'desc' => __('The number of students took this course', 'learn_press'),
 						'std'  => 0,

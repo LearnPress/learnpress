@@ -57,7 +57,7 @@ if ( !class_exists( 'LPR_Admin_Ajax' ) ) {
                         }
                     }
                     if( ! class_exists( 'LPR_Import' ) ) {
-                        $response['error'] = __('Import/Export addon not found');
+                        $response['error'] = __('Import/Export addon not found', 'learn_press' );
                     }else {
                         $importer = new LPR_Import();
                         $import_source = LPR_PLUGIN_PATH . '/dummy-data/learnpress-how-to-use-learnpress.xml';
@@ -69,17 +69,17 @@ if ( !class_exists( 'LPR_Admin_Ajax' ) ) {
                         if( file_exists( $copy ) ) {
                             $result = $importer->import( $copy );
                             if ($result == 1) {
-                                $response['success'] = __('Import sample data successfully. The page will reload now!');
+                                $response['success'] = __('Import sample data successfully. The page will reload now!', 'learn_press' );
                                 $response['redirect'] = admin_url('edit.php?post_type=lpr_course');
                             } else {
-                                $response['error'] = __('Unknown error when importing sample data. Please try again!');
+                                $response['error'] = __('Unknown error when importing sample data. Please try again!', 'learn_press' );
                             }
                         }else{
-                            $response['error'] = __('Dummy sample data not found. Please try again!');
+                            $response['error'] = __('Dummy sample data not found. Please try again!', 'learn_press' );
                         }
                     }
                 }else {
-                    $response['error'] = __('Unknown error when installing/activating Import/Export addon. Please try again!');
+                    $response['error'] = __('Unknown error when installing/activating Import/Export addon. Please try again!', 'learn_press' );
                 }
             }
             learn_press_send_json( $response );
@@ -95,7 +95,7 @@ if ( !class_exists( 'LPR_Admin_Ajax' ) ) {
             $response = array( 'addons' => array() );
 
             if (!current_user_can('activate_plugins')){
-                $response['error'] = __('You do not have sufficient permissions to deactivate plugins for this site.');
+                $response['error'] = __('You do not have sufficient permissions to deactivate plugins for this site.', 'learn_press' );
             }else {
 
                 $add_ons = $learn_press_add_ons['bundle_activate'];
@@ -116,7 +116,7 @@ if ( !class_exists( 'LPR_Admin_Ajax' ) ) {
             $response = array();
             include_once( ABSPATH . 'wp-admin/includes/plugin-install.php' ); //for plugins_api..
             if (!current_user_can('activate_plugins')){
-                $response['error'] = __('You do not have sufficient permissions to deactivate plugins for this site.');
+                $response['error'] = __('You do not have sufficient permissions to deactivate plugins for this site.', 'learn_press' );
             }else {
                 $slug = ! empty( $_REQUEST['plugin'] ) ? $_REQUEST['plugin'] : null;
                 $response[$slug] = learn_press_install_and_active_add_on( $slug );
@@ -136,7 +136,7 @@ if ( !class_exists( 'LPR_Admin_Ajax' ) ) {
             $t = !empty($_REQUEST['t']) ? $_REQUEST['t'] : '';
             $response = array();
             if (!current_user_can('activate_plugins')){
-                $response['error'] = __('You do not have sufficient permissions to deactivate plugins for this site.');
+                $response['error'] = __('You do not have sufficient permissions to deactivate plugins for this site.', 'learn_press' );
             }
             if( $plugin && $t ){
                 if( $t == 'activate' ){
@@ -193,7 +193,7 @@ if ( !class_exists( 'LPR_Admin_Ajax' ) ) {
                 $response['html'] = '<a href="' . get_edit_post_link( $page_id ) . '" target="_blank">' . __( 'Edit Page', 'learn_press' ) . '</a>&nbsp;';
                 $response['html'] .= '<a href="' . get_permalink( $page_id ) . '" target="_blank">' . __( 'View Page', 'learn_press' ) . '</a>';
             }else{
-                $response['error'] = __( 'Page name is empty!');
+                $response['error'] = __( 'Page name is empty!', 'learn_press' );
             }
             wp_send_json( $response );
             die();

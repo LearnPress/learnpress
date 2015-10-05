@@ -10,6 +10,7 @@ add_action( 'learn_press_entry_footer_archive', 'learn_press_course_instructor',
 add_action( 'learn_press_entry_footer_archive', 'learn_press_course_categories', 40 );
 add_action( 'learn_press_entry_footer_archive', 'learn_press_course_tags', 50 );
 
+
 // Single landing course
 // add_action( 'learn_press_course_landing_content', 'the_excerpt', 10 );
 add_action( 'learn_press_course_landing_content', 'learn_press_course_price', 30 );
@@ -90,4 +91,8 @@ add_filter( 'learn_press_get_template_part', 'learn_press_permission_to_view_pag
 add_filter( 'template_include', 'learn_press_permission_to_view_page' );
 // Confirm order
 add_action( 'learn_press_confirm_order', 'learn_press_order_details_table' );
+
+//add_filter( 'learn_press_get_current_question', 'learn_press_get_current_question_filter', 10, 3 );
+
+add_action( 'template_redirect', 'learn_press_redirect_to_question' );
 

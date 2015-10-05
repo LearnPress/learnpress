@@ -16,6 +16,14 @@ class LPR_Settings_General {
 		<table class="form-table">
 			<tbody>
 			<?php do_action( 'learn_press_before_general_settings_fields', $settings ); ?>
+            <tr>
+                <th scope="row"><label for="lpr_set_page"><?php _e( 'Instructors registration', 'learn_press' ); ?></label></th>
+                <td>
+                    <input type="hidden" name="learn_press[instructor_registration]" value="0">
+                    <input type="checkbox" name="learn_press[instructor_registration]" value="1" <?php checked( $settings->get( 'instructor_registration' ) ? true : false, true );?> />
+                    <p class="description"><?php _e( 'Create option for instructors registration', 'learn_press' );?></p>
+                </td>
+            </tr>
 			<tr>
 				<th scope="row"><label for="lpr_set_page"><?php _e( 'Profile methods', 'learn_press' ); ?></label></th>
 				<td>
@@ -34,9 +42,9 @@ class LPR_Settings_General {
 					<?php
 					$payment = get_option( '_lpr_payment_settings', array() );
 					$disable = '';
-					if ( isset( $payment['woocommerce']['active'] ) && learn_press_woo_is_active() ) {
+					/**if ( isset( $payment['woocommerce']['active'] ) && learn_press_woo_is_active() ) {
 						$disable = 'readonly"';
-					}
+					}*/
 					?>
 					<select <?php echo $disable; ?> id="lpr_currency" name="learn_press[currency]">
 						<?php if ( $payment_currencies = learn_press_get_payment_currencies() ) foreach ( $payment_currencies as $code => $symbol ) { ?>

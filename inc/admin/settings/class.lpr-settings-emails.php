@@ -123,12 +123,11 @@ class LPR_Settings_Emails extends LPR_Settings_Base {
 		$default_subject = 'Course Registration';
 		$default_message = '<strong>Dear {user_name}</strong>,
 
-<p>You have been enrolled in <a href="{course_link}">{course_name}</a>.</p>
-<p>Visit our website at {log_in}.</p>
+							<p>You have been enrolled in <a href="{course_link}">{course_name}</a>.</p>
+							<p>Visit our website at {log_in}.</p>
 
-<p>Best regards,</p>
-<em>Administration</em>';
-
+							<p>Best regards,</p>
+							<em>Administration</em>';
 		?>
 
 		<table class="form-table">
@@ -169,11 +168,11 @@ class LPR_Settings_Emails extends LPR_Settings_Base {
 		$default_subject = 'Course Achievement';
 		$default_message = '<strong>Dear {user_name}</strong>,
 
-<p>You have been finished in <a href="{course_link}">{course_name}</a> with {course_result}</p>
-<p>Visit our website at {log_in}.</p>
+							<p>You have been finished in <a href="{course_link}">{course_name}</a> with {course_result}</p>
+							<p>Visit our website at {log_in}.</p>
 
-<p>Best regards,</p>
-<em>Administration</em>';
+							<p>Best regards,</p>
+							<em>Administration</em>';
 
 		?>
 

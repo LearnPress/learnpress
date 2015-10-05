@@ -167,7 +167,7 @@ class LPR_Question_Type{
      * @return void
      */
     function admin_interface( $args = array() ){
-        printf( __( 'Function %s should override from its child' ), __FUNCTION__ );
+        printf( __( 'Function %s should override from its child', 'learn_press' ), __FUNCTION__ );
     }
 
     /**
@@ -178,7 +178,7 @@ class LPR_Question_Type{
      * @return void
      */
     function render(){
-        printf( __( 'Function %s should override from its child' ), __FUNCTION__ );
+        printf( __( 'Function %s should override from its child', 'learn_press' ), __FUNCTION__ );
     }
 
     function get_type( $slug = false ){
@@ -401,26 +401,19 @@ add_action( 'wp_enqueue_scripts', 'lpr_question_scripts' );
 function learn_press_submit_answer(){
     $quiz_id        = !empty( $_REQUEST['quiz_id'] ) ? intval( $_REQUEST['quiz_id'] ) : 0;
     $question_id    = !empty( $_REQUEST['question_id'] ) ? intval( $_REQUEST['question_id'] ) : 0;
-    $next_id        = !empty( $_REQUEST['next_id'] ) ? intval( $_REQUEST['next_id'] ) : 0;
+    $next_id        = !empty( $_REQUEST['next_id'] ) ? intval( $_REQUEST['next_id'] ) : learn_press_get_next_question( $quiz_id, $question_id );
     $question_answer = isset( $_REQUEST['question_answer'] ) ? $_REQUEST['question_answer'] : null;
     $finish          = isset( $_REQUEST['finish'] ) ? $_REQUEST['finish'] : null;
 
     $user_id        = get_current_user_id();
     $json = array();
-    ob_start();
+
     $ques = lpr_get_question( $question_id );
     if( $ques ){
         $ques->submit_answer( $quiz_id, $question_answer );
     }
-    if($next_id){
-        /*$ques = lpr_get_question( $next_id );
-
-        if( $ques ){
-            $quiz_answers = learn_press_get_question_answers(null, $quiz_id );
-            $ques->render( array(
-                'answer' => isset( $quiz_answers[$next_id] ) ? $quiz_answers[$next_id] : null
-            ));
-        }*/
+    ob_start();
+    if( $next_id ){
         do_action( 'learn_press_submit_answer', $question_answer, $question_id, $quiz_id, $user_id, false );
         learn_press_get_template( 'quiz/form-question.php', array( 'question_id' => $next_id, 'course_id' => learn_press_get_course_by_quiz( $quiz_id ) ) );
     }else{
@@ -428,8 +421,6 @@ function learn_press_submit_answer(){
         $quiz_completed = get_user_meta( $user_id, '_lpr_quiz_completed', true );
         $quiz_completed[$quiz_id] = time();
         update_user_meta( $user_id, '_lpr_quiz_completed', $quiz_completed );
-
-
         $course_id = learn_press_get_course_by_quiz( $quiz_id );
         if( ! learn_press_user_has_finished_course( $course_id ) ) {
             if( learn_press_user_has_completed_all_parts( $course_id, $user_id ) ){
@@ -438,17 +429,19 @@ function learn_press_submit_answer(){
         }
         learn_press_get_template( 'quiz/result.php' );
         $json['quiz_completed'] = true;
-
         do_action( 'learn_press_submit_answer', $question_answer, $question_id, $quiz_id, $user_id, true );
     }
-    $json['html'] = ob_get_clean();
-
-    wp_send_json( $json );
-
-    die();
+    $output = ob_get_clean();
+    if ( defined('DOING_AJAX') && DOING_AJAX) {
+        $json['html'] = $output;
+        $json['redirect'] = apply_filters( 'learn_press_submit_answer_redirect_url', get_the_permalink( $quiz_id ), $question_answer, $question_id, $quiz_id, $user_id );
+        learn_press_send_json( $json );
+    }
 }
 add_action( 'wp_ajax_learn_press_submit_answer', 'learn_press_submit_answer' );
 add_action( 'wp_ajax_nopriv_learn_press_submit_answer', 'learn_press_submit_answer' );
+
+add_action( 'learn_press_frontend_action_submit_answer', 'learn_press_submit_answer' );
 
 function learn_press_load_question(){
     $question_id    = !empty( $_REQUEST['question_id'] ) ? intval( $_REQUEST['question_id'] ) : 0;
@@ -567,7 +560,7 @@ function learn_press_show_answer() {
                 do_action( 'learn_press_question_suggestion_' . $ques->get_type(), $ques, $answer );
         }
     ?>
-    <h4><?php _e("Answer explanation") ?></h4>
+    <h4><?php _e("Answer explanation", 'learn_press') ?></h4>
     <p><?php echo $ques->get('options.explaination') ?></p>    
     <?php
     $json['html'] = ob_get_clean();

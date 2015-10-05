@@ -10,7 +10,7 @@ $result = learn_press_get_quiz_result( $user_id, $quiz_id );
 	<div class="quiz-result-mark">
 		<span class="quiz-mark"><?php echo $result['mark']; ?>
 			<small>/ <?php echo $result['mark_total']; ?></small></span>
-		<small><?php _e( 'point' ); ?></small>
+		<small><?php _e( 'point', 'learn_press' ); ?></small>
 	</div>
 	<div class="quiz-result-summary">
 		<div class="quiz-result-field correct">

@@ -352,21 +352,6 @@ lprHook.addAction('lpr_admin_quiz_question_html', _lprAdminQuestionHTML);
                 var $chk = $(this),
                     state = $(this).data('state'),
                     checked = $(this).is(':checked');
-
-                /*if( ( checked  && state == 'disabled' ) || ( ! checked && state == 'enabled' )  ){
-                    $(this).siblings('.add-on-state').addClass('change');
-                }else{
-                    $(this).siblings('.add-on-state').removeClass('change');
-                }
-
-                if( $('.add-on-state:visible').length ){
-                    $('#learn-press-add-ons-apply').removeAttr('disabled');
-                    $('#learn-press-add-on-state-changed-message').fadeIn();
-                }else{
-                    $('#learn-press-add-ons-apply').attr('disabled', 'disabled');
-                    $('#learn-press-add-on-state-changed-message').fadeOut();
-                }
-                return;*/
                 $.ajax({
                     url: ajaxurl,
                     data: {
@@ -397,17 +382,14 @@ lprHook.addAction('lpr_admin_quiz_question_html', _lprAdminQuestionHTML);
                         if( $link.hasClass('thimpress') ){
                             response = LearnPress.parse_json( response );
                             $link.removeClass( 'spinner' );
-                            //var message = null;
                             if( response.status == 'activate' ){
                                 $link.addClass('disabled').html(response.status_text).removeAttr('href').removeAttr('data-action');
                                 $('.addon-status', $link.closest('.action-links')).html(response.status_text).addClass('enabled');
                             }else{
                                 $link.removeClass('disabled');
                             }
-                            //message.insertBefore( $('> h2', '#learn-press-add-ons-wrap') )
                         }
                     }
-                    //$link.replaceWith( $(response.button) );
                 }
             })
         });

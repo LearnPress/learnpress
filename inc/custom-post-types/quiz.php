@@ -115,7 +115,7 @@ if( ! class_exists( 'LPR_Quiz_Post_Type' ) ){
                             'name' => __( 'Re-take quiz', 'learn_press' ),
                             'id'   => "{$prefix}retake_quiz",
                             'type' => 'number',
-                            'desc' => 'How many times the user can re-take this quiz. Set to 0 to disable',
+                            'desc' => __('How many times the user can re-take this quiz. Set to 0 to disable', 'learn_press'),
                             'min'   => 0
                         ),
                         array(

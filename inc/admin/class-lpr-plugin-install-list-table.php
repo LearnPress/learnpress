@@ -51,13 +51,13 @@ class LPR_Plugin_Install_List_Table extends WP_List_Table {
         return $slugs;
     }
 
-    private function _get_items_from_wp(){
+    private function _get_items_from_wp( $args = array() ){
         $tab = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : '';
         if( ! $tab ) return;
-
-        $plugins = learn_press_get_add_ons_from_wp();
+        global $learn_press_add_ons;
+        $plugins = learn_press_get_add_ons_from_wp( $args );
         if( ( $tab == 'bundle_activate' ) && sizeof( $plugins ) ) {
-            global $learn_press_add_ons;
+
             $_plugins = array_values( $plugins );
             $plugins = array();
             $bundle_activate = $learn_press_add_ons['bundle_activate'];
@@ -132,9 +132,11 @@ class LPR_Plugin_Install_List_Table extends WP_List_Table {
     }
 
     /**
-     * Get list of addons
+     * Get list of add ons
+     *
+     * @param array
      */
-    public function prepare_items() {
+    public function prepare_items( $args = array() ) {
         global $learn_press_add_ons;
         $this->upgrader = new LPR_Upgrader();
 
@@ -148,7 +150,7 @@ class LPR_Plugin_Install_List_Table extends WP_List_Table {
             $add_ons = $learn_press_add_ons['bundle_activate'];
         }
         if( ! $this->test_mode ){
-            $this->_get_items_from_wp();
+            $this->_get_items_from_wp( $args );
         }else{
             $this->_get_items_from_thimpress( $add_ons );
         }
@@ -156,7 +158,7 @@ class LPR_Plugin_Install_List_Table extends WP_List_Table {
 
 
     public function no_items() {
-        $message = __( 'No plugins found.' );
+        $message = __( 'No plugins found.', 'learn_press' );
 
         echo '<div class="no-plugin-results">' . $message . '</div>';
     }
@@ -335,7 +337,7 @@ class LPR_Plugin_Install_List_Table extends WP_List_Table {
 
             $author = wp_kses( $plugin['author'], $plugins_allowedtags );
             if ( ! empty( $author ) ) {
-                $author = ' <cite>' . sprintf( __( 'By %s' ), $author ) . '</cite>';
+                $author = ' <cite>' . sprintf( __( 'By %s', 'learn_press' ), $author ) . '</cite>';
             }
 
             $action_links = array();
@@ -356,14 +358,14 @@ class LPR_Plugin_Install_List_Table extends WP_List_Table {
                     case 'install':
                         if ( $status['url'] ) {
                             /* translators: 1: Plugin name and version. */
-                            $action_links[] = '<a class="install-now button thimpress" data-action="install-now" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url( $status['url'] ) . '&learnpress=active" aria-label="' . esc_attr( sprintf( __( 'Install %s now' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '">' . __( 'Install and Active' ) . '</a>';
+                            $action_links[] = '<a class="install-now button thimpress" data-action="install-now" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url( $status['url'] ) . '&learnpress=active" aria-label="' . esc_attr( sprintf( __( 'Install %s now', 'learn_press' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '">' . __( 'Install and Active', 'learn_press' ) . '</a>';
                         }
 
                         break;
                     case 'update_available':
                         if ( $status['url'] ) {
                             /* translators: 1: Plugin name and version */
-                            $action_links[] = '<a class="update-now button thimpress" data-action="update-now" data-plugin="' . esc_attr( $status['file'] ) . '" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url( $status['url'] ) . '&learnpress=active" aria-label="' . esc_attr( sprintf( __( 'Update %s now' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '">' . __( 'Update Now' ) . '</a>';
+                            $action_links[] = '<a class="update-now button thimpress" data-action="update-now" data-plugin="' . esc_attr( $status['file'] ) . '" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url( $status['url'] ) . '&learnpress=active" aria-label="' . esc_attr( sprintf( __( 'Update %s now', 'learn_press' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '">' . __( 'Update Now', 'learn_press' ) . '</a>';
                         }
 
                         break;
@@ -404,7 +406,7 @@ class LPR_Plugin_Install_List_Table extends WP_List_Table {
              */
             $action_links = apply_filters( 'plugin_install_action_links', $action_links, $plugin );
 
-            $date_format = __( 'M j, Y @ H:i' );
+            $date_format = 'M j, Y @ H:i';
             $last_updated_timestamp = strtotime( $plugin['last_updated'] );
             $details_link = "";
             $message = null;
@@ -448,8 +450,8 @@ class LPR_Plugin_Install_List_Table extends WP_List_Table {
                         <span class="num-ratings">(<?php echo number_format_i18n( $plugin['num_ratings'] ); ?>)</span>
                     </div>
                     <div class="column-updated">
-                        <strong><?php _e( 'Last Updated:' ); ?></strong> <span title="<?php echo esc_attr( date_i18n( $date_format, $last_updated_timestamp ) ); ?>">
-						<?php printf( __( '%s ago' ), human_time_diff( $last_updated_timestamp ) ); ?>
+                        <strong><?php _e( 'Last Updated:', 'learn_press' ); ?></strong> <span title="<?php echo esc_attr( date_i18n( $date_format, $last_updated_timestamp ) ); ?>">
+						<?php printf( __( '%s ago', 'learn_press' ), human_time_diff( $last_updated_timestamp ) ); ?>
 					</span>
                     </div>
                     <div class="column-downloaded">
@@ -459,17 +461,17 @@ class LPR_Plugin_Install_List_Table extends WP_List_Table {
                         } else {
                             $active_installs_text = number_format_i18n( $plugin['active_installs'] ) . '+';
                         }
-                        printf( __( '%s Active Installs' ), $active_installs_text );
+                        printf( __( '%s Active Installs', 'learn_press' ), $active_installs_text );
                         ?>
                     </div>
                     <div class="column-compatibility">
                         <?php
                         if ( ! empty( $plugin['tested'] ) && version_compare( substr( $GLOBALS['wp_version'], 0, strlen( $plugin['tested'] ) ), $plugin['tested'], '>' ) ) {
-                            echo '<span class="compatibility-untested">' . __( 'Untested with your version of WordPress' ) . '</span>';
+                            echo '<span class="compatibility-untested">' . __( 'Untested with your version of WordPress', 'learn_press' ) . '</span>';
                         } elseif ( ! empty( $plugin['requires'] ) && version_compare( substr( $GLOBALS['wp_version'], 0, strlen( $plugin['requires'] ) ), $plugin['requires'], '<' ) ) {
-                            echo '<span class="compatibility-incompatible">' . __( '<strong>Incompatible</strong> with your version of WordPress' ) . '</span>';
+                            echo '<span class="compatibility-incompatible">' . __( '<strong>Incompatible</strong> with your version of WordPress', 'learn_press' ) . '</span>';
                         } else {
-                            echo '<span class="compatibility-compatible">' . __( '<strong>Compatible</strong> with your version of WordPress' ) . '</span>';
+                            echo '<span class="compatibility-compatible">' . __( '<strong>Compatible</strong> with your version of WordPress', 'learn_press' ) . '</span>';
                         }
                         ?>
                     </div>

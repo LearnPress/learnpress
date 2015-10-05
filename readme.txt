@@ -3,7 +3,7 @@ Contributors: thimpress, halink0803, thongta, kendy73, tunnhn
 Donate link:  
 Tags: lms, elearning, e-learning, learning management system, education, course, courses, quiz, quizzes, questions, training, guru, sell courses  
 Requires at least: 3.8  
-Tested up to: 4.2.2  
+Tested up to: 4.3    
 Stable tag: trunk  
 License: GPLv2 or later  
 License URI: http://www.gnu.org/licenses/gpl-2.0.html  
@@ -63,12 +63,24 @@ We are developing and improving LearnPress day by day and bringing new features 
 
 **Premium add-ons for LearnPress WordPress LMS Plugin:**
 
-- [myCRED add-on for LearnPress](http://thimpress.com/shop/mycred-add-on-for-learnpress/) - adding myCRED support for LearnPress WordPress LMS plugin, you can add badges, point system to your eLearning WordPress site using LearnPress + myCRED add-on.
-- [Certificates add-on for LearnPress](http://thimpress.com/shop/certificates-add-on-for-learnpress/) - adding drag & drop certificates builder as well as selecting designed certificate for each LMS course, your student will get particular certificate when they finished a course.
-- [Co-instructors add-on for LearnPress](http://thimpress.com/shop/co-instructors-add-on-for-learnpress/) - multiple instructors support for each LMS course.
-- [Collections add-on for LearnPress](http://thimpress.com/shop/collections-add-on-for-learnpress/) - making LMS courses collection by selecting number of courses, this is helpful if you want to combine multiple LMS courses into a collection for a group of skills.
-- [Stripe Payment method for LearnPress](http://thimpress.com/shop/stripe-add-on-for-learnpress/) - Stripe payment method for LearnPress WordPress LMS Plugin.
-- [WooCommerce add-on for LearnPress](http://thimpress.com/shop/woocommerce-add-on-for-learnpress/) - using WooCommerce as payment gateway for LearnPress WordPress LMS Plugin.
+- [myCRED add-on for LearnPress](http://thimpress.com/product/mycred-add-on-for-learnpress/) - adding myCRED support for LearnPress WordPress LMS plugin, you can add badges, point system to your eLearning WordPress site using LearnPress + myCRED add-on.
+- [Certificates add-on for LearnPress](http://thimpress.com/product/certificates-add-on-for-learnpress/) - adding drag & drop certificates builder as well as selecting designed certificate for each LMS course, your student will get particular certificate when they finished a course.
+- [Co-instructors add-on for LearnPress](http://thimpress.com/product/co-instructors-add-on-for-learnpress/) - multiple instructors support for each LMS course.
+- [Collections add-on for LearnPress](http://thimpress.com/product/collections-add-on-for-learnpress/) - making LMS courses collection by selecting number of courses, this is helpful if you want to combine multiple LMS courses into a collection for a group of skills.
+- [Stripe Payment method for LearnPress](http://thimpress.com/product/stripe-add-on-for-learnpress/) - Stripe payment method for LearnPress WordPress LMS Plugin.
+- [WooCommerce add-on for LearnPress](http://thimpress.com/product/woocommerce-add-on-for-learnpress/) - using WooCommerce as payment gateway for LearnPress WordPress LMS Plugin.  
+- [Content Drip add-on for LearnPress](http://thimpress.com/product/content-drip-add-on-for-learnpress/) - the feature to restrict the access of student to each lesson by progress, or time.
+- [Sorting Choices question type for LearnPress](http://thimpress.com/product/sorting-choice-add-on-for-learnpress/) - another interactive question type for LearnPress.
+
+**LearnPress have been translated into the following languages:**  
+1. English  
+2. French  
+3. Indonesian  
+4. Italian  
+5. German  
+6. Polish  
+7. Russian  
+8. Dutch  
 
 **WordPress LMS Plugin - LearnPress ROADMAP:**
 
@@ -154,33 +166,61 @@ https://www.transifex.com/projects/p/learnpress/
 3. LearnPress Course Front-end.  
 4. LearnPress Courses Statistics.  
 
-== Changelog ==
+== Changelog ==  
+
+= 0.9.14 =
+- Fixed can not start a quiz for guest.
+- Fixed course evaluation error and shows wrong message
+- Added "preload icon" for quiz actions and question navigation
+- Added option for instructors registration
+- Updated default language file.
+
+= 0.9.13.1 =
+- Added lacked files.
+
+= 0.9.13 =
+- Fixed profile link problem.
+- Fixed conflict with Woo payments add-on.
+- Added shortcodes to display free courses, paid courses and newest courses.
+- Added shortcodes to display course summary.
+- Provided premium add-on assignments.
+- Provided premium add-on gradebook.
+
+= 0.9.12 =  
+- Support languages: Italian, Indonesian, German.
+
+= 0.9.11 =  
+- Fixed resets all user settings back to default when re-active LearnPress.
+- Fixed certificates trigger error "header already sent" when saving templates.
+- Made translatable strings in javascript code.
+- Fixed course review add-on error on PHP version 5.3.x.
+- Fixed text domain error on translating plugin.
 
 = 0.9.10 =
-- Fixed bug: Template loader missing header and footer
-- Updated default language file
+- Fixed bug: Template loader missing header and footer.
+- Updated default language file.
 
 = 0.9.9 =
-- Fixed bug: Course price always showing "FREE" on category page
-- Updated language Polish
+- Fixed bug: Course price always showing "FREE" on category page.
+- Updated language Polish.
 
 = 0.9.8 =  
 - Fixed wrong placeholder in email settings.  
-- Updated addon Certificates for GUI and functions with more options  
-	- Used Google Fonts instead of True Type Font (*.ttf)  
-	- Color picker  
-	- Text align (vertical and horizontal)  
-	- Text rotation  
-	- Text transform ( scale X and scale Y)  
+- Updated addon Certificates for GUI and functions with more options.
+	- Used Google Fonts instead of True Type Font (*.ttf).
+	- Color picker.
+	- Text align (vertical and horizontal).
+	- Text rotation.
+	- Text transform (scale X and scale Y).
 	- More options to display the name of a user:  
-		+ User login  
-		+ User nice name  
-		+ Nickname  
-		+ First name  
-		+ Last name  
-		+ First name then Last name  
-		+ Last name then First name  
-- Support Dutch and French (special thank to Bart Kleijheeg and fxbenard)
+		+ User login.
+		+ User nice name.
+		+ Nickname.
+		+ First name.
+		+ Last name.
+		+ First name then Last name.
+		+ Last name then First name.
+- Support Dutch and French (special thank to Bart Kleijheeg and fxbenard).
 
 = 0.9.7 =
 - Fixed wrong query of quizzes result in Profile.

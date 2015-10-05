@@ -37,8 +37,8 @@ if ( ! class_exists( 'LPR_Multi_Language' ) ) {
 		 * @return array
 		 */
 		public static function plugin_links( $links ) {
-			$links[] = '<a href="#">' . __( 'Documentation', 'meta-box' ) . '</a>';
-			$links[] = '<a href="#">' . __( 'Extensions', 'meta-box' ) . '</a>';
+			$links[] = '<a href="https://github.com/LearnPress/LearnPress/wiki">' . __( 'Documentation', 'meta-box' ) . '</a>';
+			$links[] = '<a href="' . get_admin_url() . '/admin.php?page=learn_press_add_ons' . '">' . __( 'Extensions', 'meta-box' ) . '</a>';
 
 			return $links;
 		}

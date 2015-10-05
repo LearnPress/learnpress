@@ -26,10 +26,9 @@ function learn_press_user_finished_course_send_email( $course_id = null, $user_i
             'user_name'     => ! empty( $user->display_name ) ? $user->display_name : $user->user_nicename,
             'course_name'   => get_the_title( $course_id ),
             'course_link'   => get_permalink( $course_id ),
-            'course_result' => sprintf( __( '%d%% of total' ), intval( $course_result ) )
+            'course_result' => sprintf( __( '%d%% of total', 'learn_press' ), intval( $course_result ) )
         )
     );
-
     learn_press_send_mail(
         $mail_to,
         'passed_course',

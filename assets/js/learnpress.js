@@ -4,15 +4,7 @@
 ;
 if( typeof LearnPress == 'undefined' ) window.LearnPress = {};
 ;(function($){
-    function learn_press_parse_json(response){
-        var matches = response.match(/<!--LPR_START-->(.*)<!--LPR_END-->/),
-            message = '';
-        if (matches && matches[1]) {
-            return JSON.parse(matches[1]);
-        }else{
-            return JSON.parse(response);
-        }
-    }
+
     $.fn.outerHTML = function(){
         // IE, Chrome & Safari will comply with the non-standard outerHTML, all others (FF) will have a fall-back for cloning
         return (!this.length) ? this : (this[0].outerHTML || (
@@ -37,11 +29,11 @@ if( typeof LearnPress == 'undefined' ) window.LearnPress = {};
                     user_id: user_id
                 },
                 success: function (response) {
-                    var response = learn_press_parse_json(response);
+                    var response = LearnPress.parse_json(response);
                     if( response.url ){
-                        reload( response.url )
+                        LearnPress.reload( response.url )
                     }else{
-                        reload();
+                        LearnPress.reload();
                     }
                 }
             })
@@ -59,13 +51,13 @@ if( typeof LearnPress == 'undefined' ) window.LearnPress = {};
                     if( response ){
                         if( response.message ) alert( response.message );
                         if( response.redirect )
-                            reload( response.redirect )
+                            LearnPress.reload( response.redirect )
                     }
                 }
             });
         },
         finish_course: function (course_id) {
-            if (!confirm('Are you sure you want to finish this course?')) return;
+            if (!confirm(confirm_finish_course.confirm_finish_course)) return;
             $.ajax({
                 type: "POST",
                 url: ajaxurl,
@@ -76,28 +68,12 @@ if( typeof LearnPress == 'undefined' ) window.LearnPress = {};
                 success: function (response) {
                     alert(response.message)
                     if (response.finish) {
-                        reload();
+                        LearnPress.reload();
                     }
                 }
             });
         },
-        retake_quiz: function(quiz_id){
-            $.ajax({
-                type   : "POST",
-                url    : ajaxurl,
-                data   : {
-                    action : 'learnpress_retake_quiz',
-                    quiz_id: quiz_id
-                },
-                success: function (response) {
-                    if( response && response.error ){
-                        alert( response.message )
-                    }else {
-                        reload();
-                    }
-                }
-            });
-        },
+
         load_lesson: function(permalink, args){
             args = $.extend({
                 success: function(){},
@@ -125,13 +101,9 @@ if( typeof LearnPress == 'undefined' ) window.LearnPress = {};
     var $doc = $(document),
         $win = $(window);
 
-    function reload( url ){
-        window.location.href = url || window.location.href;
-    }
-
     function complete_lesson( event ){
         event.preventDefault();
-        if( ! confirm( 'Are you sure you want to mark this lesson as completed?') ) return;
+        if( ! confirm( learn_press_js_localize.confirm_complete_lesson ) ) return;
         var lesson = $(this).data('id');
         LearnPress.complete_lesson( lesson );
     }
@@ -147,12 +119,6 @@ if( typeof LearnPress == 'undefined' ) window.LearnPress = {};
         var $button = $(this),
             course_id = $button.data('id');
         LearnPress.retake_course( course_id );
-    }
-
-    function retake_quiz( evt ){
-        evt.preventDefault();
-        if( ! confirm( learn_press_js_localize.confirm_retake_quiz ) ) return;
-        LearnPress.retake_quiz( $(this).data('id') )
     }
 
     function load_lesson(evt){
@@ -186,7 +152,6 @@ if( typeof LearnPress == 'undefined' ) window.LearnPress = {};
             .on('click', '.complete-lesson-button', complete_lesson )
             .on('click', '#finish-course', finish_course)
             .on('click', '#learn_press_retake_course', retake_course)
-            .on('click', '.button-retake-quiz', retake_quiz)
             .on('click', '.course-content-lesson-nav a', load_lesson)
             .on('click', '.section-content .course-lesson a', load_lesson);
 
@@ -211,7 +176,6 @@ if( typeof LearnPress == 'undefined' ) window.LearnPress = {};
             })
         });
     }
-
 
     $doc.ready( _ready );
 
@@ -365,10 +329,6 @@ jQuery(document).ready(function ($) {
 			}
 		})
 	})
-});
-
-jQuery(document).ready(function ($) {
-
 });
 
 jQuery(document).ready(function ($) {
@@ -547,7 +507,7 @@ jQuery(document).ready(function ($) {
             }else{
                 if( $payment_form.is(':visible') ){
                     if( !payment ){
-                        alert('Please select a payment method');
+                        alert( learn_press_js_localize.no_payment_method );
                         return;
                     }else{
                         take = true
@@ -573,7 +533,7 @@ jQuery(document).ready(function ($) {
                     dataType: 'html',
                     data: $payment_form.serialize(),
                     success: function (res) {
-                        var matches = res.match(/<!--LPR_START-->(.*)<!--LPR_END-->/),
+                        var matches = res.match(/<!-- LPR_AJAX_START -->(.*)<!-- LPR_AJAX_END -->/),
                             message = '';
                         if (matches && matches[1]) {
                             var json = JSON.parse(matches[1]);
@@ -609,7 +569,7 @@ jQuery(document).ready(function ($) {
 				action: 'learnpress_be_teacher'
 			},
 			success: function () {
-				alert('You Are An Instructor Now');
+				alert(learn_press_js_localize.you_are_instructor_now);
 				setTimeout(function () {
 					location.reload();
 				}, 500);

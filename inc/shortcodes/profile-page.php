@@ -11,7 +11,7 @@ function learn_press_profile_shortcode() {
 	global $wp_query;
 
 	if ( isset( $wp_query->query['user'] ) ) {
-		$user = get_user_by( 'login', $wp_query->query['user'] );
+		$user = get_user_by( 'login', urldecode($wp_query->query['user']) );
 	} else {
 		$user = get_user_by( 'id', get_current_user_id() );
 	}
@@ -35,7 +35,7 @@ function learn_press_profile_shortcode() {
 			$( "#quiz-accordion" ).accordion();
 		});
 	</script>
-	<?php		       
+	<?php
 }
 
 add_shortcode( 'learn_press_profile', 'learn_press_profile_shortcode' );

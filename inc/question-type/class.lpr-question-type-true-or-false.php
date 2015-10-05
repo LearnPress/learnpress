@@ -71,10 +71,21 @@ class LPR_Question_Type_True_Or_False extends LPR_Question_Type{
         $unique_name = uniqid( 'lp_question_answer_' . $this->get('ID') . '_' );
         $answer = null;
         is_array( $args ) && extract( $args );
-
+        require_once ABSPATH . '/wp-includes/default-filters.php';
     ?>
         <div class="lp-question-wrap question-<?php echo $this->get('ID');?>">
-            <h4><?php echo get_the_title( $this->get('ID') );?></h4>
+            <h4><?php echo get_the_title( $this->get('ID') );?></h4>            
+            <?php 
+                $question = get_post( $this->get('ID') );
+                $question_content = $question->post_content;                
+                if( !empty($question_content) ) :
+            ?>
+            <?php
+
+                $content = apply_filters('the_content', $question_content);
+            ?>
+            <p><?php echo $content; ?> </p>
+            <?php endif; ?>
             <ul>
                 <li>
                     <label>

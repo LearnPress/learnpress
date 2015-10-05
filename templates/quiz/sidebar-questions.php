@@ -7,7 +7,7 @@
 <?php $question_list = learn_press_get_quiz_questions(); ?>
 <?php do_action( 'learn_press_quiz_questions_before_questions' ); ?>
 <div class="quiz-questions hidden">
-	<?php $title = apply_filters( 'learn_press_list_of_questions_text', esc_attr( "List of questions", "learn_press" ) ); ?>
+	<?php $title = apply_filters( 'learn_press_list_of_questions_text', esc_attr__( 'List of questions', 'learn_press' ) ); ?>
 	<?php if ( $title ): ?>
 		<h3><?php echo $title; ?></h3>
 	<?php endif; ?>
@@ -23,7 +23,7 @@
 				$index ++;
 				$question_title = get_the_title( $question_id );
 				$question       = get_post( $question_id );
-				if ( $current_question && $current_question == $question_id && !$quiz_completed ) {
+				if ( $current_question && ( $current_question == $question_id ) && !$quiz_completed ) {
 					$current = true;
 				} else {
 					$current = false;

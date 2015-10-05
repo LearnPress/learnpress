@@ -22,7 +22,7 @@ switch( $template ) {
 		echo "\t" . '<main id="main" class="site-main twentyfifteen" role="main">';
         break;
     default :
-        echo '<div id="container"><div id="content" role="main">';
+        echo '<div id="container" class="container-wrap"><div id="content" role="main" class="container">';
         break;
 }
 echo '<!-- .learn-press --><div class="learn-press">';

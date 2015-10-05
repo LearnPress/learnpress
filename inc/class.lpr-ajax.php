@@ -181,16 +181,10 @@ if ( !class_exists( 'LPR_AJAX' ) ) {
 				learn_press_reset_user_quiz( $user_id, $quiz_id );
 				add_user_meta( $user_id, '_lpr_quiz_taken', $quiz_id );
 				$response['error'] = false;
+                $response['redirect'] = get_the_permalink( $quiz_id );
 			}
-			wp_send_json( $response );
+			learn_press_send_json( $response );
 			die();
-			// set this quiz to retake
-			$retake = get_user_meta( $user_id, '_lpr_quiz_retake', true );
-			if ( !isset( $retake ) || !is_array( $retake ) ) {
-				$retake = array();
-			}
-			array_push( $retake, $quiz_id );
-			update_user_meta( $user_id, '_lpr_quiz_retake', $retake );
 		}
 
 		/**

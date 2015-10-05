@@ -190,7 +190,7 @@ if( !function_exists( 'learn_press_print_quiz_question_content_script' ) ){
      * Output js script configuration for single quiz page
      */
     function learn_press_print_quiz_question_content_script(){
-        $current_question_id = !empty( $_REQUEST['question_id'] ) ? intval( $_REQUEST['question_id'] ) : 0;
+        $current_question_id = learn_press_get_current_question();// !empty( $_REQUEST['question_id'] ) ? intval( $_REQUEST['question_id'] ) : 0;
         $questions = learn_press_get_quiz_questions();
         if( $questions ) {
             $question_ids = array_keys($questions);
@@ -203,27 +203,28 @@ if( !function_exists( 'learn_press_print_quiz_question_content_script' ) ){
         $question = LPR_Question_Type::instance( $current_question_id );
         $user_id = get_current_user_id();
         global $quiz;
-
-        $js = array(
-            'quiz_id'           => get_the_ID(),
-            'question_id'       => $current_question_id,
-            'questions'         => $question_ids,
-            'time_remaining'    => learn_press_get_quiz_time_remaining( $user_id, $quiz->ID),
-            'quiz_started'      => learn_press_user_has_started_quiz(),
-            'quiz_completed'    => learn_press_user_has_completed_quiz()
-        );
-        ?>
-        <script type="text/javascript">
-            var dataFromParent;
-            function init() {
-                console.log(dataFromParent);
-                jQuery('.quiz-main').attr('course-id', dataFromParent);
-            }
-            jQuery(function() {
-                LearnPress.singleQuizInit( <?php echo json_encode( $js );?> );
-            });
-        </script>
-    <?php
+        if( $quiz && ! empty( $quiz->ID )) {
+            $js = array(
+                'quiz_id' => get_the_ID(),
+                'question_id' => $current_question_id,
+                'questions' => $question_ids,
+                'time_remaining' => learn_press_get_quiz_time_remaining($user_id, $quiz->ID),
+                'quiz_started' => learn_press_user_has_started_quiz(),
+                'quiz_completed' => learn_press_user_has_completed_quiz()
+            );
+            ?>
+            <script type="text/javascript">
+                var dataFromParent;
+                function init() {
+                    console.log(dataFromParent);
+                    jQuery('.quiz-main').attr('course-id', dataFromParent);
+                }
+                jQuery(function () {
+                    LearnPress.singleQuizInit(<?php echo json_encode( $js );?>);
+                });
+            </script>
+        <?php
+        }
     }
 }
 
@@ -314,13 +315,18 @@ if( !function_exists( 'learn_press_quiz_question_nav' ) ) {
     function learn_press_quiz_question_nav(){
         $current_question = learn_press_get_question_position();
         $question_id = $current_question['id'];
-        //echo rand() . "[$question_id]";
+
         learn_press_get_template( 'quiz/form-question.php', array( 'question_id' => $question_id, 'course_id' => learn_press_get_course_by_quiz( get_the_ID() ) ) );
     }
 }
 
 if( ! function_exists( 'learn_press_output_question' ) ){
-    function learn_press_output_question( $question_id, $with_answered = true ){
+    function learn_press_output_question( $question_id, $with_answered = true, $quiz_id = 0 ){
+        if( ! $question_id && $quiz_id ){
+            /*if( $questions = learn_press_get_quiz_questions( $quiz_id ) ){
+                $question_id = reset( $questions );
+            }*/
+        }
         if ( $question_id ) {
             $question = LPR_Question_Type::instance( $question_id );
             $answered = null;
@@ -411,7 +417,9 @@ if( !function_exists( 'learn_press_display_course_link' ) ){
      */
     function learn_press_display_course_link(){
         global $quiz;
-        echo '<div class="clearfix"></div><a class="back-to-course" href="' . get_permalink( get_post_meta( $quiz->ID, '_lpr_course', true ) ) . '"><i class="fa fa-angle-double-left"></i>' . __( 'Back to Course', 'learn_press' ) . '</a>';
+        if( $quiz && ! empty( $quiz->ID ) ) {
+            echo '<div class="clearfix"></div><a class="back-to-course" href="' . get_permalink(get_post_meta($quiz->ID, '_lpr_course', true)) . '"><i class="fa fa-angle-double-left"></i>' . __('Back to Course', 'learn_press') . '</a>';
+        }
     }
 }
 
@@ -863,6 +871,9 @@ if( ! function_exists( 'learn_press_course_content_next_prev_lesson' ) ){
         if( ! learn_press_user_has_enrolled_course( $course_id ) ) return;
 
         $lessons = learn_press_get_lessons_in_course( $course_id );
+
+        if( ! is_array( $lessons ) ) return;
+
         $current_position = array_search( get_the_ID(), $lessons );
 
         $prev = null;
@@ -1117,3 +1128,26 @@ function learn_press_custom_embed_video($html, $url, $attr, $post_ID) {
     return $return;
 }
 add_filter( 'embed_oembed_html', 'learn_press_custom_embed_video', 10, 4 );
+
+/**
+ * Redirect to question if user access to a quiz that user has started
+ *
+ * @param string
+ * @return string
+ */
+function learn_press_redirect_to_question( $template ){
+    global $post_type;
+    if( is_single() && $post_type == 'lpr_quiz' ){
+        if( learn_press_user_has_started_quiz() && ! learn_press_user_has_completed_quiz() ){
+            if( learn_press_get_request( 'question' ) ){
+            }else{
+                wp_redirect( learn_press_get_user_question_url( get_the_ID() ) );
+                die();
+            }
+        }elseif( learn_press_user_has_completed_quiz() && learn_press_get_request( 'question' ) ){
+            wp_redirect( get_the_permalink( get_the_ID() ) );
+            die();
+        }
+    }
+    return $template;
+}
