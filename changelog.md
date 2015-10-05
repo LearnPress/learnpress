@@ -1,3 +1,39 @@
+**0.9.14**
+- Fixed can not start a quiz for guest.
+- Fixed course evaluation error and shows wrong message
+- Added "preload icon" for quiz actions and question navigation
+- Added option for instructors registration
+- Updated default language file.
+
+**0.9.13.1**
+- Added lacked files.
+
+**0.9.13**
+- Fixed profile link problem.
+- Fixed conflict with Woo payments add-on.
+- Added shortcodes to display free courses, paid courses and newest courses.
+- Added shortcodes to display course summary.
+- Provided premium add-on assignments.
+- Provided premium add-on gradebook.
+
+**0.9.12**  
+- Support languages: Italian, Indonesian, German.
+
+**0.9.11**
+- Fixed resets all user settings back to default when re-active LearnPress.
+- Fixed certificates trigger error "header already sent" when saving templates.
+- Made translatable strings in javascript code.
+- Fixed course review add-on error on PHP version 5.3.x.
+- Fixed text domain error on translating plugin.
+
+**0.9.10**
+- Fixed bug: Template loader missing header and footer.
+- Updated default language file.
+
+**0.9.9**  
+- Fixed bug: Course price always showing "FREE" on category page.
+- Updated language Polish.
+
 **0.9.8**    
 - Fixed wrong placeholder in email settings.  
 - Updated addon Certificates for GUI and functions with more options  
