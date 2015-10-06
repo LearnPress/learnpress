@@ -8,7 +8,6 @@ if ( !defined( 'ABSPATH' ) ) {
 
 global $quiz;
 
-
 get_header();
 ?>
 <?php do_action( 'learn_press_before_main_quiz_content' ); ?>

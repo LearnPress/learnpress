@@ -6,6 +6,7 @@
 ?>
 <?php $question_list = learn_press_get_quiz_questions(); ?>
 <?php do_action( 'learn_press_quiz_questions_before_questions' ); ?>
+<?php if( $question_list ){?>
 <div class="quiz-questions hidden">
 	<?php $title = apply_filters( 'learn_press_list_of_questions_text', esc_attr__( 'List of questions', 'learn_press' ) ); ?>
 	<?php if ( $title ): ?>
@@ -36,4 +37,5 @@
 	</ul>
 	<?php do_action( 'learn_press_quiz_questions_after_questions_loop' ); ?>
 </div>
+<?php }?>
 <?php do_action( 'learn_press_quiz_questions_after_questions' ); ?>

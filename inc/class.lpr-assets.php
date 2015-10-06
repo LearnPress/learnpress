@@ -131,6 +131,7 @@ class LPR_Assets {
 		self::add_script( 'lpr-alert-js', LPR_JS_URL . 'jquery.alert.js' );
         self::add_script( 'lpr-global', LPR_JS_URL . 'global.js' );
 		self::add_script( 'lpr-time-circle-js', LPR_JS_URL . 'jquery.timer.js' );
+        self::add_script( 'block-ui', LPR_JS_URL . 'jquery.block-ui.js' );
         self::add_script( 'learn-press-js', LPR_JS_URL . 'learnpress.js', array( 'jquery', 'lpr-alert-js', 'lpr-global', 'lpr-time-circle-js' ) );
 
         learn_press_enqueue_script( "<script>var ajaxurl='" . admin_url( 'admin-ajax.php' ) . "';</script>", true );
@@ -147,6 +148,7 @@ class LPR_Assets {
 		self::enqueue_script( 'learn-press-js' );
 		self::enqueue_script( 'lpr-alert-js' );
 		self::enqueue_script( 'lpr-time-circle-js' );
+        self::enqueue_script( 'block-ui' );
 	}
 
 	static function localize_printed_scripts() {

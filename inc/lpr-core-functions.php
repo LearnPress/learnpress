@@ -86,7 +86,7 @@ if ( !function_exists( 'learn_press_course_paging_nav' ) ) :
 	 * Display navigation to next/previous set of posts when applicable.
 	 */
 	function learn_press_course_paging_nav() {
-		
+
 		if ( $GLOBALS['wp_query']->max_num_pages < 2 ) {
 			return;
 		}
@@ -118,7 +118,7 @@ if ( !function_exists( 'learn_press_course_paging_nav' ) ) :
 			'next_text' => __( '>', 'learn_press' ),
 			'type'      => 'list'
 		) );
-		
+
 		if ( $links ) :
 			?>
 			<div class="navigation pagination">
@@ -192,17 +192,28 @@ function learn_press_update_order( $order_data, $order_meta, $purchased_items ) 
  * @return bool
  */
 function learn_press_update_order_status( $order_id, $status = '' ) {
+
+	$order = LP_Order::instance( $order_id );
+	if ( $order ) {
+		$order->update_status( $status );
+	}
+	return;
 	if ( $status ) {
-		wp_update_post(
+		/*wp_update_post(
 			array( 'ID' => $order_id, 'post_status' => 'publish' )
-		);
+		);*/
 
-		if ( update_post_meta( $order_id, '_learn_press_transaction_status', $status ) ) {
-			do_action( 'learn_press_update_order_status', $status, $order_id );
+		$current_status = get_post_status( $order_id );
+		if ( $current_status != $status ) {
 
-			return true;
-		} else {
-			return false;
+
+			if ( update_post_meta( $order_id, '_learn_press_transaction_status', $status ) ) {
+				do_action( 'learn_press_update_order_status', $status, $order_id );
+
+				return true;
+			} else {
+				return false;
+			}
 		}
 	}
 
@@ -366,7 +377,7 @@ function learn_press_edit_registration() {
 	<p>
 		<label for="become_teacher">
 			<input type="checkbox" name="become_teacher" id="become_teacher">
-            <?php _e( 'Want to be an instructor?', 'learn_press' ) ?>
+			<?php _e( 'Want to be an instructor?', 'learn_press' ) ?>
 		</label>
 	</p>
 
@@ -736,6 +747,7 @@ function learn_press_publish_course( $new_status, $old_status, $post ) {
 		);
 	}
 }
+
 add_action( 'transition_post_status', 'learn_press_publish_course', 10, 3 );
 
 /**
@@ -828,6 +840,7 @@ function learn_press_get_quizzes( $course_id ) {
  * Get all lessons in a course
  *
  * @param $course_id
+ *
  * @return array
  */
 function learn_press_get_lessons( $course_id ) {
@@ -853,7 +866,7 @@ function learn_press_template_loader( $template ) {
 	$file = '';
 
 	if ( ( $page_id = learn_press_get_page_id( 'taken_course_confirm' ) ) && is_page( $page_id ) ) {
-		if ( !learn_press_user_can_view_order( !empty( $_REQUEST['order_id'] ) ? $_REQUEST['order_id'] : 0 ) ) {			
+		if ( !learn_press_user_can_view_order( !empty( $_REQUEST['order_id'] ) ? $_REQUEST['order_id'] : 0 ) ) {
 			learn_press_404_page();
 		}
 		global $post;
@@ -867,18 +880,18 @@ function learn_press_template_loader( $template ) {
 			$file   = 'archive-course.php';
 			$find[] = $file;
 			$find[] = 'learnpress/' . $file;
-        } else {
+		} else {
 			if ( get_post_type() == 'lpr_course' ) {
 				$file   = 'single-course.php';
 				$find[] = $file;
 				$find[] = 'learnpress/' . $file;
 			} else {
-				if ( get_post_type() == 'lpr_quiz' ) {					
+				if ( get_post_type() == 'lpr_quiz' ) {
 					$file   = 'single-quiz.php';
 					$find[] = $file;
 					$find[] = 'learnpress/' . $file;
 				} else {
-					if ( get_post_type() == 'lpr_assignment' ) {												
+					if ( get_post_type() == 'lpr_assignment' ) {
 						$file   = 'single-assignment.php';
 						$find[] = $file;
 						$find[] = 'learnpress/' . $file;
@@ -904,15 +917,15 @@ function learn_press_pre_get_post( $q ) {
 		return $q;
 	}
 	if ( $q->is_main_query() && $q->is_page() && ( $q->queried_object && $q->queried_object->ID == ( $page_id = learn_press_get_page_id( 'courses' ) ) && $page_id ) ) {
-        $q->set( 'post_type', 'lpr_course' );
-        $q->set( 'page', '' );
-        $q->set( 'pagename', '' );
+		$q->set( 'post_type', 'lpr_course' );
+		$q->set( 'page', '' );
+		$q->set( 'pagename', '' );
 
-        // Fix conditional Functions
-        $q->is_archive           = true;
-        $q->is_post_type_archive = true;
-        $q->is_singular          = false;
-        $q->is_page              = false;
+		// Fix conditional Functions
+		$q->is_archive           = true;
+		$q->is_post_type_archive = true;
+		$q->is_singular          = false;
+		$q->is_page              = false;
 	}
 
 	return $q;
@@ -1331,15 +1344,16 @@ function learn_press_edit_admin_bar() {
 	if ( in_array( 'lpr_teacher', $current_user->roles ) || in_array( 'administrator', $current_user->roles ) ) {
 		return;
 	}
-    $settings = LPR_Admin_Settings::instance( 'general' );
-    if( $settings->get( 'instructor_registration' ) ) {
-        $be_teacher = array();
-        $be_teacher['id'] = 'be_teacher';
-        $be_teacher['parent'] = 'user-actions';
-        $be_teacher['title'] = __('Become An Instructor', 'learn_press');
-        $be_teacher['href'] = '#';
-        $wp_admin_bar->add_menu($be_teacher);
-    }
+	if ( !class_exists( 'LPR_Admin_Settings' ) ) return;
+	$settings = LPR_Admin_Settings::instance( 'general' );
+	if ( $settings->get( 'instructor_registration' ) ) {
+		$be_teacher           = array();
+		$be_teacher['id']     = 'be_teacher';
+		$be_teacher['parent'] = 'user-actions';
+		$be_teacher['title']  = __( 'Become An Instructor', 'learn_press' );
+		$be_teacher['href']   = '#';
+		$wp_admin_bar->add_menu( $be_teacher );
+	}
 }
 
 add_action( 'admin_bar_menu', 'learn_press_edit_admin_bar' );
@@ -1360,26 +1374,26 @@ function learn_press_get_query_var( $var ) {
 
 ///////////////////////////////
 function learn_press_custom_rewrite_tag() {
-    // courses/lesson-name
+	// courses/lesson-name
 	add_rewrite_tag( '%lesson%', '([^&]+)' );
 	add_rewrite_tag( '%section%', '([^&]+)' );
 
-    // quizzes/question-name
-    add_rewrite_tag( '%question%', '([^&]+)' );
+	// quizzes/question-name
+	add_rewrite_tag( '%question%', '([^&]+)' );
 }
 
 function learn_press_custom_rewrite_rule() {
 
-    // lesson
+	// lesson
 	$post_types = get_post_types( array( 'name' => 'lpr_course' ), 'objects' );
 	$slug       = $post_types['lpr_course']->rewrite['slug'];
 	add_rewrite_rule( '^' . $slug . '/([^/]*)/([^/]*)/?([^/]*)?/?', 'index.php?lpr_course=$matches[1]&lesson=$matches[2]&section=$matches[3]', 'top' );
 
-    // question
-    $post_types = get_post_types( array( 'name' => 'lpr_quiz' ), 'objects' );
-    $slug       = $post_types['lpr_quiz']->rewrite['slug'];
-    //echo '^' . $slug . '/([^/]*)/([^/]*)/?';
-    add_rewrite_rule( '^' . $slug . '/([^/]*)/([^/]*)/?', 'index.php?lpr_quiz=$matches[1]&question=$matches[2]', 'top' );
+	// question
+	$post_types = get_post_types( array( 'name' => 'lpr_quiz' ), 'objects' );
+	$slug       = $post_types['lpr_quiz']->rewrite['slug'];
+	//echo '^' . $slug . '/([^/]*)/([^/]*)/?';
+	add_rewrite_rule( '^' . $slug . '/([^/]*)/([^/]*)/?', 'index.php?lpr_quiz=$matches[1]&question=$matches[2]', 'top' );
 
 }
 
@@ -1413,29 +1427,29 @@ function learn_press_parse_query_vars_to_request() {
 			$_POST['lesson']    = $post->ID;
 		}
 	}
-    if ( !empty( $wp_query->query_vars['question'] ) ) {
-        $post  = null;
-        $posts = get_posts(
-            array(
-                'name'        => $wp_query->query_vars['question'],
-                'post_type'   => 'lpr_question',
-                'post_status' => 'publish',
-                'numberposts' => 1
-            )
-        );
+	if ( !empty( $wp_query->query_vars['question'] ) ) {
+		$post  = null;
+		$posts = get_posts(
+			array(
+				'name'        => $wp_query->query_vars['question'],
+				'post_type'   => 'lpr_question',
+				'post_status' => 'publish',
+				'numberposts' => 1
+			)
+		);
 
-        if ( $posts ) {
-            $post = $posts[0];
-        }
-        if ( $post ) {
-            $_REQUEST['question'] = $post->ID;
-            $_GET['question']     = $post->ID;
-            $_POST['question']    = $post->ID;
-        }else{
-            global $wp_query;
-            $wp_query->is_404 = true;
-        }
-    }
+		if ( $posts ) {
+			$post = $posts[0];
+		}
+		if ( $post ) {
+			$_REQUEST['question'] = $post->ID;
+			$_GET['question']     = $post->ID;
+			$_POST['question']    = $post->ID;
+		} else {
+			global $wp_query;
+			$wp_query->is_404 = true;
+		}
+	}
 
 	if ( !empty( $wp_query->query_vars['section'] ) ) {
 		$_REQUEST['section'] = $wp_query->query_vars['section'];
@@ -1444,6 +1458,7 @@ function learn_press_parse_query_vars_to_request() {
 	}
 
 }
+
 add_action( 'wp', 'learn_press_parse_query_vars_to_request' );
 
 function learn_press_course_lesson_permalink_friendly( $permalink, $lesson_id, $course_id ) {
@@ -1459,13 +1474,13 @@ function learn_press_course_lesson_permalink_friendly( $permalink, $lesson_id, $
 
 function learn_press_course_question_permalink_friendly( $permalink, $lesson_id, $course_id ) {
 
-    if ( '' != get_option( 'permalink_structure' ) ) {
-        if ( preg_match( '!\?lesson=([^\?\&]*)!', $permalink, $matches ) ) {
-            $permalink = preg_replace( '!/?\?lesson=([^\?\&]*)!', '/' . basename( get_permalink( $matches[1] ) ), untrailingslashit( $permalink ) );
-        }
-    }
+	if ( '' != get_option( 'permalink_structure' ) ) {
+		if ( preg_match( '!\?lesson=([^\?\&]*)!', $permalink, $matches ) ) {
+			$permalink = preg_replace( '!/?\?lesson=([^\?\&]*)!', '/' . basename( get_permalink( $matches[1] ) ), untrailingslashit( $permalink ) );
+		}
+	}
 
-    return $permalink;
+	return $permalink;
 }
 
 add_filter( 'learn_press_course_lesson_permalink', 'learn_press_course_lesson_permalink_friendly', 10, 3 );
@@ -1656,17 +1671,18 @@ add_filter( 'pre_get_posts', 'learn_press_filter_search' );
 
 /**
  * Convert an object|array to json format and send it to the browser
+ *
  * @param $response
  */
-function learn_press_send_json( $data ){
-    echo '<!-- LPR_AJAX_START -->';
-    @header( 'Content-Type: application/json; charset=' . get_option( 'blog_charset' ) );
-    echo wp_json_encode( $data );
-    echo '<!-- LPR_AJAX_END -->';
-    if ( defined( 'DOING_AJAX' ) && DOING_AJAX )
-        wp_die();
-    else
-        die;
+function learn_press_send_json( $data ) {
+	echo '<!-- LPR_AJAX_START -->';
+	@header( 'Content-Type: application/json; charset=' . get_option( 'blog_charset' ) );
+	echo wp_json_encode( $data );
+	echo '<!-- LPR_AJAX_END -->';
+	if ( defined( 'DOING_AJAX' ) && DOING_AJAX )
+		wp_die();
+	else
+		die;
 }
 
 /**
@@ -1675,24 +1691,25 @@ function learn_press_send_json( $data ){
  * @param string
  * @param mixed
  * @param mixed
+ *
  * @return mixed
  */
-function learn_press_get_request( $key, $default = null, $hash = null ){
-    $return = $default;
-    if( $hash ){
-        if( !empty( $hash[ $key ] ) ){
-            $return = $hash[ $key ];
-        }
-    }else {
-        if (!empty($_POST[$key])) {
-            $return = $_POST[$key];
-        } elseif (!empty($_GET[$key])) {
-            $return = $_GET[$key];
-        } elseif (!empty($_REQUEST[$key])) {
-            $return = $_REQUEST[$key];
-        }
-    }
-    return $return;
+function learn_press_get_request( $key, $default = null, $hash = null ) {
+	$return = $default;
+	if ( $hash ) {
+		if ( !empty( $hash[$key] ) ) {
+			$return = $hash[$key];
+		}
+	} else {
+		if ( !empty( $_POST[$key] ) ) {
+			$return = $_POST[$key];
+		} elseif ( !empty( $_GET[$key] ) ) {
+			$return = $_GET[$key];
+		} elseif ( !empty( $_REQUEST[$key] ) ) {
+			$return = $_REQUEST[$key];
+		}
+	}
+	return $return;
 }
 
 /**
@@ -1701,85 +1718,103 @@ function learn_press_get_request( $key, $default = null, $hash = null ){
  * @param $q
  */
 function learn_press_pre_get_posts( $q ) {
-    // We only want to affect the main query
-    if ( ! $q->is_main_query() ) {
-        return;
-    }
+	// We only want to affect the main query
+	if ( !$q->is_main_query() ) {
+		return;
+	}
 
-    // Fix for verbose page rules
-    if ( $GLOBALS['wp_rewrite']->use_verbose_page_rules && isset( $q->queried_object_id ) && $q->queried_object_id === learn_press_get_page_id('courses') ) {
-        $q->set( 'post_type', 'lpr_course' );
-        $q->set( 'page', '' );
-        $q->set( 'pagename', '' );
+	// Fix for verbose page rules
+	if ( $GLOBALS['wp_rewrite']->use_verbose_page_rules && isset( $q->queried_object_id ) && $q->queried_object_id === learn_press_get_page_id( 'courses' ) ) {
+		$q->set( 'post_type', 'lpr_course' );
+		$q->set( 'page', '' );
+		$q->set( 'pagename', '' );
 
-        // Fix conditional Functions
-        $q->is_archive           = true;
-        $q->is_post_type_archive = true;
-        $q->is_singular          = false;
-        $q->is_page              = false;
+		// Fix conditional Functions
+		$q->is_archive           = true;
+		$q->is_post_type_archive = true;
+		$q->is_singular          = false;
+		$q->is_page              = false;
 
-    }
+	}
 
 
-    // Fix for endpoints on the homepage
-    if ( $q->is_home() && 'page' == get_option('show_on_front') && get_option('page_on_front') != $q->get('page_id') ) {
-        $_query = wp_parse_args( $q->query );
-        /*if ( ! empty( $_query ) && array_intersect( array_keys( $_query ), array_keys( $this->query_vars ) ) ) {
-            $q->is_page     = true;
-            $q->is_home     = false;
-            $q->is_singular = true;
+	// Fix for endpoints on the homepage
+	if ( $q->is_home() && 'page' == get_option( 'show_on_front' ) && get_option( 'page_on_front' ) != $q->get( 'page_id' ) ) {
+		$_query = wp_parse_args( $q->query );
+		/*if ( ! empty( $_query ) && array_intersect( array_keys( $_query ), array_keys( $this->query_vars ) ) ) {
+			$q->is_page     = true;
+			$q->is_home     = false;
+			$q->is_singular = true;
 
-            $q->set( 'page_id', get_option('page_on_front') );
-        }*/
-    }
+			$q->set( 'page_id', get_option('page_on_front') );
+		}*/
+	}
 
-    // When orderby is set, WordPress shows posts. Get around that here.
-    if ( $q->is_home() && 'page' == get_option('show_on_front') && get_option('page_on_front') == learn_press_get_page_id('courses') ) {
-        $_query = wp_parse_args( $q->query );
-        if ( empty( $_query ) || ! array_diff( array_keys( $_query ), array( 'preview', 'page', 'paged', 'cpage', 'orderby' ) ) ) {
-            $q->is_page = true;
-            $q->is_home = false;
-            $q->set( 'page_id', get_option('page_on_front') );
-            $q->set( 'post_type', 'lpr_course' );
-        }
-    }
+	// When orderby is set, WordPress shows posts. Get around that here.
+	if ( $q->is_home() && 'page' == get_option( 'show_on_front' ) && get_option( 'page_on_front' ) == learn_press_get_page_id( 'courses' ) ) {
+		$_query = wp_parse_args( $q->query );
+		if ( empty( $_query ) || !array_diff( array_keys( $_query ), array( 'preview', 'page', 'paged', 'cpage', 'orderby' ) ) ) {
+			$q->is_page = true;
+			$q->is_home = false;
+			$q->set( 'page_id', get_option( 'page_on_front' ) );
+			$q->set( 'post_type', 'lpr_course' );
+		}
+	}
 
-    if ( $q->is_page() && 'page' == get_option( 'show_on_front' ) && $q->get('page_id') == learn_press_get_page_id('courses') && learn_press_get_page_id('courses') ) {
-        echo learn_press_get_page_id('courses'), ',', $q->get('page_id');
-        $q->set( 'post_type', 'lpr_course' );
-        $q->set( 'page_id', '' );
-        if ( isset( $q->query['paged'] ) ) {
-            $q->set( 'paged', $q->query['paged'] );
-        }
+	if ( $q->is_page() && 'page' == get_option( 'show_on_front' ) && $q->get( 'page_id' ) == learn_press_get_page_id( 'courses' ) && learn_press_get_page_id( 'courses' ) ) {
+		echo learn_press_get_page_id( 'courses' ), ',', $q->get( 'page_id' );
+		$q->set( 'post_type', 'lpr_course' );
+		$q->set( 'page_id', '' );
+		if ( isset( $q->query['paged'] ) ) {
+			$q->set( 'paged', $q->query['paged'] );
+		}
 
-        global $wp_post_types;
+		global $wp_post_types;
 
-        $course_page 	= get_post( learn_press_get_page_id('courses') );
+		$course_page = get_post( learn_press_get_page_id( 'courses' ) );
 
-        $wp_post_types['lpr_course']->ID 			= $course_page->ID;
-        $wp_post_types['lpr_course']->post_title 	= $course_page->post_title;
-        $wp_post_types['lpr_course']->post_name 	= $course_page->post_name;
-        $wp_post_types['lpr_course']->post_type     = $course_page->post_type;
-        $wp_post_types['lpr_course']->ancestors     = get_ancestors( $course_page->ID, $course_page->post_type );
+		$wp_post_types['lpr_course']->ID         = $course_page->ID;
+		$wp_post_types['lpr_course']->post_title = $course_page->post_title;
+		$wp_post_types['lpr_course']->post_name  = $course_page->post_name;
+		$wp_post_types['lpr_course']->post_type  = $course_page->post_type;
+		$wp_post_types['lpr_course']->ancestors  = get_ancestors( $course_page->ID, $course_page->post_type );
 
-        $q->is_singular          = false;
-        $q->is_post_type_archive = true;
-        $q->is_archive           = true;
-        $q->is_page              = true;
+		$q->is_singular          = false;
+		$q->is_post_type_archive = true;
+		$q->is_archive           = true;
+		$q->is_page              = true;
 
-    } elseif ( ! $q->is_post_type_archive( 'lpr_course' ) && ! $q->is_tax( get_object_taxonomies( 'lpr_course' ) ) ) {
-        return;
-    }
+	} elseif ( !$q->is_post_type_archive( 'lpr_course' ) && !$q->is_tax( get_object_taxonomies( 'lpr_course' ) ) ) {
+		return;
+	}
 }
+
 add_action( 'pre_get_posts', 'learn_press_pre_get_posts' );
 
-function learn_press_init(){
-    if( class_exists( 'LPR_Settings' ) ) {
-        $settings = LPR_Settings::instance('general');
-        if ($settings->get('instructor_registration')) {
-            add_action('register_form', 'learn_press_edit_registration');
-            add_action('user_register', 'learn_press_registration_save', 10, 1);
-        }
-    }
+function learn_press_init() {
+	if ( class_exists( 'LPR_Settings' ) ) {
+		$settings = LPR_Settings::instance( 'general' );
+		if ( $settings->get( 'instructor_registration' ) ) {
+			add_action( 'register_form', 'learn_press_edit_registration' );
+			add_action( 'user_register', 'learn_press_registration_save', 10, 1 );
+		}
+	}
+
 }
+
 add_action( 'init', 'learn_press_init' );
+
+/**
+ * Gets all statuses that order supported
+ *
+ * @return array
+ */
+function learn_press_get_order_statuses() {
+	$order_statuses = array(
+		'lp-pending'    => _x( 'Pending Payment', 'Order status', 'learn_press' ),
+		'lp-processing' => _x( 'Processing', 'Order status', 'learn_press' ),
+		'lp-completed'  => _x( 'Completed', 'Order status', 'learn_press' ),
+	);
+	return apply_filters( 'learn_press_order_statuses', $order_statuses );
+}
+

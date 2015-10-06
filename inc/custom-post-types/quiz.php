@@ -207,7 +207,7 @@ if( ! class_exists( 'LPR_Quiz_Post_Type' ) ){
 			if ( false !== $pos && !array_key_exists( 'lpr_course', $columns ) ) {
 				$columns = array_merge(
 					array_slice( $columns, 0, $pos + 1 ),
-					array( 'lpr_course' => __( 'Course', 'learn_press' ) ),
+					array( 'lpr_course' => __( 'Course', 'learn_press' ), 'num_of_question' => __( 'Num. of questions', 'learn_press' ) ),
 					array_slice( $columns, $pos + 1 )
 				);
 			}
@@ -230,8 +230,22 @@ if( ! class_exists( 'LPR_Quiz_Post_Type' ) ){
 			switch ( $name ) {
 				case 'lpr_course':
 					$course_id  = get_post_meta( $post_id, '_lpr_course', true );
-					$arr_params = array( 'meta_course' => intval( $course_id ) );
-					echo '<a href="' . esc_url( add_query_arg( $arr_params ) ) . '">' . ( $course_id ? get_the_title( $course_id ) : __( 'Not assigned yet', 'learn_press' ) ) . '</a>';
+
+                    if( $course_id ){
+                        $arr_params = array( 'meta_course' => intval( $course_id ) );
+                        echo '<a href="' . esc_url( add_query_arg( $arr_params ) ) . '">' . get_the_title( $course_id ) . '</a>';
+                        echo '<div class="row-actions">';
+                        printf( '<a href="%s">%s</a>', admin_url( sprintf( 'post.php?post=%d&action=edit', $course_id ) ), __( 'Edit', 'learn_press' ) );
+                        echo "&nbsp;|&nbsp;";
+                        printf( '<a href="%s">%s</a>', get_the_permalink( $course_id  ), __( 'View', 'learn_press' ) );
+                        echo '</div>';
+                    } else{
+                        _e( 'Not assigned yet', 'learn_press' );
+                    }
+                    break;
+                case 'num_of_question':
+                    $questions = get_post_meta( $post_id, '_lpr_quiz_questions', true );
+                    echo is_array( $questions ) ? sizeof( $questions ) : 0;
 			}
 		}
 

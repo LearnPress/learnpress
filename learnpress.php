@@ -4,7 +4,7 @@ Plugin Name: LearnPress
 Plugin URI: http://thimpress.com/learnpress
 Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
 Author: ThimPress
-Version: 0.9.14
+Version: 0.9.15
 Author URI: http://thimpress.com
 */
 
@@ -12,6 +12,13 @@ Author URI: http://thimpress.com
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit;
+
+if ( ! defined( 'LPR_PLUGIN_PATH'  ) ) {
+	define( 'LPR_PLUGIN_PATH', trailingslashit( plugin_dir_path( __FILE__  ) ) );
+	define( 'LPR_PLUGIN_URL', trailingslashit( plugins_url('/', __FILE__  ) ) );
+}
+
+
 if ( !class_exists( 'LearnPress' ) ) {
     /**
      * Class LearnPress
@@ -22,7 +29,7 @@ if ( !class_exists( 'LearnPress' ) ) {
          * Current version of the plugin
 		 * @var string
 		 */
-		public $version = '0.9.14';
+		public $version = '0.9.15';
 
 		/**
          * The single instance of the class
@@ -244,6 +251,12 @@ if ( !class_exists( 'LearnPress' ) ) {
 
 			$this->include_post_types();
 
+            // abstract classes
+            require_once 'inc/abstracts/abstract-lp-course.php';
+
+            //
+            require_once 'inc/class-lp-course.php';
+
 			require_once 'inc/class.lpr-session.php';
 
 			require_once 'inc/admin/class.lpr-profile.php';
@@ -254,7 +267,10 @@ if ( !class_exists( 'LearnPress' ) ) {
 
 			require_once 'inc/class.lpr-question-type.php';
 
+            require_once 'inc/class-lp-quiz.php';
+
 			// user API
+			require_once 'inc/abstracts/abstract-lp-user.php';
 			require_once 'inc/user/class.lpr-user.php';
 			require_once 'inc/user/lpr-user-functions.php';
 
@@ -295,6 +311,8 @@ if ( !class_exists( 'LearnPress' ) ) {
 			require_once 'inc/gateways/class.lpr-gateway-abstract.php';
 			require_once 'inc/gateways/class.lpr-gateways.php';
 
+            require_once( 'inc/class-lp-order.php' );
+            require_once( 'inc/lp-order-functions.php' );
 			//if ( defined( 'DOING_AJAX' ) ) {
 			//add ajax-action
 			require_once 'inc/admin/class.lpr-admin-ajax.php';

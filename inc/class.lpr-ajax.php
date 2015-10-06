@@ -15,11 +15,11 @@ if ( !class_exists( 'LPR_AJAX' ) ) {
 			// learnpress_ajax_event => nopriv
 			$ajaxEvents = array(
 				'list_quiz'            => false,
-				'load_quiz_question'   => false,
+				'load_quiz_question'   => true,
 				'load_prev_question'   => false,
 				'load_next_question'   => false,
 				'save_question_answer' => false,
-				'finish_quiz'          => false,
+				'finish_quiz'          => true,
 				'retake_quiz'          => true, // anonymous user can retake quiz
 				'take_free_course'     => false,
 				'load_lesson_content'  => false,
@@ -30,7 +30,9 @@ if ( !class_exists( 'LPR_AJAX' ) ) {
 				'join_event'           => false,
 				'not_going'            => false,
 				//
-				'take_course'          => true
+				'take_course'          => true,
+				'start_quiz'			=> true,
+				'fetch_question'		=> true
 			);
 
 			foreach ( $ajaxEvents as $ajax_event => $nopriv ) {
@@ -61,13 +63,84 @@ if ( !class_exists( 'LPR_AJAX' ) ) {
 			}
 		}
 
+		private static function save_question_if_needed(){
+			$quiz_id 			= ! empty( $_REQUEST['quiz_id'] ) ? absint( $_REQUEST['quiz_id'] ) : 0;
+			$question_id 		= ! empty( $_REQUEST['save_id'] ) ? absint( $_REQUEST['save_id'] ) : 0;
+			$user_id			= ! empty( $_REQUEST['user_id'] ) ? absint( $_REQUEST['user_id'] ) : 0;
+			$question_answer 	= isset( $_REQUEST['question_answer'] ) ? $_REQUEST['question_answer'] : null;
+			$question 			= $question_id ? LPR_Question_Type::instance( $question_id ) : false;
+
+			if( $question_answer && $question ) {
+				$question_answer = isset( $_REQUEST['question_answer'] ) ? $_REQUEST['question_answer'] : null;
+				$question->submit_answer( $quiz_id, $question_answer );
+				do_action( 'learn_press_save_user_question_answer', $question_answer, $question_id, $quiz_id, $user_id, true );
+
+			}
+			return $question;
+		}
+
+		private static function	update_time_remaining(){
+			$time_remaining 	= learn_press_get_request( 'time_remaining' );
+			$quiz_id 			= learn_press_get_request( 'quiz_id' );
+			$user_id			= learn_press_get_request( 'user_id' );
+			if( $time_remaining ){
+				$quiz_time_remaining = learn_press_get_quiz_time_remaining( $user_id, $quiz_id );
+				if( $time_remaining != $quiz_time_remaining ){
+					$quiz_time = (array)get_user_meta( $user_id, '_lpr_quiz_start_time', true );
+					$quiz_duration   = get_post_meta( $quiz_id, '_lpr_duration', true );
+
+
+					if( ! empty( $quiz_time[ $quiz_id ] ) ){
+						echo $quiz_time[ $quiz_id ],',';
+						$quiz_time[ $quiz_id ] = current_time( 'timestamp' ) - $time_remaining;
+						echo $quiz_time[ $quiz_id ],',';
+						update_user_meta( $user_id, '_lpr_quiz_start_time', $quiz_time );
+					}
+				}
+			}
+		}
+
 		/**
 		 * Load quiz question
 		 */
 		public static function load_quiz_question() {
-			$question_id = $_POST['question_id'];
-			do_action( 'lpr_load_question', $question_id );
-			die;
+			$quiz_id 		= ! empty( $_REQUEST['quiz_id'] ) ? absint( $_REQUEST['quiz_id'] ) : 0;
+			$question_id 	= ! empty( $_REQUEST['question_id'] ) ? absint( $_REQUEST['question_id'] ) : 0;
+			$user_id		= ! empty( $_REQUEST['user_id'] ) ? absint( $_REQUEST['user_id'] ) : 0;
+
+			// save question if find it
+			self::save_question_if_needed();
+			//self::update_time_remaining();
+			$user  = learn_press_get_current_user();
+			if( $user->id != $user_id ){
+				learn_press_send_json(
+					array(
+						'result'	=> 'error',
+						'message'	=> __( 'Load question error. Try again!', 'learn_press' )
+					)
+				);
+			}
+			if( ! $quiz_id || ! $question_id ){
+				learn_press_send_json(
+					array(
+						'result'	=> 'error',
+						'message'	=> __( 'Something is wrong. Try again!', 'learn_press' )
+					)
+				);
+			}
+			if( $question = LPR_Question_Type::instance( $question_id ) ){
+				ob_start();
+				$question->render();
+				$content = ob_get_clean();
+				learn_press_send_json(
+					array(
+						'result'	=> 'success',
+						'content'	=> $content,
+						'permalink'	=> learn_press_get_user_question_url( $quiz_id, $question_id )
+					)
+				);
+
+			}
 		}
 
 
@@ -109,69 +182,28 @@ if ( !class_exists( 'LPR_AJAX' ) ) {
 		 * Finish quiz
 		 */
 		public static function finish_quiz() {
-
+			$user 			 = learn_press_get_current_user();
 			$user_id         = get_current_user_id();
-			$quiz_id         = $_POST['quiz_id'];
-			$question_id     = $_POST['question_id'];
-			$question_answer = $_POST['question_answer'];
+			$quiz_id         = learn_press_get_request( 'quiz_id' );
+			$question_id     = learn_press_get_request( 'question_id' );
+			$question_answer = learn_press_get_request( 'question_answer' );
 
 			// save current answer as if user may change
-			lpr_save_question_answer( $quiz_id, $question_id, $question_answer );
+			self::save_question_if_needed();
+			$user->finish_quiz( $quiz_id );
 
-			// Show result to frontend
-			$quiz_id        = $_POST['quiz_id'];
-			$quiz_questions = get_post_meta( $quiz_id, '_lpr_quiz_questions', true );
-			$mark           = 0;
-			if ( $quiz_questions ) {
-				foreach ( $quiz_questions as $question ) {
-					$correct_answer = get_post_meta( $question, '_lpr_question_correct_answer', true );
-					$question_mark  = get_post_meta( $question, '_lpr_question_mark', true );
-					$student_answer = lpr_get_question_answer( $quiz_id, $question_id );
-
-					if ( array_key_exists( $question, $student_answer ) ) {
-						if ( $correct_answer == $student_answer ) {
-							$mark += $question_mark;
-						}
-					}
-				}
-			}
-
-			// add this quiz to list of completed quizzes
-			$quiz_completed = get_user_meta( $user_id, '_lpr_quiz_completed', true );
-			if ( $quiz_completed ) {
-				if ( !isset( $quiz_completed[$quiz_id] ) || !is_array( $quiz_completed[$quiz_id] ) ) {
-					$quiz_completed[$quiz_id] = array();
-				}
-				array_push( $quiz_completed[$quiz_id], $mark );
-				update_user_meta( $user_id, '_lpr_quiz_completed', $quiz_completed );
-			} else {
-				$quiz_completed = array();
-				if ( !isset( $quiz_completed[$quiz_id] ) || !is_array( $quiz_completed[$quiz_id] ) ) {
-					$quiz_completed[$quiz_id] = array();
-				}
-				array_push( $quiz_completed[$quiz_id], $mark );
-				update_user_meta( $user_id, '_lpr_quiz_completed', $quiz_completed );
-			}
-
-			$retake = get_user_meta( $user_id, '_lpr_quiz_retake', true );
-			if ( isset( $retake ) && is_array( $retake ) ) {
-				$key = array_search( $quiz_id, $retake );
-				if ( $key !== false ) {
-					unset( $retake[$key] );
-					update_user_meta( $user_id, '_lpr_quiz_retake', $retake );
-				}
-			}
-			die;
+			$response = array(
+				'redirect'		=> get_the_permalink( $quiz_id )
+			);
+			learn_press_send_json( $response );
 		}
 
 		/**
 		 *  Retake a quiz
 		 */
 		public static function retake_quiz() {
-
-			$quiz_id = $_POST['quiz_id'];
-			$user_id = get_current_user_id();
-
+			$quiz_id = learn_press_get_request( 'quiz_id' );
+			$user_id = learn_press_get_current_user_id();
 			$response = array();
 			if ( !learn_press_user_can_retake_quiz( $quiz_id, $user_id ) ) {
 				$response['message'] = __( 'Sorry! You can not retake this quiz', 'learn_press' );
@@ -180,11 +212,13 @@ if ( !class_exists( 'LPR_AJAX' ) ) {
 				//lpr_reset_quiz_answer($quiz_id);
 				learn_press_reset_user_quiz( $user_id, $quiz_id );
 				add_user_meta( $user_id, '_lpr_quiz_taken', $quiz_id );
-				$response['error'] = false;
-                $response['redirect'] = get_the_permalink( $quiz_id );
+				$response = array(
+					'retake'		=> true,
+					'redirect'		=> get_the_permalink( $quiz_id )
+				);
+				do_action( 'learn_press_user_retake_quiz', $quiz_id, $user_id );
 			}
 			learn_press_send_json( $response );
-			die();
 		}
 
 		/**
@@ -461,7 +495,7 @@ if ( !class_exists( 'LPR_AJAX' ) ) {
 			$course_time = get_user_meta( $user_id, '_lpr_course_time', true );
 			if ( $course_time && !empty( $course_time[$course_id] ) ) {
 				$course_time[$course_id] = array(
-					'start' => time(),
+					'start' => current_time( 'timestamp' ),
 					'end'   => null
 				);
 				update_user_meta( $user_id, '_lpr_course_time', $course_time );
@@ -522,6 +556,71 @@ if ( !class_exists( 'LPR_AJAX' ) ) {
 					'redirect' => get_permalink( $course_id )
 				)
 			);
+			die();
+		}
+
+		function start_quiz(){
+			$quiz_id = ! empty( $_REQUEST['quiz_id'] ) ? absint( $_REQUEST['quiz_id'] ) : 0;
+			if( ! $quiz_id ){
+				learn_press_send_json(
+					array(
+						'result'	=> 'error',
+						'message'	=> __( 'The quiz ID is empty', 'learn_press' )
+					)
+				);
+			}
+			$quiz = LP_Quiz::get_quiz( $quiz_id );
+			if( ! $quiz->id || $quiz->id != $quiz_id ){
+				learn_press_send_json(
+					array(
+						'result'	=> 'error',
+						'message'	=> __( 'Something is wrong! Please try again', 'learn_press' )
+					)
+				);
+			}
+			$user = learn_press_get_current_user();
+			if( $quiz->is_require_enrollment() && $user->is( 'guest' ) ){
+				learn_press_send_json(
+					array(
+						'result'	=> 'error',
+						'message'	=> __( 'Please login to do this quiz', 'learn_press' )
+					)
+				);
+			}
+			$user->set_quiz( $quiz );
+
+			switch( strtolower( $user->get_quiz_status() ) ){
+				case 'completed':
+					learn_press_send_json(
+						array(
+							'result'	=> 'error',
+							'message'	=> __( 'You have completed this quiz', 'learn_press' ),
+							'data'		=> $user->get_quiz_result()
+						)
+					);
+					break;
+				case 'started':
+					learn_press_send_json(
+						array(
+							'result'	=> 'error',
+							'message'	=> __( 'You have started this quiz', 'learn_press' ),
+							'data'		=> array(
+								'status' => $user->get_quiz_status()
+							)
+						)
+					);
+					break;
+				default:
+					$result = $user->start_quiz();
+					learn_press_send_json(
+						array(
+							'result'	=> 'success',
+							'data'		=> $result,
+							'question_url' => learn_press_get_user_question_url( $quiz_id ),
+							'question_content' => $user->get_current_question( $quiz_id, 'html' )
+						)
+					);
+			}
 			die();
 		}
 	}

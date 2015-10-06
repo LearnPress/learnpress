@@ -36,21 +36,29 @@ function learn_press_user_finished_course_send_email( $course_id = null, $user_i
     );
 }
 
+
+function learn_press_get_current_user_id(){
+    $user = learn_press_get_current_user();
+    return $user->id;
+}
+
 /**
  * Get current user
  * @return LPR_User
  */
 function learn_press_get_current_user(){
     $user_id = get_current_user_id();
-    return learn_press_get_user( $user_id );
+    $current_user = false;
+    if( $user_id ) {
+        $current_user = learn_press_get_user( $user_id );
+    }else{
+        $current_user = LP_User_Guest::instance();
+    }
+    return $current_user;
 }
 
 function learn_press_get_user( $user_id ){
-    static $users = array();
-    if( empty( $users[ $user_id ] ) ) {
-        $users[$user_id] = new LPR_User($user_id);
-    }
-    return $users[$user_id];
+    return LP_User::get_user( $user_id );
 }
 /**
  * Get all prerequisite courses that user need to pass before take a course

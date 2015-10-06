@@ -143,7 +143,7 @@ class LPR_Anonymous_User_Quiz{
             }
             if ($finished) {
                 $quiz['finished']   = true;
-                $quiz['end']        = time();
+                $quiz['end']        = current_time( 'timestamp' );
             }
             $session->set('anonymous_quiz', $quiz);
         }

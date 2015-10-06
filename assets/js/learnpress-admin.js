@@ -547,7 +547,7 @@ lprHook.addAction('lpr_admin_quiz_question_html', _lprAdminQuestionHTML);
         parse_json: function(response){
             if( typeof reposnse == 'object' ) return response;
             try {
-                var m = response.match(/<!--LPR_START-->(.*)<!--LPR_END-->/)
+                var m = response.match(/<!-- LPR_AJAX_START -->(.*)<!-- LPR_AJAX_END -->/)
 
                 if (m && m[1]) {
                     response = JSON.parse(m[1])
@@ -631,5 +631,19 @@ lprHook.addAction('lpr_admin_quiz_question_html', _lprAdminQuestionHTML);
             $('select', form).select2('open');
         }
     });
+
+    $(document).ready(function(){
+        var $add_new_h2 = $('body.post-type-lpr_course').find('.page-title-action, .add-new-h2'),
+            $reset_h2 = $('<a href="" class="page-title-action add-new-h2">Reset</a>');
+
+        $reset_h2
+            .insertAfter($add_new_h2)
+            .click(function(evt){
+                evt.preventDefault();
+                var link = window.location.href.replace(/reset-course-data=([0-9]+)/, '');
+                link += '&reset-course-data=' + $('input#post_ID').val();
+                window.location.href = link;
+            });
+    })
 })(jQuery)
 

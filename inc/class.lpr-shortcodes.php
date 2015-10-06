@@ -105,11 +105,11 @@ class LPR_Shortcodes{
                     dataType: 'html',
                     type: 'post',
                     success: function(code){
-                        if ( code.indexOf( '<!--LPR_START-->' ) >= 0 )
-                            code = code.split( '<!--LPR_START-->' )[1];
+                        if ( code.indexOf( '<!-- LPR_AJAX_START -->' ) >= 0 )
+                            code = code.split( '<!-- LPR_AJAX_START -->' )[1];
 
-                        if ( code.indexOf( '<!--LPR_END-->' ) >= 0 )
-                            code = code.split( '<!--LPR_END-->' )[0];
+                        if ( code.indexOf( '<!-- LPR_AJAX_END -->' ) >= 0 )
+                            code = code.split( '<!-- LPR_AJAX_END -->' )[0];
                         var result = $.parseJSON( code );
                         return;
                         if( ! result.error.length ){

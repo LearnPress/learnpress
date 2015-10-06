@@ -133,9 +133,10 @@ function lpr_assignment_start() {
 
     $user_id          = get_current_user_id();
     $assignment_taken = get_user_meta( $user_id, $post->ID, true );
+    $current_time = current_time( 'timestamp' );
     if ( isset( $_POST['start_assignment'] ) ) {
 
-        if ( add_user_meta( $user_id, $post->ID, time() ) ) {
+        if ( add_user_meta( $user_id, $post->ID, $current_time ) ) {
             return;
         } else {
             wp_die( __( 'Assignment can not be re-started', 'learn_press' ) );
@@ -146,7 +147,7 @@ function lpr_assignment_start() {
         $time                          = get_post_meta( $post->ID, '_lpr_assignment_deadline' );
         $assignment_duration_parameter = apply_filters( 'lpr_assignment_duration_parameter', 86400 );
         $time_limit                    = intval( $start_time ) + intval( $time ) * $assignment_duration_parameter;
-        if ( $time_limit > time() ) {
+        if ( $time_limit > $current_time ) {
             return;
         } else {
             wp_die( __( 'TIME EXPIRED, PLEASE SUBMIT THE ASSIGNMENT', 'learn_press' ) );
@@ -187,7 +188,7 @@ function assignment_start_button() { // Check on Start Values
     if ( isset( $connected_course ) && is_numeric( $connected_course ) ) {
         $expiry = get_user_meta( $user_id, $connected_course, true );
         if ( isset( $expiry ) && is_numeric( $expiry ) ) {
-            if ( $expiry < time() ) {
+            if ( $expiry < current_time( 'timestamp' ) ) {
                 $flag = 0;
             }
         } else {
@@ -234,7 +235,7 @@ function assignment_submit_button() {
 
         $course         = get_post_meta( $post->ID, '_lpr_assignment_course', true );
         $course_started = get_user_meta( $user_id, $course, true ); // Check if Connected course is started
-        if ( isset( $course_started ) && $course_started > time() ) { // Course is Still active
+        if ( isset( $course_started ) && $course_started > current_time( 'timestamp' ) ) { // Course is Still active
 
             echo '<form method="post">
                   <input type="submit" name="submit_assignment" class="submit_assignment btn btn-primary" value="' . __( 'SUBMIT ASSIGNMENT', 'learn_press' ) . '" />';
@@ -273,6 +274,8 @@ function clear_previous_submissions() {
     die();
 }
 
+//learn_press_user_can_view_quiz()
+
 if ( !function_exists( 'the_assignment_timer' ) ) {
     function the_assignment_timer( $hours, $start = null ) {
         global $post;
@@ -286,7 +289,7 @@ if ( !function_exists( 'the_assignment_timer' ) ) {
 
         echo $assignment_taken;
 
-        $remain_time = $time_limit - time();
+        $remain_time = $time_limit - current_time( 'timestamp' );
 
 //		if ( isset( $assignment_taken ) && $assignment_taken != '' ) {
 //			if ( ( $assignment_taken + $hours * $assignment_duration_parameter ) > time() ) {
@@ -409,7 +412,7 @@ if ( !function_exists( 'the_quiz' ) ) {
 
             $quiz_taken = get_user_meta( $user_id, $quiz_id, true );
 
-            if ( isset( $quiz_taken ) && $quiz_taken && ( $quiz_taken < time() ) ) {
+            if ( isset( $quiz_taken ) && $quiz_taken && ( $quiz_taken < current_time( 'timestamp' ) ) ) {
 
                 $message = get_post_meta( $quiz_id, '_lpr_quiz_message', true );
                 echo '<div class="main_content">';
@@ -436,10 +439,10 @@ if ( !function_exists( 'the_quiz_timer' ) ) {
         if ( $minutes > 9998 ) {
             return true;
         }
-
+        $current_time = current_time( 'timestamp' );
         if ( isset( $quiztaken ) && is_numeric( $quiztaken ) && $quiztaken ) {
-            if ( $quiztaken > time() ) {
-                $minutes = $quiztaken - time();
+            if ( $quiztaken > $current_time ) {
+                $minutes = $quiztaken - $current_time;
                 $start   = 1;
             } else {
                 $minutes = 1;
@@ -469,7 +472,7 @@ if ( !function_exists( 'the_quiz_timer' ) ) {
 add_filter( 'lpr_take_course_page', 'lpr_course_time_check', 10, 2 );
 function lpr_course_time_check( $link, $course_id ) {
     $start_date = get_post_meta( $course_id, '_lpr_start_date', true );
-    if ( isset( $start_date ) && strtotime( $start_date ) > time() ) {
+    if ( isset( $start_date ) && strtotime( $start_date ) > current_time( 'timestamp' ) ) {
         return '#';
     }
 
@@ -534,8 +537,8 @@ function learn_press_update_quiz_time(){
         global $quiz;
         $user_id = get_current_user_id();
         $retake_quiz = !empty($_REQUEST['retake_quiz']) ? $_REQUEST['retake_quiz'] : 0;
-        if ($retake_quiz && learn_press_user_can_retake_quiz( $quiz->ID, $user_id ) ) {
-            learn_press_reset_user_quiz( $user_id, $quiz->ID );
+        if ($retake_quiz && learn_press_user_can_retake_quiz( $quiz->id, $user_id ) ) {
+            learn_press_reset_user_quiz( $user_id, $quiz->id );
             //wp_redirect( get_permalink( $quiz->ID ) );
         }
     }
@@ -553,6 +556,7 @@ if ( !function_exists( 'learn_press_setup_quiz_data' ) ) {
      * @return  object|null
      */
     function learn_press_setup_quiz_data( $quiz_id_variable = 'quiz_id', $global_variable = 'quiz' ) {
+        return;
         global $post, $post_type;
         $quiz = false;
         // set quiz variable to a post if we are in a single quiz
@@ -652,7 +656,6 @@ function learn_press_get_user_next_question_url( $quiz_id, $current_question_id 
         }
     }
     $next_id = learn_press_get_next_question( $current_question_id, $quiz_id, $user_id );
-
     if( $next_id ){
         $permalink = get_the_permalink( $quiz_id );
         $question_name = get_post_field('post_name', $next_id);

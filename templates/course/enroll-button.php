@@ -5,6 +5,12 @@
  */
 learn_press_prevent_access_directly();
 
+global $course;
+echo $course_status = learn_press_get_user_course_status();
+// only show enroll button if user had not enrolled
+
+if ( ( '' == $course_status && $course->is_require_enrollment() ) ) {
+
 do_action( 'learn_press_before_course_enroll_button' );
 $button_text = apply_filters( 'learn_press_take_course_button_text', __( 'Take this course', 'learn_press' ) );
 $loading_text = apply_filters( 'learn_press_take_course_button_loading_text', __( 'Processing', 'learn_press' ) );
@@ -12,3 +18,4 @@ $loading_text = apply_filters( 'learn_press_take_course_button_loading_text', __
 <button id="learn_press_take_course" class="btn take-course" data-course-id="<?php the_ID();?>" data-text="<?php echo $button_text;?>" data-loading-text="<?php echo $loading_text;?>"><?php echo $button_text;?></button>
 <?php do_action( 'learn_press_after_course_enroll_button' );?>
 
+<?php } ?>

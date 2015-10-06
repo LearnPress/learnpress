@@ -1,4 +1,6 @@
-<?php ?>
+<?php
+global $course;
+?>
 <article id="post-<?php the_ID(); ?>" <?php post_class(); ?> itemscope itemtype="http://schema.org/CreativeWork">
 	<?php do_action( 'learn_press_before_course_header' ); ?>
 	<header class="entry-header">

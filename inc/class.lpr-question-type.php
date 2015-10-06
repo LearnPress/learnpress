@@ -399,6 +399,9 @@ add_action( 'admin_enqueue_scripts', 'lpr_question_scripts' );
 add_action( 'wp_enqueue_scripts', 'lpr_question_scripts' );
 
 function learn_press_submit_answer(){
+
+    _deprecated_function ( 'learn_press_submit_answer', '0.9.15', false );
+
     $quiz_id        = !empty( $_REQUEST['quiz_id'] ) ? intval( $_REQUEST['quiz_id'] ) : 0;
     $question_id    = !empty( $_REQUEST['question_id'] ) ? intval( $_REQUEST['question_id'] ) : 0;
     $next_id        = !empty( $_REQUEST['next_id'] ) ? intval( $_REQUEST['next_id'] ) : learn_press_get_next_question( $quiz_id, $question_id );
@@ -419,7 +422,7 @@ function learn_press_submit_answer(){
     }else{
         $question_ids = learn_press_get_user_quiz_questions( $quiz_id, $user_id );
         $quiz_completed = get_user_meta( $user_id, '_lpr_quiz_completed', true );
-        $quiz_completed[$quiz_id] = time();
+        $quiz_completed[$quiz_id] = current_time( 'timestamp' );
         update_user_meta( $user_id, '_lpr_quiz_completed', $quiz_completed );
         $course_id = learn_press_get_course_by_quiz( $quiz_id );
         if( ! learn_press_user_has_finished_course( $course_id ) ) {

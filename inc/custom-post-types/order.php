@@ -17,6 +17,7 @@ if( ! class_exists( 'LPR_Order_Post_Type' ) ) {
         function __construct() {
             if( self::$loaded ) return;
             add_action('init', array($this, 'register_post_type'));
+            add_action('init', array($this, 'register_post_statues'));
             /*Add Coulumn*/
             add_filter( 'manage_edit-lpr_order_columns', array( $this, 'lpr_order_columns' ) );
             add_action( 'manage_lpr_order_posts_custom_column', array( $this, 'render_learn_press_order_columns' ) );
@@ -281,7 +282,7 @@ if( ! class_exists( 'LPR_Order_Post_Type' ) ) {
             $the_order = learn_press_get_order($post->ID);
 
             $order_items = learn_press_get_order_items($post->ID);
-            $status = get_post_meta($post->ID, '_learn_press_transaction_status', true);
+            //$status = get_post_meta($post->ID, '_learn_press_transaction_status', true);
 
             switch ($column) {
                 case 'order_student':
@@ -290,9 +291,7 @@ if( ! class_exists( 'LPR_Order_Post_Type' ) ) {
                     ?><a href="user-edit.php?user_id=<?php echo $post->user_ID ?>"><?php echo $post->user_display_name ?></a><?php
                     break;
                 case 'order_status' :
-                    //echo learn_press_get_status_text( $the_order->meta['zzlpr_status'] );
-                    //				printf( '<mark class="%s tips" data-tip="%s">%s</mark>', sanitize_title( $the_order->get_status() ), wc_get_order_status_name( $the_order->get_status() ), wc_get_order_status_name( $the_order->get_status() ) );
-                    echo $status;
+                    echo learn_press_get_order_status_label( $post->ID );
                     break;
                 case 'order_date' :
 
@@ -300,7 +299,7 @@ if( ! class_exists( 'LPR_Order_Post_Type' ) ) {
                     $m_time = $post->post_date;
                     $time = get_post_time( 'G', true, $post );
 
-                    $time_diff = time() - $time;
+                    $time_diff = current_time( 'timestamp' ) - $time;
 
                     if ( $time_diff > 0 && $time_diff < DAY_IN_SECONDS )
                         $h_time = sprintf( __( '%s ago', 'learn_press' ), human_time_diff( $time ) );
@@ -475,11 +474,9 @@ if( ! class_exists( 'LPR_Order_Post_Type' ) ) {
                             <td class="align-right" colspan="2">
                                 <?php _e('Status', 'learn_press'); ?>
                                 <select name="learn_press_order_status">
-                                    <option value="" <?php selected($status == '' ? 1 : 0, 1); ?>><?php _e( 'Unpublished', 'learn_press' );?></option>
-                                    <option
-                                        value="Pending" <?php selected($status && ( $status != 'completed' ) ? 1 : 0, 1); ?>><?php _e('Pending', 'learn_press'); ?></option>
-                                    <option
-                                        value="Completed" <?php selected($status == 'completed' ? 1 : 0, 1); ?>><?php _e('Completed', 'learn_press'); ?></option>
+                                    <?php foreach( learn_press_get_order_statuses() as $status => $label ){?>
+                                    <option value="<?php echo $status;?>" <?php selected( $status == get_post_status( $post->ID ) ? 1 : 0, 1); ?>><?php echo $label;?></option>
+                                    <?php }?>
                                 </select>
                                 <button id="update-order-status" class="button button-primary" type="button"><?php _e( 'Apply', 'learn_press' );?></button>
                             </td>
@@ -494,6 +491,38 @@ if( ! class_exists( 'LPR_Order_Post_Type' ) ) {
         function preparing_to_trash_order( $post_id ){
             if( 'lpr_order' != get_post_type( $post_id ) ) return;
 
+        }
+
+
+
+        /**
+         * Register new post status for order
+         */
+        function register_post_statues(){
+            register_post_status( 'lp-pending', array(
+                'label'                     => _x( 'Pending Payment', 'Order status', 'learn_press' ),
+                'public'                    => false,
+                'exclude_from_search'       => false,
+                'show_in_admin_all_list'    => true,
+                'show_in_admin_status_list' => true,
+                'label_count'               => _n_noop( 'Pending Payment <span class="count">(%s)</span>', 'Pending Payment <span class="count">(%s)</span>', 'learn_press' )
+            ) );
+            register_post_status( 'lp-processing', array(
+                'label'                     => _x( 'Processing', 'Order status', 'learn_press' ),
+                'public'                    => false,
+                'exclude_from_search'       => false,
+                'show_in_admin_all_list'    => true,
+                'show_in_admin_status_list' => true,
+                'label_count'               => _n_noop( 'Processing <span class="count">(%s)</span>', 'Processing <span class="count">(%s)</span>', 'learn_press' )
+            ) );
+            register_post_status( 'lp-completed', array(
+                'label'                     => _x( 'Completed', 'Order status', 'learn_press' ),
+                'public'                    => false,
+                'exclude_from_search'       => false,
+                'show_in_admin_all_list'    => true,
+                'show_in_admin_status_list' => true,
+                'label_count'               => _n_noop( 'Completed <span class="count">(%s)</span>', 'Completed <span class="count">(%s)</span>', 'learn_press' )
+            ) );
         }
     }
 } // end LPR_Order_Post_Type

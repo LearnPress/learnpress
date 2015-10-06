@@ -141,7 +141,7 @@ function learn_press_get_add_ons( $options=array() ) {
                 $plugins[$plugin_file]['tested'] = null;
                 $plugins[$plugin_file]['requires'] = null;
                 $plugins[$plugin_file]['active_installs'] = 0;
-                $plugins[$plugin_file]['last_updated'] = gmdate ( 'Y-m-d h:iA', strtotime('last Friday', time() ) ) . ' GMT';
+                $plugins[$plugin_file]['last_updated'] = gmdate ( 'Y-m-d h:iA', strtotime('last Friday', current_time( 'timestamp' ) ) ) . ' GMT';
             }
         }
     }

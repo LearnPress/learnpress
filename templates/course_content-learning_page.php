@@ -3,6 +3,7 @@
 if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
+global $course;
 
 ?>
 <?php do_action( 'learn_press_before_course_learning_content' ); ?>

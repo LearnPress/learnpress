@@ -537,3 +537,32 @@ function learn_press_one_click_install_sample_data_notice() {
 
 add_action( 'admin_notices', 'learn_press_one_click_install_sample_data_notice' );
 
+function learn_press_request_query( $vars = array() ){
+    global $typenow, $wp_query, $wp_post_statuses;
+
+    if ( 'lpr_order' === $typenow ) {
+        // Status
+        if ( ! isset( $vars['post_status'] ) ) {
+            $post_statuses = learn_press_get_order_statuses();
+
+            foreach ( $post_statuses as $status => $value ) {
+                if ( isset( $wp_post_statuses[ $status ] ) && false === $wp_post_statuses[ $status ]->show_in_admin_all_list ) {
+                    unset( $post_statuses[ $status ] );
+                }
+            }
+
+            $vars['post_status'] = array_keys( $post_statuses );
+        }
+    }
+    return $vars;
+}
+add_filter( 'request', 'learn_press_request_query' );
+
+function _learn_press_reset_course_data(){
+    if( empty( $_REQUEST['reset-course-data'] ) ){
+        return false;
+    }
+    learn_press_reset_course_data( intval( $_REQUEST['reset-course-data'] ) );
+    wp_redirect( remove_query_arg( 'reset-course-data' ) );
+}
+add_action( 'init', '_learn_press_reset_course_data' );

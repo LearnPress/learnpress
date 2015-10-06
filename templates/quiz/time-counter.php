@@ -4,6 +4,10 @@
  *
  */
 learn_press_prevent_access_directly();
+
+if( learn_press_user_has_completed_quiz() ){
+    return;
+}
 if( learn_press_get_quiz_duration() ):
 ?>
 <?php do_action( 'learn_press_before_quiz_clock' ); ?>

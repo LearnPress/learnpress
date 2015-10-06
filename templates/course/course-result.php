@@ -1,9 +1,10 @@
 <?php
-//$course_id = learn_press_get_course_by_quiz( get_the_ID() );
+if( learn_press_get_current_user()->is('guest') ) return;
 $course_id = get_the_ID();
 $passed = learn_press_user_has_passed_course( $course_id );
 $result = learn_press_get_quiz_result( null, $quiz_id );
 $result = learn_press_get_course_result( $course_id );
+
 ?>
     <div class="clearfix"></div>
 <?php if( $passed ):?>

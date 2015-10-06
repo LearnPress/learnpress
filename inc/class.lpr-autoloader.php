@@ -60,12 +60,16 @@ class LPR_Autoloader {
         // payment gateways
         if ( strpos( $class, 'lpr_gateway_' ) === 0 ) {
             $path = $this->include_path . 'gateways/' . substr( str_replace( '_', '-', $class ), 12 ) . '/';
-        }
-
-        // meta box fields
-        if( strpos( $class, 'rwmb_' ) === 0 ){
+        }elseif( strpos( $class, 'rwmb_' ) === 0 ){ // meta box fields
             $file = 'class.' . substr( str_replace( '_', '-', $class ), 5, strlen( $class ) - 11 ) . '.php';
             $path = $this->include_path . 'admin/meta-boxes/fields/';
+        }else{
+            $file = 'class-' . str_replace( '_', '-', $class ) . '.php';
+            $path = dirname( __FILE__ ) . '/';
+            if( strpos( $class, 'lp_user' ) !== false || $class == 'lp_abstract_user' ){
+                $path .= 'user/';
+            }
+            //echo $path . $file . "\n";
         }
 
         //if ( empty( $path ) || ( ! $this->load_file( $path . $file ) && strpos( $class, 'lpr_' ) === 0 ) ) {

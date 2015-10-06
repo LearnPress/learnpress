@@ -181,20 +181,24 @@ class LPR_Question_Type_Multi_Choice extends LPR_Question_Type{
                 </li>
                 <?php endforeach;?>
             </ul>
-            <?php 
-                $question = get_post( $this->get('ID') );
-                $question_content = $question->post_content;                
+            <?php
+                global $post;
+                $post = get_post( $this->get('ID') );
+                $question_content = $post->post_content;
                 if( !empty($question_content) ) :
-            ?>
 
+                    setup_postdata($post);
+            ?>
             <div id="question-hint" class="question-hint-wrap">
                 <h5 class="question-hint-title"><?php _e('Question hint', 'learn_press');?></h5>
                 <div class="question-hint-content hidden">
-                    <p><?php echo apply_filters('the_content', $question_content); ?></p>
+                    <p><?php echo apply_filters('the_content', $question_content ); ?></p>
                 </div>
             </div>
-
-            <?php endif; ?>
+            <?php
+                    wp_reset_postdata();
+                endif;
+            ?>
         </div>
     <?php
     }
@@ -207,7 +211,6 @@ class LPR_Question_Type_Multi_Choice extends LPR_Question_Type{
             'mark'      => intval( get_post_meta( $this->get('ID'), '_lpr_question_mark', true ) )
         );
         settype( $answer, 'array' );
-
         if ( $answers = $this->get('options.answer') ){
             foreach( $answers as $k => $ans ){
                 $is_true = $this->get('options.answer.' . $k . '.is_true') ? true : false;

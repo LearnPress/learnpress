@@ -1,6 +1,8 @@
 <?php
 global $learn_press;
-
+if( ! learn_press_user_has_completed_quiz( learn_press_get_current_user_id() ) ){
+    return;
+}
 $result = learn_press_get_quiz_result();
 ?>
 <div class="quiz-result">

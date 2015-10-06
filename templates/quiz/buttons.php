@@ -4,6 +4,7 @@
  *
  */
 learn_press_prevent_access_directly();
+
 ?>
 <?php do_action( 'learn_press_before_quiz_buttons' );?>
 <div class="quiz-buttons">
@@ -17,16 +18,16 @@ learn_press_prevent_access_directly();
     </button>
     <?php do_action( 'learn_press_after_start_quiz_button' );?>
     <?php endif; ?>
-    <?php if( !learn_press_user_has_completed_quiz() ):?>
+    <?php //if( !learn_press_user_has_completed_quiz() ):?>
     <?php do_action( 'learn_press_before_finish_quiz_button' );?>
-    <button class="button-finish-quiz btn hidden" quiz-id="<?php echo get_the_ID() ?>">
+    <button class="button-finish-quiz btn hidden" quiz-id="<?php echo get_the_ID() ?>" data-area="sidebar">
         <?php
         // allow doing quiz if enrolled
-        echo apply_filters( 'learn_press_finish_quiz_button_text', __( "Finish Quiz", "learn_press" ) );
+        echo apply_filters( 'learn_press_sidebar_finish_quiz_text', __( "Finish Quiz", "learn_press" ) );
         ?>
     </button>
     <?php do_action( 'learn_press_after_finish_quiz_button' );?>
-    <?php endif;?>
+    <?php //endif;?>
     <?php if( learn_press_user_can_retake_quiz() ):?>
         <button class="button-retake-quiz btn" data-id="<?php the_ID();?>"><?php _e( 'Retake', 'learn_press' );?></button>
     <?php endif;?>
