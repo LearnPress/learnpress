@@ -971,17 +971,16 @@ add_action( 'wp', 'learn_press_init_quiz' );*/
  */
 function learn_press_init_course() {
 	global $post_type;
+	$post_id = 0;
 	if ( 'lpr_course' == $post_type ) {
 		global $post;
-		$GLOBALS['course'] = $post;
+		$post_id = $post->ID;
 	} else if ( !empty( $_REQUEST['course_id'] ) ) {
-		$course = get_post( $_REQUEST['course_id'] );
-		if ( $course ) $GLOBALS['course'] = $course;
+		$post_id = $_REQUEST['course_id'];
 	}
+	lp_setup_course_data( $post_id );
 }
-
 add_action( 'wp', 'learn_press_init_course' );
-add_action( 'the_post', 'learn_press_init_course' );
 
 function learn_press_head() {
 	if ( is_single() && 'lpr_course' == get_post_type() ) {

@@ -1,0 +1,9 @@
+﻿User meta:
+- Mua courses nào
+- đang học course nào
+- hoàn thành course nào ( pass/ failue )
+- học lại cousrse nào ( mấy lần, thời gian )
+- Tình trạng học hành của từng course:
+- đang học dở course nào để còn tiếp tục
+- hoàn thành quiz nào ( bao nhiêu điểm, lần mấy, khi nào ) 
+- quiz của các lần trước ra sao 

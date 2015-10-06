@@ -6,7 +6,7 @@
 learn_press_prevent_access_directly();
 
 global $course;
-echo $course_status = learn_press_get_user_course_status();
+$course_status = learn_press_get_user_course_status();
 // only show enroll button if user had not enrolled
 
 if ( ( '' == $course_status && $course->is_require_enrollment() ) ) {

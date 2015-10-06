@@ -32,7 +32,7 @@ function lp_setup_course_data( $post ) {
 	return $GLOBALS['course'];
 }
 
-add_action( 'the_post', 'lp_setup_course_data' );
+//add_action( 'the_post', 'lp_setup_course_data' );
 
 /**
  * When the_post is called, put course data into a global.
