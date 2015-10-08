@@ -974,7 +974,9 @@ function learn_press_init_course() {
 	$post_id = 0;
 	if ( 'lpr_course' == $post_type ) {
 		global $post;
-		$post_id = $post->ID;
+		if ($post) {
+			$post_id = $post->ID;
+		}
 	} else if ( !empty( $_REQUEST['course_id'] ) ) {
 		$post_id = $_REQUEST['course_id'];
 	}
