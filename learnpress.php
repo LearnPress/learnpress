@@ -17,8 +17,6 @@ if ( ! defined( 'LPR_PLUGIN_PATH'  ) ) {
 	define( 'LPR_PLUGIN_PATH', trailingslashit( plugin_dir_path( __FILE__  ) ) );
 	define( 'LPR_PLUGIN_URL', trailingslashit( plugins_url('/', __FILE__  ) ) );
 }
-
-
 if ( !class_exists( 'LearnPress' ) ) {
     /**
      * Class LearnPress
