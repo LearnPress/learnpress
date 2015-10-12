@@ -100,8 +100,6 @@ if ( !class_exists( 'LearnPress' ) ) {
 			$this->plugin_url  = LP_PLUGIN_URL;
 			$this->plugin_path = LP_PLUGIN_PATH;
 
-
-
 			// hooks
 			$this->init_hooks();
 			// includes
