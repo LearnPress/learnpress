@@ -4,9 +4,9 @@ if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-if ( !class_exists( 'LPR_Question_Post_Type' ) ) {
-	// class LPR_Question_Post_Type
-	class LPR_Question_Post_Type {
+if ( !class_exists( 'LP_Question_Post_Type' ) ) {
+	// class LP_Question_Post_Type
+	class LP_Question_Post_Type {
 		private static $loaded = false;
 
 		function __construct() {
@@ -24,7 +24,7 @@ if ( !class_exists( 'LPR_Question_Post_Type' ) ) {
 		 * Register question post type
 		 */
 		function register_post_type() {
-			register_post_type( LPR_QUESTION_CPT,
+			register_post_type( LP_QUESTION_CPT,
 				array(
 					'labels'             => array(
 						'name'               => __( 'Question Bank', 'learn_press' ),
@@ -44,7 +44,7 @@ if ( !class_exists( 'LPR_Question_Post_Type' ) ) {
 					'publicly_queryable' => true,
 					'show_ui'            => true,
 					'has_archive'        => true,
-					'capability_type'    => LPR_LESSON_CPT,
+					'capability_type'    => LP_LESSON_CPT,
 					'map_meta_cap'       => true,
 					'show_in_menu'       => 'learn_press',
 					'show_in_admin_bar'  => true,
@@ -56,7 +56,7 @@ if ( !class_exists( 'LPR_Question_Post_Type' ) ) {
 			);
 
 
-			register_taxonomy( 'question-tag', array( LPR_QUESTION_CPT ),
+			register_taxonomy( 'question-tag', array( LP_QUESTION_CPT ),
 				array(
 					'labels'            => array(
 						'name'          => __( 'Question Tag', 'learn_press' ),
@@ -95,7 +95,7 @@ if ( !class_exists( 'LPR_Question_Post_Type' ) ) {
 			$meta_box = array(
 				'id'     => 'question_settings',
 				'title'  => __('Type of question','learn_press'),
-				'pages'  => array( LPR_QUESTION_CPT ),
+				'pages'  => array( LP_QUESTION_CPT ),
 				'fields' => array(
 					array(
 						'name' => __( '', 'learn_press' ),
@@ -121,7 +121,7 @@ if ( !class_exists( 'LPR_Question_Post_Type' ) ) {
          * Enqueue scripts
          */
 		function enqueue_script() {
-			if ( ! in_array( get_post_type(), array( 'lpr_question' ) ) ) return;
+			if ( ! in_array( get_post_type(), array( LP()->question_post_type ) ) ) return;
 			ob_start();
 			?>
 			<script>
@@ -155,7 +155,7 @@ if ( !class_exists( 'LPR_Question_Post_Type' ) ) {
 					<input type="text">
 					<select class="lpr-question-types lpr-select2" name="lpr_question[type]" id="lpr-quiz-question-type">
 						<?php if ( $questions = lpr_get_question_types() ): ?>
-							<?php foreach ( $questions as $type ): $question = LPR_Question_Type::instance( $type ); if( ! $question ) continue; ?>
+							<?php foreach ( $questions as $type ): $question = LP_Question::instance( $type ); if( ! $question ) continue; ?>
 								<option value="<?php echo $type; ?>"><?php echo $question->get_name(); ?></option>
 							<?php endforeach; ?>
 						<?php endif;?>
@@ -185,7 +185,7 @@ if ( !class_exists( 'LPR_Question_Post_Type' ) ) {
 			return $columns;
 		}
 
-	} // end LPR_Question_Post_Type
+	} // end LP_Question_Post_Type
 }
 
-new LPR_Question_Post_Type();
+new LP_Question_Post_Type();

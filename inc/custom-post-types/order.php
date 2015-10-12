@@ -8,10 +8,10 @@
  * AuthorURI: thimpress.com
  * Copyright 2007-2015 thimpress.com. All rights reserved.
  */
-if( ! class_exists( 'LPR_Order_Post_Type' ) ) {
-    // class LPR_Order_Post_Type
+if( ! class_exists( 'LP_Order_Post_Type' ) ) {
+    // class LP_Order_Post_Type
 
-    final class LPR_Order_Post_Type
+    final class LP_Order_Post_Type
     {
         private static $loaded = false;
         function __construct() {
@@ -75,7 +75,7 @@ if( ! class_exists( 'LPR_Order_Post_Type' ) ) {
         function posts_where_paged( $where ){
             global $wpdb;
             global $post_type;
-            if( 'lpr_order' != $post_type ) return $where;
+            if( LP()->order_post_type != $post_type ) return $where;
             $where .= " AND (
                 {$wpdb->postmeta}.meta_key='_learn_press_customer_id'
             )";
@@ -84,13 +84,13 @@ if( ! class_exists( 'LPR_Order_Post_Type' ) ) {
 
         function posts_fields( $fields ){
             global $post_type;
-            if( 'lpr_order' != $post_type ) return $fields;
+            if( LP()->order_post_type != $post_type ) return $fields;
             $fields .= ", uu.ID as user_ID, uu.display_name as user_display_name";
             return $fields;
         }
         function posts_orderby( $orderby ){
             global $post_type;
-            if( 'lpr_order' != $post_type ) return $orderby;
+            if( LP()->order_post_type != $post_type ) return $orderby;
             $args = wp_parse_args(
                 $_REQUEST,
                 array(
@@ -107,7 +107,7 @@ if( ! class_exists( 'LPR_Order_Post_Type' ) ) {
 
         function posts_join_paged( $join ){
             global $post_type;
-            if( 'lpr_order' != $post_type ) return $join;
+            if( LP()->order_post_type != $post_type ) return $join;
             global $wpdb;
             $join .= " INNER JOIN {$wpdb->postmeta} ON {$wpdb->posts}.ID = {$wpdb->postmeta}.post_id";
             $join .= " INNER JOIN {$wpdb->users} uu ON uu.ID = {$wpdb->postmeta}.meta_value";
@@ -130,7 +130,7 @@ if( ! class_exists( 'LPR_Order_Post_Type' ) ) {
 
             global $post, $wp_query;
 
-            if ('lpr_order' != get_post_type()) return;
+            if (LP()->order_post_type != get_post_type()) return;
             ob_start();
             ?>
             <script>
@@ -182,7 +182,7 @@ if( ! class_exists( 'LPR_Order_Post_Type' ) ) {
         function post_row_actions($actions, $post)
         {
 
-            if ('lpr_order' == $post->post_type) {
+            if (LP()->order_post_type == $post->post_type) {
 
                 $_actions = array();
 
@@ -204,7 +204,7 @@ if( ! class_exists( 'LPR_Order_Post_Type' ) ) {
         function pre_get_posts($wp_query)
         {
             if (is_admin()) {
-                if ( !empty( $wp_query->query['post_type'] ) && ( $wp_query->query['post_type'] == 'lpr_order' ) ) {
+                if ( !empty( $wp_query->query['post_type'] ) && ( $wp_query->query['post_type'] == LP()->order_post_type ) ) {
                     $wp_query->set('orderby', 'date');
                     $wp_query->set('order', 'desc');
                 }
@@ -266,7 +266,7 @@ if( ! class_exists( 'LPR_Order_Post_Type' ) ) {
         function replace_transaction_title_with_order_number($title, $post_id)
         {
             global $post;
-            if ('lpr_order' == get_post_type($post_id))
+            if (LP()->order_post_type == get_post_type($post_id))
                 $title = learn_press_transaction_order_number($post_id);
             return $title;
         }
@@ -286,7 +286,7 @@ if( ! class_exists( 'LPR_Order_Post_Type' ) ) {
 
             switch ($column) {
                 case 'order_student':
-                    //$user = new LPR_User( $post->uID );
+                    //$user = new LP_User( $post->uID );
 
                     ?><a href="user-edit.php?user_id=<?php echo $post->user_ID ?>"><?php echo $post->user_display_name ?></a><?php
                     break;
@@ -342,7 +342,7 @@ if( ! class_exists( 'LPR_Order_Post_Type' ) ) {
         function register_post_type()
         {
 
-            register_post_type( LPR_ORDER_CPT,
+            register_post_type( LP_ORDER_CPT,
                 array(
                     'labels' => array(
                         'name' => __('Orders', 'learn_press'),
@@ -370,9 +370,9 @@ if( ! class_exists( 'LPR_Order_Post_Type' ) ) {
                         'create_posts' => 'do_not_allow'
                     ),
                     'map_meta_cap' => true,
-                    'capability_type' => 'lpr_order',
+                    'capability_type' => LP()->order_post_type,
                     'hierarchical' => true,
-                    'rewrite' => array('slug' => 'lpr_order', 'hierarchical' => true, 'with_front' => true)
+                    'rewrite' => array('slug' => LP()->order_post_type, 'hierarchical' => true, 'with_front' => true)
                 )
             );
 
@@ -392,15 +392,15 @@ if( ! class_exists( 'LPR_Order_Post_Type' ) ) {
         {
 
             // Remove Publish metabox
-            remove_meta_box('submitdiv', 'lpr_order', 'side');
+            remove_meta_box('submitdiv', LP()->order_post_type, 'side');
 
             // Remove Slug metabox
-            remove_meta_box('slugdiv', 'lpr_order', 'normal');
+            remove_meta_box('slugdiv', LP()->order_post_type, 'normal');
 
             // Remove screen options tab
             //add_filter('screen_options_show_screen', '__return_false');
 
-            add_meta_box('order_details', __('Order Details', 'learn_press' ), array($this, 'order_details'), 'lpr_order', 'normal', 'core');
+            add_meta_box('order_details', __('Order Details', 'learn_press' ), array($this, 'order_details'), LP()->order_post_type, 'normal', 'core');
         }
 
         function order_details($post)
@@ -489,7 +489,7 @@ if( ! class_exists( 'LPR_Order_Post_Type' ) ) {
         }
 
         function preparing_to_trash_order( $post_id ){
-            if( 'lpr_order' != get_post_type( $post_id ) ) return;
+            if( LP()->order_post_type != get_post_type( $post_id ) ) return;
 
         }
 
@@ -525,6 +525,6 @@ if( ! class_exists( 'LPR_Order_Post_Type' ) ) {
             ) );
         }
     }
-} // end LPR_Order_Post_Type
-new LPR_Order_Post_Type();
+} // end LP_Order_Post_Type
+new LP_Order_Post_Type();
 // deprecated new Learn_Press_Order();

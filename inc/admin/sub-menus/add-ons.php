@@ -23,7 +23,7 @@ if( $wp_plugins ) {
     $learn_press_add_ons['more'] = array();
 }
 
-require_once( LPR_PLUGIN_PATH . '/inc/admin/class-lpr-upgrader.php');
+require_once( LP_PLUGIN_PATH . '/inc/admin/class-lp-upgrader.php');
 /**
  * Default tabs for add ons page
  *
@@ -164,8 +164,8 @@ add_action( 'learn_press_add_ons_content_tab_disabled', 'learn_press_add_ons_con
 
 function learn_press_add_ons_content_tab_more( $current ){
     global $learn_press_add_ons;
-    require_once LPR_PLUGIN_PATH . '/inc/admin/class-lpr-plugin-install-list-table.php';
-    $list_table = new LPR_Plugin_Install_List_Table();
+    require_once LP_PLUGIN_PATH . '/inc/admin/class-lp-plugin-install-list-table.php';
+    $list_table = new LP_Plugin_Install_List_Table();
     if( 'more' == $current ) {
         $list_table->prepare_items(array('exclude' => $learn_press_add_ons['bundle_activate']));
     }else{
@@ -312,7 +312,7 @@ function learn_press_add_on_admin_script(){
 }
 add_action( 'admin_enqueue_scripts', 'learn_press_add_on_admin_script' );
 return;
-class LPR_Plugins_List_Table extends WP_List_Table {
+class LP_Plugins_List_Table extends WP_List_Table {
     public function __construct( $args = array() ) {
         global $status, $page;
 

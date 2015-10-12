@@ -10,7 +10,7 @@ if( typeof window.LearnPress == 'undefined' ){
             window.location.href = url || window.location.href;
         },
         parse_json: function (data){
-            var m = data.match(/<!-- LPR_AJAX_START -->(.*)<!-- LPR_AJAX_END -->/);
+            var m = data.match(/<!-- LP_AJAX_START -->(.*)<!-- LP_AJAX_END -->/);
             try {
                 if (m) {
                     data = $.parseJSON(m[1]);

@@ -44,7 +44,7 @@ function learn_press_pointer_load() {
 	wp_enqueue_style( 'wp-pointer' );
 
 	// Add pointers script to queue. Add custom script.
-	wp_enqueue_script( 'learn_press-pointer', LPR_JS_URL . 'pointer.js', array( 'wp-pointer' ) );
+	wp_enqueue_script( 'learn_press-pointer', LP_JS_URL . 'pointer.js', array( 'wp-pointer' ) );
 
 	// Add pointer options to script.
 	wp_localize_script( 'learn_press-pointer', 'lpPointer', $valid_pointers );

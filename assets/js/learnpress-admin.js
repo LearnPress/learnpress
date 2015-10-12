@@ -547,7 +547,7 @@ lprHook.addAction('lpr_admin_quiz_question_html', _lprAdminQuestionHTML);
         parse_json: function(response){
             if( typeof reposnse == 'object' ) return response;
             try {
-                var m = response.match(/<!-- LPR_AJAX_START -->(.*)<!-- LPR_AJAX_END -->/)
+                var m = response.match(/<!-- LP_AJAX_START -->(.*)<!-- LP_AJAX_END -->/)
 
                 if (m && m[1]) {
                     response = JSON.parse(m[1])

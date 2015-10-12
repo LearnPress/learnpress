@@ -1,5 +1,5 @@
 <?php
-class LPR_Gateway_Paypal extends LPR_Gateway_Abstract{
+class LP_Gateway_Paypal extends LP_Gateway_Abstract{
     protected $paypal_live_url              = null;
     protected $paypal_sandbox_url           = null;
     protected $paypal_payment_live_url      = null;
@@ -153,7 +153,7 @@ class LPR_Gateway_Paypal extends LPR_Gateway_Abstract{
     }
 
     function paypal_available( $a, $b ){
-        return LPR_Settings::instance('payment')->get('paypal.enable');
+        return LP_Settings::instance('payment')->get('paypal.enable');
     }
 
 
@@ -497,9 +497,9 @@ class LPR_Gateway_Paypal extends LPR_Gateway_Abstract{
 
         $transaction    = learn_press_generate_transaction_object();
         $temp_id        = learn_press_uniqid();
-        $xxx = @file_get_contents(LPR_PLUGIN_PATH . '/temp.txt');
+        $xxx = @file_get_contents(LP_PLUGIN_PATH . '/temp.txt');
         learn_press_set_transient_transaction( 'lpps', $temp_id, $user->ID, $transaction );
-        file_put_contents(LPR_PLUGIN_PATH . '/temp.txt', $xxx . "=" . $temp_id);
+        file_put_contents(LP_PLUGIN_PATH . '/temp.txt', $xxx . "=" . $temp_id);
 
         /*$order_id = LearnPress()->session->get( 'learn_press_user_order' );
 
@@ -517,7 +517,7 @@ class LPR_Gateway_Paypal extends LPR_Gateway_Abstract{
 
         //LearnPress()->session->set( 'learn_press_user_order', $order_id );
 
-        $order = new LPR_Order( $order_id );*/
+        $order = new LP_Order( $order_id );*/
 
         $nonce = wp_create_nonce( 'learn-press-paypal-nonce' );
         $paypal_email = $paypal_settings['sandbox'] ? $paypal_settings['paypal_sandbox_email'] : $paypal_settings['paypal_email'];

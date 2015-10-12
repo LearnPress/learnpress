@@ -47,7 +47,7 @@ return;
 		'ID'            => $order_id, //Order ID
 		'post_author'   => $_POST['custom'], //Buyer ID
 		'post_date'     => $date, //Course ID
-		'post_type'     => 'lpr_order',
+		'post_type'     => LP()->order_post_type,
 		'post_password' => $post_password,
 		'post_title'    => __( 'Order on ', 'learn_press' ) . ' ' . date( "l jS F Y h:i:s A", strtotime( $date ) )
 	);

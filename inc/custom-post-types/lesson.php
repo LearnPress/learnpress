@@ -4,9 +4,13 @@ if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-if ( !class_exists( 'LPR_Lesson_Post_Type' ) ) {
-	// class LPR_Lesson_Post_Type
-	final class LPR_Lesson_Post_Type {
+if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
+
+	// Base class for custom post type to extends
+	LP()->_include( 'custom-post-types/abstract.php' );
+
+	// class LP_Lesson_Post_Type
+	final class LP_Lesson_Post_Type extends LP_Absatract_Post_Type{
 		private static $loaded = false;
 
 		function __construct() {
@@ -29,12 +33,29 @@ if ( !class_exists( 'LPR_Lesson_Post_Type' ) ) {
 			self::$loaded = true;
 		}
 
+		function admin_scripts(){
+			wp_enqueue_style( 'lp-meta-boxes', LP()->plugin_url( 'assets/css/meta-boxes.css' ) );
+			wp_enqueue_script( 'jquery-caret', LP()->plugin_url( 'assets/js/jquery.caret.js', 'jquery' ) );
+			wp_enqueue_script( 'lp-meta-boxes', LP()->plugin_url( 'assets/js/meta-boxes.js', 'jquery' ) );
+
+			wp_localize_script( 'lp-meta-boxes', 'lp_lesson_params', $this->admin_params() );
+		}
+
+		function admin_styles(){
+
+		}
+
+		function admin_params(){
+			return array(
+				'notice_empty_lesson' => 'aaaaaaaaaaaaaaaaaaaaaaaa'
+			);
+		}
 		/**
 		 * Register lesson post type
 		 */
 		function register_post_type() {
 
-			register_post_type( LPR_LESSON_CPT,
+			register_post_type( LP_LESSON_CPT,
 				array(
 					'labels'             => array(
 						'name'               => __( 'Lessons', 'learn_press' ),
@@ -55,7 +76,7 @@ if ( !class_exists( 'LPR_Lesson_Post_Type' ) ) {
 					'publicly_queryable' => true,
 					'show_ui'            => true,
 					'has_archive'        => true,
-					'capability_type'    => LPR_LESSON_CPT,
+					'capability_type'    => LP_LESSON_CPT,
 					'map_meta_cap'       => true,
 					'show_in_menu'       => 'learn_press',
 					'show_in_admin_bar'  => true,
@@ -74,7 +95,7 @@ if ( !class_exists( 'LPR_Lesson_Post_Type' ) ) {
 				)
 			);
 
-			register_taxonomy( 'lesson-tag', array( LPR_LESSON_CPT ),
+			register_taxonomy( 'lesson-tag', array( LP_LESSON_CPT ),
 				array(
 					'labels'            => array(
 						'name'          => __( 'Tag', 'learn_press' ),
@@ -98,7 +119,7 @@ if ( !class_exists( 'LPR_Lesson_Post_Type' ) ) {
 			$meta_boxes = array(
 				'id'     => 'lesson_settings',
 				'title'  => __('Lesson Settings', 'learn_press'),
-				'pages'  => array( LPR_LESSON_CPT ),
+				'pages'  => array( LP_LESSON_CPT ),
 				'fields' => array(
 					array(
 						'name' => __( 'Lesson Duration', 'learn_press' ),
@@ -126,9 +147,9 @@ if ( !class_exists( 'LPR_Lesson_Post_Type' ) ) {
 		}
 
 		function enqueue_script() {
-			if ( 'lpr_lesson' != get_post_type() ) return;
-			LPR_Admin_Assets::enqueue_script( 'select2', LPR_PLUGIN_URL . '/lib/meta-box/js/select2/select2.min.js' );
-			LPR_Admin_Assets::enqueue_style( 'select2', LPR_PLUGIN_URL . '/lib/meta-box/css/select2/select2.css' );
+			if ( LP()->lesson_post_type != get_post_type() ) return;
+			LP_Admin_Assets::enqueue_script( 'select2', LP_PLUGIN_URL . '/lib/meta-box/js/select2/select2.min.js' );
+			LP_Admin_Assets::enqueue_style( 'select2', LP_PLUGIN_URL . '/lib/meta-box/css/select2/select2.css' );
 			ob_start();
 			?>
 			<script>
@@ -165,10 +186,10 @@ if ( !class_exists( 'LPR_Lesson_Post_Type' ) ) {
 
 			// append new column after title column
 			$pos = array_search( 'title', array_keys( $columns ) );
-			if ( false !== $pos && !array_key_exists( 'lpr_course', $columns ) ) {
+			if ( false !== $pos && !array_key_exists( LP()->course_post_type, $columns ) ) {
 				$columns = array_merge(
 					array_slice( $columns, 0, $pos + 1 ),
-					array( 'lpr_course' => __( 'Course', 'learn_press' ) ),
+					array( LP()->course_post_type => __( 'Course', 'learn_press' ) ),
 					array_slice( $columns, $pos + 1 )
 				);
 			}
@@ -189,7 +210,7 @@ if ( !class_exists( 'LPR_Lesson_Post_Type' ) ) {
 		 */
 		function columns_content( $name, $post_id ) {
 			switch ( $name ) {
-				case 'lpr_course':
+				case LP()->course_post_type:
 					$course_id  = get_post_meta( $post_id, '_lpr_course', true );
 					$arr_params = array( 'meta_course' => $course_id );
 					echo '<a href="' . esc_url( add_query_arg( $arr_params ) ) . '">' . ( $course_id ? get_the_title( $course_id ) : __( 'Not assigned yet', 'learn_press' ) ) . '</a>';
@@ -218,7 +239,7 @@ if ( !class_exists( 'LPR_Lesson_Post_Type' ) ) {
                 return $fields;
             }
             global $post_type;
-            if ( 'lpr_lesson' != $post_type ) {
+            if ( LP()->lesson_post_type != $post_type ) {
                 return $fields;
             }
 
@@ -240,7 +261,7 @@ if ( !class_exists( 'LPR_Lesson_Post_Type' ) ) {
 				return $join;
 			}
 			global $post_type;
-			if ( 'lpr_lesson' != $post_type ) {
+			if ( LP()->lesson_post_type != $post_type ) {
 				return $join;
 			}
 			global $wpdb;
@@ -264,7 +285,7 @@ if ( !class_exists( 'LPR_Lesson_Post_Type' ) ) {
 				return $where;
 			}
 			global $post_type;
-			if ( 'lpr_lesson' != $post_type ) {
+			if ( LP()->lesson_post_type != $post_type ) {
 				return $where;
 			}
 			global $wpdb;
@@ -307,7 +328,7 @@ if ( !class_exists( 'LPR_Lesson_Post_Type' ) ) {
 				return $order_by_statement;
 			}
 			global $post_type;
-			if ( 'lpr_lesson' != $post_type ) {
+			if ( LP()->lesson_post_type != $post_type ) {
 				return $order_by_statement;
 			}
 			if ( isset ( $_GET['orderby'] ) && isset ( $_GET['order'] ) ) {
@@ -322,11 +343,11 @@ if ( !class_exists( 'LPR_Lesson_Post_Type' ) ) {
 		 * @return mixed
 		 */
 		function columns_sortable( $columns ) {
-			$columns['lpr_course'] = 'course';
+			$columns[LP()->course_post_type] = 'course';
 			return $columns;
 		}
 
-	}// end LPR_Lesson_Post_Type
+	}// end LP_Lesson_Post_Type
 }
-new LPR_Lesson_Post_Type();
+new LP_Lesson_Post_Type();
 

@@ -10,12 +10,12 @@ if ( !defined( 'ABSPATH' ) ) {
  * Setting page
  */
 function learn_press_settings_page() {
-    require_once( LPR_PLUGIN_PATH . "/inc/admin/class.lpr-admin-settings.php" );
-    require_once( LPR_PLUGIN_PATH . "/inc/admin/settings/class.lpr-settings-base.php" );
-    require_once( LPR_PLUGIN_PATH . "/inc/admin/settings/class.lpr-settings-general.php" );
-    require_once( LPR_PLUGIN_PATH . "/inc/admin/settings/class.lpr-settings-pages.php" );
-    require_once( LPR_PLUGIN_PATH . "/inc/admin/settings/class.lpr-settings-payment.php" );
-    require_once( LPR_PLUGIN_PATH . "/inc/admin/settings/class.lpr-settings-emails.php" );
+    require_once( LP_PLUGIN_PATH . "/inc/admin/class-lp-admin-settings.php" );
+    require_once( LP_PLUGIN_PATH . "/inc/admin/settings/class-lp-settings-base.php" );
+    require_once( LP_PLUGIN_PATH . "/inc/admin/settings/class-lp-settings-general.php" );
+    require_once( LP_PLUGIN_PATH . "/inc/admin/settings/class-lp-settings-pages.php" );
+    require_once( LP_PLUGIN_PATH . "/inc/admin/settings/class-lp-settings-payment.php" );
+    require_once( LP_PLUGIN_PATH . "/inc/admin/settings/class-lp-settings-emails.php" );
 
     $current_tab = isset( $_GET['tab'] ) ? $_GET['tab'] : '';
 

@@ -1,7 +1,7 @@
 <form id="learn_press_payment_form" name="learn_press_payment_form" method="post">
     <?php
     if ( !learn_press_is_free_course() ) {
-    $gateways = LPR_Gateways::instance()->get_available_payment_gateways();
+    $gateways = LP_Gateways::instance()->get_available_payment_gateways();
     ?>
     <ul id="lpr-payment-tab" class="nav nav-tabs" role="tablist">
         <?php

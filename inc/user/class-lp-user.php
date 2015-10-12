@@ -11,4 +11,8 @@ class LP_User extends LP_Abstract_User{
 		}
 		return self::$_users[ $id ];
 	}
+
+	static function get_current_user(){
+		return self::get_user( get_current_user_id() );
+	}
 }

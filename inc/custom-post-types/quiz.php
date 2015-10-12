@@ -10,10 +10,10 @@
 if ( ! defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly
 }
-define( 'LPR_QUIZ_SLUG', 'quiz');
-if( ! class_exists( 'LPR_Quiz_Post_Type' ) ){
-    // class LPR_Quiz_Post_Type
-    final class LPR_Quiz_Post_Type{
+define( 'LP_QUIZ_SLUG', 'quiz');
+if( ! class_exists( 'LP_Quiz_Post_Type' ) ){
+    // class LP_Quiz_Post_Type
+    final class LP_Quiz_Post_Type{
         private static $loaded = false;
         function __construct(){
             if( self::$loaded ) return;
@@ -43,7 +43,7 @@ if( ! class_exists( 'LPR_Quiz_Post_Type' ) ){
          * Register quiz post type
          */
         function register_post_type() {
-            register_post_type( 'lpr_quiz',
+            register_post_type( LP()->quiz_post_type,
                 apply_filters('lpr_quiz_post_type_args',
                     array(
                         'labels'             => array(
@@ -58,7 +58,7 @@ if( ! class_exists( 'LPR_Quiz_Post_Type' ) ){
                         'publicly_queryable' => true,
                         'show_ui'            => true,
                         'has_archive'        => true,
-                        'capability_type'    => LPR_LESSON_CPT,
+                        'capability_type'    => LP_LESSON_CPT,
                         'map_meta_cap'       => true,
                         'show_in_menu'       => 'learn_press',
                         'show_in_admin_bar'  => true,
@@ -83,7 +83,7 @@ if( ! class_exists( 'LPR_Quiz_Post_Type' ) ){
                 'learn_press_quiz_question_meta_box_args',
                 array(
                     'title'      => __( 'Questions', 'learn_press' ),
-                    'post_types' => LPR_QUIZ_CPT,
+                    'post_types' => LP_QUIZ_CPT,
                     'fields'     => array(
                         array(
                             'name' => __( '', 'learn_press' ),
@@ -99,7 +99,7 @@ if( ! class_exists( 'LPR_Quiz_Post_Type' ) ){
             new RW_Meta_Box(
                 array(
                     'title'      => __( 'LearnPress Quiz Settings', 'learn_press' ),
-                    'post_types' => LPR_QUIZ_CPT,
+                    'post_types' => LP_QUIZ_CPT,
                     'context'    => 'normal',
                     'priority'   => 'high',
                     'fields'     => array(
@@ -138,7 +138,7 @@ if( ! class_exists( 'LPR_Quiz_Post_Type' ) ){
         }
 
         function enqueue_script(){
-            if( 'lpr_quiz' != get_post_type() ) return;
+            if( LP()->quiz_post_type != get_post_type() ) return;
             ob_start();
             ?>
             <script>
@@ -179,7 +179,7 @@ if( ! class_exists( 'LPR_Quiz_Post_Type' ) ){
                     <select class="lpr-question-types lpr-select2" name="lpr_question[type]" id="lpr-quiz-question-type">
                         <?php if( $questions = lpr_get_question_types() ):?>
                             <?php foreach( $questions as $type ):?>
-                                <option value="<?php echo $type;?>"><?php echo LPR_Question_Type::instance( $type )->get_name();?></option>
+                                <option value="<?php echo $type;?>"><?php echo LP_Question::instance( $type )->get_name();?></option>
                             <?php endforeach;?>
                         <?php endif;?>
                     </select>
@@ -204,10 +204,10 @@ if( ! class_exists( 'LPR_Quiz_Post_Type' ) ){
 
 			// append new column after title column
 			$pos = array_search( 'title', array_keys( $columns ) );
-			if ( false !== $pos && !array_key_exists( 'lpr_course', $columns ) ) {
+			if ( false !== $pos && !array_key_exists( LP()->course_post_type, $columns ) ) {
 				$columns = array_merge(
 					array_slice( $columns, 0, $pos + 1 ),
-					array( 'lpr_course' => __( 'Course', 'learn_press' ), 'num_of_question' => __( 'Num. of questions', 'learn_press' ) ),
+					array( LP()->course_post_type => __( 'Course', 'learn_press' ), 'num_of_question' => __( 'Num. of questions', 'learn_press' ) ),
 					array_slice( $columns, $pos + 1 )
 				);
 			}
@@ -228,7 +228,7 @@ if( ! class_exists( 'LPR_Quiz_Post_Type' ) ){
 		 */
 		function columns_content( $name, $post_id ) {
 			switch ( $name ) {
-				case 'lpr_course':
+				case LP()->course_post_type:
 					$course_id  = get_post_meta( $post_id, '_lpr_course', true );
 
                     if( $course_id ){
@@ -271,7 +271,7 @@ if( ! class_exists( 'LPR_Quiz_Post_Type' ) ){
                 return $fields;
             }
             global $post_type;
-            if ( 'lpr_quiz' != $post_type ) {
+            if ( LP()->quiz_post_type != $post_type ) {
                 return $fields;
             }
 
@@ -293,7 +293,7 @@ if( ! class_exists( 'LPR_Quiz_Post_Type' ) ){
 				return $join;
 			}
 			global $post_type;
-			if ( 'lpr_quiz' != $post_type ) {
+			if ( LP()->quiz_post_type != $post_type ) {
 				return $join;
 			}
 			global $wpdb;
@@ -318,7 +318,7 @@ if( ! class_exists( 'LPR_Quiz_Post_Type' ) ){
 				return $where;
 			}
 			global $post_type;
-			if ( 'lpr_quiz' != $post_type ) {
+			if ( LP()->quiz_post_type != $post_type ) {
 				return $where;
 			}
 			global $wpdb;
@@ -360,7 +360,7 @@ if( ! class_exists( 'LPR_Quiz_Post_Type' ) ){
 				return $order_by_statement;
 			}
 			global $post_type;
-			if ( 'lpr_quiz' != $post_type ) {
+			if ( LP()->quiz_post_type != $post_type ) {
 				return $order_by_statement;
 			}
 			if ( isset ( $_GET['orderby'] ) && isset ( $_GET['order'] ) ) {
@@ -375,9 +375,9 @@ if( ! class_exists( 'LPR_Quiz_Post_Type' ) ){
 		 * @return mixed
 		 */
 		function columns_sortable($columns) {
-			$columns['lpr_course'] = 'course';
+			$columns[LP()->course_post_type] = 'course';
 			return $columns;
 		}
-    } // end LPR_Quiz_Post_Type
+    } // end LP_Quiz_Post_Type
 }
-new LPR_Quiz_Post_Type();
+new LP_Quiz_Post_Type();

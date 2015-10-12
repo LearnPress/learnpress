@@ -4,13 +4,25 @@ if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-if ( !class_exists( 'LPR_Course_Post_Type' ) ) {
+if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 
-	// class LPR_Course_Post_Type
-	final class LPR_Course_Post_Type {
+	// Base class for custom post type to extends
+	LP()->_include( 'custom-post-types/abstract.php' );
+
+	// class LP_Course_Post_Type
+	final class LP_Course_Post_Type extends LP_Absatract_Post_Type{
+		/**
+		 * Prevent duplicate loading
+		 *
+		 * @var bool
+		 */
 		protected static $loaded;
 
+		/**
+		 * Constructor
+		 */
 		function __construct() {
+
 			if ( self::$loaded ) return;
 
 			add_action( 'init', array( $this, 'register_post_type' ) );
@@ -19,10 +31,47 @@ if ( !class_exists( 'LPR_Course_Post_Type' ) ) {
 			add_action( 'admin_init', array( $this, 'add_meta_boxes' ), 0 );
 			add_action( 'rwmb_course_curriculum_before_save_post', array( $this, 'before_save_curriculum' ) );
 			add_filter( 'manage_lpr_course_posts_columns', array( $this, 'columns_head' ) );
-
             add_filter( "rwmb__lpr_course_price_html", array( $this, 'currency_symbol' ), 5, 3 );
+			add_action( 'admin_footer-post.php', array( __CLASS__, 'print_js_template' ) );
+			add_action( 'admin_footer-post-new.php', array( __CLASS__, 'print_js_template' ) );
+
+			parent::__construct();
 
 			self::$loaded = true;
+		}
+
+		function admin_params(){
+			global $post;
+			return apply_filters( 'learn_press_admin_course_params',
+				array(
+					'id'						=> absint( $post->ID ),
+					'notice_empty_title' 		=> __( 'Please enter the title of the course', 'learn_press' ),
+					'notice_empty_section' 		=> __( 'Please add at least one section for the course', 'learn_press' ),
+					'notice_empty_section_name' => __( 'Please enter the title of the section', 'learn_press' ),
+					'notice_empty_price' 		=> __( 'Please set a price for this course', 'learn_press' )
+				)
+			);
+		}
+
+		function admin_scripts(){
+			if ( LP()->course_post_type != get_post_type() ) return;
+			wp_enqueue_style( 'lp-meta-boxes', LP()->plugin_url( 'assets/css/meta-boxes.css' ) );
+			wp_enqueue_script( 'jquery-caret', LP()->plugin_url( 'assets/js/jquery.caret.js', 'jquery' ) );
+			wp_enqueue_script( 'lp-meta-boxes', LP()->plugin_url( 'assets/js/meta-boxes.js', 'jquery', 'backbone', 'util' ) );
+
+			wp_localize_script( 'lp-meta-boxes', 'lp_course_params', $this->admin_params() );
+		}
+
+		function admin_styles(){
+
+		}
+
+		/**
+		 * Print js template
+		 */
+		static function print_js_template(){
+			if( get_post_type() != LP()->course_post_type ) return;
+			learn_press_admin_view( 'meta-boxes/course/js-template.php' );
 		}
 
         function currency_symbol( $input_html, $field, $sub_meta ){
@@ -33,6 +82,7 @@ if ( !class_exists( 'LPR_Course_Post_Type' ) ) {
 		 * Register course post type
 		 */
 		function register_post_type() {
+
 			$labels = array(
 				'name'               => _x( 'Courses', 'Post Type General Name', 'learn_press' ),
 				'singular_name'      => _x( 'Course', 'Post Type Singular Name', 'learn_press' ),
@@ -57,7 +107,7 @@ if ( !class_exists( 'LPR_Course_Post_Type' ) ) {
 				'publicly_queryable' => true,
 				'show_ui'            => true,
 				'has_archive'        => ( $page_id = learn_press_get_page_id( 'courses' ) ) && get_post( $page_id ) ? get_page_uri( $page_id ) : 'courses',
-				'capability_type'    => LPR_COURSE_CPT,
+				'capability_type'    => LP_COURSE_CPT,
 				'map_meta_cap'       => true,
 				'show_in_menu'       => 'learn_press',
 				'show_in_admin_bar'  => true,
@@ -67,9 +117,9 @@ if ( !class_exists( 'LPR_Course_Post_Type' ) ) {
 				'hierarchical'       => true,
 				'rewrite'            => array( 'slug' => 'courses', 'hierarchical' => true, 'with_front' => false )
 			);
-			register_post_type( LPR_COURSE_CPT, $args );
+			register_post_type( LP_COURSE_CPT, $args );
 
-			register_taxonomy( 'course_category', array( LPR_COURSE_CPT ),
+			register_taxonomy( 'course_category', array( LP_COURSE_CPT ),
 				array(
 					'label'             => __( 'Course Categories', 'learn_press' ),
 					'labels'            => array(
@@ -94,7 +144,7 @@ if ( !class_exists( 'LPR_Course_Post_Type' ) ) {
 					),
 				)
 			);
-			register_taxonomy( 'course_tag', array( LPR_COURSE_CPT ),
+			register_taxonomy( 'course_tag', array( LP_COURSE_CPT ),
 				array(
 					'labels'                => array(
 						'name'                       => __( 'Course Tags', 'learn_press' ),
@@ -122,8 +172,8 @@ if ( !class_exists( 'LPR_Course_Post_Type' ) ) {
 				)
 			);
             if( ! is_admin() ){
-                LPR_Assets::enqueue_script( 'tipsy', LPR_PLUGIN_URL . '/assets/js/jquery.tipsy.js' );
-                LPR_Assets::enqueue_style( 'tipsy', LPR_PLUGIN_URL . '/assets/css/tipsy.css' );
+                LP_Assets::enqueue_script( 'tipsy', LP_PLUGIN_URL . '/assets/js/jquery.tipsy.js' );
+                LP_Assets::enqueue_style( 'tipsy', LP_PLUGIN_URL . '/assets/css/tipsy.css' );
             }
             flush_rewrite_rules();
 		}
@@ -147,12 +197,12 @@ if ( !class_exists( 'LPR_Course_Post_Type' ) ) {
 				'id'     	=> 'course_curriculum',
 				'title'  	=> __('Course Curriculum', 'learn_press'),
 				'priority'	=> 'high',
-				'pages'  	=> array( LPR_COURSE_CPT ),
+				'pages'  	=> array( LP_COURSE_CPT ),
 				'fields' 	=> array(
 					array(
 						'name' => __( 'Course Curriculum', 'learn_press' ),
 						'id'   => "{$prefix}course_lesson_quiz",
-						'type' => 'course_lesson_quiz',
+						'type' => 'curriculum',
 						'desc' => '',
 					),
 				)
@@ -167,7 +217,7 @@ if ( !class_exists( 'LPR_Course_Post_Type' ) ) {
 			$meta_box = array(
 				'id'     	=> 'course_settings',
 				'title'  	=> __('Course Settings', 'learn_press'),
-				'pages'  	=> array( LPR_COURSE_CPT ),
+				'pages'  	=> array( LP_COURSE_CPT ),
 				'priority' 	=> 'high',
 				'fields' 	=> array(
 					array(
@@ -218,7 +268,7 @@ if ( !class_exists( 'LPR_Course_Post_Type' ) ) {
 				'id'     	=> 'course_assessment',
 				'title'  	=> __('Course Assessment Settings', 'learn_press'),
 				'priority' 	=> 'high',
-				'pages'  	=> array( LPR_COURSE_CPT ),
+				'pages'  	=> array( LP_COURSE_CPT ),
 				'fields' 	=> array(
 					array(
 						'name'    => __( 'Course Final Quiz', 'learn_press' ),
@@ -253,7 +303,7 @@ if ( !class_exists( 'LPR_Course_Post_Type' ) ) {
 				'id'     	=> 'course_payment',
 				'title'  	=> __('Course Payment Settings', 'learn_press'),
 				'priority' 	=> 'high',
-				'pages'  	=> array( LPR_COURSE_CPT ),
+				'pages'  	=> array( LP_COURSE_CPT ),
 				'fields' 	=> array(
                     array(
                         'name'    => __( 'Enrolled Require', 'learn_press' ),
@@ -341,57 +391,7 @@ if ( !class_exists( 'LPR_Course_Post_Type' ) ) {
 		}
 
 		function enqueue_script() {
-			if ( 'lpr_course' != get_post_type() ) return;
-			ob_start();
-			global $post;
-			?>
-			<script>
-				window.course_id = <?php echo $post->ID;?>, form = $('#post');
-				form.submit(function (evt) {
-					var $title = $('#title'),
-						$curriculum = $('.lpr-curriculum-section:not(.lpr-empty)'),
-						is_error = false;
-					if (0 == $title.val().length) {
-						alert('<?php _e( 'Please enter the title of the course', 'learn_press' );?>');
-						$title.focus();
-						is_error = true;
-					} else if (0 == $curriculum.length) {
-						alert('<?php _e( 'Please add at least one section for the course', 'learn_press' );?>');
-						$('.lpr-curriculum-section .lpr-section-name').focus();
-						is_error = true;
-					} else {
-						$curriculum.each(function () {
-							var $section = $('.lpr-section-name', this);
-							if (0 == $section.val().length) {
-								alert('<?php _e( 'Please enter the title of the section', 'learn_press' );?>');
-								$section.focus();
-								is_error = true;
-								return false;
-							}
-						});
-					}
-                    if( $( 'input[name="_lpr_course_payment"]:checked').val() == 'not_free' && $('input[name="_lpr_course_price"]').val() <= 0 ){
-                        alert( '<?php _e( 'Please set a price for this course', 'learn_press' );?>' );
-                        is_error = true;
-                        $('input[name="_lpr_course_price"]').focus();
-                    }
-					if (true == is_error) {
-						evt.preventDefault();
-						return false;
-					}
-				});
-                $('input[name="_lpr_course_final"]').bind('click change', function(){
-                    if( $(this).val() == 'yes' ){
-                        $(this).closest('.rwmb-field').next().show();
-                    }else{
-                        $(this).closest('.rwmb-field').next().hide();
-                    }
-                }).filter(":checked").trigger('change')
-			</script>
-			<?php
-			$script = ob_get_clean();
-			$script = preg_replace( '!</?script>!', '', $script );
-			learn_press_enqueue_script( $script );
+
 		}
 
 		/**
@@ -408,8 +408,8 @@ if ( !class_exists( 'LPR_Course_Post_Type' ) ) {
 			}
 			return $columns;
 		}
-	} // end LPR_Course_Post_Type
-	new LPR_Course_Post_Type();
+	} // end LP_Course_Post_Type
+	new LP_Course_Post_Type();
 }
 
 

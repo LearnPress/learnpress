@@ -14,7 +14,7 @@ function newest_courses_shortcode( $atts ) {
 			'number' => '1000000000'
 		), $atts
 	);
-	wp_enqueue_style( 'learnpress-archive-course', LPR_CSS_URL . '/shortcode-style/learnpress-archive-course.css' );
+	wp_enqueue_style( 'learnpress-archive-course', LP_CSS_URL . '/shortcode-style/learnpress-archive-course.css' );
 	global $wpdb;
 	$courses   = $wpdb->get_results(
 	$wpdb->prepare(
@@ -22,7 +22,7 @@ function newest_courses_shortcode( $atts ) {
 			WHERE p.post_type = %s
 			AND p.post_status = %s
 			LIMIT %d",
-		'lpr_course',
+		LP()->course_post_type,
 		'publish',
 		(int)$a['number'])
 	);
@@ -56,7 +56,7 @@ function free_course_shortcode( $atts ) {
 			'number' => '1000000000'
 		), $atts
 	);
-	wp_enqueue_style( 'learnpress-archive-course', LPR_CSS_URL . '/shortcode-style/learnpress-archive-course.css' );
+	wp_enqueue_style( 'learnpress-archive-course', LP_CSS_URL . '/shortcode-style/learnpress-archive-course.css' );
 	global $wpdb;
 	$courses   = $wpdb->get_results(
 	$wpdb->prepare(
@@ -67,7 +67,7 @@ function free_course_shortcode( $atts ) {
 			AND pm.meta_key = %s
 			AND pm.meta_value = %s
 			LIMIT %d",
-		'lpr_course',
+		LP()->course_post_type,
 		'publish',
 		'_lpr_course_payment',
 		'free',
@@ -103,7 +103,7 @@ function paid_courses_shortcode( $atts ) {
 			'number' => '1000000000'
 		), $atts
 	);
-	wp_enqueue_style( 'learnpress-archive-course', LPR_CSS_URL . '/shortcode-style/learnpress-archive-course.css' );
+	wp_enqueue_style( 'learnpress-archive-course', LP_CSS_URL . '/shortcode-style/learnpress-archive-course.css' );
 	global $wpdb;
 	$courses   = $wpdb->get_results(
 	$wpdb->prepare(
@@ -114,7 +114,7 @@ function paid_courses_shortcode( $atts ) {
 			AND pm.meta_key = %s
 			AND pm.meta_value = %s
 			LIMIT %d",
-		'lpr_course',
+		LP()->course_post_type,
 		'publish',
 		'_lpr_course_payment',
 		'not_free',

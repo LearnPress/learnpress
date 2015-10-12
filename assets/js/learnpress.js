@@ -536,7 +536,7 @@ jQuery(document).ready(function ($) {
 					dataType: 'html',
 					data    : $payment_form.serialize(),
 					success : function (res) {
-						var matches = res.match(/<!-- LPR_AJAX_START -->(.*)<!-- LPR_AJAX_END -->/),
+						var matches = res.match(/<!-- LP_AJAX_START -->(.*)<!-- LP_AJAX_END -->/),
 							message = '';
 						if (matches && matches[1]) {
 							var json = JSON.parse(matches[1]);

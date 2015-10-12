@@ -69,7 +69,7 @@ jQuery(function ($) {
 	TuNN added 21 03 2015
 */
 ;(function( $ ){
-
+return;
 var $doc = $(document),
 	$body = $(document.body),
     $window = $(window),
@@ -216,7 +216,7 @@ function ajaxUpdate( args ){
         var json = {};
 
         if( res ){
-            json = res.split('__LPR_JSON__');
+            json = res.split('__LP_JSON__');
             json = res[res.length - 1];
             try{
                 json = JSON.parse( json );
@@ -471,7 +471,7 @@ function showQuickAddAssignment(){
 function ajaxAddAssignment( $sec, name ){
     $.post(ajaxurl, {action : 'lpr_quick_add_assignment', type: 'assignment', name: name, course_id: course_id}, function(res){
         if( res ){
-            res = res.split('__LPR_JSON__');
+            res = res.split('__LP_JSON__');
             res = res[res.length - 1];
             try{
                 res = JSON.parse( res );
@@ -498,7 +498,7 @@ function ajaxAddLesson( $sec, name ){
 	$.post( ajaxurl, {action : 'lpr_quick_add', type: 'lesson', name: name, course_id: course_id}, function(res){
 
         if( res ){
-            res = res.split('__LPR_JSON__');
+            res = res.split('__LP_JSON__');
             res = res[res.length - 1];
             try{
                 res = JSON.parse( res );
@@ -525,7 +525,7 @@ function ajaxAddLesson( $sec, name ){
 function ajaxAddQuiz( $sec, name ){
 	$.post(ajaxurl, {action : 'lpr_quick_add', type: 'quiz', name: name, course_id: course_id}, function(res){
         if( res ){
-            res = res.split('__LPR_JSON__');
+            res = res.split('__LP_JSON__');
             res = res[res.length - 1];
             try{
                 res = JSON.parse( res );
@@ -831,7 +831,7 @@ function _ready(){
                 var id = $this.closest('li').data('id')
                 $.post(ajaxurl, {id: id, action: 'lpr_quick_edit_lesson_quiz_name', name: newText}, function(res){
                     if( res ){
-                        res = res.split('__LPR_JSON__');
+                        res = res.split('__LP_JSON__');
                         res = res[res.length - 1];
                         try{
                             res = JSON.parse( res );

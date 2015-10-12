@@ -27,19 +27,19 @@ function learn_press_statistic_page() {
 
 add_action( 'learn_press_get_stats_students', 'learn_press_get_stats_students' );
 function learn_press_get_stats_students() {
-	require_once( LPR_PLUGIN_PATH . "/inc/admin/statistics/students.php" );
+	require_once( LP_PLUGIN_PATH . "/inc/admin/statistics/students.php" );
 }
 
 add_action( 'learn_press_get_stats_courses', 'learn_press_get_stats_courses' );
 function learn_press_get_stats_courses() {
-	require_once( LPR_PLUGIN_PATH . "/inc/admin/statistics/courses.php" );
+	require_once( LP_PLUGIN_PATH . "/inc/admin/statistics/courses.php" );
 }
 
 function learn_press_load_chart_scripts() {
-	wp_enqueue_style( 'lpr-jquery-ui-css', LPR_CSS_URL . 'jquery-ui.css' );
-	wp_enqueue_script( 'lpr-jquery-ui-js', LPR_JS_URL . 'jquery-ui.js', array( 'jquery' ), '', false );
-	wp_enqueue_script( 'lpr-chart', LPR_JS_URL . 'chart.min.js', array( 'jquery' ), '', false );
-	wp_enqueue_script( 'lpr-custom-chart', LPR_JS_URL . 'custom.chart.js', array( 'jquery' ), '', false );
+	wp_enqueue_style( 'lpr-jquery-ui-css', LP_CSS_URL . 'jquery-ui.css' );
+	wp_enqueue_script( 'lpr-jquery-ui-js', LP_JS_URL . 'jquery-ui.js', array( 'jquery' ), '', false );
+	wp_enqueue_script( 'lpr-chart', LP_JS_URL . 'chart.min.js', array( 'jquery' ), '', false );
+	wp_enqueue_script( 'lpr-custom-chart', LP_JS_URL . 'custom.chart.js', array( 'jquery' ), '', false );
 }
 
 add_action( 'admin_enqueue_scripts', 'learn_press_load_chart_scripts' );
