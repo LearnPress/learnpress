@@ -23,6 +23,7 @@ class LP_Admin_Menu {
 		// admin menu
 		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 		add_action( 'admin_menu', array( $this, 'notify_new_course' ) );
+		add_action( 'init', array( $this, 'menu_content' ) );
 	}
 
 	/**
@@ -86,6 +87,20 @@ class LP_Admin_Menu {
 		$count_courses = wp_count_posts( LP()->course_post_type );
 		$awaiting_mod  = $count_courses->pending;
 		$menu['3.14'][0] .= " <span class='awaiting-mod count-$awaiting_mod'><span class='pending-count'>" . number_format_i18n( $awaiting_mod ) . "</span></span>";
+	}
+
+	function menu_content(){
+		// auto include file for admin page
+		// example: slug = learn_press_settings -> file = inc/admin/sub-menus/settings.php
+		$page = !empty ( $_REQUEST['page'] ) ? $_REQUEST['page'] : null;
+		if ( !$page ) return;
+
+		if ( strpos( $page, 'learn_press_' ) === false ) return;
+		$file = preg_replace( '!^learn_press_!', '', $page );
+		$file = str_replace( '_', '-', $file );
+		if ( file_exists( $file = LP_PLUGIN_PATH . "/inc/admin/sub-menus/{$file}.php" ) ) {
+			require_once $file;
+		}
 	}
 }
 

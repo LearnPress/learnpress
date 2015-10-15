@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 $template = get_option( 'template' );
-echo '</div><!-- // .learn-press -->';
+echo '</div><!-- // .learnpress-content -->';
 switch( $template ) {
     case 'twentyeleven' :
         echo '</div></div>';

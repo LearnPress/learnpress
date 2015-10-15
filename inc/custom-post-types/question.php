@@ -5,25 +5,25 @@ if ( !defined( 'ABSPATH' ) ) {
 }
 
 if ( !class_exists( 'LP_Question_Post_Type' ) ) {
+	// Base class for custom post type to extends
+	LP()->_include( 'custom-post-types/abstract.php' );
+
 	// class LP_Question_Post_Type
-	class LP_Question_Post_Type {
-		private static $loaded = false;
-
+	class LP_Question_Post_Type extends LP_Abstract_Post_Type{
 		function __construct() {
-			if ( self::$loaded ) return;
 
-			add_action( 'init', array( $this, 'register_post_type' ) );
-			add_action( 'admin_head', array( $this, 'enqueue_script' ) );
-			add_action( 'admin_init', array( $this, 'add_meta_boxes' ), 5 );
+			//add_action( 'init', array( $this, 'register_post_type' ) );
+			//add_action( 'admin_head', array( $this, 'enqueue_script' ) );
+			//add_action( 'admin_init', array( $this, 'add_meta_boxes' ), 5 );
 			add_filter( 'manage_lpr_question_posts_columns', array( $this, 'columns_head' ) );
+			parent::__construct();
 
-			self::$loaded = true;
 		}
 
 		/**
 		 * Register question post type
 		 */
-		function register_post_type() {
+		static function register_post_type() {
 			register_post_type( LP_QUESTION_CPT,
 				array(
 					'labels'             => array(
@@ -82,14 +82,14 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 
 		}
 
-		function add_meta_boxes() {
+		static function add_meta_boxes() {
 
 
-			$meta_box = $this->settings_meta_box();
+			$meta_box = self::settings_meta_box();
 			new RW_Meta_Box( $meta_box );
 		}
 
-		function settings_meta_box() {
+		static function settings_meta_box() {
 			$prefix = '_lpr_';
 
 			$meta_box = array(
@@ -120,7 +120,7 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
         /**
          * Enqueue scripts
          */
-		function enqueue_script() {
+		static function admin_scripts() {
 			if ( ! in_array( get_post_type(), array( LP()->question_post_type ) ) ) return;
 			ob_start();
 			?>
@@ -185,6 +185,10 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 			return $columns;
 		}
 
+		static function admin_styles(){}
+		static function admin_params(){
+
+		}
 	} // end LP_Question_Post_Type
 }
 

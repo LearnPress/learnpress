@@ -64,7 +64,8 @@ global $post;
 						'class' 		=> $section->is_closed ? 'closed' : '',
 						'content_items' => $content_items,
 						'toggle_class'	=> ! $section->is_closed ? "dashicons-minus" : "dashicons-plus",
-						'section_name'	=> $section->name
+						'section_name'	=> $section->name,
+						'section'		=> $section
 					)
 				);
 			endforeach;

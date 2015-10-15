@@ -10,16 +10,11 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 	LP()->_include( 'custom-post-types/abstract.php' );
 
 	// class LP_Lesson_Post_Type
-	final class LP_Lesson_Post_Type extends LP_Absatract_Post_Type{
-		private static $loaded = false;
+	final class LP_Lesson_Post_Type extends LP_Abstract_Post_Type{
 
 		function __construct() {
-			if ( self::$loaded ) return;
 
-			add_action( 'init', array( $this, 'register_post_type' ) );
 
-			add_action( 'admin_head', array( $this, 'enqueue_script' ) );
-			add_action( 'admin_init', array( $this, 'add_meta_boxes' ), 0 );
 
 			add_filter( 'manage_lpr_lesson_posts_columns', array( $this, 'columns_head' ) );
 			add_action( 'manage_lpr_lesson_posts_custom_column', array( $this, 'columns_content' ), 10, 2 );
@@ -29,23 +24,22 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 			add_filter( 'posts_where_paged', array( $this, 'posts_where_paged' ) );
 			add_filter( 'posts_orderby', array( $this, 'posts_orderby' ) );
 			add_filter( 'manage_edit-lpr_lesson_sortable_columns', array( $this, 'columns_sortable' ) );
-
-			self::$loaded = true;
+			parent::__construct();
 		}
 
-		function admin_scripts(){
+		static function admin_scripts(){
 			wp_enqueue_style( 'lp-meta-boxes', LP()->plugin_url( 'assets/css/meta-boxes.css' ) );
 			wp_enqueue_script( 'jquery-caret', LP()->plugin_url( 'assets/js/jquery.caret.js', 'jquery' ) );
 			wp_enqueue_script( 'lp-meta-boxes', LP()->plugin_url( 'assets/js/meta-boxes.js', 'jquery' ) );
 
-			wp_localize_script( 'lp-meta-boxes', 'lp_lesson_params', $this->admin_params() );
+			wp_localize_script( 'lp-meta-boxes', 'lp_lesson_params', self::admin_params() );
 		}
 
-		function admin_styles(){
+		static function admin_styles(){
 
 		}
 
-		function admin_params(){
+		static function admin_params(){
 			return array(
 				'notice_empty_lesson' => 'aaaaaaaaaaaaaaaaaaaaaaaa'
 			);
@@ -53,7 +47,7 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 		/**
 		 * Register lesson post type
 		 */
-		function register_post_type() {
+		static function register_post_type() {
 
 			register_post_type( LP_LESSON_CPT,
 				array(
@@ -114,7 +108,7 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 			);
 		}
 
-		function add_meta_boxes() {
+		static function add_meta_boxes() {
 			$prefix     = '_lpr_';
 			$meta_boxes = array(
 				'id'     => 'lesson_settings',

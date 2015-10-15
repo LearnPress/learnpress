@@ -72,7 +72,9 @@ if ( !class_exists( 'LP_Admin' ) ) {
 			include_once( 'class-lp-admin-menu.php' );
 
 			// Update LearnPress from 0.9.x to 1.0
-			LP()->_include( 'updates/learnpress-update-1.0.php' );
+			if( version_compare( LP()->db_version, '1.0', '<' ) ) {
+				LP()->_include( 'updates/learnpress-update-1.0.php' );
+			}
 		}
 
 		/**

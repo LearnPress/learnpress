@@ -123,14 +123,14 @@ abstract class LP_Abstract_Course {
 		return apply_filters( 'learn_press_is_require_enrollment', $is_require, $this );
 	}
 
-	private function _get_posts_by_id( $ids ){
+	private function _get_posts_by_id( $ids ) {
 		global $wpdb;
 		settype( $ids, 'array' );
-		$posts = $wpdb->get_results("
+		$posts = $wpdb->get_results( "
 			SELECT *
 			FROM {$wpdb->posts}
 			WHERE ID IN(" . join( ',', $ids ) . ")
-		");
+		" );
 		return $posts;
 	}
 
@@ -138,10 +138,11 @@ abstract class LP_Abstract_Course {
 	 * Get all curriculum of this course
 	 *
 	 * @param bool $force
+	 *
 	 * @return mixed
 	 */
 	public function get_curriculum( $force = false ) {
-		if( ! $this->_curriculum || $force ) {
+		if ( !$this->_curriculum || $force ) {
 			global $wpdb;
 			$this->_curriculum = array();
 			$query             = $wpdb->prepare( "
@@ -153,17 +154,24 @@ abstract class LP_Abstract_Course {
 			", $this->id );
 			if ( $rows = $wpdb->get_results( $query ) ) {
 				foreach ( $rows as $row ) {
-					$section        = $row;
-					$query          = $wpdb->prepare( "
-					SELECT item_id
-					FROM {$wpdb->learnpress_section_items}
-					WHERE section_id = %d
-					ORDER BY `order` ASC
-				", $row->ID );
+					$section = $row;
+					/*$query          = $wpdb->prepare( "
+						SELECT item_id
+						FROM {$wpdb->learnpress_section_items}
+						WHERE section_id = %d
+						ORDER BY `order` ASC
+					", $row->ID );*/
 					$section->items = array();
-					if ( $items = $wpdb->get_col( $query ) ) {
-						$section->items = $this->_get_posts_by_id( $items );
-					}
+					//if ( $items = $wpdb->get_col( $query ) ) {
+					$query          = "SELECT lp_si.ID as lp_si_ID, p.*
+							FROM {$wpdb->posts} p
+							INNER JOIN {$wpdb->learnpress_section_items} lp_si ON lp_si.item_id = p.ID
+							INNER JOIN {$wpdb->learnpress_sections} lp_s ON lp_s.ID = lp_si.section_id
+							WHERE lp_s.ID = " . $row->ID . "
+							ORDER BY lp_si.order ASC
+							";
+					$section->items = $wpdb->get_results( $query );
+					//}
 					$this->_curriculum[] = $section;
 				}
 			}
@@ -184,6 +192,31 @@ abstract class LP_Abstract_Course {
 			$count = sizeof( $users );
 		}
 		return apply_filters( 'learn_press_count_users_enrolled', $count, $this );
+	}
+
+	/**
+	 * Output html for students enrolled counter
+	 *
+	 * @return string
+	 */
+	function get_students_html() {
+		$output = '';
+		if ( $count = $this->count_users_enrolled() ):
+			if ( strtolower( learn_press_get_user_course_status() ) == 'completed' ):
+				if ( $count == 1 ):
+					$output .= __( 'You enrolled', 'learn_press' );
+				else:
+					$output .= sprintf( _nx( 'You and one student enrolled', 'You and %1$s students enrolled', intval( $count - 1 ), '', 'learn_press' ), $count - 1 );
+				endif;
+				$output = apply_filters( 'learn_press_students_enrolled_html', $output, $this );
+			else:
+				$output = sprintf( _nx( 'One student enrolled', '%1$s students enrolled', $count, '', 'learn_press' ), $count );
+				$output = apply_filters( 'learn_press_one_student_enrolled_html', $output, $this );
+			endif;
+		else:
+			$output = apply_filters( 'learn_press_no_student_enrolled_html', __( 'No student enrolled', 'learn_press' ), $this );
+		endif;
+		return $output;
 	}
 
 	/**
@@ -234,27 +267,27 @@ abstract class LP_Abstract_Course {
 	/**
 	 * Get all items in a course
 	 *
-	 * @param array $args{
-	 *      force       bool 	Force to get curriculum items that does not care for it is already existing in memory or not
-	 *		group		bool 	Group the items returned by type of each item
-	 * 		field		string  The fields want to get
-	 * }
+	 * @param array $args {
+	 *                    force       bool    Force to get curriculum items that does not care for it is already existing in memory or not
+	 *                    group        bool    Group the items returned by type of each item
+	 *                    field        string  The fields want to get
+	 *                    }
 	 *
 	 * @return array
 	 */
 	function get_curriculum_items( $args = array() ) {
 
 		// default value for $args
-		$force 	= false;
-		$group	= false;
-		$field 	= '';
+		$force = false;
+		$group = false;
+		$field = '';
 
-		$args = wp_parse_args(
+		$args    = wp_parse_args(
 			$args,
 			array(
-				'force'		=> false,
-				'group'		=> false,
-				'field'		=> ''
+				'force' => false,
+				'group' => false,
+				'field' => ''
 			)
 		);
 		$lessons = array();
@@ -263,54 +296,54 @@ abstract class LP_Abstract_Course {
 		// overwrite default values with params passed
 		extract( $args );
 		$items = array();
-		if( ! $this->_curriculum_items || $force ){
+		if ( !$this->_curriculum_items || $force ) {
 			$curriculum = $this->get_curriculum( $force );
-			$index = 0;
-			if( ! empty( $field ) ){
-				if( is_string( $field ) ){
+			$index      = 0;
+			if ( !empty( $field ) ) {
+				if ( is_string( $field ) ) {
 					$field = explode( '![\s]+!', $field );
 				}
 				settype( $field, 'array' );
-			}else{
+			} else {
 				$field = false;
 			}
 			//if( is_array( $field ) ) $field = array_map( $field, 'strtolower' );
-			if( $curriculum ) foreach( $curriculum as $section ){
-				if( empty( $section->items ) ) continue;
-				foreach( $section->items as $loop_item ){
-					if( $field ) {
-						$item = null;
+			if ( $curriculum ) foreach ( $curriculum as $section ) {
+				if ( empty( $section->items ) ) continue;
+				foreach ( $section->items as $loop_item ) {
+					if ( $field ) {
+						$item       = null;
 						$item_array = (array) $loop_item;
 						foreach ( $field as $field_name ) {
-							if ( array_key_exists( $field_name, $item_array ) ){
-								$item = $item_array[ $field_name ];
+							if ( array_key_exists( $field_name, $item_array ) ) {
+								$item = $item_array[$field_name];
 								break;
 							}
 						}
-					}else{
+					} else {
 						$item = $loop_item;
 					}
-					if( $loop_item->post_type == LP()->lesson_post_type ){
-						$lessons[ $index ] = $item;
-					}else{
-						$quizzes[ $index ] = $item;
+					if ( $loop_item->post_type == LP()->lesson_post_type ) {
+						$lessons[$index] = $item;
+					} else {
+						$quizzes[$index] = $item;
 					}
-					$index++;
+					$index ++;
 				}
 			}
 			// group
-			if( $group ){
+			if ( $group ) {
 				$items = array(
-					'quizzes'	=> $quizzes,
-					'lessons'	=> $lessons
+					'quizzes' => $quizzes,
+					'lessons' => $lessons
 				);
-			}else{
+			} else {
 				// combine lessons and quizzes as it should be in curriculum
-				for( $i = 0, $n = sizeof( $quizzes ) + sizeof( $lessons ); $i < $n; $i++ ){
-					if( ! empty( $quizzes[ $i ] ) ){
-						$items[] = $quizzes[ $i ];
-					}elseif( ! empty( $lessons[ $i ] ) ){
-						$items[] = $lessons[ $i ];
+				for ( $i = 0, $n = sizeof( $quizzes ) + sizeof( $lessons ); $i < $n; $i ++ ) {
+					if ( !empty( $quizzes[$i] ) ) {
+						$items[] = $quizzes[$i];
+					} elseif ( !empty( $lessons[$i] ) ) {
+						$items[] = $lessons[$i];
 					}
 				}
 			}

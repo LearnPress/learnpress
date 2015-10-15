@@ -10,79 +10,78 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 	LP()->_include( 'custom-post-types/abstract.php' );
 
 	// class LP_Course_Post_Type
-	final class LP_Course_Post_Type extends LP_Absatract_Post_Type{
-		/**
-		 * Prevent duplicate loading
-		 *
-		 * @var bool
-		 */
-		protected static $loaded;
-
+	final class LP_Course_Post_Type extends LP_Abstract_Post_Type {
 		/**
 		 * Constructor
 		 */
 		function __construct() {
 
-			if ( self::$loaded ) return;
-
-			add_action( 'init', array( $this, 'register_post_type' ) );
-
-			add_action( 'admin_head', array( $this, 'enqueue_script' ) );
-			add_action( 'admin_init', array( $this, 'add_meta_boxes' ), 0 );
 			add_action( 'rwmb_course_curriculum_before_save_post', array( $this, 'before_save_curriculum' ) );
 			add_filter( 'manage_lpr_course_posts_columns', array( $this, 'columns_head' ) );
-            add_filter( "rwmb__lpr_course_price_html", array( $this, 'currency_symbol' ), 5, 3 );
-			add_action( 'admin_footer-post.php', array( __CLASS__, 'print_js_template' ) );
-			add_action( 'admin_footer-post-new.php', array( __CLASS__, 'print_js_template' ) );
+			add_filter( "rwmb__lpr_course_price_html", array( $this, 'currency_symbol' ), 5, 3 );
+
 
 			parent::__construct();
-
-			self::$loaded = true;
 		}
 
-		function admin_params(){
+		/**
+		 * Generate params for course used in admin
+		 *
+		 * @static
+		 * @return mixed
+		 */
+		static function admin_params() {
 			global $post;
 			return apply_filters( 'learn_press_admin_course_params',
 				array(
-					'id'						=> absint( $post->ID ),
-					'notice_empty_title' 		=> __( 'Please enter the title of the course', 'learn_press' ),
-					'notice_empty_section' 		=> __( 'Please add at least one section for the course', 'learn_press' ),
+					'id'                        => absint( $post->ID ),
+					'notice_empty_title'        => __( 'Please enter the title of the course', 'learn_press' ),
+					'notice_empty_section'      => __( 'Please add at least one section for the course', 'learn_press' ),
 					'notice_empty_section_name' => __( 'Please enter the title of the section', 'learn_press' ),
-					'notice_empty_price' 		=> __( 'Please set a price for this course', 'learn_press' )
+					'notice_empty_price'        => __( 'Please set a price for this course', 'learn_press' )
 				)
 			);
 		}
 
-		function admin_scripts(){
+		/**
+		 * Enqueue scripts
+		 *
+		 * @static
+		 */
+		static function admin_scripts() {
 			if ( LP()->course_post_type != get_post_type() ) return;
 			wp_enqueue_style( 'lp-meta-boxes', LP()->plugin_url( 'assets/css/meta-boxes.css' ) );
 			wp_enqueue_script( 'jquery-caret', LP()->plugin_url( 'assets/js/jquery.caret.js', 'jquery' ) );
 			wp_enqueue_script( 'lp-meta-boxes', LP()->plugin_url( 'assets/js/meta-boxes.js', 'jquery', 'backbone', 'util' ) );
 
-			wp_localize_script( 'lp-meta-boxes', 'lp_course_params', $this->admin_params() );
+			wp_localize_script( 'lp-meta-boxes', 'lp_course_params', self::admin_params() );
 		}
 
-		function admin_styles(){
+		/**
+		 * Enqueue styles
+		 *
+		 * @static
+		 */
+		static function admin_styles() {
 
 		}
 
 		/**
 		 * Print js template
 		 */
-		static function print_js_template(){
-			if( get_post_type() != LP()->course_post_type ) return;
+		static function print_js_template() {
+			if ( get_post_type() != LP()->course_post_type ) return;
 			learn_press_admin_view( 'meta-boxes/course/js-template.php' );
 		}
 
-        function currency_symbol( $input_html, $field, $sub_meta ){
-            return $input_html . '<span class="lpr-course-price-symbol">' . learn_press_get_currency_symbol() . '</span>';
-        }
+		function currency_symbol( $input_html, $field, $sub_meta ) {
+			return $input_html . '<span class="lpr-course-price-symbol">' . learn_press_get_currency_symbol() . '</span>';
+		}
 
 		/**
 		 * Register course post type
 		 */
-		function register_post_type() {
-
+		static function register_post_type() {
 			$labels = array(
 				'name'               => _x( 'Courses', 'Post Type General Name', 'learn_press' ),
 				'singular_name'      => _x( 'Course', 'Post Type Singular Name', 'learn_press' ),
@@ -103,7 +102,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			$args = array(
 				'labels'             => $labels,
 				'public'             => true,
-                'query_var'          => true,
+				'query_var'          => true,
 				'publicly_queryable' => true,
 				'show_ui'            => true,
 				'has_archive'        => ( $page_id = learn_press_get_page_id( 'courses' ) ) && get_post( $page_id ) ? get_page_uri( $page_id ) : 'courses',
@@ -171,37 +170,37 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 					'query_var'             => true,
 				)
 			);
-            if( ! is_admin() ){
-                LP_Assets::enqueue_script( 'tipsy', LP_PLUGIN_URL . '/assets/js/jquery.tipsy.js' );
-                LP_Assets::enqueue_style( 'tipsy', LP_PLUGIN_URL . '/assets/css/tipsy.css' );
-            }
-            flush_rewrite_rules();
+			if ( !is_admin() ) {
+				LP_Assets::enqueue_script( 'tipsy', LP_PLUGIN_URL . '/assets/js/jquery.tipsy.js' );
+				LP_Assets::enqueue_style( 'tipsy', LP_PLUGIN_URL . '/assets/css/tipsy.css' );
+			}
+			flush_rewrite_rules();
 		}
 
 		/**
 		 * Add meta boxes to course post type page
 		 */
-		function add_meta_boxes() {
+		static function add_meta_boxes() {
 
-			new RW_Meta_Box( $this->curriculum_meta_box() );
-			new RW_Meta_Box( $this->settings_meta_box() );
-			new RW_Meta_Box( $this->assessment_meta_box() );
-			new RW_Meta_Box( $this->payment_meta_box() );
+			new RW_Meta_Box( self::curriculum_meta_box() );
+			new RW_Meta_Box( self::settings_meta_box() );
+			new RW_Meta_Box( self::assessment_meta_box() );
+			new RW_Meta_Box( self::payment_meta_box() );
 
 		}
 
-		function curriculum_meta_box() {
+		static function curriculum_meta_box() {
 			$prefix = '_lpr_';
 
 			$meta_box = array(
-				'id'     	=> 'course_curriculum',
-				'title'  	=> __('Course Curriculum', 'learn_press'),
-				'priority'	=> 'high',
-				'pages'  	=> array( LP_COURSE_CPT ),
-				'fields' 	=> array(
+				'id'       => 'course_curriculum',
+				'title'    => __( 'Curriculum', 'learn_press' ),
+				'priority' => 'high',
+				'pages'    => array( LP_COURSE_CPT ),
+				'fields'   => array(
 					array(
 						'name' => __( 'Course Curriculum', 'learn_press' ),
-						'id'   => "{$prefix}course_lesson_quiz",
+						'id'   => "{$prefix}curriculum",
 						'type' => 'curriculum',
 						'desc' => '',
 					),
@@ -211,49 +210,43 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			return apply_filters( 'learn_press_course_curriculum_meta_box_args', $meta_box );
 		}
 
-		function settings_meta_box() {
+		static function settings_meta_box() {
 			$prefix = '_lpr_';
 
 			$meta_box = array(
-				'id'     	=> 'course_settings',
-				'title'  	=> __('Course Settings', 'learn_press'),
-				'pages'  	=> array( LP_COURSE_CPT ),
-				'priority' 	=> 'high',
-				'fields' 	=> array(
+				'id'       => 'course_settings',
+				'title'    => __( 'General Settings', 'learn_press' ),
+				'pages'    => array( LP_COURSE_CPT ),
+				'priority' => 'high',
+				'fields'   => array(
 					array(
-						'name' => __( 'Course Duration', 'learn_press' ),
-						'id'   => "{$prefix}course_duration",
+						'name' => __( 'Duration', 'learn_press' ),
+						'id'   => "{$prefix}_duration",
 						'type' => 'number',
-						'desc' => __('The length of the course (by weeks)', 'learn_press'),
+						'desc' => __( 'The duration of the course (by weeks)', 'learn_press' ),
 						'std'  => 10,
 					),
-					// array(
-					// 	'name' => __( 'Course Time', 'learn_press' ),
-					// 	'id'   => "{$prefix}course_time",
-					// 	'type' => 'text',
-					// 	'desc' => 'Course start and end time. Example:2-4pm',
-					// ),
 					array(
-						'name' => __( 'Number of Students Enrolled', 'learn_press' ),
-						'id'   => "{$prefix}course_student",
+						'name' => __( 'Maximum students', 'learn_press' ),
+						'id'   => "{$prefix}max_students",
 						'type' => 'number',
-						'desc' => __('The number of students took this course', 'learn_press'),
+						'desc' => __( 'Maximum number of students can be enroll this course', 'learn_press' ),
+						'std'  => 1000,
+					),
+					array(
+						'name' => __( 'Students enrolled', 'learn_press' ),
+						'id'   => "{$prefix}_students",
+						'type' => 'number',
+						'desc' => __( 'How many students has took this course', 'learn_press' ),
 						'std'  => 0,
 					),
 					array(
-						'name' => __( 'Maximum students can take the course', 'learn_press' ),
-						'id'   => "{$prefix}max_course_number_student",
+						'name' => __( 'Re-take course', 'learn_press' ),
+						'id'   => "{$prefix}retake_count",
 						'type' => 'number',
-						'desc' => __('Maximum Number Student of the Course', 'learn_press'),
-						'std'  => 1000,
+						'desc' => __( 'How many times the user can re-take this course. Set to 0 to disable', 'learn_press' ),
+						'std'  => '0',
 					),
-                    array(
-                        'name' => __( 'Re-take course', 'learn_press' ),
-                        'id'   => "{$prefix}retake_course",
-                        'type' => 'number',
-                        'desc' => __('How many times the user can re-take this course. Set to 0 to disable', 'learn_press'),
-                        'std'  => '0',
-                    ),
 
 				)
 			);
@@ -261,33 +254,33 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			return apply_filters( 'learn_press_course_settings_meta_box_args', $meta_box );
 		}
 
-		function assessment_meta_box() {
+		static function assessment_meta_box() {
 			$prefix = '_lpr_';
 
 			$meta_box = array(
-				'id'     	=> 'course_assessment',
-				'title'  	=> __('Course Assessment Settings', 'learn_press'),
-				'priority' 	=> 'high',
-				'pages'  	=> array( LP_COURSE_CPT ),
-				'fields' 	=> array(
+				'id'       => 'course_assessment',
+				'title'    => __( 'Assessment', 'learn_press' ),
+				'priority' => 'high',
+				'pages'    => array( LP_COURSE_CPT ),
+				'fields'   => array(
 					array(
-						'name'    => __( 'Course Final Quiz', 'learn_press' ),
-						'id'      => "{$prefix}course_final",
+						'name'    => __( 'Course result', 'learn_press' ),
+						'id'      => "{$prefix}final_quiz",
 						'type'    => 'radio',
-						'desc'    => __('If Final Quiz option is checked, then the course will be assessed by result of the last quiz, else the course will be assessed by the progress of learning lessons', 'learn_press'),
+						'desc'    => __( 'The way to assess the result of course for a student', 'learn_press' ),
 						'options' => array(
-							'no'  => __( 'No Final Quiz', 'learn_press' ),
-                            'yes' => __( 'Using Final Quiz', 'learn_press' )
+							'no'  => __( 'Evaluate lessons', 'learn_press' ),
+							'yes' => __( 'Evaluate result of final quiz', 'learn_press' )
 						),
 						'std'     => 'no'
 					),
 					array(
-						'name' => __( 'Passing Condition', 'learn_press' ),
-						'id'   => "{$prefix}course_condition",
+						'name' => __( 'Passing condition value', 'learn_press' ),
+						'id'   => "{$prefix}passing_condition",
 						'type' => 'number',
 						'min'  => 1,
 						'max'  => 100,
-						'desc' => __('The percentage of quiz result to finish the course', 'learn_press'),
+						'desc' => __( 'The percentage of quiz result or lessons completed to finish the course', 'learn_press' ),
 						'std'  => 50
 					)
 				)
@@ -295,102 +288,225 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			return apply_filters( 'learn_press_course_assessment_metabox', $meta_box );
 		}
 
-		function payment_meta_box() {
+		static function payment_meta_box() {
 
 			$prefix = '_lpr_';
 
 			$meta_box = array(
-				'id'     	=> 'course_payment',
-				'title'  	=> __('Course Payment Settings', 'learn_press'),
-				'priority' 	=> 'high',
-				'pages'  	=> array( LP_COURSE_CPT ),
-				'fields' 	=> array(
-                    array(
-                        'name'    => __( 'Enrolled Require', 'learn_press' ),
-                        'id'      => "{$prefix}course_enrolled_require",
-                        'type'    => 'radio',
-                        'desc'    => __('Require users logged in to study or public to all', 'learn_press'),
-                        'options' => array(
-                            'yes'     => __( 'Yes, enroll is required', 'learn_press' ),
-                            'no' => __( 'No', 'learn_press' ),
-                        ),
-                        'std'     => 'yes',
-                        'class' => 'hide-if-js'
-                    ),
+				'id'       => 'course_payment',
+				'title'    => __( 'Payment Settings', 'learn_press' ),
+				'priority' => 'high',
+				'pages'    => array( LP_COURSE_CPT ),
+				'fields'   => array(
 					array(
-						'name'    => __( 'Course Payment', 'learn_press' ),
-						'id'      => "{$prefix}course_payment",
+						'name'    => __( 'Requires enroll', 'learn_press' ),
+						'id'      => "{$prefix}enroll_requirement",
 						'type'    => 'radio',
-						'desc'    => __('If Paid be checked, An administrator will review then set course price and commission', 'learn_press'),
+						'desc'    => __( 'Require users logged in to study or public to all', 'learn_press' ),
+						'options' => array(
+							'yes' => __( 'Yes, enroll is required', 'learn_press' ),
+							'no'  => __( 'No', 'learn_press' ),
+						),
+						'std'     => 'yes',
+						'class'   => 'hide-if-js'
+					),
+					array(
+						'name'    => __( 'Course payment', 'learn_press' ),
+						'id'      => "{$prefix}_payment",
+						'type'    => 'radio',
+						'desc'    => __( 'If Paid be checked, An administrator will review then set course price and commission', 'learn_press' ),
 						'options' => array(
 							'free'     => __( 'Free', 'learn_press' ),
 							'not_free' => __( 'Paid', 'learn_press' ),
 						),
 						'std'     => 'free',
-                        'class' => 'lpr-course-payment-field'
+						'class'   => 'lpr-course-payment-field'
 					)
 				)
 			);
 
 			if ( current_user_can( 'manage_options' ) ) {
-				$message = __('If free, this field is empty or set 0. (Only admin can edit this field)', 'learn_press');
-				$price = 0;
+				$message = __( 'If free, this field is empty or set 0. (Only admin can edit this field)', 'learn_press' );
+				$price   = 0;
 
-				if( isset($_GET['post']) ) {
+				if ( isset( $_GET['post'] ) ) {
 					$course_id = $_GET['post'];
-					$type = get_post_meta( $course_id, '_lpr_course_payment', true );
-					if( $type != 'free' ) {
+					$type      = get_post_meta( $course_id, '_lpr_course_payment', true );
+					if ( $type != 'free' ) {
 						$suggest_price = get_post_meta( $course_id, '_lpr_course_suggestion_price', true );
-						if( isset( $suggest_price ) ) {
-							$message = __('This course is enrolled require and the suggestion price is ', 'learn_press') . '<span>' . learn_press_get_currency_symbol() . $suggest_price . '</span>';
-							$price = $suggest_price;
+						if ( isset( $suggest_price ) ) {
+							$message = __( 'This course is enrolled require and the suggestion price is ', 'learn_press' ) . '<span>' . learn_press_get_currency_symbol() . $suggest_price . '</span>';
+							$price   = $suggest_price;
 						}
 					} else {
-						$message = __('This course is free.','learn_press');
+						$message = __( 'This course is free.', 'learn_press' );
 					};
 				}
 				array_push(
 					$meta_box['fields'],
 					array(
-						'name' => __( 'Course Price', 'learn_press' ),
-						'id'   => "{$prefix}course_price",
-						'type' => 'number',
-						'min'  => 0,
-						'step' => 0.01,
-						'desc' => $message,
-						'std'  => $price,
-                        'class' => 'lpr-course-price-field hide-if-js'
+						'name'  => __( 'Price', 'learn_press' ),
+						'id'    => "{$prefix}_price",
+						'type'  => 'number',
+						'min'   => 0,
+						'step'  => 0.01,
+						'desc'  => $message,
+						'std'   => $price,
+						'class' => 'lpr-course-price-field hide-if-js'
 					)
 				);
 			} else {
 				array_push(
 					$meta_box['fields'],
 					array(
-						'name' 	=> __( 'Course Suggestion Price', 'learn_press'),
-						'id'	=> "{$prefix}course_suggestion_price",
-						'type'	=> 'number',
-						'min'	=> 0,
-						'step'	=> 0.01,
-						'desc'	=> __('The course price you want to suggest for admin to set.', 'learn_press'),
-                        'class' => 'lpr-course-price-field hide-if-js',
-                        'std'   => 0
+						'name'  => __( 'Course Suggestion Price', 'learn_press' ),
+						'id'    => "{$prefix}course_suggestion_price",
+						'type'  => 'number',
+						'min'   => 0,
+						'step'  => 0.01,
+						'desc'  => __( 'The course price you want to suggest for admin to set.', 'learn_press' ),
+						'class' => 'lpr-course-price-field hide-if-js',
+						'std'   => 0
 					)
-					);
+				);
 			}
 			return apply_filters( 'learn_press_course_payment_meta_box_args', $meta_box );
 		}
 
 		function before_save_curriculum() {
-			if ( $sections = $_POST['_lpr_course_lesson_quiz'] ) foreach ( $sections as $k => $section ) {
-				if ( empty( $section['name'] ) ) {
-					unset( $_POST['_lpr_course_lesson_quiz'][$k] );
-				}
-				$_POST['_lpr_course_lesson_quiz'] = array_values( $_POST['_lpr_course_lesson_quiz'] );
-			}
+			global $wpdb, $post;
+			$section_ids        = array();
+			$section_update_ids = array();
 
+			$item_ids        = array();
+			$item_update_ids = array();
+			if ( !empty( $_REQUEST['_lp_curriculum'] ) ) {
+				$query_update_section_name  = array();
+				$query_update_section_order = array();
+				$query_update_item_name     = array();
+				$query_update_item_order    = array();
+				foreach ( $_REQUEST['_lp_curriculum'] as $order => $section ) {
+					if ( !is_numeric( $order ) ) continue;
+					if ( !empty( $section['ID'] ) ) {
+						$query_update_section_name[]  = 'WHEN ' . $section['ID'] . ' THEN \'' . $section['name'] . '\'';
+						$query_update_section_order[] = 'WHEN ' . $section['ID'] . ' THEN \'' . ( $order + 1 ) . '\'';
+						$section_update_ids[] = $section['ID'];
+					} else {
+						$wpdb->insert(
+							$wpdb->learnpress_sections,
+							array(
+								'name'      => $section['name'],
+								'course_id' => $post->ID,
+								'order'     => $order + 1
+							),
+							array( '%s', '%d', '%d' )
+						);
+						$section['ID'] = $wpdb->insert_id;
+					}
+					$section_ids[] = $section['ID'];
+
+					// update items;
+					if ( empty( $section['items'] ) ) continue;
+					foreach ( $section['items'] as $item_order => $item ) {
+						if ( !is_numeric( $item_order ) ) continue;
+						if ( !empty( $item['ID'] ) ) {
+							$query_update_item_name[]  = 'WHEN ' . $item['ID'] . ' THEN \'' . $item['name'] . '\'';
+							$query_update_item_order[] = 'WHEN item_id = ' . $item['ID'] . ' AND section_id = ' . $section['ID'] . ' THEN \'' . ( $item_order + 1 ) . '\'';
+							$item_update_ids[$item['item_id']] = $item['ID'];
+						} else {
+							$item['ID'] = wp_insert_post(
+								array(
+									'post_title' => $item['name'],
+									'post_type' => $item['post_type'],
+									'post_status' => 'publish'
+								)
+							);
+							$wpdb->insert(
+								$wpdb->learnpress_section_items,
+								array(
+									'section_id' => $section['ID'],
+									'item_id'    => $item['ID'],
+									'order'      => $item_order + 1
+								)
+							);
+						}
+						$item_ids[] = $item['ID'];
+					}
+				}
+				// update the name and ordering of existing sections
+				if ( $query_update_section_name ) {
+					$query_update_section = "
+						UPDATE {$wpdb->learnpress_sections} SET
+							`name` = CASE `ID` " . join( ' ', $query_update_section_name ) . " END,
+							`order` = CASE `ID` " . join( ' ', $query_update_section_order ) . " END
+						WHERE
+							ID IN (" . join( ',', $section_update_ids ) . ")
+					";
+					$wpdb->query( $query_update_section );
+				}
+
+				// remove all sections not existing in course
+				if ( $section_ids ) {
+					$wpdb->query(
+						"DELETE FROM {$wpdb->learnpress_sections} WHERE course_id = " . $post->ID . " AND ID NOT IN(" . join( ',', $section_ids ) . ")"
+					);
+
+					$all_sections    = $wpdb->get_col( "SELECT ID FROM {$wpdb->learnpress_sections} WHERE course_id = {$post->ID}" );
+					$remove_sections = array_diff( $all_sections, $section_ids );
+					if ( $remove_sections ) {
+						$wpdb->query(
+							"DELETE FROM {$wpdb->learnpress_section_items} WHERE section_id IN(" . join( ',', $remove_sections ) . ")"
+						);
+					}
+				}
+
+				// update the name and ordering of existing items
+				if ( $query_update_item_name ) {
+					$query_update_item_name = "
+						UPDATE {$wpdb->posts} SET
+							`post_title` = CASE `ID` " . join( ' ', $query_update_item_name ) . " END
+						WHERE ID IN(" . join( ',', $item_update_ids ) . ")
+					";
+					$wpdb->query( $query_update_item_name );
+
+					$query_update_item_order = "
+						UPDATE {$wpdb->learnpress_section_items} SET
+							`order` = CASE " . join( ' ', $query_update_item_order ) . " END
+						WHERE ID IN(" . join( ',', array_keys( $item_update_ids ) ) . ")
+					";
+					$wpdb->query( $query_update_item_order );
+
+					$all_items = $wpdb->get_col("
+						SELECT lp_si.ID
+						FROM {$wpdb->learnpress_section_items} lp_si
+						INNER JOIN{$wpdb->learnpress_sections} lp_s ON lp_s.ID = lp_si.section_id
+						INNER JOIN {$wpdb->posts} p ON p.ID = lp_s.course_id
+						WHERE p.ID = " . $post->ID . "
+					");
+
+					$remove_items = array_diff( $all_items, $item_ids );
+
+					$wpdb->query("
+						DELETE
+						FROM {$wpdb->learnpress_section_items}
+						WHERE ID IN (" . join( ',', $remove_items ) . ")
+					");
+				}
+			}
+			if( ! empty( $_POST['_lp_remove_item_ids'] ) ){
+				$query = "
+					DELETE
+					FROM {$wpdb->learnpress_section_items}
+					WHERE item_id IN(" . $_POST['_lp_remove_item_ids'] . ")
+					 	AND section_id IN (" . join(',', $section_ids ) . ")
+				";
+				$wpdb->query( $query );
+			}
+			//echo '<pre>';print_r($_POST);echo '</pre>';
+			//die();
 		}
 
-		function enqueue_script() {
+		static function enqueue_scripts() {
 
 		}
 

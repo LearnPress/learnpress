@@ -471,7 +471,6 @@ function learn_press_set_start_date( $new_status, $old_status, $post ) {
 }
 
 
-
 /*
  * Add searching post by taxonomies
  */
@@ -1802,3 +1801,68 @@ function learn_press_get_order_statuses() {
 	return apply_filters( 'learn_press_order_statuses', $order_statuses );
 }
 
+function is_learnpress() {
+	return apply_filters( 'is_learnpress', ( is_course_archive() || is_course_taxonomy() || is_course() ) ? true : false );
+}
+
+if ( !function_exists( 'is_course_archive' ) ) {
+
+	/**
+	 * Returns true when viewing the course type archive.
+	 *
+	 * @return bool
+	 */
+	function is_course_archive() {
+		return ( is_post_type_archive( LP()->course_post_type ) || is_page( learn_press_get_page_id( 'course' ) ) ) ? true : false;
+	}
+}
+
+if ( !function_exists( 'is_course_taxonomy' ) ) {
+
+	/**
+	 * Returns true when viewing a course taxonomy archive.
+	 *
+	 * @return bool
+	 */
+	function is_course_taxonomy() {
+		return is_tax( get_object_taxonomies( LP()->course_post_type ) );
+	}
+}
+
+if ( !function_exists( 'is_course_category' ) ) {
+
+	/**
+	 * Returns true when viewing a course category.
+	 *
+	 * @param  string
+	 * @return bool
+	 */
+	function is_course_category( $term = '' ) {
+		return is_tax( 'course_category', $term );
+	}
+}
+
+if ( !function_exists( 'is_course_tag' ) ) {
+
+	/**
+	 * Returns true when viewing a course tag.
+	 *
+	 * @param  string
+	 * @return bool
+	 */
+	function is_course_tag( $term = '' ) {
+		return is_tax( 'course_tag', $term );
+	}
+}
+
+if ( !function_exists( 'is_course' ) ) {
+
+	/**
+	 * Returns true when viewing a single course.
+	 *
+	 * @return bool
+	 */
+	function is_course() {
+		return is_singular( array( LP()->course_post_type ) );
+	}
+}

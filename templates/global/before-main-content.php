@@ -25,4 +25,4 @@ switch( $template ) {
         echo '<div id="container" class="container-wrap"><div id="content" role="main" class="container">';
         break;
 }
-echo '<!-- .learn-press --><div class="learn-press">';
+echo '<!-- .learnpress-content --><div class="learnpress-content">';

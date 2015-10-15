@@ -4,6 +4,41 @@
 	clear: both;
 }
 
+.learnpress{
+
+}
+
+.learnpress h3{
+	font-size: 2.7rem;
+	line-height: 1.1852;
+	margin-top: 2.3704em;
+	margin-bottom: 1.1852em;
+}
+
+.learnpress .twentyfifteen .learnpress-content{
+	padding-left: 7.6923%;
+	padding-right: 7.6923%;
+	padding-top: 7.6923%;
+	margin-bottom: 7.6923%;
+	background: #fff;
+	box-shadow: 0 0 1px rgba(0,0,0,.15);
+}
+@media screen and (min-width: 59.6875em) {
+	.twentyfifteen .learnpress-content{
+		margin-left: 8.3333%;
+		margin-right: 8.3333%;
+		padding: 10%;
+	}
+}
+@media screen and (min-width: 38.75em) {
+	.twentyfifteen .learnpress-content {
+		margin-right: 7.6923%;
+		margin-left: 7.6923%;
+		margin-top: 8.3333%;
+	}
+}
+/***************************/
+
 #course-header {
 
 }

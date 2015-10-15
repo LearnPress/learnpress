@@ -112,7 +112,7 @@ function learn_press_send_user_email_order( $status, $order_id ){
 
         $course_title = get_the_title( $item['id'] );
 
-        $instructor = LP_User::instance( $course->post_author );
+        $instructor = LP_User::get_user( $course->post_author );
         $instructors[$instructor->ID] = $instructor->data->display_name;
 
 		learn_press_send_mail(

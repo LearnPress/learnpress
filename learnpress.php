@@ -22,6 +22,8 @@ if ( ! defined( 'LPR_PLUGIN_PATH'  ) ) {
 	define( 'LPR_PLUGIN_PATH', trailingslashit( plugin_dir_path( __FILE__  ) ) );
 	define( 'LPR_PLUGIN_URL', trailingslashit( plugins_url('/', __FILE__  ) ) );
 }
+
+$GLOBALS['multiple_cart'] = true;
 if ( !class_exists( 'LearnPress' ) ) {
 	/**
 	 * Class LearnPress
@@ -232,20 +234,11 @@ if ( !class_exists( 'LearnPress' ) ) {
 			// initial some tasks before page load
 			add_action( 'init', array( $this, 'init' ) );
 
-			// load enable add-ons
-			//add_action( 'init', array( $this, 'include_enable_add_on' ) );
-
 			// user roles
 			add_action( 'init', array( $this, 'add_user_roles' ) );
 
-
-
-
 			// redirect to our template if needed
 			add_action( 'template_redirect', 'learn_press_handle_purchase_request' );
-			//add_action( 'template_redirect', 'learn_press_template_redirect', 999 );
-			// add_action( 'template_include', 'learn_press_template_include', 5 );
-
 		}
 
 		/**
@@ -259,17 +252,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 			// Class instances
 			$this->session = new $session_class();
 
-			// auto include file for admin page
-			// example: slug = learn_press_settings -> file = inc/admin/sub-menus/settings.php
-			$page = !empty ( $_REQUEST['page'] ) ? $_REQUEST['page'] : null;
-			if ( !$page ) return;
 
-			if ( strpos( $page, 'learn_press_' ) === false ) return;
-			$file = preg_replace( '!^learn_press_!', '', $page );
-			$file = str_replace( '_', '-', $file );
-			if ( file_exists( $file = LP_PLUGIN_PATH . "/inc/admin/sub-menus/{$file}.php" ) ) {
-				require_once $file;
-			}
 		}
 
 		/**
@@ -299,7 +282,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 			if ( is_admin() ) {
 
 				require_once 'inc/admin/class-lp-admin-notice.php';
-				if( ! class_exists( '' ) ) {
+				if( ! class_exists( 'RWMB_Meta_Box' ) ) {
 					require_once 'inc/libraries/meta-box/meta-box.php';
 				}
 				require_once 'inc/admin/meta-boxes/class-lp-meta-box.php';

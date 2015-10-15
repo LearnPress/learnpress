@@ -16,8 +16,12 @@
 				'keyup' : 'processKeyEvents',
 				'keydown': 'inputKeyDownEvent',
 				'keypress': 'inputKeyPressEvent',
-				'click .lp-section-item .lp-remove': 'removeItem'
+				'click .lp-section-item .lp-remove': 'removeItem',
+				'click .lp-toggle': 'toggleSection',
+				'click .lp-course-curriculum-toggle a': 'toggleSections'
 			},
+			removeSectionIds : [],
+			removeItemIds: [],
 			el             : '#lp-course-curriculum',
 			initialize: function( model ){
 				this.model = model;
@@ -30,39 +34,7 @@
 			initPage: function(){
 				var that = this;
 				this.$form = $('#post');
-				this.$form.submit(function (evt) {
-					var $title = $('#title'),
-						$curriculum = $('.lpr-curriculum-section:not(.lpr-empty)'),
-						is_error = false;
-					if (0 == $title.val().length) {
-						alert( lp_course_params.notice_empty_title );
-						$title.focus();
-						is_error = true;
-					} else if (0 == $curriculum.length) {
-						alert( lp_course_params.notice_empty_section );
-						$('.lpr-curriculum-section .lpr-section-name').focus();
-						is_error = true;
-					} else {
-						$curriculum.each(function () {
-							var $section = $('.lpr-section-name', this);
-							if (0 == $section.val().length) {
-								alert( lp_course_params.notice_empty_section_name );
-								$section.focus();
-								is_error = true;
-								return false;
-							}
-						});
-					}
-					if( $( 'input[name="_lpr_course_payment"]:checked').val() == 'not_free' && $('input[name="_lpr_course_price"]').val() <= 0 ){
-						alert( lp_course_params.notice_empty_price );
-						is_error = true;
-						$('input[name="_lpr_course_price"]').focus();
-					}
-					if (true == is_error) {
-						evt.preventDefault();
-						return false;
-					}
-				});
+				this.$form.on( 'submit', $.proxy( function(){ return this.onSave()}, this ) );
 				$('input[name="_lpr_course_final"]').bind('click change', function(){
 					if( $(this).val() == 'yes' ){
 						$(this).closest('.rwmb-field').next().show();
@@ -98,7 +70,109 @@
 								}
 							}
 						}, 500);
-					})
+					});
+				this.$('.lp-curriculum-sections').sortable({
+					axis: 'y',
+					items: 'li:not(.lp-section-empty)',
+					handle: '.lp-section-icon',
+					start: function(e, ui){
+						$('.lp-curriculum-section-content').css('display', 'none');
+						$(ui.item).addClass('lp-sorting');
+					},
+					stop: function(e, ui){
+						$('.lp-curriculum-section-content').css('display', '');
+						$(ui.item).removeClass('lp-sorting');
+					}
+				});
+				this.$('.lp-curriculum-sections .lp-section-items').sortable({
+					axis: 'y',
+					items: 'li:not(.lp-item-empty)',
+					handle: '.lp-sort-item',
+					connectWith: '.lp-section-items'
+				});
+				if( this.$('.lp-curriculum-section-content:visible').length ){
+
+				}
+			},
+			toggleSection: function(e){
+				var $button = $(e.target),
+					$section = $button.closest('.lp-curriculum-section');
+				$section.find('.lp-curriculum-section-content').stop().slideToggle(function(){
+					if( $(this).is(':visible') ){
+						$(this).parent().addClass('open')
+					}else{
+						$(this).parent().removeClass('open')
+					}
+				});
+			},
+			toggleSections: function(e){
+				e.preventDefault();
+				var $target = $(e.target);
+				if($target.attr('data-action') == 'expand' ){
+					this.$('.lp-curriculum-section-content').slideDown();
+				}else{
+					this.$('.lp-curriculum-section-content').slideUp();
+				}
+			},
+			onSave: function( evt ){
+				var $title = $('#title'),
+					$curriculum = $('.lp-curriculum-section:not(.lp-section-empty)'),
+					is_error = false;
+				if (0 == $title.val().length) {
+					alert( lp_course_params.notice_empty_title );
+					$title.focus();
+					is_error = true;
+				} else if (0 == $curriculum.length) {
+					alert( lp_course_params.notice_empty_section );
+					$('.lp-curriculum-section .lp-section-name').focus();
+					is_error = true;
+				} else {
+					/*$curriculum.each(function () {
+						var $section = $('.lpr-section-name', this);
+						if (0 == $section.val().length) {
+							alert( lp_course_params.notice_empty_section_name );
+							$section.focus();
+							is_error = true;
+							return false;
+						}
+					});*/
+				}
+				if( $( 'input[name="_lpr_course_payment"]:checked').val() == 'not_free' && $('input[name="_lpr_course_price"]').val() <= 0 ){
+					alert( lp_course_params.notice_empty_price );
+					is_error = true;
+					$('input[name="_lpr_course_price"]').focus();
+				}
+				if (true == is_error) {
+					evt.preventDefault();
+					return false;
+				}
+
+				this._prepareSections();
+			},
+			_prepareSections: function(){
+				var $sections = this.$form.find('.lp-curriculum-section:not(.lp-section-empty)');
+				$sections.each(function( i, n ){
+					var $section = $(this),
+						$items = $section.find('.lp-section-item:not(.lp-item-empty)'),
+						$inputs = $('input[name*="__SECTION__"]', $section);
+					$inputs.each( function(){
+						var $input = $(this),
+							name = $input.attr('name');
+						name = name.replace(/__SECTION__/, i);
+						$input.attr('name', name);
+					});
+					$items.each(function(j, l){
+						$(this).find('input[name*="__ITEM__"]').each( function(){
+							var $input = $(this),
+								name = $input.attr('name');
+							name = name.replace(/__ITEM__/, j);
+							$input.attr('name', name);
+						});
+					});
+				});
+				if(this.removeItemIds){
+					this.$form.append( '<input type="hidden" name="_lp_remove_item_ids" value="' + this.removeItemIds.join(',') + '" />');
+				}
 			},
 			render: function(){
 
@@ -134,8 +208,10 @@
 					if(e.altKey) {
 						if (keyCode == 81) {
 							$target.closest('.lp-section-item').find('.handle.dashicons').removeClass('dashicons-media-document').addClass('dashicons-format-status');
+							$target.siblings('.lp-item-type').attr('value', 'lp_quiz');
 						} else if (keyCode == 76) {
 							$target.closest('.lp-section-item').find('.handle.dashicons').removeClass('dashicons-format-status').addClass('dashicons-media-document');
+							$target.siblings('.lp-item-type').attr('value', 'lp_lesson');
 						}
 					}
 				}
@@ -368,6 +444,7 @@
 
 				}
 				$item.remove();
+				this.removeItemIds.push(id);
 			}
 		});
 
