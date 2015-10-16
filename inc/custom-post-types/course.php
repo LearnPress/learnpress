@@ -186,7 +186,22 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			new RW_Meta_Box( self::settings_meta_box() );
 			new RW_Meta_Box( self::assessment_meta_box() );
 			new RW_Meta_Box( self::payment_meta_box() );
-
+			new RW_Meta_Box(
+				array(
+					'id'       => 'course_tabs',
+					'title'    => __( 'Curriculum', 'learn_press' ),
+					'priority' => 'high',
+					'pages'    => array( LP_COURSE_CPT ),
+					'fields'   => array(
+						array(
+							'name' => __( 'Course Curriculum', 'learn_press' ),
+							'id'   => "course_tabs",
+							'type' => 'course_tabs',
+							'desc' => '',
+						),
+					)
+				)
+			);
 		}
 
 		static function curriculum_meta_box() {
@@ -255,7 +270,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		}
 
 		static function assessment_meta_box() {
-			$prefix = '_lpr_';
+			$prefix = '_lp_';
 
 			$meta_box = array(
 				'id'       => 'course_assessment',
@@ -265,7 +280,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 				'fields'   => array(
 					array(
 						'name'    => __( 'Course result', 'learn_press' ),
-						'id'      => "{$prefix}final_quiz",
+						'id'      => "{$prefix}course_result",
 						'type'    => 'radio',
 						'desc'    => __( 'The way to assess the result of course for a student', 'learn_press' ),
 						'options' => array(
@@ -290,7 +305,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 
 		static function payment_meta_box() {
 
-			$prefix = '_lpr_';
+			$prefix = '_lp_';
 
 			$meta_box = array(
 				'id'       => 'course_payment',
@@ -312,7 +327,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 					),
 					array(
 						'name'    => __( 'Course payment', 'learn_press' ),
-						'id'      => "{$prefix}_payment",
+						'id'      => "{$prefix}payment",
 						'type'    => 'radio',
 						'desc'    => __( 'If Paid be checked, An administrator will review then set course price and commission', 'learn_press' ),
 						'options' => array(
@@ -320,7 +335,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 							'not_free' => __( 'Paid', 'learn_press' ),
 						),
 						'std'     => 'free',
-						'class'   => 'lpr-course-payment-field'
+						'class'   => 'lp-course-payment-field'
 					)
 				)
 			);
@@ -331,9 +346,9 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 
 				if ( isset( $_GET['post'] ) ) {
 					$course_id = $_GET['post'];
-					$type      = get_post_meta( $course_id, '_lpr_course_payment', true );
+					$type      = get_post_meta( $course_id, '_lp_payment', true );
 					if ( $type != 'free' ) {
-						$suggest_price = get_post_meta( $course_id, '_lpr_course_suggestion_price', true );
+						$suggest_price = get_post_meta( $course_id, '_lp_suggestion_price', true );
 						if ( isset( $suggest_price ) ) {
 							$message = __( 'This course is enrolled require and the suggestion price is ', 'learn_press' ) . '<span>' . learn_press_get_currency_symbol() . $suggest_price . '</span>';
 							$price   = $suggest_price;
@@ -346,13 +361,13 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 					$meta_box['fields'],
 					array(
 						'name'  => __( 'Price', 'learn_press' ),
-						'id'    => "{$prefix}_price",
+						'id'    => "{$prefix}price",
 						'type'  => 'number',
 						'min'   => 0,
 						'step'  => 0.01,
 						'desc'  => $message,
 						'std'   => $price,
-						'class' => 'lpr-course-price-field hide-if-js'
+						'class' => 'lp-course-price-field hide-if-js'
 					)
 				);
 			} else {
@@ -365,7 +380,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						'min'   => 0,
 						'step'  => 0.01,
 						'desc'  => __( 'The course price you want to suggest for admin to set.', 'learn_press' ),
-						'class' => 'lpr-course-price-field hide-if-js',
+						'class' => 'lp-course-price-field hide-if-js',
 						'std'   => 0
 					)
 				);

@@ -6,6 +6,8 @@
 if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
+print_r( LP_Session::get( 'cart' ) );
+
 ?>
 
 <?php do_action( 'learn_press_before_content_landing' ); ?>

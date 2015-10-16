@@ -2,12 +2,12 @@
 /**
  * Common functions used for admin
  *
- * @package LearnPress
- * @author 	ThimPress
- * @version 1.0
+ * @package   LearnPress
+ * @author    ThimPress
+ * @version   1.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
+if ( !defined( 'ABSPATH' ) ) {
 	exit;
 }
 
@@ -15,10 +15,11 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Get html view path for admin to display
  *
  * @param $name
+ *
  * @return mixed
  */
-function learn_press_get_admin_view( $name ){
-	$view =  LP()->plugin_path( 'inc/admin/views/' . $name );
+function learn_press_get_admin_view( $name ) {
+	$view = LP()->plugin_path( 'inc/admin/views/' . $name );
 	return apply_filters( 'learn_press_admin_view', $view, $name );
 }
 
@@ -28,17 +29,18 @@ function learn_press_get_admin_view( $name ){
  * @param            $name
  * @param array      $args
  * @param bool|false $include_once
+ *
  * @return bool
  */
-function learn_press_admin_view( $name, $args = array(), $include_once = false ){
+function learn_press_admin_view( $name, $args = array(), $include_once = false ) {
 	$view = learn_press_get_admin_view( $name );
-	if( file_exists( $view ) ){
+	if ( file_exists( $view ) ) {
 		// extract parameters as local variables if passed
 		is_array( $args ) && extract( $args );
 		do_action( 'learn_press_before_display_admin_view', $name, $args );
-		if( $include_once ){
+		if ( $include_once ) {
 			include_once $view;
-		}else {
+		} else {
 			include $view;
 		}
 		do_action( 'learn_press_after_display_admin_view', $name, $args );
@@ -68,10 +70,11 @@ add_action( 'init', 'learn_press_admin_localize_script' );
  */
 function learn_press_settings_tabs_array() {
 	$tabs = array(
-		'general' => __( 'General', 'learn_press' ),
-		'pages'   => __( 'Pages', 'learn_press' ),
-		'payment' => __( 'Payments', 'learn_press' ),
-		'emails'  => __( 'Emails', 'learn_press' )
+		'general'  => __( 'General', 'learn_press' ),
+		'pages'    => __( 'Pages', 'learn_press' ),
+		'payments' => __( 'Payments', 'learn_press' ),
+		'checkout' => __( 'Checkout', 'learn_press' ),
+		'emails'   => __( 'Emails', 'learn_press' )
 	);
 	return apply_filters( 'learn_press_settings_tabs_array', $tabs );
 }
@@ -495,7 +498,7 @@ function learn_press_install_add_on( $plugin_name ) {
 				$response['error'] = $result;
 			} else {
 				$response         = $result;
-				$response['text'] = __( 'Installed', 'learn_press'  );
+				$response['text'] = __( 'Installed', 'learn_press' );
 			}
 		}
 	}
@@ -580,46 +583,90 @@ function learn_press_one_click_install_sample_data_notice() {
 
 add_action( 'admin_notices', 'learn_press_one_click_install_sample_data_notice' );
 
-function learn_press_request_query( $vars = array() ){
-    global $typenow, $wp_query, $wp_post_statuses;
+function learn_press_request_query( $vars = array() ) {
+	global $typenow, $wp_query, $wp_post_statuses;
 
-    if ( LP()->order_post_type === $typenow ) {
-        // Status
-        if ( ! isset( $vars['post_status'] ) ) {
-            $post_statuses = learn_press_get_order_statuses();
+	if ( LP()->order_post_type === $typenow ) {
+		// Status
+		if ( !isset( $vars['post_status'] ) ) {
+			$post_statuses = learn_press_get_order_statuses();
 
-            foreach ( $post_statuses as $status => $value ) {
-                if ( isset( $wp_post_statuses[ $status ] ) && false === $wp_post_statuses[ $status ]->show_in_admin_all_list ) {
-                    unset( $post_statuses[ $status ] );
-                }
-            }
+			foreach ( $post_statuses as $status => $value ) {
+				if ( isset( $wp_post_statuses[$status] ) && false === $wp_post_statuses[$status]->show_in_admin_all_list ) {
+					unset( $post_statuses[$status] );
+				}
+			}
 
-            $vars['post_status'] = array_keys( $post_statuses );
-        }
-    }
-    return $vars;
+			$vars['post_status'] = array_keys( $post_statuses );
+		}
+	}
+	return $vars;
 }
+
 add_filter( 'request', 'learn_press_request_query' );
 
-function _learn_press_reset_course_data(){
-    if( empty( $_REQUEST['reset-course-data'] ) ){
-        return false;
-    }
-    learn_press_reset_course_data( intval( $_REQUEST['reset-course-data'] ) );
-    wp_redirect( remove_query_arg( 'reset-course-data' ) );
+function _learn_press_reset_course_data() {
+	if ( empty( $_REQUEST['reset-course-data'] ) ) {
+		return false;
+	}
+	learn_press_reset_course_data( intval( $_REQUEST['reset-course-data'] ) );
+	wp_redirect( remove_query_arg( 'reset-course-data' ) );
 }
+
 add_action( 'init', '_learn_press_reset_course_data' );
 
 /***********************/
-function learn_press_admin_section_loop_item_class( $item, $section ){
-	$classes = array(
+function learn_press_admin_section_loop_item_class( $item, $section ) {
+	$classes   = array(
 		'lp-section-item'
 	);
 	$classes[] = 'lp-item-' . $item->post_type;
-	if( ! $item->ID ){
+	if ( !$item->ID ) {
 		$classes[] = 'lp-item-empty lp-item-new';
 	}
 	$classes = apply_filters( 'learn_press_section_loop_item_class', $classes, $item, $section );
-	if( $classes ) echo 'class="' . join(' ', $classes ) . '"';
+	if ( $classes ) echo 'class="' . join( ' ', $classes ) . '"';
 	return $classes;
 }
+
+
+function learn_press_add_payment_method( $methods ) {
+	$methods['stripe'] = 'Stripe';
+	return $methods;
+}
+
+add_filter( 'learn_press_payment_method', 'learn_press_add_payment_method' );
+
+/*
+class LP_Settings_Payments_Stripe extends LP_Settings_Base{
+	function __construct(){
+		$this->id = 'payments';
+		$this->text = 'Stripe';
+		add_filter( 'learn_press_section_callback_payments_stripe', array( $this, 'section_callback_payments_stripe' ) );
+		parent::__construct();
+	}
+	function section_callback_payments_stripe(){
+		return array( $this, 'section_payments_stripe' );
+	}
+	function section_payments_stripe() {
+		?>
+		<table class="form-table">
+			<tbody>
+			<tr>
+				<th scope="row"><label for="learn_press_paypal_enable"><?php _e( 'API', 'learn_press' ); ?></label></th>
+				<td>
+					<input type="text" id="learn_press_paypal_enable" name="<?php echo $this->get_field_name( 'stripe[api_key]' ); ?>" />
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="learn_press_paypal_type"><?php _e( 'Type', 'learn_press' ); ?></label></th>
+				<td>
+					<input type="text" id="learn_press_paypal_enable" name="<?php echo $this->get_field_name( 'stripe[api_secret]' ); ?>" />
+				</td>
+			</tr>
+			</tbody>
+		</table>
+		<?php
+	}
+}
+new LP_Settings_Payments_Stripe();*/

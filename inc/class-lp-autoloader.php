@@ -69,6 +69,7 @@ class LP_Autoloader {
 			$file = 'class-' . substr( str_replace( '_', '-', $class ), 5 ) . '.php';
 			$path = $this->include_path . 'admin/meta-boxes/fields/';
 
+
 		} else {
 			$file = 'class-' . str_replace( '_', '-', $class ) . '.php';
 			$path = dirname( __FILE__ ) . '/';

@@ -2,7 +2,7 @@
 // Prevent loading this file directly
 defined( 'ABSPATH' ) || exit;
 
-if ( !class_exists( 'RWMB_Course_lesson_Quiz_Field' ) ) {
+if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
 	/**
 	 * Thim Theme
 	 *

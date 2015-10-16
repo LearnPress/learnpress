@@ -913,7 +913,7 @@ function learn_press_pre_get_post( $q ) {
 
 	return $q;
 }
-
+/*
 function learn_press_get_web_hooks() {
 	$web_hooks = empty( $GLOBALS['learn_press']['web_hooks'] ) ? array() : (array) $GLOBALS['learn_press']['web_hooks'];
 
@@ -970,7 +970,7 @@ function learn_press_process_web_hooks() {
 }
 
 add_action( 'wp', 'learn_press_process_web_hooks' );
-
+*/
 
 function learn_press_currency_positions() {
 	return apply_filters(
@@ -1214,12 +1214,23 @@ function learn_press_get_course_by_order( $order_id ) {
 }
 
 function learn_press_pages_dropdown( $name, $selected = false, $args = array() ) {
+	/*array(
+		'id'     => '{ID}',
+		'before' => array(
+			'add_new_page' => __( '[ Add a new page ]', 'learn_press' )
+		),
+		'class'  => 'lp-dropdown-pages',
+		'echo'   => false
+	);*/
 	$id     = null;
 	$class  = null;
 	$css    = null;
-	$before = null;
+	$before = array(
+		'add_new_page' => __( '[ Add a new page ]', 'learn_press' )
+	);
 	$after  = null;
 	$echo   = true;
+	$allow_create = true;
 	is_array( $args ) && extract( $args );
 
 	$args    = array(
@@ -1230,7 +1241,8 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 		'show_option_none' => __( 'Select Page', 'learn_press' ),
 		'class'            => $class,
 		'echo'             => false,
-		'selected'         => $selected
+		'selected'         => $selected,
+		'allow_create'		=> true
 	);
 	$output  = wp_dropdown_pages( $args );
 	$replace = "";
@@ -1250,6 +1262,19 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 		}
 		$before_output = join( "\n", $before_output );
 		$output        = preg_replace( '!(<option class=".*" value="[0-9]+".*>.*</option>)!', $before_output . "\n$1", $output, 1 );
+	}
+	if( $allow_create ){
+		ob_start();?>
+		<p class="lpr-quick-add-page-inline hide-if-js">
+			<input type="text" />
+			<button class="button" type="button"><?php _e( 'Ok', 'learn_press' ); ?></button>
+			<a href=""><?php _e( 'Cancel', 'learn_press' ); ?></a>
+		</p>
+		<p class="lpr-quick-actions-inline<?php echo $selected ? '' : ' hide-if-js'; ?>">
+			<a href="<?php echo get_edit_post_link( $selected ); ?>" target="_blank"><?php _e( 'Edit Page', 'learn_press' ); ?></a>
+			<a href="<?php echo get_permalink( $selected ); ?>" target="_blank"><?php _e( 'View Page', 'learn_press' ); ?></a>
+		</p>
+		<?php $output .= ob_get_clean();
 	}
 	if ( $echo ) {
 		echo $output;
@@ -1865,4 +1890,8 @@ if ( !function_exists( 'is_course' ) ) {
 	function is_course() {
 		return is_singular( array( LP()->course_post_type ) );
 	}
+}
+
+function learn_press_debug($a){
+	echo '<pre>';print_r($a);echo '</pre>';
 }

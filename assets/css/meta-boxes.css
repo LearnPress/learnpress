@@ -253,6 +253,56 @@
 }
 
 /************ version 1.0 **************/
+#poststuff .postbox-container{
+	position: relative;
+}
+#course_tabs .handlediv,
+#course_tabs .hndle,
+#course_tabs .rwmb-label{
+	display: none;
+}
+#course_tabs .rwmb-input{
+
+}
+#course_tabs .inside{
+	margin: 0;
+	padding: 0;
+}
+#course_tabs .rwmb-course_tabs-wrapper{
+	margin: 0;
+}
+#course_tabs{
+	position: absolute;
+	left: 0;
+	right: 0;
+}
+#course_tabs.fixed{
+	position: fixed;
+	top: 30px;
+	z-index: 10000;
+	opacity: 0.5;
+	left: 182px;
+	right: 320px;
+}
+#course_tabs.fixed:hover{
+	opacity: 1;
+}
+#course_tabs_placeholder{
+	height: 41px;
+	margin-bottom: 20px;
+}
+#poststuff h3#course-tabs-h3{
+	padding: 0;
+}
+#course-tabs-h3 > a{
+	padding: 10px;
+	display: inline-block;
+	border-right: 1px solid #DDD;
+	text-decoration: none;
+	_color: #AAA;
+	box-shadow: none;
+}
+
 .rwmb-curriculum-wrapper .rwmb-label{display: none;}
 .rwmb-curriculum-wrapper .rwmb-input{
 	width: auto !important;

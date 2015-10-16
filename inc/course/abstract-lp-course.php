@@ -68,7 +68,7 @@ abstract class LP_Abstract_Course {
 	 * @return mixed
 	 */
 	public function __get( $key ) {
-		$value = get_post_meta( $this->id, '_lpr_' . $key, true );
+		$value = get_post_meta( $this->id, '_lp_' . $key, true );
 		if ( !empty( $value ) ) {
 			$this->$key = $value;
 		}
@@ -225,7 +225,7 @@ abstract class LP_Abstract_Course {
 	 * @return bool
 	 */
 	public function is_free() {
-		$is_free = ( 'free' == $this->course_payment ) || ( 0 >= $this->get_price() );
+		$is_free = ( 'free' == $this->_payment ) || ( 0 >= $this->get_price() );
 		return apply_filters( 'learn_press_is_free_course', $is_free, $this );
 	}
 
@@ -235,7 +235,8 @@ abstract class LP_Abstract_Course {
 	 * @return mixed
 	 */
 	public function get_price() {
-		$price = $this->course_price;
+		$price = $this->_price;
+		$price = get_post_meta($this->id, '_lp_price', true);
 		if ( !$price ) {
 			$price = 0;
 		} else {

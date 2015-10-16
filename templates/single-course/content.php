@@ -4,7 +4,8 @@
  */
 
 learn_press_prevent_access_directly();
-?>
+
+?>xxxxxxxxxxxxxxxxxxxxxxxxxxx
 <div class="course-content">
-    <?php do_action( 'learn_press_course_content_summary' );?>
+	<?php do_action( 'learn_press_course_content_summary' ); ?>
 </div>

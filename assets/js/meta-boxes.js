@@ -35,13 +35,37 @@
 				var that = this;
 				this.$form = $('#post');
 				this.$form.on( 'submit', $.proxy( function(){ return this.onSave()}, this ) );
-				$('input[name="_lpr_course_final"]').bind('click change', function(){
+				$('input[name="_lp_course_result"]').bind('click change', function(){
 					if( $(this).val() == 'yes' ){
 						$(this).closest('.rwmb-field').next().show();
 					}else{
 						$(this).closest('.rwmb-field').next().hide();
 					}
 				}).filter(":checked").trigger('change');
+
+				///////////
+				var $checked = null;
+				$checked = $('input[name="_lp_enroll_requirement"]').bind('click change', function () {
+
+					var payment_field = $('.lp-course-payment-field').toggleClass('hide-if-js', !( $(this).val() != 'no' ));
+					if (payment_field.is(':visible')) {
+						$('input[name="_lp_payment"]:checked', payment_field).trigger('change')
+					} else {
+						$('.lpr-course-price-field').addClass('hide-if-js');
+					}
+
+				});
+				$checked.filter(':checked').trigger('change');
+				if ($checked.length == 0) {
+					$('input[name="_lp_enroll_requirement"][value="yes"]').trigger('click');
+				}
+
+				$('input[name="_lp_payment"]').bind('click change', function () {
+					$('.lp-course-price-field').toggleClass('hide-if-js', !( $(this).val() != 'free' ) || ( $('input[name="_lp_enroll_requirement"]:checked').val() == 'no' ));
+				}).filter(':checked').trigger('change');
+
+				$checked.closest('.rwmb-field').removeClass('hide-if-js');
+				////////////////
 
 				$(document).on('mouseover', '.lp-modal-search li', function(){
 					$(this).addClass('highlighting').siblings().removeClass('highlighting');
@@ -93,6 +117,25 @@
 				if( this.$('.lp-curriculum-section-content:visible').length ){
 
 				}
+
+				$('#postbox-container-2').prepend( $('#course_tabs') );
+				$('#course_tabs #course-tabs-h3 a').click(function(e){
+					e.preventDefault();
+					var id = $(this).attr('href'),
+						$box = $(id);
+					$(window).scrollTop($box.offset().top -120);
+				});
+				$('<div id="course_tabs_placeholder" />').insertAfter($('#course_tabs'));
+				$(window).scroll(function(){
+					var $holder = $('#course_tabs_placeholder'),
+						$tabs = $('#course_tabs'),
+						top = $holder.offset().top;
+					if( $(window).scrollTop() > top ){
+						$tabs.css('width', $tabs.width()).addClass('fixed');
+					}else{
+						$tabs.css('width', '').removeClass('fixed');
+					}
+				});
 			},
 			toggleSection: function(e){
 				var $button = $(e.target),

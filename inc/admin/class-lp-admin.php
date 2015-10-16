@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * @author  ThimPress
+ * @package LearnPress/Admin/Classes
+ * @version 1.0
+ */
 if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
@@ -72,7 +76,7 @@ if ( !class_exists( 'LP_Admin' ) ) {
 			include_once( 'class-lp-admin-menu.php' );
 
 			// Update LearnPress from 0.9.x to 1.0
-			if( version_compare( LP()->db_version, '1.0', '<' ) ) {
+			if ( version_compare( LP()->db_version, '1.0', '<' ) ) {
 				LP()->_include( 'updates/learnpress-update-1.0.php' );
 			}
 		}
@@ -91,5 +95,5 @@ if ( !class_exists( 'LP_Admin' ) ) {
 
 	}
 
-	new LP_Admin;
+	new LP_Admin();
 }

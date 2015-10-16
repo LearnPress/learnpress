@@ -81,12 +81,53 @@ if ( !class_exists( 'LearnPress' ) ) {
 		 */
 		public $session = null;
 
+		/**
+		 * Course Post Type
+		 *
+		 * @var string
+		 */
 		public $course_post_type = 'lp_course';
+
+		/**
+		 * Lesson Post Type
+		 *
+		 * @var string
+		 */
 		public $lesson_post_type = 'lp_lesson';
+
+		/**
+		 * Quiz Post Type
+		 *
+		 * @var string
+		 */
 		public $quiz_post_type = 'lp_quiz';
+
+		/**
+		 * Question Post Type
+		 *
+		 * @var string
+		 */
 		public $question_post_type = 'lp_question';
+
+		/**
+		 * Order Post Type
+		 *
+		 * @var string
+		 */
 		public $order_post_type = 'lp_order';
+
+		/**
+		 * Assignment Post Type
+		 *
+		 * @var string
+		 */
 		public $assignment_post_type = 'lp_assignment';
+
+		/**
+		 * Teacher Role
+		 *
+		 * @var string
+		 */
 		public $teacher_role = 'lp_teacher';
 
 		/**
@@ -278,6 +319,8 @@ if ( !class_exists( 'LearnPress' ) ) {
 			// auto include file for class if class doesn't exists
 			require_once 'inc/class-lp-autoloader.php';
 			require_once 'inc/class-lp-install.php';
+			require_once 'inc/lp-webhooks.php';
+			require_once 'inc/class-lp-request-handler.php';
 
 			if ( is_admin() ) {
 
@@ -288,12 +331,16 @@ if ( !class_exists( 'LearnPress' ) ) {
 				require_once 'inc/admin/meta-boxes/class-lp-meta-box.php';
 				//Include admin settings
 				require_once 'inc/admin/class-lp-admin.php';
-
-				require_once 'inc/admin/class-lp-admin-settings.php';
+				require_once( 'inc/admin/settings/class-lp-settings-base.php' );
+				//require_once 'inc/admin/class-lp-admin-settings.php';
 
 			} else {
 
 			}
+
+
+			$this->settings = LP_Settings::instance();
+
 
 			$this->include_post_types();
 
@@ -342,7 +389,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 			require_once( 'inc/lp-template-functions.php' );
 			require_once( 'inc/lp-template-hooks.php' );
 			// settings
-			require_once 'inc/class-lp-settings.php';
+			//require_once 'inc/class-lp-settings.php';
 			// simple cart
 			require_once 'inc/cart/class-lp-cart.php';
 			// payment gateways

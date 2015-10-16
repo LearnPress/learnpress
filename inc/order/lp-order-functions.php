@@ -1,12 +1,20 @@
 <?php
 /**
- * @file
- *
+ * Defines functions related to order
+ * @author  ThimPress
+ * @package LearnPress/Functions
+ * @version 1.0
+ */
+
+if ( !defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
+
+/*
  * Check to see if a user can view the order
  *
  * @param      $order_id
  * @param null $user_id
- *
  * @return bool
  */
 function learn_press_user_can_view_order( $order_id, $user_id = null ) {
@@ -25,14 +33,12 @@ function learn_press_user_can_view_order( $order_id, $user_id = null ) {
  * Function get order information
  *
  * @param int $order_id
- *
  * @return LP_Order object instance
  */
 function learn_press_get_order( $order_id ) {
 	if ( !$order_id ) {
 		return false;
 	}
-
 	return new LP_Order( $order_id );
 }
 
@@ -40,7 +46,6 @@ function learn_press_get_order( $order_id ) {
  * get confirm order URL
  *
  * @param int $order_id
- *
  * @return string
  */
 function learn_press_get_order_confirm_url( $order_id = 0 ) {
@@ -371,7 +376,7 @@ function learn_press_get_order_items( $order_id ) {
 function learn_press_format_price( $price, $with_currency = false ) {
 	if ( !is_numeric( $price ) )
 		$price = 0;
-	$settings = learn_press_settings( 'general' );
+	$settings = LP()->settings;
 	$before   = $after = '';
 	if ( $with_currency ) {
 		if ( gettype( $with_currency ) != 'string' ) {

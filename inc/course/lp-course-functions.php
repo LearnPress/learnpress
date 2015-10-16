@@ -21,6 +21,10 @@ function lp_get_quiz( $the_quiz ) {
 	return LP_Quiz::get_quiz( $the_quiz );
 }
 
+function learn_press_get_course( $the_course ){
+	return lp_get_course( $the_course );
+}
+
 /**
  * Get number of lesson in one course
  *
@@ -1072,11 +1076,11 @@ function learn_press_get_quiz_duration( $quiz_id = null ) {
  */
 function learn_press_get_course_price( $course_id = null, $with_currency = false ) {
 	if ( !$course_id ) {
-		global $post;
-		$course_id = $post ? $post->ID : 0;
+		$course_id = get_the_ID();
 	}
 	if ( !learn_press_is_free_course( $course_id ) ) {
-		$price = floatval( get_post_meta( $course_id, '_lpr_course_price', true ) );
+		$course = learn_press_get_course( $course_id );
+		$price = $course->get_price();
 		if ( $with_currency ) {
 			$price = learn_press_format_price( $price, true );
 		}
@@ -1095,10 +1099,9 @@ function learn_press_get_course_price( $course_id = null, $with_currency = false
  */
 function learn_press_is_free_course( $course_id = null ) {
 	if ( !$course_id ) {
-		global $post;
-		$course_id = $post ? $post->ID : 0;
+		$course_id = get_the_ID();
 	}
-	return ( 'free' == get_post_meta( $course_id, '_lpr_course_payment', true ) ) || ( 0 >= floatval( get_post_meta( $course_id, '_lpr_course_price', true ) ) );
+	return learn_press_get_course( $course_id )->is_free();
 }
 
 /**
@@ -1604,8 +1607,8 @@ function learn_press_get_lesson_id( $lesson_id = null ) {
  * @return int
  */
 function learn_press_get_page_id( $name ) {
-	$settings = LP_Settings::instance( 'pages' );
-	return $settings->get( "general.{$name}_page_id", false );
+	//$settings = LP_Settings::instance( 'pages' );
+	//return $settings->get( "general.{$name}_page_id", false );
 }
 
 /**
