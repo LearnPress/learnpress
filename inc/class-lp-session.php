@@ -21,6 +21,15 @@ class LP_Session {
 		//$this->_init();
 	}
 
+	function __get( $key ) {
+		self::get( $key );
+
+	}
+
+	function __set( $key, $value ) {
+		return self::set( $key, $value );
+	}
+
 	/**
 	 * Start session if it is not started
 	 * and init global session used by LearnPress
@@ -35,6 +44,9 @@ class LP_Session {
 		if ( empty( $_SESSION['learn_press'] ) ) {
 			$_SESSION['learn_press'] = array();
 		}
+
+		do_action( 'learn_press_session_init' );
+
 		return $_SESSION['learn_press'];
 	}
 

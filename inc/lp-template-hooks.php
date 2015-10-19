@@ -56,6 +56,17 @@ add_action( 'learn_press_after_the_title', 'learn_press_course_thumbnail', 10 );
 
 add_action( 'wp_enqueue_scripts', 'learn_press_frontend_single_quiz_scripts' );
 
+/* order */
+add_action( 'learn_press_checkout_before_order_review', 'learn_press_checkout_user_form', 5 );
+add_action( 'learn_press_checkout_before_order_review', 'learn_press_checkout_user_logged_in', 10 );
+
+add_action( 'learn_press_checkout_user_form', 'learn_press_checkout_user_form_login', 5 );
+add_action( 'learn_press_checkout_user_form', 'learn_press_checkout_user_form_register', 10 );
+
+add_action( 'learn_press_checkout_order_review', 'learn_press_order_review', 5 );
+add_action( 'learn_press_checkout_order_review', 'learn_press_order_payment', 10 );
+
+
 
 /*****************************************************/
 // Archive courses

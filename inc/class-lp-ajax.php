@@ -10,7 +10,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 	 */
 	class LP_AJAX {
 
-		public static function   init () {
+		public static function   init() {
 
 			// learnpress_ajax_event => nopriv
 			$ajaxEvents = array(
@@ -31,8 +31,8 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 				'not_going'            => false,
 				//
 				'take_course'          => true,
-				'start_quiz'			=> true,
-				'fetch_question'		=> true
+				'start_quiz'           => true,
+				'fetch_question'       => true
 			);
 
 			foreach ( $ajaxEvents as $ajax_event => $nopriv ) {
@@ -42,6 +42,52 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 					add_action( 'wp_ajax_nopriv_learnpress_' . $ajax_event, array( __CLASS__, $ajax_event ) );
 				}
 			}
+
+			LP_Request_Handler::register( 'lp-ajax', array( __CLASS__, 'do_ajax' ) );
+		}
+
+		function do_ajax( $var ) {
+			LP_Gateways::instance()->get_available_payment_gateways();
+			$result = false;
+			switch ( $var ) {
+				case 'checkout':
+					$result = LP()->checkout->process_checkout();
+					break;
+				case 'checkout-login':
+					$result = array(
+						'result' => 'success'
+					);
+					ob_start();
+					if ( empty( $_REQUEST['user_login'] ) ) {
+						$result['result'] = 'fail';
+						learn_press_add_notice( __( 'Please enter username', 'learn_press' ), 'error' );
+					}
+					if ( empty( $_REQUEST['user_password'] ) ) {
+						$result['result'] = 'fail';
+						learn_press_add_notice( __( 'Please enter password', 'learn_press' ), 'error' );
+					}
+					if ( $result['result'] == 'success' ) {
+						$creds                  = array();
+						$creds['user_login']    = $_REQUEST['user_login'];
+						$creds['user_password'] = $_REQUEST['user_password'];
+						$creds['remember']      = true;
+						$user                   = wp_signon( $creds, false );
+						if ( is_wp_error( $user ) ) {
+							$result['result'] = 'fail';
+							learn_press_add_notice( $user->get_error_message(), 'error' );
+						}else{
+							$result['redirect'] = learn_press_get_page_link( 'checkout' );
+						}
+					}
+					learn_press_print_notices();
+					$messages = ob_get_clean();
+					if( $result['result'] == 'fail' ){
+						$result['messages'] = $messages;
+					}
+					break;
+			}
+			learn_press_send_json( $result );
+			die();
 		}
 
 		/**
@@ -63,14 +109,14 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			}
 		}
 
-		private static function save_question_if_needed(){
-			$quiz_id 			= ! empty( $_REQUEST['quiz_id'] ) ? absint( $_REQUEST['quiz_id'] ) : 0;
-			$question_id 		= ! empty( $_REQUEST['save_id'] ) ? absint( $_REQUEST['save_id'] ) : 0;
-			$user_id			= ! empty( $_REQUEST['user_id'] ) ? absint( $_REQUEST['user_id'] ) : 0;
-			$question_answer 	= isset( $_REQUEST['question_answer'] ) ? $_REQUEST['question_answer'] : null;
-			$question 			= $question_id ? LP_Question::instance( $question_id ) : false;
+		private static function save_question_if_needed() {
+			$quiz_id         = !empty( $_REQUEST['quiz_id'] ) ? absint( $_REQUEST['quiz_id'] ) : 0;
+			$question_id     = !empty( $_REQUEST['save_id'] ) ? absint( $_REQUEST['save_id'] ) : 0;
+			$user_id         = !empty( $_REQUEST['user_id'] ) ? absint( $_REQUEST['user_id'] ) : 0;
+			$question_answer = isset( $_REQUEST['question_answer'] ) ? $_REQUEST['question_answer'] : null;
+			$question        = $question_id ? LP_Question::instance( $question_id ) : false;
 
-			if( $question_answer && $question ) {
+			if ( $question_answer && $question ) {
 				$question_answer = isset( $_REQUEST['question_answer'] ) ? $_REQUEST['question_answer'] : null;
 				$question->submit_answer( $quiz_id, $question_answer );
 				do_action( 'learn_press_save_user_question_answer', $question_answer, $question_id, $quiz_id, $user_id, true );
@@ -79,21 +125,21 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			return $question;
 		}
 
-		private static function	update_time_remaining(){
-			$time_remaining 	= learn_press_get_request( 'time_remaining' );
-			$quiz_id 			= learn_press_get_request( 'quiz_id' );
-			$user_id			= learn_press_get_request( 'user_id' );
-			if( $time_remaining ){
+		private static function    update_time_remaining() {
+			$time_remaining = learn_press_get_request( 'time_remaining' );
+			$quiz_id        = learn_press_get_request( 'quiz_id' );
+			$user_id        = learn_press_get_request( 'user_id' );
+			if ( $time_remaining ) {
 				$quiz_time_remaining = learn_press_get_quiz_time_remaining( $user_id, $quiz_id );
-				if( $time_remaining != $quiz_time_remaining ){
-					$quiz_time = (array)get_user_meta( $user_id, '_lpr_quiz_start_time', true );
-					$quiz_duration   = get_post_meta( $quiz_id, '_lpr_duration', true );
+				if ( $time_remaining != $quiz_time_remaining ) {
+					$quiz_time     = (array) get_user_meta( $user_id, '_lpr_quiz_start_time', true );
+					$quiz_duration = get_post_meta( $quiz_id, '_lpr_duration', true );
 
 
-					if( ! empty( $quiz_time[ $quiz_id ] ) ){
-						echo $quiz_time[ $quiz_id ],',';
-						$quiz_time[ $quiz_id ] = current_time( 'timestamp' ) - $time_remaining;
-						echo $quiz_time[ $quiz_id ],',';
+					if ( !empty( $quiz_time[$quiz_id] ) ) {
+						echo $quiz_time[$quiz_id], ',';
+						$quiz_time[$quiz_id] = current_time( 'timestamp' ) - $time_remaining;
+						echo $quiz_time[$quiz_id], ',';
 						update_user_meta( $user_id, '_lpr_quiz_start_time', $quiz_time );
 					}
 				}
@@ -104,39 +150,39 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 		 * Load quiz question
 		 */
 		public static function load_quiz_question() {
-			$quiz_id 		= ! empty( $_REQUEST['quiz_id'] ) ? absint( $_REQUEST['quiz_id'] ) : 0;
-			$question_id 	= ! empty( $_REQUEST['question_id'] ) ? absint( $_REQUEST['question_id'] ) : 0;
-			$user_id		= ! empty( $_REQUEST['user_id'] ) ? absint( $_REQUEST['user_id'] ) : 0;
+			$quiz_id     = !empty( $_REQUEST['quiz_id'] ) ? absint( $_REQUEST['quiz_id'] ) : 0;
+			$question_id = !empty( $_REQUEST['question_id'] ) ? absint( $_REQUEST['question_id'] ) : 0;
+			$user_id     = !empty( $_REQUEST['user_id'] ) ? absint( $_REQUEST['user_id'] ) : 0;
 
 			// save question if find it
 			self::save_question_if_needed();
 			//self::update_time_remaining();
-			$user  = learn_press_get_current_user();
-			if( $user->id != $user_id ){
+			$user = learn_press_get_current_user();
+			if ( $user->id != $user_id ) {
 				learn_press_send_json(
 					array(
-						'result'	=> 'error',
-						'message'	=> __( 'Load question error. Try again!', 'learn_press' )
+						'result'  => 'error',
+						'message' => __( 'Load question error. Try again!', 'learn_press' )
 					)
 				);
 			}
-			if( ! $quiz_id || ! $question_id ){
+			if ( !$quiz_id || !$question_id ) {
 				learn_press_send_json(
 					array(
-						'result'	=> 'error',
-						'message'	=> __( 'Something is wrong. Try again!', 'learn_press' )
+						'result'  => 'error',
+						'message' => __( 'Something is wrong. Try again!', 'learn_press' )
 					)
 				);
 			}
-			if( $question = LP_Question::instance( $question_id ) ){
+			if ( $question = LP_Question::instance( $question_id ) ) {
 				ob_start();
 				$question->render();
 				$content = ob_get_clean();
 				learn_press_send_json(
 					array(
-						'result'	=> 'success',
-						'content'	=> $content,
-						'permalink'	=> learn_press_get_user_question_url( $quiz_id, $question_id )
+						'result'    => 'success',
+						'content'   => $content,
+						'permalink' => learn_press_get_user_question_url( $quiz_id, $question_id )
 					)
 				);
 
@@ -182,7 +228,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 		 * Finish quiz
 		 */
 		public static function finish_quiz() {
-			$user 			 = learn_press_get_current_user();
+			$user            = learn_press_get_current_user();
 			$user_id         = get_current_user_id();
 			$quiz_id         = learn_press_get_request( 'quiz_id' );
 			$question_id     = learn_press_get_request( 'question_id' );
@@ -193,7 +239,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			$user->finish_quiz( $quiz_id );
 
 			$response = array(
-				'redirect'		=> get_the_permalink( $quiz_id )
+				'redirect' => get_the_permalink( $quiz_id )
 			);
 			learn_press_send_json( $response );
 		}
@@ -202,8 +248,8 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 		 *  Retake a quiz
 		 */
 		public static function retake_quiz() {
-			$quiz_id = learn_press_get_request( 'quiz_id' );
-			$user_id = learn_press_get_current_user_id();
+			$quiz_id  = learn_press_get_request( 'quiz_id' );
+			$user_id  = learn_press_get_current_user_id();
 			$response = array();
 			if ( !learn_press_user_can_retake_quiz( $quiz_id, $user_id ) ) {
 				$response['message'] = __( 'Sorry! You can not retake this quiz', 'learn_press' );
@@ -213,8 +259,8 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 				learn_press_reset_user_quiz( $user_id, $quiz_id );
 				add_user_meta( $user_id, '_lpr_quiz_taken', $quiz_id );
 				$response = array(
-					'retake'		=> true,
-					'redirect'		=> get_the_permalink( $quiz_id )
+					'retake'   => true,
+					'redirect' => get_the_permalink( $quiz_id )
 				);
 				do_action( 'learn_press_user_retake_quiz', $quiz_id, $user_id );
 			}
@@ -362,34 +408,34 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			if ( !$user_id || !$lesson_id ) {
 				wp_die( __( 'Access denied!', 'learn_press' ) );
 			}
-            $response = array();
+			$response = array();
 			if ( learn_press_mark_lesson_complete( $lesson_id, $user_id ) ) {
-                $course_id = learn_press_get_course_by_lesson( $lesson_id );
-                $lessons = learn_press_get_lessons_in_course( $course_id );
-                $lesson_completed = get_user_meta( $user_id, '_lpr_lesson_completed', true );
-                $lesson_completed = ! empty( $lesson_completed[$course_id] ) ? $lesson_completed[$course_id] : array();
+				$course_id        = learn_press_get_course_by_lesson( $lesson_id );
+				$lessons          = learn_press_get_lessons_in_course( $course_id );
+				$lesson_completed = get_user_meta( $user_id, '_lpr_lesson_completed', true );
+				$lesson_completed = !empty( $lesson_completed[$course_id] ) ? $lesson_completed[$course_id] : array();
 
-                if( $lessons ){
-                    if( false !== ( $pos = array_search( $lesson_id, $lessons ) ) ){
-                        $loop = ( $pos == count( $lessons ) - 1 ) ? 0 : $pos + 1;
-                        $infinite = 0;
-                        $max = count( $lessons );
+				if ( $lessons ) {
+					if ( false !== ( $pos = array_search( $lesson_id, $lessons ) ) ) {
+						$loop     = ( $pos == count( $lessons ) - 1 ) ? 0 : $pos + 1;
+						$infinite = 0;
+						$max      = count( $lessons );
 
-                        while( in_array( $lessons[$loop], $lesson_completed ) && ( $lessons[$loop] != $lesson_id ) ){
-                            $loop++;
-                            if( $loop == $max ) $loop = 0;
-                            if( $infinite > $max ) break;
-                        }
-                        if( $lessons[$loop] != $lesson_id ){
-                            $response['url'] = learn_press_get_course_lesson_permalink( $lessons[$loop], $course_id );
-                        }else{
-                            $response['url'] = learn_press_get_course_lesson_permalink( $lesson_id, $course_id );
-                        }
-                    }
-                }
+						while ( in_array( $lessons[$loop], $lesson_completed ) && ( $lessons[$loop] != $lesson_id ) ) {
+							$loop ++;
+							if ( $loop == $max ) $loop = 0;
+							if ( $infinite > $max ) break;
+						}
+						if ( $lessons[$loop] != $lesson_id ) {
+							$response['url'] = learn_press_get_course_lesson_permalink( $lessons[$loop], $course_id );
+						} else {
+							$response['url'] = learn_press_get_course_lesson_permalink( $lesson_id, $course_id );
+						}
+					}
+				}
 			}
 
-            learn_press_send_json( $response );
+			learn_press_send_json( $response );
 			die;
 		}
 
@@ -415,7 +461,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 
 				$final_quiz   = lpr_get_final_quiz( $course_id );
 				$final_result = learn_press_get_quiz_result( $user_id, $final_quiz );// lpr_get_quiz_result( $final_quiz );
-				if ( ! empty( $final_result ) && ! empty( $final_result['mark_percent'] ) && ( $final_result['mark_percent'] * 100 >= $pass ) ) {
+				if ( !empty( $final_result ) && !empty( $final_result['mark_percent'] ) && ( $final_result['mark_percent'] * 100 >= $pass ) ) {
 					$finish = true;
 				}
 			} else {
@@ -509,13 +555,13 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 					update_user_meta( $user_id, '_lpr_course_finished', $course_finished );
 				}
 			}
-            $user_finished = get_post_meta( $course_id, '_lpr_user_finished', true );
-            if ( $user_finished ) {
-                if ( false !== ( $position = array_search( $user_id, $user_finished ) ) ) {
-                    unset( $user_finished[$position] );
-                    update_post_meta( $course_id, '_lpr_user_finished', $user_finished );
-                }
-            }
+			$user_finished = get_post_meta( $course_id, '_lpr_user_finished', true );
+			if ( $user_finished ) {
+				if ( false !== ( $position = array_search( $user_id, $user_finished ) ) ) {
+					unset( $user_finished[$position] );
+					update_post_meta( $course_id, '_lpr_user_finished', $user_finished );
+				}
+			}
 
 			// reset the lessons user has completed
 			$lessons = get_user_meta( $user_id, '_lpr_lesson_completed', true );
@@ -559,52 +605,52 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			die();
 		}
 
-		function start_quiz(){
-			$quiz_id = ! empty( $_REQUEST['quiz_id'] ) ? absint( $_REQUEST['quiz_id'] ) : 0;
-			if( ! $quiz_id ){
+		function start_quiz() {
+			$quiz_id = !empty( $_REQUEST['quiz_id'] ) ? absint( $_REQUEST['quiz_id'] ) : 0;
+			if ( !$quiz_id ) {
 				learn_press_send_json(
 					array(
-						'result'	=> 'error',
-						'message'	=> __( 'The quiz ID is empty', 'learn_press' )
+						'result'  => 'error',
+						'message' => __( 'The quiz ID is empty', 'learn_press' )
 					)
 				);
 			}
 			$quiz = LP_Quiz::get_quiz( $quiz_id );
-			if( ! $quiz->id || $quiz->id != $quiz_id ){
+			if ( !$quiz->id || $quiz->id != $quiz_id ) {
 				learn_press_send_json(
 					array(
-						'result'	=> 'error',
-						'message'	=> __( 'Something is wrong! Please try again', 'learn_press' )
+						'result'  => 'error',
+						'message' => __( 'Something is wrong! Please try again', 'learn_press' )
 					)
 				);
 			}
 			$user = learn_press_get_current_user();
-			if( $quiz->is_require_enrollment() && $user->is( 'guest' ) ){
+			if ( $quiz->is_require_enrollment() && $user->is( 'guest' ) ) {
 				learn_press_send_json(
 					array(
-						'result'	=> 'error',
-						'message'	=> __( 'Please login to do this quiz', 'learn_press' )
+						'result'  => 'error',
+						'message' => __( 'Please login to do this quiz', 'learn_press' )
 					)
 				);
 			}
 			$user->set_quiz( $quiz );
 
-			switch( strtolower( $user->get_quiz_status() ) ){
+			switch ( strtolower( $user->get_quiz_status() ) ) {
 				case 'completed':
 					learn_press_send_json(
 						array(
-							'result'	=> 'error',
-							'message'	=> __( 'You have completed this quiz', 'learn_press' ),
-							'data'		=> $user->get_quiz_result()
+							'result'  => 'error',
+							'message' => __( 'You have completed this quiz', 'learn_press' ),
+							'data'    => $user->get_quiz_result()
 						)
 					);
 					break;
 				case 'started':
 					learn_press_send_json(
 						array(
-							'result'	=> 'error',
-							'message'	=> __( 'You have started this quiz', 'learn_press' ),
-							'data'		=> array(
+							'result'  => 'error',
+							'message' => __( 'You have started this quiz', 'learn_press' ),
+							'data'    => array(
 								'status' => $user->get_quiz_status()
 							)
 						)
@@ -614,9 +660,9 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 					$result = $user->start_quiz();
 					learn_press_send_json(
 						array(
-							'result'	=> 'success',
-							'data'		=> $result,
-							'question_url' => learn_press_get_user_question_url( $quiz_id ),
+							'result'           => 'success',
+							'data'             => $result,
+							'question_url'     => learn_press_get_user_question_url( $quiz_id ),
 							'question_content' => $user->get_current_question( $quiz_id, 'html' )
 						)
 					);

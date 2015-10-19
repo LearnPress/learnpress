@@ -2,180 +2,331 @@
 
 /**
  * Class LP_Checkout
+ *
+ * @author  ThimPress
+ * @package LearnPress/Classes
+ * @version 1.0
  */
-class LP_Checkout{
+class LP_Checkout {
 
-    /**
-     * @var LP_Checkout object instance
-     * @access protected
-     */
-    static protected $_instance = null;
+	/**
+	 * @var LP_Checkout object instance
+	 * @access protected
+	 */
+	static protected $_instance = null;
 
-    /**
-     * Payment method
-     *
-     * @var string
-     */
-    public $payment_method = '';
+	/**
+	 * Payment method
+	 *
+	 * @var string
+	 */
+	public $payment_method = '';
 
-    /**
-     * Constructor
-     */
-    function __construct(){
-        //
-    }
+	public $checkout_fields = array();
 
-    /**
-     * Creates temp new order if needed
-     *
-     * @return mixed|WP_Error
-     * @throws Exception
-     */
-    function create_order(){
+	/**
+	 * Constructor
+	 */
+	function __construct() {
+		if ( !is_user_logged_in() ) {
+			$this->checkout_fields['user_login']    = __( 'Username', 'learn_press' );
+			$this->checkout_fields['user_password'] = __( 'Password', 'learn_press' );
+		}
+		$this->checkout_fields = apply_filters( 'learn_press_checkout_fields', $this->checkout_fields );
 
-        $transaction_object = hb_generate_transaction_object( );
-        if( ! $transaction_object ){
-            throw new Exception( sprintf( __( 'Sorry, your session has expired. <a href="%s">Return to homepage</a>', 'tp-hotel-booking' ), home_url() ) );
-        }
-        // Insert or update the post data
-        $booking_id = absint( get_transient( 'booking_awaiting_payment' ) );
-        // Resume the unpaid order if its pending
-        if ( $booking_id > 0 && ( $booking = HB_Booking::instance( $booking_id ) ) && $booking->post->ID && $booking->has_status( array( 'pending', 'failed' ) ) ) {
-            $booking_data['ID'] = $booking_id;
-            $booking_data['post_content'] = hb_get_request( 'addition_information' );
-            $booking->set_booking_info( $booking_data );
-        } else {
-            $booking_id = hb_create_booking( );
-            $booking = HB_Booking::instance( $booking_id );
-        }
-        $check_in               = $transaction_object->check_in_date;
-        $check_out              = $transaction_object->check_out_date;
-        $tax                    = $transaction_object->tax;
-        $price_including_tax    = $transaction_object->price_including_tax;
-        $rooms                  = $transaction_object->rooms;
+		add_filter( 'learn_press_checkout_validate_field', array( $this, 'validate_fields' ), 10, 3 );
+	}
 
-        // booking meta data
-        $booking_info = array(
-            '_hb_check_in_date'         => strtotime( $check_in ),
-            '_hb_check_out_date'        => strtotime( $check_out ),
-            '_hb_total_nights'          => $transaction_object->total_nights,
-            '_hb_tax'                   => $tax,
-            '_hb_price_including_tax'   => $price_including_tax ? 1 : 0,
-            '_hb_sub_total'             => $transaction_object->sub_total,
-            '_hb_total'                 => $transaction_object->total,
-            '_hb_advance_payment'       => $transaction_object->advance_payment,
-            '_hb_currency'              => $transaction_object->currency,
-            '_hb_customer_id'           => $customer_id,
-            '_hb_method'                => $this->payment_method->slug,
-            '_hb_method_title'          => $this->payment_method->title,
-            '_hb_method_id'             => $this->payment_method->method_id
-        );
-        if( ! empty( $transaction_object->coupon ) ){
-            $booking_info['_hb_coupon'] = $transaction_object->coupon;
-        }
-        $booking->set_booking_info(
-            $booking_info
-        );
+	/**
+	 * Creates temp new order if needed
+	 *
+	 * @return mixed|WP_Error
+	 * @throws Exception
+	 */
+	function create_order() {
+		global $wpdb;
+		// Third-party can be controls to create a order
+		if ( $order_id = apply_filters( 'learn_press_create_order', null, $this ) ) {
+			return $order_id;
+		}
 
-        $booking_id = $booking->update();
-        if( $booking_id ){
-            $prices = array();
-            delete_post_meta( $booking_id, '_hb_room_id' );
-            if( $rooms ) foreach( $rooms as $room_options ){
-                $num_of_rooms = $room_options['quantity'];
-                // insert multiple meta value
-                for( $i = 0; $i < $num_of_rooms; $i ++ ) {
-                    add_post_meta( $booking_id, '_hb_room_id', $room_options['id'] );
-                }
-                $room = HB_Room::instance( $room_options['id'] );
-                $room->set_data(
-                    array(
-                        'num_of_rooms'      => $num_of_rooms,
-                        'check_in_date'     => $check_in,
-                        'check_out_date'    => $check_out
-                    )
-                );
-                $prices[ $room_options['id'] ] = $room->get_total( $check_in, $check_out, $num_of_rooms, false );
-            }
+		try {
+			// Start transaction if available
+			$wpdb->query( 'START TRANSACTION' );
 
-            add_post_meta( $booking_id, '_hb_room_price', $prices );
-        }
-        do_action( 'hb_new_booking', $booking_id );
-        return $booking_id;
-    }
+			$order_data = array(
+				'status'        => apply_filters( 'learn_press_default_order_status', 'pending' ),
+				'customer_id'   => $this->customer_id,
+				'customer_note' => isset( $this->posted['order_comments'] ) ? $this->posted['order_comments'] : '',
+				'created_via'   => 'checkout'
+			);
 
-    /**
-     * Process checkout
-     *
-     * @throws Exception
-     */
-    function process_checkout(){
+			// Insert or update the post data
+			$order_id = absint( WC()->session->order_awaiting_payment );
 
-        if( strtolower( $_SERVER['REQUEST_METHOD'] ) != 'post' ){
-            return;
-        }
+			// Resume the unpaid order if its pending
+			if ( $order_id > 0 && ( $order = wc_get_order( $order_id ) ) && $order->has_status( array( 'pending', 'failed' ) ) ) {
 
-        /*if ( ! isset( $_POST['hb_customer_place_order_field'] ) || ! wp_verify_nonce( $_POST['hb_customer_place_order_field'], 'hb_customer_place_order' ) ){
-            return;
-        }*/
+				$order_data['order_id'] = $order_id;
+				$order                  = wc_update_order( $order_data );
 
-        $payment_method = hb_get_user_payment_method( hb_get_request( 'hb-payment-method' ) );
+				if ( is_wp_error( $order ) ) {
+					throw new Exception( sprintf( __( 'Error %d: Unable to create order. Please try again.', 'woocommerce' ), 401 ) );
+				} else {
+					$order->remove_order_items();
+					do_action( 'woocommerce_resume_order', $order_id );
+				}
 
-        if( ! $payment_method ){
-            throw new Exception( __( 'The payment method is not available', 'tp-hotel-booking' ) );
-        }
+			} else {
 
-        $customer_id = $this->create_customer();
-        $this->payment_method = $payment_method;
-        if( $customer_id  ) {
-            $booking_id = $this->create_booking();
-            if( $booking_id ) {
-                if (HB_Cart::instance()->needs_payment()) {
-                    set_transient('booking_awaiting_payment', $booking_id, HOUR_IN_SECONDS);
-                    $result = $payment_method->process_checkout( $booking_id );
-                } else {
-                    if (empty($booking)) {
-                        $booking = HB_Booking::instance($booking_id);
-                    }
-                    // No payment was required for order
-                    $booking->payment_complete();
-                    HB_Cart::instance()->empty_cart();
-                    $return_url = $booking->get_checkout_booking_received_url();
-                    hb_send_json( array(
-                        'result' 	=> 'success',
-                        'redirect'  => apply_filters( 'hb_checkout_no_payment_needed_redirect', $return_url, $booking )
-                    ) );
-                }
-            }else{
-                die( 'can not create booking' );
-            }
-        }
+				$order = wc_create_order( $order_data );
 
-        if ( ! empty( $result['result'] ) && $result['result'] == 'success' ) {
+				if ( is_wp_error( $order ) ) {
+					throw new Exception( sprintf( __( 'Error %d: Unable to create order. Please try again.', 'woocommerce' ), 400 ) );
+				} else {
+					$order_id = $order->id;
+					do_action( 'woocommerce_new_order', $order_id );
+				}
+			}
 
-            $result = apply_filters( 'hb_payment_successful_result', $result );
+			// Store the line items to the new/resumed order
+			foreach ( WC()->cart->get_cart() as $cart_item_key => $values ) {
+				$item_id = $order->add_product(
+					$values['data'],
+					$values['quantity'],
+					array(
+						'variation' => $values['variation'],
+						'totals'    => array(
+							'subtotal'     => $values['line_subtotal'],
+							'subtotal_tax' => $values['line_subtotal_tax'],
+							'total'        => $values['line_total'],
+							'tax'          => $values['line_tax'],
+							'tax_data'     => $values['line_tax_data'] // Since 2.2
+						)
+					)
+				);
 
-            do_action( 'hb_place_order', $result );
-            if ( hb_is_ajax() ) {
-                hb_send_json( $result );
-                exit;
-            } else {
-                wp_redirect( $result['redirect'] );
-                exit;
-            }
+				if ( ! $item_id ) {
+					throw new Exception( sprintf( __( 'Error %d: Unable to create order. Please try again.', 'woocommerce' ), 402 ) );
+				}
 
-        }
-    }
+				// Allow plugins to add order item meta
+				do_action( 'woocommerce_add_order_item_meta', $item_id, $values, $cart_item_key );
+			}
 
-    /**
-     * Get unique instance for this object
-     *
-     * @return HB_Checkout
-     */
-    static function instance(){
-        if( empty( self::$_instance ) ){
-            self::$_instance = new self();
-        }
-        return self::$_instance;
-    }
+			// Store fees
+			foreach ( WC()->cart->get_fees() as $fee_key => $fee ) {
+				$item_id = $order->add_fee( $fee );
+
+				if ( ! $item_id ) {
+					throw new Exception( sprintf( __( 'Error %d: Unable to create order. Please try again.', 'woocommerce' ), 403 ) );
+				}
+
+				// Allow plugins to add order item meta to fees
+				do_action( 'woocommerce_add_order_fee_meta', $order_id, $item_id, $fee, $fee_key );
+			}
+
+			// Store shipping for all packages
+			foreach ( WC()->shipping->get_packages() as $package_key => $package ) {
+				if ( isset( $package['rates'][ $this->shipping_methods[ $package_key ] ] ) ) {
+					$item_id = $order->add_shipping( $package['rates'][ $this->shipping_methods[ $package_key ] ] );
+
+					if ( ! $item_id ) {
+						throw new Exception( sprintf( __( 'Error %d: Unable to create order. Please try again.', 'woocommerce' ), 404 ) );
+					}
+
+					// Allows plugins to add order item meta to shipping
+					do_action( 'woocommerce_add_shipping_order_item', $order_id, $item_id, $package_key );
+				}
+			}
+
+			// Store tax rows
+			foreach ( array_keys( WC()->cart->taxes + WC()->cart->shipping_taxes ) as $tax_rate_id ) {
+				if ( $tax_rate_id && ! $order->add_tax( $tax_rate_id, WC()->cart->get_tax_amount( $tax_rate_id ), WC()->cart->get_shipping_tax_amount( $tax_rate_id ) ) && apply_filters( 'woocommerce_cart_remove_taxes_zero_rate_id', 'zero-rated' ) !== $tax_rate_id ) {
+					throw new Exception( sprintf( __( 'Error %d: Unable to create order. Please try again.', 'woocommerce' ), 405 ) );
+				}
+			}
+
+			// Store coupons
+			foreach ( WC()->cart->get_coupons() as $code => $coupon ) {
+				if ( ! $order->add_coupon( $code, WC()->cart->get_coupon_discount_amount( $code ), WC()->cart->get_coupon_discount_tax_amount( $code ) ) ) {
+					throw new Exception( sprintf( __( 'Error %d: Unable to create order. Please try again.', 'woocommerce' ), 406 ) );
+				}
+			}
+
+			// Billing address
+			$billing_address = array();
+			if ( $this->checkout_fields['billing'] ) {
+				foreach ( array_keys( $this->checkout_fields['billing'] ) as $field ) {
+					$field_name = str_replace( 'billing_', '', $field );
+					$billing_address[ $field_name ] = $this->get_posted_address_data( $field_name );
+				}
+			}
+
+			// Shipping address.
+			$shipping_address = array();
+			if ( $this->checkout_fields['shipping'] ) {
+				foreach ( array_keys( $this->checkout_fields['shipping'] ) as $field ) {
+					$field_name = str_replace( 'shipping_', '', $field );
+					$shipping_address[ $field_name ] = $this->get_posted_address_data( $field_name, 'shipping' );
+				}
+			}
+
+			$order->set_address( $billing_address, 'billing' );
+			$order->set_address( $shipping_address, 'shipping' );
+			$order->set_payment_method( $this->payment_method );
+			$order->set_total( WC()->cart->shipping_total, 'shipping' );
+			$order->set_total( WC()->cart->get_cart_discount_total(), 'cart_discount' );
+			$order->set_total( WC()->cart->get_cart_discount_tax_total(), 'cart_discount_tax' );
+			$order->set_total( WC()->cart->tax_total, 'tax' );
+			$order->set_total( WC()->cart->shipping_tax_total, 'shipping_tax' );
+			$order->set_total( WC()->cart->total );
+
+			// Update user meta
+			if ( $this->customer_id ) {
+				if ( apply_filters( 'woocommerce_checkout_update_customer_data', true, $this ) ) {
+					foreach ( $billing_address as $key => $value ) {
+						update_user_meta( $this->customer_id, 'billing_' . $key, $value );
+					}
+					if ( WC()->cart->needs_shipping() ) {
+						foreach ( $shipping_address as $key => $value ) {
+							update_user_meta( $this->customer_id, 'shipping_' . $key, $value );
+						}
+					}
+				}
+				do_action( 'woocommerce_checkout_update_user_meta', $this->customer_id, $this->posted );
+			}
+
+			// Let plugins add meta
+			do_action( 'woocommerce_checkout_update_order_meta', $order_id, $this->posted );
+
+			// If we got here, the order was created without problems!
+			$wpdb->query( 'COMMIT' );
+
+		} catch ( Exception $e ) {
+			// There was an error adding order data!
+			$wpdb->query( 'ROLLBACK' );
+			return new WP_Error( 'checkout-error', $e->getMessage() );
+		}
+
+		return $order_id;
+	}
+
+	/**
+	 * Validate fields
+	 *
+	 * @param bool
+	 * @param $field
+	 * @param LP_Checkout instance
+	 *
+	 * @return bool
+	 */
+	function validate_fields( $validate, $field, $checkout ) {
+		if ( $field['name'] == 'user_login' && empty( $_POST['user_login'] ) ) {
+			$validate = false;
+			learn_press_add_notice( __( 'Please enter user login', 'learn_press' ) );
+		}
+		if ( $field['name'] == 'user_password' && empty( $_POST['user_password'] ) ) {
+			$validate = false;
+			learn_press_add_notice( __( 'Please enter user password', 'learn_press' ) );
+		}
+
+		return $validate;
+	}
+
+	/**
+	 * Process checkout
+	 *
+	 * @throws Exception
+	 */
+	function process_checkout() {
+		try {
+			if ( strtolower( $_SERVER['REQUEST_METHOD'] ) != 'post' ) {
+				return;
+			}
+
+			// Prevent timeout
+			@set_time_limit( 0 );
+
+			do_action( 'learn_press_before_checkout_process' );
+
+			$success = true;
+
+			if ( empty( $_REQUEST['payment_method'] ) ) {
+				$success = false;
+				learn_press_add_notice( __( 'Please select a payment method', 'learn_press' ), 'error' );
+			} else {
+				$this->payment_method = $_REQUEST['payment_method'];
+				if ( $this->checkout_fields ) foreach ( $this->checkout_fields as $name => $field ) {
+					if ( !apply_filters( 'learn_press_checkout_validate_field', true, array( 'name' => $name, 'text' => $field ), $this ) ) {
+						$success = false;
+					}
+				}
+				if ( isset( $this->checkout_fields['user_login'] ) && isset( $this->checkout_fields['user_password'] ) ) {
+					$creds                  = array();
+					$creds['user_login']    = $_POST['user_login'];
+					$creds['user_password'] = $_POST['user_password'];
+					$creds['remember']      = true;
+					$user                   = wp_signon( $creds, false );
+					if ( is_wp_error( $user ) ) {
+						learn_press_add_notice( $user->get_error_message(), 'error' );
+						$success = false;
+					}
+				}
+			}
+
+			if ( $success && LP()->cart->needs_payment() ) {
+				// Payment Method
+				$available_gateways = LP_Gateways::instance()->get_available_payment_gateways();
+
+				if ( !isset( $available_gateways[$this->payment_method] ) ) {
+					$this->payment_method = '';
+					learn_press_add_notice( __( 'Invalid payment method.', 'learn_press' ), 'error' );
+				} else {
+					$this->payment_method = $available_gateways[$this->payment_method];
+					$success = $this->payment_method->validate_fields();
+				}
+			} else {
+				$available_gateways = array();
+			}
+
+			$order_id = $this->create_order();
+
+			if( $success && $this->payment_method ){
+				// TODO: checkout
+				LP()->session->order_awaiting_payment = $order_id;
+			}
+
+		} catch ( Exception $e ) {
+			if ( !empty( $e ) ) {
+				learn_press_add_notice( $e->getMessage(), 'error' );
+			}
+		}
+		$error_messages = '';
+		if ( !$success ) {
+			ob_start();
+			learn_press_print_notices();
+			$error_messages = ob_get_clean();
+		}
+
+		$result = array(
+			'result'   => $success ? 'success' : 'fail',
+			'messages' => $error_messages,
+			'redirect' => ''
+		);
+		return $result;
+	}
+
+	/**
+	 * Get unique instance for this object
+	 *
+	 * @return HB_Checkout
+	 */
+	static function instance() {
+		if ( empty( self::$_instance ) ) {
+			self::$_instance = new self();
+		}
+		return self::$_instance;
+	}
 }
+

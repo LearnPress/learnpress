@@ -1,13 +1,10 @@
 <?php
-
 /**
- * FileName: Learn Press Order
- * Author: Andy(tu@thimpress.com)
- * Modified: TuNN
- * Created: Fed 2015
- * AuthorURI: thimpress.com
- * Copyright 2007-2015 thimpress.com. All rights reserved.
+ * @author  ThimPress
+ * @package LearnPress/Classes
+ * @version 1.0
  */
+
 if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 
 	// Base class for custom post type to extends
@@ -521,4 +518,3 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 	}
 } // end LP_Order_Post_Type
 new LP_Order_Post_Type();
-// deprecated new Learn_Press_Order();

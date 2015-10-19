@@ -1,0 +1,74 @@
+<?php
+/**
+ * Review order table
+ *
+ * @author        ThimPress
+ * @package       LearnPress/Templates
+ * @version       1.0
+ */
+
+if ( !defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+$review_order_heading = apply_filters( 'learn_press_checkout_review_order_heading', __( 'Your order', 'learn_press' ) );
+
+print_r(LP()->cart->get_items());
+?>
+
+<?php if ( $review_order_heading ) { ?>
+	<h3><?php echo $review_order_heading; ?></h3>
+<?php } ?>
+
+<table class="learn-press-checkout-review-order-table">
+	<thead>
+	<tr>
+		<th class="course-name"><?php _e( 'Course', 'learn_press' ); ?></th>
+		<th class="course-total"><?php _e( 'Total', 'learn_press' ); ?></th>
+	</tr>
+	</thead>
+	<tbody>
+
+	<?php do_action( 'learn_press_review_order_before_cart_contents' ); ?>
+
+	<?php foreach ( LP()->cart->get_items() as $item_id => $cart_item ) {
+		$cart_item = apply_filters( 'learn_press_cart_item', $cart_item );
+		$_course   = learn_press_get_course( $item_id );
+		if ( $_course && $cart_item['quantity'] > 0 ) {
+			?>
+			<tr class="<?php echo esc_attr( apply_filters( 'learn_press_cart_item_class', 'cart-item', $cart_item) ); ?>">
+				<td class="course-name">
+					<?php echo apply_filters( 'learn_press_cart_item_name', $_course->get_title(), $cart_item ) . '&nbsp;'; ?>
+					<?php echo apply_filters( 'learn_press_cart_item_quantity', ' <strong class="course-quantity">' . sprintf( '&times; %s', $cart_item['quantity'] ) . '</strong>', $cart_item ); ?>
+				</td>
+				<td class="course-total">
+					<?php echo apply_filters( 'learn_press_cart_item_subtotal', LP()->cart->get_item_subtotal( $_course, $cart_item['quantity'] ), $cart_item ); ?>
+				</td>
+			</tr>
+			<?php
+		}
+	}?>
+
+	<?php do_action( 'learn_press_review_order_after_cart_contents' ); ?>
+
+	</tbody>
+
+	<tfoot>
+
+	<tr class="cart-subtotal">
+		<th><?php _e( 'Subtotal', 'learn_press' ); ?></th>
+		<td><?php echo LP()->cart->get_subtotal(); ?></td>
+	</tr>
+
+	<?php do_action( 'learn_press_review_order_before_order_total' ); ?>
+
+	<tr class="order-total">
+		<th><?php _e( 'Total', 'woocommerce' ); ?></th>
+		<td><?php echo LP()->cart->get_total(); ?></td>
+	</tr>
+
+	<?php do_action( 'learn_press_review_order_after_order_total' ); ?>
+
+	</tfoot>
+
+</table>

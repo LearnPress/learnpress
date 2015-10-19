@@ -12,7 +12,7 @@
             if( ! $gateway ) continue;
         ?>
         <li>
-            <label><input type="radio" name="payment_method" value="<?php echo $slug;?>" /> <?php echo $gateway;?></label>
+            <label><input type="radio" name="payment_method" value="<?php echo $slug;?>" /> <?php echo $gateway->get_title();?></label>
             <div class="learn_press_payment_form" id="learn_press_payment_form_<?php echo $slug;?>">
             <?php do_action( 'learn_press_payment_gateway_form_' . $slug );?>
             </div>

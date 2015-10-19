@@ -103,21 +103,22 @@ class LP_Settings_Base {
 	function output_sections() {
 		$current_section = $this->section['id'];
 		$sections        = $this->get_sections();
+
 		if ( $sections ) {
 			$array_keys = array_keys( $sections );
 			echo '<ul class="subsubsub clearfix">';
-			foreach ( $sections as $name => $text ) {
+			foreach ( $sections as $name => $gateway ) {
 				?>
 				<li>
 					<a href="<?php echo '?page=learn_press_settings&tab=' . $this->id . '&section=' . sanitize_title( $name ); ?>" class="<?php echo $current_section == $name ? 'current' : ''; ?>">
-						<?php echo $text; ?>
+						<?php echo $gateway; ?>
 					</a>
 					<?php echo( end( $array_keys ) == $name ? '' : '|' ); ?>
 				</li>
 				<?php
 			}
 			echo '</ul>';
-			echo '<span class="clear"></span>';
+			echo '<div class="clear"></div>';
 		}
 	}
 

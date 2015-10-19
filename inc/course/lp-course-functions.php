@@ -2257,9 +2257,9 @@ function learn_press_frontent_script() {
 }
 
 add_action( 'wp', 'learn_press_frontent_script' );
-if ( !empty( $_REQUEST['payment_method'] ) ) {
-	add_action( 'learn_press_frontend_action', array( 'LP_AJAX', 'take_course' ) );
-}
+//if ( !empty( $_REQUEST['payment_method'] ) ) {
+//	add_action( 'learn_press_frontend_action', array( 'LP_AJAX', 'take_course' ) );
+//}
 
 /**
  * Include js template

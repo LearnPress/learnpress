@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * LP_Autoloader
+ *
+ * @author  ThimPress
+ * @package LearnPress/Classes
+ * @version 1.0
+ */
+
 if ( !defined( 'ABSPATH' ) ) {
 	exit;
 }

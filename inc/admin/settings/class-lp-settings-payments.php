@@ -26,17 +26,17 @@ class LP_Settings_Payments extends LP_Settings_Base {
 	 * @return mixed
 	 */
 	function get_sections() {
-		$sections = array(
-			'paypal' => __( 'Paypal', 'learn_press' )
-		);
-
-		return apply_filters( 'learn_press_payment_method', $sections );
+		$gateways = LP_Gateways::instance()->get_gateways();
+		if( $gateways ) foreach( $gateways as $id => $gateway ){
+			$gateways[ $id ] = $gateway->get_title();
+		}
+		return $gateways;
 	}
 
 	function output() {
 		$section = $this->section;
 		?>
-		<h3 class=""><?php echo $this->section['text']; ?></h3>
+		<h3 class=""><?php echo $this->section->text; ?></h3>
 		<table class="form-table">
 			<tbody>
 			<?php

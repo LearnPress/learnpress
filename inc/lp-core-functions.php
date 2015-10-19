@@ -913,6 +913,7 @@ function learn_press_pre_get_post( $q ) {
 
 	return $q;
 }
+
 /*
 function learn_press_get_web_hooks() {
 	$web_hooks = empty( $GLOBALS['learn_press']['web_hooks'] ) ? array() : (array) $GLOBALS['learn_press']['web_hooks'];
@@ -1188,8 +1189,7 @@ function learn_press_get_currency_symbol( $currency = '' ) {
 }
 
 function learn_press_get_page_link( $key ) {
-	$page_id = learn_press_settings( $key );
-
+	$page_id = LP()->settings->get( $key . '_page_id' );
 	return get_permalink( $page_id );
 }
 
@@ -1222,14 +1222,14 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 		'class'  => 'lp-dropdown-pages',
 		'echo'   => false
 	);*/
-	$id     = null;
-	$class  = null;
-	$css    = null;
-	$before = array(
+	$id           = null;
+	$class        = null;
+	$css          = null;
+	$before       = array(
 		'add_new_page' => __( '[ Add a new page ]', 'learn_press' )
 	);
-	$after  = null;
-	$echo   = true;
+	$after        = null;
+	$echo         = true;
 	$allow_create = true;
 	is_array( $args ) && extract( $args );
 
@@ -1242,7 +1242,7 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 		'class'            => $class,
 		'echo'             => false,
 		'selected'         => $selected,
-		'allow_create'		=> true
+		'allow_create'     => true
 	);
 	$output  = wp_dropdown_pages( $args );
 	$replace = "";
@@ -1263,8 +1263,8 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 		$before_output = join( "\n", $before_output );
 		$output        = preg_replace( '!(<option class=".*" value="[0-9]+".*>.*</option>)!', $before_output . "\n$1", $output, 1 );
 	}
-	if( $allow_create ){
-		ob_start();?>
+	if ( $allow_create ) {
+		ob_start(); ?>
 		<p class="lpr-quick-add-page-inline hide-if-js">
 			<input type="text" />
 			<button class="button" type="button"><?php _e( 'Ok', 'learn_press' ); ?></button>
@@ -1838,7 +1838,7 @@ if ( !function_exists( 'is_course_archive' ) ) {
 	 * @return bool
 	 */
 	function is_course_archive() {
-		return ( is_post_type_archive( LP()->course_post_type ) || is_page( learn_press_get_page_id( 'course' ) ) ) ? true : false;
+		return ( is_post_type_archive( LP()->course_post_type ) || ( learn_press_get_page_id( 'course' ) && is_page( learn_press_get_page_id( 'course' ) ) ) ) ? true : false;
 	}
 }
 
@@ -1860,6 +1860,7 @@ if ( !function_exists( 'is_course_category' ) ) {
 	 * Returns true when viewing a course category.
 	 *
 	 * @param  string
+	 *
 	 * @return bool
 	 */
 	function is_course_category( $term = '' ) {
@@ -1873,6 +1874,7 @@ if ( !function_exists( 'is_course_tag' ) ) {
 	 * Returns true when viewing a course tag.
 	 *
 	 * @param  string
+	 *
 	 * @return bool
 	 */
 	function is_course_tag( $term = '' ) {
@@ -1892,6 +1894,72 @@ if ( !function_exists( 'is_course' ) ) {
 	}
 }
 
-function learn_press_debug($a){
-	echo '<pre>';print_r($a);echo '</pre>';
+/**
+ * Return true if user is in checking out page
+ *
+ * @return bool
+ */
+function learn_press_is_checkout() {
+	return is_page( learn_press_get_page_id( 'checkout' ) ) || apply_filters( 'learn_press_is_checkout', false ) ? true : false;
+}
+
+/**
+ * Return register permalink
+ *
+ * @return mixed
+ */
+function learn_press_get_register_url() {
+	return apply_filters( 'learn_press_register_url', wp_registration_url() );
+}
+
+/**
+ * Add a new notice into queue
+ *
+ * @param        $message
+ * @param string $type
+ */
+function learn_press_add_notice( $message, $type = 'notice' ) {
+	if ( empty( $notices = LP_Session::get( 'notices' ) ) ) {
+		$notices = array(
+			'success' => array(),
+			'error'   => array(),
+			'notice'  => array()
+		);
+	}
+
+	$notices[$type][] = $message;
+
+	LP_Session::set( 'notices', $notices );
+}
+
+/**
+ * Display all notices from queue and clear queue if required
+ *
+ * @param bool|true $clear
+ */
+function learn_press_print_notices( $clear = true ) {
+	if ( $notices = LP_Session::get( 'notices' ) ) {
+
+		// Allow to reorder the position of notices
+		$notice_types = apply_filters( 'learn_press_notice_types', array( 'error', 'success', 'notice' ) );
+
+		foreach ( $notice_types as $notice_type ) {
+			if ( !empty( $notices[$notice_type] ) ) {
+				learn_press_get_template( "notices/{$notice_type}.php", array(
+					'messages' => $notices[$notice_type]
+				) );
+			}
+		}
+
+		// clear queue if required
+		if ( $clear ) {
+			LP_Session::set( 'notices', null );
+		}
+	}
+}
+
+function learn_press_debug( $a ) {
+	echo '<pre>';
+	print_r( $a );
+	echo '</pre>';
 }

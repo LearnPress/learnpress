@@ -134,6 +134,10 @@ abstract class LP_Abstract_Course {
 		return $posts;
 	}
 
+	function get_title(){
+		return apply_filters( 'learn_press_course_title', $this->post ? $this->post->post_title : '', $this );
+	}
+
 	/**
 	 * Get all curriculum of this course
 	 *

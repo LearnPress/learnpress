@@ -50,7 +50,8 @@ function learn_press_settings_page() {
 		}
 		do_action( 'learn_press_settings_save_' . $current_tab );
 
-		?><script type="text/javascript">window.location.href = '<?php echo admin_url( 'options-general.php?page=learn_press_settings&tab=' . $current_tab );?>';</script><?php exit();
+		$section = ! empty( $_REQUEST['section'] ) ? '&section=' . $_REQUEST['section'] : '';
+		?><script type="text/javascript">window.location.href = '<?php echo admin_url( 'options-general.php?page=learn_press_settings&tab=' . $current_tab . $section );?>';</script><?php exit();
 		echo '<div class="updated"><p><strong>' . __( 'Settings saved', 'learn_press' ) . '</strong></p></div>';
 	}
 

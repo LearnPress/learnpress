@@ -28,11 +28,11 @@ if ( !function_exists( 'learn_press_output_single_course_landing_summary' ) ) {
 	}
 }
 
-if( ! function_exists( 'learn_press_course_title' ) ){
+if ( !function_exists( 'learn_press_course_title' ) ) {
 	/**
 	 * Display the title for single course
 	 */
-	function learn_press_course_title(){
+	function learn_press_course_title() {
 		learn_press_get_template( 'single-course/title.php' );
 	}
 }
@@ -46,32 +46,92 @@ if ( !function_exists( 'learn_press_single_course_description' ) ) {
 	}
 }
 
-if( !function_exists( 'learn_press_curriculum_section_title' ) ){
+if ( !function_exists( 'learn_press_curriculum_section_title' ) ) {
 	/**
 	 * @param object
 	 */
-	function learn_press_curriculum_section_title( $section ){
+	function learn_press_curriculum_section_title( $section ) {
 		learn_press_get_template( 'single-course/section/title.php', array( 'section' => $section ) );
 	}
 }
 
-if( !function_exists( 'learn_press_curriculum_section_content' ) ){
+if ( !function_exists( 'learn_press_curriculum_section_content' ) ) {
 	/**
 	 * @param object
 	 */
-	function learn_press_curriculum_section_content( $section ){
+	function learn_press_curriculum_section_content( $section ) {
 		learn_press_get_template( 'single-course/section/content.php', array( 'section' => $section ) );
 	}
 }
 
-if( ! function_exists( 'learn_press_body_class' ) ){
+if ( !function_exists( 'learn_press_order_review' ) ) {
+	/**
+	 * Output order details
+	 *
+	 * @param LP_Checkout object
+	 */
+	function learn_press_order_review( $checkout ) {
+		learn_press_get_template( 'checkout/review-order.php', array( 'checkout' => $checkout ) );
+	}
+}
+
+if ( !function_exists( 'learn_press_order_payment' ) ) {
+	/**
+	 * Output payment methods
+	 *
+	 * @param LP_Checkout object
+	 */
+	function learn_press_order_payment( $checkout ) {
+		$available_gateways = LP_Gateways::instance()->get_available_payment_gateways();
+		learn_press_get_template( 'checkout/payment.php', array( 'available_gateways' => $available_gateways ) );
+	}
+}
+
+if ( !function_exists( 'learn_press_checkout_user_form' ) ) {
+	/**
+	 * Output login/register form before order review if user is not logged in
+	 */
+	function learn_press_checkout_user_form() {
+		learn_press_get_template( 'checkout/user-form.php' );
+	}
+}
+
+if ( !function_exists( 'learn_press_checkout_user_form_login' ) ) {
+	/**
+	 * Output login form before order review if user is not logged in
+	 */
+	function learn_press_checkout_user_form_login() {
+		learn_press_get_template( 'checkout/form-login.php' );
+	}
+}
+
+if ( !function_exists( 'learn_press_checkout_user_form_register' ) ) {
+	/**
+	 * Output register form before order review if user is not logged in
+	 */
+	function learn_press_checkout_user_form_register() {
+		learn_press_get_template( 'checkout/form-register.php' );
+	}
+}
+
+if ( !function_exists( 'learn_press_checkout_user_logged_in' ) ) {
+	/**
+	 * Output message before order review if user is logged in
+	 */
+	function learn_press_checkout_user_logged_in() {
+		learn_press_get_template( 'checkout/form-logged-in.php' );
+	}
+}
+
+if ( !function_exists( 'learn_press_body_class' ) ) {
 	/**
 	 * Append new class to body classes
 	 *
 	 * @param $classes
+	 *
 	 * @return array
 	 */
-	function learn_press_body_class( $classes ){
+	function learn_press_body_class( $classes ) {
 		$classes = (array) $classes;
 
 		if ( is_learnpress() ) {
@@ -83,18 +143,21 @@ if( ! function_exists( 'learn_press_body_class' ) ){
 	}
 }
 
-if( ! function_exists( 'learn_press_course_class' ) ){
+if ( !function_exists( 'learn_press_course_class' ) ) {
 	/**
 	 * Custom new class for course classes
 	 *
 	 * @param $classes
+	 *
 	 * @return array
 	 */
-	function learn_press_course_class( $classes ){
-		$classes = (array) $classes;
+	function learn_press_course_class( $classes ) {
+		if ( is_learnpress() ) {
+			$classes = (array) $classes;
 
-		if ( false !== ( $key = array_search( 'hentry', $classes ) ) ) {
-			unset( $classes[ $key ] );
+			if ( false !== ( $key = array_search( 'hentry', $classes ) ) ) {
+				unset( $classes[$key] );
+			}
 		}
 		return $classes;
 	}
@@ -237,7 +300,6 @@ if ( !function_exists( 'learn_press_course_curriculum' ) ) {
 		learn_press_get_template( 'single-course/curriculum.php' );
 	}
 }
-
 
 
 if ( !function_exists( 'learn_press_course_payment_form' ) ) {

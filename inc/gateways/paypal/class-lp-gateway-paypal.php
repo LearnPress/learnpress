@@ -1,18 +1,65 @@
 <?php
 
+/**
+ * Class LP_Gateway_Paypal
+ *
+ * @author  ThimPress
+ * @package LearnPress/Classes
+ * @version 1.0
+ */
+
+if ( !defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class LP_Gateway_Paypal extends LP_Gateway_Abstract {
+	/**
+	 * @var null|string
+	 */
 	protected $paypal_live_url = null;
+
+	/**
+	 * @var null|string
+	 */
 	protected $paypal_sandbox_url = null;
+
+	/**
+	 * @var null|string
+	 */
 	protected $paypal_payment_live_url = null;
+
+	/**
+	 * @var null|string
+	 */
 	protected $paypal_payment_sandbox_url = null;
+
+	/**
+	 * @var null|string
+	 */
 	protected $paypal_nvp_api_live_url = null;
+
+	/**
+	 * @var null
+	 */
 	protected $paypal_vnp_api_sandbox_url = null;
 
+	/**
+	 * @var bool
+	 */
 	static protected $loaded = false;
+
+	/**
+	 * @var string
+	 */
 	protected $method = '';
 
+	/**
+	 *
+	 */
 	function __construct() {
-		if ( self::$loaded ) return;
+		$this->id                         = 'paypal';
+		$this->title                      = 'Paypal';
+		$this->description                = __( 'Pay with Paypal', 'learn_press' );
 		$this->paypal_live_url            = 'https://www.paypal.com/';
 		$this->paypal_sandbox_url         = 'https://www.sandbox.paypal.com/';
 		$this->paypal_payment_live_url    = 'https://www.paypal.com/cgi-bin/webscr';
@@ -20,7 +67,7 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 		$this->paypal_nvp_api_live_url    = 'https://api-3t.paypal.com/nvp';
 		$this->paypal_nvp_api_sandbox_url = 'https://api-3t.sandbox.paypal.com/nvp';
 
-		$settings = learn_press_settings( 'payment' );
+		$settings = LP()->settings;
 
 		$this->method = !empty( $_REQUEST['learn-press-transaction-method'] ) ? $_REQUEST['learn-press-transaction-method'] : '';
 
@@ -153,7 +200,7 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 	}
 
 	function paypal_available( $a, $b ) {
-		return LP_Settings::instance( 'payment' )->get( 'paypal.enable' );
+		return LP()->settings->get( 'paypal_enable' );
 	}
 
 
@@ -187,10 +234,12 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 		require_once( 'paypal-ipn/ipn.php' );
 	}
 
-	function payment_form() {
+	function get_payment_form() {
+		ob_start();
 		?>
 		Pay with Paypal
 		<?php
+		return ob_get_clean();
 	}
 
 
@@ -547,4 +596,6 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 	function __toString() {
 		return 'Paypal';
 	}
+
+
 }

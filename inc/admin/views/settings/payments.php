@@ -16,7 +16,8 @@ $settings = LP()->settings;
 	<tr>
 		<th scope="row"><label for="learn_press_paypal_enable"><?php _e( 'Enable', 'learn_press' ); ?></label></th>
 		<td>
-			<input type="checkbox" id="learn_press_paypal_enable" name="lpr_settings[<?php echo $this->id; ?>][enable]" <?php checked( $settings->get( 'paypal.enable', '' ) ? 1 : 0, 1 ); ?> />
+			<input type="hidden" name="<?php echo $this->get_field_name( 'paypal_enable' ); ?>" value="no">
+			<input type="checkbox" name="<?php echo $this->get_field_name( 'paypal_enable' ); ?>" value="yes" <?php checked( $settings->get( 'paypal_enable', 'yes' ) == 'yes', true ); ?> />
 		</td>
 	</tr>
 	<tr>
