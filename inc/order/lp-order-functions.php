@@ -1,6 +1,7 @@
 <?php
 /**
  * Defines functions related to order
+ *
  * @author  ThimPress
  * @package LearnPress/Functions
  * @version 1.0
@@ -9,6 +10,125 @@
 if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
+
+/**
+ * Create new order
+ *
+ * @param array
+ * @return LP_Order instance
+ */
+function learn_press_create_order( $order_data ) {
+	$order_data_defaults = array(
+		'ID'          => 0,
+		'post_author' => '0',
+		'post_parent' => '0',
+		'post_type'   => LP()->order_post_type,
+		'post_status' => 'lp-' . apply_filters( 'learn_press_default_order_status', 'pending' ),
+		'ping_status' => 'closed',
+		'post_title'  => __( 'Order on ', 'learn_press' ) . ' ' . current_time( "l jS F Y h:i:s A" )
+	);
+	$order_data_defaults = apply_filters( 'learn_press_defaults_order_data', $order_data_defaults );
+	$order_data          = wp_parse_args( $order_data, $order_data_defaults );
+
+	if ( $order_data['status'] ) {
+		if ( !in_array( 'lp-' . $order_data['status'], array_keys( learn_press_get_order_statuses() ) ) ) {
+			return new WP_Error( 'learn_press_invalid_order_status', __( 'Invalid order status', 'learn_press' ) );
+		}
+		$order_data['post_status'] = 'lp-' . $order_data['status'];
+	}
+
+	if ( !is_null( $order_data['user_note'] ) ) {
+		$order_data['post_excerpt'] = $order_data['user_note'];
+	}
+
+	if ( $order_data['ID'] ) {
+		$order_data = apply_filters( 'learn_press_update_order_data', $order_data );
+		wp_update_post( $order_data );
+		$order_id = $order_data['ID'];
+	} else {
+		$order_data = apply_filters( 'learn_press_new_order_data', $order_data );
+		$order_id   = wp_insert_post( $order_data );
+	}
+
+	if( $order_id ){
+		$order = LP_Order::instance( $order_id );
+
+		update_post_meta( $order_id, '_order_currency', learn_press_get_currency() );
+		update_post_meta( $order_id, '_prices_include_tax', 'no' );
+		update_post_meta( $order_id, '_user_ip_address', learn_press_get_ip() );
+		update_post_meta( $order_id, '_user_agent', isset( $_SERVER['HTTP_USER_AGENT'] ) ? $_SERVER['HTTP_USER_AGENT'] : '' );
+		update_post_meta( $order_id, '_user_id', learn_press_get_current_user_id() );
+		update_post_meta( $order_id, '_order_subtotal', LP()->cart->subtotal );
+		update_post_meta( $order_id, '_order_total', LP()->cart->total );
+		update_post_meta( $order_id, '_order_key', apply_filters( 'learn_press_generate_order_key', uniqid( 'order' ) ) );
+	}
+
+	return LP_Order::instance( $order_id );
+}
+
+/**
+ * Create a new order or update an existing
+ *
+ * @param array
+ * @return LP_Order instance
+ */
+
+function learn_press_update_order( $order_data ) {
+	return learn_press_create_order( $order_data );
+}
+
+/**
+ * Update Order status
+ *
+ * @param int
+ * @param string
+ * @return bool
+ */
+function learn_press_update_order_status( $order_id, $status = '' ) {
+	$order = LP_Order::instance( $order_id );
+	if ( $order ) {
+		$order->update_status( $status );
+	}
+}
+
+function learn_press_add_order_item( $order_id, $item ) {
+	global $wpdb;
+
+	$order_id = absint( $order_id );
+
+	if ( !$order_id )
+		return false;
+
+	$defaults = array(
+		'order_item_name' => ''
+	);
+
+	$item = wp_parse_args( $item, $defaults );
+
+	$course = LP_Course::get_course( $item['item_id'] );
+	$return = $wpdb->insert(
+		$wpdb->learnpress_order_items,
+		array(
+			'order_item_name' => $course->get_title(),
+			'order_id'        => $order_id
+		),
+		array(
+			'%s', '%d'
+		)
+	);
+
+	$item_id = absint( $wpdb->insert_id );
+
+	do_action( 'learn_press_new_order_item', $item_id, $item, $order_id );
+
+	return $item_id;
+}
+
+function learn_press_add_order_item_meta( $item_id, $meta_key, $meta_value, $prev_value = '' ) {
+	return add_metadata( 'learnpress_order_item', $item_id, $meta_key, $meta_value, $prev_value );
+}
+
+/*******************************/
 
 /*
  * Check to see if a user can view the order
@@ -33,19 +153,36 @@ function learn_press_user_can_view_order( $order_id, $user_id = null ) {
  * Function get order information
  *
  * @param int $order_id
+ *
  * @return LP_Order object instance
  */
-function learn_press_get_order( $order_id ) {
-	if ( !$order_id ) {
+function learn_press_get_order( $the_order ) {
+	if ( !$the_order ) {
 		return false;
 	}
-	return new LP_Order( $order_id );
+
+	global $post;
+
+	if ( false === $the_order ) {
+		$the_order = $post;
+	} elseif ( is_numeric( $the_order ) ) {
+		$the_order = get_post( $the_order );
+	} elseif ( $the_order instanceof LP_Order ) {
+		$the_order = get_post( $the_order->id );
+	}
+
+	if ( ! $the_order || ! is_object( $the_order ) ) {
+		return false;
+	}
+
+	return LP_Order::instance( $the_order );
 }
 
 /**
  * get confirm order URL
  *
  * @param int $order_id
+ *
  * @return string
  */
 function learn_press_get_order_confirm_url( $order_id = 0 ) {
@@ -92,40 +229,6 @@ function learn_press_delete_transient_transaction( $method, $temp_id ) {
 	return delete_transient( $method . '-' . $temp_id );
 }
 
-function learn_press_create_order( $args = false ) {
-	$default_args = array(
-		'status'        => '',
-		'customer_id'   => null,
-		'customer_note' => null,
-		'order_id'      => 0,
-		'created_via'   => '',
-		'parent'        => 0
-	);
-
-	$args       = wp_parse_args( $args, $default_args );
-	$order_data = array();
-
-	if ( $args['order_id'] > 0 ) {
-		$updating         = true;
-		$order_data['ID'] = $args['order_id'];
-	} else {
-		$updating                    = false;
-		$order_data['post_type']     = LP()->order_post_type;
-		$order_data['post_status']   = 'pending';
-		$order_data['ping_status']   = 'closed';
-		$order_data['post_author']   = 1; // always is administrator
-		$order_data['post_password'] = uniqid( 'order_' );
-		$order_data['post_title']    = sprintf( __( 'Order &ndash; %s', 'learn_press' ), strftime( '%b %d, %Y @ %I:%M %p' ) );
-		$order_data['post_parent']   = absint( $args['parent'] );
-	}
-
-	if ( $updating ) {
-		$order_id = wp_update_post( $order_data );
-	} else {
-		$order_id = wp_insert_post( apply_filters( 'learn_press_temp_order_data', $order_data ), true );
-	}
-	return new LP_Order( $order_id );
-}
 
 /**
  * Deprecated function

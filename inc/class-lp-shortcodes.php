@@ -36,7 +36,12 @@ class LP_Shortcodes {
 	 */
 	static function checkout() {
 		ob_start();
-		learn_press_get_template( 'checkout/form.php', array( 'checkout' => LP()->checkout() ) );
+		// Check cart has contents
+		if ( LP()->cart->is_empty() ) {
+			learn_press_get_template( 'checkout/empty-cart.php', array( 'checkout' => LP()->checkout() ) );
+		}else {
+			learn_press_get_template( 'checkout/form.php', array( 'checkout' => LP()->checkout() ) );
+		}
 		return ob_get_clean();
 	}
 

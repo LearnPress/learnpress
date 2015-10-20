@@ -64,7 +64,8 @@ add_action( 'learn_press_checkout_user_form', 'learn_press_checkout_user_form_lo
 add_action( 'learn_press_checkout_user_form', 'learn_press_checkout_user_form_register', 10 );
 
 add_action( 'learn_press_checkout_order_review', 'learn_press_order_review', 5 );
-add_action( 'learn_press_checkout_order_review', 'learn_press_order_payment', 10 );
+add_action( 'learn_press_checkout_order_review', 'learn_press_order_comment', 10 );
+add_action( 'learn_press_checkout_order_review', 'learn_press_order_payment', 15 );
 
 
 

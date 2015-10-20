@@ -1,10 +1,11 @@
 <?php
 /**
- * @file
- *
  * LearnPress Core Functions
+ * Define common functions for both front-end and back-end
  *
- * Common functions for both front-end and back-end
+ * @author   ThimPress
+ * @package  LearnPress/Functions
+ * @version  1.0
  */
 
 if ( !defined( 'ABSPATH' ) ) {
@@ -131,94 +132,6 @@ if ( !function_exists( 'learn_press_course_paging_nav' ) ) :
 
 endif;
 
-/**
- * Function Insert or update Order
- *
- * @param $order_data array post data structure
- * @param $order_meta array post meta.
- */
-
-function learn_press_update_order( $order_data, $order_meta, $purchased_items ) {
-	$date                = current_time( 'mysql' );
-	$order_data_defaults = array(
-		'ID'          => 0, //Order ID
-		'post_author' => '0', //Buyer ID
-		'post_parent' => '0', //Course ID
-		'post_date'   => $date, //Course ID
-		'post_type'   => LP()->order_post_type,
-		'post_status' => 'publish',
-		'ping_status' => 'closed',
-		'post_title'  => __( 'Order on ', 'learn_press' ) . ' ' . date( "l jS F Y h:i:s A", strtotime( $date ) )
-	);
-	$order_data_defaults = apply_filters( 'learn_press_update_order_data', $order_data_defaults );
-	$order_data          = wp_parse_args( $order_data, $order_data_defaults );
-	$purchased_items     = wp_parse_args( $purchased_items,
-		apply_filters( 'learn_press_update_order_purchased_items',
-			array(
-				array(
-					'course_id' => 0 //Total price
-				)
-			)
-		)
-	);
-	$order_meta          = wp_parse_args( $order_meta,
-		apply_filters( 'learn_press_update_order_meta',
-			array(
-				'lpr_cost'        => 0, //Total price
-				'lpr_methods'     => 'paypal', //Payment methods
-				'lpr_items'       => $purchased_items,
-				'lpr_status'      => '0',
-				'lpr_information' => ''
-			)
-		)
-	);
-	if ( $order_data['ID'] ) {
-		wp_update_post( $order_data );
-		$order_id = $order_data['ID'];
-	} else {
-		$order_id = wp_insert_post( $order_data );
-	}
-	foreach ( $order_meta as $meta_key => $meta_value ) {
-		update_post_meta( $order_id, $meta_key, $meta_value );
-	}
-}
-
-/**
- * Update Order status
- *
- * @param $order_id int Order ID
- * @param $status   int Order status. -1: cancel,0:on-hold 1: pending, 2: completed, -2: refund
- *
- * @return bool
- */
-function learn_press_update_order_status( $order_id, $status = '' ) {
-
-	$order = LP_Order::instance( $order_id );
-	if ( $order ) {
-		$order->update_status( $status );
-	}
-	return;
-	if ( $status ) {
-		/*wp_update_post(
-			array( 'ID' => $order_id, 'post_status' => 'publish' )
-		);*/
-
-		$current_status = get_post_status( $order_id );
-		if ( $current_status != $status ) {
-
-
-			if ( update_post_meta( $order_id, '_learn_press_transaction_status', $status ) ) {
-				do_action( 'learn_press_update_order_status', $status, $order_id );
-
-				return true;
-			} else {
-				return false;
-			}
-		}
-	}
-
-	return false;
-}
 
 /**
  * Get text

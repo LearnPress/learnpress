@@ -2,6 +2,10 @@
 
 /**
  * Class LP_Order
+ *
+ * @author  ThimPress
+ * @package LearnPress/Classes
+ * @version 1.0
  */
 class LP_Order {
 
@@ -45,19 +49,25 @@ class LP_Order {
 		}
 	}
 
-	public function get_order( $id = 0 ) {
-
-		if ( !$id ) {
+	function get_order( $id ){
+		if( ! $id){
 			return false;
 		}
 
 		if ( $result = get_post( $id ) ) {
+
+			$this->id                  = $result->ID;
+			$this->order_date          = $result->post_date;
+			$this->modified_date       = $result->post_modified;
+			$this->customer_message    = $result->post_excerpt;
+			$this->customer_note       = $result->post_excerpt;
+			$this->post_status         = $result->post_status;
+
 			return true;
 		}
 
 		return false;
 	}
-
 	/**
 	 * Get current status of order
 	 *
@@ -167,6 +177,39 @@ class LP_Order {
 		return learn_press_get_order_items( $this->post->ID );
 	}
 
+	function remove_order_items(){
+		global $wpdb;
+		$wpdb->query(
+			$wpdb->prepare( "
+				DELETE FROM itemmeta
+				USING {$wpdb->learnpress_order_itemmeta} itemmeta
+				INNER JOIN {$wpdb->learnpress_order_items} items
+				WHERE itemmeta.learnpress_order_item_id = items.order_item_id
+				AND items.order_id = %d",
+				$this->id
+			)
+		);
+		$wpdb->query(
+			$wpdb->prepare( "
+				DELETE FROM {$wpdb->learnpress_order_items}
+				WHERE order_id = %d",
+				$this->id
+			)
+		);
+	}
+
+	function add_item( $item, $quantity = 1, $meta = array() ){
+		$item_id = learn_press_add_order_item( $this->id, $item );
+		if( ! $item_id ){
+			return false;
+		}
+		learn_press_add_order_item_meta( $item_id, '_course_id', $item['item_id'] );
+		learn_press_add_order_item_meta( $item_id, '_quantity', $item['quantity'] );
+		learn_press_add_order_item_meta( $item_id, '_subtotal', $item['subtotal'] );
+		learn_press_add_order_item_meta( $item_id, '_total', $item['total'] );
+		return $item_id;
+	}
+
 	function get_user( $field = '' ) {
 
 		$user = learn_press_get_user( $this->user_id );
@@ -177,11 +220,10 @@ class LP_Order {
 	}
 
 	public function __get( $key ) {
-		if ( $key == 'user_id' ) {
-			$key = 'customer_id';
+		$value = null;
+		if( ! isset( $this->{$key} ) ){
+			$value = get_post_meta( $this->id, '_' . $key, true );
 		}
-		// Get values or default if not set
-		$value = get_post_meta( $this->id, '_learn_press_' . $key, true );
 		return $value;
 	}
 
@@ -202,11 +244,10 @@ class LP_Order {
 	/*********************************/
 
 	/**
-	 * Get an instance of HB_Booking by post ID or WP_Post object
+	 * Get an instance of LP_Order by post ID or WP_Post object
 	 *
 	 * @param $order
-	 *
-	 * @return HB_Booking
+	 * @return LP_Order
 	 */
 	static function instance( $order ) {
 		$post = $order;

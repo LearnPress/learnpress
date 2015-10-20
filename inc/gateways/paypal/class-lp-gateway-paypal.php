@@ -53,13 +53,20 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 	 */
 	protected $method = '';
 
+	protected $paypal_url = null;
+	protected $paypal_payment_url = null;
+	protected $paypal_nvp_api_url = null;
+	protected $paypal_email = null;
+	protected $settings = null;
+
 	/**
 	 *
 	 */
 	function __construct() {
-		$this->id                         = 'paypal';
-		$this->title                      = 'Paypal';
-		$this->description                = __( 'Pay with Paypal', 'learn_press' );
+		$this->id          = 'paypal';
+		$this->title       = 'Paypal';
+		$this->description = __( 'Pay with Paypal', 'learn_press' );
+
 		$this->paypal_live_url            = 'https://www.paypal.com/';
 		$this->paypal_sandbox_url         = 'https://www.sandbox.paypal.com/';
 		$this->paypal_payment_live_url    = 'https://www.paypal.com/cgi-bin/webscr';
@@ -67,11 +74,28 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 		$this->paypal_nvp_api_live_url    = 'https://api-3t.paypal.com/nvp';
 		$this->paypal_nvp_api_sandbox_url = 'https://api-3t.sandbox.paypal.com/nvp';
 
-		$settings = LP()->settings;
 
-		$this->method = !empty( $_REQUEST['learn-press-transaction-method'] ) ? $_REQUEST['learn-press-transaction-method'] : '';
+		$this->settings = LP()->settings;
 
-		if ( $settings->get( 'paypal.enable' ) ) {
+		$this->init();
+		parent::__construct();
+		self::$loaded = true;
+	}
+
+	function init() {
+		if ( $this->settings->get( 'paypal_enable' ) ) {
+
+			if ( $this->settings->get( 'paypal_sandbox' ) == 'no' ) {
+				$this->paypal_url         = $this->paypal_live_url;
+				$this->paypal_payment_url = $this->paypal_payment_live_url;
+				$this->paypal_nvp_api_url = $this->paypal_nvp_api_live_url;
+				$this->paypal_email       = $this->settings->get( 'paypal_email' );
+			} else {
+				$this->paypal_url         = $this->paypal_sandbox_url;
+				$this->paypal_payment_url = $this->paypal_payment_sandbox_url;
+				$this->paypal_nvp_api_url = $this->paypal_nvp_api_sandbox_url;
+				$this->paypal_email       = $this->settings->get( 'paypal_sandbox_email' );
+			}
 
 			add_action( 'init', array( $this, 'register_web_hook' ) );
 			add_action( 'learn_press_take_course_paypal', array( $this, 'process_payment' ) );
@@ -108,9 +132,6 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 			learn_press_enqueue_script( $script );
 		}
 		add_filter( 'learn_press_payment_gateway_available_paypal', array( $this, 'paypal_available' ), 10, 2 );
-
-		parent::__construct();
-		self::$loaded = true;
 	}
 
 	function register_web_hook() {
@@ -417,8 +438,7 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 	}
 
 	function process_payment( $order ) {
-		$settings = learn_press_settings( 'payment' );
-		$redirect = $settings->get( 'paypal.type' ) == 'basic' ? $this->get_paypal_basic_request_url( $order ) : $this->get_request_url( $order );
+		$redirect = $this->settings->get( 'paypal_type' ) == 'basic' ? $this->get_paypal_basic_request_url( $order ) : $this->get_request_url( $order );
 		$json     = array(
 			'result'   => $redirect ? 'success' : 'fail',
 			'redirect' => $redirect
@@ -531,10 +551,7 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 
 	}
 
-	function get_paypal_basic_request_url( $order ) {
-		$settings = get_option( '_lpr_settings_payment' );
-		if ( empty( $settings['paypal'] ) ) return;
-		$paypal_settings = $settings['paypal'];
+	function get_paypal_basic_request_url( $order_id ) {
 
 		$user = learn_press_get_current_user();
 
@@ -544,51 +561,30 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 			'quantity' => '1',
 		);
 
-		$transaction = learn_press_generate_transaction_object();
-		$temp_id     = learn_press_uniqid();
-		$xxx         = @file_get_contents( LP_PLUGIN_PATH . '/temp.txt' );
-		learn_press_set_transient_transaction( 'lpps', $temp_id, $user->ID, $transaction );
-		file_put_contents( LP_PLUGIN_PATH . '/temp.txt', $xxx . "=" . $temp_id );
+		$nonce = wp_create_nonce( 'learn-press-paypal-nonce' );
+		$order = LP_Order::instance( $order_id );
 
-		/*$order_id = LearnPress()->session->get( 'learn_press_user_order' );
+		$custom = array( 'order_id' => $order_id, 'order_key' => $order->order_key );
 
-		$order_id = learn_press_add_transaction(
-			array(
-				'method'        => $this->method,
-				'method_id'     => '',
-				'status'        => '',
-				'user_id'       => null,
-				'order_id'      => $order_id,
-				'parent'        => 0,
-				'transaction_object' => $transaction
-			)
-		);
-
-		//LearnPress()->session->set( 'learn_press_user_order', $order_id );
-
-		$order = new LP_Order( $order_id );*/
-
-		$nonce        = wp_create_nonce( 'learn-press-paypal-nonce' );
-		$paypal_email = $paypal_settings['sandbox'] ? $paypal_settings['paypal_sandbox_email'] : $paypal_settings['paypal_email'];
-		$query        = array(
-			'business'      => $paypal_email,
+		$query = array(
+			'business'      => $this->paypal_email,
 			'item_name'     => learn_press_get_cart_description(),
 			'return'        => add_query_arg( array( 'learn-press-transaction-method' => 'paypal-standard', 'paypal-nonce' => $nonce ), learn_press_get_cart_course_url() ),
 			'currency_code' => learn_press_get_currency(),
-			'notify_url'    => get_site_url() . '/?' . learn_press_get_web_hook( 'paypal-standard' ) . '=1',//get_site_url() . '/?learn-press-transaction-method=paypal-standard',
+			'notify_url'    => get_site_url() . '/?' . learn_press_get_web_hook( 'paypal-standard' ) . '=1',
 			'no_note'       => '1',
 			'shipping'      => '0',
 			'email'         => $user->user_email,
 			'rm'            => '2',
 			'cancel_return' => learn_press_get_cart_course_url(),
-			'custom'        => $temp_id,
+			'custom'        => json_encode( $custom ),
 			'no_shipping'   => '1'
 		);
 
 		$query = array_merge( $paypal_args, $query );
-		$query = apply_filters( 'it_exchange_paypal_standard_query', $query );
+		$query = apply_filters( 'learn_press_paypal_standard_query', $query );
 
-		$paypal_payment_url = ( $paypal_settings['sandbox'] ? $this->paypal_payment_sandbox_url : $this->paypal_payment_live_url ) . '?' . http_build_query( $query );
+		$paypal_payment_url = $this->paypal_url . '?' . http_build_query( $query );
 
 		return $paypal_payment_url;
 	}

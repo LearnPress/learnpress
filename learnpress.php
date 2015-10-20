@@ -263,7 +263,9 @@ if ( !class_exists( 'LearnPress' ) ) {
 				'learnpress_sections',
 				'learnpress_section_items',
 				'learnpress_quiz_history',
-				'learnpress_user_course'
+				'learnpress_user_course',
+				'learnpress_order_itemmeta',
+				'learnpress_order_items'
 			);
 			foreach ( $tables as $table_name ) {
 				$wpdb->{$table_name} = $wpdb->prefix . $table_name;
@@ -304,7 +306,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 		function init() {
 
 			if ( $this->is_request( 'frontend' ) ) {
-				$this->cart = new LP_Cart();
+				$this->cart = LP_Cart::instance();
 			}
 
 			$this->session = LP_Session::instance();

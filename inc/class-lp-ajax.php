@@ -47,6 +47,9 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 		}
 
 		function do_ajax( $var ) {
+			if ( !defined( 'DOING_AJAX' ) ) {
+				define( 'DOING_AJAX', true );
+			}
 			LP_Gateways::instance()->get_available_payment_gateways();
 			$result = false;
 			switch ( $var ) {
@@ -75,13 +78,13 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 						if ( is_wp_error( $user ) ) {
 							$result['result'] = 'fail';
 							learn_press_add_notice( $user->get_error_message(), 'error' );
-						}else{
+						} else {
 							$result['redirect'] = learn_press_get_page_link( 'checkout' );
 						}
 					}
 					learn_press_print_notices();
 					$messages = ob_get_clean();
-					if( $result['result'] == 'fail' ){
+					if ( $result['result'] == 'fail' ) {
 						$result['messages'] = $messages;
 					}
 					break;

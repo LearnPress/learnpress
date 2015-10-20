@@ -87,6 +87,17 @@ if ( !function_exists( 'learn_press_order_payment' ) ) {
 	}
 }
 
+if ( !function_exists( 'learn_press_order_comment' ) ) {
+	/**
+	 * Output order comment input
+	 *
+	 * @param LP_Checkout object
+	 */
+	function learn_press_order_comment( $checkout ) {
+		learn_press_get_template( 'checkout/order-comment.php' );
+	}
+}
+
 if ( !function_exists( 'learn_press_checkout_user_form' ) ) {
 	/**
 	 * Output login/register form before order review if user is not logged in

@@ -22,7 +22,7 @@ class LP_Session {
 	}
 
 	function __get( $key ) {
-		self::get( $key );
+		return self::get( $key );
 
 	}
 
