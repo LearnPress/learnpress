@@ -58,11 +58,21 @@ class LP_Cart {
 	 * @param     array
 	 */
 	function add_to_cart( $course_id, $quantity = 1, $item_data = array() ) {
+
+		if( !learn_press_is_enable_cart() ) {
+			$this->empty_cart();
+		}else{
+
+		}
+
 		$course = learn_press_get_course( $course_id );
 
+		/*
 		if ( !empty( $this->_cart_content['items'][$course_id] ) ) {
 			$quantity += $this->_cart_content['items'][$course_id]['quantity'];
-		}
+		}*/
+
+		$quantity = 1;
 
 		$this->_cart_content['items'][$course_id] = apply_filters( 'learn_press_add_cart_item', array(
 				'item_id'  => $course_id,
@@ -184,10 +194,21 @@ class LP_Cart {
 	 * @return $this
 	 */
 	function empty_cart() {
+
+		do_action( 'learn_press_before_empty_cart' );
+
 		LP_Session::set( 'cart', $this->get_default_cart_content() );
+
+		do_action( 'learn_press_emptied_cart' );
+
 		return $this;
 	}
 
+	/**
+	 * Check if cart is empty or not
+	 *
+	 * @return bool
+	 */
 	function is_empty() {
 		return !$this->_cart_content['items'];
 	}
@@ -292,4 +313,5 @@ function learn_press_get_cart_total() {
 function learn_press_is_enable_cart() {
 	return LP()->settings->get( 'enable_cart' ) == 'yes';
 }
+
 //learn_press_get_cart_description();

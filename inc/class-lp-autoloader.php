@@ -84,6 +84,14 @@ class LP_Autoloader {
 			if ( strpos( $class, 'lp_user' ) !== false || $class == 'lp_abstract_user' ) {
 				$path .= 'user/';
 			}
+
+			if( ! file_exists( $path . $file ) ){
+				$segs = explode( '_', $class );
+				if( ! empty( $segs[1] ) ){
+					$path .= $segs[1] . '/';
+				}
+			}
+
 			//
 		}
 

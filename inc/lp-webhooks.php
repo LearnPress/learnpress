@@ -28,7 +28,6 @@ function learn_press_process_web_hooks() {
 	$web_hooks           = learn_press_get_web_hooks();
 	$web_hooks_processed = false;
 	// Loop through them and init callbacks
-
 	foreach ( $web_hooks as $key => $param ) {
 		if ( !empty( $_REQUEST[$param] ) ) {
 			$web_hooks_processed           = true;
@@ -39,13 +38,8 @@ function learn_press_process_web_hooks() {
 			$parsed_required_web_hook_url  = parse_url( $required_web_hook_url );
 			$web_hook_diff                 = array_diff_assoc( $parsed_requested_web_hook_url, $parsed_required_web_hook_url );
 
-			print_r($parsed_requested_web_hook_url);
-			print_r($parsed_required_web_hook_url);
-			print_r($web_hook_diff);
-
 			if ( empty( $web_hook_diff ) ) { //No differences in the requested webhook and the required webhook
 				do_action( 'learn_press_web_hook_' . $param, $_REQUEST );
-				echo "XXXXXXXXXXXX";
 			} else {
 
 			}
@@ -58,12 +52,4 @@ function learn_press_process_web_hooks() {
 	}
 }
 
-add_action( 'wp', 'learn_press_process_web_hooks' );
-
-learn_press_register_web_hook( 'cart', 'add-course-to-cart' );
-
-function add_to_cart( $params ){
-	print_r($params);
-	die('xxxx');
-}
-add_action( 'learn_press_web_hook_add-course-to-cart', 'add_to_cart' );
+add_action( 'wp_loaded', 'learn_press_process_web_hooks', 999 );

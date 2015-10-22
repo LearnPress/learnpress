@@ -24,6 +24,7 @@
 			removeItemIds: [],
 			el             : '#lp-course-curriculum',
 			initialize: function( model ){
+				if( this.$el.length == 0 ) return;
 				this.model = model;
 				this.model.view = this;
 				this.listenTo(this.model, 'change', this.render);

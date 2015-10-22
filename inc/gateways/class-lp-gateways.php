@@ -23,19 +23,20 @@ class LP_Gateways {
 	}
 
 	function init() {
-		$gateways = array(
-			'paypal' => 'LP_Gateway_Paypal'
-		);
-		// Filter
-		$gateways = apply_filters( 'learn_press_payment_method', $gateways );
-		if ( $gateways ) {
-			foreach ( $gateways as $k => $gateway ) {
+		if( !$this->payment_gateways ) {
+			$gateways = array(
+				'paypal' => 'LP_Gateway_Paypal'
+			);
+			// Filter
+			$gateways = apply_filters( 'learn_press_payment_method', $gateways );
+			if ( $gateways ) {
+				foreach ( $gateways as $k => $gateway ) {
 
-				if ( is_string( $gateway ) && class_exists( $gateway ) ) {
-					$gateway = new $gateway();
+					if ( is_string( $gateway ) && class_exists( $gateway ) ) {
+						$gateway = new $gateway();
+					}
+					$this->payment_gateways[$k] = apply_filters( 'learn_press_payment_method_init', $gateway );
 				}
-				$this->payment_gateways[$k] = apply_filters( 'learn_press_payment_method_init', $gateway );
-
 			}
 		}
 	}

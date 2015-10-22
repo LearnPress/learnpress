@@ -217,6 +217,10 @@ class LP_Checkout {
 				if ( $result['result'] == 'success' ) {
 
 					$result = apply_filters( 'learn_press_payment_successful_result', $result, $order_id );
+
+					// remove cart
+					LP()->cart->empty_cart();
+
 					if ( is_ajax() ) {
 						learn_press_send_json( $result );
 					} else {

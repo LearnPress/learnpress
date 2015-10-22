@@ -49,25 +49,33 @@ class LP_Order {
 		}
 	}
 
-	function get_order( $id ){
-		if( ! $id){
+	/**
+	 * Get order by it's ID
+	 *
+	 * @param $id
+	 *
+	 * @return bool
+	 */
+	function get_order( $id ) {
+		if ( !$id ) {
 			return false;
 		}
 
 		if ( $result = get_post( $id ) ) {
 
-			$this->id                  = $result->ID;
-			$this->order_date          = $result->post_date;
-			$this->modified_date       = $result->post_modified;
-			$this->customer_message    = $result->post_excerpt;
-			$this->customer_note       = $result->post_excerpt;
-			$this->post_status         = $result->post_status;
+			$this->id               = $result->ID;
+			$this->order_date       = $result->post_date;
+			$this->modified_date    = $result->post_modified;
+			$this->customer_message = $result->post_excerpt;
+			$this->customer_note    = $result->post_excerpt;
+			$this->post_status      = $result->post_status;
 
 			return true;
 		}
 
 		return false;
 	}
+
 	/**
 	 * Get current status of order
 	 *
@@ -127,10 +135,20 @@ class LP_Order {
 
 	/**
 	 * Format order number id
+	 *
 	 * @return string
 	 */
 	function get_order_number() {
-		return '#' . sprintf( "%'.010d", $this->id );
+		return apply_filters( 'learn_press_get_order_number', '#' . sprintf( "%'.010d", $this->id ), $this );
+	}
+
+	function get_order_status() {
+		$statuses = learn_press_get_order_statuses();
+		$status   = '';
+		if ( !empty( $statuses[$this->post_status] ) ) {
+			$status = $statuses[$this->post_status];
+		}
+		return apply_filters( 'learn_press_get_order_status', $status, $this );
 	}
 
 	/**
@@ -172,12 +190,42 @@ class LP_Order {
 
 	/*********************************/
 
-	function get_items() {
-		if ( !$this->post ) return false;
-		return learn_press_get_order_items( $this->post->ID );
+
+	public function get_items() {
+		global $wpdb;
+
+		$query = $wpdb->prepare( "
+			SELECT order_item_id, order_item_name
+			FROM {$wpdb->learnpress_order_items}
+			WHERE order_id = %d ", $this->id );
+
+		$_items = $wpdb->get_results( $query );
+		$items  = array();
+		// Loop items
+		if ( $_items ) foreach ( $_items as $item ) {
+			$items[$item->order_item_id]['name'] = $item->order_item_name;
+			$items[$item->order_item_id]['id']   = $item->order_item_id;
+
+			$this->get_item_meta( $items[$item->order_item_id] );
+			//$items[$item->order_item_id]['item_meta_array'] = $this->get_item_meta_array( $item->order_item_id );
+			//$items[$item->order_item_id]                    = $this->expand_item_meta( $items[$item->order_item_id] );
+		}
+
+		return apply_filters( 'learn_press_order_get_items', $items, $this );
 	}
 
-	function remove_order_items(){
+	function get_item_meta( &$item ) {
+		if( $metas = get_metadata( 'learnpress_order_item', $item['id'] ) ){
+			foreach( $metas as $k => $v ){
+				$item[ preg_replace( '!^_!', '', $k ) ] = maybe_unserialize( $v[0] );
+			}
+		};
+	}
+
+	/**
+	 * Remove all items from an order
+	 */
+	function remove_order_items() {
 		global $wpdb;
 		$wpdb->query(
 			$wpdb->prepare( "
@@ -198,9 +246,18 @@ class LP_Order {
 		);
 	}
 
-	function add_item( $item, $quantity = 1, $meta = array() ){
+	/**
+	 * Add a new item to order
+	 *
+	 * @param       $item
+	 * @param int   $quantity
+	 * @param array $meta
+	 *
+	 * @return bool
+	 */
+	function add_item( $item, $quantity = 1, $meta = array() ) {
 		$item_id = learn_press_add_order_item( $this->id, $item );
-		if( ! $item_id ){
+		if ( !$item_id ) {
 			return false;
 		}
 		learn_press_add_order_item_meta( $item_id, '_course_id', $item['item_id'] );
@@ -221,7 +278,7 @@ class LP_Order {
 
 	public function __get( $key ) {
 		$value = null;
-		if( ! isset( $this->{$key} ) ){
+		if ( !isset( $this->{$key} ) ) {
 			$value = get_post_meta( $this->id, '_' . $key, true );
 		}
 		return $value;
@@ -247,6 +304,7 @@ class LP_Order {
 	 * Get an instance of LP_Order by post ID or WP_Post object
 	 *
 	 * @param $order
+	 *
 	 * @return LP_Order
 	 */
 	static function instance( $order ) {

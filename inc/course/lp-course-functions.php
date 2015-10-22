@@ -1486,36 +1486,7 @@ function learn_press_user_can_retake_course( $course_id = null, $user_id = null 
 	return $taken < $available;
 }
 
-/**
- * Add a message into queue and then print out
- *
- * @param $type
- * @param $message
- */
-function learn_press_add_message( $type, $message ) {
-	$messages = get_transient( 'learn_press_message' );
-	if ( !$messages ) $messages = array();
-	if ( empty( $messages[$type] ) ) $messages[$type] = array();
-	$messages[$type][] = $message;
-	set_transient( 'learn_press_message', $messages, HOUR_IN_SECONDS );
-}
 
-/**
- * Print out the message stored in the queue
- */
-function learn_press_show_message() {
-	$messages = get_transient( 'learn_press_message' );
-	if ( $messages ) foreach ( $messages as $type => $message ) {
-		foreach ( $message as $mess ) {
-			echo '<div class="lp-message ' . $type . '">';
-			echo $mess;
-			echo '</div>';
-		}
-	}
-	delete_transient( 'learn_press_message' );
-}
-
-add_action( 'learn_press_before_main_content', 'learn_press_show_message', 50 );
 
 /**
  * Check to see if user can view a quiz or not
@@ -2409,27 +2380,7 @@ add_filter( 'template_include', 'learn_press_prevent_access_lesson' );
  * @return boolean
  */
 function learn_press_user_can_view_lesson( $lesson_id, $user_id = null ) {
-	$return = false;
-	if ( $user_id = null ) {
-		$user_id = get_current_user_id();
-	}
-
-	$course_id = learn_press_get_course_by_lesson( $lesson_id );
-
-	$enrolled_require = get_post_meta( $course_id, '_lpr_course_enrolled_require', true );
-
-	// check enrolled require
-	if ( !$enrolled_require || $enrolled_require == 'no' ) {
-		$return = true;
-	} elseif ( learn_press_is_lesson_preview( $lesson_id ) ) { // lesson can preview
-		$return = true;
-	} else {
-		if ( learn_press_is_enrolled_course() ) { // user has enrolled course
-			$return = true;
-		}
-	}
-
-	return apply_filters( 'learn_press_user_can_view_lesson', $return, $lesson_id, $user_id );
+	return LP()->user->can( 'view-lesson', $lesson_id );
 }
 
 /**

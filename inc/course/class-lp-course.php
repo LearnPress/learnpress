@@ -37,7 +37,7 @@ class LP_Course extends LP_Abstract_Course {
 	}
 
 	/**
-	 * Get the product class name
+	 * Get the course class name
 	 *
 	 * @param  WP_Post $the_course
 	 * @param  array   $args (default: array())

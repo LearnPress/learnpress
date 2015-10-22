@@ -355,4 +355,14 @@ abstract class LP_Abstract_Course {
 		}
 		return apply_filters( 'learn_press_get_course_items', $items, $this );
 	}
+
+	/**
+	 * Return true if this course can be purchaseable
+	 *
+	 * @return mixed
+	 */
+	function is_purchaseable(){
+		// TODO: needs to check more criteria, currently only check if this course is required enrollment
+		return $this->enroll_requirement;
+	}
 }

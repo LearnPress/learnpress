@@ -11,6 +11,8 @@ if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
+global $course;
+
 do_action( 'learn_press_before_single_course' ); ?>
 
 <div id="post-<?php the_ID(); ?>" <?php post_class(); ?> itemscope itemtype="http://schema.org/CreativeWork">
@@ -19,7 +21,7 @@ do_action( 'learn_press_before_single_course' ); ?>
 
 	<div class="course-summary">
 
-		<?php if ( learn_press_is_enrolled_course() ) { ?>
+		<?php if ( /*learn_press_is_enrolled_course()*/ LP()->user->has( 'enrolled-course', $course->id ) ) { ?>
 
 			<?php learn_press_get_template( 'single-course/content-learning.php' ); ?>
 

@@ -77,6 +77,24 @@ function learn_press_update_order( $order_data ) {
 	return learn_press_create_order( $order_data );
 }
 
+function learn_press_get_booking_id_by_key( $order_key ){
+	global $wpdb;
+
+	$order_id = $wpdb->get_var(
+		$wpdb->prepare( "
+			SELECT post_id
+			FROM {$wpdb->prefix}postmeta pm
+			INNER JOIN {$wpdb->prefix}posts p ON p.ID = pm.post_id
+			WHERE meta_key = '_hb_booking_key'
+			AND meta_value = %s
+			AND p.post_type = %s
+		", $order_key, LP()->order_post_type )
+	);
+
+	return $order_id;
+}
+
+/**************************/
 /**
  * Update Order status
  *

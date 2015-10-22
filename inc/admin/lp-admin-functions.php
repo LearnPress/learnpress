@@ -585,7 +585,6 @@ add_action( 'admin_notices', 'learn_press_one_click_install_sample_data_notice' 
 
 function learn_press_request_query( $vars = array() ) {
 	global $typenow, $wp_query, $wp_post_statuses;
-
 	if ( LP()->order_post_type === $typenow ) {
 		// Status
 		if ( !isset( $vars['post_status'] ) ) {
@@ -598,6 +597,7 @@ function learn_press_request_query( $vars = array() ) {
 			}
 
 			$vars['post_status'] = array_keys( $post_statuses );
+
 		}
 	}
 	return $vars;
@@ -628,5 +628,4 @@ function learn_press_admin_section_loop_item_class( $item, $section ) {
 	if ( $classes ) echo 'class="' . join( ' ', $classes ) . '"';
 	return $classes;
 }
-
 

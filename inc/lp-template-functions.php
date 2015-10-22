@@ -37,6 +37,15 @@ if ( !function_exists( 'learn_press_course_title' ) ) {
 	}
 }
 
+if ( !function_exists( 'learn_press_course_status' ) ) {
+	/**
+	 * Display the title for single course
+	 */
+	function learn_press_course_status() {
+		learn_press_get_template( 'single-course/status.php' );
+	}
+}
+
 if ( !function_exists( 'learn_press_single_course_description' ) ) {
 	/**
 	 * Display course description
@@ -134,6 +143,14 @@ if ( !function_exists( 'learn_press_checkout_user_logged_in' ) ) {
 	}
 }
 
+if ( !function_exists( 'learn_press_enroll_script' ) ) {
+	/**
+	 */
+	function learn_press_enroll_script() {
+		LP_Assets::enqueue_script( 'learn-press-enroll', LP()->plugin_url( 'assets/js/frontend/enroll.js' ), array( 'learn-press-js' ) );
+	}
+}
+
 if ( !function_exists( 'learn_press_body_class' ) ) {
 	/**
 	 * Append new class to body classes
@@ -194,6 +211,42 @@ function lp_setup_course_data( $post ) {
 
 	return $GLOBALS['course'];
 }
+
+/**
+ * Display a message immediately with out push into queue
+ *
+ * @param        $message
+ * @param string $type
+ */
+function learn_press_display_message( $message, $type = 'success' ){
+
+	// get all notices added into queue
+	$notices = LP_Session::get( 'notices' );
+	LP_Session::set( 'notices', null );
+
+	// add new notice and display
+	learn_press_add_notice( $message, $type );
+	echo learn_press_get_notices( true );
+
+	// store back notices
+	LP_Session::set( 'notices', $notices );
+}
+/**
+ * Print out the message stored in the queue
+ */
+function learn_press_print_messages() {
+	$messages = get_transient( 'learn_press_message' );
+	if ( $messages ) foreach ( $messages as $type => $message ) {
+		foreach ( $message as $mess ) {
+			echo '<div class="lp-message ' . $type . '">';
+			echo $mess;
+			echo '</div>';
+		}
+	}
+	delete_transient( 'learn_press_message' );
+}
+
+add_action( 'learn_press_before_main_content', 'learn_press_print_messages', 50 );
 
 /*******************************************************************************************/
 /*******************************************************************************************/

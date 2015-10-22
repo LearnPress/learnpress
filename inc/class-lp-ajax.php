@@ -56,6 +56,32 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 				case 'checkout':
 					$result = LP()->checkout->process_checkout();
 					break;
+				case 'enroll-course':
+					$course_id = learn_press_get_request( 'enroll-course' );
+					if ( !$course_id ) {
+						throw new Exception( __( 'Invalid course', 'learn_press' ) );
+					}
+					$insert_id = LP()->user->enroll( $course_id );
+
+					$response = array(
+						'result'   => 'fail',
+						'redirect' => apply_filters( 'learn_press_enroll_course_failure_redirect_url', get_the_permalink( $course_id ) )
+					);
+					if ( $insert_id ) {
+						$response['result']   = 'success';
+						$response['redirect'] = apply_filters( 'learn_press_enrolled_course_redirect_url', get_the_permalink( $course_id ) );
+						learn_press_add_notice( sprintf( __( 'Congrats! You have enrolled <strong>%s</strong>', 'learn_press' ), get_the_title( $course_id ) ) );
+					}
+
+					if( is_ajax() ){
+						learn_press_send_json( $response );
+					}
+
+					if( $response['redirect'] ){
+						wp_redirect( $response['redirect'] );
+					}
+
+					break;
 				case 'checkout-login':
 					$result = array(
 						'result' => 'success'

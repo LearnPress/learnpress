@@ -28,9 +28,11 @@ class LP_Assets extends LP_Abstract_Assets {
 		self::add_script( 'lpr-global', LP_JS_URL . 'global.js' );
 		self::add_script( 'lpr-time-circle-js', LP_JS_URL . 'jquery.timer.js' );
 		self::add_script( 'block-ui', LP_JS_URL . 'jquery.block-ui.js' );
-		self::add_script( 'learn-press-js', LP_JS_URL . 'learnpress.js', array( 'jquery', 'lpr-alert-js', 'lpr-global', 'lpr-time-circle-js' ) );
+		self::add_script( 'learn-press-js', LP_JS_URL . 'frontend/learnpress.js', array( 'jquery', 'lpr-alert-js', 'lpr-global', 'lpr-time-circle-js' ) );
 
-		learn_press_enqueue_script( "<script>var ajaxurl='" . admin_url( 'admin-ajax.php' ) . "';</script>", true );
+		learn_press_enqueue_script( "<script>var learn_press_ajaxurl='" . admin_url( 'admin-ajax.php' ) . "';</script>", true );
+		learn_press_enqueue_script( "<script>var learn_press_site_url='" . get_site_url() . "';</script>", true );
+		learn_press_enqueue_script( "<script>var learn_press_url='" . get_the_permalink() . "';</script>", true );
 
 		global $post;
 
@@ -51,7 +53,6 @@ class LP_Assets extends LP_Abstract_Assets {
 		if( learn_press_is_checkout() ) {
 			self::enqueue_script( 'checkout', LP()->plugin_url( 'assets/js/frontend/checkout.js' ) );
 		}
-		//echo "WWWWWWWWWWWWWWWWWWWWWWW";
 	}
 }
 LP_Assets::init();

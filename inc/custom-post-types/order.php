@@ -23,7 +23,13 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 			add_filter( 'page_row_actions', array( $this, 'post_row_actions' ), 10, 2 );
 			add_filter( 'manage_edit-lpr_order_sortable_columns', array( $this, 'sortable_columns' ) );
 
-			add_filter( 'posts_orderby', array( $this, 'posts_orderby' ) );
+			// Disable Auto Save
+			add_action( 'admin_print_scripts', array( $this, 'disable_autosave' ) );
+
+
+			add_action( 'admin_init', array( $this, 'remove_box' ) );
+
+			/*add_filter( 'posts_orderby', array( $this, 'posts_orderby' ) );
 			add_filter( 'posts_join_paged', array( $this, 'posts_join_paged' ) );
 			add_filter( 'posts_fields', array( $this, 'posts_fields' ) );
 			add_filter( 'posts_where_paged', array( $this, 'posts_where_paged' ) );
@@ -33,10 +39,26 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 
 			add_action( 'wp_trash_post', array( $this, 'preparing_to_trash_order' ) );
 
-			add_action( 'before_delete_post', array( $this, 'delete_transaction' ) );
+			add_action( 'before_delete_post', array( $this, 'delete_transaction' ) );*/
 			parent::__construct();
 
 
+		}
+
+		function remove_box() {
+			//remove_post_type_support( LP()->order_post_type, 'title' );
+			remove_post_type_support( LP()->order_post_type, 'editor' );
+		}
+
+		/**
+		 * Disable the auto-save functionality for Orders.
+		 */
+		public function disable_autosave() {
+			global $post;
+
+			if ( $post && in_array( get_post_type( $post->ID ), wc_get_order_types( 'order-meta-boxes' ) ) ) {
+				wp_dequeue_script( 'autosave' );
+			}
 		}
 
 		function delete_transaction( $post_id ) {
@@ -385,10 +407,10 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 		static function register_metabox() {
 
 			// Remove Publish metabox
-			remove_meta_box( 'submitdiv', LP()->order_post_type, 'side' );
+			//remove_meta_box( 'submitdiv', LP()->order_post_type, 'side' );
 
 			// Remove Slug metabox
-			remove_meta_box( 'slugdiv', LP()->order_post_type, 'normal' );
+			//remove_meta_box( 'slugdiv', LP()->order_post_type, 'normal' );
 
 			// Remove screen options tab
 			//add_filter('screen_options_show_screen', '__return_false');
@@ -397,87 +419,7 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 		}
 
 		static function order_details( $post ) {
-			$user        = learn_press_get_user( get_post_meta( $post->ID, '_learn_press_customer_id', true ) );
-			$order_items = learn_press_get_order_items( $post->ID );
-			$status      = strtolower( get_post_meta( $post->ID, '_learn_press_transaction_status', true ) );
-			if ( $status && !in_array( $status, array( 'completed', 'pending' ) ) ) {
-				$status = 'Pending';
-			}
-			$currency_symbol = learn_press_get_currency_symbol( $order_items->currency );
-			?>
-			<div class="order-details">
-				<div class="order-data">
-					<div class="order-data-number"><?php echo learn_press_transaction_order_number( $post->ID ); ?></div>
-					<div
-						class="order-data-date"><?php echo learn_press_transaction_order_date( $post->post_date ); ?></div>
-					<div class="order-data-status <?php echo sanitize_title( $status ); ?>"><?php echo $status; ?></div>
-					<div
-						class="order-data-payment-method"><?php echo learn_press_payment_method_from_slug( $post->ID ); ?></div>
-				</div>
-				<div class="order-user-data clearfix">
-					<div class="order-user-avatar">
-						<?php echo get_avatar( $user->ID, 120 ); ?>
-					</div>
-					<div class="order-user-meta">
-						<h2 class="user-display-name">
-							<?php echo empty( $user->display_name ) ? __( 'Unknown', 'learn_press' ) : $user->display_name; ?>
-						</h2>
-
-						<div class="user-email">
-							<?php echo empty( $user->user_email ) ? __( 'Unknown', 'learn_press' ) : $user->user_email; ?>
-						</div>
-						<div class="user-ip-address">
-							<?php echo get_post_meta( $post->ID, '_learn_press_customer_ip', true ); ?>
-						</div>
-					</div>
-				</div>
-				<div class="order-products">
-					<table>
-						<thead>
-						<tr>
-							<th colspan="2"><?php _e( 'Courses', 'learn_press' ); ?></th>
-							<th class="align-right"><?php _e( 'Amount', 'learn_press' ); ?></th>
-						</tr>
-						</thead>
-						<tbody>
-						<?php if ( $products = learn_press_get_transition_products( $post->ID ) ): foreach ( $products as $pro ) { ?>
-							<tr>
-								<td colspan="2">
-									<a href="<?php the_permalink( $pro->ID ); ?>"><?php echo get_the_title( $pro->ID ); ?></a>
-								</td>
-								<td class="align-right"><?php echo $pro->amount ? learn_press_format_price( $pro->amount, $currency_symbol ) : __( 'Free!', 'learn_press' ); ?></td>
-							</tr>
-						<?php } endif; ?>
-						</tbody>
-						<tfoot>
-						<tr>
-							<td></td>
-							<td width="300" class="align-right"><?php _e( 'Sub Total', 'learn_press' ); ?></td>
-							<td width="100"
-								class="align-right"><?php echo learn_press_format_price( $order_items->sub_total, $currency_symbol ); ?></td>
-						</tr>
-						<tr>
-							<td></td>
-							<td class="align-right"><?php _e( 'Total', 'learn_press' ); ?></td>
-							<td class="align-right total"><?php echo learn_press_format_price( $order_items->total, $currency_symbol ); ?></td>
-						</tr>
-						<tr>
-							<td></td>
-							<td class="align-right" colspan="2">
-								<?php _e( 'Status', 'learn_press' ); ?>
-								<select name="learn_press_order_status">
-									<?php foreach ( learn_press_get_order_statuses() as $status => $label ) { ?>
-										<option value="<?php echo $status; ?>" <?php selected( $status == get_post_status( $post->ID ) ? 1 : 0, 1 ); ?>><?php echo $label; ?></option>
-									<?php } ?>
-								</select>
-								<button id="update-order-status" class="button button-primary" type="button"><?php _e( 'Apply', 'learn_press' ); ?></button>
-							</td>
-						</tr>
-						</tfoot>
-					</table>
-				</div>
-			</div>
-			<?php
+			learn_press_admin_view( 'meta-boxes/order/details.php', array( 'order' => LP_Order::instance( $post ) ) );
 		}
 
 		function preparing_to_trash_order( $post_id ) {
@@ -485,6 +427,18 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 
 		}
 
+		/**
+		 * Enqueue scripts
+		 *
+		 * @static
+		 */
+		static function admin_scripts() {
+			if ( in_array( get_post_type(), array( LP()->order_post_type ) ) ) {
+
+				wp_enqueue_style( 'lp-meta-boxes', LP()->plugin_url( 'assets/css/meta-boxes.css' ) );
+
+			}
+		}
 
 		/**
 		 * Register new post status for order

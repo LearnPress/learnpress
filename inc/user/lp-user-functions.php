@@ -96,7 +96,7 @@ function learn_press_before_take_course_prerequisite( $can_take, $user_id, $cour
 
 
 function learn_press_send_user_email_order( $status, $order_id ){
-
+    return;
     $status = strtolower( $status );
     if( 'completed' == $status ){
         $order = new LP_Order( $order_id );

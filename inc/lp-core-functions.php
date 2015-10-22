@@ -1846,6 +1846,14 @@ function learn_press_add_notice( $message, $type = 'notice' ) {
 }
 
 /**
+ * Clear all notices in queue
+ */
+function learn_press_clear_notices(){
+	LP_Session::set( 'notices', null );
+	do_action( 'learn_press_clear_notices' );
+}
+
+/**
  * Display all notices from queue and clear queue if required
  *
  * @param bool|true $clear
@@ -1866,10 +1874,22 @@ function learn_press_print_notices( $clear = true ) {
 
 		// clear queue if required
 		if ( $clear ) {
-			LP_Session::set( 'notices', null );
+			learn_press_clear_notices();
 		}
 	}
 }
+
+function learn_press_get_notices( $clear = false ){
+	ob_start();
+	learn_press_print_notices( $clear );
+	return ob_get_clean();
+}
+
+function _learn_press_print_notices(){
+	learn_press_print_notices();
+}
+
+add_action( 'learn_press_before_single_course_summary', '_learn_press_print_notices', 0 );
 
 function learn_press_debug( $a ) {
 	echo '<pre>';

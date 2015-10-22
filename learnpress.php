@@ -156,8 +156,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 			$this->init_hooks();
 			// includes
 			$this->includes();
-			// load payment gateways
-			//LP_Gateways::instance()->get_available_payment_gateways();
+
 			// let third parties know that we're ready
 			do_action( 'learn_press_loaded' );
 			do_action( 'learn_press_register_add_ons' );
@@ -263,7 +262,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 				'learnpress_sections',
 				'learnpress_section_items',
 				'learnpress_quiz_history',
-				'learnpress_user_course',
+				'learnpress_user_courses',
 				'learnpress_order_itemmeta',
 				'learnpress_order_items'
 			);
@@ -298,6 +297,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 
 			// redirect to our template if needed
 			add_action( 'template_redirect', 'learn_press_handle_purchase_request' );
+
 		}
 
 		/**
@@ -309,19 +309,25 @@ if ( !class_exists( 'LearnPress' ) ) {
 				$this->cart = LP_Cart::instance();
 			}
 
-			$this->session = LP_Session::instance();
+			$this->get_session();
+			$this->get_user();
+			$this->gateways = LP_Gateways::instance()->get_available_payment_gateways();
+
 
 		}
 
 		function get_session() {
 			if ( !$this->session ) {
-				// Session class, handles session data for users - can be overwritten if custom handler is needed
-				$session_class = apply_filters( 'learn_press_session_handler', 'LP_Session' );
-
-				// Class instances
-				$this->session = new $session_class();
+				$this->session = LP_Session::instance();
 			}
 			return $this->session;
+		}
+
+		function get_user(){
+			if ( !$this->user ) {
+				$this->user = learn_press_get_current_user();
+			}
+			return $this->user;
 		}
 
 		/**
@@ -621,6 +627,9 @@ if ( !class_exists( 'LearnPress' ) ) {
 		 * @return void
 		 */
 		public function lpr_scripts() {
+
+			_deprecated_function( __CLASS__ . '::' . __FUNCTION__, LP()->version );
+
 			wp_enqueue_style( 'lpr-learnpress-css', LP_CSS_URL . 'learnpress.css' );
 			wp_enqueue_style( 'lpr-time-circle-css', LP_CSS_URL . 'timer.css' );
 

@@ -28,11 +28,15 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 		}
 
 		static function admin_scripts(){
-			wp_enqueue_style( 'lp-meta-boxes', LP()->plugin_url( 'assets/css/meta-boxes.css' ) );
-			wp_enqueue_script( 'jquery-caret', LP()->plugin_url( 'assets/js/jquery.caret.js', 'jquery' ) );
-			wp_enqueue_script( 'lp-meta-boxes', LP()->plugin_url( 'assets/js/meta-boxes.js', 'jquery' ) );
+			if ( in_array( get_post_type(), array( LP()->course_post_type, LP()->lesson_post_type ) ) ) {
 
-			wp_localize_script( 'lp-meta-boxes', 'lp_lesson_params', self::admin_params() );
+				wp_enqueue_style( 'lp-meta-boxes', LP()->plugin_url( 'assets/css/meta-boxes.css' ) );
+				wp_enqueue_script( 'jquery-caret', LP()->plugin_url( 'assets/js/jquery.caret.js', 'jquery' ) );
+				wp_enqueue_script( 'lp-meta-boxes', LP()->plugin_url( 'assets/js/meta-boxes.js', 'jquery', 'backbone', 'util' ) );
+
+				wp_localize_script( 'lp-meta-boxes', 'lp_lesson_params', self::admin_params() );
+
+			}
 		}
 
 		static function admin_styles(){
@@ -109,7 +113,7 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 		}
 
 		static function add_meta_boxes() {
-			$prefix     = '_lpr_';
+			$prefix     = '_lp_';
 			$meta_boxes = array(
 				'id'     => 'lesson_settings',
 				'title'  => __('Lesson Settings', 'learn_press'),
@@ -117,19 +121,19 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 				'fields' => array(
 					array(
 						'name' => __( 'Lesson Duration', 'learn_press' ),
-						'id'   => "{$prefix}lesson_duration",
+						'id'   => "{$prefix}duration",
 						'type' => 'number',
 						'desc' => __( 'The length of the lesson (in minutes)', 'learn_press' ),
 						'std'  => 30,
 					),
 					array(
 						'name'    => __( 'Preview Lesson', 'learn_press' ),
-						'id'      => "{$prefix}lesson_preview",
+						'id'      => "{$prefix}is_previewable",
 						'type'    => 'radio',
 						'desc'    => __( 'If this is a preview lesson, then student can view this lesson content without taking the course', 'learn_press' ),
 						'options' => array(
-							'preview'     => __( 'Yes', 'learn_press' ),
-							'not_preview' => __( 'No', 'learn_press' ),
+							'yes'     => __( 'Yes', 'learn_press' ),
+							'no' => __( 'No', 'learn_press' ),
 						),
 						'std'     => 'not_preview'
 					)
