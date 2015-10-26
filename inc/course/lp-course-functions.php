@@ -1,12 +1,10 @@
 <?php
 /**
- * LearnPress Course Functions
- *
- * @file
- *
  * Common functions to manipulate with course, lesson, quiz, questions, etc...
- * Author foobla
- * Created Mar 18 2015
+ *
+ * @author  ThimPress
+ * @package LearnPress/Functions
+ * @version 1.0
  */
 
 if ( !defined( 'ABSPATH' ) ) {
@@ -21,9 +19,44 @@ function lp_get_quiz( $the_quiz ) {
 	return LP_Quiz::get_quiz( $the_quiz );
 }
 
-function learn_press_get_course( $the_course ){
+function learn_press_get_course( $the_course ) {
 	return lp_get_course( $the_course );
 }
+
+/**
+ * print out class for quiz body
+ *
+ * @param null $class
+ */
+function learn_press_quiz_class( $class = null ) {
+	global $quiz;
+
+	if( $class && is_string( $class )){
+		$class = explode( ' ', $class );
+	}elseif( ! $class ){
+		$class = array();
+	}
+
+	$class[] = "single-quiz";
+	if ( learn_press_user_has_completed_quiz() ) {
+		$class[] = "completed";
+	} elseif ( learn_press_user_has_started_quiz() ) {
+		$class[] = "started";
+	}
+
+	if( $quiz->has( 'questions' ) ){
+		$class[] = 'has-questions';
+	}
+
+	$class[] = 'clearfix';
+
+	$class = array_unique( $class );
+
+	post_class( join( ' ', $class ) );
+}
+
+/*******************************************************/
+/*******************************************************/
 
 /**
  * Get number of lesson in one course
@@ -446,7 +479,7 @@ function learn_press_get_question_answers( $user_id = null, $quiz_id = null ) {
 		$user_id = get_current_user_id();
 	}
 
-	if( ! $quiz_id ){
+	if ( !$quiz_id ) {
 		$quiz_id = $quiz->id;
 	}
 	$answers = false;
@@ -510,7 +543,7 @@ function learn_press_get_user_quiz_data( $meta_key, $user_id = null, $quiz_id = 
 		$user_id = learn_press_get_current_user_id();
 	}
 	$quiz_id = learn_press_get_quiz_id( $quiz_id );
-	$meta = get_user_meta( $user_id, $meta_key, true );
+	$meta    = get_user_meta( $user_id, $meta_key, true );
 	return !empty( $meta[$quiz_id] ) ? $meta[$quiz_id] : false;
 }
 
@@ -932,20 +965,7 @@ function learn_press_get_question_position( $user_id = null, $quiz_id = null, $q
 	return $return;
 }
 
-/**
- * print out class for quiz body
- *
- * @param null $class
- */
-function learn_press_quiz_class( $class = null ) {
-	$class .= " single-quiz clearfix";
-	if ( learn_press_user_has_completed_quiz() ) {
-		$class .= " quiz-completed";
-	} elseif ( learn_press_user_has_started_quiz() ) {
-		$class .= " quiz-started";
-	}
-	post_class( $class );
-}
+
 
 /**
  * display the seconds in time format h:i:s
@@ -978,7 +998,7 @@ function learn_press_init_course() {
 	$post_id = 0;
 	if ( LP()->course_post_type == $post_type ) {
 		global $post;
-		if ($post) {
+		if ( $post ) {
 			$post_id = $post->ID;
 		}
 	} else if ( !empty( $_REQUEST['course_id'] ) ) {
@@ -986,6 +1006,7 @@ function learn_press_init_course() {
 	}
 	lp_setup_course_data( $post_id );
 }
+
 add_action( 'wp', 'learn_press_init_course' );
 
 function learn_press_head() {
@@ -1080,7 +1101,7 @@ function learn_press_get_course_price( $course_id = null, $with_currency = false
 	}
 	if ( !learn_press_is_free_course( $course_id ) ) {
 		$course = learn_press_get_course( $course_id );
-		$price = $course->get_price();
+		$price  = $course->get_price();
 		if ( $with_currency ) {
 			$price = learn_press_format_price( $price, true );
 		}
@@ -1173,7 +1194,7 @@ if ( !function_exists( 'is_ajax' ) ) {
 	 * @return bool
 	 */
 	function is_ajax() {
-		return defined( 'DOING_AJAX' ) ;
+		return defined( 'DOING_AJAX' );
 	}
 }
 
@@ -1486,41 +1507,6 @@ function learn_press_user_can_retake_course( $course_id = null, $user_id = null 
 	return $taken < $available;
 }
 
-
-
-/**
- * Check to see if user can view a quiz or not
- *
- * @param int $user_id
- * @param int $quiz_id
- *
- * @return boolean
- */
-function learn_press_user_can_view_quiz( $quiz_id = null, $user_id = null ) {
-	if ( !$user_id ) {
-		$user_id = get_current_user_id();
-	}
-	if ( !$quiz_id ) {
-
-		$quiz_id = get_the_ID();
-	}
-
-	if ( !$quiz_id ) return false;
-	$course_id = get_post_meta( $quiz_id, '_lpr_course', true );
-
-	$return           = false;
-	$enrolled_require = get_post_meta( $course_id, '_lpr_course_enrolled_require', true );
-	// check enrolled require
-	if ( !$enrolled_require || $enrolled_require == 'no' ) {
-		$return = true;
-	} else {
-		if ( learn_press_is_enrolled_course( $course_id ) ) { // user has enrolled course
-			$return = true;
-		}
-	}
-	return apply_filters( 'learn_press_user_can_view_quiz', $return, $quiz_id, $user_id );
-}
-
 /**
  * Check to see if user can view a assignment or not
  *
@@ -1578,8 +1564,7 @@ function learn_press_get_lesson_id( $lesson_id = null ) {
  * @return int
  */
 function learn_press_get_page_id( $name ) {
-	//$settings = LP_Settings::instance( 'pages' );
-	//return $settings->get( "general.{$name}_page_id", false );
+	return LP_Settings::instance()->get( "{$name}_page_id", false );
 }
 
 /**
@@ -1837,7 +1822,7 @@ function learn_press_get_lessons_quizzes( $course_id = null, $id_only = true ) {
  */
 function learn_press_mark_quiz_complete( $quiz_id = null, $user_id = null ) {
 	$quiz_id = learn_press_get_quiz_id( $quiz_id );
-	$time = current_time( 'timestamp' );
+	$time    = current_time( 'timestamp' );
 	if ( !learn_press_user_has_completed_quiz( $quiz_id ) ) {
 		if ( !$user_id ) $user_id = get_current_user_id();
 
@@ -1907,8 +1892,8 @@ function learn_press_finish_course( $course_id = null, $user_id = null ) {
 	$course_id = learn_press_get_course_id( $course_id );
 	if ( !$user_id ) $user_id = get_current_user_id();
 
-	$can_finish = ! learn_press_get_current_user()->is('guest');
-	if( ! apply_filters( 'lp_before_finish_course', $can_finish, $course_id, $user_id ) ){
+	$can_finish = !learn_press_get_current_user()->is( 'guest' );
+	if ( !apply_filters( 'lp_before_finish_course', $can_finish, $course_id, $user_id ) ) {
 		return;
 	}
 	$course_finished = get_user_meta( $user_id, '_lpr_course_finished', true );
@@ -2367,6 +2352,7 @@ function learn_press_prevent_access_lesson( $template ) {
 	}
 	return $template;
 }
+
 add_filter( 'template_include', 'learn_press_prevent_access_lesson' );
 
 /**
@@ -2381,6 +2367,18 @@ add_filter( 'template_include', 'learn_press_prevent_access_lesson' );
  */
 function learn_press_user_can_view_lesson( $lesson_id, $user_id = null ) {
 	return LP()->user->can( 'view-lesson', $lesson_id );
+}
+
+/**
+ * Check to see if user can view a quiz or not
+ *
+ * @param int $user_id
+ * @param int $quiz_id
+ *
+ * @return boolean
+ */
+function learn_press_user_can_view_quiz( $quiz_id = null, $user_id = null ) {
+	return LP()->user->can( 'view-quiz', $quiz_id );
 }
 
 /**
@@ -2462,15 +2460,18 @@ function learn_press_reset_user_data( $user_id ) {
 		}
 	}
 }
+
 /*****************************************************************************************/
 /**
  * Get curriculum of a course
  *
  * @version 1.0
+ *
  * @param $course_id
+ *
  * @return mixed
  */
-function learn_press_get_course_curriculum( $course_id ){
+function learn_press_get_course_curriculum( $course_id ) {
 	$course = LP_Course::get_course( $course_id );
 	return $course->get_curriculum();
 }
@@ -2479,21 +2480,23 @@ function learn_press_get_course_curriculum( $course_id ){
  * Create an empty post object
  *
  * @version 1.0
+ *
  * @param mixed
+ *
  * @return mixed
  */
-function learn_press_post_object( $defaults = false ){
+function learn_press_post_object( $defaults = false ) {
 	static $post_object = false;
-	if( ! $post_object ){
+	if ( !$post_object ) {
 		global $wpdb;
 		$post_object = new stdClass();
 		foreach ( $wpdb->get_col( "DESC " . $wpdb->posts, 0 ) as $column_name ) {
 			$post_object->{$column_name} = null;
 		}
 	}
-	if( $defaults ){
+	if ( $defaults ) {
 		settype( $defaults, 'array' );
-		foreach( $defaults as $k => $v ){
+		foreach ( $defaults as $k => $v ) {
 			$post_object->{$k} = $v;
 		}
 	}

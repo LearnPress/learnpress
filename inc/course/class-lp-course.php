@@ -27,6 +27,10 @@ class LP_Course extends LP_Abstract_Course {
 		return new $class_name( $the_course, $args );
 	}
 
+	public static function get_course_by_item( $item_id ){
+
+	}
+
 	/**
 	 * @param  string $course_type
 	 *

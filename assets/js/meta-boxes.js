@@ -1,4 +1,5 @@
 ;(function($){
+	if( typeof Backbone == 'undefined' ) return;
 	$(document).ready(function(){
 		var LP_Curriculum_Model = window.LP_Curriculum_Model = Backbone.Model.extend({
 			defaults           : {

@@ -68,12 +68,26 @@ abstract class LP_Abstract_Course {
 	 * @return mixed
 	 */
 	public function __get( $key ) {
-		$value = get_post_meta( $this->id, '_lp_' . $key, true );
-		if ( !empty( $value ) ) {
-			$this->$key = $value;
+		if( empty( $this->{$key} ) ) {
+			$value = false;
+			switch ( $key ) {
+				case 'current_lesson':
+					$lesson_id = !empty( $_REQUEST['lesson'] ) && $this->has( 'item', $_REQUEST['lesson'] ) ? $_REQUEST['lesson'] : null;
+					if( $lesson_id ){
+						$value = LP_Lesson::get_lesson( $lesson_id );
+					}
+					break;
+				case 'permalink':
+					$value = get_the_permalink( $this->id );
+					break;
+				default: // default is get course meta key
+					$value = get_post_meta( $this->id, '_lp_' . $key, true );
+			}
+			if ( !empty( $value ) ) {
+				$this->$key = $value;
+			}
 		}
-
-		return $value;
+		return ! empty( $this->$key ) ? $this->$key : null;
 	}
 
 	/**
@@ -189,24 +203,38 @@ abstract class LP_Abstract_Course {
 	 * @return mixed
 	 */
 	public function count_users_enrolled() {
-		$count = 0;
-		$users = $this->course_user;
-		if ( is_array( $users ) ) {
-			$users = array_unique( $users );
-			$count = sizeof( $users );
+
+		// Get students enrolled from settings of the course that owns course want to show
+		// So, if this value is set that means the result is fake ... :)
+		$enrolled = $this->students;
+
+		// But, if it is not set then we count the real value from DB
+		if( empty( $enrolled ) ){
+			global $wpdb;
+			$query = $wpdb->prepare("
+				SELECT count(o.ID)
+				FROM wp_posts o
+				INNER JOIN {$wpdb->learnpress_order_items} oi ON oi.order_id = o.ID
+				INNER JOIN {$wpdb->learnpress_order_itemmeta} oim ON oim.learnpress_order_item_id = oi.order_item_id
+				AND oim.meta_key = %s AND oim.meta_value = %d
+				WHERE o.post_status = %s
+			", '_course_id', $this->id, 'lp-completed');
+			$this->students = $wpdb->get_var( $query );
 		}
-		return apply_filters( 'learn_press_count_users_enrolled', $count, $this );
+		return apply_filters( 'learn_press_count_users_enrolled', $this->students , $this );
 	}
 
 	/**
 	 * Output html for students enrolled counter
 	 *
+	 * @param int Optional - user ID
 	 * @return string
 	 */
-	function get_students_html() {
+	function get_students_html( $user_id = null ) {
 		$output = '';
 		if ( $count = $this->count_users_enrolled() ):
-			if ( strtolower( learn_press_get_user_course_status() ) == 'completed' ):
+			$course_info = $this->get_course_info( $user_id );
+			if ( $course_info['status'] ):
 				if ( $count == 1 ):
 					$output .= __( 'You enrolled', 'learn_press' );
 				else:
@@ -221,6 +249,14 @@ abstract class LP_Abstract_Course {
 			$output = apply_filters( 'learn_press_no_student_enrolled_html', __( 'No student enrolled', 'learn_press' ), $this );
 		endif;
 		return $output;
+	}
+
+	public function get_course_info( $user_id = null ){
+		if( ! $user_id ){
+			$user_id = get_current_user_id();
+		}
+		$user = learn_press_get_user( $user_id );
+		return $user->get_course_info( $this->id );
 	}
 
 	/**
@@ -356,6 +392,51 @@ abstract class LP_Abstract_Course {
 		return apply_filters( 'learn_press_get_course_items', $items, $this );
 	}
 
+	function is_viewing( $content = '' ){
+		$viewing = apply_filters( 'learn_press_course_is_viewing', !empty( $_REQUEST['lesson'] ) && $this->has( 'item', $_REQUEST['lesson'] ) ? 'lesson' : 'course' );
+		if( $content ){
+			return $content == $viewing;
+		}
+		return $viewing;
+	}
+
+	/**
+	 * Check if the course has 'feature'
+	 * This function call to a function with prefix 'has'
+	 *
+	 * @param string
+	 * @return mixed
+	 * @throws Exception
+	 */
+	function has( $tag ) {
+		$args = func_get_args();
+		unset( $args[0] );
+		$method   = 'has_' . preg_replace( '!-!', '_', $tag );
+		$callback = array( $this, $method );
+		if ( is_callable( $callback ) ) {
+			return call_user_func_array( $callback, $args );
+		} else {
+			throw new Exception( sprintf( __( 'The function %s doesn\'t exists', 'learn_press' ), $tag ) );
+		}
+	}
+
+	/**
+	 * @param string
+	 * @return mixed
+	 * @throws Exception
+	 */
+	function is( $tag ) {
+		$args = func_get_args();
+		unset( $args[0] );
+		$method   = 'is_' . preg_replace( '!-!', '_', $tag );
+		$callback = array( $this, $method );
+		if ( is_callable( $callback ) ) {
+			return call_user_func_array( $callback, $args );
+		} else {
+			throw new Exception( sprintf( __( 'The function %s doesn\'t exists', 'learn_press' ), $tag ) );
+		}
+	}
+
 	/**
 	 * Return true if this course can be purchaseable
 	 *
@@ -364,5 +445,30 @@ abstract class LP_Abstract_Course {
 	function is_purchaseable(){
 		// TODO: needs to check more criteria, currently only check if this course is required enrollment
 		return $this->enroll_requirement;
+	}
+
+	function has_item( $item_id ){
+		static $items = array();
+		if( ! $items ){
+			$items = $this->get_curriculum_items( array( 'field' => 'ID', 'force' => true ) );
+		}
+		return in_array( $item_id, $items );
+	}
+
+	function get_item_link( $item_id ){
+		if( ! $this->has( 'item', $item_id ) ){
+			return false;
+		}
+		$permalink = get_the_permalink( $this->ID );
+
+		$post_name = get_post_field( 'post_name', $item_id );
+		if( '' != get_option( 'permalink_structure' ) ) {
+			$permalink .= $post_name;
+		}else{
+			$key = preg_replace( '!.*_!', '', get_post_type( $item_id ) );
+			$permalink = add_query_arg( array( $key => $post_name ), $permalink );
+		}
+
+		return apply_filters( 'learn_press_course_item_link', $permalink, $item_id, $this );
 	}
 }

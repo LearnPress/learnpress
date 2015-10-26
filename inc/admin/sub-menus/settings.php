@@ -10,11 +10,8 @@ if ( !defined( 'ABSPATH' ) ) {
  * Setting page
  */
 function learn_press_settings_page() {
-	//require_once( LP_PLUGIN_PATH . "/inc/admin/class-lp-admin-settings.php" );
-	//require_once( LP_PLUGIN_PATH . "/inc/admin/settings/class-lp-settings-general.php" );
-	//require_once( LP_PLUGIN_PATH . "/inc/admin/settings/class-lp-settings-pages.php" );
-	//require_once( LP_PLUGIN_PATH . "/inc/admin/settings/class-lp-settings-payment.php" );
-	//require_once( LP_PLUGIN_PATH . "/inc/admin/settings/class-lp-settings-emails.php" );
+	LP_Assets::enqueue_style( 'learn-press-admin' );
+	LP_Assets::enqueue_script( 'learn-press-admin-settings', LP()->plugin_url( 'assets/js/admin/settings.js') );
 
 
 	$current_tab = isset( $_GET['tab'] ) ? $_GET['tab'] : '';
@@ -67,7 +64,6 @@ function learn_press_settings_page() {
 		</h2>
 		<?php
 		do_action( 'learn_press_sections_' . $current_tab );
-
 		do_action( 'learn_press_settings_' . $current_tab );
 		?>
 		<p>

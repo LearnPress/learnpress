@@ -7,7 +7,7 @@
  */
 
 function learn_press_profile_shortcode() {
-
+echo "YYYYYYYYYYYYY";
 	global $wp_query;
 
 	if ( isset( $wp_query->query['user'] ) ) {
@@ -38,4 +38,4 @@ function learn_press_profile_shortcode() {
 	<?php
 }
 
-add_shortcode( 'learn_press_profile', 'learn_press_profile_shortcode' );
+//add_shortcode( 'learn_press_profile', 'learn_press_profile_shortcode' );

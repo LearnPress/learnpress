@@ -1,6 +1,6 @@
 <?php
 /**
- * Single course title
+ * Single quiz title
  *
  * @author  ThimPress
  * @package LearnPress/Templates
@@ -13,4 +13,4 @@ if ( !defined( 'ABSPATH' ) ) {
 
 ?>
 
-<h1 class="course-title entry-title"><?php the_title(); ?></h1>
+<h1 class="quiz-title entry-title"><?php the_title(); ?></h1>

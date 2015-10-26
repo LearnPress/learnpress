@@ -24,6 +24,8 @@ class LP_Abstract_User {
 	 */
 	public $quiz = false;
 
+	static protected $_order_items = array();
+
 	/**
 	 * Constructor
 	 *
@@ -390,12 +392,29 @@ class LP_Abstract_User {
 	/**
 	 * Return true if user can view a lesson
 	 *
-	 * @param $lesson_id
+	 * @param int $lesson_id
+	 * @param int $course_id
 	 * @return bool
 	 */
-	function can_view_lesson( $lesson_id ){
+	function can_view_lesson( $lesson_id, $course_id = null ){
 		$lesson = LP_Lesson::get_lesson( $lesson_id );
-		return $lesson->is( 'previewable' );
+		return $lesson->is( 'previewable' ) || $this->get_item_order( $lesson_id );
+	}
+
+	/**
+	 * Return true if user can view a quiz
+	 *
+	 * @param $quiz_id
+	 * @return bool
+	 */
+	function can_view_quiz( $quiz_id ){
+		if( $quiz = LP_Quiz::get_quiz( $quiz_id ) ){
+			$course = $quiz->get_course();
+			if( $course ) {
+				$this->get_course_order( $course->id );
+			}
+		}
+		return $this->get_item_order( $quiz_id );
 	}
 
 	function has( $role ) {
@@ -456,6 +475,8 @@ class LP_Abstract_User {
 		if ( $field && array_key_exists( $field, $info ) ) {
 			$info = $info[$field];
 		}
+
+		$this->_parse_item_order_of_course( $course_id );
 		return apply_filters( 'learn_press_user_course_status', $info, $this, $course_id );
 	}
 
@@ -488,18 +509,82 @@ class LP_Abstract_User {
 		$query    = $wpdb->prepare( "
 			SELECT order_id
 			FROM {$wpdb->posts} o
+			INNER JOIN {$wpdb->postmeta} om ON om.post_id = o.ID AND om.meta_key = %s AND om.meta_value = %d
 			INNER JOIN {$wpdb->learnpress_order_items} oi ON o.ID = oi.order_ID
 			INNER JOIN {$wpdb->learnpress_order_itemmeta} oim ON oim.learnpress_order_item_id= oi.order_item_id AND oim.meta_key = %s AND oim.meta_value = %d
-		", '_course_id', $course_id );
+		", '_user_id', $this->id, '_course_id', $course_id );
+
 		$order_id = $wpdb->get_var( $query );
 		if ( $order_id && $return == 'object' ) {
 			$order = LP_Order::instance( $order_id );
 		} else {
 			$order = $order_id;
 		}
+
+		$this->_parse_item_order_of_course( $course_id );
+
 		return $order;
 	}
 
+	/**
+	 * Get the order of an item in a course
+	 * Uses this function to verify permission for this user
+	 * with an item such as when user view a lesson or quiz
+	 *
+	 * @param int
+	 * @param string type of order to return LP_Order|ID
+	 * @return int
+	 */
+	function get_item_order( $item_id ){
+		if( !empty( self::$_order_items[ $item_id ] ) ){
+			return self::$_order_items[ $item_id ];
+		}
+		return false;
+	}
+
+	/**
+	 * Get the owns order of all items in a course to check permission for view
+	 * This function is called when a function related with a course also is called
+	 * Make sure parse the order of any items before check permission of it
+	 *
+	 * @param $course_id
+	 * @return bool
+	 */
+	private function _parse_item_order_of_course( $course_id ){
+		static $courses_parsed = array();
+		if( !empty( $courses_parsed[ $course_id ] ) ){
+			return true;
+		}
+		global $wpdb;
+		$items = LP_Course::get_course( $course_id )->get_curriculum_items( array( 'field' => 'ID' ) );
+
+		// How to make this simpler, LOL?
+		$query = $wpdb->prepare("
+			SELECT order_id, si.item_id
+			FROM {$wpdb->posts} o
+			INNER JOIN {$wpdb->postmeta} om ON om.post_id = o.ID AND om.meta_key = %s AND om.meta_value = %d
+			INNER JOIN {$wpdb->learnpress_order_items} oi ON o.ID = oi.order_ID
+			INNER JOIN {$wpdb->learnpress_order_itemmeta} oim ON oim.learnpress_order_item_id= oi.order_item_id AND oim.meta_key = %s
+			INNER JOIN {$wpdb->posts} c ON c.ID = oim.meta_value
+			INNER JOIN {$wpdb->learnpress_sections} s ON s.course_id = c.ID
+			INNER JOIN {$wpdb->learnpress_section_items} si ON si.section_id = s.id WHERE si.item_id IN (" . join( ',', $items ) . ")
+		", '_user_id', $this->id, '_course_id' );
+
+		if( $results = $wpdb->get_results( $query ) ){
+			foreach( $results as $row ){
+				self::$_order_items[ $row->item_id ] = $row->order_id;
+			}
+		}
+		$courses_parsed[ $course_id ] = true;
+	}
+
+	/**
+	 * Enroll this user to a course
+	 *
+	 * @param $course_id
+	 * @return int|void
+	 * @throws Exception
+	 */
 	function enroll( $course_id ) {
 		if ( !$this->can( 'enroll-course', $course_id ) ) {
 			learn_press_add_notice( __( 'Sorry! You can not enroll this course. Please try again or contact site admin' ), 'error' );
@@ -532,5 +617,13 @@ class LP_Abstract_User {
 			do_action( 'learn_press_user_enroll_course_failed', $this, $course_id, $inserted );
 		}
 		return $inserted;
+	}
+
+	function tab_courses_content(){
+		learn_press_get_template( 'profile/tabs/courses.php', array( 'user' => $this ) );
+	}
+
+	function tab_quizzes_content(){
+		learn_press_get_template( 'profile/tabs/quizzes.php', array( 'user' => $this ) );
 	}
 }

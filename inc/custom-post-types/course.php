@@ -228,7 +228,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		}
 
 		static function settings_meta_box() {
-			$prefix = '_lpr_';
+			$prefix = '_lp_';
 
 			$meta_box = array(
 				'id'       => 'course_settings',
@@ -238,7 +238,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 				'fields'   => array(
 					array(
 						'name' => __( 'Duration', 'learn_press' ),
-						'id'   => "{$prefix}_duration",
+						'id'   => "{$prefix}duration",
 						'type' => 'number',
 						'desc' => __( 'The duration of the course (by weeks)', 'learn_press' ),
 						'std'  => 10,
@@ -252,7 +252,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 					),
 					array(
 						'name' => __( 'Students enrolled', 'learn_press' ),
-						'id'   => "{$prefix}_students",
+						'id'   => "{$prefix}students",
 						'type' => 'number',
 						'desc' => __( 'How many students has took this course', 'learn_press' ),
 						'std'  => 0,

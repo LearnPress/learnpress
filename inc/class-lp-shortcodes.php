@@ -21,7 +21,7 @@ class LP_Shortcodes {
 			'learn_press_confirm_order'       => __CLASS__ . '::confirm_order',
 			'learn_press_profile'             => __CLASS__ . '::profile',
 			'learn_press_become_teacher_form' => __CLASS__ . '::become_teacher_form',
-			'learn_press_checkout'            => __CLASS__ . '::checkout'
+			'learn_press_checkout'            => __CLASS__ . '::checkout',
 		);
 
 		foreach ( $shortcodes as $shortcode => $function ) {
@@ -39,7 +39,7 @@ class LP_Shortcodes {
 		// Check cart has contents
 		if ( LP()->cart->is_empty() ) {
 			learn_press_get_template( 'checkout/empty-cart.php', array( 'checkout' => LP()->checkout() ) );
-		}else {
+		} else {
 			learn_press_get_template( 'checkout/form.php', array( 'checkout' => LP()->checkout() ) );
 		}
 		return ob_get_clean();
@@ -171,7 +171,6 @@ class LP_Shortcodes {
 	}
 
 	static function profile() {
-
 		global $wp_query;
 
 		if ( isset( $wp_query->query['user'] ) ) {
@@ -182,24 +181,14 @@ class LP_Shortcodes {
 
 		$output = '';
 		if ( !$user ) {
-			$output .= '<strong>' . __( 'This user in not available!', 'learn_press' ) . '</strong>';
+			ob_start();
+			learn_press_display_message( sprintf( __( 'The user %s in not available!', 'learn_press' ), $wp_query->query['user'] ), 'error' );
+			$output .= ob_get_clean();
 			return $output;
 		}
-
-		do_action( 'learn_press_before_profile_content' );
-
-		?>
-		<div id="profile-tabs">
-			<?php do_action( 'learn_press_add_profile_tab', $user ); ?>
-		</div>
-		<script>
-			jQuery(document).ready(function ($) {
-				$("#profile-tabs").tabs();
-				$("#quiz-accordion").accordion();
-			});
-		</script>
-		<?php
-		do_action( 'learn_press_after_profile_content' );
+		ob_start();
+		learn_press_get_template( 'profile/index.php', array( 'user' => LP_User::get_user( $user->id ) ) );
+		return ob_get_clean();
 	}
 }
 

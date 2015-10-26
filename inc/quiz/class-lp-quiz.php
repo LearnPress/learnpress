@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * Class LP_Quiz
+ *
+ * @author  ThimPress
+ * @package LearnPress/Classes
+ * @version 1.0
+ */
 class LP_Quiz {
 	/**
 	 * The quiz (post) ID.
@@ -90,8 +97,16 @@ class LP_Quiz {
 
 	function get_course() {
 		if ( empty( $this->course ) ) {
-			$course_id    = $this->_lpr_course;
-			$this->course = LP_Course::get_course( $course_id );
+			global $wpdb;
+			$query = $wpdb->prepare("
+				SELECT c.*
+				FROM {$wpdb->posts} c
+				INNER JOIN {$wpdb->learnpress_sections} ls on c.ID = ls.course_id
+				INNER JOIN {$wpdb->learnpress_section_items} lsi on lsi.section_id = ls.ID AND lsi.item_id = %d
+				", $this->id );
+			if( $course_id = $wpdb->get_var( $query ) ){
+				$this->course = LP_Course::get_course( $course_id );
+			}
 		}
 		return $this->course;
 	}
@@ -124,10 +139,32 @@ class LP_Quiz {
 		return new LP_Quiz( $the_quiz, $args );
 	}
 
-	function get_quiz_result( $quiz_id = null ){
+	function get_quiz_result( $quiz_id = null ) {
 		return false;
 	}
 
+	function get_questions(){
+		if( empty( $this->questions ) ){
+
+		}
+		return $this->questions;
+	}
+
+	function has( $feature ){
+		$args = func_get_args();
+		unset( $args[0] );
+		$method   = 'has_' . preg_replace( '!-!', '_', $feature );
+		$callback = array( $this, $method );
+		if ( is_callable( $callback ) ) {
+			return call_user_func_array( $callback, $args );
+		} else {
+			throw new Exception( sprintf( __( 'The function %s doesn\'t exists', 'learn_press' ), $feature ) );
+		}
+	}
+
+	function has_questions(){
+		return $this->get_questions();
+	}
 
 	/**
 	 * Get the quiz object

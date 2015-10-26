@@ -85,11 +85,17 @@ class LP_Lesson {
 			return false;
 		}
 
-		$class_name = self::get_lesson_class( $the_lesson, $args );
-		if ( !class_exists( $class_name ) ) {
-			$class_name = 'LP_Lesson';
+		static $lessons = array();
+
+		if( empty( $lessons[ $the_lesson->ID ] ) || ( ! empty( $args['force'] ) && $args['force'] ) ) {
+			$class_name = self::get_lesson_class( $the_lesson, $args );
+			if ( !class_exists( $class_name ) ) {
+				$class_name = 'LP_Lesson';
+			}
+
+			$lessons[$the_lesson->ID] = new $class_name( $the_lesson, $args );
 		}
-		return new $class_name( $the_lesson, $args );
+		return $lessons[ $the_lesson->ID ];
 	}
 
 	/**
@@ -138,7 +144,9 @@ class LP_Lesson {
 			$the_lesson = get_post( $the_lesson );
 		} elseif ( $the_lesson instanceof LP_Lesson ) {
 			$the_lesson = get_post( $the_lesson->id );
-		} elseif ( !( $the_lesson instanceof WP_Post ) ) {
+		} elseif ( ! empty( $the_lesson->ID ) ) {
+			$the_lesson = get_post( $the_lesson->id );
+		}elseif( !( $the_lesson instanceof WP_Post ) ) {
 			$the_lesson = false;
 		}
 

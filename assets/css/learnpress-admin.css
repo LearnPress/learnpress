@@ -1,8 +1,19 @@
 /**
-* Created by Hoang Ha
-*
-* Date: 11/03/2015
-*/
+ * Define all styles for admin side
+ *
+ * @author ThimPress
+ * @version 1.0
+ */
+
+/* */
+.learn-press-quick-add-page-inline{
+	display: inline-block;
+	vertical-align: top;
+	margin: 0 !important;
+}
+.learn-press-quick-add-page-inline > *{
+	vertical-align: top;
+}
 
 /*********************************/
 .hide {

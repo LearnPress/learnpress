@@ -21,6 +21,9 @@ class LP_Assets extends LP_Abstract_Assets {
 	 * Load assets for frontend
 	 */
 	static function load_scripts(){
+
+		self::add_style( 'learn-press-admin', LP()->plugin_url( 'assets/css/learnpress-admin.css') );
+
 		self::add_style( 'lpr-learnpress-css', LP_CSS_URL . 'learnpress.css' );
 		self::add_style( 'lpr-time-circle-css', LP_CSS_URL . 'timer.css' );
 

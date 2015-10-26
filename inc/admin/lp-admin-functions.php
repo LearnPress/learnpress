@@ -50,6 +50,86 @@ function learn_press_admin_view( $name, $args = array(), $include_once = false )
 }
 
 /**
+ * List all pages as a dropdown with "Add New Page" option
+ *
+ * @param            $name
+ * @param bool|false $selected
+ * @param array      $args
+ * @return mixed|string
+ */
+function learn_press_pages_dropdown( $name, $selected = false, $args = array() ) {
+	$id           = null;
+	$class        = null;
+	$css          = null;
+	$before       = array(
+		'add_new_page' => __( '[ Add a new page ]', 'learn_press' )
+	);
+	$after        = null;
+	$echo         = true;
+	$allow_create = true;
+	is_array( $args ) && extract( $args );
+
+	if( empty( $id ) ){
+		$id = $name;
+	}
+	$args    = array(
+		'name'             => $name,
+		'id'               => $id,
+		'sort_column'      => 'menu_order',
+		'sort_order'       => 'ASC',
+		'show_option_none' => __( 'Select Page', 'learn_press' ),
+		'class'            => $class,
+		'echo'             => false,
+		'selected'         => $selected,
+		'allow_create'     => true
+	);
+	$output  = wp_dropdown_pages( $args );
+	$replace = "";
+
+	$class .= 'learn-press-dropdown-pages';
+
+	if ( $class ) {
+		$replace .= ' class="' . $class . '"';
+	}
+	if ( $css ) {
+		$replace .= ' style="' . $css . '"';
+	}
+
+	$replace .= ' data-selected="' . $selected . '"';
+	$replace .= " data-placeholder='" . __( 'Select a page&hellip;', 'learn_press' ) . "' id=";
+	$output = str_replace( ' id=', $replace, $output );
+	if ( $before ) {
+		$before_output = array();
+		foreach ( $before as $v => $l ) {
+			$before_output[] = sprintf( '<option value="%s">%s</option>', $v, $l );
+		}
+		$before_output = join( "\n", $before_output );
+		$output        = preg_replace( '!(<option class=".*" value="[0-9]+".*>.*</option>)!', $before_output . "\n$1", $output, 1 );
+	}
+	if ( $allow_create ) {
+		ob_start(); ?>
+		<p class="learn-press-quick-add-page-inline <?php echo $id;?> hide-if-js">
+			<input type="text" />
+			<button class="button" type="button"><?php _e( 'Ok', 'learn_press' ); ?></button>
+			<a href=""><?php _e( 'Cancel', 'learn_press' ); ?></a>
+		</p>
+		<p class="learn-press-quick-add-page-actions <?php echo $id;?><?php echo $selected ? '' : ' hide-if-js'; ?>">
+			<a class="edit-page" href="<?php echo get_edit_post_link( $selected ); ?>" target="_blank"><?php _e( 'Edit Page', 'learn_press' ); ?></a>
+			<a class="view-page" href="<?php echo get_permalink( $selected ); ?>" target="_blank"><?php _e( 'View Page', 'learn_press' ); ?></a>
+		</p>
+		<?php $output .= ob_get_clean();
+	}
+	if ( $echo ) {
+		echo $output;
+	}
+
+	return $output;
+}
+/**************************************************/
+/**************************************************/
+/**************************************************/
+
+/**
  * Translate javascript text
  */
 function learn_press_admin_localize_script() {
@@ -74,6 +154,7 @@ function learn_press_settings_tabs_array() {
 		'pages'    => __( 'Pages', 'learn_press' ),
 		'payments' => __( 'Payments', 'learn_press' ),
 		'checkout' => __( 'Checkout', 'learn_press' ),
+		'profile'  => __( 'Profile', 'learn_press' ),
 		'emails'   => __( 'Emails', 'learn_press' )
 	);
 	return apply_filters( 'learn_press_settings_tabs_array', $tabs );

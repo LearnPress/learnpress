@@ -14,16 +14,15 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 
 		function __construct() {
 
+			add_filter( 'manage_' . LP()->lesson_post_type . '_posts_columns', array( $this, 'columns_head' ) );
+			add_action( 'manage_' . LP()->lesson_post_type . '_posts_custom_column', array( $this, 'columns_content' ), 10, 2 );
+			add_action( 'save_post_' . LP()->lesson_post_type, array( $this, 'update_lesson_meta' ) );
 
-
-			add_filter( 'manage_lpr_lesson_posts_columns', array( $this, 'columns_head' ) );
-			add_action( 'manage_lpr_lesson_posts_custom_column', array( $this, 'columns_content' ), 10, 2 );
-			add_action( 'save_post_lpr_lesson', array( $this, 'update_lesson_meta' ) );
             add_filter( 'posts_fields', array( $this, 'posts_fields' ) );
 			add_filter( 'posts_join_paged', array( $this, 'posts_join_paged' ) );
 			add_filter( 'posts_where_paged', array( $this, 'posts_where_paged' ) );
 			add_filter( 'posts_orderby', array( $this, 'posts_orderby' ) );
-			add_filter( 'manage_edit-lpr_lesson_sortable_columns', array( $this, 'columns_sortable' ) );
+			add_filter( 'manage_edit-' . LP()->lesson_post_type . '_sortable_columns', array( $this, 'columns_sortable' ) );
 			parent::__construct();
 		}
 
@@ -135,7 +134,7 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 							'yes'     => __( 'Yes', 'learn_press' ),
 							'no' => __( 'No', 'learn_press' ),
 						),
-						'std'     => 'not_preview'
+						'std'     => 'no'
 					)
 				)
 			);
@@ -187,7 +186,10 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 			if ( false !== $pos && !array_key_exists( LP()->course_post_type, $columns ) ) {
 				$columns = array_merge(
 					array_slice( $columns, 0, $pos + 1 ),
-					array( LP()->course_post_type => __( 'Course', 'learn_press' ) ),
+					array(
+						LP()->course_post_type => __( 'Course', 'learn_press' ),
+						'is_previewable' => __( 'Preview', 'learn_press' )
+					),
 					array_slice( $columns, $pos + 1 )
 				);
 			}
@@ -212,6 +214,9 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 					$course_id  = get_post_meta( $post_id, '_lpr_course', true );
 					$arr_params = array( 'meta_course' => $course_id );
 					echo '<a href="' . esc_url( add_query_arg( $arr_params ) ) . '">' . ( $course_id ? get_the_title( $course_id ) : __( 'Not assigned yet', 'learn_press' ) ) . '</a>';
+					break;
+				case 'is_previewable':
+					echo get_post_meta( $post_id, '_lp_is_previewable', true ) == 'yes' ? __( 'Yes', 'learn_press' ) : '-';
 			}
 		}
 

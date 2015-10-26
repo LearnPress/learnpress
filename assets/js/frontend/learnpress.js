@@ -1,5 +1,8 @@
 ;(function($) {
 	var LearnPress = window.LearnPress = {
+		setUrl: function( url, title ){
+			history.pushState({}, title, url);
+		},
 		reload: function (url) {
 			if (!url) {
 				url = window.location.href;
@@ -19,6 +22,19 @@
 				data = {};
 			}
 			return data;
+		},
+		toElement: function(element, args){
+			args = $.extend({
+				delay: 300,
+				duration: 'slow',
+				offset: 50
+			}, args || {});
+			$('body, html')
+				.fadeIn(10)
+				.delay(args.delay)
+				.animate({
+					scrollTop: $(element).offset().top - args.offset
+				}, args.duration);
 		},
 		parse_json: function (data){
 			console.log('LearnPress.parse_json has deprecated, use LearnPress.parseJSON instead of')

@@ -4,12 +4,18 @@
 if( typeof window.LearnPress == 'undefined' ){
     window.LearnPress = {};
 }
-;(function($){
-    window.LearnPress = $.extend( window.LearnPress, {
-        reload: function( url ) {
-            window.location.href = url || window.location.href;
+;(function($) {
+    var LearnPress = window.LearnPress = {
+        setUrl: function( url, title ){
+            history.pushState({}, title, url);
         },
-        parse_json: function (data){
+        reload: function (url) {
+            if (!url) {
+                url = window.location.href;
+            }
+            window.location.href = url;
+        },
+        parseJSON: function(data){
             var m = data.match(/<!-- LP_AJAX_START -->(.*)<!-- LP_AJAX_END -->/);
             try {
                 if (m) {
@@ -22,6 +28,23 @@ if( typeof window.LearnPress == 'undefined' ){
                 data = {};
             }
             return data;
+        },
+        toElement: function(element, args){
+            args = $.extend({
+                delay: 300,
+                duration: 'slow',
+                offset: 50
+            }, args || {});
+            $('body, html')
+                .fadeIn(10)
+                .delay(args.delay)
+                .animate({
+                    scrollTop: $(element).offset().top - args.offset
+                }, args.duration);
+        },
+        parse_json: function (data){
+            console.log('LearnPress.parse_json has deprecated, use LearnPress.parseJSON instead of')
+            return LearnPress.parseJSON(data);
         }
-    });
+    };
 })(jQuery);

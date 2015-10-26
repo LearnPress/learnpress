@@ -15,7 +15,7 @@ global $course;
 
 $curriculum_heading = apply_filters( 'learn_press_curriculum_heading', __( 'Course Curriculum', 'learn_press' ) );
 ?>
-<div class="course-curriculum">
+<div class="course-curriculum" id="learn-press-course-curriculum">
 
 	<?php if ( $curriculum_heading ) { ?>
 
