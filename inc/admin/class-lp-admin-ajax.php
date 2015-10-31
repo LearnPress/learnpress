@@ -15,6 +15,8 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 		public static function init() {
 			$ajaxEvents = array(
 				'create_page'             => false,
+				'add_question'            => false,
+				'convert_question_type'		=> false,
 				/////////////
 				'quick_add_lesson'        => false,
 				'quick_add_quiz'          => false,
@@ -30,7 +32,6 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			);
 			foreach ( $ajaxEvents as $ajaxEvent => $nopriv ) {
 				add_action( 'wp_ajax_learnpress_' . $ajaxEvent, array( __CLASS__, $ajaxEvent ) );
-
 				// enable for non-logged in users
 				if ( $nopriv ) {
 					add_action( 'wp_ajax_nopriv_learnpress_' . $ajaxEvent, array( __CLASS__, $ajaxEvent ) );
@@ -42,30 +43,73 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 		 * Create a new page with the title passed via $_REQUEST
 		 */
 		public static function create_page() {
-			$page_name    = !empty( $_REQUEST['page_name'] ) ? $_REQUEST['page_name'] : '';
-			$response = array();
+			$page_name = !empty( $_REQUEST['page_name'] ) ? $_REQUEST['page_name'] : '';
+			$response  = array();
 			if ( $page_name ) {
-				$args             = array(
+				$args    = array(
 					'post_type'   => 'page',
 					'post_title'  => $page_name,
 					'post_status' => 'publish'
 				);
-				$page_id          = wp_insert_post( $args );
+				$page_id = wp_insert_post( $args );
 
-				if( $page_id ) {
+				if ( $page_id ) {
 					$response['page'] = get_page( $page_id );
 					$html             = learn_press_pages_dropdown( '', '', array( 'echo' => false ) );
 					preg_match_all( '!value=\"([0-9]+)\"!', $html, $matches );
 					$response['positions'] = $matches[1];
-					$response['html']  = '<a href="' . get_edit_post_link( $page_id ) . '" target="_blank">' . __( 'Edit Page', 'learn_press' ) . '</a>&nbsp;';
+					$response['html']      = '<a href="' . get_edit_post_link( $page_id ) . '" target="_blank">' . __( 'Edit Page', 'learn_press' ) . '</a>&nbsp;';
 					$response['html'] .= '<a href="' . get_permalink( $page_id ) . '" target="_blank">' . __( 'View Page', 'learn_press' ) . '</a>';
-				}else{
+				} else {
 					$response['error'] = __( 'Error! Can not create page. Please try again!', 'learn_press' );
 				}
 			} else {
 				$response['error'] = __( 'Page name is empty!', 'learn_press' );
 			}
 			learn_press_send_json( $response );
+			die();
+		}
+
+		public static function add_question() {
+			$id   = learn_press_get_request( 'id' );
+			$type = learn_press_get_request( 'type' );
+			$name = learn_press_get_request( 'name' );
+			$response = array();
+			if( !$id ){
+				$id = wp_insert_post(
+					array(
+						'post_title' => $name,
+						'post_type'	=> LP()->question_post_type,
+						'post_status' => 'publish'
+					)
+				);
+				if( $id ){
+					add_post_meta( $id, '_lp_type', $type );
+				}
+			}
+			if( $id ){
+				ob_start();
+				$question = LP_Question_Factory::get_question( $id );
+				learn_press_admin_view( 'meta-boxes/quiz/question.php', array( 'question' => $question ) );
+				$response['html'] = ob_get_clean();
+			}else{
+
+			}
+			learn_press_send_json( $response );
+			die();
+		}
+
+		public static function convert_question_type(){
+			learn_press_debug($_POST);;
+			if( ( $from = learn_press_get_request( 'from' ) ) && ( $to = learn_press_get_request( 'to' ) ) && $question_id = learn_press_get_request( 'question_id' ) ){
+				do_action( 'learn_press_convert_question_type', $question_id, $from, $to );
+				$question = LP_Question_Factory::get_question( $question_id );
+				learn_press_send_json(
+					$question->admin_interface( array( 'echo' => false ) )
+				);
+			}else{
+				throw new Exception( __( 'Convert question type must be specify the id, source and destination type', 'learn_press' ) );
+			}
 			die();
 		}
 
@@ -205,7 +249,6 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			<?php
 			die();
 		}
-
 
 
 		/**

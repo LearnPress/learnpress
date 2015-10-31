@@ -8,7 +8,7 @@
 if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 
 	// Base class for custom post type to extends
-	LP()->_include( 'custom-post-types/abstract.php' );
+	learn_press_include( 'custom-post-types/abstract.php' );
 
 	// class LP_Order_Post_Type
 	final class LP_Order_Post_Type extends LP_Abstract_Post_Type {

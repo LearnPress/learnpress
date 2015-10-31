@@ -386,48 +386,7 @@ function learn_press_user_has_completed_quiz( $user_id = null, $quiz_id = null )
 	return apply_filters( 'learn_press_user_has_completed_quiz', $completed, $user_id, $quiz_id );
 }
 
-/**
- * Get all questions of a quiz
- *
- * @author  TuNN
- *
- * @param   int     $quiz_id  The ID of a quiz to get all questions
- * @param   boolean $only_ids return an array of questions with IDs only or as post objects
- *
- * @return  array|null
- */
-function learn_press_get_quiz_questions( $quiz_id = null, $only_ids = true ) {
-	static $quiz_questions;
-	if ( !$quiz_questions ) $quiz_questions = array();
-	$quiz_id = learn_press_get_quiz_id( $quiz_id );
-	if ( empty( $quiz_questions[$quiz_id] ) ) {
-		$questions = get_post_meta( $quiz_id, '_lpr_quiz_questions', true );
 
-		if ( is_array( $questions ) && count( $questions ) > 0 ) {
-			$question_ids = array_keys( $questions );
-			$query_args   = array(
-				'posts_per_page' => - 999,
-				'include'        => $question_ids,
-				'post_type'      => LP()->question_post_type,
-				'post_status'    => 'publish'
-			);
-			if ( $only_ids ) {
-				$query_args['fields'] = 'ids';
-			}
-
-			$questions = array();
-			// reorder as stored in database
-			if ( $_questions = get_posts( $query_args ) ):
-				$questions = array_flip( $question_ids );
-				foreach ( $_questions as $q ) {
-					$questions[$only_ids ? $q : $q->ID] = $q;
-				}
-			endif;
-		}
-		$quiz_questions[$quiz_id] = $questions;
-	}
-	return apply_filters( 'learn_press_get_quiz_questions', $quiz_questions[$quiz_id], $quiz_id, $only_ids );
-}
 
 /**
  * Check if a quiz have any question or not
@@ -1009,68 +968,7 @@ function learn_press_init_course() {
 
 add_action( 'wp', 'learn_press_init_course' );
 
-function learn_press_head() {
-	if ( is_single() && LP()->course_post_type == get_post_type() ) {
-		wp_enqueue_script( 'tojson', LP_PLUGIN_URL . '/assets/js/toJSON.js' );
-	}
-}
 
-add_action( 'wp_head', 'learn_press_head' );
-
-/**
- * Enqueue js code to print out
- *
- * @param string $code
- * @param bool   $script_tag - wrap code between <script> tag
- */
-function learn_press_enqueue_script( $code, $script_tag = false ) {
-	global $learn_press_queued_js, $learn_press_queued_js_tag;
-
-	if ( $script_tag ) {
-		if ( empty( $learn_press_queued_js_tag ) ) {
-			$learn_press_queued_js_tag = '';
-		}
-		$learn_press_queued_js_tag .= "\n" . $code . "\n";
-	} else {
-		if ( empty( $learn_press_queued_js ) ) {
-			$learn_press_queued_js = '';
-		}
-
-		$learn_press_queued_js .= "\n" . $code . "\n";
-	}
-}
-
-/**
- * Print out js code in the queue
- */
-function learn_press_print_script() {
-	global $learn_press_queued_js, $learn_press_queued_js_tag;
-	if ( !empty( $learn_press_queued_js ) ) {
-		?>
-		<!-- LearnPress JavaScript -->
-		<script type="text/javascript">jQuery(function ($) {
-				<?php
-				// Sanitize
-				$learn_press_queued_js = wp_check_invalid_utf8( $learn_press_queued_js );
-				$learn_press_queued_js = preg_replace( '/&#(x)?0*(?(1)27|39);?/i', "'", $learn_press_queued_js );
-				$learn_press_queued_js = str_replace( "\r", '', $learn_press_queued_js );
-
-				echo $learn_press_queued_js;
-				?>
-			});
-		</script>
-		<?php
-		unset( $learn_press_queued_js );
-	}
-
-	if ( !empty( $learn_press_queued_js_tag ) ) {
-		echo $learn_press_queued_js_tag;
-	}
-}
-
-add_action( 'wp_head', 'learn_press_head' );
-add_action( 'wp_footer', 'learn_press_print_script' );
-add_action( 'admin_footer', 'learn_press_print_script' );
 
 /**
  * Gets duration of a quiz
@@ -1565,17 +1463,6 @@ function learn_press_get_lesson_id( $lesson_id = null ) {
  */
 function learn_press_get_page_id( $name ) {
 	return LP_Settings::instance()->get( "{$name}_page_id", false );
-}
-
-/**
- * Get path of the plugin include the sub path if passed
- *
- * @param string $sub
- *
- * @return string
- */
-function learn_press_plugin_path( $sub = null ) {
-	return $sub ? LP_PLUGIN_PATH . '/' . untrailingslashit( $sub ) . '/' : LP_PLUGIN_PATH;
 }
 
 /**

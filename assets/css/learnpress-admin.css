@@ -4,8 +4,6 @@
  * @author ThimPress
  * @version 1.0
  */
-
-/* */
 .learn-press-quick-add-page-inline{
 	display: inline-block;
 	vertical-align: top;
@@ -15,6 +13,57 @@
 	vertical-align: top;
 }
 
+/* message box */
+#learn-press-message-box-block{
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: #000;
+	z-index: 99999;
+	opacity: 0.8;
+}
+#learn-press-message-box-window{
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	z-index: 100000;
+	color: #FFF;
+	text-align: center;
+}
+#message-box-wrap{
+	margin: 0 auto;
+	/* text-align: center; */
+	display: inline-block;
+	text-align: left;
+	max-width: 70%;
+}
+.message-box-title{
+	color: #FFF;
+	margin: 0 0 40px 0;
+	font-size: 34px;
+}
+.message-box-content{
+	font-size: 16px;
+	line-height: 1.5;
+}
+.message-box-animation{
+	background-image: url("../images/animation.gif");
+	width: 220px;
+	height: 20px;
+	margin: 20px 0 0;
+}
+.message-box-buttons{
+	margin: 20px 0 0;
+	border-top: 1px solid #929292;
+	padding-top: 20px;
+}
+.message-box-button{
+	margin-right: 10px !important;
+}
 /*********************************/
 .hide {
 	display: none;
@@ -490,6 +539,222 @@ input.lpr-fancy-checkbox {
 	height: 0;
 }
 
+/**********************************************************************/
+/**********************************************************************/
+
+.lp-list-options{
+	border: 1px solid #DDD;
+	border-collapse: collapse;
+	width: 100%;
+}
+.lp-list-option{
+
+}
+.lp-list-option .clm{
+
+}
+.lp-list-option .lp-item-checkbox{}
+.lp-list-option .lp-item-name{}
+.lp-list-option .lp-item-actions{}
+
+
+.lp-list-options thead th{
+	border: 1px solid #FFF;
+	background-color: #EAEAEA;
+	padding: 10px;
+	text-align: left;
+
+	color: #00A0D2;
+
+}
+.lp-list-options tbody th,
+.lp-list-options tbody td{
+	border: 1px solid #FFF;
+	padding: 10px 10px;
+	text-align: left;
+	background-color: #F5F5F5;
+}
+.lp-list-options .lp-answer-check{
+	width: 250px;
+}
+.lp-list-options tbody th input[type="text"],
+.lp-list-options tbody td input[type="text"]{
+	width: 100%;
+}
+.lp-list-options .ui-sortable-placeholder{
+	visibility: visible !important;
+	border: 1px dashed #DDD;
+}
+.lp-list-option .lp-answer-text{
+	color: #777;
+	background-color: #f5f5f5;
+	border-color: #F5F5F5;
+	box-shadow: none;
+}
+.lp-list-option .lp-answer-text:focus{
+	box-shadow: none;
+	outline: none;
+	background-color: #FFF;
+	border-color: #DDD;
+}
+.lp-list-option-actions{
+	cursor: pointer;
+	color: #00A0D2;
+}
+.lp-list-option-actions.lp-move-list-option{
+	cursor: move;
+}
+.lp-list-option-actions:hover{
+	color: #156077;
+}
+	/* Question meta box */
+#question_answer .rwmb-question-wrapper{
+	margin: 12px 0 0 0;
+}
+
+.question-bottom-actions > *{
+	vertical-align: baseline !important;
+}
+
+/* Quiz meta box */
+body.post-type-lp_quiz #questions,
+body.post-type-lp_question #question_answer_{
+	border: none;
+	box-shadow: none;
+	background-color: transparent;
+}
+body.post-type-lp_quiz #questions .handlediv,
+body.post-type-lp_question #question_answer_ .handlediv{
+	display: none;
+}
+body.post-type-lp_quiz #questions .hndle,
+body.post-type-lp_question #question_answer_ .hndle{
+ 	display: none;
+}
+body.post-type-lp_quiz #questions .inside,
+body.post-type-lp_question #question_answer_ .inside{
+	padding: 0;
+}
+#questions .quiz-questions-heading{
+	margin: 0;
+	padding: 20px;
+	background-color: #FFF;
+	line-height: 1;
+	border: 1px solid #DDD;
+}
+#questions .quiz-questions-heading .questions-toggle{
+	float: right;
+	margin: 0;
+	line-height: 1;
+}
+
+#questions #learn-press-dropdown-questions{
+	display: inline-block;
+	position: relative;
+}
+#questions #learn-press-dropdown-questions > ul{
+	position: absolute;
+	top: 100%;
+	margin: 0;
+	padding: 0;
+	background-color: #FFF;
+	left: 0;
+	right: 0;
+	border: 1px solid #EEE;
+	border-top: none;
+	display: none;
+	z-index: 50;
+}
+#questions #learn-press-dropdown-questions > ul > li{
+	margin: 0;
+}
+#questions #learn-press-dropdown-questions > ul li > a{
+	display: block;
+	padding: 5px;
+	outline: none;
+	box-shadow: none;
+}
+#questions #learn-press-question-name{
+	font-size: 18px;
+	min-width: 350px;
+	margin: 0;
+	box-shadow: none;
+	border-color: #EEE;
+	color: #BBB;
+	vertical-align: middle;
+}
+#questions #learn-press-toggle-questions{
+	height: 32px;
+	vertical-align: top;
+	background-color: #FFF;
+	border: 1px solid #EEE;
+	width: 32px;
+	margin-left: -4px;
+	text-align: center;
+	font-size: 30px;
+	padding: 0;
+	color: #CCC;
+	border-left: none;
+	outline: none;
+	cursor: pointer;
+}
+#questions #learn-press-toggle-questions:hover{
+	color: #AAAAAA;
+}
+#questions #learn-press-button-add-question{
+	vertical-align: middle;
+}
+#questions .question-actions{
+	background-color: #FFF;
+	border: 1px solid #DDD;
+	padding: 10px;
+	display: inline-block;
+	margin-top: 20px;
+}
+#questions .quiz-question{
+	margin: 0 0 30px 0;
+	margin: -1px 0 0px 0;
+}
+#questions .quiz-question .learn-press-question{
+	padding: 20px 20px 5px 20px;
+	background-color: #FFF;
+	border: 1px solid #DDD;
+	border-top: none;
+}
+#questions .quiz-question-head{
+	padding: 10px 20px;
+	border: 1px solid #DDD;
+	overflow: hidden;
+	background-color: #FFF;
+}
+#questions .quiz-question-head .quiz-question-actions{
+	float: right;
+	margin: 5px 0;
+}
+#questions .question-name{
+	border: none;
+	box-shadow: none;
+	padding-left: 0;
+	width: 70%;
+	font-weight: bold;
+	color: #777;
+	vertical-align: middle;
+}
+#questions .quiz-question-icon{
+	display: inline-block;
+	width: 25px;
+	height: 25px;
+	vertical-align: middle;
+	margin-right: 10px;
+}
+#questions .quiz-question-icon img{
+	max-width: 100%;
+	height: auto;
+}
+#questions #learn-press-dropdown-questions .added{
+	display: none;
+}
+
 /* admin order details */
 .post-type-lpr_order #post-body-content,
 .post-type-lpr_order #postbox-container-1,
@@ -585,7 +850,7 @@ input.lpr-fancy-checkbox {
 	font-weight: bold;
 	font-size: 16px;
 }
-
+/*************************************************************/
 .post-type-lpr_order .column-title {
 	width: 120px;
 }

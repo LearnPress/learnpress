@@ -1,166 +1,140 @@
 <?php
+
 /**
- * Created by PhpStorm.
- * User: Tu
- * Date: 27/03/2015
- * Time: 11:42 SA
- * Modified 03 Apr 2015
+ * LP_Question_True_Or_False
+ *
+ * @author  ThimPress
+ * @package LearnPress/Templates
+ * @version 1.0
+ * @extends LP_Question
  */
-class LP_Question_True_Or_False extends LP_Question{
-    function __construct( $type = null, $options = null ){
-        parent::__construct( $type, $options );
+class LP_Question_True_Or_False extends LP_Question {
+	/**
+	 * Constructor
+	 *
+	 * @param null $the_question
+	 * @param null $args
+	 */
+	function __construct( $the_question = null, $args = null ) {
+		parent::__construct( $the_question, $args );
+		add_filter( 'learn_press_question_answers', array( $this, 'limit_answers' ), 10, 2 );
+	}
 
+	function limit_answers( $answers = array(), $question ){
+		if( $question->type == $this->type ){
+			$answers = array_splice( $answers, 0, 2 );
+		}
+		return $answers;
+	}
 
-    }
+	function save( $post_data = null ) {
+		parent::save( $post_data );
+	}
 
-    function submit_answer( $quiz_id, $answer ){
-        $questions = learn_press_get_question_answers( null, $quiz_id );
-        if( !is_array( $questions ) ) $questions = array();
-        $questions[$quiz_id][$this->get('ID')] = is_array( $answer ) ? reset( $answer ) : $answer;
-        learn_press_save_question_answer( null, $quiz_id, $this->get('ID'), is_array( $answer ) ? reset( $answer ) : $answer);
-    }
+	function submit_answer( $quiz_id, $answer ) {
+		$questions = learn_press_get_question_answers( null, $quiz_id );
+		if ( !is_array( $questions ) ) $questions = array();
+		$questions[$quiz_id][$this->get( 'ID' )] = is_array( $answer ) ? reset( $answer ) : $answer;
+		learn_press_save_question_answer( null, $quiz_id, $this->get( 'ID' ), is_array( $answer ) ? reset( $answer ) : $answer );
+	}
 
-    function admin_interface( $args = array() ){
-        $uid = uniqid( 'lpr_question_answer' );
-        $post_id = $this->get('ID');
-        $this->admin_interface_head( $args );
-    ?>
-    <table class="lpr-sortable lpr-question-option">
-        <thead>
-            <th width="20"></th>
-            <th><?php _e('Is Correct?', 'learn_press');?></th>
-            <th><?php _e('Answer Text', 'learn_press');?></th>
-        </thead>
-        <tbody>
-            <tr>
-                <td class="lpr-sortable-handle">
-                    <i class="dashicons dashicons-sort"></i>
-                </td>
-                <th class="lpr-is-true-answer">
-                    <input type="hidden" name="lpr_question[<?php echo $post_id;?>][answer][is_true][__INDEX__0]" value="<?php echo $this->get('options.answer.0.is_true', 1);?>" />
-                    <input data-group="lpr-question-answer-<?php echo $this->get('ID');?>" type="radio" <?php checked( $this->get('options.answer.0.is_true', 1) );?> />
+	function get_default_answers( $answers = false ) {
+		if ( !$answers ) {
+			$answers = array(
+				array(
+					'is_true' => 'yes',
+					'value'   => 'true',
+					'text'    => __( 'True', 'learn_press' )
+				),
+				array(
+					'is_true' => 'no',
+					'value'   => 'false',
+					'text'    => __( 'False', 'learn_press' )
+				)
+			);
+		}
+		return $answers;
+	}
 
-                </th>
-                <td><input class="lpr-answer-text" type="text" name="lpr_question[<?php echo $post_id;?>][answer][text][__INDEX__0]" value="<?php echo esc_attr( $this->get( 'options.answer.0.text', __( 'True', 'learnpres' ) ) );?>" /></td>
-            </tr>
-            <tr>
-                <td class="lpr-sortable-handle">
-                    <i class="dashicons dashicons-sort"></i>
-                </td>
-                <th class="lpr-is-true-answer">
-                    <input type="hidden" name="lpr_question[<?php echo $post_id;?>][answer][is_true][__INDEX__1]" value="<?php echo $this->get('options.answer.1.is_true', 0);?>" />
-                    <input data-group="lpr-question-answer-<?php echo $this->get('ID');?>" type="radio" <?php checked( $this->get('options.answer.1.is_true', 0) );?> />
+	function admin_interface( $args = array() ) {
+		ob_start();
+		$view = learn_press_get_admin_view( 'meta-boxes/question/single-choice-options.php' );
+		include $view;
+		$output = ob_get_clean();
 
-                </th>
-                <td><input class="lpr-answer-text" type="text" name="lpr_question[<?php echo $post_id;?>][answer][text][__INDEX__1]" value="<?php echo esc_attr( $this->get( 'options.answer.1.text', __( 'False', 'learnpres' ) ) );?>" /></td>
-            </tr>
-        </tbody>
-    </table>
-    <label><?php _e('Question Explanation', 'learn_press') ?></label>
-    <?php if( $explaination = $this->get('options.explaination') ) {
-        echo '<textarea rows="4" name="lpr_question['. $post_id .'][explaination]">'. $explaination .'</textarea>';
-        }
-    else {
-        echo '<textarea rows="4" name="lpr_question['. $post_id .'][explaination]"></textarea>';
-    }?>
-    <?php
-        $this->admin_interface_foot( $args );
-    }
+		if ( !isset( $args['echo'] ) || ( isset( $args['echo'] ) && $args['echo'] === true ) ) {
+			echo $output;
+		}
+		return $output;
+	}
 
-    function render( $args = array() ){
-        $unique_name = uniqid( 'lp_question_answer_' . $this->get('ID') . '_' );
-        $answer = null;
-        is_array( $args ) && extract( $args );
-        require_once ABSPATH . '/wp-includes/default-filters.php';
-    ?>
-        <div class="lp-question-wrap question-<?php echo $this->get('ID');?>">
-            <h4><?php echo get_the_title( $this->get('ID') );?></h4>            
-            <?php 
-                $question = get_post( $this->get('ID') );
-                $question_content = $question->post_content;                
-                if( !empty($question_content) ) :
-            ?>
-            <?php
+	function render( $args = array() ) {
+		$unique_name = uniqid( 'lp_question_answer_' . $this->get( 'ID' ) . '_' );
+		$answer      = null;
+		$view = learn_press_locate_template( 'question/types/single-choice.php' );
+		include $view;
+	}
 
-                $content = apply_filters('the_content', $question_content);
-            ?>
-            <p><?php echo $content; ?> </p>
-            <?php endif; ?>
-            <ul>
-                <li>
-                    <label>
-                        <input type="radio" name="<?php echo $unique_name;?>" <?php checked( strlen( $answer) && !$answer ? 1 : 0); ?> value="0">
-                        <?php echo $this->get('options.answer.0.text');?>
-                    </label>
-                </li>
-                <li>
-                    <label>
-                        <input type="radio" name="<?php echo $unique_name;?>" <?php checked( $answer == 1 ? 1 : 0); ?> value="1">
-                        <?php echo $this->get('options.answer.1.text');?>
-                    </label>
-                </li>
-            </ul>
-        </div>
-    <?php
-    }
+	function save_post_action() {
 
-    function save_post_action(){
+		if ( $post_id = $this->get( 'ID' ) ) {
+			$post_data    = isset( $_POST[LP()->question_post_type] ) ? $_POST[LP()->question_post_type] : array();
+			$post_answers = array();
+			$post_explain = $post_data[$post_id]['explaination'];
+			if ( isset( $post_data[$post_id] ) && $post_data = $post_data[$post_id] ) {
 
-        if( $post_id = $this->get('ID') ){
-            $post_data = isset( $_POST[LP()->question_post_type] ) ? $_POST[LP()->question_post_type] : array();
-            $post_answers = array();
-            $post_explain = $post_data[$post_id]['explaination'];
-            if( isset( $post_data[$post_id] ) && $post_data = $post_data[$post_id] ){
+				//if( LP()->question_post_type != get_post_type( $post_id ) ){
+				try {
+					$ppp = wp_update_post(
+						array(
+							'ID'         => $post_id,
+							'post_title' => $post_data['text'],
+							'post_type'  => LP()->question_post_type
+						)
+					);
+				} catch ( Exception $ex ) {
+					echo "ex:";
+					print_r( $ex );
+				}
 
-                //if( LP()->question_post_type != get_post_type( $post_id ) ){
-                    try {
-                        $ppp = wp_update_post(
-                            array(
-                                'ID' => $post_id,
-                                'post_title' => $post_data['text'],
-                                'post_type' => LP()->question_post_type
-                            )
-                        );
-                    }catch ( Exception $ex){echo "ex:";print_r($ex);}
+				// }else{
 
-               // }else{
+				// }
 
-               // }
+				$index = 0;
 
-                $index = 0;
+				foreach ( $post_data['answer']['text'] as $k => $txt ) {
+					$post_answers[$index ++] = array(
+						'text'    => $txt,
+						'is_true' => $post_data['answer']['is_true'][$k]
+					);
+				}
 
-                foreach( $post_data['answer']['text'] as $k => $txt ){
-                    $post_answers[$index++] = array(
-                        'text'      => $txt,
-                        'is_true'   => $post_data['answer']['is_true'][$k]
-                    );
-                }
+			}
+			$post_data['answer']       = $post_answers;
+			$post_data['type']         = $this->get_type();
+			$post_data['explaination'] = $post_explain;
+			update_post_meta( $post_id, '_lpr_question', $post_data );
+			//print_r($post_data);
+		}
+		return $post_id;
+		// die();
+	}
 
-            }
-            $post_data['answer']    = $post_answers;
-            $post_data['type']      = $this->get_type();
-            $post_data['explaination'] = $post_explain;
-            update_post_meta( $post_id, '_lpr_question', $post_data );
-            //print_r($post_data);
-        }
-        return $post_id;
-       // die();
-    }
+	function check( $args = false ) {
+		$answer = false;
+		is_array( $args ) && extract( $args );
+		$return = array(
+			'correct' => false,
+			'mark'    => 0
+		);
 
-    function check( $args = false ){
-        $answer = false;
-        is_array( $args ) && extract( $args );
-        $return = array(
-            'correct'   => false,
-            'mark'      => 0
-        );
-
-        if( is_numeric( $answer ) ) {
-            if ($this->get('options.answer.' . $answer . '.is_true') ) {
-                $return['correct']  = true;
-                $return['mark']     = intval( get_post_meta( $this->get('ID'), '_lpr_question_mark', true ) );
-            }
-        }
-        return $return;
-    }
+		if ( is_numeric( $answer ) ) {
+			if ( $this->get( 'options.answer.' . $answer . '.is_true' ) ) {
+				$return['correct'] = true;
+				$return['mark']    = intval( get_post_meta( $this->get( 'ID' ), '_lpr_question_mark', true ) );
+			}
+		}
+		return $return;
+	}
 }

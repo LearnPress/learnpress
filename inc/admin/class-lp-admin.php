@@ -23,9 +23,17 @@ if ( !class_exists( 'LP_Admin' ) ) {
 
 			add_action( 'admin_enqueue_scripts', array( $this, 'admin_scripts' ) );
 			add_action( 'admin_print_scripts', array( $this, 'plugin_js_settings' ) );
+			add_action( 'init', array( $this, 'include_update' ) );
 
 			// redirect
 			$this->_redirect();
+		}
+
+		function include_update(){
+			// Update LearnPress from 0.9.x to 1.0
+			if ( version_compare( LP()->db_version, '1.0', '<' ) ) {
+				learn_press_include( 'updates/learnpress-update-1.0.php' );
+			}
 		}
 
 		/**
@@ -76,10 +84,7 @@ if ( !class_exists( 'LP_Admin' ) ) {
 			// Admin menu
 			include_once( 'class-lp-admin-menu.php' );
 
-			// Update LearnPress from 0.9.x to 1.0
-			if ( version_compare( LP()->db_version, '1.0', '<' ) ) {
-				LP()->_include( 'updates/learnpress-update-1.0.php' );
-			}
+
 		}
 
 		/**
@@ -95,6 +100,10 @@ if ( !class_exists( 'LP_Admin' ) ) {
 		}
 
 	}
+	function learn_press_load_admin(){
+
+	}
 
 	new LP_Admin();
 }
+add_action( 'plugins_loaded', 'learn_press_load_admin' );

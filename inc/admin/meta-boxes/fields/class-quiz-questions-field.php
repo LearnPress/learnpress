@@ -2,16 +2,23 @@
 
 // Prevent loading this file directly
 defined( 'ABSPATH' ) || exit;
-
-if ( !class_exists( 'RWMB_Quiz_Question_Field' ) ) {
-	class RWMB_Quiz_Question_Field extends RWMB_Field {
+/**
+ * Class RWMB_Quiz_Questions_Field
+ *
+ * @author  ThimPress
+ * @package LearnPress/Classes
+ * @version 1.0
+ * @extend  RWMB_Field
+ */
+if ( !class_exists( 'RWMB_Quiz_Questions_Field' ) ) {
+	class RWMB_Quiz_Questions_Field extends RWMB_Field {
 		function __construct() {
 
 		}
 
 		static function admin_enqueue_scripts() {
-			$q = new LP_Question();
-			$q->admin_script();
+			/*$q = new LP_Question();
+			$q->admin_script();*/
 			LP_Admin_Assets::enqueue_style( 'select2', RWMB_CSS_URL . 'select2/select2.css' );
 			LP_Admin_Assets::enqueue_script( 'select2', RWMB_JS_URL . 'select2/select2.min.js' );
 			LP_Admin_Assets::enqueue_script( 'lpr-quiz-question', LearnPress()->plugin_url( 'inc/admin/meta-boxes/js/quiz-question.js' ) );
@@ -65,13 +72,15 @@ if ( !class_exists( 'RWMB_Quiz_Question_Field' ) ) {
 				$json['success']  = true;
 				$json['question'] = get_post( $question_id );
 			} else {
-				$json['msg'] = __( 'Can not create a question', 'learn_press'  );
+				$json['msg'] = __( 'Can not create a question', 'learn_press' );
 			}
 			wp_send_json( $json );
 			die();
 		}
 
 		static function save_quiz_questions( $post_id ) {
+			learn_press_debug($_POST);
+			die();
 			static $has_updated;
 			$questions = isset( $_POST[LP()->question_post_type] ) ? $_POST[LP()->question_post_type] : null;
 			if ( !$questions ) return;
@@ -100,85 +109,76 @@ if ( !class_exists( 'RWMB_Quiz_Question_Field' ) ) {
 		}
 
 		static function html( $meta, $field ) {
-			global $post;
-			$post_id      = $post->ID;
-			$current_user = get_current_user_id();
-
-			$questions = lpr_get_question_types();
-
-			$lpr_questions = (array) get_post_meta( $post_id, '_lpr_quiz_questions', true );
-			$qids          = array_keys( $lpr_questions );
-			$qoptions      = array_values( $lpr_questions );
-
-
 			ob_start();
-			?>
-			<script type="text/javascript">var lpr_quiz_id = <?php echo intval( $post_id ); ?></script>
-
-
-			<div id="lpr-quiz-questions-wrap">
-				<p align="right" class="lpr-questions-toggle">
-					<a href="" data-action="expand"><?php _e( 'Expand All', 'learn_press' ); ?></a>
-					<a href="" data-action="collapse"><?php _e( 'Collapse All', 'learn_press' ); ?></a>
-				</p>
-
-				<div id="lpr-quiz-questions">
-					<?php if ( $qids ): $index = 0; ?>
-						<?php foreach ( $qids as $question_id ): ?>
-							<?php
-							if ( $question = LP_Question::instance( $question_id ) ) {
-								$question->admin_interface( $qoptions[$index ++] );
-							}
-							?>
-						<?php endforeach; ?>
-					<?php endif; ?>
-				</div>
-				<p style="vertical-align: middle;">
-
-				<div class="btn-group" id="lpr-add-new-question-type">
-					<button type="button" class="btn btn-default"
-					        data-type="single_choice"><?php _e( 'Add new Question', 'learn_press' ); ?></button>
-					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
-					        aria-expanded="false">
-						<span class="caret"></span>
-						<span class="sr-only"><?php _e( 'Toggle Dropdown', 'learn_press' ); ?></span>
-					</button>
-					<ul class="dropdown-menu" role="menu">
-						<?php if ( $questions ): ?>
-							<?php foreach ( $questions as $type ): ?>
-								<li><a href=""
-								       rel="<?php echo $type; ?>"><?php echo LP_Question::instance( $type )->get_name(); ?></a>
-								</li>
-							<?php endforeach; ?>
-						<?php endif; ?>
-					</ul>
-				</div>
-				<?php _e( '-Or-', 'learn_press' ); ?>
-				<select class="lpr-select2" name="" id="lpr-quiz-question-select-existing" style="width:300px">
-					<option value=""><?php _e( '--Select existing question--', 'learn_press' ); ?></option>
-					<?php
-
-					$query_args = array(
-						'post_type'      => LP()->question_post_type,
-						'post_status'    => 'publish',
-						'author'         => $current_user,
-						'posts_per_page' => - 1,
-						'post__not_in'   => $qids
-					);
-					$query      = new WP_Query( $query_args );
-					if ( $query->have_posts() ) {
-						while ( $query->have_posts() ) {
-							$p = $query->next_post();
-							echo '<option value="' . $p->ID . '" data-type="">' . $p->post_title . '</option>';
-						}
-					}
-					?>
-
-				</select>
-				</p>
-			</div>
-			<?php
+			$view = learn_press_get_admin_view( 'meta-boxes/quiz/questions.php' );
+			include $view;
 			return ob_get_clean();
+		}
+
+		static function save(){
+			global $wpdb, $post;
+
+			$questions = learn_press_get_request( 'learn_press_question' );
+			if( $all_questions = LP_Quiz::get_quiz( $post->ID )->get_questions() ){
+				$all_questions = array_keys( $all_questions );
+			}
+
+			// remove questions if it has removed from $_POST
+			if( $all_questions && $questions && ( $remove_ids = array_diff( $all_questions, array_keys( $questions ) ) ) ){
+				$query = $wpdb->prepare("
+					DELETE
+					FROM {$wpdb->learnpress_quiz_questions}
+					WHERE quiz_id = %d
+					AND question_id IN(" . join(',', $remove_ids ) . ")
+				", $post->ID );
+				$wpdb->query( $query );
+				do_action( 'learn_press_remove_quiz_questions', $remove_ids, $post->ID );
+			}
+
+			if( ! $questions ){
+				return;
+			}
+			$titles = learn_press_get_request( 'learn-press-question-name' );
+
+			// update the title of questions and save all data
+			foreach( $questions as $id => $data ){
+				$question = LP_Question_Factory::get_question( $id );
+				if( ! empty( $titles[ $id ] ) ){
+					$wpdb->update(
+						$wpdb->posts,
+						array(
+							'post_title' => $titles[ $id ]
+						),
+						array(
+							'ID' => $id
+						),
+						array( '%s' )
+					);
+				}
+				$question->save( $data );
+			}
+
+			// if there are new questions then insert into quiz
+			if( $new_ids = array_diff( array_keys( $questions ), $all_questions ) ){
+				$values = array();
+				foreach( $new_ids as $id ){
+					$insert_data = apply_filters(
+						'learn_press_quiz_question_insert_data',
+						array(
+							'question_id' => $id,
+							'quiz_id'	=> $post->ID,
+							'params'	=> ''
+						)
+					);
+					$values[] = $wpdb->prepare( "(%d, %d, %s)", $insert_data['quiz_id'], $insert_data['question_id'], $insert_data['param'] );
+				}
+				$query = "
+					INSERT INTO {$wpdb->learnpress_quiz_questions}(`quiz_id`, `question_id`, `params`)
+					VALUES " . join(',', $values) . "
+				";
+				$wpdb->query( $query );
+				do_action( 'learn_press_insert_quiz_questions', $new_ids, $post->ID );
+			}
 		}
 	}
 

@@ -1,15 +1,23 @@
-;(function($) {
-	var LearnPress = window.LearnPress = {
-		setUrl: function( url, title ){
+/**
+ * @author ThimPress
+ * @package LearnPress/Javascript
+ * @version 1.0
+ */
+;if (typeof window.LearnPress == 'undefined') {
+	window.LearnPress = {};
+}
+;(function ($) {
+	LearnPress = $.extend({
+		setUrl    : function (url, title) {
 			history.pushState({}, title, url);
 		},
-		reload: function (url) {
+		reload    : function (url) {
 			if (!url) {
 				url = window.location.href;
 			}
 			window.location.href = url;
 		},
-		parseJSON: function(data){
+		parseJSON : function (data) {
 			var m = data.match(/<!-- LP_AJAX_START -->(.*)<!-- LP_AJAX_END -->/);
 			try {
 				if (m) {
@@ -17,17 +25,17 @@
 				} else {
 					data = $.parseJSON(data);
 				}
-			}catch(e){
+			} catch (e) {
 				console.log(e);
 				data = {};
 			}
 			return data;
 		},
-		toElement: function(element, args){
+		toElement : function (element, args) {
 			args = $.extend({
-				delay: 300,
+				delay   : 300,
 				duration: 'slow',
-				offset: 50
+				offset  : 50
 			}, args || {});
 			$('body, html')
 				.fadeIn(10)
@@ -36,9 +44,9 @@
 					scrollTop: $(element).offset().top - args.offset
 				}, args.duration);
 		},
-		parse_json: function (data){
+		parse_json: function (data) {
 			console.log('LearnPress.parse_json has deprecated, use LearnPress.parseJSON instead of')
 			return LearnPress.parseJSON(data);
 		}
-	};
+	}, LearnPress);
 })(jQuery);

@@ -12,6 +12,33 @@ if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
+function learn_press_plugin_url( $sub_dir = '' ) {
+	return LP_PLUGIN_URL . ( $sub_dir ? "{$sub_dir}" : '' );
+}
+
+/**
+ * Get the plugin path.
+ *
+ * @param string $sub_dir
+ *
+ * @return string
+ */
+function learn_press_plugin_path( $sub_dir = '' ) {
+	return LP_PLUGIN_PATH . ( $sub_dir ? "{$sub_dir}" : '' );
+}
+
+function learn_press_include( $file, $folder = 'inc', $include_once = true ) {
+	if ( file_exists( $include = learn_press_plugin_path( "{$folder}/{$file}" ) ) ) {
+		if ( $include_once ) {
+			include_once $include;
+		} else {
+			include $include;
+		}
+		return true;
+	}
+	return false;
+}
+
 /**
  * Get current IP of the user
  *
@@ -44,6 +71,55 @@ function learn_press_get_ip() {
 	}
 
 	return esc_sql( $the_ip );
+}
+
+/**
+ * List all registered question types into dropdown
+ *
+ * @param array
+ *
+ * @return string
+ */
+function learn_press_dropdown_question_types( $args = array() ) {
+	$args   = wp_parse_args(
+		$args,
+		array(
+			'name'  => 'learn-press-dropdown-question-types',
+			'id'    => '',
+			'class' => '',
+			'selected' => '',
+			'echo' => true
+		)
+	);
+	if( !$args['id'] ){
+		$args['id'] = $args['name'];
+	}
+	$args['class'] = 'lp-dropdown-question-types' . ( $args['class'] ? ' ' . $args['class'] : '' );
+	$types  = learn_press_question_types();
+	$output = sprintf( '<select name="%s" id="%s" class="%s"%s>', $args['name'], $args['id'], $args['class'], $args['selected'] ? 'data-selected="' . $args['selected'] . '"' : '' );
+	foreach ( $types as $slug => $name ) {
+		$output .= sprintf( '<option value="%s"%s>%s</option>', $slug, selected( $slug == $args['selected'], true, false ), $name );
+	}
+	$output .= '</select>';
+	if( $args['echo'] ){
+		echo $output;
+	}
+	return $output;
+}
+
+/**
+ * Get all types of question supported
+ *
+ * @return mixed
+ */
+function learn_press_question_types() {
+	$types = array(
+		'none'				=> __( '--Select Type--', 'learn_press' ),
+		'true_or_false' => __( 'True Or False', 'learn_press' ),
+		'multi_choice'  => __( 'Multi Choice', 'learn_press' ),
+		'single_choice' => __( 'Single Choice', 'learn_press' )
+	);
+	return apply_filters( 'learn_press_question_types', $types );
 }
 
 /**
@@ -85,7 +161,7 @@ function learn_press_add_rewrite_rules() {
 		'top'
 	);
 
-	if( $profile_id = learn_press_get_page_id( 'profile' ) ){
+	if ( $profile_id = learn_press_get_page_id( 'profile' ) ) {
 		add_rewrite_rule(
 			'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?([^/]*)?/?',
 			'index.php?page_id=' . $profile_id . '&abc=1000&user=$matches[1]/$matches[2]&tabxxxxxxxxxxx=$matches[2]',
@@ -104,12 +180,12 @@ add_action( 'init', 'learn_press_add_rewrite_rules', 1000, 0 );
 function learn_press_parse_query_vars_to_request() {
 	global $wp_query;
 
-	if( isset( $wp_query->query['user'] ) ) {
+	if ( isset( $wp_query->query['user'] ) ) {
 		list( $username, $tab ) = explode( '/', $wp_query->query['user'] );
 		$wp_query->query_vars['user'] = $username;
-		$wp_query->query_vars['tab'] = $tab;
-		$wp_query->query['user'] = $username;
-		$wp_query->query['tab'] = $tab;
+		$wp_query->query_vars['tab']  = $tab;
+		$wp_query->query['user']      = $username;
+		$wp_query->query['tab']       = $tab;
 	}
 	global $wpdb;
 	// if lesson name is passed, find it's ID and put into request
@@ -129,12 +205,72 @@ function learn_press_parse_query_vars_to_request() {
 		}
 	}
 
-
 }
 
 add_action( 'wp', 'learn_press_parse_query_vars_to_request' );
 
+function learn_press_head() {
+	if ( is_single() && LP()->course_post_type == get_post_type() ) {
+		wp_enqueue_script( 'tojson', LP_PLUGIN_URL . '/assets/js/toJSON.js' );
+	}
+}
 
+add_action( 'wp_head', 'learn_press_head' );
+
+/**
+ * Enqueue js code to print out
+ *
+ * @param string $code
+ * @param bool   $script_tag - wrap code between <script> tag
+ */
+function learn_press_enqueue_script( $code, $script_tag = false ) {
+	global $learn_press_queued_js, $learn_press_queued_js_tag;
+
+	if ( $script_tag ) {
+		if ( empty( $learn_press_queued_js_tag ) ) {
+			$learn_press_queued_js_tag = '';
+		}
+		$learn_press_queued_js_tag .= "\n" . $code . "\n";
+	} else {
+		if ( empty( $learn_press_queued_js ) ) {
+			$learn_press_queued_js = '';
+		}
+
+		$learn_press_queued_js .= "\n" . $code . "\n";
+	}
+}
+
+/**
+ * Print out js code in the queue
+ */
+function learn_press_print_script() {
+	global $learn_press_queued_js, $learn_press_queued_js_tag;
+	if ( !empty( $learn_press_queued_js ) ) {
+		?>
+		<!-- LearnPress JavaScript -->
+		<script type="text/javascript">jQuery(function ($) {
+				<?php
+				// Sanitize
+				$learn_press_queued_js = wp_check_invalid_utf8( $learn_press_queued_js );
+				$learn_press_queued_js = preg_replace( '/&#(x)?0*(?(1)27|39);?/i', "'", $learn_press_queued_js );
+				$learn_press_queued_js = str_replace( "\r", '', $learn_press_queued_js );
+
+				echo $learn_press_queued_js;
+				?>
+			});
+		</script>
+		<?php
+		unset( $learn_press_queued_js );
+	}
+
+	if ( !empty( $learn_press_queued_js_tag ) ) {
+		echo $learn_press_queued_js_tag;
+	}
+}
+
+add_action( 'wp_head', 'learn_press_head' );
+add_action( 'wp_footer', 'learn_press_print_script' );
+add_action( 'admin_footer', 'learn_press_print_script' );
 
 /***********************************************/
 /***** =================================== *****/
@@ -725,12 +861,12 @@ add_action( 'transition_post_status', 'learn_press_publish_course', 10, 3 );
  */
 function learn_press_get_enrolled_courses( $user_id ) {
 	global $wpdb;
-	$query = $wpdb->prepare("
+	$query = $wpdb->prepare( "
 		SELECT course_id
 		FROM {$wpdb->learnpress_user_courses}
 		WHERE user_id = %d
 	", $user_id );
-	$pid = $wpdb->get_col( $query );
+	$pid   = $wpdb->get_col( $query );
 	if ( !$pid ) {
 		$pid = array( 0 );
 	}
@@ -1205,7 +1341,6 @@ function learn_press_get_course_by_order( $order_id ) {
 }
 
 
-
 function learn_press_seconds_to_weeks( $secs ) {
 	$secs = (int) $secs;
 	if ( $secs === 0 ) {
@@ -1517,7 +1652,7 @@ add_filter( 'pre_get_posts', 'learn_press_filter_search' );
 /**
  * Convert an object|array to json format and send it to the browser
  *
- * @param $response
+ * @param $data
  */
 function learn_press_send_json( $data ) {
 	echo '<!-- LP_AJAX_START -->';

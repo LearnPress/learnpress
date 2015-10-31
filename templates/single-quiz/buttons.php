@@ -2,34 +2,26 @@
 /**
  * Template for displaying the buttons of a quiz
  *
+ * @author  ThimPress
+ * @package LearnPress/Templates
+ * @version 1.0
  */
-learn_press_prevent_access_directly();
 
+if ( !defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
+
+global $quiz;
+
+$buttons = $quiz->get_buttons();
 ?>
-<?php do_action( 'learn_press_before_quiz_buttons' );?>
-<div class="quiz-buttons">
-    <?php if( ! learn_press_user_has_started_quiz() ):?>
-    <?php do_action( 'learn_press_before_start_quiz_button' );?>
-    <button class="button-start-quiz btn" quiz-id="<?php echo get_the_ID() ?>">
-        <?php
-        // allow doing quiz if enrolled
-        echo apply_filters( 'learn_press_start_quiz_button_text', __( "Start Quiz", "learn_press" ) );
-        ?>
-    </button>
-    <?php do_action( 'learn_press_after_start_quiz_button' );?>
-    <?php endif; ?>
-    <?php //if( !learn_press_user_has_completed_quiz() ):?>
-    <?php do_action( 'learn_press_before_finish_quiz_button' );?>
-    <button class="button-finish-quiz btn hidden" quiz-id="<?php echo get_the_ID() ?>" data-area="sidebar">
-        <?php
-        // allow doing quiz if enrolled
-        echo apply_filters( 'learn_press_sidebar_finish_quiz_text', __( "Finish Quiz", "learn_press" ) );
-        ?>
-    </button>
-    <?php do_action( 'learn_press_after_finish_quiz_button' );?>
-    <?php //endif;?>
-    <?php if( learn_press_user_can_retake_quiz() ):?>
-        <button class="button-retake-quiz btn" data-id="<?php the_ID();?>"><?php _e( 'Retake', 'learn_press' );?></button>
-    <?php endif;?>
-</div>
-<?php do_action( 'learn_press_after_quiz_buttons' );?>
+
+<?php if ( $buttons ): ?>
+
+	<div class="quiz-buttons">
+
+		<?php echo join( "\n", $buttons ); ?>
+
+	</div>
+
+<?php endif; ?>

@@ -46,6 +46,57 @@ class LP_Quiz {
 			$this->post = $quiz;
 		}
 		$this->course = LP_Course::get_course( $this->_lpr_course );
+		$this->_init();
+	}
+
+	protected function _init(){
+		add_action( 'wp_head', array( $this, 'frontend_assets' ) );
+	}
+
+	protected function _get_localize(){
+		$localize = array(
+			'finish_quiz' => __( 'Finish this quiz?', 'learn_press' )
+		);
+		return apply_filters( 'learn_press_single_quiz_localize', $localize, $this );
+	}
+
+	protected function _settings(){
+		$current_question_id = learn_press_get_current_question();// !empty( $_REQUEST['question_id'] ) ? intval( $_REQUEST['question_id'] ) : 0;
+		$questions           = learn_press_get_quiz_questions();
+		if ( $questions ) {
+			$question_ids = array_keys( $questions );
+		} else {
+			$question_ids = array();
+		}
+		if ( !$current_question_id || !in_array( $current_question_id, $question_ids ) ) {
+			$current_question_id = reset( $question_ids );
+		}
+		$question = LP_Question_Factory::get_question( $current_question_id );
+		$user_id  = get_current_user_id();
+
+		$user = learn_press_get_current_user();
+		$js   = array(
+			'time_format'	=> $this->duration > 300 ? 'h%:m%:s%' : 'm%:s%',
+			'total_time'	=> $this->duration,
+			'id'             => $this->id,
+			'questions'      => $question_ids,
+			'question_id'    => $current_question_id,
+			'status'         => $user->get_quiz_status( $this->id ),
+			'time_remaining' => ( $time_remaining = $user->get_quiz_time_remaining( $this->id ) ) !== false ? $time_remaining : $this->duration,
+			'permalink'      => get_the_permalink(),
+			'ajaxurl'        => admin_url( 'admin-ajax.php' ),
+			'user_id'        => $user->id
+		);
+
+		return apply_filters( 'learn_press_single_quiz_params', $js, $this );
+	}
+
+	function frontend_assets(){
+		if( is_quiz() && get_the_ID() == $this->id ){
+			$translate = $this->_get_localize();
+			LP_Assets::add_localize( $translate, false, 'single-quiz' );
+			LP_Assets::add_param( $this->_settings(), false, 'single-quiz' );
+		}
 	}
 
 	/**
@@ -71,14 +122,24 @@ class LP_Quiz {
 			return $this->{$key};
 		}
 
-		if ( strpos( $key, '_lpr_' ) === false ) {
-			$key = '_lpr_' . $key;
+		switch( $key ){
+			case 'current_question':
+				if( ( $question = learn_press_get_request( 'question' ) ) && is_quiz() ){
+					$value = LP_Question_Factory::get_question( $question );
+				}
+				break;
+			default:
+				if ( strpos( $key, '_lp_' ) === false ) {
+					$key = '_lp_' . $key;
+				}
+				$value = get_post_meta( $this->id, $key, true );
+				if( $key == '_lp_duration' ){
+					$value = absint( $value ) * 60;
+				}
 		}
-		$value = get_post_meta( $this->id, $key, true );
 		if ( !empty( $value ) ) {
 			$this->$key = $value;
 		}
-
 		return $value;
 	}
 
@@ -145,9 +206,33 @@ class LP_Quiz {
 
 	function get_questions(){
 		if( empty( $this->questions ) ){
+			global $wpdb;
+			$query = $wpdb->prepare("
+				SELECT q.*
+				FROM {$wpdb->posts} q
+				INNER JOIN {$wpdb->learnpress_quiz_questions} qq ON qq.question_id = q.ID
+				AND q.post_type = %s
+				AND qq.quiz_id = %d
+			", LP()->question_post_type, $this->id );
 
+			$this->questions = $wpdb->get_results( $query, OBJECT_K );
 		}
 		return $this->questions;
+	}
+
+	function get_buttons(){
+		$user = learn_press_get_current_user();
+		$buttons = array();
+		if ( !$user->has( 'started-quiz', $this->id ) ):
+			$buttons['start'] = sprintf( '<button class="button-start-quiz" data-id="%d">%s</button>', $this->id, apply_filters( 'learn_press_start_quiz_button_text', __( "Start Quiz", "learn_press" ) ) );
+		endif;
+
+		$buttons['finish'] = sprintf( '<button class="button-finish-quiz" data-id="%d">%s</button>', $this->id, apply_filters( 'learn_press_finish_quiz_button_text', __( "Finish Quiz", "learn_press" ) ) );
+
+		if ( learn_press_user_can_retake_quiz() ):
+			$buttons['retake'] = spriinf( '<button class="button-retake-quiz" data-id="%d">%s</button>', $this->id, apply_filters( 'learn_press_retake_quiz_button_text', __( 'Retake', 'learn_press' ) ) );
+		endif;
+		return apply_filters( 'learn_press_single_quiz_buttons', $buttons, $this, $user );
 	}
 
 	function has( $feature ){
@@ -164,6 +249,11 @@ class LP_Quiz {
 
 	function has_questions(){
 		return $this->get_questions();
+	}
+
+	function get_question_link( $question_id ){
+		//echo "XXXXXXXXXXXXXXX" . get_the_permalink( $this->id );
+		return get_the_permalink( $this->id ) . get_post_field( 'post_name', $question_id );
 	}
 
 	/**

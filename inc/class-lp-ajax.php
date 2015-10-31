@@ -143,11 +143,11 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			$question_id     = !empty( $_REQUEST['save_id'] ) ? absint( $_REQUEST['save_id'] ) : 0;
 			$user_id         = !empty( $_REQUEST['user_id'] ) ? absint( $_REQUEST['user_id'] ) : 0;
 			$question_answer = isset( $_REQUEST['question_answer'] ) ? $_REQUEST['question_answer'] : null;
-			$question        = $question_id ? LP_Question::instance( $question_id ) : false;
+			$question        = $question_id ? LP_Question_Factory::get_question( $question_id ) : false;
 
 			if ( $question_answer && $question ) {
 				$question_answer = isset( $_REQUEST['question_answer'] ) ? $_REQUEST['question_answer'] : null;
-				$question->submit_answer( $quiz_id, $question_answer );
+				//$question->submit_answer( $quiz_id, $question_answer );
 				do_action( 'learn_press_save_user_question_answer', $question_answer, $question_id, $quiz_id, $user_id, true );
 
 			}
@@ -182,7 +182,8 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			$quiz_id     = !empty( $_REQUEST['quiz_id'] ) ? absint( $_REQUEST['quiz_id'] ) : 0;
 			$question_id = !empty( $_REQUEST['question_id'] ) ? absint( $_REQUEST['question_id'] ) : 0;
 			$user_id     = !empty( $_REQUEST['user_id'] ) ? absint( $_REQUEST['user_id'] ) : 0;
-
+			global $quiz;
+			$quiz = LP_Quiz::get_quiz( $quiz_id );
 			// save question if find it
 			self::save_question_if_needed();
 			//self::update_time_remaining();
@@ -203,9 +204,10 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 					)
 				);
 			}
-			if ( $question = LP_Question::instance( $question_id ) ) {
+			if ( $question = LP_Question_Factory::get_question( $question_id ) ) {
 				ob_start();
-				$question->render();
+				$question_answers = $user->get_question_answers( $quiz->id, $question_id );
+				$question->render( array( 'answered' => $question_answers ) );
 				$content = ob_get_clean();
 				learn_press_send_json(
 					array(
@@ -644,7 +646,10 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 					)
 				);
 			}
+			global $quiz;
+
 			$quiz = LP_Quiz::get_quiz( $quiz_id );
+
 			if ( !$quiz->id || $quiz->id != $quiz_id ) {
 				learn_press_send_json(
 					array(

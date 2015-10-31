@@ -59,7 +59,7 @@
 /* curriculum */
 .section-header{
 	margin: 0 0 0px 0;
-	padding: 10px;
+	padding: 10px 15px;
 	background-color: #DDD;
 }
 #learn-press-course-curriculum .section{
@@ -73,7 +73,7 @@
 #learn-press-course-curriculum .section .course-item{
 	margin: 0 0 0px;
 	list-style: none;
-	padding: 10px;
+	padding: 10px 15px;
 	border-top: 1px solid #FFF;
 }
 
@@ -84,11 +84,27 @@
 .single-quiz .quiz-summary-left{
 	float: left;
 	width: 100%;
+	padding-right: 200px;
 }
 .single-quiz .quiz-sidebar{
 	float: right;
 	width: 200px;
 	margin-left: -200px;
+}
+.quiz-countdown{
+	text-align: center;
+}
+.quiz-countdown #quiz-countdown-value{
+	font-size: 40px;
+	line-height: 1;
+}
+.quiz-countdown .quiz-countdown-label{
+	font-size: smaller;
+	font-style: italic;
+	color: #999;
+}
+.quiz-buttons{
+	text-align: center;
 }
 
 /* profile */

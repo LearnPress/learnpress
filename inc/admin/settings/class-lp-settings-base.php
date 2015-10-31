@@ -171,6 +171,9 @@ class LP_Settings_Base {
 		return preg_replace( array( '!\[|(\]\[)!', '!\]!' ), array( '_', '' ), $this->get_field_name( $name ) );
 	}
 }
-
-//
 new LP_Settings_Base();
+function learn_press_load_settings_base(){
+
+}
+add_action( 'plugins_loaded', 'learn_press_load_settings_base' );
+//

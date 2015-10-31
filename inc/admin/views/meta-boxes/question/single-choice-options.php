@@ -1,0 +1,68 @@
+<div class="learn-press-question" id="learn-press-question-<?php echo $this->id;?>" data-type="single-choice" data-id="<?php echo $this->id;?>">
+<table class="lp-sortable lp-list-options" id="learn-press-list-options-<?php echo $this->id;?>">
+	<thead>
+	<th><?php _e( 'Answer Text', 'learn_press' ); ?></th>
+	<th><?php _e( 'Is Correct?', 'learn_press' ); ?></th>
+	<th width="20"></th>
+	<?php if ( $this->type == 'single_choice' ): ?>
+		<th width="20"></th>
+	<?php endif;?>
+	</thead>
+	<tbody>
+
+	<?php if ( $this->answers ): ?>
+		<?php foreach ( $this->answers as $answer ): ?>
+			<?php
+			$id = !empty( $answer['id'] ) ? $answer['id'] : '';
+			$value = $this->_get_option_value( $answer['value'] );
+			?>
+
+			<?php do_action( 'learn_press_before_question_answer_option', $this ); ?>
+
+			<tr class="lp-list-option lp-list-option-<?php echo $id;?>" data-id="<?php echo $id;?>">
+				<td>
+					<input class="lp-answer-text" type="text" name="learn_press_question[<?php echo $this->id; ?>][answer][text][]" value="<?php echo esc_attr( $answer['text'] ); ?>" />
+				</td>
+				<th class="lp-answer-check">
+					<input type="hidden" name="learn_press_question[<?php echo $this->id; ?>][answer][value][]" value="<?php echo $value; ?>" />
+					<input type="radio" name="learn_press_question_<?php echo $this->id; ?>" <?php checked( $answer['is_true'] == 'yes', true ); ?> value="<?php echo $value; ?>" />
+					<input type="hidden" name="learn_press_question[<?php echo $this->id; ?>][answer][id][]" value="<?php echo !empty( $answer['id'] ) ? $answer['id'] : ''; ?>" />
+				</th>
+				<?php if ( $this->type == 'single_choice' ): ?>
+				<td class="lp-list-option-actions lp-remove-list-option">
+					<i class="dashicons dashicons-trash"></i>
+				</td>
+				<?php endif;?>
+				<td class="lp-list-option-actions lp-move-list-option">
+					<i class="dashicons dashicons-sort"></i>
+				</td>
+			</tr>
+
+			<?php do_action( 'learn_press_after_question_answer_option', $this ); ?>
+
+		<?php endforeach; ?>
+	<?php endif; ?>
+	</tbody>
+</table>
+	<p class="question-bottom-actions">
+		<?php
+		$buttons = array(
+			'change_type' => learn_press_dropdown_question_types(array('echo' => false, 'id' => 'learn-press-dropdown-question-types-' . $this->id, 'selected' => $this->type ))
+		);
+		if( $this->type != 'true_or_false' ){
+			array_splice($buttons, 0, 0, sprintf(
+					__( '<button class="button add-question-option-button add-question-option-button-%1$d" data-id="%1$d" type="button">%2$s</button>', 'learn_press' ),
+					$this->id,
+					__( 'Add Option', 'learn_press' )
+				)
+			);
+		}
+		$buttons = apply_filters(
+			'learn_press_question_bottom_buttons',
+			$buttons,
+			$this
+		);
+		echo join( "\n", $buttons );
+		?>
+	</p>
+</div>

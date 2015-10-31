@@ -7,7 +7,7 @@ if ( !defined( 'ABSPATH' ) ) {
 if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 
 	// Base class for custom post type to extends
-	LP()->_include( 'custom-post-types/abstract.php' );
+	learn_press_include( 'custom-post-types/abstract.php' );
 
 	// class LP_Lesson_Post_Type
 	final class LP_Lesson_Post_Type extends LP_Abstract_Post_Type{
@@ -352,5 +352,9 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 
 	}// end LP_Lesson_Post_Type
 }
-new LP_Lesson_Post_Type();
+function learn_press_load_lesson_post_type(){
+	new LP_Lesson_Post_Type();
+}
+add_action( 'plugins_loaded', 'learn_press_load_lesson_post_type' );
+
 

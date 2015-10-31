@@ -36,6 +36,15 @@ abstract class LP_Abstract_Assets {
 	protected static $wp_localize_scripts = array();
 
 	/**
+	 * Params
+	 *
+	 * @var array
+	 */
+	protected static $wp_params = array();
+
+	protected static $wp_script_codes = array();
+
+	/**
 	 * Localized flag
 	 *
 	 * @var bool
@@ -61,11 +70,13 @@ abstract class LP_Abstract_Assets {
 		self::$id = is_admin() ? 0 : 1;
 		$class = get_called_class();
 		if( self::$id ) {
-			add_action( 'wp_enqueue_scripts', array( $class, 'load_scripts' ) );
+			add_action( 'wp', array( $class, 'load_scripts' ) );
+			add_action( 'wp_enqueue_scripts', array( $class, 'wp_assets' ) );
 			add_action( 'wp_print_scripts', array( $class, 'localize_printed_scripts' ), 5 );
 			add_action( 'wp_print_footer_scripts', array( $class, 'localize_printed_scripts' ), 5 );
 		}else{
-			add_action( 'admin_enqueue_scripts', array( $class, 'load_scripts' ) );
+			add_action( 'admin_init', array( $class, 'load_scripts' ) );
+			add_action( 'admin_enqueue_scripts', array( $class, 'wp_assets' ) );
 			add_action( 'admin_print_scripts', array( $class, 'localize_printed_scripts' ), 5 );
 			add_action( 'admin_print_footer_scripts', array( $class, 'localize_printed_scripts' ), 5 );
 		}
@@ -134,7 +145,9 @@ abstract class LP_Abstract_Assets {
 	/**
 	 * add translate text
 	 *
+	 * @param string
 	 * @param array $localize
+	 * @param string
 	 */
 	static function add_localize( $key, $localize = null, $handle = 'learn-press-js' ) {
 		if ( is_array( $key ) ) {
@@ -145,6 +158,25 @@ abstract class LP_Abstract_Assets {
 			if ( !$handle ) $handle = 'learn-press-js';
 			if ( empty( self::$wp_localize_scripts[$handle] ) ) self::$wp_localize_scripts[$handle] = array();
 			self::$wp_localize_scripts[$handle][$key] = $localize;
+		}
+	}
+
+	/**
+	 * Add js param
+	 *
+	 * @param string
+	 * @param array
+	 * @param string
+	 */
+	static function add_param( $key, $param = null, $handle = 'learn-press-js' ) {
+		if ( is_array( $key ) ) {
+			foreach ( $key as $k => $v ) {
+				self::add_param( $k, $v, $handle );
+			}
+		} elseif ( is_string( $key ) && strlen( $key ) ) {
+			if ( !$handle ) $handle = 'learn-press-js';
+			if ( empty( self::$wp_params[$handle] ) ) self::$wp_params[$handle] = array();
+			self::$wp_params[$handle][$key] = $param;
 		}
 	}
 
@@ -163,6 +195,31 @@ abstract class LP_Abstract_Assets {
 	}
 
 	/**
+	 * Print script params
+	 *
+	 * @param  mixed $handle
+	 */
+	private static function script_params( $handle ) {
+		$data = !empty( self::$wp_params[$handle] ) ? self::$wp_params[$handle] : false;
+		if ( wp_script_is( $handle ) && $data ) {
+			$name = str_replace( '-', '_', $handle ) . '_params';
+			unset( self::$wp_params[$handle] );
+			wp_localize_script( $handle, $name, apply_filters( $name, $data ) );
+		}
+	}
+
+	static function add_script_tag( $code, $handle = '' ){
+		if( empty( self::$wp_script_codes[ $handle ] ) ){
+			self::$wp_script_codes[ $handle ] = '';
+		}
+		self::$wp_script_codes[ $handle ] .= preg_replace( '!</?script(.*)>!', '', $code );
+	}
+
+	static function wp_assets(){
+		do_action( 'learn_press_print_assets', is_admin() );
+	}
+
+	/**
 	 * Load Script
 	 */
 	static function load_scripts() {
@@ -171,6 +228,12 @@ abstract class LP_Abstract_Assets {
 	static function localize_printed_scripts() {
 		if ( self::$scripts ) foreach ( self::$scripts as $handle ) {
 			self::localize_script( $handle );
+			self::script_params( $handle );
+			if( ! empty( self::$wp_script_codes[ $handle ] ) ) {
+				learn_press_get_template( 'global/scripts.php', array( 'code' => self::$wp_script_codes[ $handle ] ) );
+				unset( self::$wp_script_codes[ $handle ] );
+			}
 		}
+
 	}
 }

@@ -313,6 +313,15 @@ if ( !function_exists( 'learn_press_single_quiz_timer' ) ) {
 	}
 }
 
+if ( !function_exists( 'learn_press_single_quiz_buttons' ) ) {
+	/**
+	 * Output the buttons for quiz actions
+	 */
+	function learn_press_single_quiz_buttons() {
+		learn_press_get_template( 'single-quiz/buttons.php' );
+	}
+}
+
 /******************************/
 
 if ( !function_exists( 'learn_press_body_class' ) ) {
@@ -436,7 +445,6 @@ if ( !function_exists( 'learn_press_permission_to_view_page' ) ) {
 	}
 }
 add_filter( 'template_include', 'learn_press_permission_to_view_page' );
-
 
 
 
@@ -620,42 +628,7 @@ if ( !function_exists( 'learn_press_print_quiz_question_content_script' ) ) {
 	 * Output js script configuration for single quiz page
 	 */
 	function learn_press_print_quiz_question_content_script() {
-		$current_question_id = learn_press_get_current_question();// !empty( $_REQUEST['question_id'] ) ? intval( $_REQUEST['question_id'] ) : 0;
-		$questions           = learn_press_get_quiz_questions();
-		if ( $questions ) {
-			$question_ids = array_keys( $questions );
-		} else {
-			$question_ids = array();
-		}
-		if ( !$current_question_id || !in_array( $current_question_id, $question_ids ) ) {
-			$current_question_id = reset( $question_ids );
-		}
-		$question = LP_Question::instance( $current_question_id );
-		$user_id  = get_current_user_id();
-		global $quiz;
-		if ( $quiz && !empty( $quiz->id ) ) {
-			$user = learn_press_get_current_user();
-			$js   = array(
-
-				'id'             => $quiz->id,
-				'questions'      => $question_ids,
-				'status'         => $user->get_quiz_status( $quiz->id ),
-				'time_remaining' => learn_press_get_quiz_time_remaining( $user_id, $quiz->id ),
-				'question_id'    => $current_question_id,
-				'permalink'      => get_the_permalink(),
-				'ajaxurl'        => admin_url( 'admin-ajax.php' ),
-				'user_id'        => $user->id
-			);
-
-			?>
-			<script type="text/javascript">
-				jQuery(document).ready(function () {
-					LearnPress.initQuiz(<?php echo json_encode( $js );?>);
-				})
-
-			</script>
-			<?php
-		}
+		//////////////
 	}
 }
 
@@ -852,7 +825,7 @@ if ( !function_exists( 'learn_press_frontend_single_quiz_scripts' ) ) {
 			wp_dequeue_script( 'lpr-learnpress-js' );
 			wp_enqueue_script( 'tojson', LP_PLUGIN_URL . '/assets/js/toJSON.js', array( 'jquery' ) );
 			wp_enqueue_script( 'jquery-cookie', LP_PLUGIN_URL . '/assets/js/jquery.cookie.js', array( 'jquery' ) );
-			wp_enqueue_script( 'single-quiz', LP_PLUGIN_URL . '/assets/js/single-quiz.js', array( 'jquery-cookie', 'backbone', 'wp-util' ) );
+			//wp_enqueue_script( 'single-quiz', LP_PLUGIN_URL . '/assets/js/single-quiz.js', array( 'jquery-cookie', 'backbone', 'wp-util' ) );
 		}
 	}
 }

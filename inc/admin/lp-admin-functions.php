@@ -10,7 +10,6 @@
 if ( !defined( 'ABSPATH' ) ) {
 	exit;
 }
-
 /**
  * Get html view path for admin to display
  *
@@ -55,6 +54,7 @@ function learn_press_admin_view( $name, $args = array(), $include_once = false )
  * @param            $name
  * @param bool|false $selected
  * @param array      $args
+ *
  * @return mixed|string
  */
 function learn_press_pages_dropdown( $name, $selected = false, $args = array() ) {
@@ -69,7 +69,7 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 	$allow_create = true;
 	is_array( $args ) && extract( $args );
 
-	if( empty( $id ) ){
+	if ( empty( $id ) ) {
 		$id = $name;
 	}
 	$args    = array(
@@ -108,12 +108,12 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 	}
 	if ( $allow_create ) {
 		ob_start(); ?>
-		<p class="learn-press-quick-add-page-inline <?php echo $id;?> hide-if-js">
+		<p class="learn-press-quick-add-page-inline <?php echo $id; ?> hide-if-js">
 			<input type="text" />
 			<button class="button" type="button"><?php _e( 'Ok', 'learn_press' ); ?></button>
 			<a href=""><?php _e( 'Cancel', 'learn_press' ); ?></a>
 		</p>
-		<p class="learn-press-quick-add-page-actions <?php echo $id;?><?php echo $selected ? '' : ' hide-if-js'; ?>">
+		<p class="learn-press-quick-add-page-actions <?php echo $id; ?><?php echo $selected ? '' : ' hide-if-js'; ?>">
 			<a class="edit-page" href="<?php echo get_edit_post_link( $selected ); ?>" target="_blank"><?php _e( 'Edit Page', 'learn_press' ); ?></a>
 			<a class="view-page" href="<?php echo get_permalink( $selected ); ?>" target="_blank"><?php _e( 'View Page', 'learn_press' ); ?></a>
 		</p>
@@ -125,6 +125,8 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 
 	return $output;
 }
+
+
 /**************************************************/
 /**************************************************/
 /**************************************************/
@@ -407,7 +409,6 @@ function set_post_order_in_admin( $wp_query ) {
 }
 
 add_filter( 'pre_get_posts', 'set_post_order_in_admin' );
-
 /**
  * Add actions to the list of the course. e.g: Duplicate link
  *

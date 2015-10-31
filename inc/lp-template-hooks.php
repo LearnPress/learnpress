@@ -97,7 +97,8 @@ add_action( 'learn_press_single_quiz_summary', 'learn_press_single_quiz_question
 add_action( 'learn_press_single_quiz_summary', 'learn_press_single_quiz_left_end_wrap', 30 );
 add_action( 'learn_press_single_quiz_summary', 'learn_press_single_quiz_sidebar', 35 );
 
-add_action( 'learn_press_single_quiz_sidebar', 'learn_press_single_quiz_timer' );
+add_action( 'learn_press_single_quiz_sidebar', 'learn_press_single_quiz_timer', 5 );
+add_action( 'learn_press_single_quiz_sidebar', 'learn_press_single_quiz_buttons', 10 );
 //add_action( 'learn_press_single_quiz_summary', 'learn_press_single_quiz_no_question' );
 
 /*
@@ -112,6 +113,8 @@ add_action( 'learn_press_content_quiz_sidebar', 'learn_press_single_quiz_buttons
 add_action( 'learn_press_after_single_quiz', 'learn_press_print_quiz_question_content_script' );
 */
 
+
+return;
 
 /*****************************************************/
 // Archive courses

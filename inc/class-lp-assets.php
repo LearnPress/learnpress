@@ -13,53 +13,83 @@ if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-LP()->_include( 'abstracts/abstract-lp-assets.php' );
+learn_press_include( 'abstracts/abstract-lp-assets.php' );
 
 class LP_Assets extends LP_Abstract_Assets {
+
+	static function init(){
+		add_action( 'learn_press_print_assets', array( __CLASS__, '_print_assets' ) );
+		parent::init();
+	}
 
 	/**
 	 * Load assets for frontend
 	 */
 	static function load_scripts(){
 
-		self::add_style( 'learn-press-admin', LP()->plugin_url( 'assets/css/learnpress-admin.css') );
+		// global
+		self::add_script( 'learn-press-global', learn_press_plugin_url( 'assets/js/global.js' ) );
+		self::add_script( 'learn-press-block-ui', learn_press_plugin_url( 'assets/js/jquery.block-ui.js' ) );
 
-		self::add_style( 'lpr-learnpress-css', LP_CSS_URL . 'learnpress.css' );
-		self::add_style( 'lpr-time-circle-css', LP_CSS_URL . 'timer.css' );
+		// admin
+		self::add_style( 'learn-press-admin', learn_press_plugin_url( 'assets/css/learnpress-admin.css') );
 
-		self::add_script( 'lpr-alert-js', LP_JS_URL . 'jquery.alert.js' );
-		self::add_script( 'lpr-global', LP_JS_URL . 'global.js' );
-		self::add_script( 'lpr-time-circle-js', LP_JS_URL . 'jquery.timer.js' );
-		self::add_script( 'block-ui', LP_JS_URL . 'jquery.block-ui.js' );
-		self::add_script( 'learn-press-js', LP_JS_URL . 'frontend/learnpress.js', array( 'jquery', 'lpr-alert-js', 'lpr-global', 'lpr-time-circle-js' ) );
+		// frontend
+		self::add_style( 'learn-press', learn_press_plugin_url( 'assets/css/learnpress.css' ) );
+		self::add_script( 'learn-press-js', learn_press_plugin_url( 'assets/js/frontend/learnpress.js' ), array( 'learn-press-global' ) );
 
-		learn_press_enqueue_script( "<script>var learn_press_ajaxurl='" . admin_url( 'admin-ajax.php' ) . "';</script>", true );
-		learn_press_enqueue_script( "<script>var learn_press_site_url='" . get_site_url() . "';</script>", true );
-		learn_press_enqueue_script( "<script>var learn_press_url='" . get_the_permalink() . "';</script>", true );
+		// single course
+		self::add_script( 'single-course', learn_press_plugin_url( 'assets/js/frontend/single-course.js' ) );
 
-		global $post;
+		// single quiz
+		self::add_script( 'learn-press-timer', learn_press_plugin_url( 'assets/js/jquery.timer.js' ) );
+		self::add_script( 'single-quiz', learn_press_plugin_url( 'assets/js/frontend/single-quiz.js' ), array( 'backbone', 'utils' ) );
 
-		if ( !$post || !in_array( $post->post_type, array( LP()->course_post_type, LP()->quiz_post_type, LP()->lesson_post_type, LP()->assignment_post_type ) ) ) {
-			//return;
-		}
+		// checkout page
+		self::add_script( 'checkout', learn_press_plugin_url( 'assets/js/frontend/checkout.js' ) );
 
-		self::enqueue_style( 'lpr-learnpress-css' );
+		//self::add_script( 'lpr-alert-js', LP_JS_URL . 'jquery.alert.js' );
+
+		/*self::enqueue_style( 'lpr-learnpress-css' );
 		self::enqueue_style( 'lpr-time-circle-css' );
 
 		self::enqueue_script( 'learn-press-js' );
 		self::enqueue_script( 'lpr-alert-js' );
 		self::enqueue_script( 'lpr-time-circle-js' );
 		self::enqueue_script( 'block-ui' );
+*/
 
-		self::enqueue_script( 'single-course', LP()->plugin_url( 'assets/js/frontend/single-course.js' ) );
+	}
 
+	static function _print_assets(){
+
+		self::enqueue_style(
+			array(
+				'learn-press'
+			)
+		);
+
+		self::enqueue_script(
+			array(
+				'learn-press-global'
+			)
+		);
+
+		// single course
+		if( is_course() ){
+			self::enqueue_script( 'single-course' );
+		}
+
+		// single quiz
+		if( is_quiz() ){
+			self::enqueue_script( 'learn-press-timer' );
+			self::enqueue_script( 'single-quiz' );
+		}
+
+		// checkout page
 		if( learn_press_is_checkout() ) {
-			self::enqueue_script( 'checkout', LP()->plugin_url( 'assets/js/frontend/checkout.js' ) );
+			self::enqueue_script( 'checkout' );
 		}
 	}
 }
 LP_Assets::init();
-function learn_press_init_assets(){
-
-}
-add_action( 'wp_enqueue_scripts', 'learn_press_init_assets' );

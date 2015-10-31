@@ -17,12 +17,18 @@ global $quiz;
 
 	<div class="quiz-questions" id="learn-press-quiz-questions">
 
-		<?php do_action( 'learn_press_quiz_question_nav' ); ?>
-		<ul>
-			<?php for($i = 1; $i <= 10; $i++ ){?>
-				<li>Question #<?php echo $i;?></li>
+		<?php do_action( 'learn_press_before_quiz_questions' ); ?>
+
+		<ul class="quiz-questions-list">
+			<?php if( $questions = $quiz->get_questions() ) foreach( $questions as $question ){?>
+				<li data-id="<?php echo $question->ID;?>">
+					<?php printf( '<a href="%s">%s</a>', $quiz->get_question_link( $question->ID ), get_the_title( $question->ID ) );?>
+				</li>
 			<?php }?>
 		</ul>
+
+		<?php do_action( 'learn_press_after_quiz_questions' ); ?>
+
 	</div>
 
 <?php else: ?>

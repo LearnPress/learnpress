@@ -1,36 +1,34 @@
 <?php
 /**
- * Project:     learnpress.
- * Author:      GiapNV
- * Date:        1/23/15
- *
- * Copyright 2007-2014 thimpress.com. All rights reserved.
+ * @author  ThimPress
+ * @package LearnPress/Classes
+ * @version 1.0
  */
 
 if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
-define( 'LP_QUIZ_SLUG', 'quiz' );
+
 if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 
 	// Base class for custom post type to extends
-	LP()->_include( 'custom-post-types/abstract.php' );
+	learn_press_include( 'custom-post-types/abstract.php' );
 
 	// class LP_Quiz_Post_Type
 	final class LP_Quiz_Post_Type extends LP_Abstract_Post_Type {
 		function __construct() {
 
-			//add_action( 'init', array( $this, 'register_post_type' ) );
-			//add_action( 'admin_init', array( $this, 'add_meta_boxes' ), 0 );
 			add_action( 'admin_head', array( $this, 'enqueue_script' ) );
 			add_filter( 'manage_lpr_quiz_posts_columns', array( $this, 'columns_head' ) );
 			add_action( 'manage_lpr_quiz_posts_custom_column', array( $this, 'columns_content' ), 10, 2 );
 			add_action( 'save_post_lpr_quiz', array( $this, 'update_quiz_meta' ) );
+
 			add_filter( 'posts_fields', array( $this, 'posts_fields' ) );
 			add_filter( 'posts_join_paged', array( $this, 'posts_join_paged' ) );
 			add_filter( 'posts_where_paged', array( $this, 'posts_where_paged' ) );
 			add_filter( 'posts_orderby', array( $this, 'posts_orderby' ) );
 			add_filter( 'manage_edit-lpr_quiz_sortable_columns', array( $this, 'columns_sortable' ) );
+
 			add_action( 'save_post', array( $this, 'save' ) );
 
 			parent::__construct();
@@ -38,7 +36,6 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 		}
 
 		static function save() {
-
 
 		}
 
@@ -61,7 +58,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 						'publicly_queryable' => true,
 						'show_ui'            => true,
 						'has_archive'        => true,
-						'capability_type'    => LP_LESSON_CPT,
+						'capability_type'    => LP()->lesson_post_type,
 						'map_meta_cap'       => true,
 						'show_in_menu'       => 'learn_press',
 						'show_in_admin_bar'  => true,
@@ -81,18 +78,18 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 
 		static function add_meta_boxes() {
 
-			$prefix                                        = '_lpr_';
+			$prefix                                        = '_lp_';
 			$meta_box                                      = apply_filters(
 				'learn_press_quiz_question_meta_box_args',
 				array(
 					'title'      => __( 'Questions', 'learn_press' ),
-					'post_types' => LP_QUIZ_CPT,
+					'post_types' => LP()->quiz_post_type,
 					'fields'     => array(
 						array(
 							'name' => __( '', 'learn_press' ),
 							'desc' => __( '', 'learn_press' ),
-							'id'   => "{$prefix}quiz_question",
-							'type' => 'quiz_question'
+							'id'   => "{$prefix}questions",
+							'type' => 'quiz_questions'
 						)
 					)
 				)
@@ -101,29 +98,29 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 
 			new RW_Meta_Box(
 				array(
-					'title'      => __( 'LearnPress Quiz Settings', 'learn_press' ),
-					'post_types' => LP_QUIZ_CPT,
+					'title'      => __( 'General Settings', 'learn_press' ),
+					'post_types' => LP()->quiz_post_type,
 					'context'    => 'normal',
 					'priority'   => 'high',
 					'fields'     => array(
 						array(
-							'name' => __( 'Quiz Duration', 'learn_press' ),
-							'desc' => __( 'Quiz duration (in minutes). Auto submits when expire. Set 0 to disable.', 'learn_press' ),
+							'name' => __( 'Duration', 'learn_press' ),
+							'desc' => __( 'Duration of the quiz (in minutes). Auto submits when expire. Set 0 to disable.', 'learn_press' ),
 							'id'   => "{$prefix}duration",
 							'type' => 'number',
 							'min'  => 0,
 							'std'  => 10
 						),
 						array(
-							'name' => __( 'Re-take quiz', 'learn_press' ),
-							'id'   => "{$prefix}retake_quiz",
+							'name' => __( 'Re-take', 'learn_press' ),
+							'id'   => "{$prefix}retake",
 							'type' => 'number',
 							'desc' => __( 'How many times the user can re-take this quiz. Set to 0 to disable', 'learn_press' ),
 							'min'  => 0
 						),
 						array(
 							'name' => __( 'Show correct answer', 'learn_press' ),
-							'id'   => "{$prefix}show_quiz_result",
+							'id'   => "{$prefix}show_result",
 							'type' => 'checkbox',
 							'desc' => __( 'Show the correct answer in result of the quiz.', 'learn_press' ),
 							'std'  => 0
@@ -181,8 +178,8 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 					<input type="text">
 					<select class="lpr-question-types lpr-select2" name="lpr_question[type]" id="lpr-quiz-question-type">
 						<?php if ( $questions = lpr_get_question_types() ): ?>
-							<?php foreach ( $questions as $type ): ?>
-								<option value="<?php echo $type; ?>"><?php echo LP_Question::instance( $type )->get_name(); ?></option>
+							<?php foreach ( $questions as $type => $name ): ?>
+								<option value="<?php echo $type; ?>"><?php echo $name; ?></option>
 							<?php endforeach; ?>
 						<?php endif; ?>
 					</select>

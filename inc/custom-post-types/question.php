@@ -6,7 +6,7 @@ if ( !defined( 'ABSPATH' ) ) {
 
 if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 	// Base class for custom post type to extends
-	LP()->_include( 'custom-post-types/abstract.php' );
+	learn_press_include( 'custom-post-types/abstract.php' );
 
 	// class LP_Question_Post_Type
 	class LP_Question_Post_Type extends LP_Abstract_Post_Type{
@@ -84,32 +84,47 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 
 		static function add_meta_boxes() {
 
+			new RW_Meta_Box(
+				array(
+					'id'     => 'question_answer',
+					'title'  => __('Answer','learn_press'),
+					'pages'  => array( LP()->question_post_type ),
+					'fields' => array(
+						array(
+							'name' => __( '', 'learn_press' ),
+							'id'   => "_lp_question_answer",
+							'type' => 'question'
+						)
+					)
+				)
+			);
 
 			$meta_box = self::settings_meta_box();
 			new RW_Meta_Box( $meta_box );
 		}
 
 		static function settings_meta_box() {
-			$prefix = '_lpr_';
-
+			$prefix = '_lp_';
 			$meta_box = array(
 				'id'     => 'question_settings',
-				'title'  => __('Type of question','learn_press'),
-				'pages'  => array( LP_QUESTION_CPT ),
+				'title'  => __('Settings','learn_press'),
+				'pages'  => array( LP()->question_post_type ),
 				'fields' => array(
 					array(
-						'name' => __( '', 'learn_press' ),
-						'id'   => "{$prefix}question_type",
-						'type' => 'question'
-					),
-					array(
 						'name'  => __( 'Mark For This Question', 'learn_press' ),
-						'id'    => "{$prefix}question_mark",
+						'id'    => "{$prefix}mark",
 						'type'  => 'number',
 						'clone' => false,
 						'desc'  => __('Mark for choosing the right answer', 'learn_press'),
 						'min'   => 1,
 						'std'   => 1
+					),
+					array(
+						'name'  => __( 'Question Explanation', 'learn_press' ),
+						'id'    => "{$prefix}explanation",
+						'type'  => 'textarea',
+						'desc'  => __('', 'learn_press'),
+						'std'   => null
 					)
 				)
 			);
@@ -154,9 +169,9 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 				<div id="lpr-form-quick-add-question" class="lpr-quick-add-form">
 					<input type="text">
 					<select class="lpr-question-types lpr-select2" name="lpr_question[type]" id="lpr-quiz-question-type">
-						<?php if ( $questions = lpr_get_question_types() ): ?>
-							<?php foreach ( $questions as $type ): $question = LP_Question::instance( $type ); if( ! $question ) continue; ?>
-								<option value="<?php echo $type; ?>"><?php echo $question->get_name(); ?></option>
+						<?php if ( $questions = learn_press_question_types() ): ?>
+							<?php foreach ( $questions as $type => $name ): ?>
+								<option value="<?php echo $type; ?>"><?php echo $name; ?></option>
 							<?php endforeach; ?>
 						<?php endif;?>
 					</select>
@@ -188,6 +203,13 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 		static function admin_styles(){}
 		static function admin_params(){
 
+		}
+
+		function save(){
+			$this->save_post();
+		}
+		function save_post( ){
+			die();
 		}
 	} // end LP_Question_Post_Type
 }
