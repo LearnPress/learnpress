@@ -25,39 +25,74 @@ if (typeof window.LearnPress == 'undefined') {
 		$block       : null,
 		$window      : null,
 		events       : {},
-		show         : function (message, title, buttons, events) {
-			setTimeout($.proxy(function () {
+		instances	 : [],
+		instance: null,
+		show         : function (message, args) {
+			//this.hide();
+			$.proxy(function () {
+				args = $.extend({
+					title: '',
+					buttons: '',
+					events: false,
+					autohide: false,
+					message: message,
+					id: LearnPress.uniqueId()
+				}, args || {});
+
+				this.instances.push(args)
+				this.instance = args;
+
 				var $doc = $(document),
 					$body = $(document.body);
 				if (!this.$block) {
 					this.$block = $('<div id="learn-press-message-box-block"></div>').appendTo($body);
+
 				}
 				if (!this.$window) {
 					this.$window = $('<div id="learn-press-message-box-window"><div id="message-box-wrap"></div> </div>').insertAfter(this.$block);
+					this.$window.click(function(){
+					})
 				}
-				this.events = events || {};
-				this._createWindow(message, title, buttons);
+				//this.events = args.events || {};
+				this._createWindow(message, args.title, args.buttons);
 				this.$block.show();
-				this.$window.show();
+				this.$window.show().attr('instance', args.id);
 				$(window)
 					.bind('resize.message-box', $.proxy(this.update, this))
 					.bind('scroll.message-box', $.proxy(this.update, this));
 				this.update(true);
-			}, this), 100);
+				if( args.autohide ){
+					setTimeout(function(){
+						LearnPress.MessageBox.hide();
+					}, args.autohide)
+				}
+			}, this)()
 		},
 		blockUI      : function (message) {
 
 			message = (message !== false ? ( message ? message : 'Wait a moment' ) : '') + '<div class="message-box-animation"></div>';
-			this.show(message, '', '');
+			this.show(message);
 		},
-		hide         : function (delay) {
+		hide         : function (delay, instance) {
+			if( instance ){
+				this._removeInstance(instance.id);
+			}else {
+				this._removeInstance(this.instance.id);
+			}
+			if(this.instances.length == 0) {
+				if (this.$block) {
+					this.$block.hide();
+				}
+				if (this.$window) {
+					this.$window.hide();
+				}
+				$(window)
+					.unbind('resize.message-box', this.update)
+					.unbind('scroll.message-box', this.update);
+			}else{
+				this._createWindow( this.instance.message, this.instance.title, this.instance.buttons)
+			}
 
-			this.$block.animate({none: ''}, delay).fadeOut('fast');
-			this.$window.animate({none: ''}, delay).fadeOut('fast')
-
-			$(window)
-				.unbind('resize.message-box', this.update)
-				.unbind('scroll.message-box', this.update);
 		},
 		update       : function (force) {
 			var $wrap = this.$window.find('#message-box-wrap'),
@@ -73,6 +108,32 @@ if (typeof window.LearnPress == 'undefined') {
 			if (force) _update();
 			timer && clearTimeout(timer);
 			timer = setTimeout(_update, 250);
+		},
+		_removeInstance: function(id){
+			for( var i = 0; i < this.instances.length; i++){
+				if( this.instances[i].id == id ){
+
+					this.instances.splice(i, 1);
+
+					var len = this.instances.length;
+					if(len){
+						this.instance = this.instances[len-1];
+						this.$window.attr('instance', this.instance.id)
+					}else{
+						this.instance = false;
+						this.$window.removeAttr('instance')
+					}
+					break;
+				}
+			}
+		},
+		_getInstance: function(id){
+			for( var i = 0; i < this.instances.length; i++){
+				if( this.instances[i].id == id ){
+					return this.instances[i];
+					break;
+				}
+			}
 		},
 		_createWindow: function (message, title, buttons) {
 			var $wrap = this.$window.find('#message-box-wrap').html('');
@@ -100,15 +161,19 @@ if (typeof window.LearnPress == 'undefined') {
 		_createButton: function (title, type) {
 			var $button = $('<button type="button" class="button message-box-button message-box-button-' + type + '">' + title + '</button>'),
 				callback = 'on' + ( type.substr(0, 1).toUpperCase() + type.substr(1) );
-			$button.data('message-box-callback', this.events[callback]).click(function () {
-				var callback = $(this).data('message-box-callback');
+			$button.data('callback', callback).click(function () {
+				var instance = $(this).data('instance'),
+					callback = instance.events[$(this).data('callback')];
 				if ($.type(callback) == 'function') {
-					if (callback.apply(LearnPress.MessageBox, $(this).data('data')) === false) {
+					if (callback.apply(LearnPress.MessageBox, instance.data) === false) {
 						return;
+					}else{
+						LearnPress.MessageBox.hide(null, instance);
 					}
+				}else {
+					LearnPress.MessageBox.hide(null, instance);
 				}
-				LearnPress.MessageBox.hide();
-			}).data('data', this.events['data']);
+			}).data('instance', this.instance);
 			return $button;
 		}
 	}

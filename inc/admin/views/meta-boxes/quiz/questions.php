@@ -3,27 +3,32 @@ global $post;
 $quiz           = LP_Quiz::get_quiz( $post->ID );
 $current_user   = get_current_user_id();
 $question_types = learn_press_question_types();
-$exclude_ids	= array();
+$exclude_ids    = array();
+$questions      = $quiz->get_questions();
+$hidden         = (array) get_post_meta( $quiz->id, '_admin_hidden_questions', true );
+$question_ids   = $questions ? array_keys( $questions ) : array();
+
+$hidden_all = sizeof( $hidden ) && ( sizeof( array_diff( $hidden, $question_ids ) ) == 0 );
 ?>
 <div id="learn-press-quiz-questions-wrap">
 	<h3 class="quiz-questions-heading">
 		<?php _e( 'Questions', 'learn_press' ); ?>
 		<p align="right" class="questions-toggle">
-			<a href="" data-action="expand"><?php _e( 'Expand All', 'learn_press' ); ?></a>
-			<a href="" data-action="collapse"><?php _e( 'Collapse All', 'learn_press' ); ?></a>
+			<a href="" data-action="expand"<?php echo $hidden_all ? '' : ' class="hide-if-js"';?>><?php _e( 'Expand All', 'learn_press' ); ?></a>
+			<a href="" data-action="collapse"<?php echo !$hidden_all ? '' : ' class="hide-if-js"';?>><?php _e( 'Collapse All', 'learn_press' ); ?></a>
 		</p>
 	</h3>
 
 	<div id="learn-press-list-questions">
-		<?php if ( $questions = $quiz->get_questions() ): $index = 0; ?>
+		<?php if ( $questions ): $index = 0; ?>
 			<?php foreach ( $questions as $question ): ?>
 				<?php
-				$question = LP_Question_Factory::get_question( $question );
+				$question      = LP_Question_Factory::get_question( $question );
 				$question_view = learn_press_get_admin_view( 'meta-boxes/quiz/question.php' );
 				include $question_view;
 				?>
 			<?php endforeach; ?>
-		<?php $exclude_ids = array_keys( $questions ); endif; ?>
+			<?php $exclude_ids = array_keys( $questions ); endif; ?>
 	</div>
 	<div class="question-actions">
 		<div id="learn-press-dropdown-questions">
@@ -43,7 +48,8 @@ $exclude_ids	= array();
 					while ( $query->have_posts() ) {
 						$p = $query->next_post();
 						?>
-						<li class="question<?php echo in_array( $p->ID, $exclude_ids ) ? ' added' : '';?>"><a href="" data-id="<?php echo $p->ID; ?>"><?php echo $p->post_title; ?></a></li>
+						<li class="question<?php echo in_array( $p->ID, $exclude_ids ) ? ' added' : ''; ?>">
+							<a href="" data-id="<?php echo $p->ID; ?>"><?php echo $p->post_title; ?></a></li>
 						<?php
 					}
 				}

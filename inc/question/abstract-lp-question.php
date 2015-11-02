@@ -347,14 +347,39 @@ class LP_Abstract_Question {
 		return '<img src="' . apply_filters( 'learn_press_question_icon', LP()->plugin_url( 'assets/images/question.png' ), $this ) . '">';
 	}
 
+	function get_params(){
+
+	}
+
 	function is_selected_option( $answer, $answered = false ){
 		if( is_array( $answered ) ){
 			$is_selected = isset( $answer['value'] ) && in_array( $answer['value'], $answered );
 		}else{
-			$is_selected = isset( $answer['value'] ) && ( $answer['value'] == $answered );
+			$is_selected = isset( $answer['value'] ) && ( $answer['value'] == $answered . '' );
 		}
-		//echo "["; print_r($answer); echo ",";print_r($answered);echo "]";
 		return apply_filters( 'learn_press_is_selected_option', $is_selected, $answer, $answered, $this );
+	}
+
+	function save_user_answer( $answer, $quiz_id, $user_id = null ){
+		if( $user_id ){
+			$user = LP_User::get_user( $user_id );
+		}else{
+			$user = learn_press_get_current_user();
+		}
+
+		if( $progress = $user->get_quiz_progress( $quiz_id ) ){
+			if( !isset( $progress->question_answers ) ){
+				$question_answers = array();
+			}else{
+				$question_answers = $progress->question_answers;
+			}
+			$question_answers[ $this->id ] = $answer;
+
+			$question_answers = apply_filters( 'learn_press_update_user_question_answers', $question_answers, $progress->history_id, $user_id, $this, $quiz_id );
+
+			learn_press_update_user_quiz_meta( $progress->history_id, 'question_answers', $question_answers );
+		}
+		//do_action( 'learn_press_update_user_answer', $progress, $user_id, $this, $quiz_id );
 	}
 
 	function check( $args = null ) {

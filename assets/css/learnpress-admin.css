@@ -725,7 +725,21 @@ body.post-type-lp_question #question_answer_ .inside{
 	padding: 10px 20px;
 	border: 1px solid #DDD;
 	overflow: hidden;
+	background-color: #F5F5F5;
+	position: relative;
+}
+#questions .quiz-question.is-hidden .quiz-question-head,
+#questions .quiz-question.is-hidden .question-name{
 	background-color: #FFF;
+}
+#questions .quiz-question.is-hidden .quiz-question-head:beforex{
+	content: '';
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	width: 3px;
+	background-color: #DDD;
 }
 #questions .quiz-question-head .quiz-question-actions{
 	float: right;
@@ -739,6 +753,7 @@ body.post-type-lp_question #question_answer_ .inside{
 	font-weight: bold;
 	color: #777;
 	vertical-align: middle;
+	background-color: #F5F5F5;
 }
 #questions .quiz-question-icon{
 	display: inline-block;

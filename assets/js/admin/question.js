@@ -85,6 +85,40 @@ if (typeof window.LearnPress == 'undefined') {
 			$(question).removeClass('added');
 		}
 	};
+	function updateHiddenQuestions(hidden){
+		if( hidden == undefined ) {
+			hidden = [];
+			var len = $('.quiz-question-content').each(function () {
+				if ($(this).is(':hidden')) {
+					hidden.push($('.learn-press-question', this).attr('data-id'));
+				}
+			}).length;
+			if( hidden.length == 0 ){
+				$('.questions-toggle a[data-action="collapse"]')
+					.show()
+					.siblings('a[data-action="expand"]')
+					.hide();
+			}else if( hidden.length == len ){
+				$('.questions-toggle a[data-action="collapse"]')
+					.hide()
+					.siblings('a[data-action="expand"]')
+					.show();
+			}
+		}
+
+		$.ajax({
+			url: LearnPress_Settings.ajax,
+			data: {
+				action: 'learnpress_update_quiz_question_state',
+				quiz_id: $('#post_ID').val(),
+				hidden: hidden
+			},
+			success: function(){
+
+			}
+		});
+		return hidden;
+	}
 	function _ready() {
 		$('#learn-press-toggle-questions').on('click', function () {
 			$(this).siblings('ul').toggle();
@@ -154,23 +188,73 @@ if (typeof window.LearnPress == 'undefined') {
 			var action = $(this).attr('data-action');
 			switch (action){
 				case 'expand':
-					$('.learn-press-question').slideDown();
+					var $items = $('.quiz-question'),
+						len = $items.length, i = 0;
+					$(this)
+						.hide()
+						.siblings('a[data-action="collapse"]')
+						.show();
+					$items
+						.removeClass('is-hidden')
+						.find('.quiz-question-content').slideDown(function(){
+							if(++i == len){
+								updateHiddenQuestions([]);
+							}
+						});
+					$items.find('a[data-action="collapse"]').show();
+					$items.find('a[data-action="expand"]').hide();
 					break;
 				case 'collapse':
-					$('.learn-press-question').slideUp();
+					var $items = $('.quiz-question'),
+						len = $items.length, i = 0,
+						hidden = [];
+					$(this)
+						.hide()
+						.siblings('a[data-action="expand"]')
+						.show();
+					$items
+						.addClass('is-hidden')
+						.find('.quiz-question-content').slideUp(function(){
+							hidden.push($('.learn-press-question', this).attr('data-id'));
+							if(++i == len){
+								updateHiddenQuestions(hidden);
+							}
+						});
+					$items.find('a[data-action="collapse"]').hide();
+					$items.find('a[data-action="expand"]').show();
 					break;
 			}
 		}).on('click', '.quiz-question-actions a', function(e){
 			var action = $(this).attr('data-action');
+
 			switch (action){
 				case 'expand':
-					$(this).closest('.quiz-question').find('.learn-press-question').slideDown();
+					$(this)
+						.hide()
+						.siblings('a[data-action="collapse"]')
+						.show()
+						.closest('.quiz-question')
+						.removeClass('is-hidden')
+						.find('.quiz-question-content').slideDown(function(){
+							if( updateHiddenQuestions().length == 0 ){
+
+							}
+						});
 					break;
 				case 'collapse':
-					$(this).closest('.quiz-question').find('.learn-press-question').slideUp();
+					$(this)
+						.hide()
+						.siblings('a[data-action="expand"]')
+						.show()
+						.closest('.quiz-question')
+						.addClass('is-hidden')
+						.find('.quiz-question-content').slideUp(function(){
+							updateHiddenQuestions();
+						});
 					break;
 				case 'remove':
-					LearnPress.MessageBox.show( 'Do you want to remove this question from quiz?', '', 'yesNo', {
+					LearnPress.MessageBox.show( 'Do you want to remove this question from quiz?', {
+						buttons: 'yesNo',
 						data: $(this).closest('.quiz-question'),
 						onYes: function(data){
 							var $question = $(data);

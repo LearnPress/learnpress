@@ -295,6 +295,15 @@ if ( !function_exists( 'learn_press_single_quiz_questions' ) ) {
 	}
 }
 
+if ( !function_exists( 'learn_press_single_quiz_result' ) ) {
+	/**
+	 * Output the result for the quiz
+	 */
+	function learn_press_single_quiz_result() {
+		learn_press_get_template( 'single-quiz/result.php' );
+	}
+}
+
 if ( !function_exists( 'learn_press_single_quiz_sidebar' ) ) {
 	/**
 	 * Output the sidebar for a quiz
@@ -422,7 +431,7 @@ function learn_press_print_messages() {
 
 add_action( 'learn_press_before_main_content', 'learn_press_print_messages', 50 );
 
-if ( !function_exists( 'learn_press_permission_to_view_page' ) ) {
+if ( !function_exists( 'learn_press_page_controller' ) ) {
 	/**
 	 * Check permission to view page
 	 *
@@ -430,22 +439,34 @@ if ( !function_exists( 'learn_press_permission_to_view_page' ) ) {
 	 *
 	 * @return file
 	 */
-	function learn_press_permission_to_view_page( $template/*, $slug, $name*/ ) {
+	function learn_press_page_controller( $template/*, $slug, $name*/ ) {
 		if ( get_post_type() == LP()->quiz_post_type && is_single() ) {
-			if ( !LP()->user->can( 'view-quiz', get_the_ID() ) ) {
-				$quiz = LP_Quiz::get_quiz( get_the_ID() );
-
+			global $quiz;
+			$user = LP()->user;
+			$quiz = LP_Quiz::get_quiz( get_the_ID() );
+			$quiz_status = LP()->user->get_quiz_status( get_the_ID() );
+			$redirect = false;
+			if ( !$user->can( 'view-quiz', $quiz->id ) ) {
 				if ( $course = $quiz->get_course() ) {
-					wp_redirect( $course->permalink );
+					$redirect = $course->permalink;
 				}
+			}elseif( $quiz_status == 'started' && ( empty( $_REQUEST['question']) && $current_question = $user->get_current_quiz_question( $quiz->id ) ) ){
+				$redirect = $quiz->get_question_link( $current_question );
+			}elseif( $quiz_status == 'complete' &&  ! empty( $_REQUEST['question']) ){
+				$redirect = get_the_permalink( $quiz->id );
+			}
+			$redirect = apply_filters( 'learn_press_quiz_redirect_permalink', $redirect, $quiz_status, $quiz->id, $user );
+			// prevent loop redirect
+			if( $redirect &&  $redirect != learn_press_get_current_url() ){
+				wp_redirect( $redirect );
 				exit();
 			}
+
 		}
 		return $template;
 	}
 }
-add_filter( 'template_include', 'learn_press_permission_to_view_page' );
-
+add_filter( 'template_include', 'learn_press_page_controller' );
 
 
 /*******************************************************************************************/
@@ -888,6 +909,15 @@ if ( !function_exists( 'learn_press_single_quiz_questions' ) ) {
 	 */
 	function learn_press_single_quiz_questions() {
 		learn_press_get_template( 'quiz/sidebar-questions.php' );
+	}
+}
+
+if ( !function_exists( 'learn_press_single_quiz_questions_nav' ) ) {
+	/**
+	 * Output the navigation to next and previous questions
+	 */
+	function learn_press_single_quiz_questions_nav() {
+		learn_press_get_template( 'single-quiz/nav.php' );
 	}
 }
 

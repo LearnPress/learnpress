@@ -17,6 +17,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 				'create_page'             => false,
 				'add_question'            => false,
 				'convert_question_type'		=> false,
+				'update_quiz_question_state' => false,
 				/////////////
 				'quick_add_lesson'        => false,
 				'quick_add_quiz'          => false,
@@ -37,6 +38,13 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 					add_action( 'wp_ajax_nopriv_learnpress_' . $ajaxEvent, array( __CLASS__, $ajaxEvent ) );
 				}
 			}
+		}
+
+		static function update_quiz_question_state(){
+			$hidden = learn_press_get_request( 'hidden' );
+			$post = learn_press_get_request( 'quiz_id' );
+			update_post_meta( $post, '_admin_hidden_questions', $hidden );
+			die();
 		}
 
 		/**

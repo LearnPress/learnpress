@@ -142,12 +142,11 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			$quiz_id         = !empty( $_REQUEST['quiz_id'] ) ? absint( $_REQUEST['quiz_id'] ) : 0;
 			$question_id     = !empty( $_REQUEST['save_id'] ) ? absint( $_REQUEST['save_id'] ) : 0;
 			$user_id         = !empty( $_REQUEST['user_id'] ) ? absint( $_REQUEST['user_id'] ) : 0;
-			$question_answer = isset( $_REQUEST['question_answer'] ) ? $_REQUEST['question_answer'] : null;
 			$question        = $question_id ? LP_Question_Factory::get_question( $question_id ) : false;
-
-			if ( $question_answer && $question ) {
+			if ( $question ) {
 				$question_answer = isset( $_REQUEST['question_answer'] ) ? $_REQUEST['question_answer'] : null;
-				//$question->submit_answer( $quiz_id, $question_answer );
+				$question_answer = array_key_exists( 'learn-press-question-' . $question_id , $question_answer ) ? $question_answer[ 'learn-press-question-' . $question_id ] : '';
+				$question->save_user_answer( $question_answer, $quiz_id );
 				do_action( 'learn_press_save_user_question_answer', $question_answer, $question_id, $quiz_id, $user_id, true );
 
 			}
@@ -205,7 +204,12 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 				);
 			}
 			if ( $question = LP_Question_Factory::get_question( $question_id ) ) {
+
 				ob_start();
+
+				if( $progress = $user->get_quiz_progress( $quiz->id ) ){
+					learn_press_update_user_quiz_meta( $progress->history_id, 'current_question', $question_id );
+				}
 				$question_answers = $user->get_question_answers( $quiz->id, $question_id );
 				$question->render( array( 'answered' => $question_answers ) );
 				$content = ob_get_clean();
@@ -260,11 +264,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 		 */
 		public static function finish_quiz() {
 			$user            = learn_press_get_current_user();
-			$user_id         = get_current_user_id();
 			$quiz_id         = learn_press_get_request( 'quiz_id' );
-			$question_id     = learn_press_get_request( 'question_id' );
-			$question_answer = learn_press_get_request( 'question_answer' );
-
 			// save current answer as if user may change
 			self::save_question_if_needed();
 			$user->finish_quiz( $quiz_id );

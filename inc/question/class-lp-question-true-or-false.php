@@ -69,8 +69,7 @@ class LP_Question_True_Or_False extends LP_Question {
 	}
 
 	function render( $args = array() ) {
-		$unique_name = uniqid( 'lp_question_answer_' . $this->get( 'ID' ) . '_' );
-		$answer      = null;
+		$answered = ! empty( $args['answered'] ) ? $args['answered'] : '';
 		$view = learn_press_locate_template( 'question/types/single-choice.php' );
 		include $view;
 	}

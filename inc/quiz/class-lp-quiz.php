@@ -55,7 +55,10 @@ class LP_Quiz {
 
 	protected function _get_localize(){
 		$localize = array(
-			'finish_quiz' => __( 'Finish this quiz?', 'learn_press' )
+			'confirm_finish_quiz'		=> __( 'Are you sure you want to completely finish this quiz?', 'learn_press'),
+			'confirm_retake_qiuz'		=> __( 'Are you sure you want to retake this quiz?', 'learn_press'),
+			'quiz_time_is_over_message' => __( 'The time is over! Your quiz will automate come to finish', 'learn_press' ),
+			'quiz_time_is_over_title'   => __( 'Time up!', 'learn_press' )
 		);
 		return apply_filters( 'learn_press_single_quiz_localize', $localize, $this );
 	}
@@ -127,6 +130,9 @@ class LP_Quiz {
 				if( ( $question = learn_press_get_request( 'question' ) ) && is_quiz() ){
 					$value = LP_Question_Factory::get_question( $question );
 				}
+				break;
+			case 'questions':
+				$value = $this->get_questions();
 				break;
 			default:
 				if ( strpos( $key, '_lp_' ) === false ) {
@@ -208,16 +214,21 @@ class LP_Quiz {
 		if( empty( $this->questions ) ){
 			global $wpdb;
 			$query = $wpdb->prepare("
-				SELECT q.*
+				SELECT q.*, qq.params
 				FROM {$wpdb->posts} q
 				INNER JOIN {$wpdb->learnpress_quiz_questions} qq ON qq.question_id = q.ID
 				AND q.post_type = %s
 				AND qq.quiz_id = %d
 			", LP()->question_post_type, $this->id );
 
-			$this->questions = $wpdb->get_results( $query, OBJECT_K );
+			if( $this->questions = $wpdb->get_results( $query, OBJECT_K ) ){
+				foreach( $this->questions as $id => $question ){
+					$question->params = maybe_unserialize( $question->params );
+					$this->questions[ $id ] = $question	;
+				}
+			}
 		}
-		return $this->questions;
+		return apply_filters( 'learn_press_quiz_questions', $this->questions );
 	}
 
 	function get_buttons(){
@@ -229,9 +240,10 @@ class LP_Quiz {
 
 		$buttons['finish'] = sprintf( '<button class="button-finish-quiz" data-id="%d">%s</button>', $this->id, apply_filters( 'learn_press_finish_quiz_button_text', __( "Finish Quiz", "learn_press" ) ) );
 
-		if ( learn_press_user_can_retake_quiz() ):
-			$buttons['retake'] = spriinf( '<button class="button-retake-quiz" data-id="%d">%s</button>', $this->id, apply_filters( 'learn_press_retake_quiz_button_text', __( 'Retake', 'learn_press' ) ) );
+		if ( $remain = $user->can( 'retake-quiz', $this->id ) ):
+			$buttons['retake'] = sprintf( '<button class="button-retake-quiz" data-id="%d">%s (+%d)</button>', $this->id, apply_filters( 'learn_press_retake_quiz_button_text', __( 'Retake', 'learn_press' ) ), $remain );
 		endif;
+
 		return apply_filters( 'learn_press_single_quiz_buttons', $buttons, $this, $user );
 	}
 
@@ -251,9 +263,17 @@ class LP_Quiz {
 		return $this->get_questions();
 	}
 
-	function get_question_link( $question_id ){
-		//echo "XXXXXXXXXXXXXXX" . get_the_permalink( $this->id );
-		return get_the_permalink( $this->id ) . get_post_field( 'post_name', $question_id );
+	function get_question_link( $question_id = null ){
+		return apply_filters( 'learn_press_quiz_question_permalink', get_the_permalink( $this->id ) . get_post_field( 'post_name', $question_id ), $question_id, $this );
+	}
+
+	function get_question_param($name, $id){
+		if( $this->questions ){
+			if( !empty( $this->questions[ $id ] ) ){
+				return ! empty( $this->questions[ $id ]->params[ $name ] ) ? $this->questions[ $id ]->params[ $name ] : null;
+			}
+		}
+		return false;
 	}
 
 	/**
