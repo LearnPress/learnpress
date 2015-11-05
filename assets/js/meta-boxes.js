@@ -1,6 +1,8 @@
 ;(function($){
-	if( typeof Backbone == 'undefined' ) return;
+	//
+	return;
 	$(document).ready(function(){
+		if( typeof Backbone == 'undefined' ) return;
 		var LP_Curriculum_Model = window.LP_Curriculum_Model = Backbone.Model.extend({
 			defaults           : {
 			},
@@ -188,7 +190,7 @@
 					$('input[name="_lpr_course_price"]').focus();
 				}
 				if (true == is_error) {
-					evt.preventDefault();
+					//evt.preventDefault();
 					return false;
 				}
 

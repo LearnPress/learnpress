@@ -55,6 +55,18 @@ function learn_press_quiz_class( $class = null ) {
 	post_class( join( ' ', $class ) );
 }
 
+function learn_press_get_item_courses($item){
+	global $wpdb;
+	$query = $wpdb->prepare("
+		SELECT c.*
+		FROM {$wpdb->posts} c
+			INNER JOIN {$wpdb->learnpress_sections} lp_s ON c.ID = lp_s.course_id
+			INNER JOIN {$wpdb->learnpress_section_items} lp_si ON lp_si.section_id = lp_s.ID
+			WHERE lp_si.item_id = %d
+	", $item);
+	return $wpdb->get_results( $query );
+}
+
 /*******************************************************/
 /*******************************************************/
 

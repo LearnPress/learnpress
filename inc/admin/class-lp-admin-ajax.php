@@ -18,6 +18,9 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 				'add_question'            => false,
 				'convert_question_type'		=> false,
 				'update_quiz_question_state' => false,
+				'update_editor_hidden'		=> false,
+				'update_curriculum_section_state' => false,
+				'quick_add_item'		=> false,
 				/////////////
 				'quick_add_lesson'        => false,
 				'quick_add_quiz'          => false,
@@ -40,10 +43,50 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			}
 		}
 
+		static function quick_add_item(){
+			$post_type = learn_press_get_request( 'type' );
+			$post_title = learn_press_get_request( 'name' );
+			$response = array();
+			if( $post_type && $post_title ){
+				$args = compact( 'post_title', 'post_type' );
+				$args['post_status'] = 'publish';
+				$item_id = wp_insert_post( $args );
+				if( $item_id ){
+					$item = get_post( $item_id );
+					$response['post'] = $item;
+					$response['html'] = sprintf('<li class="" data-id="%1$d" data-type="%2$s" data-text="%3$s">
+						<label>
+							<input type="checkbox" value="%1$d">
+							<span class="lp-item-text">%3$s</span>
+						</label>
+					</li>', $item->ID, $item->post_type, $item->post_title );
+				}
+			}
+			learn_press_send_json( $response );
+		}
+
+		static function update_editor_hidden(){
+			if( $id = learn_press_get_request( 'course_id' ) ) {
+				if ( learn_press_get_request( 'is_hidden' ) ) {
+					update_post_meta( $id, '_lp_editor_hidden', 'yes' );
+				}else{
+					delete_post_meta( $id, '_lp_editor_hidden' );
+				}
+			}
+			learn_press_send_json($_POST);
+		}
+
 		static function update_quiz_question_state(){
 			$hidden = learn_press_get_request( 'hidden' );
 			$post = learn_press_get_request( 'quiz_id' );
 			update_post_meta( $post, '_admin_hidden_questions', $hidden );
+			die();
+		}
+
+		static function update_curriculum_section_state(){
+			$hidden = learn_press_get_request( 'hidden' );
+			$post = learn_press_get_request( 'course_id' );
+			update_post_meta( $post, '_admin_hidden_sections', $hidden );
 			die();
 		}
 

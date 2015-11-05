@@ -13,16 +13,15 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 	final class LP_Lesson_Post_Type extends LP_Abstract_Post_Type{
 
 		function __construct() {
-
 			add_filter( 'manage_' . LP()->lesson_post_type . '_posts_columns', array( $this, 'columns_head' ) );
 			add_action( 'manage_' . LP()->lesson_post_type . '_posts_custom_column', array( $this, 'columns_content' ), 10, 2 );
 			add_action( 'save_post_' . LP()->lesson_post_type, array( $this, 'update_lesson_meta' ) );
 
-            add_filter( 'posts_fields', array( $this, 'posts_fields' ) );
-			add_filter( 'posts_join_paged', array( $this, 'posts_join_paged' ) );
-			add_filter( 'posts_where_paged', array( $this, 'posts_where_paged' ) );
-			add_filter( 'posts_orderby', array( $this, 'posts_orderby' ) );
-			add_filter( 'manage_edit-' . LP()->lesson_post_type . '_sortable_columns', array( $this, 'columns_sortable' ) );
+            //add_filter( 'posts_fields', array( $this, 'posts_fields' ) );
+			//add_filter( 'posts_join_paged', array( $this, 'posts_join_paged' ) );
+			//add_filter( 'posts_where_paged', array( $this, 'posts_where_paged' ) );
+			//add_filter( 'posts_orderby', array( $this, 'posts_orderby' ) );
+			//add_filter( 'manage_edit-' . LP()->lesson_post_type . '_sortable_columns', array( $this, 'columns_sortable' ) );
 			parent::__construct();
 		}
 
@@ -51,7 +50,6 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 		 * Register lesson post type
 		 */
 		static function register_post_type() {
-
 			register_post_type( LP_LESSON_CPT,
 				array(
 					'labels'             => array(
@@ -211,9 +209,22 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 		function columns_content( $name, $post_id ) {
 			switch ( $name ) {
 				case LP()->course_post_type:
-					$course_id  = get_post_meta( $post_id, '_lpr_course', true );
-					$arr_params = array( 'meta_course' => $course_id );
-					echo '<a href="' . esc_url( add_query_arg( $arr_params ) ) . '">' . ( $course_id ? get_the_title( $course_id ) : __( 'Not assigned yet', 'learn_press' ) ) . '</a>';
+					$courses = learn_press_get_item_courses( $post_id );
+					if ( $courses ) {
+						foreach( $courses as $course ) {
+							echo '<div><a href="' . esc_url( add_query_arg( array('course_id' => $course->ID) ) ) . '">' . get_the_title( $course->ID ) . '</a>';
+							echo '<div class="row-actions">';
+							printf( '<a href="%s">%s</a>', admin_url( sprintf( 'post.php?post=%d&action=edit', $course->ID ) ), __( 'Edit', 'learn_press' ) );
+							echo "&nbsp;|&nbsp;";
+							printf( '<a href="%s">%s</a>', get_the_permalink( $course->ID ), __( 'View', 'learn_press' ) );
+							echo '</div></div>';
+						}
+
+					} else {
+						_e( 'Not assigned yet', 'learn_press' );
+					}
+
+
 					break;
 				case 'is_previewable':
 					echo get_post_meta( $post_id, '_lp_is_previewable', true ) == 'yes' ? __( 'Yes', 'learn_press' ) : '-';
@@ -352,9 +363,6 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 
 	}// end LP_Lesson_Post_Type
 }
-function learn_press_load_lesson_post_type(){
-	new LP_Lesson_Post_Type();
-}
-add_action( 'plugins_loaded', 'learn_press_load_lesson_post_type' );
+new LP_Lesson_Post_Type();
 
 

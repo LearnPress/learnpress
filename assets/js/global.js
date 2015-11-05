@@ -18,6 +18,16 @@ if (typeof window.LearnPress == 'undefined') {
 		}
 		return false;
 	}
+	$.fn.dataToJSON = function(){
+		var json = {};
+		$.each(this[0].attributes, function(){
+			var m = this.name.match(/^data-(.*)/);
+			if( m ) {
+				json[m[1]] = this.value;
+			}
+		});
+		return json;
+	}
 	LearnPress.MessageBox = {
 		/*
 		 *
@@ -36,6 +46,7 @@ if (typeof window.LearnPress == 'undefined') {
 					events: false,
 					autohide: false,
 					message: message,
+					data: false,
 					id: LearnPress.uniqueId()
 				}, args || {});
 
@@ -140,7 +151,7 @@ if (typeof window.LearnPress == 'undefined') {
 			if (title) {
 				$wrap.append('<h3 class="message-box-title">' + title + '</h3>');
 			}
-			$wrap.append('<div class="message-box-content">' + message + '</div>');
+			$wrap.append( $( '<div class="message-box-content"></div>').html(message) );
 			if (buttons) {
 				var $buttons = $('<div class="message-box-buttons"></div>');
 				switch (buttons) {
@@ -165,7 +176,7 @@ if (typeof window.LearnPress == 'undefined') {
 				var instance = $(this).data('instance'),
 					callback = instance.events[$(this).data('callback')];
 				if ($.type(callback) == 'function') {
-					if (callback.apply(LearnPress.MessageBox, instance.data) === false) {
+					if (callback.apply(LearnPress.MessageBox, [instance]) === false) {
 						return;
 					}else{
 						LearnPress.MessageBox.hide(null, instance);

@@ -417,26 +417,37 @@ class LP_Abstract_User {
 	 * Get all quizzes of the user
 	 *
 	 * @param array $args - actually, it as the same with WP_Query args
+	 * @param bool
 	 *
 	 * @return array
 	 */
-	function get_quizzes( $args = array() ) {
-		settype( $args, 'array' );
-		$args['post_type'] = LP()->quiz_post_type;
-		return $this->get_posts( $args );
+	function get_quizzes( $args = array(), $force = false  ) {
+		static $quizzes = array();
+		if( !$quizzes || $force ) {
+			settype( $args, 'array' );
+			$args['post_type'] = LP()->quiz_post_type;
+			$quizzes = $this->get_posts( $args );
+		}
+
+		return apply_filters( 'learn_press_get_user_quizzes', $quizzes );
 	}
 
 	/**
 	 * Get all quizzes of the user
 	 *
 	 * @param array $args - actually, it as the same with WP_Query args
+	 * @param bool
 	 *
 	 * @return array
 	 */
-	function get_lessons( $args = array() ) {
-		settype( $args, 'array' );
-		$args['post_type'] = LP()->lesson_post_type;
-		return $this->get_posts( $args );
+	function get_lessons( $args = array(), $force = false ) {
+		static $lessons = array();
+		if( !$lessons || $force ) {
+			settype( $args, 'array' );
+			$args['post_type'] = LP()->lesson_post_type;
+			$lessons = $this->get_posts( $args );
+		}
+		return apply_filters( 'learn_press_get_user_lessons', $lessons );
 	}
 
 	/**

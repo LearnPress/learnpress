@@ -17,6 +17,7 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
 		 * @return void
 		 */
 		static function admin_enqueue_scripts() {
+			LP_Admin_Assets::enqueue_style( 'course', LP()->plugin_url( '/inc/admin/meta-boxes/css/course.css' ) );
 			LP_Admin_Assets::enqueue_style( 'select2',         RWMB_CSS_URL . 'select2/select2.css' );
             LP_Admin_Assets::enqueue_style( 'toastr',          LP_CSS_URL . 'toastr.css' );
             //LP_Admin_Assets::enqueue_style( 'thim-course',     LearnPress()->plugin_url( 'inc/admin/meta-boxes/css/course.css' ) );
@@ -24,7 +25,7 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
 			LP_Admin_Assets::enqueue_script( 'select2',        RWMB_JS_URL . 'select2/select2.min.js' );
 			LP_Admin_Assets::enqueue_script( 'toastr',         LP_JS_URL . 'toastr.js' );
 			LP_Admin_Assets::enqueue_script( 'tojson',         LP_JS_URL . 'toJSON.js' );
-			LP_Admin_Assets::enqueue_script( 'thim-course',    LearnPress()->plugin_url( 'inc/admin/meta-boxes/js/course.js' ), array( 'jquery', 'toastr', 'tojson' ) );
+			LP_Admin_Assets::enqueue_script( 'admin-course',    LearnPress()->plugin_url( 'inc/admin/meta-boxes/js/course.js' ), array( 'jquery', 'toastr', 'tojson' ) );
 
 			LP_Admin_Assets::add_localize(
                 array(
@@ -149,8 +150,28 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
             add_action( 'wp_ajax_lpr_remove_lesson_quiz', array( __CLASS__, 'remove_lesson_quiz' ) );
 
             add_action( 'save_post', array( __CLASS__, 'update_course_curriculum' ) );
-
+			add_filter( 'learn_press_loop_section_buttons', array( __CLASS__, 'add_section_buttons' ) );
 		}
+
+		static function add_section_buttons( $buttons ){
+			$buttons = array_merge(
+				$buttons,
+				array(
+					array(
+						'id'		=> 'add-lesson',
+						'text'		=> __( 'Add Lesson', 'learn_press' ),
+						'attr'	=> 'data-action="add-lesson" data-type="lp_lesson"'
+					),
+					array(
+						'id'		=> 'add-quiz',
+						'text'		=> __( 'Add Quiz', 'learn_press' ),
+						'attr'	=> 'data-action="add-quiz" data-type="lp_quiz"'
+					)
+				)
+			);
+			return $buttons;
+		}
+
         static function remove_lesson_quiz(){
             $lesson_quiz_id = $_POST['lesson_quiz_id'];
             delete_post_meta( $lesson_quiz_id, '_lpr_course' );

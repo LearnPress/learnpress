@@ -17,11 +17,19 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		function __construct() {
 
 			add_action( 'rwmb_course_curriculum_before_save_post', array( $this, 'before_save_curriculum' ) );
-			add_filter( 'manage_lpr_course_posts_columns', array( $this, 'columns_head' ) );
+			add_filter( 'manage_lp_course_posts_columns', array( $this, 'columns_head' ) );
+			add_filter( 'manage_lp_course_posts_custom_column', array( $this, 'columns_content' ) );
 			add_filter( "rwmb__lpr_course_price_html", array( $this, 'currency_symbol' ), 5, 3 );
-
-
+			add_action( 'edit_form_after_editor', array( $this, 'toggle_editor_button' ), - 10 );
 			parent::__construct();
+		}
+
+		function toggle_editor_button( $post ) {
+			if( $post->post_type == LP()->course_post_type ) {
+				?>
+				<button class="button button-primary" data-hidden="<?php echo get_post_meta( $post->ID, '_lp_editor_hidden', true ); ?>" type="button" id="learn-press-button-toggle-editor"><?php _e( 'Toggle Course Content', 'learn_press' ); ?></button>
+				<?php
+			}
 		}
 
 		/**
@@ -49,6 +57,13 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 * @static
 		 */
 		static function admin_scripts() {
+			LP_Admin_Assets::add_localize(
+				array(
+					'notice_remove_section_item' => __( 'Are you sure you want to remove this item?', 'learn_press' )
+				),
+				null,
+				'admin-course'
+			);
 			if ( in_array( get_post_type(), array( LP()->course_post_type, LP()->lesson_post_type ) ) ) {
 
 				wp_enqueue_style( 'lp-meta-boxes', LP()->plugin_url( 'assets/css/meta-boxes.css' ) );
@@ -391,6 +406,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		}
 
 		function before_save_curriculum() {
+
 			global $wpdb, $post;
 			$section_ids        = array();
 			$section_update_ids = array();
@@ -402,52 +418,87 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 				$query_update_section_order = array();
 				$query_update_item_name     = array();
 				$query_update_item_order    = array();
-				foreach ( $_REQUEST['_lp_curriculum'] as $order => $section ) {
-					if ( !is_numeric( $order ) ) continue;
-					if ( !empty( $section['ID'] ) ) {
-						$query_update_section_name[]  = 'WHEN ' . $section['ID'] . ' THEN \'' . $section['name'] . '\'';
-						$query_update_section_order[] = 'WHEN ' . $section['ID'] . ' THEN \'' . ( $order + 1 ) . '\'';
-						$section_update_ids[] = $section['ID'];
+				$query_update_item_section  = array();
+				$section_order              = 0;
+				$all_item_ids = $wpdb->get_results(
+					$wpdb->prepare("
+						SELECT lp_si.ID, lp_si.item_id
+						FROM {$wpdb->learnpress_section_items} lp_si
+						INNER JOIN {$wpdb->learnpress_sections} lp_s ON lp_s.ID = lp_si.section_id
+						INNER JOIN {$wpdb->posts} p ON p.ID = lp_s.course_id
+						WHERE lp_s.course_id = %d
+					", $post->ID)
+				);
+				foreach ( $_REQUEST['_lp_curriculum'] as $section_id => $section ) {
+					$section_id = absint( $section_id );
+					if ( !$section['name'] ) continue;
+					// update section with new name and ordering if it is an integer
+					if ( $section_id ) {
+						$query_update_section_name[]  = 'WHEN ' . $section_id . ' THEN \'' . $section['name'] . '\'';
+						$query_update_section_order[] = 'WHEN ' . $section_id . ' THEN \'' . ( ++ $section_order ) . '\'';
+						$section_update_ids[]         = $section_id;
+						$section['ID']                = $section_id;
+						do_action( 'learn_press_update_section', $section, $post->ID );
 					} else {
+						// else, need to insert
 						$wpdb->insert(
 							$wpdb->learnpress_sections,
 							array(
 								'name'      => $section['name'],
 								'course_id' => $post->ID,
-								'order'     => $order + 1
+								'order'     => ++ $section_order
 							),
 							array( '%s', '%d', '%d' )
 						);
-						$section['ID'] = $wpdb->insert_id;
+						$section_id    = $wpdb->insert_id;
+						$section['ID'] = $section_id;
+						do_action( 'learn_press_add_section', $section, $post->ID );
 					}
-					$section_ids[] = $section['ID'];
+					$section_ids[] = $section_id;
 
 					// update items;
 					if ( empty( $section['items'] ) ) continue;
-					foreach ( $section['items'] as $item_order => $item ) {
-						if ( !is_numeric( $item_order ) ) continue;
-						if ( !empty( $item['ID'] ) ) {
-							$query_update_item_name[]  = 'WHEN ' . $item['ID'] . ' THEN \'' . $item['name'] . '\'';
-							$query_update_item_order[] = 'WHEN item_id = ' . $item['ID'] . ' AND section_id = ' . $section['ID'] . ' THEN \'' . ( $item_order + 1 ) . '\'';
-							$item_update_ids[$item['item_id']] = $item['ID'];
+					$items      = $section['items'];
+					$item_order = 0;
+					foreach ( $items as $item_id => $item ) {
+						if ( !$item['name'] ) continue;
+						$item_id = absint( $item_id );
+
+						if ( $item_id ) {
+							$query_update_item_name[]    = 'WHEN ' . $item_id . ' THEN \'' . $item['name'] . '\'';
+							$query_update_item_section[] = 'WHEN item_id = ' . $item_id . ' THEN ' . $section_id;
+							$query_update_item_order[]   = 'WHEN item_id = ' . $item_id . ' AND section_id = ' . $section_id . ' THEN \'' . ( ++ $item_order ) . '\'';
+							$item_update_ids[]           = $item_id;
+							if( !in_array( $item_id, $all_item_ids ) ){
+								$wpdb->insert(
+									$wpdb->learnpress_section_items,
+									array(
+										'section_id' => $section_id,
+										'item_id'    => $item_id,
+										'order'      => $item_order
+									)
+								);
+							}
 						} else {
-							$item['ID'] = wp_insert_post(
+							$item_id = wp_insert_post(
 								array(
-									'post_title' => $item['name'],
-									'post_type' => $item['post_type'],
+									'post_title'  => $item['name'],
+									'post_type'   => $item['post_type'],
 									'post_status' => 'publish'
 								)
 							);
+
 							$wpdb->insert(
 								$wpdb->learnpress_section_items,
 								array(
-									'section_id' => $section['ID'],
-									'item_id'    => $item['ID'],
-									'order'      => $item_order + 1
+									'section_id' => $section_id,
+									'item_id'    => $item_id,
+									'order'      => ++ $item_order
 								)
 							);
 						}
-						$item_ids[] = $item['ID'];
+
+						$item_ids[] = $item_id;
 					}
 				}
 				// update the name and ordering of existing sections
@@ -462,10 +513,50 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 					$wpdb->query( $query_update_section );
 				}
 
+				// update the name and ordering of existing items
+				if ( $query_update_item_name ) {
+					$query_update_item_name = "
+						UPDATE {$wpdb->posts} SET
+							`post_title` = CASE `ID` " . join( ' ', $query_update_item_name ) . " END
+						WHERE ID IN(" . join( ',', $item_update_ids ) . ")
+					";
+					$wpdb->query( $query_update_item_name );
+
+					$query_update_item_order = $wpdb->prepare( "
+						UPDATE {$wpdb->learnpress_section_items} lp_si
+						INNER JOIN {$wpdb->learnpress_sections} lp_s ON lp_s.ID = lp_si.section_id
+						INNER JOIN {$wpdb->posts} p ON p.ID = lp_s.course_id
+						SET
+							lp_si.`order` = CASE " . join( ' ', $query_update_item_order ) . " END,
+							lp_si.`section_id` = CASE " . join( ' ', $query_update_item_section ) . " END
+						WHERE p.ID = %d
+						AND lp_si.item_id IN(" . join( ',', $item_update_ids ) . ")
+					", $post->ID );
+					$wpdb->query( $query_update_item_order );
+				}
+
+				$wpdb->query(
+					$wpdb->prepare( "
+						DELETE FROM lp_si
+						USING {$wpdb->learnpress_section_items} lp_si
+						INNER JOIN {$wpdb->learnpress_sections} lp_s ON lp_s.ID = lp_si.section_id
+						INNER JOIN {$wpdb->posts} p ON p.ID = lp_s.course_id
+						WHERE p.ID = %d
+						AND lp_si.item_id NOT IN(" . join( ',', $item_ids ) . ")"
+						, $post->ID )
+				);
+
 				// remove all sections not existing in course
 				if ( $section_ids ) {
 					$wpdb->query(
-						"DELETE FROM {$wpdb->learnpress_sections} WHERE course_id = " . $post->ID . " AND ID NOT IN(" . join( ',', $section_ids ) . ")"
+						$wpdb->prepare( "
+							DELETE FROM lp_s
+							USING {$wpdb->learnpress_sections} lp_s
+							INNER JOIN {$wpdb->posts} p ON p.ID = lp_s.course_id
+								WHERE p.ID = %d
+								AND p.post_type = %s
+								AND lp_s.ID NOT IN(" . join( ',', $section_ids ) . ")"
+							, $post->ID, 'lp_course' )
 					);
 
 					$all_sections    = $wpdb->get_col( "SELECT ID FROM {$wpdb->learnpress_sections} WHERE course_id = {$post->ID}" );
@@ -476,51 +567,37 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						);
 					}
 				}
-
-				// update the name and ordering of existing items
-				if ( $query_update_item_name ) {
-					$query_update_item_name = "
-						UPDATE {$wpdb->posts} SET
-							`post_title` = CASE `ID` " . join( ' ', $query_update_item_name ) . " END
-						WHERE ID IN(" . join( ',', $item_update_ids ) . ")
-					";
-					$wpdb->query( $query_update_item_name );
-
-					$query_update_item_order = "
-						UPDATE {$wpdb->learnpress_section_items} SET
-							`order` = CASE " . join( ' ', $query_update_item_order ) . " END
-						WHERE ID IN(" . join( ',', array_keys( $item_update_ids ) ) . ")
-					";
-					$wpdb->query( $query_update_item_order );
-
-					$all_items = $wpdb->get_col("
-						SELECT lp_si.ID
+				// remove all duplicate items
+				$all_item_ids = $wpdb->get_results(
+					$wpdb->prepare("
+						SELECT lp_si.ID, lp_si.item_id
 						FROM {$wpdb->learnpress_section_items} lp_si
-						INNER JOIN{$wpdb->learnpress_sections} lp_s ON lp_s.ID = lp_si.section_id
+						INNER JOIN {$wpdb->learnpress_sections} lp_s ON lp_s.ID = lp_si.section_id
 						INNER JOIN {$wpdb->posts} p ON p.ID = lp_s.course_id
-						WHERE p.ID = " . $post->ID . "
-					");
+						WHERE lp_s.course_id = %d
+					", $post->ID)
+				);
+				if( $all_item_ids ){
+					$duplicate_ids = array();
+					$keep_ids = array();
+					foreach($all_item_ids as $row){
+						if( empty( $keep_ids[$row->item_id] ) ){
+							$keep_ids[$row->item_id] = $row->ID;
+						}else{
+							$duplicate_ids[] = $row->ID;
+						}
+					}
 
-					$remove_items = array_diff( $all_items, $item_ids );
-
-					$wpdb->query("
-						DELETE
-						FROM {$wpdb->learnpress_section_items}
-						WHERE ID IN (" . join( ',', $remove_items ) . ")
-					");
+					if($duplicate_ids){
+						$wpdb->query("
+							DELETE FROM {$wpdb->learnpress_section_items}
+							WHERE ID IN(" . join( ',', $duplicate_ids ) . ")
+						");
+					}
 				}
 			}
-			if( ! empty( $_POST['_lp_remove_item_ids'] ) ){
-				$query = "
-					DELETE
-					FROM {$wpdb->learnpress_section_items}
-					WHERE item_id IN(" . $_POST['_lp_remove_item_ids'] . ")
-					 	AND section_id IN (" . join(',', $section_ids ) . ")
-				";
-				$wpdb->query( $query );
-			}
+			//learn_press_debug($_POST);die();
 			//echo '<pre>';print_r($_POST);echo '</pre>';
-			//die();
 		}
 
 		static function enqueue_scripts() {
@@ -536,10 +613,58 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 */
 		function columns_head( $columns ) {
 			$user = wp_get_current_user();
-			if ( in_array( 'lpr_teacher', $user->roles ) ) {
+			if ( in_array( 'lp_teacher', $user->roles ) ) {
 				unset( $columns['author'] );
 			}
+			$keys   = array_keys( $columns );
+			$values = array_values( $columns );
+			$pos    = array_search( 'title', $keys );
+			if ( $pos !== false ) {
+				array_splice( $keys, $pos + 1, 0, 'sections' );
+				array_splice( $values, $pos + 1, 0, __( 'Sections', 'learn_press' ) );
+				$columns = array_combine( $keys, $values );
+			} else {
+				$columns['sections'] = __( 'Sections', 'learn_press' );
+			}
 			return $columns;
+		}
+
+		/**
+		 * Print content for custom column
+		 *
+		 * @param $column
+		 */
+		function columns_content( $column ) {
+			global $post;
+			switch ( $column ) {
+				case 'sections':
+					$course   = LP_Course::get_course( $post->ID );
+					$sections = $course->get_curriculum();
+					if ( $sections ) {
+						$items          = $course->get_curriculum_items( array( 'group' => true ) );
+						$count_sections = sizeof( $sections );
+						$count_lessons  = sizeof( $items['lessons'] );
+						$count_quizzes  = sizeof( $items['quizzes'] );
+						$output = sprintf( _nx( '%d section', '%d sections', $count_sections, 'learn_press' ), $count_sections );
+						$output .= ' (';
+						if( $count_lessons ){
+							$output .= sprintf( _nx( '%d lesson', '%d lessons', $count_lessons, 'learn_press' ), $count_lessons );
+						}else{
+							$output .= __( "0 lesson", 'learn_press' );
+						}
+						$output .= ', ';
+						if( $count_quizzes ){
+							$output .= sprintf( _nx( '%d quiz', '%d quizzes', $count_quizzes, 'learn_press' ), $count_quizzes );
+						}else{
+							$output .= __( "0 quiz", 'learn_press' );
+						}
+						$output .= ')';
+						echo $output;
+					} else {
+						__( '_', 'learn_press' );
+					}
+					break;
+			}
 		}
 	} // end LP_Course_Post_Type
 	new LP_Course_Post_Type();

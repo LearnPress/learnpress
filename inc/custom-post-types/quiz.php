@@ -19,15 +19,15 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 		function __construct() {
 
 			add_action( 'admin_head', array( $this, 'enqueue_script' ) );
-			add_filter( 'manage_lpr_quiz_posts_columns', array( $this, 'columns_head' ) );
-			add_action( 'manage_lpr_quiz_posts_custom_column', array( $this, 'columns_content' ), 10, 2 );
+			add_filter( 'manage_lp_quiz_posts_columns', array( $this, 'columns_head' ) );
+			add_action( 'manage_lp_quiz_posts_custom_column', array( $this, 'columns_content' ), 10, 2 );
 			add_action( 'save_post_lpr_quiz', array( $this, 'update_quiz_meta' ) );
 
-			add_filter( 'posts_fields', array( $this, 'posts_fields' ) );
-			add_filter( 'posts_join_paged', array( $this, 'posts_join_paged' ) );
-			add_filter( 'posts_where_paged', array( $this, 'posts_where_paged' ) );
-			add_filter( 'posts_orderby', array( $this, 'posts_orderby' ) );
-			add_filter( 'manage_edit-lpr_quiz_sortable_columns', array( $this, 'columns_sortable' ) );
+			//add_filter( 'posts_fields', array( $this, 'posts_fields' ) );
+			//add_filter( 'posts_join_paged', array( $this, 'posts_join_paged' ) );
+			//add_filter( 'posts_where_paged', array( $this, 'posts_where_paged' ) );
+			//add_filter( 'posts_orderby', array( $this, 'posts_orderby' ) );
+			//add_filter( 'manage_edit-lpr_quiz_sortable_columns', array( $this, 'columns_sortable' ) );
 
 			add_action( 'save_post', array( $this, 'save' ) );
 
@@ -213,7 +213,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 			}
 			unset ( $columns['taxonomy-lesson-tag'] );
 			$user = wp_get_current_user();
-			if ( in_array( 'lpr_teacher', $user->roles ) ) {
+			if ( in_array( 'lp_teacher', $user->roles ) ) {
 				unset( $columns['author'] );
 			}
 
@@ -229,23 +229,26 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 		function columns_content( $name, $post_id ) {
 			switch ( $name ) {
 				case LP()->course_post_type:
-					$course_id = get_post_meta( $post_id, '_lpr_course', true );
 
-					if ( $course_id ) {
-						$arr_params = array( 'meta_course' => intval( $course_id ) );
-						echo '<a href="' . esc_url( add_query_arg( $arr_params ) ) . '">' . get_the_title( $course_id ) . '</a>';
-						echo '<div class="row-actions">';
-						printf( '<a href="%s">%s</a>', admin_url( sprintf( 'post.php?post=%d&action=edit', $course_id ) ), __( 'Edit', 'learn_press' ) );
-						echo "&nbsp;|&nbsp;";
-						printf( '<a href="%s">%s</a>', get_the_permalink( $course_id ), __( 'View', 'learn_press' ) );
-						echo '</div>';
+					$courses = learn_press_get_item_courses( $post_id );
+					if ( $courses ) {
+						foreach( $courses as $course ) {
+							echo '<div><a href="' . esc_url( add_query_arg( array('course_id' => $course->ID) ) ) . '">' . get_the_title( $course->ID ) . '</a>';
+							echo '<div class="row-actions">';
+							printf( '<a href="%s">%s</a>', admin_url( sprintf( 'post.php?post=%d&action=edit', $course->ID ) ), __( 'Edit', 'learn_press' ) );
+							echo "&nbsp;|&nbsp;";
+							printf( '<a href="%s">%s</a>', get_the_permalink( $course->ID ), __( 'View', 'learn_press' ) );
+							echo '</div></div>';
+						}
+
 					} else {
 						_e( 'Not assigned yet', 'learn_press' );
 					}
 					break;
 				case 'num_of_question':
-					$questions = get_post_meta( $post_id, '_lpr_quiz_questions', true );
-					echo is_array( $questions ) ? sizeof( $questions ) : 0;
+					$quiz = LP_Quiz::get_quiz( $post_id );
+					$questions = $quiz->get_questions();
+					echo ($n = sizeof( $questions )) ? sprintf( _nx( '%d question', '%d questions', $n, 'learn_press' ), $n ) : '_';
 			}
 		}
 

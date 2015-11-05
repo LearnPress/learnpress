@@ -1,5 +1,5 @@
 <?php
-$is_hidden = in_array( $question->id, $hidden );
+$is_hidden = $question->id && is_array($hidden) && in_array( $question->id, $hidden );
 ?>
 <div class="quiz-question<?php echo $is_hidden ? ' is-hidden' : '';?>">
 	<div class="quiz-question-head">

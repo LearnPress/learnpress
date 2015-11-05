@@ -30,18 +30,21 @@ for ( $i = 0; $i < count( $used_item ); $i ++ ) {
 	}
 }
 global $post;
+$course_sections = $course->get_curriculum();
+
+$hidden_sections = (array)get_post_meta( $post->ID, '_admin_hidden_sections', true );
 ?><!-- -->
 <div id="lp-course-curriculum" class="lp-course-curriculum">
-	<p class="lp-course-curriculum-toggle">
-		<a href="" class="expand" data-action="expand"><?php _e( 'Expand All', 'learn_press' ); ?></a>
-		<a href="" class="close" data-action="close"><?php _e( 'Collapse All', 'learn_press' ); ?></a>
-	</p>
-	<?php _e( 'Outline your course and add content with sections, lessons and quizzes.', 'learn_press');?>
-	<ul class="lp-curriculum-sections">
+	<h3 class="curriculum-heading">
+		<?php _e( 'Curriculum', 'learn_press' );?>
+		<p align="right" class="items-toggle">
+			<a href="" data-action="expand"<?php echo !sizeof( $hidden_sections ) ? ' class="hide-if-js"' : '';?>><?php _e( 'Expand All', 'learn_press' );?></a>
+			<a href="" data-action="collapse"<?php echo sizeof( $hidden_sections ) ? ' class="hide-if-js"' : '';?>><?php _e( 'Collapse All', 'learn_press' );?></a>
+		</p>
+	</h3>
+	<!--<?php _e( 'Outline your course and add content with sections, lessons and quizzes.', 'learn_press');?>-->
+	<ul class="curriculum-sections">
 		<?php
-		global $post;
-		$course_sections = $course->get_curriculum();
-		$section_state   = get_post_meta( $post->ID, '_lpr_course_section_state', true );
 		if ( $course_sections ):
 			foreach ( $course_sections as $k => $section ):
 
@@ -58,27 +61,15 @@ global $post;
 					endforeach;
 				endif;
 
-				learn_press_admin_view(
-					'meta-boxes/course/loop-section.php',
-					array(
-						'class' 		=> $section->is_closed ? 'closed' : '',
-						'content_items' => $content_items,
-						'toggle_class'	=> ! $section->is_closed ? "dashicons-minus" : "dashicons-plus",
-						'section_name'	=> $section->name,
-						'section'		=> $section
-					)
-				);
+				include learn_press_get_admin_view( 'meta-boxes/course/loop-section.php' );
 			endforeach;
+			unset($content_items);
 		endif;
-		learn_press_admin_view(
-			'meta-boxes/course/loop-section.php',
-			array(
-				'class' 		=> 'lp-section-empty',
-				'content_items' => '',
-				'toggle_class'	=> "dashicons-minus",
-				'section_name'	=> ''
-			)
-		);
+		foreach( get_object_vars( $section ) as $k => $v ){
+			$section->{$k} = null;
+		}
+
+		include learn_press_get_admin_view( 'meta-boxes/course/loop-section.php' );
 		?>
 	</ul>
 </div>
