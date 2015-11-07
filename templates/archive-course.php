@@ -1,4 +1,11 @@
 <?php
+/**
+ * Template for displaying archive course content
+ *
+ * @author  ThimPress
+ * @package LearnPress/Templates
+ * @version 1.0
+ */
 
 if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
@@ -6,30 +13,33 @@ if ( !defined( 'ABSPATH' ) ) {
 
 get_header(); ?>
 
-<section id="primary" class="content-area">
-	<main id="main" class="site-main" role="main">
+	<?php do_action( 'learn_press_before_main_content' ); ?>
 
+		<?php if( apply_filters( 'learn_press_show_page_title', true ) ){ ?>
+
+		<h1 class="page-title">
+
+			<?php learn_press_page_title(); ?>
+
+		</h1>
+
+		<?php } ?>
+
+		<?php do_action( 'learn_press_archive_description' ); ?>
 		<?php if ( have_posts() ) : ?>
 
-			<header class="page-header">
-				<?php
-				the_archive_title( '<h1 class="page-title">', '</h1>' );
-				the_archive_description( '<div class="taxonomy-description">', '</div>' );
-				?>
-			</header><!-- .page-header -->
+			<?php do_action( 'learn_press_before_courses_loop' ); ?>
 
-			<?php
-			// Start the Loop.
-			while ( have_posts() ) : the_post();
-				learn_press_get_template( 'archive-course-content.php' );
-			endwhile;
+			<?php while ( have_posts() ) : the_post(); ?>
 
-			// Previous/next page navigation.
-			learn_press_course_paging_nav();
-		endif;
-		?>
+				<?php learn_press_get_template_part( 'content', 'course' ); ?>
 
-	</main>
-	<!-- .site-main -->
-</section><!-- .content-area -->
+			<?php endwhile;?>
+
+			<?php do_action( 'learn_press_after_courses_loop' ); ?>
+
+		<?php endif; ?>
+
+	<?php do_action( 'learn_press_after_main_content' ); ?>
+
 <?php get_footer(); ?>

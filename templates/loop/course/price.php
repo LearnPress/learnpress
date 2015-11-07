@@ -1,6 +1,6 @@
 <?php
 /**
- * Template for displaying the price of a course
+ * Template for displaying course price within the loop
  *
  * @author  ThimPress
  * @package LearnPress/Templates
@@ -12,11 +12,8 @@ if ( !defined( 'ABSPATH' ) ) {
 }
 
 global $course;
-
-if ( learn_press_is_enrolled_course() ) {
-	return;
-}
 ?>
+
 <?php if ( $price_html = $course->get_price_html() ) : ?>
 
 	<span class="course-price"><?php echo $price_html; ?></span>

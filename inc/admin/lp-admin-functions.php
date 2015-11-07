@@ -153,6 +153,7 @@ add_action( 'init', 'learn_press_admin_localize_script' );
 function learn_press_settings_tabs_array() {
 	$tabs = array(
 		'general'  => __( 'General', 'learn_press' ),
+		'courses'  => __( 'Courses', 'learn_press' ),
 		'pages'    => __( 'Pages', 'learn_press' ),
 		'payments' => __( 'Payments', 'learn_press' ),
 		'checkout' => __( 'Checkout', 'learn_press' ),
@@ -711,3 +712,12 @@ function learn_press_admin_section_loop_item_class( $item, $section ) {
 	return $classes;
 }
 
+function learn_press_disable_checked_ontop( $args ) {
+
+	if ( 'course_category' == $args['taxonomy'] ) {
+		$args['checked_ontop'] = false;
+	}
+
+	return $args;
+}
+add_filter( 'wp_terms_checklist_args', 'learn_press_disable_checked_ontop' );

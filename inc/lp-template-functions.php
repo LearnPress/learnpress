@@ -10,6 +10,97 @@ if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
+if ( !function_exists( 'learn_press_courses_loop_item_thumbnail' ) ) {
+	/**
+	 * Output the thumbnail of the course within loop
+	 */
+	function learn_press_courses_loop_item_thumbnail() {
+		learn_press_get_template( 'loop/course/thumbnail.php' );
+	}
+}
+
+if ( !function_exists( 'learn_press_courses_loop_item_title' ) ) {
+	/**
+	 * Output the title of the course within loop
+	 */
+	function learn_press_courses_loop_item_title() {
+		learn_press_get_template( 'loop/course/title.php' );
+	}
+}
+
+if ( !function_exists( 'learn_press_courses_loop_item_introduce' ) ) {
+	/**
+	 * Output the excerpt of the course within loop
+	 */
+	function learn_press_courses_loop_item_introduce() {
+		learn_press_get_template( 'loop/course/introduce.php' );
+	}
+}
+
+if ( !function_exists( 'learn_press_courses_loop_item_price' ) ) {
+	/**
+	 * Output the price of the course within loop
+	 */
+	function learn_press_courses_loop_item_price() {
+		learn_press_get_template( 'loop/course/price.php' );
+	}
+}
+
+if ( !function_exists( 'learn_press_courses_loop_item_students' ) ) {
+	/**
+	 * Output the students of the course within loop
+	 */
+	function learn_press_courses_loop_item_students() {
+		learn_press_get_template( 'loop/course/students.php' );
+	}
+}
+
+if ( !function_exists( 'learn_press_courses_loop_item_instructor' ) ) {
+	/**
+	 * Output the instructor of the course within loop
+	 */
+	function learn_press_courses_loop_item_instructor() {
+		learn_press_get_template( 'loop/course/instructor.php' );
+	}
+}
+
+if ( !function_exists( 'learn_press_courses_pagination' ) ) {
+	/**
+	 * Output the pagination of archive courses
+	 */
+	function learn_press_courses_pagination() {
+		learn_press_get_template( 'loop/course/pagination.php' );
+	}
+}
+
+if ( !function_exists( 'learn_press_breadcrumb' ) ) {
+	/**
+	 * Output the breadcrumb of archive courses
+	 *
+	 * @param array
+	 */
+	function learn_press_breadcrumb( $args = array() ) {
+		$args = wp_parse_args( $args, apply_filters( 'learn_press_breadcrumb_defaults', array(
+			'delimiter'   => '&nbsp;&#47;&nbsp;',
+			'wrap_before' => '<nav class="learn-press-breadcrumb" ' . ( is_single() ? 'itemprop="breadcrumb"' : '' ) . '>',
+			'wrap_after'  => '</nav>',
+			'before'      => '',
+			'after'       => '',
+			'home'        => _x( 'Home', 'breadcrumb', 'learn_press' )
+		) ) );
+
+		$breadcrumbs = new LP_Breadcrumb();
+
+		if ( $args['home'] ) {
+			$breadcrumbs->add_crumb( $args['home'], apply_filters( 'learn_press_breadcrumb_home_url', home_url() ) );
+		}
+
+		$args['breadcrumb'] = $breadcrumbs->generate();
+
+		learn_press_get_template( 'global/breadcrumb.php', $args );
+	}
+}
+
 if ( !function_exists( 'learn_press_output_single_course_learning_summary' ) ) {
 	/**
 	 * Output the content of learning course content
@@ -57,19 +148,46 @@ if ( !function_exists( 'learn_press_single_course_description' ) ) {
 
 if ( !function_exists( 'learn_press_single_course_lesson_content' ) ) {
 	/**
-	 * Display course description
+	 * Display lesson content
 	 */
 	function learn_press_single_course_content_lesson() {
 		learn_press_get_template( 'single-course/content-lesson.php' );
 	}
 }
 
+if ( !function_exists( 'learn_press_course_quiz_description' ) ) {
+	/**
+	 * Display lesson content
+	 */
+	function learn_press_course_quiz_description() {
+		learn_press_get_template( 'single-course/content-quiz.php' );
+	}
+}
+
 if ( !function_exists( 'learn_press_course_lesson_description' ) ) {
 	/**
-	 * Display course description
+	 * Display course lesson description
 	 */
 	function learn_press_course_lesson_description() {
 		learn_press_get_template( 'lesson/description.php' );
+	}
+}
+
+if ( !function_exists( 'learn_press_course_lesson_complete_button' ) ) {
+	/**
+	 * Display lesson complete button
+	 */
+	function learn_press_course_lesson_complete_button() {
+		learn_press_get_template( 'lesson/complete-button.php' );
+	}
+}
+
+if ( !function_exists( 'learn_press_course_lesson_navigation' ) ) {
+	/**
+	 * Display lesson navigation
+	 */
+	function learn_press_course_lesson_navigation() {
+		learn_press_get_template( 'lesson/navigation.php' );
 	}
 }
 
@@ -88,6 +206,17 @@ if ( !function_exists( 'learn_press_curriculum_section_content' ) ) {
 	 */
 	function learn_press_curriculum_section_content( $section ) {
 		learn_press_get_template( 'single-course/section/content.php', array( 'section' => $section ) );
+	}
+}
+
+if ( !function_exists( 'learn_press_section_item_meta' ) ) {
+	/**
+	 * @param object
+	 * @param array
+	 * @param LP_Course
+	 */
+	function learn_press_section_item_meta( $item, $section, $course ) {
+		learn_press_get_template( 'single-course/section/item-meta.php', array( 'item' => $item, 'section' => $section ) );
 	}
 }
 
@@ -390,9 +519,10 @@ function lp_setup_course_data( $post ) {
 		return;
 
 	$GLOBALS['course'] = lp_get_course( $post );
-
 	return $GLOBALS['course'];
 }
+add_action( 'the_post', 'lp_setup_course_data' );
+
 
 /**
  * Display a message immediately with out push into queue
@@ -468,6 +598,52 @@ if ( !function_exists( 'learn_press_page_controller' ) ) {
 }
 add_filter( 'template_include', 'learn_press_page_controller' );
 
+if ( ! function_exists( 'learn_press_page_title' ) ) {
+
+	/**
+	 * learn_press_page_title function.
+	 *
+	 * @param  boolean $echo
+	 * @return string
+	 */
+	function learn_press_page_title( $echo = true ) {
+
+		if ( is_search() ) {
+			$page_title = sprintf( __( 'Search Results: &ldquo;%s&rdquo;', 'learn_press' ), get_search_query() );
+
+			if ( get_query_var( 'paged' ) )
+				$page_title .= sprintf( __( '&nbsp;&ndash; Page %s', 'learn_press' ), get_query_var( 'paged' ) );
+
+		} elseif ( is_tax() ) {
+
+			$page_title = single_term_title( "", false );
+
+		} else {
+
+			$courses_page_id = learn_press_get_page_id( 'courses' );
+			$page_title   = get_the_title( $courses_page_id );
+
+		}
+
+		$page_title = apply_filters( 'learn_press_page_title', $page_title );
+
+		if ( $echo )
+			echo $page_title;
+		else
+			return $page_title;
+	}
+}
+
+function learn_press_template_redirect() {
+	global $wp_query, $wp;
+
+	// When default permalinks are enabled, redirect shop page to post type archive url
+	if ( !empty( $_GET['page_id'] ) && get_option( 'permalink_structure' ) == "" && $_GET['page_id'] == learn_press_get_page_id( 'courses' ) ) {
+		wp_safe_redirect( get_post_type_archive_link( 'lp_course' ) );
+		exit;
+	}
+}
+add_action( 'template_redirect', 'learn_press_template_redirect' );
 
 /*******************************************************************************************/
 /*******************************************************************************************/
@@ -475,7 +651,7 @@ add_filter( 'template_include', 'learn_press_page_controller' );
 /*******************************************************************************************/
 /*******************************************************************************************/
 
-//add_action( 'the_post', 'lp_setup_course_data' );
+//
 
 /**
  * When the_post is called, put course data into a global.
@@ -1463,7 +1639,7 @@ add_shortcode( 'quick_lesson_link', 'learn_press_quick_lesson_link_shortcode' );
  *
  * @return mixed
  */
-function learn_press_page_title( $title, $sep ) {
+function learn_press_js_page_title( $title, $sep ) {
 	if ( is_feed() || ( LP()->course_post_type != get_post_type() ) || empty( $_REQUEST['lesson'] ) ) {
 		return $title;
 	}
@@ -1472,7 +1648,7 @@ function learn_press_page_title( $title, $sep ) {
 	return preg_replace( '!(' . $course_title . ')!', '$1::' . get_the_title( $_REQUEST['lesson'] ), $title );
 }
 
-add_filter( 'wp_title', 'learn_press_page_title', 10, 2 );
+add_filter( 'wp_title', 'learn_press_js_page_title', 10, 2 );
 
 /**
  * LearnPress Embed Video button

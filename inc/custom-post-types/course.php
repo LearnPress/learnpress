@@ -99,6 +99,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 * Register course post type
 		 */
 		static function register_post_type() {
+			$settings = LP_Settings::instance();
 			$labels = array(
 				'name'               => _x( 'Courses', 'Post Type General Name', 'learn_press' ),
 				'singular_name'      => _x( 'Course', 'Post Type Singular Name', 'learn_press' ),
@@ -115,6 +116,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 				'not_found_in_trash' => __( 'No course found in Trash', 'learn_press' ),
 			);
 
+			$course_permalink = empty( $course_base = $settings->get( 'course_base' ) ) ? _x( 'courses', 'slug', 'learn_press' ) : $course_base;
 
 			$args = array(
 				'labels'             => $labels,
@@ -122,7 +124,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 				'query_var'          => true,
 				'publicly_queryable' => true,
 				'show_ui'            => true,
-				'has_archive'        => ( $page_id = learn_press_get_page_id( 'courses' ) ) && get_post( $page_id ) ? get_page_uri( $page_id ) : 'courses',
+				'has_archive'        => ( $page_id = learn_press_get_page_id( 'courses' ) ) && get_post( $page_id ) ? get_page_uri( $page_id ) : 'course',
 				'capability_type'    => LP_COURSE_CPT,
 				'map_meta_cap'       => true,
 				'show_in_menu'       => 'learn_press',
@@ -131,7 +133,11 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 				'taxonomies'         => array( 'course_category', 'course_tag' ),
 				'supports'           => array( 'title', 'editor', 'thumbnail', 'revisions', 'comments', 'author' ),
 				'hierarchical'       => true,
-				'rewrite'            => array( 'slug' => 'courses', 'hierarchical' => true, 'with_front' => false )
+				'rewrite'            => array(
+					'slug' => $course_permalink,
+					'hierarchical' => true,
+					'with_front' => false
+				)
 			);
 			register_post_type( LP_COURSE_CPT, $args );
 
@@ -154,7 +160,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 					'show_in_admin_bar' => true,
 					'show_in_nav_menus' => true,
 					'rewrite'           => array(
-						'slug'         => 'course_category',
+						'slug'         => empty( $category_base = $settings->get( 'course_category_base' ) ) ? _x( 'course-category', 'slug', 'learn_press' ) : $category_base,
 						'hierarchical' => true,
 						'with_front'   => false
 					),
@@ -185,6 +191,10 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 					'show_in_menu'          => 'learn_press',
 					'update_count_callback' => '_update_post_term_count',
 					'query_var'             => true,
+					'rewrite'               => array(
+						'slug'       => empty( $tag_base = $settings->get( 'course_tag_base' ) ) ? _x( 'course-tag', 'slug', 'learn_press' ) : $tag_base,
+						'with_front' => false
+					),
 				)
 			);
 			if ( !is_admin() ) {
@@ -287,8 +297,12 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		}
 
 		static function assessment_meta_box() {
+			$post_id = learn_press_get_request( 'post' );
 			$prefix = '_lp_';
-
+			$course_result_desc = __( 'The way to assess the result of course for a student', 'learn_press' );
+			if( $post_id && get_post_meta( $post_id, '_lp_course_result', true ) == 'evaluate_final_quiz' && !get_post_meta( $post_id, '_lp_final_quiz', true ) ){
+				$course_result_desc .= __( '<br /><strong>Note! </strong>No final quiz in course, please add a final quiz', 'learn_press' );
+			}
 			$meta_box = array(
 				'id'       => 'course_assessment',
 				'title'    => __( 'Assessment', 'learn_press' ),
@@ -299,10 +313,10 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						'name'    => __( 'Course result', 'learn_press' ),
 						'id'      => "{$prefix}course_result",
 						'type'    => 'radio',
-						'desc'    => __( 'The way to assess the result of course for a student', 'learn_press' ),
+						'desc'    => $course_result_desc,
 						'options' => array(
-							'no'  => __( 'Evaluate lessons', 'learn_press' ),
-							'yes' => __( 'Evaluate result of final quiz', 'learn_press' )
+							'evaluate_lesson'  => __( 'Evaluate lessons', 'learn_press' ),
+							'evaluate_final_quiz' => __( 'Evaluate result of final quiz', 'learn_press' )
 						),
 						'std'     => 'no'
 					),
@@ -595,6 +609,15 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						");
 					}
 				}
+			}
+			if( learn_press_get_request( '_lp_course_result' ) == 'evaluate_final_quiz' ){
+				if( $final_quiz = learn_press_get_final_quiz( $post->ID ) ) {
+					update_post_meta( $post->ID, '_lp_final_quiz', $final_quiz );
+				}else{
+					delete_post_meta( $post->ID, '_lp_final_quiz' );
+				}
+			}else{
+				delete_post_meta( $post->ID, '_lp_final_quiz' );
 			}
 			//learn_press_debug($_POST);die();
 			//echo '<pre>';print_r($_POST);echo '</pre>';

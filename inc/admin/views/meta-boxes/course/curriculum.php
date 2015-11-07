@@ -65,7 +65,7 @@ $hidden_sections = (array)get_post_meta( $post->ID, '_admin_hidden_sections', tr
 			endforeach;
 			unset($content_items);
 		endif;
-		foreach( get_object_vars( $section ) as $k => $v ){
+		if( $section ) foreach( get_object_vars( $section ) as $k => $v ){
 			$section->{$k} = null;
 		}
 

@@ -39,7 +39,7 @@ class LP_Assets extends LP_Abstract_Assets {
 		self::add_script( 'learn-press-js', learn_press_plugin_url( 'assets/js/frontend/learnpress.js' ), array( 'learn-press-global' ) );
 
 		// single course
-		self::add_script( 'single-course', learn_press_plugin_url( 'assets/js/frontend/single-course.js' ) );
+		self::add_script( 'single-course', learn_press_plugin_url( 'assets/js/frontend/single-course.js' ), array( 'backbone', 'utils' ) );
 
 		// single quiz
 		self::add_script( 'learn-press-timer', learn_press_plugin_url( 'assets/js/jquery.timer.js' ) );

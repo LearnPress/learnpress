@@ -14,7 +14,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 
 			// learnpress_ajax_event => nopriv
 			$ajaxEvents = array(
-				'list_quiz'            => false,
+				//'list_quiz'            => false,
 				'load_quiz_question'   => true,
 				'load_prev_question'   => false,
 				'load_next_question'   => false,
@@ -130,14 +130,10 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 		}
 
 		/**
-		 * List al quizzes
+		 * Save question answer
+		 *
+		 * @return bool
 		 */
-		public static function list_quiz() {
-			if ( file_exists( $template = lpr_locate_template_part( 'single', 'quiz' ) ) ) {
-				require_once( $template );
-			}
-		}
-
 		private static function save_question_if_needed() {
 			$quiz_id         = !empty( $_REQUEST['quiz_id'] ) ? absint( $_REQUEST['quiz_id'] ) : 0;
 			$question_id     = !empty( $_REQUEST['save_id'] ) ? absint( $_REQUEST['save_id'] ) : 0;

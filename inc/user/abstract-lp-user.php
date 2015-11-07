@@ -564,11 +564,36 @@ class LP_Abstract_User {
 		return apply_filters( 'learn_press_user_has_enrolled_course', $info['status'] == 'enrolled', $this, $course_id );
 	}
 
+	/**
+	 * Return true if you has finished a course
+	 *
+	 * @param int
+	 *
+	 * @return bool
+	 */
+	function has_finished_course( $course_id ){
+		return false;
+	}
+
+	/**
+	 * Return tru if user has started a quiz
+	 *
+	 * @param $quiz_id
+	 *
+	 * @return mixed
+	 */
 	function has_started_quiz( $quiz_id ) {
 		$quiz_info = $this->get_quiz_info( $quiz_id );
 		return apply_filters( 'learn_press_user_started_quiz', $quiz_info && $quiz_info['status'] == 'started', $this );
 	}
 
+	/**
+	 * Return true if user has completed a quiz
+	 *
+	 * @param $quiz_id
+	 *
+	 * @return mixed
+	 */
 	function has_completed_quiz( $quiz_id ){
 		$completed = false;
 		if( $progress = $this->get_quiz_progress( $quiz_id ) ){

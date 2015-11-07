@@ -40,6 +40,7 @@
 				this.$form = $('#post');
 				this.$form.on( 'submit', $.proxy( function(){ return this.onSave()}, this ) );
 				$('input[name="_lp_course_result"]').bind('click change', function(){
+					return;
 					if( $(this).val() == 'yes' ){
 						$(this).closest('.rwmb-field').next().show();
 					}else{

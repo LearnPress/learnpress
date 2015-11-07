@@ -17,6 +17,7 @@ $settings = LP()->settings;
 <table class="form-table">
 	<tbody>
 	<?php do_action( 'learn_press_before_' . $this->id . '_' . $this->section['id'] . '_settings_fields', $settings ); ?>
+	<!--
 	<tr>
 		<th scope="row"><label><?php _e( 'Courses Page', 'learn_press' ); ?></label></th>
 		<td>
@@ -26,6 +27,7 @@ $settings = LP()->settings;
 			?>
 		</td>
 	</tr>
+	-->
 	<tr>
 		<th scope="row"><label><?php _e( 'Take Course Confirm', 'learn_press' ); ?></label></th>
 		<td>

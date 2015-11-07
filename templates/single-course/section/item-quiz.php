@@ -16,7 +16,7 @@ $target   = apply_filters( 'learn_press_section_item_link_target', '_blank', $it
 
 <li <?php learn_press_course_quiz_class( $item->ID ); ?> data-type="<?php echo $item->post_type;?>">
 
-	<?php do_action( 'learn_press_before_section_item_title', $item, $viewable ); ?>
+	<?php do_action( 'learn_press_before_section_item_title', $item, $section, $course ); ?>
 
 	<<?php echo $tag; ?> target="<?php echo $target; ?>" <?php echo $viewable ? 'href="' . get_the_permalink( $item->ID ) . '"' : ''; ?> data-id="<?php echo $item->ID; ?>">
 
@@ -24,6 +24,6 @@ $target   = apply_filters( 'learn_press_section_item_link_target', '_blank', $it
 
 	</<?php echo $tag; ?>>
 
-	<?php do_action( 'learn_press_before_section_item_title', $lesson_quiz, $viewable ); ?>
+<?php do_action( 'learn_press_after_section_item_title', $item, $section, $course ); ?>
 
 </li>

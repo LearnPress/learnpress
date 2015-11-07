@@ -67,6 +67,92 @@ function learn_press_get_item_courses($item){
 	return $wpdb->get_results( $query );
 }
 
+function learn_press_course_post_type_link( $permalink, $post ) {
+	if ( $post->post_type !== 'lp_course' ) {
+		return $permalink;
+	}
+
+	// Abort early if the placeholder rewrite tag isn't in the generated URL
+	if ( false === strpos( $permalink, '%' ) ) {
+		return $permalink;
+	}
+
+	// Get the custom taxonomy terms in use by this post
+	$terms = get_the_terms( $post->ID, 'course_category' );
+
+	if ( ! empty( $terms ) ) {
+		usort( $terms, '_usort_terms_by_ID' ); // order by ID
+
+		$category_object = apply_filters( 'learn_press_course_post_type_link_course_category', $terms[0], $terms, $post );
+		$category_object = get_term( $category_object, 'course_category' );
+		$course_category     = $category_object->slug;
+
+		if ( $parent = $category_object->parent ) {
+			$ancestors = get_ancestors( $category_object->term_id, 'course_category' );
+			foreach ( $ancestors as $ancestor ) {
+				$ancestor_object = get_term( $ancestor, 'course_category' );
+				$course_category     = $ancestor_object->slug . '/' . $course_category;
+			}
+		}
+	} else {
+		// If no terms are assigned to this post, use a string instead (can't leave the placeholder there)
+		$course_category = _x( 'uncategorized', 'slug', 'learn_press' );
+	}
+
+	$find = array(
+		'%year%',
+		'%monthnum%',
+		'%day%',
+		'%hour%',
+		'%minute%',
+		'%second%',
+		'%post_id%',
+		'%category%',
+		'%course_category%'
+	);
+
+	$replace = array(
+		date_i18n( 'Y', strtotime( $post->post_date ) ),
+		date_i18n( 'm', strtotime( $post->post_date ) ),
+		date_i18n( 'd', strtotime( $post->post_date ) ),
+		date_i18n( 'H', strtotime( $post->post_date ) ),
+		date_i18n( 'i', strtotime( $post->post_date ) ),
+		date_i18n( 's', strtotime( $post->post_date ) ),
+		$post->ID,
+		$course_category,
+		$course_category
+	);
+
+	$permalink = str_replace( $find, $replace, $permalink );
+
+	return $permalink;
+}
+add_filter( 'post_type_link', 'learn_press_course_post_type_link', 10, 2 );
+
+/**
+ * Get the final quiz for a course if it is existing
+ *
+ * @param $course_id
+ *
+ * @return mixed
+ * @throws Exception
+ */
+function learn_press_get_final_quiz( $course_id ){
+	$course = LP_Course::get_course( $course_id );
+	if( ! $course ){
+		throw new Exception( sprintf( __( 'The course %d does not exists', 'learn_press' ), $course_id ) );
+	}
+	$course_items = $course->get_curriculum_items();
+	$final = false;
+	if( $course_items ){
+		$end = end( $course_items );
+		if( $end->post_type == LP()->quiz_post_type ){
+			$final = $end->ID;
+		}
+	}
+	return apply_filters( 'learn_press_course_final_quiz', $final, $course_id );
+}
+
 /*******************************************************/
 /*******************************************************/
 
@@ -97,20 +183,8 @@ function lpr_get_number_lesson( $course_id ) {
  * @return int
  */
 function lpr_get_final_quiz( $course_id ) {
-	$final = false;
-	if ( get_post_meta( $course_id, '_lpr_course_final', true ) == 'yes' ) {
-		$course_curriculum = get_post_meta( $course_id, '_lpr_course_lesson_quiz', true );
-		if ( $course_curriculum ) {
-			$last_section = end( $course_curriculum );
-			if ( $last_section && !empty( $last_section['lesson_quiz'] ) && $lesson_quiz = $last_section['lesson_quiz'] ) {
-				$final = end( $lesson_quiz );
-				if ( LP()->quiz_post_type != get_post_type( $final ) ) {
-					$final = false;
-				}
-			}
-		}
-	}
-	return $final;
+	_deprecated_function( __FUNCTION__, '1.0', 'learn_press_get_final_quiz' );
+	return learn_press_get_final_quiz( $course_id );
 }
 
 /**

@@ -12,7 +12,6 @@ if ( !defined( 'ABSPATH' ) ) {
 }
 
 global $course;
-
 do_action( 'learn_press_before_single_course' ); ?>
 
 <div id="post-<?php the_ID(); ?>" <?php post_class(); ?> itemscope itemtype="http://schema.org/CreativeWork">

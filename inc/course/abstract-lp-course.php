@@ -71,8 +71,18 @@ abstract class LP_Abstract_Course {
 		if( empty( $this->{$key} ) ) {
 			$value = false;
 			switch ( $key ) {
+				case 'current_item':
+					$item_type = !empty( $_REQUEST['course-item'] ) ? $_REQUEST['course-item'] : '';
+					if( $item_type ) {
+						$item_id = ( ( $item_id = learn_press_get_request( "{$item_type}_id" ) ) && $this->has( 'item', $item_id ) ) ? $item_id : null;
+						if ( $item_id ) {
+							$value = $item_type == 'lesson' ? LP_Lesson::get_lesson( $item_id ) : LP_Quiz::get_quiz( $item_id );
+						}
+					}
+
+					break;
 				case 'current_lesson':
-					$lesson_id = !empty( $_REQUEST['lesson'] ) && $this->has( 'item', $_REQUEST['lesson'] ) ? $_REQUEST['lesson'] : null;
+					$lesson_id = ( ( $lesson_id = learn_press_get_request( "lesson_id" ) ) && $this->has( 'item', $lesson_id ) ) ? $lesson_id : null;
 					if( $lesson_id ){
 						$value = LP_Lesson::get_lesson( $lesson_id );
 					}
@@ -80,6 +90,7 @@ abstract class LP_Abstract_Course {
 				case 'permalink':
 					$value = get_the_permalink( $this->id );
 					break;
+
 				default: // default is get course meta key
 					$value = get_post_meta( $this->id, '_lp_' . $key, true );
 			}
@@ -238,17 +249,32 @@ abstract class LP_Abstract_Course {
 				if ( $count == 1 ):
 					$output .= __( 'You enrolled', 'learn_press' );
 				else:
-					$output .= sprintf( _nx( 'You and one student enrolled', 'You and %1$s students enrolled', intval( $count - 1 ), '', 'learn_press' ), $count - 1 );
+					$output .= sprintf( _nx( 'You and one student enrolled', 'You and <span class="course-students-number">%1$s</span> students enrolled', intval( $count - 1 ), '', 'learn_press' ), $count - 1 );
 				endif;
 				$output = apply_filters( 'learn_press_students_enrolled_html', $output, $this );
 			else:
-				$output = sprintf( _nx( 'One student enrolled', '%1$s students enrolled', $count, '', 'learn_press' ), $count );
+				$output = sprintf( _nx( 'One student enrolled', '<span class="course-students-number">%1$s</span> students enrolled', $count, '', 'learn_press' ), $count );
 				$output = apply_filters( 'learn_press_one_student_enrolled_html', $output, $this );
 			endif;
 		else:
 			$output = apply_filters( 'learn_press_no_student_enrolled_html', __( 'No student enrolled', 'learn_press' ), $this );
 		endif;
 		return $output;
+	}
+
+	function get_instructor(){
+		$user_data = get_userdata( $this->post->post_author );
+		return apply_filters( 'learn_press_course_instructor', $user_data->display_name, $this->id );
+	}
+
+	function get_instructor_html(){
+		$instructor = $this->get_instructor();
+		$html = sprintf(
+			'<a href="%s">%s</a>',
+			apply_filters( 'learn_press_instructor_profile_link', '#', null, $this->id ),
+			$instructor
+		);
+		return apply_filters( 'learn_press_course_instructor_html', $html, $this->post->post_author, $this->id );
 	}
 
 	public function get_course_info( $user_id = null ){
@@ -275,14 +301,24 @@ abstract class LP_Abstract_Course {
 	 * @return mixed
 	 */
 	public function get_price() {
-		$price = $this->_price;
-		$price = get_post_meta($this->id, '_lp_price', true);
+		$price = $this->price;
 		if ( !$price ) {
 			$price = 0;
 		} else {
 			$price = floatval( $price );
 		}
 		return apply_filters( 'learn_press_course_price', $price, $this );
+	}
+
+	/**
+	 * Get the price of course with html
+	 *
+	 * @return mixed
+	 */
+	public function get_price_html() {
+		$price = $this->get_price();
+		$price = learn_press_format_price( $price, true );
+		return apply_filters( 'learn_press_course_price_html', $price, $this );
 	}
 
 	/**
@@ -393,7 +429,9 @@ abstract class LP_Abstract_Course {
 	}
 
 	function is_viewing( $content = '' ){
-		$viewing = apply_filters( 'learn_press_course_is_viewing', !empty( $_REQUEST['lesson'] ) && $this->has( 'item', $_REQUEST['lesson'] ) ? 'lesson' : 'course' );
+
+		$item_type = !empty( $_REQUEST['course-item'] ) ? $_REQUEST['course-item'] : '';
+		$viewing = apply_filters( 'learn_press_course_is_viewing', $item_type ? $item_type : 'course' );
 		if( $content ){
 			return $content == $viewing;
 		}
@@ -462,13 +500,62 @@ abstract class LP_Abstract_Course {
 		$permalink = get_the_permalink( $this->ID );
 
 		$post_name = get_post_field( 'post_name', $item_id );
+		$prefix = "{$item_id}-";
 		if( '' != get_option( 'permalink_structure' ) ) {
-			$permalink .= $post_name;
+			$permalink .= $prefix . $post_name;
 		}else{
-			$key = preg_replace( '!.*_!', '', get_post_type( $item_id ) );
+			$key = preg_replace( '!lp_!', '', get_post_type( $item_id ) );
 			$permalink = add_query_arg( array( $key => $post_name ), $permalink );
 		}
 
 		return apply_filters( 'learn_press_course_item_link', $permalink, $item_id, $this );
+	}
+
+	function get_next_item( $current_item = false, $dir = 'next' ){
+		$items = (array)$this->get_curriculum_items( array( 'field' => 'ID') );
+		$items_len = sizeof( $items );
+		if( $items_len < 2 ) return false;
+		$current_item = $current_item ? $current_item : ( $this->current_item ? $this->current_item->id : 0 );
+		if( ! $current_item ){
+			$current_item = reset( $items );
+		}
+		if( ( $pos = array_search( $current_item, $items ) ) !== false ){
+			if( $dir == 'next' ) {
+				if ( $pos == sizeof( $items ) - 1 ) {
+					$next_item = false;
+				} else {
+					$next_item = $items[$pos + 1];
+				}
+			}else{
+				if( $pos == 0 ){
+					$next_item = false;
+				}else{
+					$next_item = $items[ $pos - 1 ];
+				}
+			}
+		}else{
+			$next_item = $dir == 'next' ? $items[1] : $items[ $items_len - 1 ];
+		}
+		//print_r($items);
+		//echo $current_item, ",", $next_item;
+		return apply_filters( 'learn_press_course_' . $dir . '_item', $next_item, $current_item, $this );
+	}
+
+	function get_next_item_html( $current_item = false ){
+		if( $next_item = $this->get_next_item( $current_item ) ){
+			ob_start();
+			learn_press_get_template( 'lesson/next-button.php', array( 'item' => $next_item, 'course' => $this ) );
+			return ob_get_clean();
+		}
+		return false;
+	}
+
+	function get_prev_item_html( $current_item = false ){
+		if( $next_item = $this->get_next_item( $current_item, 'prev' ) ){
+			ob_start();
+			learn_press_get_template( 'lesson/prev-button.php', array( 'item' => $next_item, 'course' => $this ) );
+			return ob_get_clean();
+		}
+		return false;
 	}
 }
