@@ -47,7 +47,8 @@ if (typeof window.LearnPress == 'undefined') {
 					autohide: false,
 					message: message,
 					data: false,
-					id: LearnPress.uniqueId()
+					id: LearnPress.uniqueId(),
+					onHide: null
 				}, args || {});
 
 				this.instances.push(args)
@@ -75,6 +76,7 @@ if (typeof window.LearnPress == 'undefined') {
 				if( args.autohide ){
 					setTimeout(function(){
 						LearnPress.MessageBox.hide();
+						$.isFunction( args.onHide ) && args.onHide.call(LearnPress.MessageBox, args);
 					}, args.autohide)
 				}
 			}, this)()

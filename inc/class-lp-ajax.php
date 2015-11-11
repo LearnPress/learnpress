@@ -140,7 +140,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			$user_id         = !empty( $_REQUEST['user_id'] ) ? absint( $_REQUEST['user_id'] ) : 0;
 			$question        = $question_id ? LP_Question_Factory::get_question( $question_id ) : false;
 			if ( $question ) {
-				$question_answer = isset( $_REQUEST['question_answer'] ) ? $_REQUEST['question_answer'] : null;
+				$question_answer = isset( $_REQUEST['question_answer'] ) ? $_REQUEST['question_answer'] : array();
 				$question_answer = array_key_exists( 'learn-press-question-' . $question_id , $question_answer ) ? $question_answer[ 'learn-press-question-' . $question_id ] : '';
 				$question->save_user_answer( $question_answer, $quiz_id );
 				do_action( 'learn_press_save_user_question_answer', $question_answer, $question_id, $quiz_id, $user_id, true );
@@ -275,22 +275,20 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 		 *  Retake a quiz
 		 */
 		public static function retake_quiz() {
-			$quiz_id  = learn_press_get_request( 'quiz_id' );
-			$user_id  = learn_press_get_current_user_id();
-			$response = array();
-			if ( !learn_press_user_can_retake_quiz( $quiz_id, $user_id ) ) {
-				$response['message'] = __( 'Sorry! You can not retake this quiz', 'learn_press' );
-				$response['error']   = true;
-			} else {
-				//lpr_reset_quiz_answer($quiz_id);
-				learn_press_reset_user_quiz( $user_id, $quiz_id );
-				add_user_meta( $user_id, '_lpr_quiz_taken', $quiz_id );
-				$response = array(
-					'retake'   => true,
-					'redirect' => get_the_permalink( $quiz_id )
+			// verify nonce
+			if ( ! wp_verify_nonce( learn_press_get_request( 'nonce' ), 'retake-quiz' ) ) {
+				learn_press_send_json(
+					array(
+						'result'	=> 'fail',
+						'message'	=> __( 'Something went wrong. Please try again!', 'learn_press' )
+					)
 				);
-				do_action( 'learn_press_user_retake_quiz', $quiz_id, $user_id );
 			}
+
+			$quiz_id  = learn_press_get_request( 'quiz_id' );
+			$user	  = learn_press_get_current_user();
+
+			$response = $user->retake_quiz( $quiz_id );
 			learn_press_send_json( $response );
 		}
 

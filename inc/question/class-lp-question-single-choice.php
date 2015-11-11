@@ -187,18 +187,18 @@ class LP_Question_Single_Choice extends LP_Question {
 		include $view;
 	}
 
-	function check( $args = false ) {
-		$answer = false;
-		is_array( $args ) && extract( $args );
+	function check( $user_answer = null ) {
 		$return = array(
 			'correct' => false,
 			'mark'    => 0
 		);
-
-		if ( is_numeric( $answer ) ) {
-			if ( $this->get( 'options.answer.' . $answer . '.is_true' ) ) {
-				$return['correct'] = true;
-				$return['mark']    = intval( get_post_meta( $this->get( 'ID' ), '_lpr_question_mark', true ) );
+		if ( $answers = $this->answers ) {
+			foreach ( $answers as $k => $answer ) {
+				if( ( $answer['is_true'] == 'yes' ) && ( $answer['value'] == $user_answer ) ){
+					$return['correct'] = true;
+					$return['mark'] = floatval( $this->mark );
+					break;
+				}
 			}
 		}
 		return $return;

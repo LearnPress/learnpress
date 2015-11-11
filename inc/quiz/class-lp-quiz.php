@@ -56,7 +56,7 @@ class LP_Quiz {
 	protected function _get_localize(){
 		$localize = array(
 			'confirm_finish_quiz'		=> __( 'Are you sure you want to completely finish this quiz?', 'learn_press'),
-			'confirm_retake_qiuz'		=> __( 'Are you sure you want to retake this quiz?', 'learn_press'),
+			'confirm_retake_quiz'		=> __( 'Are you sure you want to retake this quiz?', 'learn_press'),
 			'quiz_time_is_over_message' => __( 'The time is over! Your quiz will automate come to finish', 'learn_press' ),
 			'quiz_time_is_over_title'   => __( 'Time up!', 'learn_press' )
 		);
@@ -236,12 +236,16 @@ class LP_Quiz {
 		$buttons = array();
 		if ( !$user->has( 'started-quiz', $this->id ) ):
 			$buttons['start'] = sprintf( '<button class="button-start-quiz" data-id="%d">%s</button>', $this->id, apply_filters( 'learn_press_start_quiz_button_text', __( "Start Quiz", "learn_press" ) ) );
+			$buttons['start'] .= wp_nonce_field( 'start-quiz', 'start-quiz-nonce');
 		endif;
 
 		$buttons['finish'] = sprintf( '<button class="button-finish-quiz" data-id="%d">%s</button>', $this->id, apply_filters( 'learn_press_finish_quiz_button_text', __( "Finish Quiz", "learn_press" ) ) );
+		$buttons['finish'] .= wp_nonce_field( 'finish-quiz', 'finish-quiz-nonce');
+
 
 		if ( $remain = $user->can( 'retake-quiz', $this->id ) ):
 			$buttons['retake'] = sprintf( '<button class="button-retake-quiz" data-id="%d">%s (+%d)</button>', $this->id, apply_filters( 'learn_press_retake_quiz_button_text', __( 'Retake', 'learn_press' ) ), $remain );
+			$buttons['retake'] .= wp_nonce_field( 'retake-quiz', 'retake-quiz-nonce');
 		endif;
 
 		return apply_filters( 'learn_press_single_quiz_buttons', $buttons, $this, $user );
@@ -261,6 +265,20 @@ class LP_Quiz {
 
 	function has_questions(){
 		return $this->get_questions();
+	}
+
+	function get_mark( $force = false ){
+		if( empty( $this->mark ) || $force ){
+			global $wpdb;
+			$query = $wpdb->prepare("
+				SELECT SUM(pm.meta_value) as mark
+				FROM {$wpdb->learnpress_quiz_questions} qq
+				INNER JOIN {$wpdb->posts} q ON q.ID = qq.quiz_id
+				INNER JOIN {$wpdb->postmeta} pm ON pm.post_id = qq.question_id AND pm.meta_key = %s
+			", '_lp_mark');
+			$this->mark = $wpdb->get_var( $query );
+		}
+		return apply_filters( 'learn_press_quiz_mark', $this->mark, $this );
 	}
 
 	function get_question_link( $question_id = null ){

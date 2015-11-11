@@ -149,12 +149,12 @@ if (typeof LearnPress == 'undefined') var LearnPress = {};
 				complete: (function (e) {
 					var response = LearnPress.parseJSON(e.responseText);
 					if(response.result == 'success') {
-						/*if (!that.get('content')) {
+						if (!that.get('content')) {
 							that.set('content', $(response.content));
 							if(response.permalink){
-								LearnPress.pushHistory( response.permalink );
+								LearnPress.setUrl( response.permalink );
 							}
-						}*/
+						}
 						$.isFunction(args.complete) && args.complete.call(that, response);
 					}
 				})
@@ -309,23 +309,33 @@ if (typeof LearnPress == 'undefined') var LearnPress = {};
 			});
 		},
 		retakeQuiz     : function (args) {
-			if (!confirm(learn_press_js_localize.confirm_retake_quiz)) return;
 			var that = this;
-			that.block_page();
-			args = $.extend({}, args || {});
+			args = $.extend({
+				complete: function(response){
+
+				}
+			}, args || {});
 			$.ajax({
 				url     : this.model.get('ajaxurl'),
 				dataType: 'html',
 				data    : {
 					action : 'learnpress_retake_quiz',
-					quiz_id: this.model.get('id')
+					quiz_id: this.model.get('id'),
+					nonce: this._getNonce( 'retake-quiz' )
 				},
 				success : function (response) {
-					var json = LearnPress.parseJSON(response);
-					if (json.redirect) {
-						that.loadPage(json.redirect);
-					}else if(json.message){
-						alert(json.message);
+					var json = LearnPress.parseJSON( response );
+					LearnPress.MessageBox.hide();
+					if( json.result == 'success') {
+						$.isFunction(args.complete) && args.complete.call(LearnPress.Quiz, json);
+						LearnPress.MessageBox.show('Congrats! You have re-taken this quiz. Please wait a moment and the page will reload', {
+							autohide: 2000,
+							onHide  : function () {
+								LearnPress.reload();
+							}
+						});
+					}else{
+						LearnPress.MessageBox.show(json.message, {buttons: 'ok'});
 					}
 				}
 			});
@@ -350,11 +360,30 @@ if (typeof LearnPress == 'undefined') var LearnPress = {};
 			} );
 			e.preventDefault();
 		},
+		_getNonce: function( field ){
+			return this.$('input#' + field + '-nonce').val();
+		},
 		_startQuiz: function(){
 			LearnPress.MessageBox.blockUI();
 			this.startQuiz({
 				complete: function(){
 					LearnPress.MessageBox.hide();
+				}
+			});
+		},
+		_retakeQuiz: function(){
+			var that = this;
+			LearnPress.MessageBox.show(single_quiz_localize.confirm_retake_quiz, {
+				buttons: 'yesNo',
+				events : {
+					onYes: function(){
+						LearnPress.MessageBox.blockUI();
+						that.retakeQuiz({
+							complete: function(){
+								LearnPress.MessageBox.hide();
+							}
+						});
+					}
 				}
 			});
 		},

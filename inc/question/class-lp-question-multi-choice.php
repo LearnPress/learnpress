@@ -254,20 +254,28 @@ class LP_Question_Multi_Choice extends LP_Question {
 		include $view;
 	}
 
-	function check( $args = false ) {
-		$answer = false;
-		is_array( $args ) && extract( $args );
+	function check( $user_answer = null ) {
 		$return = array(
 			'correct' => true,
-			'mark'    => intval( get_post_meta( $this->get( 'ID' ), '_lpr_question_mark', true ) )
+			'mark'    => floatval( $this->mark )
 		);
-		settype( $answer, 'array' );
-		if ( $answers = $this->get( 'options.answer' ) ) {
-			foreach ( $answers as $k => $ans ) {
-				$is_true = $this->get( 'options.answer.' . $k . '.is_true' ) ? true : false;
+		settype( $user_answer, 'array' );
+		if ( $answers = $this->answers ) {
+			foreach ( $answers as $k => $answer ) {
+				$correct = false;
+				if( $answer['is_true'] == 'yes' ){
+					if( in_array( $answer['value'], $user_answer ) ){
+						$correct = true;
+					}
+				} else {
+					if( ! in_array( $answer['value'], $user_answer ) ){
+						$correct = true;
+					}
+				}
+
 				// if the option is TRUE but user did not select it => WRONG
 				// or, if the option is FALSE but user selected it => WRONG
-				if ( ( $is_true && !in_array( $k, $answer ) ) || ( !$is_true && in_array( $k, $answer ) ) ) {
+				if ( !$correct ) {
 					$return['correct'] = false;
 					$return['mark']    = 0;
 					break;

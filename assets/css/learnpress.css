@@ -61,8 +61,12 @@
 }
 .message-box-button{
 	margin-right: 10px !important;
+	background-color: #FFFFFF;
+	color: #999;
 }
-
+.message-box-button:hover{
+	background-color: #F5F5F5;
+}
 .lp-label{
 	display: inline-block;
 	padding: 3px 8px;
@@ -238,6 +242,9 @@
 	width: 200px;
 	margin-left: -200px;
 }
+.quiz-questions-list .current{
+	font-weight: bold;
+}
 .quiz-countdown{
 	text-align: center;
 }
@@ -252,6 +259,70 @@
 }
 .quiz-buttons{
 	text-align: center;
+}
+
+.quiz-result {
+	margin-top: 20px;
+	width: 100%;
+}
+
+.quiz-result .quiz-result-mark {
+	float: left;
+	width: 150px;
+	height: 150px;
+	background-color: #F5F5F5;
+	border-radius: 50%;
+	text-align: center;
+	box-sizing: border-box;
+	padding-top: 30px;
+	line-height: 1;
+
+}
+
+.quiz-result .quiz-result-mark .quiz-mark {
+	font-size: 60px;
+	display: block;
+}
+
+.quiz-result .quiz-result-mark .quiz-mark small {
+	font-size: 20px;
+}
+
+.quiz-result .quiz-result-summary {
+	float: left;
+	margin-left: 30px;
+}
+
+.quiz-result .quiz-result-summary .quiz-result-field {
+	margin: 0;
+	font-size: 14px;
+}
+
+.quiz-result .quiz-result-summary .quiz-result-field > label {
+	width: 100px;
+	display: inline-block;
+}
+
+.quiz-result .quiz-result-summary .quiz-result-field.correct {
+	color: #0066cc;
+}
+
+.quiz-result .quiz-result-summary .quiz-result-field.wrong {
+	color: #BC0B0B;
+}
+
+.quiz-result .quiz-result-summary .quiz-result-field.empty {
+	color: #869791;
+}
+
+.quiz-history{
+	font-size: 80%;
+}
+.quiz-history td{
+	padding: 10px;
+}
+.quiz-history-actions{
+	margin: 0;
 }
 
 /* profile */

@@ -433,6 +433,15 @@ if ( !function_exists( 'learn_press_single_quiz_result' ) ) {
 	}
 }
 
+if ( !function_exists( 'learn_press_single_quiz_history' ) ) {
+	/**
+	 * Output the history of a quiz
+	 */
+	function learn_press_single_quiz_history() {
+		learn_press_get_template( 'single-quiz/history.php' );
+	}
+}
+
 if ( !function_exists( 'learn_press_single_quiz_sidebar' ) ) {
 	/**
 	 * Output the sidebar for a quiz
@@ -829,8 +838,6 @@ if ( !function_exists( 'learn_press_print_quiz_question_content_script' ) ) {
 	}
 }
 
-
-
 if ( !function_exists( 'learn_press_single_quiz_result' ) ) {
 	/**
 	 * Output the result of a quiz
@@ -839,6 +846,8 @@ if ( !function_exists( 'learn_press_single_quiz_result' ) ) {
 		learn_press_get_template( 'quiz/result.php' );
 	}
 }
+
+
 
 if ( !function_exists( 'learn_press_single_quiz_percentage' ) ) {
 	/**

@@ -26,6 +26,8 @@ class LP_Abstract_User {
 
 	static protected $_order_items = array();
 
+	protected $_quiz_history_id = null;
+
 	/**
 	 * Constructor
 	 *
@@ -100,6 +102,51 @@ class LP_Abstract_User {
 		return false;
 	}
 
+	private function _create_quiz_history( $quiz_id ) {
+
+		if ( empty( $this->_quiz_history_id ) ) {
+			global $wpdb;
+
+			$timestamp = current_time( 'timestamp' );
+			$wpdb->insert(
+				$wpdb->learnpress_user_quizzes,
+				array(
+					'user_id' => $this->id,
+					'quiz_id' => $quiz_id
+				),
+				array( '%d', '%d' )
+			);
+
+			$user_quiz_id = $wpdb->insert_id;
+
+			$quiz           = LP_Quiz::get_quiz( $quiz_id );
+			$quiz_questions = $quiz->get_questions();
+			$user_quiz_data = apply_filters(
+				'learn_press_user_quiz_data',
+				array(
+					'history_id'       => $user_quiz_id,
+					'start'            => $timestamp,
+					'end'              => '',
+					'status'           => 'started',
+					'results'          => '',
+					'current_question' => '',
+					'question_answers' => '',
+					'questions'        => $quiz_questions ? array_keys( $quiz_questions ) : ''
+				)
+			);
+
+			foreach ( $user_quiz_data as $key => $value ) {
+				if ( $key == 'history_id' ) continue;
+				learn_press_add_user_quiz_meta( $user_quiz_id, $key, $value );
+			}
+
+			do_action( 'learn_press_add_user_quiz_meta', $user_quiz_id, $this );
+		} else {
+			$user_quiz_data = $this->get_quiz_history( $quiz_id, $this->_quiz_history_id );
+		}
+		return $user_quiz_data;
+	}
+
 	/**
 	 * Start quiz for the user
 	 *
@@ -120,61 +167,15 @@ class LP_Abstract_User {
 			throw new Exception( __( 'This user already has start quiz', 'learn_press' ) );
 		}
 		///
-		global $wpdb;
-
-		$timestamp = current_time( 'timestamp' );
-		$wpdb->insert(
-			$wpdb->learnpress_user_quizzes,
-			array(
-				'user_id' => $this->id,
-				'quiz_id' => $quiz_id
-			),
-			array( '%d', '%d' )
-		);
-
-		$user_quiz_id = $wpdb->insert_id;
-
-		$quiz = LP_Quiz::get_quiz( $quiz_id );
-		$quiz_questions = $quiz->get_questions();
-		$user_quiz_data = apply_filters(
-			'learn_press_user_quiz_data',
-			array(
-				'start'		=> $timestamp,
-				'end'		=> '',
-				'status'	=> 'started',
-				'results'	=> '',
-				'current_question' => '',
-				'question_answers' => '',
-				'questions' => $quiz_questions ? array_keys( $quiz_questions ) : ''
-			)
-		);
-
-		foreach( $user_quiz_data as $key => $value ){
-			learn_press_add_user_quiz_meta( $user_quiz_id, $key, $value );
-		}
-/*
-		learn_press_add_user_quiz_meta( $user_quiz_id, 'start', $timestamp );
-		learn_press_add_user_quiz_meta( $user_quiz_id, 'end', '' );
-		learn_press_add_user_quiz_meta( $user_quiz_id, 'status', 'started' );
-		learn_press_add_user_quiz_meta( $user_quiz_id, 'results', '' );
-		learn_press_add_user_quiz_meta( $user_quiz_id, 'current_question', '' );
-		learn_press_add_user_quiz_meta( $user_quiz_id, 'question_answers', '' );
-		learn_press_add_user_quiz_meta( $user_quiz_id, 'questions',  );
-*/
-		do_action( 'learn_press_add_user_quiz_meta', $user_quiz_id, $this );
-
-		return array(
-			'start' => $timestamp,
-			'end'   => null
-		);
+		return $this->_create_quiz_history( $quiz_id );
 	}
 
-	function get_quiz_time_remaining( $quiz_id ){
+	function get_quiz_time_remaining( $quiz_id ) {
 		$remaining = false;
-		if( $progress = $this->get_quiz_progress( $quiz_id ) ){
-			$quiz = LP_Quiz::get_quiz( $quiz_id );
+		if ( $progress = $this->get_quiz_progress( $quiz_id ) ) {
+			$quiz      = LP_Quiz::get_quiz( $quiz_id );
 			$remaining = $quiz->duration + $progress->start - current_time( 'timestamp' );
-			if( $remaining < 0 ) $remaining = 0;
+			if ( $remaining < 0 ) $remaining = 0;
 		}
 		return apply_filters( 'learn_press_user_quiz_time_remaining', $remaining, $this, $quiz_id );
 	}
@@ -211,12 +212,12 @@ class LP_Abstract_User {
 		return $current;
 	}
 
-	function get_question_answers( $quiz_id, $question_id ){
-		$progress = $this->get_quiz_progress( $quiz_id );
+	function get_question_answers( $quiz_id, $question_id ) {
+		$progress         = $this->get_quiz_progress( $quiz_id );
 		$question_answers = null;
-		if( $progress ){
-			if( ! empty( $progress->question_answers[ $question_id ] ) ){
-				$question_answers = $progress->question_answers[ $question_id ];
+		if ( $progress ) {
+			if ( !empty( $progress->question_answers[$question_id] ) ) {
+				$question_answers = $progress->question_answers[$question_id];
 			}
 		}
 		return $question_answers;
@@ -248,12 +249,17 @@ class LP_Abstract_User {
 		return $mark;
 	}
 
+	/**
+	 * Finish a quiz for the user and save all data needed
+	 *
+	 * @param $quiz_id
+	 */
 	function finish_quiz( $quiz_id ) {
 		$quiz = LP_Quiz::get_quiz( $quiz_id );
 		if ( !$quiz ) {
 			return;
 		}
-		$time           = current_time( 'timestamp' );
+		$time = current_time( 'timestamp' );
 
 		$progress = $this->get_quiz_progress( $quiz->id );
 
@@ -271,12 +277,35 @@ class LP_Abstract_User {
 			}
 		}*/
 
-		do_action( 'learn_press_finish_quiz', $quiz_id, $this );
+		do_action( 'learn_press_user_finish_quiz', $quiz_id, $this );
 
 	}
 
-	function retake_quiz() {
+	/**
+	 * Retake a quiz for the user
+	 *
+	 * @param $quiz_id
+	 *
+	 * @return array
+	 * @throws Exception
+	 */
+	function retake_quiz( $quiz_id ) {
+		$response = array();
+		if ( !$this->can( 'retake-quiz', $quiz_id ) ) {
+			$response['message'] = __( 'Sorry! You can not retake this quiz', 'learn_press' );
+			$response['result']  = 'fail';
+		} else {
+			//lpr_reset_quiz_answer($quiz_id);
+			//learn_press_reset_user_quiz( $user_id, $quiz_id );
+			//add_user_meta( $user_id, '_lpr_quiz_taken', $quiz_id );
+			$data = $this->_create_quiz_history( $quiz_id );
 
+			$response['result']   = 'success';
+			$response['redirect'] = get_the_permalink( $quiz_id );
+			$response['data']     = $data;
+		}
+		do_action( 'learn_press_user_retake_quiz', $quiz_id, $response, $this );
+		return $response;
 	}
 
 	/**
@@ -289,7 +318,7 @@ class LP_Abstract_User {
 	function get_quiz_status( $quiz_id = null ) {
 		$progress = $this->get_quiz_progress( $quiz_id );
 		if ( $progress ) {
-			$quiz_status    = $progress->status;
+			$quiz_status = $progress->status;
 		} else {
 			$quiz_status = '';
 		}
@@ -329,7 +358,7 @@ class LP_Abstract_User {
 		static $history = array();
 		if ( !array_key_exists( $quiz_id, $history ) ) {
 			global $wpdb;
-			$query             = $wpdb->prepare( "
+			$query = $wpdb->prepare( "
 				SELECT *
 				FROM {$wpdb->learnpress_user_quizzes} uq
 				INNER JOIN {$wpdb->learnpress_user_quizmeta} uqm ON uqm.learnpress_user_quiz_id = uq.user_quiz_id
@@ -337,12 +366,12 @@ class LP_Abstract_User {
 					AND uq.user_id = %d
 				ORDER BY uq.user_quiz_id DESC
 			", $quiz_id, $this->id );
-			if( $results = $wpdb->get_results( $query ) ){
+			if ( $results = $wpdb->get_results( $query ) ) {
 				$history[$quiz_id] = array();
-				foreach( $results as $result ){
+				foreach ( $results as $result ) {
 					$id = $result->user_quiz_id;
-					if( empty( $history[$quiz_id][$id] ) ){
-						$history[$quiz_id][$id] = (object)array(
+					if ( empty( $history[$quiz_id][$id] ) ) {
+						$history[$quiz_id][$id] = (object) array(
 							'history_id' => $id
 						);
 					}
@@ -350,25 +379,25 @@ class LP_Abstract_User {
 				}
 			}
 		}
-		if( $history_id ){
+		if ( $history_id ) {
 			return apply_filters( 'learn_press_user_quiz_history', isset( $history[$quiz_id][$history_id] ) ? $history[$quiz_id][$history_id] : false, $this, $quiz_id );
 		}
 		return apply_filters( 'learn_press_user_quiz_history', $history[$quiz_id], $this, $quiz_id );
 	}
 
-	function get_quiz_progress( $quiz_id ){
-		$history = $this->get_quiz_history( $quiz_id );
+	function get_quiz_progress( $quiz_id ) {
+		$history  = $this->get_quiz_history( $quiz_id );
 		$progress = false;
-		if( $history ){
+		if ( $history ) {
 			$progress = reset( $history );
 		}
 		return apply_filters( 'learn_press_user_quiz_progress', $progress, $this, $quiz_id );
 	}
 
-	function get_current_quiz_question( $quiz_id ){
-		if( $progress = $this->get_quiz_progress( $quiz_id ) ){
+	function get_current_quiz_question( $quiz_id ) {
+		if ( $progress = $this->get_quiz_progress( $quiz_id ) ) {
 			$question_id = !empty( $progress->current_question ) ? $progress->current_question : false;
-		}else{
+		} else {
 			$question_id = false;
 		}
 		return apply_filters( 'learn_press_user_current_quiz_question', $question_id, $quiz_id, $this );
@@ -417,16 +446,16 @@ class LP_Abstract_User {
 	 * Get all quizzes of the user
 	 *
 	 * @param array $args - actually, it as the same with WP_Query args
-	 * @param bool
+	 * @param       bool
 	 *
 	 * @return array
 	 */
-	function get_quizzes( $args = array(), $force = false  ) {
+	function get_quizzes( $args = array(), $force = false ) {
 		static $quizzes = array();
-		if( !$quizzes || $force ) {
+		if ( !$quizzes || $force ) {
 			settype( $args, 'array' );
 			$args['post_type'] = LP()->quiz_post_type;
-			$quizzes = $this->get_posts( $args );
+			$quizzes           = $this->get_posts( $args );
 		}
 
 		return apply_filters( 'learn_press_get_user_quizzes', $quizzes );
@@ -436,16 +465,16 @@ class LP_Abstract_User {
 	 * Get all quizzes of the user
 	 *
 	 * @param array $args - actually, it as the same with WP_Query args
-	 * @param bool
+	 * @param       bool
 	 *
 	 * @return array
 	 */
 	function get_lessons( $args = array(), $force = false ) {
 		static $lessons = array();
-		if( !$lessons || $force ) {
+		if ( !$lessons || $force ) {
 			settype( $args, 'array' );
 			$args['post_type'] = LP()->lesson_post_type;
-			$lessons = $this->get_posts( $args );
+			$lessons           = $this->get_posts( $args );
 		}
 		return apply_filters( 'learn_press_get_user_lessons', $lessons );
 	}
@@ -526,16 +555,15 @@ class LP_Abstract_User {
 		return $this->get_item_order( $quiz_id );
 	}
 
-	function can_retake_quiz( $quiz_id ){
+	function can_retake_quiz( $quiz_id ) {
 		$can = false;
 		if ( $quiz = LP_Quiz::get_quiz( $quiz_id ) ) {
 			$history = $this->get_quiz_history( $quiz_id );
-			$taken = $history ? sizeof( $history ) : 0;
-			$can = $taken ? ( $quiz->retake + 1 ) - $taken : $quiz->retake;
+			$taken   = $history ? sizeof( $history ) : 0;
+			$can     = $taken ? ( $quiz->retake + 1 ) - $taken : $quiz->retake;
 		}
 		return apply_filters( 'learn_press_user_can_retake_quiz', $can, $quiz_id, $this );
 	}
-
 
 
 	function has( $role ) {
@@ -571,7 +599,7 @@ class LP_Abstract_User {
 	 *
 	 * @return bool
 	 */
-	function has_finished_course( $course_id ){
+	function has_finished_course( $course_id ) {
 		return false;
 	}
 
@@ -594,9 +622,9 @@ class LP_Abstract_User {
 	 *
 	 * @return mixed
 	 */
-	function has_completed_quiz( $quiz_id ){
+	function has_completed_quiz( $quiz_id ) {
 		$completed = false;
-		if( $progress = $this->get_quiz_progress( $quiz_id ) ){
+		if ( $progress = $this->get_quiz_progress( $quiz_id ) ) {
 			$completed = $progress->status == 'completed';
 		}
 		return apply_filters( 'learn_press_user_has_completed_quiz', $completed, $quiz_id, $this );
@@ -643,16 +671,61 @@ class LP_Abstract_User {
 		return $this->get_course_info( $course_id, 'status' );
 	}
 
-	function get_quiz_results( $quiz_id, $force = false ){
+	function get_quiz_results( $quiz_id, $force = false ) {
 		static $quiz_results = array();
-		if( empty( $quiz_results[ $quiz_id ] ) || $force ){
-			if( $progress = $this->get_quiz_progress( $quiz_id ) ){
-				$quiz_results[ $quiz_id ] = $progress;
-			}else{
-				$quiz_results[ $quiz_id ] = false;
+		if ( empty( $quiz_results[$quiz_id] ) || $force ) {
+			if ( $progress = $this->get_quiz_progress( $quiz_id ) ) {
+				$quiz_results[$quiz_id] = $progress;
+				$progress->results      = $this->evaluate_quiz_results( $quiz_id, $progress );
+
+			} else {
+				$quiz_results[$quiz_id] = false;
 			}
 		}
-		return $quiz_results[ $quiz_id ];
+		return $quiz_results[$quiz_id];
+	}
+
+	function evaluate_quiz_results( $quiz_id, $progress ) {
+		$quiz = LP_Quiz::get_quiz( $quiz_id );
+		$results = array(
+			'mark'            => 0,
+			'correct'         => 0,
+			'wrong'           => 0,
+			'empty'           => 0,
+			'mark_percent'    => 0,
+			'correct_percent' => 0,
+			'wrong_percent'   => 0,
+			'empty_percent'   => 0,
+			'quiz_time'       => $quiz->duration,
+			'quiz_mark'       => $quiz->get_mark(),
+			'user_time'       => 0,
+			'questions'		=> array()
+		);
+		$questions = $quiz->questions;
+		if( $questions ){
+			$questions = array_keys( $questions );
+		}
+		if ( !empty( $questions ) ) {
+			foreach ( $questions as $question_id ) {
+				if ( !empty( $progress->question_answers[$question_id] ) ) {
+					$question = LP_Question_Factory::get_question( $question_id );
+					$check    = $question->check( $progress->question_answers[$question_id] );
+
+					if ( $check['correct'] ) {
+						$results['correct'] ++;
+					} else {
+						$results['wrong'] ++;
+					}
+					$results['mark'] += $check['mark'];
+				} else {
+					$check = false;
+					$results['empty'] ++;
+				}
+				$results['questions'][$question_id] = $check;
+			}
+		}
+		$results['user_time'] = $progress->end - $progress->start;
+		return $results;
 	}
 
 	/**

@@ -134,7 +134,6 @@ if ( !class_exists( 'RWMB_Quiz_Questions_Field' ) ) {
 				$wpdb->query( $query );
 				do_action( 'learn_press_remove_quiz_questions', $remove_ids, $post->ID );
 			}
-
 			if( ! $questions ){
 				return;
 			}
@@ -182,5 +181,5 @@ if ( !class_exists( 'RWMB_Quiz_Questions_Field' ) ) {
 		}
 	}
 
-	add_action( 'save_post', array( 'RWMB_Quiz_Question_Field', 'save_quiz_questions' ), 1000000 );
+	//add_action( 'save_post', array( 'RWMB_Quiz_Questions_Field', 'save_quiz_questions' ), 1000000 );
 }
