@@ -151,6 +151,7 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
 
             add_action( 'save_post', array( __CLASS__, 'update_course_curriculum' ) );
 			add_filter( 'learn_press_loop_section_buttons', array( __CLASS__, 'add_section_buttons' ) );
+			//add_filter( 'learn_press_after_section_content', array( __CLASS__, 'section_options' ) );
 		}
 
 		static function add_section_buttons( $buttons ){
@@ -166,10 +167,32 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
 						'id'		=> 'add-quiz',
 						'text'		=> __( 'Add Quiz', 'learn_press' ),
 						'attr'	=> 'data-action="add-quiz" data-type="lp_quiz"'
-					)
+					)/*,
+					array(
+						'id'		=> 'toggle-section-options',
+						'text'		=> __( 'Options', 'learn_press' ),
+						'attr'	=> 'data-action=""'
+					)*/
 				)
 			);
 			return $buttons;
+		}
+
+		static function section_options(){
+			?>
+			<table class="form-table">
+				<tr>
+					<th>
+						<?php _e( 'Using final quiz', 'learn_press' );?>
+					</th>
+					<td>
+						<input type="checkbox" />
+						<p class="description"><?php _e( 'User must be completed the final quiz to finish a section', 'learn_press' );?></p>
+
+					</td>
+				</tr>
+			</table>
+			<?php
 		}
 
         static function remove_lesson_quiz(){

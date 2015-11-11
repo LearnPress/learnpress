@@ -12,21 +12,14 @@ if ( !defined( 'ABSPATH' ) ) {
 }
 
 global $course;
+if( !has_post_thumbnail() ){
+	return;
+}
+
 ?>
 
-	<?php if ( is_singular() ) { ?>
-	<div class="course-thumbnail">
-		<?php
-		$attr = array(
-			'itemprop' => 'image'
-		);
-		the_post_thumbnail( '', $attr );
-		?>
-	</div>
-	<?php } else { ?>
-	<a class="course-thumbnail" href="<?php the_permalink(); ?>" aria-hidden="true">
-		<?php
-		the_post_thumbnail( 'post-thumbnail', array( 'alt' => get_the_title() ) );
-		?>
-	</a>
-	<?php } ?>
+<a class="course-thumbnail" href="<?php the_permalink(); ?>" aria-hidden="true">
+	<?php
+	the_post_thumbnail( 'course_thumbnail', array( 'alt' => get_the_title() ) );
+	?>
+</a>

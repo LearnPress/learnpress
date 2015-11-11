@@ -181,16 +181,22 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 
 			// append new column after title column
 			$pos = array_search( 'title', array_keys( $columns ) );
+			$new_columns = array(
+				LP()->course_post_type => __( 'Course', 'learn_press' )
+			);
+			if( current_theme_supports( 'post-formats' ) ){
+				$new_columns['format'] = __( 'Format', 'learn_press' );
+			}
+			$new_columns['is_previewable'] = __( 'Preview', 'learn_press' );
 			if ( false !== $pos && !array_key_exists( LP()->course_post_type, $columns ) ) {
 				$columns = array_merge(
 					array_slice( $columns, 0, $pos + 1 ),
-					array(
-						LP()->course_post_type => __( 'Course', 'learn_press' ),
-						'is_previewable' => __( 'Preview', 'learn_press' )
-					),
+					$new_columns,
 					array_slice( $columns, $pos + 1 )
 				);
+
 			}
+
 			unset ( $columns['taxonomy-lesson-tag'] );
 			$user = wp_get_current_user();
 			if ( in_array( 'lpr_teacher', $user->roles ) ) {
@@ -228,6 +234,9 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 					break;
 				case 'is_previewable':
 					echo get_post_meta( $post_id, '_lp_is_previewable', true ) == 'yes' ? __( 'Yes', 'learn_press' ) : '-';
+					break;
+				case 'format':
+					learn_press_item_meta_format( $post_id );
 			}
 		}
 

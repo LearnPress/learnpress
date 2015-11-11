@@ -23,7 +23,8 @@
 				'click .lp-course-curriculum-toggle a': 'toggleSections',
 				'keyup input.no-submit': 'onEnterInput',
 				'keydown': 'preventSubmit',
-				'click .lp-add-buttons button': 'sectionActionHandler'
+				'click .lp-add-buttons button': 'sectionActionHandler',
+				'click .lp-item-new .handle': 'toggleItemType'
 			},
 			removeSectionIds : [],
 			removeItemIds: [],
@@ -36,7 +37,14 @@
 				this.render();
 				_.bindAll(this, 'render', 'searchItem', 'addItemToSection', 'addNewItem', 'toggleAddItemButtonState' );
 				this.initPage();
-
+				LearnPress.Hook.addAction( 'learn_press_message_box_before_resize', this.resetModalSearch)
+				LearnPress.Hook.addAction( 'learn_press_message_box_resize', this.updateModalSearch)
+			},
+			updateModalSearch: function(height, $app){
+				$('.lp-modal-search ul').css('height', height - 120).css('overflow', 'auto');
+			},
+			resetModalSearch: function($app){
+				$('.lp-modal-search ul').css('height', '').css('overflow', '')
 			},
 			initPage: function(){
 				var that = this;
@@ -157,6 +165,30 @@
 						$tabs.css('width', '').removeClass('fixed');
 					}
 				});
+			},
+			toggleItemType: function(e){
+				var $item = $(e.target).closest('.lp-section-item'),
+					from = $item.attr('data-type'),
+					to = null;
+				if( $item.attr('data-item_id') ) {
+					return;
+				}
+				if( $item.hasClass('lp-item-lp_lesson') ){
+					to = 'lp_quiz';
+					$item
+						.removeClass('lp-item-lp_lesson')
+						.addClass('lp-item-lp_quiz')
+						.attr('data-type', to)
+						.find('.lp-item-type').val(to);
+				}else{
+					to = 'lp_lesson';
+					$item
+						.removeClass('lp-item-lp_quiz')
+						.addClass('lp-item-lp_lesson')
+						.attr('data-type', to)
+						.find('.lp-item-type', to);
+				}
+				LearnPress.Hook.doAction( 'learn_press_change_section_item_type', from, to );
 			},
 			getPrevInput: function($input){
 				var $inputs = this.$('input.no-submit:visible'),
@@ -374,7 +406,7 @@
 					var $li = $(this).closest('li').addClass('selected'),
 						args = $li.dataToJSON(),
 						$item = that.createItem( args, $section );
-
+					$item.removeClass('lp-item-empty')
 				});
 				$form.hide().appendTo($(document.body));
 				LearnPress.MessageBox.hide();
@@ -444,7 +476,7 @@
 					return false;
 				}
 				*/
-				this._prepareSections();
+				return this._prepareSections();
 				//return false
 			},
 			_prepareSections: function(){

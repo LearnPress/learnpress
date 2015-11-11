@@ -10,18 +10,25 @@
 if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
+if( !has_post_thumbnail() ){
+	return;
+}
+
 ?>
-<?php if ( is_singular() ) { ?>
-	<div class="course-thumbnail">
-		<?php
-		$attr = array(
-			'itemprop' => 'image'
-		);
-		the_post_thumbnail( '', $attr );
-		?>
-	</div>
-<?php } else { ?>
-	<a class="course-thumbnail" href="<?php the_permalink(); ?>" aria-hidden="true">
-		<?php the_post_thumbnail( 'post-thumbnail', array( 'alt' => get_the_title() ) ); ?>
-	</a>
-<?php } ?>
+<div class="course-thumbnail">
+	<?php
+	$image_title 	= esc_attr( get_the_title( get_post_thumbnail_id() ) );
+	$image_caption 	= get_post( get_post_thumbnail_id() )->post_excerpt;
+	$image_link  	= wp_get_attachment_url( get_post_thumbnail_id() );
+	$image       	= get_the_post_thumbnail( $post->ID, apply_filters( 'single_course_image_size', 'single_course' ), array(
+		'title'	=> $image_title,
+		'alt'	=> $image_title
+	) );
+
+	echo apply_filters(
+		'learn_press_single_course_image_html',
+		sprintf( '<a href="%s" itemprop="image" class="learn-press-single-thumbnail" title="%s">%s</a>', $image_link, $image_caption, $image ),
+		$post->ID
+	);
+	?>
+</div>

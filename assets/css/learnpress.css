@@ -88,6 +88,36 @@
 .lp-label-final{
 	background-color: #FF6161;
 }
+.lp-label-format{
+	background-color: #ccc416;
+}
+.lp-label-format-aside{
+	background-color: #ccc416;
+}
+.lp-label-format-image{
+	background-color: #ccc416;
+}
+.lp-label-format-video{
+	background-color: #ccc416;
+}
+.lp-label-format-quote{
+	background-color: #ccc416;
+}
+.lp-label-format-link{
+	background-color: #ccc416;
+}
+.lp-label-format-gallery{
+	background-color: #ccc416;
+}
+.lp-label-format-status{
+	background-color: #ccc416;
+}
+.lp-label-format-audio{
+	background-color: #ccc416;
+}
+.lp-label-format-chat{
+	background-color: #ccc416;
+}
 /**/
 .learnpress{
 
@@ -154,6 +184,8 @@
 .course-title,
 .course-title h3{
 	font-size: 18px;
+}
+.archive .lp_course{
 }
 
 /* pagination */
@@ -227,6 +259,12 @@
 	float: right;
 	line-height: 1;
 	margin: 3px 0;
+}
+#learn-press-course-curriculum .section .course-item.section-empty{
+	background-color: #ECECEC;
+}
+#learn-press-course-curriculum .section .course-item.section-empty .learn-press-message{
+	margin: 0;
 }
 /* QUIZ */
 .single-quiz{

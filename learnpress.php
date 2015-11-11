@@ -297,8 +297,9 @@ if ( !class_exists( 'LearnPress' ) ) {
 			// user roles
 			add_action( 'init', array( $this, 'add_user_roles' ) );
 
-			// redirect to our template if needed
 			add_action( 'template_redirect', 'learn_press_handle_purchase_request' );
+
+			add_action( 'after_setup_theme', array( $this, 'setup_theme' ) );
 
 		}
 
@@ -515,6 +516,25 @@ if ( !class_exists( 'LearnPress' ) ) {
 
 		function checkout() {
 			return LP_Checkout::instance();
+		}
+
+		function setup_theme(){
+			if ( ! current_theme_supports( 'post-thumbnails' ) ) {
+				add_theme_support( 'post-thumbnails' );
+			}
+			add_post_type_support( 'lp_course', 'thumbnail' );
+
+			$sizes = apply_filters( 'learn_press_image_sizes', array( 'single_course', 'course_thumbnail' ) );
+
+			foreach( $sizes as $image_size ) {
+				$size           = LP()->settings->get( $image_size . '_image_size', array() );
+				$size['width']  = isset( $size['width'] ) ? $size['width'] : '300';
+				$size['height'] = isset( $size['height'] ) ? $size['height'] : '300';
+				$size['crop']   = isset( $size['crop'] ) ? $size['crop'] : 0;
+
+				add_image_size( $image_size, $size['width'], $size['height'], $size['crop'] );
+			}
+
 		}
 
 		/**

@@ -24,10 +24,12 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 	 */
 	static function load_scripts(){
 		self::add_style( 'learn-press-admin', learn_press_plugin_url( 'assets/css/learnpress-admin.css' ) );
+		self::add_style( 'learn-press-icon', learn_press_plugin_url( 'assets/css/style.css' ) );
 		self::add_script( 'learn-press-admin', learn_press_plugin_url( 'assets/js/admin/learnpress.js' ) );
 	}
 
 	static function _print_assets(){
+		self::enqueue_style( 'learn-press-icon' );
 		self::enqueue_style( 'learn-press-admin' );
 		self::enqueue_script( 'learn-press-admin' );
 	}

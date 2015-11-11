@@ -29,6 +29,7 @@ add_action( 'learn_press_single_course_learning_summary', 'learn_press_output_si
 add_action( 'learn_press_single_course_landing_summary', 'learn_press_output_single_course_landing_summary', 5 );
 
 /* actions to display course content for landing page */
+add_action( 'learn_press_content_landing_summary', 'learn_press_course_thumbnail', 5 );
 add_action( 'learn_press_content_landing_summary', 'learn_press_course_title', 5 );
 add_action( 'learn_press_content_landing_summary', 'learn_press_course_status', 5 );
 add_action( 'learn_press_content_landing_summary', 'learn_press_course_price', 10 );
@@ -40,6 +41,7 @@ add_action( 'learn_press_content_landing_summary', 'learn_press_single_course_de
 add_action( 'learn_press_content_landing_summary', 'learn_press_course_curriculum', 40 );
 
 /* actions to display course content for learning page */
+add_action( 'learn_press_content_landing_summary', 'learn_press_course_thumbnail', 5 );
 add_action( 'learn_press_content_learning_summary', 'learn_press_course_instructor', 10 );
 add_action( 'learn_press_content_learning_summary', 'learn_press_single_course_description', 15 );
 add_action( 'learn_press_content_learning_summary', 'learn_press_course_students', 20 );

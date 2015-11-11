@@ -77,9 +77,46 @@ $is_custom = true;
 			<input type="text" class="regular-text" name="<?php echo $this->get_field_name( "course_tag_base" ); ?>" value="<?php echo $settings->get( 'course_tag_base' ); ?>" placeholder="<?php echo 'course-tag'; ?>" />
 		</td>
 	</tr>
+	<!-- thumbnail -->
 	<tr>
 		<th colspan="2">
-			<?php _e( 'Single course permalink', 'learn_press' );?>
+			<h3><?php _e( 'Course images', 'learn_press' );?></h3>
+		</th>
+	</tr>
+	<tr>
+		<th scope="row"><label><?php _e( 'Single course', 'learn_press' ); ?></label></th>
+		<td>
+			<input type="text" size="4" name="<?php echo $this->get_field_name( "single_course_image_size[width]" ); ?>" value="<?php echo $settings->get( 'single_course_image_size.width' ); ?>" placeholder="" />
+			&times;
+			<input type="text" size="4" name="<?php echo $this->get_field_name( "single_course_image_size[height]" ); ?>" value="<?php echo $settings->get( 'single_course_image_size.height' ); ?>" placeholder="" />
+			<?php _e( 'px', 'learn_press' );?>
+			&nbsp;&nbsp;&nbsp;
+			<input type="hidden" name="<?php echo $this->get_field_name( "single_course_image_size[crop]" ); ?>" value="no" />
+			<label>
+				<input type="checkbox" name="<?php echo $this->get_field_name( "single_course_image_size[crop]" ); ?>" value="yes" <?php checked( $settings->get( 'single_course_image_size.crop' ) == 'yes' ); ?>" />
+				<?php _e( 'Crop?', 'learn_pres' );?>
+			</label>
+		</td>
+	</tr>
+	<tr>
+		<th scope="row"><label><?php _e( 'Course thumbnail', 'learn_press' ); ?></label></th>
+		<td>
+			<input type="text" size="4" name="<?php echo $this->get_field_name( "course_thumbnail_image_size[width]" ); ?>" value="<?php echo $settings->get( 'course_thumbnail_image_size.width' ); ?>" placeholder="" />
+			&times;
+			<input type="text" size="4" name="<?php echo $this->get_field_name( "course_thumbnail_image_size[height]" ); ?>" value="<?php echo $settings->get( 'course_thumbnail_image_size.height' ); ?>" placeholder="" />
+			<?php _e( 'px', 'learn_press' );?>
+			&nbsp;&nbsp;&nbsp;
+			<input type="hidden" name="<?php echo $this->get_field_name( "course_thumbnail_image_size[crop]" ); ?>" value="no" />
+			<label>
+				<input type="checkbox" name="<?php echo $this->get_field_name( "course_thumbnail_image_size[crop]" ); ?>" value="yes" <?php checked( $settings->get( 'course_thumbnail_image_size.crop' ) == 'yes' ); ?>" />
+				<?php _e( 'Crop?', 'learn_pres' );?>
+			</label>
+		</td>
+	</tr>
+	<!-- permalink -->
+	<tr>
+		<th colspan="2">
+			<h3><?php _e( 'Single course permalink', 'learn_press' );?></h3>
 		</th>
 	</tr>
 	<?php foreach( $structures as $k => $structure ): ?>

@@ -33,6 +33,7 @@ if( $is_hidden ){
 			<?php echo $content_items;?>
 			<?php learn_press_admin_view( 'meta-boxes/course/loop-item.php', array( 'item' => learn_press_post_object( array( 'post_type' => LP()->lesson_post_type ) ) ) );?>
 		</ul>
+		<?php do_action( 'learn_press_after_section_items', $section );?>
 		<?php if( $buttons = apply_filters( 'learn_press_loop_section_buttons', array() ) ):?>
 		<p class="lp-add-buttons">
 			<?php do_action( 'learn_press_before_section_buttons' );?>
@@ -61,5 +62,6 @@ if( $is_hidden ){
 			<?php do_action( 'learn_press_after_section_buttons' );?>
 		</p>
 		<?php endif; ?>
+		<?php do_action( 'learn_press_after_section_content', $section );?>
 	</div>
 </li>

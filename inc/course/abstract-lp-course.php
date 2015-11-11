@@ -184,14 +184,8 @@ abstract class LP_Abstract_Course {
 			if ( $rows = $wpdb->get_results( $query ) ) {
 				foreach ( $rows as $row ) {
 					$section = $row;
-					/*$query          = $wpdb->prepare( "
-						SELECT item_id
-						FROM {$wpdb->learnpress_section_items}
-						WHERE section_id = %d
-						ORDER BY `order` ASC
-					", $row->ID );*/
+
 					$section->items = array();
-					//if ( $items = $wpdb->get_col( $query ) ) {
 					$query          = "SELECT lp_si.ID as lp_si_ID, p.*
 							FROM {$wpdb->posts} p
 							INNER JOIN {$wpdb->learnpress_section_items} lp_si ON lp_si.item_id = p.ID

@@ -37,12 +37,13 @@ $hidden_sections = (array)get_post_meta( $post->ID, '_admin_hidden_sections', tr
 <div id="lp-course-curriculum" class="lp-course-curriculum">
 	<h3 class="curriculum-heading">
 		<?php _e( 'Curriculum', 'learn_press' );?>
+		<span class="description"><?php _e( 'Outline your course and add content with sections, lessons and quizzes.', 'learn_press');?></span>
 		<p align="right" class="items-toggle">
 			<a href="" data-action="expand"<?php echo !sizeof( $hidden_sections ) ? ' class="hide-if-js"' : '';?>><?php _e( 'Expand All', 'learn_press' );?></a>
 			<a href="" data-action="collapse"<?php echo sizeof( $hidden_sections ) ? ' class="hide-if-js"' : '';?>><?php _e( 'Collapse All', 'learn_press' );?></a>
 		</p>
 	</h3>
-	<!--<?php _e( 'Outline your course and add content with sections, lessons and quizzes.', 'learn_press');?>-->
+	<!---->
 	<ul class="curriculum-sections">
 		<?php
 		if ( $course_sections ):

@@ -64,6 +64,10 @@
 .message-box-button{
 	margin-right: 10px !important;
 }
+
+.post-type-lp_lesson .column-format .lp-label{
+	font-size: 100%;
+}
 /*********************************/
 .hide {
 	display: none;

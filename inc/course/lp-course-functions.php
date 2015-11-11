@@ -153,6 +153,26 @@ function learn_press_get_final_quiz( $course_id ){
 	return apply_filters( 'learn_press_course_final_quiz', $final, $course_id );
 }
 
+function learn_press_item_meta_format( $item ){
+	if( current_theme_supports( 'post-formats' ) ){
+		$format = get_post_format( $item );
+		if ( false === $format ) {
+			$format = 'standard';
+		}
+		//return false to hide post format
+		if( $format = apply_filters( 'learn_press_course_item_format', $format, $item ) ) {
+			printf( '<span class="lp-label lp-label-format lp-label-format-%s">%s</span>', $format, ucfirst( $format ) );
+		}
+	}
+}
+
+function learn_press_course_item_format_exclude( $format, $item ){
+	if( get_post_type( $item ) != LP()->lesson_post_type || ( $format == 'standard' ) ){
+		$format = false;
+	}
+	return $format;
+}
+add_filter( 'learn_press_course_item_format', 'learn_press_course_item_format_exclude', 5, 2 );
 /*******************************************************/
 /*******************************************************/
 

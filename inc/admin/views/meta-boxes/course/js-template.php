@@ -48,7 +48,7 @@
 	<div id="lp-modal-search-lesson" class="lp-modal-search">
 		<?php
 		$exclude_lessons = $curriculum_items['lessons'];
-		$lessons = learn_press_get_current_user()->get_lessons(array('orderby' => 'name', 'order' => 'ASC'));
+		$lessons = learn_press_get_current_user()->get_lessons(array('orderby' => 'name', 'order' => 'ASC', 'posts_per_page' => -1));
 		?>
 		<div class="lp-search-items">
 			<input type="text" name="lp-item-name" placeholder="<?php _e( 'Type here to search the quiz or add new', 'learn_press' );?>" />
@@ -80,7 +80,7 @@
 	<div id="lp-modal-search-quiz" class="lp-modal-search">
 		<?php
 		$exclude_quizzes = $curriculum_items['quizzes'];
-		$quizzes = learn_press_get_current_user()->get_quizzes(array('orderby' => 'name', 'order' => 'ASC'));
+		$quizzes = learn_press_get_current_user()->get_quizzes(array('orderby' => 'name', 'order' => 'ASC', 'posts_per_page' => -1));
 		?>
 		<div class="lp-search-items">
 			<input type="text" name="lp-item-name" placeholder="<?php _e( 'Type here to search the quiz or add new', 'learn_press' );?>" />

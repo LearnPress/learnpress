@@ -108,15 +108,29 @@ if (typeof window.LearnPress == 'undefined') {
 
 		},
 		update       : function (force) {
-			var $wrap = this.$window.find('#message-box-wrap'),
-				width = $wrap.outerWidth(),
-				height = $wrap.outerHeight(),
-				top = $wrap.offset().top,
+			var that = this,
+				$wrap = this.$window.find('#message-box-wrap'),
 				timer = $wrap.data('timer'),
 				_update = function () {
+					LearnPress.Hook.doAction('learn_press_message_box_before_resize', that );
+					var $content = $wrap.find('.message-box-content').css("height", "").css('overflow', 'hidden'),
+						width = $wrap.outerWidth(),
+						height = $wrap.outerHeight(),
+						contentHeight = $content.height(),
+						windowHeight = $(window).height(),
+						top = $wrap.offset().top;
+					if( contentHeight > windowHeight - 50){
+						$content.css({
+							height: windowHeight - 50
+						});
+						height = $wrap.outerHeight()
+					}else{
+						$content.css("height", "").css('overflow', '');
+					}
 					$wrap.css({
 						marginTop: ( $(window).height() - height ) / 2
 					});
+					LearnPress.Hook.doAction('learn_press_message_box_resize', height, that );
 				};
 			if (force) _update();
 			timer && clearTimeout(timer);

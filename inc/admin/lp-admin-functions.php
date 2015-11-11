@@ -704,7 +704,7 @@ function learn_press_admin_section_loop_item_class( $item, $section ) {
 		'lp-section-item'
 	);
 	$classes[] = 'lp-item-' . $item->post_type;
-	if ( !$item->ID ) {
+	if ( !absint($item->ID) ) {
 		$classes[] = 'lp-item-empty lp-item-new';
 	}
 	$classes = apply_filters( 'learn_press_section_loop_item_class', $classes, $item, $section );

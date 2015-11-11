@@ -43,6 +43,16 @@ $settings = LP()->settings;
 		</td>
 	</tr>
 	<tr>
+		<th><label><?php _e( 'Auto update post name', 'learn_press' ); ?></label></th>
+		<td>
+			<input type="hidden" name="<?php echo $this->get_field_name( 'auto_update_post_name' ); ?>" value="no">
+			<input type="checkbox" name="<?php echo $this->get_field_name( 'auto_update_post_name' ); ?>" value="yes" <?php checked( $settings->get( 'auto_update_post_name' ) == 'yes', true ); ?> />
+			<p class="description">
+				<?php _e( 'The post\'s name will update along with the title when changes title of lesson or quiz  in course curriculum or question in quiz<br />The permalink also is changed, therefore uncheck this if you don\'t want to change the permalink', 'learn_press' );?>
+			</p>
+		</td>
+	</tr>
+	<tr>
 		<th><label><?php _e( 'Currency', 'learn_press' ); ?></label></th>
 		<td>
 			<select name="<?php echo $this->get_field_name( 'currency' ); ?>">

@@ -128,6 +128,15 @@ if ( !function_exists( 'learn_press_course_title' ) ) {
 	}
 }
 
+if ( !function_exists( 'learn_press_course_thumbnail' ) ) {
+	/**
+	 * Display the title for single course
+	 */
+	function learn_press_course_thumbnail() {
+		learn_press_get_template( 'single-course/thumbnail.php' );
+	}
+}
+
 if ( !function_exists( 'learn_press_course_status' ) ) {
 	/**
 	 * Display the title for single course

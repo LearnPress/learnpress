@@ -23,9 +23,16 @@
 	line-height: 1;
 	border: 1px solid #DDD;
 }
+#course_curriculum .curriculum-heading .description{
+	font-weight: normal;
+	color: #999;
+	display: block;
+	font-size: 90%;
+	margin-top: 10px;;
+}
 #course_curriculum .curriculum-heading .items-toggle{
 	float: right;
-	margin: 0;
+	margin: -25px 0 0 0;
 	line-height: 1;
 }
 #course_curriculum .curriculum-sections{
@@ -81,16 +88,32 @@
 	padding: 5px 0;
 	background-color: #FFF;
 }
+#course_curriculum .lp-item-lp_lesson .handle.learn-press-icon:before{
+	content: "\e900";
+}
+#course_curriculum .lp-item-lp_quiz .handle.learn-press-icon:before{
+	content: "\e901";
+}
+#course_curriculum .lp-section-item.lp-item-new .handle{
+	color: #999;
+}
 #course_curriculum .curriculum-section-items > li:hover,
 #course_curriculum .curriculum-section-items > li:hover input.lp-item-name{
 	background-color: #F9F9F9;
 }
 #course_curriculum .lp-section-item .handle{
 	cursor: move;
-	margin-right: 0px;
+	margin-left: 10px;
 	width: 32px;
 	height: 32px;
+	display: inline-block;
+	vertical-align: middle;
+	text-align: center;
+	font-size: 18px;
+	line-height: 32px;
+	color: #00A0D2;
 }
+
 #course_curriculum .lp-section-item.ui-sortable-helper{
 
 }
@@ -109,6 +132,7 @@
 	outline: none;
 	font-size: 18px;
 	width: 70%;
+	vertical-align: middle;
 }
 #poststuff .postbox-container{
 	position: relative;
@@ -179,6 +203,10 @@
 	background-color: #F5F5F5;
 	color: #777;
 	padding: 20px;
+	height: 100%;
+}
+.lp-modal-search ul{
+
 }
 .lp-highlight-color{
 	text-decoration: underline;
