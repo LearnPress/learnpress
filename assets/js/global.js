@@ -28,6 +28,34 @@ if (typeof window.LearnPress == 'undefined') {
 		});
 		return json;
 	}
+	String.prototype.getQueryVar = function(name){
+		name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+		var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+			results = regex.exec(this);
+		return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+	}
+	String.prototype.addQueryVar = function(name, value){
+		var url = this;
+		if(name.match(/\[/)){
+			url += url.match(/\?/) ? '&' : '?';
+			url += name + '=' + value;
+		}else{
+			if( (url.indexOf('&'+name+'=') != -1) || (url.indexOf('?'+name+'=') != -1) ){
+				url = url.replace( new RegExp(name + "=([^&#]*)", 'g') , name + '=' + value);
+			}else{
+				url += url.match(/\?/) ? '&' : '?';
+				url += name + '=' + value;
+			}
+		}
+		return url;
+	}
+	String.prototype.removeQueryVar = function(name){
+		var url = this;
+		name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+		var regex = new RegExp("[\\?&]" + name + "([\[][^=]*)?=([^&#]*)", 'g');
+		url = url.replace(regex, '');
+		return url;
+	}
 	LearnPress.MessageBox = {
 		/*
 		 *
@@ -282,6 +310,12 @@ if (typeof window.LearnPress == 'undefined') {
 	LearnPress = $.extend({
 		setUrl        : function (url, title) {
 			history.pushState({}, title, url);
+		},
+		addQueryVar: function(name, value, url){
+			return (url == undefined ? window.location.href : url).addQueryVar(name, value);
+		},
+		removeQueryVar: function(name, url){
+			return (url == undefined ? window.location.href : url).removeQueryVar(name);
 		},
 		reload        : function (url) {
 			if (!url) {

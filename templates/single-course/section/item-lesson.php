@@ -9,7 +9,7 @@ if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 global $course;
-$viewable = learn_press_user_can_view_lesson( $item->ID );//learn_press_is_enrolled_course();
+$viewable = learn_press_user_can_view_lesson( $item->ID, $course->id );//learn_press_is_enrolled_course();
 $tag      = $viewable ? 'a' : 'span';
 $target   = apply_filters( 'learn_press_section_item_link_target', '_blank', $item );
 ?>

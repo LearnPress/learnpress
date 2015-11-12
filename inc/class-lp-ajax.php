@@ -140,7 +140,13 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			$user_id         = !empty( $_REQUEST['user_id'] ) ? absint( $_REQUEST['user_id'] ) : 0;
 			$question        = $question_id ? LP_Question_Factory::get_question( $question_id ) : false;
 			if ( $question ) {
-				$question_answer = isset( $_REQUEST['question_answer'] ) ? $_REQUEST['question_answer'] : array();
+				$question_answer = null;
+				$question_data = isset( $_REQUEST['question_answer'] ) ? $_REQUEST['question_answer'] : array();
+				if( is_string( $question_data ) ){
+					parse_str( $question_data, $question_answer );
+				}else{
+					$question_answer = $question_data;
+				}
 				$question_answer = array_key_exists( 'learn-press-question-' . $question_id , $question_answer ) ? $question_answer[ 'learn-press-question-' . $question_id ] : '';
 				$question->save_user_answer( $question_answer, $quiz_id );
 				do_action( 'learn_press_save_user_question_answer', $question_answer, $question_id, $quiz_id, $user_id, true );

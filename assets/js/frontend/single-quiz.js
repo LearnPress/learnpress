@@ -1,5 +1,12 @@
 if (typeof LearnPress == 'undefined') var LearnPress = {};
 (function ($) {
+	var u = [];
+	u[0] = LearnPress.addQueryVar('sex', 'male'),
+	u[1] = LearnPress.addQueryVar('sex', 'female', u[0]),
+	u[2] = LearnPress.addQueryVar('choice[]', '1', u[1]),
+	u[3] = LearnPress.addQueryVar('choice[]', '4', u[2]).addQueryVar('choice_3[]', 12, u[2]),
+	u[4] = u[3],
+	u[5] = u[4].removeQueryVar('choice');
 
 	var LearnPress_Model_Quiz = window.LearnPress_Model_Quiz = Backbone.Model.extend({
 		defaults           : {
@@ -35,7 +42,7 @@ if (typeof LearnPress == 'undefined') var LearnPress = {};
 				question.submit({
 					data    : {
 						save_id        : that.get('question_id'),
-						question_answer: $('input, select, textarea', this.view.$('form')).toJSON(),
+						question_answer: this.view.$('form').serialize(),//$('input, select, textarea', this.view.$('form')).toJSON(),
 						time_remaining: that.get('time_remaining')
 					},
 					complete: function () {
@@ -72,7 +79,7 @@ if (typeof LearnPress == 'undefined') var LearnPress = {};
 			question.submit({
 				data    : {
 					save_id        : that.get('question_id'),
-					question_answer: $('input, select, textarea', this.view.$('form')).toJSON(),
+					question_answer: this.view.$('form').serialize(), //$('input, select, textarea', this.view.$('form')).toJSON(),
 					time_remaining: that.get('time_remaining')
 				},
 				complete: function (response) {
@@ -83,6 +90,7 @@ if (typeof LearnPress == 'undefined') var LearnPress = {};
 		},
 		getQuestionPosition: function (question_id) {
 			question_id = question_id || this.get('question_id');
+			console.log(typeof question_id)
 			return _.indexOf(this.get('questions'), question_id);
 		},
 		countQuestions     : function () {
@@ -264,8 +272,9 @@ if (typeof LearnPress == 'undefined') var LearnPress = {};
 			var that = this,
 				data = $.extend({
 					action : 'learnpress_start_quiz',
-					quiz_id: this.model.get('id')
-				}, $('input, textarea, select', '#nav-question-form').toJSON() || {});
+					quiz_id: this.model.get('id'),
+					data: this.$('form').serialize()
+				}, {});//$('input, textarea, select', '#nav-question-form').toJSON() || {});
 			$.ajax({
 				url     : this.model.get('ajaxurl'),
 				data    : data,
@@ -298,13 +307,24 @@ if (typeof LearnPress == 'undefined') var LearnPress = {};
 				data    : {
 					action         : 'learnpress_finish_quiz',
 					save_id        : this.model.get('question_id'),
-					question_answer: $('input, select, textarea', this.$('form')).toJSON(),
+					question_answer: this.$('form').serialize(),// $('input, select, textarea', this.$('form')).toJSON(),
 					quiz_id        : this.model.get('id')
 				},
 				success : function (response) {
-					var json = LearnPress.parseJSON(response);
-					$.isFunction( args.complete ) && args.complete.call(LearnPress.Quiz, json);
-					LearnPress.MessageBox.show( 'Congrats! You have finished this quiz', {autohide: 2000} );
+					var json = LearnPress.parseJSON(response),
+						callbackReturn = undefined;
+					$.isFunction( args.complete ) && ( callbackReturn = args.complete.call(LearnPress.Quiz, json) );
+					LearnPress.Hook.doAction( 'learn_press_finish_quiz', that.model.get('id') );
+					LearnPress.MessageBox.show( 'Congrats! You have finished this quiz', {
+						autohide: 2000,
+						onHide: function(){
+							if( callbackReturn && callbackReturn.redirect ){
+								LearnPress.reload(callbackReturn.redirect);
+							}else if( callbackReturn == undefined && json.redirect ){
+								LearnPress.reload(json.redirect);
+							}
+						}
+					} );
 				}
 			});
 		},
@@ -394,7 +414,7 @@ if (typeof LearnPress == 'undefined') var LearnPress = {};
 				events : {
 					onYes: function(){
 						LearnPress.MessageBox.blockUI( 'Your quiz will come to finish! Please wait...' );
-						that.finishQuiz({complete: function(){
+						that.finishQuiz({complete: function(response){
 							LearnPress.MessageBox.hide();
 						}});
 					}
@@ -468,7 +488,10 @@ if (typeof LearnPress == 'undefined') var LearnPress = {};
 		}
 	}
 
+
 	$(document).ready(function(){
-		LearnPress.Quiz.init( single_quiz_params );
+		var json = JSON.stringify( single_quiz_params );
+		json = json.replace(/:\s?[\"|\']([0-9]+)[\"|\']/g, ':$1');
+		LearnPress.Quiz.init( JSON.parse( json ) );
 	})
 })(jQuery);

@@ -13,6 +13,9 @@ if ( !defined( 'ABSPATH' ) ) {
 
 global $quiz;
 
+if( ! $quiz ){
+	return;
+}
 if ( !$quiz->has( 'questions' ) ) {
 	return;
 }

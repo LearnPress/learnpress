@@ -83,9 +83,9 @@ class LP_Quiz {
 			'total_time'	=> $this->duration,
 			'id'             => $this->id,
 			'questions'      => $question_ids,
-			'question_id'    => $current_question_id,
+			'question_id'    => absint($current_question_id),
 			'status'         => $user->get_quiz_status( $this->id ),
-			'time_remaining' => ( $time_remaining = $user->get_quiz_time_remaining( $this->id ) ) !== false ? $time_remaining : $this->duration,
+			'time_remaining' => ( $time_remaining = $user->get_quiz_time_remaining( $this->id ) ) !== false && !in_array( $user->get_quiz_status( $this->id ), array( '', 'completed') ) ? $time_remaining : $this->duration,
 			'permalink'      => get_the_permalink(),
 			'ajaxurl'        => admin_url( 'admin-ajax.php' ),
 			'user_id'        => $user->id
@@ -124,7 +124,7 @@ class LP_Quiz {
 		if ( isset( $this->{$key} ) ) {
 			return $this->{$key};
 		}
-
+		$value = null;
 		switch( $key ){
 			case 'current_question':
 				if( ( $question = learn_press_get_request( 'question' ) ) && is_quiz() ){

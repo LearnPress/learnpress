@@ -1,7 +1,5 @@
 <?php
 
-learn_press_prevent_access_directly();
-
 $course_status = learn_press_get_user_course_status();
 // only show enroll button if user had not enrolled
 if ( ! ( $course_status && ( 'completed' != strtolower( $course_status ) ) ) ){

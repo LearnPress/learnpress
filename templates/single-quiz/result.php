@@ -12,11 +12,15 @@ if ( !defined( 'ABSPATH' ) ) {
 }
 
 global $quiz;
-
 if ( !LP()->user->has( 'completed-quiz', $quiz->id ) ) {
 	return;
 }
 
+if( !is_user_logged_in() ){
+	learn_press_display_message( sprintf( __( 'You are not logged in! Please <a href="%s">login</a> to save the results. The results will be deleted after your session destroyed', 'learn_press' ), learn_press_get_login_url() ), 'error' );
+}
+
+print_r($_SESSION);
 $history = LP()->user->get_quiz_results( $quiz->id );
 
 ?>
@@ -39,7 +43,7 @@ $history = LP()->user->get_quiz_results( $quiz->id );
 		</div>
 		<div class="quiz-result-field empty">
 			<label><?php echo apply_filters( 'learn_press_quiz_result_empty_text', __( 'Empty', 'learn_press' ) ); ?></label>
-			<?php printf( "%d (%0.2f%%)", $history->results['empty'], $history->reults['empty_percent'] ); ?>
+			<?php printf( "%d (%0.2f%%)", $history->results['empty'], $history->results['empty_percent'] ); ?>
 		</div>
 		<div class="quiz-result-field time">
 			<label><?php echo apply_filters( 'learn_press_quiz_result_time_text', __( 'Time', 'learn_press' ) ); ?></label>

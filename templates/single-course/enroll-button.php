@@ -12,6 +12,11 @@ if ( !defined( 'ABSPATH' ) ) {
 }
 
 global $course;
+
+if( $course->is_free() ){
+	return;
+}
+
 $course_status = learn_press_get_user_course_status();
 $user          = learn_press_get_current_user();
 // only show enroll button if user had not enrolled

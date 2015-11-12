@@ -12,6 +12,8 @@ if ( !defined( 'ABSPATH' ) ) {
 }
 global $quiz;
 $heading = apply_filters( 'learn_press_list_questions_heading', __( 'List of questions', 'learn_press' ) );
+$has_finished = LP()->user->has('completed-quiz', $quiz->id);
+
 ?>
 
 <?php if ( $heading ) { ?>
@@ -27,7 +29,11 @@ $heading = apply_filters( 'learn_press_list_questions_heading', __( 'List of que
 		<ul class="quiz-questions-list">
 			<?php if ( $questions = $quiz->get_questions() ) foreach ( $questions as $question ) { ?>
 				<li data-id="<?php echo $question->ID; ?>">
+					<?php if( $has_finished ){?>
+					<?php printf( '<span>%s</span>', get_the_title( $question->ID ) ); ?>
+					<?php }else{?>
 					<?php printf( '<a href="%s">%s</a>', $quiz->get_question_link( $question->ID ), get_the_title( $question->ID ) ); ?>
+					<?php }?>
 				</li>
 			<?php } ?>
 		</ul>

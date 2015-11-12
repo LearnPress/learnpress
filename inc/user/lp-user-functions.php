@@ -140,3 +140,76 @@ function learn_press_send_user_email_order( $status, $order_id ) {
 
 add_action( 'learn_press_update_order_status', 'learn_press_send_user_email_order', 5, 2 );
 
+/**
+ * Add more 2 user roles teacher and student
+ *
+ * @access public
+ * @return void
+ */
+function learn_press_add_user_roles() {
+
+	/* translators: user role */
+	_x( 'Instructor', 'User role' );
+
+	add_role(
+		LP()->teacher_role,
+		'Instructor',
+		array()
+	);
+	$course_cap = LP()->course_post_type . 's';
+	$lesson_cap = LP()->lesson_post_type . 's';
+	$order_cap  = LP()->order_post_type . 's';
+	// teacher
+	$teacher = get_role( LP()->teacher_role );
+	$teacher->add_cap( 'delete_published_' . $course_cap );
+	$teacher->add_cap( 'edit_published_' . $course_cap );
+	$teacher->add_cap( 'edit_' . $course_cap );
+	$teacher->add_cap( 'delete_' . $course_cap );
+
+	$teacher->add_cap( 'delete_published_' . $lesson_cap );
+	$teacher->add_cap( 'edit_published_' . $lesson_cap );
+	$teacher->add_cap( 'edit_' . $lesson_cap );
+	$teacher->add_cap( 'delete_' . $lesson_cap );
+	$teacher->add_cap( 'publish_' . $lesson_cap );
+	$teacher->add_cap( 'upload_files' );
+	$teacher->add_cap( 'read' );
+	$teacher->add_cap( 'edit_posts' );
+
+	// administrator
+	$admin = get_role( 'administrator' );
+	$admin->add_cap( 'delete_' . $course_cap );
+	$admin->add_cap( 'delete_published_' . $course_cap );
+	$admin->add_cap( 'edit_' . $course_cap );
+	$admin->add_cap( 'edit_published_' . $course_cap );
+	$admin->add_cap( 'publish_' . $course_cap );
+	$admin->add_cap( 'delete_private_' . $course_cap );
+	$admin->add_cap( 'edit_private_' . $course_cap );
+	$admin->add_cap( 'delete_others_' . $course_cap );
+	$admin->add_cap( 'edit_others_' . $course_cap );
+
+	$admin->add_cap( 'delete_' . $lesson_cap );
+	$admin->add_cap( 'delete_published_' . $lesson_cap );
+	$admin->add_cap( 'edit_' . $lesson_cap );
+	$admin->add_cap( 'edit_published_' . $lesson_cap );
+	$admin->add_cap( 'publish_' . $lesson_cap );
+	$admin->add_cap( 'delete_private_' . $lesson_cap );
+	$admin->add_cap( 'edit_private_' . $lesson_cap );
+	$admin->add_cap( 'delete_others_' . $lesson_cap );
+	$admin->add_cap( 'edit_others_' . $lesson_cap );
+
+	$admin->add_cap( 'delete_' . $order_cap );
+	$admin->add_cap( 'delete_published_' . $order_cap );
+	$admin->add_cap( 'edit_' . $order_cap );
+	$admin->add_cap( 'edit_published_' . $order_cap );
+	$admin->add_cap( 'publish_' . $order_cap );
+	$admin->add_cap( 'delete_private_' . $order_cap );
+	$admin->add_cap( 'edit_private_' . $order_cap );
+	$admin->add_cap( 'delete_others_' . $order_cap );
+	$admin->add_cap( 'edit_others_' . $order_cap );
+}
+add_action( 'init', 'learn_press_add_user_roles' );
+
+function learn_press_after_logged_in() {
+
+}
+add_action('wp_login', 'learn_press_after_logged_in');

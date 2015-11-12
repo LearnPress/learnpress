@@ -14,6 +14,9 @@ if ( $course->is( 'viewing' ) != 'lesson' && $course->is( 'viewing' ) != 'quiz' 
 	return;
 }
 
+if( !$course->is_free() && !LP()->user->has('enrolled-course', $course->id ) ){
+	return;
+}
 $buttons = array();
 if( $next_item = $course->get_next_item_html() ){
 	$buttons[] = $next_item;

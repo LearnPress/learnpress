@@ -411,6 +411,56 @@ add_action( 'wp_head', 'learn_press_head' );
 add_action( 'wp_footer', 'learn_press_print_script' );
 add_action( 'admin_footer', 'learn_press_print_script' );
 
+/**
+ * Get page id from admin settings page
+ *
+ * @param string $name
+ *
+ * @return int
+ */
+function learn_press_get_page_id( $name ) {
+	return LP_Settings::instance()->get( "{$name}_page_id", false );
+}
+
+/**
+ * display the seconds in time format h:i:s
+ *
+ * @param        $seconds
+ * @param string $separator
+ *
+ * @return string
+ */
+function learn_press_seconds_to_time( $seconds, $separator = ':' ) {
+	return sprintf( "%02d%s%02d%s%02d", floor( $seconds / 3600 ), $separator, ( $seconds / 60 ) % 60, $separator, $seconds % 60 );
+}
+
+/**
+ * Create an empty post object
+ *
+ * @version 1.0
+ *
+ * @param mixed
+ *
+ * @return mixed
+ */
+function learn_press_post_object( $defaults = false ) {
+	static $post_object = false;
+	if ( !$post_object ) {
+		global $wpdb;
+		$post_object = new stdClass();
+		foreach ( $wpdb->get_col( "DESC " . $wpdb->posts, 0 ) as $column_name ) {
+			$post_object->{$column_name} = null;
+		}
+	}
+	if ( $defaults ) {
+		settype( $defaults, 'array' );
+		foreach ( $defaults as $k => $v ) {
+			$post_object->{$k} = $v;
+		}
+	}
+	return $post_object;
+}
+
 /***********************************************/
 /***** =================================== *****/
 /***** THE FUNCTIONS ABOVE FOR VERSION 1.0 *****/
@@ -2151,6 +2201,17 @@ function _learn_press_print_notices() {
 }
 
 add_action( 'learn_press_before_single_course_summary', '_learn_press_print_notices', 0 );
+
+/**
+ * Filter the login url so third-party can be customize
+ *
+ * @param null $redirect
+ *
+ * @return mixed
+ */
+function learn_press_get_login_url( $redirect = null ) {
+	return apply_filters( 'learn_press_login_url', wp_login_url( $redirect ) );
+}
 
 function learn_press_debug( $a ) {
 	echo '<pre>';

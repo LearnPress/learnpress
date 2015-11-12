@@ -167,6 +167,16 @@ if ( !class_exists( 'LearnPress' ) ) {
 					case 'checkout':
 						$this->{$key} = LP_Checkout::instance();
 						break;
+					case 'course':
+						if( is_course() ){
+							$this->{$key} = LP_Course::get_course( get_the_ID() );
+						}
+						break;
+					case 'quiz':
+						if( is_quiz() ){
+							$this->{$key} = LP_Quiz::get_quiz( get_the_ID() );
+						}
+						break;
 				}
 			}
 			return !empty( $this->{$key} ) ? $this->{$key} : false;
@@ -293,9 +303,6 @@ if ( !class_exists( 'LearnPress' ) ) {
 			register_activation_hook( __FILE__, array( 'LP_Install', 'install' ) );
 			// initial some tasks before page load
 			add_action( 'init', array( $this, 'init' ) );
-
-			// user roles
-			add_action( 'init', array( $this, 'add_user_roles' ) );
 
 			add_action( 'template_redirect', 'learn_press_handle_purchase_request' );
 
@@ -537,138 +544,6 @@ if ( !class_exists( 'LearnPress' ) ) {
 
 		}
 
-		/**
-		 * Add more 2 user roles teacher and student
-		 *
-		 * @access public
-		 * @return void
-		 */
-		public function add_user_roles() {
-
-			/* translators: user role */
-			_x( 'Instructor', 'User role' );
-
-			add_role(
-				$this->teacher_role,
-				'Instructor',
-				array()
-			);
-			$course_cap = $this->course_post_type . 's';
-			$lesson_cap = $this->lesson_post_type . 's';
-			$order_cap  = $this->order_post_type . 's';
-			// teacher
-			$teacher = get_role( $this->teacher_role );
-			$teacher->add_cap( 'delete_published_' . $course_cap );
-			$teacher->add_cap( 'edit_published_' . $course_cap );
-			$teacher->add_cap( 'edit_' . $course_cap );
-			$teacher->add_cap( 'delete_' . $course_cap );
-
-			$teacher->add_cap( 'delete_published_' . $lesson_cap );
-			$teacher->add_cap( 'edit_published_' . $lesson_cap );
-			$teacher->add_cap( 'edit_' . $lesson_cap );
-			$teacher->add_cap( 'delete_' . $lesson_cap );
-			$teacher->add_cap( 'publish_' . $lesson_cap );
-			$teacher->add_cap( 'upload_files' );
-			$teacher->add_cap( 'read' );
-			$teacher->add_cap( 'edit_posts' );
-
-			// administrator
-			$admin = get_role( 'administrator' );
-			$admin->add_cap( 'delete_' . $course_cap );
-			$admin->add_cap( 'delete_published_' . $course_cap );
-			$admin->add_cap( 'edit_' . $course_cap );
-			$admin->add_cap( 'edit_published_' . $course_cap );
-			$admin->add_cap( 'publish_' . $course_cap );
-			$admin->add_cap( 'delete_private_' . $course_cap );
-			$admin->add_cap( 'edit_private_' . $course_cap );
-			$admin->add_cap( 'delete_others_' . $course_cap );
-			$admin->add_cap( 'edit_others_' . $course_cap );
-
-			$admin->add_cap( 'delete_' . $lesson_cap );
-			$admin->add_cap( 'delete_published_' . $lesson_cap );
-			$admin->add_cap( 'edit_' . $lesson_cap );
-			$admin->add_cap( 'edit_published_' . $lesson_cap );
-			$admin->add_cap( 'publish_' . $lesson_cap );
-			$admin->add_cap( 'delete_private_' . $lesson_cap );
-			$admin->add_cap( 'edit_private_' . $lesson_cap );
-			$admin->add_cap( 'delete_others_' . $lesson_cap );
-			$admin->add_cap( 'edit_others_' . $lesson_cap );
-
-			$admin->add_cap( 'delete_' . $order_cap );
-			$admin->add_cap( 'delete_published_' . $order_cap );
-			$admin->add_cap( 'edit_' . $order_cap );
-			$admin->add_cap( 'edit_published_' . $order_cap );
-			$admin->add_cap( 'publish_' . $order_cap );
-			$admin->add_cap( 'delete_private_' . $order_cap );
-			$admin->add_cap( 'edit_private_' . $order_cap );
-			$admin->add_cap( 'delete_others_' . $order_cap );
-			$admin->add_cap( 'edit_others_' . $order_cap );
-		}
-
-		/**
-		 * Include files of enabled add ons
-		 */
-		public function include_enable_add_on() {
-			$enabled_addons = learn_press_get_enabled_add_ons();
-			$add_ons        = learn_press_get_add_ons();
-
-			// Init all enabled addons
-			foreach ( (array) $add_ons as $slug => $params ) {
-				if ( isset( $enabled_addons[$slug] ) ) {
-					if ( !empty( $params['file'] ) && is_file( $params['file'] ) ) {
-						include_once( $params['file'] );
-					}
-				}
-			}
-		}
-
-		/**
-		 * Function include all files in folder
-		 *
-		 * @param $path   Directory address
-		 * @param $ext    array file extension what will include
-		 * @param $prefix string Class prefix
-		 */
-		function include_folder( $path, $ext = array( 'php' ), $prefix = '' ) {
-			/*Include all files in payment folder*/
-			$sfiles = scandir( $path );
-			foreach ( $sfiles as $sfile ) {
-				if ( $sfile != '.' && $sfile != '..' ) {
-					if ( is_file( $path . "/" . $sfile ) ) {
-						$ext_file  = pathinfo( $path . "/" . $sfile );
-						$file_name = $ext_file['filename'];
-
-						if ( in_array( $ext_file['extension'], $ext ) ) {
-							$class = preg_replace( '/\W/i', '_', $prefix . $file_name );
-							if ( !class_exists( $class ) ) {
-								require_once $path . "/" . $sfile;
-								new $class;
-							}
-						}
-					}
-				}
-			}
-		}
-
-		/**
-		 * Enqueue script
-		 *
-		 * @access public
-		 * @return void
-		 */
-		public function lpr_scripts() {
-
-			_deprecated_function( __CLASS__ . '::' . __FUNCTION__, LP()->version );
-			return;
-			wp_enqueue_style( 'lpr-learnpress-css', LP_CSS_URL . 'learnpress.css' );
-			wp_enqueue_style( 'lpr-time-circle-css', LP_CSS_URL . 'timer.css' );
-
-			wp_enqueue_script( 'lpr-global', LP_JS_URL . 'global.js' );
-			wp_enqueue_script( 'lpr-alert-js', LP_JS_URL . 'jquery.alert.js', array( 'jquery' ) );
-			wp_enqueue_script( 'lpr-time-circle-js', LP_JS_URL . 'jquery.timer.js', array( 'jquery', 'lpr-global', 'lpr-alert-js' ) );
-
-			wp_enqueue_script( 'lpr-learnpress-js', LP_JS_URL . 'learnpress.js', array( 'jquery' ), '', true );
-		}
 
 	} // end class
 }

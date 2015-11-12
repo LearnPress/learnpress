@@ -339,6 +339,7 @@ class LP_Abstract_User {
 			if ( !empty( $user_quiz['user_quiz_id'] ) ) {
 				$user_quiz['history'] = $this->get_quiz_history( $quiz_id );
 			}
+			$quizzes[$quiz_id] = $user_quiz;
 		}
 		if ( $field ) {
 			if ( array_key_exists( $field, $quizzes[$quiz_id] ) ) {
@@ -376,6 +377,9 @@ class LP_Abstract_User {
 						);
 					}
 					$history[$quiz_id][$id]->{$result->meta_key} = maybe_unserialize( $result->meta_value );
+				}
+				foreach( $history[$quiz_id] as $id => $progress){
+					$history[$quiz_id][$id]->results = $this->evaluate_quiz_results( $quiz_id, $progress );
 				}
 			}
 		}
@@ -535,24 +539,40 @@ class LP_Abstract_User {
 	 */
 	function can_view_lesson( $lesson_id, $course_id = null ) {
 		$lesson = LP_Lesson::get_lesson( $lesson_id );
-		return $lesson->is( 'previewable' ) || $this->get_item_order( $lesson_id );
+		$view = $lesson->is( 'previewable' ) || $this->get_item_order( $lesson_id );
+		if( !$view && $course_id && ( $course = LP_Course::get_course( $course_id ) ) && $course->is_free() ){
+			$view = true;
+		}
+		return apply_filters( 'learn_press_user_view_lesson', $view, $lesson_id, $this, $course_id );
 	}
 
 	/**
 	 * Return true if user can view a quiz
 	 *
-	 * @param $quiz_id
+	 * @param int $quiz_id
+	 * @param int $course_id - optional The course contains quiz
 	 *
 	 * @return bool
 	 */
-	function can_view_quiz( $quiz_id ) {
+	function can_view_quiz( $quiz_id, $course_id = 0 ) {
+		$course = false;
+		if( $course_id ){
+			$course = LP_Course::get_course( $course_id );
+		}
+
 		if ( $quiz = LP_Quiz::get_quiz( $quiz_id ) ) {
-			$course = $quiz->get_course();
-			if ( $course ) {
-				$this->get_course_order( $course->id );
+			if ( ! $course ) {
+				$course = $quiz->get_course();
 			}
 		}
-		return $this->get_item_order( $quiz_id );
+		if( $course ) {
+			$this->get_course_order( $course->id );
+		}
+		$view = $this->get_item_order( $quiz_id );
+		if( !$view && $course && $course->is_free() ){
+			$view = true;
+		}
+		return apply_filters( 'learn_press_user_view_quiz', $view, $quiz_id, $this, $course_id );
 	}
 
 	function can_retake_quiz( $quiz_id ) {

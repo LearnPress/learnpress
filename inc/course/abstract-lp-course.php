@@ -310,9 +310,15 @@ abstract class LP_Abstract_Course {
 	 * @return mixed
 	 */
 	public function get_price_html() {
-		$price = $this->get_price();
-		$price = learn_press_format_price( $price, true );
-		return apply_filters( 'learn_press_course_price_html', $price, $this );
+
+		if( $this->is_free() ){
+			$price_html = apply_filters( 'learn_press_course_price_html_free', __( 'Free', 'learn_press' ), $this );
+		}else {
+			$price = $this->get_price();
+			$price = learn_press_format_price( $price, true );
+			$price_html = apply_filters( 'learn_press_course_price_html', $price, $this );
+		}
+		return $price_html;
 	}
 
 	/**

@@ -57,7 +57,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 						'public'             => true,
 						'publicly_queryable' => true,
 						'show_ui'            => true,
-						'has_archive'        => true,
+						'has_archive'        => false,
 						'capability_type'    => LP()->lesson_post_type,
 						'map_meta_cap'       => true,
 						'show_in_menu'       => 'learn_press',
