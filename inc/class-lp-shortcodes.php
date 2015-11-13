@@ -74,7 +74,7 @@ class LP_Shortcodes {
 		global $current_user;
 
 		$user = new WP_User( $current_user->ID );
-		if ( in_array( 'lpr_teacher', $user->roles ) ) {
+		if ( in_array( LP()->teacher_role, $user->roles ) ) {
 			return __( "You are a teacher now", 'learn_press' );
 		}
 

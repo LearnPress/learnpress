@@ -30,7 +30,9 @@ class LP_Settings_Emails extends LP_Settings_Base {
 	function get_sections() {
 		$sections = array(
 			'general'          => __( 'General options', 'learn_press' ),
+			'new_course'       => __( 'New course', 'learn_press' ),
 			'published_course' => __( 'Published course', 'learn_press' ),
+			'new_order'        => __( 'New order', 'learn_press' ),
 			'enrolled_course'  => __( 'Enrolled course', 'learn_press' ),
 			'passed_course'    => __( 'Passed course', 'learn_press' ),
 		);
@@ -64,6 +66,16 @@ class LP_Settings_Emails extends LP_Settings_Base {
 		include_once $view;
 	}
 
+	function output_section_new_course() {
+		$view = learn_press_get_admin_view( 'settings/emails/new-course.php' );
+		include_once $view;
+	}
+
+	function output_section_new_order() {
+		$view = learn_press_get_admin_view( 'settings/emails/new-order.php' );
+		include_once $view;
+	}
+
 	function output_section_published_course() {
 		$view = learn_press_get_admin_view( 'settings/emails/published-course.php' );
 		include_once $view;
@@ -91,5 +103,6 @@ class LP_Settings_Emails extends LP_Settings_Base {
 	}
 
 }
+
 //
 return new LP_Settings_Emails();

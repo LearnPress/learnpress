@@ -140,6 +140,21 @@ function learn_press_send_user_email_order( $status, $order_id ) {
 
 add_action( 'learn_press_update_order_status', 'learn_press_send_user_email_order', 5, 2 );
 
+
+function learn_press_post_review_message_box(){
+	$user = learn_press_get_current_user();
+	if( ! $user->is_instructor() ) {
+		return;
+	}
+	?>
+	<div id="learn-press-review-message">
+		<h4><?php _e( 'Your message to Reviewer', 'learn_press' );?></h4>
+		<textarea resize="none" placeholder="<?php _e( 'Enter some information here for reviewer', 'learn_press' );?>"></textarea>
+	</div>
+	<?php
+}
+add_action( 'post_submitbox_start', 'learn_press_post_review_message_box');
+
 /**
  * Add more 2 user roles teacher and student
  *
@@ -150,7 +165,6 @@ function learn_press_add_user_roles() {
 
 	/* translators: user role */
 	_x( 'Instructor', 'User role' );
-
 	add_role(
 		LP()->teacher_role,
 		'Instructor',
@@ -213,3 +227,9 @@ function learn_press_after_logged_in() {
 
 }
 add_action('wp_login', 'learn_press_after_logged_in');
+
+function head_head_head(){
+
+}
+
+add_action( 'admin_head', 'head_head_head' );

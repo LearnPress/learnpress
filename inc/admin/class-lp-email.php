@@ -3,7 +3,7 @@
 /**
  * Class LP_Email
  */
-class LP_Email {
+class LP_Email_bakup {
 
 	/**
 	 * @var array

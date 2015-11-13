@@ -199,7 +199,7 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 
 			unset ( $columns['taxonomy-lesson-tag'] );
 			$user = wp_get_current_user();
-			if ( in_array( 'lpr_teacher', $user->roles ) ) {
+			if ( in_array( LP()->teacher_role, $user->roles ) ) {
 				unset( $columns['author'] );
 			}
 

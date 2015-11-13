@@ -239,7 +239,7 @@ function load_curriculum_template() {
 // add_action( 'admin_head-post-new.php', 'learn_press_remove_author_box' );
 // add_action( 'admin_head-post.php', 'learn_press_remove_author_box' );
 function learn_press_remove_author_box() {
-	if ( current_user_can( 'lpr_teacher' ) ) {
+	if ( current_user_can( LP()->teacher_role ) ) {
 		remove_meta_box( 'authordiv', LP()->course_post_type, 'normal' );
 		remove_meta_box( 'authordiv', LP()->lesson_post_type, 'normal' );
 		remove_meta_box( 'authordiv', LP()->quiz_post_type, 'normal' );

@@ -30,10 +30,11 @@ class LP_Admin_Menu {
 	 * Register for menu for admin
 	 */
 	public function admin_menu() {
+		$capacity = 'edit_' . LP()->course_post_type . 's';
 		add_menu_page(
 			__( 'Learning Management System', 'learn_press' ),
 			__( 'LearnPress', 'learn_press' ),
-			'edit_lpr_courses',
+			$capacity,
 			'learn_press',
 			'',
 			'dashicons-welcome-learn-more',
@@ -45,7 +46,7 @@ class LP_Admin_Menu {
 				'learn_press',
 				__( 'Statistics', 'learn_press' ),
 				__( 'Statistics', 'learn_press' ),
-				'edit_lpr_courses',
+				$capacity,
 				'learn_press_statistics',
 				'learn_press_statistic_page'
 			),

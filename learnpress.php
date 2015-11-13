@@ -164,6 +164,9 @@ if ( !class_exists( 'LearnPress' ) ) {
 		function __get( $key ) {
 			if ( empty( $this->{$key} ) ) {
 				switch ( $key ) {
+					case 'email':
+						$this->{$key} = LP_Email::instance();
+						break;
 					case 'checkout':
 						$this->{$key} = LP_Checkout::instance();
 						break;
@@ -322,8 +325,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 			$this->get_session();
 			$this->get_user();
 			$this->gateways = LP_Gateways::instance()->get_available_payment_gateways();
-
-
+			LP_Emails::init_email_notifications();
 		}
 
 		function get_session() {
@@ -581,8 +583,6 @@ function load_learn_press() {
 
 
 }
-
-
 
 // Done! entry point of the plugin
 add_action( 'plugins_loaded', 'load_learn_press' );

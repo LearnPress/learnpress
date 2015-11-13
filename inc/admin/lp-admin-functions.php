@@ -594,7 +594,7 @@ function learn_press_accept_become_a_teacher() {
 	if ( !$action || !$user_id || ( $action != 'accept-to-be-teacher' ) ) return;
 
 	$be_teacher = new WP_User( $user_id );
-	$be_teacher->set_role( 'lpr_teacher' );
+	$be_teacher->set_role( LP()->teacher_role );
 
 	do_action( 'learn_press_user_become_a_teacher', $user_id );
 }

@@ -585,6 +585,10 @@ class LP_Abstract_User {
 		return apply_filters( 'learn_press_user_can_retake_quiz', $can, $quiz_id, $this );
 	}
 
+	function is_instructor(){
+		$roles = !empty( $this->user->roles ) ? $this->user->roles : array();
+		return in_array( LP()->teacher_role, $roles );
+	}
 
 	function has( $role ) {
 		$args = func_get_args();

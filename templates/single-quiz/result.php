@@ -20,7 +20,6 @@ if( !is_user_logged_in() ){
 	learn_press_display_message( sprintf( __( 'You are not logged in! Please <a href="%s">login</a> to save the results. The results will be deleted after your session destroyed', 'learn_press' ), learn_press_get_login_url() ), 'error' );
 }
 
-print_r($_SESSION);
 $history = LP()->user->get_quiz_results( $quiz->id );
 
 ?>

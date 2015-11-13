@@ -378,7 +378,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 		public static function be_teacher() {
 			$user_id    = get_current_user_id();
 			$be_teacher = new WP_User( $user_id );
-			$be_teacher->set_role( 'lpr_teacher' );
+			$be_teacher->set_role( LP()->teacher_role );
 			die;
 		}
 

@@ -194,7 +194,7 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 		 */
 		function columns_head( $columns ) {
 			$user = wp_get_current_user();
-			if ( in_array( 'lpr_teacher', $user->roles ) ) {
+			if ( in_array( LP()->teacher_role, $user->roles ) ) {
 				unset( $columns['author'] );
 			}
 			return $columns;
