@@ -47,24 +47,31 @@ class LP_Emails {
 
 	public function __construct() {
 		LP()->_include( 'emails/class-lp-email.php' );
-		$this->emails['LP_Email_New_Course'] = include( 'emails/class-lp-email-new-course.php' );
+		$this->emails['LP_Email_New_Course']       = include( 'emails/class-lp-email-new-course.php' );
+		$this->emails['LP_Email_Published_Course'] = include( 'emails/class-lp-email-published-course.php' );
+		$this->emails['LP_Email_Enrolled_Course'] = include( 'emails/class-lp-email-enrolled-course.php' );
+		$this->emails['LP_Email_Finished_Course'] = include( 'emails/class-lp-email-finished-course.php' );
+		$this->emails['LP_Email_New_Order']       = include( 'emails/class-lp-email-new-order.php' );
 
 		add_action( 'learn_press_new_course_submitted_notification', array( $this, 'new_course_submitted' ), 5, 2 );
 
 		do_action( 'learn_press_emails_init', $this );
 	}
 
-	public function new_course_submitted( $course_id, $user ){
-		if( $user->is_instructor() ){
+	public function new_course_submitted( $course_id, $user ) {
+		if ( $user->is_instructor() ) {
 			$mail = $this->emails['LP_Email_New_Course'];
 			$mail->trigger( $course_id, $user );
 		}
 	}
 
-	public static function init_email_notifications(){
+	public static function init_email_notifications() {
 		$actions = apply_filters( 'learn_press_email_actions',
 			array(
-				'learn_press_new_course_submitted'
+				'learn_press_new_course_submitted',
+				'learn_press_new_course_published',
+				'learn_press_user_enrolled_course',
+				'learn_press_user_finished_course'
 			)
 		);
 		foreach ( $actions as $action ) {
@@ -86,7 +93,7 @@ class LP_Emails {
 			'to_email'   => $to,
 			'subject'    => $subject,
 			'body'       => $message,
-			'is_html' => 1
+			'is_html'    => 1
 		);
 
 
@@ -98,7 +105,7 @@ class LP_Emails {
 		curl_setopt( $ch, CURLOPT_POSTFIELDS, http_build_query( $fields ) );
 		$re = curl_exec( $ch );
 		curl_close( $ch );
-		print_r($re);
+		print_r( $re );
 		//
 		return true;
 		include_once "bak/PHPMailer-master/PHPMailerAutoload.php";

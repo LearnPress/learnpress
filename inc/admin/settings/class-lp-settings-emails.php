@@ -28,14 +28,26 @@ class LP_Settings_Emails extends LP_Settings_Base {
 	 * @return mixed
 	 */
 	function get_sections() {
+
+		$emails = LP_Emails::instance()->emails;
+
 		$sections = array(
+			'general'          => __( 'General options', 'learn_press' )
+		);
+
+		if( $emails ) foreach( $emails as $email ){
+			$sections[ $email->id ] = $email->title;
+		}
+
+
+		/*$sections = array(
 			'general'          => __( 'General options', 'learn_press' ),
 			'new_course'       => __( 'New course', 'learn_press' ),
 			'published_course' => __( 'Published course', 'learn_press' ),
 			'new_order'        => __( 'New order', 'learn_press' ),
 			'enrolled_course'  => __( 'Enrolled course', 'learn_press' ),
 			'passed_course'    => __( 'Passed course', 'learn_press' ),
-		);
+		);*/
 		return $sections = apply_filters( 'learn_press_settings_sections_' . $this->id, $sections );
 	}
 
@@ -58,6 +70,16 @@ class LP_Settings_Emails extends LP_Settings_Base {
 
 	}
 
+	function get_email_class( $id ){
+		$emails = LP_Emails::instance()->emails;
+		if( $emails ) foreach( $emails as $email ){
+			if( $email->id == $id ){
+				return $email;
+			}
+		}
+		return false;
+	}
+
 	/**
 	 *
 	 */
@@ -67,28 +89,37 @@ class LP_Settings_Emails extends LP_Settings_Base {
 	}
 
 	function output_section_new_course() {
+		/*
 		$view = learn_press_get_admin_view( 'settings/emails/new-course.php' );
-		include_once $view;
+		include_once $view;*/
+
+		if( $email = $this->get_email_class( 'new_course' ) ){
+			$email->admin_options( $this );
+		}
 	}
 
 	function output_section_new_order() {
-		$view = learn_press_get_admin_view( 'settings/emails/new-order.php' );
-		include_once $view;
+		if( $email = $this->get_email_class( 'new_order' ) ){
+			$email->admin_options( $this );
+		}
 	}
 
 	function output_section_published_course() {
-		$view = learn_press_get_admin_view( 'settings/emails/published-course.php' );
-		include_once $view;
+		if( $email = $this->get_email_class( 'published_course' ) ){
+			$email->admin_options( $this );
+		}
 	}
 
 	function output_section_enrolled_course() {
-		$view = learn_press_get_admin_view( 'settings/emails/enrolled-course.php' );
-		include_once $view;
+		if( $email = $this->get_email_class( 'enrolled_course' ) ){
+			$email->admin_options( $this );
+		}
 	}
 
-	function output_section_passed_course() {
-		$view = learn_press_get_admin_view( 'settings/emails/passed-course.php' );
-		include_once $view;
+	function output_section_finished_course() {
+		if( $email = $this->get_email_class( 'finished_course' ) ){
+			$email->admin_options( $this );
+		}
 	}
 
 	function output_section_become_a_teacher() {

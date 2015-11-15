@@ -1,19 +1,19 @@
 <?php
 
 /**
- * Class LP_Email_New_Course
+ * Class LP_Email_New_Order
  *
  * @author  ThimPress
  * @package LearnPress/Classes
  * @version 1.0
  */
-class LP_Email_New_Course extends LP_Email {
+class LP_Email_New_Order extends LP_Email {
 	function __construct() {
-		$this->id = 'new_course';
-		$this->title = __( 'New course', 'learn_press' );
+		$this->id = 'new_order';
+		$this->title = __( 'New order', 'learn_press' );
 
-		$this->template_html  = 'emails/new-course.php';
-		$this->template_plain = 'emails/plain/new-course.php';
+		$this->template_html  = 'emails/new-order.php';
+		$this->template_plain = 'emails/plain/new-order.php';
 
 		$this->subject = __( '[{site_title}] New course for review ({course_name}) - {course_date}', 'learn_press' );
 		$this->heading = __( 'New course', 'learn_press' );
@@ -22,8 +22,8 @@ class LP_Email_New_Course extends LP_Email {
 		parent::__construct();
 	}
 
-	function admin_options( $obj ){
-		$view = learn_press_get_admin_view( 'settings/emails/new-course.php' );
+	function admin_options( $settings_class ){
+		$view = learn_press_get_admin_view( 'settings/emails/new-order.php' );
 		include_once $view;
 	}
 
@@ -79,4 +79,4 @@ class LP_Email_New_Course extends LP_Email {
 	}
 }
 
-return new LP_Email_New_Course();
+return new LP_Email_New_Order();

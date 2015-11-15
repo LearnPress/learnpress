@@ -20,30 +20,62 @@ $settings = LP()->settings;
 	<tbody>
 	<?php do_action( 'learn_press_before_' . $this->id . '_' . $this->section['id'] . '_settings_fields', $settings ); ?>
 	<tr>
-		<th scope="row"><label for="learn-press-emails-new-order-enable"><?php _e( 'Enable', 'learn_press' ); ?></label></th>
+		<th scope="row">
+			<label for="learn-press-emails-new-order-enable"><?php _e( 'Enable', 'learn_press' ); ?></label></th>
 		<td>
-			<input type="hidden" name="<?php echo $this->get_field_name('emails_new_order[enable]');?>" value="no" />
-			<input class="regular-text" id="learn-press-emails-new-order-enable" type="text" name="<?php echo $this->get_field_name('emails_new_order[enable]');?>" value="yes" <?php checked( $settings->get( 'emails_new_order.enable', 'yes' ) == 'yes' ); ?>" />
+			<input type="hidden" name="<?php echo $settings_class->get_field_name( 'emails_new_order[enable]' ); ?>" value="no" />
+			<input id="learn-press-emails-new-order-enable" type="checkbox" name="<?php echo $settings_class->get_field_name( 'emails_new_order[enable]' ); ?>" value="yes" <?php checked( $settings->get( 'emails_new_order.enable', 'yes' ) == 'yes' ); ?>" />
 		</td>
 	</tr>
 	<tr>
-		<th scope="row"><label for="learn-press-emails-new-order-recipients"><?php _e( 'Recipient(s)', 'learn_press' ); ?></label></th>
+		<th scope="row">
+			<label for="learn-press-emails-new-order-recipients"><?php _e( 'Recipient(s)', 'learn_press' ); ?></label>
+		</th>
 		<td>
-			<input id="learn-press-emails-new-order-recipients" class="regular-text" type="text" name="<?php echo $this->get_field_name( 'emails_new_order[recipients]');?>" value="<?php echo $settings->get( 'emails_new_order.recipients', get_option( 'admin_email' ) ); ?>" />
+			<?php $default = get_option( 'admin_email' ); ?>
+			<input id="learn-press-emails-new-order-recipients" class="regular-text" type="text" name="<?php echo $settings_class->get_field_name( 'emails_new_order[recipients]' ); ?>" value="<?php echo $settings->get( 'emails_new_order.recipients', $default ); ?>" />
+
 			<p class="description">
-				<?php printf( __( 'Email recipient(s), default: %s', 'learn_press' ),  get_option( 'admin_email' ) );?>
+				<?php printf( __( 'Email recipient(s), default: <code>%s</code>', 'learn_press' ), $default ); ?>
 			</p>
 		</td>
 	</tr>
 	<tr>
-		<th scope="row"><label for="learn-press-emails-new-order-subject"><?php _e( 'Subject', 'learn_press' ); ?></label></th>
+		<th scope="row">
+			<label for="learn-press-emails-new-order-subject"><?php _e( 'Subject', 'learn_press' ); ?></label></th>
 		<td>
-			<input id="learn-press-emails-new-order-subject" class="regular-text" type="text" name="<?php echo $this->get_field_name( 'emails_new_order[subject]');?>" value="<?php echo $settings->get( 'emails_new_order.subject', '[{site_title}] New customer order ({order_number}) - {order_date}' ); ?>" />
+			<?php $default = __( '[{site_title}] New course for review ({course_name}) - {course_date}', 'learn_press' ); ?>
+			<input id="learn-press-emails-new-order-subject" class="regular-text" type="text" name="<?php echo $settings_class->get_field_name( 'emails_new_order[subject]' ); ?>" value="<?php echo $settings->get( 'emails_new_order.subject', $default ); ?>" />
+
 			<p class="description">
-				<?php printf( __( 'Email subject, default: <code>%s</code>', 'learn_press' ), '[{site_title}] New customer order ({order_number}) - {order_date}' );?>
+				<?php printf( __( 'Email subject (separated by comma), default: <code>%s</code>', 'learn_press' ), $default ); ?>
 			</p>
 		</td>
 	</tr>
+	<tr>
+		<th scope="row">
+			<label for="learn-press-emails-new-order-heading"><?php _e( 'Heading', 'learn_press' ); ?></label></th>
+		<td>
+			<?php $default = __( 'New course', 'learn_press' ); ?>
+			<input id="learn-press-emails-new-order-heading" class="regular-text" type="text" name="<?php echo $settings_class->get_field_name( 'emails_new_order[heading]' ); ?>" value="<?php echo $settings->get( 'emails_new_order.heading', $default ); ?>" />
+
+			<p class="description">
+				<?php printf( __( 'Email subject, default: <code>%s</code>', 'learn_press' ), $default ); ?>
+			</p>
+		</td>
+	</tr>
+	<tr>
+		<th scope="row">
+			<label for="learn-press-emails-new-order-email-format"><?php _e( 'Email format', 'learn_press' ); ?></label>
+		</th>
+		<td>
+			<?php learn_press_email_formats_dropdown( array( 'name' => $settings_class->get_field_name( 'emails_new_order[email_format]' ), 'id' => 'learn_press_email_formats', 'selected' => $settings->get( 'emails_new_order.email_format', $default ) ) ); ?>
+		</td>
+	</tr>
+	<?php
+	$view = learn_press_get_admin_view( 'settings/emails/email-template.php' );
+	include_once $view;
+	?>
 	<?php do_action( 'learn_press_after_' . $this->id . '_' . $this->section['id'] . '_settings_fields', $settings ); ?>
 	</tbody>
 </table>

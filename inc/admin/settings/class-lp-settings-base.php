@@ -19,26 +19,26 @@ class LP_Settings_Base {
 	 *
 	 * @var string
 	 */
-	protected $id = '';
+	public $id = '';
 
 	/**
 	 * Tab's text
 	 *
 	 * @var string
 	 */
-	protected $text = '';
+	public $text = '';
 
 	/**
 	 * Tab's sections
 	 *
 	 * @var array|bool
 	 */
-	protected $section = false;
+	public $section = false;
 
 	/**
 	 * @var array|bool
 	 */
-	protected $tab = false;
+	public $tab = false;
 
 	/**
 	 * Current tab
@@ -134,8 +134,8 @@ class LP_Settings_Base {
 	 */
 	function save() {
 		foreach ( $_POST as $k => $v ) {
-			if ( strpos( $k, 'learn_press_' ) === false ) continue;
-			update_option( $k, $v );
+			if ( ( strpos( $k, 'learn_press_' ) === false ) || ( !apply_filters( 'learn_press_abort_update_option', true, $k ) ) ) continue;
+			update_option( $k, apply_filters( 'learn_press_update_option_value', $v, $k ) );
 		}
 	}
 

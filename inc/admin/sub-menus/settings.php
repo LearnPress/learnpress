@@ -51,7 +51,6 @@ function learn_press_settings_page() {
 		?><script type="text/javascript">window.location.href = '<?php echo admin_url( 'options-general.php?page=learn_press_settings&tab=' . $current_tab . $section );?>';</script><?php exit();
 		echo '<div class="updated"><p><strong>' . __( 'Settings saved', 'learn_press' ) . '</strong></p></div>';
 	}
-
 	?>
 	<form method="<?php echo esc_attr( apply_filters( 'learn_press_settings_form_method_tab_' . $current_tab, 'post' ) ); ?>" id="mainform" action="" enctype="multipart/form-data">
 		<div id="icon-themes" class="icon32"><br></div>
