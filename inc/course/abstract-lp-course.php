@@ -501,11 +501,12 @@ abstract class LP_Abstract_Course {
 
 		$post_name = get_post_field( 'post_name', $item_id );
 		$prefix = "{$item_id}-";
-		if( '' != get_option( 'permalink_structure' ) ) {
+
+		if( '' != get_option( 'permalink_structure' ) && get_post_status( $this->id ) != 'draft' ) {
 			$permalink .= $prefix . $post_name;
 		}else{
 			$key = preg_replace( '!lp_!', '', get_post_type( $item_id ) );
-			$permalink = add_query_arg( array( $key => $post_name ), $permalink );
+			$permalink = add_query_arg( array( $key => $prefix . $post_name ), $permalink );
 		}
 
 		return apply_filters( 'learn_press_course_item_link', $permalink, $item_id, $this );

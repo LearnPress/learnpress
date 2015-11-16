@@ -279,7 +279,8 @@ if ( !class_exists( 'LearnPress' ) ) {
 				'learnpress_quiz_questions',
 				'learnpress_question_answers',
 				'learnpress_user_quizzes',
-				'learnpress_user_quizmeta'
+				'learnpress_user_quizmeta',
+				'learnpress_review_logs'
 			);
 			foreach ( $tables as $table_name ) {
 				$wpdb->{$table_name} = $wpdb->prefix . $table_name;
@@ -587,3 +588,10 @@ function load_learn_press() {
 // Done! entry point of the plugin
 add_action( 'plugins_loaded', 'load_learn_press' );
 
+function test_mail(){
+	$user = learn_press_get_user( 4 );
+	//do_action( 'learn_press_course_rejected', 920, $user );
+	//do_action( 'learn_press_course_submitted', 920, $user );
+	//do_action( 'learn_press_course_approved', 920, $user );
+}
+add_action( 'admin_footer', 'test_mail' );

@@ -21,6 +21,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			add_filter( 'manage_lp_course_posts_custom_column', array( $this, 'columns_content' ) );
 			add_filter( "rwmb__lpr_course_price_html", array( $this, 'currency_symbol' ), 5, 3 );
 			add_action( 'edit_form_after_editor', array( $this, 'toggle_editor_button' ), - 10 );
+			add_action( 'add_meta_boxes', array( __CLASS__, 'review_logs_meta_box' ) );
 			parent::__construct();
 		}
 
@@ -419,6 +420,40 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			return apply_filters( 'learn_press_course_payment_meta_box_args', $meta_box );
 		}
 
+		static function review_logs_meta_box() {
+			$post_id            = learn_press_get_request( 'post' );
+			$prefix             = '_lp_';
+
+			add_meta_box(
+				'review_logs',
+				__( 'Review Logs', 'learn_press' ),
+				array( __CLASS__, 'review_logs_content' ),
+				LP()->course_post_type,
+				'normal',
+				'default'
+			);
+
+
+		}
+
+		static function review_logs_content( $post ){
+			global $wpdb;
+			$view_all = learn_press_get_request( 'view_all_review' );
+			$query = $wpdb->prepare("
+				SELECT SQL_CALC_FOUND_ROWS *
+				FROM {$wpdb->learnpress_review_logs}
+				WHERE course_id = %d
+				ORDER BY `date` DESC"
+				. ( $view_all ? "" : " LIMIT 0, 10" ) . "
+			", $post->ID );
+			$reviews = $wpdb->get_results( $query );
+			$total_reviews = $wpdb->get_var( "SELECT FOUND_ROWS()" );
+			$count_reviews = sizeof( $reviews );
+
+			$view = learn_press_get_admin_view( 'meta-boxes/course/review-logs.php' );
+			include $view;
+		}
+
 		private function _insert_section( $section = array() ) {
 			global $wpdb;
 			$section = wp_parse_args(
@@ -590,12 +625,52 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			}
 		}
 
+		private function _review_log(){
+			global $wpdb, $post;
+
+
+
+			$required_review       = LP()->settings->get( 'required_review' ) == 'yes';
+			$enable_edit_published = LP()->settings->get( 'enable_edit_published' ) == 'yes';
+
+			if( !$required_review || ( $required_review && $enable_edit_published ) ){
+				return;
+			}
+
+			$user    = learn_press_get_current_user();
+			$message = learn_press_get_request( 'review_message' );
+
+			if( LP()->user->is_instructor() && $required_review && !$enable_edit_published ) {
+				remove_action( 'rwmb_course_curriculum_before_save_post', array( $this, 'before_save_curriculum' ) );
+				wp_update_post(
+					array(
+						'ID' => $post->ID,
+						'post_status' => 'pending'
+					),
+					array( '%d', '%s' )
+				);
+				add_action( 'rwmb_course_curriculum_before_save_post', array( $this, 'before_save_curriculum' ) );
+			}
+
+			if( !$message && !$user->is_instructor() && get_post_status( $post->ID ) == 'publish' ){
+				$message = __( 'Your course has published', 'learn_press' );
+			}
+			$query = $wpdb->prepare( "
+				INSERT INTO {$wpdb->learnpress_review_logs}(`course_id`, `user_id`, `message`, `date`, `status`, `user_type`)
+				VALUES(%d, %d, %s, %s, %s, %s)
+			", $post->ID, $user->id, $message, current_time( 'mysql' ), get_post_status( $post->ID ), $user->is_instructor() ? 'instructor' : 'reviewer' );
+			$wpdb->query( $query );
+		}
+
 		function before_save_curriculum() {
 
 			global $post;
 
+			if( get_post_type() != LP()->course_post_type ) return;
+
 			$this->_save();
 			$this->_update_final_quiz();
+			$this->_review_log();
 
 			do_action( 'learn_press_new_course_submitted', $post->ID, LP()->user );
 		}

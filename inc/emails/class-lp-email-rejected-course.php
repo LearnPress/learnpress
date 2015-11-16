@@ -1,36 +1,36 @@
 <?php
 
 /**
- * Class LP_Email_Published_Course
+ * Class LP_Email_Rejected_Course
  *
  * @author  ThimPress
  * @package LearnPress/Classes
  * @version 1.0
  */
-class LP_Email_Published_Course extends LP_Email {
+class LP_Email_Rejected_Course extends LP_Email {
 	function __construct() {
-		$this->id = 'published_course';
-		$this->title = __( 'Course approved', 'learn_press' );
+		$this->id    = 'rejected_course';
+		$this->title = __( 'Rejected course', 'learn_press' );
 
-		$this->template_html  = 'emails/published-course.php';
-		$this->template_plain = 'emails/plain/published-course.php';
+		$this->template_html  = 'emails/rejected-course.php';
+		$this->template_plain = 'emails/plain/rejected-course.php';
 
-		$this->default_subject = __( '[{site_title}] Your course {course_name} has approved', 'learn_press' );
-		$this->default_heading = __( 'Course approved', 'learn_press' );
+		$this->subject = __( '[{site_title}] Your course {course_name} has rejected', 'learn_press' );
+		$this->heading = __( 'Rejected course', 'learn_press' );
 
 
 		parent::__construct();
 	}
 
-	function admin_options( $settings_class ){
-		$view = learn_press_get_admin_view( 'settings/emails/published-course.php' );
+	function admin_options( $obj ) {
+		$view = learn_press_get_admin_view( 'settings/emails/rejected-course.php' );
 		include_once $view;
 	}
 
 	function trigger( $course_id, $user ) {
 
-		if ( !$this->enable ) {
-			return;
+		if ( is_numeric( $user ) ) {
+			$user = learn_press_get_user( $user );
 		}
 
 		$this->find['site_title']  = '{site_title}';
@@ -52,7 +52,6 @@ class LP_Email_Published_Course extends LP_Email {
 		if ( ( $this->enable != 'yes' ) || !$this->get_recipient() ) {
 			return;
 		}
-
 		$return = $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
 		return $return;
 	}
@@ -66,7 +65,7 @@ class LP_Email_Published_Course extends LP_Email {
 			'course_name'   => get_the_title( $this->object['course'] ),
 			'login_url'     => learn_press_get_login_url(),
 			'user_name'		=> $this->object['user']->user_nicename,
-			'plain_text'       => false
+			'plain_text'    => false
 		) );
 		return ob_get_clean();
 	}
@@ -80,10 +79,10 @@ class LP_Email_Published_Course extends LP_Email {
 			'course_name'   => get_the_title( $this->object['course'] ),
 			'login_url'     => learn_press_get_login_url(),
 			'user_name'		=> $this->object['user']->user_nicename,
-			'plain_text'       => true
+			'plain_text'    => true
 		) );
 		return ob_get_clean();
 	}
 }
 
-return new LP_Email_Published_Course();
+return new LP_Email_Rejected_Course();

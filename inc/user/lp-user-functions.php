@@ -58,7 +58,7 @@ function learn_press_get_current_user() {
 }
 
 function learn_press_get_user( $user_id ) {
-	if( $user_id ){
+	if ( $user_id ) {
 		return LP_User::get_user( $user_id );
 	}
 	return LP_User_Guest::instance();
@@ -140,20 +140,77 @@ function learn_press_send_user_email_order( $status, $order_id ) {
 
 add_action( 'learn_press_update_order_status', 'learn_press_send_user_email_order', 5, 2 );
 
+function learn_press_course_is_required_review( $user_id = null, $course_id = null ) {
+	if ( !$user_id ) {
+		$user_id = get_current_user_id();
+	}
+	if ( !$course_id ) {
+		global $post;
+		$course_id = $post->ID;
+	}
+	$required_review       = LP()->settings->get( 'required_review' ) == 'yes';
+	$enable_edit_published = LP()->settings->get( 'enable_edit_published' ) == 'yes';
+	$is_publish            = get_post_status( $course_id ) == 'publish';
+	$is_course             = get_post_type( $course_id ) == LP()->course_post_type;
 
-function learn_press_post_review_message_box(){
-	$user = learn_press_get_current_user();
-	if( ! $user->is_instructor() ) {
+	return !( ( !$is_course ) || ( !$required_review ) || ( $required_review && $enable_edit_published && $is_publish ) );
+}
+
+function learn_press_post_review_message_box() {
+	global $post;
+
+	if ( !learn_press_course_is_required_review( get_current_user_id(), $post->ID ) ) {
 		return;
 	}
-	?>
-	<div id="learn-press-review-message">
-		<h4><?php _e( 'Your message to Reviewer', 'learn_press' );?></h4>
-		<textarea resize="none" placeholder="<?php _e( 'Enter some information here for reviewer', 'learn_press' );?>"></textarea>
-	</div>
-	<?php
+	$user                  = learn_press_get_current_user();
+	if( $user->is_instructor() ) {
+		?>
+		<div id="learn-press-review-message">
+			<h4><?php _e( 'Your message to Reviewer', 'learn_press' ); ?></h4>
+			<textarea name="review_message" resize="none" placeholder="<?php _e( 'Enter some information here for reviewer', 'learn_press' ); ?>"></textarea>
+
+			<p class="description submitdelete">
+				<?php _e( 'Warning! Your course will become to Pending Review for admin reviews before it can be published when you update' ); ?>
+			</p>
+		</div>
+		<?php ob_start(); ?>
+		<script type="text/javascript">
+			$('#post').submit(function (e) {
+				var $review = $('textarea[name="review_message"]');
+				if (!($review.val() + '').length) {
+					alert('<?php _e( 'Please write your message to Reviewer', 'learn_press' );?>');
+					$review.focus();
+					return false;
+				}
+			});
+		</script>
+		<?php learn_press_enqueue_script( strip_tags( ob_get_clean() ) ); ?>
+		<?php
+	}else{
+		?>
+		<div id="learn-press-review-message">
+			<h4><?php _e( 'Your message to Instructor', 'learn_press' ); ?></h4>
+			<textarea name="review_message" resize="none" placeholder="<?php _e( 'Enter some information here for instructor. E.g: for reason why the course is rejected etc...', 'learn_press' ); ?>"></textarea>
+		</div>
+		<?php ob_start(); ?>
+		<script type="text/javascript">
+			$('#post').submit(function (e) {
+				var $review = $('textarea[name="review_message"]', this),
+					$status = $('select#post_status', this),
+					clicked = $(':focus', this).attr('name');
+				if ( clicked == 'save'&& $status.val() != 'publish' && !($review.val() + '').length) {
+					alert('<?php _e( 'Please write your message to Reviewer', 'learn_press' );?>');
+					$review.focus();
+					return false;
+				}
+			});
+		</script>
+		<?php learn_press_enqueue_script( strip_tags( ob_get_clean() ) ); ?>
+		<?php
+	}
 }
-add_action( 'post_submitbox_start', 'learn_press_post_review_message_box');
+
+add_action( 'post_submitbox_start', 'learn_press_post_review_message_box' );
 
 /**
  * Add more 2 user roles teacher and student
@@ -162,7 +219,7 @@ add_action( 'post_submitbox_start', 'learn_press_post_review_message_box');
  * @return void
  */
 function learn_press_add_user_roles() {
-
+	$settings = LP()->settings;
 	/* translators: user role */
 	_x( 'Instructor', 'User role' );
 	add_role(
@@ -179,6 +236,15 @@ function learn_press_add_user_roles() {
 	$teacher->add_cap( 'edit_published_' . $course_cap );
 	$teacher->add_cap( 'edit_' . $course_cap );
 	$teacher->add_cap( 'delete_' . $course_cap );
+	$settings->get( 'required_review' );
+	if ( $settings->get( 'required_review' ) == 'yes' ) {
+
+		$teacher->remove_cap( 'publish_' . $course_cap );
+	} else {
+		$teacher->add_cap( 'publish_' . $course_cap );
+	}
+	//
+
 
 	$teacher->add_cap( 'delete_published_' . $lesson_cap );
 	$teacher->add_cap( 'edit_published_' . $lesson_cap );
@@ -221,14 +287,16 @@ function learn_press_add_user_roles() {
 	$admin->add_cap( 'delete_others_' . $order_cap );
 	$admin->add_cap( 'edit_others_' . $order_cap );
 }
+
 add_action( 'init', 'learn_press_add_user_roles' );
 
 function learn_press_after_logged_in() {
 
 }
-add_action('wp_login', 'learn_press_after_logged_in');
 
-function head_head_head(){
+add_action( 'wp_login', 'learn_press_after_logged_in' );
+
+function head_head_head() {
 
 }
 

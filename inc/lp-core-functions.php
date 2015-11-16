@@ -437,6 +437,14 @@ add_action( 'wp_footer', 'learn_press_print_script' );
 add_action( 'admin_footer', 'learn_press_print_script' );
 
 /**
+ * @param string $str
+ * @param int    $lines
+ */
+function learn_press_email_new_line( $lines = 1, $str = "\r\n" ){
+	echo str_repeat( $str, $lines );
+}
+
+/**
  * Get page id from admin settings page
  *
  * @param string $name

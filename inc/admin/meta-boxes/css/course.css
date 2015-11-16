@@ -2,7 +2,7 @@
 	visibility: hidden;
 }
 #learn-press-review-message{
-
+	margin-bottom: 10px;
 }
 #learn-press-review-message > h4{
 	margin: 0 0 10px 0;
@@ -192,6 +192,45 @@
 	text-decoration: none;
 	_color: #AAA;
 	box-shadow: none;
+}
+.learn-press-review-logs{
+
+}
+.learn-press-review-logs > li{
+	border-bottom: 1px dashed #DDD;
+	padding-bottom: 20px;
+	margin-top: 20px;
+}
+.learn-press-review-logs > li:after{
+	content: '';
+	display: block;
+	clear: both;
+}
+.learn-press-review-logs .review-user{
+	width: 48px;
+}
+.learn-press-review-logs .review-user img{
+	max-width: 100%;
+	height: auto;
+}
+.learn-press-review-logs .review-user > *{
+	float: left;
+}
+.learn-press-review-logs .user-nicename{
+
+}
+.learn-press-review-logs .review-content {
+	margin-left: 68px;
+}
+.learn-press-review-logs .review-message{
+	font-style: italic;
+	font-size: 16px;
+	margin-top: 10px;
+	color: #999;
+}
+.learn-press-review-logs > li .lp-label{
+	font-size: 100%;
+	margin-top: 20px;
 }
 
 .rwmb-curriculum-wrapper .rwmb-label{display: none;}

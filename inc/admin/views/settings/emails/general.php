@@ -31,6 +31,25 @@ $settings = LP()->settings;
 			<input id="learn-press-emails-general-from-email" class="regular-text" type="email" name="<?php echo $this->get_field_name( 'emails_general[from_email]');?>" value="<?php echo $settings->get( 'emails_general.from_email', get_option( 'admin_email' ) ); ?>" />
 		</td>
 	</tr>
+	<tr>
+		<th scope="row" colspan="2">
+			<h3><?php _e( 'Email Template', 'learn_press' );?></h3>
+		</th>
+	</tr>
+	<tr>
+		<th scope="row"><label for="learn-press-emails-general-header-image"><?php _e( 'Header image', 'learn_press' ); ?></label></th>
+		<td>
+			<input id="learn-press-emails-general-header-image" class="regular-text" type="text" name="<?php echo $this->get_field_name( 'emails_general[header_image]');?>" value="<?php echo $settings->get( 'emails_general.header_image' ); ?>" />
+			<p class="description"><?php _e( 'The image display in the top of email', 'learn_press' );?></p>
+		</td>
+	</tr>
+	<tr>
+		<th scope="row"><label for="learn-press-emails-general-footer-text"><?php _e( 'Footer text', 'learn_press' ); ?></label></th>
+		<td>
+			<textarea id="learn-press-emails-general-footer-text" name="<?php echo $this->get_field_name( 'emails_general[footer_text]');?>" style="height: 100px; width: 100%;"><?php echo $settings->get( 'emails_general.footer_text' ); ?></textarea>
+			<p class="description"><?php _e( 'The text display in the bottom of email', 'learn_press' );?></p>
+		</td>
+	</tr>
 	<?php do_action( 'learn_press_after_' . $this->id . '_' . $this->section['id'] . '_settings_fields', $settings ); ?>
 	</tbody>
 </table>

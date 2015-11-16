@@ -89,11 +89,13 @@ class LP_Settings_Emails extends LP_Settings_Base {
 	}
 
 	function output_section_new_course() {
-		/*
-		$view = learn_press_get_admin_view( 'settings/emails/new-course.php' );
-		include_once $view;*/
-
 		if( $email = $this->get_email_class( 'new_course' ) ){
+			$email->admin_options( $this );
+		}
+	}
+
+	function output_section_rejected_course() {
+		if( $email = $this->get_email_class( 'rejected_course' ) ){
 			$email->admin_options( $this );
 		}
 	}

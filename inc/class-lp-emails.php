@@ -48,19 +48,48 @@ class LP_Emails {
 	public function __construct() {
 		LP()->_include( 'emails/class-lp-email.php' );
 		$this->emails['LP_Email_New_Course']       = include( 'emails/class-lp-email-new-course.php' );
+		$this->emails['LP_Email_Rejected_Course']  = include( 'emails/class-lp-email-rejected-course.php' );
 		$this->emails['LP_Email_Published_Course'] = include( 'emails/class-lp-email-published-course.php' );
-		$this->emails['LP_Email_Enrolled_Course'] = include( 'emails/class-lp-email-enrolled-course.php' );
-		$this->emails['LP_Email_Finished_Course'] = include( 'emails/class-lp-email-finished-course.php' );
-		$this->emails['LP_Email_New_Order']       = include( 'emails/class-lp-email-new-order.php' );
+		$this->emails['LP_Email_Enrolled_Course']  = include( 'emails/class-lp-email-enrolled-course.php' );
+		$this->emails['LP_Email_Finished_Course']  = include( 'emails/class-lp-email-finished-course.php' );
+		$this->emails['LP_Email_New_Order']        = include( 'emails/class-lp-email-new-order.php' );
 
-		add_action( 'learn_press_new_course_submitted_notification', array( $this, 'new_course_submitted' ), 5, 2 );
+		add_action( 'learn_press_course_submitted_notification', array( $this, 'course_submitted' ), 5, 2 );
+		add_action( 'learn_press_course_rejected_notification', array( $this, 'course_rejected' ), 5, 2 );
+		add_action( 'learn_press_course_approved_notification', array( $this, 'course_approved' ), 5, 2 );
+
+
+		add_action( 'learn_press_email_header', array( $this, 'email_header' ) );
+		add_action( 'learn_press_email_footer', array( $this, 'email_footer' ) );
 
 		do_action( 'learn_press_emails_init', $this );
 	}
 
-	public function new_course_submitted( $course_id, $user ) {
+	public function email_header( $heading ) {
+		learn_press_get_template( 'emails/email-header.php', array( 'email_heading' => $heading ) );
+	}
+
+	public function email_footer( $footer_text ) {
+		learn_press_get_template( 'emails/email-footer.php', array( 'footer_text' => $footer_text ) );
+	}
+
+	public function course_submitted( $course_id, $user ) {
 		if ( $user->is_instructor() ) {
 			$mail = $this->emails['LP_Email_New_Course'];
+			$mail->trigger( $course_id, $user );
+		}
+	}
+
+	function course_rejected( $course_id, $user ) {
+		if ( $user->is_instructor() ) {
+			$mail = $this->emails['LP_Email_Rejected_Course'];
+			$mail->trigger( $course_id, $user );
+		}
+	}
+
+	function course_approved( $course_id, $user ) {
+		if ( $user->is_instructor() ) {
+			$mail = $this->emails['LP_Email_Published_Course'];
 			$mail->trigger( $course_id, $user );
 		}
 	}
@@ -68,10 +97,13 @@ class LP_Emails {
 	public static function init_email_notifications() {
 		$actions = apply_filters( 'learn_press_email_actions',
 			array(
-				'learn_press_new_course_submitted',
+				'learn_press_course_submitted',
+				'learn_press_course_rejected',
+				'learn_press_course_approved'
+				/*
 				'learn_press_new_course_published',
 				'learn_press_user_enrolled_course',
-				'learn_press_user_finished_course'
+				'learn_press_user_finished_course'*/
 			)
 		);
 		foreach ( $actions as $action ) {
@@ -105,7 +137,6 @@ class LP_Emails {
 		curl_setopt( $ch, CURLOPT_POSTFIELDS, http_build_query( $fields ) );
 		$re = curl_exec( $ch );
 		curl_close( $ch );
-		print_r( $re );
 		//
 		return true;
 		include_once "bak/PHPMailer-master/PHPMailerAutoload.php";

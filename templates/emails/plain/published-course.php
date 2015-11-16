@@ -1,13 +1,19 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: Tu
- * Date: 11/14/2015
- * Time: 7:37 AM
+ * @author  ThimPress
+ * @package LearnPress/Classes
+ * @version 1.0
  */
+
+if ( !defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
+
 ?>
-Dear {user_name},
-Congratulation! The course you created ({course_name}) is available now
-Visit our website at {log_in}
-Best regards,
-Administration
+<?php echo "=" . $email_heading; learn_press_email_new_line( 2 );?>
+<?php printf( __( 'Dear %s', 'learn_press' ), $user_name ); learn_press_email_new_line( 2 ); ?>
+<?php printf( __( 'Congratulation! The course you created (%s) is available now.', 'learn_press' ), $course_name ); learn_press_email_new_line( 2 ); ?>
+<?php printf( __( 'Visit our website at %s to view your course.', 'learn_press' ), $login_url ); learn_press_email_new_line( 2 ); ?>
+<?php _e( 'Best regards,', 'learn_press' ); learn_press_email_new_line( 2 ); ?>
+<?php _e( 'Administration', 'learn_press' ); learn_press_email_new_line( 2 ); ?>
+<?php echo $footer_text;?>

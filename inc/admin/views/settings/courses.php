@@ -77,6 +77,26 @@ $is_custom = true;
 			<input type="text" class="regular-text" name="<?php echo $this->get_field_name( "course_tag_base" ); ?>" value="<?php echo $settings->get( 'course_tag_base' ); ?>" placeholder="<?php echo 'course-tag'; ?>" />
 		</td>
 	</tr>
+	<tr>
+		<th scope="row"><label><?php _e( 'Review course before publish', 'learn_press' ); ?></label></th>
+		<td>
+			<input type="hidden" name="<?php echo $this->get_field_name( "required_review" ); ?>" value="no" />
+			<input type="checkbox" name="<?php echo $this->get_field_name( "required_review" ); ?>" value="yes" <?php checked( $settings->get( 'required_review' ) == 'yes' );?> />
+			<p class="description">
+				<?php _e( 'The course need to review by admin before it can be published', 'learn_press' );?>
+			</p>
+		</td>
+	</tr>
+	<tr>
+		<th scope="row"><label><?php _e( 'Enable edit published course', 'learn_press' ); ?></label></th>
+		<td>
+			<input type="hidden" name="<?php echo $this->get_field_name( "enable_edit_published" ); ?>" value="no" />
+			<input type="checkbox" name="<?php echo $this->get_field_name( "enable_edit_published" ); ?>" value="yes" <?php checked( $settings->get( 'enable_edit_published' ) == 'yes' );?> />
+			<p class="description">
+				<?php _e( 'Allows instructor edit the course that published without review.<br /> If this option is disabled, the course status will be changed to Pending Review when the instructor update course', 'learn_press' );?>
+			</p>
+		</td>
+	</tr>
 	<!-- thumbnail -->
 	<tr>
 		<th colspan="2">

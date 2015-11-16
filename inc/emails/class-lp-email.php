@@ -79,6 +79,20 @@ class LP_Email {
 	public $subject;
 
 	/**
+	 * Default heading for the email content.
+	 *
+	 * @var string
+	 */
+	public $default_heading;
+
+	/**
+	 * Default subject for the email.
+	 *
+	 * @var string
+	 */
+	public $default_subject;
+
+	/**
 	 * Object this email is for, for example a customer, product, or email.
 	 *
 	 * @var object
@@ -186,10 +200,15 @@ class LP_Email {
 		if ( is_null( $this->template_base ) ) {
 			$this->template_base = LP()->plugin_path( 'templates/' );
 		}
-		if( $this->is_current() ) {
+		if ( $this->is_current() ) {
 			add_filter( 'learn_press_update_option_value', array( $this, '_remove_email_content_from_option' ), 99, 2 );
 			$this->template_actions();
 		}
+
+		$this->heading      = LP()->settings->get( 'emails_' . $this->id . '.heading', $this->default_heading );
+		$this->subject      = LP()->settings->get( 'emails_' . $this->id . '.subject', $this->default_subject );
+		$this->email_format = LP()->settings->get( 'emails_' . $this->id . '.email_format' );
+		$this->enable       = LP()->settings->get( 'emails_' . $this->id . '.enable' );
 	}
 
 	function __get( $key ) {
@@ -200,18 +219,18 @@ class LP_Email {
 		}
 	}
 
-	private function is_current(){
+	private function is_current() {
 
-		return ! empty( $_REQUEST['section'] ) && $_REQUEST['section'] == $this->id;
+		return !empty( $_REQUEST['section'] ) && $_REQUEST['section'] == $this->id;
 	}
 
 	function _remove_email_content_from_option( $options, $key ) {
 
-		if( !$this->is_current() ) {
+		if ( !$this->is_current() ) {
 			return;
 		}
 
-		if ( is_array( $options ) && ( array_key_exists( 'email_content_html', $options ) || array_key_exists( 'email_content_plain', $options ) ) ){
+		if ( is_array( $options ) && ( array_key_exists( 'email_content_html', $options ) || array_key_exists( 'email_content_plain', $options ) ) ) {
 
 			if ( array_key_exists( 'email_content_html', $options ) ) {
 				$this->save_template( $options['email_content_html'], $this->template_html );
@@ -284,7 +303,7 @@ class LP_Email {
 	}
 
 	public function get_recipient() {
-		return apply_filters( 'learn_press_email_recipient_' . $this->id, $this->recipients, $this->object );
+		return apply_filters( 'learn_press_email_recipient_' . $this->id, $this->recipient, $this->object );
 	}
 
 	public function get_subject() {
@@ -292,8 +311,7 @@ class LP_Email {
 	}
 
 	public function get_content() {
-
-		if ( $this->get_email_format() == 'plain' ) {
+		if ( $this->get_email_format() == 'plain_text' ) {
 			$email_content = preg_replace( $this->plain_search, $this->plain_replace, strip_tags( $this->get_content_plain() ) );
 		} else {
 			$email_content = $this->get_content_html();
@@ -304,6 +322,10 @@ class LP_Email {
 
 	public function get_heading() {
 		return apply_filters( 'learn_press_email_heading_' . $this->id, $this->format_string( $this->heading ), $this->object );
+	}
+
+	function get_footer_text(){
+		return apply_filters( 'learn_press_email_footer_text_' . $this->id, LP()->settings->get( 'emails_general.footer_text' ) );
 	}
 
 	public function get_content_plain() {
@@ -347,7 +369,7 @@ class LP_Email {
 	 * @return string
 	 */
 	public function get_email_format() {
-		return $this->email_format && class_exists( 'DOMDocument' ) ? $this->email_format : 'plain';
+		return $this->email_format && class_exists( 'DOMDocument' ) ? $this->email_format : 'plain_text';
 	}
 
 	public function apply_style_inline( $content ) {

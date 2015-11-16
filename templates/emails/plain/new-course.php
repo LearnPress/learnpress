@@ -1,16 +1,15 @@
 <?php
 /**
+ * @author  ThimPress
+ * @package LearnPress/Templates
+ * @version 1.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
+if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
-$current_user = wp_get_current_user();
 ?>
-<?php printf( __( 'Dear %s,', 'learn_press' ), $current_user->user_login );?>
-<?php echo "\n\n";?>
-<?php printf( __( 'Congratulation! The course you created (<a href="%s">%s</a>) is available now.', 'learn_press' ), $course_link, $course_name );?>
-<?php echo "\n\n";?>
-<?php printf( __( 'Visit our website at %s', 'learn_press' ), get_site_url() );?>.
-<?php echo "\n\n";?>
-<?php _e( 'Best regards, <br /><em>Administration</em>', 'learn_press' );?>
+<?php echo "= " . $email_heading . " =\n\n";?>
+<?php printf( __( 'A new course <a href="%s">%s</a> has submitted is waiting for your approval.', 'learn_press' ), $course_edit_link, $course_name ); echo "\n\n"; ?>
+<?php printf( __( 'Please login link %s to review and approval.', 'learn_press' ), $login_url ); echo "\n\n"; ?>
+<?php echo $footer_text . "\n\n";?>
