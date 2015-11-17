@@ -311,6 +311,9 @@ if (typeof window.LearnPress == 'undefined') {
 		setUrl        : function (url, title) {
 			history.pushState({}, title, url);
 		},
+		getUrl: function(){
+			return window.location.href;
+		},
 		addQueryVar: function(name, value, url){
 			return (url == undefined ? window.location.href : url).addQueryVar(name, value);
 		},

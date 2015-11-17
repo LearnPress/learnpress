@@ -39,6 +39,7 @@ $enroll_button_text = apply_filters( 'learn_press_enroll_button_loading_text', _
 
 				<input type="hidden" name="lp-ajax" value="enroll-course" />
 				<input type="hidden" name="enroll-course" value="<?php echo $course->id; ?>" />
+				<input type="hidden" name="_wp_http_referer" value="<?php echo get_the_permalink();?>" />
 				<button class="button enroll-button"><?php echo $enroll_button_text; ?></button>
 
 				<?php do_action( 'learn_press_after_enroll_button' ); ?>
@@ -52,14 +53,20 @@ $enroll_button_text = apply_filters( 'learn_press_enroll_button_loading_text', _
 
 	<?php elseif ( $user->can( 'purchase-course', $course->id ) ) : ?>
 
+		<?php if( LP()->cart->has_item( $course->id ) ){ ?>
+			<?php learn_press_display_message( sprintf( __( 'This course is already added to your course <a href="%s" class="button view-cart-button">%s</a>', 'learn_press' ), learn_press_get_page_link( 'cart' ), __( 'View Cart', 'learn_press' ) ) );?>
+		<?php } else { ?>
+
 		<form name="purchase-course" class="purchase-course" method="post" enctype="multipart/form-data">
 			<?php do_action( 'learn_press_before_purchase_button' ); ?>
-
+			<input type="hidden" name="_wp_http_referer" value="<?php echo get_the_permalink();?>" />
 			<input type="hidden" name="add-course-to-cart" value="<?php echo $course->id; ?>" />
 			<button class="button purchase-button"><?php echo $purchase_button_text; ?></button>
-
+			<a class="button view-cart-button" href="<?php echo learn_press_get_page_link( 'cart' );?>"><?php esc_html_e( 'View cart', 'learn_press' ); ?></a>
 			<?php do_action( 'learn_press_after_purchase_button' ); ?>
 		</form>
+
+		<?php } ?>
 
 	<?php else: ?>
 

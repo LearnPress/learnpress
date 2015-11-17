@@ -444,6 +444,19 @@ function learn_press_email_new_line( $lines = 1, $str = "\r\n" ){
 	echo str_repeat( $str, $lines );
 }
 
+if ( !function_exists( 'is_ajax' ) ) {
+
+	/**
+	 * is_ajax - Returns true when the page is loaded via ajax.
+	 *
+	 * @access public
+	 * @return bool
+	 */
+	function is_ajax() {
+		return defined( 'DOING_AJAX' );
+	}
+}
+
 /**
  * Get page id from admin settings page
  *

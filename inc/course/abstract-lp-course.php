@@ -101,6 +101,26 @@ abstract class LP_Abstract_Course {
 		return ! empty( $this->$key ) ? $this->$key : null;
 	}
 
+	function get_image( $size = 'course_thumbnail', $attr = array() ){
+		if ( has_post_thumbnail( $this->id ) ) {
+			$image = get_the_post_thumbnail( $this->id, $size, $attr );
+		} elseif ( ( $parent_id = wp_get_post_parent_id( $this->id ) ) && has_post_thumbnail( $parent_id ) ) {
+			$image = get_the_post_thumbnail( $parent_id, $size, $attr );
+		} else {
+			$image = null;
+		}
+
+		return $image;
+	}
+
+	function get_permalink(){
+		return $this->permalink;
+	}
+
+	function is_visible(){
+		return true;
+	}
+
 	/**
 	 * Get the course's post data.
 	 *

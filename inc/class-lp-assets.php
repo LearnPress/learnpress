@@ -28,6 +28,8 @@ class LP_Assets extends LP_Abstract_Assets {
 	static function load_scripts(){
 
 		// global
+		self::add_style( 'learn-press-icon', learn_press_plugin_url( 'assets/css/style.css' ) );
+
 		self::add_script( 'learn-press-global', learn_press_plugin_url( 'assets/js/global.js' ) );
 		self::add_script( 'learn-press-block-ui', learn_press_plugin_url( 'assets/js/jquery.block-ui.js' ) );
 
@@ -41,6 +43,9 @@ class LP_Assets extends LP_Abstract_Assets {
 		// single course
 		self::add_script( 'single-course', learn_press_plugin_url( 'assets/js/frontend/single-course.js' ), array( 'backbone', 'utils' ) );
 
+		if( LP()->settings->get( 'ajax_add_to_cart' ) == 'yes' ) {
+			self::add_script( 'learn-press-add-to-cart', learn_press_plugin_url( 'assets/js/frontend/add-to-cart.js' ) );
+		}
 		// single quiz
 		self::add_script( 'learn-press-timer', learn_press_plugin_url( 'assets/js/jquery.timer.js' ) );
 		self::add_script( 'single-quiz', learn_press_plugin_url( 'assets/js/frontend/single-quiz.js' ), array( 'backbone', 'utils' ) );
@@ -62,9 +67,11 @@ class LP_Assets extends LP_Abstract_Assets {
 	}
 
 	static function _print_assets(){
+		do_action( 'learn_press_frontend_before_load_assets' );
 
 		self::enqueue_style(
 			array(
+				'learn-press-icon',
 				'learn-press'
 			)
 		);
@@ -78,6 +85,7 @@ class LP_Assets extends LP_Abstract_Assets {
 		// single course
 		if( is_course() ){
 			self::enqueue_script( 'single-course' );
+			self::enqueue_script( 'learn-press-add-to-cart' );
 		}
 
 		// single quiz
@@ -90,6 +98,7 @@ class LP_Assets extends LP_Abstract_Assets {
 		if( learn_press_is_checkout() ) {
 			self::enqueue_script( 'checkout' );
 		}
+		do_action( 'learn_press_frontend_after_load_assets' );
 	}
 }
 LP_Assets::init();

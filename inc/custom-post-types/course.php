@@ -696,10 +696,10 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			$pos    = array_search( 'title', $keys );
 			if ( $pos !== false ) {
 				array_splice( $keys, $pos + 1, 0, 'sections' );
-				array_splice( $values, $pos + 1, 0, __( 'Sections', 'learn_press' ) );
+				array_splice( $values, $pos + 1, 0, __( 'Content', 'learn_press' ) );
 				$columns = array_combine( $keys, $values );
 			} else {
-				$columns['sections'] = __( 'Sections', 'learn_press' );
+				$columns['sections'] = __( 'Content', 'learn_press' );
 			}
 			return $columns;
 		}

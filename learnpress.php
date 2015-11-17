@@ -22,7 +22,6 @@ if ( !defined( 'LP_PLUGIN_PATH' ) ) {
 	define( 'LP_PLUGIN_PATH', trailingslashit( plugin_dir_path( __FILE__ ) ) );
 	define( 'LP_PLUGIN_URL', trailingslashit( plugins_url( '/', __FILE__ ) ) );
 }
-$GLOBALS['multiple_cart'] = true;
 if ( !class_exists( 'LearnPress' ) ) {
 	/**
 	 * Class LearnPress

@@ -114,12 +114,14 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 						$result['messages'] = $messages;
 					}
 					break;
+				case 'add-to-cart':
+					$result = LP()->cart->add_to_cart( learn_press_get_request( 'add-course-to-cart' ) );
 			}
 			learn_press_send_json( $result );
-			die();
 		}
 
 		/**
+			die();
 		 * Student take course
 		 * @return void
 		 */

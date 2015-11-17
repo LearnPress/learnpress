@@ -21,6 +21,7 @@ class LP_Shortcodes {
 			'learn_press_confirm_order'       => __CLASS__ . '::confirm_order',
 			'learn_press_profile'             => __CLASS__ . '::profile',
 			'learn_press_become_teacher_form' => __CLASS__ . '::become_teacher_form',
+			'learn_press_cart'            => __CLASS__ . '::cart',
 			'learn_press_checkout'            => __CLASS__ . '::checkout',
 		);
 
@@ -45,6 +46,16 @@ class LP_Shortcodes {
 		return ob_get_clean();
 	}
 
+	static function cart(){
+		ob_start();
+		// Check cart has contents
+		if ( LP()->cart->is_empty() ) {
+			learn_press_get_template( 'cart/empty-cart.php', array( 'cart' => LP()->cart ) );
+		} else {
+			learn_press_get_template( 'cart/form.php', array( 'cart' => LP()->cart ) );
+		}
+		return ob_get_clean();
+	}
 
 	static function confirm_order( $atts = null ) {
 		$atts = shortcode_atts(

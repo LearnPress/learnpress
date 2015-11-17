@@ -16,17 +16,16 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 			//add_action( 'init', array( $this, 'register_post_type' ) );
 			add_action( 'init', array( $this, 'register_post_statues' ) );
 			/*Add Coulumn*/
-			add_filter( 'manage_edit-lpr_order_columns', array( $this, 'lpr_order_columns' ) );
-			add_action( 'manage_lpr_order_posts_custom_column', array( $this, 'render_learn_press_order_columns' ) );
+			add_filter( 'manage_edit-lp_order_columns', array( $this, 'columns_head' ) );
+			add_action( 'manage_lp_order_posts_custom_column', array( $this, 'columns_content' ) );
+
 			add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ) );
 			add_filter( 'post_row_actions', array( $this, 'post_row_actions' ), 10, 2 );
 			add_filter( 'page_row_actions', array( $this, 'post_row_actions' ), 10, 2 );
-			add_filter( 'manage_edit-lpr_order_sortable_columns', array( $this, 'sortable_columns' ) );
+			add_filter( 'manage_edit-lp_order_sortable_columns', array( $this, 'sortable_columns' ) );
 
 			// Disable Auto Save
 			add_action( 'admin_print_scripts', array( $this, 'disable_autosave' ) );
-
-
 			add_action( 'admin_init', array( $this, 'remove_box' ) );
 
 			/*add_filter( 'posts_orderby', array( $this, 'posts_orderby' ) );
@@ -234,7 +233,7 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 		/**
 		 *
 		 */
-		function lpr_order_columns( $existing ) {
+		function columns_head( $existing ) {
 
 			// Remove Checkbox - adding it back below
 			if ( isset( $existing['cb'] ) ) {
@@ -266,12 +265,12 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 			if ( isset( $existing['builder_layout'] ) )
 				unset( $existing['builder_layout'] );
 
-			add_filter( 'the_title', array( $this, 'replace_transaction_title_with_order_number' ), 5, 2 );
+			add_filter( 'the_title', array( $this, 'order_title' ), 5, 2 );
 
 			$columns['cb']            = '<input type="checkbox" />';
 			$columns['title']         = __( 'Order', 'learn_press' );
 			$columns['order_student'] = __( 'Student', 'learn_press' );
-			$columns['order_items']   = __( 'Course', 'learn_press' );
+			$columns['order_items']   = __( 'Courses', 'learn_press' );
 			$columns['order_date']    = __( 'Date', 'learn_press' );
 			$columns['order_total']   = __( 'Total', 'learn_press' );
 			$columns['order_status']  = '<span class="status_head tips" data-tip="' . esc_attr__( 'Status', 'learn_press' ) . '">' . esc_attr__( 'Status', 'learn_press' ) . '</span>';
@@ -281,8 +280,7 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 			return $columns;
 		}
 
-		function replace_transaction_title_with_order_number( $title, $post_id ) {
-			global $post;
+		function order_title( $title, $post_id ) {
 			if ( LP()->order_post_type == get_post_type( $post_id ) )
 				$title = learn_press_transaction_order_number( $post_id );
 			return $title;
@@ -292,20 +290,15 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 		 * Render column data
 		 *
 		 */
-		function render_learn_press_order_columns( $column ) {
+		function columns_content( $column ) {
 			global $post;
-
 			$the_order = learn_press_get_order( $post->ID );
-
-			$order_items = learn_press_get_order_items( $post->ID );
-			//$status = get_post_meta($post->ID, '_learn_press_transaction_status', true);
-
+			//print_r($the_order->get_items());die();
 			switch ( $column ) {
 				case 'order_student':
-					//$user = new LP_User( $post->uID );
-
-					?>
-					<a href="user-edit.php?user_id=<?php echo $post->user_ID ?>"><?php echo $post->user_display_name ?></a><?php
+					$user = learn_press_get_user( $the_order->user_id );
+					printf( '<a href="user-edit.php?user_id=%d">%s (%s)</a>', $the_order->user_id, $user->user_login, $user->display_name ); ?><?php
+					printf( '<br /><span>%s</span>', $user->user_email );
 					break;
 				case 'order_status' :
 					echo learn_press_get_order_status_label( $post->ID );
@@ -327,19 +320,14 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 
 					break;
 				case 'order_items' :
-					if ( $products = learn_press_get_transition_products( $post->ID ) ):
-						$links = array();
-						foreach ( $products as $pro ) {
-							$links[] = '<a href="' . get_the_permalink( $pro->ID ) . '">' . get_the_title( $pro->ID ) . '</a>';
-						}
-						echo join( "<br />", $links );
-					else:
-						_e( "Course has been removed", 'learn_press' );
-					endif;
-
+					$links = array();
+					foreach ( $the_order->get_items() as $item ) {
+						$links[] = '<a href="' . get_the_permalink( $item['course_id'] ) . '">' . get_the_title( $item['course_id'] ) . '</a>';
+					}
+					echo join( "<br />", $links );
 					break;
 				case 'order_total' :
-					echo learn_press_format_price( empty( $order_items->total ) ? 0 : $order_items->total, learn_press_get_currency_symbol( $order_items->currency ) );
+					echo learn_press_format_price( $the_order->order_total, learn_press_get_currency_symbol( $the_order->order_currency ) );
 					break;
 				case 'order_title' :
 

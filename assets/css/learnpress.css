@@ -442,6 +442,49 @@
 	margin: 0 0 10px !important;
 }
 
+/**/
+.purchase-course .view-cart-button{
+	display: none;
+}
+.learn-press-cart-table td,
+.learn-press-cart-table th{
+	vertical-align: top;
+}
+.learn-press-cart-table .course-remove{
+	width: 40px;
+}
+.learn-press-cart-table .course-thumbnail{
+	width: 20%;
+}
+.learn-press-cart-table .course-price,
+.learn-press-cart-table .course-total{
+	width: 15%;
+}
+
+.button.loading{
+}
+.button.loading:after,
+.button.added:after{
+	font-family: learnpress;
+	content: "\e902";
+	vertical-align: baseline;
+	line-height: 20px;
+	width: 20px;
+	text-align: center;
+	height: 20px;
+	display: inline-block;
+	margin-left: 10px;
+	font-weight: 400;
+}
+.button.added:after{
+	content: '\e903';
+}
+.button.loading:after{
+	-webkit-font-smoothing: antialiased;
+	-webkit-animation: spin 2s linear infinite;
+	-moz-animation: spin 2s linear infinite;
+	animation: spin 2s linear infinite;
+}
 /* notices */
 .learn-press-notice,
 .learn-press-message,

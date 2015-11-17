@@ -13,7 +13,6 @@ if ( !defined( 'ABSPATH' ) ) {
 
 $review_order_heading = apply_filters( 'learn_press_checkout_review_order_heading', __( 'Your order', 'learn_press' ) );
 
-print_r(LP()->cart->get_items());
 ?>
 
 <?php if ( $review_order_heading ) { ?>

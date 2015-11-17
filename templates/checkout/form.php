@@ -11,6 +11,8 @@ if ( !defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+learn_press_print_notices();
+
 do_action( 'learn_press_before_checkout_form', $checkout );
 
 $checkout_url = apply_filters( 'learn_press_get_checkout_url', LP()->cart->get_checkout_url() );
