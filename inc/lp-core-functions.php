@@ -147,13 +147,13 @@ function learn_press_email_formats_dropdown( $args = array() ) {
 		'html'       => __( 'HTML', 'learn_press' ),
 		'multipart'  => __( 'Multipart', 'learn_press' )
 	);
-	$output = sprintf( '<select name="%s" id="%s" class="%s" %s>', $args['name'], $args['id'], $args['class'], '' );
-	foreach( $formats as $name => $text ){
+	$output  = sprintf( '<select name="%s" id="%s" class="%s" %s>', $args['name'], $args['id'], $args['class'], '' );
+	foreach ( $formats as $name => $text ) {
 		$output .= sprintf( '<option value="%s" %s>%s</option>', $name, selected( $args['selected'] == $name, true, false ), $text ) . "\n";
 	}
 	$output .= '</select>';
 
-	if( $args['echo'] ) echo $output;
+	if ( $args['echo'] ) echo $output;
 	return $output;
 }
 
@@ -180,12 +180,20 @@ function learn_press_get_current_url() {
  */
 function learn_press_question_types() {
 	$types = array(
-		'none'          => __( '--Select Type--', 'learn_press' ),
+		//'none'          => __( '--Select Type--', 'learn_press' ),
 		'true_or_false' => __( 'True Or False', 'learn_press' ),
 		'multi_choice'  => __( 'Multi Choice', 'learn_press' ),
 		'single_choice' => __( 'Single Choice', 'learn_press' )
 	);
 	return apply_filters( 'learn_press_question_types', $types );
+}
+
+function learn_press_section_item_types() {
+	$types = array(
+		'lp_lesson' => __( 'Lesson', 'learn_press' ),
+		'lp_quiz'   => __( 'Quiz', 'learn_press' )
+	);
+	return apply_filters( 'learn_press_section_item_types', $types );
 }
 
 /**
@@ -440,7 +448,7 @@ add_action( 'admin_footer', 'learn_press_print_script' );
  * @param string $str
  * @param int    $lines
  */
-function learn_press_email_new_line( $lines = 1, $str = "\r\n" ){
+function learn_press_email_new_line( $lines = 1, $str = "\r\n" ) {
 	echo str_repeat( $str, $lines );
 }
 
@@ -2258,6 +2266,60 @@ add_action( 'learn_press_before_single_course_summary', '_learn_press_print_noti
 function learn_press_get_login_url( $redirect = null ) {
 	return apply_filters( 'learn_press_login_url', wp_login_url( $redirect ) );
 }
+
+function learn_press_get_endpoint_url( $name, $value, $url ) {
+	if ( !$url )
+		$url = get_permalink();
+
+	// Map endpoint to options
+	$name = isset( LP()->query_vars[$name] ) ? LP()->query_vars[$name] : $name;
+
+	if ( get_option( 'permalink_structure' ) ) {
+		if ( strstr( $url, '?' ) ) {
+			$query_string = '?' . parse_url( $url, PHP_URL_QUERY );
+			$url          = current( explode( '?', $url ) );
+		} else {
+			$query_string = '';
+		}
+		$url = trailingslashit( $url ) . $name . '/' . $value . $query_string;
+	} else {
+		$url = add_query_arg( $name, $value, $url );
+	}
+
+	return apply_filters( 'learn_press_get_endpoint_url', $url, $name, $value, $url );
+}
+
+function learn_press_add_endpoints() {
+	if ( $endpoints = LP()->settings->get( 'checkout_endpoints' ) ) foreach ( $endpoints as $endpoint => $value ) {
+		$endpoint                   = preg_replace( '!_!', '-', $endpoint );
+		LP()->query_vars[$endpoint] = $value;
+
+		add_rewrite_endpoint( $value, EP_ROOT | EP_PAGES );
+	}
+}
+
+add_action( 'init', 'learn_press_add_endpoints' );
+
+function learn_press_parse_request() {
+	global $wp;
+
+	// Map query vars to their keys, or get them if endpoints are not supported
+	foreach ( LP()->query_vars as $key => $var ) {
+		if ( isset( $_GET[$var] ) ) {
+			$wp->query_vars[$key] = $_GET[$var];
+		} elseif ( isset( $wp->query_vars[$var] ) ) {
+			$wp->query_vars[$key] = $wp->query_vars[$var];
+		}
+	}
+}
+
+add_action( 'parse_request', 'learn_press_parse_request' );
+
+//function learn_press_register_addons() {
+include_once "lp-add-ons.php";
+//}
+
+//add_action( 'learn_press_register_add_ons', 'learn_press_register_addons' );
 
 function learn_press_debug( $a ) {
 	echo '<pre>';

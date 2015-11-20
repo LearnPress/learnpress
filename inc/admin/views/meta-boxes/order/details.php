@@ -26,17 +26,21 @@ $currency_symbol = learn_press_get_currency_symbol( $order_items->currency );
 				<div class="user-ip-address">
 					<?php echo $order->user_ip_address; ?>
 				</div>
+				<?php if( $title = $order->get_payment_method_title() ){ ?>
+				<div class="payment-method-title">
+					<?php echo sprintf( __( 'Pay via <strong>%s</strong>', 'learn_press' ), $title ); ?>
+				</div>
+				<?php } ?>
 			</div>
 		</div>
-		<h3><?php _e( 'Order course', 'learn_press' ); ?></h3>
-
+		<br />
+		<h3><?php _e( 'Order courses', 'learn_press' ); ?></h3>
 		<div class="order-products">
 			<table>
 				<thead>
 				<tr>
-					<th><?php _e( 'Courses', 'learn_press' ); ?></th>
+					<th><?php _e( 'Course', 'learn_press' ); ?></th>
 					<th><?php _e( 'Price', 'learn_press' ); ?></th>
-					<th><?php _e( 'Quantity', 'learn_press' ); ?></th>
 					<th class="align-right"><?php _e( 'Amount', 'learn_press' ); ?></th>
 				</tr>
 				</thead>
@@ -44,13 +48,10 @@ $currency_symbol = learn_press_get_currency_symbol( $order_items->currency );
 				<?php if ( $items = $order->get_items() ): foreach ( $items as $item ) { ?>
 					<tr>
 						<td>
-							<a href="<?php echo get_the_permalink( $item['course_id'] ); ?>"><?php echo $item['name']; ?></a>
+							<?php echo $item['quantity'];?> &times; <a href="<?php echo get_the_permalink( $item['course_id'] ); ?>"><?php echo $item['name']; ?></a>
 						</td>
 						<td>
-							<?php echo learn_press_format_price( $item['price'], $currency_symbol );?>
-						</td>
-						<td>
-							<?php echo $item['quantity'];?>
+							<?php echo learn_press_format_price( $item['total'], $currency_symbol );?>
 						</td>
 						<td class="align-right"><?php echo learn_press_format_price( $item['total'], $currency_symbol ); ?></td>
 					</tr>
@@ -58,19 +59,17 @@ $currency_symbol = learn_press_get_currency_symbol( $order_items->currency );
 				</tbody>
 				<tfoot>
 				<tr>
-					<td colspan="2"></td>
-					<td width="300" class="align-right"><?php _e( 'Sub Total', 'learn_press' ); ?></td>
+					<td width="300" colspan="2" class="align-right"><?php _e( 'Sub Total', 'learn_press' ); ?></td>
 					<td width="100"
-						class="align-right"><?php echo learn_press_format_price( $order->order_subtotal, $currency_symbol ); ?></td>
+						class="align-right"><?php echo learn_press_format_price( $order->order_subtotal, $currency_symbol ); ?>
+					</td>
 				</tr>
 				<tr>
-					<td colspan="2"></td>
-					<td class="align-right"><?php _e( 'Total', 'learn_press' ); ?></td>
+					<td class="align-right" colspan="2"><?php _e( 'Total', 'learn_press' ); ?></td>
 					<td class="align-right total"><?php echo learn_press_format_price( $order->order_total, $currency_symbol ); ?></td>
 				</tr>
 				<tr>
-					<td colspan="2"></td>
-					<td class="align-right" colspan="2">
+					<td class="align-right" colspan="3">
 						<?php _e( 'Status', 'learn_press' ); ?>
 						<select name="learn_press_order_status">
 							<?php foreach ( learn_press_get_order_statuses() as $status => $label ) { ?>

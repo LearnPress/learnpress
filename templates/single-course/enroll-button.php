@@ -47,7 +47,7 @@ $enroll_button_text = apply_filters( 'learn_press_enroll_button_loading_text', _
 
 		<?php else: ?>
 
-			<?php learn_press_display_message( __( 'You have already purchased this course', 'learn_press' ) ); ?>
+			<?php learn_press_display_message( apply_filters( 'learn_press_user_purchased_course_message', __( 'You have already purchased this course. Please wait for approve', 'learn_press' ), $course, $user ) ); ?>
 
 		<?php endif; ?>
 
@@ -70,7 +70,7 @@ $enroll_button_text = apply_filters( 'learn_press_enroll_button_loading_text', _
 
 	<?php else: ?>
 
-		<?php learn_press_display_message( __( 'Sorry, you can not purchase this course', 'learn_press' ) ); ?>
+		<?php learn_press_display_message( apply_filters( 'learn_press_user_can_not_purchase_course_message', __( 'Sorry, you can not purchase this course', 'learn_press' ), $course, $user ) ); ?>
 
 	<?php endif; ?>
 

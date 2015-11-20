@@ -20,7 +20,7 @@ $settings = LP()->settings;
 			<input type="checkbox" id="learn_press_paypal_enable" name="<?php echo $this->get_field_name( 'paypal_enable' ); ?>" value="yes" <?php checked( $settings->get( 'paypal_enable', 'yes' ) == 'yes', true ); ?> />
 		</td>
 	</tr>
-	<tr class="" data-learn_press_paypal_enable="yes">
+	<!--<tr class="" data-learn_press_paypal_enable="yes">
 		<th scope="row"><label for="learn_press_paypal_type"><?php _e( 'Type', 'learn_press' ); ?></label></th>
 		<td>
 			<select id="learn_press_paypal_type" name="<?php echo $this->get_field_name( 'paypal_type' ); ?>">
@@ -28,7 +28,7 @@ $settings = LP()->settings;
 				<option value="security" <?php selected( $settings->get( 'paypal_type' ) == 'security' ? 1 : 0, 1 ); ?>><?php _e( 'Security', 'learn_press' ); ?></option>
 			</select>
 		</td>
-	</tr>
+	</tr>-->
 	<tr data-learn_press_paypal_enable="yes">
 		<th scope="row"><label for="learn_press_paypal_email"><?php _e( 'Email Address', 'learn_press' ); ?></label>
 		</th>
@@ -36,6 +36,7 @@ $settings = LP()->settings;
 			<input type="email" class="regular-text" name="<?php echo $this->get_field_name( 'paypal_email' ); ?>" value="<?php echo $settings->get( 'paypal_email', '' ); ?>" />
 		</td>
 	</tr>
+ 	<!--
 	<tr data-learn_press_paypal_enable="yes" class="learn_press_paypal_type_security<?php echo $settings->get( 'paypal_type' ) != 'security' ? ' hide-if-js' : ''; ?>">
 		<th scope="row">
 			<label for="learn_press_paypal_api_name"><?php _e( 'API Username', 'learn_press' ); ?></label></th>
@@ -77,6 +78,7 @@ $readonly     = $settings->get( 'paypal_sandbox' ) ? '' : ' readonly="readonly"'
 			<input type="email" class="regular-text"<?php echo $readonly; ?> name="<?php echo $this->get_field_name( 'paypal_sandbox_email' ); ?>" value="<?php echo $settings->get( 'paypal_sandbox_email', '' ); ?>" />
 		</td>
 	</tr>
+<!--
 	<tr class="learn_press_paypal_type_security sandbox<?php echo $show_or_hide; ?>">
 		<th scope="row">
 			<label for="learn_press_paypal_sandbox_name"><?php _e( 'Sandbox API Username', 'learn_press' ); ?></label>
@@ -100,5 +102,5 @@ $readonly     = $settings->get( 'paypal_sandbox' ) ? '' : ' readonly="readonly"'
 		<td>
 			<input type="text" class="regular-text"<?php echo $readonly; ?> name="<?php echo $this->get_field_name( 'paypal_sandbox_api_signature' ); ?>" value="<?php echo $settings->get( 'paypal_sandbox_api_signature', '' ); ?>" />
 		</td>
-	</tr>
+	</tr>-->
 <?php do_action( 'learn_press_after_' . $this->id . '_' . $this->section['id'] . '_settings_fields', $settings ); ?>

@@ -1,0 +1,47 @@
+.button.loading{
+}
+.button.loading:after,
+.button.added:after{
+	font-family: learnpress;
+	content: "\e902";
+	vertical-align: baseline;
+	line-height: 20px;
+	width: 20px;
+	text-align: center;
+	height: 20px;
+	display: inline-block;
+	margin-left: 10px;
+	font-weight: 400;
+}
+.button.added:after{
+	content: '\e903';
+}
+.button.loading:after{
+	-webkit-font-smoothing: antialiased;
+	-webkit-animation: spin 2s linear infinite;
+	-moz-animation: spin 2s linear infinite;
+	animation: spin 2s linear infinite;
+}
+
+.button.loading-before:before,
+.button.added-before:before{
+	font-family: learnpress;
+	content: "\e902";
+	vertical-align: baseline;
+	line-height: 20px;
+	width: 20px;
+	text-align: center;
+	height: 20px;
+	display: inline-block;
+	margin-left: 10px;
+	font-weight: 400;
+}
+.button.added-before:before{
+	content: '\e903';
+}
+.button.loading-before:before{
+	-webkit-font-smoothing: antialiased;
+	-webkit-animation: spin 2s linear infinite;
+	-moz-animation: spin 2s linear infinite;
+	animation: spin 2s linear infinite;
+}

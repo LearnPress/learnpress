@@ -35,7 +35,35 @@ if( $is_hidden ){
 		</ul>
 		<?php do_action( 'learn_press_after_section_items', $section );?>
 		<?php if( $buttons = apply_filters( 'learn_press_loop_section_buttons', array() ) ):?>
+			<br />
+			<div class="lp-add-buttons">
+				<input type="text" class="regular-text no-submit" name="lp-new-item-name" placeholder="<?php _e( 'The name of new question or quiz and hit enter', 'learn_press' );?>" />
+				<div class="button lp-button-dropdown lp-button-add-item disabled">
+					<span class="lp-dropdown-label lp-add-new-item"><?php _e( 'Add New', 'learn_press' );?></span>
+					<span class="lp-dropdown-arrow">+</span>
+					<ul class="lp-dropdown-items">
+						<?php foreach( learn_press_section_item_types() as $slug => $name ){?>
+							<li>
+								<a href="" data-type="<?php echo $slug;?>"><?php echo $name;?></a>
+							</li>
+						<?php } ?>
+					</ul>
+				</div>
+				-OR-
+				<button class="button " id="add-lesson" type="button" data-action="add-lesson" data-type="lp_lesson">
+					<?php _e( 'Select Lessons', 'learn_press' );?>
+				</button>
+				<button class="button " id="add-quiz" type="button" data-action="add-quiz" data-type="lp_quiz">
+					<?php _e( 'Select Quizzes', 'learn_press' );?>
+				</button>
+				<!--
+				<button id="learn-press-button-add-question" class="button" type="button"><?php _e( 'Select Lessons', 'learn_press' ); ?></button>
+				<button id="learn-press-button-add-question" class="button" type="button"><?php _e( 'Select Quizzes', 'learn_press' ); ?></button>
+				-->
+			</div>
+			<!--
 		<p class="lp-add-buttons">
+
 			<?php do_action( 'learn_press_before_section_buttons' );?>
 			<?php
 				foreach( $buttons as $button ){
@@ -55,12 +83,9 @@ if( $is_hidden ){
 					<?php echo $button['text']; ?>
 				</button>
 				<?php } ?>
-			<!--<button class="button button-primary" type="button" data-action="add-lesson"><?php _e( 'Add Lesson', 'learn_press' ); ?></button>
-			<button class="button button-primary" type="button" data-action="add-quiz"><?php _e( 'Add Quiz', 'learn_press' ); ?></button>
-			<button class="button button-primary" type="button" data-action="quick-add-lesson"><?php _e( 'Quick add <span>L</span>esson', 'learn_press' ); ?></button>
-			<button class="button button-primary" type="button" data-action="quick-add-quiz"><?php _e( 'Quick add <span>Q</span>uiz', 'learn_press' ); ?></button>-->
+
 			<?php do_action( 'learn_press_after_section_buttons' );?>
-		</p>
+		</p>-->
 		<?php endif; ?>
 		<?php do_action( 'learn_press_after_section_content', $section );?>
 	</div>

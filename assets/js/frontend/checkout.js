@@ -65,7 +65,7 @@ if (typeof window.LearnPress == 'undefined') {
 		doCheckout         : function () {
 			var $form = $(this);
 			if ($form.triggerHandler('checkout_place_order') !== false && $form.triggerHandler('checkout_place_order_' + $('#order_review').find('input[name=payment_method]:checked').val()) !== false) {
-				$form.block_ui();
+				//$form.block_ui();
 				$.ajax({
 					url     : 'http://localhost/foobla/learnpress/1.0/lp-checkout/?lp-ajax=checkout',
 					dataType: 'html',
@@ -84,11 +84,11 @@ if (typeof window.LearnPress == 'undefined') {
 								LearnPress.reload(response.redirect);
 							}
 						}
-						$form.unblock_ui();
+						//$form.unblock_ui();
 					},
 					error:	function( jqXHR, textStatus, errorThrown ) {
 						LearnPress.Checkout.showErrors('<div class="learn-press-error">'+errorThrown+'</div>');
-						$form.unblock_ui();
+						//$form.unblock_ui();
 					}
 				})
 			}
@@ -97,8 +97,6 @@ if (typeof window.LearnPress == 'undefined') {
 		showErrors         : function (messages) {
 			$('.learn-press-error, .learn-press-notice, .learn-press-message').remove();
 			this.$form.prepend(messages);
-			//wc_checkout_form.$checkout_form.removeClass( 'processing' ).unblock();
-			//wc_checkout_form.$checkout_form.find( '.input-text, select' ).blur();
 			$('html, body').animate({
 				scrollTop: ( LearnPress.Checkout.$form.offset().top - 100 )
 			}, 1000);

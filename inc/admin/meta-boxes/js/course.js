@@ -24,7 +24,8 @@
 				'keyup input.no-submit': 'onEnterInput',
 				'keydown': 'preventSubmit',
 				'click .lp-add-buttons button': 'sectionActionHandler',
-				'click .lp-item-new .handle': 'toggleItemType'
+				'click .lp-item-new .handle': 'toggleItemType',
+				'click .lp-button-add-item': '_addNewItem'
 			},
 			removeSectionIds : [],
 			removeItemIds: [],
@@ -217,6 +218,54 @@
 					}
 				}
 			},
+			_addNewItem: function(e){
+				e.preventDefault();
+				var that = this,
+					$target = $(e.target),
+					$section = $target.closest('.curriculum-section'),
+					$input = $section.find('input[name="lp-new-item-name"]'),
+					type = null;
+				if($target.is('a')){
+					type = $target.attr('data-type');
+					$target = $target.closest('.lp-button-add-item');
+				}else{
+					if(!$target.is('.lp-button-add-item')){
+						$target = $target.closest('.lp-button-add-item');
+					}
+					type = $target.find('ul > li > a:first').attr('data-type');
+				}
+				if($target.hasClass('disabled')){
+					return;
+				}
+				if( ($input.val()+'').length == 0 ){
+					alert('Please enter item name');
+					$input.focus();
+					return;
+				}
+				$.ajax({
+					url: LearnPress_Settings.ajax,
+					data: {
+						action: 'learnpress_add_new_item',
+						name: $input.val(),
+						type: type
+					},
+					type: 'post',
+					dataType: 'html',
+					success: function(response){
+						var json = LearnPress.parseJSON(response);
+						if(json.post && json.post.ID) {
+							$item = that.createItem({
+								id: json.post.ID,
+								type: json.post.post_type,
+								text: json.post.post_title,
+								edit_link: json.post.edit_link.replace('&amp;', '&')
+							}, $section);
+							$item.removeClass('lp-item-empty');
+							$input.val('').focus().trigger('change');
+						}
+					}
+				});
+			},
 			onEnterInput: function(e){
 				var $input = $(e.target),
 					$item = $input.closest('.lp-section-item'),
@@ -224,9 +273,20 @@
 					value = $input.val(),
 					textLen = value.length,
 					type = $input.data('field');
-
+				if($input.attr('name') == 'lp-new-item-name'){
+					console.log(textLen)
+					if( textLen > 0 ){
+						$input.siblings('.lp-button-add-item').removeClass('disabled');
+					}else{
+						$input.siblings('.lp-button-add-item').addClass('disabled');
+					}
+				}
 				switch (e.keyCode){
 					case 13:
+						if($input.attr('name') == 'lp-new-item-name'){
+							$input.siblings('.lp-button-add-item').trigger('click')
+							return;
+						}
 					case 40:
 						var $next = this.getNextInput($input);
 						$next.focus();
@@ -279,6 +339,7 @@
 								$emptyItem.insertAfter($last);
 							}
 						}
+
 				}
 
 			},

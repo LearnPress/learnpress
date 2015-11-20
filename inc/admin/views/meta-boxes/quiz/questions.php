@@ -31,6 +31,23 @@ $hidden_all = sizeof( $hidden ) && ( sizeof( array_diff( $hidden, $question_ids 
 			<?php $exclude_ids = array_keys( $questions ); endif; ?>
 	</div>
 	<div class="question-actions">
+		<input type="text" class="regular-text no-submit" name="lp-new-question-name" placeholder="<?php _e( 'The name of new question and hit enter', 'learn_press' );?>" />
+		<div class="button lp-button-dropdown lp-button-add-question disabled">
+			<span class="lp-dropdown-label lp-add-new-item"><?php _e( 'Add New', 'learn_press' );?></span>
+			<span class="lp-dropdown-arrow">+</span>
+			<ul class="lp-dropdown-items">
+				<?php foreach( learn_press_question_types() as $slug => $name ){?>
+					<li>
+						<a href="" data-type="<?php echo $slug;?>"><?php echo $name;?></a>
+					</li>
+				<?php } ?>
+			</ul>
+		</div>
+		-OR-
+		<button id="learn-press-button-add-question" class="button" type="button"><?php _e( 'Add Existing Question', 'learn_press' ); ?></button>
+	</div>
+	<!--
+	<div class="question-actions">
 		<div id="learn-press-dropdown-questions">
 			<input type="text" name="question" id="learn-press-question-name" />
 			<button id="learn-press-toggle-questions" type="button" class="dashicons dashicons-arrow-down"></button>
@@ -56,10 +73,11 @@ $hidden_all = sizeof( $hidden ) && ( sizeof( array_diff( $hidden, $question_ids 
 				?>
 			</ul>
 		</div>
-		<button id="learn-press-button-add-question" class="button" type="button"><?php _e( 'New Question', 'learn_press' ); ?></button>
+		<button id="learn-press-button-new-question" class="button" type="button"><?php _e( 'New Question', 'learn_press' ); ?></button>
+		<button id="learn-press-button-add-question" class="button" type="button"><?php _e( 'Add Existing Question', 'learn_press' ); ?></button>
 	</div>
 	<br />
-
+	-->
 	<?php /*
 
 		<div class="btn-group" id="learn-press-add-new-question">

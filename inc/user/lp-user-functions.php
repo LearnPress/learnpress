@@ -290,6 +290,13 @@ function learn_press_add_user_roles() {
 
 add_action( 'init', 'learn_press_add_user_roles' );
 
+function learn_press_get_user_questions( $user_id = null, $args = array() ){
+	if( !$user_id ) {
+		$user_id = get_current_user_id();
+	}
+	return learn_press_get_user( $user_id )->get_questions( $args );
+}
+
 function learn_press_after_logged_in() {
 
 }

@@ -70,7 +70,11 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 					if ( $insert_id ) {
 						$response['result']   = 'success';
 						$response['redirect'] = apply_filters( 'learn_press_enrolled_course_redirect_url', get_the_permalink( $course_id ) );
-						learn_press_add_notice( sprintf( __( 'Congrats! You have enrolled <strong>%s</strong>', 'learn_press' ), get_the_title( $course_id ) ) );
+						$message = apply_filters( 'learn_press_enrolled_course_message', sprintf( __( 'Congrats! You have enrolled <strong>%s</strong>', 'learn_press' ), get_the_title( $course_id ) ), $course_id, LP()->user->id );
+						learn_press_add_notice( $message );
+					}else{
+						$message = apply_filters( 'learn_press_enroll_course_failed_message', sprintf( __( 'Sorry! The course <strong>%s</strong> you want to enroll has failed! Please contact site\'s administrator for more information.', 'learn_press' ), get_the_title( $course_id ) ) , $course_id, LP()->user->id );
+						learn_press_add_notice( $message, 'error' );
 					}
 
 					if( is_ajax() ){

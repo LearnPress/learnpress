@@ -43,11 +43,6 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 	protected $paypal_vnp_api_sandbox_url = null;
 
 	/**
-	 * @var bool
-	 */
-	static protected $loaded = false;
-
-	/**
 	 * @var string
 	 */
 	protected $method = '';
@@ -58,6 +53,7 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 	protected $paypal_email = null;
 	protected $settings = null;
 
+	protected $line_items = array();
 	/**
 	 *
 	 */
@@ -66,11 +62,14 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 		$this->title       = 'Paypal';
 		$this->description = __( 'Pay with Paypal', 'learn_press' );
 
-		$this->paypal_live_url            = 'https://www.paypal.com/';
+		// live
+		$this->paypal_live_url         = 'https://www.paypal.com/';
+		$this->paypal_payment_live_url = 'https://www.paypal.com/cgi-bin/webscr';
+		$this->paypal_nvp_api_live_url = 'https://api-3t.paypal.com/nvp';
+
+		// sandbox
 		$this->paypal_sandbox_url         = 'https://www.sandbox.paypal.com/';
-		$this->paypal_payment_live_url    = 'https://www.paypal.com/cgi-bin/webscr';
 		$this->paypal_payment_sandbox_url = 'https://www.sandbox.paypal.com/cgi-bin/webscr';
-		$this->paypal_nvp_api_live_url    = 'https://api-3t.paypal.com/nvp';
 		$this->paypal_nvp_api_sandbox_url = 'https://api-3t.sandbox.paypal.com/nvp';
 
 
@@ -78,14 +77,10 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 
 		$this->init();
 		parent::__construct();
-		self::$loaded = true;
 	}
 
 	function init() {
-
-
 		if ( $this->settings->get( 'paypal_enable' ) ) {
-
 			if ( $this->settings->get( 'paypal_sandbox' ) == 'no' ) {
 				$this->paypal_url         = $this->paypal_live_url;
 				$this->paypal_payment_url = $this->paypal_payment_live_url;
@@ -97,10 +92,12 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 				$this->paypal_nvp_api_url = $this->paypal_nvp_api_sandbox_url;
 				$this->paypal_email       = $this->settings->get( 'paypal_sandbox_email' );
 			}
-			if( did_action( 'init' ) ){
+
+
+			if ( did_action( 'init' ) ) {
 				$this->register_web_hook();
 				$this->parse_ipn();
-			}else{
+			} else {
 				add_action( 'init', array( $this, 'register_web_hook' ) );
 				add_action( 'init', array( $this, 'parse_ipn' ) );
 			}
@@ -111,10 +108,7 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 			//add_action('learn_press_update_order_status', array($this, 'remove_transient'), 5, 2);
 			//add_action('learn_press_payment_gateway_form_paypal', array($this, 'payment_form'));
 
-			add_action( 'learn_press_web_hook_learn_press_paypal-standard', array( $this, 'web_hook_process_paypal_standard' ) );
-			add_action( 'learn_press_web_hook_learn_press_paypal-standard-secure', array( $this, 'web_hook_process_paypal_standard_secure' ) );
-			add_filter( 'learn_press_payment_method_from_slug_paypal-standard-secure', array( $this, 'payment_method_name' ) );
-			add_filter( 'learn_press_payment_method_from_slug_paypal-standard', array( $this, 'payment_method_name' ) );
+			add_action( 'learn_press_web_hook_learn_press_paypal', array( $this, 'web_hook_process_paypal' ) );
 
 		}
 
@@ -141,102 +135,67 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 	}
 
 	function register_web_hook() {
-
-
-		learn_press_register_web_hook( 'paypal-standard', 'learn_press_paypal-standard' );
-		learn_press_register_web_hook( 'paypal-standard-secure', 'learn_press_paypal-standard-secure' );
+		learn_press_register_web_hook( 'paypal', 'learn_press_paypal' );
 	}
 
-	function web_hook_process_paypal_standard( $request ) {
+	function validate_ipn(){
+		$validate_ipn = array( 'cmd' => '_notify-validate' );
+		$validate_ipn += wp_unslash( $_POST );
 
-		$payload['cmd'] = '_notify-validate';
-		foreach ( $_POST as $key => $value ) {
-			$payload[$key] = stripslashes( $value );
-		}
+		// Send back post vars to paypal
+		$params = array(
+			'body'        => $validate_ipn,
+			'timeout'     => 60,
+			'httpversion' => '1.1',
+			'compress'    => false,
+			'decompress'  => false
+		);
 
-		$paypal_api_url = !empty( $_REQUEST['test_ipn'] ) ? $this->paypal_payment_sandbox_url : $this->paypal_payment_live_url;
-		$response       = wp_remote_post( $paypal_api_url, array( 'body' => $payload ) );
-		$body           = wp_remote_retrieve_body( $response );
-
-		if ( 'VERIFIED' === $body ) {
-			if ( !empty( $request['txn_type'] ) ) {
-				switch ( $request['txn_type'] ) {
-					case 'web_accept':
-						if ( ! empty( $request['custom'] ) && ( $order = $this->get_order( $request['custom'] ) ) ) {
-							$request['payment_status'] = strtolower( $request['payment_status'] );
-
-							if ( isset( $request['test_ipn'] ) && 1 == $request['test_ipn'] && 'pending' == $request['payment_status'] ) {
-								$request['payment_status'] = 'completed';
-							}
-
-							$method = 'payment_status_' . $request['payment_status'];
-
-							if ( method_exists( $this, $method ) ) {
-								call_user_func( array( $this, $method ), $order, $request );
-							}
-						}
-						break;
-
-				}
+		// Post back to get a response
+		$response = wp_safe_remote_post( !empty( $_REQUEST['test_ipn'] ) ? $this->paypal_payment_sandbox_url : $this->paypal_payment_live_url, $params );
+		if ( ! is_wp_error( $response ) && $response['response']['code'] >= 200 && $response['response']['code'] < 300 ) {
+			$body = wp_remote_retrieve_body( $response );
+			if ( 'VERIFIED' === $body ) {
+				return true;
 			}
 		}
+		return false;
 	}
 
-	function web_hook_process_paypal_standard_secure( $request ) {
-		$payload['cmd'] = '_notify-validate';
-		foreach ( $_POST as $key => $value ) {
-			$payload[$key] = stripslashes( $value );
-		}
-		$paypal_api_url = !empty( $_REQUEST['test_ipn'] ) ? $this->paypal_payment_sandbox_url : $this->paypal_payment_live_url;
-		$response       = wp_remote_post( $paypal_api_url, array( 'body' => $payload ) );
-		$body           = wp_remote_retrieve_body( $response );
+	function web_hook_process_paypal( $request ) {
+		if ( $this->validate_ipn() ) {
+			if ( !empty( $request['custom'] ) && ( $order = $this->get_order( $request['custom'] ) ) ) {
+				$request['payment_status'] = strtolower( $request['payment_status'] );
 
-		if ( 'VERIFIED' === $body ) {
-
-			if ( !empty( $request['txn_type'] ) ) {
-
-				if ( !empty( $request['transaction_subject'] ) && $transient_data = learn_press_get_transient_transaction( 'lppss', $request['transaction_subject'] ) ) {
-					learn_press_delete_transient_transaction( 'lppss', $request['transaction_subject'] );
-					return learn_press_add_transaction(
-						array(
-							'method'             => 'paypal-standard-secure',
-							'method_id'          => $request['txn_id'],
-							'status'             => $request['payment_status'],
-							'user_id'            => $transient_data['user_id'],
-							'transaction_object' => $transient_data['transaction_object']
-						)
-					);
+				if ( isset( $request['test_ipn'] ) && 1 == $request['test_ipn'] && 'pending' == $request['payment_status'] ) {
+					$request['payment_status'] = 'completed';
 				}
 
-				switch ( $request['txn_type'] ) {
-					case 'web_accept':
-						switch ( strtolower( $request['payment_status'] ) ) {
-							case 'completed':
-								learn_press_update_order_status( $request['txn_id'], $request['payment_status'] );
-								break;
-						}
-						break;
+				$method   = 'payment_status_' . $request['payment_status'];
+				$callback = array( $this, $method );
+				if ( is_callable( $callback ) ) {
+					call_user_func( $callback, $order, $request );
 				}
 			}
 		}
 	}
 
 	function payment_method_name( $slug ) {
-		return $slug == 'paypal-standard-secure' ? 'Paypal Standard - Secure' : ( 'paypal-standard' == $slug ? 'Paypal Standard - Basic' : $slug );
+		return $slug == 'paypal-standard' ? 'Paypal' : $slug;
 	}
 
 	function paypal_available( $a, $b ) {
 		return LP()->settings->get( 'paypal_enable' );
 	}
 
-	function get_order( $raw_custom ){
+	function get_order( $raw_custom ) {
 		$raw_custom = stripslashes( $raw_custom );
 		if ( ( $custom = json_decode( $raw_custom ) ) && is_object( $custom ) ) {
 			$order_id  = $custom->order_id;
 			$order_key = $custom->order_key;
 
 			// Fallback to serialized data if safe. This is @deprecated in 2.3.11
-		} elseif ( preg_match( '/^a:2:{/', $raw_custom ) && ! preg_match( '/[CO]:\+?[0-9]+:"/', $raw_custom ) && ( $custom = maybe_unserialize( $raw_custom ) ) ) {
+		} elseif ( preg_match( '/^a:2:{/', $raw_custom ) && !preg_match( '/[CO]:\+?[0-9]+:"/', $raw_custom ) && ( $custom = maybe_unserialize( $raw_custom ) ) ) {
 			$order_id  = $custom[0];
 			$order_key = $custom[1];
 
@@ -246,13 +205,13 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 			return false;
 		}
 
-		if ( ! $order = LP_Order::instance( $order_id ) ) {
+		if ( !$order = LP_Order::instance( $order_id ) ) {
 			$order_id = hb_get_order_id_by_key( $order_key );
 			$order    = LP_Order::instance( $order_id );
 		}
 
-		if ( ! $order || $order->order_key !== $order_key ) {
-			printf( __( 'Error: Order Keys do not match %s and %s.' ) , $order->order_key, $order_key );
+		if ( !$order || $order->order_key !== $order_key ) {
+			printf( __( 'Error: Order Keys do not match %s and %s.' ), $order->order_key, $order_key );
 			return false;
 		}
 		return $order;
@@ -294,103 +253,6 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 		Pay with Paypal
 		<?php
 		return ob_get_clean();
-	}
-
-
-	function process_order_paypal_standard_secure() {
-		if ( !empty( $_REQUEST['learn-press-transaction-method'] ) && ( 'paypal-standard-secure' == $_REQUEST['learn-press-transaction-method'] ) ) {
-			// if we have a paypal-nonce in $_REQUEST that meaning user has clicked go back to our site after finished the transaction
-			// so, create a new order
-
-			if ( !empty( $_REQUEST['paypal-nonce'] ) && wp_verify_nonce( $_REQUEST['paypal-nonce'], 'learn-press-paypal-nonce' ) ) {
-				if ( !empty( $_REQUEST['tx'] ) ) //if PDT is enabled
-					$transaction_id = $_REQUEST['tx'];
-				else if ( !empty( $_REQUEST['txn_id'] ) ) //if PDT is not enabled
-					$transaction_id = $_REQUEST['txn_id'];
-				else
-					$transaction_id = NULL;
-
-				if ( !empty( $_REQUEST['cm'] ) )
-					$transient_transaction_id = $_REQUEST['cm'];
-				else if ( !empty( $_REQUEST['custom'] ) )
-					$transient_transaction_id = $_REQUEST['custom'];
-				else
-					$transient_transaction_id = NULL;
-
-				if ( !empty( $_REQUEST['st'] ) ) //if PDT is enabled
-					$transaction_status = $_REQUEST['st'];
-				else if ( !empty( $_REQUEST['payment_status'] ) ) //if PDT is not enabled
-					$transaction_status = $_REQUEST['payment_status'];
-				else
-					$transaction_status = NULL;
-
-				$settings = get_option( '_lpr_settings_payment' );
-				if ( empty( $settings['paypal'] ) ) return;
-				$paypal_settings = $settings['paypal'];
-
-				$user = learn_press_get_current_user();
-
-				if ( !empty( $transaction_id ) && !empty( $transient_transaction_id ) && !empty( $transaction_status ) ) {
-
-					try {
-
-						$paypal_api_url       = ( $paypal_settings['sandbox'] ) ? $this->paypal_nvp_api_sandbox_url : $this->paypal_nvp_api_live_url;
-						$paypal_api_username  = ( $paypal_settings['sandbox'] ) ? $paypal_settings['paypal_sandbox_api_username'] : $paypal_settings['paypal_api_username'];
-						$paypal_api_password  = ( $paypal_settings['sandbox'] ) ? $paypal_settings['paypal_sandbox_api_password'] : $paypal_settings['paypal_api_password'];
-						$paypal_api_signature = ( $paypal_settings['sandbox'] ) ? $paypal_settings['paypal_sandbox_api_signature'] : $paypal_settings['paypal_api_signature'];
-
-						$request = array(
-							'USER'          => trim( $paypal_api_username ),
-							'PWD'           => trim( $paypal_api_password ),
-							'SIGNATURE'     => trim( $paypal_api_signature ),
-							'VERSION'       => '96.0', //The PayPal API version
-							'METHOD'        => 'GetTransactionDetails',
-							'TRANSACTIONID' => $transaction_id,
-						);
-
-						$response = wp_remote_post( $paypal_api_url, array( 'body' => $request ) );
-
-						if ( !is_wp_error( $response ) ) {
-
-							$array = array();
-							parse_str( wp_remote_retrieve_body( $response ), $response_array );
-
-							$transaction_status = $response_array['PAYMENTSTATUS'];
-
-							if ( $transaction_id != $response_array['TRANSACTIONID'] )
-								throw new Exception( __( 'Error: Transaction IDs do not match! %s, %s', 'learn_press' ) );
-
-							if ( $transaction_object = learn_press_get_transient_transaction( 'lppss', $transient_transaction_id ) ) {
-								//If the transient still exists, delete it and add the official transaction
-
-								learn_press_delete_transient_transaction( 'lppss', $transient_transaction_id );
-								$order_id = $this->get_order_id( $transaction_id );
-								$order_id = learn_press_add_transaction(
-									array(
-										'order_id'           => $order_id,
-										'method'             => 'paypal-standard-secure',
-										'method_id'          => $transaction_id,
-										'status'             => $transaction_status,
-										'user_id'            => $user->ID,
-										'transaction_object' => $transaction_object['transaction_object']
-									)
-								);
-								wp_redirect( ( $confirm_page_id = learn_press_get_page_id( 'taken_course_confirm' ) ) && get_post( $confirm_page_id ) ? learn_press_get_order_confirm_url( $order_id ) : get_site_url() );
-								die();
-							}
-
-						} else {
-							throw new Exception( $response->get_error_message() );
-						}
-
-					} catch ( Exception $e ) {
-
-					}
-					wp_redirect( get_site_url() );
-					die();
-				}
-			}
-		}
 	}
 
 	function process_order_paypal_standard() {
@@ -474,9 +336,9 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 		}
 
 		if ( 'completed' === $request['payment_status'] ) {
-			$this->payment_complete( $order, ( ! empty( $request['txn_id'] ) ? $request['txn_id'] : '' ), __( 'IPN payment completed', 'learn_press' ) );
+			$this->payment_complete( $order, ( !empty( $request['txn_id'] ) ? $request['txn_id'] : '' ), __( 'IPN payment completed', 'learn_press' ) );
 			// save paypal fee
-			if ( ! empty( $request['mc_fee'] ) ) {
+			if ( !empty( $request['mc_fee'] ) ) {
 				update_post_meta( $order->post->ID, '_transaction_fee', $request['mc_fee'] );
 			}
 		} else {
@@ -487,24 +349,26 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 	 * Handle a pending payment
 	 *
 	 * @param  LP_Order
-	 * @param Paypal IPN params
+	 * @param  Paypal IPN params
 	 */
 	protected function payment_status_pending( $order, $request ) {
 		$this->payment_status_completed( $order, $request );
 	}
 
 	/**
-	 * @param LP_Order
+	 * @param        LP_Order
 	 * @param string $txn_id
 	 * @param string $note - not use
 	 */
-	function payment_complete( $order, $txn_id = '', $note = '' ){
+	function payment_complete( $order, $txn_id = '', $note = '' ) {
 		$order->payment_complete( $txn_id );
 	}
 
 	function process_payment( $order ) {
-		$redirect = $this->settings->get( 'paypal_type' ) == 'basic' ? $this->get_paypal_basic_request_url( $order ) : $this->get_request_url( $order );
-		$json     = array(
+
+		$redirect = $this->get_request_url( $order );
+
+		$json = array(
 			'result'   => $redirect ? 'success' : 'fail',
 			'redirect' => $redirect
 		);
@@ -512,152 +376,71 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 		return $json;
 	}
 
-	function get_request_url( $order ) {
-
-		$settings = get_option( '_lpr_settings_payment' );
-		if ( empty( $settings['paypal'] ) ) return;
-		$paypal_settings = $settings['paypal'];
-
-		$user = learn_press_get_current_user();
-
-		$payment_form = '';
-
-		$paypal_api_url     = ( $paypal_settings['sandbox'] ) ? $this->paypal_nvp_api_sandbox_url : $this->paypal_nvp_api_live_url;// PAYPAL_NVP_API_SANDBOX_URL : PAYPAL_NVP_API_LIVE_URL;
-		$paypal_payment_url = ( $paypal_settings['sandbox'] ) ? $this->paypal_payment_sandbox_url : $this->paypal_payment_sandbox_url;//'https://www.sandbox.paypal.com/cgi-bin/webscr' : 'https://www.paypal.com/cgi-bin/webscr';
-
-		$paypal_email         = ( $paypal_settings['sandbox'] ) ? $paypal_settings['paypal_sandbox_email'] : $paypal_settings['paypal_email'];
-		$paypal_api_username  = ( $paypal_settings['sandbox'] ) ? $paypal_settings['paypal_sandbox_api_username'] : $paypal_settings['paypal_api_username'];
-		$paypal_api_password  = ( $paypal_settings['sandbox'] ) ? $paypal_settings['paypal_sandbox_api_password'] : $paypal_settings['paypal_api_password'];
-		$paypal_api_signature = ( $paypal_settings['sandbox'] ) ? $paypal_settings['paypal_sandbox_api_signature'] : $paypal_settings['paypal_api_signature'];
-
-		if ( !empty( $paypal_email )
-			&& !empty( $paypal_api_username )
-			&& !empty( $paypal_api_password )
-			&& !empty( $paypal_api_signature )
-		) {
-
-			$subscription = false;
-
-
-			remove_filter( 'the_title', 'wptexturize' ); // remove this because it screws up the product titles in PayPal
-
-			$transaction = learn_press_generate_transaction_object();
-			$temp_id     = learn_press_uniqid();
-
-			learn_press_set_transient_transaction( 'lppss', $temp_id, $user->ID, $transaction );
-
-
-			$button_request               = array(
-				'USER'        => trim( $paypal_api_username ),
-				'PWD'         => trim( $paypal_api_password ),
-				'SIGNATURE'   => trim( $paypal_api_signature ),
-				'VERSION'     => '96.0', //The PayPal API version
-				'METHOD'      => 'BMCreateButton',
-				'BUTTONCODE'  => 'ENCRYPTED',
-				'BUTTONIMAGE' => 'REG',
-				'BUYNOWTEXT'  => 'PAYNOW',
-			);
-			$button_request['BUTTONTYPE'] = 'BUYNOW';
-			$L_BUTTONVARS[]               = 'amount=' . learn_press_get_cart_total();
-			$L_BUTTONVARS[]               = 'quantity=1';
-			$nonce                        = wp_create_nonce( 'learn-press-paypal-nonce' );
-
-			$L_BUTTONVARS[] = 'business=' . $paypal_email;
-			$L_BUTTONVARS[] = 'item_name=' . learn_press_get_cart_description();
-			$L_BUTTONVARS[] = 'return=' . add_query_arg( array( 'learn-press-transaction-method' => 'paypal-standard-secure', 'paypal-nonce' => $nonce ), learn_press_get_cart_course_url() );
-			$L_BUTTONVARS[] = 'currency_code=' . learn_press_get_currency();//$general_settings['default-currency'];
-			$L_BUTTONVARS[] = 'notify_url=' . learn_press_get_web_hook( 'paypal-standard-secure' );
-			//http://lessbugs.com/paypal/paypal_ipn.php';// . get_site_url() . '/?paypal-stardard-secure=1' ;
-			$L_BUTTONVARS[] = 'no_note=1';
-			$L_BUTTONVARS[] = 'shipping=0';
-			$L_BUTTONVARS[] = 'email=' . $user->user_email;
-			$L_BUTTONVARS[] = 'rm=2'; //Return  Method - https://developer.paypal.com/webapps/developer/docs/classic/button-manager/integration-guide/ButtonManagerHTMLVariables/
-			$L_BUTTONVARS[] = 'cancel_return=' . learn_press_get_cart_course_url();
-			$L_BUTTONVARS[] = 'custom=' . $temp_id;
-			$L_BUTTONVARS[] = 'no_shipping=1';
-
-			$L_BUTTONVARS = apply_filters( 'learn_press_paypal_standard_secure_button_vars', $L_BUTTONVARS );
-			$count        = 0;
-			foreach ( $L_BUTTONVARS as $L_BUTTONVAR ) {
-				$button_request['L_BUTTONVAR' . $count] = $L_BUTTONVAR;
-				$count ++;
-			}
-
-
-			$button_request = apply_filters( 'learn_press_paypal_standard_secure_button_request', $button_request );
-
-			$response = wp_remote_post( $paypal_api_url, array( 'body' => $button_request ) );
-
-			if ( !is_wp_error( $response ) ) {
-				parse_str( wp_remote_retrieve_body( $response ), $response_array );
-				if ( !empty( $response_array['ACK'] ) && 'Success' === $response_array['ACK'] ) {
-					if ( !empty( $response_array['WEBSITECODE'] ) )
-						$payment_form = str_replace( array( "\r\n", "\r", "\n" ), '', stripslashes( $response_array['WEBSITECODE'] ) );
-				}
-			} else {
-				print_r( $response );
-			}
-
-			if ( preg_match( '/-----BEGIN PKCS7-----.*-----END PKCS7-----/i', $payment_form, $matches ) ) {
-
-				$query              = array(
-					'cmd'       => '_s-xclick',
-					'encrypted' => $matches[0],
-				);
-				$paypal_payment_url = $paypal_payment_url . '?' . http_build_query( $query );
-
-				return $paypal_payment_url;
-			} else {
-				echo $payment_form;
+	protected function prepare_line_items() {
+		$this->line_items = array();
+		if( $items = LP()->cart->get_items() ){
+			foreach( $items as $item ){
+				$this->add_line_item( get_the_title( $item['item_id'] ), $item['quantity'], $item['total'] );
 			}
 		}
-
-		return false;
-
 	}
 
-	/**
-	 * Build request url for Paypal Basic
-	 *
-	 * @param int
-	 * @return string
-	 */
-	function get_paypal_basic_request_url( $order_id ) {
+	protected function add_line_item( $item_name, $quantity = 1, $amount = 0, $item_number = '' ) {
+		$index = ( sizeof( $this->line_items ) / 4 ) + 1;
 
-		$user = learn_press_get_current_user();
+		if ( $amount < 0 || $index > 9 ) {
+			return false;
+		}
 
-		$paypal_args = array(
-			'cmd'      => '_xclick',
-			'amount'   => learn_press_get_cart_total(),
-			'quantity' => '1',
-		);
+		$this->line_items[ 'item_name_' . $index ]   = html_entity_decode( wc_trim_string( $item_name ? $item_name : __( 'Item', 'learn_press' ), 127 ), ENT_NOQUOTES, 'UTF-8' );
+		$this->line_items[ 'quantity_' . $index ]    = $quantity;
+		$this->line_items[ 'amount_' . $index ]      = $amount;
+		$this->line_items[ 'item_number_' . $index ] = $item_number;
 
-		$nonce = wp_create_nonce( 'learn-press-paypal-nonce' );
+		return true;
+	}
+
+	function get_item_lines(){
+		return $this->line_items;
+	}
+
+	function get_request_url( $order_id ) {
+
 		$order = LP_Order::instance( $order_id );
-
-		$custom = array( 'order_id' => $order_id, 'order_key' => $order->order_key );
-
-		$query = array(
-			'business'      => $this->paypal_email,
-			'item_name'     => learn_press_get_cart_description(),
-			'return'        => add_query_arg( array( 'learn-press-transaction-method' => 'paypal-standard', 'paypal-nonce' => $nonce ), learn_press_get_cart_course_url() ),
-			'currency_code' => learn_press_get_currency(),
-			'notify_url'    => get_site_url() . '/?' . learn_press_get_web_hook( 'paypal-standard' ) . '=1',
-			'no_note'       => '1',
-			'shipping'      => '0',
-			'email'         => $user->user_email,
-			'rm'            => '2',
-			'cancel_return' => learn_press_get_cart_course_url(),
-			'custom'        => json_encode( $custom ),
-			'no_shipping'   => '1'
-		);
-
-		$query = array_merge( $paypal_args, $query );
-		$query = apply_filters( 'learn_press_paypal_standard_query', $query );
+		$query = $this->get_paypal_args( $order );
 
 		$paypal_payment_url = $this->paypal_url . '?' . http_build_query( $query );
 
 		return $paypal_payment_url;
+	}
+
+	function get_paypal_args( $order ){
+		$this->prepare_line_items();
+		$user = learn_press_get_current_user();
+		$nonce = wp_create_nonce( 'learn-press-paypal-nonce' );
+		$custom = array( 'order_id' => $order->id, 'order_key' => $order->order_key );
+
+		$args = array_merge(
+			array(
+				'cmd'           => '_cart',
+				'business'      => $this->paypal_email,
+				'no_note'       => 1,
+				'currency_code' => learn_press_get_currency(),
+				'charset'       => 'utf-8',
+				'rm'            => is_ssl() ? 2 : 1,
+				'upload'        => 1,
+				'return'        => esc_url( $this->get_return_url( $order ) ),
+				'cancel_return' => esc_url( learn_press_is_enable_cart() ? learn_press_get_page_link( 'cart' ) : get_site_url() ),
+				'bn'            => 'LearnPress_Cart',
+				//'invoice'       => $order->id,
+				'custom'        => json_encode( $custom ),
+				'notify_url'    => get_site_url() . '/?' . learn_press_get_web_hook( 'paypal' ) . '=1',
+				'email'			=> $user->user_email
+			),
+			$this->get_item_lines()
+		);
+		//print_r($args);die();
+		return apply_filters( 'learn_press_paypal_args', $args );
 	}
 
 	function __toString() {

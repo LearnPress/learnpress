@@ -8,12 +8,14 @@ if (typeof window.LearnPress == 'undefined') {
 	window.LearnPress = {};
 }
 ;(function ($) {
+	return;
 	var $doc = $(document);
 	LearnPress.Hook.addFilter('before_add_question_option', function($el, args){
 		return true;
 	}).addAction('question_option_added', function($el){
 		$el.find('input[type="text"]').focus();
 	})
+
 	LearnPress.Question = {
 		addOption  : function (question_id) {
 			var args = {

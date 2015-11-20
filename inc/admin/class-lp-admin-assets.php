@@ -23,7 +23,8 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 	 * Load assets for admin
 	 */
 	static function load_scripts(){
-		self::add_style( 'learn-press-admin', learn_press_plugin_url( 'assets/css/learnpress-admin.css' ) );
+		self::add_style( 'learn-press-global', learn_press_plugin_url( 'assets/css/global-style.css' ) );
+		self::add_style( 'learn-press-admin', learn_press_plugin_url( 'assets/css/learnpress-admin.css' ), array( 'learn-press-global' ) );
 		self::add_style( 'learn-press-icon', learn_press_plugin_url( 'assets/css/style.css' ) );
 		self::add_script( 'learn-press-admin', learn_press_plugin_url( 'assets/js/admin/learnpress.js' ) );
 	}

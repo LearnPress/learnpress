@@ -21,7 +21,7 @@ class LP_Shortcodes {
 			'learn_press_confirm_order'       => __CLASS__ . '::confirm_order',
 			'learn_press_profile'             => __CLASS__ . '::profile',
 			'learn_press_become_teacher_form' => __CLASS__ . '::become_teacher_form',
-			'learn_press_cart'            => __CLASS__ . '::cart',
+			'learn_press_cart'                => __CLASS__ . '::cart',
 			'learn_press_checkout'            => __CLASS__ . '::checkout',
 		);
 
@@ -36,17 +36,47 @@ class LP_Shortcodes {
 	 * @return string
 	 */
 	static function checkout() {
+		global $wp;
 		ob_start();
-		// Check cart has contents
-		if ( LP()->cart->is_empty() ) {
-			learn_press_get_template( 'checkout/empty-cart.php', array( 'checkout' => LP()->checkout() ) );
+
+		if ( isset( $wp->query_vars['order-received'] ) ) {
+
+			self::order_received( $wp->query_vars['order-received'] );
+
 		} else {
-			learn_press_get_template( 'checkout/form.php', array( 'checkout' => LP()->checkout() ) );
+			// Check cart has contents
+			if ( LP()->cart->is_empty() ) {
+				learn_press_get_template( 'checkout/empty-cart.php', array( 'checkout' => LP()->checkout() ) );
+			} else {
+				learn_press_get_template( 'checkout/form.php', array( 'checkout' => LP()->checkout() ) );
+			}
 		}
+
 		return ob_get_clean();
 	}
 
-	static function cart(){
+	private static function order_received( $order_id = 0 ) {
+
+		learn_press_print_notices();
+
+		$order = false;
+
+		// Get the order
+		$order_id  = absint( $order_id );
+		$order_key = !empty( $_GET['key'] ) ? $_GET['key'] : '';
+
+		if ( $order_id > 0 ) {
+			$order = learn_press_get_order( $order_id );
+			if ( $order->order_key != $order_key )
+				unset( $order );
+		}
+
+		LP()->session->order_awaiting_payment = null;
+
+		learn_press_get_template( 'checkout/order-received.php', array( 'order' => $order ) );
+	}
+
+	static function cart() {
 		ob_start();
 		// Check cart has contents
 		if ( LP()->cart->is_empty() ) {

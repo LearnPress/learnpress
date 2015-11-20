@@ -706,7 +706,10 @@ body.post-type-lp_question #question_answer_ .inside{
 	color: #AAAAAA;
 }
 #questions #learn-press-button-add-question{
-	vertical-align: middle;
+	_vertical-align: middle;
+}
+#questions input[name="lp-new-question-name"]{
+
 }
 #questions .question-actions{
 	background-color: #FFF;
@@ -991,4 +994,54 @@ body.post-type-lp_question #question_answer_ .inside{
 }
 .column-num_of_question{
     width: 150px;
+}
+
+.lp-search-items input[name="lp-item-name"]{
+	width: 500px;
+}
+.lp-button-dropdown{
+	padding-left: 0 !important;
+	padding-right: 0 !important;
+	position: relative;
+}
+.lp-button-dropdown .lp-dropdown-label {
+	padding-left: 10px;
+}
+.lp-button-dropdown .lp-dropdown-arrow{
+	display: inline-block;
+	/* width: 20px; */
+	text-align: center;
+	padding: 0 10px;
+}
+.lp-button-dropdown .lp-dropdown-items{
+	position: absolute;
+	margin: 0;
+	/* width: 100%; */
+	background-color: #FFF;
+	top: 100%;
+	margin-top: 1px;
+	border: 1px solid #DDD;
+	right: -1px;
+	/* right: -1px; */
+	width: 200px;
+	z-index: 9999999;
+	display: none;
+}
+.lp-button-dropdown .lp-dropdown-items li{
+	margin: 0;
+}
+.lp-button-dropdown .lp-dropdown-items li a{
+	display: block;
+	padding: 10px;
+	line-height: 1;
+	text-decoration: none;
+	outline: none;
+	box-shadow: none;
+}
+.lp-button-dropdown .lp-dropdown-items li a:hover{
+	background-color: #F5F5F5;
+}
+.lp-button-dropdown:not(.disabled) .lp-dropdown-arrow:hover + ul,
+.lp-button-dropdown:not(.disabled) ul:hover{
+	display: block;
 }

@@ -353,4 +353,34 @@ function learn_press_is_enable_cart() {
 	return LP()->settings->get( 'enable_cart' ) == 'yes';
 }
 
+function learn_press_clear_cart_after_payment() {
+	global $wp;
+
+	if ( ! empty( $wp->query_vars['order-received'] ) ) {
+
+		$order_id  = absint( $wp->query_vars['order-received'] );
+		$order_key = isset( $_GET['key'] ) ? $_GET['key'] : '';
+
+		if ( $order_id > 0 ) {
+			$order = learn_press_get_order( $order_id );
+
+			if ( $order->order_key === $order_key ) {
+				LP()->cart->empty_cart();
+			}
+		}
+	}
+
+	if ( LP()->session->order_awaiting_payment > 0 ) {
+		$order = learn_press_get_order( LP()->session->order_awaiting_payment );
+
+		if ( $order && $order->id > 0 ) {
+			if ( ! $order->has_status( array( 'failed', 'pending', 'cancelled' ) ) ) {
+				LP()->cart->empty_cart();
+				LP()->session->order_awaiting_payment = null;
+			}
+		}
+	}
+}
+add_action( 'get_header', 'learn_press_clear_cart_after_payment' );
+
 //learn_press_get_cart_description();

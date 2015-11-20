@@ -525,7 +525,11 @@ class LP_Abstract_User {
 	 * @return bool
 	 */
 	function can_enroll_course( $course_id ) {
-		$enrollable = !$this->has_enrolled_course( $course_id ) && $this->has_purchased_course( $course_id );
+		$enrollable = false;
+		if( $order_id = $this->has_purchased_course( $course_id ) ) {
+			$order = LP_Order::instance( $order_id );
+			$enrollable = !$this->has_enrolled_course( $course_id ) && $order && $order->has_status( 'completed' );
+		}
 		return apply_filters( 'learn_press_user_can_enroll_course', $enrollable, $this, $course_id );
 	}
 
@@ -780,6 +784,7 @@ class LP_Abstract_User {
 			INNER JOIN {$wpdb->postmeta} om ON om.post_id = o.ID AND om.meta_key = %s AND om.meta_value = %d
 			INNER JOIN {$wpdb->learnpress_order_items} oi ON o.ID = oi.order_ID
 			INNER JOIN {$wpdb->learnpress_order_itemmeta} oim ON oim.learnpress_order_item_id= oi.order_item_id AND oim.meta_key = %s AND oim.meta_value = %d
+			ORDER BY order_id DESC
 		", '_user_id', $this->id, '_course_id', $course_id );
 
 		$order_id = $wpdb->get_var( $query );
@@ -862,10 +867,9 @@ class LP_Abstract_User {
 			return;
 		}
 		global $wpdb;
+		$inserted = 0;
 
 		do_action( 'learn_press_before_enroll_course', $this, $course_id );
-
-		$inserted = 0;
 
 		if ( $wpdb->insert(
 			$wpdb->learnpress_user_courses,
@@ -888,6 +892,25 @@ class LP_Abstract_User {
 			do_action( 'learn_press_user_enroll_course_failed', $this, $course_id, $inserted );
 		}
 		return $inserted;
+	}
+
+	function get_questions( $args = array() ){
+		static $questions = array();
+		if( !is_array( $args ) ){
+			$args = array(
+				'post_per_page' => 9999
+			);
+		}
+
+		$args['post_type'] = LP()->question_post_type;
+		$args['author']	= $this->id;
+
+		$key = md5( serialize( $args ) );
+		if( empty( $questions[$key] ) || ( !empty( $args['force'] ) && $args['force'] == true ) ){
+			$questions[ $key ] = get_posts( $args );
+		}
+
+		return apply_filters( 'learn_press_user_questions', $questions[$key], $this );
 	}
 
 	function tab_courses_content() {

@@ -21,6 +21,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 				'update_editor_hidden'		=> false,
 				'update_curriculum_section_state' => false,
 				'quick_add_item'		=> false,
+				'add_new_item' => false,
 				/////////////
 				'quick_add_lesson'        => false,
 				'quick_add_quiz'          => false,
@@ -41,6 +42,24 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 					add_action( 'wp_ajax_nopriv_learnpress_' . $ajaxEvent, array( __CLASS__, $ajaxEvent ) );
 				}
 			}
+		}
+
+		static function add_new_item(){
+
+			$post_type = learn_press_get_request( 'type' );
+			$post_title = learn_press_get_request( 'name' );
+			$response = array();
+			if( $post_type && $post_title ){
+				$args = compact( 'post_title', 'post_type' );
+				$args['post_status'] = 'publish';
+				$item_id = wp_insert_post( $args );
+				if( $item_id ){
+					$item = get_post( $item_id );
+					$response['post'] = $item;
+					$response['post']->edit_link = get_edit_post_link( $item_id );
+				}
+			}
+			learn_press_send_json( $response );
 		}
 
 		static function quick_add_item(){
@@ -125,7 +144,9 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			$id   = learn_press_get_request( 'id' );
 			$type = learn_press_get_request( 'type' );
 			$name = learn_press_get_request( 'name' );
-			$response = array();
+			$response = array(
+				'id'	=> $id
+			);
 			if( !$id ){
 				$id = wp_insert_post(
 					array(
@@ -137,6 +158,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 				if( $id ){
 					add_post_meta( $id, '_lp_type', $type );
 				}
+				$response['id'] = $id;
 			}
 			if( $id ){
 				ob_start();

@@ -22,6 +22,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 			add_filter( 'manage_lp_quiz_posts_columns', array( $this, 'columns_head' ) );
 			add_action( 'manage_lp_quiz_posts_custom_column', array( $this, 'columns_content' ), 10, 2 );
 			add_action( 'save_post_lpr_quiz', array( $this, 'update_quiz_meta' ) );
+			add_action( 'admin_head', array( $this, 'print_js_template' ) );
 
 			//add_filter( 'posts_fields', array( $this, 'posts_fields' ) );
 			//add_filter( 'posts_join_paged', array( $this, 'posts_join_paged' ) );
@@ -33,6 +34,13 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 
 			parent::__construct();
 
+		}
+
+		/**
+		 * Print js template
+		 */
+		static function print_js_template() {
+			learn_press_admin_view( 'meta-boxes/quiz/js-template.php' );
 		}
 
 		static function save() {

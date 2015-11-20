@@ -11,43 +11,51 @@ if (typeof window.LearnPress == 'undefined') {
 			this.$form.on('submit', this.enroll);
 		},
 		enroll         : function () {
-			var $form = $(this);
-			if ($form.triggerHandler('learn_press_enroll_course') !== false ) {
+			var $form = $(this),
+				$button = $form.find('.button.enroll-button'),
+				course_id = $form.find('input[name="enroll-course"]').val();
+			if (!$button.hasClass('enrolled') && $form.triggerHandler('learn_press_enroll_course') !== false ) {
+				$button.removeClass('enrolled failed').addClass('loading');
 				$.ajax({
-					url     : learn_press_url,
+					url     : LearnPress.getUrl(),
 					dataType: 'html',
 					data    : $form.serialize(),
 					type    : 'post',
 					success : function (response) {
-						response = LearnPress.parse_json(response);
+						response = LearnPress.parseJSON(response);
 						if (response.result == 'fail') {
-							if (response.messages) {
-								LearnPress.Checkout.showErrors(response.messages);
-							} else {
-								LearnPress.Checkout.showErrors('<div class="learn-press-error">Unknown error!</div>');
+							if( LearnPress.Hook.applyFilters( 'learn_press_user_enroll_course_failed', course_id ) !== false ) {
+								if (response.redirect) {
+									LearnPress.reload(response.redirect);
+								}
 							}
 						} else {
-							if (response.redirect) {
-								LearnPress.reload(response.redirect);
+							if( LearnPress.Hook.applyFilters( 'learn_press_user_enrolled_course', course_id ) !== false ) {
+								if (response.redirect) {
+									LearnPress.reload(response.redirect);
+								}
 							}
 						}
-						$form.unblock_ui();
 					},
 					error:	function( jqXHR, textStatus, errorThrown ) {
-						LearnPress.Checkout.showErrors('<div class="learn-press-error">'+errorThrown+'</div>');
-						$form.unblock_ui();
+						LearnPress.Hook.doAction( 'learn_press_user_enroll_course_failed', course_id );
+						$button.removeClass('loading').addClass('failed');
+						LearnPress.Enroll.showErrors('<div class="learn-press-error">'+errorThrown+'</div>');
 					}
 				})
 			}
 			return false;
 		},
 		showErrors         : function (messages) {
-			$('.learn-press-error, .learn-press-notice, .learn-press-message').remove();
+			this.removeErrors();
 			this.$form.prepend(messages);
 			$('html, body').animate({
 				scrollTop: ( LearnPress.Enroll.$form.offset().top - 100 )
 			}, 1000);
 			$(document.body).trigger('learn_press_enroll_error');
+		},
+		removeErrors: function(){
+			$('.learn-press-error, .learn-press-notice, .learn-press-message').remove();
 		}
 	}
 	$(document).ready(function () {

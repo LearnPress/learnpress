@@ -364,6 +364,22 @@ if ( !function_exists( 'learn_press_order_payment' ) ) {
 	}
 }
 
+if ( ! function_exists( 'learn_press_order_details_table' ) ) {
+
+	/**
+	 * Displays order details in a table.
+	 *
+	 * @param mixed $order_id
+	 * @subpackage	Orders
+	 */
+	function learn_press_order_details_table( $order_id ) {
+		if ( ! $order_id ) return;
+		learn_press_get_template( 'order/order-details.php', array(
+			'order' => learn_press_get_order( $order_id )
+		) );
+	}
+}
+
 if ( !function_exists( 'learn_press_order_comment' ) ) {
 	/**
 	 * Output order comment input

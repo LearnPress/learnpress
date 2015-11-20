@@ -10,7 +10,7 @@
 	<p class="lp-item-actions">
 		<?php do_action( 'learn_press_admin_begin_section_item_actions', $item, $section );?>
 		<a href="" class="lp-item-action lp-sort-item"><?php _e( 'Move', 'learn_press' ); ?></a> |
-		<a href="<?php echo get_edit_post_link( $item->ID ); ?>" class="lp-item-action lp-edit" target="_blank"><?php _e( 'Edit', 'learn_press' ); ?></a> |
+		<a href="<?php echo is_numeric( $item->ID ) ? get_edit_post_link( $item->ID ) : '{{data.edit_link}}'; ?>" class="lp-item-action lp-edit" target="_blank"><?php _e( 'Edit', 'learn_press' ); ?></a> |
 		<a href="" class="lp-item-action lp-remove"><?php _e( 'Remove', 'learn_press' ); ?></a>
 		<?php do_action( 'learn_press_admin_end_section_item_actions', $item, $section );?>
 	</p>

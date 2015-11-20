@@ -98,8 +98,7 @@ class LP_Checkout {
 				do_action( 'learn_press_add_order_item_meta', $item_id, $item );
 			}
 
-			///$order->set_payment_method( $this->payment_method );
-			//$order->set_total( LP()->cart->total );
+			$order->set_payment_method( $this->payment_method );
 
 			// Update user meta
 			if ( $this->user_id ) {
@@ -212,14 +211,14 @@ class LP_Checkout {
 
 				// Process Payment
 				$result = $this->payment_method->process_payment( $order_id );
-
+				$success = !empty( $result['result'] ) && $result['result'] == 'success';
 				// Redirect to success/confirmation/payment page
-				if ( $result['result'] == 'success' ) {
+				if ( $success ) {
 
 					$result = apply_filters( 'learn_press_payment_successful_result', $result, $order_id );
 
 					// remove cart
-					LP()->cart->empty_cart();
+					//LP()->cart->empty_cart();
 
 					if ( is_ajax() ) {
 						learn_press_send_json( $result );
@@ -235,6 +234,7 @@ class LP_Checkout {
 			if ( !empty( $e ) ) {
 				learn_press_add_notice( $e->getMessage(), 'error' );
 			}
+			$success = false;
 		}
 		$error_messages = '';
 		if ( !$success ) {

@@ -83,21 +83,7 @@ class LP_Settings_Payments extends LP_Settings_Base {
 			do_action( 'learn_press_save_' . $this->id . '_' . $section );
 		}
 		$settings->update();
-		return;
-		$payment_options                = get_option( '_lpr_payment_settings', array() );
-		$section                        = isset( $_GET['section'] ) ? $_GET['section'] : 'paypal';
-		$params                         = isset( $_POST['lpr_settings']['payment'][$section] ) ? $_POST['lpr_settings']['payment'][$section] : $payment_options[$section];
-		$payment_options[$section]      = $params;
-		$payment_options['method']      = isset( $_POST['lpr_settings']['payment']['method'] ) ? $_POST['lpr_settings']['payment']['method'] : '';
-		$payment_options['third_party'] = isset( $_POST['lpr_settings']['payment']['third_party'] ) ? $_POST['lpr_settings']['payment']['third_party'] : '';
-		update_option( '_lpr_payment_settings', $payment_options );
-		return;
-		$payment_options                = get_option( '_lpr_payment_settings', array() );
-		$payment_tab                    = isset( $_GET['section'] ) ? $_GET['section'] : 'paypal';
-		$params                         = isset( $_POST['lpr_settings']['payment'][$payment_tab] ) ? $_POST['lpr_settings']['payment'][$payment_tab] : $payment_options[$payment_tab];
-		$payment_options[$payment_tab]  = $params;
-		$payment_options['woocommerce'] = isset( $_POST['lpr_settings']['payment']['woocommerce'] ) ? $_POST['lpr_settings']['payment']['woocommerce'] : array();
-		update_option( '_lpr_payment_settings', $payment_options );
+
 	}
 }
 

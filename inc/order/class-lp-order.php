@@ -133,6 +133,14 @@ class LP_Order {
 		}
 	}
 
+	function set_payment_method( $payment_method ){
+		if ( is_object( $payment_method ) ) {
+			update_post_meta( $this->id, '_payment_method', $payment_method->id );
+			update_post_meta( $this->id, '_payment_method_title', $payment_method->get_title() );
+		}
+		$this->payment_method = $payment_method;
+	}
+
 	/**
 	 * Format order number id
 	 *
@@ -183,8 +191,10 @@ class LP_Order {
 	 * @return mixed
 	 */
 	public function get_checkout_order_received_url() {
-		$received_url = home_url();//hb_get_endpoint_url( 'order-received', $this->id, hb_get_page_permalink( 'search' ) );
+		$received_url = learn_press_get_endpoint_url( 'order-received', $this->id, learn_press_get_page_link( 'checkout' ) );
+
 		$received_url = add_query_arg( 'key', $this->order_key, $received_url );
+
 		return apply_filters( 'learn_press_get_checkout_order_received_url', $received_url, $this );
 	}
 
@@ -244,6 +254,8 @@ class LP_Order {
 				$this->id
 			)
 		);
+		$wpdb->query( $wpdb->prepare( "ALTER TABLE {$wpdb->learnpress_order_itemmeta} AUTO_INCREMENT = %d", 1 ) );
+		$wpdb->query( $wpdb->prepare( "ALTER TABLE {$wpdb->learnpress_order_items} AUTO_INCREMENT = %d", 1 ) );
 	}
 
 	/**
@@ -288,14 +300,18 @@ class LP_Order {
 
 	}
 
+	function get_formatted_order_subtotal() {
+		$currency_symbol = learn_press_get_currency_symbol( $this->order_currency );
+		return learn_press_format_price( $this->order_subtotal, $currency_symbol );
+	}
+
 	function get_formatted_order_total() {
-		$order_items     = learn_press_get_order_items( $this->post->ID );
-		$currency_symbol = learn_press_get_currency_symbol( $order_items->currency );
-		return learn_press_format_price( $order_items->sub_total, $currency_symbol );
+		$currency_symbol = learn_press_get_currency_symbol( $this->order_currency );
+		return learn_press_format_price( $this->order_total, $currency_symbol );
 	}
 
 	function get_payment_method_title() {
-		return learn_press_payment_method_from_slug( $this->post->ID );
+		return $this->payment_method_title;
 	}
 
 	/*********************************/

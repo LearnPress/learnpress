@@ -61,6 +61,8 @@ function learn_press_create_order( $order_data ) {
 		update_post_meta( $order_id, '_order_subtotal', LP()->cart->subtotal );
 		update_post_meta( $order_id, '_order_total', LP()->cart->total );
 		update_post_meta( $order_id, '_order_key', apply_filters( 'learn_press_generate_order_key', uniqid( 'order' ) ) );
+		update_post_meta( $order_id, '_payment_method', '' );
+		update_post_meta( $order_id, '_payment_method_title', '' );
 	}
 
 	return LP_Order::instance( $order_id );
@@ -432,7 +434,7 @@ function learn_press_get_orders( $args = array() ) {
 
 	return apply_filters( 'learn_press_get_orders', $orders, $args );
 }
-
+/*
 function learn_press_on_order_status_changed( $status, $order_id ) {
 	$course_id = learn_press_get_course_by_order( $order_id );
 	$user_id   = get_post_meta( $order_id, '_learn_press_customer_id', true );
@@ -466,7 +468,7 @@ function learn_press_on_order_status_changed( $status, $order_id ) {
 	update_post_meta( $course_id, '_lpr_course_user', $course_users );
 }
 
-add_action( 'learn_press_update_order_status', 'learn_press_on_order_status_changed', 50, 2 );
+add_action( 'learn_press_update_order_status', 'learn_press_on_order_status_changed', 50, 2 );*/
 /*
 function learn_press_send_user_email($status, $order_id){
 

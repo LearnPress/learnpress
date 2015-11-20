@@ -133,7 +133,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 		 */
 		public $cart = false;
 
-		private static $x = 0;
+		public $query_vars = array();
 		/**
 		 * LearnPress constructor
 		 */
