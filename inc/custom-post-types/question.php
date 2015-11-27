@@ -209,7 +209,7 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 			$this->save_post();
 		}
 		function save_post( ){
-			die();
+			die(__FILE__.'::'.__FUNCTION__);
 		}
 	} // end LP_Question_Post_Type
 }

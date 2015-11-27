@@ -12,7 +12,7 @@ if ( !defined( 'ABSPATH' ) ) {
 }
 global $quiz;
 
-if( ! $quiz->retake || !LP()->user->has( 'completed-quiz', $quiz->id ) ) {
+if( ! $quiz->retake_count || !LP()->user->has( 'completed-quiz', $quiz->id ) ) {
 	return;
 }
 $heading = apply_filters( 'learn_press_list_questions_heading', __( 'History', 'learn_press' ) );

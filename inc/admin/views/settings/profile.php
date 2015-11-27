@@ -17,7 +17,10 @@ $settings = LP()->settings;
 	<table class="form-table">
 		<tbody>
 		<?php do_action( 'learn_press_before_' . $this->id . '_settings_fields', $this ); ?>
-
+		<?php foreach( $this->get_settings() as $field ){?>
+			<?php $this->output_field( $field );?>
+		<?php }?>
+		<?php if( 1 == 0 ){?>
 		<tr>
 			<th scope="row"><label><?php _e( 'Profile page', 'learn_press' ); ?></label></th>
 			<td>
@@ -27,7 +30,7 @@ $settings = LP()->settings;
 				?>
 			</td>
 		</tr>
-
+		<?php }?>
 		<?php do_action( 'learn_press_after_' . $this->id . '_settings_fields', $this ); ?>
 		</tbody>
 	</table>

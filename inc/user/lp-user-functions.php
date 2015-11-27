@@ -297,6 +297,51 @@ function learn_press_get_user_questions( $user_id = null, $args = array() ){
 	return learn_press_get_user( $user_id )->get_questions( $args );
 }
 
+/**
+ * Get the type of current user
+ *
+ * @param null $check_type
+ * @return bool|string
+ */
+function learn_press_current_user_is( $check_type = null ){
+	global $current_user;
+	$user_roles = $current_user->roles;
+	$user_type = '';
+
+	// backward compatible
+	if( in_array( 'lpr_teacher', $user_roles ) ){
+		$user_type = 'instructor';
+	} elseif ( in_array( 'lp_teacher', $user_roles ) ){
+		$user_type = 'instructor';
+	} elseif ( in_array( 'administrator', $user_roles ) ){
+		$user_type = 'administrator';
+	}
+	return $check_type ? $check_type == $user_type : $user_type;
+}
+
+function learn_press_user_has_roles( $roles, $user_id = null ){
+	$has_role = false;
+	if( !$user_id ) {
+		$user = wp_get_current_user();
+	}else{
+		$user = get_user_by( 'id', $user_id );
+	}
+	$available_roles = (array) $user->roles;
+	if( is_array( $roles ) ){
+		foreach( $roles as $role ){
+			if ( in_array( $role, $available_roles ) ) {
+				$has_role = true;
+				break; // only need one of roles is in available
+			}
+		}
+	}else{
+		if ( in_array( $roles, $available_roles ) ) {
+			$has_role = true;
+		}
+	}
+	return $has_role;
+}
+
 function learn_press_after_logged_in() {
 
 }

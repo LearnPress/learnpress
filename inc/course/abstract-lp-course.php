@@ -197,21 +197,21 @@ abstract class LP_Abstract_Course {
 			$query             = $wpdb->prepare( "
 				SELECT cc.*
 				FROM {$wpdb->posts} p
-				INNER JOIN {$wpdb->learnpress_sections} cc ON p.ID = cc.course_id
+				INNER JOIN {$wpdb->learnpress_sections} cc ON p.ID = cc.section_course_id
 				WHERE p.ID = %d
-				ORDER BY `order` ASC
+				ORDER BY `section_order` ASC
 			", $this->id );
 			if ( $rows = $wpdb->get_results( $query ) ) {
 				foreach ( $rows as $row ) {
 					$section = $row;
 
 					$section->items = array();
-					$query          = "SELECT lp_si.ID as lp_si_ID, p.*
+					$query          = "SELECT lp_si.item_id as lp_si_ID, p.*
 							FROM {$wpdb->posts} p
-							INNER JOIN {$wpdb->learnpress_section_items} lp_si ON lp_si.item_id = p.ID
-							INNER JOIN {$wpdb->learnpress_sections} lp_s ON lp_s.ID = lp_si.section_id
-							WHERE lp_s.ID = " . $row->ID . "
-							ORDER BY lp_si.order ASC
+							INNER JOIN {$wpdb->learnpress_section_items} lp_si ON lp_si.section_item_id = p.ID
+							INNER JOIN {$wpdb->learnpress_sections} lp_s ON lp_s.section_id = lp_si.section_id
+							WHERE lp_s.section_id = " . $row->section_id . "
+							ORDER BY lp_si.section_item_order ASC
 							";
 					$section->items = $wpdb->get_results( $query );
 					//}

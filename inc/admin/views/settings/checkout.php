@@ -13,10 +13,13 @@ if ( !defined( 'ABSPATH' ) ) {
 
 $settings = LP()->settings;
 ?>
-	<h3><?php _e( 'General', 'learn_press' ); ?></h3>
 	<table class="form-table">
 		<tbody>
 		<?php do_action( 'learn_press_before_' . $this->id . '_' . $this->section['id'] . '_settings_fields', $this ); ?>
+		<?php foreach( $this->get_settings() as $field ){?>
+			<?php $this->output_field( $field );?>
+		<?php }?>
+		<?php if( 1 == 0 ){?>
 		<tr>
 			<th scope="row"><label for="learn-press-checkout-enable-cart"><?php _e( 'Enable cart', 'learn_press' ); ?></label></th>
 			<td>
@@ -59,8 +62,11 @@ $settings = LP()->settings;
 				?>
 			</td>
 		</tr>
+		<?php }?>
 	</tbody>
+
 	</table>
+<?php if( 1 == 0 ){?>
 	<h3><?php _e( 'Checkout Endpoints', 'learn_press' );?></h3>
 	<table class="form-table">
 		<tbody>
@@ -73,4 +79,5 @@ $settings = LP()->settings;
 		<?php do_action( 'learn_press_after_' . $this->id . '_' . $this->section['id'] . '_settings_fields', $this ); ?>
 		</tbody>
 	</table>
+	<?php } ?>
 <?php

@@ -20,7 +20,7 @@ if( $is_hidden ){
 ?>
 <li class="<?php echo join(' ', $class ); ?>" data-id="<?php echo $section ? $section->ID : '';?>">
 	<h3 class="curriculum-section-head">
-		<input name="_lp_curriculum[__SECTION__][name]" type="text" data-field="section-name" placeholder="<?php _e( 'Enter the section name and hit enter', 'learn_press' );?>" class="lp-section-name no-submit" value="<?php echo esc_attr( $section->name ); ?>" />
+		<input name="_lp_curriculum[__SECTION__][name]" type="text" data-field="section-name" placeholder="<?php _e( 'Enter the section name and hit enter', 'learn_press' );?>" class="lp-section-name no-submit" value="<?php echo esc_attr( $section->section_name ); ?>" />
 		<p class="lp-section-actions">
 			<a href="" data-action="expand"<?php echo $is_hidden ? '' : ' class="hide-if-js"';?>><?php _e( 'Expand', 'learn_press' );?></a>
 			<a href="" data-action="collapse"<?php echo ! $is_hidden ? '' : ' class="hide-if-js"';?>><?php _e( 'Collapse', 'learn_press' );?></a>

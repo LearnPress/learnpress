@@ -22,3 +22,4 @@ function lp_deprecated_filter_mapping( $data, $arg_1 = '', $arg_2 = '', $arg_3 =
 
 	return $data;
 }
+

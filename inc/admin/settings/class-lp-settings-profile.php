@@ -28,6 +28,21 @@ class LP_Settings_Profile extends LP_Settings_Base {
 		$view = learn_press_get_admin_view( 'settings/profile.php' );
 		include_once $view;
 	}
+
+	function get_settings() {
+		return apply_filters(
+			'learn_press_checkout_settings',
+			array(
+				array(
+					'title'   => __( 'Profile page', 'learn_press' ),
+					'id'       => $this->get_field_name( 'profile_page_id' ),
+					'id'       => $this->get_field_name( 'profile_page_id' ),
+					'default'  => '',
+					'type'     => 'pages-dropdown'
+				)
+			)
+		);
+	}
 }
 //
 return new LP_Settings_Profile();

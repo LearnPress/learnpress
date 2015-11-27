@@ -4,7 +4,7 @@ Plugin Name: LearnPress
 Plugin URI: http://thimpress.com/learnpress
 Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
 Author: ThimPress
-Version: 0.9.17
+Version: 0.9.19
 Author URI: http://thimpress.com
 Requires at least: 3.5
 Tested up to: 4.3
@@ -21,6 +21,8 @@ defined( 'ABSPATH' ) || exit;
 if ( !defined( 'LP_PLUGIN_PATH' ) ) {
 	define( 'LP_PLUGIN_PATH', trailingslashit( plugin_dir_path( __FILE__ ) ) );
 	define( 'LP_PLUGIN_URL', trailingslashit( plugins_url( '/', __FILE__ ) ) );
+	define( 'LEARNPRESS_VERSION', '1.0' );
+	define( 'LEARNPRESS_DB_VERSION', '1.0' );
 }
 if ( !class_exists( 'LearnPress' ) ) {
 	/**
@@ -35,14 +37,14 @@ if ( !class_exists( 'LearnPress' ) ) {
 		 *
 		 * @var string
 		 */
-		public $version = '0.9.17';
+		public $version = LEARNPRESS_VERSION;
 
 		/**
 		 * Current version of database
 		 *
 		 * @var string
 		 */
-		public $db_version = '1.0';
+		public $db_version = LEARNPRESS_DB_VERSION;
 
 		/**
 		 * The single instance of the class
@@ -134,26 +136,27 @@ if ( !class_exists( 'LearnPress' ) ) {
 		public $cart = false;
 
 		public $query_vars = array();
+
 		/**
 		 * LearnPress constructor
 		 */
 		public function __construct() {
-
+			//echo "[LearnPress loaded]";
 			$this->_setup_post_types();
 			// defines const
 			$this->define_const();
 
 			$this->define_tables();
-
 			// Define the url and path of plugin
 			$this->plugin_file = LP_PLUGIN_FILE;
 			$this->plugin_url  = LP_PLUGIN_URL;
 			$this->plugin_path = LP_PLUGIN_PATH;
 
-			// hooks
-			$this->init_hooks();
 			// includes
 			$this->includes();
+
+			// hooks
+			$this->init_hooks();
 
 			// let third parties know that we're ready
 			do_action( 'learn_press_loaded' );
@@ -170,12 +173,12 @@ if ( !class_exists( 'LearnPress' ) ) {
 						$this->{$key} = LP_Checkout::instance();
 						break;
 					case 'course':
-						if( is_course() ){
+						if ( is_course() ) {
 							$this->{$key} = LP_Course::get_course( get_the_ID() );
 						}
 						break;
 					case 'quiz':
-						if( is_quiz() ){
+						if ( is_quiz() ) {
 							$this->{$key} = LP_Quiz::get_quiz( get_the_ID() );
 						}
 						break;
@@ -249,8 +252,8 @@ if ( !class_exists( 'LearnPress' ) ) {
 		 */
 		function define_const() {
 
-			$this->define( 'LEARNPRESS_VERSION', $this->version );
-			$this->define( 'LEARNPRESS_DB_VERSION', $this->db_version );
+			//$this->define( 'LEARNPRESS_VERSION', $this->version );
+			//$this->define( 'LEARNPRESS_DB_VERSION', $this->db_version );
 
 			$this->define( 'LP_PLUGIN_FILE', __FILE__ );
 			//$this->define( 'LP_PLUGIN_PATH', trailingslashit( plugin_dir_path( __FILE__ ) ) );
@@ -298,12 +301,19 @@ if ( !class_exists( 'LearnPress' ) ) {
 			require_once 'inc/custom-post-types/order.php';
 		}
 
+		function xxx() {
+			learn_press_output_file2( 'xxx.php', rand() );
+
+		}
+
 		/**
 		 * Initial common hooks
 		 */
 		function init_hooks() {
 
-			register_activation_hook( __FILE__, array( 'LP_Install', 'install' ) );
+			$plugin_file = WP_PLUGIN_DIR . '/' . basename( dirname( __FILE__ ) ) . '/' . basename( __FILE__ );
+			register_activation_hook( $plugin_file, array( 'LP_Install', 'install' ) );
+
 			// initial some tasks before page load
 			add_action( 'init', array( $this, 'init' ) );
 
@@ -335,7 +345,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 			return $this->session;
 		}
 
-		function get_user(){
+		function get_user() {
 			if ( !$this->user ) {
 				$this->user = learn_press_get_current_user();
 			}
@@ -381,13 +391,11 @@ if ( !class_exists( 'LearnPress' ) ) {
 			// include core functions
 			require_once 'inc/lp-core-functions.php';
 			require_once 'inc/lp-add-on-functions.php';
-
 			// auto include file for class if class doesn't exists
 			require_once 'inc/class-lp-autoloader.php';
 			require_once 'inc/class-lp-install.php';
 			require_once 'inc/lp-webhooks.php';
 			require_once 'inc/class-lp-request-handler.php';
-
 			if ( is_admin() ) {
 
 				require_once 'inc/admin/class-lp-admin-notice.php';
@@ -408,14 +416,11 @@ if ( !class_exists( 'LearnPress' ) ) {
 			} else {
 
 			}
+			$this->settings = LP_Settings::instance();
 
 			require_once 'inc/class-lp-assets.php';
 			require_once 'inc/question/abstract-lp-question.php';
 			require_once 'inc/question/class-lp-question-factory.php';
-
-
-			$this->settings = LP_Settings::instance();
-
 
 			$this->include_post_types();
 
@@ -478,6 +483,8 @@ if ( !class_exists( 'LearnPress' ) ) {
 			if ( !empty( $_REQUEST['debug'] ) ) {
 				require_once( 'inc/debug.php' );
 			}
+
+
 		}
 
 		/**
@@ -527,15 +534,15 @@ if ( !class_exists( 'LearnPress' ) ) {
 			return LP_Checkout::instance();
 		}
 
-		function setup_theme(){
-			if ( ! current_theme_supports( 'post-thumbnails' ) ) {
+		function setup_theme() {
+			if ( !current_theme_supports( 'post-thumbnails' ) ) {
 				add_theme_support( 'post-thumbnails' );
 			}
 			add_post_type_support( 'lp_course', 'thumbnail' );
 
 			$sizes = apply_filters( 'learn_press_image_sizes', array( 'single_course', 'course_thumbnail' ) );
 
-			foreach( $sizes as $image_size ) {
+			foreach ( $sizes as $image_size ) {
 				$size           = LP()->settings->get( $image_size . '_image_size', array() );
 				$size['width']  = isset( $size['width'] ) ? $size['width'] : '300';
 				$size['height'] = isset( $size['height'] ) ? $size['height'] : '300';
@@ -543,10 +550,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 
 				add_image_size( $image_size, $size['width'], $size['height'], $size['crop'] );
 			}
-
 		}
-
-
 	} // end class
 }
 
@@ -564,7 +568,7 @@ function LearnPress() {
 
 function LP() {
 	static $learnpress = false;
-	if( ! $learnpress ){
+	if ( !$learnpress ) {
 		$learnpress = LearnPress::instance();
 	}
 	return $learnpress;
@@ -573,24 +577,31 @@ function LP() {
 /**
  * Load the main instance of plugin after all plugins have been loaded
  *
- * @author      TuNguyen
- * @date        04 Mar 2015
+ * @author      ThimPress
+ * @package     LearnPress/Functions
  * @since       1.0
  */
 function load_learn_press() {
 	$GLOBALS['learn_press'] = array();
 	$GLOBALS['LearnPress']  = LP();
-
-
 }
 
 // Done! entry point of the plugin
-add_action( 'plugins_loaded', 'load_learn_press' );
+load_learn_press();
 
-function test_mail(){
-	$user = learn_press_get_user( 4 );
+/************************************/
+
+function test_mail() {
+	//$user = learn_press_get_user( 4 );
 	//do_action( 'learn_press_course_rejected', 920, $user );
 	//do_action( 'learn_press_course_submitted', 920, $user );
 	//do_action( 'learn_press_course_approved', 920, $user );
 }
+
 add_action( 'admin_footer', 'test_mail' );
+
+
+function learn_press_output_file2( $file, $content ) {
+	$upload = wp_upload_dir();
+	file_put_contents( $upload['basedir'] . '/' . $file, $content );
+}

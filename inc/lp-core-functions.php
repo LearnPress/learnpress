@@ -1653,7 +1653,8 @@ function learn_press_edit_admin_bar() {
 	if ( in_array( LP()->teacher_role, $current_user->roles ) || in_array( 'administrator', $current_user->roles ) ) {
 		return;
 	}
-	if ( !class_exists( 'LP_Admin_Settings' ) ) return;
+	//if ( !class_exists( 'LP_Admin_Settings' ) ) return;
+	/**
 	$settings = LP_Admin_Settings::instance( 'general' );
 	if ( $settings->get( 'instructor_registration' ) ) {
 		$be_teacher           = array();
@@ -1662,7 +1663,7 @@ function learn_press_edit_admin_bar() {
 		$be_teacher['title']  = __( 'Become An Instructor', 'learn_press' );
 		$be_teacher['href']   = '#';
 		$wp_admin_bar->add_menu( $be_teacher );
-	}
+	}*/
 }
 
 add_action( 'admin_bar_menu', 'learn_press_edit_admin_bar' );

@@ -63,6 +63,7 @@ function learn_press_create_order( $order_data ) {
 		update_post_meta( $order_id, '_order_key', apply_filters( 'learn_press_generate_order_key', uniqid( 'order' ) ) );
 		update_post_meta( $order_id, '_payment_method', '' );
 		update_post_meta( $order_id, '_payment_method_title', '' );
+		update_post_meta( $order_id, '_order_version', '1.0' );
 	}
 
 	return LP_Order::instance( $order_id );

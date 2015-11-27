@@ -24,9 +24,8 @@ if ( !class_exists( 'LP_Admin' ) ) {
 			add_action( 'admin_enqueue_scripts', array( $this, 'admin_scripts' ) );
 			add_action( 'admin_print_scripts', array( $this, 'plugin_js_settings' ) );
 			add_action( 'init', array( $this, 'include_update' ) );
+			add_action( 'template_redirect', array( $this, '_redirect' ) );
 
-			// redirect
-			$this->_redirect();
 		}
 
 		function include_update(){
@@ -56,7 +55,7 @@ if ( !class_exists( 'LP_Admin' ) ) {
 		/**
 		 * Redirect to admin settings page
 		 */
-		private function _redirect() {
+		function _redirect() {
 			$page = isset( $_GET['page'] ) ? $_GET['page'] : '';
 			if ( 'learn_press_settings' == $page ) {
 				$current_tab = isset( $_GET['tab'] ) ? $_GET['tab'] : '';

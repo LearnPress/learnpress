@@ -11,52 +11,15 @@ if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-$settings = LP()->settings;
-global $wp_post_types;
-if ( !empty( $wp_post_types[LP()->course_post_type] ) ) {
-	$course_type          = $wp_post_types[LP()->course_post_type];
-	$default_courses_slug = $course_type->rewrite['slug'];
-} else {
-	$default_courses_slug = '';
-}
-
-//$permalinks = get_option( 'woocommerce_permalinks' );
-$course_permalink = $settings->get( 'course_base' );
-
-$courses_page_id = learn_press_get_page_id( 'courses' );
-$base_slug       = urldecode( ( $courses_page_id > 0 && get_post( $courses_page_id ) ) ? get_page_uri( $courses_page_id ) : _x( 'courses', 'default-slug', 'learn_press' ) );
-$course_base    = _x( 'course', 'default-slug', 'learn_press' );
-
-$structures = array(
-	0 => array(
-		'value' => '',
-		'text'	=> __( 'Default', 'learn_press' ),
-		'code'	=> esc_html( home_url() ) . '/?lp_course=sample-course'
-	),
-	1 => array(
-		'value' => '/' . trailingslashit( $course_base ),
-		'text'  => __( 'Course', 'learn_press' ),
-		'code'  => esc_html( sprintf( '%s/%s/sample-course/', home_url(), $course_base ) )
-	),
-	2 => array(
-		'value' => '/' . trailingslashit( $base_slug ),
-		'text'  => __( 'Courses base', 'learn_press' ),
-		'code'  => esc_html( sprintf( '%s/%s/sample-course/', home_url(), $base_slug ) )
-	),
-	3 => array(
-		'value' => '/' . trailingslashit( $base_slug ) . trailingslashit( '%course_category%' ),
-		'text'  => __( 'Courses base with category', 'learn_press' ),
-		'code'  => esc_html( sprintf( '%s/%s/course-category/sample-course/', home_url(), $base_slug ) )
-	)
-);
-
-$is_custom = true;
 ?>
 <h3 class=""><?php echo $this->section['text']; ?></h3>
 <table class="form-table">
 	<tbody>
 	<?php do_action( 'learn_press_before_' . $this->id . '_' . $this->section['id'] . '_settings_fields', $settings ); ?>
-
+	<?php foreach( $this->get_settings() as $field ){?>
+		<?php $this->output_field( $field );?>
+	<?php }?>
+	<?php if( 1 == 0 ){?>
 	<tr>
 		<th scope="row"><label><?php _e( 'Courses Page', 'learn_press' ); ?></label></th>
 		<td>
@@ -170,6 +133,7 @@ $is_custom = true;
 			<p class="description"><?php _e( 'Enter a custom base to use. A base <strong>must</strong> be set or WordPress will use default instead.', 'learn_press' ); ?></p>
 		</td>
 	</tr>
+	<?php }?>
 	<?php do_action( 'learn_press_after_' . $this->id . '_' . $this->section['id'] . '_settings_fields', $settings ); ?>
 	</tbody>
 </table>

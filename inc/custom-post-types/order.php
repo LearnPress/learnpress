@@ -55,7 +55,7 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 		public function disable_autosave() {
 			global $post;
 
-			if ( $post && in_array( get_post_type( $post->ID ), wc_get_order_types( 'order-meta-boxes' ) ) ) {
+			if ( $post && in_array( get_post_type( $post->ID ), array( 'lp_order' ) ) ) {
 				wp_dequeue_script( 'autosave' );
 			}
 		}

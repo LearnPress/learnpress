@@ -17,6 +17,11 @@ $settings = LP()->settings;
 <table class="form-table">
 	<tbody>
 	<?php do_action( 'learn_press_before_general_settings_fields', $settings ); ?>
+	<?php foreach( $this->get_settings() as $field ){?>
+		<?php $this->output_field( $field );?>
+	<?php }?>
+
+	<?php if(1 == 0){?>
 	<tr>
 		<th scope="row">
 			<label><?php _e( 'Instructors registration', 'learn_press' ); ?></label>
@@ -26,20 +31,6 @@ $settings = LP()->settings;
 			<input type="checkbox" name="<?php echo $this->get_field_name( 'instructor_registration' ); ?>" value="yes" <?php checked( $settings->get( 'instructor_registration' ) == 'yes', true ); ?> />
 
 			<p class="description"><?php _e( 'Create option for instructors registration', 'learn_press' ); ?></p>
-		</td>
-	</tr>
-	<tr>
-		<th scope="row">
-			<label><?php _e( 'Profile methods', 'learn_press' ); ?></label>
-		</th>
-		<td>
-			<select id="lpr_set_page" name="<?php echo $this->get_field_name( 'set_page' ); ?>">
-				<?php if ( $profile_methods = apply_filters( 'learn_press_profile_methods', array() ) ) ?>
-				<?php foreach ( $profile_methods as $k => $name ) { ?>
-					<?php $selected = selected( $settings->get( 'set_page' ) == $k ? 1 : 0, 1, false ); ?>
-					<option <?php echo $selected; ?> value="<?php echo $k; ?>"><?php echo $name; ?></option>
-				<?php } ?>
-			</select>
 		</td>
 	</tr>
 	<tr>
@@ -110,5 +101,6 @@ $settings = LP()->settings;
 		</td>
 	</tr>
 	<?php do_action( 'learn_press_after_general_settings_fields', $settings ); ?>
+	<?php }?>
 	</tbody>
 </table>

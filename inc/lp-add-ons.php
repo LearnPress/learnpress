@@ -30,7 +30,7 @@ class LP_Prerequisite_Addon{
 	}
 
 	static function translations() {
-		die();
+		//die();
 		$textdomain    = 'learnpress_prerequisites';
 		$locale        = apply_filters( "plugin_locale", get_locale(), $textdomain );
 		$lang_dir      = dirname( __FILE__ ) . '/lang/';
@@ -44,5 +44,5 @@ class LP_Prerequisite_Addon{
 		}
 	}
 }
-add_action( 'plugins_loaded', array( LP_Prerequisite_Addon, 'translations' ) );
+add_action( 'plugins_loaded', array( 'LP_Prerequisite_Addon', 'translations' ) );
 new LP_Prerequisite_Addon();

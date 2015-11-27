@@ -1,0 +1,6 @@
+#learn-press-confirm-abort-upgrade-course{
+	display: none;
+}
+a[href~=learn_press_upgrade]{
+	display: none!important;
+}

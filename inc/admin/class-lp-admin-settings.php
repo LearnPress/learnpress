@@ -1,5 +1,5 @@
 <?php
-die();
+wp_die( __FILE__ );
 if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
@@ -30,7 +30,7 @@ class LP_Admin_Settings {
 	 */
 	function __construct( $key ) {
 		if ( !$key ) {
-			wp_die();
+			wp_die( __FILE__ . '::' . __FUNCTION__ );
 		}
 		$this->_key     = $key;
 		$this->_options = (array) get_option( $this->_key );

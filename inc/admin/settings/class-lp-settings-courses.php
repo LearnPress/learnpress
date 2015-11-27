@@ -56,6 +56,71 @@ class LP_Settings_Courses extends LP_Settings_Base {
 		$view = learn_press_get_admin_view( 'settings/courses.php' );
 		require_once $view;
 	}
+
+	function get_settings(){
+		return apply_filters(
+			'learn_press_courses_settings',
+			array(
+				array(
+					'title'    => __( 'Courses Page', 'learn_press' ),
+					'id'       => $this->get_field_name( 'courses_page_id' ),
+					'default'  => '',
+					'type'     => 'pages-dropdown'
+				),
+				array(
+					'title'    => __( 'Course category base', 'learn_press' ),
+					'id'       => $this->get_field_name( 'course_category_base' ),
+					'default'  => 'course-category',
+					'type'     => 'text'
+				),
+				array(
+					'title'    => __( 'Course tag base', 'learn_press' ),
+					'id'       => $this->get_field_name( 'course_tag_base' ),
+					'default'  => 'course-tag',
+					'type'     => 'text'
+				),
+				array(
+					'title'    => __( 'Review course before publish', 'learn_press' ),
+					'desc'		=> __( 'The course need to review by admin before it can be published', 'learn_press' ),
+					'id'       => $this->get_field_name( 'required_review' ),
+					'default'  => 'yes',
+					'type'     => 'checkbox'
+				),
+				array(
+					'title'    => __( 'Enable edit published course', 'learn_press' ),
+					'desc'		=> __( 'Allows instructor edit the course that published without review.<br /> If this option is disabled, the course status will be changed to Pending Review when the instructor update course', 'learn_press' ),
+					'id'       => $this->get_field_name( 'enable_edit_published' ),
+					'default'  => 'yes',
+					'type'     => 'checkbox'
+				),
+				array(
+					'title'    => __( 'Course thumbnail', 'learn_press' ),
+					'type'     => 'title'
+				),
+				array(
+					'title'    => __( 'Single course', 'learn_press' ),
+					'id'       => $this->get_field_name( 'single_course_image_size' ),
+					'default'  => array( 800, 450, 'yes' ),
+					'type'     => 'image-size'
+				),
+				array(
+					'title'    => __( 'Course thumbnail', 'learn_press' ),
+					'id'       => $this->get_field_name( 'course_thumbnail_image_size' ),
+					'default'  => array( 400, 250, 'yes' ),
+					'type'     => 'image-size'
+				),
+				array(
+					'title'    => __( 'Single course permalink', 'learn_press' ),
+					'type'     => 'title'
+				),
+				array(
+					'title'    => __( 'Single course permalink', 'learn_press' ),
+					'type'     => 'course-permalink',
+					'default' => ''
+				),
+			)
+		);
+	}
 }
 
-new LP_Settings_Courses();
+return new LP_Settings_Courses();

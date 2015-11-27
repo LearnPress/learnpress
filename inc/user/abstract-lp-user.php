@@ -584,7 +584,7 @@ class LP_Abstract_User {
 		if ( $quiz = LP_Quiz::get_quiz( $quiz_id ) ) {
 			$history = $this->get_quiz_history( $quiz_id );
 			$taken   = $history ? sizeof( $history ) : 0;
-			$can     = $taken ? ( $quiz->retake + 1 ) - $taken : $quiz->retake;
+			$can     = $taken ? ( $quiz->retake_count + 1 ) - $taken : $quiz->retake_count;
 		}
 		return apply_filters( 'learn_press_user_can_retake_quiz', $can, $quiz_id, $this );
 	}
@@ -911,6 +911,17 @@ class LP_Abstract_User {
 		}
 
 		return apply_filters( 'learn_press_user_questions', $questions[$key], $this );
+	}
+
+	function get_courses(){
+		global $wpdb;
+		echo $query = $wpdb->prepare("
+			SELECT *
+			FROM {$wpdb->posts}
+			WHERE post_type = %s
+			AND post_author = %d
+		", LP()->course_post_type, $this->id);
+		return $wpdb->get_results( $query );
 	}
 
 	function tab_courses_content() {

@@ -1,5 +1,4 @@
 <h2><?php _e( 'Update Database', 'learn_press' ); ?></h2>
-<p><?php _e( 'This step will repair your database:', 'learn_press' );?></p>
 <ul id="lp-update-database">
 	<li id="lp-update-post-type">
 		<?php _e( 'Update custom post type', 'learn_press');?>

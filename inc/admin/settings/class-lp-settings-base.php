@@ -51,6 +51,9 @@ class LP_Settings_Base {
 	 * Constructor
 	 */
 	function __construct() {
+		if( strtolower( current_filter() ) == 'activate_learnpress/learnpress.php' ){
+			return;
+		}
 		$current_tab = isset( $_GET['tab'] ) ? $_GET['tab'] : '';
 		$tabs        = learn_press_settings_tabs_array();
 		if ( !$current_tab && $tabs ) {
@@ -170,10 +173,90 @@ class LP_Settings_Base {
 	function get_field_id( $name ) {
 		return preg_replace( array( '!\[|(\]\[)!', '!\]!' ), array( '_', '' ), $this->get_field_name( $name ) );
 	}
-}
-new LP_Settings_Base();
-function learn_press_load_settings_base(){
 
+	function get_settings(){
+		return array();
+	}
+
+	function output_field( $options ){
+		if ( ! isset( $options['type'] ) ) {
+			return;
+		}
+		if ( !isset( $options['id'] ) ) {
+			$options['id'] = '';
+		}
+		if ( !isset( $options['title'] ) ) {
+			$options['title'] = isset( $options['name'] ) ? $options['name'] : '';
+		}
+		if ( !isset( $options['class'] ) ) {
+			$options['class'] = '';
+		}
+		if ( !isset( $options['css'] ) ) {
+			$options['css'] = '';
+		}
+		if ( !isset( $options['default'] ) ) {
+			$options['default'] = '';
+		}
+		if ( !isset( $options['desc'] ) ) {
+			$options['desc'] = '';
+		}
+		if ( !isset( $options['desc_tip'] ) ) {
+			$options['desc_tip'] = false;
+		}
+		if ( !isset( $options['placeholder'] ) ) {
+			$options['placeholder'] = '';
+		}
+
+		$custom_attributes = array();
+
+		if ( !empty( $options['custom_attributes'] ) && is_array( $options['custom_attributes'] ) ) {
+			foreach ( $options['custom_attributes'] as $attribute => $attribute_value ) {
+				$custom_attributes[] = esc_attr( $attribute ) . '="' . esc_attr( $attribute_value ) . '"';
+			}
+		}
+
+		if( !empty( $options['desc'] ) ){
+			$description = sprintf( '<p class="description">%s</p>', $options['desc'] );
+		}else{
+			$description = '';
+		}
+		$file = $options['type'];
+		if( in_array( $file, array( 'text', 'email', 'color', 'password', 'number' ) ) ){
+			$file = 'text';
+		}
+		require learn_press_get_admin_view( 'settings/fields/' . $file . '.php' );
+	}
+
+	function get_option( $option_name, $default = null ){
+		if ( strstr( $option_name, '[' ) ) {
+			parse_str( $option_name, $option_array );
+
+			// Option name is first key
+			$option_name = current( array_keys( $option_array ) );
+
+			// Get value
+			$option_values = get_option( $option_name, '' );
+
+			$key = key( $option_array[ $option_name ] );
+
+			if ( isset( $option_values[ $key ] ) ) {
+				$option_value = $option_values[ $key ];
+			} else {
+				$option_value = null;
+			}
+
+			// Single value
+		} else {
+			$option_value = LP()->settings->get( preg_replace( '!^learn_press_!', '', $option_name ), null );
+		}
+
+		if ( is_array( $option_value ) ) {
+			$option_value = array_map( 'stripslashes', $option_value );
+		} elseif ( ! is_null( $option_value ) ) {
+			$option_value = stripslashes( $option_value );
+		}
+
+		return $option_value === null ? $default : $option_value;
+	}
 }
-add_action( 'plugins_loaded', 'learn_press_load_settings_base' );
-//
+return new LP_Settings_Base();

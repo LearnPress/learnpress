@@ -20,7 +20,10 @@
 		<?php _e( 'LearnPress update version 1.0', 'learn_press' );?>
 	</h1>
 	<div class="lp-update-content">
-		<?php do_action( 'learn_press_update_step_' . $this->_current_step );?>
+		<form name="learn-press-upgrade" method="post" action="options-general.php?page=learn_press_upgrade_10&_wpnonce=<?php echo wp_create_nonce( 'learn-press-upgrade' );?>">
+			<?php do_action( 'learn_press_update_step_' . $this->_current_step );?>
+			<?php wp_nonce_field( 'learn-press-upgrade', '_wpnonce' );?>
+		</form>
 	</div>
 </body>
 </html>

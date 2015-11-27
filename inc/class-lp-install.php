@@ -24,6 +24,8 @@ class LP_Install {
 	 */
 	private static $_db_updates = array();
 
+	private static $_is_old_version = null;
+
 	/**
 	 * Init
 	 */
@@ -35,37 +37,77 @@ class LP_Install {
 		add_action( 'admin_init', array( __CLASS__, 'update_actions' ), 5 );
 		add_action( 'wp_ajax_lp_repair_database', array( __CLASS__, 'repair_database' ) );
 		add_action( 'wp_ajax_lp_rollback_database', array( __CLASS__, 'rollback_database' ) );
-
+		add_action( 'wp_ajax_learn_press_hide_upgrade_notice', array( __CLASS__, 'hide_upgrade_notice' ) );
+		add_action( 'admin_init', array( __CLASS__, 'upgrade_wizard' ) );
+		add_action( 'admin_menu', array( __CLASS__, 'admin_menu' ) );
 	}
 
-	static function update_version_10(){
+	static function update_version_10() {
 		//$post_type = ! empty( $_REQUEST['post'])
-		if( get_option( 'learnpress_db_version' ) == null  ){
-			//wp_redirect( admin_url( 'admin.php?page=learnpress_update_10') );
+		if( !self::_has_new_table() ){
+			self::_create_options();
+			self::_create_tables();
 		}
+		$ask = get_transient( 'learn_press_upgrade_courses_ask_again' );
+		if ( version_compare( LEARNPRESS_VERSION, '1.0' ) === 0 && self::_need_to_update() ) {
+			// Notify for administrator
+			if(  empty( $ask ) && learn_press_current_user_is( 'administrator') ){
+				LP_Admin_Assets::enqueue_style( 'learn-press-upgrade', LP()->plugin_url( 'assets/css/admin/upgrade.css' ) );
+				LP_Admin_Assets::enqueue_script( 'learn-press-upgrade', LP()->plugin_url( 'assets/js/admin/upgrade.js' ) );
+				$upgrade_url = wp_nonce_url( admin_url( 'options-general.php?page=learn_press_upgrade_10' ), 'learn-press-upgrade' );
+				$message     = sprintf( '<p>%s</p>', __( 'It seem to be you have updated LearnPress from old version and there are some courses or data is out of date and need to upgrade.', 'learn_press' ) );
+				$message .= sprintf( '<div id="learn-press-confirm-abort-upgrade-course"><p><label><input type="checkbox" id="learn-press-ask-again-abort-upgrade" /> %s</label></p><p><button href="" class="button disabled" data-action="yes">%s</button> <button href="" class="button" data-action="no">%s</button> </p></div>', __( 'Do not ask again.', 'learn_press' ), __( 'Ok', 'learn_press' ), __( 'Cancel', 'learn_press' ) );
+				$message .= sprintf( '<p id="learn-press-upgrade-course-actions"><a href="%s" class="button" data-action="upgrade">%s</a>&nbsp;<button class="button disabled" data-action="abort">%s</button></p>', $upgrade_url, __( 'Upgrade now', 'learn_press' ), __( 'No, thank!', 'learn_press' ) );
+
+				LP_Admin_Notice::add( $message, 'error' );
+			}
+
+			// Notify for instructor
+			if( learn_press_current_user_is( 'instructor' ) ){
+				LP_Admin_Notice::add( sprintf( '<p>%s</p>', __( 'LearnPress has upgraded and need to upgrade the database before you can work with it. Please notify the site administrator.', 'learn_press' ) ), 'error' );
+			}
+		}
+	}
+
+	static function admin_menu(){
+		add_dashboard_page( '', '', 'manage_options', 'learn_press_upgrade_10', '' );
+	}
+
+	static function hide_upgrade_notice(){
+		$ask_again = learn_press_get_request( 'ask_again' );
+		$expiration = DAY_IN_SECONDS;
+		if( $ask_again == 'no' ){
+			$expiration = 0;
+		}
+		set_transient( 'learn_press_upgrade_courses_ask_again', $ask_again, $expiration );
+		learn_press_send_json( array( 'result' => 'success', 'message' => sprintf( '<p>%s</p>', __( 'Thank for using LearnPress', 'learn_press' ) ) ) );
+	}
+
+	static function upgrade_wizard(){
+		require_once LP_PLUGIN_PATH . '/inc/updates/learnpress-update-1.0.php';
 	}
 
 	/**
 	 * Auto get update patches from inc/updates path
 	 */
-	static function get_update_versions(){
-		if( !$patches = get_transient( 'learnpress_update_patches' ) ){
+	static function get_update_versions() {
+		if ( !$patches = get_transient( 'learnpress_update_patches' ) ) {
 			$patches = array();
 			require_once ABSPATH . 'wp-admin/includes/file.php';
-			if (WP_Filesystem()) {
+			if ( WP_Filesystem() ) {
 				global $wp_filesystem;
 
-				$list = $wp_filesystem->dirlist( LP_PLUGIN_PATH . '/inc/updates');
-				foreach ($list as $file) {
-					if( preg_match( '!learnpress-update-([0-9.]+).php!', $file['name'], $matches ) ){
-						$patches[ $matches[1] ] = $file['name'];
+				$list = $wp_filesystem->dirlist( LP_PLUGIN_PATH . '/inc/updates' );
+				foreach ( $list as $file ) {
+					if ( preg_match( '!learnpress-update-([0-9.]+).php!', $file['name'], $matches ) ) {
+						$patches[$matches[1]] = $file['name'];
 					}
 				}
 			}
-			if( $patches ){
+			if ( $patches ) {
 				self::$_db_updates = $patches;
 			}
-		}else{
+		} else {
 			self::$_db_updates = $patches;
 		}
 	}
@@ -91,194 +133,237 @@ class LP_Install {
 	/**
 	 * Check for new database version and show notice
 	 */
-	static function db_update_notices(){
-		if( get_option( 'learnpress_db_version' ) != LP()->db_version ){
+	static function db_update_notices() {
+		if ( get_option( 'learnpress_db_version' ) != LP()->db_version ) {
 			LP_Admin_Notice::add( __( '<p>LearnPress ' . LP()->version . ' need to upgrade your database.</p><p><a href="' . admin_url( 'admin.php?page=learnpress_update_10' ) . '" class="button">Update Now</a></p>', 'learn_press' ) );
 		}
 	}
 
-	static function install_options() {
-		$options = array(
-			'_lpr_settings_general' => 'a:6:{s:8:"set_page";s:11:"lpr_profile";s:8:"currency";s:3:"USD";s:12:"currency_pos";s:15:"left_with_space";s:19:"thousands_separator";s:1:",";s:18:"decimals_separator";s:1:".";s:18:"number_of_decimals";s:1:"2";}',
-			'_lpr_settings_pages'   => 'a:3:{s:7:"general";a:2:{s:15:"courses_page_id";s:0:"";s:28:"taken_course_confirm_page_id";s:0:"";}s:6:"course";a:1:{s:13:"retake_course";s:1:"0";}s:4:"quiz";a:1:{s:11:"retake_quiz";s:1:"0";}}',
-			'_lpr_settings_payment' => 'a:1:{s:6:"paypal";a:9:{s:4:"type";s:5:"basic";s:12:"paypal_email";s:0:"";s:19:"paypal_api_username";s:0:"";s:19:"paypal_api_password";s:0:"";s:20:"paypal_api_signature";s:0:"";s:20:"paypal_sandbox_email";s:0:"";s:27:"paypal_sandbox_api_username";s:0:"";s:27:"paypal_sandbox_api_password";s:0:"";s:28:"paypal_sandbox_api_signature";s:0:"";}}',
-			'_lpr_settings_emails'  => 'a:3:{s:16:"published_course";a:3:{s:6:"enable";s:1:"1";s:7:"subject";s:15:"Approved Course";s:7:"message";s:215:"<p><strong>Dear {user_name}</strong>,</p>
-<p>Congratulation! The course you created ({course_name}) is available now.</p>
-<p>Visit our website at {log_in}.</p>
-<p>Best regards,</p>
-<p><em>Administration</em></p>";}s:15:"enrolled_course";a:3:{s:6:"enable";s:1:"1";s:7:"subject";s:19:"Course Registration";s:7:"message";s:183:"<p><strong>Dear {user_name}</strong>,</p>
-<p>You have been enrolled in {course_name}.</p>
-<p>Visit our website at {log_in}.</p>
-<p>Best regards,</p>
-<p><em>Administration</em></p>";}s:13:"passed_course";a:3:{s:6:"enable";s:1:"1";s:7:"subject";s:18:"Course Achievement";s:7:"message";s:203:"<p><strong>Dear {user_name}</strong>,</p>
-<p>You have been finished in {course_name} with {course_result}</p>
-<p>Visit our website at {log_in}.</p>
-<p>Best regards,</p>
-<p><em>Administration</em></p>";}}'
-		);
-		foreach ( $options as $k => $option ) {
-			if ( !get_option( $k ) ) {
-				update_option( $k, maybe_unserialize( $option ) );
-			}
-		}
-	}
-
 	static function install() {
-		self::install_options();
+		self::_create_options();
+		self::_create_tables();
 
+		$current_version = get_option( 'learnpress_version' );
+		$current_db_version = get_option( 'learnpress_db_version' );
+
+		// is new install
+		if( is_null( $current_version ) && is_null( $current_db_version ) ){
+
+		}
 		// Update version
 		delete_option( 'learnpress_version' );
 		add_option( 'learnpress_version', LP()->version );
 
-		$s = learn_press_admin_settings( 'emails' );
-		$s->set( 'general', array(
-				'from_name'  => get_option( 'blogname' ),
-				'from_email' => get_option( 'admin_email' )
+	}
+
+	private function _is_old_version() {
+		if ( is_null( self::$_is_old_version ) ) {
+			$is_old_version = get_transient( 'learn_press_is_old_version' );
+			//echo empty( $is_old_version ) ? "null" : "<>";
+			if( empty( $is_old_version ) ) {
+				if ( !get_option( 'learnpress_db_version' ) ||
+					get_posts(
+						array(
+							'post_type'      => 'lpr_course',
+							'post_status'    => 'any',
+							'posts_per_page' => 1
+						)
+					) ){
+						$is_old_version = 'yes';
+				}
+				if ( empty( $is_old_version ) ) {
+					$is_old_version = 'no';
+				}
+				set_transient( 'learn_press_is_old_version', $is_old_version );
+			}
+			self::$_is_old_version = $is_old_version == 'yes';
+		}
+		return self::$_is_old_version;
+	}
+
+	/**
+	 * Find if there is any old course and did not upgrade
+	 * If a course has got a meta key like _learn_press_upgraded that means it is not upgraded
+	 *
+	 * @return mixed
+	 */
+	private static function _has_old_posts(){
+		global $wpdb;
+		$query = $wpdb->prepare("
+			SELECT DISTINCT p.ID, pm.meta_value as upgraded
+			FROM {$wpdb->posts} p
+			LEFT JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID AND pm.meta_key = %s
+			WHERE post_type = %s
+			HAVING upgraded IS NULL
+			LIMIT 0, 1
+		", '_learn_press_upgraded', 'lpr_course' );
+		return $wpdb->get_row( $query );
+	}
+
+	private static function _has_new_table(){
+		global $wpdb;
+		$query = $wpdb->prepare("
+			SELECT COUNT(*)
+			FROM information_schema.tables
+			WHERE table_schema = %s
+			AND table_name LIKE %s
+		", DB_NAME, '%learnpress_sections%');
+		return $wpdb->get_var( $query ) ? true : false;
+	}
+
+	private static function _need_to_update(){
+		return self::_has_old_posts() || self::_has_old_teacher_role();
+	}
+
+	private static function _has_old_teacher_role(){
+		global $wpdb;
+		$query = $wpdb->prepare("
+			SELECT um.*
+			FROM wp_users u
+			INNER JOIN wp_usermeta um ON um.user_id = u.ID AND um.meta_key = %s
+			WHERE um.meta_value LIKE %s
+			LIMIT 0, 1
+		", 'wp_capabilities', '%"lpr_teacher"%' );
+		return $wpdb->get_results( $query );
+	}
+
+	private static function _has_new_posts(){
+		$new_post = get_posts(
+			array(
+				'post_type'      => 'lp_course',
+				'post_status'    => 'any',
+				'posts_per_page' => 1
 			)
 		);
-		$s->update();
+		return sizeof( $new_post ) > 0;
 	}
 
-	static function get_posts_by_ids( $ids ){
-		global $wpdb;
-		$query = "SELECT * FROM {$wpdb->posts} WHERE ID IN(" . join( ',', $ids ) . ")";
-		return $wpdb->get_results( $query, ARRAY_A );
-	}
+	private static function _create_options() {
+		include_once LP_PLUGIN_PATH . '/inc/admin/settings/class-lp-settings-base.php';
 
-	static function get_post_meta( $post_id, $keys ){
-		global $wpdb;
-
-		$query = $wpdb->prepare("
-			SELECT pm.*
-			FROM {$wpdb->postmeta} pm
-			INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id
-			WHERE pm.meta_key in ('" . join( "','", $keys ) . "')
-			AND pm.post_id = %d
-		", absint( $post_id ) );
-		return $wpdb->get_results( $query, ARRAY_A );
-	}
-
-	static function repair_database(){
-		global $wpdb;
-		$query = $wpdb->prepare("
-			SELECT *
-			FROM {$wpdb->posts}
-			WHERE `post_type` = %s
-		", 'lpr_course' );
-
-		$new_courses = array();
-
-		if( $old_courses = $wpdb->get_results( $query ) ){
-			foreach( $old_courses as $old_course ){
-				$course_args = (array) $old_course;
-				$course_args['post_type'] = 'lp_course';
-				unset( $course_args['ID'] );
-				$new_course = wp_insert_post( $course_args );
-				if( $new_course ){
-					$course_args['ID'] = $new_course;
-					$new_courses[$old_course->ID] = $course_args;
-				}
-			}
-		}
-
-		set_transient( 'learnpress_courses', $new_courses, DAY_IN_SECONDS );
-
-		$curriculum_objects = array();
-		if( $new_courses ){
-			foreach( $new_courses as $old_id => $new_course ){
-				$curriculum = get_post_meta( $old_id, '_lpr_course_lesson_quiz', true );
-				if( $curriculum ){
-
-					foreach( $curriculum as $order => $section ){
-						$result = $wpdb->insert(
-							$wpdb->prefix . 'learnpress_sections',
-							array(
-								'name'		=> $section['name'],
-								'course_id' => $new_course['ID'],
-								'order'		=> $order + 1
-							),
-							array( '%s', '%d', '%d' )
-						);
-						if( $result ) {
-							$curriculum_id = $wpdb->insert_id;
-							$lesson_quiz = !empty( $section['lesson_quiz'] ) ? $section['lesson_quiz'] : '';
-							if( ! $lesson_quiz ) continue;
-							$lesson_quiz = self::get_posts_by_ids( $lesson_quiz );
-							if( ! $lesson_quiz ) continue;
-							$order = 1;
-							foreach( $lesson_quiz as $obj ){
-								if( $obj['post_type'] == 'lpr_quiz'){
-									$obj['post_type'] = 'lp_quiz';
-								}else{
-									$obj['post_type'] = 'lp_lesson';
-								}
-								$obj_id = $obj['ID'];
-								unset( $obj['ID'] );
-								if( $new_obj_id = wp_insert_post( $obj ) ){
-									$wpdb->insert(
-										$wpdb->prefix . 'learnpress_section_items',
-										array(
-											'section_id'	=> $curriculum_id,
-											'item_id'		=> $new_obj_id,
-											'order'			=> $order++
-										)
-									);
-								}
-								$curriculum_objects[$obj_id] = $new_obj_id;
-							}
-						}
+		$settings_classes = array(
+			include_once LP_PLUGIN_PATH . '/inc/admin/settings/class-lp-settings-general.php',
+			include_once LP_PLUGIN_PATH . '/inc/admin/settings/class-lp-settings-courses.php',
+			include_once LP_PLUGIN_PATH . '/inc/admin/settings/class-lp-settings-checkout.php',
+			include_once LP_PLUGIN_PATH . '/inc/admin/settings/class-lp-settings-profile.php',
+			include_once LP_PLUGIN_PATH . '/inc/admin/settings/class-lp-settings-emails.php'
+		);
+		foreach ( $settings_classes as $class ) {
+			if ( is_callable( array( $class, 'get_settings' ) ) ) {
+				$options = $class->get_settings();
+				foreach ( $options as $option ) {
+					if ( isset( $option['default'] ) && isset( $option['id'] ) ) {
+						$autoload = isset( $option['autoload'] ) ? (bool) $option['autoload'] : true;
+						update_option( $option['id'], $option['default'], '', ( $autoload ? 'yes' : 'no' ) );
 					}
 				}
-				$keys = array(
-					'_lpr_course_duration' 				=> '_lp_duration',
-					'_lpr_course_number_student'		=> '_lp_students',
-					'_lpr_max_course_number_student'	=> '_lp_max_students',
-					'_lpr_retake_course'				=> '_lp_retake',
-					'_lpr_course_final'					=> '_lp_final_quiz',
-					'_lpr_course_condition'				=> '_lp_passing_condition',
-					'_lpr_course_enrolled_require'		=> '_lp_required_enroll',
-					'_lpr_course_payment'				=> '_lp_payment'
-				);
-				$course_meta = self::get_post_meta( $old_id, array_keys( $keys ) );
-				//print_r($course_meta);
-				if( $course_meta ) foreach( $course_meta as $meta ){
-					add_post_meta( $new_course['ID'], $keys[ $meta['meta_key'] ], $meta['meta_value'] );
-				}
-
-				// TODO: _lpr_course_user
 			}
 		}
-		set_transient( 'learnpress_curriculum', $curriculum_objects, DAY_IN_SECONDS );
-
-		update_option( 'learnpress_db_version', '1.0' );
-		print_r( $new_courses );
-		print_r( $curriculum_objects );
-		learn_press_send_json(
-			array(
-				'result'	=> 'success',
-				'message'	=> sprintf( __( 'Congrats, database has updated! Next, where do you want to go? <a href="%s" class="button">Admin</a> or <a href="%s" class="button button-primary">Start create a course</a>'), admin_url(), admin_url( 'post-new.php?post_type=lp_course' ) )
-			)
-		);
 	}
 
-	static function rollback_database(){
+	private static function _create_tables() {
 		global $wpdb;
-		$query = "
-			SELECT ID
-			FROM {$wpdb->posts}
-			WHERE post_type IN('lp_course', 'lp_lesson', 'lp_quiz', 'lp_question', 'lp_assignment', 'lp_order' )
-		";
-		if( $ids = $wpdb->get_col($query)){
-			$wpdb->query("DELETE FROM {$wpdb->postmeta} WHERE post_id IN(" . join( ",", $ids ) . ")");
-			$wpdb->query("DELETE FROM {$wpdb->posts} WHERE ID IN(" . join( ",", $ids ) . ")");
 
-			$wpdb->query("DELETE FROM {$wpdb->learnpress_sections}");
-			$wpdb->query("DELETE FROM {$wpdb->learnpress_section_items}");
-			$wpdb->query("DELETE FROM {$wpdb->learnpress_quiz_history}");
-			$wpdb->query("DELETE FROM {$wpdb->learnpress_user_course}");
+		$wpdb->hide_errors();
+
+		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+		dbDelta( self::_get_schema() );
+		update_option( 'learnpress_db_version', LEARNPRESS_DB_VERSION );
+	}
+
+	private static function _get_schema() {
+		global $wpdb;
+
+		$collate = '';
+
+		if ( $wpdb->has_cap( 'collation' ) ) {
+			if ( !empty( $wpdb->charset ) ) {
+				$collate .= "DEFAULT CHARACTER SET $wpdb->charset";
+			}
+			if ( !empty( $wpdb->collate ) ) {
+				$collate .= " COLLATE $wpdb->collate";
+			}
 		}
-		delete_option( 'learnpress_db_version' );
-		die();
+
+		return "
+CREATE TABLE {$wpdb->prefix}learnpress_order_itemmeta (
+  meta_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  learnpress_order_item_id bigint(20) unsigned NOT NULL DEFAULT '0',
+  meta_key varchar(45) NOT NULL DEFAULT '',
+  meta_value longtext NOT NULL,
+  PRIMARY KEY (meta_id)
+) $collate;
+CREATE TABLE {$wpdb->prefix}learnpress_order_items (
+  order_item_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  order_item_name longtext NOT NULL,
+  order_id bigint(20) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (order_item_id)
+) $collate;
+CREATE TABLE {$wpdb->prefix}learnpress_question_answers (
+  question_answer_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  question_id bigint(20) unsigned NOT NULL DEFAULT '0',
+  answer_data text NOT NULL,
+  ordering bigint(20) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (question_answer_id)
+) $collate;
+CREATE TABLE {$wpdb->prefix}learnpress_quiz_questions (
+  quiz_question_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  quiz_id bigint(11) unsigned NOT NULL DEFAULT '0',
+  question_id bigint(11) unsigned NOT NULL DEFAULT '0',
+  question_order bigint(11) unsigned NOT NULL DEFAULT '1'
+  params longtext NOT NULL,
+  PRIMARY KEY (quiz_question_id)
+) $collate;
+CREATE TABLE {$wpdb->prefix}learnpress_review_logs (
+  review_log_id bigint(11) unsigned NOT NULL AUTO_INCREMENT,
+  course_id bigint(11) unsigned NOT NULL DEFAULT '0',
+  user_id bigint(11) unsigned NOT NULL DEFAULT '0',
+  message text NOT NULL,
+  date datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  status varchar(45) NOT NULL DEFAULT '',
+  user_type varchar(45) NOT NULL DEFAULT '',
+  PRIMARY KEY (review_log_id)
+) $collate;
+CREATE TABLE {$wpdb->prefix}learnpress_section_items (
+  item_id bigint(11) unsigned NOT NULL AUTO_INCREMENT,
+  section_id bigint(11) unsigned NOT NULL DEFAULT '0',
+  section_item_id bigint(11) unsigned NOT NULL DEFAULT '0',
+  section_item_order bigint(11) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (item_id)
+) $collate;
+CREATE TABLE {$wpdb->prefix}learnpress_sections (
+  section_id bigint(11) unsigned NOT NULL AUTO_INCREMENT,
+  section_name varchar(255) NOT NULL DEFAULT '',
+  section_course_id bigint(11) unsigned NOT NULL DEFAULT '0',
+  section_order bigint(5) unsigned NOT NULL DEFAULT '0',
+  section_description longtext NOT NULL,
+  is_closed tinyint(1) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (section_id)
+) $collate;
+CREATE TABLE  {$wpdb->prefix}learnpress_user_courses (
+  user_id bigint(11) unsigned NOT NULL DEFAULT '0',
+  course_id bigint(11) unsigned NOT NULL DEFAULT '0',
+  start_time datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  end_time datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  status varchar(45) NOT NULL DEFAULT '',
+  order_id bigint(11) unsigned NOT NULL DEFAULT '0',
+  user_course_id bigint(11) unsigned NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (user_course_id)
+) $collate;
+CREATE TABLE {$wpdb->prefix}learnpress_user_quizmeta (
+  learnpress_user_quiz_id bigint(11) unsigned NOT NULL,
+  meta_key varchar(45) NOT NULL DEFAULT '',
+  meta_value text NOT NULL,
+  meta_id bigint(11) unsigned NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (meta_id)
+) $collate;
+CREATE TABLE {$wpdb->prefix}learnpress_user_quizzes (
+  user_quiz_id bigint(11) unsigned NOT NULL AUTO_INCREMENT,
+  user_id bigint(11) unsigned NOT NULL DEFAULT '0',
+  quiz_id bigint(11) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (user_quiz_id)
+) $collate;
+";
 	}
 }
 
