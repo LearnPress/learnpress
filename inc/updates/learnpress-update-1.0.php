@@ -356,7 +356,6 @@ class LP_Upgrade_10 {
 			}
 		}
 
-		update_option( 'learnpress_db_version', '1.0' );
 		self::$courses_map = $new_courses;
 		$posts             = array();
 		foreach ( $new_courses as $c ) {
@@ -692,6 +691,8 @@ class LP_Upgrade_10 {
 			wp_die( $ex->getMessage() );
 		}
 		$wpdb->query( "COMMIT;" );
+		update_option( 'learnpress_version', '1.0' );
+		update_option( 'learnpress_db_version', '1.0' );
 		return true;
 	}
 
@@ -722,7 +723,7 @@ class LP_Upgrade_10 {
 			$step = reset( $this->_steps );
 		}
 		$this->_current_step = $step;
-		$view                = learn_press_get_admin_view( 'updates/update-10-wizard.php' );
+		$view                = learn_press_get_admin_view( 'updates/1.0/update-10-wizard.php' );
 		include_once $view;
 		exit();
 	}
@@ -738,12 +739,12 @@ class LP_Upgrade_10 {
 	 * Welcome step page
 	 */
 	function update_welcome() {
-		$view = learn_press_get_admin_view( 'updates/step-welcome.php' );
+		$view = learn_press_get_admin_view( 'updates/1.0/step-welcome.php' );
 		include $view;
 	}
 
 	function update_upgraded() {
-		$view = learn_press_get_admin_view( 'updates/step-upgraded.php' );
+		$view = learn_press_get_admin_view( 'updates/1.0/step-upgraded.php' );
 		include $view;
 	}
 
@@ -751,7 +752,7 @@ class LP_Upgrade_10 {
 	 * Repair Database step page
 	 */
 	function update_repair_database() {
-		$view = learn_press_get_admin_view( 'updates/step-repair-database.php' );
+		$view = learn_press_get_admin_view( 'updates/1.0/step-repair-database.php' );
 		include $view;
 	}
 
