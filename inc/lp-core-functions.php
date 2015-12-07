@@ -997,47 +997,6 @@ function learn_press_show_menu() {
 	}
 }
 
-
-/*
- * Editing permalink notification when using LearnPress profile
- */
-add_action( 'admin_notices', 'learn_press_edit_permalink' );
-add_action( 'network_admin_notices', 'learn_press_edit_permalink' );
-function learn_press_edit_permalink() {
-
-	// Setting up notification
-	$check = get_option( '_lpr_ignore_setting_up' );
-	if ( !$check && current_user_can( 'manage_options' ) ) {
-		echo '<div id="lpr-setting-up" class="updated"><p>';
-		echo sprintf(
-			__( '<strong>LearnPress is almost ready</strong>. <a class="lpr-set-up" href="%s">Setting up</a> something right now is a good idea. That\'s better than you <a class="lpr-ignore lpr-set-up">ignore</a> the message.', 'learn_press' ),
-			esc_url( add_query_arg( array( 'page' => 'learn_press_settings' ), admin_url( 'options-general.php' ) ) )
-		);
-		echo '</p></div>';
-	}
-
-	// Add notice if no rewrite rules are enabled
-	global $wp_rewrite;
-	if ( learn_press_has_profile_method() ) {
-		if ( empty( $wp_rewrite->permalink_structure ) ) {
-			echo '<div class="fade error"><p>';
-			echo sprintf(
-				wp_kses(
-					__( '<strong>LearnPress Profile is almost ready</strong>. You must <a href="%s">update your permalink structure</a> to something other than the default for it to work.', 'learn_press' ),
-					array(
-						'a'      => array(
-							'href' => array()
-						),
-						'strong' => array()
-					)
-				),
-				admin_url( 'options-permalink.php' )
-			);
-			echo '</p></div>';
-		}
-	}
-}
-
 /**
  * Send email notification.
  *

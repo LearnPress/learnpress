@@ -1,5 +1,7 @@
 ;(function($){
-
+	if( typeof LearnPress == 'undefined' ){
+		LearnPress = {};
+	}
 	$(document).ready(function(){
 		if( typeof Backbone == 'undefined' ) return;
 		var LP_Curriculum_Model = window.LP_Curriculum_Model = Backbone.Model.extend({
@@ -9,6 +11,16 @@
 			view               : false,
 			urlRoot            : '',
 			initialize         : function () {
+			},
+			removeItem: function(item){
+				var items = this.get('selectedItems');
+				items = _.without( items, item );
+				this.set('selectedItems', items);
+			},
+			addItem: function(id){
+				var items = this.get('selectedItems');
+				items.push( id );
+				this.set('selectedItems', items);
 			}
 		});
 
@@ -157,6 +169,7 @@
 
 
 				$(window).scroll(function(){
+					return;
 					var $holder = $('#course_tabs_placeholder'),
 						$tabs = $('#course_tabs'),
 						top = $holder.offset().top;
@@ -351,17 +364,14 @@
 			},
 			createSection: function(){
 				var tmpl = wp.template('curriculum-section');
-				this.$emptySection = $(tmpl());
+				this.$emptySection = $(tmpl({}));
 				this.$('.curriculum-sections').append(this.$emptySection);
 				return this.$emptySection;
 			},
 			createItem: function(args, $section){
 				var tmpl = wp.template('section-item'),
-					$item = $(tmpl(args));
-				if( $section ) {
-					var $last = $section.find('.curriculum-section-items li:last');
-					$item.insertBefore($last);
-				}
+					$item = $(tmpl(args || {}));
+				$item = LearnPress.Hook.applyFilters( 'learn_press_create_new_item', $item, $section );
 				return $item;
 			},
 			needCreateNewSection: function(){
@@ -382,9 +392,9 @@
 				e.preventDefault();
 				var $target = $(e.target);
 				if($target.attr('data-action') == 'expand' ){
-					this.$('.lp-curriculum-section-content').slideDown();
+					this.$('.curriculum-section:not(.lp-empty-section) .lp-curriculum-section-content').slideDown();
 				}else{
-					this.$('.lp-curriculum-section-content').slideUp();
+					this.$('.curriculum-section:not(.lp-empty-section) .lp-curriculum-section-content').slideUp();
 				}
 			},
 			sectionActionHandler: function(e){
@@ -411,17 +421,21 @@
 						$form
 							.data('item_type', type)
 							.data('section', $button.closest('.curriculum-section')).show();
-
+						var selectedItems = that.$('.lp-section-item').map(function(){return parseInt($(this).attr('data-item_id'))}).get();//model.get('selectedItems');
 						$form.find('li').filter(function(){
 							var id = parseInt($(this).data('id'));
-							console.log( id+','+ $.inArray( id , that.removeItemIds )+":"+that.removeItemIds)
-							if( $.inArray( $(this).data('id'), that.removeItemIds ) >= 0 ){
+							if( id && $.inArray( id, selectedItems ) == -1 ){
+
 								$(this).removeClass('selected hide-if-js');
-							};
+							}else{
+								$(this).addClass('selected hide-if-js');
+							}
+							$(this).find('input[type="checkbox"]').removeAttr('checked');
 						})
+
 						LearnPress.MessageBox.show($form);
 						$form.find('[name="lp-item-name"]').focus();
-
+						$form.find('button.lp-add-item').html($form.find('button.lp-add-item').attr('data-text'))
 						break;
 					default:
 						LearnPress.Hook.doAction( 'learn_press_section_button_click', $button );
@@ -467,7 +481,14 @@
 					var $li = $(this).closest('li').addClass('selected'),
 						args = $li.dataToJSON(),
 						$item = that.createItem( args, $section );
-					$item.removeClass('lp-item-empty')
+					console.log(args)
+					if( $item ) {
+						var $last = $section.find('.curriculum-section-items li:last');
+						$item.insertBefore($last);
+						$item.removeClass('lp-item-empty');
+						that.model.addItem(parseInt(args.id));
+						LearnPress.Hook.doAction( 'learn_press_add_item_to_section', $item, $section );
+					}
 				});
 				$form.hide().appendTo($(document.body));
 				LearnPress.MessageBox.hide();
@@ -834,18 +855,21 @@
 					events:{
 						onYes: function(instance){
 							var $item = instance.data.item,
-								id = $item.attr('data-id'),
+								id = $item.attr('data-section_item_id'),
 								type = $item.attr('data-type');
 							$item.remove();
-							instance.data.self.removeItemIds.push(parseInt(id));
+							instance.data.self.model.removeItem(parseInt(id));
 						}
 					}
 				})
 
 			}
 		});
+		var model = new LP_Curriculum_Model(LP_Curriculum_Settings),
+			view = new LP_Curriculum_View(model);
 
-		new LP_Curriculum_View( new LP_Curriculum_Model() );
+		LearnPress.$LP_Curriculum_Model = model;
+		LearnPress.$LP_Curriculum_View = view;
 	});
 
 	function updateHiddenCurriculum(hidden){
@@ -963,8 +987,8 @@
 					buttons: 'yesNo',
 					data: $(this).closest('.curriculum-section'),
 					events: {
-						onYes: function(data){
-							var $question = $(data);
+						onYes: function(args){
+							var $question = $(args.data);
 							$question.remove();
 						}
 					}

@@ -3,7 +3,6 @@
 if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
-
 if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 
 	// Base class for custom post type to extends
@@ -13,16 +12,17 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 	final class LP_Lesson_Post_Type extends LP_Abstract_Post_Type{
 
 		function __construct() {
-			add_filter( 'manage_' . LP()->lesson_post_type . '_posts_columns', array( $this, 'columns_head' ) );
-			add_action( 'manage_' . LP()->lesson_post_type . '_posts_custom_column', array( $this, 'columns_content' ), 10, 2 );
-			add_action( 'save_post_' . LP()->lesson_post_type, array( $this, 'update_lesson_meta' ) );
-
+			$post_type_name = 'lp_lesson';
+			add_filter( 'manage_' . $post_type_name . '_posts_columns', array( $this, 'columns_head' ) );
+			add_action( 'manage_' . $post_type_name . '_posts_custom_column', array( $this, 'columns_content' ), 10, 2 );
+			add_action( 'save_post_' . $post_type_name, array( $this, 'update_lesson_meta' ) );
             //add_filter( 'posts_fields', array( $this, 'posts_fields' ) );
 			//add_filter( 'posts_join_paged', array( $this, 'posts_join_paged' ) );
 			//add_filter( 'posts_where_paged', array( $this, 'posts_where_paged' ) );
 			//add_filter( 'posts_orderby', array( $this, 'posts_orderby' ) );
 			//add_filter( 'manage_edit-' . LP()->lesson_post_type . '_sortable_columns', array( $this, 'columns_sortable' ) );
 			parent::__construct();
+
 		}
 
 		static function admin_scripts(){
@@ -373,5 +373,3 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 	}// end LP_Lesson_Post_Type
 }
 new LP_Lesson_Post_Type();
-
-

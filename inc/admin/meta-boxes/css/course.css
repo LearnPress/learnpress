@@ -68,7 +68,7 @@
 	margin: 10px;
 	visibility: hidden;
 }
-#course_curriculum .curriculum-section-head:hover .lp-section-actions{
+#course_curriculum .curriculum-section:not(.lp-empty-section) .curriculum-section-head:hover .lp-section-actions{
 	visibility: visible;
 }
 #course_curriculum .curriculum-section-content{
@@ -84,8 +84,11 @@
 	outline: none;
 	box-shadow: none;
 	font-size: 24px;
-	color: #999;
+	color: #777;
 	width: 70%;
+}
+#course_curriculum .curriculum-section-head .lp-section-name:focus{
+	color: #444;
 }
 #course_curriculum .curriculum-section.lp-empty-section .curriculum-section-content{
 	display: none;
@@ -132,17 +135,20 @@
 	float: right;
 	visibility: hidden;
 }
-#course_curriculum .curriculum-section-items > li:hover .lp-item-actions{
+#course_curriculum .curriculum-section-items > li:not(.lp-item-empty):hover .lp-item-actions{
 	visibility: visible;
 }
 #course_curriculum .curriculum-section-items > li input.lp-item-name {
-	color: #999;
+	color: #777;
 	border: none;
 	box-shadow: none;
 	outline: none;
 	font-size: 18px;
 	width: 70%;
 	vertical-align: middle;
+}
+#course_curriculum .curriculum-section-items > li input.lp-item-name:focus {
+	color: #444;
 }
 #poststuff .postbox-container{
 	position: relative;

@@ -40,8 +40,6 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 
 			add_action( 'before_delete_post', array( $this, 'delete_transaction' ) );*/
 			parent::__construct();
-
-
 		}
 
 		function remove_box() {
@@ -356,20 +354,12 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 						'edit_item'     => __( 'Order Details', 'learn_press' ),
 						'all_items'     => __( 'Orders', 'learn_press' ),
 					),
-
 					'public'             => false,
 					'show_ui'            => true,
 					'show_in_nav_menus'  => false,
 					'show_in_admin_bar'  => false,
 					'publicly_queryable' => true,
 					'show_in_menu'       => 'learn_press',
-					'supports'           => array(
-						//'title',
-						//'editor',
-						//'author',
-						//'revisions',
-					),
-
 					'capabilities'       => array(
 						'create_posts' => 'do_not_allow'
 					),
@@ -390,6 +380,7 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 				'show_in_admin_status_list' => true,
 				'label_count'               => _n_noop( 'Draft order <span class="count">(%s)</span>', 'Draft order <span class="count">(%s)</span>', 'learn_press' )
 			) );
+
 		}
 
 		static function register_metabox() {

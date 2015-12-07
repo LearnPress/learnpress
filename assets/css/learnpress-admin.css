@@ -117,7 +117,9 @@ li.quiz, li.lesson, li.quick_lesson, li.quick_quiz {
 .wp-core-ui .meta_box_quick_add_quiz {
 	margin-right: 10px;
 }
-
+.column-taxonomy-course_category{
+	width: 15%;
+}
 /**/
 #lpr-block {
 	position: fixed;
@@ -1045,3 +1047,4 @@ body.post-type-lp_question #question_answer_ .inside{
 .lp-button-dropdown:not(.disabled) ul:hover{
 	display: block;
 }
+.curriculum-section.lp-empty-section {}

@@ -206,13 +206,14 @@ abstract class LP_Abstract_Course {
 					$section = $row;
 
 					$section->items = array();
-					$query          = "SELECT lp_si.item_id as lp_si_ID, p.*
-							FROM {$wpdb->posts} p
-							INNER JOIN {$wpdb->learnpress_section_items} lp_si ON lp_si.section_item_id = p.ID
-							INNER JOIN {$wpdb->learnpress_sections} lp_s ON lp_s.section_id = lp_si.section_id
-							WHERE lp_s.section_id = " . $row->section_id . "
-							ORDER BY lp_si.section_item_order ASC
-							";
+					$query          = $wpdb->prepare("
+						SELECT si.*, p.*
+						FROM {$wpdb->posts} p
+						INNER JOIN {$wpdb->learnpress_section_items} si ON si.item_id = p.ID
+						INNER JOIN {$wpdb->learnpress_sections} s ON s.section_id = si.section_id
+						WHERE s.section_id = %s
+						ORDER BY si.item_order ASC
+					", $row->section_id );
 					$section->items = $wpdb->get_results( $query );
 					//}
 					$this->_curriculum[] = $section;

@@ -32,7 +32,7 @@
 	<?php
 	$item = learn_press_post_object( array( 'post_type' => LP()->lesson_post_type ) );
 	$item->post_title = '{{data.text}}';
-	$item->ID = '{{data.id}}';
+	$item->item_id = '{{data.id}}';
 	$item->post_type = '{{data.type}}';
 	learn_press_admin_view(
 		'meta-boxes/course/loop-item.php',
@@ -107,4 +107,9 @@
 		<button class="lp-add-item button" disabled="disabled" data-text="<?php _e( 'Add to section', 'learn_press' );?>"><?php _e( 'Add to section', 'learn_press' );?></button>
 		<button class="lp-close-lightbox button" onclick="LearnPress.MessageBox.hide();"><?php _e( 'Close', 'learn_press' );?></button>
 	</div>
+</script>
+<script type="text/javascript">
+var LP_Curriculum_Settings = {
+	selectedItems: [<?php echo join(',', array_merge( $exclude_quizzes, $exclude_lessons ) ) ;?>]
+}
 </script>

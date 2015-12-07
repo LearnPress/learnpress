@@ -24,6 +24,7 @@ if ( !defined( 'LP_PLUGIN_PATH' ) ) {
 	define( 'LEARNPRESS_VERSION', '1.0' );
 	define( 'LEARNPRESS_DB_VERSION', '1.0' );
 }
+
 if ( !class_exists( 'LearnPress' ) ) {
 	/**
 	 * Class LearnPress
@@ -295,15 +296,10 @@ if ( !class_exists( 'LearnPress' ) ) {
 		function include_post_types() {
 			// Register custom-post-type and taxonomies
 			require_once 'inc/custom-post-types/course.php';
-			require_once 'inc/custom-post-types/lesson.php';
 			require_once 'inc/custom-post-types/quiz.php';
 			require_once 'inc/custom-post-types/question.php';
+			require_once 'inc/custom-post-types/lesson.php';
 			require_once 'inc/custom-post-types/order.php';
-		}
-
-		function xxx() {
-			learn_press_output_file2( 'xxx.php', rand() );
-
 		}
 
 		/**

@@ -7,18 +7,18 @@
  * @param $section_name
  * @param $content_items
  */
-$is_hidden = $section->ID && is_array( $hidden_sections ) && in_array( $section->ID, $hidden_sections );
+$is_hidden = $section->section_id && is_array( $hidden_sections ) && in_array( $section->section_id, $hidden_sections );
 $class = array(
 	'curriculum-section'
 );
-if( !$section->ID ){
+if( !$section->section_id ){
 	$class[] = 'lp-empty-section';
 }
 if( $is_hidden ){
 	$class[] = 'is_hidden';
 }
 ?>
-<li class="<?php echo join(' ', $class ); ?>" data-id="<?php echo $section ? $section->ID : '';?>">
+<li class="<?php echo join(' ', $class ); ?>" data-id="<?php echo $section ? $section->section_id : '';?>">
 	<h3 class="curriculum-section-head">
 		<input name="_lp_curriculum[__SECTION__][name]" type="text" data-field="section-name" placeholder="<?php _e( 'Enter the section name and hit enter', 'learn_press' );?>" class="lp-section-name no-submit" value="<?php echo esc_attr( $section->section_name ); ?>" />
 		<p class="lp-section-actions">
