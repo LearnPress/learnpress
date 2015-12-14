@@ -16,11 +16,13 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 			add_filter( 'manage_' . $post_type_name . '_posts_columns', array( $this, 'columns_head' ) );
 			add_action( 'manage_' . $post_type_name . '_posts_custom_column', array( $this, 'columns_content' ), 10, 2 );
 			add_action( 'save_post_' . $post_type_name, array( $this, 'update_lesson_meta' ) );
-            //add_filter( 'posts_fields', array( $this, 'posts_fields' ) );
-			//add_filter( 'posts_join_paged', array( $this, 'posts_join_paged' ) );
-			//add_filter( 'posts_where_paged', array( $this, 'posts_where_paged' ) );
-			//add_filter( 'posts_orderby', array( $this, 'posts_orderby' ) );
-			//add_filter( 'manage_edit-' . LP()->lesson_post_type . '_sortable_columns', array( $this, 'columns_sortable' ) );
+
+			// filter
+			add_filter( 'posts_fields', array( $this, 'posts_fields' ) );
+			add_filter( 'posts_join_paged', array( $this, 'posts_join_paged' ) );
+			add_filter( 'posts_where_paged', array( $this, 'posts_where_paged' ) );
+			add_filter( 'posts_orderby', array( $this, 'posts_orderby' ) );
+			add_filter( 'manage_edit-' . LP()->lesson_post_type . '_sortable_columns', array( $this, 'columns_sortable' ) );
 			parent::__construct();
 
 		}
@@ -43,7 +45,7 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 
 		static function admin_params(){
 			return array(
-				'notice_empty_lesson' => 'aaaaaaaaaaaaaaaaaaaaaaaa'
+				'notice_empty_lesson' => ''
 			);
 		}
 		/**
@@ -223,6 +225,12 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 							printf( '<a href="%s">%s</a>', admin_url( sprintf( 'post.php?post=%d&action=edit', $course->ID ) ), __( 'Edit', 'learn_press' ) );
 							echo "&nbsp;|&nbsp;";
 							printf( '<a href="%s">%s</a>', get_the_permalink( $course->ID ), __( 'View', 'learn_press' ) );
+							echo "&nbsp;|&nbsp;";
+							if( $course_id = learn_press_get_request( 'filter_course') ) {
+								printf( '<a href="%s">%s</a>', admin_url( 'edit.php?post_type=lp_lesson' ), __( 'Remove Filter', 'learn_press' ) );
+							} else {
+								printf( '<a href="%s">%s</a>', admin_url( 'edit.php?post_type=lp_lesson&filter_course=' . $course->ID ), __( 'Filter', 'learn_press' ) );
+							}
 							echo '</div></div>';
 						}
 
@@ -233,10 +241,15 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 
 					break;
 				case 'is_previewable':
-					echo get_post_meta( $post_id, '_lp_is_previewable', true ) == 'yes' ? __( 'Yes', 'learn_press' ) : '-';
+					printf(
+						'<input type="checkbox" class="learn-press-checkbox learn-press-toggle-lesson-preview" %s value="%s" data-nonce="%s" />',
+						get_post_meta( $post_id, '_lp_is_previewable', true ) == 'yes' ? ' checked="checked"' : '',
+						$post_id,
+						wp_create_nonce( 'learn-press-toggle-lesson-preview' )
+					);
 					break;
 				case 'format':
-					learn_press_item_meta_format( $post_id );
+					learn_press_item_meta_format( $post_id, __( 'Standard', 'learn_press' ) );
 			}
 		}
 
@@ -246,6 +259,7 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 		 * @param $lesson_id
 		 */
 		function update_lesson_meta( $lesson_id ) {
+			return;
 			$course_id = get_post_meta( $lesson_id, '_lpr_course', true );
 			if ( !$course_id ) {
 				delete_post_meta( $lesson_id, '_lpr_course' );
@@ -288,8 +302,10 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 				return $join;
 			}
 			global $wpdb;
-			$join .= " LEFT JOIN {$wpdb->postmeta} ON {$wpdb->posts}.ID = {$wpdb->postmeta}.post_id";
-			$join .= " LEFT JOIN {$wpdb->posts} AS c ON c.ID = {$wpdb->postmeta}.meta_value";
+			if( $course_id = learn_press_get_request( 'filter_course') ) {
+				$join .= " INNER JOIN {$wpdb->prefix}learnpress_section_items si ON si.item_id = {$wpdb->posts}.ID";
+				$join .= " INNER JOIN {$wpdb->prefix}learnpress_sections s ON s.section_id = si.section_id AND s.section_course_id = " . $course_id;
+			}
 			return $join;
 		}
 
@@ -368,6 +384,18 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 		function columns_sortable( $columns ) {
 			$columns[LP()->course_post_type] = 'course';
 			return $columns;
+		}
+
+		static function create_default_meta( $id ){
+			$meta = apply_filters( 'learn_press_default_lesson_meta',
+				array(
+					'_lp_duration'		=> 10,
+					'_lp_is_previewable' => 'no'
+				)
+			);
+			foreach( $meta as $key => $value ){
+				update_post_meta( $id, $key, $value );
+			}
 		}
 
 	}// end LP_Lesson_Post_Type

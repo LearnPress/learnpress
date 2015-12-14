@@ -94,12 +94,48 @@
 	display: none;
 }
 #course_curriculum .curriculum-section-items{
+	border-collapse: collapse;
+	width: 100%;
 }
-#course_curriculum .curriculum-section-items > li{
+#course_curriculum .curriculum-section-items .lp-section-item{
 	border: 1px dashed #DDD;
 	margin: -1px 0 0 0;
 	padding: 5px 0;
 	background-color: #FFF;
+}
+
+#course_curriculum .curriculum-section-items .lp-section-item .lp-item-actions{
+	margin: 0;
+	float: right;
+}
+#course_curriculum .lp-item-actions > *{
+	visibility: hidden;
+}
+#course_curriculum .item-bulk-actions{
+	text-align: right;
+	margin-top: 0;
+}
+#course_curriculum .lp-section-item:not(.lp-item-empty):hover .lp-item-actions > *{
+	visibility: visible;
+}
+#course_curriculum .curriculum-section-items .lp-section-item:not(.lp-item-empty) .item-checkbox{
+	display: inline-block;
+	height: 34px;
+	border: none;
+	line-height: 32px;
+	padding: 0 7px 0 0px;
+	margin: 0 4px 0 10px;
+	cursor: url("../../../../assets/images/openhand.cur") 7 5, default;
+	visibility: visible;
+}
+#course_curriculum .curriculum-section-items .lp-section-item .item-checkbox input{
+	opacity: 0.4;
+}
+#course_curriculum .curriculum-section-items .lp-section-item:not(.lp-item-empty):hover	.item-checkbox{
+	background: url("../../../../assets/images/grippy_large.png") right no-repeat;
+}
+#course_curriculum .curriculum-section-items .lp-section-item:not(.lp-item-empty):hover	.item-checkbox input{
+	opacity: 1;
 }
 #course_curriculum .lp-item-lp_lesson .handle.learn-press-icon:before{
 	content: "\e900";
@@ -110,13 +146,11 @@
 #course_curriculum .lp-section-item.lp-item-new .handle{
 	color: #999;
 }
-#course_curriculum .curriculum-section-items > li:hover,
-#course_curriculum .curriculum-section-items > li:hover input.lp-item-name{
+#course_curriculum .curriculum-section-items .lp-section-item:hover,
+#course_curriculum .curriculum-section-items .lp-section-item:hover input.lp-item-name{
 	background-color: #F9F9F9;
 }
 #course_curriculum .lp-section-item .handle{
-	cursor: move;
-	margin-left: 10px;
 	width: 32px;
 	height: 32px;
 	display: inline-block;
@@ -126,29 +160,30 @@
 	line-height: 32px;
 	color: #00A0D2;
 }
+#course_curriculum .lp-section-item.remove input.lp-item-name{
+	color: #FF0000;
+}
 
 #course_curriculum .lp-section-item.ui-sortable-helper{
 
 }
-#course_curriculum .curriculum-section-items > li .lp-item-actions{
-	margin: 6px 15px;
-	float: right;
-	visibility: hidden;
-}
-#course_curriculum .curriculum-section-items > li:not(.lp-item-empty):hover .lp-item-actions{
-	visibility: visible;
-}
-#course_curriculum .curriculum-section-items > li input.lp-item-name {
+#course_curriculum .lp-section-item input.lp-item-name {
 	color: #777;
 	border: none;
 	box-shadow: none;
 	outline: none;
 	font-size: 18px;
-	width: 70%;
+	width: 100%;
 	vertical-align: middle;
 }
-#course_curriculum .curriculum-section-items > li input.lp-item-name:focus {
+#course_curriculum .curriculum-section-items .lp-section-item input.lp-item-name:focus {
 	color: #444;
+}
+#course_curriculum .lp-section-item .section-item-icon{
+	width: 32px;
+}
+#course_curriculum .lp-section-item td{
+	height: 30px;
 }
 #poststuff .postbox-container{
 	position: relative;

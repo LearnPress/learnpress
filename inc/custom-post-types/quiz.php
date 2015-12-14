@@ -92,6 +92,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 				array(
 					'title'      => __( 'Questions', 'learn_press' ),
 					'post_types' => LP()->quiz_post_type,
+					'id'		=> 'questions',
 					'fields'     => array(
 						array(
 							'name' => __( '', 'learn_press' ),

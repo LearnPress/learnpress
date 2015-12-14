@@ -76,18 +76,18 @@ function learn_press_get_ip() {
 function learn_press_is_endpoint_url( $endpoint = false ) {
 	global $wp;
 
-	$wc_endpoints = array();
+	$endpoints = array();
 
 	if ( $endpoint !== false ) {
-		if ( !isset( $wc_endpoints[$endpoint] ) ) {
+		if ( !isset( $endpoints[$endpoint] ) ) {
 			return false;
 		} else {
-			$endpoint_var = $wc_endpoints[$endpoint];
+			$endpoint_var = $endpoints[$endpoint];
 		}
 
 		return isset( $wp->query_vars[$endpoint_var] );
 	} else {
-		foreach ( $wc_endpoints as $key => $value ) {
+		foreach ( $endpoints as $key => $value ) {
 			if ( isset( $wp->query_vars[$key] ) ) {
 				return true;
 			}

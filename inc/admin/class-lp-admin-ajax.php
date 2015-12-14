@@ -22,6 +22,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 				'update_curriculum_section_state' => false,
 				'quick_add_item'		=> false,
 				'add_new_item' => false,
+				'toggle_lesson_preview' => false,
 				/////////////
 				'quick_add_lesson'        => false,
 				'quick_add_quiz'          => false,
@@ -44,8 +45,15 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			}
 		}
 
-		static function add_new_item(){
+		static function toggle_lesson_preview(){
+			$id = learn_press_get_request( 'lesson_id' );
+			if( get_post_type( $id ) == 'lp_lesson' && wp_verify_nonce( learn_press_get_request( 'nonce' ), 'learn-press-toggle-lesson-preview' ) ){
+				update_post_meta( $id, '_lp_is_previewable', learn_press_get_request( 'previewable' ) );
+			}
+			die();
+		}
 
+		static function add_new_item(){
 			$post_type = learn_press_get_request( 'type' );
 			$post_title = learn_press_get_request( 'name' );
 			$response = array();
@@ -54,6 +62,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 				$args['post_status'] = 'publish';
 				$item_id = wp_insert_post( $args );
 				if( $item_id ){
+					LP_Lesson_Post_Type::create_default_meta( $item_id );
 					$item = get_post( $item_id );
 					$response['post'] = $item;
 					$response['post']->edit_link = get_edit_post_link( $item_id );

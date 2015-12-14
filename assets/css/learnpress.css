@@ -3,11 +3,13 @@
 	content: '';
 	clear: both;
 }
-.column-lp_course .row-actions{
+.column-lp_course .row-actions,
+.column-lp_quiz .row-actions{
 	display: inline-block;
 	margin-left: 10px;
 }
-.column-lp_course .row-actions a{
+.column-lp_course .row-actions a,
+.column-lp_quiz .row-actions a{
 	color: #999;
 }
 /**/

@@ -58,15 +58,38 @@ function learn_press_quiz_class( $class = null ) {
 	post_class( join( ' ', $class ) );
 }
 
+/**
+ * Get the courses that a item is assigned to
+ *
+ * @param $item
+ * @return mixed
+ */
 function learn_press_get_item_courses($item){
 	global $wpdb;
 	$query = $wpdb->prepare("
 		SELECT c.*
 		FROM {$wpdb->posts} c
-			INNER JOIN {$wpdb->learnpress_sections} lp_s ON c.ID = lp_s.course_id
-			INNER JOIN {$wpdb->learnpress_section_items} lp_si ON lp_si.section_id = lp_s.ID
-			WHERE lp_si.item_id = %d
+			INNER JOIN {$wpdb->learnpress_sections} s ON c.ID = s.section_course_id
+			INNER JOIN {$wpdb->learnpress_section_items} si ON si.section_id = s.section_id
+			WHERE si.item_id = %d
 	", $item);
+	return $wpdb->get_results( $query );
+}
+
+/**
+ * Get the quizzes that a question is assigned to
+ *
+ * @param $question_id
+ * @return mixed
+ */
+function learn_press_get_question_quizzes( $question_id ){
+	global $wpdb;
+	$query = $wpdb->prepare("
+		SELECT q.*
+		FROM {$wpdb->posts} q
+		INNER JOIN {$wpdb->prefix}learnpress_quiz_questions qq ON q.ID = qq.quiz_id
+		WHERE qq.question_id = %d
+	", $question_id );
 	return $wpdb->get_results( $query );
 }
 
@@ -156,7 +179,7 @@ function learn_press_get_final_quiz( $course_id ){
 	return apply_filters( 'learn_press_course_final_quiz', $final, $course_id );
 }
 
-function learn_press_item_meta_format( $item ){
+function learn_press_item_meta_format( $item, $nonce = '' ){
 	if( current_theme_supports( 'post-formats' ) ){
 		$format = get_post_format( $item );
 		if ( false === $format ) {
@@ -165,6 +188,8 @@ function learn_press_item_meta_format( $item ){
 		//return false to hide post format
 		if( $format = apply_filters( 'learn_press_course_item_format', $format, $item ) ) {
 			printf( '<span class="lp-label lp-label-format lp-label-format-%s">%s</span>', $format, ucfirst( $format ) );
+		}else{
+			echo $nonce;
 		}
 	}
 }

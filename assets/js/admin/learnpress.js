@@ -20,23 +20,21 @@
 			}
 		}).trigger('change');
 
-		/*var $elem_conds = $('[data-cond]');
-		$elem_conds.each(function(){
-			var $elem = $(this),
-				cond = $elem.attr('data-cond'),
-				$conds = $('[data-'+cond+']');
-			if(!$conds.length) return;
-			$elem.on('change _update', function(){
-				$conds.each(function(){
-					var $cond = $(this);
-					if($elem.is(':checked') && $cond.attr('data-'+cond+'') == 'yes'){
-						$cond.show();
-					}else{
-						$cond.hide();
-					}
-				})
-			}).trigger('_change');
-		})*/
+		$('.learn-press-toggle-lesson-preview').on('change', function(){
+			$.ajax({
+				url: LearnPress_Settings.ajax,
+				data: {
+					action: 'learnpress_toggle_lesson_preview',
+					lesson_id: this.value,
+					previewable: this.checked ? 'yes' : 'no',
+					nonce: $(this).attr('data-nonce')
+				},
+				dataType: 'text',
+				success: function(response){
+					response = LearnPress.parseJSON(response);
+				}
+			});
+		});
 	}
 	$doc.ready(_ready);
 })(jQuery);

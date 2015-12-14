@@ -15,7 +15,11 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 			//add_action( 'init', array( $this, 'register_post_type' ) );
 			//add_action( 'admin_head', array( $this, 'enqueue_script' ) );
 			//add_action( 'admin_init', array( $this, 'add_meta_boxes' ), 5 );
-			add_filter( 'manage_lpr_question_posts_columns', array( $this, 'columns_head' ) );
+			add_filter( 'manage_lp_question_posts_columns', array( $this, 'columns_head' ) );
+			add_action( 'manage_lp_question_posts_custom_column', array( $this, 'columns_content' ), 10, 2 );
+			add_filter( 'posts_join_paged', array( $this, 'posts_join_paged' ) );
+
+
 			parent::__construct();
 
 		}
@@ -193,11 +197,83 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 		 * @return array
 		 */
 		function columns_head( $columns ) {
+			$pos = array_search( 'title', array_keys( $columns ) );
+			$new_columns = array(
+				LP()->quiz_post_type => __( 'Quiz', 'learn_press' )
+			);
+
+			if ( false !== $pos && !array_key_exists( LP()->quiz_post_type, $columns ) ) {
+				$columns = array_merge(
+					array_slice( $columns, 0, $pos + 1 ),
+					$new_columns,
+					array_slice( $columns, $pos + 1 )
+				);
+			}
+
 			$user = wp_get_current_user();
 			if ( in_array( LP()->teacher_role, $user->roles ) ) {
 				unset( $columns['author'] );
 			}
 			return $columns;
+		}
+
+		/**
+		 * Displaying the content of extra columns
+		 *
+		 * @param $name
+		 * @param $post_id
+		 */
+		function columns_content( $name, $post_id ){
+			switch ( $name ) {
+				case LP()->quiz_post_type:
+					$quizzes = learn_press_get_question_quizzes( $post_id );
+					if ( $quizzes ) {
+						foreach ( $quizzes as $quiz ) {
+							echo '<div><a href="' . esc_url( add_query_arg( array( 'course_id' => $quiz->ID ) ) ) . '">' . get_the_title( $quiz->ID ) . '</a>';
+							echo '<div class="row-actions">';
+							printf( '<a href="%s">%s</a>', admin_url( sprintf( 'post.php?post=%d&action=edit', $quiz->ID ) ), __( 'Edit', 'learn_press' ) );
+							echo "&nbsp;|&nbsp;";
+							printf( '<a href="%s">%s</a>', get_the_permalink( $quiz->ID ), __( 'View', 'learn_press' ) );
+							echo "&nbsp;|&nbsp;";
+							if ( $quiz_id = learn_press_get_request( 'filter_quiz' ) ) {
+								printf( '<a href="%s">%s</a>', admin_url( 'edit.php?post_type=lp_question' ), __( 'Remove Filter', 'learn_press' ) );
+							} else {
+								printf( '<a href="%s">%s</a>', admin_url( 'edit.php?post_type=lp_question&filter_quiz=' . $quiz->ID ), __( 'Filter', 'learn_press' ) );
+							}
+							echo '</div></div>';
+						}
+
+					} else {
+						_e( 'Not assigned yet', 'learn_press' );
+					}
+
+
+					break;
+			}
+		}
+
+		/**
+		 * @param $join
+		 *
+		 * @return string
+		 */
+		function posts_join_paged( $join ) {
+			if ( !is_admin() ) {
+				return $join;
+			}
+			global $pagenow;
+			if ( $pagenow != 'edit.php' ) {
+				return $join;
+			}
+			global $post_type;
+			if ( LP()->question_post_type != $post_type ) {
+				return $join;
+			}
+			global $wpdb;
+			if( $quiz_id = learn_press_get_request( 'filter_quiz') ) {
+				$join .= " INNER JOIN {$wpdb->prefix}learnpress_quiz_questions qq ON qq.question_id = {$wpdb->posts}.ID AND qq.quiz_id = " . $quiz_id;
+			}
+			return $join;
 		}
 
 		static function admin_styles(){}

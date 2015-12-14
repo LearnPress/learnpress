@@ -1048,3 +1048,9 @@ body.post-type-lp_question #question_answer_ .inside{
 	display: block;
 }
 .curriculum-section.lp-empty-section {}
+
+.column-format,
+.column-is_previewable,
+.column-taxonomy-question-tag{
+	width: 10%;
+}
