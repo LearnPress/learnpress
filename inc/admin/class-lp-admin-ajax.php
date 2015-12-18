@@ -23,6 +23,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 				'quick_add_item'		=> false,
 				'add_new_item' => false,
 				'toggle_lesson_preview' => false,
+				'remove_post_items' => false,
 				/////////////
 				'quick_add_lesson'        => false,
 				'quick_add_quiz'          => false,
@@ -43,6 +44,16 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 					add_action( 'wp_ajax_nopriv_learnpress_' . $ajaxEvent, array( __CLASS__, $ajaxEvent ) );
 				}
 			}
+		}
+
+		static function remove_post_items(){
+			$id = learn_press_get_request( 'id' );
+			if( $id ){
+				foreach($id as $post_id){
+					wp_delete_post( $post_id );
+				}
+			}
+			die();
 		}
 
 		static function toggle_lesson_preview(){
@@ -171,7 +182,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			}
 			if( $id ){
 				ob_start();
-				$question = LP_Question_Factory::get_question( $id );
+				$question = LP_Question_Factory::get_question($id );
 				learn_press_admin_view( 'meta-boxes/quiz/question.php', array( 'question' => $question ) );
 				$response['html'] = ob_get_clean();
 			}else{
@@ -185,9 +196,12 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			learn_press_debug($_POST);;
 			if( ( $from = learn_press_get_request( 'from' ) ) && ( $to = learn_press_get_request( 'to' ) ) && $question_id = learn_press_get_request( 'question_id' ) ){
 				do_action( 'learn_press_convert_question_type', $question_id, $from, $to );
-				$question = LP_Question_Factory::get_question( $question_id );
+				$question = LP_Question_Factory::get_question($question_id );
 				learn_press_send_json(
-					$question->admin_interface( array( 'echo' => false ) )
+					array(
+						'html' => $question->admin_interface( array( 'echo' => false ) ),
+						'icon' => $question->get_icon()
+					)
 				);
 			}else{
 				throw new Exception( __( 'Convert question type must be specify the id, source and destination type', 'learn_press' ) );

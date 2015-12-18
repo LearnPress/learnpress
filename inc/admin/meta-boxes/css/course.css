@@ -114,6 +114,7 @@
 #course_curriculum .item-bulk-actions{
 	text-align: right;
 	margin-top: 0;
+	margin-bottom: 15px;
 }
 #course_curriculum .lp-section-item:not(.lp-item-empty):hover .lp-item-actions > *{
 	visibility: visible;
@@ -172,9 +173,17 @@
 	border: none;
 	box-shadow: none;
 	outline: none;
-	font-size: 18px;
+	font-size: 16px;
 	width: 100%;
 	vertical-align: middle;
+}
+#course_curriculum .lp-section-describe{
+	border: none;
+	box-shadow: none;
+	color: #999;
+	font-style: italic;
+	width: 60%;
+	float: left;
 }
 #course_curriculum .curriculum-section-items .lp-section-item input.lp-item-name:focus {
 	color: #444;

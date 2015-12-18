@@ -291,7 +291,7 @@ jQuery(document).ready(function ($) {
 				lesson_id: $(this).attr('lesson-id')
 			},
 			success: function (html) {
-				console.log($url);
+				LearnPress.log($url);
 				history.pushState({}, '', $url);
 				$('.course-content').html($('.course-content', html).html());
 				$('html, body').animate({scrollTop: $('.course-content').offset().top}, 'slow');
@@ -327,7 +327,7 @@ jQuery(document).ready(function ($) {
 				question_answer: $question_answer
 			},
 			success: function (html) {
-				console.log(html);
+				LearnPress.log(html);
 				location.reload(true);
 			}
 		})
@@ -465,7 +465,7 @@ jQuery(document).ready(function ($) {
 		event.preventDefault();
 		var $this = $(this);
 		var $certi_link = $this.attr("certi_link");
-		console.log($certi_link);
+		LearnPress.log($certi_link);
 		$.ajax({
 			type   : "POST",
 			url    : ajaxurl,
@@ -474,7 +474,7 @@ jQuery(document).ready(function ($) {
 				course_id: $this.attr('course-id')
 			},
 			success: function (html) {
-				console.log(html);
+				LearnPress.log(html);
 				if (html == 'success') {
 					if ($certi_link) {
 						window.location.replace($certi_link);

@@ -242,6 +242,14 @@
 	padding: 10px 15px;
 	background-color: #DDD;
 }
+.section-header p{
+	display: inline-block;
+	font-weight: normal;
+	font-style: italic;
+	color: #999;
+	font-size: smaller;
+	margin: 0;
+}
 #learn-press-course-curriculum .section{
 	margin: 0 0 1px 0px;
 	list-style: none;
@@ -484,6 +492,11 @@
 .learn-press-error{
 	border-color: #b81c23;
 }
+
+.open-hand{
+	cursor: url("../../assets/images/openhand.cur") 7 5, default !important;
+}
+
 @media screen and (min-width: 59.6875em) {
 	.twentyfifteen .learnpress-content{
 		margin-left: 8.3333%;

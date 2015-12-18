@@ -80,7 +80,7 @@ if ( !class_exists( 'RWMB_Question_Field' ) ) {
 			);
 			ob_start();
 
-			if ( $q = LP_Question_Factory::get_question( $post_id ) ) {
+			if ( $q = LP_Question_Factory::get_question($post_id ) ) {
 				$q->admin_interface();
 			}
 

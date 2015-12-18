@@ -90,7 +90,7 @@ if (typeof LearnPress == 'undefined') var LearnPress = {};
 		},
 		getQuestionPosition: function (question_id) {
 			question_id = question_id || this.get('question_id');
-			console.log(typeof question_id)
+			LearnPress.log(typeof question_id)
 			return _.indexOf(this.get('questions'), question_id);
 		},
 		countQuestions     : function () {

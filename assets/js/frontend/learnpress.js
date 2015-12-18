@@ -26,7 +26,7 @@
 					data = $.parseJSON(data);
 				}
 			} catch (e) {
-				console.log(e);
+				LearnPress.log(e);
 				data = {};
 			}
 			return data;
@@ -45,7 +45,7 @@
 				}, args.duration);
 		},
 		parse_json: function (data) {
-			console.log('LearnPress.parse_json has deprecated, use LearnPress.parseJSON instead of')
+			LearnPress.log('LearnPress.parse_json has deprecated, use LearnPress.parseJSON instead of')
 			return LearnPress.parseJSON(data);
 		}
 	}, LearnPress);

@@ -8,29 +8,40 @@ if (typeof window.LearnPress == 'undefined') {
 	window.LearnPress = {};
 }
 ;(function ($) {
-	return;
 	var $doc = $(document);
 	LearnPress.Hook.addFilter('before_add_question_option', function($el, args){
 		return true;
 	}).addAction('question_option_added', function($el){
-		$el.find('input[type="text"]').focus();
+		//$el.find('input[type="text"]').focus();
 	})
 
 	LearnPress.Question = {
-		addOption  : function (question_id) {
-			var args = {
-					question_id: question_id,
-					text       : 'New option',
-					value      : LearnPress.uniqueId()
-				},
-				tmpl = wp.template( $('#learn-press-question-'+question_id).attr('data-type')+'-option'),
-				$newOption = $(tmpl(args)),
-				$list = $('#learn-press-list-options-' + question_id + ' tbody');
-			if( LearnPress.Hook.applyFilters('before_add_question_option', $newOption, args ) !== false ) {
-				$list.append($newOption);
-				LearnPress.Hook.doAction('question_option_added', $newOption, args );
-			}
+		_getEmptyOption: function(question_id){
+			var $options = $('#learn-press-list-options-' + question_id + ' tbody .lp-list-option-empty');
+			return $options.length ? $options : false;
+		},
+		addOption  : function (question_id, args) {
+			var $newOption = this._getEmptyOption(question_id);
+			args = $.extend({autoFocus: true}, args || {});
+			if( $newOption ){
 
+			}else {
+				var templateArgs = {
+						question_id: question_id,
+						text       : '',
+						value      : LearnPress.uniqueId()
+					},
+					tmpl = wp.template($('#learn-press-question-' + question_id).attr('data-type') + '-option'),
+					$list = $('#learn-press-list-options-' + question_id + ' tbody');
+				$newOption = $(tmpl(templateArgs));
+				if (LearnPress.Hook.applyFilters('before_add_question_option', $newOption, args) !== false) {
+					$list.append($newOption);
+					LearnPress.Hook.doAction('question_option_added', $newOption, args);
+				}
+			}
+			if($newOption && args.autoFocus){
+				$newOption.find('.lp-answer-text').focus();
+			}
 		},
 		removeOption: function(theOption){
 			var $theOption = null;
@@ -121,22 +132,8 @@ if (typeof window.LearnPress == 'undefined') {
 		});
 		return hidden;
 	}
-	function _ready() {
-		$('#learn-press-toggle-questions').on('click', function () {
-			$(this).siblings('ul').toggle();
-		});
-
-		$doc.on('click', '#learn-press-dropdown-questions ul li a', function (e) {
-			e.preventDefault();
-			LearnPress.Question.addQuestion({id: $(this).data('id')});
-			$(this).closest('ul').hide();
-		});
-
-		$('#learn-press-button-add-question').on('click', function () {
-			LearnPress.Question.addQuestion({name: $('#learn-press-question-name').val(), type: 'true_or_false'});
-		});
-
-		$('.lp-list-options tbody').sortable({
+	LearnPress.sortableQuestionAnswers = function( $questions ){
+		$questions.find('.lp-list-options tbody').sortable({
 			handle: '.lp-move-list-option',
 			axis: 'y',
 			start: function(e, ui){
@@ -155,10 +152,25 @@ if (typeof window.LearnPress == 'undefined') {
 
 			}
 		});
+	}
+	function _ready() {
+		$('#learn-press-toggle-questions').on('click', function () {
+			$(this).siblings('ul').toggle();
+		});
 
-		$doc.on('click', '.add-question-option-button', function () {
+		$doc.on('click', '#learn-press-dropdown-questions ul li a', function (e) {
+			e.preventDefault();
+			LearnPress.Question.addQuestion({id: $(this).data('id')});
+			$(this).closest('ul').hide();
+		});
+
+		$('#learn-press-button-add-question').on('click', function () {
+			//LearnPress.Question.addQuestion({name: $('#learn-press-question-name').val(), type: 'true_or_false'});
+		});
+
+		$doc.on('click', '.add-question-option-button', function (e, data) {
 			var question_id = $(this).attr('data-id');
-			LearnPress.Question.addOption(question_id);
+			LearnPress.Question.addOption(question_id, data);
 		}).on('click', '.lp-remove-list-option', function () {
 			var $option = $(this).closest('tr');
 			LearnPress.Question.removeOption( $option );
@@ -179,8 +191,13 @@ if (typeof window.LearnPress == 'undefined') {
 				},
 				success: function(response){
 					response = LearnPress.parseJSON(response);
-					var $newOptions = $(response);
-					$('#learn-press-question-'+questionId).replaceWith($newOptions);
+					var $newOptions = $(response.html),
+						$question = $('#learn-press-question-'+questionId),
+						$icon = $question.closest('.quiz-question').find('.quiz-question-icon img');
+					$question.replaceWith($newOptions);
+					if($icon.length){
+						$icon.replaceWith(response.icon)
+					}
 					LearnPress.Hook.doAction('learn_press_convert_question_type', questionId, from, to, $newOptions );
 					LearnPress.MessageBox.hide();
 				}
@@ -272,6 +289,40 @@ if (typeof window.LearnPress == 'undefined') {
 			if( action ){
 				e.preventDefault();
 			}
+		}).on('keydown', '.no-submit', function(e){
+			if(e.keyCode == 13) {
+				e.preventDefault();
+				LearnPress.log('no submit form');
+			}
+		}).on('change keyup', '.lp-answer-text', function(e){
+			var $input = $(this),
+				$option = $input.closest('.lp-list-option');
+			if(e.keyCode != 13){
+				switch (e.keyCode){
+					case 38:
+					case 40:
+						var pressed = $input.data('key-'+ e.keyCode) || 1;
+						if(pressed > 1){
+							if(e.keyCode == 38){
+								( $prev = $input.findPrev('.key-nav') ) && $prev.focus();
+							}else{
+								( $next = $input.findNext('.key-nav') ) && $next.focus();
+							}
+							$input.data('key-'+ e.keyCode, 0);
+						}else {
+							$input.data('key-' + e.keyCode, pressed + 1);
+						}
+				}
+				if( ($input.val()+'').length ){
+					$option.removeClass('lp-list-option-empty');
+				}else{
+					$option.addClass('lp-list-option-empty');
+					return;
+				}
+			}
+			var $wrap = $(this).closest('.learn-press-question'),
+				$button = $wrap.find('.add-question-option-button');
+			$button.trigger('click', {autoFocus: e.keyCode == 13});
 		});
 
 

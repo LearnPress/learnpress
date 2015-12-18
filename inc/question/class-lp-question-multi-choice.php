@@ -17,8 +17,6 @@ class LP_Question_Multi_Choice extends LP_Question {
 	 */
 	function __construct( $the_question = null, $options = null ) {
 		parent::__construct( $the_question, $options );
-		LP_Question_Factory::add_template( 'multi-choice-option', $this->option_template() );
-
 	}
 
 	function submit_answer( $quiz_id, $answer ) {
@@ -86,30 +84,6 @@ class LP_Question_Multi_Choice extends LP_Question {
 		return $output;
 	}
 
-	function option_template(){
-		ob_start();
-		?>
-		<tr class="lp-list-option <# if(data.id){ #>lp-list-option-{{data.id}}<# } #>" data-id="{{data.id}}">
-
-			<td>
-				<input class="lp-answer-text" type="text" name="learn_press_question[{{data.question_id}}][answer][text][]" value="{{data.text}}" />
-			</td>
-			<th class="lp-answer-check">
-				<input type="hidden" name="learn_press_question[{{data.question_id}}][answer][value][]" value="{{data.value}}" />
-				<input type="checkbox" name="learn_press_question_{{data.question_id}}[]" {{data.checked}} value="{{data.value}}" />
-				<input type="hidden" name="learn_press_question[{{data.question_id}}][answer][id][]" value="{{data.id}}" />
-			</th>
-				<td class="lp-list-option-actions lp-remove-list-option">
-					<i class="dashicons dashicons-trash"></i>
-				</td>
-			<td class="lp-list-option-actions lp-move-list-option">
-				<i class="dashicons dashicons-sort"></i>
-			</td>
-		</tr>
-		<?php
-		return apply_filters( 'learn_press_question_answer_option_template', ob_get_clean(), $this );
-	}
-
 	function get_icon(){
 		return '<img src="' . apply_filters( 'learn_press_question_icon', LP()->plugin_url( 'assets/images/multiple-choice.png' ), $this ) . '">';
 	}
@@ -117,6 +91,8 @@ class LP_Question_Multi_Choice extends LP_Question {
 
 	/**
 	 * @param array $args
+	 *
+	 * @return mixed
 	 */
 	function admin_interfaces( $args = array() ) {
 
@@ -285,5 +261,29 @@ class LP_Question_Multi_Choice extends LP_Question {
 		}
 
 		return $return;
+	}
+
+	static function admin_js_template(){
+		ob_start();
+		?>
+		<tr class="lp-list-option <# if(data.id){ #>lp-list-option-{{data.id}}<# } #>" data-id="{{data.id}}">
+
+			<td>
+				<input class="lp-answer-text no-submit key-nav" type="text" name="learn_press_question[{{data.question_id}}][answer][text][]" value="{{data.text}}" />
+			</td>
+			<th class="lp-answer-check">
+				<input type="hidden" name="learn_press_question[{{data.question_id}}][answer][value][]" value="{{data.value}}" />
+				<input type="checkbox" name="learn_press_question_{{data.question_id}}[]" {{data.checked}} value="{{data.value}}" />
+				<input type="hidden" name="learn_press_question[{{data.question_id}}][answer][id][]" value="{{data.id}}" />
+			</th>
+			<td class="lp-list-option-actions lp-remove-list-option">
+				<i class="dashicons dashicons-trash"></i>
+			</td>
+			<td class="lp-list-option-actions lp-move-list-option">
+				<i class="dashicons dashicons-sort open-hand"></i>
+			</td>
+		</tr>
+		<?php
+		return apply_filters( 'learn_press_question_multi_choice_answer_option_template', ob_get_clean(), __CLASS__ );
 	}
 }

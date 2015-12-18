@@ -16,16 +16,77 @@ if ( !defined( 'ABSPATH' ) ) {
 learn_press_include( 'abstracts/abstract-lp-assets.php' );
 
 class LP_Assets extends LP_Abstract_Assets {
+	static protected $_minify = array(
+		'assets/js/admin/question.js' => 'assets/js/admin/question.min.js',
+		'assets/js/global.js'         => 'assets/js/global.min.js'
+	);
 
-	static function init(){
+	static function init() {
 		add_action( 'learn_press_print_assets', array( __CLASS__, '_print_assets' ) );
+		add_filter( 'script_loader_src', array( __CLASS__, 'script_loader_src' ), 10, 2 );
+		add_action( 'learn_press_settings_save_general', array( __CLASS__, '_minify_source' ) );
 		parent::init();
+	}
+
+	static function script_loader_src( $src, $handle ) {
+		if ( LP_Settings::instance()->get( 'debug' ) == 'yes' ) {
+			return $src;
+		}
+		$minify = self::$_minify;
+		foreach ( $minify as $find => $replace ) {
+			if ( strpos( $src, $find ) !== false ) {
+				$src = str_replace( $find, $replace, $src );
+				break;
+			}
+		}
+		return $src;
+	}
+
+	static function _url_to_path( $url, $sub ) {
+		$path = str_replace( LP_PLUGIN_URL, preg_replace( '/\\\\/', '/', LP_PLUGIN_PATH ), $url );
+		echo preg_replace( '!\?.*!', '', $path );
+	}
+
+	static function _create_file( $src, $des ) {
+		if ( $src == $des ) {
+			return $src;
+		}
+		$read_file  = LP_PLUGIN_PATH . '/' . $src;
+		$write_file = LP_PLUGIN_PATH . '/' . $des;
+
+		global $wp_filesystem;
+		if ( $wp_filesystem ) {
+			include_once LP_PLUGIN_PATH . '/inc/libraries/minify/src/Minify.php';
+			include_once LP_PLUGIN_PATH . '/inc/libraries/minify/src/JS.php';
+			$code     = $wp_filesystem->get_contents( $read_file );
+			$minifier = new JS( $code );
+			$code     = $minifier->minify();
+
+			$wp_filesystem->put_contents(
+				$write_file,
+				$code
+			);
+			if ( file_exists( $write_file ) ) {
+				$src = $des;
+			}
+		}
+		return $src;
+	}
+
+	static function _minify_source() {
+		if ( LP_Settings::instance()->get( 'debug' ) == 'yes' ) {
+			return;
+		}
+		$minify = self::$_minify;
+		foreach ( $minify as $find => $replace ) {
+			self::_create_file( $find, $replace );
+		}
 	}
 
 	/**
 	 * Load assets for frontend
 	 */
-	static function load_scripts(){
+	static function load_scripts() {
 
 		// global
 		self::add_style( 'learn-press-icon', learn_press_plugin_url( 'assets/css/style.css' ) );
@@ -34,7 +95,7 @@ class LP_Assets extends LP_Abstract_Assets {
 		self::add_script( 'learn-press-block-ui', learn_press_plugin_url( 'assets/js/jquery.block-ui.js' ) );
 
 		// admin
-		self::add_style( 'learn-press-admin', learn_press_plugin_url( 'assets/css/learnpress-admin.css') );
+		self::add_style( 'learn-press-admin', learn_press_plugin_url( 'assets/css/learnpress-admin.css' ) );
 
 		// frontend
 		self::add_style( 'learn-press', learn_press_plugin_url( 'assets/css/learnpress.css' ) );
@@ -43,7 +104,7 @@ class LP_Assets extends LP_Abstract_Assets {
 		// single course
 		self::add_script( 'single-course', learn_press_plugin_url( 'assets/js/frontend/single-course.js' ), array( 'backbone', 'utils' ) );
 
-		if( LP()->settings->get( 'ajax_add_to_cart' ) == 'yes' ) {
+		if ( LP()->settings->get( 'ajax_add_to_cart' ) == 'yes' ) {
 			self::add_script( 'learn-press-add-to-cart', learn_press_plugin_url( 'assets/js/frontend/add-to-cart.js' ) );
 		}
 		// single quiz
@@ -66,7 +127,7 @@ class LP_Assets extends LP_Abstract_Assets {
 
 	}
 
-	static function _print_assets(){
+	static function _print_assets() {
 		do_action( 'learn_press_frontend_before_load_assets' );
 
 		self::enqueue_style(
@@ -83,22 +144,23 @@ class LP_Assets extends LP_Abstract_Assets {
 		);
 
 		// single course
-		if( is_course() ){
+		if ( is_course() ) {
 			self::enqueue_script( 'single-course' );
 			self::enqueue_script( 'learn-press-add-to-cart' );
 		}
 
 		// single quiz
-		if( is_quiz() ){
+		if ( is_quiz() ) {
 			self::enqueue_script( 'learn-press-timer' );
 			self::enqueue_script( 'single-quiz' );
 		}
 
 		// checkout page
-		if( learn_press_is_checkout() ) {
+		if ( learn_press_is_checkout() ) {
 			self::enqueue_script( 'checkout' );
 		}
 		do_action( 'learn_press_frontend_after_load_assets' );
 	}
 }
+
 LP_Assets::init();

@@ -56,7 +56,7 @@ class LP_Question_Factory {
 	 * @param  string
 	 * @return string|false
 	 */
-	private static function get_class_name_from_question_type( $type ) {
+	public static function get_class_name_from_question_type( $type ) {
 		return $type ? 'LP_Question_' . implode( '_', array_map( 'ucfirst', explode( '-', $type ) ) ) : false;
 	}
 
@@ -67,7 +67,7 @@ class LP_Question_Factory {
 	 * @param  array   $args (default: array())
 	 * @return string
 	 */
-	private static function get_question_class( $the_question, $args = array() ) {
+	public static function get_question_class( $the_question, $args = array() ) {
 		$question_id = absint( $the_question->ID );
 		$post_type = $the_question->post_type;
 		if ( LP()->question_post_type === $post_type ) {
@@ -94,7 +94,7 @@ class LP_Question_Factory {
 	 * @uses   WP_Post
 	 * @return WP_Post|bool false on failure
 	 */
-	private static function get_question_object( $the_question ) {
+	public static function get_question_object( $the_question ) {
 		if ( false === $the_question ) {
 			$the_question = $GLOBALS['post'];
 		} elseif ( is_numeric( $the_question ) ) {
@@ -121,17 +121,43 @@ class LP_Question_Factory {
 
 
 		}
+		LP_Question_Factory::add_template( 'multi-choice-option', LP_Question_Multi_Choice::admin_js_template() );
+		LP_Question_Factory::add_template( 'single-choice-option', LP_Question_Single_Choice::admin_js_template() );
+
+		do_action( 'learn_press_question_factory_init', __CLASS__ );
 	}
 
 	static function admin_assets(){
 		LP_Admin_Assets::enqueue_style( 'learnpress-question', learn_press_plugin_url( 'assets/css/admin/question.css' ) );
 		LP_Admin_Assets::enqueue_script( 'learnpress-question', learn_press_plugin_url( 'assets/js/admin/question.js' ), array( 'jquery', 'jquery-ui-sortable') );
 	}
-	static function admin_template(){
-		if( !self::$_templates ) {
-			return;
-		}
 
+	/**
+	 * Get all type of questions
+	 *
+	 * @return mixed
+	 */
+	public static function get_types() {
+		$defaults = array(
+			'true_or_false',
+			'multi_choice',
+			'single_choice'
+		);
+		return apply_filters( 'lpr_question_types', $defaults );
+	}
+
+
+	static function admin_template(){
+		/*$questions = self::get_types();
+		$method    = is_admin() ? 'admin_js_template' : 'frontend_js_template';
+
+		if ( $questions ) foreach ( $questions as $type ) {
+			$question = self::get_classname_from_question_type( $type );
+			if ( is_callable( array( $question, $method ) ) ) {
+				$template = call_user_func( array( $question, $method ) );
+				printf( '<script id="tmpl-%s" type="text/html">%s</script>', $id, $template );
+			}
+		}*/
 		foreach( self::$_templates as $id => $content ){
 			printf( '<script id="tmpl-%s" type="text/html">%s</script>', $id, $content );
 		}

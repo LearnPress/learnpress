@@ -211,9 +211,10 @@
 					case 'delete':
 					case 'delete-forever':
 						var $items = $all.filter(function(){return $(this).find('.item-checkbox input').is(':checked')});
-						this.removeItem($items, function(){
+						this.removeItem($items, action == 'delete-forever', function(){
 							$button.closest('.item-bulk-actions').find('button').attr('disabled', 'disabled').map(function(){
-								$(this).html($(this).attr('data-title'));
+								var $b = $(this).html($(this).attr('data-title'));
+								$b.attr('data-action') == 'cancel' && $b.hide();
 							});
 						});
 						break;
@@ -334,7 +335,7 @@
 					textLen = value.length,
 					type = $input.data('field');
 				if($input.attr('name') == 'lp-new-item-name'){
-					console.log(textLen)
+					LearnPress.log(textLen)
 					if( textLen > 0 ){
 						$input.siblings('.lp-button-add-item').removeClass('disabled');
 					}else{
@@ -509,7 +510,7 @@
 					$lis = $form.find('li:not(.lp-search-no-results):not(.selected)').addClass('hide-if-js'),
 					reg = new RegExp($.grep(text.split(/[\s]+/),function(a){return a.length}).join('|'), "ig"),
 					found = 0;
-				console.log(text)
+				LearnPress.log(text)
 				//if( text.length ) {
 					found = $lis.filter(function () {
 						var $el = $(this),
@@ -911,9 +912,10 @@
 				var $item = $(e.target).closest('.lp-section-item');
 				this.removeItem($item);
 			},
-			removeItem: function($items, callback){
+			removeItem: function($items, b, callback){
 				if( $items.length == 0 ) return;
-				var itemNames = $items.map(function(){return $(this).find('.lp-item-name').val()}).get().join('</p><p>+&nbsp;');
+				var that = this,
+					itemNames = $items.map(function(){return $(this).find('.lp-item-name').val()}).get().join('</p><p>+&nbsp;');
 				LearnPress.MessageBox.show( admin_course_localize.notice_remove_section_item+'<h4><p>+&nbsp;'+itemNames+'</p></h4>', {
 					data: {
 						items: $items,
@@ -921,20 +923,50 @@
 					},
 					buttons: 'yesNo',
 					events:{
+						onNo: function(instance){
+							$items
+								.each(function(){
+									$(this).removeClass('remove').find('.item-checkbox input').prop('checked', false)
+								})
+								.closest('.curriculum-section')
+								.find('.item-bulk-actions button')
+								.attr('disabled', 'disabled')
+								.map(function(){
+									var $b = $(this);
+									$b.attr('data-action') == 'cancel' ? $b.hide() : $b.html($b.attr('data-title'))
+								});
+						},
 						onYes: function(instance){
+							var ids = [];
 							instance.data.items && instance.data.items.each(function(){
 								var $item = $(this),
-									id = $item.attr('data-section_item_id'),
+									id = parseInt( $item.attr('data-section_item_id') ),
 									type = $item.attr('data-type');
 								$item.remove();
 								if(id) {
-									instance.data.self.model.removeItem(parseInt(id));
+									instance.data.self.model.removeItem(id);
+									ids.push(id);
 								}
 							});
+							if( b ) {
+								that.removeItemDB(ids);
+							}
 							$.isFunction(callback) && callback.call();
 						}
 					}
 				})
+			},
+			removeItemDB: function(id){
+				$.ajax({
+					url: LearnPress_Settings.ajax,
+					data: {
+						action: 'learnpress_remove_post_items',
+						id: id
+					},
+					success: function(response){
+						LearnPress.log(response)
+					}
+				});
 			},
 			findItemsById: function(id){
 				if(!$.isArray(id)){
@@ -1125,10 +1157,10 @@
 				connectWith: '.curriculum-section-items',
 				stop: function(e, ui){
 					var $emptyItem = ui.item.parent().find('.lp-item-empty:last');
-					console.log('empty:')
-					console.log($emptyItem.get(0))
-					console.log('next:')
-					console.log($emptyItem.next().get(0))
+					LearnPress.log('empty:')
+					LearnPress.log($emptyItem.get(0))
+					LearnPress.log('next:')
+					LearnPress.log($emptyItem.next().get(0))
 					if ($emptyItem.next().is(ui.item.get(0))) {
 						$emptyItem.insertAfter(ui.item);
 					}

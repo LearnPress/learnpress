@@ -27,9 +27,9 @@ function learn_press_get_quiz_questions( $quiz_id = null, $only_ids = true ) {
 
 function learn_press_question_class( $question = null ){
 	if( ! $question ){
-		$question = LP_Question_Factory::get_question( get_the_ID() );
+		$question = LP_Question_Factory::get_question(get_the_ID() );
 	}elseif( is_numeric( $question ) ){
-		$question = LP_Question_Factory::get_question( $question );
+		$question = LP_Question_Factory::get_question($question );
 	}
 	if( $question ) {
 		$class = "learn-press-question-wrap question-type-{$question->type} question-{$question->id}";

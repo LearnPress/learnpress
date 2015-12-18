@@ -141,7 +141,7 @@ if ( !class_exists( 'RWMB_Quiz_Questions_Field' ) ) {
 
 			// update the title of questions and save all data
 			foreach( $questions as $id => $data ){
-				$question = LP_Question_Factory::get_question( $id );
+				$question = LP_Question_Factory::get_question($id );
 				if( ! empty( $titles[ $id ] ) ){
 					$wpdb->update(
 						$wpdb->posts,

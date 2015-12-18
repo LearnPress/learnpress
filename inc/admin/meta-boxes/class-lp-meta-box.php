@@ -1,5 +1,6 @@
 <?php
-class LP_Meta_Box extends RW_Meta_Box{
+
+class LP_Meta_Box extends RW_Meta_Box {
 	/**
 	 * Get field class name
 	 *

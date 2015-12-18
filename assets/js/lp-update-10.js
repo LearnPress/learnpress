@@ -8,7 +8,7 @@
 			try {
 				json = JSON.parse(matches[1]);
 			}catch(e){
-				console.log(e);
+				LearnPress.log(e);
 			}
 		}
 		return json;

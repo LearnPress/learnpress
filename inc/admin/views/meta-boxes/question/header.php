@@ -1,4 +1,5 @@
 <?php
+wp_die( 'Something went wrong');
 $post_id = $this->get( 'ID' );
 settype( $args, 'array' );
 $is_collapse = array_key_exists( 'toggle', $args ) && !$args['toggle'];

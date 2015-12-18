@@ -29,11 +29,18 @@ if( $is_hidden ){
 		</p>
 	</h3>
 	<div class="curriculum-section-content<?php echo $is_hidden ? ' hide-if-js' : '';?>">
-		<p class="item-bulk-actions">
+		<div class="item-bulk-actions">
+			<input name="_lp_curriculum[__SECTION__][description]" class="lp-section-describe" type="text" value="<?php echo esc_attr( $section->section_description );?>" placeholder="<?php _e( 'Describe about this section', 'learn_press' );?>" />
 			<button class="button" type="button" data-action="delete" disabled="disabled" data-title="<?php _e( 'Delete', 'learn_press' );?>"><?php _e( 'Delete', 'learn_press' );?></button>
+			<!--
 			<button class="button" type="button" data-action="delete-forever" disabled="disabled" data-title="<?php _e( 'Delete Forever', 'learn_press' );?>"><?php _e( 'Delete Forever', 'learn_press' );?></button>
+			-->
 			<button class="button hide-if-js" type="button" data-action="cancel"><?php _e( 'Cancel', 'learn_press' );?></button>
-		</p>
+			<!--<div class="button lp-check-all-items">
+				<input type="checkbox" class="" />
+				<span>&dtrif;</span>
+			</div>-->
+		</div>
 		<table class="curriculum-section-items">
 			<?php echo $content_items;?>
 			<?php learn_press_admin_view( 'meta-boxes/course/loop-item.php', array( 'item' => learn_press_post_object( array( 'post_type' => LP()->lesson_post_type ) ) ) );?>

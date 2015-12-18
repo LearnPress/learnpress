@@ -335,7 +335,7 @@ if (typeof window.LearnPress == 'undefined') {
 					data = $.parseJSON(data);
 				}
 			} catch (e) {
-				console.log(e);
+				LearnPress.log(e);
 				data = {};
 			}
 			return data;
@@ -351,7 +351,7 @@ if (typeof window.LearnPress == 'undefined') {
 			var $doc = $(document),
 				event = 'LearnPress.' + action;
 			$doc.on(event, callback);
-			console.log($doc.data('events'))
+			LearnPress.log($doc.data('events'))
 			return this
 		},
 		applyFilters  : function () {
@@ -432,8 +432,31 @@ if (typeof window.LearnPress == 'undefined') {
 			return retId;
 		},
 		parse_json    : function (data) {
-			console.log('LearnPress.parse_json has deprecated, use LearnPress.parseJSON instead of')
+			LearnPress.log('LearnPress.parse_json has deprecated, use LearnPress.parseJSON instead of')
 			return LearnPress.parseJSON(data);
+		},
+		log: function(){
+			if( typeof LEARN_PRESS_DEBUG != 'undefined' && LEARN_PRESS_DEBUG && console ){
+				for(var i = 0, n = arguments.length; i < n; i++){
+					console.log(arguments[i]);
+				}
+			}
 		}
 	}, LearnPress);
+
+	$.fn.findNext = function(selector){
+		var $selector = $(selector),
+			$root = this.first(),
+			index = $selector.index($root),
+			$next = $selector.eq(index+1);
+		return $next.length ? $next : false;
+	}
+
+	$.fn.findPrev = function(selector){
+		var $selector = $(selector),
+			$root = this.first(),
+			index = $selector.index($root),
+			$prev = $selector.eq(index-1);
+		return $prev.length ? $prev : false;
+	}
 })(jQuery);

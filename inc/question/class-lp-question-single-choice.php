@@ -18,32 +18,29 @@ class LP_Question_Single_Choice extends LP_Question {
 	function __construct( $the_question = null, $args = null ) {
 		parent::__construct( $the_question, $args );
 
-		LP_Question_Factory::add_template( 'single-choice-option', $this->option_template() );
 	}
 
-	function option_template(){
+	function admin_js_template(){
 		ob_start();
 		?>
-		<tr class="lp-list-option <# if(data.id){ #>lp-list-option-{{data.id}}<# } #>" data-id="{{data.id}}">
+		<tr class="lp-list-option lp-list-option-new lp-list-option-empty <# if(data.id){ #>lp-list-option-{{data.id}}<# } #>" data-id="{{data.id}}">
 			<td>
-				<input class="lp-answer-text" type="text" name="learn_press_question[{{data.question_id}}][answer][text][]" value="{{data.text}}" />
+				<input class="lp-answer-text no-submit key-nav" type="text" name="learn_press_question[{{data.question_id}}][answer][text][]" value="{{data.text}}" />
 			</td>
 			<th class="lp-answer-check">
 				<input type="hidden" name="learn_press_question[{{data.question_id}}][answer][value][]" value="{{data.value}}" />
 				<input type="radio" name="learn_press_question_{{data.question_id}}" {{data.checked}} value="{{data.value}}" />
 				<input type="hidden" name="learn_press_question[{{data.question_id}}][answer][id][]" value="{{data.id}}" />
 			</th>
-			<?php if ( $this->type == 'single_choice' ): ?>
-				<td class="lp-list-option-actions lp-remove-list-option">
-					<i class="dashicons dashicons-trash"></i>
-				</td>
-			<?php endif;?>
-			<td class="lp-list-option-actions lp-move-list-option">
+			<td class="lp-list-option-actions lp-remove-list-option">
+				<i class="dashicons dashicons-trash"></i>
+			</td>
+			<td class="lp-list-option-actions lp-move-list-option open-hand">
 				<i class="dashicons dashicons-sort"></i>
 			</td>
 		</tr>
 		<?php
-		return apply_filters( 'learn_press_question_answer_option_template', ob_get_clean(), $this );
+		return apply_filters( 'learn_press_question_single_choice_answer_option_template', ob_get_clean(), __CLASS__ );
 	}
 
 	function submit_answer( $quiz_id, $answer ) {
@@ -60,6 +57,7 @@ class LP_Question_Single_Choice extends LP_Question {
 
 	function admin_script() {
 		parent::admin_script();
+		return;
 		?>
 		<script type="text/html" id="tmpl-single-choice-question-answer">
 			<tr class="lpr-disabled">

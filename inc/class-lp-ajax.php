@@ -144,7 +144,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			$quiz_id         = !empty( $_REQUEST['quiz_id'] ) ? absint( $_REQUEST['quiz_id'] ) : 0;
 			$question_id     = !empty( $_REQUEST['save_id'] ) ? absint( $_REQUEST['save_id'] ) : 0;
 			$user_id         = !empty( $_REQUEST['user_id'] ) ? absint( $_REQUEST['user_id'] ) : 0;
-			$question        = $question_id ? LP_Question_Factory::get_question( $question_id ) : false;
+			$question        = $question_id ? LP_Question_Factory::get_question($question_id ) : false;
 			if ( $question ) {
 				$question_answer = null;
 				$question_data = isset( $_REQUEST['question_answer'] ) ? $_REQUEST['question_answer'] : array();
@@ -211,7 +211,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 					)
 				);
 			}
-			if ( $question = LP_Question_Factory::get_question( $question_id ) ) {
+			if ( $question = LP_Question_Factory::get_question($question_id ) ) {
 
 				ob_start();
 

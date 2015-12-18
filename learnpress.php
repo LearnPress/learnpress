@@ -331,6 +331,8 @@ if ( !class_exists( 'LearnPress' ) ) {
 			$this->get_session();
 			$this->get_user();
 			$this->gateways = LP_Gateways::instance()->get_available_payment_gateways();
+			//$this->question_factory = LP_Question_Factory::instance();
+
 			LP_Emails::init_email_notifications();
 		}
 
@@ -427,6 +429,8 @@ if ( !class_exists( 'LearnPress' ) ) {
 			// quiz
 			require_once 'inc/quiz/lp-quiz-functions.php';
 			require_once 'inc/quiz/class-lp-quiz.php';
+
+
 
 			// question
 			//require_once 'inc/question/lp-question.php';

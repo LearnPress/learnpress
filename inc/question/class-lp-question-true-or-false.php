@@ -136,4 +136,24 @@ class LP_Question_True_Or_False extends LP_Question {
 		}
 		return $return;
 	}
+
+	function admin_js_template(){
+		ob_start();
+		?>
+		<tr class="lp-list-option lp-list-option-new lp-list-option-empty <# if(data.id){ #>lp-list-option-{{data.id}}<# } #>" data-id="{{data.id}}">
+			<td>
+				<input class="lp-answer-text no-submit key-nav" type="text" name="learn_press_question[{{data.question_id}}][answer][text][]" value="{{data.text}}" />
+			</td>
+			<th class="lp-answer-check">
+				<input type="hidden" name="learn_press_question[{{data.question_id}}][answer][value][]" value="{{data.value}}" />
+				<input type="radio" name="learn_press_question_{{data.question_id}}" {{data.checked}} value="{{data.value}}" />
+				<input type="hidden" name="learn_press_question[{{data.question_id}}][answer][id][]" value="{{data.id}}" />
+			</th>
+			<td class="lp-list-option-actions lp-move-list-option open-hand">
+				<i class="dashicons dashicons-sort"></i>
+			</td>
+		</tr>
+		<?php
+		return apply_filters( 'learn_press_question_true_or_false_answer_option_template', ob_get_clean(), __CLASS__ );
+	}
 }

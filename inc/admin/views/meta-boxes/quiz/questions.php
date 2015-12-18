@@ -23,7 +23,7 @@ $hidden_all = sizeof( $hidden ) && ( sizeof( array_diff( $hidden, $question_ids 
 		<?php if ( $questions ): $index = 0; ?>
 			<?php foreach ( $questions as $question ): ?>
 				<?php
-				$question      = LP_Question_Factory::get_question( $question );
+				$question      = LP_Question_Factory::get_question($question );
 				$question_view = learn_press_get_admin_view( 'meta-boxes/quiz/question.php' );
 				include $question_view;
 				?>

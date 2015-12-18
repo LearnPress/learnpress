@@ -21,7 +21,7 @@
 
 			<tr class="lp-list-option lp-list-option-<?php echo $id;?>" data-id="<?php echo $id;?>">
 				<td>
-					<input class="lp-answer-text" type="text" name="learn_press_question[<?php echo $this->id; ?>][answer][text][]" value="<?php echo esc_attr( $answer['text'] ); ?>" />
+					<input class="lp-answer-text no-submit key-nav" type="text" name="learn_press_question[<?php echo $this->id; ?>][answer][text][]" value="<?php echo esc_attr( $answer['text'] ); ?>" />
 				</td>
 				<th class="lp-answer-check">
 					<input type="hidden" name="learn_press_question[<?php echo $this->id; ?>][answer][value][]" value="<?php echo $value; ?>" />
@@ -33,7 +33,7 @@
 					<i class="dashicons dashicons-trash"></i>
 				</td>
 				<?php endif;?>
-				<td class="lp-list-option-actions lp-move-list-option">
+				<td class="lp-list-option-actions lp-move-list-option open-hand">
 					<i class="dashicons dashicons-sort"></i>
 				</td>
 			</tr>
@@ -66,3 +66,8 @@
 		?>
 	</p>
 </div>
+<script type="text/javascript">
+	jQuery(function ($) {
+		LearnPress.sortableQuestionAnswers($('#learn-press-question-<?php echo $this->id;?>'));
+	})
+</script>

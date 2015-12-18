@@ -74,7 +74,7 @@ class LP_Quiz {
 		if ( !$current_question_id || !in_array( $current_question_id, $question_ids ) ) {
 			$current_question_id = reset( $question_ids );
 		}
-		$question = LP_Question_Factory::get_question( $current_question_id );
+		$question = LP_Question_Factory::get_question($current_question_id );
 		$user_id  = get_current_user_id();
 
 		$user = learn_press_get_current_user();
@@ -128,7 +128,7 @@ class LP_Quiz {
 		switch( $key ){
 			case 'current_question':
 				if( ( $question = learn_press_get_request( 'question' ) ) && is_quiz() ){
-					$value = LP_Question_Factory::get_question( $question );
+					$value = LP_Question_Factory::get_question($question );
 				}
 				break;
 			case 'questions':

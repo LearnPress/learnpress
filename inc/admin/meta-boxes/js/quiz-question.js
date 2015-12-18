@@ -31,7 +31,7 @@
 				$('.lp-modal-search ul.lp-list-items').css('height', '').css('overflow', '')
 			},
 			toggleAddButtonState: function(e){
-				console.log(e.target.value)
+				LearnPress.log(e.target.value)
 				if((e.target.value+'').length == 0){
 					$('.lp-button-add-question').addClass('disabled')
 				}else{
@@ -71,7 +71,7 @@
 					$lis = $form.find('.lp-list-items li:not(.lp-search-no-results):not(.selected)').addClass('hide-if-js'),
 					reg = new RegExp($.grep(text.split(/[\s]+/),function(a){return a.length}).join('|'), "ig"),
 					found = 0;
-				console.log(text)
+				LearnPress.log(text)
 				found = $lis.filter(function () {
 					var $el = $(this),
 						itemText = $el.data('text')+'',

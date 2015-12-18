@@ -22,7 +22,7 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 			add_filter( 'posts_join_paged', array( $this, 'posts_join_paged' ) );
 			add_filter( 'posts_where_paged', array( $this, 'posts_where_paged' ) );
 			add_filter( 'posts_orderby', array( $this, 'posts_orderby' ) );
-			add_filter( 'manage_edit-' . LP()->lesson_post_type . '_sortable_columns', array( $this, 'columns_sortable' ) );
+			add_filter( 'manage_edit-' . $post_type_name . '_sortable_columns', array( $this, 'columns_sortable' ) );
 			parent::__construct();
 
 		}

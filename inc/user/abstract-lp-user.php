@@ -199,7 +199,7 @@ class LP_Abstract_User {
 		if ( $what == 'id' ) {
 			return $current;
 		} else {
-			$question = LP_Question_Factory::get_question( $current );
+			$question = LP_Question_Factory::get_question($current );
 			switch ( $what ) {
 				case 'html':
 					if ( $question ) {
@@ -736,7 +736,7 @@ class LP_Abstract_User {
 		if ( !empty( $questions ) ) {
 			foreach ( $questions as $question_id ) {
 				if ( !empty( $progress->question_answers[$question_id] ) ) {
-					$question = LP_Question_Factory::get_question( $question_id );
+					$question = LP_Question_Factory::get_question($question_id );
 					$check    = $question->check( $progress->question_answers[$question_id] );
 
 					if ( $check['correct'] ) {

@@ -7,12 +7,12 @@ if( typeof LearnPress == 'undefined' ) LearnPress = {};
 jQuery(document).ready(function ($) {
 	$('.meta_box_edit').click(function (event) {
 		event.preventDefault();
-		console.log("haha");
+		LearnPress.log("haha");
 		var post_id = jQuery(this).closest('select').val();
 		var edit_link = jQuery('.meta_box_course_lesson_quiz').attr('site_url');
 		edit_link += "wp-admin/post.php?post=" + post_id + "&action=edit";
 		var new_window = window.open(edit_link);
-		console.log(post_id);
+		LearnPress.log(post_id);
 	})
 });
 

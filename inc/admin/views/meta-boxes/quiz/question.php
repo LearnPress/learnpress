@@ -1,5 +1,6 @@
 <?php
 $is_hidden = $question->id && is_array($hidden) && in_array( $question->id, $hidden );
+print_r($qustion);
 ?>
 <div class="quiz-question<?php echo $is_hidden ? ' is-hidden' : '';?>">
 	<div class="quiz-question-head">

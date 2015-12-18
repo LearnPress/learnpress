@@ -113,7 +113,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 				'edit_item'          => __( 'Edit Course', 'learn_press' ),
 				'update_item'        => __( 'Update Course', 'learn_press' ),
 				'search_items'       => __( 'Search Course', 'learn_press' ),
-				'not_found'          => sprintf( __( 'You have not got any course yet. Click <a href="%s">Add new</a> to start', 'learn_press' ), admin_url( 'post-new.php?post_type=lp_course') ),
+				'not_found'          => sprintf( __( 'You have not got any course yet. Click <a href="%s">Add new</a> to start', 'learn_press' ), admin_url( 'post-new.php?post_type=lp_course' ) ),
 				'not_found_in_trash' => __( 'No course found in Trash', 'learn_press' ),
 			);
 
@@ -431,17 +431,17 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			);
 		}
 
-		function review_logs_content( $post ){
+		function review_logs_content( $post ) {
 			global $wpdb;
-			$view_all = learn_press_get_request( 'view_all_review' );
-			$query = $wpdb->prepare("
+			$view_all      = learn_press_get_request( 'view_all_review' );
+			$query         = $wpdb->prepare( "
 				SELECT SQL_CALC_FOUND_ROWS *
 				FROM {$wpdb->learnpress_review_logs}
 				WHERE course_id = %d
 				ORDER BY `date` DESC"
 				. ( $view_all ? "" : " LIMIT 0, 10" ) . "
 			", $post->ID );
-			$reviews = $wpdb->get_results( $query );
+			$reviews       = $wpdb->get_results( $query );
 			$total_reviews = $wpdb->get_var( "SELECT FOUND_ROWS()" );
 			$count_reviews = sizeof( $reviews );
 
@@ -454,13 +454,14 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			$section = wp_parse_args(
 				$section,
 				array(
-					'section_name'      => '',
-					'section_course_id' => 0,
-					'section_order'     => 0
+					'section_name'        => '',
+					'section_course_id'   => 0,
+					'section_order'       => 0,
+					'section_description' => ''
 				)
 			);
 			extract( $section );
-			$insert_data = compact( 'section_name', 'section_course_id', 'section_order' );
+			$insert_data = compact( 'section_name', 'section_course_id', 'section_order', 'section_description' );
 			$wpdb->insert(
 				$wpdb->learnpress_sections,
 				$insert_data,
@@ -486,31 +487,31 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		/*
 		 * Delete all sections in a course and reset auto increment
 		 */
-		private function _reset_sections(){
+		private function _reset_sections() {
 			global $wpdb, $post;
 
 			$wpdb->query(
-				$wpdb->prepare("
+				$wpdb->prepare( "
 					DELETE FROM si
 					USING {$wpdb->learnpress_section_items} si
 					INNER JOIN {$wpdb->learnpress_sections} s ON s.section_id = si.section_id
 					INNER JOIN {$wpdb->posts} p ON p.ID = s.section_course_id
 					WHERE p.ID = %d
-				", $post->ID)
+				", $post->ID )
 			);
-			$wpdb->query("
+			$wpdb->query( "
 				ALTER TABLE {$wpdb->learnpress_section_items} AUTO_INCREMENT = 1
-			");
+			" );
 
 			$wpdb->query(
-				$wpdb->prepare("
+				$wpdb->prepare( "
 					DELETE FROM {$wpdb->learnpress_sections}
 					WHERE section_course_id = %d
-				", $post->ID)
+				", $post->ID )
 			);
-			$wpdb->query("
+			$wpdb->query( "
 				ALTER TABLE {$wpdb->learnpress_sections} AUTO_INCREMENT = 1
-			");
+			" );
 		}
 
 		function _save() {
@@ -519,18 +520,19 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			$this->_reset_sections();
 			if ( !empty( $_REQUEST['_lp_curriculum'] ) ) {
 				$section_order = 0;
-				$query_update = array();
-				$update_ids = array();
-				$query_insert = array();
+				$query_update  = array();
+				$update_ids    = array();
+				$query_insert  = array();
 				foreach ( $_REQUEST['_lp_curriculum'] as $section_id => $_section ) {
 					$section_id = 0;//absint( $section_id );
 					if ( !$_section['name'] ) continue;
 
 					$section = array(
-						'section_name'      => $_section['name'],
-						'section_course_id' => $post->ID,
-						'section_order'     => ++$section_order,
-						'items'     => array()
+						'section_name'        => $_section['name'],
+						'section_course_id'   => $post->ID,
+						'section_order'       => ++ $section_order,
+						'section_description' => $_section['description'],
+						'items'               => array()
 					);
 
 					if ( !$section_id ) {
@@ -542,7 +544,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 					// update items;
 					if ( empty( $_section['items'] ) ) continue;
 
-					$items = $_section['items'];
+					$items      = $_section['items'];
 					$item_order = 0;
 					//print_r($items);die();
 					foreach ( $items as $section_item_id => $_item ) {
@@ -550,39 +552,39 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						//$section_item_id = absint( $section_item_id );
 						$item_id = $_item['item_id'];
 						if ( !$item_id ) {
-							$item            = $this->_insert_item(
+							$item    = $this->_insert_item(
 								array(
 									'post_title' => $_item['name'],
 									'post_type'  => $_item['post_type'],
 								)
 							);
 							$item_id = $item['ID'];
-						}else{
-							if( strcmp ( $_item['name'], $_item['old_name'] ) !== 0 ) {
+						} else {
+							if ( strcmp( $_item['name'], $_item['old_name'] ) !== 0 ) {
 								$query_update[] = 'WHEN ' . $_item['item_id'] . ' THEN \'' . $_item['name'] . '\'';
 								$update_ids[]   = $_item['item_id'];
-								$update_data = array(
-									'ID'	=> $_item['item_id'],
+								$update_data    = array(
+									'ID'         => $_item['item_id'],
 									'post_title' => $_item['name']
 								);
-								if( LP()->settings->get('auto_update_post_name') == 'yes' ){
+								if ( LP()->settings->get( 'auto_update_post_name' ) == 'yes' ) {
 									$update_data['post_name'] = sanitize_title( $_item['name'] );
 								}
 								wp_update_post( $update_data );
 							}
 							$item_id = $_item['item_id'];
 						}
-						$query_insert[] = $wpdb->prepare( "(%d, %d, %d, %s)", $section_id, $item_id, ++$item_order, $_item['post_type'] );
+						$query_insert[] = $wpdb->prepare( "(%d, %d, %d, %s)", $section_id, $item_id, ++ $item_order, $_item['post_type'] );
 					}
 				}
-				if( $query_insert ){
+				if ( $query_insert ) {
 					$query_insert = "
 						INSERT INTO {$wpdb->learnpress_section_items}(`section_id`, `item_id`, `item_order`, `item_type`)
 						VALUES " . join( ', ', $query_insert ) . "
 					";
 					$wpdb->query( $query_insert );
 				}
-				if( $query_update ){
+				if ( $query_update ) {
 					$query_update = "
 						UPDATE {$wpdb->posts}
 						SET
@@ -595,7 +597,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			}
 		}
 
-		private function _update_final_quiz(){
+		private function _update_final_quiz() {
 			global $post;
 			$final_quiz = false;
 			if ( learn_press_get_request( '_lp_course_result' ) == 'evaluate_final_quiz' ) {
@@ -611,36 +613,36 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			return $final_quiz;
 		}
 
-		private function _send_mail(){
-			if( !LP()->user->is_instructor() ) return;
+		private function _send_mail() {
+			if ( !LP()->user->is_instructor() ) return;
 			$mail = LP()->mail;
-			if( ( $send = $mail->send( 'tunn@foobla.com', 'tunnhn@gmail.com', 'This is the subject', 'this is the content' ) ) !== true ){
+			if ( ( $send = $mail->send( 'tunn@foobla.com', 'tunnhn@gmail.com', 'This is the subject', 'this is the content' ) ) !== true ) {
 				echo 'error';
-				print_r($send);
+				print_r( $send );
 				die();
-			}else{
+			} else {
 
 			}
 		}
 
-		private function _review_log(){
+		private function _review_log() {
 			global $wpdb, $post;
 
 			$required_review       = LP()->settings->get( 'required_review' ) == 'yes';
 			$enable_edit_published = LP()->settings->get( 'enable_edit_published' ) == 'yes';
 
-			if( !$required_review || ( $required_review && $enable_edit_published ) ){
+			if ( !$required_review || ( $required_review && $enable_edit_published ) ) {
 				return;
 			}
 
 			$user    = learn_press_get_current_user();
 			$message = learn_press_get_request( 'review_message' );
 
-			if( LP()->user->is_instructor() && $required_review && !$enable_edit_published ) {
+			if ( LP()->user->is_instructor() && $required_review && !$enable_edit_published ) {
 				remove_action( 'rwmb_course_curriculum_before_save_post', array( $this, 'before_save_curriculum' ) );
 				wp_update_post(
 					array(
-						'ID' => $post->ID,
+						'ID'          => $post->ID,
 						'post_status' => 'pending'
 					),
 					array( '%d', '%s' )
@@ -648,10 +650,10 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 				add_action( 'rwmb_course_curriculum_before_save_post', array( $this, 'before_save_curriculum' ) );
 			}
 
-			if( !$message && !$user->is_instructor() && get_post_status( $post->ID ) == 'publish' ){
+			if ( !$message && !$user->is_instructor() && get_post_status( $post->ID ) == 'publish' ) {
 				$message = __( 'Your course has published', 'learn_press' );
 			}
-			if( apply_filters( 'learn_press_review_log_message', $message, $post->ID, $user->id ) ) {
+			if ( apply_filters( 'learn_press_review_log_message', $message, $post->ID, $user->id ) ) {
 				$query = $wpdb->prepare( "
 					INSERT INTO {$wpdb->learnpress_review_logs}(`course_id`, `user_id`, `message`, `date`, `status`, `user_type`)
 					VALUES(%d, %d, %s, %s, %s, %s)
@@ -665,7 +667,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 
 			global $post;
 
-			if( get_post_type() != LP()->course_post_type ) return;
+			if ( get_post_type() != LP()->course_post_type ) return;
 
 			$this->_save();
 			$this->_update_final_quiz();

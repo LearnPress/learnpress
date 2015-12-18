@@ -118,9 +118,10 @@ class LP_Upgrade_10 {
 							$wpdb->insert(
 								$wpdb->prefix . 'learnpress_section_items',
 								array(
-									'section_id'         => $section_id,
-									'section_item_id'    => $new_obj_id,
-									'section_item_order' => $order ++
+									'section_id' => $section_id,
+									'item_id'    => $new_obj_id,
+									'item_order' => $order ++,
+									'item_type'  => $obj['post_type']
 								)
 							);
 							$return['id'] = $new_obj_id;
@@ -654,20 +655,20 @@ class LP_Upgrade_10 {
 		return $meta;
 	}
 
-	private function _upgrade_user_roles(){
+	private function _upgrade_user_roles() {
 		global $wpdb;
-		$query = $wpdb->prepare("
+		$query = $wpdb->prepare( "
 			SELECT um.*
 			FROM {$wpdb->users} u
 			INNER JOIN {$wpdb->usermeta} um ON um.user_id = u.ID AND um.meta_key = %s
 			WHERE um.meta_value LIKE %s
-		", 'wp_capabilities', '%"lpr\_teacher"%');
-		if( $rows = $wpdb->get_results( $query ) ){
-			foreach( $rows as $row ){
+		", 'wp_capabilities', '%"lpr\_teacher"%' );
+		if ( $rows = $wpdb->get_results( $query ) ) {
+			foreach ( $rows as $row ) {
 
-				$user = new WP_User($row->user_id);
-				$user->remove_role('lpr_teacher');
-				$user->add_role('lp_teacher');
+				$user = new WP_User( $row->user_id );
+				$user->remove_role( 'lpr_teacher' );
+				$user->add_role( 'lp_teacher' );
 			}
 		}
 		remove_role( 'lpr_teacher' );

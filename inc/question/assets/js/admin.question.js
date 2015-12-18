@@ -712,7 +712,7 @@ function _ready(){
                     $( 'tbody tr:gt(1)', html).remove();
                     $return =  html.lprTrueOrFalseQuestion();
                 }else if( type == 'single_choice' ){
-                    console.log('xxx');
+                    LearnPress.log('xxx');
                     $('tbody input[type="checkbox"]', $old_question).each(function(){
                         var $c = $(this),
                             $r = $( $c.clone().outerHTML().replace(/type="checkbox"/, 'type="radio"') );

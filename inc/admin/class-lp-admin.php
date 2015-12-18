@@ -49,6 +49,9 @@ if ( !class_exists( 'LP_Admin' ) ) {
 				'siteurl' => home_url()
 			);
 			echo '<script type="text/javascript">var LearnPress_Settings = ' . json_encode( $js ) . '</script>';
+			if( LP_Settings::instance()->get('debug') == 'yes' ){
+				echo '<script type="text/javascript">var LEARN_PRESS_DEBUG = true;</script>';
+			}
 			$did = true;
 		}
 
