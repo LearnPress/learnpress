@@ -76,13 +76,13 @@
 	padding: 0;
 	margin: 0 0 10px 0;
 }
-#learn-press-order .order-products table{
+#learn-press-order .order-items table{
 	border: 1px solid #DDD;
 	border-collapse: collapse;
 	width: 100%;
 }
-#learn-press-order .order-products table th,
-#learn-press-order .order-products table td{
+#learn-press-order .order-items table th,
+#learn-press-order .order-items table td{
 	text-align: left;
 	padding: 10px 15px;
 	border: 1px solid #DDD;

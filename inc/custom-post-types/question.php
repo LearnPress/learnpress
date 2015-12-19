@@ -9,7 +9,7 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 	learn_press_include( 'custom-post-types/abstract.php' );
 
 	// class LP_Question_Post_Type
-	class LP_Question_Post_Type extends LP_Abstract_Post_Type{
+	class LP_Question_Post_Type extends LP_Abstract_Post_Type {
 		function __construct() {
 
 			//add_action( 'init', array( $this, 'register_post_type' ) );
@@ -91,7 +91,7 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 			new RW_Meta_Box(
 				array(
 					'id'     => 'question_answer',
-					'title'  => __('Answer','learn_press'),
+					'title'  => __( 'Answer', 'learn_press' ),
 					'pages'  => array( LP()->question_post_type ),
 					'fields' => array(
 						array(
@@ -108,10 +108,10 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 		}
 
 		static function settings_meta_box() {
-			$prefix = '_lp_';
+			$prefix   = '_lp_';
 			$meta_box = array(
 				'id'     => 'question_settings',
-				'title'  => __('Settings','learn_press'),
+				'title'  => __( 'Settings', 'learn_press' ),
 				'pages'  => array( LP()->question_post_type ),
 				'fields' => array(
 					array(
@@ -119,16 +119,16 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 						'id'    => "{$prefix}mark",
 						'type'  => 'number',
 						'clone' => false,
-						'desc'  => __('Mark for choosing the right answer', 'learn_press'),
+						'desc'  => __( 'Mark for choosing the right answer', 'learn_press' ),
 						'min'   => 1,
 						'std'   => 1
 					),
 					array(
-						'name'  => __( 'Question Explanation', 'learn_press' ),
-						'id'    => "{$prefix}explanation",
-						'type'  => 'textarea',
-						'desc'  => __('', 'learn_press'),
-						'std'   => null
+						'name' => __( 'Question Explanation', 'learn_press' ),
+						'id'   => "{$prefix}explanation",
+						'type' => 'textarea',
+						'desc' => __( '', 'learn_press' ),
+						'std'  => null
 					)
 				)
 			);
@@ -136,11 +136,11 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 			return apply_filters( 'learn_press_question_meta_box_args', $meta_box );
 		}
 
-        /**
-         * Enqueue scripts
-         */
+		/**
+		 * Enqueue scripts
+		 */
 		static function admin_scripts() {
-			if ( ! in_array( get_post_type(), array( LP()->question_post_type ) ) ) return;
+			if ( !in_array( get_post_type(), array( LP()->question_post_type ) ) ) return;
 			ob_start();
 			?>
 			<script>
@@ -152,7 +152,7 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 						alert('<?php _e( 'Please enter the title of the question', 'learn_press' );?>');
 						$title.focus();
 						is_error = true;
-					} else if ( $('.lpr-question-types').length && ( 0 == $('.lpr-question-types').val().length ) ) {
+					} else if ($('.lpr-question-types').length && ( 0 == $('.lpr-question-types').val().length )) {
 						alert('<?php _e( 'Please a type of question', 'learn_press' );?>');
 						$('.lpr-question-types').focus();
 						is_error = true;
@@ -177,10 +177,10 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 							<?php foreach ( $questions as $type => $name ): ?>
 								<option value="<?php echo $type; ?>"><?php echo $name; ?></option>
 							<?php endforeach; ?>
-						<?php endif;?>
+						<?php endif; ?>
 					</select>
-					<button class="button" data-action="add" type="button"><?php _e( 'Add [Enter]', 'learn_press' );?></button>
-					<button data-action="cancel" class="button" type="button"><?php _e( 'Cancel [ESC]', 'learn_press' );?></button>
+					<button class="button" data-action="add" type="button"><?php _e( 'Add [Enter]', 'learn_press' ); ?></button>
+					<button data-action="cancel" class="button" type="button"><?php _e( 'Cancel [ESC]', 'learn_press' ); ?></button>
 					<span class="lpr-ajaxload">...</span>
 				</div>
 			</script>
@@ -197,9 +197,10 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 		 * @return array
 		 */
 		function columns_head( $columns ) {
-			$pos = array_search( 'title', array_keys( $columns ) );
+			$pos         = array_search( 'title', array_keys( $columns ) );
 			$new_columns = array(
-				LP()->quiz_post_type => __( 'Quiz', 'learn_press' )
+				LP()->quiz_post_type => __( 'Quiz', 'learn_press' ),
+				'type'               => __( 'Type', 'learn_press' )
 			);
 
 			if ( false !== $pos && !array_key_exists( LP()->quiz_post_type, $columns ) ) {
@@ -223,7 +224,7 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 		 * @param $name
 		 * @param $post_id
 		 */
-		function columns_content( $name, $post_id ){
+		function columns_content( $name, $post_id ) {
 			switch ( $name ) {
 				case LP()->quiz_post_type:
 					$quizzes = learn_press_get_question_quizzes( $post_id );
@@ -247,8 +248,10 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 						_e( 'Not assigned yet', 'learn_press' );
 					}
 
-
 					break;
+				case 'type':
+
+					echo learn_press_question_name_from_slug( get_post_meta( $post_id, '_lp_type', true ) );
 			}
 		}
 
@@ -270,22 +273,25 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 				return $join;
 			}
 			global $wpdb;
-			if( $quiz_id = learn_press_get_request( 'filter_quiz') ) {
+			if ( $quiz_id = learn_press_get_request( 'filter_quiz' ) ) {
 				$join .= " INNER JOIN {$wpdb->prefix}learnpress_quiz_questions qq ON qq.question_id = {$wpdb->posts}.ID AND qq.quiz_id = " . $quiz_id;
 			}
 			return $join;
 		}
 
-		static function admin_styles(){}
-		static function admin_params(){
+		static function admin_styles() {
+		}
+
+		static function admin_params() {
 
 		}
 
-		function save(){
+		function save() {
 			$this->save_post();
 		}
-		function save_post( ){
-			die(__FILE__.'::'.__FUNCTION__);
+
+		function save_post() {
+			die( __FILE__ . '::' . __FUNCTION__ );
 		}
 	} // end LP_Question_Post_Type
 }

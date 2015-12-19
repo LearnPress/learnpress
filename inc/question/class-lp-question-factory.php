@@ -138,14 +138,13 @@ class LP_Question_Factory {
 	 * @return mixed
 	 */
 	public static function get_types() {
-		$defaults = array(
-			'true_or_false',
-			'multi_choice',
-			'single_choice'
+		$types = array(
+			'true_or_false' => __( 'True Or False', 'learn_press' ),
+			'multi_choice'  => __( 'Multi Choice', 'learn_press' ),
+			'single_choice' => __( 'Single Choice', 'learn_press' )
 		);
-		return apply_filters( 'lpr_question_types', $defaults );
+		return apply_filters( 'learn_press_question_types', $types );
 	}
-
 
 	static function admin_template(){
 		/*$questions = self::get_types();

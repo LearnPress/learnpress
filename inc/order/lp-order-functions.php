@@ -15,6 +15,7 @@ if ( !defined( 'ABSPATH' ) ) {
  * Create new order
  *
  * @param array
+ *
  * @return LP_Order instance
  */
 function learn_press_create_order( $order_data ) {
@@ -50,7 +51,7 @@ function learn_press_create_order( $order_data ) {
 		$order_id   = wp_insert_post( $order_data );
 	}
 
-	if( $order_id ){
+	if ( $order_id ) {
 		$order = LP_Order::instance( $order_id );
 
 		update_post_meta( $order_id, '_order_currency', learn_press_get_currency() );
@@ -73,6 +74,7 @@ function learn_press_create_order( $order_data ) {
  * Create a new order or update an existing
  *
  * @param array
+ *
  * @return LP_Order instance
  */
 
@@ -80,7 +82,7 @@ function learn_press_update_order( $order_data ) {
 	return learn_press_create_order( $order_data );
 }
 
-function learn_press_get_booking_id_by_key( $order_key ){
+function learn_press_get_booking_id_by_key( $order_key ) {
 	global $wpdb;
 
 	$order_id = $wpdb->get_var(
@@ -103,6 +105,7 @@ function learn_press_get_booking_id_by_key( $order_key ){
  *
  * @param int
  * @param string
+ *
  * @return bool
  */
 function learn_press_update_order_status( $order_id, $status = '' ) {
@@ -121,18 +124,16 @@ function learn_press_add_order_item( $order_id, $item ) {
 		return false;
 
 	$defaults = array(
-		'order_item_name' => ''
+		'order_item_name' => '',
+		'order_id'        => $order_id
 	);
 
 	$item = wp_parse_args( $item, $defaults );
 
-	$course = LP_Course::get_course( $item['item_id'] );
-	$return = $wpdb->insert(
+	//$course = LP_Course::get_course( $item['item_id'] );
+	$wpdb->insert(
 		$wpdb->learnpress_order_items,
-		array(
-			'order_item_name' => $course->get_title(),
-			'order_id'        => $order_id
-		),
+		$item,
 		array(
 			'%s', '%d'
 		)
@@ -145,10 +146,39 @@ function learn_press_add_order_item( $order_id, $item ) {
 	return $item_id;
 }
 
+function learn_press_remove_order_item( $item_id ){
+	global $wpdb;
+
+	$item_id = absint( $item_id );
+
+	if ( ! $item_id )
+		return false;
+
+	do_action( 'learn_press_before_delete_order_item', $item_id );
+
+	$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_order_items WHERE order_item_id = %d", $item_id ) );
+	$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_order_itemmeta WHERE learnpress_order_item_id = %d", $item_id ) );
+
+	do_action( 'learn_press_delete_order_item', $item_id );
+
+	return true;
+}
+
 function learn_press_add_order_item_meta( $item_id, $meta_key, $meta_value, $prev_value = '' ) {
 	return add_metadata( 'learnpress_order_item', $item_id, $meta_key, $meta_value, $prev_value );
 }
 
+function learn_press_update_order_item_meta( $item_id, $meta_key, $meta_value, $prev_value = '' ) {
+	return update_metadata( 'learnpress_order_item', $item_id, $meta_key, $meta_value, $prev_value );
+}
+
+function learn_press_delete_order_item_meta( $item_id, $meta_key, $meta_value, $delete_all = false ) {
+	return delete_metadata( 'learnpress_order_item', $item_id, $meta_key, $meta_value, $delete_all );
+}
+
+function learn_press_get_order_item_meta( $item_id, $meta_key, $single = true ) {
+	return get_metadata( 'learnpress_order_item', $item_id, $meta_key, $single );
+}
 /*******************************/
 
 /*
@@ -192,7 +222,7 @@ function learn_press_get_order( $the_order ) {
 		$the_order = get_post( $the_order->id );
 	}
 
-	if ( ! $the_order || ! is_object( $the_order ) ) {
+	if ( !$the_order || !is_object( $the_order ) ) {
 		return false;
 	}
 
@@ -435,6 +465,7 @@ function learn_press_get_orders( $args = array() ) {
 
 	return apply_filters( 'learn_press_get_orders', $orders, $args );
 }
+
 /*
 function learn_press_on_order_status_changed( $status, $order_id ) {
 	$course_id = learn_press_get_course_by_order( $order_id );
@@ -534,6 +565,48 @@ function learn_press_format_price( $price, $with_currency = false ) {
 		) . $after;
 
 	return $price;
+}
+
+function learn_press_update_order_items( $order_id ) {
+	if ( !$order = learn_press_get_order( $order_id ) ) {
+		return;
+	}
+	$subtotal = 0;
+	$total    = 0;
+	if ( $items = $order->get_items() ) {
+		/*
+			[name] => What is LearnPress?
+    		[id] => 214
+    		[course_id] => 650
+    		[quantity] => 1
+    		[subtotal] => 1.9
+    		[total] => 1.9
+		 */
+
+		foreach ( $items as $item ) {
+			$subtotal += $item['subtotal'];
+			$total += $item['total'];
+		}
+	}
+
+
+	update_post_meta( $order_id, '_order_currency', learn_press_get_currency() );
+	update_post_meta( $order_id, '_prices_include_tax', 'no' );
+	//update_post_meta( $order_id, '_user_ip_address', learn_press_get_ip() );
+	//update_post_meta( $order_id, '_user_agent', isset( $_SERVER['HTTP_USER_AGENT'] ) ? $_SERVER['HTTP_USER_AGENT'] : '' );
+	//update_post_meta( $order_id, '_user_id', learn_press_get_current_user_id() );
+	update_post_meta( $order_id, '_order_subtotal', $subtotal );
+	update_post_meta( $order_id, '_order_total', $total );
+	update_post_meta( $order_id, '_order_key', apply_filters( 'learn_press_generate_order_key', uniqid( 'order' ) ) );
+	update_post_meta( $order_id, '_payment_method', '' );
+	update_post_meta( $order_id, '_payment_method_title', '' );
+	update_post_meta( $order_id, '_order_version', '1.0' );
+
+	return array(
+		'subtotal' => $subtotal,
+		'total'    => $total,
+		'currency' => learn_press_get_currency()
+	);
 }
 
 function learn_press_transaction_order_number( $order_number ) {

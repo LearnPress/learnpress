@@ -825,29 +825,29 @@ body.post-type-lp_question #question_answer_ .inside{
 	float: left;
 }
 
-#order_details .order-products table {
+#order_details .order-items table {
 	width: 100%;
 	border-collapse: collapse;
 	margin-top: 20px;
 }
 
-#order_details .order-products table tr {
+#order_details .order-items table tr {
 	border-bottom: 1px solid #EEE;
 }
 
-#order_details .order-products table thead th {
+#order_details .order-items table thead th {
 	height: 30px;
 	text-align: left;
 	font-size: 16px;
 
 }
 
-#order_details .order-products table td {
+#order_details .order-items table td {
 	padding: 15px 0;
 	font-size: 16px;
 }
 
-#order_details .order-products table .align-right {
+#order_details .order-items table .align-right {
 	text-align: right;
 }
 

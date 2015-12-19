@@ -14,28 +14,31 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 		 */
 		public static function init() {
 			$ajaxEvents = array(
-				'create_page'             => false,
-				'add_question'            => false,
-				'convert_question_type'		=> false,
-				'update_quiz_question_state' => false,
-				'update_editor_hidden'		=> false,
+				'create_page'                     => false,
+				'add_question'                    => false,
+				'convert_question_type'           => false,
+				'update_quiz_question_state'      => false,
+				'update_editor_hidden'            => false,
 				'update_curriculum_section_state' => false,
-				'quick_add_item'		=> false,
-				'add_new_item' => false,
-				'toggle_lesson_preview' => false,
-				'remove_post_items' => false,
+				'quick_add_item'                  => false,
+				'add_new_item'                    => false,
+				'toggle_lesson_preview'           => false,
+				'remove_post_items'               => false,
+				'search_courses'                  => false,
+				'add_item_to_order'               => false,
+				'remove_order_item'               => false,
 				/////////////
-				'quick_add_lesson'        => false,
-				'quick_add_quiz'          => false,
-				'be_teacher'              => false,
-				'custom_stats'            => false,
-				'ignore_setting_up'       => false,
-				'get_page_permalink'      => false,
-				'dummy_image'             => false,
-				'update_add_on_status'    => false,
-				'plugin_install'          => false,
-				'bundle_activate_add_ons' => false,
-				'install_sample_data'     => false
+				'quick_add_lesson'                => false,
+				'quick_add_quiz'                  => false,
+				'be_teacher'                      => false,
+				'custom_stats'                    => false,
+				'ignore_setting_up'               => false,
+				'get_page_permalink'              => false,
+				'dummy_image'                     => false,
+				'update_add_on_status'            => false,
+				'plugin_install'                  => false,
+				'bundle_activate_add_ons'         => false,
+				'install_sample_data'             => false
 			);
 			foreach ( $ajaxEvents as $ajaxEvent => $nopriv ) {
 				add_action( 'wp_ajax_learnpress_' . $ajaxEvent, array( __CLASS__, $ajaxEvent ) );
@@ -46,54 +49,214 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			}
 		}
 
-		static function remove_post_items(){
+		/**
+		 * Remove an item from order
+		 */
+		static function remove_order_item(){
+			// ensure that user has permission
+			if ( !current_user_can( 'edit_lp_orders' ) ) {
+				die( __( 'Permission denied', 'learn_press' ) );
+			}
+
+			// verify nonce
+			$nonce = learn_press_get_request( 'remove_nonce' );
+			if ( !wp_verify_nonce( $nonce, 'remove_order_item' ) ) {
+				die( __( 'Check nonce failed', 'learn_press' ) );
+			}
+
+			// validate order
+			$order_id = learn_press_get_request( 'order_id' );
+			if ( !is_numeric( $order_id ) || get_post_type( $order_id ) != 'lp_order' ) {
+				die( __( 'Order invalid', 'learn_press' ) );
+			}
+
+			// validate item
+			$item_id = learn_press_get_request( 'item_id' );
+			$post    = get_post( learn_press_get_order_item_meta( $item_id, '_course_id' ) );
+			if ( !$post || ( 'lp_course' !== $post->post_type ) ) {
+				die( __( 'Course invalid', 'learn_press' ) );
+			}
+
+			learn_press_remove_order_item( $item_id );
+
+			$order_data                  = learn_press_update_order_items( $order_id );
+			$currency_symbol             = learn_press_get_currency_symbol( $order_data['currency'] );
+			$order_data['subtotal_html'] = learn_press_format_price( $order_data['subtotal'], $currency_symbol );
+			$order_data['total_html']    = learn_press_format_price( $order_data['total'], $currency_symbol );
+
+
+			learn_press_send_json(
+				array(
+					'result'     => 'success',
+					'order_data' => $order_data
+				)
+			);
+		}
+
+		/**
+		 * Add new course to order
+		 */
+		static function add_item_to_order() {
+
+			// ensure that user has permission
+			if ( !current_user_can( 'edit_lp_orders' ) ) {
+				die( __( 'Permission denied', 'learn_press' ) );
+			}
+
+			// verify nonce
+			$nonce = learn_press_get_request( 'nonce' );
+			if ( !wp_verify_nonce( $nonce, 'add_item_to_order' ) ) {
+				die( __( 'Check nonce failed', 'learn_press' ) );
+			}
+
+			// validate order
+			$order_id = learn_press_get_request( 'order_id' );
+			if ( !is_numeric( $order_id ) || get_post_type( $order_id ) != 'lp_order' ) {
+				die( __( 'Order invalid', 'learn_press' ) );
+			}
+
+			// validate item
+			$item_id = learn_press_get_request( 'item_id' );
+			$post    = get_post( $item_id );
+			if ( !$post || ( 'lp_course' !== $post->post_type ) ) {
+				die( __( 'Course invalid', 'learn_press' ) );
+			}
+
+
+			$course = learn_press_get_course( $post->ID );
+			$order  = learn_press_get_order( $order_id );
+
+			$item = array(
+				'course_id' => $course->id,
+				'name'      => $course->get_title(),
+				'quantity'  => 1,
+				'subtotal'  => $course->get_price(),
+				'total'     => $course->get_price()
+			);
+
+			// Add item
+			$item_id = learn_press_add_order_item( $order_id, array(
+				'order_item_name' => $item['name']
+			) );
+
+			$item['id'] = $item_id;
+
+			// Add item meta
+			if ( $item_id ) {
+				$item = apply_filters( 'learn_press_ajax_order_item', $item );
+
+				learn_press_add_order_item_meta( $item_id, '_course_id', $item['course_id'] );
+				learn_press_add_order_item_meta( $item_id, '_quantity', $item['quantity'] );
+				learn_press_add_order_item_meta( $item_id, '_subtotal', $item['subtotal'] );
+				learn_press_add_order_item_meta( $item_id, '_total', $item['total'] );
+
+				do_action( 'learn_press_ajax_add_order_item_meta', $item );
+			}
+
+			$order_data                  = learn_press_update_order_items( $order_id );
+			$currency_symbol             = learn_press_get_currency_symbol( $order_data['currency'] );
+			$order_data['subtotal_html'] = learn_press_format_price( $order_data['subtotal'], $currency_symbol );
+			$order_data['total_html']    = learn_press_format_price( $order_data['total'], $currency_symbol );
+
+			ob_start();
+			include learn_press_get_admin_view( 'meta-boxes/order/order-item.php' );
+			$item_html = ob_get_clean();
+
+			learn_press_send_json(
+				array(
+					'result'     => 'success',
+					'item_html'  => $item_html,
+					'order_data' => $order_data
+				)
+			);
+
+			/*$item['item_meta']       = $order->get_item_meta( $item_id );
+			$item['item_meta_array'] = $order->get_item_meta_array( $item_id );
+			$item                    = $order->expand_item_meta( $item );
+			$item                    = apply_filters( 'woocommerce_ajax_order_item', $item, $item_id );
+*/
+//			include( 'admin/meta-boxes/views/html-order-item.php' );
+
+		}
+
+		static function search_courses() {
+			$nonce = learn_press_get_request( 'nonce' );
+			if ( !wp_verify_nonce( $nonce, 'search_item_term' ) ) {
+				LP_Debug::exception( __( 'Verify nonce failed', 'learn_press' ) );
+			}
+
+			$term    = learn_press_get_request( 'term' );
+			$exclude = learn_press_get_request( 'exclude' );
+
+			$posts         = learn_press_get_all_courses(
+				array(
+					'term'    => $term,
+					'exclude' => $exclude
+				)
+			);
+			$found_courses = array();
+			if ( !empty( $posts ) ) {
+				foreach ( $posts as $post ) {
+					$found_courses[$post] = array(
+						'title'     => get_the_title( $post ),
+						'permalink' => get_the_permalink( $post )
+					);
+				}
+			}
+
+			$found_courses = apply_filters( 'learn_press_json_search_found_courses', $found_courses );
+
+			learn_press_send_json( $found_courses );
+		}
+
+		static function remove_post_items() {
 			$id = learn_press_get_request( 'id' );
-			if( $id ){
-				foreach($id as $post_id){
+			if ( $id ) {
+				foreach ( $id as $post_id ) {
 					wp_delete_post( $post_id );
 				}
 			}
 			die();
 		}
 
-		static function toggle_lesson_preview(){
+		static function toggle_lesson_preview() {
 			$id = learn_press_get_request( 'lesson_id' );
-			if( get_post_type( $id ) == 'lp_lesson' && wp_verify_nonce( learn_press_get_request( 'nonce' ), 'learn-press-toggle-lesson-preview' ) ){
+			if ( get_post_type( $id ) == 'lp_lesson' && wp_verify_nonce( learn_press_get_request( 'nonce' ), 'learn-press-toggle-lesson-preview' ) ) {
 				update_post_meta( $id, '_lp_is_previewable', learn_press_get_request( 'previewable' ) );
 			}
 			die();
 		}
 
-		static function add_new_item(){
-			$post_type = learn_press_get_request( 'type' );
+		static function add_new_item() {
+			$post_type  = learn_press_get_request( 'type' );
 			$post_title = learn_press_get_request( 'name' );
-			$response = array();
-			if( $post_type && $post_title ){
-				$args = compact( 'post_title', 'post_type' );
+			$response   = array();
+			if ( $post_type && $post_title ) {
+				$args                = compact( 'post_title', 'post_type' );
 				$args['post_status'] = 'publish';
-				$item_id = wp_insert_post( $args );
-				if( $item_id ){
+				$item_id             = wp_insert_post( $args );
+				if ( $item_id ) {
 					LP_Lesson_Post_Type::create_default_meta( $item_id );
-					$item = get_post( $item_id );
-					$response['post'] = $item;
+					$item                        = get_post( $item_id );
+					$response['post']            = $item;
 					$response['post']->edit_link = get_edit_post_link( $item_id );
 				}
 			}
 			learn_press_send_json( $response );
 		}
 
-		static function quick_add_item(){
-			$post_type = learn_press_get_request( 'type' );
+		static function quick_add_item() {
+			$post_type  = learn_press_get_request( 'type' );
 			$post_title = learn_press_get_request( 'name' );
-			$response = array();
-			if( $post_type && $post_title ){
-				$args = compact( 'post_title', 'post_type' );
+			$response   = array();
+			if ( $post_type && $post_title ) {
+				$args                = compact( 'post_title', 'post_type' );
 				$args['post_status'] = 'publish';
-				$item_id = wp_insert_post( $args );
-				if( $item_id ){
-					$item = get_post( $item_id );
+				$item_id             = wp_insert_post( $args );
+				if ( $item_id ) {
+					$item             = get_post( $item_id );
 					$response['post'] = $item;
-					$response['html'] = sprintf('<li class="" data-id="%1$d" data-type="%2$s" data-text="%3$s">
+					$response['html'] = sprintf( '<li class="" data-id="%1$d" data-type="%2$s" data-text="%3$s">
 						<label>
 							<input type="checkbox" value="%1$d">
 							<span class="lp-item-text">%3$s</span>
@@ -104,27 +267,27 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			learn_press_send_json( $response );
 		}
 
-		static function update_editor_hidden(){
-			if( $id = learn_press_get_request( 'course_id' ) ) {
+		static function update_editor_hidden() {
+			if ( $id = learn_press_get_request( 'course_id' ) ) {
 				if ( learn_press_get_request( 'is_hidden' ) ) {
 					update_post_meta( $id, '_lp_editor_hidden', 'yes' );
-				}else{
+				} else {
 					delete_post_meta( $id, '_lp_editor_hidden' );
 				}
 			}
-			learn_press_send_json($_POST);
+			learn_press_send_json( $_POST );
 		}
 
-		static function update_quiz_question_state(){
+		static function update_quiz_question_state() {
 			$hidden = learn_press_get_request( 'hidden' );
-			$post = learn_press_get_request( 'quiz_id' );
+			$post   = learn_press_get_request( 'quiz_id' );
 			update_post_meta( $post, '_admin_hidden_questions', $hidden );
 			die();
 		}
 
-		static function update_curriculum_section_state(){
+		static function update_curriculum_section_state() {
 			$hidden = learn_press_get_request( 'hidden' );
-			$post = learn_press_get_request( 'course_id' );
+			$post   = learn_press_get_request( 'course_id' );
 			update_post_meta( $post, '_admin_hidden_sections', $hidden );
 			die();
 		}
@@ -161,49 +324,49 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 		}
 
 		public static function add_question() {
-			$id   = learn_press_get_request( 'id' );
-			$type = learn_press_get_request( 'type' );
-			$name = learn_press_get_request( 'name' );
+			$id       = learn_press_get_request( 'id' );
+			$type     = learn_press_get_request( 'type' );
+			$name     = learn_press_get_request( 'name' );
 			$response = array(
-				'id'	=> $id
+				'id' => $id
 			);
-			if( !$id ){
+			if ( !$id ) {
 				$id = wp_insert_post(
 					array(
-						'post_title' => $name,
-						'post_type'	=> LP()->question_post_type,
+						'post_title'  => $name,
+						'post_type'   => LP()->question_post_type,
 						'post_status' => 'publish'
 					)
 				);
-				if( $id ){
+				if ( $id ) {
 					add_post_meta( $id, '_lp_type', $type );
 				}
 				$response['id'] = $id;
 			}
-			if( $id ){
+			if ( $id ) {
 				ob_start();
-				$question = LP_Question_Factory::get_question($id );
+				$question = LP_Question_Factory::get_question( $id );
 				learn_press_admin_view( 'meta-boxes/quiz/question.php', array( 'question' => $question ) );
 				$response['html'] = ob_get_clean();
-			}else{
+			} else {
 
 			}
 			learn_press_send_json( $response );
 			die();
 		}
 
-		public static function convert_question_type(){
-			learn_press_debug($_POST);;
-			if( ( $from = learn_press_get_request( 'from' ) ) && ( $to = learn_press_get_request( 'to' ) ) && $question_id = learn_press_get_request( 'question_id' ) ){
+		public static function convert_question_type() {
+			learn_press_debug( $_POST );;
+			if ( ( $from = learn_press_get_request( 'from' ) ) && ( $to = learn_press_get_request( 'to' ) ) && $question_id = learn_press_get_request( 'question_id' ) ) {
 				do_action( 'learn_press_convert_question_type', $question_id, $from, $to );
-				$question = LP_Question_Factory::get_question($question_id );
+				$question = LP_Question_Factory::get_question( $question_id );
 				learn_press_send_json(
 					array(
 						'html' => $question->admin_interface( array( 'echo' => false ) ),
 						'icon' => $question->get_icon()
 					)
 				);
-			}else{
+			} else {
 				throw new Exception( __( 'Convert question type must be specify the id, source and destination type', 'learn_press' ) );
 			}
 			die();

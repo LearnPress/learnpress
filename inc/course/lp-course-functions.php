@@ -403,6 +403,37 @@ function learn_press_get_lesson_id( $lesson_id = null ) {
 	return $lesson_id;
 }
 
+function learn_press_get_all_courses( $args = array() ){
+	$term = '';
+	$exclude = '';
+	is_array( $args ) && extract( $args );
+	$args    = array(
+		'post_type'      => array( 'lp_course' ),
+		'post_status'    => 'publish',
+		'posts_per_page' => - 1,
+		's'              => $term,
+		'fields'         => 'ids',
+		'exclude'        => $exclude
+	);
+	$args = apply_filters( 'learn_press_get_courses_args', $args );
+	$posts = get_posts( $args );
+	return apply_filters( 'learn_press_get_courses', $posts, $args );
+}
+
+function learn_press_search_post_excerpt( $where = '' ) {
+	global $wp_the_query;
+
+	if ( empty( $wp_the_query->query_vars['s'] ) )
+		return $where;
+
+	$where = preg_replace(
+		"/post_title\s+LIKE\s*(\'\%[^\%]+\%\')/",
+		"post_title LIKE $1) OR (post_excerpt LIKE $1", $where );
+
+	return $where;
+}
+add_filter( 'posts_where', 'learn_press_search_post_excerpt' );
+
 /////////////////////////
 function need_to_updating(){
 	ob_start();

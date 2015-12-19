@@ -360,9 +360,9 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 					'show_in_admin_bar'  => false,
 					'publicly_queryable' => true,
 					'show_in_menu'       => 'learn_press',
-					'capabilities'       => array(
+					/*'capabilities'       => array(
 						'create_posts' => 'do_not_allow'
-					),
+					),*/
 					'map_meta_cap'       => true,
 					'capability_type'    => LP()->order_post_type,
 					'hierarchical'       => true,
@@ -399,6 +399,7 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 
 		static function order_details( $post ) {
 			learn_press_admin_view( 'meta-boxes/order/details.php', array( 'order' => LP_Order::instance( $post ) ) );
+			LP_Assets::enqueue_script( 'learn-press-order', LP()->plugin_url( 'assets/js/admin/order.js' ), array( 'backbone', 'wp-util' ) );
 		}
 
 		function preparing_to_trash_order( $post_id ) {

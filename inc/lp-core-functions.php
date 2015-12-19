@@ -179,13 +179,14 @@ function learn_press_get_current_url() {
  * @return mixed
  */
 function learn_press_question_types() {
-	$types = array(
-		//'none'          => __( '--Select Type--', 'learn_press' ),
-		'true_or_false' => __( 'True Or False', 'learn_press' ),
-		'multi_choice'  => __( 'Multi Choice', 'learn_press' ),
-		'single_choice' => __( 'Single Choice', 'learn_press' )
-	);
-	return apply_filters( 'learn_press_question_types', $types );
+	return LP_Question_Factory::get_types();
+}
+
+function learn_press_question_name_from_slug( $slug ){
+	$types = learn_press_question_types();
+
+	$name = !empty( $types[ $slug ] ) ? $types[ $slug ] : '';
+	return apply_filters( 'learn_press_question_name_from_slug', $name, $slug );
 }
 
 function learn_press_section_item_types() {
