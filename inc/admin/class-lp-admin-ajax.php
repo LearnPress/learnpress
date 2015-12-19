@@ -169,14 +169,6 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 					'order_data' => $order_data
 				)
 			);
-
-			/*$item['item_meta']       = $order->get_item_meta( $item_id );
-			$item['item_meta_array'] = $order->get_item_meta_array( $item_id );
-			$item                    = $order->expand_item_meta( $item );
-			$item                    = apply_filters( 'woocommerce_ajax_order_item', $item, $item_id );
-*/
-//			include( 'admin/meta-boxes/views/html-order-item.php' );
-
 		}
 
 		static function search_courses() {

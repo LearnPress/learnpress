@@ -1,6 +1,10 @@
 <?php
 /**
- * @file
+ * Admin view for settings page display in admin under menu Settings -> LearnPress
+ *
+ * @author ThimPress
+ * @package Admin/Views
+ * @version 1.0
  */
 
 if ( !defined( 'ABSPATH' ) ) {
