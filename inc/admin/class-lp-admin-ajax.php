@@ -27,6 +27,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 				'search_courses'                  => false,
 				'add_item_to_order'               => false,
 				'remove_order_item'               => false,
+				'plugin_action'					=> false,
 				/////////////
 				'quick_add_lesson'                => false,
 				'quick_add_quiz'                  => false,
@@ -47,6 +48,13 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 					add_action( 'wp_ajax_nopriv_learnpress_' . $ajaxEvent, array( __CLASS__, $ajaxEvent ) );
 				}
 			}
+		}
+
+		static function plugin_action(){
+			$url = learn_press_get_request( 'url');
+			ob_start(); wp_remote_get($url); ob_get_clean();
+			echo wp_remote_get( admin_url( 'admin.php?page=learn_press_add_ons&tab=installed') );
+			die();
 		}
 
 		/**

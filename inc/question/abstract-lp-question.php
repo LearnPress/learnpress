@@ -89,7 +89,7 @@ class LP_Abstract_Question {
 							'text'    => stripslashes( $text ),
 							'value'   => $post_data['answer']['value'][$index]
 						),
-						'ordering'    => $index + 1,
+						'answer_order'    => $index + 1,
 						'question_id'	=> $this->id
 					);
 					if( $this->type == 'multi_choice' ){
@@ -153,7 +153,7 @@ class LP_Abstract_Question {
 			SELECT *
 			FROM {$wpdb->learnpress_question_answers}
 			WHERE question_id = %d
-			ORDER BY ordering ASC
+			ORDER BY answer_order ASC
 		", $this->id );
 		if ( $rows = $wpdb->get_results( $query ) ) {
 			foreach ( $rows as $row ) {

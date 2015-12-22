@@ -309,7 +309,7 @@ CREATE TABLE {$wpdb->prefix}learnpress_question_answers (
   question_answer_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   question_id bigint(20) unsigned NOT NULL DEFAULT '0',
   answer_data text NOT NULL,
-  ordering bigint(20) unsigned NOT NULL DEFAULT '0',
+  answer_order bigint(20) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (question_answer_id)
 ) $collate;
 CREATE TABLE {$wpdb->prefix}learnpress_quiz_questions (
@@ -331,19 +331,19 @@ CREATE TABLE {$wpdb->prefix}learnpress_review_logs (
   PRIMARY KEY (review_log_id)
 ) $collate;
 CREATE TABLE {$wpdb->prefix}learnpress_section_items (
-  item_id bigint(11) unsigned NOT NULL AUTO_INCREMENT,
+  section_item_id bigint(11) unsigned NOT NULL AUTO_INCREMENT,
   section_id bigint(11) unsigned NOT NULL DEFAULT '0',
-  section_item_id bigint(11) unsigned NOT NULL DEFAULT '0',
-  section_item_order bigint(11) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (item_id)
+  item_id bigint(11) unsigned NOT NULL DEFAULT '0',
+  item_order bigint(11) unsigned NOT NULL DEFAULT '0',
+  item_type varchar(45),
+  PRIMARY KEY (section_item_id)
 ) $collate;
 CREATE TABLE {$wpdb->prefix}learnpress_sections (
   section_id bigint(11) unsigned NOT NULL AUTO_INCREMENT,
   section_name varchar(255) NOT NULL DEFAULT '',
   section_course_id bigint(11) unsigned NOT NULL DEFAULT '0',
   section_order bigint(5) unsigned NOT NULL DEFAULT '0',
-  section_description longtext NOT NULL,
-  is_closed tinyint(1) unsigned NOT NULL DEFAULT '0',
+  section_description longtext NOT NULL
   PRIMARY KEY (section_id)
 ) $collate;
 CREATE TABLE  {$wpdb->prefix}learnpress_user_courses (

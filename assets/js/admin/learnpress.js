@@ -1,7 +1,26 @@
 ;(function($){
 	var $doc = $(document);
 	function _ready(){
-
+		$(document).on('click', '.learn-press-add-ons .plugin-action-buttons a', function(e){
+			e.preventDefault();
+			var $plugin = $(this).closest('.plugin-card');
+			if( $(this).hasClass('button-working') ){
+				return;
+			}
+			$(this).addClass('button-working disabled');
+			$.ajax({
+				url: $(this).attr('href'),
+				data: {},
+				success: function(r){
+					$.ajax({
+						url: window.location.href,
+						success: function(r){
+							$plugin.replaceWith($(r).find('#'+$plugin.attr('id')))
+						}
+					})
+				}
+			});
+		});
 		var $sandbox_mode   = $('#learn_press_paypal_sandbox_mode'),
 			$paypal_type    = $('#learn_press_paypal_type');
 		$paypal_type.change(function(){

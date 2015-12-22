@@ -16,14 +16,7 @@ if ( !defined( 'ABSPATH' ) ) {
  */
 function learn_press_add_ons_page() {
     $current = isset( $_GET['tab'] ) ? $_GET['tab'] : '';
-    $disable_add_on = isset( $_GET['learn-press-disable-addon'] ) ? $_GET['learn-press-disable-addon'] : false;
-    $enable_add_on = isset( $_GET['learn-press-enable-addon'] ) ? $_GET['learn-press-enable-addon'] : false;
 
-    if( $enable_add_on ) {
-        learn_press_enable_add_on( $enable_add_on );
-    } else if( $disable_add_on ) {
-        learn_press_disable_add_on( $disable_add_on );
-    }
 ?>
 <div id="learn-press-add-ons-wrap" class="wrap">
     <h2><?php echo __('LearnPress Add-ons', 'learn_press'); ?></h2>

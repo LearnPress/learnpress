@@ -324,10 +324,11 @@ function learn_press_get_add_ons_from_wp( $args = null ) {
 		$api = plugins_api( 'query_plugins', $query_args );
 
 		if ( is_wp_error( $api ) ) {
-			learn_press_debug( $api );
+			echo join( "", $api->errors['plugins_api_failed'] );
 			return false;
 		}
 		if ( is_array( $api->plugins ) ) {
+			$all_plugins = get_plugins();
 			// filter plugins with tag contains 'learnpress'
 			$_plugins = array_filter( $api->plugins, create_function( '$plugin', 'return $plugin->slug != \'learnpress\';' ) );
 			$exclude  = (array) $args['exclude'];
@@ -335,14 +336,24 @@ function learn_press_get_add_ons_from_wp( $args = null ) {
 
 			$has_include = is_array( $include ) ? sizeof( $include ) : false;
 			for ( $n = sizeof( $_plugins ), $i = $n - 1; $i >= 0; $i -- ) {
+
 				$plugin = $_plugins[$i];
+
+				$key = $plugin->slug;
+				foreach( $all_plugins as $file => $p ){
+					if( strpos( $file, $plugin->slug  ) !== false ){
+						$key = $file;
+						break;
+					}
+				}
+				$plugin->source = 'wp';
 				if ( !in_array( $plugin->slug, $exclude ) ) {
 					if ( $has_include ) {
 						if ( in_array( $plugin->slug, $include ) ) {
-							$plugins[$plugin->slug] = (array) $plugin;
+							$plugins[$key] = (array) $plugin;
 						}
 					} else {
-						$plugins[$plugin->slug] = (array) $plugin;
+						$plugins[$key] = (array) $plugin;
 					}
 				}
 			}
@@ -449,21 +460,8 @@ function learn_press_add_ons_content_tab_installed( $current ) {
 	learn_press_add_on_tab_description( __( 'All add-ons that you have installed', 'learn_press' ) );
 	learn_press_output_add_ons_list( $add_ons, $current );
 }
-
 add_action( 'learn_press_add_ons_content_tab_installed', 'learn_press_add_ons_content_tab_installed' );
-/*
-function learn_press_add_ons_content_tab_enabled( $current ){
-	$add_ons = learn_press_get_enabled_add_ons( array( 'show_required' => false ) );
-	learn_press_output_add_ons_list( $add_ons, $current );
-}
-add_action( 'learn_press_add_ons_content_tab_enabled', 'learn_press_add_ons_content_tab_enabled' );
 
-function learn_press_add_ons_content_tab_disabled( $current ){
-	$add_ons = learn_press_get_disabled_add_ons( array( 'show_required' => false ) );
-	learn_press_output_add_ons_list( $add_ons, $current );
-}
-add_action( 'learn_press_add_ons_content_tab_disabled', 'learn_press_add_ons_content_tab_disabled' );
-*/
 function learn_press_add_ons_content_tab_more( $current ) {
 	$add_ons = learn_press_get_all_add_ons( array( 'transient_key' => 'lp_more_add_ons', 'force' => wp_verify_nonce( learn_press_get_request( 'check' ), 'check_more' ) ) );
 
@@ -473,38 +471,7 @@ function learn_press_add_ons_content_tab_more( $current ) {
 	$description .= ' ' . sprintf( __( '<a href="%s">%s</a>' ), admin_url( 'admin.php?page=learn_press_add_ons&tab=more&check=' . wp_create_nonce( 'check_more' ) ), __( 'Check again!', 'learn_press' ) );
 	learn_press_add_on_tab_description( $description );
 	learn_press_output_add_ons_list( $add_ons, $current );
-	return;
-	global $learn_press_add_ons;
-	require_once LP_PLUGIN_PATH . '/inc/admin/class-lp-plugin-install-list-table.php';
-	$list_table = new LP_Plugin_Install_List_Table();
-	if ( 'more' == $current ) {
-		$list_table->prepare_items( array( 'exclude' => $learn_press_add_ons['bundle_activate'] ) );
-	} else {
-		$list_table->prepare_items();
-	}
-	$total_pages = $list_table->get_pagination_arg( 'total_pages' );
-	echo '<div class="learn-press-add-ons">';
-	$list_table->display();
-
-	if ( 'bundle_activate' == $current ) {
-		echo '<button class="button" type="button" id="learn-press-bundle-activate-add-ons">' . __( 'Install and/or activate all', 'learn_press' ) . '</button>';
-	}
-
-	echo '</div>';
-	?>
-	<script type="text/html" id="tmpl-add-on-install-error">
-		<div class="error">
-			<p><?php _e( 'Plugin <i>\'{{data.name}}\'</i> install failed! Please try again' ); ?></p>
-		</div>
-	</script>
-	<script type="text/html" id="tmpl-add-on-install-success">
-		<div class="updated">
-			<p><?php _e( 'Plugin <i>\'{{data.name}}\'</i> install completed!' ); ?></p>
-		</div>
-	</script>
-	<?php
 }
-
 add_action( 'learn_press_add_ons_content_tab_more', 'learn_press_add_ons_content_tab_more' );
 
 function learn_press_add_ons_content_tab_bundle_activate( $current ) {
@@ -523,36 +490,80 @@ function learn_press_add_ons_content_tab_bundle_activate( $current ) {
 	learn_press_add_on_tab_description( $description );
 	learn_press_output_add_ons_list( $add_ons, $current );
 }
-
 add_action( 'learn_press_add_ons_content_tab_bundle_activate', 'learn_press_add_ons_content_tab_bundle_activate' );
 
-function learn_press_output_add_ons_list( $add_ons, $tab = '' ) {
+function learn_press_get_add_on_action_link( $plugin, $file ){
+	$action_links = array();
+	if ( ( current_user_can( 'install_plugins' ) || current_user_can( 'update_plugins' ) ) ){
+		$name = '';
 
-	if ( !is_array( $add_ons ) ) {
+		if( !empty( $plugin['source'] ) && $plugin['source'] == 'wp' ) {
+			$status = install_plugin_install_status( $plugin );
+
+
+			switch ( $status['status'] ) {
+				case 'install':
+					if ( $status['url'] ) {
+						/* translators: 1: Plugin name and version. */
+						$action_links[] = '<a class="install-now button" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url( $status['url'] ) . '" aria-label="' . esc_attr( sprintf( __( 'Install %s now' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '"><span>' . __( 'Install Now' ) . '</span></a>';
+					}
+
+					break;
+				case 'update_available':
+					if ( $status['url'] ) {
+						/* translators: 1: Plugin name and version */
+						$action_links[] = '<a class="update-now button" data-plugin="' . esc_attr( $status['file'] ) . '" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url( $status['url'] ) . '" aria-label="' . esc_attr( sprintf( __( 'Update %s now' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '"><span>' . __( 'Update Now' ) . '</span></a>';
+					}
+
+					break;
+				case 'latest_installed':
+				case 'newer_installed':
+					$action_links[] = '<span class="button button-disabled" title="' . esc_attr__( 'This plugin is already installed and is up to date' ) . ' ">' . _x( 'Installed', 'plugin' ) . '</span>';
+					break;
+			}
+			if ( learn_press_is_plugin_install( $file ) ) {
+				if ( is_plugin_active( $file ) ) {
+					$action_links[] = '<a class="button disable-now" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url( wp_nonce_url( 'plugins.php?action=deactivate&plugin=' . $file, 'deactivate-plugin_' . $file ) ) . '" aria-label="' . esc_attr( sprintf( __( 'Disable %s now' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '"><span>' . __( 'Disable Now', 'learn_press' ) . '</span></a>';
+				} else {
+					$action_links[] = '<a class="button enable-now" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url( wp_nonce_url( 'plugins.php?action=activate&plugin=' . $file, 'activate-plugin_' . $file ) ) . '" aria-label="' . esc_attr( sprintf( __( 'Enable %s now' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '"><span>' . __( 'Enable Now', 'learn_press' ) . '</span></a>';
+				}
+			}
+
+		}else{
+			if ( learn_press_is_plugin_install( $file ) ) {
+				if ( is_plugin_active( $file ) ) {
+					$action_links[] = '<a class="button disable-now" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url( wp_nonce_url( 'plugins.php?action=deactivate&plugin=' . $file, 'deactivate-plugin_' . $file ) ) . '" aria-label="' . esc_attr( sprintf( __( 'Disable %s now' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '"><span>' . __( 'Disable Now', 'learn_press' ) . '</span></a>';
+				} else {
+					$action_links[] = '<a class="button enable-now" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url( wp_nonce_url( 'plugins.php?action=activate&plugin=' . $file, 'activate-plugin_' . $file ) ) . '" aria-label="' . esc_attr( sprintf( __( 'Enable %s now' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '"><span>' . __( 'Enable Now', 'learn_press' ) . '</span></a>';
+				}
+			} else {
+				if ( $plugin['url'] ) {
+					$action_links[] = '<a class="buy-now button" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url( $plugin['url'] ) . '" aria-label="' . esc_attr( sprintf( __( 'Buy %s now' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '">' . __( 'Buy Now' ) . '</a>';
+				}
+			}
+		}
+		//$action_links[] = $file;
+	}
+	return $action_links;
+}
+function learn_press_output_add_ons_list( $add_ons, $tab = '' ) {
+	if ( !is_array( $add_ons ) || sizeof( $add_ons ) == 0 ) {
+		printf( '<h3>%s</h3>', __( 'No add-ons found', 'learn_press' ) );
 		return false;
 	}
-	print_r($add_ons);
 	echo '<ul class="learn-press-add-ons ' . $tab . '">';
 	foreach ( $add_ons as $file => $add_on ) {
 
-		$action_links = array();
+		$action_links = learn_press_get_add_on_action_link( $add_on, $file );
 		/*if ( is_plugin_active( $file ) ) {
 			$action_links[] = '<input data-state="enabled" type="checkbox" class="lpr-fancy-checkbox" checked="checked" data-plugin="' . $file . '" data-url="' . wp_nonce_url( "plugins.php?action=deactivate&plugin={$file}", 'deactivate-plugin_' . $file ) . '" />';
 		} else {
 			$action_links[] = '<input data-state="disabled" type="checkbox" class="lpr-fancy-checkbox" data-plugin="' . $file . '" data-url="' . wp_nonce_url( "plugins.php?action=activate&plugin={$file}", 'activate-plugin_' . $file ) . '" />';
 		}*/
 
-		if( learn_press_is_plugin_install( $file ) ) {
-			if (is_plugin_active( $file )) {
-				$action_links[] = sprintf('<span class="addon-status enabled">%s</span>', __('Enabled', 'learn_press'));
-			} else {
-				$action_links[] = sprintf('<span class="addon-status disabled">%s</span>', __('Disabled', 'learn_press'));
-			}
-		}else{
-			$action_links[] = sprintf('<span class="addon-status not_install">%s</span>', __('Not Install', 'learn_press'));
-		}
+
 		?>
-		<li class="plugin-card plugin-card-learnpress">
+		<li class="plugin-card plugin-card-learnpress" id="learn-press-plugin-<?php echo $add_on['slug'];?>">
 			<div class="plugin-card-top">
 				<a href="" class="thickbox plugin-icon"><img src="<?php echo $add_on['icons']['2x']; ?>"></a>
 
