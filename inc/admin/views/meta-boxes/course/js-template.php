@@ -51,8 +51,8 @@
 		$lessons = learn_press_get_current_user()->get_lessons(array('orderby' => 'name', 'order' => 'ASC', 'posts_per_page' => -1));
 		?>
 		<div class="lp-search-items">
-			<input type="text" name="lp-item-name" placeholder="<?php _e( 'Type here to search the quiz or add new', 'learn_press' );?>" />
-			<button type="button" class="button lp-add-new-item"><?php _e( 'Add New', 'learn_press' );?></button>
+			<input type="text" name="lp-item-name" placeholder="<?php _e( 'Type here to search the lesson', 'learn_press' );?>" />
+			<!--<button type="button" class="button lp-add-new-item"><?php _e( 'Add New', 'learn_press' );?></button>-->
 		</div>
 		<ul>
 			<?php
@@ -83,8 +83,8 @@
 		$quizzes = learn_press_get_current_user()->get_quizzes(array('orderby' => 'name', 'order' => 'ASC', 'posts_per_page' => -1));
 		?>
 		<div class="lp-search-items">
-			<input type="text" name="lp-item-name" placeholder="<?php _e( 'Type here to search the quiz or add new', 'learn_press' );?>" />
-			<button type="button" class="button lp-add-new-item"><?php _e( 'Add New', 'learn_press' );?></button>
+			<input type="text" name="lp-item-name" placeholder="<?php _e( 'Type here to search the quiz', 'learn_press' );?>" />
+			<!--<button type="button" class="button lp-add-new-item"><?php _e( 'Add New', 'learn_press' );?></button>-->
 		</div>
 		<ul>
 			<?php

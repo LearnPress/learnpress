@@ -118,13 +118,6 @@ if ( !class_exists( 'LearnPress' ) ) {
 		public $order_post_type = 'lp_order';
 
 		/**
-		 * Assignment Post Type
-		 *
-		 * @var string
-		 */
-		public $assignment_post_type = 'lp_assignment';
-
-		/**
 		 * Teacher Role
 		 *
 		 * @var string
@@ -205,7 +198,6 @@ if ( !class_exists( 'LearnPress' ) ) {
 				$this->quiz_post_type       = 'lpr_quiz';
 				$this->question_post_type   = 'lpr_question';
 				$this->order_post_type      = 'lpr_order';
-				$this->assignment_post_type = 'lpr_assignment';
 				$this->teacher_role         = 'lpr_teacher';
 			}
 		}
@@ -263,7 +255,6 @@ if ( !class_exists( 'LearnPress' ) ) {
 			$this->define( 'LP_CSS_URL', LP_PLUGIN_URL . 'assets/css/' );
 
 			// Custom post type name
-			$this->define( 'LP_ASSIGNMENT_CPT', $this->assignment_post_type );
 			$this->define( 'LP_COURSE_CPT', $this->course_post_type );
 			$this->define( 'LP_LESSON_CPT', $this->lesson_post_type );
 			$this->define( 'LP_QUESTION_CPT', $this->question_post_type );

@@ -16,12 +16,12 @@ class LP_Gateway_Abstract {
 	/**
 	 * @var mixed|null
 	 */
-	public $title = null;
+	public $method_title = null;
 
 	/**
 	 * @var null
 	 */
-	public $description = null;
+	public $method_description = null;
 
 	/**
 	 * @var null
@@ -38,8 +38,8 @@ class LP_Gateway_Abstract {
 	 */
 	function __construct() {
 
-		if ( !$this->title ) {
-			$this->title = preg_replace( '!LP_Gateway_!', '', get_class( $this ) );
+		if ( !$this->method_title ) {
+			$this->method_title = preg_replace( '!LP_Gateway_!', '', get_class( $this ) );
 		}
 		if ( !$this->id ) {
 			$this->id = sanitize_title( $this->title );

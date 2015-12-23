@@ -129,11 +129,16 @@ function learn_press_add_order_item( $order_id, $item ) {
 	);
 
 	$item = wp_parse_args( $item, $defaults );
-
+	if ( array_key_exists( 'data', $item ) ) {
+		$item['data'] = maybe_serialize( $item['data'] );
+	}
 	//$course = LP_Course::get_course( $item['item_id'] );
 	$wpdb->insert(
 		$wpdb->learnpress_order_items,
-		$item,
+		array(
+			'order_item_name' => $item['order_item_name'],
+			'order_id'        => $item['order_id']
+		),
 		array(
 			'%s', '%d'
 		)
@@ -146,12 +151,12 @@ function learn_press_add_order_item( $order_id, $item ) {
 	return $item_id;
 }
 
-function learn_press_remove_order_item( $item_id ){
+function learn_press_remove_order_item( $item_id ) {
 	global $wpdb;
 
 	$item_id = absint( $item_id );
 
-	if ( ! $item_id )
+	if ( !$item_id )
 		return false;
 
 	do_action( 'learn_press_before_delete_order_item', $item_id );
@@ -179,6 +184,7 @@ function learn_press_delete_order_item_meta( $item_id, $meta_key, $meta_value, $
 function learn_press_get_order_item_meta( $item_id, $meta_key, $single = true ) {
 	return get_metadata( 'learnpress_order_item', $item_id, $meta_key, $single );
 }
+
 /*******************************/
 
 /*

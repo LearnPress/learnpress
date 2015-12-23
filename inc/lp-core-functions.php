@@ -678,7 +678,7 @@ function learn_press_pre_get_items( $query ) {
 	global $pagenow;
 	global $wpdb;
 	if ( current_user_can( LP()->teacher_role ) && is_admin() && $pagenow == 'edit.php' ) {
-		if ( in_array( $post_type, array( LP()->course_post_type, LP()->lesson_post_type, LP()->quiz_post_type, LP()->question_post_type, LP()->assignment_post_type ) ) ) {
+		if ( in_array( $post_type, array( LP()->course_post_type, LP()->lesson_post_type, LP()->quiz_post_type, LP()->question_post_type ) ) ) {
 			$items = $wpdb->get_col(
 				$wpdb->prepare(
 					"SELECT ID FROM $wpdb->posts
@@ -1203,12 +1203,6 @@ function learn_press_template_loader( $template ) {
 					$file   = 'single-quiz.php';
 					$find[] = $file;
 					$find[] = 'learnpress/' . $file;
-				} else {
-					if ( get_post_type() == LP()->assignment_post_type ) {
-						$file   = 'single-assignment.php';
-						$find[] = $file;
-						$find[] = 'learnpress/' . $file;
-					}
 				}
 			}
 		}
@@ -2282,8 +2276,11 @@ include_once "lp-add-ons.php";
 
 //add_action( 'learn_press_register_add_ons', 'learn_press_register_addons' );
 
-function learn_press_debug( $a ) {
+function learn_press_debug( $a, $die = true ) {
 	echo '<pre>';
 	print_r( $a );
 	echo '</pre>';
+	if( $die ){
+		die();
+	}
 }

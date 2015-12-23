@@ -131,7 +131,7 @@
 					});
 				this.$('.lp-curriculum-sections').sortable({
 					axis: 'y',
-					items: 'li:not(.lp-section-empty)',
+					items: 'li:not(.lp-empty-section)',
 					handle: '.lp-section-icon',
 					start: function(e, ui){
 						$('.lp-curriculum-section-content').css('display', 'none');
@@ -916,7 +916,7 @@
 				if( $items.length == 0 ) return;
 				var that = this,
 					itemNames = $items.map(function(){return $(this).find('.lp-item-name').val()}).get().join('</p><p>+&nbsp;');
-				LearnPress.MessageBox.show( admin_course_localize.notice_remove_section_item+'<h4><p>+&nbsp;'+itemNames+'</p></h4>', {
+				LearnPress.MessageBox.show( meta_box_course_localize.notice_remove_section_item+'<h4><p>+&nbsp;'+itemNames+'</p></h4>', {
 					data: {
 						items: $items,
 						self: this
@@ -1144,7 +1144,7 @@
 	function _makeListSortable(){
 		$('.curriculum-sections')
 			.sortable({
-				items: '.curriculum-section:not(.lp-section-empty)',
+				items: '.curriculum-section:not(.lp-empty-section)',
 				handle: '.lp-section-actions a[data-action="move"]',
 				axis: 'y'
 			});

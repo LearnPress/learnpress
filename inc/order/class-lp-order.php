@@ -268,6 +268,7 @@ class LP_Order {
 	 * @return bool
 	 */
 	function add_item( $item, $quantity = 1, $meta = array() ) {
+
 		$item_id = learn_press_add_order_item( $this->id, $item );
 		if ( !$item_id ) {
 			return false;

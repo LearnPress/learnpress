@@ -18,6 +18,11 @@ class LP_Cart {
 	 */
 	private static $instance = false;
 
+	/**
+	 * Hold the content of the cart
+	 *
+	 * @var array
+	 */
 	private $_cart_content = array();
 
 	/**

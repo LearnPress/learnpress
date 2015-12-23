@@ -22,7 +22,32 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			add_filter( "rwmb__lpr_course_price_html", array( $this, 'currency_symbol' ), 5, 3 );
 			add_action( 'edit_form_after_editor', array( $this, 'toggle_editor_button' ), - 10 );
 			add_action( 'add_meta_boxes', array( $this, 'review_logs_meta_box' ) );
+			add_action( 'post_submitbox_start', array( $this, 'post_review_message_box' ) );
+			add_action( 'learn_press_transition_course_status', array( $this, 'review_log' ), 10, 3 );
+			add_action( 'load-post.php', array( $this, 'post_actions' ) );
 			parent::__construct();
+		}
+
+		/**
+		 * Process request actions on post.php loaded
+		 */
+		function post_actions() {
+			$delete_log = learn_press_get_request( 'delete_log' );
+			// ensure that user can do this
+			if ( $delete_log && current_user_can( 'delete_others_lp_courses' ) ) {
+				$nonce   = learn_press_get_request( '_wpnonce' );
+				$post_id = learn_press_get_request( 'post' );
+				if ( wp_verify_nonce( $nonce, 'delete_log_' . $post_id . '_' . $delete_log ) ) {
+					global $wpdb;
+					$wpdb->query(
+						$wpdb->prepare( "
+							DELETE FROM {$wpdb->prefix}learnpress_review_logs
+							WHERE review_log_id = %d
+						", $delete_log )
+					);
+					wp_redirect( admin_url( 'post.php?post=' . learn_press_get_request( 'post' ) . '&action=edit' ) );
+				}
+			}
 		}
 
 		function toggle_editor_button( $post ) {
@@ -625,7 +650,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			}
 		}
 
-		private function _review_log() {
+		function review_log( $new_status, $old_status, $course_id ) {
 			global $wpdb, $post;
 
 			$required_review       = LP()->settings->get( 'required_review' ) == 'yes';
@@ -669,9 +694,18 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 
 			if ( get_post_type() != LP()->course_post_type ) return;
 
+			$new_status = get_post_status( $post->ID );
+			$old_status = get_post_meta( $post->ID, '_lp_course_status', true );
+
 			$this->_save();
 			$this->_update_final_quiz();
-			$this->_review_log();
+
+			if ( $new_status != $old_status ) {
+				do_action( 'learn_press_transition_course_status', $new_status, $old_status, $post->ID );
+				update_post_meta( $post->ID, '_lp_course_status', $new_status );
+			} else {
+				$this->review_log();
+			}
 
 			do_action( 'learn_press_new_course_submitted', $post->ID, LP()->user );
 		}
@@ -741,6 +775,74 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						_e( 'No content', 'learn_press' );
 					}
 					break;
+			}
+		}
+
+		/**
+		 * Log the messages between admin and instructor
+		 */
+		function post_review_message_box() {
+			global $post;
+
+			if ( !learn_press_course_is_required_review( $post->ID, get_current_user_id() ) ) {
+				//return;
+			}
+			$user = learn_press_get_current_user();
+			if ( $user->is_instructor() ) {
+				?>
+				<div id="learn-press-review-message">
+					<h4><?php _e( 'Your message to Reviewer', 'learn_press' ); ?></h4>
+					<textarea name="review_message" resize="none" placeholder="<?php _e( 'Enter some information here for reviewer', 'learn_press' ); ?>"></textarea>
+					<p>
+						<label>
+							<input type="checkbox" />
+							<?php _e( 'Notice to the admin for reviews', 'learn_press' );?>
+						</label>
+					</p>
+					<p class="description submitdelete">
+						<?php _e( 'Warning! Your course will become to Pending Review for admin reviews before it can be published when you update' ); ?>
+					</p>
+				</div>
+				<?php ob_start(); ?>
+				<script type="text/javascript">
+					$('#post').submit(function (e) {
+						var $review = $('textarea[name="review_message"]');
+						if (!($review.val() + '').length) {
+							alert('<?php _e( 'Please write your message to Reviewer', 'learn_press' );?>');
+							$review.focus();
+							return false;
+						}
+					});
+				</script>
+				<?php learn_press_enqueue_script( strip_tags( ob_get_clean() ) ); ?>
+				<?php
+			} else if ( $user->is_admin() ) {
+				?>
+				<div id="learn-press-review-message">
+					<h4><?php _e( 'Your message to Instructor', 'learn_press' ); ?></h4>
+					<textarea name="review_message" resize="none" placeholder="<?php _e( 'Enter some information here for instructor. E.g: for reason why the course is rejected etc...', 'learn_press' ); ?>"></textarea>
+					<p>
+						<label>
+							<input type="checkbox" />
+							<?php _e( 'Notice to the instructor for changes', 'learn_press' );?>
+						</label>
+					</p>
+				</div>
+				<?php ob_start(); ?>
+				<script type="text/javascript">
+					$('#post').submit(function (e) {
+						var $review = $('textarea[name="review_message"]', this),
+							$status = $('select#post_status', this),
+							clicked = $(':focus', this).attr('name');
+						if (clicked == 'save' && $status.val() != 'publish' && !($review.val() + '').length) {
+							alert('<?php _e( 'Please write your message to Reviewer', 'learn_press' );?>');
+							$review.focus();
+							return false;
+						}
+					});
+				</script>
+				<?php learn_press_enqueue_script( strip_tags( ob_get_clean() ) ); ?>
+				<?php
 			}
 		}
 	} // end LP_Course_Post_Type

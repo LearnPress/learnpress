@@ -594,6 +594,11 @@ class LP_Abstract_User {
 		return in_array( LP()->teacher_role, $roles );
 	}
 
+	function is_admin(){
+		$roles = !empty( $this->user->roles ) ? $this->user->roles : array();
+		return in_array( 'administrator', $roles );
+	}
+
 	function has( $role ) {
 		$args = func_get_args();
 		unset( $args[0] );

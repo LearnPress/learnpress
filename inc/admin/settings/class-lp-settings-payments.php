@@ -27,10 +27,11 @@ class LP_Settings_Payments extends LP_Settings_Base {
 	 */
 	function get_sections() {
 		$gateways = LP_Gateways::instance()->get_gateways();
+		$sections = array();
 		if( $gateways ) foreach( $gateways as $id => $gateway ){
-			$gateways[ $id ] = $gateway->get_title();
+			$sections[ $id ] = !empty( $gateway->method_title ) ? $gateway->method_title : ucfirst( $gateway->id );
 		}
-		return $gateways;
+		return $sections;
 	}
 
 	function output() {

@@ -15,7 +15,10 @@
 					$.ajax({
 						url: window.location.href,
 						success: function(r){
-							$plugin.replaceWith($(r).find('#'+$plugin.attr('id')))
+							var $p = $(r).find('#'+$plugin.attr('id'));
+							if( $p.length ) {
+								$plugin.replaceWith($p)
+							}
 						}
 					})
 				}

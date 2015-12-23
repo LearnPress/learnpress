@@ -240,7 +240,7 @@
 .section-header{
 	margin: 0 0 0px 0;
 	padding: 10px 15px;
-	background-color: #DDD;
+	background-color: #EEE;
 }
 .section-header p{
 	display: inline-block;
@@ -271,7 +271,7 @@
 	margin: 3px 0;
 }
 #learn-press-course-curriculum .section .course-item.section-empty{
-	background-color: #ECECEC;
+	background-color: #F5F5F5;
 }
 #learn-press-course-curriculum .section .course-item.section-empty .learn-press-message{
 	margin: 0;

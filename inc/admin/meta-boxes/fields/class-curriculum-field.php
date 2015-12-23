@@ -17,7 +17,7 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
 		 * @return void
 		 */
 		static function admin_enqueue_scripts() {
-			LP_Admin_Assets::enqueue_style( 'course', LP()->plugin_url( '/inc/admin/meta-boxes/css/course.css' ) );
+			LP_Admin_Assets::enqueue_style( 'meta-box-course', LP()->plugin_url( 'assets/css/admin/meta-box-course.css' ) );
 			LP_Admin_Assets::enqueue_style( 'select2',         RWMB_CSS_URL . 'select2/select2.css' );
             LP_Admin_Assets::enqueue_style( 'toastr',          LP_CSS_URL . 'toastr.css' );
             //LP_Admin_Assets::enqueue_style( 'thim-course',     LearnPress()->plugin_url( 'inc/admin/meta-boxes/css/course.css' ) );
@@ -25,7 +25,7 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
 			LP_Admin_Assets::enqueue_script( 'select2',        RWMB_JS_URL . 'select2/select2.min.js' );
 			LP_Admin_Assets::enqueue_script( 'toastr',         LP_JS_URL . 'toastr.js' );
 			LP_Admin_Assets::enqueue_script( 'tojson',         LP_JS_URL . 'toJSON.js' );
-			LP_Admin_Assets::enqueue_script( 'admin-course',    LearnPress()->plugin_url( 'inc/admin/meta-boxes/js/course.js' ), array( 'jquery', 'toastr', 'tojson' ) );
+			LP_Admin_Assets::enqueue_script( 'meta-box-course',    LearnPress()->plugin_url( 'assets/js/admin/meta-box-course.js' ), array( 'jquery', 'toastr', 'tojson' ) );
 
 			LP_Admin_Assets::add_localize(
                 array(
@@ -47,7 +47,7 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
                     'add_new_assignment' 			=> __( 'New assignment added', 'learn_press' ),
                     'remove_section_assignment'		=> __( 'The assignment removed', 'learn_press' ),
                     'add_assignment_to_section'		=> __( 'Assignment added to section complete!', 'learn_press' )
-                ), null, 'thim-course'
+                ), null, 'meta-box-course'
             );
 		}
 

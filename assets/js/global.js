@@ -377,6 +377,9 @@ if (typeof window.LearnPress == 'undefined') {
 			}
 		},
 		toElement     : function (element, args) {
+			if($(element).length == 0) {
+				return;
+			}
 			args = $.extend({
 				delay   : 300,
 				duration: 'slow',
