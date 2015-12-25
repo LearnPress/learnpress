@@ -114,17 +114,6 @@ class LP_Assets extends LP_Abstract_Assets {
 		// checkout page
 		self::add_script( 'checkout', learn_press_plugin_url( 'assets/js/frontend/checkout.js' ) );
 
-		//self::add_script( 'lpr-alert-js', LP_JS_URL . 'jquery.alert.js' );
-
-		/*self::enqueue_style( 'lpr-learnpress-css' );
-		self::enqueue_style( 'lpr-time-circle-css' );
-
-		self::enqueue_script( 'learn-press-js' );
-		self::enqueue_script( 'lpr-alert-js' );
-		self::enqueue_script( 'lpr-time-circle-js' );
-		self::enqueue_script( 'block-ui' );
-*/
-
 	}
 
 	static function _print_assets() {

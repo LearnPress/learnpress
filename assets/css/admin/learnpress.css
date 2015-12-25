@@ -17,8 +17,8 @@ a .archive-course:hover {
 
 .course-detail {
 	display: table-cell;
-    vertical-align: top;
-    padding-left: 10px;
+	vertical-align: top;
+	padding-left: 10px;
 }
 
 .course-title {

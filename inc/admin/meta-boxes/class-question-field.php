@@ -9,18 +9,10 @@ defined( 'ABSPATH' ) || exit;
  */
 if ( !class_exists( 'RWMB_Question_Field' ) ) {
 	class RWMB_Question_Field extends RWMB_Field {
-		static function admin_enqueue_scripts() {
-			wp_enqueue_style( 'lpr-question', RWMB_CSS_URL . 'question.css', array(), '3.2' );
-			//wp_register_script('select2', RWMB_JS_URL . 'select2/select2.min.js', array(), '3.2', true);
-
-		}
-
 		static function add_actions() {
 			// Do same actions as file field
 			parent::add_actions();
-
 			add_action( 'wp_ajax_lpr_load_question_settings', array( __CLASS__, 'load_question_settings' ) );
-
 		}
 
 		static function load_question_settings() {
@@ -58,15 +50,7 @@ if ( !class_exists( 'RWMB_Question_Field' ) ) {
 		}
 
 		static function save( $new, $old, $post_id, $field ) {
-			/**$type     = $_POST[LP()->question_post_type]['type'];
-			$question = LP_Question::instance( $type, array( 'ID' => $post_id ) );
-			if ( $question ) $question->save_post_action();
-*/
-			//update_post_meta( $post_id, '_lpr_question_type', $type );
-
-			//learn_press_debug($_POST);die();
 		}
-
 
 		static function html( $meta, $field ) {
 			global $post;

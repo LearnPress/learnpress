@@ -392,9 +392,6 @@ if ( !class_exists( 'LearnPress' ) ) {
 					require_once 'inc/libraries/meta-box/meta-box.php';
 				}
 
-				require_once 'inc/admin/meta-boxes/class-lp-meta-box.php';
-				//Include admin settings
-
 				require_once 'inc/admin/class-lp-admin.php';
 				//require_once 'inc/admin/class-lp-admin-settings.php';
 

@@ -75,7 +75,7 @@ class LP_Autoloader {
 		} elseif ( preg_match( '!lp_meta_box_|rwmb_!', $class, $matches ) ) { // meta box fields
 
 			$file = 'class-' . substr( str_replace( '_', '-', $class ), 5 ) . '.php';
-			$path = $this->include_path . 'admin/meta-boxes/fields/';
+			$path = $this->include_path . 'admin/meta-boxes/';
 
 
 		} else {
