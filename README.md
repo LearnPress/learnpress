@@ -7,7 +7,7 @@
 **LearnPress LMS Plugin works with your theme**  
 We create LearnPress LMS Plugin to work with any WordPress themes.
 
-Here is a [premium LMS WordPress theme](http://themeforest.net/item/lms-wordpress-theme-elearning-wp/11797847). More will coming soon.
+Here are some WordPress Themes designed to work with LearnPress: [Education WordPress Theme](http://themeforest.net/item/education-wordpress-theme-education-wp/14058034 "Education WordPress Theme") and [LMS WordPress theme](http://themeforest.net/item/lms-wordpress-theme-elearning-wp/11797847 "LMS WordPress Theme"). More will coming soon.
 
 
 **LearnPress Support WordPress Multisites**
