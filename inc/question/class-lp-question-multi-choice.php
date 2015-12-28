@@ -8,7 +8,7 @@
  * @version 1.0
  * @extend  LP_Abstract_Question
  */
-class LP_Question_Multi_Choice extends LP_Question {
+class LP_Question_Multi_Choice extends LP_Abstract_Question {
 
 	/**
 	 * Construct
@@ -22,8 +22,8 @@ class LP_Question_Multi_Choice extends LP_Question {
 	function submit_answer( $quiz_id, $answer ) {
 		$questions = learn_press_get_question_answers( null, $quiz_id );
 		if ( !is_array( $questions ) ) $questions = array();
-		$questions[$quiz_id][$this->get( 'ID' )] = is_array( $answer ) ? reset( $answer ) : $answer;
-		learn_press_save_question_answer( null, $quiz_id, $this->get( 'ID' ), is_array( $answer ) ? reset( $answer ) : $answer );
+		$questions[$quiz_id][$this->id] = is_array( $answer ) ? reset( $answer ) : $answer;
+		learn_press_save_question_answer( null, $quiz_id, $this->id, is_array( $answer ) ? reset( $answer ) : $answer );
 	}
 
 	function admin_script() {
@@ -98,7 +98,7 @@ class LP_Question_Multi_Choice extends LP_Question {
 
 		ob_start();
 		$uid     = uniqid( 'lpr_question_answer' );
-		$post_id = $this->get( 'ID' );
+		$post_id = $this->id;
 		$this->admin_interface_head( $args );
 		?>
 		<table class="lpr-question-option lpr-question-answer lpr-sortable">
@@ -160,7 +160,7 @@ class LP_Question_Multi_Choice extends LP_Question {
 
 	private function _admin_enqueue_script( $enqueue = true ) {
 		ob_start();
-		$key = 'question_' . $this->get( 'ID' );
+		$key = 'question_' . $this->id;
 		?>
 		<script type="text/javascript">
 			(function ($) {
@@ -195,10 +195,11 @@ class LP_Question_Multi_Choice extends LP_Question {
 
 	function save_post_action() {
 
-		if ( $post_id = $this->ID ) {
+		if ( $post_id = $this->id ) {
 			$post_data    = isset( $_POST[LP()->question_post_type] ) ? $_POST[LP()->question_post_type] : array();
 			$post_answers = array();
-			$post_explain = $post_data[$post_id]['explaination'];
+			//$post_explain = $post_data[$post_id]['explanation'];
+			learn_press_debug($_POST);
 			if ( isset( $post_data[$post_id] ) && $post_data = $post_data[$post_id] ) {
 				$post_args = array(
 					'ID'         => $post_id,
@@ -218,7 +219,7 @@ class LP_Question_Multi_Choice extends LP_Question {
 			}
 			$post_data['answer']       = $post_answers;
 			$post_data['type']         = $this->get_type();
-			$post_data['explaination'] = $post_explain;
+			//$post_data['explanation']  = $post_explain;
 			update_post_meta( $post_id, '_lpr_question', $post_data );
 		}
 		return intval( $post_id );
@@ -266,15 +267,14 @@ class LP_Question_Multi_Choice extends LP_Question {
 	static function admin_js_template(){
 		ob_start();
 		?>
-		<tr class="lp-list-option <# if(data.id){ #>lp-list-option-{{data.id}}<# } #>" data-id="{{data.id}}">
+		<tr class="lp-list-option lp-list-option-empty <# if(data.id){ #>lp-list-option-{{data.id}}<# } #>" data-id="{{data.id}}">
 
 			<td>
 				<input class="lp-answer-text no-submit key-nav" type="text" name="learn_press_question[{{data.question_id}}][answer][text][]" value="{{data.text}}" />
 			</td>
 			<th class="lp-answer-check">
 				<input type="hidden" name="learn_press_question[{{data.question_id}}][answer][value][]" value="{{data.value}}" />
-				<input type="checkbox" name="learn_press_question_{{data.question_id}}[]" {{data.checked}} value="{{data.value}}" />
-				<input type="hidden" name="learn_press_question[{{data.question_id}}][answer][id][]" value="{{data.id}}" />
+				<input type="checkbox" name="learn_press_question[{{data.question_id}}][checked][]" {{data.checked}} value="{{data.value}}" />
 			</th>
 			<td class="lp-list-option-actions lp-remove-list-option">
 				<i class="dashicons dashicons-trash"></i>

@@ -1145,16 +1145,43 @@
 		$('.curriculum-sections')
 			.sortable({
 				items: '.curriculum-section:not(.lp-empty-section)',
-				handle: '.lp-section-actions a[data-action="move"]',
+				handle: '.lp-section-actions a.move',
 				axis: 'y'
 			});
 
-		$('.curriculum-section-items')
+		$('.curriculum-section-items > tbody')
 			.sortable({
 				items: '.lp-section-item:not(.lp-item-empty)',
 				handle: '.item-checkbox',
 				axis: 'y',
-				connectWith: '.curriculum-section-items',
+				connectWith: '.curriculum-section-items > tbody',
+				helper: function(e, tr){
+					var $originals = tr.children();
+					var $helper = tr.clone();
+					$helper.children().each(function (index) {
+						// Set helper cell sizes to match the original sizes
+						$(this).width($originals.eq(index).width());
+					});
+
+					$(tr).parent().append($helper);
+
+					return $helper;
+				},
+				start: function(e, ui){
+					var cellCount = 0;
+					$('td, th', ui.helper).each(function () {
+						var colspan = 1;
+						var colspanAttr = $(this).attr('colspan');
+						if (colspanAttr > 1) {
+							colspan = colspanAttr;
+						}
+						cellCount += colspan;
+					});
+					ui.placeholder.html('<td colspan="' + cellCount + '">&nbsp;</td>');
+				},
+				sort: function(e, ui){
+					LearnPress.log(ui.helper.html())
+				},
 				stop: function(e, ui){
 					var $emptyItem = ui.item.parent().find('.lp-item-empty:last');
 					LearnPress.log('empty:')

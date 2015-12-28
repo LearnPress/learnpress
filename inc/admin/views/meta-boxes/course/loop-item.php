@@ -23,10 +23,9 @@ $group_name = '_lp_curriculum[__SECTION__][items][' . ( $section_item_id ? $sect
 		<input type="hidden" class="lp-item-type" name="<?php echo $group_name; ?>[post_type]" value="<?php echo $item->post_type; ?>" />
 	</td>
 	<td class="section-item-actions">
-		<p class="lp-item-actions">
+		<p class="lp-item-actions lp-button-actions">
 			<?php do_action( 'learn_press_admin_begin_section_item_actions', $item, $section );?>
 			<a href="<?php echo is_numeric( $item->item_id ) ? get_edit_post_link( $item->item_id ) : '{{data.edit_link}}'; ?>" class="lp-item-action lp-edit" target="_blank"><?php _e( 'Edit', 'learn_press' ); ?></a>
-			<span>|</span>
 			<a href="" class="lp-item-action lp-remove"><?php _e( 'Remove', 'learn_press' ); ?></a>
 			<span class="item-checkbox">
 				<input type="checkbox" value="<?php echo $section_item_id;?>" />

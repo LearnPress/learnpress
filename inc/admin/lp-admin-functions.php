@@ -18,6 +18,9 @@ if ( !defined( 'ABSPATH' ) ) {
  * @return mixed
  */
 function learn_press_get_admin_view( $name ) {
+	if ( !preg_match( '/\.(.*)$/', $name ) ) {
+		$name .= '.php';
+	}
 	$view = LP()->plugin_path( 'inc/admin/views/' . $name );
 	return apply_filters( 'learn_press_admin_view', $view, $name );
 }
@@ -704,7 +707,7 @@ function learn_press_admin_section_loop_item_class( $item, $section ) {
 		'lp-section-item'
 	);
 	$classes[] = 'lp-item-' . $item->post_type;
-	if ( !absint($item->ID) ) {
+	if ( !absint( $item->ID ) ) {
 		$classes[] = 'lp-item-empty lp-item-new';
 	}
 	$classes = apply_filters( 'learn_press_section_loop_item_class', $classes, $item, $section );
@@ -720,4 +723,5 @@ function learn_press_disable_checked_ontop( $args ) {
 
 	return $args;
 }
+
 add_filter( 'wp_terms_checklist_args', 'learn_press_disable_checked_ontop' );

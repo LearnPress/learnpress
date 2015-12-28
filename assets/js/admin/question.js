@@ -175,33 +175,53 @@ if (typeof window.LearnPress == 'undefined') {
 			var $option = $(this).closest('tr');
 			LearnPress.Question.removeOption( $option );
 		}).on('change', '.lp-dropdown-question-types', function(){
-			var questionId = $(this).closest('.learn-press-question').data('id'),
-				from = $(this).data('selected'),
-				to = this.value;
-			LearnPress.MessageBox.blockUI();
-			$.ajax({
-				url: LearnPress_Settings.ajax,
-				type: 'post',
-				dataType: 'html',
-				data: {
-					action: 'learnpress_convert_question_type',
-					question_id: questionId,
-					from: from,
-					to: to
-				},
-				success: function(response){
-					response = LearnPress.parseJSON(response);
-					var $newOptions = $(response.html),
-						$question = $('#learn-press-question-'+questionId),
-						$icon = $question.closest('.quiz-question').find('.quiz-question-icon img');
-					$question.replaceWith($newOptions);
-					if($icon.length){
-						$icon.replaceWith(response.icon)
+			var $select = $(this),
+				$wrap = $select.closest('.learn-press-question'),
+				questionId = $wrap.data('id'),
+				from = $select.data('selected'),
+				to = this.value,
+				_do = function(){
+					LearnPress.MessageBox.blockUI();
+					$.ajax({
+						url: LearnPress_Settings.ajax,
+						type: 'post',
+						dataType: 'html',
+						data: {
+							action: 'learnpress_convert_question_type',
+							question_id: questionId,
+							from: from,
+							to: to,
+							data: $('#post').serialize()//$wrap.find('input, select, textarea').
+						},
+						success: function(response){
+							response = LearnPress.parseJSON(response);
+							var $newOptions = $(response.html),
+								$question = $('#learn-press-question-'+questionId),
+								$icon = $question.closest('.quiz-question').find('.quiz-question-icon img');
+							$question.replaceWith($newOptions);
+							if($icon.length){
+								$icon.replaceWith(response.icon)
+							}
+							LearnPress.Hook.doAction('learn_press_convert_question_type', questionId, from, to, $newOptions );
+							LearnPress.MessageBox.hide();
+						}
+					});
+				};
+
+			LearnPress.MessageBox.show( 'Are you sure you want to convert to new type?', {
+				buttons: 'yesNo',
+				events: {
+					onYes: function () {
+						_do();
+					},
+					onNo : function () {
+						//revert
+						$select.val(from);//find('option:selected').prop('selected', false).siblings('[value="' + from + '"]').prop('selected', true);
 					}
-					LearnPress.Hook.doAction('learn_press_convert_question_type', questionId, from, to, $newOptions );
-					LearnPress.MessageBox.hide();
 				}
 			});
+			return;
+
 		}).on('click', '.questions-toggle a', function(e){
 			e.preventDefault();
 			var action = $(this).attr('data-action');
@@ -275,15 +295,17 @@ if (typeof window.LearnPress == 'undefined') {
 					LearnPress.MessageBox.show( 'Do you want to remove this question from quiz?', {
 						buttons: 'yesNo',
 						data: $(this).closest('.quiz-question'),
-						onYes: function(data){
-							var $question = $(data);
-							LearnPress.Question._showQuestion( parseInt( $question.find('.learn-press-question').attr('data-id') ) );
-							$question.remove();
+						events: {
+							onYes: function (data) {
+								var $question = $(data);
+								LearnPress.Question._showQuestion(parseInt($question.find('.learn-press-question').attr('data-id')));
+								$question.remove();
+							}
 						}
 					})
 					break;
-				case 'edit':
-					LearnPress.MessageBox.show('<iframe src="'+$(this).attr('href')+'" />');
+				//case 'edit':
+					//LearnPress.MessageBox.show('<iframe src="'+$(this).attr('href')+'" />');
 
 			}
 			if( action ){
@@ -296,24 +318,51 @@ if (typeof window.LearnPress == 'undefined') {
 			}
 		}).on('change keyup', '.lp-answer-text', function(e){
 			var $input = $(this),
-				$option = $input.closest('.lp-list-option');
+				$option = $input.closest('.lp-list-option'),
+				value = $input.val()+'';
 			if(e.keyCode != 13){
 				switch (e.keyCode){
 					case 38:
 					case 40:
+					case 8:
+					case 46:
 						var pressed = $input.data('key-'+ e.keyCode) || 1;
+						LearnPress.log('pressed:'+pressed)
 						if(pressed > 1){
 							if(e.keyCode == 38){
 								( $prev = $input.findPrev('.key-nav') ) && $prev.focus();
-							}else{
+								pressed = 0;
+							}else if(e.keyCode == 40){
 								( $next = $input.findNext('.key-nav') ) && $next.focus();
+								pressed = 0;
+							}else if(e.keyCode == 8 && value.length == 0){
+								var $row = $input.closest('tr'),
+									$prev = $row.prev();
+								if( $prev.length ){
+									$prev.find('.lp-answer-text').focus();
+									$row.remove();
+								}
+							}else if(e.keyCode == 46 && value.length == 0){
+								var $row = $input.closest('tr'),
+									$next = $row.next();
+								if( !$next.hasClass('lp-list-option-empty') ){
+									$next.find('.lp-answer-text').focus();
+									$row.remove();
+								}
 							}
-							$input.data('key-'+ e.keyCode, 0);
+							$input.data('key-'+ e.keyCode, 0 );
 						}else {
-							$input.data('key-' + e.keyCode, pressed + 1);
+							if( e.keyCode == 8 || e.keyCode == 46 ){
+								if( value.length == 0 ){
+									$input.data('key-' + e.keyCode, pressed + 1);
+								}
+							} else {
+								$input.data('key-' + e.keyCode, pressed + 1);
+							}
 						}
+						break;
 				}
-				if( ($input.val()+'').length ){
+				if( value.length ){
 					$option.removeClass('lp-list-option-empty');
 				}else{
 					$option.addClass('lp-list-option-empty');

@@ -27,7 +27,8 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 				'search_courses'                  => false,
 				'add_item_to_order'               => false,
 				'remove_order_item'               => false,
-				'plugin_action'					=> false,
+				'plugin_action'                   => false,
+				'search_questions'                => false,
 				/////////////
 				'quick_add_lesson'                => false,
 				'quick_add_quiz'                  => false,
@@ -50,17 +51,93 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			}
 		}
 
-		static function plugin_action(){
-			$url = learn_press_get_request( 'url');
-			ob_start(); wp_remote_get($url); ob_get_clean();
-			echo wp_remote_get( admin_url( 'admin.php?page=learn_press_add_ons&tab=installed') );
+		static function search_questions(){
+			global $wpdb;
+
+			$quiz_id = learn_press_get_request( 'quiz_id');
+			$user = learn_press_get_current_user();
+			if( !$user->is_admin() && get_post_field( 'post_author', $quiz_id ) != get_current_user_id() ){
+				wp_die( __( 'You have not permission to access this section', 'learn_press' ) );
+			}
+			$term    = (string) ( stripslashes( learn_press_get_request( 'term' ) ) );
+			$exclude = array();
+
+			if ( ! empty( $_GET['exclude'] ) ) {
+				$exclude = array_map( 'intval', $_GET['exclude'] );
+			}
+
+			$added = $wpdb->get_col(
+				$wpdb->prepare("
+					SELECT question_id
+					FROM {$wpdb->prefix}learnpress_quiz_questions
+					WHERE %d
+				", 1)
+			);
+			if( $added ){
+				$exclude = array_merge( $exclude, $added );
+				$exclude = array_unique( $exclude );
+			}
+
+			$args = array(
+				'post_type'      => array( 'lp_question' ),
+				'posts_per_page' => -1,
+				'post_status'    => 'publish',
+				'order'          => 'ASC',
+				'orderby'        => 'parent title',
+				'exclude'        => $exclude
+			);
+			if( !$user->is_admin() ){
+				$args['author'] = $user->id;
+			}
+			if( $term ){
+				$args['s'] = $term;
+			}
+			$posts = get_posts( $args );
+			$found_questions = array();
+
+			if ( ! empty( $posts ) ) {
+				foreach ( $posts as $post ) {
+					$found_questions[ $post->ID ] = !empty( $post->post_title ) ? $post->post_title : sprintf( '(%s)', __( 'Untitled', 'learn_press' ) );
+				}
+			}
+
+			ob_start();
+			if( $found_questions ) {
+				foreach ( $found_questions as $id => $question ) {
+					printf( '
+						<li class="" data-id="%1$d" data-type="" data-text="%2$s">
+						<label>
+							<input type="checkbox" value="%1$d">
+							<span class="lp-item-text">%2$s</span>
+						</label>
+					</li>
+					', $id, $question );
+				}
+			}else{
+				echo '<li>' . __( 'No question found', 'learn_press' ) . '</li>';
+			}
+
+			$response = array(
+				'html' => ob_get_clean(),
+				'data' => $found_questions,
+				'args' => $args
+			);
+			learn_press_send_json( $response );
+		}
+
+		static function plugin_action() {
+			$url = learn_press_get_request( 'url' );
+			ob_start();
+			wp_remote_get( $url );
+			ob_get_clean();
+			echo wp_remote_get( admin_url( 'admin.php?page=learn_press_add_ons&tab=installed' ) );
 			die();
 		}
 
 		/**
 		 * Remove an item from order
 		 */
-		static function remove_order_item(){
+		static function remove_order_item() {
 			// ensure that user has permission
 			if ( !current_user_can( 'edit_lp_orders' ) ) {
 				die( __( 'Permission denied', 'learn_press' ) );
@@ -356,10 +433,12 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 		}
 
 		public static function convert_question_type() {
-			learn_press_debug( $_POST );;
 			if ( ( $from = learn_press_get_request( 'from' ) ) && ( $to = learn_press_get_request( 'to' ) ) && $question_id = learn_press_get_request( 'question_id' ) ) {
-				do_action( 'learn_press_convert_question_type', $question_id, $from, $to );
-				$question = LP_Question_Factory::get_question( $question_id );
+				$data = array();
+				parse_str( $_POST['data'], $data );
+
+				do_action( 'learn_press_convert_question_type', $question_id, $from, $to, $data );
+				$question = LP_Question_Factory::get_question( $question_id, array( 'type' => $to ) );
 				learn_press_send_json(
 					array(
 						'html' => $question->admin_interface( array( 'echo' => false ) ),

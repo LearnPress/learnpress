@@ -182,10 +182,10 @@ function learn_press_question_types() {
 	return LP_Question_Factory::get_types();
 }
 
-function learn_press_question_name_from_slug( $slug ){
+function learn_press_question_name_from_slug( $slug ) {
 	$types = learn_press_question_types();
 
-	$name = !empty( $types[ $slug ] ) ? $types[ $slug ] : '';
+	$name = !empty( $types[$slug] ) ? $types[$slug] : '';
 	return apply_filters( 'learn_press_question_name_from_slug', $name, $slug );
 }
 
@@ -966,7 +966,7 @@ function learn_press_course_tabs() {
 		return;
 	}
 	if ( !empty( $admin_tabs_on_page[$current_page_id] ) && count( $admin_tabs_on_page[$current_page_id] ) ) {
-		echo '<h2 class="nav-tab-wrapper">';
+		echo '<h2 class="nav-tab-wrapper lp-nav-tab-wrapper">';
 		foreach ( $admin_tabs_on_page[$current_page_id] as $admin_tab_id ) {
 
 			$class = ( $admin_tabs[$admin_tab_id]["id"] == $current_page_id ) ? "nav-tab nav-tab-active" : "nav-tab";
@@ -1609,15 +1609,15 @@ function learn_press_edit_admin_bar() {
 	}
 	//if ( !class_exists( 'LP_Admin_Settings' ) ) return;
 	/**
-	$settings = LP_Admin_Settings::instance( 'general' );
-	if ( $settings->get( 'instructor_registration' ) ) {
-		$be_teacher           = array();
-		$be_teacher['id']     = 'be_teacher';
-		$be_teacher['parent'] = 'user-actions';
-		$be_teacher['title']  = __( 'Become An Instructor', 'learn_press' );
-		$be_teacher['href']   = '#';
-		$wp_admin_bar->add_menu( $be_teacher );
-	}*/
+	 * $settings = LP_Admin_Settings::instance( 'general' );
+	 * if ( $settings->get( 'instructor_registration' ) ) {
+	 * $be_teacher           = array();
+	 * $be_teacher['id']     = 'be_teacher';
+	 * $be_teacher['parent'] = 'user-actions';
+	 * $be_teacher['title']  = __( 'Become An Instructor', 'learn_press' );
+	 * $be_teacher['href']   = '#';
+	 * $wp_admin_bar->add_menu( $be_teacher );
+	 * }*/
 }
 
 add_action( 'admin_bar_menu', 'learn_press_edit_admin_bar' );
@@ -2270,6 +2270,11 @@ function learn_press_parse_request() {
 
 add_action( 'parse_request', 'learn_press_parse_request' );
 
+function learn_press_reset_auto_increment( $table ) {
+	global $wpdb;
+	$wpdb->query( $wpdb->prepare( "ALTER TABLE {$wpdb->prefix}$table AUTO_INCREMENT = %d", 1 ) );
+}
+
 //function learn_press_register_addons() {
 include_once "lp-add-ons.php";
 //}
@@ -2280,7 +2285,7 @@ function learn_press_debug( $a, $die = true ) {
 	echo '<pre>';
 	print_r( $a );
 	echo '</pre>';
-	if( $die ){
+	if ( $die ) {
 		die();
 	}
 }

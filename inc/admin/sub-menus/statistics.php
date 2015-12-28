@@ -16,6 +16,7 @@ function learn_press_statistic_page() {
 		'students' => __( 'Students', 'learn_press' ),
 		'courses'  => __( 'Courses', 'learn_press' ),
 	) );
+	echo '<div class="wrap">';
 	echo '<h2 class="nav-tab-wrapper">';
 	foreach ( $tabs as $tab => $name ) {
 		$class = ( $tab == $current_tab ) ? ' nav-tab-active' : '';
@@ -23,6 +24,7 @@ function learn_press_statistic_page() {
 	}
 	echo '</h2>';
 	do_action( 'learn_press_get_stats_' . $current_tab . '' );
+	echo '</div>';
 }
 
 add_action( 'learn_press_get_stats_students', 'learn_press_get_stats_students' );

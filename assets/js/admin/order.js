@@ -31,7 +31,7 @@
 			var that = this,
 				$item = $(e.target);
 			if (e.ctrlKey) {
-				return true;
+				//return true;
 			}
 			$.ajax({
 				url     : LearnPress_Settings.ajax,

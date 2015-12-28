@@ -21,11 +21,11 @@ if( $is_hidden ){
 <li class="<?php echo join(' ', $class ); ?>" data-id="<?php echo $section ? $section->section_id : '';?>">
 	<h3 class="curriculum-section-head">
 		<input name="_lp_curriculum[__SECTION__][name]" type="text" data-field="section-name" placeholder="<?php _e( 'Enter the section name and hit enter', 'learn_press' );?>" class="lp-section-name no-submit" value="<?php echo esc_attr( $section->section_name ); ?>" />
-		<p class="lp-section-actions">
+		<p class="lp-section-actions lp-button-actions">
 			<a href="" data-action="expand"<?php echo $is_hidden ? '' : ' class="hide-if-js"';?>><?php _e( 'Expand', 'learn_press' );?></a>
 			<a href="" data-action="collapse"<?php echo ! $is_hidden ? '' : ' class="hide-if-js"';?>><?php _e( 'Collapse', 'learn_press' );?></a>
 			<a href="" data-action="remove"><?php _e( 'Remove', 'learn_press' );?></a>
-			<a href="" data-action="move"><?php _e( 'Move', 'learn_press' );?></a>
+			<a href="" class="move"></a>
 		</p>
 	</h3>
 	<div class="curriculum-section-content<?php echo $is_hidden ? ' hide-if-js' : '';?>">

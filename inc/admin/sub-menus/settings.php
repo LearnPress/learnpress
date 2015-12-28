@@ -56,6 +56,7 @@ function learn_press_settings_page() {
 		echo '<div class="updated"><p><strong>' . __( 'Settings saved', 'learn_press' ) . '</strong></p></div>';
 	}
 	?>
+	<div class="wrap">
 	<form method="<?php echo esc_attr( apply_filters( 'learn_press_settings_form_method_tab_' . $current_tab, 'post' ) ); ?>" id="mainform" action="" enctype="multipart/form-data">
 		<div id="icon-themes" class="icon32"><br></div>
 		<h2 class="nav-tab-wrapper">
@@ -74,5 +75,6 @@ function learn_press_settings_page() {
 		</p>
 		<?php wp_nonce_field( 'learn_press_settings', 'learn_press_settings_nonce' ); ?>
 	</form>
+	</div>
 	<?php
 }

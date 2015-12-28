@@ -21,6 +21,10 @@
 				'click .lp-button-add-question': 'addNewItem'
 			},
 			initialize: function () {
+				$('#learn-press-list-questions').sortable({
+					handle: '.quiz-question-actions .move',
+					axis: 'y'
+				});
 				LearnPress.Hook.addAction( 'learn_press_message_box_before_resize', this.resetModalSearch)
 				LearnPress.Hook.addAction( 'learn_press_message_box_resize', this.updateModalSearch)
 			},
@@ -53,25 +57,50 @@
 					$form = $(wp.template('lp-modal-quiz-questions')());
 				}
 
-				$form.show().find('li').filter(function(){
+				/*$form.show().find('li').filter(function(){
 					var id = parseInt($(this).data('id'));
 					/*if( $.inArray( $(this).data('id'), that.removeItemIds ) >= 0 ){
 						$(this).removeClass('selected hide-if-js');
-					};*/
-				});
+					};
+				});*/
 
 				LearnPress.MessageBox.show($form);
-				$form.find('[name="lp-item-name"]').focus();
+				$form.find('[name="lp-item-name"]').focus().trigger('keyup');
 				$button.html($button.attr('data-text'))
 			},
 			searchItem: function(e){
-				var $input = $(e.target),
+				var that = this,
+					$input = $(e.target),
 					$form = $input.closest('.lp-modal-search'),
 					text = $input.val().replace(/\\q\?[\s]*/ig, ''),
-					$lis = $form.find('.lp-list-items li:not(.lp-search-no-results):not(.selected)').addClass('hide-if-js'),
+					//$lis = $form.find('.lp-list-items li:not(.lp-search-no-results):not(.selected)').addClass('hide-if-js'),
 					reg = new RegExp($.grep(text.split(/[\s]+/),function(a){return a.length}).join('|'), "ig"),
-					found = 0;
-				LearnPress.log(text)
+					found = 0,
+					timer = $input.data('timer'),
+					_search = function(){
+						$.ajax({
+							url: LearnPress_Settings.ajax,
+							data: {
+								action: 'learnpress_search_questions',
+								quiz_id: $('#post_ID').val(),
+								term: text,
+								exclude: that.getAddedQuestions()
+							},
+							dataType: 'text',
+							success: function(response){
+								response = LearnPress.parseJSON(response);
+								LearnPress.log(response);
+								$form.find('.lp-list-items').html(response.html);
+								$(window).trigger('resize');
+							}
+						});
+					};
+				var $button = $form.find('.lp-add-item');
+				$button.html( $button.attr('data-text')).prop('disabled', true);
+				timer && clearTimeout(timer);
+				timer = setTimeout(_search, 300);
+				$input.data('timer', timer);
+				return;
 				found = $lis.filter(function () {
 					var $el = $(this),
 						itemText = $el.data('text')+'',
@@ -183,6 +212,15 @@
 					$item.insertBefore($last);
 				}
 				return $item;
+			},
+			getAddedQuestions: function(){
+				var ids =
+					this.$('.learn-press-question')
+						.map(function(){
+							return parseInt($(this).attr('data-id'))
+						}).get();
+				console.log('xxx:');console.log(ids);
+				return ids;
 			}
 		});
 

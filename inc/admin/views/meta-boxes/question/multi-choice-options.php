@@ -9,24 +9,22 @@
 	</thead>
 	<tbody>
 
-	<?php if ( $this->answers ): ?>
-		<?php foreach ( $this->answers as $answer ): ?>
+	<?php $answers = $this->answers; if ( $answers ): ?>
+		<?php foreach ( $answers as $answer ): ?>
 			<?php
-			$id = !empty( $answer['id'] ) ? $answer['id'] : '';
 			$value = $this->_get_option_value( $answer['value'] );
 			?>
 
 			<?php do_action( 'learn_press_before_question_answer_option', $this ); ?>
 
-			<tr class="lp-list-option lp-list-option-<?php echo $id;?>" data-id="<?php echo $id;?>">
+			<tr class="lp-list-option lp-list-option-<?php echo $value;?>" data-id="<?php echo $value;?>">
 
 				<td>
 					<input class="lp-answer-text no-submit key-nav" type="text" name="learn_press_question[<?php echo $this->id; ?>][answer][text][]" value="<?php echo esc_attr( $answer['text'] ); ?>" />
 				</td>
 				<th class="lp-answer-check">
 					<input type="hidden" name="learn_press_question[<?php echo $this->id; ?>][answer][value][]" value="<?php echo $value; ?>" />
-					<input type="checkbox" name="learn_press_question_<?php echo $this->id; ?>[]" <?php checked( $answer['is_true'] == 'yes', true ); ?> value="<?php echo $value; ?>" />
-					<input type="hidden" name="learn_press_question[<?php echo $this->id; ?>][answer][id][]" value="<?php echo !empty( $answer['id'] ) ? $answer['id'] : ''; ?>" />
+					<input type="checkbox" name="learn_press_question[<?php echo $this->id; ?>][checked][]" <?php checked( $answer['is_true'] == 'yes', true ); ?> value="<?php echo $value; ?>" />
 				</th>
 				<td class="lp-list-option-actions lp-remove-list-option">
 					<i class="dashicons dashicons-trash"></i>

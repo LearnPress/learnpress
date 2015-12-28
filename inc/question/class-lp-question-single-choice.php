@@ -8,7 +8,7 @@
  * @version 1.0
  * @extends LP_Question
  */
-class LP_Question_Single_Choice extends LP_Question {
+class LP_Question_Single_Choice extends LP_Abstract_Question {
 	/**
 	 * Constructor
 	 *
@@ -29,8 +29,7 @@ class LP_Question_Single_Choice extends LP_Question {
 			</td>
 			<th class="lp-answer-check">
 				<input type="hidden" name="learn_press_question[{{data.question_id}}][answer][value][]" value="{{data.value}}" />
-				<input type="radio" name="learn_press_question_{{data.question_id}}" {{data.checked}} value="{{data.value}}" />
-				<input type="hidden" name="learn_press_question[{{data.question_id}}][answer][id][]" value="{{data.id}}" />
+				<input type="radio" name="learn_press_question[{{data.question_id}}][checked][]" {{data.checked}} value="{{data.value}}" />
 			</th>
 			<td class="lp-list-option-actions lp-remove-list-option">
 				<i class="dashicons dashicons-trash"></i>

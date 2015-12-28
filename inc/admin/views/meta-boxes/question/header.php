@@ -13,6 +13,7 @@ $questions = lpr_get_question_types();
 			<a href="" data-action="remove"><?php _e( 'Remove', 'learn_press' ); ?></a>
 			<a href="" data-action="expand" class="<?php echo !$is_collapse ? "hide-if-js" : ""; ?>"><?php _e( 'Expand', 'learn_press' ); ?></a>
 			<a href="" data-action="collapse" class="<?php echo $is_collapse ? "hide-if-js" : ""; ?>"><?php _e( 'Collapse', 'learn_press' ); ?></a>
+			<a href="" class="move">asdasdadsaasdsad</a>
 		</p>
 		<select name="learn_press_question[<?php echo $post_id; ?>][type]" data-type="<?php echo $this->get_type(); ?>">
 			<?php if ( $questions ) foreach ( $questions as $slug => $name ): ?>
