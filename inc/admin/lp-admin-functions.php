@@ -725,3 +725,8 @@ function learn_press_disable_checked_ontop( $args ) {
 }
 
 add_filter( 'wp_terms_checklist_args', 'learn_press_disable_checked_ontop' );
+
+function learn_press_output_admin_template(){
+	learn_press_admin_view( 'admin-template.php' );
+}
+add_action( 'admin_print_scripts', 'learn_press_output_admin_template' );

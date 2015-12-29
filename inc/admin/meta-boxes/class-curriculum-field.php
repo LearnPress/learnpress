@@ -19,13 +19,15 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
 		static function admin_enqueue_scripts() {
 			LP_Admin_Assets::enqueue_style( 'meta-box-course', LP()->plugin_url( 'assets/css/admin/meta-box-course.css' ) );
 			LP_Admin_Assets::enqueue_style( 'select2',         RWMB_CSS_URL . 'select2/select2.css' );
-            LP_Admin_Assets::enqueue_style( 'toastr',          LP_CSS_URL . 'toastr.css' );
+           // LP_Admin_Assets::enqueue_style( 'toastr',          LP_CSS_URL . 'toastr.css' );
             //LP_Admin_Assets::enqueue_style( 'thim-course',     LearnPress()->plugin_url( 'inc/admin/meta-boxes/css/course.css' ) );
 
 			LP_Admin_Assets::enqueue_script( 'select2',        RWMB_JS_URL . 'select2/select2.min.js' );
-			LP_Admin_Assets::enqueue_script( 'toastr',         LP_JS_URL . 'toastr.js' );
-			LP_Admin_Assets::enqueue_script( 'tojson',         LP_JS_URL . 'toJSON.js' );
-			LP_Admin_Assets::enqueue_script( 'meta-box-course',    LearnPress()->plugin_url( 'assets/js/admin/meta-box-course.js' ), array( 'jquery', 'toastr', 'tojson' ) );
+			//LP_Admin_Assets::enqueue_script( 'toastr',         LP_JS_URL . 'toastr.js' );
+			//LP_Admin_Assets::enqueue_script( 'tojson',         LP_JS_URL . 'toJSON.js' );
+			LP_Admin_Assets::enqueue_script( 'modal-search-items' );
+			LP_Admin_Assets::enqueue_script( 'meta-box-course',    LearnPress()->plugin_url( 'assets/js/admin/meta-box-course.js' ), array( 'jquery' ) );
+
 
 			LP_Admin_Assets::add_localize(
                 array(

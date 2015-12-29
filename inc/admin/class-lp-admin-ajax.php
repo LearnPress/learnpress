@@ -15,7 +15,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 		public static function init() {
 			$ajaxEvents = array(
 				'create_page'                     => false,
-				'add_question'                    => false,
+				'add_quiz_question'               => false,
 				'convert_question_type'           => false,
 				'update_quiz_question_state'      => false,
 				'update_editor_hidden'            => false,
@@ -29,6 +29,9 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 				'remove_order_item'               => false,
 				'plugin_action'                   => false,
 				'search_questions'                => false,
+				'remove_quiz_question'            => false,
+				'modal_search_items'              => false,
+				'add_item_to_section'             => false,
 				/////////////
 				'quick_add_lesson'                => false,
 				'quick_add_quiz'                  => false,
@@ -49,60 +52,176 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 					add_action( 'wp_ajax_nopriv_learnpress_' . $ajaxEvent, array( __CLASS__, $ajaxEvent ) );
 				}
 			}
+			add_filter( 'learn_press_modal_search_items_exclude', array( __CLASS__, '_modal_search_items_exclude' ), 10, 2 );
+			do_action( 'learn_press_admin_ajax_load', __CLASS__ );
 		}
 
-		static function search_questions(){
+		static function _modal_search_items_exclude( $exclude, $type ) {
+			global $wpdb;
+			$exclude2 = array();
+			switch( $type ){
+				case 'lp_lesson':
+				case 'lp_quiz':
+					$query = $wpdb->prepare("
+						SELECT item_id
+						FROM {$wpdb->prefix}learnpress_section_items
+						WHERE %d
+					", 1);
+					$exclude2 = $wpdb->get_col($query);
+					break;
+				case 'lp_question':
+
+			}
+			if( $exclude2 && $exclude ) {
+				$exclude = array_merge( $exclude, $exclude2 );
+			}else if($exclude2){
+				$exclude = $exclude2;
+			}
+			return $exclude;
+		}
+
+		static function add_item_to_section() {
+			global $wpdb;
+			$section = learn_press_get_request( 'section' );
+			if ( !$section ) {
+				wp_die( __( 'Error', 'learn_press' ) );
+			}
+			$items = (array) learn_press_get_request( 'item' );
+			if ( !$items ) {
+				$max_order = $wpdb->get_var( $wpdb->prepare( "SELECT max() FROM {$wpdb}learnpress_section_items WHERE section_id = %d", $section ) );
+				foreach ( $items as $item ) {
+
+				}
+			}
+		}
+
+		static function modal_search_items() {
 			global $wpdb;
 
-			$quiz_id = learn_press_get_request( 'quiz_id');
-			$user = learn_press_get_current_user();
-			if( !$user->is_admin() && get_post_field( 'post_author', $quiz_id ) != get_current_user_id() ){
+			$user    = learn_press_get_current_user();
+			$term    = (string) ( stripslashes( learn_press_get_request( 'term' ) ) );
+			$type    = (string) ( stripslashes( learn_press_get_request( 'type' ) ) );
+			$exclude = array();
+
+			if ( !empty( $_GET['exclude'] ) ) {
+				$exclude = array_map( 'intval', $_GET['exclude'] );
+			}
+			$args = array(
+				'post_type'      => array( $type ),
+				'posts_per_page' => - 1,
+				'post_status'    => 'publish',
+				'order'          => 'ASC',
+				'orderby'        => 'parent title',
+				'exclude'        => array_unique( (array)apply_filters( 'learn_press_modal_search_items_exclude', $exclude, $type ) )
+			);
+			if ( !$user->is_admin() ) {
+				$args['author'] = $user->id;
+			}
+			if ( $term ) {
+				$args['s'] = $term;
+			}
+			$posts       = get_posts( $args );
+			$found_items = array();
+
+			if ( !empty( $posts ) ) {
+				foreach ( $posts as $post ) {
+					$found_items[$post->ID]             = $post;
+					$found_items[$post->ID]->post_title = !empty( $post->post_title ) ? $post->post_title : sprintf( '(%s)', __( 'Untitled', 'learn_press' ) );
+				}
+			}
+
+			ob_start();
+			if ( $found_items ) {
+				foreach ( $found_items as $id => $item ) {
+					printf( '
+						<li class="" data-id="%1$d" data-type="%3$s" data-text="%2$s">
+						<label>
+							<input type="checkbox" value="%1$d">
+							<span class="lp-item-text">%2$s</span>
+						</label>
+					</li>
+					', $id, $item->post_title, $item->post_type );
+				}
+			} else {
+				echo '<li>' . __( 'No item found', 'learn_press' ) . '</li>';
+			}
+
+			$response = array(
+				'html' => ob_get_clean(),
+				'data' => $found_items,
+				'args' => $args
+			);
+			learn_press_send_json( $response );
+		}
+
+		static function remove_quiz_question() {
+			global $wpdb;
+			$quiz_id     = learn_press_get_request( 'quiz_id' );
+			$question_id = learn_press_get_request( 'question_id' );
+			if ( !wp_verify_nonce( learn_press_get_request( 'remove-nonce' ), 'remove_quiz_question' ) ) {
+				wp_die( __( 'Error', 'learn_press' ) );
+			}
+			$query = $wpdb->prepare( "
+				DELETE FROM {$wpdb->prefix}learnpress_quiz_questions
+				WHERE quiz_id = %d
+				AND question_id = %d
+			", $quiz_id, $question_id );
+			$wpdb->query( $query );
+			die();
+		}
+
+		static function search_questions() {
+			global $wpdb;
+
+			$quiz_id = learn_press_get_request( 'quiz_id' );
+			$user    = learn_press_get_current_user();
+			if ( !$user->is_admin() && get_post_field( 'post_author', $quiz_id ) != get_current_user_id() ) {
 				wp_die( __( 'You have not permission to access this section', 'learn_press' ) );
 			}
 			$term    = (string) ( stripslashes( learn_press_get_request( 'term' ) ) );
 			$exclude = array();
 
-			if ( ! empty( $_GET['exclude'] ) ) {
+			if ( !empty( $_GET['exclude'] ) ) {
 				$exclude = array_map( 'intval', $_GET['exclude'] );
 			}
 
 			$added = $wpdb->get_col(
-				$wpdb->prepare("
+				$wpdb->prepare( "
 					SELECT question_id
 					FROM {$wpdb->prefix}learnpress_quiz_questions
 					WHERE %d
-				", 1)
+				", 1 )
 			);
-			if( $added ){
+			if ( $added ) {
 				$exclude = array_merge( $exclude, $added );
 				$exclude = array_unique( $exclude );
 			}
 
 			$args = array(
 				'post_type'      => array( 'lp_question' ),
-				'posts_per_page' => -1,
+				'posts_per_page' => - 1,
 				'post_status'    => 'publish',
 				'order'          => 'ASC',
 				'orderby'        => 'parent title',
 				'exclude'        => $exclude
 			);
-			if( !$user->is_admin() ){
+			if ( !$user->is_admin() ) {
 				$args['author'] = $user->id;
 			}
-			if( $term ){
+			if ( $term ) {
 				$args['s'] = $term;
 			}
-			$posts = get_posts( $args );
+			$posts           = get_posts( $args );
 			$found_questions = array();
 
-			if ( ! empty( $posts ) ) {
+			if ( !empty( $posts ) ) {
 				foreach ( $posts as $post ) {
-					$found_questions[ $post->ID ] = !empty( $post->post_title ) ? $post->post_title : sprintf( '(%s)', __( 'Untitled', 'learn_press' ) );
+					$found_questions[$post->ID] = !empty( $post->post_title ) ? $post->post_title : sprintf( '(%s)', __( 'Untitled', 'learn_press' ) );
 				}
 			}
 
 			ob_start();
-			if( $found_questions ) {
+			if ( $found_questions ) {
 				foreach ( $found_questions as $id => $question ) {
 					printf( '
 						<li class="" data-id="%1$d" data-type="" data-text="%2$s">
@@ -113,7 +232,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 					</li>
 					', $id, $question );
 				}
-			}else{
+			} else {
 				echo '<li>' . __( 'No question found', 'learn_press' ) . '</li>';
 			}
 
@@ -400,8 +519,9 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			die();
 		}
 
-		public static function add_question() {
+		public static function add_quiz_question() {
 			$id       = learn_press_get_request( 'id' );
+			$quiz_id  = learn_press_get_request( 'quiz_id' );
 			$type     = learn_press_get_request( 'type' );
 			$name     = learn_press_get_request( 'name' );
 			$response = array(
@@ -420,13 +540,22 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 				}
 				$response['id'] = $id;
 			}
-			if ( $id ) {
+			if ( $id && $quiz_id ) {
+				global $wpdb;
+				$max_order = $wpdb->get_var( $wpdb->prepare( "SELECT max(question_order) FROM {$wpdb->prefix}learnpress_quiz_questions WHERE quiz_id = %d", $quiz_id ) );
+				$wpdb->insert(
+					$wpdb->prefix . 'learnpress_quiz_questions',
+					array(
+						'quiz_id'        => $quiz_id,
+						'question_id'    => $id,
+						'question_order' => $max_order + 1
+					),
+					array( '%d', '%d', '%d' )
+				);
 				ob_start();
 				$question = LP_Question_Factory::get_question( $id );
 				learn_press_admin_view( 'meta-boxes/quiz/question.php', array( 'question' => $question ) );
 				$response['html'] = ob_get_clean();
-			} else {
-
 			}
 			learn_press_send_json( $response );
 			die();

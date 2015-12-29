@@ -264,7 +264,8 @@ if (typeof window.LearnPress == 'undefined') {
 					break;
 			}
 		}).on('click', '.quiz-question-actions a', function(e){
-			var action = $(this).attr('data-action');
+			var $link = $(this),
+				action = $link.attr('data-action');
 
 			switch (action){
 				case 'expand':
@@ -296,10 +297,19 @@ if (typeof window.LearnPress == 'undefined') {
 						buttons: 'yesNo',
 						data: $(this).closest('.quiz-question'),
 						events: {
-							onYes: function (data) {
-								var $question = $(data);
-								LearnPress.Question._showQuestion(parseInt($question.find('.learn-press-question').attr('data-id')));
-								$question.remove();
+							onYes: function (instance) {
+								var $question = $(instance.data);
+								$.ajax({
+									url: $link.attr('href'),
+									/*data: {
+										action: 'learnpress_remove_quiz_question',
+										question_id: $question.attr('data-id'),
+										quiz_id: $('#post_ID').val()
+									},*/
+									success: function(){
+										$question.fadeOut(function(){$(this).remove()});
+									}
+								});
 							}
 						}
 					})

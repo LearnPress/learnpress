@@ -25,8 +25,12 @@
 					handle: '.quiz-question-actions .move',
 					axis: 'y'
 				});
-				LearnPress.Hook.addAction( 'learn_press_message_box_before_resize', this.resetModalSearch)
-				LearnPress.Hook.addAction( 'learn_press_message_box_resize', this.updateModalSearch)
+				_.bindAll( this, 'addItemsToSection', 'getSelectedItems' );
+				LearnPress.Hook.addAction( 'learn_press_message_box_before_resize', this.resetModalSearch);
+				LearnPress.Hook.addAction( 'learn_press_message_box_resize', this.updateModalSearch);
+				LearnPress.Hook.addFilter( 'learn_press_modal_search_items_exclude', this.getSelectedItems );
+
+				$(document).on('learn_press_modal_search_items_response', this.addItemsToSection );
 			},
 			updateModalSearch: function(height, $app){
 				$('.lp-modal-search ul.lp-list-items').css('height', height - 120).css('overflow', 'auto');
@@ -51,31 +55,35 @@
 				}
 			},
 			showListQuestions: function(){
+				var $form = LearnPress.ModalSearchItems( {
+					template: 'tmpl-learn-press-search-items',
+					type: 'lp_question',
+					exclude: this.getSelectedItems()
+				} );
+				LearnPress.MessageBox.show($form.$el);
+				$form.$el.find('header input').focus();
+
+				return;
 				var $form = $('#lp-modal-quiz-questions'),
 					$button = $form.find('.lp-add-item');
 				if ($form.length == 0) {
 					$form = $(wp.template('lp-modal-quiz-questions')());
 				}
 
-				/*$form.show().find('li').filter(function(){
-					var id = parseInt($(this).data('id'));
-					/*if( $.inArray( $(this).data('id'), that.removeItemIds ) >= 0 ){
-						$(this).removeClass('selected hide-if-js');
-					};
-				});*/
-
 				LearnPress.MessageBox.show($form);
 				$form.find('[name="lp-item-name"]').focus().trigger('keyup');
-				$button.html($button.attr('data-text'))
+				$button.html($button.attr('data-text'));
 			},
 			searchItem: function(e){
 				var that = this,
-					$input = $(e.target),
-					$form = $input.closest('.lp-modal-search'),
+					$input = $(e.target);
+				if($input.val() == $input.data('search-term')){
+					return;
+				}
+				$input.data('search-term', $input.val() );
+				var $form = $input.closest('.lp-modal-search'),
 					text = $input.val().replace(/\\q\?[\s]*/ig, ''),
-					//$lis = $form.find('.lp-list-items li:not(.lp-search-no-results):not(.selected)').addClass('hide-if-js'),
-					reg = new RegExp($.grep(text.split(/[\s]+/),function(a){return a.length}).join('|'), "ig"),
-					found = 0,
+					$button = $form.find('.lp-add-item'),
 					timer = $input.data('timer'),
 					_search = function(){
 						$.ajax({
@@ -90,33 +98,18 @@
 							success: function(response){
 								response = LearnPress.parseJSON(response);
 								LearnPress.log(response);
-								$form.find('.lp-list-items').html(response.html);
+								$form.find('.lp-list-items').html(response.html).removeClass('lp-ajaxload');
 								$(window).trigger('resize');
 							}
 						});
 					};
-				var $button = $form.find('.lp-add-item');
+				$form.find('.lp-list-items').html('').addClass('lp-ajaxload');
 				$button.html( $button.attr('data-text')).prop('disabled', true);
 				timer && clearTimeout(timer);
 				timer = setTimeout(_search, 300);
 				$input.data('timer', timer);
-				return;
-				found = $lis.filter(function () {
-					var $el = $(this),
-						itemText = $el.data('text')+'',
-						ret = itemText.search(reg) >= 0;
-					if(ret){
-						$el.find('.lp-item-text').html( itemText.replace(reg, "<i class=\"lp-highlight-color\">\$&</i>" ) );
-					}else{
-						$el.find('.lp-item-text').html( itemText );
-					}
-					return ret;
-				}).removeClass('hide-if-js').length;
-				if( ! found ) {
-					$form.find('.lp-search-no-results').removeClass('hide-if-js');
-				}else{
-					$form.find('.lp-search-no-results').addClass('hide-if-js');
-				}
+				$(window).trigger('resize');
+
 			},
 			toggleAddItemButtonState: function(e){
 				var $form = $(e.target).closest('.lp-modal-search'),
@@ -127,6 +120,19 @@
 				}else{
 					$button.attr('disabled', true).html($button.attr('data-text'));
 				}
+			},
+			getSelectedItems: function( exclude ){
+				return this.$('.learn-press-question[data-id]').map(function(){return ($(this).attr('data-id'))}).filter(function(i, c){return c > 0}).get();
+			},
+			addItemsToSection: function(e, $view, $items) {
+				var that = this,
+					selected = $items;
+				selected.each(function () {
+					var $li = $(this);//.closest('li').addClass('selected'),
+					args = $li.dataToJSON();
+					that.addQuestion(args);
+					$li.remove();
+				});
 			},
 			addQuestion: function (args) {
 				args = $.extend({
@@ -140,7 +146,8 @@
 				}
 				var that = this,
 					post_data = $.extend({
-						action: 'learnpress_add_question'
+						action: 'learnpress_add_quiz_question',
+						quiz_id: $('#post_ID').val()
 					}, args);
 
 				post_data = LearnPress.Hook.applyFilters( 'LearnPress.add_question_post_data', post_data );
@@ -201,7 +208,7 @@
 					$item.removeClass('lp-item-empty');*/
 					that.addQuestion({id: $(this).val()});
 				});
-				$form.hide().appendTo($(document.body));
+				$form.remove();
 				LearnPress.MessageBox.hide();
 			},
 			createItem: function(args, $section){
@@ -219,8 +226,7 @@
 						.map(function(){
 							return parseInt($(this).attr('data-id'))
 						}).get();
-				console.log('xxx:');console.log(ids);
-				return ids;
+			return ids;
 			}
 		});
 

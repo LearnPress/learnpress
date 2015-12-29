@@ -48,10 +48,12 @@
 				this.model.view = this;
 				this.listenTo(this.model, 'change', this.render);
 				this.render();
-				_.bindAll(this, 'render', 'searchItem', 'addItemsToSection', 'addItemToSection', 'addNewItem', 'toggleAddItemButtonState' );
+				_.bindAll(this, 'render', 'searchItem', 'addItemsToSection', 'addItemToSection', 'addNewItem', 'toggleAddItemButtonState', 'getSelectedItems' );
 				this.initPage();
 				LearnPress.Hook.addAction( 'learn_press_message_box_before_resize', this.resetModalSearch)
-				LearnPress.Hook.addAction( 'learn_press_message_box_resize', this.updateModalSearch)
+				LearnPress.Hook.addAction( 'learn_press_message_box_resize', this.updateModalSearch);
+				$(document).on('learn_press_modal_search_items_response', this.addItemsToSection );
+				LearnPress.Hook.addFilter( 'learn_press_modal_search_items_exclude', this.getSelectedItems );
 			},
 			updateModalSearch: function(height, $app){
 				$('.lp-modal-search ul').css('height', height - 120).css('overflow', 'auto');
@@ -417,6 +419,9 @@
 				return this.$emptySection;
 			},
 			createItem: function(args, $section){
+				args = $.extend({
+					edit_link: 'post.php?post='+args.id+'&action=edit'
+				}, args || {});
 				var tmpl = wp.template('section-item'),
 					$item = $(tmpl(args || {}));
 				$item = LearnPress.Hook.applyFilters( 'learn_press_create_new_item', $item, $section );
@@ -446,9 +451,18 @@
 				}
 			},
 			getSelectedItems: function(){
-				return this.$('.lp-section-item').map(function(){return parseInt($(this).attr('data-item_id'))}).get();
+				return this.$('.lp-section-item[data-item_id]').map(function(){return ($(this).attr('data-item_id'))}).filter(function(i, c){return c > 0}).get();
 			},
 			showFormItems: function( type, action, $button ){
+				var $form = LearnPress.ModalSearchItems( {
+					template: 'tmpl-learn-press-search-items',
+					type: type,
+					section: $button.closest('.curriculum-section'),
+					exclude: this.getSelectedItems()
+				} );
+				LearnPress.MessageBox.show($form.$el);
+				$form.$el.find('header input').focus();
+				return;
 				if( type == 'lp_quiz' ) {
 					$form = $('#lp-modal-search-quiz');
 					if ($form.length == 0) {
@@ -534,21 +548,35 @@
 					$form.find('.lp-search-no-results').addClass('hide-if-js');
 				}
 			},
-			addItemsToSection: function(e){
+			addItemsToSection: function(e, $view, $items){
 				var that = this,
-					$form = $(e.target).closest('.lp-modal-search'),
-					selected = $form.find('li:visible input:checked'),
-					$section = $form.data('section');
+					//$form = $(e.target).closest('.lp-modal-search'),
+					selected = $items, //$form.find('li:visible input:checked'),
+					$section = $view.options.section;
 				selected.each(function(){
-					var $li = $(this).closest('li').addClass('selected'),
-						args = $li.dataToJSON(),
+					var $li = $(this);//.closest('li').addClass('selected'),
+					args = $li.dataToJSON(),
 						$item = that.createItem( args, $section );
 					if( $item ) {
 						that.addItemToSection( $item, $section );
 					}
+					$li.remove();
 				});
-				$form.hide().appendTo($(document.body));
-				LearnPress.MessageBox.hide();
+				/*
+				$.ajax({
+					url: LearnPress_Settings.ajax,
+					data: {
+						action: 'learn_press_add_item_to_section',
+						items: selected.map(function(){return $(this).dataToJSON()}).get(),
+						section: $section ? $section.attr('data-id') : 0
+					},
+					success: function(){
+
+					}
+				});*/
+
+				//$form.hide().appendTo($(document.body));
+				//LearnPress.MessageBox.hide();
 			},
 			addItemToSection: function( $item, $section ){
 				var $last = $section.find('.curriculum-section-items .lp-section-item:last');

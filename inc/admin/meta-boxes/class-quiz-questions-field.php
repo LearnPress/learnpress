@@ -22,6 +22,7 @@ if ( !class_exists( 'RWMB_Quiz_Questions_Field' ) ) {
 			LP_Admin_Assets::enqueue_style( 'select2', RWMB_CSS_URL . 'select2/select2.css' );
 			LP_Admin_Assets::enqueue_script( 'select2', RWMB_JS_URL . 'select2/select2.min.js' );
 			LP_Admin_Assets::enqueue_script( 'lpr-quiz-question', LearnPress()->plugin_url( 'assets/js/admin/quiz-question.js' ) );
+			wp_enqueue_script( 'modal-search-items' );
 
 		}
 
@@ -119,25 +120,33 @@ if ( !class_exists( 'RWMB_Quiz_Questions_Field' ) ) {
 			global $wpdb, $post;
 
 			$questions = learn_press_get_request( 'learn_press_question' );
-			if( $all_questions = LP_Quiz::get_quiz( $post->ID )->get_questions() ){
+			/*if( $all_questions = LP_Quiz::get_quiz( $post->ID )->get_questions() ){
 				$all_questions = array_keys( $all_questions );
-			}
-
-			// remove questions if it has removed from $_POST
-			if( $all_questions && $questions && ( $remove_ids = array_diff( $all_questions, array_keys( $questions ) ) ) ){
-				$query = $wpdb->prepare("
-					DELETE
-					FROM {$wpdb->learnpress_quiz_questions}
+			}*/
+			// Get all ids of questions stored
+			$remove_ids = $wpdb->get_col(
+				$wpdb->prepare("
+					SELECT question_id
+					FROM {$wpdb->prefix}learnpress_quiz_questions
 					WHERE quiz_id = %d
-					AND question_id IN(" . join(',', $remove_ids ) . ")
-				", $post->ID );
-				$wpdb->query( $query );
-				do_action( 'learn_press_remove_quiz_questions', $remove_ids, $post->ID );
-			}
+				", $post->ID )
+			);
+
+			// delete all questions stored
+			$query = $wpdb->prepare("
+				DELETE
+				FROM {$wpdb->prefix}learnpress_quiz_questions
+				WHERE quiz_id = %d
+			", $post->ID, 1 );
+			$wpdb->query( $query );
+			learn_press_reset_auto_increment( 'learnpress_quiz_questions' );
+			do_action( 'learn_press_remove_quiz_questions', $remove_ids, $post->ID );
 			if( ! $questions ){
 				return;
 			}
 			$titles = learn_press_get_request( 'learn-press-question-name' );
+			$values = array();
+			$order = 1;
 
 			// update the title of questions and save all data
 			foreach( $questions as $id => $data ){
@@ -155,29 +164,24 @@ if ( !class_exists( 'RWMB_Quiz_Questions_Field' ) ) {
 					);
 				}
 				$question->save( $data );
+
+				$insert_data = apply_filters(
+					'learn_press_quiz_question_insert_data',
+					array(
+						'question_id' => $id,
+						'quiz_id'	=> $post->ID,
+						'params'	=> ''
+					)
+				);
+				$values[] = $wpdb->prepare( "(%d, %d, %s, %d)", $insert_data['quiz_id'], $insert_data['question_id'], $insert_data['param'], $order++ );
 			}
 
-			// if there are new questions then insert into quiz
-			if( $new_ids = array_diff( array_keys( $questions ), $all_questions ) ){
-				$values = array();
-				foreach( $new_ids as $id ){
-					$insert_data = apply_filters(
-						'learn_press_quiz_question_insert_data',
-						array(
-							'question_id' => $id,
-							'quiz_id'	=> $post->ID,
-							'params'	=> ''
-						)
-					);
-					$values[] = $wpdb->prepare( "(%d, %d, %s)", $insert_data['quiz_id'], $insert_data['question_id'], $insert_data['param'] );
-				}
-				$query = "
-					INSERT INTO {$wpdb->learnpress_quiz_questions}(`quiz_id`, `question_id`, `params`)
-					VALUES " . join(',', $values) . "
-				";
-				$wpdb->query( $query );
-				do_action( 'learn_press_insert_quiz_questions', $new_ids, $post->ID );
-			}
+			$query = "
+				INSERT INTO {$wpdb->learnpress_quiz_questions}(`quiz_id`, `question_id`, `params`, `question_order`)
+				VALUES " . join(',', $values) . "
+			";
+			$wpdb->query( $query );
+			do_action( 'learn_press_insert_quiz_questions', $new_ids, $post->ID );
 		}
 	}
 

@@ -1,6 +1,6 @@
 <?php
+global $post;
 $is_hidden = $question->id && is_array($hidden) && in_array( $question->id, $hidden );
-print_r($qustion);
 ?>
 <div class="quiz-question<?php echo $is_hidden ? ' is-hidden' : '';?>">
 	<div class="quiz-question-head">
@@ -12,7 +12,7 @@ print_r($qustion);
 			<a href="" data-action="expand"<?php echo $is_hidden ? '' : 'class="hide-if-js"';?>"><?php _e( 'Expand', 'learn_press' ); ?></a>
 			<a href="" data-action="collapse"<?php echo !$is_hidden ? '' : 'class="hide-if-js"';?>><?php _e( 'Collapse', 'learn_press' ); ?></a>
 			<a href="<?php echo get_edit_post_link( $question->id );?>" data-action="edit"><?php _e( 'Edit', 'learn_press' ); ?></a>
-			<a href="" data-action="remove"><?php _e( 'Remove', 'learn_press' ); ?></a>
+			<a href="<?php echo wp_nonce_url( admin_url( 'admin-ajax.php?action=learnpress_remove_quiz_question&quiz_id=' . $post->ID . '&question_id=' . $question->id ), 'remove_quiz_question', 'remove-nonce' );?>" data-action="remove"><?php _e( 'Remove', 'learn_press' ); ?></a>
 			<a href="" class="move"></a>
 		</p>
 	</div>

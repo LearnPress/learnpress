@@ -45,3 +45,69 @@
 	-moz-animation: spin 2s linear infinite;
 	animation: spin 2s linear infinite;
 }
+.lp-ajaxload{
+	text-align: center;
+	height: auto;
+	overflow: hidden;
+}
+.lp-ajaxload:before{
+	font-family: dashicons;
+	content: "\f111";
+	-webkit-animation: form-press-spinner 2s infinite linear;
+	animation: learn-press-ajax-spinner 2s infinite linear;
+	color: #CECECE;
+	display: inline-block;
+	width: 38px;
+	height: 40px;
+	font-size: 40px;
+	position: relative;
+	line-height: 1;
+}
+#learn-press-modal-search-items{
+	background-color: #FFF;
+	overflow: auto;
+	min-width: 400px;
+	color: #777;
+}
+#learn-press-modal-search-items header input{
+	width: 100%;
+}
+#learn-press-modal-search-items article{
+	overflow: auto;
+	margin: 20px 0;
+}
+#learn-press-modal-search-items article .lp-list-items{
+	margin: 0;
+}
+#learn-press-modal-search-items article .lp-list-items > li{
+	margin: 3px 0;
+}
+#learn-press-modal-search-items article .lp-list-items.lp-ajaxload > li{
+	display: none;
+}
+#learn-press-modal-search-items footer{
+
+}
+.inner{
+	margin: 20px;
+}
+@-webkit-keyframes learn-press-ajax-spinner {
+	0% {
+		-webkit-transform: rotate(0deg);
+		transform: rotate(0deg);
+	}
+	100% {
+		-webkit-transform: rotate(359deg);
+		transform: rotate(359deg);
+	}
+}
+@keyframes learn-press-ajax-spinner {
+	0% {
+		-webkit-transform: rotate(0deg);
+		transform: rotate(0deg);
+	}
+	100% {
+		-webkit-transform: rotate(359deg);
+		transform: rotate(359deg);
+	}
+}

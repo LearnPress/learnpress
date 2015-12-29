@@ -444,7 +444,30 @@ if (typeof window.LearnPress == 'undefined') {
 					console.log(arguments[i]);
 				}
 			}
-		}
+		},
+		template: _.memoize(function ( id, data ) {
+			var compiled,
+			/*
+			 * Underscore's default ERB-style templates are incompatible with PHP
+			 * when asp_tags is enabled, so WordPress uses Mustache-inspired templating syntax.
+			 *
+			 * @see trac ticket #22344.
+			 */
+				options = {
+					evaluate:    /<#([\s\S]+?)#>/g,
+					interpolate: /\{\{\{([\s\S]+?)\}\}\}/g,
+					escape:      /\{\{([^\}]+?)\}\}(?!\})/g,
+					variable:    'data'
+				};
+
+			var tmpl = function ( data ) {
+				compiled = compiled || _.template( $( '#' + id ).html(), null, options );
+				return compiled( data );
+			};
+			return data ? tmpl(data) : tmpl;
+		}, function(a, b){
+			return JSON.stringify(b)
+		})
 	}, LearnPress);
 
 	$.fn.findNext = function(selector){
