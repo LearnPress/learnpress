@@ -221,10 +221,10 @@
 						});
 						break;
 					case 'cancel':
-						$all.filter(function(){ return $(this).find('.item-checkbox input').removeAttr('checked');})
-							.first()
+						$all.filter(function(){ return $(this).find('.item-checkbox input').removeAttr('checked').trigger('change');})
+							/*.first()
 							.find('.item-checkbox input')
-							.trigger('change');
+							.trigger('change');*/
 				}
 			},
 			toggleItemType: function(e){

@@ -23,8 +23,21 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 			add_filter( 'posts_where_paged', array( $this, 'posts_where_paged' ) );
 			add_filter( 'posts_orderby', array( $this, 'posts_orderby' ) );
 			add_filter( 'manage_edit-' . $post_type_name . '_sortable_columns', array( $this, 'columns_sortable' ) );
+			add_action( 'before_delete_post', array( $this, 'delete_course_item' ) );
+
 			parent::__construct();
 
+		}
+
+		function delete_course_item( $post_id ) {
+			global $wpdb;
+			// delete lesson from course's section
+			$query = $wpdb->prepare( "
+				DELETE FROM {$wpdb->prefix}learnpress_section_items
+				WHERE item_id = %d
+			", $post_id );
+			$wpdb->query( $query );
+			learn_press_reset_auto_increment( 'learnpress_section_items' );
 		}
 
 		static function admin_scripts(){

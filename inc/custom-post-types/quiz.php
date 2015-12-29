@@ -23,7 +23,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 			add_action( 'manage_lp_quiz_posts_custom_column', array( $this, 'columns_content' ), 10, 2 );
 			add_action( 'save_post_lpr_quiz', array( $this, 'update_quiz_meta' ) );
 			add_action( 'admin_head', array( $this, 'print_js_template' ) );
-
+			add_action( 'before_delete_post', array( $this, 'delete_quiz_questions' ) );
 			//add_filter( 'posts_fields', array( $this, 'posts_fields' ) );
 			//add_filter( 'posts_join_paged', array( $this, 'posts_join_paged' ) );
 			//add_filter( 'posts_where_paged', array( $this, 'posts_where_paged' ) );
@@ -34,6 +34,29 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 
 			parent::__construct();
 
+		}
+
+		/**
+		 * Delete all questions assign to quiz being deleted
+		 *
+		 * @param $post_id
+		 */
+		function delete_quiz_questions( $post_id ) {
+			global $wpdb;
+			$query = $wpdb->prepare("
+				DELETE FROM {$wpdb->prefix}learnpress_quiz_questions
+				WHERE quiz_id = %d
+			", $post_id );
+			$wpdb->query($query);
+			learn_press_reset_auto_increment( 'learnpress_quiz_questions' );
+
+			// delete quiz from course's section
+			$query = $wpdb->prepare("
+				DELETE FROM {$wpdb->prefix}learnpress_section_items
+				WHERE item_id = %d
+			", $post_id );
+			$wpdb->query($query);
+			learn_press_reset_auto_increment( 'learnpress_section_items' );
 		}
 
 		/**
@@ -92,7 +115,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 				array(
 					'title'      => __( 'Questions', 'learn_press' ),
 					'post_types' => LP()->quiz_post_type,
-					'id'		=> 'questions',
+					'id'         => 'questions',
 					'fields'     => array(
 						array(
 							'name' => __( '', 'learn_press' ),
@@ -241,8 +264,8 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 
 					$courses = learn_press_get_item_courses( $post_id );
 					if ( $courses ) {
-						foreach( $courses as $course ) {
-							echo '<div><a href="' . esc_url( add_query_arg( array('course_id' => $course->ID) ) ) . '">' . get_the_title( $course->ID ) . '</a>';
+						foreach ( $courses as $course ) {
+							echo '<div><a href="' . esc_url( add_query_arg( array( 'course_id' => $course->ID ) ) ) . '">' . get_the_title( $course->ID ) . '</a>';
 							echo '<div class="row-actions">';
 							printf( '<a href="%s">%s</a>', admin_url( sprintf( 'post.php?post=%d&action=edit', $course->ID ) ), __( 'Edit', 'learn_press' ) );
 							echo "&nbsp;|&nbsp;";
@@ -255,9 +278,9 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 					}
 					break;
 				case 'num_of_question':
-					$quiz = LP_Quiz::get_quiz( $post_id );
+					$quiz      = LP_Quiz::get_quiz( $post_id );
 					$questions = $quiz->get_questions();
-					echo ($n = sizeof( $questions )) ? sprintf( _nx( '%d question', '%d questions', $n, 'learn_press' ), $n ) : '_';
+					echo ( $n = sizeof( $questions ) ) ? sprintf( _nx( '%d question', '%d questions', $n, 'learn_press' ), $n ) : '_';
 			}
 		}
 

@@ -25,8 +25,35 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			add_action( 'post_submitbox_start', array( $this, 'post_review_message_box' ) );
 			add_action( 'learn_press_transition_course_status', array( $this, 'review_log' ), 10, 3 );
 			add_action( 'load-post.php', array( $this, 'post_actions' ) );
+			add_action( 'before_delete_post', array( $this, 'delete_course_sections' ) );
+
 			parent::__construct();
 		}
+
+		/**
+		 * Delete all questions assign to quiz being deleted
+		 *
+		 * @param $post_id
+		 */
+		function delete_course_sections( $post_id ) {
+			global $wpdb;
+			// delete all items in section first
+			$section_ids = $wpdb->get_col( $wpdb->prepare( "SELECT section_id FROM {$wpdb->prefix}learnpress_sections WHERE section_course_id = %d", $post_id ) );
+			if ( $section_ids ) {
+				$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_section_items WHERE section_id IN(" . join( ',', $section_ids ) . ")" ) );
+				learn_press_reset_auto_increment( 'learnpress_section_items' );
+
+			}
+
+			// delete all sections
+			$query = $wpdb->prepare( "
+				DELETE FROM {$wpdb->prefix}learnpress_sections
+				WHERE section_course_id = %d
+			", $post_id );
+			$wpdb->query( $query );
+			learn_press_reset_auto_increment( 'learnpress_sections' );
+		}
+
 
 		/**
 		 * Process request actions on post.php loaded

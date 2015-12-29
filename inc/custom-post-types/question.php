@@ -18,10 +18,34 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 			add_filter( 'manage_lp_question_posts_columns', array( $this, 'columns_head' ) );
 			add_action( 'manage_lp_question_posts_custom_column', array( $this, 'columns_content' ), 10, 2 );
 			add_filter( 'posts_join_paged', array( $this, 'posts_join_paged' ) );
-
+			add_action( 'before_delete_post', array( $this, 'delete_question_answers' ) );
 
 			parent::__construct();
 
+		}
+
+		/**
+		 * Delete all answers assign to question being deleted
+		 *
+		 * @param $post_id
+		 */
+		function delete_question_answers( $post_id ) {
+			global $wpdb;
+			$query = $wpdb->prepare( "
+				DELETE FROM {$wpdb->prefix}learnpress_question_answers
+				WHERE question_id = %d
+			", $post_id );
+			$wpdb->query( $query );
+			learn_press_reset_auto_increment( 'learnpress_question_answers' );
+
+			// also, delete question from quiz
+			$wpdb->query(
+				$wpdb->prepare("
+					DELETE FROM {$wpdb->prefix}learnpress_quiz_questions
+					WHERE question_id = %d
+				", $post_id )
+			);
+			learn_press_reset_auto_increment( 'learnpress_quiz_questions' );
 		}
 
 		/**
