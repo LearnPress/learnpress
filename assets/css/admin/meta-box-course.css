@@ -125,7 +125,10 @@
 	padding: 5px 0;
 	background-color: #FFF;
 }
-
+#course_curriculum .curriculum-section-items .lp-section-item:nth-child(2n+1),
+#course_curriculum .curriculum-section-items .lp-section-item:nth-child(2n+1) .section-item-input input{
+	background-color: #FCFCFC;
+}
 #course_curriculum .curriculum-section-items .lp-section-item .lp-item-actions{
 	margin: 0;
 	float: right;

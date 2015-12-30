@@ -1753,9 +1753,11 @@ function learn_press_pre_get_posts( $q ) {
 				}
 			}
 		}
+		// If we have the item's name in course permalink url, get it
 		if( $course_item ) {
+			// grab the ID of the item
 			if ( preg_match( '!^([0-9]+)-!', $course_item, $matches ) ) {
-				$item_id   = $matches[1];
+				$item_id   = absint( $matches[1] );
 				$item_name = str_replace( $matches[0], '', $course_item );
 				$_post     = get_post( $item_id );//learn_press_get_post_by_name( $course_name_parts[1], true, array( 'lp_lesson', 'lp_quiz') );
 				if ( $_post ) {
@@ -1775,10 +1777,9 @@ function learn_press_pre_get_posts( $q ) {
 						$_REQUEST['quiz_id']     = $_post->ID;
 						$_REQUEST['course-item'] = 'quiz';
 
-					} else {
-
 					}
 				}
+				do_action( 'learn_press_parse_query_to_request', $course_item );
 			} else {
 				learn_press_404_page();
 			}

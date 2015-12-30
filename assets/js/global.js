@@ -447,12 +447,6 @@ if (typeof window.LearnPress == 'undefined') {
 		},
 		template: _.memoize(function ( id, data ) {
 			var compiled,
-			/*
-			 * Underscore's default ERB-style templates are incompatible with PHP
-			 * when asp_tags is enabled, so WordPress uses Mustache-inspired templating syntax.
-			 *
-			 * @see trac ticket #22344.
-			 */
 				options = {
 					evaluate:    /<#([\s\S]+?)#>/g,
 					interpolate: /\{\{\{([\s\S]+?)\}\}\}/g,

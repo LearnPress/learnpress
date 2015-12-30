@@ -413,11 +413,11 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 		 * @static
 		 */
 		static function admin_scripts() {
-			if ( in_array( get_post_type(), array( LP()->order_post_type ) ) ) {
+			/*if ( in_array( get_post_type(), array( LP()->order_post_type ) ) ) {
 
 				wp_enqueue_style( 'lp-meta-boxes', LP()->plugin_url( 'assets/css/meta-boxes.css' ) );
 
-			}
+			}*/
 		}
 
 		/**

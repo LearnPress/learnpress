@@ -43,11 +43,11 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 		static function admin_scripts(){
 			if ( in_array( get_post_type(), array( LP()->course_post_type, LP()->lesson_post_type ) ) ) {
 
-				wp_enqueue_style( 'lp-meta-boxes', LP()->plugin_url( 'assets/css/meta-boxes.css' ) );
+				//wp_enqueue_style( 'lp-meta-boxes', LP()->plugin_url( 'assets/css/meta-boxes.css' ) );
 				wp_enqueue_script( 'jquery-caret', LP()->plugin_url( 'assets/js/jquery.caret.js', 'jquery' ) );
-				wp_enqueue_script( 'lp-meta-boxes', LP()->plugin_url( 'assets/js/meta-boxes.js', 'jquery', 'backbone', 'util' ) );
+				//wp_enqueue_script( 'lp-meta-boxes', LP()->plugin_url( 'assets/js/meta-boxes.js', 'jquery', 'backbone', 'util' ) );
 
-				wp_localize_script( 'lp-meta-boxes', 'lp_lesson_params', self::admin_params() );
+				//wp_localize_script( 'lp-meta-boxes', 'lp_lesson_params', self::admin_params() );
 
 			}
 		}

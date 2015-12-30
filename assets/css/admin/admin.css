@@ -1146,6 +1146,97 @@ body.post-type-lp_question #question_answer_ .inside{
 	text-decoration: none;
 	margin-left: 5px;
 }
+
+/* course */
+.wp-core-ui .meta_box_add_section,
+.wp-core-ui .meta_box_add_lesson {
+	margin-right: 10px;
+}
+
+.hide {
+	display: none;
+}
+
+.handle.dashicons {
+	cursor:       move;
+	margin-right: 0px;
+}
+
+.meta_box_remove .dashicons {
+	text-decoration: initial;
+}
+
+.meta_box_course_lesson_quiz li input,
+.meta_box_course_lesson_quiz li select {
+	min-width: 250px;
+}
+
+.rwmb-meta-box label {
+	color:       #222;
+	font-weight: bold;
+	display:     block;
+	margin:      16px 0;
+}
+
+.description {
+	margin-top: 5px;
+}
+
+.dashed-placeholder {
+	border:  2px dashed #999;
+	padding: 10px;
+}
+/*
+	TuNN added 21 03 2015
+	Modified 03 Apr 2015
+*/
+/* Course Curriculumn meta box section*/
+
+/************ version 1.0 **************/
+
+
+/* order */
+.post-type-lp_order #post-body-content,
+.post-type-lp_order .handlediv,
+.post-type-lp_order .hndle{
+	display: none;
+}
+#learn-press-order {
+	margin: 15px;
+}
+#learn-press-order .order-data-number{
+	font-size: 36px;
+	padding: 0;
+	margin-bottom: 20px;
+}
+#learn-press-order > h3{
+	margin: 0 0 10px 0;
+	padding: 0;
+}
+#learn-press-order .order-data-date,
+#learn-press-order .order-data-status,
+#learn-press-order .order-data-payment-method{
+	font-size: 18px;
+	padding: 0 0 10px 0;
+}
+#learn-press-order .user-display-name
+#learn-press-order .user-email,
+#learn-press-order .user-ip-address{
+	padding: 0;
+	margin: 0 0 10px 0;
+}
+#learn-press-order .order-items table{
+	border: 1px solid #DDD;
+	border-collapse: collapse;
+	width: 100%;
+}
+#learn-press-order .order-items table th,
+#learn-press-order .order-items table td{
+	text-align: left;
+	padding: 10px 15px;
+	border: 1px solid #DDD;
+}
+
 @-webkit-keyframes lp-spinner {
 	0% {
 		-webkit-transform: rotate(0deg);
