@@ -70,12 +70,12 @@ abstract class LP_Abstract_Assets {
 		self::$id = is_admin() ? 0 : 1;
 		$class = get_called_class();
 		if( self::$id ) {
-			add_action( 'wp', array( $class, 'load_scripts' ) );
+			add_action( 'wp_enqueue_scripts', array( $class, 'load_scripts' ) );
 			add_action( 'wp_enqueue_scripts', array( $class, 'wp_assets' ) );
 			add_action( 'wp_print_scripts', array( $class, 'localize_printed_scripts' ), 5 );
 			add_action( 'wp_print_footer_scripts', array( $class, 'localize_printed_scripts' ), 5 );
 		}else{
-			add_action( 'admin_init', array( $class, 'load_scripts' ) );
+			add_action( 'admin_enqueue_scripts', array( $class, 'load_scripts' ) );
 			add_action( 'admin_enqueue_scripts', array( $class, 'wp_assets' ) );
 			add_action( 'admin_print_scripts', array( $class, 'localize_printed_scripts' ), 5 );
 			add_action( 'admin_print_footer_scripts', array( $class, 'localize_printed_scripts' ), 5 );

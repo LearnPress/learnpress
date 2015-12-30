@@ -730,3 +730,26 @@ function learn_press_output_admin_template(){
 	learn_press_admin_view( 'admin-template.php' );
 }
 add_action( 'admin_print_scripts', 'learn_press_output_admin_template' );
+
+function learn_press_output_screen_id(){
+	$screen = get_current_screen();
+	if( $screen ){
+		echo "<div style=\"position:fixed;top: 0; left:0; z-index: 99999999; background-color:#FFF;padding:4px;\">".$screen->id . "</div>";
+	}
+}
+add_action( 'admin_head', 'learn_press_output_screen_id' );
+
+function learn_press_get_screens(){
+	$screen_id = sanitize_title( __( 'LearnPress', 'learn_press' ) );
+	$screens   = array(
+		'toplevel_page_' . $screen_id,
+		$screen_id . '_page_learn_press_statistics',
+		$screen_id . '_page_learn_press_add_ons'
+	);
+	foreach( array( 'lp_course', 'lp_lesson', 'lp_quiz', 'lp_lesson', 'lp_order' ) as $post_type ){
+		$screens[] = 'edit-' . $post_type;
+		$screens[] = $post_type;
+	}
+
+	return apply_filters( 'learn_press_screen_ids', $screens );
+}

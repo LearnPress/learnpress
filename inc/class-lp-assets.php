@@ -92,7 +92,7 @@ class LP_Assets extends LP_Abstract_Assets {
 		self::add_style( 'learn-press-icon', learn_press_plugin_url( 'assets/css/icons.css' ) );
 
 		self::add_script( 'learn-press-global', learn_press_plugin_url( 'assets/js/global.js' ), $deps );
-		self::add_script( 'learn-press-block-ui', learn_press_plugin_url( 'assets/js/jquery.block-ui.js' ) );
+		//self::add_script( 'learn-press-block-ui', learn_press_plugin_url( 'assets/js/jquery.block-ui.js' ) );
 
 		// admin
 		self::add_style( 'learn-press-admin', learn_press_plugin_url( 'assets/css/admin/admin.css' ) );

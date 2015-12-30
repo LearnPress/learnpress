@@ -366,20 +366,25 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 					'map_meta_cap'       => true,
 					'capability_type'    => LP()->order_post_type,
 					'hierarchical'       => true,
-					'rewrite'            => array( 'slug' => LP()->order_post_type, 'hierarchical' => true, 'with_front' => true )
+					'rewrite'            => array( 'slug' => LP()->order_post_type, 'hierarchical' => true, 'with_front' => true ),
+					'supports'           => array(
+						'title',
+						'comments',
+						'custom-fields'
+					)
 				)
 			);
 
 			add_action( 'add_meta_boxes', array( __CLASS__, 'register_metabox' ) );
 
-			register_post_status( 'lpr-draft', array(
+			/*register_post_status( 'lpr-draft', array(
 				'label'                     => _x( 'Draft Order', 'Order status', 'learn_press' ),
 				'public'                    => false,
 				'exclude_from_search'       => false,
 				'show_in_admin_all_list'    => true,
 				'show_in_admin_status_list' => true,
 				'label_count'               => _n_noop( 'Draft order <span class="count">(%s)</span>', 'Draft order <span class="count">(%s)</span>', 'learn_press' )
-			) );
+			) );*/
 
 		}
 
@@ -394,12 +399,11 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 			// Remove screen options tab
 			//add_filter('screen_options_show_screen', '__return_false');
 
-			add_meta_box( 'order_details', __( 'Order Details', 'learn_press' ), array( __CLASS__, 'order_details' ), LP()->order_post_type, 'normal', 'core' );
+			add_meta_box( 'order_details', __( 'Order Details', 'learn_press' ), array( __CLASS__, 'order_details' ), LP()->order_post_type, 'normal', 'high' );
 		}
 
 		static function order_details( $post ) {
 			learn_press_admin_view( 'meta-boxes/order/details.php', array( 'order' => LP_Order::instance( $post ) ) );
-			LP_Assets::enqueue_script( 'learn-press-order', LP()->plugin_url( 'assets/js/admin/meta-box-order.js' ), array( 'backbone', 'wp-util' ) );
 		}
 
 		function preparing_to_trash_order( $post_id ) {

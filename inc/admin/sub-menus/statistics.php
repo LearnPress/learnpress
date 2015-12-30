@@ -38,10 +38,10 @@ function learn_press_get_stats_courses() {
 }
 
 function learn_press_load_chart_scripts() {
-	wp_enqueue_style( 'lpr-jquery-ui-css', LP_CSS_URL . 'jquery-ui.css' );
-	wp_enqueue_script( 'lpr-jquery-ui-js', LP_JS_URL . 'jquery-ui.js', array( 'jquery' ), '', false );
-	wp_enqueue_script( 'lpr-chart', LP_JS_URL . 'chart.min.js', array( 'jquery' ), '', false );
-	wp_enqueue_script( 'lpr-custom-chart', LP_JS_URL . 'custom.chart.js', array( 'jquery' ), '', false );
+	//wp_enqueue_style( 'lpr-jquery-ui-css', LP_CSS_URL . 'jquery-ui.css' );
+	//wp_enqueue_script( 'lpr-jquery-ui-js', LP_JS_URL . 'jquery-ui.js', array( 'jquery' ), '', false );
+	wp_enqueue_script( 'learn-press-chart', LP_JS_URL . 'chart.min.js', array( 'jquery' ) );
+	wp_enqueue_script( 'learn-press-statistic', LP_JS_URL . 'admin/statistic.js' );
 }
 
 add_action( 'admin_enqueue_scripts', 'learn_press_load_chart_scripts' );

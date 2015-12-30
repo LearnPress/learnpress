@@ -53,13 +53,29 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 				}
 			}
 			add_filter( 'learn_press_modal_search_items_exclude', array( __CLASS__, '_modal_search_items_exclude' ), 10, 4 );
+			add_filter( 'learn_press_modal_search_items_not_found', array( __CLASS__, '_modal_search_items_not_found' ), 10, 2 );
 			do_action( 'learn_press_admin_ajax_load', __CLASS__ );
+		}
+
+		static function _modal_search_items_not_found( $message, $type ) {
+			switch ( $type ) {
+				case 'lp_lesson':
+					$message = __( 'No lessons found', 'learn_press' );
+					break;
+				case 'lp_quiz':
+					$message = __( 'No quizzes found', 'learn_press' );
+					break;
+				case 'lp_question':
+					$message = __( 'No questions found', 'learn_press' );
+					break;
+			}
+			return $message;
 		}
 
 		static function _modal_search_items_exclude( $exclude, $type, $context = '', $context_id = null ) {
 			global $wpdb;
 			$exclude2 = array();
-			$user = learn_press_get_current_user();
+			$user     = learn_press_get_current_user();
 			switch ( $type ) {
 				case 'lp_lesson':
 				case 'lp_quiz':
@@ -125,13 +141,13 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 				$args['author'] = $user->id;
 			}
 
-			if( $context && $context_id ){
-				switch( $context ){
+			if ( $context && $context_id ) {
+				switch ( $context ) {
 					/**
 					 * If is search lesson/quiz for course only search the items of course's author
 					 */
 					case 'course-items':
-						if( get_post_type( $context_id ) == 'lp_course' ) {
+						if ( get_post_type( $context_id ) == 'lp_course' ) {
 							$args['author'] = get_post_field( 'post_author', $context_id );
 						}
 						break;
@@ -139,7 +155,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 					 * If is search question for quiz only search the items of course's author
 					 */
 					case 'quiz-items':
-						if( get_post_type( $context_id ) == 'lp_quiz' ) {
+						if ( get_post_type( $context_id ) == 'lp_quiz' ) {
 							$args['author'] = get_post_field( 'post_author', $context_id );
 						}
 						break;
@@ -171,7 +187,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 					', $id, $item->post_title, $item->post_type );
 				}
 			} else {
-				echo '<li>' . __( 'No item found', 'learn_press' ) . '</li>';
+				echo '<li>' . apply_filters( 'learn_press_modal_search_items_not_found', __( 'No item found', 'learn_press' ), $type ) . '</li>';
 			}
 
 			$response = array(

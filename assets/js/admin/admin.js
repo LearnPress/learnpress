@@ -710,7 +710,7 @@ lprHook.addAction('lpr_admin_quiz_question_html', _lprAdminQuestionHTML);
 	})
 })(jQuery)
 
-(function() {
+;(function() {
 	if( typeof tinymce == 'undefined' ){
 		return;
 	}
@@ -734,3 +734,51 @@ lprHook.addAction('lpr_admin_quiz_question_html', _lprAdminQuestionHTML);
 		});
 	});
 })();
+
+/* pointer.js */
+jQuery(document).ready( function($) {
+	if( typeof lpPointer == 'undefined' ){
+		return;
+	}
+	learn_press_open_pointer(0);
+	function learn_press_open_pointer(i) {
+		pointer = lpPointer.pointers[i];
+		options = $.extend( pointer.options, {
+			close: function() {
+				$.post( ajaxurl, {
+					pointer: pointer.pointer_id,
+					action: 'dismiss-wp-pointer'
+				});
+			}
+		});
+
+		$(pointer.target).pointer( options ).pointer('open');
+	}
+});
+
+/* ui.js */
+(function( $ ){
+	$.fn.extend({
+		iosCheckbox: function ( ) {
+			$(this).each(function (){
+				var $checkbox = $(this),
+					$ui = $("<div>",{class: 'ios-ui-select'}).append($("<div>",{class: 'inner'}));
+				if ($checkbox.is(":checked")){
+					$ui.addClass("checked");
+				}
+				$checkbox.after($ui)
+					.on('update', function(){
+						$ui.trigger('update')
+					})//.hide().appendTo($ui);
+				$ui.on('click update', function (){
+					$ui.toggleClass("checked");
+					$checkbox.prop('checked', $ui.hasClass("checked")).trigger('change')
+				});
+			});
+		}
+	});
+
+	$(document).ready(function(){
+		$('.learn-press-checkbox').iosCheckbox();
+	});
+})(jQuery);

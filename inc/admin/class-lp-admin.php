@@ -19,13 +19,9 @@ if ( !class_exists( 'LP_Admin' ) ) {
 		public function __construct() {
 
 			$this->includes();
-
-
-			add_action( 'admin_enqueue_scripts', array( $this, 'admin_scripts' ) );
 			add_action( 'admin_print_scripts', array( $this, 'plugin_js_settings' ) );
 			add_action( 'init', array( $this, 'include_update' ) );
 			add_action( 'template_redirect', array( $this, '_redirect' ) );
-
 		}
 
 		function include_update(){
@@ -88,24 +84,6 @@ if ( !class_exists( 'LP_Admin' ) ) {
 
 
 		}
-
-		/**
-		 * Enqueue admin scripts
-		 */
-		public function admin_scripts() {
-
-			/**
-			 * Tipsy tooltip assets
-			 */
-			LP_Admin_Assets::enqueue_style( 'jquery-tipsy', LP_CSS_URL . 'tipsy.css' );
-			LP_Admin_Assets::enqueue_script( 'jquery-tipsy', LP_JS_URL . 'jquery.tipsy.js' );
-		}
-
 	}
-	function learn_press_load_admin(){
-
-	}
-
 	new LP_Admin();
 }
-add_action( 'plugins_loaded', 'learn_press_load_admin' );
