@@ -55,8 +55,8 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * Enqueue jquery ui scripts
 		 */
 		public function learn_press_add_tabs_scripts() {
-			wp_enqueue_style( 'lpr-jquery-ui-css', LP_CSS_URL . 'jquery-ui.css' );
-			wp_enqueue_script( 'lpr-jquery-ui-js', LP_JS_URL . 'jquery-ui.js', array( 'jquery' ), '', false );
+			/*wp_enqueue_style( 'lpr-jquery-ui-css', LP_CSS_URL . 'jquery-ui.css' );
+			wp_enqueue_script( 'lpr-jquery-ui-js', LP_JS_URL . 'jquery-ui.js', array( 'jquery' ), '', false );*/
 		}
 
 		/*

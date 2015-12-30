@@ -497,6 +497,37 @@
 	cursor: url("../../assets/images/openhand.cur") 7 5, default !important;
 }
 
+a .archive-course:hover {
+	cursor: pointer;
+}
+
+.archive-course {
+	border: 1px solid black;
+	display: table;
+	margin-bottom: 10px;
+	width: 100%;
+}
+
+.course-cover {
+	display: table-cell;
+	height: 100px;
+	width: 100px;
+}
+
+.course-detail {
+	display: table-cell;
+	vertical-align: top;
+	padding-left: 10px;
+}
+
+.course-title {
+	font-weight: bold;
+}
+.lp-button-dropdown{
+	padding-right: 28px !important;
+	position: relative;
+}
+
 @media screen and (min-width: 59.6875em) {
 	.twentyfifteen .learnpress-content{
 		margin-left: 8.3333%;

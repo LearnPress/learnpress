@@ -713,8 +713,8 @@ class LP_Upgrade_10 {
 			}
 		}
 
-		wp_enqueue_style( 'lp-update-10', LP()->plugin_url( 'assets/css/lp-update-10.css' ), array( 'dashicons', 'install' ) );
-		wp_enqueue_script( 'lp-update-10', LP()->plugin_url( 'assets/js/lp-update-10.js' ), array( 'jquery' ) );
+		wp_enqueue_style( 'lp-update-10', LP()->plugin_url( 'assets/css/upgrade-10.css' ), array( 'dashicons', 'install' ) );
+		wp_enqueue_script( 'lp-update-10', LP()->plugin_url( 'assets/js/upgrade-10.js' ), array( 'jquery' ) );
 
 		add_action( 'learn_press_update_step_welcome', array( $this, 'update_welcome' ) );
 		add_action( 'learn_press_update_step_upgraded', array( $this, 'update_upgraded' ) );
