@@ -288,14 +288,6 @@ function learn_press_parse_query_vars_to_request() {
 
 add_action( 'wp', 'learn_press_parse_query_vars_to_request' );
 
-function learn_press_head() {
-	if ( is_single() && LP()->course_post_type == get_post_type() ) {
-		wp_enqueue_script( 'tojson', LP_PLUGIN_URL . '/assets/js/toJSON.js' );
-	}
-}
-
-add_action( 'wp_head', 'learn_press_head' );
-
 /**
  * Enqueue js code to print out
  *
