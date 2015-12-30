@@ -458,6 +458,8 @@
 					template: 'tmpl-learn-press-search-items',
 					type: type,
 					section: $button.closest('.curriculum-section'),
+					context: 'course-items',
+					context_id: $('#post_ID').val(),
 					exclude: this.getSelectedItems()
 				} );
 				LearnPress.MessageBox.show($form.$el);

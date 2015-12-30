@@ -58,6 +58,8 @@
 				var $form = LearnPress.ModalSearchItems( {
 					template: 'tmpl-learn-press-search-items',
 					type: 'lp_question',
+					context: 'quiz-items',
+					context_id: $('#post_ID').val(),
 					exclude: this.getSelectedItems()
 				} );
 				LearnPress.MessageBox.show($form.$el);

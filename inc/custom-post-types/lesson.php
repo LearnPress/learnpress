@@ -81,7 +81,7 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 						'not_found'          => __( 'No lesson found', 'learn_press' ),
 						'not_found_in_trash' => __( 'No lesson found in Trash', 'learn_press' ),
 					),
-					'public'             => true,
+					'public'             => false, // no access directly via lesson permalink url
 					'taxonomies'         => array( 'lesson-tag' ),
 					'publicly_queryable' => true,
 					'show_ui'            => true,

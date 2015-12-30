@@ -181,7 +181,7 @@ if ( !class_exists( 'RWMB_Quiz_Questions_Field' ) ) {
 				VALUES " . join(',', $values) . "
 			";
 			$wpdb->query( $query );
-			do_action( 'learn_press_insert_quiz_questions', $new_ids, $post->ID );
+			do_action( 'learn_press_insert_quiz_questions', $questions, $post->ID );
 		}
 	}
 

@@ -1,5 +1,5 @@
 <script type="text/html" id="tmpl-learn-press-search-items">
-	<div class="inner">
+	<div class="modal-inner">
 		<header>
 			<input type="text" name="lp-search-term" placeholder="<# if(data.placeholder){#>{{data.placeholder}}<#}else{#><?php _e('Type here to search the item', 'learn_press');?><#}#>">
 		</header>

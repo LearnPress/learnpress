@@ -23,15 +23,12 @@ class LP_Settings_Courses extends LP_Settings_Base {
 		$course_permalink = $_POST['learn_press_course_base'];
 
 		if ( $course_permalink == 'custom' ) {
-			// Get permalink without slashes
 			$course_permalink = trim( $_POST['course_permalink_structure'], '/' );
 
-			// This is an invalid base structure and breaks pages
 			if ( '%course_category%' == $course_permalink ) {
 				$course_permalink = _x( 'courses', 'slug', 'learn_press' ) . '/' . $course_permalink;
 			}
 
-			// Prepending slash
 			$course_permalink = '/' . $course_permalink;
 		} elseif ( empty( $course_permalink ) ) {
 			$course_permalink = false;
@@ -41,7 +38,6 @@ class LP_Settings_Courses extends LP_Settings_Base {
 
 		update_option( 'learn_press_course_base', $course_base );
 
-		// Shop base may require verbose page rules if nesting pages
 		$courses_page_id   = learn_press_get_page_id( 'courses' );
 		$courses_permalink = ( $courses_page_id > 0 && get_post( $courses_page_id ) ) ? get_page_uri( $courses_page_id ) : _x( 'courses', 'default-slug', 'learn_press' );
 

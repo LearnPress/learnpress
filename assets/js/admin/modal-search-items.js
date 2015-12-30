@@ -84,7 +84,9 @@
 					action : 'learnpress_modal_search_items',
 					type   : this.options.type,
 					term   : args.term,
-					exclude: args.exclude
+					exclude: args.exclude,
+					context: this.options.context,
+					context_id: this.options.context_id
 				},
 				type    : 'get',
 				dataType: 'text',

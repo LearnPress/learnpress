@@ -544,7 +544,7 @@ class LP_Abstract_User {
 	function can_view_lesson( $lesson_id, $course_id = null ) {
 		$lesson = LP_Lesson::get_lesson( $lesson_id );
 		$view = $lesson->is( 'previewable' ) || $this->get_item_order( $lesson_id );
-		if( !$view && $course_id && ( $course = LP_Course::get_course( $course_id ) ) && $course->is_free() ){
+		if( !$view && $course_id && ( $course = LP_Course::get_course( $course_id ) ) && !$course->is( 'required_enroll' ) ){
 			$view = true;
 		}
 		return apply_filters( 'learn_press_user_view_lesson', $view, $lesson_id, $this, $course_id );
@@ -573,7 +573,7 @@ class LP_Abstract_User {
 			$this->get_course_order( $course->id );
 		}
 		$view = $this->get_item_order( $quiz_id );
-		if( !$view && $course && $course->is_free() ){
+		if( !$view && $course && !$course->is( 'required_enroll' ) ){
 			$view = true;
 		}
 		return apply_filters( 'learn_press_user_view_quiz', $view, $quiz_id, $this, $course_id );

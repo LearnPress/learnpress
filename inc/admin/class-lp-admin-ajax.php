@@ -52,29 +52,34 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 					add_action( 'wp_ajax_nopriv_learnpress_' . $ajaxEvent, array( __CLASS__, $ajaxEvent ) );
 				}
 			}
-			add_filter( 'learn_press_modal_search_items_exclude', array( __CLASS__, '_modal_search_items_exclude' ), 10, 2 );
+			add_filter( 'learn_press_modal_search_items_exclude', array( __CLASS__, '_modal_search_items_exclude' ), 10, 4 );
 			do_action( 'learn_press_admin_ajax_load', __CLASS__ );
 		}
 
-		static function _modal_search_items_exclude( $exclude, $type ) {
+		static function _modal_search_items_exclude( $exclude, $type, $context = '', $context_id = null ) {
 			global $wpdb;
 			$exclude2 = array();
-			switch( $type ){
+			$user = learn_press_get_current_user();
+			switch ( $type ) {
 				case 'lp_lesson':
 				case 'lp_quiz':
-					$query = $wpdb->prepare("
+					$query    = $wpdb->prepare( "
 						SELECT item_id
 						FROM {$wpdb->prefix}learnpress_section_items
 						WHERE %d
-					", 1);
-					$exclude2 = $wpdb->get_col($query);
+					", 1 );
+					$exclude2 = $wpdb->get_col( $query );
+					if ( ( $context == 'course' ) && ( get_post_type( $context_id ) == 'lp_course' ) ) {
+						$course_author = get_post_field( 'post_author', $context_id );
+
+					}
 					break;
 				case 'lp_question':
 
 			}
-			if( $exclude2 && $exclude ) {
+			if ( $exclude2 && $exclude ) {
 				$exclude = array_merge( $exclude, $exclude2 );
-			}else if($exclude2){
+			} else if ( $exclude2 ) {
 				$exclude = $exclude2;
 			}
 			return $exclude;
@@ -98,10 +103,12 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 		static function modal_search_items() {
 			global $wpdb;
 
-			$user    = learn_press_get_current_user();
-			$term    = (string) ( stripslashes( learn_press_get_request( 'term' ) ) );
-			$type    = (string) ( stripslashes( learn_press_get_request( 'type' ) ) );
-			$exclude = array();
+			$user       = learn_press_get_current_user();
+			$term       = (string) ( stripslashes( learn_press_get_request( 'term' ) ) );
+			$type       = (string) ( stripslashes( learn_press_get_request( 'type' ) ) );
+			$context    = (string) ( stripslashes( learn_press_get_request( 'context' ) ) );
+			$context_id = (string) ( stripslashes( learn_press_get_request( 'context_id' ) ) );
+			$exclude    = array();
 
 			if ( !empty( $_GET['exclude'] ) ) {
 				$exclude = array_map( 'intval', $_GET['exclude'] );
@@ -112,10 +119,31 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 				'post_status'    => 'publish',
 				'order'          => 'ASC',
 				'orderby'        => 'parent title',
-				'exclude'        => array_unique( (array)apply_filters( 'learn_press_modal_search_items_exclude', $exclude, $type ) )
+				'exclude'        => array_unique( (array) apply_filters( 'learn_press_modal_search_items_exclude', $exclude, $type, $context, $context_id ) )
 			);
 			if ( !$user->is_admin() ) {
 				$args['author'] = $user->id;
+			}
+
+			if( $context && $context_id ){
+				switch( $context ){
+					/**
+					 * If is search lesson/quiz for course only search the items of course's author
+					 */
+					case 'course-items':
+						if( get_post_type( $context_id ) == 'lp_course' ) {
+							$args['author'] = get_post_field( 'post_author', $context_id );
+						}
+						break;
+					/**
+					 * If is search question for quiz only search the items of course's author
+					 */
+					case 'quiz-items':
+						if( get_post_type( $context_id ) == 'lp_quiz' ) {
+							$args['author'] = get_post_field( 'post_author', $context_id );
+						}
+						break;
+				}
 			}
 			if ( $term ) {
 				$args['s'] = $term;

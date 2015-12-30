@@ -311,6 +311,22 @@ abstract class LP_Abstract_Course {
 	}
 
 	/**
+	 * Check if this course is required to enroll
+	 *
+	 * @param mixed
+	 *
+	 * @return bool
+	 */
+	function is_required_enroll(){
+		if( func_get_args() ){
+			$required = $this->enroll_requirement == func_get_arg(0);
+		}else{
+			$required = $this->enroll_requirement != 'no';
+		}
+		return apply_filters( 'learn_press_course_required_enroll', $required, $this );
+	}
+
+	/**
 	 * Get the price of course
 	 *
 	 * @return mixed

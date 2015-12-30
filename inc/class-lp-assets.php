@@ -87,11 +87,11 @@ class LP_Assets extends LP_Abstract_Assets {
 	 * Load assets for frontend
 	 */
 	static function load_scripts() {
-
+		$deps = array( 'jquery', 'backbone', 'utils' );
 		// global
 		self::add_style( 'learn-press-icon', learn_press_plugin_url( 'assets/css/style.css' ) );
 
-		self::add_script( 'learn-press-global', learn_press_plugin_url( 'assets/js/global.js' ) );
+		self::add_script( 'learn-press-global', learn_press_plugin_url( 'assets/js/global.js' ), $deps );
 		self::add_script( 'learn-press-block-ui', learn_press_plugin_url( 'assets/js/jquery.block-ui.js' ) );
 
 		// admin
@@ -102,14 +102,14 @@ class LP_Assets extends LP_Abstract_Assets {
 		self::add_script( 'learn-press-js', learn_press_plugin_url( 'assets/js/frontend/learnpress.js' ), array( 'learn-press-global' ) );
 
 		// single course
-		self::add_script( 'single-course', learn_press_plugin_url( 'assets/js/frontend/single-course.js' ), array( 'backbone', 'utils' ) );
+		self::add_script( 'single-course', learn_press_plugin_url( 'assets/js/frontend/single-course.js' ), $deps );
 
 		if ( LP()->settings->get( 'ajax_add_to_cart' ) == 'yes' ) {
 			self::add_script( 'learn-press-add-to-cart', learn_press_plugin_url( 'assets/js/frontend/add-to-cart.js' ) );
 		}
 		// single quiz
 		self::add_script( 'learn-press-timer', learn_press_plugin_url( 'assets/js/jquery.timer.js' ) );
-		self::add_script( 'single-quiz', learn_press_plugin_url( 'assets/js/frontend/single-quiz.js' ), array( 'backbone', 'utils' ) );
+		self::add_script( 'single-quiz', learn_press_plugin_url( 'assets/js/frontend/single-quiz.js' ), $deps );
 
 		// checkout page
 		self::add_script( 'checkout', learn_press_plugin_url( 'assets/js/frontend/checkout.js' ) );

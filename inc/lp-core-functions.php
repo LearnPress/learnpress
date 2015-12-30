@@ -1126,54 +1126,6 @@ function learn_press_get_own_courses( $user_id ) {
 	return $my_query;
 }
 
-/**
- * @param $course_id
- *
- * @return array
- */
-function learn_press_get_quizzes( $course_id ) {
-	$quizzes    = array();
-	$curriculum = get_post_meta( $course_id, '_lpr_course_lesson_quiz', true );
-	if ( $curriculum ) {
-		foreach ( $curriculum as $lesson_quiz_s ) {
-			if ( array_key_exists( 'lesson_quiz', $lesson_quiz_s ) ) {
-				foreach ( $lesson_quiz_s['lesson_quiz'] as $lesson_quiz ) {
-					if ( get_post_type( $lesson_quiz ) == LP()->quiz_post_type ) {
-						$quizzes[] = $lesson_quiz;
-					}
-				}
-			}
-		}
-	}
-
-	return $quizzes;
-}
-
-/**
- * Get all lessons in a course
- *
- * @param $course_id
- *
- * @return array
- */
-function learn_press_get_lessons( $course_id ) {
-	$lessons    = array();
-	$curriculum = get_post_meta( $course_id, '_lpr_course_lesson_quiz', true );
-	if ( $curriculum ) {
-		foreach ( $curriculum as $lesson_quiz_s ) {
-			if ( array_key_exists( 'lesson_quiz', $lesson_quiz_s ) ) {
-				foreach ( $lesson_quiz_s['lesson_quiz'] as $lesson_quiz ) {
-					if ( get_post_type( $lesson_quiz ) == LP()->lesson_post_type ) {
-						$lessons[] = $lesson_quiz;
-					}
-				}
-			}
-		}
-	}
-
-	return $lessons;
-}
-
 add_filter( 'template_include', 'learn_press_template_loader' );
 function learn_press_template_loader( $template ) {
 	$file = '';
@@ -1238,65 +1190,6 @@ function learn_press_pre_get_post( $q ) {
 	return $q;
 }
 
-/*
-function learn_press_get_web_hooks() {
-	$web_hooks = empty( $GLOBALS['learn_press']['web_hooks'] ) ? array() : (array) $GLOBALS['learn_press']['web_hooks'];
-
-	return apply_filters( 'learn_press_get_web_hooks', $web_hooks );
-}
-
-
-function learn_press_register_web_hook( $key, $param ) {
-	if ( !$key ) {
-		return;
-	}
-	if ( empty ( $GLOBALS['learn_press']['web_hooks'] ) ) {
-		$GLOBALS['learn_press']['web_hooks'] = array();
-	}
-	$GLOBALS['learn_press']['web_hooks'][$key] = $param;
-	do_action( 'learn_press_register_web_hook', $key, $param );
-}
-
-function learn_press_get_web_hook( $key ) {
-	$web_hooks = learn_press_get_web_hooks();
-	$web_hook  = empty( $web_hooks[$key] ) ? false : $web_hooks[$key];
-
-	return apply_filters( 'learn_press_get_web_hook', $web_hook, $key );
-}
-
-function learn_press_process_web_hooks() {
-	// Grab registered web_hooks
-	$web_hooks           = learn_press_get_web_hooks();
-	$web_hooks_processed = false;
-	// Loop through them and init callbacks
-
-	foreach ( $web_hooks as $key => $param ) {
-		if ( !empty( $_REQUEST[$param] ) ) {
-			$web_hooks_processed           = true;
-			$request_scheme                = is_ssl() ? 'https://' : 'http://';
-			$requested_web_hook_url        = untrailingslashit( $request_scheme . $_SERVER['HTTP_HOST'] ) . $_SERVER['REQUEST_URI']; //REQUEST_URI includes the slash
-			$parsed_requested_web_hook_url = parse_url( $requested_web_hook_url );
-			$required_web_hook_url         = add_query_arg( $param, '1', trailingslashit( get_site_url() ) ); //add the slash to make sure we match
-			$parsed_required_web_hook_url  = parse_url( $required_web_hook_url );
-			$web_hook_diff                 = array_diff_assoc( $parsed_requested_web_hook_url, $parsed_required_web_hook_url );
-
-			if ( empty( $web_hook_diff ) ) { //No differences in the requested webhook and the required webhook
-				do_action( 'learn_press_web_hook_' . $param, $_REQUEST );
-			} else {
-
-			}
-			break; //we can stop processing here... no need to continue the foreach since we can only handle one webhook at a time
-		}
-	}
-	if ( $web_hooks_processed ) {
-		do_action( 'learn_press_web_hooks_processed' );
-		wp_die( __( 'LearnPress webhook process Complete', 'learn_press' ), __( 'iThemes Exchange Webhook Process Complete', 'learn_press' ), array( 'response' => 200 ) );
-	}
-}
-
-add_action( 'wp', 'learn_press_process_web_hooks' );
-*/
-
 function learn_press_currency_positions() {
 	return apply_filters(
 		'learn_press_currency_positions',
@@ -1310,11 +1203,10 @@ function learn_press_currency_positions() {
 	);
 }
 
-
 /**
  * get the list of currencies with code and name
  *
- * @author  TuNN
+ * @author  ThimPress
  * @return  array
  */
 function learn_press_get_payment_currencies() {
@@ -1663,62 +1555,6 @@ function learn_press_course_question_permalink_friendly( $permalink, $lesson_id,
 
 add_filter( 'learn_press_course_lesson_permalink', 'learn_press_course_lesson_permalink_friendly', 10, 3 );
 
-
-function learn_press_text_image( $text = null, $args = array() ) {
-	$width      = 200;
-	$height     = 150;
-	$font_size  = 1;
-	$background = 'FFFFFF';
-	$color      = '000000';
-	$padding    = 20;
-	extract( $args );
-
-	// Output to browser
-	if ( empty( $_REQUEST['debug'] ) ) {
-		header( 'Content-Type: image/png' );
-	}
-	/*
-    $uniqid = md5( serialize( array( 'width' => $width, 'height' => $height, 'text' => $text, 'background' => $background, 'color' => $color ) ) );
-    @mkdir( LP_PLUGIN_PATH . '/cache' );
-    $cache = LP_PLUGIN_PATH . '/cache/' . $uniqid . '.cache';
-    if( file_exists( $cache ) ){
-        readfile( $cache );
-        die();
-    }*/
-
-	$im = imagecreatetruecolor( $width, $height );
-
-	list( $r, $g, $b ) = sscanf( "#{$background}", "#%02x%02x%02x" );
-	$background = imagecolorallocate( $im, $r, $g, $b );
-
-	list( $r, $g, $b ) = sscanf( "#{$color}", "#%02x%02x%02x" );
-	$color = imagecolorallocate( $im, $r, $g, $b );
-
-	// Set the background to be white
-	imagefilledrectangle( $im, 0, 0, $width, $height, $background );
-
-	// Path to our font file
-	$font = LP_PLUGIN_PATH . '/assets/fonts/Sumana-Regular.ttf';
-	$x    = $width;
-	$loop = 0;
-	do {
-		// First we create our bounding box for the first text
-		$bbox = imagettfbbox( $font_size, 0, $font, $text );
-		// This is our cordinates for X and Y
-		$x = $bbox[0] + ( imagesx( $im ) / 2 ) - ( $bbox[4] / 2 );
-		$y = $bbox[1] + ( imagesy( $im ) / 2 ) - ( $bbox[5] / 2 );
-		$font_size ++;
-		if ( $loop ++ > 100 ) {
-			break;
-		}
-	} while ( $x > $padding );
-	// Write it
-	imagettftext( $im, $font_size, 0, $x - 5, $y, $color, $font, $text );
-	imagepng( $im );
-	//readfile( $cache );
-	imagedestroy( $im );
-}
-
 function become_a_teacher_handler() {
 	$name  = !empty( $_POST['bat_name'] ) ? $_POST['bat_name'] : null;
 	$email = !empty( $_POST['bat_email'] ) ? $_POST['bat_email'] : null;
@@ -1896,20 +1732,31 @@ function learn_press_get_request( $key, $default = null, $hash = null ) {
  * @param $q
  */
 function learn_press_pre_get_posts( $q ) {
-	// We only want to affect the main query
-	if ( !$q->is_main_query() ) {
+	// We only want to affect the main query and not in admin
+	if ( !$q->is_main_query() || is_admin() ) {
 		return;
 	}
-
-
-	if ( $q->get( 'post_type' ) == 'lp_course' ) {
+	if ( $q->get( 'post_type' ) == 'lp_course' && is_single() ) {
 		$course_name       = $q->get( 'lp_course' );
 		$course_name_parts = explode( '/', $course_name );
+		$course_item       = null;
 		if ( sizeof( $course_name_parts ) > 1 ) {
 			$q->set( 'lp_course', $course_name_parts[0] );
-			if ( preg_match( '!^([0-9]+)-!', $course_name_parts[1], $matches ) ) {
+			$course_item = $course_name_parts[1];
+		}
+		if ( !$course_item ) {
+			foreach ( array( 'lesson', 'quiz' ) as $item_type ) {
+				$q->get( $item_type );
+				if ( $q->get( $item_type ) ) {
+					$course_item = $q->get( $item_type );
+					break;
+				}
+			}
+		}
+		if( $course_item ) {
+			if ( preg_match( '!^([0-9]+)-!', $course_item, $matches ) ) {
 				$item_id   = $matches[1];
-				$item_name = str_replace( $matches[0], '', $course_name_parts[1] );
+				$item_name = str_replace( $matches[0], '', $course_item );
 				$_post     = get_post( $item_id );//learn_press_get_post_by_name( $course_name_parts[1], true, array( 'lp_lesson', 'lp_quiz') );
 				if ( $_post ) {
 					if ( $_post->post_type == 'lp_lesson' ) {
@@ -2275,6 +2122,7 @@ function learn_press_reset_auto_increment( $table ) {
 	$wpdb->query( $wpdb->prepare( "ALTER TABLE {$wpdb->prefix}$table AUTO_INCREMENT = %d", 1 ) );
 }
 
+include_once "debug.php";
 //function learn_press_register_addons() {
 include_once "lp-add-ons.php";
 //}

@@ -89,7 +89,7 @@
 #learn-press-modal-search-items footer{
 
 }
-.inner{
+.modal-inner{
 	margin: 20px;
 }
 @-webkit-keyframes learn-press-ajax-spinner {
