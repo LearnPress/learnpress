@@ -17,7 +17,7 @@ learn_press_include( 'abstracts/abstract-lp-assets.php' );
 
 class LP_Assets extends LP_Abstract_Assets {
 	static protected $_minify = array(
-		'assets/js/admin/question.js' => 'assets/js/admin/question.min.js',
+		'assets/js/admin/meta-box-question.js' => 'assets/js/admin/question.min.js',
 		'assets/js/global.js'         => 'assets/js/global.min.js'
 	);
 

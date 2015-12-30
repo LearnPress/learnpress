@@ -237,7 +237,7 @@ class LP_Question_Factory {
 
 	static function admin_assets() {
 		LP_Admin_Assets::enqueue_style( 'learnpress-question', learn_press_plugin_url( 'assets/css/admin/meta-box-question.css' ) );
-		LP_Admin_Assets::enqueue_script( 'learnpress-question', learn_press_plugin_url( 'assets/js/admin/question.js' ), array( 'jquery', 'jquery-ui-sortable' ) );
+		LP_Admin_Assets::enqueue_script( 'learnpress-question', learn_press_plugin_url( 'assets/js/admin/meta-box-question.js' ), array( 'jquery', 'jquery-ui-sortable' ) );
 	}
 
 	/**

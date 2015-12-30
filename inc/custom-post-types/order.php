@@ -399,7 +399,7 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 
 		static function order_details( $post ) {
 			learn_press_admin_view( 'meta-boxes/order/details.php', array( 'order' => LP_Order::instance( $post ) ) );
-			LP_Assets::enqueue_script( 'learn-press-order', LP()->plugin_url( 'assets/js/admin/order.js' ), array( 'backbone', 'wp-util' ) );
+			LP_Assets::enqueue_script( 'learn-press-order', LP()->plugin_url( 'assets/js/admin/meta-box-order.js' ), array( 'backbone', 'wp-util' ) );
 		}
 
 		function preparing_to_trash_order( $post_id ) {

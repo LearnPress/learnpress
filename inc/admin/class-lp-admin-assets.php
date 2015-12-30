@@ -28,7 +28,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 		self::add_style( 'learn-press-icons', learn_press_plugin_url( 'assets/css/icons.css' ) );
 
 		self::add_script( 'learn-press-ui', learn_press_plugin_url( 'assets/js/ui.js' ) );
-		self::add_script( 'learn-press-admin', learn_press_plugin_url( 'assets/js/admin/learnpress.js' ), array( 'learn-press-ui' ) );
+		self::add_script( 'learn-press-admin', learn_press_plugin_url( 'assets/js/admin/admin.js' ), array( 'learn-press-ui' ) );
 		self::add_script( 'modal-search-items',    LearnPress()->plugin_url( 'assets/js/admin/modal-search-items.js' ), array( 'jquery' ) );
 	}
 

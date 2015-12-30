@@ -1,13 +1,5 @@
 if (typeof LearnPress == 'undefined') var LearnPress = {};
 (function ($) {
-	var u = [];
-	u[0] = LearnPress.addQueryVar('sex', 'male'),
-	u[1] = LearnPress.addQueryVar('sex', 'female', u[0]),
-	u[2] = LearnPress.addQueryVar('choice[]', '1', u[1]),
-	u[3] = LearnPress.addQueryVar('choice[]', '4', u[2]).addQueryVar('choice_3[]', 12, u[2]),
-	u[4] = u[3],
-	u[5] = u[4].removeQueryVar('choice');
-
 	var LearnPress_Model_Quiz = window.LearnPress_Model_Quiz = Backbone.Model.extend({
 		defaults           : {
 			//question_id: 0
