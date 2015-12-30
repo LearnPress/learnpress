@@ -11,7 +11,7 @@
 
 [class^="learn-press-icon-"], [class*=" learn-press-icon-"], .learn-press-icon {
 	font-family: 'learnpress';
-	speak: none;
+	/*speak: none;*/
 	font-style: normal;
 	font-weight: normal;
 	font-variant: normal;

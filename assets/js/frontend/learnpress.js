@@ -43,10 +43,6 @@
 				.animate({
 					scrollTop: $(element).offset().top - args.offset
 				}, args.duration);
-		},
-		parse_json: function (data) {
-			LearnPress.log('LearnPress.parse_json has deprecated, use LearnPress.parseJSON instead of')
-			return LearnPress.parseJSON(data);
 		}
 	}, LearnPress);
 })(jQuery);

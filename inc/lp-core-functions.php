@@ -2115,6 +2115,16 @@ function learn_press_reset_auto_increment( $table ) {
 	$wpdb->query( $wpdb->prepare( "ALTER TABLE {$wpdb->prefix}$table AUTO_INCREMENT = %d", 1 ) );
 }
 
+function learn_press_front_scripts(){
+	$js = array(
+		'ajax'       => admin_url( 'admin-ajax.php' ),
+		'plugin_url' => LearnPress()->plugin_url(),
+		'siteurl' => home_url()
+	);
+	echo '<script type="text/javascript">var LearnPress_Settings = ' . json_encode( $js ) . '</script>';
+}
+add_action( 'wp_print_scripts', 'learn_press_front_scripts');
+
 include_once "debug.php";
 //function learn_press_register_addons() {
 include_once "lp-add-ons.php";

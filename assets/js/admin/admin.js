@@ -188,7 +188,7 @@ jQuery(document).ready(function($){
 				yes: yes
 			},
 			success: function(response){
-				response = LearnPress.parse_json(response);
+				response = LearnPress.parseJSON(response);
 				if( response.hide_notice ){
 					$('#learn-press-install-sample-data-notice').fadeOut();
 				}else{
@@ -443,7 +443,7 @@ lprHook.addAction('lpr_admin_quiz_question_html', _lprAdminQuestionHTML);
 				success: function(response){
 					if(action == 'install-now' || action == 'update-now' || action == 'active-now'){
 						if( $link.hasClass('thimpress') ){
-							response = LearnPress.parse_json( response );
+							response = LearnPress.parseJSON( response );
 							$link.removeClass( 'spinner' );
 							if( response.status == 'activate' ){
 								$link.addClass('disabled').html(response.status_text).removeAttr('href').removeAttr('data-action');
@@ -467,7 +467,7 @@ lprHook.addAction('lpr_admin_quiz_question_html', _lprAdminQuestionHTML);
 				},
 				dataType: 'html',
 				success: function(response){
-					response = LearnPress.parse_json( response );
+					response = LearnPress.parseJSON( response );
 					if( response.addons ){
 						for(var slug in response.addons ){
 							var plugin = response.addons[slug];

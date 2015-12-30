@@ -1,6 +1,7 @@
 .post-type-lp_course #postdivrich{
 	visibility: hidden;
 }
+
 #learn-press-review-message{
 	margin-bottom: 10px;
 }
@@ -93,7 +94,7 @@
 #course_curriculum .curriculum-section-content{
 	border: 1px solid #DDD;
 	padding: 20px;
-	border-bottom-width: 0px;
+	border-bottom-width: 0;
 }
 #course_curriculum .curriculum-section.ui-sortable-helper{
 	border-bottom: 1px solid #DDD;
@@ -161,7 +162,7 @@
 	height: 34px;
 	border: none;
 	line-height: 32px;
-	padding: 0 7px 0 0px;
+	padding: 0 7px 0 0;
 	margin: 0 4px 0 10px;
 	cursor: url("../../../assets/images/openhand.cur") 7 5, default;
 	visibility: visible;

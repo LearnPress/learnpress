@@ -351,8 +351,8 @@ if (typeof window.LearnPress == 'undefined') {
 			var $doc = $(document),
 				event = 'LearnPress.' + action;
 			$doc.on(event, callback);
-			LearnPress.log($doc.data('events'))
-			return this
+			LearnPress.log($doc.data('events'));
+			return this;
 		},
 		applyFilters  : function () {
 			var $doc = $(document),
@@ -433,10 +433,6 @@ if (typeof window.LearnPress == 'undefined') {
 			}
 
 			return retId;
-		},
-		parse_json    : function (data) {
-			LearnPress.log('LearnPress.parse_json has deprecated, use LearnPress.parseJSON instead of')
-			return LearnPress.parseJSON(data);
 		},
 		log: function(){
 			if( typeof LEARN_PRESS_DEBUG != 'undefined' && LEARN_PRESS_DEBUG && console ){

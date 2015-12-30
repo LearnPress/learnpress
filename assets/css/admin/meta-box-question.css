@@ -45,8 +45,7 @@
 	background-color: #DDD;
 }
 .lpr-question-option tbody tr.ui-sortable-helper{
-
-	left: 0px;
+	left: 0;
 }
 .lpr-question-option input[type="text"] {
 	width: 100%;

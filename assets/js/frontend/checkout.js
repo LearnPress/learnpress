@@ -40,12 +40,12 @@ if (typeof window.LearnPress == 'undefined') {
 			var $form = $(this.form);
 			if ($form.triggerHandler('checkout_login') !== false) {
 				$.ajax({
-					url     : 'http://localhost/foobla/learnpress/1.0/lp-checkout/?lp-ajax=checkout-login',
+					url     : LearnPress_Settings.siteurl +'/?lp-ajax=checkout-login',
 					dataType: 'html',
 					data    : $form.serialize(),
 					type    : 'post',
 					success : function (response) {
-						response = LearnPress.parse_json(response);
+						response = LearnPress.parseJSON(response);
 						if (response.result == 'fail') {
 							if (response.messages) {
 								LearnPress.Checkout.showErrors(response.messages);
@@ -67,12 +67,12 @@ if (typeof window.LearnPress == 'undefined') {
 			if ($form.triggerHandler('checkout_place_order') !== false && $form.triggerHandler('checkout_place_order_' + $('#order_review').find('input[name=payment_method]:checked').val()) !== false) {
 				//$form.block_ui();
 				$.ajax({
-					url     : 'http://localhost/foobla/learnpress/1.0/lp-checkout/?lp-ajax=checkout',
+					url     : LearnPress_Settings.siteurl +'/lp-checkout/?lp-ajax=checkout',
 					dataType: 'html',
 					data    : $form.serialize(),
 					type    : 'post',
 					success : function (response) {
-						response = LearnPress.parse_json(response);
+						response = LearnPress.parseJSON(response);
 						if (response.result == 'fail') {
 							if (response.messages) {
 								LearnPress.Checkout.showErrors(response.messages);

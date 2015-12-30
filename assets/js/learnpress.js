@@ -29,7 +29,7 @@ if (typeof LearnPress == 'undefined') window.LearnPress = {};
 					user_id: user_id
 				},
 				success : function (response) {
-					var response = LearnPress.parse_json(response);
+					var response = LearnPress.parseJSON(response);
 					if (response.url) {
 						LearnPress.reload(response.url)
 					} else {

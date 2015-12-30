@@ -250,11 +250,6 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 					),
 				)
 			);
-			/*if ( !is_admin() ) {
-				LP_Assets::enqueue_script( 'tipsy', LP_PLUGIN_URL . '/assets/js/jquery.tipsy.js' );
-				LP_Assets::enqueue_style( 'tipsy', LP_PLUGIN_URL . '/assets/css/tipsy.css' );
-			}
-			flush_rewrite_rules();*/
 		}
 
 		/**
@@ -266,22 +261,6 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			new RW_Meta_Box( self::settings_meta_box() );
 			new RW_Meta_Box( self::assessment_meta_box() );
 			new RW_Meta_Box( self::payment_meta_box() );
-			/*new RW_Meta_Box(
-				array(
-					'id'       => 'course_tabs',
-					'title'    => __( 'Curriculum', 'learn_press' ),
-					'priority' => 'high',
-					'pages'    => array( LP_COURSE_CPT ),
-					'fields'   => array(
-						array(
-							'name' => __( 'Course Curriculum', 'learn_press' ),
-							'id'   => "course_tabs",
-							'type' => 'course_tabs',
-							'desc' => '',
-						),
-					)
-				)
-			);*/
 		}
 
 		static function curriculum_meta_box() {
@@ -761,12 +740,14 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			$values = array_values( $columns );
 			$pos    = array_search( 'title', $keys );
 			if ( $pos !== false ) {
-				array_splice( $keys, $pos + 1, 0, 'sections' );
-				array_splice( $values, $pos + 1, 0, __( 'Content', 'learn_press' ) );
+				array_splice( $keys, $pos + 1, 0, array( 'sections', 'price' ) );
+				array_splice( $values, $pos + 1, 0, array( __( 'Content', 'learn_press' ), __( 'Price', 'learn_press' ) ) );
 				$columns = array_combine( $keys, $values );
 			} else {
 				$columns['sections'] = __( 'Content', 'learn_press' );
+				$columns['price'] = __( 'Price', 'learn_press' );
 			}
+
 			$columns['taxonomy-course_category'] = __( 'Categories', 'learn_press' );
 			return $columns;
 		}
@@ -806,6 +787,9 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						_e( 'No content', 'learn_press' );
 					}
 					break;
+				case 'price':
+					$price = get_post_meta( $post->ID, '_lp_price', true );
+					echo $price ? learn_press_format_price( get_post_meta( $post->ID, '_lp_price', true ), true ) : __( 'Free', 'learn_press' );
 			}
 		}
 
