@@ -54,6 +54,7 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 	protected $settings = null;
 
 	protected $line_items = array();
+
 	/**
 	 *
 	 */
@@ -138,7 +139,7 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 		learn_press_register_web_hook( 'paypal', 'learn_press_paypal' );
 	}
 
-	function validate_ipn(){
+	function validate_ipn() {
 		$validate_ipn = array( 'cmd' => '_notify-validate' );
 		$validate_ipn += wp_unslash( $_POST );
 
@@ -153,7 +154,7 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 
 		// Post back to get a response
 		$response = wp_safe_remote_post( !empty( $_REQUEST['test_ipn'] ) ? $this->paypal_payment_sandbox_url : $this->paypal_payment_live_url, $params );
-		if ( ! is_wp_error( $response ) && $response['response']['code'] >= 200 && $response['response']['code'] < 300 ) {
+		if ( !is_wp_error( $response ) && $response['response']['code'] >= 200 && $response['response']['code'] < 300 ) {
 			$body = wp_remote_retrieve_body( $response );
 			if ( 'VERIFIED' === $body ) {
 				return true;
@@ -378,8 +379,8 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 
 	protected function prepare_line_items() {
 		$this->line_items = array();
-		if( $items = LP()->cart->get_items() ){
-			foreach( $items as $item ){
+		if ( $items = LP()->cart->get_items() ) {
+			foreach ( $items as $item ) {
 				$this->add_line_item( get_the_title( $item['item_id'] ), $item['quantity'], $item['total'] );
 			}
 		}
@@ -392,15 +393,15 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 			return false;
 		}
 
-		$this->line_items[ 'item_name_' . $index ]   = html_entity_decode( wc_trim_string( $item_name ? $item_name : __( 'Item', 'learn_press' ), 127 ), ENT_NOQUOTES, 'UTF-8' );
-		$this->line_items[ 'quantity_' . $index ]    = $quantity;
-		$this->line_items[ 'amount_' . $index ]      = $amount;
-		$this->line_items[ 'item_number_' . $index ] = $item_number;
+		$this->line_items['item_name_' . $index]   = html_entity_decode( $item_name ? $item_name : __( 'Item', 'learn_press' ), ENT_NOQUOTES, 'UTF-8' );
+		$this->line_items['quantity_' . $index]    = $quantity;
+		$this->line_items['amount_' . $index]      = $amount;
+		$this->line_items['item_number_' . $index] = $item_number;
 
 		return true;
 	}
 
-	function get_item_lines(){
+	function get_item_lines() {
 		return $this->line_items;
 	}
 
@@ -414,10 +415,10 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 		return $paypal_payment_url;
 	}
 
-	function get_paypal_args( $order ){
+	function get_paypal_args( $order ) {
 		$this->prepare_line_items();
-		$user = learn_press_get_current_user();
-		$nonce = wp_create_nonce( 'learn-press-paypal-nonce' );
+		$user   = learn_press_get_current_user();
+		$nonce  = wp_create_nonce( 'learn-press-paypal-nonce' );
 		$custom = array( 'order_id' => $order->id, 'order_key' => $order->order_key );
 
 		$args = array_merge(
@@ -435,7 +436,7 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 				//'invoice'       => $order->id,
 				'custom'        => json_encode( $custom ),
 				'notify_url'    => get_site_url() . '/?' . learn_press_get_web_hook( 'paypal' ) . '=1',
-				'email'			=> $user->user_email
+				'email'         => $user->user_email
 			),
 			$this->get_item_lines()
 		);

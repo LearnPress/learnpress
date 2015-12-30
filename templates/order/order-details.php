@@ -1,12 +1,4 @@
 <?php
-/**
- * Order details
- *
- * @author  WooThemes
- * @package learn_press/Templates
- * @version 2.3.0
- */
-
 if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }

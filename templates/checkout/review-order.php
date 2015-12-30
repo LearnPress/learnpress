@@ -62,7 +62,7 @@ $review_order_heading = apply_filters( 'learn_press_checkout_review_order_headin
 	<?php do_action( 'learn_press_review_order_before_order_total' ); ?>
 
 	<tr class="order-total">
-		<th><?php _e( 'Total', 'woocommerce' ); ?></th>
+		<th><?php _e( 'Total', 'learn_press' ); ?></th>
 		<td><?php echo LP()->cart->get_total(); ?></td>
 	</tr>
 

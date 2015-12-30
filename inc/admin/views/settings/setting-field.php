@@ -97,16 +97,16 @@ switch ( $options['type'] ) {
 		'image_width' :
 
 		$image_size       = str_replace( '_image_size', '', $options['id'] );
-		$size             = wc_get_image_size( $image_size );
+		$size             = learn_press_get_image_size( $image_size );
 		$width            = isset( $size['width'] ) ? $size['width'] : $options['default']['width'];
 		$height           = isset( $size['height'] ) ? $size['height'] : $options['default']['height'];
 		$crop             = isset( $size['crop'] ) ? $size['crop'] : $options['default']['crop'];
 		$disabled_attr    = '';
 		$disabled_message = '';
 
-		if ( has_filter( 'woocommerce_get_image_size_' . $image_size ) ) {
+		if ( has_filter( 'learn_press_get_image_size_' . $image_size ) ) {
 			$disabled_attr    = 'disabled="disabled"';
-			$disabled_message = "<p><small>" . __( 'The settings of this image size have been disabled because its values are being overwritten by a filter.', 'woocommerce' ) . "</small></p>";
+			$disabled_message = "<p><small>" . __( 'The settings of this image size have been disabled because its values are being overwritten by a filter.', 'learn_press' ) . "</small></p>";
 		}
 
 		?>
@@ -118,7 +118,7 @@ switch ( $options['type'] ) {
 			<input name="<?php echo esc_attr( $options['id'] ); ?>[width]" <?php echo $disabled_attr; ?> id="<?php echo esc_attr( $options['id'] ); ?>-width" type="text" size="3" value="<?php echo $width; ?>" /> &times;
 			<input name="<?php echo esc_attr( $options['id'] ); ?>[height]" <?php echo $disabled_attr; ?> id="<?php echo esc_attr( $options['id'] ); ?>-height" type="text" size="3" value="<?php echo $height; ?>" />px
 
-			<label><input name="<?php echo esc_attr( $options['id'] ); ?>[crop]" <?php echo $disabled_attr; ?> id="<?php echo esc_attr( $options['id'] ); ?>-crop" type="checkbox" value="1" <?php checked( 1, $crop ); ?> /> <?php _e( 'Hard Crop?', 'woocommerce' ); ?>
+			<label><input name="<?php echo esc_attr( $options['id'] ); ?>[crop]" <?php echo $disabled_attr; ?> id="<?php echo esc_attr( $options['id'] ); ?>-crop" type="checkbox" value="1" <?php checked( 1, $crop ); ?> /> <?php _e( 'Hard Crop?', 'learn_press' ); ?>
 			</label>
 
 		</td>
@@ -147,7 +147,7 @@ switch ( $options['type'] ) {
 		<tr valign="top" class="single_select_page">
 		<th scope="row" class="titledesc"><?php echo esc_html( $options['title'] ) ?><?php echo $tooltip_html; ?></th>
 		<td class="forminp">
-			<?php echo str_replace( ' id=', " data-placeholder='" . esc_attr__( 'Select a page&hellip;', 'woocommerce' ) . "' style='" . $options['css'] . "' class='" . $options['class'] . "' id=", wp_dropdown_pages( $args ) ); ?><?php echo $description; ?>
+			<?php echo str_replace( ' id=', " data-placeholder='" . esc_attr__( 'Select a page&hellip;', 'learn_press' ) . "' style='" . $options['css'] . "' class='" . $options['class'] . "' id=", wp_dropdown_pages( $args ) ); ?><?php echo $description; ?>
 		</td>
 		</tr><?php
 		break;
@@ -171,7 +171,7 @@ switch ( $options['type'] ) {
 			<?php echo $tooltip_html; ?>
 		</th>
 		<td class="forminp">
-			<select name="<?php echo esc_attr( $options['id'] ); ?>" style="<?php echo esc_attr( $options['css'] ); ?>" data-placeholder="<?php esc_attr_e( 'Choose a country&hellip;', 'woocommerce' ); ?>" title="<?php esc_attr_e( 'Country', 'woocommerce' ) ?>" class="wc-enhanced-select">
+			<select name="<?php echo esc_attr( $options['id'] ); ?>" style="<?php echo esc_attr( $options['css'] ); ?>" data-placeholder="<?php esc_attr_e( 'Choose a country&hellip;', 'learn_press' ); ?>" title="<?php esc_attr_e( 'Country', 'learn_press' ) ?>" class="wc-enhanced-select">
 				<?php WC()->countries->country_dropdown_options( $country, $state ); ?>
 			</select> <?php echo $description; ?>
 		</td>
@@ -197,7 +197,7 @@ switch ( $options['type'] ) {
 			<?php echo $tooltip_html; ?>
 		</th>
 		<td class="forminp">
-			<select multiple="multiple" name="<?php echo esc_attr( $options['id'] ); ?>[]" style="width:350px" data-placeholder="<?php esc_attr_e( 'Choose countries&hellip;', 'woocommerce' ); ?>" title="<?php esc_attr_e( 'Country', 'woocommerce' ) ?>" class="wc-enhanced-select">
+			<select multiple="multiple" name="<?php echo esc_attr( $options['id'] ); ?>[]" style="width:350px" data-placeholder="<?php esc_attr_e( 'Choose countries&hellip;', 'learn_press' ); ?>" title="<?php esc_attr_e( 'Country', 'learn_press' ) ?>" class="wc-enhanced-select">
 				<?php
 				if ( !empty( $countries ) ) {
 					foreach ( $countries as $key => $val ) {
@@ -206,14 +206,14 @@ switch ( $options['type'] ) {
 				}
 				?>
 			</select> <?php echo ( $description ) ? $description : ''; ?> </br>
-			<a class="select_all button" href="#"><?php _e( 'Select all', 'woocommerce' ); ?></a>
-			<a class="select_none button" href="#"><?php _e( 'Select none', 'woocommerce' ); ?></a>
+			<a class="select_all button" href="#"><?php _e( 'Select all', 'learn_press' ); ?></a>
+			<a class="select_none button" href="#"><?php _e( 'Select none', 'learn_press' ); ?></a>
 		</td>
 		</tr><?php
 		break;
 
 	// Default: run an action
 	default:
-		do_action( 'woocommerce_admin_field_' . $options['type'], $options );
+		do_action( 'learn_press_admin_field_' . $options['type'], $options );
 		break;
 }

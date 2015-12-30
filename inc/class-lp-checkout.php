@@ -91,7 +91,7 @@ class LP_Checkout {
 				$item_id = $order->add_item( $item );
 
 				if ( !$item_id ) {
-					throw new Exception( sprintf( __( 'Error %d: Unable to create order. Please try again.', 'woocommerce' ), 402 ) );
+					throw new Exception( sprintf( __( 'Error %d: Unable to create order. Please try again.', 'learn_press' ), 402 ) );
 				}
 
 				// Allow plugins to add order item meta

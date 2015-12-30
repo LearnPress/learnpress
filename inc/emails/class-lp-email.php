@@ -424,7 +424,7 @@ class LP_Email {
 			}
 
 			if ( !$saved ) {
-				$redirect = add_query_arg( 'wc_error', urlencode( __( 'Could not write to template file.', 'learn_press' ) ) );
+				$redirect = add_query_arg( 'learn_press_error', urlencode( __( 'Could not write to template file.', 'learn_press' ) ) );
 				wp_redirect( $redirect );
 				exit;
 			}
