@@ -838,8 +838,9 @@ class LP_Abstract_User {
 		global $wpdb;
 		$items = LP_Course::get_course( $course_id )->get_curriculum_items( array( 'field' => 'ID' ) );
 
-		// How to make this simpler, LOL?
-		$query = $wpdb->prepare( "
+		if( $items ) {
+			// How to make this simpler, LOL?
+			$query = $wpdb->prepare( "
 			SELECT order_id, si.item_id
 			FROM {$wpdb->posts} o
 			INNER JOIN {$wpdb->postmeta} om ON om.post_id = o.ID AND om.meta_key = %s AND om.meta_value = %d
@@ -850,9 +851,10 @@ class LP_Abstract_User {
 			INNER JOIN {$wpdb->learnpress_section_items} si ON si.section_id = s.id WHERE si.item_id IN (" . join( ',', $items ) . ")
 		", '_user_id', $this->id, '_course_id' );
 
-		if ( $results = $wpdb->get_results( $query ) ) {
-			foreach ( $results as $row ) {
-				self::$_order_items[$row->item_id] = $row->order_id;
+			if ( $results = $wpdb->get_results( $query ) ) {
+				foreach ( $results as $row ) {
+					self::$_order_items[$row->item_id] = $row->order_id;
+				}
 			}
 		}
 		$courses_parsed[$course_id] = true;

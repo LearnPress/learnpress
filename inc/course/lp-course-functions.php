@@ -228,19 +228,8 @@ function learn_press_get_course_curriculum( $course_id ) {
  */
 function learn_press_is_enrolled_course( $course_id = null, $user_id = null ) {
 	_deprecated_function( __FUNCTION__, '1.0', need_to_updating());
-	if ( !$course_id ) {
-		$course_id = get_the_ID();
-	}
-	if ( !$user_id ) {
-		$user_id = get_current_user_id();
-	}
-
-
-	$course_taken = get_user_meta( $user_id, '_lpr_user_course', true );
-	if ( $course_taken ) {
-		if ( in_array( $course_id, $course_taken ) ) {
-			return true;
-		}
+	if( $course = LP_Course::get_course( $course_id ) && $user = learn_press_get_user( $user_id ) ){
+		return $user->has_enrolled_course( $course_id );
 	}
 	return false;
 }

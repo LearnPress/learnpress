@@ -33,7 +33,7 @@ if ( !class_exists( 'LP_Admin' ) ) {
 			if ( $did ) return;
 			$js = array(
 				'ajax'       => admin_url( 'admin-ajax.php' ),
-				'plugin_url' => LearnPress()->plugin_url(),
+				'plugin_url' => learn_press_plugin_url(),
 				'siteurl' => home_url()
 			);
 			echo '<script type="text/javascript">var LearnPress_Settings = ' . json_encode( $js ) . '</script>';

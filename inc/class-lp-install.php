@@ -46,7 +46,8 @@ class LP_Install {
 		if( !self::$_update_files ){
 			return;
 		}
-		$latest_version = end( array_keys( self::$_update_files ) );
+		$versions = array_keys( self::$_update_files );
+		$latest_version = end( $versions );
 		// Update LearnPress from 0.9.x to 1.0
 		if ( version_compare( learn_press_get_current_version(), $latest_version, '=' ) ) {
 			add_action( 'admin_notices', array( __CLASS__, 'hide_other_notices' ), -100 );

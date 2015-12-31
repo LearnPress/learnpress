@@ -26,7 +26,7 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
 			//LP_Admin_Assets::enqueue_script( 'toastr',         LP_JS_URL . 'toastr.js' );
 			//LP_Admin_Assets::enqueue_script( 'tojson',         LP_JS_URL . 'toJSON.js' );
 			LP_Admin_Assets::enqueue_script( 'modal-search-items' );
-			LP_Admin_Assets::enqueue_script( 'meta-box-course',    LearnPress()->plugin_url( 'assets/js/admin/meta-box-course.js' ), array( 'jquery' ) );
+			LP_Admin_Assets::enqueue_script( 'meta-box-course',    learn_press_plugin_url( 'assets/js/admin/meta-box-course.js' ), array( 'jquery' ) );
 
 
 			LP_Admin_Assets::add_localize(

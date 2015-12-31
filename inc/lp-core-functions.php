@@ -2117,7 +2117,7 @@ function learn_press_reset_auto_increment( $table ) {
 function learn_press_front_scripts(){
 	$js = array(
 		'ajax'       => admin_url( 'admin-ajax.php' ),
-		'plugin_url' => LearnPress()->plugin_url(),
+		'plugin_url' => LP()->plugin_url(),
 		'siteurl' => home_url()
 	);
 	echo '<script type="text/javascript">var LearnPress_Settings = ' . json_encode( $js ) . '</script>';

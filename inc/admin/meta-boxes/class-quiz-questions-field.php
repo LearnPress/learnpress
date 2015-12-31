@@ -11,7 +11,11 @@ defined( 'ABSPATH' ) || exit;
  * @extend  RWMB_Field
  */
 if ( !class_exists( 'RWMB_Quiz_Questions_Field' ) ) {
+
 	class RWMB_Quiz_Questions_Field extends RWMB_Field {
+		/**
+		 * Construct
+		 */
 		function __construct() {
 
 		}
@@ -21,7 +25,7 @@ if ( !class_exists( 'RWMB_Quiz_Questions_Field' ) ) {
 			$q->admin_script();*/
 			LP_Admin_Assets::enqueue_style( 'select2', RWMB_CSS_URL . 'select2/select2.css' );
 			LP_Admin_Assets::enqueue_script( 'select2', RWMB_JS_URL . 'select2/select2.min.js' );
-			LP_Admin_Assets::enqueue_script( 'lpr-quiz-question', LearnPress()->plugin_url( 'assets/js/admin/meta-box-quiz.js' ) );
+			LP_Admin_Assets::enqueue_script( 'lpr-quiz-question', learn_press_plugin_url( 'assets/js/admin/meta-box-quiz.js' ) );
 			wp_enqueue_script( 'modal-search-items' );
 
 		}
@@ -116,7 +120,7 @@ if ( !class_exists( 'RWMB_Quiz_Questions_Field' ) ) {
 			return ob_get_clean();
 		}
 
-		static function save(){
+		static function save( $new, $old, $post_id, $field ){
 			global $wpdb, $post;
 
 			$questions = learn_press_get_request( 'learn_press_question' );

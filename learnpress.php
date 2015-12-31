@@ -155,7 +155,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 
 			// let third parties know that we're ready
 			do_action( 'learn_press_loaded' );
-			do_action( 'learn_press_register_add_ons' );
+			//do_action( 'learn_press_register_add_ons' );
 		}
 
 		function __get( $key ) {
@@ -587,9 +587,3 @@ function test_mail() {
 }
 
 add_action( 'admin_footer', 'test_mail' );
-
-
-function learn_press_output_file2( $file, $content ) {
-	$upload = wp_upload_dir();
-	file_put_contents( $upload['basedir'] . '/' . $file, $content );
-}

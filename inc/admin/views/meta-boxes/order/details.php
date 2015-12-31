@@ -1,5 +1,10 @@
 <?php
-$currency_symbol = learn_press_get_currency_symbol( $order_items->currency );
+if( isset( $order_items ) ) {
+	$currency_symbol = learn_press_get_currency_symbol( $order_items->currency );
+}else{
+	$currency_symbol = learn_press_get_currency_symbol( );
+}
+global $post;
 ?>
 <div id="learn-press-order" class="order-details">
 	<div class="order-data">

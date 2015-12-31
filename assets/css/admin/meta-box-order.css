@@ -44,7 +44,7 @@
 	height: 30px;
 	text-align: left;
 	font-size: 16px;
-
+	padding: 15px 10px;
 }
 
 #order_details .order-items table td {

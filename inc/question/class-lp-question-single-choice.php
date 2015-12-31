@@ -20,7 +20,7 @@ class LP_Question_Single_Choice extends LP_Abstract_Question {
 
 	}
 
-	function admin_js_template(){
+	static function admin_js_template(){
 		ob_start();
 		?>
 		<tr class="lp-list-option lp-list-option-new lp-list-option-empty <# if(data.id){ #>lp-list-option-{{data.id}}<# } #>" data-id="{{data.id}}">

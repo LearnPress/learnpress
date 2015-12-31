@@ -4,7 +4,10 @@
  *
  * @package Admin/Views
  */
-$section_item_id = $item->section_item_id;
+if( !isset( $section ) ){
+	$section = null;
+}
+$section_item_id = !empty( $item->section_item_id ) ? $item->section_item_id : 0;
 $group_name = '_lp_curriculum[__SECTION__][items][' . ( $section_item_id ? $section_item_id : '__ITEM__' ) . ']';
 ?>
 
