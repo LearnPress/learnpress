@@ -23,7 +23,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 				'quick_add_item'                  => false,
 				'add_new_item'                    => false,
 				'toggle_lesson_preview'           => false,
-				'remove_post_items'               => false,
+				'remove_course_items'             => false,
 				'search_courses'                  => false,
 				'add_item_to_order'               => false,
 				'remove_order_item'               => false,
@@ -32,6 +32,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 				'remove_quiz_question'            => false,
 				'modal_search_items'              => false,
 				'add_item_to_section'             => false,
+				'remove_course_section'           => false,
 				/////////////
 				'quick_add_lesson'                => false,
 				'quick_add_quiz'                  => false,
@@ -129,13 +130,15 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			if ( !empty( $_GET['exclude'] ) ) {
 				$exclude = array_map( 'intval', $_GET['exclude'] );
 			}
-			$args = array(
+			$exclude = array_unique( (array) apply_filters( 'learn_press_modal_search_items_exclude', $exclude, $type, $context, $context_id ) );
+			$exclude = array_map( 'intval', $exclude );
+			$args    = array(
 				'post_type'      => array( $type ),
 				'posts_per_page' => - 1,
 				'post_status'    => 'publish',
 				'order'          => 'ASC',
 				'orderby'        => 'parent title',
-				'exclude'        => array_unique( (array) apply_filters( 'learn_press_modal_search_items_exclude', $exclude, $type, $context, $context_id ) )
+				'exclude'        => $exclude
 			);
 			if ( !$user->is_admin() ) {
 				$args['author'] = $user->id;
@@ -449,12 +452,22 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			learn_press_send_json( $found_courses );
 		}
 
-		static function remove_post_items() {
+		static function remove_course_section() {
 			$id = learn_press_get_request( 'id' );
 			if ( $id ) {
-				foreach ( $id as $post_id ) {
-					wp_delete_post( $post_id );
-				}
+				global $wpdb;
+				$query = $wpdb->prepare( "
+					DELETE FROM {$wpdb->prefix}learnpress_section_items
+					WHERE section_id = %d
+				", $id );
+				$wpdb->query( $query );
+				learn_press_reset_auto_increment( 'learnpress_section_items' );
+				$query = $wpdb->prepare( "
+					DELETE FROM {$wpdb->prefix}learnpress_sections
+					WHERE section_id = %d
+				", $id );
+				$wpdb->query( $query );
+				learn_press_reset_auto_increment( 'learnpress_sections' );
 			}
 			die();
 		}

@@ -319,9 +319,9 @@ abstract class LP_Abstract_Course {
 	 */
 	function is_required_enroll(){
 		if( func_get_args() ){
-			$required = $this->enroll_requirement == func_get_arg(0);
+			$required = $this->required_enroll == func_get_arg(0);
 		}else{
-			$required = $this->enroll_requirement != 'no';
+			$required = $this->required_enroll != 'no';
 		}
 		return apply_filters( 'learn_press_course_required_enroll', $required, $this );
 	}
@@ -519,7 +519,7 @@ abstract class LP_Abstract_Course {
 	 */
 	function is_purchaseable(){
 		// TODO: needs to check more criteria, currently only check if this course is required enrollment
-		return $this->enroll_requirement;
+		return $this->required_enroll;
 	}
 
 	function has_item( $item_id ){

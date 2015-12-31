@@ -17,18 +17,10 @@ if ( !class_exists( 'LP_Admin' ) ) {
 		 *  Constructor
 		 */
 		public function __construct() {
-
 			$this->includes();
 			add_action( 'admin_print_scripts', array( $this, 'plugin_js_settings' ) );
-			add_action( 'init', array( $this, 'include_update' ) );
+			//add_action( 'init', array( $this, 'include_update' ) );
 			add_action( 'template_redirect', array( $this, '_redirect' ) );
-		}
-
-		function include_update(){
-			// Update LearnPress from 0.9.x to 1.0
-			if ( version_compare( LP()->db_version, '1.0', '<' ) ) {
-				learn_press_include( 'updates/learnpress-update-1.0.php' );
-			}
 		}
 
 		/**

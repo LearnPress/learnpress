@@ -114,6 +114,25 @@
 		}).on( 'click', '#button-rollback-database', function(e){
 			e.preventDefault();
 			doRollbackDatabase();
+		}).on( 'click', '#learn-press-update-button', function(e){
+			e.preventDefault();
+			$('.lp-update-actions').addClass('lp-ajaxload');
+			$('.upgrade-error').remove();
+			$.ajax({
+				url: window.location.href,
+				type: 'post',
+				dataType: 'text',
+				data: $(this).closest('form').serialize(),
+				success: function(response){
+					$('.lp-update-content').replaceWith( $(response).filter('.lp-update-content') );
+				},
+				error: function(){
+					var $d = $('.lp-update-actions').removeClass('lp-ajaxload');
+					$('<p class="upgrade-error">' + 'Upgrade error' + '</p>').insertBefore($d);
+
+				}
+			});
+
 		});
 	});
 })(jQuery);

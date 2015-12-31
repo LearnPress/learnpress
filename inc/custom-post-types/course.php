@@ -378,7 +378,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 				'fields'   => array(
 					array(
 						'name'    => __( 'Requires enroll', 'learn_press' ),
-						'id'      => "{$prefix}enroll_requirement",
+						'id'      => "{$prefix}required_enroll",
 						'type'    => 'radio',
 						'desc'    => __( 'Require users logged in to study or public to all', 'learn_press' ),
 						'options' => array(
@@ -394,10 +394,10 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						'type'    => 'radio',
 						'desc'    => __( 'If Paid be checked, An administrator will review then set course price and commission', 'learn_press' ),
 						'options' => array(
-							'free'     => __( 'Free', 'learn_press' ),
-							'not_free' => __( 'Paid', 'learn_press' ),
+							'no'     => __( 'Free', 'learn_press' ),
+							'yes' => __( 'Paid', 'learn_press' ),
 						),
-						'std'     => 'free',
+						'std'     => 'no',
 						'class'   => 'lp-course-payment-field'
 					)
 				)

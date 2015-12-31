@@ -86,7 +86,7 @@ class LP_Settings_General extends LP_Settings_Base {
 				array(
 					'title'   => __( 'Debug mode', 'learn_press' ),
 					'id'      => $this->get_field_name( 'debug' ),
-					'default' => 'no',
+					'default' => 'yes',
 					'type'    => 'checkbox',
 					'desc'    => __( 'Turn on/off debug mode for developer', 'learn_press' )
 				)

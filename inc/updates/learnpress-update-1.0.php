@@ -27,10 +27,29 @@ class LP_Upgrade_10 {
 	 */
 	protected $_current_step = '';
 
+	/**
+	 * @var array
+	 */
 	public static $courses_map = array();
+
+	/**
+	 * @var array
+	 */
 	public static $orders_map = array();
+
+	/**
+	 * @var array
+	 */
 	public static $course_order_map = array();
+
+	/**
+	 * @var array
+	 */
 	public static $quizzes_map = array();
+
+	/**
+	 * @var array
+	 */
 	public static $questions_map = array();
 
 	/**
@@ -41,11 +60,16 @@ class LP_Upgrade_10 {
 		$this->learn_press_upgrade_10_page();
 	}
 
+	/**
+	 * Redirect user to Dashboard if they are trying to access the menus in old version
+	 */
 	private function _prevent_access_admin() {
-		/*if( $this->check_post_types() || $this->check_admin_menu() ) {
-			wp_redirect( admin_url( 'admin.php?page=learnpress_update_10' ) );
-			exit;
-		}*/
+		if ( ( $this->check_post_types() ) ) {
+			//if ( !( !empty( $_REQUEST['page'] && $_REQUEST['page'] == 'learn_press_upgrade_10' ) ) ) {
+				wp_redirect( admin_url( 'index.php' ) );
+				exit;
+			//}
+		}
 	}
 
 	/**
@@ -163,7 +187,7 @@ class LP_Upgrade_10 {
 						$new_value = 'no';
 					}
 					break;
-				case '_lp_enroll_requirement':
+				case '_lp_required_enroll':
 					if ( $this->_is_false_value( $new_value ) ) {
 						$new_value = 'no';
 					} else {
@@ -400,7 +424,8 @@ class LP_Upgrade_10 {
 			WHERE pm.meta_key in ('" . join( "','", $keys ) . "')
 			AND pm.post_id = %d
 		", absint( $post_id ) );
-		return $wpdb->get_results( $query, ARRAY_A );
+		$metas = (array)$wpdb->get_results( $query, ARRAY_A );
+		return $metas;
 	}
 
 	private function rollback_database() {
@@ -706,15 +731,15 @@ class LP_Upgrade_10 {
 			wp_redirect( admin_url() );
 			exit();
 		}
-
+		//if( strtolower($_SERVER['REQUEST_METHOD']) == 'post'){ print_r($_POST);die();}
 		if ( !empty( $_POST['action'] ) && $_POST['action'] == 'upgrade' ) {
 			if ( $this->do_upgrade() ) {
 				$_REQUEST['step'] = 'upgraded';
 			}
 		}
 
-		wp_enqueue_style( 'lp-update-10', LP()->plugin_url( 'assets/css/upgrade-10.css' ), array( 'dashicons', 'install' ) );
-		wp_enqueue_script( 'lp-update-10', LP()->plugin_url( 'assets/js/upgrade-10.js' ), array( 'jquery' ) );
+		wp_enqueue_style( 'lp-update-10', LP()->plugin_url( 'inc/updates/1.0/style.css' ), array( 'dashicons', 'install' ) );
+		wp_enqueue_script( 'lp-update-10', LP()->plugin_url( 'inc/updates/1.0/script.js' ), array( 'jquery' ) );
 
 		add_action( 'learn_press_update_step_welcome', array( $this, 'update_welcome' ) );
 		add_action( 'learn_press_update_step_upgraded', array( $this, 'update_upgraded' ) );

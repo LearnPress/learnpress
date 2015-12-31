@@ -11,18 +11,17 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit;
-
 /**
  * Class LP_Install
  */
 class LP_Install {
 
 	/**
-	 * DB update versions
+	 * Hold the file for each update
 	 *
 	 * @var array
 	 */
-	private static $_db_updates = array();
+	private static $_update_files = array();
 
 	private static $_is_old_version = null;
 
@@ -30,8 +29,9 @@ class LP_Install {
 	 * Init
 	 */
 	static function init() {
+		add_action( 'admin_init', array( __CLASS__, 'get_update_versions' ), -15 );
+		add_action( 'admin_init', array( __CLASS__, 'include_update' ), -10 );
 		add_action( 'admin_init', array( __CLASS__, 'update_version_10' ), 5 );
-		add_action( 'admin_init', array( __CLASS__, 'get_update_versions' ), 5 );
 		add_action( 'admin_init', array( __CLASS__, 'check_version' ), 5 );
 		add_action( 'admin_init', array( __CLASS__, 'db_update_notices' ), 5 );
 		add_action( 'admin_init', array( __CLASS__, 'update_actions' ), 5 );
@@ -40,6 +40,22 @@ class LP_Install {
 		add_action( 'wp_ajax_learn_press_hide_upgrade_notice', array( __CLASS__, 'hide_upgrade_notice' ) );
 		add_action( 'admin_init', array( __CLASS__, 'upgrade_wizard' ) );
 		add_action( 'admin_menu', array( __CLASS__, 'admin_menu' ) );
+	}
+
+	static function include_update(){
+		if( !self::$_update_files ){
+			return;
+		}
+		$latest_version = end( array_keys( self::$_update_files ) );
+		// Update LearnPress from 0.9.x to 1.0
+		if ( version_compare( learn_press_get_current_version(), $latest_version, '=' ) ) {
+			add_action( 'admin_notices', array( __CLASS__, 'hide_other_notices' ), -100 );
+			learn_press_include( 'updates/' . self::$_update_files[ $latest_version ] );
+		}
+	}
+
+	static function hide_other_notices(){
+		remove_action( 'admin_notices', 'learn_press_one_click_install_sample_data_notice' );
 	}
 
 	static function update_version_10() {
@@ -58,8 +74,8 @@ class LP_Install {
 		if ( version_compare( LEARNPRESS_VERSION, '1.0' ) === 0 && self::_need_to_update() || $update ) {
 			// Notify for administrator
 			if(  empty( $ask ) && learn_press_current_user_is( 'administrator') ){
-				LP_Admin_Assets::enqueue_style( 'learn-press-upgrade', LP()->plugin_url( 'assets/css/admin/upgrade.css' ) );
-				LP_Admin_Assets::enqueue_script( 'learn-press-upgrade', LP()->plugin_url( 'assets/js/admin/upgrade.js' ) );
+				LP_Admin_Assets::enqueue_style( 'learn-press-upgrade', LP()->plugin_url( 'inc/updates/1.0/style.css' ) );
+				LP_Admin_Assets::enqueue_script( 'learn-press-upgrade', LP()->plugin_url( 'inc/updates/1.0/script.js' ) );
 				$upgrade_url = wp_nonce_url( admin_url( 'options-general.php?page=learn_press_upgrade_10' ), 'learn-press-upgrade' );
 				$message     = sprintf( '<p>%s</p>', __( 'It seem to be you have updated LearnPress from old version and there are some courses or data is out of date and need to upgrade.', 'learn_press' ) );
 				$message .= sprintf( '<div id="learn-press-confirm-abort-upgrade-course"><p><label><input type="checkbox" id="learn-press-ask-again-abort-upgrade" /> %s</label></p><p><button href="" class="button disabled" data-action="yes">%s</button> <button href="" class="button" data-action="no">%s</button> </p></div>', __( 'Do not ask again.', 'learn_press' ), __( 'Ok', 'learn_press' ), __( 'Cancel', 'learn_press' ) );
@@ -111,10 +127,11 @@ class LP_Install {
 				}
 			}
 			if ( $patches ) {
-				self::$_db_updates = $patches;
+				ksort( $patches );
+				self::$_update_files = $patches;
 			}
 		} else {
-			self::$_db_updates = $patches;
+			self::$_update_files = $patches;
 		}
 	}
 
@@ -122,7 +139,7 @@ class LP_Install {
 	 * Check version
 	 */
 	static function check_version() {
-		if ( !defined( 'IFRAME_REQUEST' ) && ( get_option( 'learnpress_version' ) != LP()->version || get_option( 'learnpress_version' ) != LP()->version ) ) {
+		if ( !defined( 'IFRAME_REQUEST' ) && ( get_option( 'learnpress_version' ) != LP()->version ) ) {
 			self::install();
 		}
 	}
@@ -316,8 +333,8 @@ CREATE TABLE {$wpdb->prefix}learnpress_quiz_questions (
   quiz_question_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   quiz_id bigint(11) unsigned NOT NULL DEFAULT '0',
   question_id bigint(11) unsigned NOT NULL DEFAULT '0',
-  question_order bigint(11) unsigned NOT NULL DEFAULT '1'
-  params longtext NOT NULL,
+  question_order bigint(11) unsigned NOT NULL DEFAULT '1',
+  params longtext NULL,
   PRIMARY KEY (quiz_question_id)
 ) $collate;
 CREATE TABLE {$wpdb->prefix}learnpress_review_logs (
@@ -343,7 +360,7 @@ CREATE TABLE {$wpdb->prefix}learnpress_sections (
   section_name varchar(255) NOT NULL DEFAULT '',
   section_course_id bigint(11) unsigned NOT NULL DEFAULT '0',
   section_order bigint(5) unsigned NOT NULL DEFAULT '0',
-  section_description longtext NOT NULL
+  section_description longtext NOT NULL,
   PRIMARY KEY (section_id)
 ) $collate;
 CREATE TABLE  {$wpdb->prefix}learnpress_user_courses (

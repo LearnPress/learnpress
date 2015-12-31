@@ -433,7 +433,6 @@ function learn_press_print_script() {
 	}
 }
 
-add_action( 'wp_head', 'learn_press_head' );
 add_action( 'wp_footer', 'learn_press_print_script' );
 add_action( 'admin_footer', 'learn_press_print_script' );
 
@@ -2124,6 +2123,11 @@ function learn_press_front_scripts(){
 	echo '<script type="text/javascript">var LearnPress_Settings = ' . json_encode( $js ) . '</script>';
 }
 add_action( 'wp_print_scripts', 'learn_press_front_scripts');
+
+function learn_press_get_current_version(){
+	$data = get_plugin_data( LP_PLUGIN_FILE, $markup = true, $translate = true );
+	return $data['Version'];
+}
 
 include_once "debug.php";
 //function learn_press_register_addons() {
