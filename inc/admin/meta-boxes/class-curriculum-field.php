@@ -44,11 +44,7 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
                     'add_lesson_to_section'         => __( 'Lesson added to section complete!', 'learn_press' ),
                     'add_quiz_to_section'           => __( 'Quiz added to section complete!', 'learn_press' ),
                     'update_lesson_quiz'            => __( '%s updated', 'learn_press' ),
-                    'quick_edit_name'               => __( 'Click to quick edit name', 'learn_press' ),
-                    'confirm_remove_section_assignment' => __( 'Do you want to remove this assignment permanently', 'learn_press' ),
-                    'add_new_assignment' 			=> __( 'New assignment added', 'learn_press' ),
-                    'remove_section_assignment'		=> __( 'The assignment removed', 'learn_press' ),
-                    'add_assignment_to_section'		=> __( 'Assignment added to section complete!', 'learn_press' )
+                    'quick_edit_name'               => __( 'Click to quick edit name', 'learn_press' )
                 ), null, 'meta-box-course'
             );
 		}

@@ -85,7 +85,7 @@ class LP_Upgrade_10 {
 				$post_type = get_post_field( $post_id, 'post_type' );
 			}
 		}
-		$old_post_types = array( 'lpr_course', 'lpr_lesson', 'lpr_quiz', 'lpr_question', 'lpr_order', 'lpr_assignment' );
+		$old_post_types = array( 'lpr_course', 'lpr_lesson', 'lpr_quiz', 'lpr_question', 'lpr_order' );
 		return in_array( $post_type, $old_post_types );
 	}
 
@@ -433,7 +433,7 @@ class LP_Upgrade_10 {
 		$query = "
 			SELECT ID
 			FROM {$wpdb->posts}
-			WHERE post_type IN('lp_course', 'lp_lesson', 'lp_quiz', 'lp_question', 'lp_assignment', 'lp_order' )
+			WHERE post_type IN('lp_course', 'lp_lesson', 'lp_quiz', 'lp_question', 'lp_order' )
 		";
 		if ( $ids = $wpdb->get_col( $query ) ) {
 			$wpdb->query( "DELETE FROM {$wpdb->postmeta} WHERE post_id IN(" . join( ",", $ids ) . ")" );
