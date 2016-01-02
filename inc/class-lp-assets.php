@@ -23,8 +23,8 @@ class LP_Assets extends LP_Abstract_Assets {
 
 	static function init() {
 		add_action( 'learn_press_print_assets', array( __CLASS__, '_print_assets' ) );
-		add_filter( 'script_loader_src', array( __CLASS__, 'script_loader_src' ), 10, 2 );
-		add_action( 'learn_press_settings_save_general', array( __CLASS__, '_minify_source' ) );
+		/*add_filter( 'script_loader_src', array( __CLASS__, 'script_loader_src' ), 10, 2 );
+		add_action( 'learn_press_settings_save_general', array( __CLASS__, '_minify_source' ) );*/
 		parent::init();
 	}
 
