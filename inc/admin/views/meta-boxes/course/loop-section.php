@@ -7,6 +7,15 @@
  * @param $section_name
  * @param $content_items
  */
+if( empty( $section ) ){
+	$section = (object)array(
+		'section_id' => null,
+		'section_name' => '',
+		'section_course_id' => null,
+		'section_order' => null,
+		'section_description' => __( 'Describe about this section', 'learn_press' )
+	);
+}
 $is_hidden = $section->section_id && is_array( $hidden_sections ) && in_array( $section->section_id, $hidden_sections );
 $class = array(
 	'curriculum-section'
@@ -42,14 +51,14 @@ if( $is_hidden ){
 			</div>-->
 		</div>
 		<table class="curriculum-section-items">
-			<?php echo $content_items;?>
+			<?php echo isset( $content_items ) ? $content_items : '';?>
 			<?php learn_press_admin_view( 'meta-boxes/course/loop-item.php', array( 'item' => learn_press_post_object( array( 'post_type' => LP()->lesson_post_type ) ) ) );?>
 		</table>
 		<?php do_action( 'learn_press_after_section_items', $section );?>
 		<?php if( $buttons = apply_filters( 'learn_press_loop_section_buttons', array() ) ):?>
 			<br />
 			<div class="lp-add-buttons">
-				<input type="text" class="regular-text no-submit" name="lp-new-item-name" placeholder="<?php _e( 'The name of new question or quiz and hit enter', 'learn_press' );?>" />
+				<input type="text" class="regular-text no-submit" name="lp-new-item-name" placeholder="<?php _e( 'The name of new question or quiz', 'learn_press' );?>" />
 				<div class="button lp-button-dropdown lp-button-add-item disabled">
 					<span class="lp-dropdown-label lp-add-new-item"><?php _e( 'Add New', 'learn_press' );?></span>
 					<span class="lp-dropdown-arrow">+</span>

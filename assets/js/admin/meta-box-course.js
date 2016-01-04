@@ -32,6 +32,7 @@
 				'click .lp-toggle'                    : 'toggleSection',
 				'click .lp-course-curriculum-toggle a': 'toggleSections',
 				'keyup input.no-submit'               : 'onEnterInput',
+				'update input.no-submit'               : 'onEnterInput',
 				'keydown'                             : 'preventSubmit',
 				'click .lp-add-buttons button'        : 'sectionActionHandler',
 				'click .lp-item-new .handle'          : 'toggleItemType',
@@ -331,7 +332,7 @@
 								that.addItemToSection($item, $section);
 							}
 							$item.removeClass('lp-item-empty');
-							$input.val('').focus().trigger('change');
+							$input.val('').focus().trigger('keyup');
 						}
 					}
 				});

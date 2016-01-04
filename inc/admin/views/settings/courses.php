@@ -10,7 +10,7 @@
 if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
-
+$settings = LP_Settings::instance();
 ?>
 <h3 class=""><?php echo $this->section['text']; ?></h3>
 <table class="form-table">

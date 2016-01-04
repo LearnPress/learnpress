@@ -325,6 +325,9 @@ li.quiz, li.lesson, li.quick_lesson, li.quick_quiz {
 .learn-press-add-ons .action-links > span.disabled{
     color: #FF0000;
 }
+.learn-press-add-ons .plugin-icon img{
+	max-width: 100%;
+}
 #learn-press-bundle-activate-add-ons.spinner{
     float: left !important;
 }

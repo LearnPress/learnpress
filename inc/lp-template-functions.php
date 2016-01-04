@@ -235,7 +235,6 @@ if ( !function_exists( 'learn_press_course_status_message' ) ) {
 	 * Display course status message
 	 */
 	function learn_press_course_status_message() {
-		_deprecated_function( __FUNCTION__, '1.0', need_to_updating());
 		learn_press_get_template( 'single-course/course-pending.php' );
 	}
 }

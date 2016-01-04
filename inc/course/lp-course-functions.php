@@ -227,7 +227,7 @@ function learn_press_get_course_curriculum( $course_id ) {
  * @return boolean
  */
 function learn_press_is_enrolled_course( $course_id = null, $user_id = null ) {
-	_deprecated_function( __FUNCTION__, '1.0', need_to_updating());
+	_deprecated_function( __FUNCTION__, '1.0', 'LP_User -> has_enrolled_course');
 	if( $course = LP_Course::get_course( $course_id ) && $user = learn_press_get_user( $user_id ) ){
 		return $user->has_enrolled_course( $course_id );
 	}
@@ -259,8 +259,11 @@ function learn_press_is_free_course( $course_id = null ) {
  * @return  string
  */
 function learn_press_get_user_course_status( $user_id = null, $course_id = null ) {
-	_deprecated_function( __FUNCTION__, '1.0', need_to_updating());
-
+	_deprecated_function( __FUNCTION__, '1.0', 'LP_User() -> get_course_status');
+	if( $course = LP_Course::get_course( $course_id ) && $user = learn_press_get_user( $user_id ) ){
+		return $user->get_course_status( $course_id );
+	}
+	return false;
 	$status = null;
 	// try to get current user if not passed
 	if ( !$user_id ) $user_id = get_current_user_id();
@@ -361,7 +364,12 @@ function learn_press_course_enroll_required( $course_id = null ) {
  * @return mixed
  */
 function learn_press_user_has_completed_lesson( $lesson_id = null, $user_id = null ) {
-	_deprecated_function( __FUNCTION__, '1.0', need_to_updating());
+
+	_deprecated_function( __FUNCTION__, '1.0', 'LP_User() -> has_completed_quiz');
+	if( $user = learn_press_get_user( $user_id ) ){
+		return $user->has_completed_quiz( $lesson_id );
+	}
+	return false;
 
 	$lesson_id = learn_press_get_lesson_id( $lesson_id );
 	if ( !$user_id ) $user_id = get_current_user_id();

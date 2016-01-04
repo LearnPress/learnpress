@@ -89,7 +89,12 @@ function learn_press_get_quiz_id( $id ) {
  * @return  boolean
  */
 function learn_press_user_has_completed_quiz( $user_id = null, $quiz_id = null ) {
-	_deprecated_function( __FUNCTION__, '1.0', 'Need to edit this function' );
+	_deprecated_function( __FUNCTION__, '1.0', 'LP_User() -> has_completed_quiz' );
+
+	if( $user = learn_press_get_user( $user_id ) ){
+		return $user->has_completed_quiz( $quiz_id );
+	}
+	return false;
 	$completed = false;
 	// if $user_id is not passed, try to get it from current user
 	if ( !$user_id ) {
