@@ -77,5 +77,3 @@ class LP_Gateways {
 		return self::$_instance;
 	}
 }
-
-

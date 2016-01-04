@@ -61,18 +61,14 @@ class LP_Install {
 
 	static function update_version_10() {
 
-		$update = false;
-
 		if( !self::_has_new_table() ){
 			self::_create_tables();
-			$update = true;
 		}
 		if( ! get_option( 'learnpress_version' ) ){
 			self::_create_options();
-			$update = true;
 		}
 		$ask = get_transient( 'learn_press_upgrade_courses_ask_again' );
-		if ( version_compare( LEARNPRESS_VERSION, '1.0' ) === 0 && self::_need_to_update() || $update ) {
+		if ( self::_need_to_update() ) {
 			// Notify for administrator
 			if(  empty( $ask ) && learn_press_current_user_is( 'administrator') ){
 				LP_Admin_Assets::enqueue_style( 'learn-press-upgrade', LP()->plugin_url( 'inc/updates/1.0/style.css' ) );

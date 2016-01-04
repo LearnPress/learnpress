@@ -80,4 +80,3 @@ $settings = LP()->settings;
 		</tbody>
 	</table>
 	<?php } ?>
-<?php

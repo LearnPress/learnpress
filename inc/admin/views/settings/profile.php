@@ -34,4 +34,3 @@ $settings = LP()->settings;
 		<?php do_action( 'learn_press_after_' . $this->id . '_settings_fields', $this ); ?>
 		</tbody>
 	</table>
-<?php

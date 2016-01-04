@@ -168,8 +168,8 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 				'not_found'          => sprintf( __( 'You have not got any course yet. Click <a href="%s">Add new</a> to start', 'learn_press' ), admin_url( 'post-new.php?post_type=lp_course' ) ),
 				'not_found_in_trash' => __( 'No course found in Trash', 'learn_press' ),
 			);
-
-			$course_permalink = empty( $course_base = $settings->get( 'course_base' ) ) ? _x( 'courses', 'slug', 'learn_press' ) : $course_base;
+			$course_base = $settings->get( 'course_base' );
+			$course_permalink = empty( $course_base ) ? _x( 'courses', 'slug', 'learn_press' ) : $course_base;
 
 			$args = array(
 				'labels'             => $labels,
@@ -194,6 +194,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			);
 			register_post_type( LP_COURSE_CPT, $args );
 
+			$category_base = $settings->get( 'course_category_base' );
 			register_taxonomy( 'course_category', array( LP_COURSE_CPT ),
 				array(
 					'label'             => __( 'Course Categories', 'learn_press' ),
@@ -213,12 +214,14 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 					'show_in_admin_bar' => true,
 					'show_in_nav_menus' => true,
 					'rewrite'           => array(
-						'slug'         => empty( $category_base = $settings->get( 'course_category_base' ) ) ? _x( 'course-category', 'slug', 'learn_press' ) : $category_base,
+						'slug'         => empty( $category_base ) ? _x( 'course-category', 'slug', 'learn_press' ) : $category_base,
 						'hierarchical' => true,
 						'with_front'   => false
 					),
 				)
 			);
+
+			$tag_base = $settings->get( 'course_tag_base' );
 			register_taxonomy( 'course_tag', array( LP_COURSE_CPT ),
 				array(
 					'labels'                => array(
@@ -245,7 +248,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 					'update_count_callback' => '_update_post_term_count',
 					'query_var'             => true,
 					'rewrite'               => array(
-						'slug'       => empty( $tag_base = $settings->get( 'course_tag_base' ) ) ? _x( 'course-tag', 'slug', 'learn_press' ) : $tag_base,
+						'slug'       => empty( $tag_base ) ? _x( 'course-tag', 'slug', 'learn_press' ) : $tag_base,
 						'with_front' => false
 					),
 				)

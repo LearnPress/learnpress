@@ -1,10 +1,4 @@
 <?php
-
-
-// Description handling
-//$field_description = self::get_field_description( $options );
-//extract( $field_description );
-
 // Switch based on type
 switch ( $options['type'] ) {
 	case 'text':
@@ -12,15 +6,11 @@ switch ( $options['type'] ) {
 	case 'number':
 	case 'color' :
 	case 'password' :
-
-
 		break;
 
 	// Textarea
 	case 'textarea':
-
 		$option_value = self::get_option( $options['id'], $options['default'] );
-
 		?>
 		<tr valign="top">
 		<th scope="row" class="titledesc">

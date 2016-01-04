@@ -22,10 +22,10 @@ global $post;
 		</div>
 		<div class="order-user-meta">
 			<div class="user-display-name">
-				<?php echo empty( $order->get_user( 'display_name' ) ) ? __( 'Guest', 'learn_press' ) : $order->get_user( 'display_name' ); ?>
+				<?php $display_name = $order->get_user( 'display_name' ); echo empty( $display_name ) ? __( 'Guest', 'learn_press' ) : $display_name; ?>
 			</div>
 			<div class="user-email">
-				<?php echo empty( $order->get_user( 'user_email' ) ) ? '' : $order->get_user( 'user_email' ); ?>
+				<?php $user_email = $order->get_user( 'user_email' ); echo empty( $user_email ) ? '' : $user_email; ?>
 			</div>
 			<div class="user-ip-address">
 				<?php echo $order->user_ip_address; ?>
@@ -80,14 +80,6 @@ global $post;
 			</tr>
 			<tr>
 				<td class="align-right" colspan="4">
-					<!--<?php _e( 'Status', 'learn_press' ); ?>
-						<select name="learn_press_order_status">
-							<?php foreach ( learn_press_get_order_statuses() as $status => $label ) { ?>
-								<option value="<?php echo $status; ?>" <?php selected( $status == get_post_status( $post->ID ) ? 1 : 0, 1 ); ?>><?php echo $label; ?></option>
-							<?php } ?>
-						</select>
-						<button id="update-order-status" class="button button-primary" type="button"><?php _e( 'Apply', 'learn_press' ); ?></button>-->
-
 					<button class="button" type="button" id="learn-press-add-order-item"><?php _e( 'Add Item', 'learn_press' ); ?></button>
 					<button class="button" type="button" id="learn-press-calculate-order-total"><?php _e( 'Calculate Total', 'learn_press' ); ?></button>
 
@@ -105,7 +97,6 @@ global $post;
 		<ul id="learn-press-courses-result">
 			<li class="lp-search-no-results hide-if-js" data-id="0"><?php _e( 'No results', 'learn_press' ); ?></li>
 		</ul>
-		<!--<button class="lp-add-item button" disabled="disabled" data-text="<?php _e( 'Add to order', 'learn_press' ); ?>"><?php _e( 'Add to order', 'learn_press' ); ?></button>-->
 		<button class="lp-close-lightbox button" onclick="LearnPress.MessageBox.hide();"><?php _e( 'Close', 'learn_press' ); ?></button>
 	</div>
 </script>

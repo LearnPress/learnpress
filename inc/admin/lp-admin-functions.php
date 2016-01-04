@@ -737,7 +737,7 @@ function learn_press_output_screen_id(){
 		echo "<div style=\"position:fixed;top: 0; left:0; z-index: 99999999; background-color:#FFF;padding:4px;\">".$screen->id . "</div>";
 	}
 }
-add_action( 'admin_head', 'learn_press_output_screen_id' );
+//add_action( 'admin_head', 'learn_press_output_screen_id' );
 
 function learn_press_get_screens(){
 	$screen_id = sanitize_title( __( 'LearnPress', 'learn_press' ) );

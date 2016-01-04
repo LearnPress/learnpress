@@ -1991,7 +1991,8 @@ function learn_press_get_register_url() {
  * @param string $type
  */
 function learn_press_add_notice( $message, $type = 'notice' ) {
-	if ( empty( $notices = LP_Session::get( 'notices' ) ) ) {
+	$notices = LP_Session::get( 'notices' );
+	if ( empty( $notices ) ) {
 		$notices = array(
 			'success' => array(),
 			'error'   => array(),
