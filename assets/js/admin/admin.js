@@ -1,6 +1,55 @@
 ;(function($){
+	var LP_Admin = window.LP_Admin = {
+		init: function(){
+			var $doc = $(document);
+			$doc.on('click', '#learn-press-install-sample-data-notice a', this._importCourses );
+		},
+		_importCourses: function(e){
+			var $container = $('#learn-press-install-sample-data-notice'),
+				action = $(this).attr('data-action');
+			if( !action ){
+				return;
+			}
+			e.preventDefault();
+
+			if( action == 'yes' ) {
+				 $container
+					 .find('.install-sample-data-notice').slideUp()
+					 .siblings('.install-sample-data-loading').slideDown()
+			}else{
+				$('#learn-press-install-sample-data-notice').fadeOut();
+			}
+			$.ajax({
+				url: ajaxurl,
+				dataType: 'html',
+				type: 'post',
+				data:{
+					action: 'learnpress_install_sample_data',
+					yes: action
+				},
+				success: function(response){
+					response = LearnPress.parseJSON(response);
+					if( response.url ){
+						$.ajax({
+							url: response.url,
+							success: function(){
+								$container
+									.find('.install-sample-data-notice').html(response.message).slideDown()
+									.siblings('.install-sample-data-loading').slideUp();
+							}
+						});
+					}else {
+						$container
+							.find('.install-sample-data-notice').html(response.message).slideDown()
+							.siblings('.install-sample-data-loading').slideUp();
+					}
+				}
+			})
+		}
+	}
 	var $doc = $(document);
 	function _ready(){
+		LP_Admin.init();
 		$(document).on('click', '.learn-press-add-ons .plugin-action-buttons a', function(e){
 			e.preventDefault();
 			var $plugin = $(this).closest('.plugin-card');
@@ -167,43 +216,7 @@ jQuery(document).ready(function($){
 	})
 
 	// admin notice install sample data
-	$(document).on('click', '#learn-press-install-sample-data-notice a', function(e){
-		e.preventDefault();
-		var yes = $(this).hasClass('yes') ? true : false;
-		if( yes ){
-			$(document.body).block_ui({
-				position: 'fixed',
-				zIndex: 999999,
-				backgroundImage: 'url(' + LearnPress_Settings.plugin_url + '/assets/images/spinner.gif)',
-				backgroundRepeat: 'no-repeat',
-				backgroundPosition: 'center'
-			});
-		}
-		$.ajax({
-			url: ajaxurl,
-			dataType: 'html',
-			type: 'post',
-			data:{
-				action: 'learnpress_install_sample_data',
-				yes: yes
-			},
-			success: function(response){
-				response = LearnPress.parseJSON(response);
-				if( response.hide_notice ){
-					$('#learn-press-install-sample-data-notice').fadeOut();
-				}else{
-					if( response.error ){
-						alert(response.error)
-					}else if(response.success){
-						alert( response.success );
-						if( response.redirect )
-							window.location.href = response.redirect;
-					}
-					$(document.body).unblock_ui()
-				}
-			}
-		})
-	});
+
 
 	var $checked = null;
 	$checked = $('input[name="_lpr_course_enrolled_require"]').bind('click change', function () {

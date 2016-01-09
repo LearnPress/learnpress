@@ -905,6 +905,7 @@ body.post-type-lp_question #question_answer_ .inside{
 	padding-left: 0 !important;
 	padding-right: 28px !important;
 	position: relative;
+	z-index: 99998;
 }
 .lp-button-dropdown .lp-dropdown-label {
 	padding-left: 10px;
@@ -1092,6 +1093,10 @@ body.post-type-lp_question #question_answer_ .inside{
 	padding: 10px 15px;
 	border: 1px solid #DDD;
 }
+#learn-press-install-sample-data-notice .install-sample-data-loading{
+	display: none;
+}
+/* ios checkbox */
 .learn-press-checkbox{
 	display: none !important;
 }

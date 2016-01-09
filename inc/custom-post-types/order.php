@@ -353,12 +353,13 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 						'add_new_item'  => __( 'Add New Order', 'learn_press' ),
 						'edit_item'     => __( 'Order Details', 'learn_press' ),
 						'all_items'     => __( 'Orders', 'learn_press' ),
+						'view_item'	=> 'wtf'
 					),
 					'public'             => false,
 					'show_ui'            => true,
 					'show_in_nav_menus'  => false,
 					'show_in_admin_bar'  => false,
-					'publicly_queryable' => true,
+					'publicly_queryable' => false,
 					'show_in_menu'       => 'learn_press',
 					/*'capabilities'       => array(
 						'create_posts' => 'do_not_allow'

@@ -525,7 +525,7 @@ a .archive-course:hover {
 .lp-button-dropdown{
 	padding-right: 28px !important;
 	position: relative;
-	z-index: 99999;
+	z-index: 99998;
 }
 
 @media screen and (min-width: 59.6875em) {

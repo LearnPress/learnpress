@@ -1,0 +1,65 @@
+﻿***** Coding Standards *****
+- consts define prefix: LP_
+- file class prefix: class-lp-
+- file functions prefix: lp-
+- class name prefix: LP_
+- function name prefix: lp_
+- hooks prefix: learn_press_
+- option prefix: learn_press_
+- meta key prefix: _
+- custom post type: 
+
+
+***** Custom Post Type *****
+
+* Course
++ slug: course
++ metas: 
+	_lpr_course_lesson_quiz
+	_lpr_course_section_state
+	_lpr_course_duration
+	_lpr_course_number_student
+	_lpr_max_course_number_student
+	_lpr_retake_course
+	_lpr_course_condition
+	_lpr_course_payment	
+	_lpr_course_enrolled_require
+
+	_lpr_course_forum (addon)
+	_lpr_course_forum_id (addon)
+	_lpr_course_review (addon - review)	
+
+* Lesson 
++ slug: lesson
++ metas:
+	_lpr_lesson_duration
+	_lpr_lesson_preview
+	_lpr_course
+
+* Quiz
++ slug: quiz
++ metas: 
+	_lpr_quiz_questions
+	_lpr_duration
+	_lpr_retake_quiz
+	_lpr_show_quiz_result
+	_lpr_show_question_answer
+	_lpr_course
+
+* Question
++ slug: question
++ metas: 
+	_lpr_question
+	_lpr_question_mark
+	_lpr_duration
+
+
+User meta:
+- Mua courses nào
+- đang học course nào
+- hoàn thành course nào ( pass/ failue )
+- học lại cousrse nào ( mấy lần, thời gian )
+- Tình trạng học hành của từng course:
+- đang học dở course nào để còn tiếp tục
+- hoàn thành quiz nào ( bao nhiêu điểm, lần mấy, khi nào ) 
+- quiz của các lần trước ra sao 

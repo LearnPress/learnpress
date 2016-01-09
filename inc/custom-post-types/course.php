@@ -353,7 +353,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 							'evaluate_lesson'     => __( 'Evaluate lessons', 'learn_press' ),
 							'evaluate_final_quiz' => __( 'Evaluate result of final quiz', 'learn_press' )
 						),
-						'std'     => 'no'
+						'std'     => 'evaluate_lesson'
 					),
 					array(
 						'name' => __( 'Passing condition value', 'learn_press' ),

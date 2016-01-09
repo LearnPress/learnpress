@@ -13,7 +13,7 @@ if( empty( $section ) ){
 		'section_name' => '',
 		'section_course_id' => null,
 		'section_order' => null,
-		'section_description' => __( 'Describe about this section', 'learn_press' )
+		'section_description' => ''
 	);
 }
 $is_hidden = $section->section_id && is_array( $hidden_sections ) && in_array( $section->section_id, $hidden_sections );

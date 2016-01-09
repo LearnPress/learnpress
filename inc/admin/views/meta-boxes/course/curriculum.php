@@ -33,7 +33,7 @@ global $post;
 $course_sections = $course->get_curriculum();
 
 $hidden_sections = (array) get_post_meta( $post->ID, '_admin_hidden_sections', true );
-?><!-- -->
+?>
 <div id="lp-course-curriculum" class="lp-course-curriculum">
 	<h3 class="curriculum-heading">
 		<?php _e( 'Curriculum', 'learn_press' ); ?>

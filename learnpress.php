@@ -587,3 +587,16 @@ function test_mail() {
 }
 
 add_action( 'admin_footer', 'test_mail' );
+
+function learn_press_addon_notice( $notice ){
+	$notices = !empty( $GLOBALS['learn_press_addon_notice'] ) ? (array)$GLOBALS['learn_press_addon_notice'] : array();
+	$notices[] = $notice;
+	$GLOBALS['learn_press_addon_notice'] = $notices;
+}
+function learn_press_print_addon_notice(){
+	$notices = !empty( $GLOBALS['learn_press_addon_notice'] ) ? (array)$GLOBALS['learn_press_addon_notice'] : array();
+	if( $notices ) foreach( $notices as $notice ){
+		printf( '<div class="error"><p>%s</p></div>', $notice );
+	}
+}
+add_action('admin_notices', 'learn_press_print_addon_notice' );

@@ -525,8 +525,12 @@ class LP_Abstract_User {
 	 * @return bool
 	 */
 	function can_enroll_course( $course_id ) {
-		$enrollable = false;
-		if ( $order_id = $this->has_purchased_course( $course_id ) ) {
+		$course = LP_Course::get_course( $course_id );
+		// if the course payment is off and required enroll
+		$enrollable = $course && $course->payment == 'no' && $course->required_enroll == 'yes';
+
+		// if user cannot enroll by course settings above, check order
+		if ( !$enrollable && ( $order_id = $this->has_purchased_course( $course_id ) ) ){
 			$order      = LP_Order::instance( $order_id );
 			$enrollable = !$this->has_enrolled_course( $course_id ) && $order && $order->has_status( 'completed' );
 		}

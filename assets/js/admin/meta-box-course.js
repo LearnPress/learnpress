@@ -1152,8 +1152,15 @@
 							updateHiddenCurriculum([]);
 						}
 					});
-				$items.find('a[data-action="collapse"]').show();
-				$items.find('a[data-action="expand"]').hide();
+				$items.siblings('.curriculum-section-head')
+					.find('a[data-action]')
+					.map(function(){
+						var $a = $(this);
+						switch($a.attr('data-action')){
+							case 'collapse': $a.show(); break;
+							case 'expand': $a.hide();
+						}
+					});
 				break;
 			case 'collapse':
 				var $items = $('.curriculum-section-content'),
@@ -1171,8 +1178,15 @@
 							updateHiddenCurriculum(hidden);
 						}
 					});
-				$items.find('a[data-action="collapse"]').hide();
-				$items.find('a[data-action="expand"]').show();
+				$items.siblings('.curriculum-section-head')
+					.find('a[data-action]')
+					.map(function(){
+						var $a = $(this);
+						switch($a.attr('data-action')){
+							case 'collapse': $a.hide(); break;
+							case 'expand': $a.show();
+						}
+					});
 				break;
 		}
 	}

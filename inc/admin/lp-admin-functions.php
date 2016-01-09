@@ -654,19 +654,24 @@ function learn_press_one_click_install_sample_data_notice() {
 	if ( ( 0 == sizeof( $courses ) ) && ( 'off' != get_transient( 'learn_press_install_sample_data' ) ) ) {
 		printf(
 			'<div class="updated" id="learn-press-install-sample-data-notice">
+				<div class="install-sample-data-notice">
                 <p>%s</p>
-                <p>%s <strong>%s</strong> %s [<a href="" class="yes">%s</a>]&nbsp;&nbsp;&nbsp;&nbsp;[<a href="" class="no">%s</a>]</p>
+                <p>%s <strong>%s</strong> %s
+                <p><a href="" class="button yes" data-action="yes">%s</a> <a href="" class="button disabled no" data-action="no">%s</a></p>
+                </div>
+                <div class="install-sample-data-loading">
+                	<p>Importing...</p>
+				</div>
             </div>',
-			__( 'You haven\'t got any courses yet! Would you like to install sample data?', 'learn_press' ),
+			__( 'You haven\'t got any courses yet! Would you like to import sample data?', 'learn_press' ),
 			__( 'If yes, it requires to install addon named', 'learn_press' ),
 			__( 'LearnPress Import/Export', 'learn_press' ),
 			__( 'but don\'t worry because it is completely automated.', 'learn_press' ),
-			__( 'Yes', 'learn_press' ),
-			__( 'No thank!', 'learn_press' )
+			__( 'Import now', 'learn_press' ),
+			__( 'No, thanks!', 'learn_press' )
 		);
 	}
 }
-
 add_action( 'admin_notices', 'learn_press_one_click_install_sample_data_notice' );
 
 function learn_press_request_query( $vars = array() ) {

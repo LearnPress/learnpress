@@ -331,14 +331,16 @@ function learn_press_get_add_ons_from_wp( $args = null ) {
 			$all_plugins = get_plugins();
 			// filter plugins with tag contains 'learnpress'
 			$_plugins = array_filter( $api->plugins, create_function( '$plugin', 'return $plugin->slug != \'learnpress\';' ) );
+
+			// Ensure that the array is indexed from 0
+			$_plugins = array_values( $_plugins );
+
 			$exclude  = (array) $args['exclude'];
 			$include  = $args['include'];
-
 			$has_include = is_array( $include ) ? sizeof( $include ) : false;
 			for ( $n = sizeof( $_plugins ), $i = $n - 1; $i >= 0; $i -- ) {
 
 				$plugin = $_plugins[$i];
-
 				$key = $plugin->slug;
 				foreach( $all_plugins as $file => $p ){
 					if( strpos( $file, $plugin->slug  ) !== false ){

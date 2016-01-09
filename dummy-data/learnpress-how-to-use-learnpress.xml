@@ -1,1112 +1,1373 @@
+
 <?xml version="1.0" encoding="UTF-8" ?>
 <rss version="2.0"
-	xmlns:excerpt="http://wordpress.org/export/1.0/excerpt/"
+	xmlns:excerpt="http://wordpress.org/export/LPR_EXPORT_VER/excerpt/"
 	xmlns:content="http://purl.org/rss/1.0/modules/content/"
 	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
 	xmlns:dc="http://purl.org/dc/elements/1.1/"
-	xmlns:wp="http://wordpress.org/export/1.0/"
+	xmlns:wp="http://wordpress.org/export/LPR_EXPORT_VER/"
 >
-
 <channel>
-	<title>obHOME</title>
-	<link>http://home.foobla.com</link>
-	<description>foobla internal site</description>
-	<pubDate>Mon, 22 Jun 2015 07:58:18 +0000</pubDate>
+	<title>DEV LearnPress 1.0</title>
+	<link>http://localhost/foobla/learnpress/1.0</link>
+	<description>Just another WordPress site</description>
+	<pubDate>Fri, 08 Jan 2016 07:01:22 +0000</pubDate>
 	<language>en-US</language>
 	<wp:wxr_version>1.0</wp:wxr_version>
-	<wp:base_site_url>http://home.foobla.com/</wp:base_site_url>
-	<wp:base_blog_url>http://home.foobla.com</wp:base_blog_url>
-
-
-<!-- START: Authors -->
-	<wp:author><wp:author_id>2</wp:author_id><wp:author_login>ha</wp:author_login><wp:author_email>ha@foobla.com</wp:author_email><wp:author_display_name><![CDATA[Hà Hoàng]]></wp:author_display_name><wp:author_first_name><![CDATA[Hà]]></wp:author_first_name><wp:author_last_name><![CDATA[Hoàng]]></wp:author_last_name></wp:author>
-
-<!-- END: Authors -->
-<!-- START: Courses -->
-
-<item>
-	<title>How to use LearnPress</title>
-	<link>http://home.foobla.com/courses/how-to-use-learnpress/</link>
-	<pubDate>Wed, 20 May 2015 10:43:00 +0000</pubDate>
-	<dc:creator><![CDATA[ha]]></dc:creator>
-	<guid isPermaLink="false">http://home.foobla.com/?post_type=lpr_course&#038;p=133</guid>
+	<wp:base_site_url>http://localhost/foobla/learnpress/1.0</wp:base_site_url>
+	<wp:base_blog_url>http://localhost/foobla/learnpress/1.0</wp:base_blog_url>
+	<wp:plugin_name>learnpress</wp:plugin_name>
+	<wp:plugin_version>1.0</wp:plugin_version>
+		<wp:author><wp:author_id>1</wp:author_id><wp:author_login>admin</wp:author_login><wp:author_email>tunnhn@gmail.com</wp:author_email><wp:author_display_name><![CDATA[admin]]></wp:author_display_name><wp:author_first_name><![CDATA[]]></wp:author_first_name><wp:author_last_name><![CDATA[]]></wp:author_last_name></wp:author>
+	<wp:author><wp:author_id>4</wp:author_id><wp:author_login>instructor</wp:author_login><wp:author_email>tunn@foobla.com</wp:author_email><wp:author_display_name><![CDATA[In Structor]]></wp:author_display_name><wp:author_first_name><![CDATA[In]]></wp:author_first_name><wp:author_last_name><![CDATA[Structor]]></wp:author_last_name></wp:author>
+			<item>
+	<title>This is a new course</title>
+	<link>http://localhost/foobla/learnpress/1.0/dao-tao-cac-khoa-hoc-onine/this-is-a-new-course/</link>
+	<pubDate>Wed, 11 Nov 2015 10:45:53 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/?post_type=lp_course&#038;p=873</guid>
 	<description></description>
-	<content:encoded><![CDATA[Welcome our valued customers to LearnPress,
-
-LearnPress is perfect fit for designing a Learning Management System. Our intention in this course is to show you the way to use LearnPress to create a great Online Learning System where you can set up your own system and lessons.
-
-Thanks and regards,
-
-Ha Hoang
-
-<strong>What will this course bring to you?</strong>
-<ol>
-	<li>By the end of this course you will be able to control LearnPress plugin for your own demand.</li>
-	<li>You will understand the plugin workflow and how to extend its features via add-ons</li>
-</ol>
-<strong>Target Audience:</strong>
-<ol>
-	<li>The one who wants to create  an online learning system</li>
-	<li>Developer who wants to contribute to LearnPress</li>
-	<li>The one who wants to become an instructor in a LearnPress system</li>
-</ol>]]></content:encoded>
+	<content:encoded><![CDATA[]]></content:encoded>
 	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
-	<wp:post_id>133</wp:post_id>
-	<wp:post_date>2015-05-20 17:43:00</wp:post_date>
-	<wp:post_date_gmt>2015-05-20 10:43:00</wp:post_date_gmt>
-	<wp:comment_status>closed</wp:comment_status>
-	<wp:ping_status>closed</wp:ping_status>
-	<wp:post_name>how-to-use-learnpress</wp:post_name>
+	<wp:post_id>873</wp:post_id>
+	<wp:post_date>2015-11-11 10:45:53</wp:post_date>
+	<wp:post_date_gmt>2015-11-11 10:45:53</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>this-is-a-new-course</wp:post_name>
 	<wp:status>publish</wp:status>
 	<wp:post_parent>0</wp:post_parent>
 	<wp:menu_order>0</wp:menu_order>
-	<wp:post_type>lpr_course</wp:post_type>
+	<wp:post_type>lp_course</wp:post_type>
 	<wp:post_password></wp:post_password>
-    <wp:post_author_id>2</wp:post_author_id>
+	<wp:post_author_id>1</wp:post_author_id>
 	<wp:is_sticky>0</wp:is_sticky>
-			
-	<wp:postmeta>
+					<wp:postmeta>
 		<wp:meta_key>_edit_lock</wp:meta_key>
-		<wp:meta_value><![CDATA[1434959746:1]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
+		<wp:meta_value><![CDATA[1451441611:1]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
 		<wp:meta_key>_edit_last</wp:meta_key>
-		<wp:meta_value><![CDATA[13]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_course_lesson_quiz</wp:meta_key>
-		<wp:meta_value><![CDATA[a:4:{i:0;a:2:{s:4:"name";s:12:"Introduction";s:11:"lesson_quiz";a:2:{i:0;s:3:"134";i:1;s:3:"164";}}i:1;a:2:{s:4:"name";s:22:"Basic Using LearnPress";s:11:"lesson_quiz";a:6:{i:0;s:3:"135";i:1;s:3:"136";i:2;s:3:"138";i:3;s:3:"140";i:4;s:3:"148";i:5;s:3:"142";}}i:2;a:2:{s:4:"name";s:7:"Add-ons";s:11:"lesson_quiz";a:3:{i:0;s:3:"141";i:1;s:3:"143";i:2;s:3:"144";}}i:3;a:2:{s:4:"name";s:13:"For Developer";s:11:"lesson_quiz";a:2:{i:0;s:3:"145";i:1;s:3:"147";}}}]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_course_section_state</wp:meta_key>
-		<wp:meta_value><![CDATA[a:4:{i:0;s:1:"1";i:1;s:1:"1";i:2;s:1:"1";i:3;s:1:"1";}]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_course_duration</wp:meta_key>
+		<wp:meta_value><![CDATA[1]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_duration</wp:meta_key>
 		<wp:meta_value><![CDATA[10]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_course_number_student</wp:meta_key>
-		<wp:meta_value><![CDATA[3]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_max_course_number_student</wp:meta_key>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_max_students</wp:meta_key>
 		<wp:meta_value><![CDATA[1000]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_course_condition</wp:meta_key>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_students</wp:meta_key>
+		<wp:meta_value><![CDATA[0]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_retake_count</wp:meta_key>
+		<wp:meta_value><![CDATA[0]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_passing_condition</wp:meta_key>
 		<wp:meta_value><![CDATA[50]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_course_payment</wp:meta_key>
-		<wp:meta_value><![CDATA[free]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_course_forum</wp:meta_key>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_enroll_requirement</wp:meta_key>
 		<wp:meta_value><![CDATA[yes]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_course_forum_id</wp:meta_key>
-		<wp:meta_value><![CDATA[329]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_course_user</wp:meta_key>
-		<wp:meta_value><![CDATA[a:4:{i:0;s:1:"1";i:1;s:2:"13";i:2;s:2:"15";i:3;s:2:"15";}]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_course_review</wp:meta_key>
-		<wp:meta_value><![CDATA[a:5:{s:10:"rate_value";a:7:{i:0;i:0;i:1;i:1;i:2;i:0;i:3;i:0;i:4;i:0;i:5;i:0;i:6;i:0;}s:4:"user";a:1:{i:0;i:1;}s:4:"rate";a:1:{i:1;s:1:"1";}s:12:"review_title";a:1:{i:1;s:38:"The review add-on is way not completed";}s:14:"review_content";a:1:{i:1;s:51:"We need to make things perfect, not only work-able.";}}]]></wp:meta_value>
-	</wp:postmeta>
-</item>
-<!-- END: Courses -->
-<!-- START: Lessons and Quizzes -->
-
-<item>
-	<title>What is LearnPress?</title>
-	<link>http://home.foobla.com/lessons/what-is-learnpress/</link>
-	<pubDate>Sun, 17 May 2015 01:36:00 +0000</pubDate>
-	<dc:creator><![CDATA[ha]]></dc:creator>
-	<guid isPermaLink="false">http://home.foobla.com/lessons/what-is-learnpress/</guid>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_payment</wp:meta_key>
+		<wp:meta_value><![CDATA[free]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lpr_course_lesson_quiz</wp:meta_key>
+		<wp:meta_value><![CDATA[]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_course_status</wp:meta_key>
+		<wp:meta_value><![CDATA[publish]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_curriculum</wp:meta_key>
+		<wp:meta_value><![CDATA[a:1:{i:0;a:3:{s:4:"name";s:10:"Section #1";s:11:"description";s:0:"";s:5:"items";a:2:{i:614;a:5:{s:4:"name";s:18:"word wide web 2222";s:8:"old_name";s:13:"word wide web";s:7:"item_id";s:4:"1232";s:15:"section_item_id";s:3:"614";s:9:"post_type";s:9:"lp_lesson";}s:6:"item-1";a:5:{s:4:"name";s:0:"";s:8:"old_name";s:0:"";s:7:"item_id";s:0:"";s:15:"section_item_id";s:0:"";s:9:"post_type";s:9:"lp_lesson";}}}}]]></wp:meta_value>
+		</wp:postmeta>
+		<wp:section>
+			<wp:section_id>144</wp:section_id>
+			<wp:section_name>Section #1</wp:section_name>
+			<wp:section_course_id>873</wp:section_course_id>
+			<wp:section_order>1</wp:section_order>
+			<wp:section_description><![CDATA[]]></wp:section_description>
+			<!--SELECT si.*, p.post_type FROM wp_learnpress_section_items si INNER JOIN wp_posts p ON p.ID = si.item_id WHERE section_id = 144-->				<wp:section_item>
+					<wp:section_id>144</wp:section_id>
+					<wp:item_id>1232</wp:item_id>
+					<wp:item_order>1</wp:item_order>
+					<wp:item_type>lp_lesson</wp:item_type>
+				</wp:section_item>
+				</wp:section>
+	
+</item><item>
+	<title>word wide web 2222</title>
+	<link>http://localhost/foobla/learnpress/1.0/lessons/wwwwwwwwwwwwwwwwwwww/</link>
+	<pubDate>Wed, 30 Dec 2015 02:06:58 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/?post_type=lp_lesson&#038;p=1232</guid>
 	<description></description>
-	<content:encoded><![CDATA[LearnPress is an extremely strong WordPress plugin which helps you create an Online Learning Management System Website.
-
-If you are an administrator who controls and manages an Online Learning System, LearnPress provides you with complete features for your work including Courses, Lessons, Quizzes and Question Management, Payment Solutions, Statistics and a lot of add-ons for you to extend your system scale.
-
-If you are a teacher who wants to create Courses and share your knowledge to everybody on the internet, LearnPress will help you create Courses, Lessons and Quizzes and manage them easily. You will find the easiest online teaching system here.
-
-If you are a student, you can access with courses, study and test with friendly user interfaces.
-
-LearnPress also provides tools for you to create forums that you can simply interact with your teacher and your peer.
-
-And LearnPress gives these advantages to you FREE OF CHARGE!!!]]></content:encoded>
+	<content:encoded><![CDATA[]]></content:encoded>
 	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
-	<wp:post_id>134</wp:post_id>
-	<wp:post_date>2015-05-17 08:36:00</wp:post_date>
-	<wp:post_date_gmt>2015-05-17 01:36:00</wp:post_date_gmt>
+	<wp:post_id>1232</wp:post_id>
+	<wp:post_date>2015-12-30 02:06:58</wp:post_date>
+	<wp:post_date_gmt>2015-12-30 02:06:58</wp:post_date_gmt>
 	<wp:comment_status>closed</wp:comment_status>
 	<wp:ping_status>closed</wp:ping_status>
-	<wp:post_name>what-is-learnpress</wp:post_name>
+	<wp:post_name>wwwwwwwwwwwwwwwwwwww</wp:post_name>
 	<wp:status>publish</wp:status>
 	<wp:post_parent>0</wp:post_parent>
 	<wp:menu_order>0</wp:menu_order>
-	<wp:post_type>lpr_lesson</wp:post_type>
+	<wp:post_type>lp_lesson</wp:post_type>
 	<wp:post_password></wp:post_password>
-    <wp:post_author_id>2</wp:post_author_id>
+	<wp:post_author_id>1</wp:post_author_id>
 	<wp:is_sticky>0</wp:is_sticky>
-			
-	<wp:postmeta>
+					<wp:postmeta>
 		<wp:meta_key>_edit_lock</wp:meta_key>
-		<wp:meta_value><![CDATA[1433407905:13]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_edit_last</wp:meta_key>
-		<wp:meta_value><![CDATA[13]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_lesson_duration</wp:meta_key>
-		<wp:meta_value><![CDATA[12]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_lesson_preview</wp:meta_key>
-		<wp:meta_value><![CDATA[preview]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_course</wp:meta_key>
-		<wp:meta_value><![CDATA[133]]></wp:meta_value>
-	</wp:postmeta>
-</item>
-
-<item>
-	<title>How to create a course?</title>
-	<link>http://home.foobla.com/lessons/how-to-create-a-course/</link>
-	<pubDate>Sun, 17 May 2015 01:36:36 +0000</pubDate>
-	<dc:creator><![CDATA[ha]]></dc:creator>
-	<guid isPermaLink="false">http://home.foobla.com/lessons/how-to-create-a-course/</guid>
+		<wp:meta_value><![CDATA[1451443416:1]]></wp:meta_value>
+		</wp:postmeta>
+</item>			<item>
+	<title>What should be here?</title>
+	<link>http://localhost/foobla/learnpress/1.0/dao-tao-cac-khoa-hoc-onine/what-should-be-here/</link>
+	<pubDate>Fri, 04 Dec 2015 07:08:08 +0000</pubDate>
+	<dc:creator><![CDATA[instructor]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/?post_type=lp_course&#038;p=908</guid>
 	<description></description>
-	<content:encoded><![CDATA[LearnPress is a Learning Management System (LMS) with courses. First, let study a bit about a course in LearnPress.
+	<content:encoded><![CDATA[Phasellus accumsan cursus velit. Phasellus nec sem in justo pellentesque facilisis. Fusce vel dui. Integer tincidunt. Quisque id odio.
 
-A course in LearnPress contains sections, each section will include lessons to present your knowledge and quiz(optional) in order for you to give questions to test your students.
+Sed hendrerit. Morbi mattis ullamcorper velit. Phasellus dolor. Sed libero. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem.
 
-Following these steps to create a course:
+Sed magna purus, fermentum eu, tincidunt eu, varius ut, felis. Phasellus tempus. Donec posuere vulputate arcu. Aenean posuere, tortor sed cursus feugiat, nunc augue blandit nunc, eu sollicitudin urna dolor sagittis lacus. Sed a libero.
 
-1. Give a course title
+Nam eget dui. Quisque ut nisi. Curabitur ligula sapien, tincidunt non, euismod vitae, posuere imperdiet, leo. Nunc nec neque. Pellentesque libero tortor, tincidunt et, tincidunt eget, semper nec, quam.
 
-2. Describe course content.
-
-<a href="http://home.foobla.com/wp-content/uploads/2015/05/create-a-course.png"><img class="alignnone wp-image-260 size-full" src="http://home.foobla.com/wp-content/uploads/2015/05/create-a-course.png" alt="create a course" width="1211" height="874" /></a>
-
-&nbsp;
-
-3 - Create course curriculum
-
--The biggest title is the section name
-
-- Here you can find 4 buttons: add lesson, add quiz, quick add lesson, quick add quiz. The first and second button are to add existing lessons and quizzes into this section. If you don't have any lesson and quiz available to add, new lessons and quizzes can be quickly created to this section with 2 other buttons.
-
-Those quickly created lessons and quizzes  just have title, therefore the edit link on the right is used to add your lesson and quiz content.
-<a href="http://home.foobla.com/wp-content/uploads/2015/05/course-curriculum.png"><img class="aligncenter wp-image-267 size-full" src="http://home.foobla.com/wp-content/uploads/2015/05/course-curriculum.png" alt="course curriculum" width="1399" height="892" /></a>
-
-After completing your curriculum, now, you can take a look to your course settings where to set your course up. Let see what LearnPress provides for your course.
-
-<a href="http://home.foobla.com/wp-content/uploads/2015/05/course-settings.png"><img class="aligncenter wp-image-270 size-full" src="http://home.foobla.com/wp-content/uploads/2015/05/course-settings.png" alt="course settings" width="725" height="627" /></a>
-
-&nbsp;
-
-Course duration: The length of your course.
-
-Course time:
-
-Number of student enrolled:
-
-Maximum students an take the course:
-
-Co-instructor:
-
-Certificate:
-
-The next part is "Course assessment". Currently LearnPress supports two types of "Course assessment".
-
-<a href="http://home.foobla.com/wp-content/uploads/2015/05/course-assessment.png"><img class="aligncenter wp-image-268 size-full" src="http://home.foobla.com/wp-content/uploads/2015/05/course-assessment.png" alt="course assessment" width="1248" height="244" /></a>
-
-&nbsp;
-
-The last part is for commercial course. You can set your course free or not. If it is charged, a price should be set by the administrator as he reviews the course.
-
-<a href="http://home.foobla.com/wp-content/uploads/2015/05/course-payment.png"><img class="aligncenter wp-image-269 size-full" src="http://home.foobla.com/wp-content/uploads/2015/05/course-payment.png" alt="course payment" width="922" height="241" /></a>
-
-&nbsp;
-
-Congratulation ! Now, you can submit your course for review, after your LMS is published. It is now online ^_^
-
-&nbsp;]]></content:encoded>
+Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos hymenaeos. Vestibulum suscipit nulla quis orci. Fusce ac felis sit amet ligula pharetra condimentum. Vestibulum fringilla pede sit amet augue. Etiam rhoncus.]]></content:encoded>
 	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
-	<wp:post_id>135</wp:post_id>
-	<wp:post_date>2015-05-17 08:36:36</wp:post_date>
-	<wp:post_date_gmt>2015-05-17 01:36:36</wp:post_date_gmt>
+	<wp:post_id>908</wp:post_id>
+	<wp:post_date>2015-12-04 07:08:08</wp:post_date>
+	<wp:post_date_gmt>2015-12-04 07:08:08</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>what-should-be-here</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_course</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>4</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+				<category domain="course_category" nicename="it" id="18" parent="0" description=" "><![CDATA[IT]]></category>
+		<category domain="course_category" nicename="software" id="19" parent="18" description=" "><![CDATA[Software]]></category>
+			<wp:postmeta>
+		<wp:meta_key>_edit_lock</wp:meta_key>
+		<wp:meta_value><![CDATA[1452156731:1]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_edit_last</wp:meta_key>
+		<wp:meta_value><![CDATA[1]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_admin_hidden_sections</wp:meta_key>
+		<wp:meta_value><![CDATA[a:5:{i:0;s:3:"132";i:1;s:3:"133";i:2;s:3:"134";i:3;s:3:"135";i:4;s:0:"";}]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lpr_course_lesson_quiz</wp:meta_key>
+		<wp:meta_value><![CDATA[]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_curriculum</wp:meta_key>
+		<wp:meta_value><![CDATA[a:6:{i:0;a:3:{s:4:"name";s:10:"Section #1";s:11:"description";s:33:"asd asd asdasd asdasd asdasd asda";s:5:"items";a:15:{i:615;a:5:{s:4:"name";s:12:"333333333333";s:8:"old_name";s:12:"333333333333";s:7:"item_id";s:4:"1146";s:15:"section_item_id";s:3:"615";s:9:"post_type";s:7:"lp_quiz";}i:616;a:5:{s:4:"name";s:18:"where are you now?";s:8:"old_name";s:18:"where are you now?";s:7:"item_id";s:4:"1148";s:15:"section_item_id";s:3:"616";s:9:"post_type";s:9:"lp_lesson";}i:617;a:5:{s:4:"name";s:21:"I am here, beside you";s:8:"old_name";s:21:"I am here, beside you";s:7:"item_id";s:4:"1149";s:15:"section_item_id";s:3:"617";s:9:"post_type";s:7:"lp_quiz";}i:618;a:5:{s:4:"name";s:9:"asdasdasd";s:8:"old_name";s:9:"asdasdasd";s:7:"item_id";s:4:"1143";s:15:"section_item_id";s:3:"618";s:9:"post_type";s:9:"lp_lesson";}i:619;a:5:{s:4:"name";s:9:"dsfsdfsdf";s:8:"old_name";s:9:"dsfsdfsdf";s:7:"item_id";s:4:"1144";s:15:"section_item_id";s:3:"619";s:9:"post_type";s:9:"lp_lesson";}i:620;a:5:{s:4:"name";s:8:"Lesson 1";s:8:"old_name";s:8:"Lesson 1";s:7:"item_id";s:4:"1139";s:15:"section_item_id";s:3:"620";s:9:"post_type";s:9:"lp_lesson";}i:621;a:5:{s:4:"name";s:8:"Lesson 2";s:8:"old_name";s:8:"Lesson 2";s:7:"item_id";s:4:"1140";s:15:"section_item_id";s:3:"621";s:9:"post_type";s:9:"lp_lesson";}i:622;a:5:{s:4:"name";s:8:"Lesson 3";s:8:"old_name";s:8:"Lesson 3";s:7:"item_id";s:4:"1142";s:15:"section_item_id";s:3:"622";s:9:"post_type";s:9:"lp_lesson";}i:623;a:5:{s:4:"name";s:17:"qqqqqqqqqqqqqqqqq";s:8:"old_name";s:17:"qqqqqqqqqqqqqqqqq";s:7:"item_id";s:4:"1153";s:15:"section_item_id";s:3:"623";s:9:"post_type";s:9:"lp_lesson";}i:624;a:5:{s:4:"name";s:10:"trau va bo";s:8:"old_name";s:10:"trau va bo";s:7:"item_id";s:4:"1154";s:15:"section_item_id";s:3:"624";s:9:"post_type";s:9:"lp_lesson";}i:625;a:5:{s:4:"name";s:19:"adasdasdasda asd as";s:8:"old_name";s:19:"adasdasdasda asd as";s:7:"item_id";s:4:"1164";s:15:"section_item_id";s:3:"625";s:9:"post_type";s:9:"lp_lesson";}i:626;a:5:{s:4:"name";s:19:"asd asda sdasdas da";s:8:"old_name";s:19:"asd asda sdasdas da";s:7:"item_id";s:4:"1165";s:15:"section_item_id";s:3:"626";s:9:"post_type";s:9:"lp_lesson";}i:627;a:5:{s:4:"name";s:16:"asdasdasdasdasda";s:8:"old_name";s:16:"asdasdasdasdasda";s:7:"item_id";s:4:"1166";s:15:"section_item_id";s:3:"627";s:9:"post_type";s:9:"lp_lesson";}i:628;a:5:{s:4:"name";s:18:"assasdasdasdasdasd";s:8:"old_name";s:18:"assasdasdasdasdasd";s:7:"item_id";s:4:"1167";s:15:"section_item_id";s:3:"628";s:9:"post_type";s:9:"lp_lesson";}s:7:"item-14";a:5:{s:4:"name";s:0:"";s:8:"old_name";s:0:"";s:7:"item_id";s:0:"";s:15:"section_item_id";s:0:"";s:9:"post_type";s:9:"lp_lesson";}}}i:1;a:3:{s:4:"name";s:10:"Section #2";s:11:"description";s:49:"asdas das d asdas das asdasd asdas dasdas dasdasd";s:5:"items";a:5:{i:629;a:5:{s:4:"name";s:22:"How to create a course";s:8:"old_name";s:22:"How to create a course";s:7:"item_id";s:4:"1169";s:15:"section_item_id";s:3:"629";s:9:"post_type";s:9:"lp_lesson";}i:630;a:5:{s:4:"name";s:17:"What is your name";s:8:"old_name";s:17:"What is your name";s:7:"item_id";s:4:"1170";s:15:"section_item_id";s:3:"630";s:9:"post_type";s:9:"lp_lesson";}i:631;a:5:{s:4:"name";s:20:"My name is Tu Nguyen";s:8:"old_name";s:20:"My name is Tu Nguyen";s:7:"item_id";s:4:"1171";s:15:"section_item_id";s:3:"631";s:9:"post_type";s:9:"lp_lesson";}i:632;a:5:{s:4:"name";s:23:"sdfsdfsdf sdf sdf sdf s";s:8:"old_name";s:23:"sdfsdfsdf sdf sdf sdf s";s:7:"item_id";s:4:"1168";s:15:"section_item_id";s:3:"632";s:9:"post_type";s:7:"lp_quiz";}s:6:"item-4";a:5:{s:4:"name";s:0:"";s:8:"old_name";s:0:"";s:7:"item_id";s:0:"";s:15:"section_item_id";s:0:"";s:9:"post_type";s:9:"lp_lesson";}}}i:2;a:3:{s:4:"name";s:10:"Section #3";s:11:"description";s:0:"";s:5:"items";a:2:{i:633;a:5:{s:4:"name";s:14:"sdfsd fsd fsdf";s:8:"old_name";s:14:"sdfsd fsd fsdf";s:7:"item_id";s:4:"1172";s:15:"section_item_id";s:3:"633";s:9:"post_type";s:7:"lp_quiz";}s:6:"item-1";a:5:{s:4:"name";s:0:"";s:8:"old_name";s:0:"";s:7:"item_id";s:0:"";s:15:"section_item_id";s:0:"";s:9:"post_type";s:9:"lp_lesson";}}}i:3;a:3:{s:4:"name";s:10:"Section #4";s:11:"description";s:0:"";s:5:"items";a:2:{i:634;a:5:{s:4:"name";s:22:"sdf sdfsd fsdf sdfsd f";s:8:"old_name";s:22:"sdf sdfsd fsdf sdfsd f";s:7:"item_id";s:4:"1173";s:15:"section_item_id";s:3:"634";s:9:"post_type";s:7:"lp_quiz";}s:6:"item-1";a:5:{s:4:"name";s:0:"";s:8:"old_name";s:0:"";s:7:"item_id";s:0:"";s:15:"section_item_id";s:0:"";s:9:"post_type";s:9:"lp_lesson";}}}i:4;a:3:{s:4:"name";s:10:"Section #5";s:11:"description";s:0:"";s:5:"items";a:6:{i:635;a:5:{s:4:"name";s:15:"happy new year!";s:8:"old_name";s:15:"happy new year!";s:7:"item_id";s:4:"1228";s:15:"section_item_id";s:3:"635";s:9:"post_type";s:9:"lp_lesson";}i:636;a:5:{s:4:"name";s:15:"happy new year!";s:8:"old_name";s:15:"happy new year!";s:7:"item_id";s:4:"1229";s:15:"section_item_id";s:3:"636";s:9:"post_type";s:9:"lp_lesson";}i:637;a:5:{s:4:"name";s:8:"Lesson 1";s:8:"old_name";s:8:"Lesson 1";s:7:"item_id";s:4:"1136";s:15:"section_item_id";s:3:"637";s:9:"post_type";s:9:"lp_lesson";}i:638;a:5:{s:4:"name";s:8:"Lesson 2";s:8:"old_name";s:8:"Lesson 2";s:7:"item_id";s:4:"1137";s:15:"section_item_id";s:3:"638";s:9:"post_type";s:9:"lp_lesson";}i:639;a:5:{s:4:"name";s:18:"oi troi oi la troi";s:8:"old_name";s:18:"oi troi oi la troi";s:7:"item_id";s:4:"1230";s:15:"section_item_id";s:3:"639";s:9:"post_type";s:9:"lp_lesson";}s:6:"item-5";a:5:{s:4:"name";s:0:"";s:8:"old_name";s:0:"";s:7:"item_id";s:0:"";s:15:"section_item_id";s:0:"";s:9:"post_type";s:9:"lp_lesson";}}}i:5;a:3:{s:4:"name";s:10:"Section #6";s:11:"description";s:0:"";s:5:"items";a:4:{i:640;a:5:{s:4:"name";s:12:"333333333333";s:8:"old_name";s:12:"333333333333";s:7:"item_id";s:4:"1145";s:15:"section_item_id";s:3:"640";s:9:"post_type";s:9:"lp_lesson";}i:641;a:5:{s:4:"name";s:8:"44444444";s:8:"old_name";s:8:"44444444";s:7:"item_id";s:4:"1227";s:15:"section_item_id";s:3:"641";s:9:"post_type";s:9:"lp_lesson";}i:642;a:5:{s:4:"name";s:6:"cookie";s:8:"old_name";s:6:"cookie";s:7:"item_id";s:4:"1231";s:15:"section_item_id";s:3:"642";s:9:"post_type";s:9:"lp_lesson";}s:6:"item-3";a:5:{s:4:"name";s:0:"";s:8:"old_name";s:0:"";s:7:"item_id";s:0:"";s:15:"section_item_id";s:0:"";s:9:"post_type";s:9:"lp_lesson";}}}}]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_duration</wp:meta_key>
+		<wp:meta_value><![CDATA[10]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_max_students</wp:meta_key>
+		<wp:meta_value><![CDATA[1000]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_students</wp:meta_key>
+		<wp:meta_value><![CDATA[0]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_retake_count</wp:meta_key>
+		<wp:meta_value><![CDATA[0]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_passing_condition</wp:meta_key>
+		<wp:meta_value><![CDATA[50]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_enroll_requirement</wp:meta_key>
+		<wp:meta_value><![CDATA[no]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_payment</wp:meta_key>
+		<wp:meta_value><![CDATA[no]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_course_status</wp:meta_key>
+		<wp:meta_value><![CDATA[publish]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_course_result</wp:meta_key>
+		<wp:meta_value><![CDATA[evaluate_lesson]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_required_enroll</wp:meta_key>
+		<wp:meta_value><![CDATA[yes]]></wp:meta_value>
+		</wp:postmeta>
+		<wp:section>
+			<wp:section_id>145</wp:section_id>
+			<wp:section_name>Section #1</wp:section_name>
+			<wp:section_course_id>908</wp:section_course_id>
+			<wp:section_order>1</wp:section_order>
+			<wp:section_description><![CDATA[asd asd asdasd asdasd asdasd asda]]></wp:section_description>
+			<!--SELECT si.*, p.post_type FROM wp_learnpress_section_items si INNER JOIN wp_posts p ON p.ID = si.item_id WHERE section_id = 145-->				<wp:section_item>
+					<wp:section_id>145</wp:section_id>
+					<wp:item_id>1146</wp:item_id>
+					<wp:item_order>1</wp:item_order>
+					<wp:item_type>lp_quiz</wp:item_type>
+				</wp:section_item>
+							<wp:section_item>
+					<wp:section_id>145</wp:section_id>
+					<wp:item_id>1148</wp:item_id>
+					<wp:item_order>2</wp:item_order>
+					<wp:item_type>lp_lesson</wp:item_type>
+				</wp:section_item>
+							<wp:section_item>
+					<wp:section_id>145</wp:section_id>
+					<wp:item_id>1149</wp:item_id>
+					<wp:item_order>3</wp:item_order>
+					<wp:item_type>lp_quiz</wp:item_type>
+				</wp:section_item>
+							<wp:section_item>
+					<wp:section_id>145</wp:section_id>
+					<wp:item_id>1143</wp:item_id>
+					<wp:item_order>4</wp:item_order>
+					<wp:item_type>lp_lesson</wp:item_type>
+				</wp:section_item>
+							<wp:section_item>
+					<wp:section_id>145</wp:section_id>
+					<wp:item_id>1144</wp:item_id>
+					<wp:item_order>5</wp:item_order>
+					<wp:item_type>lp_lesson</wp:item_type>
+				</wp:section_item>
+							<wp:section_item>
+					<wp:section_id>145</wp:section_id>
+					<wp:item_id>1139</wp:item_id>
+					<wp:item_order>6</wp:item_order>
+					<wp:item_type>lp_lesson</wp:item_type>
+				</wp:section_item>
+							<wp:section_item>
+					<wp:section_id>145</wp:section_id>
+					<wp:item_id>1140</wp:item_id>
+					<wp:item_order>7</wp:item_order>
+					<wp:item_type>lp_lesson</wp:item_type>
+				</wp:section_item>
+							<wp:section_item>
+					<wp:section_id>145</wp:section_id>
+					<wp:item_id>1142</wp:item_id>
+					<wp:item_order>8</wp:item_order>
+					<wp:item_type>lp_lesson</wp:item_type>
+				</wp:section_item>
+							<wp:section_item>
+					<wp:section_id>145</wp:section_id>
+					<wp:item_id>1153</wp:item_id>
+					<wp:item_order>9</wp:item_order>
+					<wp:item_type>lp_lesson</wp:item_type>
+				</wp:section_item>
+							<wp:section_item>
+					<wp:section_id>145</wp:section_id>
+					<wp:item_id>1154</wp:item_id>
+					<wp:item_order>10</wp:item_order>
+					<wp:item_type>lp_lesson</wp:item_type>
+				</wp:section_item>
+							<wp:section_item>
+					<wp:section_id>145</wp:section_id>
+					<wp:item_id>1164</wp:item_id>
+					<wp:item_order>11</wp:item_order>
+					<wp:item_type>lp_lesson</wp:item_type>
+				</wp:section_item>
+							<wp:section_item>
+					<wp:section_id>145</wp:section_id>
+					<wp:item_id>1165</wp:item_id>
+					<wp:item_order>12</wp:item_order>
+					<wp:item_type>lp_lesson</wp:item_type>
+				</wp:section_item>
+							<wp:section_item>
+					<wp:section_id>145</wp:section_id>
+					<wp:item_id>1166</wp:item_id>
+					<wp:item_order>13</wp:item_order>
+					<wp:item_type>lp_lesson</wp:item_type>
+				</wp:section_item>
+							<wp:section_item>
+					<wp:section_id>145</wp:section_id>
+					<wp:item_id>1167</wp:item_id>
+					<wp:item_order>14</wp:item_order>
+					<wp:item_type>lp_lesson</wp:item_type>
+				</wp:section_item>
+				</wp:section>
+	
+		<wp:section>
+			<wp:section_id>146</wp:section_id>
+			<wp:section_name>Section #2</wp:section_name>
+			<wp:section_course_id>908</wp:section_course_id>
+			<wp:section_order>2</wp:section_order>
+			<wp:section_description><![CDATA[asdas das d asdas das asdasd asdas dasdas dasdasd]]></wp:section_description>
+			<!--SELECT si.*, p.post_type FROM wp_learnpress_section_items si INNER JOIN wp_posts p ON p.ID = si.item_id WHERE section_id = 146-->				<wp:section_item>
+					<wp:section_id>146</wp:section_id>
+					<wp:item_id>1169</wp:item_id>
+					<wp:item_order>1</wp:item_order>
+					<wp:item_type>lp_lesson</wp:item_type>
+				</wp:section_item>
+							<wp:section_item>
+					<wp:section_id>146</wp:section_id>
+					<wp:item_id>1170</wp:item_id>
+					<wp:item_order>2</wp:item_order>
+					<wp:item_type>lp_lesson</wp:item_type>
+				</wp:section_item>
+							<wp:section_item>
+					<wp:section_id>146</wp:section_id>
+					<wp:item_id>1171</wp:item_id>
+					<wp:item_order>3</wp:item_order>
+					<wp:item_type>lp_lesson</wp:item_type>
+				</wp:section_item>
+							<wp:section_item>
+					<wp:section_id>146</wp:section_id>
+					<wp:item_id>1168</wp:item_id>
+					<wp:item_order>4</wp:item_order>
+					<wp:item_type>lp_quiz</wp:item_type>
+				</wp:section_item>
+				</wp:section>
+	
+		<wp:section>
+			<wp:section_id>147</wp:section_id>
+			<wp:section_name>Section #3</wp:section_name>
+			<wp:section_course_id>908</wp:section_course_id>
+			<wp:section_order>3</wp:section_order>
+			<wp:section_description><![CDATA[]]></wp:section_description>
+			<!--SELECT si.*, p.post_type FROM wp_learnpress_section_items si INNER JOIN wp_posts p ON p.ID = si.item_id WHERE section_id = 147-->				<wp:section_item>
+					<wp:section_id>147</wp:section_id>
+					<wp:item_id>1172</wp:item_id>
+					<wp:item_order>1</wp:item_order>
+					<wp:item_type>lp_quiz</wp:item_type>
+				</wp:section_item>
+				</wp:section>
+	
+		<wp:section>
+			<wp:section_id>148</wp:section_id>
+			<wp:section_name>Section #4</wp:section_name>
+			<wp:section_course_id>908</wp:section_course_id>
+			<wp:section_order>4</wp:section_order>
+			<wp:section_description><![CDATA[]]></wp:section_description>
+			<!--SELECT si.*, p.post_type FROM wp_learnpress_section_items si INNER JOIN wp_posts p ON p.ID = si.item_id WHERE section_id = 148-->				<wp:section_item>
+					<wp:section_id>148</wp:section_id>
+					<wp:item_id>1173</wp:item_id>
+					<wp:item_order>1</wp:item_order>
+					<wp:item_type>lp_quiz</wp:item_type>
+				</wp:section_item>
+				</wp:section>
+	
+		<wp:section>
+			<wp:section_id>149</wp:section_id>
+			<wp:section_name>Section #5</wp:section_name>
+			<wp:section_course_id>908</wp:section_course_id>
+			<wp:section_order>5</wp:section_order>
+			<wp:section_description><![CDATA[]]></wp:section_description>
+			<!--SELECT si.*, p.post_type FROM wp_learnpress_section_items si INNER JOIN wp_posts p ON p.ID = si.item_id WHERE section_id = 149-->				<wp:section_item>
+					<wp:section_id>149</wp:section_id>
+					<wp:item_id>1228</wp:item_id>
+					<wp:item_order>1</wp:item_order>
+					<wp:item_type>lp_lesson</wp:item_type>
+				</wp:section_item>
+							<wp:section_item>
+					<wp:section_id>149</wp:section_id>
+					<wp:item_id>1229</wp:item_id>
+					<wp:item_order>2</wp:item_order>
+					<wp:item_type>lp_lesson</wp:item_type>
+				</wp:section_item>
+							<wp:section_item>
+					<wp:section_id>149</wp:section_id>
+					<wp:item_id>1136</wp:item_id>
+					<wp:item_order>3</wp:item_order>
+					<wp:item_type>lp_lesson</wp:item_type>
+				</wp:section_item>
+							<wp:section_item>
+					<wp:section_id>149</wp:section_id>
+					<wp:item_id>1137</wp:item_id>
+					<wp:item_order>4</wp:item_order>
+					<wp:item_type>lp_lesson</wp:item_type>
+				</wp:section_item>
+							<wp:section_item>
+					<wp:section_id>149</wp:section_id>
+					<wp:item_id>1230</wp:item_id>
+					<wp:item_order>5</wp:item_order>
+					<wp:item_type>lp_lesson</wp:item_type>
+				</wp:section_item>
+				</wp:section>
+	
+		<wp:section>
+			<wp:section_id>150</wp:section_id>
+			<wp:section_name>Section #6</wp:section_name>
+			<wp:section_course_id>908</wp:section_course_id>
+			<wp:section_order>6</wp:section_order>
+			<wp:section_description><![CDATA[]]></wp:section_description>
+			<!--SELECT si.*, p.post_type FROM wp_learnpress_section_items si INNER JOIN wp_posts p ON p.ID = si.item_id WHERE section_id = 150-->				<wp:section_item>
+					<wp:section_id>150</wp:section_id>
+					<wp:item_id>1145</wp:item_id>
+					<wp:item_order>1</wp:item_order>
+					<wp:item_type>lp_lesson</wp:item_type>
+				</wp:section_item>
+							<wp:section_item>
+					<wp:section_id>150</wp:section_id>
+					<wp:item_id>1227</wp:item_id>
+					<wp:item_order>2</wp:item_order>
+					<wp:item_type>lp_lesson</wp:item_type>
+				</wp:section_item>
+							<wp:section_item>
+					<wp:section_id>150</wp:section_id>
+					<wp:item_id>1231</wp:item_id>
+					<wp:item_order>3</wp:item_order>
+					<wp:item_type>lp_lesson</wp:item_type>
+				</wp:section_item>
+				</wp:section>
+	
+	<wp:comment>
+		<wp:comment_id>89</wp:comment_id>
+		<wp:comment_author><![CDATA[admin]]></wp:comment_author>
+		<wp:comment_author_email>tunnhn@gmail.com</wp:comment_author_email>
+		<wp:comment_author_url></wp:comment_author_url>
+		<wp:comment_author_IP>::1</wp:comment_author_IP>
+		<wp:comment_date>2016-01-07 03:50:26</wp:comment_date>
+		<wp:comment_date_gmt>2016-01-07 03:50:26</wp:comment_date_gmt>
+		<wp:comment_content><![CDATA[How create a course with LearnPress]]></wp:comment_content>
+		<wp:comment_approved>1</wp:comment_approved>
+		<wp:comment_type></wp:comment_type>
+		<wp:comment_parent>0</wp:comment_parent>
+		<wp:comment_user_id>1</wp:comment_user_id>
+		</wp:comment>
+	<wp:comment>
+		<wp:comment_id>90</wp:comment_id>
+		<wp:comment_author><![CDATA[admin]]></wp:comment_author>
+		<wp:comment_author_email>tunnhn@gmail.com</wp:comment_author_email>
+		<wp:comment_author_url></wp:comment_author_url>
+		<wp:comment_author_IP>::1</wp:comment_author_IP>
+		<wp:comment_date>2016-01-07 03:50:56</wp:comment_date>
+		<wp:comment_date_gmt>2016-01-07 03:50:56</wp:comment_date_gmt>
+		<wp:comment_content><![CDATA[Nam quam nunc blandit]]></wp:comment_content>
+		<wp:comment_approved>1</wp:comment_approved>
+		<wp:comment_type></wp:comment_type>
+		<wp:comment_parent>89</wp:comment_parent>
+		<wp:comment_user_id>1</wp:comment_user_id>
+		</wp:comment>
+</item><item>
+	<title>333333333333</title>
+	<link>http://localhost/foobla/learnpress/1.0/quizzes/333333333333-2/</link>
+	<pubDate>Tue, 08 Dec 2015 04:19:22 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/quizzes/333333333333-2/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1146</wp:post_id>
+	<wp:post_date>2015-12-08 04:19:22</wp:post_date>
+	<wp:post_date_gmt>2015-12-08 04:19:22</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>333333333333-2</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_quiz</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+					<wp:postmeta>
+		<wp:meta_key>_edit_lock</wp:meta_key>
+		<wp:meta_value><![CDATA[1451469598:1]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_edit_last</wp:meta_key>
+		<wp:meta_value><![CDATA[1]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_duration</wp:meta_key>
+		<wp:meta_value><![CDATA[10]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_show_result</wp:meta_key>
+		<wp:meta_value><![CDATA[0]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_show_question_answer</wp:meta_key>
+		<wp:meta_value><![CDATA[0]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_type</wp:meta_key>
+		<wp:meta_value><![CDATA[true_or_false]]></wp:meta_value>
+		</wp:postmeta>
+</item><item>
+	<title>where are you now?</title>
+	<link>http://localhost/foobla/learnpress/1.0/lessons/where-are-you-now/</link>
+	<pubDate>Tue, 08 Dec 2015 08:20:59 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/lessons/where-are-you-now/</guid>
+	<description></description>
+	<content:encoded><![CDATA[Nulla porta dolor. Ut varius tincidunt libero. Sed augue ipsum, egestas nec, vestibulum et, malesuada adipiscing, dui. Fusce egestas elit eget lorem. Vivamus aliquet elit ac nisl.
+
+Cras ultricies mi eu turpis hendrerit fringilla. Quisque id mi. Fusce ac felis sit amet ligula pharetra condimentum. Maecenas malesuada. Praesent nec nisl a purus blandit viverra.
+
+In auctor lobortis lacus. Phasellus leo dolor, tempus non, auctor et, hendrerit quis, nisi. Nam adipiscing. Pellentesque libero tortor, tincidunt et, tincidunt eget, semper nec, quam. Nam commodo suscipit quam.
+
+Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nullam accumsan lorem in dui. Cras varius. Nunc egestas, augue at pellentesque laoreet, felis eros vehicula leo, at malesuada velit leo quis pede. Suspendisse non nisl sit amet velit hendrerit rutrum.
+
+Morbi ac felis. Etiam rhoncus. Praesent ac massa at ligula laoreet iaculis. Nunc nulla. In turpis.]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1148</wp:post_id>
+	<wp:post_date>2015-12-08 08:20:59</wp:post_date>
+	<wp:post_date_gmt>2015-12-08 08:20:59</wp:post_date_gmt>
 	<wp:comment_status>closed</wp:comment_status>
 	<wp:ping_status>closed</wp:ping_status>
+	<wp:post_name>where-are-you-now</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_lesson</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+					<wp:postmeta>
+		<wp:meta_key>_lpr_course</wp:meta_key>
+		<wp:meta_value><![CDATA[0]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_duration</wp:meta_key>
+		<wp:meta_value><![CDATA[10]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_max_students</wp:meta_key>
+		<wp:meta_value><![CDATA[1000]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_students</wp:meta_key>
+		<wp:meta_value><![CDATA[0]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_retake_count</wp:meta_key>
+		<wp:meta_value><![CDATA[0]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_passing_condition</wp:meta_key>
+		<wp:meta_value><![CDATA[50]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_enroll_requirement</wp:meta_key>
+		<wp:meta_value><![CDATA[yes]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_payment</wp:meta_key>
+		<wp:meta_value><![CDATA[free]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_is_previewable</wp:meta_key>
+		<wp:meta_value><![CDATA[no]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_edit_lock</wp:meta_key>
+		<wp:meta_value><![CDATA[1451449804:1]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_edit_last</wp:meta_key>
+		<wp:meta_value><![CDATA[1]]></wp:meta_value>
+		</wp:postmeta>
+</item><item>
+	<title>I am here, beside you</title>
+	<link>http://localhost/foobla/learnpress/1.0/quizzes/i-am-here-beside-you/</link>
+	<pubDate>Tue, 08 Dec 2015 08:26:07 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/quizzes/i-am-here-beside-you/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1149</wp:post_id>
+	<wp:post_date>2015-12-08 08:26:07</wp:post_date>
+	<wp:post_date_gmt>2015-12-08 08:26:07</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>i-am-here-beside-you</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_quiz</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+					<wp:postmeta>
+		<wp:meta_key>_lp_duration</wp:meta_key>
+		<wp:meta_value><![CDATA[10]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_max_students</wp:meta_key>
+		<wp:meta_value><![CDATA[1000]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_students</wp:meta_key>
+		<wp:meta_value><![CDATA[0]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_retake_count</wp:meta_key>
+		<wp:meta_value><![CDATA[0]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_passing_condition</wp:meta_key>
+		<wp:meta_value><![CDATA[50]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_enroll_requirement</wp:meta_key>
+		<wp:meta_value><![CDATA[yes]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_payment</wp:meta_key>
+		<wp:meta_value><![CDATA[free]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_edit_lock</wp:meta_key>
+		<wp:meta_value><![CDATA[1450973326:1]]></wp:meta_value>
+		</wp:postmeta>
+</item><item>
+	<title>asdasdasd</title>
+	<link>http://localhost/foobla/learnpress/1.0/lessons/asdasdasd/</link>
+	<pubDate>Tue, 08 Dec 2015 03:58:51 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/lessons/asdasdasd/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1143</wp:post_id>
+	<wp:post_date>2015-12-08 03:58:51</wp:post_date>
+	<wp:post_date_gmt>2015-12-08 03:58:51</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>asdasdasd</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_lesson</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+					<wp:postmeta>
+		<wp:meta_key>_lpr_course</wp:meta_key>
+		<wp:meta_value><![CDATA[0]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_is_previewable</wp:meta_key>
+		<wp:meta_value><![CDATA[no]]></wp:meta_value>
+		</wp:postmeta>
+</item><item>
+	<title>dsfsdfsdf</title>
+	<link>http://localhost/foobla/learnpress/1.0/lessons/dsfsdfsdf/</link>
+	<pubDate>Tue, 08 Dec 2015 03:59:33 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/lessons/dsfsdfsdf/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1144</wp:post_id>
+	<wp:post_date>2015-12-08 03:59:33</wp:post_date>
+	<wp:post_date_gmt>2015-12-08 03:59:33</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>dsfsdfsdf</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_lesson</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+					<wp:postmeta>
+		<wp:meta_key>_lpr_course</wp:meta_key>
+		<wp:meta_value><![CDATA[0]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_is_previewable</wp:meta_key>
+		<wp:meta_value><![CDATA[no]]></wp:meta_value>
+		</wp:postmeta>
+</item><item>
+	<title>Lesson 1</title>
+	<link>http://localhost/foobla/learnpress/1.0/lessons/lesson-1-2/</link>
+	<pubDate>Fri, 04 Dec 2015 08:41:24 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/lessons/lesson-1-2/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1139</wp:post_id>
+	<wp:post_date>2015-12-04 08:41:24</wp:post_date>
+	<wp:post_date_gmt>2015-12-04 08:41:24</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>lesson-1-2</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_lesson</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+					<wp:postmeta>
+		<wp:meta_key>_lpr_course</wp:meta_key>
+		<wp:meta_value><![CDATA[0]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_duration</wp:meta_key>
+		<wp:meta_value><![CDATA[10]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_max_students</wp:meta_key>
+		<wp:meta_value><![CDATA[1000]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_students</wp:meta_key>
+		<wp:meta_value><![CDATA[0]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_retake_count</wp:meta_key>
+		<wp:meta_value><![CDATA[0]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_passing_condition</wp:meta_key>
+		<wp:meta_value><![CDATA[50]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_enroll_requirement</wp:meta_key>
+		<wp:meta_value><![CDATA[yes]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_payment</wp:meta_key>
+		<wp:meta_value><![CDATA[free]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_is_previewable</wp:meta_key>
+		<wp:meta_value><![CDATA[yes]]></wp:meta_value>
+		</wp:postmeta>
+</item><item>
+	<title>Lesson 2</title>
+	<link>http://localhost/foobla/learnpress/1.0/lessons/lesson-2-2/</link>
+	<pubDate>Fri, 04 Dec 2015 08:41:24 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/lessons/lesson-2-2/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1140</wp:post_id>
+	<wp:post_date>2015-12-04 08:41:24</wp:post_date>
+	<wp:post_date_gmt>2015-12-04 08:41:24</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>lesson-2-2</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_lesson</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+					<wp:postmeta>
+		<wp:meta_key>_lpr_course</wp:meta_key>
+		<wp:meta_value><![CDATA[0]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_is_previewable</wp:meta_key>
+		<wp:meta_value><![CDATA[no]]></wp:meta_value>
+		</wp:postmeta>
+</item><item>
+	<title>Lesson 3</title>
+	<link>http://localhost/foobla/learnpress/1.0/lessons/lesson-3/</link>
+	<pubDate>Tue, 08 Dec 2015 03:58:28 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/lessons/lesson-3/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1142</wp:post_id>
+	<wp:post_date>2015-12-08 03:58:28</wp:post_date>
+	<wp:post_date_gmt>2015-12-08 03:58:28</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>lesson-3</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_lesson</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+					<wp:postmeta>
+		<wp:meta_key>_lpr_course</wp:meta_key>
+		<wp:meta_value><![CDATA[0]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_is_previewable</wp:meta_key>
+		<wp:meta_value><![CDATA[no]]></wp:meta_value>
+		</wp:postmeta>
+</item><item>
+	<title>qqqqqqqqqqqqqqqqq</title>
+	<link>http://localhost/foobla/learnpress/1.0/lessons/qqqqqqqqqqqqqqqqq/</link>
+	<pubDate>Tue, 08 Dec 2015 15:15:04 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/lessons/qqqqqqqqqqqqqqqqq/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1153</wp:post_id>
+	<wp:post_date>2015-12-08 15:15:04</wp:post_date>
+	<wp:post_date_gmt>2015-12-08 15:15:04</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>qqqqqqqqqqqqqqqqq</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_lesson</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+					<wp:postmeta>
+		<wp:meta_key>_edit_lock</wp:meta_key>
+		<wp:meta_value><![CDATA[1449589506:1]]></wp:meta_value>
+		</wp:postmeta>
+</item><item>
+	<title>trau va bo</title>
+	<link>http://localhost/foobla/learnpress/1.0/lessons/trau-va-bo/</link>
+	<pubDate>Tue, 08 Dec 2015 15:16:40 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/lessons/trau-va-bo/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1154</wp:post_id>
+	<wp:post_date>2015-12-08 15:16:40</wp:post_date>
+	<wp:post_date_gmt>2015-12-08 15:16:40</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>trau-va-bo</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_lesson</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+					<wp:postmeta>
+		<wp:meta_key>_lp_duration</wp:meta_key>
+		<wp:meta_value><![CDATA[10]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_is_previewable</wp:meta_key>
+		<wp:meta_value><![CDATA[no]]></wp:meta_value>
+		</wp:postmeta>
+</item><item>
+	<title>adasdasdasda asd as</title>
+	<link>http://localhost/foobla/learnpress/1.0/lessons/adasdasdasda-asd-as/</link>
+	<pubDate>Thu, 17 Dec 2015 02:29:12 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/lessons/adasdasdasda-asd-as/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1164</wp:post_id>
+	<wp:post_date>2015-12-17 02:29:12</wp:post_date>
+	<wp:post_date_gmt>2015-12-17 02:29:12</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>adasdasdasda-asd-as</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_lesson</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+					<wp:postmeta>
+		<wp:meta_key>_lp_duration</wp:meta_key>
+		<wp:meta_value><![CDATA[10]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_max_students</wp:meta_key>
+		<wp:meta_value><![CDATA[1000]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_students</wp:meta_key>
+		<wp:meta_value><![CDATA[0]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_retake_count</wp:meta_key>
+		<wp:meta_value><![CDATA[0]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_passing_condition</wp:meta_key>
+		<wp:meta_value><![CDATA[50]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_enroll_requirement</wp:meta_key>
+		<wp:meta_value><![CDATA[yes]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_payment</wp:meta_key>
+		<wp:meta_value><![CDATA[free]]></wp:meta_value>
+		</wp:postmeta>
+</item><item>
+	<title>asd asda sdasdas da</title>
+	<link>http://localhost/foobla/learnpress/1.0/lessons/asd-asda-sdasdas-da/</link>
+	<pubDate>Thu, 17 Dec 2015 02:29:12 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/lessons/asd-asda-sdasdas-da/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1165</wp:post_id>
+	<wp:post_date>2015-12-17 02:29:12</wp:post_date>
+	<wp:post_date_gmt>2015-12-17 02:29:12</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>asd-asda-sdasdas-da</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_lesson</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+			
+</item><item>
+	<title>asdasdasdasdasda</title>
+	<link>http://localhost/foobla/learnpress/1.0/lessons/asdasdasdasdasda/</link>
+	<pubDate>Thu, 17 Dec 2015 02:29:12 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/lessons/asdasdasdasdasda/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1166</wp:post_id>
+	<wp:post_date>2015-12-17 02:29:12</wp:post_date>
+	<wp:post_date_gmt>2015-12-17 02:29:12</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>asdasdasdasdasda</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_lesson</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+			
+</item><item>
+	<title>assasdasdasdasdasd</title>
+	<link>http://localhost/foobla/learnpress/1.0/lessons/assasdasdasdasdasd/</link>
+	<pubDate>Thu, 17 Dec 2015 02:29:12 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/lessons/assasdasdasdasdasd/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1167</wp:post_id>
+	<wp:post_date>2015-12-17 02:29:12</wp:post_date>
+	<wp:post_date_gmt>2015-12-17 02:29:12</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>assasdasdasdasdasd</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_lesson</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+			
+</item><item>
+	<title>How to create a course</title>
+	<link>http://localhost/foobla/learnpress/1.0/lessons/how-to-create-a-course/</link>
+	<pubDate>Thu, 17 Dec 2015 03:39:13 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/lessons/how-to-create-a-course/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1169</wp:post_id>
+	<wp:post_date>2015-12-17 03:39:13</wp:post_date>
+	<wp:post_date_gmt>2015-12-17 03:39:13</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
 	<wp:post_name>how-to-create-a-course</wp:post_name>
 	<wp:status>publish</wp:status>
 	<wp:post_parent>0</wp:post_parent>
 	<wp:menu_order>0</wp:menu_order>
-	<wp:post_type>lpr_lesson</wp:post_type>
+	<wp:post_type>lp_lesson</wp:post_type>
 	<wp:post_password></wp:post_password>
-    <wp:post_author_id>2</wp:post_author_id>
+	<wp:post_author_id>1</wp:post_author_id>
 	<wp:is_sticky>0</wp:is_sticky>
-			
-	<wp:postmeta>
-		<wp:meta_key>_edit_lock</wp:meta_key>
-		<wp:meta_value><![CDATA[1433479017:13]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_edit_last</wp:meta_key>
-		<wp:meta_value><![CDATA[13]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_lesson_duration</wp:meta_key>
+					<wp:postmeta>
+		<wp:meta_key>_lp_duration</wp:meta_key>
 		<wp:meta_value><![CDATA[10]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_lesson_preview</wp:meta_key>
-		<wp:meta_value><![CDATA[not_preview]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_course</wp:meta_key>
-		<wp:meta_value><![CDATA[133]]></wp:meta_value>
-	</wp:postmeta>
-</item>
-
-<item>
-	<title>How to create a lesson?</title>
-	<link>http://home.foobla.com/lessons/how-to-create-a-lesson/</link>
-	<pubDate>Sun, 17 May 2015 01:36:52 +0000</pubDate>
-	<dc:creator><![CDATA[ha]]></dc:creator>
-	<guid isPermaLink="false">http://home.foobla.com/lessons/how-to-create-a-lesson/</guid>
-	<description></description>
-	<content:encoded><![CDATA[A lesson is an essential part of a course. It contains knowledge in a specific topic which teacher desires to teach students.
-
-A lesson in LearnPress can be text, video or audio.
-
-Just simply copy and paste your link of video to lesson content to show.
-
-<a href="http://home.foobla.com/wp-content/uploads/2015/05/lesson-content.png"><img class="aligncenter wp-image-286 size-full" src="http://home.foobla.com/wp-content/uploads/2015/05/lesson-content.png" alt="lesson content" width="961" height="795" /></a>
-
-There are 2 options in lesson settings
-
-1-  Lesson duration: to estimate how much time do you think students should need to study that lesson,
-
-2- Preview lesson: If your lesson is a preview, it is not necessary for your student to take course to view.
-
-<a href="http://home.foobla.com/wp-content/uploads/2015/05/lesson-settings.png"><img class="aligncenter wp-image-287 size-full" src="http://home.foobla.com/wp-content/uploads/2015/05/lesson-settings.png" alt="lesson settings" width="1046" height="244" /></a>
-
-&nbsp;]]></content:encoded>
-	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
-	<wp:post_id>136</wp:post_id>
-	<wp:post_date>2015-05-17 08:36:52</wp:post_date>
-	<wp:post_date_gmt>2015-05-17 01:36:52</wp:post_date_gmt>
-	<wp:comment_status>closed</wp:comment_status>
-	<wp:ping_status>closed</wp:ping_status>
-	<wp:post_name>how-to-create-a-lesson</wp:post_name>
-	<wp:status>publish</wp:status>
-	<wp:post_parent>0</wp:post_parent>
-	<wp:menu_order>0</wp:menu_order>
-	<wp:post_type>lpr_lesson</wp:post_type>
-	<wp:post_password></wp:post_password>
-    <wp:post_author_id>2</wp:post_author_id>
-	<wp:is_sticky>0</wp:is_sticky>
-			
-	<wp:postmeta>
-		<wp:meta_key>_edit_lock</wp:meta_key>
-		<wp:meta_value><![CDATA[1433485503:13]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_edit_last</wp:meta_key>
-		<wp:meta_value><![CDATA[13]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_lesson_duration</wp:meta_key>
-		<wp:meta_value><![CDATA[5]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_lesson_preview</wp:meta_key>
-		<wp:meta_value><![CDATA[not_preview]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_course</wp:meta_key>
-		<wp:meta_value><![CDATA[133]]></wp:meta_value>
-	</wp:postmeta>
-</item>
-
-<item>
-	<title>How to create a quiz?</title>
-	<link>http://home.foobla.com/lessons/how-to-create-a-quiz/</link>
-	<pubDate>Sun, 17 May 2015 01:38:34 +0000</pubDate>
-	<dc:creator><![CDATA[ha]]></dc:creator>
-	<guid isPermaLink="false">http://home.foobla.com/lessons/how-to-create-a-quiz/</guid>
-	<description></description>
-	<content:encoded><![CDATA[Quiz is a part of a course which is used to testing your student's understanding of your course.
-
-There are 2 ways to create a quiz:
-
-1. Go to "Quizzes&gt;add new" and "Add quiz" to a course later
-
-<a href="http://home.foobla.com/wp-content/uploads/2015/05/Add-Quizz.png"><img class="aligncenter wp-image-510 size-full" src="http://home.foobla.com/wp-content/uploads/2015/05/Add-Quizz.png" alt="Add Quizz" width="1340" height="223" /></a>
-
-2. Create a quiz by "Quick add quiz". There is only a title by this way therefore you need to "edit" it to add more questions to your quiz.
-
-<a href="http://home.foobla.com/wp-content/uploads/2015/05/quick-add-quiz.png"><img class="aligncenter wp-image-511 size-full" src="http://home.foobla.com/wp-content/uploads/2015/05/quick-add-quiz.png" alt="quick add quiz" width="1413" height="346" /></a>
-
-&nbsp;
-
-&nbsp;]]></content:encoded>
-	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
-	<wp:post_id>138</wp:post_id>
-	<wp:post_date>2015-05-17 08:38:34</wp:post_date>
-	<wp:post_date_gmt>2015-05-17 01:38:34</wp:post_date_gmt>
-	<wp:comment_status>closed</wp:comment_status>
-	<wp:ping_status>closed</wp:ping_status>
-	<wp:post_name>how-to-create-a-quiz</wp:post_name>
-	<wp:status>publish</wp:status>
-	<wp:post_parent>0</wp:post_parent>
-	<wp:menu_order>0</wp:menu_order>
-	<wp:post_type>lpr_lesson</wp:post_type>
-	<wp:post_password></wp:post_password>
-    <wp:post_author_id>2</wp:post_author_id>
-	<wp:is_sticky>0</wp:is_sticky>
-			
-	<wp:postmeta>
-		<wp:meta_key>_edit_lock</wp:meta_key>
-		<wp:meta_value><![CDATA[1433489901:13]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_edit_last</wp:meta_key>
-		<wp:meta_value><![CDATA[13]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_lesson_duration</wp:meta_key>
-		<wp:meta_value><![CDATA[30]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_lesson_preview</wp:meta_key>
-		<wp:meta_value><![CDATA[not_preview]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_course</wp:meta_key>
-		<wp:meta_value><![CDATA[133]]></wp:meta_value>
-	</wp:postmeta>
-</item>
-
-<item>
-	<title>How to create a question?</title>
-	<link>http://home.foobla.com/lessons/how-to-create-a-question/</link>
-	<pubDate>Sun, 17 May 2015 01:38:50 +0000</pubDate>
-	<dc:creator><![CDATA[ha]]></dc:creator>
-	<guid isPermaLink="false">http://home.foobla.com/lessons/how-to-create-a-question/</guid>
-	<description></description>
-	<content:encoded><![CDATA[Question is an essential part of quiz. There are plenty types of question but in LearnPress we first support 3 types: True or False, Single Choice and Multiple Choices question.
-
-You can also create a question while creating a quiz or go to "Questions&gt;add new"
-
-<a href="http://home.foobla.com/wp-content/uploads/2015/05/add-new-question.png"><img class="aligncenter wp-image-519 size-full" src="http://home.foobla.com/wp-content/uploads/2015/05/add-new-question.png" alt="add new question" width="1399" height="192" /></a>
-
-&nbsp;
-
-<a href="http://home.foobla.com/wp-content/uploads/2015/05/add-question.png"><img class="aligncenter wp-image-520 size-full" src="http://home.foobla.com/wp-content/uploads/2015/05/add-question.png" alt="add question" width="1416" height="850" /></a>]]></content:encoded>
-	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
-	<wp:post_id>140</wp:post_id>
-	<wp:post_date>2015-05-17 08:38:50</wp:post_date>
-	<wp:post_date_gmt>2015-05-17 01:38:50</wp:post_date_gmt>
-	<wp:comment_status>closed</wp:comment_status>
-	<wp:ping_status>closed</wp:ping_status>
-	<wp:post_name>how-to-create-a-question</wp:post_name>
-	<wp:status>publish</wp:status>
-	<wp:post_parent>0</wp:post_parent>
-	<wp:menu_order>0</wp:menu_order>
-	<wp:post_type>lpr_lesson</wp:post_type>
-	<wp:post_password></wp:post_password>
-    <wp:post_author_id>2</wp:post_author_id>
-	<wp:is_sticky>0</wp:is_sticky>
-			
-	<wp:postmeta>
-		<wp:meta_key>_edit_lock</wp:meta_key>
-		<wp:meta_value><![CDATA[1433497632:13]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_edit_last</wp:meta_key>
-		<wp:meta_value><![CDATA[13]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_lesson_duration</wp:meta_key>
-		<wp:meta_value><![CDATA[30]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_lesson_preview</wp:meta_key>
-		<wp:meta_value><![CDATA[not_preview]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_course</wp:meta_key>
-		<wp:meta_value><![CDATA[133]]></wp:meta_value>
-	</wp:postmeta>
-</item>
-
-<item>
-	<title>Statistic</title>
-	<link>http://home.foobla.com/lessons/statistic/</link>
-	<pubDate>Sun, 17 May 2015 01:38:57 +0000</pubDate>
-	<dc:creator><![CDATA[ha]]></dc:creator>
-	<guid isPermaLink="false">http://home.foobla.com/lessons/statistic/</guid>
-	<description></description>
-	<content:encoded><![CDATA[This is an advance feature for instructors, administrator to see how the courses  or sites are going on.
-
-<a href="http://home.foobla.com/wp-content/uploads/2015/05/statistic.png"><img class="aligncenter wp-image-743" src="http://home.foobla.com/wp-content/uploads/2015/05/statistic.png" alt="statistic" width="1000" height="463" /></a> <a href="http://home.foobla.com/wp-content/uploads/2015/05/statistic-course.png"><img class="aligncenter wp-image-744 size-full" src="http://home.foobla.com/wp-content/uploads/2015/05/statistic-course.png" alt="statistic-course" width="1744" height="789" /></a>]]></content:encoded>
-	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
-	<wp:post_id>141</wp:post_id>
-	<wp:post_date>2015-05-17 08:38:57</wp:post_date>
-	<wp:post_date_gmt>2015-05-17 01:38:57</wp:post_date_gmt>
-	<wp:comment_status>closed</wp:comment_status>
-	<wp:ping_status>closed</wp:ping_status>
-	<wp:post_name>statistic</wp:post_name>
-	<wp:status>publish</wp:status>
-	<wp:post_parent>0</wp:post_parent>
-	<wp:menu_order>0</wp:menu_order>
-	<wp:post_type>lpr_lesson</wp:post_type>
-	<wp:post_password></wp:post_password>
-    <wp:post_author_id>2</wp:post_author_id>
-	<wp:is_sticky>0</wp:is_sticky>
-			
-	<wp:postmeta>
-		<wp:meta_key>_edit_lock</wp:meta_key>
-		<wp:meta_value><![CDATA[1433495039:13]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_edit_last</wp:meta_key>
-		<wp:meta_value><![CDATA[13]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_lesson_duration</wp:meta_key>
-		<wp:meta_value><![CDATA[30]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_lesson_preview</wp:meta_key>
-		<wp:meta_value><![CDATA[not_preview]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_course</wp:meta_key>
-		<wp:meta_value><![CDATA[133]]></wp:meta_value>
-	</wp:postmeta>
-</item>
-
-<item>
-	<title>Basic using LearnPress</title>
-	<link>http://home.foobla.com/quizzes/basic-using-learnpress/</link>
-	<pubDate>Sun, 17 May 2015 01:39:25 +0000</pubDate>
-	<dc:creator><![CDATA[ha]]></dc:creator>
-	<guid isPermaLink="false">http://home.foobla.com/blog/quiz/basic-using-learnpress/</guid>
-	<description></description>
-	<content:encoded><![CDATA[How do you understand the basic using of LearnPress. Let check it !]]></content:encoded>
-	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
-	<wp:post_id>142</wp:post_id>
-	<wp:post_date>2015-05-17 08:39:25</wp:post_date>
-	<wp:post_date_gmt>2015-05-17 01:39:25</wp:post_date_gmt>
-	<wp:comment_status>closed</wp:comment_status>
-	<wp:ping_status>closed</wp:ping_status>
-	<wp:post_name>basic-using-learnpress</wp:post_name>
-	<wp:status>publish</wp:status>
-	<wp:post_parent>0</wp:post_parent>
-	<wp:menu_order>0</wp:menu_order>
-	<wp:post_type>lpr_quiz</wp:post_type>
-	<wp:post_password></wp:post_password>
-    <wp:post_author_id>2</wp:post_author_id>
-	<wp:is_sticky>0</wp:is_sticky>
-			
-	<wp:postmeta>
-		<wp:meta_key>_edit_lock</wp:meta_key>
-		<wp:meta_value><![CDATA[1433672874:1]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_quiz_questions</wp:meta_key>
-		<wp:meta_value><![CDATA[a:4:{i:252;a:1:{s:6:"toggle";s:1:"1";}i:251;a:1:{s:6:"toggle";s:1:"1";}i:276;a:1:{s:6:"toggle";s:1:"1";}i:277;a:1:{s:6:"toggle";s:1:"1";}}]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_edit_last</wp:meta_key>
-		<wp:meta_value><![CDATA[2]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_course</wp:meta_key>
-		<wp:meta_value><![CDATA[133]]></wp:meta_value>
-	</wp:postmeta>
-</item>
-
-<item>
-	<title>What is an add-on?</title>
-	<link>http://home.foobla.com/lessons/what-is-add-ons/</link>
-	<pubDate>Sun, 17 May 2015 01:40:05 +0000</pubDate>
-	<dc:creator><![CDATA[ha]]></dc:creator>
-	<guid isPermaLink="false">http://home.foobla.com/lessons/what-is-add-ons/</guid>
-	<description></description>
-	<content:encoded><![CDATA[Add-ons are extension parts of LearnPress. Add-on provides new functions and features to add to LearnPress. If you are an administrator of a LMS, you can easily select to turn add-on on or off
-
-<a href="http://home.foobla.com/wp-content/uploads/2015/05/addons.png"><img class="aligncenter wp-image-285 size-full" src="http://home.foobla.com/wp-content/uploads/2015/05/addons.png" alt="addons" width="731" height="600" /></a>
-
-In case of a developer, you can create an add-on for LearnPress by yourself. LearnPress is an open source project and a full documentation of how you can create an add-on for LearnPress will be provided to you.]]></content:encoded>
-	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
-	<wp:post_id>143</wp:post_id>
-	<wp:post_date>2015-05-17 08:40:05</wp:post_date>
-	<wp:post_date_gmt>2015-05-17 01:40:05</wp:post_date_gmt>
-	<wp:comment_status>closed</wp:comment_status>
-	<wp:ping_status>closed</wp:ping_status>
-	<wp:post_name>what-is-add-ons</wp:post_name>
-	<wp:status>publish</wp:status>
-	<wp:post_parent>0</wp:post_parent>
-	<wp:menu_order>0</wp:menu_order>
-	<wp:post_type>lpr_lesson</wp:post_type>
-	<wp:post_password></wp:post_password>
-    <wp:post_author_id>2</wp:post_author_id>
-	<wp:is_sticky>0</wp:is_sticky>
-			
-	<wp:postmeta>
-		<wp:meta_key>_edit_lock</wp:meta_key>
-		<wp:meta_value><![CDATA[1433497634:13]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_edit_last</wp:meta_key>
-		<wp:meta_value><![CDATA[13]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_lesson_duration</wp:meta_key>
-		<wp:meta_value><![CDATA[3]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_lesson_preview</wp:meta_key>
-		<wp:meta_value><![CDATA[not_preview]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_course</wp:meta_key>
-		<wp:meta_value><![CDATA[133]]></wp:meta_value>
-	</wp:postmeta>
-</item>
-
-<item>
-	<title>Add-ons</title>
-	<link>http://home.foobla.com/quizzes/add-ons/</link>
-	<pubDate>Sun, 17 May 2015 01:40:17 +0000</pubDate>
-	<dc:creator><![CDATA[ha]]></dc:creator>
-	<guid isPermaLink="false">http://home.foobla.com/blog/quiz/add-ons/</guid>
-	<description></description>
-	<content:encoded><![CDATA[This quiz is used to testing your understanding about Adds-on on LearnPress. Let start !
-
-&nbsp;]]></content:encoded>
-	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
-	<wp:post_id>144</wp:post_id>
-	<wp:post_date>2015-05-17 08:40:17</wp:post_date>
-	<wp:post_date_gmt>2015-05-17 01:40:17</wp:post_date_gmt>
-	<wp:comment_status>closed</wp:comment_status>
-	<wp:ping_status>closed</wp:ping_status>
-	<wp:post_name>add-ons</wp:post_name>
-	<wp:status>publish</wp:status>
-	<wp:post_parent>0</wp:post_parent>
-	<wp:menu_order>0</wp:menu_order>
-	<wp:post_type>lpr_quiz</wp:post_type>
-	<wp:post_password></wp:post_password>
-    <wp:post_author_id>2</wp:post_author_id>
-	<wp:is_sticky>0</wp:is_sticky>
-			
-	<wp:postmeta>
-		<wp:meta_key>_edit_lock</wp:meta_key>
-		<wp:meta_value><![CDATA[1433129466:13]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_quiz_questions</wp:meta_key>
-		<wp:meta_value><![CDATA[a:1:{i:317;a:1:{s:6:"toggle";s:1:"1";}}]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_edit_last</wp:meta_key>
-		<wp:meta_value><![CDATA[13]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_duration</wp:meta_key>
-		<wp:meta_value><![CDATA[10]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_show_quiz_result</wp:meta_key>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_max_students</wp:meta_key>
+		<wp:meta_value><![CDATA[1000]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_students</wp:meta_key>
 		<wp:meta_value><![CDATA[0]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_course</wp:meta_key>
-		<wp:meta_value><![CDATA[133]]></wp:meta_value>
-	</wp:postmeta>
-</item>
-
-<item>
-	<title>How to create an add-ons?</title>
-	<link>http://home.foobla.com/lessons/how-to-create-an-add-ons/</link>
-	<pubDate>Sun, 17 May 2015 01:40:31 +0000</pubDate>
-	<dc:creator><![CDATA[ha]]></dc:creator>
-	<guid isPermaLink="false">http://home.foobla.com/lessons/how-to-create-an-add-ons/</guid>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_retake_count</wp:meta_key>
+		<wp:meta_value><![CDATA[0]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_passing_condition</wp:meta_key>
+		<wp:meta_value><![CDATA[50]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_enroll_requirement</wp:meta_key>
+		<wp:meta_value><![CDATA[yes]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_payment</wp:meta_key>
+		<wp:meta_value><![CDATA[free]]></wp:meta_value>
+		</wp:postmeta>
+</item><item>
+	<title>What is your name</title>
+	<link>http://localhost/foobla/learnpress/1.0/lessons/what-is-your-name/</link>
+	<pubDate>Thu, 17 Dec 2015 03:39:13 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/lessons/what-is-your-name/</guid>
 	<description></description>
-	<content:encoded><![CDATA[This lesson will provide tutorial instruction to create an add-on for LearnPress.
-
-Coming soon.
-
-Thank you,]]></content:encoded>
+	<content:encoded><![CDATA[]]></content:encoded>
 	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
-	<wp:post_id>145</wp:post_id>
-	<wp:post_date>2015-05-17 08:40:31</wp:post_date>
-	<wp:post_date_gmt>2015-05-17 01:40:31</wp:post_date_gmt>
+	<wp:post_id>1170</wp:post_id>
+	<wp:post_date>2015-12-17 03:39:13</wp:post_date>
+	<wp:post_date_gmt>2015-12-17 03:39:13</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>what-is-your-name</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_lesson</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+			
+</item><item>
+	<title>My name is Tu Nguyen</title>
+	<link>http://localhost/foobla/learnpress/1.0/lessons/my-name-is-tu-nguyen/</link>
+	<pubDate>Thu, 17 Dec 2015 03:39:13 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/lessons/my-name-is-tu-nguyen/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1171</wp:post_id>
+	<wp:post_date>2015-12-17 03:39:13</wp:post_date>
+	<wp:post_date_gmt>2015-12-17 03:39:13</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>my-name-is-tu-nguyen</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_lesson</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+			
+</item><item>
+	<title>sdfsdfsdf sdf sdf sdf s</title>
+	<link>http://localhost/foobla/learnpress/1.0/quizzes/sdfsdfsdf-sdf-sdf-sdf-s/</link>
+	<pubDate>Thu, 17 Dec 2015 03:39:07 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/quizzes/sdfsdfsdf-sdf-sdf-sdf-s/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1168</wp:post_id>
+	<wp:post_date>2015-12-17 03:39:07</wp:post_date>
+	<wp:post_date_gmt>2015-12-17 03:39:07</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>sdfsdfsdf-sdf-sdf-sdf-s</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_quiz</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+					<wp:postmeta>
+		<wp:meta_key>_lp_duration</wp:meta_key>
+		<wp:meta_value><![CDATA[10]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_is_previewable</wp:meta_key>
+		<wp:meta_value><![CDATA[no]]></wp:meta_value>
+		</wp:postmeta>
+</item><item>
+	<title>sdfsd fsd fsdf</title>
+	<link>http://localhost/foobla/learnpress/1.0/quizzes/sdfsd-fsd-fsdf/</link>
+	<pubDate>Thu, 17 Dec 2015 03:44:14 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/quizzes/sdfsd-fsd-fsdf/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1172</wp:post_id>
+	<wp:post_date>2015-12-17 03:44:14</wp:post_date>
+	<wp:post_date_gmt>2015-12-17 03:44:14</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>sdfsd-fsd-fsdf</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_quiz</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+					<wp:postmeta>
+		<wp:meta_key>_lp_duration</wp:meta_key>
+		<wp:meta_value><![CDATA[10]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_max_students</wp:meta_key>
+		<wp:meta_value><![CDATA[1000]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_students</wp:meta_key>
+		<wp:meta_value><![CDATA[0]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_retake_count</wp:meta_key>
+		<wp:meta_value><![CDATA[0]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_passing_condition</wp:meta_key>
+		<wp:meta_value><![CDATA[50]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_enroll_requirement</wp:meta_key>
+		<wp:meta_value><![CDATA[yes]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_payment</wp:meta_key>
+		<wp:meta_value><![CDATA[free]]></wp:meta_value>
+		</wp:postmeta>
+</item><item>
+	<title>sdf sdfsd fsdf sdfsd f</title>
+	<link>http://localhost/foobla/learnpress/1.0/quizzes/sdf-sdfsd-fsdf-sdfsd-f/</link>
+	<pubDate>Thu, 17 Dec 2015 03:44:14 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/quizzes/sdf-sdfsd-fsdf-sdfsd-f/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1173</wp:post_id>
+	<wp:post_date>2015-12-17 03:44:14</wp:post_date>
+	<wp:post_date_gmt>2015-12-17 03:44:14</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>sdf-sdfsd-fsdf-sdfsd-f</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_quiz</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+			
+</item><item>
+	<title>happy new year!</title>
+	<link>http://localhost/foobla/learnpress/1.0/lessons/happy-new-year/</link>
+	<pubDate>Tue, 29 Dec 2015 09:25:33 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/lessons/happy-new-year/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1228</wp:post_id>
+	<wp:post_date>2015-12-29 09:25:33</wp:post_date>
+	<wp:post_date_gmt>2015-12-29 09:25:33</wp:post_date_gmt>
 	<wp:comment_status>closed</wp:comment_status>
 	<wp:ping_status>closed</wp:ping_status>
-	<wp:post_name>how-to-create-an-add-ons</wp:post_name>
+	<wp:post_name>happy-new-year</wp:post_name>
 	<wp:status>publish</wp:status>
 	<wp:post_parent>0</wp:post_parent>
 	<wp:menu_order>0</wp:menu_order>
-	<wp:post_type>lpr_lesson</wp:post_type>
+	<wp:post_type>lp_lesson</wp:post_type>
 	<wp:post_password></wp:post_password>
-    <wp:post_author_id>2</wp:post_author_id>
+	<wp:post_author_id>1</wp:post_author_id>
 	<wp:is_sticky>0</wp:is_sticky>
-			
-	<wp:postmeta>
-		<wp:meta_key>_edit_lock</wp:meta_key>
-		<wp:meta_value><![CDATA[1433497636:13]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_edit_last</wp:meta_key>
-		<wp:meta_value><![CDATA[13]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_lesson_duration</wp:meta_key>
-		<wp:meta_value><![CDATA[1]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_lesson_preview</wp:meta_key>
-		<wp:meta_value><![CDATA[not_preview]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_course</wp:meta_key>
-		<wp:meta_value><![CDATA[133]]></wp:meta_value>
-	</wp:postmeta>
-</item>
-
-<item>
-	<title>Developer</title>
-	<link>http://home.foobla.com/quizzes/developer/</link>
-	<pubDate>Sun, 17 May 2015 01:40:47 +0000</pubDate>
-	<dc:creator><![CDATA[ha]]></dc:creator>
-	<guid isPermaLink="false">http://home.foobla.com/blog/quiz/developer/</guid>
+					<wp:postmeta>
+		<wp:meta_key>_lp_duration</wp:meta_key>
+		<wp:meta_value><![CDATA[10]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_is_previewable</wp:meta_key>
+		<wp:meta_value><![CDATA[no]]></wp:meta_value>
+		</wp:postmeta>
+</item><item>
+	<title>happy new year!</title>
+	<link>http://localhost/foobla/learnpress/1.0/lessons/happy-new-year-2/</link>
+	<pubDate>Tue, 29 Dec 2015 09:25:34 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/lessons/happy-new-year-2/</guid>
 	<description></description>
 	<content:encoded><![CDATA[]]></content:encoded>
 	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
-	<wp:post_id>147</wp:post_id>
-	<wp:post_date>2015-05-17 08:40:47</wp:post_date>
-	<wp:post_date_gmt>2015-05-17 01:40:47</wp:post_date_gmt>
-	<wp:comment_status>open</wp:comment_status>
-	<wp:ping_status>open</wp:ping_status>
-	<wp:post_name>developer</wp:post_name>
-	<wp:status>publish</wp:status>
-	<wp:post_parent>0</wp:post_parent>
-	<wp:menu_order>0</wp:menu_order>
-	<wp:post_type>lpr_quiz</wp:post_type>
-	<wp:post_password></wp:post_password>
-    <wp:post_author_id>2</wp:post_author_id>
-	<wp:is_sticky>0</wp:is_sticky>
-			
-	<wp:postmeta>
-		<wp:meta_key>_edit_lock</wp:meta_key>
-		<wp:meta_value><![CDATA[1433129580:13]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_course</wp:meta_key>
-		<wp:meta_value><![CDATA[133]]></wp:meta_value>
-	</wp:postmeta>
-</item>
-
-<item>
-	<title>Orders and Payment</title>
-	<link>http://home.foobla.com/lessons/orders-and-payment/</link>
-	<pubDate>Sun, 17 May 2015 01:41:08 +0000</pubDate>
-	<dc:creator><![CDATA[ha]]></dc:creator>
-	<guid isPermaLink="false">http://home.foobla.com/lessons/orders-and-payment/</guid>
-	<description></description>
-	<content:encoded><![CDATA[]]></content:encoded>
-	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
-	<wp:post_id>148</wp:post_id>
-	<wp:post_date>2015-05-17 08:41:08</wp:post_date>
-	<wp:post_date_gmt>2015-05-17 01:41:08</wp:post_date_gmt>
-	<wp:comment_status>open</wp:comment_status>
-	<wp:ping_status>open</wp:ping_status>
-	<wp:post_name>orders-and-payment</wp:post_name>
-	<wp:status>publish</wp:status>
-	<wp:post_parent>0</wp:post_parent>
-	<wp:menu_order>0</wp:menu_order>
-	<wp:post_type>lpr_lesson</wp:post_type>
-	<wp:post_password></wp:post_password>
-    <wp:post_author_id>2</wp:post_author_id>
-	<wp:is_sticky>0</wp:is_sticky>
-			
-	<wp:postmeta>
-		<wp:meta_key>_edit_lock</wp:meta_key>
-		<wp:meta_value><![CDATA[1433122037:13]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_course</wp:meta_key>
-		<wp:meta_value><![CDATA[133]]></wp:meta_value>
-	</wp:postmeta>
-</item>
-
-<item>
-	<title>What is LearnPress?</title>
-	<link>http://home.foobla.com/quizzes/what-is-learnpress/</link>
-	<pubDate>Thu, 21 May 2015 08:37:02 +0000</pubDate>
-	<dc:creator><![CDATA[ha]]></dc:creator>
-	<guid isPermaLink="false">http://home.foobla.com/blog/quiz/what-is-learnpress/</guid>
-	<description></description>
-	<content:encoded><![CDATA[This quiz is used to testing your understanding about your previous section about "What is LearnPress?".
-
-4 multiple choice questions will be contained]]></content:encoded>
-	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
-	<wp:post_id>164</wp:post_id>
-	<wp:post_date>2015-05-21 15:37:02</wp:post_date>
-	<wp:post_date_gmt>2015-05-21 08:37:02</wp:post_date_gmt>
+	<wp:post_id>1229</wp:post_id>
+	<wp:post_date>2015-12-29 09:25:34</wp:post_date>
+	<wp:post_date_gmt>2015-12-29 09:25:34</wp:post_date_gmt>
 	<wp:comment_status>closed</wp:comment_status>
 	<wp:ping_status>closed</wp:ping_status>
-	<wp:post_name>what-is-learnpress</wp:post_name>
+	<wp:post_name>happy-new-year-2</wp:post_name>
 	<wp:status>publish</wp:status>
 	<wp:post_parent>0</wp:post_parent>
 	<wp:menu_order>0</wp:menu_order>
-	<wp:post_type>lpr_quiz</wp:post_type>
+	<wp:post_type>lp_lesson</wp:post_type>
 	<wp:post_password></wp:post_password>
-    <wp:post_author_id>2</wp:post_author_id>
+	<wp:post_author_id>1</wp:post_author_id>
 	<wp:is_sticky>0</wp:is_sticky>
-			
-	<wp:postmeta>
-		<wp:meta_key>_edit_lock</wp:meta_key>
-		<wp:meta_value><![CDATA[1433488757:13]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_quiz_questions</wp:meta_key>
-		<wp:meta_value><![CDATA[a:4:{i:167;a:1:{s:6:"toggle";s:1:"1";}i:169;a:1:{s:6:"toggle";s:1:"1";}i:170;a:1:{s:6:"toggle";s:1:"1";}i:171;a:1:{s:6:"toggle";s:1:"1";}}]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_edit_last</wp:meta_key>
-		<wp:meta_value><![CDATA[13]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
+					<wp:postmeta>
+		<wp:meta_key>_lp_duration</wp:meta_key>
+		<wp:meta_value><![CDATA[10]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_is_previewable</wp:meta_key>
+		<wp:meta_value><![CDATA[no]]></wp:meta_value>
+		</wp:postmeta>
+</item><item>
+	<title>Lesson 1</title>
+	<link>http://localhost/foobla/learnpress/1.0/lessons/lesson-1/</link>
+	<pubDate>Fri, 04 Dec 2015 08:17:04 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/lessons/lesson-1/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1136</wp:post_id>
+	<wp:post_date>2015-12-04 08:17:04</wp:post_date>
+	<wp:post_date_gmt>2015-12-04 08:17:04</wp:post_date_gmt>
+	<wp:comment_status>open</wp:comment_status>
+	<wp:ping_status>open</wp:ping_status>
+	<wp:post_name>lesson-1</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_lesson</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+					<wp:postmeta>
 		<wp:meta_key>_lpr_course</wp:meta_key>
-		<wp:meta_value><![CDATA[133]]></wp:meta_value>
-	</wp:postmeta>
-</item>
-<!-- END: Lessons and Quizzes -->
-<!-- START: Questions -->
-
-<item>
-	<title>What is LearnPress?</title>
-	<link>http://home.foobla.com/questions/what-is-learnpress/</link>
-	<pubDate>Thu, 21 May 2015 09:34:03 +0000</pubDate>
-	<dc:creator><![CDATA[ha]]></dc:creator>
-	<guid isPermaLink="false">http://home.foobla.com/questions/what-is-learnpress/</guid>
-	<description></description>
-	<content:encoded><![CDATA[]]></content:encoded>
-	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
-	<wp:post_id>167</wp:post_id>
-	<wp:post_date>2015-05-21 16:34:03</wp:post_date>
-	<wp:post_date_gmt>2015-05-21 09:34:03</wp:post_date_gmt>
-	<wp:comment_status>open</wp:comment_status>
-	<wp:ping_status>open</wp:ping_status>
-	<wp:post_name>what-is-learnpress</wp:post_name>
-	<wp:status>publish</wp:status>
-	<wp:post_parent>0</wp:post_parent>
-	<wp:menu_order>0</wp:menu_order>
-	<wp:post_type>lpr_question</wp:post_type>
-	<wp:post_password></wp:post_password>
-    <wp:post_author_id>2</wp:post_author_id>
-	<wp:is_sticky>0</wp:is_sticky>
-			
-	<wp:postmeta>
-		<wp:meta_key>_lpr_question</wp:meta_key>
-		<wp:meta_value><![CDATA[a:4:{s:4:"text";s:19:"What is LearnPress?";s:6:"answer";a:3:{i:0;a:2:{s:4:"text";s:25:"an Online Learning System";s:7:"is_true";s:1:"0";}i:1;a:2:{s:4:"text";s:17:"a WordPress theme";s:7:"is_true";s:1:"0";}i:2;a:2:{s:4:"text";s:73:"a WordPress Plugin for you to create an Online Learning Management System";s:7:"is_true";s:1:"1";}}s:4:"type";s:12:"multi_choice";s:6:"toggle";s:1:"1";}]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_question_mark</wp:meta_key>
-		<wp:meta_value><![CDATA[1]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_duration</wp:meta_key>
 		<wp:meta_value><![CDATA[0]]></wp:meta_value>
-	</wp:postmeta>
-</item>
-
-<item>
-	<title>Who can use LearnPress?</title>
-	<link>http://home.foobla.com/questions/who-can-use-learnpress-2/</link>
-	<pubDate>Thu, 21 May 2015 09:36:05 +0000</pubDate>
-	<dc:creator><![CDATA[ha]]></dc:creator>
-	<guid isPermaLink="false">http://home.foobla.com/questions/who-can-use-learnpress-2/</guid>
-	<description></description>
-	<content:encoded><![CDATA[]]></content:encoded>
-	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
-	<wp:post_id>169</wp:post_id>
-	<wp:post_date>2015-05-21 16:36:05</wp:post_date>
-	<wp:post_date_gmt>2015-05-21 09:36:05</wp:post_date_gmt>
-	<wp:comment_status>open</wp:comment_status>
-	<wp:ping_status>open</wp:ping_status>
-	<wp:post_name>who-can-use-learnpress-2</wp:post_name>
-	<wp:status>publish</wp:status>
-	<wp:post_parent>0</wp:post_parent>
-	<wp:menu_order>0</wp:menu_order>
-	<wp:post_type>lpr_question</wp:post_type>
-	<wp:post_password></wp:post_password>
-    <wp:post_author_id>2</wp:post_author_id>
-	<wp:is_sticky>0</wp:is_sticky>
-			
-	<wp:postmeta>
-		<wp:meta_key>_lpr_question</wp:meta_key>
-		<wp:meta_value><![CDATA[a:4:{s:4:"text";s:23:"Who can use LearnPress?";s:6:"answer";a:4:{i:0;a:2:{s:4:"text";s:37:"Online Learning System administrators";s:7:"is_true";s:1:"0";}i:1;a:2:{s:4:"text";s:20:"Teachers/Instructors";s:7:"is_true";s:1:"0";}i:2;a:2:{s:4:"text";s:8:"Students";s:7:"is_true";s:1:"0";}i:3;a:2:{s:4:"text";s:61:"Anyone who want to get benefit from an Online Learning System";s:7:"is_true";s:1:"1";}}s:4:"type";s:12:"multi_choice";s:6:"toggle";s:1:"1";}]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_question_mark</wp:meta_key>
-		<wp:meta_value><![CDATA[1]]></wp:meta_value>
-	</wp:postmeta>
-</item>
-
-<item>
-	<title>Do you have to pay to use LearnPress?</title>
-	<link>http://home.foobla.com/questions/do-you-have-to-pay-to-use-learnpress/</link>
-	<pubDate>Thu, 21 May 2015 09:39:24 +0000</pubDate>
-	<dc:creator><![CDATA[ha]]></dc:creator>
-	<guid isPermaLink="false">http://home.foobla.com/questions/do-you-have-to-pay-to-use-learnpress/</guid>
-	<description></description>
-	<content:encoded><![CDATA[]]></content:encoded>
-	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
-	<wp:post_id>170</wp:post_id>
-	<wp:post_date>2015-05-21 16:39:24</wp:post_date>
-	<wp:post_date_gmt>2015-05-21 09:39:24</wp:post_date_gmt>
-	<wp:comment_status>open</wp:comment_status>
-	<wp:ping_status>open</wp:ping_status>
-	<wp:post_name>do-you-have-to-pay-to-use-learnpress</wp:post_name>
-	<wp:status>publish</wp:status>
-	<wp:post_parent>0</wp:post_parent>
-	<wp:menu_order>0</wp:menu_order>
-	<wp:post_type>lpr_question</wp:post_type>
-	<wp:post_password></wp:post_password>
-    <wp:post_author_id>2</wp:post_author_id>
-	<wp:is_sticky>0</wp:is_sticky>
-			
-	<wp:postmeta>
-		<wp:meta_key>_lpr_question</wp:meta_key>
-		<wp:meta_value><![CDATA[a:4:{s:4:"text";s:37:"Do you have to pay to use LearnPress?";s:6:"answer";a:2:{i:0;a:2:{s:4:"text";s:15:"Yes, I have to.";s:7:"is_true";s:1:"1";}i:1;a:2:{s:4:"text";s:21:"No, I can use it free";s:7:"is_true";s:1:"0";}}s:4:"type";s:13:"single_choice";s:6:"toggle";s:1:"1";}]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_question_mark</wp:meta_key>
-		<wp:meta_value><![CDATA[1]]></wp:meta_value>
-	</wp:postmeta>
-</item>
-
-<item>
-	<title>Can you contribute directly to LearnPress?</title>
-	<link>http://home.foobla.com/questions/can-you-contribute-directly-to-learnpress/</link>
-	<pubDate>Thu, 21 May 2015 09:40:09 +0000</pubDate>
-	<dc:creator><![CDATA[ha]]></dc:creator>
-	<guid isPermaLink="false">http://home.foobla.com/questions/can-you-contribute-directly-to-learnpress/</guid>
-	<description></description>
-	<content:encoded><![CDATA[]]></content:encoded>
-	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
-	<wp:post_id>171</wp:post_id>
-	<wp:post_date>2015-05-21 16:40:09</wp:post_date>
-	<wp:post_date_gmt>2015-05-21 09:40:09</wp:post_date_gmt>
-	<wp:comment_status>open</wp:comment_status>
-	<wp:ping_status>open</wp:ping_status>
-	<wp:post_name>can-you-contribute-directly-to-learnpress</wp:post_name>
-	<wp:status>publish</wp:status>
-	<wp:post_parent>0</wp:post_parent>
-	<wp:menu_order>0</wp:menu_order>
-	<wp:post_type>lpr_question</wp:post_type>
-	<wp:post_password></wp:post_password>
-    <wp:post_author_id>2</wp:post_author_id>
-	<wp:is_sticky>0</wp:is_sticky>
-			
-	<wp:postmeta>
-		<wp:meta_key>_lpr_question</wp:meta_key>
-		<wp:meta_value><![CDATA[a:4:{s:4:"text";s:42:"Can you contribute directly to LearnPress?";s:6:"answer";a:2:{i:0;a:2:{s:4:"text";s:69:"Yes, LearnPress is an open source project, so I can contribute to it.";s:7:"is_true";s:1:"1";}i:1;a:2:{s:4:"text";s:45:"No, only the owner of LearnPress can do that.";s:7:"is_true";s:1:"0";}}s:4:"type";s:13:"single_choice";s:6:"toggle";s:1:"1";}]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_question_mark</wp:meta_key>
-		<wp:meta_value><![CDATA[1]]></wp:meta_value>
-	</wp:postmeta>
-</item>
-
-<item>
-	<title>How many type of question LearnPress supports?</title>
-	<link>http://home.foobla.com/questions/how-many-type-of-question-learnpress-supports/</link>
-	<pubDate>Fri, 22 May 2015 02:50:27 +0000</pubDate>
-	<dc:creator><![CDATA[ha]]></dc:creator>
-	<guid isPermaLink="false">http://home.foobla.com/questions/how-many-type-of-question-learnpress-supports/</guid>
-	<description></description>
-	<content:encoded><![CDATA[]]></content:encoded>
-	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
-	<wp:post_id>251</wp:post_id>
-	<wp:post_date>2015-05-22 09:50:27</wp:post_date>
-	<wp:post_date_gmt>2015-05-22 02:50:27</wp:post_date_gmt>
-	<wp:comment_status>open</wp:comment_status>
-	<wp:ping_status>open</wp:ping_status>
-	<wp:post_name>how-many-type-of-question-learnpress-supports</wp:post_name>
-	<wp:status>publish</wp:status>
-	<wp:post_parent>0</wp:post_parent>
-	<wp:menu_order>0</wp:menu_order>
-	<wp:post_type>lpr_question</wp:post_type>
-	<wp:post_password></wp:post_password>
-    <wp:post_author_id>2</wp:post_author_id>
-	<wp:is_sticky>0</wp:is_sticky>
-			
-	<wp:postmeta>
-		<wp:meta_key>_lpr_question</wp:meta_key>
-		<wp:meta_value><![CDATA[a:4:{s:4:"text";s:46:"How many type of question LearnPress supports?";s:6:"answer";a:3:{i:0;a:2:{s:4:"text";s:6:"1 type";s:7:"is_true";s:1:"0";}i:1;a:2:{s:4:"text";s:7:"2 types";s:7:"is_true";s:1:"0";}i:2;a:2:{s:4:"text";s:7:"3 types";s:7:"is_true";s:1:"1";}}s:4:"type";s:13:"single_choice";s:6:"toggle";s:1:"1";}]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_question_mark</wp:meta_key>
-		<wp:meta_value><![CDATA[1]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_duration</wp:meta_key>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_duration</wp:meta_key>
+		<wp:meta_value><![CDATA[10]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_max_students</wp:meta_key>
+		<wp:meta_value><![CDATA[1000]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_students</wp:meta_key>
 		<wp:meta_value><![CDATA[0]]></wp:meta_value>
-	</wp:postmeta>
-</item>
-
-<item>
-	<title>Can a teacher publish a course by himself?</title>
-	<link>http://home.foobla.com/questions/can-a-teacher-publish-a-course-by-himself/</link>
-	<pubDate>Fri, 22 May 2015 02:51:16 +0000</pubDate>
-	<dc:creator><![CDATA[ha]]></dc:creator>
-	<guid isPermaLink="false">http://home.foobla.com/questions/can-a-teacher-publish-a-course-by-himself/</guid>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_retake_count</wp:meta_key>
+		<wp:meta_value><![CDATA[0]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_passing_condition</wp:meta_key>
+		<wp:meta_value><![CDATA[50]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_enroll_requirement</wp:meta_key>
+		<wp:meta_value><![CDATA[yes]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_payment</wp:meta_key>
+		<wp:meta_value><![CDATA[free]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_is_previewable</wp:meta_key>
+		<wp:meta_value><![CDATA[no]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_edit_lock</wp:meta_key>
+		<wp:meta_value><![CDATA[1451567890:1]]></wp:meta_value>
+		</wp:postmeta>
+</item><item>
+	<title>Lesson 2</title>
+	<link>http://localhost/foobla/learnpress/1.0/lessons/lesson-2/</link>
+	<pubDate>Fri, 04 Dec 2015 08:17:04 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/lessons/lesson-2/</guid>
 	<description></description>
 	<content:encoded><![CDATA[]]></content:encoded>
 	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
-	<wp:post_id>252</wp:post_id>
-	<wp:post_date>2015-05-22 09:51:16</wp:post_date>
-	<wp:post_date_gmt>2015-05-22 02:51:16</wp:post_date_gmt>
+	<wp:post_id>1137</wp:post_id>
+	<wp:post_date>2015-12-04 08:17:04</wp:post_date>
+	<wp:post_date_gmt>2015-12-04 08:17:04</wp:post_date_gmt>
 	<wp:comment_status>open</wp:comment_status>
 	<wp:ping_status>open</wp:ping_status>
-	<wp:post_name>can-a-teacher-publish-a-course-by-himself</wp:post_name>
+	<wp:post_name>lesson-2</wp:post_name>
 	<wp:status>publish</wp:status>
 	<wp:post_parent>0</wp:post_parent>
 	<wp:menu_order>0</wp:menu_order>
-	<wp:post_type>lpr_question</wp:post_type>
+	<wp:post_type>lp_lesson</wp:post_type>
 	<wp:post_password></wp:post_password>
-    <wp:post_author_id>2</wp:post_author_id>
+	<wp:post_author_id>1</wp:post_author_id>
 	<wp:is_sticky>0</wp:is_sticky>
-			
-	<wp:postmeta>
-		<wp:meta_key>_lpr_question</wp:meta_key>
-		<wp:meta_value><![CDATA[a:4:{s:4:"text";s:42:"Can a teacher publish a course by himself?";s:6:"answer";a:2:{i:0;a:2:{s:4:"text";s:69:"Yes, he can publish a course immediately after creating it completely";s:7:"is_true";s:1:"0";}i:1;a:2:{s:4:"text";s:72:"No, he just can submit for review and the administrator will publish it.";s:7:"is_true";s:1:"1";}}s:4:"type";s:13:"single_choice";s:6:"toggle";s:1:"1";}]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_question_mark</wp:meta_key>
-		<wp:meta_value><![CDATA[1]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_duration</wp:meta_key>
+					<wp:postmeta>
+		<wp:meta_key>_lpr_course</wp:meta_key>
+		<wp:meta_value><![CDATA[0]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_is_previewable</wp:meta_key>
+		<wp:meta_value><![CDATA[no]]></wp:meta_value>
+		</wp:postmeta>
+</item><item>
+	<title>oi troi oi la troi</title>
+	<link>http://localhost/foobla/learnpress/1.0/lessons/oi-troi-oi-la-troi/</link>
+	<pubDate>Tue, 29 Dec 2015 09:29:54 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/lessons/oi-troi-oi-la-troi/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1230</wp:post_id>
+	<wp:post_date>2015-12-29 09:29:54</wp:post_date>
+	<wp:post_date_gmt>2015-12-29 09:29:54</wp:post_date_gmt>
+	<wp:comment_status>closed</wp:comment_status>
+	<wp:ping_status>closed</wp:ping_status>
+	<wp:post_name>oi-troi-oi-la-troi</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_lesson</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+					<wp:postmeta>
+		<wp:meta_key>_lp_duration</wp:meta_key>
 		<wp:meta_value><![CDATA[10]]></wp:meta_value>
-	</wp:postmeta>
-</item>
-
-<item>
-	<title>Can a teacher set price for a his course?</title>
-	<link>http://home.foobla.com/questions/can-a-teacher-set-price-for-a-his-course/</link>
-	<pubDate>Fri, 22 May 2015 03:49:10 +0000</pubDate>
-	<dc:creator><![CDATA[ha]]></dc:creator>
-	<guid isPermaLink="false">http://home.foobla.com/questions/can-a-teacher-set-price-for-a-his-course/</guid>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_is_previewable</wp:meta_key>
+		<wp:meta_value><![CDATA[no]]></wp:meta_value>
+		</wp:postmeta>
+</item><item>
+	<title>333333333333</title>
+	<link>http://localhost/foobla/learnpress/1.0/lessons/333333333333-2/</link>
+	<pubDate>Tue, 08 Dec 2015 04:18:47 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/lessons/333333333333-2/</guid>
 	<description></description>
 	<content:encoded><![CDATA[]]></content:encoded>
 	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
-	<wp:post_id>276</wp:post_id>
-	<wp:post_date>2015-05-22 10:49:10</wp:post_date>
-	<wp:post_date_gmt>2015-05-22 03:49:10</wp:post_date_gmt>
+	<wp:post_id>1145</wp:post_id>
+	<wp:post_date>2015-12-08 04:18:47</wp:post_date>
+	<wp:post_date_gmt>2015-12-08 04:18:47</wp:post_date_gmt>
 	<wp:comment_status>open</wp:comment_status>
 	<wp:ping_status>open</wp:ping_status>
-	<wp:post_name>can-a-teacher-set-price-for-a-his-course</wp:post_name>
+	<wp:post_name>333333333333-2</wp:post_name>
 	<wp:status>publish</wp:status>
 	<wp:post_parent>0</wp:post_parent>
 	<wp:menu_order>0</wp:menu_order>
-	<wp:post_type>lpr_question</wp:post_type>
+	<wp:post_type>lp_lesson</wp:post_type>
 	<wp:post_password></wp:post_password>
-    <wp:post_author_id>2</wp:post_author_id>
+	<wp:post_author_id>1</wp:post_author_id>
 	<wp:is_sticky>0</wp:is_sticky>
-			
-	<wp:postmeta>
-		<wp:meta_key>_lpr_question</wp:meta_key>
-		<wp:meta_value><![CDATA[a:4:{s:4:"text";s:41:"Can a teacher set price for a his course?";s:6:"answer";a:2:{i:0;a:2:{s:4:"text";s:12:"Yes, he can.";s:7:"is_true";s:1:"0";}i:1;a:2:{s:4:"text";s:35:"No, only administrator can do that.";s:7:"is_true";s:1:"1";}}s:4:"type";s:13:"single_choice";s:6:"toggle";s:1:"1";}]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_question_mark</wp:meta_key>
-		<wp:meta_value><![CDATA[1]]></wp:meta_value>
-	</wp:postmeta>
-</item>
-
-<item>
-	<title>How many ways are there a course can be assessed?</title>
-	<link>http://home.foobla.com/questions/how-many-ways-are-there-a-course-can-be-assessed/</link>
-	<pubDate>Fri, 22 May 2015 03:50:18 +0000</pubDate>
-	<dc:creator><![CDATA[ha]]></dc:creator>
-	<guid isPermaLink="false">http://home.foobla.com/questions/how-many-ways-are-there-a-course-can-be-assessed/</guid>
+					<wp:postmeta>
+		<wp:meta_key>_lpr_course</wp:meta_key>
+		<wp:meta_value><![CDATA[0]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_is_previewable</wp:meta_key>
+		<wp:meta_value><![CDATA[no]]></wp:meta_value>
+		</wp:postmeta>
+</item><item>
+	<title>44444444</title>
+	<link>http://localhost/foobla/learnpress/1.0/lessons/44444444-2/</link>
+	<pubDate>Tue, 29 Dec 2015 09:02:22 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/lessons/44444444-2/</guid>
 	<description></description>
 	<content:encoded><![CDATA[]]></content:encoded>
 	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
-	<wp:post_id>277</wp:post_id>
-	<wp:post_date>2015-05-22 10:50:18</wp:post_date>
-	<wp:post_date_gmt>2015-05-22 03:50:18</wp:post_date_gmt>
-	<wp:comment_status>open</wp:comment_status>
-	<wp:ping_status>open</wp:ping_status>
-	<wp:post_name>how-many-ways-are-there-a-course-can-be-assessed</wp:post_name>
+	<wp:post_id>1227</wp:post_id>
+	<wp:post_date>2015-12-29 09:02:22</wp:post_date>
+	<wp:post_date_gmt>2015-12-29 09:02:22</wp:post_date_gmt>
+	<wp:comment_status>closed</wp:comment_status>
+	<wp:ping_status>closed</wp:ping_status>
+	<wp:post_name>44444444-2</wp:post_name>
 	<wp:status>publish</wp:status>
 	<wp:post_parent>0</wp:post_parent>
 	<wp:menu_order>0</wp:menu_order>
-	<wp:post_type>lpr_question</wp:post_type>
+	<wp:post_type>lp_lesson</wp:post_type>
 	<wp:post_password></wp:post_password>
-    <wp:post_author_id>2</wp:post_author_id>
+	<wp:post_author_id>1</wp:post_author_id>
 	<wp:is_sticky>0</wp:is_sticky>
-			
-	<wp:postmeta>
-		<wp:meta_key>_lpr_question</wp:meta_key>
-		<wp:meta_value><![CDATA[a:4:{s:4:"text";s:49:"How many ways are there a course can be assessed?";s:6:"answer";a:3:{i:0;a:2:{s:4:"text";s:1:"1";s:7:"is_true";s:1:"0";}i:1;a:2:{s:4:"text";s:1:"2";s:7:"is_true";s:1:"1";}i:2;a:2:{s:4:"text";s:1:"3";s:7:"is_true";s:1:"0";}}s:4:"type";s:13:"single_choice";s:6:"toggle";s:1:"1";}]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_question_mark</wp:meta_key>
-		<wp:meta_value><![CDATA[1]]></wp:meta_value>
-	</wp:postmeta>
-</item>
-
-<item>
-	<title>Can you create a new add-on by yourself?</title>
-	<link>http://home.foobla.com/questions/can-you-create-a-new-add-on-by-yourself/</link>
-	<pubDate>Fri, 22 May 2015 07:06:00 +0000</pubDate>
-	<dc:creator><![CDATA[ha]]></dc:creator>
-	<guid isPermaLink="false">http://home.foobla.com/questions/can-you-create-a-new-add-on-by-yourself/</guid>
-	<description></description>
-	<content:encoded><![CDATA[]]></content:encoded>
-	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
-	<wp:post_id>317</wp:post_id>
-	<wp:post_date>2015-05-22 14:06:00</wp:post_date>
-	<wp:post_date_gmt>2015-05-22 07:06:00</wp:post_date_gmt>
-	<wp:comment_status>open</wp:comment_status>
-	<wp:ping_status>open</wp:ping_status>
-	<wp:post_name>can-you-create-a-new-add-on-by-yourself</wp:post_name>
-	<wp:status>publish</wp:status>
-	<wp:post_parent>0</wp:post_parent>
-	<wp:menu_order>0</wp:menu_order>
-	<wp:post_type>lpr_question</wp:post_type>
-	<wp:post_password></wp:post_password>
-    <wp:post_author_id>2</wp:post_author_id>
-	<wp:is_sticky>0</wp:is_sticky>
-			
-	<wp:postmeta>
-		<wp:meta_key>_lpr_question</wp:meta_key>
-		<wp:meta_value><![CDATA[a:4:{s:4:"type";s:13:"single_choice";s:4:"text";s:40:"Can you create a new add-on by yourself?";s:6:"answer";a:2:{i:0;a:2:{s:4:"text";s:3:"Yes";s:7:"is_true";s:1:"0";}i:1;a:2:{s:4:"text";s:2:"No";s:7:"is_true";s:1:"0";}}s:6:"toggle";s:1:"1";}]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_question_mark</wp:meta_key>
-		<wp:meta_value><![CDATA[1]]></wp:meta_value>
-	</wp:postmeta>
-	<wp:postmeta>
-		<wp:meta_key>_lpr_duration</wp:meta_key>
+					<wp:postmeta>
+		<wp:meta_key>_lp_duration</wp:meta_key>
 		<wp:meta_value><![CDATA[10]]></wp:meta_value>
-	</wp:postmeta>
-</item>
-<!-- END: Questions --></channel>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_is_previewable</wp:meta_key>
+		<wp:meta_value><![CDATA[no]]></wp:meta_value>
+		</wp:postmeta>
+</item><item>
+	<title>cookie</title>
+	<link>http://localhost/foobla/learnpress/1.0/lessons/cookie/</link>
+	<pubDate>Tue, 29 Dec 2015 09:33:07 +0000</pubDate>
+	<dc:creator><![CDATA[admin]]></dc:creator>
+	<guid isPermaLink="false">http://localhost/foobla/learnpress/1.0/lessons/cookie/</guid>
+	<description></description>
+	<content:encoded><![CDATA[]]></content:encoded>
+	<excerpt:encoded><![CDATA[]]></excerpt:encoded>
+	<wp:post_id>1231</wp:post_id>
+	<wp:post_date>2015-12-29 09:33:07</wp:post_date>
+	<wp:post_date_gmt>2015-12-29 09:33:07</wp:post_date_gmt>
+	<wp:comment_status>closed</wp:comment_status>
+	<wp:ping_status>closed</wp:ping_status>
+	<wp:post_name>cookie</wp:post_name>
+	<wp:status>publish</wp:status>
+	<wp:post_parent>0</wp:post_parent>
+	<wp:menu_order>0</wp:menu_order>
+	<wp:post_type>lp_lesson</wp:post_type>
+	<wp:post_password></wp:post_password>
+	<wp:post_author_id>1</wp:post_author_id>
+	<wp:is_sticky>0</wp:is_sticky>
+					<wp:postmeta>
+		<wp:meta_key>_lp_duration</wp:meta_key>
+		<wp:meta_value><![CDATA[10]]></wp:meta_value>
+		</wp:postmeta>		<wp:postmeta>
+		<wp:meta_key>_lp_is_previewable</wp:meta_key>
+		<wp:meta_value><![CDATA[no]]></wp:meta_value>
+		</wp:postmeta>
+</item>	</channel>
+</rss>

@@ -56,7 +56,7 @@ class LP_Install {
 	}
 
 	static function hide_other_notices(){
-		remove_action( 'admin_notices', 'learn_press_one_click_install_sample_data_notice' );
+		//remove_action( 'admin_notices', 'learn_press_one_click_install_sample_data_notice' );
 	}
 
 	static function update_version_10() {
