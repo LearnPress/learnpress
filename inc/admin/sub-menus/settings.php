@@ -23,7 +23,8 @@ function learn_press_settings_page() {
 	$tabs = learn_press_settings_tabs_array();
 
 	if ( !$current_tab && $tabs ) {
-		$current_tab = reset( array_keys( $tabs ) );
+		$keys = array_keys( $tabs );
+		$current_tab = reset( $keys );
 	}
 
 	$class_name = apply_filters( 'learn_press_settings_class_' . $current_tab, 'LP_Settings_' . $tabs[$current_tab] );

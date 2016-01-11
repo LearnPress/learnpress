@@ -27,7 +27,7 @@
 						$title = __( '(Untitled)', 'learn_press');
 					}
 					?>
-					<li class="<?php echo $hidden;?>" data-id="<?php echo $question->ID;?>" data-type="<?php echo $questions->post_type;?>" data-text="<?php echo esc_attr( $title );?>">
+					<li class="<?php echo $hidden;?>" data-id="<?php echo $question->ID;?>" data-type="<?php echo $question->post_type;?>" data-text="<?php echo esc_attr( $title );?>">
 						<label>
 							<input type="checkbox" value="<?php echo $question->ID;?>">
 							<span class="lp-item-text"><?php echo $title;?></span>

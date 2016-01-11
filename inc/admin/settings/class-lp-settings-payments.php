@@ -37,7 +37,7 @@ class LP_Settings_Payments extends LP_Settings_Base {
 	function output() {
 		$section = $this->section;
 		?>
-		<h3 class=""><?php echo $this->section->text; ?></h3>
+		<h3 class=""><?php echo $this->section['text']; ?></h3>
 		<table class="form-table">
 			<tbody>
 			<?php
