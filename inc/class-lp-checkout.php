@@ -88,6 +88,11 @@ class LP_Checkout {
 
 			// Store the line items to the new/resumed order
 			foreach ( LP()->cart->get_items() as $item ) {
+				if ( empty( $item['order_item_name'] ) && !empty( $item['item_id'] ) && ( $course = LP_Course::get_course( $item['item_id'] ) ) ) {
+					$item['order_item_name'] = $course->get_title();
+				}else{
+					throw new Exception( sprintf( __( 'Item does not exists!', 'learn_press' ), 402 ) );
+				}
 				$item_id = $order->add_item( $item );
 
 				if ( !$item_id ) {
@@ -101,7 +106,7 @@ class LP_Checkout {
 			$order->set_payment_method( $this->payment_method );
 
 			// Update user meta
-			if ( $this->user_id ) {
+			if ( !empty( $this->user_id ) ) {
 				if ( apply_filters( 'learn_press_checkout_update_user_data', true, $this ) ) {
 					// TODO: update user meta
 				}
@@ -185,6 +190,7 @@ class LP_Checkout {
 						$success = false;
 					}
 				}
+				LP()->session->set( 'chosen_payment_method', $this->payment_method );
 			}
 
 			if ( $success && LP()->cart->needs_payment() ) {
@@ -210,7 +216,7 @@ class LP_Checkout {
 				LP()->session->order_awaiting_payment = $order_id;
 
 				// Process Payment
-				$result = $this->payment_method->process_payment( $order_id );
+				$result  = $this->payment_method->process_payment( $order_id );
 				$success = !empty( $result['result'] ) && $result['result'] == 'success';
 				// Redirect to success/confirmation/payment page
 				if ( $success ) {

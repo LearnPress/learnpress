@@ -39,7 +39,7 @@ $checkout_url = apply_filters( 'learn_press_get_checkout_url', LP()->cart->get_c
 
 		<?php
 		foreach ( LP()->cart->get_items() as $cart_item ) {
-			$_course_id   = apply_filters( 'learn_press_cart_item_course_id', $cart_item['item_id'], $cart_item, $cart_item_key );
+			$_course_id   = apply_filters( 'learn_press_cart_item_course_id', $cart_item['item_id'], $cart_item );
 			$_course     = apply_filters( 'learn_press_cart_item_course', LP_Course::get_course( $_course_id ), $cart_item );
 
 			if ( $_course && $_course->exists() && $cart_item['quantity'] > 0 && apply_filters( 'learn_press_cart_item_visible', true, $cart_item ) ) {

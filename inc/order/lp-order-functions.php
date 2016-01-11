@@ -663,3 +663,12 @@ function learn_press_get_order_status_label( $order_id = 0 ) {
 	}
 	return !empty( $statuses[$status] ) ? $statuses[$status] : __( 'Pending', 'learn_press' );
 }
+
+function learn_press_get_order_statuses() {
+	$order_statuses = array(
+		'lp-pending'    => _x( 'Pending Payment', 'Order status', 'learn_press' ),
+		'lp-processing' => _x( 'Processing', 'Order status', 'learn_press' ),
+		'lp-completed'  => _x( 'Completed', 'Order status', 'learn_press' )
+	);
+	return apply_filters( 'learn_press_order_statuses', $order_statuses );
+}

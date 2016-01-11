@@ -1865,14 +1865,14 @@ add_action( 'init', 'learn_press_init' );
  *
  * @return array
  */
-function learn_press_get_order_statuses() {
+/*function learn_press_get_order_statuses() {
 	$order_statuses = array(
 		'lp-pending'    => _x( 'Pending Payment', 'Order status', 'learn_press' ),
 		'lp-processing' => _x( 'Processing', 'Order status', 'learn_press' ),
 		'lp-completed'  => _x( 'Completed', 'Order status', 'learn_press' ),
 	);
 	return apply_filters( 'learn_press_order_statuses', $order_statuses );
-}
+}*/
 
 function is_learnpress() {
 	return apply_filters( 'is_learnpress', ( is_course_archive() || is_course_taxonomy() || is_course() || is_quiz() ) ? true : false );

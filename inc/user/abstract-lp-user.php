@@ -845,15 +845,16 @@ class LP_Abstract_User {
 		if ( $items ) {
 			// How to make this simpler, LOL?
 			$query = $wpdb->prepare( "
-			SELECT order_id, si.item_id
-			FROM {$wpdb->posts} o
-			INNER JOIN {$wpdb->postmeta} om ON om.post_id = o.ID AND om.meta_key = %s AND om.meta_value = %d
-			INNER JOIN {$wpdb->learnpress_order_items} oi ON o.ID = oi.order_ID
-			INNER JOIN {$wpdb->learnpress_order_itemmeta} oim ON oim.learnpress_order_item_id= oi.order_item_id AND oim.meta_key = %s
-			INNER JOIN {$wpdb->posts} c ON c.ID = oim.meta_value
-			INNER JOIN {$wpdb->learnpress_sections} s ON s.section_course_id = c.ID
-			INNER JOIN {$wpdb->learnpress_section_items} si ON si.section_id = s.section_id WHERE si.item_id IN (" . join( ',', $items ) . ")
-		", '_user_id', $this->id, '_course_id' );
+				SELECT order_id, si.item_id
+				FROM {$wpdb->posts} o
+				INNER JOIN {$wpdb->postmeta} om ON om.post_id = o.ID AND om.meta_key = %s AND om.meta_value = %d
+				INNER JOIN {$wpdb->learnpress_order_items} oi ON o.ID = oi.order_ID
+				INNER JOIN {$wpdb->learnpress_order_itemmeta} oim ON oim.learnpress_order_item_id= oi.order_item_id AND oim.meta_key = %s
+				INNER JOIN {$wpdb->posts} c ON c.ID = oim.meta_value
+				INNER JOIN {$wpdb->learnpress_sections} s ON s.section_course_id = c.ID
+				INNER JOIN {$wpdb->learnpress_section_items} si ON si.section_id = s.section_id WHERE si.item_id IN (" . join( ',', $items ) . ")
+				AND o.post_status = %s
+			", '_user_id', $this->id, '_course_id', 'lp-completed' );
 
 			if ( $results = $wpdb->get_results( $query ) ) {
 				foreach ( $results as $row ) {

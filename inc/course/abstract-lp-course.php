@@ -519,7 +519,7 @@ abstract class LP_Abstract_Course {
 	 */
 	function is_purchaseable(){
 		// TODO: needs to check more criteria, currently only check if this course is required enrollment
-		return $this->payment == 'yes';
+		return $this->required_enroll == 'yes';
 	}
 
 	function need_payment(){

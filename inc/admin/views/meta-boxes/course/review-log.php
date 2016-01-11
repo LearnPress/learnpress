@@ -1,5 +1,8 @@
 <?php
 global $post;
+if( get_post_type() != 'lp_course' ){
+	return;
+}
 if ( !learn_press_course_is_required_review( $post->ID, get_current_user_id() ) ) {
 //return;
 }

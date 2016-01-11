@@ -67,7 +67,7 @@ class LP_Gateways {
 	}
 
 	/**
-	 * Ensure that only one instance of LP_Gateways is loadded
+	 * Ensure that only one instance of LP_Gateways is loaded
 	 * @return LP_Gateways|null
 	 */
 	static function instance() {

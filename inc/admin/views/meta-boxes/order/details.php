@@ -81,8 +81,7 @@ global $post;
 			<tr>
 				<td class="align-right" colspan="4">
 					<button class="button" type="button" id="learn-press-add-order-item"><?php _e( 'Add Item', 'learn_press' ); ?></button>
-					<button class="button" type="button" id="learn-press-calculate-order-total"><?php _e( 'Calculate Total', 'learn_press' ); ?></button>
-
+					<!--<button class="button" type="button" id="learn-press-calculate-order-total"><?php _e( 'Calculate Total', 'learn_press' ); ?></button>-->
 				</td>
 			</tr>
 			</tfoot>

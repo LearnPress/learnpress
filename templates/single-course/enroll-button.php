@@ -13,7 +13,7 @@ if ( !defined( 'ABSPATH' ) ) {
 
 global $course;
 
-if ( $course->is_free() ) {
+if ( !$course->is_required_enroll() ){
 	return;
 }
 
@@ -23,15 +23,12 @@ $user          = learn_press_get_current_user();
 $purchase_button_text = apply_filters( 'learn_press_purchase_button_text', __( 'Buy this course', 'learn_press' ) );
 $enroll_button_text   = apply_filters( 'learn_press_enroll_button_loading_text', __( 'Enroll', 'learn_press' ) );
 ?>
-
 <?php if ( $user->has( 'enrolled-course', $course->id ) ): ?>
 
-	<?php //learn_press_display_message( __( 'You have already enrolled this course', 'learn_press' ) ); ?>
+	<?php learn_press_display_message( __( 'You have already enrolled this course', 'learn_press' ) ); ?>
 
 <?php else: ?>
-	<?php if ( !$course->is_required_enroll() ): ?>
-		asdasdsad
-	<?php elseif ( $user->has( 'purchased-course', $course->id ) ) : ?>
+	<?php if ( $user->has( 'purchased-course', $course->id ) ) : ?>
 
 		<?php if ( $user->can( 'enroll-course', $course->id ) ) : ?>
 

@@ -675,7 +675,7 @@ function learn_press_one_click_install_sample_data_notice() {
 		);
 	}
 }
-add_action( 'admin_notices', 'learn_press_one_click_install_sample_data_notice' );
+//add_action( 'admin_notices', 'learn_press_one_click_install_sample_data_notice' );
 
 function learn_press_request_query( $vars = array() ) {
 	global $typenow, $wp_query, $wp_post_statuses;

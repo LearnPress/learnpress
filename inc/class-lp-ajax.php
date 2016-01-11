@@ -46,7 +46,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			LP_Request_Handler::register( 'lp-ajax', array( __CLASS__, 'do_ajax' ) );
 		}
 
-		function do_ajax( $var ) {
+		static function do_ajax( $var ) {
 			if ( !defined( 'DOING_AJAX' ) ) {
 				define( 'DOING_AJAX', true );
 			}

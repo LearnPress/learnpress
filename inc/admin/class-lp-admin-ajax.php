@@ -34,6 +34,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 				'add_item_to_section'             => false,
 				'remove_course_section'           => false,
 				'dismiss_notice'                  => false,
+				'search_users'                    => false,
 				/////////////
 				'quick_add_lesson'                => false,
 				'quick_add_quiz'                  => false,
@@ -59,14 +60,67 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			do_action( 'learn_press_admin_ajax_load', __CLASS__ );
 		}
 
-		static function dismiss_notice(){
-			$context = learn_press_get_request( 'context' );
+		static function search_users(){
+			if ( ! current_user_can( 'edit_lp_orders' ) ) {
+				die(-1);
+			}
+
+			$term = stripslashes( $_GET['term'] );
+
+			if ( empty( $term ) ) {
+				die();
+			}
+
+			$found_customers = array();
+
+			add_action( 'pre_user_query', array( __CLASS__, 'json_search_customer_name' ) );
+
+			$customers_query = new WP_User_Query( apply_filters( 'learn_press_search_customers_query', array(
+				'fields'         => 'all',
+				'orderby'        => 'display_name',
+				'search'         => '*' . $term . '*',
+				'search_columns' => array( 'ID', 'user_login', 'user_email', 'user_nicename' )
+			) ) );
+
+			remove_action( 'pre_user_query', array( __CLASS__, 'json_search_customer_name' ) );
+
+			$customers = $customers_query->get_results();
+
+			if ( ! empty( $customers ) ) {
+				foreach ( $customers as $customer ) {
+					$found_customers[] = array(
+						'label' => $customer->display_name . ' (#' . $customer->ID . ' &ndash; ' . sanitize_email( $customer->user_email ) . ')',
+						'value' => $customer->ID
+					);
+				}
+			}
+
+			echo json_encode( $found_customers );
+			die();
+		}
+
+		public static function json_search_customer_name( $query ) {
+			global $wpdb;
+
+			$term = wc_clean( stripslashes( $_GET['term'] ) );
+			if ( method_exists( $wpdb, 'esc_like' ) ) {
+				$term = $wpdb->esc_like( $term );
+			} else {
+				$term = like_escape( $term );
+			}
+
+			$query->query_from  .= " INNER JOIN {$wpdb->usermeta} AS user_name ON {$wpdb->users}.ID = user_name.user_id AND ( user_name.meta_key = 'first_name' OR user_name.meta_key = 'last_name' ) ";
+			$query->query_where .= $wpdb->prepare( " OR user_name.meta_value LIKE %s ", '%' . $term . '%' );
+		}
+
+		static function dismiss_notice() {
+			$context   = learn_press_get_request( 'context' );
 			$transient = learn_press_get_request( 'transient' );
 
-			if( $context ){
-				if( $transient >= 0 ) {
+			if ( $context ) {
+				if ( $transient >= 0 ) {
 					set_transient( 'learn_press_dismiss_notice_' . $context, 'off', $transient ? $transient : DAY_IN_SECONDS * 7 );
-				}else{
+				} else {
 					update_option( 'learn_press_dismiss_notice_' . $context, 'off' );
 				}
 			}

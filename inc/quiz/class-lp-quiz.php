@@ -168,8 +168,8 @@ class LP_Quiz {
 			$query = $wpdb->prepare("
 				SELECT c.*
 				FROM {$wpdb->posts} c
-				INNER JOIN {$wpdb->learnpress_sections} ls on c.ID = ls.course_id
-				INNER JOIN {$wpdb->learnpress_section_items} lsi on lsi.section_id = ls.ID AND lsi.item_id = %d
+				INNER JOIN {$wpdb->learnpress_sections} s on c.ID = s.section_course_id
+				INNER JOIN {$wpdb->learnpress_section_items} si on si.section_id = s.section_id AND si.item_id = %d
 				", $this->id );
 			if( $course_id = $wpdb->get_var( $query ) ){
 				$this->course = LP_Course::get_course( $course_id );

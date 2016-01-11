@@ -1077,9 +1077,13 @@ body.post-type-lp_question #question_answer_ .inside{
 
 /* order */
 .post-type-lp_order #post-body-content,
-.post-type-lp_order .handlediv,
-.post-type-lp_order .hndle{
+.post-type-lp_order #order_details .handlediv,
+.post-type-lp_order #order_details .hndle{
 	display: none;
+}
+.post-type-lp_order #submitpost .misc-pub-section label{
+	display: block;
+	font-weight: bold;
 }
 #learn-press-order {
 	margin: 15px;

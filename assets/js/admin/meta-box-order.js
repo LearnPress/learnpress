@@ -11,8 +11,38 @@
 		},
 		initialize: function () {
 			_.bindAll( this, 'resetModal', 'updateModal' );
-			LearnPress.Hook.addAction( 'learn_press_message_box_before_resize', this.resetModal)
-			LearnPress.Hook.addAction( 'learn_press_message_box_resize', this.updateModal)
+			LearnPress.Hook.addAction( 'learn_press_message_box_before_resize', this.resetModal);
+			LearnPress.Hook.addAction( 'learn_press_message_box_resize', this.updateModal);
+			this.userSuggest();
+		},
+		userSuggest: function(){
+			var id = ( typeof current_site_id !== 'undefined' ) ? '&site_id=' + current_site_id : '';
+			var position = { offset: '0, -1' };
+			if ( typeof isRtl !== 'undefined' && isRtl ) {
+				position.my = 'right top';
+				position.at = 'right bottom';
+			}
+			$( '.wp-suggest-user' ).each( function(){
+				var $this = $( this ),
+					autocompleteType = ( typeof $this.data( 'autocompleteType' ) !== 'undefined' ) ? $this.data( 'autocompleteType' ) : 'add',
+					autocompleteField = ( typeof $this.data( 'autocompleteField' ) !== 'undefined' ) ? $this.data( 'autocompleteField' ) : 'user_login';
+
+				$this.autocomplete({
+					source:    LearnPress_Settings.ajax + '?action=learnpress_search_users&autocomplete_type=' + autocompleteType + '&autocomplete_field=' + autocompleteField + id,
+					delay:     500,
+					minLength: 2,
+					position:  position,
+					open: function() {
+						$( this ).addClass( 'open' );
+					},
+					close: function() {
+						$( this ).removeClass( 'open' );
+					},
+					select: function(a, b){
+						LearnPress.log(a, b)
+					}
+				});
+			});
 		},
 		resetModal: function(height, $app){
 			this.$('#learn-press-courses-result').css('height', height - 120).css('overflow', 'auto');
