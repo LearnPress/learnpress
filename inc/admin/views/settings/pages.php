@@ -13,7 +13,6 @@ if ( !defined( 'ABSPATH' ) ) {
 
 $settings = LP()->settings;
 ?>
-<h3 class=""><?php echo $this->section['text']; ?></h3>
 <table class="form-table">
 	<tbody>
 	<?php do_action( 'learn_press_before_' . $this->id . '_' . $this->section['id'] . '_settings_fields', $settings ); ?>

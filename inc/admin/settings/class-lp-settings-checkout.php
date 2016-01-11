@@ -46,10 +46,6 @@ class LP_Settings_Checkout extends LP_Settings_Base {
 			'learn_press_checkout_settings',
 			array(
 				array(
-					'title' => __( 'General', 'learn_press' ),
-					'type'  => 'title'
-				),
-				array(
 					'title'    => __( 'Enable cart', 'learn_press' ),
 					'desc'     => __( 'Check this option to enable user can purchase multiple course at one time', 'learn_press' ),
 					'id'       => $this->get_field_name( 'enable_cart' ),

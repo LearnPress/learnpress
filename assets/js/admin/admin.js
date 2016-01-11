@@ -2,7 +2,29 @@
 	var LP_Admin = window.LP_Admin = {
 		init: function(){
 			var $doc = $(document);
-			$doc.on('click', '#learn-press-install-sample-data-notice a', this._importCourses );
+			$doc.on('click', '#learn-press-install-sample-data-notice a', this._importCourses )
+				.on('click', '.learn-press-admin-notice-dismiss', this._dismissNotice);
+		},
+		_dismissNotice: function(e){
+
+			var $notice = $(e.target),
+				context = $notice.attr('data-context'),
+				transient = $notice.attr('data-transient');
+			if(context){
+				$.ajax({
+					url: LearnPress_Settings.ajax,
+					data: {
+						action: 'learnpress_dismiss_notice',
+						context: context,
+						transient: transient
+					},
+					success: function(response){
+						$notice.closest('.updated').fadeOut();
+						$notice.closest('.error').fadeOut();
+					}
+				});
+				return false;
+			}
 		},
 		_importCourses: function(e){
 			var $container = $('#learn-press-install-sample-data-notice'),

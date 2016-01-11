@@ -29,12 +29,6 @@ class LP_Settings_General extends LP_Settings_Base {
 			'learn_press_general_settings',
 			array(
 				array(
-					'title' => __( 'General Settings', 'learn_press' ),
-					'desc'  => null,
-					'id'    => 'general-settings',
-					'type'  => 'title'
-				),
-				array(
 					'title'   => __( 'Instructors registration', 'learn_press' ),
 					'desc'    => __( 'Create option for instructors registration.', 'learn_press' ),
 					'id'      => $this->get_field_name( 'instructor_registration' ),

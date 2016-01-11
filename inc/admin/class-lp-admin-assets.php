@@ -25,7 +25,8 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 	static function load_scripts(){
 		$screen = get_current_screen();
 		$screen_id = $screen->id;
-		if( in_array( $screen_id, learn_press_get_screens() ) ) {
+		$page_id = !empty( $_REQUEST['page'] ) ? $_REQUEST['page'] : '';
+		if( in_array( $screen_id, learn_press_get_screens() ) || in_array( $page_id, learn_press_get_admin_pages() ) ) {
 			self::add_style( 'learn-press-global', learn_press_plugin_url( 'assets/css/global-style.css' ) );
 			self::add_style( 'learn-press-admin', learn_press_plugin_url( 'assets/css/admin/admin.css' ), array( 'learn-press-global' ) );
 			self::add_style( 'learn-press-icons', learn_press_plugin_url( 'assets/css/icons.css' ) );

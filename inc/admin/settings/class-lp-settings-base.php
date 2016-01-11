@@ -107,7 +107,7 @@ class LP_Settings_Base {
 		$current_section = $this->section['id'];
 		$sections        = $this->get_sections();
 
-		if ( $sections ) {
+		if ( $sections && sizeof( $sections ) > 1 ) {
 			$array_keys = array_keys( $sections );
 			echo '<ul class="subsubsub clearfix">';
 			foreach ( $sections as $name => $gateway ) {

@@ -13,7 +13,6 @@ if ( !defined( 'ABSPATH' ) ) {
 
 $settings = LP()->settings;
 ?>
-	<h3><?php _e( 'Profile', 'learn_press' ); ?></h3>
 	<table class="form-table">
 		<tbody>
 		<?php do_action( 'learn_press_before_' . $this->id . '_settings_fields', $this ); ?>

@@ -40,7 +40,7 @@ if( $is_hidden ){
 	<div class="curriculum-section-content<?php echo $is_hidden ? ' hide-if-js' : '';?>">
 		<div class="item-bulk-actions">
 			<input name="_lp_curriculum[__SECTION__][description]" class="lp-section-describe" type="text" value="<?php echo esc_attr( $section->section_description );?>" placeholder="<?php _e( 'Describe about this section', 'learn_press' );?>" />
-			<button class="button" type="button" data-action="delete" disabled="disabled" data-title="<?php _e( 'Delete', 'learn_press' );?>"><?php _e( 'Delete', 'learn_press' );?></button>
+			<button class="button hide-if-js" type="button" data-action="delete" data-title="<?php _e( 'Remove', 'learn_press' );?>"><?php _e( 'Remove', 'learn_press' );?></button>
 			<!--
 			<button class="button" type="button" data-action="delete-forever" disabled="disabled" data-title="<?php _e( 'Delete Forever', 'learn_press' );?>"><?php _e( 'Delete Forever', 'learn_press' );?></button>
 			-->
@@ -49,6 +49,9 @@ if( $is_hidden ){
 				<input type="checkbox" class="" />
 				<span>&dtrif;</span>
 			</div>-->
+			<span class="button lp-check-items">
+				<input class="lp-check-all-items" data-action="check-all" type="checkbox" />
+			</span>
 		</div>
 		<table class="curriculum-section-items">
 			<?php echo isset( $content_items ) ? $content_items : '';?>

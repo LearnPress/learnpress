@@ -224,7 +224,8 @@
 	float: left;
 	padding-left: 0;
 }
-#course_curriculum .curriculum-section-items .lp-section-item input.lp-item-name:focus {
+#course_curriculum .curriculum-section-items .lp-section-item input.lp-item-name:focus,
+#course_curriculum input:focus{
 	color: #444;
 }
 #course_curriculum .lp-section-item .section-item-icon{

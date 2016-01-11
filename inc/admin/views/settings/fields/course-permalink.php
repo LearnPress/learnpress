@@ -14,6 +14,12 @@ $courses_page_id  = learn_press_get_page_id( 'courses' );
 $base_slug        = urldecode( ( $courses_page_id > 0 && get_post( $courses_page_id ) ) ? get_page_uri( $courses_page_id ) : _x( 'courses', 'default-slug', 'learn_press' ) );
 $course_base      = _x( 'course', 'default-slug', 'learn_press' );
 
+if( !$course_permalink ){
+	global $wpdb;
+	if( $wpdb->get_results( $wpdb->prepare( "SELECT count(option_id) FROM {$wpdb->options} WHERE option_name = %s", 'learn_press_course_base' ) ) == 0 ){
+		//$course_permalink = '/courses';
+	}
+}
 $structures = array(
 	0 => array(
 		'value' => '',
@@ -38,7 +44,7 @@ $structures = array(
 );
 
 $is_custom = true;
-
+$base_type = get_option( 'learn_press_course_base_type' );
 ?>
 <?php foreach ( $structures as $k => $structure ): ?>
 	<tr<?php if ( $k == 2 || $k == 3 ) {
@@ -65,7 +71,7 @@ $is_custom = true;
 <tr>
 	<th>
 		<label>
-			<input name="<?php echo $this->get_field_name( "course_base" ); ?>" id="learn_press_custom_permalink" type="radio" value="custom" <?php checked( $is_custom, true ); ?> />
+			<input name="<?php echo $this->get_field_name( "course_base" ); ?>" id="learn_press_custom_permalink" type="radio" value="custom" <?php checked( $is_custom || ( $base_type == 'custom' ), true ); ?> />
 			<?php _e( 'Custom Base', 'learn_press' ); ?>
 		</label>
 	</th>

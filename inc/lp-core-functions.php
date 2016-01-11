@@ -918,18 +918,18 @@ function learn_press_course_tabs() {
 		array(
 
 			10 => array(
-				"link" => "edit.php?post_type=lpr_course",
+				"link" => "edit.php?post_type=lp_course",
 				"name" => __( "Courses", "learn_press" ),
-				"id"   => "edit-lpr_course",
+				"id"   => "edit-lp_course",
 			),
 
 			20 => array(
-				"link" => "edit-tags.php?taxonomy=course_category&post_type=lpr_course",
+				"link" => "edit-tags.php?taxonomy=course_category&post_type=lp_course",
 				"name" => __( "Categories", "learn_press" ),
 				"id"   => "edit-course_category",
 			),
 			30 => array(
-				"link" => "edit-tags.php?taxonomy=course_tag&post_type=lpr_course",
+				"link" => "edit-tags.php?taxonomy=course_tag&post_type=lp_course",
 				"name" => __( "Tags", "learn_press" ),
 				"id"   => "edit-course_tag",
 			),
@@ -943,7 +943,7 @@ function learn_press_course_tabs() {
 	}
 	$pages              = apply_filters(
 		'learn_press_admin_tabs_on_pages',
-		array( 'edit-lpr_course', 'edit-course_category', 'edit-course_tag', LP()->course_post_type )
+		array( 'edit-lp_course', 'edit-course_category', 'edit-course_tag', LP()->course_post_type )
 	);
 	$admin_tabs_on_page = array();
 	foreach ( $pages as $page ) {

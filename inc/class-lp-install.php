@@ -64,7 +64,7 @@ class LP_Install {
 		if( !self::_has_new_table() ){
 			self::_create_tables();
 		}
-		if( ! get_option( 'learnpress_version' ) ){
+		if( ! get_option( 'learnpress_version' ) || !get_option( 'learn_press_currency') ){
 			self::_create_options();
 		}
 		$ask = get_transient( 'learn_press_upgrade_courses_ask_again' );
@@ -279,6 +279,9 @@ class LP_Install {
 				}
 			}
 		}
+		update_option( 'learn_press_course_base', '/courses', 'yes' );
+		update_option( 'learn_press_course_base_type', 'custom', 'yes' );
+
 	}
 
 	private static function _create_tables() {

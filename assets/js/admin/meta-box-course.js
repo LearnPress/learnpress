@@ -39,6 +39,7 @@
 				'click .lp-button-add-item'           : '_addNewItem',
 				'click .item-bulk-actions button'     : 'sectionBulkActions',
 				'change .item-checkbox input'         : 'toggleButtonBulkActions',
+				'change .lp-check-items': 'toggleButtonBulkActions',
 				'click .lp-section-actions.lp-button-actions' : '_sectionActionHandler'
 			},
 			removeSectionIds        : [],
@@ -186,8 +187,15 @@
 			},
 			toggleButtonBulkActions : function (e) {
 				var $checkbox = $(e.target),
-					$all = $checkbox.closest('.curriculum-section-items').find('.item-checkbox input'),
+					$checkAll = $checkbox,
+					$all = $checkbox.closest('.curriculum-section-content').find('.lp-section-item:not(.lp-item-empty) .item-checkbox input'),
 					len;
+				if( $checkbox.attr('data-action') == 'check-all' ){
+					$all.prop('checked', $checkbox.is(':checked')).trigger('change')
+					return;
+				}else{
+					$checkAll = $checkbox.closest('.curriculum-section-content').find('input.lp-check-all-items')
+				}
 				(len = $all.filter(function () {
 					return this.checked
 				}).length)
@@ -195,6 +203,7 @@
 					$checkbox.closest('.curriculum-section-content')
 						.find('.item-bulk-actions button')
 						.removeAttr('disabled')
+						.show()
 						.map(function () {
 							var $b = $(this);
 							$b.attr('data-action') == 'cancel' ? $b.show() : $b.html($b.attr('data-title') + ' (+' + len + ')')
@@ -202,12 +211,17 @@
 				)
 					: $checkbox.closest('.curriculum-section-content')
 					.find('.item-bulk-actions button')
-					.attr('disabled', 'disabled')
+					.hide()
 					.map(function () {
 						var $b = $(this);
 						$b.attr('data-action') == 'cancel' ? $b.hide() : $b.html($b.attr('data-title'))
 					});
-				$checkbox.closest('.lp-section-item').toggleClass('remove', e.target.checked)
+				$checkbox.closest('.lp-section-item').toggleClass('remove', e.target.checked);
+				if( len == $all.length ){
+					$checkAll.attr('checked', 'checked')
+				}else if( len == 0 ){
+					$checkAll.removeAttr('checked')
+				}
 			},
 			sectionBulkActions      : function (e) {
 				var $button = $(e.target),
@@ -220,9 +234,9 @@
 							return $(this).find('.item-checkbox input').is(':checked')
 						});
 						this.removeItem($items, true, function () {
-							$button.closest('.item-bulk-actions').find('button').attr('disabled', 'disabled').map(function () {
+							$button.closest('.item-bulk-actions').find('button').map(function () {
 								var $b = $(this).html($(this).attr('data-title'));
-								$b.attr('data-action') == 'cancel' && $b.hide();
+								($.inArray( $b.attr('data-action'),['cancel', 'delete'] ) != -1) && $b.hide();
 							});
 						});
 						break;
@@ -980,10 +994,10 @@
 								})
 								.closest('.curriculum-section')
 								.find('.item-bulk-actions button')
-								.attr('disabled', 'disabled')
 								.map(function () {
 									var $b = $(this);
-									$b.attr('data-action') == 'cancel' ? $b.hide() : $b.html($b.attr('data-title'))
+									($.inArray( $b.attr('data-action'), ['cancel', 'delete'] ) != -1) && $b.hide();
+									if( $b.attr('data-action') == 'delete' ) $b.html($b.attr('data-title'))
 								});
 						},
 						onYes: function (instance) {

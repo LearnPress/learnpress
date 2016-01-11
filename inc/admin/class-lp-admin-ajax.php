@@ -33,6 +33,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 				'modal_search_items'              => false,
 				'add_item_to_section'             => false,
 				'remove_course_section'           => false,
+				'dismiss_notice'                  => false,
 				/////////////
 				'quick_add_lesson'                => false,
 				'quick_add_quiz'                  => false,
@@ -56,6 +57,20 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			add_filter( 'learn_press_modal_search_items_exclude', array( __CLASS__, '_modal_search_items_exclude' ), 10, 4 );
 			add_filter( 'learn_press_modal_search_items_not_found', array( __CLASS__, '_modal_search_items_not_found' ), 10, 2 );
 			do_action( 'learn_press_admin_ajax_load', __CLASS__ );
+		}
+
+		static function dismiss_notice(){
+			$context = learn_press_get_request( 'context' );
+			$transient = learn_press_get_request( 'transient' );
+
+			if( $context ){
+				if( $transient >= 0 ) {
+					set_transient( 'learn_press_dismiss_notice_' . $context, 'off', $transient ? $transient : DAY_IN_SECONDS * 7 );
+				}else{
+					update_option( 'learn_press_dismiss_notice_' . $context, 'off' );
+				}
+			}
+			die();
 		}
 
 		static function _modal_search_items_not_found( $message, $type ) {
@@ -643,42 +658,42 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 		 * Install sample data or dismiss the notice depending on user's option
 		 */
 		static function install_sample_data() {
-			$yes      = !empty( $_REQUEST['yes'] ) ? $_REQUEST['yes'] : '';
-			$response = array( 'result' => 'fail' );
-			$retry_button = sprintf( '<a href="" class="button yes" data-action="yes">%s</a>', __( 'Try again!', 'learn_press' ) );
+			$yes            = !empty( $_REQUEST['yes'] ) ? $_REQUEST['yes'] : '';
+			$response       = array( 'result' => 'fail' );
+			$retry_button   = sprintf( '<a href="" class="button yes" data-action="yes">%s</a>', __( 'Try again!', 'learn_press' ) );
 			$dismiss_button = sprintf( '<a href="" class="button disabled no" data-action="no">%s</a>', __( 'Cancel', 'learn_press' ) );
-			$buttons = sprintf( '<p>%s %s</p>', $retry_button, $dismiss_button );
+			$buttons        = sprintf( '<p>%s %s</p>', $retry_button, $dismiss_button );
 			if ( 'no' == $yes ) {
 				set_transient( 'learn_press_install_sample_data', 'off', 12 * HOUR_IN_SECONDS );
 			} else {
-				$result = array('status' => 'activate');//learn_press_install_and_active_add_on( 'learnpress-import-export' );
+				$result = array( 'status' => 'activate' );//learn_press_install_and_active_add_on( 'learnpress-import-export' );
 				if ( 'activate' == $result['status'] ) {
 					// copy dummy-data.xml to import folder of the add-on
 					lpie_mkdir( lpie_import_path() );
-					if( file_exists( lpie_import_path() ) ) {
+					if ( file_exists( lpie_import_path() ) ) {
 						$import_source = LP_PLUGIN_PATH . '/dummy-data/dummy-data.xml';
-						$file = 'dummy-data-' . time() . '.xml';
+						$file          = 'dummy-data-' . time() . '.xml';
 						$copy          = lpie_import_path() . '/' . $file;
 						copy( $import_source, $copy );
-						if( file_exists( $copy ) ){
-							$url = admin_url( 'admin-ajax.php?page=learn_press_import_export&tab=import-course' );
-							$postdata = array(
-								'step' => 2,
-								'action' => 'learn_press_import',
+						if ( file_exists( $copy ) ) {
+							$url                 = admin_url( 'admin-ajax.php?page=learn_press_import_export&tab=import-course' );
+							$postdata            = array(
+								'step'        => 2,
+								'action'      => 'learn_press_import',
 								'import-file' => 'import/' . $file,
-								'nonce' => wp_create_nonce( 'lpie-import-file' ),
-								'x' => 1
+								'nonce'       => wp_create_nonce( 'lpie-import-file' ),
+								'x'           => 1
 							);
-							$response['url'] = $url = $url .'&' . http_build_query($postdata) . "\n";
-							$response['result'] = 'success';
+							$response['url']     = $url = $url . '&' . http_build_query( $postdata ) . "\n";
+							$response['result']  = 'success';
 							$response['message'] = sprintf( '<p>%s <a href="edit.php?post_type=lp_course">%s</a> </p>', __( 'Import sample data successfully.', 'learn_press' ), __( 'View courses', 'learn_press' ) );
 						}
 					}
-					if( $response['result'] == 'fail' ){
+					if ( $response['result'] == 'fail' ) {
 						$response['message'] = sprintf( '<p>%s</p>%s', __( 'Import sample data failed. Please try again!.', 'learn_press' ), $buttons );
 					}
 				} else {
-					$response['result'] = 'fail';
+					$response['result']  = 'fail';
 					$response['message'] = sprintf( '<p>%s</p>', __( 'Unknown error when installing/activating Import/Export addon. Please try again!', 'learn_press' ) ) . $buttons;
 				}
 			}

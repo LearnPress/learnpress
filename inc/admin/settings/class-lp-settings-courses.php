@@ -21,7 +21,7 @@ class LP_Settings_Courses extends LP_Settings_Base {
 	function save(){
 		parent::save();
 		$course_permalink = $_POST['learn_press_course_base'];
-
+		update_option( 'learn_press_course_base_type', $course_permalink );
 		if ( $course_permalink == 'custom' ) {
 			$course_permalink = trim( $_POST['course_permalink_structure'], '/' );
 
@@ -37,6 +37,7 @@ class LP_Settings_Courses extends LP_Settings_Base {
 		$course_base = untrailingslashit( $course_permalink );
 
 		update_option( 'learn_press_course_base', $course_base );
+
 
 		$courses_page_id   = learn_press_get_page_id( 'courses' );
 		$courses_permalink = ( $courses_page_id > 0 && get_post( $courses_page_id ) ) ? get_page_uri( $courses_page_id ) : _x( 'courses', 'default-slug', 'learn_press' );

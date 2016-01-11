@@ -531,10 +531,13 @@ function learn_press_process_duplicate_action() {
 add_action( 'load-edit.php', 'learn_press_process_duplicate_action' );
 
 function learn_press_admin_notice_bundle_activation() {
-	if ( !empty( $_REQUEST['tab'] ) && ( 'bundle_activate' != $_REQUEST['tab'] ) ) {
+	if ( !empty( $_REQUEST['tab'] ) && ( 'bundle_activate' != $_REQUEST['tab'] ) && learn_press_get_notice_dismiss( 'bundle-addon-install', '' ) != 'off' ) {
 		?>
 		<div class="updated">
-			<p><?php printf( __( 'Want full free features? Click <a href="%s">here</a> to install LearnPress Add-ons Bundle for free!', 'learn_press' ), admin_url( 'admin.php?page=learn_press_add_ons&tab=bundle_activate' ) ); ?></p>
+			<p>
+				<?php printf( __( 'Want full free features? Click <a href="%s">here</a> to install LearnPress Add-ons Bundle for free!', 'learn_press' ), admin_url( 'admin.php?page=learn_press_add_ons&tab=bundle_activate' ) ); ?>
+				<?php printf( '<a href="" class="learn-press-admin-notice-dismiss" data-context="bundle-addon-install" data-transient="-1"></a>' ); ?>
+			</p>
 		</div>
 		<?php
 	}
@@ -757,4 +760,20 @@ function learn_press_get_screens(){
 	}
 
 	return apply_filters( 'learn_press_screen_ids', $screens );
+}
+
+function learn_press_get_admin_pages(){
+	return apply_filters(
+		'learn_press_admin_pages',
+		array(
+			'learn_press_settings'
+		)
+	);
+}
+
+function learn_press_get_notice_dismiss( $context, $type = 'transient' ){
+	if( $type == 'transient' ) {
+		return get_transient( 'learn_press_dismiss_notice_' . $context );
+	}
+	return get_option( 'learn_press_dismiss_notice_' . $context );
 }
