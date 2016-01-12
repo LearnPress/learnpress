@@ -76,7 +76,7 @@
 				$('input[name="_lp_course_result"]').bind('click change', function () {
 					return;
 					if ($(this).val() == 'yes') {
-						$(this).closest('.rwmb-field').next().show();
+						$(this).closest('.rwmb-field').next().removeClass('hide-if-js');
 					} else {
 						$(this).closest('.rwmb-field').next().hide();
 					}
@@ -203,10 +203,10 @@
 					$checkbox.closest('.curriculum-section-content')
 						.find('.item-bulk-actions button')
 						.removeAttr('disabled')
-						.show()
+						.removeClass('hide-if-js')
 						.map(function () {
 							var $b = $(this);
-							$b.attr('data-action') == 'cancel' ? $b.show() : $b.html($b.attr('data-title') + ' (+' + len + ')')
+							$b.attr('data-action') == 'cancel' ? $b.removeClass('hide-if-js') : $b.html($b.attr('data-title') + ' (+' + len + ')')
 						})
 				)
 					: $checkbox.closest('.curriculum-section-content')
@@ -505,7 +505,7 @@
 
 				$form
 					.data('item_type', type)
-					.data('section', $button.closest('.curriculum-section')).show();
+					.data('section', $button.closest('.curriculum-section')).removeClass('hide-if-js');
 				var selectedItems = this.getSelectedItems(),
 					unselectedItems = $form.find('li').filter(function () {
 						var id = parseInt($(this).data('id')),
@@ -526,7 +526,7 @@
 				if (unselectedItems.length) {
 					$form.find('.lp-search-no-results').hide();
 				} else {
-					$form.find('.lp-search-no-results').show();
+					$form.find('.lp-search-no-results').removeClass('hide-if-js');
 				}
 				LearnPress.Hook.doAction('learn_press_show_form_items', $form, action, $button, this);
 			},
@@ -612,6 +612,9 @@
 				var $last = $section.find('.curriculum-section-items .lp-section-item:last');
 				$item.insertBefore($last);
 				$item.removeClass('lp-item-empty');
+				if( !parseInt($item.attr('data-item_id') ) ){
+					$item.find('a[data-action="remove"]').hide();
+				}
 				this.model.addItem(parseInt($item.attr('data-id')));
 				LearnPress.Hook.doAction('learn_press_add_item_to_section', $item, $section);
 			},
@@ -887,9 +890,9 @@
 					//top: position.top + $input.outerHeight(),
 					left    : $input.position().left,
 					width   : $input.outerWidth() - 2
-				}).show();
+				}).removeClass('hide-if-js');
 				if (this.$modalQuizzes.find('li:not(.lp-search-no-results):not(.selected)').length == 0) {
-					this.$modalQuizzes.find('li.lp-search-no-results').show();
+					this.$modalQuizzes.find('li.lp-search-no-results').removeClass('hide-if-js');
 				}
 				this.isShowing = 'searchQuizForm';
 			},
@@ -972,14 +975,26 @@
 			_removeItem             : function (e) {
 				e.preventDefault();
 				var $item = $(e.target).closest('.lp-section-item');
-				this.removeItem($item, true);
+				this.removeItem($item, true, null, e.target);
 			},
-			removeItem              : function ($items, b, callback) {
+			removeItem              : function ($items, b, callback, target) {
 				if ($items.length == 0) return;
 				var that = this,
 					itemNames = $items.map(function () {
 						return $(this).find('.lp-item-name').val()
 					}).get().join('</p><p>+&nbsp;');
+
+				LearnPress.MessageBox.quickConfirm( target, {
+					onOk: function(a){
+					},
+					onCancel: function(){
+					},
+					data: {
+						items: $items,
+						self : this
+					}
+				} );
+				return;
 				LearnPress.MessageBox.show(meta_box_course_localize.notice_remove_section_item + '<h4><p>+&nbsp;' + itemNames + '</p></h4>', {
 					data   : {
 						items: $items,
@@ -1051,9 +1066,9 @@
 				switch (action) {
 					case 'expand':
 						$button
-							.hide()
+							.addClass('hide-if-js')
 							.siblings('a[data-action="collapse"]')
-							.show()
+							.removeClass('hide-if-js')
 							.closest('.curriculum-section')
 							.removeClass('is-hidden')
 							.find('.curriculum-section-content').slideDown(function () {
@@ -1064,9 +1079,9 @@
 						break;
 					case 'collapse':
 						$button
-							.hide()
+							.addClass('hide-if-js')
 							.siblings('a[data-action="expand"]')
-							.show()
+							.removeClass('hide-if-js')
 							.closest('.curriculum-section')
 							.addClass('is-hidden')
 							.find('.curriculum-section-content').slideUp(function () {
@@ -1074,6 +1089,24 @@
 							});
 						break;
 					case 'remove':
+						LearnPress.MessageBox.quickConfirm( $button, {
+							callback: function(a){
+								var $section = $(a);
+
+								$.ajax({
+									url: LearnPress_Settings.ajax,
+									data: {
+										action: 'learnpress_remove_course_section',
+										id: $section.attr('data-id')
+									},
+									success: function(){
+										$section.remove();
+									}
+								});
+							},
+							data: $button.closest('.curriculum-section')
+						} );
+						break;
 						LearnPress.MessageBox.show('Do you want to remove this section?', {
 							buttons: 'yesNo',
 							data   : $button.closest('.curriculum-section'),
@@ -1118,16 +1151,16 @@
 			}).length;
 			if (hidden.length == len) {
 				$('.lp-section-actions a[data-action="collapse"]')
-					.hide()
+					.addClass('hide-if-js')
 					.siblings('a[data-action="expand"]')
-					.show();
+					.removeClass('hide-if-js');
 			}
 		}
 		if (hidden.length == 0) {
 			$('.lp-section-actions a[data-action="collapse"]')
-				.show()
+				.removeClass('hide-if-js')
 				.siblings('a[data-action="expand"]')
-				.hide();
+				.addClass('hide-if-js');
 		}
 
 		$.ajax({
@@ -1156,9 +1189,9 @@
 				var $items = $('.curriculum-section-content'),
 					len = $items.length, i = 0;
 				$(this)
-					.hide()
+					.addClass('hide-if-js')
 					.siblings('a[data-action="collapse"]')
-					.show();
+					.removeClass('hide-if-js');
 				$items
 					.removeClass('is-hidden')
 					.slideDown(function () {
@@ -1171,8 +1204,8 @@
 					.map(function(){
 						var $a = $(this);
 						switch($a.attr('data-action')){
-							case 'collapse': $a.show(); break;
-							case 'expand': $a.hide();
+							case 'collapse': $a.removeClass('hide-if-js'); break;
+							case 'expand': $a.addClass('hide-if-js');
 						}
 					});
 				break;
@@ -1181,9 +1214,9 @@
 					len = $items.length, i = 0,
 					hidden = [];
 				$(this)
-					.hide()
+					.addClass('hide-if-js')
 					.siblings('a[data-action="expand"]')
-					.show();
+					.removeClass('hide-if-js');
 				$items
 					.addClass('is-hidden')
 					.slideUp(function () {
@@ -1197,8 +1230,8 @@
 					.map(function(){
 						var $a = $(this);
 						switch($a.attr('data-action')){
-							case 'collapse': $a.hide(); break;
-							case 'expand': $a.show();
+							case 'collapse': $a.addClass('hide-if-js'); break;
+							case 'expand': $a.removeClass('hide-if-js');
 						}
 					});
 				break;

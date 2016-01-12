@@ -43,8 +43,16 @@
 }
 #course_curriculum .curriculum-heading .items-toggle{
 	float: right;
-	margin: -25px 0 0 0;
+	margin: -33px 7px 0 0;
 	line-height: 1;
+	box-shadow: none;
+}
+#course_curriculum .curriculum-heading .items-toggle a{
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	box-shadow: none;
+	font-size: 32px;
+
 }
 #course_curriculum .curriculum-sections{
 	margin: 0;
@@ -76,18 +84,37 @@
 }
 #course_curriculum .curriculum-section-head .lp-section-actions{
 	float: right;
-	margin: 15px 0;
+	margin: 14px 0;
 	visibility: hidden;
+	position: relative;
 }
 #course_curriculum .curriculum-section:not(.lp-empty-section) .curriculum-section-head:hover .lp-section-actions{
 	visibility: visible;
 }
+#course_curriculum .curriculum-section .lp-section-actions a{
+	vertical-align: middle;
+	color: #DDD;
+	width: 24px;
+	height: 24px;
+	box-shadow: none;
+}
+#course_curriculum .curriculum-section .lp-section-actions a[data-action="expand"]{
+	line-height: 28px;
+}
+#course_curriculum .curriculum-section .lp-section-actions a:before{
+	width: 24px;
+	height: 24px;
+	font-size: 24px;
+}
+#course_curriculum .curriculum-section .lp-section-actions a:hover{
+	color: #00a0d2;
+}
 #course_curriculum .curriculum-section .curriculum-section-head .lp-section-actions .move{
 	cursor: url("../../../assets/images/openhand.cur") 7 5, default;
 	position: absolute;
-	right: 8px;
+	right: -15px;
 	height: 57px;
-	top: 0;
+	top: -15px;
 	background: url("../../../assets/images/grippy_large.png") right no-repeat;
 	width: 20px;
 }
@@ -95,6 +122,9 @@
 	border: 1px solid #DDD;
 	padding: 20px;
 	border-bottom-width: 0;
+	overflow: hidden;
+	width: 100%;
+	box-sizing: border-box;
 }
 #course_curriculum .curriculum-section.ui-sortable-helper{
 	border-bottom: 1px solid #DDD;
@@ -133,6 +163,22 @@
 #course_curriculum .curriculum-section-items .lp-section-item .lp-item-actions{
 	margin: 0;
 	float: right;
+	position: relative;
+}
+#course_curriculum .curriculum-section-items .lp-section-item .lp-item-actions a{
+	vertical-align: middle;
+	color: #DDD;
+	margin-top: -2px;
+	box-shadow: none;
+}
+#course_curriculum .curriculum-section-items .lp-section-item .lp-item-actions a:hover{
+	color: #00a0d2;
+}
+#course_curriculum .curriculum-section-items .lp-section-item[data-item_id=""] .lp-edit{
+	display: none;
+}
+#course_curriculum .curriculum-section-items .lp-section-item.lp-item-empty .lp-item-actions{
+	display: none;
 }
 #course_curriculum .lp-section-item.ui-sortable-helper td{
 

@@ -1,4 +1,5 @@
 <?php
+/*
 $exclude_quiz   = array();
 $exclude_lesson = array();
 $current_user   = get_current_user_id();
@@ -28,7 +29,7 @@ for ( $i = 0; $i < count( $used_item ); $i ++ ) {
 			}
 		}
 	}
-}
+}*/
 global $post;
 $course_sections = $course->get_curriculum();
 
@@ -40,8 +41,8 @@ $hidden_sections = (array) get_post_meta( $post->ID, '_admin_hidden_sections', t
 		<span class="description"><?php _e( 'Outline your course and add content with sections, lessons and quizzes.', 'learn_press' ); ?></span>
 
 		<p align="right" class="items-toggle">
-			<a href="" data-action="expand"<?php echo !sizeof( $hidden_sections ) ? ' class="hide-if-js"' : ''; ?>><?php _e( 'Expand All', 'learn_press' ); ?></a>
-			<a href="" data-action="collapse"<?php echo sizeof( $hidden_sections ) ? ' class="hide-if-js"' : ''; ?>><?php _e( 'Collapse All', 'learn_press' ); ?></a>
+			<a href="" data-action="expand" class="dashicons dashicons-minus<?php echo !sizeof( $hidden_sections ) ? ' hide-if-js' : ''; ?>" title="<?php _e( 'Expand All', 'learn_press' ); ?>"></a>
+			<a href="" data-action="collapse" class="dashicons dashicons-plus<?php echo sizeof( $hidden_sections ) ? ' hide-if-js' : ''; ?>" title="<?php _e( 'Collapse All', 'learn_press' ); ?>"></a>
 		</p>
 	</h3>
 	<!---->
@@ -54,8 +55,8 @@ $hidden_sections = (array) get_post_meta( $post->ID, '_admin_hidden_sections', t
 
 				if ( $section->items ):
 					foreach ( $section->items as $item ):
-						if ( LP()->quiz_post_type == $item->post_type ) $exclude_quiz[] = $item->ID;
-						if ( LP()->lesson_post_type == $item->post_type ) $exclude_lesson[] = $item->ID;
+						//if ( LP()->quiz_post_type == $item->post_type ) $exclude_quiz[] = $item->ID;
+						//if ( LP()->lesson_post_type == $item->post_type ) $exclude_lesson[] = $item->ID;
 						$loop_item_view = learn_press_get_admin_view( 'meta-boxes/course/loop-item.php' );
 						ob_start();
 						include $loop_item_view;

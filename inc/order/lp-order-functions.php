@@ -672,3 +672,11 @@ function learn_press_get_order_statuses() {
 	);
 	return apply_filters( 'learn_press_order_statuses', $order_statuses );
 }
+
+function learn_press_get_order_status( $order_id ){
+	$order = learn_press_get_order( $order_id );
+	if( $order ){
+		return $order->get_status();
+	}
+	return false;
+}

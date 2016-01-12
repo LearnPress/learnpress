@@ -16,7 +16,8 @@ $tabs = learn_press_user_profile_tabs( $user );
 if( !empty( $wp_query->query_vars['tab']  ) ){
 	$current = $wp_query->query_vars['tab'];
 }else{
-	$current = reset( array_keys( $tabs ) );
+	$tab_keys = array_keys( $tabs );
+	$current = reset( $tab_keys );
 }
 if ( ! empty( $tabs ) ) : ?>
 
@@ -37,9 +38,9 @@ if ( ! empty( $tabs ) ) : ?>
 
 	<div class="profile-content-left">
 		<ul class="tabs learn-press-tabs">
-			<?php foreach ( $tabs as $id => $tab ) : ?>
-				<li class="<?php echo esc_attr( $id ); ?>_tab<?php echo $current == $id ? ' current' : '';?>">
-					<a href="#tab-<?php echo esc_attr( $id ); ?>" data-slug="<?php echo add_query_arg( '', '', learn_press_get_page_link( 'profile' ) . $user->user_login ) . '/' . $id;?>"><?php echo apply_filters( 'learn_press_profile_' . $key . '_tab_title', esc_html( $tab['title'] ), $key ); ?></a>
+			<?php foreach ( $tabs as $key => $tab ) : ?>
+				<li class="<?php echo esc_attr( $key ); ?>_tab<?php echo $current == $key ? ' current' : '';?>">
+					<a href="#tab-<?php echo esc_attr( $key ); ?>" data-slug="<?php echo add_query_arg( '', '', learn_press_get_page_link( 'profile' ) . $user->user_login ) . '/' . $key;?>"><?php echo apply_filters( 'learn_press_profile_' . $key . '_tab_title', esc_html( $tab['title'] ), $key ); ?></a>
 				</li>
 			<?php endforeach; ?>
 		</ul>

@@ -39,6 +39,7 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 
 			add_action( 'wp_trash_post', array( $this, 'preparing_to_trash_order' ) );
 			*/
+			//add_action( 'wp_trash_post', array( $this, 'preparing_to_trash_order' ) );
 			add_action( 'before_delete_post', array( $this, 'delete_order_items' ) );
 			add_action( 'save_post', array( $this, 'save_order' ) );
 			parent::__construct();
@@ -52,22 +53,47 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 		}
 
 		function delete_order_items() {
+			global $wpdb, $post;
 
+			// get order items
+			$query = $wpdb->prepare("
+				SELECT order_item_id FROM {$wpdb->prefix}learnpress_order_items
+				WHERE order_id = %d
+			", $post->ID );
+			if( $item_ids = $wpdb->get_col( $query ) ) {
+				$query ="
+					DELETE FROM {$wpdb->prefix}learnpress_order_itemmeta
+					WHERE learnpress_order_item_id IN(" . join(',', $item_ids) . ")
+				";
+				$wpdb->query( $query );
+
+				$query = $wpdb->prepare( "
+					DELETE FROM {$wpdb->prefix}learnpress_order_items
+					WHERE order_id = %d
+				", $post->ID );
+				$wpdb->query( $query );
+			}
 		}
 
 		function save_order( $post_id ) {
-			remove_action( 'save_post', array( $this, 'save_order' ) );
+			global $action;
+			if ( wp_is_post_revision( $post_id ) )
+				return;
+			if( $action == 'editpost' && get_post_type( $post_id ) == 'lp_order' ) {
+				remove_action( 'save_post', array( $this, 'save_order' ) );
 
-			$order_statuses = learn_press_get_order_statuses();
-			$order_statuses = array_keys( $order_statuses );
-			$status         = learn_press_get_request( 'order-status' );
+				$order_statuses = learn_press_get_order_statuses();
+				$order_statuses = array_keys( $order_statuses );
+				$status         = learn_press_get_request( 'order-status' );
 
-			if ( !in_array( $status, $order_statuses ) ) {
-				$status = reset( $order_statuses );
+				if ( !in_array( $status, $order_statuses ) ) {
+					$status = reset( $order_statuses );
+				}
+				$user_id = learn_press_get_request( 'order-customer' );
+				$postdata = array( 'post_status' => $status, 'ID' => $post_id );
+				wp_update_post( $postdata );
+				update_post_meta( $post_id, '_user_id', $user_id > 0 ? $user_id : 0 );
 			}
-			$postdata = array( 'post_status' => $status, 'ID' => $post_id );
-			wp_update_post( $postdata );
-			update_post_meta( $post_id, '_user_id', learn_press_get_request( 'order-customer' ) );
 		}
 
 		function remove_box() {
@@ -322,9 +348,14 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 			//print_r($the_order->get_items());die();
 			switch ( $column ) {
 				case 'order_student':
-					$user = learn_press_get_user( $the_order->user_id );
-					printf( '<a href="user-edit.php?user_id=%d">%s (%s)</a>', $the_order->user_id, $user->user_login, $user->display_name ); ?><?php
-					printf( '<br /><span>%s</span>', $user->user_email );
+					if( $the_order->user_id ) {
+						$user = learn_press_get_user( $the_order->user_id );
+
+						printf( '<a href="user-edit.php?user_id=%d">%s (%s)</a>', $the_order->user_id, $user->user_login, $user->display_name ); ?><?php
+						printf( '<br /><span>%s</span>', $user->user_email );
+					}else{
+						_e( 'Guest', 'learn_press' );
+					}
 					break;
 				case 'order_status' :
 					echo learn_press_get_order_status_label( $post->ID );

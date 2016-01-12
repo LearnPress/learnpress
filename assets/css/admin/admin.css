@@ -680,7 +680,13 @@ body.post-type-lp_question #question_answer_ .inside{
 	margin: 0;
 	line-height: 1;
 }
-
+#questions .quiz-questions-heading .questions-toggle a{
+	color: #DDD;
+	box-shadow: none;
+}
+#questions .quiz-questions-heading .questions-toggle a:hover{
+	color: #00a0d2;
+}
 #questions #learn-press-dropdown-questions{
 	display: inline-block;
 	position: relative;
@@ -771,11 +777,18 @@ body.post-type-lp_question #question_answer_ .inside{
 }
 #questions .quiz-question-head .quiz-question-actions{
 	float: right;
-	margin: 5px 0;
+	margin: 1px 0;
 	visibility: hidden;
+	padding-top: 2px;
 }
 #questions .quiz-question-head .quiz-question-actions a{
 	margin: 0 3px;
+	color: #DDD;
+	vertical-align: middle;
+	box-shadow: none;
+}
+#questions .quiz-question-head .quiz-question-actions a:hover{
+	color: #00a0d2;
 }
 #questions .quiz-question-head .quiz-question-actions a.move{
 	cursor: url("../../images/openhand.cur") 7 5, default;
@@ -982,9 +995,9 @@ body.post-type-lp_question #question_answer_ .inside{
 	width: 10%;
 }
 
-.plugin-card .install-now:before,
-.plugin-card .disable-now:before,
-.plugin-card .enable-now:before{
+.learn-press-add-ons .plugin-card .install-now:before,
+.learn-press-add-ons .plugin-card .disable-now:before,
+.learn-press-add-ons .plugin-card .enable-now:before{
 	margin: 3px 5px 0 -2px;
 	display: inline-block;
 	font: 400 20px/1 dashicons;
@@ -993,38 +1006,54 @@ body.post-type-lp_question #question_answer_ .inside{
 	-moz-osx-font-smoothing: grayscale;
 	vertical-align: top;
 }
-.plugin-card .install-now:before {
+.learn-press-add-ons .plugin-card .install-now:before {
 	content: '\f106';
 	color: #0073aa;
 }
-.plugin-card .disable-now:before {
+.learn-press-add-ons .plugin-card .disable-now:before {
 	content: '\f147';
 	color: #0073aa;
 }
-.plugin-card .enable-now:before {
+.learn-press-add-ons .plugin-card .enable-now:before {
 	content: '\f335';
 	color: #d54e21;
 }
-.plugin-card .disable-now:hover:before {
+.learn-press-add-ons .plugin-card .disable-now:hover:before {
 	content: '\f335';
 	color: #d54e21;
 }
-.plugin-card .enable-now:hover:before {
+.learn-press-add-ons .plugin-card .enable-now:hover:before {
 	content: '\f147';
 	color: #0073aa;
 }
-.plugin-card .button-working:before{
+.learn-press-add-ons .plugin-card .button-working:before{
 	content: '\f463' !important;
 	-webkit-animation: lp-spinner 2s infinite linear;
 	animation: lp-spinner 2s infinite linear;
 	margin-right: 0;
 }
-.plugin-card .button-working span{
+.learn-press-add-ons .plugin-card .button-working span{
 	display: none;
 }
 .lp-button-actions a{
 	text-decoration: none;
 	margin-left: 5px;
+}
+
+.learn-press-quick-confirm{
+	position: absolute;
+	z-index: 9999;
+	color: rgb(255, 255, 255);
+	padding: 2px 8px;
+	display: block;
+	white-space: nowrap;
+	left: -39.625px;
+	top: 24px;
+	background-color: rgb(150, 2, 2);
+	cursor: pointer;
+}
+.learn-press-quick-confirm:hover{
+	background-color: rgb(201, 2, 2);
 }
 
 /* course */

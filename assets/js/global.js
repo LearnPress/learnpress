@@ -56,6 +56,7 @@ if (typeof window.LearnPress == 'undefined') {
 		url = url.replace(regex, '');
 		return url;
 	}
+
 	LearnPress.MessageBox = {
 		/*
 		 *
@@ -65,6 +66,50 @@ if (typeof window.LearnPress == 'undefined') {
 		events       : {},
 		instances	 : [],
 		instance: null,
+		quickConfirm: function(elem, args){
+			new (function(elem, args){
+				var $elem = $(elem),
+					$div = $('<span class="learn-press-quick-confirm"></span>').insertAfter($elem), //($(document.body)),
+					offset = $(elem).position() || {left: 0, top: 0},
+					timerOut = null,
+					timerHide = null,
+					hide = function(){
+						$div.slideUp('fast', function(){
+							$(this).remove();
+						});
+					};
+				args = args || {};
+				$div.html(args.message || $elem.attr('data-confirm-remove')).css({
+
+				});
+				$div.click(function(){
+					$.isFunction( args.onOK ) && args.onOK(args.data);
+					hide();
+				})
+				$div.css({
+					left: ( offset.left + $elem.outerWidth() ) - $div.outerWidth(),
+					top: /*offset.top +*/ $elem.outerHeight()
+				}).hide().slideDown('fast');
+				timerOut = setTimeout(function(){
+					hide.call($div[0]);
+					$.isFunction( args.onCancel ) && args.onCancel(args.data);
+				}, 3000);
+
+				timerHide = setInterval(function(){
+					if( !$elem.is(':visible') || $elem.css("visibility") == 'hidden' ){
+						clearTimeout(timerOut);
+						clearInterval(timerHide);
+						$div.remove();
+						$.isFunction( args.onCancel ) && args.onCancel(args.data);
+					}
+				}, 350);
+
+				$div.hover(function(){
+					clearInterval(timerHide);
+				});
+
+			})(elem, args);
+		},
 		show         : function (message, args) {
 			//this.hide();
 			$.proxy(function () {

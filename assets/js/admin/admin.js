@@ -3,7 +3,17 @@
 		init: function(){
 			var $doc = $(document);
 			$doc.on('click', '#learn-press-install-sample-data-notice a', this._importCourses )
-				.on('click', '.learn-press-admin-notice-dismiss', this._dismissNotice);
+				.on('click', '.learn-press-admin-notice-dismiss', this._dismissNotice)
+				.on('click', '[data-remove-confirm]', this._confirm);
+			setTimeout(function() {
+				$('[data-remove-confirm]').each(function () {
+					console.log($(this))
+				})
+			}, 1000);
+		},
+		_confirm: function(e){
+			e.preventDefault();
+			return false;
 		},
 		_dismissNotice: function(e){
 

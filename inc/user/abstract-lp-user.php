@@ -547,7 +547,7 @@ class LP_Abstract_User {
 	 */
 	function can_view_lesson( $lesson_id, $course_id = null ) {
 		$lesson = LP_Lesson::get_lesson( $lesson_id );
-		$view   = $lesson->is( 'previewable' ) || $this->get_item_order( $lesson_id );
+		$view   = $lesson->is( 'previewable' ) || ( learn_press_get_order_status( $this->get_item_order( $lesson_id ) ) == 'completed' );
 		if ( !$view && $course_id && ( $course = LP_Course::get_course( $course_id ) ) && !$course->is( 'required_enroll' ) ) {
 			$view = true;
 		}
@@ -576,7 +576,7 @@ class LP_Abstract_User {
 		if ( $course ) {
 			$this->get_course_order( $course->id );
 		}
-		$view = $this->get_item_order( $quiz_id );
+		$view = learn_press_get_order_status( $this->get_item_order( $quiz_id ) ) == 'completed';
 		if ( !$view && $course && !$course->is( 'required_enroll' ) ) {
 			$view = true;
 		}
@@ -793,6 +793,7 @@ class LP_Abstract_User {
 			INNER JOIN {$wpdb->postmeta} om ON om.post_id = o.ID AND om.meta_key = %s AND om.meta_value = %d
 			INNER JOIN {$wpdb->learnpress_order_items} oi ON o.ID = oi.order_ID
 			INNER JOIN {$wpdb->learnpress_order_itemmeta} oim ON oim.learnpress_order_item_id= oi.order_item_id AND oim.meta_key = %s AND oim.meta_value = %d
+			WHERE o.post_status IN ('lp-processing', 'lp-pending', 'lp-completed')
 			ORDER BY order_id DESC
 		", '_user_id', $this->id, '_course_id', $course_id );
 
@@ -890,7 +891,7 @@ class LP_Abstract_User {
 				'course_id'  => $course_id,
 				'start_time' => current_time( 'mysql' ),
 				'status'     => 'enrolled',
-				'end_time'   => null,
+				'end_time'   => '0000-00-00 00:00:00',
 				'order_id'   => $this->get_course_order( $course_id )
 			),
 			array( '%d', '%d', '%s', '%s', '%s' )
@@ -901,6 +902,7 @@ class LP_Abstract_User {
 			do_action( 'learn_press_user_enrolled_course', $this, $course_id, $inserted );
 
 		} else {
+			learn_press_debug($wpdb);
 			do_action( 'learn_press_user_enroll_course_failed', $this, $course_id, $inserted );
 		}
 		return $inserted;
