@@ -60,6 +60,10 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			do_action( 'learn_press_admin_ajax_load', __CLASS__ );
 		}
 
+		static function remove_course_items(){
+			die( 'Please implement this function');
+		}
+
 		static function search_users(){
 			if ( ! current_user_can( 'edit_lp_orders' ) ) {
 				die(-1);

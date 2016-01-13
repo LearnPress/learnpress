@@ -30,7 +30,7 @@ $group_name = '_lp_curriculum[__SECTION__][items][' . ( $section_item_id ? $sect
 		<p class="lp-item-actions lp-button-actions">
 			<?php do_action( 'learn_press_admin_begin_section_item_actions', $item, $section );?>
 			<a href="<?php echo absint( $item_id ) ? get_edit_post_link( $item_id ) : '{{data.edit_link}}'; ?>" class="lp-item-action lp-edit dashicons dashicons-edit" target="_blank"><?php _e( '', 'learn_press' ); ?></a>
-			<a href="" class="lp-item-action lp-remove dashicons dashicons-trash" data-confirm-remove="<?php _e( 'Are you sure?', 'learn_press' );?>"><?php _e( '', 'learn_press' ); ?></a>
+			<a href="" class="lp-item-action lp-remove dashicons dashicons-trash" data-confirm-remove="<?php _e( 'Are you sure you want to remove this item?', 'learn_press' );?>"><?php _e( '', 'learn_press' ); ?></a>
 			<span class="item-checkbox">
 				<input type="checkbox" value="<?php echo $section_item_id;?>" />
 			</span>

@@ -18,38 +18,38 @@ if (typeof window.LearnPress == 'undefined') {
 		}
 		return false;
 	}
-	$.fn.dataToJSON = function(){
+	$.fn.dataToJSON = function () {
 		var json = {};
-		$.each(this[0].attributes, function(){
+		$.each(this[0].attributes, function () {
 			var m = this.name.match(/^data-(.*)/);
-			if( m ) {
+			if (m) {
 				json[m[1]] = this.value;
 			}
 		});
 		return json;
 	}
-	String.prototype.getQueryVar = function(name){
+	String.prototype.getQueryVar = function (name) {
 		name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
 		var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
 			results = regex.exec(this);
 		return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 	}
-	String.prototype.addQueryVar = function(name, value){
+	String.prototype.addQueryVar = function (name, value) {
 		var url = this;
-		if(name.match(/\[/)){
+		if (name.match(/\[/)) {
 			url += url.match(/\?/) ? '&' : '?';
 			url += name + '=' + value;
-		}else{
-			if( (url.indexOf('&'+name+'=') != -1) || (url.indexOf('?'+name+'=') != -1) ){
-				url = url.replace( new RegExp(name + "=([^&#]*)", 'g') , name + '=' + value);
-			}else{
+		} else {
+			if ((url.indexOf('&' + name + '=') != -1) || (url.indexOf('?' + name + '=') != -1)) {
+				url = url.replace(new RegExp(name + "=([^&#]*)", 'g'), name + '=' + value);
+			} else {
 				url += url.match(/\?/) ? '&' : '?';
 				url += name + '=' + value;
 			}
 		}
 		return url;
 	}
-	String.prototype.removeQueryVar = function(name){
+	String.prototype.removeQueryVar = function (name) {
 		var url = this;
 		name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
 		var regex = new RegExp("[\\?&]" + name + "([\[][^=]*)?=([^&#]*)", 'g');
@@ -61,67 +61,71 @@ if (typeof window.LearnPress == 'undefined') {
 		/*
 		 *
 		 */
-		$block       : null,
-		$window      : null,
-		events       : {},
-		instances	 : [],
-		instance: null,
-		quickConfirm: function(elem, args){
-			new (function(elem, args){
+		$block         : null,
+		$window        : null,
+		events         : {},
+		instances      : [],
+		instance       : null,
+		quickConfirm   : function (elem, args) {
+			new (function (elem, args) {
 				var $elem = $(elem),
 					$div = $('<span class="learn-press-quick-confirm"></span>').insertAfter($elem), //($(document.body)),
 					offset = $(elem).position() || {left: 0, top: 0},
 					timerOut = null,
 					timerHide = null,
-					hide = function(){
-						$div.slideUp('fast', function(){
+					hide = function () {
+						$div.slideUp('fast', function () {
 							$(this).remove();
 						});
 					};
-				args = args || {};
-				$div.html(args.message || $elem.attr('data-confirm-remove')).css({
-
-				});
-				$div.click(function(){
-					$.isFunction( args.onOK ) && args.onOK(args.data);
+				args = $.extend({
+					message : '',
+					data    : null,
+					onOk    : null,
+					onCancel: null,
+					offset: {top: 0, left: 0}
+				}, args || {});
+				$div.html(args.message || $elem.attr('data-confirm-remove') || 'Are you sure?').css({});
+				$div.click(function () {
+					$.isFunction(args.onOk) && args.onOk(args.data);
 					hide();
 				})
 				$div.css({
-					left: ( offset.left + $elem.outerWidth() ) - $div.outerWidth(),
-					top: /*offset.top +*/ $elem.outerHeight()
+					left: ( ( offset.left + $elem.outerWidth() ) - $div.outerWidth() ) + args.offset.left,
+					top : offset.top + $elem.outerHeight() + args.offset.top
 				}).hide().slideDown('fast');
-				timerOut = setTimeout(function(){
+				timerOut = setTimeout(function () {
 					hide.call($div[0]);
-					$.isFunction( args.onCancel ) && args.onCancel(args.data);
+					$.isFunction(args.onCancel) && args.onCancel(args.data);
 				}, 3000);
 
-				timerHide = setInterval(function(){
-					if( !$elem.is(':visible') || $elem.css("visibility") == 'hidden' ){
+				timerHide = setInterval(function () {
+					if (!$elem.is(':visible') || $elem.css("visibility") == 'hidden') {
 						clearTimeout(timerOut);
 						clearInterval(timerHide);
 						$div.remove();
-						$.isFunction( args.onCancel ) && args.onCancel(args.data);
+						$.isFunction(args.onCancel) && args.onCancel(args.data);
 					}
 				}, 350);
 
-				$div.hover(function(){
+				$div.hover(function () {
 					clearInterval(timerHide);
 				});
 
 			})(elem, args);
 		},
-		show         : function (message, args) {
+		show           : function (message, args) {
 			//this.hide();
 			$.proxy(function () {
 				args = $.extend({
-					title: '',
-					buttons: '',
-					events: false,
+					title   : '',
+					buttons : '',
+					events  : false,
 					autohide: false,
-					message: message,
-					data: false,
-					id: LearnPress.uniqueId(),
-					onHide: null
+					message : message,
+					data    : false,
+					id      : LearnPress.uniqueId(),
+					onHide  : null
 				}, args || {});
 
 				this.instances.push(args)
@@ -135,7 +139,7 @@ if (typeof window.LearnPress == 'undefined') {
 				}
 				if (!this.$window) {
 					this.$window = $('<div id="learn-press-message-box-window"><div id="message-box-wrap"></div> </div>').insertAfter(this.$block);
-					this.$window.click(function(){
+					this.$window.click(function () {
 					})
 				}
 				//this.events = args.events || {};
@@ -146,26 +150,26 @@ if (typeof window.LearnPress == 'undefined') {
 					.bind('resize.message-box', $.proxy(this.update, this))
 					.bind('scroll.message-box', $.proxy(this.update, this));
 				this.update(true);
-				if( args.autohide ){
-					setTimeout(function(){
+				if (args.autohide) {
+					setTimeout(function () {
 						LearnPress.MessageBox.hide();
-						$.isFunction( args.onHide ) && args.onHide.call(LearnPress.MessageBox, args);
+						$.isFunction(args.onHide) && args.onHide.call(LearnPress.MessageBox, args);
 					}, args.autohide)
 				}
 			}, this)()
 		},
-		blockUI      : function (message) {
+		blockUI        : function (message) {
 
 			message = (message !== false ? ( message ? message : 'Wait a moment' ) : '') + '<div class="message-box-animation"></div>';
 			this.show(message);
 		},
-		hide         : function (delay, instance) {
-			if( instance ){
+		hide           : function (delay, instance) {
+			if (instance) {
 				this._removeInstance(instance.id);
-			}else {
+			} else {
 				this._removeInstance(this.instance.id);
 			}
-			if(this.instances.length == 0) {
+			if (this.instances.length == 0) {
 				if (this.$block) {
 					this.$block.hide();
 				}
@@ -175,51 +179,51 @@ if (typeof window.LearnPress == 'undefined') {
 				$(window)
 					.unbind('resize.message-box', this.update)
 					.unbind('scroll.message-box', this.update);
-			}else{
-				this._createWindow( this.instance.message, this.instance.title, this.instance.buttons)
+			} else {
+				this._createWindow(this.instance.message, this.instance.title, this.instance.buttons)
 			}
 
 		},
-		update       : function (force) {
+		update         : function (force) {
 			var that = this,
 				$wrap = this.$window.find('#message-box-wrap'),
 				timer = $wrap.data('timer'),
 				_update = function () {
-					LearnPress.Hook.doAction('learn_press_message_box_before_resize', that );
+					LearnPress.Hook.doAction('learn_press_message_box_before_resize', that);
 					var $content = $wrap.find('.message-box-content').css("height", "").css('overflow', 'hidden'),
 						width = $wrap.outerWidth(),
 						height = $wrap.outerHeight(),
 						contentHeight = $content.height(),
 						windowHeight = $(window).height(),
 						top = $wrap.offset().top;
-					if( contentHeight > windowHeight - 50){
+					if (contentHeight > windowHeight - 50) {
 						$content.css({
 							height: windowHeight - 50
 						});
 						height = $wrap.outerHeight()
-					}else{
+					} else {
 						$content.css("height", "").css('overflow', '');
 					}
 					$wrap.css({
 						marginTop: ( $(window).height() - height ) / 2
 					});
-					LearnPress.Hook.doAction('learn_press_message_box_resize', height, that );
+					LearnPress.Hook.doAction('learn_press_message_box_resize', height, that);
 				};
 			if (force) _update();
 			timer && clearTimeout(timer);
 			timer = setTimeout(_update, 250);
 		},
-		_removeInstance: function(id){
-			for( var i = 0; i < this.instances.length; i++){
-				if( this.instances[i].id == id ){
+		_removeInstance: function (id) {
+			for (var i = 0; i < this.instances.length; i++) {
+				if (this.instances[i].id == id) {
 
 					this.instances.splice(i, 1);
 
 					var len = this.instances.length;
-					if(len){
-						this.instance = this.instances[len-1];
+					if (len) {
+						this.instance = this.instances[len - 1];
 						this.$window.attr('instance', this.instance.id)
-					}else{
+					} else {
 						this.instance = false;
 						this.$window.removeAttr('instance')
 					}
@@ -227,20 +231,20 @@ if (typeof window.LearnPress == 'undefined') {
 				}
 			}
 		},
-		_getInstance: function(id){
-			for( var i = 0; i < this.instances.length; i++){
-				if( this.instances[i].id == id ){
+		_getInstance   : function (id) {
+			for (var i = 0; i < this.instances.length; i++) {
+				if (this.instances[i].id == id) {
 					return this.instances[i];
 					break;
 				}
 			}
 		},
-		_createWindow: function (message, title, buttons) {
+		_createWindow  : function (message, title, buttons) {
 			var $wrap = this.$window.find('#message-box-wrap').html('');
 			if (title) {
 				$wrap.append('<h3 class="message-box-title">' + title + '</h3>');
 			}
-			$wrap.append( $( '<div class="message-box-content"></div>').html(message) );
+			$wrap.append($('<div class="message-box-content"></div>').html(message));
 			if (buttons) {
 				var $buttons = $('<div class="message-box-buttons"></div>');
 				switch (buttons) {
@@ -258,7 +262,7 @@ if (typeof window.LearnPress == 'undefined') {
 				$wrap.append($buttons);
 			}
 		},
-		_createButton: function (title, type) {
+		_createButton  : function (title, type) {
 			var $button = $('<button type="button" class="button message-box-button message-box-button-' + type + '">' + title + '</button>'),
 				callback = 'on' + ( type.substr(0, 1).toUpperCase() + type.substr(1) );
 			$button.data('callback', callback).click(function () {
@@ -267,10 +271,10 @@ if (typeof window.LearnPress == 'undefined') {
 				if ($.type(callback) == 'function') {
 					if (callback.apply(LearnPress.MessageBox, [instance]) === false) {
 						return;
-					}else{
+					} else {
 						LearnPress.MessageBox.hide(null, instance);
 					}
-				}else {
+				} else {
 					LearnPress.MessageBox.hide(null, instance);
 				}
 			}).data('instance', this.instance);
@@ -356,13 +360,13 @@ if (typeof window.LearnPress == 'undefined') {
 		setUrl        : function (url, title) {
 			history.pushState({}, title, url);
 		},
-		getUrl: function(){
+		getUrl        : function () {
 			return window.location.href;
 		},
-		addQueryVar: function(name, value, url){
+		addQueryVar   : function (name, value, url) {
 			return (url == undefined ? window.location.href : url).addQueryVar(name, value);
 		},
-		removeQueryVar: function(name, url){
+		removeQueryVar: function (name, url) {
 			return (url == undefined ? window.location.href : url).removeQueryVar(name);
 		},
 		reload        : function (url) {
@@ -422,7 +426,7 @@ if (typeof window.LearnPress == 'undefined') {
 			}
 		},
 		toElement     : function (element, args) {
-			if($(element).length == 0) {
+			if ($(element).length == 0) {
 				return;
 			}
 			args = $.extend({
@@ -479,45 +483,45 @@ if (typeof window.LearnPress == 'undefined') {
 
 			return retId;
 		},
-		log: function(){
-			if( typeof LEARN_PRESS_DEBUG != 'undefined' && LEARN_PRESS_DEBUG && console ){
-				for(var i = 0, n = arguments.length; i < n; i++){
+		log           : function () {
+			if (typeof LEARN_PRESS_DEBUG != 'undefined' && LEARN_PRESS_DEBUG && console) {
+				for (var i = 0, n = arguments.length; i < n; i++) {
 					console.log(arguments[i]);
 				}
 			}
 		},
-		template: _.memoize(function ( id, data ) {
+		template      : _.memoize(function (id, data) {
 			var compiled,
 				options = {
-					evaluate:    /<#([\s\S]+?)#>/g,
+					evaluate   : /<#([\s\S]+?)#>/g,
 					interpolate: /\{\{\{([\s\S]+?)\}\}\}/g,
-					escape:      /\{\{([^\}]+?)\}\}(?!\})/g,
-					variable:    'data'
+					escape     : /\{\{([^\}]+?)\}\}(?!\})/g,
+					variable   : 'data'
 				};
 
-			var tmpl = function ( data ) {
-				compiled = compiled || _.template( $( '#' + id ).html(), null, options );
-				return compiled( data );
+			var tmpl = function (data) {
+				compiled = compiled || _.template($('#' + id).html(), null, options);
+				return compiled(data);
 			};
 			return data ? tmpl(data) : tmpl;
-		}, function(a, b){
+		}, function (a, b) {
 			return JSON.stringify(b)
 		})
 	}, LearnPress);
 
-	$.fn.findNext = function(selector){
+	$.fn.findNext = function (selector) {
 		var $selector = $(selector),
 			$root = this.first(),
 			index = $selector.index($root),
-			$next = $selector.eq(index+1);
+			$next = $selector.eq(index + 1);
 		return $next.length ? $next : false;
 	}
 
-	$.fn.findPrev = function(selector){
+	$.fn.findPrev = function (selector) {
 		var $selector = $(selector),
 			$root = this.first(),
 			index = $selector.index($root),
-			$prev = $selector.eq(index-1);
+			$prev = $selector.eq(index - 1);
 		return $prev.length ? $prev : false;
 	}
 })(jQuery);

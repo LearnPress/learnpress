@@ -31,20 +31,20 @@ if( $is_hidden ){
 	<h3 class="curriculum-section-head">
 		<input name="_lp_curriculum[__SECTION__][name]" type="text" data-field="section-name" placeholder="<?php _e( 'Enter the section name and hit enter', 'learn_press' );?>" class="lp-section-name no-submit" value="<?php echo esc_attr( $section->section_name ); ?>" />
 		<p class="lp-section-actions lp-button-actions">
-			<a href="" data-action="expand" class="dashicons dashicons-plus<?php echo $is_hidden ? '' : ' hide-if-js';?>" title="<?php _e( 'Expand', 'learn_press' );?>"></a>
-			<a href="" data-action="collapse" class="dashicons dashicons-minus<?php echo ! $is_hidden ? '' : ' hide-if-js';?>" title="<?php _e( 'Collapse', 'learn_press' );?>"></a>
-			<a href="" data-action="remove" class="dashicons dashicons-trash" data-confirm-remove="<?php _e( 'Are you sure?', 'learn_press' );?>"><?php _e( '', 'learn_press' );?></a>
+			<a href="" data-action="expand" class="dashicons dashicons-arrow-down<?php echo $is_hidden ? '' : ' hide-if-js';?>" title="<?php _e( 'Expand', 'learn_press' );?>"></a>
+			<a href="" data-action="collapse" class="dashicons dashicons-arrow-up<?php echo ! $is_hidden ? '' : ' hide-if-js';?>" title="<?php _e( 'Collapse', 'learn_press' );?>"></a>
+			<a href="" data-action="remove" class="dashicons dashicons-trash" data-confirm-remove="<?php _e( 'Are you sure you want to remove this section?', 'learn_press' );?>"><?php _e( '', 'learn_press' );?></a>
 			<a href="" class="move"></a>
 		</p>
 	</h3>
 	<div class="curriculum-section-content<?php echo $is_hidden ? ' hide-if-js' : '';?>">
 		<div class="item-bulk-actions">
 			<input name="_lp_curriculum[__SECTION__][description]" class="lp-section-describe" type="text" value="<?php echo esc_attr( $section->section_description );?>" placeholder="<?php _e( 'Describe about this section', 'learn_press' );?>" />
-			<button class="button hide-if-js" type="button" data-action="delete" data-title="<?php _e( 'Remove', 'learn_press' );?>"><?php _e( 'Remove', 'learn_press' );?></button>
+			<button class="button hide-if-js" type="button" data-action="delete" data-title="<?php _e( 'Remove', 'learn_press' );?>" data-confirm-remove="<?php _e( 'Are you sure you want to remove these items from section?', 'learn_press' );?>"><?php _e( 'Remove', 'learn_press' );?></button>
 			<!--
 			<button class="button" type="button" data-action="delete-forever" disabled="disabled" data-title="<?php _e( 'Delete Forever', 'learn_press' );?>"><?php _e( 'Delete Forever', 'learn_press' );?></button>
-			-->
-			<button class="button hide-if-js" type="button" data-action="cancel"><?php _e( 'Cancel', 'learn_press' );?></button>
+
+			<button class="button hide-if-js" type="button" data-action="cancel"><?php _e( 'Cancel', 'learn_press' );?></button>-->
 			<!--<div class="button lp-check-all-items">
 				<input type="checkbox" class="" />
 				<span>&dtrif;</span>

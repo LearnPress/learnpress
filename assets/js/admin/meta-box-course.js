@@ -206,7 +206,7 @@
 						.removeClass('hide-if-js')
 						.map(function () {
 							var $b = $(this);
-							$b.attr('data-action') == 'cancel' ? $b.removeClass('hide-if-js') : $b.html($b.attr('data-title') + ' (+' + len + ')')
+							$b.attr('data-action') == 'cancel' ? $b.removeClass('hide-if-js') : $b.html($b.attr('data-title') + ' (+' + len + ')').show()
 						})
 				)
 					: $checkbox.closest('.curriculum-section-content')
@@ -214,7 +214,7 @@
 					.hide()
 					.map(function () {
 						var $b = $(this);
-						$b.attr('data-action') == 'cancel' ? $b.hide() : $b.html($b.attr('data-title'))
+						$b.attr('data-action') == 'cancel' ? $b.hide() : $b.html($b.attr('data-title')).hide()
 					});
 				$checkbox.closest('.lp-section-item').toggleClass('remove', e.target.checked);
 				if( len == $all.length ){
@@ -227,6 +227,7 @@
 				var $button = $(e.target),
 					$all = $button.closest('.item-bulk-actions').siblings('.curriculum-section-items').find('.lp-section-item'),
 					action = $button.attr('data-action');
+
 				switch (action) {
 					case 'delete':
 					case 'delete-forever':
@@ -238,7 +239,7 @@
 								var $b = $(this).html($(this).attr('data-title'));
 								($.inArray( $b.attr('data-action'),['cancel', 'delete'] ) != -1) && $b.hide();
 							});
-						});
+						}, $button);
 						break;
 					case 'cancel':
 						$all.filter(function () {
@@ -986,8 +987,34 @@
 
 				LearnPress.MessageBox.quickConfirm( target, {
 					onOk: function(a){
+						var ids = [];
+						a.items && a.items.each(function () {
+							var $item = $(this),
+								id = parseInt($item.attr('data-section_item_id')),
+								type = $item.attr('data-type');
+							$item.remove();
+							if (id) {
+								a.self.model.removeItem(id);
+								ids.push(id);
+							}
+						});
+						if (b) {
+							a.self.removeItemDB(ids);
+						}
+						$.isFunction(callback) && callback.call();
 					},
-					onCancel: function(){
+					onCancel: function(a){
+						a.items
+							.each(function () {
+								$(this).removeClass('remove').find('.item-checkbox input').prop('checked', false).trigger('change')
+							})
+							.closest('.curriculum-section')
+							.find('.item-bulk-actions button')
+							.map(function () {
+								var $b = $(this);
+								($.inArray( $b.attr('data-action'), ['cancel', 'delete'] ) != -1) && $b.hide();
+								if( $b.attr('data-action') == 'delete' ) $b.html($b.attr('data-title'))
+							});
 					},
 					data: {
 						items: $items,
@@ -1090,7 +1117,7 @@
 						break;
 					case 'remove':
 						LearnPress.MessageBox.quickConfirm( $button, {
-							callback: function(a){
+							onOk: function(a){
 								var $section = $(a);
 
 								$.ajax({
