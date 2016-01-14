@@ -224,7 +224,7 @@ if ( !function_exists( 'learn_press_course_payment_form' ) ) {
 	 * Course payment form
 	 */
 	function learn_press_course_payment_form() {
-		_deprecated_function( __FUNCTION__, '1.0', need_to_updating());
+		_deprecated_function( __FUNCTION__, '1.0', need_to_updating() );
 		learn_press_get_template( 'single-course/payment-form.php' );
 
 	}
@@ -363,16 +363,17 @@ if ( !function_exists( 'learn_press_order_payment' ) ) {
 	}
 }
 
-if ( ! function_exists( 'learn_press_order_details_table' ) ) {
+if ( !function_exists( 'learn_press_order_details_table' ) ) {
 
 	/**
 	 * Displays order details in a table.
 	 *
 	 * @param mixed $order_id
-	 * @subpackage	Orders
+	 *
+	 * @subpackage    Orders
 	 */
 	function learn_press_order_details_table( $order_id ) {
-		if ( ! $order_id ) return;
+		if ( !$order_id ) return;
 		learn_press_get_template( 'order/order-details.php', array(
 			'order' => learn_press_get_order( $order_id )
 		) );
@@ -483,15 +484,25 @@ if ( !function_exists( 'learn_press_user_profile_tabs' ) ) {
 	 * Get tabs for user profile
 	 *
 	 * @param $user
+	 *
 	 * @return mixed
 	 */
 	function learn_press_user_profile_tabs( $user ) {
-		$defaults = array(
-			'courses' => array(
+		$course_endpoint = LP()->settings->get( 'profile_tab_courses_endpoint' );
+		if( !$course_endpoint ){
+			$course_endpoint = 'courses';
+		}
+
+		$quiz_endpoint = LP()->settings->get( 'profile_tab_quizzes_endpoint' );
+		if( !$quiz_endpoint ){
+			$quiz_endpoint = 'courses';
+		}
+		$defaults        = array(
+			$course_endpoint => array(
 				'title'    => __( 'Courses', 'learn_press' ),
 				'callback' => array( $user, 'tab_courses_content' )
 			),
-			'quizzes' => array(
+			$quiz_endpoint => array(
 				'title'    => __( 'Quiz Results', 'learn_press' ),
 				'callback' => array( $user, 'tab_quizzes_content' )
 			)
@@ -625,14 +636,14 @@ if ( !function_exists( 'learn_press_course_lesson_class' ) ) {
 		if ( $lesson_id && !empty( $_REQUEST['lesson'] ) && ( $lesson_id == $_REQUEST['lesson'] ) ) {
 			$classes[] = 'current';
 		}
-		if( is_course() ){
+		if ( is_course() ) {
 			$course = LP()->course;
-			if( $course->is_free() ){
+			if ( $course->is_free() ) {
 				$classes[] = 'free-item';
 			}
 		}
 		$lesson = LP_Lesson::get_lesson( $lesson_id );
-		if( $lesson && $lesson->is_previewable() ){
+		if ( $lesson && $lesson->is_previewable() ) {
 			$classes[] = 'preview-item';
 		}
 		$classes = array_unique( array_merge( $classes, $class ) );
@@ -735,6 +746,7 @@ function lp_setup_course_data( $post ) {
 	$GLOBALS['course'] = lp_get_course( $post );
 	return $GLOBALS['course'];
 }
+
 add_action( 'the_post', 'lp_setup_course_data' );
 
 
@@ -786,22 +798,22 @@ if ( !function_exists( 'learn_press_page_controller' ) ) {
 	function learn_press_page_controller( $template/*, $slug, $name*/ ) {
 		if ( get_post_type() == LP()->quiz_post_type && is_single() ) {
 			global $quiz;
-			$user = LP()->user;
-			$quiz = LP_Quiz::get_quiz( get_the_ID() );
+			$user        = LP()->user;
+			$quiz        = LP_Quiz::get_quiz( get_the_ID() );
 			$quiz_status = LP()->user->get_quiz_status( get_the_ID() );
-			$redirect = false;
+			$redirect    = false;
 			if ( !$user->can( 'view-quiz', $quiz->id ) ) {
 				if ( $course = $quiz->get_course() ) {
 					$redirect = $course->permalink;
 				}
-			}elseif( $quiz_status == 'started' && ( empty( $_REQUEST['question']) && $current_question = $user->get_current_quiz_question( $quiz->id ) ) ){
+			} elseif ( $quiz_status == 'started' && ( empty( $_REQUEST['question'] ) && $current_question = $user->get_current_quiz_question( $quiz->id ) ) ) {
 				$redirect = $quiz->get_question_link( $current_question );
-			}elseif( $quiz_status == 'complete' &&  ! empty( $_REQUEST['question']) ){
+			} elseif ( $quiz_status == 'complete' && !empty( $_REQUEST['question'] ) ) {
 				$redirect = get_the_permalink( $quiz->id );
 			}
 			$redirect = apply_filters( 'learn_press_quiz_redirect_permalink', $redirect, $quiz_status, $quiz->id, $user );
 			// prevent loop redirect
-			if( $redirect &&  $redirect != learn_press_get_current_url() ){
+			if ( $redirect && $redirect != learn_press_get_current_url() ) {
 				wp_redirect( $redirect );
 				exit();
 			}
@@ -812,12 +824,13 @@ if ( !function_exists( 'learn_press_page_controller' ) ) {
 }
 add_filter( 'template_include', 'learn_press_page_controller' );
 
-if ( ! function_exists( 'learn_press_page_title' ) ) {
+if ( !function_exists( 'learn_press_page_title' ) ) {
 
 	/**
 	 * learn_press_page_title function.
 	 *
 	 * @param  boolean $echo
+	 *
 	 * @return string
 	 */
 	function learn_press_page_title( $echo = true ) {
@@ -835,7 +848,7 @@ if ( ! function_exists( 'learn_press_page_title' ) ) {
 		} else {
 
 			$courses_page_id = learn_press_get_page_id( 'courses' );
-			$page_title   = get_the_title( $courses_page_id );
+			$page_title      = get_the_title( $courses_page_id );
 
 		}
 
@@ -857,6 +870,7 @@ function learn_press_template_redirect() {
 		exit;
 	}
 }
+
 add_action( 'template_redirect', 'learn_press_template_redirect' );
 
 

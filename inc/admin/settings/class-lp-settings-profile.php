@@ -45,4 +45,4 @@ class LP_Settings_Profile extends LP_Settings_Base {
 	}
 }
 //
-return new LP_Settings_Profile();
+//return new LP_Settings_Profile();

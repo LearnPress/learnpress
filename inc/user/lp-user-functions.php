@@ -270,6 +270,37 @@ function learn_press_user_has_roles( $roles, $user_id = null ){
 	return $has_role;
 }
 
+function learn_press_edit_admin_bar() {
+	global $wp_admin_bar;
+	if ( ( $profile = learn_press_get_page_link( 'profile') ) && ( LP()->settings->get( 'admin_bar_link' ) == 'yes' ) ) {
+		$text = LP()->settings->get( 'admin_bar_link_text' );
+		$course_profile                   = array();
+		$course_profile['id']             = 'course_profile';
+		$course_profile['parent']         = 'user-actions';
+		$course_profile['title']          = $text ? $text : __( 'View Course Profile', 'learn_press' );
+		$course_profile['href']           = $profile;
+		$course_profile['meta']['target'] = LP()->settings->get( 'admin_bar_link_target' );
+		$wp_admin_bar->add_menu( $course_profile );
+	}
+	$current_user = wp_get_current_user();
+	// add `be teacher` link
+	if ( in_array( LP()->teacher_role, $current_user->roles ) || in_array( 'administrator', $current_user->roles ) ) {
+		return;
+	}
+	//if ( !class_exists( 'LP_Admin_Settings' ) ) return;
+	/**
+	 * $settings = LP_Admin_Settings::instance( 'general' );
+	 * if ( $settings->get( 'instructor_registration' ) ) {
+	 * $be_teacher           = array();
+	 * $be_teacher['id']     = 'be_teacher';
+	 * $be_teacher['parent'] = 'user-actions';
+	 * $be_teacher['title']  = __( 'Become An Instructor', 'learn_press' );
+	 * $be_teacher['href']   = '#';
+	 * $wp_admin_bar->add_menu( $be_teacher );
+	 * }*/
+}
+add_action( 'admin_bar_menu', 'learn_press_edit_admin_bar' );
+
 function learn_press_after_logged_in() {
 
 }

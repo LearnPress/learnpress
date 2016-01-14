@@ -160,7 +160,7 @@ function learn_press_settings_tabs_array() {
 		'pages'    => __( 'Pages', 'learn_press' ),
 		'payments' => __( 'Payments', 'learn_press' ),
 		'checkout' => __( 'Checkout', 'learn_press' ),
-		'profile'  => __( 'Profile', 'learn_press' ),
+		//'profile'  => __( 'Profile', 'learn_press' ),
 		'emails'   => __( 'Emails', 'learn_press' )
 	);
 	return apply_filters( 'learn_press_settings_tabs_array', $tabs );
