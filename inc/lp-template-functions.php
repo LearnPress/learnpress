@@ -442,7 +442,19 @@ if ( !function_exists( 'learn_press_output_user_profile_tabs' ) ) {
 	 * @param LP_User
 	 */
 	function learn_press_output_user_profile_tabs( $user ) {
-		learn_press_get_template( 'profile/tabs/tabs.php', array( 'user' => $user ) );
+		learn_press_get_template( 'profile/tabs.php', array( 'user' => $user ) );
+	}
+}
+
+if ( !function_exists( 'learn_press_output_user_profile_order' ) ) {
+	/**
+	 * Display user profile tabs
+	 *
+	 * @param LP_User
+	 */
+	function learn_press_output_user_profile_order( $user ) {
+
+		learn_press_get_template( 'profile/order.php', array( 'user' => $user ) );
 	}
 }
 
@@ -497,6 +509,12 @@ if ( !function_exists( 'learn_press_user_profile_tabs' ) ) {
 		if( !$quiz_endpoint ){
 			$quiz_endpoint = 'courses';
 		}
+
+		$order_endpoint = LP()->settings->get( 'profile_tab_orders_endpoint' );
+		if( !$order_endpoint ){
+			$order_endpoint = 'orders';
+		}
+
 		$defaults        = array(
 			$course_endpoint => array(
 				'title'    => __( 'Courses', 'learn_press' ),
@@ -505,6 +523,10 @@ if ( !function_exists( 'learn_press_user_profile_tabs' ) ) {
 			$quiz_endpoint => array(
 				'title'    => __( 'Quiz Results', 'learn_press' ),
 				'callback' => array( $user, 'tab_quizzes_content' )
+			),
+			$order_endpoint => array(
+				'title'    => __( 'Orders', 'learn_press' ),
+				'callback' => array( $user, 'tab_orders_content' )
 			)
 		);
 		return apply_filters( 'learn_press_user_profile_tabs', $defaults, $user );

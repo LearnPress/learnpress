@@ -242,8 +242,8 @@ function learn_press_add_rewrite_rules() {
 
 	if ( $profile_id = learn_press_get_page_id( 'profile' ) ) {
 		add_rewrite_rule(
-			'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?([^/]*)?/?',
-			'index.php?page_id=' . $profile_id . '&abc=1000&user=$matches[1]/$matches[2]&tabxxxxxxxxxxx=$matches[2]',
+			'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?([^/]*)/?([^/]*)?/?',
+			'index.php?page_id=' . $profile_id . '&user=$matches[1]/$matches[2]/$matches[3]',
 			'top'
 		);
 	}
@@ -257,14 +257,24 @@ add_action( 'init', 'learn_press_add_rewrite_rules', 1000, 0 );
  * This function parse query vars and put into request
  */
 function learn_press_parse_query_vars_to_request() {
-	global $wp_query;
-
+	global $wp_query, $wp;
 	if ( isset( $wp_query->query['user'] ) ) {
-		list( $username, $tab ) = explode( '/', $wp_query->query['user'] );
-		$wp_query->query_vars['user'] = $username;
-		$wp_query->query_vars['tab']  = $tab;
-		$wp_query->query['user']      = $username;
-		$wp_query->query['tab']       = $tab;
+		if ( !get_option( 'permalink_structure' ) ) {
+			$wp_query->query_vars['user']     = !empty( $_REQUEST['user'] ) ? $_REQUEST['user'] : null;
+			$wp_query->query_vars['tab']      = !empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : null;
+			$wp_query->query_vars['order_id'] = !empty( $_REQUEST['order_id'] ) ? $_REQUEST['order_id'] : null;
+			$wp_query->query['user']          = !empty( $_REQUEST['user'] ) ? $_REQUEST['user'] : null;
+			$wp_query->query['tab']           = !empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : null;
+			$wp_query->query['order_id']      = !empty( $_REQUEST['order_id'] ) ? $_REQUEST['order_id'] : null;
+		} else {
+			list( $username, $tab, $id ) = explode( '/', $wp_query->query['user'] );
+			$wp_query->query_vars['user']     = $username;
+			$wp_query->query_vars['tab']      = $tab;
+			$wp_query->query_vars['order_id'] = $id;
+			$wp_query->query['user']          = $username;
+			$wp_query->query['tab']           = $tab;
+			$wp_query->query['order_id']      = $id;
+		}
 	}
 	global $wpdb;
 	// if lesson name is passed, find it's ID and put into request
@@ -1713,7 +1723,7 @@ function learn_press_pre_get_posts( $q ) {
 			}
 		}
 		// If we have the item's name in course permalink url, get it
-		if( $course_item ) {
+		if ( $course_item ) {
 			// grab the ID of the item
 			if ( preg_match( '!^([0-9]+)-!', $course_item, $matches ) ) {
 				$item_id   = absint( $matches[1] );
@@ -2083,17 +2093,18 @@ function learn_press_reset_auto_increment( $table ) {
 	$wpdb->query( $wpdb->prepare( "ALTER TABLE {$wpdb->prefix}$table AUTO_INCREMENT = %d", 1 ) );
 }
 
-function learn_press_front_scripts(){
+function learn_press_front_scripts() {
 	$js = array(
 		'ajax'       => admin_url( 'admin-ajax.php' ),
 		'plugin_url' => LP()->plugin_url(),
-		'siteurl' => home_url()
+		'siteurl'    => home_url()
 	);
 	echo '<script type="text/javascript">var LearnPress_Settings = ' . json_encode( $js ) . '</script>';
 }
-add_action( 'wp_print_scripts', 'learn_press_front_scripts');
 
-function learn_press_get_current_version(){
+add_action( 'wp_print_scripts', 'learn_press_front_scripts' );
+
+function learn_press_get_current_version() {
 	$data = get_plugin_data( LP_PLUGIN_FILE, $markup = true, $translate = true );
 	return $data['Version'];
 }

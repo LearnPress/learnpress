@@ -620,6 +620,10 @@ input.lpr-fancy-checkbox {
 	border-color: transparent;
 	box-shadow: none;
 }
+.lp-list-option .lp-answer-text:after{
+	font-family: dashicons;
+	content:'\f464';
+}
 .lp-list-option .lp-answer-text:focus,
 .lp-list-option:hover .lp-answer-text{
 	box-shadow: none;
@@ -630,6 +634,7 @@ input.lpr-fancy-checkbox {
 .lp-list-option:hover .lp-answer-text{
 	border-style: dashed;
 }
+
 .lp-list-option-actions{
 	cursor: pointer;
 	color: #00A0D2;
@@ -767,7 +772,6 @@ body.post-type-lp_question #question_answer_ .inside{
 #questions .quiz-question-head{
 	padding: 10px 20px;
 	border: 1px solid #DDD;
-	overflow: hidden;
 	background-color: #F5F5F5;
 	position: relative;
 }
@@ -1049,11 +1053,24 @@ body.post-type-lp_question #question_answer_ .inside{
 	white-space: nowrap;
 	left: -39.625px;
 	top: 24px;
-	background-color: rgb(150, 2, 2);
+	background-color: #C90202;
 	cursor: pointer;
 }
-.learn-press-quick-confirm:hover{
-	background-color: rgb(201, 2, 2);
+.learn-press-quick-confirm:hover,
+.learn-press-quick-confirm:hover:before{
+	background-color: #d73b00;
+}
+.learn-press-quick-confirm:before{
+	content: '';
+	display: block;
+	position: absolute;
+	/* border: 1px solid; */
+	transform: rotate(45deg);
+	width: 7px;
+	height: 7px;
+	top: -3px;
+	background-color: #C90202;
+	right: 7px;
 }
 
 /* course */

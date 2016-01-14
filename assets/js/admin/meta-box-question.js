@@ -173,7 +173,12 @@ if (typeof window.LearnPress == 'undefined') {
 			LearnPress.Question.addOption(question_id, data);
 		}).on('click', '.lp-remove-list-option', function () {
 			var $option = $(this).closest('tr');
-			LearnPress.Question.removeOption( $option );
+			LearnPress.MessageBox.quickConfirm( $('i', this), {
+				message: 'Are you sure you want to remove this option?',
+				onOk: function (a) {
+					LearnPress.Question.removeOption($option);
+				}
+			});
 		}).on('change', '.lp-dropdown-question-types', function(){
 			var $select = $(this),
 				$wrap = $select.closest('.learn-press-question'),
@@ -293,6 +298,27 @@ if (typeof window.LearnPress == 'undefined') {
 						});
 					break;
 				case 'remove':
+					LearnPress.MessageBox.quickConfirm( $link, {
+						onOk: function(a){
+							var $question = $(a);
+							$.ajax({
+								url: $link.attr('href'),
+								/*data: {
+								 action: 'learnpress_remove_quiz_question',
+								 question_id: $question.attr('data-id'),
+								 quiz_id: $('#post_ID').val()
+								 },*/
+								success: function(){
+									$question.fadeOut(function(){$(this).remove()});
+								}
+							});
+						},
+						onCancel: function(a){
+
+						},
+						data: $(this).closest('.quiz-question')
+					});
+					break;
 					LearnPress.MessageBox.show( 'Do you want to remove this question from quiz?', {
 						buttons: 'yesNo',
 						data: $(this).closest('.quiz-question'),

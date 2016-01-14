@@ -100,6 +100,7 @@ add_action( 'learn_press_checkout_order_review', 'learn_press_order_payment', 15
 /* Profile */
 add_action( 'learn_press_user_profile_summary', 'learn_press_output_user_profile_info', 5 );
 add_action( 'learn_press_user_profile_summary', 'learn_press_output_user_profile_tabs', 10 );
+add_action( 'learn_press_user_profile_summary', 'learn_press_output_user_profile_order', 15 );
 add_action( 'learn_press_profile_tab_courses', 'learn_press_profile_tab_courses_enrolled', 5 );
 add_action( 'learn_press_profile_tab_courses', 'learn_press_profile_tab_courses_finished', 10 );
 add_action( 'learn_press_profile_tab_courses', 'learn_press_profile_tab_courses_own', 15 );

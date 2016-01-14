@@ -74,6 +74,14 @@ class LP_Settings_Pages extends LP_Settings_Base {
 					'placeholder' => '',
 					'desc'        => __( 'This is a slug and should be unique.', 'learn_press' ) . sprintf( ' %s <code>[profile/admin/quizzes]</code>', __( 'Example link is', 'learn_press' ) )
 				),
+				array(
+					'title'       => __( 'Order', 'learn_press' ),
+					'id'          => $this->get_field_name( 'profile_tab_orders_endpoint' ),
+					'default'     => 'orders',
+					'type'        => 'text',
+					'placeholder' => '',
+					'desc'        => __( 'This is a slug and should be unique.', 'learn_press' ) . sprintf( ' %s <code>[profile/admin/orders]</code>', __( 'Example link is', 'learn_press' ) )
+				),
 				array( 'section' => 'become_a_teacher' ),
 				array(
 					'title'   => __( 'Become a teacher', 'learn_press' ),

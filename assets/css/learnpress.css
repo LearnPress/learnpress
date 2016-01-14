@@ -390,34 +390,39 @@
 
 /* profile */
 #learn-press-user-profile{
-	border: 1px solid #DDD;
 	overflow: hidden;
 }
 .learn-press-user-profile .user-info{
-	background-color: #F5F5F5;
-	padding: 20px;
-	border-bottom: 1px solid #DDD;
+	margin: 0 0 20px;
 }
 .learn-press-user-profile .user-basic-info{
 
 }
 .learn-press-user-profile .learn-press-tabs{
 	list-style: none;
-	margin: 0;
-	float: left;
-	width: 150px;
+	margin: 0 0 20px;
+	padding-left: 5px;
+	border-bottom: 1px solid #DDD;
 }
-.learn-press-user-profile .learn-press-tabs > li{}
+.learn-press-user-profile .learn-press-tabs > li{
+	float: left;
+}
 .learn-press-user-profile .learn-press-tabs > li > a{
 	box-shadow: none;
 	outline: none;
 	display: block;
 	border: none;
 	padding: 5px 10px;
-	background-color: #F5F5F5;
 }
 .learn-press-user-profile .learn-press-tabs > li.current a{
 	background-color: #FFF;
+	border: 1px solid #DDD;
+	border-bottom-color: transparent;
+	z-index: 10;
+	margin-bottom: -1px;
+}
+.learn-press-tabs-wrapper{
+	margin: 0 0 20px;
 }
 .learn-press-user-profile .learn-press-tabs-wrapper > .learn-press-tab{
 	padding: 0;

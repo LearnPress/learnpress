@@ -315,6 +315,31 @@ class LP_Order {
 		return $this->payment_method_title;
 	}
 
+	function get_view_order_url(){
+		global $wp_query;
+		$view_order_url = learn_press_get_endpoint_url( 'view-order', $this->id, learn_press_get_page_link( 'profile' ) );
+		//
+		$user = learn_press_get_current_user();
+		$key  = 'order';
+
+		if( get_option( 'permalink_structure' ) ){
+			$view_order_url = learn_press_get_page_link( 'profile' ) . $user->user_login . '/' . $key . '/' . $this->id;
+		}else {
+			$args = array(
+				'user' => $user->user_login
+			);
+			$args['tab'] = $key;
+			if ( $key ) {
+				$args['order_id'] = $this->id;
+			}
+			$view_order_url = add_query_arg(
+				$args,
+				learn_press_get_page_link( 'profile' )
+			);
+		}
+
+		return apply_filters( 'learn_press_view_order_url', $view_order_url, $this );
+	}
 	/*********************************/
 
 	/**

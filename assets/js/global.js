@@ -67,52 +67,80 @@ if (typeof window.LearnPress == 'undefined') {
 		instances      : [],
 		instance       : null,
 		quickConfirm   : function (elem, args) {
-			new (function (elem, args) {
-				var $elem = $(elem),
-					$div = $('<span class="learn-press-quick-confirm"></span>').insertAfter($elem), //($(document.body)),
-					offset = $(elem).position() || {left: 0, top: 0},
-					timerOut = null,
-					timerHide = null,
-					hide = function () {
-						$div.slideUp('fast', function () {
-							$(this).remove();
-						});
-					};
-				args = $.extend({
-					message : '',
-					data    : null,
-					onOk    : null,
-					onCancel: null,
-					offset: {top: 0, left: 0}
-				}, args || {});
-				$div.html(args.message || $elem.attr('data-confirm-remove') || 'Are you sure?').css({});
-				$div.click(function () {
-					$.isFunction(args.onOk) && args.onOk(args.data);
-					hide();
-				})
-				$div.css({
-					left: ( ( offset.left + $elem.outerWidth() ) - $div.outerWidth() ) + args.offset.left,
-					top : offset.top + $elem.outerHeight() + args.offset.top
-				}).hide().slideDown('fast');
-				timerOut = setTimeout(function () {
-					hide.call($div[0]);
-					$.isFunction(args.onCancel) && args.onCancel(args.data);
-				}, 3000);
+			var $e = $(elem);
+			$('[learn-press-quick-confirm]').each(function(){
+				( $ins = $(this).data('quick-confirm') ) && (console.log($ins), $ins.destroy() );
+			});
+			!$e.attr('learn-press-quick-confirm') && $e.attr('learn-press-quick-confirm', 'true').data('quick-confirm',
+				new (function (elem, args) {
+					var $elem = $(elem),
+						$div = $('<span class="learn-press-quick-confirm"></span>').insertAfter($elem), //($(document.body)),
+						offset = $(elem).position() || {left: 0, top: 0},
+						timerOut = null,
+						timerHide = null,
+						n = 3,
+						hide = function () {
+							$div.fadeOut('fast', function () {
+								$(this).remove();
+								$div.parent().css('position', '');
+							});
+							$elem.removeAttr('learn-press-quick-confirm').data('quick-confirm', undefined);
+							stop();
+						},
+						stop = function(){
+							timerHide && clearInterval( timerHide );
+							timerOut && clearInterval( timerOut );
+						},
+						start = function(){
+							timerOut = setInterval(function () {
+								if( --n == 0 ){
+									hide.call($div[0]);
+									$.isFunction(args.onCancel) && args.onCancel(args.data);
+									stop();
+								}
+								$div.find('span').html(' ('+n+')');
+							}, 1000);
 
-				timerHide = setInterval(function () {
-					if (!$elem.is(':visible') || $elem.css("visibility") == 'hidden') {
-						clearTimeout(timerOut);
-						clearInterval(timerHide);
+							timerHide = setInterval(function () {
+								if (!$elem.is(':visible') || $elem.css("visibility") == 'hidden') {
+									stop();
+									$div.remove();
+									$div.parent().css('position', '');
+									$.isFunction(args.onCancel) && args.onCancel(args.data);
+								}
+							}, 350);
+						};
+					args = $.extend({
+						message : '',
+						data    : null,
+						onOk    : null,
+						onCancel: null,
+						offset: {top: 0, left: 0}
+					}, args || {});
+					$div.html(args.message || $elem.attr('data-confirm-remove') || 'Are you sure?').append('<span> ('+n+')</span>').css({});
+					$div.click(function () {
+						$.isFunction(args.onOk) && args.onOk(args.data);
+						hide();
+					}).hover(function(){
+						stop();
+					}, function(){
+						start();
+					});
+					//$div.parent().css('position', 'relative');
+					$div.css({
+						left: ( ( offset.left + $elem.outerWidth() ) - $div.outerWidth() ) + args.offset.left,
+						top : offset.top + $elem.outerHeight() + args.offset.top + 5
+					}).hide().fadeIn('fast');
+					start();
+
+					this.destroy = function(){
 						$div.remove();
-						$.isFunction(args.onCancel) && args.onCancel(args.data);
-					}
-				}, 350);
-
-				$div.hover(function () {
-					clearInterval(timerHide);
-				});
-
-			})(elem, args);
+						$elem.removeAttr('learn-press-quick-confirm').data('quick-confirm', undefined);;
+						stop();
+						console.log('die');
+					};
+				})(elem, args)
+			);
 		},
 		show           : function (message, args) {
 			//this.hide();

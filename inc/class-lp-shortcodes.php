@@ -223,7 +223,11 @@ class LP_Shortcodes {
 		$output = '';
 		if ( !$user ) {
 			ob_start();
-			learn_press_display_message( sprintf( __( 'The user %s in not available!', 'learn_press' ), $wp_query->query['user'] ), 'error' );
+			if( empty( $wp_query->query['user'] ) ){
+				learn_press_get_template( 'profile/private-area.php' );
+			}else {
+				learn_press_display_message( sprintf( __( 'The user %s in not available!', 'learn_press' ), $wp_query->query['user'] ), 'error' );
+			}
 			$output .= ob_get_clean();
 			return $output;
 		}
