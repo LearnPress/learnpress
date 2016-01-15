@@ -60,7 +60,7 @@ class LP_Gateway_Abstract {
 
 	public function get_icon() {
 
-		$icon = $this->icon ? '<img src="' . WC_HTTPS::force_https_url( $this->icon ) . '" alt="' . esc_attr( $this->get_title() ) . '" />' : '';
+		$icon = $this->icon ? '<img src="' .  $this->icon  . '" alt="' . esc_attr( $this->get_title() ) . '" />' : '';
 
 		return apply_filters( 'learn_press_gateway_icon', $icon, $this->id );
 	}

@@ -553,7 +553,7 @@ function learn_press_output_add_ons_list( $add_ons, $tab = '' ) {
 		printf( '<h3>%s</h3>', __( 'No add-ons found', 'learn_press' ) );
 		return false;
 	}
-	echo '<ul class="learn-press-add-ons ' . $tab . '">';
+	echo '<ul class="learn-press-add-ons widefat ' . $tab . '">';
 	foreach ( $add_ons as $file => $add_on ) {
 
 		$action_links = learn_press_get_add_on_action_link( $add_on, $file );
@@ -570,7 +570,7 @@ function learn_press_output_add_ons_list( $add_ons, $tab = '' ) {
 				<a href="" class="thickbox plugin-icon"><img src="<?php echo $add_on['icons']['2x']; ?>"></a>
 
 				<div class="name column-name">
-					<h4><a href="" class="thickbox"><?php echo $add_on['name']; ?></a></h4>
+					<h3><a href="" class="thickbox"><?php echo $add_on['name']; ?></a></h3>
 				</div>
 				<div class="action-links">
 					<?php

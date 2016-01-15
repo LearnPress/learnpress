@@ -60,7 +60,6 @@ class LP_Autoloader {
 	}
 
 	/**
-	 * Auto-load WC classes on demand to reduce memory consumption.
 	 *
 	 * @param string $class
 	 */

@@ -16,6 +16,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 <div class="learn-press-user-profile" id="learn-press-user-profile">
 
-	<?php do_action( 'learn_press_user_profile_summary', $user ); ?>
+	<?php
+	do_action( 'learn_press_user_profile_summary', $user, $current, $tabs );
+	?>
 
 </div>

@@ -16,6 +16,7 @@ learn_press_include( 'abstracts/abstract-lp-assets.php' );
 class LP_Admin_Assets extends LP_Abstract_Assets {
 
 	static function init(){
+		parent::$caller = __CLASS__;
 		add_action( 'learn_press_print_assets', array( __CLASS__, '_print_assets' ) );
 		parent::init();
 	}

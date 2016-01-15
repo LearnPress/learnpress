@@ -56,6 +56,7 @@ abstract class LP_Abstract_Assets {
 	 */
 	protected static $id = 0;
 
+	protected static $caller = '';
 	/**
 	 * Constructor
 	 */
@@ -67,8 +68,12 @@ abstract class LP_Abstract_Assets {
 	 * Init Asset
 	 */
 	static function init() {
+		if( !self::$caller ){
+			return;
+		}
 		self::$id = is_admin() ? 0 : 1;
-		$class = get_called_class();
+
+		$class = self::$caller;
 		if( self::$id ) {
 			add_action( 'wp_enqueue_scripts', array( $class, 'load_scripts' ) );
 			add_action( 'wp_enqueue_scripts', array( $class, 'wp_assets' ) );

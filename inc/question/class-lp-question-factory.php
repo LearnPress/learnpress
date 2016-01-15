@@ -159,77 +159,77 @@ class LP_Question_Factory {
 		do_action( 'learn_press_question_factory_init', __CLASS__ );
 	}
 
-	static function sanitize_answers( $answers, $q ){
+	static function sanitize_answers( $answers, $q ) {
 		$func = "_sanitize_{$q->type}_answers";
-		if( is_callable( array( __CLASS__, $func ) ) ){
+		if ( is_callable( array( __CLASS__, $func ) ) ) {
 			return call_user_func_array( array( __CLASS__, $func ), array( $answers, $q ) );
 		}
 		return $answers;
 	}
 
-	protected static function _sanitize_multi_choice_answers( $answers, $q ){
+	protected static function _sanitize_multi_choice_answers( $answers, $q ) {
 		$size = sizeof( $answers );
-		if( $size == 0 ) {
+		if ( $size == 0 ) {
 			$answers = $q->get_default_answers();
 		}
-		$answers = array_values( $answers );
+		$answers     = array_values( $answers );
 		$has_checked = false;
-		foreach( $answers as $k => $answer ){
-			if( empty( $answer['answer_data']['is_true'] ) || $answer['answer_data']['is_true'] != 'yes' ){
+		foreach ( $answers as $k => $answer ) {
+			if ( empty( $answer['answer_data']['is_true'] ) || $answer['answer_data']['is_true'] != 'yes' ) {
 				$answers[$k]['answer_data']['is_true'] = 'no';
 				continue;
 			}
 			$has_checked = true;
 		}
-		if( !$has_checked ){
+		if ( !$has_checked ) {
 			$answers[0]['answer_data']['is_true'] = 'yes';
 		}
 		return $answers;
 	}
 
-	protected static function _sanitize_true_or_false_answers( $answers, $q ){
+	protected static function _sanitize_true_or_false_answers( $answers, $q ) {
 		$size = sizeof( $answers );
-		if( $size > 2 ){
+		if ( $size > 2 ) {
 			$answers = array_slice( $answers, 0, 2 );
-		}elseif( $size == 1 ){
+		} elseif ( $size == 1 ) {
 			$answers[] = array(
 				'is_true' => 'no',
 				'value'   => learn_press_uniqid(),
 				'text'    => __( 'Option', 'learn_press' )
 			);
-		} else {
-			$answers = $q->get_default_answers();
+		} elseif( $size == 0 ) {
+			return $answers;
 		}
-		$answers = array_values( $answers );
+		$answers     = array_values( $answers );
 		$has_checked = false;
-		foreach( $answers as $k => $answer ){
-			if( $has_checked || empty( $answer['answer_data']['is_true'] ) || $answer['answer_data']['is_true'] != 'yes' ){
+		foreach ( $answers as $k => $answer ) {
+			if ( $has_checked || empty( $answer['answer_data']['is_true'] ) || $answer['answer_data']['is_true'] != 'yes' ) {
 				$answers[$k]['answer_data']['is_true'] = 'no';
 				continue;
 			}
 			$has_checked = true;
 		}
-		if( !$has_checked ){
+		if ( !$has_checked ) {
 			$answers[0]['answer_data']['is_true'] = 'yes';
 		}
 		return $answers;
 	}
 
-	protected static function _sanitize_single_choice_answers( $answers, $q ){
+	protected static function _sanitize_single_choice_answers( $answers, $q ) {
 		$size = sizeof( $answers );
-		if( $size == 0 ){
+		if ( $size == 0 ) {
 			$answers = $q->get_default_answers();
 		}
-		$answers = array_values( $answers );
+		$answers     = array_values( $answers );
 		$has_checked = false;
-		foreach( $answers as $k => $answer ){
-			if( $has_checked || empty( $answer['answer_data']['is_true'] ) || $answer['answer_data']['is_true'] != 'yes' ){
+		foreach ( $answers as $k => $answer ) {
+			if ( $has_checked || empty( $answer['answer_data']['is_true'] ) || $answer['answer_data']['is_true'] != 'yes' ) {
 				$answers[$k]['answer_data']['is_true'] = 'no';
 				continue;
 			}
 			$has_checked = true;
 		}
-		if( !$has_checked ){
+		if ( !$has_checked ) {
 			$answers[0]['answer_data']['is_true'] = 'yes';
 		}
 		return $answers;
@@ -270,12 +270,21 @@ class LP_Question_Factory {
 		}
 	}
 
-	static function save() {
+	static function save( $post_id ) {
+
+		if ( wp_is_post_revision( $post_id ) )
+			return;
+		if ( !in_array( get_post_type( $post_id ), array( 'lp_quiz', 'lp_question' ) ) ) {
+			return;
+		}
+		// prevent loop
+		remove_action( 'save_post', array( __CLASS__, 'save' ) );
 		if ( !empty( $_POST['learn_press_question'] ) ) {
 			foreach ( $_POST['learn_press_question'] as $the_id => $post_data ) {
 				( $question = self::get_question( $the_id ) ) && $question->save( $post_data );
 			}
 		}
+		add_action( 'save_post', array( __CLASS__, 'save' ) );
 	}
 
 	static function add_template( $id, $content ) {

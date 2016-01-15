@@ -429,7 +429,7 @@ class LP_Plugin_Install_List_Table extends WP_List_Table {
                 <div class="plugin-card-top">
                     <a href="<?php echo esc_url( $details_link ); ?>" class="thickbox plugin-icon"><img src="<?php echo esc_attr( $plugin_icon_url ) ?>" /></a>
                     <div class="name column-name">
-                        <h4><a href="<?php echo esc_url( $details_link ); ?>" class="thickbox"><?php echo $title; ?></a></h4>
+                        <h3><a href="<?php echo esc_url( $details_link ); ?>" class="thickbox"><?php echo $title; ?></a></h3>
                     </div>
                     <div class="action-links">
                         <?php

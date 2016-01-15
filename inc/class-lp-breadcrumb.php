@@ -327,10 +327,7 @@ class LP_Breadcrumb {
 	 * Endpoints
 	 */
 	private function endpoint_trail() {
-		// Is an endpoint showing?
-		if ( learn_press_is_endpoint_url() && ( $endpoint = WC()->query->get_current_endpoint() ) && ( $endpoint_title = WC()->query->get_endpoint_title( $endpoint ) ) ) {
-			$this->add_crumb( $endpoint_title );
-		}
+
 	}
 
 	/**

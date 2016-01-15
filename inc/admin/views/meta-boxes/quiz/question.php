@@ -14,7 +14,7 @@ $is_hidden = $question->id && is_array($hidden) && in_array( $question->id, $hid
 		<p class="quiz-question-actions lp-button-actions">
 			<a href="" data-action="expand" class="dashicons dashicons-plus <?php echo $is_hidden ? '' : 'hide-if-js';?>" title="<?php _e( 'Expand', 'learn_press' ); ?>"></a>
 			<a href="" data-action="collapse" class="dashicons dashicons-minus <?php echo !$is_hidden ? '' : 'hide-if-js';?>" title="<?php _e( 'Collapse', 'learn_press' ); ?>"></a>
-			<a href="<?php echo get_edit_post_link( $question->id );?>" class="dashicons dashicons-edit" data-action="edit" title="<?php _e( 'Edit', 'learn_press' ); ?>"></a>
+			<a href="<?php echo get_edit_post_link( $question->id );?>" class="dashicons dashicons-edit" data-action="" title="<?php _e( 'Edit', 'learn_press' ); ?>"></a>
 			<a href="<?php echo wp_nonce_url( admin_url( 'admin-ajax.php?action=learnpress_remove_quiz_question&quiz_id=' . $post->ID . '&question_id=' . $question->id ), 'remove_quiz_question', 'remove-nonce' );?>"
 			   class="dashicons dashicons-trash"
 			   data-action="remove"

@@ -28,6 +28,58 @@ class LP_Shortcodes {
 		foreach ( $shortcodes as $shortcode => $function ) {
 			add_shortcode( apply_filters( "{$shortcode}_shortcode_tag", $shortcode ), $function );
 		}
+
+		add_action( 'template_redirect', array( __CLASS__, 'auto_shortcode' ) );
+	}
+
+	static function auto_shortcode( $template ) {
+		if ( is_page() ) {
+			global $post, $wp_query, $wp;
+			$page_id = $wp_query->queried_object_id;
+			if ( $page_id == learn_press_get_page_id( 'checkout' ) ) {
+				if ( !preg_match( '/\[learn_press_checkout\s?(.*)\]/', $post->post_content ) ) {
+					$post->post_content .= '[learn_press_checkout]';
+				}
+			} elseif ( $page_id == learn_press_get_page_id( 'profile' ) ) {
+				if ( empty( $wp->query_vars['user'] ) ) {
+					$current_user = wp_get_current_user();
+					if ( !empty( $current_user->user_login ) ) {
+						wp_redirect( learn_press_get_endpoint_url( '', $current_user->user_login, learn_press_get_page_link( 'profile' ) ) );
+						die();
+					} else {
+						learn_press_404_page();
+					}
+				} else {
+					$query = array();
+					parse_str( $wp->matched_query, $query );
+					if ( $query ) {
+						$profile_endpoints = (array) LP()->settings->get( 'profile_endpoints' );
+						$endpoints         = array_keys( $profile_endpoints );
+						foreach ( $query as $k => $v ) {
+							if ( ( $k == 'view' ) ) {
+								if ( !$v ) {
+									$v = reset( $profile_endpoints );
+								}
+								if ( !in_array( $v, $profile_endpoints ) ) {
+									learn_press_404_page();
+								}
+							}
+							if ( !empty( $v ) ) {
+								$wp->query_vars[$k] = $v;
+							}
+						}
+					}
+				}
+				if ( !preg_match( '/\[learn_press_profile\s?(.*)\]/', $post->post_content ) ) {
+					$post->post_content .= '[learn_press_profile]';
+				}
+			} elseif ( $page_id == learn_press_get_page_id( 'cart' ) ) {
+				if ( !preg_match( '/\[learn_press_cart\s?(.*)\]/', $post->post_content ) ) {
+					$post->post_content .= '[learn_press_cart]';
+				}
+			}
+		}
+		return $template;
 	}
 
 	/**
@@ -212,7 +264,7 @@ class LP_Shortcodes {
 	}
 
 	static function profile() {
-		global $wp_query;
+		global $wp_query, $wp;
 
 		if ( isset( $wp_query->query['user'] ) ) {
 			$user = get_user_by( 'login', $wp_query->query['user'] );
@@ -221,19 +273,66 @@ class LP_Shortcodes {
 		}
 
 		$output = '';
+		ob_start();
+
 		if ( !$user ) {
-			ob_start();
-			if( empty( $wp_query->query['user'] ) ){
+
+			if ( empty( $wp_query->query['user'] ) ) {
 				learn_press_get_template( 'profile/private-area.php' );
-			}else {
+			} else {
 				learn_press_display_message( sprintf( __( 'The user %s in not available!', 'learn_press' ), $wp_query->query['user'] ), 'error' );
 			}
-			$output .= ob_get_clean();
-			return $output;
+
+		} else {
+			$user = LP_User::get_user( $user->id );
+			$tabs = learn_press_user_profile_tabs( $user );
+			if ( !empty( $wp->query_vars['view'] ) ) {
+				$current = $wp->query_vars['view'];
+			} else {
+				$tab_keys = array_keys( $tabs );
+				$current  = reset( $tab_keys );
+			}
+			if( !learn_press_current_user_can_view_profile_section( $current, $user ) ){
+				learn_press_get_template( 'profile/private-area.php' );
+			}else {
+				if ( !empty( $tabs ) && !empty( $tabs[$current] ) ) :
+
+					learn_press_get_template( 'profile/index.php',
+						array(
+							'user'    => $user,
+							'tabs'    => $tabs,
+							'current' => $current
+						)
+					);
+				else:
+					if ( $wp->query_vars['view'] == LP()->settings->get( 'profile_endpoints.profile-order-details' ) ) {
+						/*
+						$current_user = wp_get_current_user();
+						if ( $wp_query->query_vars['user'] != $current_user->user_login ) {
+							learn_press_get_template( 'profile/private-area.php' );
+							return;
+						}*/
+						$order_id = 0;
+						if ( !empty( $wp->query_vars['id'] ) ) {
+							$order_id = $wp->query_vars['id'];
+						}
+						$order = learn_press_get_order( $order_id );
+						if ( !$order ) {
+							learn_press_display_message( __( 'Invalid order!', 'learn_press' ), 'error' );
+						} else {
+							learn_press_get_template( 'profile/order-details.php',
+								array(
+									'user'  => $user,
+									'order' => $order
+								)
+							);
+						}
+					}
+				endif;
+			}
 		}
-		ob_start();
-		learn_press_get_template( 'profile/index.php', array( 'user' => LP_User::get_user( $user->id ) ) );
-		return ob_get_clean();
+		$output .= ob_get_clean();
+		return $output;
 	}
 }
 

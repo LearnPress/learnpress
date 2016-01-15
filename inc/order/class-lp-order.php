@@ -320,17 +320,20 @@ class LP_Order {
 		$view_order_url = learn_press_get_endpoint_url( 'view-order', $this->id, learn_press_get_page_link( 'profile' ) );
 		//
 		$user = learn_press_get_current_user();
-		$key  = 'order';
+		$view_order_endpoint = LP()->settings->get( 'profile_endpoints.profile-order-details' );
+		if( !$view_order_endpoint ){
+			$view_order_endpoint = 'order-details';
+		}
 
 		if( get_option( 'permalink_structure' ) ){
-			$view_order_url = learn_press_get_page_link( 'profile' ) . $user->user_login . '/' . $key . '/' . $this->id;
+			$view_order_url = learn_press_get_page_link( 'profile' ) . $user->user_login . '/' . $view_order_endpoint . '/' . $this->id;
 		}else {
 			$args = array(
 				'user' => $user->user_login
 			);
-			$args['tab'] = $key;
-			if ( $key ) {
-				$args['order_id'] = $this->id;
+			$args['view'] = $view_order_endpoint;
+			if ( $view_order_endpoint ) {
+				$args['id'] = $this->id;
 			}
 			$view_order_url = add_query_arg(
 				$args,

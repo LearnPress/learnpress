@@ -100,6 +100,7 @@ class LP_Abstract_Question {
 		 */
 		if ( in_array( $this->type, apply_filters( 'learn_press_save_default_question_types', array( 'true_or_false', 'multi_choice', 'single_choice' ) ) ) ) {
 			$this->empty_answers();
+
 			if ( !empty( $post_data['answer'] ) ) {
 				$checked = !empty( $post_data['checked'] ) ? (array) $post_data['checked'] : array();
 				$answers = array();
@@ -118,6 +119,7 @@ class LP_Abstract_Question {
 					);
 					$answers[] = apply_filters( 'learn_press_question_answer_data', $data, $this );
 				}
+
 				if( $answers = apply_filters( 'learn_press_question_answers_data', $answers, $this ) ){
 					foreach( $answers as $answer ){
 						$answer['answer_data'] = maybe_serialize( $answer['answer_data'] );

@@ -11,4 +11,4 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-do_action( 'learn_press_profile_tab_courses', $user );?>
+do_action( 'learn_press_profile_tab_courses', $user );

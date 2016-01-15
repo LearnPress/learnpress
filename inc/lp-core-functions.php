@@ -243,7 +243,7 @@ function learn_press_add_rewrite_rules() {
 	if ( $profile_id = learn_press_get_page_id( 'profile' ) ) {
 		add_rewrite_rule(
 			'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?([^/]*)/?([^/]*)?/?',
-			'index.php?page_id=' . $profile_id . '&user=$matches[1]/$matches[2]/$matches[3]',
+			'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&id=$matches[3]',
 			'top'
 		);
 	}
@@ -259,7 +259,7 @@ add_action( 'init', 'learn_press_add_rewrite_rules', 1000, 0 );
 function learn_press_parse_query_vars_to_request() {
 	global $wp_query, $wp;
 	if ( isset( $wp_query->query['user'] ) ) {
-		if ( !get_option( 'permalink_structure' ) ) {
+		/*if ( !get_option( 'permalink_structure' ) ) {
 			$wp_query->query_vars['user']     = !empty( $_REQUEST['user'] ) ? $_REQUEST['user'] : null;
 			$wp_query->query_vars['tab']      = !empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : null;
 			$wp_query->query_vars['order_id'] = !empty( $_REQUEST['order_id'] ) ? $_REQUEST['order_id'] : null;
@@ -274,7 +274,7 @@ function learn_press_parse_query_vars_to_request() {
 			$wp_query->query['user']          = $username;
 			$wp_query->query['tab']           = $tab;
 			$wp_query->query['order_id']      = $id;
-		}
+		}*/
 	}
 	global $wpdb;
 	// if lesson name is passed, find it's ID and put into request
@@ -2068,6 +2068,14 @@ function learn_press_add_endpoints() {
 		LP()->query_vars[$endpoint] = $value;
 
 		add_rewrite_endpoint( $value, EP_ROOT | EP_PAGES );
+	}
+
+	if ( $endpoints = LP()->settings->get( 'profile_endpoints' ) ) foreach ( $endpoints as $endpoint => $value ) {
+		$endpoint                   = preg_replace( '!_!', '-', $endpoint );
+		LP()->query_vars[$endpoint] = $value;
+
+		add_rewrite_endpoint( $value, EP_ROOT | EP_PAGES );
+
 	}
 }
 

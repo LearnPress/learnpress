@@ -55,32 +55,50 @@ class LP_Settings_Pages extends LP_Settings_Base {
 					)
 				),
 				array(
-					'title' => __( 'Tab endpoints', 'learn_press' ),
+					'title'   => __( 'Access level', 'learn_press' ),
+					'id'      => $this->get_field_name( 'profile_access_level' ),
+					'default' => 'private',
+					'type'    => 'select',
+					'options' => array(
+						'private'  => __( 'Private (Only account own)', 'learn_press' ),
+						'public' => __( 'Public', 'learn_press' )
+					)
+				),
+				array(
+					'title' => __( 'Endpoints', 'learn_press' ),
 					'type'  => 'title'
 				),
 				array(
-					'title'       => __( 'Courses', 'learn_press' ),
-					'id'          => $this->get_field_name( 'profile_tab_courses_endpoint' ),
+					'title'       => __( 'Tab Courses', 'learn_press' ),
+					'id'          => $this->get_field_name( 'profile_endpoints[profile-courses]' ),
 					'default'     => 'courses',
 					'type'        => 'text',
 					'placeholder' => '',
 					'desc'        => __( 'This is a slug and should be unique.', 'learn_press' ) . sprintf( ' %s <code>[profile/admin/courses]</code>', __( 'Example link is', 'learn_press' ) )
 				),
 				array(
-					'title'       => __( 'Quizzes', 'learn_press' ),
-					'id'          => $this->get_field_name( 'profile_tab_quizzes_endpoint' ),
+					'title'       => __( 'Tab Quizzes', 'learn_press' ),
+					'id'          => $this->get_field_name( 'profile_endpoints[profile-quizzes]' ),
 					'default'     => 'quizzes',
 					'type'        => 'text',
 					'placeholder' => '',
 					'desc'        => __( 'This is a slug and should be unique.', 'learn_press' ) . sprintf( ' %s <code>[profile/admin/quizzes]</code>', __( 'Example link is', 'learn_press' ) )
 				),
 				array(
-					'title'       => __( 'Order', 'learn_press' ),
-					'id'          => $this->get_field_name( 'profile_tab_orders_endpoint' ),
+					'title'       => __( 'Tab Orders', 'learn_press' ),
+					'id'          => $this->get_field_name( 'profile_endpoints[profile-orders]' ),
 					'default'     => 'orders',
 					'type'        => 'text',
 					'placeholder' => '',
 					'desc'        => __( 'This is a slug and should be unique.', 'learn_press' ) . sprintf( ' %s <code>[profile/admin/orders]</code>', __( 'Example link is', 'learn_press' ) )
+				),
+				array(
+					'title'       => __( 'View order', 'learn_press' ),
+					'id'          => $this->get_field_name( 'profile_endpoints[profile-order-details]' ),
+					'default'     => 'order-details',
+					'type'        => 'text',
+					'placeholder' => '',
+					'desc'        => __( 'This is a slug and should be unique.', 'learn_press' ) . sprintf( ' %s <code>[profile/admin/order-details/123]</code>', __( 'Example link is', 'learn_press' ) )
 				),
 				array( 'section' => 'become_a_teacher' ),
 				array(

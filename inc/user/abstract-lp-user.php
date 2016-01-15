@@ -947,20 +947,9 @@ class LP_Abstract_User {
 			INNER JOIN {$wpdb->users} u ON u.ID = om.meta_value
 			WHERE o.post_type = %s
 			AND u.ID = %d
+			ORDER BY `post_date` DESC
 		", '_user_id', 'lp_order', $this->id );
 		$orders = $wpdb->get_results( $query );
 		return apply_filters( 'learn_press_user_orders', $orders, $this->id );
-	}
-
-	function tab_courses_content() {
-		learn_press_get_template( 'profile/tabs/courses.php', array( 'user' => $this ) );
-	}
-
-	function tab_quizzes_content() {
-		learn_press_get_template( 'profile/tabs/quizzes.php', array( 'user' => $this ) );
-	}
-
-	function tab_orders_content(){
-		learn_press_get_template( 'profile/tabs/orders.php', array( 'user' => $this ) );
 	}
 }

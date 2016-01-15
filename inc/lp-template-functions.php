@@ -441,8 +441,8 @@ if ( !function_exists( 'learn_press_output_user_profile_tabs' ) ) {
 	 *
 	 * @param LP_User
 	 */
-	function learn_press_output_user_profile_tabs( $user ) {
-		learn_press_get_template( 'profile/tabs.php', array( 'user' => $user ) );
+	function learn_press_output_user_profile_tabs( $user, $current, $tabs ) {
+		learn_press_get_template( 'profile/tabs.php', array( 'user' => $user, 'tabs' => $tabs, 'current' => $current ) );
 	}
 }
 
@@ -452,9 +452,9 @@ if ( !function_exists( 'learn_press_output_user_profile_order' ) ) {
 	 *
 	 * @param LP_User
 	 */
-	function learn_press_output_user_profile_order( $user ) {
+	function learn_press_output_user_profile_order( $user, $current, $tabs ) {
 
-		learn_press_get_template( 'profile/order.php', array( 'user' => $user ) );
+		learn_press_get_template( 'profile/order.php', array( 'user' => $user, 'tabs' => $tabs, 'current' => $current ) );
 	}
 }
 
@@ -500,33 +500,38 @@ if ( !function_exists( 'learn_press_user_profile_tabs' ) ) {
 	 * @return mixed
 	 */
 	function learn_press_user_profile_tabs( $user ) {
-		$course_endpoint = LP()->settings->get( 'profile_tab_courses_endpoint' );
+		$course_endpoint = LP()->settings->get( 'profile_endpoints.profile-courses' );
 		if( !$course_endpoint ){
-			$course_endpoint = 'courses';
+			$course_endpoint = 'profile-courses';
 		}
 
-		$quiz_endpoint = LP()->settings->get( 'profile_tab_quizzes_endpoint' );
+		$quiz_endpoint = LP()->settings->get( 'profile_endpoints.profile-quizzes' );
 		if( !$quiz_endpoint ){
-			$quiz_endpoint = 'courses';
+			$quiz_endpoint = 'profile-quizzes';
 		}
 
-		$order_endpoint = LP()->settings->get( 'profile_tab_orders_endpoint' );
+		$order_endpoint = LP()->settings->get( 'profile_endpoints.profile-orders' );
 		if( !$order_endpoint ){
-			$order_endpoint = 'orders';
+			$order_endpoint = 'profile-orders';
+		}
+
+		$view_order_endpoint = LP()->settings->get( 'profile_endpoints' );
+		if( !$view_order_endpoint ){
+			$view_order_endpoint = 'order';
 		}
 
 		$defaults        = array(
 			$course_endpoint => array(
 				'title'    => __( 'Courses', 'learn_press' ),
-				'callback' => array( $user, 'tab_courses_content' )
+				'callback' => 'learn_press_profile_tab_courses_content'
 			),
 			$quiz_endpoint => array(
 				'title'    => __( 'Quiz Results', 'learn_press' ),
-				'callback' => array( $user, 'tab_quizzes_content' )
+				'callback' => 'learn_press_profile_tab_quizzes_content'
 			),
 			$order_endpoint => array(
 				'title'    => __( 'Orders', 'learn_press' ),
-				'callback' => array( $user, 'tab_orders_content' )
+				'callback' => 'learn_press_profile_tab_orders_content'
 			)
 		);
 		return apply_filters( 'learn_press_user_profile_tabs', $defaults, $user );
@@ -539,8 +544,8 @@ if ( !function_exists( 'learn_press_output_user_profile_info' ) ) {
 	 *
 	 * @param $user
 	 */
-	function learn_press_output_user_profile_info( $user ) {
-		learn_press_get_template( 'profile/info.php', array( 'user' => $user ) );
+	function learn_press_output_user_profile_info( $user, $current, $tabs ) {
+		learn_press_get_template( 'profile/info.php', array( 'user' => $user, 'tabs' => $tabs, 'current' => $current ) );
 	}
 }
 
