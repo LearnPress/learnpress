@@ -682,7 +682,7 @@ class LP_Abstract_User {
 			FROM {$wpdb->learnpress_user_courses} uc
 			INNER JOIN {$wpdb->posts} o ON o.ID = uc.order_id
 			WHERE uc.course_id = %d
-			AND uc.user_id = %d o.post_status = %s
+			AND uc.user_id = %d AND o.post_status = %s
 			ORDER BY user_course_id DESC
 		", $course_id, $this->id, 'lp-completed' );
 
