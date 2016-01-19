@@ -11,7 +11,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 global $wp;
-
 ?>
 <ul class="tabs learn-press-tabs clearfix">
 	<?php foreach ( $tabs as $key => $tab ) : ?>
@@ -29,8 +28,7 @@ global $wp;
 		</li>
 	<?php endforeach; ?>
 </ul>
-</div>
-<div class="user-profile-tabs learn-press-tabs-wrapper">
+<div class="user-profile-tabs learn-press-tabs-wrapper-x">
 	<?php foreach ( $tabs as $key => $tab ) : ?>
 	<?php if( $current == $key && learn_press_current_user_can_view_profile_section( $key, $user ) ){ ?>
 		<div class="learn-press-tab" id="tab-<?php echo esc_attr( $key ); ?>">

@@ -667,7 +667,6 @@ class LP_Abstract_User {
 		return apply_filters( 'learn_press_user_has_completed_quiz', $completed, $quiz_id, $this );
 	}
 
-
 	/**
 	 * Return current status of course for user
 	 *
@@ -681,10 +680,11 @@ class LP_Abstract_User {
 		$query = $wpdb->prepare( "
 			SELECT uc.*
 			FROM {$wpdb->learnpress_user_courses} uc
+			INNER JOIN {$wpdb->posts} o ON o.ID = uc.order_id
 			WHERE uc.course_id = %d
-			AND uc.user_id = %d
+			AND uc.user_id = %d o.post_status = %s
 			ORDER BY user_course_id DESC
-		", $course_id, $this->id );
+		", $course_id, $this->id, 'lp-completed' );
 
 		$info = array(
 			'start'  => null,

@@ -423,7 +423,7 @@ add_filter( 'pre_get_posts', 'set_post_order_in_admin' );
 function learn_press_add_row_action_link( $actions ) {
 	global $post;
 	if ( LP()->course_post_type == $post->post_type ) {
-		$duplicate_link = admin_url( 'edit.php?post_type=lpr_course&action=lpr-duplicate-course&post=' . $post->ID );
+		$duplicate_link = admin_url( 'edit.php?post_type=lp_course&action=lp-duplicate-course&post=' . $post->ID );
 		$duplicate_link = array(
 			array(
 				'link'  => $duplicate_link,
@@ -460,7 +460,7 @@ function learn_press_process_duplicate_action() {
 	$wp_list_table = _get_list_table( 'WP_Posts_List_Table' );
 	$action        = $wp_list_table->current_action();
 
-	if ( isset( $_REQUEST['action'] ) && ( $action = $_REQUEST['action'] ) == 'lpr-duplicate-course' ) {
+	if ( isset( $_REQUEST['action'] ) && ( $action = $_REQUEST['action'] ) == 'lp-duplicate-course' ) {
 		$post_id = isset( $_REQUEST['post'] ) ? $_REQUEST['post'] : 0;
 		if ( $post_id && is_array( $post_id ) ) {
 			$post_id = array_shift( $post_id );

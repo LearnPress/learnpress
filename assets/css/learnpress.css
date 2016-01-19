@@ -425,19 +425,19 @@
 	margin: 0 0 20px;
 }
 .learn-press-user-profile .learn-press-tabs-wrapper > .learn-press-tab{
-	padding: 0;
+	/*padding: 0;
 	float: left;
 	width: 100%;
 	margin-right: -100%;
-	visibility: hidden;
+	visibility: hidden;*/
 }
 .learn-press-user-profile .entry-tab-inner{
 	margin: 10px;
 }
 .learn-press-user-profile .learn-press-tabs-wrapper{
-	float: left;
+	/*float: left;
 	width: 100%;
-	padding-left: 170px;
+	padding-left: 170px;*/
 }
 .learn-press-user-profile .profile-content-left{
 	float: left;

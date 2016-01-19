@@ -140,7 +140,7 @@ if (typeof window.LearnPress == 'undefined') {
 				var $heads = ui.item.parent().closest('table').find('tr > th');
 				ui.item.children().each(function(i){
 					$(this).css({
-						width: $heads.eq(i).width()
+						width: $heads.eq(i).outerWidth()
 					});
 				})
 				var $this = $(this),
