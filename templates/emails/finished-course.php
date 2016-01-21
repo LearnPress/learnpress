@@ -1,15 +1,15 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: Tu
- * Date: 11/14/2015
- * Time: 12:49 PM
+ * @author  ThimPress
+ * @package LearnPress/Templates
+ * @version 1.0
  */
 ?>
-<strong>Dear {user_name}</strong>,
+<?php do_action( 'learn_press_email_header', $email_heading ); ?>
 
-<p>You have been finished in <a href="{course_link}">{course_name}</a> with {course_result}</p>
-<p>Visit our website at {log_in}.</p>
+<p><?php printf( __( 'You have been finished course <a href="%s">%s</a>.', 'learn_press' ), get_the_permalink( $course_id ), get_the_title( $course_id ) ); ?>
+<p><?php printf( __( 'Please <a href="%s">login</a> and view your course results.', 'learn_press' ), $login_url ); ?></p>
+<p><?php printf( __( 'Best regards,', 'learn_press' ) ); ?></p>
+<p><?php printf( __( 'Administration', 'learn_press' ) ); ?></p>
 
-<p>Best regards,</p>
-<em>Administration</em>
+<?php do_action( 'learn_press_email_footer', $footer_text ); ?>

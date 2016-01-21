@@ -92,7 +92,15 @@ abstract class LP_Abstract_Course {
 					break;
 
 				default: // default is get course meta key
-					$value = get_post_meta( $this->id, '_lp_' . $key, true );
+					if( func_num_args() > 1 ) {
+						$single = func_get_arg( 1 );
+						if ( $single !== false && $single !== true ) {
+							$single = true;
+						}
+					}else{
+						$single = true;
+					}
+					$value = get_post_meta( $this->id, '_lp_' . $key, $single );
 			}
 			if ( !empty( $value ) ) {
 				$this->$key = $value;
@@ -517,7 +525,7 @@ abstract class LP_Abstract_Course {
 	 *
 	 * @return mixed
 	 */
-	function is_purchaseable(){
+	function is_purchasable(){
 		// TODO: needs to check more criteria, currently only check if this course is required enrollment
 		return $this->required_enroll == 'yes';
 	}

@@ -28,11 +28,10 @@ $settings = LP()->settings;
 		<th scope="row">
 			<label for="learn-press-emails-finished-course-subject"><?php _e( 'Subject', 'learn_press' ); ?></label></th>
 		<td>
-			<?php $default = __( '[{site_title}] New course for review ({course_name}) - {course_date}', 'learn_press' ); ?>
-			<input id="learn-press-emails-finished-course-subject" class="regular-text" type="text" name="<?php echo $settings_class->get_field_name( 'emails_finished_course[subject]' ); ?>" value="<?php echo $settings->get( 'emails_finished_course.subject', $default ); ?>" />
+			<input id="learn-press-emails-finished-course-subject" class="regular-text" type="text" name="<?php echo $settings_class->get_field_name( 'emails_finished_course[subject]' ); ?>" value="<?php echo $settings->get( 'emails_finished_course.subject', $this->default_subject ); ?>" />
 
 			<p class="description">
-				<?php printf( __( 'Email subject (separated by comma), default: <code>%s</code>', 'learn_press' ), $default ); ?>
+				<?php printf( __( 'Email subject, default: <code>%s</code>', 'learn_press' ), $this->default_subject ); ?>
 			</p>
 		</td>
 	</tr>
@@ -40,11 +39,10 @@ $settings = LP()->settings;
 		<th scope="row">
 			<label for="learn-press-emails-finished-course-heading"><?php _e( 'Heading', 'learn_press' ); ?></label></th>
 		<td>
-			<?php $default = __( 'New course', 'learn_press' ); ?>
-			<input id="learn-press-emails-finished-course-heading" class="regular-text" type="text" name="<?php echo $settings_class->get_field_name( 'emails_finished_course[heading]' ); ?>" value="<?php echo $settings->get( 'emails_finished_course.heading', $default ); ?>" />
+			<input id="learn-press-emails-finished-course-heading" class="regular-text" type="text" name="<?php echo $settings_class->get_field_name( 'emails_finished_course[heading]' ); ?>" value="<?php echo $settings->get( 'emails_finished_course.heading', $this->default_heading ); ?>" />
 
 			<p class="description">
-				<?php printf( __( 'Email subject, default: <code>%s</code>', 'learn_press' ), $default ); ?>
+				<?php printf( __( 'Email heading, default: <code>%s</code>', 'learn_press' ), $this->default_heading ); ?>
 			</p>
 		</td>
 	</tr>
@@ -53,7 +51,7 @@ $settings = LP()->settings;
 			<label for="learn-press-emails-finished-course-email-format"><?php _e( 'Email format', 'learn_press' ); ?></label>
 		</th>
 		<td>
-			<?php learn_press_email_formats_dropdown( array( 'name' => $settings_class->get_field_name( 'emails_finished_course[email_format]' ), 'id' => 'learn_press_email_formats', 'selected' => $settings->get( 'emails_finished_course.email_format', $default ) ) ); ?>
+			<?php learn_press_email_formats_dropdown( array( 'name' => $settings_class->get_field_name( 'emails_finished_course[email_format]' ), 'id' => 'learn_press_email_formats', 'selected' => $settings->get( 'emails_finished_course.email_format' ) ) ); ?>
 		</td>
 	</tr>
 	<?php

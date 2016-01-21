@@ -108,6 +108,7 @@ class LP_Order {
 		$old_status = $this->get_status();
 
 		if ( $new_status !== $old_status || !in_array( $this->post_status, array_keys( learn_press_get_order_statuses() ) ) ) {
+			//print_r(array_keys( learn_press_get_order_statuses() ));die();
 
 			// Update the order
 			wp_update_post( array( 'ID' => $this->id, 'post_status' => 'lp-' . $new_status ) );
@@ -191,7 +192,7 @@ class LP_Order {
 	 * @return mixed
 	 */
 	public function get_checkout_order_received_url() {
-		$received_url = learn_press_get_endpoint_url( 'order-received', $this->id, learn_press_get_page_link( 'checkout' ) );
+		$received_url = learn_press_get_endpoint_url( 'lp-order-received', $this->id, learn_press_get_page_link( 'checkout' ) );
 
 		$received_url = add_query_arg( 'key', $this->order_key, $received_url );
 

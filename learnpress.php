@@ -19,9 +19,12 @@ Domain Path: /lang/
 defined( 'ABSPATH' ) || exit;
 
 if ( !defined( 'LP_PLUGIN_PATH' ) ) {
+	$upload_dir = wp_upload_dir();
+
 	define( 'LP_PLUGIN_FILE', __FILE__ );
 	define( 'LP_PLUGIN_PATH', trailingslashit( plugin_dir_path( __FILE__ ) ) );
 	define( 'LP_PLUGIN_URL', trailingslashit( plugins_url( '/', __FILE__ ) ) );
+	define( 'LP_LOG_PATH', $upload_dir['basedir'] . '/learn-press-logs/' );
 	define( 'LEARNPRESS_VERSION', '1.0' );
 	define( 'LEARNPRESS_DB_VERSION', '1.0' );
 }
@@ -154,7 +157,8 @@ if ( !class_exists( 'LearnPress' ) ) {
 			$this->init_hooks();
 
 			// let third parties know that we're ready
-			do_action( 'learn_press_loaded' );
+			//do_action( 'learn_press_loaded' );
+			do_action( 'learn_press_ready' );
 			//do_action( 'learn_press_register_add_ons' );
 		}
 
@@ -194,12 +198,12 @@ if ( !class_exists( 'LearnPress' ) ) {
 			if ( !get_option( 'learnpress_db_version' ) ) {
 
 				$this->_remove_notices();
-				$this->course_post_type     = 'lpr_course';
-				$this->lesson_post_type     = 'lpr_lesson';
-				$this->quiz_post_type       = 'lpr_quiz';
-				$this->question_post_type   = 'lpr_question';
-				$this->order_post_type      = 'lpr_order';
-				$this->teacher_role         = 'lpr_teacher';
+				$this->course_post_type   = 'lpr_course';
+				$this->lesson_post_type   = 'lpr_lesson';
+				$this->quiz_post_type     = 'lpr_quiz';
+				$this->question_post_type = 'lpr_question';
+				$this->order_post_type    = 'lpr_order';
+				$this->teacher_role       = 'lpr_teacher';
 			}
 		}
 
@@ -255,6 +259,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 			$this->define( 'LP_JS_URL', LP_PLUGIN_URL . 'assets/js/' );
 			$this->define( 'LP_CSS_URL', LP_PLUGIN_URL . 'assets/css/' );
 
+
 			// Custom post type name
 			$this->define( 'LP_COURSE_CPT', $this->course_post_type );
 			$this->define( 'LP_LESSON_CPT', $this->lesson_post_type );
@@ -300,7 +305,9 @@ if ( !class_exists( 'LearnPress' ) ) {
 		function init_hooks() {
 
 			$plugin_file = WP_PLUGIN_DIR . '/' . basename( dirname( __FILE__ ) ) . '/' . basename( __FILE__ );
-			register_activation_hook( $plugin_file, array( 'LP_Install', 'install' ) );
+			register_activation_hook( __FILE__, array( 'LP_Install', 'install' ) );
+
+			//LP_Install::install();
 
 			// initial some tasks before page load
 			add_action( 'init', array( $this, 'init' ) );
@@ -418,7 +425,6 @@ if ( !class_exists( 'LearnPress' ) ) {
 			// quiz
 			require_once 'inc/quiz/lp-quiz-functions.php';
 			require_once 'inc/quiz/class-lp-quiz.php';
-
 
 
 			// question
@@ -580,25 +586,34 @@ load_learn_press();
 /************************************/
 
 function test_mail() {
-	//$user = learn_press_get_user( 4 );
-	//do_action( 'learn_press_course_rejected', 920, $user );
+	$user = learn_press_get_user( 1 );
+
+	//do_action( 'learn_press_course_submit_rejected', 1673, $user );
+	//do_action( 'learn_press_course_submit_approved', 1673, $user );
+	//do_action( 'learn_press_course_submit_for_reviewer', 1673, $user );
+	//do_action( 'learn_press_user_enrolled_course', $user, 1673, 3 );
+	//do_action( 'learn_press_order_status_pending_to_processing' );
+	//do_action( 'learn_press_order_status_pending_to_completed' );
+	//do_action( 'learn_press_order_status_processing_to_completed' );*/
 	//do_action( 'learn_press_course_submitted', 920, $user );
 	//do_action( 'learn_press_course_approved', 920, $user );
 }
 
 add_action( 'admin_footer', 'test_mail' );
 
-function learn_press_addon_notice( $notice ){
-	$notices = !empty( $GLOBALS['learn_press_addon_notice'] ) ? (array)$GLOBALS['learn_press_addon_notice'] : array();
-	$notices[] = $notice;
+function learn_press_addon_notice( $notice ) {
+	$notices                             = !empty( $GLOBALS['learn_press_addon_notice'] ) ? (array) $GLOBALS['learn_press_addon_notice'] : array();
+	$notices[]                           = $notice;
 	$GLOBALS['learn_press_addon_notice'] = $notices;
 }
-function learn_press_print_addon_notice(){
-	$notices = !empty( $GLOBALS['learn_press_addon_notice'] ) ? (array)$GLOBALS['learn_press_addon_notice'] : array();
-	if( $notices ) foreach( $notices as $notice ){
+
+function learn_press_print_addon_notice() {
+	$notices = !empty( $GLOBALS['learn_press_addon_notice'] ) ? (array) $GLOBALS['learn_press_addon_notice'] : array();
+	if ( $notices ) foreach ( $notices as $notice ) {
 		printf( '<div class="error"><p>%s</p></div>', $notice );
 	}
 }
-add_action('admin_notices', 'learn_press_print_addon_notice' );
+
+add_action( 'admin_notices', 'learn_press_print_addon_notice' );
 
 

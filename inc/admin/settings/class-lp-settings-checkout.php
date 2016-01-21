@@ -84,8 +84,8 @@ class LP_Settings_Checkout extends LP_Settings_Base {
 				),
 				array(
 					'title'    => __( 'Order received', 'learn_press' ),
-					'id'       => $this->get_field_name( 'checkout_endpoints[order_received]' ),
-					'default'  => 'order-received',
+					'id'       => $this->get_field_name( 'checkout_endpoints[lp_order_received]' ),
+					'default'  => 'lp-order-received',
 					'type'     => 'text'
 				),
 			)

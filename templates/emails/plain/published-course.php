@@ -10,10 +10,10 @@ if ( !defined( 'ABSPATH' ) ) {
 }
 
 ?>
-<?php echo "=" . $email_heading; learn_press_email_new_line( 2 );?>
-<?php printf( __( 'Dear %s', 'learn_press' ), $user_name ); learn_press_email_new_line( 2 ); ?>
-<?php printf( __( 'Congratulation! The course you created (%s) is available now.', 'learn_press' ), $course_name ); learn_press_email_new_line( 2 ); ?>
-<?php printf( __( 'Visit our website at %s to view your course.', 'learn_press' ), $login_url ); learn_press_email_new_line( 2 ); ?>
-<?php _e( 'Best regards,', 'learn_press' ); learn_press_email_new_line( 2 ); ?>
-<?php _e( 'Administration', 'learn_press' ); learn_press_email_new_line( 2 ); ?>
+<?php echo "=" . $email_heading . "=\n\n";?>
+<?php printf( __( 'Dear %s', 'learn_press' ), $user_name ); echo "\n\n"; ?>
+<?php printf( __( 'Congratulation! The course you created (%s) is available now.', 'learn_press' ), get_the_title( $course_id ) ); echo "\n\n"; ?>
+<?php printf( __( 'Click %s to view your course.', 'learn_press' ), get_the_permalink( $course_id ) ); echo "\n\n"; ?>
+<?php _e( 'Best regards,', 'learn_press' ); echo "\n\n"; ?>
+<?php _e( 'Administration', 'learn_press' ); echo "\n\n"; ?>
 <?php echo $footer_text;?>

@@ -73,7 +73,7 @@ $settings = LP()->settings;
 		<tr>
 			<th scope="row"><label><?php _e( 'Order received', 'learn_press' ); ?></label></th>
 			<td>
-				<input type="text" class="regular-text" name="<?php echo $this->get_field_name( 'checkout_endpoints[order_received]' );?>" value="<?php echo $settings->get( 'checkout_endpoints.order_received', 'order-received' );?>" />
+				<input type="text" class="regular-text" name="<?php echo $this->get_field_name( 'checkout_endpoints[lp_order_received]' );?>" value="<?php echo $settings->get( 'checkout_endpoints.lp_order_received', 'lp-order-received' );?>" />
 			</td>
 		</tr>
 		<?php do_action( 'learn_press_after_' . $this->id . '_' . $this->section['id'] . '_settings_fields', $this ); ?>

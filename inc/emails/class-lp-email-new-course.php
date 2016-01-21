@@ -17,9 +17,7 @@ class LP_Email_New_Course extends LP_Email {
 
 		$this->default_subject = __( '[{site_title}] New course has submitted for review ({course_name})', 'learn_press' );
 		$this->default_heading = __( 'New course', 'learn_press' );
-		$this->recipient = LP()->settings->get( 'emails_new_course.recipient' );
-
-
+		$this->recipient       = LP()->settings->get( 'emails_new_course.recipient' );
 		parent::__construct();
 	}
 
@@ -45,19 +43,18 @@ class LP_Email_New_Course extends LP_Email {
 			return;
 		}
 		$return = $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
+
 		return $return;
 	}
 
 	function get_content_html() {
 		ob_start();
 		learn_press_get_template( $this->template_html, array(
-			'email_heading'    => $this->get_heading(),
-			'footer_text'      => $this->get_footer_text(),
-			'site_title'       => $this->get_blogname(),
-			'course_name'      => get_the_title( $this->object['course'] ),
-			'course_edit_link' => get_edit_post_link( $this->object['course'] ),
-			'login_url'        => learn_press_get_login_url(),
-			'plain_text'       => false
+			'email_heading' => $this->get_heading(),
+			'footer_text'   => $this->get_footer_text(),
+			'site_title'    => $this->get_blogname(),
+			'course_id'     => $this->object['course'],
+			'plain_text'    => false
 		) );
 		return ob_get_clean();
 	}
@@ -65,13 +62,12 @@ class LP_Email_New_Course extends LP_Email {
 	function get_content_plain() {
 		ob_start();
 		learn_press_get_template( $this->template_plain, array(
-			'email_heading'    => $this->get_heading(),
-			'footer_text'      => $this->get_footer_text(),
-			'site_title'       => $this->get_blogname(),
-			'course_name'      => get_the_title( $this->object['course'] ),
-			'course_edit_link' => get_edit_post_link( $this->object['course'] ),
-			'login_url'        => learn_press_get_login_url(),
-			'plain_text'       => true
+			'email_heading' => $this->get_heading(),
+			'footer_text'   => $this->get_footer_text(),
+			'site_title'    => $this->get_blogname(),
+			'course_id'     => $this->object['course'],
+			'login_url'     => learn_press_get_login_url(),
+			'plain_text'    => true
 		) );
 		return ob_get_clean();
 	}

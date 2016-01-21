@@ -4,38 +4,52 @@ if( get_post_type() != 'lp_course' ){
 	return;
 }
 if ( !learn_press_course_is_required_review( $post->ID, get_current_user_id() ) ) {
-//return;
+	//return;
 }
 $user        = learn_press_get_current_user();
 $course_user = learn_press_get_user( get_post_field( 'post_author', $post->ID ) );
-if ( $user->is_instructor() ) {
+$required_review       = LP()->settings->get( 'required_review' ) == 'yes';
+$enable_edit_published = LP()->settings->get( 'enable_edit_published' ) == 'yes';
+?>
+<input type="hidden" id="learn-press-course-status" value="<?php echo get_post_status();?>">
+<?php
+if ( $user->is_instructor() && ( ( get_post() != 'publish' ) ) ) {
 	?>
 	<div id="learn-press-review-message">
-		<h4><?php _e( 'Your message to Reviewer', 'learn_press' ); ?></h4>
-		<textarea disabled="disabled" name="review_message" resize="none" placeholder="<?php _e( 'Enter some information here for reviewer', 'learn_press' ); ?>"></textarea>
+		<h4><?php _e( 'Review message to Reviewer', 'learn_press' ); ?></h4>
 		<p>
 			<label>
-				<input type="checkbox" id="learn-press-notice-check" />
-				<?php _e( 'Notice to the admin for reviewing', 'learn_press' ); ?>
+				<input type="checkbox" id="learn-press-notice-check" name="learn_press_submit_course_notice_reviewer" value="yes" />
+				<?php _e( 'Message to Reviewer', 'learn_press' ); ?>
 			</label>
 		</p>
+		<div class="hide-if-js">
+			<textarea class="widefat" rows="5" disabled="disabled" name="review_message" resize="none" placeholder="<?php _e( 'Enter some information here for reviewer', 'learn_press' ); ?>"></textarea>
+
+		</div>
+		<?php if( $required_review && !$enable_edit_published ){?>
 		<p class="description submitdelete">
 			<?php _e( 'Warning! Your course will become to Pending Review for admin reviews before it can be published when you update' ); ?>
 		</p>
+		<?php } ?>
 	</div>
 	<?php ob_start(); ?>
 	<script type="text/javascript">
 		jQuery('#post').submit(function (e) {
 			var $review = $('textarea[name="review_message"]');
-			if (!($review.val() + '').length) {
+			if (!($review.val() + '').length && $('#learn-press-notice-check').is(':checked')) {
 				alert('<?php _e( 'Please write your message to Reviewer', 'learn_press' );?>');
 				$review.focus();
 				return false;
 			}
 		});
-		jQuery('#learn-press-notice-check').click(function(){
-			var $review = jQuery('textarea[name="review_message"]').prop('disabled', !this.checked);
-			this.checked && $review.focus();
+		jQuery('#learn-press-notice-check').change(function(){
+			var checked = this.checked,
+				$review = jQuery('textarea[name="review_message"]').prop('disabled', !checked),
+				$parent = $review.parent();
+			$parent[checked ? 'slideDown' : 'slideUp'](function(){
+				checked && $review.focus();
+			});
 		});
 	</script>
 	<?php learn_press_enqueue_script( strip_tags( ob_get_clean() ) ); ?>
@@ -43,30 +57,45 @@ if ( $user->is_instructor() ) {
 } else if ( $user->is_admin() && !$course_user->is_admin() ) {
 	?>
 	<div id="learn-press-review-message">
-		<h4><?php _e( 'Your message to Instructor', 'learn_press' ); ?></h4>
-		<textarea disabled="disabled" name="review_message" resize="none" placeholder="<?php _e( 'Enter some information here for instructor. E.g: for reason why the course is rejected etc...', 'learn_press' ); ?>"></textarea>
+		<h4><?php _e( 'Review message to Instructor', 'learn_press' ); ?></h4>
 		<p>
 			<label>
-				<input type="checkbox" id="learn-press-notice-check" />
-				<?php _e( 'Notice to the instructor for changing', 'learn_press' ); ?>
+				<input type="checkbox" id="learn-press-notice-check" name="learn_press_submit_course_notice_instructor" value="yes"/>
+				<?php _e( 'Message to Instructor', 'learn_press' ); ?>
 			</label>
 		</p>
+		<div class="hide-if-js">
+		<textarea class="widefat" rows="5" disabled="disabled" name="review_message" resize="none" placeholder="<?php _e( 'Enter some information here for instructor. E.g: for reason why the course is rejected etc...', 'learn_press' ); ?>"></textarea>
+		</div>
 	</div>
 	<?php ob_start(); ?>
 	<script type="text/javascript">
+		jQuery(function($){
+			console.log($('input[name="publish"]')[0])
+		})
 		jQuery('#post').submit(function (e) {
 			var $review = $('textarea[name="review_message"]', this),
-				$status = $('select#post_status', this),
+				status = $('select#post_status', this).val(),
+				current_status = $('#learn-press-course-status').val(),
 				clicked = $(':focus', this).attr('name');
-			if (clicked == 'save' && $status.val() != 'publish' && !($review.val() + '').length) {
+
+			if ( ( ( clicked == 'save' || clicked == 'publish' ) && ( status != current_status ) || ( clicked == 'publish' ) && ( status == 'pending' ) )&& !($review.val() + '').length) {
 				alert('<?php _e( 'Please write your message to Instructor', 'learn_press' );?>');
-				$review.focus();
+				var $check = $('input[name="learn_press_submit_course_notice_instructor"]').prop('checked', true);
+				$check.trigger('change');
 				return false;
+			}else{
 			}
+			console.log($('input[name="publish"]')[0])
+
 		});
-		jQuery('#learn-press-notice-check').click(function(){
-			var $review = jQuery('textarea[name="review_message"]').prop('disabled', !this.checked);
-			this.checked && $review.focus();
+		jQuery('#learn-press-notice-check').change(function(){
+			var that = this,
+				$review = jQuery('textarea[name="review_message"]').prop('disabled', !this.checked),
+				$parent = $review.parent();
+			$parent[this.checked ? 'slideDown' : 'slideUp'](function(){
+				that.checked && $review.focus();
+			});
 		});
 	</script>
 	<?php learn_press_enqueue_script( strip_tags( ob_get_clean() ) ); ?>

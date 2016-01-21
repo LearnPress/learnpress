@@ -90,10 +90,10 @@ class LP_Shortcodes {
 	static function checkout() {
 		global $wp;
 		ob_start();
+		print_r($wp->query_vars);
+		if ( isset( $wp->query_vars['lp-order-received'] ) ) {
 
-		if ( isset( $wp->query_vars['order-received'] ) ) {
-
-			self::order_received( $wp->query_vars['order-received'] );
+			self::order_received( $wp->query_vars['lp-order-received'] );
 
 		} else {
 			// Check cart has contents

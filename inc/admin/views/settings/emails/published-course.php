@@ -51,7 +51,7 @@ $settings = LP()->settings;
 			<label for="learn-press-emails-published-course-email-format"><?php _e( 'Email format', 'learn_press' ); ?></label>
 		</th>
 		<td>
-			<?php learn_press_email_formats_dropdown( array( 'name' => $settings_class->get_field_name( 'emails_published_course[email_format]' ), 'id' => 'learn_press_email_formats', 'selected' => $settings->get( 'emails_published_course.email_format', $default ) ) ); ?>
+			<?php learn_press_email_formats_dropdown( array( 'name' => $settings_class->get_field_name( 'emails_published_course[email_format]' ), 'id' => 'learn_press_email_formats', 'selected' => $settings->get( 'emails_published_course.email_format' ) ) ); ?>
 		</td>
 	</tr>
 	<?php

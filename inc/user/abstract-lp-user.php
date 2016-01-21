@@ -513,8 +513,8 @@ class LP_Abstract_User {
 	 */
 	function can_purchase_course( $course_id ) {
 		$course       = learn_press_get_course( $course_id );
-		$purchaseable = $course->is_purchaseable() && !$this->has_purchased_course( $course_id );
-		return apply_filters( 'learn_press_user_can_purchase_course', $purchaseable, $this, $course_id );
+		$purchasable = $course->is_purchasable() && !$this->has_purchased_course( $course_id );
+		return apply_filters( 'learn_press_user_can_purchase_course', $purchasable, $this, $course_id );
 	}
 
 	/**
@@ -527,7 +527,7 @@ class LP_Abstract_User {
 	function can_enroll_course( $course_id ) {
 		$course = LP_Course::get_course( $course_id );
 		// if the course payment is off and required enroll
-		$enrollable = $course && $course->payment == 'no' && $course->required_enroll == 'yes';
+		$enrollable = $course && /* $course->payment == 'no' &&*/ $course->required_enroll != 'yes';
 
 		// if user cannot enroll by course settings above, check order
 		if ( !$enrollable && ( $order_id = $this->has_purchased_course( $course_id ) ) ){
@@ -633,11 +633,28 @@ class LP_Abstract_User {
 	 * Return true if you has finished a course
 	 *
 	 * @param int
+	 * @param bool
 	 *
 	 * @return bool
 	 */
-	function has_finished_course( $course_id ) {
-		return false;
+	function has_finished_course( $course_id, $force = false ) {
+		static $courses = array();
+		if( empty( $courses[ $course_id ] ) || $force ){
+			global $wpdb;
+			$query = $wpdb->prepare("
+				SELECT count(user_id)
+				FROM {$wpdb->prefix}learnpress_user_courses uc
+				INNER JOIN {$wpdb->posts} c ON c.ID = uc.course_id
+				INNER JOIN {$wpdb->posts} o ON o.ID = uc.order_id
+				INNER JOIN {$wpdb->postmeta} om ON om.post_id = o.ID AND om.meta_value = %s AND om.meta_value = %d
+				WHERE uc.user_id = %d
+				AND uc.course_id = %d
+				AND uc.status = %s
+				AND o.post_status = %s
+			", '_user_id', $this->id, $this->id, $course_id, 'finished', 'completed' );
+			$courses[ $course_id ] = $wpdb->get_var( $query ) > 0 ? 'yes' : 'no';
+		}
+		return apply_filters( 'learn_press_user_has_finished_course', $courses[ $course_id ] == 'yes', $this, $course_id );
 	}
 
 	/**
@@ -882,8 +899,10 @@ class LP_Abstract_User {
 		global $wpdb;
 		$inserted = 0;
 
-		do_action( 'learn_press_before_enroll_course', $this, $course_id );
-
+		$check = apply_filters( 'learn_press_before_enroll_course', true, $this, $course_id );
+		if( !$check ){
+			return false;
+		}
 		if ( $wpdb->insert(
 			$wpdb->learnpress_user_courses,
 			array(

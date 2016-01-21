@@ -89,9 +89,15 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 				if ( !in_array( $status, $order_statuses ) ) {
 					$status = reset( $order_statuses );
 				}
+				$order = learn_press_get_order( $post_id );
+				$order->update_status( $status );
+
 				$user_id = learn_press_get_request( 'order-customer' );
-				$postdata = array( 'post_status' => $status, 'ID' => $post_id );
-				wp_update_post( $postdata );
+				//$postdata = array( 'post_status' => $status, 'ID' => $post_id );
+				///wp_update_post( $postdata );
+
+
+
 				update_post_meta( $post_id, '_user_id', $user_id > 0 ? $user_id : 0 );
 			}
 		}

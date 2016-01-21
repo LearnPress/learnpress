@@ -1,15 +1,22 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: Tu
- * Date: 11/14/2015
- * Time: 12:43 PM
+ * @author ThimPress
+ * @package LearnPress/Templates
+ * @version 1.0
  */
+
+if ( !defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
 ?>
-<strong>Dear {user_name}</strong>,
+<?php do_action( 'learn_press_email_header', $email_heading ); ?>
 
-<p>You have been enrolled in <a href="{course_link}">{course_name}</a>.</p>
-<p>Visit our website at {log_in}.</p>
+<p>
+	<?php printf( __( 'You have been enrolled the course <a href="%s">%s</a>.', 'learn_press' ), get_the_permalink( $course_id ), get_the_title( $course_id ) ); ?>
+</p>
 
-<p>Best regards,</p>
-<em>Administration</em>
+<p>
+<?php printf( __( 'Please <a href="%s">login</a> and start learning now.', 'learn_press' ), $login_url ); ?>
+</p>
+
+<?php do_action( 'learn_press_email_footer', $footer_text ); ?>

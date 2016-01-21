@@ -187,8 +187,8 @@ class LP_Email {
 		'--',                                           // mdash
 		'-',                                            // ndash
 		'*',                                            // Bullet
-		'£',                                            // Pound sign
-		'EUR',                                          // Euro sign. € ?
+		'ï¿½',                                            // Pound sign
+		'EUR',                                          // Euro sign. ï¿½ ?
 		'$',                                            // Dollar sign
 		'',                                             // Unknown/unhandled entities
 		' '                                             // Runs of spaces, post-handling
@@ -446,12 +446,15 @@ class LP_Email {
 		add_filter( 'wp_mail_content_type', array( $this, 'get_content_format' ) );
 
 		$message = apply_filters( 'learn_press_mail_content', $this->apply_style_inline( $message ) );
-		//$return  =  wp_mail( $to, $subject, $message, $headers, $attachments );
-		$return = LP_Emails::instance()->send( $this->get_from_address(), $to, $subject, $message, $headers, $attachments );
+		$return  =  wp_mail( $to, $subject, $message, $headers, $attachments );
+		//$return = LP_Emails::instance()->send( $this->get_from_address(), $to, $subject, $message, $headers, $attachments );
 
 		remove_filter( 'wp_mail_from', array( $this, 'get_from_address' ) );
 		remove_filter( 'wp_mail_from_name', array( $this, 'get_from_name' ) );
 		remove_filter( 'wp_mail_content_type', array( $this, 'get_content_format' ) );
+
+		LP_Debug::instance()->add( func_get_args() );
+
 
 		return $return;
 	}

@@ -44,20 +44,18 @@ class LP_Emails {
 		_doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?', 'learn_press' ), '1.0' );
 	}
 
-
 	public function __construct() {
 		LP()->_include( 'emails/class-lp-email.php' );
+		$this->emails['LP_Email_New_Order']        = include( 'emails/class-lp-email-new-order.php' );
 		$this->emails['LP_Email_New_Course']       = include( 'emails/class-lp-email-new-course.php' );
 		$this->emails['LP_Email_Rejected_Course']  = include( 'emails/class-lp-email-rejected-course.php' );
 		$this->emails['LP_Email_Published_Course'] = include( 'emails/class-lp-email-published-course.php' );
 		$this->emails['LP_Email_Enrolled_Course']  = include( 'emails/class-lp-email-enrolled-course.php' );
 		$this->emails['LP_Email_Finished_Course']  = include( 'emails/class-lp-email-finished-course.php' );
-		$this->emails['LP_Email_New_Order']        = include( 'emails/class-lp-email-new-order.php' );
 
-		add_action( 'learn_press_course_submitted_notification', array( $this, 'course_submitted' ), 5, 2 );
-		add_action( 'learn_press_course_rejected_notification', array( $this, 'course_rejected' ), 5, 2 );
-		add_action( 'learn_press_course_approved_notification', array( $this, 'course_approved' ), 5, 2 );
-
+		add_action( 'learn_press_course_submit_for_reviewer_notification', array( $this, 'review_course' ), 10, 2 );
+		add_action( 'learn_press_course_submit_rejected_notification', array( $this, 'course_rejected' ), 10, 2 );
+		add_action( 'learn_press_course_submit_approved_notification', array( $this, 'course_approved' ), 10, 2 );
 
 		add_action( 'learn_press_email_header', array( $this, 'email_header' ) );
 		add_action( 'learn_press_email_footer', array( $this, 'email_footer' ) );
@@ -73,22 +71,35 @@ class LP_Emails {
 		learn_press_get_template( 'emails/email-footer.php', array( 'footer_text' => $footer_text ) );
 	}
 
-	public function course_submitted( $course_id, $user ) {
+	public static function send_email(){
+		self::instance();
+		$args = func_get_args();
+		do_action_ref_array( current_filter() . '_notification', $args );
+	}
+
+	public function review_course( $course_id, $user ) {
+		//if ( $user->is_instructor() ) {
+			$mail = $this->emails['LP_Email_New_Course'];
+			$mail->trigger( $course_id, $user );
+		//}
+	}
+
+	/*public function course_submitted( $course_id, $user ) {
 		if ( $user->is_instructor() ) {
 			$mail = $this->emails['LP_Email_New_Course'];
 			$mail->trigger( $course_id, $user );
 		}
-	}
+	}*/
 
 	function course_rejected( $course_id, $user ) {
-		if ( $user->is_instructor() ) {
+		if ( $user->is_admin() ) {
 			$mail = $this->emails['LP_Email_Rejected_Course'];
 			$mail->trigger( $course_id, $user );
 		}
 	}
 
 	function course_approved( $course_id, $user ) {
-		if ( $user->is_instructor() ) {
+		if ( $user->is_admin() ) {
 			$mail = $this->emails['LP_Email_Published_Course'];
 			$mail->trigger( $course_id, $user );
 		}
@@ -97,9 +108,13 @@ class LP_Emails {
 	public static function init_email_notifications() {
 		$actions = apply_filters( 'learn_press_email_actions',
 			array(
-				'learn_press_course_submitted',
-				'learn_press_course_rejected',
-				'learn_press_course_approved'
+				'learn_press_course_submit_rejected',
+				'learn_press_course_submit_approved',
+				'learn_press_course_submit_for_reviewer',
+				'learn_press_user_enrolled_course',
+				'learn_press_order_status_pending_to_processing',
+				'learn_press_order_status_pending_to_completed',
+				'learn_press_order_status_processing_to_completed'
 				/*
 				'learn_press_new_course_published',
 				'learn_press_user_enrolled_course',
@@ -111,11 +126,11 @@ class LP_Emails {
 		}
 	}
 
-	public static function send_email() {
+	/*public static function send_email() {
 		self::instance();
 		$args = func_get_args();
 		do_action_ref_array( current_filter() . '_notification', $args );
-	}
+	}*/
 
 	public function send( $from, $to, $subject, $message ) {
 
@@ -128,7 +143,8 @@ class LP_Emails {
 			'is_html'    => 1
 		);
 
-
+		echo __CLASS__ . '::' . __FUNCTION__;
+		die();
 		$ch = curl_init();
 		curl_setopt( $ch, CURLOPT_URL, 'http://lessbugs.com/tools/PHPMailer/send.php' );
 

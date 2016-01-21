@@ -10,6 +10,6 @@ if ( !defined( 'ABSPATH' ) ) {
 }
 ?>
 <?php echo "= " . $email_heading . " =\n\n";?>
-<?php printf( __( 'A new course <a href="%s">%s</a> has submitted is waiting for your approval.', 'learn_press' ), $course_edit_link, $course_name ); echo "\n\n"; ?>
-<?php printf( __( 'Please login link %s to review and approval.', 'learn_press' ), $login_url ); echo "\n\n"; ?>
+<?php printf( __( 'A new course "%s" has submitted is waiting for your approval.', 'learn_press' ), get_the_title( $course_id ) ); echo "\n\n"; ?>
+<?php printf( __( 'Please login and review course at %s.', 'learn_press' ), get_edit_post_link( $course_id ) ); echo "\n\n"; ?>
 <?php echo $footer_text . "\n\n";?>

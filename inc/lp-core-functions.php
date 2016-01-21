@@ -1965,10 +1965,15 @@ function learn_press_get_register_url() {
 /**
  * Add a new notice into queue
  *
- * @param        $message
- * @param string $type
+ * @param string
+ * @param string
+ *
+ * @return mixed
  */
 function learn_press_add_notice( $message, $type = 'notice' ) {
+	if( $message === false ){
+		return false;
+	}
 	$notices = LP_Session::get( 'notices' );
 	if ( empty( $notices ) ) {
 		$notices = array(
@@ -1985,6 +1990,7 @@ function learn_press_add_notice( $message, $type = 'notice' ) {
 
 /**
  * Clear all notices in queue
+ *
  */
 function learn_press_clear_notices() {
 	LP_Session::set( 'notices', null );
@@ -2101,6 +2107,15 @@ function learn_press_reset_auto_increment( $table ) {
 	$wpdb->query( $wpdb->prepare( "ALTER TABLE {$wpdb->prefix}$table AUTO_INCREMENT = %d", 1 ) );
 }
 
+/**
+ * @param $handle
+ *
+ * @return string
+ */
+function learn_press_get_log_file_path( $handle ) {
+	return trailingslashit( LP_LOG_PATH ) . $handle . '-' . sanitize_file_name( wp_hash( $handle ) ) . '.log';
+}
+
 function learn_press_front_scripts() {
 	$js = array(
 		'ajax'       => admin_url( 'admin-ajax.php' ),
@@ -2132,3 +2147,4 @@ function learn_press_debug( $a, $die = true ) {
 		die();
 	}
 }
+

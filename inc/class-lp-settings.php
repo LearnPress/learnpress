@@ -9,6 +9,9 @@ class LP_Settings {
 	 */
 	protected $_options = false;
 
+	/**
+	 * @var bool
+	 */
 	static protected $_instance = false;
 
 	/**

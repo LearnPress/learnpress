@@ -9,8 +9,8 @@
  */
 class LP_Email_Published_Course extends LP_Email {
 	function __construct() {
-		$this->id = 'published_course';
-		$this->title = __( 'Course approved', 'learn_press' );
+		$this->id    = 'published_course';
+		$this->title = __( 'Approved course', 'learn_press' );
 
 		$this->template_html  = 'emails/published-course.php';
 		$this->template_plain = 'emails/plain/published-course.php';
@@ -22,7 +22,7 @@ class LP_Email_Published_Course extends LP_Email {
 		parent::__construct();
 	}
 
-	function admin_options( $settings_class ){
+	function admin_options( $settings_class ) {
 		$view = learn_press_get_admin_view( 'settings/emails/published-course.php' );
 		include_once $view;
 	}
@@ -46,7 +46,7 @@ class LP_Email_Published_Course extends LP_Email {
 
 		if ( $user ) {
 			$this->user_email = stripslashes( $user->user_email );
-			$this->recipient = $this->user_email;
+			$this->recipient  = $this->user_email;
 		}
 
 		if ( ( $this->enable != 'yes' ) || !$this->get_recipient() ) {
@@ -54,6 +54,7 @@ class LP_Email_Published_Course extends LP_Email {
 		}
 
 		$return = $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
+
 		return $return;
 	}
 
@@ -61,12 +62,12 @@ class LP_Email_Published_Course extends LP_Email {
 		ob_start();
 		learn_press_get_template( $this->template_html, array(
 			'email_heading' => $this->get_heading(),
-			'footer_text' 	=> $this->get_footer_text(),
+			'footer_text'   => $this->get_footer_text(),
 			'site_title'    => $this->get_blogname(),
-			'course_name'   => get_the_title( $this->object['course'] ),
+			'course_id'     => $this->object['course'],
 			'login_url'     => learn_press_get_login_url(),
-			'user_name'		=> $this->object['user']->user_nicename,
-			'plain_text'       => false
+			'user_name'     => $this->object['user']->user_nicename,
+			'plain_text'    => false
 		) );
 		return ob_get_clean();
 	}
@@ -75,12 +76,12 @@ class LP_Email_Published_Course extends LP_Email {
 		ob_start();
 		learn_press_get_template( $this->template_plain, array(
 			'email_heading' => $this->get_heading(),
-			'footer_text' 	=> $this->get_footer_text(),
+			'footer_text'   => $this->get_footer_text(),
 			'site_title'    => $this->get_blogname(),
-			'course_name'   => get_the_title( $this->object['course'] ),
+			'course_id'     => $this->object['course'],
 			'login_url'     => learn_press_get_login_url(),
-			'user_name'		=> $this->object['user']->user_nicename,
-			'plain_text'       => true
+			'user_name'     => $this->object['user']->user_nicename,
+			'plain_text'    => true
 		) );
 		return ob_get_clean();
 	}

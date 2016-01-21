@@ -170,9 +170,10 @@
 					.on('keyup', '.lp-modal-search input[name="lp-item-name"]', this.searchItem)
 					.on('click change', '.lp-modal-search input[type="checkbox"]', this.toggleAddItemButtonState)
 					.on('click', '.lp-modal-search .lp-add-item', this.addItemsToSection)
-					.on('click', '.lp-modal-search .lp-add-new-item', this.addNewItem);
+					.on('click', '.lp-modal-search .lp-add-new-item', this.addNewItem)
+					.on('change', 'input[name="learn_press_submit_course_notice_reviewer"]', this.updatePublishAction);
 
-
+				$('input[name="learn_press_submit_course_notice_reviewer"]').trigger('change');
 				$(window).scroll(function () {
 					return;
 					var $holder = $('#course_tabs_placeholder'),
@@ -184,6 +185,13 @@
 						$tabs.css('width', '').removeClass('fixed');
 					}
 				});
+			},
+			updatePublishAction: function(e){
+				if(e.target.checked ){
+					$('#publish').val( meta_box_course_localize.submit_course_review );
+				}else{
+					$('#publish').val( meta_box_course_localize.save_course );
+				}
 			},
 			toggleButtonBulkActions : function (e) {
 				var $checkbox = $(e.target),

@@ -378,9 +378,9 @@ function learn_press_is_enable_cart() {
 function learn_press_clear_cart_after_payment() {
 	global $wp;
 
-	if ( ! empty( $wp->query_vars['order-received'] ) ) {
+	if ( ! empty( $wp->query_vars['lp-order-received'] ) ) {
 
-		$order_id  = absint( $wp->query_vars['order-received'] );
+		$order_id  = absint( $wp->query_vars['lp-order-received'] );
 		$order_key = isset( $_GET['key'] ) ? $_GET['key'] : '';
 
 		if ( $order_id > 0 ) {

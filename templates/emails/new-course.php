@@ -11,7 +11,15 @@ if ( !defined( 'ABSPATH' ) ) {
 ?>
 <?php do_action( 'learn_press_email_header', $email_heading ); ?>
 
-<p><?php printf( __( 'A new course <a href="%s">%s</a> has submitted is waiting for your approval.', 'learn_press' ), $course_edit_link, $course_name ); ?></p>
-<p><?php printf( __( 'Please <a href="%s">login</a> to review and approval.', 'learn_press' ), $login_url ); ?></p>
+<p>
+	<?php
+	printf(
+		__( 'A new course <a href="%s">%s</a> has submitted is waiting for your approval.', 'learn_press' ),
+		get_edit_post_link( $course_id ),
+		get_the_title( $course_id )
+	);
+	?>
+</p>
+<p><?php printf( __( 'Please login and review course.', 'learn_press' ) ); ?></p>
 
 <?php do_action( 'learn_press_email_footer', $footer_text ); ?>

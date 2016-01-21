@@ -79,7 +79,7 @@ class LP_Gateway_Abstract {
 		if ( $order ) {
 			$return_url = $order->get_checkout_order_received_url();
 		} else {
-			$return_url = learn_press_get_endpoint_url( 'order-received', '', learn_press_get_page_link( 'checkout' ) );
+			$return_url = learn_press_get_endpoint_url( 'lp-order-received', '', learn_press_get_page_link( 'checkout' ) );
 		}
 
 		return apply_filters( 'learn_press_get_return_url', $return_url, $order );

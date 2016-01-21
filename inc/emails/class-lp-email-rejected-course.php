@@ -15,8 +15,8 @@ class LP_Email_Rejected_Course extends LP_Email {
 		$this->template_html  = 'emails/rejected-course.php';
 		$this->template_plain = 'emails/plain/rejected-course.php';
 
-		$this->subject = __( '[{site_title}] Your course {course_name} has rejected', 'learn_press' );
-		$this->heading = __( 'Rejected course', 'learn_press' );
+		$this->default_subject = __( '[{site_title}] Your course {course_name} has rejected', 'learn_press' );
+		$this->default_heading = __( 'Rejected course', 'learn_press' );
 
 
 		parent::__construct();

@@ -18,35 +18,37 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
 		 */
 		static function admin_enqueue_scripts() {
 			LP_Admin_Assets::enqueue_style( 'meta-box-course', LP()->plugin_url( 'assets/css/admin/meta-box-course.css' ) );
-			LP_Admin_Assets::enqueue_style( 'select2',         RWMB_CSS_URL . 'select2/select2.css' );
-           // LP_Admin_Assets::enqueue_style( 'toastr',          LP_CSS_URL . 'toastr.css' );
-            //LP_Admin_Assets::enqueue_style( 'thim-course',     LearnPress()->plugin_url( 'inc/admin/meta-boxes/css/course.css' ) );
+			LP_Admin_Assets::enqueue_style( 'select2', RWMB_CSS_URL . 'select2/select2.css' );
+			// LP_Admin_Assets::enqueue_style( 'toastr',          LP_CSS_URL . 'toastr.css' );
+			//LP_Admin_Assets::enqueue_style( 'thim-course',     LearnPress()->plugin_url( 'inc/admin/meta-boxes/css/course.css' ) );
 
-			LP_Admin_Assets::enqueue_script( 'select2',        RWMB_JS_URL . 'select2/select2.min.js' );
+			LP_Admin_Assets::enqueue_script( 'select2', RWMB_JS_URL . 'select2/select2.min.js' );
 			//LP_Admin_Assets::enqueue_script( 'toastr',         LP_JS_URL . 'toastr.js' );
 			//LP_Admin_Assets::enqueue_script( 'tojson',         LP_JS_URL . 'toJSON.js' );
 			LP_Admin_Assets::enqueue_script( 'modal-search-items' );
-			LP_Admin_Assets::enqueue_script( 'meta-box-course',    learn_press_plugin_url( 'assets/js/admin/meta-box-course.js' ), array( 'jquery' ) );
+			LP_Admin_Assets::enqueue_script( 'meta-box-course', learn_press_plugin_url( 'assets/js/admin/meta-box-course.js' ), array( 'jquery' ) );
 
 
 			LP_Admin_Assets::add_localize(
-                array(
-                    'confirm_remove_section_lesson' => __( 'Do you want to remove this lesson permanently?', 'learn_press' ),
-                    'confirm_remove_section_quiz'   => __( 'Do you want to remove this quiz permanently?', 'learn_press' ),                    
-                    'confirm_remove_section'        => __( 'Do you want to remove this section permanently?', 'learn_press' ),                    
-                    'add_new_quiz'                  => __( 'New quiz added', 'learn_press' ),
-                    'add_new_lesson'                => __( 'New lesson added', 'learn_press' ),
-                    'add_new_section'               => __( 'New section added', 'learn_press' ),
-                    'remove_section_lesson'         => __( 'The lesson removed', 'learn_press' ),
-                    'remove_section_quiz'           => __( 'The quiz removed', 'learn_press' ),
-                    'remove_section'                => __( 'The section removed', 'learn_press' ),
-                    'section_ordered'               => __( 'The ordering completed', 'learn_press' ),
-                    'add_lesson_to_section'         => __( 'Lesson added to section complete!', 'learn_press' ),
-                    'add_quiz_to_section'           => __( 'Quiz added to section complete!', 'learn_press' ),
-                    'update_lesson_quiz'            => __( '%s updated', 'learn_press' ),
-                    'quick_edit_name'               => __( 'Click to quick edit name', 'learn_press' )
-                ), null, 'meta-box-course'
-            );
+				array(
+					'confirm_remove_section_lesson' => __( 'Do you want to remove this lesson permanently?', 'learn_press' ),
+					'confirm_remove_section_quiz'   => __( 'Do you want to remove this quiz permanently?', 'learn_press' ),
+					'confirm_remove_section'        => __( 'Do you want to remove this section permanently?', 'learn_press' ),
+					'add_new_quiz'                  => __( 'New quiz added', 'learn_press' ),
+					'add_new_lesson'                => __( 'New lesson added', 'learn_press' ),
+					'add_new_section'               => __( 'New section added', 'learn_press' ),
+					'remove_section_lesson'         => __( 'The lesson removed', 'learn_press' ),
+					'remove_section_quiz'           => __( 'The quiz removed', 'learn_press' ),
+					'remove_section'                => __( 'The section removed', 'learn_press' ),
+					'section_ordered'               => __( 'The ordering completed', 'learn_press' ),
+					'add_lesson_to_section'         => __( 'Lesson added to section complete!', 'learn_press' ),
+					'add_quiz_to_section'           => __( 'Quiz added to section complete!', 'learn_press' ),
+					'update_lesson_quiz'            => __( '%s updated', 'learn_press' ),
+					'quick_edit_name'               => __( 'Click to quick edit name', 'learn_press' ),
+					'save_course'                   => __( 'Save Course', 'learn_press' ),
+					'submit_course_review'          => __( 'Submit for Review', 'learn_press' )
+				), null, 'meta-box-course'
+			);
 		}
 
 
@@ -61,7 +63,7 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
 		static function html( $meta, $field ) {
 			global $post;
 			$course = LP_Course::get_course( $post );
-			$view = learn_press_get_admin_view( 'meta-boxes/course/curriculum.php' );
+			$view   = learn_press_get_admin_view( 'meta-boxes/course/curriculum.php' );
 			ob_start();
 			include $view;
 			return ob_get_clean();
@@ -145,26 +147,26 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
 			add_action( 'wp_ajax_lpr_update_course_curriculum', array( __CLASS__, 'update_course_curriculum' ) );
 			add_action( 'wp_ajax_lpr_quick_edit_lesson_quiz_name', array( __CLASS__, 'quick_edit_lesson_quiz_name' ) );
 			add_action( 'wp_ajax_lpr_update_section_state', array( __CLASS__, 'update_section_state' ) );
-            add_action( 'wp_ajax_lpr_remove_lesson_quiz', array( __CLASS__, 'remove_lesson_quiz' ) );
+			add_action( 'wp_ajax_lpr_remove_lesson_quiz', array( __CLASS__, 'remove_lesson_quiz' ) );
 
-            add_action( 'save_post', array( __CLASS__, 'update_course_curriculum' ) );
+			add_action( 'save_post', array( __CLASS__, 'update_course_curriculum' ) );
 			add_filter( 'learn_press_loop_section_buttons', array( __CLASS__, 'add_section_buttons' ) );
 			//add_filter( 'learn_press_after_section_content', array( __CLASS__, 'section_options' ) );
 		}
 
-		static function add_section_buttons( $buttons ){
+		static function add_section_buttons( $buttons ) {
 			$buttons = array_merge(
 				$buttons,
 				array(
 					array(
-						'id'		=> 'add-lesson',
-						'text'		=> __( 'Add Lesson', 'learn_press' ),
-						'attr'	=> 'data-action="add-lesson" data-type="lp_lesson"'
+						'id'   => 'add-lesson',
+						'text' => __( 'Add Lesson', 'learn_press' ),
+						'attr' => 'data-action="add-lesson" data-type="lp_lesson"'
 					),
 					array(
-						'id'		=> 'add-quiz',
-						'text'		=> __( 'Add Quiz', 'learn_press' ),
-						'attr'	=> 'data-action="add-quiz" data-type="lp_quiz"'
+						'id'   => 'add-quiz',
+						'text' => __( 'Add Quiz', 'learn_press' ),
+						'attr' => 'data-action="add-quiz" data-type="lp_quiz"'
 					)/*,
 					array(
 						'id'		=> 'toggle-section-options',
@@ -176,16 +178,17 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
 			return $buttons;
 		}
 
-		static function section_options(){
+		static function section_options() {
 			?>
 			<table class="form-table">
 				<tr>
 					<th>
-						<?php _e( 'Using final quiz', 'learn_press' );?>
+						<?php _e( 'Using final quiz', 'learn_press' ); ?>
 					</th>
 					<td>
 						<input type="checkbox" />
-						<p class="description"><?php _e( 'User must be completed the final quiz to finish a section', 'learn_press' );?></p>
+
+						<p class="description"><?php _e( 'User must be completed the final quiz to finish a section', 'learn_press' ); ?></p>
 
 					</td>
 				</tr>
@@ -193,12 +196,13 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
 			<?php
 		}
 
-        static function remove_lesson_quiz(){
-            $lesson_quiz_id = $_POST['lesson_quiz_id'];
-            delete_post_meta( $lesson_quiz_id, '_lpr_course' );
-            update_post_meta( $lesson_quiz_id, '_lpr_course', 0 );
+		static function remove_lesson_quiz() {
+			$lesson_quiz_id = $_POST['lesson_quiz_id'];
+			delete_post_meta( $lesson_quiz_id, '_lpr_course' );
+			update_post_meta( $lesson_quiz_id, '_lpr_course', 0 );
 
-        }
+		}
+
 		static function update_section_state() {
 			$post_id = $_POST['post_id'];
 			$section = $_POST['section'];
@@ -209,10 +213,10 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
 		static function quick_add() {
 			//ob_end_flush();
 			echo '__LP_JSON__';
-			$name = isset( $_POST['name'] ) ? $_POST['name'] : null;
-			$type = isset( $_POST['type'] ) ? $_POST['type'] : null;
-            $course_id = isset( $_POST['course_id'] ) ? $_POST['course_id'] : null;
-			$post = false;
+			$name      = isset( $_POST['name'] ) ? $_POST['name'] : null;
+			$type      = isset( $_POST['type'] ) ? $_POST['type'] : null;
+			$course_id = isset( $_POST['course_id'] ) ? $_POST['course_id'] : null;
+			$post      = false;
 			if ( $name && $type ) {
 				$post_id = wp_insert_post(
 					array(
@@ -223,9 +227,9 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
 				);
 				if ( $post_id ) {
 					$post = get_post( $post_id );
-                    if( $course_id ) {
-                        update_post_meta($post_id, '_lpr_course', $course_id);
-                    }
+					if ( $course_id ) {
+						update_post_meta( $post_id, '_lpr_course', $course_id );
+					}
 				}
 			}
 			wp_send_json( $post );
@@ -237,12 +241,12 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
 			echo '__LP_JSON__';
 			if ( $id ) {
 				$name    = $_POST['name'];
-                $slug   = sanitize_title( $name );
+				$slug    = sanitize_title( $name );
 				$post_id = wp_update_post(
 					array(
 						'ID'         => $id,
 						'post_title' => $name,
-                        'post_name'  => $slug
+						'post_name'  => $slug
 					)
 				);
 				if ( $post_id ) {
@@ -254,17 +258,17 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
 
 		static function update_course_curriculum() {
 
-            $is_ajax = false;
-            if( ! empty( $_REQUEST['action'] ) && 'lpr_update_course_curriculum' == $_REQUEST['action'] ) {
-                $course_id = isset($_POST['course_id']) ? intval($_POST['course_id']) : 0;
-                $is_ajax = true;
-            }else{
-                if( LP()->course_post_type != get_post_type() ) return;
-                global $post;
-                $course_id = $post->ID;
-            }
-			$meta_key  = isset( $_POST['meta_key'] ) ? $_POST['meta_key'] : '_lpr_course_lesson_quiz';
-			$metadata  = isset( $_POST['_lpr_course_lesson_quiz'] ) ? $_POST['_lpr_course_lesson_quiz'] : false;
+			$is_ajax = false;
+			if ( !empty( $_REQUEST['action'] ) && 'lpr_update_course_curriculum' == $_REQUEST['action'] ) {
+				$course_id = isset( $_POST['course_id'] ) ? intval( $_POST['course_id'] ) : 0;
+				$is_ajax   = true;
+			} else {
+				if ( LP()->course_post_type != get_post_type() ) return;
+				global $post;
+				$course_id = $post->ID;
+			}
+			$meta_key = isset( $_POST['meta_key'] ) ? $_POST['meta_key'] : '_lpr_course_lesson_quiz';
+			$metadata = isset( $_POST['_lpr_course_lesson_quiz'] ) ? $_POST['_lpr_course_lesson_quiz'] : false;
 			if ( !$course_id ) {
 				echo '__LP_JSON__';
 				wp_send_json(
@@ -274,33 +278,33 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
 				);
 			}
 
-            $metadata = apply_filters( 'learn_press_course_curriculum', $metadata, $course_id );
+			$metadata = apply_filters( 'learn_press_course_curriculum', $metadata, $course_id );
 			update_post_meta( $course_id, $meta_key, $metadata );
-            do_action( 'learn_press_update_course_curriculum', $course_id, $metadata );
+			do_action( 'learn_press_update_course_curriculum', $course_id, $metadata );
 
-            //
-            global $wpdb;
-            if( $metadata ) foreach( $metadata as $section ){
-                if( !empty( $section['lesson_quiz'] ) && $lesson_quiz = $section['lesson_quiz'] ){
-                    $query = $wpdb->prepare( "
+			//
+			global $wpdb;
+			if ( $metadata ) foreach ( $metadata as $section ) {
+				if ( !empty( $section['lesson_quiz'] ) && $lesson_quiz = $section['lesson_quiz'] ) {
+					$query = $wpdb->prepare( "
                         DELETE FROM {$wpdb->postmeta}
                         WHERE meta_key = %s
                         AND ( meta_value = %d OR meta_value = %d OR meta_value = %s )
                         AND post_id IN(" . join( ',', $lesson_quiz ) . ")
                     ", '_lpr_course', $course_id, 0, '' );
 
-                    $wpdb->query( $query );
+					$wpdb->query( $query );
 
-                    $query = "INSERT INTO {$wpdb->postmeta}(`post_id`, `meta_key`, `meta_value`) VALUES";
-                    $query_values = array();
-                    foreach( $lesson_quiz as $id ){
-                        $query_values[] = $wpdb->prepare( "(%d, %s, %d)", $id, '_lpr_course', $course_id );
-                    }
-                    $query .= join( ",", $query_values );
-                    $wpdb->query( $query );
-                }
-            }
-            if( ! $is_ajax ) return;
+					$query        = "INSERT INTO {$wpdb->postmeta}(`post_id`, `meta_key`, `meta_value`) VALUES";
+					$query_values = array();
+					foreach ( $lesson_quiz as $id ) {
+						$query_values[] = $wpdb->prepare( "(%d, %s, %d)", $id, '_lpr_course', $course_id );
+					}
+					$query .= join( ",", $query_values );
+					$wpdb->query( $query );
+				}
+			}
+			if ( !$is_ajax ) return;
 			wp_send_json(
 				array(
 					'message' => __( 'Success', 'learn_press' )

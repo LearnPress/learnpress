@@ -162,6 +162,7 @@ class LP_Install {
 	static function install() {
 		self::_create_options();
 		self::_create_tables();
+		self::_create_files();
 
 		$current_version = get_option( 'learnpress_version' );
 		$current_db_version = get_option( 'learnpress_db_version' );
@@ -174,6 +175,31 @@ class LP_Install {
 		delete_option( 'learnpress_version' );
 		add_option( 'learnpress_version', LP()->version );
 
+	}
+
+	private static function _create_files() {
+		$upload_dir      = wp_upload_dir();
+		$files = array(
+			array(
+				'base' 		=> LP_LOG_PATH,
+				'file' 		=> '.htaccess',
+				'content' 	=> 'deny from all'
+			),
+			array(
+				'base' 		=> LP_LOG_PATH,
+				'file' 		=> 'index.html',
+				'content' 	=> ''
+			)
+		);
+
+		foreach ( $files as $file ) {
+			if ( wp_mkdir_p( $file['base'] ) && ! file_exists( trailingslashit( $file['base'] ) . $file['file'] ) ) {
+				if ( $file_handle = @fopen( trailingslashit( $file['base'] ) . $file['file'], 'w' ) ) {
+					fwrite( $file_handle, $file['content'] );
+					fclose( $file_handle );
+				}
+			}
+		}
 	}
 
 	private function _is_old_version() {

@@ -18,6 +18,9 @@ class LP_Email_New_Order extends LP_Email {
 		$this->subject = __( '[{site_title}] New course for review ({course_name}) - {course_date}', 'learn_press' );
 		$this->heading = __( 'New course', 'learn_press' );
 
+		add_action( 'learn_press_order_status_pending_to_processing_notification', array( $this, 'trigger' ) );
+		add_action( 'learn_press_order_status_pending_to_completed_notification', array( $this, 'trigger' ) );
+		add_action( 'learn_press_order_status_processing_to_completed_notification', array( $this, 'trigger' ) );
 
 		parent::__construct();
 	}
@@ -27,7 +30,7 @@ class LP_Email_New_Order extends LP_Email {
 		include_once $view;
 	}
 
-	function trigger( $course_id, $user ) {
+	function trigger( $order_id ) {
 
 		if ( !$this->enable ) {
 			return;
@@ -37,16 +40,17 @@ class LP_Email_New_Order extends LP_Email {
 		$this->find['course_name'] = '{course_name}';
 		$this->find['course_date'] = '{course_date}';
 
-		$this->replace['site_title']  = $this->get_blogname();
-		$this->replace['course_name'] = get_the_title( $course_id );
-		$this->replace['course_date'] = get_the_date( null, $course_id );
+		//$this->replace['site_title']  = $this->get_blogname();
+		//$this->replace['course_name'] = get_the_title( $course_id );
+		//$this->replace['course_date'] = get_the_date( null, $course_id );
 
 		$this->object = array(
-			'course' => $course_id,
-			'user'   => $user
+			'order' => $order_id
 		);
 
 		$return = $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
+
+		LP_Debug::instance()->add( array( 'action' =>  learn_press_get_order( $order_id ) ) );
 		return $return;
 	}
 
