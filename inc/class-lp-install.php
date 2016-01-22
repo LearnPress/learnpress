@@ -305,9 +305,9 @@ class LP_Install {
 				}
 			}
 		}
-		update_option( 'learn_press_course_base', '/courses', 'yes' );
+		//update_option( 'learn_press_course_base', '/courses', 'yes' );
 		update_option( 'learn_press_course_base_type', 'custom', 'yes' );
-
+		set_transient( 'learn_press_install', 'yes', DAYS_IN_SECONDS );
 	}
 
 	private static function _create_tables() {

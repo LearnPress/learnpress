@@ -47,12 +47,34 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 	 */
 	protected $method = '';
 
+	/**
+	 * @var null
+	 */
 	protected $paypal_url = null;
+
+	/**
+	 * @var null
+	 */
 	protected $paypal_payment_url = null;
+
+	/**
+	 * @var null
+	 */
 	protected $paypal_nvp_api_url = null;
+
+	/**
+	 * @var null
+	 */
 	protected $paypal_email = null;
+
+	/**
+	 * @var null
+	 */
 	protected $settings = null;
 
+	/**
+	 * @var array
+	 */
 	protected $line_items = array();
 
 	/**

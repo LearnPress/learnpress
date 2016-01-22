@@ -1,8 +1,8 @@
 <?php
-if( isset( $order_items ) ) {
+if ( isset( $order_items ) ) {
 	$currency_symbol = learn_press_get_currency_symbol( $order_items->currency );
-}else{
-	$currency_symbol = learn_press_get_currency_symbol( );
+} else {
+	$currency_symbol = learn_press_get_currency_symbol();
 }
 global $post;
 ?>
@@ -22,10 +22,12 @@ global $post;
 		</div>
 		<div class="order-user-meta">
 			<div class="user-display-name">
-				<?php $display_name = $order->get_user( 'display_name' ); echo empty( $display_name ) ? __( 'Guest', 'learn_press' ) : $display_name; ?>
+				<?php $display_name = $order->get_user( 'display_name' );
+				echo empty( $display_name ) ? __( 'Guest', 'learn_press' ) : $display_name; ?>
 			</div>
 			<div class="user-email">
-				<?php $user_email = $order->get_user( 'user_email' ); echo empty( $user_email ) ? '' : $user_email; ?>
+				<?php $user_email = $order->get_user( 'user_email' );
+				echo empty( $user_email ) ? '' : $user_email; ?>
 			</div>
 			<div class="user-ip-address">
 				<?php echo $order->user_ip_address; ?>
@@ -87,6 +89,11 @@ global $post;
 			</tfoot>
 		</table>
 	</div>
+	<?php if ( $note = get_the_excerpt( $order->id ) ) { ?>
+		<br />
+		<h3><?php _e( 'Customer Note', 'learn_press' ); ?></h3>
+		<p class="order-note description"><?php echo $note;?></p>
+	<?php } ?>
 </div>
 <script type="text/html" id="tmpl-learn-press-modal-add-order-courses">
 	<div id="learn-press-modal-add-order-courses" class="lp-modal-search" data-nonce="<?php echo wp_create_nonce( 'add_item_to_order' ); ?>">

@@ -21,12 +21,12 @@ if ( !defined( 'ABSPATH' ) ) {
 function learn_press_create_order( $order_data ) {
 	$order_data_defaults = array(
 		'ID'          => 0,
-		'post_author' => '0',
+		'post_author' => '1',
 		'post_parent' => '0',
 		'post_type'   => LP()->order_post_type,
 		'post_status' => 'lp-' . apply_filters( 'learn_press_default_order_status', 'pending' ),
 		'ping_status' => 'closed',
-		'post_title'  => __( 'Order on ', 'learn_press' ) . ' ' . current_time( "l jS F Y h:i:s A" )
+		'post_title'  => __( 'Order on', 'learn_press' ) . ' ' . current_time( "l jS F Y h:i:s A" )
 	);
 	$order_data_defaults = apply_filters( 'learn_press_defaults_order_data', $order_data_defaults );
 	$order_data          = wp_parse_args( $order_data, $order_data_defaults );

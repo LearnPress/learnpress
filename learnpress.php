@@ -310,7 +310,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 			//LP_Install::install();
 
 			// initial some tasks before page load
-			add_action( 'init', array( $this, 'init' ) );
+			add_action( 'init', array( $this, 'init' ), 15 );
 
 			add_action( 'template_redirect', 'learn_press_handle_purchase_request' );
 
@@ -333,6 +333,11 @@ if ( !class_exists( 'LearnPress' ) ) {
 			//$this->question_factory = LP_Question_Factory::instance();
 
 			LP_Emails::init_email_notifications();
+
+			if( get_transient( 'learn_press_install' ) == 'yes' ){
+				flush_rewrite_rules();
+				delete_transient( 'learn_press_install' );
+			}
 		}
 
 		function get_session() {

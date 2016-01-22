@@ -273,13 +273,13 @@ function learn_press_user_has_roles( $roles, $user_id = null ){
 
 function learn_press_edit_admin_bar() {
 	global $wp_admin_bar;
-	if ( ( $profile = learn_press_get_page_link( 'profile') ) && ( LP()->settings->get( 'admin_bar_link' ) == 'yes' ) ) {
+	if ( ( $profile = learn_press_get_page_id( 'profile') ) && get_post_type( $profile ) == 'page' && ( LP()->settings->get( 'admin_bar_link' ) == 'yes' ) ) {
 		$text = LP()->settings->get( 'admin_bar_link_text' );
 		$course_profile                   = array();
 		$course_profile['id']             = 'course_profile';
 		$course_profile['parent']         = 'user-actions';
-		$course_profile['title']          = $text ? $text : __( 'View Course Profile', 'learn_press' );
-		$course_profile['href']           = $profile;
+		$course_profile['title']          = $text ? $text : get_the_title( $profile );
+		$course_profile['href']           = learn_press_get_page_link( 'profile' );
 		$course_profile['meta']['target'] = LP()->settings->get( 'admin_bar_link_target' );
 		$wp_admin_bar->add_menu( $course_profile );
 	}

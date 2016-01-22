@@ -152,8 +152,8 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 * Register course post type
 		 */
 		static function register_post_type() {
-			$settings = LP_Settings::instance();
-			$labels   = array(
+			$settings         = LP_Settings::instance();
+			$labels           = array(
 				'name'               => _x( 'Courses', 'Post Type General Name', 'learn_press' ),
 				'singular_name'      => _x( 'Course', 'Post Type Singular Name', 'learn_press' ),
 				'menu_name'          => __( 'Courses', 'learn_press' ),
@@ -168,7 +168,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 				'not_found'          => sprintf( __( 'You have not got any course yet. Click <a href="%s">Add new</a> to start', 'learn_press' ), admin_url( 'post-new.php?post_type=lp_course' ) ),
 				'not_found_in_trash' => __( 'No course found in Trash', 'learn_press' ),
 			);
-			$course_base = $settings->get( 'course_base' );
+			$course_base      = $settings->get( 'course_base' );
 			$course_permalink = empty( $course_base ) ? _x( 'courses', 'slug', 'learn_press' ) : $course_base;
 
 			$args = array(
@@ -186,11 +186,10 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 				'taxonomies'         => array( 'course_category', 'course_tag' ),
 				'supports'           => array( 'title', 'editor', 'thumbnail', 'revisions', 'comments', 'author' ),
 				'hierarchical'       => true,
-				'rewrite'            => array(
-					'slug'         => $course_permalink,
-					'hierarchical' => true,
+				'rewrite'            => $course_permalink ? array(
+					'slug'         => untrailingslashit( $course_permalink ),
 					'with_front'   => false
-				)
+				) : false
 			);
 			register_post_type( LP_COURSE_CPT, $args );
 
@@ -397,7 +396,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						'type'    => 'radio',
 						'desc'    => __( 'If Paid be checked, An administrator will review then set course price and commission', 'learn_press' ),
 						'options' => array(
-							'no'     => __( 'Free', 'learn_press' ),
+							'no'  => __( 'Free', 'learn_press' ),
 							'yes' => __( 'Paid', 'learn_press' ),
 						),
 						'std'     => 'no',
@@ -613,7 +612,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 								}
 								// prevent update the meta of course for the items when update items
 								$tmp_post = $_POST;
-								$_POST = array();
+								$_POST    = array();
 								wp_update_post( $update_data );
 								$_POST = $tmp_post;
 							}
@@ -676,15 +675,14 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			$action = '';
 
 			// Course is submitted by instructor
-			if( learn_press_get_request( 'learn_press_submit_course_notice_reviewer' ) == 'yes' ) {
+			if ( learn_press_get_request( 'learn_press_submit_course_notice_reviewer' ) == 'yes' ) {
 				$action = 'learn_press_course_submit_for_reviewer';
-			}
-			// Course is submitted by admin
-			elseif( learn_press_get_request( 'learn_press_submit_course_notice_instructor' ) == 'yes' ) {
+			} // Course is submitted by admin
+			elseif ( learn_press_get_request( 'learn_press_submit_course_notice_instructor' ) == 'yes' ) {
 				$action = 'learn_press_course_submit_for_instructor';
 			}
 
-			if( !$action ){
+			if ( !$action ) {
 				return;
 			}
 
@@ -692,7 +690,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 				return;
 			}*/
 
-			$user = LP()->user;
+			$user    = LP()->user;
 			$message = learn_press_get_request( 'review_message' );
 
 			if ( !$message && !$user->is_instructor() && get_post_status( $post->ID ) == 'publish' ) {
@@ -706,13 +704,13 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 				$wpdb->query( $query );
 				do_action( 'learn_press_update_review_log', $wpdb->insert_id, $post->ID, $user->id );
 			}
-			if( $action == 'learn_press_course_submit_for_instructor' ){
-				if( get_post_status( $post->ID ) == 'publish' ){
+			if ( $action == 'learn_press_course_submit_for_instructor' ) {
+				if ( get_post_status( $post->ID ) == 'publish' ) {
 					do_action( 'learn_press_course_submit_approved', $post->ID, $user );
-				}else{
+				} else {
 					do_action( 'learn_press_course_submit_rejected', $post->ID, $user );
 				}
-			}else {
+			} else {
 				do_action( $action, $post->ID, $user );
 			}
 		}
@@ -723,7 +721,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 
 			if ( get_post_type() != LP()->course_post_type ) return;
 
-			$user = LP()->user;
+			$user                  = LP()->user;
 			$required_review       = LP()->settings->get( 'required_review' ) == 'yes';
 			$enable_edit_published = LP()->settings->get( 'enable_edit_published' ) == 'yes';
 
@@ -780,7 +778,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 				$columns = array_combine( $keys, $values );
 			} else {
 				$columns['sections'] = __( 'Content', 'learn_press' );
-				$columns['price'] = __( 'Price', 'learn_press' );
+				$columns['price']    = __( 'Price', 'learn_press' );
 			}
 
 			$columns['taxonomy-course_category'] = __( 'Categories', 'learn_press' );
@@ -833,21 +831,21 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 */
 		function post_review_message_box() {
 			global $post;
-			if( get_post_type( $post->ID ) != 'lp_course' ){
+			if ( get_post_type( $post->ID ) != 'lp_course' ) {
 				return false;
 			}
 
 			//$user = learn_press_get_current_user();
 			$course_user = learn_press_get_user( get_post_field( 'post_author', $post->ID ) );
-			if( $course_user->is_admin() ){
+			if ( $course_user->is_admin() ) {
 				return;
 			}
 
-			$required_review       = LP()->settings->get( 'required_review' ) == 'yes';
+			$required_review = LP()->settings->get( 'required_review' ) == 'yes';
 			//$enable_edit_published = LP()->settings->get( 'enable_edit_published' ) == 'yes';
 			//$is_publish            = get_post_status( $post->ID ) == 'publish';
 
-			if( !$required_review ){
+			if ( !$required_review ) {
 				return;
 			}
 			/*if( $enable_edit_published ){

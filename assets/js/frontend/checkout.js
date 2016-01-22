@@ -16,6 +16,8 @@ if (typeof window.LearnPress == 'undefined') {
 			this.$form = $('form[name="lp-checkout"]');
 			$doc.on('click', 'input[name="payment_method"]', this.selectPaymentMethod);
 			$doc.on('click', '#learn-press-checkout-login-button', this.login);
+
+			$('input[name="payment_method"]:checked').trigger('click');
 			this.$form.on('submit', this.doCheckout);
 		},
 		selectPaymentMethod: function () {

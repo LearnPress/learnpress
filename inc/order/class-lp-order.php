@@ -134,7 +134,7 @@ class LP_Order {
 		}
 	}
 
-	function set_payment_method( $payment_method ){
+	function set_payment_method( $payment_method ) {
 		if ( is_object( $payment_method ) ) {
 			update_post_meta( $this->id, '_payment_method', $payment_method->id );
 			update_post_meta( $this->id, '_payment_method_title', $payment_method->get_title() );
@@ -226,9 +226,9 @@ class LP_Order {
 	}
 
 	function get_item_meta( &$item ) {
-		if( $metas = get_metadata( 'learnpress_order_item', $item['id'] ) ){
-			foreach( $metas as $k => $v ){
-				$item[ preg_replace( '!^_!', '', $k ) ] = maybe_unserialize( $v[0] );
+		if ( $metas = get_metadata( 'learnpress_order_item', $item['id'] ) ) {
+			foreach ( $metas as $k => $v ) {
+				$item[preg_replace( '!^_!', '', $k )] = maybe_unserialize( $v[0] );
 			}
 		};
 	}
@@ -316,20 +316,20 @@ class LP_Order {
 		return $this->payment_method_title;
 	}
 
-	function get_view_order_url(){
+	function get_view_order_url() {
 		global $wp_query;
 		$view_order_url = learn_press_get_endpoint_url( 'view-order', $this->id, learn_press_get_page_link( 'profile' ) );
 		//
-		$user = learn_press_get_current_user();
+		$user                = learn_press_get_current_user();
 		$view_order_endpoint = LP()->settings->get( 'profile_endpoints.profile-order-details' );
-		if( !$view_order_endpoint ){
+		if ( !$view_order_endpoint ) {
 			$view_order_endpoint = 'order-details';
 		}
 
-		if( get_option( 'permalink_structure' ) ){
+		if ( get_option( 'permalink_structure' ) ) {
 			$view_order_url = learn_press_get_page_link( 'profile' ) . $user->user_login . '/' . $view_order_endpoint . '/' . $this->id;
-		}else {
-			$args = array(
+		} else {
+			$args         = array(
 				'user' => $user->user_login
 			);
 			$args['view'] = $view_order_endpoint;
@@ -344,7 +344,31 @@ class LP_Order {
 
 		return apply_filters( 'learn_press_view_order_url', $view_order_url, $this );
 	}
-	/*********************************/
+
+	public function add_note( $note ) {
+		if ( is_user_logged_in() ) {
+			$user                 = get_user_by( 'id', get_current_user_id() );
+			$comment_author       = $user->display_name;
+			$comment_author_email = $user->user_email;
+			$comment_post_ID      = $this->id;
+			$comment_author_url   = '';
+			$comment_content      = $note;
+			$comment_agent        = 'LearnPress';
+			$comment_type         = 'lp_order_note';
+			$comment_parent       = 0;
+			$comment_approved     = 1;
+
+			$commentdata          = apply_filters(
+				'learn_press_new_order_note_data',
+				compact( 'comment_post_ID', 'comment_author', 'comment_author_email', 'comment_author_url', 'comment_content', 'comment_agent', 'comment_type', 'comment_parent', 'comment_approved' ),
+				$this->id
+			);
+
+			$comment_id = wp_insert_comment( $commentdata );
+			return $comment_id;
+		}
+		return false;
+	}
 
 	/**
 	 * Get an instance of LP_Order by post ID or WP_Post object
