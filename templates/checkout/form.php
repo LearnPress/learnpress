@@ -22,7 +22,7 @@ do_action( 'learn_press_before_checkout_form', $checkout );
 $checkout_url = apply_filters( 'learn_press_get_checkout_url', LP()->cart->get_checkout_url() );
 ?>
 
-<form method="post" name="lp-checkout" class="lp-checkout" action="<?php echo esc_url( $checkout_url ); ?>" enctype="multipart/form-data">
+<form method="post" id="learn-press-checkout" name="lp-checkout" class="lp-checkout" action="<?php echo esc_url( $checkout_url ); ?>" enctype="multipart/form-data">
 
 	<?php do_action( 'learn_press_checkout_before_order_review' ); ?>
 

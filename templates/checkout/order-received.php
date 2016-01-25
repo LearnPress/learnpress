@@ -45,7 +45,7 @@ if( $order ){
 </table>
 
 	<?php do_action( 'learn_press_order_received_' . $order->payment_method, $order->id ); ?>
-	<?php do_action( 'learn_press_order_received', $order->id ); ?>
+	<?php do_action( 'learn_press_order_received', $order ); ?>
 
 <?php } else{ ?>
 

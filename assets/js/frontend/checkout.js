@@ -65,8 +65,15 @@ if (typeof window.LearnPress == 'undefined') {
 			return false;
 		},
 		doCheckout         : function () {
-			var $form = $(this);
-			if ($form.triggerHandler('checkout_place_order') !== false && $form.triggerHandler('checkout_place_order_' + $('#order_review').find('input[name=payment_method]:checked').val()) !== false) {
+			var $form = $(this),
+				$place_order = $form.find( '#learn-press-checkout'),
+				processing_text = $place_order.attr('data-processing-text'),
+				text = $place_order.attr('value');
+			if ($form.triggerHandler('learn_press_checkout_place_order') !== false && $form.triggerHandler('learn_press_checkout_place_order_' + $('#order_review').find('input[name=payment_method]:checked').val()) !== false) {
+				if( processing_text ){
+					$place_order.val(processing_text)
+				}
+				$place_order.prop('disabled', true);
 				$.ajax({
 					url     : LearnPress_Settings.siteurl +'/lp-checkout/?lp-ajax=checkout',
 					dataType: 'html',
@@ -80,14 +87,19 @@ if (typeof window.LearnPress == 'undefined') {
 							} else {
 								LearnPress.Checkout.showErrors('<div class="learn-press-error">Unknown error!</div>');
 							}
-						} else {
+						} else if( response.result == 'success'){
 							if (response.redirect) {
 								LearnPress.reload(response.redirect);
 							}
 						}
+						$place_order.val(text)
+						$place_order.prop('disabled', false)
 					},
 					error:	function( jqXHR, textStatus, errorThrown ) {
 						LearnPress.Checkout.showErrors('<div class="learn-press-error">'+errorThrown+'</div>');
+						$place_order.val(text)
+						$place_order.prop('disabled', false)
+
 					}
 				})
 			}

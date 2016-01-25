@@ -34,6 +34,16 @@ class LP_Gateway_Abstract {
 	public $order_button_text = '';
 
 	/**
+	 * @var null
+	 */
+	protected $title = null;
+
+	/**
+	 * @var null
+	 */
+	protected $description = null;
+
+	/**
 	 * Constructor
 	 */
 	function __construct() {

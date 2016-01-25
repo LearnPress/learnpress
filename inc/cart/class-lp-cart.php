@@ -383,9 +383,7 @@ function learn_press_clear_cart_after_payment() {
 		$order_id  = absint( $wp->query_vars['lp-order-received'] );
 		$order_key = isset( $_GET['key'] ) ? $_GET['key'] : '';
 
-		if ( $order_id > 0 ) {
-			$order = learn_press_get_order( $order_id );
-
+		if ( $order_id > 0 && ( $order = learn_press_get_order( $order_id ) ) ) {
 			if ( $order->order_key === $order_key ) {
 				LP()->cart->empty_cart();
 			}

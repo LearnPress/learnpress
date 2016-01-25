@@ -100,18 +100,27 @@ class LP_Order {
 	/**
 	 * Updates order to new status if needed
 	 *
-	 * @param string $new_status
+	 * @param mixed $new_status
+	 *
+	 * @return bool
+	 * @throws Exception
 	 */
 	function update_status( $new_status = 'pending' ) {
 		// Standardise status names.
 		$new_status = 'lp-' === substr( $new_status, 0, 3 ) ? substr( $new_status, 3 ) : $new_status;
 		$old_status = $this->get_status();
 
-		if ( $new_status !== $old_status || !in_array( $this->post_status, array_keys( learn_press_get_order_statuses() ) ) ) {
-			//print_r(array_keys( learn_press_get_order_statuses() ));die();
-
+		if ( $new_status !== $old_status && in_array( $new_status, array_keys( learn_press_get_order_statuses( false ) ) ) ) {
 			// Update the order
-			wp_update_post( array( 'ID' => $this->id, 'post_status' => 'lp-' . $new_status ) );
+			global $wpdb;
+			$updated = $wpdb->update( $wpdb->posts, array( 'post_status' => 'lp-' . $new_status ), array( 'ID' => $this->id ), array( '%s' ) );
+
+			if( $updated === false ){
+				throw new Exception( __( 'Error! Update order failed', 'learn_press' ) );
+				return false;
+			}
+			LP_Debug::instance()->add( 'Update order ' . $updated . ' status from ' . $old_status . ' to ' . $new_status );
+			LP_Debug::instance()->add( get_post( $updated ) );
 			$this->post_status = 'lp-' . $new_status;
 
 			// Status was changed

@@ -54,7 +54,7 @@ class LP_Gateways {
 		$_available_gateways = array();
 		foreach ( $this->payment_gateways as $slug => $gateway ) {
 			// let custom addon can define how is enable/disable
-			if ( apply_filters( 'learn_press_payment_gateway_available_' . $slug, true, $gateway ) ) {
+			if ( apply_filters( 'learn_press_payment_gateway_available_' . $slug, false, $gateway ) ) {
 				$_available_gateways[$slug] = $gateway;
 			};
 		}

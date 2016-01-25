@@ -209,15 +209,12 @@ class LP_Checkout {
 			}
 
 			$order_id = $this->create_order();
-
-
 			if ( $success && $this->payment_method && $order_id ) {
-				// TODO: checkout
 				LP()->session->order_awaiting_payment = $order_id;
 
 				// Process Payment
 				$result  = $this->payment_method->process_payment( $order_id );
-				$success = !empty( $result['result'] ) && $result['result'] == 'success';
+				$success = !empty( $result['result'] ) ? $result['result'] == 'success' : false;
 				// Redirect to success/confirmation/payment page
 				if ( $success ) {
 

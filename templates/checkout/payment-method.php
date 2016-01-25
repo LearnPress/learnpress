@@ -11,6 +11,7 @@ if ( !defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+if( apply_filters( 'learn_press_display_payment_method', true, $gateway->id ) ){
 ?>
 <li>
 	<label>
@@ -21,3 +22,4 @@ if ( !defined( 'ABSPATH' ) ) {
 		<div class="payment-method-form payment_method_<?php echo $gateway->id; ?>"><?php echo $payment_form; ?></div>
 	<?php } ?>
 </li>
+<?php } ?>

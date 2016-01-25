@@ -664,18 +664,24 @@ function learn_press_get_order_status_label( $order_id = 0 ) {
 	return !empty( $statuses[$status] ) ? $statuses[$status] : __( 'Pending', 'learn_press' );
 }
 
-function learn_press_get_order_statuses() {
+function learn_press_get_order_statuses( $prefix = true ) {
+	$prefix         = $prefix ? 'lp-' : '';
 	$order_statuses = array(
-		'lp-pending'    => _x( 'Pending Payment', 'Order status', 'learn_press' ),
-		'lp-processing' => _x( 'Processing', 'Order status', 'learn_press' ),
-		'lp-completed'  => _x( 'Completed', 'Order status', 'learn_press' )
+		$prefix . 'pending'    => _x( 'Pending', 'Order status', 'learn_press' ),
+		$prefix . 'processing' => _x( 'Processing', 'Order status', 'learn_press' ),
+		$prefix . 'completed'  => _x( 'Completed', 'Order status', 'learn_press' ),
+		$prefix . 'on-hold'    => _x( 'On Hold', 'Order status', 'learn_press' ),
+		$prefix . 'refunded'   => _x( 'Refunded', 'Order status', 'learn_press' ),
+		$prefix . 'failed'     => _x( 'Failed', 'Order status', 'learn_press' ),
+		$prefix . 'cancelled'  => _x( 'Cancelled', 'Order status', 'learn_press' )
 	);
+
 	return apply_filters( 'learn_press_order_statuses', $order_statuses );
 }
 
-function learn_press_get_order_status( $order_id ){
+function learn_press_get_order_status( $order_id ) {
 	$order = learn_press_get_order( $order_id );
-	if( $order ){
+	if ( $order ) {
 		return $order->get_status();
 	}
 	return false;

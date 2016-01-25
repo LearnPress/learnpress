@@ -82,6 +82,10 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 	 */
 	function __construct() {
 		$this->id          = 'paypal';
+
+		$this->method_title = 'Paypal';
+		$this->method_description = 'xxxxxxxxxxx';
+
 		$this->title       = 'Paypal';
 		$this->description = __( 'Pay with Paypal', 'learn_press' );
 
@@ -208,7 +212,7 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 	}
 
 	function paypal_available( $a, $b ) {
-		return LP()->settings->get( 'paypal_enable' );
+		return LP()->settings->get( 'paypal_enable' ) == 'yes';
 	}
 
 	function get_order( $raw_custom ) {
@@ -271,11 +275,7 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 	}
 
 	function get_payment_form() {
-		ob_start();
-		?>
-		Pay with Paypal
-		<?php
-		return ob_get_clean();
+		return $this->get_description();
 	}
 
 	function process_order_paypal_standard() {

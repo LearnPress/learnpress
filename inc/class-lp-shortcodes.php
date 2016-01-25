@@ -116,10 +116,12 @@ class LP_Shortcodes {
 		$order_id  = absint( $order_id );
 		$order_key = !empty( $_GET['key'] ) ? $_GET['key'] : '';
 
-		if ( $order_id > 0 ) {
-			$order = learn_press_get_order( $order_id );
+		if ( $order_id > 0 && ( $order = learn_press_get_order( $order_id ) ) ) {
 			if ( $order->order_key != $order_key )
 				unset( $order );
+		}else{
+			learn_press_display_message( __( 'Invalid order!', 'learn_press' ), 'error' );
+			return;
 		}
 
 		LP()->session->order_awaiting_payment = null;

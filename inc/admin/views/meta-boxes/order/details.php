@@ -32,7 +32,7 @@ global $post;
 			<div class="user-ip-address">
 				<?php echo $order->user_ip_address; ?>
 			</div>
-			<?php if ( $title = $order->get_payment_method_title() ) { ?>
+			<?php if ( $title = apply_filters( 'learn_press_display_payment_method_title', $order->get_payment_method_title(), $order->payment_method ) ) { ?>
 				<div class="payment-method-title">
 					<?php echo sprintf( __( 'Pay via <strong>%s</strong>', 'learn_press' ), $title ); ?>
 				</div>
