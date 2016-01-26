@@ -534,7 +534,9 @@ if ( !function_exists( 'learn_press_user_profile_tabs' ) ) {
 				'callback' => 'learn_press_profile_tab_orders_content'
 			)
 		);
-		return apply_filters( 'learn_press_user_profile_tabs', $defaults, $user );
+		$tabs = apply_filters( 'learn_press_user_profile_tabs', $defaults, $user );
+
+		return $tabs;
 	}
 }
 

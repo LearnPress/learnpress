@@ -60,7 +60,7 @@ class LP_Shortcodes {
 								if ( !$v ) {
 									$v = reset( $profile_endpoints );
 								}
-								if ( !in_array( $v, $profile_endpoints ) ) {
+								if ( !in_array( $v, apply_filters( 'learn_press_profile_tab_endpoints', $profile_endpoints ) ) ) {
 									learn_press_404_page();
 								}
 							}
