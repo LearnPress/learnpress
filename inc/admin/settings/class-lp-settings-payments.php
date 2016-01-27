@@ -3,12 +3,12 @@
 /**
  * Class LP_Settings_Payment
  *
- * @author ThimPress
+ * @author  ThimPress
  * @package LearnPress/Admin/Classes
  * @version 1.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
+if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
@@ -19,6 +19,7 @@ class LP_Settings_Payments extends LP_Settings_Base {
 	function __construct() {
 		$this->id   = 'payments';
 		$this->text = __( 'Payments', 'learn_press' );
+
 		parent::__construct();
 	}
 
@@ -28,8 +29,12 @@ class LP_Settings_Payments extends LP_Settings_Base {
 	function get_sections() {
 		$gateways = LP_Gateways::instance()->get_gateways();
 		$sections = array();
-		if( $gateways ) foreach( $gateways as $id => $gateway ){
-			$sections[ $id ] = !empty( $gateway->method_title ) ? $gateway->method_title : ucfirst( $gateway->id );
+		if ( $gateways ) foreach ( $gateways as $id => $gateway ) {
+			$sections[$id] = array(
+				'id'          => $id,
+				'title'       => !empty( $gateway->method_title ) ? $gateway->method_title : ucfirst( $gateway->id ),
+				'description' => !empty( $gateway->method_description ) ? $gateway->method_description : ''
+			);
 		}
 		return $sections;
 	}
@@ -37,7 +42,12 @@ class LP_Settings_Payments extends LP_Settings_Base {
 	function output() {
 		$section = $this->section;
 		?>
-		<h3 class=""><?php echo $this->section['text']; ?></h3>
+		<h3 class="learn-press-settings-title"><?php echo $this->section['title']; ?></h3>
+		<?php if ( !empty( $this->section['description'] ) ) : ?>
+			<p class="description">
+				<?php echo $this->section['description']; ?>
+			</p>
+		<?php endif; ?>
 		<table class="form-table">
 			<tbody>
 			<?php

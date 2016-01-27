@@ -77,13 +77,13 @@ class LP_Settings_Base {
 			$array_keys = array_keys( $sections );
 			if ( !$current_section ) $current_section = reset( $array_keys );
 			if ( !empty( $sections[$current_section] ) ) {
-				$this->section = array( 'id' => $current_section, 'text' => $sections[$current_section] );
+				$this->section = $sections[$current_section];
 			} else {
-				$this->section = array( 'id' => null, 'text' => '' );
+				$this->section = array( 'id' => null, 'title' => '' );
 			}
 
 		} else {
-			$this->section = array( 'id' => null, 'text' => '' );
+			$this->section = array( 'id' => null, 'title' => '' );
 		}
 
 		if ( $sections = $this->get_sections() ) foreach ( $sections as $id => $text ) {
@@ -110,11 +110,11 @@ class LP_Settings_Base {
 		if ( $sections && sizeof( $sections ) > 1 ) {
 			$array_keys = array_keys( $sections );
 			echo '<ul class="subsubsub clearfix">';
-			foreach ( $sections as $name => $gateway ) {
+			foreach ( $sections as $name => $section ) {
 				?>
 				<li>
 					<a href="<?php echo '?page=learn_press_settings&tab=' . $this->id . '&section=' . sanitize_title( $name ); ?>" class="<?php echo $current_section == $name ? 'current' : ''; ?>">
-						<?php echo $gateway; ?>
+						<?php echo $section['title']; ?>
 					</a>
 					<?php echo( end( $array_keys ) == $name ? '' : '|' ); ?>
 				</li>

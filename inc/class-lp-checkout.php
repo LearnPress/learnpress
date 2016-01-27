@@ -214,15 +214,12 @@ class LP_Checkout {
 
 				// Process Payment
 				$result  = $this->payment_method->process_payment( $order_id );
+
 				$success = !empty( $result['result'] ) ? $result['result'] == 'success' : false;
 				// Redirect to success/confirmation/payment page
 				if ( $success ) {
-
 					$result = apply_filters( 'learn_press_payment_successful_result', $result, $order_id );
-
-					// remove cart
 					//LP()->cart->empty_cart();
-
 					if ( is_ajax() ) {
 						learn_press_send_json( $result );
 					} else {

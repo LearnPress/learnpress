@@ -32,11 +32,14 @@ class LP_Settings_Emails extends LP_Settings_Base {
 		$emails = LP_Emails::instance()->emails;
 
 		$sections = array(
-			'general'          => __( 'General options', 'learn_press' )
+			'general' => array( 'id' => 'general', 'title' => __( 'General options', 'learn_press' ) )
 		);
 
-		if( $emails ) foreach( $emails as $email ){
-			$sections[ $email->id ] = $email->title;
+		if ( $emails ) foreach ( $emails as $email ) {
+			$sections[$email->id] = array(
+				'id'    => $email->id,
+				'title' => $email->title
+			);
 		}
 
 
@@ -70,10 +73,10 @@ class LP_Settings_Emails extends LP_Settings_Base {
 
 	}
 
-	function get_email_class( $id ){
+	function get_email_class( $id ) {
 		$emails = LP_Emails::instance()->emails;
-		if( $emails ) foreach( $emails as $email ){
-			if( $email->id == $id ){
+		if ( $emails ) foreach ( $emails as $email ) {
+			if ( $email->id == $id ) {
 				return $email;
 			}
 		}
@@ -89,37 +92,37 @@ class LP_Settings_Emails extends LP_Settings_Base {
 	}
 
 	function output_section_new_course() {
-		if( $email = $this->get_email_class( 'new_course' ) ){
+		if ( $email = $this->get_email_class( 'new_course' ) ) {
 			$email->admin_options( $this );
 		}
 	}
 
 	function output_section_rejected_course() {
-		if( $email = $this->get_email_class( 'rejected_course' ) ){
+		if ( $email = $this->get_email_class( 'rejected_course' ) ) {
 			$email->admin_options( $this );
 		}
 	}
 
 	function output_section_new_order() {
-		if( $email = $this->get_email_class( 'new_order' ) ){
+		if ( $email = $this->get_email_class( 'new_order' ) ) {
 			$email->admin_options( $this );
 		}
 	}
 
 	function output_section_published_course() {
-		if( $email = $this->get_email_class( 'published_course' ) ){
+		if ( $email = $this->get_email_class( 'published_course' ) ) {
 			$email->admin_options( $this );
 		}
 	}
 
 	function output_section_enrolled_course() {
-		if( $email = $this->get_email_class( 'enrolled_course' ) ){
+		if ( $email = $this->get_email_class( 'enrolled_course' ) ) {
 			$email->admin_options( $this );
 		}
 	}
 
 	function output_section_finished_course() {
-		if( $email = $this->get_email_class( 'finished_course' ) ){
+		if ( $email = $this->get_email_class( 'finished_course' ) ) {
 			$email->admin_options( $this );
 		}
 	}
@@ -141,10 +144,10 @@ class LP_Settings_Emails extends LP_Settings_Base {
 			array(
 				array(
 					'title'   => __( 'Profile page', 'learn_press' ),
-					'id'       => $this->get_field_name( 'profile_page_id' ),
-					'id'       => $this->get_field_name( 'profile_page_id' ),
-					'default'  => '',
-					'type'     => 'pages-dropdown'
+					'id'      => $this->get_field_name( 'profile_page_id' ),
+					'id'      => $this->get_field_name( 'profile_page_id' ),
+					'default' => '',
+					'type'    => 'pages-dropdown'
 				)
 			)
 		);

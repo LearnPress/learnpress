@@ -13,8 +13,14 @@ class LP_Settings_Pages extends LP_Settings_Base {
 
 	function get_sections() {
 		$sections = array(
-			'profile'          => __( 'Profile', 'learn_press' ),
-			'become_a_teacher' => __( 'Become a teacher', 'learn_press' )
+			'profile'          => array(
+				'id'    => 'profile',
+				'title' => __( 'Profile', 'learn_press' )
+			),
+			'become_a_teacher' => array(
+				'id'    => 'become_a_teacher',
+				'title' => __( 'Become a teacher', 'learn_press' )
+			)
 		);
 		return $sections = apply_filters( 'learn_press_settings_sections_' . $this->id, $sections );
 	}
@@ -60,8 +66,8 @@ class LP_Settings_Pages extends LP_Settings_Base {
 					'default' => 'private',
 					'type'    => 'select',
 					'options' => array(
-						'private'  => __( 'Private (Only account own)', 'learn_press' ),
-						'public' => __( 'Public', 'learn_press' )
+						'private' => __( 'Private (Only account own)', 'learn_press' ),
+						'public'  => __( 'Public', 'learn_press' )
 					)
 				),
 				array(

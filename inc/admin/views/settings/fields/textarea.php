@@ -7,8 +7,14 @@ $option_value = self::get_option( $options['id'], $options['default'] );
 		<?php //echo $tooltip_html; ?>
 	</th>
 	<td class="forminp forminp-<?php echo sanitize_title( $options['type'] ) ?>">
-		<?php if( !empty( $options['editor'] ) && $options['editor'] == true ){?>
-			<?php wp_editor( $option_value, $options['id'], array( 'textarea_name' => $options['id'] ) );?>
+		<?php if( !empty( $options['editor'] ) && $options['editor'] !== false ){?>
+			<?php
+			$editor_args = array( 'textarea_name' => $options['id'] );
+			if( is_array( $options['editor'] ) ){
+				$editor_args = array_merge( $editor_args, $options['editor'] );
+			}
+			wp_editor( $option_value, $options['id'], $editor_args );
+			?>
 		<?php }else{ ?>
 		<textarea
 			name="<?php echo esc_attr( $options['id'] ); ?>"
