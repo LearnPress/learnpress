@@ -71,7 +71,19 @@ class LP_Session {
 	 * @return mixed
 	 */
 	static function get( $key ) {
-		return !empty( $_SESSION['learn_press'][$key] ) ? $_SESSION['learn_press'][$key] : false;
+		$content = !empty( $_SESSION['learn_press'][$key] ) ? $_SESSION['learn_press'][$key] : false;
+		if ( $key == 'cart' && $content ) {
+			if ( !empty( $content['items'] ) ) {
+				$total = 0;
+				foreach ( $content['items'] as $id => $data ) {
+					$price             = get_post_meta( $data['item_id'], '_lp_price', true );
+					$content['items'][$id]['subtotal'] = $content['items'][$id]['total'] = $data['quantity'] * $price;
+					$total += $content['items'][$id]['total'];
+				}
+				$content['subtotal'] = $content['total'] = $total;
+			}
+		}
+		return $content;
 	}
 
 	/**

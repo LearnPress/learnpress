@@ -372,8 +372,14 @@ abstract class LP_Abstract_Course {
 	 * @return array
 	 */
 	function get_quizzes() {
-		$quizzes = array();
-		return apply_filters( 'learn_press_get_course_quizzes', $quizzes, $this );
+		$items = $this->get_curriculum_items(
+			array(
+				'force' => false,
+				'group' => true,
+			)
+		);
+		$quizzes = !empty( $items['quizzes'] ) ? $items['quizzes'] : false;
+		return apply_filters( 'learn_press_course_quizzes', $quizzes, $this );
 	}
 
 	/**
@@ -382,8 +388,14 @@ abstract class LP_Abstract_Course {
 	 * @return array
 	 */
 	function get_lessons() {
-		$lessons = array();
-		return apply_filters( 'learn_press_get_course_lesson', $lessons, $this );
+		$items = $this->get_curriculum_items(
+			array(
+				'force' => false,
+				'group' => true,
+			)
+		);
+		$lessons = !empty( $items['lessons'] ) ? $items['lessons'] : false;
+		return apply_filters( 'learn_press_course_lessons', $lessons, $this );
 	}
 
 	/**
@@ -607,5 +619,33 @@ abstract class LP_Abstract_Course {
 			return ob_get_clean();
 		}
 		return false;
+	}
+
+	function evaluate_course_results( $user_id = 0 ){
+		if( !$user_id ){
+			$user_id = get_current_user_id();
+		}
+		if( $this->course_result == 'evaluate_lesson' ){
+			$results = $this->_evaluate_course_by_lesson( $user_id );
+		}
+		return apply_filters( 'learn_press_evaluation_course_results', $results );
+	}
+
+	function _evaluate_course_by_lesson( $user_id ){
+		global $wpdb;
+		$course_lessons = $this->get_lessons();
+		LP_Debug::instance()->add( $course_lessons );
+		if( !$course_lessons ){
+			return 1;
+		}
+		$query = $wpdb->prepare("
+			SELECT count(user_id)
+			FROM {$wpdb->prefix}learnpress_user_lessons ul
+			INNER JOIN {$wpdb->posts} l ON l.ID = ul.lesson_id
+			WHERE ul.user_id = %d
+			AND status = %s
+		", $user_id, 'completed' );
+		$completed_lessons = $wpdb->get_var( $query );
+		return apply_filters( 'learn_press_evaluation_course_lesson', $completed_lessons / sizeof( $course_lessons ), $this->id, $user_id );
 	}
 }

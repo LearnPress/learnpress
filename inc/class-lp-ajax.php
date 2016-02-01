@@ -308,6 +308,8 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 		 * Load lesson content
 		 */
 		public static function load_lesson_content() {
+
+			learn_press_debug( $_REQUEST );
 			global $post;
 
 			$lesson_id = $_POST['lesson_id'];
@@ -439,6 +441,25 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 		 * Complete lesson
 		 */
 		public static function complete_lesson() {
+			$nonce = learn_press_get_request( 'nonce' );
+			$item_id = learn_press_get_request( 'id' );
+			$post = get_post( $item_id );
+			if( !$post || ( $post && !wp_verify_nonce( $nonce, sprintf( 'learn-press-complete-%s-%d', $post->post_type, $post->ID ) ) ) ){
+				throw new Exception( __( 'Error ', 'learn_press' ) );
+			}
+			$user = learn_press_get_current_user();
+
+			$response = array(
+				'result' => 'error'
+			);
+			if( $user->complete_lesson( $item_id ) ){
+				ob_start();
+				learn_press_display_message( __( 'Congratulations! You have completed this lesson.', 'learn_press' ) );
+				$response['message'] = ob_get_clean();
+				$response['result'] = 'success';
+			}
+			learn_press_send_json($response);
+			die();
 			global $post;
 			$user_id   = get_current_user_id();
 			$lesson_id = !empty( $_POST['lesson'] ) ? $_POST['lesson'] : 0;

@@ -266,6 +266,15 @@ if ( !function_exists( 'learn_press_single_course_description' ) ) {
 	}
 }
 
+if ( !function_exists( 'learn_press_course_content_lesson' ) ) {
+	/**
+	 * Display course description
+	 */
+	function learn_press_course_content_lesson() {
+		learn_press_get_template( 'lesson/summary.php' );
+	}
+}
+
 if ( !function_exists( 'learn_press_single_course_lesson_content' ) ) {
 	/**
 	 * Display lesson content

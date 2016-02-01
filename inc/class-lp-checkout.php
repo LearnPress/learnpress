@@ -169,6 +169,15 @@ class LP_Checkout {
 
 			$success = true;
 
+			if( LP()->cart->is_empty() ){
+				learn_press_send_json(
+					array(
+						'result' => 'success',
+						'redirect' => learn_press_get_page_link( 'checkout' )
+					)
+				);
+			}
+
 			if ( empty( $_REQUEST['payment_method'] ) ) {
 				$success = false;
 				learn_press_add_notice( __( 'Please select a payment method', 'learn_press' ), 'error' );

@@ -407,6 +407,18 @@ class LP_Abstract_User {
 		return apply_filters( 'learn_press_user_current_quiz_question', $question_id, $quiz_id, $this );
 	}
 
+	function get_finished_courses(){
+		global $wpdb;
+		$query = $wpdb->prepare("
+			SELECT p.*, uc.start_time, uc.end_time, uc.order_id
+			FROM {$wpdb->posts} p
+			INNER JOIN {$wpdb->prefix}learnpress_user_courses uc ON p.ID = uc.course_id
+			WHERE uc.user_id = %d
+			AND uc.status = %s
+		", $this->id, 'finished');
+		return apply_filters( 'learn_press_user_finished_courses', $wpdb->get_results( $query ) );
+	}
+
 	function save_quiz_question( $question_id, $answer ) {
 
 	}
@@ -512,7 +524,7 @@ class LP_Abstract_User {
 	 * @return bool
 	 */
 	function can_purchase_course( $course_id ) {
-		$course       = learn_press_get_course( $course_id );
+		$course      = learn_press_get_course( $course_id );
 		$purchasable = $course->is_purchasable() && !$this->has_purchased_course( $course_id );
 		return apply_filters( 'learn_press_user_can_purchase_course', $purchasable, $this, $course_id );
 	}
@@ -527,10 +539,11 @@ class LP_Abstract_User {
 	function can_enroll_course( $course_id ) {
 		$course = LP_Course::get_course( $course_id );
 		// if the course payment is off and required enroll
-		$enrollable = $course && /* $course->payment == 'no' &&*/ $course->required_enroll != 'yes';
+		$enrollable = $course && /* $course->payment == 'no' &&*/
+			$course->required_enroll != 'yes';
 
 		// if user cannot enroll by course settings above, check order
-		if ( !$enrollable && ( $order_id = $this->has_purchased_course( $course_id ) ) ){
+		if ( !$enrollable && ( $order_id = $this->has_purchased_course( $course_id ) ) ) {
 			$order      = LP_Order::instance( $order_id );
 			$enrollable = !$this->has_enrolled_course( $course_id ) && $order && $order->has_status( 'completed' );
 		}
@@ -639,22 +652,22 @@ class LP_Abstract_User {
 	 */
 	function has_finished_course( $course_id, $force = false ) {
 		static $courses = array();
-		if( empty( $courses[ $course_id ] ) || $force ){
+		if ( empty( $courses[$course_id] ) || $force ) {
 			global $wpdb;
-			$query = $wpdb->prepare("
+			$query               = $wpdb->prepare( "
 				SELECT count(user_id)
 				FROM {$wpdb->prefix}learnpress_user_courses uc
 				INNER JOIN {$wpdb->posts} c ON c.ID = uc.course_id
 				INNER JOIN {$wpdb->posts} o ON o.ID = uc.order_id
-				INNER JOIN {$wpdb->postmeta} om ON om.post_id = o.ID AND om.meta_value = %s AND om.meta_value = %d
+				INNER JOIN {$wpdb->postmeta} om ON om.post_id = o.ID AND om.meta_key = %s AND om.meta_value = %d
 				WHERE uc.user_id = %d
 				AND uc.course_id = %d
 				AND uc.status = %s
 				AND o.post_status = %s
-			", '_user_id', $this->id, $this->id, $course_id, 'finished', 'completed' );
-			$courses[ $course_id ] = $wpdb->get_var( $query ) > 0 ? 'yes' : 'no';
+			", '_user_id', $this->id, $this->id, $course_id, 'finished', 'lp-completed' );
+			$courses[$course_id] = $wpdb->get_var( $query ) > 0 ? 'yes' : 'no';
 		}
-		return apply_filters( 'learn_press_user_has_finished_course', $courses[ $course_id ] == 'yes', $this, $course_id );
+		return apply_filters( 'learn_press_user_has_finished_course', $courses[$course_id] == 'yes', $this, $course_id );
 	}
 
 	/**
@@ -682,6 +695,40 @@ class LP_Abstract_User {
 			$completed = $progress->status == 'completed';
 		}
 		return apply_filters( 'learn_press_user_has_completed_quiz', $completed, $quiz_id, $this );
+	}
+
+	function complete_lesson( $lesson_id ) {
+		global $wpdb;
+		do_action( 'learn_press_before_user_complete_lesson', $lesson_id, $this );
+		$updated = $wpdb->update(
+			$wpdb->prefix . 'learnpress_user_lessons',
+			array(
+				'end_time' => current_time( 'mysql' ),
+				'status'   => 'completed'
+			),
+			array(
+				'user_id'   => $this->id,
+				'lesson_id' => $lesson_id,
+			),
+			array( '%s', '%s' ),
+			array( '%d', '%d' )
+		);
+		do_action( 'learn_press_user_complete_lesson', $lesson_id, $this );
+		return $updated ? $updated : 0;
+	}
+
+	function has_completed_lesson( $lesson_id ) {
+		static $lessons = array();
+		if ( empty( $lessons[$lesson_id] ) ) {
+			global $wpdb;
+			$query               = $wpdb->prepare( "
+				SELECT status FROM {$wpdb->prefix}learnpress_user_lessons
+				WHERE user_id = %d
+					AND lesson_id = %d
+			", $this->id, $lesson_id );
+			$lessons[$lesson_id] = $wpdb->get_var( $query );
+		}
+		return apply_filters( 'learn_press_user_has_completed_lesson', $lessons[$lesson_id] == 'completed', $lesson_id, $this );
 	}
 
 	/**
@@ -900,7 +947,7 @@ class LP_Abstract_User {
 		$inserted = 0;
 
 		$check = apply_filters( 'learn_press_before_enroll_course', true, $this, $course_id );
-		if( !$check ){
+		if ( !$check ) {
 			return false;
 		}
 		if ( $wpdb->insert(
@@ -921,7 +968,7 @@ class LP_Abstract_User {
 			do_action( 'learn_press_user_enrolled_course', $this, $course_id, $inserted );
 
 		} else {
-			learn_press_debug($wpdb);
+			learn_press_debug( $wpdb );
 			do_action( 'learn_press_user_enroll_course_failed', $this, $course_id, $inserted );
 		}
 		return $inserted;
@@ -957,9 +1004,9 @@ class LP_Abstract_User {
 		return $wpdb->get_results( $query );
 	}
 
-	function get_orders(){
+	function get_orders() {
 		global $wpdb;
-		$query = $wpdb->prepare("
+		$query  = $wpdb->prepare( "
 			SELECT o.*
 			FROM {$wpdb->posts} o
 			INNER JOIN {$wpdb->postmeta} om ON om.post_id = o.ID AND om.meta_key = %s

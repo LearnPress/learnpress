@@ -296,8 +296,7 @@ class LP_Cart {
 	}
 
 	function needs_payment() {
-		// TODO: check if need payment
-		return true;
+		return apply_filters( 'learn_press_cart_needs_payment', true, $this );
 	}
 
 	/**

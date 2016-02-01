@@ -383,10 +383,10 @@ class LP_Order {
 	 * Get an instance of LP_Order by post ID or WP_Post object
 	 *
 	 * @param $order
-	 *
+	 * @param $force
 	 * @return LP_Order
 	 */
-	static function instance( $order ) {
+	static function instance( $order, $force = true ) {
 		$post = $order;
 		if ( $order instanceof WP_Post ) {
 			$id = $order->ID;
@@ -395,7 +395,7 @@ class LP_Order {
 		} else {
 			$id = $order;
 		}
-		if ( empty( self::$_instance[$id] ) ) {
+		if ( empty( self::$_instance[$id] ) || $force ) {
 			self::$_instance[$id] = new self( $post );
 		}
 		return self::$_instance[$id];

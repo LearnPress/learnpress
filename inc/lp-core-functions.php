@@ -1092,6 +1092,10 @@ function learn_press_get_enrolled_courses( $user_id ) {
  * @return WP_Query
  */
 function learn_press_get_passed_courses( $user_id ) {
+
+	$user = learn_press_get_current_user();
+	return $user->get_finished_courses();
+
 	$pid = get_user_meta( $user_id, '_lpr_course_finished', true );
 	if ( !$pid ) {
 		$pid = array( 0 );

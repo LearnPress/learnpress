@@ -67,7 +67,7 @@ function learn_press_create_order( $order_data ) {
 		update_post_meta( $order_id, '_order_version', '1.0' );
 	}
 
-	return LP_Order::instance( $order_id );
+	return LP_Order::instance( $order_id, true );
 }
 
 /**

@@ -13,7 +13,7 @@ if ( !defined( 'ABSPATH' ) ) {
 
 global $course;
 
-if ( !$course->is_required_enroll() ){
+if ( !$course->is_required_enroll() ) {
 	return;
 }
 
@@ -29,27 +29,29 @@ $enroll_button_text   = apply_filters( 'learn_press_enroll_button_loading_text',
 
 <?php else: ?>
 	<?php if ( $user->has( 'purchased-course', $course->id ) ) : ?>
-
-		<?php if ( $user->can( 'enroll-course', $course->id ) ) : ?>
-
-			<form name="enroll-course" class="enroll-course" method="post" enctype="multipart/form-data">
-				<?php do_action( 'learn_press_before_enroll_button' ); ?>
-
-				<input type="hidden" name="lp-ajax" value="enroll-course" />
-				<input type="hidden" name="enroll-course" value="<?php echo $course->id; ?>" />
-				<input type="hidden" name="_wp_http_referer" value="<?php echo get_the_permalink(); ?>" />
-				<button class="button enroll-button"><?php echo $enroll_button_text; ?></button>
-
-				<?php do_action( 'learn_press_after_enroll_button' ); ?>
-			</form>
-
+		<?php if ( $user->has( 'finished-course', $course->id ) ): ?>
+			<?php learn_press_display_message( __( 'Congratulations! You have finished this course', 'learn_press' ) ); ?>
 		<?php else: ?>
+			<?php if ( $user->can( 'enroll-course', $course->id ) ) : ?>
 
-			<?php learn_press_display_message( apply_filters( 'learn_press_user_can_not_enroll_course_message', __( 'You have already purchased this course. Please wait for approve', 'learn_press' ), $course, $user ) ); ?>
+				<form name="enroll-course" class="enroll-course" method="post" enctype="multipart/form-data">
+					<?php do_action( 'learn_press_before_enroll_button' ); ?>
 
+					<input type="hidden" name="lp-ajax" value="enroll-course" />
+					<input type="hidden" name="enroll-course" value="<?php echo $course->id; ?>" />
+					<input type="hidden" name="_wp_http_referer" value="<?php echo get_the_permalink(); ?>" />
+					<button class="button enroll-button"><?php echo $enroll_button_text; ?></button>
+
+					<?php do_action( 'learn_press_after_enroll_button' ); ?>
+				</form>
+
+			<?php else: ?>
+
+				<?php learn_press_display_message( apply_filters( 'learn_press_user_can_not_enroll_course_message', __( 'You have already purchased this course. Please wait for approve', 'learn_press' ), $course, $user ) ); ?>
+
+			<?php endif; ?>
 		<?php endif; ?>
-
-	<?php elseif( $user->can( 'purchase-course', $course->id ) ) : ?>
+	<?php elseif ( $user->can( 'purchase-course', $course->id ) ) : ?>
 
 		<?php if ( LP()->cart->has_item( $course->id ) ) { ?>
 			<?php learn_press_display_message( sprintf( __( 'This course is already added to your cart <a href="%s" class="button view-cart-button">%s</a>', 'learn_press' ), learn_press_get_page_link( 'cart' ), __( 'View Cart', 'learn_press' ) ) ); ?>

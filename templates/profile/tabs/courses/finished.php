@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 $heading = apply_filters( 'learn_press_profile_tab_courses_finished_heading', __( 'Finished', 'learn_press' ) );
 $courses = learn_press_get_passed_courses( $user->id );
-
+global $post;
 ?>
 
 <?php if ( $heading ): ?>
@@ -23,15 +23,15 @@ $courses = learn_press_get_passed_courses( $user->id );
 
 <?php endif; ?>
 
-<?php if ( $courses->have_posts() ) : ?>
+<?php if ( $courses ) : ?>
 
 	<ul class="profile-courses courses-list enrolled">
 
-		<?php while ( $courses->have_posts() ) : $courses->the_post(); ?>
+		<?php foreach ( $courses as $post ): setup_postdata( $post ); ?>
 
 			<?php learn_press_get_template( 'profile/tabs/courses/loop.php' ); ?>
 
-		<?php endwhile; ?>
+		<?php endforeach; ?>
 	</ul>
 
 <?php else: ?>

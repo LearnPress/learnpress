@@ -106,7 +106,7 @@ if (typeof LearnPress == 'undefined') window.LearnPress = {};
 	function complete_lesson(event) {
 		event.preventDefault();
 		if (!confirm(learn_press_js_localize.confirm_complete_lesson)) return;
-		var lesson = $(this).data('id');
+		var lesson = $(this).attr('data-id');
 		LearnPress.complete_lesson(lesson);
 	}
 
@@ -124,6 +124,7 @@ if (typeof LearnPress == 'undefined') window.LearnPress = {};
 	}
 
 	function load_lesson(evt) {
+		return;
 		evt.preventDefault();
 		var $link = $(this),
 			$parent = $link.parent(),

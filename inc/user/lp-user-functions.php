@@ -219,8 +219,8 @@ function learn_press_add_user_roles() {
 
 add_action( 'init', 'learn_press_add_user_roles' );
 
-function learn_press_get_user_questions( $user_id = null, $args = array() ){
-	if( !$user_id ) {
+function learn_press_get_user_questions( $user_id = null, $args = array() ) {
+	if ( !$user_id ) {
 		$user_id = get_current_user_id();
 	}
 	return learn_press_get_user( $user_id )->get_questions( $args );
@@ -230,40 +230,41 @@ function learn_press_get_user_questions( $user_id = null, $args = array() ){
  * Get the type of current user
  *
  * @param null $check_type
+ *
  * @return bool|string
  */
-function learn_press_current_user_is( $check_type = null ){
+function learn_press_current_user_is( $check_type = null ) {
 	global $current_user;
 	$user_roles = $current_user->roles;
-	$user_type = '';
+	$user_type  = '';
 
 	// backward compatible
-	if( in_array( 'lpr_teacher', $user_roles ) ){
+	if ( in_array( 'lpr_teacher', $user_roles ) ) {
 		$user_type = 'instructor';
-	} elseif ( in_array( 'lp_teacher', $user_roles ) ){
+	} elseif ( in_array( 'lp_teacher', $user_roles ) ) {
 		$user_type = 'instructor';
-	} elseif ( in_array( 'administrator', $user_roles ) ){
+	} elseif ( in_array( 'administrator', $user_roles ) ) {
 		$user_type = 'administrator';
 	}
 	return $check_type ? $check_type == $user_type : $user_type;
 }
 
-function learn_press_user_has_roles( $roles, $user_id = null ){
+function learn_press_user_has_roles( $roles, $user_id = null ) {
 	$has_role = false;
-	if( !$user_id ) {
+	if ( !$user_id ) {
 		$user = wp_get_current_user();
-	}else{
+	} else {
 		$user = get_user_by( 'id', $user_id );
 	}
 	$available_roles = (array) $user->roles;
-	if( is_array( $roles ) ){
-		foreach( $roles as $role ){
+	if ( is_array( $roles ) ) {
+		foreach ( $roles as $role ) {
 			if ( in_array( $role, $available_roles ) ) {
 				$has_role = true;
 				break; // only need one of roles is in available
 			}
 		}
-	}else{
+	} else {
 		if ( in_array( $roles, $available_roles ) ) {
 			$has_role = true;
 		}
@@ -273,8 +274,8 @@ function learn_press_user_has_roles( $roles, $user_id = null ){
 
 function learn_press_edit_admin_bar() {
 	global $wp_admin_bar;
-	if ( ( $profile = learn_press_get_page_id( 'profile') ) && get_post_type( $profile ) == 'page' && ( LP()->settings->get( 'admin_bar_link' ) == 'yes' ) ) {
-		$text = LP()->settings->get( 'admin_bar_link_text' );
+	if ( ( $profile = learn_press_get_page_id( 'profile' ) ) && get_post_type( $profile ) == 'page' && ( LP()->settings->get( 'admin_bar_link' ) == 'yes' ) ) {
+		$text                             = LP()->settings->get( 'admin_bar_link_text' );
 		$course_profile                   = array();
 		$course_profile['id']             = 'course_profile';
 		$course_profile['parent']         = 'user-actions';
@@ -300,13 +301,14 @@ function learn_press_edit_admin_bar() {
 	 * $wp_admin_bar->add_menu( $be_teacher );
 	 * }*/
 }
+
 add_action( 'admin_bar_menu', 'learn_press_edit_admin_bar' );
 
 
-function learn_press_current_user_can_view_profile_section( $section, $user ){
+function learn_press_current_user_can_view_profile_section( $section, $user ) {
 	$current_user = wp_get_current_user();
-	$view = true;
-	if( $user->user_login != $current_user->user_login && $section == LP()->settings->get( 'profile_endpoints.profile-orders', 'profile-orders') ) {
+	$view         = true;
+	if ( $user->user_login != $current_user->user_login && $section == LP()->settings->get( 'profile_endpoints.profile-orders', 'profile-orders' ) ) {
 		$view = false;
 	}
 	return apply_filters( 'learn_press_current_user_can_view_profile_section', $view, $section, $user );
@@ -320,7 +322,7 @@ function learn_press_profile_tab_quizzes_content( $current, $tab, $user ) {
 	learn_press_get_template( 'profile/tabs/quizzes.php', array( 'user' => $user, 'current' => $current, 'tab' => $tab ) );
 }
 
-function learn_press_profile_tab_orders_content( $current, $tab, $user ){
+function learn_press_profile_tab_orders_content( $current, $tab, $user ) {
 	learn_press_get_template( 'profile/tabs/orders.php', array( 'user' => $user, 'current' => $current, 'tab' => $tab ) );
 }
 
@@ -335,3 +337,29 @@ function head_head_head() {
 }
 
 add_action( 'admin_head', 'head_head_head' );
+
+function learn_press_update_user_lesson_start_time() {
+	global $course, $wpdb;
+
+	if ( !( $lesson = $course->current_lesson ) ) {
+		return;
+	}
+	$query = $wpdb->prepare( "
+		SELECT * FROM {$wpdb->prefix}learnpress_user_lessons WHERE user_id = %d AND lesson_id = %d
+	", get_current_user_id(), $lesson->id );
+	if ( $wpdb->get_row( $query ) ) {
+		return;
+	}
+	$wpdb->insert(
+		$wpdb->prefix . 'learnpress_user_lessons',
+		array(
+			'user_id'    => get_current_user_id(),
+			'lesson_id'  => $lesson->id,
+			'start_time' => current_time( 'mysql' ),
+			'status'     => 'stared'
+		),
+		array( '%d', '%d', '%s', '%s' )
+	);
+}
+
+add_action( 'learn_press_course_content_lesson', 'learn_press_update_user_lesson_start_time' );

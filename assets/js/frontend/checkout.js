@@ -33,9 +33,9 @@ if (typeof window.LearnPress == 'undefined') {
 			}
 
 			if ($(this).data('order_button_text')) {
-				$('#place_order').val($(this).data('order_button_text'));
+				$('#learn-press-checkout').val($('#learn-press-checkout').data('order_button_text'));
 			} else {
-				$('#place_order').val($('#place_order').data('value'));
+				$('#learn-press-checkout').val($('#learn-press-checkout').data('value'));
 			}
 		},
 		login              : function () {
@@ -93,7 +93,8 @@ if (typeof window.LearnPress == 'undefined') {
 							}
 						}
 						$place_order.val(text)
-						$place_order.prop('disabled', false)
+						$place_order.prop('disabled', false);
+						console.log($place_order)
 					},
 					error:	function( jqXHR, textStatus, errorThrown ) {
 						LearnPress.Checkout.showErrors('<div class="learn-press-error">'+errorThrown+'</div>');

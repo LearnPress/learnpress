@@ -10,8 +10,8 @@ if( typeof LearnPress == 'undefined' ){
 		$body: null,
 		el: '.course-summary',
 		events:{
-			'click .curriculum-sections .section-content > li.course-lesson a': '_loadLesson',
-			'click .course-item-nav a': '_loadLesson'
+			//'click .curriculum-sections .section-content > li.course-lesson a': '_loadLesson',
+			//'click .course-item-nav a': '_loadLesson'
 		},
 		initialize: function(){
 			this.$doc = $(document);

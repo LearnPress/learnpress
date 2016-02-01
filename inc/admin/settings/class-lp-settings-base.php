@@ -178,6 +178,17 @@ class LP_Settings_Base {
 		return array();
 	}
 
+	/**
+	 * admin settings page
+	 */
+	function output_settings() {
+
+		$settings = new LP_Settings_Base();
+		if( $fields = $this->get_settings() ) foreach ( $fields as $field ) {
+			$settings->output_field( $field );
+		}
+	}
+
 	function output_field( $options ){
 		if ( ! isset( $options['type'] ) ) {
 			return;

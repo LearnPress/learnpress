@@ -19,14 +19,15 @@ Domain Path: /lang/
 defined( 'ABSPATH' ) || exit;
 
 if ( !defined( 'LP_PLUGIN_PATH' ) ) {
-	$upload_dir = wp_upload_dir();
+	//define( 'LP_PLUGIN_URL', trailingslashit( plugins_url( '/', __FILE__ ) ) );
 
+	$upload_dir = wp_upload_dir();
 	define( 'LP_PLUGIN_FILE', __FILE__ );
 	define( 'LP_PLUGIN_PATH', trailingslashit( plugin_dir_path( __FILE__ ) ) );
-	define( 'LP_PLUGIN_URL', trailingslashit( plugins_url( '/', __FILE__ ) ) );
 	define( 'LP_LOG_PATH', $upload_dir['basedir'] . '/learn-press-logs/' );
 	define( 'LEARNPRESS_VERSION', '1.0' );
 	define( 'LEARNPRESS_DB_VERSION', '1.0' );
+	//add_action( 'plugins_loaded', 'learn_press_defines', - 100 );
 }
 
 if ( !class_exists( 'LearnPress' ) ) {
@@ -147,7 +148,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 			$this->define_tables();
 			// Define the url and path of plugin
 			$this->plugin_file = LP_PLUGIN_FILE;
-			$this->plugin_url  = LP_PLUGIN_URL;
+			//$this->plugin_url  = LP_PLUGIN_URL;
 			$this->plugin_path = LP_PLUGIN_PATH;
 
 			// includes
@@ -256,8 +257,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 			$this->define( 'LP_PLUGIN_FILE', __FILE__ );
 			//$this->define( 'LP_PLUGIN_PATH', trailingslashit( plugin_dir_path( __FILE__ ) ) );
 			//$this->define( 'LP_PLUGIN_URL', trailingslashit( plugins_url( '/', __FILE__ ) ) );
-			$this->define( 'LP_JS_URL', LP_PLUGIN_URL . 'assets/js/' );
-			$this->define( 'LP_CSS_URL', LP_PLUGIN_URL . 'assets/css/' );
+
 
 
 			// Custom post type name
@@ -309,6 +309,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 
 			//LP_Install::install();
 
+			add_action( 'plugins_loaded', array( $this, '_define_plugin_url' ), -100);
 			// initial some tasks before page load
 			add_action( 'init', array( $this, 'init' ), 15 );
 
@@ -316,6 +317,15 @@ if ( !class_exists( 'LearnPress' ) ) {
 
 			add_action( 'after_setup_theme', array( $this, 'setup_theme' ) );
 
+		}
+
+		function _define_plugin_url(){
+			if(!defined( 'LP_PLUGIN_URL' ) ) {
+				$this->define( 'LP_PLUGIN_URL', trailingslashit( plugins_url( '/', __FILE__ ) ) );
+				$this->define( 'LP_JS_URL', LP_PLUGIN_URL . 'assets/js/' );
+				$this->define( 'LP_CSS_URL', LP_PLUGIN_URL . 'assets/css/' );
+			}
+			$this->plugin_url = LP_PLUGIN_URL;
 		}
 
 		/**
@@ -334,7 +344,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 
 			LP_Emails::init_email_notifications();
 
-			if( get_transient( 'learn_press_install' ) == 'yes' ){
+			if ( get_transient( 'learn_press_install' ) == 'yes' ) {
 				flush_rewrite_rules();
 				delete_transient( 'learn_press_install' );
 			}

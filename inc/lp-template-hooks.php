@@ -49,6 +49,7 @@ add_action( 'learn_press_content_learning_summary', 'learn_press_course_students
 add_action( 'learn_press_content_learning_summary', 'learn_press_single_course_content_lesson', 25 );
 add_action( 'learn_press_content_learning_summary', 'learn_press_course_curriculum', 30 );
 
+add_action( 'learn_press_course_content_lesson', 'learn_press_course_content_lesson', 5 );
 add_action( 'learn_press_course_lesson_summary', 'learn_press_course_lesson_description', 5 );
 add_action( 'learn_press_course_lesson_summary', 'learn_press_course_quiz_description', 5 );
 add_action( 'learn_press_course_lesson_summary', 'learn_press_course_lesson_complete_button', 10 );

@@ -515,6 +515,14 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 				'show_in_admin_status_list' => true,
 				'label_count'               => _n_noop( 'Processing <span class="count">(%s)</span>', 'Processing <span class="count">(%s)</span>', 'learn_press' )
 			) );
+			register_post_status( 'lp-on-hold', array(
+				'label'                     => _x( 'On Hold', 'Order status', 'learn_press' ),
+				'public'                    => false,
+				'exclude_from_search'       => false,
+				'show_in_admin_all_list'    => true,
+				'show_in_admin_status_list' => true,
+				'label_count'               => _n_noop( 'On Hold <span class="count">(%s)</span>', 'On Hold <span class="count">(%s)</span>', 'learn_press' )
+			) );
 			register_post_status( 'lp-completed', array(
 				'label'                     => _x( 'Completed', 'Order status', 'learn_press' ),
 				'public'                    => false,
@@ -522,6 +530,30 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 				'show_in_admin_all_list'    => true,
 				'show_in_admin_status_list' => true,
 				'label_count'               => _n_noop( 'Completed <span class="count">(%s)</span>', 'Completed <span class="count">(%s)</span>', 'learn_press' )
+			) );
+			register_post_status( 'lp-cancelled', array(
+				'label'                     => _x( 'Cancelled', 'Order status', 'learn_press' ),
+				'public'                    => false,
+				'exclude_from_search'       => false,
+				'show_in_admin_all_list'    => true,
+				'show_in_admin_status_list' => true,
+				'label_count'               => _n_noop( 'Cancelled <span class="count">(%s)</span>', 'Cancelled <span class="count">(%s)</span>', 'learn_press' )
+			) );
+			register_post_status( 'lp-refunded', array(
+				'label'                     => _x( 'Refunded', 'Order status', 'learn_press' ),
+				'public'                    => false,
+				'exclude_from_search'       => false,
+				'show_in_admin_all_list'    => true,
+				'show_in_admin_status_list' => true,
+				'label_count'               => _n_noop( 'Refunded <span class="count">(%s)</span>', 'Refunded <span class="count">(%s)</span>', 'learn_press' )
+			) );
+			register_post_status( 'lp-failed', array(
+				'label'                     => _x( 'Failed', 'Order status', 'learn_press' ),
+				'public'                    => false,
+				'exclude_from_search'       => false,
+				'show_in_admin_all_list'    => true,
+				'show_in_admin_status_list' => true,
+				'label_count'               => _n_noop( 'Failed <span class="count">(%s)</span>', 'Failed <span class="count">(%s)</span>', 'learn_press' )
 			) );
 		}
 	}
