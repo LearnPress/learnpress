@@ -363,3 +363,8 @@ function learn_press_update_user_lesson_start_time() {
 }
 
 add_action( 'learn_press_course_content_lesson', 'learn_press_update_user_lesson_start_time' );
+
+function learn_press_get_profile_user(){
+	global $wp;
+	return !empty( $wp->query_vars['user'] ) ? get_user_by( 'login', $wp->query_vars['user'] ) : false;
+}

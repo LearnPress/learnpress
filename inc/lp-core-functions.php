@@ -1868,7 +1868,20 @@ if ( !function_exists( 'is_courses' ) ) {
 	 * @return bool
 	 */
 	function is_courses() {
+		_deprecated_function( __FUNCTION__, '', 'learn_press_' . __FUNCTION__ );
 		return is_course_archive();
+	}
+}
+
+if ( !function_exists( 'learn_press_is_courses' ) ) {
+
+	/**
+	 * Returns true when viewing the course type archive.
+	 *
+	 * @return bool
+	 */
+	function learn_press_is_courses() {
+		return learn_press_is_course_archive();
 	}
 }
 
@@ -1880,6 +1893,19 @@ if ( !function_exists( 'is_course_archive' ) ) {
 	 * @return bool
 	 */
 	function is_course_archive() {
+		_deprecated_function( __FUNCTION__, '', 'learn_press_' . __FUNCTION__ );
+		return learn_press_is_course_archive();
+	}
+}
+
+if ( !function_exists( 'learn_press_is_course_archive' ) ) {
+
+	/**
+	 * Returns true when viewing the course type archive.
+	 *
+	 * @return bool
+	 */
+	function learn_press_is_course_archive() {
 		return ( is_post_type_archive( LP()->course_post_type ) || ( learn_press_get_page_id( 'course' ) && is_page( learn_press_get_page_id( 'course' ) ) ) ) ? true : false;
 	}
 }
@@ -1892,6 +1918,19 @@ if ( !function_exists( 'is_course_taxonomy' ) ) {
 	 * @return bool
 	 */
 	function is_course_taxonomy() {
+		_deprecated_function( __FUNCTION__, '', 'learn_press_' . __FUNCTION__ );
+		return learn_press_is_course_taxonomy();
+	}
+}
+
+if ( !function_exists( 'learn_press_is_course_taxonomy' ) ) {
+
+	/**
+	 * Returns true when viewing a course taxonomy archive.
+	 *
+	 * @return bool
+	 */
+	function learn_press_is_course_taxonomy() {
 		return is_tax( get_object_taxonomies( LP()->course_post_type ) );
 	}
 }
@@ -1906,6 +1945,21 @@ if ( !function_exists( 'is_course_category' ) ) {
 	 * @return bool
 	 */
 	function is_course_category( $term = '' ) {
+		_deprecated_function( __FUNCTION__, '', 'learn_press_' . __FUNCTION__ );
+		return learn_press_is_course_category( $term );
+	}
+}
+
+if ( !function_exists( 'learn_press_is_course_category' ) ) {
+
+	/**
+	 * Returns true when viewing a course category.
+	 *
+	 * @param  string
+	 *
+	 * @return bool
+	 */
+	function learn_press_is_course_category( $term = '' ) {
 		return is_tax( 'course_category', $term );
 	}
 }
@@ -1920,6 +1974,21 @@ if ( !function_exists( 'is_course_tag' ) ) {
 	 * @return bool
 	 */
 	function is_course_tag( $term = '' ) {
+		_deprecated_function( __FUNCTION__, '', 'learn_press_' . __FUNCTION__ );
+		return learn_press_is_course_tag( $term );
+	}
+}
+
+if ( !function_exists( 'learn_press_is_course_tag' ) ) {
+
+	/**
+	 * Returns true when viewing a course tag.
+	 *
+	 * @param  string
+	 *
+	 * @return bool
+	 */
+	function learn_press_is_course_tag( $term = '' ) {
 		return is_tax( 'course_tag', $term );
 	}
 }
@@ -1932,6 +2001,19 @@ if ( !function_exists( 'is_course' ) ) {
 	 * @return bool
 	 */
 	function is_course() {
+		_deprecated_function( __FUNCTION__, '', 'learn_press_' . __FUNCTION__ );
+		return learn_press_is_course();
+	}
+}
+
+if ( !function_exists( 'learn_press_is_course' ) ) {
+
+	/**
+	 * Returns true when viewing a single course.
+	 *
+	 * @return bool
+	 */
+	function learn_press_is_course() {
 		return is_singular( array( LP()->course_post_type ) );
 	}
 }
@@ -1944,7 +2026,34 @@ if ( !function_exists( 'is_quiz' ) ) {
 	 * @return bool
 	 */
 	function is_quiz() {
+		_deprecated_function( __FUNCTION__, '', 'learn_press_' . __FUNCTION__ );
+		return learn_press_is_quiz();
+	}
+}
+
+
+if ( !function_exists( 'learn_press_is_quiz' ) ) {
+
+	/**
+	 * Returns true when viewing a single quiz.
+	 *
+	 * @return bool
+	 */
+	function learn_press_is_quiz() {
 		return is_singular( array( LP()->quiz_post_type ) );
+	}
+}
+
+if ( !function_exists( 'learn_press_is_profile' ) ) {
+
+	/**
+	 * Returns true when viewing profile page.
+	 *
+	 * @return bool
+	 */
+	function learn_press_is_profile() {
+		$profile = learn_press_get_page_id( 'profile' );
+		return is_page( $profile ) || apply_filters( 'learn_press_is_profile', false ) ? true : false;
 	}
 }
 

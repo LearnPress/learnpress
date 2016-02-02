@@ -670,6 +670,16 @@ class LP_Abstract_User {
 		return apply_filters( 'learn_press_user_has_finished_course', $courses[$course_id] == 'yes', $this, $course_id );
 	}
 
+	function has_passed_course( $course_id ){
+		$course = LP_Course::get_course( $course_id );
+		if( $course ){
+			$results = $course->evaluate_course_results( $this->id );
+		}else{
+			$results = 0;
+		}
+		return apply_filters( 'learn_press_user_has_passed_course', $results * 100 >= $course->passing_condition ? $results : false, $course_id, $this );
+	}
+
 	/**
 	 * Return tru if user has started a quiz
 	 *

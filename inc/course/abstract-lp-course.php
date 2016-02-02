@@ -627,6 +627,8 @@ abstract class LP_Abstract_Course {
 		}
 		if( $this->course_result == 'evaluate_lesson' ){
 			$results = $this->_evaluate_course_by_lesson( $user_id );
+		}else{
+			$results = 0.96;
 		}
 		return apply_filters( 'learn_press_evaluation_course_results', $results );
 	}
