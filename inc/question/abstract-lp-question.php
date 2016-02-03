@@ -131,6 +131,10 @@ class LP_Abstract_Question {
 					}
 				}
 			}
+			if( $this->mark == 0 ){
+				$this->mark = 1;
+				update_post_meta( $this->id, '_lp_mark', 1 );
+			}
 		}
 		do_action( 'learn_press_update_question_answer', $this, $post_data );
 	}

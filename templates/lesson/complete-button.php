@@ -10,7 +10,6 @@ if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-print_r( $course->evaluate_course_results() );
 if ( !( $lesson = $course->current_lesson ) ) {
 	return;
 }

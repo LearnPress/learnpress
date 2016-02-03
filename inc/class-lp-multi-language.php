@@ -8,7 +8,7 @@ if ( ! class_exists( 'LP_Multi_Language' ) ) {
 		public static function on_load() {
 			self::load_textdomain();
 
-			$plugin = 'thim-learn-press/learnpress.php';
+			$plugin = 'learnpress/learnpress.php';
 			add_filter( "plugin_action_links_$plugin", array( __CLASS__, 'plugin_links' ) );
 		}
 
@@ -18,13 +18,19 @@ if ( ! class_exists( 'LP_Multi_Language' ) ) {
 		 * @return void
 		 */
 		public static function load_textdomain() {
-			// l18n translation files
-			$locale = get_locale();
-			$dir    = trailingslashit( LP_PLUGIN_PATH . '/lang' );
-			$mofile = "{$dir}{$locale}.mo";
-
-			// In themes/plugins/mu-plugins directory			
-			load_textdomain( 'learn_press', $mofile );
+			// Get mo file
+			$text_domain = 'learn_press';
+			$prefix = 'learnpress';
+			$locale      = apply_filters( 'plugin_locale', get_locale(), $text_domain );
+			$mo_file   = $prefix . '-' . $locale . '.mo';
+			// Check mo file global
+			$mo_global = WP_LANG_DIR . '/plugins/' . $mo_file;
+			// Load translate file
+			if ( file_exists( $mo_global ) ) {
+				load_textdomain( $text_domain, $mo_global );
+			} else {
+				load_textdomain( $text_domain, LP_PLUGIN_PATH . '/lang/' . $mo_file );
+			}
 		}
 
 		/**
@@ -37,8 +43,8 @@ if ( ! class_exists( 'LP_Multi_Language' ) ) {
 		 * @return array
 		 */
 		public static function plugin_links( $links ) {
-			$links[] = '<a href="https://github.com/LearnPress/LearnPress/wiki">' . __( 'Documentation', 'meta-box' ) . '</a>';
-			$links[] = '<a href="' . get_admin_url() . '/admin.php?page=learn_press_add_ons' . '">' . __( 'Extensions', 'meta-box' ) . '</a>';
+			$links[] = '<a href="https://github.com/LearnPress/LearnPress/wiki">' . __( 'Documentation', 'learn_press' ) . '</a>';
+			$links[] = '<a href="' . get_admin_url() . '/admin.php?page=learn_press_add_ons' . '">' . __( 'Add-ons', 'learn_press' ) . '</a>';
 
 			return $links;
 		}

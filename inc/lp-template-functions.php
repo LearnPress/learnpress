@@ -155,6 +155,16 @@ if ( !function_exists( 'learn_press_course_thumbnail' ) ) {
 	}
 }
 
+
+if ( !function_exists( 'learn_press_course_progress' ) ) {
+	/**
+	 * Display course curriculum
+	 */
+	function learn_press_course_progress() {
+		learn_press_get_template( 'single-course/progress.php' );
+	}
+}
+
 if ( !function_exists( 'learn_press_course_curriculum' ) ) {
 	/**
 	 * Display course curriculum

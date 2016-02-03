@@ -631,4 +631,3 @@ function learn_press_print_addon_notice() {
 
 add_action( 'admin_notices', 'learn_press_print_addon_notice' );
 
-

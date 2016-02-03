@@ -531,7 +531,88 @@ a .archive-course:hover {
 	position: relative;
 	z-index: 99998;
 }
-
+.lp-course-progress{
+	margin-right: 50px;
+}
+.lp-course-progress .lp-course-progress-heading{
+	margin: 0 0 40px 0;
+}
+.lp-course-progress .lp-progress-bar{
+	height: 20px;
+	background: #F5F5F5;
+	position: relative;
+	/* margin-right: 80px; */
+	float: left;
+	width: 100%;
+	margin-bottom: 50px;
+}
+.lp-course-progress .lp-progress-value{
+	height: 20px;
+	background: #DDD;
+	position: absolute;
+	left: 0;
+}
+.lp-course-progress .lp-progress-value span{
+	display: inline-block;
+	padding: 5px 10px;
+	font-size: small;
+	background: #DDD;
+	position: absolute;
+	right: 0;
+	top: -35px;
+	line-height: 1;
+}
+.lp-course-progress .lp-progress-value span:after{
+	content: '';
+	display: block;
+	border: 10px solid #DDD;
+	position: absolute;
+	border-color: transparent;
+	border-left-color: #DDD;
+	bottom: -3px;
+	/* left: 50%; */
+	/* margin-left: -10px; */
+	transform: rotate(-45deg);
+	right: -10px;
+}
+.lp-course-progress .lp-progress-total{
+	width: 50px;
+	float: right;
+	margin-right: -50px;
+	height: 20px;
+	font-size: small;
+	text-align: right;
+	line-height: 20px;
+}
+.lp-course-progress .lp-passing-conditional{
+	position: absolute;
+	height: 20px;
+	width: 1px;
+	background-color: #FF0000;
+}
+.lp-course-progress .lp-passing-conditional span{
+	display: inline-block;
+	font-size: small;
+	white-space: nowrap;
+	position: absolute;
+	top: 30px;
+	background: #DDD;
+	padding: 5px 10px;
+	line-height: 1;
+ }
+.lp-course-progress .lp-passing-conditional span:after{
+	content: '';
+	display: block;
+	border: 10px solid #DDD;
+	position: absolute;
+	border-color: transparent;
+	border-left-color: #DDD;
+	top: -3px;
+	/* left: 50%; */
+	/* margin-left: -10px; */
+	transform: rotate(135deg);
+	left: -10px;
+}
 @media screen and (min-width: 59.6875em) {
 	.twentyfifteen .learnpress-content{
 		margin-left: 8.3333%;

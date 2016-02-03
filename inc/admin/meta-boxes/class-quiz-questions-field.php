@@ -169,6 +169,7 @@ if ( !class_exists( 'RWMB_Quiz_Questions_Field' ) ) {
 				}
 				$question->save( $data );
 
+
 				$insert_data = apply_filters(
 					'learn_press_quiz_question_insert_data',
 					array(

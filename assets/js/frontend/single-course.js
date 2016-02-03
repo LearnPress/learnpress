@@ -16,7 +16,7 @@ if( typeof LearnPress == 'undefined' ){
 		initialize: function(){
 			this.$doc = $(document);
 			this.$body = $(document.body);
-
+			alert();
 		},
 		_loadLesson: function(e){
 			e.preventDefault();

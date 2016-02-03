@@ -325,6 +325,14 @@ class LP_Abstract_User {
 		return apply_filters( 'learn_press_user_quiz_status', $quiz_status, $this, $quiz_id );
 	}
 
+	function get_quiz_last_results( $quiz_id ){
+		$results = $this->get_course_info( $quiz_id );
+		if( $results ){
+			$results = reset( $results );
+		}
+		return apply_filters( 'learn_press_user_quiz_last_results', $results, $quiz_id, $this );
+	}
+
 	function get_quiz_info( $quiz_id, $field = null ) {
 		static $quizzes = array();
 		if ( empty( $quizzes[$quiz_id] ) ) {
@@ -688,8 +696,8 @@ class LP_Abstract_User {
 	 * @return mixed
 	 */
 	function has_started_quiz( $quiz_id ) {
-		$quiz_info = $this->get_quiz_info( $quiz_id );
-		return apply_filters( 'learn_press_user_started_quiz', $quiz_info && $quiz_info['status'] == 'started', $this );
+		$quiz_info = $this->get_quiz_results( $quiz_id );
+		return apply_filters( 'learn_press_user_started_quiz', !empty( $quiz_info ) && ( $quiz_info->status == 'started' ), $this );
 	}
 
 	/**
@@ -1005,7 +1013,7 @@ class LP_Abstract_User {
 
 	function get_courses() {
 		global $wpdb;
-		echo $query = $wpdb->prepare( "
+		$query = $wpdb->prepare( "
 			SELECT *
 			FROM {$wpdb->posts}
 			WHERE post_type = %s

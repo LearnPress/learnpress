@@ -275,7 +275,8 @@ class LP_Quiz {
 				FROM {$wpdb->learnpress_quiz_questions} qq
 				INNER JOIN {$wpdb->posts} q ON q.ID = qq.quiz_id
 				INNER JOIN {$wpdb->postmeta} pm ON pm.post_id = qq.question_id AND pm.meta_key = %s
-			", '_lp_mark');
+				WHERE q.ID = %d
+			", '_lp_mark', $this->id);
 			$this->mark = $wpdb->get_var( $query );
 		}
 		return apply_filters( 'learn_press_quiz_mark', $this->mark, $this );
