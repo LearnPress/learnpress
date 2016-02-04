@@ -562,6 +562,7 @@ a .archive-course:hover {
 	top: -35px;
 	line-height: 1;
 }
+
 .lp-course-progress .lp-progress-value span:after{
 	content: '';
 	display: block;
@@ -574,6 +575,16 @@ a .archive-course:hover {
 	/* margin-left: -10px; */
 	transform: rotate(-45deg);
 	right: -10px;
+}
+.lp-course-progress .lp-progress-value.left span{
+	left: 100%;
+	right: auto;
+}
+.lp-course-progress .lp-progress-value.left span:after{
+	bottom: -4px;
+	transform: rotate(225deg);
+	left: -10px;
+	right: auto;
 }
 .lp-course-progress .lp-progress-total{
 	width: 50px;
@@ -612,6 +623,15 @@ a .archive-course:hover {
 	/* margin-left: -10px; */
 	transform: rotate(135deg);
 	left: -10px;
+}
+.lp-course-progress .lp-passing-conditional.right span{
+	right: 0;
+}
+.lp-course-progress .lp-passing-conditional.right span:after{
+	left: auto;
+	right: -10px;
+	border-left-color: transparent;
+	border-bottom-color: #DDD;
 }
 @media screen and (min-width: 59.6875em) {
 	.twentyfifteen .learnpress-content{

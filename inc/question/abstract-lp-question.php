@@ -72,7 +72,7 @@ class LP_Abstract_Question {
 	}
 
 	protected function _init() {
-		add_action( 'save_post', array( $this, 'save' ) );
+		//add_action( 'save_post', array( $this, 'save' ) );
 		add_action( 'learn_press_question_answers', array( $this, 'get_default_answers' ) );
 	}
 
@@ -94,11 +94,11 @@ class LP_Abstract_Question {
 
 	public function save( $post_data = null ) {
 		global $wpdb;
-
 		/**
 		 * Allows add more type of question to save with the rules below
 		 */
 		if ( in_array( $this->type, apply_filters( 'learn_press_save_default_question_types', array( 'true_or_false', 'multi_choice', 'single_choice' ) ) ) ) {
+
 			$this->empty_answers();
 
 			if ( !empty( $post_data['answer'] ) ) {
@@ -129,6 +129,7 @@ class LP_Abstract_Question {
 							array( '%s', '%d', '%d' )
 						);
 					}
+
 				}
 			}
 			if( $this->mark == 0 ){

@@ -14,9 +14,10 @@ if( typeof LearnPress == 'undefined' ){
 			//'click .course-item-nav a': '_loadLesson'
 		},
 		initialize: function(){
+			_.bindAll( this, '_sanitizeProgress' )
 			this.$doc = $(document);
 			this.$body = $(document.body);
-			alert();
+			this._sanitizeProgress();
 		},
 		_loadLesson: function(e){
 			e.preventDefault();
@@ -44,6 +45,23 @@ if( typeof LearnPress == 'undefined' ){
 					LearnPress.MessageBox.hide();
 				}
 			})
+		},
+		_sanitizeProgress: function(){
+			var $el = $( '.lp-course-progress'),
+				$progress = $('.lp-progress-value', $el),
+				$passing = $('.lp-passing-conditional', $el),
+				progress = parseInt($progress.css('width')),
+				passing = parseInt( $passing.css('left'));
+			if( progress < $('span', $progress).outerWidth()){
+				$progress.addClass('left')
+			}else{
+				$progress.removeClass('left')
+			}
+			if( ($el.outerWidth() - passing) < $('span', $passing).outerWidth() ){
+				$passing.addClass('right')
+			}else{
+				$passing.removeClass('right')
+			}
 		}
 	});
 

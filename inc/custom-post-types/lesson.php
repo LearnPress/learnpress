@@ -77,7 +77,7 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 						'add_new'            => __( 'Add New', 'learn_press' ),
 						'edit_item'          => __( 'Edit Lesson', 'learn_press' ),
 						'update_item'        => __( 'Update Lesson', 'learn_press' ),
-						'search_items'       => __( 'Search Lesson', 'learn_press' ),
+						'search_items'       => __( 'Search Lessons', 'learn_press' ),
 						'not_found'          => __( 'No lesson found', 'learn_press' ),
 						'not_found_in_trash' => __( 'No lesson found in Trash', 'learn_press' ),
 					),
@@ -98,7 +98,7 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 						'post-formats',
 						'revisions',
 						'author',
-						'excerpt'
+						//'excerpt'
 					),
 					'hierarchical'       => true,
 					'rewrite'            => array( 'slug' => 'lessons', 'hierarchical' => true, 'with_front' => false )
@@ -233,16 +233,16 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 					$courses = learn_press_get_item_courses( $post_id );
 					if ( $courses ) {
 						foreach( $courses as $course ) {
-							echo '<div><a href="' . esc_url( add_query_arg( array('course_id' => $course->ID) ) ) . '">' . get_the_title( $course->ID ) . '</a>';
+							echo '<div><a href="' . esc_url( add_query_arg( array('filter_course' => $course->ID) ) ) . '">' . get_the_title( $course->ID ) . '</a>';
 							echo '<div class="row-actions">';
 							printf( '<a href="%s">%s</a>', admin_url( sprintf( 'post.php?post=%d&action=edit', $course->ID ) ), __( 'Edit', 'learn_press' ) );
 							echo "&nbsp;|&nbsp;";
 							printf( '<a href="%s">%s</a>', get_the_permalink( $course->ID ), __( 'View', 'learn_press' ) );
 							echo "&nbsp;|&nbsp;";
 							if( $course_id = learn_press_get_request( 'filter_course') ) {
-								printf( '<a href="%s">%s</a>', admin_url( 'edit.php?post_type=lp_lesson' ), __( 'Remove Filter', 'learn_press' ) );
+								printf( '<a href="%s">%s</a>', remove_query_arg( 'filter_course' ), __( 'Remove Filter', 'learn_press' ) );
 							} else {
-								printf( '<a href="%s">%s</a>', admin_url( 'edit.php?post_type=lp_lesson&filter_course=' . $course->ID ), __( 'Filter', 'learn_press' ) );
+								printf( '<a href="%s">%s</a>', add_query_arg( 'filter_course', $course->ID ), __( 'Filter', 'learn_press' ) );
 							}
 							echo '</div></div>';
 						}
@@ -281,17 +281,9 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 		}
 
         function posts_fields( $fields ){
-            if ( !is_admin() ) {
-                return $fields;
-            }
-            global $pagenow;
-            if ( $pagenow != 'edit.php' ) {
-                return $fields;
-            }
-            global $post_type;
-            if ( LP()->lesson_post_type != $post_type ) {
-                return $fields;
-            }
+			if( !$this->_is_archive() ){
+				return $fields;
+			}
 
             $fields = " DISTINCT " . $fields;
             return $fields;
@@ -303,21 +295,14 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 		 * @return string
 		 */
 		function posts_join_paged( $join ) {
-			if ( !is_admin() ) {
-				return $join;
-			}
-			global $pagenow;
-			if ( $pagenow != 'edit.php' ) {
-				return $join;
-			}
-			global $post_type;
-			if ( LP()->lesson_post_type != $post_type ) {
+			if( !$this->_is_archive() ){
 				return $join;
 			}
 			global $wpdb;
-			if( $course_id = learn_press_get_request( 'filter_course') ) {
-				$join .= " INNER JOIN {$wpdb->prefix}learnpress_section_items si ON si.item_id = {$wpdb->posts}.ID";
-				$join .= " INNER JOIN {$wpdb->prefix}learnpress_sections s ON s.section_id = si.section_id AND s.section_course_id = " . $course_id;
+			if( $this->_filter_course() || ( $this->_get_orderby() == 'course-name' ) || ($this->_get_search()) ) {
+				$join .= " LEFT JOIN {$wpdb->prefix}learnpress_section_items si ON si.item_id = {$wpdb->posts}.ID";
+				$join .= " LEfT JOIN {$wpdb->prefix}learnpress_sections s ON s.section_id = si.section_id";
+				$join .= " LEFT JOIN {$wpdb->posts} c ON c.ID = s.section_course_id";
 			}
 			return $join;
 		}
@@ -329,38 +314,19 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 		 */
 		function posts_where_paged( $where ) {
 
-			if ( !is_admin() ) {
-				return $where;
-			}
-			global $pagenow;
-			if ( $pagenow != 'edit.php' ) {
-				return $where;
-			}
-			global $post_type;
-			if ( LP()->lesson_post_type != $post_type ) {
+			if( !$this->_is_archive() ){
 				return $where;
 			}
 			global $wpdb;
-
-
-			if ( isset ( $_GET['meta_course'] ) ) {
-                $where .= " AND (
-                    {$wpdb->postmeta}.meta_key='_lpr_course'
-                )";
-				$where .= " AND (
-                	{$wpdb->postmeta}.meta_value='" . intval( $_GET['meta_course'] ) . "'
-           		 )";
+			if ( $course_id = $this->_filter_course() ) {
+				$where .= $wpdb->prepare( " AND (c.ID = %d)", $course_id );
 			}
 			if ( isset( $_GET['s'] ) ) {
 				$s = $_GET['s'];
-				if ( empty( $s ) ) {
-					$where .= " AND ( c.post_title IS NULL)";
-				} else {
-					$where = preg_replace(
-						"/\.post_content\s+LIKE\s*(\'[^\']+\')\s*\)/",
-						" .post_content LIKE '%$s%' ) OR (c.post_title LIKE '%$s%' )", $where
-					);
-				}
+				$where = preg_replace(
+					"/\.post_content\s+LIKE\s*(\'[^\']+\')\s*\)/",
+					" .post_content LIKE '%$s%' ) OR (c.post_title LIKE '%$s%' )", $where
+				);
 			}
 
 			return $where;
@@ -372,15 +338,7 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 		 * @return string
 		 */
 		function posts_orderby( $order_by_statement ) {
-			if ( !is_admin() ) {
-				return $order_by_statement;
-			}
-			global $pagenow;
-			if ( $pagenow != 'edit.php' ) {
-				return $order_by_statement;
-			}
-			global $post_type;
-			if ( LP()->lesson_post_type != $post_type ) {
+			if( !$this->_is_archive() ){
 				return $order_by_statement;
 			}
 			if ( isset ( $_GET['orderby'] ) && isset ( $_GET['order'] ) ) {
@@ -395,10 +353,29 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 		 * @return mixed
 		 */
 		function columns_sortable( $columns ) {
-			$columns[LP()->course_post_type] = 'course';
+			$columns[LP()->course_post_type] = 'course-name';
 			return $columns;
 		}
 
+		private function _is_archive() {
+			global $pagenow, $post_type;
+			if ( !is_admin() || ( $pagenow != 'edit.php' ) || ( LP()->lesson_post_type != $post_type ) ) {
+				return false;
+			}
+			return true;
+		}
+
+		private function _filter_course() {
+			return !empty( $_REQUEST['filter_course'] ) ? absint( $_REQUEST['filter_course'] ) : false;
+		}
+
+		private function _get_orderby(){
+			return isset( $_REQUEST['orderby'] ) ? $_REQUEST['orderby'] : '';
+		}
+
+		private function _get_search(){
+			return isset( $_REQUEST['s'] ) ? $_REQUEST['s'] : false;
+		}
 		static function create_default_meta( $id ){
 			$meta = apply_filters( 'learn_press_default_lesson_meta',
 				array(

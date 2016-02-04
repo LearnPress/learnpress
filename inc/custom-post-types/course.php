@@ -164,9 +164,9 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 				'add_new'            => __( 'Add New', 'learn_press' ),
 				'edit_item'          => __( 'Edit Course', 'learn_press' ),
 				'update_item'        => __( 'Update Course', 'learn_press' ),
-				'search_items'       => __( 'Search Course', 'learn_press' ),
+				'search_items'       => __( 'Search Courses', 'learn_press' ),
 				'not_found'          => sprintf( __( 'You have not got any course yet. Click <a href="%s">Add new</a> to start', 'learn_press' ), admin_url( 'post-new.php?post_type=lp_course' ) ),
-				'not_found_in_trash' => __( 'No course found in Trash', 'learn_press' ),
+				'not_found_in_trash' => __( 'No course found in Trash', 'learn_press' )
 			);
 			$course_base      = $settings->get( 'course_base' );
 			$course_permalink = empty( $course_base ) ? _x( 'courses', 'slug', 'learn_press' ) : $course_base;

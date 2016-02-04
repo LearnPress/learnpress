@@ -170,7 +170,22 @@ function learn_press_get_current_url() {
 			}
 		}
 	}
-	return $current_url;
+	return learn_press_sanitize_url( $current_url );
+}
+
+function learn_press_is_current_url( $url ){
+	return strcmp( learn_press_get_current_url(), learn_press_sanitize_url( $url ) ) == 0;
+}
+
+function learn_press_sanitize_url($url, $trailingslashit = true ){
+	if( $url ) {
+		preg_match( '!(https?://)?(.*)!', $url, $matches );
+		$url_without_http = $matches[2];
+		$url_without_http = preg_replace( '![/]+!', '/', $url_without_http );
+		$url              = $matches[1] . $url_without_http;
+		return $trailingslashit ? trailingslashit( $url ) : untrailingslashit( $url );
+	}
+	return $url;
 }
 
 /**

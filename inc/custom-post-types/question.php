@@ -11,6 +11,7 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 	// class LP_Question_Post_Type
 	class LP_Question_Post_Type extends LP_Abstract_Post_Type {
 		function __construct() {
+			add_action( 'admin_head', array( $this, 'init' ) );
 
 			//add_action( 'init', array( $this, 'register_post_type' ) );
 			//add_action( 'admin_head', array( $this, 'enqueue_script' ) );
@@ -20,8 +21,21 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 			add_filter( 'posts_join_paged', array( $this, 'posts_join_paged' ) );
 			add_action( 'before_delete_post', array( $this, 'delete_question_answers' ) );
 
+			//add_filter( 'posts_fields', array( $this, 'posts_fields' ) );
+			add_filter( 'posts_where_paged', array( $this, 'posts_where_paged' ) );
+			add_filter( 'posts_orderby', array( $this, 'posts_orderby' ) );
+			add_filter( 'manage_edit-lp_question_sortable_columns', array( $this, 'columns_sortable' ) );
+
 			parent::__construct();
 
+		}
+
+		function init(){
+			global $pagenow, $post_type;
+			$hidden = get_user_meta( get_current_user_id(), 'manageedit-lp_questioncolumnshidden', true );
+			if( !is_array( $hidden ) && empty( $hidden ) ){
+				update_user_meta( get_current_user_id(), 'manageedit-lp_questioncolumnshidden', array( 'taxonomy-question-tag' ) );
+			}
 		}
 
 		/**
@@ -254,16 +268,16 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 					$quizzes = learn_press_get_question_quizzes( $post_id );
 					if ( $quizzes ) {
 						foreach ( $quizzes as $quiz ) {
-							echo '<div><a href="' . esc_url( add_query_arg( array( 'course_id' => $quiz->ID ) ) ) . '">' . get_the_title( $quiz->ID ) . '</a>';
+							echo '<div><a href="' . esc_url( add_query_arg( array( 'filter_quiz' => $quiz->ID ) ) ) . '">' . get_the_title( $quiz->ID ) . '</a>';
 							echo '<div class="row-actions">';
 							printf( '<a href="%s">%s</a>', admin_url( sprintf( 'post.php?post=%d&action=edit', $quiz->ID ) ), __( 'Edit', 'learn_press' ) );
 							echo "&nbsp;|&nbsp;";
 							printf( '<a href="%s">%s</a>', get_the_permalink( $quiz->ID ), __( 'View', 'learn_press' ) );
 							echo "&nbsp;|&nbsp;";
 							if ( $quiz_id = learn_press_get_request( 'filter_quiz' ) ) {
-								printf( '<a href="%s">%s</a>', admin_url( 'edit.php?post_type=lp_question' ), __( 'Remove Filter', 'learn_press' ) );
+								printf( '<a href="%s">%s</a>', remove_query_arg( 'filter_quiz' ), __( 'Remove Filter', 'learn_press' ) );
 							} else {
-								printf( '<a href="%s">%s</a>', admin_url( 'edit.php?post_type=lp_question&filter_quiz=' . $quiz->ID ), __( 'Filter', 'learn_press' ) );
+								printf( '<a href="%s">%s</a>', add_query_arg( 'filter_quiz', $quiz->ID ), __( 'Filter', 'learn_press' ) );
 							}
 							echo '</div></div>';
 						}
@@ -274,7 +288,6 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 
 					break;
 				case 'type':
-
 					echo learn_press_question_name_from_slug( get_post_meta( $post_id, '_lp_type', true ) );
 			}
 		}
@@ -285,22 +298,73 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 		 * @return string
 		 */
 		function posts_join_paged( $join ) {
-			if ( !is_admin() ) {
-				return $join;
-			}
-			global $pagenow;
-			if ( $pagenow != 'edit.php' ) {
-				return $join;
-			}
-			global $post_type;
-			if ( LP()->question_post_type != $post_type ) {
+			if ( !$this->_is_archive() ) {
 				return $join;
 			}
 			global $wpdb;
-			if ( $quiz_id = learn_press_get_request( 'filter_quiz' ) ) {
-				$join .= " INNER JOIN {$wpdb->prefix}learnpress_quiz_questions qq ON qq.question_id = {$wpdb->posts}.ID AND qq.quiz_id = " . $quiz_id;
+			if ( $quiz_id = $this->_filter_quiz() || ( $this->_get_orderby() == 'quiz-name' ) )  {
+				$join .= " LEFT JOIN {$wpdb->prefix}learnpress_quiz_questions qq ON {$wpdb->posts}.ID = qq.question_id";
+				$join .= " LEFT JOIN {$wpdb->posts} q ON q.ID = qq.quiz_id";
 			}
 			return $join;
+		}
+
+		/**
+		 * @param $where
+		 *
+		 * @return mixed|string
+		 */
+		function posts_where_paged( $where ) {
+
+			if ( !$this->_is_archive() ) {
+				return $where;
+			}
+
+			global $wpdb;
+			if ( $quiz_id = $this->_filter_quiz() ) {
+				$where .= $wpdb->prepare( " AND (q.ID = %d)", $quiz_id );
+			}
+			return $where;
+			if ( isset( $_GET['s'] ) ) {
+				$s = $_GET['s'];
+				if ( !empty( $s ) ) {
+					$where = preg_replace(
+						"/\.post_content\s+LIKE\s*(\'[^\']+\')\s*\)/",
+						" .post_content LIKE '%$s%' ) OR ({$wpdb->posts}.post_title LIKE '%$s%' )", $where
+					);
+				}
+			}
+
+			return $where;
+		}
+
+		/**
+		 * @param $order_by_statement
+		 *
+		 * @return string
+		 */
+		function posts_orderby( $order_by_statement ) {
+			if ( !$this->_is_archive() ) {
+				return $order_by_statement;
+			}
+			if ( isset ( $_GET['orderby'] ) && isset ( $_GET['order'] ) ) {
+				switch( $_GET['orderby'] ){
+					case 'quiz-name':
+						$order_by_statement = "q.post_title {$_GET['order']}";
+						break;
+				}
+			}
+			return $order_by_statement;
+		}
+
+		/**
+		 * @param $columns
+		 *
+		 * @return mixed
+		 */
+		function columns_sortable( $columns ) {
+			$columns[LP()->quiz_post_type] = 'quiz-name';
+			return $columns;
 		}
 
 		static function admin_styles() {
@@ -314,8 +378,20 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 			$this->save_post();
 		}
 
-		function save_post() {
-			die( __FILE__ . '::' . __FUNCTION__ );
+		private function _is_archive() {
+			global $pagenow, $post_type;
+			if ( !is_admin() || ( $pagenow != 'edit.php' ) || ( LP()->question_post_type != $post_type ) ) {
+				return false;
+			}
+			return true;
+		}
+
+		private function _filter_quiz() {
+			return !empty( $_REQUEST['filter_quiz'] ) ? absint( $_REQUEST['filter_quiz'] ) : false;
+		}
+
+		private function _get_orderby(){
+			return isset( $_REQUEST['orderby'] ) ? $_REQUEST['orderby'] : '';
 		}
 	} // end LP_Question_Post_Type
 }

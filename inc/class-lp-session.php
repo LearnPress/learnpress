@@ -38,8 +38,12 @@ class LP_Session {
 	 * @return array
 	 */
 	static function init() {
-		if ( !session_id() ) {
+		if ( !session_id() && !headers_sent() ) {
 			session_start();
+		}
+		if( !session_id() ){
+			LP_Debug::instance()->add( 'Session start failed!' );
+			return false;
 		}
 		if ( empty( $_SESSION['learn_press'] ) ) {
 			$_SESSION['learn_press'] = array();

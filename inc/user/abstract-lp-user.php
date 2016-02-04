@@ -121,6 +121,7 @@ class LP_Abstract_User {
 
 			$quiz           = LP_Quiz::get_quiz( $quiz_id );
 			$quiz_questions = $quiz->get_questions();
+			$quiz_question_ids = $quiz_questions ? array_keys( $quiz_questions ) : array();
 			$user_quiz_data = apply_filters(
 				'learn_press_user_quiz_data',
 				array(
@@ -129,9 +130,9 @@ class LP_Abstract_User {
 					'end'              => '',
 					'status'           => 'started',
 					'results'          => '',
-					'current_question' => '',
+					'current_question' => !empty( $quiz_question_ids[0] ) ? $quiz_question_ids[0] : null,
 					'question_answers' => '',
-					'questions'        => $quiz_questions ? array_keys( $quiz_questions ) : ''
+					'questions'        => $quiz_question_ids
 				)
 			);
 

@@ -259,7 +259,6 @@ if ( !class_exists( 'LearnPress' ) ) {
 			//$this->define( 'LP_PLUGIN_URL', trailingslashit( plugins_url( '/', __FILE__ ) ) );
 
 
-
 			// Custom post type name
 			$this->define( 'LP_COURSE_CPT', $this->course_post_type );
 			$this->define( 'LP_LESSON_CPT', $this->lesson_post_type );
@@ -309,7 +308,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 
 			//LP_Install::install();
 
-			add_action( 'plugins_loaded', array( $this, '_define_plugin_url' ), -100);
+			add_action( 'plugins_loaded', array( $this, '_define_plugin_url' ), - 100 );
 			// initial some tasks before page load
 			add_action( 'init', array( $this, 'init' ), 15 );
 
@@ -319,8 +318,8 @@ if ( !class_exists( 'LearnPress' ) ) {
 
 		}
 
-		function _define_plugin_url(){
-			if(!defined( 'LP_PLUGIN_URL' ) ) {
+		function _define_plugin_url() {
+			if ( !defined( 'LP_PLUGIN_URL' ) ) {
 				$this->define( 'LP_PLUGIN_URL', trailingslashit( plugins_url( '/', __FILE__ ) ) );
 				$this->define( 'LP_JS_URL', LP_PLUGIN_URL . 'assets/js/' );
 				$this->define( 'LP_CSS_URL', LP_PLUGIN_URL . 'assets/css/' );
@@ -411,7 +410,8 @@ if ( !class_exists( 'LearnPress' ) ) {
 			if ( is_admin() ) {
 
 				require_once 'inc/admin/class-lp-admin-notice.php';
-				if ( !class_exists( 'RWMB_Meta_Box' ) ) {
+
+				if( !defined( 'RWMB_VER' ) ){
 					require_once 'inc/libraries/meta-box/meta-box.php';
 				}
 
@@ -493,8 +493,9 @@ if ( !class_exists( 'LearnPress' ) ) {
 			if ( !empty( $_REQUEST['debug'] ) ) {
 				require_once( 'inc/debug.php' );
 			}
-
-
+			if ( file_exists( LP_PLUGIN_PATH . '/test-functions.php' ) ) {
+				include_once LP_PLUGIN_PATH . '/test-functions.php';
+			}
 		}
 
 		/**
@@ -615,19 +616,4 @@ function test_mail() {
 }
 
 add_action( 'admin_footer', 'test_mail' );
-
-function learn_press_addon_notice( $notice ) {
-	$notices                             = !empty( $GLOBALS['learn_press_addon_notice'] ) ? (array) $GLOBALS['learn_press_addon_notice'] : array();
-	$notices[]                           = $notice;
-	$GLOBALS['learn_press_addon_notice'] = $notices;
-}
-
-function learn_press_print_addon_notice() {
-	$notices = !empty( $GLOBALS['learn_press_addon_notice'] ) ? (array) $GLOBALS['learn_press_addon_notice'] : array();
-	if ( $notices ) foreach ( $notices as $notice ) {
-		printf( '<div class="error"><p>%s</p></div>', $notice );
-	}
-}
-
-add_action( 'admin_notices', 'learn_press_print_addon_notice' );
 

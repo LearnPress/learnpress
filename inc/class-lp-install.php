@@ -265,8 +265,8 @@ class LP_Install {
 		global $wpdb;
 		$query = $wpdb->prepare("
 			SELECT um.*
-			FROM wp_users u
-			INNER JOIN wp_usermeta um ON um.user_id = u.ID AND um.meta_key = %s
+			FROM {$wpdb->users} u
+			INNER JOIN {$wpdb->usermeta} um ON um.user_id = u.ID AND um.meta_key = %s
 			WHERE um.meta_value LIKE %s
 			LIMIT 0, 1
 		", 'wp_capabilities', '%"lpr_teacher"%' );

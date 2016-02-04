@@ -185,9 +185,11 @@ function learn_press_item_meta_format( $item, $nonce = '' ){
 		if ( false === $format ) {
 			$format = 'standard';
 		}
+
 		//return false to hide post format
 		if( $format = apply_filters( 'learn_press_course_item_format', $format, $item ) ) {
-			printf( '<span class="lp-label lp-label-format lp-label-format-%s">%s</span>', $format, ucfirst( $format ) );
+			//printf( '<span class="lp-label lp-label-format lp-label-format-%s">%s</span>', $format, ucfirst( $format ) );
+			printf( '<label for="post-format-0" class="post-format-icon post-format-%s" title="%s"></label>', $format, ucfirst( $format ) );
 		}else{
 			echo $nonce;
 		}
@@ -200,7 +202,7 @@ function learn_press_course_item_format_exclude( $format, $item ){
 	}
 	return $format;
 }
-add_filter( 'learn_press_course_item_format', 'learn_press_course_item_format_exclude', 5, 2 );
+//add_filter( 'learn_press_course_item_format', 'learn_press_course_item_format_exclude', 5, 2 );
 /*******************************************************/
 /*******************************************************/
 
@@ -418,18 +420,18 @@ function learn_press_get_all_courses( $args = array() ){
 }
 
 function learn_press_search_post_excerpt( $where = '' ) {
-	global $wp_the_query;
+	global $wp_the_query, $wpdb;
 
 	if ( empty( $wp_the_query->query_vars['s'] ) )
 		return $where;
 
 	$where = preg_replace(
 		"/post_title\s+LIKE\s*(\'\%[^\%]+\%\')/",
-		"post_title LIKE $1) OR (post_excerpt LIKE $1", $where );
+		"post_title LIKE $1) OR ({$wpdb->posts}.post_excerpt LIKE $1", $where );
 
 	return $where;
 }
-add_filter( 'posts_where', 'learn_press_search_post_excerpt' );
+//add_filter( 'posts_where', 'learn_press_search_post_excerpt' );
 
 /**
  * Return true if a course is required review before submit

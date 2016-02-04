@@ -1214,6 +1214,22 @@ body.post-type-lp_question #question_answer_ .inside{
 	-webkit-box-shadow: 0 1px 2px 0 rgba(0,0,0,0.2),0 3px 4px 0 rgba(0,0,0,0.1);
 	box-shadow: 0 1px 2px 0 rgba(0,0,0,0.2),0 3px 4px 0 rgba(0,0,0,0.1);
 }
+.lp-label-counter{
+	display: inline-block;
+	/* padding: 5px; */
+	line-height: 1;
+	background-color: #0073AA;
+	border-radius: 50%;
+	height: 21px;
+	line-height: 20px;
+	text-align: center;
+	min-width: 21px;
+	color: #FFF;
+}
+.column-num_of_question{
+	width: 100px;
+	text-align: left;
+}
 @-webkit-keyframes lp-spinner {
 	0% {
 		-webkit-transform: rotate(0deg);

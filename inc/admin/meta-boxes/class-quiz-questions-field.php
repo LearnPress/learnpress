@@ -122,7 +122,7 @@ if ( !class_exists( 'RWMB_Quiz_Questions_Field' ) ) {
 
 		static function save( $new, $old, $post_id, $field ){
 			global $wpdb, $post;
-
+			//LP_Debug::instance()->add( __CLASS__ . '::' . __FUNCTION__ . '(' . join( ',', func_get_args() ) . ')' );
 			$questions = learn_press_get_request( 'learn_press_question' );
 			/*if( $all_questions = LP_Quiz::get_quiz( $post->ID )->get_questions() ){
 				$all_questions = array_keys( $all_questions );
