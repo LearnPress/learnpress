@@ -147,19 +147,53 @@ class LP_Question_Factory {
 			add_action( 'save_post', array( __CLASS__, 'save' ) );
 			add_action( 'admin_print_footer_scripts', array( __CLASS__, 'admin_template' ) );
 			add_action( 'learn_press_convert_question_type', array( __CLASS__, 'convert_question' ), 5, 4 );
-			add_filter( 'learn_press_question_answers_data', array( __CLASS__, 'sanitize_answers' ), 10, 2 );
+			add_filter( 'learn_press_question_answers_data', array( __CLASS__, 'sanitize_answers' ), 10, 3 );
 
 		} else {
 
-
 		}
+		add_action( 'learn_press_load_quiz_question', array( __CLASS__, 'save_question_if_needed' ), 100, 3 );
+		add_action( 'learn_press_user_finish_quiz', array( __CLASS__, 'save_question' ), 100, 2 );
+
 		LP_Question_Factory::add_template( 'multi-choice-option', LP_Question_Multi_Choice::admin_js_template() );
 		LP_Question_Factory::add_template( 'single-choice-option', LP_Question_Single_Choice::admin_js_template() );
 
 		do_action( 'learn_press_question_factory_init', __CLASS__ );
 	}
 
-	static function sanitize_answers( $answers, $q ) {
+	static function save_question( $quiz_id, $user_id ){
+		self::save_question_if_needed( null, $quiz_id, $user_id );
+	}
+
+	/**
+	 * Save question answer
+	 *
+	 * @param int
+	 * @param int
+	 * @param int
+	 *
+	 * @return bool
+	 */
+	static function save_question_if_needed( $question_id, $quiz_id, $user_id ) {
+		$save_id  = learn_press_get_request( 'save_id' );
+		$question = $save_id ? LP_Question_Factory::get_question( $save_id ) : false;
+		if ( $question ) {
+			$question_answer = null;
+			$question_data   = isset( $_REQUEST['question_answer'] ) ? $_REQUEST['question_answer'] : array();
+			if ( is_string( $question_data ) ) {
+				parse_str( $question_data, $question_answer );
+			} else {
+				$question_answer = $question_data;
+			}
+			$question_answer = array_key_exists( 'learn-press-question-' . $save_id, $question_answer ) ? $question_answer['learn-press-question-' . $save_id] : '';
+
+			$question->save_user_answer( $question_answer, $quiz_id );
+			do_action( 'learn_press_save_user_question_answer', $question_answer, $save_id, $quiz_id, $user_id, true );
+		}
+		return $question;
+	}
+
+	static function sanitize_answers( $answers, $posted, $q ) {
 		$func = "_sanitize_{$q->type}_answers";
 		if ( is_callable( array( __CLASS__, $func ) ) ) {
 			return call_user_func_array( array( __CLASS__, $func ), array( $answers, $q ) );
@@ -197,7 +231,7 @@ class LP_Question_Factory {
 				'value'   => learn_press_uniqid(),
 				'text'    => __( 'Option', 'learn_press' )
 			);
-		} elseif( $size == 0 ) {
+		} elseif ( $size == 0 ) {
 			return $answers;
 		}
 		$answers     = array_values( $answers );

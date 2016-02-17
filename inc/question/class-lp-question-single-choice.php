@@ -162,12 +162,14 @@ class LP_Question_Single_Choice extends LP_Abstract_Question {
 					)
 				);
 				$index = 0;
-				foreach ( $post_data['answer']['text'] as $k => $txt ) {
-					if ( !$txt ) continue;
-					$post_answers[$index ++] = array(
-						'text'    => $txt,
-						'is_true' => $post_data['answer']['is_true'][$k]
-					);
+				if( !empty( $post_data['answer']['text'] ) ) {
+					foreach ( $post_data['answer']['text'] as $k => $txt ) {
+						if ( !$txt ) continue;
+						$post_answers[$index ++] = array(
+							'text'    => $txt,
+							'is_true' => $post_data['answer']['is_true'][$k]
+						);
+					}
 				}
 			}
 			$post_data['answer']       = $post_answers;

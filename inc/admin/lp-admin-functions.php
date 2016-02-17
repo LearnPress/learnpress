@@ -14,14 +14,19 @@ if ( !defined( 'ABSPATH' ) ) {
  * Get html view path for admin to display
  *
  * @param $name
+ * @param $plugin_file
  *
  * @return mixed
  */
-function learn_press_get_admin_view( $name ) {
+function learn_press_get_admin_view( $name, $plugin_file = null ) {
 	if ( !preg_match( '/\.(.*)$/', $name ) ) {
 		$name .= '.php';
 	}
-	$view = LP()->plugin_path( 'inc/admin/views/' . $name );
+	if( $plugin_file ){
+		$view = dirname( $plugin_file ) . '/inc/admin/views/' . $name;
+	}else {
+		$view = LP()->plugin_path( 'inc/admin/views/' . $name );
+	}
 	return apply_filters( 'learn_press_admin_view', $view, $name );
 }
 
@@ -35,7 +40,7 @@ function learn_press_get_admin_view( $name ) {
  * @return bool
  */
 function learn_press_admin_view( $name, $args = array(), $include_once = false ) {
-	$view = learn_press_get_admin_view( $name );
+	$view = learn_press_get_admin_view( $name, !empty( $args['plugin_file'] ) ? $args['plugin_file'] : null );
 	if ( file_exists( $view ) ) {
 		// extract parameters as local variables if passed
 		is_array( $args ) && extract( $args );

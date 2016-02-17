@@ -26,6 +26,11 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			//add_action( 'learn_press_transition_course_status', array( $this, 'review_log' ), 10, 3 );
 			add_action( 'load-post.php', array( $this, 'post_actions' ) );
 			add_action( 'before_delete_post', array( $this, 'delete_course_sections' ) );
+			add_filter( 'manage_edit-lp_course_sortable_columns', array( $this, 'columns_sortable' ) );
+			add_filter( 'posts_fields', array( $this, 'posts_fields' ) );
+			add_filter( 'posts_join_paged', array( $this, 'posts_join_paged' ) );
+			add_filter( 'posts_where_paged', array( $this, 'posts_where_paged' ) );
+			add_filter( 'posts_orderby', array( $this, 'posts_orderby' ) );
 
 			parent::__construct();
 		}
@@ -822,7 +827,11 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 					break;
 				case 'price':
 					$price = get_post_meta( $post->ID, '_lp_price', true );
-					echo $price ? learn_press_format_price( get_post_meta( $post->ID, '_lp_price', true ), true ) : __( 'Free', 'learn_press' );
+					if( $price ) {
+						echo sprintf( '<a href="%s">%s</a>', add_query_arg( 'filter_price', $price ), learn_press_format_price( get_post_meta( $post->ID, '_lp_price', true ), true ) );
+					}else{
+						echo sprintf( '<a href="%s">%s</a>', add_query_arg( 'filter_price', 0 ), __( 'Free', 'learn_press' ) );
+					}
 			}
 		}
 
@@ -852,6 +861,97 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 				return;
 			}*/
 			learn_press_admin_view( 'meta-boxes/course/review-log' );
+		}
+
+		function posts_fields( $fields ){
+			if( !$this->_is_archive() ){
+				return $fields;
+			}
+
+			$fields = " DISTINCT " . $fields;
+			if( ( $this->_get_orderby() == 'price' ) || ($this->_get_search()) ) {
+				$fields .= ', pm_price.meta_value as course_price';
+			}
+			return $fields;
+		}
+
+		/**
+		 * @param $join
+		 *
+		 * @return string
+		 */
+		function posts_join_paged( $join ) {
+			if( !$this->_is_archive() ){
+				return $join;
+			}
+			global $wpdb;
+			$join .= " LEFT JOIN {$wpdb->postmeta} pm_price ON pm_price.post_id = {$wpdb->posts}.ID AND pm_price.meta_key = '_lp_price'";
+
+			return $join;
+		}
+
+		/**
+		 * @param $where
+		 *
+		 * @return mixed|string
+		 */
+		function posts_where_paged( $where ) {
+
+			if( !$this->_is_archive() ){
+				return $where;
+			}
+			global $wpdb;
+			if( array_key_exists( 'filter_price', $_REQUEST ) ){
+				if( $_REQUEST['filter_price'] == 0 ){
+					$where .= " AND ( pm_price.meta_value IS NULL || pm_price.meta_value = 0 )";
+				}else{
+					$where .= $wpdb->prepare( " AND ( pm_price.meta_value = %s )", $_REQUEST['filter_price'] );
+				}
+			}
+
+			return $where;
+		}
+
+		/**
+		 * @param $order_by_statement
+		 *
+		 * @return string
+		 */
+		function posts_orderby( $order_by_statement ) {
+			if( !$this->_is_archive() ){
+				return $order_by_statement;
+			}
+			switch( $this->_get_orderby() ) {
+				case 'price':
+					$order_by_statement = "pm_price.meta_value {$_GET['order']}";
+			}
+			return $order_by_statement;
+		}
+
+		/**
+		 * @param $columns
+		 *
+		 * @return mixed
+		 */
+		function columns_sortable( $columns ) {
+			$columns['price'] = 'price';
+			return $columns;
+		}
+
+		private function _is_archive() {
+			global $pagenow, $post_type;
+			if ( !is_admin() || ( $pagenow != 'edit.php' ) || ( LP()->course_post_type != $post_type ) ) {
+				return false;
+			}
+			return true;
+		}
+
+		private function _get_orderby(){
+			return isset( $_REQUEST['orderby'] ) ? $_REQUEST['orderby'] : '';
+		}
+
+		private function _get_search(){
+			return isset( $_REQUEST['s'] ) ? $_REQUEST['s'] : false;
 		}
 	} // end LP_Course_Post_Type
 	new LP_Course_Post_Type();

@@ -22,13 +22,15 @@ if ( !$quiz->has( 'questions' ) ) {
 $user = learn_press_get_current_user();
 ?>
 <div class="quiz-question-content">
-	<form method="post" action="">
-	<?php
-	if ( $quiz->current_question ):
-		$question_answers = $user->get_question_answers( $quiz->id, $quiz->current_question->id );
+	<form method="post" id="learn-press-quiz-question" name="learn-press-quiz-question" action="">
+		<?php do_action( 'learn_press_before_display_quiz_question', $quiz->current_question, $quiz, $user ); ?>
+		<?php
+		if ( $quiz->current_question ):
+			$question_answers = $user->get_question_answers( $quiz->id, $quiz->current_question->id );
 
-		$quiz->current_question->render( array( 'answered' => $question_answers ) );
-	endif;
-	?>
+			$quiz->current_question->render( array( 'answered' => $question_answers ) );
+		endif;
+		?>
+		<?php do_action( 'learn_press_after_display_quiz_question', $quiz->current_question, $quiz, $user ); ?>
 	</form>
 </div>

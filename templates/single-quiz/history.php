@@ -15,8 +15,10 @@ global $quiz;
 if( ! $quiz->retake_count || !LP()->user->has( 'completed-quiz', $quiz->id ) ) {
 	return;
 }
+$history = LP()->user->get_quiz_history( $quiz->id );
+reset($history);
+$view_id = !empty( $_REQUEST['history_id'] ) ? $_REQUEST['history_id'] : key( $history );
 $heading = apply_filters( 'learn_press_list_questions_heading', __( 'History', 'learn_press' ) );
-$view_id = !empty( $_REQUEST['history_id'] ) ? $_REQUEST['history_id'] : 0;
 ?>
 
 <?php if ( $heading ) { ?>
@@ -24,7 +26,6 @@ $view_id = !empty( $_REQUEST['history_id'] ) ? $_REQUEST['history_id'] : 0;
 <?php } ?>
 
 <?php
-$history = LP()->user->get_quiz_history( $quiz->id );
 if( $history ){
 	$position = 0;
 	?>

@@ -117,11 +117,11 @@ add_action( 'learn_press_single_quiz_summary', 'learn_press_single_quiz_descript
 add_action( 'learn_press_single_quiz_summary', 'learn_press_single_quiz_left_start_wrap', 15 );
 add_action( 'learn_press_single_quiz_summary', 'learn_press_single_quiz_question', 20 );
 add_action( 'learn_press_single_quiz_summary', 'learn_press_single_quiz_result', 20 );
-add_action( 'learn_press_single_quiz_summary', 'learn_press_single_quiz_history', 20 );
 add_action( 'learn_press_single_quiz_summary', 'learn_press_single_quiz_questions_nav', 25 );
 add_action( 'learn_press_single_quiz_summary', 'learn_press_single_quiz_questions', 30 );
-add_action( 'learn_press_single_quiz_summary', 'learn_press_single_quiz_left_end_wrap', 35 );
-add_action( 'learn_press_single_quiz_summary', 'learn_press_single_quiz_sidebar', 35 );
+add_action( 'learn_press_single_quiz_summary', 'learn_press_single_quiz_history', 35 );
+add_action( 'learn_press_single_quiz_summary', 'learn_press_single_quiz_left_end_wrap', 40 );
+add_action( 'learn_press_single_quiz_summary', 'learn_press_single_quiz_sidebar', 45 );
 
 add_action( 'learn_press_single_quiz_sidebar', 'learn_press_single_quiz_timer', 5 );
 add_action( 'learn_press_single_quiz_sidebar', 'learn_press_single_quiz_buttons', 10 );

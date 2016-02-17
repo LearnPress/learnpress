@@ -208,13 +208,15 @@ class LP_Question_Multi_Choice extends LP_Abstract_Question {
 				);
 				wp_update_post( $post_args );
 				$index = 0;
-				foreach ( $post_data['answer']['text'] as $k => $txt ) {
-					if ( !$txt ) continue;
-					$post_answers[$index] = array(
-						'text'    => $txt,
-						'is_true' => $post_data['answer']['is_true'][$k]
-					);
-					$index ++;
+				if( !empty( $post_data['answer']['text'] ) ) {
+					foreach ( $post_data['answer']['text'] as $k => $txt ) {
+						if ( !$txt ) continue;
+						$post_answers[$index] = array(
+							'text'    => $txt,
+							'is_true' => $post_data['answer']['is_true'][$k]
+						);
+						$index ++;
+					}
 				}
 			}
 			$post_data['answer']       = $post_answers;

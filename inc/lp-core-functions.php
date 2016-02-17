@@ -73,6 +73,11 @@ function learn_press_get_ip() {
 	return esc_sql( $the_ip );
 }
 
+function learn_press_uniqid( $prefix = '' ) {
+	$hash = str_replace( '.', '', microtime( true ) . uniqid() );
+	return apply_filters( 'learn_press_generate_unique_hash', $prefix . $hash, $prefix );
+}
+
 function learn_press_is_endpoint_url( $endpoint = false ) {
 	global $wp;
 

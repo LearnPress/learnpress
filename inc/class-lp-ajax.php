@@ -135,32 +135,6 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			do_action( 'learn_press_take_course', $course_id, $payment_method );
 		}
 
-		/**
-		 * Save question answer
-		 *
-		 * @return bool
-		 */
-		private static function save_question_if_needed() {
-			$quiz_id         = !empty( $_REQUEST['quiz_id'] ) ? absint( $_REQUEST['quiz_id'] ) : 0;
-			$question_id     = !empty( $_REQUEST['save_id'] ) ? absint( $_REQUEST['save_id'] ) : 0;
-			$user_id         = !empty( $_REQUEST['user_id'] ) ? absint( $_REQUEST['user_id'] ) : 0;
-			$question        = $question_id ? LP_Question_Factory::get_question($question_id ) : false;
-			if ( $question ) {
-				$question_answer = null;
-				$question_data = isset( $_REQUEST['question_answer'] ) ? $_REQUEST['question_answer'] : array();
-				if( is_string( $question_data ) ){
-					parse_str( $question_data, $question_answer );
-				}else{
-					$question_answer = $question_data;
-				}
-				$question_answer = array_key_exists( 'learn-press-question-' . $question_id , $question_answer ) ? $question_answer[ 'learn-press-question-' . $question_id ] : '';
-				$question->save_user_answer( $question_answer, $quiz_id );
-				do_action( 'learn_press_save_user_question_answer', $question_answer, $question_id, $quiz_id, $user_id, true );
-
-			}
-			return $question;
-		}
-
 		private static function    update_time_remaining() {
 			$time_remaining = learn_press_get_request( 'time_remaining' );
 			$quiz_id        = learn_press_get_request( 'quiz_id' );
@@ -191,8 +165,10 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			$user_id     = !empty( $_REQUEST['user_id'] ) ? absint( $_REQUEST['user_id'] ) : 0;
 			global $quiz;
 			$quiz = LP_Quiz::get_quiz( $quiz_id );
+
+			do_action( 'learn_press_load_quiz_question', $question_id, $quiz_id, $user_id );
 			// save question if find it
-			self::save_question_if_needed();
+			//self::save_question_if_needed();
 			//self::update_time_remaining();
 			$user = learn_press_get_current_user();
 			if ( $user->id != $user_id ) {
@@ -222,10 +198,11 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 				$question->render( array( 'answered' => $question_answers ) );
 				$content = ob_get_clean();
 				learn_press_send_json(
-					array(
-						'result'    => 'success',
-						'content'   => $content,
-						'permalink' => learn_press_get_user_question_url( $quiz_id, $question_id )
+					apply_filters( 'learn_press_load_quiz_question_result_data', array(
+							'result'    => 'success',
+							'content'   => $content,
+							'permalink' => learn_press_get_user_question_url( $quiz_id, $question_id )
+						)
 					)
 				);
 
@@ -274,7 +251,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			$user            = learn_press_get_current_user();
 			$quiz_id         = learn_press_get_request( 'quiz_id' );
 			// save current answer as if user may change
-			self::save_question_if_needed();
+			//self::save_question_if_needed();
 			$user->finish_quiz( $quiz_id );
 
 			$response = array(

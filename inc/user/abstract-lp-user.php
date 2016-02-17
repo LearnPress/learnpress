@@ -119,10 +119,10 @@ class LP_Abstract_User {
 
 			$user_quiz_id = $wpdb->insert_id;
 
-			$quiz           = LP_Quiz::get_quiz( $quiz_id );
-			$quiz_questions = $quiz->get_questions();
+			$quiz              = LP_Quiz::get_quiz( $quiz_id );
+			$quiz_questions    = $quiz->get_questions();
 			$quiz_question_ids = $quiz_questions ? array_keys( $quiz_questions ) : array();
-			$user_quiz_data = apply_filters(
+			$user_quiz_data    = apply_filters(
 				'learn_press_user_quiz_data',
 				array(
 					'history_id'       => $user_quiz_id,
@@ -168,7 +168,9 @@ class LP_Abstract_User {
 			throw new Exception( __( 'This user already has start quiz', 'learn_press' ) );
 		}
 		///
-		return $this->_create_quiz_history( $quiz_id );
+		$return = $this->_create_quiz_history( $quiz_id );
+		do_action( 'learn_press_user_start_quiz', $quiz_id, $user_id );
+		return $return;
 	}
 
 	function get_quiz_time_remaining( $quiz_id ) {
@@ -278,7 +280,7 @@ class LP_Abstract_User {
 			}
 		}*/
 
-		do_action( 'learn_press_user_finish_quiz', $quiz_id, $this );
+		do_action( 'learn_press_user_finish_quiz', $quiz_id, $this->id );
 
 	}
 
@@ -305,7 +307,7 @@ class LP_Abstract_User {
 			$response['redirect'] = get_the_permalink( $quiz_id );
 			$response['data']     = $data;
 		}
-		do_action( 'learn_press_user_retake_quiz', $quiz_id, $response, $this );
+		do_action( 'learn_press_user_retake_quiz', $response, $quiz_id, $this->id );
 		return $response;
 	}
 
@@ -326,9 +328,9 @@ class LP_Abstract_User {
 		return apply_filters( 'learn_press_user_quiz_status', $quiz_status, $this, $quiz_id );
 	}
 
-	function get_quiz_last_results( $quiz_id ){
+	function get_quiz_last_results( $quiz_id ) {
 		$results = $this->get_course_info( $quiz_id );
-		if( $results ){
+		if ( $results ) {
 			$results = reset( $results );
 		}
 		return apply_filters( 'learn_press_user_quiz_last_results', $results, $quiz_id, $this );
@@ -416,15 +418,15 @@ class LP_Abstract_User {
 		return apply_filters( 'learn_press_user_current_quiz_question', $question_id, $quiz_id, $this );
 	}
 
-	function get_finished_courses(){
+	function get_finished_courses() {
 		global $wpdb;
-		$query = $wpdb->prepare("
+		$query = $wpdb->prepare( "
 			SELECT p.*, uc.start_time, uc.end_time, uc.order_id
 			FROM {$wpdb->posts} p
 			INNER JOIN {$wpdb->prefix}learnpress_user_courses uc ON p.ID = uc.course_id
 			WHERE uc.user_id = %d
 			AND uc.status = %s
-		", $this->id, 'finished');
+		", $this->id, 'finished' );
 		return apply_filters( 'learn_press_user_finished_courses', $wpdb->get_results( $query ) );
 	}
 
@@ -679,11 +681,11 @@ class LP_Abstract_User {
 		return apply_filters( 'learn_press_user_has_finished_course', $courses[$course_id] == 'yes', $this, $course_id );
 	}
 
-	function has_passed_course( $course_id ){
+	function has_passed_course( $course_id ) {
 		$course = LP_Course::get_course( $course_id );
-		if( $course ){
+		if ( $course ) {
 			$results = $course->evaluate_course_results( $this->id );
-		}else{
+		} else {
 			$results = 0;
 		}
 		return apply_filters( 'learn_press_user_has_passed_course', $results * 100 >= $course->passing_condition ? $results : false, $course_id, $this );
@@ -714,6 +716,24 @@ class LP_Abstract_User {
 			$completed = $progress->status == 'completed';
 		}
 		return apply_filters( 'learn_press_user_has_completed_quiz', $completed, $quiz_id, $this );
+	}
+
+	function current_quiz_status( $quiz_id, $force = false ) {
+		global $wpdb;
+		static $quizzes = array();
+		if ( empty( $quizzes[$quiz_id] ) || $force ) {
+			$query             = $wpdb->prepare( "
+				SELECT uqm.meta_value as `status`
+				FROM {$wpdb->prefix}learnpress_user_quizmeta uqm
+				INNER JOIN {$wpdb->prefix}learnpress_user_quizzes uq ON uq.user_quiz_id = uqm.learnpress_user_quiz_id AND uqm.meta_key = %s
+				WHERE uq.user_id = %d
+				AND uq.quiz_id = %d
+				ORDER BY user_quiz_id DESC
+				LIMIT 1
+			", 'status', $this->id, $quiz_id );
+			$quizzes[$quiz_id] = $wpdb->get_var( $query );
+		}
+		return $quizzes[$quiz_id];
 	}
 
 	function complete_lesson( $lesson_id ) {

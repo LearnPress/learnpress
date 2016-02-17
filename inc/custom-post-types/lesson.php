@@ -365,10 +365,6 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 			return true;
 		}
 
-		private function _filter_course() {
-			return !empty( $_REQUEST['filter_course'] ) ? absint( $_REQUEST['filter_course'] ) : false;
-		}
-
 		private function _get_orderby(){
 			return isset( $_REQUEST['orderby'] ) ? $_REQUEST['orderby'] : '';
 		}
@@ -376,6 +372,11 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 		private function _get_search(){
 			return isset( $_REQUEST['s'] ) ? $_REQUEST['s'] : false;
 		}
+
+		private function _filter_course() {
+			return !empty( $_REQUEST['filter_course'] ) ? absint( $_REQUEST['filter_course'] ) : false;
+		}
+
 		static function create_default_meta( $id ){
 			$meta = apply_filters( 'learn_press_default_lesson_meta',
 				array(

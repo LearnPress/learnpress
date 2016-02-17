@@ -155,7 +155,7 @@ class LP_Install {
 	 */
 	static function db_update_notices() {
 		if ( get_option( 'learnpress_db_version' ) != LP()->db_version ) {
-			LP_Admin_Notice::add( __( '<p>LearnPress ' . LP()->version . ' need to upgrade your database.</p><p><a href="' . admin_url( 'admin.php?page=learnpress_update_10' ) . '" class="button">Update Now</a></p>', 'learn_press' ) );
+			//LP_Admin_Notice::add( __( '<p>LearnPress ' . LP()->version . ' need to upgrade your database.</p><p><a href="' . admin_url( 'admin.php?page=learnpress_update_10' ) . '" class="button">Update Now</a></p>', 'learn_press' ) );
 		}
 	}
 

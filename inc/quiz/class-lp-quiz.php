@@ -210,8 +210,8 @@ class LP_Quiz {
 		return false;
 	}
 
-	function get_questions(){
-		if( empty( $this->questions ) ){
+	function get_questions( $force = false ){
+		if( empty( $this->questions ) || $force ){
 			global $wpdb;
 			$query = $wpdb->prepare("
 				SELECT q.*, qq.params
@@ -265,6 +265,10 @@ class LP_Quiz {
 
 	function has_questions(){
 		return $this->get_questions();
+	}
+
+	function has_question( $question_id ){
+		return is_array( $this->questions ) && isset( $this->questions[ $question_id ] );
 	}
 
 	function get_mark( $force = false ){

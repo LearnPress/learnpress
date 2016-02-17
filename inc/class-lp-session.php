@@ -22,7 +22,15 @@ class LP_Session {
 	}
 
 	function __get( $key ) {
-		return self::get( $key );
+		$return = null;
+		switch( $key ){
+			case 'id':
+				$return = session_id();
+				break;
+			default:
+				$return = self::get( $key );
+		}
+		return $return;
 
 	}
 

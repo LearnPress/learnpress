@@ -65,6 +65,9 @@ class LP_Abstract_Question {
 					break;
 				default:
 					$return = get_post_meta( $this->id, '_lp_' . $key, true );
+					if( $key == 'mark' && $return <= 0 ){
+						$return = 1;
+					}
 			}
 			$this->{$key} = $return;
 		}
@@ -92,12 +95,36 @@ class LP_Abstract_Question {
 		learn_press_reset_auto_increment( 'learnpress_question_answers' );
 	}
 
+	function get_default_answers( $answers = false ) {
+		if ( !$answers ) {
+			$answers = array(
+				array(
+					'is_true' => 'yes',
+					'value'   => learn_press_uniqid(),
+					'text'    => __( 'Option First', 'learn_press' )
+				),
+				array(
+					'is_true' => 'no',
+					'value'   => learn_press_uniqid(),
+					'text'    => __( 'Option Seconds', 'learn_press' )
+				),
+				array(
+					'is_true' => 'no',
+					'value'   => learn_press_uniqid(),
+					'text'    => __( 'Option Third', 'learn_press' )
+				)
+			);
+		}
+		return $answers;
+	}
+
 	public function save( $post_data = null ) {
 		global $wpdb;
 		/**
 		 * Allows add more type of question to save with the rules below
 		 */
-		if ( in_array( $this->type, apply_filters( 'learn_press_save_default_question_types', array( 'true_or_false', 'multi_choice', 'single_choice' ) ) ) ) {
+		$types = apply_filters( 'learn_press_save_default_question_types', array( 'true_or_false', 'multi_choice', 'single_choice' ) );
+		if ( in_array( $this->type, $types ) ) {
 
 			$this->empty_answers();
 
@@ -117,10 +144,10 @@ class LP_Abstract_Question {
 						'answer_order' => $index + 1,
 						'question_id'  => $this->id
 					);
-					$answers[] = apply_filters( 'learn_press_question_answer_data', $data, $this );
+					$answers[] = apply_filters( 'learn_press_question_answer_data', $data, $post_data['answer'], $this );
 				}
 
-				if( $answers = apply_filters( 'learn_press_question_answers_data', $answers, $this ) ){
+				if( $answers = apply_filters( 'learn_press_question_answers_data', $answers, $post_data['answer'], $this ) ){
 					foreach( $answers as $answer ){
 						$answer['answer_data'] = maybe_serialize( $answer['answer_data'] );
 						$wpdb->insert(
@@ -136,6 +163,7 @@ class LP_Abstract_Question {
 				$this->mark = 1;
 				update_post_meta( $this->id, '_lp_mark', 1 );
 			}
+
 		}
 		do_action( 'learn_press_update_question_answer', $this, $post_data );
 	}
@@ -165,13 +193,12 @@ class LP_Abstract_Question {
 		return apply_filters( 'learn_press_question_answers', $answers, $this );
 	}
 
-	function get_default_answers( $answers = false ) {
+	/*function get_default_answers( $answers = false ) {
 		return $answers;
-	}
+	}*/
 
 	function submit_answer( $quiz_id, $answer ) {
-		print_r( $_POST );
-		die();
+		return false;
 	}
 
 	function get_type() {

@@ -1,4 +1,4 @@
-<div class="learn-press-question" id="learn-press-question-<?php echo $this->id;?>" data-type="single-choice" data-id="<?php echo $this->id;?>">
+<div class="learn-press-question" id="learn-press-question-<?php echo $this->id;?>" data-type="<?php echo str_replace( '_', '-', $this->type );?>" data-id="<?php echo $this->id;?>">
 <table class="lp-sortable lp-list-options" id="learn-press-list-options-<?php echo $this->id;?>">
 	<thead>
 	<th><?php _e( 'Answer Text', 'learn_press' ); ?></th>
@@ -14,6 +14,7 @@
 		<?php foreach ( $answers as $answer ): ?>
 			<?php
 			$value = $this->_get_option_value( $answer['value'] );
+			$id = $value;
 			?>
 
 			<?php do_action( 'learn_press_before_question_answer_option', $this ); ?>

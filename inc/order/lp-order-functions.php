@@ -269,11 +269,6 @@ function learn_press_do_transaction( $method, $transaction = false ) {
 	do_action( 'learn_press_do_transaction_' . $method, $transaction );
 }
 
-function learn_press_uniqid() {
-	$hash = str_replace( '.', '', microtime( true ) . uniqid() );
-	return apply_filters( 'learn_press_generate_unique_hash', $hash );
-}
-
 function learn_press_set_transient_transaction( $method, $temp_id, $user_id, $transaction ) {
 	set_transient( $method . '-' . $temp_id, array( 'user_id' => $user_id, 'transaction_object' => $transaction ), 60 * 60 * 24 );
 }

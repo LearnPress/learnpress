@@ -132,7 +132,10 @@ if (typeof window.LearnPress == 'undefined') {
 		});
 		return hidden;
 	}
-	LearnPress.sortableQuestionAnswers = function( $questions ){
+	LearnPress.sortableQuestionAnswers = function( $questions, args ){
+		args = $.extend({
+			stop: function(){}
+		}, args || {});
 		$questions.find('.lp-list-options tbody').sortable({
 			handle: '.lp-move-list-option',
 			axis: 'y',
@@ -148,8 +151,8 @@ if (typeof window.LearnPress == 'undefined') {
 				$this.find('.ui-sortable-placeholder td:gt(0)').remove();
 				$this.find('.ui-sortable-placeholder td:eq(0)').attr('colspan', cols)
 			},
-			stop: function(){
-
+			stop: function(e, ui){
+				$.isFunction( args.stop ) && args.stop.apply( this, [e, ui] );
 			}
 		});
 	}
