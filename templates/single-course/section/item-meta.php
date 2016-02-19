@@ -5,9 +5,13 @@ global $course;
 
 	<?php do_action( 'learn_press_before_item_meta', $item );?>
 
+	<span class="lp-label lp-label-viewing"><?php _e( 'Viewing', 'learn_press' );?></span>
+
+	<span class="lp-label lp-label-completed"><?php _e( 'Completed', 'learn_press' );?></span>
+
 	<?php if( $item->post_type == 'lp_quiz' ){ ?>
 
-	<span class="lp-label lp-label-quiz"><?php _e( 'Quiz', 'learn_press' );?></span>
+		<span class="lp-label lp-label-quiz"><?php _e( 'Quiz', 'learn_press' );?></span>
 
 		<?php if( $course->final_quiz == $item->ID ){?>
 

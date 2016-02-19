@@ -30,6 +30,10 @@ if (typeof LearnPress == 'undefined') window.LearnPress = {};
 				},
 				success : function (response) {
 					var response = LearnPress.parseJSON(response);
+					response = $(document).triggerHandler('learn_press_user_complete_lesson', response);
+					if(response.result == 'success'){
+						$('.course-item-' + lesson).addClass('item-completed');
+					}
 					if (response.url) {
 						LearnPress.reload(response.url)
 					} else {
@@ -66,7 +70,6 @@ if (typeof LearnPress == 'undefined') window.LearnPress = {};
 					course_id: course_id
 				},
 				success: function (response) {
-					alert(response.message)
 					if (response.finish) {
 						LearnPress.reload();
 					}

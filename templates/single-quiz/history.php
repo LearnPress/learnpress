@@ -15,10 +15,11 @@ global $quiz;
 if( ! $quiz->retake_count || !LP()->user->has( 'completed-quiz', $quiz->id ) ) {
 	return;
 }
+$limit = 10;
 $history = LP()->user->get_quiz_history( $quiz->id );
 reset($history);
 $view_id = !empty( $_REQUEST['history_id'] ) ? $_REQUEST['history_id'] : key( $history );
-$heading = apply_filters( 'learn_press_list_questions_heading', __( 'History', 'learn_press' ) );
+$heading = apply_filters( 'learn_press_list_questions_heading', sprintf( __( 'History (newest %d)', 'learn_press' ), $limit ) );
 ?>
 
 <?php if ( $heading ) { ?>
@@ -46,13 +47,15 @@ if( $history ){
 			</td>
 			<td>
 				<?php printf( "%01.2f (%%)", ($item->results['mark'] / $item->results['quiz_mark']) * 100 );?>
+				<!--
 				<p class="quiz-history-actions">
 					<a href="<?php echo add_query_arg( 'history_id', $item->history_id );?>"><?php _e( 'View', 'learn_press' );?></a>
 					<a href=""><?php _e( 'Use as result', 'learn_press' );?></a>
 				</p>
+				-->
 			</td>
 		</tr>
-		<?php } ?>
+		<?php if( $position >= $limit ) break;} ?>
 	</table>
 	<?php
 

@@ -17,7 +17,17 @@ if ( !( $lesson = $course->current_lesson ) ) {
 
 <?php if ( LP()->user->has('completed-lesson', $lesson->id) ) { ?>
 
-	<?php learn_press_display_message( __( 'Congratulations! You have completed this lesson.', 'learn_press' ) ); ?>
+	<?php
+	echo apply_filters(
+		'learn_press_user_completed_lesson_button',
+		sprintf(
+			'<button class="complete-lesson-button completed" data-id="%s" data-nonce="%s" disabled="disabled">%s</button>',
+				$lesson->id,
+				wp_create_nonce( 'learn-press-complete-lesson-' . $lesson->id ),
+				__( 'Completed', 'learn_press' )
+		)
+	);
+	?>
 
 <?php } else { ?>
 

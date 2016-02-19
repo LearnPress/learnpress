@@ -864,6 +864,11 @@ class LP_Abstract_User {
 				$results['questions'][$question_id] = $check;
 			}
 		}
+		if ( $total_questions = sizeof( $questions ) ) {
+			$results['correct_percent']       = $results['correct'] / $total_questions * 100;
+			$results['wrong_percent']         = $results['wrong'] / $total_questions * 100;
+			$results['empty_percent_percent'] = $results['empty'] / $total_questions * 100;
+		}
 		$results['user_time'] = $progress->end - $progress->start;
 		return $results;
 	}
@@ -878,6 +883,32 @@ class LP_Abstract_User {
 	function has_purchased_course( $course_id ) {
 		$order = $this->get_course_order( $course_id );
 		return $order;
+	}
+
+	function has_completed_item( $item ){
+		$return = false;
+		$item_id = 0;
+		if( is_numeric( $item ) ){
+			$item_id = absint( $item );
+		}else{
+			settype( $item, 'array' );
+			if( !empty( $item['ID'] ) ) {
+				$item_id = absint( $item['ID'] );
+			}
+		}
+		if( $item_id ){
+			if ( empty( $item['item_type'] ) ) {
+				$type = get_post_type( $item_id );
+			} else {
+				$type = $item['item_type'];
+			}
+			if ( $type == 'lp_lesson' ) {
+				$return = $this->has_completed_lesson( $item_id );
+			} elseif ( $type == 'lp_quiz' ) {
+				$return = $this->has_completed_quiz( $item_id );
+			}
+		}
+		return apply_filters( 'learn_press_user_has_completed_item', $return, $item );
 	}
 
 	/**

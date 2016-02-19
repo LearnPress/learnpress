@@ -520,40 +520,40 @@ if ( !function_exists( 'learn_press_user_profile_tabs' ) ) {
 	 */
 	function learn_press_user_profile_tabs( $user ) {
 		$course_endpoint = LP()->settings->get( 'profile_endpoints.profile-courses' );
-		if( !$course_endpoint ){
+		if ( !$course_endpoint ) {
 			$course_endpoint = 'profile-courses';
 		}
 
 		$quiz_endpoint = LP()->settings->get( 'profile_endpoints.profile-quizzes' );
-		if( !$quiz_endpoint ){
+		if ( !$quiz_endpoint ) {
 			$quiz_endpoint = 'profile-quizzes';
 		}
 
 		$order_endpoint = LP()->settings->get( 'profile_endpoints.profile-orders' );
-		if( !$order_endpoint ){
+		if ( !$order_endpoint ) {
 			$order_endpoint = 'profile-orders';
 		}
 
 		$view_order_endpoint = LP()->settings->get( 'profile_endpoints' );
-		if( !$view_order_endpoint ){
+		if ( !$view_order_endpoint ) {
 			$view_order_endpoint = 'order';
 		}
 
-		$defaults        = array(
+		$defaults = array(
 			$course_endpoint => array(
 				'title'    => __( 'Courses', 'learn_press' ),
 				'callback' => 'learn_press_profile_tab_courses_content'
 			),
-			$quiz_endpoint => array(
+			$quiz_endpoint   => array(
 				'title'    => __( 'Quiz Results', 'learn_press' ),
 				'callback' => 'learn_press_profile_tab_quizzes_content'
 			),
-			$order_endpoint => array(
+			$order_endpoint  => array(
 				'title'    => __( 'Orders', 'learn_press' ),
 				'callback' => 'learn_press_profile_tab_orders_content'
 			)
 		);
-		$tabs = apply_filters( 'learn_press_user_profile_tabs', $defaults, $user );
+		$tabs     = apply_filters( 'learn_press_user_profile_tabs', $defaults, $user );
 
 		return $tabs;
 	}
@@ -676,13 +676,13 @@ if ( !function_exists( 'learn_press_course_lesson_class' ) ) {
 		else $class = array();
 
 		$classes = array(
-			'course-lesson course-item'
+			'course-lesson course-item course-item-' . $lesson_id
 		);
-		if ( learn_press_user_has_completed_lesson( $lesson_id ) ) {
-			$classes[] = "completed";
+		if ( LP()->user->has( 'completed-item', $lesson_id ) ) {
+			$classes[] = "item-completed";
 		}
-		if ( $lesson_id && !empty( $_REQUEST['lesson'] ) && ( $lesson_id == $_REQUEST['lesson'] ) ) {
-			$classes[] = 'current';
+		if ( $lesson_id && LP()->course->is( 'current-item', $lesson_id ) ) {
+			$classes[] = 'item-current';
 		}
 		if ( is_course() ) {
 			$course = LP()->course;
@@ -711,10 +711,10 @@ if ( !function_exists( 'learn_press_course_quiz_class' ) ) {
 		else $class = array();
 
 		$classes = array(
-			'course-quiz course-item'
+			'course-quiz course-item course-item-' . $quiz_id
 		);
-		if ( learn_press_user_has_completed_quiz( null, $quiz_id ) ) {
-			$classes[] = "completed";
+		if ( LP()->user->has( 'completed-item', $quiz_id ) ) {
+			$classes[] = "item-completed";
 		}
 		$classes = array_unique( array_merge( $classes, $class ) );
 		echo 'class="' . join( ' ', $classes ) . '"';
@@ -781,21 +781,35 @@ if ( !function_exists( 'learn_press_course_class' ) ) {
  *
  * @return LP_Course
  */
-function lp_setup_course_data( $post ) {
-	if ( isset( $GLOBALS['course'] ) ) {
-		unset( $GLOBALS['course'] );
-	}
+function learn_press_setup_object_data( $post ) {
+
+	$object = null;
+
 	if ( is_int( $post ) )
 		$post = get_post( $post );
 
-	if ( empty( $post->post_type ) || !in_array( $post->post_type, array( LP()->course_post_type ) ) )
-		return;
+	if ( !$post ) {
+		return $object;
+	}
 
-	$GLOBALS['course'] = lp_get_course( $post );
-	return $GLOBALS['course'];
+	if ( $post->post_type == LP()->course_post_type ) {
+		if ( isset( $GLOBALS['course'] ) ) {
+			unset( $GLOBALS['course'] );
+		}
+		$object = $GLOBALS['course'] = learn_press_get_course( $post );
+		LP()->set_object( '_course', $object );
+	} elseif ( $post->post_type == LP()->quiz_post_type ) {
+		if ( isset( $GLOBALS['quiz'] ) ) {
+			unset( $GLOBALS['quiz'] );
+		}
+		$object = $GLOBALS['quiz'] = learn_press_get_quiz( $post );
+		LP()->set_object( '_quiz', $object );
+	}
+
+	return $object;
 }
 
-add_action( 'the_post', 'lp_setup_course_data' );
+add_action( 'the_post', 'learn_press_setup_object_data' );
 
 
 /**
@@ -845,9 +859,8 @@ if ( !function_exists( 'learn_press_page_controller' ) ) {
 	 */
 	function learn_press_page_controller( $template/*, $slug, $name*/ ) {
 		if ( get_post_type() == LP()->quiz_post_type && is_single() ) {
-			global $quiz;
+			$quiz        = LP()->quiz;
 			$user        = LP()->user;
-			$quiz        = LP_Quiz::get_quiz( get_the_ID() );
 			$quiz_status = LP()->user->get_quiz_status( get_the_ID() );
 			$redirect    = false;
 			if ( !$user->can( 'view-quiz', $quiz->id ) ) {

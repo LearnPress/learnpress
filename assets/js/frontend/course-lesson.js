@@ -19,8 +19,14 @@
 					var $html = $(response);
 					if ($(document).triggerHandler('learn_press_course_lesson_content_loaded', that) !== false) {
 						that.set('content', $html.find('#learn-press-course-lesson'));
-						$(document).trigger('learn_press_course_lesson_content_replaced', that)
+						$(document).trigger('learn_press_course_lesson_content_replaced', that);
+
+						$('.course-item.item-current')
+							.removeClass('item-current');
+						$('.course-item.course-item-' + that.get('id'))
+							.addClass('item-current');
 					}
+
 					$.isFunction(callback) && callback.call(that, response);
 				}
 			})
@@ -37,7 +43,7 @@
 				},
 				success : function (response) {
 					response = LearnPress.parseJSON(response);
-					callback && callback.call(that, response)
+					callback && callback.call(that, $.extend(response, {id: that.get('id')}))
 				}
 			})
 		}
@@ -68,10 +74,13 @@
 		completeLesson: function (e) {
 			var that = this;
 			this.model.complete(function(response){
-				console.log(response)
+				response = LearnPress.Hook.applyFilters('learn_press_user_complete_lesson_response', response)
 				if( response && response.result == 'success'){
 					that.$('.complete-lesson-button').replaceWith(response.message);
+					$('.course-item-' + response.id).addClass('item-completed');
 				}
+				LearnPress.Hook.doAction( 'learn_press_user_completed_lesson', response );
+				console.log(response)
 			});
 		}
 	});
@@ -108,7 +117,11 @@
 			if (item) {
 				if (this.view) {
 					this.view.undelegateEvents();
-					this.view.model.set('content', this.view.$el)
+					this.view.model.set('content', this.view.$el);
+					$('.course-item.item-current')
+						.removeClass('item-current');
+					$('.course-item.course-item-' + item.get('id'))
+						.addClass('item-current');
 				}
 				this.view = new $.LP_Course_Item.View({model: item});
 			}
@@ -136,7 +149,7 @@
 	});
 	function _init() {
 		var courseItems = new $.LP_Course_Item.Collection(),
-			courseItemsView = new $.LP_Course_Item_List_View({model: courseItems, currentItem: 1733});
+			courseItemsView = new $.LP_Course_Item_List_View({model: courseItems});
 	}
 
 	$(document).ready(_init)

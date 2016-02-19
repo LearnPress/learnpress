@@ -11,16 +11,12 @@ if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-function lp_get_course( $the_course ) {
+function learn_press_get_course( $the_course ) {
 	return LP_Course::get_course( $the_course );
 }
 
-function lp_get_quiz( $the_quiz ) {
+function learn_press_get_quiz( $the_quiz ) {
 	return LP_Quiz::get_quiz( $the_quiz );
-}
-
-function learn_press_get_course( $the_course ) {
-	return lp_get_course( $the_course );
 }
 
 /**

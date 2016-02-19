@@ -84,11 +84,17 @@
 .lp-label-preview{
 	background-color: #5cb85c;
 }
+.lp-label-viewing{
+	background-color: #39afff;
+}
 .lp-label-lesson{
 	background-color: #337ab7;
 }
 .lp-label-final{
 	background-color: #FF6161;
+}
+.lp-label-completed{
+	background-color: #39C7CE;
 }
 .lp-label-format{
 	background-color: #ccc416;
@@ -119,6 +125,15 @@
 }
 .lp-label-format-chat{
 	background-color: #ccc416;
+}
+
+.course-item .lp-label-completed,
+.course-item .lp-label-viewing{
+	display: none;
+}
+.course-item.item-completed .lp-label-completed,
+.course-item.item-current .lp-label-viewing{
+	display: inline-block;
 }
 /**/
 .learnpress{

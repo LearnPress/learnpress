@@ -88,6 +88,23 @@ if ( !class_exists( 'LearnPress' ) ) {
 		public $session = null;
 
 		/**
+		 * Store singular LP_Course object
+		 *
+		 * @var null
+		 */
+		private $_course = null;
+
+		/**
+		 * @var null
+		 */
+		private $_quiz = null;
+
+		/**
+		 * @var null
+		 */
+		public $lesson = null;
+
+		/**
 		 * Course Post Type
 		 *
 		 * @var string
@@ -164,27 +181,36 @@ if ( !class_exists( 'LearnPress' ) ) {
 		}
 
 		function __get( $key ) {
-			if ( empty( $this->{$key} ) ) {
-				switch ( $key ) {
-					case 'email':
-						$this->{$key} = LP_Email::instance();
-						break;
-					case 'checkout':
-						$this->{$key} = LP_Checkout::instance();
-						break;
-					case 'course':
+			$return = false;
+			switch ( $key ) {
+				case 'email':
+					$return = LP_Email::instance();
+					break;
+				case 'checkout':
+					$return = LP_Checkout::instance();
+					break;
+				case 'course':
+					if( empty( $this->_course ) ) {
 						if ( is_course() ) {
-							$this->{$key} = LP_Course::get_course( get_the_ID() );
+							$this->_course = learn_press_setup_object_data( get_the_ID() );
 						}
-						break;
-					case 'quiz':
+					}
+					$return = $this->_course;
+					break;
+				case 'quiz':
+					if( empty( $this->_quiz ) ) {
 						if ( is_quiz() ) {
-							$this->{$key} = LP_Quiz::get_quiz( get_the_ID() );
+							$this->_quiz = learn_press_setup_object_data( get_the_ID() );
 						}
-						break;
-				}
+					}
+					$return = $this->_quiz;
+					break;
 			}
-			return !empty( $this->{$key} ) ? $this->{$key} : false;
+			return $return;
+		}
+
+		function set_object( $name, $object ){
+			$this->{$name} = $object;
 		}
 
 		/**

@@ -495,6 +495,17 @@ abstract class LP_Abstract_Course {
 		return $viewing;
 	}
 
+	function is_current_item( $item_id ){
+		$item_type = !empty( $_REQUEST['course-item'] ) ? $_REQUEST['course-item'] : '';
+		$view_id = 0;
+		if( $item_type ){
+			if( !empty( $_REQUEST[ $item_type . '_id'] ) ){
+				$view_id = $_REQUEST[ $item_type . '_id'];
+			}
+		}
+		return apply_filters( 'learn_press_is_current_course_item', $view_id == $item_id, $item_id, $view_id, $this->id );
+	}
+
 	/**
 	 * Check if the course has 'feature'
 	 * This function call to a function with prefix 'has'
