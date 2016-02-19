@@ -858,27 +858,45 @@ if ( !function_exists( 'learn_press_page_controller' ) ) {
 	 * @return file
 	 */
 	function learn_press_page_controller( $template/*, $slug, $name*/ ) {
-		if ( get_post_type() == LP()->quiz_post_type && is_single() ) {
-			$quiz        = LP()->quiz;
-			$user        = LP()->user;
-			$quiz_status = LP()->user->get_quiz_status( get_the_ID() );
-			$redirect    = false;
-			if ( !$user->can( 'view-quiz', $quiz->id ) ) {
-				if ( $course = $quiz->get_course() ) {
-					$redirect = $course->permalink;
-				}
-			} elseif ( $quiz_status == 'started' && ( empty( $_REQUEST['question'] ) && $current_question = $user->get_current_quiz_question( $quiz->id ) ) ) {
-				$redirect = $quiz->get_question_link( $current_question );
-			} elseif ( $quiz_status == 'complete' && !empty( $_REQUEST['question'] ) ) {
-				$redirect = get_the_permalink( $quiz->id );
+		if ( is_single() ) {
+			$user     = LP()->user;
+			$redirect = false;
+			$item_id  = 0;
+			switch ( get_post_type() ) {
+				case LP()->quiz_post_type:
+					$quiz        = LP()->quiz;
+					$quiz_status = LP()->user->get_quiz_status( get_the_ID() );
+					$redirect    = false;
+					if ( !$user->can( 'view-quiz', $quiz->id ) ) {
+						if ( $course = $quiz->get_course() ) {
+							$redirect = $course->permalink;
+						}
+					} elseif ( $quiz_status == 'started' && ( empty( $_REQUEST['question'] ) && $current_question = $user->get_current_quiz_question( $quiz->id ) ) ) {
+						$redirect = $quiz->get_question_link( $current_question );
+					} elseif ( $quiz_status == 'complete' && !empty( $_REQUEST['question'] ) ) {
+						$redirect = get_the_permalink( $quiz->id );
+					}
+					$item_id = $quiz->id;
+					$redirect = apply_filters( 'learn_press_quiz_access_denied_redirect_permalink', $redirect, $quiz_status, $quiz->id, $user->id );
+					break;
+				case LP()->course_post_type:
+					if ( $item_id = LP()->course->is( 'viewing-item' ) ) {
+						if ( !LP()->user->can( 'view-item', $item_id ) ) {
+							$redirect = apply_filters( 'learn_press_lesson_access_denied_redirect_permalink', LP()->course->permalink, $item_id, $user->id );
+						}
+					}
 			}
-			$redirect = apply_filters( 'learn_press_quiz_redirect_permalink', $redirect, $quiz_status, $quiz->id, $user );
 			// prevent loop redirect
 			if ( $redirect && $redirect != learn_press_get_current_url() ) {
+				if( $item_id ) {
+					$error_message = apply_filters( 'learn_press_course_item_access_denied_error_message', sprintf( __( 'Access denied "%s"', 'learn_press' ), get_the_title( $item_id ) ) );
+					if( $error_message !== false ) {
+						learn_press_add_notice( $error_message, 'error' );
+					}
+				}
 				wp_redirect( $redirect );
 				exit();
 			}
-
 		}
 		return $template;
 	}

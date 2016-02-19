@@ -89,12 +89,13 @@ if (typeof window.LearnPress == 'undefined') {
 							}
 						} else if( response.result == 'success'){
 							if (response.redirect) {
+								$place_order.val('Redirecting')
 								LearnPress.reload(response.redirect);
+								return;
 							}
 						}
 						$place_order.val(text)
 						$place_order.prop('disabled', false);
-						console.log($place_order)
 					},
 					error:	function( jqXHR, textStatus, errorThrown ) {
 						LearnPress.Checkout.showErrors('<div class="learn-press-error">'+errorThrown+'</div>');

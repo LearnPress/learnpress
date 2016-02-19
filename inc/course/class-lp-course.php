@@ -27,8 +27,32 @@ class LP_Course extends LP_Abstract_Course {
 		return new $class_name( $the_course, $args );
 	}
 
-	public static function get_course_by_item( $item_id ){
-
+	public static function get_course_by_item( $item_id ) {
+		static $courses = array();
+		$course = false;
+		if ( empty( $courses[$item_id] ) ) {
+			global $wpdb;
+			$query = $wpdb->prepare( "
+				SELECT lsi.item_id, ls.section_course_id as course_id
+					FROM {$wpdb->prefix}learnpress_section_items lsi
+					INNER JOIN {$wpdb->prefix}learnpress_sections ls ON ls.section_id = lsi.section_id
+					WHERE ls.section_course_id IN (SELECT c.ID
+						FROM {$wpdb->prefix}posts c
+						INNER JOIN {$wpdb->prefix}learnpress_sections ls ON ls.section_course_id = c.ID
+						INNER JOIN {$wpdb->prefix}learnpress_section_items lsi ON lsi.section_id = ls.section_id
+						WHERE lsi.item_id = %d
+					)
+			", $item_id );
+			if ( $items = $wpdb->get_results( $query ) ) {
+				foreach ( $items as $item ) {
+					$courses[$item->item_id] = $item->course_id;
+				}
+			}
+		}
+		if ( !empty( $courses[$item_id] ) ) {
+			$course = $courses[$item_id];
+		}
+		return $course;
 	}
 
 	/**

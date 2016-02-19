@@ -561,6 +561,19 @@ class LP_Abstract_User {
 		return apply_filters( 'learn_press_user_can_enroll_course', $enrollable, $this, $course_id );
 	}
 
+	function can_view_item( $item_id ) {
+		$return = false;
+		switch ( get_post_type( $item_id ) ) {
+			case LP()->quiz_post_type:
+				$return = $this->can( 'view-quiz', $item_id );
+				break;
+			case LP()->lesson_post_type:
+				$return = $this->can( 'view-lesson', $item_id );
+				break;
+		}
+		return apply_filters( 'learn_press_user_can_view_item', $return, $item_id, $this->id );
+	}
+
 	/**
 	 * Return true if user can view a lesson
 	 *
@@ -571,11 +584,27 @@ class LP_Abstract_User {
 	 */
 	function can_view_lesson( $lesson_id, $course_id = null ) {
 		$lesson = LP_Lesson::get_lesson( $lesson_id );
-		$view   = $lesson->is( 'previewable' ) || ( learn_press_get_order_status( $this->get_item_order( $lesson_id ) ) == 'completed' );
-		if ( !$view && $course_id && ( $course = LP_Course::get_course( $course_id ) ) && !$course->is( 'required_enroll' ) ) {
-			$view = true;
+		$view   = false;
+		// first, check if the lesson is previewable
+		if ( $lesson->is( 'previewable' ) ) {
+			$view = 1;
+		} else {
+			// else, find the course of this lesson
+			if ( !$course_id ) {
+				$course_id = LP_Course::get_course_by_item( $lesson_id );
+			}
+			if ( $course = LP_Course::get_course( $course_id ) ) {
+				// if course is not required enroll so the lesson is previewable
+				if ( !$course->is( 'required_enroll' ) ) {
+					$view = 2;
+				} elseif ( $this->has( 'enrolled-course', $course_id ) ) {
+					// or user has enrolled course
+					$view = 3;
+				}
+			}
 		}
-		return apply_filters( 'learn_press_user_view_lesson', $view, $lesson_id, $this, $course_id );
+
+		return apply_filters( 'learn_press_user_view_lesson', $view, $lesson_id, $this->id, $course_id );
 	}
 
 	/**
@@ -588,6 +617,10 @@ class LP_Abstract_User {
 	 */
 	function can_view_quiz( $quiz_id, $course_id = 0 ) {
 		$course = false;
+		$view   = false;
+		if ( !$course_id ) {
+			$course_id = LP_Course::get_course_by_item( $quiz_id );
+		}
 		if ( $course_id ) {
 			$course = LP_Course::get_course( $course_id );
 		}
@@ -597,14 +630,19 @@ class LP_Abstract_User {
 				$course = $quiz->get_course();
 			}
 		}
+
 		if ( $course ) {
 			$this->get_course_order( $course->id );
+			if ( !$course->is( 'required_enroll' ) ) {
+				$view = 1;
+			} else {
+				if ( $this->has( 'enrolled-course', $course->id ) ) {
+					$view = 2;
+				}
+			}
 		}
-		$view = learn_press_get_order_status( $this->get_item_order( $quiz_id ) ) == 'completed';
-		if ( !$view && $course && !$course->is( 'required_enroll' ) ) {
-			$view = true;
-		}
-		return apply_filters( 'learn_press_user_view_quiz', $view, $quiz_id, $this, $course_id );
+
+		return apply_filters( 'learn_press_user_view_quiz', $view, $quiz_id, $this->id, $course_id );
 	}
 
 	function can_retake_quiz( $quiz_id ) {
@@ -885,18 +923,18 @@ class LP_Abstract_User {
 		return $order;
 	}
 
-	function has_completed_item( $item ){
-		$return = false;
+	function has_completed_item( $item ) {
+		$return  = false;
 		$item_id = 0;
-		if( is_numeric( $item ) ){
+		if ( is_numeric( $item ) ) {
 			$item_id = absint( $item );
-		}else{
+		} else {
 			settype( $item, 'array' );
-			if( !empty( $item['ID'] ) ) {
+			if ( !empty( $item['ID'] ) ) {
 				$item_id = absint( $item['ID'] );
 			}
 		}
-		if( $item_id ){
+		if ( $item_id ) {
 			if ( empty( $item['item_type'] ) ) {
 				$type = get_post_type( $item_id );
 			} else {

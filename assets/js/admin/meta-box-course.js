@@ -421,13 +421,13 @@
 						if (type == 'section-name') {
 							var $nextSection = $section.next();
 
-							if ($nextSection.length == 0 && textLen >= 3) {
+							if ($nextSection.length == 0 && textLen >= 1) {
 								var $emptySection = this.createSection();
 
 							}
 						} else if (type == 'item-name') {
 							var $nextItem = $item.next();
-							if ($nextItem.length == 0 && textLen >= 3) {
+							if ($nextItem.length == 0 && textLen >= 1) {
 								var $emptyItem = this.createItem({type: 'lp_lesson'});
 								var $last = $section.find('.curriculum-section-items .lp-section-item:last');
 								$emptyItem.insertAfter($last);
@@ -741,7 +741,7 @@
 					lastCode = $target.data('lastCode'),
 					keyCode = e.keyCode,
 					text = $target.val(),
-					caretPos = $target.caret(),
+					caretPos = $target.attr('type') == 'text' ? $target.caret() : false,
 					caretLen = text.length,
 					that = this;
 				if (field == 'item-name') {

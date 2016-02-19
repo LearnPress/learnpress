@@ -95,7 +95,7 @@ if (typeof LearnPress == 'undefined') window.LearnPress = {};
 						$.isFunction(args.success) && args.success.call(this, response)
 					} else {
 						if (!( $.isFunction(args.error) && args.error.call(this, response) )) {
-							alert("ERROR")
+							alert("UNKNOW ERROR")
 						}
 					}
 				}

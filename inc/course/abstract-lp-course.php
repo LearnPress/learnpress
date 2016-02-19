@@ -129,6 +129,21 @@ abstract class LP_Abstract_Course {
 		return true;
 	}
 
+	function get_request_item( $field = 'id' ){
+		$return = false;
+		if( !empty( $_REQUEST['course-item'] ) ){
+			$type = $_REQUEST['course-item'];
+			if( $field == 'type' ){
+				$return = $type;
+			}elseif( $field == 'id' ){
+				$return = !empty( $_REQUEST[$type . '_id'] ) ? $_REQUEST[$type . '_id'] : 0;
+			}elseif( $field == 'name' ){
+				$return = !empty( $_REQUEST[$type] ) ? $_REQUEST[$type] : false;
+			}
+		}
+		return $return;
+	}
+
 	/**
 	 * Get the course's post data.
 	 *
@@ -495,6 +510,15 @@ abstract class LP_Abstract_Course {
 		return $viewing;
 	}
 
+	function is_viewing_item( $item_id = false ){
+		$view_id = $this->get_request_item();
+
+		if( $item_id ){
+			return $item_id == $view_id;
+		}
+		return $view_id;
+	}
+
 	function is_current_item( $item_id ){
 		$item_type = !empty( $_REQUEST['course-item'] ) ? $_REQUEST['course-item'] : '';
 		$view_id = 0;
@@ -563,6 +587,12 @@ abstract class LP_Abstract_Course {
 			$items = $this->get_curriculum_items( array( 'field' => 'ID', 'force' => true ) );
 		}
 		return in_array( $item_id, $items );
+	}
+
+	function can_view_item( $item_id ){
+		switch( get_post_type() ){
+			case LP()->quiz_post_type:
+		}
 	}
 
 	function get_item_link( $item_id ){
