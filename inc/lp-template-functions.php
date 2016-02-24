@@ -165,6 +165,15 @@ if ( !function_exists( 'learn_press_course_progress' ) ) {
 	}
 }
 
+if ( !function_exists( 'learn_press_course_finish_button' ) ) {
+	/**
+	 * Display course curriculum
+	 */
+	function learn_press_course_finish_button() {
+		learn_press_get_template( 'single-course/finish-button.php' );
+	}
+}
+
 if ( !function_exists( 'learn_press_course_curriculum' ) ) {
 	/**
 	 * Display course curriculum
@@ -619,6 +628,12 @@ if ( !function_exists( 'learn_press_single_quiz_questions' ) ) {
 	}
 }
 
+if( !function_exists( 'learn_press_after_quiz_question_title' ) ){
+	function learn_press_single_quiz_question_answer( $question_id = null, $quiz_id = null ){
+		learn_press_get_template( 'single-quiz/question-answer.php', array( 'question_id' => $question_id, 'quiz_id' => $quiz_id ) );
+	}
+}
+
 if ( !function_exists( 'learn_press_single_quiz_result' ) ) {
 	/**
 	 * Output the result for the quiz
@@ -873,7 +888,7 @@ if ( !function_exists( 'learn_press_page_controller' ) ) {
 						}
 					} elseif ( $quiz_status == 'started' && ( empty( $_REQUEST['question'] ) && $current_question = $user->get_current_quiz_question( $quiz->id ) ) ) {
 						$redirect = $quiz->get_question_link( $current_question );
-					} elseif ( $quiz_status == 'complete' && !empty( $_REQUEST['question'] ) ) {
+					} elseif ( $quiz_status == 'completed'/* && !empty( $_REQUEST['question'] )*/ ) {
 						$redirect = get_the_permalink( $quiz->id );
 					}
 					$item_id = $quiz->id;

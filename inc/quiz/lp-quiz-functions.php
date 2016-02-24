@@ -18,37 +18,58 @@ if ( !defined( 'ABSPATH' ) ) {
  * @return  array|null
  */
 function learn_press_get_quiz_questions( $quiz_id = null, $only_ids = true ) {
-	if( !$quiz_id ){
+	if ( !$quiz_id ) {
 		$quiz_id = get_the_ID();
 	}
 	return ( $quiz = LP_Quiz::get_quiz( $quiz_id ) ) ? $quiz->get_questions() : false;
 }
 
 
-function learn_press_question_class( $question = null ){
-	if( ! $question ){
-		$question = LP_Question_Factory::get_question(get_the_ID() );
-	}elseif( is_numeric( $question ) ){
-		$question = LP_Question_Factory::get_question($question );
+function learn_press_question_class( $question = null, $classes = null, $user_id = null, $context = null ) {
+	if ( !$question ) {
+		$question = LP_Question_Factory::get_question( get_the_ID() );
+	} elseif ( is_numeric( $question ) ) {
+		$question = LP_Question_Factory::get_question( $question );
 	}
-	if( $question ) {
-		$class = "learn-press-question-wrap question-type-{$question->type} question-{$question->id}";
-		$class = apply_filters( 'learn_press_question_class', $class, $question );
-		$class = explode( " ", $class );
-		$class = array_unique( $class );
-		echo "class=\"" . join( ' ', $class ) . "\"";
+	if ( $question ) {
+		if ( is_string( $classes ) ) {
+			$classes = explode( ' ', $classes );
+		}
+		settype( $classes, 'array' );
+		$classes = array_merge( $classes, array( "learn-press-question-wrap", "question-type-{$question->type}", "question-{$question->id}" ) );
+
+		if ( $context == 'quiz-results' ) {
+			$user_id = learn_press_get_current_user_id();
+			$user        = learn_press_get_user( $user_id );
+			$answer_data = $user->get_answer_results( $question->id );
+			$classes[] = 'question-results';
+			if ( $answer_data ) {
+				if ( $answer_data['correct'] ) {
+					$classes[] = 'correct';
+				} else {
+					$classes[] = 'incorrect';
+				}
+			}else{
+				$classes[] = 'skipped';
+			}
+		}
+
+		$classes = apply_filters( 'learn_press_question_class', $classes, $question, $context );
+		$classes = array_unique( $classes );
+		$classes = array_filter( $classes );
+		echo "class=\"" . join( ' ', $classes ) . "\"";
 	}
 }
 
-function learn_press_get_user_quiz_meta( $quiz_user_id, $meta_key, $single = true ){
+function learn_press_get_user_quiz_meta( $quiz_user_id, $meta_key, $single = true ) {
 	return get_metadata( 'learnpress_user_quiz', $quiz_user_id, $meta_key, $single );
 }
 
-function learn_press_add_user_quiz_meta( $quiz_user_id, $meta_key, $meta_value, $prev_value = '' ){
+function learn_press_add_user_quiz_meta( $quiz_user_id, $meta_key, $meta_value, $prev_value = '' ) {
 	return add_metadata( 'learnpress_user_quiz', $quiz_user_id, $meta_key, $meta_value, $prev_value );
 }
 
-function learn_press_update_user_quiz_meta( $quiz_user_id, $meta_key, $meta_value, $prev_value = '' ){
+function learn_press_update_user_quiz_meta( $quiz_user_id, $meta_key, $meta_value, $prev_value = '' ) {
 	return update_metadata( 'learnpress_user_quiz', $quiz_user_id, $meta_key, $meta_value, $prev_value );
 }
 
@@ -59,9 +80,9 @@ function learn_press_update_user_quiz_meta( $quiz_user_id, $meta_key, $meta_valu
  * @return bool|int
  */
 function learn_press_get_current_question( $quiz_id = null, $user_id = 0 ) {
-	if( $user_id ){
+	if ( $user_id ) {
 		$user = learn_press_get_user( $user_id );
-	}else{
+	} else {
 		$user = LP()->user;
 	}
 	return $user->get_current_question( $quiz_id );
@@ -96,7 +117,7 @@ function learn_press_get_quiz_id( $id ) {
 function learn_press_user_has_completed_quiz( $user_id = null, $quiz_id = null ) {
 	_deprecated_function( __FUNCTION__, '1.0', 'LP_User() -> has_completed_quiz' );
 
-	if( $user = learn_press_get_user( $user_id ) ){
+	if ( $user = learn_press_get_user( $user_id ) ) {
 		return $user->has_completed_quiz( $quiz_id );
 	}
 	return false;
@@ -166,8 +187,8 @@ function learn_press_get_user_question_url( $quiz_id, $current_question_id = 0, 
 	if ( !$current_question_id ) {
 		$current_question_id = learn_press_get_current_question( $quiz_id, $user_id );
 	}
-	$permalink     = get_the_permalink( $quiz_id );
-	if( $current_question_id && get_post_type( $current_question_id ) == 'lp_question' ) {
+	$permalink = get_the_permalink( $quiz_id );
+	if ( $current_question_id && get_post_type( $current_question_id ) == 'lp_question' ) {
 		$question_name = get_post_field( 'post_name', $current_question_id );
 		if ( '' != get_option( 'permalink_structure' ) ) {
 			$permalink .= $question_name;
@@ -236,10 +257,12 @@ function learn_press_redirect_to_question( $template ) {
 		} elseif ( $quiz_status == 'completed' && learn_press_get_request( 'question' ) ) {
 			$redirect = get_the_permalink( $quiz_id );
 		}
-		if( $redirect && !learn_press_is_current_url( $redirect ) ){
-			wp_redirect( $redirect ); exit();
+		if ( $redirect && !learn_press_is_current_url( $redirect ) ) {
+			wp_redirect( $redirect );
+			exit();
 		}
 	}
 	return $template;
 }
+
 add_action( 'template_redirect', 'learn_press_redirect_to_question' );

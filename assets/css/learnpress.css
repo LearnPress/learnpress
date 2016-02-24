@@ -576,6 +576,7 @@ a .archive-course:hover {
 	right: 0;
 	top: -35px;
 	line-height: 1;
+	white-space: nowrap;
 }
 
 .lp-course-progress .lp-progress-value span:after{
@@ -600,6 +601,15 @@ a .archive-course:hover {
 	transform: rotate(225deg);
 	left: -10px;
 	right: auto;
+}
+.lp-course-progress.passed .lp-progress-value{
+	background: #83D0FF;
+}
+.lp-course-progress.passed .lp-progress-value span{
+	background: #83D0FF;
+}
+.lp-course-progress.passed .lp-progress-value span:after{
+	border-left-color: #83D0FF;
 }
 .lp-course-progress .lp-progress-total{
 	width: 50px;
@@ -648,6 +658,21 @@ a .archive-course:hover {
 	border-left-color: transparent;
 	border-bottom-color: #DDD;
 }
+.question-results .question-title:after{
+	content: '';
+	display: inline-block;
+	font-family: dashicons;
+	vertical-align: middle;
+	font-size: 20px;
+}
+.question-results.correct .question-title:after{
+	content: "\f147";
+}
+.question-results.incorrect .question-title:after{
+	content: "\f335";
+}
+.question-results.skipped{}
+
 @media screen and (min-width: 59.6875em) {
 	.twentyfifteen .learnpress-content{
 		margin-left: 8.3333%;

@@ -12,7 +12,8 @@ if ( !defined( 'ABSPATH' ) ) {
 }
 
 global $quiz;
-
+/*global $wp, $wp_query;
+learn_press_debug($wp, $wp_query);*/
 get_header();
 ?>
 

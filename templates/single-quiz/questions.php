@@ -12,7 +12,7 @@ if ( !defined( 'ABSPATH' ) ) {
 }
 global $quiz;
 $heading = apply_filters( 'learn_press_list_questions_heading', __( 'List of questions', 'learn_press' ) );
-$has_finished = LP()->user->has('completed-quiz', $quiz->id);
+$no_permalink = !LP()->user->has('started-quiz', $quiz->id);
 
 ?>
 
@@ -28,12 +28,18 @@ $has_finished = LP()->user->has('completed-quiz', $quiz->id);
 
 		<ul class="quiz-questions-list">
 			<?php if ( $questions = $quiz->get_questions() ) foreach ( $questions as $question ) { ?>
-				<li data-id="<?php echo $question->ID; ?>">
-					<?php if( $has_finished ){?>
-					<?php printf( '<span>%s</span>', get_the_title( $question->ID ) ); ?>
+				<li data-id="<?php echo $question->ID; ?>" <?php learn_press_question_class( $question->ID, '', '', 'quiz-results' );?>>
+
+					<?php do_action( 'learn_press_before_quiz_question_title', $question->ID, $quiz->id );?>
+
+					<?php if( $no_permalink ){?>
+					<?php printf( '<span class="question-title">%s</span>', get_the_title( $question->ID ) ); ?>
 					<?php }else{?>
-					<?php printf( '<a href="%s">%s</a>', $quiz->get_question_link( $question->ID ), get_the_title( $question->ID ) ); ?>
+					<?php printf( '<a class="question-title" href="%s">%s</a>', $quiz->get_question_link( $question->ID ), get_the_title( $question->ID ) ); ?>
 					<?php }?>
+
+					<?php do_action( 'learn_press_after_quiz_question_title', $question->ID, $quiz->id );?>
+
 				</li>
 			<?php } ?>
 		</ul>

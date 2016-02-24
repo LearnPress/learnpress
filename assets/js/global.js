@@ -552,4 +552,6 @@ if (typeof window.LearnPress == 'undefined') {
 			$prev = $selector.eq(index - 1);
 		return $prev.length ? $prev : false;
 	}
+
+
 })(jQuery);

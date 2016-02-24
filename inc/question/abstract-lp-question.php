@@ -825,7 +825,7 @@ class LP_Question extends LP_Abstract_Question {
 
 	protected function _get_option_value( $value = null ) {
 		if ( !$value ) {
-			$value = $this->id . uniqid();
+			$value = uniqid();
 		}
 		return $value;
 	}

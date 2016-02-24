@@ -378,8 +378,9 @@ if (typeof LearnPress == 'undefined') var LearnPress = {};
 		_startQuiz     : function () {
 			LearnPress.MessageBox.blockUI();
 			this.startQuiz({
-				complete: function () {
+				complete: function (response) {
 					LearnPress.MessageBox.hide();
+
 				}
 			});
 		},

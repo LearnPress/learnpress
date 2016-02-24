@@ -17,6 +17,10 @@ class LP_Settings_Pages extends LP_Settings_Base {
 				'id'    => 'profile',
 				'title' => __( 'Profile', 'learn_press' )
 			),
+			'quiz'          => array(
+				'id'    => 'quiz',
+				'title' => __( 'Quiz', 'learn_press' )
+			),
 			'become_a_teacher' => array(
 				'id'    => 'become_a_teacher',
 				'title' => __( 'Become a teacher', 'learn_press' )
@@ -60,7 +64,7 @@ class LP_Settings_Pages extends LP_Settings_Base {
 						'_blank' => __( 'New window', 'learn_press' )
 					)
 				),
-				array(
+				/*array(
 					'title'   => __( 'Access level', 'learn_press' ),
 					'id'      => $this->get_field_name( 'profile_access_level' ),
 					'default' => 'private',
@@ -69,7 +73,7 @@ class LP_Settings_Pages extends LP_Settings_Base {
 						'private' => __( 'Private (Only account own)', 'learn_press' ),
 						'public'  => __( 'Public', 'learn_press' )
 					)
-				),
+				),*/
 				array(
 					'title' => __( 'Endpoints', 'learn_press' ),
 					'type'  => 'title'
@@ -106,6 +110,19 @@ class LP_Settings_Pages extends LP_Settings_Base {
 					'placeholder' => '',
 					'desc'        => __( 'This is a slug and should be unique.', 'learn_press' ) . sprintf( ' %s <code>[profile/admin/order-details/123]</code>', __( 'Example link is', 'learn_press' ) )
 				),
+				array( 'section' => 'quiz' ),
+				array(
+					'title' => __( 'Endpoints', 'learn_press' ),
+					'type'  => 'title'
+				),
+				array(
+					'title'       => __( 'Results', 'learn_press' ),
+					'id'          => $this->get_field_name( 'quiz_endpoints[results]' ),
+					'default'     => 'results',
+					'type'        => 'text',
+					'placeholder' => '',
+					'desc'        => __( 'This is a slug and should be unique.', 'learn_press' ) . sprintf( ' %s <code>[quizzes/sample-quiz/results]</code>', __( 'Example link is', 'learn_press' ) )
+				),
 				array( 'section' => 'become_a_teacher' ),
 				array(
 					'title'   => __( 'Become a teacher', 'learn_press' ),
@@ -140,6 +157,11 @@ class LP_Settings_Pages extends LP_Settings_Base {
 
 	function output_section_profile() {
 		$view = learn_press_get_admin_view( 'settings/pages/profile.php' );
+		require_once $view;
+	}
+
+	function output_section_quiz() {
+		$view = learn_press_get_admin_view( 'settings/pages/quiz.php' );
 		require_once $view;
 	}
 

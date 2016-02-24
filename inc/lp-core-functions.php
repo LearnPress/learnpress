@@ -178,12 +178,12 @@ function learn_press_get_current_url() {
 	return learn_press_sanitize_url( $current_url );
 }
 
-function learn_press_is_current_url( $url ){
+function learn_press_is_current_url( $url ) {
 	return strcmp( learn_press_get_current_url(), learn_press_sanitize_url( $url ) ) == 0;
 }
 
-function learn_press_sanitize_url($url, $trailingslashit = true ){
-	if( $url ) {
+function learn_press_sanitize_url( $url, $trailingslashit = true ) {
+	if ( $url ) {
 		preg_match( '!(https?://)?(.*)!', $url, $matches );
 		$url_without_http = $matches[2];
 		$url_without_http = preg_replace( '![/]+!', '/', $url_without_http );
@@ -236,6 +236,7 @@ add_action( 'init', 'learn_press_add_rewrite_tags', 1000, 0 );
  */
 function learn_press_add_rewrite_rules() {
 
+	//flush_rewrite_rules(true);
 	// lesson
 	$course_type = LP()->course_post_type;
 	$post_types  = get_post_types( array( 'name' => $course_type ), 'objects' );
@@ -251,15 +252,31 @@ function learn_press_add_rewrite_rules() {
 	);
 
 	// question
-	$course_type = LP()->quiz_post_type;
-	$post_types  = get_post_types( array( 'name' => $course_type ), 'objects' );
-	$slug        = $post_types[$course_type]->rewrite['slug'];
-	add_rewrite_rule(
-		apply_filters( 'learn_press_question_rewrite_rule', '^' . $slug . '/([^/]*)/([^/]*)/?' ),
-		apply_filters( 'learn_press_question_rewrite_rule_redirect', 'index.php?' . $course_type . '=$matches[1]&question=$matches[2]' ),
-		'top'
-	);
-
+	$quiz_type   = LP()->quiz_post_type;
+	$post_types  = get_post_types( array( 'name' => $quiz_type ), 'objects' );
+	$slug        = $post_types[$quiz_type]->rewrite['slug'];
+	$current_uri = learn_press_get_current_url();
+	if ( preg_match( '/\/(' . LP()->settings->get( 'quiz_endpoints.results' ) . ')\/([0-9]+)?/', $current_uri, $matches ) ) {
+		$rewrite_redirect = 'index.php?' . $quiz_type . '=$matches[1]';
+		if ( !empty( $matches[1] ) ) {
+			if ( !empty( $matches[2] ) ) {
+				$rewrite_redirect .= '&' . $matches[1] . '=' . $matches[2];
+			} else {
+				$rewrite_redirect .= '&' . $matches[1] . '=0';
+			}
+		}
+		add_rewrite_rule(
+			apply_filters( 'learn_press_quiz_results_rewrite_rule', '^' . $slug . '/([^/]*)/([^/]*)/?' ),
+			apply_filters( 'learn_press_quiz_results_rewrite_rule_redirect', $rewrite_redirect ),
+			'top'
+		);
+	} else {
+		add_rewrite_rule(
+			apply_filters( 'learn_press_question_rewrite_rule', '^' . $slug . '/([^/]*)/([^/]*)/?' ),
+			apply_filters( 'learn_press_question_rewrite_rule_redirect', 'index.php?' . $quiz_type . '=$matches[1]&question=$matches[2]' ),
+			'top'
+		);
+	}
 	if ( $profile_id = learn_press_get_page_id( 'profile' ) ) {
 		add_rewrite_rule(
 			'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?([^/]*)/?([^/]*)?/?',
@@ -1005,7 +1022,7 @@ function learn_press_show_menu() {
 			jQuery(window).load(function ($) {
 				<?php
 				if ( isset ( $_GET['taxonomy'] ) ) {
-					?>
+				?>
 				jQuery("body").removeClass("sticky-menu");
 				jQuery("#toplevel_page_learn_press").addClass('wp-has-current-submenu wp-menu-open').removeClass('wp-not-current-submenu');
 				jQuery("#toplevel_page_learn_press > a").addClass('wp-has-current-submenu wp-menu-open').removeClass('wp-not-current-submenu');
@@ -2104,7 +2121,7 @@ function learn_press_get_register_url() {
  * @return mixed
  */
 function learn_press_add_notice( $message, $type = 'notice' ) {
-	if( $message === false ){
+	if ( $message === false ) {
 		return false;
 	}
 	$notices = LP_Session::get( 'notices' );
@@ -2214,9 +2231,19 @@ function learn_press_add_endpoints() {
 		LP()->query_vars[$endpoint] = $value;
 		add_rewrite_endpoint( $value, EP_ROOT | EP_PAGES );
 	}
+
+	if ( $endpoints = LP()->settings->get( 'quiz_endpoints' ) ) foreach ( $endpoints as $endpoint => $value ) {
+		$endpoint                   = preg_replace( '!_!', '-', $endpoint );
+		LP()->query_vars[$endpoint] = $value;
+		add_rewrite_endpoint( $value, EP_ROOT | EP_PAGES );
+	}
 }
 
 add_action( 'init', 'learn_press_add_endpoints' );
+
+function learn_press_is_yes( $value ) {
+	return ( $value === 1 ) || ( $value === '1' ) || ( $value == 'yes' ) || ( $value == true ) || ( $value == 'on' );
+}
 
 function learn_press_parse_request() {
 	global $wp;
@@ -2270,11 +2297,15 @@ include_once "lp-add-ons.php";
 
 //add_action( 'learn_press_register_add_ons', 'learn_press_register_addons' );
 
-function learn_press_debug( $a, $die = true ) {
+function learn_press_debug() {
+	$args = func_get_args();
+	$arg  = true;
 	echo '<pre>';
-	print_r( $a );
+	if ( $args ) foreach ( $args as $arg ) {
+		print_r( $args );
+	}
 	echo '</pre>';
-	if ( $die ) {
+	if ( $arg === true ) {
 		die();
 	}
 }

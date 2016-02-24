@@ -96,7 +96,7 @@ class LP_Question_Factory {
 	 * @return WP_Post|bool false on failure
 	 */
 	public static function get_question_object( $the_question ) {
-		if ( false === $the_question ) {
+		if ( false === $the_question && !empty( $GLOBALS['post'] ) ) {
 			$the_question = $GLOBALS['post'];
 		} elseif ( is_numeric( $the_question ) ) {
 			$the_question = get_post( $the_question );
@@ -323,6 +323,17 @@ class LP_Question_Factory {
 
 	static function add_template( $id, $content ) {
 		self::$_templates[$id] = $content;
+	}
+
+	static function fetch_question_content( $the_question, $args = false ){
+		$question = self::get_question( $the_question );
+		$content = '';
+		if( $question ){
+			ob_start();
+			$question->render( $args );
+			$content = ob_get_clean();
+		}
+		return $content;
 	}
 
 	static function convert_question( $id, $from, $to, $data ) {

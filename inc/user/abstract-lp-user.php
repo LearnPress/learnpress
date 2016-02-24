@@ -159,16 +159,17 @@ class LP_Abstract_User {
 	function start_quiz( $quiz_id = null ) {
 		if ( !$quiz_id ) $quiz_id = $this->get_quiz_field( 'id' );
 		$user_id = $this->id;
-
+		$return  = false;
 		if ( !apply_filters( 'learn_press_before_user_start_quiz', true, $quiz_id, $user_id ) ) {
 			return false;
 		}
 
 		if ( $this->get_quiz_status( $quiz_id ) != '' ) {
-			throw new Exception( __( 'This user already has start quiz', 'learn_press' ) );
+			//throw new Exception( __( 'This user already has start quiz', 'learn_press' ) );
+		} else {
+			///
+			$return = $this->_create_quiz_history( $quiz_id );
 		}
-		///
-		$return = $this->_create_quiz_history( $quiz_id );
 		do_action( 'learn_press_user_start_quiz', $quiz_id, $user_id );
 		return $return;
 	}
@@ -192,6 +193,13 @@ class LP_Abstract_User {
 			$quiz_questions = $this->quiz_questions;
 			if ( is_array( $quiz_questions ) && !empty( $quiz_questions[$quiz_id] ) ) {
 				$current = $quiz_questions[$quiz_id];
+			}
+		}
+		if ( !$current ) {
+			$history = $this->get_quiz_history( $quiz_id );
+			if ( $history ) {
+				$keys    = array_keys( $history );
+				$current = learn_press_get_user_quiz_meta( $keys[0], 'current_question' );
 			}
 		}
 		return $current;
@@ -653,6 +661,15 @@ class LP_Abstract_User {
 			$can     = $taken ? ( $quiz->retake_count + 1 ) - $taken : $quiz->retake_count;
 		}
 		return apply_filters( 'learn_press_user_can_retake_quiz', $can, $quiz_id, $this );
+	}
+
+	function can_finish_course( $course_id ) {
+		$return = false;
+		if ( $course = LP_Course::get_course( $course_id ) ) {
+			$result = $course->evaluate_course_results() * 100;
+			$return = $result >= $course->passing_condition;
+		}
+		return apply_filters( 'learn_press_user_can_finish_course', $return, $course_id, $this->id );
 	}
 
 	function is_instructor() {
@@ -1125,5 +1142,29 @@ class LP_Abstract_User {
 		", '_user_id', 'lp_order', $this->id );
 		$orders = $wpdb->get_results( $query );
 		return apply_filters( 'learn_press_user_orders', $orders, $this->id );
+	}
+
+	function get_quiz_by_question( $question_id ) {
+		global $wpdb;
+		$query = $wpdb->prepare( "
+			SELECT quiz_id
+			FROM {$wpdb->prefix}learnpress_user_quizzes uq
+			INNER JOIN {$wpdb->prefix}learnpress_user_quizmeta uqm ON uqm.learnpress_user_quiz_id = uq.user_quiz_id AND uqm.meta_key = %s AND uqm.meta_value LIKE %s
+		", 'questions', '%i:' . $wpdb->esc_like( $question_id . '' ) . ';%' );
+		return $wpdb->get_var( $query );
+	}
+
+	function get_answer_results( $question_id ) {
+		$data = false;
+		if ( $quiz_id = $this->get_quiz_by_question( $question_id ) ) {
+			if ( $question = LP_Question_Factory::get_question( $question_id ) ) {
+				$quiz_results = $this->get_quiz_results( $quiz_id );
+				if ( !empty( $quiz_results->question_answers ) ) {
+					$question_answer = !empty( $quiz_results->question_answers[$question_id] ) ? $quiz_results->question_answers[$question_id] : null;
+					$data            = $question->check( $question_answer );
+				}
+			}
+		}
+		return $data;
 	}
 }

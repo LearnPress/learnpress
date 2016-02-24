@@ -640,7 +640,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			die();
 		}
 
-		function start_quiz() {
+		static function start_quiz() {
 			$quiz_id = !empty( $_REQUEST['quiz_id'] ) ? absint( $_REQUEST['quiz_id'] ) : 0;
 			if ( !$quiz_id ) {
 				learn_press_send_json(
@@ -696,12 +696,13 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 					break;
 				default:
 					$result = $user->start_quiz();
+					$current_question = !empty( $result['current_question'] ) ? $result['current_question'] : $user->get_current_question_id( $quiz_id );
 					learn_press_send_json(
 						array(
 							'result'           => 'success',
 							'data'             => $result,
-							'question_url'     => learn_press_get_user_question_url( $quiz_id ),
-							'question_content' => $user->get_current_question( $quiz_id, 'html' )
+							'question_url'     => learn_press_get_user_question_url( $quiz_id, $current_question ),
+							'question_content' => LP_Question_Factory::fetch_question_content( $current_question )
 						)
 					);
 			}

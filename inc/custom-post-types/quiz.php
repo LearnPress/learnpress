@@ -311,13 +311,19 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 			}
 		}
 
+		/**
+		 * @param $fields
+		 *
+		 * @return string
+		 */
 		function posts_fields( $fields ) {
+			global $wpdb;
 			if ( !$this->_is_archive() ) {
 				return $fields;
 			}
 			$fields = " DISTINCT " . $fields;
 			if( $this->_get_orderby() == 'question-count' ) {
-				$fields .= ", (SELECT count(*) FROM wp_learnpress_quiz_questions qq WHERE wp_posts.ID = qq.quiz_id ) as question_count";
+				$fields .= ", (SELECT count(*) FROM {$wpdb->prefix}learnpress_quiz_questions qq WHERE {$wpdb->posts}.ID = qq.quiz_id ) as question_count";
 			}
 			return $fields;
 		}

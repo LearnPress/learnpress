@@ -1,1 +1,0 @@
-<button id="finish-course" data-id="<?php the_ID();?>"><?php _e( 'Finish this course', 'learn_press' );?></button>
