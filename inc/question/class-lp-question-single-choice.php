@@ -8,6 +8,9 @@
  * @version 1.0
  * @extends LP_Question
  */
+
+defined( 'ABSPATH' ) || exit();
+
 class LP_Question_Single_Choice extends LP_Abstract_Question {
 	/**
 	 * Constructor

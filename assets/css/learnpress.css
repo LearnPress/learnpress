@@ -566,8 +566,13 @@ a .archive-course:hover {
 	background: #DDD;
 	position: absolute;
 	left: 0;
+	-webkit-transition: width 0.25s;
+	-moz-transition: width 0.25s;
+	-ms-transition: width 0.25s;
+	-o-transition: width 0.25s;
+	transition: width 0.25s;
 }
-.lp-course-progress .lp-progress-value span{
+.lp-course-progress .lp-progress-value > span{
 	display: inline-block;
 	padding: 5px 10px;
 	font-size: small;
@@ -579,7 +584,7 @@ a .archive-course:hover {
 	white-space: nowrap;
 }
 
-.lp-course-progress .lp-progress-value span:after{
+.lp-course-progress .lp-progress-value > span:after{
 	content: '';
 	display: block;
 	border: 10px solid #DDD;
@@ -592,11 +597,11 @@ a .archive-course:hover {
 	transform: rotate(-45deg);
 	right: -10px;
 }
-.lp-course-progress .lp-progress-value.left span{
+.lp-course-progress .lp-progress-value.left > span{
 	left: 100%;
 	right: auto;
 }
-.lp-course-progress .lp-progress-value.left span:after{
+.lp-course-progress .lp-progress-value.left > span:after{
 	bottom: -4px;
 	transform: rotate(225deg);
 	left: -10px;
@@ -605,10 +610,10 @@ a .archive-course:hover {
 .lp-course-progress.passed .lp-progress-value{
 	background: #83D0FF;
 }
-.lp-course-progress.passed .lp-progress-value span{
+.lp-course-progress.passed .lp-progress-value > span{
 	background: #83D0FF;
 }
-.lp-course-progress.passed .lp-progress-value span:after{
+.lp-course-progress.passed .lp-progress-value > span:after{
 	border-left-color: #83D0FF;
 }
 .lp-course-progress .lp-progress-total{
@@ -672,6 +677,10 @@ a .archive-course:hover {
 	content: "\f335";
 }
 .question-results.skipped{}
+
+.complete-lesson-button.completed{
+
+}
 
 @media screen and (min-width: 59.6875em) {
 	.twentyfifteen .learnpress-content{

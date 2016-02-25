@@ -1,5 +1,7 @@
 <?php
 
+defined( 'ABSPATH' ) || exit();
+
 /**
  * Class LP_Abstract_Course
  */

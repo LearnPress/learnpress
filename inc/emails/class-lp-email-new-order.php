@@ -7,6 +7,9 @@
  * @package LearnPress/Classes
  * @version 1.0
  */
+
+defined( 'ABSPATH' ) || exit();
+
 class LP_Email_New_Order extends LP_Email {
 	function __construct() {
 		$this->id = 'new_order';

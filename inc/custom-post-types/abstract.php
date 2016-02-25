@@ -7,6 +7,9 @@
  * @package LearnPress/Classes
  * @version 1.0
  */
+
+defined( 'ABSPATH' ) || exit();
+
 abstract class LP_Abstract_Post_Type {
 	/**
 	 * Prevent duplicate loading

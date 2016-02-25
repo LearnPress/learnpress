@@ -421,6 +421,8 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			$nonce = learn_press_get_request( 'nonce' );
 			$item_id = learn_press_get_request( 'id' );
 			$post = get_post( $item_id );
+
+			// security check
 			if( !$post || ( $post && !wp_verify_nonce( $nonce, sprintf( 'learn-press-complete-%s-%d', $post->post_type, $post->ID ) ) ) ){
 				throw new Exception( __( 'Error ', 'learn_press' ) );
 			}
@@ -429,11 +431,13 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			$response = array(
 				'result' => 'error'
 			);
-			if( $user->complete_lesson( $item_id ) ){
+			if( $result = $user->complete_lesson( $item_id ) ){
 				ob_start();
 				learn_press_display_message( __( 'Congratulations! You have completed this lesson.', 'learn_press' ) );
 				$response['message'] = ob_get_clean();
 				$response['result'] = 'success';
+
+				$response['course_result'] = $result * 100;
 			}
 			learn_press_send_json($response);
 			die();
@@ -519,48 +523,13 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			die;
 		}
 
-		/**
-		 * Join event
-		 */
-		public static function join_event() {
-
-			$user_id  = get_current_user_id();
-			$event_id = $_POST['event_id'];
-			$events   = get_user_meta( $user_id, '_lpr_event_participated', false );
-			if ( $events ) {
-				array_push( $events, $event_id );
-				update_user_meta( $user_id, '_lpr_event_participated', $events );
-			} else {
-				array_push( $events, $event_id );
-				add_user_meta( $user_id, '_lpr_event_participated', $events );
-			}
-			echo "Going";
-			die;
-		}
-
-		/**
-		 * not going
-		 */
-		public static function not_going() {
-
-			$user_id  = get_current_user_id();
-			$event_id = $_POST['event_id'];
-			$events   = get_user_meta( $user_id, '_lpr_event_participated', true );
-			if ( $events ) {
-				$key = array_search( $event_id, $events, false );
-				unset( $events[$key] );
-				update_user_meta( $user_id, '_lpr_event_participated', $events );
-			}
-			echo "Join this event";
-			die;
-		}
 
 		/**
 		 * Retake course action
 		 */
 		public static function retake_course() {
-			$course_id = !empty( $_REQUEST['course_id'] ) ? $_REQUEST['course_id'] : 0;
-			$user_id   = !empty( $_REQUEST['user_id'] ) ? $_REQUEST['user_id'] : get_current_user_id();
+			$course_id = !empty( $_REQUEST['course_id'] ) ? absint( $_REQUEST['course_id'] ) : 0;
+			$user_id   = !empty( $_REQUEST['user_id'] ) ? absint( $_REQUEST['user_id'] ) : get_current_user_id();
 
 			if ( !$user_id || !$course_id ) {
 				wp_die( __( 'Error', 'learn_press' ) );

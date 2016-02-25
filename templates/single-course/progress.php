@@ -5,13 +5,13 @@ $num_of_decimal = 0;
 $current = round( $result * 100, $num_of_decimal );
 $passing_condition = round( $course->passing_condition , $num_of_decimal);
 ?>
-<div class="lp-course-progress<?php echo $current >= $passing_condition ? ' passed' : '';?>">
+<div class="lp-course-progress<?php echo $current >= $passing_condition ? ' passed' : '';?>" data-value="<?php echo $current;?>" data-passing-condition="<?php echo $passing_condition;?>">
 	<?php if ( ( $heading = apply_filters( 'learn_press_course_progress_heading', __( 'Learning progress', 'learn_press' ) ) ) !== false ): ?>
 		<p class="lp-course-progress-heading"><?php echo $heading; ?></p>
 	<?php endif; ?>
 	<div class="lp-progress-bar">
 		<div class="lp-progress-value" style="width: <?php echo $result * 100; ?>%;">
-			<span><?php echo sprintf( __( 'Your progress (%s%%)', 'learn_press' ), $current ); ?></span>
+			<span><?php echo sprintf( __( 'Your progress (<span>%s</span>%%)', 'learn_press' ), $current ); ?></span>
 		</div>
 		<div class="lp-passing-conditional" style="left: <?php echo $course->passing_condition; ?>%;">
 			<span><?php echo sprintf( __( 'Passing Condition (%s%%)', 'learn_press' ), $passing_condition ); ?></span>

@@ -2,7 +2,16 @@
 
 /**
  * Class LP_Settings
+ *
+ * @author  ThimPress
+ * @package LearnPress/Classes
+ * @version 1.0
  */
+
+if ( !defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class LP_Settings {
 	/**
 	 * @var array
@@ -20,14 +29,14 @@ class LP_Settings {
 	 */
 	function __construct() {
 		global $wpdb;
-		$query = $wpdb->prepare("
+		$query = $wpdb->prepare( "
 			SELECT option_name, option_value
 			FROM {$wpdb->options}
 			WHERE option_name LIKE %s
 		", 'learn_press_%' );
-		if( $options = $wpdb->get_results( $query ) ){
-			foreach( $options as $option ){
-				$this->_options[ $option->option_name ] = maybe_unserialize( $option->option_value );
+		if ( $options = $wpdb->get_results( $query ) ) {
+			foreach ( $options as $option ) {
+				$this->_options[$option->option_name] = maybe_unserialize( $option->option_value );
 			}
 		}
 
@@ -70,11 +79,11 @@ class LP_Settings {
 	}
 
 	function get( $var, $default = null ) {
-		if( strpos( $var, 'learn_press_' ) === false ){
+		if ( strpos( $var, 'learn_press_' ) === false ) {
 			$var = 'learn_press_' . $var;
 		}
 		$return = $this->_get_option( $this->_options, $var, $default );
-		if( $return == '' || is_null( $return ) ){
+		if ( $return == '' || is_null( $return ) ) {
 			$return = $default;
 		}
 		return $return;
@@ -114,4 +123,5 @@ class LP_Settings {
 		return self::$_instance;
 	}
 }
+
 return LP_Settings::instance();

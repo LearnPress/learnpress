@@ -2,7 +2,14 @@
 
 /**
  * Class LP_Abstract_User
+ *
+ * @author  ThimPress
+ * @package LearnPress/Classes
+ * @version 1.0
  */
+
+defined( 'ABSPATH' ) || exit();
+
 class LP_Abstract_User {
 	/**
 	 * @var array
@@ -24,8 +31,14 @@ class LP_Abstract_User {
 	 */
 	public $quiz = false;
 
+	/**
+	 * @var array
+	 */
 	static protected $_order_items = array();
 
+	/**
+	 * @var null
+	 */
 	protected $_quiz_history_id = null;
 
 	/**
@@ -791,7 +804,7 @@ class LP_Abstract_User {
 		return $quizzes[$quiz_id];
 	}
 
-	function complete_lesson( $lesson_id ) {
+	function complete_lesson( $lesson_id, $course_id = 0 ) {
 		global $wpdb;
 		do_action( 'learn_press_before_user_complete_lesson', $lesson_id, $this );
 		$updated = $wpdb->update(
@@ -807,8 +820,17 @@ class LP_Abstract_User {
 			array( '%s', '%s' ),
 			array( '%d', '%d' )
 		);
-		do_action( 'learn_press_user_complete_lesson', $lesson_id, $this );
-		return $updated ? $updated : 0;
+		$result  = false;
+		if ( $updated ) {
+			if ( !$course_id ) {
+				$course_id = LP_Course::get_course_by_item( $lesson_id );
+			}
+			if ( $course = LP_Course::get_course( $course_id ) ) {
+				$result = $course->evaluate_course_results( $this->id );
+			}
+		}
+		do_action( 'learn_press_user_complete_lesson', $lesson_id, $result, $this->id );
+		return $result;
 	}
 
 	function has_completed_lesson( $lesson_id ) {
@@ -924,8 +946,18 @@ class LP_Abstract_User {
 			$results['wrong_percent']         = $results['wrong'] / $total_questions * 100;
 			$results['empty_percent_percent'] = $results['empty'] / $total_questions * 100;
 		}
-		$results['user_time'] = $progress->end - $progress->start;
+		$results['user_time'] = $this->_calculate_quiz_time( $quiz, $progress );
 		return $results;
+	}
+
+	private function _calculate_quiz_time( $quiz, $progress ) {
+		$start = $progress->start;
+		$end   = $progress->end;
+		if ( $end < $start ) {
+			$end = $start + $quiz->duration;
+			learn_press_update_user_quiz_meta( $progress->history_id, 'end', $end );
+		}
+		return $end - $start;
 	}
 
 	/**

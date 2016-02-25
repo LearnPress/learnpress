@@ -1,6 +1,10 @@
 <?php
 /**
- * @file
+ * Common functions to process actions about user
+ *
+ * @author  ThimPress
+ * @package LearnPress/Functions/User
+ * @version 1.0
  */
 
 add_action( 'learn_press_user_finished_course', 'learn_press_user_finished_course_send_email', 999, 2 );
@@ -36,7 +40,9 @@ function learn_press_user_finished_course_send_email( $course_id = null, $user_i
 	);
 }
 
-
+/**
+ * @return int
+ */
 function learn_press_get_current_user_id() {
 	$user = learn_press_get_current_user();
 	return $user->id;
@@ -57,6 +63,11 @@ function learn_press_get_current_user() {
 	return $current_user;
 }
 
+/**
+ * @param $user_id
+ *
+ * @return LP_User_Guest|mixed
+ */
 function learn_press_get_user( $user_id ) {
 	if ( $user_id ) {
 		return LP_User::get_user( $user_id );
@@ -356,15 +367,16 @@ function learn_press_update_user_lesson_start_time() {
 			'user_id'    => get_current_user_id(),
 			'lesson_id'  => $lesson->id,
 			'start_time' => current_time( 'mysql' ),
-			'status'     => 'stared'
+			'status'     => 'stared',
+			'course_id'  => $course->id
 		),
-		array( '%d', '%d', '%s', '%s' )
+		array( '%d', '%d', '%s', '%s', '%d' )
 	);
 }
 
 add_action( 'learn_press_course_content_lesson', 'learn_press_update_user_lesson_start_time' );
 
-function learn_press_get_profile_user(){
+function learn_press_get_profile_user() {
 	global $wp;
 	return !empty( $wp->query_vars['user'] ) ? get_user_by( 'login', $wp->query_vars['user'] ) : false;
 }

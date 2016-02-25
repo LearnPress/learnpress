@@ -7,6 +7,9 @@
  * @package LearnPress/Classes
  * @version 1.0
  */
+
+defined( 'ABSPATH' ) || exit();
+
 class LP_Email_Enrolled_Course extends LP_Email {
 	function __construct() {
 		$this->id    = 'enrolled_course';

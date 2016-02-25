@@ -3,9 +3,16 @@
 // Prevent loading directly
 defined( 'ABSPATH' ) || exit;
 
-if ( ! class_exists( 'LP_Multi_Language' ) ) {
+if ( !class_exists( 'LP_Multi_Language' ) ) {
+	/**
+	 * Class LP_Multi_Language
+	 *
+	 * @author  ThimPress
+	 * @package LearnPress/Clases
+	 * @version 1.0
+	 */
 	class LP_Multi_Language {
-		public static function on_load() {
+		public static function init() {
 			self::load_textdomain();
 
 			$plugin = 'learnpress/learnpress.php';
@@ -18,19 +25,15 @@ if ( ! class_exists( 'LP_Multi_Language' ) ) {
 		 * @return void
 		 */
 		public static function load_textdomain() {
-			// Get mo file
-			$text_domain = 'learn_press';
-			$prefix = 'learnpress';
-			$locale      = apply_filters( 'plugin_locale', get_locale(), $text_domain );
-			$mo_file   = $prefix . '-' . $locale . '.mo';
-			// Check mo file global
-			$mo_global = WP_LANG_DIR . '/plugins/' . $mo_file;
-			// Load translate file
-			if ( file_exists( $mo_global ) ) {
-				load_textdomain( $text_domain, $mo_global );
-			} else {
-				load_textdomain( $text_domain, LP_PLUGIN_PATH . '/lang/' . $mo_file );
+			$plugin_folder = basename( LP_PLUGIN_PATH );
+			$locale        = apply_filters( 'plugin_locale', get_locale(), 'learn_press' );
+
+			if ( is_admin() ) {
+				load_textdomain( 'learn_press', WP_LANG_DIR . '/' . $plugin_folder . '/learnpress-admin-' . $locale . '.mo' );
+				load_textdomain( 'learn_press', WP_LANG_DIR . '/' . $plugin_folder . '/learnpress-admin-' . $locale . '.mo' );
 			}
+			load_textdomain( 'learn_press', WP_LANG_DIR . '/' . $plugin_folder . '/learnpress-' . $locale . '.mo' );
+			load_plugin_textdomain( 'learn_press', false, plugin_basename( LP_PLUGIN_PATH ) . "/lang" );
 		}
 
 		/**
@@ -50,4 +53,4 @@ if ( ! class_exists( 'LP_Multi_Language' ) ) {
 		}
 	}
 }
-LP_Multi_Language::on_load();
+LP_Multi_Language::init();

@@ -7,6 +7,11 @@
  * @package LearnPress/Classes
  * @version 1.0
  */
+
+if ( !defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class LP_Session {
 	/**
 	 * @var object

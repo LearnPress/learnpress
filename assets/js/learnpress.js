@@ -60,7 +60,7 @@ if (typeof LearnPress == 'undefined') window.LearnPress = {};
 				}
 			});
 		},
-		finish_course  : function (course_id) {
+		finishCourse  : function (course_id) {
 			if (!confirm(confirm_finish_course.confirm_finish_course)) return;
 			$.ajax({
 				type   : "POST",

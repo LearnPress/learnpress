@@ -8,6 +8,9 @@
  * @version 1.0
  * @extend  LP_Abstract_Question
  */
+
+defined( 'ABSPATH' ) || exit();
+
 class LP_Question_None extends LP_Question {
 
 	/**

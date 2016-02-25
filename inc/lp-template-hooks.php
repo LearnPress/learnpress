@@ -3,6 +3,8 @@
 * Build courses content
 */
 
+defined( 'ABSPATH' ) || exit();
+
 add_filter( 'body_class', 'learn_press_body_class' );
 add_filter( 'post_class', 'learn_press_course_class' );
 

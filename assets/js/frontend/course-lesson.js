@@ -36,10 +36,10 @@
 			$.ajax({
 				url     : LearnPress_Settings.ajax,
 				dataType: 'html',
-				data: {
+				data    : {
 					action: 'learnpress_complete_lesson',
-					id: this.get('id'),
-					nonce: this.get('nonce').complete
+					id    : this.get('id'),
+					nonce : this.get('nonce').complete
 				},
 				success : function (response) {
 					response = LearnPress.parseJSON(response);
@@ -73,24 +73,36 @@
 		},
 		completeLesson: function (e) {
 			var that = this;
-			this.model.complete(function(response){
+			this.model.complete(function (response) {
 				response = LearnPress.Hook.applyFilters('learn_press_user_complete_lesson_response', response)
-				if( response && response.result == 'success'){
+				if (response && response.result == 'success') {
 					that.$('.complete-lesson-button').replaceWith(response.message);
 					$('.course-item-' + response.id).addClass('item-completed');
+					if(response.course_result){
+						that.updateProgress(response);
+					}
 				}
-				LearnPress.Hook.doAction( 'learn_press_user_completed_lesson', response );
+				LearnPress.Hook.doAction('learn_press_user_completed_lesson', response);
 				console.log(response)
 			});
+		},
+		updateProgress: function(data){
+			$('.lp-course-progress')
+				.attr({
+					'data-value': data.course_result
+				})
+			if( LearnPress.Course ){
+				LearnPress.Course._sanitizeProgress();
+			}
 		}
 	});
 	$.LP_Course_Item.Collection = Backbone.Collection.extend({
 		model     : $.LP_Course_Item.Model,
+		current   : 0,
 		initialize: function () {
 			var that = this;
 			_.bindAll(this, 'initItems', 'loadItem');
 			this.initItems();
-
 		},
 		initItems : function () {
 			var that = this;
@@ -106,6 +118,9 @@
 						rootUrl: $link.attr('href')
 					});
 				that.add(model);
+				if( $li.hasClass( 'item-current' ) ){
+					that.current = id;
+				}
 			});
 		},
 		loadItem  : function (item) {
@@ -132,14 +147,14 @@
 		model     : $.LP_Course_Item.Collection,
 		el        : 'body',
 		events    : {
-			'click .section-content .course-lesson.course-item': 'loadLesson',
-			'click .course-item-nav a'                         : 'loadLesson'
+			'click .section-content .course-lesson.course-item': '_loadLesson',
+			'click .course-item-nav a'                         : '_loadLesson'
 		},
 		initialize: function (args) {
-			_.bindAll(this, 'loadLesson');
-			this.model.loadItem(args.currentItem);
+			_.bindAll(this, '_loadLesson');
+			this.model.loadItem(this.model.current);
 		},
-		loadLesson: function (e) {
+		_loadLesson: function (e) {
 			e.preventDefault();
 			var $item = $(e.target),
 				id = parseInt($item.attr('data-id')),

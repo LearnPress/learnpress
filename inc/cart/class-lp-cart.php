@@ -9,6 +9,9 @@
  * @package LearnPress/Classes
  * @version 1.0
  */
+
+defined( 'ABSPATH' ) || exit();
+
 class LP_Cart {
 
 	/**

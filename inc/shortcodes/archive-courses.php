@@ -3,6 +3,7 @@
  * Shortcodes to display archive courses
  */
 
+defined( 'ABSPATH' ) || exit();
 
 /**
  * Shortcode to display all newest courses
