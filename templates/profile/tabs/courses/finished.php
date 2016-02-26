@@ -11,10 +11,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-
-$heading = apply_filters( 'learn_press_profile_tab_courses_finished_heading', __( 'Finished', 'learn_press' ) );
-$courses = learn_press_get_passed_courses( $user->id );
 global $post;
+$heading = apply_filters( 'learn_press_profile_tab_courses_finished_heading', false );
 ?>
 
 <?php if ( $heading ): ?>
@@ -29,7 +27,7 @@ global $post;
 
 		<?php foreach ( $courses as $post ): setup_postdata( $post ); ?>
 
-			<?php learn_press_get_template( 'profile/tabs/courses/loop.php' ); ?>
+			<?php learn_press_get_template( 'profile/tabs/courses/loop.php', array( 'subtab' => 'finished' ) ); ?>
 
 		<?php endforeach; ?>
 	</ul>

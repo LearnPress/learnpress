@@ -68,7 +68,7 @@ if (typeof window.LearnPress == 'undefined') {
 		instance       : null,
 		quickConfirm   : function (elem, args) {
 			var $e = $(elem);
-			$('[learn-press-quick-confirm]').each(function(){
+			$('[learn-press-quick-confirm]').each(function () {
 				( $ins = $(this).data('quick-confirm') ) && (console.log($ins), $ins.destroy() );
 			});
 			!$e.attr('learn-press-quick-confirm') && $e.attr('learn-press-quick-confirm', 'true').data('quick-confirm',
@@ -87,18 +87,18 @@ if (typeof window.LearnPress == 'undefined') {
 							$elem.removeAttr('learn-press-quick-confirm').data('quick-confirm', undefined);
 							stop();
 						},
-						stop = function(){
-							timerHide && clearInterval( timerHide );
-							timerOut && clearInterval( timerOut );
+						stop = function () {
+							timerHide && clearInterval(timerHide);
+							timerOut && clearInterval(timerOut);
 						},
-						start = function(){
+						start = function () {
 							timerOut = setInterval(function () {
-								if( --n == 0 ){
+								if (--n == 0) {
 									hide.call($div[0]);
 									$.isFunction(args.onCancel) && args.onCancel(args.data);
 									stop();
 								}
-								$div.find('span').html(' ('+n+')');
+								$div.find('span').html(' (' + n + ')');
 							}, 1000);
 
 							timerHide = setInterval(function () {
@@ -115,15 +115,15 @@ if (typeof window.LearnPress == 'undefined') {
 						data    : null,
 						onOk    : null,
 						onCancel: null,
-						offset: {top: 0, left: 0}
+						offset  : {top: 0, left: 0}
 					}, args || {});
-					$div.html(args.message || $elem.attr('data-confirm-remove') || 'Are you sure?').append('<span> ('+n+')</span>').css({});
+					$div.html(args.message || $elem.attr('data-confirm-remove') || 'Are you sure?').append('<span> (' + n + ')</span>').css({});
 					$div.click(function () {
 						$.isFunction(args.onOk) && args.onOk(args.data);
 						hide();
-					}).hover(function(){
+					}).hover(function () {
 						stop();
-					}, function(){
+					}, function () {
 						start();
 					});
 					//$div.parent().css('position', 'relative');
@@ -133,9 +133,10 @@ if (typeof window.LearnPress == 'undefined') {
 					}).hide().fadeIn('fast');
 					start();
 
-					this.destroy = function(){
+					this.destroy = function () {
 						$div.remove();
-						$elem.removeAttr('learn-press-quick-confirm').data('quick-confirm', undefined);;
+						$elem.removeAttr('learn-press-quick-confirm').data('quick-confirm', undefined);
+						;
 						stop();
 						console.log('die');
 					};
@@ -417,6 +418,33 @@ if (typeof window.LearnPress == 'undefined') {
 			}
 			return data;
 		},
+		parseResponse : function (response, type) {
+			var m = response.match(/<!-- LP_AJAX_START -->(.*)<!-- LP_AJAX_END -->/);
+			if (m) {
+				response = m[1];
+			}
+			return ( type || 'json' ) == 'json' ? this.parseJSON(response) : response;
+		},
+		doAjax        : function (args) {
+			var type = args.type || 'post',
+				dataType = args.dataType || 'json',
+				action = ( ( args.prefix == undefined ) || 'learnpress_') + args.action,
+				data = args.action ? $.extend(args.data, {action: action}) : args.data;
+
+			$.ajax({
+				data   : data,
+				url    : ( args.url || window.location.href ),
+				type   : type,
+				success: function (response) {
+					response = LearnPress.parseResponse(response, dataType);
+					$.isFunction(args.success) && args.success(response);
+				},
+				error  : function () {
+					$.isFunction(args.error) && args.error.apply(null, LearnPress.funcArgs2Array());
+				}
+			});
+		},
+
 		funcArgs2Array: function (args) {
 			var arr = [];
 			for (var i = 0; i < args.length; i++) {
@@ -534,7 +562,65 @@ if (typeof window.LearnPress == 'undefined') {
 			return data ? tmpl(data) : tmpl;
 		}, function (a, b) {
 			return JSON.stringify(b)
-		})
+		}),
+		alert         : function (localize, callback) {
+			var title = '',
+				message = '';
+			if (typeof localize == 'string') {
+				message = localize;
+			} else {
+				if (typeof localize['title'] != 'undefined') {
+					title = localize['title'];
+				}
+				if (typeof localize['message'] != 'undefined') {
+					message = localize['message'];
+				}
+			}
+			$.alerts.alert(message, title, callback);
+		},
+		confirm       : function (localize, callback) {
+			var title = '',
+				message = '';
+
+			if (typeof localize == 'string') {
+				message = localize;
+			} else {
+				if (typeof localize['title'] != 'undefined') {
+					title = localize['title'];
+				}
+				if (typeof localize['message'] != 'undefined') {
+					message = localize['message'];
+				}
+			}
+			$.alerts.confirm(message, title, function (e) {
+				LearnPress._on_alert_hide();
+				callback && callback(e);
+			});
+			this._on_alert_show();
+
+		},
+		_on_alert_show: function () {
+			var $container = $('#popup_container'),
+				$placeholder = $('<span id="popup_container_placeholder" />').insertAfter($container).data('xxx', $container);
+			$container.stop().css('top', '-=50').css('opacity', '0').animate({
+				top    : '+=50',
+				opacity: 1
+			}, 250);
+		},
+		_on_alert_hide: function () {
+			var $holder = $("#popup_container_placeholder"),
+				$container = $holder.data('xxx');
+			if ($container) {
+				$container.replaceWith($holder);
+			}
+			$container.appendTo($(document.body))
+			$container.stop().animate({
+				top    : '+=50',
+				opacity: 0
+			}, 250, function () {
+				$(this).remove()
+			})
+		}
 	}, LearnPress);
 
 	$.fn.findNext = function (selector) {
@@ -553,5 +639,25 @@ if (typeof window.LearnPress == 'undefined') {
 		return $prev.length ? $prev : false;
 	}
 
+	function __initSubtabs() {
+		$('.learn-press-subtabs').each(function () {
+			var $tabContainer = $(this),
+				$tabs = $tabContainer.find('a');
+			$tabs.click(function (e) {
+				var $tab = $(this),
+					$contentID = $tab.attr('href');
+				e.preventDefault();
+				$tab.parent().addClass('current').siblings().removeClass('current');
+				$($contentID).addClass('current').siblings().removeClass('current');
+			}).first().trigger('click');
+		})
+	}
+
+	$(document).ready(function () {
+		__initSubtabs();
+	});
+
+	$.alerts.overlayColor = '#000';
+	$.alerts.overlayOpacity = 0.5;
 
 })(jQuery);

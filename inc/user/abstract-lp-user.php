@@ -618,7 +618,7 @@ class LP_Abstract_User {
 				// if course is not required enroll so the lesson is previewable
 				if ( !$course->is( 'required_enroll' ) ) {
 					$view = 2;
-				} elseif ( $this->has( 'enrolled-course', $course_id ) ) {
+				} elseif ( $this->has( 'enrolled-course', $course_id ) || $this->has( 'finished-course', $course_id ) ) {
 					// or user has enrolled course
 					$view = 3;
 				}
@@ -657,7 +657,7 @@ class LP_Abstract_User {
 			if ( !$course->is( 'required_enroll' ) ) {
 				$view = 1;
 			} else {
-				if ( $this->has( 'enrolled-course', $course->id ) ) {
+				if ( $this->has( 'enrolled-course', $course->id ) || $this->has( 'finished-course', $course_id ) ) {
 					$view = 2;
 				}
 			}
@@ -680,9 +680,38 @@ class LP_Abstract_User {
 		$return = false;
 		if ( $course = LP_Course::get_course( $course_id ) ) {
 			$result = $course->evaluate_course_results() * 100;
-			$return = $result >= $course->passing_condition;
+			$return = $result >= $course->passing_condition && $this->has( 'enrolled-course', $course_id );
 		}
 		return apply_filters( 'learn_press_user_can_finish_course', $return, $course_id, $this->id );
+	}
+
+	function finish_course( $course_id ) {
+		global $wpdb;
+		$result = array(
+			'result'    => 'success',
+			'course_id' => $course_id
+		);
+		if ( $course = LP_Course::get_course( $course_id ) ) {
+			if ( !$this->can( 'finish-course', $course_id ) ) {
+				$result['result']  = 'fail';
+				$result['message'] = __( 'Sorry, you can not finish this course. Please contact administrator or your instructor.', 'learn_press' );
+			} else {
+				$updated = $wpdb->update(
+					$wpdb->prefix . 'learnpress_user_courses',
+					array(
+						'end_time' => current_time( 'mysql' ),
+						'status'   => 'finished'
+					),
+					array( 'user_id' => $this->id, 'course_id' => $course_id ),
+					array( '%s', '%s' )
+				);
+				if ( $updated ) {
+					$result['rec_id'] = $wpdb->get_var( $wpdb->prepare( "SELECT user_course_id FROM {$wpdb->prefix}learnpress_user_courses WHERE user_id = %d AND course_id = %d", $this->id, $course_id ) );
+					do_action( 'learn_press_user_finish_course', $course_id, $this->id, $result );
+				}
+			}
+		}
+		return apply_filters( 'learn_press_user_finish_course_data', $result, $course_id, $this->id );
 	}
 
 	function is_instructor() {
@@ -699,6 +728,18 @@ class LP_Abstract_User {
 		$args = func_get_args();
 		unset( $args[0] );
 		$method   = 'has_' . preg_replace( '!-!', '_', $role );
+		$callback = array( $this, $method );
+		if ( is_callable( $callback ) ) {
+			return call_user_func_array( $callback, $args );
+		} else {
+			throw new Exception( sprintf( __( 'The role %s for user doesn\'t exists', 'learn_press' ), $role ) );
+		}
+	}
+
+	function get( $role ) {
+		$args = func_get_args();
+		unset( $args[0] );
+		$method   = 'get_' . preg_replace( '!-!', '_', $role );
 		$callback = array( $this, $method );
 		if ( is_callable( $callback ) ) {
 			return call_user_func_array( $callback, $args );
@@ -1150,15 +1191,55 @@ class LP_Abstract_User {
 		return apply_filters( 'learn_press_user_questions', $questions[$key], $this );
 	}
 
-	function get_courses() {
+	function get_courses( $args = array() ) {
 		global $wpdb;
-		$query = $wpdb->prepare( "
-			SELECT *
-			FROM {$wpdb->posts}
-			WHERE post_type = %s
-			AND post_author = %d
-		", LP()->course_post_type, $this->id );
-		return $wpdb->get_results( $query );
+		static $courses = array();
+		$args = wp_parse_args(
+			$args,
+			array(
+				'status'  => '',
+				'limit'   => - 1,
+				'paged'   => 1,
+				'orderby' => 'post_title',
+				'order'   => 'ASC'
+			)
+		);
+		ksort( $args );
+		$key = md5( serialize( $args ) );
+		if ( empty( $courses[$key] ) ) {
+			$where = $args['status'] ? $wpdb->prepare( "AND uc.status = %s", $args['status'] ) : '';
+			$limit = "\n";
+			if ( $args['limit'] > 0 ) {
+				if ( !$args['paged'] ) {
+					$args['paged'] = 1;
+				}
+				$start = ( $args['paged'] - 1 ) * $args['limit'];
+				$limit .= "LIMIT " . $start . ',' . $args['limit'];
+			}
+			$order = "\nORDER BY " . ($args['orderby'] ? $args['orderby'] : 'post_title') . ' ' . $args['order'];
+			$query = $wpdb->prepare( "
+				SELECT * FROM(
+					SELECT c.*, uc.status as course_status
+					FROM {$wpdb->posts} c
+					LEFT JOIN {$wpdb->prefix}learnpress_user_courses uc ON c.ID = uc.course_id
+					WHERE post_type = %s
+					AND post_author = %d
+					UNION
+					SELECT c.*, uc.status as course_status
+					FROM {$wpdb->posts} c
+					INNER JOIN {$wpdb->learnpress_user_courses} uc ON c.ID = uc.course_id
+					WHERE uc.user_id = %d
+						AND c.post_type = %s
+						AND c.post_status = %s
+				) a
+			",
+				LP()->course_post_type, $this->id,
+				$this->id, LP()->course_post_type, 'publish'
+			);
+			$query .= $where . $order . $limit;
+			$courses[$key] = $wpdb->get_results( $query );
+		}
+		return $courses[$key];
 	}
 
 	function get_orders() {
@@ -1198,5 +1279,44 @@ class LP_Abstract_User {
 			}
 		}
 		return $data;
+	}
+
+	function get_enrolled_courses( $args = array() ) {
+		global $wpdb;
+		static $courses = array();
+		$args = wp_parse_args(
+			$args,
+			array(
+				'status' => '',
+				'limit'  => - 1,
+				'paged'  => 1
+			)
+		);
+		ksort( $args );
+		$key = md5( serialize( $args ) );
+		if ( empty( $courses[$key] ) ) {
+
+			$where = $args['status'] ? $wpdb->prepare( "AND uc.status = %s", $args['status'] ) : '';
+			$limit = "\n";
+			if ( $args['limit'] > 0 ) {
+				if ( !$args['paged'] ) {
+					$args['paged'] = 1;
+				}
+				$start = ( $args['paged'] - 1 ) * $args['limit'];
+				$limit .= "LIMIT " . $start . ',' . $args['limit'];
+			}
+			$query = $wpdb->prepare( "
+				SELECT c.*, uc.status as course_status
+				FROM {$wpdb->posts} c
+				INNER JOIN {$wpdb->learnpress_user_courses} uc ON c.ID = uc.course_id
+				WHERE uc.user_id = %d
+					AND c.post_type = %s
+					AND c.post_status = %s
+			", $this->id, 'lp_course', 'publish' );
+			$query .= $where . $limit;
+
+			$courses[$key] = $wpdb->get_results( $query );
+		}
+		return $courses[$key];
 	}
 }

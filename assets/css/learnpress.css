@@ -470,7 +470,20 @@
 .profile-courses-heading{
 	margin: 0 0 10px !important;
 }
-
+.learn-press-subtabs{}
+.learn-press-subtabs > li{
+	display: inline-block;
+	margin-right: 10px;
+}
+.learn-press-subtabs > li.current{
+	font-weight: bold;
+}
+.learn-press-subtab-content{
+	display: none;
+}
+.learn-press-subtab-content.current{
+	display: block;
+}
 /**/
 .purchase-course .view-cart-button{
 	display: none;
@@ -680,6 +693,22 @@ a .archive-course:hover {
 
 .complete-lesson-button.completed{
 
+}
+
+/* jAlerts */
+#popup_container{
+	background: #FFF;
+}
+#popup_title{
+	padding: 10px 20px;
+	background: #18B6C7;
+	color: #FFF;
+}
+#popup_content{
+	padding: 20px;
+}
+#popup_message{
+	margin-bottom: 20px;
 }
 
 @media screen and (min-width: 59.6875em) {

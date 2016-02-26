@@ -2,29 +2,29 @@
 /**
  * Template for displaying lesson content in a course
  *
- * @author ThimPress
+ * @author  ThimPress
  * @package LearnPress/Templates
  * @version 1.0
  */
 
 global $course;
-if ( ! defined( 'ABSPATH' ) ) {
+if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-if( $course->is( 'viewing' ) != 'quiz' ){
+if ( $course->is( 'viewing' ) != 'quiz' ) {
 	return;
 }
 
 $quiz = $course->current_item;
 ?>
 <?php echo apply_filters( 'the_content', $quiz->post->post_content ); ?>
-<?php if( $quiz->has( 'questions' ) ){?>
+<?php if ( $quiz->has( 'questions' ) ) { ?>
 
-	<a href="<?php echo get_the_permalink( $quiz->id );?>" target="_blank"><?php _e( 'Do this quiz', 'learn_press' );?></a>
+	<a href="<?php echo get_the_permalink( $quiz->id ); ?>" target="_blank"><?php _e( 'Do this quiz', 'learn_press' ); ?></a>
 
-<?php }else{ ?>
+<?php } else { ?>
 
-	<?php learn_press_display_message( __( 'This quiz has not got any questions', 'learn_press' ), 'error' );?>
+	<?php learn_press_display_message( __( 'This quiz has not got any questions', 'learn_press' ), 'error' ); ?>
 
-<?php }?>
+<?php } ?>

@@ -1101,26 +1101,7 @@ add_action( 'transition_post_status', 'learn_press_publish_course', 10, 3 );
  * @return WP_Query
  */
 function learn_press_get_enrolled_courses( $user_id ) {
-	global $wpdb;
-	$query = $wpdb->prepare( "
-		SELECT course_id
-		FROM {$wpdb->learnpress_user_courses}
-		WHERE user_id = %d
-	", $user_id );
-	$pid   = $wpdb->get_col( $query );
-	if ( !$pid ) {
-		$pid = array( 0 );
-	}
-	$arr_query = array(
-		'post_type'           => LP()->course_post_type,
-		'post__in'            => $pid,
-		'post_status'         => 'publish',
-		'ignore_sticky_posts' => true,
-		'posts_per_page'      => - 1
-	);
-	$my_query  = new WP_Query( $arr_query );
-
-	return $my_query;
+	return LP()->get_user( $user_id )->get( 'enrolled-courses' );
 }
 
 /**

@@ -91,8 +91,8 @@
 				.attr({
 					'data-value': data.course_result
 				})
-			if( LearnPress.Course ){
-				LearnPress.Course._sanitizeProgress();
+			if( LearnPress.$Course ){
+				LearnPress.$Course._sanitizeProgress();
 			}
 		}
 	});

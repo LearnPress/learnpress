@@ -10,6 +10,31 @@ defined( 'ABSPATH' ) || exit();
  */
 class LP_Course extends LP_Abstract_Course {
 
+	function __construct( $course ) {
+		parent::__construct( $course );
+
+		add_action( 'wp_head', array( $this, 'frontend_assets' ) );
+	}
+
+	function frontend_assets() {
+		if ( learn_press_is_course() ) {
+			$translate = $this->_get_localize();
+			LP_Assets::add_localize( $translate, false, 'single-course' );
+		}
+	}
+
+	private function _get_localize() {
+		return apply_filters(
+			'learn_press_single_course_js_params',
+			array(
+				'confirm_finish_course' => array(
+					'message' => sprintf( __( 'Are you sure you want to finish course %s', 'learn_press' ), get_the_title() ),
+					'title'   => __( 'Finish course', 'learn_press' )
+				)
+			)
+		);
+	}
+
 	/**
 	 * @param bool  $the_course
 	 * @param array $args

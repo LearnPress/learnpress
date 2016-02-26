@@ -5,6 +5,26 @@ if( typeof LearnPress == 'undefined' ){
 	window.LearnPress = {}
 }
 ;(function($){
+	LearnPress.Course = $.extend(
+		LearnPress.Course || {}, {
+			finish  : function (data, callback) {
+				data = data || {};
+				data['lp-ajax'] = 'finish_course';
+				LearnPress.confirm(single_course_localize.confirm_finish_course, function(e){
+					//LearnPress.Hook.applyFilters( 'learn_press_confirm_finish_course', e, data);
+					if(e){
+						LearnPress.doAjax({
+							prefix : '',
+							data   : data,
+							success: function (res) {
+								console.log(res)
+							}
+						});
+					}
+				})
+			}
+		}
+	);
 	var LearnPress_View_Course = window.LearnPress_View_Course = Backbone.View.extend({
 		$doc: null,
 		$body: null,
@@ -50,8 +70,7 @@ if( typeof LearnPress == 'undefined' ){
 		_finishCourse: function(e){
 			var $button = $(e.target),
 				data = $button.dataToJSON();
-			console.log(data);
-			//LearnPress.finishCourse( );
+			LearnPress.Course.finish( data );
 		},
 		finishCourse: function(){
 			if (!confirm(confirm_finish_course.confirm_finish_course)) return;
@@ -59,7 +78,7 @@ if( typeof LearnPress == 'undefined' ){
 				type   : "POST",
 				url    : ajaxurl,
 				data   : {
-					action   : 'learnpress_finish_course',
+					action   : 'finish_course',
 					course_id: course_id
 				},
 				success: function (response) {
@@ -100,6 +119,6 @@ if( typeof LearnPress == 'undefined' ){
 
 	$(document).ready(function(){
 		//LearnPress.Course.init( $(this), $(document.body) );
-		LearnPress.Course = new LearnPress_View_Course();
+		LearnPress.$Course = new LearnPress_View_Course();
 	});
 })(jQuery);

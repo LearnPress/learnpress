@@ -1,11 +1,20 @@
 <?php
+/**
+ * @author        ThimPress
+ * @package       LearnPress/Templates
+ * @version       1.0
+ */
+
+defined( 'ABSPATH' ) || exit();
+
 global $course;
-$result = $course->evaluate_course_results();
-$num_of_decimal = 0;
-$current = round( $result * 100, $num_of_decimal );
-$passing_condition = round( $course->passing_condition , $num_of_decimal);
+
+$result            = $course->evaluate_course_results();
+$num_of_decimal    = 0;
+$current           = round( $result * 100, $num_of_decimal );
+$passing_condition = round( $course->passing_condition, $num_of_decimal );
 ?>
-<div class="lp-course-progress<?php echo $current >= $passing_condition ? ' passed' : '';?>" data-value="<?php echo $current;?>" data-passing-condition="<?php echo $passing_condition;?>">
+<div class="lp-course-progress<?php echo $current >= $passing_condition ? ' passed' : ''; ?>" data-value="<?php echo $current; ?>" data-passing-condition="<?php echo $passing_condition; ?>">
 	<?php if ( ( $heading = apply_filters( 'learn_press_course_progress_heading', __( 'Learning progress', 'learn_press' ) ) ) !== false ): ?>
 		<p class="lp-course-progress-heading"><?php echo $heading; ?></p>
 	<?php endif; ?>

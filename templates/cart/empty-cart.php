@@ -9,8 +9,11 @@ if ( !defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-learn_press_add_notice( __( 'Your cart is currently empty.', 'learn_press' ), 'error' );
+learn_press_display_message( __( 'Your cart is currently empty.', 'learn_press' ), 'error' );
 
-learn_press_print_notices();
+$courses_link = learn_press_get_page_link( 'courses' );
+if( !$courses_link ){
+	return;
+}
 ?>
 <a href="<?php echo learn_press_get_page_link( 'courses' ); ?>"><?php _e( 'Back to class', 'learn_press' ); ?></a>

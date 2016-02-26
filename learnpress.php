@@ -382,11 +382,25 @@ if ( !class_exists( 'LearnPress' ) ) {
 			return $this->session;
 		}
 
-		function get_user() {
+		function get_user( $user_id = 0 ) {
+			static $users = array();
+			$user = false;
 			if ( !$this->user ) {
 				$this->user = learn_press_get_current_user();
 			}
-			return $this->user;
+			if( $user_id ){
+				if( $user_id == $this->user->id ){
+					$user = $this->user;
+				}else{
+					if( empty( $users[ $user_id ] ) ){
+						$users[ $user_id ] = learn_press_get_user( $user_id );
+						$user = $users[ $user_id ];
+					}
+				}
+			}else {
+				$user = $this->user;
+			}
+			return $user;
 		}
 
 		/**

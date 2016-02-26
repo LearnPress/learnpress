@@ -20,7 +20,7 @@ do_action( 'learn_press_before_single_course' ); ?>
 
 	<div class="course-summary">
 
-		<?php if ( /*learn_press_is_enrolled_course()*/ LP()->user->has( 'enrolled-course', $course->id ) ) { ?>
+		<?php if ( LP()->user->has( 'enrolled-course', $course->id ) || LP()->user->has( 'finished-course', $course->id ) ) { ?>
 
 			<?php learn_press_get_template( 'single-course/content-learning.php' ); ?>
 

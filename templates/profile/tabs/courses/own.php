@@ -14,10 +14,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 if( !user_can( $user->ID, 'edit_lpr_courses' ) ){
 	return;
 }
-
-$heading = apply_filters( 'learn_press_profile_tab_courses_own_heading', __( 'Own Courses', 'learn_press' ) );
-$courses = learn_press_get_own_courses( $user->id );
-
+global $post;
+$heading = apply_filters( 'learn_press_profile_tab_courses_own_heading', false );
 ?>
 
 <?php if ( $heading ): ?>
@@ -26,20 +24,21 @@ $courses = learn_press_get_own_courses( $user->id );
 
 <?php endif; ?>
 
-<?php if ( $courses->have_posts() ) : ?>
+<?php if ( $courses ) : ?>
 
 	<ul class="profile-courses courses-list own">
 
-		<?php while ( $courses->have_posts() ) : $courses->the_post(); ?>
+	<?php foreach( $courses as $post ): ?>
 
-			<?php learn_press_get_template( 'profile/tabs/courses/loop.php' ); ?>
+		<?php learn_press_get_template( 'profile/tabs/courses/loop.php', array( 'subtab' => 'own' ) ); ?>
 
-		<?php endwhile; ?>
+	<?php endforeach; ?>
+
 	</ul>
 
 <?php else: ?>
 
-	<?php learn_press_display_message( __( 'You don\'t have got any published courses yet!', 'learn_press' ) ); ?>
+	<?php learn_press_display_message( __( 'You have not got any published courses yet!', 'learn_press' ) ); ?>
 
 <?php endif ?>
 

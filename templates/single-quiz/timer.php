@@ -13,7 +13,7 @@ if ( !defined( 'ABSPATH' ) ) {
 
 global $quiz;
 
-if( ! $quiz->has( 'questions' ) ){
+if ( !$quiz->has( 'questions' ) ) {
 	return;
 }
 ?>
@@ -22,9 +22,9 @@ if( ! $quiz->has( 'questions' ) ){
 	<p class="quiz-countdown-label">
 		<?php
 		echo apply_filters(
-				'learn_press_quiz_time_label',
-				$quiz->duration > 59 ? sprintf( '%s/%s/%s', __( 'hours', 'learn_press' ), __( 'mins', 'learn_press' ), __( 'secs', 'learn_press' ) ) : sprintf( '%s/%s', __( 'mins', 'learn_press' ), __( 'secs', 'learn_press' ) )
-			);
+			'learn_press_quiz_time_label',
+			$quiz->duration > 59 ? sprintf( '%s/%s/%s', __( 'hours', 'learn_press' ), __( 'mins', 'learn_press' ), __( 'secs', 'learn_press' ) ) : sprintf( '%s/%s', __( 'mins', 'learn_press' ), __( 'secs', 'learn_press' ) )
+		);
 		?>
 	</p>
 </div>

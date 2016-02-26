@@ -35,7 +35,7 @@ $review_order_heading = apply_filters( 'learn_press_checkout_review_order_headin
 		$_course   = learn_press_get_course( $item_id );
 		if ( $_course && $cart_item['quantity'] > 0 ) {
 			?>
-			<tr class="<?php echo esc_attr( apply_filters( 'learn_press_cart_item_class', 'cart-item', $cart_item) ); ?>">
+			<tr class="<?php echo esc_attr( apply_filters( 'learn_press_cart_item_class', 'cart-item', $cart_item ) ); ?>">
 				<td class="course-name">
 					<?php echo apply_filters( 'learn_press_cart_item_name', $_course->get_title(), $cart_item ) . '&nbsp;'; ?>
 					<?php echo apply_filters( 'learn_press_cart_item_quantity', ' <strong class="course-quantity">' . sprintf( '&times; %s', $cart_item['quantity'] ) . '</strong>', $cart_item ); ?>
@@ -46,7 +46,7 @@ $review_order_heading = apply_filters( 'learn_press_checkout_review_order_headin
 			</tr>
 			<?php
 		}
-	}?>
+	} ?>
 
 	<?php do_action( 'learn_press_review_order_after_cart_contents' ); ?>
 

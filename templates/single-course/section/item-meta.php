@@ -1,4 +1,12 @@
 <?php
+/**
+ * @author        ThimPress
+ * @package       LearnPress/Templates
+ * @version       1.0
+ */
+
+defined( 'ABSPATH' ) || exit();
+
 global $course;
 ?>
 <div class="course-item-meta">

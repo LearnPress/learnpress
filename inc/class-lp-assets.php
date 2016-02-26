@@ -88,12 +88,16 @@ class LP_Assets extends LP_Abstract_Assets {
 	 * Load assets for frontend
 	 */
 	static function load_scripts() {
-		$deps = array( 'jquery', 'backbone', 'utils', 'course-lesson' );
+		$deps = array( 'jquery', 'backbone', 'utils', 'course-lesson', 'jalerts' );
+
 		// global
 		self::add_style( 'learn-press-icon', learn_press_plugin_url( 'assets/css/icons.css' ) );
-
 		self::add_script( 'learn-press-global', learn_press_plugin_url( 'assets/js/global.js' ), $deps );
 		//self::add_script( 'learn-press-block-ui', learn_press_plugin_url( 'assets/js/jquery.block-ui.js' ) );
+
+		// jAlerts
+		self::add_style( 'jalerts', learn_press_plugin_url( 'assets/css/icons.css' ) );
+		self::add_script( 'jalerts', learn_press_plugin_url( 'assets/js/jquery.alert.js' )  );
 
 		// admin
 		self::add_style( 'learn-press-admin', learn_press_plugin_url( 'assets/css/admin/admin.css' ) );
