@@ -45,7 +45,7 @@ if ( ! class_exists( 'RWMB_User_Field' ) ) {
 		 */
 		static function normalize_field( $field ) {
 
-			$default_post_type = __( 'User', 'meta-box' );
+			$default_post_type = __( 'User', 'learn_press'/*'meta-box'*/ );
 
 			$field = wp_parse_args( $field, array(
 				'field_type' => 'select_advanced',
@@ -53,7 +53,7 @@ if ( ! class_exists( 'RWMB_User_Field' ) ) {
 				'query_args' => array(),
 			) );
 
-			$field['std'] = empty( $field['std'] ) ? sprintf( __( 'Select a %s', 'meta-box' ), $default_post_type ) : $field['std'];
+			$field['std'] = empty( $field['std'] ) ? sprintf( __( 'Select a %s', 'learn_press'/*'meta-box'*/ ), $default_post_type ) : $field['std'];
 
 			$field['query_args'] = wp_parse_args( $field['query_args'], array(
 				'orderby' => 'display_name',

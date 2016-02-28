@@ -214,7 +214,7 @@ if ( ! class_exists( 'RWMB_Field ' ) ) {
 		 * @return string $html
 		 */
 		static function add_clone_button() {
-			return '<a href="#" class="rwmb-button button-primary add-clone">' . __( '+', 'meta-box' ) . '</a>';
+			return '<a href="#" class="rwmb-button button-primary add-clone">' . __( '+', 'learn_press'/*'meta-box'*/ ) . '</a>';
 		}
 
 		/**
@@ -223,7 +223,7 @@ if ( ! class_exists( 'RWMB_Field ' ) ) {
 		 * @return string $html
 		 */
 		static function remove_clone_button() {
-			return '<a href="#" class="rwmb-button button remove-clone">' . __( '&#8211;', 'meta-box' ) . '</a>';
+			return '<a href="#" class="rwmb-button button remove-clone">' . __( '&#8211;', 'learn_press'/*'meta-box'*/ ) . '</a>';
 		}
 
 		/**
