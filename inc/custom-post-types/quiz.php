@@ -219,7 +219,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 				<div id="lpr-form-quick-add-question" class="lpr-quick-add-form">
 					<input type="text">
 					<select class="lpr-question-types lpr-select2" name="lpr_question[type]" id="lpr-quiz-question-type">
-						<?php if ( $questions = lpr_get_question_types() ): ?>
+						<?php if ( $questions = learn_press_question_types() ): ?>
 							<?php foreach ( $questions as $type => $name ): ?>
 								<option value="<?php echo $type; ?>"><?php echo $name; ?></option>
 							<?php endforeach; ?>

@@ -141,13 +141,13 @@ class LP_Assets extends LP_Abstract_Assets {
 		);
 
 		// single course
-		if ( is_course() ) {
+		if ( learn_press_is_course() ) {
 			self::enqueue_script( 'single-course' );
 			self::enqueue_script( 'learn-press-add-to-cart' );
 		}
 
 		// single quiz
-		if ( is_quiz() ) {
+		if ( learn_press_is_quiz() ) {
 			self::enqueue_script( 'learn-press-timer' );
 			self::enqueue_script( 'single-quiz' );
 		}

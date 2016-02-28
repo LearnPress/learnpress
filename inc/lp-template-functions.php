@@ -726,7 +726,7 @@ if ( !function_exists( 'learn_press_course_lesson_class' ) ) {
 		if ( $lesson_id && LP()->course->is( 'current-item', $lesson_id ) ) {
 			$classes[] = 'item-current';
 		}
-		if ( is_course() ) {
+		if ( learn_press_is_course() ) {
 			$course = LP()->course;
 			if ( $course->is_free() ) {
 				$classes[] = 'free-item';

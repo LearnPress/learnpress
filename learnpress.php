@@ -191,7 +191,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 					break;
 				case 'course':
 					if( empty( $this->_course ) ) {
-						if ( is_course() ) {
+						if ( learn_press_is_course() ) {
 							$this->_course = learn_press_setup_object_data( get_the_ID() );
 						}
 					}
@@ -199,7 +199,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 					break;
 				case 'quiz':
 					if( empty( $this->_quiz ) ) {
-						if ( is_quiz() ) {
+						if ( learn_press_is_quiz() ) {
 							$this->_quiz = learn_press_setup_object_data( get_the_ID() );
 						}
 					}

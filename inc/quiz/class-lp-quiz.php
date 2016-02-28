@@ -98,7 +98,7 @@ class LP_Quiz {
 	}
 
 	function frontend_assets(){
-		if( is_quiz() && get_the_ID() == $this->id ){
+		if( learn_press_is_quiz() && get_the_ID() == $this->id ){
 			$translate = $this->_get_localize();
 			LP_Assets::add_localize( $translate, false, 'single-quiz' );
 			LP_Assets::add_param( $this->_settings(), false, 'single-quiz' );
@@ -130,7 +130,7 @@ class LP_Quiz {
 		$value = null;
 		switch( $key ){
 			case 'current_question':
-				if( ( $question = learn_press_get_request( 'question' ) ) && is_quiz() ){
+				if( ( $question = learn_press_get_request( 'question' ) ) && learn_press_is_quiz() ){
 					$value = LP_Question_Factory::get_question($question );
 				}
 				break;

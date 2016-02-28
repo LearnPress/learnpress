@@ -1875,7 +1875,7 @@ add_action( 'init', 'learn_press_init' );
 }*/
 
 function is_learnpress() {
-	return apply_filters( 'is_learnpress', ( is_course_archive() || is_course_taxonomy() || is_course() || is_quiz() ) ? true : false );
+	return apply_filters( 'is_learnpress', ( is_course_archive() || is_course_taxonomy() || learn_press_is_course() || learn_press_is_quiz() ) ? true : false );
 }
 
 if ( !function_exists( 'is_courses' ) ) {
@@ -2011,19 +2011,6 @@ if ( !function_exists( 'learn_press_is_course_tag' ) ) {
 	}
 }
 
-if ( !function_exists( 'is_course' ) ) {
-
-	/**
-	 * Returns true when viewing a single course.
-	 *
-	 * @return bool
-	 */
-	function is_course() {
-		_deprecated_function( __FUNCTION__, '', 'learn_press_' . __FUNCTION__ );
-		return learn_press_is_course();
-	}
-}
-
 if ( !function_exists( 'learn_press_is_course' ) ) {
 
 	/**
@@ -2035,20 +2022,6 @@ if ( !function_exists( 'learn_press_is_course' ) ) {
 		return is_singular( array( LP()->course_post_type ) );
 	}
 }
-
-if ( !function_exists( 'is_quiz' ) ) {
-
-	/**
-	 * Returns true when viewing a single quiz.
-	 *
-	 * @return bool
-	 */
-	function is_quiz() {
-		_deprecated_function( __FUNCTION__, '', 'learn_press_' . __FUNCTION__ );
-		return learn_press_is_quiz();
-	}
-}
-
 
 if ( !function_exists( 'learn_press_is_quiz' ) ) {
 
