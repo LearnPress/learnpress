@@ -122,7 +122,7 @@ if ( !function_exists( 'learn_press_breadcrumb' ) ) {
 			'wrap_after'  => '</nav>',
 			'before'      => '',
 			'after'       => '',
-			'home'        => _x( 'Home', 'breadcrumb', 'learn_press' )
+			'home'        => _x( 'Home', 'breadcrumb', 'learnpress' )
 		) ) );
 
 		$breadcrumbs = new LP_Breadcrumb();
@@ -577,15 +577,15 @@ if ( !function_exists( 'learn_press_user_profile_tabs' ) ) {
 
 		$defaults = array(
 			$course_endpoint => array(
-				'title'    => __( 'Courses', 'learn_press' ),
+				'title'    => __( 'Courses', 'learnpress' ),
 				'callback' => 'learn_press_profile_tab_courses_content'
 			),
 			$quiz_endpoint   => array(
-				'title'    => __( 'Quiz Results', 'learn_press' ),
+				'title'    => __( 'Quiz Results', 'learnpress' ),
 				'callback' => 'learn_press_profile_tab_quizzes_content'
 			),
 			$order_endpoint  => array(
-				'title'    => __( 'Orders', 'learn_press' ),
+				'title'    => __( 'Orders', 'learnpress' ),
 				'callback' => 'learn_press_profile_tab_orders_content'
 			)
 		);
@@ -931,7 +931,7 @@ if ( !function_exists( 'learn_press_page_controller' ) ) {
 			// prevent loop redirect
 			if ( $redirect && $redirect != learn_press_get_current_url() ) {
 				if( $item_id ) {
-					$error_message = apply_filters( 'learn_press_course_item_access_denied_error_message', sprintf( __( 'Access denied "%s"', 'learn_press' ), get_the_title( $item_id ) ) );
+					$error_message = apply_filters( 'learn_press_course_item_access_denied_error_message', sprintf( __( 'Access denied "%s"', 'learnpress' ), get_the_title( $item_id ) ) );
 					if( $error_message !== false ) {
 						learn_press_add_notice( $error_message, 'error' );
 					}
@@ -957,10 +957,10 @@ if ( !function_exists( 'learn_press_page_title' ) ) {
 	function learn_press_page_title( $echo = true ) {
 
 		if ( is_search() ) {
-			$page_title = sprintf( __( 'Search Results: &ldquo;%s&rdquo;', 'learn_press' ), get_search_query() );
+			$page_title = sprintf( __( 'Search Results: &ldquo;%s&rdquo;', 'learnpress' ), get_search_query() );
 
 			if ( get_query_var( 'paged' ) )
-				$page_title .= sprintf( __( '&nbsp;&ndash; Page %s', 'learn_press' ), get_query_var( 'paged' ) );
+				$page_title .= sprintf( __( '&nbsp;&ndash; Page %s', 'learnpress' ), get_query_var( 'paged' ) );
 
 		} elseif ( is_tax() ) {
 

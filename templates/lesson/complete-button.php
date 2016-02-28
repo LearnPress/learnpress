@@ -24,7 +24,7 @@ if ( !( $lesson = $course->current_lesson ) ) {
 			'<span class="complete-lesson-button completed" data-id="%s" data-nonce="%s" disabled="disabled"><span class="dashicons dashicons-yes"></span>%s</span>',
 				$lesson->id,
 				wp_create_nonce( 'learn-press-complete-lesson-' . $lesson->id ),
-				__( 'Completed', 'learn_press' )
+				__( 'Completed', 'learnpress' )
 		)
 	);
 	?>
@@ -33,7 +33,7 @@ if ( !( $lesson = $course->current_lesson ) ) {
 
 	<?php if ( !LP()->user->has( 'finished-course', $course->id ) && LP()->user->has( 'enrolled-course', $course->id ) ) { ?>
 
-		<button class="complete-lesson-button" data-id="<?php print_r( $lesson->id );?>" data-nonce="<?php echo wp_create_nonce( 'learn-press-complete-lesson-' . $lesson->id );?>"><?php _e( 'Complete Lesson', 'learn_press' );?></button>
+		<button class="complete-lesson-button" data-id="<?php print_r( $lesson->id );?>" data-nonce="<?php echo wp_create_nonce( 'learn-press-complete-lesson-' . $lesson->id );?>"><?php _e( 'Complete Lesson', 'learnpress' );?></button>
 
 	<?php } ?>
 

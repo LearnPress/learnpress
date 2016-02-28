@@ -11,7 +11,7 @@ if ( ! class_exists( 'RWMB_File_Input_Field' ) ) {
 			wp_enqueue_media();
 			wp_enqueue_script( 'rwmb-file-input', RWMB_JS_URL . 'file-input.js', array( 'jquery' ), RWMB_VER, true );
 			wp_localize_script( 'rwmb-file-input', 'rwmbFileInput', array(
-				'frameTitle' => __( 'Select File', 'learn_press'/*'meta-box'*/ ),
+				'frameTitle' => __( 'Select File', 'learnpress'/*'meta-box'*/ ),
 			) );
 		}
 
@@ -33,9 +33,9 @@ if ( ! class_exists( 'RWMB_File_Input_Field' ) ) {
 				$meta,
 				$field['placeholder'],
 				$field['size'],
-				__( 'Select', 'learn_press'/*'meta-box'*/ ),
+				__( 'Select', 'learnpress'/*'meta-box'*/ ),
 				$meta ? '' : 'hidden',
-				__( 'Remove', 'learn_press'/*'meta-box'*/ )
+				__( 'Remove', 'learnpress'/*'meta-box'*/ )
 			);
 		}
 

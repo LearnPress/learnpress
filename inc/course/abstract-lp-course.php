@@ -287,17 +287,17 @@ abstract class LP_Abstract_Course {
 			$course_info = $this->get_course_info( $user_id );
 			if ( $course_info['status'] ):
 				if ( $count == 1 ):
-					$output .= __( 'You enrolled', 'learn_press' );
+					$output .= __( 'You enrolled', 'learnpress' );
 				else:
-					$output .= sprintf( _nx( 'You and one student enrolled', 'You and <span class="course-students-number">%1$s</span> students enrolled', intval( $count - 1 ), '', 'learn_press' ), $count - 1 );
+					$output .= sprintf( _nx( 'You and one student enrolled', 'You and <span class="course-students-number">%1$s</span> students enrolled', intval( $count - 1 ), '', 'learnpress' ), $count - 1 );
 				endif;
 				$output = apply_filters( 'learn_press_students_enrolled_html', $output, $this );
 			else:
-				$output = sprintf( _nx( 'One student enrolled', '<span class="course-students-number">%1$s</span> students enrolled', $count, '', 'learn_press' ), $count );
+				$output = sprintf( _nx( 'One student enrolled', '<span class="course-students-number">%1$s</span> students enrolled', $count, '', 'learnpress' ), $count );
 				$output = apply_filters( 'learn_press_one_student_enrolled_html', $output, $this );
 			endif;
 		else:
-			$output = apply_filters( 'learn_press_no_student_enrolled_html', __( 'No student enrolled', 'learn_press' ), $this );
+			$output = apply_filters( 'learn_press_no_student_enrolled_html', __( 'No student enrolled', 'learnpress' ), $this );
 		endif;
 		return $output;
 	}
@@ -374,7 +374,7 @@ abstract class LP_Abstract_Course {
 	public function get_price_html() {
 
 		if( $this->is_free() ){
-			$price_html = apply_filters( 'learn_press_course_price_html_free', __( 'Free', 'learn_press' ), $this );
+			$price_html = apply_filters( 'learn_press_course_price_html_free', __( 'Free', 'learnpress' ), $this );
 		}else {
 			$price = $this->get_price();
 			$price = learn_press_format_price( $price, true );
@@ -548,7 +548,7 @@ abstract class LP_Abstract_Course {
 		if ( is_callable( $callback ) ) {
 			return call_user_func_array( $callback, $args );
 		} else {
-			throw new Exception( sprintf( __( 'The function %s doesn\'t exists', 'learn_press' ), $tag ) );
+			throw new Exception( sprintf( __( 'The function %s doesn\'t exists', 'learnpress' ), $tag ) );
 		}
 	}
 
@@ -565,7 +565,7 @@ abstract class LP_Abstract_Course {
 		if ( is_callable( $callback ) ) {
 			return call_user_func_array( $callback, $args );
 		} else {
-			throw new Exception( sprintf( __( 'The function %s doesn\'t exists', 'learn_press' ), $tag ) );
+			throw new Exception( sprintf( __( 'The function %s doesn\'t exists', 'learnpress' ), $tag ) );
 		}
 	}
 

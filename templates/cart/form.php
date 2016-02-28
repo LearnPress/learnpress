@@ -27,9 +27,9 @@ $checkout_url = apply_filters( 'learn_press_get_checkout_url', LP()->cart->get_c
 		<thead>
 			<tr>
 				<th class="course-thumbnail"></th>
-				<th class="course-name"><?php _e( 'Course', 'learn_press' ); ?></th>
-				<th class="course-price"><?php _e( 'Price', 'learn_press' ); ?></th>
-				<th class="course-total"><?php _e( 'Total', 'learn_press' ); ?></th>
+				<th class="course-name"><?php _e( 'Course', 'learnpress' ); ?></th>
+				<th class="course-price"><?php _e( 'Price', 'learnpress' ); ?></th>
+				<th class="course-total"><?php _e( 'Total', 'learnpress' ); ?></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -69,9 +69,9 @@ $checkout_url = apply_filters( 'learn_press_get_checkout_url', LP()->cart->get_c
 						echo apply_filters( 'learn_press_cart_item_remove_link', sprintf(
 							'<a href="%s" class="remove" title="%s" data-course_id="%s">%s</a>',
 							esc_url( add_query_arg( 'remove-cart-item', $_course_id ) ),
-							__( 'Remove this course', 'learn_press' ),
+							__( 'Remove this course', 'learnpress' ),
 							esc_attr( $_course_id ),
-							__( 'Remove', 'learn_press' )
+							__( 'Remove', 'learnpress' )
 						), $cart_item );
 						?>
 					</td>
@@ -95,17 +95,17 @@ $checkout_url = apply_filters( 'learn_press_get_checkout_url', LP()->cart->get_c
 		do_action( 'learn_press_cart_contents' );
 		?>
 		<tr>
-			<td colspan="3"><?php _e( 'Subtotal', 'learn_press' );?></td>
+			<td colspan="3"><?php _e( 'Subtotal', 'learnpress' );?></td>
 			<td><?php echo $cart->get_subtotal();?></td>
 		</tr>
 		<tr>
-			<td colspan="3"><?php _e( 'Total', 'learn_press' );?></td>
+			<td colspan="3"><?php _e( 'Total', 'learnpress' );?></td>
 			<td><?php echo $cart->get_total();?></td>
 		</tr>
 		<?php do_action( 'learn_press_after_cart_contents' ); ?>
 		</tbody>
 	</table>
-	<button class="checkout-button"><?php _e( 'Checkout', 'learn_press' );?></button>
+	<button class="checkout-button"><?php _e( 'Checkout', 'learnpress' );?></button>
 	<?php do_action( 'learn_press_after_cart_table' ); ?>
 </form>
 

@@ -13,7 +13,7 @@ class LP_Settings_General extends LP_Settings_Base {
 	 */
 	function __construct() {
 		$this->id   = 'general';
-		$this->text = __( 'General', 'learn_press' );
+		$this->text = __( 'General', 'learnpress' );
 		//add_action( 'learn_press_settings_general', array( $this, 'output' ) );
 		//add_action( 'learn_press_settings_save_general', array( $this, 'save' ) );
 		parent::__construct();
@@ -29,60 +29,60 @@ class LP_Settings_General extends LP_Settings_Base {
 			'learn_press_general_settings',
 			array(
 				array(
-					'title'   => __( 'Instructors registration', 'learn_press' ),
-					'desc'    => __( 'Create option for instructors registration.', 'learn_press' ),
+					'title'   => __( 'Instructors registration', 'learnpress' ),
+					'desc'    => __( 'Create option for instructors registration.', 'learnpress' ),
 					'id'      => $this->get_field_name( 'instructor_registration' ),
 					'default' => 'no',
 					'type'    => 'checkbox'
 				),
 				array(
-					'title'   => __( 'Auto update post name', 'learn_press' ),
-					'desc'    => __( 'The post\'s name will update along with the title when changes title of lesson or quiz  in course curriculum or question in quiz<br />The permalink also is changed, therefore uncheck this if you don\'t want to change the permalink', 'learn_press' ),
+					'title'   => __( 'Auto update post name', 'learnpress' ),
+					'desc'    => __( 'The post\'s name will update along with the title when changes title of lesson or quiz  in course curriculum or question in quiz<br />The permalink also is changed, therefore uncheck this if you don\'t want to change the permalink', 'learnpress' ),
 					'id'      => $this->get_field_name( 'auto_update_post_name' ),
 					'default' => 'no',
 					'type'    => 'checkbox'
 				),
 				array(
-					'title'   => __( 'Currency', 'learn_press' ),
+					'title'   => __( 'Currency', 'learnpress' ),
 					'id'      => $this->get_field_name( 'currency' ),
 					'default' => 'USD',
 					'type'    => 'select',
 					'options' => $this->_get_currency_options()
 				),
 				array(
-					'title'   => __( 'Currency position', 'learn_press' ),
+					'title'   => __( 'Currency position', 'learnpress' ),
 					'id'      => $this->get_field_name( 'currency_pos' ),
 					'default' => 'left',
 					'type'    => 'select',
 					'options' => $this->_get_currency_positions()
 				),
 				array(
-					'title'   => __( 'Thousands Separator', 'learn_press' ),
+					'title'   => __( 'Thousands Separator', 'learnpress' ),
 					'id'      => $this->get_field_name( 'thousands_separator' ),
 					'default' => ',',
 					'type'    => 'text',
 					'options' => $this->_get_currency_positions()
 				),
 				array(
-					'title'   => __( 'Decimals Separator', 'learn_press' ),
+					'title'   => __( 'Decimals Separator', 'learnpress' ),
 					'id'      => $this->get_field_name( 'decimals_separator' ),
 					'default' => '.',
 					'type'    => 'text',
 					'options' => $this->_get_currency_positions()
 				),
 				array(
-					'title'   => __( 'Number of Decimals', 'learn_press' ),
+					'title'   => __( 'Number of Decimals', 'learnpress' ),
 					'id'      => $this->get_field_name( 'number_of_decimals' ),
 					'default' => '2',
 					'type'    => 'text',
 					'options' => $this->_get_currency_positions()
 				),
 				array(
-					'title'   => __( 'Debug mode', 'learn_press' ),
+					'title'   => __( 'Debug mode', 'learnpress' ),
 					'id'      => $this->get_field_name( 'debug' ),
 					'default' => 'yes',
 					'type'    => 'checkbox',
-					'desc'    => __( 'Turn on/off debug mode for developer', 'learn_press' )
+					'desc'    => __( 'Turn on/off debug mode for developer', 'learnpress' )
 				)
 			)
 		);

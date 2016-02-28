@@ -96,7 +96,7 @@ switch ( $options['type'] ) {
 
 		if ( has_filter( 'learn_press_get_image_size_' . $image_size ) ) {
 			$disabled_attr    = 'disabled="disabled"';
-			$disabled_message = "<p><small>" . __( 'The settings of this image size have been disabled because its values are being overwritten by a filter.', 'learn_press' ) . "</small></p>";
+			$disabled_message = "<p><small>" . __( 'The settings of this image size have been disabled because its values are being overwritten by a filter.', 'learnpress' ) . "</small></p>";
 		}
 
 		?>
@@ -108,7 +108,7 @@ switch ( $options['type'] ) {
 			<input name="<?php echo esc_attr( $options['id'] ); ?>[width]" <?php echo $disabled_attr; ?> id="<?php echo esc_attr( $options['id'] ); ?>-width" type="text" size="3" value="<?php echo $width; ?>" /> &times;
 			<input name="<?php echo esc_attr( $options['id'] ); ?>[height]" <?php echo $disabled_attr; ?> id="<?php echo esc_attr( $options['id'] ); ?>-height" type="text" size="3" value="<?php echo $height; ?>" />px
 
-			<label><input name="<?php echo esc_attr( $options['id'] ); ?>[crop]" <?php echo $disabled_attr; ?> id="<?php echo esc_attr( $options['id'] ); ?>-crop" type="checkbox" value="1" <?php checked( 1, $crop ); ?> /> <?php _e( 'Hard Crop?', 'learn_press' ); ?>
+			<label><input name="<?php echo esc_attr( $options['id'] ); ?>[crop]" <?php echo $disabled_attr; ?> id="<?php echo esc_attr( $options['id'] ); ?>-crop" type="checkbox" value="1" <?php checked( 1, $crop ); ?> /> <?php _e( 'Hard Crop?', 'learnpress' ); ?>
 			</label>
 
 		</td>

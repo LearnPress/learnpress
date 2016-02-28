@@ -7,7 +7,7 @@ defined( 'ABSPATH' ) || exit();
 <script type="text/html" id="tmpl-form-quick-add-lesson-link">
 	<div id="form-quick-add-lesson-link" class="lpr-dynamic-form">
 		<select name="">
-			<option value=""><?php _e( '--Select a Lesson--', 'learn_press' ); ?></option>
+			<option value=""><?php _e( '--Select a Lesson--', 'learnpress' ); ?></option>
 			<?php
 			global $post;
 			$query_args = array(

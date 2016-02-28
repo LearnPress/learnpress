@@ -47,12 +47,12 @@ class LP_Question_True_Or_False extends LP_Abstract_Question {
 				array(
 					'is_true' => 'yes',
 					'value'   => 'true',
-					'text'    => __( 'True', 'learn_press' )
+					'text'    => __( 'True', 'learnpress' )
 				),
 				array(
 					'is_true' => 'no',
 					'value'   => 'false',
-					'text'    => __( 'False', 'learn_press' )
+					'text'    => __( 'False', 'learnpress' )
 				)
 			);
 		}

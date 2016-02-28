@@ -12,11 +12,11 @@
 
 <table class="table-orders">
 	<thead>
-		<th><?php _e( 'Order', 'learn_press' );?></th>
-		<th><?php _e( 'Date', 'learn_press' );?></th>
-		<th><?php _e( 'Status', 'learn_press' );?></th>
-		<th><?php _e( 'Total', 'learn_press' );?></th>
-		<th><?php _e( 'Action', 'learn_press' );?></th>
+		<th><?php _e( 'Order', 'learnpress' );?></th>
+		<th><?php _e( 'Date', 'learnpress' );?></th>
+		<th><?php _e( 'Status', 'learnpress' );?></th>
+		<th><?php _e( 'Total', 'learnpress' );?></th>
+		<th><?php _e( 'Action', 'learnpress' );?></th>
 	</thead>
 	<tbody>
 	<?php foreach( $orders as $order ): $order = learn_press_get_order( $order );?>
@@ -29,7 +29,7 @@
 				<?php
 				$actions['view'] = array(
 					'url'  => $order->get_view_order_url(),
-					'text' => __( 'View', 'learn_press' )
+					'text' => __( 'View', 'learnpress' )
 				);
 				$actions = apply_filters( 'learn_press_user_profile_order_actions', $actions, $order );
 
@@ -44,5 +44,5 @@
 </table>
 
 <?php else: ?>
-	<?php learn_press_display_message( __( 'You have not got any orders yet!', 'learn_press' ) ); ?>
+	<?php learn_press_display_message( __( 'You have not got any orders yet!', 'learnpress' ) ); ?>
 <?php endif; ?>

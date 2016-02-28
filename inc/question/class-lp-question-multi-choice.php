@@ -58,17 +58,17 @@ class LP_Question_Multi_Choice extends LP_Abstract_Question {
 				array(
 					'is_true' => 'yes',
 					'value'   => 'option_first',
-					'text'    => __( 'Option First', 'learn_press' )
+					'text'    => __( 'Option First', 'learnpress' )
 				),
 				array(
 					'is_true' => 'no',
 					'value'   => 'option_seconds',
-					'text'    => __( 'Option Seconds', 'learn_press' )
+					'text'    => __( 'Option Seconds', 'learnpress' )
 				),
 				array(
 					'is_true' => 'no',
 					'value'   => 'option_third',
-					'text'    => __( 'Option Third', 'learn_press' )
+					'text'    => __( 'Option Third', 'learnpress' )
 				)
 			);
 		}
@@ -107,8 +107,8 @@ class LP_Question_Multi_Choice extends LP_Abstract_Question {
 		<table class="lpr-question-option lpr-question-answer lpr-sortable">
 			<thead>
 			<th width="20"></th>
-			<th><?php _e( 'Is Correct?', 'learn_press' ); ?></th>
-			<th><?php _e( 'Answer Text', 'learn_press' ); ?></th>
+			<th><?php _e( 'Is Correct?', 'learnpress' ); ?></th>
+			<th><?php _e( 'Answer Text', 'learnpress' ); ?></th>
 			<th class="lpr-remove-answer" width="40"></th>
 			</thead>
 			<tbody>
@@ -123,7 +123,7 @@ class LP_Question_Multi_Choice extends LP_Abstract_Question {
 
 					</td>
 					<td>
-						<input type="text" class="lpr-answer-text" name="lpr_question[<?php echo $post_id; ?>][answer][text][__INDEX__<?php echo $i; ?>]" value="<?php echo esc_attr( $this->get( 'options.answer.' . $i . '.text', __( '', 'learn_press' ) ) ); ?>" />
+						<input type="text" class="lpr-answer-text" name="lpr_question[<?php echo $post_id; ?>][answer][text][__INDEX__<?php echo $i; ?>]" value="<?php echo esc_attr( $this->get( 'options.answer.' . $i . '.text', __( '', 'learnpress' ) ) ); ?>" />
 					</td>
 					<td align="center" class="lpr-remove-answer"><i class="dashicons dashicons-trash"></td>
 				</tr>
@@ -147,7 +147,7 @@ class LP_Question_Multi_Choice extends LP_Abstract_Question {
 		</table>
 		<input type="hidden" name="lpr_question[<?php echo $post_id; ?>][type]" value="<?php echo $this->get_type(); ?>">
 		<p>
-			<button type="button" class="button lpr-button-add-answer"><?php _e( 'Add answer', 'learn_press' ); ?></button>
+			<button type="button" class="button lpr-button-add-answer"><?php _e( 'Add answer', 'learnpress' ); ?></button>
 		</p>
 
 		<?php
@@ -177,7 +177,7 @@ class LP_Question_Multi_Choice extends LP_Abstract_Question {
 
 						if (0 == $input.length) {
 							var message = $('.lpr-question-title input', $question).val();
-							message += ": " + '<?php _e( 'No answer added to question or you must select at least one the answer is correct!', 'learn_press' );?>';
+							message += ": " + '<?php _e( 'No answer added to question or you must select at least one the answer is correct!', 'learnpress' );?>';
 							window.learn_press_before_update_quiz_message.push(message);
 
 							return false;

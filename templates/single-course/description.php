@@ -17,7 +17,7 @@ if( $course->is( 'viewing' ) != 'course' ){
 	return;
 }
 
-$description_heading = apply_filters( 'learn_press_single_course_description_heading', __( 'Course Description', 'learn_press' ), $course );
+$description_heading = apply_filters( 'learn_press_single_course_description_heading', __( 'Course Description', 'learnpress' ), $course );
 ?>
 
 <?php if( $description_heading ){ ?>

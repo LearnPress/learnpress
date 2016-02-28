@@ -28,7 +28,7 @@ if ( ! class_exists( 'RWMB_Button_Field' ) ) {
 		 * @return array
 		 */
 		static function normalize_field( $field ) {
-			$field['std'] = $field['std'] ? $field['std'] : __( 'Click me', 'learn_press'/*'meta-box'*/ );
+			$field['std'] = $field['std'] ? $field['std'] : __( 'Click me', 'learnpress'/*'meta-box'*/ );
 
 			return $field;
 		}

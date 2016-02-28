@@ -118,7 +118,7 @@ function learn_press_course_post_type_link( $permalink, $post ) {
 		}
 	} else {
 		// If no terms are assigned to this post, use a string instead (can't leave the placeholder there)
-		$course_category = _x( 'uncategorized', 'slug', 'learn_press' );
+		$course_category = _x( 'uncategorized', 'slug', 'learnpress' );
 	}
 
 	$find = array(
@@ -162,7 +162,7 @@ add_filter( 'post_type_link', 'learn_press_course_post_type_link', 10, 2 );
 function learn_press_get_final_quiz( $course_id ){
 	$course = LP_Course::get_course( $course_id );
 	if( ! $course ){
-		throw new Exception( sprintf( __( 'The course %d does not exists', 'learn_press' ), $course_id ) );
+		throw new Exception( sprintf( __( 'The course %d does not exists', 'learnpress' ), $course_id ) );
 	}
 	$course_items = $course->get_curriculum_items();
 	$final = false;

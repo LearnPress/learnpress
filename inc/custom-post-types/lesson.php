@@ -68,18 +68,18 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 			register_post_type( LP_LESSON_CPT,
 				array(
 					'labels'             => array(
-						'name'               => __( 'Lessons', 'learn_press' ),
-						'menu_name'          => __( 'Lessons', 'learn_press' ),
-						'singular_name'      => __( 'Lesson', 'learn_press' ),
-						'add_new_item'       => __( 'Add New Lesson', 'learn_press' ),
-						'all_items'          => __( 'Lessons', 'learn_press' ),
-						'view_item'          => __( 'View Lesson', 'learn_press' ),
-						'add_new'            => __( 'Add New', 'learn_press' ),
-						'edit_item'          => __( 'Edit Lesson', 'learn_press' ),
-						'update_item'        => __( 'Update Lesson', 'learn_press' ),
-						'search_items'       => __( 'Search Lessons', 'learn_press' ),
-						'not_found'          => __( 'No lesson found', 'learn_press' ),
-						'not_found_in_trash' => __( 'No lesson found in Trash', 'learn_press' ),
+						'name'               => __( 'Lessons', 'learnpress' ),
+						'menu_name'          => __( 'Lessons', 'learnpress' ),
+						'singular_name'      => __( 'Lesson', 'learnpress' ),
+						'add_new_item'       => __( 'Add New Lesson', 'learnpress' ),
+						'all_items'          => __( 'Lessons', 'learnpress' ),
+						'view_item'          => __( 'View Lesson', 'learnpress' ),
+						'add_new'            => __( 'Add New', 'learnpress' ),
+						'edit_item'          => __( 'Edit Lesson', 'learnpress' ),
+						'update_item'        => __( 'Update Lesson', 'learnpress' ),
+						'search_items'       => __( 'Search Lessons', 'learnpress' ),
+						'not_found'          => __( 'No lesson found', 'learnpress' ),
+						'not_found_in_trash' => __( 'No lesson found in Trash', 'learnpress' ),
 					),
 					'public'             => false, // no access directly via lesson permalink url
 					'taxonomies'         => array( 'lesson-tag' ),
@@ -108,11 +108,11 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 			register_taxonomy( 'lesson-tag', array( LP_LESSON_CPT ),
 				array(
 					'labels'            => array(
-						'name'          => __( 'Tag', 'learn_press' ),
-						'menu_name'     => __( 'Tag', 'learn_press' ),
-						'singular_name' => __( 'Tag', 'learn_press' ),
-						'add_new_item'  => __( 'Add New Tag', 'learn_press' ),
-						'all_items'     => __( 'All Tags', 'learn_press' )
+						'name'          => __( 'Tag', 'learnpress' ),
+						'menu_name'     => __( 'Tag', 'learnpress' ),
+						'singular_name' => __( 'Tag', 'learnpress' ),
+						'add_new_item'  => __( 'Add New Tag', 'learnpress' ),
+						'all_items'     => __( 'All Tags', 'learnpress' )
 					),
 					'public'            => true,
 					'hierarchical'      => false,
@@ -128,24 +128,24 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 			$prefix     = '_lp_';
 			$meta_boxes = array(
 				'id'     => 'lesson_settings',
-				'title'  => __('Lesson Settings', 'learn_press'),
+				'title'  => __( 'Lesson Settings', 'learnpress' ),
 				'pages'  => array( LP_LESSON_CPT ),
 				'fields' => array(
 					array(
-						'name' => __( 'Lesson Duration', 'learn_press' ),
+						'name' => __( 'Lesson Duration', 'learnpress' ),
 						'id'   => "{$prefix}duration",
 						'type' => 'number',
-						'desc' => __( 'The length of the lesson (in minutes)', 'learn_press' ),
+						'desc' => __( 'The length of the lesson (in minutes)', 'learnpress' ),
 						'std'  => 30,
 					),
 					array(
-						'name'    => __( 'Preview Lesson', 'learn_press' ),
+						'name'    => __( 'Preview Lesson', 'learnpress' ),
 						'id'      => "{$prefix}is_previewable",
 						'type'    => 'radio',
-						'desc'    => __( 'If this is a preview lesson, then student can view this lesson content without taking the course', 'learn_press' ),
+						'desc'    => __( 'If this is a preview lesson, then student can view this lesson content without taking the course', 'learnpress' ),
 						'options' => array(
-							'yes'     => __( 'Yes', 'learn_press' ),
-							'no' => __( 'No', 'learn_press' ),
+							'yes'     => __( 'Yes', 'learnpress' ),
+							'no' => __( 'No', 'learnpress' ),
 						),
 						'std'     => 'no'
 					)
@@ -168,7 +168,7 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 					var $title = $('#title'),
 						is_error = false;
 					if (0 == $title.val().length) {
-						alert('<?php _e( 'Please enter the title of the lesson', 'learn_press' );?>');
+						alert('<?php _e( 'Please enter the title of the lesson', 'learnpress' );?>');
 						$title.focus();
 						is_error = true;
 					}
@@ -197,12 +197,12 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 			// append new column after title column
 			$pos = array_search( 'title', array_keys( $columns ) );
 			$new_columns = array(
-				LP()->course_post_type => __( 'Course', 'learn_press' )
+				LP()->course_post_type => __( 'Course', 'learnpress' )
 			);
 			if( current_theme_supports( 'post-formats' ) ){
-				$new_columns['format'] = __( 'Format', 'learn_press' );
+				$new_columns['format'] = __( 'Format', 'learnpress' );
 			}
-			$new_columns['is_previewable'] = __( 'Preview', 'learn_press' );
+			$new_columns['is_previewable'] = __( 'Preview', 'learnpress' );
 			if ( false !== $pos && !array_key_exists( LP()->course_post_type, $columns ) ) {
 				$columns = array_merge(
 					array_slice( $columns, 0, $pos + 1 ),
@@ -235,20 +235,20 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 						foreach( $courses as $course ) {
 							echo '<div><a href="' . esc_url( add_query_arg( array('filter_course' => $course->ID) ) ) . '">' . get_the_title( $course->ID ) . '</a>';
 							echo '<div class="row-actions">';
-							printf( '<a href="%s">%s</a>', admin_url( sprintf( 'post.php?post=%d&action=edit', $course->ID ) ), __( 'Edit', 'learn_press' ) );
+							printf( '<a href="%s">%s</a>', admin_url( sprintf( 'post.php?post=%d&action=edit', $course->ID ) ), __( 'Edit', 'learnpress' ) );
 							echo "&nbsp;|&nbsp;";
-							printf( '<a href="%s">%s</a>', get_the_permalink( $course->ID ), __( 'View', 'learn_press' ) );
+							printf( '<a href="%s">%s</a>', get_the_permalink( $course->ID ), __( 'View', 'learnpress' ) );
 							echo "&nbsp;|&nbsp;";
 							if( $course_id = learn_press_get_request( 'filter_course') ) {
-								printf( '<a href="%s">%s</a>', remove_query_arg( 'filter_course' ), __( 'Remove Filter', 'learn_press' ) );
+								printf( '<a href="%s">%s</a>', remove_query_arg( 'filter_course' ), __( 'Remove Filter', 'learnpress' ) );
 							} else {
-								printf( '<a href="%s">%s</a>', add_query_arg( 'filter_course', $course->ID ), __( 'Filter', 'learn_press' ) );
+								printf( '<a href="%s">%s</a>', add_query_arg( 'filter_course', $course->ID ), __( 'Filter', 'learnpress' ) );
 							}
 							echo '</div></div>';
 						}
 
 					} else {
-						_e( 'Not assigned yet', 'learn_press' );
+						_e( 'Not assigned yet', 'learnpress' );
 					}
 
 
@@ -262,7 +262,7 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 					);
 					break;
 				case 'format':
-					learn_press_item_meta_format( $post_id, __( 'Standard', 'learn_press' ) );
+					learn_press_item_meta_format( $post_id, __( 'Standard', 'learnpress' ) );
 			}
 		}
 

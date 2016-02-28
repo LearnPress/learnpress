@@ -11,10 +11,10 @@ if ( !defined( 'ABSPATH' ) ) {
 ?>
 
 <?php echo "= " . $email_heading . " =\n\n";?>
-<?php printf( __( 'You have been finished course "%s" (%s).', 'learn_press' ), get_the_title( $course_id ), get_the_permalink( $course_id ) ); echo "\n\n"; ?>
-<?php printf( __( 'Please login %s and view your course results.', 'learn_press' ), $login_url ); echo "\n\n"; ?>
-<?php printf( __( 'Best regards,', 'learn_press' ) ); echo "\n\n"; ?></p>
-<?php printf( __( 'Administration', 'learn_press' ) ); echo "\n\n"; ?></p>
+<?php printf( __( 'You have been finished course "%s" (%s).', 'learnpress' ), get_the_title( $course_id ), get_the_permalink( $course_id ) ); echo "\n\n"; ?>
+<?php printf( __( 'Please login %s and view your course results.', 'learnpress' ), $login_url ); echo "\n\n"; ?>
+<?php printf( __( 'Best regards,', 'learnpress' ) ); echo "\n\n"; ?></p>
+<?php printf( __( 'Administration', 'learnpress' ) ); echo "\n\n"; ?></p>
 <?php echo $footer_text . "\n\n";?>
 
 

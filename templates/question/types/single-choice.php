@@ -48,7 +48,7 @@ global $quiz;
 		?>
 
 		<div id="question-hint" class="question-hint-wrap">
-			<h5 class="question-hint-title"><?php _e( 'Question hint', 'learn_press' ); ?></h5>
+			<h5 class="question-hint-title"><?php _e( 'Question hint', 'learnpress' ); ?></h5>
 
 			<div class="question-hint-content">
 				<p><?php echo apply_filters( 'the_content', $question_content ); ?></p>

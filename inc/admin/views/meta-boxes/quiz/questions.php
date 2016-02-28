@@ -12,10 +12,10 @@ $hidden_all = sizeof( $hidden ) && ( sizeof( array_diff( $hidden, $question_ids 
 ?>
 <div id="learn-press-quiz-questions-wrap">
 	<h3 class="quiz-questions-heading">
-		<?php _e( 'Questions', 'learn_press' ); ?>
+		<?php _e( 'Questions', 'learnpress' ); ?>
 		<p align="right" class="questions-toggle">
-			<a href="" data-action="expand" class="dashicons dashicons-plus <?php echo $hidden_all ? '' : ' hide-if-js';?>" title="<?php _e( 'Expand All', 'learn_press' ); ?>"></a>
-			<a href="" data-action="collapse" class="dashicons dashicons-minus <?php echo !$hidden_all ? '' : ' hide-if-js';?>" title="<?php _e( 'Collapse All', 'learn_press' ); ?>"></a>
+			<a href="" data-action="expand" class="dashicons dashicons-plus <?php echo $hidden_all ? '' : ' hide-if-js';?>" title="<?php _e( 'Expand All', 'learnpress' ); ?>"></a>
+			<a href="" data-action="collapse" class="dashicons dashicons-minus <?php echo !$hidden_all ? '' : ' hide-if-js';?>" title="<?php _e( 'Collapse All', 'learnpress' ); ?>"></a>
 		</p>
 	</h3>
 
@@ -31,9 +31,9 @@ $hidden_all = sizeof( $hidden ) && ( sizeof( array_diff( $hidden, $question_ids 
 			<?php $exclude_ids = array_keys( $questions ); endif; ?>
 	</div>
 	<div class="question-actions">
-		<input type="text" class="regular-text no-submit" name="lp-new-question-name" placeholder="<?php _e( 'The name of new question and hit enter', 'learn_press' );?>" />
+		<input type="text" class="regular-text no-submit" name="lp-new-question-name" placeholder="<?php _e( 'The name of new question and hit enter', 'learnpress' );?>" />
 		<div class="button lp-button-dropdown lp-button-add-question disabled">
-			<span class="lp-dropdown-label lp-add-new-item"><?php _e( 'Add New', 'learn_press' );?></span>
+			<span class="lp-dropdown-label lp-add-new-item"><?php _e( 'Add New', 'learnpress' );?></span>
 			<span class="lp-dropdown-arrow">+</span>
 			<ul class="lp-dropdown-items">
 				<?php foreach( learn_press_question_types() as $slug => $name ){?>
@@ -44,7 +44,7 @@ $hidden_all = sizeof( $hidden ) && ( sizeof( array_diff( $hidden, $question_ids 
 			</ul>
 		</div>
 		-OR-
-		<button id="learn-press-button-add-question" class="button" type="button"><?php _e( 'Add Existing Question', 'learn_press' ); ?></button>
+		<button id="learn-press-button-add-question" class="button" type="button"><?php _e( 'Add Existing Question', 'learnpress' ); ?></button>
 	</div>
 	<!--
 	<div class="question-actions">
@@ -73,18 +73,18 @@ $hidden_all = sizeof( $hidden ) && ( sizeof( array_diff( $hidden, $question_ids 
 				?>
 			</ul>
 		</div>
-		<button id="learn-press-button-new-question" class="button" type="button"><?php _e( 'New Question', 'learn_press' ); ?></button>
-		<button id="learn-press-button-add-question" class="button" type="button"><?php _e( 'Add Existing Question', 'learn_press' ); ?></button>
+		<button id="learn-press-button-new-question" class="button" type="button"><?php _e( 'New Question', 'learnpress' ); ?></button>
+		<button id="learn-press-button-add-question" class="button" type="button"><?php _e( 'Add Existing Question', 'learnpress' ); ?></button>
 	</div>
 	<br />
 	-->
 	<?php /*
 
 		<div class="btn-group" id="learn-press-add-new-question">
-			<button type="button" class="btn btn-default" data-type="single_choice"><?php _e( 'Add new Question', 'learn_press' ); ?></button>
+			<button type="button" class="btn btn-default" data-type="single_choice"><?php _e( 'Add new Question', 'learnpress' ); ?></button>
 			<button type="button" class="btn btn-default dropdown-toggle">
 				<span class="caret"></span>
-				<span class="sr-only"><?php _e( 'Toggle Dropdown', 'learn_press' ); ?></span>
+				<span class="sr-only"><?php _e( 'Toggle Dropdown', 'learnpress' ); ?></span>
 			</button>
 			<ul class="dropdown-menu" role="menu">
 				<?php if ( $question_types ): ?>
@@ -94,9 +94,9 @@ $hidden_all = sizeof( $hidden ) && ( sizeof( array_diff( $hidden, $question_ids 
 				<?php endif; ?>
 			</ul>
 		</div>
-		<?php _e( '-Or-', 'learn_press' ); ?>
+		<?php _e( '-Or-', 'learnpress' ); ?>
 		<select class="lpr-select2" name="" id="lpr-quiz-question-select-existing" style="width:300px">
-			<option value=""><?php _e( '--Select existing question--', 'learn_press' ); ?></option>
+			<option value=""><?php _e( '--Select existing question--', 'learnpress' ); ?></option>
 			<?php
 
 			$query_args = array(

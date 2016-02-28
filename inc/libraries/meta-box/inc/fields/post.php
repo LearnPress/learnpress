@@ -43,7 +43,7 @@ if ( ! class_exists( 'RWMB_Post_Field' ) ) {
 		 * @return array
 		 */
 		static function normalize_field( $field ) {
-			$default_post_type = __( 'Post', 'learn_press'/*'meta-box'*/ );
+			$default_post_type = __( 'Post', 'learnpress'/*'meta-box'*/ );
 			if ( is_string( $field['post_type'] ) && get_post_type_object( $field['post_type'] ) ) {
 				$post_type_object  = get_post_type_object( $field['post_type'] );
 				$default_post_type = $post_type_object->labels->singular_name;
@@ -56,7 +56,7 @@ if ( ! class_exists( 'RWMB_Post_Field' ) ) {
 				'query_args' => array(),
 			) );
 
-			$field['std'] = empty( $field['std'] ) ? sprintf( __( 'Select a %s', 'learn_press'/*'meta-box'*/ ), $default_post_type ) : $field['std'];
+			$field['std'] = empty( $field['std'] ) ? sprintf( __( 'Select a %s', 'learnpress'/*'meta-box'*/ ), $default_post_type ) : $field['std'];
 
 			if ( $field['parent'] ) {
 				$field['multiple']   = false;

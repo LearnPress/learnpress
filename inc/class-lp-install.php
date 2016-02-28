@@ -74,16 +74,16 @@ class LP_Install {
 				LP_Admin_Assets::enqueue_style( 'learn-press-upgrade', LP()->plugin_url( 'inc/updates/1.0/style.css' ) );
 				LP_Admin_Assets::enqueue_script( 'learn-press-upgrade', LP()->plugin_url( 'inc/updates/1.0/script.js' ) );
 				$upgrade_url = wp_nonce_url( admin_url( 'options-general.php?page=learn_press_upgrade_10' ), 'learn-press-upgrade' );
-				$message     = sprintf( '<p>%s</p>', __( 'It seem to be you have updated LearnPress from old version and there are some courses or data is out of date and need to upgrade.', 'learn_press' ) );
-				$message .= sprintf( '<div id="learn-press-confirm-abort-upgrade-course"><p><label><input type="checkbox" id="learn-press-ask-again-abort-upgrade" /> %s</label></p><p><button href="" class="button disabled" data-action="yes">%s</button> <button href="" class="button" data-action="no">%s</button> </p></div>', __( 'Do not ask again.', 'learn_press' ), __( 'Ok', 'learn_press' ), __( 'Cancel', 'learn_press' ) );
-				$message .= sprintf( '<p id="learn-press-upgrade-course-actions"><a href="%s" class="button" data-action="upgrade">%s</a>&nbsp;<button class="button disabled" data-action="abort">%s</button></p>', $upgrade_url, __( 'Upgrade now', 'learn_press' ), __( 'No, thank!', 'learn_press' ) );
+				$message     = sprintf( '<p>%s</p>', __( 'It seem to be you have updated LearnPress from old version and there are some courses or data is out of date and need to upgrade.', 'learnpress' ) );
+				$message .= sprintf( '<div id="learn-press-confirm-abort-upgrade-course"><p><label><input type="checkbox" id="learn-press-ask-again-abort-upgrade" /> %s</label></p><p><button href="" class="button disabled" data-action="yes">%s</button> <button href="" class="button" data-action="no">%s</button> </p></div>', __( 'Do not ask again.', 'learnpress' ), __( 'Ok', 'learnpress' ), __( 'Cancel', 'learnpress' ) );
+				$message .= sprintf( '<p id="learn-press-upgrade-course-actions"><a href="%s" class="button" data-action="upgrade">%s</a>&nbsp;<button class="button disabled" data-action="abort">%s</button></p>', $upgrade_url, __( 'Upgrade now', 'learnpress' ), __( 'No, thank!', 'learnpress' ) );
 
 				LP_Admin_Notice::add( $message, 'error' );
 			}
 
 			// Notify for instructor
 			if( learn_press_current_user_is( 'instructor' ) ){
-				LP_Admin_Notice::add( sprintf( '<p>%s</p>', __( 'LearnPress has upgraded and need to upgrade the database before you can work with it. Please notify the site administrator.', 'learn_press' ) ), 'error' );
+				LP_Admin_Notice::add( sprintf( '<p>%s</p>', __( 'LearnPress has upgraded and need to upgrade the database before you can work with it. Please notify the site administrator.', 'learnpress' ) ), 'error' );
 			}
 		}
 	}
@@ -99,7 +99,7 @@ class LP_Install {
 			$expiration = 0;
 		}
 		set_transient( 'learn_press_upgrade_courses_ask_again', $ask_again, $expiration );
-		learn_press_send_json( array( 'result' => 'success', 'message' => sprintf( '<p>%s</p>', __( 'Thank for using LearnPress', 'learn_press' ) ) ) );
+		learn_press_send_json( array( 'result' => 'success', 'message' => sprintf( '<p>%s</p>', __( 'Thank for using LearnPress', 'learnpress' ) ) ) );
 	}
 
 	static function upgrade_wizard(){
@@ -155,7 +155,7 @@ class LP_Install {
 	 */
 	static function db_update_notices() {
 		if ( get_option( 'learnpress_db_version' ) != LP()->db_version ) {
-			//LP_Admin_Notice::add( __( '<p>LearnPress ' . LP()->version . ' need to upgrade your database.</p><p><a href="' . admin_url( 'admin.php?page=learnpress_update_10' ) . '" class="button">Update Now</a></p>', 'learn_press' ) );
+			//LP_Admin_Notice::add( __( '<p>LearnPress ' . LP()->version . ' need to upgrade your database.</p><p><a href="' . admin_url( 'admin.php?page=learnpress_update_10' ) . '" class="button">Update Now</a></p>', 'learnpress' ) );
 		}
 	}
 

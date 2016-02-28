@@ -77,7 +77,7 @@ if ( !class_exists( 'RWMB_Quiz_Questions_Field' ) ) {
 				$json['success']  = true;
 				$json['question'] = get_post( $question_id );
 			} else {
-				$json['msg'] = __( 'Can not create a question', 'learn_press' );
+				$json['msg'] = __( 'Can not create a question', 'learnpress' );
 			}
 			wp_send_json( $json );
 			die();

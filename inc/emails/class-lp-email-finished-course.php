@@ -13,13 +13,13 @@ defined( 'ABSPATH' ) || exit();
 class LP_Email_Finished_Course extends LP_Email {
 	function __construct() {
 		$this->id    = 'finished_course';
-		$this->title = __( 'Finished course', 'learn_press' );
+		$this->title = __( 'Finished course', 'learnpress' );
 
 		$this->template_html  = 'emails/finished-course.php';
 		$this->template_plain = 'emails/plain/finished-course.php';
 
-		$this->default_subject = __( '[{site_title}] You have finished course ({course_name})', 'learn_press' );
-		$this->default_heading = __( 'Finished course', 'learn_press' );
+		$this->default_subject = __( '[{site_title}] You have finished course ({course_name})', 'learnpress' );
+		$this->default_heading = __( 'Finished course', 'learnpress' );
 
 
 		parent::__construct();

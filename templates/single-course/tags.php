@@ -13,7 +13,7 @@ if ( !defined( 'ABSPATH' ) ) {
 
 global $course;
 
-$tags = apply_filters( 'learn_press_course_tags', get_the_term_list( $course->id, 'course_tag', __( 'Tags: ', 'learn_press' ), ', ', '' ) );
+$tags = apply_filters( 'learn_press_course_tags', get_the_term_list( $course->id, 'course_tag', __( 'Tags: ', 'learnpress' ), ', ', '' ) );
 if ( !$tags ) {
 	return;
 }

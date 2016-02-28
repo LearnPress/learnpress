@@ -9,5 +9,5 @@ defined( 'ABSPATH' ) || exit();
 ?>
 
 <div class="quiz-question-answer">
-	<button type="button" data-nav="answer" class="check_answer"><?php echo apply_filters( 'learn_press_check_answer_button', __( 'Check answer', 'learn_press' ) ); ?></button>
+	<button type="button" data-nav="answer" class="check_answer"><?php echo apply_filters( 'learn_press_check_answer_button', __( 'Check answer', 'learnpress' ) ); ?></button>
 </div>

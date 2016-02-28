@@ -134,13 +134,13 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 		static function _modal_search_items_not_found( $message, $type ) {
 			switch ( $type ) {
 				case 'lp_lesson':
-					$message = __( 'No lessons found', 'learn_press' );
+					$message = __( 'No lessons found', 'learnpress' );
 					break;
 				case 'lp_quiz':
-					$message = __( 'No quizzes found', 'learn_press' );
+					$message = __( 'No quizzes found', 'learnpress' );
 					break;
 				case 'lp_question':
-					$message = __( 'No questions found', 'learn_press' );
+					$message = __( 'No questions found', 'learnpress' );
 					break;
 			}
 			return $message;
@@ -179,7 +179,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			global $wpdb;
 			$section = learn_press_get_request( 'section' );
 			if ( !$section ) {
-				wp_die( __( 'Error', 'learn_press' ) );
+				wp_die( __( 'Error', 'learnpress' ) );
 			}
 			$items = (array) learn_press_get_request( 'item' );
 			if ( !$items ) {
@@ -246,7 +246,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			if ( !empty( $posts ) ) {
 				foreach ( $posts as $post ) {
 					$found_items[$post->ID]             = $post;
-					$found_items[$post->ID]->post_title = !empty( $post->post_title ) ? $post->post_title : sprintf( '(%s)', __( 'Untitled', 'learn_press' ) );
+					$found_items[$post->ID]->post_title = !empty( $post->post_title ) ? $post->post_title : sprintf( '(%s)', __( 'Untitled', 'learnpress' ) );
 				}
 			}
 
@@ -263,7 +263,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 					', $id, $item->post_title, $item->post_type );
 				}
 			} else {
-				echo '<li>' . apply_filters( 'learn_press_modal_search_items_not_found', __( 'No item found', 'learn_press' ), $type ) . '</li>';
+				echo '<li>' . apply_filters( 'learn_press_modal_search_items_not_found', __( 'No item found', 'learnpress' ), $type ) . '</li>';
 			}
 
 			$response = array(
@@ -279,7 +279,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			$quiz_id     = learn_press_get_request( 'quiz_id' );
 			$question_id = learn_press_get_request( 'question_id' );
 			if ( !wp_verify_nonce( learn_press_get_request( 'remove-nonce' ), 'remove_quiz_question' ) ) {
-				wp_die( __( 'Error', 'learn_press' ) );
+				wp_die( __( 'Error', 'learnpress' ) );
 			}
 			$query = $wpdb->prepare( "
 				DELETE FROM {$wpdb->prefix}learnpress_quiz_questions
@@ -296,7 +296,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			$quiz_id = learn_press_get_request( 'quiz_id' );
 			$user    = learn_press_get_current_user();
 			if ( !$user->is_admin() && get_post_field( 'post_author', $quiz_id ) != get_current_user_id() ) {
-				wp_die( __( 'You have not permission to access this section', 'learn_press' ) );
+				wp_die( __( 'You have not permission to access this section', 'learnpress' ) );
 			}
 			$term    = (string) ( stripslashes( learn_press_get_request( 'term' ) ) );
 			$exclude = array();
@@ -336,7 +336,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 
 			if ( !empty( $posts ) ) {
 				foreach ( $posts as $post ) {
-					$found_questions[$post->ID] = !empty( $post->post_title ) ? $post->post_title : sprintf( '(%s)', __( 'Untitled', 'learn_press' ) );
+					$found_questions[$post->ID] = !empty( $post->post_title ) ? $post->post_title : sprintf( '(%s)', __( 'Untitled', 'learnpress' ) );
 				}
 			}
 
@@ -353,7 +353,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 					', $id, $question );
 				}
 			} else {
-				echo '<li>' . __( 'No question found', 'learn_press' ) . '</li>';
+				echo '<li>' . __( 'No question found', 'learnpress' ) . '</li>';
 			}
 
 			$response = array(
@@ -379,26 +379,26 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 		static function remove_order_item() {
 			// ensure that user has permission
 			if ( !current_user_can( 'edit_lp_orders' ) ) {
-				die( __( 'Permission denied', 'learn_press' ) );
+				die( __( 'Permission denied', 'learnpress' ) );
 			}
 
 			// verify nonce
 			$nonce = learn_press_get_request( 'remove_nonce' );
 			if ( !wp_verify_nonce( $nonce, 'remove_order_item' ) ) {
-				die( __( 'Check nonce failed', 'learn_press' ) );
+				die( __( 'Check nonce failed', 'learnpress' ) );
 			}
 
 			// validate order
 			$order_id = learn_press_get_request( 'order_id' );
 			if ( !is_numeric( $order_id ) || get_post_type( $order_id ) != 'lp_order' ) {
-				die( __( 'Order invalid', 'learn_press' ) );
+				die( __( 'Order invalid', 'learnpress' ) );
 			}
 
 			// validate item
 			$item_id = learn_press_get_request( 'item_id' );
 			$post    = get_post( learn_press_get_order_item_meta( $item_id, '_course_id' ) );
 			if ( !$post || ( 'lp_course' !== $post->post_type ) ) {
-				die( __( 'Course invalid', 'learn_press' ) );
+				die( __( 'Course invalid', 'learnpress' ) );
 			}
 
 			learn_press_remove_order_item( $item_id );
@@ -424,26 +424,26 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 
 			// ensure that user has permission
 			if ( !current_user_can( 'edit_lp_orders' ) ) {
-				die( __( 'Permission denied', 'learn_press' ) );
+				die( __( 'Permission denied', 'learnpress' ) );
 			}
 
 			// verify nonce
 			$nonce = learn_press_get_request( 'nonce' );
 			if ( !wp_verify_nonce( $nonce, 'add_item_to_order' ) ) {
-				die( __( 'Check nonce failed', 'learn_press' ) );
+				die( __( 'Check nonce failed', 'learnpress' ) );
 			}
 
 			// validate order
 			$order_id = learn_press_get_request( 'order_id' );
 			if ( !is_numeric( $order_id ) || get_post_type( $order_id ) != 'lp_order' ) {
-				die( __( 'Order invalid', 'learn_press' ) );
+				die( __( 'Order invalid', 'learnpress' ) );
 			}
 
 			// validate item
 			$item_id = learn_press_get_request( 'item_id' );
 			$post    = get_post( $item_id );
 			if ( !$post || ( 'lp_course' !== $post->post_type ) ) {
-				die( __( 'Course invalid', 'learn_press' ) );
+				die( __( 'Course invalid', 'learnpress' ) );
 			}
 
 
@@ -498,7 +498,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 		static function search_courses() {
 			$nonce = learn_press_get_request( 'nonce' );
 			if ( !wp_verify_nonce( $nonce, 'search_item_term' ) ) {
-				LP_Debug::exception( __( 'Verify nonce failed', 'learn_press' ) );
+				LP_Debug::exception( __( 'Verify nonce failed', 'learnpress' ) );
 			}
 
 			$term    = learn_press_get_request( 'term' );
@@ -637,13 +637,13 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 					$html             = learn_press_pages_dropdown( '', '', array( 'echo' => false ) );
 					preg_match_all( '!value=\"([0-9]+)\"!', $html, $matches );
 					$response['positions'] = $matches[1];
-					$response['html']      = '<a href="' . get_edit_post_link( $page_id ) . '" target="_blank">' . __( 'Edit Page', 'learn_press' ) . '</a>&nbsp;';
-					$response['html'] .= '<a href="' . get_permalink( $page_id ) . '" target="_blank">' . __( 'View Page', 'learn_press' ) . '</a>';
+					$response['html']      = '<a href="' . get_edit_post_link( $page_id ) . '" target="_blank">' . __( 'Edit Page', 'learnpress' ) . '</a>&nbsp;';
+					$response['html'] .= '<a href="' . get_permalink( $page_id ) . '" target="_blank">' . __( 'View Page', 'learnpress' ) . '</a>';
 				} else {
-					$response['error'] = __( 'Error! Can not create page. Please try again!', 'learn_press' );
+					$response['error'] = __( 'Error! Can not create page. Please try again!', 'learnpress' );
 				}
 			} else {
-				$response['error'] = __( 'Page name is empty!', 'learn_press' );
+				$response['error'] = __( 'Page name is empty!', 'learnpress' );
 			}
 			learn_press_send_json( $response );
 			die();
@@ -705,7 +705,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 					)
 				);
 			} else {
-				throw new Exception( __( 'Convert question type must be specify the id, source and destination type', 'learn_press' ) );
+				throw new Exception( __( 'Convert question type must be specify the id, source and destination type', 'learnpress' ) );
 			}
 			die();
 		}
@@ -718,8 +718,8 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 		static function install_sample_data() {
 			$yes            = !empty( $_REQUEST['yes'] ) ? $_REQUEST['yes'] : '';
 			$response       = array( 'result' => 'fail' );
-			$retry_button   = sprintf( '<a href="" class="button yes" data-action="yes">%s</a>', __( 'Try again!', 'learn_press' ) );
-			$dismiss_button = sprintf( '<a href="" class="button disabled no" data-action="no">%s</a>', __( 'Cancel', 'learn_press' ) );
+			$retry_button   = sprintf( '<a href="" class="button yes" data-action="yes">%s</a>', __( 'Try again!', 'learnpress' ) );
+			$dismiss_button = sprintf( '<a href="" class="button disabled no" data-action="no">%s</a>', __( 'Cancel', 'learnpress' ) );
 			$buttons        = sprintf( '<p>%s %s</p>', $retry_button, $dismiss_button );
 			if ( 'no' == $yes ) {
 				set_transient( 'learn_press_install_sample_data', 'off', 12 * HOUR_IN_SECONDS );
@@ -744,15 +744,15 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 							);
 							$response['url']     = $url = $url . '&' . http_build_query( $postdata ) . "\n";
 							$response['result']  = 'success';
-							$response['message'] = sprintf( '<p>%s <a href="edit.php?post_type=lp_course">%s</a> </p>', __( 'Import sample data successfully.', 'learn_press' ), __( 'View courses', 'learn_press' ) );
+							$response['message'] = sprintf( '<p>%s <a href="edit.php?post_type=lp_course">%s</a> </p>', __( 'Import sample data successfully.', 'learnpress' ), __( 'View courses', 'learnpress' ) );
 						}
 					}
 					if ( $response['result'] == 'fail' ) {
-						$response['message'] = sprintf( '<p>%s</p>%s', __( 'Import sample data failed. Please try again!.', 'learn_press' ), $buttons );
+						$response['message'] = sprintf( '<p>%s</p>%s', __( 'Import sample data failed. Please try again!.', 'learnpress' ), $buttons );
 					}
 				} else {
 					$response['result']  = 'fail';
-					$response['message'] = sprintf( '<p>%s</p>', __( 'Unknown error when installing/activating Import/Export addon. Please try again!', 'learn_press' ) ) . $buttons;
+					$response['message'] = sprintf( '<p>%s</p>', __( 'Unknown error when installing/activating Import/Export addon. Please try again!', 'learnpress' ) ) . $buttons;
 				}
 			}
 			learn_press_send_json( $response );
@@ -768,7 +768,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			$response = array( 'addons' => array() );
 
 			if ( !current_user_can( 'activate_plugins' ) ) {
-				$response['error'] = __( 'You do not have sufficient permissions to deactivate plugins for this site.', 'learn_press' );
+				$response['error'] = __( 'You do not have sufficient permissions to deactivate plugins for this site.', 'learnpress' );
 			} else {
 
 				$add_ons = $learn_press_add_ons['bundle_activate'];
@@ -789,7 +789,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			$response = array();
 			include_once( ABSPATH . 'wp-admin/includes/plugin-install.php' ); //for plugins_api..
 			if ( !current_user_can( 'activate_plugins' ) ) {
-				$response['error'] = __( 'You do not have sufficient permissions to deactivate plugins for this site.', 'learn_press' );
+				$response['error'] = __( 'You do not have sufficient permissions to deactivate plugins for this site.', 'learnpress' );
 			} else {
 				$slug            = !empty( $_REQUEST['plugin'] ) ? $_REQUEST['plugin'] : null;
 				$response[$slug] = learn_press_install_and_active_add_on( $slug );
@@ -809,7 +809,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			$t        = !empty( $_REQUEST['t'] ) ? $_REQUEST['t'] : '';
 			$response = array();
 			if ( !current_user_can( 'activate_plugins' ) ) {
-				$response['error'] = __( 'You do not have sufficient permissions to deactivate plugins for this site.', 'learn_press' );
+				$response['error'] = __( 'You do not have sufficient permissions to deactivate plugins for this site.', 'learnpress' );
 			}
 			if ( $plugin && $t ) {
 				if ( $t == 'activate' ) {
@@ -840,8 +840,8 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 		public static function get_page_permalink() {
 			$page_id = !empty( $_REQUEST['page_id'] ) ? $_REQUEST['page_id'] : '';
 			?>
-			<a href="<?php echo get_edit_post_link( $page_id ); ?>" target="_blank"><?php _e( 'Edit Page', 'learn_press' ); ?></a>
-			<a href="<?php echo get_permalink( $page_id ); ?>" target="_blank"><?php _e( 'View Page', 'learn_press' ); ?></a>
+			<a href="<?php echo get_edit_post_link( $page_id ); ?>" target="_blank"><?php _e( 'Edit Page', 'learnpress' ); ?></a>
+			<a href="<?php echo get_permalink( $page_id ); ?>" target="_blank"><?php _e( 'View Page', 'learnpress' ); ?></a>
 			<?php
 			die();
 		}

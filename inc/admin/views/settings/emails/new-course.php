@@ -13,16 +13,16 @@ if ( !defined( 'ABSPATH' ) ) {
 $settings_class = $obj;
 $settings       = LP()->settings;
 ?>
-<h3><?php _e( 'New course for review', 'learn_press' ); ?></h3>
+<h3><?php _e( 'New course for review', 'learnpress' ); ?></h3>
 <p class="description">
-	<?php _e( 'Settings for email when a new course submit for review', 'learn_press' ); ?>
+	<?php _e( 'Settings for email when a new course submit for review', 'learnpress' ); ?>
 </p>
 <table class="form-table">
 	<tbody>
 	<?php do_action( 'learn_press_before_' . $settings_class->id . '_' . $settings_class->section['id'] . '_settings_fields', $settings ); ?>
 	<tr>
 		<th scope="row">
-			<label for="learn-press-emails-new-course-enable"><?php _e( 'Enable', 'learn_press' ); ?></label></th>
+			<label for="learn-press-emails-new-course-enable"><?php _e( 'Enable', 'learnpress' ); ?></label></th>
 		<td>
 			<input type="hidden" name="<?php echo $settings_class->get_field_name( 'emails_new_course[enable]' ); ?>" value="no" />
 			<input id="learn-press-emails-new-course-enable" type="checkbox" name="<?php echo $settings_class->get_field_name( 'emails_new_course[enable]' ); ?>" value="yes" <?php checked( $settings->get( 'emails_new_course.enable', 'yes' ) == 'yes' ); ?>" />
@@ -30,43 +30,43 @@ $settings       = LP()->settings;
 	</tr>
 	<tr>
 		<th scope="row">
-			<label for="learn-press-emails-new-course-recipients"><?php _e( 'Recipient(s)', 'learn_press' ); ?></label>
+			<label for="learn-press-emails-new-course-recipients"><?php _e( 'Recipient(s)', 'learnpress' ); ?></label>
 		</th>
 		<td>
 			<?php $default = get_option( 'admin_email' ); ?>
 			<input id="learn-press-emails-new-course-recipients" class="regular-text" type="text" name="<?php echo $settings_class->get_field_name( 'emails_new_course[recipient]' ); ?>" value="<?php echo $settings->get( 'emails_new_course.recipient', $default ); ?>" />
 
 			<p class="description">
-				<?php printf( __( 'Email recipient(s), default: <code>%s</code>', 'learn_press' ), $default ); ?>
+				<?php printf( __( 'Email recipient(s), default: <code>%s</code>', 'learnpress' ), $default ); ?>
 			</p>
 		</td>
 	</tr>
 	<tr>
 		<th scope="row">
-			<label for="learn-press-emails-new-course-subject"><?php _e( 'Subject', 'learn_press' ); ?></label></th>
+			<label for="learn-press-emails-new-course-subject"><?php _e( 'Subject', 'learnpress' ); ?></label></th>
 		<td>
 			<input id="learn-press-emails-new-course-subject" class="regular-text" type="text" name="<?php echo $settings_class->get_field_name( 'emails_new_course[subject]' ); ?>" value="<?php echo $settings->get( 'emails_new_course.subject', $this->default_subject ); ?>" />
 
 			<p class="description">
-				<?php printf( __( 'Email subject (separated by comma), default: <code>%s</code>', 'learn_press' ), $this->default_subject ); ?>
+				<?php printf( __( 'Email subject (separated by comma), default: <code>%s</code>', 'learnpress' ), $this->default_subject ); ?>
 			</p>
 		</td>
 	</tr>
 	<tr>
 		<th scope="row">
-			<label for="learn-press-emails-new-course-heading"><?php _e( 'Heading', 'learn_press' ); ?></label></th>
+			<label for="learn-press-emails-new-course-heading"><?php _e( 'Heading', 'learnpress' ); ?></label></th>
 		<td>
-			<?php $default = __( 'New course', 'learn_press' ); ?>
+			<?php $default = __( 'New course', 'learnpress' ); ?>
 			<input id="learn-press-emails-new-course-heading" class="regular-text" type="text" name="<?php echo $settings_class->get_field_name( 'emails_new_course[heading]' ); ?>" value="<?php echo $settings->get( 'emails_new_course.heading', $this->default_heading ); ?>" />
 
 			<p class="description">
-				<?php printf( __( 'Email subject, default: <code>%s</code>', 'learn_press' ), $this->default_heading ); ?>
+				<?php printf( __( 'Email subject, default: <code>%s</code>', 'learnpress' ), $this->default_heading ); ?>
 			</p>
 		</td>
 	</tr>
 	<tr>
 		<th scope="row">
-			<label for="learn-press-emails-new-course-email-format"><?php _e( 'Email format', 'learn_press' ); ?></label>
+			<label for="learn-press-emails-new-course-email-format"><?php _e( 'Email format', 'learnpress' ); ?></label>
 		</th>
 		<td>
 			<?php learn_press_email_formats_dropdown( array( 'name' => $settings_class->get_field_name( 'emails_new_course[email_format]' ), 'id' => 'learn_press_email_formats', 'selected' => $settings->get( 'emails_new_course.email_format' ) ) ); ?>

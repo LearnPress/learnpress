@@ -19,7 +19,7 @@ class LP_Settings_Profile extends LP_Settings_Base {
 	 */
 	function __construct() {
 		$this->id   = 'profile';
-		$this->text = __( 'Profile', 'learn_press' );
+		$this->text = __( 'Profile', 'learnpress' );
 
 		parent::__construct();
 	}
@@ -34,7 +34,7 @@ class LP_Settings_Profile extends LP_Settings_Base {
 			'learn_press_checkout_settings',
 			array(
 				array(
-					'title'   => __( 'Profile page', 'learn_press' ),
+					'title'   => __( 'Profile page', 'learnpress' ),
 					'id'       => $this->get_field_name( 'profile_page_id' ),
 					'id'       => $this->get_field_name( 'profile_page_id' ),
 					'default'  => '',

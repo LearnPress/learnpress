@@ -117,7 +117,7 @@ class LP_Breadcrumb {
 	 * 404 trail
 	 */
 	private function add_crumbs_404() {
-		$this->add_crumb( __( 'Error 404', 'learn_press' ) );
+		$this->add_crumb( __( 'Error 404', 'learnpress' ) );
 	}
 
 	/**
@@ -209,7 +209,7 @@ class LP_Breadcrumb {
 		$current_term = $GLOBALS['wp_query']->get_queried_object();
 
 		$this->prepend_courses_page();
-		$this->add_crumb( sprintf( __( 'Products tagged &ldquo;%s&rdquo;', 'learn_press' ), $current_term->name ) );
+		$this->add_crumb( sprintf( __( 'Products tagged &ldquo;%s&rdquo;', 'learnpress' ), $current_term->name ) );
 	}
 
 	/**
@@ -260,7 +260,7 @@ class LP_Breadcrumb {
 	 */
 	private function add_crumbs_tag() {
 		$queried_object = $GLOBALS['wp_query']->get_queried_object();
-		$this->add_crumb( sprintf( __( 'Posts tagged &ldquo;%s&rdquo;', 'learn_press' ), single_tag_title( '', false ) ), get_tag_link( $queried_object->term_id ) );
+		$this->add_crumb( sprintf( __( 'Posts tagged &ldquo;%s&rdquo;', 'learnpress' ), single_tag_title( '', false ) ), get_tag_link( $queried_object->term_id ) );
 	}
 
 	/**
@@ -302,7 +302,7 @@ class LP_Breadcrumb {
 		global $author;
 
 		$userdata = get_userdata( $author );
-		$this->add_crumb( sprintf( __( 'Author: %s', 'learn_press' ), $userdata->display_name ) );
+		$this->add_crumb( sprintf( __( 'Author: %s', 'learnpress' ), $userdata->display_name ) );
 	}
 
 	/**
@@ -335,7 +335,7 @@ class LP_Breadcrumb {
 	 */
 	private function search_trail() {
 		if ( is_search() ) {
-			$this->add_crumb( sprintf( __( 'Search results for &ldquo;%s&rdquo;', 'learn_press' ), get_search_query() ), remove_query_arg( 'paged' ) );
+			$this->add_crumb( sprintf( __( 'Search results for &ldquo;%s&rdquo;', 'learnpress' ), get_search_query() ), remove_query_arg( 'paged' ) );
 		}
 	}
 
@@ -344,7 +344,7 @@ class LP_Breadcrumb {
 	 */
 	private function paged_trail() {
 		if ( get_query_var( 'paged' ) ) {
-			$this->add_crumb( sprintf( __( 'Page %d', 'learn_press' ), get_query_var( 'paged' ) ) );
+			$this->add_crumb( sprintf( __( 'Page %d', 'learnpress' ), get_query_var( 'paged' ) ) );
 		}
 	}
 }

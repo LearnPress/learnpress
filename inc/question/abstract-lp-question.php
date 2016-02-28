@@ -104,17 +104,17 @@ class LP_Abstract_Question {
 				array(
 					'is_true' => 'yes',
 					'value'   => learn_press_uniqid(),
-					'text'    => __( 'Option First', 'learn_press' )
+					'text'    => __( 'Option First', 'learnpress' )
 				),
 				array(
 					'is_true' => 'no',
 					'value'   => learn_press_uniqid(),
-					'text'    => __( 'Option Seconds', 'learn_press' )
+					'text'    => __( 'Option Seconds', 'learnpress' )
 				),
 				array(
 					'is_true' => 'no',
 					'value'   => learn_press_uniqid(),
-					'text'    => __( 'Option Third', 'learn_press' )
+					'text'    => __( 'Option Third', 'learnpress' )
 				)
 			);
 		}
@@ -243,7 +243,7 @@ class LP_Abstract_Question {
 	 * @return void
 	 */
 	function admin_interface( $args = array() ) {
-		printf( __( 'Function %s should override from its child', 'learn_press' ), __FUNCTION__ );
+		printf( __( 'Function %s should override from its child', 'learnpress' ), __FUNCTION__ );
 	}
 
 	/**
@@ -254,7 +254,7 @@ class LP_Abstract_Question {
 	 * @return void
 	 */
 	function render() {
-		printf( __( 'Function %s should override from its child', 'learn_press' ), __FUNCTION__ );
+		printf( __( 'Function %s should override from its child', 'learnpress' ), __FUNCTION__ );
 	}
 
 	function get_name() {
@@ -552,10 +552,10 @@ class LP_Question extends LP_Abstract_Question {
 		<div class="lpr-question lpr-question-<?php echo preg_replace( '!_!', '-', $this->get_type() ); ?>" data-type="<?php echo preg_replace( '!_!', '-', $this->get_type() ); ?>" data-id="<?php echo $this->get( 'ID' ); ?>" id="learn-press-question-<?php echo $this->id; ?>">
 		<div class="lpr-question-head">
 			<p>
-				<a href="<?php echo get_edit_post_link( $post_id ); ?>"><?php _e( 'Edit', 'learn_press' ); ?></a>
-				<a href="" data-action="remove"><?php _e( 'Remove', 'learn_press' ); ?></a>
-				<a href="" data-action="expand" class="<?php echo !$is_collapse ? "hide-if-js" : ""; ?>"><?php _e( 'Expand', 'learn_press' ); ?></a>
-				<a href="" data-action="collapse" class="<?php echo $is_collapse ? "hide-if-js" : ""; ?>"><?php _e( 'Collapse', 'learn_press' ); ?></a>
+				<a href="<?php echo get_edit_post_link( $post_id ); ?>"><?php _e( 'Edit', 'learnpress' ); ?></a>
+				<a href="" data-action="remove"><?php _e( 'Remove', 'learnpress' ); ?></a>
+				<a href="" data-action="expand" class="<?php echo !$is_collapse ? "hide-if-js" : ""; ?>"><?php _e( 'Expand', 'learnpress' ); ?></a>
+				<a href="" data-action="collapse" class="<?php echo $is_collapse ? "hide-if-js" : ""; ?>"><?php _e( 'Collapse', 'learnpress' ); ?></a>
 			</p>
 			<!--<select name="lpr_question[<?php echo $post_id; ?>][type]" data-type="<?php echo $this->get_type(); ?>">
 				<?php if ( $questions ) foreach ( $questions as $type ): ?>
@@ -572,7 +572,7 @@ class LP_Question extends LP_Abstract_Question {
 		<div class="lpr-question-content<?php echo $is_collapse ? " hide-if-js" : ""; ?>">
 		<?php //do_action( 'learn_press_admin_before_question_answer', $this );
 		?>
-		<p class="lpr-question-option-label"><?php _e( 'Answer', 'learn_press' ); ?></p>
+		<p class="lpr-question-option-label"><?php _e( 'Answer', 'learnpress' ); ?></p>
 		<?php
 	}
 
@@ -593,9 +593,9 @@ class LP_Question extends LP_Abstract_Question {
 		$question_type  = LPR_Question_Factory::instance()->get_question_type( $question_meta );
 		?>
 		<p class="lpr-change-question-type">
-			<span><?php _e( 'Change type of this question to', 'learn_press' ); ?></span>
+			<span><?php _e( 'Change type of this question to', 'learnpress' ); ?></span>
 			<select class="lpr-question-types" name="lpr_question[type]" id="lpr_question-type" data-type="<?php echo $question_type; ?>">
-				<option value=""><?php _e( '--Select type--', 'learn_press' ); ?></option>
+				<option value=""><?php _e( '--Select type--', 'learnpress' ); ?></option>
 				<?php if ( $question_types ): foreach ( $question_types as $type ): ?>
 					<option value="<?php echo $type; ?>" <?php selected( $type == $question_type ); ?>><?php echo learn_press_question_slug_to_title( $type ); ?></option>
 				<?php endforeach; endif; ?>
@@ -616,7 +616,7 @@ class LP_Question extends LP_Abstract_Question {
 	 * @return void
 	 */
 	function admin_interface( $args = array() ) {
-		printf( __( 'Function %s should override from its child', 'learn_press' ), __FUNCTION__ );
+		printf( __( 'Function %s should override from its child', 'learnpress' ), __FUNCTION__ );
 	}
 
 	/**
@@ -627,7 +627,7 @@ class LP_Question extends LP_Abstract_Question {
 	 * @return void
 	 */
 	function render() {
-		printf( __( 'Function %s should override from its child', 'learn_press' ), __FUNCTION__ );
+		printf( __( 'Function %s should override from its child', 'learnpress' ), __FUNCTION__ );
 	}
 
 	function get_type( $slug = false ) {

@@ -148,9 +148,9 @@ function learn_press_email_formats_dropdown( $args = array() ) {
 		)
 	);
 	$formats = array(
-		'plain_text' => __( 'Plain text', 'learn_press' ),
-		'html'       => __( 'HTML', 'learn_press' ),
-		'multipart'  => __( 'Multipart', 'learn_press' )
+		'plain_text' => __( 'Plain text', 'learnpress' ),
+		'html'       => __( 'HTML', 'learnpress' ),
+		'multipart'  => __( 'Multipart', 'learnpress' )
 	);
 	$output  = sprintf( '<select name="%s" id="%s" class="%s" %s>', $args['name'], $args['id'], $args['class'], '' );
 	foreach ( $formats as $name => $text ) {
@@ -211,8 +211,8 @@ function learn_press_question_name_from_slug( $slug ) {
 
 function learn_press_section_item_types() {
 	$types = array(
-		'lp_lesson' => __( 'Lesson', 'learn_press' ),
-		'lp_quiz'   => __( 'Quiz', 'learn_press' )
+		'lp_lesson' => __( 'Lesson', 'learnpress' ),
+		'lp_quiz'   => __( 'Quiz', 'learnpress' )
 	);
 	return apply_filters( 'learn_press_section_item_types', $types );
 }
@@ -630,8 +630,8 @@ if ( !function_exists( 'learn_press_course_paging_nav' ) ) :
 			'current'   => $paged,
 			'mid_size'  => 1,
 			'add_args'  => array_map( 'urlencode', $query_args ),
-			'prev_text' => __( '<', 'learn_press' ),
-			'next_text' => __( '>', 'learn_press' ),
+			'prev_text' => __( '<', 'learnpress' ),
+			'next_text' => __( '>', 'learnpress' ),
 			'type'      => 'list'
 		) );
 
@@ -703,7 +703,7 @@ function learn_press_process_teacher() {
 		if ( in_array( $post_id, $quizzes ) ) {
 			return;
 		}
-		wp_die( __( 'Sorry! You don\'t have permission to do this action', 'learn_press' ), 403 );
+		wp_die( __( 'Sorry! You don\'t have permission to do this action', 'learnpress' ), 403 );
 	}
 }
 
@@ -747,13 +747,13 @@ function learn_press_pre_get_items( $query ) {
 function learn_press_restrict_items( $views ) {
 	$post_type = get_query_var( 'post_type' );
 	$new_views = array(
-		'all'     => __( 'All', 'learn_press' ),
-		'publish' => __( 'Published', 'learn_press' ),
-		'private' => __( 'Private', 'learn_press' ),
-		'pending' => __( 'Pending Review', 'learn_press' ),
-		'future'  => __( 'Scheduled', 'learn_press' ),
-		'draft'   => __( 'Draft', 'learn_press' ),
-		'trash'   => __( 'Trash', 'learn_press' ),
+		'all'     => __( 'All', 'learnpress' ),
+		'publish' => __( 'Published', 'learnpress' ),
+		'private' => __( 'Private', 'learnpress' ),
+		'pending' => __( 'Pending Review', 'learnpress' ),
+		'future'  => __( 'Scheduled', 'learnpress' ),
+		'draft'   => __( 'Draft', 'learnpress' ),
+		'trash'   => __( 'Trash', 'learnpress' ),
 	);
 
 	$url = 'edit.php';
@@ -778,7 +778,7 @@ function learn_press_restrict_items( $views ) {
 		if ( $result->found_posts > 0 ) {
 
 			$views[$view] = sprintf(
-				'<a href="%s"' . $class . '>' . __( $name, 'learn_press' ) . ' <span class="count">(%d)</span></a>',
+				'<a href="%s"' . $class . '>' . __( $name, 'learnpress' ) . ' <span class="count">(%d)</span></a>',
 				esc_url( add_query_arg( $query, $url ) ),
 				$result->found_posts
 			);
@@ -805,7 +805,7 @@ function learn_press_edit_registration() {
 	<p>
 		<label for="become_teacher">
 			<input type="checkbox" name="become_teacher" id="become_teacher">
-			<?php _e( 'Want to be an instructor?', 'learn_press' ) ?>
+			<?php _e( 'Want to be an instructor?', 'learnpress' ) ?>
 		</label>
 	</p>
 
@@ -1217,10 +1217,10 @@ function learn_press_currency_positions() {
 	return apply_filters(
 		'learn_press_currency_positions',
 		array(
-			'left'             => __( 'Left', 'learn_press' ),
-			'right'            => __( 'Right', 'learn_press' ),
-			'left_with_space'  => __( 'Left with space', 'learn_press' ),
-			'right_with_space' => __( 'Right with space', 'learn_press' )
+			'left'             => __( 'Left', 'learnpress' ),
+			'right'            => __( 'Right', 'learnpress' ),
+			'left_with_space'  => __( 'Left with space', 'learnpress' ),
+			'right_with_space' => __( 'Right with space', 'learnpress' )
 
 		)
 	);
@@ -1483,20 +1483,20 @@ function learn_press_seconds_to_weeks( $secs ) {
 	// format result
 	$result = '';
 	if ( $weeks ) {
-		$result .= $weeks . ' ' . __( 'week(s)', 'learn_press' ) . ' ';
+		$result .= $weeks . ' ' . __( 'week(s)', 'learnpress' ) . ' ';
 	}
 
 	if ( $days ) {
-		$result .= $days . ' ' . __( 'day(s)', 'learn_press' ) . ' ';
+		$result .= $days . ' ' . __( 'day(s)', 'learnpress' ) . ' ';
 	}
 
 	if ( !$weeks ) {
 		if ( $hours ) {
-			$result .= $hours . ' ' . __( 'hour(s)', 'learn_press' ) . ' ';
+			$result .= $hours . ' ' . __( 'hour(s)', 'learnpress' ) . ' ';
 
 		}
 		if ( $mins ) {
-			$result .= $mins . ' ' . __( 'min(s)', 'learn_press' ) . ' ';
+			$result .= $mins . ' ' . __( 'min(s)', 'learnpress' ) . ' ';
 		}
 	}
 	$result = rtrim( $result );
@@ -1556,15 +1556,15 @@ function become_a_teacher_handler() {
 	);
 
 	if ( !$name ) {
-		$response['error'][] = __( 'Please enter your name', 'learn_press' );
+		$response['error'][] = __( 'Please enter your name', 'learnpress' );
 	}
 
 	if ( !$email ) {
-		$response['error'][] = __( 'Please enter your email address', 'learn_press' );
+		$response['error'][] = __( 'Please enter your email address', 'learnpress' );
 	}
 
 	if ( !$phone ) {
-		//$response['error'][] = __( 'Please enter your phone number', 'learn_press' );
+		//$response['error'][] = __( 'Please enter your phone number', 'learnpress' );
 	}
 	global $current_user;
 	get_currentuserinfo();
@@ -1572,12 +1572,12 @@ function become_a_teacher_handler() {
 	$to_email        = array( get_option( 'admin_email' ) );
 	$message_headers = '';
 	$subject         = 'Please moderate';
-	$notify_message  = sprintf( __( 'The user <a href="%s">%s</a> want to be a teacher.', 'learn_press' ), admin_url( 'user-edit.php?user_id=' . $current_user->ID ), $current_user->data->user_login ) . "\r\n";
+	$notify_message  = sprintf( __( 'The user <a href="%s">%s</a> want to be a teacher.', 'learnpress' ), admin_url( 'user-edit.php?user_id=' . $current_user->ID ), $current_user->data->user_login ) . "\r\n";
 
-	$notify_message .= sprintf( __( 'Name: %s', 'learn_press' ), $name ) . "\r\n";
-	$notify_message .= sprintf( __( 'Email: %s', 'learn_press' ), $email ) . "\r\n";
-	$notify_message .= sprintf( __( 'Phone: %s', 'learn_press' ), $phone ) . "\r\n";
-	$notify_message .= wp_specialchars_decode( sprintf( __( 'Accept: %s', 'learn_press' ), admin_url( 'user-edit.php?user_id=' . $current_user->ID ) . '&action=accept-to-be-teacher' ) ) . "\r\n";
+	$notify_message .= sprintf( __( 'Name: %s', 'learnpress' ), $name ) . "\r\n";
+	$notify_message .= sprintf( __( 'Email: %s', 'learnpress' ), $email ) . "\r\n";
+	$notify_message .= sprintf( __( 'Phone: %s', 'learnpress' ), $phone ) . "\r\n";
+	$notify_message .= wp_specialchars_decode( sprintf( __( 'Accept: %s', 'learnpress' ), admin_url( 'user-edit.php?user_id=' . $current_user->ID ) . '&action=accept-to-be-teacher' ) ) . "\r\n";
 
 	$args = array(
 		$to_email,
@@ -1599,7 +1599,7 @@ add_action( 'learn_press_frontend_action_become_a_teacher', 'become_a_teacher_ha
 
 function wpdev_141551_translate_user_roles( $translations, $text, $context, $domain ) {
 
-	$plugin_domain = 'learn_press';
+	$plugin_domain = 'learnpress';
 
 	$roles = array(
 		'Instructor',
@@ -1867,9 +1867,9 @@ add_action( 'init', 'learn_press_init' );
  */
 /*function learn_press_get_order_statuses() {
 	$order_statuses = array(
-		'lp-pending'    => _x( 'Pending Payment', 'Order status', 'learn_press' ),
-		'lp-processing' => _x( 'Processing', 'Order status', 'learn_press' ),
-		'lp-completed'  => _x( 'Completed', 'Order status', 'learn_press' ),
+		'lp-pending'    => _x( 'Pending Payment', 'Order status', 'learnpress' ),
+		'lp-processing' => _x( 'Processing', 'Order status', 'learnpress' ),
+		'lp-completed'  => _x( 'Completed', 'Order status', 'learnpress' ),
 	);
 	return apply_filters( 'learn_press_order_statuses', $order_statuses );
 }*/

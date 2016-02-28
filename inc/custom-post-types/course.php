@@ -85,7 +85,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		function toggle_editor_button( $post ) {
 			if ( $post->post_type == LP()->course_post_type ) {
 				?>
-				<button class="button button-primary" data-hidden="<?php echo get_post_meta( $post->ID, '_lp_editor_hidden', true ); ?>" type="button" id="learn-press-button-toggle-editor"><?php _e( 'Toggle Course Content', 'learn_press' ); ?></button>
+				<button class="button button-primary" data-hidden="<?php echo get_post_meta( $post->ID, '_lp_editor_hidden', true ); ?>" type="button" id="learn-press-button-toggle-editor"><?php _e( 'Toggle Course Content', 'learnpress' ); ?></button>
 				<?php
 			}
 		}
@@ -101,10 +101,10 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			return apply_filters( 'learn_press_admin_course_params',
 				array(
 					'id'                        => absint( $post->ID ),
-					'notice_empty_title'        => __( 'Please enter the title of the course', 'learn_press' ),
-					'notice_empty_section'      => __( 'Please add at least one section for the course', 'learn_press' ),
-					'notice_empty_section_name' => __( 'Please enter the title of the section', 'learn_press' ),
-					'notice_empty_price'        => __( 'Please set a price for this course', 'learn_press' )
+					'notice_empty_title'        => __( 'Please enter the title of the course', 'learnpress' ),
+					'notice_empty_section'      => __( 'Please add at least one section for the course', 'learnpress' ),
+					'notice_empty_section_name' => __( 'Please enter the title of the section', 'learnpress' ),
+					'notice_empty_price'        => __( 'Please set a price for this course', 'learnpress' )
 				)
 			);
 		}
@@ -117,7 +117,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		static function admin_scripts() {
 			LP_Admin_Assets::add_localize(
 				array(
-					'notice_remove_section_item' => __( 'Are you sure you want to remove this item?', 'learn_press' )
+					'notice_remove_section_item' => __( 'Are you sure you want to remove this item?', 'learnpress' )
 				),
 				null,
 				'admin-course'
@@ -159,22 +159,22 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		static function register_post_type() {
 			$settings         = LP_Settings::instance();
 			$labels           = array(
-				'name'               => _x( 'Courses', 'Post Type General Name', 'learn_press' ),
-				'singular_name'      => _x( 'Course', 'Post Type Singular Name', 'learn_press' ),
-				'menu_name'          => __( 'Courses', 'learn_press' ),
-				'parent_item_colon'  => __( 'Parent Item:', 'learn_press' ),
-				'all_items'          => __( 'Courses', 'learn_press' ),
-				'view_item'          => __( 'View Course', 'learn_press' ),
-				'add_new_item'       => __( 'Add New Course', 'learn_press' ),
-				'add_new'            => __( 'Add New', 'learn_press' ),
-				'edit_item'          => __( 'Edit Course', 'learn_press' ),
-				'update_item'        => __( 'Update Course', 'learn_press' ),
-				'search_items'       => __( 'Search Courses', 'learn_press' ),
-				'not_found'          => sprintf( __( 'You have not got any course yet. Click <a href="%s">Add new</a> to start', 'learn_press' ), admin_url( 'post-new.php?post_type=lp_course' ) ),
-				'not_found_in_trash' => __( 'No course found in Trash', 'learn_press' )
+				'name'               => _x( 'Courses', 'Post Type General Name', 'learnpress' ),
+				'singular_name'      => _x( 'Course', 'Post Type Singular Name', 'learnpress' ),
+				'menu_name'          => __( 'Courses', 'learnpress' ),
+				'parent_item_colon'  => __( 'Parent Item:', 'learnpress' ),
+				'all_items'          => __( 'Courses', 'learnpress' ),
+				'view_item'          => __( 'View Course', 'learnpress' ),
+				'add_new_item'       => __( 'Add New Course', 'learnpress' ),
+				'add_new'            => __( 'Add New', 'learnpress' ),
+				'edit_item'          => __( 'Edit Course', 'learnpress' ),
+				'update_item'        => __( 'Update Course', 'learnpress' ),
+				'search_items'       => __( 'Search Courses', 'learnpress' ),
+				'not_found'          => sprintf( __( 'You have not got any course yet. Click <a href="%s">Add new</a> to start', 'learnpress' ), admin_url( 'post-new.php?post_type=lp_course' ) ),
+				'not_found_in_trash' => __( 'No course found in Trash', 'learnpress' )
 			);
 			$course_base      = $settings->get( 'course_base' );
-			$course_permalink = empty( $course_base ) ? _x( 'courses', 'slug', 'learn_press' ) : $course_base;
+			$course_permalink = empty( $course_base ) ? _x( 'courses', 'slug', 'learnpress' ) : $course_base;
 
 			$args = array(
 				'labels'             => $labels,
@@ -201,13 +201,13 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			$category_base = $settings->get( 'course_category_base' );
 			register_taxonomy( 'course_category', array( LP_COURSE_CPT ),
 				array(
-					'label'             => __( 'Course Categories', 'learn_press' ),
+					'label'             => __( 'Course Categories', 'learnpress' ),
 					'labels'            => array(
-						'name'          => __( 'Course Categories', 'learn_press' ),
-						'menu_name'     => __( 'Category', 'learn_press' ),
-						'singular_name' => __( 'Category', 'learn_press' ),
-						'add_new_item'  => __( 'Add New Course Category', 'learn_press' ),
-						'all_items'     => __( 'All Categories', 'learn_press' )
+						'name'          => __( 'Course Categories', 'learnpress' ),
+						'menu_name'     => __( 'Category', 'learnpress' ),
+						'singular_name' => __( 'Category', 'learnpress' ),
+						'add_new_item'  => __( 'Add New Course Category', 'learnpress' ),
+						'all_items'     => __( 'All Categories', 'learnpress' )
 					),
 					'query_var'         => true,
 					'public'            => true,
@@ -218,7 +218,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 					'show_in_admin_bar' => true,
 					'show_in_nav_menus' => true,
 					'rewrite'           => array(
-						'slug'         => empty( $category_base ) ? _x( 'course-category', 'slug', 'learn_press' ) : $category_base,
+						'slug'         => empty( $category_base ) ? _x( 'course-category', 'slug', 'learnpress' ) : $category_base,
 						'hierarchical' => true,
 						'with_front'   => false
 					),
@@ -229,21 +229,21 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			register_taxonomy( 'course_tag', array( LP_COURSE_CPT ),
 				array(
 					'labels'                => array(
-						'name'                       => __( 'Course Tags', 'learn_press' ),
-						'singular_name'              => __( 'Tag', 'learn_press' ),
-						'search_items'               => __( 'Search Course Tags', 'learn_press' ),
-						'popular_items'              => __( 'Popular Course Tags', 'learn_press' ),
-						'all_items'                  => __( 'All Course Tags', 'learn_press' ),
+						'name'                       => __( 'Course Tags', 'learnpress' ),
+						'singular_name'              => __( 'Tag', 'learnpress' ),
+						'search_items'               => __( 'Search Course Tags', 'learnpress' ),
+						'popular_items'              => __( 'Popular Course Tags', 'learnpress' ),
+						'all_items'                  => __( 'All Course Tags', 'learnpress' ),
 						'parent_item'                => null,
 						'parent_item_colon'          => null,
-						'edit_item'                  => __( 'Edit Course Tag', 'learn_press' ),
-						'update_item'                => __( 'Update Course Tag', 'learn_press' ),
-						'add_new_item'               => __( 'Add New Course Tag', 'learn_press' ),
-						'new_item_name'              => __( 'New Course Tag Name', 'learn_press' ),
-						'separate_items_with_commas' => __( 'Separate tags with commas', 'learn_press' ),
-						'add_or_remove_items'        => __( 'Add or remove tags', 'learn_press' ),
-						'choose_from_most_used'      => __( 'Choose from the most used tags', 'learn_press' ),
-						'menu_name'                  => __( 'Tags', 'learn_press' ),
+						'edit_item'                  => __( 'Edit Course Tag', 'learnpress' ),
+						'update_item'                => __( 'Update Course Tag', 'learnpress' ),
+						'add_new_item'               => __( 'Add New Course Tag', 'learnpress' ),
+						'new_item_name'              => __( 'New Course Tag Name', 'learnpress' ),
+						'separate_items_with_commas' => __( 'Separate tags with commas', 'learnpress' ),
+						'add_or_remove_items'        => __( 'Add or remove tags', 'learnpress' ),
+						'choose_from_most_used'      => __( 'Choose from the most used tags', 'learnpress' ),
+						'menu_name'                  => __( 'Tags', 'learnpress' ),
 					),
 					'public'                => true,
 					'hierarchical'          => false,
@@ -252,7 +252,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 					'update_count_callback' => '_update_post_term_count',
 					'query_var'             => true,
 					'rewrite'               => array(
-						'slug'       => empty( $tag_base ) ? _x( 'course-tag', 'slug', 'learn_press' ) : $tag_base,
+						'slug'       => empty( $tag_base ) ? _x( 'course-tag', 'slug', 'learnpress' ) : $tag_base,
 						'with_front' => false
 					),
 				)
@@ -275,12 +275,12 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 
 			$meta_box = array(
 				'id'       => 'course_curriculum',
-				'title'    => __( 'Curriculum', 'learn_press' ),
+				'title'    => __( 'Curriculum', 'learnpress' ),
 				'priority' => 'high',
 				'pages'    => array( LP_COURSE_CPT ),
 				'fields'   => array(
 					array(
-						'name' => __( 'Course Curriculum', 'learn_press' ),
+						'name' => __( 'Course Curriculum', 'learnpress' ),
 						'id'   => "{$prefix}curriculum",
 						'type' => 'curriculum',
 						'desc' => '',
@@ -296,36 +296,36 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 
 			$meta_box = array(
 				'id'       => 'course_settings',
-				'title'    => __( 'General Settings', 'learn_press' ),
+				'title'    => __( 'General Settings', 'learnpress' ),
 				'pages'    => array( LP_COURSE_CPT ),
 				'priority' => 'high',
 				'fields'   => array(
 					array(
-						'name' => __( 'Duration', 'learn_press' ),
+						'name' => __( 'Duration', 'learnpress' ),
 						'id'   => "{$prefix}duration",
 						'type' => 'number',
-						'desc' => __( 'The duration of the course (by weeks)', 'learn_press' ),
+						'desc' => __( 'The duration of the course (by weeks)', 'learnpress' ),
 						'std'  => 10,
 					),
 					array(
-						'name' => __( 'Maximum students', 'learn_press' ),
+						'name' => __( 'Maximum students', 'learnpress' ),
 						'id'   => "{$prefix}max_students",
 						'type' => 'number',
-						'desc' => __( 'Maximum number of students can be enroll this course', 'learn_press' ),
+						'desc' => __( 'Maximum number of students can be enroll this course', 'learnpress' ),
 						'std'  => 1000,
 					),
 					array(
-						'name' => __( 'Students enrolled', 'learn_press' ),
+						'name' => __( 'Students enrolled', 'learnpress' ),
 						'id'   => "{$prefix}students",
 						'type' => 'number',
-						'desc' => __( 'How many students has took this course', 'learn_press' ),
+						'desc' => __( 'How many students has took this course', 'learnpress' ),
 						'std'  => 0,
 					),
 					array(
-						'name' => __( 'Re-take course', 'learn_press' ),
+						'name' => __( 'Re-take course', 'learnpress' ),
 						'id'   => "{$prefix}retake_count",
 						'type' => 'number',
-						'desc' => __( 'How many times the user can re-take this course. Set to 0 to disable', 'learn_press' ),
+						'desc' => __( 'How many times the user can re-take this course. Set to 0 to disable', 'learnpress' ),
 						'std'  => '0',
 					),
 
@@ -338,34 +338,34 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		static function assessment_meta_box() {
 			$post_id            = learn_press_get_request( 'post' );
 			$prefix             = '_lp_';
-			$course_result_desc = __( 'The way to assess the result of course for a student', 'learn_press' );
+			$course_result_desc = __( 'The way to assess the result of course for a student', 'learnpress' );
 			if ( $post_id && get_post_meta( $post_id, '_lp_course_result', true ) == 'evaluate_final_quiz' && !get_post_meta( $post_id, '_lp_final_quiz', true ) ) {
-				$course_result_desc .= __( '<br /><strong>Note! </strong>No final quiz in course, please add a final quiz', 'learn_press' );
+				$course_result_desc .= __( '<br /><strong>Note! </strong>No final quiz in course, please add a final quiz', 'learnpress' );
 			}
 			$meta_box = array(
 				'id'       => 'course_assessment',
-				'title'    => __( 'Assessment', 'learn_press' ),
+				'title'    => __( 'Assessment', 'learnpress' ),
 				'priority' => 'high',
 				'pages'    => array( LP_COURSE_CPT ),
 				'fields'   => array(
 					array(
-						'name'    => __( 'Course result', 'learn_press' ),
+						'name'    => __( 'Course result', 'learnpress' ),
 						'id'      => "{$prefix}course_result",
 						'type'    => 'radio',
 						'desc'    => $course_result_desc,
 						'options' => array(
-							'evaluate_lesson'     => __( 'Evaluate lessons', 'learn_press' ),
-							'evaluate_final_quiz' => __( 'Evaluate result of final quiz', 'learn_press' )
+							'evaluate_lesson'     => __( 'Evaluate lessons', 'learnpress' ),
+							'evaluate_final_quiz' => __( 'Evaluate result of final quiz', 'learnpress' )
 						),
 						'std'     => 'evaluate_lesson'
 					),
 					array(
-						'name' => __( 'Passing condition value', 'learn_press' ),
+						'name' => __( 'Passing condition value', 'learnpress' ),
 						'id'   => "{$prefix}passing_condition",
 						'type' => 'number',
 						'min'  => 1,
 						'max'  => 100,
-						'desc' => __( 'The percentage of quiz result or lessons completed to finish the course', 'learn_press' ),
+						'desc' => __( 'The percentage of quiz result or lessons completed to finish the course', 'learnpress' ),
 						'std'  => 50
 					)
 				)
@@ -379,30 +379,30 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 
 			$meta_box = array(
 				'id'       => 'course_payment',
-				'title'    => __( 'Payment Settings', 'learn_press' ),
+				'title'    => __( 'Payment Settings', 'learnpress' ),
 				'priority' => 'high',
 				'pages'    => array( LP_COURSE_CPT ),
 				'fields'   => array(
 					array(
-						'name'    => __( 'Requires enroll', 'learn_press' ),
+						'name'    => __( 'Requires enroll', 'learnpress' ),
 						'id'      => "{$prefix}required_enroll",
 						'type'    => 'radio',
-						'desc'    => __( 'Require users logged in to study or public to all', 'learn_press' ),
+						'desc'    => __( 'Require users logged in to study or public to all', 'learnpress' ),
 						'options' => array(
-							'yes' => __( 'Yes, enroll is required', 'learn_press' ),
-							'no'  => __( 'No', 'learn_press' ),
+							'yes' => __( 'Yes, enroll is required', 'learnpress' ),
+							'no'  => __( 'No', 'learnpress' ),
 						),
 						'std'     => 'yes',
 						'class'   => 'hide-if-js'
 					),
 					array(
-						'name'    => __( 'Course payment', 'learn_press' ),
+						'name'    => __( 'Course payment', 'learnpress' ),
 						'id'      => "{$prefix}payment",
 						'type'    => 'radio',
-						'desc'    => __( 'If Paid be checked, An administrator will review then set course price and commission', 'learn_press' ),
+						'desc'    => __( 'If Paid be checked, An administrator will review then set course price and commission', 'learnpress' ),
 						'options' => array(
-							'no'  => __( 'Free', 'learn_press' ),
-							'yes' => __( 'Paid', 'learn_press' ),
+							'no'  => __( 'Free', 'learnpress' ),
+							'yes' => __( 'Paid', 'learnpress' ),
 						),
 						'std'     => 'no',
 						'class'   => 'lp-course-payment-field'
@@ -411,7 +411,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			);
 
 			if ( current_user_can( 'manage_options' ) ) {
-				$message = __( 'If free, this field is empty or set 0. (Only admin can edit this field)', 'learn_press' );
+				$message = __( 'If free, this field is empty or set 0. (Only admin can edit this field)', 'learnpress' );
 				$price   = 0;
 
 				if ( isset( $_GET['post'] ) ) {
@@ -420,17 +420,17 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 					if ( $type != 'free' ) {
 						$suggest_price = get_post_meta( $course_id, '_lp_suggestion_price', true );
 						if ( isset( $suggest_price ) ) {
-							$message = __( 'This course is enrolled require and the suggestion price is ', 'learn_press' ) . '<span>' . learn_press_get_currency_symbol() . $suggest_price . '</span>';
+							$message = __( 'This course is enrolled require and the suggestion price is ', 'learnpress' ) . '<span>' . learn_press_get_currency_symbol() . $suggest_price . '</span>';
 							$price   = $suggest_price;
 						}
 					} else {
-						$message = __( 'This course is free.', 'learn_press' );
+						$message = __( 'This course is free.', 'learnpress' );
 					};
 				}
 				array_push(
 					$meta_box['fields'],
 					array(
-						'name'  => __( 'Price', 'learn_press' ),
+						'name'  => __( 'Price', 'learnpress' ),
 						'id'    => "{$prefix}price",
 						'type'  => 'number',
 						'min'   => 0,
@@ -444,12 +444,12 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 				array_push(
 					$meta_box['fields'],
 					array(
-						'name'  => __( 'Course Suggestion Price', 'learn_press' ),
+						'name'  => __( 'Course Suggestion Price', 'learnpress' ),
 						'id'    => "{$prefix}course_suggestion_price",
 						'type'  => 'number',
 						'min'   => 0,
 						'step'  => 0.01,
-						'desc'  => __( 'The course price you want to suggest for admin to set.', 'learn_press' ),
+						'desc'  => __( 'The course price you want to suggest for admin to set.', 'learnpress' ),
 						'class' => 'lp-course-price-field hide-if-js',
 						'std'   => 0
 					)
@@ -461,7 +461,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		function review_logs_meta_box() {
 			add_meta_box(
 				'review_logs',
-				__( 'Review Logs', 'learn_press' ),
+				__( 'Review Logs', 'learnpress' ),
 				array( $this, 'review_logs_content' ),
 				LP()->course_post_type,
 				'normal',
@@ -699,7 +699,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			$message = learn_press_get_request( 'review_message' );
 
 			if ( !$message && !$user->is_instructor() && get_post_status( $post->ID ) == 'publish' ) {
-				$message = __( 'Your course has published', 'learn_press' );
+				$message = __( 'Your course has published', 'learnpress' );
 			}
 			if ( apply_filters( 'learn_press_review_log_message', $message, $post->ID, $user->id ) ) {
 				$query = $wpdb->prepare( "
@@ -779,14 +779,14 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			$pos    = array_search( 'title', $keys );
 			if ( $pos !== false ) {
 				array_splice( $keys, $pos + 1, 0, array( 'sections', 'price' ) );
-				array_splice( $values, $pos + 1, 0, array( __( 'Content', 'learn_press' ), __( 'Price', 'learn_press' ) ) );
+				array_splice( $values, $pos + 1, 0, array( __( 'Content', 'learnpress' ), __( 'Price', 'learnpress' ) ) );
 				$columns = array_combine( $keys, $values );
 			} else {
-				$columns['sections'] = __( 'Content', 'learn_press' );
-				$columns['price']    = __( 'Price', 'learn_press' );
+				$columns['sections'] = __( 'Content', 'learnpress' );
+				$columns['price']    = __( 'Price', 'learnpress' );
 			}
 
-			$columns['taxonomy-course_category'] = __( 'Categories', 'learn_press' );
+			$columns['taxonomy-course_category'] = __( 'Categories', 'learnpress' );
 			return $columns;
 		}
 
@@ -806,23 +806,23 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						$count_sections = sizeof( $sections );
 						$count_lessons  = sizeof( $items['lessons'] );
 						$count_quizzes  = sizeof( $items['quizzes'] );
-						$output         = sprintf( _nx( '%d section', '%d sections', $count_sections, 'learn_press' ), $count_sections );
+						$output         = sprintf( _nx( '%d section', '%d sections', $count_sections, 'learnpress' ), $count_sections );
 						$output .= ' (';
 						if ( $count_lessons ) {
-							$output .= sprintf( _nx( '%d lesson', '%d lessons', $count_lessons, 'learn_press' ), $count_lessons );
+							$output .= sprintf( _nx( '%d lesson', '%d lessons', $count_lessons, 'learnpress' ), $count_lessons );
 						} else {
-							$output .= __( "0 lesson", 'learn_press' );
+							$output .= __( "0 lesson", 'learnpress' );
 						}
 						$output .= ', ';
 						if ( $count_quizzes ) {
-							$output .= sprintf( _nx( '%d quiz', '%d quizzes', $count_quizzes, 'learn_press' ), $count_quizzes );
+							$output .= sprintf( _nx( '%d quiz', '%d quizzes', $count_quizzes, 'learnpress' ), $count_quizzes );
 						} else {
-							$output .= __( "0 quiz", 'learn_press' );
+							$output .= __( "0 quiz", 'learnpress' );
 						}
 						$output .= ')';
 						echo $output;
 					} else {
-						_e( 'No content', 'learn_press' );
+						_e( 'No content', 'learnpress' );
 					}
 					break;
 				case 'price':
@@ -830,7 +830,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 					if( $price ) {
 						echo sprintf( '<a href="%s">%s</a>', add_query_arg( 'filter_price', $price ), learn_press_format_price( get_post_meta( $post->ID, '_lp_price', true ), true ) );
 					}else{
-						echo sprintf( '<a href="%s">%s</a>', add_query_arg( 'filter_price', 0 ), __( 'Free', 'learn_press' ) );
+						echo sprintf( '<a href="%s">%s</a>', add_query_arg( 'filter_price', 0 ), __( 'Free', 'learnpress' ) );
 					}
 			}
 		}

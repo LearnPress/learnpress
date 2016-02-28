@@ -122,7 +122,7 @@ class LP_Shortcodes {
 			if ( $order->order_key != $order_key )
 				unset( $order );
 		}else{
-			learn_press_display_message( __( 'Invalid order!', 'learn_press' ), 'error' );
+			learn_press_display_message( __( 'Invalid order!', 'learnpress' ), 'error' );
 			return;
 		}
 
@@ -171,44 +171,44 @@ class LP_Shortcodes {
 
 		$user = new WP_User( $current_user->ID );
 		if ( in_array( LP()->teacher_role, $user->roles ) ) {
-			return __( "You are a teacher now", 'learn_press' );
+			return __( "You are a teacher now", 'learnpress' );
 		}
 
 		if ( !is_user_logged_in() ) {
-			return __( "Please login to fill out this form", 'learn_press' );
+			return __( "Please login to fill out this form", 'learnpress' );
 		}
 
 		if ( !empty( $_REQUEST['become-a-teacher-send'] ) ) {
-			return __( 'Your request has been sent! We will get in touch with you soon!', 'learn_press' );
+			return __( 'Your request has been sent! We will get in touch with you soon!', 'learnpress' );
 		}
 		get_currentuserinfo();
 		$atts   = shortcode_atts(
 			array(
 				'method'             => 'post',
 				'action'             => '',
-				'title'              => __( 'Become a Teacher', 'learn_press' ),
-				'description'        => __( 'Fill out your information and send to us to become a teacher', 'learn_press' ),
-				'submit_button_text' => __( 'Submit', 'learn_press' )
+				'title'              => __( 'Become a Teacher', 'learnpress' ),
+				'description'        => __( 'Fill out your information and send to us to become a teacher', 'learnpress' ),
+				'submit_button_text' => __( 'Submit', 'learnpress' )
 			),
 			$atts
 		);
 		$fields = array(
 			'bat_name'  => array(
-				'title'       => __( 'Name', 'learn_press' ),
+				'title'       => __( 'Name', 'learnpress' ),
 				'type'        => 'text',
-				'placeholder' => __( 'Your name', 'learn_press' ),
+				'placeholder' => __( 'Your name', 'learnpress' ),
 				'def'         => $current_user->display_name
 			),
 			'bat_email' => array(
-				'title'       => __( 'Email', 'learn_press' ),
+				'title'       => __( 'Email', 'learnpress' ),
 				'type'        => 'email',
-				'placeholder' => __( 'Your email address', 'learn_press' ),
+				'placeholder' => __( 'Your email address', 'learnpress' ),
 				'def'         => $current_user->user_email
 			),
 			'bat_phone' => array(
-				'title'       => __( 'Phone', 'learn_press' ),
+				'title'       => __( 'Phone', 'learnpress' ),
 				'type'        => 'text',
-				'placeholder' => __( 'Your phone number', 'learn_press' )
+				'placeholder' => __( 'Your phone number', 'learnpress' )
 			)
 		);
 		$fields = apply_filters( 'learn_press_become_teacher_form_fields', $fields );
@@ -283,7 +283,7 @@ class LP_Shortcodes {
 			if ( empty( $wp_query->query['user'] ) ) {
 				learn_press_get_template( 'profile/private-area.php' );
 			} else {
-				learn_press_display_message( sprintf( __( 'The user %s in not available!', 'learn_press' ), $wp_query->query['user'] ), 'error' );
+				learn_press_display_message( sprintf( __( 'The user %s in not available!', 'learnpress' ), $wp_query->query['user'] ), 'error' );
 			}
 
 		} else {
@@ -321,7 +321,7 @@ class LP_Shortcodes {
 						}
 						$order = learn_press_get_order( $order_id );
 						if ( !$order ) {
-							learn_press_display_message( __( 'Invalid order!', 'learn_press' ), 'error' );
+							learn_press_display_message( __( 'Invalid order!', 'learnpress' ), 'error' );
 						} else {
 							learn_press_get_template( 'profile/order-details.php',
 								array(

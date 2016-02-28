@@ -2,16 +2,16 @@
 <script type="text/html" id="tmpl-quick-add-lesson">
 	<div id="lpr-quick-add-lesson-form" class="lpr-quick-add-form">
 		<input type="text" name="" />
-		<button type="button" class="button" data-action="cancel"><?php _e( 'Cancel [ESC]', 'learn_press' ); ?></button>
-		<button type="button" class="button" data-action="add"><?php _e( 'Add [Enter]', 'learn_press' ); ?></button>
+		<button type="button" class="button" data-action="cancel"><?php _e( 'Cancel [ESC]', 'learnpress' ); ?></button>
+		<button type="button" class="button" data-action="add"><?php _e( 'Add [Enter]', 'learnpress' ); ?></button>
 		<span class="lpr-ajaxload">...</span>
 	</div>
 </script>
 <script type="text/html" id="tmpl-quick-add-quiz">
 	<div id="lpr-quick-add-quiz-form" class="lpr-quick-add-form">
 		<input type="text" name="" />
-		<button type="button" class="button" data-action="cancel"><?php _e( 'Cancel [ESC]', 'learn_press' ); ?></button>
-		<button type="button" class="button" data-action="add"><?php _e( 'Add [Enter]', 'learn_press' ); ?></button>
+		<button type="button" class="button" data-action="cancel"><?php _e( 'Cancel [ESC]', 'learnpress' ); ?></button>
+		<button type="button" class="button" data-action="add"><?php _e( 'Add [Enter]', 'learnpress' ); ?></button>
 		<span class="lpr-ajaxload">...</span>
 	</div>
 </script>
@@ -51,8 +51,8 @@
 		$lessons = learn_press_get_current_user()->get_lessons(array('orderby' => 'name', 'order' => 'ASC', 'posts_per_page' => -1));
 		?>
 		<div class="lp-search-items">
-			<input type="text" name="lp-item-name" placeholder="<?php _e( 'Type here to search the lesson', 'learn_press' );?>" />
-			<!--<button type="button" class="button lp-add-new-item"><?php _e( 'Add New', 'learn_press' );?></button>-->
+			<input type="text" name="lp-item-name" placeholder="<?php _e( 'Type here to search the lesson', 'learnpress' );?>" />
+			<!--<button type="button" class="button lp-add-new-item"><?php _e( 'Add New', 'learnpress' );?></button>-->
 		</div>
 		<ul>
 			<?php
@@ -70,10 +70,10 @@
 				}
 			}
 			?>
-			<li class="lp-search-no-results hide-if-js" data-id="0"><?php _e( 'No results', 'learn_press' );?></li>
+			<li class="lp-search-no-results hide-if-js" data-id="0"><?php _e( 'No results', 'learnpress' );?></li>
 		</ul>
-		<button class="lp-add-item button" disabled="disabled" data-text="<?php _e( 'Add to section', 'learn_press' );?>"><?php _e( 'Add to section', 'learn_press' );?></button>
-		<button class="lp-close-lightbox button" onclick="LearnPress.MessageBox.hide();"><?php _e( 'Close', 'learn_press' );?></button>
+		<button class="lp-add-item button" disabled="disabled" data-text="<?php _e( 'Add to section', 'learnpress' );?>"><?php _e( 'Add to section', 'learnpress' );?></button>
+		<button class="lp-close-lightbox button" onclick="LearnPress.MessageBox.hide();"><?php _e( 'Close', 'learnpress' );?></button>
 	</div>
 </script>
 <script type="text/html" id="tmpl-lp-modal-search-quiz">
@@ -83,8 +83,8 @@
 		$quizzes = learn_press_get_current_user()->get_quizzes(array('orderby' => 'name', 'order' => 'ASC', 'posts_per_page' => -1));
 		?>
 		<div class="lp-search-items">
-			<input type="text" name="lp-item-name" placeholder="<?php _e( 'Type here to search the quiz', 'learn_press' );?>" />
-			<!--<button type="button" class="button lp-add-new-item"><?php _e( 'Add New', 'learn_press' );?></button>-->
+			<input type="text" name="lp-item-name" placeholder="<?php _e( 'Type here to search the quiz', 'learnpress' );?>" />
+			<!--<button type="button" class="button lp-add-new-item"><?php _e( 'Add New', 'learnpress' );?></button>-->
 		</div>
 		<ul>
 			<?php
@@ -102,10 +102,10 @@
 				}
 			}
 			?>
-			<li class="lp-search-no-results hide-if-js" data-id="0"><?php _e( 'No results', 'learn_press' );?></li>
+			<li class="lp-search-no-results hide-if-js" data-id="0"><?php _e( 'No results', 'learnpress' );?></li>
 		</ul>
-		<button class="lp-add-item button" disabled="disabled" data-text="<?php _e( 'Add to section', 'learn_press' );?>"><?php _e( 'Add to section', 'learn_press' );?></button>
-		<button class="lp-close-lightbox button" onclick="LearnPress.MessageBox.hide();"><?php _e( 'Close', 'learn_press' );?></button>
+		<button class="lp-add-item button" disabled="disabled" data-text="<?php _e( 'Add to section', 'learnpress' );?>"><?php _e( 'Add to section', 'learnpress' );?></button>
+		<button class="lp-close-lightbox button" onclick="LearnPress.MessageBox.hide();"><?php _e( 'Close', 'learnpress' );?></button>
 	</div>
 </script>
 <script type="text/javascript">

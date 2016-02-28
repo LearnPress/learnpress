@@ -12,7 +12,7 @@ if ( ! class_exists( 'RWMB_Autocomplete_Field' ) ) {
 		static function admin_enqueue_scripts() {
 			wp_enqueue_style( 'rwmb-autocomplete', RWMB_CSS_URL . 'autocomplete.css', array( 'wp-admin' ), RWMB_VER );
 			wp_enqueue_script( 'rwmb-autocomplete', RWMB_JS_URL . 'autocomplete.js', array( 'jquery-ui-autocomplete' ), RWMB_VER, true );
-			wp_localize_script( 'rwmb-autocomplete', 'RWMB_Autocomplete', array( 'delete' => __( 'Delete', 'learn_press'/*'meta-box'*/ ) ) );
+			wp_localize_script( 'rwmb-autocomplete', 'RWMB_Autocomplete', array( 'delete' => __( 'Delete', 'learnpress'/*'meta-box'*/ ) ) );
 		}
 
 		/**
@@ -63,7 +63,7 @@ if ( ! class_exists( 'RWMB_Autocomplete_Field' ) ) {
 					$html .= sprintf(
 						$tpl,
 						$label,
-						__( 'Delete', 'learn_press'/*'meta-box'*/ ),
+						__( 'Delete', 'learnpress'/*'meta-box'*/ ),
 						$field['field_name'],
 						$value
 					);

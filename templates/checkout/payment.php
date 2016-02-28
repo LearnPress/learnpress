@@ -11,9 +11,9 @@ if ( !defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$payment_heading              = apply_filters( 'learn_press_checkout_payment_heading', __( 'Payment Method', 'learn_press' ) );
-$order_button_text            = apply_filters( 'learn_press_order_button_text', __( 'Place order', 'learn_press' ) );
-$order_button_text_processing = apply_filters( 'learn_press_order_button_text_processing', __( 'Processing', 'learn_press' ) );
+$payment_heading              = apply_filters( 'learn_press_checkout_payment_heading', __( 'Payment Method', 'learnpress' ) );
+$order_button_text            = apply_filters( 'learn_press_order_button_text', __( 'Place order', 'learnpress' ) );
+$order_button_text_processing = apply_filters( 'learn_press_order_button_text_processing', __( 'Processing', 'learnpress' ) );
 ?>
 
 <?php if ( $payment_heading ) { ?>
@@ -51,7 +51,7 @@ $order_button_text_processing = apply_filters( 'learn_press_order_button_text_pr
 		</div>
 
 	<?php } else { ?>
-		<?php if ( $message = apply_filters( 'learn_press_no_available_payment_methods_message', __( 'No payment methods is available.', 'learn_press' ) ) ) { ?>
+		<?php if ( $message = apply_filters( 'learn_press_no_available_payment_methods_message', __( 'No payment methods is available.', 'learnpress' ) ) ) { ?>
 			<?php learn_press_display_message( $message, 'error' ); ?>
 		<?php } ?>
 	<?php } ?>

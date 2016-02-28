@@ -2,8 +2,8 @@
 <table class="lp-sortable lp-list-options" id="learn-press-list-options-<?php echo $this->id;?>">
 	<thead>
 
-	<th><?php _e( 'Answer Text', 'learn_press' ); ?></th>
-	<th><?php _e( 'Is Correct?', 'learn_press' ); ?></th>
+	<th><?php _e( 'Answer Text', 'learnpress' ); ?></th>
+	<th><?php _e( 'Is Correct?', 'learnpress' ); ?></th>
 	<th width="20"></th>
 	<th width="20"></th>
 	</thead>
@@ -46,9 +46,9 @@
 			'learn_press_question_bottom_buttons',
 			array(
 				'add_option' => sprintf(
-					__( '<button class="button add-question-option-button add-question-option-button-%1$d" data-id="%1$d" type="button">%2$s</button>', 'learn_press' ),
+					__( '<button class="button add-question-option-button add-question-option-button-%1$d" data-id="%1$d" type="button">%2$s</button>', 'learnpress' ),
 					$this->id,
-					__( 'Add Option', 'learn_press' )
+					__( 'Add Option', 'learnpress' )
 				),
 				'change_type' => learn_press_dropdown_question_types(array('echo' => false, 'id' => 'learn-press-dropdown-question-types-' . $this->id, 'selected' => $this->type ))
 			),

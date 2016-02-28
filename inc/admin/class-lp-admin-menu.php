@@ -32,8 +32,8 @@ class LP_Admin_Menu {
 	public function admin_menu() {
 		$capacity = 'edit_' . LP()->course_post_type . 's';
 		add_menu_page(
-			__( 'Learning Management System', 'learn_press' ),
-			__( 'LearnPress', 'learn_press' ),
+			__( 'Learning Management System', 'learnpress' ),
+			__( 'LearnPress', 'learnpress' ),
 			$capacity,
 			'learn_press',
 			'',
@@ -44,24 +44,24 @@ class LP_Admin_Menu {
 		$menu_items = array(
 			'statistics' => array(
 				'learn_press',
-				__( 'Statistics', 'learn_press' ),
-				__( 'Statistics', 'learn_press' ),
+				__( 'Statistics', 'learnpress' ),
+				__( 'Statistics', 'learnpress' ),
 				$capacity,
 				'learn_press_statistics',
 				'learn_press_statistic_page'
 			),
 			'settings'   => array(
 				'options-general.php',
-				__( 'LearnPress Settings', 'learn_press' ),
-				__( 'LearnPress', 'learn_press' ),
+				__( 'LearnPress Settings', 'learnpress' ),
+				__( 'LearnPress', 'learnpress' ),
 				'manage_options',
 				'learn_press_settings',
 				'learn_press_settings_page'
 			),
 			'addons'     => array(
 				'learn_press',
-				__( 'Add-ons', 'learn_press' ),
-				__( 'Add-ons', 'learn_press' ),
+				__( 'Add-ons', 'learnpress' ),
+				__( 'Add-ons', 'learnpress' ),
 				'manage_options',
 				'learn_press_add_ons',
 				'learn_press_add_ons_page'

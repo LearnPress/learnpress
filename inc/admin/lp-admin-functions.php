@@ -70,7 +70,7 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 	$class        = null;
 	$css          = null;
 	$before       = array(
-		'add_new_page' => __( '[ Add a new page ]', 'learn_press' )
+		'add_new_page' => __( '[ Add a new page ]', 'learnpress' )
 	);
 	$after        = null;
 	$echo         = true;
@@ -85,7 +85,7 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 		'id'               => $id,
 		'sort_column'      => 'menu_order',
 		'sort_order'       => 'ASC',
-		'show_option_none' => __( 'Select Page', 'learn_press' ),
+		'show_option_none' => __( 'Select Page', 'learnpress' ),
 		'class'            => $class,
 		'echo'             => false,
 		'selected'         => $selected,
@@ -104,7 +104,7 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 	}
 
 	$replace .= ' data-selected="' . $selected . '"';
-	$replace .= " data-placeholder='" . __( 'Select a page&hellip;', 'learn_press' ) . "' id=";
+	$replace .= " data-placeholder='" . __( 'Select a page&hellip;', 'learnpress' ) . "' id=";
 	$output = str_replace( ' id=', $replace, $output );
 	if ( $before ) {
 		$before_output = array();
@@ -118,12 +118,12 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 		ob_start(); ?>
 		<p class="learn-press-quick-add-page-inline <?php echo $id; ?> hide-if-js">
 			<input type="text" />
-			<button class="button" type="button"><?php _e( 'Ok', 'learn_press' ); ?></button>
-			<a href=""><?php _e( 'Cancel', 'learn_press' ); ?></a>
+			<button class="button" type="button"><?php _e( 'Ok', 'learnpress' ); ?></button>
+			<a href=""><?php _e( 'Cancel', 'learnpress' ); ?></a>
 		</p>
 		<p class="learn-press-quick-add-page-actions <?php echo $id; ?><?php echo $selected ? '' : ' hide-if-js'; ?>">
-			<a class="edit-page" href="<?php echo get_edit_post_link( $selected ); ?>" target="_blank"><?php _e( 'Edit Page', 'learn_press' ); ?></a>
-			<a class="view-page" href="<?php echo get_permalink( $selected ); ?>" target="_blank"><?php _e( 'View Page', 'learn_press' ); ?></a>
+			<a class="edit-page" href="<?php echo get_edit_post_link( $selected ); ?>" target="_blank"><?php _e( 'Edit Page', 'learnpress' ); ?></a>
+			<a class="view-page" href="<?php echo get_permalink( $selected ); ?>" target="_blank"><?php _e( 'View Page', 'learnpress' ); ?></a>
 		</p>
 		<?php $output .= ob_get_clean();
 	}
@@ -145,8 +145,8 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 function learn_press_admin_localize_script() {
 	if ( defined( 'DOING_AJAX' ) || !is_admin() ) return;
 	$translate = array(
-		'quizzes_is_not_available' => __( 'Quiz is not available', 'learn_press' ),
-		'lessons_is_not_available' => __( 'Lesson is not available', 'learn_press' )
+		'quizzes_is_not_available' => __( 'Quiz is not available', 'learnpress' ),
+		'lessons_is_not_available' => __( 'Lesson is not available', 'learnpress' )
 	);
 	LP_Admin_Assets::add_localize( $translate );
 }
@@ -160,13 +160,13 @@ add_action( 'init', 'learn_press_admin_localize_script' );
  */
 function learn_press_settings_tabs_array() {
 	$tabs = array(
-		'general'  => __( 'General', 'learn_press' ),
-		'courses'  => __( 'Courses', 'learn_press' ),
-		'pages'    => __( 'Pages', 'learn_press' ),
-		'payments' => __( 'Payments', 'learn_press' ),
-		'checkout' => __( 'Checkout', 'learn_press' ),
-		//'profile'  => __( 'Profile', 'learn_press' ),
-		'emails'   => __( 'Emails', 'learn_press' )
+		'general'  => __( 'General', 'learnpress' ),
+		'courses'  => __( 'Courses', 'learnpress' ),
+		'pages'    => __( 'Pages', 'learnpress' ),
+		'payments' => __( 'Payments', 'learnpress' ),
+		'checkout' => __( 'Checkout', 'learnpress' ),
+		//'profile'  => __( 'Profile', 'learnpress' ),
+		'emails'   => __( 'Emails', 'learnpress' )
 	);
 	return apply_filters( 'learn_press_settings_tabs_array', $tabs );
 }
@@ -325,7 +325,7 @@ function learn_press_get_chart_students( $from = null, $by = null, $time_ago ) {
  * @return array
  */
 function learn_press_get_chart_courses() {
-	$labels              = array( __( 'Pending Courses / Publish Courses', 'learn_press' ), __( 'Free Courses / Priced Courses', 'learn_press' ) );
+	$labels              = array( __( 'Pending Courses / Publish Courses', 'learnpress' ), __( 'Free Courses / Priced Courses', 'learnpress' ) );
 	$datasets            = array();
 	$datasets[0]['data'] = array( learn_press_get_courses_by_status( 'pending' ), learn_press_get_courses_by_price( 'free' ) );
 	$datasets[1]['data'] = array( learn_press_get_courses_by_status( 'publish' ), learn_press_get_courses_by_price( 'not_free' ) );
@@ -432,7 +432,7 @@ function learn_press_add_row_action_link( $actions ) {
 		$duplicate_link = array(
 			array(
 				'link'  => $duplicate_link,
-				'title' => __( 'Duplicate this course', 'learn_press' ),
+				'title' => __( 'Duplicate this course', 'learnpress' ),
 				'class' => ''
 			)
 		);
@@ -443,7 +443,7 @@ function learn_press_add_row_action_link( $actions ) {
 				$drop_down[] = '<li>' . sprintf( '<a href="%s" class="%s">%s</a>', $link['link'], $link['class'], $link['title'] ) . '</li>';
 			};
 			$drop_down[] = '</ul>';
-			$link        = sprintf( '<div class="lpr-row-actions"><a href="%s">%s</a>%s</div>', 'javascript: void(0);', __( 'Course', 'learn_press' ), join( "\n", $drop_down ) );
+			$link        = sprintf( '<div class="lpr-row-actions"><a href="%s">%s</a>%s</div>', 'javascript: void(0);', __( 'Course', 'learnpress' ), join( "\n", $drop_down ) );
 		} else {
 			$link = array_shift( $links );
 			$link = sprintf( '<a href="%s" class="%s">%s</a>', $link['link'], $link['class'], $link['title'] );
@@ -472,11 +472,11 @@ function learn_press_process_duplicate_action() {
 		}
 		// check for post is exists
 		if ( !( $post_id && $post = get_post( $post_id ) ) ) {
-			wp_die( __( 'Op! The course does not exists', 'learn_press' ) );
+			wp_die( __( 'Op! The course does not exists', 'learnpress' ) );
 		}
 		// ensure that user can create course
 		if ( !current_user_can( 'edit_posts' ) ) {
-			wp_die( __( 'Sorry! You have not permission to duplicate this course', 'learn_press' ) );
+			wp_die( __( 'Sorry! You have not permission to duplicate this course', 'learnpress' ) );
 		}
 
 		// assign course to current user
@@ -540,7 +540,7 @@ function learn_press_admin_notice_bundle_activation() {
 		?>
 		<div class="updated">
 			<p>
-				<?php printf( __( 'Want full free features? Click <a href="%s">here</a> to install LearnPress Add-ons Bundle for free!', 'learn_press' ), admin_url( 'admin.php?page=learn_press_add_ons&tab=bundle_activate' ) ); ?>
+				<?php printf( __( 'Want full free features? Click <a href="%s">here</a> to install LearnPress Add-ons Bundle for free!', 'learnpress' ), admin_url( 'admin.php?page=learn_press_add_ons&tab=bundle_activate' ) ); ?>
 				<?php printf( '<a href="" class="learn-press-admin-notice-dismiss" data-context="bundle-addon-install" data-transient="-1"></a>' ); ?>
 			</p>
 		</div>
@@ -592,7 +592,7 @@ function learn_press_install_add_on( $plugin_name ) {
 				$response['error'] = $result;
 			} else {
 				$response         = $result;
-				$response['text'] = __( 'Installed', 'learn_press' );
+				$response['text'] = __( 'Installed', 'learnpress' );
 			}
 		}
 	}
@@ -616,7 +616,7 @@ function learn_press_user_become_a_teacher_notice( $user_id ) {
 	$user = new WP_User( $user_id );
 	?>
 	<div class="updated">
-		<p><?php printf( __( 'The user %s has become a teacher', 'learn_press' ), $user->user_login ); ?></p>
+		<p><?php printf( __( 'The user %s has become a teacher', 'learnpress' ), $user->user_login ); ?></p>
 	</div>
 	<?php
 }
@@ -671,12 +671,12 @@ function learn_press_one_click_install_sample_data_notice() {
                 	<p>Importing...</p>
 				</div>
             </div>',
-			__( 'You haven\'t got any courses yet! Would you like to import sample data?', 'learn_press' ),
-			__( 'If yes, it requires to install addon named', 'learn_press' ),
-			__( 'LearnPress Import/Export', 'learn_press' ),
-			__( 'but don\'t worry because it is completely automated.', 'learn_press' ),
-			__( 'Import now', 'learn_press' ),
-			__( 'No, thanks!', 'learn_press' )
+			__( 'You haven\'t got any courses yet! Would you like to import sample data?', 'learnpress' ),
+			__( 'If yes, it requires to install addon named', 'learnpress' ),
+			__( 'LearnPress Import/Export', 'learnpress' ),
+			__( 'but don\'t worry because it is completely automated.', 'learnpress' ),
+			__( 'Import now', 'learnpress' ),
+			__( 'No, thanks!', 'learnpress' )
 		);
 	}
 }
@@ -753,7 +753,7 @@ function learn_press_output_screen_id(){
 //add_action( 'admin_head', 'learn_press_output_screen_id' );
 
 function learn_press_get_screens(){
-	$screen_id = sanitize_title( __( 'LearnPress', 'learn_press' ) );
+	$screen_id = sanitize_title( __( 'LearnPress', 'learnpress' ) );
 	$screens   = array(
 		'toplevel_page_' . $screen_id,
 		$screen_id . '_page_learn_press_statistics',

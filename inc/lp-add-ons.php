@@ -25,7 +25,7 @@ class LP_Prerequisite_Addon {
 
 	function course_message( $message, $course, $user ) {
 		if ( !empty( $this->course_prerequisites[$course->id] ) ) {
-			$message = sprintf( __( 'Please finish course <strong>%s</strong> before you can enroll this course', 'learn_press' ), get_the_title( $this->course_prerequisites[$course->id] ) );
+			$message = sprintf( __( 'Please finish course <strong>%s</strong> before you can enroll this course', 'learnpress' ), get_the_title( $this->course_prerequisites[$course->id] ) );
 		}
 		return $message;
 	}

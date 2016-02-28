@@ -49,7 +49,7 @@ return;
 		'post_date'     => $date, //Course ID
 		'post_type'     => LP()->order_post_type,
 		'post_password' => $post_password,
-		'post_title'    => __( 'Order on ', 'learn_press' ) . ' ' . date( "l jS F Y h:i:s A", strtotime( $date ) )
+		'post_title'    => __( 'Order on ', 'learnpress' ) . ' ' . date( "l jS F Y h:i:s A", strtotime( $date ) )
 	);
 	$order_meta        = array(
 		'lpr_cost'        => $_POST['mc_gross'], //Total price

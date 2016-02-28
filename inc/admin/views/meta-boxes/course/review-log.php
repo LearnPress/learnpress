@@ -16,15 +16,15 @@ $enable_edit_published = LP()->settings->get( 'enable_edit_published' ) == 'yes'
 if ( $user->is_instructor() && ( ( get_post() != 'publish' ) ) ) {
 	?>
 	<div id="learn-press-review-message">
-		<h4><?php _e( 'Review message to Reviewer', 'learn_press' ); ?></h4>
+		<h4><?php _e( 'Review message to Reviewer', 'learnpress' ); ?></h4>
 		<p>
 			<label>
 				<input type="checkbox" id="learn-press-notice-check" name="learn_press_submit_course_notice_reviewer" value="yes" />
-				<?php _e( 'Message to Reviewer', 'learn_press' ); ?>
+				<?php _e( 'Message to Reviewer', 'learnpress' ); ?>
 			</label>
 		</p>
 		<div class="hide-if-js">
-			<textarea class="widefat" rows="5" disabled="disabled" name="review_message" resize="none" placeholder="<?php _e( 'Enter some information here for reviewer', 'learn_press' ); ?>"></textarea>
+			<textarea class="widefat" rows="5" disabled="disabled" name="review_message" resize="none" placeholder="<?php _e( 'Enter some information here for reviewer', 'learnpress' ); ?>"></textarea>
 
 		</div>
 		<?php if( $required_review && !$enable_edit_published ){?>
@@ -38,7 +38,7 @@ if ( $user->is_instructor() && ( ( get_post() != 'publish' ) ) ) {
 		jQuery('#post').submit(function (e) {
 			var $review = $('textarea[name="review_message"]');
 			if (!($review.val() + '').length && $('#learn-press-notice-check').is(':checked')) {
-				alert('<?php _e( 'Please write your message to Reviewer', 'learn_press' );?>');
+				alert('<?php _e( 'Please write your message to Reviewer', 'learnpress' );?>');
 				$review.focus();
 				return false;
 			}
@@ -57,15 +57,15 @@ if ( $user->is_instructor() && ( ( get_post() != 'publish' ) ) ) {
 } else if ( $user->is_admin() && !$course_user->is_admin() ) {
 	?>
 	<div id="learn-press-review-message">
-		<h4><?php _e( 'Review message to Instructor', 'learn_press' ); ?></h4>
+		<h4><?php _e( 'Review message to Instructor', 'learnpress' ); ?></h4>
 		<p>
 			<label>
 				<input type="checkbox" id="learn-press-notice-check" name="learn_press_submit_course_notice_instructor" value="yes"/>
-				<?php _e( 'Message to Instructor', 'learn_press' ); ?>
+				<?php _e( 'Message to Instructor', 'learnpress' ); ?>
 			</label>
 		</p>
 		<div class="hide-if-js">
-		<textarea class="widefat" rows="5" disabled="disabled" name="review_message" resize="none" placeholder="<?php _e( 'Enter some information here for instructor. E.g: for reason why the course is rejected etc...', 'learn_press' ); ?>"></textarea>
+		<textarea class="widefat" rows="5" disabled="disabled" name="review_message" resize="none" placeholder="<?php _e( 'Enter some information here for instructor. E.g: for reason why the course is rejected etc...', 'learnpress' ); ?>"></textarea>
 		</div>
 	</div>
 	<?php ob_start(); ?>
@@ -80,7 +80,7 @@ if ( $user->is_instructor() && ( ( get_post() != 'publish' ) ) ) {
 				clicked = $(':focus', this).attr('name');
 
 			if ( ( ( clicked == 'save' || clicked == 'publish' ) && ( status != current_status ) || ( clicked == 'publish' ) && ( status == 'pending' ) )&& !($review.val() + '').length) {
-				alert('<?php _e( 'Please write your message to Instructor', 'learn_press' );?>');
+				alert('<?php _e( 'Please write your message to Instructor', 'learnpress' );?>');
 				var $check = $('input[name="learn_press_submit_course_notice_instructor"]').prop('checked', true);
 				$check.trigger('change');
 				return false;

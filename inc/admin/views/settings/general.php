@@ -23,27 +23,27 @@ $settings = LP()->settings;
 	<?php if(1 == 0){?>
 	<tr>
 		<th scope="row">
-			<label><?php _e( 'Instructors registration', 'learn_press' ); ?></label>
+			<label><?php _e( 'Instructors registration', 'learnpress' ); ?></label>
 		</th>
 		<td>
 			<input type="hidden" name="<?php echo $this->get_field_name( 'instructor_registration' ); ?>" value="no">
 			<input type="checkbox" name="<?php echo $this->get_field_name( 'instructor_registration' ); ?>" value="yes" <?php checked( $settings->get( 'instructor_registration' ) == 'yes', true ); ?> />
 
-			<p class="description"><?php _e( 'Create option for instructors registration', 'learn_press' ); ?></p>
+			<p class="description"><?php _e( 'Create option for instructors registration', 'learnpress' ); ?></p>
 		</td>
 	</tr>
 	<tr>
-		<th><label><?php _e( 'Auto update post name', 'learn_press' ); ?></label></th>
+		<th><label><?php _e( 'Auto update post name', 'learnpress' ); ?></label></th>
 		<td>
 			<input type="hidden" name="<?php echo $this->get_field_name( 'auto_update_post_name' ); ?>" value="no">
 			<input type="checkbox" name="<?php echo $this->get_field_name( 'auto_update_post_name' ); ?>" value="yes" <?php checked( $settings->get( 'auto_update_post_name' ) == 'yes', true ); ?> />
 			<p class="description">
-				<?php _e( 'The post\'s name will update along with the title when changes title of lesson or quiz  in course curriculum or question in quiz<br />The permalink also is changed, therefore uncheck this if you don\'t want to change the permalink', 'learn_press' );?>
+				<?php _e( 'The post\'s name will update along with the title when changes title of lesson or quiz  in course curriculum or question in quiz<br />The permalink also is changed, therefore uncheck this if you don\'t want to change the permalink', 'learnpress' );?>
 			</p>
 		</td>
 	</tr>
 	<tr>
-		<th><label><?php _e( 'Currency', 'learn_press' ); ?></label></th>
+		<th><label><?php _e( 'Currency', 'learnpress' ); ?></label></th>
 		<td>
 			<select name="<?php echo $this->get_field_name( 'currency' ); ?>">
 				<?php if ( $payment_currencies = learn_press_get_payment_currencies() ) foreach ( $payment_currencies as $code => $symbol ) { ?>
@@ -54,7 +54,7 @@ $settings = LP()->settings;
 		</td>
 	</tr>
 	<tr>
-		<th><label><?php _e( 'Currency Position', 'learn_press' ); ?></label>
+		<th><label><?php _e( 'Currency Position', 'learnpress' ); ?></label>
 		</th>
 		<td>
 			<select name="<?php echo $this->get_field_name( 'currency_pos' ); ?>">
@@ -82,19 +82,19 @@ $settings = LP()->settings;
 		</td>
 	</tr>
 	<tr>
-		<th><label><?php _e( 'Thousands Separator', 'learn_press' ); ?></label></th>
+		<th><label><?php _e( 'Thousands Separator', 'learnpress' ); ?></label></th>
 		<td>
 			<input class="regular_text" type="text" name="<?php echo $this->get_field_name( 'thousands_separator' ); ?>" value="<?php echo $settings->get( 'thousands_separator', ',' ); ?>" />
 		</td>
 	</tr>
 	<tr>
-		<th><label><?php _e( 'Decimals Separator', 'learn_press' ); ?></label></th>
+		<th><label><?php _e( 'Decimals Separator', 'learnpress' ); ?></label></th>
 		<td>
 			<input class="regular_text" type="text" name="<?php echo $this->get_field_name( 'decimals_separator' ); ?>" value="<?php echo $settings->get( 'decimals_separator', '.' ); ?>" />
 		</td>
 	</tr>
 	<tr>
-		<th><label><?php _e( 'Number of Decimals', 'learn_press' ); ?></label></th>
+		<th><label><?php _e( 'Number of Decimals', 'learnpress' ); ?></label></th>
 		<td>
 			<input class="regular_text" type="text" name="<?php echo $this->get_field_name( 'number_of_decimals' ); ?>" value="<?php echo $settings->get( 'number_of_decimals', 2 ); ?>" />
 		</td>

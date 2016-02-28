@@ -232,7 +232,7 @@ class LP_Question_Factory {
 			$answers[] = array(
 				'is_true' => 'no',
 				'value'   => learn_press_uniqid(),
-				'text'    => __( 'Option', 'learn_press' )
+				'text'    => __( 'Option', 'learnpress' )
 			);
 		} elseif ( $size == 0 ) {
 			return $answers;
@@ -284,9 +284,9 @@ class LP_Question_Factory {
 	 */
 	public static function get_types() {
 		$types = array(
-			'true_or_false' => __( 'True Or False', 'learn_press' ),
-			'multi_choice'  => __( 'Multi Choice', 'learn_press' ),
-			'single_choice' => __( 'Single Choice', 'learn_press' )
+			'true_or_false' => __( 'True Or False', 'learnpress' ),
+			'multi_choice'  => __( 'Multi Choice', 'learnpress' ),
+			'single_choice' => __( 'Single Choice', 'learnpress' )
 		);
 		return apply_filters( 'learn_press_question_types', $types );
 	}

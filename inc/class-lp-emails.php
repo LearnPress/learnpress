@@ -39,14 +39,14 @@ class LP_Emails {
 	 * @version 1.0
 	 */
 	public function __clone() {
-		_doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?', 'learn_press' ), '1.0' );
+		_doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?', 'learnpress' ), '1.0' );
 	}
 
 	/**
 	 * @version 1.0
 	 */
 	public function __wakeup() {
-		_doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?', 'learn_press' ), '1.0' );
+		_doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?', 'learnpress' ), '1.0' );
 	}
 
 	public function __construct() {
@@ -141,7 +141,7 @@ class LP_Emails {
 
 		$fields = array(
 			'from_email' => $from,
-			'from_name'  => 'wtf',
+			'from_name'  => 'from name',
 			'to_email'   => $to,
 			'subject'    => $subject,
 			'body'       => $message,

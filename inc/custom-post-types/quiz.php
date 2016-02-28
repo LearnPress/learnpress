@@ -82,18 +82,18 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 				apply_filters( 'lp_quiz_post_type_args',
 					array(
 						'labels'             => array(
-							'name'               => __( 'Quizzes', 'learn_press' ),
-							'menu_name'          => __( 'Quizzes', 'learn_press' ),
-							'singular_name'      => __( 'Quiz', 'learn_press' ),
-							'add_new_item'       => __( 'Add New Quiz', 'learn_press' ),
-							'edit_item'          => __( 'Edit Quiz', 'learn_press' ),
-							'all_items'          => __( 'Quizzes', 'learn_press' ),
-							'view_item'          => __( 'View Quiz', 'learn_press' ),
-							'add_new'            => __( 'New Quiz', 'learn_press' ),
-							'update_item'        => __( 'Update Quiz', 'learn_press' ),
-							'search_items'       => __( 'Search Quizzes', 'learn_press' ),
-							'not_found'          => sprintf( __( 'You have not got any quiz yet. Click <a href="%s">Add new</a> to start', 'learn_press' ), admin_url( 'post-new.php?post_type=lp_quiz' ) ),
-							'not_found_in_trash' => __( 'No quiz found in Trash', 'learn_press' )
+							'name'               => __( 'Quizzes', 'learnpress' ),
+							'menu_name'          => __( 'Quizzes', 'learnpress' ),
+							'singular_name'      => __( 'Quiz', 'learnpress' ),
+							'add_new_item'       => __( 'Add New Quiz', 'learnpress' ),
+							'edit_item'          => __( 'Edit Quiz', 'learnpress' ),
+							'all_items'          => __( 'Quizzes', 'learnpress' ),
+							'view_item'          => __( 'View Quiz', 'learnpress' ),
+							'add_new'            => __( 'New Quiz', 'learnpress' ),
+							'update_item'        => __( 'Update Quiz', 'learnpress' ),
+							'search_items'       => __( 'Search Quizzes', 'learnpress' ),
+							'not_found'          => sprintf( __( 'You have not got any quiz yet. Click <a href="%s">Add new</a> to start', 'learnpress' ), admin_url( 'post-new.php?post_type=lp_quiz' ) ),
+							'not_found_in_trash' => __( 'No quiz found in Trash', 'learnpress' )
 						),
 						'public'             => true,
 						'publicly_queryable' => true,
@@ -123,13 +123,13 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 			$meta_box                                      = apply_filters(
 				'learn_press_quiz_question_meta_box_args',
 				array(
-					'title'      => __( 'Questions', 'learn_press' ),
+					'title'      => __( 'Questions', 'learnpress' ),
 					'post_types' => LP()->quiz_post_type,
 					'id'         => 'questions',
 					'fields'     => array(
 						array(
-							'name' => __( '', 'learn_press' ),
-							'desc' => __( '', 'learn_press' ),
+							'name' => __( '', 'learnpress' ),
+							'desc' => __( '', 'learnpress' ),
 							'id'   => "{$prefix}questions",
 							'type' => 'quiz_questions'
 						)
@@ -140,38 +140,38 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 
 			new RW_Meta_Box(
 				array(
-					'title'      => __( 'General Settings', 'learn_press' ),
+					'title'      => __( 'General Settings', 'learnpress' ),
 					'post_types' => LP()->quiz_post_type,
 					'context'    => 'normal',
 					'priority'   => 'high',
 					'fields'     => array(
 						array(
-							'name' => __( 'Duration', 'learn_press' ),
-							'desc' => __( 'Duration of the quiz (in minutes). Auto submits when expire. Set 0 to disable.', 'learn_press' ),
+							'name' => __( 'Duration', 'learnpress' ),
+							'desc' => __( 'Duration of the quiz (in minutes). Auto submits when expire. Set 0 to disable.', 'learnpress' ),
 							'id'   => "{$prefix}duration",
 							'type' => 'number',
 							'min'  => 0,
 							'std'  => 10
 						),
 						array(
-							'name' => __( 'Re-take', 'learn_press' ),
+							'name' => __( 'Re-take', 'learnpress' ),
 							'id'   => "{$prefix}retake_count",
 							'type' => 'number',
-							'desc' => __( 'How many times the user can re-take this quiz. Set to 0 to disable', 'learn_press' ),
+							'desc' => __( 'How many times the user can re-take this quiz. Set to 0 to disable', 'learnpress' ),
 							'min'  => 0
 						),
 						array(
-							'name' => __( 'Show correct answer', 'learn_press' ),
+							'name' => __( 'Show correct answer', 'learnpress' ),
 							'id'   => "{$prefix}show_result",
 							'type' => 'checkbox',
-							'desc' => __( 'Show the correct answer in result of the quiz.', 'learn_press' ),
+							'desc' => __( 'Show the correct answer in result of the quiz.', 'learnpress' ),
 							'std'  => 0
 						),
 						array(
-							'name' => __( 'Show question answer immediately', 'learn_press' ),
+							'name' => __( 'Show question answer immediately', 'learnpress' ),
 							'id'   => "{$prefix}show_question_answer",
 							'type' => 'checkbox',
-							'desc' => __( 'Show the correct answer and explanation (if exists) of the question right after student answered.', 'learn_press' ),
+							'desc' => __( 'Show the correct answer and explanation (if exists) of the question right after student answered.', 'learnpress' ),
 							'std'  => 0
 						),
 					)
@@ -191,7 +191,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 						is_error = false;
 					window.learn_press_before_update_quiz_message = [];
 					if (0 == $title.val().length) {
-						window.learn_press_before_update_quiz_message.push('<?php _e( 'Please enter the title of the quiz', 'learn_press' );?>');
+						window.learn_press_before_update_quiz_message.push('<?php _e( 'Please enter the title of the quiz', 'learnpress' );?>');
 						$title.focus();
 						is_error = true;
 					}
@@ -225,8 +225,8 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 							<?php endforeach; ?>
 						<?php endif; ?>
 					</select>
-					<button class="button" data-action="add" type="button"><?php _e( 'Add [Enter]', 'learn_press' ); ?></button>
-					<button data-action="cancel" class="button" type="button"><?php _e( 'Cancel [ESC]', 'learn_press' ); ?></button>
+					<button class="button" data-action="add" type="button"><?php _e( 'Add [Enter]', 'learnpress' ); ?></button>
+					<button data-action="cancel" class="button" type="button"><?php _e( 'Cancel [ESC]', 'learnpress' ); ?></button>
 					<span class="lpr-ajaxload">...</span>
 				</div>
 			</script>
@@ -249,7 +249,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 			if ( false !== $pos && !array_key_exists( LP()->course_post_type, $columns ) ) {
 				$columns = array_merge(
 					array_slice( $columns, 0, $pos + 1 ),
-					array( LP()->course_post_type => __( 'Course', 'learn_press' ), 'num_of_question' => __( 'Questions', 'learn_press' ) ),
+					array( LP()->course_post_type => __( 'Course', 'learnpress' ), 'num_of_question' => __( 'Questions', 'learnpress' ) ),
 					array_slice( $columns, $pos + 1 )
 				);
 			}
@@ -277,21 +277,21 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 						foreach ( $courses as $course ) {
 							echo '<div><a href="' . esc_url( add_query_arg( array( 'filter_course' => $course->ID ) ) ) . '">' . get_the_title( $course->ID ) . '</a>';
 							echo '<div class="row-actions">';
-							printf( '<a href="%s">%s</a>', admin_url( sprintf( 'post.php?post=%d&action=edit', $course->ID ) ), __( 'Edit', 'learn_press' ) );
+							printf( '<a href="%s">%s</a>', admin_url( sprintf( 'post.php?post=%d&action=edit', $course->ID ) ), __( 'Edit', 'learnpress' ) );
 							echo "&nbsp;|&nbsp;";
-							printf( '<a href="%s">%s</a>', get_the_permalink( $course->ID ), __( 'View', 'learn_press' ) );
+							printf( '<a href="%s">%s</a>', get_the_permalink( $course->ID ), __( 'View', 'learnpress' ) );
 							echo "&nbsp;|&nbsp;";
 							if ( $this->_filter_course() ) {
-								printf( '<a href="%s">%s</a>', remove_query_arg( 'filter_course' ), __( 'Remove Filter', 'learn_press' ) );
+								printf( '<a href="%s">%s</a>', remove_query_arg( 'filter_course' ), __( 'Remove Filter', 'learnpress' ) );
 							} else {
-								printf( '<a href="%s">%s</a>', add_query_arg( 'filter_course', $course->ID ), __( 'Filter', 'learn_press' ) );
+								printf( '<a href="%s">%s</a>', add_query_arg( 'filter_course', $course->ID ), __( 'Filter', 'learnpress' ) );
 							}
 
 							echo '</div></div>';
 						}
 
 					} else {
-						_e( 'Not assigned yet', 'learn_press' );
+						_e( 'Not assigned yet', 'learnpress' );
 					}
 					break;
 				case 'num_of_question':
@@ -305,7 +305,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 
 					printf(
 						'<span class="lp-label-counter" title="%s">%s</span>',
-						( $count ) ? sprintf( _nx( '%d question', '%d questions', $count, 'learn_press' ), $count ) : __( 'This quiz has got any questions', 'learn_press' ),
+						( $count ) ? sprintf( _nx( '%d question', '%d questions', $count, 'learnpress' ), $count ) : __( 'This quiz has got any questions', 'learnpress' ),
 						$count
 					);
 			}

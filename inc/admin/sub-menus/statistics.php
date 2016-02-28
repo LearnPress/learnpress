@@ -13,8 +13,8 @@ if ( !defined( 'ABSPATH' ) ) {
 function learn_press_statistic_page() {
 	$current_tab = isset( $_GET['tab'] ) ? $_GET['tab'] : 'students';
 	$tabs        = apply_filters( 'learn_press_statistics_tabs', array(
-		'students' => __( 'Students', 'learn_press' ),
-		'courses'  => __( 'Courses', 'learn_press' ),
+		'students' => __( 'Students', 'learnpress' ),
+		'courses'  => __( 'Courses', 'learnpress' ),
 	) );
 	echo '<div class="wrap">';
 	echo '<h2 class="nav-tab-wrapper">';

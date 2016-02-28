@@ -15,8 +15,8 @@ if ( is_user_logged_in() ) {
 	return;
 }
 
-$heading    = apply_filters( 'learn_press_checkout_login_heading', __( 'Returning customer', 'learn_press' ) );
-$subheading = apply_filters( 'learn_press_checkout_login_subheading', __( 'I am a returning customer', 'learn_press' ) );
+$heading    = apply_filters( 'learn_press_checkout_login_heading', __( 'Returning customer', 'learnpress' ) );
+$subheading = apply_filters( 'learn_press_checkout_login_subheading', __( 'I am a returning customer', 'learnpress' ) );
 
 ?>
 
@@ -45,7 +45,7 @@ $subheading = apply_filters( 'learn_press_checkout_login_subheading', __( 'I am 
 			<input type="password" name="user_password" />
 		</li>
 		<li>
-			<button type="button" id="learn-press-checkout-login-button"><?php _e( 'Login', 'learn_press' ); ?></button>
+			<button type="button" id="learn-press-checkout-login-button"><?php _e( 'Login', 'learnpress' ); ?></button>
 		</li>
 
 		<?php do_action( 'learn_press_checkout_user_login_after_form_fields' ); ?>

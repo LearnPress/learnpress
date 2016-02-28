@@ -56,14 +56,14 @@ function learn_press_settings_page() {
 		$section = !empty( $_REQUEST['section'] ) ? '&section=' . $_REQUEST['section'] : '';
 		?>
 		<script type="text/javascript">window.location.href = '<?php echo admin_url( 'options-general.php?page=learn_press_settings&tab=' . $current_tab . $section . '&settings-updated=true' );?>';</script><?php exit();
-		echo '<div class="updated"><p><strong>' . __( 'Settings saved', 'learn_press' ) . '</strong></p></div>';
+		echo '<div class="updated"><p><strong>' . __( 'Settings saved', 'learnpress' ) . '</strong></p></div>';
 	}
 	// ensure all settings relevant to rewrite rules effect immediately
 	flush_rewrite_rules();
 
 	if ( !empty( $_GET['settings-updated'] ) ) : ?>
 		<div id="message" class="updated notice is-dismissible">
-			<p><?php _e( 'LearnPress settings updated.', 'learn_press' ); ?></p>
+			<p><?php _e( 'LearnPress settings updated.', 'learnpress' ); ?></p>
 		</div>
 	<?php endif; ?>
 
@@ -82,7 +82,7 @@ function learn_press_settings_page() {
 			do_action( 'learn_press_settings_' . $current_tab );
 			?>
 			<p>
-				<button class="button button-primary"><?php _e( 'Save settings', 'learn_press' ); ?></button>
+				<button class="button button-primary"><?php _e( 'Save settings', 'learnpress' ); ?></button>
 			</p>
 			<?php wp_nonce_field( 'learn_press_settings', 'learn_press_settings_nonce' ); ?>
 		</form>

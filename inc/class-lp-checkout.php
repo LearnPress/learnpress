@@ -34,8 +34,8 @@ class LP_Checkout {
 	 */
 	function __construct() {
 		if ( !is_user_logged_in() ) {
-			$this->checkout_fields['user_login']    = __( 'Username', 'learn_press' );
-			$this->checkout_fields['user_password'] = __( 'Password', 'learn_press' );
+			$this->checkout_fields['user_login']    = __( 'Username', 'learnpress' );
+			$this->checkout_fields['user_password'] = __( 'Password', 'learnpress' );
 		}
 		$this->checkout_fields = apply_filters( 'learn_press_checkout_fields', $this->checkout_fields );
 
@@ -75,7 +75,7 @@ class LP_Checkout {
 				$order            = learn_press_update_order( $order_data );
 
 				if ( is_wp_error( $order ) ) {
-					throw new Exception( sprintf( __( 'Error %d: Unable to create order. Please try again.', 'learn_press' ), 401 ) );
+					throw new Exception( sprintf( __( 'Error %d: Unable to create order. Please try again.', 'learnpress' ), 401 ) );
 				} else {
 					$order->remove_order_items();
 					//do_action( 'learn_press_resume_order', $order_id );
@@ -84,7 +84,7 @@ class LP_Checkout {
 			} else {
 				$order = learn_press_create_order( $order_data );
 				if ( is_wp_error( $order ) ) {
-					throw new Exception( sprintf( __( 'Error %d: Unable to create order. Please try again.', 'learn_press' ), 400 ) );
+					throw new Exception( sprintf( __( 'Error %d: Unable to create order. Please try again.', 'learnpress' ), 400 ) );
 				} else {
 					$order_id = $order->id;
 					do_action( 'learn_press_new_order', $order_id );
@@ -96,12 +96,12 @@ class LP_Checkout {
 				if ( empty( $item['order_item_name'] ) && !empty( $item['item_id'] ) && ( $course = LP_Course::get_course( $item['item_id'] ) ) ) {
 					$item['order_item_name'] = $course->get_title();
 				}else{
-					throw new Exception( sprintf( __( 'Item does not exists!', 'learn_press' ), 402 ) );
+					throw new Exception( sprintf( __( 'Item does not exists!', 'learnpress' ), 402 ) );
 				}
 				$item_id = $order->add_item( $item );
 
 				if ( !$item_id ) {
-					throw new Exception( sprintf( __( 'Error %d: Unable to create order. Please try again.', 'learn_press' ), 402 ) );
+					throw new Exception( sprintf( __( 'Error %d: Unable to create order. Please try again.', 'learnpress' ), 402 ) );
 				}
 
 				// Allow plugins to add order item meta
@@ -146,11 +146,11 @@ class LP_Checkout {
 	function validate_fields( $validate, $field, $checkout ) {
 		if ( $field['name'] == 'user_login' && empty( $_POST['user_login'] ) ) {
 			$validate = false;
-			learn_press_add_notice( __( 'Please enter user login', 'learn_press' ) );
+			learn_press_add_notice( __( 'Please enter user login', 'learnpress' ) );
 		}
 		if ( $field['name'] == 'user_password' && empty( $_POST['user_password'] ) ) {
 			$validate = false;
-			learn_press_add_notice( __( 'Please enter user password', 'learn_press' ) );
+			learn_press_add_notice( __( 'Please enter user password', 'learnpress' ) );
 		}
 
 		return $validate;
@@ -185,7 +185,7 @@ class LP_Checkout {
 
 			if ( empty( $_REQUEST['payment_method'] ) ) {
 				$success = false;
-				learn_press_add_notice( __( 'Please select a payment method', 'learn_press' ), 'error' );
+				learn_press_add_notice( __( 'Please select a payment method', 'learnpress' ), 'error' );
 			} else {
 				$this->payment_method = $_REQUEST['payment_method'];
 				if ( $this->checkout_fields ) foreach ( $this->checkout_fields as $name => $field ) {
@@ -213,7 +213,7 @@ class LP_Checkout {
 
 				if ( !isset( $available_gateways[$this->payment_method] ) ) {
 					$this->payment_method = '';
-					learn_press_add_notice( __( 'Invalid payment method.', 'learn_press' ), 'error' );
+					learn_press_add_notice( __( 'Invalid payment method.', 'learnpress' ), 'error' );
 				} else {
 					$this->payment_method = $available_gateways[$this->payment_method];
 					$success              = $this->payment_method->validate_fields();

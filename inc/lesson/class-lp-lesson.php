@@ -68,7 +68,7 @@ class LP_Lesson {
 		if ( is_callable( $callback ) ) {
 			return call_user_func_array( $callback, $args );
 		} else {
-			throw new Exception( sprintf( __( 'The function %s doesn\'t exists', 'learn_press' ), $tag ) );
+			throw new Exception( sprintf( __( 'The function %s doesn\'t exists', 'learnpress' ), $tag ) );
 		}
 	}
 

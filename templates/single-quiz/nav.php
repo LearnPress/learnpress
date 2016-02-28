@@ -26,11 +26,11 @@ $status = LP()->user->get_quiz_status( $quiz->id );
 	<?php if( $status != 'completed' ){ ?>
 
 	<button type="button" data-nav="prev" class="prev-question" data-url="<?php //echo $prev; ?>">
-		<?php echo apply_filters( 'learn_press_quiz_question_nav_button_back_title', __( 'Back', 'learn_press' ) ); ?>
+		<?php echo apply_filters( 'learn_press_quiz_question_nav_button_back_title', __( 'Back', 'learnpress' ) ); ?>
 	</button>
 
 	<button type="button" data-nav="next" class="next-question" data-url="<?php //echo $next; ?>">
-		<?php echo apply_filters( 'learn_press_quiz_question_nav_button_next_title', __( 'Next', 'learn_press' ) ); ?>
+		<?php echo apply_filters( 'learn_press_quiz_question_nav_button_next_title', __( 'Next', 'learnpress' ) ); ?>
 	</button>
 
 	<button class="button-finish-quiz btn hidden" quiz-id="<?php echo get_the_ID() ?>" data-area="nav">

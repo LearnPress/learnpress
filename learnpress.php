@@ -9,8 +9,8 @@ Author URI: http://thimpress.com
 Requires at least: 3.5
 Tested up to: 4.3
 
-Text Domain: learn_press
-Domain Path: /lang/
+Text Domain: learnpress
+Domain Path: /languages/
 */
 
 /**

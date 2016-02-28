@@ -119,7 +119,7 @@ class LP_Order {
 			$updated = $wpdb->update( $wpdb->posts, array( 'post_status' => 'lp-' . $new_status ), array( 'ID' => $this->id ), array( '%s' ) );
 
 			if( $updated === false ){
-				throw new Exception( __( 'Error! Update order failed', 'learn_press' ) );
+				throw new Exception( __( 'Error! Update order failed', 'learnpress' ) );
 				return false;
 			}
 			LP_Debug::instance()->add( 'Update order ' . $updated . ' status from ' . $old_status . ' to ' . $new_status );

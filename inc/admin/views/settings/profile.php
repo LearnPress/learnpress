@@ -21,7 +21,7 @@ $settings = LP()->settings;
 		<?php }?>
 		<?php if( 1 == 0 ){?>
 		<tr>
-			<th scope="row"><label><?php _e( 'Profile page', 'learn_press' ); ?></label></th>
+			<th scope="row"><label><?php _e( 'Profile page', 'learnpress' ); ?></label></th>
 			<td>
 				<?php
 				$profile_page_id = $settings->get( 'profile_page_id', 0 );

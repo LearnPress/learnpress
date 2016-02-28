@@ -53,7 +53,7 @@ class LP_Abstract_User {
 			$this->user = get_user_by( 'id', $the_user );
 			$this->id   = $the_user;
 		} else {
-			throw new Exception( sprintf( __( 'The user with ID = %d is not exists', 'learn_press' ), $the_user ) );
+			throw new Exception( sprintf( __( 'The user with ID = %d is not exists', 'learnpress' ), $the_user ) );
 		}
 	}
 
@@ -178,7 +178,7 @@ class LP_Abstract_User {
 		}
 
 		if ( $this->get_quiz_status( $quiz_id ) != '' ) {
-			//throw new Exception( __( 'This user already has start quiz', 'learn_press' ) );
+			//throw new Exception( __( 'This user already has start quiz', 'learnpress' ) );
 		} else {
 			///
 			$return = $this->_create_quiz_history( $quiz_id );
@@ -316,7 +316,7 @@ class LP_Abstract_User {
 	function retake_quiz( $quiz_id ) {
 		$response = array();
 		if ( !$this->can( 'retake-quiz', $quiz_id ) ) {
-			$response['message'] = __( 'Sorry! You can not retake this quiz', 'learn_press' );
+			$response['message'] = __( 'Sorry! You can not retake this quiz', 'learnpress' );
 			$response['result']  = 'fail';
 		} else {
 			//lpr_reset_quiz_answer($quiz_id);
@@ -544,7 +544,7 @@ class LP_Abstract_User {
 		if ( is_callable( $callback ) ) {
 			return call_user_func_array( $callback, $args );
 		} else {
-			throw new Exception( sprintf( __( 'The role %s for user doesn\'t exists', 'learn_press' ), $role ) );
+			throw new Exception( sprintf( __( 'The role %s for user doesn\'t exists', 'learnpress' ), $role ) );
 		}
 	}
 
@@ -694,7 +694,7 @@ class LP_Abstract_User {
 		if ( $course = LP_Course::get_course( $course_id ) ) {
 			if ( !$this->can( 'finish-course', $course_id ) ) {
 				$result['result']  = 'fail';
-				$result['message'] = __( 'Sorry, you can not finish this course. Please contact administrator or your instructor.', 'learn_press' );
+				$result['message'] = __( 'Sorry, you can not finish this course. Please contact administrator or your instructor.', 'learnpress' );
 			} else {
 				$updated = $wpdb->update(
 					$wpdb->prefix . 'learnpress_user_courses',
@@ -732,7 +732,7 @@ class LP_Abstract_User {
 		if ( is_callable( $callback ) ) {
 			return call_user_func_array( $callback, $args );
 		} else {
-			throw new Exception( sprintf( __( 'The role %s for user doesn\'t exists', 'learn_press' ), $role ) );
+			throw new Exception( sprintf( __( 'The role %s for user doesn\'t exists', 'learnpress' ), $role ) );
 		}
 	}
 
@@ -744,7 +744,7 @@ class LP_Abstract_User {
 		if ( is_callable( $callback ) ) {
 			return call_user_func_array( $callback, $args );
 		} else {
-			throw new Exception( sprintf( __( 'The role %s for user doesn\'t exists', 'learn_press' ), $role ) );
+			throw new Exception( sprintf( __( 'The role %s for user doesn\'t exists', 'learnpress' ), $role ) );
 		}
 	}
 

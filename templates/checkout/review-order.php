@@ -11,7 +11,7 @@ if ( !defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$review_order_heading = apply_filters( 'learn_press_checkout_review_order_heading', __( 'Your order', 'learn_press' ) );
+$review_order_heading = apply_filters( 'learn_press_checkout_review_order_heading', __( 'Your order', 'learnpress' ) );
 
 ?>
 
@@ -22,8 +22,8 @@ $review_order_heading = apply_filters( 'learn_press_checkout_review_order_headin
 <table class="learn-press-checkout-review-order-table">
 	<thead>
 	<tr>
-		<th class="course-name"><?php _e( 'Course', 'learn_press' ); ?></th>
-		<th class="course-total"><?php _e( 'Total', 'learn_press' ); ?></th>
+		<th class="course-name"><?php _e( 'Course', 'learnpress' ); ?></th>
+		<th class="course-total"><?php _e( 'Total', 'learnpress' ); ?></th>
 	</tr>
 	</thead>
 	<tbody>
@@ -55,14 +55,14 @@ $review_order_heading = apply_filters( 'learn_press_checkout_review_order_headin
 	<tfoot>
 
 	<tr class="cart-subtotal">
-		<th><?php _e( 'Subtotal', 'learn_press' ); ?></th>
+		<th><?php _e( 'Subtotal', 'learnpress' ); ?></th>
 		<td><?php echo LP()->cart->get_subtotal(); ?></td>
 	</tr>
 
 	<?php do_action( 'learn_press_review_order_before_order_total' ); ?>
 
 	<tr class="order-total">
-		<th><?php _e( 'Total', 'learn_press' ); ?></th>
+		<th><?php _e( 'Total', 'learnpress' ); ?></th>
 		<td><?php echo LP()->cart->get_total(); ?></td>
 	</tr>
 

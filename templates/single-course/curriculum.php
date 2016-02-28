@@ -13,7 +13,7 @@ if ( !defined( 'ABSPATH' ) ) {
 
 global $course;
 
-$curriculum_heading = apply_filters( 'learn_press_curriculum_heading', __( 'Course Curriculum', 'learn_press' ) );
+$curriculum_heading = apply_filters( 'learn_press_curriculum_heading', __( 'Course Curriculum', 'learnpress' ) );
 ?>
 <div class="course-curriculum" id="learn-press-course-curriculum">
 
@@ -38,7 +38,7 @@ $curriculum_heading = apply_filters( 'learn_press_curriculum_heading', __( 'Cour
 		</ul>
 
 	<?php else: ?>
-		<?php echo apply_filters( 'learn_press_course_curriculum_empty', __( 'Curriculum is empty', 'learn_press' ) ); ?>
+		<?php echo apply_filters( 'learn_press_course_curriculum_empty', __( 'Curriculum is empty', 'learnpress' ) ); ?>
 	<?php endif; ?>
 
 	<?php do_action( 'learn_press_after_single_course_curriculum' ); ?>

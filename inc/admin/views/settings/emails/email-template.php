@@ -1,14 +1,14 @@
 <tr>
 	<th scope="row">
-		<label for="learn-press-emails-new-course-email-content"><?php _e( 'Email content', 'learn_press' ); ?></label>
+		<label for="learn-press-emails-new-course-email-content"><?php _e( 'Email content', 'learnpress' ); ?></label>
 	</th>
 	<td>
 		<?php if ( current_user_can( 'edit_themes' ) && ( !empty( $this->template_html ) || !empty( $this->template_plain ) ) ) { ?>
 			<div id="templates">
 				<?php
 				$templates = array(
-					'html'  => __( 'HTML template', 'learn_press' ),
-					'plain' => __( 'Plain text template', 'learn_press' )
+					'html'  => __( 'HTML template', 'learnpress' ),
+					'plain' => __( 'Plain text template', 'learnpress' )
 				);
 
 				foreach ( $templates as $template_type => $title ) :
@@ -45,12 +45,12 @@
 							<h4><?php echo wp_kses_post( $title ); ?></h4>
 
 							<p class="description">
-								<?php printf( __( 'This template has been overridden by your theme and can be found in: <code>%s</code>.', 'learn_press' ), 'yourtheme/' . $template_dir . '/' . $template ); ?>
+								<?php printf( __( 'This template has been overridden by your theme and can be found in: <code>%s</code>.', 'learnpress' ), 'yourtheme/' . $template_dir . '/' . $template ); ?>
 							</p>
 							<p>
 								<?php if ( is_writable( $local_file ) ) : ?>
 									<a href="<?php echo esc_url( wp_nonce_url( remove_query_arg( array( 'move_template', 'saved' ), add_query_arg( 'delete_template', $template_type ) ), 'learn_press_email_template_nonce', '_learn_press_email_nonce' ) ); ?>" class="delete_template button">
-										<?php _e( 'Delete template file', 'learn_press' ); ?>
+										<?php _e( 'Delete template file', 'learnpress' ); ?>
 									</a>
 								<?php endif; ?>
 							</p>
@@ -60,18 +60,18 @@
 							</div>
 							<h4><?php echo wp_kses_post( $title ); ?></h4>
 							<p class="description">
-								<?php printf( __( 'To override and edit this email template copy <code>%s</code> to your theme folder: <code>%s</code>.', 'learn_press' ), plugin_basename( $template_file ), 'yourtheme/' . $template_dir . '/' . $template ); ?>
+								<?php printf( __( 'To override and edit this email template copy <code>%s</code> to your theme folder: <code>%s</code>.', 'learnpress' ), plugin_basename( $template_file ), 'yourtheme/' . $template_dir . '/' . $template ); ?>
 							</p>
 							<p>
 								<?php if ( ( is_dir( get_stylesheet_directory() . '/' . $template_dir . '/emails/' ) && is_writable( get_stylesheet_directory() . '/' . $template_dir . '/emails/' ) ) || is_writable( get_stylesheet_directory() ) ) { ?>
 									<a href="<?php echo esc_url( wp_nonce_url( remove_query_arg( array( 'delete_template', 'saved' ), add_query_arg( 'move_template', $template_type ) ), 'learn_press_email_template_nonce', '_learn_press_email_nonce' ) ); ?>" class="button">
-										<?php _e( 'Copy file to theme', 'learn_press' ); ?>
+										<?php _e( 'Copy file to theme', 'learnpress' ); ?>
 									</a>
 								<?php } ?>
 							</p>
 						<?php } else { ?>
 
-							<p><?php _e( 'File was not found.', 'learn_press' ); ?></p>
+							<p><?php _e( 'File was not found.', 'learnpress' ); ?></p>
 
 						<?php } ?>
 					</div>

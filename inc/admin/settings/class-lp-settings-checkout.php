@@ -19,7 +19,7 @@ class LP_Settings_Checkout extends LP_Settings_Base {
 	 */
 	function __construct() {
 		$this->id   = 'checkout';
-		$this->text = __( 'Checkout', 'learn_press' );
+		$this->text = __( 'Checkout', 'learnpress' );
 
 		parent::__construct();
 	}
@@ -33,7 +33,7 @@ class LP_Settings_Checkout extends LP_Settings_Base {
 		$sections = array(
 			'general' => array(
 				'id'    => 'general',
-				'title' => __( 'General', 'learn_press' )
+				'title' => __( 'General', 'learnpress' )
 			)
 		);
 		return $sections = apply_filters( 'learn_press_settings_sections_' . $this->id, $sections );
@@ -49,44 +49,44 @@ class LP_Settings_Checkout extends LP_Settings_Base {
 			'learn_press_checkout_settings',
 			array(
 				array(
-					'title'   => __( 'Enable cart', 'learn_press' ),
-					'desc'    => __( 'Check this option to enable user can purchase multiple course at one time', 'learn_press' ),
+					'title'   => __( 'Enable cart', 'learnpress' ),
+					'desc'    => __( 'Check this option to enable user can purchase multiple course at one time', 'learnpress' ),
 					'id'      => $this->get_field_name( 'enable_cart' ),
 					'default' => 'no',
 					'type'    => 'checkbox'
 				),
 				array(
-					'title'   => __( 'Add to cart redirect', 'learn_press' ),
-					'desc'    => __( 'Redirect to checkout immediately after add course to cart', 'learn_press' ),
+					'title'   => __( 'Add to cart redirect', 'learnpress' ),
+					'desc'    => __( 'Redirect to checkout immediately after add course to cart', 'learnpress' ),
 					'id'      => $this->get_field_name( 'redirect_after_add' ),
 					'default' => 'yes',
 					'type'    => 'checkbox'
 				),
 				array(
-					'title'   => __( 'AJAX add to cart', 'learn_press' ),
-					'desc'    => __( 'Using AJAX to add course to the cart', 'learn_press' ),
+					'title'   => __( 'AJAX add to cart', 'learnpress' ),
+					'desc'    => __( 'Using AJAX to add course to the cart', 'learnpress' ),
 					'id'      => $this->get_field_name( 'ajax_add_to_cart' ),
 					'default' => 'no',
 					'type'    => 'checkbox'
 				),
 				array(
-					'title'   => __( 'Cart page', 'learn_press' ),
+					'title'   => __( 'Cart page', 'learnpress' ),
 					'id'      => $this->get_field_name( 'cart_page_id' ),
 					'default' => '',
 					'type'    => 'pages-dropdown'
 				),
 				array(
-					'title'   => __( 'Checkout page', 'learn_press' ),
+					'title'   => __( 'Checkout page', 'learnpress' ),
 					'id'      => $this->get_field_name( 'checkout_page_id' ),
 					'default' => '',
 					'type'    => 'pages-dropdown'
 				),
 				array(
-					'title' => __( 'Checkout Endpoints', 'learn_press' ),
+					'title' => __( 'Checkout Endpoints', 'learnpress' ),
 					'type'  => 'title'
 				),
 				array(
-					'title'   => __( 'Order received', 'learn_press' ),
+					'title'   => __( 'Order received', 'learnpress' ),
 					'id'      => $this->get_field_name( 'checkout_endpoints[lp_order_received]' ),
 					'default' => 'lp-order-received',
 					'type'    => 'text'

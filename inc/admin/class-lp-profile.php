@@ -46,7 +46,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * Profile methods
 		 */
 		public function learn_press_profile_method( $methods ) {
-			$methods['lpr_profile'] = __( 'LearnPress Profile', 'learn_press' );
+			$methods['lpr_profile'] = __( 'LearnPress Profile', 'learnpress' );
 
 			return $methods;
 		}
@@ -69,17 +69,17 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				array(
 					10 => array(
 						'tab_id'      => 'user_info',
-						'tab_name'    => __( 'User Information', 'learn_press' ),
+						'tab_name'    => __( 'User Information', 'learnpress' ),
 						'tab_content' => apply_filters( 'learn_press_user_info_tab_content', $content, $user )
 					),
 					20 => array(
 						'tab_id'      => 'user_courses',
-						'tab_name'    => __( 'Courses', 'learn_press' ),
+						'tab_name'    => __( 'Courses', 'learnpress' ),
 						'tab_content' => apply_filters( 'learn_press_user_courses_tab_content', $content, $user )
 					),
 					30 => array(
 						'tab_id'      => 'user_quizzes',
-						'tab_name'    => __( 'Quiz Results', 'learn_press' ),
+						'tab_name'    => __( 'Quiz Results', 'learnpress' ),
 						'tab_content' => apply_filters( 'learn_press_user_quizzes_tab_content', $content, $user )
 					)
 				),
@@ -129,7 +129,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 
 		public function end_title_content( $course, $user ) {
 			if ( learn_press_user_has_passed_course( $course->ID, $user->ID ) ) {
-				_e( '<span class="course-status passed">Passed</span>', 'learn_press' );
+				_e( '<span class="course-status passed">Passed</span>', 'learnpress' );
 			} else {
 
 			}

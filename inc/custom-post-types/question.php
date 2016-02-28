@@ -69,18 +69,18 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 			register_post_type( LP_QUESTION_CPT,
 				array(
 					'labels'             => array(
-						'name'               => __( 'Question Bank', 'learn_press' ),
-						'menu_name'          => __( 'Question Bank', 'learn_press' ),
-						'singular_name'      => __( 'Question', 'learn_press' ),
-						'all_items'          => __( 'Questions', 'learn_press' ),
-						'view_item'          => __( 'View Question', 'learn_press' ),
-						'add_new_item'       => __( 'Add New Question', 'learn_press' ),
-						'add_new'            => __( 'Add New', 'learn_press' ),
-						'edit_item'          => __( 'Edit Question', 'learn_press' ),
-						'update_item'        => __( 'Update Question', 'learn_press' ),
-						'search_items'       => __( 'Search Questions', 'learn_press' ),
-						'not_found'          => __( 'No question found', 'learn_press' ),
-						'not_found_in_trash' => __( 'No question found in trash', 'learn_press' ),
+						'name'               => __( 'Question Bank', 'learnpress' ),
+						'menu_name'          => __( 'Question Bank', 'learnpress' ),
+						'singular_name'      => __( 'Question', 'learnpress' ),
+						'all_items'          => __( 'Questions', 'learnpress' ),
+						'view_item'          => __( 'View Question', 'learnpress' ),
+						'add_new_item'       => __( 'Add New Question', 'learnpress' ),
+						'add_new'            => __( 'Add New', 'learnpress' ),
+						'edit_item'          => __( 'Edit Question', 'learnpress' ),
+						'update_item'        => __( 'Update Question', 'learnpress' ),
+						'search_items'       => __( 'Search Questions', 'learnpress' ),
+						'not_found'          => __( 'No question found', 'learnpress' ),
+						'not_found_in_trash' => __( 'No question found in trash', 'learnpress' ),
 					),
 					'public'             => false, // disable access directly via permalink url
 					'publicly_queryable' => true,
@@ -101,11 +101,11 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 			register_taxonomy( 'question-tag', array( LP_QUESTION_CPT ),
 				array(
 					'labels'            => array(
-						'name'          => __( 'Question Tag', 'learn_press' ),
-						'menu_name'     => __( 'Tag', 'learn_press' ),
-						'singular_name' => __( 'Tag', 'learn_press' ),
-						'add_new_item'  => __( 'Add New Tag', 'learn_press' ),
-						'all_items'     => __( 'All Tags', 'learn_press' )
+						'name'          => __( 'Question Tag', 'learnpress' ),
+						'menu_name'     => __( 'Tag', 'learnpress' ),
+						'singular_name' => __( 'Tag', 'learnpress' ),
+						'add_new_item'  => __( 'Add New Tag', 'learnpress' ),
+						'all_items'     => __( 'All Tags', 'learnpress' )
 					),
 					'public'            => true,
 					'hierarchical'      => false,
@@ -129,11 +129,11 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 			new RW_Meta_Box(
 				array(
 					'id'     => 'question_answer',
-					'title'  => __( 'Answer', 'learn_press' ),
+					'title'  => __( 'Answer', 'learnpress' ),
 					'pages'  => array( LP()->question_post_type ),
 					'fields' => array(
 						array(
-							'name' => __( '', 'learn_press' ),
+							'name' => __( '', 'learnpress' ),
 							'id'   => "_lp_question_answer",
 							'type' => 'question'
 						)
@@ -149,23 +149,23 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 			$prefix   = '_lp_';
 			$meta_box = array(
 				'id'     => 'question_settings',
-				'title'  => __( 'Settings', 'learn_press' ),
+				'title'  => __( 'Settings', 'learnpress' ),
 				'pages'  => array( LP()->question_post_type ),
 				'fields' => array(
 					array(
-						'name'  => __( 'Mark For This Question', 'learn_press' ),
+						'name'  => __( 'Mark For This Question', 'learnpress' ),
 						'id'    => "{$prefix}mark",
 						'type'  => 'number',
 						'clone' => false,
-						'desc'  => __( 'Mark for choosing the right answer', 'learn_press' ),
+						'desc'  => __( 'Mark for choosing the right answer', 'learnpress' ),
 						'min'   => 1,
 						'std'   => 1
 					),
 					array(
-						'name' => __( 'Question Explanation', 'learn_press' ),
+						'name' => __( 'Question Explanation', 'learnpress' ),
 						'id'   => "{$prefix}explanation",
 						'type' => 'textarea',
-						'desc' => __( '', 'learn_press' ),
+						'desc' => __( '', 'learnpress' ),
 						'std'  => null
 					)
 				)
@@ -187,11 +187,11 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 					var $title = $('#title'),
 						is_error = false;
 					if (0 == $title.val().length) {
-						alert('<?php _e( 'Please enter the title of the question', 'learn_press' );?>');
+						alert('<?php _e( 'Please enter the title of the question', 'learnpress' );?>');
 						$title.focus();
 						is_error = true;
 					} else if ($('.lpr-question-types').length && ( 0 == $('.lpr-question-types').val().length )) {
-						alert('<?php _e( 'Please a type of question', 'learn_press' );?>');
+						alert('<?php _e( 'Please a type of question', 'learnpress' );?>');
 						$('.lpr-question-types').focus();
 						is_error = true;
 					}
@@ -217,8 +217,8 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 							<?php endforeach; ?>
 						<?php endif; ?>
 					</select>
-					<button class="button" data-action="add" type="button"><?php _e( 'Add [Enter]', 'learn_press' ); ?></button>
-					<button data-action="cancel" class="button" type="button"><?php _e( 'Cancel [ESC]', 'learn_press' ); ?></button>
+					<button class="button" data-action="add" type="button"><?php _e( 'Add [Enter]', 'learnpress' ); ?></button>
+					<button data-action="cancel" class="button" type="button"><?php _e( 'Cancel [ESC]', 'learnpress' ); ?></button>
 					<span class="lpr-ajaxload">...</span>
 				</div>
 			</script>
@@ -237,8 +237,8 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 		function columns_head( $columns ) {
 			$pos         = array_search( 'title', array_keys( $columns ) );
 			$new_columns = array(
-				LP()->quiz_post_type => __( 'Quiz', 'learn_press' ),
-				'type'               => __( 'Type', 'learn_press' )
+				LP()->quiz_post_type => __( 'Quiz', 'learnpress' ),
+				'type'               => __( 'Type', 'learnpress' )
 			);
 
 			if ( false !== $pos && !array_key_exists( LP()->quiz_post_type, $columns ) ) {
@@ -270,20 +270,20 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 						foreach ( $quizzes as $quiz ) {
 							echo '<div><a href="' . esc_url( add_query_arg( array( 'filter_quiz' => $quiz->ID ) ) ) . '">' . get_the_title( $quiz->ID ) . '</a>';
 							echo '<div class="row-actions">';
-							printf( '<a href="%s">%s</a>', admin_url( sprintf( 'post.php?post=%d&action=edit', $quiz->ID ) ), __( 'Edit', 'learn_press' ) );
+							printf( '<a href="%s">%s</a>', admin_url( sprintf( 'post.php?post=%d&action=edit', $quiz->ID ) ), __( 'Edit', 'learnpress' ) );
 							echo "&nbsp;|&nbsp;";
-							printf( '<a href="%s">%s</a>', get_the_permalink( $quiz->ID ), __( 'View', 'learn_press' ) );
+							printf( '<a href="%s">%s</a>', get_the_permalink( $quiz->ID ), __( 'View', 'learnpress' ) );
 							echo "&nbsp;|&nbsp;";
 							if ( $quiz_id = learn_press_get_request( 'filter_quiz' ) ) {
-								printf( '<a href="%s">%s</a>', remove_query_arg( 'filter_quiz' ), __( 'Remove Filter', 'learn_press' ) );
+								printf( '<a href="%s">%s</a>', remove_query_arg( 'filter_quiz' ), __( 'Remove Filter', 'learnpress' ) );
 							} else {
-								printf( '<a href="%s">%s</a>', add_query_arg( 'filter_quiz', $quiz->ID ), __( 'Filter', 'learn_press' ) );
+								printf( '<a href="%s">%s</a>', add_query_arg( 'filter_quiz', $quiz->ID ), __( 'Filter', 'learnpress' ) );
 							}
 							echo '</div></div>';
 						}
 
 					} else {
-						_e( 'Not assigned yet', 'learn_press' );
+						_e( 'Not assigned yet', 'learnpress' );
 					}
 
 					break;

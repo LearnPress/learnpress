@@ -9,7 +9,7 @@ if ( !defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$comment_heading = apply_filters( 'learn_press_order_comment_heading', __( 'Additional Information', 'learn_press' ) );
+$comment_heading = apply_filters( 'learn_press_order_comment_heading', __( 'Additional Information', 'learnpress' ) );
 
 ?>
 

@@ -11,7 +11,7 @@ if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 global $quiz;
-$heading = apply_filters( 'learn_press_list_questions_heading', __( 'List of questions', 'learn_press' ) );
+$heading = apply_filters( 'learn_press_list_questions_heading', __( 'List of questions', 'learnpress' ) );
 $no_permalink = !LP()->user->has('started-quiz', $quiz->id);
 
 ?>
@@ -50,7 +50,7 @@ $no_permalink = !LP()->user->has('started-quiz', $quiz->id);
 
 <?php else: ?>
 
-	<?php learn_press_display_message( apply_filters( 'learn_press_quiz_no_questions_notice', __( 'This quiz hasn\'t got any questions', 'learn_press' ) ) ); ?>
+	<?php learn_press_display_message( apply_filters( 'learn_press_quiz_no_questions_notice', __( 'This quiz hasn\'t got any questions', 'learnpress' ) ) ); ?>
 
 <?php endif; ?>
 

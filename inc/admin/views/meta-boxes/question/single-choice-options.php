@@ -1,8 +1,8 @@
 <div class="learn-press-question" id="learn-press-question-<?php echo $this->id;?>" data-type="<?php echo str_replace( '_', '-', $this->type );?>" data-id="<?php echo $this->id;?>">
 <table class="lp-sortable lp-list-options" id="learn-press-list-options-<?php echo $this->id;?>">
 	<thead>
-	<th><?php _e( 'Answer Text', 'learn_press' ); ?></th>
-	<th><?php _e( 'Is Correct?', 'learn_press' ); ?></th>
+	<th><?php _e( 'Answer Text', 'learnpress' ); ?></th>
+	<th><?php _e( 'Is Correct?', 'learnpress' ); ?></th>
 	<th width="20"></th>
 	<?php if ( $this->type == 'single_choice' ): ?>
 		<th width="20"></th>
@@ -50,9 +50,9 @@
 		);
 		if( $this->type != 'true_or_false' ){
 			array_splice($buttons, 0, 0, sprintf(
-					__( '<button class="button add-question-option-button add-question-option-button-%1$d" data-id="%1$d" type="button">%2$s</button>', 'learn_press' ),
+					__( '<button class="button add-question-option-button add-question-option-button-%1$d" data-id="%1$d" type="button">%2$s</button>', 'learnpress' ),
 					$this->id,
-					__( 'Add Option', 'learn_press' )
+					__( 'Add Option', 'learnpress' )
 				)
 			);
 		}

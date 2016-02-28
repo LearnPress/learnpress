@@ -30,7 +30,7 @@ function learn_press_user_finished_course_send_email( $course_id = null, $user_i
 			'user_name'     => !empty( $user->display_name ) ? $user->display_name : $user->user_nicename,
 			'course_name'   => get_the_title( $course_id ),
 			'course_link'   => get_permalink( $course_id ),
-			'course_result' => sprintf( __( '%d%% of total', 'learn_press' ), intval( $course_result ) )
+			'course_result' => sprintf( __( '%d%% of total', 'learnpress' ), intval( $course_result ) )
 		)
 	);
 	learn_press_send_mail(
@@ -307,7 +307,7 @@ function learn_press_edit_admin_bar() {
 	 * $be_teacher           = array();
 	 * $be_teacher['id']     = 'be_teacher';
 	 * $be_teacher['parent'] = 'user-actions';
-	 * $be_teacher['title']  = __( 'Become An Instructor', 'learn_press' );
+	 * $be_teacher['title']  = __( 'Become An Instructor', 'learnpress' );
 	 * $be_teacher['href']   = '#';
 	 * $wp_admin_bar->add_menu( $be_teacher );
 	 * }*/

@@ -235,7 +235,7 @@ if ( ! class_exists( 'RW_Meta_Box' ) ) {
 					{
 						var rwmb = {
 							validationOptions : jQuery.parseJSON( \'' . json_encode( $this->validation ) . '\' ),
-							summaryMessage : "' . esc_js( __( 'Please correct the errors highlighted below and try again.', 'learn_press'/*'meta-box'*/ ) ) . '"
+							summaryMessage : "' . esc_js( __( 'Please correct the errors highlighted below and try again.', 'learnpress'/*'meta-box'*/ ) ) . '"
 						};
 					}
 					else

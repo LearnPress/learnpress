@@ -31,22 +31,22 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
 
 			LP_Admin_Assets::add_localize(
 				array(
-					'confirm_remove_section_lesson' => __( 'Do you want to remove this lesson permanently?', 'learn_press' ),
-					'confirm_remove_section_quiz'   => __( 'Do you want to remove this quiz permanently?', 'learn_press' ),
-					'confirm_remove_section'        => __( 'Do you want to remove this section permanently?', 'learn_press' ),
-					'add_new_quiz'                  => __( 'New quiz added', 'learn_press' ),
-					'add_new_lesson'                => __( 'New lesson added', 'learn_press' ),
-					'add_new_section'               => __( 'New section added', 'learn_press' ),
-					'remove_section_lesson'         => __( 'The lesson removed', 'learn_press' ),
-					'remove_section_quiz'           => __( 'The quiz removed', 'learn_press' ),
-					'remove_section'                => __( 'The section removed', 'learn_press' ),
-					'section_ordered'               => __( 'The ordering completed', 'learn_press' ),
-					'add_lesson_to_section'         => __( 'Lesson added to section complete!', 'learn_press' ),
-					'add_quiz_to_section'           => __( 'Quiz added to section complete!', 'learn_press' ),
-					'update_lesson_quiz'            => __( '%s updated', 'learn_press' ),
-					'quick_edit_name'               => __( 'Click to quick edit name', 'learn_press' ),
-					'save_course'                   => __( 'Save Course', 'learn_press' ),
-					'submit_course_review'          => __( 'Submit for Review', 'learn_press' )
+					'confirm_remove_section_lesson' => __( 'Do you want to remove this lesson permanently?', 'learnpress' ),
+					'confirm_remove_section_quiz'   => __( 'Do you want to remove this quiz permanently?', 'learnpress' ),
+					'confirm_remove_section'        => __( 'Do you want to remove this section permanently?', 'learnpress' ),
+					'add_new_quiz'                  => __( 'New quiz added', 'learnpress' ),
+					'add_new_lesson'                => __( 'New lesson added', 'learnpress' ),
+					'add_new_section'               => __( 'New section added', 'learnpress' ),
+					'remove_section_lesson'         => __( 'The lesson removed', 'learnpress' ),
+					'remove_section_quiz'           => __( 'The quiz removed', 'learnpress' ),
+					'remove_section'                => __( 'The section removed', 'learnpress' ),
+					'section_ordered'               => __( 'The ordering completed', 'learnpress' ),
+					'add_lesson_to_section'         => __( 'Lesson added to section complete!', 'learnpress' ),
+					'add_quiz_to_section'           => __( 'Quiz added to section complete!', 'learnpress' ),
+					'update_lesson_quiz'            => __( '%s updated', 'learnpress' ),
+					'quick_edit_name'               => __( 'Click to quick edit name', 'learnpress' ),
+					'save_course'                   => __( 'Save Course', 'learnpress' ),
+					'submit_course_review'          => __( 'Submit for Review', 'learnpress' )
 				), null, 'meta-box-course'
 			);
 		}
@@ -160,17 +160,17 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
 				array(
 					array(
 						'id'   => 'add-lesson',
-						'text' => __( 'Add Lesson', 'learn_press' ),
+						'text' => __( 'Add Lesson', 'learnpress' ),
 						'attr' => 'data-action="add-lesson" data-type="lp_lesson"'
 					),
 					array(
 						'id'   => 'add-quiz',
-						'text' => __( 'Add Quiz', 'learn_press' ),
+						'text' => __( 'Add Quiz', 'learnpress' ),
 						'attr' => 'data-action="add-quiz" data-type="lp_quiz"'
 					)/*,
 					array(
 						'id'		=> 'toggle-section-options',
-						'text'		=> __( 'Options', 'learn_press' ),
+						'text'		=> __( 'Options', 'learnpress' ),
 						'attr'	=> 'data-action=""'
 					)*/
 				)
@@ -183,12 +183,12 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
 			<table class="form-table">
 				<tr>
 					<th>
-						<?php _e( 'Using final quiz', 'learn_press' ); ?>
+						<?php _e( 'Using final quiz', 'learnpress' ); ?>
 					</th>
 					<td>
 						<input type="checkbox" />
 
-						<p class="description"><?php _e( 'User must be completed the final quiz to finish a section', 'learn_press' ); ?></p>
+						<p class="description"><?php _e( 'User must be completed the final quiz to finish a section', 'learnpress' ); ?></p>
 
 					</td>
 				</tr>
@@ -273,7 +273,7 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
 				echo '__LP_JSON__';
 				wp_send_json(
 					array(
-						'message' => __( 'The course is empty', 'learn_press' )
+						'message' => __( 'The course is empty', 'learnpress' )
 					)
 				);
 			}
@@ -307,7 +307,7 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
 			if ( !$is_ajax ) return;
 			wp_send_json(
 				array(
-					'message' => __( 'Success', 'learn_press' )
+					'message' => __( 'Success', 'learnpress' )
 				)
 			);
 		}

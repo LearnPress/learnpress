@@ -13,13 +13,13 @@ defined( 'ABSPATH' ) || exit();
 class LP_Email_Enrolled_Course extends LP_Email {
 	function __construct() {
 		$this->id    = 'enrolled_course';
-		$this->title = __( 'Enrolled course', 'learn_press' );
+		$this->title = __( 'Enrolled course', 'learnpress' );
 
 		$this->template_html  = 'emails/enrolled-course.php';
 		$this->template_plain = 'emails/plain/enrolled-course.php';
 
-		$this->default_subject = __( '[{site_title}] You have enrolled course ({course_name})', 'learn_press' );
-		$this->default_heading = __( 'Enrolled course', 'learn_press' );
+		$this->default_subject = __( '[{site_title}] You have enrolled course ({course_name})', 'learnpress' );
+		$this->default_heading = __( 'Enrolled course', 'learnpress' );
 
 		add_action( 'learn_press_user_enrolled_course_notification', array( $this, 'trigger' ), 99, 3 );
 

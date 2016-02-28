@@ -6,7 +6,7 @@ if ( !defined( 'ABSPATH' ) ) {
 
 ?>
 <div>
-	<h3><?php _e('Relation of your courses', 'learn_press') ?></h3>
+	<h3><?php _e( 'Relation of your courses', 'learnpress' ) ?></h3>
 </div>
 <div class="lpr-chart-wrapper">
 	<canvas id="lpr-chart-courses"></canvas>

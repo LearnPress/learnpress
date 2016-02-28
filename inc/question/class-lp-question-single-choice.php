@@ -98,7 +98,7 @@ class LP_Question_Single_Choice extends LP_Abstract_Question {
 						var $input = $('.lpr-is-true-answer input[type="radio"]:checked', $question);
 						if (0 == $input.length) {
 							var message = $('.lpr-question-title input', $question).val();
-							message += ": " + '<?php _e( 'No answer added to question or you must set an answer is correct!', 'learn_press' );?>'
+							message += ": " + '<?php _e( 'No answer added to question or you must set an answer is correct!', 'learnpress' );?>'
 							window.learn_press_before_update_quiz_message.push(message);
 							return false;
 						}
@@ -122,17 +122,17 @@ class LP_Question_Single_Choice extends LP_Abstract_Question {
 				array(
 					'is_true' => 'yes',
 					'value'   => 'option_first',
-					'text'    => __( 'Option First', 'learn_press' )
+					'text'    => __( 'Option First', 'learnpress' )
 				),
 				array(
 					'is_true' => 'no',
 					'value'   => 'option_seconds',
-					'text'    => __( 'Option Seconds', 'learn_press' )
+					'text'    => __( 'Option Seconds', 'learnpress' )
 				),
 				array(
 					'is_true' => 'no',
 					'value'   => 'option_third',
-					'text'    => __( 'Option Third', 'learn_press' )
+					'text'    => __( 'Option Third', 'learnpress' )
 				)
 			);
 		}

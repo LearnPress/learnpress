@@ -87,7 +87,7 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 		$this->method_description = 'Make payment via Paypal';
 
 		$this->title       = 'Paypal';
-		$this->description = __( 'Pay with Paypal', 'learn_press' );
+		$this->description = __( 'Pay with Paypal', 'learnpress' );
 
 		// live
 		$this->paypal_live_url         = 'https://www.paypal.com/';
@@ -359,7 +359,7 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 		}
 
 		if ( 'completed' === $request['payment_status'] ) {
-			$this->payment_complete( $order, ( !empty( $request['txn_id'] ) ? $request['txn_id'] : '' ), __( 'IPN payment completed', 'learn_press' ) );
+			$this->payment_complete( $order, ( !empty( $request['txn_id'] ) ? $request['txn_id'] : '' ), __( 'IPN payment completed', 'learnpress' ) );
 			// save paypal fee
 			if ( !empty( $request['mc_fee'] ) ) {
 				update_post_meta( $order->post->ID, '_transaction_fee', $request['mc_fee'] );
@@ -415,7 +415,7 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 			return false;
 		}
 
-		$this->line_items['item_name_' . $index]   = html_entity_decode( $item_name ? $item_name : __( 'Item', 'learn_press' ), ENT_NOQUOTES, 'UTF-8' );
+		$this->line_items['item_name_' . $index]   = html_entity_decode( $item_name ? $item_name : __( 'Item', 'learnpress' ), ENT_NOQUOTES, 'UTF-8' );
 		$this->line_items['quantity_' . $index]    = $quantity;
 		$this->line_items['amount_' . $index]      = $amount;
 		$this->line_items['item_number_' . $index] = $item_number;

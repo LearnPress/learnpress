@@ -31,7 +31,7 @@ if ( 0 != $post->ID ) {
 
 				<div class="misc-pub-section">
 					<label>
-						<?php _e( 'Order status', 'learn_press' ); ?>
+						<?php _e( 'Order status', 'learnpress' ); ?>
 					</label>
 					<select name="order-status">
 						<?php
@@ -45,7 +45,7 @@ if ( 0 != $post->ID ) {
 
 				<div class="misc-pub-section">
 					<label>
-						<?php _e( 'Customer', 'learn_press' ); ?>
+						<?php _e( 'Customer', 'learnpress' ); ?>
 					</label>
 					<!--
 					<input name="order-customer" type="text" class="wp-suggest-user ui-autocomplete-input" id="admin-email" data-autocomplete-type="search" data-autocomplete-field="user_email" autocomplete="off">
@@ -53,8 +53,8 @@ if ( 0 != $post->ID ) {
 					<?php
 					wp_dropdown_users(
 						array(
-							'show_option_none' => __( '[Guest]', 'learn_press' ),
-							'show_option_none' => __( '[Guest]', 'learn_press' ),
+							'show_option_none' => __( '[Guest]', 'learnpress' ),
+							'show_option_none' => __( '[Guest]', 'learnpress' ),
 							'name'             => 'order-customer',
 							'id'               => null,
 							'selected'         => $order->get_user( 'ID' )

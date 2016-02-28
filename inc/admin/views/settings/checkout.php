@@ -21,31 +21,31 @@ $settings = LP()->settings;
 		<?php }?>
 		<?php if( 1 == 0 ){?>
 		<tr>
-			<th scope="row"><label for="learn-press-checkout-enable-cart"><?php _e( 'Enable cart', 'learn_press' ); ?></label></th>
+			<th scope="row"><label for="learn-press-checkout-enable-cart"><?php _e( 'Enable cart', 'learnpress' ); ?></label></th>
 			<td>
 				<input type="hidden" name="<?php echo $this->get_field_name( 'enable_cart' ); ?>" value="no" />
 				<input id="learn-press-checkout-enable-cart" type="checkbox" name="<?php echo $this->get_field_name( 'enable_cart' ); ?>" value="yes" <?php checked( $settings->get( 'enable_cart' ) == 'yes', true ); ?> />
-				<p class="description"><?php _e( 'Check this option to enable user can purchase multiple course at one time', 'learn_press');?></p>
+				<p class="description"><?php _e( 'Check this option to enable user can purchase multiple course at one time', 'learnpress' );?></p>
 			</td>
 		</tr>
 		<tr>
-			<th scope="row"><label for="learn-press-checkout-add-to-cart-redirect"><?php _e( 'Add to cart redirect', 'learn_press' ); ?></label></th>
+			<th scope="row"><label for="learn-press-checkout-add-to-cart-redirect"><?php _e( 'Add to cart redirect', 'learnpress' ); ?></label></th>
 			<td>
 				<input type="hidden" name="<?php echo $this->get_field_name( 'redirect_after_add' ); ?>" value="no" />
 				<input id="learn-press-checkout-add-to-cart-redirect" type="checkbox" name="<?php echo $this->get_field_name( 'redirect_after_add' ); ?>" value="yes" <?php checked( $settings->get( 'redirect_after_add' ) == 'yes', true ); ?> />
-				<p class="description"><?php _e( 'Redirect to checkout immediately after add course to cart', 'learn_press');?></p>
+				<p class="description"><?php _e( 'Redirect to checkout immediately after add course to cart', 'learnpress' );?></p>
 			</td>
 		</tr>
 		<tr>
-			<th scope="row"><label for="learn-press-checkout-add-to-cart-ajax"><?php _e( 'AJAX add to cart', 'learn_press' ); ?></label></th>
+			<th scope="row"><label for="learn-press-checkout-add-to-cart-ajax"><?php _e( 'AJAX add to cart', 'learnpress' ); ?></label></th>
 			<td>
 				<input type="hidden" name="<?php echo $this->get_field_name( 'ajax_add_to_cart' ); ?>" value="no" />
 				<input id="learn-press-checkout-add-to-cart-ajax" type="checkbox" name="<?php echo $this->get_field_name( 'ajax_add_to_cart' ); ?>" value="yes" <?php checked( $settings->get( 'ajax_add_to_cart' ) == 'yes', true ); ?> />
-				<p class="description"><?php _e( 'Using AJAX to add course to the cart', 'learn_press');?></p>
+				<p class="description"><?php _e( 'Using AJAX to add course to the cart', 'learnpress' );?></p>
 			</td>
 		</tr>
 		<tr>
-			<th scope="row"><label><?php _e( 'Cart page', 'learn_press' ); ?></label></th>
+			<th scope="row"><label><?php _e( 'Cart page', 'learnpress' ); ?></label></th>
 			<td>
 				<?php
 				$cart_page_id = $settings->get( 'cart_page_id', 0 );
@@ -54,7 +54,7 @@ $settings = LP()->settings;
 			</td>
 		</tr>
 		<tr>
-			<th scope="row"><label><?php _e( 'Checkout page', 'learn_press' ); ?></label></th>
+			<th scope="row"><label><?php _e( 'Checkout page', 'learnpress' ); ?></label></th>
 			<td>
 				<?php
 				$checkout_page_id = $settings->get( 'checkout_page_id', 0 );
@@ -67,11 +67,11 @@ $settings = LP()->settings;
 
 	</table>
 <?php if( 1 == 0 ){?>
-	<h3><?php _e( 'Checkout Endpoints', 'learn_press' );?></h3>
+	<h3><?php _e( 'Checkout Endpoints', 'learnpress' );?></h3>
 	<table class="form-table">
 		<tbody>
 		<tr>
-			<th scope="row"><label><?php _e( 'Order received', 'learn_press' ); ?></label></th>
+			<th scope="row"><label><?php _e( 'Order received', 'learnpress' ); ?></label></th>
 			<td>
 				<input type="text" class="regular-text" name="<?php echo $this->get_field_name( 'checkout_endpoints[lp_order_received]' );?>" value="<?php echo $settings->get( 'checkout_endpoints.lp_order_received', 'lp-order-received' );?>" />
 			</td>

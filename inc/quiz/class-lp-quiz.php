@@ -58,10 +58,10 @@ class LP_Quiz {
 
 	protected function _get_localize(){
 		$localize = array(
-			'confirm_finish_quiz'		=> __( 'Are you sure you want to completely finish this quiz?', 'learn_press'),
-			'confirm_retake_quiz'		=> __( 'Are you sure you want to retake this quiz?', 'learn_press'),
-			'quiz_time_is_over_message' => __( 'The time is over! Your quiz will automate come to finish', 'learn_press' ),
-			'quiz_time_is_over_title'   => __( 'Time up!', 'learn_press' )
+			'confirm_finish_quiz'		=> __( 'Are you sure you want to completely finish this quiz?', 'learnpress' ),
+			'confirm_retake_quiz'		=> __( 'Are you sure you want to retake this quiz?', 'learnpress' ),
+			'quiz_time_is_over_message' => __( 'The time is over! Your quiz will automate come to finish', 'learnpress' ),
+			'quiz_time_is_over_title'   => __( 'Time up!', 'learnpress' )
 		);
 		return apply_filters( 'learn_press_single_quiz_localize', $localize, $this );
 	}
@@ -247,7 +247,7 @@ class LP_Quiz {
 
 
 		if ( $remain = $user->can( 'retake-quiz', $this->id ) ):
-			$buttons['retake'] = sprintf( '<button class="button-retake-quiz" data-id="%d">%s (+%d)</button>', $this->id, apply_filters( 'learn_press_retake_quiz_button_text', __( 'Retake', 'learn_press' ) ), $remain );
+			$buttons['retake'] = sprintf( '<button class="button-retake-quiz" data-id="%d">%s (+%d)</button>', $this->id, apply_filters( 'learn_press_retake_quiz_button_text', __( 'Retake', 'learnpress' ) ), $remain );
 			$buttons['retake'] .= wp_nonce_field( 'retake-quiz', 'retake-quiz-nonce');
 		endif;
 
@@ -262,7 +262,7 @@ class LP_Quiz {
 		if ( is_callable( $callback ) ) {
 			return call_user_func_array( $callback, $args );
 		} else {
-			throw new Exception( sprintf( __( 'The function %s doesn\'t exists', 'learn_press' ), $feature ) );
+			throw new Exception( sprintf( __( 'The function %s doesn\'t exists', 'learnpress' ), $feature ) );
 		}
 	}
 

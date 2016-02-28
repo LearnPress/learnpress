@@ -20,7 +20,7 @@ $group_name = '_lp_curriculum[__SECTION__][items][' . ( $section_item_id ? $sect
 		<span class="handle learn-press-icon"></span>
 	</td>
 	<td class="section-item-input">
-		<input type="text" name="<?php echo $group_name; ?>[name]" class="lp-item-name no-submit" data-field="item-name" value="<?php echo esc_attr( $item->post_title );?>" placeholder="<?php _e( 'Enter name of the new item here and press Enter', 'learn_press' );?>" />
+		<input type="text" name="<?php echo $group_name; ?>[name]" class="lp-item-name no-submit" data-field="item-name" value="<?php echo esc_attr( $item->post_title );?>" placeholder="<?php _e( 'Enter name of the new item here and press Enter', 'learnpress' );?>" />
 		<input type="hidden" name="<?php echo $group_name; ?>[old_name]" value="<?php echo esc_attr( $item->post_title );?>" />
 		<input type="hidden" name="<?php echo $group_name; ?>[item_id]" value="<?php echo $item_id; ?>" />
 		<input type="hidden" name="<?php echo $group_name; ?>[section_item_id]" value="<?php echo $section_item_id; ?>" />
@@ -29,8 +29,8 @@ $group_name = '_lp_curriculum[__SECTION__][items][' . ( $section_item_id ? $sect
 	<td class="section-item-actions">
 		<p class="lp-item-actions lp-button-actions">
 			<?php do_action( 'learn_press_admin_begin_section_item_actions', $item, $section );?>
-			<a href="<?php echo absint( $item_id ) ? get_edit_post_link( $item_id ) : '{{data.edit_link}}'; ?>" class="lp-item-action lp-edit dashicons dashicons-edit" target="_blank"><?php _e( '', 'learn_press' ); ?></a>
-			<a href="" class="lp-item-action lp-remove dashicons dashicons-trash" data-confirm-remove="<?php _e( 'Are you sure you want to remove this item?', 'learn_press' );?>"><?php _e( '', 'learn_press' ); ?></a>
+			<a href="<?php echo absint( $item_id ) ? get_edit_post_link( $item_id ) : '{{data.edit_link}}'; ?>" class="lp-item-action lp-edit dashicons dashicons-edit" target="_blank"><?php _e( '', 'learnpress' ); ?></a>
+			<a href="" class="lp-item-action lp-remove dashicons dashicons-trash" data-confirm-remove="<?php _e( 'Are you sure you want to remove this item?', 'learnpress' );?>"><?php _e( '', 'learnpress' ); ?></a>
 			<span class="item-checkbox">
 				<input type="checkbox" value="<?php echo $section_item_id;?>" />
 			</span>

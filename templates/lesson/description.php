@@ -23,7 +23,7 @@ if( ! ( $lesson = $course->current_lesson ) ){
 
 	<?php else: ?>
 
-		<?php learn_press_display_message( __( 'This lesson has not got the content' , 'learn_press' ) );?>
+		<?php learn_press_display_message( __( 'This lesson has not got the content' , 'learnpress' ) );?>
 
 	<?php endif;?>
 

@@ -58,7 +58,7 @@ do_action( 'learn_press_before_single_course' ); ?>
 	<?php do_action( 'learn_press_before_course_footer' ); ?>
 	<footer class="entry-footer">
 		<?php
-		edit_post_link( __( 'Edit', 'learn_press' ), '<span class="edit-link">', '</span>' );
+		edit_post_link( __( 'Edit', 'learnpress' ), '<span class="edit-link">', '</span>' );
 		?>
 	</footer>
 	<!-- .entry-footer -->

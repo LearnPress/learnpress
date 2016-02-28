@@ -26,14 +26,14 @@ function learn_press_create_order( $order_data ) {
 		'post_type'   => LP()->order_post_type,
 		'post_status' => 'lp-' . apply_filters( 'learn_press_default_order_status', 'pending' ),
 		'ping_status' => 'closed',
-		'post_title'  => __( 'Order on', 'learn_press' ) . ' ' . current_time( "l jS F Y h:i:s A" )
+		'post_title'  => __( 'Order on', 'learnpress' ) . ' ' . current_time( "l jS F Y h:i:s A" )
 	);
 	$order_data_defaults = apply_filters( 'learn_press_defaults_order_data', $order_data_defaults );
 	$order_data          = wp_parse_args( $order_data, $order_data_defaults );
 
 	if ( $order_data['status'] ) {
 		if ( !in_array( 'lp-' . $order_data['status'], array_keys( learn_press_get_order_statuses() ) ) ) {
-			return new WP_Error( 'learn_press_invalid_order_status', __( 'Invalid order status', 'learn_press' ) );
+			return new WP_Error( 'learn_press_invalid_order_status', __( 'Invalid order status', 'learnpress' ) );
 		}
 		$order_data['post_status'] = 'lp-' . $order_data['status'];
 	}
@@ -517,7 +517,7 @@ add_action( 'learn_press_update_order_status', 'learn_press_send_user_email', 50
 
 function learn_press_get_course_price_text( $price, $course_id ) {
 	if ( !$price && LP()->course_post_type == get_post_type( $course_id ) ) {
-		$price = __( 'Free', 'learn_press' );
+		$price = __( 'Free', 'learnpress' );
 	}
 	return $price;
 }
@@ -656,19 +656,19 @@ function learn_press_get_order_status_label( $order_id = 0 ) {
 	} else {
 		$status = $order_id;
 	}
-	return !empty( $statuses[$status] ) ? $statuses[$status] : __( 'Pending', 'learn_press' );
+	return !empty( $statuses[$status] ) ? $statuses[$status] : __( 'Pending', 'learnpress' );
 }
 
 function learn_press_get_order_statuses( $prefix = true ) {
 	$prefix         = $prefix ? 'lp-' : '';
 	$order_statuses = array(
-		$prefix . 'pending'    => _x( 'Pending', 'Order status', 'learn_press' ),
-		$prefix . 'processing' => _x( 'Processing', 'Order status', 'learn_press' ),
-		$prefix . 'completed'  => _x( 'Completed', 'Order status', 'learn_press' ),
-		$prefix . 'on-hold'    => _x( 'On Hold', 'Order status', 'learn_press' ),
-		$prefix . 'refunded'   => _x( 'Refunded', 'Order status', 'learn_press' ),
-		$prefix . 'failed'     => _x( 'Failed', 'Order status', 'learn_press' ),
-		$prefix . 'cancelled'  => _x( 'Cancelled', 'Order status', 'learn_press' )
+		$prefix . 'pending'    => _x( 'Pending', 'Order status', 'learnpress' ),
+		$prefix . 'processing' => _x( 'Processing', 'Order status', 'learnpress' ),
+		$prefix . 'completed'  => _x( 'Completed', 'Order status', 'learnpress' ),
+		$prefix . 'on-hold'    => _x( 'On Hold', 'Order status', 'learnpress' ),
+		$prefix . 'refunded'   => _x( 'Refunded', 'Order status', 'learnpress' ),
+		$prefix . 'failed'     => _x( 'Failed', 'Order status', 'learnpress' ),
+		$prefix . 'cancelled'  => _x( 'Cancelled', 'Order status', 'learnpress' )
 	);
 
 	return apply_filters( 'learn_press_order_statuses', $order_statuses );

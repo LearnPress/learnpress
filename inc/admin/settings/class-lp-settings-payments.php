@@ -18,7 +18,7 @@ class LP_Settings_Payments extends LP_Settings_Base {
 	 */
 	function __construct() {
 		$this->id   = 'payments';
-		$this->text = __( 'Payments', 'learn_press' );
+		$this->text = __( 'Payments', 'learnpress' );
 
 		parent::__construct();
 	}

@@ -75,7 +75,7 @@ function learn_press_process_web_hooks() {
 	}
 	if ( $web_hooks_processed ) {
 		do_action( 'learn_press_web_hooks_processed' );
-		wp_die( __( 'LearnPress webhook process Complete', 'learn_press' ), __( 'LearnPress webhook process Complete', 'learn_press' ), array( 'response' => 200 ) );
+		wp_die( __( 'LearnPress webhook process Complete', 'learnpress' ), __( 'LearnPress webhook process Complete', 'learnpress' ), array( 'response' => 200 ) );
 	}
 }
 

@@ -13,13 +13,13 @@ defined( 'ABSPATH' ) || exit();
 class LP_Email_New_Order extends LP_Email {
 	function __construct() {
 		$this->id = 'new_order';
-		$this->title = __( 'New order', 'learn_press' );
+		$this->title = __( 'New order', 'learnpress' );
 
 		$this->template_html  = 'emails/new-order.php';
 		$this->template_plain = 'emails/plain/new-order.php';
 
-		$this->subject = __( '[{site_title}] New course for review ({course_name}) - {course_date}', 'learn_press' );
-		$this->heading = __( 'New course', 'learn_press' );
+		$this->subject = __( '[{site_title}] New course for review ({course_name}) - {course_date}', 'learnpress' );
+		$this->heading = __( 'New course', 'learnpress' );
 
 		add_action( 'learn_press_order_status_pending_to_processing_notification', array( $this, 'trigger' ) );
 		add_action( 'learn_press_order_status_pending_to_completed_notification', array( $this, 'trigger' ) );

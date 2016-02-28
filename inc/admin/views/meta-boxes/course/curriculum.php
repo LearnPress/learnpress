@@ -37,12 +37,12 @@ $hidden_sections = (array) get_post_meta( $post->ID, '_admin_hidden_sections', t
 ?>
 <div id="lp-course-curriculum" class="lp-course-curriculum">
 	<h3 class="curriculum-heading">
-		<?php _e( 'Curriculum', 'learn_press' ); ?>
-		<span class="description"><?php _e( 'Outline your course and add content with sections, lessons and quizzes.', 'learn_press' ); ?></span>
+		<?php _e( 'Curriculum', 'learnpress' ); ?>
+		<span class="description"><?php _e( 'Outline your course and add content with sections, lessons and quizzes.', 'learnpress' ); ?></span>
 
 		<p align="right" class="items-toggle">
-			<a href="" data-action="expand" class="dashicons dashicons-arrow-down<?php echo !sizeof( $hidden_sections ) ? ' hide-if-js' : ''; ?>" title="<?php _e( 'Expand All', 'learn_press' ); ?>"></a>
-			<a href="" data-action="collapse" class="dashicons dashicons-arrow-up<?php echo sizeof( $hidden_sections ) ? ' hide-if-js' : ''; ?>" title="<?php _e( 'Collapse All', 'learn_press' ); ?>"></a>
+			<a href="" data-action="expand" class="dashicons dashicons-arrow-down<?php echo !sizeof( $hidden_sections ) ? ' hide-if-js' : ''; ?>" title="<?php _e( 'Expand All', 'learnpress' ); ?>"></a>
+			<a href="" data-action="collapse" class="dashicons dashicons-arrow-up<?php echo sizeof( $hidden_sections ) ? ' hide-if-js' : ''; ?>" title="<?php _e( 'Collapse All', 'learnpress' ); ?>"></a>
 		</p>
 	</h3>
 	<!---->

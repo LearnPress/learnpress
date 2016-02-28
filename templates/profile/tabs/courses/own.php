@@ -38,7 +38,7 @@ $heading = apply_filters( 'learn_press_profile_tab_courses_own_heading', false )
 
 <?php else: ?>
 
-	<?php learn_press_display_message( __( 'You have not got any published courses yet!', 'learn_press' ) ); ?>
+	<?php learn_press_display_message( __( 'You have not got any published courses yet!', 'learnpress' ) ); ?>
 
 <?php endif ?>
 

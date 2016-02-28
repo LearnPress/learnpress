@@ -18,7 +18,7 @@ class LP_Settings_Emails extends LP_Settings_Base {
 	 */
 	function __construct() {
 		$this->id   = 'emails';
-		$this->text = __( 'Emails', 'learn_press' );
+		$this->text = __( 'Emails', 'learnpress' );
 		parent::__construct();
 	}
 
@@ -32,7 +32,7 @@ class LP_Settings_Emails extends LP_Settings_Base {
 		$emails = LP_Emails::instance()->emails;
 
 		$sections = array(
-			'general' => array( 'id' => 'general', 'title' => __( 'General options', 'learn_press' ) )
+			'general' => array( 'id' => 'general', 'title' => __( 'General options', 'learnpress' ) )
 		);
 
 		if ( $emails ) foreach ( $emails as $email ) {
@@ -44,12 +44,12 @@ class LP_Settings_Emails extends LP_Settings_Base {
 
 
 		/*$sections = array(
-			'general'          => __( 'General options', 'learn_press' ),
-			'new_course'       => __( 'New course', 'learn_press' ),
-			'published_course' => __( 'Published course', 'learn_press' ),
-			'new_order'        => __( 'New order', 'learn_press' ),
-			'enrolled_course'  => __( 'Enrolled course', 'learn_press' ),
-			'passed_course'    => __( 'Passed course', 'learn_press' ),
+			'general'          => __( 'General options', 'learnpress' ),
+			'new_course'       => __( 'New course', 'learnpress' ),
+			'published_course' => __( 'Published course', 'learnpress' ),
+			'new_order'        => __( 'New order', 'learnpress' ),
+			'enrolled_course'  => __( 'Enrolled course', 'learnpress' ),
+			'passed_course'    => __( 'Passed course', 'learnpress' ),
 		);*/
 		return $sections = apply_filters( 'learn_press_settings_sections_' . $this->id, $sections );
 	}
@@ -143,7 +143,7 @@ class LP_Settings_Emails extends LP_Settings_Base {
 			'learn_press_email_settings',
 			array(
 				array(
-					'title'   => __( 'Profile page', 'learn_press' ),
+					'title'   => __( 'Profile page', 'learnpress' ),
 					'id'      => $this->get_field_name( 'profile_page_id' ),
 					'id'      => $this->get_field_name( 'profile_page_id' ),
 					'default' => '',

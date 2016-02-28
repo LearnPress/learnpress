@@ -26,12 +26,12 @@ if ( $my_query->have_posts() ) :
 	endwhile;
 	if ( !$check ) :
 		do_action( 'learn_press_before_no_completed_quiz' );
-		learn_press_display_message( __( 'You have not finished any quizzes yet!', 'learn_press' ) );
+		learn_press_display_message( __( 'You have not finished any quizzes yet!', 'learnpress' ) );
 		do_action( 'learn_press_after_no_completed_quiz' );
 	endif;
 else :
 	do_action( 'learn_press_before_no_enrolled_course' );
-	learn_press_display_message( __( 'You have not taken any courses yet!', 'learn_press' ) );
+	learn_press_display_message( __( 'You have not taken any courses yet!', 'learnpress' ) );
 	do_action( 'learn_press_after_no_enrolled_course' );
 endif;
 wp_reset_postdata();

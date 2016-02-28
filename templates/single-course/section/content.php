@@ -28,7 +28,7 @@ if ( !defined( 'ABSPATH' ) ) {
 	?>
 	<?php } else { ?>
 
-		<li class="course-item section-empty"><?php learn_press_display_message( __( 'No items in this section', 'learn_press' ) );?></li>
+		<li class="course-item section-empty"><?php learn_press_display_message( __( 'No items in this section', 'learnpress' ) );?></li>
 
 	<?php } ?>
 </ul>

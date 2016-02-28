@@ -73,17 +73,17 @@ function learn_press_get_add_on_tabs() {
 	$counts   = learn_press_count_add_ons();
 	$defaults = array(
 		'installed'       => array(
-			'text'  => sprintf( __( 'Installed <span class="count">(%s)</span>', 'learn_press' ), $counts['installed'] ),
+			'text'  => sprintf( __( 'Installed <span class="count">(%s)</span>', 'learnpress' ), $counts['installed'] ),
 			'class' => '',
 			'url'   => ''
 		),
 		'bundle_activate' => array(
-			'text'  => sprintf( __( 'Bundle Activate <span class="count">(%s)</span>', 'learn_press' ), $counts['bundle_activate'] ), __( '', 'learn_press' ),
+			'text'  => sprintf( __( 'Bundle Activate <span class="count">(%s)</span>', 'learnpress' ), $counts['bundle_activate'] ), __( '', 'learnpress' ),
 			'class' => '',
 			'url'   => ''
 		),
 		'more'            => array(
-			'text'  => sprintf( __( 'Get more <span class="count">(%s)</span>', 'learn_press' ), $counts['more'] ), __( '', 'learn_press' ),
+			'text'  => sprintf( __( 'Get more <span class="count">(%s)</span>', 'learnpress' ), $counts['more'] ), __( '', 'learnpress' ),
 			'class' => '',
 			'url'   => ''
 		)
@@ -101,7 +101,7 @@ function learn_press_print_add_on_tab( $current ) {
 	$active = ( empty( $current ) || 'installed' == $current ) ? 'nav-tab-active' : '';
 	?>
 	<h2 class="nav-tab-wrapper">
-		<a class="nav-tab <?php echo $active; ?>" href="<?php echo admin_url( 'admin.php?page=learn_press_add_ons' ); ?>"><?php _e( 'All', 'learn_press' ); ?></a>
+		<a class="nav-tab <?php echo $active; ?>" href="<?php echo admin_url( 'admin.php?page=learn_press_add_ons' ); ?>"><?php _e( 'All', 'learnpress' ); ?></a>
 		<?php do_action( 'learn_press_print_add_on_page_tab', $current ) ?>
 	</h2>
 	<?php
@@ -115,7 +115,7 @@ function learn_press_print_add_on_tab( $current ) {
 function learn_press_print_get_more_tab( $current ) {
 	$active = ( empty( $current ) || 'get_more' == $current ) ? 'nav-tab-active' : '';
 	?>
-	<a class="nav-tab <?php echo $active; ?>" href="<?php echo admin_url( 'admin.php?page=learn_press_add_ons&tab=get_more' ); ?>"><?php _e( 'Get More', 'learn_press' ); ?></a>
+	<a class="nav-tab <?php echo $active; ?>" href="<?php echo admin_url( 'admin.php?page=learn_press_add_ons&tab=get_more' ); ?>"><?php _e( 'Get More', 'learnpress' ); ?></a>
 	<?php
 }
 
@@ -265,7 +265,7 @@ function learn_press_get_plugin_data( $plugins ) {
 
 	$raw_response = wp_remote_post( $url, $options );
 	if ( $ssl && is_wp_error( $raw_response ) ) {
-		trigger_error( __( 'An unexpected error occurred. Something may be wrong with WordPress.org or this server&#8217;s configuration. If you continue to have problems, please try the <a href="https://wordpress.org/support/">support forums</a>.', 'learn_press' ) . ' ' . __( '(WordPress could not establish a secure connection to WordPress.org. Please contact your server administrator.)', 'learn_press' ), headers_sent() || WP_DEBUG ? E_USER_WARNING : E_USER_NOTICE );
+		trigger_error( __( 'An unexpected error occurred. Something may be wrong with WordPress.org or this server&#8217;s configuration. If you continue to have problems, please try the <a href="https://wordpress.org/support/">support forums</a>.', 'learnpress' ) . ' ' . __( '(WordPress could not establish a secure connection to WordPress.org. Please contact your server administrator.)', 'learnpress' ), headers_sent() || WP_DEBUG ? E_USER_WARNING : E_USER_NOTICE );
 		$raw_response = wp_remote_post( $http_url, $options );
 	}
 	$response = json_decode( wp_remote_retrieve_body( $raw_response ), true );
@@ -382,7 +382,7 @@ function learn_press_install_and_active_add_on( $slug ) {
 		require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
 	}
 	$api   = plugins_api( 'plugin_information', array( 'slug' => $slug, 'fields' => array( 'sections' => false ) ) );
-	$title = sprintf( __( 'Installing Plugin: %s', 'learn_press' ), $api->name . ' ' . $api->version );
+	$title = sprintf( __( 'Installing Plugin: %s', 'learnpress' ), $api->name . ' ' . $api->version );
 	$nonce = 'install-plugin_' . $slug;
 	$url   = 'update.php?action=install-plugin&plugin=' . urlencode( $slug );
 
@@ -396,12 +396,12 @@ function learn_press_install_and_active_add_on( $slug ) {
 		if ( is_wp_error( $result ) ) {
 			$return['error']       = $result;
 			$return['status']      = 'not_install';
-			$return['status_text'] = __( 'Not install', 'learn_press' );
+			$return['status_text'] = __( 'Not install', 'learnpress' );
 		} else {
 
 			$return['result']      = $result;
 			$return['status']      = 'installed';
-			$return['status_text'] = __( 'Installed', 'learn_press' );
+			$return['status_text'] = __( 'Installed', 'learnpress' );
 		}
 	}
 	$plugin = learn_press_plugin_basename_from_slug( $slug );
@@ -411,7 +411,7 @@ function learn_press_install_and_active_add_on( $slug ) {
 		// ensure that plugin is enabled
 		$is_activate           = is_plugin_active( $plugin );
 		$return['status']      = $is_activate ? 'activate' : 'deactivate';
-		$return['status_text'] = $is_activate ? __( 'Enabled', 'learn_press' ) : __( 'Disabled', 'learn_press' );
+		$return['status_text'] = $is_activate ? __( 'Enabled', 'learnpress' ) : __( 'Disabled', 'learnpress' );
 	}
 	$return['plugin_file'] = $plugin;
 	return $return;
@@ -437,7 +437,7 @@ function learn_press_upgrader_post_install( $a, $b, $result ) {
 			// ensure that plugin is enabled
 			$is_activate           = is_plugin_active( $plugin );
 			$result['status']      = $is_activate ? 'activate' : 'deactivate';
-			$result['status_text'] = $is_activate ? __( 'Enabled', 'learn_press' ) : __( 'Disabled', 'learn_press' );
+			$result['status_text'] = $is_activate ? __( 'Enabled', 'learnpress' ) : __( 'Disabled', 'learnpress' );
 		}
 		learn_press_send_json( $result );
 	}
@@ -459,7 +459,7 @@ function learn_press_add_on_tab_description( $description ) {
 
 function learn_press_add_ons_content_tab_installed( $current ) {
 	$add_ons = learn_press_get_add_ons();
-	learn_press_add_on_tab_description( __( 'All add-ons that you have installed', 'learn_press' ) );
+	learn_press_add_on_tab_description( __( 'All add-ons that you have installed', 'learnpress' ) );
 	learn_press_output_add_ons_list( $add_ons, $current );
 }
 add_action( 'learn_press_add_ons_content_tab_installed', 'learn_press_add_ons_content_tab_installed' );
@@ -468,9 +468,9 @@ function learn_press_add_ons_content_tab_more( $current ) {
 	$add_ons = learn_press_get_all_add_ons( array( 'transient_key' => 'lp_more_add_ons', 'force' => wp_verify_nonce( learn_press_get_request( 'check' ), 'check_more' ) ) );
 
 	$time        = get_option( '_transient_timeout_lp_more_add_ons' );
-	$description = __( 'All add-ons we are provided.', 'learn_press' );
+	$description = __( 'All add-ons we are provided.', 'learnpress' );
 	$description .= ' ' . sprintf( __( 'Last checked %s ago' ), human_time_diff( $time - LP_ADD_ON_TRANSIENT_TIME ) );
-	$description .= ' ' . sprintf( __( '<a href="%s">%s</a>' ), admin_url( 'admin.php?page=learn_press_add_ons&tab=more&check=' . wp_create_nonce( 'check_more' ) ), __( 'Check again!', 'learn_press' ) );
+	$description .= ' ' . sprintf( __( '<a href="%s">%s</a>' ), admin_url( 'admin.php?page=learn_press_add_ons&tab=more&check=' . wp_create_nonce( 'check_more' ) ), __( 'Check again!', 'learnpress' ) );
 	learn_press_add_on_tab_description( $description );
 	learn_press_output_add_ons_list( $add_ons, $current );
 }
@@ -485,9 +485,9 @@ function learn_press_add_ons_content_tab_bundle_activate( $current ) {
 		)
 	);
 	$time        = get_option( '_transient_timeout_lp_ba_add_ons' );
-	$description = __( 'All add-ons that provide basic features for your LMS site.', 'learn_press' );
+	$description = __( 'All add-ons that provide basic features for your LMS site.', 'learnpress' );
 	$description .= ' ' . sprintf( __( 'Last checked %s ago' ), human_time_diff( $time - LP_ADD_ON_TRANSIENT_TIME ) );
-	$description .= ' ' . sprintf( __( '<a href="%s">%s</a>' ), admin_url( 'admin.php?page=learn_press_add_ons&tab=bundle_activate&check=' . wp_create_nonce( 'check_bundle_activate' ) ), __( 'Check again!', 'learn_press' ) );
+	$description .= ' ' . sprintf( __( '<a href="%s">%s</a>' ), admin_url( 'admin.php?page=learn_press_add_ons&tab=bundle_activate&check=' . wp_create_nonce( 'check_bundle_activate' ) ), __( 'Check again!', 'learnpress' ) );
 
 	learn_press_add_on_tab_description( $description );
 	learn_press_output_add_ons_list( $add_ons, $current );
@@ -525,18 +525,18 @@ function learn_press_get_add_on_action_link( $plugin, $file ){
 			}
 			if ( learn_press_is_plugin_install( $file ) ) {
 				if ( is_plugin_active( $file ) ) {
-					$action_links[] = '<a class="button disable-now" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url( wp_nonce_url( 'plugins.php?action=deactivate&plugin=' . $file, 'deactivate-plugin_' . $file ) ) . '" aria-label="' . esc_attr( sprintf( __( 'Disable %s now' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '"><span>' . __( 'Disable Now', 'learn_press' ) . '</span></a>';
+					$action_links[] = '<a class="button disable-now" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url( wp_nonce_url( 'plugins.php?action=deactivate&plugin=' . $file, 'deactivate-plugin_' . $file ) ) . '" aria-label="' . esc_attr( sprintf( __( 'Disable %s now' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '"><span>' . __( 'Disable Now', 'learnpress' ) . '</span></a>';
 				} else {
-					$action_links[] = '<a class="button enable-now" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url( wp_nonce_url( 'plugins.php?action=activate&plugin=' . $file, 'activate-plugin_' . $file ) ) . '" aria-label="' . esc_attr( sprintf( __( 'Enable %s now' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '"><span>' . __( 'Enable Now', 'learn_press' ) . '</span></a>';
+					$action_links[] = '<a class="button enable-now" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url( wp_nonce_url( 'plugins.php?action=activate&plugin=' . $file, 'activate-plugin_' . $file ) ) . '" aria-label="' . esc_attr( sprintf( __( 'Enable %s now' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '"><span>' . __( 'Enable Now', 'learnpress' ) . '</span></a>';
 				}
 			}
 
 		}else{
 			if ( learn_press_is_plugin_install( $file ) ) {
 				if ( is_plugin_active( $file ) ) {
-					$action_links[] = '<a class="button disable-now" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url( wp_nonce_url( 'plugins.php?action=deactivate&plugin=' . $file, 'deactivate-plugin_' . $file ) ) . '" aria-label="' . esc_attr( sprintf( __( 'Disable %s now' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '"><span>' . __( 'Disable Now', 'learn_press' ) . '</span></a>';
+					$action_links[] = '<a class="button disable-now" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url( wp_nonce_url( 'plugins.php?action=deactivate&plugin=' . $file, 'deactivate-plugin_' . $file ) ) . '" aria-label="' . esc_attr( sprintf( __( 'Disable %s now' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '"><span>' . __( 'Disable Now', 'learnpress' ) . '</span></a>';
 				} else {
-					$action_links[] = '<a class="button enable-now" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url( wp_nonce_url( 'plugins.php?action=activate&plugin=' . $file, 'activate-plugin_' . $file ) ) . '" aria-label="' . esc_attr( sprintf( __( 'Enable %s now' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '"><span>' . __( 'Enable Now', 'learn_press' ) . '</span></a>';
+					$action_links[] = '<a class="button enable-now" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url( wp_nonce_url( 'plugins.php?action=activate&plugin=' . $file, 'activate-plugin_' . $file ) ) . '" aria-label="' . esc_attr( sprintf( __( 'Enable %s now' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '"><span>' . __( 'Enable Now', 'learnpress' ) . '</span></a>';
 				}
 			} else {
 				if ( $plugin['url'] ) {
@@ -550,7 +550,7 @@ function learn_press_get_add_on_action_link( $plugin, $file ){
 }
 function learn_press_output_add_ons_list( $add_ons, $tab = '' ) {
 	if ( !is_array( $add_ons ) || sizeof( $add_ons ) == 0 ) {
-		printf( '<h3>%s</h3>', __( 'No add-ons found', 'learn_press' ) );
+		printf( '<h3>%s</h3>', __( 'No add-ons found', 'learnpress' ) );
 		return false;
 	}
 	echo '<ul class="learn-press-add-ons widefat ' . $tab . '">';
@@ -582,7 +582,7 @@ function learn_press_output_add_ons_list( $add_ons, $tab = '' ) {
 				<div class="desc column-description">
 					<p><?php echo $add_on['short_description']; ?></p>
 
-					<p class="authors"><?php printf( __( '<cite>By %s</cite>', 'learn_press' ), $add_on['author'] ); ?></p>
+					<p class="authors"><?php printf( __( '<cite>By %s</cite>', 'learnpress' ), $add_on['author'] ); ?></p>
 				</div>
 			</div>
 			<div class="plugin-card-bottom">
@@ -598,8 +598,8 @@ function learn_press_output_add_ons_list( $add_ons, $tab = '' ) {
 					$last_updated_timestamp = strtotime( $add_on['last_updated'] );
 					?>
 					<div class="column-updated">
-						<strong><?php _e( 'Last Updated:', 'learn_press' ); ?></strong> <span title="<?php echo esc_attr( date_i18n( $date_format, $last_updated_timestamp ) ); ?>">
-						<?php printf( __( '%s ago', 'learn_press' ), human_time_diff( $last_updated_timestamp ) ); ?>
+						<strong><?php _e( 'Last Updated:', 'learnpress' ); ?></strong> <span title="<?php echo esc_attr( date_i18n( $date_format, $last_updated_timestamp ) ); ?>">
+						<?php printf( __( '%s ago', 'learnpress' ), human_time_diff( $last_updated_timestamp ) ); ?>
 					    </span>
 					</div>
 				<?php } ?>
@@ -611,7 +611,7 @@ function learn_press_output_add_ons_list( $add_ons, $tab = '' ) {
 						} else {
 							$active_installs_text = number_format_i18n( $add_on['active_installs'] ) . '+';
 						}
-						printf( __( '%s Active Installs', 'learn_press' ), $active_installs_text );
+						printf( __( '%s Active Installs', 'learnpress' ), $active_installs_text );
 						?>
 					</div>
 				<?php } ?>
@@ -619,11 +619,11 @@ function learn_press_output_add_ons_list( $add_ons, $tab = '' ) {
 				<div class="column-compatibility">
 					<?php
 					if ( !empty( $add_on['tested'] ) && version_compare( substr( $GLOBALS['wp_version'], 0, strlen( $add_on['tested'] ) ), $add_on['tested'], '>' ) ) {
-						echo '<span class="compatibility-untested">' . __( 'Untested with your version of WordPress', 'learn_press' ) . '</span>';
+						echo '<span class="compatibility-untested">' . __( 'Untested with your version of WordPress', 'learnpress' ) . '</span>';
 					} elseif ( !empty( $plugin['requires'] ) && version_compare( substr( $GLOBALS['wp_version'], 0, strlen( $add_on['requires'] ) ), $add_on['requires'], '<' ) ) {
-						echo '<span class="compatibility-incompatible">' . __( '<strong>Incompatible</strong> with your version of WordPress', 'learn_press' ) . '</span>';
+						echo '<span class="compatibility-incompatible">' . __( '<strong>Incompatible</strong> with your version of WordPress', 'learnpress' ) . '</span>';
 					} else {
-						echo '<span class="compatibility-compatible">' . __( '<strong>Compatible</strong> with your version of WordPress', 'learn_press' ) . '</span>';
+						echo '<span class="compatibility-compatible">' . __( '<strong>Compatible</strong> with your version of WordPress', 'learnpress' ) . '</span>';
 					}
 					?>
 				</div>

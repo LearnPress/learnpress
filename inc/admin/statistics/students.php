@@ -6,25 +6,25 @@ if ( !defined( 'ABSPATH' ) ) {
 
 ?>
 <div>
-	<h3><?php _e('Number of student enrolled your courses', 'learn_press') ?></h3>
+	<h3><?php _e( 'Number of student enrolled your courses', 'learnpress' ) ?></h3>
 	<ul class="subsubsub">
 		<li>
-			<button class="button" onclick="drawStudentsChart(last_seven_days,config); return false; " href="#"><?php _e( 'Last 7 Days', 'learn_press' ); ?></button>
+			<button class="button" onclick="drawStudentsChart(last_seven_days,config); return false; " href="#"><?php _e( 'Last 7 Days', 'learnpress' ); ?></button>
 		</li>
 		<li>
-			<button class="button" onclick="drawStudentsChart(last_thirty_days,config); return false; " href="#"><?php _e( 'Last 30 Days', 'learn_press' ); ?></button>
+			<button class="button" onclick="drawStudentsChart(last_thirty_days,config); return false; " href="#"><?php _e( 'Last 30 Days', 'learnpress' ); ?></button>
 		</li>
 		<li>
-			<button class="button" onclick="drawStudentsChart(last_twelve_months,config); return false;" href="#"><?php _e( 'Last 12 Months', 'learn_press' ); ?></button>
+			<button class="button" onclick="drawStudentsChart(last_twelve_months,config); return false;" href="#"><?php _e( 'Last 12 Months', 'learnpress' ); ?></button>
 		</li>
 		<li>
 			<form id="lpr-custom-time">
-				<span><?php _e( 'From', 'learn_press' ) ?></span>
+				<span><?php _e( 'From', 'learnpress' ) ?></span>
 				<input type="text" placeholder="mm/dd/yyyy" name="from" class="lpr-time">
-				<span><?php _e( 'To', 'learn_press' ) ?></span>
+				<span><?php _e( 'To', 'learnpress' ) ?></span>
 				<input type="text" placeholder="mm/dd/yyyy" name="to" class="lpr-time">
 				<input type="hidden" name="action" value="learnpress_custom_stats">
-				<button class="button button-primary" type="submit"><?php _e( 'Go', 'learn_press' ); ?></button>
+				<button class="button button-primary" type="submit"><?php _e( 'Go', 'learnpress' ); ?></button>
 			</form>
 		</li>
 	</ul>

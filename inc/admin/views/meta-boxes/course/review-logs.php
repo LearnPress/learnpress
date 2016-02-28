@@ -4,9 +4,9 @@ $index = $total_reviews;
 ?>
 <h4>
 	<?php if ( $total_reviews ) { ?>
-		<?php printf( _nx( '%d review', '%d reviews', $total_reviews, 'learn_press' ), $total_reviews ); ?>
+		<?php printf( _nx( '%d review', '%d reviews', $total_reviews, 'learnpress' ), $total_reviews ); ?>
 	<?php } else { ?>
-		<?php _e( 'This course has not got any review yet', 'learn_press' ); ?>
+		<?php _e( 'This course has not got any review yet', 'learnpress' ); ?>
 	<?php } ?>
 </h4>
 <ul class="learn-press-review-logs clearfix">
@@ -22,11 +22,11 @@ $index = $total_reviews;
 
 				<div class="review-message"><?php echo $review->message; ?></div>
 			<span class="lp-label <?php echo $review->status == 'publish' ? 'lp-label-preview' : ( $review->user_type == 'reviewer' ? 'lp-label-final' : 'lp-label-format' ); ?>">
-				<?php echo $review->status == 'publish' ? __( 'Publish', 'learn_press' ) : ( $review->user_type == 'reviewer' ? __( 'Soft rejected', 'learn_press' ) : __( 'Submit for review', 'learn_press' ) ); ?>
+				<?php echo $review->status == 'publish' ? __( 'Publish', 'learnpress' ) : ( $review->user_type == 'reviewer' ? __( 'Soft rejected', 'learnpress' ) : __( 'Submit for review', 'learnpress' ) ); ?>
 			</span>
 				<?php if ( current_user_can( 'delete_others_lp_courses' ) ) { ?>
 					&nbsp;&nbsp;
-					<a href="<?php echo wp_nonce_url( admin_url( 'post.php?post=' . $post->ID . '&action=edit&delete_log=' . $review->review_log_id ), 'delete_log_' . $post->ID . '_' . $review->review_log_id ); ?>"><?php _e( 'Delete', 'learn_press' ); ?></a>
+					<a href="<?php echo wp_nonce_url( admin_url( 'post.php?post=' . $post->ID . '&action=edit&delete_log=' . $review->review_log_id ), 'delete_log_' . $post->ID . '_' . $review->review_log_id ); ?>"><?php _e( 'Delete', 'learnpress' ); ?></a>
 				<?php } ?>
 			</div>
 		</li>
@@ -35,9 +35,9 @@ $index = $total_reviews;
 <?php if ( $total_reviews > 10 ) { ?>
 	<p>
 		<?php if ( $total_reviews == $count_reviews ) { ?>
-			<a href="<?php echo remove_query_arg( 'view_all_review' ); ?>"><?php _e( 'View less', 'learn_press' ); ?></a>
+			<a href="<?php echo remove_query_arg( 'view_all_review' ); ?>"><?php _e( 'View less', 'learnpress' ); ?></a>
 		<?php } else { ?>
-			<a href="<?php echo add_query_arg( 'view_all_review', '1' ); ?>"><?php _e( 'View all', 'learn_press' ); ?></a>
+			<a href="<?php echo add_query_arg( 'view_all_review', '1' ); ?>"><?php _e( 'View all', 'learnpress' ); ?></a>
 		<?php } ?>
 	</p>
 <?php } ?>

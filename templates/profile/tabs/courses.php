@@ -11,10 +11,10 @@ if ( !defined( 'ABSPATH' ) ) {
 	exit;
 }
 $subtabs = array(
-	'all'      => __( 'All', 'learn_press' ),
-	'learning' => __( 'Learning', 'learn_press' ),
-	'finished' => __( 'Finished', 'learn_press' ),
-	'own'      => __( 'Own', 'learn_press' )
+	'all'      => __( 'All', 'learnpress' ),
+	'learning' => __( 'Learning', 'learnpress' ),
+	'finished' => __( 'Finished', 'learnpress' ),
+	'own'      => __( 'Own', 'learnpress' )
 );
 $subtabs = apply_filters( 'learn_press_profile_tab_courses_subtabs', $subtabs );
 if( !$subtabs ){

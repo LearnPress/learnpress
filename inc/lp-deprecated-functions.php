@@ -6,7 +6,7 @@
 throw new Exception( "This file will not included in anywhere" );
 function learn_press_settings_payment() {
 	?>
-	<h3><?php _e( 'Payment', 'learn_press' ); ?></h3>
+	<h3><?php _e( 'Payment', 'learnpress' ); ?></h3>
 	<?php
 }
 
@@ -99,7 +99,7 @@ function learn_press_edit_permalink() {
 	if ( !$check && current_user_can( 'manage_options' ) ) {
 		echo '<div id="lpr-setting-up" class="updated"><p>';
 		echo sprintf(
-			__( '<strong>LearnPress is almost ready</strong>. <a class="lpr-set-up" href="%s">Setting up</a> something right now is a good idea. That\'s better than you <a class="lpr-ignore lpr-set-up">ignore</a> the message.', 'learn_press' ),
+			__( '<strong>LearnPress is almost ready</strong>. <a class="lpr-set-up" href="%s">Setting up</a> something right now is a good idea. That\'s better than you <a class="lpr-ignore lpr-set-up">ignore</a> the message.', 'learnpress' ),
 			esc_url( add_query_arg( array( 'page' => 'learn_press_settings' ), admin_url( 'options-general.php' ) ) )
 		);
 		echo '</p></div>';
@@ -112,7 +112,7 @@ function learn_press_edit_permalink() {
 			echo '<div class="fade error"><p>';
 			echo sprintf(
 				wp_kses(
-					__( '<strong>LearnPress Profile is almost ready</strong>. You must <a href="%s">update your permalink structure</a> to something other than the default for it to work.', 'learn_press' ),
+					__( '<strong>LearnPress Profile is almost ready</strong>. You must <a href="%s">update your permalink structure</a> to something other than the default for it to work.', 'learnpress' ),
 					array(
 						'a'      => array(
 							'href' => array()
@@ -297,7 +297,7 @@ function learn_press_show_answer() {
 			do_action( 'learn_press_question_suggestion_' . $ques->get_type(), $ques, $answer );
 	}
 	?>
-	<h4><?php _e( "Answer explanation", 'learn_press' ) ?></h4>
+	<h4><?php _e( "Answer explanation", 'learnpress' ) ?></h4>
 	<p><?php echo $ques->get( 'options.explaination' ) ?></p>
 	<?php
 	$json['html'] = ob_get_clean();

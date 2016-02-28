@@ -280,7 +280,7 @@ class LP_Email {
 					$template_file = $this->template_base . $template;
 					// Copy template file
 					copy( $template_file, $theme_file );
-					echo '<div class="updated"><p>' . __( 'Template file copied to theme.', 'learn_press' ) . '</p></div>';
+					echo '<div class="updated"><p>' . __( 'Template file copied to theme.', 'learnpress' ) . '</p></div>';
 				}
 			}
 		}
@@ -295,7 +295,7 @@ class LP_Email {
 
 				if ( file_exists( $theme_file ) ) {
 					unlink( $theme_file );
-					echo '<div class="updated"><p>' . __( 'Template file deleted from theme.', 'learn_press' ) . '</p></div>';
+					echo '<div class="updated"><p>' . __( 'Template file deleted from theme.', 'learnpress' ) . '</p></div>';
 				}
 			}
 		}
@@ -427,7 +427,7 @@ class LP_Email {
 			}
 
 			if ( !$saved ) {
-				$redirect = add_query_arg( 'learn_press_error', urlencode( __( 'Could not write to template file.', 'learn_press' ) ) );
+				$redirect = add_query_arg( 'learn_press_error', urlencode( __( 'Could not write to template file.', 'learnpress' ) ) );
 				wp_redirect( $redirect );
 				exit;
 			}

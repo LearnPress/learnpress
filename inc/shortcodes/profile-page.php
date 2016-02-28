@@ -18,7 +18,7 @@ function learn_press_profile_shortcode() {
 
 	$output = '';
 	if ( !$user ) {
-		$output .= '<strong>' . __( 'This user in not available!', 'learn_press' ) . '</strong>';
+		$output .= '<strong>' . __( 'This user in not available!', 'learnpress' ) . '</strong>';
 		return $output;
 	}
 

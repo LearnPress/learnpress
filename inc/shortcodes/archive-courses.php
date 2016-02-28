@@ -35,8 +35,8 @@ function newest_courses_shortcode( $atts ) {
 				<div class="course-title">
 					<?php echo get_the_title( $course->ID ) ?>
 				</div>
-				<div class="course-student-number"><?php echo learn_press_count_students_enrolled( $course->ID ) . __( ' students', 'learn_press' ) ?></div>
-				<div class="course-lesson-number"><?php echo lpr_get_number_lesson( $course->ID ) . __(' lessons', 'learn_press') ?></div>
+				<div class="course-student-number"><?php echo learn_press_count_students_enrolled( $course->ID ) . __( ' students', 'learnpress' ) ?></div>
+				<div class="course-lesson-number"><?php echo lpr_get_number_lesson( $course->ID ) . __( ' lessons', 'learnpress' ) ?></div>
 			</div>
 		</div>
 	</a>
@@ -81,8 +81,8 @@ function free_course_shortcode( $atts ) {
 				<div class="course-title">
 					<?php echo get_the_title( $course->ID ) ?>
 				</div>
-				<div class="course-student-number"><?php echo learn_press_count_students_enrolled( $course->ID ) . __( ' students', 'learn_press' ) ?></div>
-				<div class="course-lesson-number"><?php echo lpr_get_number_lesson( $course->ID ) . __(' lessons', 'learn_press') ?></div>
+				<div class="course-student-number"><?php echo learn_press_count_students_enrolled( $course->ID ) . __( ' students', 'learnpress' ) ?></div>
+				<div class="course-lesson-number"><?php echo lpr_get_number_lesson( $course->ID ) . __( ' lessons', 'learnpress' ) ?></div>
 			</div>
 		</div>
 	</a>
@@ -127,8 +127,8 @@ function paid_courses_shortcode( $atts ) {
 				<div class="course-title">
 					<?php echo get_the_title( $course->ID ) ?>
 				</div>
-				<div class="course-student-number"><?php echo learn_press_count_students_enrolled( $course->ID ) . __( ' students', 'learn_press' ) ?></div>
-				<div class="course-lesson-number"><?php echo lpr_get_number_lesson( $course->ID ) . __(' lessons', 'learn_press') ?></div>
+				<div class="course-student-number"><?php echo learn_press_count_students_enrolled( $course->ID ) . __( ' students', 'learnpress' ) ?></div>
+				<div class="course-lesson-number"><?php echo lpr_get_number_lesson( $course->ID ) . __( ' lessons', 'learnpress' ) ?></div>
 			</div>
 		</div>
 	</a>

@@ -63,8 +63,8 @@ function learn_press_register_pointer_in_edit_course( $pointer ) {
 		'target'  => '#course_curriculum',
 		'options' => array(
 			'content'  => sprintf( '<h3> %s </h3> <p> %s </p>',
-				__( 'Course Curriculum', 'learn_press' ),
-				__( 'Build a course by selecting created lessons and quizzes or adding new ones. Sorting, editing, shortcuts (l and q), it never gets easier with LearnPress.', 'learn_press' )
+				__( 'Course Curriculum', 'learnpress' ),
+				__( 'Build a course by selecting created lessons and quizzes or adding new ones. Sorting, editing, shortcuts (l and q), it never gets easier with LearnPress.', 'learnpress' )
 			),
 			'position' => array( 'edge' => 'top', 'align' => 'middle' )
 		)

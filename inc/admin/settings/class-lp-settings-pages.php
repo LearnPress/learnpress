@@ -6,7 +6,7 @@
 class LP_Settings_Pages extends LP_Settings_Base {
 	function __construct() {
 		$this->id   = 'pages';
-		$this->text = __( 'Pages', 'learn_press' );
+		$this->text = __( 'Pages', 'learnpress' );
 
 		parent::__construct();
 	}
@@ -15,15 +15,15 @@ class LP_Settings_Pages extends LP_Settings_Base {
 		$sections = array(
 			'profile'          => array(
 				'id'    => 'profile',
-				'title' => __( 'Profile', 'learn_press' )
+				'title' => __( 'Profile', 'learnpress' )
 			),
 			'quiz'          => array(
 				'id'    => 'quiz',
-				'title' => __( 'Quiz', 'learn_press' )
+				'title' => __( 'Quiz', 'learnpress' )
 			),
 			'become_a_teacher' => array(
 				'id'    => 'become_a_teacher',
-				'title' => __( 'Become a teacher', 'learn_press' )
+				'title' => __( 'Become a teacher', 'learnpress' )
 			)
 		);
 		return $sections = apply_filters( 'learn_press_settings_sections_' . $this->id, $sections );
@@ -35,97 +35,97 @@ class LP_Settings_Pages extends LP_Settings_Base {
 			array(
 				array( 'section' => 'profile' ),
 				array(
-					'title'   => __( 'Profile', 'learn_press' ),
+					'title'   => __( 'Profile', 'learnpress' ),
 					'id'      => $this->get_field_name( 'profile_page_id' ),
 					'default' => '',
 					'type'    => 'pages-dropdown'
 				),
 				array(
-					'title'   => __( 'Add link to admin bar', 'learn_press' ),
+					'title'   => __( 'Add link to admin bar', 'learnpress' ),
 					'id'      => $this->get_field_name( 'admin_bar_link' ),
 					'default' => 'yes',
 					'type'    => 'checkbox'
 				),
 				array(
-					'title'       => __( 'Text link', 'learn_press' ),
+					'title'       => __( 'Text link', 'learnpress' ),
 					'id'          => $this->get_field_name( 'admin_bar_link_text' ),
 					'default'     => '',
 					'type'        => 'text',
-					'placeholder' => __( 'Default: View Course Profile', 'learn_press' ),
+					'placeholder' => __( 'Default: View Course Profile', 'learnpress' ),
 					'class'       => 'regular-text'
 				),
 				array(
-					'title'   => __( 'Target link', 'learn_press' ),
+					'title'   => __( 'Target link', 'learnpress' ),
 					'id'      => $this->get_field_name( 'admin_bar_link_target' ),
 					'default' => 'yes',
 					'type'    => 'select',
 					'options' => array(
-						'_self'  => __( 'Self', 'learn_press' ),
-						'_blank' => __( 'New window', 'learn_press' )
+						'_self'  => __( 'Self', 'learnpress' ),
+						'_blank' => __( 'New window', 'learnpress' )
 					)
 				),
 				/*array(
-					'title'   => __( 'Access level', 'learn_press' ),
+					'title'   => __( 'Access level', 'learnpress' ),
 					'id'      => $this->get_field_name( 'profile_access_level' ),
 					'default' => 'private',
 					'type'    => 'select',
 					'options' => array(
-						'private' => __( 'Private (Only account own)', 'learn_press' ),
-						'public'  => __( 'Public', 'learn_press' )
+						'private' => __( 'Private (Only account own)', 'learnpress' ),
+						'public'  => __( 'Public', 'learnpress' )
 					)
 				),*/
 				array(
-					'title' => __( 'Endpoints', 'learn_press' ),
+					'title' => __( 'Endpoints', 'learnpress' ),
 					'type'  => 'title'
 				),
 				array(
-					'title'       => __( 'Tab Courses', 'learn_press' ),
+					'title'       => __( 'Tab Courses', 'learnpress' ),
 					'id'          => $this->get_field_name( 'profile_endpoints[profile-courses]' ),
 					'default'     => 'courses',
 					'type'        => 'text',
 					'placeholder' => '',
-					'desc'        => __( 'This is a slug and should be unique.', 'learn_press' ) . sprintf( ' %s <code>[profile/admin/courses]</code>', __( 'Example link is', 'learn_press' ) )
+					'desc'        => __( 'This is a slug and should be unique.', 'learnpress' ) . sprintf( ' %s <code>[profile/admin/courses]</code>', __( 'Example link is', 'learnpress' ) )
 				),
 				array(
-					'title'       => __( 'Tab Quizzes', 'learn_press' ),
+					'title'       => __( 'Tab Quizzes', 'learnpress' ),
 					'id'          => $this->get_field_name( 'profile_endpoints[profile-quizzes]' ),
 					'default'     => 'quizzes',
 					'type'        => 'text',
 					'placeholder' => '',
-					'desc'        => __( 'This is a slug and should be unique.', 'learn_press' ) . sprintf( ' %s <code>[profile/admin/quizzes]</code>', __( 'Example link is', 'learn_press' ) )
+					'desc'        => __( 'This is a slug and should be unique.', 'learnpress' ) . sprintf( ' %s <code>[profile/admin/quizzes]</code>', __( 'Example link is', 'learnpress' ) )
 				),
 				array(
-					'title'       => __( 'Tab Orders', 'learn_press' ),
+					'title'       => __( 'Tab Orders', 'learnpress' ),
 					'id'          => $this->get_field_name( 'profile_endpoints[profile-orders]' ),
 					'default'     => 'orders',
 					'type'        => 'text',
 					'placeholder' => '',
-					'desc'        => __( 'This is a slug and should be unique.', 'learn_press' ) . sprintf( ' %s <code>[profile/admin/orders]</code>', __( 'Example link is', 'learn_press' ) )
+					'desc'        => __( 'This is a slug and should be unique.', 'learnpress' ) . sprintf( ' %s <code>[profile/admin/orders]</code>', __( 'Example link is', 'learnpress' ) )
 				),
 				array(
-					'title'       => __( 'View order', 'learn_press' ),
+					'title'       => __( 'View order', 'learnpress' ),
 					'id'          => $this->get_field_name( 'profile_endpoints[profile-order-details]' ),
 					'default'     => 'order-details',
 					'type'        => 'text',
 					'placeholder' => '',
-					'desc'        => __( 'This is a slug and should be unique.', 'learn_press' ) . sprintf( ' %s <code>[profile/admin/order-details/123]</code>', __( 'Example link is', 'learn_press' ) )
+					'desc'        => __( 'This is a slug and should be unique.', 'learnpress' ) . sprintf( ' %s <code>[profile/admin/order-details/123]</code>', __( 'Example link is', 'learnpress' ) )
 				),
 				array( 'section' => 'quiz' ),
 				array(
-					'title' => __( 'Endpoints', 'learn_press' ),
+					'title' => __( 'Endpoints', 'learnpress' ),
 					'type'  => 'title'
 				),
 				array(
-					'title'       => __( 'Results', 'learn_press' ),
+					'title'       => __( 'Results', 'learnpress' ),
 					'id'          => $this->get_field_name( 'quiz_endpoints[results]' ),
 					'default'     => 'results',
 					'type'        => 'text',
 					'placeholder' => '',
-					'desc'        => __( 'This is a slug and should be unique.', 'learn_press' ) . sprintf( ' %s <code>[quizzes/sample-quiz/results]</code>', __( 'Example link is', 'learn_press' ) )
+					'desc'        => __( 'This is a slug and should be unique.', 'learnpress' ) . sprintf( ' %s <code>[quizzes/sample-quiz/results]</code>', __( 'Example link is', 'learnpress' ) )
 				),
 				array( 'section' => 'become_a_teacher' ),
 				array(
-					'title'   => __( 'Become a teacher', 'learn_press' ),
+					'title'   => __( 'Become a teacher', 'learnpress' ),
 					'id'      => $this->get_field_name( 'become_a_teacher_page_id' ),
 					'default' => '',
 					'type'    => 'pages-dropdown'

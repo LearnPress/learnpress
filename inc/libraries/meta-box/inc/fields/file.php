@@ -13,8 +13,8 @@ if ( ! class_exists( 'RWMB_File_Field' ) ) {
 			wp_enqueue_style( 'rwmb-file', RWMB_CSS_URL . 'file.css', array(), RWMB_VER );
 			wp_enqueue_script( 'rwmb-file', RWMB_JS_URL . 'file.js', array( 'jquery' ), RWMB_VER, true );
 			wp_localize_script( 'rwmb-file', 'rwmbFile', array(
-				'maxFileUploadsSingle' => __( 'You may only upload maximum %d file', 'learn_press'/*'meta-box'*/ ),
-				'maxFileUploadsPlural' => __( 'You may only upload maximum %d files', 'learn_press'/*'meta-box'*/ ),
+				'maxFileUploadsSingle' => __( 'You may only upload maximum %d file', 'learnpress'/*'meta-box'*/ ),
+				'maxFileUploadsPlural' => __( 'You may only upload maximum %d files', 'learnpress'/*'meta-box'*/ ),
 			) );
 		}
 
@@ -87,7 +87,7 @@ if ( ! class_exists( 'RWMB_File_Field' ) ) {
 			if ( $ok ) {
 				wp_send_json_success();
 			} else {
-				wp_send_json_error( __( 'Error: Cannot delete file', 'learn_press'/*'meta-box'*/ ) );
+				wp_send_json_error( __( 'Error: Cannot delete file', 'learnpress'/*'meta-box'*/ ) );
 			}
 		}
 
@@ -100,8 +100,8 @@ if ( ! class_exists( 'RWMB_File_Field' ) ) {
 		 * @return string
 		 */
 		static function html( $meta, $field ) {
-			$i18n_title = apply_filters( 'rwmb_file_upload_string', _x( 'Upload Files', 'file upload', 'learn_press'/*'meta-box'*/ ), $field );
-			$i18n_more  = apply_filters( 'rwmb_file_add_string', _x( '+ Add new file', 'file upload', 'learn_press'/*'meta-box'*/ ), $field );
+			$i18n_title = apply_filters( 'rwmb_file_upload_string', _x( 'Upload Files', 'file upload', 'learnpress'/*'meta-box'*/ ), $field );
+			$i18n_more  = apply_filters( 'rwmb_file_add_string', _x( '+ Add new file', 'file upload', 'learnpress'/*'meta-box'*/ ), $field );
 
 			// Uploaded files
 			$html             = self::get_uploaded_files( $meta, $field );
@@ -156,8 +156,8 @@ if ( ! class_exists( 'RWMB_File_Field' ) ) {
 		}
 
 		static function file_html( $attachment_id ) {
-			$i18n_delete = apply_filters( 'rwmb_file_delete_string', _x( 'Delete', 'file upload', 'learn_press'/*'meta-box'*/ ) );
-			$i18n_edit   = apply_filters( 'rwmb_file_edit_string', _x( 'Edit', 'file upload', 'learn_press'/*'meta-box'*/ ) );
+			$i18n_delete = apply_filters( 'rwmb_file_delete_string', _x( 'Delete', 'file upload', 'learnpress'/*'meta-box'*/ ) );
+			$i18n_edit   = apply_filters( 'rwmb_file_edit_string', _x( 'Edit', 'file upload', 'learnpress'/*'meta-box'*/ ) );
 			$li          = '
 			<li id="item_%s">
 				<div class="rwmb-icon">%s</div>

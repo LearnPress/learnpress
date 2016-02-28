@@ -21,7 +21,7 @@ $settings = LP_Settings::instance();
 	<?php }?>
 	<?php if( 1 == 0 ){?>
 	<tr>
-		<th scope="row"><label><?php _e( 'Courses Page', 'learn_press' ); ?></label></th>
+		<th scope="row"><label><?php _e( 'Courses Page', 'learnpress' ); ?></label></th>
 		<td>
 			<?php
 			learn_press_pages_dropdown( $this->get_field_name( "courses_page_id" ), $courses_page_id );
@@ -29,50 +29,50 @@ $settings = LP_Settings::instance();
 		</td>
 	</tr>
 	<tr>
-		<th scope="row"><label><?php _e( 'Course category base', 'learn_press' ); ?></label></th>
+		<th scope="row"><label><?php _e( 'Course category base', 'learnpress' ); ?></label></th>
 		<td>
 			<input type="text" class="regular-text" name="<?php echo $this->get_field_name( "course_category_base" ); ?>" value="<?php echo $settings->get( 'course_category_base' ); ?>" placeholder="<?php echo 'course-category'; ?>" />
 		</td>
 	</tr>
 	<tr>
-		<th scope="row"><label><?php _e( 'Course tag base', 'learn_press' ); ?></label></th>
+		<th scope="row"><label><?php _e( 'Course tag base', 'learnpress' ); ?></label></th>
 		<td>
 			<input type="text" class="regular-text" name="<?php echo $this->get_field_name( "course_tag_base" ); ?>" value="<?php echo $settings->get( 'course_tag_base' ); ?>" placeholder="<?php echo 'course-tag'; ?>" />
 		</td>
 	</tr>
 	<tr>
-		<th scope="row"><label><?php _e( 'Review course before publish', 'learn_press' ); ?></label></th>
+		<th scope="row"><label><?php _e( 'Review course before publish', 'learnpress' ); ?></label></th>
 		<td>
 			<input type="hidden" name="<?php echo $this->get_field_name( "required_review" ); ?>" value="no" />
 			<input type="checkbox" name="<?php echo $this->get_field_name( "required_review" ); ?>" value="yes" <?php checked( $settings->get( 'required_review' ) == 'yes' );?> />
 			<p class="description">
-				<?php _e( 'The course need to review by admin before it can be published', 'learn_press' );?>
+				<?php _e( 'The course need to review by admin before it can be published', 'learnpress' );?>
 			</p>
 		</td>
 	</tr>
 	<tr>
-		<th scope="row"><label><?php _e( 'Enable edit published course', 'learn_press' ); ?></label></th>
+		<th scope="row"><label><?php _e( 'Enable edit published course', 'learnpress' ); ?></label></th>
 		<td>
 			<input type="hidden" name="<?php echo $this->get_field_name( "enable_edit_published" ); ?>" value="no" />
 			<input type="checkbox" name="<?php echo $this->get_field_name( "enable_edit_published" ); ?>" value="yes" <?php checked( $settings->get( 'enable_edit_published' ) == 'yes' );?> />
 			<p class="description">
-				<?php _e( 'Allows instructor edit the course that published without review.<br /> If this option is disabled, the course status will be changed to Pending Review when the instructor update course', 'learn_press' );?>
+				<?php _e( 'Allows instructor edit the course that published without review.<br /> If this option is disabled, the course status will be changed to Pending Review when the instructor update course', 'learnpress' );?>
 			</p>
 		</td>
 	</tr>
 	<!-- thumbnail -->
 	<tr>
 		<th colspan="2">
-			<h3><?php _e( 'Course images', 'learn_press' );?></h3>
+			<h3><?php _e( 'Course images', 'learnpress' );?></h3>
 		</th>
 	</tr>
 	<tr>
-		<th scope="row"><label><?php _e( 'Single course', 'learn_press' ); ?></label></th>
+		<th scope="row"><label><?php _e( 'Single course', 'learnpress' ); ?></label></th>
 		<td>
 			<input type="text" size="4" name="<?php echo $this->get_field_name( "single_course_image_size[width]" ); ?>" value="<?php echo $settings->get( 'single_course_image_size.width' ); ?>" placeholder="" />
 			&times;
 			<input type="text" size="4" name="<?php echo $this->get_field_name( "single_course_image_size[height]" ); ?>" value="<?php echo $settings->get( 'single_course_image_size.height' ); ?>" placeholder="" />
-			<?php _e( 'px', 'learn_press' );?>
+			<?php _e( 'px', 'learnpress' );?>
 			&nbsp;&nbsp;&nbsp;
 			<input type="hidden" name="<?php echo $this->get_field_name( "single_course_image_size[crop]" ); ?>" value="no" />
 			<label>
@@ -82,12 +82,12 @@ $settings = LP_Settings::instance();
 		</td>
 	</tr>
 	<tr>
-		<th scope="row"><label><?php _e( 'Course thumbnail', 'learn_press' ); ?></label></th>
+		<th scope="row"><label><?php _e( 'Course thumbnail', 'learnpress' ); ?></label></th>
 		<td>
 			<input type="text" size="4" name="<?php echo $this->get_field_name( "course_thumbnail_image_size[width]" ); ?>" value="<?php echo $settings->get( 'course_thumbnail_image_size.width' ); ?>" placeholder="" />
 			&times;
 			<input type="text" size="4" name="<?php echo $this->get_field_name( "course_thumbnail_image_size[height]" ); ?>" value="<?php echo $settings->get( 'course_thumbnail_image_size.height' ); ?>" placeholder="" />
-			<?php _e( 'px', 'learn_press' );?>
+			<?php _e( 'px', 'learnpress' );?>
 			&nbsp;&nbsp;&nbsp;
 			<input type="hidden" name="<?php echo $this->get_field_name( "course_thumbnail_image_size[crop]" ); ?>" value="no" />
 			<label>
@@ -99,7 +99,7 @@ $settings = LP_Settings::instance();
 	<!-- permalink -->
 	<tr>
 		<th colspan="2">
-			<h3><?php _e( 'Single course permalink', 'learn_press' );?></h3>
+			<h3><?php _e( 'Single course permalink', 'learnpress' );?></h3>
 		</th>
 	</tr>
 	<?php foreach( $structures as $k => $structure ): ?>
@@ -125,12 +125,12 @@ $settings = LP_Settings::instance();
 		<th>
 			<label>
 				<input name="<?php echo $this->get_field_name( "course_base" ); ?>" id="learn_press_custom_permalink" type="radio" value="custom" <?php checked( $is_custom, true ); ?> />
-				<?php _e( 'Custom Base', 'learn_press' ); ?>
+				<?php _e( 'Custom Base', 'learnpress' ); ?>
 			</label>
 		</th>
 		<td>
 			<input name="course_permalink_structure" id="course_permalink_structure" type="text" value="<?php echo esc_attr( $course_permalink ); ?>" class="regular-text code" />
-			<p class="description"><?php _e( 'Enter a custom base to use. A base <strong>must</strong> be set or WordPress will use default instead.', 'learn_press' ); ?></p>
+			<p class="description"><?php _e( 'Enter a custom base to use. A base <strong>must</strong> be set or WordPress will use default instead.', 'learnpress' ); ?></p>
 		</td>
 	</tr>
 	<?php }?>

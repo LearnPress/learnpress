@@ -212,7 +212,7 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 			?>
 			<script>
 				$('#update-order-status').click(function () {
-					var $button = $(this).attr('disabled', 'disabled').html('<?php _e( 'Processing...', 'learn_press' );?>');
+					var $button = $(this).attr('disabled', 'disabled').html('<?php _e( 'Processing...', 'learnpress' );?>');
 					$.ajax({
 						url     : ajaxurl,
 						type    : 'POST',
@@ -229,10 +229,10 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 									.html(res.status)
 									.addClass(res.class);
 							}
-							$button.removeAttr('disabled').html('<?php _e( 'Apply', 'learn_press' );?>');
+							$button.removeAttr('disabled').html('<?php _e( 'Apply', 'learnpress' );?>');
 						},
 						error   : function () {
-							$button.removeAttr('disabled').html('<?php _e( 'Apply', 'learn_press' );?>');
+							$button.removeAttr('disabled').html('<?php _e( 'Apply', 'learnpress' );?>');
 						}
 					});
 				})
@@ -262,7 +262,7 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 				$_actions = array();
 
 				if ( !empty( $actions['edit'] ) ) {
-					$_actions['edit'] = '<a href="' . get_edit_post_link( $post->ID, true ) . '" title="' . esc_attr( __( 'View the transaction details', 'learn_press' ) ) . '">' . __( 'Details', 'learn_press' ) . '</a>';
+					$_actions['edit'] = '<a href="' . get_edit_post_link( $post->ID, true ) . '" title="' . esc_attr( __( 'View the transaction details', 'learnpress' ) ) . '">' . __( 'Details', 'learnpress' ) . '</a>';
 				}
 
 				if ( !empty( $actions['trash'] ) ) $_actions['trash'] = $actions['trash'];
@@ -326,12 +326,12 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 			add_filter( 'the_title', array( $this, 'order_title' ), 5, 2 );
 
 			$columns['cb']            = '<input type="checkbox" />';
-			$columns['title']         = __( 'Order', 'learn_press' );
-			$columns['order_student'] = __( 'Student', 'learn_press' );
-			$columns['order_items']   = __( 'Courses', 'learn_press' );
-			$columns['order_date']    = __( 'Date', 'learn_press' );
-			$columns['order_total']   = __( 'Total', 'learn_press' );
-			$columns['order_status']  = '<span class="status_head tips" data-tip="' . esc_attr__( 'Status', 'learn_press' ) . '">' . esc_attr__( 'Status', 'learn_press' ) . '</span>';
+			$columns['title']         = __( 'Order', 'learnpress' );
+			$columns['order_student'] = __( 'Student', 'learnpress' );
+			$columns['order_items']   = __( 'Courses', 'learnpress' );
+			$columns['order_date']    = __( 'Date', 'learnpress' );
+			$columns['order_total']   = __( 'Total', 'learnpress' );
+			$columns['order_status']  = '<span class="status_head tips" data-tip="' . esc_attr__( 'Status', 'learnpress' ) . '">' . esc_attr__( 'Status', 'learnpress' ) . '</span>';
 
 			$columns = array_merge( $columns, $existing );
 
@@ -360,7 +360,7 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 						printf( '<a href="user-edit.php?user_id=%d">%s (%s)</a>', $the_order->user_id, $user->user_login, $user->display_name ); ?><?php
 						printf( '<br /><span>%s</span>', $user->user_email );
 					}else{
-						_e( 'Guest', 'learn_press' );
+						_e( 'Guest', 'learnpress' );
 					}
 					break;
 				case 'order_status' :
@@ -375,7 +375,7 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 					$time_diff = current_time( 'timestamp' ) - $time;
 
 					if ( $time_diff > 0 && $time_diff < DAY_IN_SECONDS )
-						$h_time = sprintf( __( '%s ago', 'learn_press' ), human_time_diff( $time ) );
+						$h_time = sprintf( __( '%s ago', 'learnpress' ), human_time_diff( $time ) );
 					else
 						$h_time = mysql2date( 'Y/m/d', $m_time );
 
@@ -412,13 +412,13 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 			register_post_type( LP_ORDER_CPT,
 				array(
 					'labels'             => array(
-						'name'          => __( 'Orders', 'learn_press' ),
-						'menu_name'     => __( 'Orders', 'learn_press' ),
-						'singular_name' => __( 'Order', 'learn_press' ),
-						'add_new_item'  => __( 'Add New Order', 'learn_press' ),
-						'edit_item'     => __( 'Order Details', 'learn_press' ),
-						'all_items'     => __( 'Orders', 'learn_press' ),
-						'view_item'     => 'wtf'
+						'name'          => __( 'Orders', 'learnpress' ),
+						'menu_name'     => __( 'Orders', 'learnpress' ),
+						'singular_name' => __( 'Order', 'learnpress' ),
+						'add_new_item'  => __( 'Add New Order', 'learnpress' ),
+						'edit_item'     => __( 'Order Details', 'learnpress' ),
+						'all_items'     => __( 'Orders', 'learnpress' ),
+						'view_item'     => __( 'View Order', 'learnpress' )
 					),
 					'public'             => false,
 					'show_ui'            => true,
@@ -444,7 +444,7 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 			add_action( 'add_meta_boxes', array( __CLASS__, 'register_metabox' ) );
 
 			/*register_post_status( 'lpr-draft', array(
-				'label'                     => _x( 'Draft Order', 'Order status', 'learn_press' ),
+				'label'                     => _x( 'Draft Order', 'Order status', 'learnpress' ),
 				'public'                    => false,
 				'exclude_from_search'       => false,
 				'show_in_admin_all_list'    => true,
@@ -465,8 +465,8 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 			// Remove screen options tab
 			//add_filter('screen_options_show_screen', '__return_false');
 
-			add_meta_box( 'order_details', __( 'Order Details', 'learn_press' ), array( __CLASS__, 'order_details' ), LP()->order_post_type, 'normal', 'high' );
-			add_meta_box( 'submitdiv', __( 'Order Actions', 'learn_press' ), array( __CLASS__, 'order_actions' ), LP()->order_post_type, 'side', 'high' );
+			add_meta_box( 'order_details', __( 'Order Details', 'learnpress' ), array( __CLASS__, 'order_details' ), LP()->order_post_type, 'normal', 'high' );
+			add_meta_box( 'submitdiv', __( 'Order Actions', 'learnpress' ), array( __CLASS__, 'order_actions' ), LP()->order_post_type, 'side', 'high' );
 		}
 
 		static function order_details( $post ) {
@@ -500,60 +500,60 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 		 */
 		function register_post_statues() {
 			register_post_status( 'lp-pending', array(
-				'label'                     => _x( 'Pending Payment', 'Order status', 'learn_press' ),
+				'label'                     => _x( 'Pending Payment', 'Order status', 'learnpress' ),
 				'public'                    => false,
 				'exclude_from_search'       => false,
 				'show_in_admin_all_list'    => true,
 				'show_in_admin_status_list' => true,
-				'label_count'               => _n_noop( 'Pending Payment <span class="count">(%s)</span>', 'Pending Payment <span class="count">(%s)</span>', 'learn_press' )
+				'label_count'               => _n_noop( 'Pending Payment <span class="count">(%s)</span>', 'Pending Payment <span class="count">(%s)</span>', 'learnpress' )
 			) );
 			register_post_status( 'lp-processing', array(
-				'label'                     => _x( 'Processing', 'Order status', 'learn_press' ),
+				'label'                     => _x( 'Processing', 'Order status', 'learnpress' ),
 				'public'                    => false,
 				'exclude_from_search'       => false,
 				'show_in_admin_all_list'    => true,
 				'show_in_admin_status_list' => true,
-				'label_count'               => _n_noop( 'Processing <span class="count">(%s)</span>', 'Processing <span class="count">(%s)</span>', 'learn_press' )
+				'label_count'               => _n_noop( 'Processing <span class="count">(%s)</span>', 'Processing <span class="count">(%s)</span>', 'learnpress' )
 			) );
 			register_post_status( 'lp-on-hold', array(
-				'label'                     => _x( 'On Hold', 'Order status', 'learn_press' ),
+				'label'                     => _x( 'On Hold', 'Order status', 'learnpress' ),
 				'public'                    => false,
 				'exclude_from_search'       => false,
 				'show_in_admin_all_list'    => true,
 				'show_in_admin_status_list' => true,
-				'label_count'               => _n_noop( 'On Hold <span class="count">(%s)</span>', 'On Hold <span class="count">(%s)</span>', 'learn_press' )
+				'label_count'               => _n_noop( 'On Hold <span class="count">(%s)</span>', 'On Hold <span class="count">(%s)</span>', 'learnpress' )
 			) );
 			register_post_status( 'lp-completed', array(
-				'label'                     => _x( 'Completed', 'Order status', 'learn_press' ),
+				'label'                     => _x( 'Completed', 'Order status', 'learnpress' ),
 				'public'                    => false,
 				'exclude_from_search'       => false,
 				'show_in_admin_all_list'    => true,
 				'show_in_admin_status_list' => true,
-				'label_count'               => _n_noop( 'Completed <span class="count">(%s)</span>', 'Completed <span class="count">(%s)</span>', 'learn_press' )
+				'label_count'               => _n_noop( 'Completed <span class="count">(%s)</span>', 'Completed <span class="count">(%s)</span>', 'learnpress' )
 			) );
 			register_post_status( 'lp-cancelled', array(
-				'label'                     => _x( 'Cancelled', 'Order status', 'learn_press' ),
+				'label'                     => _x( 'Cancelled', 'Order status', 'learnpress' ),
 				'public'                    => false,
 				'exclude_from_search'       => false,
 				'show_in_admin_all_list'    => true,
 				'show_in_admin_status_list' => true,
-				'label_count'               => _n_noop( 'Cancelled <span class="count">(%s)</span>', 'Cancelled <span class="count">(%s)</span>', 'learn_press' )
+				'label_count'               => _n_noop( 'Cancelled <span class="count">(%s)</span>', 'Cancelled <span class="count">(%s)</span>', 'learnpress' )
 			) );
 			register_post_status( 'lp-refunded', array(
-				'label'                     => _x( 'Refunded', 'Order status', 'learn_press' ),
+				'label'                     => _x( 'Refunded', 'Order status', 'learnpress' ),
 				'public'                    => false,
 				'exclude_from_search'       => false,
 				'show_in_admin_all_list'    => true,
 				'show_in_admin_status_list' => true,
-				'label_count'               => _n_noop( 'Refunded <span class="count">(%s)</span>', 'Refunded <span class="count">(%s)</span>', 'learn_press' )
+				'label_count'               => _n_noop( 'Refunded <span class="count">(%s)</span>', 'Refunded <span class="count">(%s)</span>', 'learnpress' )
 			) );
 			register_post_status( 'lp-failed', array(
-				'label'                     => _x( 'Failed', 'Order status', 'learn_press' ),
+				'label'                     => _x( 'Failed', 'Order status', 'learnpress' ),
 				'public'                    => false,
 				'exclude_from_search'       => false,
 				'show_in_admin_all_list'    => true,
 				'show_in_admin_status_list' => true,
-				'label_count'               => _n_noop( 'Failed <span class="count">(%s)</span>', 'Failed <span class="count">(%s)</span>', 'learn_press' )
+				'label_count'               => _n_noop( 'Failed <span class="count">(%s)</span>', 'Failed <span class="count">(%s)</span>', 'learnpress' )
 			) );
 		}
 	}

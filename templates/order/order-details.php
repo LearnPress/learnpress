@@ -10,12 +10,12 @@ if ( !defined( 'ABSPATH' ) ) {
 }
 
 ?>
-<h2><?php _e( 'Order Details', 'learn_press' ); ?></h2>
+<h2><?php _e( 'Order Details', 'learnpress' ); ?></h2>
 <table class="order_table order_details">
 	<thead>
 	<tr>
-		<th class="course-name"><?php _e( 'Course', 'learn_press' ); ?></th>
-		<th class="course-total"><?php _e( 'Total', 'learn_press' ); ?></th>
+		<th class="course-name"><?php _e( 'Course', 'learnpress' ); ?></th>
+		<th class="course-total"><?php _e( 'Total', 'learnpress' ); ?></th>
 	</tr>
 	</thead>
 	<tbody>
@@ -34,7 +34,7 @@ if ( !defined( 'ABSPATH' ) ) {
 						?>
 					</td>
 					<td class="product-total">
-						<?php echo !empty( $item['total'] ) ? learn_press_format_price( $item['total'], $currency_symbol ) : __( 'Free!', 'learn_press' ); ?>
+						<?php echo !empty( $item['total'] ) ? learn_press_format_price( $item['total'], $currency_symbol ) : __( 'Free!', 'learnpress' ); ?>
 					</td>
 				</tr>
 				<?php
@@ -47,11 +47,11 @@ if ( !defined( 'ABSPATH' ) ) {
 	<tfoot>
 
 	<tr>
-		<th scope="row"><?php _e( 'Subtotal', 'learn_press' ); ?></th>
+		<th scope="row"><?php _e( 'Subtotal', 'learnpress' ); ?></th>
 		<td><?php echo $order->get_formatted_order_subtotal(); ?></td>
 	</tr>
 	<tr>
-		<th scope="row"><?php _e( 'Total', 'learn_press' ); ?></th>
+		<th scope="row"><?php _e( 'Total', 'learnpress' ); ?></th>
 		<td><?php echo $order->get_formatted_order_total(); ?></td>
 	</tr>
 	</tfoot>
