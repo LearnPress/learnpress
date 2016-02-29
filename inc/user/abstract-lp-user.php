@@ -498,15 +498,52 @@ class LP_Abstract_User {
 	 *
 	 * @return array
 	 */
-	function get_quizzes( $args = array(), $force = false ) {
+	function get_quizzes( &$args = array(), $force = false ) {
 		static $quizzes = array();
-		if ( !$quizzes || $force ) {
-			settype( $args, 'array' );
-			$args['post_type'] = LP()->quiz_post_type;
-			$quizzes           = $this->get_posts( $args );
+		settype( $args, 'array' );
+
+		$args              = wp_parse_args(
+			$args,
+			array(
+				'limit'  => - 1,
+				'paged'  => 1,
+				'status' => array( 'started', 'finished' ),
+				'total'  => 5
+			)
+		);
+		$args['post_type'] = LP()->quiz_post_type;
+		$key               = md5( serialize( $args ) );
+		if ( empty( $quizzes[$key] ) || $force ) {
+			global $wpdb;
+			$where = $wpdb->prepare( "\nWHERE uq.user_id = %d", $this->id );
+			$limit = "\n";
+			if ( $args['limit'] > 0 ) {
+				if ( !$args['paged'] ) {
+					$args['paged'] = 1;
+				}
+				$start = ( $args['paged'] - 1 ) * $args['limit'];
+				$limit .= "LIMIT " . $start . ',' . $args['limit'];
+			}
+			$query = $wpdb->prepare( "
+				SELECT SQL_CALC_FOUND_ROWS DISTINCT q.*
+				FROM {$wpdb->posts} q
+				INNER JOIN {$wpdb->prefix}learnpress_user_quizzes uq ON uq.quiz_id = q.ID
+				{$where}
+			", $this->id );
+
+			$query         = $query . $limit;
+			$rows          = $wpdb->get_results( $query );
+			$total         = $wpdb->get_var( "SELECT FOUND_ROWS()" );
+			$quizzes[$key] = array(
+				'rows'  => $rows,
+				'total' => $total
+			);
+			$args['total'] = $total;
+		}else{
+			$args['total'] = $quizzes[$key]['total'];
 		}
 
-		return apply_filters( 'learn_press_get_user_quizzes', $quizzes );
+		return apply_filters( 'learn_press_get_user_quizzes', $quizzes[$key]['rows'], $args );
 	}
 
 	/**
@@ -680,9 +717,19 @@ class LP_Abstract_User {
 		$return = false;
 		if ( $course = LP_Course::get_course( $course_id ) ) {
 			$result = $course->evaluate_course_results() * 100;
-			$return = $result >= $course->passing_condition && $this->has( 'enrolled-course', $course_id );
+			$return = $result >= $course->passing_condition && $this->is_course_status( $course_id, array( 'enrolled' ) );
 		}
 		return apply_filters( 'learn_press_user_can_finish_course', $return, $course_id, $this->id );
+	}
+
+	function is_course_status( $course_id, $statuses ){
+		$status = $this->get_course_status( $course_id );
+		if( is_array( $statuses ) ){
+			return in_array( $status, $statuses );
+		}elseif( is_string( $statuses ) ){
+			return $statuses == $status;
+		}
+		return false;
 	}
 
 	function finish_course( $course_id ) {
@@ -759,7 +806,7 @@ class LP_Abstract_User {
 
 		$info = $this->get_course_info( $course_id );
 
-		return apply_filters( 'learn_press_user_has_enrolled_course', $info['status'] == 'enrolled', $this, $course_id );
+		return apply_filters( 'learn_press_user_has_enrolled_course', $info['status'] != '', $this, $course_id );
 	}
 
 	/**
@@ -922,11 +969,11 @@ class LP_Abstract_User {
 		}
 
 		$this->_parse_item_order_of_course( $course_id );
-		return apply_filters( 'learn_press_user_course_status', $info, $this, $course_id );
+		return apply_filters( 'learn_press_user_course_info', $info, $this, $course_id );
 	}
 
 	function get_course_status( $course_id ) {
-		return $this->get_course_info( $course_id, 'status' );
+		return apply_filters( 'learn_press_user_course_status', $this->get_course_info( $course_id, 'status' ), $this->id );
 	}
 
 	function get_quiz_results( $quiz_id, $force = false ) {
@@ -1009,8 +1056,9 @@ class LP_Abstract_User {
 	 * @return bool
 	 */
 	function has_purchased_course( $course_id ) {
-		$order = $this->get_course_order( $course_id );
-		return $order;
+		$order = $this->get_course_order( $course_id, 'object' );
+		$purchased = $order && $order->has_status( array( 'processing', 'completed' ) );
+		return apply_filters( 'learn_press_user_has_purchased_course', $purchased, $course_id, $this->id, $order ? $order->id : 0 );
 	}
 
 	function has_completed_item( $item ) {
@@ -1216,7 +1264,7 @@ class LP_Abstract_User {
 				$start = ( $args['paged'] - 1 ) * $args['limit'];
 				$limit .= "LIMIT " . $start . ',' . $args['limit'];
 			}
-			$order = "\nORDER BY " . ($args['orderby'] ? $args['orderby'] : 'post_title') . ' ' . $args['order'];
+			$order = "\nORDER BY " . ( $args['orderby'] ? $args['orderby'] : 'post_title' ) . ' ' . $args['order'];
 			$query = $wpdb->prepare( "
 				SELECT * FROM(
 					SELECT c.*, uc.status as course_status

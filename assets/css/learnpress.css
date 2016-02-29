@@ -143,6 +143,8 @@
 .learnpress ul,
 .learnpress li{
 	list-style: none;
+	padding: 0;
+	margin: 0;
 }
 
 .learnpress h3{
@@ -151,7 +153,10 @@
 	margin-top: 2.3704em;
 	margin-bottom: 1.1852em;
 }
-
+.learnpress .learnpress-content{
+	z-index: 100;
+	position: relative;
+}
 .learnpress .twentyfifteen .learnpress-content{
 	padding-left: 7.6923%;
 	padding-right: 7.6923%;

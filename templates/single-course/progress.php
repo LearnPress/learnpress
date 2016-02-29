@@ -8,7 +8,9 @@
 defined( 'ABSPATH' ) || exit();
 
 global $course;
-
+if ( !LP()->user->get( 'course-status', $course->id ) ) {
+	return;
+}
 $result            = $course->evaluate_course_results();
 $num_of_decimal    = 0;
 $current           = round( $result * 100, $num_of_decimal );

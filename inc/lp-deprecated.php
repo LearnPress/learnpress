@@ -109,7 +109,7 @@ function learn_press_get_lessons( $course_id ) {
  *
  * @return array
  */
-function learn_press_get_quizzes( $course_id ) {
+function learn_press_get_course_quizzes( $course_id ) {
 	_deprecated_function( __FUNCTION__, '1.0' );
 	$quizzes    = array();
 	$curriculum = get_post_meta( $course_id, '_lpr_course_lesson_quiz', true );

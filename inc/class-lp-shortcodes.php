@@ -121,7 +121,7 @@ class LP_Shortcodes {
 		if ( $order_id > 0 && ( $order = learn_press_get_order( $order_id ) ) ) {
 			if ( $order->order_key != $order_key )
 				unset( $order );
-		}else{
+		} else {
 			learn_press_display_message( __( 'Invalid order!', 'learnpress' ), 'error' );
 			return;
 		}
@@ -268,9 +268,8 @@ class LP_Shortcodes {
 
 	static function profile() {
 		global $wp_query, $wp;
-
 		if ( isset( $wp_query->query['user'] ) ) {
-			$user = get_user_by( 'login', $wp_query->query['user'] );
+			$user = get_user_by( 'login', urldecode( $wp_query->query['user'] ) );
 		} else {
 			$user = get_user_by( 'id', get_current_user_id() );
 		}
@@ -283,7 +282,7 @@ class LP_Shortcodes {
 			if ( empty( $wp_query->query['user'] ) ) {
 				learn_press_get_template( 'profile/private-area.php' );
 			} else {
-				learn_press_display_message( sprintf( __( 'The user %s in not available!', 'learnpress' ), $wp_query->query['user'] ), 'error' );
+				learn_press_display_message( sprintf( __( 'The user %s is not available!', 'learnpress' ), $wp_query->query['user'] ), 'error' );
 			}
 
 		} else {
@@ -295,9 +294,9 @@ class LP_Shortcodes {
 				$tab_keys = array_keys( $tabs );
 				$current  = reset( $tab_keys );
 			}
-			if( !learn_press_current_user_can_view_profile_section( $current, $user ) ){
+			if ( !learn_press_current_user_can_view_profile_section( $current, $user ) ) {
 				learn_press_get_template( 'profile/private-area.php' );
-			}else {
+			} else {
 				if ( !empty( $tabs ) && !empty( $tabs[$current] ) ) :
 
 					learn_press_get_template( 'profile/index.php',

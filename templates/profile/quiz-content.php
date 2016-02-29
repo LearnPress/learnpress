@@ -6,35 +6,15 @@
  */
 
 defined( 'ABSPATH' ) || exit();
-
-$result = learn_press_get_quiz_result( $user_id, $quiz_id );
+global $post;
+$result = $user->get_quiz_results( $post->ID );
 ?>
-
-<div class="quiz-result">
-	<div class="quiz-title">
-		<a href="<?php echo get_permalink( $quiz_id ) ?>"><?php echo get_the_title( $quiz_id ); ?></a>
-	</div>
-	<div class="quiz-result-mark">
-		<span class="quiz-mark"><?php echo $result['mark']; ?>
-			<small>/ <?php echo $result['mark_total']; ?></small></span>
-		<small><?php _e( 'point', 'learnpress' ); ?></small>
-	</div>
-	<div class="quiz-result-summary">
-		<div class="quiz-result-field correct">
-			<label><?php echo apply_filters( 'learn_press_quiz_result_correct_text', __( 'Correct', 'learnpress' ) ); ?></label>
-			<?php printf( "%d (%0.2f%%)", $result['correct'], $result['correct_percent'] ); ?>
-		</div>
-		<div class="quiz-result-field wrong">
-			<label><?php echo apply_filters( 'learn_press_quiz_result_wrong_text', __( 'Wrong', 'learnpress' ) ); ?></label>
-			<?php printf( "%d (%0.2f%%)", $result['wrong'], $result['wrong_percent'] ); ?>
-		</div>
-		<div class="quiz-result-field empty">
-			<label><?php echo apply_filters( 'learn_press_quiz_result_empty_text', __( 'Empty', 'learnpress' ) ); ?></label>
-			<?php printf( "%d (%0.2f%%)", $result['empty'], $result['empty_percent'] ); ?>
-		</div>
-		<div class="quiz-result-field time">
-			<label><?php echo apply_filters( 'learn_press_quiz_result_time_text', __( 'Time', 'learnpress' ) ); ?></label>
-			<?php echo learn_press_seconds_to_time( $result['quiz_time'] ); ?>
-		</div>
-	</div>
-</div>
+<li class="learn-press-quiz-result <?php echo sanitize_title($result->status);?>">
+	<a href="<?php echo get_permalink( $post->ID ) ?>" class="quiz-title"><?php echo get_the_title( $post->ID ); ?></a>
+	<p class="quiz-result-meta">
+		<span class="status">
+			<?php echo ucfirst($result->status);?>
+		</span>
+		<span class="percentage"><?php echo sprintf( '%s/%s', $result->results['correct_percent'], 100 );?></span>
+	</p>
+</li>

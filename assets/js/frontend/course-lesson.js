@@ -12,6 +12,7 @@
 		},
 		load      : function (callback) {
 			var that = this;
+
 			$.ajax({
 				url     : this.url(),
 				dataType: 'html',
@@ -106,7 +107,7 @@
 		},
 		initItems : function () {
 			var that = this;
-			$('.section-content .course-lesson.course-item').each(function () {
+			$('.section-content .course-item').each(function () {
 				var $li = $(this),
 					$link = $li.find('a'),
 					id = parseInt($link.attr('data-id')),
@@ -122,8 +123,9 @@
 					that.current = id;
 				}
 			});
+
 		},
-		loadItem  : function (item) {
+		loadItem  : function (item, link) {
 			if ($.isNumeric(item)) {
 				item = this.findWhere({id: item});
 			} else if ($.type(item) == 'string') {
@@ -137,6 +139,10 @@
 						.removeClass('item-current');
 					$('.course-item.course-item-' + item.get('id'))
 						.addClass('item-current');
+				}
+				if(link){
+					item.set('rootUrl', link);
+					item.rootUrl = link;
 				}
 				this.view = new $.LP_Course_Item.View({model: item});
 			}
@@ -159,7 +165,7 @@
 			var $item = $(e.target),
 				id = parseInt($item.attr('data-id')),
 				link = $item.attr('href');
-			this.model.loadItem(id ? id : link);
+			this.model.loadItem(id ? id : link, link);
 		}
 	});
 	function _init() {

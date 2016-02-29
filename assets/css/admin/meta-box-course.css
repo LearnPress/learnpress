@@ -275,6 +275,28 @@
 }
 #course_curriculum .lp-section-item .section-item-icon{
 	width: 32px;
+	white-space: nowrap;
+}
+#course_curriculum .lp-section-item .learn-press-icon{
+	width: 32px;
+	height: 32px;
+	font-family: dashicons;
+	display: inline-block;
+	font-size: 20px;
+	text-align: center;
+	line-height: 32px;
+	color: #DDD;
+	cursor: pointer;
+}
+#course_curriculum .lp-section-item .learn-press-icon.item-lp_quiz:before{
+	content: "\f469";
+}
+#course_curriculum .lp-section-item .learn-press-icon.item-lp_lesson:before{
+	content: "\f330";
+}
+#course_curriculum .lp-section-item .learn-press-icon.item-selected,
+#course_curriculum .lp-section-item[data-item_id=""] .learn-press-icon:hover{
+	color: #0085ba;
 }
 #course_curriculum .lp-section-item td{
 	height: 30px;

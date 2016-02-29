@@ -6,7 +6,7 @@
  * @package LearnPress/Template
  * @version 1.0
  */
-
+defined( 'ABSPATH' ) || exit();
 ?>
 <?php if( $orders = $user->get_orders() ): ?>
 

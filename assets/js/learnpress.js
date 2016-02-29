@@ -1,7 +1,3 @@
-/**
- * Created by GiapNV on 1/16/15.
- */
-;
 if (typeof LearnPress == 'undefined') window.LearnPress = {};
 ;
 (function ($) {

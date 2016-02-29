@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if( !user_can( $user->ID, 'edit_lpr_courses' ) ){
+if( !user_can( $user->ID, 'edit_lp_courses' ) ){
 	return;
 }
 global $post;
@@ -38,7 +38,7 @@ $heading = apply_filters( 'learn_press_profile_tab_courses_own_heading', false )
 
 <?php else: ?>
 
-	<?php learn_press_display_message( __( 'You have not got any published courses yet!', 'learnpress' ) ); ?>
+	<?php learn_press_display_message( __( 'You haven\'t got any published courses yet!', 'learnpress' ) ); ?>
 
 <?php endif ?>
 

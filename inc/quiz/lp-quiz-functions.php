@@ -39,17 +39,17 @@ function learn_press_question_class( $question = null, $classes = null, $user_id
 		$classes = array_merge( $classes, array( "learn-press-question-wrap", "question-type-{$question->type}", "question-{$question->id}" ) );
 
 		if ( $context == 'quiz-results' ) {
-			$user_id = learn_press_get_current_user_id();
+			$user_id     = learn_press_get_current_user_id();
 			$user        = learn_press_get_user( $user_id );
 			$answer_data = $user->get_answer_results( $question->id );
-			$classes[] = 'question-results';
+			$classes[]   = 'question-results';
 			if ( $answer_data ) {
 				if ( $answer_data['correct'] ) {
 					$classes[] = 'correct';
 				} else {
 					$classes[] = 'incorrect';
 				}
-			}else{
+			} else {
 				$classes[] = 'skipped';
 			}
 		}
@@ -266,3 +266,15 @@ function learn_press_redirect_to_question( $template ) {
 }
 
 add_action( 'template_redirect', 'learn_press_redirect_to_question' );
+
+
+function learn_press_get_quizzes( $user_id = 0, &$args = array() ) {
+	if ( !$user_id ) {
+		$user_id = learn_press_get_current_user_id();
+	}
+	if ( !$user_id ) {
+		return;
+	}
+	$user = learn_press_get_user( $user_id );
+	return $user->get_quizzes( $args );
+}
