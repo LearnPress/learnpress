@@ -1,0 +1,2327 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: LearnPress\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-07-16 16:21+0700\n"
+"PO-Revision-Date: 2015-07-18 18:24+0700\n"
+"Last-Translator: Hoang Ha <halink0803@gmail.com>\n"
+"Language-Team: Dutch (Netherlands) (http://www.transifex.com/p/learnpress/language/nl_NL/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: nl_NL\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.8.2\n"
+
+#: learnpress.php:352
+msgid "Learning Management System"
+msgstr "Learning Management System"
+
+#: learnpress.php:353 learnpress.php:373
+msgid "LearnPress"
+msgstr ""
+
+#: learnpress.php:364 learnpress.php:365
+msgid "Statistics"
+msgstr ""
+
+#: learnpress.php:372
+msgid "LearnPress Settings"
+msgstr ""
+
+#: learnpress.php:380 learnpress.php:381
+msgid "Add-ons"
+msgstr "Add-ons"
+
+#: learnpress.php:405
+msgctxt "User role"
+msgid "Instructor"
+msgstr ""
+
+#: inc/class.lpr-ajax.php:177
+msgid "Sorry! You can not retake this quiz"
+msgstr ""
+
+#: inc/class.lpr-ajax.php:335 inc/class.lpr-ajax.php:377
+msgid "Access denied!"
+msgstr ""
+
+#: inc/class.lpr-ajax.php:404
+msgid "Congratulation ! You have finished this course"
+msgstr ""
+
+#: inc/class.lpr-ajax.php:407
+msgid "Sorry! You can not finish this course now"
+msgstr ""
+
+#: inc/class.lpr-ajax.php:457 inc/class.lpr-ajax.php:463
+msgid "Error"
+msgstr ""
+
+#: inc/class.lpr-multi-language.php:40 lib/meta-box/inc/common.php:48
+msgid "Documentation"
+msgstr ""
+
+#: inc/class.lpr-multi-language.php:41 lib/meta-box/inc/common.php:49
+msgid "Extensions"
+msgstr ""
+
+#: inc/class.lpr-question-type.php:119 inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:147 inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:237 templates/archive-course-content.php:25 templates/course_content.php:27
+msgid "Edit"
+msgstr "Bewerken"
+
+#: inc/class.lpr-question-type.php:120 inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:114 inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:146 inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:169 inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:212 inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:237 lib/meta-box/inc/fields/file-input.php:38
+msgid "Remove"
+msgstr ""
+
+#: inc/class.lpr-question-type.php:121
+msgid "Expand"
+msgstr ""
+
+#: inc/class.lpr-question-type.php:122
+msgid "Collapse"
+msgstr "Wegklappen"
+
+#: inc/class.lpr-question-type.php:138
+msgid "Answer"
+msgstr ""
+
+#: inc/class.lpr-question-type.php:170 inc/class.lpr-question-type.php:181
+#, php-format
+msgid "Function %s should override from its child"
+msgstr ""
+
+#: inc/class.lpr-question-type.php:570
+msgid "Answer explanation"
+msgstr ""
+
+#: inc/class.lpr-shortcodes.php:47
+msgid "You are a teacher now"
+msgstr ""
+
+#: inc/class.lpr-shortcodes.php:51
+msgid "Please login to fill out this form"
+msgstr ""
+
+#: inc/class.lpr-shortcodes.php:55
+msgid "Your request has been sent! We will get in touch with you soon!"
+msgstr ""
+
+#: inc/class.lpr-shortcodes.php:62 inc/admin/settings/class.lpr-settings-pages.php:103
+msgid "Become a Teacher"
+msgstr ""
+
+#: inc/class.lpr-shortcodes.php:63
+msgid "Fill out your information and send to us to become a teacher"
+msgstr ""
+
+#: inc/class.lpr-shortcodes.php:64
+msgid "Submit"
+msgstr ""
+
+#: inc/class.lpr-shortcodes.php:70
+msgid "Name"
+msgstr ""
+
+#: inc/class.lpr-shortcodes.php:72
+msgid "Your name"
+msgstr ""
+
+#: inc/class.lpr-shortcodes.php:76
+msgid "Email"
+msgstr ""
+
+#: inc/class.lpr-shortcodes.php:78
+msgid "Your email address"
+msgstr ""
+
+#: inc/class.lpr-shortcodes.php:82
+msgid "Phone"
+msgstr ""
+
+#: inc/class.lpr-shortcodes.php:84
+msgid "Your phone number"
+msgstr ""
+
+#: inc/class.lpr-shortcodes.php:151 inc/shortcodes/profile-page.php:21
+msgid "This user in not available!"
+msgstr ""
+
+#: inc/lpr-add-on-functions.php:18 inc/lpr-core-functions.php:356
+msgid "All"
+msgstr ""
+
+#: inc/lpr-add-on-functions.php:31 inc/lpr-add-on-functions.php:639 inc/lpr-add-on-functions.php:665 inc/admin/class-lpr-plugin-install-list-table.php:417
+msgid "Enabled"
+msgstr "Inschakelen"
+
+#: inc/lpr-add-on-functions.php:42 inc/lpr-add-on-functions.php:639 inc/lpr-add-on-functions.php:665 inc/admin/class-lpr-plugin-install-list-table.php:419
+msgid "Disabled"
+msgstr ""
+
+#: inc/lpr-add-on-functions.php:53
+msgid "Get More"
+msgstr ""
+
+#: inc/lpr-add-on-functions.php:81
+msgid "All LearnPress Add-ons require a slug parameter."
+msgstr ""
+
+#: inc/lpr-add-on-functions.php:84
+msgid "All LearnPress Add-ons require a name parameter."
+msgstr "Alle LearnPress Add-ons vereisen een naam parameterâ"
+
+#: inc/lpr-add-on-functions.php:87
+msgid "All LearnPress Add-ons require a file parameter."
+msgstr "Alle LearnPress Add-ons vereisen een bestand parameter"
+
+#: inc/lpr-add-on-functions.php:367
+msgid "bbPress Integration"
+msgstr ""
+
+#: inc/lpr-add-on-functions.php:368
+#, php-format
+msgid "Using the forum for courses provided by bbPress.%s"
+msgstr ""
+
+#: inc/lpr-add-on-functions.php:377
+msgid "BuddyPress Integration"
+msgstr ""
+
+#: inc/lpr-add-on-functions.php:378
+#, php-format
+msgid "Using the profile system provided by BuddyPress.%s"
+msgstr ""
+
+#: inc/lpr-add-on-functions.php:387
+msgid "Certificate"
+msgstr ""
+
+#: inc/lpr-add-on-functions.php:388
+msgid "Allow create a certificate for student after they finish a course"
+msgstr ""
+
+#: inc/lpr-add-on-functions.php:398
+msgid "Courses Collection"
+msgstr ""
+
+#: inc/lpr-add-on-functions.php:399
+msgid "Collecting related courses into one collection by administrator"
+msgstr ""
+
+#: inc/lpr-add-on-functions.php:409
+msgid "Course Review"
+msgstr ""
+
+#: inc/lpr-add-on-functions.php:410
+msgid "Adding review for course "
+msgstr ""
+
+#: inc/lpr-add-on-functions.php:419
+msgid "Export/Import"
+msgstr ""
+
+#: inc/lpr-add-on-functions.php:420
+msgid "Export and Import your courses with all lesson and quiz in easiest way"
+msgstr ""
+
+#: inc/lpr-add-on-functions.php:429
+msgid "Prerequisite Courses"
+msgstr ""
+
+#: inc/lpr-add-on-functions.php:430
+msgid "Adding prerequisite course when add new a course "
+msgstr ""
+
+#: inc/lpr-add-on-functions.php:439
+msgid "Stripe"
+msgstr ""
+
+#: inc/lpr-add-on-functions.php:440
+msgid "Make the payment with Stripe"
+msgstr ""
+
+#: inc/lpr-add-on-functions.php:449
+msgid "Courses Wishlist"
+msgstr ""
+
+#: inc/lpr-add-on-functions.php:450
+msgid "Wishlist feature"
+msgstr ""
+
+#: inc/lpr-add-on-functions.php:459
+msgid "WooCommerce Payment"
+msgstr ""
+
+#: inc/lpr-add-on-functions.php:460
+#, php-format
+msgid "Using the payment system provided by WooCommerce.%s"
+msgstr ""
+
+#: inc/lpr-add-on-functions.php:515
+msgid "An unexpected error occurred. Something may be wrong with WordPress.org or this server&#8217;s configuration. If you continue to have problems, please try the <a href=\"https://wordpress.org/support/\">support forums</a>."
+msgstr "An unexpected error occurred. Something may be wrong with WordPress.org or this server&#8217;s configuration. If you continue to have problems, please try the <a href=\"https://wordpress.org/support/\">support forums</a>."
+
+#: inc/lpr-add-on-functions.php:515
+msgid "(WordPress could not establish a secure connection to WordPress.org. Please contact your server administrator.)"
+msgstr "(WordPress could not establish a secure connection to WordPress.org. Please contact your server administrator.)"
+
+#: inc/lpr-add-on-functions.php:610
+#, php-format
+msgid "Installing Plugin: %s"
+msgstr ""
+
+#: inc/lpr-add-on-functions.php:624
+msgid "Not install"
+msgstr ""
+
+#: inc/lpr-add-on-functions.php:629 inc/admin/lpr-admin-functions.php:444
+msgid "Installed"
+msgstr ""
+
+#: inc/lpr-core-functions.php:56 inc/lpr-quiz-functions.php:270
+msgid "Invalid ID"
+msgstr ""
+
+#: inc/lpr-core-functions.php:61
+msgid "Unable to take the course"
+msgstr ""
+
+#: inc/lpr-core-functions.php:136
+msgid "<"
+msgstr ""
+
+#: inc/lpr-core-functions.php:137
+msgid ">"
+msgstr ""
+
+#: inc/lpr-core-functions.php:170 inc/gateways/paypal/paypal-ipn/ipn.php:52
+msgid "Order on "
+msgstr ""
+
+#: inc/lpr-core-functions.php:312
+msgid "Sorry! You don't have permission to do this action"
+msgstr ""
+
+#: inc/lpr-core-functions.php:357
+msgid "Published"
+msgstr ""
+
+#: inc/lpr-core-functions.php:358
+msgid "Private"
+msgstr ""
+
+#: inc/lpr-core-functions.php:359
+msgid "Pending Review"
+msgstr ""
+
+#: inc/lpr-core-functions.php:360
+msgid "Scheduled"
+msgstr ""
+
+#: inc/lpr-core-functions.php:361
+msgid "Draft"
+msgstr ""
+
+#: inc/lpr-core-functions.php:362
+msgid "Trash"
+msgstr ""
+
+#: inc/lpr-core-functions.php:413
+msgid "Want to be an instructor?"
+msgstr ""
+
+#: inc/lpr-core-functions.php:605 inc/admin/class.lpr-profile.php:77 inc/admin/sub-menus/statistics.php:17 inc/custom-post-types/course.php:40 inc/custom-post-types/course.php:42 inc/custom-post-types/order.php:447
+msgid "Courses"
+msgstr "Cursussen"
+
+#: inc/lpr-core-functions.php:611
+msgid "Categories"
+msgstr ""
+
+#: inc/lpr-core-functions.php:616 inc/custom-post-types/course.php:114
+msgid "Tags"
+msgstr ""
+
+#: inc/lpr-core-functions.php:715
+#, php-format
+msgid "<strong>LearnPress is almost ready</strong>. <a class=\"lpr-set-up\" href=\"%s\">Setting up</a> something right now is a good idea. That's better than you <a class=\"lpr-ignore lpr-set-up\">ignore</a> the message."
+msgstr "<strong>LearnPress is almost ready</strong>. <a class=\"lpr-set-up\" href=\"%s\">Setting up</a> something right now is a good idea. That's better than you <a class=\"lpr-ignore lpr-set-up\">ignore</a> the message."
+
+#: inc/lpr-core-functions.php:728
+#, php-format
+msgid "<strong>LearnPress Profile is almost ready</strong>. You must <a href=\"%s\">update your permalink structure</a> to something other than the default for it to work."
+msgstr "<strong>LearnPress Profile is almost ready</strong>. You must <a href=\"%s\">update your permalink structure</a> to something other than the default for it to work."
+
+#: inc/lpr-core-functions.php:1071
+msgid "LearnPress webhook process Complete"
+msgstr ""
+
+#: inc/lpr-core-functions.php:1071
+msgid "iThemes Exchange Webhook Process Complete"
+msgstr ""
+
+#: inc/lpr-core-functions.php:1090
+msgid "Left"
+msgstr ""
+
+#: inc/lpr-core-functions.php:1091
+msgid "Right"
+msgstr ""
+
+#: inc/lpr-core-functions.php:1092
+msgid "Left with space"
+msgstr ""
+
+#: inc/lpr-core-functions.php:1093
+msgid "Right with space"
+msgstr ""
+
+#: inc/lpr-core-functions.php:1341
+msgid "Select Page"
+msgstr ""
+
+#: inc/lpr-core-functions.php:1355
+msgid "Select a page&hellip;"
+msgstr ""
+
+#: inc/lpr-core-functions.php:1431
+msgid "View Course Profile"
+msgstr ""
+
+#: inc/lpr-core-functions.php:1443
+msgid "Become An Instructor"
+msgstr ""
+
+#: inc/lpr-core-functions.php:1598
+msgid "Please enter your name"
+msgstr ""
+
+#: inc/lpr-core-functions.php:1602
+msgid "Please enter your email address"
+msgstr ""
+
+#: inc/lpr-core-functions.php:1614
+#, php-format
+msgid "The user <a href=\"%s\">%s</a> want to be a teacher."
+msgstr ""
+
+#: inc/lpr-core-functions.php:1616
+#, php-format
+msgid "Name: %s"
+msgstr ""
+
+#: inc/lpr-core-functions.php:1617
+#, php-format
+msgid "Email: %s"
+msgstr ""
+
+#: inc/lpr-core-functions.php:1618
+#, php-format
+msgid "Phone: %s"
+msgstr ""
+
+#: inc/lpr-core-functions.php:1619
+#, php-format
+msgid "Accept: %s"
+msgstr ""
+
+#: inc/lpr-course-functions.php:273 inc/lpr-course-functions.php:284
+msgid "You have not permission to view this page"
+msgstr ""
+
+#: inc/lpr-course-functions.php:1065
+msgid "Congratulations! You have enrolled this course"
+msgstr ""
+
+#: inc/lpr-course-functions.php:1085
+msgid "Invalid payment method."
+msgstr ""
+
+#: inc/lpr-course-functions.php:1090
+msgid "Sorry! You can not enroll to this course"
+msgstr ""
+
+#: inc/lpr-course-functions.php:2099
+msgid "Be sure you want to retake this course! All your data will be deleted."
+msgstr ""
+
+#: inc/lpr-course-functions.php:2100
+msgid "Be sure you want to retake this quiz! All your data will be deleted."
+msgstr ""
+
+#: inc/lpr-course-functions.php:2101
+msgid "Are you sure you want to finish this quiz?"
+msgstr ""
+
+#: inc/lpr-deprecated-functions.php:9
+msgid "Payment"
+msgstr ""
+
+#: inc/lpr-js-template.php:7 inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:256
+msgid "--Select a Lesson--"
+msgstr "—Selecteer een les—"
+
+#: inc/lpr-quiz-functions.php:72
+msgid "You have not saved answer for this question yet"
+msgstr ""
+
+#: inc/lpr-quiz-functions.php:136
+msgid "Security check failed !"
+msgstr ""
+
+#: inc/lpr-quiz-functions.php:147
+msgid "Assignment can not be re-started"
+msgstr ""
+
+#: inc/lpr-quiz-functions.php:158
+msgid "TIME EXPIRED, PLEASE SUBMIT THE ASSIGNMENT"
+msgstr ""
+
+#: inc/lpr-quiz-functions.php:166
+msgid "Assignment "
+msgstr ""
+
+#: inc/lpr-quiz-functions.php:166
+msgid " submitted by student "
+msgstr "ingediend door student"
+
+#: inc/lpr-quiz-functions.php:169
+msgid "Assignment submitted by Student"
+msgstr ""
+
+#: inc/lpr-quiz-functions.php:205
+msgid "START ASSIGNMENT"
+msgstr ""
+
+#: inc/lpr-quiz-functions.php:218
+msgid "CONTINUE ASSIGNMENT"
+msgstr "OPDRACHT VOORTZETTEN"
+
+#: inc/lpr-quiz-functions.php:246 inc/lpr-quiz-functions.php:255
+msgid "SUBMIT ASSIGNMENT"
+msgstr "OPDRACHT INDIENEN"
+
+#: inc/lpr-quiz-functions.php:251
+msgid "INACTIVE COURSE "
+msgstr "INACTIEVE CURSUS"
+
+#: inc/lpr-quiz-functions.php:274
+msgid " previous submissions removed ! Reloading page ..."
+msgstr "vorige submissions verwijderd! Opnieuw laden van pagina…"
+
+#: inc/lpr-quiz-functions.php:276
+msgid "Unable to remove previous submissions"
+msgstr "Unable to remove previous submissions"
+
+#: inc/lpr-quiz-functions.php:399 inc/lpr-quiz-functions.php:408
+msgid "Next Question"
+msgstr "Volgende vraag"
+
+#: inc/lpr-quiz-functions.php:404 inc/lpr-quiz-functions.php:407
+msgid "Previous Question"
+msgstr "Vorige vraag"
+
+#: inc/lpr-quiz-functions.php:456
+msgid "Duration not Set"
+msgstr "Tijdsduur niet ingevuld"
+
+#: inc/lpr-quiz-functions.php:468
+msgid "Time Remaining"
+msgstr "Resterende tijd"
+
+#: inc/lpr-quiz-functions.php:469
+msgid "Mins"
+msgstr "Minuten"
+
+#: inc/lpr-quiz-functions.php:469
+msgid "Secs"
+msgstr "Seconden"
+
+#: inc/lpr-template-functions.php:414
+msgid "Back to Course"
+msgstr "Terug naar de cursus"
+
+#: inc/lpr-template-functions.php:575
+#, php-format
+msgid "This course will end within %s next"
+msgstr "Deze cursus zal beëindigd worden over %s"
+
+#: inc/lpr-template-functions.php:587
+#, php-format
+msgid "You have passed %d percent of course and now you can finish this course if you want"
+msgstr "U bent klaar met %d procent van deze cursus en u kunt deze cursus nu afronden als u wilt."
+
+#: inc/lpr-template-functions.php:844
+msgid "Congratulations! You have completed this lesson."
+msgstr "Gefeliciteerd! U heeft de les afgerond."
+
+#: inc/lpr-template-functions.php:848
+msgid "Complete Lesson"
+msgstr "Les afronden"
+
+#: inc/lpr-template-functions.php:906
+msgid "Previous"
+msgstr "Vorige"
+
+#: inc/lpr-template-functions.php:907 templates/quiz/nav.php:4
+msgid "Next"
+msgstr "Volgende"
+
+#: inc/lpr-template-functions.php:939
+msgid "This is a quiz. Please enroll to do this quiz"
+msgstr "Dit is een quiz. Schrijf u in om aan de quiz deel te nemen"
+
+#: inc/lpr-template-functions.php:941
+msgid "This is a lesson. Please enroll to study this lesson"
+msgstr "Dit is een les. Schrijf u in om aan de les deel te nemen"
+
+#: inc/lpr-template-functions.php:949
+#, php-format
+msgid "%s and answered correctly %d out of %d total questions"
+msgstr "%s en goed beantwoord %d van de %d totaal aantal vragen"
+
+#: inc/lpr-template-functions.php:950
+msgid "You have finished this quiz"
+msgstr "U heeft de quiz afgerond."
+
+#: inc/lpr-template-functions.php:950
+msgid "You have started this quiz"
+msgstr "U bent de quiz begonnen."
+
+#: inc/lpr-template-functions.php:955
+msgid "This is a quiz. Click on link to complete this quiz"
+msgstr "Dit is een quiz. Klik op de link om de quiz af te ronden"
+
+#: inc/lpr-template-functions.php:960
+msgid "Congratulations! You have completed this lesson"
+msgstr "Gefeliciteerd! U heeft de les succesvol afgerond."
+
+#: inc/lpr-template-functions.php:963
+msgid "You are studying this lesson"
+msgstr "U bent de les aan het bestuderen"
+
+#: inc/lpr-template-functions.php:964
+msgid "This is a lesson. Click on link to complete this lesson"
+msgstr "Dit is een les. Klik op de link om de les af te ronden"
+
+#: inc/admin/class-lpr-plugin-install-list-table.php:159
+msgid "No plugins found."
+msgstr "Geen plugins gevonden"
+
+#: inc/admin/class-lpr-plugin-install-list-table.php:293
+msgctxt "Plugin installer group title"
+msgid "Performance"
+msgstr "Prestatie"
+
+#: inc/admin/class-lpr-plugin-install-list-table.php:294
+msgctxt "Plugin installer group title"
+msgid "Social"
+msgstr "Sociaal"
+
+#: inc/admin/class-lpr-plugin-install-list-table.php:295
+msgctxt "Plugin installer group title"
+msgid "Tools"
+msgstr "Hulpmiddelen"
+
+#: inc/admin/class-lpr-plugin-install-list-table.php:338
+#, php-format
+msgid "By %s"
+msgstr "Door %s"
+
+#: inc/admin/class-lpr-plugin-install-list-table.php:359
+#, php-format
+msgid "Install %s now"
+msgstr "Installeer %s nu"
+
+#: inc/admin/class-lpr-plugin-install-list-table.php:359
+msgid "Install and Active"
+msgstr "Installeer en acitiveer"
+
+#: inc/admin/class-lpr-plugin-install-list-table.php:366
+#, php-format
+msgid "Update %s now"
+msgstr "Update %s nu"
+
+#: inc/admin/class-lpr-plugin-install-list-table.php:366
+msgid "Update Now"
+msgstr "Update nu"
+
+#: inc/admin/class-lpr-plugin-install-list-table.php:373
+msgctxt "plugin"
+msgid "Enabled"
+msgstr "Inschakelen"
+
+#: inc/admin/class-lpr-plugin-install-list-table.php:375
+msgctxt "plugin"
+msgid "Enable"
+msgstr "Inschakelen"
+
+#: inc/admin/class-lpr-plugin-install-list-table.php:407 inc/admin/sub-menus/add-ons.php:197
+msgid "M j, Y @ H:i"
+msgstr "M j, Y @ H:i"
+
+#: inc/admin/class-lpr-plugin-install-list-table.php:422
+msgid "Not Install"
+msgstr "Niet installeren"
+
+#: inc/admin/class-lpr-plugin-install-list-table.php:451 inc/admin/sub-menus/add-ons.php:225
+msgid "Last Updated:"
+msgstr "Laatste update:"
+
+#: inc/admin/class-lpr-plugin-install-list-table.php:452 inc/admin/sub-menus/add-ons.php:226 inc/custom-post-types/order.php:306
+#, php-format
+msgid "%s ago"
+msgstr "%s geleden"
+
+#: inc/admin/class-lpr-plugin-install-list-table.php:458 inc/admin/sub-menus/add-ons.php:232
+msgctxt "Active plugin installs"
+msgid "1+ Million"
+msgstr "1+ miljoen"
+
+#: inc/admin/class-lpr-plugin-install-list-table.php:462 inc/admin/sub-menus/add-ons.php:236
+#, php-format
+msgid "%s Active Installs"
+msgstr "%s actieve installaties"
+
+#: inc/admin/class-lpr-plugin-install-list-table.php:468 inc/admin/sub-menus/add-ons.php:242
+msgid "Untested with your version of WordPress"
+msgstr "Niet getest op uw WordPress versie"
+
+#: inc/admin/class-lpr-plugin-install-list-table.php:470 inc/admin/sub-menus/add-ons.php:244
+msgid "<strong>Incompatible</strong> with your version of WordPress"
+msgstr "<strong>Niet compatibel </strong> op uw WordPress versie"
+
+#: inc/admin/class-lpr-plugin-install-list-table.php:472 inc/admin/sub-menus/add-ons.php:246
+msgid "<strong>Compatible</strong> with your version of WordPress"
+msgstr "<strong>Compatibel</strong> met uw WordPress versie"
+
+#: inc/admin/class-lpr-upgrader.php:12
+msgid "Invalid Data provided."
+msgstr "Ongeldige data aangeleverd"
+
+#: inc/admin/class-lpr-upgrader.php:13
+msgid "Could not access filesystem."
+msgstr "Geen toegang tot het bestandssysteem"
+
+#: inc/admin/class-lpr-upgrader.php:14
+msgid "Filesystem error."
+msgstr "Bestandssysteem fout"
+
+#: inc/admin/class-lpr-upgrader.php:15
+msgid "Unable to locate WordPress Root directory."
+msgstr "Kan WordPress Root directory niet vinden."
+
+#: inc/admin/class-lpr-upgrader.php:16
+msgid "Unable to locate WordPress Content directory (wp-content)."
+msgstr "Kan WordPress Content directory  (wp-content) niet vinden."
+
+#: inc/admin/class-lpr-upgrader.php:17
+msgid "Unable to locate WordPress Plugin directory."
+msgstr "Kan WordPress Plugin directory niet vinden."
+
+#: inc/admin/class-lpr-upgrader.php:18
+msgid "Unable to locate WordPress Theme directory."
+msgstr "Kan WordPress Thema directory niet vinden."
+
+#: inc/admin/class-lpr-upgrader.php:20
+#, php-format
+msgid "Unable to locate needed folder (%s)."
+msgstr "Kan map (%s) niet vinden."
+
+#: inc/admin/class-lpr-upgrader.php:22
+msgid "Download failed."
+msgstr "Download mislukt"
+
+#: inc/admin/class-lpr-upgrader.php:23
+msgid "Installing the latest version&#8230;"
+msgstr "Laatste versie installeren&#8230;"
+
+#: inc/admin/class-lpr-upgrader.php:24
+msgid "The package contains no files."
+msgstr "Dit pakket bevat geen bestanden"
+
+#: inc/admin/class-lpr-upgrader.php:25
+msgid "Destination folder already exists."
+msgstr "Aflevermap bestaat al."
+
+#: inc/admin/class-lpr-upgrader.php:26
+msgid "Could not create directory."
+msgstr "Kan map niet aanmaken"
+
+#: inc/admin/class-lpr-upgrader.php:27
+msgid "The package could not be installed."
+msgstr "Dit pakker kan niet worden geïnstalleerd"
+
+#: inc/admin/class-lpr-upgrader.php:29
+msgid "Enabling Maintenance mode&#8230;"
+msgstr "Onderhoudsmodus inschakelen&#8230;"
+
+#: inc/admin/class-lpr-upgrader.php:30
+msgid "Disabling Maintenance mode&#8230;"
+msgstr "Onderhoudsmodus uitschakelen&#8230;"
+
+#: inc/admin/class.lpr-admin-ajax.php:60
+msgid "Import/Export addon not found"
+msgstr "Import/Export addon niet gevonden"
+
+#: inc/admin/class.lpr-admin-ajax.php:72
+msgid "Import sample data successfully. The page will reload now!"
+msgstr "Succesvol sample data geïmporteerd. De pagina zal nu herladen!"
+
+#: inc/admin/class.lpr-admin-ajax.php:75
+msgid "Unknown error when importing sample data. Please try again!"
+msgstr "Onbekende fout bij het importeren van sample data. Probeer het opnieuw!"
+
+#: inc/admin/class.lpr-admin-ajax.php:78
+msgid "Dummy sample data not found. Please try again!"
+msgstr "Dummy sample data niet gevonden. Probeer het opnieuw"
+
+#: inc/admin/class.lpr-admin-ajax.php:82
+msgid "Unknown error when installing/activating Import/Export addon. Please try again!"
+msgstr "Onbekende fout bij het installeren/activeren van de Import/Export addon. Probeer het opnieuw!"
+
+#: inc/admin/class.lpr-admin-ajax.php:98 inc/admin/class.lpr-admin-ajax.php:119 inc/admin/class.lpr-admin-ajax.php:139
+msgid "You do not have sufficient permissions to deactivate plugins for this site."
+msgstr "U heeft niet voldoende permissies om de plugin voor deze site te deactiveren."
+
+#: inc/admin/class.lpr-admin-ajax.php:170 inc/admin/class.lpr-admin-ajax.php:193 inc/admin/settings/class.lpr-settings-pages.php:62 inc/admin/settings/class.lpr-settings-pages.php:73 inc/admin/settings/class.lpr-settings-pages.php:97 inc/admin/settings/class.lpr-settings-pages.php:119
+msgid "Edit Page"
+msgstr "Bewerk pagina"
+
+#: inc/admin/class.lpr-admin-ajax.php:171 inc/admin/class.lpr-admin-ajax.php:194 inc/admin/settings/class.lpr-settings-pages.php:63 inc/admin/settings/class.lpr-settings-pages.php:74 inc/admin/settings/class.lpr-settings-pages.php:98 inc/admin/settings/class.lpr-settings-pages.php:120
+msgid "View Page"
+msgstr "Bekijk pagina"
+
+#: inc/admin/class.lpr-admin-ajax.php:196
+msgid "Page name is empty!"
+msgstr "Pagina naam is leeg!"
+
+#: inc/admin/class.lpr-admin-assets.php:27
+msgid "Delete?"
+msgstr "Verwijderen?"
+
+#: inc/admin/class.lpr-profile.php:49
+msgid "LearnPress Profile"
+msgstr "LearnPress profiel"
+
+#: inc/admin/class.lpr-profile.php:72
+msgid "User Information"
+msgstr "Gebruikersinformatie"
+
+#: inc/admin/class.lpr-profile.php:82
+msgid "Quiz Results"
+msgstr "Quiz resultaten"
+
+#: inc/admin/class.lpr-profile.php:132
+msgid "<span class=\"course-status passed\">Passed</span>"
+msgstr "<span class=\"course-status passed\">Geslaagd</span>"
+
+#: inc/admin/lpr-admin-functions.php:13
+msgid "Quiz is not available"
+msgstr "Quiz is niet beschikbaar"
+
+#: inc/admin/lpr-admin-functions.php:14
+msgid "Lesson is not available"
+msgstr "Les is niet beschikbaar"
+
+#: inc/admin/lpr-admin-functions.php:27 inc/admin/settings/class.lpr-settings-pages.php:19
+msgid "General"
+msgstr "Algemeen"
+
+#: inc/admin/lpr-admin-functions.php:28 inc/admin/settings/class.lpr-settings-pages.php:9
+msgid "Pages"
+msgstr "Pagina’s"
+
+#: inc/admin/lpr-admin-functions.php:29 inc/admin/settings/class.lpr-settings-payment.php:9
+msgid "Payments"
+msgstr "Betalingen"
+
+#: inc/admin/lpr-admin-functions.php:30 inc/admin/settings/class.lpr-settings-emails.php:9
+msgid "Emails"
+msgstr "Emails"
+
+#: inc/admin/lpr-admin-functions.php:186
+msgid "Pending Courses / Publish Courses"
+msgstr "Aangevraagde cursussen / Publiceren cursussen"
+
+#: inc/admin/lpr-admin-functions.php:186
+msgid "Free Courses / Priced Courses"
+msgstr "Gratis cursussen / Betaalde cursussen"
+
+#: inc/admin/lpr-admin-functions.php:291
+msgid "Duplicate this course"
+msgstr "Dupliceer deze cursus"
+
+#: inc/admin/lpr-admin-functions.php:302 inc/custom-post-types/lesson.php:171 inc/custom-post-types/order.php:255 inc/custom-post-types/quiz.php:210 templates/order/order-details.php:19
+msgid "Course"
+msgstr "Cursus"
+
+#: inc/admin/lpr-admin-functions.php:330
+msgid "Op! The course does not exists"
+msgstr "Oeps! Deze cursus bestaat niet"
+
+#: inc/admin/lpr-admin-functions.php:334
+msgid "Sorry! You have not permission to duplicate this course"
+msgstr "Sorry! U heeft niet de permissies om deze cursus te dupliceren"
+
+#: inc/admin/lpr-admin-functions.php:396
+#, php-format
+msgid "Want full free features? Click <a href=\"%s\">here</a> to install LearnPress Add-ons Bundle for free!"
+msgstr "Wilt u de volledige gratis functionaliteiten? Klik <a href=\"%s\">hier</a> om de LearnPress Add-ons bundel gratis te installeren"
+
+#: inc/admin/lpr-admin-functions.php:467
+#, php-format
+msgid "The user %s has become a teacher"
+msgstr "De gebruiker %s is een docent geworden"
+
+#: inc/admin/lpr-admin-functions.php:508
+msgid ""
+"\n"
+"            <div class=\"updated\" id=\"learn-press-install-sample-data-notice\">\n"
+"                <p>You haven't got any courses yet! Would you like to install sample data?</p>\n"
+"                <p>If yes, it requires to install addon named <strong>LearnPress Import/Export</strong> but don't worry because it is completely automated. [<a href=\"\" class=\"yes\">Yes</a>]&nbsp;&nbsp;&nbsp;&nbsp;[<a href=\"\" class=\"no\">No thank!</a>]</p>\n"
+"            </div>"
+msgstr ""
+"\n"
+"            <div class=\"updated\" id=\"learn-press-install-sample-data-notice\">\n"
+"                <p>U heeft nog geen cursussen! Wil je sample data installeren?</p>\n"
+"                <p>Zo ja, dan moet u de add-on<strong>LearnPress Import/Export</strong> installeren. [<a href=\"\" class=\"yes\">Yes</a>]&nbsp;&nbsp;&nbsp;&nbsp;[<a href=\"\" class=\"no\">Nee bedankt!</a>]</p>\n"
+"            </div>"
+
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:31
+msgid "Do you want to remove this lesson permanently?"
+msgstr "Wilt u de les permanent verwijderen?"
+
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:32
+msgid "Do you want to remove this quiz permanently?"
+msgstr "Wilt u de quiz permanent verwijderen?"
+
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:33
+msgid "Do you want to remove this section permanently?"
+msgstr "Wilt u deze sectie permanent verwijderen?"
+
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:34
+msgid "New quiz added"
+msgstr "Nieuwe quiz toegevoegd"
+
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:35
+msgid "New lesson added"
+msgstr "Nieuwe les toegevoegd"
+
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:36
+msgid "New section added"
+msgstr "Nieuwe sectie toegevoegd"
+
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:37
+msgid "The lesson removed"
+msgstr "De les is verwijderd"
+
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:38
+msgid "The quiz removed"
+msgstr "De quiz is verwijderd"
+
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:39
+msgid "The section removed"
+msgstr "De sectie is verwijderd"
+
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:40
+msgid "The ordering completed"
+msgstr "De ordering is afgerond"
+
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:41
+msgid "Lesson added to section complete!"
+msgstr "Les toegevoegd om de sectie af te ronden!"
+
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:42
+msgid "Quiz added to section complete!"
+msgstr "Quiz toegevoegd om de sectie af te ronden!"
+
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:43
+#, php-format
+msgid "%s updated"
+msgstr "%s upgedate"
+
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:44
+msgid "Click to quick edit name"
+msgstr "Klik hier om snel de naam aan te passen"
+
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:96 inc/admin/meta-boxes/fields/class.quiz-question.php:121
+msgid "Expand All"
+msgstr "Alles uitbreiden"
+
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:97 inc/admin/meta-boxes/fields/class.quiz-question.php:122
+msgid "Collapse All"
+msgstr "Alles dichtklappen"
+
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:99
+msgid "Outline your course and add content with sections, lessons and quizzes."
+msgstr "Maak uw cursus en voeg inhoud toe met secties, lessen en quizzen."
+
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:112 inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:167 inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:210
+msgid "Expand/Close"
+msgstr "Breid uit/Sluiten"
+
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:145 inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:237
+msgid "Click to quick edit"
+msgstr "Klik om snel te bewerken"
+
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:155 inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:180 inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:221
+msgid "Add Lesson"
+msgstr "Les toevoegen"
+
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:156 inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:181 inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:222
+msgid "Add Quiz"
+msgstr "Quiz toevoegen"
+
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:157 inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:182 inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:223
+msgid "Quick add <span>L</span>esson"
+msgstr "Snel <span>L</span>es toevoegen"
+
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:158 inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:183 inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:224
+msgid "Quick add <span>Q</span>uiz"
+msgstr "Snel <span>Q</span>uiz toevoegen"
+
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:193 inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:201 inc/custom-post-types/question.php:164 inc/custom-post-types/quiz.php:187
+msgid "Cancel [ESC]"
+msgstr "Annuleer [ESC]"
+
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:194 inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:202 inc/custom-post-types/question.php:163 inc/custom-post-types/quiz.php:186
+msgid "Add [Enter]"
+msgstr "Toevoegen [Enter]"
+
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:271
+msgid "--Select a Quiz--"
+msgstr "—Selecteer een les—"
+
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:459
+msgid "The course is empty"
+msgstr "De cursus is leeg"
+
+#: inc/admin/meta-boxes/fields/class.course-lesson-quiz.php:493
+msgid "Success"
+msgstr "Voltooid"
+
+#: inc/admin/meta-boxes/fields/class.question.php:85
+msgid "Select..."
+msgstr "Selecteer…"
+
+#: inc/admin/meta-boxes/fields/class.quiz-question.php:67
+msgid "Can not create a question"
+msgstr "Vraag aanmaken niet mogelijk"
+
+#: inc/admin/meta-boxes/fields/class.quiz-question.php:140
+msgid "Add new Question"
+msgstr "Nieuwe vraag aanmaken"
+
+#: inc/admin/meta-boxes/fields/class.quiz-question.php:144
+msgid "Toggle Dropdown"
+msgstr "Schakelen met dropdown"
+
+#: inc/admin/meta-boxes/fields/class.quiz-question.php:159
+msgid "--Select existing question--"
+msgstr "--Selecteer bestaande vraag--"
+
+#: inc/admin/meta-boxes/fields/class.teacher.php:46 lib/meta-box/inc/fields/post.php:46
+msgid "Post"
+msgstr "Posten"
+
+#: inc/admin/meta-boxes/fields/class.teacher.php:54 lib/meta-box/inc/fields/post.php:59 lib/meta-box/inc/fields/taxonomy.php:36 lib/meta-box/inc/fields/user.php:56
+#, php-format
+msgid "Select a %s"
+msgstr "Selecteer een %s"
+
+#: inc/admin/pointers/pointers.php:66 inc/custom-post-types/course.php:148 inc/custom-post-types/course.php:153 templates/course/curriculum.php:11
+msgid "Course Curriculum"
+msgstr "Cursusonderdelen"
+
+#: inc/admin/pointers/pointers.php:67
+msgid "Build a course by selecting created lessons and quizzes or adding new ones. Sorting, editing, shortcuts (l and q), it never gets easier with LearnPress."
+msgstr "Stel een cursus samen door gecreëerd lessen en quizzen te selecteren of nieuwe toe te voegen. Sorteren, bewerken, sneltoetsen (l en q), het zal nooit makkelijker worden met LearnPress."
+
+#: inc/admin/settings/class.lpr-settings-emails.php:19
+msgid "General options"
+msgstr "Algemene opties"
+
+#: inc/admin/settings/class.lpr-settings-emails.php:20
+msgid "Published course"
+msgstr "Gepubliceerde cursussen"
+
+#: inc/admin/settings/class.lpr-settings-emails.php:21
+msgid "Enrolled course"
+msgstr "Ingeschreven cursussen"
+
+#: inc/admin/settings/class.lpr-settings-emails.php:22
+msgid "Passed course"
+msgstr "Afgeronde cursussen"
+
+#: inc/admin/settings/class.lpr-settings-emails.php:53
+msgid "Email Options"
+msgstr "Email opties"
+
+#: inc/admin/settings/class.lpr-settings-emails.php:58
+msgid "From Name"
+msgstr "Naam van"
+
+#: inc/admin/settings/class.lpr-settings-emails.php:64
+msgid "From Email"
+msgstr "Email van"
+
+#: inc/admin/settings/class.lpr-settings-emails.php:91 inc/admin/settings/class.lpr-settings-emails.php:138 inc/admin/settings/class.lpr-settings-emails.php:184 inc/admin/settings/class.lpr-settings-emails.php:228 inc/admin/settings/class.lpr-settings-payment.php:60 inc/admin/sub-menus/add-ons.php:443
+msgid "Enable"
+msgstr "Inschakelen"
+
+#: inc/admin/settings/class.lpr-settings-emails.php:95
+msgid "Send notification for instructors when their course was approved"
+msgstr "Stuur een notificatie naar de instructeur als de cursus is goedgekeurd"
+
+#: inc/admin/settings/class.lpr-settings-emails.php:99 inc/admin/settings/class.lpr-settings-emails.php:146 inc/admin/settings/class.lpr-settings-emails.php:192 inc/admin/settings/class.lpr-settings-emails.php:236
+msgid "Subject"
+msgstr "Onderwerp"
+
+#: inc/admin/settings/class.lpr-settings-emails.php:103 inc/admin/settings/class.lpr-settings-emails.php:150 inc/admin/settings/class.lpr-settings-emails.php:196 inc/admin/settings/class.lpr-settings-emails.php:240
+msgid "Email subject"
+msgstr "Email onderwerp"
+
+#: inc/admin/settings/class.lpr-settings-emails.php:108 inc/admin/settings/class.lpr-settings-emails.php:154 inc/admin/settings/class.lpr-settings-emails.php:200 inc/admin/settings/class.lpr-settings-emails.php:244
+msgid "Message"
+msgstr "Bericht"
+
+#: inc/admin/settings/class.lpr-settings-emails.php:112 inc/admin/settings/class.lpr-settings-emails.php:157 inc/admin/settings/class.lpr-settings-emails.php:203
+msgid "Placeholders"
+msgstr "Plaatsaanduidingen"
+
+#: inc/admin/settings/class.lpr-settings-emails.php:142
+msgid "Send notification for users when they enrolled a course"
+msgstr "Stuur notificatie naar gebruikers als ze zijn ingeschreven voor de cursus"
+
+#: inc/admin/settings/class.lpr-settings-emails.php:188
+msgid "Send notification for users when they finished a course"
+msgstr "Stuur notificatie naar gebruikers als ze een cursus hebben afgerond"
+
+#: inc/admin/settings/class.lpr-settings-emails.php:232
+msgid "Send notification when a user want to be a teacher"
+msgstr "Stuur notificatie als een gebruiker een docent wil worden"
+
+#: inc/admin/settings/class.lpr-settings-general.php:15
+msgid "General Settings"
+msgstr "Algemene instellingen"
+
+#: inc/admin/settings/class.lpr-settings-general.php:20
+msgid "Profile methods"
+msgstr "Profiel methodes"
+
+#: inc/admin/settings/class.lpr-settings-general.php:32
+msgid "Currency"
+msgstr "Valuta"
+
+#: inc/admin/settings/class.lpr-settings-general.php:48
+msgid "For integrated payment method"
+msgstr "Voor geïntegreerde betaalmethode"
+
+#: inc/admin/settings/class.lpr-settings-general.php:52
+msgid "Currency Position"
+msgstr "Valuta positie"
+
+#: inc/admin/settings/class.lpr-settings-general.php:83
+msgid "Thousands Separator"
+msgstr "Scheidingsteken voor duizendtallen"
+
+#: inc/admin/settings/class.lpr-settings-general.php:89
+msgid "Decimals Separator"
+msgstr "Scheidingsteken voor decimalen"
+
+#: inc/admin/settings/class.lpr-settings-general.php:95
+msgid "Number of Decimals"
+msgstr "Aantal decimalen"
+
+#: inc/admin/settings/class.lpr-settings-pages.php:39
+msgid "[ Add a new page ]"
+msgstr "[ Voeg een nieuwe pagina toe ]"
+
+#: inc/admin/settings/class.lpr-settings-pages.php:52
+msgid "Courses Page"
+msgstr "Cursussen pagina"
+
+#: inc/admin/settings/class.lpr-settings-pages.php:58 inc/admin/settings/class.lpr-settings-pages.php:92 inc/admin/settings/class.lpr-settings-pages.php:114
+msgid "Ok"
+msgstr "Oké "
+
+#: inc/admin/settings/class.lpr-settings-pages.php:59 inc/admin/settings/class.lpr-settings-pages.php:93 inc/admin/settings/class.lpr-settings-pages.php:115
+msgid "Cancel"
+msgstr "Annuleer"
+
+#: inc/admin/settings/class.lpr-settings-pages.php:69
+msgid "Profile Page"
+msgstr "Profiel pagina"
+
+#: inc/admin/settings/class.lpr-settings-pages.php:80
+msgid "Take Course Confirm"
+msgstr "Neem cursus bevestiging aan"
+
+#: inc/admin/settings/class.lpr-settings-pages.php:137
+msgid "Retake course"
+msgstr "Cursus overdoen"
+
+#: inc/admin/settings/class.lpr-settings-pages.php:140
+msgid "The number of times a user can re-take course. Set to 0 to disabled"
+msgstr "Het aantal keer dat de gebruiker de cursus kan overdoen. 0 kan niet worden ingevuld"
+
+#: inc/admin/settings/class.lpr-settings-pages.php:157
+msgid "Retake quiz"
+msgstr "Quiz overdoen"
+
+#: inc/admin/settings/class.lpr-settings-pages.php:160
+msgid "The number of times a user can re-take quiz. Set to 0 to disabled"
+msgstr "Het aantal keer dat de gebruiker de quiz kan overdoen. 0 kan niet worden ingevuld"
+
+#: inc/admin/settings/class.lpr-settings-payment.php:15
+msgid "Paypal"
+msgstr "Paypal"
+
+#: inc/admin/settings/class.lpr-settings-payment.php:66
+msgid "Type"
+msgstr "Type"
+
+#: inc/admin/settings/class.lpr-settings-payment.php:69
+msgid "Basic"
+msgstr "Basis"
+
+#: inc/admin/settings/class.lpr-settings-payment.php:70
+msgid "Security"
+msgstr "Beveiliging"
+
+#: inc/admin/settings/class.lpr-settings-payment.php:75
+msgid "Email Address"
+msgstr "Email adres"
+
+#: inc/admin/settings/class.lpr-settings-payment.php:81
+msgid "API Username"
+msgstr "API gebruikersnaam"
+
+#: inc/admin/settings/class.lpr-settings-payment.php:87
+msgid "API Password"
+msgstr "API wachtwoord"
+
+#: inc/admin/settings/class.lpr-settings-payment.php:93
+msgid "API Signature"
+msgstr "API handtekening"
+
+#: inc/admin/settings/class.lpr-settings-payment.php:104
+msgid "Sandbox Mode"
+msgstr "Sandbox Modus"
+
+#: inc/admin/settings/class.lpr-settings-payment.php:110
+msgid "Sandbox Email Address"
+msgstr "Sandbox Email adres"
+
+#: inc/admin/settings/class.lpr-settings-payment.php:116
+msgid "Sandbox API Username"
+msgstr "Sandbox API gebruikersnaam"
+
+#: inc/admin/settings/class.lpr-settings-payment.php:122
+msgid "Sandbox API Password"
+msgstr "Sandbox API wachtwoord"
+
+#: inc/admin/settings/class.lpr-settings-payment.php:128
+msgid "Sandbox API Signature"
+msgstr "Sandbox API handtekening"
+
+#: inc/admin/statistics/courses.php:9
+msgid "Relation of your courses"
+msgstr "Relatie van je cursussen"
+
+#: inc/admin/statistics/students.php:9
+msgid "Number of student enrolled your courses"
+msgstr "Aantal deelnemers van deze cursus"
+
+#: inc/admin/statistics/students.php:12
+msgid "Last 7 Days"
+msgstr "Afgelopen 7 dagen"
+
+#: inc/admin/statistics/students.php:15
+msgid "Last 30 Days"
+msgstr "Afgelopen 30 dagen"
+
+#: inc/admin/statistics/students.php:18
+msgid "Last 12 Months"
+msgstr "Afgelopen 12 maanden"
+
+#: inc/admin/statistics/students.php:22
+msgid "From"
+msgstr "Van"
+
+#: inc/admin/statistics/students.php:24
+msgid "To"
+msgstr "Naar"
+
+#: inc/admin/statistics/students.php:27
+msgid "Go"
+msgstr "Ga"
+
+#: inc/admin/sub-menus/add-ons.php:21
+#, php-format
+msgid "All <span class=\"count\">(%s)</span>"
+msgstr "Alle <span class=\"count\">(%s)</span>"
+
+#: inc/admin/sub-menus/add-ons.php:26
+#, php-format
+msgid "Bundle Activate <span class=\"count\">(%s)</span>"
+msgstr "Activeer bundel <span class=\"count\">(%s)</span>"
+
+#: inc/admin/sub-menus/add-ons.php:31
+#, php-format
+msgid "Get more <span class=\"count\">(%s)</span>"
+msgstr "Meer verkrijgen <span class=\"count\">(%s)</span>"
+
+#: inc/admin/sub-menus/add-ons.php:56
+msgid "LearnPress Add-ons"
+msgstr "LearnPress Add-ons"
+
+#: inc/admin/sub-menus/add-ons.php:57
+msgid "Add-ons are features that you can add or remove depending on your needs"
+msgstr "Add-ons zijn kenmerken die je kan toevoegen of verwijderen afhankelijk van je  behoeftes"
+
+#: inc/admin/sub-menus/add-ons.php:95
+msgid "One or more plugins state has changed to activate/deactivate. Click 'Apply' button to update"
+msgstr "Eén of meerdere plugins zijn veranderd naar activeren / deactiveren. Klik op 'Toepassen' knop om up te daten"
+
+#: inc/admin/sub-menus/add-ons.php:158
+msgid "Install and/or activate all"
+msgstr "Installeer en/of activeer alle"
+
+#: inc/admin/sub-menus/add-ons.php:165
+msgid "Plugin <i>'{{data.name}}'</i> install failed! Please try again"
+msgstr "Plugin <i>'{{data.name}}'</i> installatie mislukt! Probeer het opnieuw"
+
+#: inc/admin/sub-menus/add-ons.php:170
+msgid "Plugin <i>'{{data.name}}'</i> install completed!"
+msgstr "Plugin <i>'{{data.name}}'</i> installatie succesvol afgerond!"
+
+#: inc/admin/sub-menus/add-ons.php:216
+#, php-format
+msgid "<cite>By <a href=\"%s\">%s</a></cite>"
+msgstr "<cite>Door <a href=\"%s\">%s</a></cite>"
+
+#: inc/admin/sub-menus/add-ons.php:268
+msgid "Core"
+msgstr "Kern"
+
+#: inc/admin/sub-menus/add-ons.php:278
+msgid "Settings"
+msgstr "Instellingen"
+
+#: inc/admin/sub-menus/add-ons.php:326
+msgid "Plugin"
+msgstr "Plugin"
+
+#: inc/admin/sub-menus/add-ons.php:327
+msgid "Description"
+msgstr "Beschrijving"
+
+#: inc/admin/sub-menus/add-ons.php:386
+msgid "Network Activate"
+msgstr "Activeer netwerk"
+
+#: inc/admin/sub-menus/add-ons.php:386
+msgid "Activate"
+msgstr "Activeren"
+
+#: inc/admin/sub-menus/add-ons.php:389
+msgid "Network Deactivate"
+msgstr "Deactiveer netwerk"
+
+#: inc/admin/sub-menus/add-ons.php:389
+msgid "Deactivate"
+msgstr "Deactiveren"
+
+#: inc/admin/sub-menus/add-ons.php:393
+msgid "Update"
+msgstr "Updaten"
+
+#: inc/admin/sub-menus/add-ons.php:395 lib/meta-box/inc/fields/autocomplete.php:15 lib/meta-box/inc/fields/autocomplete.php:66
+msgid "Delete"
+msgstr "Verwijderen"
+
+#: inc/admin/sub-menus/add-ons.php:441
+msgid "Disable this plugin"
+msgstr "Schakel plugin uit"
+
+#: inc/admin/sub-menus/add-ons.php:441
+msgid "Disable"
+msgstr "Uitschakelen"
+
+#: inc/admin/sub-menus/add-ons.php:443
+msgid "Enable this plugin"
+msgstr "Schakel plugin in"
+
+#: inc/admin/sub-menus/add-ons.php:456
+#, php-format
+msgid "Select %s"
+msgstr "Selecteer %s"
+
+#: inc/admin/sub-menus/settings.php:36
+msgid "Settings saved"
+msgstr "Instellingen opgeslagen"
+
+#: inc/admin/sub-menus/settings.php:57
+msgid "Save settings"
+msgstr "Instellingen opslaan"
+
+#: inc/admin/sub-menus/statistics.php:16
+msgid "Students"
+msgstr "Studenten"
+
+#: inc/custom-post-types/course.php:38
+msgctxt "Post Type General Name"
+msgid "Courses"
+msgstr "Cursussen"
+
+#: inc/custom-post-types/course.php:39
+msgctxt "Post Type Singular Name"
+msgid "Course"
+msgstr "Cursus"
+
+#: inc/custom-post-types/course.php:41
+msgid "Parent Item:"
+msgstr "Parent Item:"
+
+#: inc/custom-post-types/course.php:43
+msgid "View Course"
+msgstr "Bekijk cursus"
+
+#: inc/custom-post-types/course.php:44
+msgid "Add New Course"
+msgstr "Nieuwe cursus toevoegen"
+
+#: inc/custom-post-types/course.php:45 inc/custom-post-types/lesson.php:46 inc/custom-post-types/question.php:36
+msgid "Add New"
+msgstr "Voeg toe"
+
+#: inc/custom-post-types/course.php:46
+msgid "Edit Course"
+msgstr "Cursus bewereken"
+
+#: inc/custom-post-types/course.php:47
+msgid "Update Course"
+msgstr "Cursus updaten"
+
+#: inc/custom-post-types/course.php:48
+msgid "Search Course"
+msgstr "Cursus zoeken"
+
+#: inc/custom-post-types/course.php:49
+msgid "No course found"
+msgstr "Geen cursus gevonden"
+
+#: inc/custom-post-types/course.php:50
+msgid "No course found in Trash"
+msgstr "Geen cursus gevonden in de prullenbak"
+
+#: inc/custom-post-types/course.php:74 inc/custom-post-types/course.php:76
+msgid "Course Categories"
+msgstr "Cursus Categoriën"
+
+#: inc/custom-post-types/course.php:77 inc/custom-post-types/course.php:78
+msgid "Category"
+msgstr "Categorie"
+
+#: inc/custom-post-types/course.php:79
+msgid "Add New Course Category"
+msgstr "Voeg nieuwe cursus categorie toe"
+
+#: inc/custom-post-types/course.php:80
+msgid "All Categories"
+msgstr "Alle categoriën"
+
+#: inc/custom-post-types/course.php:100
+msgid "Course Tags"
+msgstr "Cursus label"
+
+#: inc/custom-post-types/course.php:101 inc/custom-post-types/lesson.php:80 inc/custom-post-types/lesson.php:81 inc/custom-post-types/lesson.php:82 inc/custom-post-types/question.php:63 inc/custom-post-types/question.php:64
+msgid "Tag"
+msgstr "Label"
+
+#: inc/custom-post-types/course.php:102
+msgid "Search Course Tags"
+msgstr "Cursus label zoeken"
+
+#: inc/custom-post-types/course.php:103
+msgid "Popular Course Tags"
+msgstr "Populaire cursus labels"
+
+#: inc/custom-post-types/course.php:104
+msgid "All Course Tags"
+msgstr "Alle categoriën"
+
+#: inc/custom-post-types/course.php:107
+msgid "Edit Course Tag"
+msgstr "Cursus label bewerken"
+
+#: inc/custom-post-types/course.php:108
+msgid "Update Course Tag"
+msgstr "Cursus label updaten"
+
+#: inc/custom-post-types/course.php:109
+msgid "Add New Course Tag"
+msgstr "Nieuwe cursus label toevoegen"
+
+#: inc/custom-post-types/course.php:110
+msgid "New Course Tag Name"
+msgstr "Nieuw cursus label naam"
+
+#: inc/custom-post-types/course.php:111
+msgid "Separate tags with commas"
+msgstr "Labels scheiden met comma’s "
+
+#: inc/custom-post-types/course.php:112
+msgid "Add or remove tags"
+msgstr "Labels toevoegen en verwijderen"
+
+#: inc/custom-post-types/course.php:113
+msgid "Choose from the most used tags"
+msgstr "Kies van de meest gebruikte labels"
+
+#: inc/custom-post-types/course.php:169
+msgid "Course Settings"
+msgstr "Cursus instellingen"
+
+#: inc/custom-post-types/course.php:174
+msgid "Course Duration"
+msgstr "Cursus duur"
+
+#: inc/custom-post-types/course.php:177
+msgid "The length of the course (by weeks)"
+msgstr "De lengte van deze cursus (in weken)"
+
+#: inc/custom-post-types/course.php:187
+msgid "Number of Students Enrolled"
+msgstr "Aantal studenten ingeschreven"
+
+#: inc/custom-post-types/course.php:190
+msgid "The number of students took this course"
+msgstr "Aantal studenten die deze cursus hebben afgerond"
+
+#: inc/custom-post-types/course.php:194
+msgid "Maximum students can take the course"
+msgstr "Aantal studenten die deze cursus doen"
+
+#: inc/custom-post-types/course.php:197
+msgid "Maximum Number Student of the Course"
+msgstr "Maximum aantal studenten van deze cursus"
+
+#: inc/custom-post-types/course.php:201
+msgid "Re-take course"
+msgstr "Cursus overdoen"
+
+#: inc/custom-post-types/course.php:204
+msgid "How many times the user can re-take this course. Set to 0 to disable"
+msgstr "Hoeveel keer de gebruiker de cursus kan overdoen. 0 kan niet worden ingevoerd"
+
+#: inc/custom-post-types/course.php:219
+msgid "Course Assessment Settings"
+msgstr "Cursus opdracht instellingen"
+
+#: inc/custom-post-types/course.php:224
+msgid "Course Final Quiz"
+msgstr "Cursus eindquiz"
+
+#: inc/custom-post-types/course.php:227
+msgid ""
+"If Final Quiz option is checked, then the course will be assessed by result of the last quiz, else the course\n"
+"                                      will be assessed by the progress of learning lessons"
+msgstr ""
+"Als eindquiz is aangevinkt, dan zal de cursus worden beoordeeld op het resultaat van de laatste quiz, anders wordt de cursus \n"
+" \n"
+"beoordeeld door de voortgang van het Learning Lessons"
+
+#: inc/custom-post-types/course.php:230
+msgid "No Final Quiz"
+msgstr "Geen Eindquiz"
+
+#: inc/custom-post-types/course.php:231
+msgid "Using Final Quiz"
+msgstr "Eindquiz gebruiken"
+
+#: inc/custom-post-types/course.php:236
+msgid "Passing Condition"
+msgstr "Slagingsvoorwaarden"
+
+#: inc/custom-post-types/course.php:241
+msgid "The percentage of quiz result to finish the course"
+msgstr "Het percentage van het resultaat van de quiz om de course succesvol af te ronden"
+
+#: inc/custom-post-types/course.php:255
+msgid "Course Payment Settings"
+msgstr "Cursus betalings instellingen"
+
+#: inc/custom-post-types/course.php:260
+msgid "Enrolled Require"
+msgstr "Inschrijving vereist"
+
+#: inc/custom-post-types/course.php:263
+msgid "Require users logged in to study or public to all"
+msgstr "Vereisen om gebruikers om alleen te kunnen studeren als ze ingelogd zijn, anders is het publiekelijk"
+
+#: inc/custom-post-types/course.php:265
+msgid "Yes, enroll is required"
+msgstr "Ja, inschrijving is verplicht"
+
+#: inc/custom-post-types/course.php:266 inc/custom-post-types/lesson.php:117
+msgid "No"
+msgstr "Nee"
+
+#: inc/custom-post-types/course.php:272
+msgid "Course Payment"
+msgstr "Cursus betaling"
+
+#: inc/custom-post-types/course.php:275
+msgid "If Paid be checked, An administrator will review then set course price and commission"
+msgstr "Als betaling is vereist, een administrator zal de cursusprijs en -commissie overzien"
+
+#: inc/custom-post-types/course.php:277 inc/order/lpr-order-functions.php:352
+msgid "Free"
+msgstr "Gratis"
+
+#: inc/custom-post-types/course.php:278
+msgid "Paid"
+msgstr "Betaald"
+
+#: inc/custom-post-types/course.php:287
+msgid "If free, this field is empty or set 0. (Only admin can edit this field)"
+msgstr "Wanneer gratis, dit veld is leeg of 0. (Alleen admin kan dit veld aanpassen)"
+
+#: inc/custom-post-types/course.php:296
+msgid "This course is enrolled require and the suggestion price is "
+msgstr "Voor deze cursus is inschrijving verplicht en de aanbevolen prijs is"
+
+#: inc/custom-post-types/course.php:300
+msgid "This course is free."
+msgstr "Deze cursus is gratis"
+
+#: inc/custom-post-types/course.php:306
+msgid "Course Price"
+msgstr "Cursus prijs"
+
+#: inc/custom-post-types/course.php:320
+msgid "Course Suggestion Price"
+msgstr "Aanbevolen cursus prijs"
+
+#: inc/custom-post-types/course.php:325
+msgid "The course price you want to suggest for admin to set."
+msgstr "De cursus prijs die jij zou willen aanbevelen aan de administrator"
+
+#: inc/custom-post-types/course.php:356
+msgid "Please enter the title of the course"
+msgstr "Vul de titel van de cursus in"
+
+#: inc/custom-post-types/course.php:360
+msgid "Please add at least one section for the course"
+msgstr "Voeg ten minste een sectie toe aan deze cursus"
+
+#: inc/custom-post-types/course.php:367
+msgid "Please enter the title of the section"
+msgstr "Vul de titel van de sectie in"
+
+#: inc/custom-post-types/course.php:375
+msgid "Please set a price for this course"
+msgstr "Vul een prijs voor deze cursus in"
+
+#: inc/custom-post-types/lesson.php:40 inc/custom-post-types/lesson.php:41 inc/custom-post-types/lesson.php:44
+msgid "Lessons"
+msgstr "Lessen"
+
+#: inc/custom-post-types/lesson.php:42
+msgid "Lesson"
+msgstr "Les"
+
+#: inc/custom-post-types/lesson.php:43
+msgid "Add New Lesson"
+msgstr "Nieuwe les toevoegen"
+
+#: inc/custom-post-types/lesson.php:45
+msgid "View Lesson"
+msgstr "Bekijk lessen"
+
+#: inc/custom-post-types/lesson.php:47
+msgid "Edit Lesson"
+msgstr "Bewerk lessen"
+
+#: inc/custom-post-types/lesson.php:48
+msgid "Update Lesson"
+msgstr "Update lessen"
+
+#: inc/custom-post-types/lesson.php:49
+msgid "Search Lesson"
+msgstr "Zoek lessen"
+
+#: inc/custom-post-types/lesson.php:50
+msgid "No lesson found"
+msgstr "Geen lessen gevonden"
+
+#: inc/custom-post-types/lesson.php:51
+msgid "No lesson found in Trash"
+msgstr "Geen lessen gevonden in de prullenbak"
+
+#: inc/custom-post-types/lesson.php:83 inc/custom-post-types/question.php:65
+msgid "Add New Tag"
+msgstr "Voeg nieuw label toe"
+
+#: inc/custom-post-types/lesson.php:84 inc/custom-post-types/question.php:66
+msgid "All Tags"
+msgstr "Alle labels"
+
+#: inc/custom-post-types/lesson.php:100
+msgid "Lesson Settings"
+msgstr "Les instellingen"
+
+#: inc/custom-post-types/lesson.php:104
+msgid "Lesson Duration"
+msgstr "Duur van de les"
+
+#: inc/custom-post-types/lesson.php:107
+msgid "The length of the lesson (in minutes)"
+msgstr "De duur van de les (in minuten)"
+
+#: inc/custom-post-types/lesson.php:111
+msgid "Preview Lesson"
+msgstr "Voorbeeld les"
+
+#: inc/custom-post-types/lesson.php:114
+msgid "If this is a preview lesson, then student can view this lesson content without taking the course"
+msgstr "Als dit een voorbeeldles is, kan de student de inhoud zien zonder aan de cursus deel te nemen"
+
+#: inc/custom-post-types/lesson.php:116
+msgid "Yes"
+msgstr "Ja"
+
+#: inc/custom-post-types/lesson.php:140
+msgid "Please enter the title of the lesson"
+msgstr "Vul een titel voor de les in"
+
+#: inc/custom-post-types/lesson.php:195 inc/custom-post-types/quiz.php:234
+msgid "Not assigned yet"
+msgstr "Nog niet beoordeeld"
+
+#: inc/custom-post-types/order.php:137
+msgid "Processing..."
+msgstr "Verwerken…"
+
+#: inc/custom-post-types/order.php:154 inc/custom-post-types/order.php:157 inc/custom-post-types/order.php:484
+msgid "Apply"
+msgstr "Toepassen"
+
+#: inc/custom-post-types/order.php:189
+msgid "View the transaction details"
+msgstr "Bekijk de transactie details"
+
+#: inc/custom-post-types/order.php:189
+msgid "Details"
+msgstr "Details"
+
+#: inc/custom-post-types/order.php:253 inc/custom-post-types/order.php:351
+msgid "Order"
+msgstr "Order"
+
+#: inc/custom-post-types/order.php:254
+msgid "Student"
+msgstr "Student"
+
+#: inc/custom-post-types/order.php:256
+msgid "Date"
+msgstr "Datum"
+
+#: inc/custom-post-types/order.php:257 inc/custom-post-types/order.php:470 templates/order/order-details.php:20 templates/order/order-details.php:58
+msgid "Total"
+msgstr "Totaal"
+
+#: inc/custom-post-types/order.php:258 inc/custom-post-types/order.php:476
+msgid "Status"
+msgstr "Status"
+
+#: inc/custom-post-types/order.php:299
+msgid "Y/m/d g:i:s a"
+msgstr "Y/m/d g:i:s a"
+
+#: inc/custom-post-types/order.php:308
+msgid "Y/m/d"
+msgstr "Y/m/d"
+
+#: inc/custom-post-types/order.php:321
+msgid "Course has been removed"
+msgstr "Cursus is verwijderd"
+
+#: inc/custom-post-types/order.php:349 inc/custom-post-types/order.php:350 inc/custom-post-types/order.php:354
+msgid "Orders"
+msgstr "Orders"
+
+#: inc/custom-post-types/order.php:352
+msgid "Add New Order"
+msgstr "Nieuwe order toevoegen"
+
+#: inc/custom-post-types/order.php:353 inc/custom-post-types/order.php:404 templates/order/order-details.php:15
+msgid "Order Details"
+msgstr "Order details"
+
+#: inc/custom-post-types/order.php:383
+msgctxt "Order status"
+msgid "Draft Order"
+msgstr "Orderbesluit"
+
+#: inc/custom-post-types/order.php:388
+#, php-format
+msgid "Draft order <span class=\"count\">(%s)</span>"
+msgid_plural "Draft order <span class=\"count\">(%s)</span>"
+msgstr[0] ""
+msgstr[1] ""
+
+#: inc/custom-post-types/order.php:432 inc/custom-post-types/order.php:436
+msgid "Unknow"
+msgstr "Niet bekend"
+
+#: inc/custom-post-types/order.php:448
+msgid "Amount"
+msgstr "Aantal"
+
+#: inc/custom-post-types/order.php:457 templates/order/order-details.php:41
+msgid "Free!"
+msgstr "Gratis!"
+
+#: inc/custom-post-types/order.php:464
+msgid "Sub Total"
+msgstr "Subtotaal"
+
+#: inc/custom-post-types/order.php:478
+msgid "Unpublished"
+msgstr "Ongepubliceerd"
+
+#: inc/custom-post-types/order.php:480
+msgid "Pending"
+msgstr "In afwachting"
+
+#: inc/custom-post-types/order.php:482
+msgid "Completed"
+msgstr "Afegerond"
+
+#: inc/custom-post-types/question.php:30 inc/custom-post-types/question.php:31
+msgid "Question Bank"
+msgstr "Vragenopslag"
+
+#: inc/custom-post-types/question.php:32
+msgid "Question"
+msgstr "Vraag"
+
+#: inc/custom-post-types/question.php:33 inc/custom-post-types/quiz.php:85
+msgid "Questions"
+msgstr "Vragen"
+
+#: inc/custom-post-types/question.php:34
+msgid "View Question"
+msgstr "Bekijk vraag"
+
+#: inc/custom-post-types/question.php:35
+msgid "Add New Question"
+msgstr "Nieuwe vraag"
+
+#: inc/custom-post-types/question.php:37
+msgid "Edit Question"
+msgstr "Vraag bewerken"
+
+#: inc/custom-post-types/question.php:38
+msgid "Update Question"
+msgstr "Vraag updaten"
+
+#: inc/custom-post-types/question.php:39
+msgid "Search Questions"
+msgstr "Vragen zoeken"
+
+#: inc/custom-post-types/question.php:40
+msgid "No question found"
+msgstr "Geen vragen gevonden"
+
+#: inc/custom-post-types/question.php:41
+msgid "No question found in trash"
+msgstr "Geen vragen gevonden in de prullenbak"
+
+#: inc/custom-post-types/question.php:62
+msgid "Question Tag"
+msgstr "Vragenlabel"
+
+#: inc/custom-post-types/question.php:97
+msgid "Type of question"
+msgstr "Type vraag"
+
+#: inc/custom-post-types/question.php:106
+msgid "Mark For This Question"
+msgstr "Cijfer voor deze vraag"
+
+#: inc/custom-post-types/question.php:110
+msgid "Mark for choosing the right answer"
+msgstr "Cijfer voor het kiezen van het goede antwoord"
+
+#: inc/custom-post-types/question.php:133
+msgid "Please enter the title of the question"
+msgstr "Vul de titel van de vraag in"
+
+#: inc/custom-post-types/question.php:137
+msgid "Please a type of question"
+msgstr "Type vraag"
+
+#: inc/custom-post-types/quiz.php:50 inc/custom-post-types/quiz.php:51 inc/custom-post-types/quiz.php:55
+msgid "Quizzes"
+msgstr "Quizzen"
+
+#: inc/custom-post-types/quiz.php:52
+msgid "Quiz"
+msgstr "Quiz"
+
+#: inc/custom-post-types/quiz.php:53
+msgid "Add New Quiz"
+msgstr "Nieuwe quiz toevoegen"
+
+#: inc/custom-post-types/quiz.php:54
+msgid "Edit Quiz"
+msgstr "Quiz bewerken"
+
+#: inc/custom-post-types/quiz.php:101
+msgid "LearnPress Quiz Settings"
+msgstr "LearnPress quiz instellingen"
+
+#: inc/custom-post-types/quiz.php:107
+msgid "Quiz Duration"
+msgstr "Duur van de quiz"
+
+#: inc/custom-post-types/quiz.php:108
+msgid "Quiz duration (in minutes). Auto submits when expire. Set 0 to disable."
+msgstr "Duur van de quiz (in minuten). Automatisch opgeslagen als de tijd verlopen is. 0 voor niet van toepassing. "
+
+#: inc/custom-post-types/quiz.php:115
+msgid "Re-take quiz"
+msgstr "Quiz overdoen"
+
+#: inc/custom-post-types/quiz.php:122
+msgid "Show correct answer"
+msgstr "Laat goede antwoord zien"
+
+#: inc/custom-post-types/quiz.php:125
+msgid "Show the correct answer in result of the quiz."
+msgstr "Laat het correcte antwoord in het resultaat van de quiz zien"
+
+#: inc/custom-post-types/quiz.php:129
+msgid "Show question answer immediately"
+msgstr "Laat het antwoord van de vraag gelijk zien"
+
+#: inc/custom-post-types/quiz.php:132
+msgid "Show the correct answer and explanation (if exists) of the question right after student answered."
+msgstr "Laat het correcte antwoord en toelichting (wanneer deze bestaat) van de vraag zien gelijk nadat de student antwoordde."
+
+#: inc/custom-post-types/quiz.php:152
+msgid "Please enter the title of the quiz"
+msgstr "Vul de titel van de quiz in"
+
+#: inc/gateways/paypal/class.lpr-gateway-paypal.php:259
+#, php-format
+msgid "Error: Transaction IDs do not match! %s, %s"
+msgstr "Fout: Transactie IDs zijn niet gelijk! %s, %s"
+
+#: inc/order/lpr-order-functions.php:111
+#, php-format
+msgid "Order &ndash; %s"
+msgstr "Order &ndash; %s"
+
+#: inc/question-type/class.lpr-question-type-dropdown.php:41 inc/question-type/class.lpr-question-type-multi-choice.php:50 inc/question-type/class.lpr-question-type-single-choice.php:83 inc/question-type/class.lpr-question-type-true-or-false.php:31
+msgid "Is Correct?"
+msgstr "Is het goed?"
+
+#: inc/question-type/class.lpr-question-type-dropdown.php:42 inc/question-type/class.lpr-question-type-multi-choice.php:51 inc/question-type/class.lpr-question-type-single-choice.php:84 inc/question-type/class.lpr-question-type-true-or-false.php:32
+msgid "Answer Text"
+msgstr "Antwoord tekst"
+
+#: inc/question-type/class.lpr-question-type-dropdown.php:63 inc/question-type/class.lpr-question-type-multi-choice.php:84 inc/question-type/class.lpr-question-type-single-choice.php:117
+msgid "Add answer"
+msgstr "Antwoord toevoegen"
+
+#: inc/question-type/class.lpr-question-type-dropdown.php:64 inc/question-type/class.lpr-question-type-multi-choice.php:85 inc/question-type/class.lpr-question-type-single-choice.php:118 inc/question-type/class.lpr-question-type-true-or-false.php:59
+msgid "Question Explanation"
+msgstr "Toelichting op de vraag"
+
+#: inc/question-type/class.lpr-question-type-multi-choice.php:113
+msgid "No answer added to question or you must select at least one the answer is correct!"
+msgstr "Geen vragen toegevoegd aan de vraag, of je moet ten minste een vraag selecteren die correct is!"
+
+#: inc/question-type/class.lpr-question-type-multi-choice.php:192 inc/question-type/class.lpr-question-type-single-choice.php:186
+msgid "Question hint"
+msgstr ""
+
+#: inc/question-type/class.lpr-question-type-single-choice.php:57
+msgid "No answer added to question or you must set an answer is correct!"
+msgstr "Geen vragen toegevoegd aan de vraag, of je moet een vraag correct invullen!"
+
+#: inc/question-type/class.lpr-question-type-true-or-false.php:44
+msgid "True"
+msgstr "Waar"
+
+#: inc/question-type/class.lpr-question-type-true-or-false.php:55
+msgid "False"
+msgstr "Onwaar"
+
+#: inc/user/lpr-user-functions.php:29
+#, php-format
+msgid "%d%% of total"
+msgstr "%d%% van totaal"
+
+#: lib/meta-box/inc/field.php:217
+msgid "+"
+msgstr "+"
+
+#: lib/meta-box/inc/field.php:226
+msgid "&#8211;"
+msgstr "&#8211;"
+
+#: lib/meta-box/inc/meta-box.php:239
+msgid "Please correct the errors highlighted below and try again."
+msgstr "Verbeter de foutmeldingen die zijn gemarkeerd en probeer opnieuw"
+
+#: lib/meta-box/inc/fields/button.php:31
+msgid "Click me"
+msgstr "Klik hier"
+
+#: lib/meta-box/inc/fields/file-advanced.php:20
+msgid "Select Files"
+msgstr "Bestanden selecteren"
+
+#: lib/meta-box/inc/fields/file-advanced.php:59
+msgctxt "file upload"
+msgid "Select or Upload Files"
+msgstr "Bestanden selecteren of uploaden"
+
+#: lib/meta-box/inc/fields/file-advanced.php:95 lib/meta-box/inc/fields/file.php:159
+msgctxt "file upload"
+msgid "Delete"
+msgstr "Verwijderen"
+
+#: lib/meta-box/inc/fields/file-advanced.php:96 lib/meta-box/inc/fields/file.php:160
+msgctxt "file upload"
+msgid "Edit"
+msgstr "Bewerken"
+
+#: lib/meta-box/inc/fields/file-input.php:14
+msgid "Select File"
+msgstr "Bestand selecteren"
+
+#: lib/meta-box/inc/fields/file-input.php:36
+msgid "Select"
+msgstr "Selecteren"
+
+#: lib/meta-box/inc/fields/file.php:16
+#, php-format
+msgid "You may only upload maximum %d file"
+msgstr "U mag maximaal %d bestanden uploaden"
+
+#: lib/meta-box/inc/fields/file.php:17
+#, php-format
+msgid "You may only upload maximum %d files"
+msgstr "U mag maximaal %d bestanden uploaden"
+
+#: lib/meta-box/inc/fields/file.php:90
+msgid "Error: Cannot delete file"
+msgstr "Fout: Bestand verwijderen mislukt"
+
+#: lib/meta-box/inc/fields/file.php:103
+msgctxt "file upload"
+msgid "Upload Files"
+msgstr "Bestanden uploaden"
+
+#: lib/meta-box/inc/fields/file.php:104
+msgctxt "file upload"
+msgid "+ Add new file"
+msgstr "+ nieuw bestand toevoegen"
+
+#: lib/meta-box/inc/fields/image-advanced.php:20
+msgid "Select Images"
+msgstr "Afbeeldingen selecteren"
+
+#: lib/meta-box/inc/fields/image-advanced.php:64
+msgctxt "image upload"
+msgid "Select or Upload Images"
+msgstr "Selecteer of upload afbeeldingen"
+
+#: lib/meta-box/inc/fields/image-advanced.php:100 lib/meta-box/inc/fields/image.php:127
+msgctxt "image upload"
+msgid "Delete"
+msgstr "Verwijderen"
+
+#: lib/meta-box/inc/fields/image-advanced.php:101 lib/meta-box/inc/fields/image.php:128
+msgctxt "image upload"
+msgid "Edit"
+msgstr "Bewerken"
+
+#: lib/meta-box/inc/fields/image.php:63 lib/meta-box/inc/fields/thickbox-image.php:30
+msgctxt "image upload"
+msgid "Upload Images"
+msgstr "Afbeeldingen uploaden"
+
+#: lib/meta-box/inc/fields/image.php:64
+msgctxt "image upload"
+msgid "+ Add new image"
+msgstr "+ nieuw afbeelding toevoegen"
+
+#: lib/meta-box/inc/fields/map.php:43
+msgid "Find Address"
+msgstr "Adres vinden"
+
+#: lib/meta-box/inc/fields/oembed.php:49
+msgid "Embed HTML not available."
+msgstr "Emed HTML niet beschikbaar"
+
+#: lib/meta-box/inc/fields/oembed.php:70
+msgid "Preview"
+msgstr "Voorbeeld"
+
+#: lib/meta-box/inc/fields/plupload-image.php:96
+msgctxt "image upload"
+msgid "Drop images here"
+msgstr "Sleep afbeeldingen hier"
+
+#: lib/meta-box/inc/fields/plupload-image.php:97
+msgctxt "image upload"
+msgid "or"
+msgstr "of"
+
+#: lib/meta-box/inc/fields/plupload-image.php:98
+msgctxt "image upload"
+msgid "Select Files"
+msgstr "Bestanden selecteren"
+
+#: lib/meta-box/inc/fields/plupload-image.php:172
+msgctxt "image upload"
+msgid "Allowed Image Files"
+msgstr "Afbeeldingen toegestaan"
+
+#: lib/meta-box/inc/fields/user.php:48
+msgid "User"
+msgstr "Gebruiker"
+
+#: templates/course/button-retake.php:1
+msgid "Retake this course"
+msgstr "Cursus overdoen"
+
+#: templates/course/content-course-title.php:3
+msgid "Course Description"
+msgstr "Cursus beschrijving"
+
+#: templates/course/course-pending.php:3
+#, php-format
+msgid "You have taken this course but it's status is %s"
+msgstr "U heeft aan deze cursus deelgenomen maar de status is %s"
+
+#: templates/course/course-result.php:10 templates/quiz/percentage.php:8
+#, php-format
+msgid "You have passed this course with %.2f%% of total"
+msgstr "U bent geslaagd voor deze cursus met %.2f%% van het totaal"
+
+#: templates/course/course-result.php:15 templates/quiz/percentage.php:13
+#, php-format
+msgid "Sorry, you have not passed this course. This course required you pass %.2f%% but your result is only %.2f%%"
+msgstr "Sorry, u bent helaas niet geslaagd voor deze cursus. %.2f%% is een voldoende, uw resultaat is: %.2f%%"
+
+#: templates/course/curriculum.php:19
+msgid "Curriculum is empty"
+msgstr "Cursusonderdelen zijn leeg"
+
+#: templates/course/enroll-button.php:9
+msgid "Take this course"
+msgstr "Aan deze cursus deelnemen"
+
+#: templates/course/enroll-button.php:10
+msgid "Processing"
+msgstr "Verwerken"
+
+#: templates/course/finish-course-button.php:1
+msgid "Finish this course"
+msgstr "Deze cursus afronden"
+
+#: templates/course/instructor.php:12
+msgid "Instructor: "
+msgstr "Docent:"
+
+#: templates/course/students.php:13
+msgid "You enrolled"
+msgstr "U bent ingeschreven"
+
+#: templates/course/students.php:15
+#, php-format
+msgctxt ""
+msgid "You and one student enrolled"
+msgid_plural "You and %1$s students enrolled"
+msgstr[0] "U en een andere student zijn ingeschreven"
+msgstr[1] "U en %1$s studenten zijn ingeschreven"
+
+#: templates/course/students.php:18
+#, php-format
+msgctxt ""
+msgid "One student enrolled"
+msgid_plural "%1$s students enrolled"
+msgstr[0] "Een student ingeschreven"
+msgstr[1] "%1$s studenten ingeschreven"
+
+#: templates/course/students.php:21
+msgid "No student enrolled"
+msgstr "Geen studenten ingeschreven"
+
+#: templates/order/confirm.php:5
+msgid "Unfortunately your order cannot be processed as the originating bank/merchant has declined your transaction."
+msgstr "Helaas kunt uw order niet worden verwerkt, omdat de bank / handelaar uw transactie heeft geweigerd."
+
+#: templates/order/confirm.php:9
+msgid "Please attempt your purchase again or go to your account page."
+msgstr "Probeer het opnieuw aan te schaffen en ga naar je account pagina"
+
+#: templates/order/confirm.php:11
+msgid "Please attempt your purchase again."
+msgstr "Probeer aanschaffen opnieuw"
+
+#: templates/order/confirm.php:15
+msgid "Pay"
+msgstr "Betaal"
+
+#: templates/order/confirm.php:17
+msgid "My Account"
+msgstr "Mijn account"
+
+#: templates/order/confirm.php:23 templates/order/confirm.php:58
+msgid "Thank you. Your order has been received."
+msgstr "Bedankt. Uw order is aangekomen"
+
+#: templates/order/confirm.php:27
+msgid "Order Number:"
+msgstr "Order nummer:"
+
+#: templates/order/confirm.php:31
+msgid "Date:"
+msgstr "Datum"
+
+#: templates/order/confirm.php:35
+msgid "Total:"
+msgstr "Totaal"
+
+#: templates/order/confirm.php:40
+msgid "Payment Method:"
+msgstr "Betaalmethode"
+
+#: templates/order/confirm.php:45
+msgid "Status:"
+msgstr "Status"
+
+#: templates/order/order-details.php:54
+msgid "Subtotal"
+msgstr "Subtotaal"
+
+#: templates/profile/quiz-content.php:13 templates/quiz/result.php:10
+msgid "point"
+msgstr "Punt"
+
+#: templates/profile/quiz-content.php:17 templates/quiz/result.php:14
+msgid "Correct"
+msgstr "Goed"
+
+#: templates/profile/quiz-content.php:21 templates/quiz/result.php:18
+msgid "Wrong"
+msgstr "Fout"
+
+#: templates/profile/quiz-content.php:25 templates/quiz/result.php:22
+msgid "Empty"
+msgstr "Leeg"
+
+#: templates/profile/quiz-content.php:29 templates/quiz/result.php:26
+msgid "Time"
+msgstr "Tijd"
+
+#: templates/profile/user-courses.php:6
+msgid "All Enrolled Courses"
+msgstr "Ingeschreven cursussen"
+
+#: templates/profile/user-courses.php:15 templates/profile/user-quizzes.php:27
+msgid "You have not taken any courses yet!"
+msgstr "U heeft nog niet deelgenomen aan een cursus!"
+
+#: templates/profile/user-courses.php:22
+msgid "All Passed Courses"
+msgstr "Alle afgeronde cursussen"
+
+#: templates/profile/user-courses.php:31
+msgid "You have not finished any courses yet!"
+msgstr "U heeft nog geen cursussen afgerond!"
+
+#: templates/profile/user-courses.php:39
+msgid "All Own Courses"
+msgstr "Alle eigen cursussen"
+
+#: templates/profile/user-courses.php:48
+msgid "You don't have got any published courses yet!"
+msgstr "U heeft nog geen cursussen gepubliceerd!"
+
+#: templates/profile/user-quizzes.php:22
+msgid "You have not finished any quizzes yet!"
+msgstr "U heeft nog geen quizzen gemaakt!"
+
+#: templates/profile/user-courses/own-course.php:10
+msgid "Price"
+msgstr "Prijs"
+
+#: templates/profile/user-courses/own-course.php:18
+msgid "Students enrolled"
+msgstr "Studenten ingeschreven"
+
+#: templates/profile/user-courses/own-course.php:26
+msgid "Students passed"
+msgstr "Studenten geslaagd"
+
+#: templates/quiz/button-check-answer.php:3
+msgid "Check answer"
+msgstr "Check antwoord"
+
+#: templates/quiz/buttons.php:15
+msgid "Start Quiz"
+msgstr "Start Quiz"
+
+#: templates/quiz/buttons.php:25
+msgid "Finish Quiz"
+msgstr "Quiz afronden"
+
+#: templates/quiz/buttons.php:31
+msgid "Retake"
+msgstr "Overdoen"
+
+#: templates/quiz/empty.php:7
+msgid "No question found!"
+msgstr "Geen vragen gevonden!"
+
+#: templates/quiz/nav.php:3
+msgid "Back"
+msgstr "Terug"
+
+#: templates/quiz/no-preview-message.php:3
+msgid "Sorry! You have not permission to view this quiz"
+msgstr "Sorry! U heeft geen permissie om de quiz te zien"
+
+#: templates/quiz/no-question.php:2
+msgid "No question in this quiz"
+msgstr "Geen vraag in deze quiz"
+
+#: templates/quiz/result.php:7
+msgid "Your result"
+msgstr "Uw resultaat"
+
+#: templates/quiz/time-counter.php:15
+msgid "Time remaining"
+msgstr "Resterende tijd"
+
+#: templates/quiz/time-counter.php:17
+msgid "mins/secs"
+msgstr "min/sec"
