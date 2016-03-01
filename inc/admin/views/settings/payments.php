@@ -67,6 +67,7 @@ $readonly     = $settings->get( 'paypal_sandbox' ) ? '' : ' readonly="readonly"'
 		<th scope="row">
 			<label for="learn_press_paypal_sandbox_mode"><?php _e( 'Sandbox Mode', 'learnpress' ); ?></label></th>
 		<td>
+			<input type="hidden" name="<?php echo $this->get_field_name( 'paypal_sandbox' ); ?>" value="no">
 			<input type="checkbox" id="learn_press_paypal_sandbox_mode" name="<?php echo $this->get_field_name( 'paypal_sandbox' ); ?>" value="yes" <?php checked( $settings->get( 'paypal_sandbox', 'no' ) == 'yes', true ); ?> />
 		</td>
 	</tr>

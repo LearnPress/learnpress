@@ -24,6 +24,7 @@ class LP_Admin_Menu {
 		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 		add_action( 'admin_menu', array( $this, 'notify_new_course' ) );
 		add_action( 'init', array( $this, 'menu_content' ) );
+		add_action( 'init', 'learn_press_admin_update_settings', 1000 );
 	}
 
 	/**
@@ -94,13 +95,18 @@ class LP_Admin_Menu {
 		// auto include file for admin page
 		// example: slug = learn_press_settings -> file = inc/admin/sub-menus/settings.php
 		$page = !empty ( $_REQUEST['page'] ) ? $_REQUEST['page'] : null;
-		if ( !$page ) return;
+		if ( $page ) {
 
-		if ( strpos( $page, 'learn_press_' ) === false ) return;
-		$file = preg_replace( '!^learn_press_!', '', $page );
-		$file = str_replace( '_', '-', $file );
-		if ( file_exists( $file = LP_PLUGIN_PATH . "/inc/admin/sub-menus/{$file}.php" ) ) {
-			require_once $file;
+			if ( strpos( $page, 'learn_press_' ) !== false ) {
+				$file = preg_replace( '!^learn_press_!', '', $page );
+				$file = str_replace( '_', '-', $file );
+				if ( file_exists( $file = LP_PLUGIN_PATH . "/inc/admin/sub-menus/{$file}.php" ) ) {
+					require_once $file;
+				}
+			}
+		}
+		if( !function_exists( 'learn_press_admin_update_settings' ) ){
+			remove_action( 'init', 'learn_press_admin_update_settings', 1000 );
 		}
 	}
 }

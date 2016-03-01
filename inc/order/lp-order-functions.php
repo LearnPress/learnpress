@@ -11,6 +11,14 @@ if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
+function learn_press_method_title_for_free( $title, $name ) {
+	if ( empty( $title ) && empty( $name ) ) {
+		$title = __( 'Free Payment', 'learnpress' );
+	}
+	return $title;
+}
+
+//add_filter( 'learn_press_display_payment_method_title', 'learn_press_method_title_for_free', 10, 2 );
 /**
  * Create new order
  *

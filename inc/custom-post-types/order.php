@@ -56,14 +56,14 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 			global $wpdb, $post;
 
 			// get order items
-			$query = $wpdb->prepare("
+			$query = $wpdb->prepare( "
 				SELECT order_item_id FROM {$wpdb->prefix}learnpress_order_items
 				WHERE order_id = %d
 			", $post->ID );
-			if( $item_ids = $wpdb->get_col( $query ) ) {
-				$query ="
+			if ( $item_ids = $wpdb->get_col( $query ) ) {
+				$query = "
 					DELETE FROM {$wpdb->prefix}learnpress_order_itemmeta
-					WHERE learnpress_order_item_id IN(" . join(',', $item_ids) . ")
+					WHERE learnpress_order_item_id IN(" . join( ',', $item_ids ) . ")
 				";
 				$wpdb->query( $query );
 
@@ -79,7 +79,7 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 			global $action;
 			if ( wp_is_post_revision( $post_id ) )
 				return;
-			if( $action == 'editpost' && get_post_type( $post_id ) == 'lp_order' ) {
+			if ( $action == 'editpost' && get_post_type( $post_id ) == 'lp_order' ) {
 				remove_action( 'save_post', array( $this, 'save_order' ) );
 
 				$order_statuses = learn_press_get_order_statuses();
@@ -95,7 +95,6 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 				$user_id = learn_press_get_request( 'order-customer' );
 				//$postdata = array( 'post_status' => $status, 'ID' => $post_id );
 				///wp_update_post( $postdata );
-
 
 
 				update_post_meta( $post_id, '_user_id', $user_id > 0 ? $user_id : 0 );
@@ -258,15 +257,20 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 		function post_row_actions( $actions, $post ) {
 
 			if ( LP()->order_post_type == $post->post_type ) {
-
-				$_actions = array();
+				if ( !empty( $actions['inline hide-if-no-js'] ) ) {
+					unset( $actions['inline hide-if-no-js'] );
+				}
+				if ( !empty( $actions['edit'] ) ) {
+					$actions['edit'] = preg_replace( '/>(.*?)<\/a>/', ">" . __( 'View Order', 'learnpress' ) . "</a>", $actions['edit'] );
+				}
+				/*$_actions = array();
 
 				if ( !empty( $actions['edit'] ) ) {
 					$_actions['edit'] = '<a href="' . get_edit_post_link( $post->ID, true ) . '" title="' . esc_attr( __( 'View the transaction details', 'learnpress' ) ) . '">' . __( 'Details', 'learnpress' ) . '</a>';
 				}
 
 				if ( !empty( $actions['trash'] ) ) $_actions['trash'] = $actions['trash'];
-				$actions = $_actions;
+				$actions = $_actions;*/
 			}
 			return $actions;
 		}
@@ -300,9 +304,9 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 			}
 
 			// Remove Title - adding it back below
-			if ( isset( $existing['title'] ) )
+			/*if ( isset( $existing['title'] ) )
 				unset( $existing['title'] );
-
+			*/
 			// Remove Format
 			if ( isset( $existing['format'] ) )
 				unset( $existing['format'] );
@@ -354,12 +358,12 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 			//print_r($the_order->get_items());die();
 			switch ( $column ) {
 				case 'order_student':
-					if( $the_order->user_id ) {
+					if ( $the_order->user_id ) {
 						$user = learn_press_get_user( $the_order->user_id );
 
 						printf( '<a href="user-edit.php?user_id=%d">%s (%s)</a>', $the_order->user_id, $user->user_login, $user->display_name ); ?><?php
 						printf( '<br /><span>%s</span>', $user->user_email );
-					}else{
+					} else {
 						_e( 'Guest', 'learnpress' );
 					}
 					break;
@@ -391,14 +395,17 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 					break;
 				case 'order_total' :
 					echo learn_press_format_price( $the_order->order_total, learn_press_get_currency_symbol( $the_order->order_currency ) );
+					if ( $title = $the_order->get_payment_method_title() ) { ?>
+						<div class="payment-method-title">
+							<?php echo $the_order->order_total == 0 ? $title : sprintf( __( 'Pay via <strong>%s</strong>', 'learnpress' ), $title ); ?>
+						</div>
+					<?php }
 					break;
 				case 'order_title' :
-
 					$order_number = sprintf( "%'.010d", $the_order->ID );
 					?>
 					<div class="tips">
 						<a href="post.php?post=<?php echo $the_order->ID ?>&action=edit"><strong><?php echo learn_press_transaction_order_number( $order_number ); ?></strong></a>
-
 					</div>
 					<?php break;
 			}
@@ -459,6 +466,8 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 			// Remove Publish metabox
 			remove_meta_box( 'submitdiv', LP()->order_post_type, 'side' );
 
+			remove_meta_box( 'commentstatusdiv', LP()->order_post_type, 'normal' );
+
 			// Remove Slug metabox
 			//remove_meta_box( 'slugdiv', LP()->order_post_type, 'normal' );
 
@@ -493,6 +502,10 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 				wp_enqueue_style( 'lp-meta-boxes', LP()->plugin_url( 'assets/css/meta-boxes.css' ) );
 
 			}*/
+		}
+
+		function remove_edit_post_link() {
+			return '';
 		}
 
 		/**

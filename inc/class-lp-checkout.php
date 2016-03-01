@@ -95,7 +95,7 @@ class LP_Checkout {
 			foreach ( LP()->cart->get_items() as $item ) {
 				if ( empty( $item['order_item_name'] ) && !empty( $item['item_id'] ) && ( $course = LP_Course::get_course( $item['item_id'] ) ) ) {
 					$item['order_item_name'] = $course->get_title();
-				}else{
+				} else {
 					throw new Exception( sprintf( __( 'Item does not exists!', 'learnpress' ), 402 ) );
 				}
 				$item_id = $order->add_item( $item );
@@ -174,20 +174,20 @@ class LP_Checkout {
 
 			$success = true;
 
-			if( LP()->cart->is_empty() ){
+			if ( LP()->cart->is_empty() ) {
 				learn_press_send_json(
 					array(
-						'result' => 'success',
+						'result'   => 'success',
 						'redirect' => learn_press_get_page_link( 'checkout' )
 					)
 				);
 			}
 
-			if ( empty( $_REQUEST['payment_method'] ) ) {
+			if ( LP()->cart->needs_payment() && empty( $_REQUEST['payment_method'] ) ) {
 				$success = false;
 				learn_press_add_notice( __( 'Please select a payment method', 'learnpress' ), 'error' );
 			} else {
-				$this->payment_method = $_REQUEST['payment_method'];
+				$this->payment_method = !empty( $_REQUEST['payment_method'] ) ? $_REQUEST['payment_method'] : '';
 				if ( $this->checkout_fields ) foreach ( $this->checkout_fields as $name => $field ) {
 					if ( !apply_filters( 'learn_press_checkout_validate_field', true, array( 'name' => $name, 'text' => $field ), $this ) ) {
 						$success = false;
@@ -223,17 +223,25 @@ class LP_Checkout {
 			}
 
 			$order_id = $this->create_order();
-			if ( $success && $this->payment_method && $order_id ) {
-				LP()->session->order_awaiting_payment = $order_id;
+			if ( $success && $order_id ) {
 
-				// Process Payment
-				$result  = $this->payment_method->process_payment( $order_id );
+				if ( $this->payment_method ) {
+					// Store the order is waiting for payment and each payment method should clear it
+					LP()->session->order_awaiting_payment = $order_id;
 
-				$success = !empty( $result['result'] ) ? $result['result'] == 'success' : false;
+					// Process Payment
+					$result  = $this->payment_method->process_payment( $order_id );
+					$success = !empty( $result['result'] ) ? $result['result'] == 'success' : false;
+				} else {
+					// ensure that no order is waiting for payment
+					$order = new LP_Order( $order_id );
+					if ( $order && $order->payment_complete() ) {
+						$result = array( 'result' => 'success', 'redirect' => $order->get_checkout_order_received_url() );
+					}
+				}
 				// Redirect to success/confirmation/payment page
 				if ( $success ) {
 					$result = apply_filters( 'learn_press_payment_successful_result', $result, $order_id );
-					//LP()->cart->empty_cart();
 					if ( is_ajax() ) {
 						learn_press_send_json( $result );
 					} else {

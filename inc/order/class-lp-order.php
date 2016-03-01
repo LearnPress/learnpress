@@ -49,6 +49,9 @@ class LP_Order {
 			$this->id   = absint( $order->ID );
 			$this->post = $order;
 			$this->get_order( $this->id );
+		} else {
+			$this->id   = 0;
+			$this->post = new WP_Post( new stdClass() );
 		}
 	}
 
@@ -118,7 +121,7 @@ class LP_Order {
 			global $wpdb;
 			$updated = $wpdb->update( $wpdb->posts, array( 'post_status' => 'lp-' . $new_status ), array( 'ID' => $this->id ), array( '%s' ) );
 
-			if( $updated === false ){
+			if ( $updated === false ) {
 				throw new Exception( __( 'Error! Update order failed', 'learnpress' ) );
 				return false;
 			}
@@ -176,13 +179,15 @@ class LP_Order {
 	 * Mark order as complete
 	 *
 	 * @param string - transaction ID provided payment gateway
+	 *
+	 * @return bool
 	 */
 	function payment_complete( $transaction_id = '' ) {
 		do_action( 'learn_press_pre_payment_complete', $this->id );
 
-		delete_transient( 'order_awaiting_payment' );
+		LP()->session->order_awaiting_payment = null;
 
-		$valid_order_statuses = apply_filters( 'learn_press_valid_order_statuses_for_payment_complete', array( 'pending' ), $this );
+		$valid_order_statuses = apply_filters( 'learn_press_valid_order_statuses_for_payment_complete', array( 'pending', 'processing', 'on-hold' ), $this );
 
 		if ( $this->id && $this->has_status( $valid_order_statuses ) ) {
 
@@ -196,6 +201,8 @@ class LP_Order {
 		} else {
 			do_action( 'learn_press_payment_complete_order_status_' . $this->get_status(), $this->id );
 		}
+
+		return true;
 	}
 
 	/**
@@ -325,7 +332,12 @@ class LP_Order {
 	}
 
 	function get_payment_method_title() {
-		return $this->payment_method_title;
+		if( $this->total == 0 ){
+			$title = __( 'Free Payment', 'learnpress' );
+		}else{
+			$title = $this->payment_method_title;
+		}
+		return apply_filters( 'learn_press_display_payment_method_title', $title, $this->payment_method );
 	}
 
 	function get_view_order_url() {
@@ -370,7 +382,7 @@ class LP_Order {
 			$comment_parent       = 0;
 			$comment_approved     = 1;
 
-			$commentdata          = apply_filters(
+			$commentdata = apply_filters(
 				'learn_press_new_order_note_data',
 				compact( 'comment_post_ID', 'comment_author', 'comment_author_email', 'comment_author_url', 'comment_content', 'comment_agent', 'comment_type', 'comment_parent', 'comment_approved' ),
 				$this->id
@@ -387,6 +399,7 @@ class LP_Order {
 	 *
 	 * @param $order
 	 * @param $force
+	 *
 	 * @return LP_Order
 	 */
 	static function instance( $order, $force = true ) {

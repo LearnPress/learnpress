@@ -23,41 +23,10 @@ function learn_press_settings_page() {
 	$tabs = learn_press_settings_tabs_array();
 
 	if ( !$current_tab && $tabs ) {
-		$keys = array_keys( $tabs );
+		$keys        = array_keys( $tabs );
 		$current_tab = reset( $keys );
 	}
 
-	$class_name = apply_filters( 'learn_press_settings_class_' . $current_tab, 'LP_Settings_' . $tabs[$current_tab] );
-	if ( !class_exists( $class_name ) ) {
-		$class_file = apply_filters( 'learn_press_settings_file_' . $current_tab, LP()->plugin_path( 'inc/admin/settings/class-lp-settings-' . $current_tab . '.php' ) );
-		if ( !file_exists( $class_file ) ) {
-			return false;
-		}
-
-		include_once $class_file;
-		if ( !class_exists( $class_name ) ) {
-
-		}
-	}
-
-	if ( !empty( $_POST ) ) {
-		//	 Check if our nonce is set.
-		if ( !isset( $_POST['learn_press_settings_nonce'] ) ) {
-			return;
-		}
-
-		// Verify that the nonce is valid.
-		if ( !wp_verify_nonce( $_POST['learn_press_settings_nonce'], 'learn_press_settings' ) ) {
-			return;
-		}
-
-		do_action( 'learn_press_settings_save_' . $current_tab );
-
-		$section = !empty( $_REQUEST['section'] ) ? '&section=' . $_REQUEST['section'] : '';
-		?>
-		<script type="text/javascript">window.location.href = '<?php echo admin_url( 'options-general.php?page=learn_press_settings&tab=' . $current_tab . $section . '&settings-updated=true' );?>';</script><?php exit();
-		echo '<div class="updated"><p><strong>' . __( 'Settings saved', 'learnpress' ) . '</strong></p></div>';
-	}
 	// ensure all settings relevant to rewrite rules effect immediately
 	flush_rewrite_rules();
 
@@ -88,4 +57,48 @@ function learn_press_settings_page() {
 		</form>
 	</div>
 	<?php
+}
+
+function learn_press_admin_update_settings() {
+
+	$tabs        = learn_press_settings_tabs_array();
+	$current_tab = isset( $_GET['tab'] ) ? $_GET['tab'] : '';
+
+	if ( !$current_tab && $tabs ) {
+		$keys        = array_keys( $tabs );
+		$current_tab = reset( $keys );
+	}
+
+	$class_name = apply_filters( 'learn_press_settings_class_' . $current_tab, 'LP_Settings_' . $tabs[$current_tab] );
+	if ( !class_exists( $class_name ) ) {
+		$class_file = apply_filters( 'learn_press_settings_file_' . $current_tab, LP()->plugin_path( 'inc/admin/settings/class-lp-settings-' . $current_tab . '.php' ) );
+		if ( !file_exists( $class_file ) ) {
+			return false;
+		}
+
+		include_once $class_file;
+		if ( !class_exists( $class_name ) ) {
+
+		}
+	}
+
+	if ( !empty( $_POST ) ) {
+		//	 Check if our nonce is set.
+		if ( !isset( $_POST['learn_press_settings_nonce'] ) ) {
+			return;
+		}
+
+		// Verify that the nonce is valid.
+		if ( !wp_verify_nonce( $_POST['learn_press_settings_nonce'], 'learn_press_settings' ) ) {
+			return;
+		}
+
+		do_action( 'learn_press_settings_save_' . $current_tab );
+
+		$section = !empty( $_REQUEST['section'] ) ? '&section=' . $_REQUEST['section'] : '';
+		LP_Admin_Notice::add( '<p><strong>' . __( 'Settings saved', 'learnpress' ) . '</strong></p>' );
+
+		wp_redirect( admin_url( 'options-general.php?page=learn_press_settings&tab=' . $current_tab . $section . '&settings-updated=true' ) );
+		exit();
+	}
 }

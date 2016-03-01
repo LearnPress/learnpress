@@ -13,9 +13,13 @@ $comment_heading = apply_filters( 'learn_press_order_comment_heading', __( 'Addi
 
 ?>
 
-<?php if ( $comment_heading ) { ?>
+<div class="learn-press-checkout-comment">
 
-	<h3 class="learn-press-order-comment-heading"><?php echo $comment_heading; ?></h3>
+	<?php if ( $comment_heading ) { ?>
 
-<?php } ?>
-<textarea name="order_comments"></textarea>
+		<h3 class="learn-press-order-comment-heading"><?php echo $comment_heading; ?></h3>
+
+	<?php } ?>
+	<textarea name="order_comments"></textarea>
+
+</div>

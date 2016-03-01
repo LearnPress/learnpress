@@ -539,7 +539,7 @@ class LP_Abstract_User {
 				'total' => $total
 			);
 			$args['total'] = $total;
-		}else{
+		} else {
 			$args['total'] = $quizzes[$key]['total'];
 		}
 
@@ -613,8 +613,8 @@ class LP_Abstract_User {
 
 		// if user cannot enroll by course settings above, check order
 		if ( !$enrollable && ( $order_id = $this->has_purchased_course( $course_id ) ) ) {
-			$order      = LP_Order::instance( $order_id );
-			$enrollable = !$this->has_enrolled_course( $course_id ) && $order && $order->has_status( 'completed' );
+			$order = LP_Order::instance( $order_id );
+			$enrollable = !$this->has_enrolled_course( $course_id ) && ( $order && $order->has_status( 'completed' ) );
 		}
 		return apply_filters( 'learn_press_user_can_enroll_course', $enrollable, $this, $course_id );
 	}
@@ -722,11 +722,11 @@ class LP_Abstract_User {
 		return apply_filters( 'learn_press_user_can_finish_course', $return, $course_id, $this->id );
 	}
 
-	function is_course_status( $course_id, $statuses ){
+	function is_course_status( $course_id, $statuses ) {
 		$status = $this->get_course_status( $course_id );
-		if( is_array( $statuses ) ){
+		if ( is_array( $statuses ) ) {
 			return in_array( $status, $statuses );
-		}elseif( is_string( $statuses ) ){
+		} elseif ( is_string( $statuses ) ) {
 			return $statuses == $status;
 		}
 		return false;
@@ -1056,8 +1056,11 @@ class LP_Abstract_User {
 	 * @return bool
 	 */
 	function has_purchased_course( $course_id ) {
-		$order = $this->get_course_order( $course_id, 'object' );
-		$purchased = $order && $order->has_status( array( 'processing', 'completed' ) );
+		$purchased = false;
+		$order     = $this->get_course_order( $course_id, 'object' );
+		if ( $order && $order->has_status( array( 'processing', 'completed' ) ) ) {
+			$purchased = $order->id;
+		}
 		return apply_filters( 'learn_press_user_has_purchased_course', $purchased, $course_id, $this->id, $order ? $order->id : 0 );
 	}
 

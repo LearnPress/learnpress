@@ -32,9 +32,9 @@ global $post;
 			<div class="user-ip-address">
 				<?php echo $order->user_ip_address; ?>
 			</div>
-			<?php if ( $title = apply_filters( 'learn_press_display_payment_method_title', $order->get_payment_method_title(), $order->payment_method ) ) { ?>
+			<?php if ( $title = $order->get_payment_method_title() ) { ?>
 				<div class="payment-method-title">
-					<?php echo sprintf( __( 'Pay via <strong>%s</strong>', 'learnpress' ), $title ); ?>
+					<?php echo $order->order_total == 0 ? $title : sprintf( __( 'Pay via <strong>%s</strong>', 'learnpress' ), $title ); ?>
 				</div>
 			<?php } ?>
 		</div>
@@ -42,7 +42,6 @@ global $post;
 	<br />
 
 	<h3><?php _e( 'Order Items', 'learnpress' ); ?></h3>
-
 	<div class="order-items">
 		<table>
 			<thead>

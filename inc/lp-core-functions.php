@@ -2229,6 +2229,9 @@ function learn_press_get_log_file_path( $handle ) {
 }
 
 function learn_press_front_scripts() {
+	if( is_admin() ){
+		return;
+	}
 	$js = array(
 		'ajax'        => admin_url( 'admin-ajax.php' ),
 		'plugin_url'  => LP()->plugin_url(),

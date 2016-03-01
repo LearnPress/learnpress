@@ -30,7 +30,7 @@ if ( !class_exists( 'LP_Admin' ) ) {
 		 */
 		function plugin_js_settings() {
 			static $did = false;
-			if ( $did ) return;
+			if ( $did || !is_admin() ) return;
 			$js = array(
 				'ajax'       => admin_url( 'admin-ajax.php' ),
 				'plugin_url' => learn_press_plugin_url(),
