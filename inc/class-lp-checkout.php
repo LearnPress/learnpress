@@ -159,11 +159,14 @@ class LP_Checkout {
 	/**
 	 * Process checkout
 	 *
+	 * @param $from_request bool
+	 *
+	 * @return array|mixed|void
 	 * @throws Exception
 	 */
-	function process_checkout() {
+	function process_checkout( $from_request = true ) {
 		try {
-			if ( strtolower( $_SERVER['REQUEST_METHOD'] ) != 'post' ) {
+			if ( $from_request && strtolower( $_SERVER['REQUEST_METHOD'] ) != 'post' ) {
 				return;
 			}
 
@@ -280,7 +283,7 @@ class LP_Checkout {
 	 */
 	static function instance() {
 		if ( empty( self::$_instance ) ) {
-			self::$_instance = new self();
+			self::$_instance = new LP_Checkout();
 		}
 		return self::$_instance;
 	}
