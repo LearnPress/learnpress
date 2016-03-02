@@ -412,6 +412,16 @@ CREATE TABLE {$wpdb->prefix}learnpress_user_quizzes (
   quiz_id bigint(11) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (user_quiz_id)
 ) $collate;
+CREATE TABLE {$wpdb->prefix}learnpress_user_lessons (
+  `user_lesson_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `end_time` datetime DEFAULT NULL,
+  `status` varchar(20) DEFAULT NULL,
+  `user_id` int(11) unsigned NOT NULL,
+  `lesson_id` int(11) unsigned NOT NULL,
+  `course_id` int(11) DEFAULT NULL,
+  `start_time` datetime DEFAULT NULL,
+  PRIMARY KEY (`user_lesson_id`)
+)
 ";
 	}
 }
