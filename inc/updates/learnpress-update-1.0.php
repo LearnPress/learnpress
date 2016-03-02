@@ -99,6 +99,13 @@ class LP_Upgrade_10 {
 		return preg_match( '!^learn_press_!', $admin_page );
 	}
 
+	/**
+	 * Any value is null, empty, false, 'no', 'off' consider is false
+	 *
+	 * @param $value
+	 *
+	 * @return bool
+	 */
 	private function _is_false_value( $value ) {
 		if ( is_numeric( $value ) ) {
 			return $value == 0;
@@ -108,6 +115,14 @@ class LP_Upgrade_10 {
 		return !!$value;
 	}
 
+	/**
+	 * Converts old curriculum to new
+	 *
+	 * @param $old_id
+	 * @param $new_id
+	 *
+	 * @return array
+	 */
 	private function _create_curriculum( $old_id, $new_id ) {
 		global $wpdb;
 		$curriculum    = get_post_meta( $old_id, '_lpr_course_lesson_quiz', true );
@@ -166,6 +181,12 @@ class LP_Upgrade_10 {
 		return $section_items;
 	}
 
+	/**
+	 * Converts old course meta to new
+	 *
+	 * @param $old_id
+	 * @param $new_id
+	 */
 	private function _create_course_meta( $old_id, $new_id ) {
 		$keys        = array(
 			'_lpr_course_duration'           => '_lp_duration',
@@ -182,6 +203,7 @@ class LP_Upgrade_10 {
 			$new_key   = $keys[$meta['meta_key']];
 			$new_value = $meta['meta_value'];
 			switch ( $new_key ) {
+				//
 				case '_lp_payment':
 					if ( $new_value == 'free' ) {
 						$new_value = 'no';
@@ -699,9 +721,13 @@ class LP_Upgrade_10 {
 		remove_role( 'lpr_teacher' );
 	}
 
+	private function _update_user_lessons(){
+
+	}
+
 	function do_upgrade() {
 		global $wpdb;
-		// start a transaction so we can rollback all as begin
+		// start a transaction so we can rollback all as begin if there is an error
 		$wpdb->query( "START TRANSACTION;" );
 		try {
 			// update courses

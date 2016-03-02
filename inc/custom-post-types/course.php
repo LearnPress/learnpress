@@ -31,6 +31,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			add_filter( 'posts_join_paged', array( $this, 'posts_join_paged' ) );
 			add_filter( 'posts_where_paged', array( $this, 'posts_where_paged' ) );
 			add_filter( 'posts_orderby', array( $this, 'posts_orderby' ) );
+			add_action( 'admin_head', array( __CLASS__, 'print_js_template' ) );
 
 			parent::__construct();
 		}

@@ -21,7 +21,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 			add_action( 'admin_head', array( $this, 'enqueue_script' ) );
 			add_filter( 'manage_lp_quiz_posts_columns', array( $this, 'columns_head' ) );
 			add_action( 'manage_lp_quiz_posts_custom_column', array( $this, 'columns_content' ), 10, 2 );
-			add_action( 'admin_head', array( $this, 'print_js_template' ) );
+			add_action( 'admin_head', array( __CLASS__, 'print_js_template' ) );
 			add_action( 'before_delete_post', array( $this, 'delete_quiz_questions' ) );
 			add_filter( 'posts_fields', array( $this, 'posts_fields' ) );
 			add_filter( 'posts_join_paged', array( $this, 'posts_join_paged' ) );
