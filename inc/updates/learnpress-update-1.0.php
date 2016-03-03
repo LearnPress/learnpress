@@ -488,6 +488,7 @@ class LP_Upgrade_10 {
 		if ( !$orders ) {
 			return;
 		}
+
 		foreach ( $orders as $order ) {
 			$order_data              = (array) $order;
 			$order_data['post_type'] = 'lp_order';
@@ -655,7 +656,7 @@ class LP_Upgrade_10 {
 								'start_time' => $lesson_start_time ? date( 'Y-m-d H:i:s', $lesson_start_time ) : '0000-00-00 00:00:00',
 								'end_time'   => $lesson_end_time ? date( 'Y-m-d H:i:s', $lesson_end_time ) : '0000-00-00 00:00:00',
 								'status'     => $lesson_end_time ? 'completed' : 'started',
-								'lesson_id'  => !empty( self::$lessons_map[$old_course_id] ) ? self::$lessons_map[$old_course_id] : ''
+								'lesson_id'  => !empty( self::$lessons_map[$old_lesson_id] ) ? self::$lessons_map[$old_lesson_id] : ''
 							)
 						);
 					}
