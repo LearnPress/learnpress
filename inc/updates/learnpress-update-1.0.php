@@ -50,6 +50,11 @@ class LP_Upgrade_10 {
 	/**
 	 * @var array
 	 */
+	public static $lessons_map = array();
+
+	/**
+	 * @var array
+	 */
 	public static $questions_map = array();
 
 	/**
@@ -66,8 +71,8 @@ class LP_Upgrade_10 {
 	private function _prevent_access_admin() {
 		if ( ( $this->check_post_types() ) ) {
 			//if ( !( !empty( $_REQUEST['page'] && $_REQUEST['page'] == 'learn_press_upgrade_10' ) ) ) {
-				wp_redirect( admin_url( 'index.php' ) );
-				exit;
+			wp_redirect( admin_url( 'index.php' ) );
+			exit;
 			//}
 		}
 	}
@@ -171,6 +176,7 @@ class LP_Upgrade_10 {
 								self::$quizzes_map[$obj_id] = $new_obj_id;
 							} elseif ( $obj['post_type'] == 'lp_lesson' ) {
 								$this->_create_lesson_meta( $obj_id, $new_obj_id );
+								self::$lessons_map[$obj_id] = $new_obj_id;
 							}
 						}
 						$section_items[$obj_id] = $return;
@@ -446,7 +452,7 @@ class LP_Upgrade_10 {
 			WHERE pm.meta_key in ('" . join( "','", $keys ) . "')
 			AND pm.post_id = %d
 		", absint( $post_id ) );
-		$metas = (array)$wpdb->get_results( $query, ARRAY_A );
+		$metas = (array) $wpdb->get_results( $query, ARRAY_A );
 		return $metas;
 	}
 
@@ -579,7 +585,8 @@ class LP_Upgrade_10 {
 			'_lpr_quiz_questions',
 			'_lpr_quiz_current_question',
 			'_lpr_quiz_question_answer',
-			'_lpr_quiz_completed'
+			'_lpr_quiz_completed',
+			'_lpr_lesson_completed'
 		);
 		$fields         = array();
 		$join           = array();
@@ -626,6 +633,29 @@ class LP_Upgrade_10 {
 								'end_time'   => $course_end_time ? date( 'Y-m-d H:i:s', $course_end_time ) : '',
 								'status'     => $course_end_time ? 'completed' : 'started',
 								'order_id'   => !empty( self::$orders_map[$course_order] ) ? self::$orders_map[$course_order] : ''
+							)
+						);
+					}
+				}
+			}
+			if ( !empty( $user_meta->lesson_completed ) ) {
+				foreach ( $user_meta->lesson_completed as $old_course_id => $_lessons ) {
+					$lesson_start_time = null;
+					$lesson_end_time   = null;
+					if ( !empty( $user_meta->course_time ) && !empty( $user_meta->course_time[$old_course_id] ) ) {
+						$lesson_start_time = !empty( $user_meta->course_time[$old_course_id]['start'] ) ? $user_meta->course_time[$old_course_id]['start'] : '';
+						$lesson_end_time   = !empty( $user_meta->course_time[$old_course_id]['end'] ) ? $user_meta->course_time[$old_course_id]['end'] : '';
+					}
+					if ( $_lessons ) foreach ( $_lessons as $old_lesson_id ) {
+						$wpdb->insert(
+							$wpdb->prefix . 'learnpress_user_lessons',
+							array(
+								'user_id'    => $user_meta->user_id,
+								'course_id'  => $new_course_id,
+								'start_time' => $lesson_start_time ? date( 'Y-m-d H:i:s', $lesson_start_time ) : '0000-00-00 00:00:00',
+								'end_time'   => $lesson_end_time ? date( 'Y-m-d H:i:s', $lesson_end_time ) : '0000-00-00 00:00:00',
+								'status'     => $lesson_end_time ? 'completed' : 'started',
+								'lesson_id'  => !empty( self::$lessons_map[$old_course_id] ) ? self::$lessons_map[$old_course_id] : ''
 							)
 						);
 					}
@@ -721,7 +751,7 @@ class LP_Upgrade_10 {
 		remove_role( 'lpr_teacher' );
 	}
 
-	private function _update_user_lessons(){
+	private function _update_user_lessons() {
 
 	}
 
