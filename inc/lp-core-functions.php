@@ -1817,7 +1817,6 @@ function learn_press_pre_get_posts( $q ) {
 	}
 
 	if ( $q->is_page() && 'page' == get_option( 'show_on_front' ) && $q->get( 'page_id' ) == learn_press_get_page_id( 'courses' ) && learn_press_get_page_id( 'courses' ) ) {
-		echo learn_press_get_page_id( 'courses' ), ',', $q->get( 'page_id' );
 		$q->set( 'post_type', LP()->course_post_type );
 		$q->set( 'page_id', '' );
 		if ( isset( $q->query['paged'] ) ) {

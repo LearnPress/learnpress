@@ -37,7 +37,7 @@ class LP_Shortcodes {
 			global $post, $wp_query, $wp;
 			$page_id = !empty( $wp_query->queried_object_id ) ?
 				$wp_query->queried_object_id :
-				( !empty( $wp_query->query_vars['page_id'] ) ? $wp_query->query_vars['page_id'] : 0 );
+				( !empty( $wp_query->query_vars['page_id'] ) ? $wp_query->query_vars['page_id'] : -1 );
 			if ( $page_id == learn_press_get_page_id( 'checkout' ) ) {
 				if ( !preg_match( '/\[learn_press_checkout\s?(.*)\]/', $post->post_content ) ) {
 					$post->post_content .= '[learn_press_checkout]';
