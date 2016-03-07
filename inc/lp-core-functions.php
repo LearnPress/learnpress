@@ -1152,7 +1152,7 @@ function learn_press_get_own_courses( $user_id ) {
 add_filter( 'template_include', 'learn_press_template_loader' );
 function learn_press_template_loader( $template ) {
 	$file = '';
-
+	$theme_template = learn_press_template_path();
 	if ( ( $page_id = learn_press_get_page_id( 'taken_course_confirm' ) ) && is_page( $page_id ) ) {
 		if ( !learn_press_user_can_view_order( !empty( $_REQUEST['order_id'] ) ? $_REQUEST['order_id'] : 0 ) ) {
 			learn_press_404_page();
@@ -1167,17 +1167,17 @@ function learn_press_template_loader( $template ) {
 		if ( is_post_type_archive( LP()->course_post_type ) || ( ( $page_id = learn_press_get_page_id( 'courses' ) ) && is_page( $page_id ) ) || ( is_tax( 'course_category' ) ) ) {
 			$file   = 'archive-course.php';
 			$find[] = $file;
-			$find[] = 'learnpress/' . $file;
+			$find[] = "{$theme_template}/{$file}";
 		} else {
 			if ( get_post_type() == LP()->course_post_type ) {
 				$file   = 'single-course.php';
 				$find[] = $file;
-				$find[] = 'learnpress/' . $file;
+				$find[] = "{$theme_template}/{$file}";
 			} else {
 				if ( get_post_type() == LP()->quiz_post_type ) {
 					$file   = 'single-quiz.php';
 					$find[] = $file;
-					$find[] = 'learnpress/' . $file;
+					$find[] = "{$theme_template}/{$file}";
 				}
 			}
 		}

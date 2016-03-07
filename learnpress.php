@@ -426,11 +426,13 @@ if ( !class_exists( 'LearnPress' ) ) {
 		/**
 		 * Get the template folder in the theme.
 		 *
+		 * @param bool
+		 *
 		 * @access public
 		 * @return string
 		 */
-		public function template_path() {
-			return apply_filters( 'learn_press_template_path', 'learnpress/' );
+		public function template_path( $slash = false ) {
+			return apply_filters( 'learn_press_template_path', 'learnpress' ) . ($slash ? '/' : '');
 		}
 
 		/**
