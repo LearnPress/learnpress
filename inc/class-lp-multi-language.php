@@ -17,6 +17,7 @@ if ( !class_exists( 'LP_Multi_Language' ) ) {
 
 			$plugin = 'learnpress/learnpress.php';
 			add_filter( "plugin_action_links_$plugin", array( __CLASS__, 'plugin_links' ) );
+
 		}
 
 		/**
@@ -30,10 +31,10 @@ if ( !class_exists( 'LP_Multi_Language' ) ) {
 			$locale        = apply_filters( 'plugin_locale', get_locale(), $text_domain );
 
 			if ( is_admin() ) {
-				load_textdomain( $text_domain, WP_LANG_DIR . '/' . $plugin_folder . "/{$text_domain}-admin-{$locale}.mo" );
-				load_textdomain( $text_domain, WP_LANG_DIR . '/' . $plugin_folder . "/learnpress-admin-{$locale}.mo" );
+				load_textdomain( $text_domain, WP_LANG_DIR . "/{$plugin_folder}/{$plugin_folder}-admin-{$locale}.mo" );
+				load_textdomain( $text_domain, WP_LANG_DIR . "/plugins/{$plugin_folder}-admin-{$locale}.mo" );
 			}
-			load_textdomain( $text_domain, WP_LANG_DIR . '/' . $plugin_folder . "/learnpress-{$locale}.mo" );
+			load_textdomain( $text_domain, WP_LANG_DIR . "/{$plugin_folder}/{$plugin_folder}-{$locale}.mo" );
 			load_plugin_textdomain( $text_domain, false, plugin_basename( LP_PLUGIN_PATH ) . "/languages" );
 		}
 

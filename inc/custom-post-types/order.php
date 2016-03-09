@@ -54,7 +54,9 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 
 		function delete_order_items() {
 			global $wpdb, $post;
-
+			if ( !$post ) {
+				return;
+			}
 			// get order items
 			$query = $wpdb->prepare( "
 				SELECT order_item_id FROM {$wpdb->prefix}learnpress_order_items

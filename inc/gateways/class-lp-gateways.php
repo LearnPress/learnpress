@@ -31,7 +31,6 @@ class LP_Gateways {
 			$gateways = apply_filters( 'learn_press_payment_method', $gateways );
 			if ( $gateways ) {
 				foreach ( $gateways as $k => $gateway ) {
-
 					if ( is_string( $gateway ) && class_exists( $gateway ) ) {
 						$gateway = new $gateway();
 					}

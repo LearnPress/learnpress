@@ -560,8 +560,8 @@
 					type = $button.data('type'),
 					$form = null;
 				switch (action) {
-					case 'add-quiz':
-					case 'add-lesson':
+					case 'add-lp_quiz':
+					case 'add-lp_lesson':
 						this.showFormItems(type, action, $button);
 						break;
 					default:

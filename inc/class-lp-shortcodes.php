@@ -37,7 +37,7 @@ class LP_Shortcodes {
 			global $post, $wp_query, $wp;
 			$page_id = !empty( $wp_query->queried_object_id ) ?
 				$wp_query->queried_object_id :
-				( !empty( $wp_query->query_vars['page_id'] ) ? $wp_query->query_vars['page_id'] : -1 );
+				( !empty( $wp_query->query_vars['page_id'] ) ? $wp_query->query_vars['page_id'] : - 1 );
 			if ( $page_id == learn_press_get_page_id( 'checkout' ) ) {
 				if ( !preg_match( '/\[learn_press_checkout\s?(.*)\]/', $post->post_content ) ) {
 					$post->post_content .= '[learn_press_checkout]';
@@ -170,17 +170,33 @@ class LP_Shortcodes {
 		global $current_user;
 
 		$user = new WP_User( $current_user->ID );
+
+		$return = array(
+			'error' => false
+		);
+
 		if ( in_array( LP()->teacher_role, $user->roles ) ) {
-			return __( "You are a teacher now", 'learnpress' );
+			$return['message'] = __( "You are a teacher now", 'learnpress' );
+			$return['error']   = true;
+			$return['code']    = 1;
 		}
 
 		if ( !is_user_logged_in() ) {
-			return __( "Please login to fill out this form", 'learnpress' );
+			$return['message'] = __( "Please login to fill out this form", 'learnpress' );
+			$return['error']   = true;
+			$return['code']    = 2;
 		}
 
 		if ( !empty( $_REQUEST['become-a-teacher-send'] ) ) {
-			return __( 'Your request has been sent! We will get in touch with you soon!', 'learnpress' );
+			$return['message'] = __( 'Your request has been sent! We will get in touch with you soon!', 'learnpress' );
+			$return['error']   = true;
+			$return['code']    = 3;
 		}
+
+		if ( !apply_filters( 'learn_press_become_a_teacher_display_form', !$return['error'], $return ) ) {
+			return $return['message'];
+		}
+
 		get_currentuserinfo();
 		$atts   = shortcode_atts(
 			array(
