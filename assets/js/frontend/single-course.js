@@ -44,22 +44,34 @@ if( typeof LearnPress == 'undefined' ){
 			e.preventDefault();
 			this.loadLesson( $(e.target).attr('href') );
 		},
-		loadLesson: function( permalink ){
+		loadLesson: function( permalink, args ){
 			LearnPress.MessageBox.blockUI();
 			LearnPress.setUrl( permalink );
+
+			args = $.extend({
+				success: function () {
+				},
+				error  : function () {
+				}
+			}, args || {})
+
 			$.ajax({
 				url    : permalink,
 				success: function (response) {
-					var $html = $(response),
-						$newLesson = $html.find('#learn-press-course-lesson-summary'),
-						$newHeading = $html.find('#learn-press-course-lesson-heading');
+					var ret = true;
+					$.isFunction(args.success) && ( ret = args.success.call(this, response) );
+					if( ret === true ) {
+						var $html = $(response),
+							$newLesson = $html.find('#learn-press-course-lesson-summary'),
+							$newHeading = $html.find('#learn-press-course-lesson-heading');
 
-					$('title').html($html.filter('title').text());
-					$('#learn-press-course-description-heading, #learn-press-course-lesson-heading').replaceWith($newHeading)
-					$('#learn-press-course-description, #learn-press-course-lesson-summary').replaceWith($newLesson);
+						$('title').html($html.filter('title').text());
+						$('#learn-press-course-description-heading, #learn-press-course-lesson-heading').replaceWith($newHeading)
+						$('#learn-press-course-description, #learn-press-course-lesson-summary').replaceWith($newLesson);
 
-					LearnPress.toElement( '#learn-press-course-lesson-heading' );
-					LearnPress.MessageBox.hide();
+						LearnPress.toElement('#learn-press-course-lesson-heading');
+						LearnPress.MessageBox.hide();
+					}
 				},
 				error: function(){
 					// TODO: handle the error here
