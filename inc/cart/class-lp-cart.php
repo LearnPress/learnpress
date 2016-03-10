@@ -199,17 +199,6 @@ class LP_Cart {
 	/**
 	 * Get all items from cart
 	 *
-	 * @deprecated
-	 * @return mixed
-	 */
-	function get_products() {
-		_deprecated_function( __CLASS__ . '->' . __FUNCTION__, '1.0', __CLASS__ . '->get_items' );
-		return $this->get_items();
-	}
-
-	/**
-	 * Get all items from cart
-	 *
 	 * @return mixed
 	 */
 	function get_items() {

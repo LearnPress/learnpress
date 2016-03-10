@@ -614,10 +614,6 @@ if ( !class_exists( 'LearnPress' ) ) {
  * @since  1.0
  * @author thimpress
  */
-function LearnPress() {
-	_deprecated_function( __FUNCTION__ . '()', '1.0', 'LP()' );
-	return LearnPress::instance();
-}
 
 function LP() {
 	static $learnpress = false;

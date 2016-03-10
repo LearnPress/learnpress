@@ -395,7 +395,7 @@ function learn_press_generate_transaction_object() {
 	$cart = learn_press_get_cart();
 
 
-	if ( $products = $cart->get_products() ) {
+	if ( $products = $cart->get_items() ) {
 		foreach ( $products as $key => $product ) {
 			$products[$key]['product_base_price'] = floatval( learn_press_get_course_price( $product['id'] ) );
 			$products[$key]['product_subtotal']   = floatval( learn_press_get_course_price( $product['id'] ) * $product['quantity'] );
@@ -429,7 +429,7 @@ function learn_press_generate_transaction_object() {
  */
 function learn_press_cart_order_instructor() {
 	$cart = learn_press_get_cart();
-	if ( $products = $cart->get_products() ) {
+	if ( $products = $cart->get_items() ) {
 		foreach ( $products as $key => $product ) {
 			$post = get_post( $product['id'] );
 			if ( $post && !empty( $post->ID ) ) {

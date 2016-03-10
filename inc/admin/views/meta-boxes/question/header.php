@@ -4,7 +4,7 @@ $post_id = $this->get( 'ID' );
 settype( $args, 'array' );
 $is_collapse = array_key_exists( 'toggle', $args ) && !$args['toggle'];
 
-$questions = lpr_get_question_types();
+$questions = learn_press_question_types();
 ?>
 <div class="learn-press-question learn-press-question-<?php echo preg_replace( '!_!', '-', $this->get_type() ); ?>" data-id="<?php echo $this->id; ?>">
 	<div class="question-head">

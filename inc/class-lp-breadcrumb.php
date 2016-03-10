@@ -63,9 +63,9 @@ class LP_Breadcrumb {
 			'is_404',
 			'is_attachment',
 			'is_single',
-			'is_course_category',
-			'is_course_tag',
-			'is_courses',
+			'learn_press_is_course_category',
+			'learn_press_is_course_tag',
+			'learn_press_is_courses',
 			'is_page',
 			'is_post_type_archive',
 			'is_category',
@@ -77,8 +77,12 @@ class LP_Breadcrumb {
 
 		if ( ( !is_front_page() && !( is_post_type_archive() && get_option( 'page_on_front' ) == learn_press_get_page_id( 'courses' ) ) ) || is_paged() ) {
 			foreach ( $conditionals as $conditional ) {
-				if ( call_user_func( $conditional ) ) {
-					call_user_func( array( $this, 'add_crumbs_' . substr( $conditional, 3 ) ) );
+				if ( is_callable( $conditional ) && call_user_func( $conditional ) ) {
+					$conditional = preg_replace( '/^learn_press_/', '', $conditional );
+					$conditional = preg_replace( '/^is_/', '', $conditional );
+					if( is_callable( array( $this, 'add_crumbs_' . $conditional ) ) ) {
+						call_user_func( array( $this, 'add_crumbs_' . $conditional ) );
+					}
 					break;
 				}
 			}
