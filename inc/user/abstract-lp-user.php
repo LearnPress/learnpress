@@ -613,7 +613,7 @@ class LP_Abstract_User {
 
 		// if user cannot enroll by course settings above, check order
 		if ( !$enrollable && ( $order_id = $this->has_purchased_course( $course_id ) ) ) {
-			$order = LP_Order::instance( $order_id );
+			$order      = LP_Order::instance( $order_id );
 			$enrollable = !$this->has_enrolled_course( $course_id ) && ( $order && $order->has_status( 'completed' ) );
 		}
 		return apply_filters( 'learn_press_user_can_enroll_course', $enrollable, $this, $course_id );
@@ -1154,8 +1154,11 @@ class LP_Abstract_User {
 			return true;
 		}
 		global $wpdb;
-		$items = LP_Course::get_course( $course_id )->get_curriculum_items( array( 'field' => 'ID' ) );
-
+		$course = LP_Course::get_course( $course_id );
+		$items  = null;
+		if ( $course ) {
+			$items = $course->get_curriculum_items( array( 'field' => 'ID' ) );
+		}
 		if ( $items ) {
 			// How to make this simpler, LOL?
 			$query = $wpdb->prepare( "
