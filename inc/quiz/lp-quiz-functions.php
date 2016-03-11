@@ -115,30 +115,12 @@ function learn_press_get_quiz_id( $id ) {
  * @return  boolean
  */
 function learn_press_user_has_completed_quiz( $user_id = null, $quiz_id = null ) {
-	_deprecated_function( __FUNCTION__, '1.0', 'LP_User() -> has_completed_quiz' );
+	//_deprecated_function( __FUNCTION__, '1.0', 'LP_User() -> has_completed_quiz' );
 
 	if ( $user = learn_press_get_user( $user_id ) ) {
 		return $user->has_completed_quiz( $quiz_id );
 	}
 	return false;
-	$completed = false;
-	// if $user_id is not passed, try to get it from current user
-	if ( !$user_id ) {
-		$user_id = learn_press_get_current_user_id();
-		if ( !$user_id ) $completed = false;
-	}
-
-	// if $quiz_id is not passed, try to get it from current quiz
-	$quiz_id = learn_press_get_quiz_id( $quiz_id );
-
-	$quiz_completed = get_user_meta( $user_id, '_lpr_quiz_completed', true );
-	$retake         = get_user_meta( $user_id, '_lpr_quiz_retake', true );
-
-	// if user can not retake a quiz or has already completed a quiz
-	if ( ( !$retake || !in_array( $quiz_id, $retake ) ) && $quiz_completed && array_key_exists( $quiz_id, $quiz_completed ) ) {
-		$completed = true;
-	}
-	return apply_filters( 'learn_press_user_has_completed_quiz', $completed, $user_id, $quiz_id );
 }
 
 /**

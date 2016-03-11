@@ -225,7 +225,7 @@ function learn_press_get_course_curriculum( $course_id ) {
  * @return boolean
  */
 function learn_press_is_enrolled_course( $course_id = null, $user_id = null ) {
-	_deprecated_function( __FUNCTION__, '1.0', 'LP_User -> has_enrolled_course');
+	//_deprecated_function( __FUNCTION__, '1.0', 'LP_User -> has_enrolled_course');
 	if( $course = LP_Course::get_course( $course_id ) && $user = learn_press_get_user( $user_id ) ){
 		return $user->has_enrolled_course( $course_id );
 	}
