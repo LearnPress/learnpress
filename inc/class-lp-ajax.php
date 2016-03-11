@@ -72,6 +72,9 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			$callback = array( __CLASS__, '_request_' . $method );
 			if ( is_callable( $callback ) ) {
 				$result = call_user_func( $callback );
+			}elseif( has_action( 'learn_press_ajax_handler_' . $method ) ){
+				do_action( 'learn_press_ajax_handler_' . $method );
+				return;
 			}
 			learn_press_send_json( $result );
 		}

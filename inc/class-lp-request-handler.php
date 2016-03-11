@@ -28,7 +28,7 @@ class LP_Request_Handler {
 	 */
 	static function process_request() {
 		if ( !empty( $_REQUEST ) ) foreach ( $_REQUEST as $key => $value ) {
-			do_action( 'request_handler_' . $key, $value, $_REQUEST );
+			do_action( 'learn_press_request_handler_' . $key, $value, $_REQUEST );
 		}
 	}
 
@@ -40,7 +40,13 @@ class LP_Request_Handler {
 	 * @param int $priority
 	 */
 	static function register( $action, $function, $priority = 5 ) {
-		add_action( 'request_handler_' . $action, $function, $priority );
+		add_action( 'learn_press_request_handler_' . $action, $function, $priority );
+	}
+
+	static function register_ajax($action, $function, $priority = 5){
+		//$action, $function, $priority = 5
+		add_action( 'learn_press_ajax_handler_' . $action, $function, $priority );
+
 	}
 }
 

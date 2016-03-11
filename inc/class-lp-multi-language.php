@@ -55,4 +55,23 @@ if ( !class_exists( 'LP_Multi_Language' ) ) {
 		}
 	}
 }
+
+/**
+ * Load plugin text domain
+ *
+ * @param        $path
+ * @param string $text_domain
+ */
+function learn_press_load_plugin_text_domain( $path, $text_domain = 'learnpress' ){
+	$plugin_folder = basename( $path );
+	$locale        = apply_filters( 'plugin_locale', get_locale(), $text_domain );
+
+	if ( is_admin() ) {
+		load_textdomain( $text_domain, WP_LANG_DIR . "/{$plugin_folder}/{$plugin_folder}-admin-{$locale}.mo" );
+		load_textdomain( $text_domain, WP_LANG_DIR . "/plugins/{$plugin_folder}-admin-{$locale}.mo" );
+	}
+	load_textdomain( $text_domain, WP_LANG_DIR . "/{$plugin_folder}/{$plugin_folder}-{$locale}.mo" );
+	load_plugin_textdomain( $text_domain, false, plugin_basename( $path ) . "/languages" );
+}
+
 LP_Multi_Language::init();

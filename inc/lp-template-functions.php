@@ -1110,9 +1110,11 @@ function learn_press_locate_template( $template_name, $template_path = '', $defa
  * Returns the name of folder contains template files in theme
  *
  * @param bool
+ *
+ * @return string
  */
 function learn_press_template_path( $slash = false ) {
-	return LP()->template_path( $slash );
+	return apply_filters( 'learn_press_template_path', 'learnpress' ) . ($slash ? '/' : '');
 }
 
 if ( !function_exists( 'learn_press_single_quiz_questions_nav' ) ) {

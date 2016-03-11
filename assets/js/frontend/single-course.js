@@ -38,6 +38,16 @@ if( typeof LearnPress == 'undefined' ){
 			_.bindAll( this, '_sanitizeProgress' )
 			this.$doc = $(document);
 			this.$body = $(document.body);
+
+			LearnPress.Hook.addAction( 'learn_press_before_load_lesson', function( permalink ){
+				LearnPress.MessageBox.blockUI();
+				LearnPress.setUrl( permalink );
+			});
+			LearnPress.Hook.addAction( 'learn_press_load_lesson_completed', function( permalink ){
+				LearnPress.toElement('#learn-press-course-lesson-heading');
+				LearnPress.MessageBox.hide();
+			});
+
 			this._sanitizeProgress();
 		},
 		_loadLesson: function(e){
@@ -45,9 +55,8 @@ if( typeof LearnPress == 'undefined' ){
 			this.loadLesson( $(e.target).attr('href') );
 		},
 		loadLesson: function( permalink, args ){
-			LearnPress.MessageBox.blockUI();
-			LearnPress.setUrl( permalink );
-
+			var that = this;
+			LearnPress.Hook.doAction( 'learn_press_before_load_lesson', permalink, this );
 			args = $.extend({
 				success: function () {
 				},
@@ -69,8 +78,7 @@ if( typeof LearnPress == 'undefined' ){
 						$('#learn-press-course-description-heading, #learn-press-course-lesson-heading').replaceWith($newHeading)
 						$('#learn-press-course-description, #learn-press-course-lesson-summary').replaceWith($newLesson);
 
-						LearnPress.toElement('#learn-press-course-lesson-heading');
-						LearnPress.MessageBox.hide();
+						LearnPress.Hook.doAction( 'learn_press_load_lesson_completed', permalink, that );
 					}
 				},
 				error: function(){
