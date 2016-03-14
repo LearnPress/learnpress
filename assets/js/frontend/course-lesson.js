@@ -12,22 +12,21 @@
 		},
 		load      : function (callback) {
 			var that = this;
-
+			//console.log('learn_press_course_lesson_content_loaded')
 			$.ajax({
 				url     : this.url(),
 				dataType: 'html',
 				success : function (response) {
 					var $html = $(response);
-					if ($(document).triggerHandler('learn_press_course_lesson_content_loaded', that) !== false) {
+					if (LearnPress.Hook.applyFilters('learn_press_update_lesson_content', $html, that) !== false) {
 						that.set('content', $html.find('#learn-press-course-lesson'));
-						$(document).trigger('learn_press_course_lesson_content_replaced', that);
+						$(document).trigger('learn_press_course_lesson_content_replaced', $html, that);
 
 						$('.course-item.item-current')
 							.removeClass('item-current');
 						$('.course-item.course-item-' + that.get('id'))
 							.addClass('item-current');
 					}
-
 					$.isFunction(callback) && callback.call(that, response);
 				}
 			})
@@ -58,6 +57,8 @@
 		initialize    : function () {
 			_.bindAll(this, 'updateLesson', 'completeLesson');
 			this.model.on('change', this.updateLesson, this);
+			LearnPress.Hook.doAction('learn_press_before_load_lesson', this)
+
 			if (this.model.get('content')) {
 				this.updateLesson();
 			} else {
@@ -69,7 +70,9 @@
 			var $content = this.model.get('content');
 			this.$el.replaceWith($content);
 			this.setElement($content);
-			LearnPress.setUrl(this.model.get('rootUrl'))
+			LearnPress.setUrl(this.model.get('rootUrl'));
+			LearnPress.Hook.doAction('learn_press_lesson_content_loaded', $content, this);
+
 			//}
 		},
 		completeLesson: function (e) {
@@ -79,7 +82,7 @@
 				if (response && response.result == 'success') {
 					that.$('.complete-lesson-button').replaceWith(response.message);
 					$('.course-item-' + response.id).addClass('item-completed');
-					if(response.course_result){
+					if (response.course_result) {
 						that.updateProgress(response);
 					}
 				}
@@ -87,12 +90,12 @@
 				console.log(response)
 			});
 		},
-		updateProgress: function(data){
+		updateProgress: function (data) {
 			$('.lp-course-progress')
 				.attr({
 					'data-value': data.course_result
 				})
-			if( LearnPress.$Course ){
+			if (LearnPress.$Course) {
 				LearnPress.$Course._sanitizeProgress();
 			}
 		}
@@ -119,7 +122,7 @@
 						rootUrl: $link.attr('href')
 					});
 				that.add(model);
-				if( $li.hasClass( 'item-current' ) ){
+				if ($li.hasClass('item-current')) {
 					that.current = id;
 				}
 			});
@@ -140,7 +143,7 @@
 					$('.course-item.course-item-' + item.get('id'))
 						.addClass('item-current');
 				}
-				if(link){
+				if (link) {
 					item.set('rootUrl', link);
 					item.rootUrl = link;
 				}
@@ -150,13 +153,13 @@
 	});
 
 	$.LP_Course_Item_List_View = Backbone.View.extend({
-		model     : $.LP_Course_Item.Collection,
-		el        : 'body',
-		events    : {
+		model      : $.LP_Course_Item.Collection,
+		el         : 'body',
+		events     : {
 			'click .section-content .course-lesson.course-item': '_loadLesson',
 			'click .course-item-nav a'                         : '_loadLesson'
 		},
-		initialize: function (args) {
+		initialize : function (args) {
 			_.bindAll(this, '_loadLesson');
 			this.model.loadItem(this.model.current);
 		},

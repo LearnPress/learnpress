@@ -15,7 +15,7 @@ if ( !defined( 'ABSPATH' ) ) {
  * Class LP_Admin_Menu
  */
 class LP_Admin_Menu {
-
+	protected $_submenu = null;
 	/**
 	 * LP_Admin_Menu Construct
 	 */
@@ -25,6 +25,20 @@ class LP_Admin_Menu {
 		add_action( 'admin_menu', array( $this, 'notify_new_course' ) );
 		add_action( 'init', array( $this, 'menu_content' ) );
 		add_action( 'init', 'learn_press_admin_update_settings', 1000 );
+
+		// auto include file for admin page
+		// example: slug = learn_press_settings -> file = inc/admin/sub-menus/settings.php
+		$page = !empty ( $_REQUEST['page'] ) ? $_REQUEST['page'] : null;
+		if ( $page ) {
+
+			if ( strpos( $page, 'learn_press_' ) !== false ) {
+				$file = preg_replace( '!^learn_press_!', '', $page );
+				$file = str_replace( '_', '-', $file );
+				if ( file_exists( $file = LP_PLUGIN_PATH . "/inc/admin/sub-menus/{$file}.php" ) ) {
+					$this->_submenu = require_once $file;
+				}
+			}
+		}
 	}
 
 	/**
@@ -49,7 +63,7 @@ class LP_Admin_Menu {
 				__( 'Statistics', 'learnpress' ),
 				$capacity,
 				'learn_press_statistics',
-				'learn_press_statistic_page'
+				array( $this, 'menu_page' )
 			),
 			'settings'   => array(
 				'options-general.php',
@@ -91,20 +105,13 @@ class LP_Admin_Menu {
 		$menu['3.14'][0] .= " <span class='awaiting-mod count-$awaiting_mod'><span class='pending-count'>" . number_format_i18n( $awaiting_mod ) . "</span></span>";
 	}
 
-	function menu_content(){
-		// auto include file for admin page
-		// example: slug = learn_press_settings -> file = inc/admin/sub-menus/settings.php
-		$page = !empty ( $_REQUEST['page'] ) ? $_REQUEST['page'] : null;
-		if ( $page ) {
-
-			if ( strpos( $page, 'learn_press_' ) !== false ) {
-				$file = preg_replace( '!^learn_press_!', '', $page );
-				$file = str_replace( '_', '-', $file );
-				if ( file_exists( $file = LP_PLUGIN_PATH . "/inc/admin/sub-menus/{$file}.php" ) ) {
-					require_once $file;
-				}
-			}
+	function menu_page(){
+		if( $this->_submenu ){
+			$this->_submenu->display();
 		}
+	}
+
+	function menu_content(){
 		if( !function_exists( 'learn_press_admin_update_settings' ) ){
 			remove_action( 'init', 'learn_press_admin_update_settings', 1000 );
 		}

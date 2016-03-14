@@ -52,7 +52,7 @@ if( typeof LearnPress == 'undefined' ){
 		},
 		_loadLesson: function(e){
 			e.preventDefault();
-			this.loadLesson( $(e.target).attr('href') );
+			//this.loadLesson( $(e.target).attr('href') );
 		},
 		loadLesson: function( permalink, args ){
 			var that = this;

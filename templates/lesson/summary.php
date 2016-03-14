@@ -24,7 +24,6 @@ $item_heading = apply_filters( 'learn_press_course_item_content_heading', apply_
 	<h3 class="course-lesson-heading" id="learn-press-course-lesson-heading"><?php echo $item_heading; ?></h3>
 
 <?php } ?>
-
 <div class="course-lesson-summary" id="learn-press-course-lesson-summary">
 
 	<?php do_action( 'learn_press_course_lesson_summary' ); ?>
