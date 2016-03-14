@@ -287,7 +287,7 @@ class LP_Shortcodes {
 		if ( isset( $wp_query->query['user'] ) ) {
 			$user = get_user_by( 'login', urldecode( $wp_query->query['user'] ) );
 		} else {
-			$user = get_user_by( 'id', get_current_user_id() );
+			$user = get_user_by( 'ID', get_current_user_id() );
 		}
 
 		$output = '';
@@ -302,7 +302,7 @@ class LP_Shortcodes {
 			}
 
 		} else {
-			$user = LP_User::get_user( $user->id );
+			$user = LP_User::get_user( $user->ID );
 			$tabs = learn_press_user_profile_tabs( $user );
 			if ( !empty( $wp->query_vars['view'] ) ) {
 				$current = $wp->query_vars['view'];

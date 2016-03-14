@@ -71,7 +71,6 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 		}
 
 		static function save( $post ) {
-			LP_Debug::instance()->add( 'Save quiz ' . $post );
 		}
 
 		/**

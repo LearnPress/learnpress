@@ -82,10 +82,10 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 						'not_found_in_trash' => __( 'No lesson found in Trash', 'learnpress' ),
 					),
 					'public'             => false, // no access directly via lesson permalink url
-					'taxonomies'         => array( 'lesson-tag' ),
-					'publicly_queryable' => true,
+					'taxonomies'         => array( 'lesson_tag' ),
+					'publicly_queryable' => false,
 					'show_ui'            => true,
-					'has_archive'        => true,
+					'has_archive'        => false,
 					'capability_type'    => LP_LESSON_CPT,
 					'map_meta_cap'       => true,
 					'show_in_menu'       => 'learn_press',
@@ -105,7 +105,7 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 				)
 			);
 
-			register_taxonomy( 'lesson-tag', array( LP_LESSON_CPT ),
+			register_taxonomy( 'lesson_tag', array( LP_LESSON_CPT ),
 				array(
 					'labels'            => array(
 						'name'          => __( 'Tag', 'learnpress' ),
@@ -119,7 +119,7 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 					'show_ui'           => true,
 					'show_admin_column' => 'true',
 					'show_in_nav_menus' => true,
-					'rewrite'           => array( 'slug' => 'lesson-tag', 'hierarchical' => true, 'with_front' => false ),
+					'rewrite'           => array( 'slug' => 'lesson_tag', 'hierarchical' => true, 'with_front' => false ),
 				)
 			);
 		}

@@ -83,9 +83,9 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 						'not_found_in_trash' => __( 'No question found in trash', 'learnpress' ),
 					),
 					'public'             => false, // disable access directly via permalink url
-					'publicly_queryable' => true,
+					'publicly_queryable' => false,
 					'show_ui'            => true,
-					'has_archive'        => true,
+					'has_archive'        => false,
 					'capability_type'    => LP_LESSON_CPT,
 					'map_meta_cap'       => true,
 					'show_in_menu'       => 'learn_press',
@@ -98,7 +98,7 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 			);
 
 
-			register_taxonomy( 'question-tag', array( LP_QUESTION_CPT ),
+			register_taxonomy( 'question_tag', array( LP_QUESTION_CPT ),
 				array(
 					'labels'            => array(
 						'name'          => __( 'Question Tag', 'learnpress' ),

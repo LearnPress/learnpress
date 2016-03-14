@@ -545,10 +545,12 @@ function learn_press_post_object( $defaults = false ) {
 			$post_object->{$column_name} = null;
 		}
 	}
-	if ( $defaults ) {
-		settype( $defaults, 'array' );
-		foreach ( $defaults as $k => $v ) {
-			$post_object->{$k} = $v;
+	settype( $defaults, 'array' );
+	foreach ( get_object_vars( $post_object ) as $k => $v ) {
+		if ( array_key_exists( $k, $defaults ) ) {
+			$post_object->{$k} = $defaults[$k];
+		} else {
+			$post_object->{$k} = '';
 		}
 	}
 	return $post_object;
@@ -1151,7 +1153,7 @@ function learn_press_get_own_courses( $user_id ) {
 
 add_filter( 'template_include', 'learn_press_template_loader' );
 function learn_press_template_loader( $template ) {
-	$file = '';
+	$file           = '';
 	$theme_template = learn_press_template_path();
 	if ( ( $page_id = learn_press_get_page_id( 'taken_course_confirm' ) ) && is_page( $page_id ) ) {
 		if ( !learn_press_user_can_view_order( !empty( $_REQUEST['order_id'] ) ? $_REQUEST['order_id'] : 0 ) ) {
@@ -2163,7 +2165,7 @@ function learn_press_get_log_file_path( $handle ) {
 }
 
 function learn_press_front_scripts() {
-	if( is_admin() ){
+	if ( is_admin() ) {
 		return;
 	}
 	$js = array(

@@ -71,9 +71,7 @@ $hidden_sections = (array) get_post_meta( $post->ID, '_admin_hidden_sections', t
 		if ( !empty( $section ) ) foreach ( get_object_vars( $section ) as $k => $v ) {
 			$section->{$k} = null;
 		}
-		echo "[[[[[[[[[[[";
 		include learn_press_get_admin_view( 'meta-boxes/course/loop-section.php' );
-		echo "]]]]]]]]]]]";
 		?>
 	</ul>
 </div>

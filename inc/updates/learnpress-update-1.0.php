@@ -176,6 +176,8 @@ class LP_Upgrade_10 {
 								self::$quizzes_map[$obj_id] = $new_obj_id;
 							} elseif ( $obj['post_type'] == 'lp_lesson' ) {
 								$this->_create_lesson_meta( $obj_id, $new_obj_id );
+								$this->_update_lesson_tag( $obj_id, $new_obj_id );
+								$this->_update_lesson_format( $obj_id, $new_obj_id );
 								self::$lessons_map[$obj_id] = $new_obj_id;
 							}
 						}
@@ -185,6 +187,51 @@ class LP_Upgrade_10 {
 			}
 		}
 		return $section_items;
+	}
+
+	/**
+	 * @param $old_id
+	 * @param $new_id
+	 */
+	private function _update_lesson_tag( $old_id, $new_id ) {
+		$tags = array();
+		if ( $terms = wp_get_object_terms( $old_id, array( 'lesson_tag', 'lesson-tag' ) ) ) {
+			foreach ( $terms as $term ) {
+				if ( $term->taxonomy == 'lesson-tag' ) {
+					$_term = term_exists( $term->name, 'lesson_tag' );
+					if ( $_term === 0 || $_term === NULL ) {
+						$_term = wp_insert_term(
+							$term->name, // the term
+							'lesson_tag', // the taxonomy
+							array(
+								'description' => $term->description,
+								'slug'        => $term->slug,
+								'parent'      => $term->parent
+							)
+						);
+					}
+					if ( !is_wp_error( $_term ) ) {
+						$tags[] = absint( $_term['term_id'] );
+					}
+				} else {
+					$tags[] = abs( $term->term_id );
+				}
+			}
+		}
+		LP_Debug::instance()->add( '-----------update lesson tag[' . $old_id . ',' . $new_id . ']------------' );
+		LP_Debug::instance()->add( $terms );
+		if ( $tags ) {
+			wp_set_object_terms( $new_id, $tags, 'lesson_tag' );
+		}
+	}
+
+	function _update_lesson_format( $old_id, $new_id ) {
+		if ( $format = get_post_format( $old_id ) ) {
+			set_post_format( $new_id, $format );
+			LP_Debug::instance()->add( $format );
+		}
+		LP_Debug::instance()->add( '-----------update lesson format[' . $old_id . ',' . $new_id . ']------------' );
+
 	}
 
 	/**
@@ -310,6 +357,8 @@ class LP_Upgrade_10 {
 					array( '%d', '%d', '%d' )
 				);
 				$this->_create_question_meta( $old_question_id, $new_question_id );
+				$this->_update_question_tag( $old_question_id, $new_question_id );
+
 				$new_questions[$old_question_id]       = $new_question_id;
 				self::$questions_map[$old_question_id] = $new_question_id;
 			}
@@ -355,15 +404,53 @@ class LP_Upgrade_10 {
 						$wpdb->insert(
 							$wpdb->prefix . 'learnpress_question_answers',
 							array(
-								'question_id' => $new_id,
-								'answer_data' => serialize( $question_data ),
-								'ordering'    => ++ $ordering
+								'question_id'  => $new_id,
+								'answer_data'  => serialize( $question_data ),
+								'answer_order' => ++ $ordering
 							),
 							array( '%d', '%s', '%d' )
 						);
 					}
 				}
 			}
+		}
+	}
+
+	/**
+	 * @param $old_id
+	 * @param $new_id
+	 */
+	private function _update_question_tag( $old_id, $new_id ) {
+		$tags = array();
+		if ( $terms = wp_get_object_terms( $old_id, array( 'question_tag', 'question-tag' ) ) ) {
+			foreach ( $terms as $term ) {
+				if ( $term->taxonomy == 'question-tag' ) {
+					$_term = term_exists( $term->name, 'question_tag' );
+					if ( $_term === 0 || $_term === NULL ) {
+						$_term = wp_insert_term(
+							$term->name, // the term
+							'question_tag', // the taxonomy
+							array(
+								'description' => $term->description,
+								'slug'        => $term->slug,
+								'parent'      => $term->parent
+							)
+						);
+						LP_Debug::instance()->add( 'xxxxxxxxxxxxxxxxxxxxxxxxxx' );
+					} else {
+						LP_Debug::instance()->add( 'yyyyyyyyyyyyyyyyyyyyyyyyyyyy' );
+					}
+					if ( !is_wp_error( $_term ) ) {
+						$tags[] = absint( $_term['term_id'] );
+					}
+					LP_Debug::instance()->add( $_term );
+				} else {
+					$tags[] = absint( $term->term_id );
+				}
+			}
+		}
+		if ( $tags ) {
+			wp_set_object_terms( $new_id, $tags, 'question_tag' );
 		}
 	}
 
@@ -376,8 +463,53 @@ class LP_Upgrade_10 {
 		if ( $new_course_id ) {
 			$section_items = $this->_create_curriculum( $old_course->ID, $new_course_id );
 			$this->_create_course_meta( $old_course->ID, $new_course_id );
+			$this->_update_course_category( $old_course->ID, $new_course_id );
+			$this->_update_course_tag( $old_course->ID, $new_course_id );
+			$this->_update_course_thumbnail( $old_course->ID, $new_course_id );
 		}
 		return array( 'id' => $new_course_id, 'section_items' => $section_items );
+	}
+
+	/**
+	 * @param $old_id
+	 * @param $new_id
+	 */
+	private function _update_course_category( $old_id, $new_id ) {
+		$categories = array();
+		if ( $terms = wp_get_object_terms( $old_id, 'course_category' ) ) {
+			foreach ( $terms as $term ) {
+				$categories[] = $term->term_id;
+			}
+		}
+		if ( $categories ) {
+			wp_set_object_terms( $new_id, $categories, 'course_category' );
+		}
+	}
+
+	/**
+	 * @param $old_id
+	 * @param $new_id
+	 */
+	private function _update_course_tag( $old_id, $new_id ) {
+		$tags = array();
+		if ( $terms = wp_get_object_terms( $old_id, 'course_tag' ) ) {
+			foreach ( $terms as $term ) {
+				$tags[] = $term->term_id;
+			}
+		}
+		if ( $tags ) {
+			wp_set_object_terms( $new_id, $tags, 'course_tag' );
+		}
+	}
+
+	/**
+	 * @param $old_id
+	 * @param $new_id
+	 */
+	private function _update_course_thumbnail( $old_id, $new_id ) {
+		if ( $post_thumbnail_id = get_post_thumbnail_id( $old_id ) ) {
+			set_post_thumbnail( $new_id, $post_thumbnail_id );
+		}
 	}
 
 	private function _upgrade_courses() {
@@ -756,11 +888,59 @@ class LP_Upgrade_10 {
 
 	}
 
+	/**
+	 * Register old taxonomy so we can use wp_get_object_terms on old post types
+	 */
+	private function _backward_compatible() {
+		register_taxonomy( 'lesson-tag', array( 'lpr_lesson', 'lp_lesson' ),
+			array(
+				'labels'            => array(
+					'name'          => __( 'Tag', 'learn_press' ),
+					'menu_name'     => __( 'Tag', 'learn_press' ),
+					'singular_name' => __( 'Tag', 'learn_press' ),
+					'add_new_item'  => __( 'Add New Tag', 'learn_press' ),
+					'all_items'     => __( 'All Tags', 'learn_press' )
+				),
+				'public'            => true,
+				'hierarchical'      => false,
+				'show_ui'           => true,
+				'show_admin_column' => 'true',
+				'show_in_nav_menus' => true,
+				'rewrite'           => array( 'slug' => _x( 'lesson-tag', 'Permalink Slug', 'learn_press' ), 'hierarchical' => true, 'with_front' => false ),
+			)
+		);
+
+		register_taxonomy( 'question-tag', array( 'lpr_question', 'lp_question' ),
+			array(
+				'labels'            => array(
+					'name'          => __( 'Question Tag', 'learn_press' ),
+					'menu_name'     => __( 'Tag', 'learn_press' ),
+					'singular_name' => __( 'Tag', 'learn_press' ),
+					'add_new_item'  => __( 'Add New Tag', 'learn_press' ),
+					'all_items'     => __( 'All Tags', 'learn_press' )
+				),
+				'public'            => true,
+				'hierarchical'      => false,
+				'show_ui'           => true,
+				'show_admin_column' => 'true',
+				'show_in_nav_menus' => true,
+				'rewrite'           => array(
+					'slug'         => _x( 'question-tag', 'Permalink Slug', 'learn_press' ),
+					'hierarchical' => false,
+					'with_front'   => false
+				),
+			)
+		);
+
+		add_post_type_support( 'lpr_lesson', 'post-formats' );
+	}
+
 	function do_upgrade() {
 		global $wpdb;
 		// start a transaction so we can rollback all as begin if there is an error
 		$wpdb->query( "START TRANSACTION;" );
 		try {
+			$this->_backward_compatible();
 			// update courses
 			$this->_upgrade_courses();
 			// update orders

@@ -515,7 +515,7 @@ class LP_Abstract_User {
 		$key               = md5( serialize( $args ) );
 		if ( empty( $quizzes[$key] ) || $force ) {
 			global $wpdb;
-			$where = $wpdb->prepare( "\nWHERE uq.user_id = %d", $this->id );
+			//$where = $wpdb->prepare( "\nWHERE uq.user_id = %d", $this->id );
 			$limit = "\n";
 			if ( $args['limit'] > 0 ) {
 				if ( !$args['paged'] ) {
@@ -528,7 +528,7 @@ class LP_Abstract_User {
 				SELECT SQL_CALC_FOUND_ROWS DISTINCT q.*
 				FROM {$wpdb->posts} q
 				INNER JOIN {$wpdb->prefix}learnpress_user_quizzes uq ON uq.quiz_id = q.ID
-				{$where}
+				WHERE uq.user_id = %d
 			", $this->id );
 
 			$query         = $query . $limit;

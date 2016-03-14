@@ -55,7 +55,11 @@ if ( $is_hidden ) {
 		</div>
 		<table class="curriculum-section-items">
 			<?php echo isset( $content_items ) ? $content_items : ''; ?>
-			<?php learn_press_admin_view( 'meta-boxes/course/loop-item.php', array( 'item' => learn_press_post_object( array( 'post_type' => LP()->lesson_post_type ) ) ) ); ?>
+			<?php
+			$item = learn_press_post_object( array( 'post_type' => LP()->lesson_post_type ) );
+			?>
+			<?php learn_press_admin_view( 'meta-boxes/course/loop-item.php', array( 'item' => $item) ); ?>
+
 		</table>
 		<?php do_action( 'learn_press_after_section_items', $section ); ?>
 		<?php if ( $buttons = apply_filters( 'learn_press_loop_section_buttons', array() ) ): ?>

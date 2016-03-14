@@ -373,6 +373,8 @@ if ( !class_exists( 'LearnPress' ) ) {
 				flush_rewrite_rules();
 				delete_transient( 'learn_press_install' );
 			}
+
+
 		}
 
 		function get_session() {
