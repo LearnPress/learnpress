@@ -130,6 +130,7 @@ class LP_Quiz {
 		$value = null;
 		switch( $key ){
 			case 'current_question':
+
 				if( ( $question = learn_press_get_request( 'question' ) ) && learn_press_is_quiz() ){
 					$value = LP_Question_Factory::get_question($question );
 				}
