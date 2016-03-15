@@ -57,8 +57,7 @@
 		initialize    : function () {
 			_.bindAll(this, 'updateLesson', 'completeLesson');
 			this.model.on('change', this.updateLesson, this);
-			LearnPress.Hook.doAction('learn_press_before_load_lesson', this)
-
+			LearnPress.Hook.doAction('learn_press_before_load_lesson', this);
 			if (this.model.get('content')) {
 				this.updateLesson();
 			} else {

@@ -929,7 +929,7 @@ if ( !function_exists( 'learn_press_page_controller' ) ) {
 					}
 			}
 			// prevent loop redirect
-			if ( $redirect && $redirect != learn_press_get_current_url() ) {
+			if ( $redirect && !learn_press_is_current_url( $redirect ) ) {
 				if( $item_id ) {
 					$error_message = apply_filters( 'learn_press_course_item_access_denied_error_message', sprintf( __( 'Access denied "%s"', 'learnpress' ), get_the_title( $item_id ) ) );
 					if( $error_message !== false ) {

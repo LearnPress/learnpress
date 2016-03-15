@@ -56,6 +56,7 @@ if( typeof LearnPress == 'undefined' ){
 		},
 		loadLesson: function( permalink, args ){
 			var that = this;
+			console.log('loadLesson')
 			LearnPress.Hook.doAction( 'learn_press_before_load_lesson', permalink, this );
 			args = $.extend({
 				success: function () {
