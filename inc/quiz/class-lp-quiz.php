@@ -56,7 +56,7 @@ class LP_Quiz {
 		add_action( 'wp_head', array( $this, 'frontend_assets' ) );
 	}
 
-	protected function _get_localize(){
+	function get_localize(){
 		$localize = array(
 			'confirm_finish_quiz'		=> __( 'Are you sure you want to completely finish this quiz?', 'learnpress' ),
 			'confirm_retake_quiz'		=> __( 'Are you sure you want to retake this quiz?', 'learnpress' ),
@@ -66,7 +66,7 @@ class LP_Quiz {
 		return apply_filters( 'learn_press_single_quiz_localize', $localize, $this );
 	}
 
-	protected function _settings(){
+	function get_settings(){
 		$current_question_id = learn_press_get_current_question();// !empty( $_REQUEST['question_id'] ) ? intval( $_REQUEST['question_id'] ) : 0;
 		$questions           = learn_press_get_quiz_questions();
 		if ( $questions ) {
@@ -99,9 +99,9 @@ class LP_Quiz {
 
 	function frontend_assets(){
 		if( learn_press_is_quiz() && get_the_ID() == $this->id ){
-			$translate = $this->_get_localize();
+			$translate = $this->get_localize();
 			LP_Assets::add_localize( $translate, false, 'single-quiz' );
-			LP_Assets::add_param( $this->_settings(), false, 'single-quiz' );
+			LP_Assets::add_param( $this->get_settings(), false, 'single-quiz' );
 		}
 	}
 

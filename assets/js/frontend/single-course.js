@@ -52,7 +52,7 @@ if( typeof LearnPress == 'undefined' ){
 		},
 		_loadLesson: function(e){
 			e.preventDefault();
-			//this.loadLesson( $(e.target).attr('href') );
+			this.loadLesson( $(e.target).attr('href') );
 		},
 		loadLesson: function( permalink, args ){
 			var that = this;
@@ -79,6 +79,8 @@ if( typeof LearnPress == 'undefined' ){
 						$('#learn-press-course-description, #learn-press-course-lesson-summary').replaceWith($newLesson);
 
 						LearnPress.Hook.doAction( 'learn_press_load_lesson_completed', permalink, that );
+						LearnPress.Hook.doAction('learn_press_lesson_content_loaded', $html, this);
+
 					}
 				},
 				error: function(){
