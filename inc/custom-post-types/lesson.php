@@ -97,7 +97,6 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 						'thumbnail',
 						'post-formats',
 						'revisions',
-						'author',
 						//'excerpt'
 					),
 					'hierarchical'       => true,
