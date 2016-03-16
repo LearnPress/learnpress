@@ -91,7 +91,7 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 					'show_in_menu'       => 'learn_press',
 					'show_in_admin_bar'  => true,
 					'show_in_nav_menus'  => true,
-					'supports'           => array( 'title', 'editor', 'revisions', 'author' ),
+					'supports'           => array( 'title', 'editor', 'revisions' ),
 					'hierarchical'       => true,
 					'rewrite'            => array( 'slug' => 'questions', 'hierarchical' => true, 'with_front' => false )
 				)

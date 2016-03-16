@@ -107,7 +107,6 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 							'title',
 							'editor',
 							'revisions',
-							'author'
 						),
 						'hierarchical'       => true,
 						'rewrite'            => array( 'slug' => 'quizzes', 'hierarchical' => true, 'with_front' => false )

@@ -256,7 +256,7 @@ function learn_press_add_rewrite_rules() {
 	$post_types  = get_post_types( array( 'name' => $quiz_type ), 'objects' );
 	$slug        = $post_types[$quiz_type]->rewrite['slug'];
 	$current_uri = learn_press_get_current_url();
-	if ( preg_match( '/\/(' . LP()->settings->get( 'quiz_endpoints.results' ) . ')\/([0-9]+)?/', $current_uri, $matches ) ) {
+	if ( ( $quiz_endpoint = LP()->settings->get( 'quiz_endpoints.results' ) ) && preg_match( '/\/(' . $quiz_endpoint . ')\/([0-9]+)?/', $current_uri, $matches ) ) {
 		$rewrite_redirect = 'index.php?' . $quiz_type . '=$matches[1]';
 		if ( !empty( $matches[1] ) ) {
 			if ( !empty( $matches[2] ) ) {
@@ -270,6 +270,7 @@ function learn_press_add_rewrite_rules() {
 			apply_filters( 'learn_press_quiz_results_rewrite_rule_redirect', $rewrite_redirect ),
 			'top'
 		);
+
 	} else {
 		add_rewrite_rule(
 			apply_filters( 'learn_press_question_rewrite_rule', '^' . $slug . '/([^/]*)/([^/]*)/?' ),
