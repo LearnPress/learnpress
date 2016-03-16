@@ -10,7 +10,6 @@
 if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
-
 get_header( ); ?>
 
 	<?php do_action( 'learn_press_before_main_content' ); ?>

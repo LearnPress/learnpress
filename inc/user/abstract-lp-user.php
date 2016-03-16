@@ -49,11 +49,11 @@ class LP_Abstract_User {
 	 * @throws Exception
 	 */
 	function __construct( $the_user = 0 ) {
-		if ( $user = get_user_by( 'id', $the_user ) ) {
-			$this->user = get_user_by( 'id', $the_user );
+		if ( $user = get_user_by( 'ID', $the_user ) ) {
+			$this->user = get_user_by( 'ID', $the_user );
 			$this->id   = $the_user;
 		} else {
-			throw new Exception( sprintf( __( 'The user with ID = %d is not exists', 'learnpress' ), $the_user ) );
+			//throw new Exception( sprintf( __( 'The user with ID = %d is not exists', 'learnpress' ), $the_user ) );
 		}
 	}
 
