@@ -825,5 +825,11 @@ jQuery(document).ready( function($) {
 
 	$(document).ready(function(){
 		$('.learn-press-checkbox').iosCheckbox();
+
+		var elems = Array.prototype.slice.call( document.querySelectorAll('.rwmb-learnpress-switchbutton') );
+
+		elems.forEach(function(html) {
+		  	var switchery = new Switchery( html, { size: 'small' } );
+		});
 	});
 })(jQuery);

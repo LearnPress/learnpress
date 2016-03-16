@@ -178,7 +178,7 @@ if ( !class_exists( 'RWMB_Quiz_Questions_Field' ) ) {
 						'params'	=> ''
 					)
 				);
-				$values[] = $wpdb->prepare( "(%d, %d, %s, %d)", $insert_data['quiz_id'], $insert_data['question_id'], $insert_data['param'], $order++ );
+				$values[] = $wpdb->prepare( "(%d, %d, %s, %d)", $insert_data['quiz_id'], $insert_data['question_id'], isset( $insert_data['param'] ) ? $insert_data['param'] : '', $order++ );
 			}
 
 			$query = "

@@ -138,41 +138,44 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 			$GLOBALS['learn_press_quiz_question_meta_box'] = new RW_Meta_Box( $meta_box );
 
 			new RW_Meta_Box(
-				array(
-					'title'      => __( 'General Settings', 'learnpress' ),
-					'post_types' => LP()->quiz_post_type,
-					'context'    => 'normal',
-					'priority'   => 'high',
-					'fields'     => array(
-						array(
-							'name' => __( 'Duration', 'learnpress' ),
-							'desc' => __( 'Duration of the quiz (in minutes). Auto submits when expire. Set 0 to disable.', 'learnpress' ),
-							'id'   => "{$prefix}duration",
-							'type' => 'number',
-							'min'  => 0,
-							'std'  => 10
-						),
-						array(
-							'name' => __( 'Re-take', 'learnpress' ),
-							'id'   => "{$prefix}retake_count",
-							'type' => 'number',
-							'desc' => __( 'How many times the user can re-take this quiz. Set to 0 to disable', 'learnpress' ),
-							'min'  => 0
-						),
-						array(
-							'name' => __( 'Show correct answer', 'learnpress' ),
-							'id'   => "{$prefix}show_result",
-							'type' => 'checkbox',
-							'desc' => __( 'Show the correct answer in result of the quiz.', 'learnpress' ),
-							'std'  => 0
-						),
-						array(
-							'name' => __( 'Show question answer immediately', 'learnpress' ),
-							'id'   => "{$prefix}show_question_answer",
-							'type' => 'checkbox',
-							'desc' => __( 'Show the correct answer and explanation (if exists) of the question right after student answered.', 'learnpress' ),
-							'std'  => 0
-						),
+				apply_filters( 'learn_press_quiz_general_meta_box',
+					array(
+						'title'      => __( 'General Settings', 'learnpress' ),
+						'post_types' => LP()->quiz_post_type,
+						'context'    => 'normal',
+						'priority'   => 'high',
+						'fields'     => array(
+							// ,
+							array(
+								'name' => __( 'Duration', 'learnpress' ),
+								'desc' => __( 'Duration of the quiz (in minutes). Auto submits when expire. Set 0 to disable.', 'learnpress' ),
+								'id'   => "{$prefix}duration",
+								'type' => 'number',
+								'min'  => 0,
+								'std'  => 10
+							),
+							array(
+								'name' => __( 'Re-take', 'learnpress' ),
+								'id'   => "{$prefix}retake_count",
+								'type' => 'number',
+								'desc' => __( 'How many times the user can re-take this quiz. Set to 0 to disable', 'learnpress' ),
+								'min'  => 0
+							),
+							array(
+								'name' => __( 'Show correct answer', 'learnpress' ),
+								'id'   => "{$prefix}show_result",
+								'type' => 'checkbox',
+								'desc' => __( 'Show the correct answer in result of the quiz.', 'learnpress' ),
+								'std'  => 0
+							),
+							array(
+								'name' => __( 'Show question answer immediately', 'learnpress' ),
+								'id'   => "{$prefix}show_question_answer",
+								'type' => 'checkbox',
+								'desc' => __( 'Show the correct answer and explanation (if exists) of the question right after student answered.', 'learnpress' ),
+								'std'  => 0
+							),
+						)
 					)
 				)
 			);
