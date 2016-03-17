@@ -232,7 +232,7 @@ class LP_Quiz {
 				}
 			}
 		}
-		return apply_filters( 'learn_press_quiz_questions', $this->questions );
+		return apply_filters( 'learn_press_quiz_questions', $this->questions, $this->id, $force );
 	}
 
 	function get_buttons(){

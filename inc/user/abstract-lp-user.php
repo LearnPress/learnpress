@@ -143,7 +143,7 @@ class LP_Abstract_User {
 					'end'              => '',
 					'status'           => 'started',
 					'results'          => '',
-					'current_question' => !empty( $quiz_question_ids[0] ) ? $quiz_question_ids[0] : null,
+					'current_question' => ! empty( $quiz_question_ids[0] ) ? $quiz_question_ids[0] : null,
 					'question_answers' => '',
 					'questions'        => $quiz_question_ids
 				)
@@ -173,7 +173,7 @@ class LP_Abstract_User {
 		if ( !$quiz_id ) $quiz_id = $this->get_quiz_field( 'id' );
 		$user_id = $this->id;
 		$return  = false;
-		if ( !apply_filters( 'learn_press_before_user_start_quiz', true, $quiz_id, $user_id ) ) {
+		if ( ! apply_filters( 'learn_press_before_user_start_quiz', true, $quiz_id, $user_id ) ) {
 			return false;
 		}
 
