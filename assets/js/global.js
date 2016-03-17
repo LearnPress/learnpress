@@ -195,7 +195,7 @@ if (typeof window.LearnPress == 'undefined') {
 		hide           : function (delay, instance) {
 			if (instance) {
 				this._removeInstance(instance.id);
-			} else {
+			} else if( this.instance ){
 				this._removeInstance(this.instance.id);
 			}
 			if (this.instances.length == 0) {
@@ -209,7 +209,9 @@ if (typeof window.LearnPress == 'undefined') {
 					.unbind('resize.message-box', this.update)
 					.unbind('scroll.message-box', this.update);
 			} else {
-				this._createWindow(this.instance.message, this.instance.title, this.instance.buttons)
+				if( this.instance ) {
+					this._createWindow(this.instance.message, this.instance.title, this.instance.buttons)
+				}
 			}
 
 		},

@@ -627,18 +627,23 @@ abstract class LP_Abstract_Course {
 		if ( !$this->has( 'item', $item_id ) ) {
 			return false;
 		}
-		$permalink = get_the_permalink( $this->ID );
+		switch( get_post_type( $item_id )){
+			case 'lp_quiz':
+			case 'lp_lesson':
+				$permalink = get_the_permalink( $this->ID );
 
-		$post_name = get_post_field( 'post_name', $item_id );
-		$prefix    = "{$item_id}-";
+				$post_name = get_post_field( 'post_name', $item_id );
+				$prefix    = "{$item_id}-";
 
-		if ( '' != get_option( 'permalink_structure' ) && get_post_status( $this->id ) != 'draft' ) {
-			$permalink .= $prefix . $post_name;
-		} else {
-			$key       = preg_replace( '!lp_!', '', get_post_type( $item_id ) );
-			$permalink = add_query_arg( array( $key => $prefix . $post_name ), $permalink );
+				if ( '' != get_option( 'permalink_structure' ) && get_post_status( $this->id ) != 'draft' ) {
+					$permalink .= $prefix . $post_name;
+				} else {
+					$key       = preg_replace( '!lp_!', '', get_post_type( $item_id ) );
+					$permalink = add_query_arg( array( $key => $prefix . $post_name ), $permalink );
+				}
+			break;
 		}
-
+		$permalink = trailingslashit( $permalink );
 		return apply_filters( 'learn_press_course_item_link', $permalink, $item_id, $this );
 	}
 
