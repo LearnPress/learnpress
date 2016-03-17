@@ -11,23 +11,31 @@
 			this.rootUrl = data.rootUrl;
 		},
 		load      : function (callback) {
-			var that = this;
-			//console.log('learn_press_course_lesson_content_loaded')
-			$.ajax({
-				url     : this.url(),
-				dataType: 'html',
-				success : function (response) {
-					var $html = $(response);
-					if (LearnPress.Hook.applyFilters('learn_press_update_lesson_content', $html, that) !== false) {
-						that.set('content', $html.find('#learn-press-course-lesson'));
-						$(document).trigger('learn_press_course_lesson_content_replaced', $html, that);
-
+			var that = this,
+				_completed = function (response, success) {
+					var $html = $(response || ''),
+						$lesson = $html.find('#learn-press-course-lesson');
+					if ($lesson.length == 0) {
+						$lesson = $('<div id="learn-press-course-lesson" />');
+					}
+					if (LearnPress.Hook.applyFilters('learn_press_update_item_content', $lesson, that) !== false) {
+						that.set('content', $lesson);
+						$(document).trigger('learn_press_course_item_content_replaced', $lesson, that);
 						$('.course-item.item-current')
 							.removeClass('item-current');
 						$('.course-item.course-item-' + that.get('id'))
 							.addClass('item-current');
 					}
 					$.isFunction(callback) && callback.call(that, response);
+				};
+			$.ajax({
+				url     : this.url(),
+				dataType: 'html',
+				success : function (response) {
+					_completed(response, true);
+				},
+				error   : function () {
+					_completed('', false)
 				}
 			})
 		},
@@ -55,23 +63,22 @@
 			'click .complete-lesson-button': 'completeLesson'
 		},
 		initialize    : function () {
-			_.bindAll(this, 'updateLesson', 'completeLesson');
-			this.model.on('change', this.updateLesson, this);
-			LearnPress.Hook.doAction('learn_press_before_load_lesson', this);
-			if (this.model.get('content')) {
-				this.updateLesson();
-			} else {
-				this.model.load();
+			_.bindAll(this, 'updateItem', 'completeLesson');
+			this.model.on('change', this.updateItem, this);
+			if (LearnPress.Hook.applyFilters('learn_press_before_load_item', this) !== false) {
+				if (this.model.get('content')) {
+					this.updateItem();
+				} else {
+					this.model.load();
+				}
 			}
 		},
-		updateLesson  : function () {
-			//if(this.model.hasChanged('content')) {
+		updateItem    : function () {
 			var $content = this.model.get('content');
 			this.$el.replaceWith($content);
 			this.setElement($content);
 			LearnPress.setUrl(this.model.get('rootUrl'));
-			LearnPress.Hook.doAction('learn_press_lesson_content_loaded', $content, this);
-
+			LearnPress.Hook.doAction('learn_press_item_content_loaded', $content, this);
 			//}
 		},
 		completeLesson: function (e) {
@@ -118,7 +125,8 @@
 						nonce  : {
 							complete: $link.attr('data-complete-nonce')
 						},
-						rootUrl: $link.attr('href')
+						rootUrl: $link.attr('href'),
+						type   : $li.data('type')
 					});
 				that.add(model);
 				if ($li.hasClass('item-current')) {
@@ -133,36 +141,38 @@
 			} else if ($.type(item) == 'string') {
 				item = this.findWhere({rootUrl: item});
 			}
-			if (item) {
-				if (this.view) {
-					this.view.undelegateEvents();
-					this.view.model.set('content', this.view.$el);
-					$('.course-item.item-current')
-						.removeClass('item-current');
-					$('.course-item.course-item-' + item.get('id'))
-						.addClass('item-current');
+			if (LearnPress.Hook.applyFilters('learn_press_load_item_content', true, item, link) !== false) {
+				if (item) {
+					if (this.view) {
+						this.view.undelegateEvents();
+						this.view.model.set('content', this.view.$el);
+						$('.course-item.item-current')
+							.removeClass('item-current');
+						$('.course-item.course-item-' + item.get('id'))
+							.addClass('item-current');
+					}
+					if (link) {
+						item.set('rootUrl', link);
+						item.rootUrl = link;
+					}
+					this.view = new $.LP_Course_Item.View({model: item});
 				}
-				if (link) {
-					item.set('rootUrl', link);
-					item.rootUrl = link;
-				}
-				this.view = new $.LP_Course_Item.View({model: item});
 			}
 		}
 	});
 
 	$.LP_Course_Item_List_View = Backbone.View.extend({
-		model      : $.LP_Course_Item.Collection,
-		el         : 'body',
-		events     : {
-			'click .section-content .course-lesson.course-item': '_loadLesson',
-			'click .course-item-nav a'                         : '_loadLesson'
+		model     : $.LP_Course_Item.Collection,
+		el        : 'body',
+		events    : {
+			'click .section-content .course-item': '_loadItem',
+			'click .course-item-nav a'           : '_loadItem'
 		},
-		initialize : function (args) {
-			_.bindAll(this, '_loadLesson');
+		initialize: function (args) {
+			_.bindAll(this, '_loadItem');
 			this.model.loadItem(this.model.current);
 		},
-		_loadLesson: function (e) {
+		_loadItem : function (e) {
 			e.preventDefault();
 			var $item = $(e.target),
 				id = parseInt($item.attr('data-id')),
@@ -170,10 +180,5 @@
 			this.model.loadItem(id ? id : link, link);
 		}
 	});
-	function _init() {
-		var courseItems = new $.LP_Course_Item.Collection(),
-			courseItemsView = new $.LP_Course_Item_List_View({model: courseItems});
-	}
 
-	$(document).ready(_init)
 })(jQuery);
