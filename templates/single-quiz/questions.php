@@ -12,7 +12,7 @@ if ( !defined( 'ABSPATH' ) ) {
 }
 global $quiz;
 $heading = apply_filters( 'learn_press_list_questions_heading', __( 'List of questions', 'learnpress' ) );
-$no_permalink = !LP()->user->has('started-quiz', $quiz->id);
+$no_permalink = ! LP()->user->has('started-quiz', $quiz->id);
 
 ?>
 

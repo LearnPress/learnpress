@@ -3,7 +3,7 @@
  * @Author: ducnvtt
  * @Date:   2016-03-16 15:13:02
  * @Last Modified by:   ducnvtt
- * @Last Modified time: 2016-03-16 16:51:57
+ * @Last Modified time: 2016-03-17 09:49:22
  * button-switcher
  */
 
@@ -34,7 +34,22 @@ if ( ! class_exists( 'RWMB_Button_Switcher_Field' ) ) {
 		 * @return string
 		 */
 		static function html( $meta, $field ) {
-			return sprintf( '<p><input name="%s" id="%s" type="checkbox" class="rwmb-learnpress-switchbutton" /></p>', $field['field_name'], $field['id'] );
+			$field = wp_parse_args( $field, array(
+					'name' => '',
+					'desc' => '',
+					'id'   => '',
+					'type' => '',
+					'off'  => '',
+					'on'   => ''
+				));
+			return sprintf(
+				'<p><small>%s</small>&nbsp;<input name="%s" id="%s" type="checkbox" class="rwmb-learnpress-switchbutton" %s />&nbsp;<small>%s</small></p>',
+				$field['off'],
+				$field['field_name'],
+				$field['id'],
+				$meta === 'on' ? 'checked' : '',
+				$field['on']
+			);
 		}
 	}
 
