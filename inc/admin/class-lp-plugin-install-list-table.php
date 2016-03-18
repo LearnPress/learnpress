@@ -7,6 +7,7 @@
  * @since 3.1.0
  * @access private
  */
+die();
 class LP_Plugin_Install_List_Table extends WP_List_Table {
 
     public $order = 'ASC';

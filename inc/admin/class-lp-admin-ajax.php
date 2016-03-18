@@ -35,6 +35,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 				'remove_course_section'           => false,
 				'dismiss_notice'                  => false,
 				'search_users'                    => false,
+				'load_chart'                      => false,
 				/////////////
 				'quick_add_lesson'                => false,
 				'quick_add_quiz'                  => false,
@@ -60,13 +61,20 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			do_action( 'learn_press_admin_ajax_load', __CLASS__ );
 		}
 
-		static function remove_course_items(){
-			die( 'Please implement this function');
+		static function load_chart(){
+			if( !class_exists( '' ) ){
+				require_once LP_PLUGIN_PATH . '/inc/admin/sub-menus/statistics.php';
+			}
+			LP_Admin_Submenu_Statistic::instance()->load_chart();
 		}
 
-		static function search_users(){
-			if ( ! current_user_can( 'edit_lp_orders' ) ) {
-				die(-1);
+		static function remove_course_items() {
+			die( 'Please implement this function' );
+		}
+
+		static function search_users() {
+			if ( !current_user_can( 'edit_lp_orders' ) ) {
+				die( - 1 );
 			}
 
 			$term = stripslashes( $_GET['term'] );
@@ -90,7 +98,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 
 			$customers = $customers_query->get_results();
 
-			if ( ! empty( $customers ) ) {
+			if ( !empty( $customers ) ) {
 				foreach ( $customers as $customer ) {
 					$found_customers[] = array(
 						'label' => $customer->display_name . ' (#' . $customer->ID . ' &ndash; ' . sanitize_email( $customer->user_email ) . ')',
@@ -113,7 +121,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 				$term = like_escape( $term );
 			}
 
-			$query->query_from  .= " INNER JOIN {$wpdb->usermeta} AS user_name ON {$wpdb->users}.ID = user_name.user_id AND ( user_name.meta_key = 'first_name' OR user_name.meta_key = 'last_name' ) ";
+			$query->query_from .= " INNER JOIN {$wpdb->usermeta} AS user_name ON {$wpdb->users}.ID = user_name.user_id AND ( user_name.meta_key = 'first_name' OR user_name.meta_key = 'last_name' ) ";
 			$query->query_where .= $wpdb->prepare( " OR user_name.meta_value LIKE %s ", '%' . $term . '%' );
 		}
 

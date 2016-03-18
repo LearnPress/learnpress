@@ -332,7 +332,7 @@ class LP_Order {
 	}
 
 	function get_payment_method_title() {
-		if( $this->total == 0 ){
+		if( $this->order_total == 0 ){
 			$title = __( 'Free Payment', 'learnpress' );
 		}else{
 			$title = $this->payment_method_title;

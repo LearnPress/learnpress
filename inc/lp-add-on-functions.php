@@ -40,8 +40,8 @@ function learn_press_count_add_ons() {
 	return $count_fields;
 }
 
-function learn_press_get_all_add_ons( $args = array() ){
-	$args = wp_parse_args(
+function learn_press_get_all_add_ons( $args = array() ) {
+	$args   = wp_parse_args(
 		$args,
 		array( 'transient_key' => 'lp_more_add_ons', 'force' => false )
 	);
@@ -119,6 +119,36 @@ function learn_press_print_get_more_tab( $current ) {
 	<?php
 }
 
+function learn_press_get_add_on_icons( $plugin_data, $plugin_file ) {
+	$plugin_path = ABSPATH . 'wp-content/plugins/' . $plugin_file;
+	$icon_path   = dirname( $plugin_path ) . '/assets/images';
+	$icons       = array(
+		'2x' => '',
+		'1x' => ''
+	);
+	foreach ( array( '2x' => 'icon-256x256', '1x' => 'icon-128x128' ) as $s => $name ) {
+		foreach ( array( 'png', 'svg' ) as $t ) {
+			if ( file_exists( $icon_path . "/{$name}.{$t}" ) ) {
+				$icons[$s] = plugins_url( '/', $plugin_path ) . "assets/images/{$name}.{$t}";
+				break;
+			}
+		}
+	}
+	return $icons;
+}
+
+function learn_press_get_add_on_icon( $icons ) {
+	$icon = '';
+	if ( !empty( $icons['2x'] ) ) {
+		$icon = $icons['2x'];
+	} elseif ( !empty( $icons['1x'] ) ) {
+		$icon = $icons['1x'];
+	} else {
+		$icon = LP_PLUGIN_URL . 'assets/images/icon-128x128.png';
+	}
+	return $icon;
+}
+
 /**
  * Get all add-ons for LearnPress has installed
  * Identify a plugin is an add-on if it is already existing a tag 'learnpress' inside
@@ -169,10 +199,7 @@ function learn_press_get_add_ons( $options = array() ) {
 						//'last_updated' => isset( $plugin_data['Requires at least'] ) ? $plugin_data['Requires at least'] : '',
 						'homepage'          => $plugin_data['PluginURI'],
 						'short_description' => $plugin_data['Description'],
-						'icons'             => array(
-							'2x' => LP_PLUGIN_URL . '/assets/images/icon-128x128.png',
-							'1x' => LP_PLUGIN_URL . '/assets/images/icon-128x128.png'
-						)
+						'icons'             => learn_press_get_add_on_icons( $plugin_data, $plugin_file )
 					);
 					if ( !empty( $plugin_data['Requires at least'] ) ) {
 						$plugins[$plugin_file]['requires'] = $plugin_data['Requires at least'];
@@ -335,15 +362,15 @@ function learn_press_get_add_ons_from_wp( $args = null ) {
 			// Ensure that the array is indexed from 0
 			$_plugins = array_values( $_plugins );
 
-			$exclude  = (array) $args['exclude'];
-			$include  = $args['include'];
+			$exclude     = (array) $args['exclude'];
+			$include     = $args['include'];
 			$has_include = is_array( $include ) ? sizeof( $include ) : false;
 			for ( $n = sizeof( $_plugins ), $i = $n - 1; $i >= 0; $i -- ) {
 
 				$plugin = $_plugins[$i];
-				$key = $plugin->slug;
-				foreach( $all_plugins as $file => $p ){
-					if( strpos( $file, $plugin->slug  ) !== false ){
+				$key    = $plugin->slug;
+				foreach ( $all_plugins as $file => $p ) {
+					if ( strpos( $file, $plugin->slug ) !== false ) {
 						$key = $file;
 						break;
 					}
@@ -462,6 +489,7 @@ function learn_press_add_ons_content_tab_installed( $current ) {
 	learn_press_add_on_tab_description( __( 'All add-ons that you have installed', 'learnpress' ) );
 	learn_press_output_add_ons_list( $add_ons, $current );
 }
+
 add_action( 'learn_press_add_ons_content_tab_installed', 'learn_press_add_ons_content_tab_installed' );
 
 function learn_press_add_ons_content_tab_more( $current ) {
@@ -474,6 +502,7 @@ function learn_press_add_ons_content_tab_more( $current ) {
 	learn_press_add_on_tab_description( $description );
 	learn_press_output_add_ons_list( $add_ons, $current );
 }
+
 add_action( 'learn_press_add_ons_content_tab_more', 'learn_press_add_ons_content_tab_more' );
 
 function learn_press_add_ons_content_tab_bundle_activate( $current ) {
@@ -492,14 +521,15 @@ function learn_press_add_ons_content_tab_bundle_activate( $current ) {
 	learn_press_add_on_tab_description( $description );
 	learn_press_output_add_ons_list( $add_ons, $current );
 }
+
 add_action( 'learn_press_add_ons_content_tab_bundle_activate', 'learn_press_add_ons_content_tab_bundle_activate' );
 
-function learn_press_get_add_on_action_link( $plugin, $file ){
+function learn_press_get_add_on_action_link( $plugin, $file ) {
 	$action_links = array();
-	if ( ( current_user_can( 'install_plugins' ) || current_user_can( 'update_plugins' ) ) ){
+	if ( ( current_user_can( 'install_plugins' ) || current_user_can( 'update_plugins' ) ) ) {
 		$name = '';
 
-		if( !empty( $plugin['source'] ) && $plugin['source'] == 'wp' ) {
+		if ( !empty( $plugin['source'] ) && $plugin['source'] == 'wp' ) {
 			$status = install_plugin_install_status( $plugin );
 
 
@@ -531,7 +561,7 @@ function learn_press_get_add_on_action_link( $plugin, $file ){
 				}
 			}
 
-		}else{
+		} else {
 			if ( learn_press_is_plugin_install( $file ) ) {
 				if ( is_plugin_active( $file ) ) {
 					$action_links[] = '<a class="button disable-now" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url( wp_nonce_url( 'plugins.php?action=deactivate&plugin=' . $file, 'deactivate-plugin_' . $file ) ) . '" aria-label="' . esc_attr( sprintf( __( 'Disable %s now' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '"><span>' . __( 'Disable Now', 'learnpress' ) . '</span></a>';
@@ -544,10 +574,11 @@ function learn_press_get_add_on_action_link( $plugin, $file ){
 				}
 			}
 		}
-		//$action_links[] = $file;
+		$action_links[] = '<p class="plugin-version">' . sprintf( __( 'Version: %s', 'learnpress' ), $plugin['version'] ) . '</p>';
 	}
 	return $action_links;
 }
+
 function learn_press_output_add_ons_list( $add_ons, $tab = '' ) {
 	if ( !is_array( $add_ons ) || sizeof( $add_ons ) == 0 ) {
 		printf( '<h3>%s</h3>', __( 'No add-ons found', 'learnpress' ) );
@@ -565,12 +596,12 @@ function learn_press_output_add_ons_list( $add_ons, $tab = '' ) {
 
 
 		?>
-		<li class="plugin-card plugin-card-learnpress" id="learn-press-plugin-<?php echo $add_on['slug'];?>">
+		<li class="plugin-card plugin-card-learnpress" id="learn-press-plugin-<?php echo $add_on['slug']; ?>">
 			<div class="plugin-card-top">
-				<a href="" class="thickbox plugin-icon"><img src="<?php echo $add_on['icons']['2x']; ?>"></a>
+				<span class="plugin-icon"><img src="<?php echo learn_press_get_add_on_icon( $add_on['icons'] ); ?>"></span>
 
 				<div class="name column-name">
-					<h3><a href="" class="thickbox"><?php echo $add_on['name']; ?></a></h3>
+					<h3><?php echo $add_on['name']; ?></h3>
 				</div>
 				<div class="action-links">
 					<?php
@@ -640,8 +671,8 @@ function learn_press_add_on_admin_script() {
 
 add_action( 'admin_enqueue_scripts', 'learn_press_add_on_admin_script' );
 
-function learn_press_get_premium_add_ons( $addons ){
-	$add = end( $addons );
+function learn_press_get_premium_add_ons( $addons ) {
+	$add                          = end( $addons );
 	$addons['this-is-new-add-on'] = $add;
 	return $addons;
 }

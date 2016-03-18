@@ -56,6 +56,7 @@ function learn_press_add_ons_page() {
 		?>
 	</ul>
 	<div class="clear"></div>
+	<?php do_action( 'learn_press_add_ons_content_tab_' . $current, $current );	?>
+	</div>
 	<?php
-	do_action( 'learn_press_add_ons_content_tab_' . $current, $current );
 }
