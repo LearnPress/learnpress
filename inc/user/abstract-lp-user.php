@@ -755,6 +755,7 @@ class LP_Abstract_User {
 				if ( $updated ) {
 					$result['rec_id'] = $wpdb->get_var( $wpdb->prepare( "SELECT user_course_id FROM {$wpdb->prefix}learnpress_user_courses WHERE user_id = %d AND course_id = %d", $this->id, $course_id ) );
 					do_action( 'learn_press_user_finish_course', $course_id, $this->id, $result );
+
 				}
 			}
 		}

@@ -16,8 +16,16 @@ if (typeof LearnPress == 'undefined') {
 						LearnPress.doAjax({
 							prefix : '',
 							data   : data,
-							success: function (res) {
-								console.log(res)
+							success: function (response) {
+								LearnPress.Hook.applyFilters('learn_press_user_finished_course', response);
+								if (response && response.result == 'success') {
+									LearnPress.reload();
+								} else {
+									if (response.message) {
+										LearnPress.alert(response.message);
+									}
+								}
+								$.isFunction(callback) && callback(response);
 							}
 						});
 					}
@@ -47,8 +55,8 @@ if (typeof LearnPress == 'undefined') {
 			LearnPress.Hook.addFilter('learn_press_before_load_item', function ($view) {
 				LearnPress.MessageBox.blockUI();
 				if ($view.model.get('type') == 'lp_quiz') {
-					var redirect = LearnPress.Hook.applyFilters('learn_press_course_item_redirect_url', $('.course-item-'+$view.model.get('id')+' a').prop('href'), $view);
-					if ( redirect!== false) {
+					var redirect = LearnPress.Hook.applyFilters('learn_press_course_item_redirect_url', $('.course-item-' + $view.model.get('id') + ' a').prop('href'), $view);
+					if (redirect !== false) {
 						var win = window.open(redirect, '_blank');
 						win.focus();
 					}
@@ -107,7 +115,13 @@ if (typeof LearnPress == 'undefined') {
 		_finishCourse    : function (e) {
 			var $button = $(e.target),
 				data = $button.dataToJSON();
-			LearnPress.Course.finish(data);
+			data = LearnPress.Hook.applyFilters('learn_press_user_finish_course_data', data);
+			if (data && data.id) {
+				$button.prop('disabled', true);
+				LearnPress.Course.finish(data, function (response) {
+					$button.prop('disabled', false);
+				});
+			}
 		},
 		finishCourse     : function () {
 			if (!confirm(confirm_finish_course.confirm_finish_course)) return;
@@ -119,7 +133,8 @@ if (typeof LearnPress == 'undefined') {
 					course_id: course_id
 				},
 				success: function (response) {
-					if (response.finish) {
+					response = LearnPress.parseJSON(response)
+					if (response.result == 'success') {
 						LearnPress.reload();
 					}
 				}

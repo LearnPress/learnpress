@@ -195,7 +195,7 @@ if (typeof window.LearnPress == 'undefined') {
 		hide           : function (delay, instance) {
 			if (instance) {
 				this._removeInstance(instance.id);
-			} else if( this.instance ){
+			} else if (this.instance) {
 				this._removeInstance(this.instance.id);
 			}
 			if (this.instances.length == 0) {
@@ -209,7 +209,7 @@ if (typeof window.LearnPress == 'undefined') {
 					.unbind('resize.message-box', this.update)
 					.unbind('scroll.message-box', this.update);
 			} else {
-				if( this.instance ) {
+				if (this.instance) {
 					this._createWindow(this.instance.message, this.instance.title, this.instance.buttons)
 				}
 			}
@@ -434,14 +434,15 @@ if (typeof window.LearnPress == 'undefined') {
 				data = args.action ? $.extend(args.data, {action: action}) : args.data;
 
 			$.ajax({
-				data   : data,
-				url    : ( args.url || window.location.href ),
-				type   : type,
-				success: function (response) {
+				data    : data,
+				url     : ( args.url || window.location.href ),
+				type    : type,
+				dataType: 'html',
+				success : function (response) {
 					response = LearnPress.parseResponse(response, dataType);
 					$.isFunction(args.success) && args.success(response);
 				},
-				error  : function () {
+				error   : function () {
 					$.isFunction(args.error) && args.error.apply(null, LearnPress.funcArgs2Array());
 				}
 			});

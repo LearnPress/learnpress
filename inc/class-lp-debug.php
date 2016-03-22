@@ -52,7 +52,12 @@ class LP_Debug {
 			return true;
 		}
 
-		if ( $this->_handles[$handle] = @fopen( learn_press_get_log_file_path( $handle ), 'a' ) ) {
+		$path = learn_press_get_log_file_path( $handle );
+
+		if ( $this->_handles[$handle] = fopen( $path, 'a' ) ) {
+			if ( filesize( $path ) >= 1024 * 1024 * 1 ) {
+				ftruncate( $this->_handles[$handle], 0 );
+			}
 			return true;
 		}
 
@@ -74,7 +79,7 @@ class LP_Debug {
 				print_r( $message );
 				$message = ob_get_clean();
 			}
-			@fwrite( $this->_handles[$handle], "-----" . $time . "-----\n" . $message . "\n" );
+			fwrite( $this->_handles[$handle], "-----" . $time . "-----\n" . $message . "\n" );
 		}
 		do_action( 'learn_press_log_add', $handle, $message );
 	}
