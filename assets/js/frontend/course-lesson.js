@@ -77,7 +77,10 @@
 			var $content = this.model.get('content');
 			this.$el.replaceWith($content);
 			this.setElement($content);
-			LearnPress.setUrl(this.model.get('rootUrl'));
+			var url = LearnPress.Hook.applyFilters('learn_press_set_item_url', this.model.get('rootUrl'), this);
+			if (url) {
+				LearnPress.setUrl(url);
+			}
 			LearnPress.Hook.doAction('learn_press_item_content_loaded', $content, this);
 			//}
 		},
