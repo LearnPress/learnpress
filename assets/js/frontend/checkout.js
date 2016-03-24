@@ -3,6 +3,7 @@ if (typeof window.LearnPress == 'undefined') {
 }
 ;
 (function ($) {
+	"use strict";
 	LearnPress.reload = function (url) {
 		if (!url) {
 			url = window.location.href;

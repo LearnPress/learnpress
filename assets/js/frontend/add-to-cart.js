@@ -1,4 +1,5 @@
 ;(function($){
+	"use strict";
 	function _ready(){
 		$('form.purchase-course').submit(function(){
 			var $button = $('button.purchase-button', this),

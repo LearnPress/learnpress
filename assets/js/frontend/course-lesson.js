@@ -1,4 +1,5 @@
 ;(function ($) {
+	"use strict";
 	$.LP_Course_Item = function () {
 
 	}
@@ -75,6 +76,7 @@
 		},
 		updateItem    : function () {
 			var $content = this.model.get('content');
+			console.log('xxx', $content)
 			this.$el.replaceWith($content);
 			this.setElement($content);
 			var url = LearnPress.Hook.applyFilters('learn_press_set_item_url', this.model.get('rootUrl'), this);
@@ -148,7 +150,7 @@
 				if (item) {
 					if (this.view) {
 						this.view.undelegateEvents();
-						this.view.model.set('content', this.view.$el);
+						//this.view.model.set('content', this.view.$el);
 						$('.course-item.item-current')
 							.removeClass('item-current');
 						$('.course-item.course-item-' + item.get('id'))

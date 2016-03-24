@@ -331,6 +331,7 @@ function learn_press_get_add_ons_from_wp( $args = null ) {
 			'icons'           => true,
 			'active_installs' => true
 		),
+		'tag'				=> 'learnpress',
 		// Send the locale and installed plugin slugs to the API so it can provide context-sensitive results.
 		'locale'            => get_locale(),
 		'installed_plugins' => learn_press_get_installed_plugin_slugs(),

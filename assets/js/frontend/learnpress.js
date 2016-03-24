@@ -7,6 +7,7 @@
 	window.LearnPress = {};
 }
 ;(function ($) {
+	"use strict";
 	LearnPress = $.extend({
 		setUrl    : function (url, title) {
 			history.pushState({}, title, url);

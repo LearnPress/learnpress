@@ -3,6 +3,7 @@ if (typeof window.LearnPress == 'undefined') {
 }
 ;
 (function ($) {
+	"use strict";
 	LearnPress.Enroll = {
 		$form              : null,
 		init               : function () {

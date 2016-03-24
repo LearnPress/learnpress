@@ -5,6 +5,7 @@ if (typeof LearnPress == 'undefined') {
 	window.LearnPress = {}
 }
 ;(function ($) {
+	"use strict";
 	LearnPress.Course = $.extend(
 		LearnPress.Course || {}, {
 			finish: function (data, callback) {

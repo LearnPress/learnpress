@@ -1,5 +1,6 @@
 if (typeof LearnPress == 'undefined') var LearnPress = {};
 (function ($) {
+	"use strict";
 	var LearnPress_Model_Quiz = window.LearnPress_Model_Quiz = Backbone.Model.extend({
 		defaults           : {
 			//question_id: 0
