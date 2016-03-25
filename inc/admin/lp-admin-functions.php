@@ -866,7 +866,7 @@ add_filter( 'pre_get_posts', 'set_post_order_in_admin' );
 function learn_press_add_row_action_link( $actions ) {
 	global $post;
 	if ( LP()->course_post_type == $post->post_type ) {
-		$duplicate_link = admin_url( 'edit.php?post_type=lp_course&action=lp-duplicate-course&post=' . $post->ID );
+		$duplicate_link = admin_url( 'edit.php?post_type=lp_course&action=lp-duplicate-course&post=' . $post->ID . '&nonce=' . wp_create_nonce( 'lp-duplicate-' . $post->ID ) );
 		$duplicate_link = array(
 			array(
 				'link'  => $duplicate_link,
@@ -893,6 +893,26 @@ function learn_press_add_row_action_link( $actions ) {
 
 add_filter( 'page_row_actions', 'learn_press_add_row_action_link' );
 
+function learn_press_copy_post_meta( $from_id, $to_id){
+	global $wpdb;
+	$course_meta = $wpdb->get_results(
+		$wpdb->prepare("SELECT meta_key, meta_value FROM $wpdb->postmeta WHERE post_id = %d", $from_id )
+	);
+	if ( count( $course_meta ) != 0 ) {
+		$sql_query     = "INSERT INTO $wpdb->postmeta (post_id, meta_key, meta_value) ";
+		$sql_query_sel = array();
+
+		foreach ( $course_meta as $meta ) {
+			$meta_key   = $meta->meta_key;
+			$meta_value = addslashes( $meta->meta_value );
+
+			$sql_query_sel[] = "SELECT {$to_id}, '$meta_key', '$meta_value'";
+		}
+
+		$sql_query .= implode( " UNION ALL ", $sql_query_sel );
+		$wpdb->query( $sql_query );
+	}
+}
 /**
  * Duplicate a course when user hit "Duplicate" button
  *
@@ -905,6 +925,10 @@ function learn_press_process_duplicate_action() {
 
 	if ( isset( $_REQUEST['action'] ) && ( $action = $_REQUEST['action'] ) == 'lp-duplicate-course' ) {
 		$post_id = isset( $_REQUEST['post'] ) ? $_REQUEST['post'] : 0;
+		$nonce   = !empty( $_REQUEST['nonce'] ) ? $_REQUEST['nonce'] : '';
+		if ( !wp_verify_nonce( $nonce, 'lp-duplicate-' . $post_id ) ) {
+			wp_die( __( 'Error', 'learnpress' ) );
+		}
 		if ( $post_id && is_array( $post_id ) ) {
 			$post_id = array_shift( $post_id );
 		}
@@ -942,6 +966,11 @@ function learn_press_process_duplicate_action() {
 		// insert new course and get it ID
 		$new_post_id = wp_insert_post( $args );
 
+		if ( !$new_post_id ) {
+			LP_Admin_Notice::add_redirect( __( '<p>Sorry! Duplicate the course failed!</p>', 'learnpress' ) );
+			wp_redirect( admin_url( 'edit.php?post_type=lp_course' ) );
+			exit();
+		}
 		// assign related tags/categories to new course
 		$taxonomies = get_object_taxonomies( $post->post_type );
 		foreach ( $taxonomies as $taxonomy ) {
@@ -951,22 +980,57 @@ function learn_press_process_duplicate_action() {
 
 		// duplicate course data
 		global $wpdb;
-		$course_meta = $wpdb->get_results( "SELECT meta_key, meta_value FROM $wpdb->postmeta WHERE post_id=$post_id" );
-		if ( count( $course_meta ) != 0 ) {
-			$sql_query     = "INSERT INTO $wpdb->postmeta (post_id, meta_key, meta_value) ";
-			$sql_query_sel = array();
+		//learn_press_copy_post_meta( $post_id, $new_post_id );
 
-			foreach ( $course_meta as $meta ) {
-				$meta_key   = $meta->meta_key;
-				$meta_value = addslashes( $meta->meta_value );
-
-				$sql_query_sel[] = "SELECT $new_post_id, '$meta_key', '$meta_value'";
+		$query = $wpdb->prepare( "
+			SELECT *
+			FROM {$wpdb->prefix}learnpress_sections s
+			INNER JOIN {$wpdb->posts} c ON c.ID = s.section_course_id
+			WHERE c.ID = %d
+		", $post->ID );
+		LP_Debug::instance()->add( $query );
+		if ( $sections = $wpdb->get_results( $query ) ) {
+			foreach ( $sections as $section ) {
+				$new_section_id = $wpdb->insert(
+					$wpdb->prefix . 'learnpress_sections',
+					array(
+						'section_name'        => $section->section_name,
+						'section_course_id'   => $new_post_id,
+						'section_order'       => $section->section_order,
+						'section_description' => $section->section_description
+					),
+					array( '%s', '%d', '%d', '%s' )
+				);
+				if ( $new_section_id ) {
+					$query = $wpdb->prepare( "
+						SELECT i.*
+						FROM {$wpdb->posts} i
+						INNER JOIN {$wpdb->prefix}learnpress_sections s ON i.item_id = i.ID
+						WHERE s.section_id = %d
+					", $section->section_id );
+					if ( $items = $wpdb->get_results( $query ) ) {
+						foreach ( $items as $item ) {
+							$item_args = (array) $item;
+							unset(
+								$item_args['ID'],
+								$item_args['post_author'],
+								$item_args['post_date'],
+								$item_args['post_date_gmt'],
+								$item_args['post_modified'],
+								$item_args['post_modified_gmt'],
+								$item_args['comment_count']
+							);
+							$new_item_id = $wpdb->insert(
+								$wpdb->posts,
+								$item_args
+							);
+						}
+					}
+				}
 			}
-
-			$sql_query .= implode( " UNION ALL ", $sql_query_sel );
-			$wpdb->query( $sql_query );
 		}
-		wp_redirect( admin_url( 'edit.php?post_type=lpr_course' ) );
+		LP_Admin_Notice::add_redirect( __( '<p>Course duplicated.</p>', 'learnpress' ) );
+		wp_redirect( admin_url( "post.php?post={$new_post_id}&action=edit" ) );
 		die();
 	}
 }

@@ -97,9 +97,18 @@
 				}).filter(":checked").trigger('change');
 
 				///////////
-				var $checked = null;
-				$checked = $('input[name="_lp_required_enroll"]').bind('click change', function () {
+				var $chkPayment = $( 'input[name="_lp_payment"]').on('change', function(){
+					var toggle = this.value != 'yes';
+					$('.lp-course-price-field').toggleClass('hide-if-js', toggle).attr('xxx', Math.random());
+					$('.lp-course-required-enroll').toggleClass('hide-if-js', !toggle);
+				})
+				$chkPayment.filter(':checked').trigger('change');
 
+				if( $('input[name="_lp_course_result"]:checked').length == 0 ){
+					$('input[name="_lp_course_result"]').filter(function(){return this.value == 'evaluate_lesson';}).prop('checked', true)
+				}
+/*
+					;$('input[name="_lp_required_enroll"]').bind('click change', function () {
 					var payment_field = $('.lp-course-payment-field').toggleClass('hide-if-js', !( $(this).val() != 'no' ));
 					if (payment_field.is(':visible')) {
 						$('input[name="_lp_payment"]:checked', payment_field).trigger('change')
@@ -114,10 +123,10 @@
 				}
 
 				$('input[name="_lp_payment"]').bind('click change', function () {
-					$('.lp-course-price-field').toggleClass('hide-if-js', !( $(this).val() != 'free' ) || ( $('input[name="_lp_required_enroll"]:checked').val() == 'no' ));
+					$('.lp-course-price-field').toggleClass('hide-if-js', !( $(this).val() != 'no' ) || ( $('input[name="_lp_required_enroll"]:checked').val() == 'no' ));
 				}).filter(':checked').trigger('change');
 
-				$checked.closest('.rwmb-field').removeClass('hide-if-js');
+				$checked.closest('.rwmb-field').removeClass('hide-if-js');*/
 				////////////////
 
 				$(document).on('mouseover', '.lp-modal-search li', function () {
@@ -1377,6 +1386,7 @@
 
 	function _ready() {
 		$('#learn-press-button-toggle-editor').on('click _click', _toggleEditorHandler).trigger('_click');
+
 		_makeListSortable();
 	}
 

@@ -162,7 +162,7 @@ class LP_Install {
 	static function install() {
 		self::_create_options();
 		self::_create_tables();
-		self::_create_files();
+		self::create_files();
 
 		$current_version = get_option( 'learnpress_version' );
 		$current_db_version = get_option( 'learnpress_db_version' );
@@ -177,7 +177,7 @@ class LP_Install {
 
 	}
 
-	private static function _create_files() {
+	static function create_files() {
 		$upload_dir      = wp_upload_dir();
 		$files = array(
 			array(

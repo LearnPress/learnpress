@@ -13,7 +13,7 @@ if ( !defined( 'ABSPATH' ) ) {
 if( !has_post_thumbnail() ){
 	return;
 }
-
+global $post;
 ?>
 <div class="course-thumbnail">
 	<?php

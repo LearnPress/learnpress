@@ -376,7 +376,8 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 
 		static function payment_meta_box() {
 
-			$prefix = '_lp_';
+			$course_id = !empty( $_GET['post'] ) ? $_GET['post'] : 0;
+			$prefix    = '_lp_';
 
 			$meta_box = array(
 				'id'       => 'course_payment',
@@ -384,18 +385,6 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 				'priority' => 'high',
 				'pages'    => array( LP_COURSE_CPT ),
 				'fields'   => array(
-					array(
-						'name'    => __( 'Requires enroll', 'learnpress' ),
-						'id'      => "{$prefix}required_enroll",
-						'type'    => 'radio',
-						'desc'    => __( 'Require users logged in to study or public to all', 'learnpress' ),
-						'options' => array(
-							'yes' => __( 'Yes, enroll is required', 'learnpress' ),
-							'no'  => __( 'No', 'learnpress' ),
-						),
-						'std'     => 'yes',
-						'class'   => 'hide-if-js'
-					),
 					array(
 						'name'    => __( 'Course payment', 'learnpress' ),
 						'id'      => "{$prefix}payment",
@@ -410,6 +399,8 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 					)
 				)
 			);
+
+			$payment = get_post_meta( $course_id, '_lp_payment', true );
 
 			if ( current_user_can( 'manage_options' ) ) {
 				$message = __( 'If free, this field is empty or set 0. (Only admin can edit this field)', 'learnpress' );
@@ -438,7 +429,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						'step'  => 0.01,
 						'desc'  => $message,
 						'std'   => $price,
-						'class' => 'lp-course-price-field hide-if-js'
+						'class' => 'lp-course-price-field' . ( $payment != 'yes' ? ' hide-if-js' : '' )
 					)
 				);
 			} else {
@@ -451,11 +442,28 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						'min'   => 0,
 						'step'  => 0.01,
 						'desc'  => __( 'The course price you want to suggest for admin to set.', 'learnpress' ),
-						'class' => 'lp-course-price-field hide-if-js',
+						'class' => 'lp-course-price-field' . ( $payment != 'yes' ? ' hide-if-js' : '' ),
 						'std'   => 0
 					)
 				);
 			}
+			$meta_box['fields'] = array_merge(
+				$meta_box['fields'],
+				array(
+					array(
+						'name'    => __( 'Requires enroll', 'learnpress' ),
+						'id'      => "{$prefix}required_enroll",
+						'type'    => 'radio',
+						'desc'    => __( 'Require users logged in to study or public to all', 'learnpress' ),
+						'options' => array(
+							'yes' => __( 'Yes, enroll is required', 'learnpress' ),
+							'no'  => __( 'No', 'learnpress' ),
+						),
+						'std'     => 'yes',
+						'class'   =>  'lp-course-required-enroll' . ( $payment == 'yes' ? ' hide-if-js' : '' )
+					)
+				)
+			);
 			return apply_filters( 'learn_press_course_payment_meta_box_args', $meta_box );
 		}
 

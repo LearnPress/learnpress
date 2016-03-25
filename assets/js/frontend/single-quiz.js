@@ -40,7 +40,9 @@ if (typeof LearnPress == 'undefined') var LearnPress = {};
 					},
 					complete: function () {
 						that.set('question_id', next_id);
-						$.isFunction(callback) && callback.apply(that)
+						$.isFunction(callback) && callback.apply(that);
+
+						LearnPress.Hook.doAction('learn_press_next_question', next_id);
 					}
 				});
 			}
@@ -58,11 +60,14 @@ if (typeof LearnPress == 'undefined') var LearnPress = {};
 						},
 						complete: function () {
 							that.set('question_id', prev_id);
-							$.isFunction(callback) && callback.apply(that)
+							$.isFunction(callback) && callback.apply(that);
+							LearnPress.Hook.doAction('learn_press_previous_question', prev_id);
 						}
 					});
 				} else {
 					this.set('question_id', prev_id);
+					$.isFunction(callback) && callback.apply(that);
+					LearnPress.Hook.doAction('learn_press_previous_question', prev_id);
 				}
 			}
 		},
@@ -393,8 +398,9 @@ if (typeof LearnPress == 'undefined') var LearnPress = {};
 					onYes: function () {
 						LearnPress.MessageBox.blockUI();
 						that.retakeQuiz({
-							complete: function () {
+							complete: function (response) {
 								LearnPress.MessageBox.hide();
+								LearnPress.Hook.doAction('learn_press_user_retaken_quiz', response);
 							}
 						});
 					}
@@ -411,6 +417,7 @@ if (typeof LearnPress == 'undefined') var LearnPress = {};
 						that.finishQuiz({
 							complete: function (response) {
 								LearnPress.MessageBox.hide();
+								LearnPress.Hook.doAction('learn_press_user_finished_quiz', response);
 							}
 						});
 					}

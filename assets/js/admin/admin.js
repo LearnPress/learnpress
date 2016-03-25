@@ -171,19 +171,6 @@ jQuery(document).ready(function ($) {
 	$("[id*=" + check + "]").css("display", "");
 });
 
-jQuery(document).ready(function ($) {
-	var input = $('#_lpr_course_price');
-	var input2 = $('#_lpr_course_suggestion_price');
-	$('[name=_lpr_course_payment]').change(function () {
-		if ($('[value=free]').is(':checked')) {
-			input.prop('disabled', true);
-			input2.prop('disabled', true);
-		} else {
-			input.prop('disabled', false);
-			input2.prop('disabled', false);
-		}
-	});
-});
 
 jQuery(document).ready(function ($) {
 	$('#wp-admin-bar-be_teacher').click(function () {
@@ -247,6 +234,7 @@ jQuery(document).ready(function($){
 		return false;
 	})
 
+	return;
 	// admin notice install sample data
 
 

@@ -53,14 +53,21 @@ class LP_Debug {
 		}
 
 		$path = learn_press_get_log_file_path( $handle );
+		$f    = @fopen( $path, 'a' );
 
-		if ( $this->_handles[$handle] = fopen( $path, 'a' ) ) {
-			if ( filesize( $path ) >= 1024 * 1024 * 1 ) {
-				ftruncate( $this->_handles[$handle], 0 );
-			}
-			return true;
+		// if path is not exists, creates path and try again!
+		if ( !$f ) {
+			LP_Install::create_files();
+			$f = @fopen( $path, 'a' );
 		}
 
+		if ( $f ) {
+			if ( filesize( $path ) >= 1024 * 1024 * 1 ) {
+				ftruncate( $f, 0 );
+			}
+			$this->_handles[$handle] = $f;
+			return true;
+		}
 		return false;
 	}
 
@@ -70,9 +77,16 @@ class LP_Debug {
 	 *
 	 * @param string $handle
 	 * @param string $message
+	 * @param bool   $clear
 	 */
-	public function add( $message, $handle = 'log' ) {
+	public function add( $message, $handle = 'log', $clear = false ) {
+		if ( !$handle ) {
+			$handle = 'log';
+		}
 		if ( $this->open( $handle ) && is_resource( $this->_handles[$handle] ) ) {
+			if ( $clear ) {
+				$this->clear( $handle );
+			}
 			$time = date_i18n( 'm-d-Y @ H:i:s -' );
 			if ( !is_string( $message ) ) {
 				ob_start();
