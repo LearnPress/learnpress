@@ -1,6 +1,7 @@
 if (typeof LearnPress == 'undefined') var LearnPress = {};
 (function ($) {
 	"use strict";
+
 	var LearnPress_Model_Quiz = window.LearnPress_Model_Quiz = Backbone.Model.extend({
 		defaults           : {
 			//question_id: 0
@@ -313,7 +314,7 @@ if (typeof LearnPress == 'undefined') var LearnPress = {};
 						callbackReturn = undefined;
 					$.isFunction(args.complete) && ( callbackReturn = args.complete.call(LearnPress.Quiz, json) );
 					LearnPress.Hook.doAction('learn_press_finish_quiz', that.model.get('id'), that);
-					LearnPress.MessageBox.show('Congrats! You have finished this quiz', {
+					LearnPress.MessageBox.show(single_quiz_localize.finished_quiz, {
 						autohide: 2000,
 						onHide  : function () {
 							if (callbackReturn && callbackReturn.redirect) {
@@ -346,7 +347,7 @@ if (typeof LearnPress == 'undefined') var LearnPress = {};
 					LearnPress.MessageBox.hide();
 					if (json.result == 'success') {
 						$.isFunction(args.complete) && args.complete.call(LearnPress.Quiz, json);
-						LearnPress.MessageBox.show('Congrats! You have re-taken this quiz. Please wait a moment and the page will reload', {
+						LearnPress.MessageBox.show(single_quiz_localize.retaken_quiz, {
 							autohide: 2000,
 							onHide  : function () {
 								LearnPress.reload();
@@ -402,39 +403,63 @@ if (typeof LearnPress == 'undefined') var LearnPress = {};
 		_retakeQuiz    : function () {
 			var that = this;
 			if (LearnPress.Hook.applyFilters('learn_press_before_retake_quiz', true, that) !== false) {
-				LearnPress.MessageBox.show(single_quiz_localize.confirm_retake_quiz, {
-					buttons: 'yesNo',
-					events : {
-						onYes: function () {
-							LearnPress.MessageBox.blockUI();
-							that.retakeQuiz({
-								complete: function (response) {
-									LearnPress.MessageBox.hide();
-									LearnPress.Hook.doAction('learn_press_user_retaken_quiz', response, that);
-								}
-							});
-						}
+				LearnPress.confirm(single_quiz_localize.confirm_retake_quiz, function (confirm) {
+					if (!confirm) {
+						return;
 					}
-				});
+					LearnPress.MessageBox.blockUI();
+					that.retakeQuiz({
+						complete: function (response) {
+							LearnPress.MessageBox.hide();
+							LearnPress.Hook.doAction('learn_press_user_retaken_quiz', response, that);
+						}
+					});
+				})
+				/*
+				 LearnPress.MessageBox.show(single_quiz_localize.confirm_retake_quiz, {
+				 buttons: 'yesNo',
+				 events : {
+				 onYes: function () {
+				 LearnPress.MessageBox.blockUI();
+				 that.retakeQuiz({
+				 complete: function (response) {
+				 LearnPress.MessageBox.hide();
+				 LearnPress.Hook.doAction('learn_press_user_retaken_quiz', response, that);
+				 }
+				 });
+				 }
+				 }
+				 });*/
 			}
 		},
 		_finishQuiz    : function () {
 			var that = this;
 			if (LearnPress.Hook.applyFilters('learn_press_before_finish_quiz', true, that) !== false) {
-				LearnPress.MessageBox.show(single_quiz_localize.confirm_finish_quiz, {
-					buttons: 'yesNo',
-					events : {
-						onYes: function () {
-							LearnPress.MessageBox.blockUI('Your quiz will come to finish! Please wait...');
-							that.finishQuiz({
-								complete: function (response) {
-									LearnPress.MessageBox.hide();
-									LearnPress.Hook.doAction('learn_press_user_finished_quiz', response, that);
-								}
-							});
-						}
+				LearnPress.confirm(single_quiz_localize.confirm_finish_quiz, function (confirm) {
+					if (!confirm) {
+						return;
 					}
+					that.finishQuiz({
+						complete: function (response) {
+							LearnPress.MessageBox.hide();
+							LearnPress.Hook.doAction('learn_press_user_finished_quiz', response, that);
+						}
+					});
 				});
+				/*LearnPress.MessageBox.show(single_quiz_localize.confirm_finish_quiz, {
+				 buttons: 'yesNo',
+				 events : {
+				 onYes: function () {
+				 LearnPress.MessageBox.blockUI('Your quiz will come to finish! Please wait...');
+				 that.finishQuiz({
+				 complete: function (response) {
+				 LearnPress.MessageBox.hide();
+				 LearnPress.Hook.doAction('learn_press_user_finished_quiz', response, that);
+				 }
+				 });
+				 }
+				 }
+				 });*/
 			}
 		},
 		_updateQuestion: function ($newQuestion) {

@@ -257,41 +257,11 @@ function learn_press_is_free_course( $course_id = null ) {
  * @return  string
  */
 function learn_press_get_user_course_status( $user_id = null, $course_id = null ) {
-	_deprecated_function( __FUNCTION__, '1.0', 'LP_User() -> get_course_status');
+	//_deprecated_function( __FUNCTION__, '1.0', 'LP_User() -> get_course_status');
 	if( $course = LP_Course::get_course( $course_id ) && $user = learn_press_get_user( $user_id ) ){
 		return $user->get_course_status( $course_id );
 	}
 	return false;
-	$status = null;
-	// try to get current user if not passed
-	if ( !$user_id ) $user_id = get_current_user_id();
-
-	// try to get course id if not passed
-	if ( !$course_id ) {
-		global $course;
-		$course_id = $course ? $course->id : get_the_ID();
-	}
-
-	if ( $course_id && $user_id ) {
-		//add_user_meta(  $user_id, '_lpr_order_id', 40 );
-		$orders = get_user_meta( $user_id, '_lpr_order_id' );
-		$orders = array_unique( $orders );
-		if ( $orders ) {
-			$order_id = 0;
-			foreach ( $orders as $order ) {
-				$order_items = get_post_meta( $order, '_learn_press_order_items', true );
-				if ( $order_items && $order_items->products ) {
-					if ( !empty( $order_items->products[$course_id] ) ) {
-						$order_id = max( $order_id, $order );
-					}
-				}
-			}
-
-			if ( ( $order = get_post( $order_id ) ) && $order->post_status != 'lpr-draft' )
-				$status = get_post_meta( $order_id, '_learn_press_transaction_status', true );
-		}
-	}
-	return $status;
 }
 
 

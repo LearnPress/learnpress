@@ -52,21 +52,31 @@ class LP_Quiz {
 		$this->_init();
 	}
 
-	protected function _init(){
+	protected function _init() {
 		add_action( 'wp_head', array( $this, 'frontend_assets' ) );
 	}
 
-	function get_localize(){
+	function get_localize() {
 		$localize = array(
-			'confirm_finish_quiz'		=> __( 'Are you sure you want to completely finish this quiz?', 'learnpress' ),
-			'confirm_retake_quiz'		=> __( 'Are you sure you want to retake this quiz?', 'learnpress' ),
-			'quiz_time_is_over_message' => __( 'The time is over! Your quiz will automate come to finish', 'learnpress' ),
-			'quiz_time_is_over_title'   => __( 'Time up!', 'learnpress' )
+			'confirm_finish_quiz' => array(
+				'title'   => __( 'Finish quiz', 'learnpress' ),
+				'message' => __( 'Are you sure you want to completely finish this quiz?', 'learnpress' )
+			),
+			'confirm_retake_quiz' => array(
+				'title'   => __( 'Retake quiz', 'learnpress' ),
+				'message' => __( 'Are you sure you want to retake this quiz?', 'learnpress' )
+			),
+			'quiz_time_is_over'   => array(
+				'title'   => __( 'Time over' ),
+				'message' => __( 'The time is over! Your quiz will automate come to finish', 'learnpress' )
+			),
+			'finished_quiz'       => __( 'Congrats! You have finished this quiz', 'learnpress' ),
+			'retaken_quiz'        => __( 'Congrats! You have re-taken this quiz. Please wait a moment and the page will reload', 'learnpress' )
 		);
 		return apply_filters( 'learn_press_single_quiz_localize', $localize, $this );
 	}
 
-	function get_settings(){
+	function get_settings() {
 		$current_question_id = learn_press_get_current_question();// !empty( $_REQUEST['question_id'] ) ? intval( $_REQUEST['question_id'] ) : 0;
 		$questions           = learn_press_get_quiz_questions();
 		if ( $questions ) {
@@ -77,18 +87,18 @@ class LP_Quiz {
 		if ( !$current_question_id || !in_array( $current_question_id, $question_ids ) ) {
 			$current_question_id = reset( $question_ids );
 		}
-		$question = LP_Question_Factory::get_question($current_question_id );
+		$question = LP_Question_Factory::get_question( $current_question_id );
 		$user_id  = get_current_user_id();
 
 		$user = learn_press_get_current_user();
 		$js   = array(
-			'time_format'	=> $this->duration > 300 ? 'h%:m%:s%' : 'm%:s%',
-			'total_time'	=> $this->duration,
+			'time_format'    => $this->duration > 300 ? 'h%:m%:s%' : 'm%:s%',
+			'total_time'     => $this->duration,
 			'id'             => $this->id,
 			'questions'      => $question_ids,
-			'question_id'    => absint($current_question_id),
+			'question_id'    => absint( $current_question_id ),
 			'status'         => $user->get_quiz_status( $this->id ),
-			'time_remaining' => ( $time_remaining = $user->get_quiz_time_remaining( $this->id ) ) !== false && !in_array( $user->get_quiz_status( $this->id ), array( '', 'completed') ) ? $time_remaining : $this->duration,
+			'time_remaining' => ( $time_remaining = $user->get_quiz_time_remaining( $this->id ) ) !== false && !in_array( $user->get_quiz_status( $this->id ), array( '', 'completed' ) ) ? $time_remaining : $this->duration,
 			'permalink'      => get_the_permalink(),
 			'ajaxurl'        => admin_url( 'admin-ajax.php' ),
 			'user_id'        => $user->id
@@ -97,8 +107,8 @@ class LP_Quiz {
 		return apply_filters( 'learn_press_single_quiz_params', $js, $this );
 	}
 
-	function frontend_assets(){
-		if( learn_press_is_quiz() && get_the_ID() == $this->id ){
+	function frontend_assets() {
+		if ( learn_press_is_quiz() && get_the_ID() == $this->id ) {
 			$translate = $this->get_localize();
 			LP_Assets::add_localize( $translate, false, 'single-quiz' );
 			LP_Assets::add_param( $this->get_settings(), false, 'single-quiz' );
@@ -128,11 +138,11 @@ class LP_Quiz {
 			return $this->{$key};
 		}
 		$value = null;
-		switch( $key ){
+		switch ( $key ) {
 			case 'current_question':
 
-				if( ( $question = learn_press_get_request( 'question' ) ) && learn_press_is_quiz() ){
-					$value = LP_Question_Factory::get_question($question );
+				if ( ( $question = learn_press_get_request( 'question' ) ) && learn_press_is_quiz() ) {
+					$value = LP_Question_Factory::get_question( $question );
 				}
 				break;
 			case 'questions':
@@ -143,7 +153,7 @@ class LP_Quiz {
 					$key = '_lp_' . $key;
 				}
 				$value = get_post_meta( $this->id, $key, true );
-				if( $key == '_lp_duration' ){
+				if ( $key == '_lp_duration' ) {
 					$value = absint( $value ) * 60;
 				}
 		}
@@ -169,13 +179,13 @@ class LP_Quiz {
 	function get_course() {
 		if ( empty( $this->course ) ) {
 			global $wpdb;
-			$query = $wpdb->prepare("
+			$query = $wpdb->prepare( "
 				SELECT c.*
 				FROM {$wpdb->posts} c
 				INNER JOIN {$wpdb->learnpress_sections} s on c.ID = s.section_course_id
 				INNER JOIN {$wpdb->learnpress_section_items} si on si.section_id = s.section_id AND si.item_id = %d
 				", $this->id );
-			if( $course_id = $wpdb->get_var( $query ) ){
+			if ( $course_id = $wpdb->get_var( $query ) ) {
 				$this->course = LP_Course::get_course( $course_id );
 			}
 		}
@@ -214,10 +224,10 @@ class LP_Quiz {
 		return false;
 	}
 
-	function get_questions( $force = false ){
-		if( empty( $this->questions ) || $force ){
+	function get_questions( $force = false ) {
+		if ( empty( $this->questions ) || $force ) {
 			global $wpdb;
-			$query = $wpdb->prepare("
+			$query = $wpdb->prepare( "
 				SELECT q.*, qq.params
 				FROM {$wpdb->posts} q
 				INNER JOIN {$wpdb->learnpress_quiz_questions} qq ON qq.question_id = q.ID
@@ -225,37 +235,37 @@ class LP_Quiz {
 				AND qq.quiz_id = %d
 			", LP()->question_post_type, $this->id );
 
-			if( $this->questions = $wpdb->get_results( $query, OBJECT_K ) ){
-				foreach( $this->questions as $id => $question ){
-					$question->params = maybe_unserialize( $question->params );
-					$this->questions[ $id ] = $question	;
+			if ( $this->questions = $wpdb->get_results( $query, OBJECT_K ) ) {
+				foreach ( $this->questions as $id => $question ) {
+					$question->params     = maybe_unserialize( $question->params );
+					$this->questions[$id] = $question;
 				}
 			}
 		}
 		return apply_filters( 'learn_press_quiz_questions', $this->questions, $this->id, $force );
 	}
 
-	function get_buttons(){
-		$user = learn_press_get_current_user();
+	function get_buttons() {
+		$user    = learn_press_get_current_user();
 		$buttons = array();
 		if ( !$user->has( 'started-quiz', $this->id ) ):
 			$buttons['start'] = sprintf( '<button class="button-start-quiz" data-id="%d">%s</button>', $this->id, apply_filters( 'learn_press_start_quiz_button_text', __( "Start Quiz", "learn_press" ) ) );
-			$buttons['start'] .= wp_nonce_field( 'start-quiz', 'start-quiz-nonce');
+			$buttons['start'] .= wp_nonce_field( 'start-quiz', 'start-quiz-nonce' );
 		endif;
 
 		$buttons['finish'] = sprintf( '<button class="button-finish-quiz" data-id="%d">%s</button>', $this->id, apply_filters( 'learn_press_finish_quiz_button_text', __( "Finish Quiz", "learn_press" ) ) );
-		$buttons['finish'] .= wp_nonce_field( 'finish-quiz', 'finish-quiz-nonce');
+		$buttons['finish'] .= wp_nonce_field( 'finish-quiz', 'finish-quiz-nonce' );
 
 
 		if ( $remain = $user->can( 'retake-quiz', $this->id ) ):
 			$buttons['retake'] = sprintf( '<button class="button-retake-quiz" data-id="%d">%s (+%d)</button>', $this->id, apply_filters( 'learn_press_retake_quiz_button_text', __( 'Retake', 'learnpress' ) ), $remain );
-			$buttons['retake'] .= wp_nonce_field( 'retake-quiz', 'retake-quiz-nonce');
+			$buttons['retake'] .= wp_nonce_field( 'retake-quiz', 'retake-quiz-nonce' );
 		endif;
 
 		return apply_filters( 'learn_press_single_quiz_buttons', $buttons, $this, $user );
 	}
 
-	function has( $feature ){
+	function has( $feature ) {
 		$args = func_get_args();
 		unset( $args[0] );
 		$method   = 'has_' . preg_replace( '!-!', '_', $feature );
@@ -267,37 +277,37 @@ class LP_Quiz {
 		}
 	}
 
-	function has_questions(){
+	function has_questions() {
 		return $this->get_questions();
 	}
 
-	function has_question( $question_id ){
-		return is_array( $this->questions ) && isset( $this->questions[ $question_id ] );
+	function has_question( $question_id ) {
+		return is_array( $this->questions ) && isset( $this->questions[$question_id] );
 	}
 
-	function get_mark( $force = false ){
-		if( empty( $this->mark ) || $force ){
+	function get_mark( $force = false ) {
+		if ( empty( $this->mark ) || $force ) {
 			global $wpdb;
-			$query = $wpdb->prepare("
+			$query      = $wpdb->prepare( "
 				SELECT SUM(pm.meta_value) as mark
 				FROM {$wpdb->learnpress_quiz_questions} qq
 				INNER JOIN {$wpdb->posts} q ON q.ID = qq.quiz_id
 				INNER JOIN {$wpdb->postmeta} pm ON pm.post_id = qq.question_id AND pm.meta_key = %s
 				WHERE q.ID = %d
-			", '_lp_mark', $this->id);
+			", '_lp_mark', $this->id );
 			$this->mark = $wpdb->get_var( $query );
 		}
 		return apply_filters( 'learn_press_quiz_mark', $this->mark, $this );
 	}
 
-	function get_question_link( $question_id = null ){
+	function get_question_link( $question_id = null ) {
 		return apply_filters( 'learn_press_quiz_question_permalink', get_the_permalink( $this->id ) . get_post_field( 'post_name', $question_id ), $question_id, $this );
 	}
 
-	function get_question_param($name, $id){
-		if( $this->questions ){
-			if( !empty( $this->questions[ $id ] ) ){
-				return ! empty( $this->questions[ $id ]->params[ $name ] ) ? $this->questions[ $id ]->params[ $name ] : null;
+	function get_question_param( $name, $id ) {
+		if ( $this->questions ) {
+			if ( !empty( $this->questions[$id] ) ) {
+				return !empty( $this->questions[$id]->params[$name] ) ? $this->questions[$id]->params[$name] : null;
 			}
 		}
 		return false;
