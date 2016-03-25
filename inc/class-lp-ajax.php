@@ -72,7 +72,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			$callback = array( __CLASS__, '_request_' . $method );
 			if ( is_callable( $callback ) ) {
 				$result = call_user_func( $callback );
-			}elseif( has_action( 'learn_press_ajax_handler_' . $method ) ){
+			} elseif ( has_action( 'learn_press_ajax_handler_' . $method ) ) {
 				do_action( 'learn_press_ajax_handler_' . $method );
 				return;
 			}
@@ -146,7 +146,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			if ( $result['result'] == 'fail' ) {
 				$result['messages'] = $messages;
 			}
-			return false;
+			return $result;
 		}
 
 		static function _request_add_to_cart() {

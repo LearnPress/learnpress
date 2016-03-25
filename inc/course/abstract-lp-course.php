@@ -34,6 +34,11 @@ abstract class LP_Abstract_Course {
 	protected $_curriculum = false;
 
 	/**
+	 * @var null
+	 */
+	protected $_count_users = null;
+
+	/**
 	 * Constructor gets the post object and sets the ID for the loaded course.
 	 *
 	 * @param int|LP_Course|object $course Course ID, post object, or course object
@@ -282,9 +287,9 @@ abstract class LP_Abstract_Course {
 	 * @return int
 	 */
 	public function get_users_enrolled( $force = false ) {
-		static $count_users = 0;
+
 		global $wpdb;
-		if ( !$count_users || $force ) {
+		if ( $this->_count_users === null || $force ) {
 			$query       = $wpdb->prepare( "
 				SELECT count(o.ID)
 				FROM wp_posts o
@@ -293,9 +298,9 @@ abstract class LP_Abstract_Course {
 				AND oim.meta_key = %s AND oim.meta_value = %d
 				WHERE o.post_status = %s
 			", '_course_id', $this->id, 'lp-completed' );
-			$count_users = $wpdb->get_var( $query );
+			$this->_count_users = $wpdb->get_var( $query );
 		}
-		return $count_users;
+		return $this->_count_users;
 	}
 
 	/**

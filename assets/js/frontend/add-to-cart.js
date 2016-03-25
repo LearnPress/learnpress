@@ -14,7 +14,7 @@
 				dataType: 'html',
 				success: function(response){
 					$button.addClass('added').removeClass('loading');
-					$view_cart.show();
+					$view_cart.removeClass('hide-if-js');
 				}
 			});
 			return false;

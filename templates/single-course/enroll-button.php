@@ -62,7 +62,7 @@ $enroll_button_text   = apply_filters( 'learn_press_enroll_button_loading_text',
 				<input type="hidden" name="_wp_http_referer" value="<?php echo get_the_permalink(); ?>" />
 				<input type="hidden" name="add-course-to-cart" value="<?php echo $course->id; ?>" />
 				<button class="button purchase-button"><?php echo $purchase_button_text; ?></button>
-				<a class="button view-cart-button" href="<?php echo learn_press_get_page_link( 'cart' ); ?>"><?php esc_html_e( 'View cart', 'learnpress' ); ?></a>
+				<a class="button view-cart-button hide-if-js" href="<?php echo learn_press_get_page_link( 'cart' ); ?>"><?php esc_html_e( 'View cart', 'learnpress' ); ?></a>
 				<?php do_action( 'learn_press_after_purchase_button' ); ?>
 			</form>
 

@@ -656,3 +656,4 @@ function test_mail() {
 }
 
 add_action( 'admin_footer', 'test_mail' );
+

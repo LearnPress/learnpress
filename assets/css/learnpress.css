@@ -489,9 +489,12 @@
 .learn-press-subtab-content.current{
 	display: block;
 }
+.hide-if-js{
+	display: none;
+}
 /**/
 .purchase-course .view-cart-button{
-	display: none;
+
 }
 .learn-press-cart-table td,
 .learn-press-cart-table th{

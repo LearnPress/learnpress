@@ -198,10 +198,10 @@ class LP_Checkout {
 				}
 				if ( isset( $this->checkout_fields['user_login'] ) && isset( $this->checkout_fields['user_password'] ) ) {
 					$creds                  = array();
-					$creds['user_login']    = $_POST['user_login'];
-					$creds['user_password'] = $_POST['user_password'];
+					$creds['user_login']    = !empty( $_POST['user_login'] ) ? $_POST['user_login'] : '';
+					$creds['user_password'] = !empty( $_POST['user_password'] ) ? $_POST['user_password'] : '';
 					$creds['remember']      = true;
-					$user                   = wp_signon( $creds, false );
+					$user                   = wp_signon( $creds, is_ssl() );
 					if ( is_wp_error( $user ) ) {
 						learn_press_add_notice( $user->get_error_message(), 'error' );
 						$success = false;

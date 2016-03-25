@@ -1279,12 +1279,13 @@ body.post-type-lp_question #question_answer_ .inside{
 	/* padding: 5px; */
 	line-height: 1;
 	background-color: #0073AA;
-	border-radius: 50%;
+	border-radius: 10px;
 	height: 21px;
 	line-height: 20px;
 	text-align: center;
 	min-width: 21px;
 	color: #FFF;
+	padding: 0 5px;
 }
 .column-num_of_question{
 	width: 100px;
