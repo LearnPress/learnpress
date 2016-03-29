@@ -27,7 +27,6 @@ $user = learn_press_get_current_user();
 		<?php
 		if ( $quiz->current_question ):
 			$question_answers = $user->get_question_answers( $quiz->id, $quiz->current_question->id );
-
 			$quiz->current_question->render( array( 'answered' => $question_answers ) );
 		endif;
 		?>

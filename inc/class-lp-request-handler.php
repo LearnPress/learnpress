@@ -19,7 +19,7 @@ class LP_Request_Handler {
 	 * Constructor
 	 */
 	function __construct() {
-		add_action( 'wp_loaded', array( __CLASS__, 'process_request' ), 999 );
+		add_action( 'wp_loaded', array( __CLASS__, 'process_request' ), 99999 );
 
 	}
 

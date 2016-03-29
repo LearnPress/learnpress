@@ -143,8 +143,6 @@
 .learnpress ul,
 .learnpress li{
 	list-style: none;
-	padding: 0;
-	margin: 0;
 }
 
 .learnpress h3{
@@ -303,12 +301,14 @@
 .single-quiz .quiz-summary-left{
 	float: left;
 	width: 100%;
-	padding-right: 200px;
+	padding-right: 320px;
 }
 .single-quiz .quiz-sidebar{
 	float: right;
-	width: 200px;
-	margin-left: -200px;
+	width: 300px;
+	margin-left: -300px;
+	border: 2px solid #DDD;
+	padding: 20px;
 }
 .quiz-questions-list .current{
 	font-weight: bold;

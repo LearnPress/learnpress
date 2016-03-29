@@ -51,29 +51,13 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 				define( 'DOING_AJAX', true );
 			}
 			LP_Gateways::instance()->get_available_payment_gateways();
-			$result = false;
-			/*switch ( $var ) {
-				case 'checkout':
-
-					break;
-				case 'enroll-course':
-
-
-					break;
-				case 'checkout-login':
-
-					break;
-				case 'add-to-cart':
-
-					break;
-				case 'finish-course'
-			}*/
+			$result   = false;
 			$method   = preg_replace( '/[-]+/', '_', $var );
 			$callback = array( __CLASS__, '_request_' . $method );
 			if ( is_callable( $callback ) ) {
 				$result = call_user_func( $callback );
-			} elseif ( has_action( 'learn_press_ajax_handler_' . $method ) ) {
-				do_action( 'learn_press_ajax_handler_' . $method );
+			} elseif ( has_action( 'learn_press_ajax_handler_' . $var ) ) {
+				do_action( 'learn_press_ajax_handler_' . $var );
 				return;
 			}
 			learn_press_send_json( $result );
@@ -196,6 +180,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			die;
 		}
 
+
 		/**
 		 * die();
 		 * Student take course
@@ -238,10 +223,10 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			global $quiz;
 			$quiz = LP_Quiz::get_quiz( $quiz_id );
 
+			LP()->quiz = $quiz;
+
 			do_action( 'learn_press_load_quiz_question', $question_id, $quiz_id, $user_id );
-			// save question if find it
-			//self::save_question_if_needed();
-			//self::update_time_remaining();
+
 			$user = learn_press_get_current_user();
 			if ( $user->id != $user_id ) {
 				learn_press_send_json(
@@ -336,6 +321,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 		 *  Retake a quiz
 		 */
 		public static function retake_quiz() {
+			die( __FUNCTION__ );
 			// verify nonce
 			if ( !wp_verify_nonce( learn_press_get_request( 'nonce' ), 'retake-quiz' ) ) {
 				learn_press_send_json(

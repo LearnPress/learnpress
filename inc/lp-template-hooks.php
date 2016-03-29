@@ -136,9 +136,12 @@ add_action( 'learn_press_single_quiz_summary', 'learn_press_single_quiz_history'
 add_action( 'learn_press_single_quiz_summary', 'learn_press_single_quiz_left_end_wrap', 40 );
 add_action( 'learn_press_single_quiz_summary', 'learn_press_single_quiz_sidebar', 45 );
 
-add_action( 'learn_press_single_quiz_sidebar', 'learn_press_single_quiz_timer', 5 );
+add_action( 'learn_press_single_quiz_sidebar', 'learn_press_single_quiz_information', 5 );
+add_action( 'learn_press_single_quiz_sidebar', 'learn_press_single_quiz_timer', 10 );
+add_action( 'learn_press_single_quiz_sidebar', 'learn_press_single_quiz_buttons', 15 );
+/*
 add_action( 'learn_press_single_quiz_sidebar', 'learn_press_single_quiz_buttons', 10 );
-
+*/
 add_action( 'learn_press_after_quiz_question_title', 'learn_press_single_quiz_question_answer', 5, 2 );
 //add_action( 'learn_press_single_quiz_summary', 'learn_press_single_quiz_no_question' );
 

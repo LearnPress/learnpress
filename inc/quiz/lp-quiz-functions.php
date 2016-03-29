@@ -25,7 +25,19 @@ function learn_press_get_quiz_questions( $quiz_id = null, $only_ids = true ) {
 }
 
 
-function learn_press_question_class( $question = null, $classes = null, $user_id = null, $context = null ) {
+function learn_press_question_class( $question = null, $args = array() /*, $classes = null, $user_id = null, $context = null*/ ) {
+	$args    = wp_parse_args(
+		$args,
+		array(
+			'user'    => LP()->user,
+			'quiz'    => LP()->quiz,
+			'classes' => ''
+		)
+	);
+	$quiz    = $args['quiz'];
+	$user    = $args['user'];
+	$classes = $args['classes'];
+
 	if ( !$question ) {
 		$question = LP_Question_Factory::get_question( get_the_ID() );
 	} elseif ( is_numeric( $question ) ) {
@@ -38,12 +50,12 @@ function learn_press_question_class( $question = null, $classes = null, $user_id
 		settype( $classes, 'array' );
 		$classes = array_merge( $classes, array( "learn-press-question-wrap", "question-type-{$question->type}", "question-{$question->id}" ) );
 
-		if ( $context == 'quiz-results' ) {
+		if ( $user->get_quiz_status( $quiz->id ) == 'completed' ) {
 			$user_id     = learn_press_get_current_user_id();
 			$user        = learn_press_get_user( $user_id );
-			$answer_data = $user->get_answer_results( $question->id );
+			$answer_data = $user->get_answer_results( $question->id, $quiz->id );
 			$classes[]   = 'question-results';
-			if ( $answer_data ) {
+			if ( $user->is_answered_question( $question->id, $quiz->id ) ) {
 				if ( $answer_data['correct'] ) {
 					$classes[] = 'correct';
 				} else {
@@ -52,9 +64,11 @@ function learn_press_question_class( $question = null, $classes = null, $user_id
 			} else {
 				$classes[] = 'skipped';
 			}
+		} else if ( $question->id == learn_press_get_request( 'question' ) ) {
+			$classes[] = 'current';
 		}
 
-		$classes = apply_filters( 'learn_press_question_class', $classes, $question, $context );
+		$classes = apply_filters( 'learn_press_question_class', $classes, $question, $quiz );
 		$classes = array_unique( $classes );
 		$classes = array_filter( $classes );
 		echo "class=\"" . join( ' ', $classes ) . "\"";
@@ -178,6 +192,7 @@ function learn_press_get_user_question_url( $quiz_id, $current_question_id = 0, 
 			$permalink = add_query_arg( 'question', $question_name, $permalink );
 		}
 	}
+	$permalink = trailingslashit( $permalink );
 	return apply_filters( 'learn_press_quiz_question_url', $permalink, $quiz_id, $current_question_id, $user_id );
 }
 
@@ -247,7 +262,7 @@ function learn_press_redirect_to_question( $template ) {
 	return $template;
 }
 
-add_action( 'template_redirect', 'learn_press_redirect_to_question' );
+//add_action( 'template_redirect', 'learn_press_redirect_to_question' );
 
 
 function learn_press_get_quizzes( $user_id = 0, &$args = array() ) {
@@ -260,3 +275,9 @@ function learn_press_get_quizzes( $user_id = 0, &$args = array() ) {
 	$user = learn_press_get_user( $user_id );
 	return $user->get_quizzes( $args );
 }
+
+function learn_press_output_question_nonce( $question ) {
+	printf( '<input type="hidden" name="update-question-nonce" value="%s" />', wp_create_nonce( 'current-question-nonce-' . $question->id ) );
+}
+
+add_action( 'learn_press_after_question_wrap', 'learn_press_output_question_nonce' );

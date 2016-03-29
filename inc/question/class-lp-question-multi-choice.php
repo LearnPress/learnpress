@@ -91,6 +91,13 @@ class LP_Question_Multi_Choice extends LP_Abstract_Question {
 		return '<img src="' . apply_filters( 'learn_press_question_icon', LP()->plugin_url( 'assets/images/multiple-choice.png' ), $this ) . '">';
 	}
 
+	function can_check_answer(){
+		return true;
+	}
+
+	function show_answer(){
+
+	}
 
 	/**
 	 * @param array $args

@@ -168,10 +168,10 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 								'std'  => 0
 							),
 							array(
-								'name' => __( 'Show question answer immediately', 'learnpress' ),
-								'id'   => "{$prefix}show_question_answer",
+								'name' => __( 'Show check answer', 'learnpress' ),
+								'id'   => "{$prefix}show_check_answer",
 								'type' => 'checkbox',
-								'desc' => __( 'Show the correct answer and explanation (if exists) of the question right after student answered.', 'learnpress' ),
+								'desc' => __( 'Show button to check answer', 'learnpress' ),
 								'std'  => 0
 							),
 						)

@@ -180,17 +180,23 @@ class LP_Abstract_Question {
 
 	protected function _get_answers() {
 		global $wpdb;
-		$answers = array();
-		$query   = $wpdb->prepare( "
-			SELECT *
-			FROM {$wpdb->learnpress_question_answers}
-			WHERE question_id = %d
-			ORDER BY answer_order ASC
-		", $this->id );
-		if ( $rows = $wpdb->get_results( $query ) ) {
-			foreach ( $rows as $row ) {
-				$answers[$row->question_answer_id]       = maybe_unserialize( $row->answer_data );
-				$answers[$row->question_answer_id]['id'] = $row->question_answer_id;
+		static $answers = array();
+		if ( empty( $answers ) ) {
+			if ( !empty( $GLOBALS['learnpress_question_answers'] ) ) {
+
+			} else {
+				$query = $wpdb->prepare( "
+					SELECT *
+					FROM {$wpdb->learnpress_question_answers}
+					WHERE question_id = %d
+					ORDER BY answer_order ASC
+				", $this->id );
+				if ( $rows = $wpdb->get_results( $query ) ) {
+					foreach ( $rows as $row ) {
+						$answers[$row->question_answer_id]       = maybe_unserialize( $row->answer_data );
+						$answers[$row->question_answer_id]['id'] = $row->question_answer_id;
+					}
+				}
 			}
 		}
 		return apply_filters( 'learn_press_question_answers', $answers, $this );
@@ -713,6 +719,14 @@ class LP_Question extends LP_Abstract_Question {
 
 		// return;
 		return $return;
+	}
+
+	function can_check_answer() {
+		return false;
+	}
+
+	function show_answer() {
+
 	}
 
 	/**

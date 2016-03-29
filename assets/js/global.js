@@ -438,9 +438,9 @@ if (typeof window.LearnPress == 'undefined') {
 				url     : ( args.url || window.location.href ),
 				type    : type,
 				dataType: 'html',
-				success : function (response) {
-					response = LearnPress.parseResponse(response, dataType);
-					$.isFunction(args.success) && args.success(response);
+				success : function (raw) {
+					var response = LearnPress.parseResponse(raw, dataType);
+					$.isFunction(args.success) && args.success(response, raw);
 				},
 				error   : function () {
 					$.isFunction(args.error) && args.error.apply(null, LearnPress.funcArgs2Array());
@@ -579,7 +579,11 @@ if (typeof window.LearnPress == 'undefined') {
 					message = localize['message'];
 				}
 			}
-			$.alerts.alert(message, title, callback);
+			$.alerts.alert(message, title, function (e) {
+				LearnPress._on_alert_hide();
+				callback && callback(e);
+			});
+			this._on_alert_show();
 		},
 		confirm       : function (localize, callback) {
 			var title = '',

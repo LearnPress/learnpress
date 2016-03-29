@@ -190,7 +190,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 					$return = LP_Checkout::instance();
 					break;
 				case 'course':
-					if( empty( $this->_course ) ) {
+					if ( empty( $this->_course ) ) {
 						if ( learn_press_is_course() ) {
 							$this->_course = learn_press_setup_object_data( get_the_ID() );
 						}
@@ -198,7 +198,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 					$return = $this->_course;
 					break;
 				case 'quiz':
-					if( empty( $this->_quiz ) ) {
+					if ( empty( $this->_quiz ) ) {
 						if ( learn_press_is_quiz() ) {
 							$this->_quiz = learn_press_setup_object_data( get_the_ID() );
 						}
@@ -209,7 +209,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 			return $return;
 		}
 
-		function set_object( $name, $object ){
+		function set_object( $name, $object ) {
 			$this->{$name} = $object;
 		}
 
@@ -390,16 +390,16 @@ if ( !class_exists( 'LearnPress' ) ) {
 			if ( !$this->user ) {
 				$this->user = learn_press_get_current_user();
 			}
-			if( $user_id ){
-				if( $user_id == $this->user->id ){
+			if ( $user_id ) {
+				if ( $user_id == $this->user->id ) {
 					$user = $this->user;
-				}else{
-					if( empty( $users[ $user_id ] ) ){
-						$users[ $user_id ] = learn_press_get_user( $user_id );
-						$user = $users[ $user_id ];
+				} else {
+					if ( empty( $users[$user_id] ) ) {
+						$users[$user_id] = learn_press_get_user( $user_id );
+						$user            = $users[$user_id];
 					}
 				}
-			}else {
+			} else {
 				$user = $this->user;
 			}
 			return $user;
@@ -455,7 +455,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 
 				require_once 'inc/admin/class-lp-admin-notice.php';
 
-				if( !defined( 'RWMB_VER' ) ){
+				if ( !defined( 'RWMB_VER' ) ) {
 					require_once 'inc/libraries/meta-box/meta-box.php';
 				}
 
@@ -483,6 +483,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 			require_once 'inc/course/class-lp-course.php';
 			// quiz
 			require_once 'inc/quiz/lp-quiz-functions.php';
+			require_once 'inc/quiz/class-lp-quiz-factory.php';
 			require_once 'inc/quiz/class-lp-quiz.php';
 
 
@@ -657,3 +658,33 @@ function test_mail() {
 
 add_action( 'admin_footer', 'test_mail' );
 
+function xxxx( $query ) {
+	if ( empty( $GLOBALS['lp_queries'] ) ) {
+		$GLOBALS['lp_queries'] = array();
+	}
+	$q = preg_replace( '/(\r\n|\r|\n|\s)+/', ' ', $query );
+	$k = md5( $q );
+	if ( empty( $GLOBALS['lp_queries'][$k] ) ) {
+		$GLOBALS['lp_queries'][$k] = array(
+			$q,
+			1
+		);
+	} else {
+		$GLOBALS['lp_queries'][$k][1] ++;
+	}
+
+	return $query;
+}
+
+add_action( 'plugins_loaded', 'yyyy' );
+function yyyy() {
+	add_filter( 'query', 'xxxx' );
+}
+
+function zzzz() {
+	$queries = $GLOBALS['lp_queries'];
+	usort( $queries, create_function( '$a, $b', 'return $a[1] < $b[1];' ) );
+	LP_Debug::instance()->add( $queries, 'query', true );
+}
+
+add_action( 'wp_footer', 'zzzz', 9999999 );

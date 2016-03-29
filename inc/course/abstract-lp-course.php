@@ -31,7 +31,7 @@ abstract class LP_Abstract_Course {
 	 *
 	 * @var array
 	 */
-	protected $_curriculum = false;
+	protected static $_curriculum = array();
 
 	/**
 	 * @var null
@@ -221,36 +221,56 @@ abstract class LP_Abstract_Course {
 	 * @return mixed
 	 */
 	public function get_curriculum( $force = false ) {
-		if ( !$this->_curriculum || $force ) {
+		if ( !$this->id ) {
+			return false;
+		}
+		if ( !array_key_exists( $this->id, self::$_curriculum ) ) {
+			self::$_curriculum[$this->id] = array();
+		}
+		if ( !self::$_curriculum[$this->id] || $force ) {
 			global $wpdb;
-			$this->_curriculum = array();
-			$query             = $wpdb->prepare( "
+			$query = $wpdb->prepare( "
 				SELECT cc.*
 				FROM {$wpdb->posts} p
 				INNER JOIN {$wpdb->learnpress_sections} cc ON p.ID = cc.section_course_id
 				WHERE p.ID = %d
 				ORDER BY `section_order` ASC
 			", $this->id );
-			if ( $rows = $wpdb->get_results( $query ) ) {
-				foreach ( $rows as $row ) {
-					$section = $row;
+			if ( $rows = $wpdb->get_results( $query, OBJECT_K ) ) {
+				$section_ids  = array_keys( $rows );
+				$how_many     = count( $section_ids );
+				$placeholders = array_fill( 0, $how_many, '%d' );
+				$in           = implode( ', ', $placeholders );
 
-					$section->items = array();
-					$query          = $wpdb->prepare( "
+				$query         = $wpdb->prepare( "
 						SELECT si.*, p.*
 						FROM {$wpdb->posts} p
 						INNER JOIN {$wpdb->learnpress_section_items} si ON si.item_id = p.ID
 						INNER JOIN {$wpdb->learnpress_sections} s ON s.section_id = si.section_id
-						WHERE s.section_id = %s
-						ORDER BY si.item_order ASC
-					", $row->section_id );
-					$section->items = $wpdb->get_results( $query );
-					//}
-					$this->_curriculum[] = $section;
+						WHERE s.section_id IN( $in )
+						ORDER BY s.section_order, si.item_order ASC
+					", $section_ids );
+				$section_items = $wpdb->get_results( $query );
+
+				foreach ( $rows as $row ) {
+					$section        = $row;
+					$section->items = array();
+					if ( $section_items ) {
+						$count = 0;
+						foreach ( $section_items as $item ) {
+							if ( $item->section_id == $row->section_id ) {
+								$section->items[] = $item;
+								$count ++;
+							} else {
+								if ( $count ) break;
+							}
+						}
+					}
+					self::$_curriculum[$this->id][] = $section;
 				}
 			}
 		}
-		return apply_filters( 'learn_press_course_curriculum', $this->_curriculum, $this );
+		return apply_filters( 'learn_press_course_curriculum', self::$_curriculum[$this->id], $this );
 	}
 
 	/**
@@ -290,7 +310,7 @@ abstract class LP_Abstract_Course {
 
 		global $wpdb;
 		if ( $this->_count_users === null || $force ) {
-			$query       = $wpdb->prepare( "
+			$query              = $wpdb->prepare( "
 				SELECT count(o.ID)
 				FROM wp_posts o
 				INNER JOIN {$wpdb->learnpress_order_items} oi ON oi.order_id = o.ID
@@ -632,7 +652,7 @@ abstract class LP_Abstract_Course {
 		if ( !$this->has( 'item', $item_id ) ) {
 			return false;
 		}
-		switch( get_post_type( $item_id )){
+		switch ( get_post_type( $item_id ) ) {
 			case 'lp_quiz':
 			case 'lp_lesson':
 				$permalink = get_the_permalink( $this->ID );
@@ -646,7 +666,7 @@ abstract class LP_Abstract_Course {
 					$key       = preg_replace( '!lp_!', '', get_post_type( $item_id ) );
 					$permalink = add_query_arg( array( $key => $prefix . $post_name ), $permalink );
 				}
-			break;
+				break;
 		}
 		$permalink = trailingslashit( $permalink );
 		return apply_filters( 'learn_press_course_item_link', $permalink, $item_id, $this );
@@ -713,21 +733,25 @@ abstract class LP_Abstract_Course {
 	}
 
 	function _evaluate_course_by_lesson( $user_id ) {
-		global $wpdb;
-		$course_lessons = $this->get_lessons();
-		LP_Debug::instance()->add( $course_lessons );
-		if ( !$course_lessons ) {
-			return 1;
+
+		static $evaluate_course_by_lesson = array();
+		if ( !array_key_exists( $this->id, $evaluate_course_by_lesson ) ) {
+			global $wpdb;
+			$course_lessons = $this->get_lessons();
+			if ( !$course_lessons ) {
+				return 1;
+			}
+			$query                                = $wpdb->prepare( "
+				SELECT count(user_id)
+				FROM {$wpdb->prefix}learnpress_user_lessons ul
+				INNER JOIN {$wpdb->posts} l ON l.ID = ul.lesson_id
+				WHERE ul.user_id = %d
+				AND status = %s
+			", $user_id, 'completed' );
+			$completed_lessons                    = $wpdb->get_var( $query );
+			$evaluate_course_by_lesson[$this->id] = $completed_lessons / sizeof( $course_lessons );
 		}
-		$query             = $wpdb->prepare( "
-			SELECT count(user_id)
-			FROM {$wpdb->prefix}learnpress_user_lessons ul
-			INNER JOIN {$wpdb->posts} l ON l.ID = ul.lesson_id
-			WHERE ul.user_id = %d
-			AND status = %s
-		", $user_id, 'completed' );
-		$completed_lessons = $wpdb->get_var( $query );
-		return apply_filters( 'learn_press_evaluation_course_lesson', $completed_lessons / sizeof( $course_lessons ), $this->id, $user_id );
+		return apply_filters( 'learn_press_evaluation_course_lesson', $evaluate_course_by_lesson[$this->id], $this->id, $user_id );
 	}
 
 	function _evaluate_course_by_quiz( $user_id ) {

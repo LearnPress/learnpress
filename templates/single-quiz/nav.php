@@ -21,21 +21,26 @@ $status = LP()->user->get_quiz_status( $quiz->id );
 
 ?>
 
+<?php if( $status != 'completed' ){ ?>
+
 <div class="quiz-question-nav-buttons">
 
-	<?php if( $status != 'completed' ){ ?>
-
-	<button type="button" data-nav="prev" class="prev-question" data-url="<?php //echo $prev; ?>">
-		<?php echo apply_filters( 'learn_press_quiz_question_nav_button_back_title', __( 'Back', 'learnpress' ) ); ?>
+	<button type="button" data-nav="check" class="check-question hide-if-js">
+		<?php echo apply_filters( 'learn_press_button_check_question_text', __( 'Check', 'learnpress' ) ); ?>
 	</button>
 
-	<button type="button" data-nav="next" class="next-question" data-url="<?php //echo $next; ?>">
-		<?php echo apply_filters( 'learn_press_quiz_question_nav_button_next_title', __( 'Next', 'learnpress' ) ); ?>
+	<button type="button" data-nav="prev" class="prev-question hide-if-js">
+		<?php echo apply_filters( 'learn_press_button_back_question_text', __( 'Back', 'learnpress' ) ); ?>
 	</button>
 
-	<button class="button-finish-quiz btn hidden" quiz-id="<?php echo get_the_ID() ?>" data-area="nav">
-		<?php echo apply_filters( 'learn_press_finish_quiz_text', __( "Finish", "learn_press" ) );?>
+	<button type="button" data-nav="next" class="next-question hide-if-js">
+		<?php echo apply_filters( 'learn_press_quiz_question_nav_button_next_text', __( 'Next', 'learnpress' ) ); ?>
 	</button>
 
-	<?php }?>
+	<button class="button-finish-quiz btn hide-if-js" quiz-id="<?php echo get_the_ID() ?>" data-area="nav">
+		<?php echo apply_filters( 'learn_press_button_finish_quiz_text', __( "Finish", "learn_press" ) );?>
+	</button>
+
 </div>
+
+<?php }?>
