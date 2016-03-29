@@ -156,6 +156,10 @@ class LP_Assets extends LP_Abstract_Assets {
 		if ( learn_press_is_checkout() ) {
 			self::enqueue_script( 'checkout' );
 		}
+
+		if( learn_press_is_profile() ){
+			self::enqueue_script( 'learn-press-js' );
+		}
 		do_action( 'learn_press_frontend_after_load_assets' );
 	}
 }

@@ -9,16 +9,16 @@
 ;(function ($) {
 	"use strict";
 	LearnPress = $.extend({
-		setUrl    : function (url, title) {
+		setUrl   : function (url, title) {
 			history.pushState({}, title, url);
 		},
-		reload    : function (url) {
+		reload   : function (url) {
 			if (!url) {
 				url = window.location.href;
 			}
 			window.location.href = url;
 		},
-		parseJSON : function (data) {
+		parseJSON: function (data) {
 			var m = data.match(/<!-- LP_AJAX_START -->(.*)<!-- LP_AJAX_END -->/);
 			try {
 				if (m) {
@@ -32,7 +32,7 @@
 			}
 			return data;
 		},
-		toElement : function (element, args) {
+		toElement: function (element, args) {
 			args = $.extend({
 				delay   : 300,
 				duration: 'slow',
@@ -46,4 +46,27 @@
 				}, args.duration);
 		}
 	}, LearnPress);
+
+	$(document).on('submit', '#learn-press-form-login', function (e) {
+		LearnPress.doAjax({
+			data   : {
+				'lp-ajax': 'login',
+				data     : $(this).serialize()
+			},
+			success: function (response, raw) {
+				if (response.message) {
+					LearnPress.alert(response.message, function () {
+						if (response.redirect) {
+							LearnPress.reload(response.redirect);
+						}
+					});
+				} else {
+					if (response.redirect) {
+						LearnPress.reload(response.redirect);
+					}
+				}
+			}
+		})
+		return false;
+	});
 })(jQuery);

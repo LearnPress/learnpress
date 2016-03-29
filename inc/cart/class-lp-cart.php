@@ -90,45 +90,58 @@ class LP_Cart {
 		do_action( 'learn_press_add_to_cart', $course_id, $quantity, $item_data, $this );
 		$button = '';
 
-
-		if ( learn_press_is_enable_cart() && LP()->settings->get( 'no_checkout_free_course' ) != 'yes' ) {
-			if ( LP()->settings->get( 'redirect_after_add' ) == 'yes' ) {
-				$redirect = learn_press_get_page_link( 'cart' );
+		// if the course is FREE and no require checkout screen
+		if ( LP()->settings->get( 'no_checkout_free_course' ) == 'yes' && $this->total == 0 ) {
+			if ( !is_user_logged_in() ) {
+				$redirect = learn_press_get_page_link( 'profile' );
 				if ( !$redirect ) {
-					learn_press_add_notice( sprintf( __( 'Cart page is not setting up.', 'learnpress' ) ) );
-					$redirect = add_query_arg( '', '' );
+					$redirect = wp_login_url();
 				} else {
-					$button = sprintf( '<a href="%s">%s</a>', get_the_permalink( $course_id ), __( 'Back to class', 'learnpress' ) );
+					$redirect = add_query_arg( 'next', wp_create_nonce( 'process-checkout-free-course' ), $redirect );
 				}
+				learn_press_add_notice( __( 'Please login to continue process.', 'learn_press' ) );
+				$checkout_results['redirect'] = $redirect;
 			} else {
-				$redirect = get_the_permalink( $course_id );
-				if ( !learn_press_get_page_link( 'cart' ) ) {
-					learn_press_add_notice( sprintf( __( 'Checkout page is not setting up.', 'learnpress' ) ) );
-				} else {
-					$button = sprintf( '<a href="%s">%s</a>', learn_press_get_page_link( 'cart' ), __( 'View cart', 'learnpress' ) );
-				}
+				add_filter( 'learn_press_checkout_success_result', '_learn_press_checkout_auto_enroll_free_course', 10, 2 );
+				$checkout_results = LP_Checkout::instance()->process_checkout();
+			}
+			if ( is_ajax() ) {
+				learn_press_send_json(
+					$checkout_results
+				);
+			} else {
+				wp_redirect( $checkout_results['redirect'] );
+				exit();
 			}
 		} else {
-			if( LP()->settings->get( 'no_checkout_free_course' ) == 'yes' && $this->total == 0 ){
-				$checkout_results = LP_Checkout::instance()->process_checkout();
-				if ( is_ajax() ) {
-					learn_press_send_json(
-						$checkout_results
-					);
+			if ( learn_press_is_enable_cart() ) {
+				if ( LP()->settings->get( 'redirect_after_add' ) == 'yes' ) {
+					$redirect = learn_press_get_page_link( 'cart' );
+					if ( !$redirect ) {
+						learn_press_add_notice( sprintf( __( 'Cart page is not setting up.', 'learnpress' ) ) );
+						$redirect = learn_press_get_current_url();
+					} else {
+						$button = sprintf( '<a href="%s">%s</a>', get_the_permalink( $course_id ), __( 'Back to class', 'learnpress' ) );
+					}
 				} else {
-					wp_redirect( $checkout_results['redirect'] );
-					die();
+					$redirect = get_the_permalink( $course_id );
+					if ( !learn_press_get_page_link( 'cart' ) ) {
+						learn_press_add_notice( sprintf( __( 'Checkout page is not setting up.', 'learnpress' ) ) );
+					} else {
+						$button = sprintf( '<a href="%s">%s</a>', learn_press_get_page_link( 'cart' ), __( 'View cart', 'learnpress' ) );
+					}
 				}
-			}else {
+				learn_press_add_notice( sprintf( __( '<strong>%s</strong> has been added to your cart. %s', 'learnpress' ), get_the_title( $course_id ), $button ) );
+
+			} else {
 				$redirect = learn_press_get_page_link( 'checkout' );
 				if ( !$redirect ) {
 					learn_press_add_notice( sprintf( __( 'Checkout page is not setting up.', 'learnpress' ) ) );
-					$redirect = add_query_arg( '', '' );
+					$redirect = learn_press_get_current_url();
 				}
 			}
 		}
 		$redirect = apply_filters( 'learn_press_add_to_cart_redirect', $redirect, $course_id );
-		learn_press_add_notice( sprintf( __( '<strong>%s</strong> has been added to your cart. %s', 'learnpress' ), get_the_title( $course_id ), $button ) );
 
 		if ( is_ajax() ) {
 			learn_press_send_json(

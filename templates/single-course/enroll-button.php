@@ -54,7 +54,11 @@ $enroll_button_text   = apply_filters( 'learn_press_enroll_button_loading_text',
 	<?php elseif ( $user->can( 'purchase-course', $course->id ) ) : ?>
 
 		<?php if ( LP()->cart->has_item( $course->id ) ) { ?>
-			<?php learn_press_display_message( sprintf( __( 'This course is already added to your cart <a href="%s" class="button view-cart-button">%s</a>', 'learnpress' ), learn_press_get_page_link( 'cart' ), __( 'View Cart', 'learnpress' ) ) ); ?>
+			<?php if ( learn_press_is_enable_cart() ): ?>
+				<?php learn_press_display_message( sprintf( __( 'This course is already added to your cart <a href="%s" class="button view-cart-button">%s</a>', 'learnpress' ), learn_press_get_page_link( 'cart' ), __( 'View Cart', 'learnpress' ) ) ); ?>
+			<?php else: ?>
+				<?php learn_press_display_message( sprintf( __( 'You have selected course. <a href="%s" class="button view-cart-button">%s</a>', 'learnpress' ), learn_press_get_page_link( 'checkout' ), __( 'Process Checkout', 'learnpress' ) ) ); ?>
+			<?php endif; ?>
 		<?php } else { ?>
 
 			<form name="purchase-course" class="purchase-course" method="post" enctype="multipart/form-data">

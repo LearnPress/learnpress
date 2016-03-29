@@ -2070,11 +2070,20 @@ function learn_press_get_notices( $clear = false ) {
 	return ob_get_clean();
 }
 
-function _learn_press_print_notices() {
+function _learn_press_print_notices( $content ) {
+	ob_start();
 	learn_press_print_notices();
+	$notices = ob_get_clean();
+	$content = $notices . $content;
+
+	if ( current_filter() != 'the_content' ) {
+		echo $content;
+	}
+	return $content;
 }
 
 add_action( 'learn_press_before_single_course_summary', '_learn_press_print_notices', 0 );
+add_filter( 'the_content', '_learn_press_print_notices', 1000 );
 
 /**
  * Filter the login url so third-party can be customize

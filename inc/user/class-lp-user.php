@@ -12,12 +12,14 @@ defined( 'ABSPATH' ) || exit();
 
 class LP_User extends LP_Abstract_User {
 	/**
-	 * @param $id
+	 * @param      $id
+	 *
+	 * @param bool $force
 	 *
 	 * @return mixed
 	 */
-	static function get_user( $id ) {
-		if ( empty( self::$_users[$id] ) ) {
+	static function get_user( $id, $force = false ) {
+		if ( empty( self::$_users[$id] ) || $force ) {
 			self::$_users[$id] = new self( $id );
 		}
 		return self::$_users[$id];

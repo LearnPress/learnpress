@@ -59,6 +59,7 @@ function learn_press_create_order( $order_data ) {
 		$order_id   = wp_insert_post( $order_data );
 	}
 
+
 	if ( $order_id ) {
 		$order = LP_Order::instance( $order_id );
 
@@ -66,7 +67,7 @@ function learn_press_create_order( $order_data ) {
 		update_post_meta( $order_id, '_prices_include_tax', 'no' );
 		update_post_meta( $order_id, '_user_ip_address', learn_press_get_ip() );
 		update_post_meta( $order_id, '_user_agent', isset( $_SERVER['HTTP_USER_AGENT'] ) ? $_SERVER['HTTP_USER_AGENT'] : '' );
-		update_post_meta( $order_id, '_user_id', learn_press_get_current_user_id() );
+		update_post_meta( $order_id, '_user_id', get_current_user_id() );
 		update_post_meta( $order_id, '_order_subtotal', LP()->cart->subtotal );
 		update_post_meta( $order_id, '_order_total', LP()->cart->total );
 		update_post_meta( $order_id, '_order_key', apply_filters( 'learn_press_generate_order_key', uniqid( 'order' ) ) );
@@ -221,7 +222,7 @@ function learn_press_user_can_view_order( $order_id, $user_id = null ) {
  *
  * @return LP_Order object instance
  */
-function learn_press_get_order( $the_order ) {
+function learn_press_get_order( $the_order, $force = false ) {
 	if ( !$the_order ) {
 		return false;
 	}
@@ -240,7 +241,7 @@ function learn_press_get_order( $the_order ) {
 		return false;
 	}
 
-	return LP_Order::instance( $the_order );
+	return LP_Order::instance( $the_order, $force );
 }
 
 /**
@@ -688,4 +689,30 @@ function learn_press_get_order_status( $order_id ) {
 		return $order->get_status();
 	}
 	return false;
+}
+
+/**
+ * Auto enroll course after user checkout
+ *
+ * @param $result
+ * @param $order_id
+ */
+function _learn_press_checkout_auto_enroll_free_course( $result, $order_id ) {
+	$enrolled = false;
+	if ( $order_id && $order = learn_press_get_order( $order_id, true /* force to get all changed */ ) ) {
+		$user = learn_press_get_user( $order->user_id, true );
+		if ( $order_items = $order->get_items() ) {
+			foreach ( $order_items as $item ) {
+				if ( $user->enroll( $item['course_id'] ) ) {
+					$enrolled = $item['course_id'];
+				}
+			}
+		}
+	}
+	if ( $enrolled ) {
+		learn_press_add_notice( sprintf( __( 'You have enrolled course. <a href="%s">Order details</a>', 'learnpress' ), $result['redirect'] ) );
+		$result['redirect'] = get_the_permalink( $enrolled );
+		LP()->cart->empty_cart();
+	}
+	return $result;
 }

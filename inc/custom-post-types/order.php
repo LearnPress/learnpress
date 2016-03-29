@@ -52,16 +52,16 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 			wp_enqueue_script( 'user-suggest' );
 		}
 
-		function delete_order_items() {
+		function delete_order_items( $post_id ) {
 			global $wpdb, $post;
-			if ( !$post ) {
+			if ( get_post_type( $post_id ) != 'lp_order' ) {
 				return;
 			}
 			// get order items
 			$query = $wpdb->prepare( "
 				SELECT order_item_id FROM {$wpdb->prefix}learnpress_order_items
 				WHERE order_id = %d
-			", $post->ID );
+			", $post_id );
 			if ( $item_ids = $wpdb->get_col( $query ) ) {
 				$query = "
 					DELETE FROM {$wpdb->prefix}learnpress_order_itemmeta
@@ -72,7 +72,7 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 				$query = $wpdb->prepare( "
 					DELETE FROM {$wpdb->prefix}learnpress_order_items
 					WHERE order_id = %d
-				", $post->ID );
+				", $post_id );
 				$wpdb->query( $query );
 			}
 		}
@@ -362,7 +362,6 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 				case 'order_student':
 					if ( $the_order->user_id ) {
 						$user = learn_press_get_user( $the_order->user_id );
-
 						printf( '<a href="user-edit.php?user_id=%d">%s (%s)</a>', $the_order->user_id, $user->user_login, $user->display_name ); ?><?php
 						printf( '<br /><span>%s</span>', $user->user_email );
 					} else {

@@ -900,6 +900,11 @@ if ( !function_exists( 'learn_press_page_controller' ) ) {
 	 * @return file
 	 */
 	function learn_press_page_controller( $template/*, $slug, $name*/ ) {
+		global $wp;
+		if ( isset( $wp->query_vars['lp-order-received'] ) ) {
+			global $post;
+			$post->post_title = __( 'Order received', 'learnpress' );
+		}
 		if ( is_single() ) {
 			$user     = LP()->user;
 			$redirect = false;
@@ -928,6 +933,7 @@ if ( !function_exists( 'learn_press_page_controller' ) ) {
 						}
 					}
 			}
+
 			// prevent loop redirect
 			if ( $redirect && !learn_press_is_current_url( $redirect ) ) {
 				if ( $item_id ) {
@@ -940,6 +946,7 @@ if ( !function_exists( 'learn_press_page_controller' ) ) {
 				exit();
 			}
 		}
+
 		return $template;
 	}
 }

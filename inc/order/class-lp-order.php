@@ -112,7 +112,7 @@ class LP_Order {
 	 * @throws Exception
 	 */
 	function update_status( $new_status = 'pending' ) {
-		// Standardise status names.
+		global $post;
 		$new_status = 'lp-' === substr( $new_status, 0, 3 ) ? substr( $new_status, 3 ) : $new_status;
 		$old_status = $this->get_status();
 
@@ -125,10 +125,10 @@ class LP_Order {
 				throw new Exception( __( 'Error! Update order failed', 'learnpress' ) );
 				return false;
 			}
-			LP_Debug::instance()->add( 'Update order ' . $updated . ' status from ' . $old_status . ' to ' . $new_status );
-			LP_Debug::instance()->add( get_post( $updated ) );
-			$this->post_status = 'lp-' . $new_status;
-
+			$this->post_status       = 'lp-' . $new_status;
+			$this->post->post_status = 'lp-' . $new_status;
+			// update post cache
+			wp_cache_set( $this->id, $this->post, 'posts' );
 			// Status was changed
 			do_action( 'learn_press_order_status_' . $new_status, $this->id );
 			do_action( 'learn_press_order_status_' . $old_status . '_to_' . $new_status, $this->id );
@@ -332,9 +332,9 @@ class LP_Order {
 	}
 
 	function get_payment_method_title() {
-		if( $this->order_total == 0 ){
+		if ( $this->order_total == 0 ) {
 			$title = __( 'Free Payment', 'learnpress' );
-		}else{
+		} else {
 			$title = $this->payment_method_title;
 		}
 		return apply_filters( 'learn_press_display_payment_method_title', $title, $this->payment_method );

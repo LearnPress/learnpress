@@ -133,6 +133,44 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			return $result;
 		}
 
+		static function _request_login() {
+			$data_str = learn_press_get_request( 'data' );
+			$data     = null;
+			if ( $data_str ) {
+				parse_str( $data_str, $data );
+			}
+
+			$user   = wp_signon(
+				array(
+					'user_login'    => $data['log'],
+					'user_password' => $data['pwd'],
+					'remember'      => isset( $data['rememberme'] ) ? $data['rememberme'] : false
+				),
+				is_ssl()
+			);
+			$error  = is_wp_error( $user );
+			$return = array(
+				'result'   => $error ? 'error' : 'success',
+				'redirect' => !$error && !empty( $_REQUEST['return'] ) ? $_REQUEST['return'] : ''
+			);
+			if ( $error ) {
+				$return['message'] = array(
+					'title'   => __( 'Login failed', 'learnpress' ),
+					'message' => $user->get_error_message() ? $user->get_error_message() : __( 'Please enter your username and/or password', 'learnpress' )
+				);
+			} else {
+				wp_set_current_user( $user->ID );
+				$next = learn_press_get_request( 'next' );
+				if ( wp_verify_nonce( $next, 'process-checkout-free-course' ) ) {
+					add_filter( 'learn_press_checkout_success_result', '_learn_press_checkout_auto_enroll_free_course', 10, 2 );
+					$checkout = LP()->checkout()->process_checkout();
+				}
+			}
+			//echo is_user_logged_in() ? 'logged' : 'not logged';
+			//print_r($return);die();
+			learn_press_send_json( $return );
+		}
+
 		static function _request_add_to_cart() {
 			return LP()->cart->add_to_cart( learn_press_get_request( 'add-course-to-cart' ) );
 		}

@@ -49,7 +49,14 @@ class LP_Shortcodes {
 						wp_redirect( learn_press_get_endpoint_url( '', $current_user->user_login, learn_press_get_page_link( 'profile' ) ) );
 						die();
 					} else {
-						learn_press_404_page();
+						ob_start();
+						wp_login_form(
+							array(
+								'form_id' => 'learn-press-form-login'
+							)
+						);
+						$content            = ob_get_clean();
+						$post->post_content = $content;
 					}
 				} else {
 					$query = array();
@@ -118,7 +125,7 @@ class LP_Shortcodes {
 		$order_id  = absint( $order_id );
 		$order_key = !empty( $_GET['key'] ) ? $_GET['key'] : '';
 
-		if ( $order_id > 0 && ( $order = learn_press_get_order( $order_id ) ) ) {
+		if ( $order_id > 0 && ( $order = learn_press_get_order( $order_id ) ) && $order->post->post_status != 'trash' ) {
 			if ( $order->order_key != $order_key )
 				unset( $order );
 		} else {

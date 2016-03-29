@@ -49,8 +49,8 @@ class LP_Abstract_User {
 	 * @throws Exception
 	 */
 	function __construct( $the_user = 0 ) {
-		if ( $user = get_user_by( 'ID', $the_user ) ) {
-			$this->user = get_user_by( 'ID', $the_user );
+		if ( $user = get_user_by( 'id', $the_user ) ) {
+			$this->user = $user;
 			$this->id   = $the_user;
 		} else {
 			//throw new Exception( sprintf( __( 'The user with ID = %d is not exists', 'learnpress' ), $the_user ) );
@@ -625,7 +625,7 @@ class LP_Abstract_User {
 
 		// if user cannot enroll by course settings above, check order
 		if ( !$enrollable && ( $order_id = $this->has_purchased_course( $course_id ) ) ) {
-			$order      = LP_Order::instance( $order_id );
+			$order      = LP_Order::instance( $order_id, true );
 			$enrollable = !$this->has_enrolled_course( $course_id ) && ( $order && $order->has_status( 'completed' ) );
 		}
 		return apply_filters( 'learn_press_user_can_enroll_course', $enrollable, $this, $course_id );

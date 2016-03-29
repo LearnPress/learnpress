@@ -196,7 +196,7 @@ class LP_Checkout {
 						$success = false;
 					}
 				}
-				if ( isset( $this->checkout_fields['user_login'] ) && isset( $this->checkout_fields['user_password'] ) ) {
+				if ( !is_user_logged_in() && isset( $this->checkout_fields['user_login'] ) && isset( $this->checkout_fields['user_password'] ) ) {
 					$creds                  = array();
 					$creds['user_login']    = !empty( $_POST['user_login'] ) ? $_POST['user_login'] : '';
 					$creds['user_password'] = !empty( $_POST['user_password'] ) ? $_POST['user_password'] : '';
@@ -244,7 +244,7 @@ class LP_Checkout {
 				}
 				// Redirect to success/confirmation/payment page
 				if ( $success ) {
-					$result = apply_filters( 'learn_press_payment_successful_result', $result, $order_id );
+					$result = apply_filters( 'learn_press_checkout_success_result', $result, $order_id );
 					if ( is_ajax() ) {
 						learn_press_send_json( $result );
 					} else {

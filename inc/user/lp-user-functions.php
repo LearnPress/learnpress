@@ -64,13 +64,15 @@ function learn_press_get_current_user() {
 }
 
 /**
- * @param $user_id
+ * @param      $user_id
+ *
+ * @param bool $force
  *
  * @return LP_User_Guest|mixed
  */
-function learn_press_get_user( $user_id ) {
+function learn_press_get_user( $user_id, $force = false ) {
 	if ( $user_id ) {
-		return LP_User::get_user( $user_id );
+		return LP_User::get_user( $user_id, $force );
 	}
 	return LP_User_Guest::instance();
 }
