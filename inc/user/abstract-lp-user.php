@@ -64,7 +64,7 @@ class LP_Abstract_User {
 	 * @param $value
 	 */
 	function __set( $key, $value ) {
-		$this->user->data->{$key} = $value;
+		//$this->user->data->{$key} = $value;
 	}
 
 	/**
@@ -957,6 +957,9 @@ class LP_Abstract_User {
 	 * @return mixed
 	 */
 	function get_course_info( $course_id, $field = null ) {
+		if ( !$course_id ) {
+			return false;
+		}
 		global $wpdb;
 		static $user_course_info = array();
 		if ( empty( $user_course_info[$this->id] ) ) {

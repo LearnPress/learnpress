@@ -64,7 +64,7 @@ class LP_Abstract_Question {
 			$return = null;
 			switch ( $key ) {
 				case 'answers':
-					$return = $this->_get_answers();
+					$return = $this->get_answers();
 					break;
 				default:
 					$return = get_post_meta( $this->id, '_lp_' . $key, true );
@@ -178,13 +178,16 @@ class LP_Abstract_Question {
 		return $value;
 	}
 
-	protected function _get_answers() {
+	function get_answers() {
 		global $wpdb;
 		static $answers = array();
 		if ( empty( $answers ) ) {
-			if ( !empty( $GLOBALS['learnpress_question_answers'] ) ) {
-
-			} else {
+			if ( !empty( $GLOBALS['learnpress_question_answers'][$this->id] ) ) {
+				if ( array_key_exists( $this->id, $GLOBALS['learnpress_question_answers'] ) ) {
+					$answers = $GLOBALS['learnpress_question_answers'][$this->id];
+				}
+			}
+			if ( empty( $answers ) ) {
 				$query = $wpdb->prepare( "
 					SELECT *
 					FROM {$wpdb->learnpress_question_answers}
@@ -418,6 +421,10 @@ class LP_Abstract_Question {
 			learn_press_update_user_quiz_meta( $progress->history_id, 'question_answers', $question_answers );
 		}
 		//do_action( 'learn_press_update_user_answer', $progress, $user_id, $this, $quiz_id );
+	}
+
+	function can_check_answer() {
+		return false;
 	}
 
 	function check( $args = null ) {
@@ -721,9 +728,7 @@ class LP_Question extends LP_Abstract_Question {
 		return $return;
 	}
 
-	function can_check_answer() {
-		return false;
-	}
+
 
 	function show_answer() {
 

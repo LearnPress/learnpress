@@ -11,6 +11,7 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit;
+
 /**
  * Class LP_Install
  */
@@ -29,8 +30,8 @@ class LP_Install {
 	 * Init
 	 */
 	static function init() {
-		add_action( 'admin_init', array( __CLASS__, 'get_update_versions' ), -15 );
-		add_action( 'admin_init', array( __CLASS__, 'include_update' ), -10 );
+		add_action( 'admin_init', array( __CLASS__, 'get_update_versions' ), - 15 );
+		add_action( 'admin_init', array( __CLASS__, 'include_update' ), - 10 );
 		add_action( 'admin_init', array( __CLASS__, 'update_version_10' ), 5 );
 		add_action( 'admin_init', array( __CLASS__, 'check_version' ), 5 );
 		add_action( 'admin_init', array( __CLASS__, 'db_update_notices' ), 5 );
@@ -42,35 +43,36 @@ class LP_Install {
 		add_action( 'admin_menu', array( __CLASS__, 'admin_menu' ) );
 	}
 
-	static function include_update(){
-		if( !self::$_update_files ){
+	static function include_update() {
+		if ( !self::$_update_files ) {
 			return;
 		}
-		$versions = array_keys( self::$_update_files );
+		$versions       = array_keys( self::$_update_files );
 		$latest_version = end( $versions );
 		// Update LearnPress from 0.9.x to 1.0
 		if ( version_compare( learn_press_get_current_version(), $latest_version, '=' ) ) {
-			add_action( 'admin_notices', array( __CLASS__, 'hide_other_notices' ), -100 );
-			learn_press_include( 'updates/' . self::$_update_files[ $latest_version ] );
+			add_action( 'admin_notices', array( __CLASS__, 'hide_other_notices' ), - 100 );
+			learn_press_include( 'updates/' . self::$_update_files[$latest_version] );
 		}
 	}
 
-	static function hide_other_notices(){
+	static function hide_other_notices() {
 		//remove_action( 'admin_notices', 'learn_press_one_click_install_sample_data_notice' );
 	}
 
 	static function update_version_10() {
 
-		if( !self::_has_new_table() ){
-			self::_create_tables();
+		if ( !self::_has_new_table() ) {
+			//self::_create_tables();
+			self::install();
 		}
-		if( ! get_option( 'learnpress_version' ) || !get_option( 'learn_press_currency') ){
+		if ( !get_option( 'learnpress_version' ) || !get_option( 'learn_press_currency' ) ) {
 			self::_create_options();
 		}
 		$ask = get_transient( 'learn_press_upgrade_courses_ask_again' );
 		if ( self::_need_to_update() ) {
 			// Notify for administrator
-			if(  empty( $ask ) && learn_press_current_user_is( 'administrator') ){
+			if ( empty( $ask ) && learn_press_current_user_is( 'administrator' ) ) {
 				LP_Admin_Assets::enqueue_style( 'learn-press-upgrade', LP()->plugin_url( 'inc/updates/1.0/style.css' ) );
 				LP_Admin_Assets::enqueue_script( 'learn-press-upgrade', LP()->plugin_url( 'inc/updates/1.0/script.js' ) );
 				$upgrade_url = wp_nonce_url( admin_url( 'options-general.php?page=learn_press_upgrade_10' ), 'learn-press-upgrade' );
@@ -82,27 +84,27 @@ class LP_Install {
 			}
 
 			// Notify for instructor
-			if( learn_press_current_user_is( 'instructor' ) ){
+			if ( learn_press_current_user_is( 'instructor' ) ) {
 				LP_Admin_Notice::add( sprintf( '<p>%s</p>', __( 'LearnPress has upgraded and need to upgrade the database before you can work with it. Please notify the site administrator.', 'learnpress' ) ), 'error' );
 			}
 		}
 	}
 
-	static function admin_menu(){
+	static function admin_menu() {
 		add_dashboard_page( '', '', 'manage_options', 'learn_press_upgrade_10', '' );
 	}
 
-	static function hide_upgrade_notice(){
-		$ask_again = learn_press_get_request( 'ask_again' );
+	static function hide_upgrade_notice() {
+		$ask_again  = learn_press_get_request( 'ask_again' );
 		$expiration = DAY_IN_SECONDS;
-		if( $ask_again == 'no' ){
+		if ( $ask_again == 'no' ) {
 			$expiration = 0;
 		}
 		set_transient( 'learn_press_upgrade_courses_ask_again', $ask_again, $expiration );
 		learn_press_send_json( array( 'result' => 'success', 'message' => sprintf( '<p>%s</p>', __( 'Thank for using LearnPress', 'learnpress' ) ) ) );
 	}
 
-	static function upgrade_wizard(){
+	static function upgrade_wizard() {
 		require_once LP_PLUGIN_PATH . '/inc/updates/learnpress-update-1.0.php';
 	}
 
@@ -163,12 +165,13 @@ class LP_Install {
 		self::_create_options();
 		self::_create_tables();
 		self::create_files();
+		self::create_pages();
 
-		$current_version = get_option( 'learnpress_version' );
+		$current_version    = get_option( 'learnpress_version' );
 		$current_db_version = get_option( 'learnpress_db_version' );
 
 		// is new install
-		if( is_null( $current_version ) && is_null( $current_db_version ) ){
+		if ( is_null( $current_version ) && is_null( $current_db_version ) ) {
 
 		}
 		// Update version
@@ -177,23 +180,61 @@ class LP_Install {
 
 	}
 
+	static function _search_page( $type ) {
+		global $wpdb;
+		$query = $wpdb->prepare( "
+			SELECT ID
+			FROM {$wpdb->posts} p
+			INNER JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID AND pm.meta_key = %s AND pm.meta_value = %s
+		", '_learn_press_page', $type );
+		return $wpdb->get_var( $query );
+	}
+
+	static function create_pages() {
+		global $wpdb;
+		$pages = array( 'checkout', 'cart', 'profile', 'courses', 'become_a_teacher' );
+
+		foreach ( $pages as $page ) {
+			$page_id = get_option( "learn_press_{$page}_page_id" );
+			if ( $page_id && get_post_type( $page_id ) == 'page' ) {
+				continue;
+			}
+			$page_id = self::_search_page( $page );
+			if ( !$page_id ) {
+				wp_insert_post(
+					array(
+						'post_title'     => 'LP ' . ucwords( str_replace( '_', ' ', $page ) ),
+						'post_status'    => 'publish',
+						'post_type'      => 'page',
+						'comment_status' => 'closed'
+					)
+				);
+				$page_id = $wpdb->insert_id;
+			}
+			if ( $page_id ) {
+				update_option( "learn_press_{$page}_page_id", $page_id );
+				update_post_meta( $page_id, '_learn_press_page', $page );
+			}
+		}
+	}
+
 	static function create_files() {
-		$upload_dir      = wp_upload_dir();
-		$files = array(
+		$upload_dir = wp_upload_dir();
+		$files      = array(
 			array(
-				'base' 		=> LP_LOG_PATH,
-				'file' 		=> '.htaccess',
-				'content' 	=> 'deny from all'
+				'base'    => LP_LOG_PATH,
+				'file'    => '.htaccess',
+				'content' => 'deny from all'
 			),
 			array(
-				'base' 		=> LP_LOG_PATH,
-				'file' 		=> 'index.html',
-				'content' 	=> ''
+				'base'    => LP_LOG_PATH,
+				'file'    => 'index.html',
+				'content' => ''
 			)
 		);
 
 		foreach ( $files as $file ) {
-			if ( wp_mkdir_p( $file['base'] ) && ! file_exists( trailingslashit( $file['base'] ) . $file['file'] ) ) {
+			if ( wp_mkdir_p( $file['base'] ) && !file_exists( trailingslashit( $file['base'] ) . $file['file'] ) ) {
 				if ( $file_handle = @fopen( trailingslashit( $file['base'] ) . $file['file'], 'w' ) ) {
 					fwrite( $file_handle, $file['content'] );
 					fclose( $file_handle );
@@ -206,7 +247,7 @@ class LP_Install {
 		if ( is_null( self::$_is_old_version ) ) {
 			$is_old_version = get_transient( 'learn_press_is_old_version' );
 			//echo empty( $is_old_version ) ? "null" : "<>";
-			if( empty( $is_old_version ) ) {
+			if ( empty( $is_old_version ) ) {
 				if ( !get_option( 'learnpress_db_version' ) ||
 					get_posts(
 						array(
@@ -214,8 +255,9 @@ class LP_Install {
 							'post_status'    => 'any',
 							'posts_per_page' => 1
 						)
-					) ){
-						$is_old_version = 'yes';
+					)
+				) {
+					$is_old_version = 'yes';
 				}
 				if ( empty( $is_old_version ) ) {
 					$is_old_version = 'no';
@@ -233,9 +275,9 @@ class LP_Install {
 	 *
 	 * @return mixed
 	 */
-	private static function _has_old_posts(){
+	private static function _has_old_posts() {
 		global $wpdb;
-		$query = $wpdb->prepare("
+		$query = $wpdb->prepare( "
 			SELECT DISTINCT p.ID, pm.meta_value as upgraded
 			FROM {$wpdb->posts} p
 			LEFT JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID AND pm.meta_key = %s
@@ -246,24 +288,24 @@ class LP_Install {
 		return $wpdb->get_row( $query );
 	}
 
-	private static function _has_new_table(){
+	private static function _has_new_table() {
 		global $wpdb;
-		$query = $wpdb->prepare("
+		$query = $wpdb->prepare( "
 			SELECT COUNT(*)
 			FROM information_schema.tables
 			WHERE table_schema = %s
 			AND table_name LIKE %s
-		", DB_NAME, '%learnpress_sections%');
+		", DB_NAME, '%learnpress_sections%' );
 		return $wpdb->get_var( $query ) ? true : false;
 	}
 
-	private static function _need_to_update(){
+	private static function _need_to_update() {
 		return self::_has_old_posts() || self::_has_old_teacher_role();
 	}
 
-	private static function _has_old_teacher_role(){
+	private static function _has_old_teacher_role() {
 		global $wpdb;
-		$query = $wpdb->prepare("
+		$query = $wpdb->prepare( "
 			SELECT um.*
 			FROM {$wpdb->users} u
 			INNER JOIN {$wpdb->usermeta} um ON um.user_id = u.ID AND um.meta_key = %s
@@ -273,7 +315,7 @@ class LP_Install {
 		return $wpdb->get_results( $query );
 	}
 
-	private static function _has_new_posts(){
+	private static function _has_new_posts() {
 		$new_post = get_posts(
 			array(
 				'post_type'      => 'lp_course',
@@ -307,7 +349,9 @@ class LP_Install {
 		}
 		//update_option( 'learn_press_course_base', '/courses', 'yes' );
 		update_option( 'learn_press_course_base_type', 'custom', 'yes' );
-		set_transient( 'learn_press_install', 'yes', DAYS_IN_SECONDS );
+		update_option( 'learn_press_paypal_email', get_option( 'admin_email' ), 'yes' );
+		update_option( 'learn_press_paypal_enable', 'yes', 'yes' );
+		set_transient( 'learn_press_install', 'yes', 24 * 3600 );
 	}
 
 	private static function _create_tables() {

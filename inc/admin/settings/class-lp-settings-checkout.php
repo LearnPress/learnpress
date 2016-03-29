@@ -52,7 +52,7 @@ class LP_Settings_Checkout extends LP_Settings_Base {
 					'title'   => __( 'Enable cart', 'learnpress' ),
 					'desc'    => __( 'Check this option to enable user can purchase multiple course at one time', 'learnpress' ),
 					'id'      => $this->get_field_name( 'enable_cart' ),
-					'default' => 'no',
+					'default' => 'yes',
 					'type'    => 'checkbox'
 				),
 				array(
@@ -73,7 +73,7 @@ class LP_Settings_Checkout extends LP_Settings_Base {
 					'title'   => __( 'No checkout free course', 'learnpress' ),
 					'desc'    => __( 'Check this option to enable user can enroll course immediate without add to cart', 'learnpress' ),
 					'id'      => $this->get_field_name( 'no_checkout_free_course' ),
-					'default' => 'no',
+					'default' => 'yes',
 					'type'    => 'checkbox'
 				),
 				array(

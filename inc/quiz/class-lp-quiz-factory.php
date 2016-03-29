@@ -6,9 +6,10 @@ class LP_Quiz_Factory {
 
 	static function init() {
 		$actions = array(
-			'start-quiz'  => 'start_quiz',
-			'finish-quiz' => 'finish_quiz',
-			'retake-quiz' => 'retake_quiz'
+			'start-quiz'     => 'start_quiz',
+			'finish-quiz'    => 'finish_quiz',
+			'retake-quiz'    => 'retake_quiz',
+			'check-question' => 'check_question'
 		);
 		foreach ( $actions as $k => $v ) {
 			LP_Request_Handler::register_ajax( $k, array( __CLASS__, $v ) );
@@ -106,6 +107,20 @@ class LP_Quiz_Factory {
 				)
 			)
 		);
+	}
+
+	static function check_question() {
+		self::_verify_nonce();
+		$user_id     = learn_press_get_request( 'user_id' );
+		$quiz_id     = learn_press_get_request( 'quiz_id' );
+		$question_id = learn_press_get_request( 'question_id' );
+		$user        = learn_press_get_user( $user_id );
+		$quiz        = LP_Quiz::get_quiz( $quiz_id );
+		if ( $quiz ) {
+			$answers = $quiz->check_question( $question_id, $user );
+		}
+		print_r( $answers );
+		die();
 	}
 
 	static function _verify_nonce() {

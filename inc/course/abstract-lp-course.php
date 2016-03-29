@@ -733,7 +733,6 @@ abstract class LP_Abstract_Course {
 	}
 
 	function _evaluate_course_by_lesson( $user_id ) {
-
 		static $evaluate_course_by_lesson = array();
 		if ( !array_key_exists( $this->id, $evaluate_course_by_lesson ) ) {
 			global $wpdb;

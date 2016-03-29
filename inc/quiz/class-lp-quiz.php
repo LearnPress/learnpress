@@ -32,7 +32,10 @@ class LP_Quiz {
 	 */
 	public $course = null;
 
-	static protected $_metas = array();
+	/**
+	 * @var array
+	 */
+	static protected $_meta = array();
 
 	/**
 	 * Constructor gets the post object and sets the ID for the loaded course.
@@ -40,6 +43,9 @@ class LP_Quiz {
 	 * @param int|LP_Quiz|object $quiz Quiz ID, post object, or course object
 	 */
 	public function __construct( $quiz ) {
+		if ( empty( $GLOBALS['learnpress_question_answers'] ) ) {
+			$GLOBALS['learnpress_question_answers'] = array();
+		}
 		if ( is_numeric( $quiz ) ) {
 			$this->id   = absint( $quiz );
 			$this->post = get_post( $this->id );
@@ -50,11 +56,15 @@ class LP_Quiz {
 			$this->id   = absint( $quiz->ID );
 			$this->post = $quiz;
 		}
+		if ( empty( self::$_meta[$this->id] ) ) {
+			self::$_meta[$this->id] = array();
+		}
 		$this->course = LP_Course::get_course( $this->_lpr_course );
 		$this->_init();
 	}
 
 	protected function _init() {
+
 		add_action( 'wp_head', array( $this, 'frontend_assets' ) );
 	}
 
@@ -109,8 +119,9 @@ class LP_Quiz {
 			if ( !$current_question_id || !in_array( $current_question_id, $question_ids ) ) {
 				$current_question_id = reset( $question_ids );
 			}
-			//$question = LP_Question_Factory::get_question( $current_question_id );
-			$user = learn_press_get_current_user();
+
+			$current_question_id = absint( $current_question_id );
+			$question            = LP_Question_Factory::get_question( $current_question_id );
 
 			$user                     = learn_press_get_current_user();
 			$js                       = array(
@@ -118,13 +129,14 @@ class LP_Quiz {
 				'total_time'     => $this->duration,
 				'id'             => $this->id,
 				'questions'      => $question_ids,
-				'question_id'    => absint( $current_question_id ),
+				'question_id'    => $current_question_id,
 				'status'         => $user->get_quiz_status( $this->id ),
 				'time_remaining' => ( $time_remaining = $user->get_quiz_time_remaining( $this->id ) ) !== false && !in_array( $user->get_quiz_status( $this->id ), array( '', 'completed' ) ) ? $time_remaining : $this->duration,
 				'permalink'      => get_the_permalink(),
 				'ajaxurl'        => admin_url( 'admin-ajax.php' ),
 				'user_id'        => $user->id,
-				'nonce'          => wp_create_nonce( 'learn-press-quiz-action-' . $this->id . '-' . $user->id )
+				'nonce'          => wp_create_nonce( 'learn-press-quiz-action-' . $this->id . '-' . $user->id ),
+				'question'       => $question ? array( 'check_answer' => $question->can_check_answer() ) : false
 			);
 			$this->single_quiz_params = $js;
 		}
@@ -176,8 +188,8 @@ class LP_Quiz {
 				$value = get_the_permalink( $this->id );
 				break;
 			default:
-				if ( array_key_exists( $key, self::$_metas ) ) {
-					$value = self::$_metas[$key];
+				if ( array_key_exists( $key, self::$_meta[$this->id] ) ) {
+					$value = self::$_meta[$this->id][$key];
 				} else {
 					if ( strpos( $key, '_lp_' ) === false ) {
 						$key = '_lp_' . $key;
@@ -186,7 +198,7 @@ class LP_Quiz {
 					if ( $key == '_lp_duration' ) {
 						$value = absint( $value ) * 60;
 					}
-					self::$_metas[$key] = $value;
+					self::$_meta[$this->id][$key] = $value;
 				}
 		}
 		if ( !empty( $value ) ) {
@@ -257,22 +269,22 @@ class LP_Quiz {
 	}
 
 	function get_questions( $force = false ) {
-		static $this_questions;
-		$GLOBALS['learnpress_question_answers'] = array();
-		if ( empty( $this_questions ) || $force ) {
+		if ( !array_key_exists( 'questions', self::$_meta[$this->id] ) || $force ) {
+			self::$_meta[$this->id]['questions'] = array();
 			global $wpdb;
 			$query = $wpdb->prepare( "
-				SELECT q.*, qq.params
-				FROM {$wpdb->posts} q
-				INNER JOIN {$wpdb->learnpress_quiz_questions} qq ON qq.question_id = q.ID
-				AND q.post_type = %s
-				AND qq.quiz_id = %d
-			", LP()->question_post_type, $this->id );
+					SELECT q.*, qq.params
+					FROM {$wpdb->posts} q
+					INNER JOIN {$wpdb->learnpress_quiz_questions} qq ON qq.question_id = q.ID
+					AND q.post_type = %s
+					AND qq.quiz_id = %d
+				", LP()->question_post_type, $this->id );
 
 			if ( $this_questions = $wpdb->get_results( $query, OBJECT_K ) ) {
 				foreach ( $this_questions as $id => $question ) {
-					$question->params     = maybe_unserialize( $question->params );
-					$this->questions[$id] = $question;
+					$question->params                            = maybe_unserialize( $question->params );
+					self::$_meta[$this->id]['questions'][]       = $question;
+					$GLOBALS['learnpress_question_answers'][$id] = array();
 				}
 				if ( $answers = $wpdb->get_results( "
 					SELECT *
@@ -282,13 +294,13 @@ class LP_Quiz {
 				" )
 				) {
 					foreach ( $answers as $answer ) {
-						$GLOBALS['learnpress_question_answers'][$answer->question_answer_id]       = maybe_unserialize( $answer->answer_data );
-						$GLOBALS['learnpress_question_answers'][$answer->question_answer_id]['id'] = $answer->question_answer_id;
-
+						$GLOBALS['learnpress_question_answers'][$answer->question_id][$answer->question_answer_id]       = maybe_unserialize( $answer->answer_data );
+						$GLOBALS['learnpress_question_answers'][$answer->question_id][$answer->question_answer_id]['id'] = $answer->question_answer_id;
 					}
 				}
 			}
-			//$this->questions = $this_questions;
+		} else {
+			$this_questions = self::$_meta[$this->id]['questions'];
 		}
 		return apply_filters( 'learn_press_quiz_questions', $this_questions, $this->id, $force );
 	}
@@ -318,19 +330,21 @@ class LP_Quiz {
 	}
 
 	function get_mark( $force = false ) {
-
-		if ( empty( self::$_metas['mark'] ) || $force ) {
+		if ( !self::$_meta[$this->id] ) {
+			self::$_meta[$this->id] = array();
+		}
+		if ( empty( self::$_meta[$this->id]['mark'] ) || $force ) {
 			global $wpdb;
-			$query      = $wpdb->prepare( "
+			$query                          = $wpdb->prepare( "
 				SELECT SUM(pm.meta_value) as mark
 				FROM {$wpdb->learnpress_quiz_questions} qq
 				INNER JOIN {$wpdb->posts} q ON q.ID = qq.quiz_id
 				INNER JOIN {$wpdb->postmeta} pm ON pm.post_id = qq.question_id AND pm.meta_key = %s
 				WHERE q.ID = %d
 			", '_lp_mark', $this->id );
-			self::$_metas['mark'] = $wpdb->get_var( $query );
+			self::$_meta[$this->id]['mark'] = $wpdb->get_var( $query );
 		}
-		return apply_filters( 'learn_press_quiz_mark', self::$_metas['mark'], $this );
+		return apply_filters( 'learn_press_quiz_mark', self::$_meta[$this->id]['mark'], $this );
 	}
 
 	function get_question_link( $question_id = null ) {
@@ -344,6 +358,29 @@ class LP_Quiz {
 			}
 		}
 		return false;
+	}
+
+	function check_question( $question_id, $user_id ) {
+
+		if ( !$question = LP_Question_Factory::get_question( $question_id ) ) {
+			return false;
+		}
+
+		$user = learn_press_get_user( $user_id );
+
+		$history = $user->get_quiz_results( $this->id );
+		if ( !$history ) {
+			return false;
+		}
+		$checked = (array) learn_press_get_user_quiz_meta( $history->history_id, 'checked' );
+		$checked = array_filter( $checked );
+		if ( !in_array( $question_id, $checked ) ) {
+			$checked[] = $question_id;
+		}
+
+		learn_press_update_user_quiz_meta( $history->history_id, 'checked', $checked );
+
+		return $question->get_answers();
 	}
 
 	/**
