@@ -63,9 +63,9 @@ class LP_Abstract_User {
 	 * @param $key
 	 * @param $value
 	 */
-	function __set( $key, $value ) {
+	/*function __set( $key, $value ) {
 		//$this->user->data->{$key} = $value;
-	}
+	}*/
 
 	/**
 	 * Magic function to get user data
