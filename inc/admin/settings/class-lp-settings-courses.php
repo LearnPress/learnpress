@@ -94,6 +94,17 @@ class LP_Settings_Courses extends LP_Settings_Base {
 					'type'    => 'checkbox'
 				),
 				array(
+					'title' => __( 'Archive', 'learnpress' ),
+					'type'  => 'title'
+				),
+				array(
+					'title'   => __( 'Courses limit', 'learnpress' ),
+					'desc'    => __( 'Number of courses display per page', 'learnpress' ),
+					'id'      => $this->get_field_name( 'archive_course_limit' ),
+					'default' => '10',
+					'type'    => 'number'
+				),
+				array(
 					'title' => __( 'Course thumbnail', 'learnpress' ),
 					'type'  => 'title'
 				),
