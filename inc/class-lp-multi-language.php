@@ -56,7 +56,7 @@ if ( !class_exists( 'LP_Multi_Language' ) ) {
 	}
 }
 
-if(function_exists('learn_press_load_plugin_text_domain')) {
+if ( !function_exists( 'learn_press_load_plugin_text_domain' ) ) {
 	/**
 	 * Load plugin text domain
 	 *
