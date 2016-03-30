@@ -294,9 +294,12 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 				$content = ob_get_clean();
 				learn_press_send_json(
 					apply_filters( 'learn_press_load_quiz_question_result_data', array(
-							'result'    => 'success',
-							'content'   => $content,
-							'permalink' => learn_press_get_user_question_url( $quiz_id, $question_id )
+							'result'       => 'success',
+							'permalink'    => learn_press_get_user_question_url( $quiz_id, $question_id ),
+							'question' => array(
+								'content' => $content,
+								'check_answer' => $question->can_check_answer()
+							)
 						)
 					)
 				);

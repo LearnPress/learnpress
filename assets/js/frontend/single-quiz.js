@@ -156,12 +156,12 @@ if (typeof LearnPress == 'undefined') var LearnPress = {};
 				complete: (function (e) {
 					var response = LearnPress.parseJSON(e.responseText);
 					if (response.result == 'success') {
-						if (!that.get('content')) {
-							that.set('content', $(response.content));
-							if (response.permalink) {
-								LearnPress.setUrl(response.permalink);
-							}
+						//if (!that.get('content')) {
+						that.set(response.question);
+						if (response.permalink) {
+							LearnPress.setUrl(response.permalink);
 						}
+						//}
 						$.isFunction(args.complete) && args.complete.call(that, response);
 					}
 				})
@@ -292,10 +292,7 @@ if (typeof LearnPress == 'undefined') var LearnPress = {};
 							this.$buttons.prev.addClass(hidden);
 						}
 					}
-					if (this.model.current().get('check_answer')) {
-						this.$buttons.check.removeClass(hidden);
-
-					}
+					this.$buttons.check.toggleClass(hidden, !this.model.current().get('check_answer'));
 					break;
 				default:
 					this.$buttons.next.addClass(hidden);
@@ -365,38 +362,6 @@ if (typeof LearnPress == 'undefined') var LearnPress = {};
 					});
 				}
 			});
-			return;
-			args = $.extend({
-				complete: function (response) {
-
-				}
-			}, args || {});
-			$.ajax({
-				url     : this.model.get('ajaxurl'),
-				dataType: 'html',
-				data    : {
-					action         : 'learnpress_finish_quiz',
-					save_id        : this.model.get('question_id'),
-					question_answer: this.$('form').serialize(),// $('input, select, textarea', this.$('form')).toJSON(),
-					quiz_id        : this.model.get('id')
-				},
-				success : function (response) {
-					var json = LearnPress.parseJSON(response),
-						callbackReturn = undefined;
-					$.isFunction(args.complete) && ( callbackReturn = args.complete.call(LearnPress.Quiz, json) );
-					LearnPress.Hook.doAction('learn_press_finish_quiz', that.model.get('id'), that);
-					LearnPress.MessageBox.show(single_quiz_localize.finished_quiz, {
-						autohide: 2000,
-						onHide  : function () {
-							if (callbackReturn && callbackReturn.redirect) {
-								LearnPress.reload(callbackReturn.redirect);
-							} else if (callbackReturn == undefined && json.redirect) {
-								LearnPress.reload(json.redirect);
-							}
-						}
-					});
-				}
-			});
 		},
 		retakeQuiz     : function (args) {
 			this.block_page();
@@ -427,58 +392,6 @@ if (typeof LearnPress == 'undefined') var LearnPress = {};
 					}
 				}
 			});
-			return;
-			var that = this;
-			args = $.extend({
-				complete: function (response) {
-
-				}
-			}, args || {});
-			var that = this,
-				data = $.extend({
-					action : 'learnpress_retake_quiz',
-					quiz_id: this.model.get('id'),
-					data   : this.$('form').serialize()
-				}, {});
-			LearnPress.doAjax({
-				url    : window.location.href,
-				data   : this.$('form[name="learn-press-quiz-intro"]').serialize(),
-				success: function (response, raw) {
-					LearnPress.MessageBox.hide();
-					var response = LearnPress.Hook.applyFilters('learn_press_start_quiz_results', response, that);
-					if (response.result == 'success') {
-						that.model.current().set(response.question);
-						that.model.set({status: response.data.status, question_id: response.question.id});
-						LearnPress.setUrl(response.question.permalink);
-					}
-					$.isFunction(args.complete) && args.complete.call(that, response)
-				}
-			});
-			return;
-			$.ajax({
-				url     : this.model.get('ajaxurl'),
-				dataType: 'html',
-				data    : {
-					action : 'learnpress_retake_quiz',
-					quiz_id: this.model.get('id'),
-					nonce  : this._getNonce('retake-quiz')
-				},
-				success : function (response) {
-					var json = LearnPress.parseJSON(response);
-					LearnPress.MessageBox.hide();
-					if (json.result == 'success') {
-						$.isFunction(args.complete) && args.complete.call(LearnPress.Quiz, json);
-						LearnPress.MessageBox.show(single_quiz_localize.retaken_quiz, {
-							autohide: 2000,
-							onHide  : function () {
-								LearnPress.reload();
-							}
-						});
-					} else {
-						LearnPress.MessageBox.show(json.message, {buttons: 'ok'});
-					}
-				}
-			});
 		},
 		_checkQuestion : function () {
 			if (LearnPress.Hook.applyFilters('learn_press_before_check_question', true, this) !== false) {
@@ -490,11 +403,13 @@ if (typeof LearnPress == 'undefined') var LearnPress = {};
 				this.pause();
 				this.block_page();
 				this.model.current().check({
-					complete: function () {
+					complete: function (response) {
 						that.$buttons.next.prop('disabled', false);
 						that.$buttons.prev.prop('disabled', false);
 						that.$buttons.finish.prop('disabled', false);
 						that.$buttons.check.prop('disabled', false);
+
+						LearnPress.Hook.doAction('learn_press_check_question', response, that);
 					},
 					data    : {nonce: this.model.get('nonce')}
 				});

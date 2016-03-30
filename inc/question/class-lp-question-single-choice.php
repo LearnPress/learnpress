@@ -23,6 +23,10 @@ class LP_Question_Single_Choice extends LP_Abstract_Question {
 
 	}
 
+	function can_check_answer() {
+		return false;
+	}
+
 	static function admin_js_template(){
 		ob_start();
 		?>

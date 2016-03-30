@@ -125,7 +125,7 @@ class LP_Quiz {
 				$question_ids = array();
 			}*/
 			if ( !$current_question_id || !in_array( $current_question_id, $questions ) ) {
-				$current_question_id = reset( $question_ids );
+				$current_question_id = reset( $questions );
 			}
 
 			$current_question_id = absint( $current_question_id );

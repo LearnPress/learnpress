@@ -119,8 +119,11 @@ class LP_Quiz_Factory {
 		if ( $quiz ) {
 			$answers = $quiz->check_question( $question_id, $user );
 		}
-		print_r( $answers );
-		die();
+		$response = array(
+			'result'  => 'success',
+			'answers' => $answers
+		);
+		learn_press_send_json( $response );
 	}
 
 	static function _verify_nonce() {
