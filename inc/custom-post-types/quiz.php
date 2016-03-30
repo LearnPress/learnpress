@@ -35,7 +35,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 
 		}
 
-		function init(){
+		function init() {
 
 		}
 
@@ -250,7 +250,11 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 			if ( false !== $pos && !array_key_exists( LP()->course_post_type, $columns ) ) {
 				$columns = array_merge(
 					array_slice( $columns, 0, $pos + 1 ),
-					array( LP()->course_post_type => __( 'Course', 'learnpress' ), 'num_of_question' => __( 'Questions', 'learnpress' ) ),
+					array(
+						LP()->course_post_type => __( 'Course', 'learnpress' ),
+						'num_of_question'      => __( 'Questions', 'learnpress' ),
+						'duration'             => __( 'Duration', 'learnpress' )
+					),
 					array_slice( $columns, $pos + 1 )
 				);
 			}
@@ -296,12 +300,12 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 					}
 					break;
 				case 'num_of_question':
-					if( property_exists( $post, 'question_count' ) ){
+					if ( property_exists( $post, 'question_count' ) ) {
 						$count = $post->question_count;
-					}else{
+					} else {
 						$quiz      = LP_Quiz::get_quiz( $post_id );
 						$questions = $quiz->get_questions();
-						$count = sizeof( $questions );
+						$count     = sizeof( $questions );
 					}
 
 					printf(
@@ -309,6 +313,16 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 						( $count ) ? sprintf( _nx( '%d question', '%d questions', $count, 'learnpress' ), $count ) : __( 'This quiz has got any questions', 'learnpress' ),
 						$count
 					);
+					break;
+				case 'duration':
+					$duration = absint( get_post_meta( $post_id, '_lp_duration', true ) ) * 60;
+					if ( $duration >= 600 ) {
+						echo date( 'H:i:s', $duration );
+					} elseif ( $duration > 0 ) {
+						echo date( 'i:s', $duration );
+					} else {
+						echo '-';
+					}
 			}
 		}
 
@@ -323,7 +337,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 				return $fields;
 			}
 			$fields = " DISTINCT " . $fields;
-			if( $this->_get_orderby() == 'question-count' ) {
+			if ( $this->_get_orderby() == 'question-count' ) {
 				$fields .= ", (SELECT count(*) FROM {$wpdb->prefix}learnpress_quiz_questions qq WHERE {$wpdb->posts}.ID = qq.quiz_id ) as question_count";
 			}
 			return $fields;
@@ -363,7 +377,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 				$where .= $wpdb->prepare( " AND (c.ID = %d)", $course_id );
 			}
 			if ( isset( $_GET['s'] ) ) {
-				$s = $_GET['s'];
+				$s     = $_GET['s'];
 				$where = preg_replace(
 					"/\.post_content\s+LIKE\s*(\'[^\']+\')\s*\)/",
 					" .post_content LIKE '%$s%' ) OR (c.post_title LIKE '%$s%' )", $where
@@ -384,7 +398,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 			}
 			global $wpdb;
 			if ( isset ( $_GET['orderby'] ) && isset ( $_GET['order'] ) ) {
-				switch( $_GET['orderby'] ){
+				switch ( $_GET['orderby'] ) {
 					case 'course-name':
 						$order_by_statement = "c.post_title {$_GET['order']}";
 						break;
@@ -405,7 +419,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 */
 		function columns_sortable( $columns ) {
 			$columns[LP()->course_post_type] = 'course-name';
-			$columns['num_of_question']       = 'question-count';
+			$columns['num_of_question']      = 'question-count';
 			return $columns;
 		}
 
@@ -421,11 +435,11 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 			return !empty( $_REQUEST['filter_course'] ) ? absint( $_REQUEST['filter_course'] ) : false;
 		}
 
-		private function _get_orderby(){
+		private function _get_orderby() {
 			return isset( $_REQUEST['orderby'] ) ? $_REQUEST['orderby'] : '';
 		}
 
-		private function _get_search(){
+		private function _get_search() {
 			return isset( $_REQUEST['s'] ) ? $_REQUEST['s'] : false;
 		}
 	} // end LP_Quiz_Post_Type

@@ -317,7 +317,7 @@ class LP_Upgrade_10 {
 			$new_value = $meta['meta_value'];
 			switch ( $new_key ) {
 				case '_lp_is_previewable':
-					if ( $this->_is_false_value( $new_value ) ) {
+					if ( $this->_is_false_value( $new_value ) || $new_id == 'not_preview' ) {
 						$new_value = 'no';
 					} else {
 						$new_value = 'yes';

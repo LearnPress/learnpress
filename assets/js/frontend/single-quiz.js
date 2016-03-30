@@ -300,7 +300,7 @@ if (typeof LearnPress == 'undefined') var LearnPress = {};
 				default:
 					this.$buttons.next.addClass(hidden);
 					this.$buttons.prev.addClass(hidden);
-					this.$buttons.start.removeClass(hidden)();
+					this.$buttons.start.removeClass(hidden);
 					this.$buttons.finish.addClass(hidden);
 					this.$buttons.retake.addClass(hidden);
 					this.$('.quiz-questions .qq.current').removeClass('current');

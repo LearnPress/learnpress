@@ -124,6 +124,11 @@ class LP_Quiz {
 			$question            = LP_Question_Factory::get_question( $current_question_id );
 
 			$user                     = learn_press_get_current_user();
+
+			if( $user->get_quiz_results( $this->id )){
+
+			}
+
 			$js                       = array(
 				'time_format'    => $this->duration > 300 ? 'h%:m%:s%' : 'm%:s%',
 				'total_time'     => $this->duration,
@@ -136,7 +141,8 @@ class LP_Quiz {
 				'ajaxurl'        => admin_url( 'admin-ajax.php' ),
 				'user_id'        => $user->id,
 				'nonce'          => wp_create_nonce( 'learn-press-quiz-action-' . $this->id . '-' . $user->id ),
-				'question'       => $question ? array( 'check_answer' => $question->can_check_answer() ) : false
+				'question'       => $question ? array( 'check_answer' => $question->can_check_answer() ) : false,
+				'history' => $user->get_quiz_results( $this->id )
 			);
 			$this->single_quiz_params = $js;
 		}

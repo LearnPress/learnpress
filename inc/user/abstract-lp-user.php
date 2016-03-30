@@ -135,6 +135,7 @@ class LP_Abstract_User {
 			$quiz              = LP_Quiz::get_quiz( $quiz_id );
 			$quiz_questions    = $quiz->get_questions();
 			$quiz_question_ids = $quiz_questions ? array_keys( $quiz_questions ) : array();
+			$quiz_question_ids = array_filter( $quiz_question_ids );
 			$user_quiz_data    = apply_filters(
 				'learn_press_user_quiz_data',
 				array(
