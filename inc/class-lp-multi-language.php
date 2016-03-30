@@ -56,37 +56,38 @@ if ( !class_exists( 'LP_Multi_Language' ) ) {
 	}
 }
 
-/**
- * Load plugin text domain
- *
- * @param        string
- * @param        mixed
- */
-function learn_press_load_plugin_text_domain( $path, $text_domain = true ) {
-	$plugin_folder = basename( $path );
-	if ( true === $text_domain ) {
-		$text_domain = $plugin_folder;
+if(function_exists('learn_press_load_plugin_text_domain')) {
+	/**
+	 * Load plugin text domain
+	 *
+	 * @param        string
+	 * @param        mixed
+	 */
+	function learn_press_load_plugin_text_domain( $path, $text_domain = true ) {
+		$plugin_folder = basename( $path );
+		if ( true === $text_domain ) {
+			$text_domain = $plugin_folder;
+		}
+
+		$locale = apply_filters( 'plugin_locale', get_locale(), $text_domain );
+
+		if ( is_admin() ) {
+			load_textdomain( $text_domain, WP_LANG_DIR . "/{$plugin_folder}/{$plugin_folder}-admin-{$locale}.mo" );
+			load_textdomain( $text_domain, WP_LANG_DIR . "/plugins/{$plugin_folder}-admin-{$locale}.mo" );
+		}
+
+		load_textdomain( $text_domain, WP_LANG_DIR . "/{$plugin_folder}/{$plugin_folder}-{$locale}.mo" );
+
+		$mo = WP_CONTENT_DIR . "/plugins/{$plugin_folder}/languages/{$plugin_folder}-{$locale}.mo";
+		load_textdomain( $text_domain, $mo );
+		load_plugin_textdomain( $text_domain, false, plugin_basename( $path ) . "/languages" );
+		LP_Debug::instance()->add(
+			array(
+				$mo . "-" . ( file_exists( $mo ) ? 'YES' : 'NO' ),
+				plugin_basename( $path ) . "/languages",
+				$text_domain
+			)
+		);
 	}
-
-	$locale = apply_filters( 'plugin_locale', get_locale(), $text_domain );
-
-	if ( is_admin() ) {
-		load_textdomain( $text_domain, WP_LANG_DIR . "/{$plugin_folder}/{$plugin_folder}-admin-{$locale}.mo" );
-		load_textdomain( $text_domain, WP_LANG_DIR . "/plugins/{$plugin_folder}-admin-{$locale}.mo" );
-	}
-
-	load_textdomain( $text_domain, WP_LANG_DIR . "/{$plugin_folder}/{$plugin_folder}-{$locale}.mo" );
-
-	$mo = WP_CONTENT_DIR . "/plugins/{$plugin_folder}/languages/{$plugin_folder}-{$locale}.mo";
-	load_textdomain( $text_domain, $mo );
-	load_plugin_textdomain( $text_domain, false, plugin_basename( $path ) . "/languages" );
-	LP_Debug::instance()->add(
-		array(
-			$mo . "-" . ( file_exists( $mo ) ? 'YES' : 'NO' ),
-			plugin_basename( $path ) . "/languages",
-			$text_domain
-		)
-	);
 }
-
 LP_Multi_Language::init();

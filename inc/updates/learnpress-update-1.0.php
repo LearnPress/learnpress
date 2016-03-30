@@ -279,7 +279,7 @@ class LP_Upgrade_10 {
 			'_lpr_duration'             => '_lp_duration',
 			'_lpr_retake_quiz'          => '_lp_retake_count',
 			'_lpr_show_quiz_result'     => '_lp_show_result',
-			'_lpr_show_question_answer' => '_lp_show_question_answer',
+			'_lpr_show_question_answer' => '_lp_show_check_answer',
 			'_lpr_course'               => null
 		);
 		$quiz_meta = self::get_post_meta( $old_id, array_keys( $keys ) );
@@ -324,6 +324,9 @@ class LP_Upgrade_10 {
 					}
 			}
 			add_post_meta( $new_id, $new_key, $new_value );
+		}
+		if ( $post_thumbnail_id = get_post_thumbnail_id( $old_id ) ) {
+			set_post_thumbnail( $new_id, $post_thumbnail_id );
 		}
 	}
 
@@ -436,14 +439,11 @@ class LP_Upgrade_10 {
 								'parent'      => $term->parent
 							)
 						);
-						LP_Debug::instance()->add( 'xxxxxxxxxxxxxxxxxxxxxxxxxx' );
 					} else {
-						LP_Debug::instance()->add( 'yyyyyyyyyyyyyyyyyyyyyyyyyyyy' );
 					}
 					if ( !is_wp_error( $_term ) ) {
 						$tags[] = absint( $_term['term_id'] );
 					}
-					LP_Debug::instance()->add( $_term );
 				} else {
 					$tags[] = absint( $term->term_id );
 				}
