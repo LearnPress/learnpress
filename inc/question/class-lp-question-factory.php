@@ -164,7 +164,7 @@ class LP_Question_Factory {
 		do_action( 'learn_press_question_factory_init', __CLASS__ );
 	}
 
-	static function save_question( $quiz_id, $user_id ){
+	static function save_question( $quiz_id, $user_id ) {
 		self::save_question_if_needed( null, $quiz_id, $user_id );
 	}
 
@@ -178,9 +178,11 @@ class LP_Question_Factory {
 	 * @return bool
 	 */
 	static function save_question_if_needed( $question_id, $quiz_id, $user_id ) {
+		$user     = learn_press_get_user( $user_id );
 		$save_id  = learn_press_get_request( 'save_id' );
 		$question = $save_id ? LP_Question_Factory::get_question( $save_id ) : false;
-		if ( $question ) {
+
+		if ( $question && !$user->has_checked_answer( $save_id, $quiz_id ) && $user->get_quiz_status( $quiz_id ) == 'started' ) {
 			$question_answer = null;
 			$question_data   = isset( $_REQUEST['question_answer'] ) ? $_REQUEST['question_answer'] : array();
 			if ( is_string( $question_data ) ) {
@@ -189,12 +191,12 @@ class LP_Question_Factory {
 				$question_answer = $question_data;
 			}
 			$question_answer = array_key_exists( 'learn-press-question-' . $save_id, $question_answer ) ? $question_answer['learn-press-question-' . $save_id] : '';
-
 			$question->save_user_answer( $question_answer, $quiz_id );
 			do_action( 'learn_press_save_user_question_answer', $question_answer, $save_id, $quiz_id, $user_id, true );
 		}
 		return $question;
 	}
+
 
 	static function sanitize_answers( $answers, $posted, $q ) {
 		$func = "_sanitize_{$q->type}_answers";
@@ -292,16 +294,6 @@ class LP_Question_Factory {
 	}
 
 	static function admin_template() {
-		/*$questions = self::get_types();
-		$method    = is_admin() ? 'admin_js_template' : 'frontend_js_template';
-
-		if ( $questions ) foreach ( $questions as $type ) {
-			$question = self::get_classname_from_question_type( $type );
-			if ( is_callable( array( $question, $method ) ) ) {
-				$template = call_user_func( array( $question, $method ) );
-				printf( '<script id="tmpl-%s" type="text/html">%s</script>', $id, $template );
-			}
-		}*/
 		foreach ( self::$_templates as $id => $content ) {
 			printf( '<script id="tmpl-%s" type="text/html">%s</script>', $id, $content );
 		}
@@ -328,10 +320,10 @@ class LP_Question_Factory {
 		self::$_templates[$id] = $content;
 	}
 
-	static function fetch_question_content( $the_question, $args = false ){
+	static function fetch_question_content( $the_question, $args = false ) {
 		$question = self::get_question( $the_question );
-		$content = '';
-		if( $question ){
+		$content  = '';
+		if ( $question ) {
 			ob_start();
 			$question->render( $args );
 			$content = ob_get_clean();
@@ -350,67 +342,7 @@ class LP_Question_Factory {
 			$question->type = $to;
 			$question->save( $post_data );
 		}
-		return;
-		switch ( $from ) {
-			case 'true_or_false':
-			case 'single_choice':
-				if ( $to == 'multi_choice' ) {
 
-				}
-				break;
-			case 'multi_choice':
-				$count       = 0;
-				$true_option = 0;
-				if ( $to == 'true_or_false' ) {
-					$first_option         = reset( $question->answers );
-					$check_seconds_option = false;
-					if ( $first_option['is_true'] != 'yes' ) {
-						$check_seconds_option = true;
-					}
-					foreach ( $question->answers as $answer ) {
-						$count ++;
-						if ( $answer['is_true'] == 'yes' ) {
-							$true_option ++;
-						}
-						if ( $true_option > 1 ) {
-							$answer['is_true'] = 'no';
-						}
-						if ( $count == 2 && $check_seconds_option ) {
-							$answer['is_true'] = 'yes';
-						}
-						$wpdb->update(
-							$wpdb->learnpress_question_answers,
-							array(
-								'answer_data' => maybe_serialize( $answer )
-							),
-							array( 'question_answer_id' => $answer['id'] ),
-							array( '%s' )
-						);
-
-						if ( $count >= 2 ) {
-							break;
-						}
-					}
-				} elseif ( $to == 'single_choice' ) {
-					foreach ( $question->answers as $answer ) {
-						if ( $answer['is_true'] == 'yes' ) {
-							$true_option ++;
-						}
-						if ( $true_option > 2 ) {
-							$answer['is_true'] = 'no';
-						}
-
-						$wpdb->update(
-							$wpdb->learnpress_question_answers,
-							array(
-								'answer_data' => maybe_serialize( $answer )
-							),
-							array( 'question_answer_id' => $answer['id'] ),
-							array( '%s' )
-						);
-					}
-				}
-		}
 		update_post_meta( $question->id, '_lp_type', $to );
 	}
 }

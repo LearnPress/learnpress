@@ -703,6 +703,16 @@ a .archive-course:hover {
 
 }
 
+.learn-press-question-wrap{
+
+}
+.learn-press-question-wrap.checked li.answer-true{
+	background: #C4EBFF;
+}
+.learn-press-question-wrap.checked li.user-answer-false{
+	color: #FF0000;
+}
+
 /* jAlerts */
 #popup_container{
 	background: #FFF;

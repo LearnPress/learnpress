@@ -18,7 +18,7 @@ learn_press_include( 'abstracts/abstract-lp-assets.php' );
 class LP_Assets extends LP_Abstract_Assets {
 	static protected $_minify = array(
 		'assets/js/admin/meta-box-question.js' => 'assets/js/admin/question.min.js',
-		'assets/js/global.js'         => 'assets/js/global.min.js'
+		'assets/js/global.js'                  => 'assets/js/global.min.js'
 	);
 
 	static function init() {
@@ -97,7 +97,7 @@ class LP_Assets extends LP_Abstract_Assets {
 
 		// jAlerts
 		self::add_style( 'jalerts', learn_press_plugin_url( 'assets/css/icons.css' ) );
-		self::add_script( 'jalerts', learn_press_plugin_url( 'assets/js/jquery.alert.js' )  );
+		self::add_script( 'jalerts', learn_press_plugin_url( 'assets/js/jquery.alert.js' ) );
 
 		// admin
 		self::add_style( 'learn-press-admin', learn_press_plugin_url( 'assets/css/admin/admin.css' ) );
@@ -157,8 +157,12 @@ class LP_Assets extends LP_Abstract_Assets {
 			self::enqueue_script( 'checkout' );
 		}
 
-		if( learn_press_is_profile() ){
+		if ( learn_press_is_profile() ) {
 			self::enqueue_script( 'learn-press-js' );
+		}
+
+		if ( is_learnpress() ) {
+			self::enqueue_script( 'learn-press' );
 		}
 		do_action( 'learn_press_frontend_after_load_assets' );
 	}

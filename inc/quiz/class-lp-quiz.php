@@ -131,12 +131,11 @@ class LP_Quiz {
 			$current_question_id = absint( $current_question_id );
 			$question            = LP_Question_Factory::get_question( $current_question_id );
 
-
 			$js                       = array(
 				'time_format'    => $this->duration > 300 ? 'h%:m%:s%' : 'm%:s%',
 				'total_time'     => $this->duration,
 				'id'             => $this->id,
-				'questions'      => $questions,
+				'questions'      => $this->get_question_params( $questions ),//$questions,
 				'question_id'    => $current_question_id,
 				'status'         => $user->get_quiz_status( $this->id ),
 				'time_remaining' => ( $time_remaining = $user->get_quiz_time_remaining( $this->id ) ) !== false && !in_array( $user->get_quiz_status( $this->id ), array( '', 'completed' ) ) ? $time_remaining : $this->duration,
@@ -144,12 +143,35 @@ class LP_Quiz {
 				'ajaxurl'        => admin_url( 'admin-ajax.php' ),
 				'user_id'        => $user->id,
 				'nonce'          => wp_create_nonce( 'learn-press-quiz-action-' . $this->id . '-' . $user->id ),
-				'question'       => $question ? array( 'check_answer' => $question->can_check_answer() ) : false,
-				'history'        => $user->get_quiz_results( $this->id )
+				'question'       => $question ? array( 'check_answer' => $question->can_check_answer() ) : false
 			);
 			$this->single_quiz_params = $js;
 		}
 		return apply_filters( 'learn_press_single_quiz_params', $this->single_quiz_params, $this );
+	}
+
+	function get_question_params( $ids ) {
+		global $wpdb;
+		$query = $wpdb->prepare( "
+			SELECT ID as id, pm.meta_value as type
+			FROM {$wpdb->posts} p
+			INNER JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID AND pm.meta_key = %s
+			WHERE ID IN(" . join( ',', $ids ) . ")
+			AND post_type = %s
+		", '_lp_type', 'lp_question' );
+		if ( $results = $wpdb->get_results( $query, OBJECT_K ) ) {
+			$user = learn_press_get_current_user();
+			if ( $history = $user->get_quiz_results( $this->id ) ) {
+				$checked_answers = (array)$history->checked;
+			} else {
+				$checked_answers = array();
+			}
+			foreach ( $results as $row ) {
+				$row->check_answer = learn_press_question_type_support( $row->type, 'check-answer' );
+				$row->checked      = in_array( $row->id, $checked_answers );
+			}
+		}
+		return $results;
 	}
 
 	function frontend_assets() {
@@ -299,13 +321,15 @@ class LP_Quiz {
 					SELECT *
 					FROM {$wpdb->learnpress_question_answers}
 					WHERE question_id IN(" . join( ',', array_keys( $this_questions ) ) . ")
-					ORDER BY answer_order ASC
+					ORDER BY question_id, answer_order ASC
 				" )
 				) {
+
 					foreach ( $answers as $answer ) {
 						$GLOBALS['learnpress_question_answers'][$answer->question_id][$answer->question_answer_id]       = maybe_unserialize( $answer->answer_data );
 						$GLOBALS['learnpress_question_answers'][$answer->question_id][$answer->question_answer_id]['id'] = $answer->question_answer_id;
 					}
+					//print_r($GLOBALS['learnpress_question_answers']);
 				}
 			}
 		} else {

@@ -11,8 +11,9 @@ if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-global $quiz;
-
+$quiz    = LP()->quiz;
+$user    = LP()->user;
+$checked = $user->has_checked_answer( $this->id, $quiz->id );
 ?>
 <div <?php learn_press_question_class( $this ); ?> data-id="<?php echo $this->id; ?>" data-type="multi-choice">
 
@@ -29,7 +30,7 @@ global $quiz;
 				<?php do_action( 'learn_press_before_question_answer_text', $answer, $this ); ?>
 
 				<label>
-					<input type="checkbox" name="learn-press-question-<?php echo $this->id; ?>[]" <?php checked( $this->is_selected_option( $answer, $answered ) ); ?> value="<?php echo $answer['value']; ?>" />
+					<input type="checkbox" name="learn-press-question-<?php echo $this->id; ?>[]" <?php checked( $this->is_selected_option( $answer, $answered ) ); ?> value="<?php echo $answer['value']; ?>" <?php echo $checked ? 'disabled="disabled"' : ''; ?> />
 					<?php echo apply_filters( 'learn_press_question_answer_text', $answer['text'], $answer, $this ); ?>
 				</label>
 

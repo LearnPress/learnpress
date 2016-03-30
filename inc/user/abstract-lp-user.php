@@ -238,11 +238,13 @@ class LP_Abstract_User {
 	}
 
 	function get_question_answers( $quiz_id, $question_id ) {
-		$progress         = $this->get_quiz_progress( $quiz_id );
+		$progress = $this->get_quiz_progress( $quiz_id );
+
 		$question_answers = null;
 		if ( $progress ) {
-			if ( !empty( $progress->question_answers[$question_id] ) ) {
-				$question_answers = $progress->question_answers[$question_id];
+			$answers = (array) $progress->question_answers;
+			if ( array_key_exists( $question_id, $answers ) ) {
+				$question_answers = $answers[$question_id];
 			}
 		}
 		return $question_answers;
@@ -1414,5 +1416,15 @@ class LP_Abstract_User {
 			$courses[$key] = $wpdb->get_results( $query );
 		}
 		return $courses[$key];
+	}
+
+	function has_checked_answer( $question_id, $quiz_id ) {
+		$history = $this->get_quiz_results( $quiz_id );
+		if ( !$history ) {
+			return;
+		}
+		$checked = (array) learn_press_get_user_quiz_meta( $history->history_id, 'checked' );
+		$checked = array_filter( $checked );
+		return in_array( $question_id, $checked );
 	}
 }

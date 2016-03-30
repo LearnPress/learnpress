@@ -18,7 +18,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 				'load_quiz_question'   => true,
 				'load_prev_question'   => false,
 				'load_next_question'   => false,
-				'save_question_answer' => false,
+				//'save_question_answer' => false,
 				'finish_quiz'          => true,
 				'retake_quiz'          => true, // anonymous user can retake quiz
 				'take_free_course'     => false,
@@ -297,8 +297,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 							'result'       => 'success',
 							'permalink'    => learn_press_get_user_question_url( $quiz_id, $question_id ),
 							'question' => array(
-								'content' => $content,
-								'check_answer' => $question->can_check_answer()
+								'content' => $content
 							)
 						)
 					)

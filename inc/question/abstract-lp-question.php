@@ -180,7 +180,7 @@ class LP_Abstract_Question {
 
 	function get_answers() {
 		global $wpdb;
-		static $answers = array();
+		$answers = array();
 		if ( empty( $answers ) ) {
 			if ( !empty( $GLOBALS['learnpress_question_answers'][$this->id] ) ) {
 				if ( array_key_exists( $this->id, $GLOBALS['learnpress_question_answers'] ) ) {
@@ -200,6 +200,7 @@ class LP_Abstract_Question {
 						$answers[$row->question_answer_id]['id'] = $row->question_answer_id;
 					}
 				}
+				$GLOBALS['learnpress_question_answers'][$this->id] = $answers;
 			}
 		}
 		return apply_filters( 'learn_press_question_answers', $answers, $this );

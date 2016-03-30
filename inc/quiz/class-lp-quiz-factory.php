@@ -14,7 +14,6 @@ class LP_Quiz_Factory {
 		foreach ( $actions as $k => $v ) {
 			LP_Request_Handler::register_ajax( $k, array( __CLASS__, $v ) );
 		}
-
 	}
 
 	static function start_quiz() {
@@ -116,6 +115,9 @@ class LP_Quiz_Factory {
 		$question_id = learn_press_get_request( 'question_id' );
 		$user        = learn_press_get_user( $user_id );
 		$quiz        = LP_Quiz::get_quiz( $quiz_id );
+
+		LP_Question_Factory::save_question_if_needed( $question_id, $quiz_id, $user_id );
+
 		if ( $quiz ) {
 			$answers = $quiz->check_question( $question_id, $user );
 		}

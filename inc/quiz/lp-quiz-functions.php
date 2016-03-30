@@ -49,8 +49,8 @@ function learn_press_question_class( $question = null, $args = array() /*, $clas
 		}
 		settype( $classes, 'array' );
 		$classes = array_merge( $classes, array( "learn-press-question-wrap", "question-type-{$question->type}", "question-{$question->id}" ) );
-
-		if ( $user->get_quiz_status( $quiz->id ) == 'completed' ) {
+		$status  = $user->get_quiz_status( $quiz->id );
+		if ( $status == 'completed' ) {
 			$user_id     = learn_press_get_current_user_id();
 			$user        = learn_press_get_user( $user_id );
 			$answer_data = $user->get_answer_results( $question->id, $quiz->id );
@@ -64,7 +64,7 @@ function learn_press_question_class( $question = null, $args = array() /*, $clas
 			} else {
 				$classes[] = 'skipped';
 			}
-		} else if ( $question->id == learn_press_get_request( 'question' ) ) {
+		} else if ( $status == 'started' && $question->id == learn_press_get_request( 'question' ) ) {
 			$classes[] = 'current';
 		}
 
@@ -281,3 +281,65 @@ function learn_press_output_question_nonce( $question ) {
 }
 
 add_action( 'learn_press_after_question_wrap', 'learn_press_output_question_nonce' );
+
+function learn_press_add_question_type_support( $types, $supports ) {
+	if ( !empty( $GLOBALS['learn_press_question_type_support'] ) ) {
+		$GLOBALS['learn_press_question_type_support'] = array();
+	}
+	$_supports = $GLOBALS['learn_press_question_type_support'];
+	settype( $types, 'array' );
+	settype( $supports, 'array' );
+
+	$types    = array_filter( $types );
+	$supports = array_filter( $supports );
+
+	if ( $types ) foreach ( $types as $type ) {
+		if ( !$type ) {
+			continue;
+		}
+		if ( empty( $_supports[$type] ) ) {
+			$_supports[$type] = array();
+		}
+		if ( $supports ) foreach ( $supports as $s ) {
+			$_supports[$type][] = $s;
+		}
+		$_supports[$type] = array_filter( $_supports[$type] );
+	}
+	$GLOBALS['learn_press_question_type_support'] = $_supports;
+}
+
+function learn_press_get_question_type_support( $type = '' ) {
+	$supports = !empty( $GLOBALS['learn_press_question_type_support'] ) ? $GLOBALS['learn_press_question_type_support'] : array();
+	return $type && !empty( $supports[$type] ) ? $supports[$type] : $supports;
+}
+
+function learn_press_question_type_support( $type, $features ) {
+	settype( $features, 'array' );
+	$features    = array_filter( $features );
+	$supports    = learn_press_get_question_type_support( $type );
+	$has_support = true;
+	if ( $features ) {
+		foreach ( $features as $feature ) {
+			$has_support = $has_support && in_array( $feature, $supports );
+		}
+	}
+	return $has_support;
+}
+
+function _learn_press_add_question_type_support() {
+	learn_press_add_question_type_support(
+		array(
+			'multi_choice',
+			'single_choice',
+			'true_or_false'
+		),
+		'check-answer'
+	);
+}
+
+add_action( 'plugins_loaded', '_learn_press_add_question_type_support' );
+
+function xxxxxxxxxxxxx(){
+	print_r($GLOBALS['learnpress_question_answers']);
+}
+add_action( 'wp_footer', 'xxxxxxxxxxxxx');

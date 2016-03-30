@@ -27,7 +27,7 @@ class LP_Question_Single_Choice extends LP_Abstract_Question {
 		return false;
 	}
 
-	static function admin_js_template(){
+	static function admin_js_template() {
 		ob_start();
 		?>
 		<tr class="lp-list-option lp-list-option-new lp-list-option-empty <# if(data.id){ #>lp-list-option-{{data.id}}<# } #>" data-id="{{data.id}}">
@@ -57,7 +57,7 @@ class LP_Question_Single_Choice extends LP_Abstract_Question {
 		//print_r($answer);
 	}
 
-	function get_icon(){
+	function get_icon() {
 		return '<img src="' . apply_filters( 'learn_press_question_icon', LP()->plugin_url( 'assets/images/single-choice.png' ), $this ) . '">';
 	}
 
@@ -97,7 +97,7 @@ class LP_Question_Single_Choice extends LP_Abstract_Question {
 			(function ($) {
 				var $form = $('#post');
 				$form.unbind('learn_press_question_before_update.<?php echo $key;?>').on('learn_press_question_before_update.<?php echo $key;?>', function () {
-					var $question = $('.lpr-question-single-choice[data-id="<?php echo $this->get('ID');?>"]');
+					var $question = $('.lpr-question-single-choice[data-id="<?php echo $this->get( 'ID' );?>"]');
 					if ($question.length) {
 						var $input = $('.lpr-is-true-answer input[type="radio"]:checked', $question);
 						if (0 == $input.length) {
@@ -169,7 +169,7 @@ class LP_Question_Single_Choice extends LP_Abstract_Question {
 					)
 				);
 				$index = 0;
-				if( !empty( $post_data['answer']['text'] ) ) {
+				if ( !empty( $post_data['answer']['text'] ) ) {
 					foreach ( $post_data['answer']['text'] as $k => $txt ) {
 						if ( !$txt ) continue;
 						$post_answers[$index ++] = array(
@@ -188,8 +188,8 @@ class LP_Question_Single_Choice extends LP_Abstract_Question {
 	}
 
 	function render( $args = null ) {
-		$answered = ! empty( $args['answered'] ) ? $args['answered'] : array();
-		$view = learn_press_locate_template( 'question/types/single-choice.php' );
+		$answered = array_key_exists( 'answered', $args ) ? $args['answered'] : array();
+		$view     = learn_press_locate_template( 'question/types/single-choice.php' );
 		include $view;
 	}
 
@@ -200,9 +200,9 @@ class LP_Question_Single_Choice extends LP_Abstract_Question {
 		);
 		if ( $answers = $this->answers ) {
 			foreach ( $answers as $k => $answer ) {
-				if( ( $answer['is_true'] == 'yes' ) && ( $answer['value'] == $user_answer ) ){
+				if ( ( $answer['is_true'] == 'yes' ) && ( $answer['value'] == $user_answer ) ) {
 					$return['correct'] = true;
-					$return['mark'] = floatval( $this->mark );
+					$return['mark']    = floatval( $this->mark );
 					break;
 				}
 			}

@@ -15,7 +15,7 @@ $user = LP()->user;
 if ( !$quiz ) {
 	return;
 }
-$remaining_time = $user->has_completed_quiz( $quiz->id ) ? $quiz->duration : $user->get_quiz_time_remaining( $quiz->id );
+$remaining_time = $user->get_quiz_status() != 'started' ? $quiz->duration : $user->get_quiz_time_remaining( $quiz->id );
 ?>
 <div class="quiz-countdown<?php echo !$user->get_quiz_status( $quiz->id ) ? ' hide-if-js' : ''; ?> ">
 	<div id="quiz-countdown-value">
