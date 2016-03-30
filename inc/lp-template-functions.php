@@ -909,6 +909,31 @@ if ( !function_exists( 'learn_press_page_controller' ) ) {
 			$user     = LP()->user;
 			$redirect = false;
 			$item_id  = 0;
+
+			/*if ( is_single() && $post_type == LP()->quiz_post_type ) {
+				$user        = learn_press_get_current_user();
+				$quiz_id     = get_the_ID();
+				$quiz_status = $user->get_quiz_status( $quiz_id );
+				if ( $quiz_status == 'started' && learn_press_get_quiz_time_remaining( $user->id, $quiz_id ) == 0 && get_post_meta( $quiz_id, '_lpr_duration', true ) ) {
+					$user->finish_quiz( $quiz_id );
+					$quiz_status = 'completed';
+				}
+				$redirect = null;
+				if ( learn_press_get_request( 'question' ) && $quiz_status == '' ) {
+					$redirect = get_the_permalink( $quiz_id );
+				} elseif ( $quiz_status == 'started' ) {
+					if ( learn_press_get_request( 'question' ) ) {
+					} else {
+						$redirect = learn_press_get_user_question_url( $quiz_id );
+					}
+				} elseif ( $quiz_status == 'completed' && learn_press_get_request( 'question' ) ) {
+					$redirect = get_the_permalink( $quiz_id );
+				}
+				if ( $redirect && !learn_press_is_current_url( $redirect ) ) {
+					wp_redirect( $redirect );
+					exit();
+				}
+			}*/
 			switch ( get_post_type() ) {
 				case LP()->quiz_post_type:
 					$quiz        = LP()->quiz;
@@ -921,6 +946,8 @@ if ( !function_exists( 'learn_press_page_controller' ) ) {
 					} elseif ( $quiz_status == 'started' && ( empty( $_REQUEST['question'] ) && $current_question = $user->get_current_quiz_question( $quiz->id ) ) ) {
 						$redirect = $quiz->get_question_link( $current_question );
 					} elseif ( $quiz_status == 'completed'/* && !empty( $_REQUEST['question'] )*/ ) {
+						$redirect = get_the_permalink( $quiz->id );
+					} elseif ( learn_press_get_request( 'question' ) && $quiz_status == '' ) {
 						$redirect = get_the_permalink( $quiz->id );
 					}
 					$item_id  = $quiz->id;

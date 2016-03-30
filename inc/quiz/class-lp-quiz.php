@@ -109,31 +109,34 @@ class LP_Quiz {
 
 	function get_settings() {
 		if ( empty( $this->single_quiz_params ) ) {
+			$user = learn_press_get_current_user();
+
+			if ( $results = $user->get_quiz_results( $this->id ) ) {
+				$questions = $results->questions;
+			} else {
+				$questions = learn_press_get_quiz_questions();
+				$questions = array_keys( $questions );
+			}
 			$current_question_id = !empty( $_REQUEST['question'] ) ? intval( $_REQUEST['question'] ) : learn_press_get_current_question();// !empty( $_REQUEST['question_id'] ) ? intval( $_REQUEST['question_id'] ) : 0;
-			$questions           = learn_press_get_quiz_questions();
-			if ( $questions ) {
+
+			/*if ( $questions ) {
 				$question_ids = array_keys( $questions );
 			} else {
 				$question_ids = array();
-			}
-			if ( !$current_question_id || !in_array( $current_question_id, $question_ids ) ) {
+			}*/
+			if ( !$current_question_id || !in_array( $current_question_id, $questions ) ) {
 				$current_question_id = reset( $question_ids );
 			}
 
 			$current_question_id = absint( $current_question_id );
 			$question            = LP_Question_Factory::get_question( $current_question_id );
 
-			$user                     = learn_press_get_current_user();
-
-			if( $user->get_quiz_results( $this->id )){
-
-			}
 
 			$js                       = array(
 				'time_format'    => $this->duration > 300 ? 'h%:m%:s%' : 'm%:s%',
 				'total_time'     => $this->duration,
 				'id'             => $this->id,
-				'questions'      => $question_ids,
+				'questions'      => $questions,
 				'question_id'    => $current_question_id,
 				'status'         => $user->get_quiz_status( $this->id ),
 				'time_remaining' => ( $time_remaining = $user->get_quiz_time_remaining( $this->id ) ) !== false && !in_array( $user->get_quiz_status( $this->id ), array( '', 'completed' ) ) ? $time_remaining : $this->duration,
@@ -142,7 +145,7 @@ class LP_Quiz {
 				'user_id'        => $user->id,
 				'nonce'          => wp_create_nonce( 'learn-press-quiz-action-' . $this->id . '-' . $user->id ),
 				'question'       => $question ? array( 'check_answer' => $question->can_check_answer() ) : false,
-				'history' => $user->get_quiz_results( $this->id )
+				'history'        => $user->get_quiz_results( $this->id )
 			);
 			$this->single_quiz_params = $js;
 		}
@@ -289,7 +292,7 @@ class LP_Quiz {
 			if ( $this_questions = $wpdb->get_results( $query, OBJECT_K ) ) {
 				foreach ( $this_questions as $id => $question ) {
 					$question->params                            = maybe_unserialize( $question->params );
-					self::$_meta[$this->id]['questions'][]       = $question;
+					self::$_meta[$this->id]['questions'][$id]    = $question;
 					$GLOBALS['learnpress_question_answers'][$id] = array();
 				}
 				if ( $answers = $wpdb->get_results( "
@@ -387,6 +390,21 @@ class LP_Quiz {
 		learn_press_update_user_quiz_meta( $history->history_id, 'checked', $checked );
 
 		return $question->get_answers();
+	}
+
+	function get_question_position( $question, $user_id = 0 ) {
+		if ( !$user_id ) {
+			$user_id = learn_press_get_current_user_id();
+		}
+		$user = learn_press_get_user( $user_id );
+		if ( $user && $results = $user->get_quiz_results( $this->id ) ) {
+			$questions = (array) $results->questions;
+		} else {
+			$questions = (array) $this->get_questions();
+			$questions = array_keys( $questions );
+		}
+		$position = array_search( $question, $questions );
+		return $position;
 	}
 
 	/**

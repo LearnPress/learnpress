@@ -11,9 +11,9 @@ if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-global $quiz;
+$quiz = LP()->quiz;
 
-if( ! $quiz ){
+if ( !$quiz ) {
 	return;
 }
 if ( !$quiz->has( 'questions' ) ) {
