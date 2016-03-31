@@ -193,9 +193,9 @@ class LP_Question_Factory {
 		$user     = learn_press_get_user( $user_id );
 		$save_id  = learn_press_get_request( 'save_id' );
 		$question = $save_id ? LP_Question_Factory::get_question( $save_id ) : false;
+		$question_answer = null;
 
 		if ( $question && !$user->has_checked_answer( $save_id, $quiz_id ) && $user->get_quiz_status( $quiz_id ) == 'started' ) {
-			$question_answer = null;
 			$question_data   = isset( $_REQUEST['question_answer'] ) ? $_REQUEST['question_answer'] : array();
 			if ( is_string( $question_data ) ) {
 				parse_str( $question_data, $question_answer );
@@ -206,7 +206,7 @@ class LP_Question_Factory {
 			$question->save_user_answer( $question_answer, $quiz_id );
 			do_action( 'learn_press_save_user_question_answer', $question_answer, $save_id, $quiz_id, $user_id, true );
 		}
-		return $question;
+		return $question_answer;
 	}
 
 

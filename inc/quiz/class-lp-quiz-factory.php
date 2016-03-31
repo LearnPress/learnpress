@@ -116,7 +116,7 @@ class LP_Quiz_Factory {
 		$user        = learn_press_get_user( $user_id );
 		$quiz        = LP_Quiz::get_quiz( $quiz_id );
 
-		LP_Question_Factory::save_question_if_needed( $question_id, $quiz_id, $user_id );
+		$question_answer = LP_Question_Factory::save_question_if_needed( $question_id, $quiz_id, $user_id );
 		if ( !$quiz || !$quiz->id ) {
 			return;
 		}
@@ -132,8 +132,10 @@ class LP_Quiz_Factory {
 			$checked = false;
 		}
 		$response = array(
-			'result'  => 'success',
-			'checked' => $checked
+			'result'   => 'success',
+			'checked'  => $checked,
+			'answered' => $question_answer
+
 		);
 		learn_press_send_json( $response );
 	}

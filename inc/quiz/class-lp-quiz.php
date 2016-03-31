@@ -132,7 +132,7 @@ class LP_Quiz {
 			$question            = LP_Question_Factory::get_question( $current_question_id );
 
 			$js                                           = array(
-				'time_format'    => $this->duration > 300 ? 'h%:m%:s%' : 'm%:s%',
+				'time_format'    => $this->duration >= 300 ? 'h%:m%:s%' : 'm%:s%',
 				'total_time'     => $this->duration,
 				'id'             => $this->id,
 				'questions'      => $this->get_question_params( $questions ),//$questions,

@@ -686,6 +686,9 @@ a .archive-course:hover {
 	border-left-color: transparent;
 	border-bottom-color: #DDD;
 }
+.quiz-questions-list .question-title{
+	font-weight: normal;
+}
 .question-results .question-title:after{
 	content: '';
 	display: inline-block;

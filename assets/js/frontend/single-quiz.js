@@ -26,6 +26,7 @@ if (typeof LearnPress == 'undefined') var LearnPress = {};
 				}, args));
 				$model.urlRoot = this.get('ajaxurl');
 				$model.view = this.view;
+
 				this.questions.add($model);
 			}, this);
 		},
@@ -261,6 +262,7 @@ if (typeof LearnPress == 'undefined') var LearnPress = {};
 				this.initCountdown();
 
 			}
+			var that = this;
 			this.setButtonsState();
 		},
 		changeQuestion : function () {
@@ -442,9 +444,18 @@ if (typeof LearnPress == 'undefined') var LearnPress = {};
 				case'multi_choice':
 					$.each(response.checked, function (k, v) {
 						var $input = $content.find('input[value="' + v.value + '"]'),
-							$li = $input.closest('li').removeClass('answer-true user-answer-false');
+							$li = $input.closest('.learn-press-question-wrap').removeClass('answer-true user-answer-false');
 						if (v.is_true == 'yes') {
 							$li.addClass('answer-true')
+						}
+						if (response.answered) {
+							if (typeof response.answered == 'string') {
+								if (response.answered == v.value) {
+									$input.prop('checked', true);
+								}
+							} else if ($.inArray(v.value, response.answered) != -1) {
+								$input.prop('checked', true);
+							}
 						}
 						if ($input.is(':checked') && v.is_true == 'yes') {
 						} else {
@@ -511,15 +522,22 @@ if (typeof LearnPress == 'undefined') var LearnPress = {};
 			}
 		},
 		_selectQuestion: function (e) {
+			e.preventDefault();
 			var that = this,
-				id = $(e.target).parent().data('id');
+				id = $(e.target).closest('.learn-press-question-wrap').data('id');
 			if (LearnPress.Hook.applyFilters('learn_press_before_select_question', true, that) !== false) {
+				this.pause();
+				this.$buttons.next.prop('disabled', true);
+				this.$buttons.prev.prop('disabled', true);
+				this.$buttons.finish.prop('disabled', true);
 				this.pause();
 				this.model.select(id, function (response) {
 					LearnPress.Hook.doAction('learn_press_selected_question', id, that);
+					that.$buttons.next.prop('disabled', false);
+					that.$buttons.prev.prop('disabled', false);
+					that.$buttons.finish.prop('disabled', false);
 				});
 			}
-			e.preventDefault();
 		},
 		_getNonce      : function (field) {
 			return this.$('input#' + field + '-nonce').val();

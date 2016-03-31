@@ -41,7 +41,7 @@ $no_permalink = !LP()->user->has( 'started-quiz', $quiz->id );
 					<?php if ( $no_permalink ) { ?>
 						<?php printf( '<h4 class="question-title">%s</h4>', get_the_title( $question->ID ) ); ?>
 					<?php } else { ?>
-						<?php printf( '<h4><a class="question-title" href="%s">%s</a></h4>', $quiz->get_question_link( $question->ID ), get_the_title( $question->ID ) ); ?>
+						<?php printf( '<h4 class="question-title"><a href="%s">%s</a></h4>', $quiz->get_question_link( $question->ID ), get_the_title( $question->ID ) ); ?>
 					<?php } ?>
 
 					<?php do_action( 'learn_press_after_quiz_question_title', $question->ID, $quiz->id ); ?>
