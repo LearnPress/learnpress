@@ -1040,10 +1040,11 @@ class LP_Abstract_User {
 			$questions = array_keys( $questions );
 		}
 		if ( !empty( $questions ) ) {
+			$question_answers = $progress->question_answers;
 			foreach ( $questions as $question_id ) {
-				if ( !is_null( $progress->question_answers[$question_id] ) ) {
+				if ( is_array( $question_answers ) && !is_null( $question_answers[$question_id] ) ) {
 					$question = LP_Question_Factory::get_question( $question_id );
-					$check    = $question->check( $progress->question_answers[$question_id] );
+					$check    = $question->check( $question_answers[$question_id] );
 
 					if ( $check['correct'] ) {
 						$results['correct'] ++;

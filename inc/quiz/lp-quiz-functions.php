@@ -284,7 +284,7 @@ function learn_press_output_question_nonce( $question ) {
 add_action( 'learn_press_after_question_wrap', 'learn_press_output_question_nonce' );
 
 function learn_press_add_question_type_support( $types, $supports ) {
-	if ( !empty( $GLOBALS['learn_press_question_type_support'] ) ) {
+	if ( empty( $GLOBALS['learn_press_question_type_support'] ) ) {
 		$GLOBALS['learn_press_question_type_support'] = array();
 	}
 	$_supports = $GLOBALS['learn_press_question_type_support'];

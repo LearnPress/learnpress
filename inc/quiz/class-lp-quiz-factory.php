@@ -95,8 +95,11 @@ class LP_Quiz_Factory {
 		self::_verify_nonce();
 		if ( $user->get_quiz_status( $quiz_id ) == 'completed' ) {
 			$response = $user->retake_quiz( $quiz_id );
+			echo 'xxxxxxxxxxxxx';
 			learn_press_send_json( $response );
+
 		}
+		echo 'yyyyyyyyyy';
 		learn_press_send_json(
 			array(
 				'result'  => 'error',

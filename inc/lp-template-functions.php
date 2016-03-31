@@ -936,12 +936,14 @@ if ( !function_exists( 'learn_press_page_controller' ) ) {
 			}*/
 			switch ( get_post_type() ) {
 				case LP()->quiz_post_type:
-					$quiz        = LP()->quiz;
-					$quiz_status = LP()->user->get_quiz_status( get_the_ID() );
-					$redirect    = false;
+					$quiz          = LP()->quiz;
+					$quiz_status   = LP()->user->get_quiz_status( get_the_ID() );
+					$redirect      = false;
+					$error_message = false;
 					if ( !$user->can( 'view-quiz', $quiz->id ) ) {
 						if ( $course = $quiz->get_course() ) {
-							$redirect = $course->permalink;
+							$redirect      = $course->permalink;
+							$error_message = sprintf( __( 'Access denied "%s"', 'learnpress' ) );
 						}
 					} elseif ( $quiz_status == 'started' && ( empty( $_REQUEST['question'] ) && $current_question = $user->get_current_quiz_question( $quiz->id ) ) ) {
 						$redirect = $quiz->get_question_link( $current_question );
@@ -963,8 +965,8 @@ if ( !function_exists( 'learn_press_page_controller' ) ) {
 
 			// prevent loop redirect
 			if ( $redirect && !learn_press_is_current_url( $redirect ) ) {
-				if ( $item_id ) {
-					$error_message = apply_filters( 'learn_press_course_item_access_denied_error_message', sprintf( __( 'Access denied "%s"', 'learnpress' ), get_the_title( $item_id ) ) );
+				if ( $item_id && $error_message ) {
+					$error_message = apply_filters( 'learn_press_course_item_access_denied_error_message', get_the_title( $item_id ) );
 					if ( $error_message !== false ) {
 						learn_press_add_notice( $error_message, 'error' );
 					}
