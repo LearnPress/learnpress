@@ -178,7 +178,7 @@ class LP_Abstract_Question {
 		return $value;
 	}
 
-	function get_answers() {
+	function get_answers( $field = null, $exclude = null ) {
 		global $wpdb;
 		$answers = array();
 		if ( empty( $answers ) ) {
@@ -201,6 +201,22 @@ class LP_Abstract_Question {
 					}
 				}
 				$GLOBALS['learnpress_question_answers'][$this->id] = $answers;
+			}
+		}
+		if ( $answers && ( $field || $exclude ) ) {
+			if ( $field ) settype( $field, 'array' );
+			if ( $exclude ) settype( $exclude, 'array' );
+			foreach ( $answers as $k => $v ) {
+				$new_arr = $field ? array() : $v;
+				if ( $field ) foreach ( $field as $f ) {
+					$new_arr[$f] = $v[$f];
+				}
+				if ( $exclude ) foreach ( $exclude as $f ) {
+					if ( array_key_exists( $f, $new_arr ) ) {
+						unset( $new_arr[$f] );
+					}
+				}
+				$answers[$k] = $new_arr;
 			}
 		}
 		return apply_filters( 'learn_press_question_answers', $answers, $this );
@@ -394,11 +410,13 @@ class LP_Abstract_Question {
 	}
 
 	function is_selected_option( $answer, $answered = false ) {
+		$value = array_key_exists( 'value', $answer ) ? $answer['value'] : '';
 		if ( is_array( $answered ) ) {
-			$is_selected = isset( $answer['value'] ) && in_array( $answer['value'], $answered );
+			$is_selected = in_array( $value, $answered );
 		} else {
-			$is_selected = isset( $answer['value'] ) && ( $answer['value'] == $answered . '' );
+			$is_selected = ( $value . '' === $answered . '' );
 		}
+
 		return apply_filters( 'learn_press_is_selected_option', $is_selected, $answer, $answered, $this );
 	}
 
@@ -728,7 +746,6 @@ class LP_Question extends LP_Abstract_Question {
 		// return;
 		return $return;
 	}
-
 
 
 	function show_answer() {

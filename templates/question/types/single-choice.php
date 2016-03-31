@@ -10,14 +10,20 @@
 if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
-$quiz    = LP()->quiz;
-$user    = LP()->user;
-$checked = $user->has_checked_answer( $this->id, $quiz->id );
+$quiz        = LP()->quiz;
+$user        = LP()->user;
+$completed   = $user->get_quiz_status( $quiz->id ) == 'completed';
+$show_result = $quiz->show_result == 'yes';
+$checked     = $user->has_checked_answer( $this->id, $quiz->id ) || $completed;
 
+$args = array();
+if ( $show_result && $completed ) {
+	$args['classes'] = 'checked';
+}
 ?>
-<div <?php learn_press_question_class( $this );?> data-id="<?php echo $this->id; ?>" data-type="single-choice">
+<div <?php learn_press_question_class( $this, $args ); ?> data-id="<?php echo $this->id; ?>" data-type="single-choice">
 
-	<?php do_action( 'learn_press_before_question_wrap', $this );?>
+	<?php do_action( 'learn_press_before_question_wrap', $this ); ?>
 
 	<h4 class="learn-press-question-title"><?php echo get_the_title( $this->id ); ?></h4>
 
@@ -25,46 +31,39 @@ $checked = $user->has_checked_answer( $this->id, $quiz->id );
 
 	<ul class="learn-press-question-options">
 		<?php if ( $answers = $this->answers ) foreach ( $answers as $k => $answer ): ?>
-			<li>
+			<?php
+			$answer_class   = array();
+			if ( $completed && $show_result ) {
+				$answer_correct = true;
+				if ( $completed && $show_result && $answer['is_true'] == 'yes' ) {
+					$answer_class[] = 'answer-true';
+				}
+				if ( $answer['is_true'] == 'yes' && !$this->is_selected_option( $answer, $answered ) ) {
+					$answer_correct = false;
+				}
+				if ( $answer['is_true'] != 'yes' && $this->is_selected_option( $answer, $answered ) ) {
+					$answer_correct = false;
+				}
+				if ( !$answer_correct ) {
+					$answer_class[] = 'user-answer-false';
+				}
+			}
+			?>
+			<li<?php echo $answer_class ? ' class="' . join( ' ', $answer_class ) . '"' : ''; ?> >
 
-				<?php do_action( 'learn_press_before_question_answer_text', $answer, $this );?>
+				<?php do_action( 'learn_press_before_question_answer_text', $answer, $this ); ?>
 
 				<label>
-					<input type="radio" name="learn-press-question-<?php echo $this->id; ?>" <?php checked( $this->is_selected_option( $answer, $answered ) ); ?> value="<?php echo $answer['value']; ?>" <?php echo $checked? 'disabled="disabled"' : '';?>>
+					<input type="radio" name="learn-press-question-<?php echo $this->id; ?>" <?php checked( $this->is_selected_option( $answer, $answered ) ); ?> value="<?php echo $answer['value']; ?>" <?php echo $checked ? 'disabled="disabled"' : ''; ?>>
 					<?php echo apply_filters( 'learn_press_question_answer_text', $answer['text'], $answer, $this ); ?>
 				</label>
 
-				<?php do_action( 'learn_press_before_question_answer_text', $answer, $this );?>
+				<?php do_action( 'learn_press_before_question_answer_text', $answer, $this ); ?>
 
 			</li>
 		<?php endforeach; ?>
 	</ul>
-	<input type="hidden" name="learn-press-question-permalink" value="<?php echo esc_url( $quiz->get_question_link( $this->id ) );?>" />
-	<?php do_action( 'learn_press_before_question_wrap', $this );?>
+	<input type="hidden" name="learn-press-question-permalink" value="<?php echo esc_url( $quiz->get_question_link( $this->id ) ); ?>" />
+	<?php do_action( 'learn_press_before_question_wrap', $this ); ?>
 
-	<?php
-	/*$question         = get_post( $this->get( 'ID' ) );
-	$question_content = $question->post_content;
-	if ( !empty( $question_content ) ) :
-		?>
-
-		<div id="question-hint" class="question-hint-wrap">
-			<h5 class="question-hint-title"><?php _e( 'Question hint', 'learnpress' ); ?></h5>
-
-			<div class="question-hint-content">
-				<p><?php echo apply_filters( 'the_content', $question_content ); ?></p>
-			</div>
-		</div>
-		<script type="text/javascript">
-			jQuery('.question-hint-content').hide();
-			jQuery('#question-hint').on('click', function () {
-				jQuery('.question-hint-content').fadeToggle();
-			});
-		</script>
-
-	<?php endif; */?>
 </div>
-
-<?php
-//$a = array ( 'current_question' => 1, 'question_answers' => array ( 688 => array ( 'option_third', '5632e12a6d216' ), 507 => 'option_seconds' ) );
-//print_r(serialize($a));

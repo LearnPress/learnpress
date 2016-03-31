@@ -12,14 +12,14 @@ if ( !defined( 'ABSPATH' ) ) {
 }
 
 $quiz = LP()->quiz;
+$user = LP()->user;
 
 if ( !$quiz ) {
 	return;
 }
-if ( !$quiz->has( 'questions' ) ) {
+if ( !$quiz->has( 'questions' ) || $user->get_quiz_status( $quiz->id ) == 'completed' ) {
 	return;
 }
-$user = learn_press_get_current_user();
 ?>
 <div class="quiz-question-content">
 	<form method="post" id="learn-press-quiz-question" name="learn-press-quiz-question" action="">

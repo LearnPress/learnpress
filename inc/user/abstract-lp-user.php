@@ -247,6 +247,7 @@ class LP_Abstract_User {
 				$question_answers = $answers[$question_id];
 			}
 		}
+
 		return $question_answers;
 	}
 
@@ -1040,7 +1041,7 @@ class LP_Abstract_User {
 		}
 		if ( !empty( $questions ) ) {
 			foreach ( $questions as $question_id ) {
-				if ( !empty( $progress->question_answers[$question_id] ) ) {
+				if ( !is_null( $progress->question_answers[$question_id] ) ) {
 					$question = LP_Question_Factory::get_question( $question_id );
 					$check    = $question->check( $progress->question_answers[$question_id] );
 
@@ -1358,7 +1359,7 @@ class LP_Abstract_User {
 			if ( $question = LP_Question_Factory::get_question( $question_id ) ) {
 				$quiz_results = $this->get_quiz_results( $quiz_id );
 				if ( !empty( $quiz_results->question_answers ) ) {
-					$question_answer = !empty( $quiz_results->question_answers[$question_id] ) ? $quiz_results->question_answers[$question_id] : null;
+					$question_answer = array_key_exists( $question_id, $quiz_results->question_answers ) ? $quiz_results->question_answers[$question_id] : null;
 					$data            = $question->check( $question_answer );
 				}
 			}

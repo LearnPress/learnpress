@@ -15,6 +15,7 @@ class LP_Question_Multi_Choice extends LP_Abstract_Question {
 
 	/**
 	 * Construct
+	 *
 	 * @param mixed
 	 * @param array
 	 */
@@ -87,15 +88,15 @@ class LP_Question_Multi_Choice extends LP_Abstract_Question {
 		return $output;
 	}
 
-	function get_icon(){
+	function get_icon() {
 		return '<img src="' . apply_filters( 'learn_press_question_icon', LP()->plugin_url( 'assets/images/multiple-choice.png' ), $this ) . '">';
 	}
 
-	function can_check_answer(){
+	function can_check_answer() {
 		return true;
 	}
 
-	function show_answer(){
+	function show_answer() {
 
 	}
 
@@ -162,7 +163,7 @@ class LP_Question_Multi_Choice extends LP_Abstract_Question {
 		$this->_admin_enqueue_script( false );
 		$output = ob_get_clean();
 
-		if( !isset( $args['echo'] ) || ( isset( $args['echo'] ) && $args['echo'] === true ) ){
+		if ( !isset( $args['echo'] ) || ( isset( $args['echo'] ) && $args['echo'] === true ) ) {
 			echo $output;
 		}
 		return $output;
@@ -177,7 +178,7 @@ class LP_Question_Multi_Choice extends LP_Abstract_Question {
 				var $form = $('#post');
 
 				$form.unbind('learn_press_question_before_update.<?php echo $key;?>').bind('learn_press_question_before_update.<?php echo $key;?>', function () {
-					var $question = $('.lpr-question-multi-choice[data-id="<?php echo $this->get('ID');?>"]');
+					var $question = $('.lpr-question-multi-choice[data-id="<?php echo $this->get( 'ID' );?>"]');
 
 					if ($question.length) {
 						var $input = $('.lpr-is-true-answer input[type="checkbox"]:checked', $question);
@@ -209,7 +210,7 @@ class LP_Question_Multi_Choice extends LP_Abstract_Question {
 			$post_data    = isset( $_POST[LP()->question_post_type] ) ? $_POST[LP()->question_post_type] : array();
 			$post_answers = array();
 			//$post_explain = $post_data[$post_id]['explanation'];
-			learn_press_debug($_POST);
+			learn_press_debug( $_POST );
 			if ( isset( $post_data[$post_id] ) && $post_data = $post_data[$post_id] ) {
 				$post_args = array(
 					'ID'         => $post_id,
@@ -218,7 +219,7 @@ class LP_Question_Multi_Choice extends LP_Abstract_Question {
 				);
 				wp_update_post( $post_args );
 				$index = 0;
-				if( !empty( $post_data['answer']['text'] ) ) {
+				if ( !empty( $post_data['answer']['text'] ) ) {
 					foreach ( $post_data['answer']['text'] as $k => $txt ) {
 						if ( !$txt ) continue;
 						$post_answers[$index] = array(
@@ -229,8 +230,8 @@ class LP_Question_Multi_Choice extends LP_Abstract_Question {
 					}
 				}
 			}
-			$post_data['answer']       = $post_answers;
-			$post_data['type']         = $this->get_type();
+			$post_data['answer'] = $post_answers;
+			$post_data['type']   = $this->get_type();
 			//$post_data['explanation']  = $post_explain;
 			update_post_meta( $post_id, '_lpr_question', $post_data );
 		}
@@ -238,8 +239,8 @@ class LP_Question_Multi_Choice extends LP_Abstract_Question {
 	}
 
 	function render( $args = null ) {
-		$answered = ! empty( $args['answered'] ) ? $args['answered'] : array();
-		$view = learn_press_locate_template( 'question/types/multi-choice.php' );
+		$answered = !empty( $args['answered'] ) ? $args['answered'] : array();
+		$view     = learn_press_locate_template( 'question/types/multi-choice.php' );
 		include $view;
 	}
 
@@ -252,14 +253,16 @@ class LP_Question_Multi_Choice extends LP_Abstract_Question {
 		if ( $answers = $this->answers ) {
 			foreach ( $answers as $k => $answer ) {
 				$correct = false;
-				if( $answer['is_true'] == 'yes' ){
-					if( in_array( $answer['value'], $user_answer ) ){
-						$correct = true;
-					}
+				if ( $answer['is_true'] == 'yes' ) {
+					/**if( in_array( $answer['value'], $user_answer ) ){
+					 * $correct = true;
+					 * }*/
+					$correct = $this->is_selected_option( $answer, $user_answer );
 				} else {
-					if( ! in_array( $answer['value'], $user_answer ) ){
+					/*if( ! in_array( $answer['value'], $user_answer ) ){
 						$correct = true;
-					}
+					}*/
+					$correct = !$this->is_selected_option( $answer, $user_answer );
 				}
 
 				// if the option is TRUE but user did not select it => WRONG
@@ -276,7 +279,7 @@ class LP_Question_Multi_Choice extends LP_Abstract_Question {
 		return $return;
 	}
 
-	static function admin_js_template(){
+	static function admin_js_template() {
 		ob_start();
 		?>
 		<tr class="lp-list-option lp-list-option-empty <# if(data.id){ #>lp-list-option-{{data.id}}<# } #>" data-id="{{data.id}}">

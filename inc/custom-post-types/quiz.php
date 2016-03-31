@@ -161,18 +161,26 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 								'min'  => 0
 							),
 							array(
-								'name' => __( 'Show correct answer', 'learnpress' ),
-								'id'   => "{$prefix}show_result",
-								'type' => 'checkbox',
-								'desc' => __( 'Show the correct answer in result of the quiz.', 'learnpress' ),
-								'std'  => 0
+								'name'    => __( 'Show correct answer', 'learnpress' ),
+								'id'      => "{$prefix}show_result",
+								'type'    => 'radio',
+								'desc'    => __( 'Show the correct answer in result of the quiz.', 'learnpress' ),
+								'options' => array(
+									'no'  => __( 'No', 'learnpress' ),
+									'yes' => __( 'Yes', 'learnpress' )
+								),
+								'std'     => 'no'
 							),
 							array(
-								'name' => __( 'Show check answer', 'learnpress' ),
-								'id'   => "{$prefix}show_check_answer",
-								'type' => 'checkbox',
-								'desc' => __( 'Show button to check answer', 'learnpress' ),
-								'std'  => 0
+								'name'    => __( 'Show check answer', 'learnpress' ),
+								'id'      => "{$prefix}show_check_answer",
+								'type'    => 'radio',
+								'desc'    => __( 'Show button to check answer', 'learnpress' ),
+								'options' => array(
+									'no'  => __( 'No', 'learnpress' ),
+									'yes' => __( 'Yes', 'learnpress' )
+								),
+								'std'     => 'no'
 							),
 						)
 					)

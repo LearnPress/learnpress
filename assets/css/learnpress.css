@@ -310,10 +310,13 @@
 	border: 2px solid #DDD;
 	padding: 20px;
 }
+.single-quiz.quiz-completed .quiz-questions-list .learn-press-question-title{
+	display: none;
+}
 .quiz-questions-list .current{
 	font-weight: bold;
 }
-.quiz-questions-list .current:after{
+.quiz-questions-list .current a:after{
 	display: inline-block;
 	background-color: #0066cc;
 	/* padding: 0px 8px; */
@@ -345,7 +348,6 @@
 }
 
 .quiz-result {
-	margin-top: 20px;
 	width: 100%;
 }
 

@@ -117,13 +117,23 @@ class LP_Quiz_Factory {
 		$quiz        = LP_Quiz::get_quiz( $quiz_id );
 
 		LP_Question_Factory::save_question_if_needed( $question_id, $quiz_id, $user_id );
-
+		if ( !$quiz || !$quiz->id ) {
+			return;
+		}
+		if ( $quiz->show_check_answer != 'yes' ) {
+			return;
+		}
 		if ( $quiz ) {
-			$answers = $quiz->check_question( $question_id, $user );
+			$quiz->check_question( $question_id, $user );
+		}
+		if ( $question_id && $question = LP_Question_Factory::get_question( $question_id ) ) {
+			$checked = $question->get_answers( null, array( 'text' ) );
+		} else {
+			$checked = false;
 		}
 		$response = array(
 			'result'  => 'success',
-			'answers' => $answers
+			'checked' => $checked
 		);
 		learn_press_send_json( $response );
 	}

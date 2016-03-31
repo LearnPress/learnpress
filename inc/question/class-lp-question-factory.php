@@ -157,11 +157,23 @@ class LP_Question_Factory {
 		}
 		add_action( 'learn_press_load_quiz_question', array( __CLASS__, 'save_question_if_needed' ), 100, 3 );
 		add_action( 'learn_press_user_finish_quiz', array( __CLASS__, 'save_question' ), 100, 2 );
+		add_action( 'learn_press_after_quiz_question_title', array( __CLASS__, 'show_answer' ), 100, 2 );
 
 		LP_Question_Factory::add_template( 'multi-choice-option', LP_Question_Multi_Choice::admin_js_template() );
 		LP_Question_Factory::add_template( 'single-choice-option', LP_Question_Single_Choice::admin_js_template() );
 
 		do_action( 'learn_press_question_factory_init', __CLASS__ );
+	}
+
+	static function show_answer( $id, $quiz_id ) {
+		$quiz   = LP_Quiz::get_quiz( $quiz_id );
+		$status = LP()->user->get_quiz_status( $quiz_id );
+		if ( $status != 'completed' || $quiz->show_result != 'yes' ) {
+			return;
+		}
+		$question = LP_Question_Factory::get_question( $id );
+		$user     = LP()->user;
+		$question->render( array( 'answered' => $user->get_question_answers( $quiz_id, $id ), 'check' => true ) );
 	}
 
 	static function save_question( $quiz_id, $user_id ) {

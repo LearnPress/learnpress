@@ -200,7 +200,7 @@ class LP_Question_Single_Choice extends LP_Abstract_Question {
 		);
 		if ( $answers = $this->answers ) {
 			foreach ( $answers as $k => $answer ) {
-				if ( ( $answer['is_true'] == 'yes' ) && ( $answer['value'] == $user_answer ) ) {
+				if ( ( $answer['is_true'] == 'yes' ) && ( $this->is_selected_option( $answer, $user_answer ) /*$answer['value'] == $user_answer*/ ) ) {
 					$return['correct'] = true;
 					$return['mark']    = floatval( $this->mark );
 					break;

@@ -38,6 +38,7 @@ function learn_press_question_class( $question = null, $args = array() /*, $clas
 	$user    = $args['user'];
 	$classes = $args['classes'];
 
+
 	if ( !$question ) {
 		$question = LP_Question_Factory::get_question( get_the_ID() );
 	} elseif ( is_numeric( $question ) ) {
@@ -338,8 +339,3 @@ function _learn_press_add_question_type_support() {
 }
 
 add_action( 'plugins_loaded', '_learn_press_add_question_type_support' );
-
-function xxxxxxxxxxxxx(){
-	print_r($GLOBALS['learnpress_question_answers']);
-}
-add_action( 'wp_footer', 'xxxxxxxxxxxxx');

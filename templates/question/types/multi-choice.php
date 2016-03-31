@@ -11,11 +11,20 @@ if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-$quiz    = LP()->quiz;
-$user    = LP()->user;
-$checked = $user->has_checked_answer( $this->id, $quiz->id );
+$quiz = LP()->quiz;
+$user = LP()->user;
+
+$completed   = $user->get_quiz_status( $quiz->id ) == 'completed';
+$show_result = $quiz->show_result == 'yes';
+$checked     = $user->has_checked_answer( $this->id, $quiz->id ) || $completed;
+
+$args = array();
+if ( $show_result && $completed ) {
+	$args['classes'] = 'checked';
+}
+
 ?>
-<div <?php learn_press_question_class( $this ); ?> data-id="<?php echo $this->id; ?>" data-type="multi-choice">
+<div <?php learn_press_question_class( $this, $args ); ?> data-id="<?php echo $this->id; ?>" data-type="multi-choice">
 
 	<?php do_action( 'learn_press_before_question_wrap', $this ); ?>
 
@@ -25,7 +34,26 @@ $checked = $user->has_checked_answer( $this->id, $quiz->id );
 
 	<ul class="learn-press-question-options">
 		<?php if ( $answers = $this->answers ) foreach ( $answers as $k => $answer ): ?>
-			<li>
+			<?php
+			$answer_class = array();
+			if ( $completed && $show_result ) {
+				$answer_class   = array();
+				$answer_correct = true;
+				if( $completed && $show_result && $answer['is_true'] == 'yes'){
+					$answer_class[] = 'answer-true';
+				}
+				if ( $answer['is_true'] == 'yes' && !$this->is_selected_option( $answer, $answered ) ) {
+					$answer_correct = false;
+				}
+				if ( $answer['is_true'] != 'yes' && $this->is_selected_option( $answer, $answered ) ) {
+					$answer_correct = false;
+				}
+				if ( !$answer_correct ) {
+					$answer_class[] = 'user-answer-false';
+				}
+			}
+			?>
+			<li<?php echo $answer_class ? ' class="' . join( ' ', $answer_class ) . '"' : ''; ?>>
 
 				<?php do_action( 'learn_press_before_question_answer_text', $answer, $this ); ?>
 
