@@ -434,13 +434,13 @@ CREATE TABLE {$wpdb->prefix}learnpress_sections (
   PRIMARY KEY (section_id)
 ) $collate;
 CREATE TABLE  {$wpdb->prefix}learnpress_user_courses (
+  user_course_id bigint(11) unsigned NOT NULL AUTO_INCREMENT,
   user_id bigint(11) unsigned NOT NULL DEFAULT '0',
   course_id bigint(11) unsigned NOT NULL DEFAULT '0',
   start_time datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   end_time datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   status varchar(45) NOT NULL DEFAULT '',
   order_id bigint(11) unsigned NOT NULL DEFAULT '0',
-  user_course_id bigint(11) unsigned NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (user_course_id)
 ) $collate;
 CREATE TABLE {$wpdb->prefix}learnpress_user_quizmeta (
@@ -457,13 +457,13 @@ CREATE TABLE {$wpdb->prefix}learnpress_user_quizzes (
   PRIMARY KEY (user_quiz_id)
 ) $collate;
 CREATE TABLE {$wpdb->prefix}learnpress_user_lessons (
-  `user_lesson_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `end_time` datetime DEFAULT NULL,
-  `status` varchar(20) DEFAULT NULL,
-  `user_id` int(11) unsigned NOT NULL,
-  `lesson_id` int(11) unsigned NOT NULL,
-  `course_id` int(11) DEFAULT NULL,
-  `start_time` datetime DEFAULT NULL,
+  user_lesson_id bigint(11) unsigned NOT NULL AUTO_INCREMENT,
+  user_id bigint(11) unsigned NOT NULL,
+  lesson_id bigint(11) unsigned NOT NULL,
+  course_id bigint(11) DEFAULT NULL,
+  start_time datetime DEFAULT NULL,
+  end_time datetime DEFAULT NULL,
+  status varchar(20) DEFAULT NULL,
   PRIMARY KEY (`user_lesson_id`)
 )
 ";

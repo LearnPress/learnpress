@@ -741,7 +741,7 @@ class LP_Abstract_User {
 		$return = false;
 		if ( $course = LP_Course::get_course( $course_id ) ) {
 			$result = $course->evaluate_course_results() * 100;
-			$return = ($result >= $course->passing_condition) && $this->has_course_status( $course_id, array( 'enrolled', 'started' ) );
+			$return = ( $result >= $course->passing_condition ) && $this->has_course_status( $course_id, array( 'enrolled', 'started' ) );
 		}
 		return apply_filters( 'learn_press_user_can_finish_course', $return, $course_id, $this->id );
 	}
@@ -947,7 +947,7 @@ class LP_Abstract_User {
 	}
 
 	function has_completed_lesson( $lesson_id ) {
-		$lessons = self::$_lessons[$this->id];
+		$lessons = !empty( self::$_lessons[$this->id] ) ? self::$_lessons[$this->id] : array();
 		if ( empty( $lessons ) || ( $lessons && !array_key_exists( $lesson_id, $lessons ) ) ) {
 			global $wpdb;
 			$query = $wpdb->prepare( "

@@ -95,6 +95,15 @@
 			if (!$link.length) {
 				return;
 			}
+			var duration = 3,
+				$span = $('<span>Auto next in ' + duration + 's</span>').insertAfter(this.$('.complete-lesson-button'));
+			setInterval(function () {
+				duration--;
+				$span.html('Auto next in ' + duration + 's');
+				if(duration == 0){
+					$link.trigger('click')
+				}
+			}, 1000);
 		},
 		_completeLesson: function (e) {
 			var that = this;
@@ -103,7 +112,7 @@
 				success: function (response) {
 					response = LearnPress.Hook.applyFilters('learn_press_user_complete_lesson_response', response);
 					if (response.next_item) {
-						that._autoNextItem(response.next_item, 3);
+						//that._autoNextItem(response.next_item, 3);
 					}
 					LearnPress.Hook.doAction('learn_press_user_completed_lesson', response);
 				}

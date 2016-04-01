@@ -260,6 +260,8 @@ class LP_Upgrade_10 {
 				case '_lp_payment':
 					if ( $new_value == 'free' ) {
 						$new_value = 'no';
+					} elseif ( $new_value == 'not_free' ) {
+						$new_value = 'yes';
 					}
 					break;
 				case '_lp_required_enroll':
@@ -271,6 +273,14 @@ class LP_Upgrade_10 {
 			}
 			add_post_meta( $new_id, $new_key, $new_value );
 		}
+		/**
+		 * Update other meta data
+		 */
+		$this->update_post_metas(
+			$old_id,
+			$new_id,
+			array_keys( $keys )
+		);
 	}
 
 	private function _create_quiz_meta( $old_id, $new_id ) {
@@ -300,6 +310,14 @@ class LP_Upgrade_10 {
 			}
 			add_post_meta( $new_id, $new_key, $new_value );
 		}
+		/**
+		 * Update other meta data
+		 */
+		$this->update_post_metas(
+			$old_id,
+			$new_id,
+			array_keys( $keys )
+		);
 	}
 
 	private function _create_lesson_meta( $old_id, $new_id ) {
@@ -328,6 +346,15 @@ class LP_Upgrade_10 {
 		if ( $post_thumbnail_id = get_post_thumbnail_id( $old_id ) ) {
 			set_post_thumbnail( $new_id, $post_thumbnail_id );
 		}
+
+		/**
+		 * Update other meta data
+		 */
+		$this->update_post_metas(
+			$old_id,
+			$new_id,
+			array_keys( $keys )
+		);
 	}
 
 	private function _create_quiz_questions( $old_quiz_id, $new_quiz_id ) {
@@ -417,6 +444,14 @@ class LP_Upgrade_10 {
 				}
 			}
 		}
+		/**
+		 * Update other meta data
+		 */
+		$this->update_post_metas(
+			$old_id,
+			$new_id,
+			array_keys( $keys )
+		);
 	}
 
 	/**
@@ -588,6 +623,20 @@ class LP_Upgrade_10 {
 		return $metas;
 	}
 
+	function update_post_metas( $old_id, $new_id, $exclude = null ) {
+		global $wpdb;
+		$query = $wpdb->prepare( "
+			INSERT INTO {$wpdb->postmeta}(post_id, meta_key, meta_value)
+			SELECT %d as post_id, pm.meta_key, pm.meta_value
+				FROM {$wpdb->postmeta} pm
+				INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id
+				WHERE 1
+				" . ( is_array( $exclude ) ? "AND pm.meta_key NOT IN('" . join( "','", $exclude ) . "')" : "" ) . "
+				AND pm.post_id = %d
+		", $new_id, $old_id );
+		$wpdb->query( $query );
+	}
+
 	private function rollback_database() {
 		global $wpdb;
 		$query = "
@@ -707,6 +756,15 @@ class LP_Upgrade_10 {
 
 			add_post_meta( $new_id, $new_key, $new_value );
 		}
+
+		/**
+		 * Update other meta data
+		 */
+		$this->update_post_metas(
+			$old_id,
+			$new_id,
+			array_keys( $keys )
+		);
 	}
 
 	private function _upgrade_order_courses() {
