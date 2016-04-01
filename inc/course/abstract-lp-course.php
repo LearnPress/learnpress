@@ -38,6 +38,8 @@ abstract class LP_Abstract_Course {
 	 */
 	protected $_count_users = null;
 
+	protected static $_lessons = array();
+
 	/**
 	 * Constructor gets the post object and sets the ID for the loaded course.
 	 *
@@ -53,6 +55,9 @@ abstract class LP_Abstract_Course {
 		} elseif ( isset( $course->ID ) ) {
 			$this->id   = absint( $course->ID );
 			$this->post = $course;
+		}
+		if ( empty( self::$_lessons[$this->id] ) ) {
+			self::$_lessons[$this->id] = array();
 		}
 	}
 
@@ -229,7 +234,8 @@ abstract class LP_Abstract_Course {
 		}
 		if ( !self::$_curriculum[$this->id] || $force ) {
 			global $wpdb;
-			$query = $wpdb->prepare( "
+			self::$_curriculum[$this->id] = array();
+			$query                        = $wpdb->prepare( "
 				SELECT cc.*
 				FROM {$wpdb->posts} p
 				INNER JOIN {$wpdb->learnpress_sections} cc ON p.ID = cc.section_course_id
@@ -245,8 +251,8 @@ abstract class LP_Abstract_Course {
 				$query         = $wpdb->prepare( "
 						SELECT si.*, p.*
 						FROM {$wpdb->posts} p
-						INNER JOIN {$wpdb->learnpress_section_items} si ON si.item_id = p.ID
-						INNER JOIN {$wpdb->learnpress_sections} s ON s.section_id = si.section_id
+						INNER JOIN {$wpdb->prefix}learnpress_section_items si ON si.item_id = p.ID
+						INNER JOIN {$wpdb->prefix}learnpress_sections s ON s.section_id = si.section_id
 						WHERE s.section_id IN( $in )
 						ORDER BY s.section_order, si.item_order ASC
 					", $section_ids );
@@ -258,6 +264,7 @@ abstract class LP_Abstract_Course {
 					if ( $section_items ) {
 						$count = 0;
 						foreach ( $section_items as $item ) {
+
 							if ( $item->section_id == $row->section_id ) {
 								$section->items[] = $item;
 								$count ++;
@@ -270,6 +277,7 @@ abstract class LP_Abstract_Course {
 				}
 			}
 		}
+
 		return apply_filters( 'learn_press_course_curriculum', self::$_curriculum[$this->id], $this );
 	}
 

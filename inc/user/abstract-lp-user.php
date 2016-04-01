@@ -37,6 +37,11 @@ class LP_Abstract_User {
 	static protected $_order_items = array();
 
 	/**
+	 * @var array
+	 */
+	static protected $_lessons = array();
+
+	/**
 	 * @var null
 	 */
 	protected $_quiz_history_id = null;
@@ -54,6 +59,9 @@ class LP_Abstract_User {
 			$this->id   = $the_user;
 		} else {
 			//throw new Exception( sprintf( __( 'The user with ID = %d is not exists', 'learnpress' ), $the_user ) );
+		}
+		if ( empty( self::$_lessons[$this->id] ) ) {
+			self::$_lessons[$this->id] = array();
 		}
 	}
 
@@ -733,12 +741,12 @@ class LP_Abstract_User {
 		$return = false;
 		if ( $course = LP_Course::get_course( $course_id ) ) {
 			$result = $course->evaluate_course_results() * 100;
-			$return = $result >= $course->passing_condition && $this->is_course_status( $course_id, array( 'enrolled' ) );
+			$return = ($result >= $course->passing_condition) && $this->has_course_status( $course_id, array( 'enrolled', 'started' ) );
 		}
 		return apply_filters( 'learn_press_user_can_finish_course', $return, $course_id, $this->id );
 	}
 
-	function is_course_status( $course_id, $statuses ) {
+	function has_course_status( $course_id, $statuses ) {
 		$status = $this->get_course_status( $course_id );
 		if ( is_array( $statuses ) ) {
 			return in_array( $status, $statuses );
@@ -939,17 +947,22 @@ class LP_Abstract_User {
 	}
 
 	function has_completed_lesson( $lesson_id ) {
-		static $lessons = array();
-		if ( empty( $lessons[$lesson_id] ) ) {
+		$lessons = self::$_lessons[$this->id];
+		if ( empty( $lessons ) || ( $lessons && !array_key_exists( $lesson_id, $lessons ) ) ) {
 			global $wpdb;
-			$query               = $wpdb->prepare( "
-				SELECT status FROM {$wpdb->prefix}learnpress_user_lessons
+			$query = $wpdb->prepare( "
+				SELECT lesson_id, status FROM {$wpdb->prefix}learnpress_user_lessons
 				WHERE user_id = %d
-					AND lesson_id = %d
-			", $this->id, $lesson_id );
-			$lessons[$lesson_id] = $wpdb->get_var( $query );
+			", $this->id );
+			if ( $rows = $wpdb->get_results( $query ) ) {
+				foreach ( $rows as $r ) {
+					$lessons[$r->lesson_id] = $r->status;
+				}
+			}
+			self::$_lessons[$this->id] = $lessons;
 		}
-		return apply_filters( 'learn_press_user_has_completed_lesson', $lessons[$lesson_id] == 'completed', $lesson_id, $this );
+		$completed = !empty( $lessons[$lesson_id] ) && $lessons[$lesson_id] == 'completed';
+		return apply_filters( 'learn_press_user_has_completed_lesson', $completed, $lesson_id, $this );
 	}
 
 	/**

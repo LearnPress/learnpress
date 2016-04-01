@@ -15,24 +15,24 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			// learnpress_ajax_event => nopriv
 			$ajaxEvents = array(
 				//'list_quiz'            => false,
-				'load_quiz_question'   => true,
-				'load_prev_question'   => false,
-				'load_next_question'   => false,
+				'load_quiz_question'  => true,
+				'load_prev_question'  => false,
+				'load_next_question'  => false,
 				//'save_question_answer' => false,
-				'finish_quiz'          => true,
-				'retake_quiz'          => true, // anonymous user can retake quiz
-				'take_free_course'     => false,
-				'load_lesson_content'  => false,
-				'load_next_lesson'     => false,
-				'load_prev_lesson'     => false,
-				'complete_lesson'      => false,
-				'finish_course'        => false,
-				'join_event'           => false,
-				'not_going'            => false,
+				'finish_quiz'         => true,
+				'retake_quiz'         => true, // anonymous user can retake quiz
+				'take_free_course'    => false,
+				'load_lesson_content' => false,
+				'load_next_lesson'    => false,
+				'load_prev_lesson'    => false,
+				'complete_lesson'     => false,
+				'finish_course'       => false,
+				'join_event'          => false,
+				'not_going'           => false,
 				//
-				'take_course'          => true,
-				'start_quiz'           => true,
-				'fetch_question'       => true
+				'take_course'         => true,
+				'start_quiz'          => true,
+				'fetch_question'      => true
 			);
 
 			foreach ( $ajaxEvents as $ajax_event => $nopriv ) {
@@ -161,13 +161,32 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			} else {
 				wp_set_current_user( $user->ID );
 				$next = learn_press_get_request( 'next' );
-				if ( wp_verify_nonce( $next, 'process-checkout-free-course' ) ) {
-					add_filter( 'learn_press_checkout_success_result', '_learn_press_checkout_auto_enroll_free_course', 10, 2 );
-					$checkout = LP()->checkout()->process_checkout();
+				if ( $next == 'enroll-course' ) {
+					$user     = new LP_User( $user->ID );
+					$checkout = false;
+					if ( $cart_items = LP()->cart->get_items() ) {
+						foreach ( $cart_items as $item ) {
+							if ( $user->has_enrolled_course( $item['item_id'] ) ) {
+								$checkout = $item['item_id'];
+							} elseif ( $user->has_purchased_course( $item['item_id'] ) ) {
+								$checkout = $item['item_id'];
+								$user->enroll( $item['item_id'] );
+							}
+							if ( $checkout ) {
+								LP()->cart->remove_item( $checkout );
+								$return['redirect'] = get_the_permalink( $checkout );
+								learn_press_add_notice( sprintf( __( 'Welcome back, %s. You have enrolled this course', 'learnpress' ), $user->user->display_name ) );
+								break;
+							}
+						}
+					}
+					if ( $checkout === false ) {
+						add_filter( 'learn_press_checkout_success_result', '_learn_press_checkout_auto_enroll_free_course', 10, 2 );
+						$checkout = LP()->checkout()->process_checkout();
+					} else {
+					}
 				}
 			}
-			//echo is_user_logged_in() ? 'logged' : 'not logged';
-			//print_r($return);die();
 			learn_press_send_json( $return );
 		}
 
@@ -176,46 +195,28 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 		}
 
 		static function _request_finish_course() {
-			$user_id   = get_current_user_id();
+			$nonce     = learn_press_get_request( 'nonce' );
 			$course_id = absint( learn_press_get_request( 'id' ) );
+			$user      = learn_press_get_current_user();
 
-			$user   = learn_press_get_user( $user_id );
 			$course = LP_Course::get_course( $course_id );
-			if ( !$user->id || !$course || !wp_verify_nonce( learn_press_get_request( 'nonce' ), 'learn-press-finish-course-' . $course->id ) ) {
-				wp_die( __( 'Access denied!', 'learnpress' ) );
+
+			$nonce_action = sprintf( 'learn-press-finish-course-%d-%d', $course_id, $user->id );
+			if ( !$user->id || !$course || !wp_verify_nonce( $nonce, $nonce_action ) ) {
+				wp_die( __( 'Access denied! Bla bla bla...', 'learnpress' ) );
 			}
 
 			$response = $user->finish_course( $course_id );
 
+			if ( $response['result'] == 'success' ) {
+				$message              = __( 'Congrats! You have finished this course', 'learnpress' );
+				$response['redirect'] = get_the_permalink( $course_id );
+			} else {
+				$message = __( 'Error! You cannot finish this course. Please contact your administrator for more information.', 'learnpress' );
+			}
+
+			$response['message'] = array( 'title' => __( 'Finish course', 'learnpress' ), 'message' => $message );
 			learn_press_send_json( $response );
-
-			$assessment = get_post_meta( $course_id, '_lpr_course_final', true );
-			$pass       = floatval( get_post_meta( $course_id, '_lpr_course_condition', true ) );
-			if ( $assessment == 'yes' ) {
-
-				$final_quiz   = lpr_get_final_quiz( $course_id );
-				$final_result = learn_press_get_quiz_result( $user_id, $final_quiz );// lpr_get_quiz_result( $final_quiz );
-				if ( !empty( $final_result ) && !empty( $final_result['mark_percent'] ) && ( $final_result['mark_percent'] * 100 >= $pass ) ) {
-					$finish = true;
-				}
-			} else {
-				$progress = lpr_course_evaluation( $course_id );
-				if ( $progress >= $pass ) {
-					$finish = true;
-				}
-			}
-
-
-			if ( $finish ) {
-				learn_press_finish_course( $course_id, $user_id );
-
-				$json['message'] = __( 'Congratulation ! You have finished this course', 'learnpress' );
-			} else {
-				$json['finish']  = false;
-				$json['message'] = __( 'Sorry! You can not finish this course now', 'learnpress' );
-			}
-			wp_send_json( $json );
-			die;
 		}
 
 
@@ -294,9 +295,9 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 				$content = ob_get_clean();
 				learn_press_send_json(
 					apply_filters( 'learn_press_load_quiz_question_result_data', array(
-							'result'       => 'success',
-							'permalink'    => learn_press_get_user_question_url( $quiz_id, $question_id ),
-							'question' => array(
+							'result'    => 'success',
+							'permalink' => learn_press_get_user_question_url( $quiz_id, $question_id ),
+							'question'  => array(
 								'content' => $content
 							)
 						)
@@ -516,64 +517,38 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 		 * Complete lesson
 		 */
 		public static function complete_lesson() {
-			$nonce   = learn_press_get_request( 'nonce' );
-			$item_id = learn_press_get_request( 'id' );
-			$post    = get_post( $item_id );
-
-			// security check
-			if ( !$post || ( $post && !wp_verify_nonce( $nonce, sprintf( 'learn-press-complete-%s-%d', $post->post_type, $post->ID ) ) ) ) {
-				throw new Exception( __( 'Error ', 'learnpress' ) );
-			}
-			$user = learn_press_get_current_user();
-
-			$response = array(
-				'result' => 'error'
+			$nonce        = learn_press_get_request( 'nonce' );
+			$item_id      = learn_press_get_request( 'id' );
+			$course_id    = learn_press_get_request( 'course_id' );
+			$post         = get_post( $item_id );
+			$user         = learn_press_get_current_user();
+			$course       = LP_Course::get_course( $course_id );
+			$response     = array(
+				'result' => 'success'
 			);
-			if ( $result = $user->complete_lesson( $item_id ) ) {
+			$nonce_action = sprintf( 'learn-press-complete-%s-%d-%d-%d', $post->post_type, $post->ID, $course->id, $user->id );
+			// security check
+			if ( !$post || ( $post && !wp_verify_nonce( $nonce, $nonce_action ) ) ) {
+				$response['result']  = 'error';
+				$response['message'] = __( 'Error! Invalid lesson or security checked failure', 'learnpress' );
+			}
+
+			if ( $response['result'] == 'success' ) {
+				$result                    = $user->complete_lesson( $item_id );
+				$can_finish                = $user->can_finish_course( $course_id );
+				$response['button_text']   = '<span class="dashicons dashicons-yes"></span>' . __( 'Completed', 'learnpress' );
+				$response['course_result'] = round( $result * 100, 0 );
+				$response['can_finish']    = $can_finish;
+
 				ob_start();
-				learn_press_display_message( __( 'Congratulations! You have completed this lesson.', 'learnpress' ) );
-				$response['message'] = ob_get_clean();
-				$response['result']  = 'success';
-
-				$response['course_result'] = $result * 100;
-			}
-			learn_press_send_json( $response );
-			die();
-			global $post;
-			$user_id   = get_current_user_id();
-			$lesson_id = !empty( $_POST['lesson'] ) ? $_POST['lesson'] : 0;
-			if ( !$user_id || !$lesson_id ) {
-				wp_die( __( 'Access denied!', 'learnpress' ) );
-			}
-			$response = array();
-			if ( learn_press_mark_lesson_complete( $lesson_id, $user_id ) ) {
-				$course_id        = learn_press_get_course_by_lesson( $lesson_id );
-				$lessons          = learn_press_get_lessons_in_course( $course_id );
-				$lesson_completed = get_user_meta( $user_id, '_lpr_lesson_completed', true );
-				$lesson_completed = !empty( $lesson_completed[$course_id] ) ? $lesson_completed[$course_id] : array();
-
-				if ( $lessons ) {
-					if ( false !== ( $pos = array_search( $lesson_id, $lessons ) ) ) {
-						$loop     = ( $pos == count( $lessons ) - 1 ) ? 0 : $pos + 1;
-						$infinite = 0;
-						$max      = count( $lessons );
-
-						while ( in_array( $lessons[$loop], $lesson_completed ) && ( $lessons[$loop] != $lesson_id ) ) {
-							$loop ++;
-							if ( $loop == $max ) $loop = 0;
-							if ( $infinite > $max ) break;
-						}
-						if ( $lessons[$loop] != $lesson_id ) {
-							$response['url'] = learn_press_get_course_lesson_permalink( $lessons[$loop], $course_id );
-						} else {
-							$response['url'] = learn_press_get_course_lesson_permalink( $lesson_id, $course_id );
-						}
-					}
+				if ( $can_finish ) {
+					learn_press_display_message( __( 'Congratulations! You have completed this lesson and you can finish course.', 'learnpress' ) );
+				} else {
+					learn_press_display_message( __( 'Congratulations! You have completed this lesson.', 'learnpress' ) );
 				}
+				$response['message'] = ob_get_clean();
 			}
-
 			learn_press_send_json( $response );
-			die;
 		}
 
 		/**

@@ -583,6 +583,9 @@ a .archive-course:hover {
 	float: left;
 	width: 100%;
 	margin-bottom: 50px;
+	-webkit-border-radius:5px;
+	-moz-border-radius:5px;
+	border-radius:5px;
 }
 .lp-course-progress .lp-progress-value{
 	height: 20px;
@@ -595,7 +598,8 @@ a .archive-course:hover {
 	-o-transition: width 0.25s;
 	transition: width 0.25s;
 }
-.lp-course-progress .lp-progress-value > span{
+.lp-course-progress .lp-progress-value > span,
+.lp-course-progress .lp-passing-conditional span{
 	display: inline-block;
 	padding: 5px 10px;
 	font-size: small;
@@ -605,21 +609,39 @@ a .archive-course:hover {
 	top: -35px;
 	line-height: 1;
 	white-space: nowrap;
+	width: 50px;
+	text-align: center;
+	margin-right: -25px;
+	-webkit-border-radius:3px;
+	-moz-border-radius:3px;
+	border-radius:3px;
 }
 
-.lp-course-progress .lp-progress-value > span:after{
+.lp-course-progress .lp-progress-value > span:after,
+.lp-course-progress .lp-passing-conditional span:after{
 	content: '';
 	display: block;
-	border: 10px solid #DDD;
+	border: 6px solid #DDD;
 	position: absolute;
 	border-color: transparent;
-	border-left-color: #DDD;
-	bottom: -3px;
-	/* left: 50%; */
-	/* margin-left: -10px; */
-	transform: rotate(-45deg);
-	right: -10px;
+	border-top-color: #DDD;
+	bottom: -12px;
+	left: 50%;
+	margin-left: -6px;
 }
+
+.lp-course-progress .lp-passing-conditional span{
+	top: 30px;
+	margin-left: -25px;
+}
+.lp-course-progress .lp-passing-conditional span:after{
+	border-bottom-color: #DDD;
+	top: -12px;
+	left: 50%;
+	border-top-color: transparent;
+	bottom: auto;
+}
+
 .lp-course-progress .lp-progress-value.left > span{
 	left: 100%;
 	right: auto;
@@ -632,12 +654,15 @@ a .archive-course:hover {
 }
 .lp-course-progress.passed .lp-progress-value{
 	background: #83D0FF;
+	-webkit-border-radius:5px;
+	-moz-border-radius:5px;
+	border-radius:5px;
 }
 .lp-course-progress.passed .lp-progress-value > span{
 	background: #83D0FF;
 }
 .lp-course-progress.passed .lp-progress-value > span:after{
-	border-left-color: #83D0FF;
+	border-top-color: #83D0FF;
 }
 .lp-course-progress .lp-progress-total{
 	width: 50px;
@@ -654,29 +679,7 @@ a .archive-course:hover {
 	width: 1px;
 	background-color: #FF0000;
 }
-.lp-course-progress .lp-passing-conditional span{
-	display: inline-block;
-	font-size: small;
-	white-space: nowrap;
-	position: absolute;
-	top: 30px;
-	background: #DDD;
-	padding: 5px 10px;
-	line-height: 1;
- }
-.lp-course-progress .lp-passing-conditional span:after{
-	content: '';
-	display: block;
-	border: 10px solid #DDD;
-	position: absolute;
-	border-color: transparent;
-	border-left-color: #DDD;
-	top: -3px;
-	/* left: 50%; */
-	/* margin-left: -10px; */
-	transform: rotate(135deg);
-	left: -10px;
-}
+
 .lp-course-progress .lp-passing-conditional.right span{
 	right: 0;
 }

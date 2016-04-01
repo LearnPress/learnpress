@@ -60,10 +60,11 @@ add_action( 'learn_press_content_learning_summary', 'learn_press_course_finish_b
 add_action( 'learn_press_content_learning_summary', 'learn_press_course_curriculum', 55 );
 
 add_action( 'learn_press_course_content_lesson', 'learn_press_course_content_lesson', 5 );
+add_action( 'learn_press_course_lesson_summary', 'learn_press_course_lesson_data', 5 );
 add_action( 'learn_press_course_lesson_summary', 'learn_press_course_lesson_description', 5 );
-add_action( 'learn_press_course_lesson_summary', 'learn_press_course_quiz_description', 5 );
-add_action( 'learn_press_course_lesson_summary', 'learn_press_course_lesson_complete_button', 10 );
-add_action( 'learn_press_course_lesson_summary', 'learn_press_course_lesson_navigation', 15 );
+add_action( 'learn_press_course_lesson_summary', 'learn_press_course_quiz_description', 10 );
+add_action( 'learn_press_course_lesson_summary', 'learn_press_course_lesson_complete_button', 15 );
+add_action( 'learn_press_course_lesson_summary', 'learn_press_course_lesson_navigation', 20 );
 
 /**************************************/
 add_action( 'learn_press_after_enroll_button', 'learn_press_enroll_script' );

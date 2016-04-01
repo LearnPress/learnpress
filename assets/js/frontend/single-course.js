@@ -9,28 +9,7 @@ if (typeof LearnPress == 'undefined') {
 	LearnPress.Course = $.extend(
 		LearnPress.Course || {}, {
 			finish: function (data, callback) {
-				data = data || {};
-				data['lp-ajax'] = 'finish_course';
-				LearnPress.confirm(single_course_localize.confirm_finish_course, function (e) {
-					//LearnPress.Hook.applyFilters( 'learn_press_confirm_finish_course', e, data);
-					if (e) {
-						LearnPress.doAjax({
-							prefix : '',
-							data   : data,
-							success: function (response) {
-								LearnPress.Hook.applyFilters('learn_press_user_finished_course', response);
-								if (response && response.result == 'success') {
-									LearnPress.reload();
-								} else {
-									if (response.message) {
-										LearnPress.alert(response.message);
-									}
-								}
-								$.isFunction(callback) && callback(response);
-							}
-						});
-					}
-				})
+				LearnPress.$Course && LearnPress.$Course.finishCourse({data: data, success: callback});
 			}
 		}
 	);
@@ -49,7 +28,7 @@ if (typeof LearnPress == 'undefined') {
 			this.courseItems = new $.LP_Course_Item.Collection();
 			this.courseItemsView = new $.LP_Course_Item_List_View({model: this.courseItems});
 
-			_.bindAll(this, '_sanitizeProgress')
+			_.bindAll(this, '_finishCourse', '_sanitizeProgress', 'completeLesson');
 			this.$doc = $(document);
 			this.$body = $(document.body);
 
@@ -64,14 +43,42 @@ if (typeof LearnPress == 'undefined') {
 				}
 				return true;
 			});
-			LearnPress.Hook.addAction('learn_press_item_content_loaded', function ($content, $view) {
-				LearnPress.toElement('#learn-press-course-lesson-heading');
-				LearnPress.MessageBox.hide();
-			});
+			LearnPress.Hook
+				.addAction('learn_press_item_content_loaded', this.itemLoaded)
+				.addAction('learn_press_user_completed_lesson', this.completeLesson)
+				.addAction('learn_press_user_passed_course_condition', function () {
+				});
 
 			this._sanitizeProgress();
 
 
+		},
+		itemLoaded       : function ($content, $view) {
+			LearnPress.toElement('#learn-press-course-lesson-heading');
+			LearnPress.MessageBox.hide();
+		},
+		completeLesson   : function (response) {
+			if (response && response.result == 'success') {
+				var $button = this.$('.complete-lesson-button').addClass('completed').prop('disabled', true).html(response.button_text);
+				$('.course-item-' + response.id).addClass('item-completed');
+				if (response.course_result) {
+					if (response.can_finish) {
+						this.$('#learn-press-finish-course').removeClass('hide-if-js');
+						LearnPress.Hook.doAction('learn_press_user_passed_course_condition', response, this);
+					}
+					if (response.message) {
+						$(response.message).insertBefore($button);
+					}
+					this.updateProgress(response);
+				}
+			}
+		},
+		updateProgress   : function (data) {
+			$('.lp-course-progress')
+				.attr({
+					'data-value': data.course_result
+				})
+			this._sanitizeProgress();
 		},
 		_loadLesson      : function (e) {
 			this.loadLesson($(e.target).attr('href'));
@@ -114,32 +121,55 @@ if (typeof LearnPress == 'undefined') {
 			})
 		},
 		_finishCourse    : function (e) {
-			var $button = $(e.target),
-				data = $button.dataToJSON();
+			var that = this,
+				$button = $(e.target),
+				data = $button.data();
 			data = LearnPress.Hook.applyFilters('learn_press_user_finish_course_data', data);
 			if (data && data.id) {
 				$button.prop('disabled', true);
-				LearnPress.Course.finish(data, function (response) {
-					$button.prop('disabled', false);
+				this.finishCourse({
+					data   : data,
+					success: function (response) {
+						LearnPress.Hook.applyFilters('learn_press_finish_course_params', response);
+
+						if (response && response.result == 'success') {
+							that.$('#learn-press-finish-course, .complete-lesson-button').remove();
+							LearnPress.Hook.doAction('learn_press_finish_course', response);
+						}
+						if (response.message) {
+							LearnPress.alert(response.message, function () {
+								if (response.redirect) {
+									LearnPress.reload(response.redirect);
+								}
+							});
+						} else {
+							if (response.redirect) {
+								LearnPress.reload(response.redirect);
+							}
+						}
+					}
 				});
 			}
 		},
-		finishCourse     : function () {
-			if (!confirm(confirm_finish_course.confirm_finish_course)) return;
-			$.ajax({
-				type   : "POST",
-				url    : ajaxurl,
-				data   : {
-					action   : 'finish_course',
-					course_id: course_id
-				},
-				success: function (response) {
-					response = LearnPress.parseJSON(response)
-					if (response.result == 'success') {
-						LearnPress.reload();
+		finishCourse     : function (args) {
+			args = args || {};
+			var _do = function (e) {
+					if (e) {
+						LearnPress.doAjax({
+							prefix : '',
+							data   : data,
+							success: _success
+						});
 					}
-				}
-			});
+				},
+				_success = function (response) {
+					$.isFunction(args.success) && args.success.call(that, response);
+				},
+				that = this,
+				data = $.extend({
+					'lp-ajax': 'finish_course'
+				}, args.data || {});
+			LearnPress.confirm(single_course_localize.confirm_finish_course, _do);
 		},
 		_sanitizeProgress: function () {
 			var $el = $('.lp-course-progress'),
@@ -150,16 +180,7 @@ if (typeof LearnPress == 'undefined') {
 				_done = function () {
 					var progress = parseInt($progress.css('width')),
 						passing = parseInt($passing.css('left'));
-					if (progress < $('span', $progress).outerWidth()) {
-						$progress.addClass('left')
-					} else {
-						$progress.removeClass('left')
-					}
-					if (($el.outerWidth() - passing) < $('span', $passing).outerWidth()) {
-						$passing.addClass('right')
-					} else {
-						$passing.removeClass('right')
-					}
+
 					if (value >= passing_condition) {
 						$el.addClass('passed');
 					}

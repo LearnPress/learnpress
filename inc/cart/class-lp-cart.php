@@ -36,6 +36,21 @@ class LP_Cart {
 		if ( !is_array( $this->_cart_content = LP_Session::get( 'cart' ) ) ) {
 			$this->_cart_content = $this->get_default_cart_content();
 		}
+
+		$remove_items = array();
+		if ( $this->_cart_content['items'] ) {
+			foreach ( $this->_cart_content['items'] as $k => $item ) {
+				if ( empty( $item['item_id'] ) || !get_post( $item['item_id'] ) ) {
+					$remove_items[] = $item['item_id'];
+				}
+			}
+		}
+		if ( $remove_items ) {
+			foreach ( $remove_items as $item_id ) {
+				$this->remove_item( $item_id );
+			}
+		}
+
 		LP_Request_Handler::register( 'add-course-to-cart', array( $this, 'add_to_cart' ), 20 );
 		LP_Request_Handler::register( 'remove-cart-item', array( $this, 'remove_item' ), 20 );
 		add_action( 'learn_press_add_to_cart', array( $this, 'calculate_totals' ), 10 );
@@ -97,7 +112,7 @@ class LP_Cart {
 				if ( !$redirect ) {
 					$redirect = wp_login_url();
 				} else {
-					$redirect = add_query_arg( 'next', wp_create_nonce( 'process-checkout-free-course' ), $redirect );
+					$redirect = add_query_arg( 'next', 'enroll-course', $redirect );
 				}
 				learn_press_add_notice( __( 'Please login to continue process.', 'learn_press' ) );
 				$checkout_results['redirect'] = $redirect;
@@ -218,6 +233,7 @@ class LP_Cart {
 		if ( !did_action( 'learn_press_get_cart_from_session' ) ) {
 			$this->get_cart_from_session();
 		}
+
 		return $this->_cart_content['items'];
 	}
 

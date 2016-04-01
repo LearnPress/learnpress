@@ -23,7 +23,6 @@ $target   = apply_filters( 'learn_press_section_item_link_target', '_blank', $it
 		<?php echo apply_filters( 'learn_press_section_item_title', get_the_title( $item->ID ), $item ); ?>
 
 	</<?php echo $tag; ?>>
-
 	<?php do_action( 'learn_press_after_section_item_title', $item, $section, $course ); ?>
 
 </li>
