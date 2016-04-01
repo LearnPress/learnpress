@@ -597,6 +597,9 @@ a .archive-course:hover {
 	-ms-transition: width 0.25s;
 	-o-transition: width 0.25s;
 	transition: width 0.25s;
+	-webkit-border-radius:5px;
+	-moz-border-radius:5px;
+	border-radius:5px;;
 }
 .lp-course-progress .lp-progress-value > span,
 .lp-course-progress .lp-passing-conditional span{

@@ -539,6 +539,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 				$response['button_text']   = '<span class="dashicons dashicons-yes"></span>' . __( 'Completed', 'learnpress' );
 				$response['course_result'] = round( $result * 100, 0 );
 				$response['can_finish']    = $can_finish;
+				$response['next_item']     = $course->get_next_item( $item_id );
 
 				ob_start();
 				if ( $can_finish ) {

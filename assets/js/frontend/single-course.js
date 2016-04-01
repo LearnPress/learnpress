@@ -38,7 +38,7 @@ if (typeof LearnPress == 'undefined') {
 					var redirect = LearnPress.Hook.applyFilters('learn_press_course_item_redirect_url', $('.course-item-' + $view.model.get('id') + ' a').prop('href'), $view);
 					if (redirect !== false) {
 						var win = window.open(redirect, '_blank');
-						win.focus();
+						try{win.focus();}catch(e){}
 					}
 				}
 				return true;

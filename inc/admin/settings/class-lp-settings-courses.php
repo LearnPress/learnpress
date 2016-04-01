@@ -129,6 +129,13 @@ class LP_Settings_Courses extends LP_Settings_Base {
 					'type'    => 'course-permalink',
 					'default' => ''
 				),
+				array(
+					'title'   => __( 'Auto navigation item', 'learnpress' ),
+					'type'    => 'auto_nav_course_item',
+					'default' => 'yes',
+					'type'    => 'checkbox',
+					'desc'    => __( 'Navigate to next item after user complete', 'learnpress' )
+				)
 			)
 		);
 	}

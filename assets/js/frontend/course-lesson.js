@@ -90,12 +90,21 @@
 			LearnPress.Hook.doAction('learn_press_item_content_loaded', $content, this);
 			//}
 		},
+		_autoNextItem  : function (item, delay) {
+			var $link = this.$('.course-item-next a[data-id="' + item + '"]');
+			if (!$link.length) {
+				return;
+			}
+		},
 		_completeLesson: function (e) {
 			var that = this;
 			this.model.complete({
 				data   : $(e.target).data(),
 				success: function (response) {
-					response = LearnPress.Hook.applyFilters('learn_press_user_complete_lesson_response', response)
+					response = LearnPress.Hook.applyFilters('learn_press_user_complete_lesson_response', response);
+					if (response.next_item) {
+						that._autoNextItem(response.next_item, 3);
+					}
 					LearnPress.Hook.doAction('learn_press_user_completed_lesson', response);
 				}
 			});

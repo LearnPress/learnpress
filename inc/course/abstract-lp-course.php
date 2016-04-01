@@ -415,7 +415,7 @@ abstract class LP_Abstract_Course {
 	 */
 	public function get_price() {
 		$price = $this->price;
-		if ( !$price || $this->is_free() ) {
+		if ( !$price || 'no' == $this->payment ) {
 			$price = 0;
 		} else {
 			$price = floatval( $price );
@@ -681,13 +681,25 @@ abstract class LP_Abstract_Course {
 	}
 
 	function get_next_item( $current_item = false, $dir = 'next' ) {
-		$items     = (array) $this->get_curriculum_items( array( 'field' => 'ID' ) );
+
+		$items_types = apply_filters( 'learn_press_course_' . $dir . '_item_types', false, $this->id );
+		if ( $items_types === false ) {
+			$items = (array) $this->get_curriculum_items( array( 'field' => 'ID' ) );
+		} else {
+			$items = (array) $this->get_curriculum_items( array( 'field' => 'ID', 'group' => true ) );
+			if ( !empty( $items[$items_types] ) ) {
+				$items = array_values( $items[$items_types] );
+			} else {
+				$items = array();
+			}
+		}
 		$items_len = sizeof( $items );
 		if ( $items_len < 2 ) return false;
 		$current_item = $current_item ? $current_item : ( $this->current_item ? $this->current_item->id : 0 );
 		if ( !$current_item ) {
 			$current_item = reset( $items );
 		}
+
 		if ( ( $pos = array_search( $current_item, $items ) ) !== false ) {
 			if ( $dir == 'next' ) {
 				if ( $pos == sizeof( $items ) - 1 ) {
@@ -705,8 +717,6 @@ abstract class LP_Abstract_Course {
 		} else {
 			$next_item = $dir == 'next' ? $items[1] : $items[$items_len - 1];
 		}
-		//print_r($items);
-		//echo $current_item, ",", $next_item;
 		return apply_filters( 'learn_press_course_' . $dir . '_item', $next_item, $current_item, $this );
 	}
 

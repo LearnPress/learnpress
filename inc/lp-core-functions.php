@@ -2198,11 +2198,7 @@ function learn_press_get_current_version() {
 }
 
 include_once "debug.php";
-//function learn_press_register_addons() {
 include_once "lp-add-ons.php";
-//}
-
-//add_action( 'learn_press_register_add_ons', 'learn_press_register_addons' );
 
 function learn_press_debug() {
 	$args = func_get_args();
@@ -2216,4 +2212,3 @@ function learn_press_debug() {
 		die();
 	}
 }
-
