@@ -175,7 +175,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 							if ( $checkout ) {
 								LP()->cart->remove_item( $checkout );
 								$return['redirect'] = get_the_permalink( $checkout );
-								learn_press_add_notice( sprintf( __( 'Welcome back, %s. You have enrolled this course', 'learnpress' ), $user->user->display_name ) );
+								learn_press_add_notice( sprintf( __( 'Welcome back, %s. You\'ve already enrolled this course', 'learnpress' ), $user->user->display_name ) );
 								break;
 							}
 						}

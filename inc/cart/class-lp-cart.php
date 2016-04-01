@@ -92,13 +92,13 @@ class LP_Cart {
 			$quantity += $this->_cart_content['items'][$course_id]['quantity'];
 		}*/
 
-		$quantity = 1;
-
+		$quantity                                 = 1;
+		$price                                    = $course->is_free() ? 0 : $course->get_price();
 		$this->_cart_content['items'][$course_id] = apply_filters( 'learn_press_add_cart_item', array(
 				'item_id'  => $course_id,
 				'quantity' => $quantity,
-				'subtotal' => $course->get_price() * $quantity,
-				'total'    => $course->get_price() * $quantity,
+				'subtotal' => $price * $quantity,
+				'total'    => $price * $quantity,
 				'data'     => $item_data
 			)
 		);

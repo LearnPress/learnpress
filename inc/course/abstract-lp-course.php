@@ -415,7 +415,7 @@ abstract class LP_Abstract_Course {
 	 */
 	public function get_price() {
 		$price = $this->price;
-		if ( !$price ) {
+		if ( !$price || $this->is_free() ) {
 			$price = 0;
 		} else {
 			$price = floatval( $price );
