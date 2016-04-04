@@ -252,6 +252,8 @@ if (typeof LearnPress == 'undefined') var LearnPress = {};
 				check : this.$('.check-question')
 			};
 			if (this.model.get('status') == 'started') {
+				this.initCountdown();
+
 				var $current = this.model.current();
 				if ($current) {
 					$current.set({
@@ -259,8 +261,6 @@ if (typeof LearnPress == 'undefined') var LearnPress = {};
 					});
 					this._updateQuestion($current.element());
 				}
-				this.initCountdown();
-
 			}
 			var that = this;
 			this.setButtonsState();
@@ -441,13 +441,14 @@ if (typeof LearnPress == 'undefined') var LearnPress = {};
 			switch ($current.get('type')) {
 				case 'true_or_false':
 				case 'single_choice':
-				case'multi_choice':
+				case 'multi_choice':
 					$.each(response.checked, function (k, v) {
 						var $input = $content.find('input[value="' + v.value + '"]'),
-							$li = $input.closest('.learn-press-question-wrap').removeClass('answer-true user-answer-false');
+							$li = $input.closest('li').removeClass('answer-true user-answer-false');
 						if (v.is_true == 'yes') {
 							$li.addClass('answer-true')
 						}
+						console.log($li[0].className)
 						if (response.answered) {
 							if (typeof response.answered == 'string') {
 								if (response.answered == v.value) {

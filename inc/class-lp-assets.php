@@ -143,7 +143,10 @@ class LP_Assets extends LP_Abstract_Assets {
 		// single course
 		if ( learn_press_is_course() ) {
 			self::enqueue_script( 'single-course' );
-			self::enqueue_script( 'learn-press-add-to-cart' );
+			$course = LP()->course;
+			if ( $course && !$course->is_free() ) {
+				self::enqueue_script( 'learn-press-add-to-cart' );
+			}
 		}
 
 		// single quiz
