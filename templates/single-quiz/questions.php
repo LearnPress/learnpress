@@ -18,7 +18,7 @@ if ( !$quiz ) {
 $status = $user->get_quiz_status( $quiz->id );
 
 $heading      = apply_filters( 'learn_press_list_questions_heading', __( 'List of questions', 'learnpress' ) );
-$no_permalink = $user->has_quiz_status( $quiz->id, array( '', 'completed' ) );
+$no_permalink = ( $status == '' ) || ( $status == 'completed' );
 
 ?>
 
