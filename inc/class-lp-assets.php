@@ -144,7 +144,8 @@ class LP_Assets extends LP_Abstract_Assets {
 		if ( learn_press_is_course() ) {
 			self::enqueue_script( 'single-course' );
 			$course = LP()->course;
-			if ( $course && !$course->is_free() ) {
+			if ( $course && $course->is_free() && LP()->settings->get( 'no_checkout_free_course' ) == 'yes' ) {}
+			else{
 				self::enqueue_script( 'learn-press-add-to-cart' );
 			}
 		}
