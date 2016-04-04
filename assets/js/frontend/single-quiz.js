@@ -302,7 +302,8 @@ if (typeof LearnPress == 'undefined') var LearnPress = {};
 			this.$el.css('visibility', 'visible');
 		},
 		setButtonsState: function () {
-			var hidden = 'hide-if-js';
+			var hidden = 'hide-if-js',
+				current = this.model.current();
 			switch (this.model.get('status').toLowerCase()) {
 				case 'completed':
 					this.$buttons.start.addClass(hidden);
@@ -331,7 +332,11 @@ if (typeof LearnPress == 'undefined') var LearnPress = {};
 							this.$buttons.prev.addClass(hidden);
 						}
 					}
-					this.$buttons.check.toggleClass(hidden, !this.model.current().get('check_answer'));
+					if(current && current.get('check_answer')) {
+						this.$buttons.check.removeClass(hidden);
+					}else{
+						this.$buttons.check.addClass(hidden);
+					}
 					break;
 				default:
 					this.$buttons.next.addClass(hidden);
