@@ -209,8 +209,11 @@ if ( !class_exists( 'LearnPress' ) ) {
 			return $return;
 		}
 
-		function set_object( $name, $object ) {
+		function set_object( $name, $object, $global = false ) {
 			$this->{$name} = $object;
+			if( $global ){
+				$GLOBALS[$name] = $object;
+			}
 		}
 
 		/**

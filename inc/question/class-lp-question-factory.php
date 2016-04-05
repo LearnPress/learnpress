@@ -170,6 +170,7 @@ class LP_Question_Factory {
 	static function show_answer( $id, $quiz_id ) {
 		$quiz   = LP_Quiz::get_quiz( $quiz_id );
 		$status = LP()->user->get_quiz_status( $quiz_id );
+
 		if ( $status != 'completed' || $quiz->show_result != 'yes' ) {
 			return;
 		}

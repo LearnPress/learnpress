@@ -159,7 +159,7 @@ if ( !class_exists( 'RWMB_Quiz_Questions_Field' ) ) {
 					$wpdb->update(
 						$wpdb->posts,
 						array(
-							'post_title' => $titles[ $id ]
+							'post_title' => stripslashes( $titles[ $id ] )
 						),
 						array(
 							'ID' => $id
