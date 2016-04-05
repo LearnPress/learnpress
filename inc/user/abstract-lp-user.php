@@ -140,7 +140,7 @@ class LP_Abstract_User {
 
 			$user_quiz_id = $wpdb->insert_id;
 
-			$quiz              = LP_Quiz::get_quiz( $quiz_id );
+			$quiz              = new LP_Quiz( $quiz_id );
 			$quiz_questions    = $quiz->get_questions();
 			$quiz_question_ids = $quiz_questions ? array_keys( $quiz_questions ) : array();
 			$quiz_question_ids = array_filter( $quiz_question_ids );

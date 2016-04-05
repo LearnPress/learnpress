@@ -32,7 +32,7 @@ if ( $show_result && $completed ) {
 	<ul class="learn-press-question-options">
 		<?php if ( $answers = $this->answers ) foreach ( $answers as $k => $answer ): ?>
 			<?php
-			$answer_class   = array();
+			$answer_class = array();
 			if ( $completed && $show_result ) {
 				$answer_correct = true;
 				if ( $completed && $show_result && $answer['is_true'] == 'yes' ) {
@@ -58,12 +58,12 @@ if ( $show_result && $completed ) {
 					<?php echo apply_filters( 'learn_press_question_answer_text', $answer['text'], $answer, $this ); ?>
 				</label>
 
-				<?php do_action( 'learn_press_before_question_answer_text', $answer, $this ); ?>
+				<?php do_action( 'learn_press_after_question_answer_text', $answer, $this ); ?>
 
 			</li>
 		<?php endforeach; ?>
 	</ul>
 	<input type="hidden" name="learn-press-question-permalink" value="<?php echo esc_url( $quiz->get_question_link( $this->id ) ); ?>" />
-	<?php do_action( 'learn_press_before_question_wrap', $this ); ?>
+	<?php do_action( 'learn_press_after_question_wrap', $this, $quiz ); ?>
 
 </div>

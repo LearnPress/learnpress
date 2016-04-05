@@ -30,7 +30,7 @@ global $course;
 	<?php }elseif( $item->post_type == 'lp_lesson' ){ ?>
 
 		<span class="lp-label lp-label-lesson"><?php _e( 'Lesson', 'learnpress' );?></span>
-		<?php if( get_post_meta( $item->ID, '_lp_is_previewable', true ) == 'yes' ){?>
+		<?php if( get_post_meta( $item->ID, '_lp_preview', true ) == 'yes' ){?>
 
 			<span class="lp-label lp-label-preview"><?php _e( 'Preview', 'learnpress' );?></span>
 

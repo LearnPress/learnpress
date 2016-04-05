@@ -740,6 +740,10 @@ a .archive-course:hover {
 	margin-bottom: 20px;
 }
 
+.question-hint{
+
+}
+
 @media screen and (min-width: 59.6875em) {
 	.twentyfifteen .learnpress-content{
 		margin-left: 8.3333%;

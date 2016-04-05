@@ -135,7 +135,7 @@ class LP_Quiz {
 				'time_format'    => $this->duration >= 300 ? 'h%:m%:s%' : 'm%:s%',
 				'total_time'     => $this->duration,
 				'id'             => $this->id,
-				'questions'      => $this->get_question_params( $questions ),//$questions,
+				'questions'      => array_values( $this->get_question_params( $questions ) ),//$questions,
 				'question_id'    => $current_question_id,
 				'status'         => $user->get_quiz_status( $this->id ),
 				'time_remaining' => ( $time_remaining = $user->get_quiz_time_remaining( $this->id ) ) !== false && !in_array( $user->get_quiz_status( $this->id ), array( '', 'completed' ) ) ? $time_remaining : $this->duration,
@@ -156,15 +156,17 @@ class LP_Quiz {
 			SELECT qa.question_answer_id, ID as id, pm.meta_value as type, qa.answer_data as answer_data
 			FROM {$wpdb->posts} p
 			INNER JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID AND pm.meta_key = %s
-			RIGHT JOIN wp_learnpress_question_answers qa ON qa.question_id = p.ID
+			INNER JOIN {$wpdb->prefix}learnpress_quiz_questions qq ON qq.question_id = p.ID
+			RIGHT JOIN {$wpdb->prefix}learnpress_question_answers qa ON qa.question_id = p.ID
 			WHERE ID IN(" . join( ',', $ids ) . ")
 			AND post_type = %s
-			ORDER BY id, answer_order ASC
+			ORDER BY qq.question_order, answer_order ASC
 		", '_lp_type', 'lp_question' );
 		$results = array();
 		if ( $_results = $wpdb->get_results( $query, OBJECT_K ) ) {
 			$user              = learn_press_get_current_user();
 			$show_check_answer = $this->show_check_answer;
+			$show_hint         = $this->show_hint;
 			if ( $show_check_answer == 'yes' ) {
 				if ( $history = $user->get_quiz_results( $this->id ) ) {
 					$checked_answers = (array) $history->checked;
@@ -175,15 +177,20 @@ class LP_Quiz {
 			foreach ( $_results as $k => $row ) {
 				if ( empty( $results[$row->id] ) ) {
 					$results[$row->id] = (object) array(
-						'id'   => $row->id,
+						'id'   => absint( $row->id ),
 						'type' => $row->type
 					);
 					if ( $show_check_answer == 'yes' ) {
 						$results[$row->id]->check_answer = learn_press_question_type_support( $row->type, 'check-answer' );
 						$results[$row->id]->checked      = array();
 					}
+
+					if ( $show_hint == 'yes' && empty( $results[$row->id]->hint ) ) {
+						$results[$row->id]->hint = get_post_meta( $row->id, '_lp_explanation', true ) ? true : false;
+					}
 				}
-				if ( $show_check_answer != 'yes' ){
+
+				if ( $show_check_answer != 'yes' ) {
 					continue;
 				}
 				if ( in_array( $row->id, $checked_answers ) ) {

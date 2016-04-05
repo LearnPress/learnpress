@@ -26,7 +26,6 @@ if (typeof LearnPress == 'undefined') var LearnPress = {};
 				}, args));
 				$model.urlRoot = this.get('ajaxurl');
 				$model.view = this.view;
-
 				this.questions.add($model);
 			}, this);
 		},
@@ -73,7 +72,7 @@ if (typeof LearnPress == 'undefined') var LearnPress = {};
 		select             : function (id, callback) {
 			var question = this.questions.findWhere({id: id}),
 				that = this;
-			question.submit({
+			question && question.submit({
 				data    : {
 					save_id        : that.get('question_id'),
 					question_answer: this.view.$('form').serialize(), //$('input, select, textarea', this.view.$('form')).toJSON(),
@@ -120,8 +119,8 @@ if (typeof LearnPress == 'undefined') var LearnPress = {};
 			return this.questions.findWhere({id: parseInt(this.get('question_id'))});
 		},
 		getIds             : function () {
-			return _.keys(this.get('questions')).map(function (i) {
-				return parseInt(i)
+			return $.map(this.get('questions'), function (i, v) {
+				return parseInt(i.id)
 			});
 		}
 	});
@@ -211,7 +210,8 @@ if (typeof LearnPress == 'undefined') var LearnPress = {};
 			'click .next-question'           : '_nextQuestion',
 			'click .prev-question'           : '_prevQuestion',
 			'click .check-question'          : '_checkQuestion',
-			'click .quiz-questions-list li a': '_selectQuestion'
+			'click .quiz-questions-list li a': '_selectQuestion',
+			'click .hint-question'           : '_hintQuestion'
 		},
 		el             : '.single-quiz',
 		isRendered     : false,
@@ -236,7 +236,7 @@ if (typeof LearnPress == 'undefined') var LearnPress = {};
 					}, 100)
 
 				});
-			_.bindAll(this, 'render', '_timeOver', '_checkQuestion', 'updateAnswer', 'updateCountdown');
+			_.bindAll(this, 'render', '_timeOver', '_checkQuestion', '_hintQuestion', 'updateAnswer', 'updateCountdown');
 
 			this._create();
 			this.render();
@@ -249,7 +249,8 @@ if (typeof LearnPress == 'undefined') var LearnPress = {};
 				retake: this.$('.button-retake-quiz'),
 				next  : this.$('.next-question'),
 				prev  : this.$('.prev-question'),
-				check : this.$('.check-question')
+				check : this.$('.check-question'),
+				hint  : this.$('.hint-question')
 			};
 			if (this.model.get('status') == 'started') {
 				this.initCountdown();
@@ -332,11 +333,17 @@ if (typeof LearnPress == 'undefined') var LearnPress = {};
 							this.$buttons.prev.addClass(hidden);
 						}
 					}
-					if(current && current.get('check_answer')) {
+					if (current && current.get('check_answer')) {
 						this.$buttons.check.removeClass(hidden);
-					}else{
+					} else {
 						this.$buttons.check.addClass(hidden);
 					}
+					if (current && current.get('hint')) {
+						this.$buttons.hint.removeClass(hidden);
+					} else {
+						this.$buttons.hint.addClass(hidden);
+					}
+					console.log(current.get('hint'));
 					break;
 				default:
 					this.$buttons.next.addClass(hidden);
@@ -453,7 +460,6 @@ if (typeof LearnPress == 'undefined') var LearnPress = {};
 						if (v.is_true == 'yes') {
 							$li.addClass('answer-true')
 						}
-						console.log($li[0].className)
 						if (response.answered) {
 							if (typeof response.answered == 'string') {
 								if (response.answered == v.value) {
@@ -474,6 +480,7 @@ if (typeof LearnPress == 'undefined') var LearnPress = {};
 						content: $content
 					});
 			}
+			//LearnPress.Hook.doAction('learn_press_check_question', response, $current);
 			this.render();
 		},
 		_checkQuestion : function () {
@@ -492,10 +499,19 @@ if (typeof LearnPress == 'undefined') var LearnPress = {};
 						that.$buttons.finish.prop('disabled', false);
 						that.$buttons.check.prop('disabled', false);
 						LearnPress.Hook.doAction('learn_press_check_question', response, that);
+						that.resume();
 					},
 					data    : {nonce: this.model.get('nonce')}
 				});
 			}
+		},
+		_hintQuestion  : function (e) {
+			e.preventDefault();
+			var current = this.model.current();
+			if (current && current.get('hint')) {
+				$('#learn-press-question-hint-' + current.get('id')).toggleClass('hide-if-js')
+			}
+
 		},
 		_nextQuestion  : function () {
 			if (LearnPress.Hook.applyFilters('learn_press_before_next_question', true, this) !== false) {
@@ -531,6 +547,9 @@ if (typeof LearnPress == 'undefined') var LearnPress = {};
 			e.preventDefault();
 			var that = this,
 				id = $(e.target).closest('.learn-press-question-wrap').data('id');
+			if (this.model.get('status') != 'started') {
+				return false;
+			}
 			if (LearnPress.Hook.applyFilters('learn_press_before_select_question', true, that) !== false) {
 				this.pause();
 				this.$buttons.next.prop('disabled', true);
@@ -688,7 +707,6 @@ if (typeof LearnPress == 'undefined') var LearnPress = {};
 
 	$(document).ready(function () {
 		var json = JSON.stringify(single_quiz_params);
-		json = json.replace(/:\s?[\"|\']([0-9]+)[\"|\']/g, ':$1');
-		LearnPress.Quiz.init(JSON.parse(json));
+		LearnPress.Quiz.init(single_quiz_params);
 	})
 })(jQuery);

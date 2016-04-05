@@ -8,7 +8,7 @@
  * @version 1.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
+if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
@@ -57,6 +57,7 @@ abstract class LP_Abstract_Assets {
 	protected static $id = 0;
 
 	protected static $caller = '';
+
 	/**
 	 * Constructor
 	 */
@@ -68,23 +69,25 @@ abstract class LP_Abstract_Assets {
 	 * Init Asset
 	 */
 	static function init() {
-		if( !self::$caller ){
+		if ( !self::$caller ) {
 			return;
 		}
 		self::$id = is_admin() ? 0 : 1;
 
 		$class = self::$caller;
-		if( self::$id ) {
+		if ( self::$id ) {
 			add_action( 'wp_enqueue_scripts', array( $class, 'load_scripts' ) );
 			add_action( 'wp_enqueue_scripts', array( $class, 'wp_assets' ) );
 			add_action( 'wp_print_scripts', array( $class, 'localize_printed_scripts' ), 5 );
 			add_action( 'wp_print_footer_scripts', array( $class, 'localize_printed_scripts' ), 5 );
-		}else{
+		} else {
 			add_action( 'admin_enqueue_scripts', array( $class, 'load_scripts' ) );
 			add_action( 'admin_enqueue_scripts', array( $class, 'wp_assets' ) );
 			add_action( 'admin_print_scripts', array( $class, 'localize_printed_scripts' ), 5 );
 			add_action( 'admin_print_footer_scripts', array( $class, 'localize_printed_scripts' ), 5 );
 		}
+
+		add_filter( 'script_loader_src', array( $class, 'script_params' ), 999, 2 );
 	}
 
 	/**
@@ -150,9 +153,9 @@ abstract class LP_Abstract_Assets {
 	/**
 	 * add translate text
 	 *
-	 * @param string
+	 * @param       string
 	 * @param array $localize
-	 * @param string
+	 * @param       string
 	 */
 	static function add_localize( $key, $localize = null, $handle = 'learn-press-js' ) {
 		if ( is_array( $key ) ) {
@@ -204,24 +207,39 @@ abstract class LP_Abstract_Assets {
 	 *
 	 * @param  mixed $handle
 	 */
-	private static function script_params( $handle ) {
+	private static function script_paramsx( $handle ) {
 		$data = !empty( self::$wp_params[$handle] ) ? self::$wp_params[$handle] : false;
 		if ( wp_script_is( $handle ) && $data ) {
 			$name = str_replace( '-', '_', $handle ) . '_params';
 			unset( self::$wp_params[$handle] );
-			wp_localize_script( $handle, $name, apply_filters( $name, $data ) );
+			//$data = learn_press_sanitize_json( $data );
+			//wp_localize_script( $handle, $name, apply_filters( $name, $data ) );
 		}
 	}
 
-	static function add_script_tag( $code, $handle = '' ){
-		if( empty( self::$wp_script_codes[ $handle ] ) ){
-			self::$wp_script_codes[ $handle ] = '';
+	static function add_script_tag( $code, $handle = '' ) {
+		if ( empty( self::$wp_script_codes[$handle] ) ) {
+			self::$wp_script_codes[$handle] = '';
 		}
-		self::$wp_script_codes[ $handle ] .= preg_replace( '!</?script(.*)>!', '', $code );
+		self::$wp_script_codes[$handle] .= preg_replace( '!</?script(.*)>!', '', $code );
 	}
 
-	static function wp_assets(){
+	static function wp_assets() {
 		do_action( 'learn_press_print_assets', is_admin() );
+	}
+
+	static function script_params( $src, $handle ) {
+		$data = !empty( self::$wp_params[$handle] ) ? self::$wp_params[$handle] : false;
+		if ( wp_script_is( $handle ) && $data ) {
+			$name = str_replace( '-', '_', $handle ) . '_params';
+			echo "<script type='text/javascript'>\n"; // CDATA and type='text/javascript' is not needed for HTML 5
+			echo "/* <![CDATA[ */\n";
+			echo "var {$name}=" . wp_json_encode( $data ) . "\n";
+			echo "/* ]]> */\n";
+			echo "</script>\n";
+			unset( self::$wp_params[$handle] );
+		}
+		return $src;
 	}
 
 	/**
@@ -233,10 +251,10 @@ abstract class LP_Abstract_Assets {
 	static function localize_printed_scripts() {
 		if ( self::$scripts ) foreach ( self::$scripts as $handle ) {
 			self::localize_script( $handle );
-			self::script_params( $handle );
-			if( ! empty( self::$wp_script_codes[ $handle ] ) ) {
-				learn_press_get_template( 'global/scripts.php', array( 'code' => self::$wp_script_codes[ $handle ] ) );
-				unset( self::$wp_script_codes[ $handle ] );
+			//self::script_params( $handle );
+			if ( !empty( self::$wp_script_codes[$handle] ) ) {
+				learn_press_get_template( 'global/scripts.php', array( 'code' => self::$wp_script_codes[$handle] ) );
+				unset( self::$wp_script_codes[$handle] );
 			}
 		}
 

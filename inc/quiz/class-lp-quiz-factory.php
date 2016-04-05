@@ -130,10 +130,17 @@ class LP_Quiz_Factory {
 			$quiz->check_question( $question_id, $user );
 		}
 		if ( $question_id && $question = LP_Question_Factory::get_question( $question_id ) ) {
-			$checked = $question->get_answers( null, array( 'text' ) );
+			$include = apply_filters( 'learn_press_check_question_answers_include_fields', null, $question_id, $quiz_id, $user_id );
+			$exclude = apply_filters( 'learn_press_check_question_answers_exclude_fields', array( 'text' ), $question_id, $quiz_id, $user_id );
+			$checked = $question->get_answers( $include, $exclude );
+			if ( $checked ) {
+				$checked = array_values( $checked );
+			}
 		} else {
 			$checked = false;
 		}
+		$checked = apply_filters( 'learn_press_check_question_answers', $checked, $question_id, $quiz_id, $user_id );
+
 		$response = array(
 			'result'   => 'success',
 			'checked'  => $checked,

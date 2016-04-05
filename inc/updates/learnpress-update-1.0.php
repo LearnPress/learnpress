@@ -324,7 +324,7 @@ class LP_Upgrade_10 {
 	private function _create_lesson_meta( $old_id, $new_id ) {
 		$keys      = array(
 			'_lpr_lesson_duration' => '_lp_duration',
-			'_lpr_lesson_preview'  => '_lp_is_previewable',
+			'_lpr_lesson_preview'  => '_lp_preview',
 			'_lpr_course'          => null
 		);
 		$quiz_meta = self::get_post_meta( $old_id, array_keys( $keys ) );
@@ -335,7 +335,7 @@ class LP_Upgrade_10 {
 			$new_key   = $keys[$meta['meta_key']];
 			$new_value = $meta['meta_value'];
 			switch ( $new_key ) {
-				case '_lp_is_previewable':
+				case '_lp_preview':
 					if ( $this->_is_false_value( $new_value ) || $new_id == 'not_preview' ) {
 						$new_value = 'no';
 					} else {

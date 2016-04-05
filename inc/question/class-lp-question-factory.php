@@ -158,6 +158,7 @@ class LP_Question_Factory {
 		add_action( 'learn_press_load_quiz_question', array( __CLASS__, 'save_question_if_needed' ), 100, 3 );
 		add_action( 'learn_press_user_finish_quiz', array( __CLASS__, 'save_question' ), 100, 2 );
 		add_action( 'learn_press_after_quiz_question_title', array( __CLASS__, 'show_answer' ), 100, 2 );
+		add_action( 'learn_press_after_question_wrap', array( __CLASS__, 'show_hint' ), 100, 2 );
 
 		LP_Question_Factory::add_template( 'multi-choice-option', LP_Question_Multi_Choice::admin_js_template() );
 		LP_Question_Factory::add_template( 'single-choice-option', LP_Question_Single_Choice::admin_js_template() );
@@ -176,6 +177,17 @@ class LP_Question_Factory {
 		$question->render( array( 'answered' => $user->get_question_answers( $quiz_id, $id ), 'check' => true ) );
 	}
 
+	static function show_hint( $id, $quiz_id ) {
+		$quiz   = LP()->quiz;
+		$status = LP()->user->get_quiz_status( $quiz->id );
+		if ( !( $status == 'started' && $quiz->show_hint == 'yes' ) ) {
+			return;
+		}
+		if ( $hint = get_post_meta( $quiz->current_question->id, '_lp_explanation', true ) ) {
+			echo '<div id="learn-press-question-hint-' . $quiz->current_question->id . '" class="question-hint hide-if-js">' . $hint . '</div>';
+		}
+	}
+
 	static function save_question( $quiz_id, $user_id ) {
 		self::save_question_if_needed( null, $quiz_id, $user_id );
 	}
@@ -190,13 +202,13 @@ class LP_Question_Factory {
 	 * @return bool
 	 */
 	static function save_question_if_needed( $question_id, $quiz_id, $user_id ) {
-		$user     = learn_press_get_user( $user_id );
-		$save_id  = learn_press_get_request( 'save_id' );
-		$question = $save_id ? LP_Question_Factory::get_question( $save_id ) : false;
+		$user            = learn_press_get_user( $user_id );
+		$save_id         = learn_press_get_request( 'save_id' );
+		$question        = $save_id ? LP_Question_Factory::get_question( $save_id ) : false;
 		$question_answer = null;
 
 		if ( $question && !$user->has_checked_answer( $save_id, $quiz_id ) && $user->get_quiz_status( $quiz_id ) == 'started' ) {
-			$question_data   = isset( $_REQUEST['question_answer'] ) ? $_REQUEST['question_answer'] : array();
+			$question_data = isset( $_REQUEST['question_answer'] ) ? $_REQUEST['question_answer'] : array();
 			if ( is_string( $question_data ) ) {
 				parse_str( $question_data, $question_answer );
 			} else {

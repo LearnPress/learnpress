@@ -556,7 +556,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 		static function toggle_lesson_preview() {
 			$id = learn_press_get_request( 'lesson_id' );
 			if ( get_post_type( $id ) == 'lp_lesson' && wp_verify_nonce( learn_press_get_request( 'nonce' ), 'learn-press-toggle-lesson-preview' ) ) {
-				update_post_meta( $id, '_lp_is_previewable', learn_press_get_request( 'previewable' ) );
+				update_post_meta( $id, '_lp_preview', learn_press_get_request( 'previewable' ) );
 			}
 			die();
 		}

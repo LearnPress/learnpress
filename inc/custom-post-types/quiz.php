@@ -182,6 +182,17 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 								),
 								'std'     => 'no'
 							),
+							array(
+								'name'    => __( 'Show hint', 'learnpress' ),
+								'id'      => "{$prefix}show_hint",
+								'type'    => 'radio',
+								'desc'    => __( 'Show button to hint answer', 'learnpress' ),
+								'options' => array(
+									'no'  => __( 'No', 'learnpress' ),
+									'yes' => __( 'Yes', 'learnpress' )
+								),
+								'std'     => 'no'
+							)
 						)
 					)
 				)

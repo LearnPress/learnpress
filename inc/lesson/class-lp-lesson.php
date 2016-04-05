@@ -73,7 +73,7 @@ class LP_Lesson {
 	}
 
 	function is_previewable() {
-		return apply_filters( 'learn_press_lesson_is_previewable', $this->is_previewable == 'yes', $this );
+		return apply_filters( 'learn_press_lesson_preview', $this->preview == 'yes', $this );
 	}
 
 	/**

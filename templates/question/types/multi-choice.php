@@ -39,7 +39,7 @@ if ( $show_result && $completed ) {
 			if ( $completed && $show_result ) {
 				$answer_class   = array();
 				$answer_correct = true;
-				if( $completed && $show_result && $answer['is_true'] == 'yes'){
+				if ( $completed && $show_result && $answer['is_true'] == 'yes' ) {
 					$answer_class[] = 'answer-true';
 				}
 				if ( $answer['is_true'] == 'yes' && !$this->is_selected_option( $answer, $answered ) ) {
@@ -62,12 +62,12 @@ if ( $show_result && $completed ) {
 					<?php echo apply_filters( 'learn_press_question_answer_text', $answer['text'], $answer, $this ); ?>
 				</label>
 
-				<?php do_action( 'learn_press_before_question_answer_text', $answer, $this ); ?>
+				<?php do_action( 'learn_press_after_question_answer_text', $answer, $this ); ?>
 
 			</li>
 		<?php endforeach; ?>
 	</ul>
 
-	<?php do_action( 'learn_press_after_question_wrap', $this ); ?>
+	<?php do_action( 'learn_press_after_question_wrap', $this, $quiz ); ?>
 
 </div>
