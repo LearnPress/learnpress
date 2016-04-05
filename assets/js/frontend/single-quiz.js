@@ -211,7 +211,8 @@ if (typeof LearnPress == 'undefined') var LearnPress = {};
 			'click .prev-question'           : '_prevQuestion',
 			'click .check-question'          : '_checkQuestion',
 			'click .quiz-questions-list li a': '_selectQuestion',
-			'click .hint-question'           : '_hintQuestion'
+			'click .hint-question'           : '_hintQuestion',
+			'click .explain-question'        : '_explainQuestion'
 		},
 		el             : '.single-quiz',
 		isRendered     : false,
@@ -244,13 +245,14 @@ if (typeof LearnPress == 'undefined') var LearnPress = {};
 		},
 		_create        : function () {
 			this.$buttons = {
-				start : this.$('.button-start-quiz'),
-				finish: this.$('.button-finish-quiz'),
-				retake: this.$('.button-retake-quiz'),
-				next  : this.$('.next-question'),
-				prev  : this.$('.prev-question'),
-				check : this.$('.check-question'),
-				hint  : this.$('.hint-question')
+				start  : this.$('.button-start-quiz'),
+				finish : this.$('.button-finish-quiz'),
+				retake : this.$('.button-retake-quiz'),
+				next   : this.$('.next-question'),
+				prev   : this.$('.prev-question'),
+				check  : this.$('.check-question'),
+				hint   : this.$('.hint-question'),
+				explain: this.$('.explain-question'),
 			};
 			if (this.model.get('status') == 'started') {
 				this.initCountdown();
@@ -343,7 +345,11 @@ if (typeof LearnPress == 'undefined') var LearnPress = {};
 					} else {
 						this.$buttons.hint.addClass(hidden);
 					}
-					console.log(current.get('hint'));
+					if (current && current.get('explanation')) {
+						this.$buttons.explain.removeClass(hidden);
+					} else {
+						this.$buttons.explain.addClass(hidden);
+					}
 					break;
 				default:
 					this.$buttons.next.addClass(hidden);
@@ -510,6 +516,14 @@ if (typeof LearnPress == 'undefined') var LearnPress = {};
 			var current = this.model.current();
 			if (current && current.get('hint')) {
 				$('#learn-press-question-hint-' + current.get('id')).toggleClass('hide-if-js')
+			}
+
+		},
+		_explainQuestion  : function (e) {
+			e.preventDefault();
+			var current = this.model.current();
+			if (current && current.get('explanation')) {
+				$('#learn-press-question-explanation-' + current.get('id')).toggleClass('hide-if-js')
 			}
 
 		},

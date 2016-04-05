@@ -743,6 +743,15 @@ function learn_press_pre_get_items( $query ) {
 	}
 }
 
+function _is_false_value( $value ) {
+	if ( is_numeric( $value ) ) {
+		return $value == 0;
+	} elseif ( is_string( $value ) ) {
+		return ( empty( $value ) || is_null( $value ) || in_array( $value, array( 'no', 'off', 'false' ) ) );
+	}
+	return !!$value;
+}
+
 /**
  * This helper function is useful in case a meta is not exists in database
  * but we need to set default value for it before get it value
@@ -772,7 +781,11 @@ function learn_press_set_default_post_meta( $check, $object_id, $meta_key, $sing
 				$_check    = false;
 				$post_type = get_post_type( $object_id );
 				if ( $post_type == 'lp_quiz' && in_array( $meta_key, array( '_lp_show_result', '_lp_show_check_answer', '_lp_show_hint' ) ) ) {
-					$_check = 'no';
+					if ( $meta_key == '_lp_show_hint' ) {
+						$_check = 'yes';
+					} else {
+						$_check = 'no';
+					}
 				} elseif ( $post_type == 'lp_course' && in_array( $meta_key, array( '_lp_payment', '_lp_required_enroll', '_lp_course_result' ) ) ) {
 					if ( $meta_key == '_lp_course_result' ) {
 						$_check = 'evaluate_lesson';
@@ -2253,7 +2266,7 @@ function learn_press_get_current_version() {
 
 function learn_press_sanitize_json( $string ) {
 
-	echo json_encode($string);
+	echo json_encode( $string );
 	return $string;
 }
 

@@ -167,6 +167,7 @@ class LP_Quiz {
 			$user              = learn_press_get_current_user();
 			$show_check_answer = $this->show_check_answer;
 			$show_hint         = $this->show_hint;
+			$show_explanation  = $this->show_explanation;
 			if ( $show_check_answer == 'yes' ) {
 				if ( $history = $user->get_quiz_results( $this->id ) ) {
 					$checked_answers = (array) $history->checked;
@@ -186,7 +187,10 @@ class LP_Quiz {
 					}
 
 					if ( $show_hint == 'yes' && empty( $results[$row->id]->hint ) ) {
-						$results[$row->id]->hint = get_post_meta( $row->id, '_lp_explanation', true ) ? true : false;
+						$results[$row->id]->hint = get_post_meta( $row->id, '_lp_hint', true ) ? true : false;
+					}
+					if ( $show_explanation == 'yes' && empty( $results[$row->id]->explanation ) ) {
+						$results[$row->id]->explanation = get_post_meta( $row->id, '_lp_explanation', true ) ? true : false;
 					}
 				}
 

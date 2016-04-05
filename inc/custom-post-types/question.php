@@ -30,10 +30,10 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 
 		}
 
-		function init(){
+		function init() {
 			global $pagenow, $post_type;
 			$hidden = get_user_meta( get_current_user_id(), 'manageedit-lp_questioncolumnshidden', true );
-			if( !is_array( $hidden ) && empty( $hidden ) ){
+			if ( !is_array( $hidden ) && empty( $hidden ) ) {
 				update_user_meta( get_current_user_id(), 'manageedit-lp_questioncolumnshidden', array( 'taxonomy-question-tag' ) );
 			}
 		}
@@ -54,7 +54,7 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 
 			// also, delete question from quiz
 			$wpdb->query(
-				$wpdb->prepare("
+				$wpdb->prepare( "
 					DELETE FROM {$wpdb->prefix}learnpress_quiz_questions
 					WHERE question_id = %d
 				", $post_id )
@@ -153,7 +153,7 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 				'pages'  => array( LP()->question_post_type ),
 				'fields' => array(
 					array(
-						'name'  => __( 'Mark For This Question', 'learnpress' ),
+						'name'  => __( 'Mark for this question', 'learnpress' ),
 						'id'    => "{$prefix}mark",
 						'type'  => 'number',
 						'clone' => false,
@@ -162,10 +162,17 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 						'std'   => 1
 					),
 					array(
-						'name' => __( 'Question Explanation', 'learnpress' ),
+						'name' => __( 'Question explanation', 'learnpress' ),
 						'id'   => "{$prefix}explanation",
 						'type' => 'textarea',
-						'desc' => __( '', 'learnpress' ),
+						'desc' => __( 'Explanation why an option is true and other is false', 'learnpress' ),
+						'std'  => null
+					),
+					array(
+						'name' => __( 'Question hint', 'learnpress' ),
+						'id'   => "{$prefix}hint",
+						'type' => 'textarea',
+						'desc' => __( 'Instruction for user select the right answer', 'learnpress' ),
 						'std'  => null
 					)
 				)
@@ -302,7 +309,7 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 				return $join;
 			}
 			global $wpdb;
-			if ( $quiz_id = $this->_filter_quiz() || ( $this->_get_orderby() == 'quiz-name' ) )  {
+			if ( $quiz_id = $this->_filter_quiz() || ( $this->_get_orderby() == 'quiz-name' ) ) {
 				$join .= " LEFT JOIN {$wpdb->prefix}learnpress_quiz_questions qq ON {$wpdb->posts}.ID = qq.question_id";
 				$join .= " LEFT JOIN {$wpdb->posts} q ON q.ID = qq.quiz_id";
 			}
@@ -348,7 +355,7 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 				return $order_by_statement;
 			}
 			if ( isset ( $_GET['orderby'] ) && isset ( $_GET['order'] ) ) {
-				switch( $_GET['orderby'] ){
+				switch ( $_GET['orderby'] ) {
 					case 'quiz-name':
 						$order_by_statement = "q.post_title {$_GET['order']}";
 						break;
@@ -390,7 +397,7 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 			return !empty( $_REQUEST['filter_quiz'] ) ? absint( $_REQUEST['filter_quiz'] ) : false;
 		}
 
-		private function _get_orderby(){
+		private function _get_orderby() {
 			return isset( $_REQUEST['orderby'] ) ? $_REQUEST['orderby'] : '';
 		}
 	} // end LP_Question_Post_Type

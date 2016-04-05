@@ -39,6 +39,12 @@ $status = LP()->user->get_quiz_status( $quiz->id );
 			</button>
 		<?php endif; ?>
 
+		<?php if ( $quiz->show_explanation == 'yes' ): ?>
+			<button type="button" data-nav="explanation" class="explain-question hide-if-js">
+				<?php echo apply_filters( 'learn_press_button_explain_question_text', __( 'Explain', 'learnpress' ) ); ?>
+			</button>
+		<?php endif; ?>
+
 		<?php if ( $quiz->show_check_answer == 'yes' ): ?>
 			<button type="button" data-nav="check" class="check-question hide-if-js">
 				<?php echo apply_filters( 'learn_press_button_check_question_text', __( 'Check', 'learnpress' ) ); ?>

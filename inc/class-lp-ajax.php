@@ -260,9 +260,9 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			$question_id = !empty( $_REQUEST['question_id'] ) ? absint( $_REQUEST['question_id'] ) : 0;
 			$user_id     = !empty( $_REQUEST['user_id'] ) ? absint( $_REQUEST['user_id'] ) : 0;
 			global $quiz;
-			$quiz = LP_Quiz::get_quiz( $quiz_id );
-
+			$quiz      = LP_Quiz::get_quiz( $quiz_id );
 			LP()->quiz = $quiz;
+
 
 			do_action( 'learn_press_load_quiz_question', $question_id, $quiz_id, $user_id );
 
@@ -284,6 +284,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 				);
 			}
 			if ( $question = LP_Question_Factory::get_question( $question_id ) ) {
+				$quiz->current_question = $question;
 
 				ob_start();
 
@@ -294,7 +295,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 				$question->render( array( 'answered' => $question_answers ) );
 
 				if ( $hint = get_post_meta( $question->id, '_lp_explanation', true ) ) {
-					echo '<div id="learn-press-question-hint-' . $question->id . '" class="question-hint hide-if-js">' . $hint . '</div>';
+					///echo '<div id="learn-press-question-hint-' . $question->id . '" class="question-hint hide-if-js">' . $hint . '</div>';
 				}
 
 				$content = ob_get_clean();

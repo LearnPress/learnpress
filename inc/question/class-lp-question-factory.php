@@ -159,6 +159,7 @@ class LP_Question_Factory {
 		add_action( 'learn_press_user_finish_quiz', array( __CLASS__, 'save_question' ), 100, 2 );
 		add_action( 'learn_press_after_quiz_question_title', array( __CLASS__, 'show_answer' ), 100, 2 );
 		add_action( 'learn_press_after_question_wrap', array( __CLASS__, 'show_hint' ), 100, 2 );
+		add_action( 'learn_press_after_question_wrap', array( __CLASS__, 'show_explanation' ), 110, 2 );
 
 		LP_Question_Factory::add_template( 'multi-choice-option', LP_Question_Multi_Choice::admin_js_template() );
 		LP_Question_Factory::add_template( 'single-choice-option', LP_Question_Single_Choice::admin_js_template() );
@@ -178,14 +179,11 @@ class LP_Question_Factory {
 	}
 
 	static function show_hint( $id, $quiz_id ) {
-		$quiz   = LP()->quiz;
-		$status = LP()->user->get_quiz_status( $quiz->id );
-		if ( !( $status == 'started' && $quiz->show_hint == 'yes' ) ) {
-			return;
-		}
-		if ( $hint = get_post_meta( $quiz->current_question->id, '_lp_explanation', true ) ) {
-			echo '<div id="learn-press-question-hint-' . $quiz->current_question->id . '" class="question-hint hide-if-js">' . $hint . '</div>';
-		}
+		learn_press_get_template( 'question/hint.php' );
+	}
+
+	static function show_explanation( $id, $quiz_id ) {
+		learn_press_get_template( 'question/explanation.php' );
 	}
 
 	static function save_question( $quiz_id, $user_id ) {

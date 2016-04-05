@@ -192,6 +192,17 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 									'yes' => __( 'Yes', 'learnpress' )
 								),
 								'std'     => 'no'
+							),
+							array(
+								'name'    => __( 'Show explanation', 'learnpress' ),
+								'id'      => "{$prefix}show_explanation",
+								'type'    => 'radio',
+								'desc'    => __( 'Show button to explain answer', 'learnpress' ),
+								'options' => array(
+									'no'  => __( 'No', 'learnpress' ),
+									'yes' => __( 'Yes', 'learnpress' )
+								),
+								'std'     => 'no'
 							)
 						)
 					)

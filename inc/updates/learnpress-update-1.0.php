@@ -243,7 +243,7 @@ class LP_Upgrade_10 {
 	private function _create_course_meta( $old_id, $new_id ) {
 		$keys        = array(
 			'_lpr_course_duration'           => '_lp_duration',
-			//'_lpr_course_number_student'     => '_lp_students',
+			'_lpr_course_price'              => '_lp_price',
 			'_lpr_course_student'            => '_lp_students',
 			'_lpr_max_course_number_student' => '_lp_max_students',
 			'_lpr_retake_course'             => '_lp_retake_count',
@@ -290,6 +290,7 @@ class LP_Upgrade_10 {
 			'_lpr_duration'             => '_lp_duration',
 			'_lpr_retake_quiz'          => '_lp_retake_count',
 			'_lpr_show_quiz_result'     => '_lp_show_result',
+			'_lpr_show_question_answer' => '_lp_show_check_answer',
 			'_lpr_show_question_answer' => '_lp_show_check_answer',
 			'_lpr_course'               => null
 		);
