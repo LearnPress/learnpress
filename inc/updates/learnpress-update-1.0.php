@@ -132,6 +132,7 @@ class LP_Upgrade_10 {
 		global $wpdb;
 		$curriculum    = get_post_meta( $old_id, '_lpr_course_lesson_quiz', true );
 		$section_items = array();
+		$post_ids      = array();
 		if ( $curriculum ) {
 			foreach ( $curriculum as $order => $section ) {
 				$result = $wpdb->insert(
@@ -146,7 +147,8 @@ class LP_Upgrade_10 {
 				if ( $result ) {
 					$section_id  = $wpdb->insert_id;
 					$lesson_quiz = !empty( $section['lesson_quiz'] ) ? $section['lesson_quiz'] : '';
-					$lesson_quiz = self::get_posts_by_ids( $lesson_quiz );
+					$post_ids    = array_merge( $post_ids, $lesson_quiz );
+					$lesson_quiz = self::get_posts_by_ids( $lesson_quiz, array( 'lpr_lesson', 'lpr_quiz' ) );
 					if ( !$lesson_quiz ) continue;
 					$order = 1;
 					foreach ( $lesson_quiz as $obj ) {
@@ -186,6 +188,7 @@ class LP_Upgrade_10 {
 				}
 			}
 		}
+
 		return $section_items;
 	}
 
@@ -218,8 +221,6 @@ class LP_Upgrade_10 {
 				}
 			}
 		}
-		LP_Debug::instance()->add( '-----------update lesson tag[' . $old_id . ',' . $new_id . ']------------' );
-		LP_Debug::instance()->add( $terms );
 		if ( $tags ) {
 			wp_set_object_terms( $new_id, $tags, 'lesson_tag' );
 		}
@@ -228,10 +229,7 @@ class LP_Upgrade_10 {
 	function _update_lesson_format( $old_id, $new_id ) {
 		if ( $format = get_post_format( $old_id ) ) {
 			set_post_format( $new_id, $format );
-			LP_Debug::instance()->add( $format );
 		}
-		LP_Debug::instance()->add( '-----------update lesson format[' . $old_id . ',' . $new_id . ']------------' );
-
 	}
 
 	/**
@@ -291,7 +289,6 @@ class LP_Upgrade_10 {
 			'_lpr_retake_quiz'          => '_lp_retake_count',
 			'_lpr_show_quiz_result'     => '_lp_show_result',
 			'_lpr_show_question_answer' => '_lp_show_check_answer',
-			'_lpr_show_question_answer' => '_lp_show_check_answer',
 			'_lpr_course'               => null
 		);
 		$quiz_meta = self::get_post_meta( $old_id, array_keys( $keys ) );
@@ -303,7 +300,7 @@ class LP_Upgrade_10 {
 			$new_value = $meta['meta_value'];
 			switch ( $new_key ) {
 				case '_lp_show_result':
-				case '_lp_show_question_answer':
+				case '_lp_show_check_answer':
 					if ( $this->_is_false_value( $new_value ) ) {
 						$new_value = 'no';
 					} else {
@@ -312,6 +309,8 @@ class LP_Upgrade_10 {
 			}
 			add_post_meta( $new_id, $new_key, $new_value );
 		}
+		update_post_meta( $new_id, '_lp_show_explanation', 'no' );
+		update_post_meta( $new_id, '_lp_show_hint', 'yes' );
 		/**
 		 * Update other meta data
 		 */
@@ -337,7 +336,7 @@ class LP_Upgrade_10 {
 			$new_value = $meta['meta_value'];
 			switch ( $new_key ) {
 				case '_lp_preview':
-					if ( $this->_is_false_value( $new_value ) || $new_id == 'not_preview' ) {
+					if ( $this->_is_false_value( $new_value ) || $new_value == 'not_preview' ) {
 						$new_value = 'no';
 					} else {
 						$new_value = 'yes';
@@ -604,11 +603,23 @@ class LP_Upgrade_10 {
 		$wpdb->query( $query );
 	}
 
-	function get_posts_by_ids( $ids ) {
+	function get_posts_by_ids( $ids, $types = array() ) {
 		global $wpdb;
 		settype( $ids, 'array' );
 		$query = "SELECT * FROM {$wpdb->posts} WHERE ID IN(" . join( ',', $ids ) . ")";
-		return $wpdb->get_results( $query, ARRAY_A );
+		if ( $types ) {
+			settype( $types, 'array' );
+			$query .= " AND post_type IN('" . join( "','", $types ) . "')";
+		}
+		$posts = array();
+		if ( $rows = $wpdb->get_results( $query, OBJECT_K ) ) {
+			foreach ( $ids as $id ) {
+				if ( !empty( $rows[$id] ) ) {
+					$posts[$id] = (array) $rows[$id];
+				}
+			}
+		}
+		return $posts;
 	}
 
 	function get_post_meta( $post_id, $keys ) {
