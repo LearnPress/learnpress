@@ -16,6 +16,6 @@ if ( !$explanation ) {
 	return;
 }
 ?>
-<div id="learn-press-question-explanation-<?php echo $quiz->current_question->id; ?>" class="question-explanation-content hide-if-js">
+<div id="learn-press-question-explanation-<?php echo $quiz->current_question->id; ?>" class="question-explanation-content hide-if-js" data-title="<?php echo esc_attr( __( 'Explanation', 'learnpress' ) ); ?>">
 	<?php echo $explanation; ?>
 </div>

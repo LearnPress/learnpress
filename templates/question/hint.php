@@ -16,6 +16,6 @@ if ( !$hint ) {
 	return;
 }
 ?>
-<div id="learn-press-question-hint-<?php echo $quiz->current_question->id; ?>" class="question-hint-content hide-if-js">
+<div id="learn-press-question-hint-<?php echo $quiz->current_question->id; ?>" class="question-hint-content hide-if-js" data-title="<?php echo esc_attr( __( 'Hint', 'learnpress' ) ); ?>">
 	<?php echo $hint; ?>
 </div>
