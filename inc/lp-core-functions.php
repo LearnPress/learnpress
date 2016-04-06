@@ -2270,6 +2270,48 @@ function learn_press_sanitize_json( $string ) {
 	return $string;
 }
 
+function learn_press_get_current_profile_tab() {
+	global $wp_query;
+	$current = '';
+	if ( !empty( $_REQUEST['tab'] ) ) {
+		$current = $_REQUEST['tab'];
+	} else if ( !empty( $wp_query->query_vars['tab'] ) ) {
+		$current = $wp_query->query_vars['tab'];
+	} else {
+		if ( $tabs = learn_press_user_profile_tabs() ) {
+			$tab_keys = array_keys( $tabs );
+			$current  = reset( $tab_keys );
+		}
+	}
+	return $current;
+}
+
+function learn_press_user_profile_link( $user_id = 0, $tab = null ) {
+	if ( !$user_id ) {
+		$user = get_user_by( 'id', get_current_user_id() );
+	} else {
+		$user = get_user_by( 'id', $user_id );
+	}
+
+	if ( !$user ) {
+		return '';
+	}
+	global $wp_query;
+	$page_id = !empty( $wp_query->queried_object_id ) ? $wp_query->queried_object_id : ( !empty( $wp_query->query_vars['page_id'] ) ? $wp_query->query_vars['page_id'] : - 1 );
+	$args    = array(
+		'user' => $user->user_login
+	);
+	if ( $tab ) {
+		$args['tab'] = $tab;
+	}
+	if ( get_option( 'permalink_structure' ) && learn_press_get_page_id( 'profile' ) ) {
+		$url = learn_press_get_page_link( 'profile' ) . join( "/", array_values( $args ) );
+	} else {
+		$url = add_query_arg( $args, learn_press_get_page_link( 'profile' ) );
+	}
+	return $url;
+}
+
 include_once "debug.php";
 include_once "lp-add-ons.php";
 

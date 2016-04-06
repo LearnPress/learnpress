@@ -272,13 +272,33 @@ class LP_Upgrade_10 {
 			}
 			add_post_meta( $new_id, $new_key, $new_value );
 		}
+
+		/**
+		 * bbPress addon
+		 */
+		if ( $forum_id = get_post_meta( $old_id, '_lpr_forum_course_id', true ) ) {
+			add_post_meta( $new_id, '_lp_course_forum', $forum_id );
+			add_post_meta( $new_id, '_lp_bbpress_forum_enable', 'yes' );
+			add_post_meta( $new_id, '_lp_bbpress_forum_enrolled_user', 'yes' );
+
+		}
+
+		/**
+		 * Co-Instructors addon
+		 */
+		if ( $co_instructors = get_post_meta( $old_id, '_lpr_co_teacher' ) ) {
+			foreach ( $co_instructors as $user_id ) {
+				add_post_meta( $new_id, '_lp_co_teacher', $user_id );
+			}
+		}
+
 		/**
 		 * Update other meta data
 		 */
 		$this->update_post_metas(
 			$old_id,
 			$new_id,
-			array_keys( $keys )
+			array_merge( array_keys( $keys ), array( '_lpr_forum_course_id', '_lpr_co_teacher' ) )
 		);
 	}
 

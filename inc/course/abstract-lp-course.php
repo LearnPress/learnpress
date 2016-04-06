@@ -368,7 +368,8 @@ abstract class LP_Abstract_Course {
 		$instructor = $this->get_instructor();
 		$html       = sprintf(
 			'<a href="%s">%s</a>',
-			apply_filters( 'learn_press_instructor_profile_link', '#', null, $this->id ),
+			//apply_filters( 'learn_press_instructor_profile_link', '#', null, $this->id ),
+			learn_press_user_profile_link( $this->post->post_author ),
 			$instructor
 		);
 		return apply_filters( 'learn_press_course_instructor_html', $html, $this->post->post_author, $this->id );

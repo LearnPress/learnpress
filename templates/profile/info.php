@@ -12,13 +12,8 @@ if ( !defined( 'ABSPATH' ) ) {
 }
 global $wp_query;
 
-$tabs = learn_press_user_profile_tabs( $user );
-if ( !empty( $wp_query->query_vars['tab'] ) ) {
-	$current = $wp_query->query_vars['tab'];
-} else {
-	$tab_keys = array_keys( $tabs );
-	$current  = reset( $tab_keys );
-}
+$tabs         = learn_press_user_profile_tabs( $user );
+$current      = learn_press_get_current_profile_tab();
 $profile_link = learn_press_get_page_link( 'profile' );
 if ( !empty( $tabs ) && !empty( $tabs[$current] ) ) : ?>
 	<div class="user-info" id="learn-press-user-info">

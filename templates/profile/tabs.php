@@ -10,7 +10,7 @@
 if ( !defined( 'ABSPATH' ) ) {
 	exit;
 }
-global $wp;
+$current = learn_press_get_current_profile_tab();
 ?>
 <ul class="tabs learn-press-tabs clearfix">
 	<?php foreach ( $tabs as $key => $tab ) : ?>
@@ -20,11 +20,16 @@ global $wp;
 		}
 		?>
 		<li class="<?php echo esc_attr( $key ); ?>_tab<?php echo $current == $key ? ' current' : ''; ?>">
+			<?php /*
 			<?php if ( get_option( 'permalink_structure' ) ) : ?>
-				<a href="<?php echo add_query_arg( '', '', learn_press_get_page_link( 'profile' ) . $user->user_login ) . '/' . $key; ?>" data-slug="<?php echo add_query_arg( '', '', learn_press_get_page_link( 'profile' ) . $user->user_login ) . '/' . $key; ?>"><?php echo apply_filters( 'learn_press_profile_' . $key . '_tab_title', esc_html( $tab['title'] ), $key ); ?></a>
+
 			<?php else: ?>
 				<a href="<?php echo add_query_arg( array( 'user' => $user->user_login, 'tab' => $key ), learn_press_get_page_link( 'profile' ) ); ?>" data-slug="<?php echo add_query_arg( '', '', learn_press_get_page_link( 'profile' ) . $user->user_login ) . '/' . $key; ?>"><?php echo apply_filters( 'learn_press_profile_' . $key . '_tab_title', esc_html( $tab['title'] ), $key ); ?></a>
 			<?php endif; ?>
+ 			*/
+			$link = learn_press_user_profile_link( null, $key );
+			?>
+			<a href="<?php echo esc_url( $link ); ?>" data-slug="<?php echo esc_attr( $link ); ?>"><?php echo apply_filters( 'learn_press_profile_' . $key . '_tab_title', esc_html( $tab['title'] ), $key ); ?></a>
 		</li>
 	<?php endforeach; ?>
 </ul>

@@ -498,7 +498,7 @@ if ( !function_exists( 'learn_press_output_user_profile_order' ) ) {
 	 */
 	function learn_press_output_user_profile_order( $user, $current, $tabs ) {
 
-		learn_press_get_template( 'profile/order.php', array( 'user' => $user, 'tabs' => $tabs, 'current' => $current ) );
+		//learn_press_get_template( 'profile/tabs/orders.php', array( 'user' => $user, 'tabs' => $tabs, 'current' => $current ) );
 	}
 }
 
@@ -572,7 +572,10 @@ if ( !function_exists( 'learn_press_user_profile_tabs' ) ) {
 	 *
 	 * @return mixed
 	 */
-	function learn_press_user_profile_tabs( $user ) {
+	function learn_press_user_profile_tabs( $user = null ) {
+		if ( !$user ) {
+			$user = get_user_by( 'id', get_current_user_id() );
+		}
 		$course_endpoint = LP()->settings->get( 'profile_endpoints.profile-courses' );
 		if ( !$course_endpoint ) {
 			$course_endpoint = 'profile-courses';
