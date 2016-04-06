@@ -190,7 +190,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 				'show_in_admin_bar'  => true,
 				'show_in_nav_menus'  => true,
 				'taxonomies'         => array( 'course_category', 'course_tag' ),
-				'supports'           => array( 'title', 'editor', 'thumbnail', 'revisions', 'comments' ),
+				'supports'           => array( 'title', 'editor', 'thumbnail', 'revisions', 'comments', 'excerpt' ),
 				'hierarchical'       => true,
 				'rewrite'            => $course_permalink ? array(
 					'slug'       => untrailingslashit( $course_permalink ),

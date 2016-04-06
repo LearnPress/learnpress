@@ -31,7 +31,6 @@ if (typeof LearnPress == 'undefined') {
 			_.bindAll(this, '_finishCourse', '_sanitizeProgress', 'completeLesson');
 			this.$doc = $(document);
 			this.$body = $(document.body);
-
 			LearnPress.Hook.addFilter('learn_press_before_load_item', function ($view) {
 				LearnPress.MessageBox.blockUI();
 				if ($view.model.get('type') == 'lp_quiz') {
@@ -85,7 +84,6 @@ if (typeof LearnPress == 'undefined') {
 		},
 		loadLesson       : function (permalink, args) {
 			var that = this;
-			console.log('loadLesson')
 			LearnPress.Hook.doAction('learn_press_before_load_lesson', permalink, this);
 			args = $.extend({
 				success: function () {

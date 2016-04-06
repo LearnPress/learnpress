@@ -69,6 +69,7 @@
 		initialize     : function () {
 			_.bindAll(this, 'updateItem', '_completeLesson');
 			this.model.on('change', this.updateItem, this);
+
 			if (LearnPress.Hook.applyFilters('learn_press_before_load_item', this) !== false) {
 				if (this.model.get('id') && this.$('input[name="learn-press-lesson-viewing"]').val() != this.model.get('id')) {
 					if (this.model.get('content')) {
@@ -76,6 +77,8 @@
 					} else {
 						this.model.load();
 					}
+				}else if(this.model.get('content')){
+					LearnPress.Hook.doAction('learn_press_item_content_loaded', this.model.get('content'), this);
 				}
 			}
 		},
@@ -88,7 +91,6 @@
 				LearnPress.setUrl(url);
 			}
 			LearnPress.Hook.doAction('learn_press_item_content_loaded', $content, this);
-			//}
 		},
 		_autoNextItem  : function (item, delay) {
 			var $link = this.$('.course-item-next a[data-id="' + item + '"]');
@@ -133,22 +135,25 @@
 				var $li = $(this),
 					$link = $li.find('a'),
 					id = parseInt($link.attr('data-id')),
-					model = new $.LP_Course_Item.Model({
+					args = {
 						id     : id,
 						nonce  : {
 							complete: $link.attr('data-complete-nonce')
 						},
 						rootUrl: $link.attr('href'),
 						type   : $li.data('type')
-					});
-				that.add(model);
+					};
 				if ($li.hasClass('item-current')) {
 					that.current = id;
+					args.content = $('#learn-press-course-lesson')
 				}
+				var model = new $.LP_Course_Item.Model(args);
+				that.add(model);
 			});
 
 		},
 		loadItem  : function (item, link) {
+
 			if ($.isNumeric(item)) {
 				item = this.findWhere({id: item});
 			} else if ($.type(item) == 'string') {
@@ -183,7 +188,7 @@
 		},
 		initialize: function (args) {
 			_.bindAll(this, '_loadItem');
-			this.model.loadItem(this.model.current);
+			//this.model.loadItem(this.model.current);
 		},
 		_loadItem : function (e) {
 			e.preventDefault();

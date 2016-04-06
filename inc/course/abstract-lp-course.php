@@ -764,7 +764,8 @@ abstract class LP_Abstract_Course {
 				INNER JOIN {$wpdb->posts} l ON l.ID = ul.lesson_id
 				WHERE ul.user_id = %d
 				AND status = %s
-			", $user_id, 'completed' );
+				AND ul.course_id = %d
+			", $user_id, 'completed', $this->id );
 			$completed_lessons                    = $wpdb->get_var( $query );
 			$evaluate_course_by_lesson[$this->id] = $completed_lessons / sizeof( $course_lessons );
 		}

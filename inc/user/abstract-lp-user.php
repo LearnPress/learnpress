@@ -946,7 +946,11 @@ class LP_Abstract_User {
 		return $result;
 	}
 
-	function has_completed_lesson( $lesson_id ) {
+	function has_completed_lesson( $lesson_id, $course_id = null ) {
+		if ( !$course_id ) {
+			$course    = LP()->course;
+			$course_id = $course ? $course->id : 0;
+		}
 		$lessons = !empty( self::$_lessons[$this->id] ) ? self::$_lessons[$this->id] : array();
 		if ( empty( $lessons ) || ( $lessons && !array_key_exists( $lesson_id, $lessons ) ) ) {
 			global $wpdb;
@@ -954,6 +958,7 @@ class LP_Abstract_User {
 				SELECT lesson_id, status FROM {$wpdb->prefix}learnpress_user_lessons
 				WHERE user_id = %d
 			", $this->id );
+			$query .= $course_id ? $wpdb->prepare( " AND course_id = %d", $course_id ) : '';
 			if ( $rows = $wpdb->get_results( $query ) ) {
 				foreach ( $rows as $r ) {
 					$lessons[$r->lesson_id] = $r->status;

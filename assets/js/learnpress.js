@@ -164,13 +164,13 @@ if (typeof LearnPress == 'undefined') window.LearnPress = {};
 	}
 
 	function _ready() {
-		$doc
+		/*$doc
 			.on('click', '.complete-lesson-button', complete_lesson)
 			.on('click', '#finish-course', finish_course)
 			.on('click', '#learn_press_retake_course', retake_course)
 			.on('click', '.course-content-lesson-nav a', load_lesson)
 			.on('click', '.section-content .course-lesson a', load_lesson);
-
+*/
 		$('.lesson-quiz-icon', '.section-content').each(function () {
 			var $target = $(this), $parent = $target.closest('li');
 			$target.tipsy({
