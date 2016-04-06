@@ -16,7 +16,6 @@ learn_press_print_notices();
 do_action( 'learn_press_before_cart' );
 
 $checkout_url = apply_filters( 'learn_press_get_checkout_url', LP()->cart->get_checkout_url() );
-
 ?>
 
 <form method="post" name="lp-cart" class="lp-cart" action="<?php echo esc_url( $checkout_url ); ?>" enctype="multipart/form-data">

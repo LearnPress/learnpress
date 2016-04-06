@@ -28,7 +28,7 @@ class LP_Session {
 
 	function __get( $key ) {
 		$return = null;
-		switch( $key ){
+		switch ( $key ) {
 			case 'id':
 				$return = session_id();
 				break;
@@ -54,7 +54,7 @@ class LP_Session {
 		if ( !session_id() && !headers_sent() ) {
 			session_start();
 		}
-		if( !session_id() ){
+		if ( !session_id() ) {
 			LP_Debug::instance()->add( 'Session start failed!' );
 			return false;
 		}
@@ -93,7 +93,10 @@ class LP_Session {
 			if ( !empty( $content['items'] ) ) {
 				$total = 0;
 				foreach ( $content['items'] as $id => $data ) {
-					$price             = get_post_meta( $data['item_id'], '_lp_price', true );
+					$price = get_post_meta( $data['item_id'], '_lp_price', true );
+					if ( get_post_meta( $data['item_id'], '_lp_payment', true ) != 'yes' || !$price ) {
+						$price = 0;
+					}
 					$content['items'][$id]['subtotal'] = $content['items'][$id]['total'] = $data['quantity'] * $price;
 					$total += $content['items'][$id]['total'];
 				}

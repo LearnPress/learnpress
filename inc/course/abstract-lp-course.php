@@ -113,6 +113,9 @@ abstract class LP_Abstract_Course {
 						$single = true;
 					}
 					$value = get_post_meta( $this->id, '_lp_' . $key, $single );
+					if ( ($key == 'price' || $key == 'total' ) && get_post_meta( $this->id, '_lp_payment', true ) != 'yes' ) {
+						$value = 0;
+					}
 			}
 			if ( !empty( $value ) ) {
 				$this->$key = $value;
@@ -416,7 +419,7 @@ abstract class LP_Abstract_Course {
 	 */
 	public function get_price() {
 		$price = $this->price;
-		if ( !$price || 'no' == $this->payment ) {
+		if ( !$price || 'yes' != $this->payment ) {
 			$price = 0;
 		} else {
 			$price = floatval( $price );
