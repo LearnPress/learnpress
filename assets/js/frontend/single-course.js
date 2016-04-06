@@ -56,7 +56,7 @@ if (typeof LearnPress == 'undefined') {
 			LearnPress.toElement('#learn-press-course-lesson-heading');
 			LearnPress.MessageBox.hide();
 		},
-		completeLesson   : function (response) {
+		completeLesson   : function (response, that) {
 			if (response && response.result == 'success') {
 				var $button = this.$('.complete-lesson-button').addClass('completed').prop('disabled', true).html(response.button_text);
 				$('.course-item-' + response.id).addClass('item-completed');

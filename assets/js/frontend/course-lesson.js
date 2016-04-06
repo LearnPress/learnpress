@@ -77,7 +77,7 @@
 					} else {
 						this.model.load();
 					}
-				}else if(this.model.get('content')){
+				} else if (this.model.get('content')) {
 					LearnPress.Hook.doAction('learn_press_item_content_loaded', this.model.get('content'), this);
 				}
 			}
@@ -102,7 +102,7 @@
 			setInterval(function () {
 				duration--;
 				$span.html('Auto next in ' + duration + 's');
-				if(duration == 0){
+				if (duration == 0) {
 					$link.trigger('click')
 				}
 			}, 1000);
@@ -116,7 +116,7 @@
 					if (response.next_item) {
 						//that._autoNextItem(response.next_item, 3);
 					}
-					LearnPress.Hook.doAction('learn_press_user_completed_lesson', response);
+					LearnPress.Hook.doAction('learn_press_user_completed_lesson', response, that);
 				}
 			});
 		}
