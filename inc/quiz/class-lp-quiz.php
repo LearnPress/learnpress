@@ -170,7 +170,7 @@ class LP_Quiz {
 			$show_explanation  = $this->show_explanation;
 			if ( $show_check_answer == 'yes' ) {
 				if ( $history = $user->get_quiz_results( $this->id ) ) {
-					$checked_answers = (array) $history->checked;
+					$checked_answers = !empty( $history->checked ) ? (array) $history->checked : array();
 				} else {
 					$checked_answers = array();
 				}
