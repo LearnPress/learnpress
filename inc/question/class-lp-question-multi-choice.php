@@ -239,6 +239,7 @@ class LP_Question_Multi_Choice extends LP_Abstract_Question {
 	}
 
 	function render( $args = null ) {
+		settype( $args, 'array' );
 		$answered = !empty( $args['answered'] ) ? $args['answered'] : array();
 		$view     = learn_press_locate_template( 'question/types/multi-choice.php' );
 		include $view;

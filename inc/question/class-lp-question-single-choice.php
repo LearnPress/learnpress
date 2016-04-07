@@ -188,6 +188,7 @@ class LP_Question_Single_Choice extends LP_Abstract_Question {
 	}
 
 	function render( $args = null ) {
+		settype( $args, 'array' );
 		$answered = array_key_exists( 'answered', $args ) ? $args['answered'] : array();
 		$view     = learn_press_locate_template( 'question/types/single-choice.php' );
 		include $view;

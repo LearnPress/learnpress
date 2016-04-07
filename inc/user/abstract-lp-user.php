@@ -155,7 +155,8 @@ class LP_Abstract_User {
 					'current_question' => !empty( $quiz_question_ids[0] ) ? $quiz_question_ids[0] : null,
 					'question_answers' => '',
 					'questions'        => $quiz_question_ids
-				)
+				),
+				$quiz_id, $this->id
 			);
 
 			foreach ( $user_quiz_data as $key => $value ) {

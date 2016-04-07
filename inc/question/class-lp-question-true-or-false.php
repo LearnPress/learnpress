@@ -72,6 +72,7 @@ class LP_Question_True_Or_False extends LP_Abstract_Question {
 	}
 
 	function render( $args = array() ) {
+		settype( $args, 'array' );
 		$answered = ! empty( $args['answered'] ) ? $args['answered'] : '';
 		$view = learn_press_locate_template( 'question/types/single-choice.php' );
 		include $view;

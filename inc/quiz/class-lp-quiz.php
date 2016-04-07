@@ -206,7 +206,7 @@ class LP_Quiz {
 				}
 			}
 		}
-		return $results;
+		return apply_filters( 'learn_press_quiz_param_questions', $results, $this->id );
 	}
 
 	function frontend_assets() {
