@@ -53,7 +53,6 @@ class LP_Email_New_Order extends LP_Email {
 
 		$return = $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
 
-		LP_Debug::instance()->add( array( 'action' =>  learn_press_get_order( $order_id ) ) );
 		return $return;
 	}
 

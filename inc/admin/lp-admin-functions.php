@@ -525,7 +525,6 @@ function learn_press_get_chart_courses( $from = null, $by = null, $time_ago ) {
 			$results['all'][$v->d] = $v;
 		}
 	}
-	LP_Debug::instance()->add( $query );
 	$query = $wpdb->prepare( "
 				SELECT count(c.ID) as c, DATE_FORMAT( c.post_date, %s) as d
 				FROM {$wpdb->posts} c
@@ -535,7 +534,6 @@ function learn_press_get_chart_courses( $from = null, $by = null, $time_ago ) {
 				HAVING d BETWEEN %s AND %s
 				ORDER BY d ASC
 			", $_sql_format, 'publish', 'lp_course', $_from, $_to );
-	LP_Debug::instance()->add( $query );
 	if ( $_results = $wpdb->get_results( $query ) ) {
 		foreach ( $_results as $k => $v ) {
 			$results['publish'][$v->d] = $v;
@@ -552,7 +550,6 @@ function learn_press_get_chart_courses( $from = null, $by = null, $time_ago ) {
 				HAVING d BETWEEN %s AND %s
 				ORDER BY d ASC
 			", $_sql_format, '_lp_payment', 'yes', 'publish', 'lp_course', $_from, $_to );
-	LP_Debug::instance()->add( $query );
 	if ( $_results = $wpdb->get_results( $query ) ) {
 		foreach ( $_results as $k => $v ) {
 			$results['paid'][$v->d] = $v;
@@ -692,7 +689,6 @@ function learn_press_get_chart_orders( $from = null, $by = null, $time_ago ) {
 			$results['all'][$v->d] = $v;
 		}
 	}
-	LP_Debug::instance()->add( $query );
 	$query = $wpdb->prepare( "
 				SELECT count(o.ID) as c, DATE_FORMAT( o.post_date, %s) as d
 				FROM {$wpdb->posts} o
@@ -702,7 +698,6 @@ function learn_press_get_chart_orders( $from = null, $by = null, $time_ago ) {
 				HAVING d BETWEEN %s AND %s
 				ORDER BY d ASC
 			", $_sql_format, 'lp_order', $_from, $_to );
-	LP_Debug::instance()->add( $query );
 	if ( $_results = $wpdb->get_results( $query ) ) {
 		foreach ( $_results as $k => $v ) {
 			$results['completed'][$v->d] = $v;
@@ -988,7 +983,6 @@ function learn_press_process_duplicate_action() {
 			INNER JOIN {$wpdb->posts} c ON c.ID = s.section_course_id
 			WHERE c.ID = %d
 		", $post->ID );
-		LP_Debug::instance()->add( $query );
 		if ( $sections = $wpdb->get_results( $query ) ) {
 			foreach ( $sections as $section ) {
 				$new_section_id = $wpdb->insert(

@@ -456,9 +456,6 @@ class LP_Email {
 		remove_filter( 'wp_mail_from_name', array( $this, 'get_from_name' ) );
 		remove_filter( 'wp_mail_content_type', array( $this, 'get_content_format' ) );
 
-		LP_Debug::instance()->add( func_get_args() );
-
-
 		return $return;
 	}
 }

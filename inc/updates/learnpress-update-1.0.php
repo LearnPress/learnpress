@@ -522,8 +522,32 @@ class LP_Upgrade_10 {
 			$this->_update_course_category( $old_course->ID, $new_course_id );
 			$this->_update_course_tag( $old_course->ID, $new_course_id );
 			$this->_update_course_thumbnail( $old_course->ID, $new_course_id );
+			$this->_update_course_comments( $old_course->ID, $new_course_id );
+
 		}
 		return array( 'id' => $new_course_id, 'section_items' => $section_items );
+	}
+
+	private function _update_course_comments( $old_id, $new_id, $parent_id = 0 ) {
+		global $wpdb;
+		$query = $wpdb->prepare( "
+			SELECT c.*
+			FROM {$wpdb->comments} c
+			INNER JOIN {$wpdb->posts} p ON p.ID = c.comment_post_ID
+			WHERE p.ID = %d
+			AND p.post_type = %s
+		", $old_id, 'lpr_course' );
+		if ( $comments = $wpdb->get_results( $query ) ) {
+			foreach ( $comments as $c ) {
+				$wpdb->update(
+					$wpdb->comments,
+					array( 'comment_post_ID' => $new_id ),
+					array( 'comment_ID' => $c->comment_ID ),
+					array( '%d' )
+				);
+				update_comment_meta( $c->comment_ID, '_lpr_old_course', $old_id );
+			}
+		}
 	}
 
 	/**
@@ -1028,6 +1052,7 @@ class LP_Upgrade_10 {
 
 	function do_upgrade() {
 		global $wpdb;
+		set_time_limit( 0 );
 		// start a transaction so we can rollback all as begin if there is an error
 		$wpdb->query( "START TRANSACTION;" );
 		try {
@@ -1045,8 +1070,11 @@ class LP_Upgrade_10 {
 			wp_die( $ex->getMessage() );
 		}
 		$wpdb->query( "COMMIT;" );
+		flush_rewrite_rules();
 		update_option( 'learnpress_version', '1.0' );
 		update_option( 'learnpress_db_version', '1.0' );
+		// cui bap
+		update_option( 'permalink_structure', '/%postname%/' );
 		return true;
 	}
 

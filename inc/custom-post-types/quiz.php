@@ -45,7 +45,6 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 * @param $post_id
 		 */
 		function delete_quiz_questions( $post_id ) {
-			LP_Debug::instance()->add( 'Before delete post ' . $post_id );
 			global $wpdb;
 			$query = $wpdb->prepare( "
 				DELETE FROM {$wpdb->prefix}learnpress_quiz_questions

@@ -81,13 +81,7 @@ if ( !function_exists( 'learn_press_load_plugin_text_domain' ) ) {
 		$mo = WP_CONTENT_DIR . "/plugins/{$plugin_folder}/languages/{$plugin_folder}-{$locale}.mo";
 		load_textdomain( $text_domain, $mo );
 		load_plugin_textdomain( $text_domain, false, plugin_basename( $path ) . "/languages" );
-		LP_Debug::instance()->add(
-			array(
-				$mo . "-" . ( file_exists( $mo ) ? 'YES' : 'NO' ),
-				plugin_basename( $path ) . "/languages",
-				$text_domain
-			)
-		);
+
 	}
 }
 LP_Multi_Language::init();
