@@ -117,7 +117,7 @@ class LP_Cart {
 				$checkout_results['redirect'] = $redirect;
 			} else {
 				add_filter( 'learn_press_checkout_success_result', '_learn_press_checkout_auto_enroll_free_course', 10, 2 );
-				$checkout_results = LP_Checkout::instance()->process_checkout();
+				$checkout_results = LP_Checkout::instance()->process_checkout( );
 			}
 			if ( is_ajax() ) {
 				learn_press_send_json(

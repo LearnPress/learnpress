@@ -191,7 +191,8 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 		}
 
 		static function _request_add_to_cart() {
-			return LP()->cart->add_to_cart( learn_press_get_request( 'add-course-to-cart' ) );
+			LP()->cart->add_to_cart( learn_press_get_request( 'add-course-to-cart' ) );
+
 		}
 
 		static function _request_finish_course() {

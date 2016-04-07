@@ -714,5 +714,6 @@ function _learn_press_checkout_auto_enroll_free_course( $result, $order_id ) {
 		$result['redirect'] = get_the_permalink( $enrolled );
 		LP()->cart->empty_cart();
 	}
+
 	return $result;
 }

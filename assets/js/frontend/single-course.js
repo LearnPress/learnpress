@@ -63,7 +63,7 @@ if (typeof LearnPress == 'undefined') {
 				if (response.course_result) {
 					if (response.can_finish) {
 						this.$('#learn-press-finish-course').removeClass('hide-if-js');
-						LearnPress.Hook.doAction('learn_press_user_passed_course_condition', response, this);
+						LearnPress.Hook.doAction('learn_press_user_passed_course_condition', response, that);
 					}
 					if (response.message) {
 						$(response.message).insertBefore($button);
