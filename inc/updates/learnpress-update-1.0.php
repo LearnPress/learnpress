@@ -248,7 +248,8 @@ class LP_Upgrade_10 {
 			'_lpr_course_final'              => '_lp_final_quiz',
 			'_lpr_course_condition'          => '_lp_passing_condition',
 			'_lpr_course_enrolled_require'   => '_lp_required_enroll',
-			'_lpr_course_payment'            => '_lp_payment'
+			'_lpr_course_payment'            => '_lp_payment',
+			'_lpr_course_certificate'        => '_lp_cert'
 		);
 		$course_meta = self::get_post_meta( $old_id, array_keys( $keys ) );
 		if ( $course_meta ) foreach ( $course_meta as $meta ) {
@@ -269,6 +270,32 @@ class LP_Upgrade_10 {
 					} else {
 						$new_value = 'yes';
 					}
+					break;
+				case '_lp_cert': // update certificate
+					$cert_id   = absint( $new_value );
+					$cert_data = get_post_meta( $cert_id, '_lpr_cert', true );
+					$cert_post = get_post( $cert_id );
+					if ( $cert_post && $cert_post->post_type == 'lpr_certificate' ) {
+						$cert_post = get_object_vars( $cert_post );
+
+						unset( $cert_post['ID'] );
+						$cert_post['post_type'] = 'lp_cert';
+						$new_cert_id            = wp_insert_post( $cert_post );
+						if ( $new_cert_id ) {
+
+							if ( !empty( $cert_data['id'] ) ) {
+								$attachment_id = $cert_data['id'];
+								$attachment    = wp_get_attachment_url( $attachment_id );
+								update_post_meta( $new_cert_id, '_lp_cert_template', $attachment );
+
+								if ( !empty( $cert_data['layers'] ) ) {
+									update_post_meta( $new_cert_id, '_lp_cert_layers', $cert_data['layers'] );
+								}
+							}
+							update_post_meta( $new_id, '_lp_cert', $new_cert_id );
+						}
+					}
+					continue;
 			}
 			add_post_meta( $new_id, $new_key, $new_value );
 		}
@@ -339,6 +366,8 @@ class LP_Upgrade_10 {
 			$new_id,
 			array_keys( $keys )
 		);
+		update_post_meta( $new_id, '_learn_press_upgraded', $old_id );
+
 	}
 
 	private function _create_lesson_meta( $old_id, $new_id ) {
@@ -376,6 +405,8 @@ class LP_Upgrade_10 {
 			$new_id,
 			array_keys( $keys )
 		);
+		update_post_meta( $new_id, '_learn_press_upgraded', $old_id );
+
 	}
 
 	private function _create_quiz_questions( $old_quiz_id, $new_quiz_id ) {
@@ -412,6 +443,7 @@ class LP_Upgrade_10 {
 
 				$new_questions[$old_question_id]       = $new_question_id;
 				self::$questions_map[$old_question_id] = $new_question_id;
+
 			}
 		}
 		return $new_questions;
@@ -444,7 +476,7 @@ class LP_Upgrade_10 {
 				add_post_meta( $new_id, '_lp_type', $meta['type'] );
 			}
 			if ( !empty( $meta['answer'] ) ) {
-				if ( in_array( $meta['type'], array( 'true_or_false', 'single_choice', 'multi_choice' ) ) ) {
+				if ( in_array( $meta['type'], array( 'true_or_false', 'single_choice', 'multi_choice', 'sorting_choice' ) ) ) {
 					$ordering = 0;
 					foreach ( $meta['answer'] as $order => $answer ) {
 						$question_data = array(
@@ -452,6 +484,9 @@ class LP_Upgrade_10 {
 							'value'   => $ordering,
 							'is_true' => $this->_is_false_value( $answer['is_true'] ) ? 'no' : 'yes'
 						);
+						if ( $meta['type'] == 'sorting_choice' ) {
+							unset( $question_data['is_true'] );
+						}
 						$wpdb->insert(
 							$wpdb->prefix . 'learnpress_question_answers',
 							array(
@@ -464,6 +499,17 @@ class LP_Upgrade_10 {
 					}
 				}
 			}
+			if ( $meta['type'] == 'fill_in_blank' ) {
+				$wpdb->insert(
+					$wpdb->prefix . 'learnpress_question_answers',
+					array(
+						'question_id'  => $new_id,
+						'answer_data'  => maybe_serialize( $meta['passage'] ),
+						'answer_order' => 0
+					),
+					array( '%d', '%s', '%d' )
+				);
+			}
 		}
 		/**
 		 * Update other meta data
@@ -473,6 +519,8 @@ class LP_Upgrade_10 {
 			$new_id,
 			array_keys( $keys )
 		);
+		update_post_meta( $new_id, '_learn_press_upgraded', $old_id );
+
 	}
 
 	/**
@@ -822,6 +870,8 @@ class LP_Upgrade_10 {
 			$new_id,
 			array_keys( $keys )
 		);
+		update_post_meta( $new_id, '_learn_press_upgraded', $old_id );
+
 	}
 
 	private function _upgrade_order_courses() {
