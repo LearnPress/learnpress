@@ -182,18 +182,33 @@ class LP_Install {
 
 	static function _search_page( $type ) {
 		global $wpdb;
-		$query = $wpdb->prepare( "
+		$query   = $wpdb->prepare( "
 			SELECT ID
 			FROM {$wpdb->posts} p
 			INNER JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID AND pm.meta_key = %s AND pm.meta_value = %s
 		", '_learn_press_page', $type );
-		return $wpdb->get_var( $query );
+		$page_id = $wpdb->get_var( $query );
+		if ( !$page_id ) {
+			$settings = get_option( '_lpr_settings_pages' );
+			if ( !empty( $settings['general'] ) ) {
+				switch ( $type ) {
+					case 'courses':
+						if ( !empty( $settings['general']['courses_page_id'] ) ) {
+							$page_id = $settings['general']['courses_page_id'];
+						}
+						break;
+				}
+			}
+			if ( !$page_id || get_post_type( $page_id ) != 'page' ) {
+				$page_id = 0;
+			}
+		}
+		return $page_id;
 	}
 
 	static function create_pages() {
 		global $wpdb;
 		$pages = array( 'checkout', 'cart', 'profile', 'courses', 'become_a_teacher' );
-
 		foreach ( $pages as $page ) {
 			$page_id = get_option( "learn_press_{$page}_page_id" );
 			if ( $page_id && get_post_type( $page_id ) == 'page' ) {
