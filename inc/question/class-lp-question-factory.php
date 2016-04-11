@@ -43,7 +43,7 @@ class LP_Question_Factory {
 		}
 		$classname = self::get_question_class( $the_question, $args );
 		if ( !class_exists( $classname ) ) {
-			$classname = 'LP_Question_True_Or_False';
+			$classname = 'LP_Question_None';
 		}
 		if ( is_array( $args ) ) {
 			ksort( $args );
