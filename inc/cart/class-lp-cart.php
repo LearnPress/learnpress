@@ -114,7 +114,7 @@ class LP_Cart {
 					$redirect = add_query_arg( 'next', 'enroll-course', $redirect );
 				}
 				learn_press_add_notice( __( 'Please login to continue process.', 'learn_press' ) );
-				$checkout_results['redirect'] = $redirect;
+				$checkout_results['redirect'] = apply_filters( 'learn_press_no_checkout_free_course_redirect', $redirect );
 			} else {
 				add_filter( 'learn_press_checkout_success_result', '_learn_press_checkout_auto_enroll_free_course', 10, 2 );
 				$checkout_results = LP_Checkout::instance()->process_checkout( );

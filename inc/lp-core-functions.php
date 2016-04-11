@@ -1499,7 +1499,7 @@ function learn_press_get_currency_symbol( $currency = '' ) {
 
 function learn_press_get_page_link( $key ) {
 	$page_id = LP()->settings->get( $key . '_page_id' );
-	return get_permalink( $page_id );
+	return apply_filters( 'learn_press_get_page_link', get_permalink( $page_id ), $page_id, $key );
 }
 
 
