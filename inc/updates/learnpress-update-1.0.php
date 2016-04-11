@@ -504,7 +504,7 @@ class LP_Upgrade_10 {
 					$wpdb->prefix . 'learnpress_question_answers',
 					array(
 						'question_id'  => $new_id,
-						'answer_data'  => maybe_serialize( $meta['passage'] ),
+						'answer_data'  => maybe_serialize( array( 'passage' => !empty( $meta['passage'] ) ? $meta['passage'] : '' ) ),
 						'answer_order' => 0
 					),
 					array( '%d', '%s', '%d' )

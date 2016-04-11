@@ -361,7 +361,7 @@ class LP_Quiz {
 				) {
 
 					foreach ( $answers as $answer ) {
-						$GLOBALS['learnpress_question_answers'][$answer->question_id][$answer->question_answer_id]       = maybe_unserialize( $answer->answer_data );
+						$GLOBALS['learnpress_question_answers'][$answer->question_id][$answer->question_answer_id]       = (array) maybe_unserialize( $answer->answer_data );
 						$GLOBALS['learnpress_question_answers'][$answer->question_id][$answer->question_answer_id]['id'] = $answer->question_answer_id;
 					}
 					//print_r($GLOBALS['learnpress_question_answers']);
