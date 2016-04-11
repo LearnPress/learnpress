@@ -605,7 +605,9 @@ if (typeof LearnPress == 'undefined') var LearnPress = {};
 								LearnPress.reload(response.redirect)
 							}
 						}
-
+						that.$buttons.next.prop('disabled', false);
+						that.$buttons.prev.prop('disabled', false);
+						that.$buttons.finish.prop('disabled', false);
 						LearnPress.Hook.doAction('learn_press_start_quiz', response, that);
 					}
 				});
