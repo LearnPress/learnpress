@@ -14,9 +14,9 @@ class LP_Quiz_Factory {
 		foreach ( $actions as $k => $v ) {
 			LP_Request_Handler::register_ajax( $k, array( __CLASS__, $v ) );
 		}
-		add_action( 'learn_press_before_user_start_quiz', array( __CLASS__, 'xxx' ), 5, 3 );
+		/*add_action( 'learn_press_before_user_start_quiz', array( __CLASS__, 'xxx' ), 5, 3 );
 		add_action( 'init', array( __CLASS__, 'yyy' ) );
-		add_action( 'init', array( __CLASS__, '_delete_anonymous_users' ) );
+		add_action( 'init', array( __CLASS__, '_delete_anonymous_users' ) );*/
 	}
 
 	static function yyy() {
@@ -72,7 +72,6 @@ class LP_Quiz_Factory {
 		self::_verify_nonce();
 
 		LP()->set_object( 'quiz', $quiz, true );
-
 		$user = learn_press_get_current_user();
 		if ( $quiz->is_require_enrollment() && $user->is( 'guest' ) ) {
 			learn_press_send_json(

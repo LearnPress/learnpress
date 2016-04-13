@@ -187,7 +187,6 @@ class LP_Abstract_User {
 			return false;
 		}
 
-		die();
 		if ( $this->get_quiz_status( $quiz_id ) != '' ) {
 			//throw new Exception( __( 'This user already has start quiz', 'learnpress' ) );
 		} else {
