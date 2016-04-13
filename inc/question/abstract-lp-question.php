@@ -79,7 +79,7 @@ class LP_Abstract_Question {
 
 	protected function _init() {
 		//add_action( 'save_post', array( $this, 'save' ) );
-		add_action( 'learn_press_question_answers', array( $this, 'get_default_answers' ) );
+		add_filter( 'learn_press_question_answers', array( $this, '_get_default_answers' ), 10, 2 );
 	}
 
 	/**
@@ -96,6 +96,13 @@ class LP_Abstract_Question {
 		do_action( 'learn_press_delete_question_answers', $this->id );
 
 		learn_press_reset_auto_increment( 'learnpress_question_answers' );
+	}
+
+	function _get_default_answers( $answers = false, $q = null ) {
+		if ( !$answers && ( $q && $q->id == $this->id ) ) {
+			$answers = $this->get_default_answers( $answers );
+		}
+		return $answers;
 	}
 
 	function get_default_answers( $answers = false ) {
@@ -181,7 +188,7 @@ class LP_Abstract_Question {
 	function get_answers( $field = null, $exclude = null ) {
 		global $wpdb;
 		$answers = array();
-		if ( empty( $answers ) ) {
+		//if ( empty( $answers ) ) {
 			if ( !empty( $GLOBALS['learnpress_question_answers'][$this->id] ) ) {
 				if ( array_key_exists( $this->id, $GLOBALS['learnpress_question_answers'] ) ) {
 					$answers = $GLOBALS['learnpress_question_answers'][$this->id];
@@ -202,7 +209,7 @@ class LP_Abstract_Question {
 				}
 				$GLOBALS['learnpress_question_answers'][$this->id] = $answers;
 			}
-		}
+		//}
 		if ( $answers && ( $field || $exclude ) ) {
 			if ( $field ) settype( $field, 'array' );
 			if ( $exclude ) settype( $exclude, 'array' );
@@ -219,6 +226,7 @@ class LP_Abstract_Question {
 				$answers[$k] = $new_arr;
 			}
 		}
+
 		return apply_filters( 'learn_press_question_answers', $answers, $this );
 	}
 

@@ -187,6 +187,7 @@ class LP_Abstract_User {
 			return false;
 		}
 
+		die();
 		if ( $this->get_quiz_status( $quiz_id ) != '' ) {
 			//throw new Exception( __( 'This user already has start quiz', 'learnpress' ) );
 		} else {
@@ -1059,7 +1060,7 @@ class LP_Abstract_User {
 			$questions = array_keys( $questions );
 		}
 		if ( !empty( $questions ) ) {
-			$question_answers = $progress->question_answers;
+			$question_answers = !empty( $progress->question_answers ) ? $progress->question_answers : array();
 			foreach ( $questions as $question_id ) {
 				if ( is_array( $question_answers ) && array_key_exists( $question_id, $question_answers ) && !is_null( $question_answers[$question_id] ) ) {
 					$question = LP_Question_Factory::get_question( $question_id );
@@ -1396,7 +1397,7 @@ class LP_Abstract_User {
 		}
 
 		$results  = $this->get_quiz_results( $quiz_id );
-		$answered = $results->question_answers;
+		$answered = !empty( $results->question_answers ) ? $results->question_answers : array();
 		return $answered ? array_key_exists( $question_id, $answered ) : false;
 	}
 

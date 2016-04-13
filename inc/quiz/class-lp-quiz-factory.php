@@ -14,6 +14,54 @@ class LP_Quiz_Factory {
 		foreach ( $actions as $k => $v ) {
 			LP_Request_Handler::register_ajax( $k, array( __CLASS__, $v ) );
 		}
+		add_action( 'learn_press_before_user_start_quiz', array( __CLASS__, 'xxx' ), 5, 3 );
+		add_action( 'init', array( __CLASS__, 'yyy' ) );
+		add_action( 'init', array( __CLASS__, '_delete_anonymous_users' ) );
+	}
+
+	static function yyy() {
+		$user = learn_press_get_current_user();
+		if ( $user instanceof LP_User_Guest ) {
+			$expire  = get_user_meta( $user->id, '_lp_anonymous_user_expire', true );
+			$current = time();
+			if ( ( $current - ( $expire - 60 ) ) < 10 ) {
+				update_user_meta( $user->id, '_lp_anonymous_user_expire', $current + 60 );
+			}
+		}
+	}
+
+	static function _delete_anonymous_users() {
+		global $wpdb;
+		$sql = $wpdb->prepare( "
+		DELETE a, b FROM $wpdb->users a, $wpdb->usermeta b
+		WHERE a.ID = b.user_id
+		AND b.meta_key = %s
+		AND b.meta_value < %d
+		", '_lp_anonymous_user_expire', time() );
+		//$wpdb->query( $sql );
+	}
+
+	static function xxx( $start, $quiz_id, $user_id ) {
+		$x      = 60;
+		$expire = $x + time();
+		$user   = get_user_by( 'id', $user_id );
+		if ( $user ) {
+			if ( $expire_time = get_user_meta( $user_id, '_lp_anonymous_user_expire', true ) ) {
+				$current_time = time();
+				if ( $expire_time - $current_time <= 0 ) {
+					update_user_meta( $user_id, '_lp_anonymous_user_expire', $expire );
+				}
+			}
+			return $start;
+		}
+		$new_user_id = wp_create_user( uniqid( 'user_' . wp_create_nonce( time() ) ), '12345' );
+		if ( $new_user_id ) {
+			global $wpdb;
+			if ( $wpdb->update( $wpdb->users, array( 'ID' => $user_id ), array( 'ID' => $new_user_id ) ) ) {
+				update_user_meta( $user_id, '_lp_anonymous_user_expire', $expire );
+			}
+		}
+		return $start;
 	}
 
 	static function start_quiz() {
@@ -59,9 +107,9 @@ class LP_Quiz_Factory {
 				);
 				break;
 			default:
-				$result                 = $user->start_quiz();
-				$current_question       = !empty( $result['current_question'] ) ? $result['current_question'] : $user->get_current_question_id( $quiz_id );
-				$question               = LP_Question_Factory::get_question( $current_question );
+				$result           = $user->start_quiz();
+				$current_question = !empty( $result['current_question'] ) ? $result['current_question'] : $user->get_current_question_id( $quiz_id );
+				$question         = LP_Question_Factory::get_question( $current_question );
 				if ( $question ) {
 					$quiz->current_question = $question;
 					ob_start();

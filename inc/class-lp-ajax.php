@@ -288,17 +288,16 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 				$quiz->current_question = $question;
 
 				ob_start();
-
 				if ( $progress = $user->get_quiz_progress( $quiz->id ) ) {
 					learn_press_update_user_quiz_meta( $progress->history_id, 'current_question', $question_id );
 				}
 				$question_answers = $user->get_question_answers( $quiz->id, $question_id );
 				$question->render( array( 'answered' => $question_answers ) );
-
-				if ( $hint = get_post_meta( $question->id, '_lp_explanation', true ) ) {
-					///echo '<div id="learn-press-question-hint-' . $question->id . '" class="question-hint hide-if-js">' . $hint . '</div>';
-				}
-
+				/*
+								if ( $hint = get_post_meta( $question->id, '_lp_explanation', true ) ) {
+									///echo '<div id="learn-press-question-hint-' . $question->id . '" class="question-hint hide-if-js">' . $hint . '</div>';
+								}
+				*/
 				$content = ob_get_clean();
 				learn_press_send_json(
 					apply_filters( 'learn_press_load_quiz_question_result_data', array(

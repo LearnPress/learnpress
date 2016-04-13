@@ -658,6 +658,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 		}
 
 		public static function add_quiz_question() {
+			global $post;
 			$id       = learn_press_get_request( 'id' );
 			$quiz_id  = learn_press_get_request( 'quiz_id' );
 			$type     = learn_press_get_request( 'type' );
@@ -665,6 +666,8 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			$response = array(
 				'id' => $id
 			);
+			$post     = get_post( $quiz_id );
+			setup_postdata( $post );
 			if ( !$id ) {
 				$id = wp_insert_post(
 					array(

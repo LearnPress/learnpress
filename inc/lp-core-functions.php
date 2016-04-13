@@ -291,6 +291,12 @@ function learn_press_add_rewrite_rules() {
 
 add_action( 'init', 'learn_press_add_rewrite_rules', 1000, 0 );
 
+function learn_press_flush_rewrite_rules() {
+
+}
+
+add_action( 'init', 'learn_press_flush_rewrite_rules', 999999999 );
+
 /**
  * This function parse query vars and put into request
  */

@@ -177,7 +177,7 @@ class LP_Install {
 		// Update version
 		delete_option( 'learnpress_version' );
 		add_option( 'learnpress_version', LP()->version );
-
+		update_option( '_learn_press_flush_rewrite_rules', 'yes' );
 	}
 
 	static function _search_page( $type ) {
@@ -188,27 +188,14 @@ class LP_Install {
 			INNER JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID AND pm.meta_key = %s AND pm.meta_value = %s
 		", '_learn_press_page', $type );
 		$page_id = $wpdb->get_var( $query );
-		if ( !$page_id ) {
-			$settings = get_option( '_lpr_settings_pages' );
-			if ( !empty( $settings['general'] ) ) {
-				switch ( $type ) {
-					case 'courses':
-						if ( !empty( $settings['general']['courses_page_id'] ) ) {
-							$page_id = $settings['general']['courses_page_id'];
-						}
-						break;
-				}
-			}
-			if ( !$page_id || get_post_type( $page_id ) != 'page' ) {
-				$page_id = 0;
-			}
-		}
+
 		return $page_id;
 	}
 
 	static function create_pages() {
 		global $wpdb;
 		$pages = array( 'checkout', 'cart', 'profile', 'courses', 'become_a_teacher' );
+
 		foreach ( $pages as $page ) {
 			$page_id = get_option( "learn_press_{$page}_page_id" );
 			if ( $page_id && get_post_type( $page_id ) == 'page' ) {
@@ -216,21 +203,49 @@ class LP_Install {
 			}
 			$page_id = self::_search_page( $page );
 			if ( !$page_id ) {
-				wp_insert_post(
-					array(
-						'post_title'     => 'LP ' . ucwords( str_replace( '_', ' ', $page ) ),
-						'post_status'    => 'publish',
-						'post_type'      => 'page',
-						'comment_status' => 'closed'
+				// Check if page has already existed
+				switch ( $page ) {
+					case 'courses':
+						$_lpr_settings_pages = (array) get_option( '_lpr_settings_pages' );
+
+						if ( !empty( $_lpr_settings_pages['general'] ) ) {
+							if ( !empty( $_lpr_settings_pages['general']['courses_page_id'] ) ) {
+								$page_id = $_lpr_settings_pages['general']['courses_page_id'];
+							}
+						}
+						break;
+					case 'profile':
+						$_lpr_settings_general = (array) get_option( '_lpr_settings_general' );
+						if ( !empty( $_lpr_settings_general['set_page'] && $_lpr_settings_general['set_page'] == 'lpr_profile' ) ) {
+							$page_id = $wpdb->get_var(
+								$wpdb->prepare( "
+									SELECT ID
+										FROM $wpdb->posts p
+										INNER JOIN $wpdb->postmeta pm ON p.ID = pm.post_id AND pm.meta_key = %s AND pm.meta_value = %d
+								", '_lpr_is_profile_page', 1 )
+							);
+						}
+						break;
+				}
+
+				if ( !$page_id && wp_insert_post(
+						array(
+							'post_title'     => 'LP ' . ucwords( str_replace( '_', ' ', $page ) ),
+							'post_status'    => 'publish',
+							'post_type'      => 'page',
+							'comment_status' => 'closed'
+						)
 					)
-				);
-				$page_id = $wpdb->insert_id;
+				) {
+					$page_id = $wpdb->insert_id;
+				}
 			}
 			if ( $page_id ) {
 				update_option( "learn_press_{$page}_page_id", $page_id );
 				update_post_meta( $page_id, '_learn_press_page', $page );
 			}
 		}
+		flush_rewrite_rules();
 	}
 
 	static function create_files() {
@@ -261,7 +276,7 @@ class LP_Install {
 	private function _is_old_version() {
 		if ( is_null( self::$_is_old_version ) ) {
 			$is_old_version = get_transient( 'learn_press_is_old_version' );
-			//echo empty( $is_old_version ) ? "null" : "<>";
+
 			if ( empty( $is_old_version ) ) {
 				if ( !get_option( 'learnpress_db_version' ) ||
 					get_posts(
@@ -342,6 +357,7 @@ class LP_Install {
 	}
 
 	private static function _create_options() {
+		global $wpdb;
 		include_once LP_PLUGIN_PATH . '/inc/admin/settings/class-lp-settings-base.php';
 
 		$settings_classes = array(
@@ -362,10 +378,22 @@ class LP_Install {
 				}
 			}
 		}
+		$custom_options = array(
+			'learn_press_course_base_type'   => 'custom',
+			'learn_press_paypal_email'       => get_option( 'admin_email' ),
+			'learn_press_paypal_enable'      => 'yes',
+			'learn_press_profile_endpoints'  => 'a:4:{s:15:"profile-courses";s:7:"courses";s:15:"profile-quizzes";s:7:"quizzes";s:14:"profile-orders";s:6:"orders";s:21:"profile-order-details";s:13:"order-details";}',
+			'learn_press_checkout_endpoints' => 'a:1:{s:17:"lp_order_received";s:17:"lp-order-received";}'
+		);
+		foreach ( $custom_options as $option_name => $option_value ) {
+			if ( !get_option( $option_name ) ) {
+				update_option( $option_name, maybe_unserialize( $option_value ), 'yes' );
+			}
+		}
 		//update_option( 'learn_press_course_base', '/courses', 'yes' );
-		update_option( 'learn_press_course_base_type', 'custom', 'yes' );
+		/*update_option( 'learn_press_course_base_type', 'custom', 'yes' );
 		update_option( 'learn_press_paypal_email', get_option( 'admin_email' ), 'yes' );
-		update_option( 'learn_press_paypal_enable', 'yes', 'yes' );
+		update_option( 'learn_press_paypal_enable', 'yes', 'yes' );*/
 		set_transient( 'learn_press_install', 'yes', 24 * 3600 );
 	}
 

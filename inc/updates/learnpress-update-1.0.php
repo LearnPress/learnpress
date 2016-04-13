@@ -1123,6 +1123,7 @@ class LP_Upgrade_10 {
 		flush_rewrite_rules();
 		update_option( 'learnpress_version', '1.0' );
 		update_option( 'learnpress_db_version', '1.0' );
+		update_option( '_learn_press_flush_rewrite_rules', 'yes' );
 		// cui bap
 		update_option( 'permalink_structure', '/%postname%/' );
 		return true;
