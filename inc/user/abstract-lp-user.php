@@ -1439,6 +1439,45 @@ class LP_Abstract_User {
 		return $courses[$key];
 	}
 
+	function get_purchased_courses( $args = array() ) {
+		global $wpdb;
+		static $courses = array();
+		$args = wp_parse_args(
+			$args,
+			array(
+				'status' => '',
+				'limit'  => - 1,
+				'paged'  => 1
+			)
+		);
+		ksort( $args );
+		$key = md5( serialize( $args ) );
+		if ( empty( $courses[$key] ) ) {
+
+			$where = $args['status'] ? $wpdb->prepare( "AND uc.status = %s", $args['status'] ) : '';
+			$limit = "\n";
+			if ( $args['limit'] > 0 ) {
+				if ( !$args['paged'] ) {
+					$args['paged'] = 1;
+				}
+				$start = ( $args['paged'] - 1 ) * $args['limit'];
+				$limit .= "LIMIT " . $start . ',' . $args['limit'];
+			}
+			$query = $wpdb->prepare( "
+				SELECT c.*, uc.status as course_status
+				FROM {$wpdb->posts} c
+				INNER JOIN {$wpdb->learnpress_user_courses} uc ON c.ID = uc.course_id
+				WHERE uc.user_id = %d
+					AND c.post_type = %s
+					AND c.post_status = %s
+			", $this->id, 'lp_course', 'publish' );
+			$query .= $where . $limit;
+
+			$courses[$key] = $wpdb->get_results( $query );
+		}
+		return $courses[$key];
+	}
+
 	function has_checked_answer( $question_id, $quiz_id ) {
 		$history = $this->get_quiz_results( $quiz_id );
 		if ( !$history ) {

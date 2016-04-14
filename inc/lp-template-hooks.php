@@ -115,6 +115,7 @@ add_action( 'learn_press_user_profile_summary', 'learn_press_output_user_profile
 add_action( 'learn_press_user_profile_summary', 'learn_press_output_user_profile_order', 15, 3 );
 add_action( 'learn_press_profile_tab_courses_all', 'learn_press_profile_tab_courses_all', 5 );
 add_action( 'learn_press_profile_tab_courses_learning', 'learn_press_profile_tab_courses_learning', 5 );
+add_action( 'learn_press_profile_tab_courses_purchased', 'learn_press_profile_tab_courses_purchased', 5 );
 add_action( 'learn_press_profile_tab_courses_finished', 'learn_press_profile_tab_courses_finished', 5 );
 add_action( 'learn_press_profile_tab_courses_own', 'learn_press_profile_tab_courses_own', 5 );
 add_action( 'learn_press_after_profile_tab_all_loop_course', 'learn_press_after_profile_tab_loop_course', 5 );

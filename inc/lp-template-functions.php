@@ -526,6 +526,18 @@ if ( !function_exists( 'learn_press_profile_tab_courses_learning' ) ) {
 	}
 }
 
+if ( !function_exists( 'learn_press_profile_tab_courses_purchased' ) ) {
+	/**
+	 * Display user profile tabs
+	 *
+	 * @param LP_User
+	 */
+	function learn_press_profile_tab_courses_purchased( $user ) {
+		$courses = $user->get( 'purchased-courses', array( 'limit' => 10 ) );
+		learn_press_get_template( 'profile/tabs/courses/purchased.php', array( 'user' => $user, 'courses' => $courses ) );
+	}
+}
+
 if ( !function_exists( 'learn_press_profile_tab_courses_finished' ) ) {
 	/**
 	 * Display user profile tabs
