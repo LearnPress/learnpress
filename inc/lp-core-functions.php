@@ -952,14 +952,26 @@ if ( learn_press_has_profile_method() ) {
 	add_filter( 'learn_press_instructor_profile_link', 'learn_press_get_profile_link', 10, 3 );
 }
 function learn_press_get_profile_link( $link, $user_id, $course_id ) {
-	if ( is_null( $user_id ) ) {
-		$course  = get_post( $course_id );
-		$user_id = $course->post_author;
-	}
-	$user_login = get_the_author_meta( 'user_login', $user_id );
-	$link       = home_url( "/profile/$user_login" );
+	///_deprecated_function( __FUNCTION__, '1.0', 'learn_press_course_profile_link');
+	return learn_press_course_profile_link( $course_id );
+}
 
-	return $link;
+/**
+ * Return profile link of an user from a course
+ *
+ * @param int $course_id
+ *
+ * @return mixed|void
+ */
+function learn_press_course_profile_link( $course_id = 0 ) {
+	$link = null;
+	if ( !$course_id ) {
+		$course_id = get_the_ID();
+	}
+	if ( get_post( $course_id ) == 'lp_course' && $course_author = get_post_field( 'post_author', $course_id ) ) {
+		$link = learn_press_user_profile_link( $course_author );
+	}
+	return apply_filters( 'learn_press_course_profile_link', $link, $course_id, $course_author );
 }
 
 /*

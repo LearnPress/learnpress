@@ -1334,7 +1334,7 @@ class LP_Abstract_User {
 					WHERE uc.user_id = %d
 						AND c.post_type = %s
 						AND c.post_status = %s
-				) a
+				) a GROUP BY a.ID
 			",
 				LP()->course_post_type, $this->id,
 				$this->id, LP()->course_post_type, 'publish'
