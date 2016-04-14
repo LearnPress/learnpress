@@ -113,7 +113,7 @@ abstract class LP_Abstract_Course {
 						$single = true;
 					}
 					$value = get_post_meta( $this->id, '_lp_' . $key, $single );
-					if ( ($key == 'price' || $key == 'total' ) && get_post_meta( $this->id, '_lp_payment', true ) != 'yes' ) {
+					if ( ( $key == 'price' || $key == 'total' ) && get_post_meta( $this->id, '_lp_payment', true ) != 'yes' ) {
 						$value = 0;
 					}
 			}
@@ -465,14 +465,22 @@ abstract class LP_Abstract_Course {
 	 *
 	 * @return array
 	 */
-	function get_lessons() {
-		$items   = $this->get_curriculum_items(
+	function get_lessons( $args = null ) {
+		$args            = wp_parse_args(
+			$args,
 			array(
-				'force' => false,
-				'group' => true,
+				'field' => ''
 			)
 		);
-		$lessons = !empty( $items['lessons'] ) ? $items['lessons'] : false;
+		$curriculum_args = array_merge(
+			array(
+				'force' => false,
+				'group' => true
+			),
+			$args
+		);
+		$items           = $this->get_curriculum_items( $curriculum_args );
+		$lessons         = !empty( $items['lessons'] ) ? $items['lessons'] : false;
 		return apply_filters( 'learn_press_course_lessons', $lessons, $this );
 	}
 
@@ -758,7 +766,7 @@ abstract class LP_Abstract_Course {
 		static $evaluate_course_by_lesson = array();
 		if ( !array_key_exists( $this->id, $evaluate_course_by_lesson ) ) {
 			global $wpdb;
-			$course_lessons = $this->get_lessons();
+			$course_lessons = $this->get_lessons( array( 'field' => 'ID' ) );
 			if ( !$course_lessons ) {
 				return 1;
 			}
@@ -769,9 +777,10 @@ abstract class LP_Abstract_Course {
 				WHERE ul.user_id = %d
 				AND status = %s
 				AND ul.course_id = %d
+				AND ul.lesson_id IN
 			", $user_id, 'completed', $this->id );
 			$completed_lessons                    = $wpdb->get_var( $query );
-			$evaluate_course_by_lesson[$this->id] = $completed_lessons / sizeof( $course_lessons );
+			$evaluate_course_by_lesson[$this->id] = min( $completed_lessons / sizeof( $course_lessons ), 1 );
 		}
 		return apply_filters( 'learn_press_evaluation_course_lesson', $evaluate_course_by_lesson[$this->id], $this->id, $user_id );
 	}

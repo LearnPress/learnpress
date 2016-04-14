@@ -14,9 +14,9 @@ class LP_Quiz_Factory {
 		foreach ( $actions as $k => $v ) {
 			LP_Request_Handler::register_ajax( $k, array( __CLASS__, $v ) );
 		}
-		/*add_action( 'learn_press_before_user_start_quiz', array( __CLASS__, 'xxx' ), 5, 3 );
+		add_action( 'learn_press_before_user_start_quiz', array( __CLASS__, 'xxx' ), 5, 3 );
 		add_action( 'init', array( __CLASS__, 'yyy' ) );
-		add_action( 'init', array( __CLASS__, '_delete_anonymous_users' ) );*/
+		add_action( 'init', array( __CLASS__, '_delete_anonymous_users' ) );
 	}
 
 	static function yyy() {
@@ -42,6 +42,7 @@ class LP_Quiz_Factory {
 	}
 
 	static function xxx( $start, $quiz_id, $user_id ) {
+		$start  = false;
 		$x      = 60;
 		$expire = $x + time();
 		$user   = get_user_by( 'id', $user_id );
@@ -119,7 +120,11 @@ class LP_Quiz_Factory {
 				}
 				learn_press_send_json(
 					array(
-						'result'   => 'success',
+						'result'   => $result === false ? 'fail' : 'success',
+						'message'  => $result === false ? array(
+							'title'   => __( 'Error', 'learnpress' ),
+							'message' => __( 'Start quiz failed', 'learnpress' )
+						) : '',
 						'data'     => $result,
 						'question' =>
 							array(

@@ -216,7 +216,7 @@ class LP_Install {
 						break;
 					case 'profile':
 						$_lpr_settings_general = (array) get_option( '_lpr_settings_general' );
-						if ( !empty( $_lpr_settings_general['set_page'] && $_lpr_settings_general['set_page'] == 'lpr_profile' ) ) {
+						if ( !empty( $_lpr_settings_general['set_page'] ) && $_lpr_settings_general['set_page'] == 'lpr_profile' ) {
 							$page_id = $wpdb->get_var(
 								$wpdb->prepare( "
 									SELECT ID
