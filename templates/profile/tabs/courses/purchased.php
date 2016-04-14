@@ -7,7 +7,7 @@
  * @version 1.0
  */
 
-if ( !defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
@@ -23,18 +23,18 @@ $heading = apply_filters( 'learn_press_profile_tab_courses_purchased_heading', f
 
 <?php if ( $courses ) : ?>
 
-	<ul class="profile-courses courses-list purchased">
+	<ul class="profile-courses courses-list enrolled">
 
-		<?php foreach( $courses as $post ){ setup_postdata( $post );?>
+		<?php foreach ( $courses as $post ): setup_postdata( $post ); ?>
 
 			<?php learn_press_get_template( 'profile/tabs/courses/loop.php', array( 'subtab' => 'purchased' ) ); ?>
 
-		<?php } ?>
+		<?php endforeach; ?>
 	</ul>
 
 <?php else: ?>
 
-	<?php learn_press_display_message( __( 'You haven\'t got any purchased courses!', 'learnpress' ) ); ?>
+	<?php learn_press_display_message( __( 'You haven\'t purchased any courses yet!', 'learnpress' ) ); ?>
 
 <?php endif ?>
 

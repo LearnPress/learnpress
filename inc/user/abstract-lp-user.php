@@ -1454,7 +1454,7 @@ class LP_Abstract_User {
 		$key = md5( serialize( $args ) );
 		if ( empty( $courses[$key] ) ) {
 
-			$where = $args['status'] ? $wpdb->prepare( "AND uc.status = %s", $args['status'] ) : '';
+//			$where = $args['status'] ? $wpdb->prepare( "AND uc.status = %s", $args['status'] ) : '';
 			$limit = "\n";
 			if ( $args['limit'] > 0 ) {
 				if ( !$args['paged'] ) {
@@ -1464,19 +1464,22 @@ class LP_Abstract_User {
 				$limit .= "LIMIT " . $start . ',' . $args['limit'];
 			}
 			$query = $wpdb->prepare( "
-				SELECT oim.meta_value AS course_id
-					FROM `{$wpdb->posts}` AS p
-					INNER JOIN {$wpdb->postmeta} AS pm ON p.ID = pm.post_id AND pm.meta_key = %s AND pm.meta_value = %d
-					INNER JOIN {$wpdb->learnpress_order_items} AS oi ON p.ID = oi.order_id
-					INNER JOIN {$wpdb->learnpress_order_itemmeta} AS oim ON oi.order_item_id = oim.learnpress_order_item_id AND oim.meta_key = %s
-					WHERE p.post_status = %s
-					AND oim.meta_value NOT IN (SELECT uc.course_id FROM {$wpdb->learnpress_user_courses} AS uc WHERE uc.user_id = 1 )
-					GROUP BY oim.meta_value
+				SELECT * FROM {$wpdb->posts} WHERE ID IN ( 
+					 SELECT oim.meta_value AS ID
+						FROM `{$wpdb->posts}` AS p
+						INNER JOIN {$wpdb->postmeta} AS pm ON p.ID = pm.post_id AND pm.meta_key = %s AND pm.meta_value = %d
+						INNER JOIN {$wpdb->learnpress_order_items} AS oi ON p.ID = oi.order_id
+						INNER JOIN {$wpdb->learnpress_order_itemmeta} AS oim ON oi.order_item_id = oim.learnpress_order_item_id AND oim.meta_key = %s
+						WHERE p.post_status = %s
+						AND oim.meta_value NOT IN (SELECT uc.course_id FROM {$wpdb->learnpress_user_courses} AS uc WHERE uc.user_id = %d )
+						GROUP BY oim.meta_value
+				 )	
 			", '_user_id', $this->id, '_course_id', 'lp-completed', $this->id );
-			$query .= $where . $limit;
+			$query .= $limit;
 
 			$courses[$key] = $wpdb->get_results( $query );
 		}
+
 		return $courses[$key];
 	}
 
