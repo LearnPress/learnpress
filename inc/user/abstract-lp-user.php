@@ -1199,7 +1199,7 @@ class LP_Abstract_User {
 	 */
 	private function _parse_item_order_of_course( $course_id ) {
 		static $courses_parsed = array();
-		if ( !empty( $courses_parsed[$course_id] ) ) {
+		if ( !empty( $courses_parsed[$this->id . '-' . $course_id] ) ) {
 			return true;
 		}
 		global $wpdb;
@@ -1228,7 +1228,7 @@ class LP_Abstract_User {
 				}
 			}
 		}
-		$courses_parsed[$course_id] = true;
+		$courses_parsed[$this->id . '-' . $course_id] = true;
 	}
 
 	/**
@@ -1304,7 +1304,8 @@ class LP_Abstract_User {
 				'limit'   => - 1,
 				'paged'   => 1,
 				'orderby' => 'post_title',
-				'order'   => 'ASC'
+				'order'   => 'ASC',
+				'user_id' => $this->id
 			)
 		);
 		ksort( $args );
@@ -1337,7 +1338,7 @@ class LP_Abstract_User {
 				) a GROUP BY a.ID
 			",
 				LP()->course_post_type, $this->id,
-				$this->id, LP()->course_post_type, 'publish'
+				$args['user_id'], LP()->course_post_type, 'publish'
 			);
 			$query .= $where . $order . $limit;
 			$courses[$key] = $wpdb->get_results( $query );
@@ -1406,9 +1407,10 @@ class LP_Abstract_User {
 		$args = wp_parse_args(
 			$args,
 			array(
-				'status' => '',
-				'limit'  => - 1,
-				'paged'  => 1
+				'status'  => '',
+				'limit'   => - 1,
+				'paged'   => 1,
+				'user_id' => $this->id
 			)
 		);
 		ksort( $args );
@@ -1431,7 +1433,7 @@ class LP_Abstract_User {
 				WHERE uc.user_id = %d
 					AND c.post_type = %s
 					AND c.post_status = %s
-			", $this->id, 'lp_course', 'publish' );
+			", $args['user_id'], 'lp_course', 'publish' );
 			$query .= $where . $limit;
 
 			$courses[$key] = $wpdb->get_results( $query );
@@ -1464,7 +1466,7 @@ class LP_Abstract_User {
 				$limit .= "LIMIT " . $start . ',' . $args['limit'];
 			}
 			$query = $wpdb->prepare( "
-				SELECT * FROM {$wpdb->posts} WHERE ID IN ( 
+				SELECT * FROM {$wpdb->posts} WHERE ID IN (
 					 SELECT oim.meta_value AS ID
 						FROM `{$wpdb->posts}` AS p
 						INNER JOIN {$wpdb->postmeta} AS pm ON p.ID = pm.post_id AND pm.meta_key = %s AND pm.meta_value = %d
@@ -1473,8 +1475,19 @@ class LP_Abstract_User {
 						WHERE p.post_status = %s
 						AND oim.meta_value NOT IN (SELECT uc.course_id FROM {$wpdb->learnpress_user_courses} AS uc WHERE uc.user_id = %d )
 						GROUP BY oim.meta_value
-				 )	
+				 )
 			", '_user_id', $this->id, '_course_id', 'lp-completed', $this->id );
+			/*
+			 SELECT c.*
+			FROM wp_posts o
+			INNER JOIN wp_learnpress_order_items oi ON oi.order_id = o.ID
+			INNER JOIN wp_learnpress_order_itemmeta oim ON oim.learnpress_order_item_id = oi.order_item_id AND oim.meta_key = '_course_id'
+			INNER JOIN wp_posts c ON c.ID = oim.meta_value
+			INNER JOIN wp_postmeta om ON om.post_id = o.ID AND om.meta_key = '_user_id'
+			WHERE o.post_status = 'lp-completed'
+			AND c.post_type = 'lp_course'
+			AND om.meta_value=1
+			 */
 			$query .= $limit;
 
 			$courses[$key] = $wpdb->get_results( $query );
