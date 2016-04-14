@@ -1464,13 +1464,15 @@ class LP_Abstract_User {
 				$limit .= "LIMIT " . $start . ',' . $args['limit'];
 			}
 			$query = $wpdb->prepare( "
-				SELECT c.*, uc.status as course_status
-				FROM {$wpdb->posts} c
-				INNER JOIN {$wpdb->learnpress_user_courses} uc ON c.ID = uc.course_id
-				WHERE uc.user_id = %d
-					AND c.post_type = %s
-					AND c.post_status = %s
-			", $this->id, 'lp_course', 'publish' );
+				SELECT oim.meta_value AS course_id
+					FROM `{$wpdb->posts}` AS p
+					INNER JOIN {$wpdb->postmeta} AS pm ON p.ID = pm.post_id AND pm.meta_key = %s AND pm.meta_value = %d
+					INNER JOIN {$wpdb->learnpress_order_items} AS oi ON p.ID = oi.order_id
+					INNER JOIN {$wpdb->learnpress_order_itemmeta} AS oim ON oi.order_item_id = oim.learnpress_order_item_id AND oim.meta_key = %s
+					WHERE p.post_status = %s
+					AND oim.meta_value NOT IN (SELECT uc.course_id FROM {$wpdb->learnpress_user_courses} AS uc WHERE uc.user_id = 1 )
+					GROUP BY oim.meta_value
+			", '_user_id', $this->id, '_course_id', 'lp-completed', $this->id );
 			$query .= $where . $limit;
 
 			$courses[$key] = $wpdb->get_results( $query );
