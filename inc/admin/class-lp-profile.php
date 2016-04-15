@@ -13,7 +13,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 */
 		public function __construct() {
 			add_filter( 'learn_press_profile_methods', array( $this, 'learn_press_profile_method' ) );
-			add_action( 'wp_loaded', array( $this, 'learn_press_process_profile' ) );
+//			add_action( 'wp_loaded', array( $this, 'learn_press_process_profile' ) );
 			add_action( 'learn_press_before_profile_content', array( $this, 'learn_press_add_tabs_scripts' ) );
 			add_action( 'learn_press_add_profile_tab', array( $this, 'learn_press_add_profile_tab' ) );
 			add_filter( 'learn_press_user_info_tab_content', array( $this, 'learn_press_user_info_tab_content' ), 10, 2 );
