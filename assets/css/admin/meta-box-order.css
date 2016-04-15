@@ -128,3 +128,22 @@
 .post-type-lp_order #submitdiv .handlediv{
 	display: none;
 }
+
+.order-status-description {
+	font-size: smaller;
+	background: #CEE8FF;
+	padding: 5px;
+	font-style: italic;
+	color: #848484;
+	position: relative;
+	margin-top: 10px;
+	border-radius: 3px;
+}
+
+.order-status-description:before {
+	content: '';
+	border: 5px solid transparent;
+	border-bottom-color: #CEE8FF;
+	position: absolute;
+	top: -10px;
+}

@@ -1,63 +1,75 @@
 ;
 (function ($) {
 	var LP_Order_View = window.LP_Order_View = Backbone.View.extend({
-		el            : 'body',
-		events        : {
+		el                : 'body',
+		events            : {
 			'click #learn-press-add-order-item'           : '_addItem',
 			'click #learn-press-calculate-order-total'    : 'calculateTotal',
 			'click #learn-press-courses-result a[data-id]': 'addItem',
 			'click .remove-order-item'                    : 'removeItem',
-			'keyup #learn-press-search-item-term'         : 'searchItems'
+			'keyup #learn-press-search-item-term'         : 'searchItems',
+			'change select[name="order-status"]'          : '_updateDescription'
 		},
-		initialize: function () {
-			_.bindAll( this, 'resetModal', 'updateModal' );
-			LearnPress.Hook.addAction( 'learn_press_message_box_before_resize', this.resetModal);
-			LearnPress.Hook.addAction( 'learn_press_message_box_resize', this.updateModal);
+		initialize        : function () {
+			_.bindAll(this, 'resetModal', 'updateModal', '_updateDescription');
+			LearnPress.Hook.addAction('learn_press_message_box_before_resize', this.resetModal);
+			LearnPress.Hook.addAction('learn_press_message_box_resize', this.updateModal);
 			this.userSuggest();
 		},
-		userSuggest: function(){
+		_updateDescription: function (e) {
+			var $sel = $(e.target),
+				$option = $sel.find('option:selected');
+			$sel.siblings('.description').fadeOut('fast', function () {
+				$(this).html($option.attr('data-desc'))
+					.removeClass(function (c, d) {
+						var m = d.match(/(lp-.*)\s?/);
+						return m ? m[0] : '';
+					}).addClass($option.val()).fadeIn('fast');
+			})
+		},
+		userSuggest       : function () {
 			var id = ( typeof current_site_id !== 'undefined' ) ? '&site_id=' + current_site_id : '';
-			var position = { offset: '0, -1' };
-			if ( typeof isRtl !== 'undefined' && isRtl ) {
+			var position = {offset: '0, -1'};
+			if (typeof isRtl !== 'undefined' && isRtl) {
 				position.my = 'right top';
 				position.at = 'right bottom';
 			}
-			$( '.wp-suggest-user' ).each( function(){
-				var $this = $( this ),
-					autocompleteType = ( typeof $this.data( 'autocompleteType' ) !== 'undefined' ) ? $this.data( 'autocompleteType' ) : 'add',
-					autocompleteField = ( typeof $this.data( 'autocompleteField' ) !== 'undefined' ) ? $this.data( 'autocompleteField' ) : 'user_login';
+			$('.wp-suggest-user').each(function () {
+				var $this = $(this),
+					autocompleteType = ( typeof $this.data('autocompleteType') !== 'undefined' ) ? $this.data('autocompleteType') : 'add',
+					autocompleteField = ( typeof $this.data('autocompleteField') !== 'undefined' ) ? $this.data('autocompleteField') : 'user_login';
 
 				$this.autocomplete({
-					source:    LearnPress_Settings.ajax + '?action=learnpress_search_users&autocomplete_type=' + autocompleteType + '&autocomplete_field=' + autocompleteField + id,
-					delay:     500,
+					source   : LearnPress_Settings.ajax + '?action=learnpress_search_users&autocomplete_type=' + autocompleteType + '&autocomplete_field=' + autocompleteField + id,
+					delay    : 500,
 					minLength: 2,
-					position:  position,
-					open: function() {
-						$( this ).addClass( 'open' );
+					position : position,
+					open     : function () {
+						$(this).addClass('open');
 					},
-					close: function() {
-						$( this ).removeClass( 'open' );
+					close    : function () {
+						$(this).removeClass('open');
 					},
-					select: function(a, b){
+					select   : function (a, b) {
 						LearnPress.log(a, b)
 					}
 				});
 			});
 		},
-		resetModal: function(height, $app){
+		resetModal        : function (height, $app) {
 			this.$('#learn-press-courses-result').css('height', height - 120).css('overflow', 'auto');
 		},
-		updateModal: function($app){
+		updateModal       : function ($app) {
 			this.$('#learn-press-courses-result').css('height', '').css('overflow', '')
 		},
-		_addItem      : function (e) {
+		_addItem          : function (e) {
 			var $form = $('#learn-press-modal-add-order-courses');
 			if ($form.length == 0) {
 				$form = $(wp.template('learn-press-modal-add-order-courses')());
 			}
 			LearnPress.MessageBox.show($form);
 		},
-		addItem       : function (e) {
+		addItem           : function (e) {
 			var that = this,
 				$item = $(e.target);
 			if (e.ctrlKey) {
@@ -91,30 +103,32 @@
 
 			return false;
 		},
-		removeItem: function(e){
+		removeItem        : function (e) {
 			e.preventDefault();
 			var that = this,
 				$item = $(e.target).closest('tr'),
-				item_id = parseInt( $item.attr('data-item_id') );
-			if( !item_id ){
+				item_id = parseInt($item.attr('data-item_id'));
+			if (!item_id) {
 				return;
 			}
 			$.ajax({
-				url: LearnPress_Settings.ajax,
-				data: {
-					action: 'learnpress_remove_order_item',
-					order_id: $('#post_ID').val(),
-					item_id: item_id,
+				url     : LearnPress_Settings.ajax,
+				data    : {
+					action      : 'learnpress_remove_order_item',
+					order_id    : $('#post_ID').val(),
+					item_id     : item_id,
 					remove_nonce: $item.attr('data-remove_nonce')
 				},
-				type: 'post',
+				type    : 'post',
 				dataType: 'text',
-				success: function(response){
+				success : function (response) {
 					response = LearnPress.parseJSON(response);
-					if(response.result == 'success'){
+					if (response.result == 'success') {
 						var $order_table = that.$('.order-items'),
 							$no_item = $order_table.find('.no-order-items'),
-							$other_items = $item.siblings().filter(function(){return !$(this).is($no_item)});
+							$other_items = $item.siblings().filter(function () {
+								return !$(this).is($no_item)
+							});
 						$order_table.find('.order-subtotal').html(response.order_data.subtotal_html);
 						$order_table.find('.order-total').html(response.order_data.total_html);
 						$item.remove();
@@ -123,10 +137,10 @@
 				}
 			});
 		},
-		calculateTotal: function (e) {
+		calculateTotal    : function (e) {
 			LearnPress.log(e)
 		},
-		fetchResults  : function (results) {
+		fetchResults      : function (results) {
 			var $list = this.$('#learn-press-courses-result'),
 				$t = $list.find('li').filter(function () {
 					return $(this).hasClass('lp-search-no-results') ? true : $(this).remove() && false;
@@ -135,7 +149,7 @@
 				$('<li><a href="' + i.permalink + '" data-id="' + k + '">' + i.title + '</a></li>').insertBefore($t);
 			});
 		},
-		searchItems   : function (e) {
+		searchItems       : function (e) {
 			var that = this,
 				$input = $(e.target),
 				timer = $input.data('timer'),

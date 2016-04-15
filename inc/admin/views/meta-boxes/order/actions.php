@@ -37,10 +37,13 @@ if ( 0 != $post->ID ) {
 						<?php
 						$statuses = learn_press_get_order_statuses();
 						foreach ( $statuses as $status => $status_name ) {
-							echo '<option value="' . esc_attr( $status ) . '" ' . selected( $status, 'lp-' . $order->get_status(), false ) . '>' . esc_html( $status_name ) . '</option>';
+							echo '<option data-desc="' . esc_attr( _learn_press_get_order_status_description( $status ) ) . '" value="' . esc_attr( $status ) . '" ' . selected( $status, 'lp-' . $order->get_status(), false ) . '>' . esc_html( $status_name ) . '</option>';
 						}
 						?>
 					</select>
+					<div class="description order-status-description">
+						<?php echo _learn_press_get_order_status_description( 'lp-' . $order->get_status() ); ?>
+					</div>
 				</div>
 
 				<div class="misc-pub-section">

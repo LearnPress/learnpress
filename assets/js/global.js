@@ -656,7 +656,10 @@ if (typeof window.LearnPress == 'undefined') {
 				e.preventDefault();
 				$tab.parent().addClass('current').siblings().removeClass('current');
 				$($contentID).addClass('current').siblings().removeClass('current');
-			}).first().trigger('click');
+				LearnPress.setUrl($contentID)
+			}).filter(function () {
+				return $(this).attr('href') == window.location.hash;
+			}).trigger('click');
 		})
 	}
 
