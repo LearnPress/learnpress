@@ -294,14 +294,12 @@ class LP_Shortcodes {
 		if ( isset( $wp_query->query['user'] ) ) {
 			$user = get_user_by( 'login', urldecode( $wp_query->query['user'] ) );
 		} else {
-			$user = get_user_by( 'ID', get_current_user_id() );
+			$user = get_user_by( 'id', get_current_user_id() );
 		}
 
 		$output = '';
 		ob_start();
-
 		if ( !$user ) {
-
 			if ( empty( $wp_query->query['user'] ) ) {
 				learn_press_get_template( 'profile/private-area.php' );
 			} else {

@@ -540,20 +540,27 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			}
 
 			if ( $response['result'] == 'success' ) {
-				$result                    = $user->complete_lesson( $item_id );
-				$can_finish                = $user->can_finish_course( $course_id );
-				$response['button_text']   = '<span class="dashicons dashicons-yes"></span>' . __( 'Completed', 'learnpress' );
-				$response['course_result'] = round( $result * 100, 0 );
-				$response['can_finish']    = $can_finish;
-				$response['next_item']     = $course->get_next_item( $item_id );
+				$result = $user->complete_lesson( $item_id );
+				if ( !is_wp_error( $result ) ) {
+					$can_finish                = $user->can_finish_course( $course_id );
+					$response['button_text']   = '<span class="dashicons dashicons-yes"></span>' . __( 'Completed', 'learnpress' );
+					$response['course_result'] = round( $result * 100, 0 );
+					$response['can_finish']    = $can_finish;
+					$response['next_item']     = $course->get_next_item( $item_id );
 
-				ob_start();
-				if ( $can_finish ) {
-					learn_press_display_message( __( 'Congratulations! You have completed this lesson and you can finish course.', 'learnpress' ) );
+					ob_start();
+					if ( $can_finish ) {
+						learn_press_display_message( __( 'Congratulations! You have completed this lesson and you can finish course.', 'learnpress' ) );
+					} else {
+						learn_press_display_message( __( 'Congratulations! You have completed this lesson.', 'learnpress' ) );
+					}
+					$response['message'] = ob_get_clean();
 				} else {
-					learn_press_display_message( __( 'Congratulations! You have completed this lesson.', 'learnpress' ) );
+					ob_start();
+					learn_press_display_message( $result->get_error_message() );
+					$response['message'] = ob_get_clean();
+					$response['result']  = 'fail';
 				}
-				$response['message'] = ob_get_clean();
 			}
 			learn_press_send_json( $response );
 		}

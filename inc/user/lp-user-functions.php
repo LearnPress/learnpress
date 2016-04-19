@@ -354,12 +354,12 @@ add_action( 'admin_head', 'head_head_head' );
 function learn_press_update_user_lesson_start_time() {
 	global $course, $wpdb;
 
-	if ( !( $lesson = $course->current_lesson ) ) {
+	if ( !$course->id || !( $lesson = $course->current_lesson ) ) {
 		return;
 	}
 	$query = $wpdb->prepare( "
-		SELECT * FROM {$wpdb->prefix}learnpress_user_lessons WHERE user_id = %d AND lesson_id = %d
-	", get_current_user_id(), $lesson->id );
+		SELECT user_lesson_id FROM {$wpdb->prefix}learnpress_user_lessons WHERE user_id = %d AND lesson_id = %d AND course_id = %d
+	", get_current_user_id(), $lesson->id, $course->id );
 	if ( $wpdb->get_row( $query ) ) {
 		return;
 	}

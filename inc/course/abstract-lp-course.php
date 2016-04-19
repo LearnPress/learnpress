@@ -764,25 +764,27 @@ abstract class LP_Abstract_Course {
 
 	function _evaluate_course_by_lesson( $user_id ) {
 		static $evaluate_course_by_lesson = array();
-		if ( !array_key_exists( $this->id, $evaluate_course_by_lesson ) ) {
+		$key = $this->id . '-' . $user_id;
+		if ( !array_key_exists( $key, $evaluate_course_by_lesson ) ) {
 			global $wpdb;
 			$course_lessons = $this->get_lessons( array( 'field' => 'ID' ) );
 			if ( !$course_lessons ) {
 				return 1;
 			}
-			$query                                = $wpdb->prepare( "
-				SELECT count(user_id)
-				FROM {$wpdb->prefix}learnpress_user_lessons ul
-				INNER JOIN {$wpdb->posts} l ON l.ID = ul.lesson_id
-				WHERE ul.user_id = %d
-				AND status = %s
-				AND ul.course_id = %d
-				AND ul.lesson_id IN
-			", $user_id, 'completed', $this->id );
-			$completed_lessons                    = $wpdb->get_var( $query );
-			$evaluate_course_by_lesson[$this->id] = min( $completed_lessons / sizeof( $course_lessons ), 1 );
+			$query = $wpdb->prepare( "
+					SELECT count(ul.lesson_id)
+					FROM {$wpdb->prefix}learnpress_user_lessons ul
+					INNER JOIN {$wpdb->posts} l ON l.ID = ul.lesson_id
+					WHERE ul.user_id = %d
+					AND status = %s
+					AND ul.course_id = %d
+					AND ul.lesson_id IN(" . join( ",", $course_lessons ) . ")
+				", $user_id, 'completed', $this->id );
+
+			$completed_lessons               = $wpdb->get_var( $query );
+			$evaluate_course_by_lesson[$key] = min( $completed_lessons / sizeof( $course_lessons ), 1 );
 		}
-		return apply_filters( 'learn_press_evaluation_course_lesson', $evaluate_course_by_lesson[$this->id], $this->id, $user_id );
+		return apply_filters( 'learn_press_evaluation_course_lesson', $evaluate_course_by_lesson[$key], $this->id, $user_id );
 	}
 
 	function _evaluate_course_by_quiz( $user_id ) {

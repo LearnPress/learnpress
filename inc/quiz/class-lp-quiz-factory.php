@@ -14,10 +14,10 @@ class LP_Quiz_Factory {
 		foreach ( $actions as $k => $v ) {
 			LP_Request_Handler::register_ajax( $k, array( __CLASS__, $v ) );
 		}
-		return;
+		/*
 		add_action( 'learn_press_before_user_start_quiz', array( __CLASS__, 'xxx' ), 5, 3 );
 		add_action( 'init', array( __CLASS__, 'yyy' ) );
-		add_action( 'init', array( __CLASS__, '_delete_anonymous_users' ) );
+		add_action( 'init', array( __CLASS__, '_delete_anonymous_users' ) );*/
 	}
 
 	static function yyy() {
@@ -56,7 +56,7 @@ class LP_Quiz_Factory {
 			}
 			return $start;
 		}
-		$new_user_id = wp_create_user( uniqid( 'user_' . wp_create_nonce( time() ) ), '12345' );
+		$new_user_id = wp_create_user( uniqid( 'user_' . time() ), '12345' );
 		if ( $new_user_id ) {
 			global $wpdb;
 			if ( $wpdb->update( $wpdb->users, array( 'ID' => $user_id ), array( 'ID' => $new_user_id ) ) ) {

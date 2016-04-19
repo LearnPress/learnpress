@@ -918,31 +918,62 @@ class LP_Abstract_User {
 		return $quizzes[$quiz_id];
 	}
 
+	function is_exists_lesson( $lesson_id, $course_id ) {
+		global $wpdb;
+		$query = $wpdb->prepare( "
+			SELECT user_lesson_id
+			FROM {$wpdb->prefix}learnpress_user_lessons
+			WHERE user_id = %d
+			AND course_id = %d
+			AND lesson_id = %d
+		", $this->id, $course_id, $lesson_id );
+		return $wpdb->get_var( $query );
+	}
+
 	function complete_lesson( $lesson_id, $course_id = 0 ) {
 		global $wpdb;
 		do_action( 'learn_press_before_user_complete_lesson', $lesson_id, $this );
-		$updated = $wpdb->update(
-			$wpdb->prefix . 'learnpress_user_lessons',
-			array(
-				'end_time' => current_time( 'mysql' ),
-				'status'   => 'completed'
-			),
-			array(
-				'user_id'   => $this->id,
-				'lesson_id' => $lesson_id,
-			),
-			array( '%s', '%s' ),
-			array( '%d', '%d' )
-		);
-		$result  = false;
+		if ( !$course_id ) {
+			$course_id = LP_Course::get_course_by_item( $lesson_id );
+		}
+		if ( $this->is_exists_lesson( $lesson_id, $course_id ) ) {
+			$updated = $wpdb->update(
+				$wpdb->prefix . 'learnpress_user_lessons',
+				array(
+					'end_time' => current_time( 'mysql' ),
+					'status'   => 'completed'
+				),
+				array(
+					'user_id'   => $this->id,
+					'lesson_id' => $lesson_id,
+					'course_id' => $course_id
+				),
+				array( '%s', '%s' ),
+				array( '%d', '%d', '%d' )
+			);
+		} else {
+			$updated = $wpdb->insert(
+				$wpdb->prefix . 'learnpress_user_lessons',
+				array(
+					'user_id'    => $this->id,
+					'lesson_id'  => $lesson_id,
+					'course_id'  => $course_id,
+					'start_time' => current_time( 'mysql' ),
+					'end_time'   => current_time( 'mysql' ),
+					'status'     => 'completed'
+				),
+				array( '%d', '%d', '%d', '%s', '%s', '%s' )
+			);
+		}
+		$result = false;
 		if ( $updated ) {
-			if ( !$course_id ) {
-				$course_id = LP_Course::get_course_by_item( $lesson_id );
-			}
 			if ( $course = LP_Course::get_course( $course_id ) ) {
 				$result = $course->evaluate_course_results( $this->id );
 			}
+		} else {
+			$result = new WP_Error( null, $wpdb->last_error );
 		}
+
 		do_action( 'learn_press_user_complete_lesson', $lesson_id, $result, $this->id );
 		return $result;
 	}
@@ -1355,8 +1386,9 @@ class LP_Abstract_User {
 			INNER JOIN {$wpdb->users} u ON u.ID = om.meta_value
 			WHERE o.post_type = %s
 			AND u.ID = %d
+			AND o.post_status <> %s
 			ORDER BY `post_date` DESC
-		", '_user_id', 'lp_order', $this->id );
+		", '_user_id', 'lp_order', $this->id, 'trash' );
 		$orders = $wpdb->get_results( $query );
 		return apply_filters( 'learn_press_user_orders', $orders, $this->id );
 	}
