@@ -18,9 +18,6 @@ get_header( ); ?>
 
 		<?php learn_press_get_template_part( 'content', 'single-course' ); ?>
 
-		<!--	if ( comments_open() || get_comments_number() ) :
-				comments_template();
-			endif;-->
 	<?php endwhile; ?>
 
 	<?php do_action( 'learn_press_after_main_content' ); ?>

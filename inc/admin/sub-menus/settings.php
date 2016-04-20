@@ -36,7 +36,13 @@ function learn_press_settings_page() {
 		</div>
 	<?php endif; ?>
 
-	<div class="wrap">
+	<div class="wrap" id="learn-press-admin-settings">
+		<div id="learn-press-updating-message" class="error hide-if-js">
+			<p><?php esc_html_e( 'Settings changed. Updating...', 'learnpress' ); ?></p>
+		</div>
+		<div id="learn-press-updated-message" class="updated hide-if-js">
+			<p><?php esc_html_e( 'Settings updated. Redirecting...', 'learnpress' ); ?></p>
+		</div>
 		<form method="<?php echo esc_attr( apply_filters( 'learn_press_settings_form_method_tab_' . $current_tab, 'post' ) ); ?>" id="mainform" action="" enctype="multipart/form-data">
 			<div id="icon-themes" class="icon32"><br></div>
 			<h2 class="nav-tab-wrapper">

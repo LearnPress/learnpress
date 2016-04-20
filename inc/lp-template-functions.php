@@ -1155,7 +1155,7 @@ function learn_press_locate_template( $template_name, $template_path = '', $defa
 	}
 
 	if ( !$default_path ) {
-		$default_path = LP_PLUGIN_PATH . '/templates/';
+		$default_path = LP_PLUGIN_PATH . 'templates/';
 	}
 
 	// Look within passed path within the theme - this is priority

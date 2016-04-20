@@ -116,10 +116,11 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 	}
 	if ( $allow_create ) {
 		ob_start(); ?>
+		<button class="button button-quick-add-page" data-id="<?php echo $id; ?>" type="button"><?php _e( 'Create', 'learnpress' ); ?></button>
 		<p class="learn-press-quick-add-page-inline <?php echo $id; ?> hide-if-js">
-			<input type="text" />
-			<button class="button" type="button"><?php _e( 'Ok', 'learnpress' ); ?></button>
-			<a href=""><?php _e( 'Cancel', 'learnpress' ); ?></a>
+			<input type="text" placeholder="<?php esc_attr_e( 'New page title', 'learnpress' ); ?>" />
+			<button class="button" type="button"><?php esc_html_e( 'Ok [Enter]', 'learnpress' ); ?></button>
+			<a href=""><?php _e( 'Cancel [ESC]', 'learnpress' ); ?></a>
 		</p>
 		<p class="learn-press-quick-add-page-actions <?php echo $id; ?><?php echo $selected ? '' : ' hide-if-js'; ?>">
 			<a class="edit-page" href="<?php echo get_edit_post_link( $selected ); ?>" target="_blank"><?php _e( 'Edit Page', 'learnpress' ); ?></a>
@@ -888,10 +889,10 @@ function learn_press_add_row_action_link( $actions ) {
 
 add_filter( 'page_row_actions', 'learn_press_add_row_action_link' );
 
-function learn_press_copy_post_meta( $from_id, $to_id){
+function learn_press_copy_post_meta( $from_id, $to_id ) {
 	global $wpdb;
 	$course_meta = $wpdb->get_results(
-		$wpdb->prepare("SELECT meta_key, meta_value FROM $wpdb->postmeta WHERE post_id = %d", $from_id )
+		$wpdb->prepare( "SELECT meta_key, meta_value FROM $wpdb->postmeta WHERE post_id = %d", $from_id )
 	);
 	if ( count( $course_meta ) != 0 ) {
 		$sql_query     = "INSERT INTO $wpdb->postmeta (post_id, meta_key, meta_value) ";
@@ -908,6 +909,7 @@ function learn_press_copy_post_meta( $from_id, $to_id){
 		$wpdb->query( $sql_query );
 	}
 }
+
 /**
  * Duplicate a course when user hit "Duplicate" button
  *

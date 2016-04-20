@@ -1,10 +1,10 @@
 @font-face {
 	font-family: 'learnpress';
-	src:url('../fonts/icomoon.eot?ym8b3w');
-	src:url('../fonts/icomoon.eot?ym8b3w#iefix') format('embedded-opentype'),
-		url('../fonts/icomoon.ttf?ym8b3w') format('truetype'),
-		url('../fonts/icomoon.woff?ym8b3w') format('woff'),
-		url('../fonts/icomoon.svg?ym8b3w#icomoon') format('svg');
+	src: url('../fonts/icon.eot?ym8b3w');
+	src: url('../fonts/icon.eot?ym8b3w#iefix') format('embedded-opentype'),
+	url('../fonts/icon.ttf?ym8b3w') format('truetype'),
+	url('../fonts/icon.woff?ym8b3w') format('woff'),
+	url('../fonts/icon.svg?ym8b3w#icon') format('svg');
 	font-weight: normal;
 	font-style: normal;
 }

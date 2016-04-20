@@ -1257,16 +1257,14 @@ function learn_press_template_loader( $template ) {
 			$find[] = $file;
 			$find[] = "{$theme_template}/{$file}";
 		} else {
-			if ( get_post_type() == LP()->course_post_type ) {
+			if ( learn_press_is_course() ) {
 				$file   = 'single-course.php';
 				$find[] = $file;
 				$find[] = "{$theme_template}/{$file}";
-			} else {
-				if ( get_post_type() == LP()->quiz_post_type ) {
-					$file   = 'single-quiz.php';
-					$find[] = $file;
-					$find[] = "{$theme_template}/{$file}";
-				}
+			} elseif ( learn_press_is_quiz() ) {
+				$file   = 'single-quiz.php';
+				$find[] = $file;
+				$find[] = "{$theme_template}/{$file}";
 			}
 		}
 	}
@@ -1745,6 +1743,8 @@ function learn_press_posts_where_statement_search( $where ) {
 	// appdn ) to the end of the block
 	$where = preg_replace( '!(OR\s+' . $wpdb->terms . '.name LIKE \'%' . $wp_query->get( 's' ) . '%\')!', '$1 )', $where );
 
+	remove_filter( 'posts_where', 'learn_press_posts_where_statement_search', 99 );
+
 	return $where;
 }
 
@@ -1757,11 +1757,13 @@ function learn_press_posts_where_statement_search( $where ) {
 function learn_press_filter_search( $q ) {
 	if ( $q->is_main_query() && $q->is_search() && ( !empty( $_REQUEST['ref'] ) && $_REQUEST['ref'] == 'course' ) ) {
 		$q->set( 'post_type', LP()->course_post_type );
-		add_filter( 'posts_where', 'learn_press_posts_where_statement_search' );
+		add_filter( 'posts_where', 'learn_press_posts_where_statement_search', 99 );
+
+		remove_filter( 'pre_get_posts', 'learn_press_filter_search', 99 );
 	}
 }
 
-add_filter( 'pre_get_posts', 'learn_press_filter_search' );
+add_filter( 'pre_get_posts', 'learn_press_filter_search', 99 );
 
 /**
  * Convert an object|array to json format and send it to the browser
@@ -1966,7 +1968,13 @@ add_action( 'init', 'learn_press_init' );
 }*/
 
 function is_learnpress() {
-	return apply_filters( 'is_learnpress', ( learn_press_is_course_archive() || learn_press_is_course_taxonomy() || learn_press_is_course() || learn_press_is_quiz() ) ? true : false );
+	return apply_filters( 'is_learnpress', ( learn_press_is_course_archive() || learn_press_is_course_taxonomy() || learn_press_is_course() || learn_press_is_quiz() || learn_press_is_search() ) ? true : false );
+}
+
+if ( !function_exists( 'learn_press_is_search' ) ) {
+	function learn_press_is_search() {
+		return array_key_exists( 's', $_REQUEST ) && array_key_exists( 'ref', $_REQUEST ) && $_REQUEST['ref'] == 'course';
+	}
 }
 
 if ( !function_exists( 'learn_press_is_courses' ) ) {
@@ -2323,6 +2331,7 @@ function learn_press_user_profile_link( $user_id = 0, $tab = null ) {
 	if ( $tab ) {
 		$args['tab'] = $tab;
 	}
+	$args = array_map( '_learn_press_urlencode', $args );
 	if ( get_option( 'permalink_structure' ) && learn_press_get_page_id( 'profile' ) ) {
 		$url = learn_press_get_page_link( 'profile' ) . join( "/", array_values( $args ) );
 	} else {
@@ -2331,15 +2340,68 @@ function learn_press_user_profile_link( $user_id = 0, $tab = null ) {
 	return $url;
 }
 
+function _learn_press_urlencode( $string ) {
+	return preg_replace( '/\s/', '+', $string );
+}
+
+/**
+ * Get number of courses by search key
+ *
+ * @param $search_key
+ *
+ * @return int
+ */
+if ( !function_exists( 'thim_get_courses_by_search_key' ) ) {
+	function thim_get_courses_by_search_key( $search_key ) {
+		$count = 0;
+		$query = new WP_Query( array(
+			'post_type'           => 'lp_course',
+			'ignore_sticky_posts' => true,
+			'posts_per_page'      => - 1,
+			's'                   => $search_key
+		) );
+
+		if ( !empty( $query->post_count ) ) {
+			$count = $query->post_count;
+		}
+		return $count;
+	}
+}
+/**
+ * @param $template
+ *
+ * @return string
+ */
+function learn_press_search_template( $template ) {
+	if ( !empty( $_REQUEST['ref'] ) && ( $_REQUEST['ref'] == 'course' ) ) {
+		$template = learn_press_locate_template( 'archive-course.php' );
+	}
+	return $template;
+}
+
+add_filter( 'template_include', 'learn_press_search_template', 69 );
+
+function learn_press_redirect_search() {
+	if ( learn_press_is_search() ) {
+		$search_page = learn_press_get_page_id( 'search' );
+		if ( !is_page( $search_page ) ) {
+			global $wp_query;
+			wp_redirect( add_query_arg( 's', $wp_query->query_vars['s'], get_the_permalink( $search_page ) ) );
+			exit();
+		}
+	}
+}
+
+//add_action( 'init', 'learn_press_redirect_search' );
+
 include_once "debug.php";
-include_once "lp-add-ons.php";
 
 function learn_press_debug() {
 	$args = func_get_args();
 	$arg  = true;
 	echo '<pre>';
 	if ( $args ) foreach ( $args as $arg ) {
-		print_r( $args );
+		print_r( $arg );
 	}
 	echo '</pre>';
 	if ( $arg === true ) {
