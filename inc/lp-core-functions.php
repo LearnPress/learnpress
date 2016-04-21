@@ -1941,14 +1941,10 @@ function learn_press_pre_get_posts( $q ) {
 add_action( 'pre_get_posts', 'learn_press_pre_get_posts' );
 
 function learn_press_init() {
-	if ( class_exists( 'LP_Settings' ) ) {
-		$settings = LP_Settings::instance( 'general' );
-		if ( $settings->get( 'instructor_registration' ) ) {
-			add_action( 'register_form', 'learn_press_edit_registration' );
-			add_action( 'user_register', 'learn_press_registration_save', 10, 1 );
-		}
+	if ( LP()->settings->get( 'instructor_registration' ) == 'yes' ) {
+		add_action( 'register_form', 'learn_press_edit_registration' );
+		add_action( 'user_register', 'learn_press_registration_save', 10, 1 );
 	}
-
 }
 
 add_action( 'init', 'learn_press_init' );

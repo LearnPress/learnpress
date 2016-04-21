@@ -880,6 +880,13 @@ a .archive-course:hover {
 	font-weight: bold;
 }
 
+.button-fade {
+	opacity: 0.5;
+}
+
+.button-fade:hover {
+	opacity: 1;
+}
 @media screen and (min-width: 59.6875em) {
 	.twentyfifteen .learnpress-content {
 		margin-left: 8.3333%;

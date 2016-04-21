@@ -179,7 +179,6 @@ class LP_Install {
 		self::update_db_version();
 		self::update_version();
 		update_option( '_learn_press_flush_rewrite_rules', 'yes' );
-
 		$sql = "DELETE a, b FROM $wpdb->options a, $wpdb->options b
 			WHERE a.option_name LIKE %s
 			AND a.option_name NOT LIKE %s

@@ -227,13 +227,13 @@ if ( !class_exists( 'LearnPress' ) ) {
 
 			if ( !get_option( 'learnpress_db_version' ) ) {
 
-				$this->_remove_notices();
+				/*$this->_remove_notices();
 				$this->course_post_type   = 'lpr_course';
 				$this->lesson_post_type   = 'lpr_lesson';
 				$this->quiz_post_type     = 'lpr_quiz';
 				$this->question_post_type = 'lpr_question';
 				$this->order_post_type    = 'lpr_order';
-				$this->teacher_role       = 'lpr_teacher';
+				$this->teacher_role       = 'lpr_teacher';*/
 			}
 		}
 

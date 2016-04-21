@@ -70,10 +70,8 @@ class LP_Upgrade_From_09 {
 	 */
 	private function _prevent_access_admin() {
 		if ( ( $this->check_post_types() ) ) {
-			//if ( !( !empty( $_REQUEST['page'] && $_REQUEST['page'] == 'learn_press_upgrade_10' ) ) ) {
 			wp_redirect( admin_url( 'index.php' ) );
 			exit;
-			//}
 		}
 	}
 
@@ -190,6 +188,92 @@ class LP_Upgrade_From_09 {
 		}
 
 		return $section_items;
+	}
+
+	/**
+	 * Upgrade items is not assigned to any courses
+	 */
+	private function _upgrade_unassigned_items( $force = false ) {
+		global $wpdb;
+		$exclude = array();
+		if ( self::$quizzes_map ) {
+			$exclude = array_keys( self::$quizzes_map );
+		}
+		if ( self::$lessons_map ) {
+			$exclude = array_merge( $exclude, array_keys( self::$lessons_map ) );
+		}
+		$exclude = array_filter( $exclude );
+		$query   = $wpdb->prepare( "
+			SELECT DISTINCT p.*, pm.meta_value as upgraded
+			FROM {$wpdb->posts} p
+			LEFT JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID AND pm.meta_key = %s
+			WHERE post_type IN (%s, %s)
+			" . ( $exclude ? "AND ID NOT IN(" . join( ',', $exclude ) . ")" : "" ) . "
+			" . ( !$force ? "HAVING upgraded IS NULL" : "" ) . "
+		", '_learn_press_upgraded', 'lpr_quiz', 'lpr_lesson' );
+
+		if ( !$items = $wpdb->get_results( $query, OBJECT_K ) ) {
+			return;
+		}
+		foreach ( $items as $obj ) {
+			$obj = (array) $obj;
+			if ( $obj['post_type'] == 'lpr_quiz' ) {
+				$obj['post_type'] = 'lp_quiz';
+			} elseif ( $obj['post_type'] == 'lpr_lesson' ) {
+				$obj['post_type'] = 'lp_lesson';
+			}
+			$obj_id = $obj['ID'];
+			unset( $obj['ID'] );
+			$return = array();
+			if ( $new_obj_id = wp_insert_post( $obj ) ) {
+				if ( $obj['post_type'] == 'lp_quiz' ) {
+					$this->_create_quiz_meta( $obj_id, $new_obj_id );
+					$new_questions              = $this->_create_quiz_questions( $obj_id, $new_obj_id );
+					$return['questions']        = $new_questions;
+					self::$quizzes_map[$obj_id] = $new_obj_id;
+				} elseif ( $obj['post_type'] == 'lp_lesson' ) {
+					$this->_create_lesson_meta( $obj_id, $new_obj_id );
+					$this->_update_lesson_tag( $obj_id, $new_obj_id );
+					$this->_update_lesson_format( $obj_id, $new_obj_id );
+					self::$lessons_map[$obj_id] = $new_obj_id;
+				}
+			}
+		}
+	}
+
+	/**
+	 * Upgrade items is not assigned to any questions
+	 */
+	private function _upgrade_unassigned_questions( $force = false ) {
+		global $wpdb;
+		$exclude = array();
+		if ( self::$questions_map ) {
+			$exclude = array_keys( self::$questions_map );
+		}
+		$exclude = array_filter( $exclude );
+		$query   = $wpdb->prepare( "
+			SELECT DISTINCT p.*, pm.meta_value as upgraded
+			FROM {$wpdb->posts} p
+			LEFT JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID AND pm.meta_key = %s
+			WHERE post_type IN (%s)
+			" . ( $exclude ? "AND ID NOT IN(" . join( ',', $exclude ) . ")" : "" ) . "
+			" . ( !$force ? "HAVING upgraded IS NULL" : "" ) . "
+		", '_learn_press_upgraded', 'lpr_question' );
+
+		if ( !$items = $wpdb->get_results( $query, OBJECT_K ) ) {
+			return;
+		}
+		foreach ( $items as $obj ) {
+			$obj    = (array) $obj;
+			$obj_id = $obj['ID'];
+			unset( $obj['ID'] );
+			$obj['post_type'] = 'lp_question';
+			if ( $new_obj_id = wp_insert_post( $obj ) ) {
+				$this->_create_question_meta( $obj_id, $new_obj_id );
+				$this->_update_question_tag( $obj_id, $new_obj_id );
+				self::$questions_map[$obj_id] = $new_obj_id;
+			}
+		}
 	}
 
 	/**
@@ -366,8 +450,7 @@ class LP_Upgrade_From_09 {
 			$new_id,
 			array_keys( $keys )
 		);
-		update_post_meta( $new_id, '_learn_press_upgraded', $old_id );
-
+		$this->_mark_upgraded( $old_id, $new_id );
 	}
 
 	private function _create_lesson_meta( $old_id, $new_id ) {
@@ -405,8 +488,7 @@ class LP_Upgrade_From_09 {
 			$new_id,
 			array_keys( $keys )
 		);
-		update_post_meta( $new_id, '_learn_press_upgraded', $old_id );
-
+		$this->_mark_upgraded( $old_id, $new_id );
 	}
 
 	private function _create_quiz_questions( $old_quiz_id, $new_quiz_id ) {
@@ -519,7 +601,7 @@ class LP_Upgrade_From_09 {
 			$new_id,
 			array_keys( $keys )
 		);
-		update_post_meta( $new_id, '_learn_press_upgraded', $old_id );
+		$this->_mark_upgraded( $old_id, $new_id );
 
 	}
 
@@ -640,14 +722,14 @@ class LP_Upgrade_From_09 {
 		}
 	}
 
-	private function _upgrade_courses() {
+	private function _upgrade_courses( $force = false ) {
 		global $wpdb;
 		$query = $wpdb->prepare( "
 			SELECT DISTINCT p.*, pm.meta_value as upgraded
 			FROM {$wpdb->posts} p
 			LEFT JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID AND pm.meta_key = %s
 			WHERE post_type = %s
-			HAVING upgraded IS NULL
+			" . ( !$force ? "HAVING upgraded IS NULL" : "" ) . "
 		", '_learn_press_upgraded', 'lpr_course' );
 
 		$new_courses = array();
@@ -657,7 +739,8 @@ class LP_Upgrade_From_09 {
 				$return                       = $this->_upgrade_course( $old_course );
 				$new_courses[$old_course->ID] = $return;
 				if ( $return['id'] ) {
-					$wpdb->insert(
+					$this->_mark_upgraded( $old_course->ID, $return['id'] );
+					/*$wpdb->insert(
 						$wpdb->prefix . 'postmeta',
 						array(
 							'post_id'    => $old_course->ID,
@@ -665,6 +748,14 @@ class LP_Upgrade_From_09 {
 							'meta_value' => $return['id']
 						)
 					);
+					$wpdb->insert(
+						$wpdb->prefix . 'postmeta',
+						array(
+							'post_id'    => $return['id'],
+							'meta_key'   => '_learn_press_upgraded',
+							'meta_value' => $old_course->ID
+						)
+					);*/
 				}
 			}
 		}
@@ -870,8 +961,7 @@ class LP_Upgrade_From_09 {
 			$new_id,
 			array_keys( $keys )
 		);
-		update_post_meta( $new_id, '_learn_press_upgraded', $old_id );
-
+		$this->_mark_upgraded( $old_id, $new_id );
 	}
 
 	private function _upgrade_order_courses() {
@@ -1196,6 +1286,11 @@ class LP_Upgrade_From_09 {
 		}
 	}
 
+	private function _mark_upgraded( $old, $new ) {
+		update_post_meta( $old, '_learn_press_upgraded', $new );
+		update_post_meta( $new, '_learn_press_upgraded_from', $old );
+	}
+
 	function upgrade_database() {
 		LP_Install::update();
 	}
@@ -1205,10 +1300,15 @@ class LP_Upgrade_From_09 {
 		set_time_limit( 0 );
 		// start a transaction so we can rollback all as begin if there is an error
 		$wpdb->query( "START TRANSACTION;" );
+		$force = learn_press_get_request( 'force' ) == 'true';
 		try {
 			$this->_backward_compatible();
 			// update courses
-			$this->_upgrade_courses();
+			$this->_upgrade_courses( $force );
+			// update unassigned items
+			$this->_upgrade_unassigned_items( $force );
+			// update unassigned questions
+			$this->_upgrade_unassigned_questions( $force );
 			// update orders
 			$this->_upgrade_orders();
 			// orders
@@ -1229,6 +1329,7 @@ class LP_Upgrade_From_09 {
 		update_option( '_learn_press_flush_rewrite_rules', 'yes' );
 		// cui bap
 		update_option( 'permalink_structure', '/%postname%/' );
+		delete_transient( 'learn_press_is_old_version' );
 		return true;
 	}
 
@@ -1241,7 +1342,6 @@ class LP_Upgrade_From_09 {
 			wp_redirect( admin_url() );
 			exit();
 		}
-		//if( strtolower($_SERVER['REQUEST_METHOD']) == 'post'){ print_r($_POST);die();}
 		if ( !empty( $_POST['action'] ) && $_POST['action'] == 'upgrade' ) {
 			if ( $this->do_upgrade() ) {
 				$_REQUEST['step'] = 'upgraded';

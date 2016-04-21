@@ -42,13 +42,7 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 
 		static function admin_scripts(){
 			if ( in_array( get_post_type(), array( LP()->course_post_type, LP()->lesson_post_type ) ) ) {
-
-				//wp_enqueue_style( 'lp-meta-boxes', LP()->plugin_url( 'assets/css/meta-boxes.css' ) );
 				wp_enqueue_script( 'jquery-caret', LP()->plugin_url( 'assets/js/jquery.caret.js', 'jquery' ) );
-				//wp_enqueue_script( 'lp-meta-boxes', LP()->plugin_url( 'assets/js/meta-boxes.js', 'jquery', 'backbone', 'util' ) );
-
-				//wp_localize_script( 'lp-meta-boxes', 'lp_lesson_params', self::admin_params() );
-
 			}
 		}
 
@@ -262,20 +256,6 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 					break;
 				case 'format':
 					learn_press_item_meta_format( $post_id, __( 'Standard', 'learnpress' ) );
-			}
-		}
-
-		/**
-		 * Update lesson meta data
-		 *
-		 * @param $lesson_id
-		 */
-		function update_lesson_meta( $lesson_id ) {
-			return;
-			$course_id = get_post_meta( $lesson_id, '_lpr_course', true );
-			if ( !$course_id ) {
-				delete_post_meta( $lesson_id, '_lpr_course' );
-				update_post_meta( $lesson_id, '_lpr_course', 0 );
 			}
 		}
 

@@ -16,6 +16,7 @@ if ( !defined( 'ABSPATH' ) ) {
  */
 class LP_Admin_Menu {
 	protected $_submenu = null;
+
 	/**
 	 * LP_Admin_Menu Construct
 	 */
@@ -89,6 +90,8 @@ class LP_Admin_Menu {
 		if ( $menu_items ) foreach ( $menu_items as $item ) {
 			call_user_func_array( 'add_submenu_page', $item );
 		}
+
+		add_submenu_page( 'tools.php', __( 'Database tools', 'learnpress' ), __( 'LearnPress', 'learnpress' ), 'manage_options', 'learn_press_tools', 'learn_press_tools_page' );
 	}
 
 	/*
@@ -105,14 +108,14 @@ class LP_Admin_Menu {
 		$menu['3.14'][0] .= " <span class='awaiting-mod count-$awaiting_mod'><span class='pending-count'>" . number_format_i18n( $awaiting_mod ) . "</span></span>";
 	}
 
-	function menu_page(){
-		if( $this->_submenu ){
+	function menu_page() {
+		if ( $this->_submenu ) {
 			$this->_submenu->display();
 		}
 	}
 
-	function menu_content(){
-		if( !function_exists( 'learn_press_admin_update_settings' ) ){
+	function menu_content() {
+		if ( !function_exists( 'learn_press_admin_update_settings' ) ) {
 			remove_action( 'init', 'learn_press_admin_update_settings', 1000 );
 		}
 	}

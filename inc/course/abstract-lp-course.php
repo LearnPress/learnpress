@@ -323,7 +323,7 @@ abstract class LP_Abstract_Course {
 		if ( $this->_count_users === null || $force ) {
 			$query              = $wpdb->prepare( "
 				SELECT count(o.ID)
-				FROM wp_posts o
+				FROM {$wpdb->posts} o
 				INNER JOIN {$wpdb->learnpress_order_items} oi ON oi.order_id = o.ID
 				INNER JOIN {$wpdb->learnpress_order_itemmeta} oim ON oim.learnpress_order_item_id = oi.order_item_id
 				AND oim.meta_key = %s AND oim.meta_value = %d
@@ -371,7 +371,6 @@ abstract class LP_Abstract_Course {
 		$instructor = $this->get_instructor();
 		$html       = sprintf(
 			'<a href="%s">%s</a>',
-			//apply_filters( 'learn_press_instructor_profile_link', '#', null, $this->id ),
 			learn_press_user_profile_link( $this->post->post_author ),
 			$instructor
 		);
