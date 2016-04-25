@@ -841,12 +841,11 @@ if ( !function_exists( 'learn_press_course_class' ) ) {
 	function learn_press_course_class( $classes ) {
 		if ( is_learnpress() ) {
 			$classes = (array) $classes;
-
 			if ( false !== ( $key = array_search( 'hentry', $classes ) ) ) {
 				unset( $classes[$key] );
 			}
 		}
-		return $classes;
+		return apply_filters( 'learn_press_course_class', $classes );
 	}
 }
 /**
@@ -1232,5 +1231,14 @@ if ( !function_exists( 'learn_press_single_quiz_sidebar_buttons' ) ) {
 	 */
 	function learn_press_single_quiz_sidebar_buttons() {
 		learn_press_get_template( 'single-quiz/sidebar-buttons.php' );
+	}
+}
+
+if ( !function_exists( 'learn_press_generate_template_information' ) ) {
+	function learn_press_generate_template_information( $template_name, $template_path, $located, $args ) {
+		$debug = learn_press_get_request( 'debug' );
+		if ( $debug == 'on' ) {
+			echo "<!-- Template Location:" . str_replace( array( LP_PLUGIN_PATH, ABSPATH ), '', $located ) . " -->";
+		}
 	}
 }

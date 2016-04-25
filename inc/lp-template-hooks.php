@@ -162,6 +162,8 @@ add_action( 'learn_press_after_single_quiz', 'learn_press_print_quiz_question_co
 
 add_action( 'learn_press_order_received', 'learn_press_order_details_table', 5 );
 
+add_action( 'learn_press_before_template_part', 'learn_press_generate_template_information', 999, 4 );
+
 return;
 
 /*****************************************************/

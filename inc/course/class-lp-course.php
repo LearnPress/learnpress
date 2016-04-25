@@ -119,7 +119,7 @@ class LP_Course extends LP_Abstract_Course {
 		$class_name = self::get_class_name_from_course_type( $course_type );
 
 		// Filter class name so that the class can be overridden if extended.
-		return apply_filters( 'learn_press_course_class', $class_name, $course_type, $post_type, $course_id );
+		return apply_filters( 'learn_press_course_object_class', $class_name, $course_type, $post_type, $course_id );
 	}
 
 	/**

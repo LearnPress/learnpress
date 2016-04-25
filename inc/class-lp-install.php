@@ -62,7 +62,7 @@ class LP_Install {
 
 	static function update_from_09() {
 
-		if ( !self::_has_new_table() ) {
+		if ( !self::_has_new_table() || version_compare( LEARNPRESS_DB_VERSION, get_option( 'learnpress_db_version' ), '>' ) ) {
 			//self::_create_tables();
 			self::install();
 		}
@@ -522,6 +522,7 @@ CREATE TABLE {$wpdb->prefix}learnpress_user_quizzes (
   user_quiz_id bigint(11) unsigned NOT NULL AUTO_INCREMENT,
   user_id bigint(11) unsigned NOT NULL DEFAULT '0',
   quiz_id bigint(11) unsigned NOT NULL DEFAULT '0',
+  course_id bigint(11) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (user_quiz_id)
 ) $collate;
 CREATE TABLE {$wpdb->prefix}learnpress_user_lessons (

@@ -38,6 +38,9 @@ abstract class LP_Abstract_Course {
 	 */
 	protected $_count_users = null;
 
+	/**
+	 * @var array
+	 */
 	protected static $_lessons = array();
 
 	/**

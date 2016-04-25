@@ -123,7 +123,7 @@ class LP_Abstract_User {
 		return false;
 	}
 
-	private function _create_quiz_history( $quiz_id ) {
+	private function _create_quiz_history( $quiz_id, $course_id = 0/* added 1.0.4 */ ) {
 
 		if ( empty( $this->_quiz_history_id ) ) {
 			global $wpdb;
@@ -137,8 +137,21 @@ class LP_Abstract_User {
 				),
 				array( '%d', '%d' )
 			);
-
 			$user_quiz_id = $wpdb->insert_id;
+
+			/**
+			 * Added 1.0.4
+			 */
+			@$wpdb->update(
+				$wpdb->learnpress_user_quizzes,
+				array(
+					'course_id' => $course_id
+				),
+				array( 'user_quiz_id' => $user_quiz_id ),
+				array( '%d' ),
+				array( '%d' )
+			);
+			//
 
 			$quiz              = new LP_Quiz( $quiz_id );
 			$quiz_questions    = $quiz->get_questions();

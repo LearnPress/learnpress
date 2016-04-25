@@ -1000,7 +1000,8 @@ class LP_Upgrade_From_09 {
 			return;
 		}
 		foreach ( $user_meta_rows as $user_meta ) {
-			$user_meta = $this->_parse_user_meta( $user_meta );
+			$user_meta     = $this->_parse_user_meta( $user_meta );
+			$new_course_id = 0;
 			if ( !empty( $user_meta->user_course ) && !empty( $user_meta->course_time ) ) {
 				foreach ( $user_meta->user_course as $course_id ) {
 					if ( !empty( self::$courses_map[$course_id] ) && !empty( $user_meta->course_time[$course_id] ) ) {
@@ -1065,6 +1066,19 @@ class LP_Upgrade_From_09 {
 					if ( !$user_quiz_id ) {
 						continue;
 					}
+					/**
+					 * Added 1.0.4
+					 */
+					@$wpdb->update(
+						$wpdb->learnpress_user_quizzes,
+						array(
+							'course_id' => $new_course_id
+						),
+						array( 'user_quiz_id' => $user_quiz_id ),
+						array( '%d' ),
+						array( '%d' )
+					);
+					//
 					learn_press_add_user_quiz_meta( $user_quiz_id, 'start', $time );
 					if ( !empty( $user_meta->quiz_completed ) ) {
 						if ( !empty( $user_meta->quiz_completed[$old_quiz_id] ) ) {
