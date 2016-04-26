@@ -968,6 +968,7 @@ function learn_press_course_profile_link( $course_id = 0 ) {
 	if ( !$course_id ) {
 		$course_id = get_the_ID();
 	}
+	$course_author = false;
 	if ( get_post( $course_id ) == 'lp_course' && $course_author = get_post_field( 'post_author', $course_id ) ) {
 		$link = learn_press_user_profile_link( $course_author );
 	}
@@ -2340,29 +2341,6 @@ function _learn_press_urlencode( $string ) {
 	return preg_replace( '/\s/', '+', $string );
 }
 
-/**
- * Get number of courses by search key
- *
- * @param $search_key
- *
- * @return int
- */
-if ( !function_exists( 'thim_get_courses_by_search_key' ) ) {
-	function thim_get_courses_by_search_key( $search_key ) {
-		$count = 0;
-		$query = new WP_Query( array(
-			'post_type'           => 'lp_course',
-			'ignore_sticky_posts' => true,
-			'posts_per_page'      => - 1,
-			's'                   => $search_key
-		) );
-
-		if ( !empty( $query->post_count ) ) {
-			$count = $query->post_count;
-		}
-		return $count;
-	}
-}
 /**
  * @param $template
  *
