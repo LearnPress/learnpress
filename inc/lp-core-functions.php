@@ -1634,58 +1634,80 @@ function learn_press_course_question_permalink_friendly( $permalink, $lesson_id,
 
 add_filter( 'learn_press_course_lesson_permalink', 'learn_press_course_lesson_permalink_friendly', 10, 3 );
 
-function become_a_teacher_handler() {
-	$name  = !empty( $_POST['bat_name'] ) ? $_POST['bat_name'] : null;
-	$email = !empty( $_POST['bat_email'] ) ? $_POST['bat_email'] : null;
-	$phone = !empty( $_POST['bat_phone'] ) ? $_POST['bat_phone'] : null;
 
-	$response = array(
-		'error' => array()
-	);
-
-	if ( !$name ) {
-		$response['error'][] = __( 'Please enter your name', 'learnpress' );
+function learn_press_user_maybe_is_a_teacher( $user = null ) {
+	if ( !$user ) {
+		$user = learn_press_get_current_user();
+	} else if ( is_numeric( $user ) ) {
+		$user = learn_press_get_user( $user );
 	}
-
-	if ( !$email ) {
-		$response['error'][] = __( 'Please enter your email address', 'learnpress' );
+	if ( !$user ) {
+		return false;
 	}
-
-	if ( !$phone ) {
-		//$response['error'][] = __( 'Please enter your phone number', 'learnpress' );
+	$role = in_array( 'administrator', $user->user->roles ) ? 'administrator' : false;
+	if ( !$role ) {
+		$role = in_array( 'lp_teacher', $user->user->roles ) ? 'lp_teacher' : false;
 	}
-	global $current_user;
-	get_currentuserinfo();
-
-	$to_email        = array( get_option( 'admin_email' ) );
-	$message_headers = '';
-	$subject         = 'Please moderate';
-	$notify_message  = sprintf( __( 'The user <a href="%s">%s</a> want to be a teacher.', 'learnpress' ), admin_url( 'user-edit.php?user_id=' . $current_user->ID ), $current_user->data->user_login ) . "\r\n";
-
-	$notify_message .= sprintf( __( 'Name: %s', 'learnpress' ), $name ) . "\r\n";
-	$notify_message .= sprintf( __( 'Email: %s', 'learnpress' ), $email ) . "\r\n";
-	$notify_message .= sprintf( __( 'Phone: %s', 'learnpress' ), $phone ) . "\r\n";
-	$notify_message .= wp_specialchars_decode( sprintf( __( 'Accept: %s', 'learnpress' ), admin_url( 'user-edit.php?user_id=' . $current_user->ID ) . '&action=accept-to-be-teacher' ) ) . "\r\n";
-
-	$args = array(
-		$to_email,
-		( $subject ),
-		$notify_message,
-		$message_headers
-	);
-
-	$return             = @call_user_func_array( 'wp_mail', $args );// $email, wp_specialchars_decode( $subject ), $notify_message, $message_headers );
-	$response['return'] = $return;
-	//$response['args']   = $args;
-	// $response['user']   = $current_user;
-	learn_press_send_json( $response );
-	die();
+	return apply_filters( 'learn_press_user_maybe_is_a_teacher', $role, $user->id );
 }
 
-add_action( 'learn_press_frontend_action_become_a_teacher', 'become_a_teacher_handler' );
+function learn_press_process_become_a_teacher_form( $args = null ) {
+	$user   = learn_press_get_current_user();
+	$error  = false;
+	$return = array(
+		'result' => 'success'
+	);
 
+	if ( !$error ) {
 
-function wpdev_141551_translate_user_roles( $translations, $text, $context, $domain ) {
+		$args = wp_parse_args(
+			$args,
+			array(
+				'name'  => null,
+				'email' => null,
+				'phone' => null
+			)
+		);
+
+		$return['message'] = array();
+
+		if ( !$args['name'] ) {
+			$return['message'][] = learn_press_get_message( __( 'Please enter your name', 'learnpress' ), 'error' );
+			$error               = true;
+		}
+
+		if ( !$args['email'] ) {
+			$return['message'][] = learn_press_get_message( __( 'Please enter your email address', 'learnpress' ), 'error' );
+			$error               = true;
+		}
+	}
+	if ( !$error ) {
+		$to_email        = array( get_option( 'admin_email' ) );
+		$message_headers = '';
+		$subject         = __( 'Please moderate', 'learnpress' );
+		$notify_message  = sprintf( __( 'The user <a href="%s">%s</a> want to be a teacher.', 'learnpress' ), admin_url( 'user-edit.php?user_id=' . $user->id ), $user->user_login ) . "\r\n";
+
+		$notify_message .= sprintf( __( 'Name: %s', 'learnpress' ), $args['name'] ) . "\r\n";
+		$notify_message .= sprintf( __( 'Email: %s', 'learnpress' ), $args['email'] ) . "\r\n";
+		$notify_message .= sprintf( __( 'Phone: %s', 'learnpress' ), $args['phone'] ) . "\r\n";
+		$notify_message .= wp_specialchars_decode( sprintf( __( 'Accept: %s', 'learnpress' ), wp_nonce_url( admin_url( 'user-edit.php?user_id=' . $user->id ) . '&action=accept-to-be-teacher', 'accept-to-be-teacher' ) ) ) . "\r\n";
+		$args = array(
+			$to_email,
+			( $subject ),
+			$notify_message,
+			$message_headers
+		);
+
+		@call_user_func_array( 'wp_mail', $args );
+		$return['message'][] = learn_press_get_message( __( 'Your request has been sent! We will get in touch with you soon!', 'learnpress' ) );
+
+		set_transient( 'learn_press_become_teacher_sent_' . $user->id, 'yes', HOUR_IN_SECONDS * 2 );
+	}
+	$return['result'] = $error ? 'error' : 'success';
+	return $return;
+}
+
+function _learn_press_translate_user_roles( $translations, $text, $context, $domain ) {
 
 	$plugin_domain = 'learnpress';
 
@@ -1704,7 +1726,7 @@ function wpdev_141551_translate_user_roles( $translations, $text, $context, $dom
 	return $translations;
 }
 
-add_filter( 'gettext_with_context', 'wpdev_141551_translate_user_roles', 10, 4 );
+add_filter( 'gettext_with_context', '_learn_press_translate_user_roles', 10, 4 );
 
 /**
  * @param mixed
@@ -2270,18 +2292,149 @@ function learn_press_get_log_file_path( $handle ) {
 
 function learn_press_front_scripts() {
 	if ( is_admin() ) {
-		return;
+		//return;
 	}
 	$js = array(
 		'ajax'        => admin_url( 'admin-ajax.php' ),
 		'plugin_url'  => LP()->plugin_url(),
 		'siteurl'     => home_url(),
-		'current_url' => learn_press_get_current_url()
+		'current_url' => learn_press_get_current_url(),
 	);
 	echo '<script type="text/javascript">var LearnPress_Settings = ' . json_encode( $js ) . '</script>';
 }
 
 add_action( 'wp_print_scripts', 'learn_press_front_scripts' );
+
+function learn_press_set_user_timezone() {
+	?>
+	<script type="text/javascript">
+		(function (factory) {
+			if (typeof define === 'function' && define.amd) {
+				// AMD (Register as an anonymous module)
+				define(['jquery'], factory);
+			} else if (typeof exports === 'object') {
+				// Node/CommonJS
+				module.exports = factory(require('jquery'));
+			} else {
+				// Browser globals
+				factory(jQuery);
+			}
+		}(function ($) {
+
+			var pluses = /\+/g;
+
+			function encode(s) {
+				return config.raw ? s : encodeURIComponent(s);
+			}
+
+			function decode(s) {
+				return config.raw ? s : decodeURIComponent(s);
+			}
+
+			function stringifyCookieValue(value) {
+				return encode(config.json ? JSON.stringify(value) : String(value));
+			}
+
+			function parseCookieValue(s) {
+				if (s.indexOf('"') === 0) {
+					// This is a quoted cookie as according to RFC2068, unescape...
+					s = s.slice(1, -1).replace(/\\"/g, '"').replace(/\\\\/g, '\\');
+				}
+
+				try {
+					// Replace server-side written pluses with spaces.
+					// If we can't decode the cookie, ignore it, it's unusable.
+					// If we can't parse the cookie, ignore it, it's unusable.
+					s = decodeURIComponent(s.replace(pluses, ' '));
+					return config.json ? JSON.parse(s) : s;
+				} catch (e) {
+				}
+			}
+
+			function read(s, converter) {
+				var value = config.raw ? s : parseCookieValue(s);
+				return $.isFunction(converter) ? converter(value) : value;
+			}
+
+			var config = $.cookie = function (key, value, options) {
+
+				// Write
+
+				if (arguments.length > 1 && !$.isFunction(value)) {
+					options = $.extend({}, config.defaults, options);
+
+					if (typeof options.expires === 'number') {
+						var days = options.expires, t = options.expires = new Date();
+						t.setMilliseconds(t.getMilliseconds() + days * 864e+5);
+					}
+
+					return (document.cookie = [
+						encode(key), '=', stringifyCookieValue(value),
+						options.expires ? '; expires=' + options.expires.toUTCString() : '', // use expires attribute, max-age is not supported by IE
+						options.path ? '; path=' + options.path : '',
+						options.domain ? '; domain=' + options.domain : '',
+						options.secure ? '; secure' : ''
+					].join(''));
+				}
+
+				// Read
+
+				var result = key ? undefined : {},
+				// To prevent the for loop in the first place assign an empty array
+				// in case there are no cookies at all. Also prevents odd result when
+				// calling $.cookie().
+					cookies = document.cookie ? document.cookie.split('; ') : [],
+					i = 0,
+					l = cookies.length;
+
+				for (; i < l; i++) {
+					var parts = cookies[i].split('='),
+						name = decode(parts.shift()),
+						cookie = parts.join('=');
+
+					if (key === name) {
+						// If second argument (value) is a function it's a converter...
+						result = read(cookie, value);
+						break;
+					}
+
+					// Prevent storing a cookie that we couldn't decode.
+					if (!key && (cookie = read(cookie)) !== undefined) {
+						result[name] = cookie;
+					}
+				}
+
+				return result;
+			};
+
+			config.defaults = {};
+
+			$.removeCookie = function (key, options) {
+				// Must not alter options, thus extending a fresh object...
+				$.cookie(key, '', $.extend({}, options, {expires: -1}));
+				return !$.cookie(key);
+			};
+
+		}));
+		jQuery.cookie('timezone', new Date().getTimezoneOffset());
+	</script>
+	<?php
+}
+
+add_action( 'admin_head', 'learn_press_set_user_timezone' );
+
+function learn_press_user_time( $time, $format = 'timestamp' ) {
+	if ( is_string( $time ) ) {
+		$time = @strtotime( $time );
+	}
+	$time = $time + ( get_option( 'gmt_offset' ) - $_COOKIE['timezone'] / 60 ) * HOUR_IN_SECONDS;
+	switch ( $format ) {
+		case 'timestamp':
+			return $time;
+		default:
+			return date( 'Y-m-d H:i:s', $time );
+	}
+}
 
 function learn_press_get_current_version() {
 	$data = get_plugin_data( LP_PLUGIN_FILE, $markup = true, $translate = true );

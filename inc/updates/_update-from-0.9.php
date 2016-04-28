@@ -1211,7 +1211,7 @@ class LP_Upgrade_From_09 {
 			$options = explode( ' ', 'currency currency_pos thousands_separator decimals_separator number_of_decimals instructor_registration' );
 			foreach ( $options as $o ) {
 				if ( array_key_exists( $o, $_lpr_settings_general ) ) {
-					update_option( 'learn_press_' . $o, $_lpr_settings_general[$o] );
+					add_option( 'learn_press_' . $o, $_lpr_settings_general[$o] );
 				}
 			}
 		}
@@ -1221,13 +1221,13 @@ class LP_Upgrade_From_09 {
 			foreach ( $payments as $payment => $options ) {
 				if ( $payment == 'paypal' ) {
 					if ( !empty( $options['enable'] ) && $options['enable'] == 'on' ) {
-						update_option( 'learn_press_paypal_enable', 'yes' );
+						add_option( 'learn_press_paypal_enable', 'yes' );
 					} else {
-						update_option( 'learn_press_paypal_enable', 'no' );
+						add_option( 'learn_press_paypal_enable', 'no' );
 					}
-					update_option( 'learn_press_paypal_email', !empty( $options['paypal_email'] ) ? $options['paypal_email'] : '' );
-					update_option( 'learn_press_paypal_sandbox_email', !empty( $options['paypal_sandbox_email'] ) ? $options['paypal_sandbox_email'] : '' );
-					update_option( 'learn_press_paypal_sandbox', !empty( $options['sandbox'] ) ? 'yes' : 'no' );
+					add_option( 'learn_press_paypal_email', !empty( $options['paypal_email'] ) ? $options['paypal_email'] : '' );
+					add_option( 'learn_press_paypal_sandbox_email', !empty( $options['paypal_sandbox_email'] ) ? $options['paypal_sandbox_email'] : '' );
+					add_option( 'learn_press_paypal_sandbox', !empty( $options['sandbox'] ) ? 'yes' : 'no' );
 				}
 			}
 		}
@@ -1283,7 +1283,7 @@ class LP_Upgrade_From_09 {
 							}
 						}
 					}
-					update_option( $emails[$email_type][0], $new_email );
+					add_option( $emails[$email_type][0], $new_email );
 				} elseif ( $email_type == 'general' ) {
 					$new_email               = wp_parse_args(
 						get_option( 'learn_press_emails_general' ),
@@ -1294,7 +1294,7 @@ class LP_Upgrade_From_09 {
 					);
 					$new_email['from_name']  = !empty( $email['from_name'] ) ? $email['from_name'] : $new_email['from_name'];
 					$new_email['from_email'] = !empty( $email['from_email'] ) ? $email['from_email'] : $new_email['from_email'];
-					update_option( 'learn_press_emails_general', $new_email );
+					add_option( 'learn_press_emails_general', $new_email );
 				}
 			}
 		}
@@ -1362,8 +1362,8 @@ class LP_Upgrade_From_09 {
 			}
 		}
 
-		wp_enqueue_style( 'learn-press-upgrade-x', LP()->plugin_url( 'inc/updates/0.9/style.css' ), array( 'dashicons', 'install' ) );
-		wp_enqueue_script( 'learn-press-upgrade-x', LP()->plugin_url( 'inc/updates/0.9/script.js' ), array( 'jquery' ) );
+		wp_enqueue_style( 'learn-press-upgrade-x', LP()->plugin_url( 'inc/updates/09/style.css' ), array( 'dashicons', 'install' ) );
+		wp_enqueue_script( 'learn-press-upgrade-x', LP()->plugin_url( 'inc/updates/09/script.js' ), array( 'jquery' ) );
 
 		add_action( 'learn_press_update_step_welcome', array( $this, 'update_welcome' ) );
 		add_action( 'learn_press_update_step_upgraded', array( $this, 'update_upgraded' ) );

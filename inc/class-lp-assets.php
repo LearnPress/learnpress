@@ -24,9 +24,14 @@ class LP_Assets extends LP_Abstract_Assets {
 	static function init() {
 		parent::$caller = __CLASS__;
 		add_action( 'learn_press_print_assets', array( __CLASS__, '_print_assets' ) );
+		add_action( 'wp_footer', array( __CLASS__, 'footer_scripts' ) );
 		/*add_filter( 'script_loader_src', array( __CLASS__, 'script_loader_src' ), 10, 2 );
 		add_action( 'learn_press_settings_save_general', array( __CLASS__, '_minify_source' ) );*/
 		parent::init();
+	}
+
+	static function footer_scripts() {
+		global $wp_scripts;
 	}
 
 	static function script_loader_src( $src, $handle ) {
@@ -122,6 +127,9 @@ class LP_Assets extends LP_Abstract_Assets {
 		// checkout page
 		self::add_script( 'checkout', learn_press_plugin_url( 'assets/js/frontend/checkout.js' ) );
 
+		// become teacher
+		self::add_script( 'become-teacher', learn_press_plugin_url( 'assets/js/frontend/become-teacher.js' ) );
+
 	}
 
 	static function _print_assets() {
@@ -144,8 +152,8 @@ class LP_Assets extends LP_Abstract_Assets {
 		if ( learn_press_is_course() ) {
 			self::enqueue_script( 'single-course' );
 			$course = LP()->course;
-			if ( $course && $course->is_free() && LP()->settings->get( 'no_checkout_free_course' ) == 'yes' ) {}
-			else{
+			if ( $course && $course->is_free() && LP()->settings->get( 'no_checkout_free_course' ) == 'yes' ) {
+			} else {
 				self::enqueue_script( 'learn-press-add-to-cart' );
 			}
 		}
@@ -169,6 +177,7 @@ class LP_Assets extends LP_Abstract_Assets {
 			self::enqueue_script( 'learn-press' );
 		}
 		do_action( 'learn_press_frontend_after_load_assets' );
+
 	}
 }
 

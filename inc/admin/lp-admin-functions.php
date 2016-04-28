@@ -1102,10 +1102,12 @@ function learn_press_accept_become_a_teacher() {
 	$user_id = !empty( $_REQUEST['user_id'] ) ? $_REQUEST['user_id'] : '';
 	if ( !$action || !$user_id || ( $action != 'accept-to-be-teacher' ) ) return;
 
-	$be_teacher = new WP_User( $user_id );
-	$be_teacher->set_role( LP()->teacher_role );
-
-	do_action( 'learn_press_user_become_a_teacher', $user_id );
+	if ( !learn_press_user_maybe_is_a_teacher( $user_id ) ) {
+		$be_teacher = new WP_User( $user_id );
+		$be_teacher->set_role( LP()->teacher_role );
+		delete_transient( 'learn_press_become_teacher_sent_' . $user_id );
+		do_action( 'learn_press_user_become_a_teacher', $user_id );
+	}
 }
 
 add_action( 'admin_notices', 'learn_press_accept_become_a_teacher' );

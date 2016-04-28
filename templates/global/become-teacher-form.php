@@ -11,7 +11,7 @@ $method  = $atts['method'];
 $request = $method == 'post' ? $_POST : $_REQUEST;
 ?>
 <div class="become-teacher-form">
-	<form name="become_teacher_form" method="<?php echo $method; ?>" enctype="multipart/form-data" action="<?php echo $atts['action']; ?>">
+	<form id="<?php echo $form_id; ?>" name="become-teacher-form" method="<?php echo $method; ?>" enctype="multipart/form-data" action="<?php echo $atts['action']; ?>">
 		<?php if ( $fields ): ?>
 			<ul>
 				<?php foreach ( $fields as $name => $option ): ?>
@@ -49,8 +49,8 @@ $request = $method == 'post' ? $_POST : $_REQUEST;
 					</li>
 				<?php endforeach; ?>
 			</ul>
-			<input type="hidden" name="action" value="become_a_teacher" />
-			<button type="submit"><?php echo $atts['submit_button_text']; ?></button>
+			<input type="hidden" name="lp-ajax" value="become-a-teacher" />
+			<button type="submit" data-text="<?php echo esc_attr( $atts['submit_button_text'] ); ?>" data-text-process="<?php esc_attr_e( 'Processing', 'learnpress' ); ?>"><?php echo esc_html( $atts['submit_button_text'] ); ?></button>
 		<?php endif; ?>
 	</form>
 </div>

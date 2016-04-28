@@ -4,7 +4,6 @@
 	<meta name="viewport" content="width=device-width" />
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title><?php printf( __( 'LearnPress update version %s', 'learnpress' ), learn_press_get_current_version() ); ?></title>
-	<?php wp_print_scripts( 'wc-setup' ); ?>
 	<?php do_action( 'admin_print_styles' ); ?>
 	<?php do_action( 'admin_print_scripts' ); ?>
 	<?php do_action( 'admin_head' ); ?>

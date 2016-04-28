@@ -63,6 +63,17 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			learn_press_send_json( $result );
 		}
 
+		static function _request_become_a_teacher() {
+			$response = learn_press_process_become_a_teacher_form(
+				array(
+					'name'  => learn_press_get_request( 'bat_name' ),
+					'email' => learn_press_get_request( 'bat_email' ),
+					'phone' => learn_press_get_request( 'bat_phone' )
+				)
+			);
+			learn_press_send_json( $response );
+		}
+
 		static function _request_checkout() {
 			return LP()->checkout->process_checkout();
 		}

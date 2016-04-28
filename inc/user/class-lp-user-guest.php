@@ -15,7 +15,8 @@ class LP_User_Guest extends LP_Abstract_User {
 	 * @param $the_user
 	 */
 	function __construct( $the_user ) {
-		$this->id = $the_user;
+		$this->id   = $the_user;
+		$this->user = new WP_User( 0 );
 	}
 
 	/**

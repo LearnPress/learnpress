@@ -906,6 +906,13 @@ function learn_press_display_message( $message, $type = 'success' ) {
 	LP_Session::set( 'notices', $notices );
 }
 
+function learn_press_get_message( $message, $type = 'success' ) {
+	ob_start();
+	learn_press_display_message( $message, $type );
+	$message = ob_get_clean();
+	return $message;
+}
+
 /**
  * Print out the message stored in the queue
  */

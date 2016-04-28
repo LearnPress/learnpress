@@ -86,6 +86,10 @@ class LP_Shortcodes {
 				if ( !preg_match( '/\[learn_press_cart\s?(.*)\]/', $post->post_content ) ) {
 					$post->post_content .= '[learn_press_cart]';
 				}
+			} elseif ( $page_id == learn_press_get_page_id( 'become_a_teacher' ) ) {
+				if ( !preg_match( '/\[learn_press_become_teacher_form\s?(.*)\]/', $post->post_content ) ) {
+					$post->post_content .= '[learn_press_become_teacher_form]';
+				}
 			}
 		}
 		return $template;
@@ -174,118 +178,75 @@ class LP_Shortcodes {
 	 * Display a form let the user can be join as a teacher
 	 */
 	static function become_teacher_form( $atts ) {
-		global $current_user;
-
-		$user = new WP_User( $current_user->ID );
-
+		$user   = learn_press_get_current_user();
 		$return = array(
 			'error' => false
 		);
 
-		if ( in_array( LP()->teacher_role, $user->roles ) ) {
-			$return['message'] = __( "You are a teacher now", 'learnpress' );
+		if ( in_array( LP()->teacher_role, $user->user->roles ) ) {
+			$return['message'] = learn_press_get_message( __( "You are a teacher now", 'learnpress' ) );
 			$return['error']   = true;
 			$return['code']    = 1;
+		} elseif ( get_transient( 'learn_press_become_teacher_sent_' . $user->id ) == 'yes' ) {
+			$return['message'] = learn_press_get_message( __( 'Your request has been sent! We will get in touch with you soon!', 'learnpress' ) );
+			$return['error']   = true;
+			$return['code']    = 3;
 		}
 
 		if ( !is_user_logged_in() ) {
-			$return['message'] = __( "Please login to fill out this form", 'learnpress' );
+			$return['message'] = learn_press_get_message( __( "Please login to fill out this form", 'learnpress' ) );
 			$return['error']   = true;
 			$return['code']    = 2;
-		}
-
-		if ( !empty( $_REQUEST['become-a-teacher-send'] ) ) {
-			$return['message'] = __( 'Your request has been sent! We will get in touch with you soon!', 'learnpress' );
-			$return['error']   = true;
-			$return['code']    = 3;
 		}
 
 		if ( !apply_filters( 'learn_press_become_a_teacher_display_form', !$return['error'], $return ) ) {
 			return $return['message'];
 		}
 
-		get_currentuserinfo();
-		$atts   = shortcode_atts(
-			array(
-				'method'             => 'post',
-				'action'             => '',
-				'title'              => __( 'Become a Teacher', 'learnpress' ),
-				'description'        => __( 'Fill out your information and send to us to become a teacher', 'learnpress' ),
-				'submit_button_text' => __( 'Submit', 'learnpress' )
-			),
-			$atts
-		);
-		$fields = array(
-			'bat_name'  => array(
-				'title'       => __( 'Name', 'learnpress' ),
-				'type'        => 'text',
-				'placeholder' => __( 'Your name', 'learnpress' ),
-				'def'         => $current_user->display_name
-			),
-			'bat_email' => array(
-				'title'       => __( 'Email', 'learnpress' ),
-				'type'        => 'email',
-				'placeholder' => __( 'Your email address', 'learnpress' ),
-				'def'         => $current_user->user_email
-			),
-			'bat_phone' => array(
-				'title'       => __( 'Phone', 'learnpress' ),
-				'type'        => 'text',
-				'placeholder' => __( 'Your phone number', 'learnpress' )
-			)
-		);
-		$fields = apply_filters( 'learn_press_become_teacher_form_fields', $fields );
-		ob_start();
-		$form_template = learn_press_locate_template( 'global/become-teacher-form.php' );
-		if ( file_exists( $form_template ) ) {
-			require $form_template;
+		if ( learn_press_user_maybe_is_a_teacher() ) {
+			$html = learn_press_get_message( __( 'Your role is allowed to create a course', 'learnpress' ) );
+		} else {
+			$atts   = shortcode_atts(
+				array(
+					'method'             => 'post',
+					'action'             => '',
+					'title'              => __( 'Become a Teacher', 'learnpress' ),
+					'description'        => __( 'Fill out your information and send to us to become a teacher', 'learnpress' ),
+					'submit_button_text' => __( 'Submit', 'learnpress' )
+				),
+				$atts
+			);
+			$fields = array(
+				'bat_name'  => array(
+					'title'       => __( 'Name', 'learnpress' ),
+					'type'        => 'text',
+					'placeholder' => __( 'Your name', 'learnpress' ),
+					'def'         => $user->display_name
+				),
+				'bat_email' => array(
+					'title'       => __( 'Email', 'learnpress' ),
+					'type'        => 'email',
+					'placeholder' => __( 'Your email address', 'learnpress' ),
+					'def'         => $user->user_email
+				),
+				'bat_phone' => array(
+					'title'       => __( 'Phone', 'learnpress' ),
+					'type'        => 'text',
+					'placeholder' => __( 'Your phone number', 'learnpress' )
+				)
+			);
+			$fields = apply_filters( 'learn_press_become_teacher_form_fields', $fields );
+			ob_start();
+			$form_template = learn_press_locate_template( 'global/become-teacher-form.php' );
+			$form_id       = uniqid( 'become-teacher-form-' );
+			if ( file_exists( $form_template ) ) {
+				require $form_template;
+			}
+
+			$html = ob_get_clean();
+
+			LP_Assets::enqueue_script( 'become-teacher' );
 		}
-
-		$html = ob_get_clean();
-		ob_start();
-		?>
-		<script>
-			$('form[name="become_teacher_form"]').submit(function () {
-				var $form = $(this);
-				$form.siblings('.error-message').fadeOut('fast', function () {
-					$(this).remove()
-				});
-				if ($form.triggerHandler('become_teacher_send') !== false) {
-					$.ajax({
-						url     : $form.attr('action'),
-						data    : $form.serialize(),
-						dataType: 'html',
-						type    : 'post',
-						success : function (code) {
-							if (code.indexOf('<!-- LP_AJAX_START -->') >= 0)
-								code = code.split('<!-- LP_AJAX_START -->')[1];
-
-							if (code.indexOf('<!-- LP_AJAX_END -->') >= 0)
-								code = code.split('<!-- LP_AJAX_END -->')[0];
-							var result = $.parseJSON(code);
-							return;
-							if (!result.error.length) {
-								var url = window.location.href;
-								if (url.indexOf('?') != -1) url += '&'
-								else url += '?';
-
-								url += 'become-a-teacher-send=1';
-								window.location.href = url;
-							} else {
-								$.each(result.error, function () {
-									$('<p class="error-message">' + this + '</p>').insertBefore($form);
-								})
-							}
-						}
-					});
-				}
-				return false;
-			});
-		</script>
-		<?php
-		$js = preg_replace( '!</?script>!', '', ob_get_clean() );
-		//$js = preg_replace( '!\s+|\t+!', ' ', $js );
-		learn_press_enqueue_script( $js );
 		return $html;
 	}
 

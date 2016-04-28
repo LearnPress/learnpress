@@ -1128,7 +1128,10 @@ class LP_Abstract_User {
 			$results['empty_percent_percent'] = $results['empty'] / $total_questions * 100;
 		}
 		$results['user_time'] = $this->_calculate_quiz_time( $quiz, $progress );
-		return $results;
+		if ( $results['quiz_mark'] ) {
+			$results['mark_percent'] = $results['mark'] / $results['quiz_mark'] * 100;
+		}
+		return apply_filters( 'learn_press_evaluate_quiz_results', $results, $quiz_id, $this->id );
 	}
 
 	private function _calculate_quiz_time( $quiz, $progress ) {

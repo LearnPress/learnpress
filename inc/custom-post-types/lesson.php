@@ -15,7 +15,7 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 			$post_type_name = 'lp_lesson';
 			add_filter( 'manage_' . $post_type_name . '_posts_columns', array( $this, 'columns_head' ) );
 			add_action( 'manage_' . $post_type_name . '_posts_custom_column', array( $this, 'columns_content' ), 10, 2 );
-			add_action( 'save_post_' . $post_type_name, array( $this, 'update_lesson_meta' ) );
+			////add_action( 'save_post_' . $post_type_name, array( $this, 'update_lesson_meta' ) );
 
 			// filter
 			add_filter( 'posts_fields', array( $this, 'posts_fields' ) );
