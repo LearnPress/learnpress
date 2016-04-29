@@ -1107,21 +1107,26 @@ function learn_press_accept_become_a_teacher() {
 		$be_teacher->set_role( LP()->teacher_role );
 		delete_transient( 'learn_press_become_teacher_sent_' . $user_id );
 		do_action( 'learn_press_user_become_a_teacher', $user_id );
+		$redirect = add_query_arg( 'become-a-teacher-accepted', 'yes' );
+		$redirect = remove_query_arg( 'action', $redirect );
+		wp_redirect( $redirect );
 	}
 }
 
-add_action( 'admin_notices', 'learn_press_accept_become_a_teacher' );
+add_action( 'plugins_loaded', 'learn_press_accept_become_a_teacher' );
 
-function learn_press_user_become_a_teacher_notice( $user_id ) {
-	$user = new WP_User( $user_id );
-	?>
-	<div class="updated">
-		<p><?php printf( __( 'The user %s has become a teacher', 'learnpress' ), $user->user_login ); ?></p>
-	</div>
-	<?php
+function learn_press_user_become_a_teacher_notice() {
+	if ( $user_id = learn_press_get_request( 'user_id' ) && learn_press_get_request( 'become-a-teacher-accepted' ) == 'yes' ) {
+		$user = new WP_User( $user_id );
+		?>
+		<div class="updated">
+			<p><?php printf( __( 'The user %s has become a teacher', 'learnpress' ), $user->user_login ); ?></p>
+		</div>
+		<?php
+	}
 }
 
-add_action( 'learn_press_user_become_a_teacher', 'learn_press_user_become_a_teacher_notice' );
+add_action( 'admin_notices', 'learn_press_user_become_a_teacher_notice' );
 
 /**
  * Check to see if a plugin is already installed or not

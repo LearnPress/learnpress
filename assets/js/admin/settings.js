@@ -99,29 +99,29 @@
 				$(this).siblings('a').trigger('click')
 			}
 		});
-		/*$('#learn-press-admin-settings').on('click', '.nav-tab, .subsubsub > li > a', function (e) {
-		 e.preventDefault();
-		 var redirect = $(this).attr('href'),
-		 data = $('#mainform').serialize();
-		 if (data != oldData) {
-		 $('#learn-press-updating-message').show();
-		 $.ajax({
-		 url     : window.location.href,
-		 data    : data,
-		 type    : 'post',
-		 dataType: 'html',
-		 success : function (res) {
-		 $('#learn-press-updating-message').hide();
-		 $('#learn-press-updated-message').show();
-		 window.location.href = redirect;
-		 }
-		 });
-		 } else {
-		 window.location.href = redirect;
-		 }
-		 });
-		 // hold current settings to know if user changed anything
-		 oldData = $('#mainform').serialize();*/
+		$('#learn-press-admin-settings').on('click', '.nav-tab, .subsubsub > li > a', function (e) {
+			e.preventDefault();
+			var redirect = $(this).attr('href'),
+				data = $('#mainform').serialize();
+			if (data != oldData) {
+				$('#learn-press-updating-message').show();
+				$.ajax({
+					url     : window.location.href,
+					data    : data,
+					type    : 'post',
+					dataType: 'html',
+					success : function (res) {
+						$('#learn-press-updating-message').hide();
+						$('#learn-press-updated-message').show();
+						window.location.href = redirect;
+					}
+				});
+			} else {
+				window.location.href = redirect;
+			}
+		});
+		// hold current settings to know if user changed anything
+		oldData = $('#mainform').serialize();
 	}
 
 	$doc.ready(_ready);

@@ -649,7 +649,34 @@ abstract class LP_Abstract_Course {
 	 */
 	function is_purchasable() {
 		// TODO: needs to check more criteria, currently only check if this course is required enrollment
-		return $this->required_enroll == 'yes';
+		$is_purchasable = $this->required_enroll == 'yes';
+		if ( $is_purchasable ) {
+			$count_in_order = $this->count_in_order( array( 'completed', 'processing' ) );
+			$is_purchasable = $is_purchasable && ( $count_in_order < $this->max_students );
+		}
+		return apply_filters( 'learn_press_item_is_purchasable', $is_purchasable, $this->id );
+	}
+
+	function count_in_order( $statuses = 'completed' ) {
+		global $wpdb;
+		settype( $statuses, 'array' );
+		foreach ( $statuses as $k => $v ) {
+			if ( !preg_match( '/^lp-/', $v ) ) {
+				$statuses[$k] = 'lp-' . $v;
+			}
+		}
+		$in_clause = join( ',', array_fill( 0, sizeof( $statuses ), '%s' ) );
+		$query     = $wpdb->prepare( "
+			SELECT count(oim.meta_id)
+			FROM {$wpdb->learnpress_order_itemmeta} oim
+			INNER JOIN {$wpdb->learnpress_order_items} oi ON oi.order_item_id = oim.learnpress_order_item_id
+				AND oim.meta_key = %s
+				AND oim.meta_value = %d
+			INNER JOIN {$wpdb->posts} o ON o.ID = oi.order_id
+			WHERE o.post_type = %s
+			AND o.post_status IN ($in_clause)
+		", array_merge( array( '_course_id', $this->id, 'lp_order' ), $statuses ) );
+		return $wpdb->get_var( $query );
 	}
 
 	function need_payment() {

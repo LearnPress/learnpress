@@ -649,6 +649,15 @@ if ( !function_exists( 'learn_press_single_quiz_title' ) ) {
 	}
 }
 
+if ( !function_exists( 'learn_press_single_quiz_preview_mode' ) ) {
+	/**
+	 * Output the title of the quiz
+	 */
+	function learn_press_single_quiz_preview_mode() {
+		learn_press_get_template( 'single-quiz/preview-mode.php' );
+	}
+}
+
 if ( !function_exists( 'learn_press_single_quiz_description' ) ) {
 	/**
 	 * Output the content of the quiz
@@ -1248,4 +1257,68 @@ if ( !function_exists( 'learn_press_generate_template_information' ) ) {
 			echo "<!-- Template Location:" . str_replace( array( LP_PLUGIN_PATH, ABSPATH ), '', $located ) . " -->";
 		}
 	}
+}
+
+add_filter( 'template_include', 'learn_press_permission_view_quiz', 100 );
+function learn_press_permission_view_quiz( $template ) {
+
+	// if is not in single quiz
+	if ( !learn_press_is_quiz() ) {
+		return $template;
+	}
+
+	// If user haven't got permission
+	if ( !current_user_can( 'edit-lp_quiz' ) ) {
+		switch ( LP()->settings->get( 'quiz_restrict_access' ) ) {
+			case 'custom':
+				$template = learn_press_locate_template( 'global/restrict-access.php' );
+				break;
+			default:
+				learn_press_404_page();
+		}
+	}
+
+	return $template;
+}
+
+add_filter( 'template_include', 'learn_press_template_loader' );
+function learn_press_template_loader( $template ) {
+	$file           = '';
+	$theme_template = learn_press_template_path();
+	if ( ( $page_id = learn_press_get_page_id( 'taken_course_confirm' ) ) && is_page( $page_id ) ) {
+		if ( !learn_press_user_can_view_order( !empty( $_REQUEST['order_id'] ) ? $_REQUEST['order_id'] : 0 ) ) {
+			learn_press_404_page();
+		}
+		global $post;
+		$post->post_content = '[learn_press_confirm_order]';
+	} elseif ( ( $page_id = learn_press_get_page_id( 'become_teacher_form' ) ) && is_page( $page_id ) ) {
+		global $post;
+
+		$post->post_content = '[learn_press_become_teacher_form]';
+	} else {
+		if ( is_post_type_archive( LP()->course_post_type ) || ( ( $page_id = learn_press_get_page_id( 'courses' ) ) && is_page( $page_id ) ) || ( is_tax( 'course_category' ) ) ) {
+			$file   = 'archive-course.php';
+			$find[] = $file;
+			$find[] = "{$theme_template}/{$file}";
+		} else {
+			if ( learn_press_is_course() ) {
+				$file   = 'single-course.php';
+				$find[] = $file;
+				$find[] = "{$theme_template}/{$file}";
+			} elseif ( learn_press_is_quiz() ) {
+				$file   = 'single-quiz.php';
+				$find[] = $file;
+				$find[] = "{$theme_template}/{$file}";
+			}
+		}
+	}
+
+	if ( $file ) {
+		$template = locate_template( array_unique( $find ) );
+		if ( !$template ) {
+			$template = learn_press_plugin_path( 'templates/' ) . $file;
+		}
+	}
+
+	return $template;
 }

@@ -75,6 +75,24 @@ class LP_Quiz_Factory {
 
 		LP()->set_object( 'quiz', $quiz, true );
 		$user = learn_press_get_current_user();
+
+		if ( $quiz->is_require_enrollment() && $user->is( 'guest' ) ) {
+			learn_press_send_json(
+				array(
+					'result'  => 'error',
+					'message' => array( 'title' => __( 'Error', 'learnpress' ), 'message' => __( 'You need to login to do this quiz.', 'learnpress' ) )
+				)
+			);
+		}
+
+		if ( learn_press_get_request( 'preview' ) == 'true' ) {
+			learn_press_send_json(
+				array(
+					'result'  => 'error',
+					'message' => array( 'title' => __( 'Error', 'learnpress' ), 'message' => __( 'You can not start quiz in preview mode.', 'learnpress' ) )
+				)
+			);
+		}
 		if ( $quiz->is_require_enrollment() && $user->is( 'guest' ) ) {
 			learn_press_send_json(
 				array(

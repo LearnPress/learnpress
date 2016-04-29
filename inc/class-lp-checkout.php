@@ -210,6 +210,17 @@ class LP_Checkout {
 				LP()->session->set( 'chosen_payment_method', $this->payment_method );
 			}
 
+			foreach ( LP()->cart->get_items() as $item ) {
+				$item = LP_Course::get_course( $item['item_id'] );
+				if ( !$item ) {
+					$success = false;
+					learn_press_add_notice( __( 'Item %s does not exists.', 'learnpress' ), 'error' );
+				} elseif ( !$item->is_purchasable() ) {
+					learn_press_add_notice( sprintf( __( 'Item "%s" is not purchasable.', 'learnpress' ), get_the_title( $item->id ) ), 'error' );
+					$success = false;
+				}
+			}
+
 			if ( $success && LP()->cart->needs_payment() ) {
 				// Payment Method
 				$available_gateways = LP_Gateways::instance()->get_available_payment_gateways();

@@ -126,7 +126,7 @@ add_action( 'learn_press_after_profile_tab_own_loop_course', 'learn_press_after_
 // Single Quiz
 //add_action( 'learn_press_before_content_in_single_quiz', 'learn_press_single_quiz_content_start_wrap' );
 //add_action( 'learn_press_before_content_in_single_quiz', 'learn_press_single_quiz_content_before_content' );
-
+add_action( 'learn_press_single_quiz_summary', 'learn_press_single_quiz_preview_mode', 0 );
 add_action( 'learn_press_single_quiz_summary', 'learn_press_single_quiz_title', 5 );
 add_action( 'learn_press_single_quiz_summary', 'learn_press_single_quiz_description', 10 );
 add_action( 'learn_press_single_quiz_summary', 'learn_press_single_quiz_left_start_wrap', 15 );
