@@ -83,6 +83,9 @@ abstract class LP_Abstract_Course {
 	 * @return mixed
 	 */
 	public function __get( $key ) {
+		if ( strcasecmp( $key, 'ID' ) == 0 ) {
+			$key = strtolower( $key );
+		}
 		if ( empty( $this->{$key} ) ) {
 			$value = false;
 			switch ( $key ) {
@@ -704,7 +707,7 @@ abstract class LP_Abstract_Course {
 		switch ( get_post_type( $item_id ) ) {
 			case 'lp_quiz':
 			case 'lp_lesson':
-				$permalink = get_the_permalink( $this->ID );
+				$permalink = get_the_permalink( $this->id );
 
 				$post_name = get_post_field( 'post_name', $item_id );
 				$prefix    = "{$item_id}-";

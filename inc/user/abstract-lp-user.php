@@ -785,7 +785,7 @@ class LP_Abstract_User {
 					$wpdb->prefix . 'learnpress_user_courses',
 					array(
 						'end_time' => current_time( 'mysql' ),
-						'status'   => 'finished'
+						//'status'   => 'finished'
 					),
 					array( 'user_id' => $this->id, 'course_id' => $course_id ),
 					array( '%s', '%s' )

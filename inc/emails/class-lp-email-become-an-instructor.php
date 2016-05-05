@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Class LP_Email_Finished_Course
+ * Class LP_Email_Enrolled_Course
  *
  * @author  ThimPress
  * @package LearnPress/Classes
@@ -10,31 +10,33 @@
 
 defined( 'ABSPATH' ) || exit();
 
-class LP_Email_Finished_Course extends LP_Email {
+class LP_Email_Become_An_Instructor extends LP_Email {
 	function __construct() {
-		$this->id    = 'finished_course';
-		$this->title = __( 'Finished course', 'learnpress' );
+		$this->id    = 'become_an_instructor';
+		$this->title = __( 'Become an instructor', 'learnpress' );
 
-		$this->template_html  = 'emails/finished-course.php';
-		$this->template_plain = 'emails/plain/finished-course.php';
+		$this->template_html  = 'emails/enrolled-course.php';
+		$this->template_plain = 'emails/plain/enrolled-course.php';
 
-		$this->default_subject = __( '[{site_title}] You have finished course ({course_name})', 'learnpress' );
-		$this->default_heading = __( 'Finished course', 'learnpress' );
+		$this->default_subject = __( '[{site_title}] You have enrolled course ({course_name})', 'learnpress' );
+		$this->default_heading = __( 'Enrolled course', 'learnpress' );
 
+		add_action( 'learn_press_user_enrolled_course_notification', array( $this, 'trigger' ), 99, 3 );
 
 		parent::__construct();
 	}
 
 	function admin_options( $settings_class ) {
-		$view = learn_press_get_admin_view( 'settings/emails/finished-course.php' );
+		$view = learn_press_get_admin_view( 'settings/emails/enrolled-course.php' );
 		include_once $view;
 	}
 
-	function trigger( $course_id, $user_id, $result ) {
-
-		if ( !$this->enable || !( $user = learn_press_get_user( $user_id ) ) ) {
+	function trigger( $user, $course_id, $user_course_id ) {
+		if ( !$this->enable ) {
 			return;
 		}
+
+		$this->recipient = $user->user_email;
 
 		$this->find['site_title']  = '{site_title}';
 		$this->find['course_name'] = '{course_name}';
@@ -50,6 +52,7 @@ class LP_Email_Finished_Course extends LP_Email {
 		);
 
 		$return = $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
+
 		return $return;
 	}
 
@@ -80,4 +83,4 @@ class LP_Email_Finished_Course extends LP_Email {
 	}
 }
 
-return new LP_Email_Finished_Course();
+return new LP_Email_Become_An_Instructor();

@@ -16,15 +16,13 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 */
 		function __construct() {
 
-			add_action( 'rwmb_course_curriculum_before_save_post', array( $this, 'before_save_curriculum' ) );
+			add_action( 'save_post', array( $this, 'before_save_curriculum' ), 1000 );
 			add_filter( 'manage_lp_course_posts_columns', array( $this, 'columns_head' ) );
 			add_filter( 'manage_lp_course_posts_custom_column', array( $this, 'columns_content' ) );
 			add_filter( "rwmb__lpr_course_price_html", array( $this, 'currency_symbol' ), 5, 3 );
 			add_action( 'edit_form_after_editor', array( $this, 'toggle_editor_button' ), - 10 );
 			//add_action( 'add_meta_boxes', array( $this, 'review_logs_meta_box' ) );
 			//add_action( 'post_submitbox_start', array( $this, 'post_review_message_box' ) );
-
-
 			//add_action( 'learn_press_transition_course_status', array( $this, 'review_log' ), 10, 3 );
 			add_action( 'load-post.php', array( $this, 'post_actions' ) );
 			add_action( 'before_delete_post', array( $this, 'delete_course_sections' ) );
@@ -34,7 +32,6 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			add_filter( 'posts_where_paged', array( $this, 'posts_where_paged' ) );
 			add_filter( 'posts_orderby', array( $this, 'posts_orderby' ) );
 			add_action( 'admin_head', array( __CLASS__, 'print_js_template' ) );
-
 			parent::__construct();
 		}
 
@@ -126,11 +123,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 				'admin-course'
 			);
 			if ( in_array( get_post_type(), array( LP()->course_post_type, LP()->lesson_post_type ) ) ) {
-
-				//wp_enqueue_style( 'lp-meta-boxes', LP()->plugin_url( 'assets/css/meta-boxes.css' ) );
 				wp_enqueue_script( 'jquery-caret', LP()->plugin_url( 'assets/js/jquery.caret.js', 'jquery' ) );
-				///wp_enqueue_script( 'lp-meta-boxes', LP()->plugin_url( 'assets/js/meta-boxes.js', 'jquery', 'backbone', 'util' ) );
-
 				wp_localize_script( 'lp-meta-boxes', 'lp_course_params', self::admin_params() );
 			}
 		}
@@ -271,6 +264,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			new RW_Meta_Box( self::settings_meta_box() );
 			new RW_Meta_Box( self::assessment_meta_box() );
 			new RW_Meta_Box( self::payment_meta_box() );
+
 		}
 
 		static function curriculum_meta_box() {
@@ -462,7 +456,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 							'no'  => __( 'No', 'learnpress' ),
 						),
 						'std'     => 'yes',
-						'class'   =>  'lp-course-required-enroll' . ( $payment == 'yes' ? ' hide-if-js' : '' )
+						'class'   => 'lp-course-required-enroll' . ( $payment == 'yes' ? ' hide-if-js' : '' )
 					)
 				)
 			);
@@ -627,10 +621,10 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 									$update_data['post_name'] = sanitize_title( $_item['name'] );
 								}
 								// prevent update the meta of course for the items when update items
-								$tmp_post = $_POST;
-								$_POST    = array();
+								//$tmp_post = $_POST;
+								///$_POST    = array();
 								wp_update_post( $update_data );
-								$_POST = $tmp_post;
+								////$_POST = $tmp_post;
 							}
 							$item_id = $_item['item_id'];
 						}
@@ -737,12 +731,14 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 
 			if ( get_post_type() != LP()->course_post_type ) return;
 
+			remove_action( 'save_post', array( $this, 'before_save_curriculum' ), 1000 );
+			//remove_action( 'rwmb_course_curriculum_before_save_post', array( $this, 'before_save_curriculum' ) );
+
 			$user                  = LP()->user;
 			$required_review       = LP()->settings->get( 'required_review' ) == 'yes';
 			$enable_edit_published = LP()->settings->get( 'enable_edit_published' ) == 'yes';
 
 			if ( $user->is_instructor() && $required_review && !$enable_edit_published ) {
-				remove_action( 'rwmb_course_curriculum_before_save_post', array( $this, 'before_save_curriculum' ) );
 				wp_update_post(
 					array(
 						'ID'          => $post->ID,
@@ -750,7 +746,6 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 					),
 					array( '%d', '%s' )
 				);
-				add_action( 'rwmb_course_curriculum_before_save_post', array( $this, 'before_save_curriculum' ) );
 			}
 
 			$new_status = get_post_status( $post->ID );
@@ -767,6 +762,8 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			$this->_review_log();
 			delete_post_meta( $post->ID, '_lp_curriculum' );
 			unset( $_POST['_lp_curriculum'] );
+
+			//add_action( 'rwmb_course_curriculum_before_save_post', array( $this, 'before_save_curriculum' ) );
 		}
 
 		static function enqueue_scripts() {

@@ -19,16 +19,9 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
 		static function admin_enqueue_scripts() {
 			LP_Admin_Assets::enqueue_style( 'meta-box-course', LP()->plugin_url( 'assets/css/admin/meta-box-course.css' ) );
 			LP_Admin_Assets::enqueue_style( 'select2', RWMB_CSS_URL . 'select2/select2.css' );
-			// LP_Admin_Assets::enqueue_style( 'toastr',          LP_CSS_URL . 'toastr.css' );
-			//LP_Admin_Assets::enqueue_style( 'thim-course',     LearnPress()->plugin_url( 'inc/admin/meta-boxes/css/course.css' ) );
-
 			LP_Admin_Assets::enqueue_script( 'select2', RWMB_JS_URL . 'select2/select2.min.js' );
-			//LP_Admin_Assets::enqueue_script( 'toastr',         LP_JS_URL . 'toastr.js' );
-			//LP_Admin_Assets::enqueue_script( 'tojson',         LP_JS_URL . 'toJSON.js' );
 			LP_Admin_Assets::enqueue_script( 'modal-search-items' );
 			LP_Admin_Assets::enqueue_script( 'meta-box-course', learn_press_plugin_url( 'assets/js/admin/meta-box-course.js' ), array( 'jquery' ) );
-
-
 			LP_Admin_Assets::add_localize(
 				array(
 					'confirm_remove_section_lesson' => __( 'Do you want to remove this lesson permanently?', 'learnpress' ),
@@ -149,7 +142,7 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
 			add_action( 'wp_ajax_lpr_update_section_state', array( __CLASS__, 'update_section_state' ) );
 			add_action( 'wp_ajax_lpr_remove_lesson_quiz', array( __CLASS__, 'remove_lesson_quiz' ) );
 
-			add_action( 'save_post', array( __CLASS__, 'update_course_curriculum' ) );
+			///add_action( 'save_post', array( __CLASS__, 'update_course_curriculum' ) );
 			add_filter( 'learn_press_loop_section_buttons', array( __CLASS__, 'add_section_buttons' ) );
 			//add_filter( 'learn_press_after_section_content', array( __CLASS__, 'section_options' ) );
 		}
@@ -167,12 +160,7 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
 						'id'   => 'add-quiz',
 						'text' => __( 'Add Quiz', 'learnpress' ),
 						'attr' => 'data-action="add-quiz" data-type="lp_quiz"'
-					)/*,
-					array(
-						'id'		=> 'toggle-section-options',
-						'text'		=> __( 'Options', 'learnpress' ),
-						'attr'	=> 'data-action=""'
-					)*/
+					)
 				)
 			);
 			return $buttons;
@@ -200,7 +188,6 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
 			$lesson_quiz_id = $_POST['lesson_quiz_id'];
 			delete_post_meta( $lesson_quiz_id, '_lpr_course' );
 			update_post_meta( $lesson_quiz_id, '_lpr_course', 0 );
-
 		}
 
 		static function update_section_state() {

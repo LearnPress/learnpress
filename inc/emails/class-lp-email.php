@@ -327,7 +327,7 @@ class LP_Email {
 		return apply_filters( 'learn_press_email_heading_' . $this->id, $this->format_string( $this->heading ), $this->object );
 	}
 
-	function get_footer_text(){
+	function get_footer_text() {
 		return apply_filters( 'learn_press_email_footer_text_' . $this->id, LP()->settings->get( 'emails_general.footer_text' ) );
 	}
 
@@ -449,9 +449,15 @@ class LP_Email {
 		add_filter( 'wp_mail_content_type', array( $this, 'get_content_format' ) );
 
 		$message = apply_filters( 'learn_press_mail_content', $this->apply_style_inline( $message ) );
-		$return  =  wp_mail( $to, $subject, $message, $headers, $attachments );
-		//$return = LP_Emails::instance()->send( $this->get_from_address(), $to, $subject, $message, $headers, $attachments );
+		$return  = wp_mail( $to, $subject, $message, $headers, $attachments );
 
+		if ( LP()->settings->get( 'debug' ) == 'yes' ) {
+			ob_start();
+			echo get_class( $this ) . '::' . __FUNCTION__ . "\n";
+			print_r( func_get_args() );
+			$log = ob_get_clean();
+			LP_Debug::instance()->add( $log );
+		}
 		remove_filter( 'wp_mail_from', array( $this, 'get_from_address' ) );
 		remove_filter( 'wp_mail_from_name', array( $this, 'get_from_name' ) );
 		remove_filter( 'wp_mail_content_type', array( $this, 'get_content_format' ) );

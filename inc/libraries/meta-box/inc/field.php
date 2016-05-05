@@ -302,7 +302,6 @@ if ( ! class_exists( 'RWMB_Field ' ) ) {
 				}
 
 				update_post_meta( $post_id, $name, $new );
-
 			}
 		}
 

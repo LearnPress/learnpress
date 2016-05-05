@@ -3,7 +3,7 @@
 defined( 'ABSPATH' ) || exit;
 
 // Meta Box Class
-if ( ! class_exists( 'RW_Meta_Box' ) ) {
+if ( !class_exists( 'RW_Meta_Box' ) ) {
 	/**
 	 * A class to rapid develop meta boxes for custom & built in content types
 	 * Piggybacks on WordPress
@@ -50,14 +50,14 @@ if ( ! class_exists( 'RW_Meta_Box' ) ) {
 		 */
 		function __construct( $meta_box ) {
 			// Run script only in admin area
-			if ( ! is_admin() ) {
+			if ( !is_admin() ) {
 				return;
 			}
 
 			// Assign meta box values to local variables and add it's missed values
 			$this->meta_box   = self::normalize( $meta_box );
-			$this->fields     = & $this->meta_box['fields'];
-			$this->validation = & $this->meta_box['validation'];
+			$this->fields     = &$this->meta_box['fields'];
+			$this->validation = &$this->meta_box['validation'];
 
 			// Allow users to show/hide meta box
 			// 1st action applies to all meta boxes
@@ -65,7 +65,7 @@ if ( ! class_exists( 'RW_Meta_Box' ) ) {
 			$show = true;
 			$show = apply_filters( 'rwmb_show', $show, $this->meta_box );
 			$show = apply_filters( "rwmb_show_{$this->meta_box['id']}", $show, $this->meta_box );
-			if ( ! $show ) {
+			if ( !$show ) {
 				return;
 			}
 
@@ -91,6 +91,7 @@ if ( ! class_exists( 'RW_Meta_Box' ) ) {
 			// @see wp_update_post(), wp_insert_attachment()
 			add_action( 'edit_attachment', array( $this, 'save_post' ) );
 			add_action( 'add_attachment', array( $this, 'save_post' ) );
+
 		}
 
 		/**
@@ -102,7 +103,7 @@ if ( ! class_exists( 'RW_Meta_Box' ) ) {
 			$screen = get_current_screen();
 
 			// Enqueue scripts and styles for registered pages (post types) only
-			if ( 'post' != $screen->base || ! in_array( $screen->post_type, $this->meta_box['post_types'] ) ) {
+			if ( 'post' != $screen->base || !in_array( $screen->post_type, $this->meta_box['post_types'] ) ) {
 				return;
 			}
 
@@ -218,14 +219,14 @@ if ( ! class_exists( 'RW_Meta_Box' ) ) {
 			// Allow users to add custom code before meta box content
 			// 1st action applies to all meta boxes
 			// 2nd action applies to only current meta box
-            //echo "1";
+			//echo "1";
 			do_action( 'rwmb_before', $this );
 			do_action( "rwmb_before_{$this->meta_box['id']}", $this );
-            //echo "2";
+			//echo "2";
 			foreach ( $this->fields as $field ) {
 				call_user_func( array( self::get_class_name( $field ), 'show' ), $field, $saved );
 			}
-            //echo "3";
+			//echo "3";
 
 			// Include validation settings for this meta-box
 			if ( isset( $this->validation ) && $this->validation ) {
@@ -280,18 +281,15 @@ if ( ! class_exists( 'RW_Meta_Box' ) ) {
 			$id    = $this->meta_box['id'];
 			$nonce = isset( $_POST["nonce_{$id}"] ) ? sanitize_key( $_POST["nonce_{$id}"] ) : '';
 
-			if ( empty( $_POST["nonce_{$id}"] ) || ! wp_verify_nonce( $nonce, "rwmb-save-{$id}" ) ) {
+
+			if ( empty( $_POST["nonce_{$id}"] ) || !wp_verify_nonce( $nonce, "rwmb-save-{$id}" ) ) {
 				return;
 			}
-
-
-
 
 			// Autosave
-			if ( defined( 'DOING_AUTOSAVE' ) && ! $this->meta_box['autosave'] ) {
+			if ( defined( 'DOING_AUTOSAVE' ) && !$this->meta_box['autosave'] ) {
 				return;
 			}
-
 			// Make sure meta is added to the post, not a revision
 			if ( $the_post = wp_is_post_revision( $post_id ) ) {
 				$post_id = $the_post;
@@ -303,7 +301,7 @@ if ( ! class_exists( 'RW_Meta_Box' ) ) {
 
 			foreach ( $this->fields as $field ) {
 				$name = $field['id'];
-				$old  = get_post_meta( $post_id, $name, ! $field['multiple'] );
+				$old  = get_post_meta( $post_id, $name, !$field['multiple'] );
 				$new  = isset( $_POST[$name] ) ? $_POST[$name] : ( $field['multiple'] ? array() : '' );
 
 				// Allow field class change the value
@@ -316,13 +314,11 @@ if ( ! class_exists( 'RW_Meta_Box' ) ) {
 				$new = apply_filters( "rwmb_{$name}_value", $new, $field, $old );
 
 
-
 				// Call defined method to save meta value, if there's no methods, call common one
-                //echo "[", self::get_class_name( $field ),$post_id, $name, $new, "]";
+				//echo "[", self::get_class_name( $field ),$post_id, $name, $new, "]";
 				call_user_func( array( self::get_class_name( $field ), 'save' ), $new, $old, $post_id, $field );
 
 			}
-            //print_r($_POST);die();
 			// After save action
 			do_action( 'rwmb_after_save_post', $post_id );
 			do_action( "rwmb_{$this->meta_box['id']}_after_save_post", $post_id );
@@ -355,7 +351,7 @@ if ( ! class_exists( 'RW_Meta_Box' ) ) {
 			 *
 			 * @since 4.4.1
 			 */
-			if ( ! empty( $meta_box['pages'] ) ) {
+			if ( !empty( $meta_box['pages'] ) ) {
 				$meta_box['post_types'] = $meta_box['pages'];
 			}
 
@@ -429,7 +425,7 @@ if ( ! class_exists( 'RW_Meta_Box' ) ) {
 			$class = 'RWMB_' . ucwords( $type ) . '_Field';
 
 			// Relace whitespace with underscores
-			 $class = str_replace( ' ', '_', $class );
+			$class = str_replace( ' ', '_', $class );
 
 			//echo $class . '-' . ( class_exists( $class ) ? 1 : 0 ) . "<br />\n";
 			return class_exists( $class ) ? $class : false;
@@ -446,9 +442,9 @@ if ( ! class_exists( 'RW_Meta_Box' ) ) {
 		 */
 		static function has_been_saved( $post_id, $fields ) {
 			foreach ( $fields as $field ) {
-				$value = get_post_meta( $post_id, $field['id'], ! $field['multiple'] );
+				$value = get_post_meta( $post_id, $field['id'], !$field['multiple'] );
 				if (
-					( ! $field['multiple'] && '' !== $value )
+					( !$field['multiple'] && '' !== $value )
 					|| ( $field['multiple'] && array() !== $value )
 				) {
 					return true;

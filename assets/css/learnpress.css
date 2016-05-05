@@ -675,6 +675,12 @@ a .archive-course:hover {
 	margin-right: 50px;
 }
 
+.lp-course-progress:after {
+	display: block;
+	content: '';
+	clear: both;
+}
+
 .lp-course-progress .lp-course-progress-heading {
 	margin: 0 0 40px 0;
 }

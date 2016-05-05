@@ -21,7 +21,7 @@ $course_status = learn_press_get_user_course_status();
 $user          = learn_press_get_current_user();
 // only show enroll button if user had not enrolled
 $purchase_button_text = apply_filters( 'learn_press_purchase_button_text', __( 'Buy this course', 'learnpress' ) );
-$enroll_button_text   = apply_filters( 'learn_press_enroll_button_loading_text', __( 'Enroll', 'learnpress' ) );
+$enroll_button_text   = apply_filters( 'learn_press_enroll_button_text', __( 'Enroll', 'learnpress' ) );
 ?>
 <?php if ( $user->has( 'enrolled-course', $course->id ) ): ?>
 

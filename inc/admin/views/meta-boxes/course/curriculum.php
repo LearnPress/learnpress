@@ -55,8 +55,6 @@ $hidden_sections = (array) get_post_meta( $post->ID, '_admin_hidden_sections', t
 
 				if ( $section->items ):
 					foreach ( $section->items as $item ):
-						//if ( LP()->quiz_post_type == $item->post_type ) $exclude_quiz[] = $item->ID;
-						//if ( LP()->lesson_post_type == $item->post_type ) $exclude_lesson[] = $item->ID;
 						$loop_item_view = learn_press_get_admin_view( 'meta-boxes/course/loop-item.php' );
 						ob_start();
 						include $loop_item_view;

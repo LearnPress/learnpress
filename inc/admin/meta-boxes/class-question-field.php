@@ -54,14 +54,7 @@ if ( !class_exists( 'RWMB_Question_Field' ) ) {
 
 		static function html( $meta, $field ) {
 			global $post;
-			$post_id  = $post->ID;
-			/*$question = get_post_meta( $post_id, '_lpr_question', true );
-			$question = wp_parse_args(
-				$question,
-				array(
-					'type' => null
-				)
-			);*/
+			$post_id = $post->ID;
 			ob_start();
 
 			if ( $q = LP_Question_Factory::get_question( $post_id ) ) {

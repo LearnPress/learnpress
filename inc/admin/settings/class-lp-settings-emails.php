@@ -127,7 +127,7 @@ class LP_Settings_Emails extends LP_Settings_Base {
 		}
 	}
 
-	function output_section_become_a_teacher() {
+	function output_section_become_an_instructor() {
 		$view = learn_press_get_admin_view( 'settings/emails/general.php' );
 		include_once $view;
 		$this->_become_a_teacher_request();

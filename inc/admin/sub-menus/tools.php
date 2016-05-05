@@ -178,6 +178,9 @@ function learn_press_tools_page() {
 			<div class="learn-press-message">
 				<?php _e( 'Use this action to force system upgrade outdated data to new version.', 'learnpress' ); ?>
 			</div>
+			<div class="learn-press-error">
+				<?php _e( 'All course will be upgraded whether you have done this action in the past. So please remove all courses before upgrade to prevent courses is duplicated.', 'learnpress' ); ?>
+			</div>
 			<p>
 				<a class="button" href="<?php echo wp_nonce_url( admin_url( 'options-general.php?page=learn_press_upgrade_from_09&force=true' ), 'learn-press-upgrade-09' ); ?>"><?php esc_html_e( 'Upgrade', 'learnpress' ); ?></a>
 			</p>

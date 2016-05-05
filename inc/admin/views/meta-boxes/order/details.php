@@ -88,7 +88,7 @@ global $post;
 			</tfoot>
 		</table>
 	</div>
-	<?php if ( $note = get_the_excerpt( $order->id ) ) { ?>
+	<?php if ( $note = get_the_excerpt() ) { ?>
 		<br />
 		<h3><?php _e( 'Customer Note', 'learnpress' ); ?></h3>
 		<p class="order-note description"><?php echo $note;?></p>
