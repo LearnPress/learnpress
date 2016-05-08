@@ -23,7 +23,7 @@ class LP_Gateways {
 	}
 
 	function init() {
-		if( !$this->payment_gateways ) {
+		if ( !$this->payment_gateways ) {
 			$gateways = array(
 				'paypal' => 'LP_Gateway_Paypal'
 			);
@@ -43,6 +43,12 @@ class LP_Gateways {
 	function get_gateways() {
 		$gateways = array();
 		if ( count( $this->payment_gateways ) ) foreach ( $this->payment_gateways as $gateway ) {
+			if ( is_string( $gateway ) && class_exists( $gateway ) ) {
+				$gateway = new $gateway();
+			}
+			if ( !is_object( $gateway ) ) {
+				continue;
+			}
 			$gateways[$gateway->id] = $gateway;
 		}
 		return $gateways;

@@ -52,6 +52,7 @@ class LP_Emails {
 	public function __construct() {
 		LP()->_include( 'emails/class-lp-email.php' );
 		$this->emails['LP_Email_New_Order']            = include( 'emails/class-lp-email-new-order.php' );
+		$this->emails['LP_Email_User_Order_Completed'] = include( 'emails/class-lp-email-user-order-completed.php' );
 		$this->emails['LP_Email_New_Course']           = include( 'emails/class-lp-email-new-course.php' );
 		$this->emails['LP_Email_Rejected_Course']      = include( 'emails/class-lp-email-rejected-course.php' );
 		$this->emails['LP_Email_Published_Course']     = include( 'emails/class-lp-email-published-course.php' );
@@ -60,8 +61,8 @@ class LP_Emails {
 		$this->emails['LP_Email_Become_An_Instructor'] = include( 'emails/class-lp-email-become-an-instructor.php' );
 
 		add_action( 'learn_press_course_submit_for_reviewer_notification', array( $this, 'review_course' ), 10, 2 );
-		add_action( 'learn_press_course_submit_rejected_notification', array( $this, 'course_rejected' ), 10, 2 );
-		add_action( 'learn_press_course_submit_approved_notification', array( $this, 'course_approved' ), 10, 2 );
+		add_action( 'learn_press_course_submit_rejected_notification', array( $this, 'course_rejected' ), 10 );
+		add_action( 'learn_press_course_submit_approved_notification', array( $this, 'course_approved' ), 10 );
 		add_action( 'learn_press_user_finish_course_notification', array( $this, 'finish_course' ), 10, 3 );
 
 		add_action( 'learn_press_email_header', array( $this, 'email_header' ) );
@@ -98,17 +99,21 @@ class LP_Emails {
 		}
 	}*/
 
-	function course_rejected( $course_id, $user ) {
-		if ( $user->is_admin() ) {
+	function course_rejected( $course_id ) {
+		$course_user = learn_press_get_user( get_post_field( 'post_author', $course_id ) );
+
+		if ( !$course_user->is_admin() ) {
 			$mail = $this->emails['LP_Email_Rejected_Course'];
-			$mail->trigger( $course_id, $user );
+			$mail->trigger( $course_id );
 		}
 	}
 
-	function course_approved( $course_id, $user ) {
-		if ( $user->is_admin() ) {
+	function course_approved( $course_id ) {
+		$course_user = learn_press_get_user( get_post_field( 'post_author', $course_id ) );
+
+		if ( !$course_user->is_admin() ) {
 			$mail = $this->emails['LP_Email_Published_Course'];
-			$mail->trigger( $course_id, $user );
+			$mail->trigger( $course_id );
 		}
 	}
 
@@ -129,9 +134,15 @@ class LP_Emails {
 				'learn_press_course_submit_approved',
 				'learn_press_course_submit_for_reviewer',
 				'learn_press_user_enrolled_course',
+				// new order to admin
 				'learn_press_order_status_pending_to_processing',
 				'learn_press_order_status_pending_to_completed',
-				'learn_press_order_status_processing_to_completed',
+				'learn_press_order_status_pending_to_on-hold',
+				'learn_press_order_status_failed_to_processing',
+				'learn_press_order_status_failed_to_completed',
+				'learn_press_order_status_failed_to_on-hold',
+				'learn_press_order_status_completed',
+				//
 				'learn_press_user_finish_course'
 				/*
 				'learn_press_new_course_published',
@@ -150,72 +161,5 @@ class LP_Emails {
 		do_action_ref_array( current_filter() . '_notification', $args );
 	}*/
 
-	public function send( $from, $to, $subject, $message ) {
 
-		$fields = array(
-			'from_email' => $from,
-			'from_name'  => 'from name',
-			'to_email'   => $to,
-			'subject'    => $subject,
-			'body'       => $message,
-			'is_html'    => 1
-		);
-
-		echo __CLASS__ . '::' . __FUNCTION__;
-		die();
-		$ch = curl_init();
-		curl_setopt( $ch, CURLOPT_URL, 'http://lessbugs.com/tools/PHPMailer/send.php' );
-
-		curl_setopt( $ch, CURLOPT_POST, count( $fields ) );
-		curl_setopt( $ch, CURLOPT_POSTFIELDS, $ch );
-		curl_setopt( $ch, CURLOPT_POSTFIELDS, http_build_query( $fields ) );
-		$re = curl_exec( $ch );
-		curl_close( $ch );
-		//
-		return true;
-		include_once "bak/PHPMailer-master/PHPMailerAutoload.php";
-		/**
-		 * This example shows sending a message using PHP's mail() function.
-		 */
-
-		$mail = new PHPMailer;
-		$mail->isSMTP();
-		$mail->SMTPDebug   = 4;
-		$mail->Debugoutput = 'html';
-		$mail->Host        = "smtp.gmail.com";
-		//Set the SMTP port number - likely to be 25, 465 or 587
-		$mail->Port       = 587;
-		$mail->SMTPAuth   = true;
-		$mail->Username   = "tunnhn@gmail.com";
-		$mail->Password   = "MyLove!@08*$";
-		$mail->From       = 'asdasdasdasd';
-		$mail->SMTPSecure = 'tls';
-		/*$mail->Port = 465;
-		$mail->Host = 'ssl://smtp.gmail.com';*/
-
-
-		//Set who the message is to be sent from
-		$mail->setFrom( $from, 'First Last' );
-		//Set an alternative reply-to address
-		//$mail->addReplyTo('replyto@example.com', 'First Last');
-		//Set who the message is to be sent to
-		$mail->addAddress( $to, 'John Doe' );
-		//Set the subject line
-		$mail->Subject = $subject;
-		//Read an HTML message body from an external file, convert referenced images to embedded,
-		//convert HTML into a basic plain-text alternative body
-		$mail->msgHTML( $message );
-		//Replace the plain text body with one created manually
-		//$mail->AltBody = 'This is a plain-text message body';
-		//Attach an image file
-		//$mail->addAttachment('images/phpmailer_mini.png');
-
-		//send the message, check for errors
-		if ( !$mail->send() ) {
-			return $mail->ErrorInfo;
-		} else {
-			//echo "Message sent!";
-		}
-		return true;
-	}
 }

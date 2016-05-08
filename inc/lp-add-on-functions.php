@@ -310,10 +310,11 @@ function learn_press_get_plugin_data( $plugins ) {
  */
 function learn_press_get_add_ons_from_wp( $args = null ) {
 	learn_press_require_plugins_api();
+	$tag  = 'learnpress';
 	$args = wp_parse_args(
 		$args,
 		array(
-			'search'        => array( 'learnpress' ),
+			'search'        => array( $tag ),
 			'include'       => null,
 			'exclude'       => null,
 			'transient_key' => null,
@@ -331,7 +332,7 @@ function learn_press_get_add_ons_from_wp( $args = null ) {
 			'icons'           => true,
 			'active_installs' => true
 		),
-		'tag'				=> 'learnpress',
+		//'tag'				=> $tag,
 		// Send the locale and installed plugin slugs to the API so it can provide context-sensitive results.
 		'locale'            => get_locale(),
 		'installed_plugins' => learn_press_get_installed_plugin_slugs(),
@@ -350,7 +351,6 @@ function learn_press_get_add_ons_from_wp( $args = null ) {
 		$plugins = array();
 		learn_press_require_plugins_api();
 		$api = plugins_api( 'query_plugins', $query_args );
-
 		if ( is_wp_error( $api ) ) {
 			echo join( "", $api->errors['plugins_api_failed'] );
 			return false;

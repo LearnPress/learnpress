@@ -42,7 +42,6 @@ class LP_Settings_Emails extends LP_Settings_Base {
 			);
 		}
 
-
 		/*$sections = array(
 			'general'          => __( 'General options', 'learnpress' ),
 			'new_course'       => __( 'New course', 'learnpress' ),
@@ -93,6 +92,12 @@ class LP_Settings_Emails extends LP_Settings_Base {
 
 	function output_section_new_course() {
 		if ( $email = $this->get_email_class( 'new_course' ) ) {
+			$email->admin_options( $this );
+		}
+	}
+
+	function output_section_user_order_completed() {
+		if ( $email = $this->get_email_class( 'user_order_completed' ) ) {
 			$email->admin_options( $this );
 		}
 	}

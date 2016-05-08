@@ -12,7 +12,10 @@ if ( !defined( 'ABSPATH' ) ) {
 
 $settings = LP()->settings;
 ?>
-
+<h3><?php _e( 'Finished course', 'learnpress' ); ?></h3>
+<p class="description">
+	<?php _e( 'Send this email to user when a course finished', 'learnpress' ); ?>
+</p>
 <table class="form-table">
 	<tbody>
 	<?php do_action( 'learn_press_before_' . $this->id . '_' . $this->section['id'] . '_settings_fields', $settings ); ?>
@@ -21,7 +24,7 @@ $settings = LP()->settings;
 			<label for="learn-press-emails-finished-course-enable"><?php _e( 'Enable', 'learnpress' ); ?></label></th>
 		<td>
 			<input type="hidden" name="<?php echo $settings_class->get_field_name( 'emails_finished_course[enable]' ); ?>" value="no" />
-			<input id="learn-press-emails-finished-course-enable" type="checkbox" name="<?php echo $settings_class->get_field_name( 'emails_finished_course[enable]' ); ?>" value="yes" <?php checked( $settings->get( 'emails_finished_course.enable', 'yes' ) == 'yes' ); ?>" />
+			<input id="learn-press-emails-finished-course-enable" type="checkbox" name="<?php echo $settings_class->get_field_name( 'emails_finished_course[enable]' ); ?>" value="yes" <?php checked( $settings->get( 'emails_finished_course.enable' ) == 'yes' ); ?>" />
 		</td>
 	</tr>
 	<tr>

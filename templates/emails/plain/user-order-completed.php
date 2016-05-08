@@ -14,14 +14,11 @@ if ( !defined( 'ABSPATH' ) ) {
 
 <?php
 
-printf( __( 'New order placed by %s', 'learnpress' ), $order->get_user_name() );
-echo "\n\n";
-
 do_action( 'learn_press_email_new_order_before_table', $order, $plain_text );
 
 learn_press_get_template( 'emails/plain/order-items-table.php', array( 'order' => $order ) );
 
-echo "\n" . sprintf( __( 'View order: %s', 'learnpress' ), admin_url( 'post.php?post=' . $order->id . '&action=edit' ) ) . "\n";
+echo "\n" . sprintf( __( 'View order: %s', 'learnpress' ), learn_press_user_profile_link( $order->user_id, 'orders' ) ) . "\n";
 
 do_action( 'learn_press_email_new_order_after_table', $order, $plain_text );
 

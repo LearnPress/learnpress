@@ -686,13 +686,13 @@ function learn_press_get_order_statuses( $prefix = true ) {
 function _learn_press_get_order_status_description( $status ) {
 	static $descriptions = null;
 	$descriptions = array(
-		'lp-pending'    => __( 'Order received but not do anything', 'learnpress' ),
-		'lp-failed'     => __( 'Payment failed or was declined (unpaid). Note that this status may not show immediately and instead show as pending until verified (i.e., PayPal).', 'learnpress' ),
-		'lp-processing' => __( 'Payment received and stock has been reduced- the order is awaiting fulfillment', 'learnpress' ),
-		'lp-completed'  => __( 'Order fulfilled and complete – requires no further action', 'learnpress' ),
-		'lp-on-hold'    => __( 'Awaiting payment – stock is reduced, but you need to confirm payment', 'learnpress' ),
-		'lp-cancelled'  => __( 'Cancelled by an admin or the customer – no further action required', 'learnpress' ),
-		'lp-refunded'   => __( 'Refunded by an admin – no further action required', 'learnpress' )
+		'lp-pending'    => __( 'Order received in case user buy a course but doesn\'t finalise the order.', 'learnpress' ),
+		'lp-failed'     => __( 'Payment failed or was declined (unpaid).', 'learnpress' ),
+		'lp-processing' => __( 'Payment received and the order is awaiting fulfillment.', 'learnpress' ),
+		'lp-completed'  => __( 'Order fulfilled and complete.', 'learnpress' ),
+		'lp-on-hold'    => __( 'Awaiting payment.', 'learnpress' ),
+		'lp-cancelled'  => __( 'The order is cancelled by an admin or the customer.', 'learnpress' ),
+		'lp-refunded'   => __( 'Refunded is to indicate that the refund to the customer has been sent.', 'learnpress' )
 	);
 	return apply_filters( 'learn_press_order_status_description', !empty( $descriptions[$status] ) ? $descriptions[$status] : '' );
 }

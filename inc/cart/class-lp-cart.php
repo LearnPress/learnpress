@@ -90,6 +90,11 @@ class LP_Cart {
 		if ( !empty( $this->_cart_content['items'][$course_id] ) ) {
 			$quantity += $this->_cart_content['items'][$course_id]['quantity'];
 		}*/
+		if ( !$course->is_purchasable() ) {
+			learn_press_add_message( __( 'Sorry! This course is not purchasable.', 'learnpress' ) );
+			wp_redirect( get_the_permalink( $course_id ) );
+			exit();
+		}
 
 		$quantity                                 = 1;
 		$price                                    = $course->is_free() ? 0 : $course->get_price();
@@ -117,7 +122,7 @@ class LP_Cart {
 				$checkout_results['redirect'] = apply_filters( 'learn_press_no_checkout_free_course_redirect', $redirect );
 			} else {
 				add_filter( 'learn_press_checkout_success_result', '_learn_press_checkout_auto_enroll_free_course', 10, 2 );
-				$checkout_results = LP_Checkout::instance()->process_checkout( );
+				$checkout_results = LP_Checkout::instance()->process_checkout();
 			}
 			if ( is_ajax() ) {
 				learn_press_send_json(

@@ -11,6 +11,11 @@ if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
+/**
+ * @param $the_course
+ *
+ * @return LP_Course|mixed
+ */
 function learn_press_get_course( $the_course ) {
 	return LP_Course::get_course( $the_course );
 }
@@ -435,6 +440,13 @@ function learn_press_course_is_required_review( $course_id = null, $user_id = nu
 	$is_publish            = get_post_status( $course_id ) == 'publish';
 
 	return !( ( !$required_review ) || ( $required_review && $enable_edit_published && $is_publish ) );
+}
+
+function learn_press_get_course_user( $course_id = null ) {
+	if ( !$course_id ) {
+		$course_id = get_the_ID();
+	}
+	return learn_press_get_user( get_post_field( 'post_author', $course_id ) );
 }
 
 /////////////////////////

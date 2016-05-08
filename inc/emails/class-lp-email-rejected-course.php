@@ -30,12 +30,12 @@ class LP_Email_Rejected_Course extends LP_Email {
 		include_once $view;
 	}
 
-	function trigger( $course_id, $user ) {
-
-		if ( is_numeric( $user ) ) {
-			$user = learn_press_get_user( $user );
+	function trigger( $course_id ) {
+		if ( !$this->enable ) {
+			return;
 		}
 
+		$course                    = learn_press_get_course( $course_id );
 		$this->find['site_title']  = '{site_title}';
 		$this->find['course_name'] = '{course_name}';
 
@@ -43,16 +43,13 @@ class LP_Email_Rejected_Course extends LP_Email {
 		$this->replace['course_name'] = get_the_title( $course_id );
 
 		$this->object = array(
-			'course' => $course_id,
-			'user'   => $user
+			'course' => $course
 		);
 
-		if ( $user ) {
-			$this->user_email = stripslashes( $user->user_email );
-			$this->recipient = $this->user_email;
-		}
+		$user_course     = learn_press_get_course_user( $course_id );
+		$this->recipient = $user_course->user_email;
 
-		if ( ( $this->enable != 'yes' ) || !$this->get_recipient() ) {
+		if ( !$this->get_recipient() ) {
 			return;
 		}
 		$return = $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
@@ -61,30 +58,25 @@ class LP_Email_Rejected_Course extends LP_Email {
 
 	function get_content_html() {
 		ob_start();
-		learn_press_get_template( $this->template_html, array(
-			'email_heading' => $this->get_heading(),
-			'footer_text' 	=> $this->get_footer_text(),
-			'site_title'    => $this->get_blogname(),
-			'course_name'   => get_the_title( $this->object['course'] ),
-			'login_url'     => learn_press_get_login_url(),
-			'user_name'		=> $this->object['user']->user_nicename,
-			'plain_text'    => false
-		) );
+		learn_press_get_template( $this->template_html, $this->get_template_data( 'html' ) );
 		return ob_get_clean();
 	}
 
 	function get_content_plain() {
 		ob_start();
-		learn_press_get_template( $this->template_plain, array(
-			'email_heading' => $this->get_heading(),
-			'footer_text' 	=> $this->get_footer_text(),
-			'site_title'    => $this->get_blogname(),
-			'course_name'   => get_the_title( $this->object['course'] ),
-			'login_url'     => learn_press_get_login_url(),
-			'user_name'		=> $this->object['user']->user_nicename,
-			'plain_text'    => true
-		) );
+		learn_press_get_template( $this->template_plain, $this->get_template_data( 'plain' ) );
 		return ob_get_clean();
+	}
+
+	function get_template_data( $format = 'plain' ) {
+		return array(
+			'email_heading' => $this->get_heading(),
+			'footer_text'   => $this->get_footer_text(),
+			'site_title'    => $this->get_blogname(),
+			'course'        => $this->object['course'],
+			'login_url'     => learn_press_get_login_url(),
+			'plain_text'    => $format == 'plain'
+		);
 	}
 }
 

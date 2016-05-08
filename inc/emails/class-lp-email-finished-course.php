@@ -45,38 +45,45 @@ class LP_Email_Finished_Course extends LP_Email {
 		$this->replace['course_date'] = get_the_date( null, $course_id );
 
 		$this->object = array(
-			'course' => $course_id,
+			'course' => learn_press_get_course( $course_id ),
 			'user'   => $user
 		);
 
+		$course = learn_press_get_course( $course_id );
+
+		LP_Debug::instance()->add( $course->evaluate_course_results( $user_id ) );
 		$return = $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
 		return $return;
 	}
 
+	function get_recipient() {
+		if ( !empty( $this->object['user'] ) ) {
+			$this->recipient = $this->object['user']->user_email;
+		}
+		return parent::get_recipient();
+	}
+
 	function get_content_html() {
 		ob_start();
-		learn_press_get_template( $this->template_html, array(
-			'email_heading' => $this->get_heading(),
-			'footer_text'   => $this->get_footer_text(),
-			'site_title'    => $this->get_blogname(),
-			'course_id'     => $this->object['course'],
-			'login_url'     => learn_press_get_login_url(),
-			'plain_text'    => false
-		) );
+		learn_press_get_template( $this->template_html, $this->get_template_data( 'html' ) );
 		return ob_get_clean();
 	}
 
 	function get_content_plain() {
 		ob_start();
-		learn_press_get_template( $this->template_plain, array(
+		learn_press_get_template( $this->template_plain, $this->get_template_data( 'plain' ) );
+		return ob_get_clean();
+	}
+
+	function get_template_data( $content_type = 'plain' ) {
+		return array(
 			'email_heading' => $this->get_heading(),
 			'footer_text'   => $this->get_footer_text(),
 			'site_title'    => $this->get_blogname(),
-			'course_id'     => $this->object['course'],
-			'login_url'     => learn_press_get_login_url(),
-			'plain_text'    => true
-		) );
-		return ob_get_clean();
+			'course_id'     => $this->object['course']->id,
+			'profile_url'   => learn_press_user_profile_link( $this->object['user']->id ),
+			'plain_text'    => $content_type == 'plain'
+		);
 	}
 }
 

@@ -83,7 +83,7 @@ class LP_Debug {
 		if ( !$handle ) {
 			$handle = 'log';
 		}
-		if ( $this->open( $handle ) && is_resource( $this->_handles[$handle] ) ) {
+		if ( LP()->settings->get( 'debug' ) == 'yes' && $this->open( $handle ) && is_resource( $this->_handles[$handle] ) ) {
 			if ( $clear ) {
 				$this->clear( $handle );
 			}

@@ -211,7 +211,7 @@ class LP_Email {
 		$this->heading      = LP()->settings->get( 'emails_' . $this->id . '.heading', $this->default_heading );
 		$this->subject      = LP()->settings->get( 'emails_' . $this->id . '.subject', $this->default_subject );
 		$this->email_format = LP()->settings->get( 'emails_' . $this->id . '.email_format' );
-		$this->enable       = LP()->settings->get( 'emails_' . $this->id . '.enable' );
+		$this->enable       = LP()->settings->get( 'emails_' . $this->id . '.enable' ) == 'yes';
 	}
 
 	function __get( $key ) {
@@ -463,5 +463,19 @@ class LP_Email {
 		remove_filter( 'wp_mail_content_type', array( $this, 'get_content_format' ) );
 
 		return $return;
+	}
+
+	function _send( $from, $to, $subject, $message ) {
+
+	}
+
+	/**
+	 * @param string $format
+	 *
+	 * @return array
+	 */
+
+	function get_template_data( $format = 'plain' ) {
+		return array( 'plain_text' => $format == 'plain' );
 	}
 }

@@ -53,6 +53,11 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 			wp_enqueue_script( 'user-suggest' );
 		}
 
+		/**
+		 * Delete all records related to order being deleted
+		 *
+		 * @param $post_id
+		 */
 		function delete_order_items( $post_id ) {
 			global $wpdb, $post;
 			if ( get_post_type( $post_id ) != 'lp_order' ) {
@@ -64,14 +69,23 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 				WHERE order_id = %d
 			", $post_id );
 			if ( $item_ids = $wpdb->get_col( $query ) ) {
+				// delete order item meta data
 				$query = "
 					DELETE FROM {$wpdb->prefix}learnpress_order_itemmeta
 					WHERE learnpress_order_item_id IN(" . join( ',', $item_ids ) . ")
 				";
 				$wpdb->query( $query );
 
+				// delete order items
 				$query = $wpdb->prepare( "
 					DELETE FROM {$wpdb->prefix}learnpress_order_items
+					WHERE order_id = %d
+				", $post_id );
+				$wpdb->query( $query );
+
+				// delete user course related to order
+				$query = $wpdb->prepare( "
+					DELETE FROM {$wpdb->prefix}learnpress_user_courses
 					WHERE order_id = %d
 				", $post_id );
 				$wpdb->query( $query );

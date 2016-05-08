@@ -681,7 +681,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 
 		private function _review_log() {
 			global $wpdb, $post;
-
+			$user   = learn_press_get_current_user();
 			$action = '';
 
 			// Course is submitted by instructor
@@ -690,6 +690,21 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			} // Course is submitted by admin
 			elseif ( learn_press_get_request( 'learn_press_submit_course_notice_instructor' ) == 'yes' ) {
 				$action = 'learn_press_course_submit_for_instructor';
+			}
+
+			if ( $user->is_admin() ) {
+				if ( $post->post_status != 'publish' && get_post_status( $post->ID ) == 'publish' ) {
+					do_action( 'learn_press_course_submit_approved', $post->ID );
+					delete_post_meta( $post->ID, '_lp_submit_for_reviewer', 'yes' );
+				} elseif ( get_post_status( $post->ID ) != 'publish' ) {
+					do_action( 'learn_press_course_submit_rejected', $post->ID );
+					delete_post_meta( $post->ID, '_lp_submit_for_reviewer', 'yes' );
+				}
+			} elseif ( $user->is_instructor() ) {
+				if ( $post->post_status != 'publish' && get_post_meta( $post->ID, '_lp_submit_for_reviewer', true ) != 'yes' ) {
+					do_action( 'learn_press_course_submit_for_reviewer', $post->ID );
+					update_post_meta( $post->ID, '_lp_submit_for_reviewer', 'yes' );
+				}
 			}
 
 			if ( !$action ) {

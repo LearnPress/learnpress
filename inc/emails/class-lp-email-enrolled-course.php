@@ -11,6 +11,9 @@
 defined( 'ABSPATH' ) || exit();
 
 class LP_Email_Enrolled_Course extends LP_Email {
+	/**
+	 * LP_Email_Enrolled_Course constructor.
+	 */
 	function __construct() {
 		$this->id    = 'enrolled_course';
 		$this->title = __( 'Enrolled course', 'learnpress' );
@@ -36,6 +39,16 @@ class LP_Email_Enrolled_Course extends LP_Email {
 			return;
 		}
 
+		global $wpdb;
+
+		$user_course_data = $wpdb->get_row(
+			$wpdb->prepare( "SELECT * FROM {$wpdb->prefix}learnpress_user_courses WHERE user_course_id = %d", $user_course_id )
+		);
+
+		if ( !$user_course_data ) {
+			// TODO: ...
+			return;
+		}
 		$this->recipient = $user->user_email;
 
 		$this->find['site_title']  = '{site_title}';
@@ -47,8 +60,8 @@ class LP_Email_Enrolled_Course extends LP_Email {
 		$this->replace['course_date'] = get_the_date( null, $course_id );
 
 		$this->object = array(
-			'course' => $course_id,
-			'user'   => $user
+			'course' => learn_press_get_course( $course_id ),
+			'user'   => learn_press_get_user( $user_course_data->user_id )
 		);
 
 		$return = $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
@@ -58,28 +71,26 @@ class LP_Email_Enrolled_Course extends LP_Email {
 
 	function get_content_html() {
 		ob_start();
-		learn_press_get_template( $this->template_html, array(
-			'email_heading' => $this->get_heading(),
-			'footer_text'   => $this->get_footer_text(),
-			'site_title'    => $this->get_blogname(),
-			'course_id'     => $this->object['course'],
-			'login_url'     => learn_press_get_login_url(),
-			'plain_text'    => false
-		) );
+		learn_press_get_template( $this->template_html, $this->get_template_data( 'html' ) );
 		return ob_get_clean();
 	}
 
 	function get_content_plain() {
 		ob_start();
-		learn_press_get_template( $this->template_plain, array(
+		learn_press_get_template( $this->template_plain, $this->get_template_data( 'plain' ) );
+		return ob_get_clean();
+	}
+
+	function get_template_data( $format = 'plain' ) {
+		return array(
 			'email_heading' => $this->get_heading(),
 			'footer_text'   => $this->get_footer_text(),
 			'site_title'    => $this->get_blogname(),
-			'course_id'     => $this->object['course'],
+			'course'        => $this->object['course'],
+			'user'          => $this->object['user'],
 			'login_url'     => learn_press_get_login_url(),
-			'plain_text'    => true
-		) );
-		return ob_get_clean();
+			'plain_text'    => $format == 'plain'
+		);
 	}
 }
 

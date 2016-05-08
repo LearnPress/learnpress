@@ -1283,6 +1283,8 @@ function learn_press_permission_view_quiz( $template ) {
 
 add_filter( 'template_include', 'learn_press_template_loader' );
 function learn_press_template_loader( $template ) {
+	global $post;
+
 	$file           = '';
 	$theme_template = learn_press_template_path();
 	if ( ( $page_id = learn_press_get_page_id( 'taken_course_confirm' ) ) && is_page( $page_id ) ) {
@@ -1292,7 +1294,6 @@ function learn_press_template_loader( $template ) {
 		global $post;
 		$post->post_content = '[learn_press_confirm_order]';
 	} elseif ( ( $page_id = learn_press_get_page_id( 'become_teacher_form' ) ) && is_page( $page_id ) ) {
-		global $post;
 
 		$post->post_content = '[learn_press_become_teacher_form]';
 	} else {
@@ -1302,9 +1303,11 @@ function learn_press_template_loader( $template ) {
 			$find[] = "{$theme_template}/{$file}";
 		} else {
 			if ( learn_press_is_course() ) {
+
 				$file   = 'single-course.php';
 				$find[] = $file;
 				$find[] = "{$theme_template}/{$file}";
+
 			} elseif ( learn_press_is_quiz() ) {
 				$file   = 'single-quiz.php';
 				$find[] = $file;

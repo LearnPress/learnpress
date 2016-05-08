@@ -652,7 +652,7 @@ abstract class LP_Abstract_Course {
 	 */
 	function is_purchasable() {
 		// TODO: needs to check more criteria, currently only check if this course is required enrollment
-		$is_purchasable = $this->required_enroll == 'yes';
+		$is_purchasable = $this->required_enroll == 'yes' && $this->post->post_status == 'publish';
 		if ( $is_purchasable ) {
 			$count_in_order = $this->count_in_order( array( 'completed', 'processing' ) );
 			$is_purchasable = $is_purchasable && ( $count_in_order < $this->max_students );

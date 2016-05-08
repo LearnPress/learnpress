@@ -133,6 +133,11 @@ class LP_Assets extends LP_Abstract_Assets {
 	}
 
 	static function _print_assets() {
+
+		if ( is_admin() ) {
+			//return;
+		}
+
 		do_action( 'learn_press_frontend_before_load_assets' );
 
 		self::enqueue_style(

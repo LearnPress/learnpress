@@ -394,6 +394,10 @@ class LP_Order {
 		return false;
 	}
 
+	function get_user_name() {
+		return apply_filters( 'learn_press_order_user_name', sprintf( _x( '%1$s', 'full name', 'learnpress' ), $this->get_user( 'user_login' ) ) );
+	}
+
 	/**
 	 * Get an instance of LP_Order by post ID or WP_Post object
 	 *
