@@ -7,15 +7,16 @@
  * @version 1.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
+if ( !defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if( !user_can( $user->ID, 'edit_lp_courses' ) ){
+if ( !user_can( $user->ID, 'edit_lp_courses' ) ) {
 	return;
 }
-global $post;
+global $post, $wp;
 $heading = apply_filters( 'learn_press_profile_tab_courses_own_heading', false );
+$paged   = !empty( $_REQUEST['section'] ) && $_REQUEST['section'] == $subtab ? get_query_var( 'paged' ) : 1;
 ?>
 
 <?php if ( $heading ): ?>
@@ -28,13 +29,22 @@ $heading = apply_filters( 'learn_press_profile_tab_courses_own_heading', false )
 
 	<ul class="profile-courses courses-list own">
 
-	<?php foreach( $courses as $post ): ?>
+		<?php foreach ( $courses as $post ): ?>
 
-		<?php learn_press_get_template( 'profile/tabs/courses/loop.php', array( 'subtab' => 'own' ) ); ?>
+			<?php learn_press_get_template( 'profile/tabs/courses/loop.php', array( 'subtab' => 'own' ) ); ?>
 
-	<?php endforeach; ?>
+		<?php endforeach; ?>
 
 	</ul>
+	<?php
+	learn_press_paging_nav(
+		array(
+			'num_pages' => $num_pages,
+			'paged'     => $paged,
+			//'base' => add_query_arg( array( 'section' => $subtab ), learn_press_user_profile_link( $user->id, learn_press_get_current_profile_tab() ) )
+		)
+	);
+	?>
 
 <?php else: ?>
 

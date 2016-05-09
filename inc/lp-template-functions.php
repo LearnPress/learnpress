@@ -508,9 +508,18 @@ if ( !function_exists( 'learn_press_profile_tab_courses_all' ) ) {
 	 *
 	 * @param LP_User
 	 */
-	function learn_press_profile_tab_courses_all( $user ) {
-		$courses = $user->get( 'courses', array( 'limit' => 10 ) );
-		learn_press_get_template( 'profile/tabs/courses/all.php', array( 'user' => $user, 'courses' => $courses ) );
+	function learn_press_profile_tab_courses_all( $user, $tab ) {
+		$args              = array(
+			'user'   => $user,
+			'subtab' => $tab
+		);
+		$limit             = LP()->settings->get( 'profile_courses_limit', 10 );
+		$limit             = apply_filters( 'learn_press_profile_tab_courses_all_limit', $limit );
+		$courses           = $user->get( 'courses', array( 'limit' => $limit ) );
+		$num_pages         = learn_press_get_num_pages( $user->_get_found_rows(), $limit );
+		$args['courses']   = $courses;
+		$args['num_pages'] = $num_pages;
+		learn_press_get_template( 'profile/tabs/courses/all.php', $args );
 	}
 }
 
@@ -520,9 +529,18 @@ if ( !function_exists( 'learn_press_profile_tab_courses_learning' ) ) {
 	 *
 	 * @param LP_User
 	 */
-	function learn_press_profile_tab_courses_learning( $user ) {
-		$courses = $user->get( 'enrolled-courses', array( 'status' => 'enrolled', 'limit' => 10 ) );
-		learn_press_get_template( 'profile/tabs/courses/learning.php', array( 'user' => $user, 'courses' => $courses ) );
+	function learn_press_profile_tab_courses_learning( $user, $tab ) {
+		$args              = array(
+			'user'   => $user,
+			'subtab' => $tab
+		);
+		$limit             = LP()->settings->get( 'profile_courses_limit', 10 );
+		$limit             = apply_filters( 'learn_press_profile_tab_courses_learning_limit', $limit );
+		$courses           = $user->get( 'enrolled-courses', array( 'status' => 'enrolled', 'limit' => $limit ) );
+		$num_pages         = learn_press_get_num_pages( $user->_get_found_rows(), $limit );
+		$args['courses']   = $courses;
+		$args['num_pages'] = $num_pages;
+		learn_press_get_template( 'profile/tabs/courses/learning.php', $args );
 	}
 }
 
@@ -532,9 +550,18 @@ if ( !function_exists( 'learn_press_profile_tab_courses_purchased' ) ) {
 	 *
 	 * @param LP_User
 	 */
-	function learn_press_profile_tab_courses_purchased( $user ) {
-		$courses = $user->get( 'purchased-courses', array( 'limit' => 10 ) );
-		learn_press_get_template( 'profile/tabs/courses/purchased.php', array( 'user' => $user, 'courses' => $courses ) );
+	function learn_press_profile_tab_courses_purchased( $user, $tab ) {
+		$args              = array(
+			'user'   => $user,
+			'subtab' => $tab
+		);
+		$limit             = LP()->settings->get( 'profile_courses_limit', 10 );
+		$limit             = apply_filters( 'learn_press_profile_tab_courses_purchased_limit', $limit );
+		$courses           = $user->get( 'purchased-courses', array( 'limit' => $limit ) );
+		$num_pages         = learn_press_get_num_pages( $user->_get_found_rows(), $limit );
+		$args['courses']   = $courses;
+		$args['num_pages'] = $num_pages;
+		learn_press_get_template( 'profile/tabs/courses/purchased.php', $args );
 	}
 }
 
@@ -544,9 +571,18 @@ if ( !function_exists( 'learn_press_profile_tab_courses_finished' ) ) {
 	 *
 	 * @param LP_User
 	 */
-	function learn_press_profile_tab_courses_finished( $user ) {
-		$courses = $user->get( 'enrolled-courses', array( 'status' => 'finished', 'limit' => 10 ) );
-		learn_press_get_template( 'profile/tabs/courses/finished.php', array( 'user' => $user, 'courses' => $courses ) );
+	function learn_press_profile_tab_courses_finished( $user, $tab ) {
+		$args              = array(
+			'user'   => $user,
+			'subtab' => $tab
+		);
+		$limit             = LP()->settings->get( 'profile_courses_limit', 10 );
+		$limit             = apply_filters( 'learn_press_profile_tab_courses_finished_limit', $limit );
+		$courses           = $user->get( 'enrolled-courses', array( 'status' => 'finished', 'limit' => $limit ) );
+		$num_pages         = learn_press_get_num_pages( $user->_get_found_rows(), $limit );
+		$args['courses']   = $courses;
+		$args['num_pages'] = $num_pages;
+		learn_press_get_template( 'profile/tabs/courses/finished.php', $args );
 	}
 }
 
@@ -556,9 +592,18 @@ if ( !function_exists( 'learn_press_profile_tab_courses_own' ) ) {
 	 *
 	 * @param LP_User
 	 */
-	function learn_press_profile_tab_courses_own( $user ) {
-		$courses = $user->get( 'courses', array( 'limit' => 10 ) );
-		learn_press_get_template( 'profile/tabs/courses/own.php', array( 'user' => $user, 'courses' => $courses ) );
+	function learn_press_profile_tab_courses_own( $user, $tab ) {
+		$args              = array(
+			'user'   => $user,
+			'subtab' => $tab
+		);
+		$limit             = LP()->settings->get( 'profile_courses_limit', 10 );
+		$limit             = apply_filters( 'learn_press_profile_tab_courses_own_limit', $limit );
+		$courses           = $user->get( 'own-courses', array( 'limit' => $limit ) );
+		$num_pages         = learn_press_get_num_pages( $user->_get_found_rows(), $limit );
+		$args['courses']   = $courses;
+		$args['num_pages'] = $num_pages;
+		learn_press_get_template( 'profile/tabs/courses/own.php', $args );
 	}
 }
 

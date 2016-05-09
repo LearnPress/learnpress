@@ -649,22 +649,27 @@ if (typeof window.LearnPress == 'undefined') {
 	function __initSubtabs() {
 		$('.learn-press-subtabs').each(function () {
 			var $tabContainer = $(this),
-				$tabs = $tabContainer.find('a');
+				$tabs = $tabContainer.find('a'),
+				current = null;
 			$tabs.click(function (e) {
 				var $tab = $(this),
 					$contentID = $tab.attr('href');
-				e.preventDefault();
 				$tab.parent().addClass('current').siblings().removeClass('current');
-				$($contentID).addClass('current').siblings().removeClass('current');
-				LearnPress.setUrl($contentID)
+				current = $($contentID).addClass('current');
+				current.siblings().removeClass('current');
+				//LearnPress.setUrl($contentID);
+				e.preventDefault();
 			}).filter(function () {
 				return $(this).attr('href') == window.location.hash;
 			}).trigger('click');
+			if (!current) {
+				$tabs.first().trigger('click')
+			}
 		})
 	}
 
 	$(document).ready(function () {
-		__initSubtabs();
+		//__initSubtabs();
 	});
 
 	$.alerts.overlayColor = '#000';

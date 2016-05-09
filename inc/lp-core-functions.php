@@ -235,7 +235,8 @@ add_action( 'init', 'learn_press_add_rewrite_tags', 1000, 0 );
  * Add more custom rewrite rules
  */
 function learn_press_add_rewrite_rules() {
-
+	// for testing pursose
+	flush_rewrite_rules();
 	//flush_rewrite_rules(true);
 	// lesson
 	$course_type = 'lp_course';
@@ -280,10 +281,22 @@ function learn_press_add_rewrite_rules() {
 	}
 	if ( $profile_id = learn_press_get_page_id( 'profile' ) ) {
 		add_rewrite_rule(
-			'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?([^/]*)/?([^/]*)?/?',
+			'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?([^/]*)/?([^/]*)/?([^/]*)/?([^/]*)/?',
+			'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&id=$matches[3]&paged=$matches[4]',
+			'top'
+		);
+		/*
+		add_rewrite_rule(
+			'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?([^/]*)/?([^/]*)/?',
 			'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&id=$matches[3]',
 			'top'
 		);
+		/*
+		add_rewrite_rule(
+			'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?([^/]*)/?([^/]*)/?([^/]*)/?([^/]*)/?',
+			'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&id=$matches[3]&section=$matches[4]&paged=$matches[5]',
+			'top'
+		);*/
 	}
 
 	do_action( 'learn_press_add_rewrite_rules' );
@@ -291,11 +304,6 @@ function learn_press_add_rewrite_rules() {
 
 add_action( 'init', 'learn_press_add_rewrite_rules', 1000, 0 );
 
-function learn_press_flush_rewrite_rules() {
-
-}
-
-add_action( 'init', 'learn_press_flush_rewrite_rules', 999999999 );
 
 /**
  * This function parse query vars and put into request
@@ -609,14 +617,44 @@ if ( !function_exists( 'learn_press_course_paging_nav' ) ) :
 
 	/**
 	 * Display navigation to next/previous set of posts when applicable.
+	 *
+	 * @param array
 	 */
-	function learn_press_course_paging_nav() {
+	function learn_press_course_paging_nav( $args = array() ) {
+		learn_press_paging_nav(
+			array(
+				'num_pages'     => $GLOBALS['wp_query']->max_num_pages,
+				'wrapper_class' => 'navigation pagination'
+			)
+		);
+	}
 
-		if ( $GLOBALS['wp_query']->max_num_pages < 2 ) {
+endif;
+
+/* nav */
+if ( !function_exists( 'learn_press_paging_nav' ) ) :
+
+	/**
+	 * Display navigation to next/previous set of posts when applicable.
+	 *
+	 * @param array
+	 */
+	function learn_press_paging_nav( $args = array() ) {
+
+		$args = wp_parse_args(
+			$args,
+			array(
+				'num_pages'     => 0,
+				'paged'         => get_query_var( 'paged' ) ? get_query_var( 'paged' ) : 1,
+				'wrapper_class' => 'learn-press-pagination',
+				'base'          => false
+			)
+		);
+		if ( $args['num_pages'] < 2 ) {
 			return;
 		}
-		$paged        = get_query_var( 'paged' ) ? intval( get_query_var( 'paged' ) ) : 1;
-		$pagenum_link = html_entity_decode( get_pagenum_link() );
+		$paged        = $args['paged'];
+		$pagenum_link = html_entity_decode( $args['base'] === false ? get_pagenum_link() : $args['base'] );
 
 		$query_args = array();
 		$url_parts  = explode( '?', $pagenum_link );
@@ -635,8 +673,8 @@ if ( !function_exists( 'learn_press_course_paging_nav' ) ) :
 		$links = paginate_links( array(
 			'base'      => $pagenum_link,
 			'format'    => $format,
-			'total'     => $GLOBALS['wp_query']->max_num_pages,
-			'current'   => $paged,
+			'total'     => $args['num_pages'],
+			'current'   => max( 1, $paged ),
 			'mid_size'  => 1,
 			'add_args'  => array_map( 'urlencode', $query_args ),
 			'prev_text' => __( '<', 'learnpress' ),
@@ -646,7 +684,7 @@ if ( !function_exists( 'learn_press_course_paging_nav' ) ) :
 
 		if ( $links ) :
 			?>
-			<div class="navigation pagination">
+			<div class="<?php echo $args['wrapper_class']; ?>">
 				<?php echo $links; ?>
 			</div>
 			<!-- .pagination -->
@@ -656,6 +694,16 @@ if ( !function_exists( 'learn_press_course_paging_nav' ) ) :
 
 endif;
 
+function learn_press_get_num_pages( $total, $limit = 10 ) {
+	if ( $total <= $limit ) {
+		return 1;
+	}
+	$pages = absint( $total / $limit );
+	if ( $total % $limit != 0 ) {
+		$pages ++;
+	}
+	return $pages;
+}
 
 /**
  * Get text
@@ -2475,6 +2523,19 @@ function learn_press_redirect_search() {
 			exit();
 		}
 	}
+}
+
+function learn_press_get_subtabs_course() {
+	$subtabs = array(
+		'all'       => __( 'All', 'learnpress' ),
+		'learning'  => __( 'Learning', 'learnpress' ),
+		'purchased' => __( 'Purchased', 'learnpress' ),
+		'finished'  => __( 'Finished', 'learnpress' ),
+		'own'       => __( 'Own', 'learnpress' )
+	);
+
+	$subtabs = apply_filters( 'learn_press_profile_tab_courses_subtabs', $subtabs );
+	return $subtabs;
 }
 
 //add_action( 'init', 'learn_press_redirect_search' );

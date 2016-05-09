@@ -64,6 +64,13 @@ class LP_Settings_Pages extends LP_Settings_Base {
 						'_blank' => __( 'New window', 'learnpress' )
 					)
 				),
+				array(
+					'title'   => __( 'Courses limit', 'learnpress' ),
+					'id'      => $this->get_field_name( 'profile_courses_limit' ),
+					'default' => '10',
+					'type'    => 'number',
+					'min'     => 1
+				),
 				/*array(
 					'title'   => __( 'Access level', 'learnpress' ),
 					'id'      => $this->get_field_name( 'profile_access_level' ),

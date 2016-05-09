@@ -31,6 +31,7 @@ $heading = apply_filters( 'learn_press_profile_tab_courses_purchased_heading', f
 
 		<?php endforeach; ?>
 	</ul>
+	<?php learn_press_paging_nav( array( 'num_pages' => $num_pages ) ); ?>
 
 <?php else: ?>
 

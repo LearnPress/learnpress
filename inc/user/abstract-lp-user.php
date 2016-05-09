@@ -47,6 +47,11 @@ class LP_Abstract_User {
 	protected $_quiz_history_id = null;
 
 	/**
+	 * @var int
+	 */
+	protected $_FOUND_ROWS = 0;
+
+	/**
 	 * Constructor
 	 *
 	 * @param int $the_user
@@ -544,7 +549,7 @@ class LP_Abstract_User {
 			$args,
 			array(
 				'limit'  => - 1,
-				'paged'  => 1,
+				'paged'  => get_query_var( 'paged' ) ? get_query_var( 'paged' ) : 1,
 				'status' => array( 'started', 'finished' ),
 				'total'  => 5
 			)
@@ -1349,7 +1354,7 @@ class LP_Abstract_User {
 			array(
 				'status'  => '',
 				'limit'   => - 1,
-				'paged'   => 1,
+				'paged'   => get_query_var( 'paged' ) ? get_query_var( 'paged' ) : 1,
 				'orderby' => 'post_title',
 				'order'   => 'ASC',
 				'user_id' => $this->id
@@ -1369,10 +1374,10 @@ class LP_Abstract_User {
 			}
 			$order = "\nORDER BY " . ( $args['orderby'] ? $args['orderby'] : 'post_title' ) . ' ' . $args['order'];
 			$query = $wpdb->prepare( "
-				SELECT * FROM(
+				SELECT SQL_CALC_FOUND_ROWS * FROM(
 					SELECT c.*, uc.status as course_status
 					FROM {$wpdb->posts} c
-					LEFT JOIN {$wpdb->prefix}learnpress_user_courses uc ON c.ID = uc.course_id
+					LEFT JOIN {$wpdb->prefix}learnpress_user_courses uc ON c.ID = uc.course_id AND uc.user_id = %d
 					WHERE post_type = %s
 					AND post_author = %d
 					UNION
@@ -1383,14 +1388,21 @@ class LP_Abstract_User {
 						AND c.post_type = %s
 						AND c.post_status = %s
 				) a GROUP BY a.ID
-			",
+			", $args['user_id'],
 				LP()->course_post_type, $this->id,
 				$args['user_id'], LP()->course_post_type, 'publish'
 			);
 			$query .= $where . $order . $limit;
-			$courses[$key] = $wpdb->get_results( $query );
+
+			$data          = array(
+				'rows' => $wpdb->get_results( $query )
+			);
+			$data['count'] = $wpdb->get_var( "SELECT FOUND_ROWS();" );
+
+			$courses[$key] = $data;
 		}
-		return $courses[$key];
+		$this->_FOUND_ROWS = $courses[$key]['count'];
+		return $courses[$key]['rows'];
 	}
 
 	function get_orders() {
@@ -1457,14 +1469,13 @@ class LP_Abstract_User {
 			array(
 				'status'  => '',
 				'limit'   => - 1,
-				'paged'   => 1,
+				'paged'   => get_query_var( 'paged' ) ? get_query_var( 'paged' ) : 1,
 				'user_id' => $this->id
 			)
 		);
 		ksort( $args );
 		$key = md5( serialize( $args ) );
 		if ( empty( $courses[$key] ) ) {
-
 			$where = $args['status'] ? $wpdb->prepare( "AND uc.status = %s", $args['status'] ) : '';
 			$limit = "\n";
 			if ( $args['limit'] > 0 ) {
@@ -1475,7 +1486,7 @@ class LP_Abstract_User {
 				$limit .= "LIMIT " . $start . ',' . $args['limit'];
 			}
 			$query = $wpdb->prepare( "
-				SELECT c.*, uc.status as course_status
+				SELECT SQL_CALC_FOUND_ROWS c.*, uc.status as course_status
 				FROM {$wpdb->posts} c
 				INNER JOIN {$wpdb->learnpress_user_courses} uc ON c.ID = uc.course_id
 				WHERE uc.user_id = %d
@@ -1483,10 +1494,15 @@ class LP_Abstract_User {
 					AND c.post_status = %s
 			", $args['user_id'], 'lp_course', 'publish' );
 			$query .= $where . $limit;
+			$data          = array(
+				'rows' => $wpdb->get_results( $query )
+			);
+			$data['count'] = $wpdb->get_var( "SELECT FOUND_ROWS();" );
 
-			$courses[$key] = $wpdb->get_results( $query );
+			$courses[$key] = $data;
 		}
-		return $courses[$key];
+		$this->_FOUND_ROWS = $courses[$key]['count'];
+		return $courses[$key]['rows'];
 	}
 
 	function get_purchased_courses( $args = array() ) {
@@ -1495,9 +1511,10 @@ class LP_Abstract_User {
 		$args = wp_parse_args(
 			$args,
 			array(
-				'status' => '',
-				'limit'  => - 1,
-				'paged'  => 1
+				'status'  => '',
+				'limit'   => - 1,
+				'paged'   => get_query_var( 'paged' ) ? get_query_var( 'paged' ) : 1,
+				'user_id' => $this->id
 			)
 		);
 		ksort( $args );
@@ -1513,7 +1530,7 @@ class LP_Abstract_User {
 				$start = ( $args['paged'] - 1 ) * $args['limit'];
 				$limit .= "LIMIT " . $start . ',' . $args['limit'];
 			}
-			$query = $wpdb->prepare( "
+			/*$query = $wpdb->prepare( "
 				SELECT * FROM {$wpdb->posts} WHERE ID IN (
 					 SELECT oim.meta_value AS ID
 						FROM `{$wpdb->posts}` AS p
@@ -1525,23 +1542,75 @@ class LP_Abstract_User {
 						GROUP BY oim.meta_value
 				 )
 			", '_user_id', $this->id, '_course_id', 'lp-completed', $this->id );
-			/*
-			 SELECT c.*
-			FROM wp_posts o
-			INNER JOIN wp_learnpress_order_items oi ON oi.order_id = o.ID
-			INNER JOIN wp_learnpress_order_itemmeta oim ON oim.learnpress_order_item_id = oi.order_item_id AND oim.meta_key = '_course_id'
-			INNER JOIN wp_posts c ON c.ID = oim.meta_value
-			INNER JOIN wp_postmeta om ON om.post_id = o.ID AND om.meta_key = '_user_id'
-			WHERE o.post_status = 'lp-completed'
-			AND c.post_type = 'lp_course'
-			AND om.meta_value=1
-			 */
+			*/
+			$query = $wpdb->prepare( "
+				SELECT SQL_CALC_FOUND_ROWS c.*
+				FROM wp_posts o
+				INNER JOIN wp_learnpress_order_items oi ON oi.order_id = o.ID
+				INNER JOIN wp_learnpress_order_itemmeta oim ON oim.learnpress_order_item_id = oi.order_item_id AND oim.meta_key = %s
+				INNER JOIN wp_posts c ON c.ID = oim.meta_value
+				INNER JOIN wp_postmeta om ON om.post_id = o.ID AND om.meta_key = %s
+				WHERE o.post_status IN( %s, %s, %s )
+				AND c.post_type = %s
+				AND om.meta_value = %d
+			", '_course_id', '_user_id', 'lp-completed', 'lp-processing', 'lp-on-hold', 'lp_course', $args['user_id'] );
 			$query .= $limit;
 
-			$courses[$key] = $wpdb->get_results( $query );
-		}
+			$data          = array(
+				'rows' => $wpdb->get_results( $query )
+			);
+			$data['count'] = $wpdb->get_var( "SELECT FOUND_ROWS();" );
 
-		return $courses[$key];
+			$courses[$key] = $data;
+		}
+		$this->_FOUND_ROWS = $courses[$key]['count'];
+		return $courses[$key]['rows'];
+	}
+
+	function get_own_courses( $args = array() ) {
+		global $wpdb;
+		static $courses = array();
+		$args = wp_parse_args(
+			$args,
+			array(
+				'limit'   => - 1,
+				'paged'   => get_query_var( 'paged' ) ? get_query_var( 'paged' ) : 1,
+				'user_id' => $this->id
+			)
+		);
+		ksort( $args );
+		$key = md5( serialize( $args ) );
+		if ( empty( $courses[$key] ) ) {
+			$limit = "\n";
+			if ( $args['limit'] > 0 ) {
+				if ( !$args['paged'] ) {
+					$args['paged'] = 1;
+				}
+				$start = ( $args['paged'] - 1 ) * $args['limit'];
+				$limit .= "LIMIT " . $start . ',' . $args['limit'];
+			}
+			$query = $wpdb->prepare( "
+				SELECT SQL_CALC_FOUND_ROWS c.*
+				FROM wp_posts c
+				WHERE c.post_status = %s
+				AND c.post_type = %s
+				AND c.post_author = %d
+			", 'publish', 'lp_course', $args['user_id'] );
+			$query .= $limit;
+
+			$data          = array(
+				'rows' => $wpdb->get_results( $query )
+			);
+			$data['count'] = $wpdb->get_var( "SELECT FOUND_ROWS();" );
+
+			$courses[$key] = $data;
+		}
+		$this->_FOUND_ROWS = $courses[$key]['count'];
+		return $courses[$key]['rows'];
+	}
+
+	function _get_found_rows() {
+		return $this->_FOUND_ROWS;
 	}
 
 	function has_checked_answer( $question_id, $quiz_id ) {

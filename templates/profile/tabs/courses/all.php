@@ -11,7 +11,7 @@ if ( !defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-global $post;
+global $post, $wp;
 $heading = apply_filters( 'learn_press_profile_tab_courses_enrolled_heading', false );
 ?>
 
@@ -25,13 +25,15 @@ $heading = apply_filters( 'learn_press_profile_tab_courses_enrolled_heading', fa
 
 	<ul class="profile-courses courses-list enrolled">
 
-		<?php foreach( $courses as $post ){ setup_postdata( $post );?>
+		<?php foreach ( $courses as $post ) {
+			setup_postdata( $post ); ?>
 
 			<?php learn_press_get_template( 'profile/tabs/courses/loop.php', array( 'subtab' => 'all' ) ); ?>
 
 		<?php } ?>
 	</ul>
 
+	<?php learn_press_paging_nav( array( 'num_pages' => $num_pages ) ); ?>
 <?php else: ?>
 
 	<?php learn_press_display_message( __( 'You haven\'t got any courses yet!', 'learnpress' ) ); ?>
