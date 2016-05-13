@@ -508,7 +508,7 @@ if ( !function_exists( 'learn_press_profile_tab_courses_all' ) ) {
 	 *
 	 * @param LP_User
 	 */
-	function learn_press_profile_tab_courses_all( $user, $tab ) {
+	function learn_press_profile_tab_courses_all( $user, $tab = null ) {
 		$args              = array(
 			'user'   => $user,
 			'subtab' => $tab
@@ -668,6 +668,14 @@ if ( !function_exists( 'learn_press_user_profile_tabs' ) ) {
 			)
 		);
 		$tabs     = apply_filters( 'learn_press_user_profile_tabs', $defaults, $user );
+
+		foreach ( $tabs as $slug => $opt ) {
+			if ( !empty( $defaults[$slug] ) ) {
+				continue;
+			}
+			LP()->query_vars[$slug] = $slug;
+			add_rewrite_endpoint( $slug, EP_ROOT | EP_PAGES );
+		}
 
 		return $tabs;
 	}

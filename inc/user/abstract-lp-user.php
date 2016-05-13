@@ -423,7 +423,8 @@ class LP_Abstract_User {
 
 	function get_quiz_history( $quiz_id, $history_id = null ) {
 		static $history = array();
-		if ( $quiz_id && !array_key_exists( $quiz_id, $history ) ) {
+		$key = $this->id . '_' . $quiz_id;
+		if ( $quiz_id && !array_key_exists( $key, $history ) ) {
 			global $wpdb;
 			$query = $wpdb->prepare( "
 				SELECT *
@@ -434,25 +435,25 @@ class LP_Abstract_User {
 				ORDER BY uq.user_quiz_id DESC
 			", $quiz_id, $this->id );
 			if ( $results = $wpdb->get_results( $query ) ) {
-				$history[$quiz_id] = array();
+				$history[$key] = array();
 				foreach ( $results as $result ) {
 					$id = $result->user_quiz_id;
-					if ( empty( $history[$quiz_id][$id] ) ) {
-						$history[$quiz_id][$id] = (object) array(
+					if ( empty( $history[$key][$id] ) ) {
+						$history[$key][$id] = (object) array(
 							'history_id' => $id
 						);
 					}
-					$history[$quiz_id][$id]->{$result->meta_key} = maybe_unserialize( $result->meta_value );
+					$history[$key][$id]->{$result->meta_key} = maybe_unserialize( $result->meta_value );
 				}
-				foreach ( $history[$quiz_id] as $id => $progress ) {
-					$history[$quiz_id][$id]->results = $this->evaluate_quiz_results( $quiz_id, $progress );
+				foreach ( $history[$key] as $id => $progress ) {
+					$history[$key][$id]->results = $this->evaluate_quiz_results( $quiz_id, $progress );
 				}
 			}
 		}
 		if ( $history_id ) {
-			return apply_filters( 'learn_press_user_quiz_history', isset( $history[$quiz_id][$history_id] ) ? $history[$quiz_id][$history_id] : false, $this, $quiz_id );
+			return apply_filters( 'learn_press_user_quiz_history', isset( $history[$key][$history_id] ) ? $history[$key][$history_id] : false, $this, $quiz_id );
 		}
-		return apply_filters( 'learn_press_user_quiz_history', isset( $history[$quiz_id] ) ? $history[$quiz_id] : array(), $this, $quiz_id );
+		return apply_filters( 'learn_press_user_quiz_history', isset( $history[$key] ) ? $history[$key] : array(), $this, $quiz_id );
 	}
 
 	function get_current_results( $quiz_id ) {
@@ -1075,16 +1076,17 @@ class LP_Abstract_User {
 
 	function get_quiz_results( $quiz_id, $force = false ) {
 		static $quiz_results = array();
-		if ( empty( $quiz_results[$quiz_id] ) || $force ) {
+		$key = $this->id . '_' . $quiz_id;
+		if ( empty( $quiz_results[$key] ) || $force ) {
 			if ( $progress = $this->get_quiz_progress( $quiz_id ) ) {
-				$quiz_results[$quiz_id] = $progress;
-				$progress->results      = $this->evaluate_quiz_results( $quiz_id, $progress );
+				$quiz_results[$key] = $progress;
+				$progress->results  = $this->evaluate_quiz_results( $quiz_id, $progress );
 
 			} else {
-				$quiz_results[$quiz_id] = false;
+				$quiz_results[$key] = false;
 			}
 		}
-		return $quiz_results[$quiz_id];
+		return $quiz_results[$key];
 	}
 
 	function evaluate_quiz_results( $quiz_id, $progress ) {

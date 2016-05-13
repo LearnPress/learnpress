@@ -733,37 +733,6 @@ function learn_press_get_status_text( $status_id ) {
 	return $text;
 }
 
-/**
- * Processing co-teacher
- */
-add_action( 'admin_head-post.php', 'learn_press_process_teacher' );
-function learn_press_process_teacher() {
-	if ( current_user_can( 'manage_options' ) ) {
-		return;
-	}
-	global $post;
-	$post_id = $post->ID;
-
-	if ( current_user_can( LP()->teacher_role ) ) {
-		if ( $post->post_author == get_current_user_id() ) {
-			return;
-		}
-		$courses = apply_filters( 'learn_press_valid_courses', array() );
-		$lessons = apply_filters( 'learn_press_valid_lessons', array() );
-		$quizzes = apply_filters( 'learn_press_valid_quizzes', array() );
-		if ( in_array( $post_id, $courses ) ) {
-			return;
-		}
-		if ( in_array( $post_id, $lessons ) ) {
-			return;
-		}
-		if ( in_array( $post_id, $quizzes ) ) {
-			return;
-		}
-		wp_die( __( 'Sorry! You don\'t have permission to do this action', 'learnpress' ), 403 );
-	}
-}
-
 add_action( 'pre_get_posts', 'learn_press_pre_get_items', 10 );
 function learn_press_pre_get_items( $query ) {
 	if ( current_user_can( 'manage_options' ) ) {

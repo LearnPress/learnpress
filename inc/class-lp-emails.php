@@ -58,7 +58,7 @@ class LP_Emails {
 		$this->emails['LP_Email_Published_Course']     = include( 'emails/class-lp-email-published-course.php' );
 		$this->emails['LP_Email_Enrolled_Course']      = include( 'emails/class-lp-email-enrolled-course.php' );
 		$this->emails['LP_Email_Finished_Course']      = include( 'emails/class-lp-email-finished-course.php' );
-		$this->emails['LP_Email_Become_An_Instructor'] = include( 'emails/class-lp-email-become-an-instructor.php' );
+		//$this->emails['LP_Email_Become_An_Instructor'] = include( 'emails/class-lp-email-become-an-instructor.php' );
 
 		add_action( 'learn_press_course_submit_for_reviewer_notification', array( $this, 'review_course' ), 10, 2 );
 		add_action( 'learn_press_course_submit_rejected_notification', array( $this, 'course_rejected' ), 10 );

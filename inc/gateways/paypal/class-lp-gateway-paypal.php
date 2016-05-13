@@ -233,8 +233,8 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 		}
 
 		if ( !$order = LP_Order::instance( $order_id ) ) {
-			$order_id = hb_get_order_id_by_key( $order_key );
-			$order    = LP_Order::instance( $order_id );
+			//$order_id = hb_get_order_id_by_key( $order_key );
+			//$order    = LP_Order::instance( $order_id );
 		}
 
 		if ( !$order || $order->order_key !== $order_key ) {

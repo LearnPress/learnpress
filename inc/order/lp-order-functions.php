@@ -74,6 +74,7 @@ function learn_press_create_order( $order_data ) {
 		update_post_meta( $order_id, '_payment_method', '' );
 		update_post_meta( $order_id, '_payment_method_title', '' );
 		update_post_meta( $order_id, '_order_version', '1.0' );
+		update_post_meta( $order_id, '_created_via', !empty( $order_data['created_via'] ) ? $order_data['created_via'] : 'checkout' );
 	}
 
 	return LP_Order::instance( $order_id, true );
