@@ -1524,7 +1524,6 @@ class LP_Abstract_User {
 		$key = md5( serialize( $args ) );
 		if ( empty( $courses[$key] ) ) {
 
-//			$where = $args['status'] ? $wpdb->prepare( "AND uc.status = %s", $args['status'] ) : '';
 			$limit = "\n";
 			if ( $args['limit'] > 0 ) {
 				if ( !$args['paged'] ) {
@@ -1533,19 +1532,6 @@ class LP_Abstract_User {
 				$start = ( $args['paged'] - 1 ) * $args['limit'];
 				$limit .= "LIMIT " . $start . ',' . $args['limit'];
 			}
-			/*$query = $wpdb->prepare( "
-				SELECT * FROM {$wpdb->posts} WHERE ID IN (
-					 SELECT oim.meta_value AS ID
-						FROM `{$wpdb->posts}` AS p
-						INNER JOIN {$wpdb->postmeta} AS pm ON p.ID = pm.post_id AND pm.meta_key = %s AND pm.meta_value = %d
-						INNER JOIN {$wpdb->learnpress_order_items} AS oi ON p.ID = oi.order_id
-						INNER JOIN {$wpdb->learnpress_order_itemmeta} AS oim ON oi.order_item_id = oim.learnpress_order_item_id AND oim.meta_key = %s
-						WHERE p.post_status = %s
-						AND oim.meta_value NOT IN (SELECT uc.course_id FROM {$wpdb->learnpress_user_courses} AS uc WHERE uc.user_id = %d )
-						GROUP BY oim.meta_value
-				 )
-			", '_user_id', $this->id, '_course_id', 'lp-completed', $this->id );
-			*/
 			$query = $wpdb->prepare( "
 				SELECT SQL_CALC_FOUND_ROWS c.*
 				FROM wp_posts o
@@ -1555,8 +1541,9 @@ class LP_Abstract_User {
 				INNER JOIN wp_postmeta om ON om.post_id = o.ID AND om.meta_key = %s
 				WHERE o.post_status IN( %s, %s, %s )
 				AND c.post_type = %s
+				AND c.post_status = %s
 				AND om.meta_value = %d
-			", '_course_id', '_user_id', 'lp-completed', 'lp-processing', 'lp-on-hold', 'lp_course', $args['user_id'] );
+			", '_course_id', '_user_id', 'lp-completed', 'lp-processing', 'lp-on-hold', 'lp_course', 'publish', $args['user_id'] );
 			$query .= $limit;
 
 			$data          = array(
@@ -1606,8 +1593,6 @@ class LP_Abstract_User {
 			$data['count'] = $wpdb->get_var( "SELECT FOUND_ROWS();" );
 
 			$courses[$key] = $data;
-
-			LP_Debug::instance()->add( $courses );
 
 		}
 		$this->_FOUND_ROWS = $courses[$key]['count'];

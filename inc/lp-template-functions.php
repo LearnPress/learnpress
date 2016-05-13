@@ -661,13 +661,17 @@ if ( !function_exists( 'learn_press_user_profile_tabs' ) ) {
 			$quiz_endpoint   => array(
 				'title'    => __( 'Quiz Results', 'learnpress' ),
 				'callback' => 'learn_press_profile_tab_quizzes_content'
-			),
-			$order_endpoint  => array(
-				'title'    => __( 'Orders', 'learnpress' ),
-				'callback' => 'learn_press_profile_tab_orders_content'
 			)
 		);
-		$tabs     = apply_filters( 'learn_press_user_profile_tabs', $defaults, $user );
+
+		if ( $user->id == get_current_user_id() ) {
+			$defaults[$order_endpoint] = array(
+				'title'    => __( 'Orders', 'learnpress' ),
+				'callback' => 'learn_press_profile_tab_orders_content'
+			);
+		}
+
+		$tabs = apply_filters( 'learn_press_user_profile_tabs', $defaults, $user );
 
 		foreach ( $tabs as $slug => $opt ) {
 			if ( !empty( $defaults[$slug] ) ) {
