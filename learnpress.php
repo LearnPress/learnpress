@@ -344,7 +344,6 @@ if ( !class_exists( 'LearnPress' ) ) {
 			add_action( 'template_redirect', 'learn_press_handle_purchase_request' );
 
 			add_action( 'after_setup_theme', array( $this, 'setup_theme' ) );
-
 		}
 
 		function _define_plugin_url() {
@@ -361,6 +360,13 @@ if ( !class_exists( 'LearnPress' ) ) {
 		 */
 		function init() {
 
+			if ( !empty( $_REQUEST['view-log'] ) ) {
+				$log = $_REQUEST['view-log'];
+				echo '<pre>';
+				@readfile( learn_press_get_log_file_path( $log ) );
+				echo '<pre>';
+				die();
+			}
 			if ( $this->is_request( 'frontend' ) ) {
 				$this->cart = LP_Cart::instance();
 			}

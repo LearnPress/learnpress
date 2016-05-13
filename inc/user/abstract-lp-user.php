@@ -1497,7 +1497,7 @@ class LP_Abstract_User {
 			", $args['user_id'], 'lp_course', 'publish' );
 			$query .= $where . $limit;
 			$data          = array(
-				'rows' => $wpdb->get_results( $query )
+				'rows' => $wpdb->get_results( $query, OBJECT_K )
 			);
 			$data['count'] = $wpdb->get_var( "SELECT FOUND_ROWS();" );
 
@@ -1516,7 +1516,8 @@ class LP_Abstract_User {
 				'status'  => '',
 				'limit'   => - 1,
 				'paged'   => get_query_var( 'paged' ) ? get_query_var( 'paged' ) : 1,
-				'user_id' => $this->id
+				'user_id' => $this->id,
+				'fields'  => ''
 			)
 		);
 		ksort( $args );
@@ -1559,7 +1560,7 @@ class LP_Abstract_User {
 			$query .= $limit;
 
 			$data          = array(
-				'rows' => $wpdb->get_results( $query )
+				'rows' => $wpdb->get_results( $query, OBJECT_K )
 			);
 			$data['count'] = $wpdb->get_var( "SELECT FOUND_ROWS();" );
 
@@ -1599,13 +1600,15 @@ class LP_Abstract_User {
 				AND c.post_author = %d
 			", 'publish', 'lp_course', $args['user_id'] );
 			$query .= $limit;
-
 			$data          = array(
-				'rows' => $wpdb->get_results( $query )
+				'rows' => $wpdb->get_results( $query, OBJECT_K )
 			);
 			$data['count'] = $wpdb->get_var( "SELECT FOUND_ROWS();" );
 
 			$courses[$key] = $data;
+
+			LP_Debug::instance()->add( $courses );
+
 		}
 		$this->_FOUND_ROWS = $courses[$key]['count'];
 		return $courses[$key]['rows'];
