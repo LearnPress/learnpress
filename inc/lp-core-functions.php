@@ -2507,6 +2507,32 @@ function learn_press_get_subtabs_course() {
 	return $subtabs;
 }
 
+function learn_press_auto_enroll_user_to_courses( $order_id ) {
+	if ( LP()->settings->get( 'disable_auto_enroll' ) == 'yes' ) {
+		return;
+	}
+	if ( !$order = learn_press_get_order( $order_id ) ) {
+		return;
+	}
+	if ( !$items = $order->get_items() ) {
+		return;
+	}
+	if ( !$user = $order->get_user() ) {
+		return;
+	}
+	foreach ( $items as $item_id => $item ) {
+		$course = learn_press_get_course( $item['course_id'] );
+		if ( !$course ) {
+			continue;
+		}
+		if ( $user->has( 'enrolled-course', $course->id ) ) {
+			continue;
+		}
+		$user->enroll( $course->id );
+	}
+}
+
+add_action( 'learn_press_order_status_completed', 'learn_press_auto_enroll_user_to_courses' );
 //add_action( 'init', 'learn_press_redirect_search' );
 
 include_once "debug.php";
