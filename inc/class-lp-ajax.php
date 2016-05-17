@@ -215,7 +215,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 
 			$nonce_action = sprintf( 'learn-press-finish-course-%d-%d', $course_id, $user->id );
 			if ( !$user->id || !$course || !wp_verify_nonce( $nonce, $nonce_action ) ) {
-				wp_die( __( 'Access denied! Bla bla bla...', 'learnpress' ) );
+				wp_die( __( 'Access denied!', 'learnpress' ) );
 			}
 
 			$response = $user->finish_course( $course_id );

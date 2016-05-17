@@ -843,15 +843,31 @@ class LP_Abstract_User {
 	/**
 	 * Return true if user has already enrolled course
 	 *
-	 * @param $course_id
+	 * @param int  $course_id
+	 * @param bool $force
 	 *
 	 * @return bool
 	 */
-	function has_enrolled_course( $course_id ) {
+	function has_enrolled_course( $course_id, $force = false ) {
 
-		$info = $this->get_course_info( $course_id );
+		static $enrolled_courses = array();
 
-		return apply_filters( 'learn_press_user_has_enrolled_course', $info['status'] != '', $this, $course_id );
+		$key = sprintf( '%d-%d', $this->id, $course_id );
+
+		if ( empty( $enrolled_courses[$key] ) || $force ) {
+			//$info = $this->get_course_info( $course_id );
+			global $wpdb;
+			$query                  = $wpdb->prepare( "
+				SELECT status
+				FROM {$wpdb->prefix}learnpress_user_courses
+				WHERE user_id = %d
+				AND course_id = %d
+				AND status <> %s
+				LIMIT 0, 1
+			", $this->id, $course_id, '' );
+			$enrolled_courses[$key] = $wpdb->get_var( $query ) ? true : false;
+		}
+		return apply_filters( 'learn_press_user_has_enrolled_course', $enrolled_courses[$key], $this, $course_id );
 	}
 
 	/**
@@ -1203,25 +1219,32 @@ class LP_Abstract_User {
 	 */
 	function get_course_order( $course_id, $return = '' ) {
 		global $wpdb;
-		$query = $wpdb->prepare( "
-			SELECT order_id
-			FROM {$wpdb->posts} o
-			INNER JOIN {$wpdb->postmeta} om ON om.post_id = o.ID AND om.meta_key = %s AND om.meta_value = %d
-			INNER JOIN {$wpdb->learnpress_order_items} oi ON o.ID = oi.order_ID
-			INNER JOIN {$wpdb->learnpress_order_itemmeta} oim ON oim.learnpress_order_item_id= oi.order_item_id AND oim.meta_key = %s AND oim.meta_value = %d
-			WHERE o.post_status IN ('lp-processing', 'lp-pending', 'lp-completed')
-			ORDER BY order_id DESC
-		", '_user_id', $this->id, '_course_id', $course_id );
+		static $orders = array();
 
-		$order_id = $wpdb->get_var( $query );
+		$key = sprintf( '%d_%d', $this->id, $course_id );
+
+		if ( empty( $orders[$key] ) ) {
+			$query = $wpdb->prepare( "
+				SELECT order_id
+				FROM {$wpdb->posts} o
+				INNER JOIN {$wpdb->postmeta} om ON om.post_id = o.ID AND om.meta_key = %s AND om.meta_value = %d
+				INNER JOIN {$wpdb->learnpress_order_items} oi ON o.ID = oi.order_ID
+				INNER JOIN {$wpdb->learnpress_order_itemmeta} oim ON oim.learnpress_order_item_id= oi.order_item_id AND oim.meta_key = %s AND oim.meta_value = %d
+				WHERE o.post_status IN ('lp-processing', 'lp-pending', 'lp-completed')
+				ORDER BY order_id DESC
+			", '_user_id', $this->id, '_course_id', $course_id );
+
+			$order_id = $wpdb->get_var( $query );
+			$this->_parse_item_order_of_course( $course_id );
+			$orders[$key] = $order_id;
+		} else {
+			$order_id = $orders[$key];
+		}
 		if ( $order_id && $return == 'object' ) {
 			$order = LP_Order::instance( $order_id );
 		} else {
 			$order = $order_id;
 		}
-
-		$this->_parse_item_order_of_course( $course_id );
-
 		return $order;
 	}
 

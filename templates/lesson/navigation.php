@@ -9,7 +9,6 @@ global $course;
 if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
-
 if ( $course->is( 'viewing' ) != 'lesson' && $course->is( 'viewing' ) != 'quiz' ) {
 	return;
 }

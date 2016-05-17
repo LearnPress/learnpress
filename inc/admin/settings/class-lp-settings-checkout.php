@@ -77,6 +77,13 @@ class LP_Settings_Checkout extends LP_Settings_Base {
 					'type'    => 'checkbox'
 				),
 				array(
+					'title'   => __( 'Disable auto enroll', 'learnpress' ),
+					'desc'    => __( 'Disable auto enroll a user after they bought a course', 'learnpress' ),
+					'id'      => $this->get_field_name( 'disable_auto_enroll' ),
+					'default' => 'no',
+					'type'    => 'checkbox'
+				),
+				array(
 					'title'   => __( 'Cart page', 'learnpress' ),
 					'id'      => $this->get_field_name( 'cart_page_id' ),
 					'default' => '',
