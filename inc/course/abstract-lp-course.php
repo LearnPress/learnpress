@@ -704,6 +704,7 @@ abstract class LP_Abstract_Course {
 		if ( !$this->has( 'item', $item_id ) ) {
 			return false;
 		}
+		$permalink = get_the_permalink( $item_id );
 		switch ( get_post_type( $item_id ) ) {
 			case 'lp_quiz':
 			case 'lp_lesson':

@@ -8,7 +8,8 @@
 if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
-
+/* section item display inside a section */
+$learnpress_course_sections = lean_press_get_course_sections();
 ?>
 
 <ul class="section-content">
@@ -18,7 +19,9 @@ if ( !defined( 'ABSPATH' ) ) {
 	<?php
 	foreach ( $section->items as $item ) {
 		$post_type = str_replace( 'lp_', '', $item->post_type );
-		if ( !in_array( $post_type, array( 'lesson', 'quiz' ) ) ) continue;
+
+		if ( ! in_array( $item->post_type, $learnpress_course_sections ) ) continue;
+
 		$args = array(
 			'item'    => $item,
 			'section' => $section
