@@ -29,7 +29,7 @@ class LP_Admin_Submenu_Statistic {
 	/**
 	 * LP_Admin_Submenu_Statistic constructor.
 	 */
-	function __construct() {
+	public function __construct() {
 		add_action( 'learn_press_get_stats_users', array( $this, 'get_stats_users' ) );
 		add_action( 'learn_press_get_stats_courses', array( $this, 'get_stats_courses' ) );
 		add_action( 'learn_press_get_stats_orders', array( $this, 'get_stats_orders' ) );
@@ -40,7 +40,7 @@ class LP_Admin_Submenu_Statistic {
 	/**
 	 * Statistic page
 	 */
-	function display() {
+	public function display() {
 		$this->tab     = isset( $_GET['tab'] ) ? $_GET['tab'] : 'users';
 		$this->section = isset( $_GET['section'] ) ? $_GET['section'] : '';
 		$tabs          = apply_filters( 'learn_press_statistics_tabs', array(
@@ -62,25 +62,25 @@ class LP_Admin_Submenu_Statistic {
 	/**
 	 *
 	 */
-	function get_stats_users() {
+	public function get_stats_users() {
 		require_once learn_press_get_admin_view( 'statistics/users.php' );
 	}
 
 	/**
 	 *
 	 */
-	function get_stats_courses() {
+	public function get_stats_courses() {
 		require_once learn_press_get_admin_view( 'statistics/courses.php' );
 	}
 
 	/**
 	 *
 	 */
-	function get_stats_orders() {
+	public function get_stats_orders() {
 		require_once learn_press_get_admin_view( 'statistics/orders.php' );
 	}
 
-	function load_chart() {
+	public function load_chart() {
 		$type     = learn_press_get_request( 'type' );
 		$response = null;
 		switch ( $type ) {
@@ -229,7 +229,7 @@ class LP_Admin_Submenu_Statistic {
 	/**
 	 *
 	 */
-	function load_chart_scripts() {
+	public function load_chart_scripts() {
 		//wp_enqueue_style( 'lpr-jquery-ui-css', LP_CSS_URL . 'jquery-ui.css' );
 		//wp_enqueue_script( 'lpr-jquery-ui-js', LP_JS_URL . 'jquery-ui.js', array( 'jquery' ), '', false );
 		wp_enqueue_script( 'learn-press-chart', LP_JS_URL . 'chart.min.js', array( 'jquery', 'jquery-ui-datepicker' ) );
@@ -239,7 +239,7 @@ class LP_Admin_Submenu_Statistic {
 	/**
 	 * @return LP_Admin_Submenu_Statistic|null
 	 */
-	static function instance() {
+	public static function instance() {
 		if ( !self::$_instance ) {
 			self::$_instance = new self();
 		}

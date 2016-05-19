@@ -68,7 +68,7 @@ class LP_Quiz {
 		add_action( 'wp_head', array( $this, 'frontend_assets' ) );
 	}
 
-	function get_duration_html( $format = 'h:i:s' ) {
+	public function get_duration_html( $format = 'h:i:s' ) {
 		$duration = $this->duration;
 		if ( $duration ) {
 			$duration = date( $format, $duration );
@@ -78,7 +78,7 @@ class LP_Quiz {
 		return apply_filters( 'learn_press_quiz_duration', $duration, $this );
 	}
 
-	function get_total_questions() {
+	public function get_total_questions() {
 		$questions = $this->questions;
 		$count     = 0;
 		if ( $questions ) {
@@ -87,7 +87,7 @@ class LP_Quiz {
 		return $count;
 	}
 
-	function get_localize() {
+	public function get_localize() {
 		$localize = array(
 			'confirm_finish_quiz' => array(
 				'title'   => __( 'Finish quiz', 'learnpress' ),
@@ -107,7 +107,7 @@ class LP_Quiz {
 		return apply_filters( 'learn_press_single_quiz_localize', $localize, $this );
 	}
 
-	function get_settings() {
+	public function get_settings() {
 		if ( empty( self::$_meta[$this->id]['single_quiz_params'] ) ) {
 			$user = learn_press_get_current_user();
 
@@ -150,7 +150,7 @@ class LP_Quiz {
 		return apply_filters( 'learn_press_single_quiz_params', self::$_meta[$this->id]['single_quiz_params'], $this );
 	}
 
-	function get_question_params( $ids ) {
+	public function get_question_params( $ids ) {
 		global $wpdb;
 		$query   = $wpdb->prepare( "
 			SELECT qa.question_answer_id, ID as id, pm.meta_value as type, qa.answer_data as answer_data
@@ -209,7 +209,7 @@ class LP_Quiz {
 		return apply_filters( 'learn_press_quiz_param_questions', $results, $this->id );
 	}
 
-	function frontend_assets() {
+	public function frontend_assets() {
 		if ( learn_press_is_quiz() && get_the_ID() == $this->id ) {
 			$translate = $this->get_localize();
 			LP_Assets::add_localize( $translate, false, 'single-quiz' );
@@ -282,11 +282,11 @@ class LP_Quiz {
 		return $this->post;
 	}
 
-	function is_require_enrollment() {
+	public function is_require_enrollment() {
 		return $this->course && $this->course->is_require_enrollment();
 	}
 
-	function get_course() {
+	public function get_course() {
 		if ( empty( $this->course ) ) {
 			global $wpdb;
 			$query = $wpdb->prepare( "
@@ -302,7 +302,7 @@ class LP_Quiz {
 		return $this->course;
 	}
 
-	function get_user_id() {
+	public function get_user_id() {
 		if ( empty( $this->user_id ) ) {
 			$user_id = get_current_user_id();
 			if ( !$user_id ) {
@@ -330,11 +330,11 @@ class LP_Quiz {
 		return new LP_Quiz( $the_quiz, $args );
 	}
 
-	function get_quiz_result( $quiz_id = null ) {
+	public function get_quiz_result( $quiz_id = null ) {
 		return false;
 	}
 
-	function get_questions( $force = false ) {
+	public function get_questions( $force = false ) {
 		if ( !array_key_exists( 'questions', self::$_meta[$this->id] ) || $force ) {
 			self::$_meta[$this->id]['questions'] = array();
 			global $wpdb;
@@ -373,11 +373,11 @@ class LP_Quiz {
 		return apply_filters( 'learn_press_quiz_questions', $this_questions, $this->id, $force );
 	}
 
-	function get_buttons() {
+	public function get_buttons() {
 
 	}
 
-	function has( $feature ) {
+	public function has( $feature ) {
 		$args = func_get_args();
 		unset( $args[0] );
 		$method   = 'has_' . preg_replace( '!-!', '_', $feature );
@@ -389,15 +389,15 @@ class LP_Quiz {
 		}
 	}
 
-	function has_questions() {
+	public function has_questions() {
 		return $this->get_questions();
 	}
 
-	function has_question( $question_id ) {
+	public function has_question( $question_id ) {
 		return is_array( $this->questions ) && isset( $this->questions[$question_id] );
 	}
 
-	function get_mark( $force = false ) {
+	public function get_mark( $force = false ) {
 		if ( !self::$_meta[$this->id] ) {
 			self::$_meta[$this->id] = array();
 		}
@@ -415,11 +415,11 @@ class LP_Quiz {
 		return apply_filters( 'learn_press_quiz_mark', self::$_meta[$this->id]['mark'], $this );
 	}
 
-	function get_question_link( $question_id = null ) {
+	public function get_question_link( $question_id = null ) {
 		return apply_filters( 'learn_press_quiz_question_permalink', get_the_permalink( $this->id ) . get_post_field( 'post_name', $question_id ), $question_id, $this );
 	}
 
-	function get_question_param( $name, $id ) {
+	public function get_question_param( $name, $id ) {
 		if ( $this->questions ) {
 			if ( !empty( $this->questions[$id] ) ) {
 				return !empty( $this->questions[$id]->params[$name] ) ? $this->questions[$id]->params[$name] : null;
@@ -428,7 +428,7 @@ class LP_Quiz {
 		return false;
 	}
 
-	function check_question( $question_id, $user_id ) {
+	public function check_question( $question_id, $user_id ) {
 
 		if ( !$question = LP_Question_Factory::get_question( $question_id ) ) {
 			return false;
@@ -450,7 +450,7 @@ class LP_Quiz {
 
 	}
 
-	function get_question_position( $question, $user_id = 0 ) {
+	public function get_question_position( $question, $user_id = 0 ) {
 		if ( !$user_id ) {
 			$user_id = learn_press_get_current_user_id();
 		}

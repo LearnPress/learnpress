@@ -12,7 +12,7 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 
 	// class LP_Order_Post_Type
 	final class LP_Order_Post_Type extends LP_Abstract_Post_Type {
-		function __construct() {
+		public function __construct() {
 			//add_action( 'init', array( $this, 'register_post_type' ) );
 			add_action( 'init', array( $this, 'register_post_statues' ) );
 			/*Add Coulumn*/
@@ -46,7 +46,7 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 			parent::__construct();
 		}
 
-		function enqueue_scripts() {
+		public function enqueue_scripts() {
 			if ( get_post_type() != 'lp_order' ) {
 				return;
 			}
@@ -58,7 +58,7 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 		 *
 		 * @param $post_id
 		 */
-		function delete_order_items( $post_id ) {
+		public function delete_order_items( $post_id ) {
 			global $wpdb, $post;
 			if ( get_post_type( $post_id ) != 'lp_order' ) {
 				return;
@@ -92,7 +92,7 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 			}
 		}
 
-		function save_order( $post_id ) {
+		public function save_order( $post_id ) {
 			global $action;
 			if ( wp_is_post_revision( $post_id ) )
 				return;
@@ -118,7 +118,7 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 			}
 		}
 
-		function remove_box() {
+		public function remove_box() {
 			//remove_post_type_support( LP()->order_post_type, 'title' );
 			remove_post_type_support( LP()->order_post_type, 'editor' );
 		}
@@ -134,7 +134,7 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 			}
 		}
 
-		function admin_footer() {
+		public function admin_footer() {
 			if ( !$this->_is_archive() ) {
 				return;
 			}
@@ -147,7 +147,7 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 			<?php
 		}
 
-		function posts_where_paged( $where ) {
+		public function posts_where_paged( $where ) {
 			global $wpdb, $wp_query;
 			if ( !$this->_is_archive() || !$this->_is_search() ) {
 				return $where;
@@ -163,7 +163,7 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 			return $where;
 		}
 
-		function posts_fields( $fields ) {
+		public function posts_fields( $fields ) {
 			if ( !$this->_is_archive() || !$this->_is_search() ) {
 				return $fields;
 			}
@@ -171,14 +171,14 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 			return $fields;
 		}
 
-		function posts_orderby( $orderby ) {
+		public function posts_orderby( $orderby ) {
 			if ( !$this->_is_archive() || !$this->_is_search() ) {
 				return $orderby;
 			}
 			return $orderby;
 		}
 
-		function posts_join_paged( $join ) {
+		public function posts_join_paged( $join ) {
 			if ( !$this->_is_archive() || !$this->_is_search() ) {
 				return $join;
 			}
@@ -195,12 +195,12 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 		 *
 		 * @return mixed
 		 */
-		function sortable_columns( $columns ) {
+		public function sortable_columns( $columns ) {
 			$columns['order_student'] = 'student';
 			return $columns;
 		}
 
-		function admin_head() {
+		public function admin_head() {
 
 			global $post, $wp_query;
 
@@ -239,7 +239,7 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 			learn_press_enqueue_script( $js );
 		}
 
-		function update_status() {
+		public function update_status() {
 			$order_id = !empty( $_REQUEST['order_id'] ) ? $_REQUEST['order_id'] : 0;
 			$status   = !empty( $_REQUEST['status'] ) ? $_REQUEST['status'] : 'Pending';
 			learn_press_update_order_status( $order_id, $status );
@@ -252,7 +252,7 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 			);
 		}
 
-		function post_row_actions( $actions, $post ) {
+		public function post_row_actions( $actions, $post ) {
 
 			if ( LP()->order_post_type == $post->post_type ) {
 				if ( !empty( $actions['inline hide-if-no-js'] ) ) {
@@ -272,7 +272,7 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 		 *
 		 * @return mixed
 		 */
-		function pre_get_posts( $wp_query ) {
+		public function pre_get_posts( $wp_query ) {
 			if ( is_admin() ) {
 				if ( !empty( $wp_query->query['post_type'] ) && ( $wp_query->query['post_type'] == LP()->order_post_type ) ) {
 					$wp_query->set( 'orderby', 'date' );
@@ -285,7 +285,7 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 		/**
 		 *
 		 */
-		function columns_head( $existing ) {
+		public function columns_head( $existing ) {
 
 			// Remove Checkbox - adding it back below
 			if ( isset( $existing['cb'] ) ) {
@@ -332,7 +332,7 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 			return $columns;
 		}
 
-		function order_title( $title, $post_id ) {
+		public function order_title( $title, $post_id ) {
 			if ( LP()->order_post_type == get_post_type( $post_id ) )
 				$title = learn_press_transaction_order_number( $post_id );
 			return $title;
@@ -342,7 +342,7 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 		 * Render column data
 		 *
 		 */
-		function columns_content( $column ) {
+		public function columns_content( $column ) {
 			global $post;
 			$the_order = learn_press_get_order( $post->ID );
 			switch ( $column ) {
@@ -414,7 +414,7 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 		/**
 		 * Register post type
 		 */
-		static function register_post_type() {
+		public static function register_post_type() {
 
 			register_post_type( LP_ORDER_CPT,
 				array(
@@ -456,7 +456,7 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 			add_action( 'add_meta_boxes', array( __CLASS__, 'register_metabox' ) );
 		}
 
-		static function register_metabox() {
+		public static function register_metabox() {
 
 			// Remove Publish metabox
 			remove_meta_box( 'submitdiv', LP()->order_post_type, 'side' );
@@ -467,15 +467,15 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 			add_meta_box( 'submitdiv', __( 'Order Actions', 'learnpress' ), array( __CLASS__, 'order_actions' ), LP()->order_post_type, 'side', 'high' );
 		}
 
-		static function order_details( $post ) {
+		public static function order_details( $post ) {
 			learn_press_admin_view( 'meta-boxes/order/details.php', array( 'order' => LP_Order::instance( $post ) ) );
 		}
 
-		static function order_actions( $post ) {
+		public static function order_actions( $post ) {
 			learn_press_admin_view( 'meta-boxes/order/actions.php', array( 'order' => LP_Order::instance( $post ) ) );
 		}
 
-		function preparing_to_trash_order( $post_id ) {
+		public function preparing_to_trash_order( $post_id ) {
 			if ( LP()->order_post_type != get_post_type( $post_id ) ) return;
 
 		}
@@ -485,7 +485,7 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 		 *
 		 * @static
 		 */
-		static function admin_scripts() {
+		public static function admin_scripts() {
 			/*if ( in_array( get_post_type(), array( LP()->order_post_type ) ) ) {
 
 				wp_enqueue_style( 'lp-meta-boxes', LP()->plugin_url( 'assets/css/meta-boxes.css' ) );
@@ -493,14 +493,14 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 			}*/
 		}
 
-		function remove_edit_post_link() {
+		public function remove_edit_post_link() {
 			return '';
 		}
 
 		/**
 		 * Register new post status for order
 		 */
-		function register_post_statues() {
+		public function register_post_statues() {
 			register_post_status( 'lp-pending', array(
 				'label'                     => _x( 'Pending Payment', 'Order status', 'learnpress' ),
 				'public'                    => false,

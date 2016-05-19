@@ -31,7 +31,7 @@ class LP_Cart {
 	/**
 	 * Constructor
 	 */
-	function __construct() {
+	public function __construct() {
 		//if ( self::$instance ) return;
 		if ( !is_array( $this->_cart_content = LP_Session::get( 'cart' ) ) ) {
 			$this->_cart_content = $this->get_default_cart_content();
@@ -55,7 +55,7 @@ class LP_Cart {
 		add_action( 'learn_press_add_to_cart', array( $this, 'calculate_totals' ), 10 );
 	}
 
-	function __get( $key ) {
+	public function __get( $key ) {
 		$return = null;
 		if ( !isset( $this->{$key} ) ) {
 			switch ( $key ) {
@@ -79,7 +79,7 @@ class LP_Cart {
 	 * @param int $quantity
 	 * @param     array
 	 */
-	function add_to_cart( $course_id, $quantity = 1, $item_data = array() ) {
+	public function add_to_cart( $course_id, $quantity = 1, $item_data = array() ) {
 
 		if ( !learn_press_is_enable_cart() ) {
 			$this->empty_cart();
@@ -176,11 +176,11 @@ class LP_Cart {
 		}
 	}
 
-	function has_item( $item_id ) {
+	public function has_item( $item_id ) {
 		return isset( $this->_cart_content['items'][$item_id] );
 	}
 
-	function remove_item( $item_id ) {
+	public function remove_item( $item_id ) {
 		if ( isset( $this->_cart_content['items'][$item_id] ) ) {
 
 			do_action( 'learn_press_remove_cart_item', $item_id, $this );
@@ -197,7 +197,7 @@ class LP_Cart {
 		return false;
 	}
 
-	function calculate_totals() {
+	public function calculate_totals() {
 		if ( $items = $this->_cart_content['items'] ) {
 			$subtotal = 0;
 			foreach ( $items as $item_id => $item ) {
@@ -216,7 +216,7 @@ class LP_Cart {
 		$this->update_session();
 	}
 
-	function update_session() {
+	public function update_session() {
 		LP_Session::set( 'cart', $this->_cart_content );
 	}
 
@@ -225,7 +225,7 @@ class LP_Cart {
 	 *
 	 * @return mixed
 	 */
-	function get_cart_id() {
+	public function get_cart_id() {
 		return !empty( $_SESSION['learn_press_cart']['cart_id'] ) ? $_SESSION['learn_press_cart']['cart_id'] : 0;
 	}
 
@@ -234,14 +234,14 @@ class LP_Cart {
 	 *
 	 * @return mixed
 	 */
-	function get_items() {
+	public function get_items() {
 		if ( !did_action( 'learn_press_get_cart_from_session' ) ) {
 			$this->get_cart_from_session();
 		}
 		return $this->_cart_content['items'];
 	}
 
-	function get_cart_from_session() {
+	public function get_cart_from_session() {
 		$this->_cart_content = LP_Session::get( 'cart' );
 		do_action( 'learn_press_get_cart_from_session' );
 	}
@@ -251,7 +251,7 @@ class LP_Cart {
 	 *
 	 * @return mixed
 	 */
-	function get_subtotal() {
+	public function get_subtotal() {
 
 		$subtotal = learn_press_format_price( $this->_cart_content['subtotal'], true );
 		return apply_filters( 'learn_press_get_cart_subtotal', $subtotal, $this->get_cart_id() );
@@ -262,7 +262,7 @@ class LP_Cart {
 	 *
 	 * @return mixed
 	 */
-	function get_total() {
+	public function get_total() {
 		$subtotal = $this->get_subtotal();
 		$total    = $subtotal;
 		return apply_filters( 'learn_press_get_cart_total', $total, $this->get_cart_id() );
@@ -273,11 +273,11 @@ class LP_Cart {
 	 *
 	 * @return string
 	 */
-	function generate_cart_id() {
+	public function generate_cart_id() {
 		return md5( time() );
 	}
 
-	function get_item_subtotal( $course, $quantity = 1 ) {
+	public function get_item_subtotal( $course, $quantity = 1 ) {
 		$price           = $course->get_price();
 		$row_price       = $price * $quantity;
 		$course_subtotal = learn_press_format_price( $row_price, true );
@@ -289,7 +289,7 @@ class LP_Cart {
 	 *
 	 * @return $this
 	 */
-	function empty_cart() {
+	public function empty_cart() {
 
 		do_action( 'learn_press_before_empty_cart' );
 
@@ -306,15 +306,15 @@ class LP_Cart {
 	 *
 	 * @return bool
 	 */
-	function is_empty() {
+	public function is_empty() {
 		return !$this->_cart_content['items'];
 	}
 
-	function get_cart_content() {
+	public function get_cart_content() {
 		return $this->_cart_content;
 	}
 
-	function get_default_cart_content() {
+	public function get_default_cart_content() {
 		return apply_filters( 'learn_press_default_cart_content', array(
 				'items'    => array(),
 				'subtotal' => 0,
@@ -331,14 +331,14 @@ class LP_Cart {
 		return apply_filters( 'learn_press_get_checkout_url', $checkout_url );
 	}
 
-	function needs_payment() {
+	public function needs_payment() {
 		return apply_filters( 'learn_press_cart_needs_payment', $this->total > 0, $this );
 	}
 
 	/**
 	 * Destroy cart instance
 	 */
-	function destroy() {
+	public function destroy() {
 
 	}
 
@@ -348,7 +348,7 @@ class LP_Cart {
 	 *
 	 * @return LP_Cart|mixed
 	 */
-	static function instance() {
+	public static function instance() {
 		if ( !self::$instance ) {
 			self::$instance = new self();
 		}

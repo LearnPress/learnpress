@@ -29,7 +29,7 @@ class LP_Install {
 	/**
 	 * Init
 	 */
-	static function init() {
+	public static function init() {
 		add_action( 'admin_init', array( __CLASS__, 'get_update_versions' ), - 15 );
 		add_action( 'admin_init', array( __CLASS__, 'include_update' ), - 10 );
 		add_action( 'admin_init', array( __CLASS__, 'update_from_09' ), 5 );
@@ -43,7 +43,7 @@ class LP_Install {
 		add_action( 'admin_menu', array( __CLASS__, 'admin_menu' ) );
 	}
 
-	static function include_update() {
+	public static function include_update() {
 		if ( !self::$_update_files ) {
 			return;
 		}
@@ -56,11 +56,11 @@ class LP_Install {
 		}
 	}
 
-	static function hide_other_notices() {
+	public static function hide_other_notices() {
 		//remove_action( 'admin_notices', 'learn_press_one_click_install_sample_data_notice' );
 	}
 
-	static function update_from_09() {
+	public static function update_from_09() {
 
 		if ( !self::_has_new_table() || version_compare( LEARNPRESS_DB_VERSION, get_option( 'learnpress_db_version' ), '>' ) ) {
 			//self::_create_tables();
@@ -90,11 +90,11 @@ class LP_Install {
 		}
 	}
 
-	static function admin_menu() {
+	public static function admin_menu() {
 		add_dashboard_page( '', '', 'manage_options', 'learn_press_upgrade_from_09', '' );
 	}
 
-	static function hide_upgrade_notice() {
+	public static function hide_upgrade_notice() {
 		$ask_again  = learn_press_get_request( 'ask_again' );
 		$expiration = DAY_IN_SECONDS;
 		if ( $ask_again == 'no' ) {
@@ -104,14 +104,14 @@ class LP_Install {
 		learn_press_send_json( array( 'result' => 'success', 'message' => sprintf( '<p>%s</p>', __( 'Thank for using LearnPress', 'learnpress' ) ) ) );
 	}
 
-	static function upgrade_wizard() {
+	public static function upgrade_wizard() {
 		require_once LP_PLUGIN_PATH . '/inc/updates/_update-from-0.9.php';
 	}
 
 	/**
 	 * Auto get update patches from inc/updates path
 	 */
-	static function get_update_versions() {
+	public static function get_update_versions() {
 		if ( !$patches = get_transient( 'learnpress_update_patches' ) ) {
 			$patches = array();
 			require_once ABSPATH . 'wp-admin/includes/file.php';
@@ -137,7 +137,7 @@ class LP_Install {
 	/**
 	 * Check version
 	 */
-	static function check_version() {
+	public static function check_version() {
 		if ( !defined( 'IFRAME_REQUEST' ) && ( get_option( 'learnpress_version' ) != LP()->version ) ) {
 			self::install();
 		}
@@ -146,7 +146,7 @@ class LP_Install {
 	/**
 	 * Install update actions when user click update button
 	 */
-	static function update_actions() {
+	public static function update_actions() {
 		if ( !empty( $_GET['upgrade_learnpress'] ) ) {
 			self::update();
 		}
@@ -155,13 +155,13 @@ class LP_Install {
 	/**
 	 * Check for new database version and show notice
 	 */
-	static function db_update_notices() {
+	public static function db_update_notices() {
 		if ( get_option( 'learnpress_db_version' ) != LP()->db_version ) {
 			//LP_Admin_Notice::add( __( '<p>LearnPress ' . LP()->version . ' need to upgrade your database.</p><p><a href="' . admin_url( 'admin.php?page=learnpress_update_10' ) . '" class="button">Update Now</a></p>', 'learnpress' ) );
 		}
 	}
 
-	static function install() {
+	public static function install() {
 		global $wpdb;
 		self::_create_options();
 		self::_create_tables();
@@ -188,7 +188,7 @@ class LP_Install {
 
 	}
 
-	static function _search_page( $type ) {
+	public static function _search_page( $type ) {
 		global $wpdb;
 		$query   = $wpdb->prepare( "
 			SELECT ID
@@ -200,7 +200,7 @@ class LP_Install {
 		return $page_id;
 	}
 
-	static function create_pages() {
+	public static function create_pages() {
 		global $wpdb;
 		$pages = array( 'checkout', 'cart', 'profile', 'courses', 'become_a_teacher' );
 
@@ -256,7 +256,7 @@ class LP_Install {
 		flush_rewrite_rules();
 	}
 
-	static function create_files() {
+	public static function create_files() {
 		$upload_dir = wp_upload_dir();
 		$files      = array(
 			array(
@@ -364,7 +364,7 @@ class LP_Install {
 		return sizeof( $new_post ) > 0;
 	}
 
-	static function update() {
+	public static function update() {
 		$learnpress_db_version = get_option( 'learnpress_db_version' );
 		foreach ( self::$_update_files as $version => $updater ) {
 			if ( version_compare( $learnpress_db_version, $version, '<' ) ) {
@@ -376,12 +376,12 @@ class LP_Install {
 		self::update_db_version();
 	}
 
-	static function update_db_version( $version = null ) {
+	public static function update_db_version( $version = null ) {
 		delete_option( 'learnpress_db_version' );
 		add_option( 'learnpress_db_version', is_null( $version ) ? LEARNPRESS_DB_VERSION : $version );
 	}
 
-	static function update_version( $version = null ) {
+	public static function update_version( $version = null ) {
 		delete_option( 'learnpress_version' );
 		add_option( 'learnpress_version', is_null( $version ) ? LEARNPRESS_VERSION : $version );
 	}

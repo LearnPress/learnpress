@@ -58,7 +58,7 @@ class LP_Abstract_User {
 	 *
 	 * @throws Exception
 	 */
-	function __construct( $the_user = 0 ) {
+	public function __construct( $the_user = 0 ) {
 		if ( $user = get_user_by( 'id', $the_user ) ) {
 			$this->user = $user;
 			$this->id   = $the_user;
@@ -87,7 +87,7 @@ class LP_Abstract_User {
 	 *
 	 * @return bool
 	 */
-	function __get( $key ) {
+	public function __get( $key ) {
 		$return = false;
 		if ( !empty( $this->user->data->{$key} ) ) {
 			$return = $this->user->data->{$key};
@@ -110,7 +110,7 @@ class LP_Abstract_User {
 	 *
 	 * @param $quiz
 	 */
-	function set_quiz( $quiz ) {
+	public function set_quiz( $quiz ) {
 		$this->quiz = $quiz;
 	}
 
@@ -121,7 +121,7 @@ class LP_Abstract_User {
 	 *
 	 * @return bool
 	 */
-	function get_quiz_field( $field ) {
+	public function get_quiz_field( $field ) {
 		if ( !empty( $this->quiz->{$field} ) ) {
 			return $this->quiz->{$field};
 		}
@@ -136,10 +136,11 @@ class LP_Abstract_User {
 			$timestamp = current_time( 'timestamp' );
 			$wpdb->insert(
 				$wpdb->learnpress_user_quizzes,
-				array(
-					'user_id' => $this->id,
-					'quiz_id' => $quiz_id
-				),
+				apply_filters( 'learn_press_user_quiz_history_data', array(
+					'user_id'   => $this->id,
+					'quiz_id'   => $quiz_id,
+					'course_id' => $course_id
+				), $this->id, $quiz_id, $course_id ),
 				array( '%d', '%d' )
 			);
 			$user_quiz_id = $wpdb->insert_id;
@@ -197,7 +198,7 @@ class LP_Abstract_User {
 	 * @throws Exception
 	 * @return array|void
 	 */
-	function start_quiz( $quiz_id = null ) {
+	public function start_quiz( $quiz_id = null ) {
 		if ( !$quiz_id ) $quiz_id = $this->get_quiz_field( 'id' );
 		$user_id = $this->id;
 		$return  = false;
@@ -215,7 +216,7 @@ class LP_Abstract_User {
 		return $return;
 	}
 
-	function get_quiz_time_remaining( $quiz_id ) {
+	public function get_quiz_time_remaining( $quiz_id ) {
 		$remaining = false;
 		if ( $progress = $this->get_quiz_progress( $quiz_id ) ) {
 			$quiz      = LP_Quiz::get_quiz( $quiz_id );
@@ -225,7 +226,7 @@ class LP_Abstract_User {
 		return apply_filters( 'learn_press_user_quiz_time_remaining', $remaining, $this, $quiz_id );
 	}
 
-	function get_current_question_id( $quiz_id = 0 ) {
+	public function get_current_question_id( $quiz_id = 0 ) {
 		$current               = false;
 		$quiz_current_question = $this->quiz_current_question;
 		if ( is_array( $quiz_current_question ) && !empty( $quiz_current_question[$quiz_id] ) ) {
@@ -246,7 +247,7 @@ class LP_Abstract_User {
 		return $current;
 	}
 
-	function get_current_question( $quiz_id, $what = '' ) {
+	public function get_current_question( $quiz_id, $what = '' ) {
 		$current = $this->get_current_question_id( $quiz_id );
 		if ( $what == 'id' ) {
 			return $current;
@@ -264,7 +265,7 @@ class LP_Abstract_User {
 		return $current;
 	}
 
-	function get_question_answers( $quiz_id, $question_id ) {
+	public function get_question_answers( $quiz_id, $question_id ) {
 		$progress = $this->get_quiz_progress( $quiz_id );
 
 		$question_answers = null;
@@ -285,7 +286,7 @@ class LP_Abstract_User {
 	 *
 	 * @return int
 	 */
-	function get_quiz_mark( $quiz_id ) {
+	public function get_quiz_mark( $quiz_id ) {
 		$quiz_questions = get_post_meta( $quiz_id, '_lpr_quiz_questions', true );
 		$mark           = 0;
 		if ( !$quiz_questions ) {
@@ -309,7 +310,7 @@ class LP_Abstract_User {
 	 *
 	 * @param $quiz_id
 	 */
-	function finish_quiz( $quiz_id ) {
+	public function finish_quiz( $quiz_id ) {
 		$quiz = LP_Quiz::get_quiz( $quiz_id );
 		if ( !$quiz ) {
 			return;
@@ -344,7 +345,7 @@ class LP_Abstract_User {
 	 * @return array
 	 * @throws Exception
 	 */
-	function retake_quiz( $quiz_id ) {
+	public function retake_quiz( $quiz_id ) {
 		$response = array();
 		if ( !$this->can( 'retake-quiz', $quiz_id ) ) {
 			$response['message'] = __( 'Sorry! You can not retake this quiz', 'learnpress' );
@@ -367,7 +368,7 @@ class LP_Abstract_User {
 	 *
 	 * @return mixed
 	 */
-	function get_quiz_status( $quiz_id = null ) {
+	public function get_quiz_status( $quiz_id = null ) {
 		$progress = $this->get_quiz_progress( $quiz_id );
 		if ( $progress ) {
 			$quiz_status = $progress->status;
@@ -377,13 +378,13 @@ class LP_Abstract_User {
 		return apply_filters( 'learn_press_user_quiz_status', $quiz_status, $this, $quiz_id );
 	}
 
-	function has_quiz_status( $quiz_id, $statuses ) {
+	public function has_quiz_status( $quiz_id, $statuses ) {
 		$status = $this->get_quiz_status( $quiz_id );
 		settype( $statuses, 'array' );
 		return in_array( $status, $statuses );
 	}
 
-	function get_quiz_last_results( $quiz_id ) {
+	public function get_quiz_last_results( $quiz_id ) {
 		$results = $this->get_course_info( $quiz_id );
 		if ( $results ) {
 			$results = reset( $results );
@@ -391,7 +392,7 @@ class LP_Abstract_User {
 		return apply_filters( 'learn_press_user_quiz_last_results', $results, $quiz_id, $this );
 	}
 
-	function get_quiz_info( $quiz_id, $field = null ) {
+	public function get_quiz_info( $quiz_id, $field = null ) {
 		static $quizzes = array();
 		if ( empty( $quizzes[$quiz_id] ) ) {
 			global $wpdb;
@@ -421,7 +422,7 @@ class LP_Abstract_User {
 
 	}
 
-	function get_quiz_history( $quiz_id, $history_id = null ) {
+	public function get_quiz_history( $quiz_id, $history_id = null ) {
 		static $history = array();
 		$key = $this->id . '_' . $quiz_id;
 		if ( $quiz_id && !array_key_exists( $key, $history ) ) {
@@ -456,7 +457,7 @@ class LP_Abstract_User {
 		return apply_filters( 'learn_press_user_quiz_history', isset( $history[$key] ) ? $history[$key] : array(), $this, $quiz_id );
 	}
 
-	function get_current_results( $quiz_id ) {
+	public function get_current_results( $quiz_id ) {
 		$history = $this->get_quiz_history( $quiz_id );
 		$current = false;
 		if ( $history ) {
@@ -465,7 +466,7 @@ class LP_Abstract_User {
 		return $current;
 	}
 
-	function get_quiz_progress( $quiz_id ) {
+	public function get_quiz_progress( $quiz_id ) {
 		$history  = $this->get_quiz_history( $quiz_id );
 		$progress = false;
 		if ( $history ) {
@@ -474,7 +475,7 @@ class LP_Abstract_User {
 		return apply_filters( 'learn_press_user_quiz_progress', $progress, $this, $quiz_id );
 	}
 
-	function get_current_quiz_question( $quiz_id ) {
+	public function get_current_quiz_question( $quiz_id ) {
 		if ( $progress = $this->get_quiz_progress( $quiz_id ) ) {
 			$question_id = !empty( $progress->current_question ) ? $progress->current_question : false;
 		} else {
@@ -483,7 +484,7 @@ class LP_Abstract_User {
 		return apply_filters( 'learn_press_user_current_quiz_question', $question_id, $quiz_id, $this );
 	}
 
-	function get_finished_courses() {
+	public function get_finished_courses() {
 		global $wpdb;
 		$query = $wpdb->prepare( "
 			SELECT p.*, uc.start_time, uc.end_time, uc.order_id
@@ -495,7 +496,7 @@ class LP_Abstract_User {
 		return apply_filters( 'learn_press_user_finished_courses', $wpdb->get_results( $query ) );
 	}
 
-	function save_quiz_question( $question_id, $answer ) {
+	public function save_quiz_question( $question_id, $answer ) {
 
 	}
 
@@ -506,7 +507,7 @@ class LP_Abstract_User {
 	 *
 	 * @return bool
 	 */
-	function is( $type ) {
+	public function is( $type ) {
 		$name = preg_replace( '!LP_User(_?)!', '', get_class( $this ) );
 		return strtolower( $name ) == strtolower( $type );
 	}
@@ -518,7 +519,7 @@ class LP_Abstract_User {
 	 *
 	 * @return array
 	 */
-	function get_posts( $args = array() ) {
+	public function get_posts( $args = array() ) {
 		settype( $args, 'array' );
 		$args['author'] = $this->id;
 
@@ -542,7 +543,7 @@ class LP_Abstract_User {
 	 *
 	 * @return array
 	 */
-	function get_quizzes( &$args = array(), $force = false ) {
+	public function get_quizzes( &$args = array(), $force = false ) {
 		static $quizzes = array();
 		settype( $args, 'array' );
 
@@ -598,7 +599,7 @@ class LP_Abstract_User {
 	 *
 	 * @return array
 	 */
-	function get_lessons( $args = array(), $force = false ) {
+	public function get_lessons( $args = array(), $force = false ) {
 		static $lessons = array();
 		if ( !$lessons || $force ) {
 			settype( $args, 'array' );
@@ -617,7 +618,7 @@ class LP_Abstract_User {
 	 * @return mixed
 	 * @throws Exception
 	 */
-	function can( $role ) {
+	public function can( $role ) {
 		$args = func_get_args();
 		unset( $args[0] );
 		$method   = 'can_' . preg_replace( '!-!', '_', $role );
@@ -636,7 +637,7 @@ class LP_Abstract_User {
 	 *
 	 * @return bool
 	 */
-	function can_purchase_course( $course_id ) {
+	public function can_purchase_course( $course_id ) {
 		$course      = learn_press_get_course( $course_id );
 		$purchasable = $course->is_purchasable() && !$this->has_purchased_course( $course_id );
 		return apply_filters( 'learn_press_user_can_purchase_course', $purchasable, $this, $course_id );
@@ -649,7 +650,7 @@ class LP_Abstract_User {
 	 *
 	 * @return bool
 	 */
-	function can_enroll_course( $course_id ) {
+	public function can_enroll_course( $course_id ) {
 		$course = LP_Course::get_course( $course_id );
 		// if the course payment is off and required enroll
 		$enrollable = $course && /* $course->payment == 'no' &&*/
@@ -663,7 +664,7 @@ class LP_Abstract_User {
 		return apply_filters( 'learn_press_user_can_enroll_course', $enrollable, $this, $course_id );
 	}
 
-	function can_view_item( $item_id ) {
+	public function can_view_item( $item_id ) {
 		$return = false;
 		switch ( get_post_type( $item_id ) ) {
 			case LP()->quiz_post_type:
@@ -684,7 +685,7 @@ class LP_Abstract_User {
 	 *
 	 * @return bool
 	 */
-	function can_view_lesson( $lesson_id, $course_id = null ) {
+	public function can_view_lesson( $lesson_id, $course_id = null ) {
 		$lesson = LP_Lesson::get_lesson( $lesson_id );
 		$view   = false;
 		// first, check if the lesson is previewable
@@ -717,7 +718,7 @@ class LP_Abstract_User {
 	 *
 	 * @return bool
 	 */
-	function can_view_quiz( $quiz_id, $course_id = 0 ) {
+	public function can_view_quiz( $quiz_id, $course_id = 0 ) {
 		$course = false;
 		$view   = false;
 		if ( !$course_id ) {
@@ -747,7 +748,7 @@ class LP_Abstract_User {
 		return apply_filters( 'learn_press_user_view_quiz', $view, $quiz_id, $this->id, $course_id );
 	}
 
-	function can_retake_quiz( $quiz_id ) {
+	public function can_retake_quiz( $quiz_id ) {
 		$can = false;
 		if ( $quiz = LP_Quiz::get_quiz( $quiz_id ) ) {
 			$history = $this->get_quiz_history( $quiz_id );
@@ -757,7 +758,7 @@ class LP_Abstract_User {
 		return apply_filters( 'learn_press_user_can_retake_quiz', $can, $quiz_id, $this );
 	}
 
-	function can_finish_course( $course_id ) {
+	public function can_finish_course( $course_id ) {
 		$return = false;
 		if ( $course = LP_Course::get_course( $course_id ) ) {
 			$result = $course->evaluate_course_results() * 100;
@@ -766,7 +767,7 @@ class LP_Abstract_User {
 		return apply_filters( 'learn_press_user_can_finish_course', $return, $course_id, $this->id );
 	}
 
-	function has_course_status( $course_id, $statuses ) {
+	public function has_course_status( $course_id, $statuses ) {
 		$status = $this->get_course_status( $course_id );
 		if ( is_array( $statuses ) ) {
 			return in_array( $status, $statuses );
@@ -776,7 +777,7 @@ class LP_Abstract_User {
 		return false;
 	}
 
-	function finish_course( $course_id ) {
+	public function finish_course( $course_id ) {
 		global $wpdb;
 		$result = array(
 			'result'    => 'success',
@@ -806,17 +807,17 @@ class LP_Abstract_User {
 		return apply_filters( 'learn_press_user_finish_course_data', $result, $course_id, $this->id );
 	}
 
-	function is_instructor() {
+	public function is_instructor() {
 		$roles = !empty( $this->user->roles ) ? $this->user->roles : array();
 		return in_array( LP()->teacher_role, $roles );
 	}
 
-	function is_admin() {
+	public function is_admin() {
 		$roles = !empty( $this->user->roles ) ? $this->user->roles : array();
 		return in_array( 'administrator', $roles );
 	}
 
-	function has( $role ) {
+	public function has( $role ) {
 		$args = func_get_args();
 		unset( $args[0] );
 		$method   = 'has_' . preg_replace( '!-!', '_', $role );
@@ -828,7 +829,7 @@ class LP_Abstract_User {
 		}
 	}
 
-	function get( $role ) {
+	public function get( $role ) {
 		$args = func_get_args();
 		unset( $args[0] );
 		$method   = 'get_' . preg_replace( '!-!', '_', $role );
@@ -848,7 +849,7 @@ class LP_Abstract_User {
 	 *
 	 * @return bool
 	 */
-	function has_enrolled_course( $course_id, $force = false ) {
+	public function has_enrolled_course( $course_id, $force = false ) {
 
 		static $enrolled_courses = array();
 
@@ -878,7 +879,7 @@ class LP_Abstract_User {
 	 *
 	 * @return bool
 	 */
-	function has_finished_course( $course_id, $force = false ) {
+	public function has_finished_course( $course_id, $force = false ) {
 		static $courses = array();
 		if ( empty( $courses[$course_id] ) || $force ) {
 			global $wpdb;
@@ -898,7 +899,7 @@ class LP_Abstract_User {
 		return apply_filters( 'learn_press_user_has_finished_course', $courses[$course_id] == 'yes', $this, $course_id );
 	}
 
-	function has_passed_course( $course_id ) {
+	public function has_passed_course( $course_id ) {
 		$course = LP_Course::get_course( $course_id );
 		if ( $course ) {
 			$results = $course->evaluate_course_results( $this->id );
@@ -915,7 +916,7 @@ class LP_Abstract_User {
 	 *
 	 * @return mixed
 	 */
-	function has_started_quiz( $quiz_id ) {
+	public function has_started_quiz( $quiz_id ) {
 		$quiz_info = $this->get_quiz_results( $quiz_id );
 		return apply_filters( 'learn_press_user_started_quiz', !empty( $quiz_info ) && ( $quiz_info->status == 'started' ), $this );
 	}
@@ -927,7 +928,7 @@ class LP_Abstract_User {
 	 *
 	 * @return mixed
 	 */
-	function has_completed_quiz( $quiz_id ) {
+	public function has_completed_quiz( $quiz_id ) {
 		$completed = false;
 		if ( $progress = $this->get_quiz_progress( $quiz_id ) ) {
 			$completed = $progress->status == 'completed';
@@ -935,7 +936,7 @@ class LP_Abstract_User {
 		return apply_filters( 'learn_press_user_has_completed_quiz', $completed, $quiz_id, $this );
 	}
 
-	function current_quiz_status( $quiz_id, $force = false ) {
+	public function current_quiz_status( $quiz_id, $force = false ) {
 		global $wpdb;
 		static $quizzes = array();
 		if ( $quiz_id && ( !array_key_exists( $quiz_id, $quizzes ) || $force ) ) {
@@ -953,7 +954,7 @@ class LP_Abstract_User {
 		return $quizzes[$quiz_id];
 	}
 
-	function is_exists_lesson( $lesson_id, $course_id ) {
+	public function is_exists_lesson( $lesson_id, $course_id ) {
 		global $wpdb;
 		$query = $wpdb->prepare( "
 			SELECT user_lesson_id
@@ -965,7 +966,7 @@ class LP_Abstract_User {
 		return $wpdb->get_var( $query );
 	}
 
-	function complete_lesson( $lesson_id, $course_id = 0 ) {
+	public function complete_lesson( $lesson_id, $course_id = 0 ) {
 		global $wpdb;
 		do_action( 'learn_press_before_user_complete_lesson', $lesson_id, $this );
 		if ( !$course_id ) {
@@ -1013,7 +1014,7 @@ class LP_Abstract_User {
 		return $result;
 	}
 
-	function has_completed_lesson( $lesson_id, $course_id = null ) {
+	public function has_completed_lesson( $lesson_id, $course_id = null ) {
 		if ( !$course_id ) {
 			$course    = LP()->course;
 			$course_id = $course ? $course->id : 0;
@@ -1045,7 +1046,7 @@ class LP_Abstract_User {
 	 *
 	 * @return mixed
 	 */
-	function get_course_info( $course_id, $field = null ) {
+	public function get_course_info( $course_id, $field = null ) {
 		if ( !$course_id ) {
 			return false;
 		}
@@ -1086,11 +1087,11 @@ class LP_Abstract_User {
 		return apply_filters( 'learn_press_user_course_info', $info, $this, $course_id );
 	}
 
-	function get_course_status( $course_id ) {
+	public function get_course_status( $course_id ) {
 		return apply_filters( 'learn_press_user_course_status', $this->get_course_info( $course_id, 'status' ), $this->id );
 	}
 
-	function get_quiz_results( $quiz_id, $force = false ) {
+	public function get_quiz_results( $quiz_id, $force = false ) {
 		static $quiz_results = array();
 		$key = $this->id . '_' . $quiz_id;
 		if ( empty( $quiz_results[$key] ) || $force ) {
@@ -1105,7 +1106,7 @@ class LP_Abstract_User {
 		return $quiz_results[$key];
 	}
 
-	function evaluate_quiz_results( $quiz_id, $progress ) {
+	public function evaluate_quiz_results( $quiz_id, $progress ) {
 		$quiz      = LP_Quiz::get_quiz( $quiz_id );
 		$results   = array(
 			'mark'            => 0,
@@ -1174,7 +1175,7 @@ class LP_Abstract_User {
 	 *
 	 * @return bool
 	 */
-	function has_purchased_course( $course_id ) {
+	public function has_purchased_course( $course_id ) {
 		$purchased = false;
 		$order     = $this->get_course_order( $course_id, 'object' );
 		if ( $order && $order->has_status( array( 'processing', 'completed' ) ) ) {
@@ -1183,7 +1184,7 @@ class LP_Abstract_User {
 		return apply_filters( 'learn_press_user_has_purchased_course', $purchased, $course_id, $this->id, $order ? $order->id : 0 );
 	}
 
-	function has_completed_item( $item ) {
+	public function has_completed_item( $item ) {
 		$return  = false;
 		$item_id = 0;
 		if ( is_numeric( $item ) ) {
@@ -1217,7 +1218,7 @@ class LP_Abstract_User {
 	 *
 	 * @return int
 	 */
-	function get_course_order( $course_id, $return = '' ) {
+	public function get_course_order( $course_id, $return = '' ) {
 		global $wpdb;
 		static $orders = array();
 
@@ -1258,7 +1259,7 @@ class LP_Abstract_User {
 	 *
 	 * @return int
 	 */
-	function get_item_order( $item_id ) {
+	public function get_item_order( $item_id ) {
 		if ( !empty( self::$_order_items[$item_id] ) ) {
 			return self::$_order_items[$item_id];
 		}
@@ -1316,7 +1317,7 @@ class LP_Abstract_User {
 	 * @return int|void
 	 * @throws Exception
 	 */
-	function enroll( $course_id ) {
+	public function enroll( $course_id ) {
 		if ( !$this->can( 'enroll-course', $course_id ) ) {
 			learn_press_add_notice( __( 'Sorry! You can not enroll this course. Please try again or contact site admin' ), 'error' );
 			return;
@@ -1352,7 +1353,7 @@ class LP_Abstract_User {
 		return $inserted;
 	}
 
-	function get_questions( $args = array() ) {
+	public function get_questions( $args = array() ) {
 		static $questions = array();
 		if ( !is_array( $args ) ) {
 			$args = array(
@@ -1371,7 +1372,7 @@ class LP_Abstract_User {
 		return apply_filters( 'learn_press_user_questions', $questions[$key], $this );
 	}
 
-	function get_courses( $args = array() ) {
+	public function get_courses( $args = array() ) {
 		global $wpdb;
 		static $courses = array();
 		$args = wp_parse_args(
@@ -1430,7 +1431,7 @@ class LP_Abstract_User {
 		return $courses[$key]['rows'];
 	}
 
-	function get_orders() {
+	public function get_orders() {
 		global $wpdb;
 		$query  = $wpdb->prepare( "
 			SELECT o.*
@@ -1446,7 +1447,7 @@ class LP_Abstract_User {
 		return apply_filters( 'learn_press_user_orders', $orders, $this->id );
 	}
 
-	function get_quiz_by_question( $question_id ) {
+	public function get_quiz_by_question( $question_id ) {
 		global $wpdb;
 		$query = $wpdb->prepare( "
 			SELECT quiz_id
@@ -1456,7 +1457,7 @@ class LP_Abstract_User {
 		return $wpdb->get_var( $query );
 	}
 
-	function get_answer_results( $question_id, $quiz_id = null ) {
+	public function get_answer_results( $question_id, $quiz_id = null ) {
 		$data = false;
 		if ( !$quiz_id ) {
 			$quiz_id = $this->get_quiz_by_question( $question_id );
@@ -1473,7 +1474,7 @@ class LP_Abstract_User {
 		return $data;
 	}
 
-	function is_answered_question( $question_id, $quiz_id = null ) {
+	public function is_answered_question( $question_id, $quiz_id = null ) {
 		if ( empty( $this->answered_questions ) ) {
 			$this->answered_questions = array();
 		}
@@ -1486,7 +1487,7 @@ class LP_Abstract_User {
 		return $answered ? array_key_exists( $question_id, $answered ) : false;
 	}
 
-	function get_enrolled_courses( $args = array() ) {
+	public function get_enrolled_courses( $args = array() ) {
 		global $wpdb;
 		static $courses = array();
 		$args = wp_parse_args(
@@ -1530,7 +1531,7 @@ class LP_Abstract_User {
 		return $courses[$key]['rows'];
 	}
 
-	function get_purchased_courses( $args = array() ) {
+	public function get_purchased_courses( $args = array() ) {
 		global $wpdb;
 		static $courses = array();
 		$args = wp_parse_args(
@@ -1580,7 +1581,7 @@ class LP_Abstract_User {
 		return $courses[$key]['rows'];
 	}
 
-	function get_own_courses( $args = array() ) {
+	public function get_own_courses( $args = array() ) {
 		global $wpdb;
 		static $courses = array();
 		$args = wp_parse_args(
@@ -1622,11 +1623,11 @@ class LP_Abstract_User {
 		return $courses[$key]['rows'];
 	}
 
-	function _get_found_rows() {
+	public function _get_found_rows() {
 		return $this->_FOUND_ROWS;
 	}
 
-	function has_checked_answer( $question_id, $quiz_id ) {
+	public function has_checked_answer( $question_id, $quiz_id ) {
 		$history = $this->get_quiz_results( $quiz_id );
 		if ( !$history ) {
 			return;

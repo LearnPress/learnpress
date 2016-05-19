@@ -23,7 +23,7 @@ class LP_Admin_Notice {
 	/**
 	 * LP_Admin_Notice construct
 	 */
-	function __construct() {
+	public function __construct() {
 		add_action( 'admin_notices', array( __CLASS__, 'show_notices' ), 100000 );
 	}
 
@@ -35,7 +35,7 @@ class LP_Admin_Notice {
 	 * @param string $id      Custom id for html element's ID
 	 * @param        bool
 	 */
-	static function add( $message, $type = 'updated', $id = '', $redirect = false ) {
+	public static function add( $message, $type = 'updated', $id = '', $redirect = false ) {
 		if ( $redirect ) {
 			$notices = get_transient( 'learn_press_redirect_notices' );
 			if ( empty( $notices ) ) {
@@ -56,14 +56,14 @@ class LP_Admin_Notice {
 		}
 	}
 
-	static function add_redirect( $message, $type = 'updated', $id = '' ) {
+	public static function add_redirect( $message, $type = 'updated', $id = '' ) {
 		self::add( $message, $type, $id, true );
 	}
 
 	/**
 	 * Show all notices has registered
 	 */
-	static function show_notices() {
+	public static function show_notices() {
 		if ( self::$_notices ) {
 			foreach ( self::$_notices as $notice ) {
 				if ( empty( $notice ) ) {

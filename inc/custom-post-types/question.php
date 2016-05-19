@@ -10,7 +10,7 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 
 	// class LP_Question_Post_Type
 	class LP_Question_Post_Type extends LP_Abstract_Post_Type {
-		function __construct() {
+		public function __construct() {
 			add_action( 'admin_head', array( $this, 'init' ) );
 
 			//add_action( 'init', array( $this, 'register_post_type' ) );
@@ -30,7 +30,7 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 
 		}
 
-		function init() {
+		public function init() {
 			global $pagenow, $post_type;
 			$hidden = get_user_meta( get_current_user_id(), 'manageedit-lp_questioncolumnshidden', true );
 			if ( !is_array( $hidden ) && empty( $hidden ) ) {
@@ -43,7 +43,7 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 		 *
 		 * @param $post_id
 		 */
-		function delete_question_answers( $post_id ) {
+		public function delete_question_answers( $post_id ) {
 			global $wpdb;
 			$query = $wpdb->prepare( "
 				DELETE FROM {$wpdb->prefix}learnpress_question_answers
@@ -65,7 +65,7 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 		/**
 		 * Register question post type
 		 */
-		static function register_post_type() {
+		public static function register_post_type() {
 			register_post_type( LP_QUESTION_CPT,
 				array(
 					'labels'             => array(
@@ -124,7 +124,7 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 
 		}
 
-		static function add_meta_boxes() {
+		public static function add_meta_boxes() {
 
 			new RW_Meta_Box(
 				array(
@@ -145,7 +145,7 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 			new RW_Meta_Box( $meta_box );
 		}
 
-		static function settings_meta_box() {
+		public static function settings_meta_box() {
 			$prefix   = '_lp_';
 			$meta_box = array(
 				'id'     => 'question_settings',
@@ -184,7 +184,7 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 		/**
 		 * Enqueue scripts
 		 */
-		static function admin_scripts() {
+		public static function admin_scripts() {
 			if ( !in_array( get_post_type(), array( LP()->question_post_type ) ) ) return;
 			ob_start();
 			?>
@@ -241,7 +241,7 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 		 *
 		 * @return array
 		 */
-		function columns_head( $columns ) {
+		public function columns_head( $columns ) {
 			$pos         = array_search( 'title', array_keys( $columns ) );
 			$new_columns = array(
 				LP()->quiz_post_type => __( 'Quiz', 'learnpress' ),
@@ -269,7 +269,7 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 		 * @param $name
 		 * @param $post_id
 		 */
-		function columns_content( $name, $post_id ) {
+		public function columns_content( $name, $post_id ) {
 			switch ( $name ) {
 				case LP()->quiz_post_type:
 					$quizzes = learn_press_get_question_quizzes( $post_id );
@@ -304,7 +304,7 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 		 *
 		 * @return string
 		 */
-		function posts_join_paged( $join ) {
+		public function posts_join_paged( $join ) {
 			if ( !$this->_is_archive() ) {
 				return $join;
 			}
@@ -321,7 +321,7 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 		 *
 		 * @return mixed|string
 		 */
-		function posts_where_paged( $where ) {
+		public function posts_where_paged( $where ) {
 
 			if ( !$this->_is_archive() ) {
 				return $where;
@@ -350,7 +350,7 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 		 *
 		 * @return string
 		 */
-		function posts_orderby( $order_by_statement ) {
+		public function posts_orderby( $order_by_statement ) {
 			if ( !$this->_is_archive() ) {
 				return $order_by_statement;
 			}
@@ -369,19 +369,19 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 		 *
 		 * @return mixed
 		 */
-		function columns_sortable( $columns ) {
+		public function columns_sortable( $columns ) {
 			$columns[LP()->quiz_post_type] = 'quiz-name';
 			return $columns;
 		}
 
-		static function admin_styles() {
+		public static function admin_styles() {
 		}
 
-		static function admin_params() {
+		public static function admin_params() {
 
 		}
 
-		function save() {
+		public function save() {
 			$this->save_post();
 		}
 

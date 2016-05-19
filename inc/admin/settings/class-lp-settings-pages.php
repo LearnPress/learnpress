@@ -4,14 +4,14 @@
  * Class LP_Settings_Pages
  */
 class LP_Settings_Pages extends LP_Settings_Base {
-	function __construct() {
+	public function __construct() {
 		$this->id   = 'pages';
 		$this->text = __( 'Pages', 'learnpress' );
 
 		parent::__construct();
 	}
 
-	function get_sections() {
+	public function get_sections() {
 		$sections = array(
 			'profile'          => array(
 				'id'    => 'profile',
@@ -29,7 +29,7 @@ class LP_Settings_Pages extends LP_Settings_Base {
 		return $sections = apply_filters( 'learn_press_settings_sections_' . $this->id, $sections );
 	}
 
-	function get_settings() {
+	public function get_settings() {
 		return apply_filters(
 			'learn_press_page_settings',
 			array(
@@ -152,7 +152,7 @@ class LP_Settings_Pages extends LP_Settings_Base {
 		);
 	}
 
-	function _get_settings( $section ) {
+	public function _get_settings( $section ) {
 		$settings = $this->get_settings();
 		$get      = false;
 		$return   = array();
@@ -173,17 +173,17 @@ class LP_Settings_Pages extends LP_Settings_Base {
 		return $return;
 	}
 
-	function output_section_profile() {
+	public function output_section_profile() {
 		$view = learn_press_get_admin_view( 'settings/pages/profile.php' );
 		require_once $view;
 	}
 
-	function output_section_quiz() {
+	public function output_section_quiz() {
 		$view = learn_press_get_admin_view( 'settings/pages/quiz.php' );
 		require_once $view;
 	}
 
-	function output_section_become_a_teacher() {
+	public function output_section_become_a_teacher() {
 		$view = learn_press_get_admin_view( 'settings/pages/become-a-teacher.php' );
 		require_once $view;
 	}

@@ -4,14 +4,14 @@
  * Class LP_Settings_Courses
  */
 class LP_Settings_Courses extends LP_Settings_Base {
-	function __construct() {
+	public function __construct() {
 		$this->id   = 'courses';
 		$this->text = __( 'Courses', 'learnpress' );
 
 		parent::__construct();
 	}
 
-	function _get_sections() {
+	public function _get_sections() {
 		$sections = array(
 			'general' => array(
 				'id'    => 'general',
@@ -21,7 +21,7 @@ class LP_Settings_Courses extends LP_Settings_Base {
 		return $sections = apply_filters( 'learn_press_settings_sections_' . $this->id, $sections );
 	}
 
-	function save() {
+	public function save() {
 		parent::save();
 		$course_permalink = $_POST['learn_press_course_base'];
 		update_option( 'learn_press_course_base_type', $course_permalink );
@@ -52,12 +52,12 @@ class LP_Settings_Courses extends LP_Settings_Base {
 		}
 	}
 
-	function output() {
+	public function output() {
 		$view = learn_press_get_admin_view( 'settings/courses.php' );
 		require_once $view;
 	}
 
-	function get_settings() {
+	public function get_settings() {
 		return apply_filters(
 			'learn_press_courses_settings',
 			array(

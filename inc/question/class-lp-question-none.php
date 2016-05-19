@@ -18,11 +18,11 @@ class LP_Question_None extends LP_Question {
 	 * @param mixed
 	 * @param array
 	 */
-	function __construct( $the_question = null, $options = null ) {
+	public function __construct( $the_question = null, $options = null ) {
 		parent::__construct( $the_question, $options );
 	}
 
-	function admin_interface( $args = array() ) {
+	public function admin_interface( $args = array() ) {
 		ob_start();
 		$view = learn_press_get_admin_view( 'meta-boxes/question/none.php' );
 		include $view;

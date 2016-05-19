@@ -80,7 +80,7 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 	/**
 	 *
 	 */
-	function __construct() {
+	public function __construct() {
 		$this->id          = 'paypal';
 
 		$this->method_title = 'Paypal';
@@ -106,7 +106,7 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 		parent::__construct();
 	}
 
-	function init() {
+	public function init() {
 		if ( $this->settings->get( 'paypal_enable' ) ) {
 			if ( $this->settings->get( 'paypal_sandbox' ) == 'no' ) {
 				$this->paypal_url         = $this->paypal_live_url;
@@ -161,11 +161,11 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 		add_filter( 'learn_press_payment_gateway_available_paypal', array( $this, 'paypal_available' ), 10, 2 );
 	}
 
-	function register_web_hook() {
+	public function register_web_hook() {
 		learn_press_register_web_hook( 'paypal', 'learn_press_paypal' );
 	}
 
-	function validate_ipn() {
+	public function validate_ipn() {
 		$validate_ipn = array( 'cmd' => '_notify-validate' );
 		$validate_ipn += wp_unslash( $_POST );
 
@@ -189,7 +189,7 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 		return false;
 	}
 
-	function web_hook_process_paypal( $request ) {
+	public function web_hook_process_paypal( $request ) {
 		if ( $this->validate_ipn() ) {
 			if ( !empty( $request['custom'] ) && ( $order = $this->get_order( $request['custom'] ) ) ) {
 				$request['payment_status'] = strtolower( $request['payment_status'] );
@@ -207,15 +207,15 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 		}
 	}
 
-	function payment_method_name( $slug ) {
+	public function payment_method_name( $slug ) {
 		return $slug == 'paypal-standard' ? 'Paypal' : $slug;
 	}
 
-	function paypal_available( $a, $b ) {
+	public function paypal_available( $a, $b ) {
 		return LP()->settings->get( 'paypal_enable' ) == 'yes';
 	}
 
-	function get_order( $raw_custom ) {
+	public function get_order( $raw_custom ) {
 		$raw_custom = stripslashes( $raw_custom );
 		if ( ( $custom = json_decode( $raw_custom ) ) && is_object( $custom ) ) {
 			$order_id  = $custom->order_id;
@@ -251,7 +251,7 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 	 *
 	 * @return int
 	 */
-	function get_order_id( $txn_id ) {
+	public function get_order_id( $txn_id ) {
 
 		$args = array(
 			'meta_key'    => '_learn_press_transaction_method_id',
@@ -267,18 +267,18 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 		return 0;
 	}
 
-	function parse_ipn() {
+	public function parse_ipn() {
 		if ( !isset( $_REQUEST['ipn'] ) ) {
 			return;
 		}
 		require_once( 'paypal-ipn/ipn.php' );
 	}
 
-	function get_payment_form() {
+	public function get_payment_form() {
 		return $this->get_description();
 	}
 
-	function process_order_paypal_standard() {
+	public function process_order_paypal_standard() {
 
 		if ( !empty( $_REQUEST['learn-press-transaction-method'] ) && ( 'paypal-standard' == $_REQUEST['learn-press-transaction-method'] ) ) {
 			// if we have a paypal-nonce in $_REQUEST that meaning user has clicked go back to our site after finished the transaction
@@ -383,11 +383,11 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 	 * @param string $txn_id
 	 * @param string $note - not use
 	 */
-	function payment_complete( $order, $txn_id = '', $note = '' ) {
+	public function payment_complete( $order, $txn_id = '', $note = '' ) {
 		$order->payment_complete( $txn_id );
 	}
 
-	function process_payment( $order ) {
+	public function process_payment( $order ) {
 
 		$redirect = $this->get_request_url( $order );
 
@@ -423,11 +423,11 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 		return true;
 	}
 
-	function get_item_lines() {
+	public function get_item_lines() {
 		return $this->line_items;
 	}
 
-	function get_request_url( $order_id ) {
+	public function get_request_url( $order_id ) {
 
 		$order = LP_Order::instance( $order_id );
 		$query = $this->get_paypal_args( $order );
@@ -437,7 +437,7 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 		return $paypal_payment_url;
 	}
 
-	function get_paypal_args( $order ) {
+	public function get_paypal_args( $order ) {
 		$this->prepare_line_items();
 		$user   = learn_press_get_current_user();
 		$nonce  = wp_create_nonce( 'learn-press-paypal-nonce' );
@@ -466,7 +466,7 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 		return apply_filters( 'learn_press_paypal_args', $args );
 	}
 
-	function __toString() {
+	public function __toString() {
 		return 'Paypal';
 	}
 }

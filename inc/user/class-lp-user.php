@@ -19,7 +19,7 @@ class LP_User extends LP_Abstract_User {
 	 *
 	 * @return mixed
 	 */
-	static function get_user( $the_user, $force = false ) {
+	public static function get_user( $the_user, $force = false ) {
 		if ( is_numeric( $the_user ) ) {
 
 		} elseif ( $the_user instanceof LP_Abstract_User ) {
@@ -41,7 +41,7 @@ class LP_User extends LP_Abstract_User {
 	/**
 	 * @return mixed
 	 */
-	static function get_current_user() {
+	public static function get_current_user() {
 		return self::get_user( get_current_user_id() );
 	}
 }

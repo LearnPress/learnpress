@@ -11,7 +11,7 @@
 defined( 'ABSPATH' ) || exit();
 
 class LP_Email_Become_An_Instructor extends LP_Email {
-	function __construct() {
+	public function __construct() {
 		$this->id    = 'become_an_instructor';
 		$this->title = __( 'Become an instructor', 'learnpress' );
 
@@ -26,12 +26,12 @@ class LP_Email_Become_An_Instructor extends LP_Email {
 		parent::__construct();
 	}
 
-	function admin_options( $settings_class ) {
+	public function admin_options( $settings_class ) {
 		$view = learn_press_get_admin_view( 'settings/emails/enrolled-course.php' );
 		include_once $view;
 	}
 
-	function trigger( $user, $course_id, $user_course_id ) {
+	public function trigger( $user, $course_id, $user_course_id ) {
 		if ( !$this->enable ) {
 			return;
 		}
@@ -56,7 +56,7 @@ class LP_Email_Become_An_Instructor extends LP_Email {
 		return $return;
 	}
 
-	function get_content_html() {
+	public function get_content_html() {
 		ob_start();
 		learn_press_get_template( $this->template_html, array(
 			'email_heading' => $this->get_heading(),
@@ -69,7 +69,7 @@ class LP_Email_Become_An_Instructor extends LP_Email {
 		return ob_get_clean();
 	}
 
-	function get_content_plain() {
+	public function get_content_plain() {
 		ob_start();
 		learn_press_get_template( $this->template_plain, array(
 			'email_heading' => $this->get_heading(),

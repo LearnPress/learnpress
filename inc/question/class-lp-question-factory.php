@@ -143,7 +143,7 @@ class LP_Question_Factory {
 		return $type;
 	}
 
-	static function init() {
+	public static function init() {
 
 		if ( is_admin() ) {
 			add_action( 'admin_enqueue_scripts', array( __CLASS__, 'admin_assets' ) );
@@ -167,7 +167,7 @@ class LP_Question_Factory {
 		do_action( 'learn_press_question_factory_init', __CLASS__ );
 	}
 
-	static function show_answer( $id, $quiz_id ) {
+	public static function show_answer( $id, $quiz_id ) {
 		$quiz   = LP_Quiz::get_quiz( $quiz_id );
 		$status = LP()->user->get_quiz_status( $quiz_id );
 
@@ -179,15 +179,15 @@ class LP_Question_Factory {
 		$question->render( array( 'answered' => $user->get_question_answers( $quiz_id, $id ), 'check' => true ) );
 	}
 
-	static function show_hint( $id, $quiz_id ) {
+	public static function show_hint( $id, $quiz_id ) {
 		learn_press_get_template( 'question/hint.php' );
 	}
 
-	static function show_explanation( $id, $quiz_id ) {
+	public static function show_explanation( $id, $quiz_id ) {
 		learn_press_get_template( 'question/explanation.php' );
 	}
 
-	static function save_question( $quiz_id, $user_id ) {
+	public static function save_question( $quiz_id, $user_id ) {
 		self::save_question_if_needed( null, $quiz_id, $user_id );
 	}
 
@@ -200,7 +200,7 @@ class LP_Question_Factory {
 	 *
 	 * @return bool
 	 */
-	static function save_question_if_needed( $question_id, $quiz_id, $user_id ) {
+	public static function save_question_if_needed( $question_id, $quiz_id, $user_id ) {
 		$user            = learn_press_get_user( $user_id );
 		$save_id         = learn_press_get_request( 'save_id' );
 		$question        = $save_id ? LP_Question_Factory::get_question( $save_id ) : false;
@@ -221,7 +221,7 @@ class LP_Question_Factory {
 	}
 
 
-	static function sanitize_answers( $answers, $posted, $q ) {
+	public static function sanitize_answers( $answers, $posted, $q ) {
 		$func = "_sanitize_{$q->type}_answers";
 		if ( is_callable( array( __CLASS__, $func ) ) ) {
 			return call_user_func_array( array( __CLASS__, $func ), array( $answers, $q ) );
@@ -297,7 +297,7 @@ class LP_Question_Factory {
 		return $answers;
 	}
 
-	static function admin_assets() {
+	public static function admin_assets() {
 		LP_Admin_Assets::enqueue_style( 'learnpress-question', learn_press_plugin_url( 'assets/css/admin/meta-box-question.css' ) );
 		LP_Admin_Assets::enqueue_script( 'learnpress-question', learn_press_plugin_url( 'assets/js/admin/meta-box-question.js' ), array( 'jquery', 'jquery-ui-sortable' ) );
 	}
@@ -316,13 +316,13 @@ class LP_Question_Factory {
 		return apply_filters( 'learn_press_question_types', $types );
 	}
 
-	static function admin_template() {
+	public static function admin_template() {
 		foreach ( self::$_templates as $id => $content ) {
 			printf( '<script id="tmpl-%s" type="text/html">%s</script>', $id, $content );
 		}
 	}
 
-	static function save( $post_id ) {
+	public static function save( $post_id ) {
 
 		if ( wp_is_post_revision( $post_id ) )
 			return;
@@ -339,11 +339,11 @@ class LP_Question_Factory {
 		add_action( 'save_post', array( __CLASS__, 'save' ) );
 	}
 
-	static function add_template( $id, $content ) {
+	public static function add_template( $id, $content ) {
 		self::$_templates[$id] = $content;
 	}
 
-	static function fetch_question_content( $the_question, $args = false ) {
+	public static function fetch_question_content( $the_question, $args = false ) {
 		$question = self::get_question( $the_question );
 		$content  = '';
 		if ( $question ) {
@@ -354,7 +354,7 @@ class LP_Question_Factory {
 		return $content;
 	}
 
-	static function convert_question( $id, $from, $to, $data ) {
+	public static function convert_question( $id, $from, $to, $data ) {
 		if ( !empty( $data['learn_press_question'] ) && !empty( $data['learn_press_question'][$id] ) ) {
 			$post_data = $data['learn_press_question'][$id];
 		} else {

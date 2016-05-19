@@ -18,11 +18,11 @@ class LP_Gateways {
 
 	protected $payment_gateways = array();
 
-	function __construct() {
+	public function __construct() {
 		$this->init();
 	}
 
-	function init() {
+	public function init() {
 		if ( !$this->payment_gateways ) {
 			$gateways = array(
 				'paypal' => 'LP_Gateway_Paypal'
@@ -40,7 +40,7 @@ class LP_Gateways {
 		}
 	}
 
-	function get_gateways() {
+	public function get_gateways() {
 		$gateways = array();
 		if ( count( $this->payment_gateways ) ) foreach ( $this->payment_gateways as $gateway ) {
 			if ( is_string( $gateway ) && class_exists( $gateway ) ) {
@@ -54,7 +54,7 @@ class LP_Gateways {
 		return $gateways;
 	}
 
-	function get_available_payment_gateways() {
+	public function get_available_payment_gateways() {
 		$this->init();
 		$_available_gateways = array();
 		foreach ( $this->payment_gateways as $slug => $gateway ) {
@@ -67,7 +67,7 @@ class LP_Gateways {
 		return apply_filters( 'learn_press_available_payment_gateways', $_available_gateways );
 	}
 
-	function get_availabe_gateways() {
+	public function get_availabe_gateways() {
 		return $this->payment_gateways;
 	}
 
@@ -75,7 +75,7 @@ class LP_Gateways {
 	 * Ensure that only one instance of LP_Gateways is loaded
 	 * @return LP_Gateways|null
 	 */
-	static function instance() {
+	public static function instance() {
 		if ( is_null( self::$_instance ) ) {
 			self::$_instance = new self();
 		}

@@ -18,30 +18,30 @@ class LP_Question_True_Or_False extends LP_Abstract_Question {
 	 * @param null $the_question
 	 * @param null $args
 	 */
-	function __construct( $the_question = null, $args = null ) {
+	public function __construct( $the_question = null, $args = null ) {
 		parent::__construct( $the_question, $args );
 		add_filter( 'learn_press_question_answers', array( $this, 'limit_answers' ), 10, 2 );
 	}
 
-	function limit_answers( $answers = array(), $question ){
+	public function limit_answers( $answers = array(), $question ) {
 		if( $question->type == $this->type ){
 			$answers = array_splice( $answers, 0, 2 );
 		}
 		return $answers;
 	}
 
-	function save( $post_data = null ) {
+	public function save( $post_data = null ) {
 		parent::save( $post_data );
 	}
 
-	function submit_answer( $quiz_id, $answer ) {
+	public function submit_answer( $quiz_id, $answer ) {
 		$questions = learn_press_get_question_answers( null, $quiz_id );
 		if ( !is_array( $questions ) ) $questions = array();
 		$questions[$quiz_id][$this->get( 'ID' )] = is_array( $answer ) ? reset( $answer ) : $answer;
 		learn_press_save_question_answer( null, $quiz_id, $this->get( 'ID' ), is_array( $answer ) ? reset( $answer ) : $answer );
 	}
 
-	function get_default_answers( $answers = false ) {
+	public function get_default_answers( $answers = false ) {
 		if ( !$answers ) {
 			$answers = array(
 				array(
@@ -59,7 +59,7 @@ class LP_Question_True_Or_False extends LP_Abstract_Question {
 		return $answers;
 	}
 
-	function admin_interface( $args = array() ) {
+	public function admin_interface( $args = array() ) {
 		ob_start();
 		$view = learn_press_get_admin_view( 'meta-boxes/question/single-choice-options.php' );
 		include $view;
@@ -71,14 +71,14 @@ class LP_Question_True_Or_False extends LP_Abstract_Question {
 		return $output;
 	}
 
-	function render( $args = array() ) {
+	public function render( $args = array() ) {
 		settype( $args, 'array' );
 		$answered = ! empty( $args['answered'] ) ? $args['answered'] : '';
 		$view = learn_press_locate_template( 'question/types/single-choice.php' );
 		include $view;
 	}
 
-	function save_post_action() {
+	public function save_post_action() {
 
 		if ( $post_id = $this->get( 'ID' ) ) {
 			$post_data    = isset( $_POST[LP()->question_post_type] ) ? $_POST[LP()->question_post_type] : array();
@@ -124,7 +124,7 @@ class LP_Question_True_Or_False extends LP_Abstract_Question {
 		// die();
 	}
 
-	function check( $user_answer = null ) {
+	public function check( $user_answer = null ) {
 		$return = array(
 			'correct' => false,
 			'mark'    => 0
@@ -141,7 +141,7 @@ class LP_Question_True_Or_False extends LP_Abstract_Question {
 		return $return;
 	}
 
-	function admin_js_template(){
+	public function admin_js_template() {
 		ob_start();
 		?>
 		<tr class="lp-list-option lp-list-option-new lp-list-option-empty <# if(data.id){ #>lp-list-option-{{data.id}}<# } #>" data-id="{{data.id}}">

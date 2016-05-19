@@ -60,7 +60,7 @@ class LP_Upgrade_From_09 {
 	/**
 	 * Constructor
 	 */
-	function __construct() {
+	public function __construct() {
 		$this->_prevent_access_admin();
 		$this->learn_press_upgrade_10_page();
 	}
@@ -310,7 +310,7 @@ class LP_Upgrade_From_09 {
 		}
 	}
 
-	function _update_lesson_format( $old_id, $new_id ) {
+	public function _update_lesson_format( $old_id, $new_id ) {
 		if ( $format = get_post_format( $old_id ) ) {
 			set_post_format( $new_id, $format );
 		}
@@ -786,7 +786,7 @@ class LP_Upgrade_From_09 {
 		$wpdb->query( $query );
 	}
 
-	function get_posts_by_ids( $ids, $types = array() ) {
+	public function get_posts_by_ids( $ids, $types = array() ) {
 		global $wpdb;
 		settype( $ids, 'array' );
 		$query = "SELECT * FROM {$wpdb->posts} WHERE ID IN(" . join( ',', $ids ) . ")";
@@ -805,7 +805,7 @@ class LP_Upgrade_From_09 {
 		return $posts;
 	}
 
-	function get_post_meta( $post_id, $keys ) {
+	public function get_post_meta( $post_id, $keys ) {
 		global $wpdb;
 
 		$query = $wpdb->prepare( "
@@ -819,7 +819,7 @@ class LP_Upgrade_From_09 {
 		return $metas;
 	}
 
-	function update_post_metas( $old_id, $new_id, $exclude = null ) {
+	public function update_post_metas( $old_id, $new_id, $exclude = null ) {
 		global $wpdb;
 		$query = $wpdb->prepare( "
 			INSERT INTO {$wpdb->postmeta}(post_id, meta_key, meta_value)
@@ -1205,7 +1205,7 @@ class LP_Upgrade_From_09 {
 	}
 
 	// Update settings
-	function upgrade_settings() {
+	public function upgrade_settings() {
 		// update general settings
 		if ( $_lpr_settings_general = get_option( '_lpr_settings_general' ) ) {
 			$options = explode( ' ', 'currency currency_pos thousands_separator decimals_separator number_of_decimals instructor_registration' );
@@ -1305,11 +1305,11 @@ class LP_Upgrade_From_09 {
 		update_post_meta( $new, '_learn_press_upgraded_from', $old );
 	}
 
-	function upgrade_database() {
+	public function upgrade_database() {
 		LP_Install::update();
 	}
 
-	function do_upgrade() {
+	public function do_upgrade() {
 		global $wpdb;
 		set_time_limit( 0 );
 		// start a transaction so we can rollback all as begin if there is an error
@@ -1350,7 +1350,7 @@ class LP_Upgrade_From_09 {
 	/**
 	 * Display update page content
 	 */
-	function learn_press_upgrade_10_page() {
+	public function learn_press_upgrade_10_page() {
 		if ( empty( $_REQUEST['page'] ) || $_REQUEST['page'] != 'learn_press_upgrade_from_09' ) return;
 		if ( empty( $_REQUEST['_wpnonce'] ) || !wp_verify_nonce( $_REQUEST['_wpnonce'], 'learn-press-upgrade-09' ) ) {
 			wp_redirect( admin_url() );
@@ -1381,19 +1381,19 @@ class LP_Upgrade_From_09 {
 	/**
 	 * Add menu to make it work properly
 	 */
-	function learn_press_update_10_menu() {
+	public function learn_press_update_10_menu() {
 		add_dashboard_page( '', '', 'manage_options', 'learn_press_upgrade_from_09', '' );
 	}
 
 	/**
 	 * Welcome step page
 	 */
-	function update_welcome() {
+	public function update_welcome() {
 		$view = learn_press_get_admin_view( 'updates/0.9/step-welcome.php' );
 		include $view;
 	}
 
-	function update_upgraded() {
+	public function update_upgraded() {
 		$view = learn_press_get_admin_view( 'updates/0.9/step-upgraded.php' );
 		include $view;
 	}
@@ -1401,12 +1401,12 @@ class LP_Upgrade_From_09 {
 	/**
 	 * Repair Database step page
 	 */
-	function update_repair_database() {
+	public function update_repair_database() {
 		$view = learn_press_get_admin_view( 'updates/0.9/step-repair-database.php' );
 		include $view;
 	}
 
-	function next_link() {
+	public function next_link() {
 		if ( $this->_current_step ) {
 			if ( ( $pos = array_search( $this->_current_step, $this->_steps ) ) !== false ) {
 				if ( $pos < sizeof( $this->_steps ) - 1 ) {
@@ -1418,7 +1418,7 @@ class LP_Upgrade_From_09 {
 		return false;
 	}
 
-	function prev_link() {
+	public function prev_link() {
 		if ( $this->_current_step ) {
 			if ( ( $pos = array_search( $this->_current_step, $this->_steps ) ) !== false ) {
 				if ( $pos > 0 ) {

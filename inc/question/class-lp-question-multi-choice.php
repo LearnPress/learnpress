@@ -19,18 +19,18 @@ class LP_Question_Multi_Choice extends LP_Abstract_Question {
 	 * @param mixed
 	 * @param array
 	 */
-	function __construct( $the_question = null, $options = null ) {
+	public function __construct( $the_question = null, $options = null ) {
 		parent::__construct( $the_question, $options );
 	}
 
-	function submit_answer( $quiz_id, $answer ) {
+	public function submit_answer( $quiz_id, $answer ) {
 		$questions = learn_press_get_question_answers( null, $quiz_id );
 		if ( !is_array( $questions ) ) $questions = array();
 		$questions[$quiz_id][$this->id] = is_array( $answer ) ? reset( $answer ) : $answer;
 		learn_press_save_question_answer( null, $quiz_id, $this->id, is_array( $answer ) ? reset( $answer ) : $answer );
 	}
 
-	function admin_script() {
+	public function admin_script() {
 		parent::admin_script();
 		?>
 		<script type="text/html" id="tmpl-multi-choice-question-answer">
@@ -53,7 +53,7 @@ class LP_Question_Multi_Choice extends LP_Abstract_Question {
 		<?php
 	}
 
-	function get_default_answers( $answers = false ) {
+	public function get_default_answers( $answers = false ) {
 		if ( !$answers ) {
 			$answers = array(
 				array(
@@ -76,7 +76,7 @@ class LP_Question_Multi_Choice extends LP_Abstract_Question {
 		return $answers;
 	}
 
-	function admin_interface( $args = array() ) {
+	public function admin_interface( $args = array() ) {
 		ob_start();
 		$view = learn_press_get_admin_view( 'meta-boxes/question/multi-choice-options.php' );
 		include $view;
@@ -88,15 +88,15 @@ class LP_Question_Multi_Choice extends LP_Abstract_Question {
 		return $output;
 	}
 
-	function get_icon() {
+	public function get_icon() {
 		return '<img src="' . apply_filters( 'learn_press_question_icon', LP()->plugin_url( 'assets/images/multiple-choice.png' ), $this ) . '">';
 	}
 
-	function can_check_answer() {
+	public function can_check_answer() {
 		return true;
 	}
 
-	function show_answer() {
+	public function show_answer() {
 
 	}
 
@@ -105,7 +105,7 @@ class LP_Question_Multi_Choice extends LP_Abstract_Question {
 	 *
 	 * @return mixed
 	 */
-	function admin_interfaces( $args = array() ) {
+	public function admin_interfaces( $args = array() ) {
 
 		ob_start();
 		$uid     = uniqid( 'lpr_question_answer' );
@@ -204,7 +204,7 @@ class LP_Question_Multi_Choice extends LP_Abstract_Question {
 		}
 	}
 
-	function save_post_action() {
+	public function save_post_action() {
 
 		if ( $post_id = $this->id ) {
 			$post_data    = isset( $_POST[LP()->question_post_type] ) ? $_POST[LP()->question_post_type] : array();
@@ -238,14 +238,14 @@ class LP_Question_Multi_Choice extends LP_Abstract_Question {
 		return intval( $post_id );
 	}
 
-	function render( $args = null ) {
+	public function render( $args = null ) {
 		settype( $args, 'array' );
 		$answered = !empty( $args['answered'] ) ? $args['answered'] : array();
 		$view     = learn_press_locate_template( 'question/types/multi-choice.php' );
 		include $view;
 	}
 
-	function check( $user_answer = null ) {
+	public function check( $user_answer = null ) {
 		$return = array(
 			'correct' => true,
 			'mark'    => floatval( $this->mark )
@@ -280,7 +280,7 @@ class LP_Question_Multi_Choice extends LP_Abstract_Question {
 		return $return;
 	}
 
-	static function admin_js_template() {
+	public static function admin_js_template() {
 		ob_start();
 		?>
 		<tr class="lp-list-option lp-list-option-empty <# if(data.id){ #>lp-list-option-{{data.id}}<# } #>" data-id="{{data.id}}">

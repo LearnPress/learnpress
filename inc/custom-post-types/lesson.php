@@ -11,7 +11,7 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 	// class LP_Lesson_Post_Type
 	final class LP_Lesson_Post_Type extends LP_Abstract_Post_Type{
 
-		function __construct() {
+		public function __construct() {
 			$post_type_name = 'lp_lesson';
 			add_filter( 'manage_' . $post_type_name . '_posts_columns', array( $this, 'columns_head' ) );
 			add_action( 'manage_' . $post_type_name . '_posts_custom_column', array( $this, 'columns_content' ), 10, 2 );
@@ -29,7 +29,7 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 
 		}
 
-		function delete_course_item( $post_id ) {
+		public function delete_course_item( $post_id ) {
 			global $wpdb;
 			// delete lesson from course's section
 			$query = $wpdb->prepare( "
@@ -40,17 +40,17 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 			learn_press_reset_auto_increment( 'learnpress_section_items' );
 		}
 
-		static function admin_scripts(){
+		public static function admin_scripts() {
 			if ( in_array( get_post_type(), array( LP()->course_post_type, LP()->lesson_post_type ) ) ) {
 				wp_enqueue_script( 'jquery-caret', LP()->plugin_url( 'assets/js/jquery.caret.js', 'jquery' ) );
 			}
 		}
 
-		static function admin_styles(){
+		public static function admin_styles() {
 
 		}
 
-		static function admin_params(){
+		public static function admin_params() {
 			return array(
 				'notice_empty_lesson' => ''
 			);
@@ -58,7 +58,7 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 		/**
 		 * Register lesson post type
 		 */
-		static function register_post_type() {
+		public static function register_post_type() {
 			register_post_type( LP_LESSON_CPT,
 				array(
 					'labels'             => array(
@@ -117,7 +117,7 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 			);
 		}
 
-		static function add_meta_boxes() {
+		public static function add_meta_boxes() {
 			$prefix     = '_lp_';
 			$meta_boxes = array(
 				'id'     => 'lesson_settings',
@@ -149,7 +149,7 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 
 		}
 
-		function enqueue_script() {
+		public function enqueue_script() {
 			if ( LP()->lesson_post_type != get_post_type() ) return;
 			LP_Admin_Assets::enqueue_script( 'select2', LP_PLUGIN_URL . '/lib/meta-box/js/select2/select2.min.js' );
 			LP_Admin_Assets::enqueue_style( 'select2', LP_PLUGIN_URL . '/lib/meta-box/css/select2/select2.css' );
@@ -185,7 +185,7 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 		 *
 		 * @return array
 		 */
-		function columns_head( $columns ) {
+		public function columns_head( $columns ) {
 
 			// append new column after title column
 			$pos = array_search( 'title', array_keys( $columns ) );
@@ -220,7 +220,7 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 		 * @param string $name
 		 * @param int    $post_id
 		 */
-		function columns_content( $name, $post_id ) {
+		public function columns_content( $name, $post_id ) {
 			switch ( $name ) {
 				case LP()->course_post_type:
 					$courses = learn_press_get_item_courses( $post_id );
@@ -273,7 +273,7 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 		 *
 		 * @return string
 		 */
-		function posts_join_paged( $join ) {
+		public function posts_join_paged( $join ) {
 			if( !$this->_is_archive() ){
 				return $join;
 			}
@@ -291,7 +291,7 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 		 *
 		 * @return mixed|string
 		 */
-		function posts_where_paged( $where ) {
+		public function posts_where_paged( $where ) {
 
 			if( !$this->_is_archive() ){
 				return $where;
@@ -316,7 +316,7 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 		 *
 		 * @return string
 		 */
-		function posts_orderby( $order_by_statement ) {
+		public function posts_orderby( $order_by_statement ) {
 			if( !$this->_is_archive() ){
 				return $order_by_statement;
 			}
@@ -331,7 +331,7 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 		 *
 		 * @return mixed
 		 */
-		function columns_sortable( $columns ) {
+		public function columns_sortable( $columns ) {
 			$columns[LP()->course_post_type] = 'course-name';
 			return $columns;
 		}
@@ -356,7 +356,7 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 			return !empty( $_REQUEST['filter_course'] ) ? absint( $_REQUEST['filter_course'] ) : false;
 		}
 
-		static function create_default_meta( $id ){
+		public static function create_default_meta( $id ) {
 			$meta = apply_filters( 'learn_press_default_lesson_meta',
 				array(
 					'_lp_duration'		=> 10,

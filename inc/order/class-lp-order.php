@@ -27,7 +27,7 @@ class LP_Order {
 	/**
 	 * @param $order
 	 */
-	function __construct( $order ) {
+	public function __construct( $order ) {
 		$this->init( $order );
 	}
 
@@ -62,7 +62,7 @@ class LP_Order {
 	 *
 	 * @return bool
 	 */
-	function get_order( $id ) {
+	public function get_order( $id ) {
 		if ( !$id ) {
 			return false;
 		}
@@ -111,7 +111,7 @@ class LP_Order {
 	 * @return bool
 	 * @throws Exception
 	 */
-	function update_status( $new_status = 'pending' ) {
+	public function update_status( $new_status = 'pending' ) {
 		global $post;
 		$new_status = 'lp-' === substr( $new_status, 0, 3 ) ? substr( $new_status, 3 ) : $new_status;
 		$old_status = $this->get_status();
@@ -149,7 +149,7 @@ class LP_Order {
 		}
 	}
 
-	function set_payment_method( $payment_method ) {
+	public function set_payment_method( $payment_method ) {
 		if ( is_object( $payment_method ) ) {
 			update_post_meta( $this->id, '_payment_method', $payment_method->id );
 			update_post_meta( $this->id, '_payment_method_title', $payment_method->get_title() );
@@ -162,11 +162,11 @@ class LP_Order {
 	 *
 	 * @return string
 	 */
-	function get_order_number() {
+	public function get_order_number() {
 		return apply_filters( 'learn_press_get_order_number', '#' . sprintf( "%'.010d", $this->id ), $this );
 	}
 
-	function get_order_status() {
+	public function get_order_status() {
 		$statuses = learn_press_get_order_statuses();
 		$status   = '';
 		if ( !empty( $statuses[$this->post_status] ) ) {
@@ -182,7 +182,7 @@ class LP_Order {
 	 *
 	 * @return bool
 	 */
-	function payment_complete( $transaction_id = '' ) {
+	public function payment_complete( $transaction_id = '' ) {
 		do_action( 'learn_press_pre_payment_complete', $this->id );
 
 		LP()->session->order_awaiting_payment = null;
@@ -244,7 +244,7 @@ class LP_Order {
 		return apply_filters( 'learn_press_order_get_items', $items, $this );
 	}
 
-	function get_item_meta( &$item ) {
+	public function get_item_meta( &$item ) {
 		if ( $metas = get_metadata( 'learnpress_order_item', $item['id'] ) ) {
 			foreach ( $metas as $k => $v ) {
 				$item[preg_replace( '!^_!', '', $k )] = maybe_unserialize( $v[0] );
@@ -255,7 +255,7 @@ class LP_Order {
 	/**
 	 * Remove all items from an order
 	 */
-	function remove_order_items() {
+	public function remove_order_items() {
 		global $wpdb;
 		$wpdb->query(
 			$wpdb->prepare( "
@@ -287,7 +287,7 @@ class LP_Order {
 	 *
 	 * @return bool
 	 */
-	function add_item( $item, $quantity = 1, $meta = array() ) {
+	public function add_item( $item, $quantity = 1, $meta = array() ) {
 
 		$item_id = learn_press_add_order_item( $this->id, $item );
 		if ( !$item_id ) {
@@ -300,7 +300,7 @@ class LP_Order {
 		return $item_id;
 	}
 
-	function get_user( $field = '' ) {
+	public function get_user( $field = '' ) {
 
 		$user = learn_press_get_user( $this->user_id );
 		if ( $field ) {
@@ -317,21 +317,21 @@ class LP_Order {
 		return $value;
 	}
 
-	function get_checkout_payment_url() {
+	public function get_checkout_payment_url() {
 
 	}
 
-	function get_formatted_order_subtotal() {
+	public function get_formatted_order_subtotal() {
 		$currency_symbol = learn_press_get_currency_symbol( $this->order_currency );
 		return learn_press_format_price( $this->order_subtotal, $currency_symbol );
 	}
 
-	function get_formatted_order_total() {
+	public function get_formatted_order_total() {
 		$currency_symbol = learn_press_get_currency_symbol( $this->order_currency );
 		return learn_press_format_price( $this->order_total, $currency_symbol );
 	}
 
-	function get_payment_method_title() {
+	public function get_payment_method_title() {
 		if ( $this->order_total == 0 ) {
 			$title = __( 'Free Payment', 'learnpress' );
 		} else {
@@ -340,7 +340,7 @@ class LP_Order {
 		return apply_filters( 'learn_press_display_payment_method_title', $title, $this->payment_method );
 	}
 
-	function get_view_order_url() {
+	public function get_view_order_url() {
 		global $wp_query;
 		$view_order_url = learn_press_get_endpoint_url( 'view-order', $this->id, learn_press_get_page_link( 'profile' ) );
 		//
@@ -394,7 +394,7 @@ class LP_Order {
 		return false;
 	}
 
-	function get_user_name() {
+	public function get_user_name() {
 		return apply_filters( 'learn_press_order_user_name', sprintf( _x( '%1$s', 'full name', 'learnpress' ), $this->get_user( 'user_login' ) ) );
 	}
 
@@ -406,7 +406,7 @@ class LP_Order {
 	 *
 	 * @return LP_Order
 	 */
-	static function instance( $order, $force = true ) {
+	public static function instance( $order, $force = true ) {
 		$post = $order;
 		if ( $order instanceof WP_Post ) {
 			$id = $order->ID;

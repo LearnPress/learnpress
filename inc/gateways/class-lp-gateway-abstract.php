@@ -46,7 +46,7 @@ class LP_Gateway_Abstract {
 	/**
 	 * Constructor
 	 */
-	function __construct() {
+	public function __construct() {
 
 		if ( !$this->method_title ) {
 			$this->method_title = preg_replace( '!LP_Gateway_!', '', get_class( $this ) );
@@ -56,7 +56,7 @@ class LP_Gateway_Abstract {
 		}
 	}
 
-	function process_payment( $order ) {
+	public function process_payment( $order ) {
 		return array();
 	}
 
@@ -75,11 +75,11 @@ class LP_Gateway_Abstract {
 		return apply_filters( 'learn_press_gateway_icon', $icon, $this->id );
 	}
 
-	function get_payment_form(){
+	public function get_payment_form() {
 		return '';
 	}
 
-	function validate_fields(){
+	public function validate_fields() {
 		// TODO: validate fields if needed
 		return true;
 	}

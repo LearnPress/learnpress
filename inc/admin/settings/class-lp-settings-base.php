@@ -50,7 +50,7 @@ class LP_Settings_Base {
 	/**
 	 * Constructor
 	 */
-	function __construct() {
+	public function __construct() {
 		if( strtolower( current_filter() ) == 'activate_learnpress/learnpress.php' ){
 			return;
 		}
@@ -102,7 +102,7 @@ class LP_Settings_Base {
 	/**
 	 * Output tab's sections if defined
 	 */
-	function output_sections() {
+	public function output_sections() {
 		$current_section = $this->section['id'];
 		$sections        = $this->get_sections();
 
@@ -127,14 +127,14 @@ class LP_Settings_Base {
 	/**
 	 * Output settings tab content
 	 */
-	function output() {
+	public function output() {
 		do_action( 'learn_press_section_' . $this->id . '_' . $this->section['id'] );
 	}
 
 	/**
 	 * Save settings for current tab
 	 */
-	function save() {
+	public function save() {
 		foreach ( $_POST as $k => $v ) {
 			if ( ( strpos( $k, 'learn_press_' ) === false ) || ( !apply_filters( 'learn_press_abort_update_option', true, $k ) ) ) continue;
 			update_option( $k, apply_filters( 'learn_press_update_option_value', $v, $k ) );
@@ -146,7 +146,7 @@ class LP_Settings_Base {
 	 *
 	 * @return bool
 	 */
-	function get_sections() {
+	public function get_sections() {
 		return false;
 	}
 
@@ -157,7 +157,7 @@ class LP_Settings_Base {
 	 *
 	 * @return mixed
 	 */
-	function get_field_name( $name ) {
+	public function get_field_name( $name ) {
 		$field_name = apply_filters( 'learn_press_settings_field_name_' . $name, "learn_press_{$name}" );
 		return $field_name;
 	}
@@ -169,18 +169,18 @@ class LP_Settings_Base {
 	 *
 	 * @return mixed
 	 */
-	function get_field_id( $name ) {
+	public function get_field_id( $name ) {
 		return preg_replace( array( '!\[|(\]\[)!', '!\]!' ), array( '_', '' ), $this->get_field_name( $name ) );
 	}
 
-	function get_settings(){
+	public function get_settings() {
 		return array();
 	}
 
 	/**
 	 * admin settings page
 	 */
-	function output_settings() {
+	public function output_settings() {
 
 		$settings = new LP_Settings_Base();
 		if( $fields = $this->get_settings() ) foreach ( $fields as $field ) {
@@ -188,7 +188,7 @@ class LP_Settings_Base {
 		}
 	}
 
-	function output_field( $options ){
+	public function output_field( $options ) {
 		if ( ! isset( $options['type'] ) ) {
 			return;
 		}
@@ -237,7 +237,7 @@ class LP_Settings_Base {
 		require learn_press_get_admin_view( 'settings/fields/' . $file . '.php' );
 	}
 
-	function get_option( $option_name, $default = null ){
+	public function get_option( $option_name, $default = null ) {
 		if ( strstr( $option_name, '[' ) ) {
 			parse_str( $option_name, $option_array );
 

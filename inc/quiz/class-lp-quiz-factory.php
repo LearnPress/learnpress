@@ -4,7 +4,7 @@ class LP_Quiz_Factory {
 	static $user = null;
 	static $quiz = null;
 
-	static function init() {
+	public static function init() {
 		$actions = array(
 			'start-quiz'     => 'start_quiz',
 			'finish-quiz'    => 'finish_quiz',
@@ -20,7 +20,7 @@ class LP_Quiz_Factory {
 		add_action( 'init', array( __CLASS__, '_delete_anonymous_users' ) );*/
 	}
 
-	static function yyy() {
+	public static function yyy() {
 		$user = learn_press_get_current_user();
 		if ( $user instanceof LP_User_Guest ) {
 			$expire  = get_user_meta( $user->id, '_lp_anonymous_user_expire', true );
@@ -31,7 +31,7 @@ class LP_Quiz_Factory {
 		}
 	}
 
-	static function _delete_anonymous_users() {
+	public static function _delete_anonymous_users() {
 		global $wpdb;
 		$sql = $wpdb->prepare( "
 		DELETE a, b FROM $wpdb->users a, $wpdb->usermeta b
@@ -42,7 +42,7 @@ class LP_Quiz_Factory {
 		//$wpdb->query( $sql );
 	}
 
-	static function xxx( $start, $quiz_id, $user_id ) {
+	public static function xxx( $start, $quiz_id, $user_id ) {
 		$start  = false;
 		$x      = 60;
 		$expire = $x + time();
@@ -66,7 +66,7 @@ class LP_Quiz_Factory {
 		return $start;
 	}
 
-	static function start_quiz() {
+	public static function start_quiz() {
 		$quiz_id  = learn_press_get_request( 'quiz_id' );
 		$response = array( 'result' => 'success' );
 		$quiz     = LP_Quiz::get_quiz( $quiz_id );
@@ -157,7 +157,7 @@ class LP_Quiz_Factory {
 		learn_press_send_json( $response );
 	}
 
-	static function finish_quiz() {
+	public static function finish_quiz() {
 		$quiz_id = learn_press_get_request( 'quiz_id' );
 		$quiz    = LP_Quiz::get_quiz( $quiz_id );
 		$user    = learn_press_get_current_user();
@@ -173,7 +173,7 @@ class LP_Quiz_Factory {
 		}
 	}
 
-	static function retake_quiz() {
+	public static function retake_quiz() {
 		$quiz_id = learn_press_get_request( 'quiz_id' );
 		$user    = learn_press_get_current_user();
 		self::_verify_nonce();
@@ -196,7 +196,7 @@ class LP_Quiz_Factory {
 		);
 	}
 
-	static function check_question() {
+	public static function check_question() {
 		self::_verify_nonce();
 		$user_id     = learn_press_get_request( 'user_id' );
 		$quiz_id     = learn_press_get_request( 'quiz_id' );
@@ -236,7 +236,7 @@ class LP_Quiz_Factory {
 		learn_press_send_json( $response );
 	}
 
-	static function _verify_nonce() {
+	public static function _verify_nonce() {
 		$quiz_id  = learn_press_get_request( 'quiz_id' );
 		$user_id  = learn_press_get_current_user_id();
 		$security = learn_press_get_request( 'nonce' );

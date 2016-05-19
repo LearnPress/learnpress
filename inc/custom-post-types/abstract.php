@@ -21,7 +21,7 @@ abstract class LP_Abstract_Post_Type {
 	/**
 	 * Constructor
 	 */
-	function __construct() {
+	public function __construct() {
 		$extended = get_class( $this );
 
 		if ( is_callable( array( $extended, 'register_post_type' ) ) ) {
@@ -49,18 +49,18 @@ abstract class LP_Abstract_Post_Type {
 	 *
 	 * @return mixed
 	 */
-	static function register_post_type() {
+	public static function register_post_type() {
 	}
 
-	static function add_meta_boxes() {
+	public static function add_meta_boxes() {
 	}
 
-	static function admin_params() {
+	public static function admin_params() {
 	}
 
-	static function admin_scripts() {
+	public static function admin_scripts() {
 	}
 
-	static function admin_styles() {
+	public static function admin_styles() {
 	}
 }

@@ -43,7 +43,7 @@ class LP_Abstract_Question {
 	 * @param mixed
 	 * @param array
 	 */
-	function __construct( $the_question = null, $args = null ) {
+	public function __construct( $the_question = null, $args = null ) {
 		if ( is_numeric( $the_question ) ) {
 			$this->id   = absint( $the_question );
 			$this->post = get_post( $this->id );
@@ -59,7 +59,7 @@ class LP_Abstract_Question {
 		$this->_init();
 	}
 
-	function __get( $key ) {
+	public function __get( $key ) {
 		if ( !isset( $this->{$key} ) ) {
 			$return = null;
 			switch ( $key ) {
@@ -98,14 +98,14 @@ class LP_Abstract_Question {
 		learn_press_reset_auto_increment( 'learnpress_question_answers' );
 	}
 
-	function _get_default_answers( $answers = false, $q = null ) {
+	public function _get_default_answers( $answers = false, $q = null ) {
 		if ( !$answers && ( $q && $q->id == $this->id ) ) {
 			$answers = $this->get_default_answers( $answers );
 		}
 		return $answers;
 	}
 
-	function get_default_answers( $answers = false ) {
+	public function get_default_answers( $answers = false ) {
 		if ( !$answers ) {
 			$answers = array(
 				array(
@@ -185,7 +185,7 @@ class LP_Abstract_Question {
 		return $value;
 	}
 
-	function get_answers( $field = null, $exclude = null ) {
+	public function get_answers( $field = null, $exclude = null ) {
 		global $wpdb;
 		$answers = array();
 		//if ( empty( $answers ) ) {
@@ -234,11 +234,11 @@ class LP_Abstract_Question {
 		return $answers;
 	}*/
 
-	function submit_answer( $quiz_id, $answer ) {
+	public function submit_answer( $quiz_id, $answer ) {
 		return false;
 	}
 
-	function get_type() {
+	public function get_type() {
 		return $this->type;
 	}
 
@@ -250,7 +250,7 @@ class LP_Abstract_Question {
 	 *
 	 * @reutrn void
 	 */
-	function admin_interface_head( $args = array() ) {
+	public function admin_interface_head( $args = array() ) {
 		$view = learn_press_get_admin_view( 'meta-boxes/question/header.php' );
 		include $view;
 	}
@@ -263,7 +263,7 @@ class LP_Abstract_Question {
 	 *
 	 * @return void
 	 */
-	function admin_interface_foot( $args = array() ) {
+	public function admin_interface_foot( $args = array() ) {
 		$view = learn_press_get_admin_view( 'meta-boxes/question/footer.php' );
 		include $view;
 	}
@@ -276,7 +276,7 @@ class LP_Abstract_Question {
 	 *
 	 * @return void
 	 */
-	function admin_interface( $args = array() ) {
+	public function admin_interface( $args = array() ) {
 		printf( __( 'Function %s should override from its child', 'learnpress' ), __FUNCTION__ );
 	}
 
@@ -287,11 +287,11 @@ class LP_Abstract_Question {
 	 *
 	 * @return void
 	 */
-	function render() {
+	public function render() {
 		printf( __( 'Function %s should override from its child', 'learnpress' ), __FUNCTION__ );
 	}
 
-	function get_name() {
+	public function get_name() {
 		return
 			isset( $this->options['name'] ) ? $this->options['name'] : ucfirst( preg_replace_callback( '!_([a-z])!', create_function( '$matches', 'return " " . strtoupper($matches[1]);' ), $this->get_type() ) );
 	}
@@ -304,7 +304,7 @@ class LP_Abstract_Question {
 	 *
 	 * @return  void
 	 */
-	function set( $key, $value ) {
+	public function set( $key, $value ) {
 		$this->$key = $value;
 	}
 
@@ -320,7 +320,7 @@ class LP_Abstract_Question {
 	 *
 	 * @return  mixed|null
 	 */
-	function get( $key = null, $default = null, $func = null ) {
+	public function get( $key = null, $default = null, $func = null ) {
 		$val = $this->_get( $this, $key, $default );
 		return is_callable( $func ) ? call_user_func_array( $func, array( $val ) ) : $val;
 	}
@@ -363,13 +363,13 @@ class LP_Abstract_Question {
 	/**
 	 * Save question data on POST action
 	 */
-	function save_post_action() {
+	public function save_post_action() {
 	}
 
 	/**
 	 * Store question data
 	 */
-	function store() {
+	public function store() {
 		$post_id = $this->id;
 		$is_new  = false;
 		if ( $post_id ) {
@@ -409,15 +409,15 @@ class LP_Abstract_Question {
 		return $post_id;
 	}
 
-	function get_icon() {
+	public function get_icon() {
 		return '<img src="' . apply_filters( 'learn_press_question_icon', LP()->plugin_url( 'assets/images/question.png' ), $this ) . '">';
 	}
 
-	function get_params() {
+	public function get_params() {
 
 	}
 
-	function is_selected_option( $answer, $answered = false ) {
+	public function is_selected_option( $answer, $answered = false ) {
 		$value = array_key_exists( 'value', $answer ) ? $answer['value'] : '';
 		if ( is_array( $answered ) ) {
 			$is_selected = in_array( $value, $answered );
@@ -428,7 +428,7 @@ class LP_Abstract_Question {
 		return apply_filters( 'learn_press_is_selected_option', $is_selected, $answer, $answered, $this );
 	}
 
-	function save_user_answer( $answer, $quiz_id, $user_id = null ) {
+	public function save_user_answer( $answer, $quiz_id, $user_id = null ) {
 		if ( $user_id ) {
 			$user = LP_User::get_user( $user_id );
 		} else {
@@ -450,11 +450,11 @@ class LP_Abstract_Question {
 		//do_action( 'learn_press_update_user_answer', $progress, $user_id, $this, $quiz_id );
 	}
 
-	function can_check_answer() {
+	public function can_check_answer() {
 		return false;
 	}
 
-	function check( $args = null ) {
+	public function check( $args = null ) {
 		$return = array(
 			'correct' => false,
 			'mark'    => 0
@@ -495,7 +495,7 @@ class LP_Question extends LP_Abstract_Question {
 	 * @param null $the_question
 	 * @param null $options
 	 */
-	function __construct( $the_question = null, $options = null ) {
+	public function __construct( $the_question = null, $options = null ) {
 		if ( is_numeric( $the_question ) ) {
 			$this->id   = absint( $the_question );
 			$this->post = get_post( $this->id );
@@ -524,7 +524,7 @@ class LP_Question extends LP_Abstract_Question {
 		//print_r($this);
 	}
 
-	function __get( $key ) {
+	public function __get( $key ) {
 		$return = null;
 		if ( strtolower( $key ) == 'id' ) {
 			$key = 'id';
@@ -542,7 +542,7 @@ class LP_Question extends LP_Abstract_Question {
 		return $return;
 	}
 
-	function submit_answer( $quiz_id, $answer ) {
+	public function submit_answer( $quiz_id, $answer ) {
 		print_r( $_POST );
 		die();
 	}
@@ -555,22 +555,22 @@ class LP_Question extends LP_Abstract_Question {
 		$this->options = array_merge( $this->options, (array) get_post_meta( $this->ID, '_lpr_question', true ) );
 	}
 
-	function admin_script() {
+	public function admin_script() {
 		global $wp_query, $post, $post_type;
 		if ( !in_array( $post_type, array( 'lpr_question', 'lpr_quiz', 'lpr_lesson' ) ) ) return;
 		if ( empty( $post->ID ) || $wp_query->is_archive ) return;
 
 	}
 
-	function admin_style() {
+	public function admin_style() {
 
 	}
 
-	function wp_script() {
+	public function wp_script() {
 
 	}
 
-	function wp_style() {
+	public function wp_style() {
 
 	}
 
@@ -582,7 +582,7 @@ class LP_Question extends LP_Abstract_Question {
 	 *
 	 * @reutrn void
 	 */
-	function admin_interface_head( $args = array() ) {
+	public function admin_interface_head( $args = array() ) {
 		$post_id = $this->get( 'ID' );
 		settype( $args, 'array' );
 		$is_collapse = array_key_exists( 'toggle', $args ) && !$args['toggle'];
@@ -624,7 +624,7 @@ class LP_Question extends LP_Abstract_Question {
 	 *
 	 * @return void
 	 */
-	function admin_interface_foot( $args = array() ) {
+	public function admin_interface_foot( $args = array() ) {
 		settype( $args, 'array' );
 		$is_collapse = array_key_exists( 'toggle', $args ) && !$args['toggle'];
 		//print_r($args);
@@ -655,7 +655,7 @@ class LP_Question extends LP_Abstract_Question {
 	 *
 	 * @return void
 	 */
-	function admin_interface( $args = array() ) {
+	public function admin_interface( $args = array() ) {
 		printf( __( 'Function %s should override from its child', 'learnpress' ), __FUNCTION__ );
 	}
 
@@ -666,17 +666,17 @@ class LP_Question extends LP_Abstract_Question {
 	 *
 	 * @return void
 	 */
-	function render() {
+	public function render() {
 		printf( __( 'Function %s should override from its child', 'learnpress' ), __FUNCTION__ );
 	}
 
-	function get_type( $slug = false ) {
+	public function get_type( $slug = false ) {
 		$type = strtolower( preg_replace( '!LPR_Question_Type_!', '', get_class( $this ) ) );
 		if ( $slug ) $type = preg_replace( '!_!', '-', $type );
 		return $type;
 	}
 
-	function get_name() {
+	public function get_name() {
 		return
 			isset( $this->options['name'] ) ? $this->options['name'] : ucfirst( preg_replace_callback( '!_([a-z])!', create_function( '$matches', 'return " " . strtoupper($matches[1]);' ), $this->get_type() ) );
 	}
@@ -696,7 +696,7 @@ class LP_Question extends LP_Abstract_Question {
 	 *
 	 * @return  void
 	 */
-	function set( $key, $value ) {
+	public function set( $key, $value ) {
 		$this->$key = $value;
 	}
 
@@ -712,7 +712,7 @@ class LP_Question extends LP_Abstract_Question {
 	 *
 	 * @return  mixed|null
 	 */
-	function get( $key = null, $default = null, $func = null ) {
+	public function get( $key = null, $default = null, $func = null ) {
 		if ( is_string( $key ) && strpos( $key, '.' ) === false ) {
 			return $this->{$key};
 		}
@@ -756,20 +756,20 @@ class LP_Question extends LP_Abstract_Question {
 	}
 
 
-	function show_answer() {
+	public function show_answer() {
 
 	}
 
 	/**
 	 * Save question data on POST action
 	 */
-	function save_post_action() {
+	public function save_post_action() {
 	}
 
 	/**
 	 * Store question data
 	 */
-	function store() {
+	public function store() {
 		$post_id = $this->get( 'ID' );
 		$is_new  = false;
 		if ( $post_id ) {
@@ -818,7 +818,7 @@ class LP_Question extends LP_Abstract_Question {
 	 *
 	 * @return  bool
 	 */
-	static function instance( $id_or_type = null, $options = null ) {
+	public static function instance( $id_or_type = null, $options = null ) {
 		$type = $id_or_type;
 		if ( is_numeric( $id_or_type ) ) {
 			$question = get_post( $id_or_type );
@@ -860,7 +860,7 @@ class LP_Question extends LP_Abstract_Question {
 		return $class_instance;
 	}
 
-	function check( $args = null ) {
+	public function check( $args = null ) {
 		$return = array(
 			'correct' => false,
 			'mark'    => 0

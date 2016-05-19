@@ -16,7 +16,7 @@ class LP_Settings_Payments extends LP_Settings_Base {
 	/**
 	 * Constructor
 	 */
-	function __construct() {
+	public function __construct() {
 		$this->id   = 'payments';
 		$this->text = __( 'Payments', 'learnpress' );
 
@@ -26,7 +26,7 @@ class LP_Settings_Payments extends LP_Settings_Base {
 	/**
 	 * @return mixed
 	 */
-	function get_sections() {
+	public function get_sections() {
 		$gateways = LP_Gateways::instance()->get_gateways();
 		$sections = array();
 		if ( $gateways ) foreach ( $gateways as $id => $gateway ) {
@@ -39,7 +39,7 @@ class LP_Settings_Payments extends LP_Settings_Base {
 		return $sections;
 	}
 
-	function output() {
+	public function output() {
 		$section = $this->section;
 		?>
 		<h3 class="learn-press-settings-title"><?php echo $this->section['title']; ?></h3>
@@ -77,12 +77,12 @@ class LP_Settings_Payments extends LP_Settings_Base {
 	/**
 	 * Print admin options for paypal section
 	 */
-	function output_section_paypal() {
+	public function output_section_paypal() {
 		$view = learn_press_get_admin_view( 'settings/payments.php' );
 		include_once $view;
 	}
 
-	function saves() {
+	public function saves() {
 
 		$settings = LP_Admin_Settings::instance( 'payment' );
 		$section  = $this->section['id'];

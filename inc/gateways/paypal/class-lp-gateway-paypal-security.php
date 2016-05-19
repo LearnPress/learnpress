@@ -1,6 +1,6 @@
 <?php
 class LP_Gateway_Paypal_Security extends LP_Gateway_Paypal{
-	function get_request_url( $order_id ){
+	public function get_request_url( $order_id ) {
 		$user    = learn_press_get_current_user();
 		$sandbox = LP()->settings->get( 'paypal_sandbox' ) == 'yes';
 

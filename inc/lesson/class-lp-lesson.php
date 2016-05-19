@@ -31,7 +31,7 @@ class LP_Lesson {
 	 */
 	public $lesson_type = null;
 
-	function __construct( $lesson ) {
+	public function __construct( $lesson ) {
 		if ( is_numeric( $lesson ) ) {
 			$this->id   = absint( $lesson );
 			$this->post = get_post( $this->id );
@@ -60,7 +60,7 @@ class LP_Lesson {
 		return $value;
 	}
 
-	function is( $tag ) {
+	public function is( $tag ) {
 		$args = func_get_args();
 		unset( $args[0] );
 		$method   = 'is_' . preg_replace( '!-!', '_', $tag );
@@ -72,7 +72,7 @@ class LP_Lesson {
 		}
 	}
 
-	function is_previewable() {
+	public function is_previewable() {
 		return apply_filters( 'learn_press_lesson_preview', $this->preview == 'yes', $this );
 	}
 

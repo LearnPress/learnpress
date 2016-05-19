@@ -16,7 +16,7 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
 		 *
 		 * @return void
 		 */
-		static function admin_enqueue_scripts() {
+		public static function admin_enqueue_scripts() {
 			LP_Admin_Assets::enqueue_style( 'meta-box-course', LP()->plugin_url( 'assets/css/admin/meta-box-course.css' ) );
 			LP_Admin_Assets::enqueue_style( 'select2', RWMB_CSS_URL . 'select2/select2.css' );
 			LP_Admin_Assets::enqueue_script( 'select2', RWMB_JS_URL . 'select2/select2.min.js' );
@@ -53,7 +53,7 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
 		 *
 		 * @return string
 		 */
-		static function html( $meta, $field ) {
+		public static function html( $meta, $field ) {
 			global $post;
 			$course = LP_Course::get_course( $post );
 			$view   = learn_press_get_admin_view( 'meta-boxes/course/curriculum.php' );
@@ -69,7 +69,7 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
 		 *
 		 * @return array
 		 */
-		static function normalize_field( $field ) {
+		public static function normalize_field( $field ) {
 			$field = wp_parse_args( $field, array(
 				'size'        => 30,
 				'datalist'    => false,
@@ -86,7 +86,7 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
 		 *
 		 * @return array
 		 */
-		static function datalist_html( $field ) {
+		public static function datalist_html( $field ) {
 			if ( !$field['datalist'] ) {
 				return '';
 			}
@@ -118,7 +118,7 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
 		 * @param $post_id
 		 * @param $field
 		 */
-		static function save( $new, $old, $post_id, $field ) {
+		public static function save( $new, $old, $post_id, $field ) {
 
 			if ( empty( $new ) ) {
 				delete_post_meta( $post_id, $field['id'] );
@@ -132,7 +132,7 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
 			}
 		}
 
-		static function add_actions() {
+		public static function add_actions() {
 			// Do same actions as file field
 			parent::add_actions();
 
@@ -147,7 +147,7 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
 			//add_filter( 'learn_press_after_section_content', array( __CLASS__, 'section_options' ) );
 		}
 
-		static function add_section_buttons( $buttons ) {
+		public static function add_section_buttons( $buttons ) {
 			$buttons = array_merge(
 				$buttons,
 				array(
@@ -166,7 +166,7 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
 			return $buttons;
 		}
 
-		static function section_options() {
+		public static function section_options() {
 			?>
 			<table class="form-table">
 				<tr>
@@ -184,20 +184,20 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
 			<?php
 		}
 
-		static function remove_lesson_quiz() {
+		public static function remove_lesson_quiz() {
 			$lesson_quiz_id = $_POST['lesson_quiz_id'];
 			delete_post_meta( $lesson_quiz_id, '_lpr_course' );
 			update_post_meta( $lesson_quiz_id, '_lpr_course', 0 );
 		}
 
-		static function update_section_state() {
+		public static function update_section_state() {
 			$post_id = $_POST['post_id'];
 			$section = $_POST['section'];
 			update_post_meta( $post_id, '_lpr_course_section_state', $section );
 			die();
 		}
 
-		static function quick_add() {
+		public static function quick_add() {
 			//ob_end_flush();
 			echo '__LP_JSON__';
 			$name      = isset( $_POST['name'] ) ? $_POST['name'] : null;
@@ -223,7 +223,7 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
 			die();
 		}
 
-		static function quick_edit_lesson_quiz_name() {
+		public static function quick_edit_lesson_quiz_name() {
 			$id = isset( $_POST['id'] ) ? intval( $_POST['id'] ) : 0;
 			echo '__LP_JSON__';
 			if ( $id ) {
@@ -243,7 +243,7 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
 
 		}
 
-		static function update_course_curriculum() {
+		public static function update_course_curriculum() {
 
 			$is_ajax = false;
 			if ( !empty( $_REQUEST['action'] ) && 'lpr_update_course_curriculum' == $_REQUEST['action'] ) {
@@ -299,7 +299,7 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
 			);
 		}
 
-		static function meta( $post_id, $saved, $field ) {
+		public static function meta( $post_id, $saved, $field ) {
 			$meta = get_post_meta( $post_id, $field['id'], true );
 
 			// Use $field['std'] only when the meta box hasn't been saved (i.e. the first time we run)
@@ -313,7 +313,7 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
 			return $meta;
 		}
 
-		static function cleanHeader() {
+		public static function cleanHeader() {
 
 		}
 	}

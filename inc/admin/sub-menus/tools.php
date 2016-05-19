@@ -12,6 +12,7 @@ if ( !defined( 'ABSPATH' ) ) {
 }
 if ( 'learn-press-remove-data' == learn_press_get_request( 'action' ) ) {
 	add_action( 'init', 'learn_press_remove_data' );
+	public
 	function learn_press_remove_data() {
 		$nonce = learn_press_get_request( 'remove-data-nonce' );
 		if ( !wp_verify_nonce( $nonce, 'learn-press-remove-data' ) ) {
@@ -96,6 +97,7 @@ if ( 'learn-press-remove-data' == learn_press_get_request( 'action' ) ) {
 }
 if ( 'learn-press-remove-old-data' == learn_press_get_request( 'action' ) ) {
 	add_action( 'init', 'learn_press_remove_old_data' );
+	public
 	function learn_press_remove_old_data() {
 		$nonce = learn_press_get_request( 'remove-old-data-nonce' );
 		if ( !wp_verify_nonce( $nonce, 'learn-press-remove-old-data' ) ) {

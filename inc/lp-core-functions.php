@@ -235,17 +235,12 @@ add_action( 'init', 'learn_press_add_rewrite_tags', 1000, 0 );
  * Add more custom rewrite rules
  */
 function learn_press_add_rewrite_rules() {
-	// for testing pursose
-	flush_rewrite_rules();
-	//flush_rewrite_rules(true);
+	$rewrite_prefix = get_option( 'learn_press_permalink_structure' );
 	// lesson
 	$course_type = 'lp_course';
 	$post_types  = get_post_types( array( 'name' => $course_type ), 'objects' );
 	$slug        = $post_types[$course_type]->rewrite['slug'];
 
-
-	//echo add_query_arg('', '');
-	//die();
 	add_rewrite_rule(
 		apply_filters( 'learn_press_lesson_rewrite_rule', '^' . $slug . '/([^/]*)/?([^/]*)?/?' ),
 		apply_filters( 'learn_press_lesson_rewrite_rule_redirect', 'index.php?' . $course_type . '=$matches[1]&lesson=$matches[2]' ),
@@ -281,7 +276,7 @@ function learn_press_add_rewrite_rules() {
 	}
 	if ( $profile_id = learn_press_get_page_id( 'profile' ) ) {
 		add_rewrite_rule(
-			'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?([^/]*)/?([^/]*)/?([^/]*)/?([^/]*)/?',
+			'^' . $rewrite_prefix . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?([^/]*)/?([^/]*)/?([^/]*)/?([^/]*)/?',
 			'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&id=$matches[3]&paged=$matches[4]',
 			'top'
 		);
@@ -298,13 +293,42 @@ function learn_press_add_rewrite_rules() {
 			'top'
 		);*/
 	}
-
 	do_action( 'learn_press_add_rewrite_rules' );
 }
 
 add_action( 'init', 'learn_press_add_rewrite_rules', 1000, 0 );
 
+function learn_press_update_permalink_structure() {
+	global $pagenow;
+	if ( $pagenow != 'options-permalink.php' ) {
+		return;
+	}
+	if ( strtolower( $_SERVER['REQUEST_METHOD'] ) != 'post' ) {
+		return;
+	}
+	$rewrite_prefix      = '';
+	$permalink_structure = !empty( $_REQUEST['permalink_structure'] ) ? $_REQUEST['permalink_structure'] : '';
+	if ( $permalink_structure ) {
+		$segs = explode( '/', $permalink_structure );
+		if ( sizeof( $segs ) ) {
+			foreach ( $segs as $seg ) {
+				if ( strpos( $seg, '%' ) !== false || $seg == 'archives' ) {
+					break;
+				}
+				$rewrite_prefix[] = $seg;
+			}
+		}
+		$rewrite_prefix = array_filter( $rewrite_prefix );
+		if ( sizeof( $rewrite_prefix ) ) {
+			$rewrite_prefix = join( '/', $rewrite_prefix ) . '/';
+		} else {
+			$rewrite_prefix = '';
+		}
+	}
+	update_option( 'learn_press_permalink_structure', $rewrite_prefix );
+}
 
+add_action( 'init', 'learn_press_update_permalink_structure' );
 /**
  * This function parse query vars and put into request
  */

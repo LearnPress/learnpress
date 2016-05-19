@@ -76,7 +76,7 @@ if (typeof window.LearnPress == 'undefined') {
 				}
 				$place_order.prop('disabled', true);
 				$.ajax({
-					url     : LearnPress_Settings.siteurl +'/lp-checkout/?lp-ajax=checkout',
+					url     : LearnPress_Settings.siteurl + '/?lp-ajax=checkout',
 					dataType: 'html',
 					data    : $form.serialize(),
 					type    : 'post',

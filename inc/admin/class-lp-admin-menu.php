@@ -20,7 +20,7 @@ class LP_Admin_Menu {
 	/**
 	 * LP_Admin_Menu Construct
 	 */
-	function __construct() {
+	public function __construct() {
 		// admin menu
 		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 		add_action( 'admin_menu', array( $this, 'notify_new_course' ) );
@@ -97,7 +97,7 @@ class LP_Admin_Menu {
 	/*
 	 * Notify an administrator with pending courses
 	 */
-	function notify_new_course() {
+	public function notify_new_course() {
 		global $menu;
 		$current_user = wp_get_current_user();
 		if ( !in_array( 'administrator', $current_user->roles ) ) {
@@ -108,13 +108,13 @@ class LP_Admin_Menu {
 		$menu['3.14'][0] .= " <span class='awaiting-mod count-$awaiting_mod'><span class='pending-count'>" . number_format_i18n( $awaiting_mod ) . "</span></span>";
 	}
 
-	function menu_page() {
+	public function menu_page() {
 		if ( $this->_submenu ) {
 			$this->_submenu->display();
 		}
 	}
 
-	function menu_content() {
+	public function menu_content() {
 		if ( !function_exists( 'learn_press_admin_update_settings' ) ) {
 			remove_action( 'init', 'learn_press_admin_update_settings', 1000 );
 		}

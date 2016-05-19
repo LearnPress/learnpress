@@ -21,12 +21,12 @@ class LP_Session {
 	/**
 	 * Constructor
 	 */
-	function __construct() {
+	public function __construct() {
 		if ( self::$instance ) return;
 		//$this->_init();
 	}
 
-	function __get( $key ) {
+	public function __get( $key ) {
 		$return = null;
 		switch ( $key ) {
 			case 'id':
@@ -39,7 +39,7 @@ class LP_Session {
 
 	}
 
-	function __set( $key, $value ) {
+	public function __set( $key, $value ) {
 		return self::set( $key, $value );
 	}
 
@@ -50,7 +50,7 @@ class LP_Session {
 	 * @access private
 	 * @return array
 	 */
-	static function init() {
+	public static function init() {
 		if ( !session_id() && !headers_sent() ) {
 			session_start();
 		}
@@ -75,7 +75,7 @@ class LP_Session {
 	 *
 	 * @return mixed
 	 */
-	static function set( $key, $value ) {
+	public static function set( $key, $value ) {
 		$_SESSION['learn_press'][$key] = $value;
 		return $_SESSION['learn_press'][$key];
 	}
@@ -87,7 +87,7 @@ class LP_Session {
 	 *
 	 * @return mixed
 	 */
-	static function get( $key ) {
+	public static function get( $key ) {
 		$content = !empty( $_SESSION['learn_press'][$key] ) ? $_SESSION['learn_press'][$key] : false;
 		if ( $key == 'cart' && $content ) {
 			if ( !empty( $content['items'] ) ) {
@@ -111,7 +111,7 @@ class LP_Session {
 	 *
 	 * @param $key
 	 */
-	static function remove( $key ) {
+	public static function remove( $key ) {
 		if ( isset( $_SESSION['learn_press'][$key] ) ) {
 			unset( $_SESSION['learn_press'][$key] );
 		}
@@ -122,7 +122,7 @@ class LP_Session {
 	 *
 	 * @return LP_Session|object
 	 */
-	static function instance() {
+	public static function instance() {
 		if ( !self::$instance ) {
 			self::$instance = new self();
 		}

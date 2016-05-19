@@ -14,7 +14,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		/**
 		 * Constructor
 		 */
-		function __construct() {
+		public function __construct() {
 
 			add_action( 'save_post', array( $this, 'before_save_curriculum' ), 1000 );
 			add_filter( 'manage_lp_course_posts_columns', array( $this, 'columns_head' ) );
@@ -40,7 +40,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 *
 		 * @param $post_id
 		 */
-		function delete_course_sections( $post_id ) {
+		public function delete_course_sections( $post_id ) {
 			global $wpdb;
 			// delete all items in section first
 			$section_ids = $wpdb->get_col( $wpdb->prepare( "SELECT section_id FROM {$wpdb->prefix}learnpress_sections WHERE section_course_id = %d", $post_id ) );
@@ -63,7 +63,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		/**
 		 * Process request actions on post.php loaded
 		 */
-		function post_actions() {
+		public function post_actions() {
 			$delete_log = learn_press_get_request( 'delete_log' );
 			// ensure that user can do this
 			if ( $delete_log && current_user_can( 'delete_others_lp_courses' ) ) {
@@ -82,7 +82,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			}
 		}
 
-		function toggle_editor_button( $post ) {
+		public function toggle_editor_button( $post ) {
 			if ( $post->post_type == LP()->course_post_type ) {
 				?>
 				<button class="button button-primary" data-hidden="<?php echo get_post_meta( $post->ID, '_lp_editor_hidden', true ); ?>" type="button" id="learn-press-button-toggle-editor"><?php _e( 'Toggle Course Content', 'learnpress' ); ?></button>
@@ -96,7 +96,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 * @static
 		 * @return mixed
 		 */
-		static function admin_params() {
+		public static function admin_params() {
 			global $post;
 			return apply_filters( 'learn_press_admin_course_params',
 				array(
@@ -114,7 +114,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 *
 		 * @static
 		 */
-		static function admin_scripts() {
+		public static function admin_scripts() {
 			LP_Admin_Assets::add_localize(
 				array(
 					'notice_remove_section_item' => __( 'Are you sure you want to remove this item?', 'learnpress' )
@@ -133,26 +133,26 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 *
 		 * @static
 		 */
-		static function admin_styles() {
+		public static function admin_styles() {
 
 		}
 
 		/**
 		 * Print js template
 		 */
-		static function print_js_template() {
+		public static function print_js_template() {
 			if ( get_post_type() != LP()->course_post_type ) return;
 			learn_press_admin_view( 'meta-boxes/course/js-template.php' );
 		}
 
-		function currency_symbol( $input_html, $field, $sub_meta ) {
+		public function currency_symbol( $input_html, $field, $sub_meta ) {
 			return $input_html . '<span class="lpr-course-price-symbol">' . learn_press_get_currency_symbol() . '</span>';
 		}
 
 		/**
 		 * Register course post type
 		 */
-		static function register_post_type() {
+		public static function register_post_type() {
 			$settings         = LP_Settings::instance();
 			$labels           = array(
 				'name'               => _x( 'Courses', 'Post Type General Name', 'learnpress' ),
@@ -258,7 +258,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		/**
 		 * Add meta boxes to course post type page
 		 */
-		static function add_meta_boxes() {
+		public static function add_meta_boxes() {
 
 			new RW_Meta_Box( self::curriculum_meta_box() );
 			new RW_Meta_Box( self::settings_meta_box() );
@@ -267,7 +267,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 
 		}
 
-		static function curriculum_meta_box() {
+		public static function curriculum_meta_box() {
 			$prefix = '_lp_';
 
 			$meta_box = array(
@@ -288,7 +288,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			return apply_filters( 'learn_press_course_curriculum_meta_box_args', $meta_box );
 		}
 
-		static function settings_meta_box() {
+		public static function settings_meta_box() {
 			$prefix = '_lp_';
 
 			$meta_box = array(
@@ -332,7 +332,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			return apply_filters( 'learn_press_course_settings_meta_box_args', $meta_box );
 		}
 
-		static function assessment_meta_box() {
+		public static function assessment_meta_box() {
 			$post_id            = learn_press_get_request( 'post' );
 			$prefix             = '_lp_';
 			$course_result_desc = __( 'The way to assess the result of course for a student', 'learnpress' );
@@ -370,7 +370,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			return apply_filters( 'learn_press_course_assessment_metabox', $meta_box );
 		}
 
-		static function payment_meta_box() {
+		public static function payment_meta_box() {
 
 			$course_id = !empty( $_GET['post'] ) ? $_GET['post'] : 0;
 			$prefix    = '_lp_';
@@ -463,7 +463,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			return apply_filters( 'learn_press_course_payment_meta_box_args', $meta_box );
 		}
 
-		function review_logs_meta_box() {
+		public function review_logs_meta_box() {
 			add_meta_box(
 				'review_logs',
 				__( 'Review Logs', 'learnpress' ),
@@ -479,7 +479,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 *
 		 * @param $post
 		 */
-		function review_logs_content( $post ) {
+		public function review_logs_content( $post ) {
 			global $wpdb;
 			$view_all      = learn_press_get_request( 'view_all_review' );
 			$query         = $wpdb->prepare( "
@@ -562,7 +562,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			" );
 		}
 
-		function _save() {
+		public function _save() {
 			global $wpdb, $post;
 
 			$this->_reset_sections();
@@ -740,7 +740,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			}
 		}
 
-		function before_save_curriculum() {
+		public function before_save_curriculum() {
 
 			global $post;
 
@@ -781,7 +781,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			//add_action( 'rwmb_course_curriculum_before_save_post', array( $this, 'before_save_curriculum' ) );
 		}
 
-		static function enqueue_scripts() {
+		public static function enqueue_scripts() {
 
 		}
 
@@ -792,7 +792,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 *
 		 * @return array
 		 */
-		function columns_head( $columns ) {
+		public function columns_head( $columns ) {
 			$user = wp_get_current_user();
 			if ( in_array( 'lp_teacher', $user->roles ) ) {
 				unset( $columns['author'] );
@@ -818,7 +818,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 *
 		 * @param $column
 		 */
-		function columns_content( $column ) {
+		public function columns_content( $column ) {
 			global $post;
 			switch ( $column ) {
 				case 'sections':
@@ -861,7 +861,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		/**
 		 * Log the messages between admin and instructor
 		 */
-		function post_review_message_box() {
+		public function post_review_message_box() {
 			global $post;
 			if ( get_post_type( $post->ID ) != 'lp_course' ) {
 				return false;
@@ -886,7 +886,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			learn_press_admin_view( 'meta-boxes/course/review-log' );
 		}
 
-		function posts_fields( $fields ) {
+		public function posts_fields( $fields ) {
 			if ( !$this->_is_archive() ) {
 				return $fields;
 			}
@@ -903,7 +903,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 *
 		 * @return string
 		 */
-		function posts_join_paged( $join ) {
+		public function posts_join_paged( $join ) {
 			if ( !$this->_is_archive() ) {
 				return $join;
 			}
@@ -918,7 +918,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 *
 		 * @return mixed|string
 		 */
-		function posts_where_paged( $where ) {
+		public function posts_where_paged( $where ) {
 
 			if ( !$this->_is_archive() ) {
 				return $where;
@@ -940,7 +940,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 *
 		 * @return string
 		 */
-		function posts_orderby( $order_by_statement ) {
+		public function posts_orderby( $order_by_statement ) {
 			if ( !$this->_is_archive() ) {
 				return $order_by_statement;
 			}
@@ -956,7 +956,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 *
 		 * @return mixed
 		 */
-		function columns_sortable( $columns ) {
+		public function columns_sortable( $columns ) {
 			$columns['price'] = 'price';
 			return $columns;
 		}

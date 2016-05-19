@@ -16,11 +16,11 @@ if ( !class_exists( 'RWMB_Quiz_Questions_Field' ) ) {
 		/**
 		 * Construct
 		 */
-		function __construct() {
+		public function __construct() {
 
 		}
 
-		static function admin_enqueue_scripts() {
+		public static function admin_enqueue_scripts() {
 			/*$q = new LP_Question();
 			$q->admin_script();*/
 			LP_Admin_Assets::enqueue_style( 'select2', RWMB_CSS_URL . 'select2/select2.css' );
@@ -30,7 +30,7 @@ if ( !class_exists( 'RWMB_Quiz_Questions_Field' ) ) {
 
 		}
 
-		static function add_actions() {
+		public static function add_actions() {
 			// Do same actions as file field
 			parent::add_actions();
 
@@ -38,7 +38,7 @@ if ( !class_exists( 'RWMB_Quiz_Questions_Field' ) ) {
 			add_action( 'wp_ajax_lpr_quiz_question_remove', array( __CLASS__, 'quiz_question_remove' ) );
 		}
 
-		static function quiz_question_remove() {
+		public static function quiz_question_remove() {
 			$question_id = isset( $_REQUEST['question_id'] ) ? $_REQUEST['question_id'] : null;
 			$quiz_id     = isset( $_REQUEST['quiz_id'] ) ? $_REQUEST['quiz_id'] : null;
 
@@ -50,7 +50,7 @@ if ( !class_exists( 'RWMB_Quiz_Questions_Field' ) ) {
 			die();
 		}
 
-		static function quiz_question_add() {
+		public static function quiz_question_add() {
 			$type        = isset( $_REQUEST['type'] ) ? $_REQUEST['type'] : null;
 			$text        = isset( $_REQUEST['text'] ) ? $_REQUEST['text'] : null;
 			$question_id = isset( $_REQUEST['question_id'] ) ? $_REQUEST['question_id'] : null;
@@ -83,7 +83,7 @@ if ( !class_exists( 'RWMB_Quiz_Questions_Field' ) ) {
 			die();
 		}
 
-		static function save_quiz_questions( $post_id ) {
+		public static function save_quiz_questions( $post_id ) {
 			learn_press_debug($_POST);
 			die();
 			static $has_updated;
@@ -113,14 +113,14 @@ if ( !class_exists( 'RWMB_Quiz_Questions_Field' ) ) {
 			update_post_meta( $post_id, '_lpr_quiz_questions', $postmeta );
 		}
 
-		static function html( $meta, $field ) {
+		public static function html( $meta, $field ) {
 			ob_start();
 			$view = learn_press_get_admin_view( 'meta-boxes/quiz/questions.php' );
 			include $view;
 			return ob_get_clean();
 		}
 
-		static function save( $new, $old, $post_id, $field ){
+		public static function save( $new, $old, $post_id, $field ) {
 			global $wpdb, $post;
 			//LP_Debug::instance()->add( __CLASS__ . '::' . __FUNCTION__ . '(' . join( ',', func_get_args() ) . ')' );
 			$questions = learn_press_get_request( 'learn_press_question' );

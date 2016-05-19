@@ -16,7 +16,7 @@ class LP_Shortcodes {
 	/**
 	 * Init shortcodes
 	 */
-	static function init() {
+	public static function init() {
 		$shortcodes = array(
 			'learn_press_confirm_order'       => __CLASS__ . '::confirm_order',
 			'learn_press_profile'             => __CLASS__ . '::profile',
@@ -32,7 +32,7 @@ class LP_Shortcodes {
 		add_action( 'template_redirect', array( __CLASS__, 'auto_shortcode' ) );
 	}
 
-	static function auto_shortcode( $template ) {
+	public static function auto_shortcode( $template ) {
 		if ( is_page() ) {
 			global $post, $wp_query, $wp;
 			$page_id = !empty( $wp_query->queried_object_id ) ?
@@ -100,7 +100,7 @@ class LP_Shortcodes {
 	 *
 	 * @return string
 	 */
-	static function checkout() {
+	public static function checkout() {
 		global $wp;
 		ob_start();
 		if ( isset( $wp->query_vars['lp-order-received'] ) ) {
@@ -142,7 +142,7 @@ class LP_Shortcodes {
 		learn_press_get_template( 'checkout/order-received.php', array( 'order' => $order ) );
 	}
 
-	static function cart() {
+	public static function cart() {
 		ob_start();
 		// Check cart has contents
 		if ( LP()->cart->is_empty() ) {
@@ -153,7 +153,7 @@ class LP_Shortcodes {
 		return ob_get_clean();
 	}
 
-	static function confirm_order( $atts = null ) {
+	public static function confirm_order( $atts = null ) {
 		$atts = shortcode_atts(
 			array(
 				'order_id' => !empty( $_REQUEST['order_id'] ) ? intval( $_REQUEST['order_id'] ) : 0
@@ -177,7 +177,7 @@ class LP_Shortcodes {
 	/**
 	 * Display a form let the user can be join as a teacher
 	 */
-	static function become_teacher_form( $atts ) {
+	public static function become_teacher_form( $atts ) {
 		$user = learn_press_get_current_user();
 
 		$message = '';
@@ -249,7 +249,7 @@ class LP_Shortcodes {
 		return $html;
 	}
 
-	static function profile() {
+	public static function profile() {
 		global $wp_query, $wp;
 		if ( isset( $wp_query->query['user'] ) ) {
 			$user = get_user_by( 'login', urldecode( $wp_query->query['user'] ) );

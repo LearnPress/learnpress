@@ -32,7 +32,7 @@ class LP_Checkout {
 	/**
 	 * Constructor
 	 */
-	function __construct() {
+	public function __construct() {
 		if ( !is_user_logged_in() ) {
 			$this->checkout_fields['user_login']    = __( 'Username', 'learnpress' );
 			$this->checkout_fields['user_password'] = __( 'Password', 'learnpress' );
@@ -48,7 +48,7 @@ class LP_Checkout {
 	 * @return mixed|WP_Error
 	 * @throws Exception
 	 */
-	function create_order() {
+	public function create_order() {
 		global $wpdb;
 		// Third-party can be controls to create a order
 		if ( $order_id = apply_filters( 'learn_press_create_order', null, $this ) ) {
@@ -143,7 +143,7 @@ class LP_Checkout {
 	 *
 	 * @return bool
 	 */
-	function validate_fields( $validate, $field, $checkout ) {
+	public function validate_fields( $validate, $field, $checkout ) {
 		if ( $field['name'] == 'user_login' && empty( $_POST['user_login'] ) ) {
 			$validate = false;
 			learn_press_add_notice( __( 'Please enter user login', 'learnpress' ) );
@@ -164,7 +164,7 @@ class LP_Checkout {
 	 * @return array|mixed|void
 	 * @throws Exception
 	 */
-	function process_checkout( $from_request = true ) {
+	public function process_checkout( $from_request = true ) {
 		try {
 			if ( $from_request && strtolower( $_SERVER['REQUEST_METHOD'] ) != 'post' ) {
 				return;
@@ -292,7 +292,7 @@ class LP_Checkout {
 	 *
 	 * @return HB_Checkout
 	 */
-	static function instance() {
+	public static function instance() {
 		if ( empty( self::$_instance ) ) {
 			self::$_instance = new LP_Checkout();
 		}

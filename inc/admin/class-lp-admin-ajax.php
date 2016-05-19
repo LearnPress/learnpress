@@ -61,18 +61,18 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			do_action( 'learn_press_admin_ajax_load', __CLASS__ );
 		}
 
-		static function load_chart(){
+		public static function load_chart() {
 			if( !class_exists( '' ) ){
 				require_once LP_PLUGIN_PATH . '/inc/admin/sub-menus/statistics.php';
 			}
 			LP_Admin_Submenu_Statistic::instance()->load_chart();
 		}
 
-		static function remove_course_items() {
+		public static function remove_course_items() {
 			die( 'Please implement this function' );
 		}
 
-		static function search_users() {
+		public static function search_users() {
 			if ( !current_user_can( 'edit_lp_orders' ) ) {
 				die( - 1 );
 			}
@@ -125,7 +125,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			$query->query_where .= $wpdb->prepare( " OR user_name.meta_value LIKE %s ", '%' . $term . '%' );
 		}
 
-		static function dismiss_notice() {
+		public static function dismiss_notice() {
 			$context   = learn_press_get_request( 'context' );
 			$transient = learn_press_get_request( 'transient' );
 
@@ -139,7 +139,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			die();
 		}
 
-		static function _modal_search_items_not_found( $message, $type ) {
+		public static function _modal_search_items_not_found( $message, $type ) {
 			switch ( $type ) {
 				case 'lp_lesson':
 					$message = __( 'No lessons found', 'learnpress' );
@@ -154,7 +154,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			return $message;
 		}
 
-		static function _modal_search_items_exclude( $exclude, $type, $context = '', $context_id = null ) {
+		public static function _modal_search_items_exclude( $exclude, $type, $context = '', $context_id = null ) {
 			global $wpdb;
 			$exclude2 = array();
 			$user     = learn_press_get_current_user();
@@ -183,7 +183,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			return $exclude;
 		}
 
-		static function add_item_to_section() {
+		public static function add_item_to_section() {
 			global $wpdb;
 			$section = learn_press_get_request( 'section' );
 			if ( !$section ) {
@@ -198,7 +198,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			}
 		}
 
-		static function modal_search_items() {
+		public static function modal_search_items() {
 			global $wpdb;
 
 			$user       = learn_press_get_current_user();
@@ -282,7 +282,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			learn_press_send_json( $response );
 		}
 
-		static function remove_quiz_question() {
+		public static function remove_quiz_question() {
 			global $wpdb;
 			$quiz_id     = learn_press_get_request( 'quiz_id' );
 			$question_id = learn_press_get_request( 'question_id' );
@@ -298,7 +298,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			die();
 		}
 
-		static function search_questions() {
+		public static function search_questions() {
 			global $wpdb;
 
 			$quiz_id = learn_press_get_request( 'quiz_id' );
@@ -372,7 +372,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			learn_press_send_json( $response );
 		}
 
-		static function plugin_action() {
+		public static function plugin_action() {
 			$url = learn_press_get_request( 'url' );
 			ob_start();
 			wp_remote_get( $url );
@@ -384,7 +384,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 		/**
 		 * Remove an item from order
 		 */
-		static function remove_order_item() {
+		public static function remove_order_item() {
 			// ensure that user has permission
 			if ( !current_user_can( 'edit_lp_orders' ) ) {
 				die( __( 'Permission denied', 'learnpress' ) );
@@ -428,7 +428,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 		/**
 		 * Add new course to order
 		 */
-		static function add_item_to_order() {
+		public static function add_item_to_order() {
 
 			// ensure that user has permission
 			if ( !current_user_can( 'edit_lp_orders' ) ) {
@@ -503,7 +503,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			);
 		}
 
-		static function search_courses() {
+		public static function search_courses() {
 			$nonce = learn_press_get_request( 'nonce' );
 			if ( !wp_verify_nonce( $nonce, 'search_item_term' ) ) {
 				LP_Debug::exception( __( 'Verify nonce failed', 'learnpress' ) );
@@ -533,7 +533,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			learn_press_send_json( $found_courses );
 		}
 
-		static function remove_course_section() {
+		public static function remove_course_section() {
 			$id = learn_press_get_request( 'id' );
 			if ( $id ) {
 				global $wpdb;
@@ -553,7 +553,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			die();
 		}
 
-		static function toggle_lesson_preview() {
+		public static function toggle_lesson_preview() {
 			$id = learn_press_get_request( 'lesson_id' );
 			if ( get_post_type( $id ) == 'lp_lesson' && wp_verify_nonce( learn_press_get_request( 'nonce' ), 'learn-press-toggle-lesson-preview' ) ) {
 				update_post_meta( $id, '_lp_preview', learn_press_get_request( 'previewable' ) );
@@ -561,7 +561,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			die();
 		}
 
-		static function add_new_item() {
+		public static function add_new_item() {
 			$post_type  = learn_press_get_request( 'type' );
 			$post_title = learn_press_get_request( 'name' );
 			$response   = array();
@@ -579,7 +579,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			learn_press_send_json( $response );
 		}
 
-		static function quick_add_item() {
+		public static function quick_add_item() {
 			$post_type  = learn_press_get_request( 'type' );
 			$post_title = learn_press_get_request( 'name' );
 			$response   = array();
@@ -601,7 +601,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			learn_press_send_json( $response );
 		}
 
-		static function update_editor_hidden() {
+		public static function update_editor_hidden() {
 			if ( $id = learn_press_get_request( 'course_id' ) ) {
 				if ( learn_press_get_request( 'is_hidden' ) ) {
 					update_post_meta( $id, '_lp_editor_hidden', 'yes' );
@@ -612,14 +612,14 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			learn_press_send_json( $_POST );
 		}
 
-		static function update_quiz_question_state() {
+		public static function update_quiz_question_state() {
 			$hidden = learn_press_get_request( 'hidden' );
 			$post   = learn_press_get_request( 'quiz_id' );
 			update_post_meta( $post, '_admin_hidden_questions', $hidden );
 			die();
 		}
 
-		static function update_curriculum_section_state() {
+		public static function update_curriculum_section_state() {
 			$hidden = learn_press_get_request( 'hidden' );
 			$post   = learn_press_get_request( 'course_id' );
 			update_post_meta( $post, '_admin_hidden_sections', $hidden );
@@ -726,7 +726,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 		/**
 		 * Install sample data or dismiss the notice depending on user's option
 		 */
-		static function install_sample_data() {
+		public static function install_sample_data() {
 			$yes            = !empty( $_REQUEST['yes'] ) ? $_REQUEST['yes'] : '';
 			$response       = array( 'result' => 'fail' );
 			$retry_button   = sprintf( '<a href="" class="button yes" data-action="yes">%s</a>', __( 'Try again!', 'learnpress' ) );
@@ -773,7 +773,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 		/**
 		 * Activate a bundle of add-ons, if an add-on is not installed then install it first
 		 */
-		static function bundle_activate_add_ons() {
+		public static function bundle_activate_add_ons() {
 			global $learn_press_add_ons;
 			include_once( ABSPATH . 'wp-admin/includes/plugin-install.php' ); //for plugins_api..
 			$response = array( 'addons' => array() );
@@ -796,7 +796,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 		/**
 		 * Activate a bundle of add-ons, if an add-on is not installed then install it first
 		 */
-		static function bundle_activate_add_on() {
+		public static function bundle_activate_add_on() {
 			$response = array();
 			include_once( ABSPATH . 'wp-admin/includes/plugin-install.php' ); //for plugins_api..
 			if ( !current_user_can( 'activate_plugins' ) ) {
@@ -808,14 +808,14 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			learn_press_send_json( $response );
 		}
 
-		static function plugin_install() {
+		public static function plugin_install() {
 			$plugin_name = !empty( $_REQUEST['plugin'] ) ? $_REQUEST['plugin'] : '';
 			$response    = learn_press_install_add_on( $plugin_name );
 			learn_press_send_json( $response );
 			die();
 		}
 
-		static function update_add_on_status() {
+		public static function update_add_on_status() {
 			$plugin   = !empty( $_REQUEST['plugin'] ) ? $_REQUEST['plugin'] : '';
 			$t        = !empty( $_REQUEST['t'] ) ? $_REQUEST['t'] : '';
 			$response = array();

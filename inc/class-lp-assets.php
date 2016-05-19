@@ -21,7 +21,7 @@ class LP_Assets extends LP_Abstract_Assets {
 		'assets/js/global.js'                  => 'assets/js/global.min.js'
 	);
 
-	static function init() {
+	public static function init() {
 		parent::$caller = __CLASS__;
 		add_action( 'learn_press_print_assets', array( __CLASS__, '_print_assets' ) );
 		add_action( 'wp_footer', array( __CLASS__, 'footer_scripts' ) );
@@ -30,11 +30,11 @@ class LP_Assets extends LP_Abstract_Assets {
 		parent::init();
 	}
 
-	static function footer_scripts() {
+	public static function footer_scripts() {
 		global $wp_scripts;
 	}
 
-	static function script_loader_src( $src, $handle ) {
+	public static function script_loader_src( $src, $handle ) {
 		if ( LP_Settings::instance()->get( 'debug' ) == 'yes' ) {
 			return $src;
 		}
@@ -48,12 +48,12 @@ class LP_Assets extends LP_Abstract_Assets {
 		return $src;
 	}
 
-	static function _url_to_path( $url, $sub ) {
+	public static function _url_to_path( $url, $sub ) {
 		$path = str_replace( LP_PLUGIN_URL, preg_replace( '/\\\\/', '/', LP_PLUGIN_PATH ), $url );
 		echo preg_replace( '!\?.*!', '', $path );
 	}
 
-	static function _create_file( $src, $des ) {
+	public static function _create_file( $src, $des ) {
 		if ( $src == $des ) {
 			return $src;
 		}
@@ -79,7 +79,7 @@ class LP_Assets extends LP_Abstract_Assets {
 		return $src;
 	}
 
-	static function _minify_source() {
+	public static function _minify_source() {
 		if ( LP_Settings::instance()->get( 'debug' ) == 'yes' ) {
 			return;
 		}
@@ -92,7 +92,7 @@ class LP_Assets extends LP_Abstract_Assets {
 	/**
 	 * Load assets for frontend
 	 */
-	static function load_scripts() {
+	public static function load_scripts() {
 		$deps = array( 'jquery', 'backbone', 'utils', 'course-lesson', 'jalerts' );
 
 		// global
@@ -132,7 +132,7 @@ class LP_Assets extends LP_Abstract_Assets {
 
 	}
 
-	static function _print_assets() {
+	public static function _print_assets() {
 
 		if ( is_admin() ) {
 			//return;

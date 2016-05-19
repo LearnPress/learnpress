@@ -10,13 +10,13 @@ defined( 'ABSPATH' ) || exit();
  */
 class LP_Course extends LP_Abstract_Course {
 
-	function __construct( $course ) {
+	public function __construct( $course ) {
 		parent::__construct( $course );
 
 		add_action( 'wp_head', array( $this, 'frontend_assets' ) );
 	}
 
-	function frontend_assets() {
+	public function frontend_assets() {
 		if ( learn_press_is_course() ) {
 			$translate = $this->_get_localize();
 			LP_Assets::add_localize( $translate, false, 'single-course' );

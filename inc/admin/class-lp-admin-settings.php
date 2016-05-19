@@ -28,7 +28,7 @@ class LP_Admin_Settings {
 	 *
 	 * @param $key
 	 */
-	function __construct( $key ) {
+	public function __construct( $key ) {
 		if ( !$key ) {
 			wp_die( __FILE__ . '::' . __FUNCTION__ );
 		}
@@ -42,7 +42,7 @@ class LP_Admin_Settings {
 	 * @param $name
 	 * @param $value
 	 */
-	function set( $name, $value ) {
+	public function set( $name, $value ) {
 		$this->_set_option( $this->_options, $name, $value, true );
 	}
 
@@ -119,7 +119,7 @@ class LP_Admin_Settings {
 	 *
 	 * @return null
 	 */
-	function get( $var, $default = null ) {
+	public function get( $var, $default = null ) {
 		return $this->_get_option( $this->_options, $var, $default );
 	}
 
@@ -132,7 +132,7 @@ class LP_Admin_Settings {
 	 *
 	 * @return null
 	 */
-	function _get_option( $obj, $var, $default = null ) {
+	public function _get_option( $obj, $var, $default = null ) {
 		$var         = (array) explode( '.', $var );
 		$current_var = array_shift( $var );
 		if ( is_object( $obj ) ) {
@@ -164,7 +164,7 @@ class LP_Admin_Settings {
 	 *
 	 * @param $new
 	 */
-	function bind( $new ) {
+	public function bind( $new ) {
 		if ( is_object( $new ) ) $new = (array) $new;
 		if ( is_array( $new ) ) {
 			foreach ( $new as $k => $v ) {
@@ -176,7 +176,7 @@ class LP_Admin_Settings {
 	/**
 	 * Store options into database
 	 */
-	function update() {
+	public function update() {
 		update_option( $this->_key, $this->_options );
 	}
 
@@ -187,7 +187,7 @@ class LP_Admin_Settings {
 	 *
 	 * @return mixed
 	 */
-	static function instance( $key ) {
+	public static function instance( $key ) {
 		static $instances = array();
 		$key = '_lpr_settings_' . $key;
 		if ( empty( $instances[$key] ) ) {
@@ -198,6 +198,7 @@ class LP_Admin_Settings {
 }
 
 if ( !function_exists( 'learn_press_admin_settings' ) ) {
+	public
 	function learn_press_admin_settings( $key ) {
 		return LP_Admin_Settings::instance( $key );
 	}

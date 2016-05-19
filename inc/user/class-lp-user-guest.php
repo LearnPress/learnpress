@@ -14,7 +14,7 @@ class LP_User_Guest extends LP_Abstract_User {
 	/**
 	 * @param $the_user
 	 */
-	function __construct( $the_user ) {
+	public function __construct( $the_user ) {
 		$this->id   = $the_user;
 		$this->user = new WP_User( 0 );
 	}
@@ -24,7 +24,7 @@ class LP_User_Guest extends LP_Abstract_User {
 	 *
 	 * @return LP_User_Guest
 	 */
-	static function instance() {
+	public static function instance() {
 		static $user;
 		if ( !$user ) {
 			if ( !session_id() ) session_start();

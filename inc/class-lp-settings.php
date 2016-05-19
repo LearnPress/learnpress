@@ -27,7 +27,7 @@ class LP_Settings {
 	 * Constructor
 	 *
 	 */
-	function __construct() {
+	public function __construct() {
 		global $wpdb;
 		$query = $wpdb->prepare( "
 			SELECT option_name, option_value
@@ -48,7 +48,7 @@ class LP_Settings {
 	 * @param $name
 	 * @param $value
 	 */
-	function set( $name, $value ) {
+	public function set( $name, $value ) {
 		$this->_set_option( $this->_options, $name, $value );
 	}
 
@@ -78,7 +78,7 @@ class LP_Settings {
 		}
 	}
 
-	function get( $var, $default = null ) {
+	public function get( $var, $default = null ) {
 		if ( strpos( $var, 'learn_press_' ) === false ) {
 			$var = 'learn_press_' . $var;
 		}
@@ -89,7 +89,7 @@ class LP_Settings {
 		return $return;
 	}
 
-	function _get_option( $obj, $var, $default = null ) {
+	public function _get_option( $obj, $var, $default = null ) {
 		$var         = (array) explode( '.', $var );
 		$current_var = array_shift( $var );
 		if ( is_object( $obj ) ) {
@@ -116,7 +116,7 @@ class LP_Settings {
 		return $default;
 	}
 
-	static function instance() {
+	public static function instance() {
 		if ( empty( self::$_instance ) ) {
 			self::$_instance = new self();
 		}

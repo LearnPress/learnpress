@@ -46,7 +46,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			LP_Request_Handler::register( 'lp-ajax', array( __CLASS__, 'do_ajax' ) );
 		}
 
-		static function do_ajax( $var ) {
+		public static function do_ajax( $var ) {
 			if ( !defined( 'DOING_AJAX' ) ) {
 				define( 'DOING_AJAX', true );
 			}
@@ -63,7 +63,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			learn_press_send_json( $result );
 		}
 
-		static function _request_become_a_teacher() {
+		public static function _request_become_a_teacher() {
 			$response = learn_press_process_become_a_teacher_form(
 				array(
 					'name'  => learn_press_get_request( 'bat_name' ),
@@ -74,11 +74,11 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			learn_press_send_json( $response );
 		}
 
-		static function _request_checkout() {
+		public static function _request_checkout() {
 			return LP()->checkout->process_checkout();
 		}
 
-		static function _request_enroll_course() {
+		public static function _request_enroll_course() {
 			$course_id = learn_press_get_request( 'enroll-course' );
 			if ( !$course_id ) {
 				throw new Exception( __( 'Invalid course', 'learnpress' ) );
@@ -110,7 +110,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			return false;
 		}
 
-		static function _request_checkout_login() {
+		public static function _request_checkout_login() {
 			$result = array(
 				'result' => 'success'
 			);
@@ -144,7 +144,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			return $result;
 		}
 
-		static function _request_login() {
+		public static function _request_login() {
 			$data_str = learn_press_get_request( 'data' );
 			$data     = null;
 			if ( $data_str ) {
@@ -201,12 +201,12 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			learn_press_send_json( $return );
 		}
 
-		static function _request_add_to_cart() {
+		public static function _request_add_to_cart() {
 			LP()->cart->add_to_cart( learn_press_get_request( 'add-course-to-cart' ) );
 
 		}
 
-		static function _request_finish_course() {
+		public static function _request_finish_course() {
 			$nonce     = learn_press_get_request( 'nonce' );
 			$course_id = absint( learn_press_get_request( 'id' ) );
 			$user      = learn_press_get_current_user();
@@ -423,7 +423,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 		/**
 		 * Load next lesson
 		 */
-		function load_next_lesson() {
+		public function load_next_lesson() {
 
 			$lesson_id = $_POST['lesson_id'];
 			$html      = '';
@@ -439,7 +439,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 		/**
 		 * Load previous lesson
 		 */
-		function load_prev_lesson() {
+		public function load_prev_lesson() {
 
 			$lesson_id = $_POST['lesson_id'];
 			$html      = '';
@@ -661,7 +661,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			die();
 		}
 
-		static function start_quiz() {
+		public static function start_quiz() {
 			$quiz_id = !empty( $_REQUEST['quiz_id'] ) ? absint( $_REQUEST['quiz_id'] ) : 0;
 			if ( !$quiz_id ) {
 				learn_press_send_json(

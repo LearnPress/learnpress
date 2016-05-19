@@ -28,7 +28,7 @@ if ( !class_exists( 'LP_Admin' ) ) {
 		 *
 		 * @since 0.9.4
 		 */
-		function plugin_js_settings() {
+		public function plugin_js_settings() {
 			static $did = false;
 			if ( $did || !is_admin() ) return;
 			$js = array(
@@ -46,7 +46,7 @@ if ( !class_exists( 'LP_Admin' ) ) {
 		/**
 		 * Redirect to admin settings page
 		 */
-		function _redirect() {
+		public function _redirect() {
 			$page = isset( $_GET['page'] ) ? $_GET['page'] : '';
 			if ( 'learn_press_settings' == $page ) {
 				$current_tab = isset( $_GET['tab'] ) ? $_GET['tab'] : '';

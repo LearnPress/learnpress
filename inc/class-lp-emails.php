@@ -99,7 +99,7 @@ class LP_Emails {
 		}
 	}*/
 
-	function course_rejected( $course_id ) {
+	public function course_rejected( $course_id ) {
 		$course_user = learn_press_get_user( get_post_field( 'post_author', $course_id ) );
 
 		if ( !$course_user->is_admin() ) {
@@ -108,7 +108,7 @@ class LP_Emails {
 		}
 	}
 
-	function course_approved( $course_id ) {
+	public function course_approved( $course_id ) {
 		$course_user = learn_press_get_user( get_post_field( 'post_author', $course_id ) );
 
 		if ( !$course_user->is_admin() ) {
@@ -117,7 +117,7 @@ class LP_Emails {
 		}
 	}
 
-	function finish_course( $course_id, $user_id, $result ) {
+	public function finish_course( $course_id, $user_id, $result ) {
 		if ( !$user = learn_press_get_user( $user_id ) ) {
 			return;
 		}

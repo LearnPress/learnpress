@@ -15,7 +15,7 @@ if ( !defined( 'ABSPATH' ) ) {
 learn_press_include( 'abstracts/abstract-lp-assets.php' );
 class LP_Admin_Assets extends LP_Abstract_Assets {
 
-	static function init(){
+	public static function init() {
 		parent::$caller = __CLASS__;
 		add_action( 'learn_press_print_assets', array( __CLASS__, '_print_assets' ) );
 		parent::init();
@@ -23,7 +23,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 	/**
 	 * Load assets for admin
 	 */
-	static function load_scripts(){
+	public static function load_scripts() {
 		$screen = get_current_screen();
 		$screen_id = $screen->id;
 		$page_id = !empty( $_REQUEST['page'] ) ? $_REQUEST['page'] : '';
@@ -42,7 +42,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 		}
 	}
 
-	static function _print_assets(){
+	public static function _print_assets() {
 		self::enqueue_style( 'learn-press-icons' );
 		self::enqueue_style( 'learn-press-admin' );
 

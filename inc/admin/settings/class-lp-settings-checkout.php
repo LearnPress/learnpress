@@ -17,7 +17,7 @@ class LP_Settings_Checkout extends LP_Settings_Base {
 	/**
 	 * Constructor
 	 */
-	function __construct() {
+	public function __construct() {
 		$this->id   = 'checkout';
 		$this->text = __( 'Checkout', 'learnpress' );
 
@@ -29,7 +29,7 @@ class LP_Settings_Checkout extends LP_Settings_Base {
 	 *
 	 * @return mixed
 	 */
-	function get_sections() {
+	public function get_sections() {
 		$sections = array(
 			'general' => array(
 				'id'    => 'general',
@@ -39,12 +39,12 @@ class LP_Settings_Checkout extends LP_Settings_Base {
 		return $sections = apply_filters( 'learn_press_settings_sections_' . $this->id, $sections );
 	}
 
-	function output_section_general() {
+	public function output_section_general() {
 		$view = learn_press_get_admin_view( 'settings/checkout.php' );
 		include_once $view;
 	}
 
-	function get_settings() {
+	public function get_settings() {
 		return apply_filters(
 			'learn_press_checkout_settings',
 			array(

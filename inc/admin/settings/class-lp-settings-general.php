@@ -11,7 +11,7 @@ class LP_Settings_General extends LP_Settings_Base {
 	/**
 	 * Construct
 	 */
-	function __construct() {
+	public function __construct() {
 		$this->id   = 'general';
 		$this->text = __( 'General', 'learnpress' );
 		//add_action( 'learn_press_settings_general', array( $this, 'output' ) );
@@ -19,12 +19,12 @@ class LP_Settings_General extends LP_Settings_Base {
 		parent::__construct();
 	}
 
-	function output() {
+	public function output() {
 		$view = learn_press_get_admin_view( 'settings/general.php' );
 		include_once $view;
 	}
 
-	function get_settings() {
+	public function get_settings() {
 		return apply_filters(
 			'learn_press_general_settings',
 			array(

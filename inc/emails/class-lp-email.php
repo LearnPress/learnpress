@@ -198,7 +198,7 @@ class LP_Email {
 	);
 
 
-	function __construct() {
+	public function __construct() {
 		$this->id = str_replace( '-', '_', $this->id );
 		if ( is_null( $this->template_base ) ) {
 			$this->template_base = LP()->plugin_path( 'templates/' );
@@ -214,7 +214,7 @@ class LP_Email {
 		$this->enable       = LP()->settings->get( 'emails_' . $this->id . '.enable' ) == 'yes';
 	}
 
-	function __get( $key ) {
+	public function __get( $key ) {
 		if ( !empty( $this->{$key} ) ) {
 			return $this->{$key};
 		} else {
@@ -227,7 +227,7 @@ class LP_Email {
 		return !empty( $_REQUEST['section'] ) && $_REQUEST['section'] == $this->id;
 	}
 
-	function _remove_email_content_from_option( $options, $key ) {
+	public function _remove_email_content_from_option( $options, $key ) {
 
 		if ( !$this->is_current() ) {
 			return;
@@ -327,7 +327,7 @@ class LP_Email {
 		return apply_filters( 'learn_press_email_heading_' . $this->id, $this->format_string( $this->heading ), $this->object );
 	}
 
-	function get_footer_text() {
+	public function get_footer_text() {
 		return apply_filters( 'learn_press_email_footer_text_' . $this->id, LP()->settings->get( 'emails_general.footer_text' ) );
 	}
 
@@ -345,11 +345,11 @@ class LP_Email {
 		return apply_filters( 'learn_press_email_attachments', array(), $this->id, $this->object );
 	}
 
-	function get_from_address() {
+	public function get_from_address() {
 		return sanitize_email( LP()->settings->get( 'emails_general.from_email' ) );
 	}
 
-	function get_from_name() {
+	public function get_from_name() {
 		return sanitize_email( LP()->settings->get( 'emails_general.from_name' ) );
 	}
 
@@ -357,7 +357,7 @@ class LP_Email {
 		return wp_specialchars_decode( get_option( 'blogname' ), ENT_QUOTES );
 	}
 
-	function get_content_format() {
+	public function get_content_format() {
 		switch ( $this->get_email_format() ) {
 			case 'html' :
 				return 'text/html';
@@ -438,7 +438,7 @@ class LP_Email {
 		return get_stylesheet_directory() . '/' . apply_filters( 'learn_press_template_directory', 'learnpress', $template ) . '/' . $template;
 	}
 
-	function admin_options( $obj ) {
+	public function admin_options( $obj ) {
 
 	}
 
@@ -465,7 +465,7 @@ class LP_Email {
 		return $return;
 	}
 
-	function _send( $from, $to, $subject, $message ) {
+	public function _send( $from, $to, $subject, $message ) {
 
 	}
 
@@ -475,7 +475,7 @@ class LP_Email {
 	 * @return array
 	 */
 
-	function get_template_data( $format = 'plain' ) {
+	public function get_template_data( $format = 'plain' ) {
 		return array( 'plain_text' => $format == 'plain' );
 	}
 }

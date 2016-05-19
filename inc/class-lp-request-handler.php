@@ -18,7 +18,7 @@ class LP_Request_Handler {
 	/**
 	 * Constructor
 	 */
-	function __construct() {
+	public function __construct() {
 		add_action( 'wp_loaded', array( __CLASS__, 'process_request' ), 99999 );
 
 	}
@@ -26,7 +26,7 @@ class LP_Request_Handler {
 	/**
 	 * Process actions
 	 */
-	static function process_request() {
+	public static function process_request() {
 		if ( !empty( $_REQUEST ) ) foreach ( $_REQUEST as $key => $value ) {
 			do_action( 'learn_press_request_handler_' . $key, $value, $_REQUEST );
 		}
@@ -39,11 +39,11 @@ class LP_Request_Handler {
 	 * @param     $function
 	 * @param int $priority
 	 */
-	static function register( $action, $function, $priority = 5 ) {
+	public static function register( $action, $function, $priority = 5 ) {
 		add_action( 'learn_press_request_handler_' . $action, $function, $priority );
 	}
 
-	static function register_ajax($action, $function, $priority = 5){
+	public static function register_ajax( $action, $function, $priority = 5 ) {
 		//$action, $function, $priority = 5
 		add_action( 'learn_press_ajax_handler_' . $action, $function, $priority );
 

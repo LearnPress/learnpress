@@ -61,14 +61,14 @@ abstract class LP_Abstract_Assets {
 	/**
 	 * Constructor
 	 */
-	function __construct() {
+	public function __construct() {
 
 	}
 
 	/**
 	 * Init Asset
 	 */
-	static function init() {
+	public static function init() {
 		if ( !self::$caller ) {
 			return;
 		}
@@ -99,7 +99,7 @@ abstract class LP_Abstract_Assets {
 	 * @param string  $version
 	 * @param boolean $in_footer
 	 */
-	static function add_script( $handle, $src, $deps = array( 'jquery' ), $version = LEARNPRESS_VERSION, $in_footer = true ) {
+	public static function add_script( $handle, $src, $deps = array( 'jquery' ), $version = LEARNPRESS_VERSION, $in_footer = true ) {
 		self::$scripts[] = $handle;
 		wp_register_script( $handle, $src, $deps, $version, $in_footer );
 	}
@@ -113,7 +113,7 @@ abstract class LP_Abstract_Assets {
 	 * @param string $version
 	 * @param string $media
 	 */
-	static function add_style( $handle, $src, $deps = array(), $version = LEARNPRESS_VERSION, $media = 'all' ) {
+	public static function add_style( $handle, $src, $deps = array(), $version = LEARNPRESS_VERSION, $media = 'all' ) {
 		self::$styles[] = $handle;
 		wp_register_style( $handle, $src, $deps, $version, $media );
 	}
@@ -127,7 +127,7 @@ abstract class LP_Abstract_Assets {
 	 * @param string  $version
 	 * @param boolean $in_footer
 	 */
-	static function enqueue_script( $handle, $src = '', $deps = array( 'jquery' ), $version = LEARNPRESS_VERSION, $in_footer = true ) {
+	public static function enqueue_script( $handle, $src = '', $deps = array( 'jquery' ), $version = LEARNPRESS_VERSION, $in_footer = true ) {
 		if ( !in_array( $handle, self::$scripts ) && $src ) {
 			self::add_script( $handle, $src, $deps, $version, $in_footer );
 		}
@@ -143,7 +143,7 @@ abstract class LP_Abstract_Assets {
 	 * @param string $version
 	 * @param string $media
 	 */
-	static function enqueue_style( $handle, $src = '', $deps = array(), $version = LEARNPRESS_VERSION, $media = 'all' ) {
+	public static function enqueue_style( $handle, $src = '', $deps = array(), $version = LEARNPRESS_VERSION, $media = 'all' ) {
 		if ( !in_array( $handle, self::$styles ) && $src ) {
 			self::add_style( $handle, $src, $deps, $version, $media );
 		}
@@ -157,7 +157,7 @@ abstract class LP_Abstract_Assets {
 	 * @param array $localize
 	 * @param       string
 	 */
-	static function add_localize( $key, $localize = null, $handle = 'learn-press-js' ) {
+	public static function add_localize( $key, $localize = null, $handle = 'learn-press-js' ) {
 		if ( is_array( $key ) ) {
 			foreach ( $key as $k => $v ) {
 				self::add_localize( $k, $v, $handle );
@@ -176,7 +176,7 @@ abstract class LP_Abstract_Assets {
 	 * @param array
 	 * @param string
 	 */
-	static function add_param( $key, $param = null, $handle = 'learn-press-js' ) {
+	public static function add_param( $key, $param = null, $handle = 'learn-press-js' ) {
 		if ( is_array( $key ) ) {
 			foreach ( $key as $k => $v ) {
 				self::add_param( $k, $v, $handle );
@@ -217,18 +217,18 @@ abstract class LP_Abstract_Assets {
 		}
 	}
 
-	static function add_script_tag( $code, $handle = '' ) {
+	public static function add_script_tag( $code, $handle = '' ) {
 		if ( empty( self::$wp_script_codes[$handle] ) ) {
 			self::$wp_script_codes[$handle] = '';
 		}
 		self::$wp_script_codes[$handle] .= preg_replace( '!</?script(.*)>!', '', $code );
 	}
 
-	static function wp_assets() {
+	public static function wp_assets() {
 		do_action( 'learn_press_print_assets', is_admin() );
 	}
 
-	static function script_params( $src, $handle ) {
+	public static function script_params( $src, $handle ) {
 		$data = !empty( self::$wp_params[$handle] ) ? self::$wp_params[$handle] : false;
 		if ( wp_script_is( $handle ) && $data ) {
 			$name = str_replace( '-', '_', $handle ) . '_params';
@@ -245,10 +245,10 @@ abstract class LP_Abstract_Assets {
 	/**
 	 * Load Script
 	 */
-	static function load_scripts() {
+	public static function load_scripts() {
 	}
 
-	static function localize_printed_scripts() {
+	public static function localize_printed_scripts() {
 		if ( self::$scripts ) foreach ( self::$scripts as $handle ) {
 			self::localize_script( $handle );
 			//self::script_params( $handle );

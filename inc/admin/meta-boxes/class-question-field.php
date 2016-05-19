@@ -9,13 +9,13 @@ defined( 'ABSPATH' ) || exit;
  */
 if ( !class_exists( 'RWMB_Question_Field' ) ) {
 	class RWMB_Question_Field extends RWMB_Field {
-		static function add_actions() {
+		public static function add_actions() {
 			// Do same actions as file field
 			parent::add_actions();
 			add_action( 'wp_ajax_lpr_load_question_settings', array( __CLASS__, 'load_question_settings' ) );
 		}
 
-		static function load_question_settings() {
+		public static function load_question_settings() {
 			$type        = isset( $_REQUEST['type'] ) ? $_REQUEST['type'] : null;
 			$question_id = isset( $_REQUEST['question_id'] ) ? $_REQUEST['question_id'] : null;
 
@@ -49,10 +49,10 @@ if ( !class_exists( 'RWMB_Question_Field' ) ) {
 			die();
 		}
 
-		static function save( $new, $old, $post_id, $field ) {
+		public static function save( $new, $old, $post_id, $field ) {
 		}
 
-		static function html( $meta, $field ) {
+		public static function html( $meta, $field ) {
 			global $post;
 			$post_id = $post->ID;
 			ob_start();

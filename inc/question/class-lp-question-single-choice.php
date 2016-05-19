@@ -18,16 +18,16 @@ class LP_Question_Single_Choice extends LP_Abstract_Question {
 	 * @param mixed
 	 * @param array
 	 */
-	function __construct( $the_question = null, $args = null ) {
+	public function __construct( $the_question = null, $args = null ) {
 		parent::__construct( $the_question, $args );
 
 	}
 
-	function can_check_answer() {
+	public function can_check_answer() {
 		return false;
 	}
 
-	static function admin_js_template() {
+	public static function admin_js_template() {
 		ob_start();
 		?>
 		<tr class="lp-list-option lp-list-option-new lp-list-option-empty <# if(data.id){ #>lp-list-option-{{data.id}}<# } #>" data-id="{{data.id}}">
@@ -49,7 +49,7 @@ class LP_Question_Single_Choice extends LP_Abstract_Question {
 		return apply_filters( 'learn_press_question_single_choice_answer_option_template', ob_get_clean(), __CLASS__ );
 	}
 
-	function submit_answer( $quiz_id, $answer ) {
+	public function submit_answer( $quiz_id, $answer ) {
 		$questions = learn_press_get_question_answers( null, $quiz_id );
 		if ( !is_array( $questions ) ) $questions = array();
 		$questions[$quiz_id][$this->get( 'ID' )] = is_array( $answer ) ? reset( $answer ) : $answer;
@@ -57,11 +57,11 @@ class LP_Question_Single_Choice extends LP_Abstract_Question {
 		//print_r($answer);
 	}
 
-	function get_icon() {
+	public function get_icon() {
 		return '<img src="' . apply_filters( 'learn_press_question_icon', LP()->plugin_url( 'assets/images/single-choice.png' ), $this ) . '">';
 	}
 
-	function admin_script() {
+	public function admin_script() {
 		parent::admin_script();
 		return;
 		?>
@@ -120,7 +120,7 @@ class LP_Question_Single_Choice extends LP_Abstract_Question {
 		}
 	}
 
-	function get_default_answers( $answers = false ) {
+	public function get_default_answers( $answers = false ) {
 		if ( !$answers ) {
 			$answers = array(
 				array(
@@ -143,7 +143,7 @@ class LP_Question_Single_Choice extends LP_Abstract_Question {
 		return $answers;
 	}
 
-	function admin_interface( $args = array() ) {
+	public function admin_interface( $args = array() ) {
 		ob_start();
 		$view = learn_press_get_admin_view( 'meta-boxes/question/single-choice-options.php' );
 		include $view;
@@ -155,7 +155,7 @@ class LP_Question_Single_Choice extends LP_Abstract_Question {
 		return $output;
 	}
 
-	function save_post_action() {
+	public function save_post_action() {
 		if ( $post_id = $this->get( 'ID' ) ) {
 			$post_data    = isset( $_POST[LP()->question_post_type] ) ? $_POST[LP()->question_post_type] : array();
 			$post_answers = array();
@@ -187,14 +187,14 @@ class LP_Question_Single_Choice extends LP_Abstract_Question {
 		return $post_id;
 	}
 
-	function render( $args = null ) {
+	public function render( $args = null ) {
 		settype( $args, 'array' );
 		$answered = array_key_exists( 'answered', $args ) ? $args['answered'] : array();
 		$view     = learn_press_locate_template( 'question/types/single-choice.php' );
 		include $view;
 	}
 
-	function check( $user_answer = null ) {
+	public function check( $user_answer = null ) {
 		$return = array(
 			'correct' => false,
 			'mark'    => 0

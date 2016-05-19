@@ -122,7 +122,7 @@ class LP_Debug {
 		return self::$_instance;
 	}
 
-	static function debug() {
+	public static function debug() {
 		if ( LP_Settings::instance()->get( 'debug' ) != 'yes' ) {
 			return;
 		}
@@ -133,7 +133,7 @@ class LP_Debug {
 		}
 	}
 
-	static function exception( $message ) {
+	public static function exception( $message ) {
 		if ( LP_Settings::instance()->get( 'debug' ) != 'yes' ) {
 			return;
 		}
