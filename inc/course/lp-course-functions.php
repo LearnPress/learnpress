@@ -455,3 +455,11 @@ function need_to_updating() {
 	learn_press_display_message( 'This function need to updating' );
 	return ob_get_clean();
 }
+
+/* filter section item single course */
+function lean_press_get_course_sections() {
+	return apply_filters( 'lean_press_get_course_sections', array(
+			'lp_lesson',
+			'lp_quiz'
+		) );
+}
