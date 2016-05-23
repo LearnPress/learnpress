@@ -1164,29 +1164,29 @@ class LP_Upgrade_From_09 {
 		register_taxonomy( 'lesson-tag', array( 'lpr_lesson', 'lp_lesson' ),
 			array(
 				'labels'            => array(
-					'name'          => __( 'Tag', 'learn_press' ),
-					'menu_name'     => __( 'Tag', 'learn_press' ),
-					'singular_name' => __( 'Tag', 'learn_press' ),
-					'add_new_item'  => __( 'Add New Tag', 'learn_press' ),
-					'all_items'     => __( 'All Tags', 'learn_press' )
+					'name'          => __( 'Tag', 'learnpress' ),
+					'menu_name'     => __( 'Tag', 'learnpress' ),
+					'singular_name' => __( 'Tag', 'learnpress' ),
+					'add_new_item'  => __( 'Add New Tag', 'learnpress' ),
+					'all_items'     => __( 'All Tags', 'learnpress' )
 				),
 				'public'            => true,
 				'hierarchical'      => false,
 				'show_ui'           => true,
 				'show_admin_column' => 'true',
 				'show_in_nav_menus' => true,
-				'rewrite'           => array( 'slug' => _x( 'lesson-tag', 'Permalink Slug', 'learn_press' ), 'hierarchical' => true, 'with_front' => false ),
+				'rewrite'           => array( 'slug' => _x( 'lesson-tag', 'Permalink Slug', 'learnpress' ), 'hierarchical' => true, 'with_front' => false ),
 			)
 		);
 
 		register_taxonomy( 'question-tag', array( 'lpr_question', 'lp_question' ),
 			array(
 				'labels'            => array(
-					'name'          => __( 'Question Tag', 'learn_press' ),
-					'menu_name'     => __( 'Tag', 'learn_press' ),
-					'singular_name' => __( 'Tag', 'learn_press' ),
-					'add_new_item'  => __( 'Add New Tag', 'learn_press' ),
-					'all_items'     => __( 'All Tags', 'learn_press' )
+					'name'          => __( 'Question Tag', 'learnpress' ),
+					'menu_name'     => __( 'Tag', 'learnpress' ),
+					'singular_name' => __( 'Tag', 'learnpress' ),
+					'add_new_item'  => __( 'Add New Tag', 'learnpress' ),
+					'all_items'     => __( 'All Tags', 'learnpress' )
 				),
 				'public'            => true,
 				'hierarchical'      => false,
@@ -1194,7 +1194,7 @@ class LP_Upgrade_From_09 {
 				'show_admin_column' => 'true',
 				'show_in_nav_menus' => true,
 				'rewrite'           => array(
-					'slug'         => _x( 'question-tag', 'Permalink Slug', 'learn_press' ),
+					'slug'         => _x( 'question-tag', 'Permalink Slug', 'learnpress' ),
 					'hierarchical' => false,
 					'with_front'   => false
 				),

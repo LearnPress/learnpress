@@ -13,8 +13,8 @@ $group_name      = '_lp_curriculum[__SECTION__][items][' . ( $section_item_id ? 
 
 $support_types = apply_filters(
 	'learn_press_support_item_types', array(
-		'lp_quiz'   => __( 'Quiz', 'learn_press' ),
-		'lp_lesson' => __( 'Lesson', 'learn_press' )
+		'lp_quiz'   => __( 'Quiz', 'learnpress' ),
+		'lp_lesson' => __( 'Lesson', 'learnpress' )
 	)
 );
 ?>
