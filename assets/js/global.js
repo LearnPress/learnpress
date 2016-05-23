@@ -669,10 +669,10 @@ if (typeof window.LearnPress == 'undefined') {
 	}
 
 	$(document).ready(function () {
-		//__initSubtabs();
+		if (typeof $.alerts != 'undefined') {
+			$.alerts.overlayColor = '#000';
+			$.alerts.overlayOpacity = 0.5;
+		}
 	});
-
-	$.alerts.overlayColor = '#000';
-	$.alerts.overlayOpacity = 0.5;
 
 })(jQuery);

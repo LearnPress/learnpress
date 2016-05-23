@@ -24,5 +24,5 @@ global $user_identity;
 		$user_identity
 	);
 	?>
-	<a href="<?php echo wp_logout_url( get_permalink() ); ?>" title="<?php esc_attr_e( 'Log out of this account' ); ?>"><?php _e( 'Log out &raquo;' ); ?></a>
+	<a href="<?php echo wp_logout_url( get_permalink() ); ?>" title="<?php esc_attr_e( 'Log out of this account', 'learnpress' ); ?>"><?php _e( 'Log out &raquo;', 'learnpress' ); ?></a>
 </p>
