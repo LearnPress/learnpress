@@ -198,7 +198,6 @@ class LP_Admin_Settings {
 }
 
 if ( !function_exists( 'learn_press_admin_settings' ) ) {
-	public
 	function learn_press_admin_settings( $key ) {
 		return LP_Admin_Settings::instance( $key );
 	}

@@ -2291,13 +2291,19 @@ function learn_press_get_log_file_path( $handle ) {
 
 function learn_press_front_scripts() {
 	if ( is_admin() ) {
-		//return;
+		return;
 	}
 	$js = array(
 		'ajax'        => admin_url( 'admin-ajax.php' ),
 		'plugin_url'  => LP()->plugin_url(),
 		'siteurl'     => home_url(),
 		'current_url' => learn_press_get_current_url(),
+		'localize'    => array(
+			'button_ok'     => __( 'OK', 'learnpress' ),
+			'button_cancel' => __( 'Cancel', 'learnpress' ),
+			'button_yes'    => __( 'Yes', 'learnpress' ),
+			'button_no'     => __( 'No', 'learnpress' )
+		)
 	);
 	echo '<script type="text/javascript">var LearnPress_Settings = ' . json_encode( $js ) . '</script>';
 }

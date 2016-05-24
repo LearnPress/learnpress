@@ -280,15 +280,15 @@ if (typeof window.LearnPress == 'undefined') {
 				var $buttons = $('<div class="message-box-buttons"></div>');
 				switch (buttons) {
 					case 'yesNo':
-						$buttons.append(this._createButton('Yes', 'yes'));
-						$buttons.append(this._createButton('No', 'no'));
+						$buttons.append(this._createButton(LearnPress_Settings.localize.button_yes, 'yes'));
+						$buttons.append(this._createButton(LearnPress_Settings.localize.button_no, 'no'));
 						break;
 					case 'okCancel':
-						$buttons.append(this._createButton('Ok', 'ok'));
-						$buttons.append(this._createButton('Cancel', 'cancel'));
+						$buttons.append(this._createButton(LearnPress_Settings.localize.button_ok, 'ok'));
+						$buttons.append(this._createButton(LearnPress_Settings.localize.button_cancel, 'cancel'));
 						break;
 					default:
-						$buttons.append(this._createButton('Ok', 'ok'));
+						$buttons.append(this._createButton(LearnPress_Settings.localize.button_ok, 'ok'));
 				}
 				$wrap.append($buttons);
 			}

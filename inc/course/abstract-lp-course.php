@@ -207,9 +207,27 @@ abstract class LP_Abstract_Course {
 	 * @return bool
 	 */
 	public function is_require_enrollment() {
-		$is_require = $this->course_enrolled_require;
-		$is_require = empty( $is_require ) || ( $is_require == 'yes' ) ? true : false;
-		return apply_filters( 'learn_press_is_require_enrollment', $is_require, $this );
+		return $this->is_required_enroll();
+	}
+
+	/**
+	 * Check if this course is required to enroll
+	 *
+	 * @param mixed
+	 *
+	 * @return bool
+	 */
+	public function is_required_enroll() {
+		if ( func_get_args() ) {
+			$required = $this->required_enroll == func_get_arg( 0 );
+		} else {
+			$required = $this->required_enroll != 'no';
+		}
+		$required = $required || $this->payment == 'yes';
+		//$is_require = empty( $is_require ) || ( $is_require == 'yes' ) ? true : false;
+		///return apply_filters( 'learn_press_is_require_enrollment', $is_require, $this );
+
+		return apply_filters( 'learn_press_course_required_enroll', $required, $this );
 	}
 
 	private function _get_posts_by_id( $ids ) {
@@ -399,22 +417,6 @@ abstract class LP_Abstract_Course {
 	public function is_free() {
 		$is_free = ( ( 'no' == $this->payment ) || ( 0 >= $this->get_price() ) );
 		return apply_filters( 'learn_press_is_free_course', $is_free, $this );
-	}
-
-	/**
-	 * Check if this course is required to enroll
-	 *
-	 * @param mixed
-	 *
-	 * @return bool
-	 */
-	public function is_required_enroll() {
-		if ( func_get_args() ) {
-			$required = $this->required_enroll == func_get_arg( 0 );
-		} else {
-			$required = $this->required_enroll != 'no';
-		}
-		return apply_filters( 'learn_press_course_required_enroll', $required, $this );
 	}
 
 	/**
@@ -652,7 +654,7 @@ abstract class LP_Abstract_Course {
 	 */
 	public function is_purchasable() {
 		// TODO: needs to check more criteria, currently only check if this course is required enrollment
-		$is_purchasable = $this->required_enroll == 'yes' && $this->post->post_status == 'publish';
+		$is_purchasable = $this->is_required_enroll() && $this->post->post_status == 'publish';
 		if ( $is_purchasable ) {
 			$count_in_order = $this->count_in_order( array( 'completed', 'processing' ) );
 			$is_purchasable = $is_purchasable && ( $count_in_order < $this->max_students );
@@ -708,7 +710,7 @@ abstract class LP_Abstract_Course {
 		switch ( get_post_type( $item_id ) ) {
 			case 'lp_quiz':
 			case 'lp_lesson':
-				$permalink = get_the_permalink( $this->id );
+				$permalink = trailingslashit( get_the_permalink( $this->id ) );
 
 				$post_name = get_post_field( 'post_name', $item_id );
 				$prefix    = "{$item_id}-";

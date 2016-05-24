@@ -192,9 +192,10 @@
 		},
 		_loadItem : function (e) {
 			e.preventDefault();
-			var $item = $(e.target),
+			var $item = $(e.target).closest('a'),
 				id = parseInt($item.attr('data-id')),
 				link = $item.attr('href');
+			console.log(link)
 			this.model.loadItem(id ? id : link, link);
 		}
 	});

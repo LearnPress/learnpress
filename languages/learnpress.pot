@@ -2,7 +2,6 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
 #: inc/lp-add-on-functions.php:81 inc/lp-add-on-functions.php:86
 #: inc/admin/views/meta-boxes/course/loop-item.php:41
 #: inc/admin/views/meta-boxes/course/loop-item.php:42
@@ -14,16 +13,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-05-16 10:58+0700\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Report-Msgid-Bugs-To: BUG-EMAIL-ADDR <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: yyyy-mm-dd hh:mm+0000\n"
+"PO-Revision-Date: 2016-05-23 11:19+0700\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"X-Generator: Eazy Po 0.9.5.3\n"
 
 #: test-functions.php:15
 #, php-format
@@ -286,7 +286,7 @@ msgstr ""
 msgid "You are a teacher now"
 msgstr ""
 
-#: inc/class-lp-shortcodes.php:193 inc/lp-core-functions.php:1677
+#: inc/class-lp-shortcodes.php:193 inc/lp-core-functions.php:1701
 msgid "Your request has been sent! We will get in touch with you soon!"
 msgstr ""
 
@@ -354,8 +354,8 @@ msgstr ""
 msgid "Get more <span class=\"count\">(%s)</span>"
 msgstr ""
 
-#: inc/lp-add-on-functions.php:104 inc/lp-core-functions.php:843
-#: inc/lp-core-functions.php:2499 inc/admin/lp-admin-functions.php:424
+#: inc/lp-add-on-functions.php:104 inc/lp-core-functions.php:867
+#: inc/lp-core-functions.php:2523 inc/admin/lp-admin-functions.php:424
 #: inc/admin/lp-admin-functions.php:580 inc/admin/lp-admin-functions.php:726
 #: inc/admin/views/statistics/courses.php:27
 #: inc/admin/views/statistics/courses.php:42
@@ -555,58 +555,56 @@ msgstr ""
 msgid "Multipart"
 msgstr ""
 
-#: inc/lp-core-functions.php:214
+#: inc/lp-core-functions.php:214 inc/lp-template-functions.php:1401
 #: inc/admin/views/meta-boxes/course/loop-item.php:17
 #: inc/custom-post-types/lesson.php:67
-#: templates/single-course/section/item-meta.php:32
 msgid "Lesson"
 msgstr ""
 
-#: inc/lp-core-functions.php:215
+#: inc/lp-core-functions.php:215 inc/lp-template-functions.php:1391
 #: inc/admin/settings/class-lp-settings-pages.php:22
 #: inc/admin/views/meta-boxes/course/loop-item.php:16
 #: inc/custom-post-types/question.php:247 inc/custom-post-types/quiz.php:85
-#: templates/single-course/section/item-meta.php:22
 msgid "Quiz"
 msgstr ""
 
-#: inc/lp-core-functions.php:680
+#: inc/lp-core-functions.php:704
 msgid "<"
 msgstr ""
 
-#: inc/lp-core-functions.php:681
+#: inc/lp-core-functions.php:705
 msgid ">"
 msgstr ""
 
-#: inc/lp-core-functions.php:844
+#: inc/lp-core-functions.php:868
 msgid "Published"
 msgstr ""
 
-#: inc/lp-core-functions.php:845
+#: inc/lp-core-functions.php:869
 msgid "Private"
 msgstr ""
 
-#: inc/lp-core-functions.php:846
+#: inc/lp-core-functions.php:870
 msgid "Pending Review"
 msgstr ""
 
-#: inc/lp-core-functions.php:847
+#: inc/lp-core-functions.php:871
 msgid "Scheduled"
 msgstr ""
 
-#: inc/lp-core-functions.php:848
+#: inc/lp-core-functions.php:872
 msgid "Draft"
 msgstr ""
 
-#: inc/lp-core-functions.php:849
+#: inc/lp-core-functions.php:873
 msgid "Trash"
 msgstr ""
 
-#: inc/lp-core-functions.php:901
+#: inc/lp-core-functions.php:925
 msgid "Want to be an instructor?"
 msgstr ""
 
-#: inc/lp-core-functions.php:1075 inc/lp-template-functions.php:658
+#: inc/lp-core-functions.php:1099 inc/lp-template-functions.php:658
 #: inc/admin/class-lp-profile.php:77 inc/admin/lp-admin-functions.php:165
 #: inc/admin/settings/class-lp-settings-courses.php:9
 #: inc/admin/sub-menus/statistics.php:48 inc/custom-post-types/course.php:160
@@ -614,96 +612,96 @@ msgstr ""
 msgid "Courses"
 msgstr ""
 
-#: inc/lp-core-functions.php:1081 inc/custom-post-types/course.php:812
+#: inc/lp-core-functions.php:1105 inc/custom-post-types/course.php:812
 msgid "Categories"
 msgstr ""
 
-#: inc/lp-core-functions.php:1086 inc/custom-post-types/course.php:242
+#: inc/lp-core-functions.php:1110 inc/custom-post-types/course.php:242
 msgid "Tags"
 msgstr ""
 
-#: inc/lp-core-functions.php:1282
+#: inc/lp-core-functions.php:1306
 msgid "Left"
 msgstr ""
 
-#: inc/lp-core-functions.php:1283
+#: inc/lp-core-functions.php:1307
 msgid "Right"
 msgstr ""
 
-#: inc/lp-core-functions.php:1284
+#: inc/lp-core-functions.php:1308
 msgid "Left with space"
 msgstr ""
 
-#: inc/lp-core-functions.php:1285
+#: inc/lp-core-functions.php:1309
 msgid "Right with space"
 msgstr ""
 
-#: inc/lp-core-functions.php:1549
+#: inc/lp-core-functions.php:1573
 msgid "week(s)"
 msgstr ""
 
-#: inc/lp-core-functions.php:1553
+#: inc/lp-core-functions.php:1577
 msgid "day(s)"
 msgstr ""
 
-#: inc/lp-core-functions.php:1558
+#: inc/lp-core-functions.php:1582
 msgid "hour(s)"
 msgstr ""
 
-#: inc/lp-core-functions.php:1562
+#: inc/lp-core-functions.php:1586
 msgid "min(s)"
 msgstr ""
 
-#: inc/lp-core-functions.php:1650
+#: inc/lp-core-functions.php:1674
 msgid "Please enter your name"
 msgstr ""
 
-#: inc/lp-core-functions.php:1655
+#: inc/lp-core-functions.php:1679
 msgid "Please enter your email address"
 msgstr ""
 
-#: inc/lp-core-functions.php:1662
+#: inc/lp-core-functions.php:1686
 msgid "Please moderate"
 msgstr ""
 
-#: inc/lp-core-functions.php:1663
+#: inc/lp-core-functions.php:1687
 #, php-format
 msgid "The user <a href=\"%s\">%s</a> want to be a teacher."
 msgstr ""
 
-#: inc/lp-core-functions.php:1665
+#: inc/lp-core-functions.php:1689
 #, php-format
 msgid "Name: %s"
 msgstr ""
 
-#: inc/lp-core-functions.php:1666
+#: inc/lp-core-functions.php:1690
 #, php-format
 msgid "Email: %s"
 msgstr ""
 
-#: inc/lp-core-functions.php:1667
+#: inc/lp-core-functions.php:1691
 #, php-format
 msgid "Phone: %s"
 msgstr ""
 
-#: inc/lp-core-functions.php:1668
+#: inc/lp-core-functions.php:1692
 #, php-format
 msgid "Accept: %s"
 msgstr ""
 
-#: inc/lp-core-functions.php:2500
+#: inc/lp-core-functions.php:2524
 msgid "Learning"
 msgstr ""
 
-#: inc/lp-core-functions.php:2501 inc/custom-post-types/order.php:325
+#: inc/lp-core-functions.php:2525 inc/custom-post-types/order.php:325
 msgid "Purchased"
 msgstr ""
 
-#: inc/lp-core-functions.php:2502
+#: inc/lp-core-functions.php:2526
 msgid "Finished"
 msgstr ""
 
-#: inc/lp-core-functions.php:2503
+#: inc/lp-core-functions.php:2527
 msgid "Own"
 msgstr ""
 
@@ -769,6 +767,15 @@ msgstr ""
 #: inc/lp-template-functions.php:1104
 #, php-format
 msgid "&nbsp;&ndash; Page %s"
+msgstr ""
+
+#: inc/lp-template-functions.php:1395
+msgid "Final"
+msgstr ""
+
+#: inc/lp-template-functions.php:1404 inc/custom-post-types/lesson.php:198
+#: inc/libraries/meta-box/inc/fields/oembed.php:70
+msgid "Preview"
 msgstr ""
 
 #: inc/lp-webhooks.php:78
@@ -1632,50 +1639,50 @@ msgstr ""
 msgid "Users"
 msgstr ""
 
-#: inc/admin/sub-menus/tools.php:174
+#: inc/admin/sub-menus/tools.php:176
 msgid "LearnPress Tools"
 msgstr ""
 
-#: inc/admin/sub-menus/tools.php:176
+#: inc/admin/sub-menus/tools.php:178
 msgid "Upgrade courses"
 msgstr ""
 
-#: inc/admin/sub-menus/tools.php:177
+#: inc/admin/sub-menus/tools.php:179
 msgid ""
 "Upgrade courses, lessons, quizzes and questions from version less than 1.0."
 msgstr ""
 
-#: inc/admin/sub-menus/tools.php:179
+#: inc/admin/sub-menus/tools.php:181
 msgid "Use this action to force system upgrade outdated data to new version."
 msgstr ""
 
-#: inc/admin/sub-menus/tools.php:182
+#: inc/admin/sub-menus/tools.php:184
 msgid ""
 "All course will be upgraded whether you have done this action in the past. "
 "So please remove all courses before upgrade to prevent courses is duplicated."
 msgstr ""
 
-#: inc/admin/sub-menus/tools.php:185
+#: inc/admin/sub-menus/tools.php:187
 msgid "Upgrade"
 msgstr ""
 
-#: inc/admin/sub-menus/tools.php:189
+#: inc/admin/sub-menus/tools.php:191
 msgid "Remove current data"
 msgstr ""
 
-#: inc/admin/sub-menus/tools.php:190
+#: inc/admin/sub-menus/tools.php:192
 msgid "Remove all courses, lessons, quizzes and questions"
 msgstr ""
 
-#: inc/admin/sub-menus/tools.php:193
+#: inc/admin/sub-menus/tools.php:195
 msgid "Be careful before use this action!"
 msgstr ""
 
-#: inc/admin/sub-menus/tools.php:197 inc/admin/sub-menus/tools.php:214
+#: inc/admin/sub-menus/tools.php:199 inc/admin/sub-menus/tools.php:216
 msgid "Check this box and click button again to confirm."
 msgstr ""
 
-#: inc/admin/sub-menus/tools.php:200 inc/admin/sub-menus/tools.php:217
+#: inc/admin/sub-menus/tools.php:202 inc/admin/sub-menus/tools.php:219
 #: inc/admin/views/meta-boxes/course/loop-section.php:43
 #: inc/admin/views/meta-boxes/question/header.php:13
 #: inc/admin/views/meta-boxes/quiz/question.php:35
@@ -1684,17 +1691,17 @@ msgstr ""
 msgid "Remove"
 msgstr ""
 
-#: inc/admin/sub-menus/tools.php:206
+#: inc/admin/sub-menus/tools.php:208
 msgid "Remove outdated data"
 msgstr ""
 
-#: inc/admin/sub-menus/tools.php:207
+#: inc/admin/sub-menus/tools.php:209
 msgid ""
 "Remove all courses, lessons, quizzes and questions from version less than "
 "1.0."
 msgstr ""
 
-#: inc/admin/sub-menus/tools.php:210
+#: inc/admin/sub-menus/tools.php:212
 msgid ""
 "Be careful before use this action! Only use this action in case all data is "
 "outdated has upgraded."
@@ -3066,12 +3073,6 @@ msgstr ""
 msgid "Format"
 msgstr ""
 
-#: inc/custom-post-types/lesson.php:198
-#: inc/libraries/meta-box/inc/fields/oembed.php:70
-#: templates/single-course/section/item-meta.php:35
-msgid "Preview"
-msgstr ""
-
 #: inc/custom-post-types/lesson.php:233 inc/custom-post-types/question.php:282
 #: inc/custom-post-types/quiz.php:316 templates/profile/tabs/orders.php:32
 #: templates/single-quiz/history.php:61
@@ -3871,23 +3872,23 @@ msgctxt "Permalink Slug"
 msgid "question-tag"
 msgstr ""
 
-#: inc/user/abstract-lp-user.php:350
+#: inc/user/abstract-lp-user.php:351
 msgid "Sorry! You can not retake this quiz"
 msgstr ""
 
-#: inc/user/abstract-lp-user.php:628 inc/user/abstract-lp-user.php:827
-#: inc/user/abstract-lp-user.php:839
+#: inc/user/abstract-lp-user.php:629 inc/user/abstract-lp-user.php:828
+#: inc/user/abstract-lp-user.php:840
 #, php-format
 msgid "The role %s for user doesn't exists"
 msgstr ""
 
-#: inc/user/abstract-lp-user.php:788
+#: inc/user/abstract-lp-user.php:789
 msgid ""
 "Sorry, you can not finish this course. Please contact administrator or your "
 "instructor."
 msgstr ""
 
-#: inc/user/abstract-lp-user.php:1321
+#: inc/user/abstract-lp-user.php:1322
 msgid ""
 "Sorry! You can not enroll this course. Please try again or contact site admin"
 msgstr ""
@@ -4386,16 +4387,12 @@ msgstr ""
 msgid "Tags: "
 msgstr ""
 
-#: templates/single-course/section/content.php:31
+#: templates/single-course/section/content.php:34
 msgid "No items in this section"
 msgstr ""
 
 #: templates/single-course/section/item-meta.php:16
 msgid "Viewing"
-msgstr ""
-
-#: templates/single-course/section/item-meta.php:26
-msgid "Final"
 msgstr ""
 
 #: templates/single-quiz/button-check-answer.php:12

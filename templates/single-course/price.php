@@ -16,6 +16,7 @@ global $course;
 if ( learn_press_is_enrolled_course() ) {
 	return;
 }
+
 ?>
 <?php if ( $price_html = $course->get_price_html() ) : ?>
 
