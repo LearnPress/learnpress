@@ -2,6 +2,7 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
 #: inc/lp-add-on-functions.php:81 inc/lp-add-on-functions.php:86
 #: inc/admin/views/meta-boxes/course/loop-item.php:41
 #: inc/admin/views/meta-boxes/course/loop-item.php:42
@@ -13,17 +14,16 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: BUG-EMAIL-ADDR <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: yyyy-mm-dd hh:mm+0000\n"
-"PO-Revision-Date: 2016-05-23 11:19+0700\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-05-25 08:46+0700\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
-"X-Generator: Eazy Po 0.9.5.3\n"
 
 #: test-functions.php:15
 #, php-format
@@ -242,7 +242,8 @@ msgstr ""
 msgid "Ok"
 msgstr ""
 
-#: inc/class-lp-install.php:80 inc/admin/class-lp-admin-ajax.php:733
+#: inc/class-lp-install.php:80 inc/lp-core-functions.php:2303
+#: inc/admin/class-lp-admin-ajax.php:733
 #: inc/admin/views/meta-boxes/course/loop-section.php:47
 msgid "Cancel"
 msgstr ""
@@ -355,7 +356,7 @@ msgid "Get more <span class=\"count\">(%s)</span>"
 msgstr ""
 
 #: inc/lp-add-on-functions.php:104 inc/lp-core-functions.php:867
-#: inc/lp-core-functions.php:2523 inc/admin/lp-admin-functions.php:424
+#: inc/lp-core-functions.php:2529 inc/admin/lp-admin-functions.php:424
 #: inc/admin/lp-admin-functions.php:580 inc/admin/lp-admin-functions.php:726
 #: inc/admin/views/statistics/courses.php:27
 #: inc/admin/views/statistics/courses.php:42
@@ -689,19 +690,36 @@ msgstr ""
 msgid "Accept: %s"
 msgstr ""
 
-#: inc/lp-core-functions.php:2524
+#: inc/lp-core-functions.php:2302
+msgid "OK"
+msgstr ""
+
+#: inc/lp-core-functions.php:2304 inc/custom-post-types/lesson.php:140
+#: inc/custom-post-types/quiz.php:169 inc/custom-post-types/quiz.php:180
+#: inc/custom-post-types/quiz.php:191 inc/custom-post-types/quiz.php:202
+msgid "Yes"
+msgstr ""
+
+#: inc/lp-core-functions.php:2305 inc/custom-post-types/course.php:456
+#: inc/custom-post-types/lesson.php:141 inc/custom-post-types/quiz.php:168
+#: inc/custom-post-types/quiz.php:179 inc/custom-post-types/quiz.php:190
+#: inc/custom-post-types/quiz.php:201
+msgid "No"
+msgstr ""
+
+#: inc/lp-core-functions.php:2530
 msgid "Learning"
 msgstr ""
 
-#: inc/lp-core-functions.php:2525 inc/custom-post-types/order.php:325
+#: inc/lp-core-functions.php:2531 inc/custom-post-types/order.php:325
 msgid "Purchased"
 msgstr ""
 
-#: inc/lp-core-functions.php:2526
+#: inc/lp-core-functions.php:2532
 msgid "Finished"
 msgstr ""
 
-#: inc/lp-core-functions.php:2527
+#: inc/lp-core-functions.php:2533
 msgid "Own"
 msgstr ""
 
@@ -1124,7 +1142,7 @@ msgstr ""
 
 #: inc/admin/lp-admin-functions.php:600
 #: inc/admin/views/statistics/courses.php:46
-#: inc/course/abstract-lp-course.php:443 inc/custom-post-types/course.php:390
+#: inc/course/abstract-lp-course.php:445 inc/custom-post-types/course.php:390
 #: inc/custom-post-types/course.php:856 inc/order/lp-order-functions.php:530
 msgid "Free"
 msgstr ""
@@ -1828,6 +1846,11 @@ msgstr ""
 
 #: inc/admin/views/meta-boxes/course/loop-section.php:68
 msgid "The name of new question or quiz"
+msgstr ""
+
+#: inc/admin/views/meta-boxes/course/loop-section.php:80
+#: inc/admin/views/meta-boxes/quiz/questions.php:46
+msgid "-OR-"
 msgstr ""
 
 #: inc/admin/views/meta-boxes/course/loop-section.php:84
@@ -2627,11 +2650,11 @@ msgstr ""
 msgid "<strong>%s</strong> has been added to your cart. %s"
 msgstr ""
 
-#: inc/course/abstract-lp-course.php:356
+#: inc/course/abstract-lp-course.php:374
 msgid "You enrolled"
 msgstr ""
 
-#: inc/course/abstract-lp-course.php:358
+#: inc/course/abstract-lp-course.php:376
 #, php-format
 msgctxt ""
 msgid "You and one student enrolled"
@@ -2640,7 +2663,7 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/course/abstract-lp-course.php:362
+#: inc/course/abstract-lp-course.php:380
 #, php-format
 msgctxt ""
 msgid "One student enrolled"
@@ -2649,11 +2672,11 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/course/abstract-lp-course.php:366
+#: inc/course/abstract-lp-course.php:384
 msgid "No student enrolled"
 msgstr ""
 
-#: inc/course/abstract-lp-course.php:626 inc/course/abstract-lp-course.php:644
+#: inc/course/abstract-lp-course.php:628 inc/course/abstract-lp-course.php:646
 #: inc/lesson/class-lp-lesson.php:71 inc/quiz/class-lp-quiz.php:388
 #, php-format
 msgid "The function %s doesn't exists"
@@ -2940,12 +2963,6 @@ msgstr ""
 msgid "Yes, enroll is required"
 msgstr ""
 
-#: inc/custom-post-types/course.php:456 inc/custom-post-types/lesson.php:141
-#: inc/custom-post-types/quiz.php:168 inc/custom-post-types/quiz.php:179
-#: inc/custom-post-types/quiz.php:190 inc/custom-post-types/quiz.php:201
-msgid "No"
-msgstr ""
-
 #: inc/custom-post-types/course.php:469
 msgid "Review Logs"
 msgstr ""
@@ -3057,12 +3074,6 @@ msgstr ""
 msgid ""
 "If this is a preview lesson, then student can view this lesson content "
 "without taking the course"
-msgstr ""
-
-#: inc/custom-post-types/lesson.php:140 inc/custom-post-types/quiz.php:169
-#: inc/custom-post-types/quiz.php:180 inc/custom-post-types/quiz.php:191
-#: inc/custom-post-types/quiz.php:202
-msgid "Yes"
 msgstr ""
 
 #: inc/custom-post-types/lesson.php:164

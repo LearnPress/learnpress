@@ -37,7 +37,10 @@ if (typeof LearnPress == 'undefined') {
 					var redirect = LearnPress.Hook.applyFilters('learn_press_course_item_redirect_url', $('.course-item-' + $view.model.get('id') + ' a').prop('href'), $view);
 					if (redirect !== false) {
 						var win = window.open(redirect, '_blank');
-						try{win.focus();}catch(e){}
+						try {
+							win.focus();
+						} catch (e) {
+						}
 					}
 				}
 				return true;
@@ -192,5 +195,15 @@ if (typeof LearnPress == 'undefined') {
 	$(document).ready(function () {
 		//LearnPress.Course.init( $(this), $(document.body) );
 		LearnPress.$Course = new LearnPress_View_Course();
+
+		LearnPress.Hook.addAction('learn_press_item_content_loaded', function () {
+			setTimeout(function () {
+				try {
+					window.wp.mediaelement.initialize();
+				} catch (e) {
+					console.log('window.wp.mediaelement is not defined');
+				}
+			}, 300);
+		})
 	});
 })(jQuery);

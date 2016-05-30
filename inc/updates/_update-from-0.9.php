@@ -1339,7 +1339,7 @@ class LP_Upgrade_From_09 {
 		}
 		$wpdb->query( "COMMIT;" );
 		update_option( 'learnpress_version', LP()->version );
-		update_option( 'learnpress_db_version', LP()->db_version );
+		update_option( 'learnpress_db_version', LP()->version );
 		update_option( '_learn_press_flush_rewrite_rules', 'yes' );
 		// cui bap
 		update_option( 'permalink_structure', '/%postname%/' );

@@ -43,7 +43,7 @@ $hidden_all = sizeof( $hidden ) && ( sizeof( array_diff( $hidden, $question_ids 
 				<?php } ?>
 			</ul>
 		</div>
-		-OR-
+		<?php _e( '-OR-', 'learnpress' ); ?>
 		<button id="learn-press-button-add-question" class="button" type="button"><?php _e( 'Add Existing Question', 'learnpress' ); ?></button>
 	</div>
 </div>

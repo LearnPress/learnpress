@@ -18,7 +18,7 @@ $target   = apply_filters( 'learn_press_section_item_link_target', '_blank', $it
 
 	<?php do_action( 'learn_press_before_section_item_title', $item, $section, $course ); ?>
 
-	<<?php echo $tag; ?> target="<?php echo $target; ?>" <?php echo $viewable ? 'href="' . get_the_permalink( $item->ID ) . '"' : ''; ?> data-id="<?php echo $item->ID; ?>">
+	<<?php echo $tag; ?> class="course-item-title" target="<?php echo $target; ?>" <?php echo $viewable ? 'href="' . get_the_permalink( $item->ID ) . '"' : ''; ?> data-id="<?php echo $item->ID; ?>">
 
 		<?php echo apply_filters( 'learn_press_section_item_title', get_the_title( $item->ID ), $item ); ?>
 

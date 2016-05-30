@@ -41,7 +41,11 @@
 				'change .item-checkbox input'                   : 'toggleButtonBulkActions',
 				'change .lp-check-items'                        : 'toggleButtonBulkActions',
 				'click .lp-section-actions.lp-button-actions'   : '_sectionActionHandler',
-				'click .lp-section-item .section-item-icon span': '_changeItemType'
+				'click .lp-section-item .section-item-icon span': '_changeItemType',
+				'click .learn-press-dropdown-item-types > li a' : '_changeItemType',
+				'change .lp-item-name '                         : '_updateItem',
+				'focus .lp-item-name'                           : '_focusItem',
+				'blur .lp-item-name'                            : '_blurItem'
 			},
 			removeSectionIds        : [],
 			removeItemIds           : [],
@@ -52,25 +56,56 @@
 				this.model.view = this;
 				this.listenTo(this.model, 'change', this.render);
 				this.render();
-				_.bindAll(this, 'render', 'searchItem', 'addItemsToSection', 'addItemToSection', 'addNewItem', 'toggleAddItemButtonState', 'getSelectedItems', '_sectionActionHandler', '_changeItemType');
+				_.bindAll(this, 'render', 'searchItem', 'addItemsToSection', 'addItemToSection', 'addNewItem', 'toggleAddItemButtonState', 'getSelectedItems', '_sectionActionHandler', '_changeItemType', '_updateItem');
 				this.initPage();
 				LearnPress.Hook.addAction('learn_press_message_box_before_resize', this.resetModalSearch)
 				LearnPress.Hook.addAction('learn_press_message_box_resize', this.updateModalSearch);
 				$(document).on('learn_press_modal_search_items_response', this.addItemsToSection);
 				LearnPress.Hook.addFilter('learn_press_modal_search_items_exclude', this.getSelectedItems);
 			},
+			_focusItem              : function (e) {
+				$(e.target).closest('tr').removeClass('focus');
+			},
+			_blurItem               : function (e) {
+				//$(e.target).closest('tr').removeClass('focus');
+			},
 			_changeItemType         : function (e) {
 				var $icon = $(e.target),
 					$row = $icon.closest('tr'),
 					type = $icon.attr('data-type'),
 					item_id = $row.attr('data-item_id');
-				if (item_id) {
-					alert('You can not change an existing item to other type')
-				} else {
-					$icon.addClass('item-selected').siblings().removeClass('item-selected');
-					$row.attr('data-type', type);
-					$row.find('input.lp-item-type').val(type);
+				if ($icon.hasClass('item-selected')) {
+					return;
 				}
+				if (item_id) {
+					if (!confirm('Change type of item will replace all data. Sure?')) {
+						return;
+					}
+				}
+				$row.attr({
+					'data-type': type
+				}).find('.lp-item-type').val(type);
+				$icon.addClass('item-selected').parent().siblings().find('span').removeClass('item-selected');
+				var pos = $icon.parent().position(),
+					$rep = $icon.closest('.learn-press-dropdown-item-types').find('>span'),
+					$i = $icon.clone().removeAttr('title').insertAfter($icon).css({
+						position: 'absolute',
+						top     : pos.top + 2,
+						left    : pos.left + 2,
+						zIndex  : 20
+					}).animate({
+						left: -32
+					});
+				$rep.fadeOut(function () {
+					$i.css({position: '', top: '', left: '', zIndex: ''});
+					$(this).replaceWith($i);
+					$row.removeClass('focus');
+				});
+				//$icon.closest('.learn-press-dropdown-item-types').find('>span').replaceWith();
+			},
+			_updateItem             : function (e) {
+				var $inp = $(e.target),
+					item_name = $inp.val();
 			},
 			updateModalSearch       : function (height, $app) {
 				$('.lp-modal-search ul').css('height', height - 120).css('overflow', 'auto');
@@ -97,37 +132,19 @@
 				}).filter(":checked").trigger('change');
 
 				///////////
-				var $chkPayment = $( 'input[name="_lp_payment"]').on('change', function(){
+				var $chkPayment = $('input[name="_lp_payment"]').on('change', function () {
 					var toggle = this.value != 'yes';
 					$('.lp-course-price-field').toggleClass('hide-if-js', toggle).attr('xxx', Math.random());
 					$('.lp-course-required-enroll').toggleClass('hide-if-js', !toggle);
 				})
 				$chkPayment.filter(':checked').trigger('change');
 
-				if( $('input[name="_lp_course_result"]:checked').length == 0 ){
-					$('input[name="_lp_course_result"]').filter(function(){return this.value == 'evaluate_lesson';}).prop('checked', true)
-				}
-/*
-					;$('input[name="_lp_required_enroll"]').bind('click change', function () {
-					var payment_field = $('.lp-course-payment-field').toggleClass('hide-if-js', !( $(this).val() != 'no' ));
-					if (payment_field.is(':visible')) {
-						$('input[name="_lp_payment"]:checked', payment_field).trigger('change')
-					} else {
-						$('.lpr-course-price-field').addClass('hide-if-js');
-					}
-
-				});
-				$checked.filter(':checked').trigger('change');
-				if ($checked.length == 0) {
-					$('input[name="_lp_required_enroll"][value="yes"]').trigger('click');
+				if ($('input[name="_lp_course_result"]:checked').length == 0) {
+					$('input[name="_lp_course_result"]').filter(function () {
+						return this.value == 'evaluate_lesson';
+					}).prop('checked', true)
 				}
 
-				$('input[name="_lp_payment"]').bind('click change', function () {
-					$('.lp-course-price-field').toggleClass('hide-if-js', !( $(this).val() != 'no' ) || ( $('input[name="_lp_required_enroll"]:checked').val() == 'no' ));
-				}).filter(':checked').trigger('change');
-
-				$checked.closest('.rwmb-field').removeClass('hide-if-js');*/
-				////////////////
 
 				$(document).on('mouseover', '.lp-modal-search li', function () {
 					$(this).addClass('highlighting').siblings().removeClass('highlighting');
@@ -522,45 +539,7 @@
 				});
 				LearnPress.MessageBox.show($form.$el);
 				$form.$el.find('header input').focus();
-				return;
-				if (type == 'lp_quiz') {
-					$form = $('#lp-modal-search-quiz');
-					if ($form.length == 0) {
-						$form = $(wp.template('lp-modal-search-quiz')());
-					}
-				} else {
-					$form = $('#lp-modal-search-lesson');
-					if ($form.length == 0) {
-						$form = $(wp.template('lp-modal-search-lesson')());
-					}
-				}
 
-				$form
-					.data('item_type', type)
-					.data('section', $button.closest('.curriculum-section')).removeClass('hide-if-js');
-				var selectedItems = this.getSelectedItems(),
-					unselectedItems = $form.find('li').filter(function () {
-						var id = parseInt($(this).data('id')),
-							selected = false;
-						if (id && $.inArray(id, selectedItems) == -1) {
-							$(this).removeClass('selected hide-if-js');
-							selected = false;
-						} else {
-							$(this).addClass('selected hide-if-js');
-							selected = true;
-						}
-						$(this).find('input[type="checkbox"]').removeAttr('checked');
-						return !selected;
-					});
-				LearnPress.MessageBox.show($form);
-				$form.find('[name="lp-item-name"]').focus();
-				$form.find('button.lp-add-item').html($form.find('button.lp-add-item').attr('data-text'));
-				if (unselectedItems.length) {
-					$form.find('.lp-search-no-results').hide();
-				} else {
-					$form.find('.lp-search-no-results').removeClass('hide-if-js');
-				}
-				LearnPress.Hook.doAction('learn_press_show_form_items', $form, action, $button, this);
 			},
 			sectionActionHandler    : function (e) {
 				var that = this,
@@ -587,7 +566,6 @@
 					}).join('|'), "ig"),
 					found = 0;
 				LearnPress.log(text)
-				//if( text.length ) {
 				found = $lis.filter(function () {
 					var $el = $(this),
 						itemText = $el.data('text') + '',
@@ -599,11 +577,7 @@
 					}
 					return ret;
 				}).removeClass('hide-if-js').length;
-				/*}else{
-				 found = $lis.removeClass('hide-if-js');
-				 found.find('.lp-highlight-color').remove();
-				 found = found.length
-				 }*/
+
 				if (!found) {
 					$form.find('.lp-search-no-results').removeClass('hide-if-js');
 				} else {
@@ -612,7 +586,6 @@
 			},
 			addItemsToSection       : function (e, $view, $items) {
 				var that = this,
-				//$form = $(e.target).closest('.lp-modal-search'),
 					selected = $items, //$form.find('li:visible input:checked'),
 					$section = $view.options.section;
 				selected.each(function () {
@@ -624,21 +597,7 @@
 					}
 					$li.remove();
 				});
-				/*
-				 $.ajax({
-				 url: LearnPress_Settings.ajax,
-				 data: {
-				 action: 'learn_press_add_item_to_section',
-				 items: selected.map(function(){return $(this).dataToJSON()}).get(),
-				 section: $section ? $section.attr('data-id') : 0
-				 },
-				 success: function(){
 
-				 }
-				 });*/
-
-				//$form.hide().appendTo($(document.body));
-				//LearnPress.MessageBox.hide();
 			},
 			addItemToSection        : function ($item, $section) {
 				var $last = $section.find('.curriculum-section-items .lp-section-item:last');
@@ -676,9 +635,17 @@
 					selected = $form.find('li input:checked'),
 					$button = $form.find('.lp-add-item');
 				if (selected.length) {
-					$button.removeAttr('disabled').html($button.attr('data-text') + ' (+' + selected.length + ')');
+					$button.each(function () {
+						var $btn = $(this);
+						$btn.removeAttr('disabled').html($btn.attr('data-text') + ' (+' + selected.length + ')');
+						console.log($btn);
+					});
 				} else {
-					$button.attr('disabled', true).html($button.attr('data-text'));
+					$button.each(function () {
+						var $btn = $(this);
+						$btn.attr('disabled', true).html($btn.attr('data-text'));
+						console.log($btn);
+					});
 				}
 			},
 			onSave                  : function (evt) {
@@ -1052,46 +1019,7 @@
 						self : this
 					}
 				});
-				return;
-				LearnPress.MessageBox.show(meta_box_course_localize.notice_remove_section_item + '<h4><p>+&nbsp;' + itemNames + '</p></h4>', {
-					data   : {
-						items: $items,
-						self : this
-					},
-					buttons: 'yesNo',
-					events : {
-						onNo : function (instance) {
-							$items
-								.each(function () {
-									$(this).removeClass('remove').find('.item-checkbox input').prop('checked', false)
-								})
-								.closest('.curriculum-section')
-								.find('.item-bulk-actions button')
-								.map(function () {
-									var $b = $(this);
-									($.inArray($b.attr('data-action'), ['cancel', 'delete']) != -1) && $b.hide();
-									if ($b.attr('data-action') == 'delete') $b.html($b.attr('data-title'))
-								});
-						},
-						onYes: function (instance) {
-							var ids = [];
-							instance.data.items && instance.data.items.each(function () {
-								var $item = $(this),
-									id = parseInt($item.attr('data-section_item_id')),
-									type = $item.attr('data-type');
-								$item.remove();
-								if (id) {
-									instance.data.self.model.removeItem(id);
-									ids.push(id);
-								}
-							});
-							if (b) {
-								that.removeItemDB(ids);
-							}
-							$.isFunction(callback) && callback.call();
-						}
-					}
-				})
+
 			},
 			removeItemDB            : function (id) {
 				$.ajax({

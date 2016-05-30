@@ -277,7 +277,8 @@
 	width: 32px;
 	white-space: nowrap;
 }
-#course_curriculum .lp-section-item .learn-press-icon{
+
+.lp-section-item .learn-press-icon {
 	width: 32px;
 	height: 32px;
 	font-family: dashicons;
@@ -287,6 +288,7 @@
 	line-height: 32px;
 	color: #DDD;
 	cursor: pointer;
+	border: 1px solid transparent;
 }
 #course_curriculum .lp-section-item .learn-press-icon.item-lp_quiz:before{
 	content: "\f469";
@@ -296,7 +298,6 @@
 }
 #course_curriculum .lp-section-item .learn-press-icon.item-selected,
 #course_curriculum .lp-section-item[data-item_id=""] .learn-press-icon:hover{
-	color: #0085ba;
 }
 #course_curriculum .lp-section-item td{
 	height: 30px;
@@ -432,6 +433,61 @@
 .lp-highlight-color{
 	text-decoration: underline;
 	color: #00a0d2;
+}
+
+.learn-press-dropdown-item-types {
+	position: relative;
+}
+
+.learn-press-dropdown-item-types > ul {
+	display: none;
+	position: absolute;
+	top: 0px;
+	z-index: 10;
+	background: #FFF;
+	border: 1px solid #DDD;
+	left: 100%;
+	margin-left: -1px;
+}
+
+.learn-press-dropdown-item-types > ul > li {
+	margin: 0;
+	display: table-cell;
+}
+
+.learn-press-dropdown-item-types > ul > li span {
+	border-width: 0 !important;
+}
+
+.learn-press-dropdown-item-types:hover > ul,
+tr.focus .learn-press-dropdown-item-types > ul {
+	display: inline-table;
+	border-left-color: transparent;
+}
+
+.learn-press-dropdown-item-types:hover > span.learn-press-icon,
+tr.focus .learn-press-dropdown-item-types > span.learn-press-icon {
+	background: #FFF;
+	border-color: #DDD;
+	z-index: 5;
+	position: relative;
+}
+
+.learn-press-dropdown-item-types:hover > span.learn-press-icon:after {
+	content: '';
+	border-left: 1px solid #EEE;
+	position: absolute;
+	right: 0;
+	display: inline-block;
+	height: 20px;
+	top: 50%;
+	margin-top: -10px;
+}
+
+.learn-press-dropdown-item-types > span.learn-press-icon,
+.learn-press-dropdown-item-types li:hover span.learn-press-icon,
+.learn-press-dropdown-item-types li span.learn-press-icon.item-selected {
+	color: #0085ba;
 }
 /*
 #lp-course-curriculum .lp-course-curriculum-toggle{

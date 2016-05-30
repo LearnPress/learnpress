@@ -62,14 +62,30 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 		}
 
 		public static function load_chart() {
-			if( !class_exists( '' ) ){
+			if ( !class_exists( '' ) ) {
 				require_once LP_PLUGIN_PATH . '/inc/admin/sub-menus/statistics.php';
 			}
 			LP_Admin_Submenu_Statistic::instance()->load_chart();
 		}
 
 		public static function remove_course_items() {
-			die( 'Please implement this function' );
+			$id = learn_press_get_request( 'id' );
+			if ( $id ) {
+				global $wpdb;
+				$in_clause = array_fill( 0, sizeof( $id ), '%d' );
+				$in_clause = "IN(" . join( ",", $in_clause ) . ")";
+				echo $wpdb->prepare( "
+						DELETE FROM {$wpdb->prefix}learnpress_section_items
+						WHERE section_item_id $in_clause
+					", $id );
+				$wpdb->query(
+					$wpdb->prepare( "
+						DELETE FROM {$wpdb->prefix}learnpress_section_items
+						WHERE section_item_id $in_clause
+					", $id )
+				);
+			}
+			die();
 		}
 
 		public static function search_users() {
@@ -169,7 +185,6 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 					$exclude2 = $wpdb->get_col( $query );
 					if ( ( $context == 'course' ) && ( get_post_type( $context_id ) == 'lp_course' ) ) {
 						$course_author = get_post_field( 'post_author', $context_id );
-
 					}
 					break;
 				case 'lp_question':
@@ -248,6 +263,8 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			if ( $term ) {
 				$args['s'] = $term;
 			}
+
+			print_r( $args );
 			$posts       = get_posts( $args );
 			$found_items = array();
 

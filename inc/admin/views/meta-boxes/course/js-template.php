@@ -51,7 +51,7 @@
 		$lessons = learn_press_get_current_user()->get_lessons(array('orderby' => 'name', 'order' => 'ASC', 'posts_per_page' => -1));
 		?>
 		<div class="lp-search-items">
-			<input type="text" name="lp-item-name" placeholder="<?php _e( 'Type here to search the lesson', 'learnpress' );?>" />
+			<input type="text" name="lp-item-name" placeholder="<?php _e( 'Type here to search lesson', 'learnpress' ); ?>" />
 			<!--<button type="button" class="button lp-add-new-item"><?php _e( 'Add New', 'learnpress' );?></button>-->
 		</div>
 		<ul>
@@ -84,7 +84,7 @@
 		$quizzes = learn_press_get_current_user()->get_quizzes( $args );
 		?>
 		<div class="lp-search-items">
-			<input type="text" name="lp-item-name" placeholder="<?php _e( 'Type here to search the quiz', 'learnpress' );?>" />
+			<input type="text" name="lp-item-name" placeholder="<?php _e( 'Type here to search quiz', 'learnpress' ); ?>" />
 			<!--<button type="button" class="button lp-add-new-item"><?php _e( 'Add New', 'learnpress' );?></button>-->
 		</div>
 		<ul>

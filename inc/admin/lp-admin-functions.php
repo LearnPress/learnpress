@@ -1227,7 +1227,7 @@ function learn_press_admin_section_loop_item_class( $item, $section ) {
 	);
 	$classes[] = 'lp-item-' . $item->post_type;
 	if ( !absint( $item->ID ) ) {
-		$classes[] = 'lp-item-empty lp-item-new';
+		$classes[] = 'lp-item-empty lp-item-new focus';
 	}
 	$classes = apply_filters( 'learn_press_section_loop_item_class', $classes, $item, $section );
 	if ( $classes ) echo 'class="' . join( ' ', $classes ) . '"';

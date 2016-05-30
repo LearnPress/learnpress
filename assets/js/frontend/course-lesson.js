@@ -72,7 +72,7 @@
 
 			if (LearnPress.Hook.applyFilters('learn_press_before_load_item', this) !== false) {
 				if (this.model.get('id') && this.$('input[name="learn-press-lesson-viewing"]').val() != this.model.get('id')) {
-					if (this.model.get('content')) {
+					if (this.model.get('content') == 'no-cache') {
 						this.updateItem();
 					} else {
 						this.model.load();

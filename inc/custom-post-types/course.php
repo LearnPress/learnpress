@@ -508,7 +508,9 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 					'section_description' => ''
 				)
 			);
+			$section = stripslashes_deep( $section );
 			extract( $section );
+
 			$insert_data = compact( 'section_name', 'section_course_id', 'section_order', 'section_description' );
 			$wpdb->insert(
 				$wpdb->learnpress_sections,
@@ -566,6 +568,8 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			global $wpdb, $post;
 
 			$this->_reset_sections();
+
+			//learn_press_debug($_REQUEST['_lp_curriculum'], true);
 			if ( !empty( $_REQUEST['_lp_curriculum'] ) ) {
 				$section_order = 0;
 				$query_update  = array();

@@ -152,7 +152,8 @@ class LP_Assets extends LP_Abstract_Assets {
 				'learn-press-global'
 			)
 		);
-
+		wp_enqueue_style( 'wp-mediaelement' );
+		wp_enqueue_script( 'wp-mediaelement' );
 		// single course
 		if ( learn_press_is_course() ) {
 			self::enqueue_script( 'single-course' );

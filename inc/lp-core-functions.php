@@ -2225,12 +2225,13 @@ function learn_press_get_endpoint_url( $name, $value, $url ) {
 		} else {
 			$query_string = '';
 		}
-		$url = trailingslashit( $url ) . $name . '/' . $value . $query_string;
+		$url = trailingslashit( $url ) . ( $name ? $name . '/' : '' ) . $value . $query_string;
+
 	} else {
 		$url = add_query_arg( $name, $value, $url );
 	}
 
-	return apply_filters( 'learn_press_get_endpoint_url', $url, $name, $value, $url );
+	return apply_filters( 'learn_press_get_endpoint_url', esc_url( $url ), $name, $value, $url );
 }
 
 function learn_press_add_endpoints() {

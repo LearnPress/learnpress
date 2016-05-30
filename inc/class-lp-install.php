@@ -11,6 +11,7 @@
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit;
+define( 'LEARN_PRESS_UPDATE_DATABASE', true );
 
 /**
  * Class LP_Install
@@ -30,7 +31,7 @@ class LP_Install {
 	 * Init
 	 */
 	public static function init() {
-		add_action( 'admin_init', array( __CLASS__, 'get_update_versions' ), - 15 );
+		//add_action( 'admin_init', array( __CLASS__, 'get_update_versions' ), - 15 );
 		add_action( 'admin_init', array( __CLASS__, 'include_update' ), - 10 );
 		add_action( 'admin_init', array( __CLASS__, 'update_from_09' ), 5 );
 		add_action( 'admin_init', array( __CLASS__, 'check_version' ), 5 );
@@ -62,8 +63,7 @@ class LP_Install {
 
 	public static function update_from_09() {
 
-		if ( !self::_has_new_table() || version_compare( LEARNPRESS_DB_VERSION, get_option( 'learnpress_db_version' ), '>' ) ) {
-			//self::_create_tables();
+		if ( !self::_has_new_table() || version_compare( LEARNPRESS_VERSION, get_option( 'learnpress_db_version' ), '>' ) ) {
 			self::install();
 		}
 		if ( !get_option( 'learnpress_version' ) || !get_option( 'learn_press_currency' ) ) {
@@ -112,6 +112,7 @@ class LP_Install {
 	 * Auto get update patches from inc/updates path
 	 */
 	public static function get_update_versions() {
+
 		if ( !$patches = get_transient( 'learnpress_update_patches' ) ) {
 			$patches = array();
 			require_once ABSPATH . 'wp-admin/includes/file.php';
@@ -156,8 +157,7 @@ class LP_Install {
 	 * Check for new database version and show notice
 	 */
 	public static function db_update_notices() {
-		if ( get_option( 'learnpress_db_version' ) != LP()->db_version ) {
-			//LP_Admin_Notice::add( __( '<p>LearnPress ' . LP()->version . ' need to upgrade your database.</p><p><a href="' . admin_url( 'admin.php?page=learnpress_update_10' ) . '" class="button">Update Now</a></p>', 'learnpress' ) );
+		if ( get_option( 'learnpress_db_version' ) != LP()->version ) {
 		}
 	}
 
@@ -168,17 +168,6 @@ class LP_Install {
 		self::create_files();
 		self::create_pages();
 
-		$current_version    = get_option( 'learnpress_version' );
-		$current_db_version = get_option( 'learnpress_db_version' );
-
-		// is new install
-		if ( is_null( $current_version ) && is_null( $current_db_version ) ) {
-
-		}
-		// Update version
-		self::update_db_version();
-		self::update_version();
-		update_option( '_learn_press_flush_rewrite_rules', 'yes' );
 		$sql = "DELETE a, b FROM $wpdb->options a, $wpdb->options b
 			WHERE a.option_name LIKE %s
 			AND a.option_name NOT LIKE %s
@@ -186,6 +175,12 @@ class LP_Install {
 			AND b.option_value < %d";
 		$wpdb->query( $wpdb->prepare( $sql, $wpdb->esc_like( '_transient_' ) . '%', $wpdb->esc_like( '_transient_timeout_' ) . '%', time() ) );
 
+		add_action( 'admin_init', array( __CLASS__, '_auto_update' ), - 15 );
+	}
+
+	public static function _auto_update() {
+		self::get_update_versions();
+		self::update();
 	}
 
 	public static function _search_page( $type ) {
@@ -366,19 +361,21 @@ class LP_Install {
 
 	public static function update() {
 		$learnpress_db_version = get_option( 'learnpress_db_version' );
+
 		foreach ( self::$_update_files as $version => $updater ) {
 			if ( version_compare( $learnpress_db_version, $version, '<' ) ) {
-				include( $updater );
+				@include( LP_PLUGIN_PATH . '/inc/updates/' . $updater );
 				self::update_db_version( $version );
 			}
 		}
 
 		self::update_db_version();
+		self::update_version();
 	}
 
 	public static function update_db_version( $version = null ) {
 		delete_option( 'learnpress_db_version' );
-		add_option( 'learnpress_db_version', is_null( $version ) ? LEARNPRESS_DB_VERSION : $version );
+		add_option( 'learnpress_db_version', is_null( $version ) ? LEARNPRESS_VERSION : $version );
 	}
 
 	public static function update_version( $version = null ) {
@@ -432,6 +429,7 @@ class LP_Install {
 
 		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 		dbDelta( self::_get_schema() );
+
 	}
 
 	private static function _get_schema() {
@@ -448,26 +446,26 @@ class LP_Install {
 			}
 		}
 
-		return "
+		$query = "
 CREATE TABLE {$wpdb->prefix}learnpress_order_itemmeta (
   meta_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   learnpress_order_item_id bigint(20) unsigned NOT NULL DEFAULT '0',
   meta_key varchar(45) NOT NULL DEFAULT '',
   meta_value longtext NOT NULL,
-  PRIMARY KEY (meta_id)
+  PRIMARY KEY  (meta_id)
 ) $collate;
 CREATE TABLE {$wpdb->prefix}learnpress_order_items (
   order_item_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   order_item_name longtext NOT NULL,
   order_id bigint(20) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (order_item_id)
+  PRIMARY KEY  (order_item_id)
 ) $collate;
 CREATE TABLE {$wpdb->prefix}learnpress_question_answers (
   question_answer_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   question_id bigint(20) unsigned NOT NULL DEFAULT '0',
   answer_data text NOT NULL,
   answer_order bigint(20) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (question_answer_id)
+  PRIMARY KEY  (question_answer_id)
 ) $collate;
 CREATE TABLE {$wpdb->prefix}learnpress_quiz_questions (
   quiz_question_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -475,7 +473,7 @@ CREATE TABLE {$wpdb->prefix}learnpress_quiz_questions (
   question_id bigint(11) unsigned NOT NULL DEFAULT '0',
   question_order bigint(11) unsigned NOT NULL DEFAULT '1',
   params longtext NULL,
-  PRIMARY KEY (quiz_question_id)
+  PRIMARY KEY  (quiz_question_id)
 ) $collate;
 CREATE TABLE {$wpdb->prefix}learnpress_review_logs (
   review_log_id bigint(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -485,7 +483,7 @@ CREATE TABLE {$wpdb->prefix}learnpress_review_logs (
   date datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   status varchar(45) NOT NULL DEFAULT '',
   user_type varchar(45) NOT NULL DEFAULT '',
-  PRIMARY KEY (review_log_id)
+  PRIMARY KEY  (review_log_id)
 ) $collate;
 CREATE TABLE {$wpdb->prefix}learnpress_section_items (
   section_item_id bigint(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -493,7 +491,7 @@ CREATE TABLE {$wpdb->prefix}learnpress_section_items (
   item_id bigint(11) unsigned NOT NULL DEFAULT '0',
   item_order bigint(11) unsigned NOT NULL DEFAULT '0',
   item_type varchar(45),
-  PRIMARY KEY (section_item_id)
+  PRIMARY KEY  (section_item_id)
 ) $collate;
 CREATE TABLE {$wpdb->prefix}learnpress_sections (
   section_id bigint(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -501,9 +499,9 @@ CREATE TABLE {$wpdb->prefix}learnpress_sections (
   section_course_id bigint(11) unsigned NOT NULL DEFAULT '0',
   section_order bigint(5) unsigned NOT NULL DEFAULT '0',
   section_description longtext NOT NULL,
-  PRIMARY KEY (section_id)
+  PRIMARY KEY  (section_id)
 ) $collate;
-CREATE TABLE  {$wpdb->prefix}learnpress_user_courses (
+CREATE TABLE {$wpdb->prefix}learnpress_user_courses (
   user_course_id bigint(11) unsigned NOT NULL AUTO_INCREMENT,
   user_id bigint(11) unsigned NOT NULL DEFAULT '0',
   course_id bigint(11) unsigned NOT NULL DEFAULT '0',
@@ -511,33 +509,56 @@ CREATE TABLE  {$wpdb->prefix}learnpress_user_courses (
   end_time datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   status varchar(45) NOT NULL DEFAULT '',
   order_id bigint(11) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (user_course_id)
+  PRIMARY KEY  (user_course_id)
 ) $collate;
 CREATE TABLE {$wpdb->prefix}learnpress_user_quizmeta (
   learnpress_user_quiz_id bigint(11) unsigned NOT NULL,
   meta_key varchar(45) NOT NULL DEFAULT '',
   meta_value text NOT NULL,
   meta_id bigint(11) unsigned NOT NULL AUTO_INCREMENT,
-  PRIMARY KEY (meta_id)
+  PRIMARY KEY  (meta_id)
 ) $collate;
 CREATE TABLE {$wpdb->prefix}learnpress_user_quizzes (
   user_quiz_id bigint(11) unsigned NOT NULL AUTO_INCREMENT,
   user_id bigint(11) unsigned NOT NULL DEFAULT '0',
   quiz_id bigint(11) unsigned NOT NULL DEFAULT '0',
   course_id bigint(11) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (user_quiz_id)
+  PRIMARY KEY  (user_quiz_id)
 ) $collate;
 CREATE TABLE {$wpdb->prefix}learnpress_user_lessons (
   user_lesson_id bigint(11) unsigned NOT NULL AUTO_INCREMENT,
   user_id bigint(11) unsigned NOT NULL,
   lesson_id bigint(11) unsigned NOT NULL,
   course_id bigint(11) DEFAULT NULL,
-  start_time datetime DEFAULT NULL,
-  end_time datetime DEFAULT NULL,
+  start_date datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  end_date datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   status varchar(20) DEFAULT NULL,
-  PRIMARY KEY (`user_lesson_id`)
-)
+  PRIMARY KEY  (user_lesson_id)
+) $collate;
 ";
+		if ( LEARN_PRESS_UPDATE_DATABASE ) {
+			$query .= "
+CREATE TABLE {$wpdb->prefix}learnpress_user_course_items (
+  user_course_item_id bigint(11) unsigned NOT NULL AUTO_INCREMENT,
+  user_id bigint(11) unsigned NOT NULL DEFAULT '0',
+  item_id bigint(11) unsigned NOT NULL DEFAULT '0',
+  course_id bigint(11) unsigned NOT NULL DEFAULT '0',
+  start_date datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  end_date datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  item_type varchar(45) NOT NULL DEFAULT '',
+  status varchar(45) NOT NULL DEFAULT '',
+  PRIMARY KEY  (user_course_item_id)
+) $collate;
+CREATE TABLE {$wpdb->prefix}learnpress_user_course_itemmeta (
+  meta_id bigint(11) unsigned NOT NULL AUTO_INCREMENT,
+  learnpress_user_course_item_id bigint(11) unsigned NOT NULL,
+  meta_key varchar(45) NOT NULL DEFAULT '',
+  meta_value text NOT NULL,
+  PRIMARY KEY  (meta_id)
+) $collate;
+";
+		}
+		return $query;
 	}
 }
 

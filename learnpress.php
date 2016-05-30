@@ -4,7 +4,7 @@ Plugin Name: LearnPress
 Plugin URI: http://thimpress.com/learnpress
 Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
 Author: ThimPress
-Version: 1.0.6
+Version: 1.0.7
 Author URI: http://thimpress.com
 Requires at least: 3.8
 Tested up to: 4.5.2
@@ -25,8 +25,7 @@ if ( !defined( 'LP_PLUGIN_PATH' ) ) {
 	define( 'LP_PLUGIN_FILE', __FILE__ );
 	define( 'LP_PLUGIN_PATH', trailingslashit( plugin_dir_path( __FILE__ ) ) );
 	define( 'LP_LOG_PATH', $upload_dir['basedir'] . '/learn-press-logs/' );
-	define( 'LEARNPRESS_VERSION', '1.0.6' );
-	define( 'LEARNPRESS_DB_VERSION', '1.0.2' );
+	define( 'LEARNPRESS_VERSION', '1.0.7' );
 	//add_action( 'plugins_loaded', 'learn_press_defines', - 100 );
 }
 
@@ -44,13 +43,6 @@ if ( !class_exists( 'LearnPress' ) ) {
 		 * @var string
 		 */
 		public $version = LEARNPRESS_VERSION;
-
-		/**
-		 * Current version of database
-		 *
-		 * @var string
-		 */
-		public $db_version = LEARNPRESS_DB_VERSION;
 
 		/**
 		 * The single instance of the class
@@ -327,13 +319,34 @@ if ( !class_exists( 'LearnPress' ) ) {
 			require_once 'inc/custom-post-types/order.php';
 		}
 
+		private function plugin_basename( $filepath ) {
+			$file          = str_replace( '\\', '/', $filepath ); // sanitize for Win32 installs
+			$file          = preg_replace( '|/+|', '/', $file ); // remove any duplicate slash
+			$plugin_dir    = str_replace( '\\', '/', WP_PLUGIN_DIR ); // sanitize for Win32 installs
+			$plugin_dir    = preg_replace( '|/+|', '/', $plugin_dir ); // remove any duplicate slash
+			$mu_plugin_dir = str_replace( '\\', '/', WPMU_PLUGIN_DIR ); // sanitize for Win32 installs
+			$mu_plugin_dir = preg_replace( '|/+|', '/', $mu_plugin_dir ); // remove any duplicate slash
+			$sp_plugin_dir = dirname( $filepath );
+			$sp_plugin_dir = dirname( $sp_plugin_dir );
+
+			$sp_plugin_dir = str_replace( '\\', '/', $sp_plugin_dir ); // sanitize for Win32 installs
+			$sp_plugin_dir = preg_replace( '|/+|', '/', $sp_plugin_dir ); // remove any duplicate slash
+
+			$file = preg_replace( '#^' . preg_quote( $sp_plugin_dir, '#' ) . '/|^' . preg_quote( $plugin_dir, '#' ) . '/|^' . preg_quote( $mu_plugin_dir, '#' ) . '/#', '', $file ); // get relative path from plugins dir
+			$file = trim( $file, '/' );
+			return strtolower( $file );
+		}
+
 		/**
 		 * Initial common hooks
 		 */
 		public function init_hooks() {
 
 			$plugin_file = WP_PLUGIN_DIR . '/' . basename( dirname( __FILE__ ) ) . '/' . basename( __FILE__ );
-			register_activation_hook( __FILE__, array( 'LP_Install', 'install' ) );
+
+			//register_activation_hook( $plugin_file, array( 'LP_Install', 'install' ) );
+			$plugin_basename = $this->plugin_basename( __FILE__ );
+			add_action( 'activate_' . $plugin_basename, array( 'LP_Install', 'install' ) );
 
 			//LP_Install::install();
 

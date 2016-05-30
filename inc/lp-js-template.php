@@ -1,5 +1,6 @@
 <?php
 defined( 'ABSPATH' ) || exit();
+die();
 ?>
 <script type="text/html" id="tmpl-page-block">
 	<div id="lpr-page-block"></div>
