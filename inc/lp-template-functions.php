@@ -297,7 +297,16 @@ if ( !function_exists( 'learn_press_single_course_lesson_content' ) ) {
 	 * Display lesson content
 	 */
 	function learn_press_single_course_content_lesson() {
-		learn_press_get_template( 'single-course/content-lesson.php' );
+		//learn_press_get_template( 'single-course/content-lesson.php' );
+	}
+}
+
+if ( !function_exists( 'learn_press_single_course_content_item' ) ) {
+	/**
+	 * Display lesson content
+	 */
+	function learn_press_single_course_content_item() {
+		learn_press_get_template( 'single-course/content-item.php' );
 	}
 }
 

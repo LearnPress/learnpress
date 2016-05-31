@@ -325,7 +325,17 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						'desc' => __( 'How many times the user can re-take this course. Set to 0 to disable', 'learnpress' ),
 						'std'  => '0',
 					),
-
+					array(
+						'name'    => __( 'Load media libraries', 'learnpress' ),
+						'id'      => "{$prefix}load_media",
+						'type'    => 'radio',
+						'desc'    => __( 'Load media assets for shortcode', 'learnpress' ),
+						'std'     => 'no',
+						'options' => array(
+							'no'  => __( 'No', 'learnpress' ),
+							'yes' => __( 'Yes', 'learnpress' )
+						)
+					),
 				)
 			);
 
