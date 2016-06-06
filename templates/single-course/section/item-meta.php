@@ -7,15 +7,18 @@
 
 defined( 'ABSPATH' ) || exit();
 
-global $course;
+$user   = LP()->user;
+$course = LP()->course;
 ?>
 <div class="course-item-meta">
 
-	<?php do_action( 'learn_press_before_item_meta', $item );?>
+	<?php do_action( 'learn_press_before_item_meta', $item ); ?>
 
-	<span class="lp-label lp-label-viewing"><?php _e( 'Viewing', 'learnpress' );?></span>
+	<span class="lp-label lp-label-viewing"><?php _e( 'Viewing', 'learnpress' ); ?></span>
 
-	<span class="lp-label lp-label-completed"><?php _e( 'Completed', 'learnpress' );?></span>
+	<?php if ( $user->can_view_item( $item->ID ) !== false ) { ?>
+		<span class="lp-label lp-label-completed"><?php _e( 'Completed', 'learnpress' ); ?></span>
+	<?php } ?>
 
 	<?php learn_press_item_meta_type( $course, $item ); ?>
 

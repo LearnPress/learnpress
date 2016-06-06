@@ -25,7 +25,7 @@
 				</td>
 				<th class="lp-answer-check">
 					<input type="hidden" name="learn_press_question[<?php echo $this->id; ?>][answer][value][]" value="<?php echo $value; ?>" />
-					<input type="radio" name="learn_press_question[<?php echo $this->id; ?>][checked]" <?php checked( $answer['is_true'] == 'yes', true ); ?> value="<?php echo $value; ?>" />
+					<input type="radio" name="learn_press_question[<?php echo $this->id; ?>][checked][]" <?php checked( $answer['is_true'] == 'yes', true ); ?> value="<?php echo $value; ?>" />
 				</th>
 				<?php if ( $this->type == 'single_choice' ): ?>
 				<td class="lp-list-option-actions lp-remove-list-option">

@@ -38,6 +38,8 @@ add_action( 'learn_press_content_landing_summary', 'learn_press_course_price', 2
 add_action( 'learn_press_content_landing_summary', 'learn_press_course_students', 30 );
 add_action( 'learn_press_content_landing_summary', 'learn_press_course_meta_end_wrapper', 35 );
 add_action( 'learn_press_content_landing_summary', 'learn_press_single_course_content_lesson', 40 );
+add_action( 'learn_press_content_landing_summary', 'learn_press_single_course_content_item', 40 );
+
 //add_action( 'learn_press_content_landing_summary', 'learn_press_course_payment_form', 20 );
 add_action( 'learn_press_content_landing_summary', 'learn_press_course_enroll_button', 45 );
 //add_action( 'learn_press_content_landing_summary', 'learn_press_course_status_message', 50 );

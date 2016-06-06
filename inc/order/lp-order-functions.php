@@ -725,6 +725,10 @@ function _learn_press_checkout_auto_enroll_free_course( $result, $order_id ) {
 					$enrolled = $item['course_id'];
 				}
 			}
+			if ( !$enrolled ) {
+				$item     = reset( $order_items );
+				$enrolled = $item['course_id'];
+			}
 		}
 	}
 	if ( $enrolled ) {
@@ -732,6 +736,5 @@ function _learn_press_checkout_auto_enroll_free_course( $result, $order_id ) {
 		$result['redirect'] = get_the_permalink( $enrolled );
 		LP()->cart->empty_cart();
 	}
-
 	return $result;
 }

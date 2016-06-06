@@ -1392,23 +1392,23 @@ function learn_press_template_loader( $template ) {
 	return $template;
 }
 
-if ( !  function_exists( 'learn_press_item_meta_type' ) ) {
+if ( !function_exists( 'learn_press_item_meta_type' ) ) {
 	function learn_press_item_meta_type( $course, $item ) { ?>
 
-		<?php if( $item->post_type == 'lp_quiz' ){ ?>
+		<?php if ( $item->post_type == 'lp_quiz' ) { ?>
 
-			<span class="lp-label lp-label-quiz"><?php _e( 'Quiz', 'learnpress' );?></span>
+			<span class="lp-label lp-label-quiz"><?php _e( 'Quiz', 'learnpress' ); ?></span>
 
-			<?php if( $course->final_quiz == $item->ID ){?>
+			<?php if ( $course->final_quiz == $item->ID ) { ?>
 
-				<span class="lp-label lp-label-final"><?php _e( 'Final', 'learnpress' );?></span>
+				<span class="lp-label lp-label-final"><?php _e( 'Final', 'learnpress' ); ?></span>
 
-			<?php }?>
+			<?php } ?>
 
-		<?php }elseif( $item->post_type == 'lp_lesson' ){ ?>
+		<?php } elseif ( $item->post_type == 'lp_lesson' ) { ?>
 
 			<span class="lp-label lp-label-lesson"><?php _e( 'Lesson', 'learnpress' ); ?></span>
-			<?php if( get_post_meta( $item->ID, '_lp_preview', true ) == 'yes' ){?>
+			<?php if ( get_post_meta( $item->ID, '_lp_preview', true ) == 'yes' ) { ?>
 
 				<span class="lp-label lp-label-preview"><?php _e( 'Preview', 'learnpress' ); ?></span>
 
@@ -1416,8 +1416,36 @@ if ( !  function_exists( 'learn_press_item_meta_type' ) ) {
 
 		<?php } else { ?>
 
-				<?php do_action( 'learn_press_item_meta_type', $course, $item ); ?>
+			<?php do_action( 'learn_press_item_meta_type', $course, $item ); ?>
 
 		<?php }
 	}
 }
+
+function learn_press_single_course_js() {
+	if ( !learn_press_is_course() ) {
+		return;
+	}
+	$user   = LP()->user;
+	$course = LP()->course;
+	$js     = array( 'url' => $course->get_permalink(), 'items' => array() );
+	if ( $items = $course->get_curriculum_items() ) {
+		foreach ( $items as $item ) {
+			$item          = array(
+				'id'        => absint( $item->ID ),
+				'type'      => $item->post_type,
+				'title'     => get_the_title( $item->ID ),
+				'url'       => $course->get_item_link( $item->ID ),
+				'current'   => $course->is_viewing_item( $item->ID ),
+				'completed' => false,
+				'viewable'  => $item->post_type == 'lp_quiz' ? ( $user->can_view_quiz( $item->ID, $course->id ) !== false ) : ( $user->can_view_lesson( $item->ID, $course->id ) !== false )
+			);
+			$js['items'][] = $item;
+		}
+	}
+	echo '<script type="text/javascript">';
+	echo 'var SingleCourse_Params = ' . json_encode( $js );
+	echo '</script>';
+}
+
+add_action( 'wp_head', 'learn_press_single_course_js' );

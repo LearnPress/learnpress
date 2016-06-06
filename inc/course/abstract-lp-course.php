@@ -221,9 +221,9 @@ abstract class LP_Abstract_Course {
 		if ( func_get_args() ) {
 			$required = $this->required_enroll == func_get_arg( 0 );
 		} else {
-			$required = $this->required_enroll != 'no';
+			$required = $this->required_enroll !== 'no';
 		}
-		$required = $required || $this->payment == 'yes';
+		$required = $required || ( $this->payment == 'yes' );
 		//$is_require = empty( $is_require ) || ( $is_require == 'yes' ) ? true : false;
 		///return apply_filters( 'learn_press_is_require_enrollment', $is_require, $this );
 
@@ -708,7 +708,6 @@ abstract class LP_Abstract_Course {
 		}
 		$permalink = get_the_permalink( $item_id );
 		switch ( get_post_type( $item_id ) ) {
-			case 'lp_quiz':
 			case 'lp_lesson':
 				$permalink = trailingslashit( get_the_permalink( $this->id ) );
 
@@ -722,14 +721,20 @@ abstract class LP_Abstract_Course {
 					$permalink = add_query_arg( array( $key => $prefix . $post_name ), $permalink );
 				}
 				break;
+			case 'lp_quiz':
+				$permalink = get_the_permalink( $item_id );
 		}
 		$permalink = trailingslashit( $permalink );
 		return apply_filters( 'learn_press_course_item_link', $permalink, $item_id, $this );
 	}
 
-	public function get_next_item( $current_item = false, $dir = 'next' ) {
-
-		$items_types = apply_filters( 'learn_press_course_' . $dir . '_item_types', false, $this->id );
+	public function get_next_item( $args = null ) {
+		$args        = wp_parse_args( $args, array(
+			'current_item' => false,
+			'dir'          => 'next',
+			'viewable'     => null
+		) );
+		$items_types = apply_filters( 'learn_press_course_' . $args['dir'] . '_item_types', false, $this->id );
 		if ( $items_types === false ) {
 			$items = (array) $this->get_curriculum_items( array( 'field' => 'ID' ) );
 		} else {
@@ -742,33 +747,61 @@ abstract class LP_Abstract_Course {
 		}
 		$items_len = sizeof( $items );
 		if ( $items_len < 2 ) return false;
-		$current_item = $current_item ? $current_item : ( $this->current_item ? $this->current_item->id : 0 );
+		$current_item = $args['current_item'] ? $args['current_item'] : ( $this->current_item ? $this->current_item->id : 0 );
 		if ( !$current_item ) {
 			$current_item = reset( $items );
 		}
-
+		$next_item = false;
 		if ( ( $pos = array_search( $current_item, $items ) ) !== false ) {
-			if ( $dir == 'next' ) {
+			if ( $args['dir'] == 'next' ) {
 				if ( $pos == sizeof( $items ) - 1 ) {
 					$next_item = false;
 				} else {
-					$next_item = $items[$pos + 1];
+					if ( $args['viewable'] !== null ) {
+						$user = learn_press_get_current_user();
+						for ( $i = $pos + 1; $i < $items_len; $i ++ ) {
+							if ( !!$user->can( 'view-item', $items[$i] ) === $args['viewable'] ) {
+								$next_item = $items[$i];
+								break;
+							}
+						}
+					} else {
+						$next_item = $items[$pos + 1];
+					}
 				}
 			} else {
 				if ( $pos == 0 ) {
 					$next_item = false;
 				} else {
-					$next_item = $items[$pos - 1];
+					if ( $args['viewable'] !== null ) {
+						$user = learn_press_get_current_user();
+						for ( $i = $pos - 1; $i >= 0; $i -- ) {
+							if ( !!$user->can( 'view-item', $items[$i] ) === $args['viewable'] ) {
+								$next_item = $items[$i];
+								break;
+							}
+						}
+					} else {
+						$next_item = $items[$pos - 1];
+					}
 				}
 			}
 		} else {
-			$next_item = $dir == 'next' ? $items[1] : $items[$items_len - 1];
+			$next_item = $args['dir'] == 'next' ? $items[1] : $items[$items_len - 1];
 		}
-		return apply_filters( 'learn_press_course_' . $dir . '_item', $next_item, $current_item, $this );
+		return apply_filters( 'learn_press_course_' . $args['dir'] . '_item', $next_item, $current_item, $this );
 	}
 
-	public function get_next_item_html( $current_item = false ) {
-		if ( $next_item = $this->get_next_item( $current_item ) ) {
+	public function get_next_item_html( $args = null ) {
+		$args = wp_parse_args(
+			$args,
+			array(
+				'current_item' => false,
+				'viewable'     => null,
+				'dir'          => 'next'
+			)
+		);
+		if ( $next_item = $this->get_next_item( $args ) ) {
 			ob_start();
 			learn_press_get_template( 'lesson/next-button.php', array( 'item' => $next_item, 'course' => $this ) );
 			return ob_get_clean();
@@ -776,8 +809,16 @@ abstract class LP_Abstract_Course {
 		return false;
 	}
 
-	public function get_prev_item_html( $current_item = false ) {
-		if ( $next_item = $this->get_next_item( $current_item, 'prev' ) ) {
+	public function get_prev_item_html( $args = null ) {
+		$args = wp_parse_args(
+			$args,
+			array(
+				'current_item' => false,
+				'viewable'     => null,
+				'dir'          => 'prev'
+			)
+		);
+		if ( $next_item = $this->get_next_item( $args ) ) {
 			ob_start();
 			learn_press_get_template( 'lesson/prev-button.php', array( 'item' => $next_item, 'course' => $this ) );
 			return ob_get_clean();

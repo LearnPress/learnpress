@@ -893,6 +893,32 @@ a .archive-course:hover {
 .button-fade:hover {
 	opacity: 1;
 }
+
+#learn-press-content-item {
+	margin-bottom: 20px;
+}
+
+#learn-press-content-item.loading {
+	height: 50px;
+	overflow: hidden;
+	position: relative;
+}
+
+#learn-press-content-item.loading:before,
+#learn-press-content-item.loading:after {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 10;
+	background: #FFF;
+	content: '';
+}
+
+#learn-press-content-item.loading:after {
+	background: url("../images/ajax-loader.gif") center no-repeat;
+}
 @media screen and (min-width: 59.6875em) {
 	.twentyfifteen .learnpress-content {
 		margin-left: 8.3333%;

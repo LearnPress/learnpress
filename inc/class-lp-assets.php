@@ -114,8 +114,10 @@ class LP_Assets extends LP_Abstract_Assets {
 		// lesson
 		self::add_script( 'course-lesson', learn_press_plugin_url( 'assets/js/frontend/course-lesson.js' ) );
 
+
+		$v2 = "";
 		// single course
-		self::add_script( 'single-course', learn_press_plugin_url( 'assets/js/frontend/single-course.js' ), $deps );
+		self::add_script( 'single-course', learn_press_plugin_url( 'assets/js/frontend/single-course' . $v2 . '.js' ), $deps );
 
 		if ( LP()->settings->get( 'ajax_add_to_cart' ) == 'yes' ) {
 			self::add_script( 'learn-press-add-to-cart', learn_press_plugin_url( 'assets/js/frontend/add-to-cart.js' ) );

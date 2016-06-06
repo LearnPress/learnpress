@@ -38,7 +38,7 @@
 				error   : function () {
 					_completed('', false)
 				}
-			})
+			});
 		},
 		complete  : function (args) {
 			var that = this;
@@ -71,7 +71,7 @@
 			this.model.on('change', this.updateItem, this);
 
 			if (LearnPress.Hook.applyFilters('learn_press_before_load_item', this) !== false) {
-				if (this.model.get('id') && this.$('input[name="learn-press-lesson-viewing"]').val() != this.model.get('id')) {
+				if (this.model.get('id') /*&& this.$('input[name="learn-press-lesson-viewing"]').val() != this.model.get('id')*/) {
 					if (this.model.get('content') == 'no-cache') {
 						this.updateItem();
 					} else {
@@ -145,7 +145,7 @@
 					};
 				if ($li.hasClass('item-current')) {
 					that.current = id;
-					args.content = $('#learn-press-course-lesson')
+					//args.content = $('#learn-press-course-lesson')
 				}
 				var model = new $.LP_Course_Item.Model(args);
 				that.add(model);
@@ -188,14 +188,12 @@
 		},
 		initialize: function (args) {
 			_.bindAll(this, '_loadItem');
-			//this.model.loadItem(this.model.current);
 		},
 		_loadItem : function (e) {
 			e.preventDefault();
 			var $item = $(e.target).closest('a'),
 				id = parseInt($item.attr('data-id')),
 				link = $item.attr('href');
-			console.log(link)
 			this.model.loadItem(id ? id : link, link);
 		}
 	});

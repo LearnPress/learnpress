@@ -1547,7 +1547,6 @@ class LP_Abstract_User {
 		ksort( $args );
 		$key = md5( serialize( $args ) );
 		if ( empty( $courses[$key] ) ) {
-
 			$limit = "\n";
 			if ( $args['limit'] > 0 ) {
 				if ( !$args['paged'] ) {
@@ -1558,11 +1557,11 @@ class LP_Abstract_User {
 			}
 			$query = $wpdb->prepare( "
 				SELECT SQL_CALC_FOUND_ROWS c.*
-				FROM wp_posts o
-				INNER JOIN wp_learnpress_order_items oi ON oi.order_id = o.ID
-				INNER JOIN wp_learnpress_order_itemmeta oim ON oim.learnpress_order_item_id = oi.order_item_id AND oim.meta_key = %s
-				INNER JOIN wp_posts c ON c.ID = oim.meta_value
-				INNER JOIN wp_postmeta om ON om.post_id = o.ID AND om.meta_key = %s
+				FROM {$wpdb->posts} o
+				INNER JOIN {$wpdb->prefix}learnpress_order_items oi ON oi.order_id = o.ID
+				INNER JOIN {$wpdb->prefix}learnpress_order_itemmeta oim ON oim.learnpress_order_item_id = oi.order_item_id AND oim.meta_key = %s
+				INNER JOIN {$wpdb->posts} c ON c.ID = oim.meta_value
+				INNER JOIN {$wpdb->postmeta} om ON om.post_id = o.ID AND om.meta_key = %s
 				WHERE o.post_status IN( %s, %s, %s )
 				AND c.post_type = %s
 				AND c.post_status = %s
@@ -1605,7 +1604,7 @@ class LP_Abstract_User {
 			}
 			$query = $wpdb->prepare( "
 				SELECT SQL_CALC_FOUND_ROWS c.*
-				FROM wp_posts c
+				FROM {$wpdb->posts} c
 				WHERE c.post_status = %s
 				AND c.post_type = %s
 				AND c.post_author = %d

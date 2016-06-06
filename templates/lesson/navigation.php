@@ -13,20 +13,19 @@ if ( $course->is( 'viewing' ) != 'lesson' && $course->is( 'viewing' ) != 'quiz' 
 	return;
 }
 
-if( !$course->is_free() && !LP()->user->has('enrolled-course', $course->id ) ){
-	return;
+if ( !$course->is_free() && !LP()->user->has( 'enrolled-course', $course->id ) ) {
+	//return;
 }
 $buttons = array();
-if( $next_item = $course->get_next_item_html() ){
+if ( $next_item = $course->get_next_item_html( array( 'viewable' => true ) ) ) {
 	$buttons[] = $next_item;
 }
-if( $prev_item = $course->get_prev_item_html() ){
+if ( $prev_item = $course->get_prev_item_html( array( 'viewable' => true ) ) ) {
 	$buttons[] = $prev_item;
 }
 
-if( $buttons ){
-
+if ( $buttons ) {
 	?>
-	<div class="course-item-nav"><?php echo join( "\n",$buttons ) ;?></div>
+	<div class="course-item-nav"><?php echo join( "\n", $buttons ); ?></div>
 	<?php
 }

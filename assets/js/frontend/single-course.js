@@ -196,9 +196,10 @@ if (typeof LearnPress == 'undefined') {
 		//LearnPress.Course.init( $(this), $(document.body) );
 		LearnPress.$Course = new LearnPress_View_Course();
 
-		LearnPress.Hook.addAction('learn_press_item_content_loaded', function () {
+		LearnPress.Hook.addAction('learn_press_item_content_loaded', function (a, b) {
 			setTimeout(function () {
 				try {
+					//console.log(a.html())
 					window.wp.mediaelement.initialize();
 				} catch (e) {
 					console.log('window.wp.mediaelement is not defined');

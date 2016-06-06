@@ -329,7 +329,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						'name'    => __( 'Load media libraries', 'learnpress' ),
 						'id'      => "{$prefix}load_media",
 						'type'    => 'radio',
-						'desc'    => __( 'Load media assets for shortcode', 'learnpress' ),
+						'desc'    => __( 'Load media assets for shortcode. Only use this option if you use shortcode <code>[audio]</code> in your course or lesson content', 'learnpress' ),
 						'std'     => 'no',
 						'options' => array(
 							'no'  => __( 'No', 'learnpress' ),
