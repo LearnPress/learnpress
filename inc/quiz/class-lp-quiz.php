@@ -152,6 +152,9 @@ class LP_Quiz {
 
 	public function get_question_params( $ids ) {
 		global $wpdb;
+		if ( !$ids ) {
+			$ids = array( 0 );
+		}
 		$query   = $wpdb->prepare( "
 			SELECT qa.question_answer_id, ID as id, pm.meta_value as type, qa.answer_data as answer_data
 			FROM {$wpdb->posts} p
@@ -404,10 +407,10 @@ class LP_Quiz {
 		if ( empty( self::$_meta[$this->id]['mark'] ) || $force ) {
 			global $wpdb;
 			$query                          = $wpdb->prepare( "
-				SELECT SUM(pm.meta_value) as mark
+				SELECT SUM( IF(pm.meta_value, pm.meta_value, 1) ) as mark
 				FROM {$wpdb->learnpress_quiz_questions} qq
 				INNER JOIN {$wpdb->posts} q ON q.ID = qq.quiz_id
-				INNER JOIN {$wpdb->postmeta} pm ON pm.post_id = qq.question_id AND pm.meta_key = %s
+				LEFT JOIN {$wpdb->postmeta} pm ON pm.post_id = qq.question_id AND pm.meta_key = %s
 				WHERE q.ID = %d
 			", '_lp_mark', $this->id );
 			self::$_meta[$this->id]['mark'] = $wpdb->get_var( $query );

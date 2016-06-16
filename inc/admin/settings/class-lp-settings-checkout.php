@@ -49,27 +49,6 @@ class LP_Settings_Checkout extends LP_Settings_Base {
 			'learn_press_checkout_settings',
 			array(
 				array(
-					'title'   => __( 'Enable cart', 'learnpress' ),
-					'desc'    => __( 'Check this option to enable user can purchase multiple course at one time', 'learnpress' ),
-					'id'      => $this->get_field_name( 'enable_cart' ),
-					'default' => 'yes',
-					'type'    => 'checkbox'
-				),
-				array(
-					'title'   => __( 'Add to cart redirect', 'learnpress' ),
-					'desc'    => __( 'Redirect to checkout immediately after add course to cart', 'learnpress' ),
-					'id'      => $this->get_field_name( 'redirect_after_add' ),
-					'default' => 'yes',
-					'type'    => 'checkbox'
-				),
-				array(
-					'title'   => __( 'AJAX add to cart', 'learnpress' ),
-					'desc'    => __( 'Using AJAX to add course to the cart', 'learnpress' ),
-					'id'      => $this->get_field_name( 'ajax_add_to_cart' ),
-					'default' => 'no',
-					'type'    => 'checkbox'
-				),
-				array(
 					'title'   => __( 'No checkout free course', 'learnpress' ),
 					'desc'    => __( 'Check this option to enable user can enroll course immediate without add to cart', 'learnpress' ),
 					'id'      => $this->get_field_name( 'no_checkout_free_course' ),
@@ -82,12 +61,6 @@ class LP_Settings_Checkout extends LP_Settings_Base {
 					'id'      => $this->get_field_name( 'disable_auto_enroll' ),
 					'default' => 'no',
 					'type'    => 'checkbox'
-				),
-				array(
-					'title'   => __( 'Cart page', 'learnpress' ),
-					'id'      => $this->get_field_name( 'cart_page_id' ),
-					'default' => '',
-					'type'    => 'pages-dropdown'
 				),
 				array(
 					'title'   => __( 'Checkout page', 'learnpress' ),
@@ -105,7 +78,8 @@ class LP_Settings_Checkout extends LP_Settings_Base {
 					'default' => 'lp-order-received',
 					'type'    => 'text'
 				),
-			)
+			),
+			$this
 		);
 	}
 }

@@ -25,8 +25,21 @@ if (typeof LearnPress == 'undefined') {
 			'click #learn-press-finish-course': '_finishCourse'
 		},
 		initialize       : function (args) {
+
+
+			var id = parseInt($('.course-item.item-current').find('>a').attr('data-id')),
+				item = null;
+			if (id) {
+				$('[id="learn-press-course-lesson"]').html('')
+				//this.model.loadItem(item);
+			}
 			this.courseItems = new $.LP_Course_Item.Collection();
 			this.courseItemsView = new $.LP_Course_Item_List_View({model: this.courseItems});
+
+			if (id) {
+				console.log(id)
+				this.courseItems.loadItem(id);
+			}
 
 			_.bindAll(this, '_finishCourse', '_sanitizeProgress', 'completeLesson');
 			this.$doc = $(document);
@@ -52,7 +65,6 @@ if (typeof LearnPress == 'undefined') {
 				});
 
 			this._sanitizeProgress();
-
 
 		},
 		itemLoaded       : function ($content, $view) {

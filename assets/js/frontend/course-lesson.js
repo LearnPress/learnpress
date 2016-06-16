@@ -81,11 +81,12 @@
 					LearnPress.Hook.doAction('learn_press_item_content_loaded', this.model.get('content'), this);
 				}
 			}
+			console.log('initialize')
 		},
 		updateItem     : function () {
 			var $content = this.model.get('content');
 			this.$el.replaceWith($content);
-			this.setElement($content);
+			this.setElement($content.show());
 			var url = LearnPress.Hook.applyFilters('learn_press_set_item_url', this.model.get('rootUrl'), this);
 			if (url) {
 				LearnPress.setUrl(url);
@@ -124,6 +125,8 @@
 	$.LP_Course_Item.Collection = Backbone.Collection.extend({
 		model     : $.LP_Course_Item.Model,
 		current   : 0,
+		lastLoaded: null,
+
 		initialize: function () {
 			var that = this;
 			_.bindAll(this, 'initItems', 'loadItem');
@@ -158,6 +161,8 @@
 				item = this.findWhere({id: item});
 			} else if ($.type(item) == 'string') {
 				item = this.findWhere({rootUrl: item});
+			} else {
+
 			}
 			if (LearnPress.Hook.applyFilters('learn_press_load_item_content', true, item, link) !== false) {
 				if (item) {
@@ -183,8 +188,8 @@
 		model     : $.LP_Course_Item.Collection,
 		el        : 'body',
 		events    : {
-			'click .section-content .course-item': '_loadItem',
-			'click .course-item-nav a'           : '_loadItem'
+			'click .section-content .course-item a': '_loadItem',
+			'click .course-item-nav a'             : '_loadItem'
 		},
 		initialize: function (args) {
 			_.bindAll(this, '_loadItem');
@@ -194,7 +199,12 @@
 			var $item = $(e.target).closest('a'),
 				id = parseInt($item.attr('data-id')),
 				link = $item.attr('href');
-			this.model.loadItem(id ? id : link, link);
+			var item = id ? id : link;
+			if (this.lastLoaded == item) {
+				return;
+			}
+			this.model.loadItem(item, link);
+			console.log('_loadItem', id, link)
 		}
 	});
 

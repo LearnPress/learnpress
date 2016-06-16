@@ -165,6 +165,20 @@
 	display: inline-block;
 }
 
+.course-meta > * {
+	display: inline-block;
+	font-style: italic;
+	font-size: smaller;
+}
+
+.course-meta > *:after {
+	content: '  |  ';
+	font-style: italic;
+}
+
+.course-meta > *:last-child:after {
+	display: none;
+}
 /**/
 .learnpress {
 
@@ -896,6 +910,10 @@ a .archive-course:hover {
 
 #learn-press-content-item {
 	margin-bottom: 20px;
+	background: #F5F5F5;
+	border: 1px solid #DDD;
+	padding: 20px;
+	display: none;
 }
 
 #learn-press-content-item.loading {
@@ -919,6 +937,66 @@ a .archive-course:hover {
 #learn-press-content-item.loading:after {
 	background: url("../images/ajax-loader.gif") center no-repeat;
 }
+
+#learn-press-course-lesson {
+}
+
+.quiz-question-nav-buttons {
+	margin: 10px 0;
+}
+
+@-ms-viewport {
+	width: device-width;
+}
+
+@viewport {
+	width: device-width;
+}
+
+/**
+ * Mobile Large 620px
+ */
+@media screen and (min-width: 38.75em) {
+	.twentyfifteen .learnpress-content {
+		margin-right: 7.6923%;
+		margin-left: 7.6923%;
+		margin-top: 8.3333%;
+	}
+}
+
+@media screen and (max-width: 38.75em) {
+	.single-quiz .quiz-sidebar {
+		width: 100%;
+	}
+
+	.learnpress ul {
+		margin-left: 0;
+	}
+
+	#learn-press-course-curriculum .section .course-item-meta {
+		float: none;
+	}
+}
+
+/**
+ * Tablet Small 740px
+ */
+
+@media screen and (min-width: 46.25em) {
+
+}
+
+/**
+ * Tablet Large 880px
+ */
+
+@media screen and (min-width: 55em) {
+}
+
+/**
+ * Desktop Small 955px
+ */
+
 @media screen and (min-width: 59.6875em) {
 	.twentyfifteen .learnpress-content {
 		margin-left: 8.3333%;
@@ -927,10 +1005,40 @@ a .archive-course:hover {
 	}
 }
 
-@media screen and (min-width: 38.75em) {
+@media screen and (max-width: 59.6875em) {
+
 	.twentyfifteen .learnpress-content {
-		margin-right: 7.6923%;
-		margin-left: 7.6923%;
-		margin-top: 8.3333%;
+		padding: 10%;
 	}
+}
+
+/**
+ * Desktop Medium 1100px
+ */
+
+@media screen and (max-width: 68.75em) {
+	.single-quiz .quiz-summary-left,
+	.single-quiz .quiz-sidebar {
+		float: none;
+		margin: 0 auto;
+	}
+
+	.single-quiz .quiz-summary-left {
+		padding-right: 0;
+	}
+}
+
+/**
+ * Desktop Large 1240px
+ */
+
+@media screen and (min-width: 77.5em) {
+}
+
+/**
+ * Desktop X-Large 1403px
+ */
+
+@media screen and (min-width: 87.6875em) {
+
 }

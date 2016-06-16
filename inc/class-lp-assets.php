@@ -25,9 +25,17 @@ class LP_Assets extends LP_Abstract_Assets {
 		parent::$caller = __CLASS__;
 		add_action( 'learn_press_print_assets', array( __CLASS__, '_print_assets' ) );
 		add_action( 'wp_footer', array( __CLASS__, 'footer_scripts' ) );
+		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'eduma_assets' ), 9999 );
 		/*add_filter( 'script_loader_src', array( __CLASS__, 'script_loader_src' ), 10, 2 );
 		add_action( 'learn_press_settings_save_general', array( __CLASS__, '_minify_source' ) );*/
 		parent::init();
+	}
+
+	public static function eduma_assets() {
+		if ( learn_press_is_course() ) {
+			self::enqueue_script( 'eduma-single-course' );
+			self::enqueue_style( 'eduma-single-course' );
+		}
 	}
 
 	public static function footer_scripts() {
@@ -118,6 +126,10 @@ class LP_Assets extends LP_Abstract_Assets {
 		$v2 = "";
 		// single course
 		self::add_script( 'single-course', learn_press_plugin_url( 'assets/js/frontend/single-course' . $v2 . '.js' ), $deps );
+		if ( $v2 && wp_get_theme()->get( 'Name' ) == 'eduma' ) {
+			self::add_script( 'eduma-single-course', learn_press_plugin_url( 'assets/eduma/custom-script.js' ) );
+			self::add_style( 'eduma-single-course', learn_press_plugin_url( 'assets/eduma/custom-style.css' ) );
+		}
 
 		if ( LP()->settings->get( 'ajax_add_to_cart' ) == 'yes' ) {
 			self::add_script( 'learn-press-add-to-cart', learn_press_plugin_url( 'assets/js/frontend/add-to-cart.js' ) );
@@ -158,6 +170,7 @@ class LP_Assets extends LP_Abstract_Assets {
 		// single course
 		if ( learn_press_is_course() ) {
 			self::enqueue_script( 'single-course' );
+
 			$course = LP()->course;
 			if ( $course->load_media == 'yes' ) {
 				wp_enqueue_style( 'wp-mediaelement' );
@@ -188,7 +201,6 @@ class LP_Assets extends LP_Abstract_Assets {
 			self::enqueue_script( 'learn-press' );
 		}
 		do_action( 'learn_press_frontend_after_load_assets' );
-
 	}
 }
 

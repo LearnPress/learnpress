@@ -264,7 +264,6 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 				$args['s'] = $term;
 			}
 
-			print_r( $args );
 			$posts       = get_posts( $args );
 			$found_items = array();
 
@@ -285,7 +284,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 							<span class="lp-item-text">%2$s</span>
 						</label>
 					</li>
-					', $id, $item->post_title, $item->post_type );
+					', $id, esc_attr( $item->post_title ), $item->post_type );
 				}
 			} else {
 				echo '<li>' . apply_filters( 'learn_press_modal_search_items_not_found', __( 'No item found', 'learnpress' ), $type ) . '</li>';

@@ -459,8 +459,8 @@
 	border-width: 0 !important;
 }
 
-.learn-press-dropdown-item-types:hover > ul,
-tr.focus .learn-press-dropdown-item-types > ul {
+tr[data-item_id=""] .learn-press-dropdown-item-types:hover > ul,
+tr[data-item_id=""].focus .learn-press-dropdown-item-types > ul {
 	display: inline-table;
 	border-left-color: transparent;
 }

@@ -652,12 +652,12 @@ class LP_Abstract_User {
 	 */
 	public function can_enroll_course( $course_id ) {
 		$course = LP_Course::get_course( $course_id );
-		// if the course payment is off and required enroll
-		$enrollable = $course && /* $course->payment == 'no' &&*/
-			$course->required_enroll != 'yes';
+		// check if course is purchasable
+		$enrollable = $course && $course->is_purchasable();/* $course->payment == 'no' &&*/
+		//$course->required_enroll == 'yes';
 
-		// if user cannot enroll by course settings above, check order
-		if ( !$enrollable && ( $order_id = $this->has_purchased_course( $course_id ) ) ) {
+		// if user can enroll, check order to ensure that user hasn't bought course
+		if ( $enrollable && ( $order_id = $this->has_purchased_course( $course_id ) ) ) {
 			$order      = LP_Order::instance( $order_id, true );
 			$enrollable = !$this->has_enrolled_course( $course_id ) && ( $order && $order->has_status( 'completed' ) );
 		}
@@ -780,15 +780,14 @@ class LP_Abstract_User {
 	public function finish_course( $course_id ) {
 		global $wpdb;
 		$result = array(
-			'result'    => 'success',
+			'result'    => 'fail',
 			'course_id' => $course_id
 		);
 		if ( $course = LP_Course::get_course( $course_id ) ) {
 			if ( !$this->can( 'finish-course', $course_id ) ) {
-				$result['result']  = 'fail';
 				$result['message'] = __( 'Sorry, you can not finish this course. Please contact administrator or your instructor.', 'learnpress' );
 			} else {
-				$updated = $wpdb->update(
+				$updated   = $wpdb->update(
 					$wpdb->prefix . 'learnpress_user_courses',
 					array(
 						'end_time' => current_time( 'mysql' ),
@@ -797,9 +796,21 @@ class LP_Abstract_User {
 					array( 'user_id' => $this->id, 'course_id' => $course_id ),
 					array( '%s', '%s' )
 				);
-				if ( $updated ) {
-					$result['rec_id'] = $wpdb->get_var( $wpdb->prepare( "SELECT user_course_id FROM {$wpdb->prefix}learnpress_user_courses WHERE user_id = %d AND course_id = %d", $this->id, $course_id ) );
+				$null_time = '0000-00-00 00:00';
+				$rec_id    = $wpdb->get_var(
+					$wpdb->prepare( "
+							SELECT user_course_id
+							FROM {$wpdb->prefix}learnpress_user_courses
+							WHERE user_id = %d
+								AND course_id = %d
+								AND start_time <> %s AND end_time <> %s
+						", $this->id, $course_id, $null_time, $null_time )
+				);
+				if ( $rec_id ) {
+					$result['rec_id'] = $rec_id;
+					$result['result'] = 'success';
 					do_action( 'learn_press_user_finish_course', $course_id, $this->id, $result );
+				} else {
 
 				}
 			}
@@ -1208,6 +1219,25 @@ class LP_Abstract_User {
 			}
 		}
 		return apply_filters( 'learn_press_user_has_completed_item', $return, $item );
+	}
+
+	public function get_course_remaining_time( $course_id ) {
+		$course = learn_press_get_course( $course_id );
+		$remain = false;
+		if ( $course->id ) {
+			$course_duration = $course->duration * 7 * 24 * 3600;
+			$course_info     = $this->get_course_info( $course_id );
+			if ( $course_info ) {
+				$now        = time();
+				$start_time = intval( strtotime( $course_info['start'] ) );
+
+				if ( $start_time + $course_duration > $now ) {
+					$remain = $start_time + $course_duration - $now;
+					$remain = learn_press_seconds_to_weeks( $remain );
+				}
+			}
+		}
+		return $remain;
 	}
 
 	/**

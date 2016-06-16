@@ -25,10 +25,10 @@ if ( !defined( 'LP_PLUGIN_PATH' ) ) {
 	define( 'LP_PLUGIN_FILE', __FILE__ );
 	define( 'LP_PLUGIN_PATH', trailingslashit( plugin_dir_path( __FILE__ ) ) );
 	define( 'LP_LOG_PATH', $upload_dir['basedir'] . '/learn-press-logs/' );
-	define( 'LEARNPRESS_VERSION', '1.0.7' );
+	define( 'LEARNPRESS_VERSION', '1.0.8' );
+	define( 'LP_ENABLE_CART', true );
 	//add_action( 'plugins_loaded', 'learn_press_defines', - 100 );
 }
-
 if ( !class_exists( 'LearnPress' ) ) {
 	/**
 	 * Class LearnPress

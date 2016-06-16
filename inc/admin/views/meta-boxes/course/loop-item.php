@@ -13,10 +13,15 @@ $group_name      = '_lp_curriculum[__SECTION__][items][' . ( $section_item_id ? 
 
 $support_types = apply_filters(
 	'learn_press_support_item_types', array(
-		'lp_quiz'   => __( 'Quiz', 'learnpress' ),
-		'lp_lesson' => __( 'Lesson', 'learnpress' )
+		'lp_lesson' => __( 'Lesson', 'learnpress' ),
+		'lp_quiz'   => __( 'Quiz', 'learnpress' )
 	)
 );
+if ( !empty( $support_types[$item->post_type] ) ) {
+	$item_selected = $item->post_type;
+} else {
+	$item_selected = key( $support_types );
+}
 ?>
 
 <?php do_action( 'learn_press_admin_before_section_loop_item', $item, $section ); ?>
@@ -29,7 +34,7 @@ $support_types = apply_filters(
 			<ul>
 				<?php foreach ( $support_types as $_type => $text ) { ?>
 					<li>
-						<span class="learn-press-icon<?php echo $_type == $item->post_type ? ' item-selected' : ''; ?> item-<?php echo $_type; ?>" title="<?php echo sprintf( __( 'Switch to %s', 'learnpress' ), $text ); ?>" data-type="<?php echo $_type; ?>"></span>
+						<span class="learn-press-icon<?php echo $_type == $item_selected ? ' item-selected' : ''; ?> item-<?php echo $_type; ?>" title="<?php echo sprintf( __( 'Switch to %s', 'learnpress' ), $text ); ?>" data-type="<?php echo $_type; ?>"></span>
 					</li>
 				<?php } ?>
 			</ul>

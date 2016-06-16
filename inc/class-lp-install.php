@@ -429,7 +429,7 @@ class LP_Install {
 
 		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 		dbDelta( self::_get_schema() );
-
+		LP_Debug::instance()->add( 'create_table' );
 	}
 
 	private static function _get_schema() {
@@ -530,8 +530,8 @@ CREATE TABLE {$wpdb->prefix}learnpress_user_lessons (
   user_id bigint(11) unsigned NOT NULL,
   lesson_id bigint(11) unsigned NOT NULL,
   course_id bigint(11) DEFAULT NULL,
-  start_date datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  end_date datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  start_time datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  end_time datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   status varchar(20) DEFAULT NULL,
   PRIMARY KEY  (user_lesson_id)
 ) $collate;
@@ -543,8 +543,8 @@ CREATE TABLE {$wpdb->prefix}learnpress_user_course_items (
   user_id bigint(11) unsigned NOT NULL DEFAULT '0',
   item_id bigint(11) unsigned NOT NULL DEFAULT '0',
   course_id bigint(11) unsigned NOT NULL DEFAULT '0',
-  start_date datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  end_date datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  start_time datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  end_time datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   item_type varchar(45) NOT NULL DEFAULT '',
   status varchar(45) NOT NULL DEFAULT '',
   PRIMARY KEY  (user_course_item_id)

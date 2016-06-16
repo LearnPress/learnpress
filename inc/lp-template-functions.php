@@ -1325,6 +1325,18 @@ if ( !function_exists( 'learn_press_generate_template_information' ) ) {
 	}
 }
 
+if ( !function_exists( 'learn_press_course_remaining_time' ) ) {
+	/**
+	 * Show the time remain of a course
+	 */
+	function learn_press_course_remaining_time() {
+		$user = learn_press_get_current_user();
+		if ( !$user->has_finished_course( get_the_ID() ) && $text = $user->get( 'course-remaining-time', get_the_ID() ) ) {
+			learn_press_message( sprintf( __( 'This course will end within %s next', 'learn_press' ), $text ) );
+		}
+	}
+}
+
 add_filter( 'template_include', 'learn_press_permission_view_quiz', 100 );
 function learn_press_permission_view_quiz( $template ) {
 

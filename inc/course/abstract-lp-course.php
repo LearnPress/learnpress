@@ -367,7 +367,7 @@ abstract class LP_Abstract_Course {
 	 */
 	public function get_students_html( $user_id = null ) {
 		$output = '';
-		if ( $count = $this->count_users_enrolled() ):
+		if ( $count = $this->count_users_enrolled( 'append' ) ):
 			$course_info = $this->get_course_info( $user_id );
 			if ( $course_info['status'] ):
 				if ( $count == 1 ):

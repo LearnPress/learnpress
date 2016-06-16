@@ -2566,6 +2566,68 @@ function learn_press_auto_enroll_user_to_courses( $order_id ) {
 add_action( 'learn_press_order_status_completed', 'learn_press_auto_enroll_user_to_courses' );
 //add_action( 'init', 'learn_press_redirect_search' );
 
+if ( defined( 'LP_ENABLE_CART' ) && LP_ENABLE_CART ) {
+	add_filter( 'learn_press_checkout_settings', '_learn_press_cart_settings', 10, 2 );
+	function _learn_press_cart_settings( $settings, $class ) {
+		$settings = array_merge(
+			$settings,
+			array(
+				array(
+					'title' => __( 'Cart', 'learnpress' ),
+					'type'  => 'title'
+				),
+				array(
+					'title'   => __( 'Enable cart', 'learnpress' ),
+					'desc'    => __( 'Check this option to enable user can purchase multiple course at one time', 'learnpress' ),
+					'id'      => $class->get_field_name( 'enable_cart' ),
+					'default' => 'yes',
+					'type'    => 'checkbox'
+				),
+				array(
+					'title'   => __( 'Add to cart redirect', 'learnpress' ),
+					'desc'    => __( 'Redirect to checkout immediately after add course to cart', 'learnpress' ),
+					'id'      => $class->get_field_name( 'redirect_after_add' ),
+					'default' => 'yes',
+					'type'    => 'checkbox'
+				),
+				array(
+					'title'   => __( 'AJAX add to cart', 'learnpress' ),
+					'desc'    => __( 'Using AJAX to add course to the cart', 'learnpress' ),
+					'id'      => $class->get_field_name( 'ajax_add_to_cart' ),
+					'default' => 'no',
+					'type'    => 'checkbox'
+				),
+				array(
+					'title'   => __( 'Cart page', 'learnpress' ),
+					'id'      => $class->get_field_name( 'cart_page_id' ),
+					'default' => '',
+					'type'    => 'pages-dropdown'
+				)
+			)
+		);
+		return $settings;
+	}
+
+
+} else {
+	add_filter( 'learn_press_enable_cart', '_learn_press_enable_cart', 1000 );
+	function _learn_press_enable_cart( $r ) {
+		return false;
+	}
+
+	add_filter( 'learn_press_get_template', '_learn_press_enroll_button', 1000, 5 );
+	function _learn_press_enroll_button( $located, $template_name, $args, $template_path, $default_path ) {
+		if ( $template_name == 'single-course/enroll-button.php' ) {
+			$located = learn_press_locate_template( 'single-course/enroll-button-new.php', $template_path, $default_path );
+		}
+		return $located;
+	}
+
+	if ( get_option( 'learn_press_no_checkout_free_course' ) !== 'yes' ) {
+		update_option( 'learn_press_no_checkout_free_course', 'yes' );
+	}
+}
+
 include_once "debug.php";
 
 function learn_press_debug() {

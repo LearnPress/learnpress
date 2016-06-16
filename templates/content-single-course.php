@@ -12,7 +12,14 @@ if ( !defined( 'ABSPATH' ) ) {
 }
 
 global $course;
+
+if ( post_password_required() ) {
+	echo get_the_password_form();
+	return;
+}
+
 do_action( 'learn_press_before_single_course' ); ?>
+
 
 <div id="post-<?php the_ID(); ?>" <?php post_class(); ?> itemscope itemtype="http://schema.org/CreativeWork">
 

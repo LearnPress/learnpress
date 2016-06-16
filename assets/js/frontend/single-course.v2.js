@@ -5,6 +5,7 @@
  */
 ;(function ($) {
 
+	window.LP_V2 = true;
 	if (typeof jQuery == 'undefined' || typeof Backbone == 'undefined') {
 		console.log('Error');
 		return;
@@ -70,8 +71,8 @@
 			this.set('content', response);
 			switch (this.get('type')) {
 				case 'lp_lesson':
-					var $content = $html.find('#learn-press-course-lesson');
-					$('#learn-press-content-item').html($content);
+					var $content = $html.find('#learn-press-content-item').html();
+					$('#learn-press-content-item').html($content).show();
 					break;
 				case 'lp_quiz':
 					var data = this.$doc.triggerHandler('learn_press_item_redirect_url', {
@@ -148,22 +149,31 @@
 	});
 
 	CourseView = LP.CourseView = Backbone.View.extend({
-		el          : '.course-summary',
-		events      : {
-			'click .course-item-title': '_loadItem',
-			'click .course-item-nav a': '_loadItemNav'
+		el           : 'body',
+		events       : {
+			'click .button-load-item' : '_loadItem',
+			'click .course-item-nav a': '_loadItemNav',
+			'click .finish-course'    : '_finishCourse'
 		},
-		initialize  : function () {
+		initialize   : function () {
 			_.bindAll(this, '_itemChanged', '_itemLoaded');
 			this.initEvents();
+			this.initCurrent();
 		},
-		initEvents  : function () {
+		initEvents   : function () {
 			$(document)
 				.on('learn_press_item_current_changed', this._itemChanged)
 				.on('learn_press_item_loaded', this._itemLoaded)
 
 		},
-		_itemChanged: function (e, data) {
+		initCurrent  : function () {
+			var current = this.model.items.getCurrent();
+			if (!current) {
+				return;
+			}
+			current.itemLoaded($("html").html());
+		},
+		_itemChanged : function (e, data) {
 			var that = this;
 			switch (data.key) {
 				case 'current':
@@ -183,18 +193,18 @@
 					}
 			}
 		},
-		_itemLoaded : function (e, data) {
+		_itemLoaded  : function (e, data) {
 			$('.course-description-heading, .course-description').hide();
 			$('#learn-press-content-item').removeClass('loading');
 			return data;
 		},
-		_loadItem   : function (e) {
+		_loadItem    : function (e) {
 			e.preventDefault();
-			var $tag = $(e.target).closest('.course-item-title');
+			var $tag = $(e.target).closest('.button-load-item');
 			if (!$tag.is('a')) {
 				return false;
 			}
-			var id = $tag.data('id'),
+			var id = parseInt($tag.data('id')),
 				type = $tag.closest('.course-item').data('type'),
 				$item = this.model.items.findWhere({id: id});
 			if (!$item) {
@@ -204,18 +214,21 @@
 				return false;
 			}
 			this.model.items.setCurrent($item);
-			e.preventDefault();
 		},
-		_loadItemNav: function (e) {
+		_loadItemNav : function (e) {
+			e.preventDefault();
+
 			var id = $(e.target).attr('data-id'),
-				$item = this.$('.section-content a[data-id="' + id + '"]');
+				$item = this.$('.section-content a.button-load-item[data-id="' + id + '"]');
 			$item.trigger('click');
-			console.log(id, $item);
-			e.preventDefault();
+			console.log('_loadItemNav')
 		},
-		loadItem    : function (item) {
+		_finishCourse: function (e) {
+
 		},
-		extend      : function (obj) {
+		loadItem     : function (item) {
+		},
+		extend       : function (obj) {
 			for (var i in obj) {
 				this[i] = obj[i];
 			}
@@ -224,8 +237,10 @@
 	});
 
 	$(document).ready(function () {
-		LP.Views.Course = new CourseView({
-			model: new CourseModel(SingleCourse_Params)
-		});
+		if (typeof SingleCourse_Params != 'undefined') {
+			LP.Views.Course = new CourseView({
+				model: new CourseModel(SingleCourse_Params)
+			});
+		}
 	})
 })(jQuery);

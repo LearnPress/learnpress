@@ -31,7 +31,7 @@ class LP_Settings_Profile extends LP_Settings_Base {
 
 	public function get_settings() {
 		return apply_filters(
-			'learn_press_checkout_settings',
+			'learn_press_profile_settings',
 			array(
 				array(
 					'title'   => __( 'Profile page', 'learnpress' ),

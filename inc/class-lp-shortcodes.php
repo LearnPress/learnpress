@@ -47,8 +47,10 @@ class LP_Shortcodes {
 					$current_user = wp_get_current_user();
 					if ( !empty( $current_user->user_login ) ) {
 						$redirect = learn_press_get_endpoint_url( '', $current_user->user_login, learn_press_get_page_link( 'profile' ) );
-						wp_redirect( $redirect );
-						die();
+						if ( $redirect && !learn_press_is_current_url( $redirect ) ) {
+							wp_redirect( $redirect );
+							die();
+						}
 					} else {
 						ob_start();
 						wp_login_form(

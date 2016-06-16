@@ -11,6 +11,11 @@ if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
+if ( post_password_required() ) {
+	echo get_the_password_form();
+	return;
+}
+
 ?>
 
 <?php do_action( 'learn_press_before_single_quiz' ); ?>

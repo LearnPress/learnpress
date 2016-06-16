@@ -408,7 +408,7 @@ function learn_press_get_cart_total() {
  * @return bool
  */
 function learn_press_is_enable_cart() {
-	return LP()->settings->get( 'enable_cart' ) == 'yes';
+	return apply_filters( 'learn_press_enable_cart', LP()->settings->get( 'enable_cart' ) == 'yes' );
 }
 
 function learn_press_clear_cart_after_payment() {

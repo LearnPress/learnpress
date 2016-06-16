@@ -78,9 +78,9 @@
 					return;
 				}
 				if (item_id) {
-					if (!confirm('Change type of item will replace all data. Sure?')) {
-						return;
-					}
+					//if (!confirm('Change type of item will replace all data. Sure?')) {
+					return;
+					//}
 				}
 				$row.attr({
 					'data-type': type
@@ -493,6 +493,7 @@
 				args = $.extend({
 					edit_link: 'post.php?post=' + args.id + '&action=edit'
 				}, args || {});
+
 				var tmpl = wp.template('section-item'),
 					$item = $(tmpl(args || {}));
 				$item = LearnPress.Hook.applyFilters('learn_press_create_new_item', $item, $section);
@@ -589,9 +590,10 @@
 					selected = $items, //$form.find('li:visible input:checked'),
 					$section = $view.options.section;
 				selected.each(function () {
-					var $li = $(this);//.closest('li').addClass('selected'),
-					args = $li.dataToJSON(),
+					var $li = $(this),//.closest('li').addClass('selected'),
+						args = $li.dataToJSON(),
 						$item = that.createItem(args, $section);
+					console.log(args)
 					if ($item) {
 						that.addItemToSection($item, $section);
 					}
@@ -605,6 +607,8 @@
 				$item.removeClass('lp-item-empty');
 				if (!parseInt($item.attr('data-item_id'))) {
 					$item.find('a[data-action="remove"]').hide();
+				} else {
+					$item.removeClass('focus').find('.learn-press-dropdown-item-types ul').remove();
 				}
 				this.model.addItem(parseInt($item.attr('data-id')));
 				LearnPress.Hook.doAction('learn_press_add_item_to_section', $item, $section);
