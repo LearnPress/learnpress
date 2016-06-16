@@ -81,7 +81,6 @@
 					LearnPress.Hook.doAction('learn_press_item_content_loaded', this.model.get('content'), this);
 				}
 			}
-			console.log('initialize')
 		},
 		updateItem     : function () {
 			var $content = this.model.get('content');
@@ -91,6 +90,7 @@
 			if (url) {
 				LearnPress.setUrl(url);
 			}
+			$content.closest('#learn-press-content-item').show();
 			LearnPress.Hook.doAction('learn_press_item_content_loaded', $content, this);
 		},
 		_autoNextItem  : function (item, delay) {
@@ -204,7 +204,6 @@
 				return;
 			}
 			this.model.loadItem(item, link);
-			console.log('_loadItem', id, link)
 		}
 	});
 

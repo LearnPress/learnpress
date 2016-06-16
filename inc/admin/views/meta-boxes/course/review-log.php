@@ -70,9 +70,6 @@ if ( $user->is_instructor() && ( ( get_post() != 'publish' ) ) ) {
 	</div>
 	<?php ob_start(); ?>
 	<script type="text/javascript">
-		jQuery(function($){
-			console.log($('input[name="publish"]')[0])
-		})
 		jQuery('#post').submit(function (e) {
 			var $review = $('textarea[name="review_message"]', this),
 				status = $('select#post_status', this).val(),
@@ -86,8 +83,6 @@ if ( $user->is_instructor() && ( ( get_post() != 'publish' ) ) ) {
 				return false;
 			}else{
 			}
-			console.log($('input[name="publish"]')[0])
-
 		});
 		jQuery('#learn-press-notice-check').change(function(){
 			var that = this,

@@ -37,7 +37,6 @@ if (typeof LearnPress == 'undefined') {
 			this.courseItemsView = new $.LP_Course_Item_List_View({model: this.courseItems});
 
 			if (id) {
-				console.log(id)
 				this.courseItems.loadItem(id);
 			}
 
@@ -214,7 +213,6 @@ if (typeof LearnPress == 'undefined') {
 					//console.log(a.html())
 					window.wp.mediaelement.initialize();
 				} catch (e) {
-					console.log('window.wp.mediaelement is not defined');
 				}
 			}, 300);
 		})

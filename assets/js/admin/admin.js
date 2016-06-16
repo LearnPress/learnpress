@@ -7,7 +7,6 @@
 				.on('click', '[data-remove-confirm]', this._confirm);
 			setTimeout(function() {
 				$('[data-remove-confirm]').each(function () {
-					console.log($(this))
 				})
 			}, 1000);
 		},

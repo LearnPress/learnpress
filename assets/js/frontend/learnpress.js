@@ -39,7 +39,6 @@
 				offset  : 50,
 				callback: null
 			}, args || {});
-			console.log(args);
 			$('body, html')
 				.fadeIn(10)
 				.delay(args.delay)

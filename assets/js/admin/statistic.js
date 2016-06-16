@@ -41,7 +41,6 @@
 							response = LearnPress.parseJSON(response);
 							$container.LP_Chart_Line(response, LP_Chart_Config);
 							$container.removeClass('loading');
-							console.log(response.sql)
 						}
 					});
 					return false;
@@ -90,7 +89,6 @@
 							response = LearnPress.parseJSON(response);
 							$container.LP_Chart_Line(response, LP_Chart_Config);
 							$container.removeClass('loading');
-							console.log(response.sql)
 						}
 					});
 					return false;
@@ -139,7 +137,6 @@
 							response = LearnPress.parseJSON(response);
 							$container.LP_Chart_Line(response, LP_Chart_Config);
 							$container.removeClass('loading');
-							console.log(response.sql)
 						}
 					});
 					return false;

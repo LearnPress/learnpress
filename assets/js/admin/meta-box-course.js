@@ -593,7 +593,6 @@
 					var $li = $(this),//.closest('li').addClass('selected'),
 						args = $li.dataToJSON(),
 						$item = that.createItem(args, $section);
-					console.log(args)
 					if ($item) {
 						that.addItemToSection($item, $section);
 					}
@@ -642,13 +641,11 @@
 					$button.each(function () {
 						var $btn = $(this);
 						$btn.removeAttr('disabled').html($btn.attr('data-text') + ' (+' + selected.length + ')');
-						console.log($btn);
 					});
 				} else {
 					$button.each(function () {
 						var $btn = $(this);
 						$btn.attr('disabled', true).html($btn.attr('data-text'));
-						console.log($btn);
 					});
 				}
 			},

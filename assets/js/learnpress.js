@@ -58,33 +58,6 @@ if (typeof LearnPress == 'undefined') window.LearnPress = {};
 		},
 		finishCourse  : function (course_id, callback) {
 			if (!confirm(confirm_finish_course.confirm_finish_course)) return;
-
-			LearnPress.doAjax({
-				action: 'finish_course_x',
-				data: {
-					xxx: 1,
-					yyy: 2
-				},
-				success: function(res){
-					console.log(res)
-				}
-			});
-			return;
-			$.ajax({
-				type   : "POST",
-				url    : window,
-				data   : {
-					action   : 'learnpress_finish_course',
-					course_id: course_id
-				},
-				success: function (response) {
-					if (response.result == 'success') {
-
-					}
-					$.isFunction( callback ) && callback(response);
-					LearnPress.Hook.doAction( 'learn_press_user_finish_course', course_id, response );
-				}
-			});
 		},
 
 		load_lesson: function (permalink, args) {

@@ -910,12 +910,15 @@ a .archive-course:hover {
 
 #learn-press-content-item {
 	margin-bottom: 20px;
-	background: #F5F5F5;
+	background: #ffffff;
 	border: 1px solid #DDD;
 	padding: 20px;
 	display: none;
 }
 
+#learn-press-content-item .course-lesson-heading {
+	margin-top: 0;
+}
 #learn-press-content-item.loading {
 	height: 50px;
 	overflow: hidden;

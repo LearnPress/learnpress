@@ -221,7 +221,6 @@
 			var id = $(e.target).attr('data-id'),
 				$item = this.$('.section-content a.button-load-item[data-id="' + id + '"]');
 			$item.trigger('click');
-			console.log('_loadItemNav')
 		},
 		_finishCourse: function (e) {
 
