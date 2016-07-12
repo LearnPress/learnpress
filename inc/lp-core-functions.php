@@ -1840,7 +1840,7 @@ function learn_press_pre_get_posts( $q ) {
 	if ( !$q->is_main_query() || is_admin() ) {
 		return;
 	}
-	if ( learn_press_is_courses() && $limit = absint( LP()->settings->get( 'archive_course_limit' ) ) ) {
+	if ( ( learn_press_is_courses() || learn_press_is_course_taxonomy() ) && $limit = absint( LP()->settings->get( 'archive_course_limit' ) ) ) {
 		$q->set( 'posts_per_page', $limit );
 	}
 	if ( $q->get( 'post_type' ) == 'lp_course' && is_single() ) {
