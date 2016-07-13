@@ -6,6 +6,74 @@ if (typeof window.LearnPress == 'undefined') {
 }
 ;
 (function ($) {
+	$.fn.serializeJSON = function () {
+		var unIndexed = $(this).serializeArray(),
+			indexed = {},
+			validate = /(\[([a-zA-Z0-9_-]+)?\]?)/g,
+			arrayKeys = {},
+			end = false;
+		$.each(unIndexed, function () {
+			var that = this,
+				match = this.name.match(/^([0-9a-zA-Z_-]+)/);
+			if (!match) {
+				return;
+			}
+			var keys = this.name.match(validate),
+				objPath = "indexed['" + match[0] + "']";
+
+			if (keys) {
+				if (typeof indexed[match[0]] != 'object') {
+					indexed[match[0]] = {};
+				}
+
+				$.each(keys, function (i, prop) {
+					prop = prop.replace(/\]|\[/g, '');
+					var rawPath = objPath.replace(/'|\[|\]/g, ''),
+						objExp = '',
+						preObjPath = objPath;
+
+					if (prop == '') {
+						if (arrayKeys[rawPath] == undefined) {
+							arrayKeys[rawPath] = 0;
+						} else {
+							arrayKeys[rawPath]++;
+						}
+						objPath += "['" + arrayKeys[rawPath] + "']";
+					} else {
+						if (!isNaN(prop)) {
+							arrayKeys[rawPath] = prop;
+						}
+						objPath += "['" + prop + "']";
+					}
+					try {
+						if (i == keys.length - 1) {
+							objExp = objPath + "=that.value;";
+							end = true;
+						} else {
+							objExp = objPath + "={}";
+							end = false;
+						}
+
+						var evalString = "" +
+							"if( typeof " + objPath + " == 'undefined'){" + objExp + ";" +
+							"}else{" +
+							"if(end){" +
+							"if(typeof " + preObjPath + "!='object'){" + preObjPath + "={};}" +
+							objExp +
+							"}" +
+							"}";
+						eval(evalString);
+					} catch (e) {
+						console.log('Error:' + e + "\n" + objExp);
+					}
+				})
+			} else {
+				indexed[match[0]] = this.value;
+			}
+			indexed['how-old-are-you'] = 11
+		});
+		return indexed;
+	};
 	$.fn.hasEvent = function (name) {
 		var events = $(this).data('events');
 		if (typeof events.LearnPress == 'undefined') {

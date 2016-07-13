@@ -2287,7 +2287,8 @@ function learn_press_reset_auto_increment( $table ) {
  * @return string
  */
 function learn_press_get_log_file_path( $handle ) {
-	return trailingslashit( LP_LOG_PATH ) . $handle . '-' . sanitize_file_name( wp_hash( $handle ) ) . '.log';
+
+	return trailingslashit( LP_LOG_PATH ) . $handle . '-' . sanitize_file_name( function_exists('wp_hash') ? wp_hash( $handle ) : md5($handle) ) . '.log';
 }
 
 function learn_press_front_scripts() {

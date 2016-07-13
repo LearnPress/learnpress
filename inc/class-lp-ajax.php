@@ -275,6 +275,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			LP()->quiz = $quiz;
 
 
+
 			do_action( 'learn_press_load_quiz_question', $question_id, $quiz_id, $user_id );
 
 			$user = learn_press_get_current_user();
