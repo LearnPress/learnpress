@@ -19,8 +19,6 @@ Domain Path: /languages/
 defined( 'ABSPATH' ) || exit;
 
 if ( !defined( 'LP_PLUGIN_PATH' ) ) {
-	//define( 'LP_PLUGIN_URL', trailingslashit( plugins_url( '/', __FILE__ ) ) );
-
 	$upload_dir = wp_upload_dir();
 	define( 'LP_PLUGIN_FILE', __FILE__ );
 	define( 'LP_PLUGIN_PATH', trailingslashit( plugin_dir_path( __FILE__ ) ) );
