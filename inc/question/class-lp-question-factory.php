@@ -324,6 +324,13 @@ class LP_Question_Factory {
 
 	public static function save( $post_id ) {
 
+		global $post, $pagenow;
+
+		// Ensure that we are editing course in admin side
+		if ( ($pagenow != 'post.php') ) {
+			return;
+		}
+
 		if ( wp_is_post_revision( $post_id ) )
 			return;
 		if ( !in_array( get_post_type( $post_id ), array( 'lp_quiz', 'lp_question' ) ) ) {

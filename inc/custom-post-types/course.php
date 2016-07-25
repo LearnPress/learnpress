@@ -42,6 +42,9 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 */
 		public function delete_course_sections( $post_id ) {
 			global $wpdb;
+			if ( get_post_type( $post_id ) !== 'lp_course' ) {
+				return;
+			}
 			// delete all items in section first
 			$section_ids = $wpdb->get_col( $wpdb->prepare( "SELECT section_id FROM {$wpdb->prefix}learnpress_sections WHERE section_course_id = %d", $post_id ) );
 			if ( $section_ids ) {
@@ -756,9 +759,12 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 
 		public function before_save_curriculum() {
 
-			global $post;
+			global $post, $pagenow;
 
-			if ( get_post_type() != LP()->course_post_type ) return;
+			// Ensure that we are editing course in admin side
+			if ( ($pagenow != 'post.php') || ( get_post_type() != LP()->course_post_type ) ) {
+				return;
+			}
 
 			remove_action( 'save_post', array( $this, 'before_save_curriculum' ), 1000 );
 			//remove_action( 'rwmb_course_curriculum_before_save_post', array( $this, 'before_save_curriculum' ) );
