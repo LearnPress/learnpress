@@ -1332,7 +1332,7 @@ if ( !function_exists( 'learn_press_course_remaining_time' ) ) {
 	function learn_press_course_remaining_time() {
 		$user = learn_press_get_current_user();
 		if ( !$user->has_finished_course( get_the_ID() ) && $text = $user->get( 'course-remaining-time', get_the_ID() ) ) {
-			learn_press_message( sprintf( __( 'This course will end within %s next', 'learn_press' ), $text ) );
+			learn_press_message( sprintf( __( 'This course will end within %s next', 'learnpress' ), $text ) );
 		}
 	}
 }
