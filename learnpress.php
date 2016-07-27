@@ -662,4 +662,3 @@ function load_learn_press() {
 
 // Done! entry point of the plugin
 load_learn_press();
-
