@@ -1,3 +1,7 @@
+.post-type-lp_course input[type="text"],
+.post-type-lp_course select {
+	vertical-align: baseline;
+}
 .post-type-lp_course #postdivrich{
 	visibility: hidden;
 }

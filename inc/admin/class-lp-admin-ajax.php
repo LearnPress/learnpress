@@ -130,7 +130,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 		public static function json_search_customer_name( $query ) {
 			global $wpdb;
 
-			$term = wc_clean( stripslashes( $_GET['term'] ) );
+			$term = stripslashes( $_GET['term'] );
 			if ( method_exists( $wpdb, 'esc_like' ) ) {
 				$term = $wpdb->esc_like( $term );
 			} else {

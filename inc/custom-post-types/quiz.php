@@ -146,11 +146,20 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 							// ,
 							array(
 								'name' => __( 'Duration', 'learnpress' ),
-								'desc' => __( 'Duration of the quiz (in minutes). Auto submits when expire. Set 0 to disable.', 'learnpress' ),
+								'desc' => __( 'Duration of the quiz (in minutes). Auto submits when expire.', 'learnpress' ),
 								'id'   => "{$prefix}duration",
 								'type' => 'number',
 								'min'  => 0,
 								'std'  => 10
+							),
+							array(
+								'name' => __( 'Passing Grade (%)', 'learnpress' ),
+								'desc' => __( 'Requires user reached this point to pass the quiz.', 'learnpress' ),
+								'id'   => "{$prefix}passing_grade",
+								'type' => 'number',
+								'min'  => 0,
+								'max'  => 100,
+								'std'  => 0
 							),
 							array(
 								'name' => __( 'Re-take', 'learnpress' ),

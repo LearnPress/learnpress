@@ -401,7 +401,7 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 
 	protected function prepare_line_items() {
 		$this->line_items = array();
-		if ( $items = LP()->cart->get_items() ) {
+		if ( $items = LP()->get_checkout_cart()->get_items() ) {
 			foreach ( $items as $item ) {
 				$this->add_line_item( get_the_title( $item['item_id'] ), $item['quantity'], $item['total'] );
 			}

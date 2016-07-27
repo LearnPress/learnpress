@@ -16,8 +16,8 @@ if ( !defined( 'ABSPATH' ) ) {
  *
  * @return LP_Course|mixed
  */
-function learn_press_get_course( $the_course ) {
-	return LP_Course::get_course( $the_course );
+function learn_press_get_course( $the_course = false ) {
+	return $the_course ? LP_Course::get_course( $the_course ) : LP()->course;
 }
 
 function learn_press_get_quiz( $the_quiz ) {
@@ -32,11 +32,15 @@ function learn_press_get_quiz( $the_quiz ) {
  * @return bool
  */
 function learn_press_quiz_class( $class = null ) {
-	$quiz = LP()->quiz;
+	$item = LP()->global['course-item'];
 	$user = LP()->user;
-	if ( !$quiz ) {
+
+	if ( !$item ) {
 		return false;
 	}
+
+	$quiz = LP_Quiz::get_quiz( $item->ID );
+
 	if ( $class && is_string( $class ) ) {
 		$class = explode( ' ', $class );
 	} elseif ( !$class ) {
@@ -449,6 +453,39 @@ function learn_press_get_course_user( $course_id = null ) {
 	return learn_press_get_user( get_post_field( 'post_author', $course_id ) );
 }
 
+/**
+ * Get item types support in course curriculum
+ *
+ * @return mixed|null|void
+ */
+function learn_press_course_get_support_item_types() {
+	$types = array();
+	if ( !empty( $GLOBALS['learn_press_course_support_item_types'] ) ) {
+		$types = $GLOBALS['learn_press_course_support_item_types'];
+	}
+	return $types;
+}
+
+function learn_press_course_add_support_item_type() {
+	if ( empty( $GLOBALS['learn_press_course_support_item_types'] ) ) {
+		$GLOBALS['learn_press_course_support_item_types'] = array();
+	}
+	if ( func_num_args() == 1 && is_array( func_get_arg( 0 ) ) ) {
+		foreach ( func_get_arg( 0 ) as $type => $label ) {
+			learn_press_course_add_support_item_type( $type, $label );
+		}
+	} else if ( func_num_args() == 2 ) {
+		$GLOBALS['learn_press_course_support_item_types'][func_get_arg( 0 )] = func_get_arg( 1 );
+	}
+}
+
+learn_press_course_add_support_item_type(
+	array(
+		'lp_lesson' => __( 'Lesson', 'learnpress' ),
+		'lp_quiz'   => __( 'Quiz', 'learnpress' )
+	)
+);
+
 /////////////////////////
 function need_to_updating() {
 	ob_start();
@@ -459,7 +496,7 @@ function need_to_updating() {
 /* filter section item single course */
 function lean_press_get_course_sections() {
 	return apply_filters( 'lean_press_get_course_sections', array(
-			'lp_lesson',
-			'lp_quiz'
-		) );
+		'lp_lesson',
+		'lp_quiz'
+	) );
 }

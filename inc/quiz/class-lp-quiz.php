@@ -63,19 +63,20 @@ class LP_Quiz {
 		$this->_init();
 	}
 
+
 	protected function _init() {
 
 		add_action( 'wp_head', array( $this, 'frontend_assets' ) );
 	}
 
-	public function get_duration_html( $format = 'h:i:s' ) {
+	public function get_duration_html() {
 		$duration = $this->duration;
 		if ( $duration ) {
-			$duration = date( $format, $duration );
+			$duration = learn_press_seconds_to_time( $duration );
 		} else {
 			$duration = __( 'Unlimited', 'learnpress' );
 		}
-		return apply_filters( 'learn_press_quiz_duration', $duration, $this );
+		return apply_filters( 'learn_press_quiz_duration_html', $duration, $this );
 	}
 
 	public function get_total_questions() {
@@ -213,7 +214,7 @@ class LP_Quiz {
 	}
 
 	public function frontend_assets() {
-		if ( learn_press_is_quiz() && get_the_ID() == $this->id ) {
+		if ( learn_press_is_course() && LP()->global['course-item']->id == $this->id ) {
 			$translate = $this->get_localize();
 			LP_Assets::add_localize( $translate, false, 'single-quiz' );
 			LP_Assets::add_param( $this->get_settings(), false, 'single-quiz' );
@@ -244,6 +245,9 @@ class LP_Quiz {
 		}
 		$value = null;
 		switch ( $key ) {
+			case 'ID':
+				$value = $this->id;
+				break;
 			case 'current_question':
 
 				if ( ( $question = learn_press_get_request( 'question' ) ) && learn_press_is_quiz() ) {
@@ -255,6 +259,13 @@ class LP_Quiz {
 				break;
 			case 'permalink':
 				$value = get_the_permalink( $this->id );
+				break;
+				break;
+			case 'title':
+				$value = $this->post->post_title;
+				break;
+			case 'content':
+				$value = apply_filters( 'the_content', $this->post->post_content );
 				break;
 			default:
 				if ( array_key_exists( $key, self::$_meta[$this->id] ) ) {
@@ -289,7 +300,14 @@ class LP_Quiz {
 		return $this->course && $this->course->is_require_enrollment();
 	}
 
-	public function get_course() {
+	/**
+	 * Get the course that contains this quiz
+	 *
+	 * @param string
+	 *
+	 * @return bool|null
+	 */
+	public function get_course( $args = null ) {
 		if ( empty( $this->course ) ) {
 			global $wpdb;
 			$query = $wpdb->prepare( "
@@ -302,7 +320,14 @@ class LP_Quiz {
 				$this->course = LP_Course::get_course( $course_id );
 			}
 		}
-		return $this->course;
+		$return = $this->course;
+		if ( $this->course && $args ) {
+			$args = wp_parse_args( $args, array( 'field' => null ) );
+			if ( $args['field'] ) {
+				$return = $this->course->{$args['field']};
+			}
+		}
+		return $return;
 	}
 
 	public function get_user_id() {
@@ -419,7 +444,17 @@ class LP_Quiz {
 	}
 
 	public function get_question_link( $question_id = null ) {
-		return apply_filters( 'learn_press_quiz_question_permalink', get_the_permalink( $this->id ) . get_post_field( 'post_name', $question_id ), $question_id, $this );
+		$course = LP()->global['course'];
+
+		$permalink     = $course->get_item_link( $this->id );
+		$question_name = get_post_field( 'post_name', $question_id );
+		if ( '' != get_option( 'permalink_structure' ) && get_post_status( $this->id ) != 'draft' ) {
+			$permalink = $permalink . $question_name;
+		} else {
+			$permalink = add_query_arg( array( 'question', $question_name ), $permalink );
+		}
+
+		return apply_filters( 'learn_press_quiz_question_permalink', $permalink, $question_id, $this );
 	}
 
 	public function get_question_param( $name, $id ) {

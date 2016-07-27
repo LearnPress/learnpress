@@ -2,11 +2,11 @@
 ( function ($, Backbone, _) {
 	'use strict';
 
-	LearnPress.ModalSearchItems = function (options) {
-		return new LearnPress.ModalSearchItems.View(options);
+	LP.ModalSearchItems = function (options) {
+		return new LP.ModalSearchItems.View(options);
 	};
 
-	LearnPress.ModalSearchItems.View = Backbone.View.extend({
+	LP.ModalSearchItems.View = Backbone.View.extend({
 		tagName                  : 'div',
 		id                       : 'learn-press-modal-search-items',
 		options                  : {
@@ -27,7 +27,7 @@
 			this.options = options;
 			_.bindAll(this, 'render');
 			this.render();
-			LearnPress.Hook
+			LP.Hook
 				.addAction('learn_press_message_box_before_resize', function () {
 					that.$('article').css('height', '');
 				})
@@ -41,7 +41,7 @@
 			this.$el.attr({
 				tabindex   : 0,
 				'data-tmpl': this.options.template
-			}).append(LearnPress.template(this.options.template));
+			}).append(LP.template(this.options.template));
 
 			$(document.body).css({
 				'overflow': 'hidden'
@@ -78,7 +78,7 @@
 		},
 		_fetchItems              : function (response) {
 			this.$('article .lp-list-items').removeClass('lp-ajaxload').html(response.html);
-			LearnPress.log(response.html);
+			LP.log(response.html);
 			this.refreshModal();
 			$(document.body).trigger('learn_press_modal_search_items_fetch', this);
 		},
@@ -91,7 +91,7 @@
 				exclude: ''
 			}, args || {});
 			$.ajax({
-				url     : LearnPress_Settings.ajax,
+				url     : LP_Settings.ajax,
 				data    : {
 					action    : 'learnpress_modal_search_items',
 					type      : this.options.type,
@@ -103,7 +103,7 @@
 				type    : 'get',
 				dataType: 'text',
 				success : function (response) {
-					response = LearnPress.parseJSON(response);
+					response = LP.parseJSON(response);
 					that._fetchItems(response);
 				}
 			})
@@ -117,7 +117,7 @@
 				'overflow': 'auto'
 			});
 			this.remove();
-			LearnPress.MessageBox.hide();
+			LP.MessageBox.hide();
 			$(document.body).trigger('learn_press_modal_search_items_removed', this);
 		},
 		_addItems                : function (e) {
@@ -146,7 +146,7 @@
 				this.searchTimer = setTimeout(function () {
 					that.search({
 						term   : e.target.value,
-						exclude: LearnPress.Hook.applyFilters('learn_press_modal_search_items_exclude', that.options.exclude, that)
+						exclude: LP.Hook.applyFilters('learn_press_modal_search_items_exclude', that.options.exclude, that)
 					});
 				}, 300);
 				this.searchTerm = e.target.value;

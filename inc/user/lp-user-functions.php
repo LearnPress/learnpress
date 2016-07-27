@@ -7,6 +7,61 @@
  * @version 1.0
  */
 
+/**
+ * Delete user data by user ID
+ *
+ * @param $user_id
+ * @param $course_id
+ */
+function learn_press_delete_user_data( $user_id, $course_id = 0 ) {
+	global $wpdb;
+	// TODO: Should be deleted user's order and order data???
+
+	$query_args = array( $user_id );
+	if ( $course_id ) {
+		$query_args[] = $course_id;
+	}
+	// delete all courses user has enrolled
+	$query = $wpdb->prepare( "
+				DELETE FROM {$wpdb->prefix}learnpress_user_items
+				WHERE user_id = %d
+				" . ( $course_id ? " AND item_id = %d" : "" ) . "
+			", $query_args );
+	@$wpdb->query( $query );
+
+	return;
+
+	// delete all lessons user has learned
+	$query = $wpdb->prepare( "
+				DELETE FROM {$wpdb->prefix}learnpress_user_lessons
+				WHERE user_id = %d
+				" . ( $course_id ? " AND course_id = %d" : "" ) . "
+			", $query_args );
+	@$wpdb->query( $query );
+
+	// delete all quizzes user has started
+	$query = $wpdb->prepare( "
+				DELETE FROM a1, a2
+				USING {$wpdb->prefix}learnpress_user_quizzes AS a1
+				INNER JOIN {$wpdb->prefix}learnpress_user_quizmeta AS a2
+				WHERE a1.user_quiz_id = a2.learnpress_user_quiz_id
+				AND a1.user_id = %d
+				" . ( $course_id ? " AND course_id = %d" : "" ) . "
+			", $query_args );
+	@$wpdb->query( $query );
+
+	// delete all items user has started such as lessons, quizzes
+	$query = $wpdb->prepare( "
+				DELETE FROM a1, a2
+				USING {$wpdb->prefix}learnpress_user_course_items AS a1
+				INNER JOIN {$wpdb->prefix}learnpress_user_course_itemmeta AS a2
+				WHERE a1.user_course_item_id = a2.learnpress_user_course_item_id
+				AND a1.user_id = %d
+				" . ( $course_id ? " AND course_id = %d" : "" ) . "
+			", $query_args );
+	@$wpdb->query( $query );
+}
+
 add_action( 'learn_press_user_finished_course', 'learn_press_user_finished_course_send_email', 999, 2 );
 
 function learn_press_user_finished_course_send_email( $course_id = null, $user_id = null ) {
@@ -293,7 +348,7 @@ function learn_press_edit_admin_bar() {
 		$course_profile['id']             = 'course_profile';
 		$course_profile['parent']         = 'user-actions';
 		$course_profile['title']          = $text ? $text : get_the_title( $profile );
-		$course_profile['href']           = learn_press_get_page_link( 'profile' );
+		$course_profile['href']           = learn_press_user_profile_link();
 		$course_profile['meta']['target'] = LP()->settings->get( 'admin_bar_link_target' );
 		$wp_admin_bar->add_menu( $course_profile );
 	}

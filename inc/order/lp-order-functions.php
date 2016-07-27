@@ -179,6 +179,36 @@ function learn_press_remove_order_item( $item_id ) {
 	return true;
 }
 
+function _learn_press_before_delete_order_item( $item_id ) {
+	global $wpdb;
+	if ( $order = learn_press_get_order_by_item_id( $item_id ) ) {
+		$course_id = learn_press_get_order_item_meta( $item_id, '_course_id' );
+		learn_press_delete_user_data( $order->user_id, $course_id );
+	}
+}
+
+add_action( 'learn_press_before_delete_order_item', '_learn_press_before_delete_order_item' );
+
+function _learn_press_ajax_add_order_item_meta( $item ) {
+	$item_id = $item['id'];
+	if ( $order = learn_press_get_order_by_item_id( $item_id ) ) {
+		if ( $order->get_status() == 'completed' ) {
+			learn_press_auto_enroll_user_to_courses( $order->id );
+		}
+	}
+}
+
+add_action( 'learn_press_ajax_add_order_item_meta', '_learn_press_ajax_add_order_item_meta' );
+
+function learn_press_get_order_by_item_id( $item_id ) {
+	global $wpdb;
+	$order_id = $wpdb->get_var( $wpdb->prepare( "SELECT order_id FROM {$wpdb->prefix}learnpress_order_items WHERE order_item_id = %d", $item_id ) );
+	if ( $order_id && $order = learn_press_get_order( $order_id ) ) {
+		return $order;
+	}
+	return false;
+}
+
 function learn_press_add_order_item_meta( $item_id, $meta_key, $meta_value, $prev_value = '' ) {
 	return add_metadata( 'learnpress_order_item', $item_id, $meta_key, $meta_value, $prev_value );
 }

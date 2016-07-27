@@ -83,7 +83,7 @@
 						if (data == undefined || data.redirect == undefined) {
 							data.redirect = this.get('url');
 						}
-						LearnPress.reload(data.redirect);
+						LP.reload(data.redirect);
 					}
 					break;
 				default:
@@ -126,7 +126,7 @@
 						_r = item.get('url')
 					}
 					try {
-						LearnPress.setUrl(_r);
+						LP.setUrl(_r);
 					} catch (e) {
 					}
 				}
@@ -183,7 +183,7 @@
 							return;
 						}
 						$('#learn-press-content-item').addClass('loading');
-						LearnPress.toElement('#learn-press-content-item', {
+						LP.toElement('#learn-press-content-item', {
 							delay   : 0,
 							duration: 0,
 							callback: function () {

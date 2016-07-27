@@ -1,7 +1,7 @@
 ;
 (function ($) {
-	if (typeof LearnPress == 'undefined') {
-		LearnPress = {};
+	if (typeof LP == 'undefined') {
+		LP = {};
 	}
 	$(document).ready(function () {
 		if (typeof Backbone == 'undefined') return;
@@ -58,10 +58,10 @@
 				this.render();
 				_.bindAll(this, 'render', 'searchItem', 'addItemsToSection', 'addItemToSection', 'addNewItem', 'toggleAddItemButtonState', 'getSelectedItems', '_sectionActionHandler', '_changeItemType', '_updateItem');
 				this.initPage();
-				LearnPress.Hook.addAction('learn_press_message_box_before_resize', this.resetModalSearch)
-				LearnPress.Hook.addAction('learn_press_message_box_resize', this.updateModalSearch);
+				LP.Hook.addAction('learn_press_message_box_before_resize', this.resetModalSearch)
+				LP.Hook.addAction('learn_press_message_box_resize', this.updateModalSearch);
 				$(document).on('learn_press_modal_search_items_response', this.addItemsToSection);
-				LearnPress.Hook.addFilter('learn_press_modal_search_items_exclude', this.getSelectedItems);
+				LP.Hook.addFilter('learn_press_modal_search_items_exclude', this.getSelectedItems);
 			},
 			_focusItem              : function (e) {
 				$(e.target).closest('tr').removeClass('focus');
@@ -320,7 +320,7 @@
 						.attr('data-type', to)
 						.find('.lp-item-type', to);
 				}
-				LearnPress.Hook.doAction('learn_press_change_section_item_type', from, to);
+				LP.Hook.doAction('learn_press_change_section_item_type', from, to);
 			},
 			getPrevInput            : function ($input) {
 				var $inputs = this.$('input.no-submit:visible'),
@@ -374,7 +374,7 @@
 					return;
 				}
 				$.ajax({
-					url     : LearnPress_Settings.ajax,
+					url     : LP_Settings.ajax,
 					data    : {
 						action: 'learnpress_add_new_item',
 						name  : $input.val(),
@@ -383,7 +383,7 @@
 					type    : 'post',
 					dataType: 'html',
 					success : function (response) {
-						var json = LearnPress.parseJSON(response);
+						var json = LP.parseJSON(response);
 						if (json.post && json.post.ID) {
 							$item = that.createItem({
 								id       : json.post.ID,
@@ -408,7 +408,7 @@
 					textLen = value.length,
 					type = $input.data('field');
 				if ($input.attr('name') == 'lp-new-item-name') {
-					LearnPress.log(textLen)
+					LP.log(textLen)
 					if (textLen > 0) {
 						$input.siblings('.lp-button-add-item').removeClass('disabled');
 					} else {
@@ -496,7 +496,7 @@
 
 				var tmpl = wp.template('section-item'),
 					$item = $(tmpl(args || {}));
-				$item = LearnPress.Hook.applyFilters('learn_press_create_new_item', $item, $section);
+				$item = LP.Hook.applyFilters('learn_press_create_new_item', $item, $section);
 				return $item;
 			},
 			needCreateNewSection    : function () {
@@ -530,7 +530,7 @@
 				}).get();
 			},
 			showFormItems           : function (type, action, $button) {
-				var $form = LearnPress.ModalSearchItems({
+				var $form = LP.ModalSearchItems({
 					template  : 'tmpl-learn-press-search-items',
 					type      : type,
 					section   : $button.closest('.curriculum-section'),
@@ -538,7 +538,7 @@
 					context_id: $('#post_ID').val(),
 					exclude   : this.getSelectedItems()
 				});
-				LearnPress.MessageBox.show($form.$el);
+				LP.MessageBox.show($form.$el);
 				$form.$el.find('header input').focus();
 
 			},
@@ -554,7 +554,7 @@
 						this.showFormItems(type, action, $button);
 						break;
 					default:
-						LearnPress.Hook.doAction('learn_press_section_button_click', $button, action, this);
+						LP.Hook.doAction('learn_press_section_button_click', $button, action, this);
 				}
 			},
 			searchItem              : function (e) {
@@ -566,7 +566,7 @@
 						return a.length
 					}).join('|'), "ig"),
 					found = 0;
-				LearnPress.log(text)
+				LP.log(text)
 				found = $lis.filter(function () {
 					var $el = $(this),
 						itemText = $el.data('text') + '',
@@ -610,12 +610,12 @@
 					$item.removeClass('focus').find('.learn-press-dropdown-item-types ul').remove();
 				}
 				this.model.addItem(parseInt($item.attr('data-id')));
-				LearnPress.Hook.doAction('learn_press_add_item_to_section', $item, $section);
+				LP.Hook.doAction('learn_press_add_item_to_section', $item, $section);
 			},
 			addNewItem              : function (e) {
 				var $form = $(e.target).closest('.lp-modal-search');
 				$.ajax({
-					url     : LearnPress_Settings.ajax,
+					url     : LP_Settings.ajax,
 					data    : {
 						action: 'learnpress_quick_add_item',
 						name  : $form.find('input[name="lp-item-name"]').val(),
@@ -624,7 +624,7 @@
 					type    : 'post',
 					dataType: 'html',
 					success : function (response) {
-						var json = LearnPress.parseJSON(response);
+						var json = LP.parseJSON(response);
 						if (json.html) {
 							var $item = $(json.html)
 							$form.find('ul').append($item);
@@ -984,7 +984,7 @@
 						return $(this).find('.lp-item-name').val()
 					}).get().join('</p><p>+&nbsp;');
 
-				LearnPress.MessageBox.quickConfirm(target, {
+				LP.MessageBox.quickConfirm(target, {
 					onOk    : function (a) {
 						var ids = [];
 						a.items && a.items.each(function () {
@@ -1024,13 +1024,13 @@
 			},
 			removeItemDB            : function (id) {
 				$.ajax({
-					url    : LearnPress_Settings.ajax,
+					url    : LP_Settings.ajax,
 					data   : {
 						action: 'learnpress_remove_course_items',
 						id    : id
 					},
 					success: function (response) {
-						LearnPress.log(response)
+						LP.log(response)
 					}
 				});
 			},
@@ -1076,12 +1076,12 @@
 						});
 						break;
 					case 'remove':
-						LearnPress.MessageBox.quickConfirm($button, {
+						LP.MessageBox.quickConfirm($button, {
 							onOk: function (a) {
 								var $section = $(a);
 
 								$.ajax({
-									url    : LearnPress_Settings.ajax,
+									url    : LP_Settings.ajax,
 									data   : {
 										action: 'learnpress_remove_course_section',
 										id    : $section.attr('data-id')
@@ -1094,7 +1094,7 @@
 							data: $button.closest('.curriculum-section')
 						});
 						break;
-						LearnPress.MessageBox.show('Do you want to remove this section?', {
+						LP.MessageBox.show('Do you want to remove this section?', {
 							buttons: 'yesNo',
 							data   : $button.closest('.curriculum-section'),
 							events : {
@@ -1102,7 +1102,7 @@
 									var $section = $(args.data);
 
 									$.ajax({
-										url    : LearnPress_Settings.ajax,
+										url    : LP_Settings.ajax,
 										data   : {
 											action: 'learnpress_remove_course_section',
 											id    : $section.attr('data-id')
@@ -1124,8 +1124,8 @@
 		var model = new LP_Curriculum_Model(LP_Curriculum_Settings),
 			view = new LP_Curriculum_View(model);
 
-		LearnPress.$LP_Curriculum_Model = model;
-		LearnPress.$LP_Curriculum_View = view;
+		LP.$LP_Curriculum_Model = model;
+		LP.$LP_Curriculum_View = view;
 	});
 
 	function updateHiddenCurriculum(hidden) {
@@ -1151,7 +1151,7 @@
 		}
 
 		$.ajax({
-			url    : LearnPress_Settings.ajax,
+			url    : LP_Settings.ajax,
 			data   : {
 				action   : 'learnpress_update_curriculum_section_state',
 				course_id: $('#post_ID').val(),
@@ -1245,7 +1245,7 @@
 			}
 			;
 			$.ajax({
-				url    : LearnPress_Settings.ajax,
+				url    : LP_Settings.ajax,
 				type   : 'post',
 				data   : {
 					action   : 'learnpress_update_editor_hidden',
@@ -1298,14 +1298,14 @@
 					ui.placeholder.html('<td colspan="' + cellCount + '">&nbsp;</td>');
 				},
 				sort       : function (e, ui) {
-					LearnPress.log(ui.helper.html())
+					LP.log(ui.helper.html())
 				},
 				stop       : function (e, ui) {
 					var $emptyItem = ui.item.parent().find('.lp-item-empty:last');
-					LearnPress.log('empty:')
-					LearnPress.log($emptyItem.get(0))
-					LearnPress.log('next:')
-					LearnPress.log($emptyItem.next().get(0))
+					LP.log('empty:')
+					LP.log($emptyItem.get(0))
+					LP.log('next:')
+					LP.log($emptyItem.next().get(0))
 					if ($emptyItem.next().is(ui.item.get(0))) {
 						$emptyItem.insertAfter(ui.item);
 					}

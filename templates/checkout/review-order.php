@@ -13,6 +13,8 @@ if ( !defined( 'ABSPATH' ) ) {
 
 $review_order_heading = apply_filters( 'learn_press_checkout_review_order_heading', __( 'Your order', 'learnpress' ) );
 
+$cart = learn_press_get_checkout_cart();
+
 ?>
 
 <?php if ( $review_order_heading ) { ?>
@@ -30,7 +32,7 @@ $review_order_heading = apply_filters( 'learn_press_checkout_review_order_headin
 
 	<?php do_action( 'learn_press_review_order_before_cart_contents' ); ?>
 
-	<?php foreach ( LP()->cart->get_items() as $item_id => $cart_item ) {
+	<?php if ( $items = $cart->get_items() ) foreach ( $items as $item_id => $cart_item ) {
 		$cart_item = apply_filters( 'learn_press_cart_item', $cart_item );
 		$_course   = learn_press_get_course( $item_id );
 		if ( $_course && $cart_item['quantity'] > 0 ) {
@@ -41,7 +43,7 @@ $review_order_heading = apply_filters( 'learn_press_checkout_review_order_headin
 					<?php echo apply_filters( 'learn_press_cart_item_quantity', ' <strong class="course-quantity">' . sprintf( '&times; %s', $cart_item['quantity'] ) . '</strong>', $cart_item ); ?>
 				</td>
 				<td class="course-total">
-					<?php echo apply_filters( 'learn_press_cart_item_subtotal', LP()->cart->get_item_subtotal( $_course, $cart_item['quantity'] ), $cart_item ); ?>
+					<?php echo apply_filters( 'learn_press_cart_item_subtotal', $cart->get_item_subtotal( $_course, $cart_item['quantity'] ), $cart_item ); ?>
 				</td>
 			</tr>
 			<?php
@@ -56,14 +58,14 @@ $review_order_heading = apply_filters( 'learn_press_checkout_review_order_headin
 
 	<tr class="cart-subtotal">
 		<th><?php _e( 'Subtotal', 'learnpress' ); ?></th>
-		<td><?php echo LP()->cart->get_subtotal(); ?></td>
+		<td><?php echo $cart->get_subtotal(); ?></td>
 	</tr>
 
 	<?php do_action( 'learn_press_review_order_before_order_total' ); ?>
 
 	<tr class="order-total">
 		<th><?php _e( 'Total', 'learnpress' ); ?></th>
-		<td><?php echo LP()->cart->get_total(); ?></td>
+		<td><?php echo $cart->get_total(); ?></td>
 	</tr>
 
 	<?php do_action( 'learn_press_review_order_after_order_total' ); ?>

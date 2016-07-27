@@ -21,7 +21,6 @@ class LP_Shortcodes {
 			'learn_press_confirm_order'       => __CLASS__ . '::confirm_order',
 			'learn_press_profile'             => __CLASS__ . '::profile',
 			'learn_press_become_teacher_form' => __CLASS__ . '::become_teacher_form',
-			'learn_press_cart'                => __CLASS__ . '::cart',
 			'learn_press_checkout'            => __CLASS__ . '::checkout',
 		);
 
@@ -53,9 +52,11 @@ class LP_Shortcodes {
 						}
 					} else {
 						ob_start();
+						add_filter( 'login_form_bottom', array( __CLASS__, '_login_form_bottom' ), 10, 2 );
 						wp_login_form(
 							array(
-								'form_id' => 'learn-press-form-login'
+								'form_id' => 'learn-press-form-login',
+								'context' => 'learn-press-login'
 							)
 						);
 						$content            = ob_get_clean();
@@ -85,41 +86,54 @@ class LP_Shortcodes {
 				if ( !preg_match( '/\[learn_press_profile\s?(.*)\]/', $post->post_content ) ) {
 					$post->post_content .= '[learn_press_profile]';
 				}
-			} elseif ( $page_id == learn_press_get_page_id( 'cart' ) ) {
-				if ( !preg_match( '/\[learn_press_cart\s?(.*)\]/', $post->post_content ) ) {
-					$post->post_content .= '[learn_press_cart]';
-				}
 			} elseif ( $page_id == learn_press_get_page_id( 'become_a_teacher' ) ) {
 				if ( !preg_match( '/\[learn_press_become_teacher_form\s?(.*)\]/', $post->post_content ) ) {
 					$post->post_content .= '[learn_press_become_teacher_form]';
 				}
 			}
+
+			do_action( 'learn_press_auto_shortcode', $post, $template );
 		}
 		return $template;
+	}
+
+	public static function _login_form_bottom( $content, $args ) {
+		if ( !( !empty( $args['context'] ) && $args['context'] == 'learn-press-login' ) ) {
+			return;
+		}
+		print_r( $args );
+
+	}
+
+	public static function wrapper_shortcode( $content ) {
+		return '<div class="learnpress">' . $content . '</div>';
 	}
 
 	/**
 	 * Checkout form
 	 *
+	 * @param array
+	 *
 	 * @return string
 	 */
-	public static function checkout() {
+	public static function checkout( $atts ) {
 		global $wp;
 		ob_start();
+
 		if ( isset( $wp->query_vars['lp-order-received'] ) ) {
 
 			self::order_received( $wp->query_vars['lp-order-received'] );
 
 		} else {
+			$cart = learn_press_get_checkout_cart();
 			// Check cart has contents
-			if ( LP()->cart->is_empty() ) {
+			if ( $cart->is_empty() ) {
 				learn_press_get_template( 'cart/empty-cart.php', array( 'checkout' => LP()->checkout() ) );
 			} else {
 				learn_press_get_template( 'checkout/form.php', array( 'checkout' => LP()->checkout() ) );
 			}
 		}
-
-		return ob_get_clean();
+		return self::wrapper_shortcode( ob_get_clean() );
 	}
 
 	private static function order_received( $order_id = 0 ) {
@@ -145,17 +159,13 @@ class LP_Shortcodes {
 		learn_press_get_template( 'checkout/order-received.php', array( 'order' => $order ) );
 	}
 
-	public static function cart() {
-		ob_start();
-		// Check cart has contents
-		if ( LP()->cart->is_empty() ) {
-			learn_press_get_template( 'cart/empty-cart.php', array( 'cart' => LP()->cart ) );
-		} else {
-			learn_press_get_template( 'cart/form.php', array( 'cart' => LP()->cart ) );
-		}
-		return ob_get_clean();
-	}
-
+	/**
+	 * Shortcode content for "Confirm Order" page
+	 *
+	 * @param array $atts
+	 *
+	 * @return string
+	 */
 	public static function confirm_order( $atts = null ) {
 		$atts = shortcode_atts(
 			array(
@@ -174,11 +184,16 @@ class LP_Shortcodes {
 		if ( $order ) {
 			learn_press_get_template( 'order/confirm.php', array( 'order' => $order ) );
 		}
-		return ob_get_clean();
+
+		return self::wrapper_shortcode( ob_get_clean() );
 	}
 
 	/**
 	 * Display a form let the user can be join as a teacher
+	 *
+	 * @param array|null
+	 *
+	 * @return string
 	 */
 	public static function become_teacher_form( $atts ) {
 		$user = learn_press_get_current_user();
@@ -249,7 +264,8 @@ class LP_Shortcodes {
 		$html = ob_get_clean();
 
 		LP_Assets::enqueue_script( 'become-teacher' );
-		return $html;
+
+		return self::wrapper_shortcode( $html );
 	}
 
 	public static function profile() {
@@ -320,7 +336,8 @@ class LP_Shortcodes {
 			}
 		}
 		$output .= ob_get_clean();
-		return $output;
+
+		return self::wrapper_shortcode( $output );
 	}
 }
 

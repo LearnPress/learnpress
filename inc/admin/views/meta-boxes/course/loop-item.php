@@ -11,12 +11,7 @@ $section_item_id = !empty( $item->section_item_id ) ? $item->section_item_id : n
 $item_id         = !empty( $item->item_id ) ? $item->item_id : null;
 $group_name      = '_lp_curriculum[__SECTION__][items][' . ( $section_item_id ? $section_item_id : '__ITEM__' ) . ']';
 
-$support_types = apply_filters(
-	'learn_press_support_item_types', array(
-		'lp_lesson' => __( 'Lesson', 'learnpress' ),
-		'lp_quiz'   => __( 'Quiz', 'learnpress' )
-	)
-);
+$support_types = learn_press_course_get_support_item_types();
 if ( !empty( $support_types[$item->post_type] ) ) {
 	$item_selected = $item->post_type;
 } else {

@@ -101,48 +101,52 @@ class LP_Assets extends LP_Abstract_Assets {
 	 * Load assets for frontend
 	 */
 	public static function load_scripts() {
+
+		$min = LP()->settings->get( 'debug' ) != 'yes' ? '.min' : '';
+
 		$deps = array( 'jquery', 'backbone', 'utils', 'course-lesson', 'jalerts' );
 
 		// global
 		self::add_style( 'learn-press-icon', learn_press_plugin_url( 'assets/css/icons.css' ) );
-		self::add_script( 'learn-press-global', learn_press_plugin_url( 'assets/js/global.js' ), $deps );
+		self::add_script( 'learn-press-global', learn_press_plugin_url( 'assets/js/global' . $min . '.js' ), $deps );
 		//self::add_script( 'learn-press-block-ui', learn_press_plugin_url( 'assets/js/jquery.block-ui.js' ) );
 
 		// jAlerts
 		self::add_style( 'jalerts', learn_press_plugin_url( 'assets/css/icons.css' ) );
-		self::add_script( 'jalerts', learn_press_plugin_url( 'assets/js/jquery.alert.js' ) );
+		self::add_script( 'jalerts', learn_press_plugin_url( 'assets/js/jquery.alert' . $min . '.js' ) );
 
 		// admin
 		self::add_style( 'learn-press-admin', learn_press_plugin_url( 'assets/css/admin/admin.css' ) );
 
 		// frontend
 		self::add_style( 'learn-press', learn_press_plugin_url( 'assets/css/learnpress.css' ) );
-		self::add_script( 'learn-press-js', learn_press_plugin_url( 'assets/js/frontend/learnpress.js' ), array( 'learn-press-global' ) );
+		self::add_script( 'learn-press-js', learn_press_plugin_url( 'assets/js/frontend/learnpress' . $min . '.js' ), array( 'learn-press-global' ) );
 
 		// lesson
-		self::add_script( 'course-lesson', learn_press_plugin_url( 'assets/js/frontend/course-lesson.js' ) );
+		self::add_script( 'course-lesson', learn_press_plugin_url( 'assets/js/frontend/course-lesson' . $min . '.js' ) );
 
 
 		$v2 = "";
 		// single course
-		self::add_script( 'single-course', learn_press_plugin_url( 'assets/js/frontend/single-course' . $v2 . '.js' ), $deps );
+		self::add_script( 'single-course', learn_press_plugin_url( 'assets/js/frontend/single-course' . $v2 . $min . '.js' ), $deps );
+		self::add_script( 'course-quiz', LP()->js( 'frontend/course-quiz.js' ), $deps );
 		if ( $v2 && wp_get_theme()->get( 'Name' ) == 'eduma' ) {
-			self::add_script( 'eduma-single-course', learn_press_plugin_url( 'assets/eduma/custom-script.js' ) );
+			self::add_script( 'eduma-single-course', learn_press_plugin_url( 'assets/eduma/custom-script' . $min . '.js' ) );
 			self::add_style( 'eduma-single-course', learn_press_plugin_url( 'assets/eduma/custom-style.css' ) );
 		}
 
 		if ( LP()->settings->get( 'ajax_add_to_cart' ) == 'yes' ) {
-			self::add_script( 'learn-press-add-to-cart', learn_press_plugin_url( 'assets/js/frontend/add-to-cart.js' ) );
+			self::add_script( 'learn-press-add-to-cart', learn_press_plugin_url( 'assets/js/frontend/add-to-cart' . $min . '.js' ) );
 		}
 		// single quiz
-		self::add_script( 'learn-press-timer', learn_press_plugin_url( 'assets/js/jquery.timer.js' ) );
-		self::add_script( 'single-quiz', learn_press_plugin_url( 'assets/js/frontend/single-quiz.js' ), $deps );
+		self::add_script( 'learn-press-timer', learn_press_plugin_url( 'assets/js/jquery.timer' . $min . '.js' ) );
+		self::add_script( 'single-quiz', learn_press_plugin_url( 'assets/js/frontend/single-quiz' . $min . '.js' ), $deps );
 
 		// checkout page
-		self::add_script( 'checkout', learn_press_plugin_url( 'assets/js/frontend/checkout.js' ) );
+		self::add_script( 'checkout', learn_press_plugin_url( 'assets/js/frontend/checkout' . $min . '.js' ) );
 
 		// become teacher
-		self::add_script( 'become-teacher', learn_press_plugin_url( 'assets/js/frontend/become-teacher.js' ) );
+		self::add_script( 'become-teacher', learn_press_plugin_url( 'assets/js/frontend/become-teacher' . $min . '.js' ) );
 
 	}
 
@@ -170,7 +174,7 @@ class LP_Assets extends LP_Abstract_Assets {
 		// single course
 		if ( learn_press_is_course() ) {
 			self::enqueue_script( 'single-course' );
-
+			self::enqueue_script( 'course-quiz' );
 			$course = LP()->course;
 			if ( $course->load_media == 'yes' ) {
 				wp_enqueue_style( 'wp-mediaelement' );
@@ -180,12 +184,14 @@ class LP_Assets extends LP_Abstract_Assets {
 			} else {
 				self::enqueue_script( 'learn-press-add-to-cart' );
 			}
+			//self::enqueue_script( 'learn-press-timer' );
+			//self::enqueue_script( 'single-quiz' );
 		}
 
 		// single quiz
 		if ( learn_press_is_quiz() ) {
-			self::enqueue_script( 'learn-press-timer' );
-			self::enqueue_script( 'single-quiz' );
+			//self::enqueue_script( 'learn-press-timer' );
+			//self::enqueue_script( 'single-quiz' );
 		}
 
 		// checkout page

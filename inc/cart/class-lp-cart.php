@@ -26,14 +26,20 @@ class LP_Cart {
 	 *
 	 * @var array
 	 */
-	private $_cart_content = array();
+	protected $_cart_content = array();
+
+	/**
+	 * Key of cart content stored in session
+	 *
+	 * @var string
+	 */
+	protected $_cart_session_key = 'cart';
 
 	/**
 	 * Constructor
 	 */
 	public function __construct() {
-		//if ( self::$instance ) return;
-		if ( !is_array( $this->_cart_content = LP_Session::get( 'cart' ) ) ) {
+		if ( !is_array( $this->_cart_content = learn_press_session_get( $this->_cart_session_key ) ) ) {
 			$this->_cart_content = $this->get_default_cart_content();
 		}
 
@@ -53,6 +59,14 @@ class LP_Cart {
 		LP_Request_Handler::register( 'add-course-to-cart', array( $this, 'add_to_cart' ), 20 );
 		LP_Request_Handler::register( 'remove-cart-item', array( $this, 'remove_item' ), 20 );
 		add_action( 'learn_press_add_to_cart', array( $this, 'calculate_totals' ), 10 );
+		add_action( 'wp', array( $this, 'maybe_set_cart_cookies' ), 99 ); // Set cookies
+		add_action( 'shutdown', array( $this, 'maybe_set_cart_cookies' ), 0 ); // Set cookies before shutdown and ob flushing
+		add_action( 'wp_loaded', array( $this, 'init' ) );
+	}
+
+	function init() {
+
+		$this->get_cart_from_session();
 	}
 
 	public function __get( $key ) {
@@ -72,6 +86,49 @@ class LP_Cart {
 		return $return;
 	}
 
+	public function maybe_set_cart_cookies() {
+		if ( !headers_sent()/* && did_action( 'wp_loaded' )*/ ) {
+			$this->set_cart_cookies( !$this->is_empty() );
+		}
+	}
+
+	private function set_cart_cookies( $set = true ) {
+		if ( $set ) {
+			learn_press_setcookie( 'learn_press_items_in_cart', 1 );
+			//learn_press_setcookie( 'woocommerce_cart_hash', md5( json_encode( $this->get_cart_for_session() ) ) );
+			$this->get_cart_for_session();
+		} elseif ( isset( $_COOKIE['learn_press_items_in_cart'] ) ) {
+			learn_press_setcookie( 'learn_press_items_in_cart', 0, time() - HOUR_IN_SECONDS );
+			//learn_press_setcookie( 'woocommerce_cart_hash', '', time() - HOUR_IN_SECONDS );
+		}
+
+
+		do_action( 'learn_press_set_cart_cookies', $set );
+	}
+
+	public function get_cart_for_session() {
+		$cart_session = array();
+
+		if ( $this->get_cart() ) {
+			foreach ( $this->get_cart() as $key => $values ) {
+				$cart_session[$key] = $values;
+				unset( $cart_session[$key]['data'] ); // Unset product object
+			}
+		}
+
+		return $cart_session;
+	}
+
+	public function get_cart() {
+		if ( !did_action( 'wp_loaded' ) ) {
+			_doing_it_wrong( __FUNCTION__, __( 'Get cart should not be called before the wp_loaded action.', 'woocommerce' ), '2.3' );
+		}
+		if ( !did_action( 'woocommerce_cart_loaded_from_session' ) ) {
+			$this->get_cart_from_session();
+		}
+		return array_filter( (array) $this->_cart_content );
+	}
+
 	/**
 	 * Add course to cart
 	 *
@@ -80,6 +137,59 @@ class LP_Cart {
 	 * @param     array
 	 */
 	public function add_to_cart( $course_id, $quantity = 1, $item_data = array() ) {
+
+		$course = learn_press_get_course( $course_id );
+
+		// course is not purchasable
+		if ( !$course->is_purchasable() ) {
+			learn_press_display_message( __( 'Sorry! This course is not purchasable.', 'learnpress' ) );
+			if ( $redirect = apply_filter( 'learn_press_course_is_not_purchasable_redirect', get_the_permalink( $course_id ), $course_id ) ) {
+				wp_redirect( $redirect );
+				exit();
+			}
+			return;
+		}
+
+		// Redirect to login page if user is not logged in
+		if ( !is_user_logged_in() ) {
+			$return_url = add_query_arg( $_POST, get_the_permalink( $course->id ) );
+			$return_url = apply_filters( 'learn_press_purchase_course_login_redirect_return_url', $return_url );
+			$redirect   = apply_filters( 'learn_press_purchase_course_login_redirect', learn_press_get_login_url( $return_url ) );
+
+			if ( $redirect !== false ) {
+				wp_redirect( $redirect );
+				exit();
+			}
+		}
+
+		/**
+		 * Generate course information and stores into session
+		 * for redirection if needed then we can remove it immediately
+		 */
+		$quantity = apply_filters( 'learn_press_purchase_course_quantity', $quantity, $course_id );
+		$price    = $course->is_free() ? 0 : $course->get_price();
+		/*$course_info = apply_filters( 'learn_press_purchase_course_info', array(
+				'item_id'  => $course_id,
+				'quantity' => $quantity,
+				'subtotal' => $price * $quantity,
+				'total'    => $price * $quantity,
+				'data'     => apply_filters( 'learn_press_purchase_course_info_data', $_REQUEST )
+			)
+		);*/
+
+		$this->_cart_content['items'][$course_id] = apply_filters( 'learn_press_add_cart_item', array(
+				'item_id'  => $course_id,
+				'quantity' => $quantity,
+				'subtotal' => $price * $quantity,
+				'total'    => $price * $quantity,
+				'data'     => $item_data
+			)
+		);
+		//if ( did_action( 'wp' ) ) {
+		$this->set_cart_cookies( true );
+		//}
+		do_action( 'learn_press_add_to_cart', $course_id, $quantity, $item_data, $this );
+		return;
 
 		if ( !learn_press_is_enable_cart() ) {
 			$this->empty_cart();
@@ -106,8 +216,17 @@ class LP_Cart {
 				'data'     => $item_data
 			)
 		);
+
+		learn_press_session_set( $this->_cart_session_key, $this->_cart_content );
+
+		$this->set_cart_cookies( !$this->is_empty() );
+
 		do_action( 'learn_press_add_to_cart', $course_id, $quantity, $item_data, $this );
 		$button = '';
+
+		if ( !is_user_logged_in() ) {
+
+		}
 
 		// if the course is FREE and no require checkout screen
 		if ( LP()->settings->get( 'no_checkout_free_course' ) == 'yes' && $this->total == 0 ) {
@@ -124,14 +243,15 @@ class LP_Cart {
 				add_filter( 'learn_press_checkout_success_result', '_learn_press_checkout_auto_enroll_free_course', 10, 2 );
 				$checkout_results = LP_Checkout::instance()->process_checkout();
 			}
-			if ( is_ajax() ) {
+			$redirect = $checkout_results['redirect'];
+			/*if ( is_ajax() ) {
 				learn_press_send_json(
 					$checkout_results
 				);
 			} else {
 				wp_redirect( $checkout_results['redirect'] );
 				exit();
-			}
+			}*/
 		} else {
 			if ( learn_press_is_enable_cart() ) {
 				if ( LP()->settings->get( 'redirect_after_add' ) == 'yes' ) {
@@ -160,6 +280,8 @@ class LP_Cart {
 				}
 			}
 		}
+
+
 		$redirect = apply_filters( 'learn_press_add_to_cart_redirect', $redirect, $course_id );
 
 		if ( is_ajax() ) {
@@ -176,10 +298,24 @@ class LP_Cart {
 		}
 	}
 
+	/**
+	 * Checks to see if there is an item in cart
+	 *
+	 * @param $item_id
+	 *
+	 * @return bool
+	 */
 	public function has_item( $item_id ) {
 		return isset( $this->_cart_content['items'][$item_id] );
 	}
 
+	/**
+	 * Remove an item from cart
+	 *
+	 * @param $item_id
+	 *
+	 * @return bool
+	 */
 	public function remove_item( $item_id ) {
 		if ( isset( $this->_cart_content['items'][$item_id] ) ) {
 
@@ -197,9 +333,13 @@ class LP_Cart {
 		return false;
 	}
 
+	/**
+	 * Re-calculate cart totals and update data to session
+	 */
 	public function calculate_totals() {
+		$subtotal = 0;
+
 		if ( $items = $this->_cart_content['items'] ) {
-			$subtotal = 0;
 			foreach ( $items as $item_id => $item ) {
 				$course = learn_press_get_course( $item_id );
 				if ( $course ) {
@@ -209,15 +349,18 @@ class LP_Cart {
 				$this->_cart_content['items'][$item_id]['total']    = $_subtotal;
 				$subtotal += $_subtotal;
 			}
-			$this->_cart_content['subtotal'] = $subtotal;
-			$this->_cart_content['total']    = $subtotal;
-		}
 
+		}
+		$this->_cart_content['subtotal'] = $subtotal;
+		$this->_cart_content['total']    = $subtotal;
 		$this->update_session();
 	}
 
+	/**
+	 * Update cart content to session
+	 */
 	public function update_session() {
-		LP_Session::set( 'cart', $this->_cart_content );
+		learn_press_session_set( $this->_cart_session_key, $this->_cart_content );
 	}
 
 	/**
@@ -242,7 +385,7 @@ class LP_Cart {
 	}
 
 	public function get_cart_from_session() {
-		$this->_cart_content = LP_Session::get( 'cart' );
+		$this->_cart_content = learn_press_session_get( $this->_cart_session_key );
 		do_action( 'learn_press_get_cart_from_session' );
 	}
 
@@ -293,7 +436,8 @@ class LP_Cart {
 
 		do_action( 'learn_press_before_empty_cart' );
 
-		LP_Session::set( 'cart', $this->get_default_cart_content() );
+		learn_press_session_set( $this->_cart_session_key, $this->get_default_cart_content() );
+
 		$this->get_cart_from_session();
 
 		do_action( 'learn_press_emptied_cart' );
@@ -307,7 +451,7 @@ class LP_Cart {
 	 * @return bool
 	 */
 	public function is_empty() {
-		return !$this->_cart_content['items'];
+		return sizeof( $this->get_items() ) === 0; //!$this->_cart_content['items'];
 	}
 
 	public function get_cart_content() {
@@ -402,14 +546,6 @@ function learn_press_get_cart_total() {
 	return LP()->cart->total;
 }
 
-/**
- * Return true if enable cart
- *
- * @return bool
- */
-function learn_press_is_enable_cart() {
-	return apply_filters( 'learn_press_enable_cart', LP()->settings->get( 'enable_cart' ) == 'yes' );
-}
 
 function learn_press_clear_cart_after_payment() {
 	global $wp;
@@ -439,5 +575,8 @@ function learn_press_clear_cart_after_payment() {
 }
 
 add_action( 'get_header', 'learn_press_clear_cart_after_payment' );
+
+
+
 
 //learn_press_get_cart_description();

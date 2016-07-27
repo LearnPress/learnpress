@@ -14,7 +14,7 @@
 					dataType: 'html',
 					type    : 'post',
 					success : function (code) {
-						var response = LearnPress.parseJSON(code);
+						var response = LP.parseJSON(code);
 						if (response.message) {
 							for (var n = response.message.length, i = n - 1; i >= 0; i--) {
 								$form.prepend($(response.message[i]))

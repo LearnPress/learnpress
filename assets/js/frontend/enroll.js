@@ -1,10 +1,10 @@
-if (typeof window.LearnPress == 'undefined') {
-	window.LearnPress = {};
+if (typeof window.LP == 'undefined') {
+	window.LP = {};
 }
 ;
 (function ($) {
 	"use strict";
-	LearnPress.Enroll = {
+	LP.Enroll = {
 		$form              : null,
 		init               : function () {
 			var $doc = $(document);
@@ -18,30 +18,30 @@ if (typeof window.LearnPress == 'undefined') {
 			if (!$button.hasClass('enrolled') && $form.triggerHandler('learn_press_enroll_course') !== false ) {
 				$button.removeClass('enrolled failed').addClass('loading');
 				$.ajax({
-					url     : LearnPress.getUrl(),
+					url     : LP.getUrl(),
 					dataType: 'html',
 					data    : $form.serialize(),
 					type    : 'post',
 					success : function (response) {
-						response = LearnPress.parseJSON(response);
+						response = LP.parseJSON(response);
 						if (response.result == 'fail') {
-							if( LearnPress.Hook.applyFilters( 'learn_press_user_enroll_course_failed', course_id ) !== false ) {
+							if (LP.Hook.applyFilters('learn_press_user_enroll_course_failed', course_id) !== false) {
 								if (response.redirect) {
-									LearnPress.reload(response.redirect);
+									LP.reload(response.redirect);
 								}
 							}
 						} else {
-							if( LearnPress.Hook.applyFilters( 'learn_press_user_enrolled_course', course_id ) !== false ) {
+							if (LP.Hook.applyFilters('learn_press_user_enrolled_course', course_id) !== false) {
 								if (response.redirect) {
-									LearnPress.reload(response.redirect);
+									LP.reload(response.redirect);
 								}
 							}
 						}
 					},
-					error:	function( jqXHR, textStatus, errorThrown ) {
-						LearnPress.Hook.doAction( 'learn_press_user_enroll_course_failed', course_id );
+					error   :	function( jqXHR, textStatus, errorThrown ) {
+						LP.Hook.doAction('learn_press_user_enroll_course_failed', course_id);
 						$button.removeClass('loading').addClass('failed');
-						LearnPress.Enroll.showErrors('<div class="learn-press-error">'+errorThrown+'</div>');
+						LP.Enroll.showErrors('<div class="learn-press-error">' + errorThrown + '</div>');
 					}
 				})
 			}
@@ -51,7 +51,7 @@ if (typeof window.LearnPress == 'undefined') {
 			this.removeErrors();
 			this.$form.prepend(messages);
 			$('html, body').animate({
-				scrollTop: ( LearnPress.Enroll.$form.offset().top - 100 )
+				scrollTop: ( LP.Enroll.$form.offset().top - 100 )
 			}, 1000);
 			$(document.body).trigger('learn_press_enroll_error');
 		},
@@ -60,6 +60,6 @@ if (typeof window.LearnPress == 'undefined') {
 		}
 	}
 	$(document).ready(function () {
-		LearnPress.Enroll.init()
+		LP.Enroll.init()
 	});
 })(jQuery);

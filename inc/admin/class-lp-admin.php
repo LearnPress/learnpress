@@ -21,6 +21,21 @@ if ( !class_exists( 'LP_Admin' ) ) {
 			add_action( 'admin_print_scripts', array( $this, 'plugin_js_settings' ) );
 			//add_action( 'init', array( $this, 'include_update' ) );
 			add_action( 'template_redirect', array( $this, '_redirect' ) );
+			add_action( 'delete_user', array( $this, 'delete_user_data' ) );
+			add_action( 'delete_user_form', array( $this, 'delete_user_form' ) );
+		}
+
+		function delete_user_form() {
+			// What should be displayed here?
+		}
+
+		/**
+		 * Delete records related user being deleted in other tables
+		 *
+		 * @param int $user_id
+		 */
+		function delete_user_data( $user_id ) {
+			learn_press_delete_user_data( $user_id );
 		}
 
 		/**
@@ -42,8 +57,8 @@ if ( !class_exists( 'LP_Admin' ) ) {
 					'button_no'     => __( 'No', 'learnpress' )
 				)
 			);
-			echo '<script type="text/javascript">var LearnPress_Settings = ' . json_encode( $js ) . '</script>';
-			if( LP_Settings::instance()->get('debug') == 'yes' ){
+			echo '<script type="text/javascript">var LP_Settings = ' . json_encode( $js ) . '</script>';
+			if ( LP_Settings::instance()->get( 'debug' ) == 'yes' ) {
 				echo '<script type="text/javascript">var LEARN_PRESS_DEBUG = true;</script>';
 			}
 			$did = true;
@@ -83,5 +98,6 @@ if ( !class_exists( 'LP_Admin' ) ) {
 
 		}
 	}
+
 	new LP_Admin();
 }

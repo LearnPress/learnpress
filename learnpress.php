@@ -1,18 +1,17 @@
 <?php
-
 /*
-  Plugin Name: LearnPress
-  Plugin URI: http://thimpress.com/learnpress
-  Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
-  Author: ThimPress
-  Version: 1.0.8
-  Author URI: http://thimpress.com
-  Requires at least: 3.8
-  Tested up to: 4.5.2
+Plugin Name: LearnPress
+Plugin URI: http://thimpress.com/learnpress
+Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
+Author: ThimPress
+Version: 1.0.9
+Author URI: http://thimpress.com
+Requires at least: 3.8
+Tested up to: 4.5.2
 
-  Text Domain: learnpress
-  Domain Path: /languages/
- */
+Text Domain: learnpress
+Domain Path: /languages/
+*/
 
 /**
  * Prevent loading this file directly
@@ -20,15 +19,18 @@
 defined( 'ABSPATH' ) || exit;
 
 if ( !defined( 'LP_PLUGIN_PATH' ) ) {
+	//define( 'LP_PLUGIN_URL', trailingslashit( plugins_url( '/', __FILE__ ) ) );
+
 	$upload_dir = wp_upload_dir();
 	define( 'LP_PLUGIN_FILE', __FILE__ );
 	define( 'LP_PLUGIN_PATH', trailingslashit( plugin_dir_path( __FILE__ ) ) );
 	define( 'LP_LOG_PATH', $upload_dir['basedir'] . '/learn-press-logs/' );
-	define( 'LEARNPRESS_VERSION', '1.0.8' );
-	define( 'LP_ENABLE_CART', true );
+	define( 'LEARNPRESS_VERSION', '1.0.9' );
+	define( 'LP_ENABLE_CART', false );
+	define( 'LP_SESSION_CACHE_GROUP', 'learn_press_session_id' );
+	//add_action( 'plugins_loaded', 'learn_press_defines', - 100 );
 }
 if ( !class_exists( 'LearnPress' ) ) {
-
 	/**
 	 * Class LearnPress
 	 *
@@ -141,7 +143,23 @@ if ( !class_exists( 'LearnPress' ) ) {
 		 * @var LP_Cart object
 		 */
 		public $cart = false;
+
+		/**
+		 * @var null
+		 */
+		public $schedule = null;
+
+		/**
+		 * @var array
+		 */
 		public $query_vars = array();
+
+		/**
+		 * Store global variables
+		 *
+		 * @var array
+		 */
+		public $global = array( 'course' => null, 'course-item' => null, 'quiz-question' => null );
 
 		/**
 		 * LearnPress constructor
@@ -165,9 +183,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 			$this->init_hooks();
 
 			// let third parties know that we're ready
-			//do_action( 'learn_press_loaded' );
 			do_action( 'learn_press_ready' );
-			//do_action( 'learn_press_register_add_ons' );
 		}
 
 		public function __get( $key ) {
@@ -214,15 +230,16 @@ if ( !class_exists( 'LearnPress' ) ) {
 			/**
 			 * If db version is not set
 			 */
+
 			if ( !get_option( 'learnpress_db_version' ) ) {
 
-				/* $this->_remove_notices();
-				  $this->course_post_type   = 'lpr_course';
-				  $this->lesson_post_type   = 'lpr_lesson';
-				  $this->quiz_post_type     = 'lpr_quiz';
-				  $this->question_post_type = 'lpr_question';
-				  $this->order_post_type    = 'lpr_order';
-				  $this->teacher_role       = 'lpr_teacher'; */
+				/*$this->_remove_notices();
+				$this->course_post_type   = 'lpr_course';
+				$this->lesson_post_type   = 'lpr_lesson';
+				$this->quiz_post_type     = 'lpr_quiz';
+				$this->question_post_type = 'lpr_question';
+				$this->order_post_type    = 'lpr_order';
+				$this->teacher_role       = 'lpr_teacher';*/
 			}
 		}
 
@@ -275,6 +292,8 @@ if ( !class_exists( 'LearnPress' ) ) {
 			$this->define( 'LP_PLUGIN_FILE', __FILE__ );
 			//$this->define( 'LP_PLUGIN_PATH', trailingslashit( plugin_dir_path( __FILE__ ) ) );
 			//$this->define( 'LP_PLUGIN_URL', trailingslashit( plugins_url( '/', __FILE__ ) ) );
+
+
 			// Custom post type name
 			$this->define( 'LP_COURSE_CPT', $this->course_post_type );
 			$this->define( 'LP_LESSON_CPT', $this->lesson_post_type );
@@ -315,19 +334,18 @@ if ( !class_exists( 'LearnPress' ) ) {
 		}
 
 		private function plugin_basename( $filepath ) {
-			$file          = str_replace( '\\', '/', $filepath ); // sanitize for Win32 installs
-			$file          = preg_replace( '|/+|', '/', $file ); // remove any duplicate slash
-			$plugin_dir    = str_replace( '\\', '/', WP_PLUGIN_DIR ); // sanitize for Win32 installs
-			$plugin_dir    = preg_replace( '|/+|', '/', $plugin_dir ); // remove any duplicate slash
-			$mu_plugin_dir = str_replace( '\\', '/', WPMU_PLUGIN_DIR ); // sanitize for Win32 installs
-			$mu_plugin_dir = preg_replace( '|/+|', '/', $mu_plugin_dir ); // remove any duplicate slash
+			$file          = str_replace( '\\', '/', $filepath );
+			$file          = preg_replace( '|/+|', '/', $file );
+			$plugin_dir    = str_replace( '\\', '/', WP_PLUGIN_DIR );
+			$plugin_dir    = preg_replace( '|/+|', '/', $plugin_dir );
+			$mu_plugin_dir = str_replace( '\\', '/', WPMU_PLUGIN_DIR );
+			$mu_plugin_dir = preg_replace( '|/+|', '/', $mu_plugin_dir );
 			$sp_plugin_dir = dirname( $filepath );
 			$sp_plugin_dir = dirname( $sp_plugin_dir );
+			$sp_plugin_dir = str_replace( '\\', '/', $sp_plugin_dir );
+			$sp_plugin_dir = preg_replace( '|/+|', '/', $sp_plugin_dir );
 
-			$sp_plugin_dir = str_replace( '\\', '/', $sp_plugin_dir ); // sanitize for Win32 installs
-			$sp_plugin_dir = preg_replace( '|/+|', '/', $sp_plugin_dir ); // remove any duplicate slash
-
-			$file = preg_replace( '#^' . preg_quote( $sp_plugin_dir, '#' ) . '/|^' . preg_quote( $plugin_dir, '#' ) . '/|^' . preg_quote( $mu_plugin_dir, '#' ) . '/#', '', $file ); // get relative path from plugins dir
+			$file = preg_replace( '#^' . preg_quote( $sp_plugin_dir, '#' ) . '/|^' . preg_quote( $plugin_dir, '#' ) . '/|^' . preg_quote( $mu_plugin_dir, '#' ) . '/#', '', $file );
 			$file = trim( $file, '/' );
 			return strtolower( $file );
 		}
@@ -336,21 +354,12 @@ if ( !class_exists( 'LearnPress' ) ) {
 		 * Initial common hooks
 		 */
 		public function init_hooks() {
-
-			$plugin_file = WP_PLUGIN_DIR . '/' . basename( dirname( __FILE__ ) ) . '/' . basename( __FILE__ );
-
-			//register_activation_hook( $plugin_file, array( 'LP_Install', 'install' ) );
 			$plugin_basename = $this->plugin_basename( __FILE__ );
+
 			add_action( 'activate_' . $plugin_basename, array( 'LP_Install', 'install' ) );
-
-			//LP_Install::install();
-
 			add_action( 'plugins_loaded', array( $this, '_define_plugin_url' ), - 100 );
-			// initial some tasks before page load
 			add_action( 'init', array( $this, 'init' ), 15 );
-
 			add_action( 'template_redirect', 'learn_press_handle_purchase_request' );
-
 			add_action( 'after_setup_theme', array( $this, 'setup_theme' ) );
 		}
 
@@ -376,13 +385,13 @@ if ( !class_exists( 'LearnPress' ) ) {
 				die();
 			}
 			if ( $this->is_request( 'frontend' ) ) {
-				$this->cart = LP_Cart::instance();
+				$this->get_session();
+				$this->get_cart();
 			}
 
-			$this->get_session();
 			$this->get_user();
 			$this->gateways = LP_Gateways::instance()->get_available_payment_gateways();
-			//$this->question_factory = LP_Question_Factory::instance();
+			$this->schedule = require_once( LP_PLUGIN_PATH . "/inc/class-lp-schedules.php" );
 
 			LP_Emails::init_email_notifications();
 
@@ -392,11 +401,42 @@ if ( !class_exists( 'LearnPress' ) ) {
 			}
 		}
 
+		/**
+		 * Get session object instance
+		 *
+		 * @return mixed
+		 */
 		public function get_session() {
 			if ( !$this->session ) {
-				$this->session = LP_Session::instance();
+				$session_class = apply_filters( 'learn_press_session_class', 'LP_Session_Handler' );
+				if ( class_exists( $session_class ) ) {
+					$this->session = is_callable( array( $session_class, 'instance' ) ) ? call_user_func( array( $session_class, 'instance' ) ) : new $session_class();
+				}
 			}
 			return $this->session;
+		}
+
+		/**
+		 * Get cart object instance for online learning market
+		 *
+		 * @return mixed
+		 */
+		public function get_cart() {
+			if ( !$this->cart ) {
+				$cart_class = apply_filters( 'learn_press_cart_class', 'LP_Cart' );
+				if ( is_object( $cart_class ) ) {
+					$this->cart = $cart_class;
+				} else {
+					if ( class_exists( $cart_class ) ) {
+						$this->cart = is_callable( array( $cart_class, 'instance' ) ) ? call_user_func( array( $cart_class, 'instance' ) ) : new $cart_class();
+					}
+				}
+			}
+			return $this->cart;
+		}
+
+		public function get_checkout_cart() {
+			return learn_press_get_checkout_cart();
 		}
 
 		public function get_user( $user_id = 0 ) {
@@ -458,6 +498,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 		public function includes() {
 
 			require_once 'inc/lp-deprecated.php';
+			require_once 'inc/class-lp-cache.php';
 			// include core functions
 			require_once 'inc/lp-core-functions.php';
 			require_once 'inc/lp-add-on-functions.php';
@@ -479,6 +520,8 @@ if ( !class_exists( 'LearnPress' ) ) {
 
 				require_once( 'inc/admin/settings/class-lp-settings-base.php' );
 				require_once( 'inc/admin/class-lp-admin-assets.php' );
+
+
 			} else {
 
 			}
@@ -498,55 +541,40 @@ if ( !class_exists( 'LearnPress' ) ) {
 			require_once 'inc/quiz/lp-quiz-functions.php';
 			require_once 'inc/quiz/class-lp-quiz-factory.php';
 			require_once 'inc/quiz/class-lp-quiz.php';
-
-
-			// question
-			//require_once 'inc/question/lp-question.php';
 			// order
 			require_once 'inc/order/lp-order-functions.php';
 			require_once 'inc/order/class-lp-order.php';
-
 			// user API
 			require_once 'inc/user/lp-user-functions.php';
 			require_once 'inc/user/abstract-lp-user.php';
 			require_once 'inc/user/class-lp-user.php';
-
 			// others
-			require_once 'inc/class-lp-session.php';
+			require_once 'inc/class-lp-session-handler.php';
 			require_once 'inc/admin/class-lp-profile.php';
 			require_once 'inc/admin/class-lp-email.php';
 			// assets
-
-
 			if ( is_admin() ) {
-
 				//Include pointers
 				require_once 'inc/admin/pointers/pointers.php';
 			} else {
-
 				// shortcodes
 				require_once 'inc/class-lp-shortcodes.php';
 				// Include short-code file
 				require_once 'inc/shortcodes/profile-page.php';
 				require_once 'inc/shortcodes/archive-courses.php';
 			}
-
 			// include template functions
 			require_once( 'inc/lp-template-functions.php' );
 			require_once( 'inc/lp-template-hooks.php' );
-			// settings
-			//require_once 'inc/class-lp-settings.php';
 			// simple cart
 			require_once 'inc/cart/class-lp-cart.php';
 			// payment gateways
 			require_once 'inc/gateways/class-lp-gateway-abstract.php';
 			require_once 'inc/gateways/class-lp-gateways.php';
-
 			//add ajax-action
 			require_once 'inc/admin/class-lp-admin-ajax.php';
 			require_once 'inc/class-lp-ajax.php';
 			require_once 'inc/class-lp-multi-language.php';
-
 			if ( !empty( $_REQUEST['debug'] ) ) {
 				require_once( 'inc/debug.php' );
 			}
@@ -620,9 +648,64 @@ if ( !class_exists( 'LearnPress' ) ) {
 			}
 		}
 
-	}
+		/**
+		 * Short way to return js file is located in LearnPress directory
+		 *
+		 * @param string
+		 *
+		 * @return string
+		 */
+		public function js( $file ) {
+			$min = '';
+			if ( LP()->settings->get( 'debug' ) !== 'yes' ) {
+				$min = '.min';
+			}
+			if ( !preg_match( '/.js$/', $file ) ) {
+				$file .= '.js';
+			}
+			if ( $min ) {
+				$file = preg_replace( '/.js$/', $min . '.js', $file );
+			}
+			return $this->plugin_url( "assets/js/{$file}" );
+		}
 
-	// end class
+		/**
+		 * Short way to return css file is located in LearnPress directory
+		 *
+		 * @param string
+		 *
+		 * @return string
+		 */
+		public function css( $file ) {
+			$min = '';
+			if ( LP()->settings->get( 'debug' ) !== 'yes' ) {
+				$min = '.min';
+			}
+			if ( !preg_match( '/.css/', $file ) ) {
+				$file .= '.css';
+			}
+			if ( $min ) {
+				$file = preg_replace( '/.css/', $min . '.css', $file );
+			}
+			return $this->plugin_url( "assets/css/{$file}" );
+		}
+
+		/**
+		 * Short way to return image file is located in LearnPress directory
+		 *
+		 * @param string
+		 *
+		 * @return string
+		 */
+		public function image( $file ) {
+
+			if ( !preg_match( '/.(jpg|png)$/', $file ) ) {
+				$file .= '.jpg';
+			}
+
+			return $this->plugin_url( "assets/images/{$file}" );
+		}
+	} // end class
 }
 
 /**
@@ -632,6 +715,7 @@ if ( !class_exists( 'LearnPress' ) ) {
  * @since  1.0
  * @author thimpress
  */
+
 function LP() {
 	static $learnpress = false;
 	if ( !$learnpress ) {
@@ -655,4 +739,6 @@ function load_learn_press() {
 // Done! entry point of the plugin
 load_learn_press();
 
-/* version 1.1 */
+
+//preg_match("/^khoa-hoc/(.+?)(?:/([0-9]+))?/?$/", "learnpress-test/khoa-hoc/xxx/quizzes/dfgdfgdfgdfg/", $m);
+//print_r($m);

@@ -73,7 +73,7 @@
 			<li class="lp-search-no-results hide-if-js" data-id="0"><?php _e( 'No results', 'learnpress' );?></li>
 		</ul>
 		<button class="lp-add-item button" disabled="disabled" data-text="<?php _e( 'Add to section', 'learnpress' );?>"><?php _e( 'Add to section', 'learnpress' );?></button>
-		<button class="lp-close-lightbox button" onclick="LearnPress.MessageBox.hide();"><?php _e( 'Close', 'learnpress' );?></button>
+		<button class="lp-close-lightbox button" onclick="LP.MessageBox.hide();"><?php _e( 'Close', 'learnpress' ); ?></button>
 	</div>
 </script>
 <script type="text/html" id="tmpl-lp-modal-search-quiz">
@@ -106,7 +106,7 @@
 			<li class="lp-search-no-results hide-if-js" data-id="0"><?php _e( 'No results', 'learnpress' );?></li>
 		</ul>
 		<button class="lp-add-item button" disabled="disabled" data-text="<?php _e( 'Add to section', 'learnpress' );?>"><?php _e( 'Add to section', 'learnpress' );?></button>
-		<button class="lp-close-lightbox button" onclick="LearnPress.MessageBox.hide();"><?php _e( 'Close', 'learnpress' );?></button>
+		<button class="lp-close-lightbox button" onclick="LP.MessageBox.hide();"><?php _e( 'Close', 'learnpress' ); ?></button>
 	</div>
 </script>
 <script type="text/javascript">

@@ -15,7 +15,5 @@ global $course;
 ?>
 
 <span class="course-instructor">
-
-	<?php echo $course->get_instructor_html();?>
-
+	<?php echo sprintf( __( 'By %s', 'learnpress' ), $course->get_instructor_html() ); ?>
 </span>

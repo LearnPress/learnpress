@@ -42,7 +42,7 @@ class LP_Email_Enrolled_Course extends LP_Email {
 		global $wpdb;
 
 		$user_course_data = $wpdb->get_row(
-			$wpdb->prepare( "SELECT * FROM {$wpdb->prefix}learnpress_user_courses WHERE user_course_id = %d", $user_course_id )
+			$wpdb->prepare( "SELECT * FROM {$wpdb->prefix}learnpress_user_items WHERE user_item_id = %d", $user_course_id )
 		);
 
 		if ( !$user_course_data ) {

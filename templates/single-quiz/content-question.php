@@ -22,7 +22,6 @@ if ( !$quiz->has( 'questions' ) || $user->get_quiz_status( $quiz->id ) == 'compl
 }
 ?>
 <div class="quiz-question-content">
-	<?php the_content($quiz->current_question->id);?>
 	<form method="post" id="learn-press-quiz-question" name="learn-press-quiz-question" action="">
 		<?php do_action( 'learn_press_before_display_quiz_question', $quiz->current_question, $quiz, $user ); ?>
 		<?php

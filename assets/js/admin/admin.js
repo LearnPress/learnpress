@@ -21,8 +21,8 @@
 				transient = $notice.attr('data-transient');
 			if(context){
 				$.ajax({
-					url: LearnPress_Settings.ajax,
-					data: {
+					url    : LP_Settings.ajax,
+					data   : {
 						action: 'learnpress_dismiss_notice',
 						context: context,
 						transient: transient
@@ -59,7 +59,7 @@
 					yes: action
 				},
 				success: function(response){
-					response = LearnPress.parseJSON(response);
+					response = LP.parseJSON(response);
 					if( response.url ){
 						$.ajax({
 							url: response.url,
@@ -124,16 +124,16 @@
 
 		$('.learn-press-toggle-lesson-preview').on('change', function(){
 			$.ajax({
-				url: LearnPress_Settings.ajax,
-				data: {
+				url     : LP_Settings.ajax,
+				data    : {
 					action: 'learnpress_toggle_lesson_preview',
 					lesson_id: this.value,
 					previewable: this.checked ? 'yes' : 'no',
 					nonce: $(this).attr('data-nonce')
 				},
 				dataType: 'text',
-				success: function(response){
-					response = LearnPress.parseJSON(response);
+				success : function(response){
+					response = LP.parseJSON(response);
 				}
 			});
 		});
@@ -145,17 +145,17 @@
  * Created by foobla on 3/10/2015.
  */
 
-if( typeof LearnPress == 'undefined' ) LearnPress = {};
+if (typeof LP == 'undefined') LP = {};
 
 jQuery(document).ready(function ($) {
 	$('.meta_box_edit').click(function (event) {
 		event.preventDefault();
-		LearnPress.log("haha");
+		LP.log("haha");
 		var post_id = jQuery(this).closest('select').val();
 		var edit_link = jQuery('.meta_box_course_lesson_quiz').attr('site_url');
 		edit_link += "wp-admin/post.php?post=" + post_id + "&action=edit";
 		var new_window = window.open(edit_link);
-		LearnPress.log(post_id);
+		LP.log(post_id);
 	})
 });
 
@@ -475,7 +475,7 @@ lprHook.addAction('lpr_admin_quiz_question_html', _lprAdminQuestionHTML);
 				success: function(response){
 					if(action == 'install-now' || action == 'update-now' || action == 'active-now'){
 						if( $link.hasClass('thimpress') ){
-							response = LearnPress.parseJSON( response );
+							response = LP.parseJSON(response);
 							$link.removeClass( 'spinner' );
 							if( response.status == 'activate' ){
 								$link.addClass('disabled').html(response.status_text).removeAttr('href').removeAttr('data-action');
@@ -499,7 +499,7 @@ lprHook.addAction('lpr_admin_quiz_question_html', _lprAdminQuestionHTML);
 				},
 				dataType: 'html',
 				success: function(response){
-					response = LearnPress.parseJSON( response );
+					response = LP.parseJSON(response);
 					if( response.addons ){
 						for(var slug in response.addons ){
 							var plugin = response.addons[slug];
@@ -638,7 +638,7 @@ lprHook.addAction('lpr_admin_quiz_question_html', _lprAdminQuestionHTML);
 
 	})
 
-	$.extend( LearnPress, {
+	$.extend(LP, {
 		parse_json: function(response){
 			if( typeof reposnse == 'object' ) return response;
 			try {

@@ -21,6 +21,11 @@ class LP_Debug {
 	private static $_instance = null;
 
 	/**
+	 * @var array
+	 */
+	private static $_time = array();
+
+	/**
 	 * Constructor for the logger.
 	 */
 	public function __construct() {
@@ -138,5 +143,15 @@ class LP_Debug {
 			return;
 		}
 		throw new Exception( $message );
+	}
+
+	public static function timeStart( $name ) {
+		self::$_time[$name] = microtime();
+	}
+
+	public static function timeEnd( $name ) {
+		$time = microtime() - self::$_time[$name];
+		echo "{$name} execution time = " . $time;
+		unset( self::$_time[$name] );
 	}
 }

@@ -1,16 +1,16 @@
-if (typeof window.LearnPress == 'undefined') {
-	window.LearnPress = {};
+if (typeof window.LP == 'undefined') {
+	window.LP = {};
 }
 ;
 (function ($) {
 	"use strict";
-	LearnPress.reload = function (url) {
+	LP.reload = function (url) {
 		if (!url) {
 			url = window.location.href;
 		}
 		window.location.href = url;
 	}
-	LearnPress.Checkout = {
+	LP.Checkout = {
 		$form              : null,
 		init               : function () {
 			var $doc = $(document);
@@ -43,17 +43,17 @@ if (typeof window.LearnPress == 'undefined') {
 			var $form = $(this.form);
 			if ($form.triggerHandler('checkout_login') !== false) {
 				$.ajax({
-					url     : LearnPress_Settings.siteurl +'/?lp-ajax=checkout-login',
+					url     : LP_Settings.siteurl + '/?lp-ajax=checkout-login',
 					dataType: 'html',
 					data    : $form.serialize(),
 					type    : 'post',
 					success : function (response) {
-						response = LearnPress.parseJSON(response);
+						response = LP.parseJSON(response);
 						if (response.result == 'fail') {
 							if (response.messages) {
-								LearnPress.Checkout.showErrors(response.messages);
+								LP.Checkout.showErrors(response.messages);
 							} else {
-								LearnPress.Checkout.showErrors('<div class="learn-press-error">Unknown error!</div>');
+								LP.Checkout.showErrors('<div class="learn-press-error">Unknown error!</div>');
 							}
 						} else {
 							if (response.redirect) {
@@ -76,30 +76,30 @@ if (typeof window.LearnPress == 'undefined') {
 				}
 				$place_order.prop('disabled', true);
 				$.ajax({
-					url     : LearnPress_Settings.siteurl + '/?lp-ajax=checkout',
+					url     : LP_Settings.siteurl + '/?lp-ajax=checkout',
 					dataType: 'html',
 					data    : $form.serialize(),
 					type    : 'post',
 					success : function (response) {
-						response = LearnPress.parseJSON(response);
+						response = LP.parseJSON(response);
 						if (response.result == 'fail') {
 							if (response.messages) {
-								LearnPress.Checkout.showErrors(response.messages);
+								LP.Checkout.showErrors(response.messages);
 							} else {
-								LearnPress.Checkout.showErrors('<div class="learn-press-error">Unknown error!</div>');
+								LP.Checkout.showErrors('<div class="learn-press-error">Unknown error!</div>');
 							}
 						} else if( response.result == 'success'){
 							if (response.redirect) {
 								$place_order.val('Redirecting')
-								LearnPress.reload(response.redirect);
+								LP.reload(response.redirect);
 								return;
 							}
 						}
 						$place_order.val(text)
 						$place_order.prop('disabled', false);
 					},
-					error:	function( jqXHR, textStatus, errorThrown ) {
-						LearnPress.Checkout.showErrors('<div class="learn-press-error">'+errorThrown+'</div>');
+					error   :	function( jqXHR, textStatus, errorThrown ) {
+						LP.Checkout.showErrors('<div class="learn-press-error">' + errorThrown + '</div>');
 						$place_order.val(text)
 						$place_order.prop('disabled', false)
 
@@ -112,12 +112,12 @@ if (typeof window.LearnPress == 'undefined') {
 			$('.learn-press-error, .learn-press-notice, .learn-press-message').remove();
 			this.$form.prepend(messages);
 			$('html, body').animate({
-				scrollTop: ( LearnPress.Checkout.$form.offset().top - 100 )
+				scrollTop: ( LP.Checkout.$form.offset().top - 100 )
 			}, 1000);
 			$(document).trigger('learnpress_checkout_error');
 		}
 	}
 	$(document).ready(function () {
-		LearnPress.Checkout.init()
+		LP.Checkout.init()
 	});
 })(jQuery);

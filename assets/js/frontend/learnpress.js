@@ -3,14 +3,17 @@
  * @package LearnPress/Javascript
  * @version 1.0
  */
-;if (typeof window.LearnPress == 'undefined') {
-	window.LearnPress = {};
+;if (typeof window.LP == 'undefined') {
+	window.LP = {};
 }
 ;(function ($) {
 	"use strict";
-	LearnPress = $.extend({
-		setUrl   : function (url, title) {
-			history.pushState({}, title, url);
+	LP = $.extend({
+		setUrlx  : function (url, title) {
+
+			if (url) {
+				history.pushState({}, title, url);
+			}
 		},
 		reload   : function (url) {
 			if (!url) {
@@ -27,7 +30,7 @@
 					data = $.parseJSON(data);
 				}
 			} catch (e) {
-				LearnPress.log(e);
+				LP.log(e);
 				data = {};
 			}
 			return data;
@@ -46,24 +49,24 @@
 					scrollTop: $(element).offset().top - args.offset
 				}, args.duration, args.callback);
 		}
-	}, LearnPress);
+	}, LP);
 
 	$(document).on('submit', '#learn-press-form-login', function (e) {
-		LearnPress.doAjax({
+		LP.doAjax({
 			data   : {
 				'lp-ajax': 'login',
 				data     : $(this).serialize()
 			},
 			success: function (response, raw) {
 				if (response.message) {
-					LearnPress.alert(response.message, function () {
+					LP.alert(response.message, function () {
 						if (response.redirect) {
-							LearnPress.reload(response.redirect);
+							LP.reload(response.redirect);
 						}
 					});
 				} else {
 					if (response.redirect) {
-						LearnPress.reload(response.redirect);
+						LP.reload(response.redirect);
 					}
 				}
 			}

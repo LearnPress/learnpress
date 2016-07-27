@@ -26,9 +26,9 @@
 					axis: 'y'
 				});
 				_.bindAll( this, 'addItemsToSection', 'getSelectedItems' );
-				LearnPress.Hook.addAction( 'learn_press_message_box_before_resize', this.resetModalSearch);
-				LearnPress.Hook.addAction( 'learn_press_message_box_resize', this.updateModalSearch);
-				LearnPress.Hook.addFilter( 'learn_press_modal_search_items_exclude', this.getSelectedItems );
+				LP.Hook.addAction('learn_press_message_box_before_resize', this.resetModalSearch);
+				LP.Hook.addAction('learn_press_message_box_resize', this.updateModalSearch);
+				LP.Hook.addFilter('learn_press_modal_search_items_exclude', this.getSelectedItems);
 
 				$(document).on('learn_press_modal_search_items_response', this.addItemsToSection );
 			},
@@ -39,7 +39,7 @@
 				$('.lp-modal-search ul.lp-list-items').css('height', '').css('overflow', '')
 			},
 			toggleAddButtonState: function(e){
-				LearnPress.log(e.target.value)
+				LP.log(e.target.value)
 				if((e.target.value+'').length == 0){
 					$('.lp-button-add-question').addClass('disabled')
 				}else{
@@ -55,14 +55,14 @@
 				}
 			},
 			showListQuestions: function(){
-				var $form = LearnPress.ModalSearchItems( {
+				var $form = LP.ModalSearchItems({
 					template: 'tmpl-learn-press-search-items',
 					type: 'lp_question',
 					context: 'quiz-items',
 					context_id: $('#post_ID').val(),
 					exclude: this.getSelectedItems()
 				} );
-				LearnPress.MessageBox.show($form.$el);
+				LP.MessageBox.show($form.$el);
 				$form.$el.find('header input').focus();
 
 				return;
@@ -72,7 +72,7 @@
 					$form = $(wp.template('lp-modal-quiz-questions')());
 				}
 
-				LearnPress.MessageBox.show($form);
+				LP.MessageBox.show($form);
 				$form.find('[name="lp-item-name"]').focus().trigger('keyup');
 				$button.html($button.attr('data-text'));
 			},
@@ -89,17 +89,17 @@
 					timer = $input.data('timer'),
 					_search = function(){
 						$.ajax({
-							url: LearnPress_Settings.ajax,
-							data: {
+							url     : LP_Settings.ajax,
+							data    : {
 								action: 'learnpress_search_questions',
 								quiz_id: $('#post_ID').val(),
 								term: text,
 								exclude: that.getAddedQuestions()
 							},
 							dataType: 'text',
-							success: function(response){
-								response = LearnPress.parseJSON(response);
-								LearnPress.log(response);
+							success : function(response){
+								response = LP.parseJSON(response);
+								LP.log(response);
 								$form.find('.lp-list-items').html(response.html).removeClass('lp-ajaxload');
 								$(window).trigger('resize');
 							}
@@ -152,20 +152,20 @@
 						quiz_id: $('#post_ID').val()
 					}, args);
 
-				post_data = LearnPress.Hook.applyFilters( 'LearnPress.add_question_post_data', post_data );
+				post_data = LP.Hook.applyFilters('LP.add_question_post_data', post_data);
 
 				$.ajax({
-					url     : LearnPress_Settings.ajax,
+					url     : LP_Settings.ajax,
 					dataType: 'html',
 					type    : 'post',
 					data    : post_data,
 					success : function (response) {
-						response = LearnPress.parseJSON(response);
+						response = LP.parseJSON(response);
 						var $newQuestion = $(response.html);
 						$('#learn-press-list-questions').append($newQuestion);
 						that.$('#lp-modal-quiz-questions li[data-id="'+response.id+'"]').addClass('selected hide-if-js');
-						//LearnPress.Question._hideQuestion( args.id )
-						LearnPress.Hook.doAction( 'learn_press_add_quiz_question', $newQuestion, args);
+						//LP.Question._hideQuestion( args.id )
+						LP.Hook.doAction('learn_press_add_quiz_question', $newQuestion, args);
 					}
 				});
 			},
@@ -211,7 +211,7 @@
 					that.addQuestion({id: $(this).val()});
 				});
 				$form.remove();
-				LearnPress.MessageBox.hide();
+				LP.MessageBox.hide();
 			},
 			createItem: function(args, $section){
 				var tmpl = wp.template('quiz-question'),

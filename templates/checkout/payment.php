@@ -18,9 +18,9 @@ $show_button                  = true;
 ?>
 
 <div id="learn-press-payment" class="learn-press-checkout-payment">
-	<?php if ( LP()->cart->needs_payment() ): ?>
+	<?php if ( LP()->get_checkout_cart()->needs_payment() ): ?>
 
-		<?php if ( empty( $available_gateways ) ): $show_button = false;?>
+		<?php if ( empty( $available_gateways ) ): $show_button = false; ?>
 
 			<?php if ( $message = apply_filters( 'learn_press_no_available_payment_methods_message', __( 'No payment methods is available.', 'learnpress' ) ) ) { ?>
 				<?php learn_press_display_message( $message, 'error' ); ?>
@@ -47,18 +47,18 @@ $show_button                  = true;
 		<?php endif; ?>
 
 	<?php endif; ?>
-	<?php if( $show_button ): ?>
+	<?php if ( $show_button ): ?>
 
-	<div class="place-order-action">
+		<div class="place-order-action">
 
-		<?php do_action( 'learn_press_order_before_submit' ); ?>
+			<?php do_action( 'learn_press_order_before_submit' ); ?>
 
-		<?php echo apply_filters( 'learn_press_order_button_html', '<input type="submit" class="button alt" name="learn_press_checkout_place_order" id="learn-press-checkout" data-processing-text="' . esc_attr( $order_button_text_processing ) . '" value="' . esc_attr( $order_button_text ) . '" data-value="' . esc_attr( $order_button_text ) . '" />' ); ?>
+			<?php echo apply_filters( 'learn_press_order_button_html', '<input type="submit" class="button alt" name="learn_press_checkout_place_order" id="learn-press-checkout" data-processing-text="' . esc_attr( $order_button_text_processing ) . '" value="' . esc_attr( $order_button_text ) . '" data-value="' . esc_attr( $order_button_text ) . '" />' ); ?>
 
-		<?php do_action( 'learn_press_order_after_submit' ); ?>
+			<?php do_action( 'learn_press_order_after_submit' ); ?>
 
-	</div>
+		</div>
 
-	<?php endif;?>
+	<?php endif; ?>
 
 </div>

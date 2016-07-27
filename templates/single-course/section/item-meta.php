@@ -7,22 +7,31 @@
 
 defined( 'ABSPATH' ) || exit();
 
-$user   = LP()->user;
-$course = LP()->course;
+$user        = LP()->user;
+$course      = LP()->course;
+$item_status = $user->get_item_status( $item->ID );
+$security    = wp_create_nonce( sprintf( 'complete-item-%d-%d-%d', $user->id, $course->id, $item->ID ) );
+
 ?>
 <div class="course-item-meta">
 
 	<?php do_action( 'learn_press_before_item_meta', $item ); ?>
 
-	<span class="lp-label lp-label-viewing"><?php _e( 'Viewing', 'learnpress' ); ?></span>
+	<!--<span class="lp-label lp-label-viewing"><?php _e( 'Viewing', 'learnpress' ); ?></span>-->
 
 	<?php if ( $user->can_view_item( $item->ID ) !== false ) { ?>
-		<span class="lp-label lp-label-completed"><?php _e( 'Completed', 'learnpress' ); ?></span>
+		<?php if ( $item_status == 'completed' ) { ?>
+			<span class="lp-icon item-status" title="<?php esc_attr_e( 'Completed', 'learnpress' ); ?>"></span>
+		<?php } elseif ( $item_status == 'started' ) { ?>
+			<span class="lp-icon item-status button-complete-item button-complete-lesson" data-security="<?php echo esc_attr( $security ); ?>" title="<?php esc_attr_e( 'Not Completed', 'learnpress' ); ?>"></span>
+		<?php } else { ?>
+			<span class="lp-icon item-status button-complete-item button-complete-lesson" data-security="<?php echo esc_attr( $security ); ?>" title="<?php esc_attr_e( 'Not Started', 'learnpress' ); ?>"></span>
+		<?php } ?>
 	<?php } ?>
 
-	<?php learn_press_item_meta_type( $course, $item ); ?>
+	<?php //learn_press_item_meta_type( $course, $item ); ?>
 
-	<?php learn_press_item_meta_format( $item->ID ); ?>
+	<?php //learn_press_item_meta_format( $item->ID ); ?>
 
 	<?php do_action( 'learn_press_after_item_meta', $item ); ?>
 

@@ -1,5 +1,6 @@
 ;(function ($) {
 	"use strict";
+	return;
 	$.LP_Course_Item = function () {
 
 	}
@@ -19,7 +20,7 @@
 					if ($lesson.length == 0) {
 						$lesson = $('<div id="learn-press-course-lesson" />');
 					}
-					if (LearnPress.Hook.applyFilters('learn_press_update_item_content', $lesson, that) !== false) {
+					if (LP.Hook.applyFilters('learn_press_update_item_content', $lesson, that) !== false) {
 						that.set('content', $lesson);
 						$(document).trigger('learn_press_course_item_content_replaced', $lesson, that);
 						$('.course-item.item-current')
@@ -46,15 +47,27 @@
 				data   : null,
 				success: null
 			}, args || {});
+			LP.ajax({
+				dataType: 'html',
+				action  : 'complete_lesson',
+				data    : $.extend({
+					id: this.get('id')
+				}, args.data || {}),
+				success : function (response) {
+					response = LP.parseJSON(response);
+					$.isFunction(args.success) && args.success.call(that, $.extend(response, {id: that.get('id')}))
+				}
+			});
+			return;
 			$.ajax({
-				url     : LearnPress_Settings.ajax,
+				url     : '',
 				dataType: 'html',
 				data    : $.extend({
 					action: 'learnpress_complete_lesson',
 					id    : this.get('id')
 				}, args.data || {}),
 				success : function (response) {
-					response = LearnPress.parseJSON(response);
+					response = LP.parseJSON(response);
 					$.isFunction(args.success) && args.success.call(that, $.extend(response, {id: that.get('id')}))
 				}
 			})
@@ -70,7 +83,7 @@
 			_.bindAll(this, 'updateItem', '_completeLesson');
 			this.model.on('change', this.updateItem, this);
 
-			if (LearnPress.Hook.applyFilters('learn_press_before_load_item', this) !== false) {
+			if (LP.Hook.applyFilters('learn_press_before_load_item', this) !== false) {
 				if (this.model.get('id') /*&& this.$('input[name="learn-press-lesson-viewing"]').val() != this.model.get('id')*/) {
 					if (this.model.get('content') == 'no-cache') {
 						this.updateItem();
@@ -78,7 +91,7 @@
 						this.model.load();
 					}
 				} else if (this.model.get('content')) {
-					LearnPress.Hook.doAction('learn_press_item_content_loaded', this.model.get('content'), this);
+					LP.Hook.doAction('learn_press_item_content_loaded', this.model.get('content'), this);
 				}
 			}
 		},
@@ -86,12 +99,12 @@
 			var $content = this.model.get('content');
 			this.$el.replaceWith($content);
 			this.setElement($content.show());
-			var url = LearnPress.Hook.applyFilters('learn_press_set_item_url', this.model.get('rootUrl'), this);
+			var url = LP.Hook.applyFilters('learn_press_set_item_url', this.model.get('rootUrl'), this);
 			if (url) {
-				LearnPress.setUrl(url);
+				LP.setUrl(url);
 			}
 			$content.closest('#learn-press-content-item').show();
-			LearnPress.Hook.doAction('learn_press_item_content_loaded', $content, this);
+			LP.Hook.doAction('learn_press_item_content_loaded', $content, this);
 		},
 		_autoNextItem  : function (item, delay) {
 			var $link = this.$('.course-item-next a[data-id="' + item + '"]');
@@ -113,11 +126,11 @@
 			this.model.complete({
 				data   : $(e.target).data(),
 				success: function (response) {
-					response = LearnPress.Hook.applyFilters('learn_press_user_complete_lesson_response', response);
+					response = LP.Hook.applyFilters('learn_press_user_complete_lesson_response', response);
 					if (response.next_item) {
 						//that._autoNextItem(response.next_item, 3);
 					}
-					LearnPress.Hook.doAction('learn_press_user_completed_lesson', response, that);
+					LP.Hook.doAction('learn_press_user_completed_lesson', response, that);
 				}
 			});
 		}
@@ -164,7 +177,7 @@
 			} else {
 
 			}
-			if (LearnPress.Hook.applyFilters('learn_press_load_item_content', true, item, link) !== false) {
+			if (LP.Hook.applyFilters('learn_press_load_item_content', true, item, link) !== false) {
 				if (item) {
 					if (this.view) {
 						this.view.undelegateEvents();

@@ -38,7 +38,7 @@
 						},
 						dataType: 'text',
 						success : function (response) {
-							response = LearnPress.parseJSON(response);
+							response = LP.parseJSON(response);
 							$container.LP_Chart_Line(response, LP_Chart_Config);
 							$container.removeClass('loading');
 						}
@@ -86,7 +86,7 @@
 						},
 						dataType: 'text',
 						success : function (response) {
-							response = LearnPress.parseJSON(response);
+							response = LP.parseJSON(response);
 							$container.LP_Chart_Line(response, LP_Chart_Config);
 							$container.removeClass('loading');
 						}
@@ -134,7 +134,7 @@
 						},
 						dataType: 'text',
 						success : function (response) {
-							response = LearnPress.parseJSON(response);
+							response = LP.parseJSON(response);
 							$container.LP_Chart_Line(response, LP_Chart_Config);
 							$container.removeClass('loading');
 						}

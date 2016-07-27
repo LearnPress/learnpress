@@ -31,11 +31,15 @@ if ( !defined( 'ABSPATH' ) ) {
 
 	<?php do_action( 'learn_press_before_courses_loop' ); ?>
 
+	<?php learn_press_begin_courses_loop(); ?>
+
 	<?php while ( have_posts() ) : the_post(); ?>
 
 		<?php learn_press_get_template_part( 'content', 'course' ); ?>
 
 	<?php endwhile; ?>
+
+	<?php learn_press_begin_courses_loop(); ?>
 
 	<?php do_action( 'learn_press_after_courses_loop' ); ?>
 

@@ -34,7 +34,7 @@
 				if (this.value != 'add_new_page') {
 					if (parseInt(this.value)) {
 						$actions.find('a.edit-page').attr('href', 'post.php?post=' + this.value + '&action=edit');
-						$actions.find('a.view-page').attr('href', LearnPress_Settings.siteurl + '?page_id=' + this.value);
+						$actions.find('a.view-page').attr('href', LP_Settings.siteurl + '?page_id=' + this.value);
 						$actions.removeClass('hide-if-js');
 						$select.attr('data-selected', this.value);
 					}
@@ -58,7 +58,7 @@
 			}
 
 			$.ajax({
-				url     : LearnPress_Settings.ajax,
+				url     : LP_Settings.ajax,
 				data    : {
 					action   : 'learnpress_create_page',
 					page_name: page_name
@@ -66,7 +66,7 @@
 				type    : 'post',
 				dataType: 'html',
 				success : function (response) {
-					response = LearnPress.parseJSON(response);
+					response = LP.parseJSON(response);
 					if (response.page) {
 						addPageToAllDropdowns({
 							ID       : response.page.ID,

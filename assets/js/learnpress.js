@@ -1,4 +1,4 @@
-if (typeof LearnPress == 'undefined') window.LearnPress = {};
+if (typeof LP == 'undefined') window.LP = {};
 ;
 (function ($) {
 
@@ -13,7 +13,7 @@ if (typeof LearnPress == 'undefined') window.LearnPress = {};
 		})(this[0]));
 
 	}
-	$.extend(LearnPress, {
+	$.extend(LP, {
 		complete_lesson: function (lesson, user_id) {
 			$.ajax({
 				type    : "POST",
@@ -25,15 +25,15 @@ if (typeof LearnPress == 'undefined') window.LearnPress = {};
 					user_id: user_id
 				},
 				success : function (response) {
-					var response = LearnPress.parseJSON(response);
+					var response = LP.parseJSON(response);
 					response = $(document).triggerHandler('learn_press_user_complete_lesson', response);
 					if(response.result == 'success'){
 						$('.course-item-' + lesson).addClass('item-completed');
 					}
 					if (response.url) {
-						LearnPress.reload(response.url)
+						LP.reload(response.url)
 					} else {
-						LearnPress.reload();
+						LP.reload();
 					}
 				}
 			})
@@ -51,7 +51,7 @@ if (typeof LearnPress == 'undefined') window.LearnPress = {};
 					if (response) {
 						if (response.message) alert(response.message);
 						if (response.redirect)
-							LearnPress.reload(response.redirect)
+							LP.reload(response.redirect)
 					}
 				}
 			});
@@ -93,20 +93,20 @@ if (typeof LearnPress == 'undefined') window.LearnPress = {};
 		event.preventDefault();
 		if (!confirm(learn_press_js_localize.confirm_complete_lesson)) return;
 		var lesson = $(this).attr('data-id');
-		LearnPress.complete_lesson(lesson);
+		LP.complete_lesson(lesson);
 	}
 
 	function finish_course() {
 		var $button = $(this),
 			course_id = $button.data('id');
-		LearnPress.finish_course(course_id);
+		LP.finish_course(course_id);
 	}
 
 	function retake_course() {
 		if (!confirm(learn_press_js_localize.confirm_retake_course)) return;
 		var $button = $(this),
 			course_id = $button.data('id');
-		LearnPress.retake_course(course_id);
+		LP.retake_course(course_id);
 	}
 
 	function load_lesson(evt) {
@@ -122,7 +122,7 @@ if (typeof LearnPress == 'undefined') window.LearnPress = {};
 			$parent.addClass('loading')
 		}
 		history.pushState({}, '', permalink);
-		LearnPress.load_lesson(permalink, {
+		LP.load_lesson(permalink, {
 			success: function () {
 				$('.curriculum-sections .course-lesson.current').removeClass('current')
 				if ($parent.hasClass('course-lesson')) {
@@ -278,7 +278,7 @@ jQuery(document).ready(function ($) {
 				lesson_id: $(this).attr('lesson-id')
 			},
 			success: function (html) {
-				LearnPress.log($url);
+				LP.log($url);
 				history.pushState({}, '', $url);
 				$('.course-content').html($('.course-content', html).html());
 				$('html, body').animate({scrollTop: $('.course-content').offset().top}, 'slow');
@@ -314,7 +314,7 @@ jQuery(document).ready(function ($) {
 				question_answer: $question_answer
 			},
 			success: function (html) {
-				LearnPress.log(html);
+				LP.log(html);
 				location.reload(true);
 			}
 		})
@@ -452,7 +452,7 @@ jQuery(document).ready(function ($) {
 		event.preventDefault();
 		var $this = $(this);
 		var $certi_link = $this.attr("certi_link");
-		LearnPress.log($certi_link);
+		LP.log($certi_link);
 		$.ajax({
 			type   : "POST",
 			url    : ajaxurl,
@@ -461,7 +461,7 @@ jQuery(document).ready(function ($) {
 				course_id: $this.attr('course-id')
 			},
 			success: function (html) {
-				LearnPress.log(html);
+				LP.log(html);
 				if (html == 'success') {
 					if ($certi_link) {
 						window.location.replace($certi_link);

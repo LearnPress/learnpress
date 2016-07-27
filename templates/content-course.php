@@ -12,7 +12,7 @@ if ( !defined( 'ABSPATH' ) ) {
 }
 
 ?>
-<div id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
+<li id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
 
 	<?php do_action( 'learn_press_before_courses_loop_item' ); ?>
 
@@ -24,4 +24,4 @@ if ( !defined( 'ABSPATH' ) ) {
 
 	<?php do_action( 'learn_press_after_courses_loop_item' ); ?>
 
-</div>
+</li>

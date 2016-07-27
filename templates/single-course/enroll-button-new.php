@@ -10,8 +10,7 @@
 if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
-
-global $course;
+$course = learn_press_get_course();
 
 if ( !$course->is_required_enroll() ) {
 	return;
@@ -31,11 +30,10 @@ if ( !$user->can( 'enroll-course', $course->id ) ) {
 $purchase_button_text = apply_filters( 'learn_press_purchase_button_text', __( 'Buy this course', 'learnpress' ) );
 
 ?>
-XXXXXXXXXXXXXXXXXXXXXX
 <form name="purchase-course" class="purchase-course" method="post" enctype="multipart/form-data">
 	<?php do_action( 'learn_press_before_purchase_button' ); ?>
-	<input type="hidden" name="_wp_http_referer" value="<?php echo get_the_permalink(); ?>" />
-	<input type="hidden" name="add-course-to-cart" value="<?php echo $course->id; ?>" />
+	<!--<input type="hidden" name="add-course-to-cart" value="<?php echo $course->id; ?>" />-->
+	<input type="hidden" name="purchase-course" value="<?php echo $course->id; ?>" />
 	<button class="button purchase-button"><?php echo $purchase_button_text; ?></button>
 	<?php do_action( 'learn_press_after_purchase_button' ); ?>
 </form>

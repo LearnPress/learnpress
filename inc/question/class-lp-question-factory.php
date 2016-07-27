@@ -168,6 +168,7 @@ class LP_Question_Factory {
 	}
 
 	public static function show_answer( $id, $quiz_id ) {
+
 		$quiz   = LP_Quiz::get_quiz( $quiz_id );
 		$status = LP()->user->get_quiz_status( $quiz_id );
 
@@ -323,11 +324,10 @@ class LP_Question_Factory {
 	}
 
 	public static function save( $post_id ) {
-
 		global $post, $pagenow;
 
 		// Ensure that we are editing course in admin side
-		if ( ($pagenow != 'post.php') ) {
+		if ( ( $pagenow != 'post.php' ) ) {
 			return;
 		}
 

@@ -25,13 +25,15 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 				'load_lesson_content' => false,
 				'load_next_lesson'    => false,
 				'load_prev_lesson'    => false,
-				'complete_lesson'     => false,
+				///'complete_lesson'     => false,
 				'finish_course'       => false,
 				'not_going'           => false,
 				//
 				'take_course'         => true,
 				'start_quiz'          => true,
-				'fetch_question'      => true
+				'fetch_question'      => true,
+
+				////////////////////
 			);
 
 			foreach ( $ajaxEvents as $ajax_event => $nopriv ) {
@@ -59,6 +61,9 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 				do_action( 'learn_press_ajax_handler_' . $var );
 				return;
 			}
+			if ( learn_press_get_request( 'format' ) == 'html' ) {
+				return;
+			}
 			learn_press_send_json( $result );
 		}
 
@@ -74,7 +79,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 		}
 
 		public static function _request_checkout() {
-			return LP()->checkout->process_checkout();
+			return LP()->checkout->process_checkout_handler();
 		}
 
 		public static function _request_enroll_course() {
@@ -230,6 +235,95 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			learn_press_send_json( $response );
 		}
 
+		public static function _request_complete_item() {
+			$user      = learn_press_get_current_user();
+			$id        = learn_press_get_request( 'id' );
+			$course_id = !empty( $_REQUEST['course_id'] ) ? $_REQUEST['course_id'] : get_the_ID();
+			$type      = learn_press_get_request( 'type' );
+			$security  = learn_press_get_request( 'security' );
+			$response  = array();
+			if ( !wp_verify_nonce( $security, sprintf( 'complete-item-%d-%d-%d', $user->id, $course_id, $id ) ) ) {
+				$response['result']  = 'fail';
+				$response['message'] = __( 'Bad request!', 'learnpress' );
+			} else {
+				if ( $type == 'lp_lesson' ) {
+					$results = $user->complete_lesson( $id, $course_id );
+					if ( is_wp_error( $results ) ) {
+						$response['result']  = 'fail';
+						$response['message'] = $results->get_error_message();
+					} elseif ( $results !== false ) {
+						$course                     = learn_press_get_course( $course_id );
+						LP()->course                = $course;
+						LP()->user                  = $user;
+						$response['course_results'] = $results;
+						$response['result']         = 'success';
+						$response['status']         = 'completed';
+						$response['html']           = array();
+						if ( $section_id = learn_press_get_request( 'section_id' ) ) {
+							ob_start();
+							learn_press_get_template( 'single-course/section/title.php', array( 'force' => true, 'section' => $course->get_curriculum( $section_id ) ) );
+							$response['html']['section_header'] = ob_get_clean();
+						}
+						ob_start();
+						learn_press_get_template( 'single-course/progress.php', array( 'force' => true ) );
+						$response['html']['progress'] = ob_get_clean();
+					}
+				} else {
+					do_action( 'learn_press_user_request_complete_item', $_REQUEST );
+				}
+			}
+			learn_press_send_json( $response );
+		}
+
+		public static function _request_load_item() {
+			add_action( 'get_header', array( __CLASS__, '_load_item_content' ) );
+		}
+
+		public static function _load_item_content() {
+			global $wpdb;
+			$user      = learn_press_get_current_user();
+			$item_id   = learn_press_get_request( 'id' );
+			$course_id = get_the_ID();
+			// Ensure that user can view course item
+			if ( $user->can( 'view-item', $item_id, $course_id ) ) {
+				// Update user item if it's not updated
+				if ( !$user->get_item_status( $item_id ) ) {
+					$item_type = learn_press_get_request( 'type' );
+					if ( !$item_type ) {
+						$item_type = get_post_type( $item_id );
+					}
+					if ( apply_filters( 'learn_press_insert_user_item_data', true, $item_id, $course_id ) ) {
+						$wpdb->insert(
+							$wpdb->prefix . 'learnpress_user_items',
+							apply_filters(
+								'learn_press_user_item_data',
+								array(
+									'user_id'    => get_current_user_id(),
+									'item_id'    => learn_press_get_request( 'id' ),
+									'item_type'  => $item_type,
+									'start_time' => $item_type == 'lp_lesson' ? current_time( 'mysql' ) : '0000-00-00 00:00:00',
+									'end_time'   => '0000-00-00 00:00:00',
+									'status'     => $item_type == 'lp_lesson' ? 'started' : 'viewed',
+									'ref_id'     => $course_id,
+									'ref_type'   => 'lp_course'
+								)
+							),
+							array(
+								'%d', '%d', '%s', '%s', '%s', '%s', '%d', '%s'
+							)
+						);
+						$user_item_id = $wpdb->insert_id;
+					}
+				}
+				// display content item
+				learn_press_get_template( 'single-course/content-item.php' );
+			} else {
+				// display message
+				learn_press_get_template( 'singe-course/content-protected.php' );
+			}
+			die();
+		}
+
 
 		/**
 		 * die();
@@ -273,7 +367,6 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			global $quiz;
 			$quiz      = LP_Quiz::get_quiz( $quiz_id );
 			LP()->quiz = $quiz;
-
 
 
 			do_action( 'learn_press_load_quiz_question', $question_id, $quiz_id, $user_id );

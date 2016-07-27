@@ -32,6 +32,7 @@ if ( $show_result && $completed ) {
 
 	<?php do_action( 'learn_press_before_question_options', $this ); ?>
 
+
 	<ul class="learn-press-question-options">
 		<?php if ( $answers = $this->answers ) foreach ( $answers as $k => $answer ): ?>
 			<?php

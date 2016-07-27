@@ -1,7 +1,7 @@
 <?php
 //add_action( 'wp_head', 'learn_press_head_head' );
-function learn_press_head_head(){
-	learn_press_debug($_REQUEST, false);
+function learn_press_head_head() {
+	learn_press_debug( $_REQUEST, false );
 }
 
 
@@ -21,9 +21,13 @@ function test_mail() {
 
 add_action( 'admin_footer', 'test_mail' );
 
-function xxxx( $query ) {
+function learn_press_log_query( $query ) {
 	if ( empty( $GLOBALS['lp_queries'] ) ) {
-		$GLOBALS['lp_queries'] = array();
+		$GLOBALS['lp_queries']       = array();
+		$GLOBALS['lp_total_queries'] = 0;
+	}
+	if ( !preg_match_all( '!woocommerce!', $query ) ) {
+		//return $query;
 	}
 	$q = preg_replace( '/(\r\n|\r|\n|\s)+/', ' ', $query );
 	$k = md5( $q );
@@ -36,18 +40,18 @@ function xxxx( $query ) {
 		$GLOBALS['lp_queries'][$k][1] ++;
 	}
 
+	$GLOBALS['lp_total_queries'] += 1;
+
 	return $query;
 }
 
-add_action( 'plugins_loaded', 'yyyy' );
-function yyyy() {
-	add_filter( 'query', 'xxxx' );
-}
+add_filter( 'query', 'learn_press_log_query' );
 
-function zzzz() {
+function learn_press_save_queries() {
 	$queries = $GLOBALS['lp_queries'];
 	usort( $queries, create_function( '$a, $b', 'return $a[1] < $b[1];' ) );
 	LP_Debug::instance()->add( $queries, 'query', true );
+	LP_Debug::instance()->add( "Total of queries " . $GLOBALS['lp_total_queries'], 'query' );
 }
 
-add_action( 'wp_footer', 'zzzz', 9999999 );
+add_action( 'wp_footer', 'learn_press_save_queries', 9999999 );

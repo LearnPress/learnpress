@@ -17,7 +17,11 @@
 					<# }else{ #><?php _e( 'Add and Close', 'learnpress' ); ?>
 						<# } #>
 			</button>
-			<button class="close-modal button" onclick="LearnPress.MessageBox.hide();"><# if(data.closeText){ #>{{data.closeText}}<# }else{ #><?php _e( 'Close', 'learnpress' );?><# } #></button>
+			<button class="close-modal button" onclick="LP.MessageBox.hide();">
+				<# if(data.closeText){ #>{{data.closeText}}
+					<# }else{ #><?php _e( 'Close', 'learnpress' ); ?>
+						<# } #>
+			</button>
 		</footer>
 	</div>
 </script>

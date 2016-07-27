@@ -9,7 +9,7 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 	learn_press_include( 'custom-post-types/abstract.php' );
 
 	// class LP_Lesson_Post_Type
-	final class LP_Lesson_Post_Type extends LP_Abstract_Post_Type{
+	final class LP_Lesson_Post_Type extends LP_Abstract_Post_Type {
 
 		public function __construct() {
 			$post_type_name = 'lp_lesson';
@@ -55,6 +55,7 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 				'notice_empty_lesson' => ''
 			);
 		}
+
 		/**
 		 * Register lesson post type
 		 */
@@ -76,8 +77,9 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 						'not_found_in_trash' => __( 'No lesson found in Trash', 'learnpress' ),
 					),
 					'public'             => false, // no access directly via lesson permalink url
+					'query_var'          => true,
 					'taxonomies'         => array( 'lesson_tag' ),
-					'publicly_queryable' => false,
+					'publicly_queryable' => true,
 					'show_ui'            => true,
 					'has_archive'        => false,
 					'capability_type'    => LP_LESSON_CPT,
@@ -137,8 +139,8 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 						'type'    => 'radio',
 						'desc'    => __( 'If this is a preview lesson, then student can view this lesson content without taking the course', 'learnpress' ),
 						'options' => array(
-							'yes'     => __( 'Yes', 'learnpress' ),
-							'no' => __( 'No', 'learnpress' ),
+							'yes' => __( 'Yes', 'learnpress' ),
+							'no'  => __( 'No', 'learnpress' ),
 						),
 						'std'     => 'no'
 					)
@@ -188,11 +190,11 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 		public function columns_head( $columns ) {
 
 			// append new column after title column
-			$pos = array_search( 'title', array_keys( $columns ) );
+			$pos         = array_search( 'title', array_keys( $columns ) );
 			$new_columns = array(
 				LP()->course_post_type => __( 'Course', 'learnpress' )
 			);
-			if( current_theme_supports( 'post-formats' ) ){
+			if ( current_theme_supports( 'post-formats' ) ) {
 				$new_columns['format'] = __( 'Format', 'learnpress' );
 			}
 			$new_columns['preview'] = __( 'Preview', 'learnpress' );
@@ -225,14 +227,14 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 				case LP()->course_post_type:
 					$courses = learn_press_get_item_courses( $post_id );
 					if ( $courses ) {
-						foreach( $courses as $course ) {
-							echo '<div><a href="' . esc_url( add_query_arg( array('filter_course' => $course->ID) ) ) . '">' . get_the_title( $course->ID ) . '</a>';
+						foreach ( $courses as $course ) {
+							echo '<div><a href="' . esc_url( add_query_arg( array( 'filter_course' => $course->ID ) ) ) . '">' . get_the_title( $course->ID ) . '</a>';
 							echo '<div class="row-actions">';
 							printf( '<a href="%s">%s</a>', admin_url( sprintf( 'post.php?post=%d&action=edit', $course->ID ) ), __( 'Edit', 'learnpress' ) );
 							echo "&nbsp;|&nbsp;";
 							printf( '<a href="%s">%s</a>', get_the_permalink( $course->ID ), __( 'View', 'learnpress' ) );
 							echo "&nbsp;|&nbsp;";
-							if( $course_id = learn_press_get_request( 'filter_course') ) {
+							if ( $course_id = learn_press_get_request( 'filter_course' ) ) {
 								printf( '<a href="%s">%s</a>', remove_query_arg( 'filter_course' ), __( 'Remove Filter', 'learnpress' ) );
 							} else {
 								printf( '<a href="%s">%s</a>', add_query_arg( 'filter_course', $course->ID ), __( 'Filter', 'learnpress' ) );
@@ -259,14 +261,14 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 			}
 		}
 
-        function posts_fields( $fields ){
-			if( !$this->_is_archive() ){
+		function posts_fields( $fields ) {
+			if ( !$this->_is_archive() ) {
 				return $fields;
 			}
 
-            $fields = " DISTINCT " . $fields;
-            return $fields;
-        }
+			$fields = " DISTINCT " . $fields;
+			return $fields;
+		}
 
 		/**
 		 * @param $join
@@ -274,11 +276,11 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 		 * @return string
 		 */
 		public function posts_join_paged( $join ) {
-			if( !$this->_is_archive() ){
+			if ( !$this->_is_archive() ) {
 				return $join;
 			}
 			global $wpdb;
-			if( $this->_filter_course() || ( $this->_get_orderby() == 'course-name' ) || ($this->_get_search()) ) {
+			if ( $this->_filter_course() || ( $this->_get_orderby() == 'course-name' ) || ( $this->_get_search() ) ) {
 				$join .= " LEFT JOIN {$wpdb->prefix}learnpress_section_items si ON si.item_id = {$wpdb->posts}.ID";
 				$join .= " LEfT JOIN {$wpdb->prefix}learnpress_sections s ON s.section_id = si.section_id";
 				$join .= " LEFT JOIN {$wpdb->posts} c ON c.ID = s.section_course_id";
@@ -293,7 +295,7 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 		 */
 		public function posts_where_paged( $where ) {
 
-			if( !$this->_is_archive() ){
+			if ( !$this->_is_archive() ) {
 				return $where;
 			}
 			global $wpdb;
@@ -301,7 +303,7 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 				$where .= $wpdb->prepare( " AND (c.ID = %d)", $course_id );
 			}
 			if ( isset( $_GET['s'] ) ) {
-				$s = $_GET['s'];
+				$s     = $_GET['s'];
 				$where = preg_replace(
 					"/\.post_content\s+LIKE\s*(\'[^\']+\')\s*\)/",
 					" .post_content LIKE '%$s%' ) OR (c.post_title LIKE '%$s%' )", $where
@@ -317,7 +319,7 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 		 * @return string
 		 */
 		public function posts_orderby( $order_by_statement ) {
-			if( !$this->_is_archive() ){
+			if ( !$this->_is_archive() ) {
 				return $order_by_statement;
 			}
 			if ( isset ( $_GET['orderby'] ) && isset ( $_GET['order'] ) ) {
@@ -344,11 +346,11 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 			return true;
 		}
 
-		private function _get_orderby(){
+		private function _get_orderby() {
 			return isset( $_REQUEST['orderby'] ) ? $_REQUEST['orderby'] : '';
 		}
 
-		private function _get_search(){
+		private function _get_search() {
 			return isset( $_REQUEST['s'] ) ? $_REQUEST['s'] : false;
 		}
 
@@ -359,11 +361,11 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 		public static function create_default_meta( $id ) {
 			$meta = apply_filters( 'learn_press_default_lesson_meta',
 				array(
-					'_lp_duration'		=> 10,
-					'_lp_preview' => 'no'
+					'_lp_duration' => 10,
+					'_lp_preview'  => 'no'
 				)
 			);
-			foreach( $meta as $key => $value ){
+			foreach ( $meta as $key => $value ) {
 				update_post_meta( $id, $key, $value );
 			}
 		}

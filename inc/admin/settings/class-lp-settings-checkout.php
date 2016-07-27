@@ -49,7 +49,7 @@ class LP_Settings_Checkout extends LP_Settings_Base {
 			'learn_press_checkout_settings',
 			array(
 				array(
-					'title'   => __( 'No checkout free course', 'learnpress' ),
+					'title'   => __( 'No checkout Free course', 'learnpress' ),
 					'desc'    => __( 'Check this option to enable user can enroll course immediate without add to cart', 'learnpress' ),
 					'id'      => $this->get_field_name( 'no_checkout_free_course' ),
 					'default' => 'yes',

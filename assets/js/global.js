@@ -1,10 +1,10 @@
 /**
  * Common functions/utils used in all page
  */
-if (typeof window.LearnPress == 'undefined') {
-	window.LearnPress = {};
+if (typeof window.LP == 'undefined') {
+	window.LP = {};
 }
-;
+
 (function ($) {
 	$.fn.serializeJSON = function () {
 		var unIndexed = $(this).serializeArray(),
@@ -76,11 +76,11 @@ if (typeof window.LearnPress == 'undefined') {
 	};
 	$.fn.hasEvent = function (name) {
 		var events = $(this).data('events');
-		if (typeof events.LearnPress == 'undefined') {
+		if (typeof events.LP == 'undefined') {
 			return false;
 		}
-		for (i = 0; i < events.LearnPress.length; i++) {
-			if (events.LearnPress[i].namespace == name) {
+		for (i = 0; i < events.LP.length; i++) {
+			if (events.LP[i].namespace == name) {
 				return true;
 			}
 		}
@@ -96,7 +96,7 @@ if (typeof window.LearnPress == 'undefined') {
 		});
 		return json;
 	}
-	
+
 	String.prototype.getQueryVar = function (name) {
 		name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
 		var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
@@ -125,8 +125,9 @@ if (typeof window.LearnPress == 'undefined') {
 		url = url.replace(regex, '');
 		return url;
 	}
-	if($.isEmptyObject("") == false){
-		$.isEmptyObject = function(a){
+
+	if ($.isEmptyObject("") == false) {
+		$.isEmptyObject = function (a) {
 			for (prop in a) {
 				if (a.hasOwnProperty(prop)) {
 					return false;
@@ -136,7 +137,7 @@ if (typeof window.LearnPress == 'undefined') {
 		}
 	}
 
-	LearnPress.MessageBox = {
+	LP.MessageBox = {
 		/*
 		 *
 		 */
@@ -232,7 +233,7 @@ if (typeof window.LearnPress == 'undefined') {
 					autohide: false,
 					message : message,
 					data    : false,
-					id      : LearnPress.uniqueId(),
+					id      : LP.uniqueId(),
 					onHide  : null
 				}, args || {});
 
@@ -260,8 +261,8 @@ if (typeof window.LearnPress == 'undefined') {
 				this.update(true);
 				if (args.autohide) {
 					setTimeout(function () {
-						LearnPress.MessageBox.hide();
-						$.isFunction(args.onHide) && args.onHide.call(LearnPress.MessageBox, args);
+						LP.MessageBox.hide();
+						$.isFunction(args.onHide) && args.onHide.call(LP.MessageBox, args);
 					}, args.autohide)
 				}
 			}, this)()
@@ -299,7 +300,7 @@ if (typeof window.LearnPress == 'undefined') {
 				$wrap = this.$window.find('#message-box-wrap'),
 				timer = $wrap.data('timer'),
 				_update = function () {
-					LearnPress.Hook.doAction('learn_press_message_box_before_resize', that);
+					LP.Hook.doAction('learn_press_message_box_before_resize', that);
 					var $content = $wrap.find('.message-box-content').css("height", "").css('overflow', 'hidden'),
 						width = $wrap.outerWidth(),
 						height = $wrap.outerHeight(),
@@ -317,7 +318,7 @@ if (typeof window.LearnPress == 'undefined') {
 					$wrap.css({
 						marginTop: ( $(window).height() - height ) / 2
 					});
-					LearnPress.Hook.doAction('learn_press_message_box_resize', height, that);
+					LP.Hook.doAction('learn_press_message_box_resize', height, that);
 				};
 			if (force) _update();
 			timer && clearTimeout(timer);
@@ -359,15 +360,15 @@ if (typeof window.LearnPress == 'undefined') {
 				var $buttons = $('<div class="message-box-buttons"></div>');
 				switch (buttons) {
 					case 'yesNo':
-						$buttons.append(this._createButton(LearnPress_Settings.localize.button_yes, 'yes'));
-						$buttons.append(this._createButton(LearnPress_Settings.localize.button_no, 'no'));
+						$buttons.append(this._createButton(LP_Settings.localize.button_yes, 'yes'));
+						$buttons.append(this._createButton(LP_Settings.localize.button_no, 'no'));
 						break;
 					case 'okCancel':
-						$buttons.append(this._createButton(LearnPress_Settings.localize.button_ok, 'ok'));
-						$buttons.append(this._createButton(LearnPress_Settings.localize.button_cancel, 'cancel'));
+						$buttons.append(this._createButton(LP_Settings.localize.button_ok, 'ok'));
+						$buttons.append(this._createButton(LP_Settings.localize.button_cancel, 'cancel'));
 						break;
 					default:
-						$buttons.append(this._createButton(LearnPress_Settings.localize.button_ok, 'ok'));
+						$buttons.append(this._createButton(LP_Settings.localize.button_ok, 'ok'));
 				}
 				$wrap.append($buttons);
 			}
@@ -379,19 +380,19 @@ if (typeof window.LearnPress == 'undefined') {
 				var instance = $(this).data('instance'),
 					callback = instance.events[$(this).data('callback')];
 				if ($.type(callback) == 'function') {
-					if (callback.apply(LearnPress.MessageBox, [instance]) === false) {
+					if (callback.apply(LP.MessageBox, [instance]) === false) {
 						return;
 					} else {
-						LearnPress.MessageBox.hide(null, instance);
+						LP.MessageBox.hide(null, instance);
 					}
 				} else {
-					LearnPress.MessageBox.hide(null, instance);
+					LP.MessageBox.hide(null, instance);
 				}
 			}).data('instance', this.instance);
 			return $button;
 		}
 	}
-	LearnPress.Hook = {
+	LP.Hook = {
 		hooks       : {action: {}, filter: {}},
 		addAction   : function (action, callable, priority, tag) {
 			this.addHook('action', action, callable, priority, tag);
@@ -466,9 +467,11 @@ if (typeof window.LearnPress == 'undefined') {
 			return this;
 		}
 	};
-	LearnPress = $.extend({
+	LP = $.extend({
 		setUrl        : function (url, title) {
-			history.pushState({}, title, url);
+			if (url) {
+				history.pushState({}, title, url);
+			}
 		},
 		getUrl        : function () {
 			return window.location.href;
@@ -494,7 +497,7 @@ if (typeof window.LearnPress == 'undefined') {
 					data = $.parseJSON(data);
 				}
 			} catch (e) {
-				LearnPress.log(e);
+				LP.log(e);
 				data = {};
 			}
 			return data;
@@ -505,6 +508,25 @@ if (typeof window.LearnPress == 'undefined') {
 				response = m[1];
 			}
 			return ( type || 'json' ) == 'json' ? this.parseJSON(response) : response;
+		},
+		ajax          : function (args) {
+			var type = args.type || 'post',
+				dataType = args.dataType || 'json',
+				data = args.action ? $.extend(args.data, {'lp-ajax': args.action}) : args.data,
+				url = args.url || window.location.href;
+			$.ajax({
+				data    : data,
+				url     : url,
+				type    : type,
+				dataType: 'html',
+				success : function (raw) {
+					var response = LP.parseResponse(raw, dataType);
+					$.isFunction(args.success) && args.success(response, raw);
+				},
+				error   : function () {
+					$.isFunction(args.error) && args.error.apply(null, LP.funcArgs2Array());
+				}
+			});
 		},
 		doAjax        : function (args) {
 			var type = args.type || 'post',
@@ -518,11 +540,11 @@ if (typeof window.LearnPress == 'undefined') {
 				type    : type,
 				dataType: 'html',
 				success : function (raw) {
-					var response = LearnPress.parseResponse(raw, dataType);
+					var response = LP.parseResponse(raw, dataType);
 					$.isFunction(args.success) && args.success(response, raw);
 				},
 				error   : function () {
-					$.isFunction(args.error) && args.error.apply(null, LearnPress.funcArgs2Array());
+					$.isFunction(args.error) && args.error.apply(null, LP.funcArgs2Array());
 				}
 			});
 		},
@@ -536,9 +558,9 @@ if (typeof window.LearnPress == 'undefined') {
 		},
 		addFilter     : function (action, callback) {
 			var $doc = $(document),
-				event = 'LearnPress.' + action;
+				event = 'LP.' + action;
 			$doc.on(event, callback);
-			LearnPress.log($doc.data('events'));
+			LP.log($doc.data('events'));
 			return this;
 		},
 		applyFilters  : function () {
@@ -546,7 +568,7 @@ if (typeof window.LearnPress == 'undefined') {
 				action = arguments[0],
 				args = this.funcArgs2Array(arguments);
 			if ($doc.hasEvent(action)) {
-				args[0] = 'LearnPress.' + action;
+				args[0] = 'LP.' + action;
 				return $doc.triggerHandler.apply($doc, args);
 			}
 			return args[1];
@@ -559,7 +581,7 @@ if (typeof window.LearnPress == 'undefined') {
 				action = arguments[0],
 				args = this.funcArgs2Array(arguments);
 			if ($doc.hasEvent(action)) {
-				args[0] = 'LearnPress.' + action;
+				args[0] = 'LP.' + action;
 				$doc.trigger.apply($doc, args);
 			}
 		},
@@ -623,11 +645,11 @@ if (typeof window.LearnPress == 'undefined') {
 			return retId;
 		},
 		log           : function () {
-			if (typeof LEARN_PRESS_DEBUG != 'undefined' && LEARN_PRESS_DEBUG && console) {
-				for (var i = 0, n = arguments.length; i < n; i++) {
-					console.log(arguments[i]);
-				}
+			//if (typeof LEARN_PRESS_DEBUG != 'undefined' && LEARN_PRESS_DEBUG && console) {
+			for (var i = 0, n = arguments.length; i < n; i++) {
+				console.log(arguments[i]);
 			}
+			//}
 		},
 		template      : _.memoize(function (id, data) {
 			var compiled,
@@ -660,7 +682,7 @@ if (typeof window.LearnPress == 'undefined') {
 				}
 			}
 			$.alerts.alert(message, title, function (e) {
-				LearnPress._on_alert_hide();
+				LP._on_alert_hide();
 				callback && callback(e);
 			});
 			this._on_alert_show();
@@ -680,7 +702,7 @@ if (typeof window.LearnPress == 'undefined') {
 				}
 			}
 			$.alerts.confirm(message, title, function (e) {
-				LearnPress._on_alert_hide();
+				LP._on_alert_hide();
 				callback && callback(e);
 			});
 			this._on_alert_show();
@@ -708,7 +730,7 @@ if (typeof window.LearnPress == 'undefined') {
 				$(this).remove()
 			})
 		}
-	}, LearnPress);
+	}, LP);
 
 	$.fn.findNext = function (selector) {
 		var $selector = $(selector),
@@ -737,7 +759,7 @@ if (typeof window.LearnPress == 'undefined') {
 				$tab.parent().addClass('current').siblings().removeClass('current');
 				current = $($contentID).addClass('current');
 				current.siblings().removeClass('current');
-				//LearnPress.setUrl($contentID);
+				//LP.setUrl($contentID);
 				e.preventDefault();
 			}).filter(function () {
 				return $(this).attr('href') == window.location.hash;
@@ -753,6 +775,15 @@ if (typeof window.LearnPress == 'undefined') {
 			$.alerts.overlayColor = '#000';
 			$.alerts.overlayOpacity = 0.5;
 		}
+
+		$('body')
+			.on('click', '.learn-press-nav-tabs li a', function (e) {
+				e.preventDefault();
+				var $tab = $(this);
+				$tab.closest('li').addClass('active').siblings().removeClass('active');
+				$($tab.attr('data-tab')).addClass('active').siblings().removeClass('active');
+			})
+
 	});
 
 })(jQuery);

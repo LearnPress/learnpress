@@ -4,18 +4,18 @@
  * @version 1.0
  */
 ;
-if (typeof window.LearnPress == 'undefined') {
-	window.LearnPress = {};
+if (typeof window.LP == 'undefined') {
+	window.LP = {};
 }
 ;(function ($) {
 	var $doc = $(document);
-	LearnPress.Hook.addFilter('before_add_question_option', function($el, args){
+	LP.Hook.addFilter('before_add_question_option', function ($el, args) {
 		return true;
 	}).addAction('question_option_added', function($el){
 		//$el.find('input[type="text"]').focus();
 	})
 
-	LearnPress.Question = {
+	LP.Question = {
 		_getEmptyOption: function(question_id){
 			var $options = $('#learn-press-list-options-' + question_id + ' tbody .lp-list-option-empty');
 			return $options.length ? $options : false;
@@ -29,14 +29,14 @@ if (typeof window.LearnPress == 'undefined') {
 				var templateArgs = {
 						question_id: question_id,
 						text       : '',
-						value      : LearnPress.uniqueId()
+						value      : LP.uniqueId()
 					},
 					tmpl = wp.template($('#learn-press-question-' + question_id).attr('data-type') + '-option'),
 					$list = $('#learn-press-list-options-' + question_id + ' tbody');
 				$newOption = $(tmpl(templateArgs));
-				if (LearnPress.Hook.applyFilters('before_add_question_option', $newOption, args) !== false) {
+				if (LP.Hook.applyFilters('before_add_question_option', $newOption, args) !== false) {
 					$list.append($newOption);
-					LearnPress.Hook.doAction('question_option_added', $newOption, args);
+					LP.Hook.doAction('question_option_added', $newOption, args);
 				}
 			}
 			if($newOption && args.autoFocus){
@@ -50,9 +50,9 @@ if (typeof window.LearnPress == 'undefined') {
 			}else{
 				$theOption = $(theOption);
 			}
-			if( LearnPress.Hook.applyFilters('before_remove_question_option', true, $theOption) !== false ) {
+			if (LP.Hook.applyFilters('before_remove_question_option', true, $theOption) !== false) {
 				$theOption.remove();
-				LearnPress.Hook.doAction('question_option_removed', $theOption);
+				LP.Hook.doAction('question_option_removed', $theOption);
 			}
 		},
 		addQuestion: function (args) {
@@ -69,19 +69,19 @@ if (typeof window.LearnPress == 'undefined') {
 				action: 'learnpress_add_question'
 			}, args);
 
-			post_data = LearnPress.Hook.applyFilters( 'LearnPress.add_question_post_data', post_data );
+			post_data = LP.Hook.applyFilters('LP.add_question_post_data', post_data);
 
 			$.ajax({
-				url     : LearnPress_Settings.ajax,
+				url     : LP_Settings.ajax,
 				dataType: 'html',
 				type    : 'post',
 				data    : post_data,
 				success : function (response) {
-					response = LearnPress.parseJSON(response);
+					response = LP.parseJSON(response);
 					var $newQuestion = $(response.html);
 					$('#learn-press-list-questions').append($newQuestion);
-					LearnPress.Question._hideQuestion( args.id )
-					LearnPress.Hook.doAction( 'learn_press_add_quiz_question', $newQuestion, args);
+					LP.Question._hideQuestion(args.id)
+					LP.Hook.doAction('learn_press_add_quiz_question', $newQuestion, args);
 				}
 			});
 		},
@@ -120,8 +120,8 @@ if (typeof window.LearnPress == 'undefined') {
 		}
 
 		$.ajax({
-			url: LearnPress_Settings.ajax,
-			data: {
+			url    : LP_Settings.ajax,
+			data   : {
 				action: 'learnpress_update_quiz_question_state',
 				quiz_id: $('#post_ID').val(),
 				hidden: hidden
@@ -132,7 +132,8 @@ if (typeof window.LearnPress == 'undefined') {
 		});
 		return hidden;
 	}
-	LearnPress.sortableQuestionAnswers = function( $questions, args ){
+
+	LP.sortableQuestionAnswers = function ($questions, args) {
 		args = $.extend({
 			stop: function(){}
 		}, args || {});
@@ -163,23 +164,23 @@ if (typeof window.LearnPress == 'undefined') {
 
 		$doc.on('click', '#learn-press-dropdown-questions ul li a', function (e) {
 			e.preventDefault();
-			LearnPress.Question.addQuestion({id: $(this).data('id')});
+			LP.Question.addQuestion({id: $(this).data('id')});
 			$(this).closest('ul').hide();
 		});
 
 		$('#learn-press-button-add-question').on('click', function () {
-			//LearnPress.Question.addQuestion({name: $('#learn-press-question-name').val(), type: 'true_or_false'});
+			//LP.Question.addQuestion({name: $('#learn-press-question-name').val(), type: 'true_or_false'});
 		});
 
 		$doc.on('click', '.add-question-option-button', function (e, data) {
 			var question_id = $(this).attr('data-id');
-			LearnPress.Question.addOption(question_id, data);
+			LP.Question.addOption(question_id, data);
 		}).on('click', '.lp-remove-list-option', function () {
 			var $option = $(this).closest('tr');
-			LearnPress.MessageBox.quickConfirm( $('i', this), {
+			LP.MessageBox.quickConfirm($('i', this), {
 				message: 'Are you sure you want to remove this option?',
 				onOk: function (a) {
-					LearnPress.Question.removeOption($option);
+					LP.Question.removeOption($option);
 				}
 			});
 		}).on('change', '.lp-dropdown-question-types', function(){
@@ -189,20 +190,20 @@ if (typeof window.LearnPress == 'undefined') {
 				from = $select.data('selected'),
 				to = this.value,
 				_do = function(){
-					LearnPress.MessageBox.blockUI();
+					LP.MessageBox.blockUI();
 					$.ajax({
-						url: LearnPress_Settings.ajax,
-						type: 'post',
+						url     : LP_Settings.ajax,
+						type    : 'post',
 						dataType: 'html',
-						data: {
+						data    : {
 							action: 'learnpress_convert_question_type',
 							question_id: questionId,
 							from: from,
 							to: to,
 							data: $('#post').serialize()//$wrap.find('input, select, textarea').
 						},
-						success: function(response){
-							response = LearnPress.parseJSON(response);
+						success : function(response){
+							response = LP.parseJSON(response);
 							var $newOptions = $(response.html),
 								$question = $('#learn-press-question-'+questionId),
 								$icon = $question.closest('.quiz-question').find('.quiz-question-icon img');
@@ -210,13 +211,13 @@ if (typeof window.LearnPress == 'undefined') {
 							if($icon.length){
 								$icon.replaceWith(response.icon)
 							}
-							LearnPress.Hook.doAction('learn_press_convert_question_type', questionId, from, to, $newOptions );
-							LearnPress.MessageBox.hide();
+							LP.Hook.doAction('learn_press_convert_question_type', questionId, from, to, $newOptions);
+							LP.MessageBox.hide();
 						}
 					});
 				};
 
-			LearnPress.MessageBox.show( 'Are you sure you want to convert to new type?', {
+			LP.MessageBox.show('Are you sure you want to convert to new type?', {
 				buttons: 'yesNo',
 				events: {
 					onYes: function () {
@@ -301,7 +302,7 @@ if (typeof window.LearnPress == 'undefined') {
 						});
 					break;
 				case 'remove':
-					LearnPress.MessageBox.quickConfirm( $link, {
+					LP.MessageBox.quickConfirm($link, {
 						onOk: function(a){
 							var $question = $(a);
 							$.ajax({
@@ -322,7 +323,7 @@ if (typeof window.LearnPress == 'undefined') {
 						data: $(this).closest('.quiz-question')
 					});
 					break;
-					LearnPress.MessageBox.show( 'Do you want to remove this question from quiz?', {
+					LP.MessageBox.show('Do you want to remove this question from quiz?', {
 						buttons: 'yesNo',
 						data: $(this).closest('.quiz-question'),
 						events: {
@@ -344,7 +345,7 @@ if (typeof window.LearnPress == 'undefined') {
 					})
 					break;
 				//case 'edit':
-					//LearnPress.MessageBox.show('<iframe src="'+$(this).attr('href')+'" />');
+				//LP.MessageBox.show('<iframe src="'+$(this).attr('href')+'" />');
 
 			}
 			if( action ){
@@ -353,7 +354,7 @@ if (typeof window.LearnPress == 'undefined') {
 		}).on('keydown', '.no-submit', function(e){
 			if(e.keyCode == 13) {
 				e.preventDefault();
-				LearnPress.log('no submit form');
+				LP.log('no submit form');
 			}
 		}).on('change keyup', '.lp-answer-text', function(e){
 			var $input = $(this),
@@ -366,7 +367,7 @@ if (typeof window.LearnPress == 'undefined') {
 					case 8:
 					case 46:
 						var pressed = $input.data('key-'+ e.keyCode) || 1;
-						LearnPress.log('pressed:'+pressed)
+						LP.log('pressed:' + pressed)
 						if(pressed > 1){
 							if(e.keyCode == 38){
 								( $prev = $input.findPrev('.key-nav') ) && $prev.focus();

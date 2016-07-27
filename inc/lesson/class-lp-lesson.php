@@ -52,11 +52,26 @@ class LP_Lesson {
 	 * @return mixed
 	 */
 	public function __get( $key ) {
-		$value = get_post_meta( $this->id, '_lp_' . $key, true );
-		if ( !empty( $value ) ) {
-			$this->$key = $value;
+		if ( isset( $this->{$key} ) ) {
+			return $this->{$key};
 		}
-
+		$value = null;
+		switch ( $key ) {
+			case 'ID':
+				$value = $this->id;
+				break;
+			case 'title':
+				$value = $this->post->post_title;
+				break;
+			case 'content':
+				$value = apply_filters( 'the_content', $this->post->post_content );
+				break;
+			default:
+				$value = get_post_meta( $this->id, '_lp_' . $key, true );
+				if ( !empty( $value ) ) {
+					$this->$key = $value;
+				}
+		}
 		return $value;
 	}
 
@@ -90,7 +105,7 @@ class LP_Lesson {
 
 		static $lessons = array();
 
-		if( empty( $lessons[ $the_lesson->ID ] ) || ( ! empty( $args['force'] ) && $args['force'] ) ) {
+		if ( empty( $lessons[$the_lesson->ID] ) || ( !empty( $args['force'] ) && $args['force'] ) ) {
 			$class_name = self::get_lesson_class( $the_lesson, $args );
 			if ( !class_exists( $class_name ) ) {
 				$class_name = 'LP_Lesson';
@@ -98,7 +113,7 @@ class LP_Lesson {
 
 			$lessons[$the_lesson->ID] = new $class_name( $the_lesson, $args );
 		}
-		return $lessons[ $the_lesson->ID ];
+		return $lessons[$the_lesson->ID];
 	}
 
 	/**
@@ -147,9 +162,9 @@ class LP_Lesson {
 			$the_lesson = get_post( $the_lesson );
 		} elseif ( $the_lesson instanceof LP_Lesson ) {
 			$the_lesson = get_post( $the_lesson->id );
-		} elseif ( ! empty( $the_lesson->ID ) ) {
+		} elseif ( !empty( $the_lesson->ID ) ) {
 			$the_lesson = get_post( $the_lesson->id );
-		}elseif( !( $the_lesson instanceof WP_Post ) ) {
+		} elseif ( !( $the_lesson instanceof WP_Post ) ) {
 			$the_lesson = false;
 		}
 
