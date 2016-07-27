@@ -1284,6 +1284,7 @@ function learn_press_pre_get_post( $q ) {
 	if ( is_admin() ) {
 		return $q;
 	}
+
 	if ( $q->is_main_query() && $q->is_page() && ( $q->queried_object && $q->queried_object->ID == ( $page_id = learn_press_get_page_id( 'courses' ) ) && $page_id ) ) {
 		$q->set( 'post_type', 'lp_course' );
 		$q->set( 'page', '' );

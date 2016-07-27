@@ -195,6 +195,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 					'with_front' => false
 				) : false
 			);
+
 			register_post_type( LP_COURSE_CPT, $args );
 
 			$category_base = $settings->get( 'course_category_base' );

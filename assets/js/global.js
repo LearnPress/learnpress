@@ -96,6 +96,7 @@ if (typeof window.LearnPress == 'undefined') {
 		});
 		return json;
 	}
+	
 	String.prototype.getQueryVar = function (name) {
 		name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
 		var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
@@ -123,6 +124,16 @@ if (typeof window.LearnPress == 'undefined') {
 		var regex = new RegExp("[\\?&]" + name + "([\[][^=]*)?=([^&#]*)", 'g');
 		url = url.replace(regex, '');
 		return url;
+	}
+	if($.isEmptyObject("") == false){
+		$.isEmptyObject = function(a){
+			for (prop in a) {
+				if (a.hasOwnProperty(prop)) {
+					return false;
+				}
+			}
+			return true;
+		}
 	}
 
 	LearnPress.MessageBox = {

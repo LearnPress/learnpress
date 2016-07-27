@@ -1375,6 +1375,7 @@ function learn_press_template_loader( $template ) {
 
 		$post->post_content = '[learn_press_become_teacher_form]';
 	} else {
+		//echo is_post_type_archive( LP()->course_post_type ) ? "is_post_type_archive" :"";
 		if ( is_post_type_archive( LP()->course_post_type ) || ( ( $page_id = learn_press_get_page_id( 'courses' ) ) && is_page( $page_id ) ) || ( is_tax( 'course_category' ) ) ) {
 			$file   = 'archive-course.php';
 			$find[] = $file;
