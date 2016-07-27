@@ -738,7 +738,3 @@ function load_learn_press() {
 
 // Done! entry point of the plugin
 load_learn_press();
-
-
-//preg_match("/^khoa-hoc/(.+?)(?:/([0-9]+))?/?$/", "learnpress-test/khoa-hoc/xxx/quizzes/dfgdfgdfgdfg/", $m);
-//print_r($m);
