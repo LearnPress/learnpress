@@ -598,10 +598,18 @@ if ( !class_exists( 'LearnPress' ) ) {
 			return false;
 		}
 
+		/**
+		 * Get checkout object instance
+		 *
+		 * @return LP_Checkout
+		 */
 		public function checkout() {
 			return LP_Checkout::instance();
 		}
 
+		/**
+		 * Setup courses thumbnail
+		 */
 		public function setup_theme() {
 			if ( !current_theme_supports( 'post-thumbnails' ) ) {
 				add_theme_support( 'post-thumbnails' );
