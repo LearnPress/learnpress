@@ -276,7 +276,8 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 		}
 
 		public static function _request_load_item() {
-			add_action( 'get_header', array( __CLASS__, '_load_item_content' ) );
+			//add_action( 'get_header', array( __CLASS__, '_load_item_content' ) );
+			self::_load_item_content();
 		}
 
 		public static function _load_item_content() {
