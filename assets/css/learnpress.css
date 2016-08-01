@@ -457,6 +457,9 @@ body.course-has-popup {
 #course-curriculum-popup #popup-main #popup-content #popup-content-inner {
   margin: 20px;
 }
+#course-curriculum-popup #popup-main #popup-content .learn-press-course-results-progress {
+  margin: 20px;
+}
 #course-curriculum-popup #popup-main #popup-footer {
   position: absolute;
   bottom: 0;
