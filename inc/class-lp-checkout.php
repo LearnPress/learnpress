@@ -267,7 +267,7 @@ class LP_Checkout {
 			}
 
 		} catch ( Exception $e ) {
-			if ( !empty( $e ) ) {
+			if ( !empty( $e->getMessage() ) ) {
 				learn_press_add_notice( $e->getMessage(), 'error' );
 			}
 			$success = false;

@@ -1349,8 +1349,8 @@ class LP_Abstract_User {
 	 */
 	public function enroll( $course_id ) {
 		if ( !$this->can( 'enroll-course', $course_id ) ) {
-			learn_press_add_notice( __( 'Sorry! You can not enroll this course. Please try again or contact site admin' ), 'error' );
-			return;
+			//learn_press_add_notice( __( 'Sorry! You can not enroll this course. Please try again or contact site admin' ), 'error' );
+			return false;
 		}
 		global $wpdb;
 		$inserted = 0;
