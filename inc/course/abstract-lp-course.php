@@ -947,7 +947,12 @@ abstract class LP_Abstract_Course {
 		$html    = '';
 		$quizzes = $this->get_quizzes();
 		if ( ( $this->course_result == 'evaluate_lesson' ) || !$quizzes ) {
-			$html = sprintf( __( '%d of %d items completed', 'learnpress' ), $this->get_completed_lessons( $user_id, $force ), sizeof( $this->get_lessons() ) );
+
+			$lessons     = $this->get_lessons();
+			$total_items = sizeof( $quizzes ) + sizeof( $lessons );
+
+
+			$html = sprintf( __( '%d of %d items completed', 'learnpress' ), $this->get_completed_items( $user_id, $force ), $total_items );
 		} else {
 			if ( $this->course_result == 'evaluate_final_quiz' ) {
 				$html = sprintf( __( '%d%% completed', 'learnpress' ), $this->_evaluate_course_by_quiz( $user_id, $force ) * 100 );
@@ -1034,8 +1039,49 @@ abstract class LP_Abstract_Course {
 			$completed_lessons               = $this->get_completed_lessons( $user_id );
 			$evaluate_course_by_lesson[$key] = min( $completed_lessons / sizeof( $course_lessons ), 1 );
 		}
-
 		return apply_filters( 'learn_press_evaluation_course_lesson', $evaluate_course_by_lesson[$key], $this->id, $user_id );
+	}
+
+	/**
+	 * Get number of lessons user has completed
+	 *
+	 * @param       $user_id
+	 * @param array $items
+	 * @param bool  $force
+	 *
+	 * @return int|mixed|null|void
+	 */
+	public function get_completed_items( $user_id, $items = array(), $force = false ) {
+		static $completed_items = array();
+		$key = $user_id . '-' . $this->id;
+		if ( !array_key_exists( $key, $completed_items ) || $force ) {
+			global $wpdb;
+			$course_items = $this->get_curriculum_items( array( 'field' => 'ID' ) );
+			if ( !$course_items ) {
+				return 0;
+			}
+			if ( $items ) {
+				$in_item_types = array_fill( 0, sizeof( $items ), '%s' );
+				$item_types    = $wpdb->prepare( " AND item_type IN(" . join( ',', $in_item_types ) . ") ", $items );
+			} else {
+				$item_types = '';
+			}
+			$query         = $wpdb->prepare( "
+				SELECT user_item_id, user_id, status, ref_id, item_id, item_type
+				FROM (SELECT * FROM wp_learnpress_user_items ORDER BY item_id, user_item_id DESC) x
+				GROUP BY item_id
+				HAVING user_id = %d
+				AND status = %s
+				AND ref_id = %d
+				AND item_id IN(" . join( ",", $course_items ) . ")
+				" . $item_types . "
+			", $user_id, 'completed', $this->id );
+			$user_item_ids = $wpdb->get_col( $query );
+
+			$completed_items[$key] = sizeof( $user_item_ids );
+		}
+
+		return apply_filters( 'learn_press_user_completed_items', $completed_items[$key], $this->id, $user_id );
 	}
 
 	/**
