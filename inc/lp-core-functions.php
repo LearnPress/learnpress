@@ -3145,6 +3145,23 @@ function learn_press_update_user_item_meta( $user_item_id, $meta_key, $meta_valu
 	return update_metadata( 'learnpress_user_item', $user_item_id, $meta_key, $meta_value, $prev_value );
 }
 
+function learn_press_plugin_basename( $filepath ) {
+	$file          = str_replace( '\\', '/', $filepath );
+	$file          = preg_replace( '|/+|', '/', $file );
+	$plugin_dir    = str_replace( '\\', '/', WP_PLUGIN_DIR );
+	$plugin_dir    = preg_replace( '|/+|', '/', $plugin_dir );
+	$mu_plugin_dir = str_replace( '\\', '/', WPMU_PLUGIN_DIR );
+	$mu_plugin_dir = preg_replace( '|/+|', '/', $mu_plugin_dir );
+	$sp_plugin_dir = dirname( $filepath );
+	$sp_plugin_dir = dirname( $sp_plugin_dir );
+	$sp_plugin_dir = str_replace( '\\', '/', $sp_plugin_dir );
+	$sp_plugin_dir = preg_replace( '|/+|', '/', $sp_plugin_dir );
+
+	$file = preg_replace( '#^' . preg_quote( $sp_plugin_dir, '#' ) . '/|^' . preg_quote( $plugin_dir, '#' ) . '/|^' . preg_quote( $mu_plugin_dir, '#' ) . '/#', '', $file );
+	$file = trim( $file, '/' );
+	return strtolower( $file );
+}
+
 // Debugging
 include_once "debug.php";
 

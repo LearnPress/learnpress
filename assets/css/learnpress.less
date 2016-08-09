@@ -179,7 +179,6 @@
         padding: 15px 15px;
         border-top: 1px solid rgb(255, 255, 255);
         position: relative;
-        cursor: pointer;
         .transition(background linear 0.5s);
         .lp-label-viewing,
         .lp-label-completed {
@@ -195,6 +194,13 @@
         }
         .lp-icon {
             display: none;
+        }
+        &.viewable{
+            cursor: pointer;
+            &:hover {
+                background: #e7ecfb;
+                .transition(background linear 0s);
+            }
         }
         &.course-lesson {
             .course-item-title {
@@ -240,10 +246,6 @@
             &.off {
                 .transition(none);
             }
-        }
-        &:hover {
-            background: #e7ecfb;
-            .transition(background linear 0s);
         }
     }
 
@@ -352,6 +354,7 @@
 
 #learn-press-content-item {
     border: 1px solid #DDD;
+    display: none;
     .learn-press-content-item-title {
         padding: 20px;
         background: #F5F5F5;
@@ -368,7 +371,7 @@
     .learn-press-nav-tabs {
         list-style: none;
         padding: 0 0 0 15px;
-        margin: 0;
+        margin: 0 0 20px 0;
         border-bottom: 1px solid #DDD;
         .learn-press-nav-tab {
             float: left;
@@ -400,6 +403,7 @@
     }
     .learn-press-tab-panel {
         display: none;
+        margin-bottom: 20px;
         &.active {
             display: block;
         }
@@ -523,6 +527,9 @@ body.course-has-popup {
     }
 }
 
+.learnpress form.purchase-course{
+    margin-bottom: 20px;
+}
 /* COURSE QUIZ */
 .single-quiz {
     .quiz-questions-list {
@@ -533,4 +540,11 @@ body.course-has-popup {
         list-style: none;
         padding: 0;
     }
+}
+
+.learnpress-content{
+    margin-bottom: 20px;
+}
+.course-meta{
+    margin-bottom: 20px;
 }

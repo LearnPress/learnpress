@@ -859,13 +859,13 @@ if ( !function_exists( 'learn_press_single_quiz_buttons' ) ) {
 }
 
 if ( !function_exists( 'learn_press_course_item_class' ) ) {
-	function learn_press_course_item_class( $item_id, $class = null ) {
+	function learn_press_course_item_class( $item_id, $course_id = 0, $class = null ) {
 		switch ( get_post_type( $item_id ) ) {
 			case 'lp_lesson':
-				learn_press_course_lesson_class( $item_id, $class );
+				learn_press_course_lesson_class( $item_id, $course_id, $class );
 				break;
 			case 'lp_quiz':
-				learn_press_course_quiz_class( $item_id, $class );
+				learn_press_course_quiz_class( $item_id, $course_id, $class );
 				break;
 		}
 	}
@@ -876,9 +876,23 @@ if ( !function_exists( 'learn_press_course_lesson_class' ) ) {
 	 * The class of lesson in course curriculum
 	 *
 	 * @param int          $lesson_id
+	 * @param int          $course_id
 	 * @param array|string $class
+	 * @param boolean      $echo
+	 *
+	 * @return mixed
 	 */
-	function learn_press_course_lesson_class( $lesson_id = null, $class = null ) {
+	function learn_press_course_lesson_class( $lesson_id = null, $course_id = 0, $class = null, $echo = true ) {
+		$user = learn_press_get_current_user();
+		if ( !$course_id ) {
+			$course_id = get_the_ID();
+		}
+
+		$course = learn_press_get_course( $course_id );
+		if ( !$course ) {
+			return '';
+		}
+
 		if ( is_string( $class ) && $class ) $class = preg_split( '!\s+!', $class );
 		else $class = array();
 
@@ -888,11 +902,10 @@ if ( !function_exists( 'learn_press_course_lesson_class' ) ) {
 		if ( $status = LP()->user->get_item_status( $lesson_id ) ) {
 			$classes[] = "item-has-status item-{$status}";
 		}
-		if ( $lesson_id && LP()->course->is( 'current-item', $lesson_id ) ) {
+		if ( $lesson_id && $course->is( 'current-item', $lesson_id ) ) {
 			$classes[] = 'item-current';
 		}
 		if ( learn_press_is_course() ) {
-			$course = LP()->course;
 			if ( $course->is_free() ) {
 				$classes[] = 'free-item';
 			}
@@ -901,8 +914,16 @@ if ( !function_exists( 'learn_press_course_lesson_class' ) ) {
 		if ( $lesson && $lesson->is_previewable() ) {
 			$classes[] = 'preview-item';
 		}
+
+		if ( $user->can( 'view-item', $lesson_id, $course_id ) ) {
+			$classes[] = 'viewable';
+		}
+
 		$classes = array_unique( array_merge( $classes, $class ) );
-		echo 'class="' . implode( ' ', $classes ) . '"';
+		if ( $echo ) {
+			echo 'class="' . implode( ' ', $classes ) . '"';
+		}
+		return $classes;
 	}
 }
 
@@ -911,23 +932,47 @@ if ( !function_exists( 'learn_press_course_quiz_class' ) ) {
 	 * The class of lesson in course curriculum
 	 *
 	 * @param int          $quiz_id
+	 * @param int          $course_id
 	 * @param string|array $class
+	 * @param boolean      $echo
+	 *
+	 * @return mixed
 	 */
-	function learn_press_course_quiz_class( $quiz_id = null, $class = null ) {
+	function learn_press_course_quiz_class( $quiz_id = null, $course_id = 0, $class = null, $echo = true ) {
+		$user = learn_press_get_current_user();
+		if ( !$course_id ) {
+			$course_id = get_the_ID();
+		}
 		if ( is_string( $class ) && $class ) $class = preg_split( '!\s+!', $class );
 		else $class = array();
+
+		$course = learn_press_get_course( $course_id );
+		if ( !$course ) {
+			return '';
+		}
 
 		$classes = array(
 			'course-quiz course-item course-item-' . $quiz_id
 		);
+
 		if ( $status = LP()->user->get_item_status( $quiz_id ) ) {
 			$classes[] = "item-has-status item-{$status}";
 		}
-		if ( $quiz_id && LP()->course->is( 'current-item', $quiz_id ) ) {
+
+		if ( $quiz_id && $course->is( 'current-item', $quiz_id ) ) {
 			$classes[] = 'item-current';
 		}
+
+		if ( $user->can( 'view-item', $quiz_id, $course_id ) ) {
+			$classes[] = 'viewable';
+		}
+
 		$classes = array_unique( array_merge( $classes, $class ) );
-		echo 'class="' . join( ' ', $classes ) . '"';
+
+		if ( $echo ) {
+			echo 'class="' . join( ' ', $classes ) . '"';
+		}
+		return $classes;
 	}
 }
 
@@ -1587,11 +1632,11 @@ if ( !function_exists( '_learn_press_default_course_tabs' ) ) {
 		);
 
 		// Curriculum
-		$tabs['curriculum2'] = array(
+		/*$tabs['curriculum2'] = array(
 			'title'    => __( 'Course Curriculum', 'learnpress' ),
 			'priority' => 30,
 			'callback' => 'learn_press_course_curriculum_tab'
-		);
+		);*/
 
 		return $tabs;
 	}

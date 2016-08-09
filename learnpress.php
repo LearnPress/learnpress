@@ -333,28 +333,19 @@ if ( !class_exists( 'LearnPress' ) ) {
 			require_once 'inc/custom-post-types/order.php';
 		}
 
-		private function plugin_basename( $filepath ) {
-			$file          = str_replace( '\\', '/', $filepath );
-			$file          = preg_replace( '|/+|', '/', $file );
-			$plugin_dir    = str_replace( '\\', '/', WP_PLUGIN_DIR );
-			$plugin_dir    = preg_replace( '|/+|', '/', $plugin_dir );
-			$mu_plugin_dir = str_replace( '\\', '/', WPMU_PLUGIN_DIR );
-			$mu_plugin_dir = preg_replace( '|/+|', '/', $mu_plugin_dir );
-			$sp_plugin_dir = dirname( $filepath );
-			$sp_plugin_dir = dirname( $sp_plugin_dir );
-			$sp_plugin_dir = str_replace( '\\', '/', $sp_plugin_dir );
-			$sp_plugin_dir = preg_replace( '|/+|', '/', $sp_plugin_dir );
-
-			$file = preg_replace( '#^' . preg_quote( $sp_plugin_dir, '#' ) . '/|^' . preg_quote( $plugin_dir, '#' ) . '/|^' . preg_quote( $mu_plugin_dir, '#' ) . '/#', '', $file );
-			$file = trim( $file, '/' );
-			return strtolower( $file );
+		/**
+		 * Get base name of plugin from file
+		 * @return string
+		 */
+		private function plugin_basename() {
+			return learn_press_plugin_basename( __FILE__ );
 		}
 
 		/**
 		 * Initial common hooks
 		 */
 		public function init_hooks() {
-			$plugin_basename = $this->plugin_basename( __FILE__ );
+			$plugin_basename = $this->plugin_basename();
 
 			add_action( 'activate_' . $plugin_basename, array( 'LP_Install', 'install' ) );
 			add_action( 'plugins_loaded', array( $this, '_define_plugin_url' ), - 100 );

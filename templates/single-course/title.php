@@ -13,4 +13,4 @@ if ( !defined( 'ABSPATH' ) ) {
 
 ?>
 
-<h1 class="course-title entry-title"><?php the_title(); ?></h1>
+<h1 itemprop="name" class="course-title entry-title"><?php the_title(); ?></h1>

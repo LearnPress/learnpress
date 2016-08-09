@@ -25,7 +25,7 @@ $description_heading = apply_filters( 'learn_press_single_course_description_hea
 
 <?php if ( $description_heading ) { ?>
 
-	<h3 class="course-description-heading" id="learn-press-course-description-heading"><?php echo $description_heading; ?></h3>
+	<h2 class="course-description-heading" id="learn-press-course-description-heading"><?php echo $description_heading; ?></h2>
 
 <?php } ?>
 

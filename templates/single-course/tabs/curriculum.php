@@ -19,7 +19,7 @@ $curriculum_heading = apply_filters( 'learn_press_curriculum_heading', __( 'Cour
 
 	<?php if ( $curriculum_heading ) { ?>
 
-		<h3 class="course-curriculum-title"><?php echo $curriculum_heading; ?></h3>
+		<h2 class="course-curriculum-title"><?php echo $curriculum_heading; ?></h2>
 
 	<?php } ?>
 
