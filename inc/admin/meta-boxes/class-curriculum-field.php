@@ -17,6 +17,7 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
 		 * @return void
 		 */
 		public static function admin_enqueue_scripts() {
+			return;
 			LP_Admin_Assets::enqueue_style( 'meta-box-course', LP()->plugin_url( 'assets/css/admin/meta-box-course.css' ) );
 			LP_Admin_Assets::enqueue_style( 'select2', RWMB_CSS_URL . 'select2/select2.css' );
 			LP_Admin_Assets::enqueue_script( 'select2', RWMB_JS_URL . 'select2/select2.min.js' );

@@ -198,7 +198,7 @@ if (typeof LearnPress == 'undefined') {
 				if (this.current) {
 					var index = this.current.get('index') + 1;
 					next = this.at(index);
-					while (!next.$el.hasClass('viewable')) {
+					while (next && !next.$el.hasClass('viewable')) {
 						index++;
 						next = this.at(index);
 						if (!next || index > 1000) {
@@ -238,7 +238,9 @@ if (typeof LearnPress == 'undefined') {
 			'click .learn-press-nav-tab'       : '_tabClick',
 			'click .button-start-quiz'         : '_startQuiz',
 			'click .button-finish-quiz'        : '_finishQuiz',
-			'click .button-retake-quiz'        : '_retakeQuiz'
+			'click .button-retake-quiz'        : '_retakeQuiz',
+			'click .button-retake-course'      : '_retakeCourse',
+			'click .button-finish-course'      : '_finishCourse'
 
 			//'click #learn-press-button-complete-item': '_c'
 		},
@@ -289,6 +291,9 @@ if (typeof LearnPress == 'undefined') {
 						content: $(response).html()
 					});
 					that.itemLoading = 0;
+				},
+				error   : function () {
+					that.itemLoading = 0;
 				}
 			});
 		},
@@ -316,6 +321,7 @@ if (typeof LearnPress == 'undefined') {
 
 						that.$('.learn-press-course-results-progress').replaceWith($(response.html.progress));
 						$section.find('.section-header').replaceWith($(response.html.section_header));
+						that.$('.learn-press-course-buttons').replaceWith($(response.html.buttons))
 					}
 				}
 			});
@@ -375,6 +381,38 @@ if (typeof LearnPress == 'undefined') {
 				}
 			});
 		},
+		_retakeCourse    : function (e) {
+			e.preventDefault();
+			var $button = $(e.target),
+				data = $button.data(),
+				args = {
+					data    : data,
+					callback: function (response) {
+						if (response.result == 'success') {
+							if (response.redirect) {
+								LP.reload(response.redirect);
+							}
+						}
+					}
+				};
+			this.model.retakeCourse(args);
+		},
+		_finishCourse    : function (e) {
+			e.preventDefault();
+			var $button = $(e.target),
+				data = $button.data(),
+				args = {
+					data    : data,
+					callback: function (response) {
+						if (response.result == 'success') {
+							if (response.redirect) {
+								LP.reload(response.redirect);
+							}
+						}
+					}
+				};
+			this.model.finishCourse(args);
+		},
 		_showPopup       : function (e) {
 			e.preventDefault();
 			var args = {
@@ -430,28 +468,52 @@ if (typeof LearnPress == 'undefined') {
 
 	});
 	Course.Model = Backbone.Model.extend({
-		items      : null,
-		initialize : function () {
+		items       : null,
+		initialize  : function () {
 			LP.log('Course.Model.initialize');
 			this.createItems();
 		},
-		createItems: function () {
+		createItems : function () {
 			this.items = new Course_Items();
 			this.items.add(this.get('items'));
 		},
-		getItem    : function (args) {
+		retakeCourse: function (args) {
+			var that = this;
+			LP.ajax({
+				url     : this.get('url'),
+				action  : 'retake-course',
+				data    : args.data,
+				dataType: 'json',
+				success : function (response) {
+					$.isFunction(args.callback) && args.callback.call(args.context, response, that);
+				}
+			});
+		},
+		finishCourse: function (args) {
+			var that = this;
+			LP.ajax({
+				url     : this.get('url'),
+				action  : 'finish-course',
+				data    : args.data,
+				dataType: 'json',
+				success : function (response) {
+					$.isFunction(args.callback) && args.callback.call(args.context, response, that);
+				}
+			});
+		},
+		getItem     : function (args) {
 			return $.isPlainObject(args) ? this.items.findWhere(args) : this.items.findWhere({id: args});
 		},
-		getNextItem: function () {
+		getNextItem : function () {
 			return this.items.getNextItem();
 		},
-		getPrevItem: function () {
+		getPrevItem : function () {
 			return this.items.getPrevItem();
 		},
-		getItems   : function (args) {
+		getItems    : function (args) {
 			return typeof args == 'undefined' ? this.items : this.items.where(args);
 		},
-		getCurrent : function () {
+		getCurrent  : function () {
 		}
 	});
 
@@ -485,6 +547,8 @@ if (typeof LearnPress == 'undefined') {
 		},
 		_closePopup         : function (e) {
 			e.preventDefault();
+			LP.setUrl(this.course.model.get('url'));
+			$('#learn-press-content-item').hide();
 			this.curriculumPlaceholder.replaceWith(this.$('#learn-press-course-curriculum'));
 			this.progressPlaceholder.replaceWith(this.$('.learn-press-course-results-progress'));
 

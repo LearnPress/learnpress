@@ -211,8 +211,8 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 		}
 
 		public static function _request_finish_course() {
-			$nonce     = learn_press_get_request( 'nonce' );
-			$course_id = absint( learn_press_get_request( 'id' ) );
+			$nonce     = learn_press_get_request( 'security' );
+			$course_id = absint( learn_press_get_request( 'course_id' ) );
 			$user      = learn_press_get_current_user();
 
 			$course = LP_Course::get_course( $course_id );
@@ -222,16 +222,21 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 				wp_die( __( 'Access denied!', 'learnpress' ) );
 			}
 
-			$response = $user->finish_course( $course_id );
+			$finished = $user->finish_course( $course_id );
 
-			if ( $response['result'] == 'success' ) {
-				$message              = __( 'Congrats! You have finished this course', 'learnpress' );
+			$response = array();
+
+			if ( $finished ) {
+				learn_press_add_notice( __( 'Congrats! You have finished this course', 'learnpress' ) );
 				$response['redirect'] = get_the_permalink( $course_id );
+
+				$response['result'] = 'success';
 			} else {
-				$message = __( 'Error! You cannot finish this course. Please contact your administrator for more information.', 'learnpress' );
+				$response['message'] = __( 'Error! You cannot finish this course. Please contact your administrator for more information.', 'learnpress' );
+				$response['result']  = 'error';
 			}
 
-			$response['message'] = array( 'title' => __( 'Finish course', 'learnpress' ), 'message' => $message );
+			//$response['message'] = array( 'title' => __( 'Finish course', 'learnpress' ), 'message' => $message );
 			learn_press_send_json( $response );
 		}
 
@@ -252,6 +257,10 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 						$response['result']  = 'fail';
 						$response['message'] = $results->get_error_message();
 					} elseif ( $results !== false ) {
+						/**
+						 * Flush cache to force update
+						 */
+						wp_cache_flush();
 						$course                     = learn_press_get_course( $course_id );
 						LP()->course                = $course;
 						LP()->user                  = $user;
@@ -267,6 +276,10 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 						ob_start();
 						learn_press_get_template( 'single-course/progress.php', array( 'force' => true ) );
 						$response['html']['progress'] = ob_get_clean();
+
+						ob_start();
+						learn_press_get_template( 'single-course/buttons.php', array( 'force' => true ) );
+						$response['html']['buttons']   = ob_get_clean();
 					}
 				} else {
 					do_action( 'learn_press_user_request_complete_item', $_REQUEST );
@@ -595,86 +608,32 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 		/**
 		 * Retake course action
 		 */
-		public static function retake_course() {
-			$course_id = !empty( $_REQUEST['course_id'] ) ? absint( $_REQUEST['course_id'] ) : 0;
-			$user_id   = !empty( $_REQUEST['user_id'] ) ? absint( $_REQUEST['user_id'] ) : get_current_user_id();
-
-			if ( !$user_id || !$course_id ) {
-				wp_die( __( 'Error', 'learnpress' ) );
-			}
-
-			////
-			// Of course, user only retake course if he has finished
-			if ( !learn_press_user_has_finished_course( $course_id, $user_id ) ) {
-				wp_die( __( 'Error', 'learnpress' ) );
-			}
-
-			// reset course start time
-			$course_time = get_user_meta( $user_id, '_lpr_course_time', true );
-			if ( $course_time && !empty( $course_time[$course_id] ) ) {
-				$course_time[$course_id] = array(
-					'start' => current_time( 'timestamp' ),
-					'end'   => null
-				);
-				update_user_meta( $user_id, '_lpr_course_time', $course_time );
-			}
-
-			// reset course user finished
-			$course_finished = get_user_meta( $user_id, '_lpr_course_finished', true );
-			if ( $course_finished && in_array( $course_id, $course_finished ) ) {
-				if ( false !== ( $position = array_search( $course_id, $course_finished ) ) ) {
-					unset( $course_finished[$position] );
-					update_user_meta( $user_id, '_lpr_course_finished', $course_finished );
-				}
-			}
-			$user_finished = get_post_meta( $course_id, '_lpr_user_finished', true );
-			if ( $user_finished ) {
-				if ( false !== ( $position = array_search( $user_id, $user_finished ) ) ) {
-					unset( $user_finished[$position] );
-					update_post_meta( $course_id, '_lpr_user_finished', $user_finished );
-				}
-			}
-
-			// reset the lessons user has completed
-			$lessons = get_user_meta( $user_id, '_lpr_lesson_completed', true );
-			if ( $lessons && isset( $lessons[$course_id] ) ) {
-				unset( $lessons[$course_id] );
-				update_user_meta( $user_id, '_lpr_lesson_completed', $lessons );
-			}
-
-			$quizzes = learn_press_get_quizzes( $course_id );
-
-			// remove all quizzes in the course which user has taken
-			if ( $quizzes ) {
-				$quiz_start_time       = get_user_meta( $user_id, '_lpr_quiz_start_time', true );
-				$quiz_question         = get_user_meta( $user_id, '_lpr_quiz_questions', true );
-				$quiz_current_question = get_user_meta( $user_id, '_lpr_quiz_current_question', true );
-				$quiz_question_answer  = get_user_meta( $user_id, '_lpr_quiz_question_answer', true );
-				$quiz_completed        = get_user_meta( $user_id, '_lpr_quiz_completed', true );
-
-				foreach ( $quizzes as $quiz_id ) {
-					delete_user_meta( $user_id, '_lpr_quiz_taken', $quiz_id );
-					if ( isset( $quiz_start_time[$quiz_id] ) ) unset( $quiz_start_time[$quiz_id] );
-					if ( isset( $quiz_question[$quiz_id] ) ) unset( $quiz_question[$quiz_id] );
-					if ( isset( $quiz_current_question[$quiz_id] ) ) unset( $quiz_current_question[$quiz_id] );
-					if ( isset( $quiz_question_answer[$quiz_id] ) ) unset( $quiz_question_answer[$quiz_id] );
-					if ( isset( $quiz_completed[$quiz_id] ) ) unset( $quiz_completed[$quiz_id] );
-				}
-
-				update_user_meta( $user_id, '_lpr_quiz_start_time', $quiz_start_time );
-				update_user_meta( $user_id, '_lpr_quiz_questions', $quiz_question );
-				update_user_meta( $user_id, '_lpr_quiz_current_question', $quiz_current_question );
-				update_user_meta( $user_id, '_lpr_quiz_question_answer', $quiz_question_answer );
-				update_user_meta( $user_id, '_lpr_quiz_completed', $quiz_completed );
-			}
-
-			update_user_meta( $user_id, '_lpr_course_taken', $course_id );
-			wp_send_json(
-				array(
-					'redirect' => get_permalink( $course_id )
-				)
+		public static function _request_retake_course() {
+			$security        = learn_press_get_request( 'security' );
+			$course_id       = learn_press_get_request( 'course_id' );
+			$user            = learn_press_get_current_user();
+			$course          = LP_Course::get_course( $course_id );
+			$response        = array(
+				'result' => 'error'
 			);
-			die();
+			$security_action = sprintf( 'learn-press-retake-course-%d-%d', $course->id, $user->id );
+			// security check
+			if ( !wp_verify_nonce( $security, $security_action ) ) {
+				$response['message'] = __( 'Error! Invalid lesson or security checked failure', 'learnpress' );
+			} else {
+				if ( $user->can( 'retake-course', $course_id ) ) {
+					if ( !$result = $user->retake_course( $course_id ) ) {
+						$response['message'] = __( 'Error!', 'learnpress' );
+					} else {
+						learn_press_add_notice( sprintf( __( 'You have retaken course "%s"', 'learnpress' ), $course->get_title() ) );
+						$response['result']   = 'success';
+						$response['redirect'] = apply_filters( 'learn_press_retake_course_redirect', add_query_arg( 'retaken-course', $course_id, get_the_permalink( $course_id ) ) );
+					}
+				} else {
+					$result['message'] = __( 'Error! You can not retake course', 'learnpress' );
+				}
+			}
+			learn_press_send_json( $response );
 		}
 
 		public static function start_quiz() {

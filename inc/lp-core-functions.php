@@ -2781,7 +2781,6 @@ function learn_press_purchase_course_handler( $course_id ) {
 	$redirect      = learn_press_get_page_link( 'checkout' );
 	$has_checkout  = $redirect ? true : false;
 	$need_checkout = $cart->needs_payment();
-
 	// In case the course is FREE and "No checkout free course" is turn off
 	if ( !$need_checkout ) {
 		require_once LP_PLUGIN_PATH . '/inc/gateways/class-lp-gateway-none.php';

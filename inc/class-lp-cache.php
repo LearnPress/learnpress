@@ -37,6 +37,16 @@ class LP_Cache {
 	/**
 	 * @var string
 	 */
+	protected static $_completed_lessons = 'user-completed-lessons';
+
+	/**
+	 * @var string
+	 */
+	protected static $_evaluate_course_by_lesson = 'user-evaluate-course-by-lesson';
+
+	/**
+	 * @var string
+	 */
 	protected static $_quiz_history = 'user-quiz-history';
 
 	/**
@@ -166,6 +176,106 @@ class LP_Cache {
 	public static function get_count_retaken_quiz( $key = false, $def = false ) {
 		return self::_get_cache( self::$_count_retaken_quiz, $key, $def );
 	}
+
+	/**
+	 * Helper function to set user lesson status to cache
+	 *
+	 * @param string $key
+	 * @param mixed  $value
+	 *
+	 * @return array|bool|mixed
+	 */
+	public static function set_completed_lessons( $key, $value ) {
+		return self::_set_cache( self::$_completed_lessons, $key, $value );
+	}
+
+	/**
+	 * Helper function to get user lesson status from cache
+	 *
+	 * @param bool|string $key
+	 * @param mixed       $def
+	 *
+	 * @return array|bool|mixed
+	 */
+	public static function get_completed_lessons( $key = false, $def = false ) {
+		return self::_get_cache( self::$_completed_lessons, $key, $def );
+	}
+
+	/**
+	 * Helper function to set user lesson status to cache
+	 *
+	 * @param string $key
+	 * @param mixed  $value
+	 *
+	 * @return array|bool|mixed
+	 */
+	public static function set_evaluate_course_by_lesson( $key, $value ) {
+		return self::_set_cache( self::$_evaluate_course_by_lesson, $key, $value );
+	}
+
+	/**
+	 * Helper function to get user lesson status from cache
+	 *
+	 * @param bool|string $key
+	 * @param mixed       $def
+	 *
+	 * @return array|bool|mixed
+	 */
+	public static function get_evaluate_course_by_lesson( $key = false, $def = false ) {
+		return self::_get_cache( self::$_evaluate_course_by_lesson, $key, $def );
+	}
+
+	/**
+	 * Helper function to set user lesson status to cache
+	 *
+	 * @param string $key
+	 * @param mixed  $value
+	 *
+	 * @return array|bool|mixed
+	 */
+	public static function set_completed_items( $key, $value ) {
+		return self::_set_cache( 'user-completed-items', $key, $value );
+	}
+
+	/**
+	 * Helper function to get user lesson status from cache
+	 *
+	 * @param bool|string $key
+	 * @param mixed       $def
+	 *
+	 * @return array|bool|mixed
+	 */
+	public static function get_completed_items( $key = false, $def = false ) {
+		return self::_get_cache( 'user-completed-item', $key, $def );
+	}
+
+	/**********************************************/
+
+	public static function set_enrolled_courses( $key, $value ) {
+		return self::_set_cache( 'user-enrolled-courses', $key, $value );
+	}
+
+	public static function get_enrolled_courses( $key = false, $def = false ) {
+		return self::_get_cache( 'user-enrolled-courses', $key, $def );
+	}
+
+	public static function set_finished_courses( $key, $value ) {
+		return self::_set_cache( 'user-finished-courses', $key, $value );
+	}
+
+	public static function get_finished_courses( $key = false, $def = false ) {
+		return self::_get_cache( 'user-finished-courses', $key, $def );
+	}
+
+	public static function set_course_info( $key, $value ) {
+		return self::_set_cache( 'user-course-info', $key, $value );
+	}
+
+	public static function get_course_info( $key = false, $def = false ) {
+		return self::_get_cache( 'user-course-info', $key, $def );
+	}
+
+	/**********************************************/
 
 	/**
 	 * @param int|string $key

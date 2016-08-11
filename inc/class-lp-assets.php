@@ -119,7 +119,9 @@ class LP_Assets extends LP_Abstract_Assets {
 		self::add_style( 'learn-press-admin', learn_press_plugin_url( 'assets/css/admin/admin.css' ) );
 
 		// frontend
-		self::add_style( 'learn-press', learn_press_plugin_url( 'assets/css/learnpress.css' ) );
+		if(LP()->settings->get('load_css') == 'yes' || LP()->settings->get('load_css') == '') {
+			self::add_style( 'learn-press', learn_press_plugin_url( 'assets/css/learnpress.css' ) );
+		}
 		self::add_script( 'learn-press-js', learn_press_plugin_url( 'assets/js/frontend/learnpress' . $min . '.js' ), array( 'learn-press-global' ) );
 
 		// lesson

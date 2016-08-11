@@ -78,6 +78,13 @@ class LP_Settings_General extends LP_Settings_Base {
 					'options' => $this->_get_currency_positions()
 				),
 				array(
+					'title'   => __( 'Load css', 'learnpress' ),
+					'id'      => $this->get_field_name( 'load_css' ),
+					'default' => 'yes',
+					'type'    => 'checkbox',
+					'desc'    => __( 'Load default stylesheet for LearnPress', 'learnpress' )
+				),
+				array(
 					'title'   => __( 'Debug mode', 'learnpress' ),
 					'id'      => $this->get_field_name( 'debug' ),
 					'default' => 'yes',

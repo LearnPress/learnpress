@@ -17,8 +17,8 @@ if( ! $messages ){
 
 ?>
 
-<ul class="learn-press-error">
+<ul class="learn-press-message error">
 	<?php foreach ( $messages as $message ) : ?>
-		<li><?php echo wp_kses_post( $message ); ?></li>
+		<li><?php echo /*wp_kses_post*/( $message ); ?></li>
 	<?php endforeach; ?>
 </ul>

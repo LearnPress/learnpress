@@ -19,6 +19,6 @@ if ( !$messages ) {
 
 <?php foreach ( $messages as $message ) : ?>
 	<div class="learn-press-message">
-		<?php echo wp_kses_post( $message ); ?>
+		<?php echo /*wp_kses_post*/( $message ); ?>
 	</div>
 <?php endforeach; ?>

@@ -999,8 +999,11 @@ abstract class LP_Abstract_Course {
 	 * @return int|mixed|null|void
 	 */
 	public function get_completed_lessons( $user_id, $force = false ) {
-		static $completed_lessons = array();
+		//static $completed_lessons = array();
 		$key = $user_id . '-' . $this->id;
+
+		$completed_lessons = LP_Cache::get_completed_lessons( false, array() );
+
 		if ( !array_key_exists( $key, $completed_lessons ) || $force ) {
 			global $wpdb;
 			$course_lessons = $this->get_lessons( array( 'field' => 'ID' ) );
@@ -1018,6 +1021,8 @@ abstract class LP_Abstract_Course {
 				", $user_id, 'completed', $this->id );
 
 			$completed_lessons[$key] = $wpdb->get_var( $query );
+
+			LP_Cache::set_completed_lessons( $key, $completed_lessons[$key] );
 		}
 
 		return apply_filters( 'learn_press_user_completed_lessons', $completed_lessons[$key], $this->id, $user_id );
@@ -1032,12 +1037,14 @@ abstract class LP_Abstract_Course {
 	 * @return int|mixed|null|void
 	 */
 	public function _evaluate_course_by_lesson( $user_id, $force = false ) {
-		static $evaluate_course_by_lesson = array();
-		$key = $user_id . '-' . $this->id;
+		//static $evaluate_course_by_lesson = array();
+		$evaluate_course_by_lesson = LP_Cache::get_evaluate_course_by_lesson( false, array() );
+		$key                       = $user_id . '-' . $this->id;
 		if ( !array_key_exists( $key, $evaluate_course_by_lesson ) || $force ) {
 			$course_lessons                  = $this->get_lessons( array( 'field' => 'ID' ) );
 			$completed_lessons               = $this->get_completed_lessons( $user_id );
 			$evaluate_course_by_lesson[$key] = min( $completed_lessons / sizeof( $course_lessons ), 1 );
+			LP_Cache::set_evaluate_course_by_lesson( $key, $evaluate_course_by_lesson[$key] );
 		}
 		return apply_filters( 'learn_press_evaluation_course_lesson', $evaluate_course_by_lesson[$key], $this->id, $user_id );
 	}
@@ -1052,8 +1059,9 @@ abstract class LP_Abstract_Course {
 	 * @return int|mixed|null|void
 	 */
 	public function get_completed_items( $user_id, $items = array(), $force = false ) {
-		static $completed_items = array();
-		$key = $user_id . '-' . $this->id;
+		//static $completed_items = array();
+		$completed_items = LP_Cache::get_completed_items( false, array() );
+		$key             = $user_id . '-' . $this->id;
 		if ( !array_key_exists( $key, $completed_items ) || $force ) {
 			global $wpdb;
 			$course_items = $this->get_curriculum_items( array( 'field' => 'ID' ) );
@@ -1079,6 +1087,7 @@ abstract class LP_Abstract_Course {
 			$user_item_ids = $wpdb->get_col( $query );
 
 			$completed_items[$key] = sizeof( $user_item_ids );
+			LP_Cache::set_completed_items( $key, $completed_items[$key] );
 		}
 
 		return apply_filters( 'learn_press_user_completed_items', $completed_items[$key], $this->id, $user_id );
@@ -1200,7 +1209,9 @@ abstract class LP_Abstract_Course {
 		$user        = learn_press_get_user( $user_id );
 		$course_info = $user->get_course_info( $this->id );
 		$start_time  = intval( strtotime( $course_info['start'] ) );
-
+		if ( $duration == 0 ) {
+			$duration = DAY_IN_SECONDS * 365 * 100;
+		}
 		$expired = $start_time + $duration;
 		return apply_filters( 'learn_press_user_course_expired_time', $expired, $user_id, $this->id );
 	}

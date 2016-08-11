@@ -35,18 +35,37 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 
 			//add_action( 'edit_form_after_editor', array( $this, 'course_editor' ) );
 			add_action( 'save_post', array( $this, 'update_course' ) );
+
+			add_action( 'admin_enqueue_scripts', array( $this, 'admin_script' ) );
+			add_action( 'admin_print_scripts', array( $this, 'course_editor' ) );
 			parent::__construct();
 		}
 
-		public function update_course( $course_id ) {
 
+		public function update_course( $course_id ) {
+			learn_press_debug( $_REQUEST );
+			die();
 		}
 
 		function add_meta_box() {
 			add_meta_box( 'course-editor', 'dfgdfgfdg', array( $this, 'course_editor' ), 'lp_course', 'advanced', 'default' );
 		}
 
+		function admin_script() {
+			global $post_type;
+			if ( $post_type != 'lp_course' ) {
+				return;
+			}
+			wp_enqueue_script( 'course-editor', LP()->js( 'admin/course-editor' ), array( 'jquery', 'backbone', 'wp-util', 'jquery-ui-sortable' ) );
+			wp_enqueue_style( 'course-editor', LP()->css( 'admin/course-editor' ) );
+
+		}
+
 		function course_editor() {
+			global $post_type;
+			if ( $post_type != 'lp_course' ) {
+				return;
+			}
 			learn_press_admin_view( 'meta-boxes/course/editor' );
 		}
 
@@ -280,7 +299,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 */
 		public static function add_meta_boxes() {
 
-			new RW_Meta_Box( self::curriculum_meta_box() );
+			//new RW_Meta_Box( self::curriculum_meta_box() );
 			new RW_Meta_Box( self::settings_meta_box() );
 			new RW_Meta_Box( self::assessment_meta_box() );
 			new RW_Meta_Box( self::payment_meta_box() );

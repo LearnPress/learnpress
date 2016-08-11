@@ -17,6 +17,9 @@ if ( !$quiz ) {
 	return;
 }
 $status = $user->get_quiz_status( $quiz->id );
+if ( $user->has( 'finished-course', $course->id ) ) {
+	return;
+}
 ?>
 <div class="quiz-buttons">
 

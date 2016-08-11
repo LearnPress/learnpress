@@ -10,12 +10,20 @@ class LP_Schedules {
 	 * LP_Schedules constructor.
 	 */
 	public function __construct() {
+		//add_action( 'learn_press_user_enrolled_course', array( $this, 'user_enrolled_course' ), 100, 3 );
 		$this->_update_user_course_expired();
 		//add_action( 'learn_press_update_user_course_schedule', array( $this, 'user_course_schedule' ) );
 	}
 
+	/**
+	 * Auto finished course when time is expired for users
+	 */
 	private function _update_user_course_expired() {
 		global $wpdb;
+
+		/**
+		 * Find all courses that user did not finish yet
+		 */
 		$query = $wpdb->prepare( "
 			SELECT *
 			FROM {$wpdb->prefix}learnpress_user_items
@@ -30,7 +38,8 @@ class LP_Schedules {
 
 			foreach ( $results as $row ) {
 				$course = learn_press_get_course( $row->item_id );
-				if ( 0 >= $course->is_expired( $row->user_id ) ) {
+				$expired = $course->is_expired( $row->user_id );
+				if ( 0 >= $expired ) {
 					$user        = learn_press_get_user( $row->user_id );
 					$course_info = $user->get_course_info( $row->item_id );
 
@@ -41,8 +50,10 @@ class LP_Schedules {
 				}
 			}
 			if ( sizeof( $when ) ) {
+				/**
+				 * Update course's end time
+				 */
 				$query_params = array_merge( $query_params, $where );
-
 				$query_update = $wpdb->prepare( "
 					UPDATE {$wpdb->prefix}learnpress_user_items
 					SET end_time = CASE
@@ -52,6 +63,7 @@ class LP_Schedules {
 				", $query_params );
 				$wpdb->query( $query_update );
 
+				// Update course's status to finished
 				$query_params = $where;
 				array_unshift( $query_params, 'finished' );
 				$query = $wpdb->prepare( "
@@ -63,29 +75,7 @@ class LP_Schedules {
 			}
 		}
 		do_action( 'learn_press_update_user_course_expired' );
-		return;
-		$time = microtime();
-		for ( $i = 0; $i < 1000000; $i ++ ) {
-			$wpdb->insert(
-				$wpdb->prefix . 'learnpress_user_course_items',
-				array(
-					'user_id'    => 1,
-					'item_id'    => $i + 100000,
-					'course_id'  => rand( 500, 1000 ),
-					'item_type'  => 'course',
-					'status'     => 'xxxxxx',
-					'start_time' => '0000-00-00 00:00:00',
-					'end_time'   => '0000-00-00 00:00:00'
-				)
-			);
-		}
-		echo microtime() - $time;
-	}
 
-	public function user_course_schedule() {
-		$schedule_args = array( 'course_id' => $course_id );
-		wp_clear_scheduled_hook( 'learn_press_update_user_course_schedule', $schedule_args );
-		wp_schedule_single_event( '', 'learn_press_update_user_course_schedule', $schedule_args );
 	}
 
 	public function user_course_expired( $user_id, $course_id ) {

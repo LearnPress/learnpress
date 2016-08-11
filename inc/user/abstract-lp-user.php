@@ -527,7 +527,7 @@ class LP_Abstract_User {
 				$cached[$this->id . '-' . $course_id . '-' . $id] = '';
 			}
 			//wp_cache_set( 'user-quiz-statuses', $cached, 'learnpress' );
-			LP_Cache::set_quiz_status( $cached );
+			LP_Cache::set_quiz_status( $this->id . '-' . $course_id . '-' . $quiz_id, $cached[$this->id . '-' . $course_id . '-' . $quiz_id] );
 		}
 
 		//learn_press_debug( __FILE__, current_filter(), get_the_ID(), $cached, $quiz_ids );
@@ -1118,15 +1118,38 @@ class LP_Abstract_User {
 		return false;
 	}
 
+	/**
+	 * Check to see if user can retake a course, if yes return number of times
+	 *
+	 * @param      $course_id
+	 * @param bool $force
+	 *
+	 * @return mixed
+	 */
+	public function can_retake_course( $course_id, $force = false ) {
+		$can = false;
+		if ( $course = learn_press_get_course( $course_id ) ) {
+			$count = $course->retake_count;
+			if ( $count > 0 ) {
+				// Number of taken
+				$taken = $this->count_retaken_course( $course_id, $force );
+				if ( $taken ) {
+					$can = $count - $taken;
+				} else {
+					$can = $count;
+				}
+			}
+		}
+
+		return apply_filters( 'learn_press_user_can_retake_course', $can, $course->id, $this->id );
+	}
+
 	public function finish_course( $course_id ) {
 		global $wpdb;
-		$result = array(
-			'result'    => 'fail',
-			'course_id' => $course_id
-		);
+		$return = 0;
 		if ( $course = LP_Course::get_course( $course_id ) ) {
 			if ( !$this->can( 'finish-course', $course_id ) ) {
-				$result['message'] = __( 'Sorry, you can not finish this course. Please contact administrator or your instructor.', 'learnpress' );
+				return false;
 			} else {
 				$updated   = $wpdb->update(
 					$wpdb->prefix . 'learnpress_user_items',
@@ -1138,25 +1161,21 @@ class LP_Abstract_User {
 					array( '%s', '%s' )
 				);
 				$null_time = '0000-00-00 00:00';
-				$rec_id    = $wpdb->get_var(
+				$return    = $wpdb->get_var(
 					$wpdb->prepare( "
-							SELECT user_course_id
+							SELECT user_item_id
 							FROM {$wpdb->prefix}learnpress_user_items
 							WHERE user_id = %d
 								AND item_id = %d
 								AND start_time <> %s AND end_time <> %s
 						", $this->id, $course_id, $null_time, $null_time )
 				);
-				if ( $rec_id ) {
-					$result['rec_id'] = $rec_id;
-					$result['result'] = 'success';
-					do_action( 'learn_press_user_finish_course', $course_id, $this->id, $result );
-				} else {
-
+				if ( $return ) {
+					do_action( 'learn_press_user_finish_course', $course_id, $this->id, $return );
 				}
 			}
 		}
-		return apply_filters( 'learn_press_user_finish_course_data', $result, $course_id, $this->id );
+		return apply_filters( 'learn_press_user_finish_course_data', $return, $course_id, $this->id );
 	}
 
 	public function is_instructor() {
@@ -1203,9 +1222,10 @@ class LP_Abstract_User {
 	 */
 	public function has_enrolled_course( $course_id, $force = false ) {
 
-		static $enrolled_courses = array();
+		//static $enrolled_courses = array();
 
-		$key = sprintf( '%d-%d', $this->id, $course_id );
+		$enrolled_courses = LP_Cache::get_enrolled_courses( false, array() );
+		$key              = sprintf( '%d-%d', $this->id, $course_id );
 
 		if ( empty( $enrolled_courses[$key] ) || $force ) {
 			//$info = $this->get_course_info( $course_id );
@@ -1219,6 +1239,7 @@ class LP_Abstract_User {
 				LIMIT 0, 1
 			", $this->id, $course_id, '' );
 			$enrolled_courses[$key] = $wpdb->get_var( $query ) ? true : false;
+			LP_Cache::set_enrolled_courses( $key, $enrolled_courses[$key] );
 		}
 		return apply_filters( 'learn_press_user_has_enrolled_course', $enrolled_courses[$key], $this, $course_id );
 	}
@@ -1232,21 +1253,23 @@ class LP_Abstract_User {
 	 * @return bool
 	 */
 	public function has_finished_course( $course_id, $force = false ) {
-		static $courses = array();
+		//static $courses = array();
+		$finished_courses = LP_Cache::get_finished_courses(false,array());
 		if ( empty( $courses[$course_id] ) || $force ) {
 			global $wpdb;
 			$query               = $wpdb->prepare( "
-				SELECT count(user_id)
+				SELECT status
 				FROM {$wpdb->prefix}learnpress_user_items uc
 				INNER JOIN {$wpdb->posts} c ON c.ID = uc.item_id
 				INNER JOIN {$wpdb->posts} o ON o.ID = uc.ref_id
 				INNER JOIN {$wpdb->postmeta} om ON om.post_id = o.ID AND om.meta_key = %s AND om.meta_value = %d
 				WHERE uc.user_id = %d
 				AND uc.item_id = %d
-				AND uc.status = %s
 				AND o.post_status = %s
-			", '_user_id', $this->id, $this->id, $course_id, 'finished', 'lp-completed' );
-			$courses[$course_id] = $wpdb->get_var( $query ) > 0 ? 'yes' : 'no';
+				ORDER BY user_item_id DESC LIMIT 0,1
+			", '_user_id', $this->id, $this->id, $course_id, 'lp-completed' );
+			$courses[$course_id] = $wpdb->get_var( $query ) == 'finished' ? 'yes' : 'no';
+			LP_Cache::set_finished_courses($course_id, $courses[$course_id] );
 		}
 		return apply_filters( 'learn_press_user_has_finished_course', $courses[$course_id] == 'yes', $this, $course_id );
 	}
@@ -1352,7 +1375,7 @@ class LP_Abstract_User {
 		// If no data exists in cache or force to get it from database
 		if ( !array_key_exists( $this->id . '-' . $course_id . '-' . $quiz_id, $cached ) || $force ) {
 			$query = $wpdb->prepare( "
-				SELECT count(user_item_id) - 1 FROM wp_learnpress_user_items
+				SELECT count(user_item_id) - 1 FROM {$wpdb->prefix}learnpress_user_items
 				WHERE user_id = %d
 				AND item_id = %d
 				AND ref_id = %d
@@ -1371,6 +1394,102 @@ class LP_Abstract_User {
 		}
 
 		return apply_filters( 'learn_press_user_count_retaken_quiz', $count, $quiz_id, $course_id, $this->id );
+	}
+
+	/**
+	 * Count number of time user has retaken a quiz
+	 *
+	 * @param int  $course_id
+	 * @param bool $force
+	 *
+	 * @return int
+	 */
+	public function count_retaken_course( $course_id = 0, $force = false ) {
+		$count = false;
+
+		if ( !$course_id ) {
+			$course_id = get_the_ID();
+		}
+
+		if ( !$course_id ) {
+			return $count;
+		}
+
+		global $wpdb;
+
+		// Get data from cache
+		$cached = (array) wp_cache_get( 'user-count-retaken-course', 'learnpress' );
+
+		// If no data exists in cache or force to get it from database
+		if ( !array_key_exists( $this->id . '-' . $course_id, $cached ) || $force ) {
+			$query = $wpdb->prepare( "
+				SELECT count(user_item_id) - 1 FROM {$wpdb->prefix}learnpress_user_items
+				WHERE user_id = %d
+				AND item_id = %d
+				AND item_type = %s
+			", $this->id, $course_id, 'lp_course' );
+
+			$count = $wpdb->get_var( $query );
+			if ( $count < 0 ) {
+				$count = 0;
+			}
+			// Store into cache
+			$cached[$this->id . '-' . $course_id] = $count;
+			wp_cache_set( 'user-count-retaken-course', $cached, 'learnpress' );
+		} else {
+			$count = $cached[$this->id . '-' . $course_id];
+		}
+
+		return apply_filters( 'learn_press_user_count_retaken_course', $count, $course_id, $this->id );
+	}
+
+	public function retake_course( $course_id ) {
+		if ( !$this->can( 'retake-course', $course_id ) ) {
+			return false;
+		}
+
+		global $wpdb;
+		$inserted = 0;
+
+		$check = apply_filters( 'learn_press_before_retake_course', true, $course_id, $this->id );
+		if ( !$check ) {
+			return false;
+		}
+		if ( $wpdb->insert(
+			$wpdb->prefix . 'learnpress_user_items',
+			array(
+				'user_id'    => $this->id,
+				'item_id'    => $course_id,
+				'start_time' => current_time( 'mysql' ),
+				'status'     => 'enrolled',
+				'end_time'   => '0000-00-00 00:00:00',
+				'ref_id'     => $this->get_course_order( $course_id ),
+				'item_type'  => 'lp_course',
+				'ref_type'   => 'lp_order'
+			),
+			array( '%d', '%d', '%s', '%s', '%s', '%d', '%s', '%s' )
+		)
+		) {
+			$inserted = $wpdb->insert_id;
+
+			/*
+			 * Should be deleted all user items when user retake course?
+			 */
+			$wpdb->query(
+				$wpdb->prepare( "
+					DELETE FROM {$wpdb->prefix}learnpress_user_items
+					WHERE user_id = %d
+					AND ref_id = %d
+					AND ref_type = %s
+				", $this->id, $course_id, 'lp_course' )
+			);
+			do_action( 'learn_press_user_retaken_course', $course_id, $this->id, $inserted );
+
+		} else {
+			learn_press_debug( $wpdb );
+			do_action( 'learn_press_user_retake_course_failed', $course_id, $this->id, $inserted );
+		}
+		return $inserted;
 	}
 
 	/**
@@ -1520,9 +1639,10 @@ class LP_Abstract_User {
 			return false;
 		}
 		global $wpdb;
-		static $user_course_info = array();
+		//static $user_course_info = array();
+		$user_course_info = LP_Cache::get_course_info(false,array());
 		if ( empty( $user_course_info[$this->id] ) ) {
-			$user_course_info[$this->id] = array();
+			$user_course_info[$this->id . '-' . $course_id] = array();
 		}
 		if ( $course_id && empty( $user_course_info[$this->id][$course_id] ) ) {
 			$query = $wpdb->prepare( "
@@ -1547,6 +1667,7 @@ class LP_Abstract_User {
 				$info['results'] = $course->evaluate_course_results( $this->id );
 			}
 			$user_course_info[$this->id][$course_id] = $info;
+
 		}
 		if ( $field && array_key_exists( $field, $user_course_info[$this->id][$course_id] ) ) {
 			$info = $user_course_info[$this->id][$course_id][$field];
@@ -1826,8 +1947,7 @@ class LP_Abstract_User {
 	 */
 	public function enroll( $course_id ) {
 		if ( !$this->can( 'enroll-course', $course_id ) ) {
-			learn_press_add_notice( __( 'Sorry! You can not enroll this course. Please try again or contact site admin' ), 'error' );
-			return;
+			return false;
 		}
 		global $wpdb;
 		$inserted = 0;
@@ -1853,7 +1973,7 @@ class LP_Abstract_User {
 		) {
 			$inserted = $wpdb->insert_id;
 
-			do_action( 'learn_press_user_enrolled_course', $this, $course_id, $inserted );
+			do_action( 'learn_press_user_enrolled_course', $course_id, $this->id, $inserted );
 
 		} else {
 			learn_press_debug( $wpdb );
