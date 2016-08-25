@@ -109,3 +109,11 @@ $json = array(
 <script type="text/javascript">
 	var Course_Settings = <?php echo wp_json_encode( $json, JSON_PRETTY_PRINT );?>
 </script>
+<div id="course-editor" class="course-editor">
+	<div class="course-curriculum">
+		asdsadsad
+	</div>
+	<div class="course-edit-item">
+		asdasdasdsa
+	</div>
+</div>

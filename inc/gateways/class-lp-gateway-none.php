@@ -1,7 +1,6 @@
 <?php
-
 /**
- * Class LP_Gateway_Abstract
+ * Class LP_Gateway_None
  *
  * @author  ThimPress
  * @package LearnPress/Classes

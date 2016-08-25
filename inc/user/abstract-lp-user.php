@@ -406,6 +406,32 @@ class LP_Abstract_User {
 	}
 
 	/**
+	 * Get mark of a quiz for an user
+	 *
+	 * @param $quiz_id
+	 *
+	 * @return int
+	 */
+	public function get_quiz_mark( $quiz_id ) {
+		$quiz_questions = get_post_meta( $quiz_id, '_lpr_quiz_questions', true );
+		$mark           = 0;
+		if ( !$quiz_questions ) {
+			foreach ( $quiz_questions as $question ) {
+				$correct_answer = get_post_meta( $question, '_lpr_question_correct_answer', true );
+				$question_mark  = get_post_meta( $question, '_lpr_question_mark', true );
+				$student_answer = lpr_get_question_answer( $quiz_id, $question );
+
+				if ( array_key_exists( $question, $student_answer ) ) {
+					if ( $correct_answer == $student_answer ) {
+						$mark += $question_mark;
+					}
+				}
+			}
+		}
+		return $mark;
+	}
+
+	/**
 	 * Finish a quiz for the user and save all data needed
 	 *
 	 * @param int $quiz_id
@@ -443,7 +469,8 @@ class LP_Abstract_User {
 			}
 		}
 
-		return $progress;
+		do_action( 'learn_press_user_finish_quiz', $quiz_id, $this->id );
+
 	}
 
 	/**
@@ -1690,7 +1717,6 @@ class LP_Abstract_User {
 				}
 			}
 			self::$_lessons[$this->id] = $lessons;
-			print_r( self::$_lessons );
 		}
 		$completed = !empty( $lessons[$lesson_id] ) && $lessons[$lesson_id] == 'completed';
 		return apply_filters( 'learn_press_user_has_completed_lesson', $completed, $lesson_id, $this );
