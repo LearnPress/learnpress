@@ -314,3 +314,38 @@ function lpr_get_question_types() {
 	_deprecated_function( __FUNCTION__, '1.0', 'learn_press_question_types' );
 	return learn_press_question_types();
 }
+
+
+
+add_action( 'learn_press_user_finished_course', 'learn_press_user_finished_course_send_email', 999, 2 );
+
+function learn_press_user_finished_course_send_email( $course_id = null, $user_id = null ) {
+	$course_id = learn_press_get_course_id( $course_id );
+	if ( !$user_id ) $user_id = get_current_user_id();
+	$user = get_user_by( 'id', $user_id );
+	if ( empty( $user->ID ) || !$course_id ) return false;
+	$mail_to = $user->user_email;
+
+	$assessment = get_post_meta( $course_id, '_lpr_course_final', true );
+	if ( 'yes' == $assessment ) {
+		$quiz_id       = lpr_get_final_quiz( $course_id );
+		$quiz_result   = learn_press_get_quiz_result( $user_id, $quiz_id );
+		$course_result = $quiz_result['mark_percent'] * 100;
+	} else {
+		$course_result = 100;
+	}
+	$args = apply_filters(
+		'learn_press_vars_passed_course',
+		array(
+			'user_name'     => !empty( $user->display_name ) ? $user->display_name : $user->user_nicename,
+			'course_name'   => get_the_title( $course_id ),
+			'course_link'   => get_permalink( $course_id ),
+			'course_result' => sprintf( __( '%d%% of total', 'learnpress' ), intval( $course_result ) )
+		)
+	);
+	learn_press_send_mail(
+		$mail_to,
+		'passed_course',
+		$args
+	);
+}

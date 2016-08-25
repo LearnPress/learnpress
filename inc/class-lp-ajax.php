@@ -350,27 +350,6 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			do_action( 'learn_press_take_course', $course_id, $payment_method );
 		}
 
-		private static function update_time_remaining() {
-			$time_remaining = learn_press_get_request( 'time_remaining' );
-			$quiz_id        = learn_press_get_request( 'quiz_id' );
-			$user_id        = learn_press_get_request( 'user_id' );
-			if ( $time_remaining ) {
-				$quiz_time_remaining = learn_press_get_quiz_time_remaining( $user_id, $quiz_id );
-				if ( $time_remaining != $quiz_time_remaining ) {
-					$quiz_time     = (array) get_user_meta( $user_id, '_lpr_quiz_start_time', true );
-					$quiz_duration = get_post_meta( $quiz_id, '_lpr_duration', true );
-
-
-					if ( !empty( $quiz_time[$quiz_id] ) ) {
-						echo $quiz_time[$quiz_id], ',';
-						$quiz_time[$quiz_id] = current_time( 'timestamp' ) - $time_remaining;
-						echo $quiz_time[$quiz_id], ',';
-						update_user_meta( $user_id, '_lpr_quiz_start_time', $quiz_time );
-					}
-				}
-			}
-		}
-
 		/**
 		 * Load quiz question
 		 */
@@ -432,39 +411,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 		}
 
 
-		/**
-		 * Load previous question
-		 */
-		public static function load_prev_question() {
 
-			$prev_question_id = $_POST['prev_question_id'];
-			$question_id      = $_POST['question_id'];
-			$question_answer  = $_POST['question_answer'];
-			$quiz_id          = $_POST['quiz_id'];
-
-			lpr_save_question_answer( $quiz_id, $question_id, $question_answer );
-
-			do_action( 'lpr_load_question', $prev_question_id );
-
-			die;
-		}
-
-		/**
-		 *   Load next question
-		 */
-		public static function load_next_question() {
-
-			$next_question_id = $_POST['next_question_id'];
-			$quiz_id          = $_POST['quiz_id'];
-			$question_id      = $_POST['question_id'];
-			$question_answer  = $_POST['question_answer'];
-
-			lpr_save_question_answer( $quiz_id, $question_id, $question_answer );
-
-			do_action( 'lpr_load_question', $next_question_id );
-
-			die;
-		}
 
 		/**
 		 * Finish quiz
@@ -525,38 +472,6 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 				$content
 			);
 			die;
-		}
-
-		/**
-		 * Load next lesson
-		 */
-		public function load_next_lesson() {
-
-			$lesson_id = $_POST['lesson_id'];
-			$html      = '';
-			$html .= '<h2>' . get_the_title( $lesson_id ) . '</h2>';
-			$html .= '<p>' . get_post_meta( $lesson_id, '_lpr_lesson_desc', true ) . '</p>';
-			$lesson         = get_post( $lesson_id );
-			$lesson_content = $lesson->post_content;
-			$lesson_content = apply_filters( 'the_content', $lesson_content );
-			$html .= '<p>' . $lesson_content . '</p>';
-			echo $html;
-		}
-
-		/**
-		 * Load previous lesson
-		 */
-		public function load_prev_lesson() {
-
-			$lesson_id = $_POST['lesson_id'];
-			$html      = '';
-			$html .= '<h2>' . get_the_title( $lesson_id ) . '</h2>';
-			$html .= '<p>' . get_post_meta( $lesson_id, '_lpr_lesson_desc', true ) . '</p>';
-			$lesson         = get_post( $lesson_id );
-			$lesson_content = $lesson->post_content;
-			$lesson_content = apply_filters( 'the_content', $lesson_content );
-			$html .= '<p>' . $lesson_content . '</p>';
-			echo $html;
 		}
 
 		/**
@@ -704,6 +619,41 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			}
 			die();
 		}
+
+		/**************************/
+		/** DEPRECATED FUNCTIONS **/
+		/**************************/
+
+		/**
+
+		public static function load_prev_question() {
+
+			$prev_question_id = $_POST['prev_question_id'];
+			$question_id      = $_POST['question_id'];
+			$question_answer  = $_POST['question_answer'];
+			$quiz_id          = $_POST['quiz_id'];
+
+			lpr_save_question_answer( $quiz_id, $question_id, $question_answer );
+
+			do_action( 'lpr_load_question', $prev_question_id );
+
+			die;
+		}
+
+		public static function load_next_question() {
+
+			$next_question_id = $_POST['next_question_id'];
+			$quiz_id          = $_POST['quiz_id'];
+			$question_id      = $_POST['question_id'];
+			$question_answer  = $_POST['question_answer'];
+
+			lpr_save_question_answer( $quiz_id, $question_id, $question_answer );
+
+			do_action( 'lpr_load_question', $next_question_id );
+
+			die;
+		}
+		 */
 	}
 }
 LP_AJAX::init();

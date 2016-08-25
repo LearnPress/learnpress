@@ -17,7 +17,7 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
 		 * @return void
 		 */
 		public static function admin_enqueue_scripts() {
-			return;
+
 			LP_Admin_Assets::enqueue_style( 'meta-box-course', LP()->plugin_url( 'assets/css/admin/meta-box-course.css' ) );
 			LP_Admin_Assets::enqueue_style( 'select2', RWMB_CSS_URL . 'select2/select2.css' );
 			LP_Admin_Assets::enqueue_script( 'select2', RWMB_JS_URL . 'select2/select2.min.js' );
@@ -137,11 +137,11 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
 			// Do same actions as file field
 			parent::add_actions();
 
-			add_action( 'wp_ajax_lpr_quick_add', array( __CLASS__, 'quick_add' ) );
+			/*add_action( 'wp_ajax_lpr_quick_add', array( __CLASS__, 'quick_add' ) );
 			add_action( 'wp_ajax_lpr_update_course_curriculum', array( __CLASS__, 'update_course_curriculum' ) );
 			add_action( 'wp_ajax_lpr_quick_edit_lesson_quiz_name', array( __CLASS__, 'quick_edit_lesson_quiz_name' ) );
 			add_action( 'wp_ajax_lpr_update_section_state', array( __CLASS__, 'update_section_state' ) );
-			add_action( 'wp_ajax_lpr_remove_lesson_quiz', array( __CLASS__, 'remove_lesson_quiz' ) );
+			add_action( 'wp_ajax_lpr_remove_lesson_quiz', array( __CLASS__, 'remove_lesson_quiz' ) );*/
 
 			///add_action( 'save_post', array( __CLASS__, 'update_course_curriculum' ) );
 			add_filter( 'learn_press_loop_section_buttons', array( __CLASS__, 'add_section_buttons' ) );

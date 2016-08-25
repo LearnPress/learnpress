@@ -44,7 +44,7 @@ class LP_Cart {
 		}
 
 		$remove_items = array();
-		if ( $this->_cart_content['items'] ) {
+		if ( !empty( $this->_cart_content['items'] ) ) {
 			foreach ( $this->_cart_content['items'] as $k => $item ) {
 				if ( empty( $item['item_id'] ) || !get_post( $item['item_id'] ) ) {
 					$remove_items[] = $item['item_id'];
@@ -58,6 +58,7 @@ class LP_Cart {
 		}
 		LP_Request_Handler::register( 'add-course-to-cart', array( $this, 'add_to_cart' ), 20 );
 		LP_Request_Handler::register( 'remove-cart-item', array( $this, 'remove_item' ), 20 );
+
 		add_action( 'learn_press_add_to_cart', array( $this, 'calculate_totals' ), 10 );
 		add_action( 'wp', array( $this, 'maybe_set_cart_cookies' ), 99 ); // Set cookies
 		add_action( 'shutdown', array( $this, 'maybe_set_cart_cookies' ), 0 ); // Set cookies before shutdown and ob flushing
@@ -65,7 +66,6 @@ class LP_Cart {
 	}
 
 	function init() {
-
 		$this->get_cart_from_session();
 	}
 
@@ -95,14 +95,10 @@ class LP_Cart {
 	private function set_cart_cookies( $set = true ) {
 		if ( $set ) {
 			learn_press_setcookie( 'learn_press_items_in_cart', 1 );
-			//learn_press_setcookie( 'woocommerce_cart_hash', md5( json_encode( $this->get_cart_for_session() ) ) );
 			$this->get_cart_for_session();
 		} elseif ( isset( $_COOKIE['learn_press_items_in_cart'] ) ) {
 			learn_press_setcookie( 'learn_press_items_in_cart', 0, time() - HOUR_IN_SECONDS );
-			//learn_press_setcookie( 'woocommerce_cart_hash', '', time() - HOUR_IN_SECONDS );
 		}
-
-
 		do_action( 'learn_press_set_cart_cookies', $set );
 	}
 
@@ -123,7 +119,7 @@ class LP_Cart {
 		if ( !did_action( 'wp_loaded' ) ) {
 			_doing_it_wrong( __FUNCTION__, __( 'Get cart should not be called before the wp_loaded action.', 'woocommerce' ), '2.3' );
 		}
-		if ( !did_action( 'woocommerce_cart_loaded_from_session' ) ) {
+		if ( !did_action( 'learn_press_cart_loaded_from_session' ) ) {
 			$this->get_cart_from_session();
 		}
 		return array_filter( (array) $this->_cart_content );
@@ -185,9 +181,11 @@ class LP_Cart {
 				'data'     => $item_data
 			)
 		);
-		//if ( did_action( 'wp' ) ) {
-		$this->set_cart_cookies( true );
-		//}
+
+		if ( did_action( 'wp' ) ) {
+			$this->set_cart_cookies( true );
+		}
+
 		do_action( 'learn_press_add_to_cart', $course_id, $quantity, $item_data, $this );
 		return;
 
@@ -339,7 +337,7 @@ class LP_Cart {
 	public function calculate_totals() {
 		$subtotal = 0;
 
-		if ( $items = $this->_cart_content['items'] ) {
+		if ( !empty( $this->_cart_content['items'] ) && $items = $this->_cart_content['items'] ) {
 			foreach ( $items as $item_id => $item ) {
 				$course = learn_press_get_course( $item_id );
 				if ( $course ) {
@@ -381,12 +379,19 @@ class LP_Cart {
 		if ( !did_action( 'learn_press_get_cart_from_session' ) ) {
 			$this->get_cart_from_session();
 		}
-		return $this->_cart_content['items'];
+		return !empty( $this->_cart_content['items'] ) ? $this->_cart_content['items'] : array();
 	}
 
-	public function get_cart_from_session() {
-		$this->_cart_content = learn_press_session_get( $this->_cart_session_key );
-		do_action( 'learn_press_get_cart_from_session' );
+	/**
+	 * Load cart content data from session
+	 *
+	 * @param bool $force
+	 */
+	public function get_cart_from_session( $force = false ) {
+		if ( !did_action( 'learn_press_get_cart_from_session' ) || $force ) {
+			$this->_cart_content = learn_press_session_get( $this->_cart_session_key );
+			do_action( 'learn_press_get_cart_from_session' );
+		}
 	}
 
 	/**
@@ -420,6 +425,14 @@ class LP_Cart {
 		return md5( time() );
 	}
 
+	/**
+	 * Return sub-total of cart content
+	 *
+	 * @param     $course
+	 * @param int $quantity
+	 *
+	 * @return mixed|void
+	 */
 	public function get_item_subtotal( $course, $quantity = 1 ) {
 		$price           = $course->get_price();
 		$row_price       = $price * $quantity;
@@ -454,6 +467,11 @@ class LP_Cart {
 		return sizeof( $this->get_items() ) === 0; //!$this->_cart_content['items'];
 	}
 
+	/**
+	 * Return cart content
+	 *
+	 * @return array|mixed|void
+	 */
 	public function get_cart_content() {
 		return $this->_cart_content;
 	}
@@ -468,6 +486,9 @@ class LP_Cart {
 	}
 
 	/**
+	 * Get checkout url for checkout page
+	 * Return default url of checkout page
+	 *
 	 * @return mixed
 	 */
 	public function get_checkout_url() {
@@ -475,8 +496,53 @@ class LP_Cart {
 		return apply_filters( 'learn_press_get_checkout_url', $checkout_url );
 	}
 
+	/**
+	 * Checks if need to payment
+	 * Return true if cart total greater than 0
+	 *
+	 * @return mixed|void
+	 */
 	public function needs_payment() {
 		return apply_filters( 'learn_press_cart_needs_payment', $this->total > 0, $this );
+	}
+
+	/**
+	 * Process action for purchase course button
+	 *
+	 * @param $course_id
+	 */
+	public function purchase_course_handler( $course_id ) {
+		if ( apply_filters( 'learn_press_purchase_single_course', true ) ) {
+			$this->empty_cart();
+		}
+		$this->add_to_cart( $course_id, 1, $_POST );
+		$redirect      = learn_press_get_page_link( 'checkout' );
+		$has_checkout  = $redirect ? true : false;
+		$need_checkout = $this->needs_payment();
+
+		// In case the course is FREE and "No checkout free course" is turn off
+		if ( !$need_checkout ) {
+			require_once LP_PLUGIN_PATH . '/inc/gateways/class-lp-gateway-none.php';
+			$checkout = learn_press_get_checkout( array( 'payment_method' => new LP_Gateway_None() ) );
+
+			/**
+			 * + Auto enroll
+			 */
+			add_filter( 'learn_press_checkout_success_result', '_learn_press_checkout_success_result', 10, 2 );
+			$results = $checkout->process_checkout();
+			remove_filter( 'learn_press_checkout_success_result', '_learn_press_checkout_success_result', 10 );
+		} else {
+
+			// Checkout page is not setting up
+			if ( !$has_checkout ) {
+				learn_press_add_notice( __( 'Checkout page is not setup', 'learnpress' ), 'error' );
+			} else {
+				wp_redirect( apply_filters( 'learn_press_checkout_redirect', $redirect ) );
+				exit();
+			}
+
+		}
+		return;
 	}
 
 	/**

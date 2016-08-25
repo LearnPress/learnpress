@@ -36,6 +36,8 @@ class LP_Quiz_Factory {
 
 	}
 
+
+
 	public static function output_quiz_params( $quiz ) {
 		$json = array(
 			'id'                => $quiz->id,
@@ -211,6 +213,7 @@ class LP_Quiz_Factory {
 			);
 		} else {
 			$result = $user->finish_quiz( $quiz_id, $course_id );
+			LP_Cache::flush();
 			if ( $result ) {
 				$course = learn_press_get_course( $course_id );
 				//LP()->course        = $course;
@@ -253,6 +256,7 @@ class LP_Quiz_Factory {
 			);
 		} else {
 			$result = $user->retake_quiz( $quiz_id, $course_id );
+			LP_Cache::flush();
 			if ( $result ) {
 				$course = learn_press_get_course( $course_id );
 				//LP()->course        = $course;

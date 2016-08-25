@@ -1,38 +1,6 @@
 <?php
-/*
-$exclude_quiz   = array();
-$exclude_lesson = array();
-$current_user   = get_current_user_id();
-global $wpdb;
-$q         = $wpdb->prepare(
-	"SELECT         pm.meta_value
-					FROM            $wpdb->posts        AS p
-					INNER JOIN      $wpdb->postmeta     AS pm  ON p.ID = pm.post_id
-						WHERE           p.post_type = %s
-						AND 			p.post_author = %d
-						AND             pm.meta_key = %s",
-	LP()->course_post_type,
-	$current_user,
-	'_lpr_course_lesson_quiz'
-);
-$used_item = $wpdb->get_col(
-	$q
-);
-
-for ( $i = 0; $i < count( $used_item ); $i ++ ) {
-	$lesson_quiz_array = unserialize( $used_item[$i] );
-	for ( $j = 0; $j < count( $lesson_quiz_array ); $j ++ ) {
-		if ( isset( $lesson_quiz_array[$j]['lesson_quiz'] ) ) {
-			foreach ( $lesson_quiz_array[$j]['lesson_quiz'] as $key => $value ) {
-				array_push( $exclude_lesson, $value );
-				array_push( $exclude_quiz, $value );
-			}
-		}
-	}
-}*/
 global $post;
 $course_sections = $course->get_curriculum();
-
 $hidden_sections = (array) get_post_meta( $post->ID, '_admin_hidden_sections', true );
 ?>
 <div id="lp-course-curriculum" class="lp-course-curriculum">

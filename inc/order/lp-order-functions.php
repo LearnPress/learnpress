@@ -507,54 +507,6 @@ function learn_press_get_orders( $args = array() ) {
 	return apply_filters( 'learn_press_get_orders', $orders, $args );
 }
 
-/*
-function learn_press_on_order_status_changed( $status, $order_id ) {
-	$course_id = learn_press_get_course_by_order( $order_id );
-	$user_id   = get_post_meta( $order_id, '_learn_press_customer_id', true );
-
-	$user_courses = get_user_meta( $user_id, '_lpr_user_course', true );
-	$course_users = get_post_meta( $course_id, '_lpr_course_user', true );
-	if ( strtolower( $status ) == 'completed' ) {
-		learn_press_increment_user_enrolled( $course_id );
-		if ( is_array( $user_courses ) ) {
-			$user_courses[] = $course_id;
-		} else {
-			$user_courses = array( $course_id );
-		}
-
-		if ( is_array( $course_users ) ) {
-			$course_users[] = $user_id;
-		} else {
-			$course_users = array( $user_id );
-		}
-	} else {
-		learn_press_decrement_user_enrolled( $course_id );
-		if ( is_array( $user_courses ) && ( false !== ( $pos = array_search( $course_id, $user_courses ) ) ) ) {
-			unset( $user_courses[$pos] );
-		}
-
-		if ( is_array( $course_users ) && ( false !== ( $pos = array_search( $user_id, $course_users ) ) ) ) {
-			unset( $course_users[$pos] );
-		}
-	}
-	update_user_meta( $user_id, '_lpr_user_course', $user_courses );
-	update_post_meta( $course_id, '_lpr_course_user', $course_users );
-}
-
-add_action( 'learn_press_update_order_status', 'learn_press_on_order_status_changed', 50, 2 );*/
-/*
-function learn_press_send_user_email($status, $order_id){
-
-    if( 'completed' == strtolower( $status ) ) {
-
-        $order = new LP_Order($order_id);
-        $to = $order->get_user('email');
-        $action = 'enrolled_course';
-        learn_press_send_mail( $to, $action, null );
-    }
-}
-add_action( 'learn_press_update_order_status', 'learn_press_send_user_email', 50, 2 );*/
-
 function learn_press_get_course_price_text( $price, $course_id ) {
 	if ( !$price && LP()->course_post_type == get_post_type( $course_id ) ) {
 		$price = __( 'Free', 'learnpress' );
@@ -563,7 +515,6 @@ function learn_press_get_course_price_text( $price, $course_id ) {
 }
 
 add_filter( 'learn_press_get_course_price', 'learn_press_get_course_price_text', 5, 2 );
-
 
 function learn_press_get_order_items( $order_id ) {
 	return get_post_meta( $order_id, '_learn_press_order_items', true );
@@ -743,6 +694,7 @@ function learn_press_get_order_status( $order_id ) {
  * @param $order_id
  */
 function _learn_press_checkout_auto_enroll_free_course( $result, $order_id ) {
+	return;
 	$enrolled = false;
 	if ( $order_id && $order = learn_press_get_order( $order_id, true /* force to get all changed */ ) ) {
 		$user = learn_press_get_user( $order->user_id, true );

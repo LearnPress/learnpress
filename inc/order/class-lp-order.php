@@ -166,6 +166,11 @@ class LP_Order {
 		return apply_filters( 'learn_press_get_order_number', '#' . sprintf( "%'.010d", $this->id ), $this );
 	}
 
+	/**
+	 * Get status of the order
+	 *
+	 * @return mixed|void
+	 */
 	public function get_order_status() {
 		$statuses = learn_press_get_order_statuses();
 		$status   = '';
@@ -220,7 +225,38 @@ class LP_Order {
 
 	/*********************************/
 
+	/**
+	 * Get customer name of the order
+	 */
+	public function get_customer_name() {
+		$user_id       = $this->user_id;
+		$user          = learn_press_get_user( $user_id );
+		$customer_name = '';
+		if ( !$user->is_exists() ) {
+			$customer_name = apply_filters( 'learn_press_order_customer_name', __( '[Guest]', 'learnpress' ) );
+		} else {
+			if ( $user->user->data->display_name ) {
+				$customer_name = $user->user->data->display_name;
+			} elseif ( $user->user->data->user_nicename ) {
+				$customer_name = $user->user->data->user_nicename;
+			} elseif ( $user->user->data->user_login ) {
+				$customer_name = $user->user->data->user_login;
+			}
+		}
+		return $customer_name;
+	}
 
+	public function customer_exists(){
+		$user_id       = $this->user_id;
+		$user          = learn_press_get_user( $user_id );
+		return $user->is_exists();
+	}
+
+	/**
+	 * Get items of the order
+	 *
+	 * @return mixed|void
+	 */
 	public function get_items() {
 		global $wpdb;
 
@@ -350,6 +386,7 @@ class LP_Order {
 			$view_order_endpoint = 'order-details';
 		}
 
+		$view_order_endpoint = urlencode( $view_order_endpoint );
 		if ( get_option( 'permalink_structure' ) ) {
 			$view_order_url = learn_press_get_page_link( 'profile' ) . $user->user_login . '/' . $view_order_endpoint . '/' . $this->id;
 		} else {

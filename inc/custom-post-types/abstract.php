@@ -28,7 +28,7 @@ abstract class LP_Abstract_Post_Type {
 			add_action( 'init', array( $extended, 'register_post_type' ) );
 		}
 		if ( is_callable( array( $extended, 'add_meta_boxes' ) ) ) {
-			add_action( 'admin_init', array( $extended, 'add_meta_boxes' ), 0 );
+			add_action( 'load-post.php', array( $extended, 'add_meta_boxes' ), 0 );
 		}
 		if ( is_callable( array( $extended, 'admin_scripts' ) ) ) {
 			add_action( 'admin_enqueue_scripts', array( $extended, 'admin_scripts' ) );

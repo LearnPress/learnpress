@@ -127,12 +127,6 @@ class LP_Settings_General extends LP_Settings_Base {
 		}
 		return $positions;
 	}
-
-	/*function save() {
-		$settings = LP_Admin_Settings::instance( 'general' );// $_POST['lpr_settings']['general'];
-		$settings->bind( $_POST['learn_press'] );
-		$settings->update();
-	}*/
 }
 
 return new LP_Settings_General();

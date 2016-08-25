@@ -188,8 +188,15 @@ class LP_Abstract_Question {
 	public function get_answers( $field = null, $exclude = null ) {
 		global $wpdb;
 		$answers = array();
-		//if ( empty( $answers ) ) {
-			if ( !empty( $GLOBALS['learnpress_question_answers'][$this->id] ) ) {
+		/**
+		 * Question post type should be cached
+		 */
+
+		if ( $question_post = get_post( $this->id ) ) {
+			$answers = !empty( $question_post->answers ) ? $question_post->answers : array();
+		}
+
+		/*	if ( !empty( $GLOBALS['learnpress_question_answers'][$this->id] ) ) {
 				if ( array_key_exists( $this->id, $GLOBALS['learnpress_question_answers'] ) ) {
 					$answers = $GLOBALS['learnpress_question_answers'][$this->id];
 				}
@@ -208,8 +215,7 @@ class LP_Abstract_Question {
 					}
 				}
 				$GLOBALS['learnpress_question_answers'][$this->id] = $answers;
-			}
-		//}
+			}*/
 		if ( $answers && ( $field || $exclude ) ) {
 			if ( $field ) settype( $field, 'array' );
 			if ( $exclude ) settype( $exclude, 'array' );
@@ -597,16 +603,6 @@ class LP_Question extends LP_Abstract_Question {
 				<a href="" data-action="expand" class="<?php echo !$is_collapse ? "hide-if-js" : ""; ?>"><?php _e( 'Expand', 'learnpress' ); ?></a>
 				<a href="" data-action="collapse" class="<?php echo $is_collapse ? "hide-if-js" : ""; ?>"><?php _e( 'Collapse', 'learnpress' ); ?></a>
 			</p>
-			<!--<select name="lpr_question[<?php echo $post_id; ?>][type]" data-type="<?php echo $this->get_type(); ?>">
-				<?php if ( $questions ) foreach ( $questions as $type ): ?>
-					<?php $question = LPR_Question_Factory::instance()->get_question( $type ); ?>
-					<?php if ( $question ) { ?>
-						<option value="<?php echo $type; ?>" <?php selected( $this->get_type() == $type ? 1 : 0, 1 ); ?>>
-							<?php echo $question->get_name(); ?>
-						</option>
-					<?php } ?>
-				<?php endforeach; ?>
-			</select>-->
 			<span class="lpr-question-title"><input class="inactive" type="text" name="lpr_question[<?php echo $this->get( 'ID' ); ?>][text]" value="<?php echo esc_attr( $this->post->post_title ); ?>" /></span>
 		</div>
 		<div class="lpr-question-content<?php echo $is_collapse ? " hide-if-js" : ""; ?>">

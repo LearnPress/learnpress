@@ -62,38 +62,6 @@ function learn_press_delete_user_data( $user_id, $course_id = 0 ) {
 	@$wpdb->query( $query );
 }
 
-add_action( 'learn_press_user_finished_course', 'learn_press_user_finished_course_send_email', 999, 2 );
-
-function learn_press_user_finished_course_send_email( $course_id = null, $user_id = null ) {
-	$course_id = learn_press_get_course_id( $course_id );
-	if ( !$user_id ) $user_id = get_current_user_id();
-	$user = get_user_by( 'id', $user_id );
-	if ( empty( $user->ID ) || !$course_id ) return false;
-	$mail_to = $user->user_email;
-
-	$assessment = get_post_meta( $course_id, '_lpr_course_final', true );
-	if ( 'yes' == $assessment ) {
-		$quiz_id       = lpr_get_final_quiz( $course_id );
-		$quiz_result   = learn_press_get_quiz_result( $user_id, $quiz_id );
-		$course_result = $quiz_result['mark_percent'] * 100;
-	} else {
-		$course_result = 100;
-	}
-	$args = apply_filters(
-		'learn_press_vars_passed_course',
-		array(
-			'user_name'     => !empty( $user->display_name ) ? $user->display_name : $user->user_nicename,
-			'course_name'   => get_the_title( $course_id ),
-			'course_link'   => get_permalink( $course_id ),
-			'course_result' => sprintf( __( '%d%% of total', 'learnpress' ), intval( $course_result ) )
-		)
-	);
-	learn_press_send_mail(
-		$mail_to,
-		'passed_course',
-		$args
-	);
-}
 
 /**
  * @return int
@@ -104,11 +72,18 @@ function learn_press_get_current_user_id() {
 }
 
 /**
- * Get current user
+ * Get the user by $user_id passed. If $user_id is NULL, get current user.
+ *
+ * If current user is not logged in, return a GUEST user
+ *
+ * @param int $user_id
+ *
  * @return LP_User
  */
-function learn_press_get_current_user() {
-	$user_id      = get_current_user_id();
+function learn_press_get_current_user( $user_id = 0 ) {
+	if ( !$user_id ) {
+		$user_id = get_current_user_id();
+	}
 	$current_user = false;
 	if ( $user_id ) {
 		$current_user = learn_press_get_user( $user_id );
@@ -119,8 +94,9 @@ function learn_press_get_current_user() {
 }
 
 /**
- * @param      $user_id
+ * Get user by ID, if the ID is NULL then return a GUEST user
  *
+ * @param int  $user_id
  * @param bool $force
  *
  * @return LP_User_Guest|mixed
@@ -131,43 +107,6 @@ function learn_press_get_user( $user_id, $force = false ) {
 	}
 	return LP_User_Guest::instance();
 }
-
-/**
- * Get all prerequisite courses that user need to pass before take a course
- *
- * @param bool $user_id
- * @param      $course_id -=90a4
- *
- * @return array|bool
- */
-function learn_press_user_prerequisite_courses( $user_id = false, $course_id ) {
-	if ( !$user_id ) {
-		$user    = learn_press_get_current_user();
-		$user_id = $user->ID;
-	}
-	$prerequisite = (array) get_post_meta( $course_id, '_lpr_course_prerequisite', true );
-	$courses      = false;
-	if ( $prerequisite ) {
-
-		$course_completed = get_user_meta( $user_id, '_lpr_course_completed', true );
-		foreach ( $prerequisite as $course ) {
-			if ( $course && $course_completed ) {
-				if ( !array_key_exists( $course, $course_completed ) ) {
-					if ( !$courses ) $courses = array();
-					$courses[] = $course;
-				}
-			}
-		}
-	}
-	return $courses;
-}
-
-function learn_press_before_take_course_prerequisite( $can_take, $user_id, $course_id ) {
-	return false == learn_press_user_prerequisite_courses( $user_id, $course_id );
-}
-
-//add_filter( 'learn_press_before_take_course', 'learn_press_before_take_course_prerequisite', 5, 3 );
-
 
 function learn_press_send_user_email_order( $status, $order_id ) {
 	return;
@@ -394,18 +333,6 @@ function learn_press_profile_tab_orders_content( $current, $tab, $user ) {
 	learn_press_get_template( 'profile/tabs/orders.php', array( 'user' => $user, 'current' => $current, 'tab' => $tab ) );
 }
 
-function learn_press_after_logged_in() {
-
-}
-
-add_action( 'wp_login', 'learn_press_after_logged_in' );
-
-function head_head_head() {
-
-}
-
-add_action( 'admin_head', 'head_head_head' );
-
 function learn_press_update_user_lesson_start_time() {
 	global $course, $wpdb;
 
@@ -437,3 +364,223 @@ function learn_press_get_profile_user() {
 	global $wp;
 	return !empty( $wp->query_vars['user'] ) ? get_user_by( 'login', $wp->query_vars['user'] ) : false;
 }
+
+/**
+ * Add instructor registration button to register page and admin bar
+ */
+function learn_press_user_become_teacher_registration_form() {
+	if ( LP()->settings->get( 'instructor_registration' ) != 'yes' ) {
+		return;
+	}
+	?>
+	<p>
+		<label for="become_teacher">
+			<input type="checkbox" name="become_teacher" id="become_teacher">
+			<?php _e( 'Want to be an instructor?', 'learnpress' ) ?>
+		</label>
+	</p>
+	<?php
+}
+
+add_action( 'register_form', 'learn_press_user_become_teacher_registration_form' );
+
+/**
+ * Process instructor registration while user register new account
+ *
+ * @param $user_id
+ */
+function learn_press_update_user_teacher_role( $user_id ) {
+	if ( LP()->settings->get( 'instructor_registration' ) != 'yes' ) {
+		return;
+	}
+	if ( !isset( $_POST['become_teacher'] ) ) {
+		return;
+	}
+	$new_user = new WP_User( $user_id );
+	$new_user->set_role( LP()->teacher_role );
+}
+
+add_action( 'user_register', 'learn_press_update_user_teacher_role', 10, 1 );
+
+
+/**
+ * @param array $fields
+ * @param mixed $where
+ *
+ * @return mixed
+ */
+function learn_press_update_user_item_field( $fields, $where = false ) {
+	global $wpdb;
+
+	// Table fields
+	$table_fields = array( 'user_id' => '%d', 'item_id' => '%d', 'ref_id' => '%d', 'start_time' => '%s', 'end_time' => '%s', 'item_type' => '%s', 'status' => '%s', 'ref_type' => '%s' );
+
+	// Data and format
+	$data        = array();
+	$data_format = array();
+
+	// Build data and data format
+	foreach ( $fields as $field => $value ) {
+		if ( !empty( $table_fields[$field] ) ) {
+			$data[$field]  = $value;
+			$data_format[] = $table_fields[$field];
+		}
+	}
+
+	//
+	if ( $where && empty( $where['user_id'] ) ) {
+		$where['user_id'] = learn_press_get_current_user_id();
+	}
+	$where_format = array();
+	/// Build where and where format
+	if ( $where ) foreach ( $where as $field => $value ) {
+		if ( !empty( $table_fields[$field] ) ) {
+			$where_format[] = $table_fields[$field];
+		}
+	}
+	$return = false;
+	if ( $data ) {
+		if ( $where ) {
+			$return = $wpdb->update(
+				$wpdb->prefix . 'learnpress_user_items',
+				$data,
+				$where,
+				$data_format,
+				$where_format
+			);
+		} else {
+			if ( $wpdb->insert(
+				$wpdb->prefix . 'learnpress_user_items',
+				$data,
+				$data_format
+			)
+			) {
+				$return = $wpdb->insert_id;
+			}
+		}
+	}
+	return $return;
+}
+
+/**
+ * Get user item row(s) from user items table by multiple WHERE conditional
+ *
+ * @param      $where
+ * @param bool $single
+ *
+ * @return array|bool|null|object|void
+ */
+function learn_press_get_user_item( $where, $single = true ) {
+	global $wpdb;
+
+	// Table fields
+	$table_fields = array( 'user_id' => '%d', 'item_id' => '%d', 'ref_id' => '%d', 'start_time' => '%s', 'end_time' => '%s', 'item_type' => '%s', 'status' => '%s', 'ref_type' => '%s' );
+
+	$where_str = array();
+	foreach ( $where as $field => $value ) {
+		if ( !empty( $table_fields[$field] ) ) {
+			$where_str[] = "{$field} = " . $table_fields[$field];
+		}
+	}
+	$item = false;
+	if ( $where_str ) {
+		$query = $wpdb->prepare( "
+			SELECT *
+			FROM {$wpdb->prefix}learnpress_user_items
+			WHERE " . join( ' AND ', $where_str ) . "
+		", $where );
+		if ( $single ) {
+			$item = $wpdb->get_row( $query );
+		} else {
+			$item = $wpdb->get_results( $query );
+		}
+	}
+	return $item;
+}
+
+/**
+ * Get user item meta from user_itemmeta table
+ *
+ * @param      $user_item_id
+ * @param      $meta_key
+ * @param bool $single
+ *
+ * @return mixed
+ */
+function learn_press_get_user_item_meta( $user_item_id, $meta_key, $single = true ) {
+	return get_metadata( 'learnpress_user_item', $user_item_id, $meta_key, $single );
+}
+
+/**
+ * Add user item meta into table user_itemmeta
+ *
+ * @param        $user_item_id
+ * @param        $meta_key
+ * @param        $meta_value
+ * @param string $prev_value
+ *
+ * @return false|int
+ */
+function learn_press_add_user_item_meta( $user_item_id, $meta_key, $meta_value, $prev_value = '' ) {
+	return add_metadata( 'learnpress_user_item', $user_item_id, $meta_key, $meta_value, $prev_value );
+}
+
+/**
+ * Update user item meta to table user_itemmeta
+ *
+ * @param        $user_item_id
+ * @param        $meta_key
+ * @param        $meta_value
+ * @param string $prev_value
+ *
+ * @return bool|int
+ */
+function learn_press_update_user_item_meta( $user_item_id, $meta_key, $meta_value, $prev_value = '' ) {
+	return update_metadata( 'learnpress_user_item', $user_item_id, $meta_key, $meta_value, $prev_value );
+}
+
+/**
+ * Update field created_time after added user item meta
+ *
+ * @use updated_{meta_type}_meta hook
+ *
+ * @param $meta_id
+ * @param $object_id
+ * @param $meta_key
+ * @param $_meta_value
+ */
+function _learn_press_update_created_time_user_item_meta( $meta_id, $object_id, $meta_key, $_meta_value ) {
+	global $wpdb;
+	$wpdb->update(
+		$wpdb->learnpress_user_itemmeta,
+		array( 'create_time' => current_time( 'mysql' ) ),
+		array( 'meta_id' => $meta_id ),
+		array( '%s' ),
+		array( '%d' )
+	);
+}
+
+add_action( 'added_learnpress_user_item_meta', '_learn_press_update_created_time_user_item_meta', 10, 4 );
+
+/**
+ * Update field updated_time after updated user item meta
+ *
+ * @use updated_{meta_type}_meta hook
+ *
+ * @param $meta_id
+ * @param $object_id
+ * @param $meta_key
+ * @param $_meta_value
+ */
+function _learn_press_update_updated_time_user_item_meta( $meta_id, $object_id, $meta_key, $_meta_value ) {
+	global $wpdb;
+	$wpdb->update(
+		$wpdb->learnpress_user_itemmeta,
+		array( 'update_time' => current_time( 'mysql' ) ),
+		array( 'meta_id' => $meta_id ),
+		array( '%s' ),
+		array( '%d' )
+	);
+}
+
+add_action( 'updated_learnpress_user_item_meta', '_learn_press_update_updated_time_user_item_meta', 10, 4 );

@@ -301,15 +301,12 @@ abstract class LP_Abstract_Course {
 		if ( !$this->id ) {
 			return false;
 		}
-		$cached = true;
-		if ( !array_key_exists( $this->id, self::$_curriculum ) ) {
-			self::$_curriculum[$this->id] = array();
-			$cached                       = false;
-		}
-		if ( !$cached || $force ) {
+		$curriculum = LP_Cache::get_course_curriculum( false, array() );
+
+		if ( !array_key_exists( $this->id, $curriculum ) || $force ) {
 			global $wpdb;
-			self::$_curriculum[$this->id] = array();
-			$query                        = $wpdb->prepare( "
+			$curriculum[$this->id] = array();
+			$query                 = $wpdb->prepare( "
 				SELECT cc.*
 				FROM {$wpdb->posts} p
 				INNER JOIN {$wpdb->learnpress_sections} cc ON p.ID = cc.section_course_id
@@ -331,37 +328,48 @@ abstract class LP_Abstract_Course {
 						ORDER BY s.section_order, si.item_order ASC
 					", $section_ids );
 				$section_items = $wpdb->get_results( $query );
-
+				$post_ids = array();
 				foreach ( $rows as $row ) {
 					$section        = $row;
 					$section->items = array();
 					if ( $section_items ) {
 						$count = 0;
 						foreach ( $section_items as $item ) {
-
 							if ( $item->section_id == $row->section_id ) {
 								$section->items[] = $item;
+								/**
+								 * Add item to 'posts' cache group
+								 */
+								$item_post        = wp_cache_get( $item->ID, 'posts' );
+								if ( !$item_post ) {
+									wp_cache_add( $item->ID, $item, 'posts' );
+								}
+								$post_ids[] = $item->ID;
 								$count ++;
 							} else {
 								if ( $count ) break;
 							}
 						}
 					}
-					self::$_curriculum[$this->id][$section->section_id] = $section;
+					$curriculum[$this->id][$section->section_id] = $section;
 				}
+				// update all meta data into cache
+				update_meta_cache('post', $post_ids);
+				//SELECT post_id, meta_key, meta_value FROM wp_postmeta WHERE post_id IN
 			}
+			LP_Cache::set_course_curriculum( $curriculum );
 		}
 
 		$return = false;
 		if ( $section_id ) {
-			if ( !empty( self::$_curriculum[$this->id][$section_id] ) ) {
-				$return = self::$_curriculum[$this->id][$section_id];
+			if ( !empty( $curriculum[$this->id][$section_id] ) ) {
+				$return = $curriculum[$this->id][$section_id];
 			}
 		} else {
-			$return = self::$_curriculum[$this->id];
+			$return = $curriculum[$this->id];
 		}
 
-		return apply_filters( 'learn_press_course_curriculum', $return, $section_id, $this->id );
+		return apply_filters( 'learn_press_course_curriculum', $return, $this->id, $section_id );
 	}
 
 	/**
@@ -793,7 +801,7 @@ abstract class LP_Abstract_Course {
 	public function has_item( $item_id ) {
 		static $items = array();
 		if ( !$items ) {
-			$items = $this->get_curriculum_items( array( 'field' => 'ID', 'force' => true ) );
+			$items = $this->get_curriculum_items( array( 'field' => 'ID'/*, 'force' => true */ ) );
 		}
 		return in_array( $item_id, $items );
 	}

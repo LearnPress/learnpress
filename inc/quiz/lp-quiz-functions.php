@@ -30,12 +30,12 @@ function learn_press_question_class( $question = null, $args = array() /*, $clas
 		$args,
 		array(
 			'user'    => LP()->user,
-			'quiz'    => LP()->quiz,
+			'quiz'    => !empty( LP()->global['course-item'] ) ? LP()->global['course-item'] : false,
 			'classes' => ''
 		)
 	);
 	$quiz    = $args['quiz'];
-	$user    = $args['user'];
+	$user    = $args['user'] ? $args['user'] : learn_press_get_current_user();
 	$classes = $args['classes'];
 
 
@@ -50,7 +50,11 @@ function learn_press_question_class( $question = null, $args = array() /*, $clas
 		}
 		settype( $classes, 'array' );
 		$classes = array_merge( $classes, array( "learn-press-question-wrap", "question-type-{$question->type}", "question-{$question->id}" ) );
-		$status  = $user->get_quiz_status( $quiz->id );
+		if($quiz) {
+			$status = $user->get_quiz_status( $quiz->id );
+		}else{
+			$status = '';
+		}
 		if ( $status == 'completed' ) {
 			$user_id     = learn_press_get_current_user_id();
 			$user        = learn_press_get_user( $user_id );
@@ -77,19 +81,16 @@ function learn_press_question_class( $question = null, $args = array() /*, $clas
 }
 
 function learn_press_get_user_quiz_meta( $quiz_user_id, $meta_key, $single = true ) {
-	echo __FUNCTION__ . '.' . $meta_key;
+	return get_metadata( 'learnpress_user_item', $quiz_user_id, $meta_key, $single );
 	return get_metadata( 'learnpress_user_quiz', $quiz_user_id, $meta_key, $single );
 }
 
 function learn_press_add_user_quiz_meta( $quiz_user_id, $meta_key, $meta_value, $prev_value = '' ) {
-	echo __FUNCTION__ . '.' . $meta_key;
 
 	return add_metadata( 'learnpress_user_quiz', $quiz_user_id, $meta_key, $meta_value, $prev_value );
 }
 
 function learn_press_update_user_quiz_meta( $quiz_user_id, $meta_key, $meta_value, $prev_value = '' ) {
-	echo __FUNCTION__ . '.' . $meta_key;
-
 	return update_metadata( 'learnpress_user_quiz', $quiz_user_id, $meta_key, $meta_value, $prev_value );
 }
 

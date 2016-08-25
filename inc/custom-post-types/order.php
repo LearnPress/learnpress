@@ -366,12 +366,12 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 			$the_order = learn_press_get_order( $post->ID );
 			switch ( $column ) {
 				case 'order_student':
-					if ( $the_order->user_id ) {
+					if ( $the_order->customer_exists() ) {
 						$user = learn_press_get_user( $the_order->user_id );
 						printf( '<a href="user-edit.php?user_id=%d">%s (%s)</a>', $the_order->user_id, $user->user_login, $user->display_name ); ?><?php
 						printf( '<br /><span>%s</span>', $user->user_email );
 					} else {
-						_e( 'Guest', 'learnpress' );
+						echo $the_order->get_customer_name();
 					}
 					break;
 				case 'order_status' :

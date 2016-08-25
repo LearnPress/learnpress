@@ -22,8 +22,7 @@ global $post;
 		</div>
 		<div class="order-user-meta">
 			<div class="user-display-name">
-				<?php $display_name = $order->get_user( 'display_name' );
-				echo empty( $display_name ) ? __( 'Guest', 'learnpress' ) : $display_name; ?>
+				<?php echo $order->get_customer_name(); ?>
 			</div>
 			<div class="user-email">
 				<?php $user_email = $order->get_user( 'user_email' );

@@ -135,6 +135,75 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 	return $output;
 }
 
+/**
+ * List all registered question types into dropdown
+ *
+ * @param array
+ *
+ * @return string
+ */
+function learn_press_dropdown_question_types( $args = array() ) {
+	$args = wp_parse_args(
+		$args,
+		array(
+			'name'     => 'learn-press-dropdown-question-types',
+			'id'       => '',
+			'class'    => '',
+			'selected' => '',
+			'echo'     => true
+		)
+	);
+	if ( !$args['id'] ) {
+		$args['id'] = $args['name'];
+	}
+	$args['class'] = 'lp-dropdown-question-types' . ( $args['class'] ? ' ' . $args['class'] : '' );
+	$types         = learn_press_question_types();
+	$output        = sprintf( '<select name="%s" id="%s" class="%s"%s>', $args['name'], $args['id'], $args['class'], $args['selected'] ? 'data-selected="' . $args['selected'] . '"' : '' );
+	foreach ( $types as $slug => $name ) {
+		$output .= sprintf( '<option value="%s"%s>%s</option>', $slug, selected( $slug == $args['selected'], true, false ), $name );
+	}
+	$output .= '</select>';
+	if ( $args['echo'] ) {
+		echo $output;
+	}
+	return $output;
+}
+
+/**
+ * Displays email formats support into a dropdown
+ *
+ * @param array $args
+ *
+ * @return string
+ */
+function learn_press_email_formats_dropdown( $args = array() ) {
+	$args    = wp_parse_args(
+		$args,
+		array(
+			'name'     => 'learn-press-dropdown-email-formats',
+			'id'       => '',
+			'class'    => '',
+			'selected' => '',
+			'echo'     => true
+		)
+	);
+	$formats = array(
+		'plain_text' => __( 'Plain text', 'learnpress' ),
+		'html'       => __( 'HTML', 'learnpress' ),
+		'multipart'  => __( 'Multipart', 'learnpress' )
+	);
+	$output  = sprintf( '<select name="%s" id="%s" class="%s" %s>', $args['name'], $args['id'], $args['class'], '' );
+	foreach ( $formats as $name => $text ) {
+		$output .= sprintf( '<option value="%s" %s>%s</option>', $name, selected( $args['selected'] == $name, true, false ), $text ) . "\n";
+	}
+	$output .= '</select>';
+
+	if ( $args['echo'] ) echo $output;
+	return $output;
+}
+
+
+
 
 /**************************************************/
 /**************************************************/

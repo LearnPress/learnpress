@@ -259,24 +259,83 @@ class LP_Cache {
 		return self::_get_cache( 'user-enrolled-courses', $key, $def );
 	}
 
-	public static function set_finished_courses( $key, $value ) {
-		return self::_set_cache( 'user-finished-courses', $key, $value );
+	/**
+	 * Set cache for user's course information
+	 *
+	 * @param      $key_or_value
+	 * @param bool $value
+	 *
+	 * @return array|bool|mixed
+	 */
+	public static function set_finished_courses( $key_or_value, $value =false ) {
+		if ( func_num_args() == 1 ) {
+			wp_cache_set( 'user-finished-courses', $key_or_value, self::$_group );
+			return $key_or_value;
+		}
+		return self::_set_cache( 'user-finished-courses', $key_or_value, $value );
 	}
 
+	/**
+	 * @param bool $key
+	 * @param bool $def
+	 *
+	 * @return array|bool|mixed
+	 */
 	public static function get_finished_courses( $key = false, $def = false ) {
 		return self::_get_cache( 'user-finished-courses', $key, $def );
 	}
 
-	public static function set_course_info( $key, $value ) {
-		return self::_set_cache( 'user-course-info', $key, $value );
+	public static function set_course_info( $key_or_value, $value = false ) {
+		if ( func_num_args() == 1 ) {
+			wp_cache_set( 'user-course-info', $key_or_value, self::$_group );
+			return $key_or_value;
+		}
+		return self::_set_cache( 'user-course-info', $key_or_value, $value );
 	}
 
 	public static function get_course_info( $key = false, $def = false ) {
 		return self::_get_cache( 'user-course-info', $key, $def );
 	}
 
-	/**********************************************/
+	public static function set_course_curriculum( $key_or_value, $value = false ) {
+		if ( func_num_args() == 1 ) {
+			wp_cache_set( 'course-curriculum', $key_or_value, self::$_group );
+			return $key_or_value;
+		}
+		return self::_set_cache( 'course-curriculum', $key_or_value, $value );
+	}
 
+	public static function get_course_curriculum( $key = false, $def = false ) {
+		return self::_get_cache( 'course-curriculum', $key, $def );
+	}
+
+	public static function set_item_statuses( $key_or_value, $value = false ) {
+		if ( func_num_args() == 1 ) {
+			wp_cache_set( 'course-item-statuses', $key_or_value, self::$_group );
+			return $key_or_value;
+		}
+		return self::_set_cache( 'course-item-statuses', $key_or_value, $value );
+	}
+
+	public static function get_item_statuses( $key = false, $def = false ) {
+		return self::_get_cache( 'course-item-statuses', $key, $def );
+	}
+
+	public static function set_quiz_questions( $key_or_value, $value = false ) {
+		if ( func_num_args() == 1 ) {
+			wp_cache_set( 'quiz-questions', $key_or_value, self::$_group );
+			return $key_or_value;
+		}
+		return self::_set_cache( 'quiz-questions', $key_or_value, $value );
+	}
+
+	public static function get_quiz_questions( $key = false, $def = false ) {
+		return self::_get_cache( 'quiz-questions', $key, $def );
+	}
+	/**********************************************/
+	public static function flush(){
+		wp_cache_flush();
+	}
 	/**
 	 * @param int|string $key
 	 * @param int|string $field

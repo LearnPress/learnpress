@@ -59,7 +59,7 @@ class LP_Quiz {
 		if ( empty( self::$_meta[$this->id] ) ) {
 			self::$_meta[$this->id] = array();
 		}
-		$this->course = LP_Course::get_course( $this->_lpr_course );
+		//$this->course = LP_Course::get_course( $this->_lpr_course );
 		$this->_init();
 	}
 
@@ -108,12 +108,13 @@ class LP_Quiz {
 		return apply_filters( 'learn_press_single_quiz_localize', $localize, $this );
 	}
 
-	public function get_settings() {
+	public function get_settings( $user_id = 0, $course_id = 0 ) {
 		if ( empty( self::$_meta[$this->id]['single_quiz_params'] ) ) {
-			$user = learn_press_get_current_user();
-
+			$user   = learn_press_get_current_user( $user_id );
+			$course = learn_press_get_course( $course_id );
 			if ( $results = $user->get_quiz_results( $this->id ) ) {
-				$questions = $results->questions;
+				//echo 'xxxxxxxxxxxxxxx';print_r($results);
+				$questions = $results->_quiz_questions;
 			} else {
 				$questions = learn_press_get_quiz_questions();
 				$questions = array_keys( $questions );
@@ -125,49 +126,46 @@ class LP_Quiz {
 			} else {
 				$question_ids = array();
 			}*/
-			if ( !$current_question_id || !in_array( $current_question_id, $questions ) ) {
+			if ( $questions && ( !$current_question_id || !in_array( $current_question_id, $questions ) ) ) {
 				$current_question_id = reset( $questions );
 			}
 
-			$current_question_id = absint( $current_question_id );
+			$current_question_id = $user->get_current_quiz_question( $this->id, $course->id );
 			$question            = LP_Question_Factory::get_question( $current_question_id );
+			$duration            = $this->duration;
+			$r_time              = ( $time_remaining = $user->get_quiz_time_remaining( $this->id ) ) !== false && !in_array( $user->get_quiz_status( $this->id ), array( '', 'completed' ) ) ? $time_remaining : $this->duration;
 
 			$js                                           = array(
-				'time_format'    => $this->duration >= 300 ? 'h%:m%:s%' : 'm%:s%',
-				'total_time'     => $this->duration,
-				'id'             => $this->id,
-				'questions'      => array_values( $this->get_question_params( $questions ) ),//$questions,
-				'question_id'    => $current_question_id,
-				'status'         => $user->get_quiz_status( $this->id ),
-				'time_remaining' => ( $time_remaining = $user->get_quiz_time_remaining( $this->id ) ) !== false && !in_array( $user->get_quiz_status( $this->id ), array( '', 'completed' ) ) ? $time_remaining : $this->duration,
-				'permalink'      => get_the_permalink(),
-				'ajaxurl'        => admin_url( 'admin-ajax.php' ),
-				'user_id'        => $user->id,
-				'nonce'          => wp_create_nonce( 'learn-press-quiz-action-' . $this->id . '-' . $user->id ),
-				'question'       => $question ? array( 'check_answer' => $question->can_check_answer() ) : false
+				'time_format'     => $this->duration >= 300 ? 'h%:m%:s%' : 'm%:s%',
+				'total_time'      => $this->duration,
+				'id'              => $this->id,
+				'questions'       => array_values( $this->get_question_params( $questions, $current_question_id ) ),//$questions,
+				'question_id'     => $current_question_id,
+				'status'          => $user->get_quiz_status( $this->id ),
+				'time_remaining'  => $r_time,//( $time_remaining = $user->get_quiz_time_remaining( $this->id ) ) !== false && !in_array( $user->get_quiz_status( $this->id ), array( '', 'completed' ) ) ? $time_remaining : $this->duration,
+				'permalink'       => get_the_permalink(),
+				'ajaxurl'         => admin_url( 'admin-ajax.php' ),
+				'user_id'         => $user->id,
+				'nonce'           => wp_create_nonce( 'learn-press-quiz-action-' . $this->id . '-' . $user->id ),
+				'question'        => $question ? array( 'check_answer' => $question->can_check_answer() ) : false,
+				'totalTime'       => $this->duration,
+				'userTime'        => $duration - $r_time,
+				'currentQuestion' => get_post_field( 'post_name', $current_question_id ),
+				'usePermalink'    => get_option( 'permalink' )
 			);
 			self::$_meta[$this->id]['single_quiz_params'] = $js;
 		}
 		return apply_filters( 'learn_press_single_quiz_params', self::$_meta[$this->id]['single_quiz_params'], $this );
 	}
 
-	public function get_question_params( $ids ) {
+	public function get_question_params( $ids, $current = 0 ) {
 		global $wpdb;
 		if ( !$ids ) {
 			$ids = array( 0 );
 		}
-		$query   = $wpdb->prepare( "
-			SELECT qa.question_answer_id, ID as id, pm.meta_value as type, qa.answer_data as answer_data
-			FROM {$wpdb->posts} p
-			INNER JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID AND pm.meta_key = %s
-			INNER JOIN {$wpdb->prefix}learnpress_quiz_questions qq ON qq.question_id = p.ID
-			RIGHT JOIN {$wpdb->prefix}learnpress_question_answers qa ON qa.question_id = p.ID
-			WHERE ID IN(" . join( ',', $ids ) . ")
-			AND post_type = %s
-			ORDER BY qq.question_order, answer_order ASC
-		", '_lp_type', 'lp_question' );
+
 		$results = array();
-		if ( $_results = $wpdb->get_results( $query, OBJECT_K ) ) {
+		if ( $questions = $this->get_questions() ) {
 			$user              = learn_press_get_current_user();
 			$show_check_answer = $this->show_check_answer;
 			$show_hint         = $this->show_hint;
@@ -179,8 +177,27 @@ class LP_Quiz {
 					$checked_answers = array();
 				}
 			}
-			foreach ( $_results as $k => $row ) {
-				if ( empty( $results[$row->id] ) ) {
+			foreach ( $questions as $question_id => $question ) {
+				$_question = (object) array(
+					'id'    => absint( $question->ID ),
+					'type'  => $question->type,
+					'title' => get_the_title( $question->ID ),
+					'name'  => get_post_field( 'post_name', $question->ID ),
+					'url'   => $this->get_question_link( $question->ID )
+				);
+				if ( $show_check_answer == 'yes' ) {
+					//$_question->check_answer = learn_press_question_type_support( $question->type, 'check-answer' );
+					$_question->supportCheckAnswer = learn_press_question_type_support( $question->type, 'check-answer' ) ? 'yes' : 'no';
+					$_question->checked            = array();
+				}
+
+				if ( $show_hint == 'yes' && empty( $question->hasHint ) ) {
+					$_question->hasHint = get_post_meta( $question->ID, '_lp_hint', true ) ? 'yes' : 'no';
+				}
+				if ( $show_explanation == 'yes' && empty( $question->hasExplanation ) ) {
+					$_question->hasExplanation = get_post_meta( $question->ID, '_lp_explanation', true ) ? 'yes' : 'no';
+				}
+				/*if ( empty( $results[$row->id] ) ) {
 					$results[$row->id] = (object) array(
 						'id'   => absint( $row->id ),
 						'type' => $row->type
@@ -196,11 +213,27 @@ class LP_Quiz {
 					if ( $show_explanation == 'yes' && empty( $results[$row->id]->explanation ) ) {
 						$results[$row->id]->explanation = get_post_meta( $row->id, '_lp_explanation', true ) ? true : false;
 					}
+				//}
+				*/
+				if ( $show_check_answer == 'yes' ) {
+					if ( in_array( $question->ID, $checked_answers ) ) {
+						if ( !empty( $question->answers ) ) {
+							foreach ( $question->answers as $answer ) {
+								$checked = maybe_unserialize( $answer );
+								unset( $checked['text'] );
+								$_question->checked[$answer['id']] = $checked;
+							}
+						}
+					} else {
+						$_question->checked = false;
+					}
 				}
 
-				if ( $show_check_answer != 'yes' ) {
-					continue;
+				if ( $current == $question->ID ) {
+					$_question->current = 'yes';
 				}
+				$results[$question->ID] = $_question;
+				continue;
 				if ( in_array( $row->id, $checked_answers ) ) {
 					$checked = maybe_unserialize( $row->answer_data );
 					unset( $checked['text'] );
@@ -364,24 +397,135 @@ class LP_Quiz {
 		return false;
 	}
 
+	/**
+	 * Get all questions in a quiz
+	 *
+	 * @param bool $force
+	 *
+	 * @return array|mixed
+	 */
 	public function get_questions( $force = false ) {
+		$questions = LP_Cache::get_quiz_questions( false, array() );
+
+		/**
+		 * Get data from database if it didn't do or force to do this
+		 */
+		if ( !array_key_exists( $this->id, $questions ) || $force ) {
+			$this_questions       = $this->_get_questions();
+			$questions[$this->id] = $this_questions;
+			// Update back to cache
+			LP_Cache::set_quiz_questions( $questions );
+		}
+		return apply_filters( 'learn_press_quiz_questions', $questions[$this->id], $this->id, $force );
+	}
+
+	private function _get_questions() {
+		global $wpdb;
+		$query = $wpdb->prepare( "
+			SELECT p.*
+			FROM {$wpdb->learnpress_quiz_questions} qq INNER JOIN {$wpdb->posts} p ON p.ID = qq.question_id AND p.post_type = %s
+			INNER JOIN {$wpdb->posts} q ON q.ID = qq.quiz_id AND q.post_type = %s
+			WHERE qq.quiz_id = %d
+			ORDER BY qq.question_order ASC
+		", 'lp_question', 'lp_quiz', $this->id );
+
+		if ( $questions = $wpdb->get_results( $query, OBJECT_K ) ) {
+			$question_ids = array_keys( $questions );
+
+			$answers = $this->_get_question_answers( $question_ids );
+
+			foreach ( $questions as $id => $question ) {
+				// Fetch answers for questions if exists
+				if ( $answers ) {
+					$question->answers = array();
+					for ( $n = sizeof( $answers ), $i = $n - 1; $i >= 0; $i -- ) {
+						if ( $answers[$i]->id != $question->ID ) {
+							break;
+						}
+						$answer_data                                         = maybe_unserialize( $answers[$i]->answer_data );
+						$answer_data['id']                                   = $answers[$i]->question_answer_id;
+						$answer_data['order']                                = $answers[$i]->answer_order;
+						$answer_data['type']                                 = $answers[$i]->type;
+						$question->answers[$answers[$i]->question_answer_id] = $answer_data;
+						unset( $answers[$i] );
+					}
+				}
+				$question->type = $answer_data['type'];
+				/**
+				 * Add item to 'posts' cache group
+				 */
+				$item_post = wp_cache_get( $question->ID, 'posts' );
+				if ( !$item_post ) {
+					wp_cache_add( $question->ID, $question, 'posts' );
+				}
+			}
+			// Update meta cache
+			update_meta_cache( 'post', $question_ids );
+		}
+
+		return $questions;
+	}
+
+	private function _get_question_answers( $question_ids ) {
+		global $wpdb;
+		$format_ids   = array_fill( 0, sizeof( $question_ids ), '%d' );
+		$prepare_args = array_merge( array( '_lp_type', 'lp_question' ), $question_ids );
+		$query        = $wpdb->prepare( "
+			SELECT qa.question_answer_id, ID as id, pm.meta_value as type, qa.answer_data as answer_data, answer_order
+			FROM {$wpdb->posts} p
+			INNER JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID AND pm.meta_key = %s
+			INNER JOIN {$wpdb->prefix}learnpress_quiz_questions qq ON qq.question_id = p.ID
+			RIGHT JOIN {$wpdb->prefix}learnpress_question_answers qa ON qa.question_id = p.ID
+			WHERE post_type = %s
+			AND ID IN(" . join( ',', $format_ids ) . ")
+			ORDER BY qq.question_order DESC, answer_order DESC
+		", $prepare_args );
+		return $wpdb->get_results( $query );
+	}
+
+	public function get_questions_( $force = false ) {
+		$questions = LP_Cache::get_quiz_questions( false, array() );
 		if ( !array_key_exists( 'questions', self::$_meta[$this->id] ) || $force ) {
 			self::$_meta[$this->id]['questions'] = array();
 			global $wpdb;
-			$query = $wpdb->prepare( "
+			/*$query = $wpdb->prepare( "
 					SELECT q.*, qq.params
 					FROM {$wpdb->posts} q
 					INNER JOIN {$wpdb->learnpress_quiz_questions} qq ON qq.question_id = q.ID
 					AND q.post_type = %s
 					AND qq.quiz_id = %d
-				", LP()->question_post_type, $this->id );
+				", LP()->question_post_type, $this->id );*/
+
+			$query = $wpdb->prepare( "
+			SELECT qa.question_answer_id, ID as id, pm.meta_value as type, qa.answer_data as answer_data, answer_order
+			FROM {$wpdb->posts} p
+			INNER JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID AND pm.meta_key = %s
+			INNER JOIN {$wpdb->prefix}learnpress_quiz_questions qq ON qq.question_id = p.ID
+			RIGHT JOIN {$wpdb->prefix}learnpress_question_answers qa ON qa.question_id = p.ID
+			WHERE ID IN(" . join( ',', $ids ) . ")
+			AND post_type = %s
+			ORDER BY qq.question_order, answer_order ASC
+		", '_lp_type', 'lp_question' );
 
 			if ( $this_questions = $wpdb->get_results( $query, OBJECT_K ) ) {
+				$question_ids = array();
 				foreach ( $this_questions as $id => $question ) {
 					$question->params                            = maybe_unserialize( $question->params );
 					self::$_meta[$this->id]['questions'][$id]    = $question;
 					$GLOBALS['learnpress_question_answers'][$id] = array();
+
+					/**
+					 * Add item to 'posts' cache group
+					 */
+					$item_post = wp_cache_get( $question->ID, 'posts' );
+					if ( !$item_post ) {
+						wp_cache_add( $question->ID, $question, 'posts' );
+					}
+					$question_ids[] = $question->ID;
 				}
+				// Update cache
+				update_meta_cache( 'post', $question_ids );
+
 				if ( $answers = $wpdb->get_results( "
 					SELECT *
 					FROM {$wpdb->learnpress_question_answers}
@@ -525,5 +669,11 @@ class LP_Quiz {
 		}
 
 		return apply_filters( 'learn_press_quiz_object', $the_quiz );
+	}
+
+	public function get_current_question( $user_id = 0, $course_id = 0 ) {
+		$user = learn_press_get_current_user( $user_id );
+		$id   = $user->get_current_quiz_question( $this->id, $course_id );
+		return LP_Question_Factory::get_question( $id );
 	}
 }

@@ -1,7 +1,7 @@
 if (typeof LP == 'undefined') var LP = {};
 (function ($) {
 	"use strict";
-
+return;
 	var LP_Model_Quiz = window.LP_Model_Quiz = Backbone.Model.extend({
 		defaults           : {
 			//question_id: 0

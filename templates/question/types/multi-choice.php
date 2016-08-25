@@ -11,7 +11,7 @@ if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-$quiz = LP()->quiz;
+$quiz = LP()->global['course-item'];
 $user = LP()->user;
 
 $completed   = $user->get_quiz_status( $quiz->id ) == 'completed';
@@ -30,12 +30,16 @@ if ( $show_result && $completed ) {
 
 	<h4 class="learn-press-question-title"><?php echo get_the_title( $this->id ); ?></h4>
 
-	<?php do_action( 'learn_press_before_question_options', $this ); ?>
+	<div class="question-desc">
+		<?php echo apply_filters( 'the_content', $this->post->post_content ); ?>
+	</div>
 
+	<?php do_action( 'learn_press_before_question_options', $this ); ?>
+	<?php if ( $answers = $this->answers ):?>
 
 	<ul class="learn-press-question-options">
-		<?php if ( $answers = $this->answers ) foreach ( $answers as $k => $answer ): ?>
 			<?php
+			foreach ( $answers as $k => $answer ):
 			$answer_class = array();
 			if ( $completed && $show_result ) {
 				$answer_class   = array();
@@ -60,7 +64,7 @@ if ( $show_result && $completed ) {
 
 				<label>
 					<input type="checkbox" name="learn-press-question-<?php echo $this->id; ?>[]" <?php checked( $this->is_selected_option( $answer, $answered ) ); ?> value="<?php echo $answer['value']; ?>" <?php echo $checked ? 'disabled="disabled"' : ''; ?> />
-					<?php echo apply_filters( 'learn_press_question_answer_text', $answer['text'], $answer, $this ); ?>
+					<p class="auto-check-lines"><?php echo apply_filters( 'learn_press_question_answer_text', $answer['text'], $answer, $this ); ?></p>
 				</label>
 
 				<?php do_action( 'learn_press_after_question_answer_text', $answer, $this ); ?>
@@ -68,6 +72,7 @@ if ( $show_result && $completed ) {
 			</li>
 		<?php endforeach; ?>
 	</ul>
+	<?php endif;?>
 
 	<?php do_action( 'learn_press_after_question_wrap', $this, $quiz ); ?>
 

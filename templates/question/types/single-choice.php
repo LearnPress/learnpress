@@ -10,7 +10,7 @@
 if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
-$quiz        = LP()->quiz;
+$quiz        = LP()->global['course-item'];
 $user        = LP()->user;
 $completed   = $user->get_quiz_status( $quiz->id ) == 'completed';
 $show_result = $quiz->show_result == 'yes';
@@ -27,6 +27,9 @@ if ( $show_result && $completed ) {
 
 	<h4 class="learn-press-question-title"><?php echo get_the_title( $this->id ); ?></h4>
 
+	<div class="question-desc">
+		<?php echo apply_filters( 'the_content', $this->post->post_content ); ?>
+	</div>
 	<?php do_action( 'learn_press_before_question_options', $this ); ?>
 
 	<ul class="learn-press-question-options">
@@ -55,7 +58,7 @@ if ( $show_result && $completed ) {
 
 				<label>
 					<input type="radio" name="learn-press-question-<?php echo $this->id; ?>" <?php checked( $this->is_selected_option( $answer, $answered ) ); ?> value="<?php echo $answer['value']; ?>" <?php echo $checked ? 'disabled="disabled"' : ''; ?>>
-					<?php echo apply_filters( 'learn_press_question_answer_text', $answer['text'], $answer, $this ); ?>
+					<p class="auto-check-lines"><?php echo apply_filters( 'learn_press_question_answer_text', $answer['text'], $answer, $this ); ?></p>
 				</label>
 
 				<?php do_action( 'learn_press_after_question_answer_text', $answer, $this ); ?>

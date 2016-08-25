@@ -90,6 +90,8 @@ if ( !class_exists( 'LP_Admin' ) ) {
 		public function includes() {
 			// Common function used in admin
 			include_once( 'lp-admin-functions.php' );
+			// Admin actions
+			include_once( 'lp-admin-actions.php' );
 			//Ajax Class
 			include_once( 'class-lp-admin-ajax.php' );
 			// Admin menu

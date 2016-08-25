@@ -90,13 +90,9 @@ class LP_Autoloader {
 					$path .= $segs[1] . '/';
 				}
 			}
-
-			//
 		}
 
-		//if ( empty( $path ) || ( ! $this->load_file( $path . $file ) && strpos( $class, 'lpr_' ) === 0 ) ) {
 		$this->load_file( $path . $file );
-		//}
 	}
 }
 

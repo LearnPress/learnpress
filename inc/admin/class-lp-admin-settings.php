@@ -180,13 +180,7 @@ class LP_Admin_Settings {
 		update_option( $this->_key, $this->_options );
 	}
 
-	/**
-	 * Unique an instance of the class by the key of the options want to initial
-	 *
-	 * @param $key
-	 *
-	 * @return mixed
-	 */
+	/*** XXXXXXXXXXXXXXXXXXXX
 	public static function instance( $key ) {
 		static $instances = array();
 		$key = '_lpr_settings_' . $key;
@@ -194,11 +188,5 @@ class LP_Admin_Settings {
 			$instances[$key] = new LP_Admin_Settings( $key );
 		}
 		return $instances[$key];
-	}
-}
-
-if ( !function_exists( 'learn_press_admin_settings' ) ) {
-	function learn_press_admin_settings( $key ) {
-		return LP_Admin_Settings::instance( $key );
-	}
+	}*/
 }

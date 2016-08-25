@@ -31,6 +31,7 @@ class LP_Emails {
 	public static function instance() {
 		if ( is_null( self::$_instance ) ) {
 			self::$_instance = new self();
+			self::init_email_notifications();
 		}
 		return self::$_instance;
 	}

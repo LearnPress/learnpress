@@ -15,12 +15,13 @@ $payment_heading              = apply_filters( 'learn_press_checkout_payment_hea
 $order_button_text            = apply_filters( 'learn_press_order_button_text', __( 'Place order', 'learnpress' ) );
 $order_button_text_processing = apply_filters( 'learn_press_order_button_text_processing', __( 'Processing', 'learnpress' ) );
 $show_button                  = true;
+$count_gateways               = !empty( $available_gateways ) ? sizeof( $available_gateways ) : 0;
 ?>
 
 <div id="learn-press-payment" class="learn-press-checkout-payment">
 	<?php if ( LP()->get_checkout_cart()->needs_payment() ): ?>
 
-		<?php if ( empty( $available_gateways ) ): $show_button = false; ?>
+		<?php if ( !$count_gateways ): $show_button = false; ?>
 
 			<?php if ( $message = apply_filters( 'learn_press_no_available_payment_methods_message', __( 'No payment methods is available.', 'learnpress' ) ) ) { ?>
 				<?php learn_press_display_message( $message, 'error' ); ?>
@@ -36,7 +37,7 @@ $show_button                  = true;
 
 				<?php foreach ( $available_gateways as $gateway ) { ?>
 
-					<?php learn_press_get_template( 'checkout/payment-method.php', array( 'gateway' => $gateway ) ); ?>
+					<?php learn_press_get_template( 'checkout/payment-method.php', array( 'gateway' => $gateway, 'selected' => $count_gateways ) ); ?>
 
 				<?php } ?>
 

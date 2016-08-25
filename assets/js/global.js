@@ -732,6 +732,22 @@ if (typeof window.LP == 'undefined') {
 		}
 	}, LP);
 
+	$.fn.rows = function () {
+		var h = $(this).height();
+		var lh = $(this).css('line-height').replace("px", "");
+		$(this).attr({height: h, 'line-height': lh});
+		return Math.floor(h / parseInt(lh));
+	}
+
+	$.fn.checkLines = function (p) {
+		return this.each(function () {
+			var $e = $(this),
+				rows = $e.rows();
+
+			p.call(this, rows);
+		})
+	}
+
 	$.fn.findNext = function (selector) {
 		var $selector = $(selector),
 			$root = this.first(),
@@ -782,7 +798,31 @@ if (typeof window.LP == 'undefined') {
 				var $tab = $(this);
 				$tab.closest('li').addClass('active').siblings().removeClass('active');
 				$($tab.attr('data-tab')).addClass('active').siblings().removeClass('active');
-			})
+			});
+		$('.learn-press-nav-tabs li.active a').trigger('click');
+
+		///
+		(function () {
+			var timer = null,
+				callback = function () {
+					$('.auto-check-lines').checkLines(function (r) {
+						if (r > 1) {
+							$(this).removeClass('single-lines');
+						} else {
+							$(this).addClass('single-lines');
+						}
+						$(this).attr('rows', r);
+					});
+				};
+			$(window).on('resize.check-lines', function () {
+				if (timer) {
+					timer && clearTimeout(timer);
+					timer = setTimeout(callback, 300);
+				} else {
+					callback();
+				}
+			});
+		})();
 
 	});
 

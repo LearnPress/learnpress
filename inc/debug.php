@@ -22,10 +22,15 @@ function test_mail() {
 add_action( 'admin_footer', 'test_mail' );
 
 function learn_press_log_query( $query ) {
+	if ( is_admin() ) {
+		return $query;
+	}
 	if ( empty( $GLOBALS['lp_queries'] ) ) {
 		$GLOBALS['lp_queries']       = array();
 		$GLOBALS['lp_total_queries'] = 0;
 	}
+	$debug_backtrace = debug_backtrace();
+
 	if ( !preg_match_all( '!woocommerce!', $query ) ) {
 		//return $query;
 	}
@@ -34,7 +39,10 @@ function learn_press_log_query( $query ) {
 	if ( empty( $GLOBALS['lp_queries'][$k] ) ) {
 		$GLOBALS['lp_queries'][$k] = array(
 			$q,
-			1
+			1,
+			'file' => $debug_backtrace[4]['file'],
+			'line' => $debug_backtrace[4]['line'],
+			'func' => $debug_backtrace[5]['function']
 		);
 	} else {
 		$GLOBALS['lp_queries'][$k][1] ++;
@@ -48,8 +56,11 @@ function learn_press_log_query( $query ) {
 add_filter( 'query', 'learn_press_log_query' );
 
 function learn_press_save_queries() {
+	if ( is_admin() ) {
+		return;
+	}
 	$queries = $GLOBALS['lp_queries'];
-	usort( $queries, create_function( '$a, $b', 'return $a[1] < $b[1];' ) );
+	usort( $queries, create_function( '$a, $b', 'return $a[0] < $b[0];' ) );
 	LP_Debug::instance()->add( $queries, 'query', true );
 	LP_Debug::instance()->add( "Total of queries " . $GLOBALS['lp_total_queries'], 'query' );
 }

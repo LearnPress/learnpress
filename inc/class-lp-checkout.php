@@ -208,9 +208,8 @@ class LP_Checkout {
 			do_action( 'learn_press_before_checkout_process' );
 
 			$success = true;
-
 			if ( LP()->cart->is_empty() ) {
-				learn_press_send_json(
+				return apply_filters( 'learn_press_checkout_cart_empty',
 					array(
 						'result'   => 'success',
 						'redirect' => learn_press_get_page_link( 'checkout' )
@@ -305,6 +304,8 @@ class LP_Checkout {
 			}
 			$success = false;
 		}
+
+		// Get all messages
 		$error_messages = '';
 		if ( !$success ) {
 			ob_start();

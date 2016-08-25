@@ -11,17 +11,18 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 
 	// class LP_Course_Post_Type
 	final class LP_Course_Post_Type extends LP_Abstract_Post_Type {
+		protected static $_VER2 = false;
 		/**
 		 * Constructor
 		 */
 		public function __construct() {
-
+			self::$_VER2 = false;
 			add_action( 'save_post', array( $this, 'before_save_curriculum' ), 1000 );
 			add_filter( 'manage_lp_course_posts_columns', array( $this, 'columns_head' ) );
 			add_filter( 'manage_lp_course_posts_custom_column', array( $this, 'columns_content' ) );
 			add_filter( "rwmb__lpr_course_price_html", array( $this, 'currency_symbol' ), 5, 3 );
 			add_action( 'edit_form_after_editor', array( $this, 'toggle_editor_button' ), - 10 );
-			//add_action( 'add_meta_boxes', array( $this, 'review_logs_meta_box' ) );
+			//add_action( 'add_meta_boxes', array( __CLASS__, 'add_meta_boxes' ) );
 			//add_action( 'post_submitbox_start', array( $this, 'post_review_message_box' ) );
 			//add_action( 'learn_press_transition_course_status', array( $this, 'review_log' ), 10, 3 );
 			add_action( 'load-post.php', array( $this, 'post_actions' ) );
@@ -36,15 +37,17 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			//add_action( 'edit_form_after_editor', array( $this, 'course_editor' ) );
 			add_action( 'save_post', array( $this, 'update_course' ) );
 
-			add_action( 'admin_enqueue_scripts', array( $this, 'admin_script' ) );
-			add_action( 'admin_print_scripts', array( $this, 'course_editor' ) );
+			if(self::$_VER2) {
+				add_action( 'admin_enqueue_scripts', array( $this, 'admin_script' ) );
+				add_action( 'admin_print_scripts', array( $this, 'course_editor' ) );
+			}
 			parent::__construct();
 		}
 
 
 		public function update_course( $course_id ) {
-			learn_press_debug( $_REQUEST );
-			die();
+			/*learn_press_debug( $_REQUEST );
+			die();*/
 		}
 
 		function add_meta_box() {
@@ -298,8 +301,10 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 * Add meta boxes to course post type page
 		 */
 		public static function add_meta_boxes() {
+			if(!self::$_VER2){
+				new RW_Meta_Box( self::curriculum_meta_box() );
+			}
 
-			//new RW_Meta_Box( self::curriculum_meta_box() );
 			new RW_Meta_Box( self::settings_meta_box() );
 			new RW_Meta_Box( self::assessment_meta_box() );
 			new RW_Meta_Box( self::payment_meta_box() );

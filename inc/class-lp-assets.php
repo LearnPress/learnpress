@@ -119,7 +119,7 @@ class LP_Assets extends LP_Abstract_Assets {
 		self::add_style( 'learn-press-admin', learn_press_plugin_url( 'assets/css/admin/admin.css' ) );
 
 		// frontend
-		if(LP()->settings->get('load_css') == 'yes' || LP()->settings->get('load_css') == '') {
+		if ( LP()->settings->get( 'load_css' ) == 'yes' || LP()->settings->get( 'load_css' ) == '' ) {
 			self::add_style( 'learn-press', learn_press_plugin_url( 'assets/css/learnpress.css' ) );
 		}
 		self::add_script( 'learn-press-js', learn_press_plugin_url( 'assets/js/frontend/learnpress' . $min . '.js' ), array( 'learn-press-global' ) );
@@ -131,7 +131,7 @@ class LP_Assets extends LP_Abstract_Assets {
 		$v2 = "";
 		// single course
 		self::add_script( 'single-course', learn_press_plugin_url( 'assets/js/frontend/single-course' . $v2 . $min . '.js' ), $deps );
-		self::add_script( 'course-quiz', LP()->js( 'frontend/course-quiz.js' ), $deps );
+		//self::add_script( 'course-quiz', LP()->js( 'frontend/course-quiz.js' ), $deps );
 		if ( $v2 && wp_get_theme()->get( 'Name' ) == 'eduma' ) {
 			self::add_script( 'eduma-single-course', learn_press_plugin_url( 'assets/eduma/custom-script' . $min . '.js' ) );
 			self::add_style( 'eduma-single-course', learn_press_plugin_url( 'assets/eduma/custom-style.css' ) );
@@ -142,13 +142,15 @@ class LP_Assets extends LP_Abstract_Assets {
 		}
 		// single quiz
 		self::add_script( 'learn-press-timer', learn_press_plugin_url( 'assets/js/jquery.timer' . $min . '.js' ) );
-		self::add_script( 'single-quiz', learn_press_plugin_url( 'assets/js/frontend/single-quiz' . $min . '.js' ), $deps );
+		//self::add_script( 'single-quiz', learn_press_plugin_url( 'assets/js/frontend/single-quiz' . $min . '.js' ), $deps );
 
 		// checkout page
 		self::add_script( 'checkout', learn_press_plugin_url( 'assets/js/frontend/checkout' . $min . '.js' ) );
 
 		// become teacher
 		self::add_script( 'become-teacher', learn_press_plugin_url( 'assets/js/frontend/become-teacher' . $min . '.js' ) );
+
+		self::add_script( 'course-quiz', LP()->js( 'frontend/quiz.js' ) );
 
 	}
 

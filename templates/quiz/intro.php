@@ -13,6 +13,7 @@ if ( $user->has( 'quiz-status', array( 'started', 'completed' ), $quiz->id, $cou
 }
 ?>
 
+
 <ul class="quiz-intro">
 	<li>
 		<label><?php _e( 'Attempts allowed:', 'learnpress' ); ?></label>
