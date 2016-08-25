@@ -52,7 +52,7 @@ $status = LP()->user->get_quiz_status( $quiz->id );
 		<?php endif; ?>
 
 		<button class="button-finish-quiz btn hide-if-js" quiz-id="<?php echo get_the_ID() ?>" data-area="nav">
-			<?php echo apply_filters( 'learn_press_button_finish_quiz_text', __( "Finish", "learn_press" ) ); ?>
+			<?php echo apply_filters( 'learn_press_button_finish_quiz_text', __( "Finish", "learnpress" ) ); ?>
 		</button>
 
 	</div>
