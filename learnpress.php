@@ -754,8 +754,6 @@ if ( !class_exists( 'LearnPress' ) ) {
 			}
 			return $this->plugin_url( "assets/css/{$file}" );
 		}
-	} // end class
-}
 
 		/**
 		 * Short way to return image file is located in LearnPress directory
