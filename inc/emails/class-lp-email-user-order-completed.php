@@ -21,7 +21,7 @@ class LP_Email_User_Order_Completed extends LP_Email {
 		$this->template_html  = 'emails/user-order-completed.php';
 		$this->template_plain = 'emails/plain/user-order-completed.php';
 
-		$this->default_subject = __( 'Your order onn {order_date} is completed', 'learnpress' );
+		$this->default_subject = __( 'Your order on {order_date} is completed', 'learnpress' );
 		$this->default_heading = __( 'Your order {order_number} is completed', 'learnpress' );
 
 		add_action( 'learn_press_order_status_completed_notification', array( $this, 'trigger' ) );

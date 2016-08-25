@@ -755,18 +755,18 @@ function learn_press_admin_course_tabs() {
 
 			10 => array(
 				"link" => "edit.php?post_type=lp_course",
-				"name" => __( "Courses", "learn_press" ),
+				"name" => __( "Courses", "learnpress" ),
 				"id"   => "edit-lp_course",
 			),
 
 			20 => array(
 				"link" => "edit-tags.php?taxonomy=course_category&post_type=lp_course",
-				"name" => __( "Categories", "learn_press" ),
+				"name" => __( "Categories", "learnpress" ),
 				"id"   => "edit-course_category",
 			),
 			30 => array(
 				"link" => "edit-tags.php?taxonomy=course_tag&post_type=lp_course",
-				"name" => __( "Tags", "learn_press" ),
+				"name" => __( "Tags", "learnpress" ),
 				"id"   => "edit-course_tag",
 			),
 

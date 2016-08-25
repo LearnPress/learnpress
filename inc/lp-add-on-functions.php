@@ -498,7 +498,7 @@ function learn_press_add_ons_content_tab_more( $current ) {
 
 	$time        = get_option( '_transient_timeout_lp_more_add_ons' );
 	$description = __( 'All add-ons we are provided.', 'learnpress' );
-	$description .= ' ' . sprintf( __( 'Last checked %s ago' ), human_time_diff( $time - LP_ADD_ON_TRANSIENT_TIME ) );
+	$description .= ' ' . sprintf( __( 'Last checked %s ago', 'learnpress' ), human_time_diff( $time - LP_ADD_ON_TRANSIENT_TIME ) );
 	$description .= ' ' . sprintf( __( '<a href="%s">%s</a>' ), admin_url( 'admin.php?page=learn_press_add_ons&tab=more&check=' . wp_create_nonce( 'check_more' ) ), __( 'Check again!', 'learnpress' ) );
 	learn_press_add_on_tab_description( $description );
 	learn_press_output_add_ons_list( $add_ons, $current );
