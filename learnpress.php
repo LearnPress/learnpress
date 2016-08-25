@@ -1,18 +1,17 @@
 <?php
-
 /*
-  Plugin Name: LearnPress
-  Plugin URI: http://thimpress.com/learnpress
-  Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
-  Author: ThimPress
-  Version: 1.0.8
-  Author URI: http://thimpress.com
-  Requires at least: 3.8
-  Tested up to: 4.5.2
+Plugin Name: LearnPress
+Plugin URI: http://thimpress.com/learnpress
+Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
+Author: ThimPress
+Version: 1.0.8
+Author URI: http://thimpress.com
+Requires at least: 3.8
+Tested up to: 4.5.2
 
-  Text Domain: learnpress
-  Domain Path: /languages/
- */
+Text Domain: learnpress
+Domain Path: /languages/
+*/
 
 /**
  * Prevent loading this file directly
@@ -20,15 +19,17 @@
 defined( 'ABSPATH' ) || exit;
 
 if ( !defined( 'LP_PLUGIN_PATH' ) ) {
+	//define( 'LP_PLUGIN_URL', trailingslashit( plugins_url( '/', __FILE__ ) ) );
+
 	$upload_dir = wp_upload_dir();
 	define( 'LP_PLUGIN_FILE', __FILE__ );
 	define( 'LP_PLUGIN_PATH', trailingslashit( plugin_dir_path( __FILE__ ) ) );
 	define( 'LP_LOG_PATH', $upload_dir['basedir'] . '/learn-press-logs/' );
 	define( 'LEARNPRESS_VERSION', '1.0.8' );
 	define( 'LP_ENABLE_CART', true );
+	//add_action( 'plugins_loaded', 'learn_press_defines', - 100 );
 }
 if ( !class_exists( 'LearnPress' ) ) {
-
 	/**
 	 * Class LearnPress
 	 *
@@ -36,7 +37,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 	 */
 	class LearnPress {
 
-		/**
+		/**wordpress trigger custom event
 		 * Current version of the plugin
 		 *
 		 * @var string
@@ -141,6 +142,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 		 * @var LP_Cart object
 		 */
 		public $cart = false;
+
 		public $query_vars = array();
 
 		/**
@@ -196,7 +198,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 					$return = $this->_quiz;
 					break;
 			}
-			return $return;
+			return $return;https://www.jetbrains.com/help/phpstorm/10.0/creating-php-documentation-comments.html
 		}
 
 		public function set_object( $name, $object, $global = false ) {
@@ -214,15 +216,16 @@ if ( !class_exists( 'LearnPress' ) ) {
 			/**
 			 * If db version is not set
 			 */
+
 			if ( !get_option( 'learnpress_db_version' ) ) {
 
-				/* $this->_remove_notices();
-				  $this->course_post_type   = 'lpr_course';
-				  $this->lesson_post_type   = 'lpr_lesson';
-				  $this->quiz_post_type     = 'lpr_quiz';
-				  $this->question_post_type = 'lpr_question';
-				  $this->order_post_type    = 'lpr_order';
-				  $this->teacher_role       = 'lpr_teacher'; */
+				/*$this->_remove_notices();
+				$this->course_post_type   = 'lpr_course';
+				$this->lesson_post_type   = 'lpr_lesson';
+				$this->quiz_post_type     = 'lpr_quiz';
+				$this->question_post_type = 'lpr_question';
+				$this->order_post_type    = 'lpr_order';
+				$this->teacher_role       = 'lpr_teacher';*/
 			}
 		}
 
@@ -275,6 +278,8 @@ if ( !class_exists( 'LearnPress' ) ) {
 			$this->define( 'LP_PLUGIN_FILE', __FILE__ );
 			//$this->define( 'LP_PLUGIN_PATH', trailingslashit( plugin_dir_path( __FILE__ ) ) );
 			//$this->define( 'LP_PLUGIN_URL', trailingslashit( plugins_url( '/', __FILE__ ) ) );
+
+
 			// Custom post type name
 			$this->define( 'LP_COURSE_CPT', $this->course_post_type );
 			$this->define( 'LP_LESSON_CPT', $this->lesson_post_type );
@@ -349,6 +354,8 @@ if ( !class_exists( 'LearnPress' ) ) {
 			// initial some tasks before page load
 			add_action( 'init', array( $this, 'init' ), 15 );
 
+			add_action('widgets_init', array($this, 'widgets_init'));
+
 			add_action( 'template_redirect', 'learn_press_handle_purchase_request' );
 
 			add_action( 'after_setup_theme', array( $this, 'setup_theme' ) );
@@ -390,6 +397,16 @@ if ( !class_exists( 'LearnPress' ) ) {
 				flush_rewrite_rules();
 				delete_transient( 'learn_press_install' );
 			}
+
+
+		}
+
+		/**
+		 * Init widgets
+		 */
+
+		public function widgets_init(){
+			do_action('lp_widgets_init');
 		}
 
 		public function get_session() {
@@ -479,6 +496,8 @@ if ( !class_exists( 'LearnPress' ) ) {
 
 				require_once( 'inc/admin/settings/class-lp-settings-base.php' );
 				require_once( 'inc/admin/class-lp-admin-assets.php' );
+
+
 			} else {
 
 			}
@@ -502,6 +521,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 
 			// question
 			//require_once 'inc/question/lp-question.php';
+
 			// order
 			require_once 'inc/order/lp-order-functions.php';
 			require_once 'inc/order/class-lp-order.php';
@@ -529,7 +549,15 @@ if ( !class_exists( 'LearnPress' ) ) {
 				// Include short-code file
 				require_once 'inc/shortcodes/profile-page.php';
 				require_once 'inc/shortcodes/archive-courses.php';
+				require_once 'inc/shortcodes/recent_courses/recent-courses.php';
+				require_once 'inc/shortcodes/popular_courses/popular-course.php';
+				require_once 'inc/shortcodes/featured_courses/featured-course.php';
 			}
+
+			//include widgets
+			require_once 'inc/widgets/recent_courses/recent-course-widget.php';
+			require_once 'inc/widgets/popular_courses/popular-course-widget.php';
+			require_once 'inc/widgets/featured_courses/featured-course-widget.php';
 
 			// include template functions
 			require_once( 'inc/lp-template-functions.php' );
@@ -598,18 +626,10 @@ if ( !class_exists( 'LearnPress' ) ) {
 			return false;
 		}
 
-		/**
-		 * Get checkout object instance
-		 *
-		 * @return LP_Checkout
-		 */
 		public function checkout() {
 			return LP_Checkout::instance();
 		}
 
-		/**
-		 * Setup courses thumbnail
-		 */
 		public function setup_theme() {
 			if ( !current_theme_supports( 'post-thumbnails' ) ) {
 				add_theme_support( 'post-thumbnails' );
@@ -627,10 +647,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 				add_image_size( $image_size, $size['width'], $size['height'], $size['crop'] );
 			}
 		}
-
-	}
-
-	// end class
+	} // end class
 }
 
 /**
@@ -640,6 +657,7 @@ if ( !class_exists( 'LearnPress' ) ) {
  * @since  1.0
  * @author thimpress
  */
+
 function LP() {
 	static $learnpress = false;
 	if ( !$learnpress ) {
@@ -653,7 +671,7 @@ function LP() {
  *
  * @author      ThimPress
  * @package     LearnPress/Functions
- * @since       1.0
+ * @since       1.0load_learn_press
  */
 function load_learn_press() {
 	$GLOBALS['learn_press'] = array();
