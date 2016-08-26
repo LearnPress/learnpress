@@ -477,6 +477,9 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			if ( current_user_can( 'manage_options' ) ) {
 				$message = __( 'If free, this field is empty or set 0. (Only admin can edit this field)', 'learnpress' );
 				$price   = 0;
+				$sale_price = 0;
+				$start_date = '';
+				$end_date = '';
 
 				if ( isset( $_GET['post'] ) ) {
 					$course_id = $_GET['post'];
@@ -487,6 +490,11 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 							$message = __( 'This course is enrolled require and the suggestion price is ', 'learnpress' ) . '<span>' . learn_press_get_currency_symbol() . $suggest_price . '</span>';
 							$price   = $suggest_price;
 						}
+
+						$sale_price = get_post_meta( $course_id, '_lp_sale_price', true );
+						$start_date = get_post_meta( $course_id, '_lp_sale_start', true );
+						$end_date	= get_post_meta( $course_id, '_lp_sale_end', true );
+
 					} else {
 						$message = __( 'This course is free.', 'learnpress' );
 					};
@@ -502,6 +510,32 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						'desc'  => $message,
 						'std'   => $price,
 						'class' => 'lp-course-price-field' . ( $payment != 'yes' ? ' hide-if-js' : '' )
+					),
+					array(
+						'name'  => __( 'Sale Price', 'learnpress' ),
+						'id'    => "{$prefix}sale_price",
+						'type'  => 'number',
+						'min'   => 0,
+						'step'  => 0.01,
+						'desc'  => '',
+						'std'   => $sale_price,
+						'class' => 'lp-course-price-field lp-course-sale_price-field' . ( $payment != 'yes' ? ' hide-if-js' : '' )
+					),
+					array(
+						'name'  => __( 'Start', 'learnpress' ),
+						'id'    => "{$prefix}sale_start",
+						'type'  => 'datetime',
+						'desc'  => '',
+						'std'   => $start_date,
+						'class' => 'lp-course-price-field lp-course-sale_start-field' . ( $payment != 'yes' ? ' hide-if-js' : '' )
+					),
+					array(
+						'name'  => __( 'End', 'learnpress' ),
+						'id'    => "{$prefix}sale_end",
+						'type'  => 'datetime',
+						'desc'  => '',
+						'std'   => $end_date,
+						'class' => 'lp-course-price-field lp-course-sale_end-field' . ( $payment != 'yes' ? ' hide-if-js' : '' )
 					)
 				);
 			} else {
