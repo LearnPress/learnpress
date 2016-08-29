@@ -490,7 +490,7 @@ abstract class LP_Abstract_Course {
 	public function get_origin_price() {
 		$price = 0;
 		if ( 'yes' == $this->payment ) {
-			$price = floatval(get_post_meta( $this->id, '_lp_suggestion_price', true ));
+			$price = $this->price;
 		}
 		return $price;
 	}
@@ -551,6 +551,24 @@ abstract class LP_Abstract_Course {
 		return $price_html;
 	}
 
+	
+	/**
+	 * Get the price of course with html
+	 *
+	 * @return mixed
+	 */
+	public function get_origin_price_html() {
+		$origin_price_html='';
+		if ( !$this->is_free() ) {
+			$origin_price      = $this->get_origin_price();
+			$origin_price      = learn_press_format_price( $origin_price, true );
+			$origin_price_html = apply_filters( 'learn_press_course_origin_price_html', $origin_price, $this );
+		}
+		return $origin_price_html;
+	}
+	
+
+	
 	/**
 	 * Get all quizzes in a course
 	 *
