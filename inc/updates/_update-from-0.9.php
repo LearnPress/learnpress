@@ -1344,6 +1344,8 @@ class LP_Upgrade_From_09 {
 		// cui bap
 		update_option( 'permalink_structure', '/%postname%/' );
 		delete_transient( 'learn_press_is_old_version' );
+
+		learn_press_update_log( '1.0.x', array( 'time' => time() ) );
 		return true;
 	}
 

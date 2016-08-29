@@ -47,5 +47,5 @@ if ( LEARN_PRESS_UPDATE_DATABASE ) {
 		WHERE meta_key <> %s AND meta_key <> %s AND meta_key <> %s
 	", 'start', 'end', 'status' );
 	$wpdb->query( $query );
-
+	learn_press_update_log( '1.0.7', array( 'time' => time() ) );
 }

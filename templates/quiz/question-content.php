@@ -9,8 +9,8 @@ if ( !isset( $quiz ) ) {
 	return;
 }
 LP()->quiz = $quiz;
-$question = $quiz->get_current_question();
-if(!$question){
+$question  = $quiz->get_current_question();
+if ( !$question ) {
 	return;
 }
 ?>
@@ -18,5 +18,5 @@ if(!$question){
 	<?php
 	$question->render();
 	?>
-
+	<?php learn_press_get_template( 'question/hint.php', array( 'quiz' => $quiz ) ); ?>
 </div>

@@ -764,6 +764,49 @@ if (typeof window.LP == 'undefined') {
 		return $prev.length ? $prev : false;
 	}
 
+	$.each(['progress'], function (i, property) {
+		$.Tween.propHooks[property] = {
+			get: function (tween) {
+				return $(tween.elem).css('transform');
+			},
+			set: function (tween) {
+				/*var style = tween.elem.style;
+				 var p_begin = parseColor($(tween.elem).css(property));
+				 var p_end = parseColor(tween.end);
+				 tween.run = function(progress) {
+				 style[property] = calculateColor(p_begin, p_end, progress);
+				 }*/
+				if (tween.now < 180) {
+					$(this).find('.progress-circle').removeClass('gt-50');
+				} else {
+					$(this).find('.progress-circle').addClass('gt-50');
+				}
+				$(tween.elem).find('.fill').css({
+					transform: 'rotate(' + tween.end + 'deg)'
+				});
+				console.log(tween)
+			}
+		}
+	});
+
+	$.fn.progress = function (v) {
+		return this.each(function () {
+			var t = parseInt(v / 100 * 360),
+				timer = null,
+				$this = $(this);
+
+			if (t < 180) {
+				$this.find('.progress-circle').removeClass('gt-50');
+			} else {
+				$this.find('.progress-circle').addClass('gt-50');
+			}
+			$this.find('.fill').css({
+				transform: 'rotate(' + t + 'deg)'
+			});
+
+		})
+	}
+
 	function __initSubtabs() {
 		$('.learn-press-subtabs').each(function () {
 			var $tabContainer = $(this),

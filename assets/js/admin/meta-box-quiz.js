@@ -233,6 +233,16 @@
 		});
 
 		new LP_Quiz_Question_View(new LP_Quiz_Question_Model());
+
+		$('input[name="_lp_passing_grade_type"]').change(function(){
+			var t = $('input[name="_lp_passing_grade_type"]:checked').val();
+			switch(t){
+				case 'percentage':
+					t = '%';
+					break;
+			}
+			$('label[for="_lp_passing_grade"] span').html(t);
+		}).filter(':checked').trigger('change');
 	});
 
 	return

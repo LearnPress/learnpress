@@ -19,10 +19,11 @@ class LP_Quiz_Factory {
 	 */
 	public static function init() {
 		$actions = array(
-			'start-quiz'     => 'start_quiz',
-			'finish-quiz'    => 'finish_quiz',
-			'retake-quiz'    => 'retake_quiz',
-			'check-question' => 'check_question'
+			'start-quiz'        => 'start_quiz',
+			'finish-quiz'       => 'finish_quiz',
+			'retake-quiz'       => 'retake_quiz',
+			'check-question'    => 'check_question',
+			'get-question-hint' => 'get_question_hint'
 		);
 		foreach ( $actions as $k => $v ) {
 			LP_Request_Handler::register_ajax( $k, array( __CLASS__, $v ) );
@@ -35,8 +36,6 @@ class LP_Quiz_Factory {
 		add_action( 'init', array( __CLASS__, '_delete_anonymous_users' ) );*/
 
 	}
-
-
 
 	public static function output_quiz_params( $quiz ) {
 		$json = array(
@@ -338,10 +337,25 @@ class LP_Quiz_Factory {
 		learn_press_send_json( $response );
 	}
 
+	public static function get_question_hint() {
+		$check = self::_verify_nonce( __FUNCTION__ );
+		list( $course_id, $quiz_id, $user_id, $security ) = array_values( $check );
+		$question_id                = learn_press_get_request( 'question_id', 0 );
+		$quiz                       = LP_Quiz::get_quiz( $quiz_id );
+		$quiz->current_question     = LP_Question_Factory::get_question( $question_id );
+		LP()->global['course']      = LP_Course::get_course( $course_id );
+		LP()->global['course-item'] = $quiz;
+		$_REQUEST['html']           = learn_press_get_template_content( 'question/hint.php' );
+		learn_press_send_json( $_REQUEST );
+		die();
+	}
+
 	/**
 	 * Verify quiz action security
 	 *
 	 * @param $action
+	 *
+	 * @return mixed
 	 */
 	public static function _verify_nonce( $action ) {
 		$action    = str_replace( '_', '-', $action );
@@ -355,11 +369,16 @@ class LP_Quiz_Factory {
 			learn_press_send_json(
 				array(
 					'result'  => 'error',
-					'xx'      => "{$action}-{$user_id}-{$course_id}-{$quiz_id}",
 					'message' => array( 'title' => __( 'Error', 'learnpress' ), 'message' => __( 'Please contact site\'s administrator for more information.', 'learnpress' ) )
 				)
 			);
 		}
+		return array(
+			'course_id' => $course_id,
+			'quiz_id'   => $quiz_id,
+			'user_id'   => $user_id,
+			'security'  => $security,
+		);
 	}
 }
 

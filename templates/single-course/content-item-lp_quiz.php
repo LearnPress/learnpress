@@ -15,10 +15,11 @@ $quiz = LP_Quiz::get_quiz( $item->ID );
 ?>
 
 <h4 class="learn-press-content-item-title"><?php echo $item->title; ?></h4>
+<div class=""><?php echo $item->content;?></div>
 <div itemscope id="quiz-<?php echo $item->ID; ?>" <?php learn_press_quiz_class( 'learn-press-content-item-summary' ); ?>>
 
 	<?php if ( $user->has( 'quiz-status', 'completed', $item->id, $course->id ) ): ?>
-		Quiz results
+		<?php learn_press_get_template( 'quiz/result.php', array( 'force' => $force, 'quiz' => $quiz ) ); ?>
 	<?php elseif ( $user->has( 'quiz-status', 'started', $item->id, $course->id ) ): ?>
 		<?php learn_press_get_template( 'quiz/question-content.php', array( 'force' => $force, 'quiz' => $quiz ) ); ?>
 		<?php learn_press_get_template( 'quiz/countdown.php', array( 'force' => $force ) ); ?>
@@ -31,6 +32,6 @@ $quiz = LP_Quiz::get_quiz( $item->ID );
 
 </div>
 <script>
-	window.Quiz_Params = <?php echo json_encode( $quiz->get_settings(), LP()->settings->get('debug') == 'yes' ? JSON_PRETTY_PRINT : '' );?>;
+	window.Quiz_Params = <?php echo json_encode( $quiz->get_settings(), LP()->settings->get( 'debug' ) == 'yes' ? JSON_PRETTY_PRINT : '' );?>;
 </script>
 

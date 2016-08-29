@@ -8,7 +8,8 @@ $course = learn_press_get_course( get_the_ID() );
 		</div>
 		<div id="popup-main">
 			<div id="popup-header">
-				<h3 class=""><?php echo $course->get_title(); ?></h3>
+				<div class="popup-menu"></div>
+				<h3 class="popup-title"><?php echo $course->get_title(); ?></h3>
 				<a class="popup-close"></a>
 			</div>
 			<div id="popup-content">
@@ -22,6 +23,9 @@ $course = learn_press_get_course( get_the_ID() );
 					<a class="footer-control next-item" data-id="<?php echo $next_item; ?>" href="<?php echo $course->get_item_link( $next_item ); ?>"><?php echo get_the_title( $next_item ); ?></a>
 				<?php endif; ?>
 			</div>
+		</div>
+		<div class="popup-block-content">
+			<span></span>
 		</div>
 	</div>
 </script>
