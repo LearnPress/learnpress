@@ -2542,6 +2542,16 @@ function learn_press_plugin_basename( $filepath ) {
 	return strtolower( $file );
 }
 
+function learn_press_update_log( $version, $data ) {
+	$logs = get_option( 'learn_press_update_logs' );
+	if ( !$logs ) {
+		$logs = array( $version => $data );
+	} else {
+		$logs[$version] = $data;
+	}
+	update_option( 'learn_press_update_logs', $logs );
+}
+
 // Debugging
 include_once "debug.php";
 

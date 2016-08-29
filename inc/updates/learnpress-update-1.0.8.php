@@ -33,4 +33,5 @@ if ( LEARN_PRESS_UPDATE_DATABASE ) {
 	$query = $wpdb->query( "
 		ALTER TABLE {$wpdb->prefix}learnpress_user_course_items DROP COLUMN `start_date`, DROP COLUMN `end_date`;
 	" );
+	learn_press_update_log( '1.0.8', array( 'time' => time() ) );
 }

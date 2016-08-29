@@ -153,7 +153,18 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 								'std'  => 10
 							),
 							array(
-								'name' => __( 'Passing Grade (%)', 'learnpress' ),
+								'name'    => __( 'Passing Grade Type', 'learnpress' ),
+								'desc'    => __( 'Requires user reached this point to pass the quiz.', 'learnpress' ),
+								'id'      => "{$prefix}passing_grade_type",
+								'type'    => 'radio',
+								'options' => array(
+									'percentage' => __( 'Percentage', 'learnpress' ),
+									'point'      => __( 'Point', 'learnpress' )
+								),
+								'std'     => 'percentage'
+							),
+							array(
+								'name' => __( 'Passing Grade (<span>%</span>)', 'learnpress' ),
 								'desc' => __( 'Requires user reached this point to pass the quiz.', 'learnpress' ),
 								'id'   => "{$prefix}passing_grade",
 								'type' => 'number',

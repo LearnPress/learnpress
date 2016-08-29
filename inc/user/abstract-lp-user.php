@@ -92,7 +92,10 @@ class LP_Abstract_User {
 		}
 	}
 
-	public function get_course_items( $type = '', $field = null ) {
+	public function get_course_items( $type = '', $field = null, $course_id = 0 ) {
+		if ( $course_id ) {
+			$this->set_course( $course_id );
+		}
 		if ( !$type ) {
 			$items = $this->_course_items;
 		} else {
@@ -396,7 +399,7 @@ class LP_Abstract_User {
 
 		$question_answers = null;
 		if ( $progress ) {
-			$answers = (array) $progress->_quiz_question_answers;
+			$answers = (array) $progress->quiz_question_answers;
 			if ( array_key_exists( $question_id, $answers ) ) {
 				$question_answers = $answers[$question_id];
 			}
@@ -536,6 +539,7 @@ class LP_Abstract_User {
 	 * @return mixed
 	 */
 	public function get_quiz_status( $quiz_id, $course_id = 0, $force = false ) {
+
 		return $this->get_item_status( $quiz_id, $course_id, $force );
 		global $wpdb;
 		if ( !$course_id ) {
@@ -627,7 +631,6 @@ class LP_Abstract_User {
 	}
 
 	public function get_item_status( $item_id, $course_id = 0, $force = false ) {
-
 		if ( !$course_id ) {
 			$course_id = get_the_ID();
 		}
@@ -636,18 +639,19 @@ class LP_Abstract_User {
 			$this->set_course( $course_id );
 		}
 
+
 		$item_statuses = LP_Cache::get_item_statuses( false, array() );
 		$key           = sprintf( '%d-%d-%d', $this->id, $course_id, $item_id );
-
 		if ( ( !array_key_exists( $key, $item_statuses ) || $force ) ) {
-			if ( $item_ids = $this->get_course_items( '', 'key' ) ) {
+
+			if ( $item_ids = $this->get_course_items( '', 'key', $course_id ) ) {
 				global $wpdb;
-				$in    = array_fill( 0, sizeof( $item_ids ), '%d' );
-				$args  = array_merge(
+				$in                  = array_fill( 0, sizeof( $item_ids ), '%d' );
+				$args                = array_merge(
 					array( $this->id, $course_id ),
 					$item_ids
 				);
-				$query = $wpdb->prepare( "
+				$query               = $wpdb->prepare( "
 					SELECT item_id as id, `status`
 					FROM {$wpdb->learnpress_user_items} WHERE user_id = %d AND ref_id = %d AND item_id IN(" . join( ', ', $in ) . ") ORDER BY user_item_id ASC
 				", $args );
@@ -685,7 +689,9 @@ class LP_Abstract_User {
 	 * @return bool
 	 */
 	public function has_quiz_status( $statuses, $quiz_id, $course_id = 0, $force = false ) {
+
 		$status = $this->get_quiz_status( $quiz_id, $course_id, $force );
+
 		settype( $statuses, 'array' );
 		return apply_filters( 'learn_press_user_has_quiz_status', in_array( $status, $statuses ), $statuses, $status, $quiz_id, $course_id, $this->id );
 	}
@@ -736,6 +742,7 @@ class LP_Abstract_User {
 	 *
 	 * @param int  $quiz_id
 	 * @param int  $course_id
+	 * @param int  $history_id
 	 * @param bool $force
 	 *
 	 * @return mixed|null|void
@@ -795,20 +802,26 @@ class LP_Abstract_User {
 					}
 
 					$history[$this->id . '-' . $course_id . '-' . $result->item_id][$result->user_item_id] = (object) array(
+						'history_id' => $result->user_item_id,
 						'start'      => $result->start_time,
 						'end'        => $result->end_time,
-						'status'     => $result->status,
-						'history_id' => $result->user_item_id
+						'status'     => $result->status
 					);
 					//echo 'xxxxxxxxxxxxx'.$result->status;
 				}
 				if ( $item_ids && $meta = $this->_get_quiz_meta( $item_ids ) ) {
+					$maps = array(
+						'_quiz_questions'        => 'questions',
+						'_quiz_question'         => 'question',
+						'_quiz_question_answers' => 'answers'
+					);
 					foreach ( $meta as $k => $v ) {
 						if ( empty( $history[$this->id . '-' . $course_id . '-' . $v->item_id][$v->user_item_id] ) ) {
 							//$history[$this->id . '-' . $course_id . '-' . $v->item_id][$meta->user_item_id] = array();
 							continue;
 						}
-						$history[$this->id . '-' . $course_id . '-' . $v->item_id][$v->user_item_id]->{$v->meta_key} = maybe_unserialize( $v->meta_value );
+						$obj_key                                                                                 = !empty( $maps[$v->meta_key] ) ? $maps[$v->meta_key] : $v->meta_key;
+						$history[$this->id . '-' . $course_id . '-' . $v->item_id][$v->user_item_id]->{$obj_key} = maybe_unserialize( $v->meta_value );
 					}
 				}
 
@@ -886,10 +899,10 @@ class LP_Abstract_User {
 	public function get_current_quiz_question( $quiz_id, $course_id = 0 ) {
 		$question_id = 0;
 		if ( $progress = $this->get_quiz_progress( $quiz_id, $course_id ) ) {
-			if ( !empty( $progress->_quiz_question ) ) {
-				$question_id = $progress->_quiz_question;
-			} elseif ( !empty( $progress->_quiz_questions ) && is_array( $progress->_quiz_questions ) ) {
-				$question_id = reset( $progress->_quiz_questions );
+			if ( !empty( $progress->question ) ) {
+				$question_id = $progress->question;
+			} elseif ( !empty( $progress->questions ) && is_array( $progress->questions ) ) {
+				$question_id = reset( $progress->questions );
 			}
 			///$question_id = !empty( $progress->current_question ) ? $progress->current_question : false;
 		}
@@ -1790,27 +1803,42 @@ class LP_Abstract_User {
 	 * @return mixed
 	 */
 	public function get_quiz_results( $quiz_id, $course_id = 0, $force = false ) {
-		static $quiz_results = array();
 		if ( !$course_id ) {
 			$course_id = get_the_ID();
 		}
+		$quiz_results = LP_Cache::get_quiz_results( false, array() );
+
 		$key = $this->id . '-' . $course_id . '-' . $quiz_id;
 		if ( !array_key_exists( $key, $quiz_results ) || $force ) {
+			$quiz = LP_Quiz::get_quiz( $quiz_id );
 			if ( $history = $this->get_quiz_history( $quiz_id, $course_id, false, $force ) ) {
-
-				$quiz_results[$key]          = reset( $history );
-				$quiz_results[$key]->results = $this->evaluate_quiz_results( $quiz_id, $quiz_results[$key] );
+				$quiz_results[$key] = reset( $history );
+				///settype( $quiz_results[$key], 'array' );
+				//$quiz_results[$key]->mark    = $quiz->get_mark();
+				if ( $user_results = $this->evaluate_quiz_results( $quiz_id, $quiz_results[$key] ) ) {
+					foreach ( $user_results as $k => $v ) {
+						$quiz_results[$key]->{$k} = $v;
+					}
+				}
 			} else {
 				$quiz_results[$key] = false;
 			}
+			LP_Cache::set_quiz_results( $quiz_results );
 		}
 		return $quiz_results[$key];
 	}
 
+	/**
+	 * Evaluate results of a quiz for this user
+	 *
+	 * @param $quiz_id
+	 * @param $progress
+	 *
+	 * @return mixed|void
+	 */
 	public function evaluate_quiz_results( $quiz_id, $progress ) {
-
-		$quiz    = LP_Quiz::get_quiz( $quiz_id );
-		$results = array(
+		$quiz      = LP_Quiz::get_quiz( $quiz_id );
+		$results   = array(
 			'mark'            => 0,
 			'correct'         => 0,
 			'wrong'           => 0,
@@ -1819,15 +1847,15 @@ class LP_Abstract_User {
 			'correct_percent' => 0,
 			'wrong_percent'   => 0,
 			'empty_percent'   => 0,
-			'quiz_time'       => $quiz->duration,
-			'quiz_mark'       => $quiz->get_mark(),
-			'user_time'       => 0,
+			//'quiz_time'       => $quiz->duration,
+			//'quiz_mark'       => $quiz->get_mark(),
+			'time'            => 0,
 			'questions'       => array()
 		);
-
 		$questions = $quiz->questions;
 		if ( $questions ) {
-			$questions = array_keys( $questions );
+			$questions            = array_keys( $questions );
+			$results['questions'] = $questions;
 		}
 		if ( !empty( $questions ) ) {
 			$question_answers = !empty( $progress->question_answers ) ? $progress->question_answers : array();
@@ -1846,17 +1874,17 @@ class LP_Abstract_User {
 					$check = false;
 					$results['empty'] ++;
 				}
-				$results['questions'][$question_id] = $check;
+				$results['answers'][$question_id] = $check;
 			}
 		}
 		if ( $total_questions = sizeof( $questions ) ) {
-			$results['correct_percent']       = $results['correct'] / $total_questions * 100;
-			$results['wrong_percent']         = $results['wrong'] / $total_questions * 100;
-			$results['empty_percent_percent'] = $results['empty'] / $total_questions * 100;
+			$results['correct_percent'] = $results['correct'] / $total_questions * 100;
+			$results['wrong_percent']   = $results['wrong'] / $total_questions * 100;
+			$results['empty_percent']   = $results['empty'] / $total_questions * 100;
 		}
-		$results['user_time'] = $this->_calculate_quiz_time( $quiz, $progress );
-		if ( $results['quiz_mark'] ) {
-			$results['mark_percent'] = $results['mark'] / $results['quiz_mark'] * 100;
+		$results['time'] = $this->_calculate_quiz_time( $quiz, $progress );
+		if ( $results['mark'] ) {
+			$results['mark_percent'] = $results['mark'] / $results['mark'] * 100;
 		}
 		return apply_filters( 'learn_press_evaluate_quiz_results', $results, $quiz_id, $this->id );
 	}

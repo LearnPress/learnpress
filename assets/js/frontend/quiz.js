@@ -73,7 +73,22 @@
 					user_id        : this.get('user_id'),
 					quiz_id        : this.get('quiz_id'),
 					question_id    : this.get('id'),
-					save_id        : this.get('id'),
+					question_answer: $('form#learn-press-quiz-question').serializeJSON()
+				}, args.data || {}),
+				success: function (response, raw) {
+					that.set('checked', response.checked);
+					$.isFunction(args.complete) && args.complete.call(that, response)
+				}
+			})
+		},
+		showHint  : function (args) {
+			var that = this;
+			LP.doAjax({
+				data   : $.extend({
+					'lp-ajax'      : 'get-question-hint',
+					user_id        : this.get('user_id'),
+					quiz_id        : this.get('quiz_id'),
+					question_id    : this.get('id'),
 					question_answer: $('form#learn-press-quiz-question').serializeJSON()
 				}, args.data || {}),
 				success: function (response, raw) {
@@ -123,7 +138,6 @@
 			this._args = args || {};
 			this._initQuestions();
 			this.set('remainingTime', args.totalTime - args.userTime);
-			console.log(this.getTotalTime('dhms'))
 		},
 		_initQuestions     : function () {
 			this.questions = new List_Questions();
@@ -321,7 +335,7 @@
 			return prev;
 		},
 		getCurrent         : function (_field, _default) {
-			var current = this.questions.findWhere({current: 'yes'}),
+			var current = this.current(),
 				r = _default;
 			if (current) {
 				r = current.get(_field);
@@ -329,19 +343,39 @@
 			return r;
 		},
 		current            : function () {
-			return this.questions.findWhere({id: parseInt(this.get('question_id'))});
+			return this.questions.findWhere({current: 'yes'});
 		},
 		getIds             : function () {
 			return $.map(this.get('questions'), function (i, v) {
 				return parseInt(i.id)
 			});
+		},
+		showHint           : function (callback, args) {
+			this.current().showHint({
+				complete: callback,
+				data    : this.getRequestParams(args)
+			});
+		},
+		checkAnswer        : function (callback) {
+			$.isFunction(callback) && callback.call(this, 'asdsdasdxxxxxxxxxxsadsadsad')
+		},
+		getRequestParams   : function (args) {
+			var defaults = LP.Hook.applyFilters('learn_press_request_quiz_params', {
+				quiz_id  : this.get('id'),
+				user_id  : this.get('user_id'),
+				course_id: this.get('courseId')
+			});
+
+			return $.extend(defaults, args || {});
 		}
 	});
 	Quiz.View = Backbone.View.extend({
 		el                    : '.single-quiz',
 		events                : {
 			'click .button-prev-question': '_prevQuestion',
-			'click .button-next-question': '_nextQuestion'
+			'click .button-next-question': '_nextQuestion',
+			'click .button-hint'         : '_showHint',
+			'click .button-check-answer' : '_checkAnswer'
 		},
 		timeout               : 0,
 		initialize            : function () {
@@ -352,7 +386,7 @@
 		},
 		_initCountDown        : function () {
 			this.refreshCountdown();
-			setTimeout($.proxy(function () {
+			$.inArray(this.model.get('status'), ['started']) >= 0 && setTimeout($.proxy(function () {
 				this.start();
 			}, this), 500);
 		},
@@ -371,10 +405,12 @@
 		},
 		_prevQuestion         : function (e) {
 			e.preventDefault();
+			LP.$Course.view.blockContent();
 			this.model.prev(this._loadQuestionCompleted);
 		},
 		_nextQuestion         : function (e) {
 			e.preventDefault();
+			LP.$Course.view.blockContent();
 			this.model.next(this._loadQuestionCompleted);
 		},
 		_loadQuestionCompleted: function (response, model) {
@@ -383,16 +419,46 @@
 			$('.question-content').replaceWith($newElement);
 			this.updateButtons();
 			$(window).trigger('load');
-			$(document).trigger('resize')
+			$(document).trigger('resize');
+			LP.$Course.view.unblockContent();
+
+		},
+		_showHint             : function (e) {
+			e.preventDefault();
+			this.$('.question-hint-content').removeClass('hide-if-js');
+			return;
+			LP.$Course.view.blockContent();
+			this.model.showHint(this._showHintCompleted, {
+				security: $(e.target).data('security')
+			});
+
+		},
+		_showHintCompleted    : function (response) {
+			//$(response.html).this.
+			LP.$Course.view.unblockContent();
+		},
+		_checkAnswer          : function (e) {
+			e.preventDefault();
+			LP.$Course.view.blockContent();
+			this.model.checkAnswer(this._checkAnswerCompleted);
+		},
+		_checkAnswerCompleted : function (response) {
+			console.log('check', response);
+			LP.$Course.view.unblockContent();
 		},
 		updateButtons         : function () {
-			console.log(this.model.questions.length)
 			if (this.model.questions.length < 2) {
 				return;
 			}
-			console.log(this.model.isFirst(), this.model.isLast());
-			this.$('.button-prev-question').toggleClass('hide-if-js', this.model.isFirst())
-			this.$('.button-next-question').toggleClass('hide-if-js', this.model.isLast());
+			if (this.model.get('status') == 'started') {
+				this.$('.button-prev-question').toggleClass('hide-if-js', this.model.isFirst());
+				this.$('.button-next-question').toggleClass('hide-if-js', this.model.isLast());
+				var current = this.model.current();
+				if (current) {
+					this.$('.button-check-answer').toggleClass('hide-if-js', current.get('hasCheckAnswer') != 'yes');
+					this.$('.button-hint').toggleClass('hide-if-js', current.get('hasHint') != 'yes');
+				}
+			}
 		},
 		start                 : function () {
 			this._onTick();
@@ -427,11 +493,12 @@
 		itemUrl               : function (url, item) {
 			if (item.get('id') == this.model.get('id')) {
 				var questionName = this.model.getCurrent('name'), reg;
-				if (questionName) {
+				if (questionName && this.model.get('status') !== 'completed') {
 					reg = new RegExp(questionName, '');
 					if (!url.match(reg)) {
 						url = url.replace(/\/$/, '') + '/' + questionName + '/';
 					}
+					console.log(url)
 				}
 			}
 			return url;
@@ -441,8 +508,8 @@
 	window.LP_Quiz = Quiz;
 	// DOM ready
 	LP.Hook.addAction('learn_press_course_initialize', function ($course) {
-		if (typeof Quiz_Params) {
-			window.$Quiz = new LP_Quiz(Quiz_Params);
+		if (typeof Quiz_Params != 'undefined') {
+			window.$Quiz = new LP_Quiz($.extend({course: $course}, Quiz_Params));
 			$course.view.updateUrl();
 		}
 	});

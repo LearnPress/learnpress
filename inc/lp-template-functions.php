@@ -1320,6 +1320,24 @@ function learn_press_get_template( $template_name, $args = array(), $template_pa
 }
 
 /**
+ * Get template content
+ *
+ * @uses learn_press_get_template();
+ *
+ * @param        $template_name
+ * @param array  $args
+ * @param string $template_path
+ * @param string $default_path
+ *
+ * @return string
+ */
+function learn_press_get_template_content( $template_name, $args = array(), $template_path = '', $default_path = '' ) {
+	ob_start();
+	learn_press_get_template( $template_name, $args, $template_path, $default_path );
+	return ob_get_clean();
+}
+
+/**
  * Locate a template and return the path for inclusion.
  *
  * This is the load order:

@@ -405,7 +405,7 @@ body.course-has-popup {
   float: left;
   width: 350px;
   position: absolute;
-  top: 0;
+  top: 60px;
   bottom: 0;
   overflow: auto;
   background: #FFF;
@@ -418,6 +418,9 @@ body.course-has-popup {
   margin: 0;
   font-size: smaller;
 }
+#course-curriculum-popup #popup-sidebar .learn-press-course-results-progress {
+  margin: 20px;
+}
 #course-curriculum-popup #popup-main {
   position: absolute;
   top: 0;
@@ -429,18 +432,25 @@ body.course-has-popup {
 #course-curriculum-popup #popup-main #popup-header {
   position: absolute;
   top: 0;
-  left: 0;
+  left: -350px;
   right: 0;
-  height: 50px;
+  height: 60px;
   background: #F5F5F5;
   border-bottom: 1px solid #DDD;
 }
+#course-curriculum-popup #popup-main #popup-header .popup-menu {
+  position: absolute;
+  height: 60px;
+  width: 350px;
+  border-right: 1px solid #DDD;
+}
 #course-curriculum-popup #popup-main #popup-header .popup-close {
-  width: 50px;
-  height: 50px;
+  width: 59px;
+  height: 59px;
   position: absolute;
   right: 0;
   top: 0;
+  cursor: pointer;
 }
 #course-curriculum-popup #popup-main #popup-header .popup-close:before,
 #course-curriculum-popup #popup-main #popup-header .popup-close:after {
@@ -449,37 +459,47 @@ body.course-has-popup {
   width: 30px;
   display: inline-block;
   position: absolute;
+  top: 29px;
+  left: 15px;
 }
 #course-curriculum-popup #popup-main #popup-header .popup-close:before {
   -webkit-transform: rotate(45deg);
-  top: 25px;
 }
 #course-curriculum-popup #popup-main #popup-header .popup-close:after {
   -webkit-transform: rotate(-45deg);
-  top: 25px;
+}
+#course-curriculum-popup #popup-main #popup-header .popup-close:hover {
+  background: #FFF;
+}
+#course-curriculum-popup #popup-main #popup-header .popup-close:hover:before,
+#course-curriculum-popup #popup-main #popup-header .popup-close:hover:after {
+  border-color: #00A0D2;
 }
 #course-curriculum-popup #popup-main #popup-header h3 {
-  margin: 0;
-  height: 50px;
-  line-height: 50px;
+  margin: 0 0 0 350px;
+  height: 60px;
+  line-height: 60px;
   padding: 0 20px;
 }
 #course-curriculum-popup #popup-main #popup-content {
   position: absolute;
-  top: 50px;
+  top: 60px;
   bottom: 50px;
   left: 0;
   right: 0;
   overflow: auto;
 }
 #course-curriculum-popup #popup-main #popup-content #popup-content-inner {
-  margin: 20px;
+  margin: 20px 40px;
 }
 #course-curriculum-popup #popup-main #popup-content .learn-press-content-item-title {
   margin-bottom: 20px;
+  font-size: 24px;
+  border-bottom: 2px solid #DDD;
+  padding-bottom: 20px;
 }
 #course-curriculum-popup #popup-main #popup-content .learn-press-course-results-progress {
-  margin: 20px;
+  margin: 40px;
 }
 #course-curriculum-popup #popup-main #popup-footer {
   position: absolute;
@@ -502,6 +522,70 @@ body.course-has-popup {
 }
 #course-curriculum-popup #popup-main #popup-footer .footer-control.next-item {
   float: right;
+}
+#course-curriculum-popup .popup-block-content {
+  display: none;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.25);
+  position: absolute;
+}
+#course-curriculum-popup.block-content .popup-block-content {
+  display: block;
+}
+#course-curriculum-popup.block-content .popup-block-content span {
+  display: inline;
+  width: 50px;
+  height: 50px;
+  border: 2px solid #00adff;
+  -webkit-border-radius: 50%;
+  -khtml-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -ms-border-radius: 50%;
+  -o-border-radius: 50%;
+  border-radius: 50%;
+}
+#course-curriculum-popup.block-content .popup-block-content span:after {
+  width: 3px;
+  height: 15px;
+  background: #00adff;
+  margin-left: 21px;
+  margin-top: 9px;
+  content: '';
+  position: absolute;
+}
+#course-curriculum-popup.block-content .popup-block-content:before,
+#course-curriculum-popup.block-content .popup-block-content:after,
+#course-curriculum-popup.block-content .popup-block-content span {
+  content: '';
+  position: absolute;
+  margin-top: -25px;
+  top: 50%;
+  left: 50%;
+  margin-left: -25px;
+  z-index: 110;
+}
+#course-curriculum-popup.block-content .popup-block-content:before {
+  width: 50px;
+  height: 50px;
+  background: #FFF;
+  -webkit-border-radius: 50%;
+  -khtml-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -ms-border-radius: 50%;
+  -o-border-radius: 50%;
+  border-radius: 50%;
+}
+#course-curriculum-popup.block-content .popup-block-content:after {
+  width: 20px;
+  height: 3px;
+  background: #00adff;
+  margin-left: -10px;
+  margin-top: -1px;
+  -webkit-animation: spin 1s infinite;
+  -moz-animation: spin 1s infinite;
+  animation: spin 1s infinite;
 }
 .learnpress form.purchase-course {
   margin-bottom: 20px;
@@ -684,6 +768,118 @@ body.course-has-popup {
   clip: rect(0, 200px, 200px, 100px);
   background: #DDD;
 }
+.single-quiz .quiz-result .quiz-result-mark {
+  margin-bottom: 20px;
+}
+.single-quiz .quiz-result .quiz-result-mark .progress-circle {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background-color: #DDD;
+  position: relative;
+}
+.single-quiz .quiz-result .quiz-result-mark .progress-circle .background {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  /*left: calc(50% - 100px);
+            top: calc(50% - 100px);*/
+  width: 200px;
+  height: 200px;
+  clip: rect(0, 200px, 200px, 100px);
+}
+.single-quiz .quiz-result .quiz-result-mark .progress-circle .background .fill {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  /*left: calc(50% - 100px);
+                top: calc(50% - 100px);*/
+  width: 200px;
+  height: 200px;
+  clip: rect(0, 100px, 200px, 0);
+  background: #95e6f9;
+  transform: rotate(0deg);
+}
+.single-quiz .quiz-result .quiz-result-mark .progress-circle:after {
+  content: '';
+  width: 170px;
+  height: 170px;
+  background: #FFF;
+  -webkit-border-radius: 50%;
+  -khtml-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -ms-border-radius: 50%;
+  -o-border-radius: 50%;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -85px;
+  margin-left: -85px;
+  pointer-events: none;
+}
+.single-quiz .quiz-result .quiz-result-mark .progress-circle .inside {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  line-height: 200px;
+  text-align: center;
+  z-index: 10;
+}
+.single-quiz .quiz-result .quiz-result-mark .progress-circle.gt-50 {
+  background-color: #95e6f9;
+}
+.single-quiz .quiz-result .quiz-result-mark .progress-circle.gt-50 .background {
+  clip: rect(0, 100px, 200px, 0);
+}
+.single-quiz .quiz-result .quiz-result-mark .progress-circle.gt-50 .fill {
+  clip: rect(0, 200px, 200px, 100px);
+  background: #DDD;
+}
+.single-quiz .quiz-result .quiz-result-summary {
+  margin-bottom: 20px;
+  max-width: 500px;
+}
+.single-quiz .quiz-result .quiz-result-summary .quiz-result-field {
+  position: relative;
+  background: #F5F5F5;
+  margin: 0 0 8px 0;
+  font-size: 12px;
+  padding: 3px 10px;
+  -webkit-border-radius: 4px;
+  -khtml-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
+  border-radius: 4px;
+  overflow: hidden;
+  border-bottom: 2px solid #DDD;
+}
+.single-quiz .quiz-result .quiz-result-summary .quiz-result-field:after {
+  display: block;
+  position: absolute;
+  content: '';
+  top: 0;
+  left: 0;
+  height: 100%;
+}
+.single-quiz .quiz-result .quiz-result-summary .quiz-result-field:after {
+  content: attr(data-text);
+  width: 82px;
+  color: #FFF;
+  white-space: nowrap;
+  overflow: hidden;
+  padding: 3px 10px;
+}
+.single-quiz .quiz-result .quiz-result-summary .quiz-result-field.correct:after {
+  background: #22b4ff;
+}
+.single-quiz .quiz-result .quiz-result-summary .quiz-result-field.wrong:after {
+  background: #ff5425;
+}
+.single-quiz .quiz-result .quiz-result-summary .quiz-result-field.empty:after {
+  background: #d2bc5d;
+}
 /* QUESTION */
 .learn-press-question-options {
   list-style: none;
@@ -811,4 +1007,30 @@ body.course-has-popup {
 .single-quiz .quiz-intro {
   list-style: none;
   padding: 0;
+}
+@-moz-keyframes spin {
+  0% {
+    -moz-transform: rotate(-90deg) translate(10px);
+  }
+  100% {
+    -moz-transform: rotate(360deg) translate(20px);
+  }
+}
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(-90deg) translate(10px);
+  }
+  100% {
+    -webkit-transform: rotate(360deg) translate(20px);
+  }
+}
+@keyframes spin {
+  0% {
+    -webkit-transform: rotate(-90deg) translate(10px);
+    transform: rotate(-90deg) translate(10px);
+  }
+  100% {
+    -webkit-transform: rotate(270deg) translate(10px);
+    transform: rotate(270deg) translate(10px);
+  }
 }

@@ -328,7 +328,7 @@ abstract class LP_Abstract_Course {
 						ORDER BY s.section_order, si.item_order ASC
 					", $section_ids );
 				$section_items = $wpdb->get_results( $query );
-				$post_ids = array();
+				$post_ids      = array();
 				foreach ( $rows as $row ) {
 					$section        = $row;
 					$section->items = array();
@@ -340,7 +340,7 @@ abstract class LP_Abstract_Course {
 								/**
 								 * Add item to 'posts' cache group
 								 */
-								$item_post        = wp_cache_get( $item->ID, 'posts' );
+								$item_post = wp_cache_get( $item->ID, 'posts' );
 								if ( !$item_post ) {
 									wp_cache_add( $item->ID, $item, 'posts' );
 								}
@@ -354,7 +354,7 @@ abstract class LP_Abstract_Course {
 					$curriculum[$this->id][$section->section_id] = $section;
 				}
 				// update all meta data into cache
-				update_meta_cache('post', $post_ids);
+				update_meta_cache( 'post', $post_ids );
 				//SELECT post_id, meta_key, meta_value FROM wp_postmeta WHERE post_id IN
 			}
 			LP_Cache::set_course_curriculum( $curriculum );
@@ -1334,16 +1334,17 @@ abstract class LP_Abstract_Course {
 
 		$items = $this->get_curriculum_items(
 			array(
-				'field'        => array( 'item_id', 'item_type', 'post_title' ),
-				'field_map'    => array( 'id', 'type', 'title' ),
+				'field'        => array( 'item_id', 'item_type', 'post_title', 'post_content' ),
+				'field_map'    => array( 'id', 'type', 'title', 'content' ),
 				'field_format' => array( '%d', '%s', '%s' )
 			)
 		);
 
 		if ( $items ) foreach ( $items as $k => $item ) {
 			if ( ( $view = $user->can( 'view-item', $item['id'] ) ) !== false ) {
-				$items[$k]['url']    = $this->get_item_link( $item['id'] );
-				$items[$k]['status'] = $user->get_item_status( $item['id'], $this->id );
+				$items[$k]['url']     = $this->get_item_link( $item['id'] );
+				$items[$k]['status']  = $user->get_item_status( $item['id'], $this->id );
+				$items[$k]['content'] = apply_filters( 'the_content', $item['content'] );
 				if ( $view == 'preview' ) {
 
 				}

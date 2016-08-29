@@ -267,7 +267,7 @@ class LP_Cache {
 	 *
 	 * @return array|bool|mixed
 	 */
-	public static function set_finished_courses( $key_or_value, $value =false ) {
+	public static function set_finished_courses( $key_or_value, $value = false ) {
 		if ( func_num_args() == 1 ) {
 			wp_cache_set( 'user-finished-courses', $key_or_value, self::$_group );
 			return $key_or_value;
@@ -332,10 +332,36 @@ class LP_Cache {
 	public static function get_quiz_questions( $key = false, $def = false ) {
 		return self::_get_cache( 'quiz-questions', $key, $def );
 	}
+
+	public static function set_quiz_results( $key_or_value, $value = false ) {
+		if ( func_num_args() == 1 ) {
+			wp_cache_set( 'quiz-results', $key_or_value, self::$_group );
+			return $key_or_value;
+		}
+		return self::_set_cache( 'quiz-results', $key_or_value, $value );
+	}
+
+	public static function get_quiz_results( $key = false, $def = false ) {
+		return self::_get_cache( 'quiz-results', $key, $def );
+	}
+
+	public static function set_quiz_params( $key_or_value, $value = false ) {
+		if ( func_num_args() == 1 ) {
+			wp_cache_set( 'quiz-params', $key_or_value, self::$_group );
+			return $key_or_value;
+		}
+		return self::_set_cache( 'quiz-params', $key_or_value, $value );
+	}
+
+	public static function get_quiz_params( $key = false, $def = false ) {
+		return self::_get_cache( 'quiz-params', $key, $def );
+	}
+
 	/**********************************************/
-	public static function flush(){
+	public static function flush() {
 		wp_cache_flush();
 	}
+
 	/**
 	 * @param int|string $key
 	 * @param int|string $field

@@ -8,14 +8,21 @@ class LP_Query {
 	 * LP_Query constructor.
 	 */
 	public function __construct() {
-		add_action( 'wp', array( $this, 'parse_query_vars_to_request' ) );
+		//add_action( 'wp', array( $this, 'parse_query_vars_to_request' ) );
 		add_action( 'init', array( $this, 'add_rewrite_tags' ), 1000, 0 );
 		add_action( 'init', array( $this, 'add_rewrite_rules' ), 1000, 0 );
-		add_filter( 'parse_request', array( $this, 'get_current_quiz_question' ), 1000, 1 );
+		add_filter( 'parse_request', array( $this, 'parse_request' ), 1000, 1 );
 
 	}
 
-	public function get_current_quiz_question( $q ) {
+	/**
+	 * Parses request params and controls page
+	 *
+	 * @param $q
+	 *
+	 * @return mixed
+	 */
+	public function parse_request( $q ) {
 		$user    = learn_press_get_current_user();
 		$request = $this->get_request();
 		if ( !$request ) {
@@ -49,18 +56,27 @@ class LP_Query {
 				if ( empty( $matches[4] ) ) {
 					if ( $question_id = $user->get_current_quiz_question( $post->ID, 37 ) ) {
 						$q->query_vars['question'] = get_post_field( 'post_name', $question_id );
-						//$_SERVER['REQUEST_URI'] = trailingslashit( $_SERVER['REQUEST_URI'] ) . get_post_field( 'post_name', $question_id );
 					}
 				} else {
 					// If user is viewing a question then update current question for user
 					$question = learn_press_get_post_by_name( $matches[4], 'lp_question' );
 					$course   = learn_press_get_post_by_name( $q->query_vars['lp_course'], 'lp_course' );
+
+					/**
+					 * If user has completed a quiz but they are accessing to a question inside quiz,
+					 * redirect them back to quiz to show results of that quiz instead
+					 */
+					if ( $user->has_quiz_status( 'completed', $post->ID, $course->ID ) ) {
+						//remove question name from uri
+						$redirect = get_site_url() . '/' . dirname( $request_match );
+						wp_redirect( $redirect );
+						exit();
+					}
 					if ( $question ) {
 						$progress = $user->get_quiz_progress( $post->ID, $course->ID );
 						learn_press_update_user_item_meta( $progress->history_id, '_quiz_question', $question->ID );
 					}
 				}
-				//print_r($post);
 			}
 		}
 
@@ -74,8 +90,7 @@ class LP_Query {
 	 *
 	 * @return string
 	 */
-	public
-	function get_request() {
+	public function get_request() {
 		global $wp_rewrite;
 		$pathinfo = isset( $_SERVER['PATH_INFO'] ) ? $_SERVER['PATH_INFO'] : '';
 		list( $pathinfo ) = explode( '?', $pathinfo );
