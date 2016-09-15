@@ -39,6 +39,11 @@ abstract class LP_Abstract_Course {
 	protected $_count_users = null;
 
 	/**
+	 * @var null
+	 */
+	protected $_students_list = null;
+
+	/**
 	 * @var array
 	 */
 	protected static $_lessons = array();
@@ -566,9 +571,37 @@ abstract class LP_Abstract_Course {
 		}
 		return $origin_price_html;
 	}
-	
 
-	
+	/**
+	 * @param $limit int limit of records
+	 * @param $force boolean force to query database
+	 *
+	 * @return array list enrolled students
+	 */
+	public function get_students_list($force = false, $limit = -1){
+		if(!$this->exists()) return null;
+
+		global $wpdb;
+		if($limit < 0) $limit = PHP_INT_MAX;
+
+		if ( $this->_students_list === null || $force ) {
+			$query              = $wpdb->prepare( "
+				SELECT user_id, user_nicename, user_status, display_name
+				FROM {$wpdb->prefix}learnpress_user_courses uc
+				LEFT JOIN  {$wpdb->users} u
+					ON uc.user_id = u.ID
+				WHERE course_id = %s
+					AND status = %s
+					AND user_status = %s
+				LIMIT %d
+			", $this->id, 'enrolled', '0', $limit );
+			$this->_students_list = $wpdb->get_results( $query );
+		}
+		return $this->_students_list;
+
+	}
+
+
 	/**
 	 * Get all quizzes in a course
 	 *

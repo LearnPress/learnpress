@@ -56,6 +56,7 @@ add_action( 'learn_press_content_landing_summary', 'learn_press_course_tabs', 50
 
 add_action( 'learn_press_content_landing_summary', 'learn_press_course_curriculum_popup', 65 );
 add_action( 'learn_press_content_landing_summary', 'learn_press_course_buttons', 70 );
+add_action('learn_press_content_landing_summary', 'learn_press_course_students_list', 75);
 
 /* actions to display course content for learning page */
 add_action( 'learn_press_course_item_content', 'learn_press_course_item_content', 5 );
@@ -82,6 +83,7 @@ add_action( 'learn_press_content_learning_summary', 'learn_press_course_curricul
 //add_action( 'learn_press_content_learning_summary', 'learn_press_course_retake_button', 70 );
 
 add_action( 'learn_press_content_learning_summary', 'learn_press_course_buttons', 70 );
+add_action('learn_press_after_content_learning', 'learn_press_course_students_list', 75);
 
 
 

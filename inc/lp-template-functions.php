@@ -372,6 +372,16 @@ if ( !function_exists( 'learn_press_single_course_content_item' ) ) {
 	}
 }
 
+if (!function_exists('learn_press_course_students_list')) {
+	/**
+	 * Display list of students enrolled to the course
+	 */
+	function learn_press_course_students_list()
+	{
+		learn_press_get_template('single-course/students-list.php');
+	}
+}
+
 if ( !function_exists( 'learn_press_course_quiz_description' ) ) {
 	/**
 	 * Display lesson content

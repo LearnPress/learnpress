@@ -96,13 +96,13 @@
  * implement get_course methods which return array of LP_Course to be display
  *
  * override optional methods
- *  add_default_atts to modify default attributes 
+ *  add_default_atts to modify default attributes
  */
 
-defined( 'ABSPATH' ) || exit();
+defined('ABSPATH') || exit();
 
 
-if ( !class_exists( 'LP_Archive_Courses_Shortcode' ) ) {
+if (!class_exists('LP_Archive_Courses_Shortcode')) {
     /**
      * Class LP_AJAX
      */
@@ -138,21 +138,23 @@ if ( !class_exists( 'LP_Archive_Courses_Shortcode' ) ) {
          * get shortcode be initial
          * call once
          */
-        public static function init(){
+        public static function init()
+        {
             static::init_const();
             static::enqueue_style();
-            add_shortcode( static::$name, array( get_called_class(), 'shortcode_output' ) );
+            add_shortcode(static::$name, array(get_called_class(), 'shortcode_output'));
         }
 
         /**
          * get learn press course from wordpress post object
-         * @param object-reference $post wordpress post object
+         * @param object -reference $post wordpress post object
          * @return LP_Course course
          */
-        public static function get_lp_course($post){
+        public static function get_lp_course($post)
+        {
             $id = $post->ID;
             $course = null;
-            if( !empty($id) ){
+            if (!empty($id)) {
                 $course = new LP_Course($id);
             }
             return $course;
@@ -163,7 +165,8 @@ if ( !class_exists( 'LP_Archive_Courses_Shortcode' ) ) {
          * get shortcode output
          * main function of shortcode
          */
-        public static function  shortcode_output($atts){
+        public static function shortcode_output($atts)
+        {
             $default_atts = static::default_atts();
             $a = shortcode_atts($default_atts, $atts);
             $a = static::parse_atts($a);
@@ -172,9 +175,9 @@ if ( !class_exists( 'LP_Archive_Courses_Shortcode' ) ) {
             $courses = static::get_courses($a);
 
 
-            if(empty($courses)) return;
-            static::render($courses, $a, $template_file_name);
-
+            if (empty($courses)) return;
+            $output = static::render($courses, $a, $template_file_name);
+            return $output;
         }
 
         /**
@@ -182,7 +185,8 @@ if ( !class_exists( 'LP_Archive_Courses_Shortcode' ) ) {
          * @param array $atts
          * @return array well parsed shortcode attributes
          */
-        public static function parse_atts($a){
+        public static function parse_atts($a)
+        {
             $a['show_desc'] = filter_var($a['show_desc'], FILTER_VALIDATE_BOOLEAN);
             $a['show_lesson'] = filter_var($a['show_lesson'], FILTER_VALIDATE_BOOLEAN);
             $a['show_thumbnail'] = filter_var($a['show_thumbnail'], FILTER_VALIDATE_BOOLEAN);
@@ -201,7 +205,8 @@ if ( !class_exists( 'LP_Archive_Courses_Shortcode' ) ) {
          * get archive course by attributes
          * @return /LP_Course[] array of courses
          */
-        public static function get_courses($a){
+        public static function get_courses($a)
+        {
             //TODO
             return null;
         }
@@ -211,9 +216,10 @@ if ( !class_exists( 'LP_Archive_Courses_Shortcode' ) ) {
          * @param $template_name
          * @return string
          */
-        public static function get_template($atts){
+        public static function get_template($atts)
+        {
             $template_file_name = $atts['template'] . '.php';
-            if( ! file_exists( static::$template_dir . $template_file_name ) ){
+            if (!file_exists(static::$template_dir . $template_file_name)) {
                 $template_file_name = 'list.php';
             }
             return $template_file_name;
@@ -224,33 +230,39 @@ if ( !class_exists( 'LP_Archive_Courses_Shortcode' ) ) {
          * @param LP_Course current course
          */
 
-        public static function render($courses, $a = null, $template_file_name = 'cards.php'){
+        public static function render($courses, $a = null, $template_file_name = 'cards.php')
+        {
 
             $courses_count = sizeof($courses);
-            if($a['display'] > $courses_count) {
+            if ($a['display'] > $courses_count) {
                 $a['display'] = $courses_count;
             }
 
-            $page_count = floor($courses_count/$a['display']);
-            $page_count += ($courses_count % $a['display'] == 0)?0:1;
+            ob_start();
+            $page_count = floor($courses_count / $a['display']);
+            $page_count += ($courses_count % $a['display'] == 0) ? 0 : 1;
 
             //include template file
             include static::$template_dir . $template_file_name;
 
-            if ( isset($template_script) ){
+            if (isset($template_script)) {
                 static::enqueue_scripts
                 ($template_script);
             }
+
+            return ob_get_clean();
         }
 
         /**
          * add shortcode style
          */
-        public static function enqueue_style(){
+        public static function enqueue_style()
+        {
             add_action('wp_head', array(__CLASS__, 'apply_style'));
         }
 
-        public  static  function apply_style(){
+        public static function apply_style()
+        {
             wp_enqueue_style('owl_carousel_css', get_site_url() . '/wp-content/plugins/learnpress/assets/css/owlcarousel/owl.carousel.css');
         }
 
@@ -261,7 +273,8 @@ if ( !class_exists( 'LP_Archive_Courses_Shortcode' ) ) {
          * add shortcode script
          * @param $script_url script url
          */
-        public static function enqueue_scripts($script_url){
+        public static function enqueue_scripts($script_url)
+        {
             static::$script_url = $script_url;
             add_action('wp_footer', array(__CLASS__, 'apply_script'));
         }
@@ -271,7 +284,8 @@ if ( !class_exists( 'LP_Archive_Courses_Shortcode' ) ) {
          * callback to apply shortcode script
          */
 
-        public static function apply_script(){
+        public static function apply_script()
+        {
             $url = static::$script_url;
             $owl = get_site_url() . '/wp-content/plugins/learnpress/assets/js/owlcarousel/owl.carousel.min.js';
             wp_enqueue_script('owl_carousel_js', $owl, array('jquery'));
@@ -281,8 +295,9 @@ if ( !class_exists( 'LP_Archive_Courses_Shortcode' ) ) {
         /**
          * define static variable
          */
-        public static function init_const(){
-            static::$template_dir = LP_PLUGIN_PATH.'/inc/shortcodes/recent_courses/templates/';
+        public static function init_const()
+        {
+            static::$template_dir = LP_PLUGIN_PATH . '/inc/shortcodes/recent_courses/templates/';
         }
 
         /**
@@ -290,7 +305,8 @@ if ( !class_exists( 'LP_Archive_Courses_Shortcode' ) ) {
          * return array
          */
 
-        public static function add_default_atts(){
+        public static function add_default_atts()
+        {
             return null;
         }
 
@@ -300,7 +316,8 @@ if ( !class_exists( 'LP_Archive_Courses_Shortcode' ) ) {
          * @return  array default attributes
          */
 
-        public static function default_atts(){
+        public static function default_atts()
+        {
             $a = array(
                 'limit' => '8',
                 'display' => '8',
@@ -315,11 +332,11 @@ if ( !class_exists( 'LP_Archive_Courses_Shortcode' ) ) {
                 'show_price' => 'true',
                 'css_class' => '',
                 'template' => 'list',
-                
+
                 //options for owl carousel
-                'items'=> "",
+                'items' => "",
                 'items_desktop' => "",
-                'items_desktop_small'=> "",
+                'items_desktop_small' => "",
                 'itemsTablet' => "",
                 'items_tablet_small' => "",
                 'items_mobile' => "",
