@@ -54,7 +54,7 @@ if ( 0 != $post->ID ) {
 					<input name="order-customer" type="text" class="wp-suggest-user ui-autocomplete-input" id="admin-email" data-autocomplete-type="search" data-autocomplete-field="user_email" autocomplete="off">
 					-->
 					<?php
-					if($order->get_status() =='' || $order->has_status('pending') ) {
+//					if($order->get_status() =='' || $order->has_status('pending') ) {
 						wp_dropdown_users(
 							array(
 								'show_option_none' => __( '[Guest]', 'learnpress' ),
@@ -64,9 +64,9 @@ if ( 0 != $post->ID ) {
 								'selected'         => $order->get_user( 'ID' )
 							)
 						);
-					}else{
-						echo $order->get_customer_name();
-					}
+//					}else{
+//						echo $order->get_customer_name();
+//					}
 					?>
 				</div>
 
