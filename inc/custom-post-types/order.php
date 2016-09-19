@@ -118,6 +118,12 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 			if ( $action == 'editpost' && get_post_type( $post_id ) == 'lp_order' ) {
 				remove_action( 'save_post', array( $this, 'save_order' ) );
 
+				$user_id = learn_press_get_request( 'order-customer' );
+				//$postdata = array( 'post_status' => $status, 'ID' => $post_id );
+				///wp_update_post( $postdata );
+
+				update_post_meta( $post_id, '_user_id', $user_id > 0 ? $user_id : 0 );
+
 				$order_statuses = learn_press_get_order_statuses();
 				$order_statuses = array_keys( $order_statuses );
 				$status         = learn_press_get_request( 'order-status' );
@@ -127,13 +133,6 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 				}
 				$order = learn_press_get_order( $post_id );
 				$order->update_status( $status );
-
-				$user_id = learn_press_get_request( 'order-customer' );
-				//$postdata = array( 'post_status' => $status, 'ID' => $post_id );
-				///wp_update_post( $postdata );
-
-
-				update_post_meta( $post_id, '_user_id', $user_id > 0 ? $user_id : 0 );
 			}
 		}
 
