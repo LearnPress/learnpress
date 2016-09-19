@@ -39,7 +39,7 @@ $students_list_avatar_size = apply_filters('learn_press_students_list_avatar_siz
                                     'class' => 'students_list_avatar'
                                 )
                             ); ?>
-                        <? endif; ?>
+                        <?php endif; ?>
                         <a
                             class="name"
                             href="<?php echo learn_press_user_profile_link($student->user_id) ?>"
@@ -48,7 +48,7 @@ $students_list_avatar_size = apply_filters('learn_press_students_list_avatar_siz
                             <?php echo $student->display_name ?>
                         </a>
                     </li>
-                <? endforeach; ?>
+                <?php endforeach; ?>
             </ul>
         <?php else: ?>
             <div class="students empty">
