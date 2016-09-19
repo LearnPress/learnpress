@@ -62,6 +62,7 @@
                 LP.Hook.addAction('learn_press_message_box_resize', this.updateModalSearch);
                 $(document).on('learn_press_modal_search_items_response', this.addItemsToSection);
                 LP.Hook.addFilter('learn_press_modal_search_items_exclude', this.getSelectedItems);
+                LP.Hook.addFilter('learn_press_create_new_item', this.newItemFilter);
             },
             _focusItem: function (e) {
                 $(e.target).closest('tr').removeClass('focus');
@@ -123,7 +124,10 @@
                 var that = this;
                 this.$form = $('#post');
                 this.$form.on('submit', $.proxy(function (e) {
-                    if ($(e.target).hasClass('no-submit')) {
+                    if ($(e.target).hasClass('no-submit')) {                LP.Hook.addFilter('learn_press_create_new_item', function ($item) {
+                    if(!$item) return;
+                    return $item;
+                });
                         return false;
                     }
                     return this.onSave()
@@ -642,6 +646,13 @@
                         }
                     }
                 });
+            },
+            newItemFilter: function ($item) {
+                if(!$item) return;
+                $item.find('.section-item-icon .learn-press-dropdown-item-types ul .item-selected')
+                    .parent()
+                    .hide();
+                return $item;
             },
             toggleAddItemButtonState: function (e) {
                 var $form = $(e.target).closest('.lp-modal-search'),
