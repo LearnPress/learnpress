@@ -124,10 +124,7 @@
                 var that = this;
                 this.$form = $('#post');
                 this.$form.on('submit', $.proxy(function (e) {
-                    if ($(e.target).hasClass('no-submit')) {                LP.Hook.addFilter('learn_press_create_new_item', function ($item) {
-                    if(!$item) return;
-                    return $item;
-                });
+                    if ($(e.target).hasClass('no-submit')) {
                         return false;
                     }
                     return this.onSave()
