@@ -2,7 +2,7 @@
 	var Course_Editor = function (args) {
 		this.model = new Course_Editor.Model(args);
 		this.view = new Course_Editor.View({model: this.model});
-	}
+	};
 
 	var xxx = {
 		time : 0,
@@ -12,11 +12,11 @@
 			} else {
 				var old = this.time;
 				this.time = 0;
-				return (new Date()).getTime() - old < v
+				return (new Date()).getTime() - old < v;
 			}
 			return true;
 		}
-	}
+	};
 
 	Course_Editor.View = Backbone.View.extend({
 		$editor          : null,

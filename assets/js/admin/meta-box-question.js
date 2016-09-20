@@ -7,7 +7,7 @@
 if (typeof window.LP == 'undefined') {
 	window.LP = {};
 }
-console.log(LP);
+
 ;(function ($) {
 	var $doc = $(document);
 	LP.Hook.addFilter('before_add_question_option', function ($el, args) {
