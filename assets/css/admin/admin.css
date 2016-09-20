@@ -332,14 +332,26 @@ li.quick_quiz {
 #learn-press-add-ons-wrap #name {
   width: 30%;
 }
+
+.learn-press-add-ons p:before{
+    content: '';
+}
 @media (max-width: 1280px) {
   .learn-press-add-ons > li {
-    width: 33.33%;
+    /*width: 33.33%;*/
   }
+}
+@media screen and (max-width: 782px) {
+    .learn-press-add-ons .enable-now {
+        padding: 5px;
+    }
+    .learn-press-add-ons .enable-now:before{
+        margin: 0px !important;
+    }
 }
 @media (max-width: 768px) {
   .learn-press-add-ons > li {
-    width: 50%;
+    /*width: 50%;*/
   }
 }
 @media (max-width: 480px) {
