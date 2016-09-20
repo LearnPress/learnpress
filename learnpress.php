@@ -7,7 +7,7 @@ Description: LearnPress is a WordPress complete solution for creating a Learning
 Author: ThimPress
 Version: 1.0.9
 Author URI: http://thimpress.com
-Requires at least: 3.8             
+Requires at least: 3.8
 Tested up to: 4.5.2
 
 Text Domain: learnpress
