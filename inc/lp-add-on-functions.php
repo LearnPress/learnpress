@@ -176,13 +176,11 @@ function learn_press_get_add_ons( $options = array() ) {
 					continue;
 				}
 				$plugin_slug = dirname( $plugin_file );
-				if ( isset( $wp_plugins[$plugin_slug] ) ) {
-					$plugins[$plugin_file]           = (array) $wp_plugins[$plugin_slug];
+				if ( isset( $wp_plugins[$plugin_file] ) ) {
+					$plugins[$plugin_file]           = (array) $wp_plugins[$plugin_file];
 					$plugins[$plugin_file]['source'] = 'wp';
 				} else {
-
 					$plugin_data = _get_plugin_data_markup_translate( $plugin_file, $plugin_data, false, true );
-
 					$plugins[$plugin_file] = array(
 						'name'              => $plugin_data['Name'],
 						'slug'              => $plugin_slug,
@@ -514,6 +512,7 @@ function learn_press_add_ons_content_tab_bundle_activate( $current ) {
 			'force'         => wp_verify_nonce( learn_press_get_request( 'check' ), 'check_bundle_activate' )
 		)
 	);
+
 	$time        = get_option( '_transient_timeout_lp_ba_add_ons' );
 	$description = __( 'All add-ons that provide basic features for your LMS site.', 'learnpress' );
 	$description .= ' ' . sprintf( __( 'Last checked %s ago' ), human_time_diff( $time - LP_ADD_ON_TRANSIENT_TIME ) );
