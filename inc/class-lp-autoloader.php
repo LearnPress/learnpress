@@ -91,7 +91,6 @@ class LP_Autoloader {
 				}
 			}
 		}
-
 		$this->load_file( $path . $file );
 	}
 }

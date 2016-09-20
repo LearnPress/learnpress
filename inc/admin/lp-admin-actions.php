@@ -11,10 +11,10 @@
 function _learn_press_set_user_items( $query ) {
 	global $post_type, $pagenow, $wpdb;
 
-	if ( current_user_can( 'manage_options' ) || !current_user_can( LP()->teacher_role ) || !is_admin() || ( $pagenow != 'edit.php' ) ) {
+	if ( current_user_can( 'manage_options' ) || !current_user_can( LP_TEACHER_ROLE ) || !is_admin() || ( $pagenow != 'edit.php' ) ) {
 		return $query;
 	}
-	if ( !in_array( $post_type, array( 'lp_course', LP()->lesson_post_type, LP()->quiz_post_type, LP()->question_post_type ) ) ) {
+	if ( !in_array( $post_type, array( 'lp_course', LP_LESSON_CPT, LP_QUIZ_CPT, LP_QUESTION_CPT ) ) ) {
 		return;
 	}
 	$items = $wpdb->get_col(

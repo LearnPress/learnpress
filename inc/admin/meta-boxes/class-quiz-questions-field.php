@@ -23,10 +23,10 @@ if ( !class_exists( 'RWMB_Quiz_Questions_Field' ) ) {
 		public static function admin_enqueue_scripts() {
 			/*$q = new LP_Question();
 			$q->admin_script();*/
-			LP_Admin_Assets::enqueue_style( 'select2', RWMB_CSS_URL . 'select2/select2.css' );
-			LP_Admin_Assets::enqueue_script( 'select2', RWMB_JS_URL . 'select2/select2.min.js' );
-			LP_Admin_Assets::enqueue_script( 'lpr-quiz-question', learn_press_plugin_url( 'assets/js/admin/meta-box-quiz.js' ) );
-			wp_enqueue_script( 'modal-search-items' );
+			LP_Assets::enqueue_style( 'select2', RWMB_CSS_URL . 'select2/select2.css' );
+			LP_Assets::enqueue_script( 'select2', RWMB_JS_URL . 'select2/select2.min.js' );
+			LP_Assets::enqueue_script( 'learn-press-meta-box-quiz', learn_press_plugin_url( 'assets/js/admin/meta-box-quiz.js' ) );
+			LP_Assets::enqueue_script( 'learn-press-modal-search-items' );
 
 		}
 
@@ -61,7 +61,7 @@ if ( !class_exists( 'RWMB_Quiz_Questions_Field' ) ) {
 			if ( $question ) {
 				if ( !$question_id ) {
 					$question->set( 'post_title', $text ? $text : 'Your question text here' );
-					$question->set( 'post_type', LP()->question_post_type );
+					$question->set( 'post_type', LP_QUESTION_CPT );
 					$question->set( 'post_status', 'publish' );
 				}
 
@@ -87,7 +87,7 @@ if ( !class_exists( 'RWMB_Quiz_Questions_Field' ) ) {
 			learn_press_debug($_POST);
 			die();
 			static $has_updated;
-			$questions = isset( $_POST[LP()->question_post_type] ) ? $_POST[LP()->question_post_type] : null;
+			$questions = isset( $_POST[LP_QUESTION_CPT] ) ? $_POST[LP_QUESTION_CPT] : null;
 			if ( !$questions ) return;
 			$postmeta = array();
 

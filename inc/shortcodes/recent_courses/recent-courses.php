@@ -107,7 +107,7 @@ if ( !class_exists( 'LP_Recent_Courses_Shortcode' ) ) {
 		        	AND p.post_status = %s
 			        ORDER BY p.post_date DESC
 			        LIMIT %d",
-                    LP()->course_post_type,
+                    LP_COURSE_CPT,
                     'publish',
                     (int)$a['limit']
                 )

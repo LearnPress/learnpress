@@ -14,26 +14,20 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 
 			// learnpress_ajax_event => nopriv
 			$ajaxEvents = array(
-				//'list_quiz'            => false,
 				'load_quiz_question'  => true,
 				'load_prev_question'  => false,
 				'load_next_question'  => false,
-				//'save_question_answer' => false,
 				'finish_quiz'         => true,
 				'retake_quiz'         => true, // anonymous user can retake quiz
 				'take_free_course'    => false,
 				'load_lesson_content' => false,
 				'load_next_lesson'    => false,
 				'load_prev_lesson'    => false,
-				///'complete_lesson'     => false,
 				'finish_course'       => false,
 				'not_going'           => false,
-				//
 				'take_course'         => true,
 				'start_quiz'          => true,
 				'fetch_question'      => true,
-
-				////////////////////
 			);
 
 			foreach ( $ajaxEvents as $ajax_event => $nopriv ) {

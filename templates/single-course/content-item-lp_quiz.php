@@ -4,31 +4,38 @@
  *
  * @author ThimPress
  */
-$course = LP()->global['course'];
 $user   = learn_press_get_current_user();
-$item   = isset( $item ) ? $item : LP()->global['course-item'];
-$force  = isset( $force ) ? $force : false;
-if ( !$item ) {
+$course = LP()->global['course'];
+$quiz   = isset( $item ) ? $item : LP()->global['course-item'];
+if ( !$quiz ) {
 	return;
 }
-$quiz = LP_Quiz::get_quiz( $item->ID );
 ?>
-
-<h4 class="learn-press-content-item-title"><?php echo $item->title; ?></h4>
-<div class=""><?php echo $item->content;?></div>
-<div itemscope id="quiz-<?php echo $item->ID; ?>" <?php learn_press_quiz_class( 'learn-press-content-item-summary' ); ?>>
-
-	<?php if ( $user->has( 'quiz-status', 'completed', $item->id, $course->id ) ): ?>
-		<?php learn_press_get_template( 'quiz/result.php', array( 'force' => $force, 'quiz' => $quiz ) ); ?>
-	<?php elseif ( $user->has( 'quiz-status', 'started', $item->id, $course->id ) ): ?>
-		<?php learn_press_get_template( 'quiz/question-content.php', array( 'force' => $force, 'quiz' => $quiz ) ); ?>
-		<?php learn_press_get_template( 'quiz/countdown.php', array( 'force' => $force ) ); ?>
-	<?php else: ?>
-		<?php learn_press_get_template( 'quiz/description.php' ); ?>
-		<?php learn_press_get_template( 'quiz/intro.php', array( 'force' => $force ) ); ?>
+<div class="learn-press-content-item-title content-item-quiz-title">
+	<?php if ( false !== ( $item_quiz_title = apply_filters( 'learn_press_item_quiz_title', $quiz->title ) ) ): ?>
+		<h4><?php echo $item_quiz_title; ?></h4>
 	<?php endif; ?>
-	<?php learn_press_get_template( 'quiz/buttons.php', array( 'force' => $force ) ); ?>
-	<?php learn_press_get_template( 'quiz/questions.php', array( 'force' => $force ) ); ?>
+	<?php learn_press_get_template( 'quiz/countdown-simple.php' ); ?>
+</div>
+<div itemscope id="quiz-<?php echo $quiz->id; ?>" <?php learn_press_quiz_class( 'learn-press-content-item-summary' ); ?>>
+
+	<?php if ( $user->has_quiz_status( array( 'completed' ), $quiz->id, $course->id ) ): ?>
+
+		<?php learn_press_get_template( 'quiz/result.php' ); ?>
+
+	<?php elseif ( $user->has( 'quiz-status', 'started', $quiz->id, $course->id ) ): ?>
+
+		<?php learn_press_get_template( 'quiz/question-content.php' ); ?>
+		<?php //learn_press_get_template( 'quiz/countdown.php' ); ?>
+
+	<?php else: ?>
+
+		<?php learn_press_get_template( 'quiz/description.php' ); ?>
+		<?php learn_press_get_template( 'quiz/intro.php' ); ?>
+
+	<?php endif; ?>
+	<?php learn_press_get_template( 'quiz/buttons.php' ); ?>
+	<?php learn_press_get_template( 'quiz/questions.php' ); ?>
 
 </div>
 <script>

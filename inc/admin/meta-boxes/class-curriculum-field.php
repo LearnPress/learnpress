@@ -18,12 +18,8 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
 		 */
 		public static function admin_enqueue_scripts() {
 
-			LP_Admin_Assets::enqueue_style( 'meta-box-course', LP()->plugin_url( 'assets/css/admin/meta-box-course.css' ) );
-			LP_Admin_Assets::enqueue_style( 'select2', RWMB_CSS_URL . 'select2/select2.css' );
-			LP_Admin_Assets::enqueue_script( 'select2', RWMB_JS_URL . 'select2/select2.min.js' );
-			LP_Admin_Assets::enqueue_script( 'modal-search-items' );
-			LP_Admin_Assets::enqueue_script( 'meta-box-course', learn_press_plugin_url( 'assets/js/admin/meta-box-course.js' ), array( 'jquery' ) );
-			LP_Admin_Assets::add_localize(
+			LP_Assets::enqueue_script( 'learn-press-modal-search-items' );
+			LP_Assets::add_localize(
 				array(
 					'confirm_remove_section_lesson' => __( 'Do you want to remove this lesson permanently?', 'learnpress' ),
 					'confirm_remove_section_quiz'   => __( 'Do you want to remove this quiz permanently?', 'learnpress' ),
@@ -251,7 +247,7 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
 				$course_id = isset( $_POST['course_id'] ) ? intval( $_POST['course_id'] ) : 0;
 				$is_ajax   = true;
 			} else {
-				if ( LP()->course_post_type != get_post_type() ) return;
+				if ( LP_COURSE_CPT != get_post_type() ) return;
 				global $post;
 				$course_id = $post->ID;
 			}

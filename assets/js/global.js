@@ -488,7 +488,15 @@ if (typeof window.LP == 'undefined') {
 			}
 			window.location.href = url;
 		},
-		parseJSON     : function (data) {
+
+		parseResponse : function (response, type) {
+			var m = response.match(/<!-- LP_AJAX_START -->(.*)<!-- LP_AJAX_END -->/);
+			if (m) {
+				response = m[1]
+			}
+			return (type || "json") == "json" ? this.parseJSON(response) : response
+		},
+		parseJSON: function (data) {
 			var m = data.match(/<!-- LP_AJAX_START -->(.*)<!-- LP_AJAX_END -->/);
 			try {
 				if (m) {
@@ -501,13 +509,6 @@ if (typeof window.LP == 'undefined') {
 				data = {};
 			}
 			return data;
-		},
-		parseResponse : function (response, type) {
-			var m = response.match(/<!-- LP_AJAX_START -->(.*)<!-- LP_AJAX_END -->/);
-			if (m) {
-				response = m[1];
-			}
-			return ( type || 'json' ) == 'json' ? this.parseJSON(response) : response;
 		},
 		ajax          : function (args) {
 			var type = args.type || 'post',

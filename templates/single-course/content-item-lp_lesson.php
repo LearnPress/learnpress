@@ -5,6 +5,7 @@
  * @author  ThimPress
  * @version 1.0
  */
+global $lp_query, $wp_query;
 $user     = learn_press_get_current_user();
 $course   = LP()->global['course'];
 $security = wp_create_nonce( sprintf( 'complete-item-%d-%d-%d', $user->id, $course->id, $item->ID ) );

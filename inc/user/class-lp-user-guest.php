@@ -27,7 +27,7 @@ class LP_User_Guest extends LP_Abstract_User {
 	public static function instance() {
 		static $user;
 		if ( !$user ) {
-			if ( !session_id() ) session_start();
+			if ( !session_id() ) @session_start();
 			if ( empty( $_SESSION['learn_press_temp_user_id'] ) ) {
 				$_SESSION['learn_press_temp_user_id']    = time();
 				$_SESSION['learn_press_temp_session_id'] = session_id();

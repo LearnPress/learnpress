@@ -50,16 +50,3 @@
 .lpr-question-option input[type="text"] {
 	width: 100%;
 }
-.lp-modal-search{
-	background-color: #F5F5F5;
-	color: #777;
-	padding: 20px;
-	height: 100%;
-}
-.lp-modal-search ul{
-
-}
-.lp-highlight-color{
-	text-decoration: underline;
-	color: #00a0d2;
-}

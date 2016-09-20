@@ -6,44 +6,32 @@
  */
 
 if ( !class_exists( 'LP_Order_Post_Type' ) ) {
-
-	// Base class for custom post type to extends
-	learn_press_include( 'custom-post-types/abstract.php' );
-
 	// class LP_Order_Post_Type
 	final class LP_Order_Post_Type extends LP_Abstract_Post_Type {
-		public function __construct() {
-			//add_action( 'init', array( $this, 'register_post_type' ) );
+
+		/**
+		 * @var null
+		 */
+		protected static $_instance = null;
+
+		/**
+		 * LP_Order_Post_Type constructor.
+		 *
+		 * @param $post_type
+		 */
+		public function __construct( $post_type ) {
 			add_action( 'init', array( $this, 'register_post_statues' ) );
-			/*Add Coulumn*/
-			add_filter( 'manage_edit-lp_order_columns', array( $this, 'columns_head' ) );
-			add_action( 'manage_lp_order_posts_custom_column', array( $this, 'columns_content' ) );
-
 			add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ) );
-			add_filter( 'post_row_actions', array( $this, 'post_row_actions' ), 10, 2 );
-			add_filter( 'page_row_actions', array( $this, 'post_row_actions' ), 10, 2 );
-			add_filter( 'manage_edit-lp_order_sortable_columns', array( $this, 'sortable_columns' ) );
 
-			// Disable Auto Save
-			add_action( 'admin_print_scripts', array( $this, 'disable_autosave' ) );
 			add_action( 'admin_init', array( $this, 'remove_box' ) );
 			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
-
-			add_filter( 'posts_orderby', array( $this, 'posts_orderby' ) );
-			add_filter( 'posts_join_paged', array( $this, 'posts_join_paged' ) );
-			add_filter( 'posts_fields', array( $this, 'posts_fields' ) );
-			add_filter( 'posts_where_paged', array( $this, 'posts_where_paged' ) );
 			add_filter( 'admin_footer', array( $this, 'admin_footer' ) );
 
-			/*add_action( 'wp_ajax_update_order_status', array( $this, 'update_status' ) );
-			add_action( 'admin_head', array( $this, 'admin_head' ) );
+			$this
+				->add_map_method( 'before_delete', 'delete_order_items' )
+				->add_map_method( 'save', 'save_order' );
 
-			add_action( 'wp_trash_post', array( $this, 'preparing_to_trash_order' ) );
-			*/
-			//add_action( 'wp_trash_post', array( $this, 'preparing_to_trash_order' ) );
-			add_action( 'before_delete_post', array( $this, 'delete_order_items' ) );
-			add_action( 'save_post', array( $this, 'save_order' ) );
-			parent::__construct();
+			parent::__construct( $post_type );
 		}
 
 		public function enqueue_scripts() {
@@ -137,19 +125,8 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 		}
 
 		public function remove_box() {
-			//remove_post_type_support( LP()->order_post_type, 'title' );
-			remove_post_type_support( LP()->order_post_type, 'editor' );
-		}
-
-		/**
-		 * Disable the auto-save functionality for Orders.
-		 */
-		public function disable_autosave() {
-			global $post;
-
-			if ( $post && in_array( get_post_type( $post->ID ), array( 'lp_order' ) ) ) {
-				wp_dequeue_script( 'autosave' );
-			}
+			//remove_post_type_support( LP_ORDER_CPT, 'title' );
+			remove_post_type_support( LP_ORDER_CPT, 'editor' );
 		}
 
 		public function admin_footer() {
@@ -222,7 +199,7 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 
 			global $post, $wp_query;
 
-			if ( LP()->order_post_type != get_post_type() ) return;
+			if ( LP_ORDER_CPT != get_post_type() ) return;
 			ob_start();
 			?>
 			<script>
@@ -270,15 +247,12 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 			);
 		}
 
-		public function post_row_actions( $actions, $post ) {
-
-			if ( LP()->order_post_type == $post->post_type ) {
-				if ( !empty( $actions['inline hide-if-no-js'] ) ) {
-					unset( $actions['inline hide-if-no-js'] );
-				}
-				if ( !empty( $actions['edit'] ) ) {
-					$actions['edit'] = preg_replace( '/>(.*?)<\/a>/', ">" . __( 'View Order', 'learnpress' ) . "</a>", $actions['edit'] );
-				}
+		public function row_actions( $actions, $post ) {
+			if ( !empty( $actions['inline hide-if-no-js'] ) ) {
+				unset( $actions['inline hide-if-no-js'] );
+			}
+			if ( !empty( $actions['edit'] ) ) {
+				$actions['edit'] = preg_replace( '/>(.*?)<\/a>/', ">" . __( 'View Order', 'learnpress' ) . "</a>", $actions['edit'] );
 			}
 			return $actions;
 		}
@@ -292,7 +266,7 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 		 */
 		public function pre_get_posts( $wp_query ) {
 			if ( is_admin() ) {
-				if ( !empty( $wp_query->query['post_type'] ) && ( $wp_query->query['post_type'] == LP()->order_post_type ) ) {
+				if ( !empty( $wp_query->query['post_type'] ) && ( $wp_query->query['post_type'] == LP_ORDER_CPT ) ) {
 					$wp_query->set( 'orderby', 'date' );
 					$wp_query->set( 'order', 'desc' );
 				}
@@ -351,7 +325,7 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 		}
 
 		public function order_title( $title, $post_id ) {
-			if ( LP()->order_post_type == get_post_type( $post_id ) )
+			if ( LP_ORDER_CPT == get_post_type( $post_id ) )
 				$title = learn_press_transaction_order_number( $post_id );
 			return $title;
 		}
@@ -359,8 +333,10 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 		/**
 		 * Render column data
 		 *
+		 * @param string
+		 * @param int
 		 */
-		public function columns_content( $column ) {
+		public function columns_content( $column, $post_id = 0 ) {
 			global $post;
 			$the_order = learn_press_get_order( $post->ID );
 			switch ( $column ) {
@@ -432,57 +408,51 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 		/**
 		 * Register post type
 		 */
-		public static function register_post_type() {
-
-			register_post_type( LP_ORDER_CPT,
-				array(
-					'labels'             => array(
-						'name'               => __( 'Orders', 'learnpress' ),
-						'menu_name'          => __( 'Orders', 'learnpress' ),
-						'singular_name'      => __( 'Order', 'learnpress' ),
-						'add_new_item'       => __( 'Add New Order', 'learnpress' ),
-						'edit_item'          => __( 'Order Details', 'learnpress' ),
-						'all_items'          => __( 'Orders', 'learnpress' ),
-						'view_item'          => __( 'View Order', 'learnpress' ),
-						'add_new'            => __( 'Add New', 'learnpress' ),
-						'update_item'        => __( 'Update Order', 'learnpress' ),
-						'search_items'       => __( 'Search Orders', 'learnpress' ),
-						'not_found'          => __( 'No order found', 'learnpress' ),
-						'not_found_in_trash' => __( 'No order found in Trash', 'learnpress' )
-					),
-					'public'             => false,
-					'show_ui'            => true,
-					'show_in_nav_menus'  => false,
-					'show_in_admin_bar'  => false,
-					'publicly_queryable' => false,
-					'show_in_menu'       => 'learn_press',
-					/*'capabilities'       => array(
-						'create_posts' => 'do_not_allow'
-					),*/
-					'map_meta_cap'       => true,
-					'capability_type'    => LP()->order_post_type,
-					'hierarchical'       => true,
-					'rewrite'            => array( 'slug' => LP()->order_post_type, 'hierarchical' => true, 'with_front' => true ),
-					'supports'           => array(
-						'title',
-						'comments',
-						'custom-fields'
-					)
+		public function register() {
+			return array(
+				'labels'             => array(
+					'name'               => __( 'Orders', 'learnpress' ),
+					'menu_name'          => __( 'Orders', 'learnpress' ),
+					'singular_name'      => __( 'Order', 'learnpress' ),
+					'add_new_item'       => __( 'Add New Order', 'learnpress' ),
+					'edit_item'          => __( 'Order Details', 'learnpress' ),
+					'all_items'          => __( 'Orders', 'learnpress' ),
+					'view_item'          => __( 'View Order', 'learnpress' ),
+					'add_new'            => __( 'Add New', 'learnpress' ),
+					'update_item'        => __( 'Update Order', 'learnpress' ),
+					'search_items'       => __( 'Search Orders', 'learnpress' ),
+					'not_found'          => __( 'No order found', 'learnpress' ),
+					'not_found_in_trash' => __( 'No order found in Trash', 'learnpress' )
+				),
+				'public'             => false,
+				'show_ui'            => true,
+				'show_in_nav_menus'  => false,
+				'show_in_admin_bar'  => false,
+				'publicly_queryable' => false,
+				'show_in_menu'       => 'learn_press',
+				/*'capabilities'       => array(
+					'create_posts' => 'do_not_allow'
+				),*/
+				'map_meta_cap'       => true,
+				'capability_type'    => LP_ORDER_CPT,
+				'hierarchical'       => true,
+				'rewrite'            => array( 'slug' => LP_ORDER_CPT, 'hierarchical' => true, 'with_front' => true ),
+				'supports'           => array(
+					'title',
+					'comments',
+					'custom-fields'
 				)
 			);
-
-			add_action( 'add_meta_boxes', array( __CLASS__, 'register_metabox' ) );
 		}
 
 		public static function register_metabox() {
 
 			// Remove Publish metabox
-			remove_meta_box( 'submitdiv', LP()->order_post_type, 'side' );
+			remove_meta_box( 'submitdiv', LP_ORDER_CPT, 'side' );
 
-			remove_meta_box( 'commentstatusdiv', LP()->order_post_type, 'normal' );
+			remove_meta_box( 'commentstatusdiv', LP_ORDER_CPT, 'normal' );
 
-			add_meta_box( 'order_details', __( 'Order Details', 'learnpress' ), array( __CLASS__, 'order_details' ), LP()->order_post_type, 'normal', 'high' );
-			add_meta_box( 'submitdiv', __( 'Order Actions', 'learnpress' ), array( __CLASS__, 'order_actions' ), LP()->order_post_type, 'side', 'high' );
+
 		}
 
 		public static function order_details( $post ) {
@@ -494,7 +464,7 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 		}
 
 		public function preparing_to_trash_order( $post_id ) {
-			if ( LP()->order_post_type != get_post_type( $post_id ) ) return;
+			if ( LP_ORDER_CPT != get_post_type( $post_id ) ) return;
 
 		}
 
@@ -503,12 +473,7 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 		 *
 		 * @static
 		 */
-		public static function admin_scripts() {
-			/*if ( in_array( get_post_type(), array( LP()->order_post_type ) ) ) {
-
-				wp_enqueue_style( 'lp-meta-boxes', LP()->plugin_url( 'assets/css/meta-boxes.css' ) );
-
-			}*/
+		public function admin_scripts() {
 		}
 
 		public function remove_edit_post_link() {
@@ -576,6 +541,21 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 				'label_count'               => _n_noop( 'Failed <span class="count">(%s)</span>', 'Failed <span class="count">(%s)</span>', 'learnpress' )
 			) );
 		}
-	}
-} // end LP_Order_Post_Type
-new LP_Order_Post_Type();
+
+		public function submitdiv(){
+
+		}
+
+		public static function instance() {
+			if ( !self::$_instance ) {
+				self::$_instance = new self( LP_ORDER_CPT );
+			}
+			return self::$_instance;
+		}
+	}// end LP_Order_Post_Type
+
+	$order_post_type = LP_Order_Post_Type::instance();
+	$order_post_type
+		->add_meta_box( 'order_details', __( 'Order Details', 'learnpress' ), 'order_details', 'normal', 'high' )
+		->add_meta_box( 'submitdiv', __( 'Order Actions', 'learnpress' ), 'order_actions', 'side', 'high' );
+}

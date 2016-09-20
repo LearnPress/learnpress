@@ -81,18 +81,18 @@ class LP_Question_True_Or_False extends LP_Abstract_Question {
 	public function save_post_action() {
 
 		if ( $post_id = $this->get( 'ID' ) ) {
-			$post_data    = isset( $_POST[LP()->question_post_type] ) ? $_POST[LP()->question_post_type] : array();
+			$post_data    = isset( $_POST[LP_QUESTION_CPT] ) ? $_POST[LP_QUESTION_CPT] : array();
 			$post_answers = array();
 			$post_explain = $post_data[$post_id]['explaination'];
 			if ( isset( $post_data[$post_id] ) && $post_data = $post_data[$post_id] ) {
 
-				//if( LP()->question_post_type != get_post_type( $post_id ) ){
+				//if( LP_QUESTION_CPT != get_post_type( $post_id ) ){
 				try {
 					$ppp = wp_update_post(
 						array(
 							'ID'         => $post_id,
 							'post_title' => $post_data['text'],
-							'post_type'  => LP()->question_post_type
+							'post_type'  => LP_QUESTION_CPT
 						)
 					);
 				} catch ( Exception $ex ) {

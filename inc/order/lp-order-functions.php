@@ -31,7 +31,7 @@ function learn_press_create_order( $order_data ) {
 		'ID'          => 0,
 		'post_author' => '1',
 		'post_parent' => '0',
-		'post_type'   => LP()->order_post_type,
+		'post_type'   => LP_ORDER_CPT,
 		'post_status' => 'lp-' . apply_filters( 'learn_press_default_order_status', 'pending' ),
 		'ping_status' => 'closed',
 		'post_title'  => __( 'Order on', 'learnpress' ) . ' ' . current_time( "l jS F Y h:i:s A" )
@@ -103,7 +103,7 @@ function learn_press_get_booking_id_by_key( $order_key ) {
 			WHERE meta_key = '_hb_booking_key'
 			AND meta_value = %s
 			AND p.post_type = %s
-		", $order_key, LP()->order_post_type )
+		", $order_key, LP_ORDER_CPT )
 	);
 
 	return $order_id;
@@ -359,7 +359,7 @@ function learn_press_add_order( $args = null ) {
 		$order_data['ID'] = $args['order_id'];
 	} else {
 		$updating                  = false;
-		$order_data['post_type']   = LP()->order_post_type;
+		$order_data['post_type']   = LP_ORDER_CPT;
 		$order_data['post_status'] = !empty( $args['status'] ) ? 'publish' : 'lpr-draft';
 		$order_data['ping_status'] = 'closed';
 		$order_data['post_author'] = ( $order_owner_id = learn_press_cart_order_instructor() ) ? $order_owner_id : 1; // always is administrator
@@ -483,7 +483,7 @@ function learn_press_handle_purchase_request() {
 
 function learn_press_get_orders( $args = array() ) {
 	$defaults = array(
-		'post_type' => LP()->order_post_type,
+		'post_type' => LP_ORDER_CPT,
 	);
 
 	$args = wp_parse_args( $args, $defaults );
@@ -508,7 +508,7 @@ function learn_press_get_orders( $args = array() ) {
 }
 
 function learn_press_get_course_price_text( $price, $course_id ) {
-	if ( !$price && LP()->course_post_type == get_post_type( $course_id ) ) {
+	if ( !$price && LP_COURSE_CPT == get_post_type( $course_id ) ) {
 		$price = __( 'Free', 'learnpress' );
 	}
 	return $price;
@@ -622,7 +622,7 @@ function learn_press_get_course_order( $course_id, $user_id = null ) {
         FROM {$wpdb->posts} p INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
         INNER JOIN {$wpdb->postmeta} pm2 ON p.ID = pm2.post_id AND pm2.meta_key = %s
         WHERE p.post_type = %s AND pm.meta_key = %s AND pm.meta_value = %d
-    ", '_learn_press_order_items', LP()->order_post_type, '_learn_press_customer_id', $user_id );
+    ", '_learn_press_order_items', LP_ORDER_CPT, '_learn_press_customer_id', $user_id );
 	if ( $orders = $wpdb->get_results( $query ) ) {
 		foreach ( $orders as $order_data ) {
 			$order_id   = $order_data->ID;

@@ -5,16 +5,26 @@
  * @author  ThimPress
  * @package LearnPress/Templates
  */
-if ( !isset( $quiz ) ) {
+$user   = learn_press_get_current_user();
+$course = LP()->global['course'];
+$quiz   = isset( $item ) ? $item : LP()->global['course-item'];
+if ( !$quiz ) {
 	return;
 }
-LP()->quiz = $quiz;
-$question  = $quiz->get_current_question();
+$question = $quiz->get_current_question();
 if ( !$question ) {
 	return;
 }
 ?>
-<div class="question-content">
+<?php if ( false !== ( $title = apply_filters( 'learn_press_quiz_question_title', $question->get_title() ) ) ): ?>
+	<h4 class="quiz-question-title"><?php echo $title; ?></h4>
+<?php endif; ?>
+<div class="quiz-question-content">
+	<?php if ( false !== ( $content = apply_filters( 'learn_press_quiz_question_content', $question->get_content() ) ) ): ?>
+		<div class="question-content">
+			<?php echo $content; ?>
+		</div>
+	<?php endif; ?>
 	<?php
 	$question->render();
 	?>

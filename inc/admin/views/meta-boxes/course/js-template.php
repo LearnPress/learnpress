@@ -30,7 +30,7 @@
 </script>
 <script type="text/html" id="tmpl-section-item">
 	<?php
-	$item = learn_press_post_object( array( 'post_type' => LP()->lesson_post_type ) );
+	$item = learn_press_post_object( array( 'post_type' => LP_LESSON_CPT ) );
 	$item->post_title = '{{data.text}}';
 	$item->item_id = '{{data.id}}';
 	$item->post_type = '{{data.type}}';

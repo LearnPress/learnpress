@@ -28,12 +28,13 @@ if ( $show_result && $completed ) {
 
 	<?php do_action( 'learn_press_before_question_wrap', $this ); ?>
 
+	<!--
 	<h4 class="learn-press-question-title"><?php echo get_the_title( $this->id ); ?></h4>
 
 	<div class="question-desc">
 		<?php echo apply_filters( 'the_content', $this->post->post_content ); ?>
 	</div>
-
+	-->
 	<?php do_action( 'learn_press_before_question_options', $this ); ?>
 	<?php if ( $answers = $this->answers ):?>
 

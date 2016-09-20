@@ -28,13 +28,7 @@ class LP_Quiz_Factory {
 		foreach ( $actions as $k => $v ) {
 			LP_Request_Handler::register_ajax( $k, array( __CLASS__, $v ) );
 		}
-
 		add_action( 'learn_press_after_single_quiz_summary', array( __CLASS__, 'output_quiz_params' ) );
-		/*
-		add_action( 'learn_press_before_user_start_quiz', array( __CLASS__, 'xxx' ), 5, 3 );
-		add_action( 'init', array( __CLASS__, 'yyy' ) );
-		add_action( 'init', array( __CLASS__, '_delete_anonymous_users' ) );*/
-
 	}
 
 	public static function output_quiz_params( $quiz ) {
@@ -161,33 +155,6 @@ class LP_Quiz_Factory {
 				$response['result'] = 'error';
 			}
 		}
-		/*
-		$current_question = !empty( $result['current_question'] ) ? $result['current_question'] : $user->get_current_question_id( $quiz_id );
-		$question         = LP_Question_Factory::get_question( $current_question );
-		if ( $question ) {
-			$quiz->current_question = $question;
-			ob_start();
-			$question->render();
-			$content = ob_get_clean();
-		} else {
-			$content = '';
-		}
-		learn_press_send_json(
-			array(
-				'result'   => $result === false ? 'fail' : 'success',
-				'message'  => $result === false ? array(
-					'title'   => __( 'Error', 'learnpress' ),
-					'message' => __( 'Start quiz failed', 'learnpress' )
-				) : '',
-				'data'     => $result,
-				'question' =>
-					array(
-						'id'        => $current_question,
-						'permalink' => learn_press_get_user_question_url( $quiz_id, $current_question ),
-						'content'   => $content
-					)
-			)
-		);*/
 		learn_press_send_json( $response );
 	}
 
@@ -206,7 +173,6 @@ class LP_Quiz_Factory {
 				array(
 					'result'   => 'error',
 					'message'  => array( 'title' => __( 'Error', 'learnpress' ), 'message' => __( 'You have already completed quiz', 'learnpress' ) ),
-					//'data'     => $user->get_quiz_result(),
 					'redirect' => $quiz->permalink
 				)
 			);
@@ -214,17 +180,11 @@ class LP_Quiz_Factory {
 			$result = $user->finish_quiz( $quiz_id, $course_id );
 			LP_Cache::flush();
 			if ( $result ) {
-				$course = learn_press_get_course( $course_id );
-				//LP()->course        = $course;
-				//LP()->user          = $user;
+				$course             = learn_press_get_course( $course_id );
 				$response['status'] = $result->status;
-
 				// update cache
 				LP_Cache::set_quiz_status( $user->id . '-' . $course->id . '-' . $quiz_id, $result->status );
-
-				ob_start();
-				learn_press_get_template( 'single-course/content-item-lp_quiz.php' );
-				$response['html'] = ob_get_clean();
+				$response['html'] = learn_press_get_template_content( 'single-course/content-item-lp_quiz.php' );
 			} else {
 				$response['result'] = 'error';
 			}
@@ -249,7 +209,6 @@ class LP_Quiz_Factory {
 				array(
 					'result'   => 'error',
 					'message'  => array( 'title' => __( 'Error', 'learnpress' ), 'message' => __( 'You can not retake quiz', 'learnpress' ) ),
-					//'data'     => $user->get_quiz_result(),
 					'redirect' => $quiz->permalink
 				)
 			);
@@ -264,37 +223,13 @@ class LP_Quiz_Factory {
 
 				// update cache
 				LP_Cache::set_quiz_status( $user->id . '-' . $course->id . '-' . $quiz_id, $result->status );
-
-				ob_start();
-				learn_press_get_template( 'single-course/content-item-lp_quiz.php' );
-				$response['html'] = ob_get_clean();
+				$response['html'] = learn_press_get_template_content( 'single-course/content-item-lp_quiz.php' );
 			} else {
 				$response['result'] = 'error';
 			}
 		}
 
 		learn_press_send_json( $response );
-
-		$quiz_id = learn_press_get_request( 'quiz_id' );
-		$user    = learn_press_get_current_user();
-		self::_verify_nonce();
-
-		LP()->set_object( 'quiz', LP_Quiz::get_quiz( $quiz_id ), true );
-
-		if ( $user->get_quiz_status( $quiz_id ) == 'completed' ) {
-			$response = $user->retake_quiz( $quiz_id );
-			learn_press_send_json( $response );
-		}
-
-		learn_press_send_json(
-			array(
-				'result'  => 'error',
-				'message' => array(
-					'title'   => __( 'Error', 'learnpress' ),
-					'message' => __( 'You can not retake this quiz', 'learnpress' )
-				)
-			)
-		);
 	}
 
 	public static function check_question() {
@@ -353,11 +288,12 @@ class LP_Quiz_Factory {
 	/**
 	 * Verify quiz action security
 	 *
-	 * @param $action
+	 * @param string $action
+	 * @param mixed  $error_message
 	 *
 	 * @return mixed
 	 */
-	public static function _verify_nonce( $action ) {
+	public static function _verify_nonce( $action, $error_message = false ) {
 		$action    = str_replace( '_', '-', $action );
 		$course_id = learn_press_get_request( 'course_id', 0 );
 		$quiz_id   = learn_press_get_request( 'quiz_id', 0 );
@@ -366,10 +302,14 @@ class LP_Quiz_Factory {
 
 		$quiz = LP_Quiz::get_quiz( $quiz_id );
 		if ( !$quiz->id || !wp_verify_nonce( $security, "{$action}-{$user_id}-{$course_id}-{$quiz_id}" ) ) {
+			if ( $error_message === false ) {
+				$error_message = array( 'title' => __( 'Error', 'learnpress' ), 'message' => __( 'Please contact site\'s administrator for more information.', 'learnpress' ) );
+			}
+
 			learn_press_send_json(
 				array(
 					'result'  => 'error',
-					'message' => array( 'title' => __( 'Error', 'learnpress' ), 'message' => __( 'Please contact site\'s administrator for more information.', 'learnpress' ) )
+					'message' => $error_message
 				)
 			);
 		}

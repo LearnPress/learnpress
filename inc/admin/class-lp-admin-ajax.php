@@ -688,7 +688,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 				$id = wp_insert_post(
 					array(
 						'post_title'  => $name,
-						'post_type'   => LP()->question_post_type,
+						'post_type'   => LP_QUESTION_CPT,
 						'post_status' => 'publish'
 					)
 				);
@@ -897,7 +897,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 
 			$new_lesson = array(
 				'post_title'  => wp_strip_all_tags( $lesson_title ),
-				'post_type'   => LP()->lesson_post_type,
+				'post_type'   => LP_LESSON_CPT,
 				'post_status' => 'publish'
 			);
 
@@ -905,7 +905,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 
 			$args      = array(
 				'numberposts' => 1,
-				'post_type'   => LP()->lesson_post_type,
+				'post_type'   => LP_LESSON_CPT,
 				'post_status' => 'publish'
 			);
 			$lesson    = wp_get_recent_posts( $args );
@@ -926,7 +926,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 
 			$new_quiz = array(
 				'post_title'  => wp_strip_all_tags( $quiz_title ),
-				'post_type'   => LP()->quiz_post_type,
+				'post_type'   => LP_QUIZ_CPT,
 				'post_status' => 'publish'
 			);
 
@@ -934,7 +934,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 
 			$args    = array(
 				'numberposts' => 1,
-				'post_type'   => LP()->quiz_post_type,
+				'post_type'   => LP_QUIZ_CPT,
 				'post_status' => 'publish'
 			);
 			$quiz    = wp_get_recent_posts( $args );
@@ -950,7 +950,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 		public static function be_teacher() {
 			$user_id    = get_current_user_id();
 			$be_teacher = new WP_User( $user_id );
-			$be_teacher->set_role( LP()->teacher_role );
+			$be_teacher->set_role( LP_TEACHER_ROLE );
 			die;
 		}
 

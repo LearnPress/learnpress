@@ -447,6 +447,7 @@ class LP_Abstract_User {
 		if ( !$quiz ) {
 			return;
 		}
+		$return = false;
 		$progress = $this->get_quiz_results( $quiz->id, $course_id );
 		if ( $progress ) {
 			$time       = current_time( 'timestamp' );
@@ -456,7 +457,7 @@ class LP_Abstract_User {
 				$time = $start_time + $quiz->duration;
 			}
 
-			$return = learn_press_update_user_item_field(
+			$updated = learn_press_update_user_item_field(
 				array(
 					'status'   => 'completed',
 					'end_time' => date( 'Y-m-d H:i:h', $time )
@@ -466,14 +467,14 @@ class LP_Abstract_User {
 				)
 			);
 
-			if ( $return ) {
-				$progress = $this->get_quiz_results( $quiz_id, $course_id, true );
+			if ( $updated ) {
+				$return = $this->get_quiz_results( $quiz_id, $course_id, true );
 				//do_action( 'learn_press_user_finish_quiz', $progress, $quiz_id, $course_id, $this->id );
 			}
 		}
 
 		do_action( 'learn_press_user_finish_quiz', $quiz_id, $this->id );
-
+		return $return;
 	}
 
 	/**
@@ -982,7 +983,7 @@ class LP_Abstract_User {
 				'total'  => 5
 			)
 		);
-		$args['post_type'] = LP()->quiz_post_type;
+		$args['post_type'] = LP_QUIZ_CPT;
 		$key               = md5( serialize( $args ) );
 		if ( empty( $quizzes[$key] ) || $force ) {
 			global $wpdb;
@@ -1029,7 +1030,7 @@ class LP_Abstract_User {
 		static $lessons = array();
 		if ( !$lessons || $force ) {
 			settype( $args, 'array' );
-			$args['post_type'] = LP()->lesson_post_type;
+			$args['post_type'] = LP_LESSON_CPT;
 			$lessons           = $this->get_posts( $args );
 		}
 		return apply_filters( 'learn_press_get_user_lessons', $lessons );
@@ -1093,10 +1094,10 @@ class LP_Abstract_User {
 	public function can_view_item( $item_id, $course_id = 0 ) {
 		$return = false;
 		switch ( get_post_type( $item_id ) ) {
-			case LP()->quiz_post_type:
+			case LP_QUIZ_CPT:
 				$return = $this->can( 'view-quiz', $item_id, $course_id );
 				break;
-			case LP()->lesson_post_type:
+			case LP_LESSON_CPT:
 				$return = $this->can( 'view-lesson', $item_id, $course_id );
 				break;
 		}
@@ -1290,7 +1291,7 @@ class LP_Abstract_User {
 
 	public function is_instructor() {
 		$roles = !empty( $this->user->roles ) ? $this->user->roles : array();
-		return in_array( LP()->teacher_role, $roles );
+		return in_array( LP_TEACHER_ROLE, $roles );
 	}
 
 	public function is_admin() {
@@ -2115,7 +2116,7 @@ class LP_Abstract_User {
 			);
 		}
 
-		$args['post_type'] = LP()->question_post_type;
+		$args['post_type'] = LP_QUESTION_CPT;
 		$args['author']    = $this->id;
 
 		$key = md5( serialize( $args ) );
@@ -2169,8 +2170,8 @@ class LP_Abstract_User {
 						AND c.post_status = %s
 				) a GROUP BY a.ID
 			", $args['user_id'],
-				LP()->course_post_type, $this->id,
-				$args['user_id'], LP()->course_post_type, 'publish'
+				LP_COURSE_CPT, $this->id,
+				$args['user_id'], LP_COURSE_CPT, 'publish'
 			);
 			$query .= $where . $order . $limit;
 

@@ -114,7 +114,7 @@ if ( !class_exists( 'LP_Featured_Courses_Shortcode' ) ) {
                     ORDER BY p.post_date
                     LIMIT %d",
                     '_lp_featured',
-                    LP()->course_post_type,
+                    LP_COURSE_CPT,
                     'publish',
                     '1',
                     (int)$a['limit']

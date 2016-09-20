@@ -5,28 +5,23 @@ if ( !defined( 'ABSPATH' ) ) {
 }
 
 if ( !class_exists( 'LP_Question_Post_Type' ) ) {
-	// Base class for custom post type to extends
-	learn_press_include( 'custom-post-types/abstract.php' );
-
 	// class LP_Question_Post_Type
 	class LP_Question_Post_Type extends LP_Abstract_Post_Type {
-		public function __construct() {
+		/**
+		 * @var null
+		 */
+		protected static $_instance = null;
+
+		/**
+		 * LP_Question_Post_Type constructor.
+		 *
+		 * @param $post_type
+		 * @param mixed
+		 */
+		public function __construct( $post_type, $args = '' ) {
 			add_action( 'admin_head', array( $this, 'init' ) );
 
-			//add_action( 'init', array( $this, 'register_post_type' ) );
-			//add_action( 'admin_head', array( $this, 'enqueue_script' ) );
-			//add_action( 'admin_init', array( $this, 'add_meta_boxes' ), 5 );
-			add_filter( 'manage_lp_question_posts_columns', array( $this, 'columns_head' ) );
-			add_action( 'manage_lp_question_posts_custom_column', array( $this, 'columns_content' ), 10, 2 );
-			add_filter( 'posts_join_paged', array( $this, 'posts_join_paged' ) );
-			add_action( 'before_delete_post', array( $this, 'delete_question_answers' ) );
-
-			//add_filter( 'posts_fields', array( $this, 'posts_fields' ) );
-			add_filter( 'posts_where_paged', array( $this, 'posts_where_paged' ) );
-			add_filter( 'posts_orderby', array( $this, 'posts_orderby' ) );
-			add_filter( 'manage_edit-lp_question_sortable_columns', array( $this, 'columns_sortable' ) );
-
-			parent::__construct();
+			parent::__construct( $post_type, $args );
 
 		}
 
@@ -65,39 +60,7 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 		/**
 		 * Register question post type
 		 */
-		public static function register_post_type() {
-			register_post_type( LP_QUESTION_CPT,
-				array(
-					'labels'             => array(
-						'name'               => __( 'Question Bank', 'learnpress' ),
-						'menu_name'          => __( 'Question Bank', 'learnpress' ),
-						'singular_name'      => __( 'Question', 'learnpress' ),
-						'all_items'          => __( 'Questions', 'learnpress' ),
-						'view_item'          => __( 'View Question', 'learnpress' ),
-						'add_new_item'       => __( 'Add New Question', 'learnpress' ),
-						'add_new'            => __( 'Add New', 'learnpress' ),
-						'edit_item'          => __( 'Edit Question', 'learnpress' ),
-						'update_item'        => __( 'Update Question', 'learnpress' ),
-						'search_items'       => __( 'Search Questions', 'learnpress' ),
-						'not_found'          => __( 'No question found', 'learnpress' ),
-						'not_found_in_trash' => __( 'No question found in trash', 'learnpress' ),
-					),
-					'public'             => false, // disable access directly via permalink url
-					'publicly_queryable' => false,
-					'show_ui'            => true,
-					'has_archive'        => false,
-					'capability_type'    => LP_LESSON_CPT,
-					'map_meta_cap'       => true,
-					'show_in_menu'       => 'learn_press',
-					'show_in_admin_bar'  => true,
-					'show_in_nav_menus'  => true,
-					'supports'           => array( 'title', 'editor', 'revisions' ),
-					'hierarchical'       => true,
-					'rewrite'            => array( 'slug' => 'questions', 'hierarchical' => true, 'with_front' => false )
-				)
-			);
-
-
+		public function register() {
 			register_taxonomy( 'question_tag', array( LP_QUESTION_CPT ),
 				array(
 					'labels'            => array(
@@ -120,17 +83,43 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 				)
 			);
 			add_post_type_support( 'question', 'comments' );
-
-
+			return array(
+				'labels'             => array(
+					'name'               => __( 'Question Bank', 'learnpress' ),
+					'menu_name'          => __( 'Question Bank', 'learnpress' ),
+					'singular_name'      => __( 'Question', 'learnpress' ),
+					'all_items'          => __( 'Questions', 'learnpress' ),
+					'view_item'          => __( 'View Question', 'learnpress' ),
+					'add_new_item'       => __( 'Add New Question', 'learnpress' ),
+					'add_new'            => __( 'Add New', 'learnpress' ),
+					'edit_item'          => __( 'Edit Question', 'learnpress' ),
+					'update_item'        => __( 'Update Question', 'learnpress' ),
+					'search_items'       => __( 'Search Questions', 'learnpress' ),
+					'not_found'          => __( 'No question found', 'learnpress' ),
+					'not_found_in_trash' => __( 'No question found in trash', 'learnpress' ),
+				),
+				'public'             => false, // disable access directly via permalink url
+				'publicly_queryable' => false,
+				'show_ui'            => true,
+				'has_archive'        => false,
+				'capability_type'    => LP_LESSON_CPT,
+				'map_meta_cap'       => true,
+				'show_in_menu'       => 'learn_press',
+				'show_in_admin_bar'  => true,
+				'show_in_nav_menus'  => true,
+				'supports'           => array( 'title', 'editor', 'revisions' ),
+				'hierarchical'       => true,
+				'rewrite'            => array( 'slug' => 'questions', 'hierarchical' => true, 'with_front' => false )
+			);
 		}
 
-		public static function add_meta_boxes() {
+		public function add_meta_boxes() {
 
 			new RW_Meta_Box(
 				array(
 					'id'     => 'question_answer',
 					'title'  => __( 'Answer', 'learnpress' ),
-					'pages'  => array( LP()->question_post_type ),
+					'pages'  => array( LP_QUESTION_CPT ),
 					'fields' => array(
 						array(
 							'name' => __( '', 'learnpress' ),
@@ -143,6 +132,7 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 
 			$meta_box = self::settings_meta_box();
 			new RW_Meta_Box( $meta_box );
+			parent::add_meta_boxes();
 		}
 
 		public static function settings_meta_box() {
@@ -150,7 +140,7 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 			$meta_box = array(
 				'id'     => 'question_settings',
 				'title'  => __( 'Settings', 'learnpress' ),
-				'pages'  => array( LP()->question_post_type ),
+				'pages'  => array( LP_QUESTION_CPT ),
 				'fields' => array(
 					array(
 						'name'  => __( 'Mark for this question', 'learnpress' ),
@@ -184,8 +174,8 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 		/**
 		 * Enqueue scripts
 		 */
-		public static function admin_scripts() {
-			if ( !in_array( get_post_type(), array( LP()->question_post_type ) ) ) return;
+		public function admin_scripts() {
+			if ( !in_array( get_post_type(), array( LP_QUESTION_CPT ) ) ) return;
 			ob_start();
 			?>
 			<script>
@@ -244,11 +234,11 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 		public function columns_head( $columns ) {
 			$pos         = array_search( 'title', array_keys( $columns ) );
 			$new_columns = array(
-				LP()->quiz_post_type => __( 'Quiz', 'learnpress' ),
-				'type'               => __( 'Type', 'learnpress' )
+				LP_QUIZ_CPT => __( 'Quiz', 'learnpress' ),
+				'type'      => __( 'Type', 'learnpress' )
 			);
 
-			if ( false !== $pos && !array_key_exists( LP()->quiz_post_type, $columns ) ) {
+			if ( false !== $pos && !array_key_exists( LP_QUIZ_CPT, $columns ) ) {
 				$columns = array_merge(
 					array_slice( $columns, 0, $pos + 1 ),
 					$new_columns,
@@ -257,7 +247,7 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 			}
 
 			$user = wp_get_current_user();
-			if ( in_array( LP()->teacher_role, $user->roles ) ) {
+			if ( in_array( LP_TEACHER_ROLE, $user->roles ) ) {
 				unset( $columns['author'] );
 			}
 			return $columns;
@@ -269,9 +259,9 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 		 * @param $name
 		 * @param $post_id
 		 */
-		public function columns_content( $name, $post_id ) {
+		public function columns_content( $name, $post_id = 0 ) {
 			switch ( $name ) {
-				case LP()->quiz_post_type:
+				case LP_QUIZ_CPT:
 					$quizzes = learn_press_get_question_quizzes( $post_id );
 					if ( $quizzes ) {
 						foreach ( $quizzes as $quiz ) {
@@ -369,25 +359,25 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 		 *
 		 * @return mixed
 		 */
-		public function columns_sortable( $columns ) {
-			$columns[LP()->quiz_post_type] = 'quiz-name';
+		public function sortable_columns( $columns ) {
+			$columns[LP_QUIZ_CPT] = 'quiz-name';
 			return $columns;
 		}
 
-		public static function admin_styles() {
+		public function admin_styles() {
 		}
 
-		public static function admin_params() {
+		public function admin_params() {
 
 		}
 
 		public function save() {
-			$this->save_post();
+			//$this->save_post();
 		}
 
 		private function _is_archive() {
 			global $pagenow, $post_type;
-			if ( !is_admin() || ( $pagenow != 'edit.php' ) || ( LP()->question_post_type != $post_type ) ) {
+			if ( !is_admin() || ( $pagenow != 'edit.php' ) || ( LP_QUESTION_CPT != $post_type ) ) {
 				return false;
 			}
 			return true;
@@ -400,7 +390,19 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 		private function _get_orderby() {
 			return isset( $_REQUEST['orderby'] ) ? $_REQUEST['orderby'] : '';
 		}
-	} // end LP_Question_Post_Type
-}
 
-new LP_Question_Post_Type();
+		public static function instance() {
+			if ( !self::$_instance ) {
+				$args            = array(
+					'default_meta' => array(
+						'_lp_mark' => 1,
+						'_lp_type' => 'true_or_false'
+					)
+				);
+				self::$_instance = new self( LP_QUESTION_CPT, $args );
+			}
+			return self::$_instance;
+		}
+	} // end LP_Question_Post_Type
+	$question_post_type = LP_Question_Post_Type::instance();
+}

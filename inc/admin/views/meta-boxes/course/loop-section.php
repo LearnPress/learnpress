@@ -45,21 +45,21 @@ if ( $is_hidden ) {
             <!--
             <button class="button" type="button" data-action="delete-forever" disabled="disabled" data-title="<?php _e( 'Delete Forever', 'learnpress' ); ?>"><?php _e( 'Delete Forever', 'learnpress' ); ?></button>
 
-            <button class="button hide-if-js" type="button" data-action="cancel"><?php _e( 'Cancel', 'learnpress' ); ?></button>-->
-            <!--<div class="button lp-check-all-items">
-                    <input type="checkbox" class="" />
-                    <span>&dtrif;</span>
-            </div>-->
-            <span class="button lp-check-items">
-                <input class="lp-check-all-items" data-action="check-all" type="checkbox" />
-            </span>
-        </div>
-        <table class="curriculum-section-items">
-            <?php echo isset( $content_items ) ? $content_items : ''; ?>
-            <?php
-            $item = learn_press_post_object( array( 'post_type' => LP()->lesson_post_type ) );
-            ?>
-            <?php learn_press_admin_view( 'meta-boxes/course/loop-item.php', array( 'item' => $item ) ); ?>
+			<button class="button hide-if-js" type="button" data-action="cancel"><?php _e( 'Cancel', 'learnpress' ); ?></button>-->
+			<!--<div class="button lp-check-all-items">
+				<input type="checkbox" class="" />
+				<span>&dtrif;</span>
+			</div>-->
+			<span class="button lp-check-items">
+				<input class="lp-check-all-items" data-action="check-all" type="checkbox" />
+			</span>
+		</div>
+		<table class="curriculum-section-items">
+			<?php echo isset( $content_items ) ? $content_items : ''; ?>
+			<?php
+			$item = learn_press_post_object( array( 'post_type' => LP_LESSON_CPT ) );
+			?>
+			<?php learn_press_admin_view( 'meta-boxes/course/loop-item.php', array( 'item' => $item ) ); ?>
 
         </table>
         <?php do_action( 'learn_press_after_section_items', $section ); ?>

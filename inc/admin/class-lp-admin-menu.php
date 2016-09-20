@@ -46,7 +46,7 @@ class LP_Admin_Menu {
 	 * Register for menu for admin
 	 */
 	public function admin_menu() {
-		$capacity = 'edit_' . LP()->course_post_type . 's';
+		$capacity = 'edit_' . LP_COURSE_CPT . 's';
 		add_menu_page(
 			__( 'Learning Management System', 'learnpress' ),
 			__( 'LearnPress', 'learnpress' ),
@@ -103,7 +103,7 @@ class LP_Admin_Menu {
 		if ( !in_array( 'administrator', $current_user->roles ) ) {
 			return;
 		}
-		$count_courses = wp_count_posts( LP()->course_post_type );
+		$count_courses = wp_count_posts( LP_COURSE_CPT );
 		$awaiting_mod  = $count_courses->pending;
 		$menu['3.14'][0] .= " <span class='awaiting-mod count-$awaiting_mod'><span class='pending-count'>" . number_format_i18n( $awaiting_mod ) . "</span></span>";
 	}

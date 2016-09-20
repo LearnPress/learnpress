@@ -103,13 +103,6 @@ abstract class LP_Abstract_Course {
 			$value = false;
 			switch ( $key ) {
 				case 'current_item':
-					/*$item_type = !empty( $_REQUEST['course-item'] ) ? $_REQUEST['course-item'] : '';
-					if ( $item_type ) {
-						$item_id = ( ( $item_id = learn_press_get_request( "{$item_type}_id" ) ) && $this->has( 'item', $item_id ) ) ? $item_id : null;
-						if ( $item_id ) {
-							$value = $item_type == 'lesson' ? LP_Lesson::get_lesson( $item_id ) : LP_Quiz::get_quiz( $item_id );
-						}
-					}*/
 					if ( !empty( LP()->global['course-item'] ) ) {
 						$value = LP()->global['course-item'];
 					}
@@ -509,11 +502,11 @@ abstract class LP_Abstract_Course {
 		if ( 'yes' == $this->payment ) {
 			$sale_price = floatval( get_post_meta( $this->id, '_lp_sale_price', true ) );
 			$start_date = get_post_meta( $this->id, '_lp_sale_start', true );
-			$end_date	= get_post_meta( $this->id, '_lp_sale_end', true );
-			$now = time();
-			$end = strtotime( $end_date );
-			$start = strtotime( $start_date );
-			if( ( $now >= $start || !$start_date ) && ( $now <= $end || !$end_date ) && $sale_price ){
+			$end_date   = get_post_meta( $this->id, '_lp_sale_end', true );
+			$now        = time();
+			$end        = strtotime( $end_date );
+			$start      = strtotime( $start_date );
+			if ( ( $now >= $start || !$start_date ) && ( $now <= $end || !$end_date ) && $sale_price ) {
 				$res = $sale_price;
 			}
 		}
@@ -530,9 +523,9 @@ abstract class LP_Abstract_Course {
 		if ( !$price || 'yes' != $this->payment ) {
 			$price = 0;
 		} else {
-			$price = floatval( $price );
+			$price      = floatval( $price );
 			$sale_price = $this->get_sale_price();
-			if( $sale_price > 0 && $sale_price < $price ){
+			if ( $sale_price > 0 && $sale_price < $price ) {
 				$price = $sale_price;
 			}
 		}
@@ -556,14 +549,14 @@ abstract class LP_Abstract_Course {
 		return $price_html;
 	}
 
-	
+
 	/**
 	 * Get the price of course with html
 	 *
 	 * @return mixed
 	 */
 	public function get_origin_price_html() {
-		$origin_price_html='';
+		$origin_price_html = '';
 		if ( !$this->is_free() ) {
 			$origin_price      = $this->get_origin_price();
 			$origin_price      = learn_press_format_price( $origin_price, true );
@@ -578,14 +571,14 @@ abstract class LP_Abstract_Course {
 	 *
 	 * @return array list enrolled students
 	 */
-	public function get_students_list($force = false, $limit = -1){
-		if(!$this->exists()) return null;
+	public function get_students_list( $force = false, $limit = - 1 ) {
+		if ( !$this->exists() ) return null;
 
 		global $wpdb;
-		if($limit < 0) $limit = PHP_INT_MAX;
+		if ( $limit < 0 ) $limit = PHP_INT_MAX;
 
 		if ( $this->_students_list === null || $force ) {
-			$query              = $wpdb->prepare( "
+			$query                = $wpdb->prepare( "
 				SELECT user_id, user_nicename, user_status, display_name
 				FROM {$wpdb->prefix}learnpress_user_courses uc
 				LEFT JOIN  {$wpdb->users} u
@@ -741,7 +734,7 @@ abstract class LP_Abstract_Course {
 					} else {
 						$item = $loop_item;
 					}
-					if ( $loop_item->post_type == LP()->lesson_post_type ) {
+					if ( $loop_item->post_type == LP_LESSON_CPT ) {
 						$lessons[$index] = $item;
 					} else {
 						$quizzes[$index] = $item;
@@ -895,7 +888,25 @@ abstract class LP_Abstract_Course {
 
 	public function can_view_item( $item_id ) {
 		switch ( get_post_type() ) {
-			case LP()->quiz_post_type:
+			case LP_QUIZ_CPT:
+		}
+	}
+
+	public function get_item( $thing = '' ) {
+		$curriculum = $this->get_curriculum_items();
+		if ( !$curriculum ) {
+			return false;
+		}
+		if(!$thing){
+
+		}
+		if ( $thing ) {
+			if ( is_numeric( $thing ) ) {
+				foreach ( $curriculum as $item ) {
+					if ( $item->ID == $thing ) {
+					}
+				}
+			}
 		}
 	}
 
@@ -1283,7 +1294,7 @@ abstract class LP_Abstract_Course {
 			if ( $start_time + $duration > $now ) {
 				$remain = $start_time + $duration - $now;
 				$remain = learn_press_seconds_to_weeks( $remain );
-				$html   = sprintf( __( 'This course will end within %s next', 'learn_press' ), $remain );
+				$html   = sprintf( __( 'This course will end within %s next', 'learnpress' ), $remain );
 			}
 		}
 		return $html;

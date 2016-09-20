@@ -181,7 +181,7 @@ function learn_press_get_final_quiz( $course_id ) {
 	$final        = false;
 	if ( $course_items ) {
 		$end = end( $course_items );
-		if ( $end->post_type == LP()->quiz_post_type ) {
+		if ( $end->post_type == LP_QUIZ_CPT ) {
 			$final = $end->ID;
 		}
 	}
@@ -206,7 +206,7 @@ function learn_press_item_meta_format( $item, $nonce = '' ) {
 }
 
 function learn_press_course_item_format_exclude( $format, $item ) {
-	if ( get_post_type( $item ) != LP()->lesson_post_type || ( $format == 'standard' ) ) {
+	if ( get_post_type( $item ) != LP_LESSON_CPT || ( $format == 'standard' ) ) {
 		$format = false;
 	}
 	return $format;
@@ -485,6 +485,38 @@ learn_press_course_add_support_item_type(
 		'lp_quiz'   => __( 'Quiz', 'learnpress' )
 	)
 );
+
+function learn_press_get_course_id() {
+	$course_id = false;
+	if ( learn_press_is_course() ) {
+		$course_id = get_the_ID();
+	}
+	return $course_id;
+}
+
+function learn_press_course_item(){
+
+}
+
+//function learn_press_get_course_
+/*
+$course = LP()->global['course'];
+$user   = learn_press_get_current_user();
+$item   = isset( $item ) ? $item : LP()->global['course-item'];
+$force  = isset( $force ) ? $force : false;
+if ( !$item ) {
+	return;
+}
+$quiz = LP_Quiz::get_quiz( $item->ID );
+/*if ( $user->has( 'quiz-status', 'started', $item->id, $course->id ) ) {
+	$question          = $quiz->get_current_question();
+	$item_quiz_title   = $question->get_title();
+	$item_quiz_content = $question->get_content();
+} else
+{
+	$item_quiz_title   = $item->title;
+	$item_quiz_content = $item->content;
+}*/
 
 /////////////////////////
 function need_to_updating() {

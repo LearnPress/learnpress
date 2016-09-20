@@ -13,8 +13,6 @@ if (typeof LearnPress == 'undefined') {
 			}
 		}
 	);
-	//var LearnPress_View_Course = window.LearnPress_View_Course = Backbone.View.extend({
-
 	var Course = function (args) {
 			this.model = new Course.Model(args);
 			this.view = new Course.View({
@@ -279,7 +277,6 @@ if (typeof LearnPress == 'undefined') {
 				return;
 			}
 			this.blockContent();
-
 			this.itemLoading = id;
 			this.currentItem = this.model.getItem(id);
 			this.currentItem.set('content', '')
@@ -361,10 +358,10 @@ if (typeof LearnPress == 'undefined') {
 				callback : function (response, item) {
 					that.currentItem.set('content', response.html);
 					if (typeof Quiz_Params) {
-						window.Quiz = new LPQuiz(Quiz_Params);
+						window.Quiz = new LP_Quiz(Quiz_Params);
 					}
 					/*
-					 window.Quiz = new LPQuiz({
+					 window.Quiz = new LP_Quiz({
 					 totalTime: 7200,
 					 userTime : 0,
 					 questions: [{name: 'xxxx'}]
@@ -389,15 +386,16 @@ if (typeof LearnPress == 'undefined') {
 			var that = this,
 				$button = $(e.target),
 				security = $button.data('security');
+			//this.$('#course-curriculum-popup').addClass('overlay-processing');
 			this.currentItem.retakeQuiz({
 				security : security,
 				course_id: this.model.get('id'),
 				callback : function (response, item) {
 					that.currentItem.set('content', response.html);
 					if (typeof Quiz_Params) {
-						window.Quiz = new LPQuiz(Quiz_Params);
+						window.Quiz = new LP_Quiz(Quiz_Params);
 					}
-					/*window.Quiz = new LPQuiz({
+					/*window.Quiz = new LP_Quiz({
 					 totalTime: 7200,
 					 userTime : 0,
 					 questions: [{name: 'xxxx'}]

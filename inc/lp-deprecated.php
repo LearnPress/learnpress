@@ -93,7 +93,7 @@ function learn_press_get_lessons( $course_id ) {
 		foreach ( $curriculum as $lesson_quiz_s ) {
 			if ( array_key_exists( 'lesson_quiz', $lesson_quiz_s ) ) {
 				foreach ( $lesson_quiz_s['lesson_quiz'] as $lesson_quiz ) {
-					if ( get_post_type( $lesson_quiz ) == LP()->lesson_post_type ) {
+					if ( get_post_type( $lesson_quiz ) == LP_LESSON_CPT ) {
 						$lessons[] = $lesson_quiz;
 					}
 				}
@@ -117,7 +117,7 @@ function learn_press_get_course_quizzes( $course_id ) {
 		foreach ( $curriculum as $lesson_quiz_s ) {
 			if ( array_key_exists( 'lesson_quiz', $lesson_quiz_s ) ) {
 				foreach ( $lesson_quiz_s['lesson_quiz'] as $lesson_quiz ) {
-					if ( get_post_type( $lesson_quiz ) == LP()->quiz_post_type ) {
+					if ( get_post_type( $lesson_quiz ) == LP_QUIZ_CPT ) {
 						$quizzes[] = $lesson_quiz;
 					}
 				}

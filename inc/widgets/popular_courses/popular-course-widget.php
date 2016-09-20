@@ -139,7 +139,7 @@ class LP_Popular_Course_Widget extends WP_Widget {
                     AND p.post_status = %s
                     ORDER BY value
                     LIMIT %d",
-                LP()->course_post_type,
+                LP_COURSE_CPT,
                 'publish',
                 (int)$instance['limit']
             )

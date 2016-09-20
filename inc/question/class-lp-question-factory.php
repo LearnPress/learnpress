@@ -299,8 +299,8 @@ class LP_Question_Factory {
 	}
 
 	public static function admin_assets() {
-		LP_Admin_Assets::enqueue_style( 'learnpress-question', learn_press_plugin_url( 'assets/css/admin/meta-box-question.css' ) );
-		LP_Admin_Assets::enqueue_script( 'learnpress-question', learn_press_plugin_url( 'assets/js/admin/meta-box-question.js' ), array( 'jquery', 'jquery-ui-sortable', 'learn-press-global' ) );
+		LP_Assets::enqueue_style( 'learn-press-meta-box-question' );
+		//LP_Assets::enqueue_script( 'learn-press-meta-box-question', false, array( 'learn-press-admin' ) );
 	}
 
 	/**

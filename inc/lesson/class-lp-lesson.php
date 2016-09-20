@@ -128,7 +128,7 @@ class LP_Lesson {
 		$lesson_id = absint( $the_lesson->ID );
 		$post_type = $the_lesson->post_type;
 
-		if ( LP()->lesson_post_type === $post_type ) {
+		if ( LP_LESSON_CPT === $post_type ) {
 			if ( isset( $args['lesson_type'] ) ) {
 				$lesson_type = $args['lesson_type'];
 			} else {
