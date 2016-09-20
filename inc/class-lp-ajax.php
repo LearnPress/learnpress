@@ -14,20 +14,26 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 
 			// learnpress_ajax_event => nopriv
 			$ajaxEvents = array(
+				//'list_quiz'            => false,
 				'load_quiz_question'  => true,
 				'load_prev_question'  => false,
 				'load_next_question'  => false,
+				//'save_question_answer' => false,
 				'finish_quiz'         => true,
 				'retake_quiz'         => true, // anonymous user can retake quiz
 				'take_free_course'    => false,
 				'load_lesson_content' => false,
 				'load_next_lesson'    => false,
 				'load_prev_lesson'    => false,
+				///'complete_lesson'     => false,
 				'finish_course'       => false,
 				'not_going'           => false,
+				//
 				'take_course'         => true,
 				'start_quiz'          => true,
 				'fetch_question'      => true,
+
+				////////////////////
 			);
 
 			foreach ( $ajaxEvents as $ajax_event => $nopriv ) {
@@ -87,6 +93,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 				'result'   => 'fail',
 				'redirect' => apply_filters( 'learn_press_enroll_course_failure_redirect_url', get_the_permalink( $course_id ) )
 			);
+			
 			if ( $insert_id ) {
 				$response['result']   = 'success';
 				$response['redirect'] = apply_filters( 'learn_press_enrolled_course_redirect_url', get_the_permalink( $course_id ) );
@@ -200,8 +207,23 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 		}
 
 		public static function _request_add_to_cart() {
-			LP()->cart->add_to_cart( learn_press_get_request( 'add-course-to-cart' ) );
-
+			$cart		= learn_press_get_cart();
+			$course_id	= learn_press_get_request( 'purchase-course' );
+			$cart->add_to_cart($course_id);
+			$res = $cart->add_to_cart($course_id);
+			$return = array(
+				'result'   => 'success',
+				'redirect' => learn_press_get_checkout_url()
+			);
+			if ( is_ajax() ) {
+				learn_press_send_json( $return );
+			} else {
+				wp_redirect( $return['redirect'] );
+			}
+//			learn_press_send_json($return);
+//			LP()->cart->add_to_cart( learn_press_get_request( 'add-course-to-cart' ) );
+//			echo '<pre>' . print_r( $res, true ) . '</pre>';
+//			exit( '' . __LINE__ );
 		}
 
 		public static function _request_finish_course() {

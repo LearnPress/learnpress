@@ -27,7 +27,12 @@ $button_retake        = '';
 $security             = wp_create_nonce( sprintf( 'learn-press-retake-course-%d-%d', $course->id, $user->id ) );
 ?>
 <div class="learn-press-course-buttons">
-	<?php if ( $user->has( 'finished-course', $course->id ) ): ?>
+	<?php 
+
+	# -------------------------------
+	# Finished Course
+	# -------------------------------
+	if ( $user->has( 'finished-course', $course->id ) ): ?>
 
 		<?php if ( $count = $user->can( 'retake-course', $course->id ) ): ?>
 			<?php $button_retake = sprintf( '<button class="button button-retake-course" data-course_id="%d" data-security="%s">%s</button>', $course->id, $security, sprintf( __( 'Retake (+%d)', 'learnpress' ), $count ) ); ?>
@@ -35,7 +40,12 @@ $security             = wp_create_nonce( sprintf( 'learn-press-retake-course-%d-
 
 		<?php learn_press_display_message( sprintf( __( 'Congratulations! You have finished this course%s', 'learnpress' ), $button_retake ) ); ?>
 
-	<?php elseif ( $user->has( 'enrolled-course', $course->id ) ): ?>
+	<?php 
+	
+	# -------------------------------
+	# Enrolled Course
+	# -------------------------------
+	elseif ( $user->has( 'enrolled-course', $course->id ) ): ?>
 
 		<?php
 		$can_finish = $user->can( 'finish-course', $course->id );
@@ -51,21 +61,24 @@ $security             = wp_create_nonce( sprintf( 'learn-press-retake-course-%d-
 		<?php endif; ?>
 
 
-	<?php /*elseif ( $user->can( 'enroll-course', $course->id ) ) : ?>
+	<?php 
+	
 
-	<form name="enroll-course" class="enroll-course" method="post" enctype="multipart/form-data">
-		<?php do_action( 'learn_press_before_enroll_button' ); ?>
+	elseif ( $user->can( 'enroll-course', $course->id ) && $course->is_free() ) : ?>
+		<form name="enroll-course" class="enroll-course" method="post" enctype="multipart/form-data">
+			<?php do_action( 'learn_press_before_enroll_button' ); ?>
 
-		<input type="hidden" name="lp-ajax" value="enroll-course" />
-		<input type="hidden" name="enroll-course" value="<?php echo $course->id; ?>" />
-		<input type="hidden" name="_wp_http_referer" value="<?php echo get_the_permalink(); ?>" />
-		<button class="button enroll-button"><?php echo $enroll_button_text; ?></button>
+			<input type="hidden" name="lp-ajax" value="enroll-course" />
+			<input type="hidden" name="enroll-course" value="<?php echo $course->id; ?>" />
+			<input type="hidden" name="_wp_http_referer" value="<?php echo get_the_permalink(); ?>" />
+			<button class="button enroll-button"><?php echo $enroll_button_text; ?></button>
 
-		<?php do_action( 'learn_press_after_enroll_button' ); ?>
-	</form>
+			<?php do_action( 'learn_press_after_enroll_button' ); ?>
+		</form>
 
-<?php */ elseif ( $user->can( 'purchase-course', $course->id ) ) : ?>
+	<?php 
 
+	elseif ( $user->can( 'purchase-course', $course->id ) ) : ?>
 		<!--
 	<?php if ( LP()->cart->has_item( $course->id ) ) { ?>
 		<?php if ( learn_press_is_enable_cart() ): ?>
@@ -89,6 +102,7 @@ $security             = wp_create_nonce( sprintf( 'learn-press-retake-course-%d-
 
 		<form name="purchase-course" class="purchase-course" method="post" enctype="multipart/form-data">
 			<?php do_action( 'learn_press_before_purchase_button' ); ?>
+			<input type="hidden" name="_wp_http_referer" value="<?php echo get_the_permalink(); ?>" />
 			<!--<input type="hidden" name="add-course-to-cart" value="<?php echo $course->id; ?>" />-->
 			<input type="hidden" name="purchase-course" value="<?php echo $course->id; ?>" />
 			<button class="button purchase-button"><?php echo $purchase_button_text; ?></button>
