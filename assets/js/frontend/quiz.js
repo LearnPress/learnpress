@@ -552,4 +552,5 @@
 			$course.view.updateUrl();
 		}
 	});
+	console.log(new Date())
 })(jQuery);

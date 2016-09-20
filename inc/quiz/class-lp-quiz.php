@@ -168,6 +168,10 @@ class LP_Quiz {
 			if ( $js['status'] == 'completed' ) {
 				$js['result'] = $user->get_quiz_results( $this->id, $course_id, $force );
 			}
+			if ( $js['status'] == 'started' ) {
+				$history         = $user->get_quiz_results( $this->id, $course_id );
+				$js['startTime'] = ( $history->start );
+			}
 			$quiz_params[$key] = $js;
 			LP_Cache::set_quiz_params( $quiz_params );
 		}

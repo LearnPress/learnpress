@@ -507,5 +507,5 @@ class LP_Assets {
 		self::enqueue_script( 'learn-press-course-quiz' );
 	}
 }
-
+/* XXXXXXXXXXXXXXX */
 return new LP_Assets();

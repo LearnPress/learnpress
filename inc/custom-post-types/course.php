@@ -914,9 +914,6 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 
 			$this->_review_log();
 			delete_post_meta( $post->ID, '_lp_curriculum' );
-			unset( $_POST['_lp_curriculum'] );
-			echo __FUNCTION__;
-			die();
 			//add_action( 'rwmb_course_curriculum_before_save_post', array( $this, 'before_save_curriculum' ) );
 		}
 

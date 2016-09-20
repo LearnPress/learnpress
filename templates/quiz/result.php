@@ -24,8 +24,8 @@ if ( !is_user_logged_in() ) {
 $history = LP()->user->get_quiz_results( $quiz->id );
 ?>
 <div class="quiz-result">
-	<h4 class="result-title"><?php _e( 'Your result', 'learnpress' ); ?></h4>
-	<!--<div class="quiz-result-mark">
+	<!--<h4 class="result-title"><?php _e( 'Your result', 'learnpress' ); ?></h4>
+	<div class="quiz-result-mark">
 		<div class="progress-circle">
 			<div class="background">
 				<div class="fill"></div>
@@ -55,10 +55,9 @@ $history = LP()->user->get_quiz_results( $quiz->id );
 				<span data-text="<?php echo esc_attr( $text ); ?>"></span>
 			</div>
 		<?php endforeach; ?>
-		<div class="quiz-result-field time">
-			<label><?php echo apply_filters( 'learn_press_quiz_result_time_text', __( 'Time', 'learnpress' ) ); ?></label>
-			<?php echo learn_press_seconds_to_time( $history->time ); ?>
-		</div>
+	</div>
+	<div class="quiz-result-time">
+		<?php echo sprintf( __( 'Your time: %s', 'learnpress' ), learn_press_seconds_to_time( $history->time ) ); ?>
 	</div>
 	<div class="clearfix"></div>
 </div>
