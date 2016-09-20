@@ -204,7 +204,7 @@ class LP_Shortcodes {
 		if ( !is_user_logged_in() ) {
 			$message = __( "Please login to fill out this form", 'learnpress' );
 			$code    = 1;
-		} elseif ( in_array( LP()->teacher_role, $user->user->roles ) ) {
+		} elseif ( in_array( LP_TEACHER_ROLE, $user->user->roles ) ) {
 			$message = __( "You are a teacher now", 'learnpress' );
 			$code    = 2;
 		} elseif ( get_transient( 'learn_press_become_teacher_sent_' . $user->id ) == 'yes' ) {

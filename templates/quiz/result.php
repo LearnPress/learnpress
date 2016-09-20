@@ -10,9 +10,10 @@
 if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
-
-$quiz = LP()->global['course-item'];
-if ( !LP()->user->has( 'completed-quiz', $quiz->id ) ) {
+$user   = learn_press_get_current_user();
+$course = LP()->global['course'];
+$quiz   = LP()->global['course-item'];
+if ( !$user->has( 'completed-quiz', $quiz->id ) ) {
 	return;
 }
 
@@ -24,7 +25,7 @@ $history = LP()->user->get_quiz_results( $quiz->id );
 ?>
 <div class="quiz-result">
 	<h4 class="result-title"><?php _e( 'Your result', 'learnpress' ); ?></h4>
-	<div class="quiz-result-mark">
+	<!--<div class="quiz-result-mark">
 		<div class="progress-circle">
 			<div class="background">
 				<div class="fill"></div>
@@ -37,7 +38,8 @@ $history = LP()->user->get_quiz_results( $quiz->id );
 				<small><?php _e( 'point', 'learnpress' ); ?></small>
 			</div>
 		</div>
-	</div>
+	</div>-->
+	<h4><?php echo esc_html( sprintf( __( 'You have reached %d of %d points', 'learnpress' ), $history->mark, $quiz->get_mark() ) ); ?></h4>
 	<?php
 	$fields = array(
 		'correct' => sprintf( apply_filters( 'learn_press_quiz_result_correct_text', __( 'Correct %d (%0.0f%%)', 'learnpress' ) ), $history->correct, $history->correct_percent ),
@@ -47,8 +49,10 @@ $history = LP()->user->get_quiz_results( $quiz->id );
 	?>
 	<div class="quiz-result-summary">
 		<?php foreach ( $fields as $class => $text ): ?>
-			<div class="quiz-result-field <?php echo $class; ?>" data-text="<?php echo esc_attr( $text ); ?>">
+			<?php $value = apply_filters( 'learn_press_quiz_result_' . $class . '_value', $history->{$class . '_percent'}, $history, $quiz, $course ); ?>
+			<div class="quiz-result-field <?php echo $class; ?>" data-value="<?php echo $value; ?>">
 				<?php echo $text; ?>
+				<span data-text="<?php echo esc_attr( $text ); ?>"></span>
 			</div>
 		<?php endforeach; ?>
 		<div class="quiz-result-field time">
@@ -58,10 +62,3 @@ $history = LP()->user->get_quiz_results( $quiz->id );
 	</div>
 	<div class="clearfix"></div>
 </div>
-<script>
-	jQuery(function ($) {
-		//$('body').click(function() {
-		$('.quiz-result-mark').progress(parseInt(Math.random() * 100));
-		//})
-	});
-</script>

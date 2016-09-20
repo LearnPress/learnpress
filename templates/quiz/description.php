@@ -10,14 +10,14 @@
 if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
+
+$quiz_id = LP()->global['course-item'];
+$quiz    = learn_press_get_quiz( $quiz_id );
+if ( !$quiz->id ) {
+	return;
+}
 ?>
 
-<div class="quiz-description" id="learn-press-quiz-description">
-
-	<?php do_action( 'learn_press_begin_single_quiz_description' ); ?>
-
-	<?php the_content(); ?>
-
-	<?php do_action( 'learn_press_end_single_quiz_description' ); ?>
-
-</div>
+<?php if ( false !== ( $item_quiz_content = apply_filters( 'learn_press_item_quiz_content', $quiz->content ) ) ): ?>
+	<div class="quiz-description"><?php echo $item_quiz_content; ?></div>
+<?php endif; ?>

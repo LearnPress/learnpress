@@ -73,8 +73,8 @@ class LP_Install {
 		if ( self::_need_to_update() ) {
 			// Notify for administrator
 			if ( empty( $ask ) && learn_press_current_user_is( 'administrator' ) ) {
-				LP_Admin_Assets::enqueue_style( 'learn-press-upgrade', LP()->plugin_url( 'inc/updates/09/style.css' ) );
-				LP_Admin_Assets::enqueue_script( 'learn-press-upgrade', LP()->plugin_url( 'inc/updates/09/script.js' ) );
+				LP_Assets::enqueue_style( 'learn-press-upgrade', LP()->plugin_url( 'inc/updates/09/style.css' ) );
+				LP_Assets::enqueue_script( 'learn-press-upgrade', LP()->plugin_url( 'inc/updates/09/script.js' ) );
 				$upgrade_url = wp_nonce_url( admin_url( 'options-general.php?page=learn_press_upgrade_from_09' ), 'learn-press-upgrade-09' );
 				$message     = sprintf( '<p>%s</p>', __( 'It seem to be you have updated LearnPress from old version and there are some courses or data is out of date and need to upgrade.', 'learnpress' ) );
 				$message .= sprintf( '<div id="learn-press-confirm-abort-upgrade-course"><p><label><input type="checkbox" id="learn-press-ask-again-abort-upgrade" /> %s</label></p><p><button href="" class="button disabled" data-action="yes">%s</button> <button href="" class="button" data-action="no">%s</button> </p></div>', __( 'Do not ask again.', 'learnpress' ), __( 'Ok', 'learnpress' ), __( 'Cancel', 'learnpress' ) );

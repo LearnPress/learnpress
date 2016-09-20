@@ -5,6 +5,11 @@
  */
 class LP_Query {
 	/**
+	 * @var array
+	 */
+	public $query_vars = array();
+
+	/**
 	 * LP_Query constructor.
 	 */
 	public function __construct() {
@@ -25,7 +30,7 @@ class LP_Query {
 	public function parse_request( $q ) {
 		$user    = learn_press_get_current_user();
 		$request = $this->get_request();
-		if ( !$request ) {
+		if ( !$request || is_admin()) {
 			return $q;
 		}
 		remove_filter( 'do_parse_request', array( $this, 'get_current_quiz_question' ), 1010, 3 );
@@ -42,6 +47,16 @@ class LP_Query {
 
 		$request_match = $request;
 
+		if ( !empty( $q->query_vars['post_type'] ) && $q->query_vars['post_type'] == LP_COURSE_CPT ) {
+			$this->query_vars['course'] = $q->query_vars[LP_COURSE_CPT];
+			if ( !empty( $q->query_vars['quiz'] ) ) {
+				$this->query_vars['quiz']      = $q->query_vars['quiz'];
+				$this->query_vars['item_type'] = LP_QUIZ_CPT;
+			} elseif ( !empty( $q->query_vars['lesson'] ) ) {
+				$this->query_vars['lesson']    = $q->query_vars['lesson'];
+				$this->query_vars['item_type'] = LP_LESSON_CPT;
+			}
+		}
 		/**
 		 * Match request URI with quiz permalink
 		 */
@@ -55,7 +70,7 @@ class LP_Query {
 				// Try to get current question of current user and put it into URI
 				if ( empty( $matches[4] ) ) {
 					if ( $question_id = $user->get_current_quiz_question( $post->ID, 37 ) ) {
-						$q->query_vars['question'] = get_post_field( 'post_name', $question_id );
+						$this->query_vars['question'] = $q->query_vars['question'] = get_post_field( 'post_name', $question_id );
 					}
 				} else {
 					// If user is viewing a question then update current question for user
@@ -79,7 +94,7 @@ class LP_Query {
 				}
 			}
 		}
-
+		do_action_ref_array( 'learn_press_parse_query', array( &$this ) );
 		return $q;
 	}
 
@@ -189,7 +204,7 @@ class LP_Query {
 		);*/
 
 		// question
-		/*$quiz_type   = LP()->quiz_post_type;
+		/*$quiz_type   = LP_QUIZ_CPT;
 		$post_types  = get_post_types( array( 'name' => $quiz_type ), 'objects' );
 		$slug        = $post_types[$quiz_type]->rewrite['slug'];
 		$current_uri = learn_press_get_current_url();
@@ -296,7 +311,7 @@ class LP_Query {
 		global $wpdb;
 		// if lesson name is passed, find it's ID and put into request
 		/*if ( !empty( $wp_query->query_vars['lesson'] ) ) {
-			if ( $lesson_id = $wpdb->get_var( $wpdb->prepare( "SELECT ID FROM {$wpdb->posts} WHERE post_name = %s AND post_type = %s", $wp_query->query_vars['lesson'], LP()->lesson_post_type ) ) ) {
+			if ( $lesson_id = $wpdb->get_var( $wpdb->prepare( "SELECT ID FROM {$wpdb->posts} WHERE post_name = %s AND post_type = %s", $wp_query->query_vars['lesson'], LP_LESSON_CPT ) ) ) {
 				$_REQUEST['lesson'] = $lesson_id;
 				$_GET['lesson']     = $lesson_id;
 				$_POST['lesson']    = $lesson_id;
@@ -304,12 +319,40 @@ class LP_Query {
 		}*/
 		// if question name is passed, find it's ID and put into request
 		/*if ( !empty( $wp_query->query_vars['question'] ) ) {
-			if ( $question_id = $wpdb->get_var( $wpdb->prepare( "SELECT ID FROM {$wpdb->posts} WHERE post_name = %s AND post_type = %s", $wp_query->query_vars['question'], LP()->question_post_type ) ) ) {
+			if ( $question_id = $wpdb->get_var( $wpdb->prepare( "SELECT ID FROM {$wpdb->posts} WHERE post_name = %s AND post_type = %s", $wp_query->query_vars['question'], LP_QUESTION_CPT ) ) ) {
 				$_REQUEST['question'] = $question_id;
 				$_GET['question']     = $question_id;
 				$_POST['question']    = $question_id;
 			}
 		}*/
 
+	}
+
+	/**
+	 * Get current course user accessing
+	 *
+	 * @param string $return
+	 *
+	 * @return bool|false|int|LP_Course|mixed
+	 */
+	public function get_course( $return = 'id' ) {
+		$course = false;
+		if ( learn_press_is_course() ) {
+			$course = get_the_ID();
+		}
+		if ( $course && $return == 'object' ) {
+			$course = learn_press_get_course( $course );
+		}
+		return $course;
+	}
+
+	public function get_course_item( $return = 'id' ) {
+		$course = $this->get_course( 'object' );
+		$user   = learn_press_get_current_user();
+		$item   = isset( $item ) ? $item : LP()->global['course-item'];
+		if ( $item && $return == 'object' ) {
+			$item = LP_Course::get_item( $item );
+		}
+		return $item;
 	}
 }

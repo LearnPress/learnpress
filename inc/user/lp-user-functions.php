@@ -158,15 +158,15 @@ function learn_press_add_user_roles() {
 	/* translators: user role */
 	_x( 'Instructor', 'User role' );
 	add_role(
-		LP()->teacher_role,
+		LP_TEACHER_ROLE,
 		'Instructor',
 		array()
 	);
-	$course_cap = LP()->course_post_type . 's';
-	$lesson_cap = LP()->lesson_post_type . 's';
-	$order_cap  = LP()->order_post_type . 's';
+	$course_cap = LP_COURSE_CPT . 's';
+	$lesson_cap = LP_LESSON_CPT . 's';
+	$order_cap  = LP_ORDER_CPT . 's';
 	// teacher
-	$teacher = get_role( LP()->teacher_role );
+	$teacher = get_role( LP_TEACHER_ROLE );
 	$teacher->add_cap( 'delete_published_' . $course_cap );
 	$teacher->add_cap( 'edit_published_' . $course_cap );
 	$teacher->add_cap( 'edit_' . $course_cap );
@@ -293,7 +293,7 @@ function learn_press_edit_admin_bar() {
 	}
 	$current_user = wp_get_current_user();
 	// add `be teacher` link
-	if ( in_array( LP()->teacher_role, $current_user->roles ) || in_array( 'administrator', $current_user->roles ) ) {
+	if ( in_array( LP_TEACHER_ROLE, $current_user->roles ) || in_array( 'administrator', $current_user->roles ) ) {
 		return;
 	}
 	//if ( !class_exists( 'LP_Admin_Settings' ) ) return;
@@ -397,7 +397,7 @@ function learn_press_update_user_teacher_role( $user_id ) {
 		return;
 	}
 	$new_user = new WP_User( $user_id );
-	$new_user->set_role( LP()->teacher_role );
+	$new_user->set_role( LP_TEACHER_ROLE );
 }
 
 add_action( 'user_register', 'learn_press_update_user_teacher_role', 10, 1 );
@@ -584,3 +584,16 @@ function _learn_press_update_updated_time_user_item_meta( $meta_id, $object_id, 
 }
 
 add_action( 'updated_learnpress_user_item_meta', '_learn_press_update_updated_time_user_item_meta', 10, 4 );
+
+/**
+ * @param     $status
+ * @param int $quiz_id
+ * @param int $user_id
+ * @param int $course_id
+ *
+ * @return bool|mixed
+ */
+function learn_press_user_has_quiz_status( $status, $quiz_id = 0, $user_id = 0, $course_id = 0 ) {
+	$user = learn_press_get_user( $user_id );
+	return $user->has_quiz_status( $status, $quiz_id, $course_id );
+}

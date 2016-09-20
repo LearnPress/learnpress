@@ -32,8 +32,8 @@ class LP_Request_Handler {
 		add_action( 'wp_head', array( __CLASS__, 'process_request' ), 1000 );
 
 		//if ( !learn_press_is_enable_cart() ) {
-			LP_Request_Handler::register( 'purchase-course', 'learn_press_purchase_course_handler', 20 );
-			LP_Request_Handler::register( 'enroll-course', 'learn_press_purchase_course_handler', 20 );
+		LP_Request_Handler::register( 'purchase-course', 'learn_press_purchase_course_handler', 20 );
+		LP_Request_Handler::register( 'enroll-course', 'learn_press_purchase_course_handler', 20 );
 		//}
 
 	}

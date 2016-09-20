@@ -82,6 +82,14 @@ class LP_Abstract_Question {
 		add_filter( 'learn_press_question_answers', array( $this, '_get_default_answers' ), 10, 2 );
 	}
 
+	public function get_title() {
+		return get_the_title( $this->id );
+	}
+
+	public function get_content() {
+		return apply_filters( 'the_content', $this->post->post_content );
+	}
+
 	/**
 	 * Remove all answers to prepare for inserting new
 	 */
@@ -173,7 +181,6 @@ class LP_Abstract_Question {
 				$this->mark = 1;
 				update_post_meta( $this->id, '_lp_mark', 1 );
 			}
-
 		}
 		do_action( 'learn_press_update_question_answer', $this, $post_data );
 	}
@@ -195,6 +202,7 @@ class LP_Abstract_Question {
 		if ( $question_post = get_post( $this->id ) ) {
 			$answers = !empty( $question_post->answers ) ? $question_post->answers : array();
 		}
+
 
 		/*	if ( !empty( $GLOBALS['learnpress_question_answers'][$this->id] ) ) {
 				if ( array_key_exists( $this->id, $GLOBALS['learnpress_question_answers'] ) ) {
@@ -383,7 +391,7 @@ class LP_Abstract_Question {
 				array(
 					'ID'          => $post_id,
 					'post_title'  => $this->get( 'post_title' ),
-					'post_type'   => LP()->question_post_type,
+					'post_type'   => LP_QUESTION_CPT,
 					'post_status' => 'publish'
 
 				)
@@ -392,7 +400,7 @@ class LP_Abstract_Question {
 			$post_id = wp_insert_post(
 				array(
 					'post_title'  => $this->get( 'post_title' ),
-					'post_type'   => LP()->question_post_type,
+					'post_type'   => LP_QUESTION_CPT,
 					'post_status' => 'publish'
 				)
 			);

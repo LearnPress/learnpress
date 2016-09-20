@@ -3,239 +3,50 @@
 if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
-
 if ( !class_exists( 'LP_Course_Post_Type' ) ) {
-
-	// Base class for custom post type to extends
-	learn_press_include( 'custom-post-types/abstract.php' );
-
 	// class LP_Course_Post_Type
 	final class LP_Course_Post_Type extends LP_Abstract_Post_Type {
+		/**
+		 * New version of course editor
+		 *
+		 * @var bool
+		 */
 		protected static $_VER2 = false;
+
+		/**
+		 * @var null
+		 */
+		protected static $_instance = null;
+
 		/**
 		 * Constructor
+		 *
+		 * @param string
 		 */
-		public function __construct() {
-			self::$_VER2 = false;
-			add_action( 'save_post', array( $this, 'before_save_curriculum' ), 1000 );
-			add_filter( 'manage_lp_course_posts_columns', array( $this, 'columns_head' ) );
-			add_filter( 'manage_lp_course_posts_custom_column', array( $this, 'columns_content' ) );
-			add_filter( "rwmb__lpr_course_price_html", array( $this, 'currency_symbol' ), 5, 3 );
+		public function __construct( $post_type ) {
+			parent::__construct( $post_type );
+
+			// Map origin methods to another method
+			$this
+				->add_map_method( 'save', 'update_course', false )
+				->add_map_method( 'save', 'before_save_curriculum', false )
+				->add_map_method( 'before_delete', 'delete_course_sections' );
+
 			add_action( 'edit_form_after_editor', array( $this, 'toggle_editor_button' ), - 10 );
-			//add_action( 'add_meta_boxes', array( __CLASS__, 'add_meta_boxes' ) );
-			//add_action( 'post_submitbox_start', array( $this, 'post_review_message_box' ) );
-			//add_action( 'learn_press_transition_course_status', array( $this, 'review_log' ), 10, 3 );
 			add_action( 'load-post.php', array( $this, 'post_actions' ) );
-			add_action( 'before_delete_post', array( $this, 'delete_course_sections' ) );
-			add_filter( 'manage_edit-lp_course_sortable_columns', array( $this, 'columns_sortable' ) );
-			add_filter( 'posts_fields', array( $this, 'posts_fields' ) );
-			add_filter( 'posts_join_paged', array( $this, 'posts_join_paged' ) );
-			add_filter( 'posts_where_paged', array( $this, 'posts_where_paged' ) );
-			add_filter( 'posts_orderby', array( $this, 'posts_orderby' ) );
-			add_action( 'admin_head', array( __CLASS__, 'print_js_template' ) );
+			add_action( 'init', array( $this, 'register_taxonomy' ) );
 
-			//add_action( 'edit_form_after_editor', array( $this, 'course_editor' ) );
-			add_action( 'save_post', array( $this, 'update_course' ) );
+			// filter
+			add_filter( "rwmb__lpr_course_price_html", array( $this, 'currency_symbol' ), 5, 3 );
 
-			if(self::$_VER2) {
+			if ( self::$_VER2 ) {
 				add_action( 'admin_enqueue_scripts', array( $this, 'admin_script' ) );
 				add_action( 'admin_print_scripts', array( $this, 'course_editor' ) );
 			}
-			parent::__construct();
 		}
 
-
-		public function update_course( $course_id ) {
-			/*learn_press_debug( $_REQUEST );
-			die();*/
-		}
-
-		function add_meta_box() {
-			add_meta_box( 'course-editor', 'dfgdfgfdg', array( $this, 'course_editor' ), 'lp_course', 'advanced', 'default' );
-		}
-
-		function admin_script() {
-			global $post_type;
-			if ( $post_type != 'lp_course' ) {
-				return;
-			}
-			wp_enqueue_script( 'course-editor', LP()->js( 'admin/course-editor' ), array( 'jquery', 'backbone', 'wp-util', 'jquery-ui-sortable' ) );
-			wp_enqueue_style( 'course-editor', LP()->css( 'admin/course-editor' ) );
-
-		}
-
-		function course_editor() {
-			global $post_type;
-			if ( $post_type != 'lp_course' ) {
-				return;
-			}
-			learn_press_admin_view( 'meta-boxes/course/editor' );
-		}
-
-		/**
-		 * Delete all questions assign to quiz being deleted
-		 *
-		 * @param $post_id
-		 */
-		public function delete_course_sections( $post_id ) {
-			global $wpdb;
-			// delete all items in section first
-			$section_ids = $wpdb->get_col( $wpdb->prepare( "SELECT section_id FROM {$wpdb->prefix}learnpress_sections WHERE section_course_id = %d", $post_id ) );
-			if ( $section_ids ) {
-				$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_section_items WHERE section_id IN(" . join( ',', $section_ids ) . ")" ) );
-				learn_press_reset_auto_increment( 'learnpress_section_items' );
-
-			}
-
-			// delete all sections
-			$query = $wpdb->prepare( "
-				DELETE FROM {$wpdb->prefix}learnpress_sections
-				WHERE section_course_id = %d
-			", $post_id );
-			$wpdb->query( $query );
-			learn_press_reset_auto_increment( 'learnpress_sections' );
-		}
-
-
-		/**
-		 * Process request actions on post.php loaded
-		 */
-		public function post_actions() {
-			$delete_log = learn_press_get_request( 'delete_log' );
-			// ensure that user can do this
-			if ( $delete_log && current_user_can( 'delete_others_lp_courses' ) ) {
-				$nonce   = learn_press_get_request( '_wpnonce' );
-				$post_id = learn_press_get_request( 'post' );
-				if ( wp_verify_nonce( $nonce, 'delete_log_' . $post_id . '_' . $delete_log ) ) {
-					global $wpdb;
-					$wpdb->query(
-						$wpdb->prepare( "
-							DELETE FROM {$wpdb->prefix}learnpress_review_logs
-							WHERE review_log_id = %d
-						", $delete_log )
-					);
-					wp_redirect( admin_url( 'post.php?post=' . learn_press_get_request( 'post' ) . '&action=edit' ) );
-				}
-			}
-		}
-
-		/**
-		 * Toggle course description editor
-		 *
-		 * @param $post
-		 */
-		public function toggle_editor_button( $post ) {
-			if ( $post->post_type == LP()->course_post_type ) {
-				?>
-				<button class="button button-primary" data-hidden="<?php echo get_post_meta( $post->ID, '_lp_editor_hidden', true ); ?>" type="button" id="learn-press-button-toggle-editor"><?php _e( 'Toggle Course Content', 'learnpress' ); ?></button>
-				<?php
-			}
-		}
-
-		/**
-		 * Generate params for course used in admin
-		 *
-		 * @static
-		 * @return mixed
-		 */
-		public static function admin_params() {
-			global $post;
-			return apply_filters( 'learn_press_admin_course_params',
-				array(
-					'id'                        => absint( $post->ID ),
-					'notice_empty_title'        => __( 'Please enter the title of the course', 'learnpress' ),
-					'notice_empty_section'      => __( 'Please add at least one section for the course', 'learnpress' ),
-					'notice_empty_section_name' => __( 'Please enter the title of the section', 'learnpress' ),
-					'notice_empty_price'        => __( 'Please set a price for this course', 'learnpress' )
-				)
-			);
-		}
-
-		/**
-		 * Enqueue scripts
-		 *
-		 * @static
-		 */
-		public static function admin_scripts() {
-			LP_Admin_Assets::add_localize(
-				array(
-					'notice_remove_section_item' => __( 'Are you sure you want to remove this item?', 'learnpress' )
-				),
-				null,
-				'admin-course'
-			);
-			if ( in_array( get_post_type(), array( LP()->course_post_type, LP()->lesson_post_type ) ) ) {
-				wp_enqueue_script( 'jquery-caret', LP()->plugin_url( 'assets/js/jquery.caret.js', 'jquery' ) );
-				wp_localize_script( 'lp-meta-boxes', 'lp_course_params', self::admin_params() );
-			}
-		}
-
-		/**
-		 * Enqueue styles
-		 *
-		 * @static
-		 */
-		public static function admin_styles() {
-
-		}
-
-		/**
-		 * Print js template
-		 */
-		public static function print_js_template() {
-			if ( get_post_type() != LP()->course_post_type ) return;
-			learn_press_admin_view( 'meta-boxes/course/js-template.php' );
-		}
-
-		public function currency_symbol( $input_html, $field, $sub_meta ) {
-			return $input_html . '<span class="lpr-course-price-symbol">' . learn_press_get_currency_symbol() . '</span>';
-		}
-
-		/**
-		 * Register course post type
-		 */
-		public static function register_post_type() {
-			$settings         = LP_Settings::instance();
-			$labels           = array(
-				'name'               => _x( 'Courses', 'Post Type General Name', 'learnpress' ),
-				'singular_name'      => _x( 'Course', 'Post Type Singular Name', 'learnpress' ),
-				'menu_name'          => __( 'Courses', 'learnpress' ),
-				'parent_item_colon'  => __( 'Parent Item:', 'learnpress' ),
-				'all_items'          => __( 'Courses', 'learnpress' ),
-				'view_item'          => __( 'View Course', 'learnpress' ),
-				'add_new_item'       => __( 'Add New Course', 'learnpress' ),
-				'add_new'            => __( 'Add New', 'learnpress' ),
-				'edit_item'          => __( 'Edit Course', 'learnpress' ),
-				'update_item'        => __( 'Update Course', 'learnpress' ),
-				'search_items'       => __( 'Search Courses', 'learnpress' ),
-				'not_found'          => sprintf( __( 'You have not got any course yet. Click <a href="%s">Add new</a> to start', 'learnpress' ), admin_url( 'post-new.php?post_type=lp_course' ) ),
-				'not_found_in_trash' => __( 'No course found in Trash', 'learnpress' )
-			);
-			$course_base      = $settings->get( 'course_base' );
-			$course_permalink = empty( $course_base ) ? _x( 'courses', 'slug', 'learnpress' ) : $course_base;
-
-			$args = array(
-				'labels'             => $labels,
-				'public'             => true,
-				'query_var'          => true,
-				'publicly_queryable' => true,
-				'show_ui'            => true,
-				'has_archive'        => ( $page_id = learn_press_get_page_id( 'courses' ) ) && get_post( $page_id ) ? get_page_uri( $page_id ) : 'courses',
-				'capability_type'    => LP_COURSE_CPT,
-				'map_meta_cap'       => true,
-				'show_in_menu'       => 'learn_press',
-				'show_in_admin_bar'  => true,
-				'show_in_nav_menus'  => true,
-				'taxonomies'         => array( 'course_category', 'course_tag' ),
-				'supports'           => array( 'title', 'editor', 'thumbnail', 'revisions', 'comments', 'excerpt' ),
-				'hierarchical'       => true,
-				'rewrite'            => $course_permalink ? array(
-					'slug'       => untrailingslashit( $course_permalink ),
-					'with_front' => false
-				) : false
-			);
-			register_post_type( LP_COURSE_CPT, $args );
-
+		public function register_taxonomy() {
+			$settings      = LP()->settings;
 			$category_base = $settings->get( 'course_category_base' );
 			register_taxonomy( 'course_category', array( LP_COURSE_CPT ),
 				array(
@@ -297,18 +108,198 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			);
 		}
 
+		public function update_course( $course_id ) {
+			/*learn_press_debug( $_REQUEST );
+			die();*/
+		}
+
+
+		function admin_script() {
+			global $post_type;
+			if ( $post_type != 'lp_course' ) {
+				return;
+			}
+			wp_enqueue_script( 'course-editor', LP()->js( 'admin/course-editor' ), array( 'jquery', 'backbone', 'wp-util', 'jquery-ui-sortable' ) );
+			wp_enqueue_style( 'course-editor', LP()->css( 'admin/course-editor' ) );
+
+		}
+
+		function course_editor() {
+			global $post_type;
+			if ( $post_type != 'lp_course' ) {
+				return;
+			}
+			learn_press_admin_view( 'meta-boxes/course/editor' );
+		}
+
+		/**
+		 * Delete all questions assign to quiz being deleted
+		 *
+		 * @param $post_id
+		 */
+		public function delete_course_sections( $post_id ) {
+			global $wpdb;
+			// delete all items in section first
+			$section_ids = $wpdb->get_col( $wpdb->prepare( "SELECT section_id FROM {$wpdb->prefix}learnpress_sections WHERE section_course_id = %d", $post_id ) );
+			if ( $section_ids ) {
+				$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_section_items WHERE %d AND section_id IN(" . join( ',', $section_ids ) . ")", 1 ) );
+				learn_press_reset_auto_increment( 'learnpress_section_items' );
+
+			}
+
+			// delete all sections
+			$query = $wpdb->prepare( "
+				DELETE FROM {$wpdb->prefix}learnpress_sections
+				WHERE section_course_id = %d
+			", $post_id );
+			$wpdb->query( $query );
+			learn_press_reset_auto_increment( 'learnpress_sections' );
+		}
+
+
+		/**
+		 * Process request actions on post.php loaded
+		 */
+		public function post_actions() {
+			$delete_log = learn_press_get_request( 'delete_log' );
+			// ensure that user can do this
+			if ( $delete_log && current_user_can( 'delete_others_lp_courses' ) ) {
+				$nonce   = learn_press_get_request( '_wpnonce' );
+				$post_id = learn_press_get_request( 'post' );
+				if ( wp_verify_nonce( $nonce, 'delete_log_' . $post_id . '_' . $delete_log ) ) {
+					global $wpdb;
+					$wpdb->query(
+						$wpdb->prepare( "
+							DELETE FROM {$wpdb->prefix}learnpress_review_logs
+							WHERE review_log_id = %d
+						", $delete_log )
+					);
+					wp_redirect( admin_url( 'post.php?post=' . learn_press_get_request( 'post' ) . '&action=edit' ) );
+				}
+			}
+		}
+
+		/**
+		 * Toggle course description editor
+		 *
+		 * @param $post
+		 */
+		public function toggle_editor_button( $post ) {
+			if ( $post->post_type == LP_COURSE_CPT ) {
+				?>
+				<button class="button button-primary" data-hidden="<?php echo get_post_meta( $post->ID, '_lp_editor_hidden', true ); ?>" type="button" id="learn-press-button-toggle-editor"><?php _e( 'Toggle Course Content', 'learnpress' ); ?></button>
+				<?php
+			}
+		}
+
+		/**
+		 * Generate params for course used in admin
+		 *
+		 * @static
+		 * @return mixed
+		 */
+		public function admin_params() {
+			global $post;
+			return apply_filters( 'learn_press_admin_course_params',
+				array(
+					'id'                        => absint( $post->ID ),
+					'notice_empty_title'        => __( 'Please enter the title of the course', 'learnpress' ),
+					'notice_empty_section'      => __( 'Please add at least one section for the course', 'learnpress' ),
+					'notice_empty_section_name' => __( 'Please enter the title of the section', 'learnpress' ),
+					'notice_empty_price'        => __( 'Please set a price for this course', 'learnpress' )
+				)
+			);
+		}
+
+		/**
+		 * Enqueue scripts
+		 *
+		 * @static
+		 */
+		public function admin_scripts() {
+			LP_Assets::add_localize(
+				array(
+					'notice_remove_section_item' => __( 'Are you sure you want to remove this item?', 'learnpress' )
+				),
+				null,
+				'admin-course'
+			);
+			if ( in_array( get_post_type(), array( LP_COURSE_CPT, LP_LESSON_CPT ) ) ) {
+				wp_enqueue_script( 'jquery-caret', LP()->plugin_url( 'assets/js/jquery.caret.js', 'jquery' ) );
+				wp_localize_script( 'lp-meta-boxes', 'lp_course_params', self::admin_params() );
+			}
+		}
+
+		/**
+		 * Print js template
+		 */
+		public function print_js_template() {
+			if ( get_post_type() != LP_COURSE_CPT ) return;
+			learn_press_admin_view( 'meta-boxes/course/js-template.php' );
+		}
+
+		public function currency_symbol( $input_html, $field, $sub_meta ) {
+			return $input_html . '<span class="lpr-course-price-symbol">' . learn_press_get_currency_symbol() . '</span>';
+		}
+
+		/**
+		 * Register course post type
+		 */
+		public function register() {
+			$settings         = LP_Settings::instance();
+			$labels           = array(
+				'name'               => _x( 'Courses', 'Post Type General Name', 'learnpress' ),
+				'singular_name'      => _x( 'Course', 'Post Type Singular Name', 'learnpress' ),
+				'menu_name'          => __( 'Courses', 'learnpress' ),
+				'parent_item_colon'  => __( 'Parent Item:', 'learnpress' ),
+				'all_items'          => __( 'Courses', 'learnpress' ),
+				'view_item'          => __( 'View Course', 'learnpress' ),
+				'add_new_item'       => __( 'Add New Course', 'learnpress' ),
+				'add_new'            => __( 'Add New', 'learnpress' ),
+				'edit_item'          => __( 'Edit Course', 'learnpress' ),
+				'update_item'        => __( 'Update Course', 'learnpress' ),
+				'search_items'       => __( 'Search Courses', 'learnpress' ),
+				'not_found'          => sprintf( __( 'You have not got any course yet. Click <a href="%s">Add new</a> to start', 'learnpress' ), admin_url( 'post-new.php?post_type=lp_course' ) ),
+				'not_found_in_trash' => __( 'No course found in Trash', 'learnpress' )
+			);
+			$course_base      = $settings->get( 'course_base' );
+			$course_permalink = empty( $course_base ) ? _x( 'courses', 'slug', 'learnpress' ) : $course_base;
+
+			$args = array(
+				'labels'             => $labels,
+				'public'             => true,
+				'query_var'          => true,
+				'publicly_queryable' => true,
+				'show_ui'            => true,
+				'has_archive'        => ( $page_id = learn_press_get_page_id( 'courses' ) ) && get_post( $page_id ) ? get_page_uri( $page_id ) : 'courses',
+				'capability_type'    => LP_COURSE_CPT,
+				'map_meta_cap'       => true,
+				'show_in_menu'       => 'learn_press',
+				'show_in_admin_bar'  => true,
+				'show_in_nav_menus'  => true,
+				'taxonomies'         => array( 'course_category', 'course_tag' ),
+				'supports'           => array( 'title', 'editor', 'thumbnail', 'revisions', 'comments', 'excerpt' ),
+				'hierarchical'       => true,
+				'rewrite'            => $course_permalink ? array(
+					'slug'       => untrailingslashit( $course_permalink ),
+					'with_front' => false
+				) : false
+			);
+			return $args;
+		}
+
 		/**
 		 * Add meta boxes to course post type page
 		 */
-		public static function add_meta_boxes() {
-			if(!self::$_VER2){
+		public function add_meta_boxes() {
+			if ( !self::$_VER2 ) {
 				new RW_Meta_Box( self::curriculum_meta_box() );
 			}
 
 			new RW_Meta_Box( self::settings_meta_box() );
 			new RW_Meta_Box( self::assessment_meta_box() );
 			new RW_Meta_Box( self::payment_meta_box() );
-
+			parent::add_meta_boxes();
 		}
 
 		/**
@@ -475,11 +466,11 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			$payment = get_post_meta( $course_id, '_lp_payment', true );
 
 			if ( current_user_can( 'manage_options' ) ) {
-				$message = __( 'If free, this field is empty or set 0. (Only admin can edit this field)', 'learnpress' );
-				$price   = 0;
+				$message    = __( 'If free, this field is empty or set 0. (Only admin can edit this field)', 'learnpress' );
+				$price      = 0;
 				$sale_price = 0;
 				$start_date = '';
-				$end_date = '';
+				$end_date   = '';
 
 				if ( isset( $_GET['post'] ) ) {
 					$course_id = $_GET['post'];
@@ -493,7 +484,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 
 						$sale_price = get_post_meta( $course_id, '_lp_sale_price', true );
 						$start_date = get_post_meta( $course_id, '_lp_sale_start', true );
-						$end_date	= get_post_meta( $course_id, '_lp_sale_end', true );
+						$end_date   = get_post_meta( $course_id, '_lp_sale_end', true );
 
 					} else {
 						$message = __( 'This course is free.', 'learnpress' );
@@ -582,7 +573,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 				'review_logs',
 				__( 'Review Logs', 'learnpress' ),
 				array( $this, 'review_logs_content' ),
-				LP()->course_post_type,
+				LP_COURSE_CPT,
 				'normal',
 				'default'
 			);
@@ -876,7 +867,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			global $post, $pagenow;
 
 			// Ensure that we are editing course in admin side
-			if ( ( $pagenow != 'post.php' ) || ( get_post_type() != LP()->course_post_type ) ) {
+			if ( ( $pagenow != 'post.php' ) || ( get_post_type() != LP_COURSE_CPT ) ) {
 				return;
 			}
 
@@ -911,7 +902,8 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			$this->_review_log();
 			delete_post_meta( $post->ID, '_lp_curriculum' );
 			unset( $_POST['_lp_curriculum'] );
-
+			echo __FUNCTION__;
+			die();
 			//add_action( 'rwmb_course_curriculum_before_save_post', array( $this, 'before_save_curriculum' ) );
 		}
 
@@ -950,9 +942,10 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		/**
 		 * Print content for custom column
 		 *
-		 * @param $column
+		 * @param string
+		 * @param int
 		 */
-		public function columns_content( $column ) {
+		public function columns_content( $column, $post_id = 0 ) {
 			global $post;
 			switch ( $column ) {
 				case 'sections':
@@ -1090,14 +1083,14 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 *
 		 * @return mixed
 		 */
-		public function columns_sortable( $columns ) {
+		public function sortable_columns( $columns ) {
 			$columns['price'] = 'price';
 			return $columns;
 		}
 
 		private function _is_archive() {
 			global $pagenow, $post_type;
-			if ( !is_admin() || ( $pagenow != 'edit.php' ) || ( LP()->course_post_type != $post_type ) ) {
+			if ( !is_admin() || ( $pagenow != 'edit.php' ) || ( LP_COURSE_CPT != $post_type ) ) {
 				return false;
 			}
 			return true;
@@ -1110,6 +1103,15 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		private function _get_search() {
 			return isset( $_REQUEST['s'] ) ? $_REQUEST['s'] : false;
 		}
+
+		public static function instance() {
+			if ( !self::$_instance ) {
+				self::$_instance = new self( LP_COURSE_CPT );
+			}
+			return self::$_instance;
+		}
 	} // end LP_Course_Post_Type
-	new LP_Course_Post_Type();
+
+	$course_post_type = LP_Course_Post_Type::instance();
+	$course_post_type->add_meta_box( 'course-editor', 'dfgdfgfdg', 'course_editor', 'advanced', 'default' );
 }

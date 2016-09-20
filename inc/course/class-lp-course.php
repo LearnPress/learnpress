@@ -103,7 +103,7 @@ class LP_Course extends LP_Abstract_Course {
 		$course_id = absint( $the_course->ID );
 		$post_type = $the_course->post_type;
 
-		if ( LP()->course_post_type === $post_type ) {
+		if ( LP_COURSE_CPT === $post_type ) {
 			if ( isset( $args['course_type'] ) ) {
 				$course_type = $args['course_type'];
 			} else {

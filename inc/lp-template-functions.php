@@ -1081,13 +1081,13 @@ function learn_press_setup_object_data( $post ) {
 		return $object;
 	}
 
-	if ( $post->post_type == LP()->course_post_type ) {
+	if ( $post->post_type == LP_COURSE_CPT ) {
 		if ( isset( $GLOBALS['course'] ) ) {
 			unset( $GLOBALS['course'] );
 		}
 		$object = $GLOBALS['course'] = learn_press_get_course( $post );
 		LP()->set_object( '_course', $object );
-	} elseif ( $post->post_type == LP()->quiz_post_type ) {
+	} elseif ( $post->post_type == LP_QUIZ_CPT ) {
 		if ( isset( $GLOBALS['quiz'] ) ) {
 			unset( $GLOBALS['quiz'] );
 		}
@@ -1165,7 +1165,7 @@ if ( !function_exists( 'learn_press_page_controller' ) ) {
 			$item_id  = 0;
 
 			switch ( get_post_type() ) {
-				case LP()->quiz_post_type:
+				case LP_QUIZ_CPT:
 					$quiz          = LP()->quiz;
 					$quiz_status   = LP()->user->get_quiz_status( get_the_ID() );
 					$redirect      = false;
@@ -1185,7 +1185,7 @@ if ( !function_exists( 'learn_press_page_controller' ) ) {
 					$item_id  = $quiz->id;
 					$redirect = apply_filters( 'learn_press_quiz_access_denied_redirect_permalink', $redirect, $quiz_status, $quiz->id, $user->id );
 					break;
-				case LP()->course_post_type:
+				case LP_COURSE_CPT:
 					if ( $item_id = LP()->course->is( 'viewing-item' ) ) {
 						if ( !LP()->user->can( 'view-item', $item_id ) ) {
 							$redirect = apply_filters( 'learn_press_lesson_access_denied_redirect_permalink', LP()->course->permalink, $item_id, $user->id );
@@ -1524,7 +1524,7 @@ function learn_press_template_loader( $template ) {
 
 		$post->post_content = '[learn_press_become_teacher_form]';
 	} else {
-		if ( is_post_type_archive( LP()->course_post_type ) || ( ( $page_id = learn_press_get_page_id( 'courses' ) ) && is_page( $page_id ) ) || ( is_tax( 'course_category' ) ) ) {
+		if ( is_post_type_archive( LP_COURSE_CPT ) || ( ( $page_id = learn_press_get_page_id( 'courses' ) ) && is_page( $page_id ) ) || ( is_tax( 'course_category' ) ) ) {
 			$file   = 'archive-course.php';
 			$find[] = $file;
 			$find[] = "{$theme_template}/{$file}";

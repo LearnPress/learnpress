@@ -397,7 +397,7 @@ class LP_Quiz {
 	 * @param bool  $the_quiz
 	 * @param array $args
 	 *
-	 * @return bool
+	 * @return LP_Quiz
 	 */
 	public static function get_quiz( $the_quiz = false, $args = array() ) {
 		//$the_quiz = self::get_quiz_object( $the_quiz );
@@ -451,6 +451,7 @@ class LP_Quiz {
 			$answers = $this->_get_question_answers( $question_ids );
 
 			foreach ( $questions as $id => $question ) {
+				$answer_data = array( 'type' => 'true_or_false' );
 				// Fetch answers for questions if exists
 				if ( $answers ) {
 					$question->answers = array();
@@ -458,7 +459,8 @@ class LP_Quiz {
 						if ( $answers[$i]->id != $question->ID ) {
 							break;
 						}
-						$answer_data                                         = maybe_unserialize( $answers[$i]->answer_data );
+						$answers[$i]->answer_data                            = maybe_unserialize( $answers[$i]->answer_data );
+						$answer_data                                         = array_merge( $answer_data, $answers[$i]->answer_data );
 						$answer_data['id']                                   = $answers[$i]->question_answer_id;
 						$answer_data['order']                                = $answers[$i]->answer_order;
 						$answer_data['type']                                 = $answers[$i]->type;
@@ -512,7 +514,7 @@ class LP_Quiz {
 					INNER JOIN {$wpdb->learnpress_quiz_questions} qq ON qq.question_id = q.ID
 					AND q.post_type = %s
 					AND qq.quiz_id = %d
-				", LP()->question_post_type, $this->id );*/
+				", LP_QUESTION_CPT, $this->id );*/
 
 			$query = $wpdb->prepare( "
 			SELECT qa.question_answer_id, ID as id, pm.meta_value as type, qa.answer_data as answer_data, answer_order

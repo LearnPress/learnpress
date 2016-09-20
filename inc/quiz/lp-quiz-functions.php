@@ -242,7 +242,7 @@ function learn_press_get_user_quiz_status( $quiz_id, $user_id = false ) {
  */
 function learn_press_redirect_to_question( $template ) {
 	global $post_type;
-	if ( is_single() && $post_type == LP()->quiz_post_type ) {
+	if ( is_single() && $post_type == LP_QUIZ_CPT ) {
 		$user        = learn_press_get_current_user();
 		$quiz_id     = get_the_ID();
 		$quiz_status = $user->get_quiz_status( $quiz_id );
@@ -332,6 +332,7 @@ function learn_press_question_type_support( $type, $features ) {
 	}
 	return $has_support;
 }
+
 
 function _learn_press_add_question_type_support() {
 	learn_press_add_question_type_support(

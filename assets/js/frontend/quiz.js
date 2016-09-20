@@ -102,16 +102,20 @@
 	 * List Questions
 	 */
 	Quiz.List_Questions = List_Questions = Backbone.Collection.extend({
-		url       : 'admin-ajax.php',
-		len       : 0,
-		model     : Model_Question,
-		initialize: function () {
+		url          : 'admin-ajax.php',
+		len          : 0,
+		model        : Model_Question,
+		initialize   : function () {
 			this.on('add', function (model) {
 				this.listenTo(model, 'change', this.onChange);
+				this.listenTo(model, 'change:hasShowedHint', this.onChangedHint);
 				model.set('index', this.len++);
 			}, this)
 		},
-		onChange  : function (a, b) {
+		onChangedHint: function (a, b) {
+
+		},
+		onChange     : function (a, b) {
 			if (a.get('current') == 'yes') {
 				this.current = a;
 				for (var i = 0; i < this.length; i++) {
@@ -126,7 +130,10 @@
 					e.set('current', 'no');
 					this.listenTo(e, 'change', this.onChange);
 				}
-				LP.$Course.view.updateUrl();
+				try {
+					this.view.updateUrl();
+				} catch (e) {
+				}
 			}
 		}
 	});
@@ -136,6 +143,9 @@
 		questions          : null,
 		initialize         : function (args) {
 			this._args = args || {};
+			this.on('change:view', function () {
+				this.questions.view = this.get('view')
+			});
 			this._initQuestions();
 			this.set('remainingTime', args.totalTime - args.userTime);
 		},
@@ -205,14 +215,16 @@
 			}
 			next.set('current', 'yes');
 			if (next.get('response')) {
+				next.set('loaded', true);
 				$.isFunction(callback) && callback(next.get('response'), that);
 			} else {
 				$.ajax({
 					url     : next.get('url'),
 					dataType: 'html',
 					success : function (response) {
-						next.set('response', response);
-						$.isFunction(callback) && callback(response, that);
+						var $html = $(response).contents().find('.question-content')
+						next.set('response', $html);
+						$.isFunction(callback) && callback($html, that);
 					}
 				});
 			}
@@ -247,14 +259,16 @@
 			}
 			prev.set('current', 'yes');
 			if (prev.get('response')) {
+				prev.set('loaded', true);
 				$.isFunction(callback) && callback(prev.get('response'), that);
 			} else {
 				$.ajax({
 					url     : prev.get('url'),
 					dataType: 'html',
 					success : function (response) {
-						prev.set('response', response);
-						$.isFunction(callback) && callback(response, that);
+						var $html = $(response).contents().find('.question-content')
+						prev.set('response', $html);
+						$.isFunction(callback) && callback($html, that);
 					}
 				})
 			}
@@ -342,8 +356,12 @@
 			}
 			return r;
 		},
-		current            : function () {
-			return this.questions.findWhere({current: 'yes'});
+		current            : function (create) {
+			var current = this.questions.findWhere({current: 'yes'});
+			if (!current && create) {
+				current = new Model_Question();
+			}
+			return current;
 		},
 		getIds             : function () {
 			return $.map(this.get('questions'), function (i, v) {
@@ -370,7 +388,7 @@
 		}
 	});
 	Quiz.View = Backbone.View.extend({
-		el                    : '.single-quiz',
+		el                    : 'body',
 		events                : {
 			'click .button-prev-question': '_prevQuestion',
 			'click .button-next-question': '_nextQuestion',
@@ -381,6 +399,7 @@
 		initialize            : function () {
 			_.bindAll(this, '_onTick', 'itemUrl', '_loadQuestionCompleted');
 			LP.Hook.addFilter('learn_press_get_current_item_url', this.itemUrl);
+			this.model.set('view', this);
 			this._initCountDown();
 			this.updateButtons();
 		},
@@ -395,9 +414,11 @@
 		},
 		_onTick               : function () {
 			this.timeout && clearTimeout(this.timeout);
-			this.refreshCountdown();
 			var timer = this.model.inc();
+			this.refreshCountdown();
 			if (timer.remainingTime == 0) {
+				LP.Hook.doAction('learn_press_quiz_timeout', this);
+				LP.log('Quiz timeout');
 				this.$('.button-finish-quiz').trigger('click');
 				return;
 			}
@@ -406,25 +427,43 @@
 		_prevQuestion         : function (e) {
 			e.preventDefault();
 			LP.$Course.view.blockContent();
+			this.model.current(true).set('response', this.$('.question-content'));
 			this.model.prev(this._loadQuestionCompleted);
 		},
 		_nextQuestion         : function (e) {
 			e.preventDefault();
 			LP.$Course.view.blockContent();
+			this.model.current(true).set('response', this.$('.question-content'));
 			this.model.next(this._loadQuestionCompleted);
 		},
 		_loadQuestionCompleted: function (response, model) {
-			var $html = $(response),
-				$newElement = $html.contents().find('.question-content');
-			$('.question-content').replaceWith($newElement);
+			var loaded = model.get('loaded'),
+				$newElement = $(response);
+
+			var $oldElement = this.$('.question-content');
+			//if (loaded) {
+			this.$el.prepend($newElement.show());//.appendTo();//$oldElement);
+			$oldElement.detach();
+			//} else {
+
+			//}
+			console.log(response)
 			this.updateButtons();
+			if (model.getCurrent('hasShowedHint') == 'yes') {
+				this.$('.button-hint').attr('disabled', true);
+				this.$('.question-hint-content').removeClass('hide-if-js');
+			} else {
+				this.$('.button-hint').attr('disabled', false);
+				this.$('.question-hint-content').addClass('hide-if-js');
+			}
 			$(window).trigger('load');
 			$(document).trigger('resize');
 			LP.$Course.view.unblockContent();
-
 		},
 		_showHint             : function (e) {
 			e.preventDefault();
+			this.model.current().set('hasShowedHint', 'yes');
+			this.$('.button-hint').attr('disabled', true);
 			this.$('.question-hint-content').removeClass('hide-if-js');
 			return;
 			LP.$Course.view.blockContent();
@@ -481,14 +520,14 @@
 			strTime.push(this._addLeadingZero(remainingTime.m));
 			strTime.push(this._addLeadingZero(remainingTime.s));
 
-			var t = this.model.get('remainingTime') / this.model.get('totalTime') * 360;
-			this.$('.countdown').html(strTime.join(':'));
-			if (t < 180) {
+			var t = parseInt(this.model.get('remainingTime') / this.model.get('totalTime') * 100);// * 360;
+			this.$('.quiz-countdown').attr('data-value', t).toggleClass('xxx', t < 10).find('.countdown').html(strTime.join(':'));
+			/**if (t < 180) {
 				this.$('.progress-circle').removeClass('gt-50');
 			}
-			this.$('.fill').css({
+			 this.$('.fill').css({
 				transform: 'rotate(' + t + 'deg)'
-			});
+			});*/
 		},
 		itemUrl               : function (url, item) {
 			if (item.get('id') == this.model.get('id')) {

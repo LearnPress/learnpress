@@ -136,7 +136,7 @@ class LP_Featured_Course_Widget extends WP_Widget {
                     ORDER BY p.post_date
                     LIMIT %d",
                 '_lp_featured',
-                LP()->course_post_type,
+                LP_COURSE_CPT,
                 'publish',
                 '1',
                 (int)$instance['limit']

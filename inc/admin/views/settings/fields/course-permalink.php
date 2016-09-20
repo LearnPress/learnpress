@@ -2,8 +2,8 @@
 
 $settings = LP()->settings;
 global $wp_post_types;
-if ( !empty( $wp_post_types[LP()->course_post_type] ) ) {
-	$course_type          = $wp_post_types[LP()->course_post_type];
+if ( !empty( $wp_post_types[LP_COURSE_CPT] ) ) {
+	$course_type          = $wp_post_types[LP_COURSE_CPT];
 	$default_courses_slug = $course_type->rewrite['slug'];
 } else {
 	$default_courses_slug = '';

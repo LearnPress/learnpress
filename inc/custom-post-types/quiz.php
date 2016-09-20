@@ -10,33 +10,24 @@ if ( !defined( 'ABSPATH' ) ) {
 }
 
 if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
-
-	// Base class for custom post type to extends
-	learn_press_include( 'custom-post-types/abstract.php' );
-
 	// class LP_Quiz_Post_Type
 	final class LP_Quiz_Post_Type extends LP_Abstract_Post_Type {
-		public function __construct() {
-			add_action( 'admin_head', array( $this, 'init' ) );
+
+		/**
+		 * @var null
+		 */
+		protected static $_instance = null;
+
+		/**
+		 * LP_Quiz_Post_Type constructor.
+		 *
+		 * @param $post_type
+		 * @param mixed
+		 */
+		public function __construct( $post_type, $args = '' ) {
 			add_action( 'admin_head', array( $this, 'enqueue_script' ) );
-			add_filter( 'manage_lp_quiz_posts_columns', array( $this, 'columns_head' ) );
-			add_action( 'manage_lp_quiz_posts_custom_column', array( $this, 'columns_content' ), 10, 2 );
-			add_action( 'admin_head', array( __CLASS__, 'print_js_template' ) );
-			add_action( 'before_delete_post', array( $this, 'delete_quiz_questions' ) );
-			add_filter( 'posts_fields', array( $this, 'posts_fields' ) );
-			add_filter( 'posts_join_paged', array( $this, 'posts_join_paged' ) );
-			add_filter( 'posts_where_paged', array( $this, 'posts_where_paged' ) );
-			add_filter( 'posts_orderby', array( $this, 'posts_orderby' ) );
-			add_filter( 'manage_edit-lp_quiz_sortable_columns', array( $this, 'columns_sortable' ) );
-
-			add_action( 'save_post', array( $this, 'save' ) );
-
-			parent::__construct();
-
-		}
-
-		public function init() {
-
+			$this->add_map_method( 'before_delete', 'delete_quiz_questions' );
+			parent::__construct( $post_type, $args );
 		}
 
 		/**
@@ -65,18 +56,15 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 		/**
 		 * Print js template
 		 */
-		public static function print_js_template() {
+		public function print_js_template() {
 			learn_press_admin_view( 'meta-boxes/quiz/js-template.php' );
-		}
-
-		public static function save( $post ) {
 		}
 
 		/**
 		 * Register quiz post type
 		 */
-		public static function register_post_type() {
-			register_post_type( LP()->quiz_post_type,
+		public function register() {
+			register_post_type( LP_QUIZ_CPT,
 				apply_filters( 'lp_quiz_post_type_args',
 					array(
 						'labels'             => array(
@@ -97,7 +85,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 						'publicly_queryable' => true,
 						'show_ui'            => true,
 						'has_archive'        => false,
-						'capability_type'    => LP()->lesson_post_type,
+						'capability_type'    => LP_LESSON_CPT,
 						'map_meta_cap'       => true,
 						'show_in_menu'       => 'learn_press',
 						'show_in_admin_bar'  => true,
@@ -114,14 +102,14 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 			);
 		}
 
-		public static function add_meta_boxes() {
+		public function add_meta_boxes() {
 
 			$prefix                                        = '_lp_';
 			$meta_box                                      = apply_filters(
 				'learn_press_quiz_question_meta_box_args',
 				array(
 					'title'      => __( 'Questions', 'learnpress' ),
-					'post_types' => LP()->quiz_post_type,
+					'post_types' => LP_QUIZ_CPT,
 					'id'         => 'questions',
 					'fields'     => array(
 						array(
@@ -139,7 +127,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 				apply_filters( 'learn_press_quiz_general_meta_box',
 					array(
 						'title'      => __( 'General Settings', 'learnpress' ),
-						'post_types' => LP()->quiz_post_type,
+						'post_types' => LP_QUIZ_CPT,
 						'context'    => 'normal',
 						'priority'   => 'high',
 						'fields'     => array(
@@ -227,10 +215,11 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 					)
 				)
 			);
+			parent::add_meta_boxes();
 		}
 
 		public function enqueue_script() {
-			if ( LP()->quiz_post_type != get_post_type() ) return;
+			if ( LP_QUIZ_CPT != get_post_type() ) return;
 			ob_start();
 			?>
 			<script>
@@ -296,13 +285,13 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 
 			// append new column after title column
 			$pos = array_search( 'title', array_keys( $columns ) );
-			if ( false !== $pos && !array_key_exists( LP()->course_post_type, $columns ) ) {
+			if ( false !== $pos && !array_key_exists( LP_COURSE_CPT, $columns ) ) {
 				$columns = array_merge(
 					array_slice( $columns, 0, $pos + 1 ),
 					array(
-						LP()->course_post_type => __( 'Course', 'learnpress' ),
-						'num_of_question'      => __( 'Questions', 'learnpress' ),
-						'duration'             => __( 'Duration', 'learnpress' )
+						LP_COURSE_CPT     => __( 'Course', 'learnpress' ),
+						'num_of_question' => __( 'Questions', 'learnpress' ),
+						'duration'        => __( 'Duration', 'learnpress' )
 					),
 					array_slice( $columns, $pos + 1 )
 				);
@@ -322,10 +311,10 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 * @param string $name
 		 * @param int    $post_id
 		 */
-		public function columns_content( $name, $post_id ) {
+		public function columns_content( $name, $post_id = 0 ) {
 			global $post;
 			switch ( $name ) {
-				case LP()->course_post_type:
+				case LP_COURSE_CPT:
 					$courses = learn_press_get_item_courses( $post_id );
 					if ( $courses ) {
 						foreach ( $courses as $course ) {
@@ -466,15 +455,15 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 *
 		 * @return mixed
 		 */
-		public function columns_sortable( $columns ) {
-			$columns[LP()->course_post_type] = 'course-name';
-			$columns['num_of_question']      = 'question-count';
+		public function sortable_columns( $columns ) {
+			$columns[LP_COURSE_CPT]     = 'course-name';
+			$columns['num_of_question'] = 'question-count';
 			return $columns;
 		}
 
 		private function _is_archive() {
 			global $pagenow, $post_type;
-			if ( !is_admin() || ( $pagenow != 'edit.php' ) || ( LP()->quiz_post_type != $post_type ) ) {
+			if ( !is_admin() || ( $pagenow != 'edit.php' ) || ( LP_QUIZ_CPT != $post_type ) ) {
 				return false;
 			}
 			return true;
@@ -491,6 +480,14 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 		private function _get_search() {
 			return isset( $_REQUEST['s'] ) ? $_REQUEST['s'] : false;
 		}
+
+		public static function instance() {
+			if ( !self::$_instance ) {
+
+				self::$_instance = new self( LP_QUIZ_CPT, '' );
+			}
+			return self::$_instance;
+		}
 	} // end LP_Quiz_Post_Type
+	$quiz_post_type = LP_Quiz_Post_Type::instance();
 }
-new LP_Quiz_Post_Type();

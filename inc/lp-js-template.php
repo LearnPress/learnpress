@@ -12,7 +12,7 @@ die();
 			<?php
 			global $post;
 			$query_args = array(
-				'post_type'      => LP()->lesson_post_type,
+				'post_type'      => LP_LESSON_CPT,
 				'post_status'    => 'publish',
 				'author'         => get_current_user_id(),
 				'posts_per_page' => - 1,

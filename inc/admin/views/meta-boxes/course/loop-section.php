@@ -56,7 +56,7 @@ if ( $is_hidden ) {
 		<table class="curriculum-section-items">
 			<?php echo isset( $content_items ) ? $content_items : ''; ?>
 			<?php
-			$item = learn_press_post_object( array( 'post_type' => LP()->lesson_post_type ) );
+			$item = learn_press_post_object( array( 'post_type' => LP_LESSON_CPT ) );
 			?>
 			<?php learn_press_admin_view( 'meta-boxes/course/loop-item.php', array( 'item' => $item ) ); ?>
 

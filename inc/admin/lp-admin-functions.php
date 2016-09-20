@@ -203,8 +203,6 @@ function learn_press_email_formats_dropdown( $args = array() ) {
 }
 
 
-
-
 /**************************************************/
 /**************************************************/
 /**************************************************/
@@ -218,7 +216,7 @@ function learn_press_admin_localize_script() {
 		'quizzes_is_not_available' => __( 'Quiz is not available', 'learnpress' ),
 		'lessons_is_not_available' => __( 'Lesson is not available', 'learnpress' )
 	);
-	LP_Admin_Assets::add_localize( $translate );
+	LP_Assets::add_localize( $translate );
 }
 
 add_action( 'init', 'learn_press_admin_localize_script' );
@@ -269,7 +267,7 @@ function learn_press_get_order_by_time( $by, $time ) {
 					AND m.meta_key = %s
 					AND m.meta_value = %s
 					AND YEAR(p.post_date) = %s AND MONTH(p.post_date) = %s AND DAY(p.post_date) = %s",
-					$user_id, LP()->order_post_type, 'publish', '_learn_press_transaction_status', 'completed', $y, $m, $d
+					$user_id, LP_ORDER_CPT, 'publish', '_learn_press_transaction_status', 'completed', $y, $m, $d
 				)
 			);
 			break;
@@ -285,7 +283,7 @@ function learn_press_get_order_by_time( $by, $time ) {
 					AND m.meta_key = %s
 					AND m.meta_value = %s
 					AND YEAR(p.post_date) = %s AND MONTH(p.post_date) = %s",
-					$user_id, LP()->order_post_type, 'publish', '_learn_press_transaction_status', 'completed', $y, $m
+					$user_id, LP_ORDER_CPT, 'publish', '_learn_press_transaction_status', 'completed', $y, $m
 				)
 			);
 			break;
@@ -310,7 +308,7 @@ function learn_press_get_courses_by_status( $status ) {
 			WHERE post_author = %d
 			AND post_type = %s
 			AND post_status = %s",
-			$user_id, LP()->course_post_type, $status
+			$user_id, LP_COURSE_CPT, $status
 		)
 	);
 	return $courses;
@@ -336,7 +334,7 @@ function learn_press_get_courses_by_price( $fee ) {
 			AND p.post_status IN (%s, %s)
 			AND m.meta_key = %s
 			AND m.meta_value = %s",
-			$user_id, LP()->course_post_type, 'publish', 'pending', '_lpr_course_payment', $fee
+			$user_id, LP_COURSE_CPT, 'publish', 'pending', '_lpr_course_payment', $fee
 		)
 	);
 	return $courses;
@@ -914,7 +912,7 @@ function set_post_order_in_admin( $wp_query ) {
 	if ( isset( $_GET['post_type'] ) ) {
 		$post_type = $_GET['post_type'];
 	} else $post_type = '';
-	if ( is_admin() && 'edit.php' == $pagenow && $post_type == LP()->course_post_type && !isset( $_GET['orderby'] ) ) {
+	if ( is_admin() && 'edit.php' == $pagenow && $post_type == LP_COURSE_CPT && !isset( $_GET['orderby'] ) ) {
 		$wp_query->set( 'orderby', 'date' );
 		$wp_query->set( 'order', 'DSC' );
 	}
@@ -930,7 +928,7 @@ add_filter( 'pre_get_posts', 'set_post_order_in_admin' );
  */
 function learn_press_add_row_action_link( $actions ) {
 	global $post;
-	if ( LP()->course_post_type == $post->post_type ) {
+	if ( LP_COURSE_CPT == $post->post_type ) {
 		$duplicate_link = admin_url( 'edit.php?post_type=lp_course&action=lp-duplicate-course&post=' . $post->ID . '&nonce=' . wp_create_nonce( 'lp-duplicate-' . $post->ID ) );
 		$duplicate_link = array(
 			array(
@@ -1173,7 +1171,7 @@ function learn_press_accept_become_a_teacher() {
 
 	if ( !learn_press_user_maybe_is_a_teacher( $user_id ) ) {
 		$be_teacher = new WP_User( $user_id );
-		$be_teacher->set_role( LP()->teacher_role );
+		$be_teacher->set_role( LP_TEACHER_ROLE );
 		delete_transient( 'learn_press_become_teacher_sent_' . $user_id );
 		do_action( 'learn_press_user_become_a_teacher', $user_id );
 		$redirect = add_query_arg( 'become-a-teacher-accepted', 'yes' );
@@ -1229,7 +1227,7 @@ function learn_press_plugin_basename_from_slug( $slug ) {
 function learn_press_one_click_install_sample_data_notice() {
 	$courses = get_posts(
 		array(
-			'post_type'   => LP()->course_post_type,
+			'post_type'   => LP_COURSE_CPT,
 			'post_status' => 'any'
 		)
 	);
@@ -1259,7 +1257,7 @@ function learn_press_one_click_install_sample_data_notice() {
 
 function learn_press_request_query( $vars = array() ) {
 	global $typenow, $wp_query, $wp_post_statuses;
-	if ( LP()->order_post_type === $typenow ) {
+	if ( LP_ORDER_CPT === $typenow ) {
 		// Status
 		if ( !isset( $vars['post_status'] ) ) {
 			$post_statuses = learn_press_get_order_statuses();
@@ -1336,7 +1334,7 @@ function learn_press_get_screens() {
 		$screen_id . '_page_learn_press_statistics',
 		$screen_id . '_page_learn_press_add_ons'
 	);
-	foreach ( array( 'lp_course', 'lp_lesson', 'lp_quiz', 'lp_lesson', 'lp_order' ) as $post_type ) {
+	foreach ( array( 'lp_course', 'lp_lesson', 'lp_quiz', 'lp_question', 'lp_order' ) as $post_type ) {
 		$screens[] = 'edit-' . $post_type;
 		$screens[] = $post_type;
 	}
@@ -1351,6 +1349,33 @@ function learn_press_get_admin_pages() {
 			'learn_press_settings'
 		)
 	);
+}
+
+function learn_press_is_post_type_screen( $post_type, $union = 'OR' ) {
+	if ( is_array( $post_type ) ) {
+		$return = null;
+		foreach ( $post_type as $_post_type ) {
+			$check = learn_press_is_post_type_screen( $_post_type );
+			if ( $union == 'OR' && $check ) {
+				return true;
+			}
+			if ( $return == null ) {
+				$return = $check;
+			} else {
+				$return = $return && $check;
+			}
+			if ( $union !== 'OR' ) {
+				return $return;
+			}
+		}
+		return $return;
+	}
+	$screen = get_current_screen();
+	if ( !$screen ) {
+		return;
+	}
+	$screen_id = $screen->id;
+	return in_array( $screen_id, array( $post_type, "edit-{$post_type}" ) );
 }
 
 function learn_press_get_notice_dismiss( $context, $type = 'transient' ) {
