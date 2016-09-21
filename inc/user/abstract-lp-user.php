@@ -983,7 +983,7 @@ class LP_Abstract_User {
 				'total'  => 5
 			)
 		);
-		$args['post_type'] = LP_QUIZ_CPT;
+		$args['post_type'] = LP()->quiz_post_type;
 		$key               = md5( serialize( $args ) );
 		if ( empty( $quizzes[$key] ) || $force ) {
 			global $wpdb;
@@ -1030,7 +1030,7 @@ class LP_Abstract_User {
 		static $lessons = array();
 		if ( !$lessons || $force ) {
 			settype( $args, 'array' );
-			$args['post_type'] = LP_LESSON_CPT;
+			$args['post_type'] = LP()->lesson_post_type;
 			$lessons           = $this->get_posts( $args );
 		}
 		return apply_filters( 'learn_press_get_user_lessons', $lessons );
@@ -1094,10 +1094,10 @@ class LP_Abstract_User {
 	public function can_view_item( $item_id, $course_id = 0 ) {
 		$return = false;
 		switch ( get_post_type( $item_id ) ) {
-			case LP_QUIZ_CPT:
+			case LP()->quiz_post_type:
 				$return = $this->can( 'view-quiz', $item_id, $course_id );
 				break;
-			case LP_LESSON_CPT:
+			case LP()->lesson_post_type:
 				$return = $this->can( 'view-lesson', $item_id, $course_id );
 				break;
 		}
@@ -1291,7 +1291,7 @@ class LP_Abstract_User {
 
 	public function is_instructor() {
 		$roles = !empty( $this->user->roles ) ? $this->user->roles : array();
-		return in_array( LP_TEACHER_ROLE, $roles );
+		return in_array( LP()->teacher_role, $roles );
 	}
 
 	public function is_admin() {
@@ -2082,6 +2082,31 @@ class LP_Abstract_User {
 		if ( !$check ) {
 			return false;
 		}
+
+		$course = learn_press_get_course( $course_id );
+
+		# 1 create order
+		$order_data = array(
+				'status'		=> apply_filters( 'learn_press_default_enroll_order_status', 'completed' ),
+				'user_id'		=> get_current_user_id(),
+				'user_note'		=> '',
+				'created_via'	=> 'enroll'
+			);
+		$order = learn_press_create_order($order_data);
+
+		# 2 add order item
+		$item = array(
+			'order_item_name'	=> $course->get_title(),
+			'course_id'			=> $course->id,
+			'name'				=> $course->get_title(),
+			'quantity'			=> 1,
+			'subtotal'			=> $course->get_price(),
+			'total'				=> $course->get_price()
+		);
+
+		learn_press_add_order_item($order->id, $item);
+
+		# 3 enroll course
 		if ( $wpdb->insert(
 			$wpdb->prefix . 'learnpress_user_items',
 			array(
@@ -2090,7 +2115,8 @@ class LP_Abstract_User {
 				'start_time' => current_time( 'mysql' ),
 				'status'     => 'enrolled',
 				'end_time'   => '0000-00-00 00:00:00',
-				'ref_id'     => $this->get_course_order( $course_id ),
+				'ref_id'     => $order->id,
+//				'ref_id'     => $this->get_course_order( $course_id ),
 				'item_type'  => 'lp_course',
 				'ref_type'   => 'lp_order'
 			),
@@ -2116,7 +2142,7 @@ class LP_Abstract_User {
 			);
 		}
 
-		$args['post_type'] = LP_QUESTION_CPT;
+		$args['post_type'] = LP()->question_post_type;
 		$args['author']    = $this->id;
 
 		$key = md5( serialize( $args ) );
@@ -2170,8 +2196,8 @@ class LP_Abstract_User {
 						AND c.post_status = %s
 				) a GROUP BY a.ID
 			", $args['user_id'],
-				LP_COURSE_CPT, $this->id,
-				$args['user_id'], LP_COURSE_CPT, 'publish'
+				LP()->course_post_type, $this->id,
+				$args['user_id'], LP()->course_post_type, 'publish'
 			);
 			$query .= $where . $order . $limit;
 
