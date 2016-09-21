@@ -104,9 +104,17 @@ class LP_Assets {
 			add_action( 'admin_print_footer_scripts', array( self::$_instance, 'localize_printed_scripts' ), 5 );
 			add_action( 'admin_enqueue_scripts', array( __CLASS__, '_enqueue_scripts' ) );
 		}
-		add_action( 'wp_default_scripts', array( __CLASS__, 'default_scripts' ) );
-		add_action( 'wp_default_styles', array( __CLASS__, 'default_styles' ) );
-		add_filter( 'script_loader_src', array( $class = self::$_instance, 'script_params' ), 999, 2 );
+		add_filter( 'script_loader_src', array( self::$_instance, 'script_params' ), 999, 2 );
+		add_action( 'wp_default_scripts', array( __CLASS__, 'add_default_scripts' ) );
+		add_action( 'wp_default_styles', array( __CLASS__, 'add_default_styles' ) );
+		if ( !defined( 'LP_DEBUG' ) || ( false == LP_DEBUG ) ) {
+			add_filter( 'script_loader_tag', array( self::$_instance, 'unload_script_tag' ), 100, 3 );
+			add_filter( 'style_loader_tag', array( self::$_instance, 'unload_script_tag' ), 100, 3 );
+			add_action( 'wp_print_footer_scripts', array( self::$_instance, 'include_script_file' ), 10000 );
+			add_action( 'admin_print_footer_scripts', array( self::$_instance, 'include_script_file' ), 10000 );
+			add_action( 'wp_print_scripts', array( self::$_instance, 'include_stylesheet_file' ), 5 );
+			add_action( 'admin_print_scripts', array( self::$_instance, 'include_stylesheet_file' ), 5 );
+		}
 	}
 
 	/**
@@ -128,16 +136,19 @@ class LP_Assets {
 			$guessed_url = true;
 			$guessurl    = wp_guess_url();
 		}
-		$default_path = '/wp-content/plugins/learnpress/assets/';
-
+		$default_dirs             = array( '/wp-admin/js/', '/wp-includes/js/' );
 		$scripts->base_url        = $guessurl;
 		$scripts->content_url     = defined( 'WP_CONTENT_URL' ) ? WP_CONTENT_URL : '';
 		$scripts->default_version = get_bloginfo( 'version' );
-		$scripts->default_dirs    = array( $default_path, '/wp-admin/js/', '/wp-includes/js/' );
+		$scripts->default_dirs    = $default_dirs;
+		self::add_default_scripts( $scripts );
+	}
 
-		$suffix     = SCRIPT_DEBUG ? '' : '';
-		$dev_suffix = $develop_src ? '' : '.min';
-		$deps       = array( 'jquery', 'backbone', 'utils' );
+	public static function add_default_scripts( &$scripts ) {
+		$default_path = '/wp-content/plugins/learnpress/assets/';
+		//$scripts->default_dirs[] = $default_path;
+		$suffix = '';
+		$deps   = array( 'jquery', 'backbone', 'utils' );
 
 		// global
 		$scripts->add( 'learn-press-global', $default_path . 'js/global' . $suffix . '.js', $deps, false, 1 );
@@ -187,26 +198,38 @@ class LP_Assets {
 			$guessed_url = true;
 			$guessurl    = wp_guess_url();
 		}
-		$default_path = '/wp-content/plugins/learnpress/assets/';
-
+		$default_dirs            = array( '/wp-admin/css/', '/wp-includes/css/' );
 		$styles->base_url        = $guessurl;
 		$styles->content_url     = defined( 'WP_CONTENT_URL' ) ? WP_CONTENT_URL : '';
 		$styles->default_version = get_bloginfo( 'version' );
-		$styles->default_dirs    = array( $default_path, '/wp-admin/css/', '/wp-includes/css/' );
+		$styles->default_dirs[]  = $default_dirs;
 
-		$suffix     = SCRIPT_DEBUG ? '' : '';
-		$dev_suffix = $develop_src ? '' : '.min';
-		$styles->add( 'learn-press-global', $default_path . 'css/global' . $suffix . '.css' );
-		$styles->add( 'learn-press-admin', $default_path . 'css/admin/admin' . $suffix . '.css' );
-		$styles->add( 'learn-press-mb-course', $default_path . 'css/admin/meta-box-course' . $suffix . '.css' );
-		$styles->add( 'learn-press-mb-question', $default_path . 'css/admin/meta-box-question' . $suffix . '.css' );
-		$styles->add( 'learn-press-mb-order', $default_path . 'css/admin/meta-box-order' . $suffix . '.css' );
+		self::add_default_styles( $styles );
 
 		//LP_Assets::enqueue_style( 'select2', RWMB_CSS_URL . 'select2/select2.css' );
 		//LP_Assets::enqueue_script( 'learn-press-select2', RWMB_JS_URL . 'select2/select2.min.js' );
 		//LP_Assets::enqueue_script( 'learn-press-modal-search-items' );
 		//LP_Assets::enqueue_script( 'learn-press-meta-box-course', learn_press_plugin_url( 'assets/js/admin/meta-box-course.js' ), array( 'jquery' ) );
 		//$styles->add( 'learn-press-meta-box-question', $default_path . 'css/admin/meta-box-question' . $suffix . '.css' );
+	}
+
+	public static function add_default_styles( &$styles ) {
+		$default_path = '/wp-content/plugins/learnpress/assets/';
+		//$styles->default_dirs[] = $default_path;
+		$suffix = '';
+		// global
+		$styles->add( 'learn-press-global', $default_path . 'css/global' . $suffix . '.css' );
+
+		// admin
+		$styles->add( 'learn-press-admin', $default_path . 'css/admin/admin' . $suffix . '.css' );
+		$styles->add( 'learn-press-mb-course', $default_path . 'css/admin/meta-box-course' . $suffix . '.css' );
+		$styles->add( 'learn-press-mb-question', $default_path . 'css/admin/meta-box-question' . $suffix . '.css' );
+		$styles->add( 'learn-press-mb-order', $default_path . 'css/admin/meta-box-order' . $suffix . '.css' );
+
+		// frontend
+		$styles->add( 'learn-press', $default_path . 'css/learnpress.css' );
+
+		//print_r( $styles );
 	}
 
 	/**
@@ -448,6 +471,80 @@ class LP_Assets {
 	}
 
 	/**
+	 * Do not load script
+	 */
+	public function unload_script_tag( $tag, $handle, $src ) {
+		if ( strpos( $handle, 'learn-press-' ) !== false && strpos( $src, '/learnpress/' ) !== false ) {
+			return false;
+		}
+		return $tag;
+	}
+
+	public function include_script_file() {
+		global $wp_scripts, $compress_scripts;
+
+		$zip = $compress_scripts ? 1 : 0;
+		if ( $zip && defined( 'ENFORCE_GZIP' ) && ENFORCE_GZIP )
+			$zip = 'gzip';
+
+		if ( !empty( $wp_scripts->lp_script_concat ) && $concat = join( ',', $wp_scripts->lp_script_concat ) ) {
+			if ( !empty( $wp_scripts->print_code ) ) {
+				echo "\n<script type='text/javascript'>\n";
+				echo "/* <![CDATA[ */\n"; // not needed in HTML 5
+				echo $wp_scripts->print_code;
+				echo "/* ]]> */\n";
+				echo "</script>\n";
+			}
+
+			$concat = str_split( $concat, 128 );
+			$concat = 'load%5B%5D=' . implode( '&load%5B%5D=', $concat );
+
+			$src = get_site_url() . "/wp-content/plugins/learnpress/assets/load-scripts.php?" . $concat . "&c={$zip}&ver=" . $wp_scripts->default_version;
+			echo "<script type='text/javascript' src='" . esc_attr( $src ) . "'></script>\n";
+		}
+
+		if ( !empty( $wp_scripts->print_html ) )
+			echo $wp_scripts->print_html;
+	}
+
+
+	public function include_stylesheet_file() {
+
+		if ( did_action( 'learn_press_included_style_file' ) ) {
+			return;
+		}
+
+		global $compress_css;
+
+		$wp_styles = wp_styles();
+
+		$zip = $compress_css ? 1 : 0;
+		if ( $zip && defined( 'ENFORCE_GZIP' ) && ENFORCE_GZIP )
+			$zip = 'gzip';
+
+		if ( !empty( $wp_styles->lp_style_concat ) && $concat = join( ',', $wp_styles->lp_style_concat ) ) {
+			$dir = $wp_styles->text_direction;
+			$ver = $wp_styles->default_version;
+
+			$concat = str_split( $concat, 128 );
+			$concat = 'load%5B%5D=' . implode( '&load%5B%5D=', $concat );
+
+			$href = get_site_url() . "/wp-content/plugins/learnpress/assets/load-styles.php?" . $concat . "&c={$zip}&ver=" . $ver;
+			echo "<link rel='stylesheet' href='" . esc_attr( $href ) . "' type='text/css' media='all' />\n";
+
+			if ( !empty( $wp_styles->print_code ) ) {
+				echo "<style type='text/css'>\n";
+				echo $wp_styles->print_code;
+				echo "\n</style>\n";
+			}
+		}
+
+		if ( !empty( $wp_styles->print_html ) )
+			echo $wp_styles->print_html;
+		do_action( 'learn_press_included_style_file' );
+	}
+
+	/**
 	 * Load assets for frontend
 	 */
 	public function load_scripts() {
@@ -487,25 +584,30 @@ class LP_Assets {
 		// global
 		self::enqueue_style( 'learn-press-icon' );
 		self::enqueue_style( 'learn-press-jalerts' );
-		self::enqueue_style( 'learn-press-admin' );
+		//self::enqueue_style( 'learn-press-admin' );
 		// frontend
 		if ( LP()->settings->get( 'load_css' ) == 'yes' || LP()->settings->get( 'load_css' ) == '' ) {
-			self::enqueue_style( 'learn-press', learn_press_plugin_url( 'assets/css/learnpress.css' ) );
+			self::enqueue_style( 'learn-press' );
 		}
 
 		self::enqueue_script( 'learn-press-jalerts' );
 		self::enqueue_script( 'learn-press-global' );
 		self::enqueue_script( 'learn-press-js' );
-		self::enqueue_script( 'learn-press-course-lesson' );
-		self::enqueue_script( 'learn-press-single-course' );
-		if ( LP()->settings->get( 'ajax_add_to_cart' ) == 'yes' ) {
-			self::enqueue_script( 'learn-press-add-to-cart' );
+		//self::enqueue_script( 'learn-press-course-lesson' );
+		if(learn_press_is_course()) {
+			self::enqueue_script( 'learn-press-single-course' );
+			self::enqueue_script( 'learn-press-course-quiz' );
 		}
-		self::enqueue_script( 'learn-press-timer' );
-		self::enqueue_script( 'learn-press-checkout' );
+		/*if ( LP()->settings->get( 'ajax_add_to_cart' ) == 'yes' ) {
+			self::enqueue_script( 'learn-press-add-to-cart' );
+		}*/
+		//self::enqueue_script( 'learn-press-timer' );
+		if(learn_press_is_checkout()) {
+			self::enqueue_script( 'learn-press-checkout' );
+		}
 		self::enqueue_script( 'learn-press-become-teacher' );
-		self::enqueue_script( 'learn-press-course-quiz' );
 	}
 }
+
 /* XXXXXXXXXXXXXXX */
 return new LP_Assets();

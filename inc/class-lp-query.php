@@ -90,6 +90,7 @@ class LP_Query {
 					if ( $question ) {
 						$progress = $user->get_quiz_progress( $post->ID, $course->ID );
 						learn_press_update_user_item_meta( $progress->history_id, '_quiz_question', $question->ID );
+						LP_Cache::flush();
 					}
 				}
 			}

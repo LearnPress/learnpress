@@ -11,32 +11,34 @@ if ( !$quiz ) {
 	return;
 }
 ?>
-<div class="learn-press-content-item-title content-item-quiz-title">
-	<?php if ( false !== ( $item_quiz_title = apply_filters( 'learn_press_item_quiz_title', $quiz->title ) ) ): ?>
-		<h4><?php echo $item_quiz_title; ?></h4>
-	<?php endif; ?>
-	<?php learn_press_get_template( 'quiz/countdown-simple.php' ); ?>
-</div>
-<div itemscope id="quiz-<?php echo $quiz->id; ?>" <?php learn_press_quiz_class( 'learn-press-content-item-summary' ); ?>>
+<div id="content-item-<?php echo $quiz->id; ?>">
+	<div class="learn-press-content-item-title content-item-quiz-title">
+		<?php if ( false !== ( $item_quiz_title = apply_filters( 'learn_press_item_quiz_title', $quiz->title ) ) ): ?>
+			<h4><?php echo $item_quiz_title; ?></h4>
+		<?php endif; ?>
+		<?php learn_press_get_template( 'quiz/countdown-simple.php' ); ?>
+	</div>
+	<div id="quiz-<?php echo $quiz->id; ?>" <?php learn_press_quiz_class( 'learn-press-content-item-summary' ); ?>>
 
-	<?php if ( $user->has_quiz_status( array( 'completed' ), $quiz->id, $course->id ) ): ?>
+		<?php if ( $user->has_quiz_status( array( 'completed' ), $quiz->id, $course->id ) ): ?>
 
-		<?php learn_press_get_template( 'quiz/result.php' ); ?>
+			<?php learn_press_get_template( 'quiz/result.php' ); ?>
 
-	<?php elseif ( $user->has( 'quiz-status', 'started', $quiz->id, $course->id ) ): ?>
+		<?php elseif ( $user->has( 'quiz-status', 'started', $quiz->id, $course->id ) ): ?>
 
-		<?php learn_press_get_template( 'quiz/question-content.php' ); ?>
-		<?php //learn_press_get_template( 'quiz/countdown.php' ); ?>
+			<?php learn_press_get_template( 'quiz/question-content.php' ); ?>
+			<?php //learn_press_get_template( 'quiz/countdown.php' ); ?>
 
-	<?php else: ?>
+		<?php else: ?>
 
-		<?php learn_press_get_template( 'quiz/description.php' ); ?>
-		<?php learn_press_get_template( 'quiz/intro.php' ); ?>
+			<?php learn_press_get_template( 'quiz/description.php' ); ?>
+			<?php learn_press_get_template( 'quiz/intro.php' ); ?>
 
-	<?php endif; ?>
-	<?php learn_press_get_template( 'quiz/buttons.php' ); ?>
-	<?php learn_press_get_template( 'quiz/questions.php' ); ?>
+		<?php endif; ?>
+		<?php learn_press_get_template( 'quiz/buttons.php' ); ?>
+		<?php learn_press_get_template( 'quiz/questions.php' ); ?>
 
+	</div>
 </div>
 <script>
 	window.Quiz_Params = <?php echo json_encode( $quiz->get_settings(), LP()->settings->get( 'debug' ) == 'yes' ? JSON_PRETTY_PRINT : '' );?>;

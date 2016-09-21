@@ -116,7 +116,8 @@
 
 		},
 		onChange     : function (a, b) {
-			if (a.get('current') == 'yes') {
+
+			if (a.changed['current'] && a.get('current') == 'yes') {
 				this.current = a;
 				for (var i = 0; i < this.length; i++) {
 					var e = this.at(i);
@@ -218,15 +219,17 @@
 				next.set('loaded', true);
 				$.isFunction(callback) && callback(next.get('response'), that);
 			} else {
-				$.ajax({
-					url     : next.get('url'),
-					dataType: 'html',
-					success : function (response) {
-						var $html = $(response).contents().find('.question-content')
-						next.set('response', $html);
-						$.isFunction(callback) && callback($html, that);
-					}
-				});
+				new (function(a, b, c) {
+					$.ajax({
+						url     : next.get('url'),
+						dataType: 'html',
+						success : function (response) {
+							var $html = $(response).contents().find('.learn-press-content-item-summary')
+							a.set('response', $html);
+							$.isFunction(c) && c($html, b);
+						}
+					})
+				})(next, that, callback);
 			}
 			return;
 			if (!this.isLast()) {
@@ -266,7 +269,7 @@
 					url     : prev.get('url'),
 					dataType: 'html',
 					success : function (response) {
-						var $html = $(response).contents().find('.question-content')
+						var $html = $(response).contents().find('.learn-press-content-item-summary')
 						prev.set('response', $html);
 						$.isFunction(callback) && callback($html, that);
 					}
@@ -388,7 +391,9 @@
 		}
 	});
 	Quiz.View = Backbone.View.extend({
-		el                    : 'body',
+		el                    : function () {
+			return 'body';
+		},
 		events                : {
 			'click .button-prev-question': '_prevQuestion',
 			'click .button-next-question': '_nextQuestion',
@@ -397,13 +402,19 @@
 		},
 		timeout               : 0,
 		initialize            : function () {
+			var $el = $('#content-item-' + this.model.get('id'));
+			//this.setElement($el);
 			_.bindAll(this, '_onTick', 'itemUrl', '_loadQuestionCompleted');
 			LP.Hook.addFilter('learn_press_get_current_item_url', this.itemUrl);
 			this.model.set('view', this);
 			this._initCountDown();
 			this.updateButtons();
+
 		},
 		_initCountDown        : function () {
+			if (this.model.get('status') != 'started') {
+				return;
+			}
 			this.refreshCountdown();
 			$.inArray(this.model.get('status'), ['started']) >= 0 && setTimeout($.proxy(function () {
 				this.start();
@@ -427,27 +438,33 @@
 		_prevQuestion         : function (e) {
 			e.preventDefault();
 			LP.$Course.view.blockContent();
-			this.model.current(true).set('response', this.$('.question-content'));
+			this.model.current(true).set('response', this.$('.learn-press-content-item-summary'));
 			this.model.prev(this._loadQuestionCompleted);
 		},
 		_nextQuestion         : function (e) {
 			e.preventDefault();
 			LP.$Course.view.blockContent();
-			this.model.current(true).set('response', this.$('.question-content'));
+			this.model.current(true).set('response', this.$('.learn-press-content-item-summary'));
 			this.model.next(this._loadQuestionCompleted);
 		},
 		_loadQuestionCompleted: function (response, model) {
+
+			this.model.questions.forEach(function (v, k) {
+				console.log(k, v.get('current'))
+			})
+
 			var loaded = model.get('loaded'),
 				$newElement = $(response);
 
-			var $oldElement = this.$('.question-content');
+			var $oldElement = this.$('.learn-press-content-item-summary');
 			//if (loaded) {
-			this.$el.prepend($newElement.show());//.appendTo();//$oldElement);
+
+			console.log('current:' + $newElement.find('.quiz-question-title').html())
+			$newElement.show().insertAfter($oldElement);//.replaceWith($newElement.show());//.appendTo();//$oldElement);
 			$oldElement.detach();
 			//} else {
 
 			//}
-			console.log(response)
 			this.updateButtons();
 			if (model.getCurrent('hasShowedHint') == 'yes') {
 				this.$('.button-hint').attr('disabled', true);
@@ -490,6 +507,7 @@
 				return;
 			}
 			if (this.model.get('status') == 'started') {
+				console.log(this.$('.button-prev-question'), this.model.isLast());
 				this.$('.button-prev-question').toggleClass('hide-if-js', this.model.isFirst());
 				this.$('.button-next-question').toggleClass('hide-if-js', this.model.isLast());
 				var current = this.model.current();
@@ -506,11 +524,16 @@
 			this.timeout && clearTimeout(this.timeout);
 		},
 		refreshCountdown      : function () {
-			var totalTime = this.model.getTotalTime('dhms'),
+			var localTimeZone = -(new Date().getTimezoneOffset()) / 60,
+				timeOffset = this.model.get('serverTime') - localTimeZone;
+			var startTime = this.model.get('startTime'),
+				endTime = startTime + this.model.get('totalTime'),
+				totalTime = this.model.getTotalTime('dhms'),
 				remainingTime = this.model.getRemainingTime('dhms'),
-				strTime = [];
-
-
+				strTime = [],
+				nowTime = new Date().getTime() / 1000;
+			endTime += timeOffset * 3600;
+			remainingTime = this.model._secondsToDHMS(endTime - nowTime);
 			if (totalTime.d) {
 				strTime.push(this._addLeadingZero(remainingTime.d));
 			}
@@ -552,5 +575,5 @@
 			$course.view.updateUrl();
 		}
 	});
-	console.log(new Date())
+
 })(jQuery);

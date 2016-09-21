@@ -169,9 +169,11 @@ class LP_Quiz {
 				$js['result'] = $user->get_quiz_results( $this->id, $course_id, $force );
 			}
 			if ( $js['status'] == 'started' ) {
-				$history         = $user->get_quiz_results( $this->id, $course_id );
-				$js['startTime'] = ( $history->start );
+				$history          = $user->get_quiz_results( $this->id, $course_id );
+				$js['startTime']  = strtotime( $history->start );
+				$js['serverTime'] = date( 'Z' ) / 3600;//date_timezone_get( date_default_timezone_get() );// get_option('gmt_offset');
 			}
+
 			$quiz_params[$key] = $js;
 			LP_Cache::set_quiz_params( $quiz_params );
 		}
@@ -203,7 +205,7 @@ class LP_Quiz {
 					'type'  => $question->type,
 					'title' => get_the_title( $question->ID ),
 					'name'  => get_post_field( 'post_name', $question->ID ),
-					'url'   => $this->get_question_link( $question->ID )
+					'url'   => trailingslashit( $this->get_question_link( $question->ID ) )
 				);
 				if ( $show_check_answer == 'yes' ) {
 					//$_question->check_answer = learn_press_question_type_support( $question->type, 'check-answer' );

@@ -2572,92 +2572,12 @@ function learn_press_update_log( $version, $data ) {
 	}
 	update_option( 'learn_press_update_logs', $logs );
 }
-
-/**
- * Do not load script
- */
-add_filter( 'script_loader_tag', 'learn_press_unload_script_tag', 100, 3 );
-function learn_press_unload_script_tag( $tag, $handle, $src ) {
-	if ( strpos( $handle, 'learn-press-' ) !== false && strpos( $src, '/learnpress/' ) !== false ) {
-		return false;
-	}
-	return $tag;
-}
-
-add_action( 'wp_print_footer_scripts', 'learn_press_include_script_file', 10000 );
-add_action( 'admin_print_footer_scripts', 'learn_press_include_script_file', 1000000 );
-
-function learn_press_include_script_file() {
-	global $wp_scripts, $compress_scripts;
-
-	$zip = $compress_scripts ? 1 : 0;
-	if ( $zip && defined( 'ENFORCE_GZIP' ) && ENFORCE_GZIP )
-		$zip = 'gzip';
-
-	if ( !empty( $wp_scripts->lp_script_concat ) && $concat = join( ',', $wp_scripts->lp_script_concat ) ) {
-		if ( !empty( $wp_scripts->print_code ) ) {
-			echo "\n<script type='text/javascript'>\n";
-			echo "/* <![CDATA[ */\n"; // not needed in HTML 5
-			echo $wp_scripts->print_code;
-			echo "/* ]]> */\n";
-			echo "</script>\n";
-		}
-
-		$concat = str_split( $concat, 128 );
-		$concat = 'load%5B%5D=' . implode( '&load%5B%5D=', $concat );
-
-		$src = get_site_url() . "/wp-content/plugins/learnpress/assets/load-scripts.php?" . $concat . "&c={$zip}&ver=" . $wp_scripts->default_version;
-		echo "<script type='text/javascript' src='" . esc_attr( $src ) . "'></script>\n";
-	}
-
-	if ( !empty( $wp_scripts->print_html ) )
-		echo $wp_scripts->print_html;
-}
-
-add_action( 'wp_print_scripts', 'learn_press_include_stylesheet_file', 5 );
-add_action( 'admin_print_scripts', 'learn_press_include_stylesheet_file', 5 );
-
-function learn_press_include_stylesheet_file() {
-
-	if ( did_action( 'learn_press_included_style_file' ) ) {
-		return;
-	}
-
-	global $compress_css;
-
-	$wp_styles = wp_styles();
-
-	$zip = $compress_css ? 1 : 0;
-	if ( $zip && defined( 'ENFORCE_GZIP' ) && ENFORCE_GZIP )
-		$zip = 'gzip';
-
-	if ( !empty( $wp_styles->lp_style_concat ) && $concat = join( ',', $wp_styles->lp_style_concat ) ) {
-		$dir = $wp_styles->text_direction;
-		$ver = $wp_styles->default_version;
-
-		$concat = str_split( $concat, 128 );
-		$concat = 'load%5B%5D=' . implode( '&load%5B%5D=', $concat );
-
-		$href = get_site_url() . "/wp-content/plugins/learnpress/assets/load-styles.php?" . $concat . "&c={$zip}&ver=" . $ver;
-		echo "<link rel='stylesheet' href='" . esc_attr( $href ) . "' type='text/css' media='all' />\n";
-
-		if ( !empty( $wp_styles->print_code ) ) {
-			echo "<style type='text/css'>\n";
-			echo $wp_styles->print_code;
-			echo "\n</style>\n";
-		}
-	}
-
-	if ( !empty( $wp_styles->print_html ) )
-		echo $wp_styles->print_html;
-	do_action( 'learn_press_included_style_file' );
-}
-
+/*
 add_action( 'wp_default_scripts', 'learn_press_default_scripts' );
 add_action( 'wp_default_styles', 'learn_press_default_scripts' );
 function learn_press_default_scripts( $wp_scripts ) {
 	$wp_scripts->default_dirs[] = '/wp-content/plugins/learnpress/assets/';
-}
+}*/
 
 // Debugging
 include_once "debug.php";
