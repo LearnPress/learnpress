@@ -49,6 +49,7 @@ if ( !empty( $support_types[$item->post_type] ) ) {
             <a href="" class="lp-item-action lp-remove dashicons dashicons-trash" data-confirm-remove="<?php _e( 'Are you sure you want to remove this item?', 'learnpress' ); ?>"><?php _e( '', 'learnpress' ); ?></a>
             <span class="item-checkbox">
                 <input type="checkbox" value="<?php echo $section_item_id; ?>" />
+				<a class="dashicons dashicons-menu"></a>
             </span>
             <?php do_action( 'learn_press_admin_end_section_item_actions', $item, $section ); ?>
         </p>
