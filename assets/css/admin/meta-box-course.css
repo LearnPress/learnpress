@@ -171,7 +171,7 @@
 }
 #course_curriculum .curriculum-section-items .lp-section-item .lp-item-actions a{
 	vertical-align: middle;
-	color: #DDD;
+	color: #666;
 	margin-top: -2px;
 	box-shadow: none;
 }
@@ -212,7 +212,7 @@
 	height: 34px;
 	border: none;
 	line-height: 32px;
-	padding: 0 7px 0 0;
+	padding: 0 0 0 0;
 	margin: 0 4px 0 10px;
 	cursor: url("../../../assets/images/openhand.cur") 7 5, default;
 	visibility: visible;
@@ -220,9 +220,7 @@
 #course_curriculum .curriculum-section-items .lp-section-item .item-checkbox input{
 	opacity: 0.4;
 }
-#course_curriculum .curriculum-section-items .lp-section-item:not(.lp-item-empty):hover	.item-checkbox{
-	background: url("../../../assets/images/grippy_large.png") right no-repeat;
-}
+
 #course_curriculum .curriculum-section-items .lp-section-item:not(.lp-item-empty):hover	.item-checkbox input{
 	opacity: 1;
 }
