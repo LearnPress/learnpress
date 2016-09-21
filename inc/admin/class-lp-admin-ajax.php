@@ -290,10 +290,13 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 				echo '<li>' . apply_filters( 'learn_press_modal_search_items_not_found', __( 'No item found', 'learnpress' ), $type ) . '</li>';
 			}
 
+                        $item_object = $type ? get_post_type_object( $type ) : '';
+                        $post_type = $context_id ? get_post_type_object( get_post_type( $context_id ) ) : '';
 			$response = array(
 				'html' => ob_get_clean(),
 				'data' => $found_items,
-				'args' => $args
+				'args' => $args,
+                                'notices'   => '<div class="learnpress-search-notices notice notice-warning">' .  sprintf( '<p><strong>%s</strong>' . __( ' can not assign more than 1 ', 'learnpress' ) . '%s</p>', $item_object->labels->singular_name, $post_type->labels->singular_name ) . '</div>'
 			);
 			learn_press_send_json( $response );
 		}

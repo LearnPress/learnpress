@@ -552,14 +552,15 @@
 					return c > 0;
 				}).get();
 			},
-			showFormItems           : function (type, action, $button) {
+			showFormItems           : function (type, action, $button, notices) {
 				var $form = LP.ModalSearchItems({
 					template  : 'tmpl-learn-press-search-items',
 					type      : type,
 					section   : $button.closest('.curriculum-section'),
 					context   : 'course-items',
 					context_id: $('#post_ID').val(),
-					exclude   : this.getSelectedItems()
+					exclude   : this.getSelectedItems(),
+                                        notices   : notices
 				});
 				LP.MessageBox.show($form.$el);
 				$form.$el.find('header input').focus();
@@ -570,11 +571,12 @@
 					$button = $(e.target),
 					action = $button.data('action'),
 					type = $button.data('type'),
+                                        notices = $button.data('notices'),
 					$form = null;
 				switch (action) {
 					case 'add-lp_quiz':
 					case 'add-lp_lesson':
-						this.showFormItems(type, action, $button);
+						this.showFormItems(type, action, $button, notices);
 						break;
 					default:
 						LP.Hook.doAction('learn_press_section_button_click', $button, action, this);
