@@ -455,7 +455,6 @@ class LP_Quiz {
 			$question_ids = array_keys( $questions );
 
 			$answers = $this->_get_question_answers( $question_ids );
-
 			foreach ( $questions as $id => $question ) {
 				$answer_data = array( 'type' => 'true_or_false' );
 				// Fetch answers for questions if exists
@@ -479,16 +478,17 @@ class LP_Quiz {
 				 * Add item to 'posts' cache group
 				 */
 				$item_post = wp_cache_get( $question->ID, 'posts' );
-				if ( !$item_post ) {
-					wp_cache_add( $question->ID, $question, 'posts' );
+				if ( $item_post ) {
+					wp_cache_delete( $question->ID, 'posts' );
 				}
+				$add = wp_cache_add( $question->ID, $question, 'posts' );
+
 				// update mark of quiz
 				$this->_mark += absint( $question->mark );
 			}
 			// Update meta cache
 			update_meta_cache( 'post', $question_ids );
 		}
-
 		return $questions;
 	}
 

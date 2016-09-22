@@ -99,7 +99,6 @@ class LP_Session_Handler {
 			$this->_customer_id        = $cookie[0];
 			$this->_session_expiration = $cookie[1];
 			$this->_has_cookie         = true;
-			//echo "[11111111:", $this->_customer_id, ']';
 			if ( time() > $this->_session_expiration - HOUR_IN_SECONDS ) {
 				$this->set_session_expiration();
 				$this->update_session_timestamp( $this->_customer_id, $this->_session_expiration );
@@ -108,7 +107,6 @@ class LP_Session_Handler {
 		} else {
 			$this->set_session_expiration();
 			$this->_customer_id = $this->generate_customer_id();
-			//echo "[222222222:", $this->_customer_id, ']';
 
 		}
 		$this->_data = $this->get_session_data();
@@ -155,12 +153,7 @@ class LP_Session_Handler {
 	}
 
 	public function get_session_cookie() {
-		/*learn_press_setcookie('xxxxxxxxxxxxxxxx', 'yyyyyyyyyyyyyyyyyyyy');
-		echo "[===\n";
-		print_r($_COOKIE);
-		echo ",\n", $this->_cookie, ",\n";
-		print_r( $_COOKIE[$this->_cookie] );
-		echo "\n]";*/
+
 		if ( empty( $_COOKIE[$this->_cookie] ) || !is_string( $_COOKIE[$this->_cookie] ) ) {
 
 
@@ -286,11 +279,6 @@ class LP_Session_Handler {
 			wp_cache_add( $this->get_cache_prefix() . $customer_id, $value, LP_SESSION_CACHE_GROUP, $this->_session_expiration - time() );
 		}
 
-		/*echo 'XXX';
-		print_r( $value );
-		echo ",";
-		print_r( maybe_unserialize( $value ) );
-		echo 'YYY';*/
 		return maybe_unserialize( $value );
 	}
 

@@ -429,13 +429,13 @@
 				return undefined;
 			}
 			var $html = question.get('response'),
+				$form = $('<form />'),
 				answer = {};
 			if ($html) {
-				var $form = $('<form />');
 				$form.html($html.clone());
 				answer = $form.serializeJSON();
 			}
-			return answer;
+			return LP.Hook.applyFilters('learn_press_question_answer_data', answer, $form, question, this);
 		}
 	});
 	Quiz.View = Backbone.View.extend({

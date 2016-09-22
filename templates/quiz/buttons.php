@@ -20,19 +20,22 @@ $status = $user->get_quiz_status( $quiz->id );
 if ( $user->has( 'finished-course', $course->id ) ) {
 	return;
 }
+$question = $quiz->get_current_question();
 ?>
 <div class="quiz-buttons">
 
 	<?php if ( !$user->has( 'quiz-status', 'completed', $quiz->id ) ): ?>
 		<button class="button-prev-question"><?php esc_html_e( 'Previous', 'learnpress' ); ?></button>
 		<button class="button-next-question"><?php esc_html_e( 'Next', 'learnpress' ); ?></button>
-		<button
-			class="button-check-answer"
-			data-id="<?php esc_attr_e( $quiz->id ); ?>"
-			data-security="<?php esc_attr_e( wp_create_nonce( 'check-question-' . $user->id . '-' . $course->id . '-' . $quiz->id ) ); ?>">
-			<?php esc_html_e( 'Check', 'learnpress' ); ?>
-		</button>
-		<button class="button-hint" data-security="<?php esc_attr_e( wp_create_nonce( 'get-question-hint-' . $user->id . '-' . $course->id . '-' . $quiz->id ) ); ?>"><?php esc_html_e( 'Hint', 'learnpress' ); ?></button>
+		<?php if ( !$user->has_checked_answer( $question->id, $quiz->id, $course->id ) ): ?>
+			<button
+				class="button-check-answer"
+				data-id="<?php esc_attr_e( $quiz->id ); ?>"
+				data-security="<?php esc_attr_e( wp_create_nonce( 'check-question-' . $user->id . '-' . $course->id . '-' . $quiz->id ) ); ?>">
+				<?php esc_html_e( 'Check', 'learnpress' ); ?>
+			</button>
+			<button class="button-hint" data-security="<?php esc_attr_e( wp_create_nonce( 'get-question-hint-' . $user->id . '-' . $course->id . '-' . $quiz->id ) ); ?>"><?php esc_html_e( 'Hint', 'learnpress' ); ?></button>
+		<?php endif; ?>
 	<?php endif; ?>
 	<?php if ( $user->has( 'quiz-status', 'completed', $quiz->id ) && $remain = $user->can( 'retake-quiz', $quiz->id ) ): ?>
 		<button

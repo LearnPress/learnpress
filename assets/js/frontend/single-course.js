@@ -623,6 +623,12 @@ if (typeof LearnPress == 'undefined') {
 		});
 	});
 
+	$(document).ajaxComplete(function (a, b, c) {
+		if (c.data.match(/lp-ajax=/)) {
+			$(document).trigger('ready');
+			$(window).trigger('resize');
+		}
+	});
 	return;
 
 	$(document).ready(function () {

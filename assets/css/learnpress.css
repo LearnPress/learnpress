@@ -723,6 +723,9 @@ body.course-has-popup {
   /*padding: 20px;
         border-top: 1px solid #DDD;*/
 }
+#course-curriculum-popup .learn-press-content-item-summary .quiz-question-title {
+  margin-bottom: 20px;
+}
 .learnpress form.purchase-course {
   margin-bottom: 20px;
 }
@@ -1542,7 +1545,7 @@ body.course-has-popup {
   margin: 0 0 20px 0;
   padding: 0;
 }
-.learn-press-question-options > li {
+.learn-press-question-options > li.answer-option {
   font-size: 16px;
   background: #F5F5F5;
   margin-bottom: 20px;
@@ -1554,11 +1557,11 @@ body.course-has-popup {
   -o-border-radius: 4px;
   border-radius: 4px;
 }
-.learn-press-question-options > li > label {
+.learn-press-question-options > li.answer-option > label {
   display: block;
 }
-.learn-press-question-options > li > label input[type="checkbox"],
-.learn-press-question-options > li > label input[type="radio"] {
+.learn-press-question-options > li.answer-option > label input[type="checkbox"],
+.learn-press-question-options > li.answer-option > label input[type="radio"] {
   border: 0;
   -webkit-appearance: initial;
   width: 30px;
@@ -1571,8 +1574,8 @@ body.course-has-popup {
   left: 15px;
   margin: 0;
 }
-.learn-press-question-options > li > label input[type="checkbox"]:checked:before,
-.learn-press-question-options > li > label input[type="radio"]:checked:before {
+.learn-press-question-options > li.answer-option > label input[type="checkbox"]:checked:before,
+.learn-press-question-options > li.answer-option > label input[type="radio"]:checked:before {
   content: '';
   border: 4px solid #00b9eb;
   display: inline-block;
@@ -1591,13 +1594,17 @@ body.course-has-popup {
   -o-transform: rotate(36deg);
   transform: rotate(36deg);
 }
-.learn-press-question-options > li > label input[type="checkbox"]:checked + p,
-.learn-press-question-options > li > label input[type="radio"]:checked + p {
+.learn-press-question-options > li.answer-option > label input[type="checkbox"]:checked + p,
+.learn-press-question-options > li.answer-option > label input[type="radio"]:checked + p {
   font-weight: bold;
   background: #00b9eb;
   color: #FFF;
 }
-.learn-press-question-options > li > label input[type="radio"] {
+.learn-press-question-options > li.answer-option > label input[type="checkbox"][disabled],
+.learn-press-question-options > li.answer-option > label input[type="radio"][disabled] {
+  opacity: 1;
+}
+.learn-press-question-options > li.answer-option > label input[type="radio"] {
   -webkit-border-radius: 50%;
   -khtml-border-radius: 50%;
   -moz-border-radius: 50%;
@@ -1605,19 +1612,19 @@ body.course-has-popup {
   -o-border-radius: 50%;
   border-radius: 50%;
 }
-.learn-press-question-options > li > label p {
+.learn-press-question-options > li.answer-option > label p {
   min-height: 50px;
   padding: 5px 20px 5px 60px;
   margin: 0;
   box-sizing: border-box;
   line-height: 1.5;
 }
-.learn-press-question-options > li > label p.single-lines {
+.learn-press-question-options > li.answer-option > label p.single-lines {
   padding: 0 20px 0 60px;
   line-height: 50px;
   /* middle */
 }
-.learn-press-question-options > li label p {
+.learn-press-question-options > li.answer-option label p {
   -webkit-border-radius: 4px;
   -khtml-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -1625,15 +1632,15 @@ body.course-has-popup {
   -o-border-radius: 4px;
   border-radius: 4px;
 }
-.learn-press-question-options > li.answer-true label p {
+.learn-press-question-options > li.answer-option.answer-true label p {
   background: #00b9eb;
   color: #FFF;
 }
-.learn-press-question-options > li.user-answer-false {
+.learn-press-question-options > li.answer-option.user-answer-false {
   background: #F5F5F5;
 }
-.learn-press-question-options > li.user-answer-false > label input[type="checkbox"] + p,
-.learn-press-question-options > li.user-answer-false > label input[type="radio"] + p {
+.learn-press-question-options > li.answer-option.user-answer-false > label input[type="checkbox"] + p,
+.learn-press-question-options > li.answer-option.user-answer-false > label input[type="radio"] + p {
   text-decoration: line-through;
   color: #FF0000;
   background: #F5F5F5;

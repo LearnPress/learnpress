@@ -419,7 +419,6 @@
 					type = $input.data('field'),
 					that = this;
 				if ($input.attr('name') == 'lp-new-item-name') {
-					LP.log(textLen);
 					if (textLen > 0) {
 						$input.siblings('.lp-button-add-item').removeClass('disabled');
 					} else {
@@ -591,7 +590,6 @@
 						return a.length
 					}).join('|'), "ig"),
 					found = 0;
-				LP.log(text);
 				found = $lis.filter(function () {
 					var $el = $(this),
 						itemText = $el.data('text') + '',
@@ -1064,7 +1062,6 @@
 						id    : id
 					},
 					success: function (response) {
-						LP.log(response)
 					}
 				});
 			},
@@ -1334,14 +1331,9 @@
 					ui.placeholder.html('<td colspan="' + cellCount + '">&nbsp;</td>');
 				},
 				sort       : function (e, ui) {
-					LP.log(ui.helper.html())
 				},
 				stop       : function (e, ui) {
 					var $emptyItem = ui.item.parent().find('.lp-item-empty:last');
-					LP.log('empty:')
-					LP.log($emptyItem.get(0))
-					LP.log('next:')
-					LP.log($emptyItem.next().get(0))
 					if ($emptyItem.next().is(ui.item.get(0))) {
 						$emptyItem.insertAfter(ui.item);
 					}

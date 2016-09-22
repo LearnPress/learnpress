@@ -614,6 +614,4 @@ class LP_Assets {
 		self::enqueue_script( 'learn-press-become-teacher' );
 	}
 }
-
-/* XXXXXXXXXXXXXXX */
 return new LP_Assets();

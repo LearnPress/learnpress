@@ -24,11 +24,10 @@ if ( $show_result && $completed ) {
 <ul class="learn-press-question-options">
 	<?php if ( $answers = $this->answers ) foreach ( $answers as $k => $answer ): ?>
 		<?php
-		$answer_class = array();
+		$answer_class = array( 'answer-option' );
 		if ( $completed && $show_result || $checked ) {
-			$answer_class   = array();
 			$answer_correct = true;
-			if ( $answer['is_true'] == 'yes' ) {
+			if ( $checked && $answer['is_true'] == 'yes' ) {
 				$answer_class[] = 'answer-true';
 			}
 			if ( $answer['is_true'] == 'yes' && !$this->is_selected_option( $answer, $answered ) ) {

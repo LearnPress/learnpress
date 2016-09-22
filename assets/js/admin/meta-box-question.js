@@ -5,7 +5,7 @@
  */
 ;
 if (typeof window.LP == 'undefined') {
-	window.LP = {};
+	window.LP = window.LearnPress = {};
 }
 
 ;(function ($) {

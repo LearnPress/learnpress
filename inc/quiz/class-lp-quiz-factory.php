@@ -263,40 +263,41 @@ class LP_Quiz_Factory {
 		$user        = learn_press_get_user( $user_id );
 		$quiz        = LP_Quiz::get_quiz( $quiz_id );
 		LP()->set_object( 'quiz', $quiz, true );
-
-		$answer      = learn_press_get_request( 'question_answer' );
-		$user_answer = false;
-		$history     = $user->get_quiz_results( $quiz_id, $course_id, true );
-
-		if ( $answer && $history ) {
-			if ( array_key_exists( 'learn-press-question-' . $question_id, $answer ) ) {
-				$user_answer = $answer['learn-press-question-' . $question_id];
+		if ( !$user->has_checked_answer( $question_id, $quiz_id, $course_id ) ) {
+			$answer      = learn_press_get_request( 'question_answer' );
+			$user_answer = false;
+			$history     = $user->get_quiz_results( $quiz_id, $course_id, true );
+			if ( is_string( $answer ) && strpos( $answer, '=' ) !== false ) {
+				parse_str( $answer, $answer );
 			}
-			if ( $user_answer ) {
-				$update_answers               = (array) $history->question_answers;
-				$update_answers[$question_id] = $user_answer;
-				learn_press_update_user_item_meta( $history->history_id, '_quiz_question_answers', $update_answers );
+			if ( $answer && $history ) {
+				if ( array_key_exists( 'learn-press-question-' . $question_id, $answer ) ) {
+					$user_answer = $answer['learn-press-question-' . $question_id];
+				}
+
+				if ( $user_answer ) {
+					$update_answers               = (array) $history->question_answers;
+					$update_answers[$question_id] = $user_answer;
+					learn_press_update_user_item_meta( $history->history_id, '_quiz_question_answers', $update_answers );
+				}
 			}
+			if ( $history ) {
+				$checked = learn_press_get_user_item_meta( $history->history_id, '_quiz_question_checked', true );
+				if ( !$checked ) {
+					$checked = array();
+				} else {
+					$checked = (array) $checked;
+				}
+				if ( !in_array( $question_id, $checked ) ) {
+					$checked[] = $question_id;
+					learn_press_update_user_item_meta( $history->history_id, '_quiz_question_checked', $checked );
+				}
+			}
+
+			LP_Cache::flush();
 		}
-		if ( $history ) {
-			$checked = learn_press_get_user_item_meta( $history->history_id, '_quiz_question_checked', true );
-			if ( !$checked ) {
-				$checked = array();
-			} else {
-				$checked = (array) $checked;
-			}
-			if ( !in_array( $question_id, $checked ) ) {
-				$checked[] = $question_id;
-				learn_press_update_user_item_meta( $history->history_id, '_quiz_question_checked', $checked );
-			}
-		}
-
-		LP_Cache::flush();
 		$question = LP_Question_Factory::get_question( $question_id );
-		if ( $question ) {
-			$right_answer = $question->answers;
-		}
-		$question->render( array( 'quiz_id' => $quiz_id, 'course_id' => $course_id ) );
+		$question->render( array( 'quiz_id' => $quiz_id, 'course_id' => $course_id, 'force' => true ) );
 		exit();
 		////$question_answer = LP_Question_Factory::save_question_if_needed( $question_id, $quiz_id, $user_id );
 		if ( !$quiz || !$quiz->id ) {
