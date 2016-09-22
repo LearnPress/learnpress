@@ -447,7 +447,7 @@ class LP_Abstract_User {
 		if ( !$quiz ) {
 			return;
 		}
-		$return = false;
+		$return   = false;
 		$progress = $this->get_quiz_results( $quiz->id, $course_id );
 		if ( $progress ) {
 			$time       = current_time( 'timestamp' );
@@ -760,7 +760,7 @@ class LP_Abstract_User {
 		}
 
 		$key    = $this->id . '-' . $course_id . '-' . $quiz_id;
-		$cached = (array) wp_cache_get( 'user-quiz-history', 'learnpress' );
+		$cached = LP_Cache::get_quiz_history( false, array() );// wp_cache_get( 'user-quiz-history', 'learnpress' );
 		if ( ( !array_key_exists( $key, $cached ) || $force ) && $quiz_id ) {
 			global $wpdb;
 			$t1             = $wpdb->prefix . 'learnpress_user_items'; //{$wpdb->learnpress_user_quizzes}
@@ -814,32 +814,33 @@ class LP_Abstract_User {
 					$maps = array(
 						'_quiz_questions'        => 'questions',
 						'_quiz_question'         => 'question',
-						'_quiz_question_answers' => 'answers'
+						'_quiz_question_answers' => 'question_answers'
 					);
 					foreach ( $meta as $k => $v ) {
 						if ( empty( $history[$this->id . '-' . $course_id . '-' . $v->item_id][$v->user_item_id] ) ) {
 							//$history[$this->id . '-' . $course_id . '-' . $v->item_id][$meta->user_item_id] = array();
 							continue;
 						}
-						$obj_key                                                                                 = !empty( $maps[$v->meta_key] ) ? $maps[$v->meta_key] : $v->meta_key;
+						$obj_key = !empty( $maps[$v->meta_key] ) ? $maps[$v->meta_key] : $v->meta_key;
+
 						$history[$this->id . '-' . $course_id . '-' . $v->item_id][$v->user_item_id]->{$obj_key} = maybe_unserialize( $v->meta_value );
 					}
 				}
-
-				/*
-				foreach ( $history[$key] as $id => $progress ) {
-					$history[$key][$id]->results = $this->evaluate_quiz_results( $quiz_id, $progress );
-				}*/
 			}
 
 			if ( $history ) {
-				$cached = array_merge( $cached, $history );
-				wp_cache_set( 'user-quiz-history', $cached, 'learnpress' );
+				foreach ( $history as $k1 => $v1 ) {
+					if ( empty( $cached[$k1] ) ) {
+						$cached[$k1] = $v1;
+						continue;
+					}
+					foreach ( $v1 as $k2 => $v2 ) {
+						$cached[$k1][$k2] = $v2;
+					}
+				}
+				LP_Cache::set_quiz_history( $cached );
 			}
 		}
-		/*if ( $history_id ) {
-			return apply_filters( 'learn_press_user_quiz_history', isset( $history[$key][$history_id] ) ? $history[$key][$history_id] : false, $this, $quiz_id );
-		}*/
 		return apply_filters( 'learn_press_user_quiz_history', isset( $cached[$key] ) ? $cached[$key] : array(), $this, $quiz_id );
 	}
 
@@ -983,7 +984,7 @@ class LP_Abstract_User {
 				'total'  => 5
 			)
 		);
-		$args['post_type'] = LP()->quiz_post_type;
+		$args['post_type'] = LP_QUIZ_CPT;
 		$key               = md5( serialize( $args ) );
 		if ( empty( $quizzes[$key] ) || $force ) {
 			global $wpdb;
@@ -1030,7 +1031,7 @@ class LP_Abstract_User {
 		static $lessons = array();
 		if ( !$lessons || $force ) {
 			settype( $args, 'array' );
-			$args['post_type'] = LP()->lesson_post_type;
+			$args['post_type'] = LP_LESSON_CPT;
 			$lessons           = $this->get_posts( $args );
 		}
 		return apply_filters( 'learn_press_get_user_lessons', $lessons );
@@ -1094,10 +1095,10 @@ class LP_Abstract_User {
 	public function can_view_item( $item_id, $course_id = 0 ) {
 		$return = false;
 		switch ( get_post_type( $item_id ) ) {
-			case LP()->quiz_post_type:
+			case LP_QUIZ_CPT:
 				$return = $this->can( 'view-quiz', $item_id, $course_id );
 				break;
-			case LP()->lesson_post_type:
+			case LP_LESSON_CPT:
 				$return = $this->can( 'view-lesson', $item_id, $course_id );
 				break;
 		}
@@ -1149,7 +1150,7 @@ class LP_Abstract_User {
 		$course = false;
 		$view   = false;
 		if ( !$course_id ) {
-			$course_id = LP_Course::get_course_by_item( $quiz_id );
+			$course_id = get_the_ID();
 		}
 		if ( $course_id ) {
 			$course = LP_Course::get_course( $course_id );
@@ -1811,11 +1812,8 @@ class LP_Abstract_User {
 
 		$key = $this->id . '-' . $course_id . '-' . $quiz_id;
 		if ( !array_key_exists( $key, $quiz_results ) || $force ) {
-			$quiz = LP_Quiz::get_quiz( $quiz_id );
 			if ( $history = $this->get_quiz_history( $quiz_id, $course_id, false, $force ) ) {
 				$quiz_results[$key] = reset( $history );
-				///settype( $quiz_results[$key], 'array' );
-				//$quiz_results[$key]->mark    = $quiz->get_mark();
 				if ( $user_results = $this->evaluate_quiz_results( $quiz_id, $quiz_results[$key] ) ) {
 					foreach ( $user_results as $k => $v ) {
 						$quiz_results[$key]->{$k} = $v;
@@ -1875,7 +1873,7 @@ class LP_Abstract_User {
 					$check = false;
 					$results['empty'] ++;
 				}
-				$results['answers'][$question_id] = $check;
+				$results['answer_results'][$question_id] = $check;
 			}
 		}
 		if ( $total_questions = sizeof( $questions ) ) {
@@ -2087,24 +2085,24 @@ class LP_Abstract_User {
 
 		# 1 create order
 		$order_data = array(
-				'status'		=> apply_filters( 'learn_press_default_enroll_order_status', 'completed' ),
-				'user_id'		=> get_current_user_id(),
-				'user_note'		=> '',
-				'created_via'	=> 'enroll'
-			);
-		$order = learn_press_create_order($order_data);
+			'status'      => apply_filters( 'learn_press_default_enroll_order_status', 'completed' ),
+			'user_id'     => get_current_user_id(),
+			'user_note'   => '',
+			'created_via' => 'enroll'
+		);
+		$order      = learn_press_create_order( $order_data );
 
 		# 2 add order item
 		$item = array(
-			'order_item_name'	=> $course->get_title(),
-			'course_id'			=> $course->id,
-			'name'				=> $course->get_title(),
-			'quantity'			=> 1,
-			'subtotal'			=> $course->get_price(),
-			'total'				=> $course->get_price()
+			'order_item_name' => $course->get_title(),
+			'course_id'       => $course->id,
+			'name'            => $course->get_title(),
+			'quantity'        => 1,
+			'subtotal'        => $course->get_price(),
+			'total'           => $course->get_price()
 		);
 
-		learn_press_add_order_item($order->id, $item);
+		learn_press_add_order_item( $order->id, $item );
 
 		# 3 enroll course
 		if ( $wpdb->insert(
@@ -2142,7 +2140,7 @@ class LP_Abstract_User {
 			);
 		}
 
-		$args['post_type'] = LP()->question_post_type;
+		$args['post_type'] = LP_QUESTION_CPT;
 		$args['author']    = $this->id;
 
 		$key = md5( serialize( $args ) );
@@ -2196,8 +2194,8 @@ class LP_Abstract_User {
 						AND c.post_status = %s
 				) a GROUP BY a.ID
 			", $args['user_id'],
-				LP()->course_post_type, $this->id,
-				$args['user_id'], LP()->course_post_type, 'publish'
+				LP_COURSE_CPT, $this->id,
+				$args['user_id'], LP_COURSE_CPT, 'publish'
 			);
 			$query .= $where . $order . $limit;
 
@@ -2421,12 +2419,12 @@ class LP_Abstract_User {
 		return $this->_FOUND_ROWS;
 	}
 
-	public function has_checked_answer( $question_id, $quiz_id ) {
-		$history = $this->get_quiz_results( $quiz_id );
+	public function has_checked_answer( $question_id, $quiz_id, $course_id = 0 ) {
+		$history = $this->get_quiz_results( $quiz_id, $course_id );
 		if ( !$history ) {
 			return;
 		}
-		$checked = (array) learn_press_get_user_quiz_meta( $history->history_id, 'checked' );
+		$checked = (array) learn_press_get_user_item_meta( $history->history_id, '_quiz_question_checked' );
 		$checked = array_filter( $checked );
 		return in_array( $question_id, $checked );
 	}
@@ -2443,4 +2441,5 @@ class LP_Abstract_User {
 	public function is_exists() {
 		return $this->ID > 0;
 	}
+
 }

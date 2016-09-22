@@ -56,8 +56,10 @@ $history = LP()->user->get_quiz_results( $quiz->id );
 			</div>
 		<?php endforeach; ?>
 	</div>
-	<div class="quiz-result-time">
-		<?php echo sprintf( __( 'Your time: %s', 'learnpress' ), learn_press_seconds_to_time( $history->time ) ); ?>
-	</div>
+	<?php if ( $quiz->duration > 0 ): ?>
+		<div class="quiz-result-time">
+			<?php echo sprintf( __( 'Your time: %s', 'learnpress' ), learn_press_seconds_to_time( $history->time ) ); ?>
+		</div>
+	<?php endif; ?>
 	<div class="clearfix"></div>
 </div>

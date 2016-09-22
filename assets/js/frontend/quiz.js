@@ -68,15 +68,19 @@
 				}, args || {});
 			}
 			LP.doAjax({
-				data   : $.extend({
-					'lp-ajax'      : 'check-question',
-					user_id        : this.get('user_id'),
-					quiz_id        : this.get('quiz_id'),
-					question_id    : this.get('id'),
-					question_answer: $('form#learn-press-quiz-question').serializeJSON()
+				data    : $.extend({
+					'lp-ajax'  : 'check-question',
+					question_id: this.get('id')
+					//question_answer: $('form#learn-press-quiz-question').serializeJSON()
 				}, args.data || {}),
-				success: function (response, raw) {
-					that.set('checked', response.checked);
+				dataType: 'html',
+				success : function (response, raw) {
+					var $content = that.get('response');
+					if ($content) {
+						$content.find('.learn-press-question-options').replaceWith($(response).filter('.learn-press-question-options'));
+					}
+					console.log($content)
+					that.set({checked: 'yes', response: $content});
 					$.isFunction(args.complete) && args.complete.call(that, response)
 				}
 			})
@@ -140,48 +144,51 @@
 	});
 
 	Quiz.Model = Backbone.Model.extend({
-		_args              : null,
-		questions          : null,
-		initialize         : function (args) {
+		_args                : null,
+		questions            : null,
+		initialize           : function (args) {
+			_.bindAll(this, 'getQuizData');
 			this._args = args || {};
 			this.on('change:view', function () {
 				this.questions.view = this.get('view')
 			});
 			this._initQuestions();
 			this.set('remainingTime', args.totalTime - args.userTime);
+			LP.Hook.addFilter('learn_press_finish_quiz_data', this.getQuizData);
+
 		},
-		_initQuestions     : function () {
+		_initQuestions       : function () {
 			this.questions = new List_Questions();
 			_.forEach(this._args.questions, function (q) {
 				this.questions.add(q);
 			}, this);
 		},
-		_secondsToDHMS     : function (t) {
+		_secondsToDHMS       : function (t) {
 			var d = Math.floor(t / (24 * 3600)), t = t - d * 24 * 3600, h = Math.floor(t / 3600), t = t - h * 3600, m = Math.floor(t / 60), s = Math.floor(t - m * 60);
 			return {d: d, h: h, m: m, s: s}
 		},
-		getRemainingTime   : function (format) {
+		getRemainingTime     : function (format) {
 			var t = this.get('remainingTime');
 			if (format == 'dhms') {
 				t = this._secondsToDHMS(t);
 			}
 			return t;
 		},
-		getTotalTime       : function (format) {
+		getTotalTime         : function (format) {
 			var t = this.get('totalTime');
 			if (format == 'dhms') {
 				t = this._secondsToDHMS(t);
 			}
 			return t;
 		},
-		getUserTime        : function (format) {
+		getUserTime          : function (format) {
 			var t = this.get('userTime');
 			if (format == 'dhms') {
 				t = this._secondsToDHMS(t);
 			}
 			return t;
 		},
-		inc                : function () {
+		inc                  : function () {
 			var userTime = this.get('userTime') + 1,
 				remainingTime = Math.max(this.get('totalTime') - userTime, 0);
 			this.set({
@@ -193,7 +200,7 @@
 				remainingTime: remainingTime
 			}
 		},
-		fetchCurrent       : function (callback) {
+		fetchCurrent         : function (callback) {
 			var current = this.getCurrent(),
 				that = this;
 			if (!current) {
@@ -208,7 +215,7 @@
 				}
 			});
 		},
-		next               : function (callback) {
+		next                 : function (callback) {
 			var next = this.findNext(),
 				that = this;
 			if (!next) {
@@ -217,16 +224,16 @@
 			next.set('current', 'yes');
 			if (next.get('response')) {
 				next.set('loaded', true);
-				$.isFunction(callback) && callback(next.get('response'), that);
+				$.isFunction(callback) && callback(next, that);
 			} else {
-				new (function(a, b, c) {
+				new (function (a, b, c) {
 					$.ajax({
 						url     : next.get('url'),
 						dataType: 'html',
 						success : function (response) {
 							var $html = $(response).contents().find('.learn-press-content-item-summary')
 							a.set('response', $html);
-							$.isFunction(c) && c($html, b);
+							$.isFunction(c) && c(a, b);
 						}
 					})
 				})(next, that, callback);
@@ -254,7 +261,7 @@
 			}
 		}
 		,
-		prev               : function (callback) {
+		prev                 : function (callback) {
 			var prev = this.findPrev(),
 				that = this;
 			if (!prev) {
@@ -263,7 +270,7 @@
 			prev.set('current', 'yes');
 			if (prev.get('response')) {
 				prev.set('loaded', true);
-				$.isFunction(callback) && callback(prev.get('response'), that);
+				$.isFunction(callback) && callback(prev, that);
 			} else {
 				$.ajax({
 					url     : prev.get('url'),
@@ -271,7 +278,7 @@
 					success : function (response) {
 						var $html = $(response).contents().find('.learn-press-content-item-summary')
 						prev.set('response', $html);
-						$.isFunction(callback) && callback($html, that);
+						$.isFunction(callback) && callback(prev, that);
 					}
 				})
 			}
@@ -298,7 +305,7 @@
 			}
 		}
 		,
-		select             : function (id, callback) {
+		select               : function (id, callback) {
 			var question = this.questions.findWhere({id: id}),
 				that = this;
 			return;
@@ -314,24 +321,24 @@
 				}
 			});
 		},
-		getQuestionPosition: function (question_id) {
+		getQuestionPosition  : function (question_id) {
 			question_id = question_id || this.get('question_id');
 			return _.indexOf(this.getIds(), question_id);
 		},
-		countQuestions     : function () {
+		countQuestions       : function () {
 			return this.questions.length;
 		},
-		isLast             : function (question_id) {
+		isLast               : function (question_id) {
 			question_id = question_id || this.getCurrent('id');
 			var q = this.questions.findWhere({id: parseInt(question_id)});
 			return q ? q.get('index') == this.questions.length - 1 : false;//this.getQuestionPosition(question_id) == (this.countQuestions() - 1);
 		},
-		isFirst            : function (question_id) {
+		isFirst              : function (question_id) {
 			question_id = question_id || this.getCurrent('id');
 			var q = this.questions.findWhere({id: parseInt(question_id)});
 			return q ? q.get('index') == 0 : false;// this.getQuestionPosition(question_id) == 0;
 		},
-		findNext           : function (question_id) {
+		findNext             : function (question_id) {
 			question_id = question_id || this.getCurrent('id');
 			var q = this.questions.findWhere({id: parseInt(question_id)}),
 				next = false;
@@ -341,7 +348,7 @@
 			}
 			return next;
 		},
-		findPrev           : function (question_id) {
+		findPrev             : function (question_id) {
 			question_id = question_id || this.getCurrent('id');
 			var q = this.questions.findWhere({id: parseInt(question_id)}),
 				prev = false;
@@ -351,7 +358,7 @@
 			}
 			return prev;
 		},
-		getCurrent         : function (_field, _default) {
+		getCurrent           : function (_field, _default) {
 			var current = this.current(),
 				r = _default;
 			if (current) {
@@ -359,28 +366,35 @@
 			}
 			return r;
 		},
-		current            : function (create) {
+		current              : function (create) {
 			var current = this.questions.findWhere({current: 'yes'});
 			if (!current && create) {
 				current = new Model_Question();
 			}
 			return current;
 		},
-		getIds             : function () {
+		getIds               : function () {
 			return $.map(this.get('questions'), function (i, v) {
 				return parseInt(i.id)
 			});
 		},
-		showHint           : function (callback, args) {
+		showHint             : function (callback, args) {
 			this.current().showHint({
 				complete: callback,
 				data    : this.getRequestParams(args)
 			});
 		},
-		checkAnswer        : function (callback) {
-			$.isFunction(callback) && callback.call(this, 'asdsdasdxxxxxxxxxxsadsadsad')
+		checkAnswer          : function (callback, args) {
+			if (!args) {
+				args = {};
+			}
+			args.question_answer = this.getQuestionAnswerData(this.current());
+			this.current().check({
+				complete: callback,
+				data    : this.getRequestParams(args)
+			});
 		},
-		getRequestParams   : function (args) {
+		getRequestParams     : function (args) {
 			var defaults = LP.Hook.applyFilters('learn_press_request_quiz_params', {
 				quiz_id  : this.get('id'),
 				user_id  : this.get('user_id'),
@@ -388,6 +402,40 @@
 			});
 
 			return $.extend(defaults, args || {});
+		},
+		getQuestion          : function (thing) {
+			var question = false;
+			if ($.isNumeric(thing)) {
+				question = this.questions.findWhere({id: parseInt(thing)});
+			} else if ($.isPlainObject(thing)) {
+				question = this.questions.findWhere(thing);
+			} else if ($.type(thing) == 'undefined' || $.type(thing) == null) {
+				question = this.current();
+			} else if (thing instanceof Model_Question) {
+				question = thing;
+			}
+			return question;
+		},
+		getQuizData          : function (data) {
+			data.answers = {};
+			this.questions.forEach(function (model) {
+				data.answers[model.get('id')] = this.getQuestionAnswerData(model);
+			}, this);
+			return data;
+		},
+		getQuestionAnswerData: function (question) {
+			question = this.getQuestion(question);
+			if (!question) {
+				return undefined;
+			}
+			var $html = question.get('response'),
+				answer = {};
+			if ($html) {
+				var $form = $('<form />');
+				$form.html($html.clone());
+				answer = $form.serializeJSON();
+			}
+			return answer;
 		}
 	});
 	Quiz.View = Backbone.View.extend({
@@ -404,15 +452,16 @@
 		initialize            : function () {
 			var $el = $('#content-item-' + this.model.get('id'));
 			//this.setElement($el);
-			_.bindAll(this, '_onTick', 'itemUrl', '_loadQuestionCompleted');
+			_.bindAll(this, '_onTick', 'itemUrl', '_loadQuestionCompleted', '_checkAnswer');
 			LP.Hook.addFilter('learn_press_get_current_item_url', this.itemUrl);
+			this.model.current(true).set('response', this.$('.learn-press-content-item-summary'));
 			this.model.set('view', this);
 			this._initCountDown();
 			this.updateButtons();
 
 		},
 		_initCountDown        : function () {
-			if (this.model.get('status') != 'started') {
+			if (this.model.get('status') != 'started' || this.model.get('totalTime') <= 0) {
 				return;
 			}
 			this.refreshCountdown();
@@ -429,7 +478,6 @@
 			this.refreshCountdown();
 			if (timer.remainingTime == 0) {
 				LP.Hook.doAction('learn_press_quiz_timeout', this);
-				LP.log('Quiz timeout');
 				this.$('.button-finish-quiz').trigger('click');
 				return;
 			}
@@ -447,24 +495,12 @@
 			this.model.current(true).set('response', this.$('.learn-press-content-item-summary'));
 			this.model.next(this._loadQuestionCompleted);
 		},
-		_loadQuestionCompleted: function (response, model) {
-
-			this.model.questions.forEach(function (v, k) {
-				console.log(k, v.get('current'))
-			})
-
+		_loadQuestionCompleted: function (question, model) {
 			var loaded = model.get('loaded'),
-				$newElement = $(response);
-
-			var $oldElement = this.$('.learn-press-content-item-summary');
-			//if (loaded) {
-
-			console.log('current:' + $newElement.find('.quiz-question-title').html())
-			$newElement.show().insertAfter($oldElement);//.replaceWith($newElement.show());//.appendTo();//$oldElement);
+				$newElement = question.get('response'),
+				$oldElement = this.$('.learn-press-content-item-summary');
+			$newElement.show().insertAfter($oldElement);
 			$oldElement.detach();
-			//} else {
-
-			//}
 			this.updateButtons();
 			if (model.getCurrent('hasShowedHint') == 'yes') {
 				this.$('.button-hint').attr('disabled', true);
@@ -473,9 +509,11 @@
 				this.$('.button-hint').attr('disabled', false);
 				this.$('.question-hint-content').addClass('hide-if-js');
 			}
+
 			$(window).trigger('load');
 			$(document).trigger('resize');
 			LP.$Course.view.unblockContent();
+			LP.setUrl(question.get('url'));
 		},
 		_showHint             : function (e) {
 			e.preventDefault();
@@ -495,11 +533,15 @@
 		},
 		_checkAnswer          : function (e) {
 			e.preventDefault();
+			var that = this,
+				$button = $(e.target),
+				security = $button.data('security');
 			LP.$Course.view.blockContent();
-			this.model.checkAnswer(this._checkAnswerCompleted);
+			this.model.checkAnswer(this._checkAnswerCompleted, {
+				security: security
+			});
 		},
-		_checkAnswerCompleted : function (response) {
-			console.log('check', response);
+		_checkAnswerCompleted : function (question) {
 			LP.$Course.view.unblockContent();
 		},
 		updateButtons         : function () {
@@ -507,7 +549,6 @@
 				return;
 			}
 			if (this.model.get('status') == 'started') {
-				console.log(this.$('.button-prev-question'), this.model.isLast());
 				this.$('.button-prev-question').toggleClass('hide-if-js', this.model.isFirst());
 				this.$('.button-next-question').toggleClass('hide-if-js', this.model.isLast());
 				var current = this.model.current();
@@ -560,7 +601,6 @@
 					if (!url.match(reg)) {
 						url = url.replace(/\/$/, '') + '/' + questionName + '/';
 					}
-					console.log(url)
 				}
 			}
 			return url;

@@ -8,7 +8,6 @@
 
 $item_id = LP()->global['course-item'];
 $user    = learn_press_get_current_user();
-
 ?>
 <div id="learn-press-content-item">
 	<?php if ( $item_id ) { ?>

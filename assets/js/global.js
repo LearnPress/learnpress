@@ -2,7 +2,7 @@
  * Common functions/utils used in all page
  */
 if (typeof window.LP == 'undefined') {
-	window.LP = {};
+	window.LP = window.LearnPress = {};
 }
 
 (function ($) {
@@ -70,7 +70,6 @@ if (typeof window.LP == 'undefined') {
 			} else {
 				indexed[match[0]] = this.value;
 			}
-			indexed['how-old-are-you'] = 11
 		});
 		return indexed;
 	};

@@ -475,6 +475,26 @@ class LP_Abstract_Question {
 		);
 		return $return;
 	}
+
+	public function get_user_answered( $args ) {
+		$answered = null;
+		if ( $args['history_id'] ) {
+			$user_meta = learn_press_get_user_item_meta( $args['history_id'], '_quiz_question_answers', true );
+			if ( $user_meta && array_key_exists( $this->id, $user_meta ) ) {
+				$answered = $user_meta[$this->id];
+			}
+		} elseif ( $args['quiz_id'] && $args['course_id'] ) {
+			$user    = learn_press_get_current_user();
+			$history = $user->get_quiz_results( $args['quiz_id'], $args['course_id'] );
+			if ( $history ) {
+				$user_meta = learn_press_get_user_item_meta( $history->history_id, '_quiz_question_answers', true );
+				if ( $user_meta && array_key_exists( $this->id, $user_meta ) ) {
+					$answered = $user_meta[$this->id];
+				}
+			}
+		}
+		return $answered;
+	}
 }
 
 /**

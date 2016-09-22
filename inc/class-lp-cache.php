@@ -132,13 +132,17 @@ class LP_Cache {
 	/**
 	 * Helper function to set user lesson status to cache
 	 *
-	 * @param string $key
+	 * @param string $key_or_value
 	 * @param mixed  $value
 	 *
 	 * @return array|bool|mixed
 	 */
-	public static function set_quiz_history( $key, $value ) {
-		return self::_set_cache( self::$_quiz_history, $key, $value );
+	public static function set_quiz_history( $key_or_value, $value = false ) {
+		if ( func_num_args() == 1 ) {
+			wp_cache_set( self::$_quiz_history, $key_or_value, self::$_group );
+			return $key_or_value;
+		}
+		return self::_set_cache( self::$_quiz_history, $key_or_value, $value );
 	}
 
 	/**

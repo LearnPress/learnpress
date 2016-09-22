@@ -292,6 +292,9 @@ class LP_Assets {
 
 	public static function add_script_concat( $handle ) {
 		global $wp_scripts;
+		if ( !$wp_scripts ) {
+			return;
+		}
 		if ( empty( $wp_scripts->lp_script_concat ) ) {
 			$wp_scripts->lp_script_concat = array();
 		}
@@ -305,6 +308,9 @@ class LP_Assets {
 
 	public static function add_style_concat( $handle ) {
 		global $wp_styles;
+		if ( !$wp_styles ) {
+			return;
+		}
 		if ( empty( $wp_styles->lp_style_concat ) ) {
 			$wp_styles->lp_style_concat = array();
 		}
@@ -594,7 +600,7 @@ class LP_Assets {
 		self::enqueue_script( 'learn-press-global' );
 		self::enqueue_script( 'learn-press-js' );
 		//self::enqueue_script( 'learn-press-course-lesson' );
-		if(learn_press_is_course()) {
+		if ( learn_press_is_course() ) {
 			self::enqueue_script( 'learn-press-single-course' );
 			self::enqueue_script( 'learn-press-course-quiz' );
 		}
@@ -602,7 +608,7 @@ class LP_Assets {
 			self::enqueue_script( 'learn-press-add-to-cart' );
 		}*/
 		//self::enqueue_script( 'learn-press-timer' );
-		if(learn_press_is_checkout()) {
+		if ( learn_press_is_checkout() ) {
 			self::enqueue_script( 'learn-press-checkout' );
 		}
 		self::enqueue_script( 'learn-press-become-teacher' );

@@ -177,8 +177,29 @@ class LP_Quiz_Factory {
 				)
 			);
 		} else {
+			$answers = learn_press_get_request( 'answers' );
+			if ( $answers ) {
+				$history = $user->get_quiz_results( $quiz_id, $course_id, true );
+				if ( !$history ) {
+					learn_press_send_json(
+						array(
+							'result'  => 'error',
+							'message' => array( 'title' => __( 'Error', 'learnpress' ), 'message' => __( 'Error while finish quiz', 'learnpress' ) )
+						)
+					);
+				}
+				$update_answers = (array) $history->question_answers;
+				foreach ( $answers as $question_id => $data ) {
+					if ( array_key_exists( 'learn-press-question-' . $question_id, $data ) ) {
+						$update_answers[$question_id] = $data['learn-press-question-' . $question_id];
+					}
+				}
+				learn_press_update_user_item_meta( $history->history_id, '_quiz_question_answers', $update_answers );
+			}
+
 			$result = $user->finish_quiz( $quiz_id, $course_id );
 			LP_Cache::flush();
+
 			if ( $result ) {
 				$course             = learn_press_get_course( $course_id );
 				$response['status'] = $result->status;
@@ -233,15 +254,51 @@ class LP_Quiz_Factory {
 	}
 
 	public static function check_question() {
-		self::_verify_nonce();
+		self::_verify_nonce( __FUNCTION__ );
+
 		$user_id     = learn_press_get_request( 'user_id' );
 		$quiz_id     = learn_press_get_request( 'quiz_id' );
+		$course_id   = learn_press_get_request( 'course_id' );
 		$question_id = learn_press_get_request( 'question_id' );
 		$user        = learn_press_get_user( $user_id );
 		$quiz        = LP_Quiz::get_quiz( $quiz_id );
 		LP()->set_object( 'quiz', $quiz, true );
 
-		$question_answer = LP_Question_Factory::save_question_if_needed( $question_id, $quiz_id, $user_id );
+		$answer      = learn_press_get_request( 'question_answer' );
+		$user_answer = false;
+		$history     = $user->get_quiz_results( $quiz_id, $course_id, true );
+
+		if ( $answer && $history ) {
+			if ( array_key_exists( 'learn-press-question-' . $question_id, $answer ) ) {
+				$user_answer = $answer['learn-press-question-' . $question_id];
+			}
+			if ( $user_answer ) {
+				$update_answers               = (array) $history->question_answers;
+				$update_answers[$question_id] = $user_answer;
+				learn_press_update_user_item_meta( $history->history_id, '_quiz_question_answers', $update_answers );
+			}
+		}
+		if ( $history ) {
+			$checked = learn_press_get_user_item_meta( $history->history_id, '_quiz_question_checked', true );
+			if ( !$checked ) {
+				$checked = array();
+			} else {
+				$checked = (array) $checked;
+			}
+			if ( !in_array( $question_id, $checked ) ) {
+				$checked[] = $question_id;
+				learn_press_update_user_item_meta( $history->history_id, '_quiz_question_checked', $checked );
+			}
+		}
+
+		LP_Cache::flush();
+		$question = LP_Question_Factory::get_question( $question_id );
+		if ( $question ) {
+			$right_answer = $question->answers;
+		}
+		$question->render( array( 'quiz_id' => $quiz_id, 'course_id' => $course_id ) );
+		exit();
+		////$question_answer = LP_Question_Factory::save_question_if_needed( $question_id, $quiz_id, $user_id );
 		if ( !$quiz || !$quiz->id ) {
 			return;
 		}

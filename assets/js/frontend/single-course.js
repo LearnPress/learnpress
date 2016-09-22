@@ -117,6 +117,7 @@ if (typeof LearnPress == 'undefined') {
 					security : null,
 				}, args || {});
 				var data = this._validateObject(args), that = this;
+				data = LP.Hook.applyFilters('learn_press_finish_quiz_data', data);
 				LP.ajax({
 					url     : this.get('url'),
 					action  : 'finish-quiz',

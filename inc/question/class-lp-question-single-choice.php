@@ -188,9 +188,20 @@ class LP_Question_Single_Choice extends LP_Abstract_Question {
 	}
 
 	public function render( $args = null ) {
-		settype( $args, 'array' );
-		$answered = array_key_exists( 'answered', $args ) ? $args['answered'] : array();
-		$view     = learn_press_locate_template( 'question/types/single-choice.php' );
+		$args     = wp_parse_args(
+			$args,
+			array(
+				'answered'   => null,
+				'history_id' => 0,
+				'quiz_id'    => 0,
+				'course_id'  => 0
+			)
+		);
+		$answered = !empty( $args['answered'] ) ? $args['answered'] : null;
+		if ( null === $answered ) {
+			$answered = $this->get_user_answered( $args );
+		}
+		$view     = learn_press_locate_template( 'question/single-choice/answer-options.php' );
 		include $view;
 	}
 

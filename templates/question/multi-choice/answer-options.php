@@ -22,34 +22,21 @@ $args = array();
 if ( $show_result && $completed ) {
 	$args['classes'] = 'checked';
 }
-
 ?>
-<div <?php learn_press_question_class( $this, $args ); ?> data-id="<?php echo $this->id; ?>" data-type="multi-choice">
-
-	<?php do_action( 'learn_press_before_question_wrap', $this ); ?>
-
-	<!--
-	<h4 class="learn-press-question-title"><?php echo get_the_title( $this->id ); ?></h4>
-
-	<div class="question-desc">
-		<?php echo apply_filters( 'the_content', $this->post->post_content ); ?>
-	</div>
-	-->
-	<?php do_action( 'learn_press_before_question_options', $this ); ?>
-	<?php if ( $answers = $this->answers ):?>
-
+<?php if ( $answers = $this->answers ):?>
 	<ul class="learn-press-question-options">
-			<?php
-			foreach ( $answers as $k => $answer ):
+		<?php
+
+		foreach ( $answers as $k => $answer ):
 			$answer_class = array();
-			if ( $completed && $show_result ) {
+			if ( $completed && $show_result || $checked ) {
 				$answer_class   = array();
 				$answer_correct = true;
-				if ( $completed && $show_result && $answer['is_true'] == 'yes' ) {
+				if ( $answer['is_true'] == 'yes' ) {
 					$answer_class[] = 'answer-true';
 				}
 				if ( $answer['is_true'] == 'yes' && !$this->is_selected_option( $answer, $answered ) ) {
-					$answer_correct = false;
+					//$answer_correct = false;
 				}
 				if ( $answer['is_true'] != 'yes' && $this->is_selected_option( $answer, $answered ) ) {
 					$answer_correct = false;
@@ -73,8 +60,4 @@ if ( $show_result && $completed ) {
 			</li>
 		<?php endforeach; ?>
 	</ul>
-	<?php endif;?>
-
-	<?php do_action( 'learn_press_after_question_wrap', $this, $quiz ); ?>
-
-</div>
+<?php endif;?>

@@ -1596,12 +1596,6 @@ body.course-has-popup {
   font-weight: bold;
   background: #00b9eb;
   color: #FFF;
-  -webkit-border-radius: 4px;
-  -khtml-border-radius: 4px;
-  -moz-border-radius: 4px;
-  -ms-border-radius: 4px;
-  -o-border-radius: 4px;
-  border-radius: 4px;
 }
 .learn-press-question-options > li > label input[type="radio"] {
   -webkit-border-radius: 50%;
@@ -1622,6 +1616,27 @@ body.course-has-popup {
   padding: 0 20px 0 60px;
   line-height: 50px;
   /* middle */
+}
+.learn-press-question-options > li label p {
+  -webkit-border-radius: 4px;
+  -khtml-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
+  border-radius: 4px;
+}
+.learn-press-question-options > li.answer-true label p {
+  background: #00b9eb;
+  color: #FFF;
+}
+.learn-press-question-options > li.user-answer-false {
+  background: #F5F5F5;
+}
+.learn-press-question-options > li.user-answer-false > label input[type="checkbox"] + p,
+.learn-press-question-options > li.user-answer-false > label input[type="radio"] + p {
+  text-decoration: line-through;
+  color: #FF0000;
+  background: #F5F5F5;
 }
 .learnpress-content {
   margin-bottom: 20px;

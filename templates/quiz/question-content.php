@@ -26,7 +26,7 @@ if ( !$question ) {
 		</div>
 	<?php endif; ?>
 	<?php
-	$question->render();
+	$question->render( array( 'quiz_id' => $quiz->id, 'course_id' => $course->id ) );
 	?>
 	<?php learn_press_get_template( 'question/hint.php', array( 'quiz' => $quiz ) ); ?>
 </div>

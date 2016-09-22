@@ -1,4 +1,5 @@
 @import "_icons";
+
 @icon-url: '../fonts/icomoon';
 @font-face {
     font-family: 'lp-icons';
@@ -85,8 +86,8 @@
     animation: @arguments;
 }
 
-.overlay-processing{
-    &:before, &:after{
+.overlay-processing {
+    &:before, &:after {
         content: '';
         display: block;
         position: fixed;
@@ -96,11 +97,11 @@
         height: 100%;
         z-index: 999999;
     }
-    &:before{
+    &:before {
         background: #000;
         opacity: 0.5;
     }
-    &:after{
+    &:after {
         background: #FFF;
     }
 }
@@ -734,18 +735,18 @@ body.course-has-popup {
                     content: '';
                     left: 0;
                 }
-                &:before{
+                &:before {
                     width: 100%;
                 }
                 &:after {
                     background: #00adff;
                 }
-                &.xxx{
-                    &:after{
+                &.xxx {
+                    &:after {
                         background: #FF0000;
                     }
                 }
-                .countdown{
+                .countdown {
 
                 }
             }
@@ -882,7 +883,7 @@ body.course-has-popup {
 .element-data-percent-loop (@i) when (@i <= 100) {
     .single-quiz .quiz-result-field[data-value="@{i}"]:before,
     .single-quiz .quiz-result-field[data-value="@{i}"] span,
-    #quiz-countdown[data-value="@{i}"]:after{
+    #quiz-countdown[data-value="@{i}"]:after {
         width: ~"@{i}%";
     }
     .element-data-percent-loop(@i + 1);
@@ -933,7 +934,6 @@ body.course-has-popup {
                     font-weight: bold;
                     background: #00b9eb;
                     color: #FFF;
-                    .border-radius(4px);
                 }
             }
             input[type="radio"] {
@@ -948,6 +948,23 @@ body.course-has-popup {
                 &.single-lines {
                     padding: 0 20px 0 60px;
                     line-height: 50px; /* middle */
+                }
+            }
+        }
+        label p {
+            .border-radius(4px);
+        }
+        &.answer-true label p {
+            background: #00b9eb;
+            color: #FFF;
+        }
+        &.user-answer-false {
+            background: #F5F5F5;
+            > label {
+                input[type="checkbox"] + p, input[type="radio"] + p {
+                    text-decoration: line-through;
+                    color: #FF0000;
+                    background: #F5F5F5;
                 }
             }
         }
