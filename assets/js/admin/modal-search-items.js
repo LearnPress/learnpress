@@ -41,7 +41,7 @@
 			this.$el.attr({
 				tabindex   : 0,
 				'data-tmpl': this.options.template
-			}).append(LP.template(this.options.template));
+			}).append(LP.template(this.options.template, this.options));
 
 			$(document.body).css({
 				'overflow': 'hidden'
@@ -60,13 +60,13 @@
 				$button.each(function () {
 					var $btn = $(this);
 					$btn.removeAttr('disabled').html($btn.attr('data-text') + ' (+' + $selected.length + ')');
-				})
+				});
 
 			} else {
 				$button.each(function () {
 					var $btn = $(this);
 					$btn.attr('disabled', true).html($btn.attr('data-text'));
-				})
+				});
 
 			}
 		},
@@ -78,6 +78,10 @@
 		},
 		_fetchItems              : function (response) {
 			this.$('article .lp-list-items').removeClass('lp-ajaxload').html(response.html);
+                        if ( this.$('.learnpress-search-notices').length == 0 ) {
+                            console.debug( $('#learn-press-modal-search-items footer') );
+                            $('#learn-press-modal-search-items header').prepend( response.notices );
+                        }
 			LP.log(response.html);
 			this.refreshModal();
 			$(document.body).trigger('learn_press_modal_search_items_fetch', this);
@@ -105,8 +109,10 @@
 				success : function (response) {
 					response = LP.parseJSON(response);
 					that._fetchItems(response);
+//                                        console.debug( that.$('#learn-press-modal-search-items footer') );
+//                                        that.$('#learn-press-modal-search-items footer').append( response.notices );
 				}
-			})
+			});
 		},
 		_closeModal              : function (e) {
 			e.preventDefault();
@@ -124,7 +130,7 @@
 			$(document.body).trigger('learn_press_modal_search_items_response', [this, this.getItems()]);
 			this.refreshModal(e);
 			if ($(e.target).hasClass('close')) {
-				this.$('.close-modal').trigger('click')
+				this.$('.close-modal').trigger('click');
 			}
 		},
 		refreshModal             : function (e) {
@@ -134,7 +140,7 @@
 		},
 		getItems                 : function () {
 			return this.$('li input:checked').map(function () {
-				return $(this).closest('li')
+				return $(this).closest('li');
 			});
 		},
 		keyboardActions          : function (e) {

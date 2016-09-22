@@ -13,14 +13,18 @@
 				<# if(data.addText){ #>{{data.addText}}<# }else{ #><?php _e( 'Add', 'learnpress' );?><# } #>
 			</button>
 			<button class="lp-add-item close button" disabled="disabled" data-text="<# if(data.addAndCloseText){ #>{{data.addAndCloseText}}<# }else{ #><?php _e( 'Add and Close', 'learnpress' ); ?><# } #>">
-				<# if(data.addAndCloseText){ #>{{data.addAndCloseText}}
-					<# }else{ #><?php _e( 'Add and Close', 'learnpress' ); ?>
-						<# } #>
+				<# if(data.addAndCloseText){ #>
+                                    {{data.addAndCloseText}}
+                                <# }else{ #>
+                                    <?php _e( 'Add and Close', 'learnpress' ); ?>
+                                <# } #>
 			</button>
 			<button class="close-modal button" onclick="LP.MessageBox.hide();">
-				<# if(data.closeText){ #>{{data.closeText}}
-					<# }else{ #><?php _e( 'Close', 'learnpress' ); ?>
-						<# } #>
+				<# if(data.closeText){ #>
+                                    {{data.closeText}}
+                                <# }else{ #>
+                                    <?php _e( 'Close', 'learnpress' ); ?>
+                                <# } #>
 			</button>
 		</footer>
 	</div>

@@ -248,7 +248,7 @@ if (typeof window.LP == 'undefined') {
 				if (!this.$window) {
 					this.$window = $('<div id="learn-press-message-box-window"><div id="message-box-wrap"></div> </div>').insertAfter(this.$block);
 					this.$window.click(function () {
-					})
+					});
 				}
 				//this.events = args.events || {};
 				this._createWindow(message, args.title, args.buttons);
@@ -264,7 +264,7 @@ if (typeof window.LP == 'undefined') {
 						$.isFunction(args.onHide) && args.onHide.call(LP.MessageBox, args);
 					}, args.autohide)
 				}
-			}, this)()
+			}, this)();
 		},
 		blockUI        : function (message) {
 
@@ -666,7 +666,7 @@ if (typeof window.LP == 'undefined') {
 			};
 			return data ? tmpl(data) : tmpl;
 		}, function (a, b) {
-			return JSON.stringify(b)
+			return JSON.stringify(b);
 		}),
 		alert         : function (localize, callback) {
 			var title = '',

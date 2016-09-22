@@ -19,6 +19,7 @@ if ( !$course->is_required_enroll() ) {
 
 $course_status = learn_press_get_user_course_status();
 $user          = learn_press_get_current_user();
+
 // only show enroll button if user had not enrolled
 $purchase_button_text = apply_filters( 'learn_press_purchase_button_text', __( 'Buy this course', 'learnpress' ) );
 $enroll_button_text   = apply_filters( 'learn_press_enroll_button_text', __( 'Enroll', 'learnpress' ) );
@@ -59,12 +60,10 @@ $security             = wp_create_nonce( sprintf( 'learn-press-retake-course-%d-
 				<?php _e( 'Finish course', 'learnpress' ); ?>
 			</button>
 		<?php endif; ?>
-
-
-	<?php 
-	
-
-	elseif ( $user->can( 'enroll-course', $course->id ) && $course->is_free() ) : ?>
+<?php 
+	elseif ( $user->can( 'enroll-course', $course->id ) ) : 
+//	elseif ( $user->can( 'enroll-course', $course->id ) && ( $course->is_free() || $user->has_purchased_course($course->id) ) ) : 
+?>
 		<form name="enroll-course" class="enroll-course" method="post" enctype="multipart/form-data">
 			<?php do_action( 'learn_press_before_enroll_button' ); ?>
 
@@ -75,7 +74,6 @@ $security             = wp_create_nonce( sprintf( 'learn-press-retake-course-%d-
 
 			<?php do_action( 'learn_press_after_enroll_button' ); ?>
 		</form>
-
 	<?php 
 
 	elseif ( $user->can( 'purchase-course', $course->id ) ) : ?>

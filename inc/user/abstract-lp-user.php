@@ -447,7 +447,7 @@ class LP_Abstract_User {
 		if ( !$quiz ) {
 			return;
 		}
-		$return   = false;
+		$return = false;
 		$progress = $this->get_quiz_results( $quiz->id, $course_id );
 		if ( $progress ) {
 			$time       = current_time( 'timestamp' );
@@ -826,6 +826,11 @@ class LP_Abstract_User {
 						$history[$this->id . '-' . $course_id . '-' . $v->item_id][$v->user_item_id]->{$obj_key} = maybe_unserialize( $v->meta_value );
 					}
 				}
+
+				/*
+				foreach ( $history[$key] as $id => $progress ) {
+					$history[$key][$id]->results = $this->evaluate_quiz_results( $quiz_id, $progress );
+				}*/
 			}
 
 			if ( $history ) {
@@ -841,6 +846,9 @@ class LP_Abstract_User {
 				LP_Cache::set_quiz_history( $cached );
 			}
 		}
+		/*if ( $history_id ) {
+			return apply_filters( 'learn_press_user_quiz_history', isset( $history[$key][$history_id] ) ? $history[$key][$history_id] : false, $this, $quiz_id );
+		}*/
 		return apply_filters( 'learn_press_user_quiz_history', isset( $cached[$key] ) ? $cached[$key] : array(), $this, $quiz_id );
 	}
 
@@ -1066,8 +1074,8 @@ class LP_Abstract_User {
 	 * @return bool
 	 */
 	public function can_purchase_course( $course_id ) {
-		$course      = learn_press_get_course( $course_id );
-		$purchasable = $course->is_purchasable() && !$this->has_purchased_course( $course_id );
+		$course			= learn_press_get_course( $course_id );
+		$purchasable	= $course->is_purchasable() && !$this->has_purchased_course( $course_id );
 		return apply_filters( 'learn_press_user_can_purchase_course', $purchasable, $this, $course_id );
 	}
 
@@ -1079,11 +1087,10 @@ class LP_Abstract_User {
 	 * @return bool
 	 */
 	public function can_enroll_course( $course_id ) {
+		# condition
 		$course = LP_Course::get_course( $course_id );
 		// check if course is purchasable
-		$enrollable = $course && $course->is_purchasable();/* $course->payment == 'no' &&*/
-		//$course->required_enroll == 'yes';
-
+		$enrollable = $course && $course->is_required_enroll() && ( $course->is_purchasable() || $course->is_free() );
 		// if user can enroll, check order to ensure that user hasn't bought course
 		if ( $enrollable && ( $order_id = $this->has_purchased_course( $course_id ) ) ) {
 			$order      = LP_Order::instance( $order_id, true );
@@ -2104,6 +2111,30 @@ class LP_Abstract_User {
 
 		learn_press_add_order_item( $order->id, $item );
 
+		$ref_id = 0;
+		$ref_type = '';
+		if(!$course->is_free()){
+			$ref_id = $this->get_course_order( $course_id );
+			$ref_type = 'lp_order';
+		}
+		/**
+		// backup from server
+		if ( $wpdb->insert(
+		$wpdb->prefix . 'learnpress_user_items',
+		array(
+		'user_id'    => $this->id,
+		'item_id'    => $course_id,
+		'start_time' => current_time( 'mysql' ),
+		'status'     => 'enrolled',
+		'end_time'   => '0000-00-00 00:00:00',
+		'ref_id'     => $ref_id,
+		'item_type'  => 'lp_course',
+		'ref_type'   => $ref_type
+		),
+		array( '%d', '%d', '%s', '%s', '%s', '%d', '%s', '%s' )
+		)
+		) {
+		 */
 		# 3 enroll course
 		if ( $wpdb->insert(
 			$wpdb->prefix . 'learnpress_user_items',
@@ -2441,5 +2472,4 @@ class LP_Abstract_User {
 	public function is_exists() {
 		return $this->ID > 0;
 	}
-
 }
