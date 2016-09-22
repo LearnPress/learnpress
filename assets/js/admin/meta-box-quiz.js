@@ -39,7 +39,6 @@
 				$('.lp-modal-search ul.lp-list-items').css('height', '').css('overflow', '')
 			},
 			toggleAddButtonState: function(e){
-				LP.log(e.target.value)
 				if((e.target.value+'').length == 0){
 					$('.lp-button-add-question').addClass('disabled')
 				}else{
