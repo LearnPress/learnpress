@@ -603,6 +603,7 @@ class LP_Assets {
 		if ( learn_press_is_course() ) {
 			self::enqueue_script( 'learn-press-single-course' );
 			self::enqueue_script( 'learn-press-course-quiz' );
+			self::enqueue_script( 'learn-press-enroll' );
 		}
 		/*if ( LP()->settings->get( 'ajax_add_to_cart' ) == 'yes' ) {
 			self::enqueue_script( 'learn-press-add-to-cart' );
