@@ -2360,7 +2360,7 @@ function learn_press_auto_enroll_user_to_courses( $order_id ) {
 		if ( $user->has( 'enrolled-course', $course->id ) ) {
 			continue;
 		}
-		$return = $user->enroll( $course->id );
+		$return = $user->enroll( $course->id, $order_id );
 	}
 	return $return;
 }

@@ -36,8 +36,9 @@ class LP_Schedules {
 			$query_params = array();
 			$where        = array();
 
-			foreach ( $results as $row ) {
+			foreach ( $results as $row ) {continue;
 				$course = learn_press_get_course( $row->item_id );
+                                if ( ! $course ) continue;
 				$expired = $course->is_expired( $row->user_id );
 				if ( 0 >= $expired ) {
 					$user        = learn_press_get_user( $row->user_id );

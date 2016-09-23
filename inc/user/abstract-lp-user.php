@@ -2083,7 +2083,7 @@ class LP_Abstract_User {
 	 * @return int|void
 	 * @throws Exception
 	 */
-	public function enroll( $course_id ) {
+	public function enroll( $course_id, $ref_id = 0 ) {
 		if ( !$this->can( 'enroll-course', $course_id ) ) {
 			return false;
 		}
@@ -2096,31 +2096,32 @@ class LP_Abstract_User {
 		}
 
 		$course = learn_press_get_course( $course_id );
-		$ref_id   = 0;
-		if ( $course->is_free() ) {
-			# 1 create order
-			$order_data = array(
-				'status'      => apply_filters( 'learn_press_default_enroll_order_status', 'completed' ),
-				'user_id'     => get_current_user_id(),
-				'user_note'   => '',
-				'created_via' => 'enroll'
-			);
-			$order      = learn_press_create_order( $order_data );
+		if ( ! $ref_id ) {
+                    if ( $course->is_free() ) {
+                            # 1 create order
+                            $order_data = array(
+                                    'status'      => apply_filters( 'learn_press_default_enroll_order_status', 'completed' ),
+                                    'user_id'     => get_current_user_id(),
+                                    'user_note'   => '',
+                                    'created_via' => 'enroll'
+                            );
+                            $order      = learn_press_create_order( $order_data );
 
-			# 2 add order item
-			$item = array(
-				'order_item_name' => $course->get_title(),
-				'course_id'       => $course->id,
-				'name'            => $course->get_title(),
-				'quantity'        => 1,
-				'subtotal'        => $course->get_price(),
-				'total'           => $course->get_price()
-			);
-			learn_press_add_order_item( $order->id, $item );
-			$ref_id = $order->id;
-		} else {
-			$ref_id   = $this->get_course_order( $course_id );
-		}
+                            # 2 add order item
+                            $item = array(
+                                    'order_item_name' => $course->get_title(),
+                                    'course_id'       => $course->id,
+                                    'name'            => $course->get_title(),
+                                    'quantity'        => 1,
+                                    'subtotal'        => $course->get_price(),
+                                    'total'           => $course->get_price()
+                            );
+                            learn_press_add_order_item( $order->id, $item );
+                            $ref_id = $order->id;
+                    } else {
+                            $ref_id   = $this->get_course_order( $course_id );
+                    }
+                }
 		/**
 		 * // backup from server
 		 * if ( $wpdb->insert(
