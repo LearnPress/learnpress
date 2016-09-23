@@ -2360,7 +2360,18 @@ function learn_press_auto_enroll_user_to_courses( $order_id ) {
 		if ( $user->has( 'enrolled-course', $course->id ) ) {
 			continue;
 		}
-		$return = $user->enroll( $course->id, $order_id );
+//                error. this scripts will create new order each course item
+//		$return = $user->enroll( $course->id, $order_id );
+                $return = learn_press_update_user_item_field( array(
+                    'user_id'    => learn_press_get_current_user_id(),
+                    'item_id'    => $course->id,
+                    'start_time' => current_time( 'mysql' ),
+                    'status'     => 'enrolled',
+                    'end_time'   => '0000-00-00 00:00:00',
+                    'ref_id'     => $course->id,
+                    'item_type'  => 'lp_course',
+                    'ref_type'   => 'lp_order'
+                ) );
 	}
 	return $return;
 }
