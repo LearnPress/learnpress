@@ -488,14 +488,14 @@ if (typeof window.LP == 'undefined') {
 			window.location.href = url;
 		},
 
-		parseResponse : function (response, type) {
+		parseResponse: function (response, type) {
 			var m = response.match(/<!-- LP_AJAX_START -->(.*)<!-- LP_AJAX_END -->/);
 			if (m) {
 				response = m[1]
 			}
 			return (type || "json") == "json" ? this.parseJSON(response) : response
 		},
-		parseJSON: function (data) {
+		parseJSON    : function (data) {
 			var m = data.match(/<!-- LP_AJAX_START -->(.*)<!-- LP_AJAX_END -->/);
 			try {
 				if (m) {
@@ -509,7 +509,7 @@ if (typeof window.LP == 'undefined') {
 			}
 			return data;
 		},
-		ajax          : function (args) {
+		ajax         : function (args) {
 			var type = args.type || 'post',
 				dataType = args.dataType || 'json',
 				data = args.action ? $.extend(args.data, {'lp-ajax': args.action}) : args.data,
@@ -528,7 +528,7 @@ if (typeof window.LP == 'undefined') {
 				}
 			});
 		},
-		doAjax        : function (args) {
+		doAjax       : function (args) {
 			var type = args.type || 'post',
 				dataType = args.dataType || 'json',
 				action = ( ( args.prefix == undefined ) || 'learnpress_') + args.action,
@@ -650,6 +650,15 @@ if (typeof window.LP == 'undefined') {
 				console.log(arguments[i]);
 			}
 			//}
+		},
+		blockContent  : function () {
+			if ($('#learn-press-block-content').length == 0) {
+				$(LP.template('learn-press-template-block-content', {})).appendTo($('body'));
+			}
+			$('body, html').addClass('block-content').css('overflow', 'hidden');
+		},
+		unblockContent: function () {
+			$('body, html').removeClass('block-content').css('overflow', '');
 		},
 		template      : _.memoize(function (id, data) {
 			var compiled,
@@ -867,6 +876,9 @@ if (typeof window.LP == 'undefined') {
 			});
 		})();
 
+		$(document).on('click', '[data-block-content="yes"]', function () {
+			LP.blockContent();
+		});
 	});
 
 })(jQuery);

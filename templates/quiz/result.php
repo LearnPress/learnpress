@@ -50,7 +50,7 @@ $history = LP()->user->get_quiz_results( $quiz->id );
 	<div class="quiz-result-summary">
 		<?php foreach ( $fields as $class => $text ): ?>
 			<?php $value = apply_filters( 'learn_press_quiz_result_' . $class . '_value', $history->{$class . '_percent'}, $history, $quiz, $course ); ?>
-			<div class="quiz-result-field <?php echo $class; ?>" data-value="<?php echo $value; ?>">
+			<div class="quiz-result-field <?php echo $class; ?>" data-value="<?php echo absint( $value ); ?>">
 				<?php echo $text; ?>
 				<span data-text="<?php echo esc_attr( $text ); ?>"></span>
 			</div>

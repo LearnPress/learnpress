@@ -24,9 +24,6 @@ $course = learn_press_get_course( get_the_ID() );
 				<?php endif; ?>
 			</div>
 		</div>
-		<div class="popup-block-content">
-			<span></span>
-		</div>
 	</div>
 </script>
 
@@ -36,4 +33,9 @@ $course = learn_press_get_course( get_the_ID() );
 
 <script type="text/template" id="learn-press-template-course-next-item">
 	<a class="footer-control next-item" data-id="{{data.id}}" href="{{data.url}}">{{data.title}}</a>
+</script>
+<script type="text/template" id="learn-press-template-block-content">
+<div id="learn-press-block-content" class="popup-block-content">
+	<span></span>
+</div>
 </script>

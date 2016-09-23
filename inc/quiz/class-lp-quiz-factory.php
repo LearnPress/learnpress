@@ -190,6 +190,7 @@ class LP_Quiz_Factory {
 				}
 				$update_answers = (array) $history->question_answers;
 				foreach ( $answers as $question_id => $data ) {
+					settype( $data, 'array' );
 					if ( array_key_exists( 'learn-press-question-' . $question_id, $data ) ) {
 						$update_answers[$question_id] = $data['learn-press-question-' . $question_id];
 					}

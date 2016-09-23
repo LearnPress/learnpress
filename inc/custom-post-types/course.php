@@ -1123,5 +1123,5 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 	} // end LP_Course_Post_Type
 
 	$course_post_type = LP_Course_Post_Type::instance();
-	$course_post_type->add_meta_box( 'course-editor', 'dfgdfgfdg', 'course_editor', 'advanced', 'default' );
+	//$course_post_type->add_meta_box( 'course-editor', 'dfgdfgfdg', 'course_editor', 'advanced', 'default' );
 }

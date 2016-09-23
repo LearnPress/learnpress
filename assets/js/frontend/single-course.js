@@ -2,7 +2,7 @@
  * Single course functions
  */
 if (typeof LearnPress == 'undefined') {
-	window.LearnPress = {}
+	window.LP = window.LearnPress = {}
 }
 ;(function ($) {
 	"use strict";
@@ -13,6 +13,7 @@ if (typeof LearnPress == 'undefined') {
 			}
 		}
 	);
+
 	var Course = function (args) {
 			this.model = new Course.Model(args);
 			this.view = new Course.View({
@@ -497,12 +498,10 @@ if (typeof LearnPress == 'undefined') {
 			}
 		},
 		blockContent     : function () {
-			var $content = this.$('#course-curriculum-popup');
-			$content.addClass('block-content');
+			LP.blockContent()
 		},
 		unblockContent   : function () {
-			var $content = this.$('#course-curriculum-popup');
-			$content.removeClass('block-content');
+			LP.unblockContent();
 		}
 	});
 	Course.Model = Backbone.Model.extend({
@@ -558,7 +557,7 @@ if (typeof LearnPress == 'undefined') {
 	Course.Popup = Backbone.View.extend({
 		course              : null,
 		events              : {
-			'click .popup-close': '_closePopup',
+			'click .popup-close': '_closePopup'
 			//'click .button-load-item': '_loadItem'
 		},
 		initialize          : function (args) {
@@ -624,10 +623,13 @@ if (typeof LearnPress == 'undefined') {
 	});
 
 	$(document).ajaxComplete(function (a, b, c) {
-		if (c.data.match(/lp-ajax=/)) {
+		if (c.data && c.data.match(/lp-ajax=/)) {
 			$(document).trigger('ready');
 			$(window).trigger('resize');
+			LP.unblockContent();
 		}
+	}).ajaxError(function(){
+		LP.unblockContent();
 	});
 	return;
 

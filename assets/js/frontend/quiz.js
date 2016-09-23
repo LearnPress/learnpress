@@ -485,13 +485,11 @@
 		},
 		_prevQuestion         : function (e) {
 			e.preventDefault();
-			LP.$Course.view.blockContent();
 			this.model.current(true).set('response', this.$('.learn-press-content-item-summary'));
 			this.model.prev(this._loadQuestionCompleted);
 		},
 		_nextQuestion         : function (e) {
 			e.preventDefault();
-			LP.$Course.view.blockContent();
 			this.model.current(true).set('response', this.$('.learn-press-content-item-summary'));
 			this.model.next(this._loadQuestionCompleted);
 		},
@@ -512,8 +510,8 @@
 
 			$(window).trigger('load');
 			$(document).trigger('resize');
-			LP.$Course.view.unblockContent();
 			LP.setUrl(question.get('url'));
+			LP.unblockContent();
 		},
 		_showHint             : function (e) {
 			e.preventDefault();
@@ -529,20 +527,20 @@
 		},
 		_showHintCompleted    : function (response) {
 			//$(response.html).this.
-			LP.$Course.view.unblockContent();
+			LP.unblockContent();
 		},
 		_checkAnswer          : function (e) {
 			e.preventDefault();
 			var that = this,
 				$button = $(e.target),
 				security = $button.data('security');
-			LP.$Course.view.blockContent();
+
 			this.model.checkAnswer(this._checkAnswerCompleted, {
 				security: security
 			});
 		},
 		_checkAnswerCompleted : function (question) {
-			LP.$Course.view.unblockContent();
+			LP.unblockContent();
 		},
 		updateButtons         : function () {
 			if (this.model.questions.length < 2) {
