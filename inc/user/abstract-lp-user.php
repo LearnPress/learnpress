@@ -2096,9 +2096,7 @@ class LP_Abstract_User {
 		}
 
 		$course = learn_press_get_course( $course_id );
-
 		$ref_id   = 0;
-		$ref_type = '';
 		if ( $course->is_free() ) {
 			# 1 create order
 			$order_data = array(
@@ -2119,9 +2117,9 @@ class LP_Abstract_User {
 				'total'           => $course->get_price()
 			);
 			learn_press_add_order_item( $order->id, $item );
+			$ref_id = $order->id;
 		} else {
 			$ref_id   = $this->get_course_order( $course_id );
-			$ref_type = 'lp_order';
 		}
 		/**
 		 * // backup from server
