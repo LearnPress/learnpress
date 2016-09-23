@@ -268,9 +268,9 @@ class LP_Checkout {
 					$success = $this->payment_method->validate_fields();
 				}
 			}
-			$order_id = $this->create_order();
-			if ( $success && $order_id ) {
+			if ( $success ) {
 
+                                $order_id = $this->create_order();
 				if ( $this->payment_method ) {
 					// Store the order is waiting for payment and each payment method should clear it
 					LP()->session->order_awaiting_payment = $order_id;

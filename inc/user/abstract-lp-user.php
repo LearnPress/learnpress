@@ -2148,7 +2148,7 @@ class LP_Abstract_User {
 				'start_time' => current_time( 'mysql' ),
 				'status'     => 'enrolled',
 				'end_time'   => '0000-00-00 00:00:00',
-				'ref_id'     => $order->id,
+				'ref_id'     => $ref_id,
 //				'ref_id'     => $this->get_course_order( $course_id ),
 				'item_type'  => 'lp_course',
 				'ref_type'   => 'lp_order'
