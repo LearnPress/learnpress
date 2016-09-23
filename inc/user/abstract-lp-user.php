@@ -1092,14 +1092,16 @@ class LP_Abstract_User {
 		# condition
 		$course = LP_Course::get_course( $course_id );
 		// check if course is purchasable
-		$enrollable = $course && $course->is_required_enroll() && ( $course->is_purchasable() || $course->is_free() );
-		if($course->is_purchasable() && !$this->has_purchased_course( $course_id )){
+		$enrollable = false;
+		if (!$course) {
 			$enrollable = false;
-		}
-		// if user can enroll, check order to ensure that user hasn't bought course
-		if ( $enrollable && ( $order_id = $this->has_purchased_course( $course_id ) ) ) {
-			$order      = LP_Order::instance( $order_id, true );
-			$enrollable = !$this->has_enrolled_course( $course_id ) && ( $order && $order->has_status( 'completed' ) );
+		} elseif (!$course->is_required_enroll()) {
+			$enrollable = false;
+		} elseif ($course->is_free()) {
+			$enrollable = true;
+		} elseif ($course->is_purchasable() && ($order_id = $this->has_purchased_course($course_id))) {
+			$order = LP_Order::instance($order_id, true);
+			$enrollable = !$this->has_enrolled_course($course_id) && ( $order && $order->has_status('completed') );
 		}
 		return apply_filters( 'learn_press_user_can_enroll_course', $enrollable, $this, $course_id );
 	}
