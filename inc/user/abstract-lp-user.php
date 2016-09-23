@@ -2202,7 +2202,7 @@ class LP_Abstract_User {
 					UNION
 					SELECT c.*, uc.status as course_status
 					FROM {$wpdb->posts} c
-					INNER JOIN {$wpdb->prefix}learnpress_user_items uc ON c.ID = uc.course_id
+					INNER JOIN {$wpdb->prefix}learnpress_user_items uc ON c.ID = uc.item_id
 					WHERE uc.user_id = %d
 						AND c.post_type = %s
 						AND c.post_status = %s
@@ -2307,7 +2307,7 @@ class LP_Abstract_User {
 			$query = $wpdb->prepare( "
 				SELECT SQL_CALC_FOUND_ROWS c.*, uc.status as course_status
 				FROM {$wpdb->posts} c
-				INNER JOIN {$wpdb->prefix}learnpress_user_items uc ON c.ID = uc.ref_id
+				INNER JOIN {$wpdb->prefix}learnpress_user_items uc ON c.ID = uc.item_id
 				WHERE uc.user_id = %d
 					AND c.post_type = %s
 					AND c.post_status = %s
