@@ -73,6 +73,45 @@ if (typeof window.LP == 'undefined') {
 		});
 		return indexed;
 	};
+	$.fn.tooltip = function (options) {
+		options = $.extend({}, {
+			offset: [0, 0]
+		}, options || {});
+		return $.each(this, function () {
+			var $el = $(this),
+				content = $el.data('content');
+			if (!content || ($el.data('tooltip') != undefined)) {
+				return;
+			}
+			var $tooltip = null;
+			$el.hover(function (e) {
+				$tooltip = $('<div class="learn-press-tooltip-bubble"/>').html(content).appendTo($('body')).hide();
+				var position = $el.offset();
+				if ($.isArray(options.offset)) {
+					var top = options.offset[1],
+						left = options.offset[0];
+					if ($.isNumeric(left)) {
+						position.left += left;
+					} else {
+
+					}
+					if ($.isNumeric(top)) {
+						position.top += top;
+					} else {
+
+					}
+				}
+				$tooltip.css({
+					top : position.top,
+					left: position.left
+				});
+				$tooltip.fadeIn();
+			}, function () {
+				$tooltip && $tooltip.remove();
+			});
+			$el.data('tooltip', true);
+		});
+	}
 	$.fn.hasEvent = function (name) {
 		var events = $(this).data('events');
 		if (typeof events.LP == 'undefined') {
@@ -879,6 +918,7 @@ if (typeof window.LP == 'undefined') {
 		$(document).on('click', '[data-block-content="yes"]', function () {
 			LP.blockContent();
 		});
+		$('.learn-press-tooltip').tooltip({offset: [24, 24]});
 	});
 
 })(jQuery);

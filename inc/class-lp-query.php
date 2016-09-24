@@ -30,7 +30,7 @@ class LP_Query {
 	public function parse_request( $q ) {
 		$user    = learn_press_get_current_user();
 		$request = $this->get_request();
-		if ( !$request || is_admin()) {
+		if ( !$request || is_admin() ) {
 			return $q;
 		}
 		remove_filter( 'do_parse_request', array( $this, 'get_current_quiz_question' ), 1010, 3 );
@@ -48,7 +48,9 @@ class LP_Query {
 		$request_match = $request;
 
 		if ( !empty( $q->query_vars['post_type'] ) && $q->query_vars['post_type'] == LP_COURSE_CPT ) {
-			$this->query_vars['course'] = $q->query_vars[LP_COURSE_CPT];
+			if ( !empty( $q->query_vars[LP_COURSE_CPT] ) ) {
+				$this->query_vars['course'] = $q->query_vars[LP_COURSE_CPT];
+			}
 			if ( !empty( $q->query_vars['quiz'] ) ) {
 				$this->query_vars['quiz']      = $q->query_vars['quiz'];
 				$this->query_vars['item_type'] = LP_QUIZ_CPT;

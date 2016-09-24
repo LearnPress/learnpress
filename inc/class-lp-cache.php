@@ -232,13 +232,18 @@ class LP_Cache {
 	/**
 	 * Helper function to set user lesson status to cache
 	 *
-	 * @param string $key
+	 * @param string $key_or_value
 	 * @param mixed  $value
 	 *
 	 * @return array|bool|mixed
 	 */
-	public static function set_completed_items( $key, $value ) {
-		return self::_set_cache( 'user-completed-items', $key, $value );
+	public static function set_completed_items( $key_or_value, $value = false ) {
+		//return self::_set_cache( 'user-completed-items', $key, $value );
+		if ( func_num_args() == 1 ) {
+			wp_cache_set( 'user-completed-items', $key_or_value, self::$_group );
+			return $key_or_value;
+		}
+		return self::_set_cache( 'user-completed-items', $key_or_value, $value );
 	}
 
 	/**

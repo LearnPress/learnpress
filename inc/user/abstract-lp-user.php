@@ -817,7 +817,8 @@ class LP_Abstract_User {
 					$maps = array(
 						'_quiz_questions'        => 'questions',
 						'_quiz_question'         => 'question',
-						'_quiz_question_answers' => 'question_answers'
+						'_quiz_question_answers' => 'question_answers',
+						'_quiz_question_checked' => 'question_checked'
 					);
 					foreach ( $meta as $k => $v ) {
 						if ( empty( $history[$this->id . '-' . $course_id . '-' . $v->item_id][$v->user_item_id] ) ) {
@@ -1093,15 +1094,15 @@ class LP_Abstract_User {
 		$course = LP_Course::get_course( $course_id );
 		// check if course is purchasable
 		$enrollable = false;
-		if (!$course) {
+		if ( !$course ) {
 			$enrollable = false;
-		} elseif (!$course->is_required_enroll()) {
+		} elseif ( !$course->is_required_enroll() ) {
 			$enrollable = false;
-		} elseif ($course->is_free()) {
+		} elseif ( $course->is_free() ) {
 			$enrollable = true;
-		} elseif ($course->is_purchasable() && ($order_id = $this->has_purchased_course($course_id))) {
-			$order = LP_Order::instance($order_id, true);
-			$enrollable = !$this->has_enrolled_course($course_id) && ( $order && $order->has_status('completed') );
+		} elseif ( $course->is_purchasable() && ( $order_id = $this->has_purchased_course( $course_id ) ) ) {
+			$order      = LP_Order::instance( $order_id, true );
+			$enrollable = !$this->has_enrolled_course( $course_id ) && ( $order && $order->has_status( 'completed' ) );
 		}
 		return apply_filters( 'learn_press_user_can_enroll_course', $enrollable, $this, $course_id );
 	}
@@ -1861,7 +1862,7 @@ class LP_Abstract_User {
 			'wrong_percent'   => 0,
 			'empty_percent'   => 0,
 			//'quiz_time'       => $quiz->duration,
-			//'quiz_mark'       => $quiz->get_mark(),
+			'quiz_mark'       => $quiz->get_mark(),
 			'time'            => 0,
 			'questions'       => array()
 		);
@@ -1896,8 +1897,8 @@ class LP_Abstract_User {
 			$results['empty_percent']   = $results['empty'] / $total_questions * 100;
 		}
 		$results['time'] = $this->_calculate_quiz_time( $quiz, $progress );
-		if ( $results['mark'] ) {
-			$results['mark_percent'] = $results['mark'] / $results['mark'] * 100;
+		if ( $results['quiz_mark'] ) {
+			$results['mark_percent'] = $results['mark'] / $results['quiz_mark'] * 100;
 		}
 		return apply_filters( 'learn_press_evaluate_quiz_results', $results, $quiz_id, $this->id );
 	}
@@ -2097,8 +2098,8 @@ class LP_Abstract_User {
 
 		$course = learn_press_get_course( $course_id );
 
-		if ( ! $course->is_free() ) {
-				$ref_id   = $this->get_course_order( $course_id );
+		if ( !$course->is_free() ) {
+			$ref_id = $this->get_course_order( $course_id );
 		}
 
 		/**

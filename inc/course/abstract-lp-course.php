@@ -897,7 +897,7 @@ abstract class LP_Abstract_Course {
 		if ( !$curriculum ) {
 			return false;
 		}
-		if(!$thing){
+		if ( !$thing ) {
 
 		}
 		if ( $thing ) {
@@ -1058,7 +1058,7 @@ abstract class LP_Abstract_Course {
 			$total_items = sizeof( $quizzes ) + sizeof( $lessons );
 
 
-			$html = sprintf( __( '%d of %d items completed', 'learnpress' ), $this->get_completed_items( $user_id, $force ), $total_items );
+			$html = sprintf( __( '%d of %d items completed', 'learnpress' ), $this->count_completed_items( $user_id, $force ), $total_items );
 		} else {
 			if ( $this->course_result == 'evaluate_final_quiz' ) {
 				$html = sprintf( __( '%d%% completed', 'learnpress' ), $this->_evaluate_course_by_quiz( $user_id, $force ) * 100 );
@@ -1067,6 +1067,16 @@ abstract class LP_Abstract_Course {
 			}
 		}
 		return apply_filters( 'learn_press_course_result_html', $html, $this->id, $user_id );
+	}
+
+	protected function _evaluate_course_by_items( $user_id = 0, $force = false ) {
+		$items  = $this->get_curriculum_items();
+		$result = 0;
+		if ( $items ) {
+			$completed_items = $this->count_completed_items( $user_id, $force );
+			$result          = absint( $completed_items / sizeof( $items ) * 100 );
+		}
+		return apply_filters( 'learn_press_course_results_by_items', $result, $this->id, $user_id );
 	}
 
 	/**
@@ -1085,7 +1095,7 @@ abstract class LP_Abstract_Course {
 		$quizzes = $this->get_quizzes();
 
 		if ( ( $this->course_result == 'evaluate_lesson' ) || !$quizzes ) {
-			$results = $this->_evaluate_course_by_lesson( $user_id, $force );
+			$results = $this->_evaluate_course_by_items( $user_id, $force );//$this->_evaluate_course_by_lesson( $user_id, $force );
 		} else {
 			if ( $this->course_result == 'evaluate_final_quiz' ) {
 				$results = $this->_evaluate_course_by_quiz( $user_id, $force );
@@ -1094,6 +1104,10 @@ abstract class LP_Abstract_Course {
 			}
 		}
 		return apply_filters( 'learn_press_evaluation_course_results', $results );
+	}
+
+	public function is_evaluation( $thing ) {
+		return $this->course_result == $thing;
 	}
 
 	/**
@@ -1164,8 +1178,10 @@ abstract class LP_Abstract_Course {
 	 *
 	 * @return int|mixed|null|void
 	 */
-	public function get_completed_items( $user_id, $items = array(), $force = false ) {
-		//static $completed_items = array();
+	public function get_completed_items( $user_id = 0, $items = array(), $force = false ) {
+		if ( !$user_id ) {
+			$user_id = get_current_user_id();
+		}
 		$completed_items = LP_Cache::get_completed_items( false, array() );
 		$key             = $user_id . '-' . $this->id;
 		if ( !array_key_exists( $key, $completed_items ) || $force ) {
@@ -1180,7 +1196,7 @@ abstract class LP_Abstract_Course {
 			} else {
 				$item_types = '';
 			}
-			$query         = $wpdb->prepare( "
+			$query                 = $wpdb->prepare( "
 				SELECT user_item_id, user_id, status, ref_id, item_id, item_type
 				FROM (SELECT * FROM wp_learnpress_user_items ORDER BY item_id, user_item_id DESC) x
 				GROUP BY item_id
@@ -1190,13 +1206,26 @@ abstract class LP_Abstract_Course {
 				AND item_id IN(" . join( ",", $course_items ) . ")
 				" . $item_types . "
 			", $user_id, 'completed', $this->id );
-			$user_item_ids = $wpdb->get_col( $query );
-
-			$completed_items[$key] = sizeof( $user_item_ids );
-			LP_Cache::set_completed_items( $key, $completed_items[$key] );
+			$user_item_ids         = $wpdb->get_col( $query );
+			$completed_items[$key] = $user_item_ids;
+			LP_Cache::set_completed_items( $completed_items );
 		}
-
 		return apply_filters( 'learn_press_user_completed_items', $completed_items[$key], $this->id, $user_id );
+	}
+
+	/**
+	 * @param int  $user_id
+	 * @param bool $force
+	 *
+	 * @return mixed|void
+	 */
+	public function count_completed_items( $user_id = 0, $force = false ) {
+		$items = $this->get_completed_items( $user_id, $force );
+		$count = 0;
+		if ( $items ) {
+			$count = sizeof( $items );
+		}
+		return apply_filters( 'learn_press_count_user_completed_items', $count, $this->id, $user_id );
 	}
 
 	/**
@@ -1209,14 +1238,13 @@ abstract class LP_Abstract_Course {
 	 */
 	public function _evaluate_course_by_quiz( $user_id, $force = false ) {
 		global $wpdb;
-		$final_quiz = LP_Quiz::get_quiz( $this->final_quiz );
-		$user       = learn_press_get_user( $user_id );
-		$results    = $user->get_quiz_results( $this->final_quiz );
+		$user    = learn_press_get_user( $user_id );
+		$results = $user->get_quiz_results( $this->final_quiz, $this->id );
 		if ( !$results ) {
 			$result = 0;
 		} else {
-			if ( !empty( $results->results['quiz_mark'] ) ) {
-				$result = $results->results['mark'] / $results->results['quiz_mark'];
+			if ( !empty( $results->mark_percent ) ) {
+				$result = absint( $results->mark_percent );
 			} else {
 				$result = 0;
 			}

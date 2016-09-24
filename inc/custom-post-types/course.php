@@ -413,7 +413,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						'desc'    => $course_result_desc,
 						'options' => array(
 							'evaluate_lesson'     => __( 'Evaluate lessons', 'learnpress' ),
-							'evaluate_quiz'       => __( 'Evaluate result of quizzes', 'learnpress' ),
+							'evaluate_quizzes'       => __( 'Evaluate result of quizzes', 'learnpress' ),
 							'evaluate_final_quiz' => __( 'Evaluate result of final quiz', 'learnpress' )
 						),
 						'std'     => 'evaluate_lesson'
