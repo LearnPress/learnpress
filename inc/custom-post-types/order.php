@@ -136,7 +136,7 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
             ?>
             <script type="text/javascript">
                 jQuery( function ( $ ) {
-                    $( '#post-search-input' ).prop( 'placeholder', '<?php esc_attr_e( 'Order number, user name, user email, etc...', 'learnpress' ); ?>' ).css( 'width', 400 )
+                    $( '#post-search-input' ).prop( 'placeholder', '<?php esc_attr_e( 'Order number, user name, user email, course name etc...', 'learnpress' ); ?>' ).css( 'width', 400 )
                 } )
             </script>
             <?php
@@ -147,14 +147,17 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
             if ( !$this->_is_archive() || !$this->_is_search() ) {
                 return $where;
             }
+
             $s = '%' . $wpdb->esc_like( $wp_query->get( 's' ) ) . '%';
             $append = $wpdb->prepare( " (uu.user_login LIKE %s
 					OR uu.user_nicename LIKE %s
 					OR uu.user_email LIKE %s
 					OR uu.display_name LIKE %s
 					OR {$wpdb->posts}.ID LIKE %s
-				) OR ", $s, $s, $s, $s, $s );
+                                        OR orderItem.order_item_name LIKE %s
+				) OR ", $s, $s, $s, $s, $s, $s );
             $where = preg_replace( "/({$wpdb->posts}\.post_title LIKE)/", $append . '$1', $where );
+
             return $where;
         }
 
@@ -180,6 +183,7 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
             global $wpdb;
             $join .= " INNER JOIN {$wpdb->postmeta} ON {$wpdb->posts}.ID = {$wpdb->postmeta}.post_id";
             $join .= " INNER JOIN {$wpdb->users} uu ON uu.ID = {$wpdb->postmeta}.meta_value";
+            $join .= " INNER JOIN {$wpdb->learnpress_order_items} AS orderItem ON orderItem.order_id = {$wpdb->posts}.ID";
             return $join;
         }
 
@@ -384,7 +388,7 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
                         <div class="payment-method-title">
                         <?php echo $the_order->order_total == 0 ? $title : sprintf( __( 'Pay via <strong>%s</strong>', 'learnpress' ), $title ); ?>
                         </div>
-                    <?php
+                        <?php
                     }
                     break;
                 case 'order_title' :
