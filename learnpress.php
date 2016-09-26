@@ -105,6 +105,11 @@ if ( !class_exists( 'LearnPress' ) ) {
 		 * LearnPress constructor
 		 */
 		public function __construct() {
+			// Prevent duplicate unwanted hooks
+			if ( self::$_instance ) {
+				return;
+			}
+			self::$_instance = $this;
 			// define table prefixes
 			$this->define_tables();
 			// include files
@@ -401,7 +406,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 			}
 			$this->settings = LP_Settings::instance();
 			//if ( !is_admin() ) {
-				require_once 'inc/class-lp-assets.php';
+			require_once 'inc/class-lp-assets.php';
 			//}
 			require_once 'inc/question/abstract-lp-question.php';
 			require_once 'inc/question/class-lp-question-factory.php';
@@ -480,7 +485,6 @@ if ( !class_exists( 'LearnPress' ) ) {
 			if ( file_exists( LP_PLUGIN_PATH . '/test-functions.php' ) ) {
 				include_once LP_PLUGIN_PATH . '/test-functions.php';
 			}
-
 			$GLOBALS['lp_query'] = $this->query = new LP_Query();
 		}
 

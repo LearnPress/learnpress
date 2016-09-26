@@ -795,8 +795,6 @@ body.block-content #learn-press-block-content {
 .single-quiz .quiz-questions-list,
 .single-quiz .quiz-intro {
   list-style: none;
-  padding: 0;
-  margin: 0 0 20px 0;
 }
 .single-quiz .quiz-description,
 .single-quiz .question-content {
@@ -808,7 +806,6 @@ body.block-content #learn-press-block-content {
 .single-quiz .question-content .learn-press-question-title {
   margin-bottom: 20px;
 }
-.single-quiz .quiz-intro,
 .single-quiz .quiz-countdown {
   float: right;
   width: 300px;
@@ -1742,7 +1739,9 @@ body.block-content #learn-press-block-content {
 }
 .single-quiz .quiz-intro {
   list-style: none;
-  padding: 0;
+  padding: 10px 20px;
+  background: #F5F5F5;
+  margin: 0 0 20px 0;
 }
 .learn-press-tooltip {
   font-family: dashicons;

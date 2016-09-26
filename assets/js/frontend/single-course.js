@@ -330,7 +330,8 @@ if (typeof LearnPress == 'undefined') {
 
 						that.$('.learn-press-course-results-progress').replaceWith($(response.html.progress));
 						$section.find('.section-header').replaceWith($(response.html.section_header));
-						that.$('.learn-press-course-buttons').replaceWith($(response.html.buttons))
+						that.$('.learn-press-course-buttons').replaceWith($(response.html.buttons));
+						that.currentItem.set('content', $(response.html.content))
 					}
 				}
 			});
@@ -359,15 +360,10 @@ if (typeof LearnPress == 'undefined') {
 				course_id: this.model.get('id'),
 				callback : function (response, item) {
 					that.currentItem.set('content', response.html);
+					that.viewItem(that.currentItem.get('id'))
 					if (typeof Quiz_Params) {
 						window.Quiz = new LP_Quiz(Quiz_Params);
 					}
-					/*
-					 window.Quiz = new LP_Quiz({
-					 totalTime: 7200,
-					 userTime : 0,
-					 questions: [{name: 'xxxx'}]
-					 });*/
 				}
 			});
 		},
@@ -628,7 +624,7 @@ if (typeof LearnPress == 'undefined') {
 			$(window).trigger('resize');
 			LP.unblockContent();
 		}
-	}).ajaxError(function(){
+	}).ajaxError(function () {
 		LP.unblockContent();
 	});
 	return;

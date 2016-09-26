@@ -640,11 +640,9 @@ class LP_Abstract_User {
 			$this->set_course( $course_id );
 		}
 
-
 		$item_statuses = LP_Cache::get_item_statuses( false, array() );
 		$key           = sprintf( '%d-%d-%d', $this->id, $course_id, $item_id );
 		if ( ( !array_key_exists( $key, $item_statuses ) || $force ) ) {
-
 			if ( $item_ids = $this->get_course_items( '', 'key', $course_id ) ) {
 				global $wpdb;
 				$in                  = array_fill( 0, sizeof( $item_ids ), '%d' );
@@ -705,7 +703,7 @@ class LP_Abstract_User {
 		return apply_filters( 'learn_press_user_quiz_last_results', $results, $quiz_id, $this );
 	}
 
-	public function get_quiz_info( $quiz_id, $field = null ) {
+	public function get_quiz_info( $quiz_id, $course_id = 0, $field = null ) {
 		static $quizzes = array();
 		if ( empty( $quizzes[$quiz_id] ) ) {
 			global $wpdb;
@@ -718,7 +716,7 @@ class LP_Abstract_User {
 			", $this->id, $quiz_id, '' );
 			$user_quiz = (array) $wpdb->get_row( $query );
 			if ( !empty( $user_quiz['user_quiz_id'] ) ) {
-				$user_quiz['history'] = $this->get_quiz_history( $quiz_id );
+				$user_quiz['history'] = $this->get_quiz_history( $quiz_id, $course_id );
 
 
 			}
@@ -761,7 +759,7 @@ class LP_Abstract_User {
 
 		$key    = $this->id . '-' . $course_id . '-' . $quiz_id;
 		$cached = LP_Cache::get_quiz_history( false, array() );// wp_cache_get( 'user-quiz-history', 'learnpress' );
-		if ( ( !array_key_exists( $key, $cached ) || $force ) && $quiz_id ) {
+		if ( ( !array_key_exists( $key, $cached ) || $force ) && $quiz_id && in_array( $quiz_id, $quizzes ) ) {
 			global $wpdb;
 			$t1             = $wpdb->prefix . 'learnpress_user_items'; //{$wpdb->learnpress_user_quizzes}
 			$t2             = $wpdb->prefix . 'learnpress_user_itemmeta'; //{$wpdb->learnpress_user_quizzes}
@@ -770,7 +768,8 @@ class LP_Abstract_User {
 				array( 'lp_quiz', $this->id, $course_id ),
 				$quizzes
 			);
-			$query          = $wpdb->prepare( "
+
+			$query = $wpdb->prepare( "
 				SELECT *
 				FROM $t1 uq
 				WHERE uq.item_type = %s
@@ -846,9 +845,10 @@ class LP_Abstract_User {
 						$cached[$k1][$k2] = $v2;
 					}
 				}
-				LP_Cache::set_quiz_history( $cached );
 			}
+			LP_Cache::set_quiz_history( $cached );
 		}
+
 		/*if ( $history_id ) {
 			return apply_filters( 'learn_press_user_quiz_history', isset( $history[$key][$history_id] ) ? $history[$key][$history_id] : false, $this, $quiz_id );
 		}*/
@@ -869,14 +869,12 @@ class LP_Abstract_User {
 		return $wpdb->get_results( $query );
 	}
 
-	public function get_current_results( $quiz_id ) {
-		$history = $this->get_quiz_history( $quiz_id );
+	public function get_current_results( $quiz_id, $course_id = 0 ) {
+		$history = $this->get_quiz_history( $quiz_id, $course_id );
 		$current = false;
 		if ( $history ) {
 			$current = reset( $history );
 		}
-
-
 		return $current;
 	}
 
@@ -917,9 +915,18 @@ class LP_Abstract_User {
 			} elseif ( !empty( $progress->questions ) && is_array( $progress->questions ) ) {
 				$question_id = reset( $progress->questions );
 			}
-			///$question_id = !empty( $progress->current_question ) ? $progress->current_question : false;
 		}
+		if ( !$question_id ) {
+			$quiz = LP_Quiz::get_quiz( $quiz_id );
+			if ( $quiz ) {
+				$questions = $quiz->get_questions();
+				if ( $questions ) {
+					$question    = reset( $questions );
+					$question_id = $question->ID;
+				}
+			}
 
+		}
 		return apply_filters( 'learn_press_user_current_quiz_question', absint( $question_id ), $quiz_id, $course_id, $this->id );
 	}
 
@@ -2442,6 +2449,34 @@ class LP_Abstract_User {
 		$checked = (array) learn_press_get_user_item_meta( $history->history_id, '_quiz_question_checked', true );
 		$checked = array_filter( $checked );
 		return in_array( $question_id, $checked );
+	}
+
+	/**
+	 * Get user's quiz's graduation
+	 *
+	 * @param      $quiz_id
+	 * @param int  $course_id
+	 * @param bool $check_completed
+	 *
+	 * @return mixed|void
+	 */
+	public function get_quiz_graduation( $quiz_id, $course_id = 0, $check_completed = true ) {
+		$result = $this->get_quiz_results( $quiz_id, $course_id );
+		$grade  = '';
+		if ( $result && ( ( $check_completed == false ) || $check_completed && $result->status == 'completed' ) ) {
+			$quiz          = LP_Quiz::get_quiz( $quiz_id );
+			$grade_type    = $quiz->passing_grade_type;
+			$passing_grade = $quiz->passing_grade;
+			if ( $grade_type == 'point' ) {
+				$grade = $passing_grade <= $result->mark;
+			} elseif ( $grade_type == 'percentage' ) {
+				$grade = $passing_grade <= $result->mark_percent;
+			} else {
+				$grade = true;
+			}
+			$grade = $grade ? 'passed' : 'failed';
+		}
+		return apply_filters( 'learn_press_user_quiz_graduation', $grade, $quiz_id, $course_id );
 	}
 
 	public function get_current_quiz_questionX() {

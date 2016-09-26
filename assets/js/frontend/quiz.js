@@ -162,6 +162,9 @@
 			_.forEach(this._args.questions, function (q) {
 				this.questions.add(q);
 			}, this);
+			if (this.questions.length && !this.current()) {
+				this.questions.at(0).set('current', 'yes');
+			}
 		},
 		_secondsToDHMS       : function (t) {
 			var d = Math.floor(t / (24 * 3600)), t = t - d * 24 * 3600, h = Math.floor(t / 3600), t = t - h * 3600, m = Math.floor(t / 60), s = Math.floor(t - m * 60);
@@ -453,6 +456,7 @@
 			var $el = $('#content-item-' + this.model.get('id'));
 			//this.setElement($el);
 			_.bindAll(this, '_onTick', 'itemUrl', '_loadQuestionCompleted', '_checkAnswer');
+
 			LP.Hook.addFilter('learn_press_get_current_item_url', this.itemUrl);
 			this.model.current(true).set('response', this.$('.learn-press-content-item-summary'));
 			this.model.set('view', this);
@@ -512,6 +516,7 @@
 			$(document).trigger('resize');
 			LP.setUrl(question.get('url'));
 			LP.unblockContent();
+			console.log('hide')
 		},
 		_showHint             : function (e) {
 			e.preventDefault();

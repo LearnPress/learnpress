@@ -63,7 +63,7 @@ abstract class LP_Abstract_Course {
 			$this->post = $course->post;
 		} elseif ( isset( $course->ID ) ) {
 			$this->id   = absint( $course->ID );
-			$this->post = $course;
+			$this->post = get_post( $course->ID );
 		}
 		if ( empty( self::$_lessons[$this->id] ) ) {
 			self::$_lessons[$this->id] = array();
@@ -299,25 +299,27 @@ abstract class LP_Abstract_Course {
 		if ( !$this->id ) {
 			return false;
 		}
-		$curriculum = LP_Cache::get_course_curriculum( false, array() );
+		if ( false ) {
+			$curriculum = LP_Cache::get_course_curriculum( false, array() );
 
-		if ( !array_key_exists( $this->id, $curriculum ) || $force ) {
-			global $wpdb;
-			$curriculum[$this->id] = array();
-			$query                 = $wpdb->prepare( "
+			if ( !array_key_exists( $this->id, $curriculum ) || $force ) {
+				global $wpdb;
+
+				$curriculum[$this->id] = array();
+				$query                 = $wpdb->prepare( "
 				SELECT cc.*
 				FROM {$wpdb->posts} p
 				INNER JOIN {$wpdb->learnpress_sections} cc ON p.ID = cc.section_course_id
 				WHERE p.ID = %d
 				ORDER BY `section_order` ASC
 			", $this->id );
-			if ( $rows = $wpdb->get_results( $query, OBJECT_K ) ) {
-				$section_ids  = array_keys( $rows );
-				$how_many     = count( $section_ids );
-				$placeholders = array_fill( 0, $how_many, '%d' );
-				$in           = implode( ', ', $placeholders );
+				if ( $rows = $wpdb->get_results( $query, OBJECT_K ) ) {
+					$section_ids  = array_keys( $rows );
+					$how_many     = count( $section_ids );
+					$placeholders = array_fill( 0, $how_many, '%d' );
+					$in           = implode( ', ', $placeholders );
 
-				$query         = $wpdb->prepare( "
+					$query         = $wpdb->prepare( "
 						SELECT si.*, p.*
 						FROM {$wpdb->posts} p
 						INNER JOIN {$wpdb->prefix}learnpress_section_items si ON si.item_id = p.ID
@@ -325,48 +327,58 @@ abstract class LP_Abstract_Course {
 						WHERE s.section_id IN( $in )
 						ORDER BY s.section_order, si.item_order ASC
 					", $section_ids );
-				$section_items = $wpdb->get_results( $query );
-				$post_ids      = array();
-				foreach ( $rows as $row ) {
-					$section        = $row;
-					$section->items = array();
-					if ( $section_items ) {
-						$count = 0;
-						foreach ( $section_items as $item ) {
-							if ( $item->section_id == $row->section_id ) {
-								$section->items[] = $item;
-								/**
-								 * Add item to 'posts' cache group
-								 */
-								$item_post = wp_cache_get( $item->ID, 'posts' );
-								if ( !$item_post ) {
-									wp_cache_add( $item->ID, $item, 'posts' );
+					$section_items = $wpdb->get_results( $query );
+					$post_ids      = array();
+					foreach ( $rows as $row ) {
+						$section        = $row;
+						$section->items = array();
+						if ( $section_items ) {
+							$count = 0;
+							foreach ( $section_items as $item ) {
+								if ( $item->section_id == $row->section_id ) {
+									$section->items[] = $item;
+									/**
+									 * Add item to 'posts' cache group
+									 */
+									$item_post = wp_cache_get( $item->ID, 'posts' );
+									if ( !$item_post ) {
+										wp_cache_add( $item->ID, $item, 'posts' );
+									}
+									$post_ids[] = $item->ID;
+									$count ++;
+								} else {
+									if ( $count ) break;
 								}
-								$post_ids[] = $item->ID;
-								$count ++;
-							} else {
-								if ( $count ) break;
 							}
 						}
+						$curriculum[$this->id][$section->section_id] = $section;
 					}
-					$curriculum[$this->id][$section->section_id] = $section;
+					// update all meta data into cache
+					update_meta_cache( 'post', $post_ids );
+					//SELECT post_id, meta_key, meta_value FROM wp_postmeta WHERE post_id IN
 				}
-				// update all meta data into cache
-				update_meta_cache( 'post', $post_ids );
-				//SELECT post_id, meta_key, meta_value FROM wp_postmeta WHERE post_id IN
 			}
 			LP_Cache::set_course_curriculum( $curriculum );
-		}
-
-		$return = false;
-		if ( $section_id ) {
-			if ( !empty( $curriculum[$this->id][$section_id] ) ) {
-				$return = $curriculum[$this->id][$section_id];
+			$return = false;
+			if ( $section_id ) {
+				if ( !empty( $curriculum[$this->id][$section_id] ) ) {
+					$return = $curriculum[$this->id][$section_id];
+				}
+			} else {
+				$return = $curriculum[$this->id];
 			}
-		} else {
-			$return = $curriculum[$this->id];
+		} // end if(false)
+		else {
+			$curriculum = _learn_press_get_course_curriculum( $this->id, $force );
+			$return     = false;
+			if ( $section_id ) {
+				if ( !empty( $curriculum[$section_id] ) ) {
+					$return = $curriculum[$section_id];
+				}
+			} else {
+				$return = $curriculum;
+			}
 		}
-
 		return apply_filters( 'learn_press_course_curriculum', $return, $this->id, $section_id );
 	}
 
@@ -1074,7 +1086,7 @@ abstract class LP_Abstract_Course {
 		$result = 0;
 		if ( $items ) {
 			$completed_items = $this->count_completed_items( $user_id, $force );
-			$result          = absint( $completed_items / sizeof( $items ) * 100 );
+			$result          = round( $completed_items / sizeof( $items ) * 100 );
 		}
 		return apply_filters( 'learn_press_course_results_by_items', $result, $this->id, $user_id );
 	}
@@ -1182,8 +1194,22 @@ abstract class LP_Abstract_Course {
 		if ( !$user_id ) {
 			$user_id = get_current_user_id();
 		}
-		$completed_items = LP_Cache::get_completed_items( false, array() );
-		$key             = $user_id . '-' . $this->id;
+		//$completed_items = LP_Cache::get_completed_items( false, array() );
+		$key = $user_id . '-' . $this->id;
+
+		$item_statuses   = LP_Cache::get_item_statuses( false, array() );
+		$completed_items = array();
+		if ( $item_statuses ) {
+			if ( $curriculum_items = $this->post->curriculum_items ) {
+				foreach ( $curriculum_items as $item_id ) {
+					$k = sprintf( '%d-%d-%d', $user_id, $this->id, $item_id );
+					if ( !empty( $item_statuses[$k] ) && $item_statuses[$k] == 'completed' ) {
+						$completed_items[] = $item_id;
+					}
+				}
+			}
+		}
+		return apply_filters( 'learn_press_user_completed_items', $completed_items, $this->id, $user_id );
 		if ( !array_key_exists( $key, $completed_items ) || $force ) {
 			global $wpdb;
 			$course_items = $this->get_curriculum_items( array( 'field' => 'ID' ) );
@@ -1238,20 +1264,26 @@ abstract class LP_Abstract_Course {
 	 */
 	public function _evaluate_course_by_quiz( $user_id, $force = false ) {
 		global $wpdb;
+		$result = $this->evaluate_quiz( $this->final_quiz, $user_id );
+		return apply_filters( 'learn_press_evaluation_course_quiz', $result, $this->id, $user_id );
+	}
+
+	public function evaluate_quiz( $quiz_id, $user_id, $force = false ) {
 		$user    = learn_press_get_user( $user_id );
-		$results = $user->get_quiz_results( $this->final_quiz, $this->id );
+		$quiz    = LP_Quiz::get_quiz( $quiz_id );
+		$results = $user->get_quiz_results( $quiz_id, $this->id );
 		if ( !$results ) {
 			$result = 0;
 		} else {
-			if ( !empty( $results->mark_percent ) ) {
+			if ( $user->get_quiz_graduation( $quiz_id, $this->id ) == 'passed' && !empty( $results->mark_percent ) ) {
 				$result = absint( $results->mark_percent );
 			} else {
 				$result = 0;
 			}
 		}
-
-		return apply_filters( 'learn_press_evaluation_course_quiz', $result, $this->id, $user_id );
+		return $result;
 	}
+
 
 	/**
 	 * Calculate results of course by avg of all quizzes
@@ -1262,7 +1294,15 @@ abstract class LP_Abstract_Course {
 	 * @return mixed
 	 */
 	public function _evaluate_course_by_quizzes( $user_id, $force = false ) {
-		return sizeof( $this->get_quizzes() ) / 100;
+		$quizzes = $this->get_quizzes();
+		$result  = 0;
+		if ( $quizzes ) {
+			foreach ( $quizzes as $quiz ) {
+				$result += $this->evaluate_quiz( $quiz->ID, $user_id, $force );
+			}
+			$result = round( $result / sizeof( $quizzes ) );
+		}
+		return apply_filters( 'learn_press_evaluation_course_quizzes', $result, $this->id, $user_id );
 	}
 
 	/**
@@ -1411,7 +1451,6 @@ abstract class LP_Abstract_Course {
 				'field_format' => array( '%d', '%s', '%s' )
 			)
 		);
-
 		if ( $items ) foreach ( $items as $k => $item ) {
 			if ( ( $view = $user->can( 'view-item', $item['id'] ) ) !== false ) {
 				$items[$k]['url']     = $this->get_item_link( $item['id'] );

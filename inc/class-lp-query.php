@@ -17,7 +17,6 @@ class LP_Query {
 		add_action( 'init', array( $this, 'add_rewrite_tags' ), 1000, 0 );
 		add_action( 'init', array( $this, 'add_rewrite_rules' ), 1000, 0 );
 		add_filter( 'parse_request', array( $this, 'parse_request' ), 1000, 1 );
-
 	}
 
 	/**
@@ -46,10 +45,10 @@ class LP_Query {
 			$request_match = $req_uri . '/' . $request;*/
 
 		$request_match = $request;
-
 		if ( !empty( $q->query_vars['post_type'] ) && $q->query_vars['post_type'] == LP_COURSE_CPT ) {
 			if ( !empty( $q->query_vars[LP_COURSE_CPT] ) ) {
 				$this->query_vars['course'] = $q->query_vars[LP_COURSE_CPT];
+				learn_press_setup_course_data( $this->query_vars['course'] );
 			}
 			if ( !empty( $q->query_vars['quiz'] ) ) {
 				$this->query_vars['quiz']      = $q->query_vars['quiz'];

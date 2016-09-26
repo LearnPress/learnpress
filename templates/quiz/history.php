@@ -10,13 +10,14 @@
 if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
+$course = learn_press_get_the_course();
 $quiz = LP()->global['course-item'];
 
-if ( !$quiz->retake_count || !LP()->user->has( 'completed-quiz', $quiz->id ) ) {
+if ( !$quiz->retake_count || !LP()->user->has( 'completed-quiz', $quiz->id, $course->id ) ) {
 	return;
 }
 $limit   = 10;
-$history = LP()->user->get_quiz_history( $quiz->id );
+$history = LP()->user->get_quiz_history( $quiz->id, $course->id );
 reset( $history );
 
 $history_count = sizeof( $history );

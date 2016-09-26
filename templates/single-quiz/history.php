@@ -10,13 +10,13 @@
 if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
-global $quiz;
-
+$course = learn_press_get_the_course();
+$quiz   = LP()->global['course-item'];
 if ( !$quiz->retake_count || !LP()->user->has( 'completed-quiz', $quiz->id ) ) {
 	return;
 }
 $limit   = 10;
-$history = LP()->user->get_quiz_history( $quiz->id );
+$history = LP()->user->get_quiz_history( $quiz->id, $course->id );
 reset( $history );
 
 $history_count = sizeof( $history );
@@ -51,11 +51,11 @@ if ( $history_count > 1 ) {
 					<div><?php echo date( get_option( 'time_format' ), $item->start ); ?></div>
 				</td>
 				<td>
-					<?php if( $item->results['quiz_mark'] ) { ?>
-					<?php printf( "%01.2f (%%)", ( $item->results['mark'] / $item->results['quiz_mark'] ) * 100 ); ?>
-					<?php }else{ ?>
-					<?php printf( "%01.2f (%%)", 0 ); ?>
-					<?php }?>
+					<?php if ( $item->results['quiz_mark'] ) { ?>
+						<?php printf( "%01.2f (%%)", ( $item->results['mark'] / $item->results['quiz_mark'] ) * 100 ); ?>
+					<?php } else { ?>
+						<?php printf( "%01.2f (%%)", 0 ); ?>
+					<?php } ?>
 					<!--
 				<p class="quiz-history-actions">
 					<a href="<?php echo add_query_arg( 'history_id', $item->history_id ); ?>"><?php _e( 'View', 'learnpress' ); ?></a>

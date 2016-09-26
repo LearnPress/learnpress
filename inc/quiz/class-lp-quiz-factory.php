@@ -145,12 +145,9 @@ class LP_Quiz_Factory {
 				LP()->user          = $user;
 				$response['status'] = $result->status;
 
-				// update cache
-				LP_Cache::set_quiz_status( $user->id . '-' . $course->id . '-' . $quiz_id, $result->status );
+				LP_Cache::flush();
 
-				ob_start();
-				learn_press_get_template( 'single-course/content-item-lp_quiz.php' );
-				$response['html'] = ob_get_clean();
+				$response['html'] = learn_press_get_template_content( 'single-course/content-item-lp_quiz.php' );
 			} else {
 				$response['result'] = 'error';
 			}

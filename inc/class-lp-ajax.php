@@ -93,7 +93,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 				'result'   => 'fail',
 				'redirect' => apply_filters( 'learn_press_enroll_course_failure_redirect_url', get_the_permalink( $course_id ) )
 			);
-			
+
 			if ( $insert_id ) {
 				$response['result']   = 'success';
 				$response['redirect'] = apply_filters( 'learn_press_enrolled_course_redirect_url', get_the_permalink( $course_id ) );
@@ -207,10 +207,10 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 		}
 
 		public static function _request_add_to_cart() {
-			$cart		= learn_press_get_cart();
-			$course_id	= learn_press_get_request( 'purchase-course' );
-			$cart->add_to_cart($course_id);
-			$res = $cart->add_to_cart($course_id);
+			$cart      = learn_press_get_cart();
+			$course_id = learn_press_get_request( 'purchase-course' );
+			$cart->add_to_cart( $course_id );
+			$res    = $cart->add_to_cart( $course_id );
 			$return = array(
 				'result'   => 'success',
 				'redirect' => learn_press_get_checkout_url()
@@ -285,17 +285,11 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 						$response['status']         = 'completed';
 						$response['html']           = array();
 						if ( $section_id = learn_press_get_request( 'section_id' ) ) {
-							ob_start();
-							learn_press_get_template( 'single-course/section/title.php', array( 'force' => true, 'section' => $course->get_curriculum( $section_id ) ) );
-							$response['html']['section_header'] = ob_get_clean();
+							$response['html']['section_header'] = learn_press_get_template_content( 'single-course/section/title.php', array( 'section' => $course->get_curriculum( $section_id ) ) );
 						}
-						ob_start();
-						learn_press_get_template( 'single-course/progress.php', array( 'force' => true ) );
-						$response['html']['progress'] = ob_get_clean();
-
-						ob_start();
-						learn_press_get_template( 'single-course/buttons.php', array( 'force' => true ) );
-						$response['html']['buttons']   = ob_get_clean();
+						$response['html']['progress'] = learn_press_get_template_content( 'single-course/progress.php' );
+						$response['html']['buttons']  = learn_press_get_template_content( 'single-course/buttons.php' );
+						$response['html']['content']  = learn_press_get_template_content( 'single-course/content-item-lp_lesson.php' );
 					}
 				} else {
 					do_action( 'learn_press_user_request_complete_item', $_REQUEST );
@@ -425,8 +419,6 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 
 			}
 		}
-
-
 
 
 		/**
@@ -641,34 +633,34 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 		/**************************/
 
 		/**
-
-		public static function load_prev_question() {
-
-			$prev_question_id = $_POST['prev_question_id'];
-			$question_id      = $_POST['question_id'];
-			$question_answer  = $_POST['question_answer'];
-			$quiz_id          = $_POST['quiz_id'];
-
-			lpr_save_question_answer( $quiz_id, $question_id, $question_answer );
-
-			do_action( 'lpr_load_question', $prev_question_id );
-
-			die;
-		}
-
-		public static function load_next_question() {
-
-			$next_question_id = $_POST['next_question_id'];
-			$quiz_id          = $_POST['quiz_id'];
-			$question_id      = $_POST['question_id'];
-			$question_answer  = $_POST['question_answer'];
-
-			lpr_save_question_answer( $quiz_id, $question_id, $question_answer );
-
-			do_action( 'lpr_load_question', $next_question_id );
-
-			die;
-		}
+		 *
+		 * public static function load_prev_question() {
+		 *
+		 * $prev_question_id = $_POST['prev_question_id'];
+		 * $question_id      = $_POST['question_id'];
+		 * $question_answer  = $_POST['question_answer'];
+		 * $quiz_id          = $_POST['quiz_id'];
+		 *
+		 * lpr_save_question_answer( $quiz_id, $question_id, $question_answer );
+		 *
+		 * do_action( 'lpr_load_question', $prev_question_id );
+		 *
+		 * die;
+		 * }
+		 *
+		 * public static function load_next_question() {
+		 *
+		 * $next_question_id = $_POST['next_question_id'];
+		 * $quiz_id          = $_POST['quiz_id'];
+		 * $question_id      = $_POST['question_id'];
+		 * $question_answer  = $_POST['question_answer'];
+		 *
+		 * lpr_save_question_answer( $quiz_id, $question_id, $question_answer );
+		 *
+		 * do_action( 'lpr_load_question', $next_question_id );
+		 *
+		 * die;
+		 * }
 		 */
 	}
 }

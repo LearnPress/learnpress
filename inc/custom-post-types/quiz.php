@@ -146,6 +146,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 								'id'      => "{$prefix}passing_grade_type",
 								'type'    => 'radio',
 								'options' => array(
+									'no' => __( 'No', 'learnpress' ),
 									'percentage' => __( 'Percentage', 'learnpress' ),
 									'point'      => __( 'Point', 'learnpress' )
 								),

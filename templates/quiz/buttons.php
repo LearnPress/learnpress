@@ -24,7 +24,7 @@ $question = $quiz->get_current_question();
 ?>
 <div class="quiz-buttons">
 
-	<?php if ( !$user->has( 'quiz-status', 'completed', $quiz->id ) ): ?>
+	<?php if ( $user->has( 'quiz-status', array( 'started' ), $quiz->id ) ): ?>
 		<button class="button-prev-question" data-block-content="yes"><?php esc_html_e( 'Previous', 'learnpress' ); ?></button>
 		<button class="button-next-question" data-block-content="yes"><?php esc_html_e( 'Next', 'learnpress' ); ?></button>
 		<?php if ( !$user->has_checked_answer( $question->id, $quiz->id, $course->id ) ): ?>

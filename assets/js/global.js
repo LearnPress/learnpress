@@ -697,7 +697,9 @@ if (typeof window.LP == 'undefined') {
 			$('body, html').addClass('block-content').css('overflow', 'hidden');
 		},
 		unblockContent: function () {
-			$('body, html').removeClass('block-content').css('overflow', '');
+			setTimeout(function () {
+				$('body, html').removeClass('block-content').css('overflow', '');
+			}, 350);
 		},
 		template      : _.memoize(function (id, data) {
 			var compiled,
@@ -917,6 +919,7 @@ if (typeof window.LP == 'undefined') {
 
 		$(document).on('click', '[data-block-content="yes"]', function () {
 			LP.blockContent();
+			console.log('show')
 		});
 		$('.learn-press-tooltip').tooltip({offset: [24, 24]});
 	});

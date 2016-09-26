@@ -39,7 +39,7 @@ $history = LP()->user->get_quiz_results( $quiz->id );
 			</div>
 		</div>
 	</div>-->
-	<h4><?php echo esc_html( sprintf( __( 'You have reached %d of %d points', 'learnpress' ), $history->mark, $quiz->get_mark() ) ); ?></h4>
+	<h4><?php echo esc_html( sprintf( __( 'You have reached %d of %d points (%s)', 'learnpress' ), $history->mark, $quiz->get_mark(), round($history->mark_percent) . '%' ) ); ?></h4>
 	<?php
 	$fields = array(
 		'correct' => sprintf( apply_filters( 'learn_press_quiz_result_correct_text', __( 'Correct %d (%0.0f%%)', 'learnpress' ) ), $history->correct, $history->correct_percent ),

@@ -19,7 +19,6 @@ if ( !$quiz ) {
 		<?php learn_press_get_template( 'quiz/countdown-simple.php' ); ?>
 	</div>
 	<div id="quiz-<?php echo $quiz->id; ?>" <?php learn_press_quiz_class( 'learn-press-content-item-summary' ); ?>>
-
 		<?php if ( $user->has_quiz_status( array( 'completed' ), $quiz->id, $course->id ) ): ?>
 
 			<?php learn_press_get_template( 'quiz/result.php' ); ?>
