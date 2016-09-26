@@ -133,6 +133,18 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 						'fields'     => array(
 							// ,
 							array(
+								'name' => __( 'Show/Hide Question', 'learnpress' ),
+								'desc' => __( 'Show/Hide list questions on this quiz.', 'learnpress' ),
+								'id'   => "{$prefix}show_hide_question",
+								'type' => 'radio',
+								'options' => array(
+									'global'    => __( 'Global Setting', 'learnpress' ),
+									'show'      => __( 'Show', 'learnpress' ),
+									'hide'      => __( 'Hide', 'learnpress' )
+								),
+                                                                'std'   => 'global'
+							),
+							array(
 								'name' => __( 'Duration', 'learnpress' ),
 								'desc' => __( 'Duration of the quiz (in minutes). Auto submits when expire.', 'learnpress' ),
 								'id'   => "{$prefix}duration",

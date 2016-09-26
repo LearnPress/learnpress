@@ -41,7 +41,6 @@ class LP_Settings_Courses extends LP_Settings_Base {
 
 		update_option( 'learn_press_course_base', $course_base );
 
-
 		$courses_page_id   = learn_press_get_page_id( 'courses' );
 		$courses_permalink = ( $courses_page_id > 0 && get_post( $courses_page_id ) ) ? get_page_uri( $courses_page_id ) : _x( 'courses', 'default-slug', 'learnpress' );
 
@@ -91,6 +90,13 @@ class LP_Settings_Courses extends LP_Settings_Base {
 					'desc'    => __( 'Allows instructor edit the course that published without review.<br /> If this option is disabled, the course status will be changed to Pending Review when the instructor update course', 'learnpress' ),
 					'id'      => $this->get_field_name( 'enable_edit_published' ),
 					'default' => 'yes',
+					'type'    => 'checkbox'
+				),
+				array(
+					'title'   => __( 'Hide list of question in quiz', 'learnpress' ),
+					'desc'    => __( 'Hide list of question in quiz<br /> If this option is enabled, the course status will be changed to Pending Review when the instructor update course', 'learnpress' ),
+					'id'      => $this->get_field_name( 'disable_question_in_quiz' ),
+					'default' => 'no',
 					'type'    => 'checkbox'
 				),
 				array(

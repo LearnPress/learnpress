@@ -1486,7 +1486,7 @@ function learn_press_permission_view_quiz( $template ) {
 	}
 	$user = learn_press_get_current_user();
 	// If user haven't got permission
-	if ( !current_user_can( 'edit-lp_quiz' ) && !$user->can( 'view-quiz', $quiz - id ) ) {
+	if ( !current_user_can( 'edit-lp_quiz' ) && !$user->can( 'view-quiz', get_the_ID() ) ) { // $quiz - id
 		switch ( LP()->settings->get( 'quiz_restrict_access' ) ) {
 			case 'custom':
 				$template = learn_press_locate_template( 'global/restrict-access.php' );

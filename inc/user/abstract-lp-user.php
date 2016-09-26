@@ -759,7 +759,7 @@ class LP_Abstract_User {
 
 		$key    = $this->id . '-' . $course_id . '-' . $quiz_id;
 		$cached = LP_Cache::get_quiz_history( false, array() );// wp_cache_get( 'user-quiz-history', 'learnpress' );
-		if ( ( !array_key_exists( $key, $cached ) || $force ) && $quiz_id && in_array( $quiz_id, $quizzes ) ) {
+		if ( ( !array_key_exists( $key, $cached ) || $force ) && $quiz_id && is_array( $quizzes ) && in_array( $quiz_id, $quizzes ) ) {
 			global $wpdb;
 			$t1             = $wpdb->prefix . 'learnpress_user_items'; //{$wpdb->learnpress_user_quizzes}
 			$t2             = $wpdb->prefix . 'learnpress_user_itemmeta'; //{$wpdb->learnpress_user_quizzes}

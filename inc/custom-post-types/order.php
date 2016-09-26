@@ -137,7 +137,7 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
             <script type="text/javascript">
                 jQuery( function ( $ ) {
                     $( '#post-search-input' ).prop( 'placeholder', '<?php esc_attr_e( 'Order number, user name, user email, course name etc...', 'learnpress' ); ?>' ).css( 'width', 400 )
-                } )
+                } );
             </script>
             <?php
         }

@@ -12,7 +12,7 @@ if ( !defined( 'ABSPATH' ) ) {
 }
 $quiz = LP()->quiz;
 $user = LP()->user;
-if ( !$quiz ) {
+if ( !$quiz || learn_press_quiz_is_hide_question( $quiz->id ) ) {
 	return;
 }
 $status = $user->get_quiz_status( $quiz->id );

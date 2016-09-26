@@ -346,3 +346,15 @@ function _learn_press_add_question_type_support() {
 }
 
 add_action( 'plugins_loaded', '_learn_press_add_question_type_support' );
+
+if ( !function_exists( 'learn_press_quiz_is_hide_question' ) ) {
+    function learn_press_quiz_is_hide_question( $quiz_id = null ) {
+        if ( ! $quiz_id ) return false;
+        $meta = get_post_meta( $quiz_id, '_lp_show_hide_question', true );
+        if ( $meta === 'hide' || ( $meta === 'global' && LP()->settings->get( 'disable_question_in_quiz' ) === 'yes' ) ) {
+            return true;
+        }
+
+        return false;
+    }
+}
