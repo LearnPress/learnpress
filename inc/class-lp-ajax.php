@@ -349,7 +349,6 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			die();
 		}
 
-
 		/**
 		 * die();
 		 * Student take course
@@ -420,7 +419,6 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 
 			}
 		}
-
 
 		/**
 		 * Finish quiz
