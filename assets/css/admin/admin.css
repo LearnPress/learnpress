@@ -21,7 +21,8 @@
 .learn-press-quick-add-page-inline > * {
   vertical-align: top;
 }
-.post-type-lp_course .column-price {
+.post-type-lp_course .column-price,
+.post-type-lp_course .column-students {
   width: 10%;
 }
 /* message box */

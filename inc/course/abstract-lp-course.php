@@ -591,13 +591,13 @@ abstract class LP_Abstract_Course {
 
 		if ( $this->_students_list === null || $force ) {
 			$query                = $wpdb->prepare( "
-				SELECT user_id, user_nicename, user_status, display_name
-				FROM {$wpdb->prefix}learnpress_user_courses uc
-				LEFT JOIN  {$wpdb->users} u
+				SELECT ID, user_nicename, user_status, display_name
+				FROM {$wpdb->users} u
+				LEFT JOIN {$wpdb->prefix}learnpress_user_items uc
 					ON uc.user_id = u.ID
-				WHERE course_id = %s
-					AND status = %s
-					AND user_status = %s
+				WHERE uc.item_id = %s
+					AND uc.status = %s
+					AND u.user_status = %s
 				LIMIT %d
 			", $this->id, 'enrolled', '0', $limit );
 			$this->_students_list = $wpdb->get_results( $query );
