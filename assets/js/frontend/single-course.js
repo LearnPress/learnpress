@@ -360,7 +360,12 @@ if (typeof LearnPress == 'undefined') {
 				course_id: this.model.get('id'),
 				callback : function (response, item) {
 					that.currentItem.set('content', response.html);
-					that.viewItem(that.currentItem.get('id'))
+					that.viewItem(that.currentItem.get('id'));
+					if (window.quiz) {
+						window.quiz.destroy();
+						//window.quiz.view.$el.removeData().unbind();
+						//window.quiz.view.remove();
+					}
 					if (typeof Quiz_Params) {
 						window.Quiz = new LP_Quiz(Quiz_Params);
 					}
@@ -375,8 +380,11 @@ if (typeof LearnPress == 'undefined') {
 				security : security,
 				course_id: this.model.get('id'),
 				callback : function (response, item) {
-					that.currentItem.set('content', response.html);
-					LP.log(response.html)
+					that.currentItem.set('content', response.html.content);
+					that.$('.course-item-' + that.currentItem.get('id'))
+						.addClass('item-completed');
+					that.$('.learn-press-course-results-progress').replaceWith(response.html.progress);
+					LP.setUrl(that.currentItem.get('url'));
 				}
 			});
 		},
@@ -385,15 +393,21 @@ if (typeof LearnPress == 'undefined') {
 				$button = $(e.target),
 				security = $button.data('security');
 			//this.$('#course-curriculum-popup').addClass('overlay-processing');
-			this.currentItem.retakeQuiz({
+			this.currentItem.retakeQuiz && this.currentItem.retakeQuiz({
 				security : security,
 				course_id: this.model.get('id'),
 				callback : function (response, item) {
-					that.currentItem.set('content', response.html);
-					that.$('.course-item-'+that.currentItem.get('id'))
+					that.currentItem.set('content', response.html.content);
+					that.$('.course-item-' + that.currentItem.get('id'))
 						.removeClass('item-completed');
+					that.$('.learn-press-course-results-progress').replaceWith(response.html.progress);
+					if (window.quiz) {
+						window.quiz.destroy();
+						//window.quiz.view.$el.removeData().unbind();
+						//window.quiz.view.remove();
+					}
 					if (typeof Quiz_Params) {
-						window.Quiz = new LP_Quiz(Quiz_Params);
+						window.quiz = new LP_Quiz(Quiz_Params);
 					}
 				}
 			});

@@ -196,14 +196,17 @@ class LP_Quiz_Factory {
 			}
 
 			$result = $user->finish_quiz( $quiz_id, $course_id );
-			//LP_Cache::flush();
+			learn_press_setup_user_course_data( $user->id, $course_id );
 
 			if ( $result ) {
 				$course             = learn_press_get_course( $course_id );
 				$response['status'] = $result->status;
 				// update cache
 				LP_Cache::set_quiz_status( $user->id . '-' . $course->id . '-' . $quiz_id, $result->status );
-				$response['html'] = learn_press_get_template_content( 'single-course/content-item-lp_quiz.php' );
+				$response['html'] = array(
+					'content'  => learn_press_get_template_content( 'single-course/content-item-lp_quiz.php' ),
+					'progress' => learn_press_get_template_content( 'single-course/progress.php' )
+				);
 			} else {
 				$response['result'] = 'error';
 			}
@@ -233,12 +236,16 @@ class LP_Quiz_Factory {
 			);
 		} else {
 			$result = $user->retake_quiz( $quiz_id, $course_id );
+			learn_press_setup_user_course_data( $user->id, $course_id );
 			if ( $result ) {
-				$course = learn_press_get_course( $course_id );
+				$course             = learn_press_get_course( $course_id );
 				$response['status'] = $result->status;
 				// update cache
 				LP_Cache::set_quiz_status( $user->id . '-' . $course->id . '-' . $quiz_id, $result->status );
-				$response['html'] = learn_press_get_template_content( 'single-course/content-item-lp_quiz.php' );
+				$response['html'] = array(
+					'content'  => learn_press_get_template_content( 'single-course/content-item-lp_quiz.php' ),
+					'progress' => learn_press_get_template_content( 'single-course/progress.php' )
+				);
 			} else {
 				$response['result'] = 'error';
 			}

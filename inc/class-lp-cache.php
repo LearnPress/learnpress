@@ -379,9 +379,24 @@ class LP_Cache {
 	}
 
 	/**********************************************/
-	public static function flush() {
-		echo 'FLUSH';
-		wp_cache_flush();
+	public static function flush( $section = '' ) {
+		if ( func_num_args() > 1 ) {
+			foreach ( func_get_args() as $arg ) {
+				self::flush( $arg );
+			}
+			return;
+		}
+		if ( $section ) {
+			if ( is_string( $section ) ) {
+				wp_cache_set( $section, '', self::$_group );
+			} else {
+				foreach ( $section as $sec ) {
+					self::flush( $sec );
+				}
+			}
+		} else {
+			wp_cache_flush();
+		}
 	}
 
 	/**

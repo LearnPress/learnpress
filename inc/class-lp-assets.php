@@ -227,7 +227,7 @@ class LP_Assets {
 		$styles->add( 'learn-press-mb-order', $default_path . 'css/admin/meta-box-order' . $suffix . '.css' );
 
 		// frontend
-		$styles->add( 'learn-press', $default_path . 'css/learnpress.css' );
+		$styles->add( 'learn-press-style', $default_path . 'css/learnpress.css' );
 
 		//print_r( $styles );
 	}
@@ -590,25 +590,19 @@ class LP_Assets {
 		// global
 		self::enqueue_style( 'learn-press-icon' );
 		self::enqueue_style( 'learn-press-jalerts' );
-		//self::enqueue_style( 'learn-press-admin' );
+
 		// frontend
 		if ( LP()->settings->get( 'load_css' ) == 'yes' || LP()->settings->get( 'load_css' ) == '' ) {
-			self::enqueue_style( 'learn-press' );
+			self::enqueue_style( 'learn-press-style' );
 		}
-
 		self::enqueue_script( 'learn-press-jalerts' );
 		self::enqueue_script( 'learn-press-global' );
 		self::enqueue_script( 'learn-press-js' );
-		//self::enqueue_script( 'learn-press-course-lesson' );
 		if ( learn_press_is_course() ) {
 			self::enqueue_script( 'learn-press-single-course' );
 			self::enqueue_script( 'learn-press-course-quiz' );
 			self::enqueue_script( 'learn-press-enroll' );
 		}
-		/*if ( LP()->settings->get( 'ajax_add_to_cart' ) == 'yes' ) {
-			self::enqueue_script( 'learn-press-add-to-cart' );
-		}*/
-		//self::enqueue_script( 'learn-press-timer' );
 		if ( learn_press_is_checkout() ) {
 			self::enqueue_script( 'learn-press-checkout' );
 		}

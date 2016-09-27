@@ -615,7 +615,6 @@ abstract class LP_Abstract_Course {
 	 * @return array
 	 */
 	public function get_quizzes( $field = null ) {
-
 		$items   = $this->get_curriculum_items(
 			array(
 				'force' => false,

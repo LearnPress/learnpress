@@ -8,9 +8,21 @@
 ;(function ($) {
 
 	var Quiz = function (args) {
-		this.quiz = new Quiz.View({
-			model: new Quiz.Model(args)
+		this.model = new Quiz.Model(args);
+		this.view = new Quiz.View({
+			model: this.model
 		});
+		this.destroy = function () {
+			this.model.questions.forEach(function (m) {
+				try {
+					m.id = null;
+					m.destroy();
+				}catch (ex){
+					console.log(ex, m)
+				}
+			});
+			this.view.undelegateEvents();
+		}
 	}, Model_Question, List_Questions;
 
 	Quiz.Model_Question = Model_Question = Backbone.Model.extend({
@@ -145,6 +157,7 @@
 
 	Quiz.Model = Backbone.Model.extend({
 		_args                : null,
+		url: '',
 		questions            : null,
 		initialize           : function (args) {
 			_.bindAll(this, 'getQuizData');
@@ -236,31 +249,11 @@
 						success : function (response) {
 							var $html = $(response).contents().find('.learn-press-content-item-summary')
 							a.set('response', $html);
+							LP.Hook.doAction('learn_press_next_question', next.get('id'), that);
 							$.isFunction(c) && c(a, b);
 						}
 					})
 				})(next, that, callback);
-			}
-			return;
-			if (!this.isLast()) {
-				var next = this.findNext(),
-					that = this;
-				if (!next) {
-					return;
-				}
-				return;
-				question.submit({
-					data    : {
-						save_id        : that.get('question_id'),
-						question_answer: this.view.$('form').serializeJSON(),
-						time_remaining : that.get('time_remaining')
-					},
-					complete: function () {
-						that.set('question_id', next_id);
-						$.isFunction(callback) && callback.apply(that);
-						LP.Hook.doAction('learn_press_next_question', next_id, that);
-					}
-				});
 			}
 		}
 		,
@@ -281,30 +274,10 @@
 					success : function (response) {
 						var $html = $(response).contents().find('.learn-press-content-item-summary')
 						prev.set('response', $html);
+						LP.Hook.doAction('learn_press_previous_question', prev.get('id'), that);
 						$.isFunction(callback) && callback(prev, that);
 					}
 				})
-			}
-
-			return;
-			if (!this.isFirst()) {
-
-
-				return;
-				//if (!question.get('content')) {
-				question.submit({
-					data    : {
-						save_id        : that.get('question_id'),
-						question_answer: this.view.$('form').serializeJSON(),
-						time_remaining : that.get('time_remaining')
-					},
-					complete: function () {
-						that.set('question_id', prev_id);
-						$.isFunction(callback) && callback.apply(that);
-						LP.Hook.doAction('learn_press_previous_question', prev_id, that);
-					}
-				});
-
 			}
 		}
 		,
@@ -614,7 +587,7 @@
 	// DOM ready
 	LP.Hook.addAction('learn_press_course_initialize', function ($course) {
 		if (typeof Quiz_Params != 'undefined') {
-			window.$Quiz = new LP_Quiz($.extend({course: $course}, Quiz_Params));
+			window.quiz = new LP_Quiz($.extend({course: $course}, Quiz_Params));
 			$course.view.updateUrl();
 		}
 	});

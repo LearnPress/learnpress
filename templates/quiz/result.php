@@ -24,21 +24,6 @@ if ( !is_user_logged_in() ) {
 $history = $user->get_quiz_results( $quiz->id );
 ?>
 <div class="quiz-result">
-	<!--<h4 class="result-title"><?php _e( 'Your result', 'learnpress' ); ?></h4>
-	<div class="quiz-result-mark">
-		<div class="progress-circle">
-			<div class="background">
-				<div class="fill"></div>
-			</div>
-			<div class="inside">
-				<span class="quiz-mark">
-					<?php echo $history->mark; ?>
-					<small>/ <?php echo $quiz->get_mark(); ?></small>
-				</span>
-				<small><?php _e( 'point', 'learnpress' ); ?></small>
-			</div>
-		</div>
-	</div>-->
 	<h4><?php echo esc_html( sprintf( __( 'You have reached %d of %d points (%s)', 'learnpress' ), $history->mark, $quiz->get_mark(), round($history->mark_percent) . '%' ) ); ?></h4>
 	<?php
 	$fields = array(
