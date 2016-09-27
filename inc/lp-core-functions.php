@@ -317,6 +317,19 @@ function _learn_press_get_course_terms_parent_usort_callback( $a, $b ) {
 }
 
 function learn_press_get_post_by_name( $name, $single = true, $type = null ) {
+	$post_names = LP_Cache::get_post_names( false, array() );
+	$post       = false;
+	if ( $post_names && !empty( $post_names[$name] ) ) {
+		$post = get_post( $post_names[$name] );
+		if ( $post && $type && $type == $post->post_type ) {
+
+		} else {
+			$post = false;
+		}
+	}
+	if ( $post ) {
+		return $post;
+	}
 	global $wpdb;
 	static $posts = array();
 	if ( empty( $posts[$name] ) ) {
@@ -1531,6 +1544,7 @@ function learn_press_pre_get_posts( $q ) {
 				}
 			}
 		}
+
 		if ( $item_name && !$item_object ) {
 			learn_press_404_page();
 		} elseif ( $item_object && !$course->has( 'item', $item_object->id ) ) {
@@ -2362,16 +2376,16 @@ function learn_press_auto_enroll_user_to_courses( $order_id ) {
 		}
 //                error. this scripts will create new order each course item
 //		$return = $user->enroll( $course->id, $order_id );
-                $return = learn_press_update_user_item_field( array(
-                    'user_id'    => learn_press_get_current_user_id(),
-                    'item_id'    => $course->id,
-                    'start_time' => current_time( 'mysql' ),
-                    'status'     => 'enrolled',
-                    'end_time'   => '0000-00-00 00:00:00',
-                    'ref_id'     => $course->id,
-                    'item_type'  => 'lp_course',
-                    'ref_type'   => 'lp_order'
-                ) );
+		$return = learn_press_update_user_item_field( array(
+			'user_id'    => learn_press_get_current_user_id(),
+			'item_id'    => $course->id,
+			'start_time' => current_time( 'mysql' ),
+			'status'     => 'enrolled',
+			'end_time'   => '0000-00-00 00:00:00',
+			'ref_id'     => $course->id,
+			'item_type'  => 'lp_course',
+			'ref_type'   => 'lp_order'
+		) );
 	}
 	return $return;
 }
@@ -2583,6 +2597,7 @@ function learn_press_update_log( $version, $data ) {
 	}
 	update_option( 'learn_press_update_logs', $logs );
 }
+
 /*
 add_action( 'wp_default_scripts', 'learn_press_default_scripts' );
 add_action( 'wp_default_styles', 'learn_press_default_scripts' );

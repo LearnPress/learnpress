@@ -203,7 +203,6 @@ class LP_Abstract_Question {
 			$answers = !empty( $question_post->answers ) ? $question_post->answers : array();
 		}
 
-
 		/*	if ( !empty( $GLOBALS['learnpress_question_answers'][$this->id] ) ) {
 				if ( array_key_exists( $this->id, $GLOBALS['learnpress_question_answers'] ) ) {
 					$answers = $GLOBALS['learnpress_question_answers'][$this->id];

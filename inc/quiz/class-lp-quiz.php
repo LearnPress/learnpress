@@ -55,17 +55,25 @@ class LP_Quiz {
 		}
 		if ( is_numeric( $quiz ) ) {
 			$this->id   = absint( $quiz );
-			$this->post = get_post( $this->id );
 		} elseif ( $quiz instanceof LP_Quiz ) {
-			$this->id   = absint( $quiz->id );
-			$this->post = $quiz->post;
+			$this->id = absint( $quiz->id );
+			//$this->post =  $quiz->post;
 		} elseif ( isset( $quiz->ID ) ) {
-			$this->id   = absint( $quiz->ID );
-			$this->post = $quiz;
+			$this->id = absint( $quiz->ID );
+			//$this->post = $quiz;
 		}
+
+		_learn_press_get_quiz_questions( $this->id );
+		$this->post = get_post( $this->id );
+
+
 		if ( empty( self::$_meta[$this->id] ) ) {
 			self::$_meta[$this->id] = array();
 		}
+		if ( !empty( $this->post->mark ) ) {
+			$this->_mark = $this->post->mark;
+		}
+
 		//$this->course = LP_Course::get_course( $this->_lpr_course );
 		$this->_init();
 	}
@@ -426,6 +434,16 @@ class LP_Quiz {
 	 * @return array|mixed
 	 */
 	public function get_questions( $force = false ) {
+		$post      = get_post( $this->id );
+		$questions = array();
+		if ( !empty( $post->questions ) ) {
+			$ids = maybe_unserialize( $post->questions );
+			foreach ( $ids as $k => $v ) {
+				$questions[$v] = get_post( $v );
+			}
+		}
+		return $questions;
+
 		$questions = LP_Cache::get_quiz_questions( false, array() );
 
 		/**
@@ -437,6 +455,7 @@ class LP_Quiz {
 			// Update back to cache
 			LP_Cache::set_quiz_questions( $questions );
 		}
+		print_r( $questions[$this->id] );
 		return apply_filters( 'learn_press_quiz_questions', $questions[$this->id], $this->id, $force );
 	}
 

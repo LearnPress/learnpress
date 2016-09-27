@@ -372,13 +372,12 @@ if ( !function_exists( 'learn_press_single_course_content_item' ) ) {
 	}
 }
 
-if (!function_exists('learn_press_course_students_list')) {
+if ( !function_exists( 'learn_press_course_students_list' ) ) {
 	/**
 	 * Display list of students enrolled to the course
 	 */
-	function learn_press_course_students_list()
-	{
-		learn_press_get_template('single-course/students-list.php');
+	function learn_press_course_students_list() {
+		learn_press_get_template( 'single-course/students-list.php' );
 	}
 }
 
@@ -1479,7 +1478,6 @@ if ( !function_exists( 'learn_press_course_remaining_time' ) ) {
 
 add_filter( 'template_include', 'learn_press_permission_view_quiz', 100 );
 function learn_press_permission_view_quiz( $template ) {
-
 	$quiz = LP()->global['course-item'];
 	// if is not in single quiz
 	if ( !learn_press_is_quiz() ) {
@@ -1487,7 +1485,7 @@ function learn_press_permission_view_quiz( $template ) {
 	}
 	$user = learn_press_get_current_user();
 	// If user haven't got permission
-	if ( !current_user_can( 'edit-lp_quiz' ) && !$user->can( 'view-quiz', get_the_ID() ) ) { // $quiz - id
+	if ( !current_user_can( 'edit-lp_quiz' ) && !$user->can( 'view-quiz', $quiz->id ) ) {
 		switch ( LP()->settings->get( 'quiz_restrict_access' ) ) {
 			case 'custom':
 				$template = learn_press_locate_template( 'global/restrict-access.php' );

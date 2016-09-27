@@ -488,16 +488,6 @@ class LP_Abstract_User {
 	 */
 	public function retake_quiz( $quiz_id, $course_id ) {
 		$response = false;
-		/*if ( !$this->can( 'retake-quiz', $quiz_id ) ) {
-			$response['message'] = __( 'Sorry! You can not retake this quiz', 'learnpress' );
-			$response['result']  = 'fail';
-		} else {
-			$data = $this->_create_quiz_history( $quiz_id );
-
-			$response['result']   = 'success';
-			$response['redirect'] = get_the_permalink( $quiz_id );
-			$response['data']     = $data;
-		}*/
 		$return = learn_press_update_user_item_field(
 			array(
 				'user_id'    => learn_press_get_current_user_id(),
@@ -518,7 +508,6 @@ class LP_Abstract_User {
 			} else {
 				$question = 0;
 			}
-			//var_dump( $questions, $question );
 			// Update user quiz meta data
 			learn_press_update_user_item_meta( $return, '_quiz_questions', $questions );
 			learn_press_update_user_item_meta( $return, '_quiz_question', $question );
@@ -756,10 +745,12 @@ class LP_Abstract_User {
 		} else {
 			$quizzes = array();
 		}
+		$key = $this->id . '-' . $course_id . '-' . $quiz_id;
 
-		$key    = $this->id . '-' . $course_id . '-' . $quiz_id;
+
 		$cached = LP_Cache::get_quiz_history( false, array() );// wp_cache_get( 'user-quiz-history', 'learnpress' );
-		if ( ( !array_key_exists( $key, $cached ) || $force ) && $quiz_id && is_array( $quizzes ) && in_array( $quiz_id, $quizzes ) ) {
+
+		if ( ( !array_key_exists( $key, $cached ) || $force ) && $quiz_id && in_array( $quiz_id, $quizzes ) ) {
 			global $wpdb;
 			$t1             = $wpdb->prefix . 'learnpress_user_items'; //{$wpdb->learnpress_user_quizzes}
 			$t2             = $wpdb->prefix . 'learnpress_user_itemmeta'; //{$wpdb->learnpress_user_quizzes}
@@ -768,8 +759,7 @@ class LP_Abstract_User {
 				array( 'lp_quiz', $this->id, $course_id ),
 				$quizzes
 			);
-
-			$query = $wpdb->prepare( "
+			$query          = $wpdb->prepare( "
 				SELECT *
 				FROM $t1 uq
 				WHERE uq.item_type = %s
@@ -828,7 +818,6 @@ class LP_Abstract_User {
 						$history[$this->id . '-' . $course_id . '-' . $v->item_id][$v->user_item_id]->{$obj_key} = maybe_unserialize( $v->meta_value );
 					}
 				}
-
 				/*
 				foreach ( $history[$key] as $id => $progress ) {
 					$history[$key][$id]->results = $this->evaluate_quiz_results( $quiz_id, $progress );
@@ -848,6 +837,7 @@ class LP_Abstract_User {
 			}
 			LP_Cache::set_quiz_history( $cached );
 		}
+
 
 		/*if ( $history_id ) {
 			return apply_filters( 'learn_press_user_quiz_history', isset( $history[$key][$history_id] ) ? $history[$key][$history_id] : false, $this, $quiz_id );
@@ -1144,11 +1134,13 @@ class LP_Abstract_User {
 		} else {
 			// else, find the course of this lesson
 			if ( !$course_id ) {
-				$course_id = LP_Course::get_course_by_item( $lesson_id );
+				$course_id = get_the_ID();// LP_Course::get_course_by_item( $lesson_id );
 			}
 			if ( $course = LP_Course::get_course( $course_id ) ) {
 				// if course is not required enroll so the lesson is previewable
-				if ( !$course->is( 'required_enroll' ) ) {
+				if( $this->is_admin() || ( $this->is_instructor()&& $course->post->post_author == $this->user->ID ) ) {
+					$view = 'preview';
+				} elseif ( !$course->is( 'required_enroll' ) ) {
 					$view = 'no-required-enroll';
 				} elseif ( $this->has( 'enrolled-course', $course_id ) || $this->has( 'finished-course', $course_id ) ) {
 					// or user has enrolled course
@@ -1194,7 +1186,6 @@ class LP_Abstract_User {
 				}
 			}
 		}
-
 		return apply_filters( 'learn_press_user_view_quiz', $view, $quiz_id, $this->id, $course_id );
 	}
 
@@ -1358,8 +1349,15 @@ class LP_Abstract_User {
 
 		//static $enrolled_courses = array();
 
-		$enrolled_courses = LP_Cache::get_enrolled_courses( false, array() );
-		$key              = sprintf( '%d-%d', $this->id, $course_id );
+		//$enrolled_courses = LP_Cache::get_enrolled_courses( false, array() );
+		$item_statuses = LP_Cache::get_item_statuses( false, array() );
+		$key           = sprintf( '%d-%d-%d', $this->id, $course_id, $course_id );
+		$enrolled      = false;
+		if ( !empty( $item_statuses[$key] ) && $item_statuses[$key] != '' ) {
+			$enrolled = true;
+		}
+		return apply_filters( 'learn_press_user_has_enrolled_course', $enrolled, $this, $course_id );
+		$key = sprintf( '%d-%d', $this->id, $course_id );
 
 		if ( empty( $enrolled_courses[$key] ) || $force ) {
 			//$info = $this->get_course_info( $course_id );
@@ -1387,6 +1385,15 @@ class LP_Abstract_User {
 	 * @return bool
 	 */
 	public function has_finished_course( $course_id, $force = false ) {
+		$item_statuses = LP_Cache::get_item_statuses( false, array() );
+		$key           = sprintf( '%d-%d-%d', $this->id, $course_id, $course_id );
+		$enrolled      = false;
+		if ( !empty( $item_statuses[$key] ) ) {
+			$enrolled = $item_statuses[$key];
+		}
+		return apply_filters( 'learn_press_user_has_finished_course', $enrolled == 'finished', $this, $course_id );
+
+
 		//static $courses = array();
 		$finished_courses = LP_Cache::get_finished_courses( false, array() );
 		if ( empty( $finished_courses[$course_id] ) || $force ) {
@@ -1502,6 +1509,13 @@ class LP_Abstract_User {
 		}
 
 		global $wpdb;
+
+		$count   = 0;
+		$history = $this->get_quiz_history( $quiz_id, $course_id );
+		if ( $history ) {
+			$count = sizeof( $history ) - 1;
+		}
+		return apply_filters( 'learn_press_user_count_retaken_quiz', $count, $quiz_id, $course_id, $this->id );
 
 		// Get data from cache
 		$cached = (array) wp_cache_get( 'user-count-retaken-quiz', 'learnpress' );
@@ -1663,7 +1677,7 @@ class LP_Abstract_User {
 		global $wpdb;
 		do_action( 'learn_press_before_user_complete_lesson', $lesson_id, $this );
 		if ( !$course_id ) {
-			$course_id = LP_Course::get_course_by_item( $lesson_id );
+			$course_id = get_the_ID();// LP_Course::get_course_by_item( $lesson_id );
 		}
 		$result = false;
 
@@ -2010,7 +2024,7 @@ class LP_Abstract_User {
 			", '_user_id', $this->id, '_course_id', $course_id );
 
 			$order_id = $wpdb->get_var( $query );
-			$this->_parse_item_order_of_course( $course_id );
+			//$this->_parse_item_order_of_course( $course_id );
 			$orders[$key] = $order_id;
 		} else {
 			$order_id = $orders[$key];

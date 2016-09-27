@@ -37,9 +37,9 @@ class LP_Settings {
 		if ( $options = $wpdb->get_results( $query ) ) {
 			foreach ( $options as $option ) {
 				$this->_options[$option->option_name] = maybe_unserialize( $option->option_value );
+				wp_cache_add( $option->option_name, $this->_options[$option->option_name], 'options' );
 			}
 		}
-
 	}
 
 	/**
@@ -82,6 +82,13 @@ class LP_Settings {
 		if ( strpos( $var, 'learn_press_' ) === false ) {
 			$var = 'learn_press_' . $var;
 		}
+		$segs = explode( '.', $var );
+
+		if ( !array_key_exists( $segs[0], $this->_options ) ) {
+
+			//$this->_options[$segs[0]] = get_option( $segs[0] );
+		}
+
 		$return = $this->_get_option( $this->_options, $var, $default );
 		if ( $return == '' || is_null( $return ) ) {
 			$return = $default;

@@ -366,8 +366,21 @@ class LP_Cache {
 		return self::_get_cache( 'quiz-params', $key, $def );
 	}
 
+	public static function set_post_names( $key_or_value, $value = false ) {
+		if ( func_num_args() == 1 ) {
+			wp_cache_set( 'post-names', $key_or_value, self::$_group );
+			return $key_or_value;
+		}
+		return self::_set_cache( 'post-names', $key_or_value, $value );
+	}
+
+	public static function get_post_names( $key = false, $def = false ) {
+		return self::_get_cache( 'post-names', $key, $def );
+	}
+
 	/**********************************************/
 	public static function flush() {
+		echo 'FLUSH';
 		wp_cache_flush();
 	}
 

@@ -10,13 +10,15 @@ $quiz   = isset( $item ) ? $item : LP()->global['course-item'];
 if ( !$quiz ) {
 	return;
 }
+$have_questions = $quiz->get_questions();
+
 ?>
 <div id="content-item-<?php echo $quiz->id; ?>">
 	<div class="learn-press-content-item-title content-item-quiz-title">
 		<?php if ( false !== ( $item_quiz_title = apply_filters( 'learn_press_item_quiz_title', $quiz->title ) ) ): ?>
 			<h4><?php echo $item_quiz_title; ?></h4>
 		<?php endif; ?>
-		<?php learn_press_get_template( 'quiz/countdown-simple.php' ); ?>
+		<?php $have_questions && learn_press_get_template( 'quiz/countdown-simple.php' ); ?>
 	</div>
 	<div id="quiz-<?php echo $quiz->id; ?>" <?php learn_press_quiz_class( 'learn-press-content-item-summary' ); ?>>
 		<?php if ( $user->has_quiz_status( array( 'completed' ), $quiz->id, $course->id ) ): ?>
@@ -24,9 +26,9 @@ if ( !$quiz ) {
 			<?php learn_press_get_template( 'quiz/result.php' ); ?>
 
 		<?php elseif ( $user->has( 'quiz-status', 'started', $quiz->id, $course->id ) ): ?>
-
-			<?php learn_press_get_template( 'quiz/question-content.php' ); ?>
-			<?php //learn_press_get_template( 'quiz/countdown.php' ); ?>
+			<?php if ( $have_questions ): ?>
+				<?php learn_press_get_template( 'quiz/question-content.php' ); ?>
+			<?php endif;//learn_press_get_template( 'quiz/countdown.php' ); ?>
 
 		<?php else: ?>
 
@@ -34,9 +36,13 @@ if ( !$quiz ) {
 			<?php learn_press_get_template( 'quiz/intro.php' ); ?>
 
 		<?php endif; ?>
-		<?php learn_press_get_template( 'quiz/buttons.php' ); ?>
-		<?php learn_press_get_template( 'quiz/questions.php' ); ?>
 
+		<?php if ( $have_questions ) { ?>
+			<?php learn_press_get_template( 'quiz/buttons.php' ); ?>
+			<?php learn_press_get_template( 'quiz/questions.php' ); ?>
+		<?php } else { ?>
+			<?php learn_press_display_message( __( 'No questions', 'learnpress' ) ); ?>
+		<?php } ?>
 	</div>
 </div>
 <script>
