@@ -35,6 +35,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			add_action( 'edit_form_after_editor', array( $this, 'toggle_editor_button' ), - 10 );
 			add_action( 'load-post.php', array( $this, 'post_actions' ) );
 			add_action( 'init', array( $this, 'register_taxonomy' ) );
+			add_action( 'init', array( $this, 'init_course' ) );
 
 			// filter
 			add_filter( "rwmb__lpr_course_price_html", array( $this, 'currency_symbol' ), 5, 3 );
@@ -43,6 +44,10 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 				add_action( 'admin_enqueue_scripts', array( $this, 'admin_script' ) );
 				add_action( 'admin_print_scripts', array( $this, 'course_editor' ) );
 			}
+		}
+
+		public function init_course(){
+
 		}
 
 		public function register_taxonomy() {

@@ -390,14 +390,11 @@ if (typeof LearnPress == 'undefined') {
 				course_id: this.model.get('id'),
 				callback : function (response, item) {
 					that.currentItem.set('content', response.html);
+					that.$('.course-item-'+that.currentItem.get('id'))
+						.removeClass('item-completed');
 					if (typeof Quiz_Params) {
 						window.Quiz = new LP_Quiz(Quiz_Params);
 					}
-					/*window.Quiz = new LP_Quiz({
-					 totalTime: 7200,
-					 userTime : 0,
-					 questions: [{name: 'xxxx'}]
-					 });*/
 				}
 			});
 		},

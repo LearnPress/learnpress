@@ -16,7 +16,9 @@ class LP_Query {
 		//add_action( 'wp', array( $this, 'parse_query_vars_to_request' ) );
 		add_action( 'init', array( $this, 'add_rewrite_tags' ), 1000, 0 );
 		add_action( 'init', array( $this, 'add_rewrite_rules' ), 1000, 0 );
-		add_filter( 'parse_request', array( $this, 'parse_request' ), 1000, 1 );
+
+		add_action( 'parse_query', array( $this, 'parse_request' ), 1000, 1 );
+		//add_filter( 'parse_request', array( $this, 'parse_request' ), 1000, 1 );
 	}
 
 	/**
@@ -27,6 +29,9 @@ class LP_Query {
 	 * @return mixed
 	 */
 	public function parse_request( $q ) {
+		if ( did_action( 'learn_press_parse_query' ) ) {
+			return $q;
+		}
 		$user    = learn_press_get_current_user();
 		$request = $this->get_request();
 		if ( !$request || is_admin() ) {
@@ -45,10 +50,11 @@ class LP_Query {
 			$request_match = $req_uri . '/' . $request;*/
 
 		$request_match = $request;
+		$course_id     = 0;
 		if ( !empty( $q->query_vars['post_type'] ) && $q->query_vars['post_type'] == LP_COURSE_CPT ) {
 			if ( !empty( $q->query_vars[LP_COURSE_CPT] ) ) {
 				$this->query_vars['course'] = $q->query_vars[LP_COURSE_CPT];
-				learn_press_setup_course_data( $this->query_vars['course'] );
+				$course_id                  = learn_press_setup_course_data( $this->query_vars['course'] );
 			}
 			if ( !empty( $q->query_vars['quiz'] ) ) {
 				$this->query_vars['quiz']      = $q->query_vars['quiz'];
@@ -70,33 +76,41 @@ class LP_Query {
 				// If request URI does not contains a question
 				// Try to get current question of current user and put it into URI
 				if ( empty( $matches[4] ) ) {
-					if ( $question_id = $user->get_current_quiz_question( $post->ID, 37 ) ) {
+					if ( $user->has_quiz_status( 'started', $post->ID, $course_id ) && $question_id = $user->get_current_quiz_question( $post->ID, $course_id ) ) {
 						$this->query_vars['question'] = $q->query_vars['question'] = get_post_field( 'post_name', $question_id );
 					}
 				} else {
 					// If user is viewing a question then update current question for user
 					$question = learn_press_get_post_by_name( $matches[4], 'lp_question' );
-					$course   = learn_press_get_post_by_name( $q->query_vars['lp_course'], 'lp_course' );
+					//$course   = learn_press_get_post_by_name( $q->query_vars['lp_course'], 'lp_course' );
 
 					/**
 					 * If user has completed a quiz but they are accessing to a question inside quiz,
 					 * redirect them back to quiz to show results of that quiz instead
 					 */
-					if ( $user->has_quiz_status( 'completed', $post->ID, $course->ID ) ) {
+					if ( $user->has_quiz_status( 'completed', $post->ID, $course_id ) ) {
 						//remove question name from uri
 						$redirect = get_site_url() . '/' . dirname( $request_match );
 						wp_redirect( $redirect );
 						exit();
 					}
 					if ( $question ) {
-						$progress = $user->get_quiz_progress( $post->ID, $course->ID );
-						learn_press_update_user_item_meta( $progress->history_id, '_quiz_question', $question->ID );
-						LP_Cache::flush();
+						global $wpdb;
+						$query = $wpdb->prepare( "
+							SELECT MAX(user_item_id)
+							FROM {$wpdb->prefix}learnpress_user_items
+							WHERE user_id = %d AND item_id = %d AND item_type = %s and status <> %s
+						", learn_press_get_current_user_id(), $post->ID, 'lp_quiz', 'completed' );
+						if ( $history_id = $wpdb->get_var( $query ) ) {
+							learn_press_update_user_item_meta( $history_id, '_quiz_question', $question->ID );
+						}
+						//LP_Cache::flush();
 					}
 				}
 			}
 		}
 		do_action_ref_array( 'learn_press_parse_query', array( &$this ) );
+		learn_press_setup_user_course_data( get_current_user_id(), $course_id );
 		return $q;
 	}
 
