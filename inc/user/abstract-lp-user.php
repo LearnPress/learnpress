@@ -1138,7 +1138,9 @@ class LP_Abstract_User {
 			}
 			if ( $course = LP_Course::get_course( $course_id ) ) {
 				// if course is not required enroll so the lesson is previewable
-				if ( !$course->is( 'required_enroll' ) ) {
+				if( $this->is_admin() || ( $this->is_instructor()&& $course->post->post_author == $this->user->ID ) ) {
+					$view = 'preview';
+				} elseif ( !$course->is( 'required_enroll' ) ) {
 					$view = 'no-required-enroll';
 				} elseif ( $this->has( 'enrolled-course', $course_id ) || $this->has( 'finished-course', $course_id ) ) {
 					// or user has enrolled course

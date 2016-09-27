@@ -309,6 +309,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			$item_id   = learn_press_get_request( 'id' );
 			$course_id = get_the_ID();
 			// Ensure that user can view course item
+			$can_view_item = $user->can( 'view-item', $item_id, $course_id );
 			if ( $user->can( 'view-item', $item_id, $course_id ) ) {
 				// Update user item if it's not updated
 				if ( !$user->get_item_status( $item_id ) ) {
@@ -316,7 +317,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 					if ( !$item_type ) {
 						$item_type = get_post_type( $item_id );
 					}
-					if ( apply_filters( 'learn_press_insert_user_item_data', true, $item_id, $course_id ) ) {
+					if ( apply_filters( 'learn_press_insert_user_item_data', true, $item_id, $course_id ) && $can_view_item!='preview' ) {
 						$wpdb->insert(
 							$wpdb->prefix . 'learnpress_user_items',
 							apply_filters(
