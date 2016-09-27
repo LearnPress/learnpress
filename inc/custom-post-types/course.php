@@ -992,7 +992,8 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 					break;
 				case 'price':
 					$price = get_post_meta( $post->ID, '_lp_price', true );
-					if ( $price ) {
+                                        $is_paid = get_post_meta( $post->ID, '_lp_payment', true );
+					if ( $is_paid === 'yes' && $price ) {
 						echo sprintf( '<a href="%s">%s</a>', add_query_arg( 'filter_price', $price ), learn_press_format_price( get_post_meta( $post->ID, '_lp_price', true ), true ) );
 					} else {
 						echo sprintf( '<a href="%s">%s</a>', add_query_arg( 'filter_price', 0 ), __( 'Free', 'learnpress' ) );

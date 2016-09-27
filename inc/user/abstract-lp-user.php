@@ -1178,7 +1178,9 @@ class LP_Abstract_User {
 
 		if ( $course ) {
 			$this->get_course_order( $course->id );
-			if ( !$course->is( 'required_enroll' ) ) {
+			if( $this->is_admin() || ( $this->is_instructor()&& $course->post->post_author == $this->user->ID ) ) {
+					$view = 'preview';
+			} elseif ( !$course->is( 'required_enroll' ) ) {
 				$view = 'no-required-enroll';
 			} else {
 				if ( $this->has( 'enrolled-course', $course->id ) || $this->has( 'finished-course', $course_id ) ) {
