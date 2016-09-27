@@ -1479,6 +1479,7 @@ if ( !function_exists( 'learn_press_course_remaining_time' ) ) {
 
 add_filter( 'template_include', 'learn_press_permission_view_quiz', 100 );
 function learn_press_permission_view_quiz( $template ) {
+
 	$quiz = LP()->global['course-item'];
 	// if is not in single quiz
 	if ( !learn_press_is_quiz() ) {
