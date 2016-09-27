@@ -380,8 +380,7 @@ function learn_press_quiz_permalink( $permalink, $post) {
     if ( $post->post_type !== 'lp_quiz' ) {
         return $permalink;
     }
-//    var_dump(get_post_type_object( 'lp_quiz' )); die();
-    $quiz = LP_Quiz::get_quiz( $post->ID );
+
     $course_id = learn_press_get_quiz_course_id( $post->ID );
     if ( $course_id ) {
         $permalink = learn_press_get_course_item_url( $course_id, $post->ID );
