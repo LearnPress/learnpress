@@ -1106,6 +1106,9 @@ class LP_Abstract_User {
 
 	public function can_view_item( $item_id, $course_id = 0 ) {
 		$return = false;
+		if ( !$course_id ) {
+			$course_id = get_the_ID();
+		}
 		switch ( get_post_type( $item_id ) ) {
 			case LP_QUIZ_CPT:
 				$return = $this->can( 'view-quiz', $item_id, $course_id );
@@ -1126,25 +1129,22 @@ class LP_Abstract_User {
 	 * @return bool
 	 */
 	public function can_view_lesson( $lesson_id, $course_id = 0 ) {
-		$lesson = LP_Lesson::get_lesson( $lesson_id );
-		$view   = false;
-		// first, check if the lesson is previewable
-		if ( $lesson->is( 'previewable' ) ) {
-			$view = 'preview';
-		}
+		$view = false;
 		// else, find the course of this lesson
 		if ( !$course_id ) {
 			$course_id = get_the_ID();// LP_Course::get_course_by_item( $lesson_id );
 		}
+		$lesson = LP_Lesson::get_lesson( $lesson_id );
 		if ( $course = LP_Course::get_course( $course_id ) ) {
+
 			if ( $this->has( 'enrolled-course', $course_id ) || $this->has( 'finished-course', $course_id ) ) {
 				// or user has enrolled course
 				$view = 'enrolled';
+			} elseif ( $lesson->is( 'previewable' ) || $this->is_admin() || ( $this->is_instructor() && $course->post->post_author == $this->user->ID ) ) {
+				$view = 'preview';
 			} elseif ( !$course->is( 'required_enroll' ) ) {
 				// if course is not required enroll so the lesson is previewable
 				$view = 'no-required-enroll';
-			} elseif ( $this->is_admin() || ( $this->is_instructor() && $course->post->post_author == $this->user->ID ) ) {
-				$view = 'preview';
 			}
 		}
 		return apply_filters( 'learn_press_user_view_lesson', $view, $lesson_id, $this->id, $course_id );
@@ -1168,22 +1168,13 @@ class LP_Abstract_User {
 			$course = LP_Course::get_course( $course_id );
 		}
 
-		if ( $quiz = LP_Quiz::get_quiz( $quiz_id ) ) {
-			if ( !$course ) {
-				$course = $quiz->get_course();
-			}
-		}
-
 		if ( $course ) {
-			$this->get_course_order( $course->id );
-			if ( $this->is_admin() || ( $this->is_instructor() && $course->post->post_author == $this->user->ID ) ) {
+			if ( $this->has( 'enrolled-course', $course_id ) || $this->has( 'finished-course', $course_id ) ) {
+				$view = 'enrolled';
+			} elseif ( $this->is_admin() || ( $this->is_instructor() && $course->post->post_author == $this->user->ID ) ) {
 				$view = 'preview';
 			} elseif ( !$course->is( 'required_enroll' ) ) {
 				$view = 'no-required-enroll';
-			} else {
-				if ( $this->has( 'enrolled-course', $course->id ) || $this->has( 'finished-course', $course_id ) ) {
-					$view = 'enrolled';
-				}
 			}
 		}
 		return apply_filters( 'learn_press_user_view_quiz', $view, $quiz_id, $this->id, $course_id );
@@ -1271,7 +1262,7 @@ class LP_Abstract_User {
 
 	public function get_incomplete_items( $course_id ) {
 		global $wpdb;
-		$query = $wpdb->prepare( "
+		$query    = $wpdb->prepare( "
 			SELECT user_item_id
 			FROM {$wpdb->learnpress_user_items}
 			WHERE user_id = %d
@@ -1289,7 +1280,7 @@ class LP_Abstract_User {
 			if ( !$this->can( 'finish-course', $course_id ) && 1 == 0 ) {
 				return false;
 			} else {
-				$updated = $wpdb->update(
+				$updated   = $wpdb->update(
 					$wpdb->prefix . 'learnpress_user_items',
 					array(
 						'end_time' => current_time( 'mysql' ),
@@ -1367,6 +1358,13 @@ class LP_Abstract_User {
 		}
 	}
 
+	public function get_orders() {
+		_learn_press_get_user_course_orders( $this->id );
+		$orders = LP_Cache::get_user_course_order( false, array() );
+		return !empty( $orders[$this->id] ) ? $orders[$this->id] : false;
+	}
+
+
 	/**
 	 * Return true if user has already enrolled course
 	 *
@@ -1376,15 +1374,13 @@ class LP_Abstract_User {
 	 * @return bool
 	 */
 	public function has_enrolled_course( $course_id, $force = false ) {
-
-		//static $enrolled_courses = array();
-
-		//$enrolled_courses = LP_Cache::get_enrolled_courses( false, array() );
-		$item_statuses = LP_Cache::get_item_statuses( false, array() );
-		$key           = sprintf( '%d-%d-%d', $this->id, $course_id, $course_id );
-		$enrolled      = false;
-		if ( !empty( $item_statuses[$key] ) && $item_statuses[$key] != '' ) {
-			$enrolled = true;
+		if ( $enrolled = $this->has_purchased_course( $course_id ) ) {
+			$item_statuses = LP_Cache::get_item_statuses( false, array() );
+			$key           = sprintf( '%d-%d-%d', $this->id, $course_id, $course_id );
+			$enrolled      = false;
+			if ( !empty( $item_statuses[$key] ) && $item_statuses[$key] != '' ) {
+				$enrolled = true;
+			}
 		}
 		return apply_filters( 'learn_press_user_has_enrolled_course', $enrolled, $this, $course_id );
 		$key = sprintf( '%d-%d', $this->id, $course_id );
@@ -1709,7 +1705,7 @@ class LP_Abstract_User {
 		if ( !$course_id ) {
 			$course_id = get_the_ID();// LP_Course::get_course_by_item( $lesson_id );
 		}
-		if($this->can_view_lesson( $lesson_id, $course_id )=='preview'){
+		if ( $this->can_view_lesson( $lesson_id, $course_id ) == 'preview' ) {
 			return false;
 		}
 		$result = false;
@@ -1975,12 +1971,30 @@ class LP_Abstract_User {
 	 * @return bool
 	 */
 	public function has_purchased_course( $course_id ) {
+		/*$purchased = false;
+		$orders    = $this->get_orders();
+		$order     = !empty( $orders[$course_id] ) ? $orders[$course_id] : false;
+		if ( $order ) {
+			$purchased = $order->post_status = 'lp-completed';
+		}*/
+		return apply_filters( 'learn_press_user_has_bought_course', $this->get_order_status( $course_id ) == 'lp-completed', $course_id, $this->id );
+
 		$purchased = false;
 		$order     = $this->get_course_order( $course_id, 'object' );
 		if ( $order && $order->has_status( array( 'processing', 'completed' ) ) ) {
 			$purchased = $order->id;
 		}
 		return apply_filters( 'learn_press_user_has_purchased_course', $purchased, $course_id, $this->id, $order ? $order->id : 0 );
+	}
+
+	public function has_ordered_course( $course_id ) {
+		return apply_filters( 'learn_press_user_has_ordered_course', !!$this->get_order_status( $course_id ), $course_id, $this->id );
+	}
+
+	public function get_order_status( $course_id ) {
+		$orders = $this->get_orders();
+		$order  = !empty( $orders[$course_id] ) ? $orders[$course_id] : false;
+		return apply_filters( 'learn_press_user_has_ordered_course', $order ? $order->post_status : false, $course_id, $this->id );
 	}
 
 	public function has_completed_item( $item, $course_id = 0, $force = false ) {
@@ -2279,7 +2293,7 @@ class LP_Abstract_User {
 		return $courses[$key]['rows'];
 	}
 
-	public function get_orders() {
+	public function _get_orders() {
 		global $wpdb;
 		$query  = $wpdb->prepare( "
 			SELECT o.*

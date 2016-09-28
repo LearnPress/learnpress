@@ -20,9 +20,15 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 		 */
 		public function __construct( $post_type, $args = '' ) {
 			add_action( 'admin_head', array( $this, 'init' ) );
-
+			add_action( 'init', array( $this, 'init_question' ) );
 			parent::__construct( $post_type, $args );
 
+		}
+
+		public function init_question() {
+			if ( !empty( $_REQUEST['post'] ) && get_post_type( $_REQUEST['post'] ) == LP_QUESTION_CPT ) {
+				$q = _learn_press_setup_question( array( $_REQUEST['post'] ) );
+			}
 		}
 
 		public function init() {

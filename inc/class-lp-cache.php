@@ -378,6 +378,18 @@ class LP_Cache {
 		return self::_get_cache( 'post-names', $key, $def );
 	}
 
+	public static function set_user_course_order( $key_or_value, $value = false ) {
+		if ( func_num_args() == 1 ) {
+			wp_cache_set( 'user-course-order', $key_or_value, self::$_group );
+			return $key_or_value;
+		}
+		return self::_set_cache( 'post-names', $key_or_value, $value );
+	}
+
+	public static function get_user_course_order( $key = false, $def = false ) {
+		return self::_get_cache( 'user-course-order', $key, $def );
+	}
+
 	/**********************************************/
 	public static function flush( $section = '' ) {
 		if ( func_num_args() > 1 ) {

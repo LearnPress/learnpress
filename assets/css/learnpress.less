@@ -179,7 +179,7 @@
 }
 
 .hide-if-js {
-    display: none;
+    display: none !important;
 }
 
 /* Archive courses */
@@ -702,6 +702,8 @@ body.course-has-popup {
             height: 50px;
             background: #F5F5F5;
             border-top: 1px solid #DDD;
+            line-height: 47px;
+            padding: 0 20px;
             .footer-control {
                 display: block;
                 height: 50px;
@@ -714,6 +716,9 @@ body.course-has-popup {
                 &.next-item {
                     float: right;
                 }
+            }
+            .button-finish-course{
+                float: right;
             }
         }
     }
@@ -1101,6 +1106,7 @@ body.block-content {
     &:before {
         content: "\f223";
     }
+    line-height: 1;
 }
 
 .learn-press-tooltip-bubble {

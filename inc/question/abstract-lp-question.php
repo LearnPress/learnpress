@@ -200,7 +200,7 @@ class LP_Abstract_Question {
 		 */
 
 		if ( $question_post = get_post( $this->id ) ) {
-			$answers = !empty( $question_post->answers ) ? $question_post->answers : array();
+			$answers = !empty( $question_post->answers ) ? maybe_unserialize( $question_post->answers ) : array();
 		}
 
 		/*	if ( !empty( $GLOBALS['learnpress_question_answers'][$this->id] ) ) {

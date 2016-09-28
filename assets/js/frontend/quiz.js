@@ -91,7 +91,6 @@
 					if ($content) {
 						$content.find('.learn-press-question-options').replaceWith($(response).filter('.learn-press-question-options'));
 					}
-					console.log($content)
 					that.set({checked: 'yes', response: $content});
 					$.isFunction(args.complete) && args.complete.call(that, response)
 				}
@@ -125,8 +124,18 @@
 			this.on('add', function (model) {
 				this.listenTo(model, 'change', this.onChange);
 				this.listenTo(model, 'change:hasShowedHint', this.onChangedHint);
+				this.listenTo(model, 'change:checked', function(a){
+					if(a.changed['checked'] && a.changed['checked'] == 'yes'){
+						var $dom = a.get('response');
+						if($dom) $dom.find('.button-check-answer').attr('disabled', true);
+					}
+				}, this);
 				model.set('index', this.len++);
-			}, this)
+			}, this);
+			this.on('change:view', function () {
+				this.questions.view = this.get('view')
+			});
+
 		},
 		onChangedHint: function (a, b) {
 

@@ -252,14 +252,19 @@ function learn_press_setup_user_course_data( $user_id, $course_id ) {
 		_doing_it_wrong( __FUNCTION__, __( '' ), LEARNPRESS_VERSION );
 		return;
 	}
+
+	/**
+	 * Get user orders
+	 */
+	_learn_press_get_user_course_orders();
+
 	global $wpdb;
 	$course   = get_post( $course_id );
 	$item_ids = !empty( $course->curriculum_items ) ? $course->curriculum_items : array();
-	if ( !$item_ids ) {
-		return;
-	}
-	$in    = implode( ', ', $item_ids );
-	$query = $wpdb->prepare( "
+	if ( $item_ids ) {
+
+		$in    = implode( ', ', $item_ids );
+		$query = $wpdb->prepare( "
 		SELECT * FROM {$wpdb->prefix}learnpress_user_items t1
 		WHERE user_id = %d
 		AND item_id = %d
@@ -276,22 +281,87 @@ function learn_press_setup_user_course_data( $user_id, $course_id ) {
 		)
 		ORDER BY user_item_id ASC
 	", $user_id, $course_id, $user_id, $course_id, $user_id, $course_id );
-	$items = $wpdb->get_results( $query );
-	if ( !$items ) {
-		return;
-	}
-	$item_statuses = LP_Cache::get_item_statuses( false, array() );
-	foreach ( $item_ids as $id ) {
-		if ( !array_key_exists( $id, $item_statuses ) ) {
-			$item_statuses[$user_id . '-' . $course_id . '-' . $id] = '';
+		$items = $wpdb->get_results( $query );
+		if ( !$items ) {
+			return;
 		}
+		$item_statuses = LP_Cache::get_item_statuses( false, array() );
+		foreach ( $item_ids as $id ) {
+			if ( !array_key_exists( $id, $item_statuses ) ) {
+				$item_statuses[$user_id . '-' . $course_id . '-' . $id] = '';
+			}
+		}
+		foreach ( $items as $item ) {
+			$item_statuses[$user_id . '-' . $course_id . '-' . $item->item_id] = $item->status;
+		}
+		LP_Cache::set_item_statuses( $item_statuses );
 	}
-	foreach ( $items as $item ) {
-		$item_statuses[$user_id . '-' . $course_id . '-' . $item->item_id] = $item->status;
-	}
-	LP_Cache::set_item_statuses( $item_statuses );
 }
 
-function learn_press_get_posts() {
+function _learn_press_get_user_course_orders( $user_id = 0, $force = false ) {
+	global $wpdb;
+	if ( !$user_id ) {
+		$user_id = learn_press_get_current_user_id();
+	}
+	$data = LP_Cache::get_user_course_order( false, array() );
+	if ( !array_key_exists( $user_id, $data ) || $force ) {
+		$results = array();
+		$query   = $wpdb->prepare( "
+			SELECT o.*, oim.meta_value as course_id
+			FROM {$wpdb->prefix}learnpress_order_items oi
+			INNER JOIN {$wpdb->prefix}learnpress_order_itemmeta oim ON oim.learnpress_order_item_id = oi.order_item_id AND meta_key = %s
+			INNER JOIN {$wpdb->prefix}postmeta om ON om.post_id = oi.order_id AND om.meta_key = %s AND om.meta_value = %d
+			INNER JOIN {$wpdb->posts} o ON o.ID = om.post_id AND o.post_status <> %s
+			WHERE o.post_type = %s
+		", '_course_id', '_user_id', $user_id, 'trash', LP_ORDER_CPT );
+		if ( $rows = $wpdb->get_results( $query ) ) {
+			foreach ( $rows as $row ) {
+				$results[$row->course_id] = $row;
+			}
+		}
+		$data[$user_id] = $results;
+		LP_Cache::set_user_course_order( $data );
+	} else {
+		$results = $data[$user_id];
+	}
+	return $results;
+}
 
+function _learn_press_setup_question( $id ) {
+	global $wpdb;
+	settype($id, 'array');
+	$query = $wpdb->prepare( "
+		SELECT p.*, qa.question_answer_id, pm.meta_value as type, qa.answer_data as answer_data, answer_order
+		FROM {$wpdb->posts} p
+		INNER JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID AND pm.meta_key = %s
+		RIGHT JOIN {$wpdb->prefix}learnpress_question_answers qa ON qa.question_id = p.ID
+		WHERE p.ID IN (" . join( ',', $id ) . ")
+		ORDER BY ID, answer_order ASC
+	", '_lp_type' );
+	$questions = array();
+
+	if ( $answers = $wpdb->get_results( $query ) ) {
+		$question_id = 0;
+		foreach ( $answers as $row ) {
+			if ( $row->ID != $question_id ) {
+				$question_id = $row->ID;
+				$questions[$question_id] = $row;
+				$questions[$question_id]->answers = array();
+				$questions[$question_id]->type    = $row->type;
+			}
+			if ( !$answer_data = maybe_unserialize( $row->answer_data ) ) {
+				continue;
+			}
+			$answer_data['id']                                          = $row->question_answer_id;
+			$answer_data['order']                                       = $row->answer_order;
+			$answer_data['type']                                        = $row->type;
+			$questions[$question_id]->answers[$row->question_answer_id] = $answer_data;
+		}
+		foreach($questions as $question){
+			$question->answers = maybe_serialize($question->answers);
+			wp_cache_delete( $question->ID, 'posts' );
+			wp_cache_add( $question->ID, $question, 'posts' );
+		}
+	}
+	return $questions;
 }

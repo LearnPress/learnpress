@@ -17,7 +17,7 @@ $user   = LP()->user;
 $completed   = $user->has_quiz_status( 'completed', $quiz->id, $course->id );
 $show_result = $quiz->show_result == 'yes';
 $checked     = $user->has_checked_answer( $this->id, $quiz->id, $course->id );
-$args = array();
+$args        = array();
 if ( $show_result && $completed ) {
 	$args['classes'] = 'checked';
 }
@@ -57,5 +57,10 @@ if ( $show_result && $completed ) {
 
 			</li>
 		<?php endforeach; ?>
+		<?php if ( $checked && $explanation = $this->explanation ): ?>
+			<li class="question-explanation">
+				<?php echo do_shortcode( $explanation ); ?>
+			</li>
+		<?php endif; ?>
 	</ul>
 <?php endif; ?>

@@ -297,6 +297,7 @@ class LP_Quiz_Factory {
 
 			////LP_Cache::flush();
 		}
+		learn_press_setup_user_course_data( $user_id, $course_id );
 		$question = LP_Question_Factory::get_question( $question_id );
 		$question->render( array( 'quiz_id' => $quiz_id, 'course_id' => $course_id, 'force' => true ) );
 		exit();

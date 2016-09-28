@@ -127,7 +127,7 @@
 }
 /* PROGRESS CIRCLE */
 .hide-if-js {
-  display: none;
+  display: none !important;
 }
 /* Archive courses */
 .learn-press-courses {
@@ -644,6 +644,8 @@ body.course-has-popup {
   height: 50px;
   background: #F5F5F5;
   border-top: 1px solid #DDD;
+  line-height: 47px;
+  padding: 0 20px;
 }
 #course-curriculum-popup #popup-main #popup-footer .footer-control {
   display: block;
@@ -656,6 +658,9 @@ body.course-has-popup {
   float: left;
 }
 #course-curriculum-popup #popup-main #popup-footer .footer-control.next-item {
+  float: right;
+}
+#course-curriculum-popup #popup-main #popup-footer .button-finish-course {
   float: right;
 }
 #course-curriculum-popup .learn-press-content-item-title {
@@ -1756,6 +1761,7 @@ body.block-content #learn-press-block-content {
   vertical-align: middle;
   color: #0f4956;
   cursor: pointer;
+  line-height: 1;
 }
 .learn-press-tooltip:before {
   content: "\f223";
