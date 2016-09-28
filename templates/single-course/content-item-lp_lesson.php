@@ -13,6 +13,14 @@ $security = wp_create_nonce( sprintf( 'complete-item-%d-%d-%d', $user->id, $cour
 $can_view_item = $user->can( 'view-item', $item->id, $course->id );
 ?>
 <h2 class="learn-press-content-item-title"><?php echo $item->title; ?></h2>
+<?php
+if( $can_view_item == 'preview'):
+	?>
+<a class="" href="<?php echo get_edit_post_link( $item->id ); ?>"><?php _e('Edit lesson', 'learnpress'); ?></a>
+<hr/>
+	<?php
+endif;
+?>
 <div class="learn-press-content-item-summary">
 	<?php echo $item->content; ?>
 	<?php if ( $user->has_completed_lesson( $item->ID, $course->id ) ) { ?>
