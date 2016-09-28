@@ -1262,7 +1262,7 @@ class LP_Abstract_User {
 
 	public function get_incomplete_items( $course_id ) {
 		global $wpdb;
-		$query    = $wpdb->prepare( "
+		$query = $wpdb->prepare( "
 			SELECT user_item_id
 			FROM {$wpdb->learnpress_user_items}
 			WHERE user_id = %d
@@ -1280,7 +1280,7 @@ class LP_Abstract_User {
 			if ( !$this->can( 'finish-course', $course_id ) && 1 == 0 ) {
 				return false;
 			} else {
-				$updated   = $wpdb->update(
+				$updated = $wpdb->update(
 					$wpdb->prefix . 'learnpress_user_items',
 					array(
 						'end_time' => current_time( 'mysql' ),
@@ -1326,7 +1326,7 @@ class LP_Abstract_User {
 
 	public function is_instructor() {
 		$roles = !empty( $this->user->roles ) ? $this->user->roles : array();
-		return in_array( LP()->teacher_role, $roles );
+		return in_array( LP_TEACHER_ROLE, $roles );
 	}
 
 	public function is_admin() {
