@@ -1709,6 +1709,9 @@ class LP_Abstract_User {
 		if ( !$course_id ) {
 			$course_id = get_the_ID();// LP_Course::get_course_by_item( $lesson_id );
 		}
+		if($this->can_view_lesson( $lesson_id, $course_id )=='preview'){
+			return false;
+		}
 		$result = false;
 
 		/**

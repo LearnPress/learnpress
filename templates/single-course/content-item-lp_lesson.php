@@ -10,6 +10,7 @@ $user     = learn_press_get_current_user();
 $course   = LP()->global['course'];
 $item     = LP()->global['course-item'];
 $security = wp_create_nonce( sprintf( 'complete-item-%d-%d-%d', $user->id, $course->id, $item->ID ) );
+$can_view_item = $user->can( 'view-item', $item->id, $course->id );
 ?>
 <h2 class="learn-press-content-item-title"><?php echo $item->title; ?></h2>
 <div class="learn-press-content-item-summary">
@@ -17,7 +18,7 @@ $security = wp_create_nonce( sprintf( 'complete-item-%d-%d-%d', $user->id, $cour
 	<?php if ( $user->has_completed_lesson( $item->ID, $course->id ) ) { ?>
 		<?php learn_press_display_message( __( 'Congrats! You have completed this lesson', 'learnpress' ) ); ?>
 		<button class="" disabled="disabled"> <?php _e( 'Completed', 'learnpress' ); ?></button>
-	<?php } else if ( !$user->has( 'finished-course', $course->id ) ) { ?>
+	<?php } else if ( !$user->has( 'finished-course', $course->id ) && $can_view_item!='preview' ) { ?>
 		<button class="button-complete-item button-complete-lesson" data-security="<?php echo esc_attr( $security ); ?>"><?php _e( 'Complete', 'learnpress' ); ?></button>
 	<?php } ?>
 </div>
