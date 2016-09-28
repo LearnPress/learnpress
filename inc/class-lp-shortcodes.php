@@ -101,8 +101,6 @@ class LP_Shortcodes {
 		if ( !( !empty( $args['context'] ) && $args['context'] == 'learn-press-login' ) ) {
 			return;
 		}
-		print_r( $args );
-
 	}
 
 	public static function wrapper_shortcode( $content ) {

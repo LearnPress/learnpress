@@ -2,35 +2,35 @@
 
 @icon-url: '../fonts/icomoon';
 @font-face {
-    font-family: 'lp-icons';
-    src: url('@{icon-url}.eot?6gvjr0');
-    src: url('@{icon-url}.eot?6gvjr0#iefix') format('embedded-opentype'),
-    url('@{icon-url}.ttf?6gvjr0') format('truetype'),
-    url('@{icon-url}.woff?6gvjr0') format('woff'),
-    url('@{icon-url}.svg?6gvjr0#icons') format('svg');
-    font-weight: normal;
-    font-style: normal;
+  font-family: 'lp-icons';
+  src: url('@{icon-url}.eot?6gvjr0');
+  src: url('@{icon-url}.eot?6gvjr0#iefix') format('embedded-opentype'),
+  url('@{icon-url}.ttf?6gvjr0') format('truetype'),
+  url('@{icon-url}.woff?6gvjr0') format('woff'),
+  url('@{icon-url}.svg?6gvjr0#icons') format('svg');
+  font-weight: normal;
+  font-style: normal;
 }
 
 [class^="lp-icon-"], [class*=" lp-icon-"] {
-    /* use !important to prevent issues with browser extensions that change fonts */
-    font-family: 'lp-icons' !important;
-    speak: none;
-    font-style: normal;
-    font-weight: normal;
-    font-variant: normal;
-    text-transform: none;
-    line-height: 1;
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'lp-icons' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
 
-    /* Better Font Rendering =========== */
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .clearfix:after {
-    display: block;
-    content: '';
-    clear: both;
+  display: block;
+  content: '';
+  clear: both;
 }
 
 .border-radius(@args) {
@@ -1186,6 +1186,24 @@ body.block-content {
             }
         }
     }
+}
+
+/* jAlerts */
+#popup_container {
+  background: #FFF;
+
+  #popup_title {
+    padding: 10px 20px;
+    background: #18B6C7;
+    color: #FFF;
+  }
+
+  #popup_content {
+    padding: 20px;
+    #popup_message {
+      margin-bottom: 20px;
+    }
+  }
 }
 
 @-moz-keyframes spin-12 {

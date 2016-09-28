@@ -665,8 +665,8 @@ body.course-has-popup {
 }
 #course-curriculum-popup .learn-press-content-item-title {
   /*padding: 20px;
-        background: #F5F5F5;
-        margin: 0;*/
+    background: #F5F5F5;
+    margin: 0;*/
 }
 #course-curriculum-popup .learn-press-content-item-title.content-item-quiz-title h4 {
   float: left;
@@ -704,7 +704,7 @@ body.course-has-popup {
 }
 #course-curriculum-popup .learn-press-content-item-summary {
   /*padding: 20px;
-        border-top: 1px solid #DDD;*/
+    border-top: 1px solid #DDD;*/
 }
 #course-curriculum-popup .learn-press-content-item-summary .quiz-question-title {
   margin-bottom: 20px;
@@ -804,8 +804,8 @@ body.block-content #learn-press-block-content {
 .single-quiz .quiz-description,
 .single-quiz .question-content {
   /*float: left;
-        width: 100%;
-        padding-right: 340px;*/
+    width: 100%;
+    padding-right: 340px;*/
 }
 .single-quiz .quiz-description .learn-press-question-title,
 .single-quiz .question-content .learn-press-question-title {
@@ -830,7 +830,7 @@ body.block-content #learn-press-block-content {
   position: absolute;
   border-radius: 50%;
   /*left: calc(50% - 100px);
-            top: calc(50% - 100px);*/
+      top: calc(50% - 100px);*/
   width: 260px;
   height: 260px;
   clip: rect(0, 260px, 260px, 130px);
@@ -840,7 +840,7 @@ body.block-content #learn-press-block-content {
   position: absolute;
   border-radius: 50%;
   /*left: calc(50% - 100px);
-                top: calc(50% - 100px);*/
+        top: calc(50% - 100px);*/
   width: 260px;
   height: 260px;
   clip: rect(0, 130px, 260px, 0);
@@ -917,7 +917,7 @@ body.block-content #learn-press-block-content {
   position: absolute;
   border-radius: 50%;
   /*left: calc(50% - 100px);
-            top: calc(50% - 100px);*/
+      top: calc(50% - 100px);*/
   width: 200px;
   height: 200px;
   clip: rect(0, 200px, 200px, 100px);
@@ -927,7 +927,7 @@ body.block-content #learn-press-block-content {
   position: absolute;
   border-radius: 50%;
   /*left: calc(50% - 100px);
-                top: calc(50% - 100px);*/
+        top: calc(50% - 100px);*/
   width: 200px;
   height: 200px;
   clip: rect(0, 100px, 200px, 0);
@@ -985,7 +985,7 @@ body.block-content #learn-press-block-content {
   position: absolute;
   border-radius: 50%;
   /*left: calc(50% - 100px);
-            top: calc(50% - 100px);*/
+      top: calc(50% - 100px);*/
   width: 200px;
   height: 200px;
   clip: rect(0, 200px, 200px, 100px);
@@ -995,7 +995,7 @@ body.block-content #learn-press-block-content {
   position: absolute;
   border-radius: 50%;
   /*left: calc(50% - 100px);
-                top: calc(50% - 100px);*/
+        top: calc(50% - 100px);*/
   width: 200px;
   height: 200px;
   clip: rect(0, 100px, 200px, 0);
@@ -1835,6 +1835,21 @@ body.block-content #learn-press-block-content {
   padding: 0 10px;
   border: 1px solid #DDD;
   background-color: #FFF;
+}
+/* jAlerts */
+#popup_container {
+  background: #FFF;
+}
+#popup_container #popup_title {
+  padding: 10px 20px;
+  background: #18B6C7;
+  color: #FFF;
+}
+#popup_container #popup_content {
+  padding: 20px;
+}
+#popup_container #popup_content #popup_message {
+  margin-bottom: 20px;
 }
 @-moz-keyframes spin-12 {
   0% {
