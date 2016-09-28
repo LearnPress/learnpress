@@ -26,7 +26,7 @@ if ( typeof window.LP === 'undefined' ) {
                 var $paymentForm = $( 'div.payment-method-form.' + $( this ).attr( 'id' ) );
                 if ( $( this ).is( ':checked' ) ) { // && !$paymentForm.is(':visible')
                     $( 'div.payment-method-form' ).filter( ':visible' ).slideUp( 250 );
-                    $( 'div.payment-method-form.' + $( this ).attr( 'id' ) ).slideDown( 250 );
+                    $( this ).parents('li:first').find( '.payment-method-form.' + $( this ).attr( 'id' ) ).slideDown( 250 );
                 }
             } else {
                 $( 'div.payment-method-form' ).show();
