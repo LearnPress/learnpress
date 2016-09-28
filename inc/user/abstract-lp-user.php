@@ -1828,11 +1828,10 @@ class LP_Abstract_User {
 			$query = $wpdb->prepare( "
 				SELECT uc.*
 				FROM {$wpdb->prefix}learnpress_user_items uc
-				INNER JOIN {$wpdb->posts} o ON o.ID = uc.ref_id
-				WHERE uc.item_id = %d
-				AND uc.user_id = %d AND o.post_status = %s
+				INNER JOIN {$wpdb->posts} o ON o.ID = uc.item_id
+				WHERE uc.user_id = %d AND o.status = %s
 				ORDER BY user_item_id DESC
-			", $course_id, $this->id, 'lp-completed' );
+			", $this->id, 'enrolled' );
 
 			$info = array(
 				'start'  => null,
