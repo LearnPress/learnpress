@@ -1039,7 +1039,7 @@ if (!class_exists('LP_Course_Post_Type')) {
                     }
                     break;
                 case 'students' :
-                    echo count($course->get_students_list(true));
+                    echo '<span class=lp-label-counter>' . count($course->get_students_list(true)) . '</span>';
 
             }
         }
@@ -1150,6 +1150,7 @@ if (!class_exists('LP_Course_Post_Type')) {
         public function sortable_columns($columns)
         {
             $columns['price'] = 'price';
+
             return $columns;
         }
 
