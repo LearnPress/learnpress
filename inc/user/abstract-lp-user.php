@@ -1140,12 +1140,12 @@ class LP_Abstract_User {
 			if ( $this->has( 'enrolled-course', $course_id ) || $this->has( 'finished-course', $course_id ) ) {
 				// or user has enrolled course
 				$view = 'enrolled';
+			} elseif ( $this->is_admin() || ( $this->is_instructor() && $course->post->post_author == $this->user->ID ) ) {
+				$view = 'preview';
 			} elseif ( !$course->is( 'required_enroll' ) ) {
 				// if course is not required enroll so the lesson is previewable
 				$view = 'no-required-enroll';
-			} elseif ( $this->is_admin() || ( $this->is_instructor() && $course->post->post_author == $this->user->ID ) ) {
-				$view = 'preview';
-			}
+			} 
 		}
 		return apply_filters( 'learn_press_user_view_lesson', $view, $lesson_id, $this->id, $course_id );
 	}
@@ -1335,7 +1335,7 @@ class LP_Abstract_User {
 
 	public function is_instructor() {
 		$roles = !empty( $this->user->roles ) ? $this->user->roles : array();
-		return in_array( LP()->teacher_role, $roles );
+		return in_array( LP_TEACHER_ROLE, $roles );
 	}
 
 	public function is_admin() {
