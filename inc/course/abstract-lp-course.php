@@ -596,10 +596,9 @@ abstract class LP_Abstract_Course {
 				LEFT JOIN {$wpdb->prefix}learnpress_user_items uc
 					ON uc.user_id = u.ID
 				WHERE uc.item_id = %s
-					AND uc.status = %s
 					AND u.user_status = %s
 				LIMIT %d
-			", $this->id, 'enrolled', '0', $limit );
+			", $this->id, '0', $limit );
 			$this->_students_list = $wpdb->get_results( $query );
 		}
 		return $this->_students_list;
@@ -628,6 +627,8 @@ abstract class LP_Abstract_Course {
 
 	/**
 	 * Get all lessons in a course
+	 *
+	 * @param mixed
 	 *
 	 * @return array
 	 */

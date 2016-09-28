@@ -228,12 +228,12 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 
 		public static function _request_finish_course() {
 			$nonce     = learn_press_get_request( 'security' );
-			$course_id = absint( learn_press_get_request( 'course_id' ) );
+			$course_id = absint( learn_press_get_request( 'id' ) );
 			$user      = learn_press_get_current_user();
 
 			$course = LP_Course::get_course( $course_id );
 
-			$nonce_action = sprintf( 'learn-press-finish-course-%d-%d', $course_id, $user->id );
+			$nonce_action = sprintf( 'finish-course-%d-%d', $course_id, $user->id );
 			if ( !$user->id || !$course || !wp_verify_nonce( $nonce, $nonce_action ) ) {
 				wp_die( __( 'Access denied!', 'learnpress' ) );
 			}
@@ -276,7 +276,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 						/**
 						 * Flush cache to force update
 						 */
-						wp_cache_flush();
+						learn_press_setup_user_course_data( $user->id, $course_id );
 						$course                     = learn_press_get_course( $course_id );
 						LP()->course                = $course;
 						LP()->user                  = $user;
@@ -310,15 +310,15 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			$course_id = get_the_ID();
 			// Ensure that user can view course item
 			$can_view_item = $user->can( 'view-item', $item_id, $course_id );
-			if ( $user->can( 'view-item', $item_id, $course_id ) ) {
+			if ( $can_view_item ) {
 				// Update user item if it's not updated
-				if ( !$user->get_item_status( $item_id ) ) {
+				if ( !$user->get_item_status( $item_id, $course_id ) ) {
 					$item_type = learn_press_get_request( 'type' );
 					if ( !$item_type ) {
 						$item_type = get_post_type( $item_id );
 					}
-					if ( apply_filters( 'learn_press_insert_user_item_data', true, $item_id, $course_id ) && $can_view_item!='preview' ) {
-						$wpdb->insert(
+					if ( apply_filters( 'learn_press_insert_user_item_data', true, $item_id, $course_id ) && $can_view_item != 'preview' ) {
+						$insert       = $wpdb->insert(
 							$wpdb->prefix . 'learnpress_user_items',
 							apply_filters(
 								'learn_press_user_item_data',

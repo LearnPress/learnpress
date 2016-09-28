@@ -694,11 +694,15 @@ if (typeof window.LP == 'undefined') {
 			if ($('#learn-press-block-content').length == 0) {
 				$(LP.template('learn-press-template-block-content', {})).appendTo($('body'));
 			}
-			$('body, html').addClass('block-content').css('overflow', 'hidden');
+			var $root = $('body').addClass('block-content'),
+				overflow = $root.css('overflow');
+			$root.css('overflow', 'hidden').attr('overflow', overflow);
 		},
 		unblockContent: function () {
 			setTimeout(function () {
-				$('body, html').removeClass('block-content').css('overflow', '');
+				var $root = $('body, html').removeClass('block-content'),
+					overflow = $root.attr('overflow');
+				$root.css('overflow', overflow).removeAttr('overflow');
 			}, 350);
 		},
 		template      : _.memoize(function (id, data) {

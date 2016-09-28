@@ -488,7 +488,7 @@ class LP_Abstract_User {
 	 */
 	public function retake_quiz( $quiz_id, $course_id ) {
 		$response = false;
-		$return = learn_press_update_user_item_field(
+		$return   = learn_press_update_user_item_field(
 			array(
 				'user_id'    => learn_press_get_current_user_id(),
 				'item_id'    => $quiz_id,
@@ -1131,24 +1131,22 @@ class LP_Abstract_User {
 		// first, check if the lesson is previewable
 		if ( $lesson->is( 'previewable' ) ) {
 			$view = 'preview';
-		} else {
-			// else, find the course of this lesson
-			if ( !$course_id ) {
-				$course_id = get_the_ID();// LP_Course::get_course_by_item( $lesson_id );
-			}
-			if ( $course = LP_Course::get_course( $course_id ) ) {
+		}
+		// else, find the course of this lesson
+		if ( !$course_id ) {
+			$course_id = get_the_ID();// LP_Course::get_course_by_item( $lesson_id );
+		}
+		if ( $course = LP_Course::get_course( $course_id ) ) {
+			if ( $this->has( 'enrolled-course', $course_id ) || $this->has( 'finished-course', $course_id ) ) {
+				// or user has enrolled course
+				$view = 'enrolled';
+			} elseif ( !$course->is( 'required_enroll' ) ) {
 				// if course is not required enroll so the lesson is previewable
-				if( $this->is_admin() || ( $this->is_instructor()&& $course->post->post_author == $this->user->ID ) ) {
-					$view = 'preview';
-				} elseif ( !$course->is( 'required_enroll' ) ) {
-					$view = 'no-required-enroll';
-				} elseif ( $this->has( 'enrolled-course', $course_id ) || $this->has( 'finished-course', $course_id ) ) {
-					// or user has enrolled course
-					$view = 'enrolled';
-				}
+				$view = 'no-required-enroll';
+			} elseif ( $this->is_admin() || ( $this->is_instructor() && $course->post->post_author == $this->user->ID ) ) {
+				$view = 'preview';
 			}
 		}
-
 		return apply_filters( 'learn_press_user_view_lesson', $view, $lesson_id, $this->id, $course_id );
 	}
 
@@ -1178,8 +1176,8 @@ class LP_Abstract_User {
 
 		if ( $course ) {
 			$this->get_course_order( $course->id );
-			if( $this->is_admin() || ( $this->is_instructor()&& $course->post->post_author == $this->user->ID ) ) {
-					$view = 'preview';
+			if ( $this->is_admin() || ( $this->is_instructor() && $course->post->post_author == $this->user->ID ) ) {
+				$view = 'preview';
 			} elseif ( !$course->is( 'required_enroll' ) ) {
 				$view = 'no-required-enroll';
 			} else {
@@ -1229,7 +1227,7 @@ class LP_Abstract_User {
 	public function can_finish_course( $course_id ) {
 		$return = false;
 		if ( $course = LP_Course::get_course( $course_id ) ) {
-			$result = $course->evaluate_course_results() * 100;
+			$result = $course->evaluate_course_results();
 			$return = ( $result >= $course->passing_condition ) && $this->has_course_status( $course_id, array( 'enrolled', 'started' ) );
 		}
 		return apply_filters( 'learn_press_user_can_finish_course', $return, $course_id, $this->id );
@@ -1271,14 +1269,27 @@ class LP_Abstract_User {
 		return apply_filters( 'learn_press_user_can_retake_course', $can, $course->id, $this->id );
 	}
 
+	public function get_incomplete_items( $course_id ) {
+		global $wpdb;
+		$query = $wpdb->prepare( "
+			SELECT user_item_id
+			FROM {$wpdb->learnpress_user_items}
+			WHERE user_id = %d
+			AND (item_id = %d OR ref_id = %d)
+			AND `status` NOT IN(%s, %s)
+		", $this->id, $course_id, $course_id, 'completed', 'finished' );
+		$item_ids = $wpdb->get_col( $query );
+		return apply_filters( 'learn_press_user_incomplete_items', $item_ids, $course_id, $this->id );
+	}
+
 	public function finish_course( $course_id ) {
 		global $wpdb;
 		$return = 0;
 		if ( $course = LP_Course::get_course( $course_id ) ) {
-			if ( !$this->can( 'finish-course', $course_id ) ) {
+			if ( !$this->can( 'finish-course', $course_id ) && 1 == 0 ) {
 				return false;
 			} else {
-				$updated   = $wpdb->update(
+				$updated = $wpdb->update(
 					$wpdb->prefix . 'learnpress_user_items',
 					array(
 						'end_time' => current_time( 'mysql' ),
@@ -1288,7 +1299,24 @@ class LP_Abstract_User {
 					array( '%s', '%s' )
 				);
 				$null_time = '0000-00-00 00:00';
-				$return    = $wpdb->get_var(
+
+				/*$incomplete_items = $this->get_incomplete_items( $course_id );
+				if ( $incomplete_items ) {
+					$update    = $wpdb->prepare( "
+						UPDATE {$wpdb->prefix}learnpress_user_items
+						SET end_time = %s, status = CASE
+							WHEN item_type = %s THEN %s
+							ELSE %s
+							END
+						WHERE
+							user_id = %d
+							AND (( item_id = %d AND item_type = %s) OR (ref_id = %d and ref_type = %s))
+							AND `status` NOT IN(%s, %s)
+					", $null_time, 'lp_course', 'finished', 'completed', $this->id, $course_id, 'lp_course', $course_id, 'lp_order', 'finished', 'completed' );
+					$wpdb->query( $update );
+
+				}*/
+				$return = $wpdb->get_var(
 					$wpdb->prepare( "
 							SELECT user_item_id
 							FROM {$wpdb->prefix}learnpress_user_items
