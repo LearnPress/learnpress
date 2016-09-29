@@ -33,7 +33,8 @@
 				})
 				.addAction('learn_press_message_box_resize', function (height, app) {
 					that.$('article').css({
-						height: height - 135
+//						height: height - 135
+                                            height: height - 50 - $( '#learn-press-modal-search-items header' ).height() - $( '#learn-press-modal-search-items footer' ).height()
 					});
 				});
 		},
@@ -79,7 +80,7 @@
 		_fetchItems              : function (response) {
 			this.$('article .lp-list-items').removeClass('lp-ajaxload').html(response.html);
                         if ( this.$('.learnpress-search-notices').length == 0 ) {
-                            console.debug( $('#learn-press-modal-search-items footer') );
+//                            console.debug( $('#learn-press-modal-search-items footer') );
                             $('#learn-press-modal-search-items header').prepend( response.notices );
                         }
 			LP.log(response.html);

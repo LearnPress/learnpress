@@ -235,7 +235,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			$cart      = learn_press_get_cart();
 			$course_id = learn_press_get_request( 'purchase-course' );
 			$cart->add_to_cart( $course_id );
-			$res    = $cart->add_to_cart( $course_id );
+//			$res    = $cart->add_to_cart( $course_id );
 			$return = array(
 				'result'   => 'success',
 				'redirect' => learn_press_get_checkout_url()

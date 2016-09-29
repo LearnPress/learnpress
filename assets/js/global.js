@@ -347,9 +347,9 @@ if (typeof window.LP == 'undefined') {
 						top = $wrap.offset().top;
 					if (contentHeight > windowHeight - 50) {
 						$content.css({
-							height: windowHeight - 50
+							height: windowHeight - 25
 						});
-						height = $wrap.outerHeight()
+						height = $wrap.outerHeight();
 					} else {
 						$content.css("height", "").css('overflow', '');
 					}
