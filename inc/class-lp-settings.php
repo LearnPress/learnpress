@@ -16,7 +16,7 @@ class LP_Settings {
 	/**
 	 * @var array
 	 */
-	protected $_options = false;
+	protected $_options = array();
 
 	/**
 	 * @var bool
