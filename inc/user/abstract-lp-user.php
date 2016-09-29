@@ -1829,7 +1829,7 @@ class LP_Abstract_User {
 				SELECT uc.*
 				FROM {$wpdb->prefix}learnpress_user_items uc
 				INNER JOIN {$wpdb->posts} o ON o.ID = uc.item_id
-				WHERE uc.user_id = %d AND o.status = %s
+				WHERE uc.user_id = %d AND o.post_status = %s
 				ORDER BY user_item_id DESC
 			", $this->id, 'enrolled' );
 
