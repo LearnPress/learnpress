@@ -1,4 +1,16 @@
 <?php
+/**
+ * Template for displaying question's hint
+ *
+ * @author  ThimPress
+ * @package LearnPress/Templates
+ * @version 1.0
+ */
+
+if ( !defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
+
 $quiz = LP()->global['course-item'];
 $user = LP()->user;
 if ( !$quiz || $user->get_quiz_status( $quiz->id ) != 'started' ) {

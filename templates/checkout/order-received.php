@@ -10,7 +10,7 @@
 if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
-global $wp;
+
 if ( $order ) {
 	?>
 	<p><?php echo apply_filters( 'learn_press_thankyou_order_received_text', __( 'Thank you. Your order has been received.', 'learnpress' ), $order ); ?></p>

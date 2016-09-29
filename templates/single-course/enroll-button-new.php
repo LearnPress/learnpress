@@ -6,7 +6,7 @@
  * @package LearnPress/Templates
  * @version 1.0
  */
-
+die(__FILE__);
 if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }

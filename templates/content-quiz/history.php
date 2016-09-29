@@ -11,7 +11,7 @@ if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 $course = learn_press_get_the_course();
-$quiz = LP()->global['course-item'];
+$quiz   = LP()->global['course-item'];
 
 if ( !$quiz->retake_count || !LP()->user->has( 'completed-quiz', $quiz->id, $course->id ) ) {
 	return;
@@ -19,7 +19,6 @@ if ( !$quiz->retake_count || !LP()->user->has( 'completed-quiz', $quiz->id, $cou
 $limit   = 10;
 $history = LP()->user->get_quiz_history( $quiz->id, $course->id );
 reset( $history );
-
 $history_count = sizeof( $history );
 $view_id       = !empty( $_REQUEST['history_id'] ) ? $_REQUEST['history_id'] : key( $history );
 $heading       = sprintf( __( 'Other results (newest %d items)', 'learnpress' ), $limit );
@@ -57,12 +56,6 @@ if ( $history_count > 1 ) {
 					<?php } else { ?>
 						<?php printf( "%01.2f (%%)", 0 ); ?>
 					<?php } ?>
-					<!--
-				<p class="quiz-history-actions">
-					<a href="<?php echo add_query_arg( 'history_id', $item->history_id ); ?>"><?php _e( 'View', 'learnpress' ); ?></a>
-					<a href=""><?php _e( 'Use as result', 'learnpress' ); ?></a>
-				</p>
-				-->
 				</td>
 			</tr>
 			<?php if ( $position >= $limit ) break;

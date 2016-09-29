@@ -1,4 +1,5 @@
 <?php
+die(__FILE__);
 ?>
 	<div id="quiz-countdown" class="quiz-countdown">
 		<div class="progress-circle gt-50">

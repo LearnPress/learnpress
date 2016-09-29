@@ -1,7 +1,15 @@
 <?php
+/**
+ * Template for displaying quiz's introduction
+ *
+ * @package LearnPress/Templates
+ * @author ThimPress
+ * @version 1.0
+ */
 if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
+
 $course = LP()->global['course'];
 $quiz   = LP()->global['course-item'];
 $user   = learn_press_get_current_user();
@@ -12,7 +20,6 @@ if ( $user->has( 'quiz-status', array( 'started', 'completed' ), $quiz->id, $cou
 	return;
 }
 ?>
-
 
 <ul class="quiz-intro">
 	<li>

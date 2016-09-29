@@ -11,7 +11,7 @@ if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-global $course;
+$course = LP()->global['course'];
 
 if ( post_password_required() ) {
 	echo get_the_password_form();

@@ -6,6 +6,8 @@
  */
 
 defined( 'ABSPATH' ) || exit();
+
+die(__FILE__);
 ?>
 
 <div class="quiz-question-answer">

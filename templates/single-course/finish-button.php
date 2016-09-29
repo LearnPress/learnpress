@@ -6,6 +6,7 @@
  * @package LearnPress/Templates
  * @version 1.0
  */
+die(__FILE__);
 defined( 'ABSPATH' ) || exit();
 $can_finish = LP()->user->can( 'finish-course', get_the_ID() );
 $nonce      = wp_create_nonce( sprintf( 'learn-press-finish-course-%d-%d', get_the_ID(), get_current_user_id() ) );

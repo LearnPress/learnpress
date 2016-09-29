@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
-global $course;
+$course = LP()->global['course'];
 
 $students_list_heading = apply_filters('learn_press_students_list_heading', __('Students Enrolled', 'leanpress'));
 $student_limit = apply_filters('learn_press_students_list_limit', -1);

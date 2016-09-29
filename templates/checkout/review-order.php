@@ -12,8 +12,7 @@ if ( !defined( 'ABSPATH' ) ) {
 }
 
 $review_order_heading = apply_filters( 'learn_press_checkout_review_order_heading', __( 'Your order', 'learnpress' ) );
-
-$cart = learn_press_get_checkout_cart();
+$cart                 = learn_press_get_checkout_cart();
 
 ?>
 

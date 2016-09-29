@@ -10,8 +10,8 @@
 if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
-
-global $course;
+die(__FILE__);
+$course = LP()->global['course'];
 
 if ( !$course->is_required_enroll() ) {
 	return;

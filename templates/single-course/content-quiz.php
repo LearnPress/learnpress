@@ -7,7 +7,7 @@
  * @version 1.0
  */
 
-global $course;
+$course = LP()->global['course'];
 if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }

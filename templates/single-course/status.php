@@ -11,7 +11,7 @@ if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-global $course;
+$course = LP()->global['course'];
 
 $user = learn_press_get_current_user();
 

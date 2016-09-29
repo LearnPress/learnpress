@@ -16,10 +16,12 @@ $user   = LP()->user;
 if ( !$quiz ) {
 	return;
 }
-$status = $user->get_quiz_status( $quiz->id );
+
 if ( $user->has( 'finished-course', $course->id ) ) {
 	return;
 }
+
+$status   = $user->get_quiz_status( $quiz->id );
 $question = $quiz->get_current_question();
 ?>
 <div class="quiz-buttons">

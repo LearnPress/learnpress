@@ -747,7 +747,7 @@ class LP_Abstract_User {
 
 		$cached = LP_Cache::get_quiz_history( false, array() );// wp_cache_get( 'user-quiz-history', 'learnpress' );
 
-		if ( ( !array_key_exists( $key, $cached ) || $force ) && $quiz_id && in_array( $quiz_id, $quizzes ) ) {
+		if ( ( !array_key_exists( $key, $cached ) || $force ) && $quizzes && in_array( $quiz_id, $quizzes ) ) {
 			global $wpdb;
 			$t1             = $wpdb->prefix . 'learnpress_user_items'; //{$wpdb->learnpress_user_quizzes}
 			$t2             = $wpdb->prefix . 'learnpress_user_itemmeta'; //{$wpdb->learnpress_user_quizzes}
@@ -774,15 +774,6 @@ class LP_Abstract_User {
 			if ( $results = $wpdb->get_results( $query ) ) {
 				$item_ids = array();
 				foreach ( $results as $result ) {
-					/*$id = $result->user_item_id;
-					if ( empty( $history[$key][$id] ) ) {
-						$history[$key][$id] = (object) array(
-							'history_id' => $id
-						);
-					}
-					$history[$key][$id]->{$result->meta_key} = maybe_unserialize( $result->meta_value );*/
-					//$quiz_ids[] = $result->item_id;
-
 					$item_ids[] = $result->user_item_id;
 					if ( empty( $history[$this->id . '-' . $course_id . '-' . $result->item_id] ) ) {
 						$history[$this->id . '-' . $course_id . '-' . $result->item_id] = array();
@@ -797,7 +788,6 @@ class LP_Abstract_User {
 						'questions'        => array(),
 						'question_answers' => array()
 					);
-					//echo 'xxxxxxxxxxxxx'.$result->status;
 				}
 				if ( $item_ids && $meta = $this->_get_quiz_meta( $item_ids ) ) {
 					$maps = array(
@@ -807,18 +797,14 @@ class LP_Abstract_User {
 						'question_checked' => 'question_checked'
 					);
 					foreach ( $meta as $k => $v ) {
-						if ( empty( $history[$this->id . '-' . $course_id . '-' . $v->item_id][$v->user_item_id] ) ) {
-							//$history[$this->id . '-' . $course_id . '-' . $v->item_id][$meta->user_item_id] = array();
+						$_key = $this->id . '-' . $course_id . '-' . $v->item_id;
+						if ( empty( $history[$_key][$v->user_item_id] ) ) {
 							continue;
 						}
-						$obj_key                                                                                 = !empty( $maps[$v->meta_key] ) ? $maps[$v->meta_key] : $v->meta_key;
-						$history[$this->id . '-' . $course_id . '-' . $v->item_id][$v->user_item_id]->{$obj_key} = maybe_unserialize( $v->meta_value );
+						$obj_key                                     = !empty( $maps[$v->meta_key] ) ? $maps[$v->meta_key] : $v->meta_key;
+						$history[$key][$v->user_item_id]->{$obj_key} = maybe_unserialize( $v->meta_value );
 					}
 				}
-				/*
-				foreach ( $history[$key] as $id => $progress ) {
-					$history[$key][$id]->results = $this->evaluate_quiz_results( $quiz_id, $progress );
-				}*/
 			}
 
 			if ( $history ) {
@@ -835,10 +821,6 @@ class LP_Abstract_User {
 			LP_Cache::set_quiz_history( $cached );
 		}
 
-
-		/*if ( $history_id ) {
-			return apply_filters( 'learn_press_user_quiz_history', isset( $history[$key][$history_id] ) ? $history[$key][$history_id] : false, $this, $quiz_id );
-		}*/
 		return apply_filters( 'learn_press_user_quiz_history', isset( $cached[$key] ) ? $cached[$key] : array(), $this, $quiz_id );
 	}
 

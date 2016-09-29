@@ -11,7 +11,7 @@ if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-global $course;
+$course = LP()->global['course'];
 
 if ( !$course->is_required_enroll() ) {
 	return;

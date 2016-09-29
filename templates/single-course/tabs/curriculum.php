@@ -11,7 +11,7 @@ if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-global $course;
+$course = LP()->global['course'];
 
 $curriculum_heading = apply_filters( 'learn_press_curriculum_heading', __( 'Course Curriculum', 'learnpress' ) );
 ?>

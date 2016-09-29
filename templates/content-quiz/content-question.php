@@ -11,6 +11,8 @@ if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
+die(__FILE__);
+
 $quiz = LP()->global['course-item'];
 $user = LP()->user;
 

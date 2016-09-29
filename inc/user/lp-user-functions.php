@@ -334,7 +334,8 @@ function learn_press_profile_tab_orders_content( $current, $tab, $user ) {
 }
 
 function learn_press_update_user_lesson_start_time() {
-	global $course, $wpdb;
+	global $wpdb;
+	$course = LP()->global['course'];
 
 	if ( !$course->id || !( $lesson = $course->current_lesson ) ) {
 		return;

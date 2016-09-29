@@ -10,14 +10,14 @@
 if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
-$course = learn_press_get_the_course();
-$quiz   = LP()->global['course-item'];
-$user   = LP()->user;
-
+$course      = learn_press_get_the_course();
+$quiz        = LP()->global['course-item'];
+$user        = LP()->user;
 $completed   = $user->has_quiz_status( 'completed', $quiz->id, $course->id );
-$show_result = $quiz->show_result == 'yes';
 $checked     = $user->has_checked_answer( $this->id, $quiz->id, $course->id );
+$show_result = $quiz->show_result == 'yes';
 $args        = array();
+
 if ( $show_result && $completed ) {
 	$args['classes'] = 'checked';
 }

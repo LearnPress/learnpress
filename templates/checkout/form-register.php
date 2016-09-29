@@ -15,14 +15,12 @@ if ( is_user_logged_in() ) {
 	return;
 }
 
-$heading    = apply_filters( 'learn_press_checkout_register_heading', __( 'New Customer', 'learnpress' ) );
-$subheading = apply_filters( 'learn_press_checkout_register_subheading', __( 'Register Account', 'learnpress' ) );
-
+$heading              = apply_filters( 'learn_press_checkout_register_heading', __( 'New Customer', 'learnpress' ) );
+$subheading           = apply_filters( 'learn_press_checkout_register_subheading', __( 'Register Account', 'learnpress' ) );
 $register_url         = learn_press_get_register_url();
 $register_button_text = apply_filters( 'learn_press_checkout_register_button_text', __( 'Continue', 'learnpress' ) );
-
-$content = sprintf( __( 'By creating an account you will be able to shop faster, be up to date on an order status, and keep track of the orders you have previously made.<a href="%s">%s</a>', 'learnpress' ), $register_url, $register_button_text );
-$content = apply_filters( 'learn_press_checkout_register_content', $content );
+$content              = sprintf( __( 'By creating an account you will be able to keep track of the course\'s progress you have previously enrolled.<a href="%s">%s</a>', 'learnpress' ), $register_url, $register_button_text );
+$content              = apply_filters( 'learn_press_checkout_register_content', $content );
 
 ?>
 

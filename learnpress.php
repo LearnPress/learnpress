@@ -98,6 +98,9 @@ if ( !class_exists( 'LearnPress' ) ) {
 		 */
 		protected $_table_prefixes = array();
 
+		/**
+		 * @var null
+		 */
 		public $query = null;
 
 		/**
