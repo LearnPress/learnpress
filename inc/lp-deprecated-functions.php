@@ -147,7 +147,7 @@ function learn_press_submit_answer() {
 	ob_start();
 	if ( $next_id ) {
 		do_action( 'learn_press_submit_answer', $question_answer, $question_id, $quiz_id, $user_id, false );
-		learn_press_get_template( 'quiz/form-question.php', array( 'question_id' => $next_id, 'course_id' => learn_press_get_course_by_quiz( $quiz_id ) ) );
+		learn_press_get_template( 'content-quiz/form-question.php', array( 'question_id' => $next_id, 'course_id' => learn_press_get_course_by_quiz( $quiz_id ) ) );
 	} else {
 		$question_ids             = learn_press_get_user_quiz_questions( $quiz_id, $user_id );
 		$quiz_completed           = get_user_meta( $user_id, '_lpr_quiz_completed', true );
@@ -159,7 +159,7 @@ function learn_press_submit_answer() {
 				learn_press_finish_course( $course_id, $user_id );
 			}
 		}
-		learn_press_get_template( 'quiz/result.php' );
+		learn_press_get_template( 'content-quiz/result.php' );
 		$json['quiz_completed'] = true;
 		do_action( 'learn_press_submit_answer', $question_answer, $question_id, $quiz_id, $user_id, true );
 	}
@@ -187,7 +187,7 @@ function learn_press_load_question() {
 			'answer' => isset( $quiz_answers[$question_id] ) ? $quiz_answers[$question_id] : null
 		));
 	}*/
-	learn_press_get_template( 'quiz/form-question.php', array( 'question_id' => $question_id, 'course_id' => learn_press_get_course_by_quiz( $quiz_id ) ) );
+	learn_press_get_template( 'content-quiz/form-question.php', array( 'question_id' => $question_id, 'course_id' => learn_press_get_course_by_quiz( $quiz_id ) ) );
 
 	die();
 }

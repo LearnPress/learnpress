@@ -7,6 +7,9 @@
  *
  * @since 1.1
  */
+if ( !defined( 'ABSPATH' ) ) {
+	exit;
+}
 class LP_Cache {
 
 	/**
@@ -258,12 +261,26 @@ class LP_Cache {
 		return self::_get_cache( 'user-completed-item', $key, $def );
 	}
 
-	/**********************************************/
-
-	public static function set_enrolled_courses( $key, $value ) {
-		return self::_set_cache( 'user-enrolled-courses', $key, $value );
+	/**
+	 * @param $key_or_value
+	 * @param $value
+	 *
+	 * @return array|bool|mixed
+	 */
+	public static function set_enrolled_courses( $key_or_value, $value ) {
+		if ( func_num_args() == 1 ) {
+			wp_cache_set( 'user-enrolled-courses', $key_or_value, self::$_group );
+			return $key_or_value;
+		}
+		return self::_set_cache( 'user-enrolled-courses', $key_or_value, $value );
 	}
 
+	/**
+	 * @param bool $key
+	 * @param bool $def
+	 *
+	 * @return array|bool|mixed
+	 */
 	public static function get_enrolled_courses( $key = false, $def = false ) {
 		return self::_get_cache( 'user-enrolled-courses', $key, $def );
 	}
@@ -294,6 +311,12 @@ class LP_Cache {
 		return self::_get_cache( 'user-finished-courses', $key, $def );
 	}
 
+	/**
+	 * @param      $key_or_value
+	 * @param bool $value
+	 *
+	 * @return array|bool|mixed
+	 */
 	public static function set_course_info( $key_or_value, $value = false ) {
 		if ( func_num_args() == 1 ) {
 			wp_cache_set( 'user-course-info', $key_or_value, self::$_group );
@@ -302,10 +325,22 @@ class LP_Cache {
 		return self::_set_cache( 'user-course-info', $key_or_value, $value );
 	}
 
+	/**
+	 * @param bool $key
+	 * @param bool $def
+	 *
+	 * @return array|bool|mixed
+	 */
 	public static function get_course_info( $key = false, $def = false ) {
 		return self::_get_cache( 'user-course-info', $key, $def );
 	}
 
+	/**
+	 * @param      $key_or_value
+	 * @param bool $value
+	 *
+	 * @return array|bool|mixed
+	 */
 	public static function set_course_curriculum( $key_or_value, $value = false ) {
 		if ( func_num_args() == 1 ) {
 			wp_cache_set( 'course-curriculum', $key_or_value, self::$_group );
@@ -314,10 +349,22 @@ class LP_Cache {
 		return self::_set_cache( 'course-curriculum', $key_or_value, $value );
 	}
 
+	/**
+	 * @param bool $key
+	 * @param bool $def
+	 *
+	 * @return array|bool|mixed
+	 */
 	public static function get_course_curriculum( $key = false, $def = false ) {
 		return self::_get_cache( 'course-curriculum', $key, $def );
 	}
 
+	/**
+	 * @param      $key_or_value
+	 * @param bool $value
+	 *
+	 * @return array|bool|mixed
+	 */
 	public static function set_item_statuses( $key_or_value, $value = false ) {
 		if ( func_num_args() == 1 ) {
 			wp_cache_set( 'course-item-statuses', $key_or_value, self::$_group );
@@ -326,10 +373,22 @@ class LP_Cache {
 		return self::_set_cache( 'course-item-statuses', $key_or_value, $value );
 	}
 
+	/**
+	 * @param bool $key
+	 * @param bool $def
+	 *
+	 * @return array|bool|mixed
+	 */
 	public static function get_item_statuses( $key = false, $def = false ) {
 		return self::_get_cache( 'course-item-statuses', $key, $def );
 	}
 
+	/**
+	 * @param      $key_or_value
+	 * @param bool $value
+	 *
+	 * @return array|bool|mixed
+	 */
 	public static function set_quiz_questions( $key_or_value, $value = false ) {
 		if ( func_num_args() == 1 ) {
 			wp_cache_set( 'quiz-questions', $key_or_value, self::$_group );
@@ -338,10 +397,22 @@ class LP_Cache {
 		return self::_set_cache( 'quiz-questions', $key_or_value, $value );
 	}
 
+	/**
+	 * @param bool $key
+	 * @param bool $def
+	 *
+	 * @return array|bool|mixed
+	 */
 	public static function get_quiz_questions( $key = false, $def = false ) {
 		return self::_get_cache( 'quiz-questions', $key, $def );
 	}
 
+	/**
+	 * @param      $key_or_value
+	 * @param bool $value
+	 *
+	 * @return array|bool|mixed
+	 */
 	public static function set_quiz_results( $key_or_value, $value = false ) {
 		if ( func_num_args() == 1 ) {
 			wp_cache_set( 'quiz-results', $key_or_value, self::$_group );
@@ -350,10 +421,22 @@ class LP_Cache {
 		return self::_set_cache( 'quiz-results', $key_or_value, $value );
 	}
 
+	/**
+	 * @param bool $key
+	 * @param bool $def
+	 *
+	 * @return array|bool|mixed
+	 */
 	public static function get_quiz_results( $key = false, $def = false ) {
 		return self::_get_cache( 'quiz-results', $key, $def );
 	}
 
+	/**
+	 * @param      $key_or_value
+	 * @param bool $value
+	 *
+	 * @return array|bool|mixed
+	 */
 	public static function set_quiz_params( $key_or_value, $value = false ) {
 		if ( func_num_args() == 1 ) {
 			wp_cache_set( 'quiz-params', $key_or_value, self::$_group );
@@ -362,10 +445,22 @@ class LP_Cache {
 		return self::_set_cache( 'quiz-params', $key_or_value, $value );
 	}
 
+	/**
+	 * @param bool $key
+	 * @param bool $def
+	 *
+	 * @return array|bool|mixed
+	 */
 	public static function get_quiz_params( $key = false, $def = false ) {
 		return self::_get_cache( 'quiz-params', $key, $def );
 	}
 
+	/**
+	 * @param      $key_or_value
+	 * @param bool $value
+	 *
+	 * @return array|bool|mixed
+	 */
 	public static function set_post_names( $key_or_value, $value = false ) {
 		if ( func_num_args() == 1 ) {
 			wp_cache_set( 'post-names', $key_or_value, self::$_group );
@@ -374,10 +469,22 @@ class LP_Cache {
 		return self::_set_cache( 'post-names', $key_or_value, $value );
 	}
 
+	/**
+	 * @param bool $key
+	 * @param bool $def
+	 *
+	 * @return array|bool|mixed
+	 */
 	public static function get_post_names( $key = false, $def = false ) {
 		return self::_get_cache( 'post-names', $key, $def );
 	}
 
+	/**
+	 * @param      $key_or_value
+	 * @param bool $value
+	 *
+	 * @return array|bool|mixed
+	 */
 	public static function set_user_course_order( $key_or_value, $value = false ) {
 		if ( func_num_args() == 1 ) {
 			wp_cache_set( 'user-course-order', $key_or_value, self::$_group );
@@ -386,11 +493,19 @@ class LP_Cache {
 		return self::_set_cache( 'post-names', $key_or_value, $value );
 	}
 
+	/**
+	 * @param bool $key
+	 * @param bool $def
+	 *
+	 * @return array|bool|mixed
+	 */
 	public static function get_user_course_order( $key = false, $def = false ) {
 		return self::_get_cache( 'user-course-order', $key, $def );
 	}
 
-	/**********************************************/
+	/**
+	 * @param string $section
+	 */
 	public static function flush( $section = '' ) {
 		if ( func_num_args() > 1 ) {
 			foreach ( func_get_args() as $arg ) {

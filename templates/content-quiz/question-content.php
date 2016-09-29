@@ -30,5 +30,5 @@ $question = LP_Question_Factory::get_question( $question_id );
 	<?php
 	$question->render( array( 'quiz_id' => $quiz->id, 'course_id' => $course->id ) );
 	?>
-	<?php learn_press_get_template( 'question/hint.php', array( 'quiz' => $quiz ) ); ?>
+	<?php learn_press_get_template( 'content-question/hint.php', array( 'quiz' => $quiz ) ); ?>
 </div>

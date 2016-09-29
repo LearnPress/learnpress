@@ -127,7 +127,7 @@
 }
 /* PROGRESS CIRCLE */
 .hide-if-js {
-  display: none !important;
+  display: none;
 }
 /* Archive courses */
 .learn-press-courses {
@@ -159,17 +159,17 @@
 .learn-press-courses li.course .course-thumbnail {
   position: relative;
 }
-.learn-press-courses li.course .course-thumbnail img {
+.learn-press-courses li.course .course-thumbnailimg {
   max-width: 100%;
   height: auto;
 }
 .learn-press-courses li.course .course-thumbnail:after {
-  box-shadow: 0 0 20px #FFF inset;
+  box-shadow: 0 0 20px #210404 inset;
+  content: '';
   position: absolute;
   width: 100%;
   height: 100%;
   left: 0;
-  top: 0;
 }
 .learn-press-courses li.course .course-info {
   padding: 0 15px 15px;
@@ -188,6 +188,10 @@
 }
 .learn-press-courses li.course .course-info > * {
   display: block;
+}
+.learn-press-courses li.course:nth-child(4n+1) {
+  clear: left;
+  margin-left: 0;
 }
 .learn-press-notice .button {
   float: right;
@@ -640,8 +644,6 @@ body.course-has-popup {
   height: 50px;
   background: #F5F5F5;
   border-top: 1px solid #DDD;
-  line-height: 47px;
-  padding: 0 20px;
 }
 #course-curriculum-popup #popup-main #popup-footer .footer-control {
   display: block;
@@ -656,13 +658,10 @@ body.course-has-popup {
 #course-curriculum-popup #popup-main #popup-footer .footer-control.next-item {
   float: right;
 }
-#course-curriculum-popup #popup-main #popup-footer .button-finish-course {
-  float: right;
-}
 #course-curriculum-popup .learn-press-content-item-title {
   /*padding: 20px;
-        background: #F5F5F5;
-        margin: 0;*/
+    background: #F5F5F5;
+    margin: 0;*/
 }
 #course-curriculum-popup .learn-press-content-item-title.content-item-quiz-title h4 {
   float: left;
@@ -700,7 +699,7 @@ body.course-has-popup {
 }
 #course-curriculum-popup .learn-press-content-item-summary {
   /*padding: 20px;
-        border-top: 1px solid #DDD;*/
+    border-top: 1px solid #DDD;*/
 }
 #course-curriculum-popup .learn-press-content-item-summary .quiz-question-title {
   margin-bottom: 20px;
@@ -800,8 +799,8 @@ body.block-content #learn-press-block-content {
 .single-quiz .quiz-description,
 .single-quiz .question-content {
   /*float: left;
-        width: 100%;
-        padding-right: 340px;*/
+    width: 100%;
+    padding-right: 340px;*/
 }
 .single-quiz .quiz-description .learn-press-question-title,
 .single-quiz .question-content .learn-press-question-title {
@@ -826,7 +825,7 @@ body.block-content #learn-press-block-content {
   position: absolute;
   border-radius: 50%;
   /*left: calc(50% - 100px);
-            top: calc(50% - 100px);*/
+      top: calc(50% - 100px);*/
   width: 260px;
   height: 260px;
   clip: rect(0, 260px, 260px, 130px);
@@ -836,7 +835,7 @@ body.block-content #learn-press-block-content {
   position: absolute;
   border-radius: 50%;
   /*left: calc(50% - 100px);
-                top: calc(50% - 100px);*/
+        top: calc(50% - 100px);*/
   width: 260px;
   height: 260px;
   clip: rect(0, 130px, 260px, 0);
@@ -913,7 +912,7 @@ body.block-content #learn-press-block-content {
   position: absolute;
   border-radius: 50%;
   /*left: calc(50% - 100px);
-            top: calc(50% - 100px);*/
+      top: calc(50% - 100px);*/
   width: 200px;
   height: 200px;
   clip: rect(0, 200px, 200px, 100px);
@@ -923,7 +922,7 @@ body.block-content #learn-press-block-content {
   position: absolute;
   border-radius: 50%;
   /*left: calc(50% - 100px);
-                top: calc(50% - 100px);*/
+        top: calc(50% - 100px);*/
   width: 200px;
   height: 200px;
   clip: rect(0, 100px, 200px, 0);
@@ -981,7 +980,7 @@ body.block-content #learn-press-block-content {
   position: absolute;
   border-radius: 50%;
   /*left: calc(50% - 100px);
-            top: calc(50% - 100px);*/
+      top: calc(50% - 100px);*/
   width: 200px;
   height: 200px;
   clip: rect(0, 200px, 200px, 100px);
@@ -991,7 +990,7 @@ body.block-content #learn-press-block-content {
   position: absolute;
   border-radius: 50%;
   /*left: calc(50% - 100px);
-                top: calc(50% - 100px);*/
+        top: calc(50% - 100px);*/
   width: 200px;
   height: 200px;
   clip: rect(0, 100px, 200px, 0);
@@ -1051,6 +1050,7 @@ body.block-content #learn-press-block-content {
   -o-border-radius: 4px;
   border-radius: 4px;
   overflow: hidden;
+  border-bottom: 2px solid #DDD;
 }
 .single-quiz .quiz-result .quiz-result-summary .quiz-result-field span,
 .single-quiz .quiz-result .quiz-result-summary .quiz-result-field span:after,

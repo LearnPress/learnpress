@@ -542,27 +542,8 @@ function learn_press_get_user_question_answer( $args = '' ) {
 	return $answered;
 }
 
-//function learn_press_get_course_
-/*
-$course = LP()->global['course'];
-$user   = learn_press_get_current_user();
-$item   = isset( $item ) ? $item : LP()->global['course-item'];
-$force  = isset( $force ) ? $force : false;
-if ( !$item ) {
-	return;
-}
-$quiz = LP_Quiz::get_quiz( $item->ID );
-/*if ( $user->has( 'quiz-status', 'started', $item->id, $course->id ) ) {
-	$question          = $quiz->get_current_question();
-	$item_quiz_title   = $question->get_title();
-	$item_quiz_content = $question->get_content();
-} else
-{
-	$item_quiz_title   = $item->title;
-	$item_quiz_content = $item->content;
-}*/
-require_once LP_PLUGIN_PATH . "/inc/course-init.php";
-/////////////////////////
+require_once LP_PLUGIN_PATH . "/inc/lp-init.php";
+
 function need_to_updating() {
 	ob_start();
 	learn_press_display_message( 'This function need to updating' );

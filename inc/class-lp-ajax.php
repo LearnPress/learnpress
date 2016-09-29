@@ -9,31 +9,25 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 	 * Class LP_AJAX
 	 */
 	class LP_AJAX {
-
+		/**
+		 * Init common ajax events
+		 */
 		public static function init() {
-
-			// learnpress_ajax_event => nopriv
 			$ajaxEvents = array(
-				//'list_quiz'            => false,
 				'load_quiz_question'  => true,
 				'load_prev_question'  => false,
 				'load_next_question'  => false,
-				//'save_question_answer' => false,
 				'finish_quiz'         => true,
 				'retake_quiz'         => true, // anonymous user can retake quiz
 				'take_free_course'    => false,
 				'load_lesson_content' => false,
 				'load_next_lesson'    => false,
 				'load_prev_lesson'    => false,
-				///'complete_lesson'     => false,
 				'finish_course'       => false,
 				'not_going'           => false,
-				//
 				'take_course'         => true,
 				'start_quiz'          => true,
-				'fetch_question'      => true,
-
-				////////////////////
+				'fetch_question'      => true
 			);
 
 			foreach ( $ajaxEvents as $ajax_event => $nopriv ) {
@@ -47,6 +41,11 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			LP_Request_Handler::register( 'lp-ajax', array( __CLASS__, 'do_ajax' ) );
 		}
 
+		/**
+		 * Do ajax if there is a 'lp-ajax' in $_REQUEST
+		 *
+		 * @param $var
+		 */
 		public static function do_ajax( $var ) {
 			if ( !defined( 'DOING_AJAX' ) ) {
 				define( 'DOING_AJAX', true );
@@ -67,6 +66,9 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			learn_press_send_json( $result );
 		}
 
+		/**
+		 * Become a teacher
+		 */
 		public static function _request_become_a_teacher() {
 			$response = learn_press_process_become_a_teacher_form(
 				array(
@@ -78,10 +80,21 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			learn_press_send_json( $response );
 		}
 
+		/**
+		 * Checkout process
+		 *
+		 * @return array|mixed|void
+		 */
 		public static function _request_checkout() {
 			return LP()->checkout->process_checkout_handler();
 		}
 
+		/**
+		 * Enroll course
+		 *
+		 * @return bool
+		 * @throws Exception
+		 */
 		public static function _request_enroll_course() {
 			$course_id = learn_press_get_request( 'enroll-course' );
 			if ( !$course_id ) {
@@ -115,6 +128,11 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			return false;
 		}
 
+		/**
+		 * Request login in checkout process
+		 *
+		 * @return array
+		 */
 		public static function _request_checkout_login() {
 			$result = array(
 				'result' => 'success'
@@ -149,6 +167,9 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			return $result;
 		}
 
+		/**
+		 * Request login in profile
+		 */
 		public static function _request_login() {
 			$data_str = learn_press_get_request( 'data' );
 			$data     = null;
@@ -170,7 +191,6 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 				'result'   => $error ? 'error' : 'success',
 				'redirect' => !$error && !empty( $data['redirect_to'] ) ? $data['redirect_to'] : ''
 			);
-//            var_dump($return);
 			if ( $error ) {
 				$return['message'] = array(
 					'title'   => __( 'Login failed', 'learnpress' ),
@@ -208,6 +228,9 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			learn_press_send_json( $return );
 		}
 
+		/**
+		 * Request add-to-cart a course
+		 */
 		public static function _request_add_to_cart() {
 			$cart      = learn_press_get_cart();
 			$course_id = learn_press_get_request( 'purchase-course' );
@@ -222,12 +245,11 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			} else {
 				wp_redirect( $return['redirect'] );
 			}
-//			learn_press_send_json($return);
-//			LP()->cart->add_to_cart( learn_press_get_request( 'add-course-to-cart' ) );
-//			echo '<pre>' . print_r( $res, true ) . '</pre>';
-//			exit( '' . __LINE__ );
 		}
 
+		/**
+		 * Request finish course
+		 */
 		public static function _request_finish_course() {
 			$nonce     = learn_press_get_request( 'security' );
 			$course_id = absint( learn_press_get_request( 'id' ) );
@@ -254,10 +276,12 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 				$response['result']  = 'error';
 			}
 
-			//$response['message'] = array( 'title' => __( 'Finish course', 'learnpress' ), 'message' => $message );
 			learn_press_send_json( $response );
 		}
 
+		/**
+		 * Request complete an item
+		 */
 		public static function _request_complete_item() {
 			$user      = learn_press_get_current_user();
 			$id        = learn_press_get_request( 'id' );
@@ -300,8 +324,10 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			learn_press_send_json( $response );
 		}
 
+		/**
+		 * Request load item content
+		 */
 		public static function _request_load_item() {
-			//add_action( 'get_header', array( __CLASS__, '_load_item_content' ) );
 			self::_load_item_content();
 		}
 
@@ -372,10 +398,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			global $quiz;
 			$quiz      = LP_Quiz::get_quiz( $quiz_id );
 			LP()->quiz = $quiz;
-
-
 			do_action( 'learn_press_load_quiz_question', $question_id, $quiz_id, $user_id );
-
 			$user = learn_press_get_current_user();
 			if ( $user->id != $user_id ) {
 				learn_press_send_json(
@@ -402,11 +425,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 				}
 				$question_answers = $user->get_question_answers( $quiz->id, $question_id );
 				$question->render( array( 'answered' => $question_answers ) );
-				/*
-								if ( $hint = get_post_meta( $question->id, '_lp_explanation', true ) ) {
-									///echo '<div id="learn-press-question-hint-' . $question->id . '" class="question-hint hide-if-js">' . $hint . '</div>';
-								}
-				*/
+
 				$content = ob_get_clean();
 				learn_press_send_json(
 					apply_filters( 'learn_press_load_quiz_question_result_data', array(
@@ -418,7 +437,6 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 						)
 					)
 				);
-
 			}
 		}
 
@@ -428,10 +446,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 		public static function finish_quiz() {
 			$user    = learn_press_get_current_user();
 			$quiz_id = learn_press_get_request( 'quiz_id' );
-			// save current answer as if user may change
-			//self::save_question_if_needed();
 			$user->finish_quiz( $quiz_id );
-
 			$response = array(
 				'redirect' => get_the_permalink( $quiz_id )
 			);
@@ -452,10 +467,8 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 					)
 				);
 			}
-
 			$quiz_id = learn_press_get_request( 'quiz_id' );
 			$user    = learn_press_get_current_user();
-
 			$response = $user->retake_quiz( $quiz_id );
 			learn_press_send_json( $response );
 		}
@@ -464,10 +477,8 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 		 * Load lesson content
 		 */
 		public static function load_lesson_content() {
-
 			learn_press_debug( $_REQUEST );
 			global $post;
-
 			$lesson_id = $_POST['lesson_id'];
 			$title     = get_the_title( $lesson_id );
 			$post      = get_post( $lesson_id );
@@ -628,41 +639,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			}
 			die();
 		}
-
-		/**************************/
-		/** DEPRECATED FUNCTIONS **/
-		/**************************/
-
-		/**
-		 *
-		 * public static function load_prev_question() {
-		 *
-		 * $prev_question_id = $_POST['prev_question_id'];
-		 * $question_id      = $_POST['question_id'];
-		 * $question_answer  = $_POST['question_answer'];
-		 * $quiz_id          = $_POST['quiz_id'];
-		 *
-		 * lpr_save_question_answer( $quiz_id, $question_id, $question_answer );
-		 *
-		 * do_action( 'lpr_load_question', $prev_question_id );
-		 *
-		 * die;
-		 * }
-		 *
-		 * public static function load_next_question() {
-		 *
-		 * $next_question_id = $_POST['next_question_id'];
-		 * $quiz_id          = $_POST['quiz_id'];
-		 * $question_id      = $_POST['question_id'];
-		 * $question_answer  = $_POST['question_answer'];
-		 *
-		 * lpr_save_question_answer( $quiz_id, $question_id, $question_answer );
-		 *
-		 * do_action( 'lpr_load_question', $next_question_id );
-		 *
-		 * die;
-		 * }
-		 */
 	}
 }
+// Call class
 LP_AJAX::init();

@@ -78,17 +78,19 @@ class LP_Settings {
 		}
 	}
 
+	/**
+	 * Get option recurse separated by DOT
+	 *
+	 * @param      $var
+	 * @param null $default
+	 *
+	 * @return null
+	 */
 	public function get( $var, $default = null ) {
 		if ( strpos( $var, 'learn_press_' ) === false ) {
 			$var = 'learn_press_' . $var;
 		}
 		$segs = explode( '.', $var );
-
-		if ( !array_key_exists( $segs[0], $this->_options ) ) {
-
-			//$this->_options[$segs[0]] = get_option( $segs[0] );
-		}
-
 		$return = $this->_get_option( $this->_options, $var, $default );
 		if ( $return == '' || is_null( $return ) ) {
 			$return = $default;

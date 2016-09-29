@@ -3,6 +3,7 @@
 /**
  * Class LP_Helper
  */
+defined( 'ABSPATH' ) || exit;
 class LP_Helper {
 	/**
 	 * Shuffle array and keep the keys

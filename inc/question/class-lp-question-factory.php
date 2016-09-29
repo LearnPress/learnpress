@@ -181,11 +181,11 @@ class LP_Question_Factory {
 	}
 
 	public static function show_hint( $id, $quiz_id ) {
-		learn_press_get_template( 'question/hint.php' );
+		learn_press_get_template( 'content-question/hint.php' );
 	}
 
 	public static function show_explanation( $id, $quiz_id ) {
-		learn_press_get_template( 'question/explanation.php' );
+		learn_press_get_template( 'content-question/explanation.php' );
 	}
 
 	public static function save_question( $quiz_id, $user_id ) {

@@ -340,7 +340,7 @@ class LP_Quiz_Factory {
 		$quiz->current_question     = LP_Question_Factory::get_question( $question_id );
 		LP()->global['course']      = LP_Course::get_course( $course_id );
 		LP()->global['course-item'] = $quiz;
-		$_REQUEST['html']           = learn_press_get_template_content( 'question/hint.php' );
+		$_REQUEST['html']           = learn_press_get_template_content( 'content-question/hint.php' );
 		learn_press_send_json( $_REQUEST );
 		die();
 	}

@@ -1,5 +1,4 @@
 <?php
-
 /*
 Plugin Name: LearnPress
 Plugin URI: http://thimpress.com/learnpress
@@ -642,13 +641,10 @@ function LP() {
 function load_learn_press() {
 	_deprecated_function( __FUNCTION__, '1.1', 'LP' );
 	return LP();
-
-	/*$GLOBALS['learn_press'] = array();
-	$GLOBALS['LearnPress']  = LP();*/
 }
 
 /**
  * Done! entry point of the plugin
  * Create new instance of LearnPress and put it to global
  */
-$GLOBALS['learnpress'] = LP();
+$GLOBALS['LearnPress'] = LP();

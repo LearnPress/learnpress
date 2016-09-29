@@ -649,16 +649,13 @@ class LP_Abstract_User {
 						$item_statuses[$this->id . '-' . $course_id . '-' . $row->id] = $row->status;
 					}
 				}
-				/*
-				if ( !empty( $this->_course_items[$item_id] ) ) {
-					if ( $this->_course_items[$item_id] == 'lp_lesson' ) {
-						$status = $this->get_lesson_status( $item_id, $course_id, $force );
-					} elseif ( $this->_course_items[$item_id] == 'lp_quiz' ) {
-						$status = $this->get_quiz_status( $item_id, $course_id, $force );
+			}
+			if ( $item_ids ) {
+				foreach ( $item_ids as $id ) {
+					if ( !array_key_exists( $id, $item_statuses ) ) {
+						$item_statuses[$this->id . '-' . $course_id . '-' . $id] = false;
 					}
-				}*/
-			} else {
-				$item_statuses[$key] = false;
+				}
 			}
 			LP_Cache::set_item_statuses( $item_statuses );
 		}
@@ -805,7 +802,7 @@ class LP_Abstract_User {
 				if ( $item_ids && $meta = $this->_get_quiz_meta( $item_ids ) ) {
 					$maps = array(
 						'questions'        => 'questions',
-						'current_question'         => 'question',
+						'current_question' => 'question',
 						'question_answers' => 'question_answers',
 						'question_checked' => 'question_checked'
 					);
@@ -1262,7 +1259,7 @@ class LP_Abstract_User {
 
 	public function get_incomplete_items( $course_id ) {
 		global $wpdb;
-		$query = $wpdb->prepare( "
+		$query    = $wpdb->prepare( "
 			SELECT user_item_id
 			FROM {$wpdb->learnpress_user_items}
 			WHERE user_id = %d
@@ -1280,7 +1277,7 @@ class LP_Abstract_User {
 			if ( !$this->can( 'finish-course', $course_id ) && 1 == 0 ) {
 				return false;
 			} else {
-				$updated = $wpdb->update(
+				$updated   = $wpdb->update(
 					$wpdb->prefix . 'learnpress_user_items',
 					array(
 						'end_time' => current_time( 'mysql' ),
@@ -2170,7 +2167,7 @@ class LP_Abstract_User {
 		}
 
 		$course = learn_press_get_course( $course_id );
-		$ref_id   = 0;
+		$ref_id = 0;
 		if ( $course->is_free() ) {
 			# 1 create order
 			$order_data = array(
@@ -2193,7 +2190,7 @@ class LP_Abstract_User {
 			learn_press_add_order_item( $order->id, $item );
 			$ref_id = $order->id;
 		} else {
-			$ref_id   = $this->get_course_order( $course_id );
+			$ref_id = $this->get_course_order( $course_id );
 		}
 
 		/**

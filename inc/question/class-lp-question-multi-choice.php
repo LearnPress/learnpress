@@ -252,7 +252,7 @@ class LP_Question_Multi_Choice extends LP_Abstract_Question {
 		if ( null === $answered ) {
 			$answered = $this->get_user_answered( $args );
 		}
-		$view = learn_press_locate_template( 'question/multi-choice/answer-options.php' );
+		$view = learn_press_locate_template( 'content-question/multi-choice/answer-options.php' );
 		include $view;
 	}
 

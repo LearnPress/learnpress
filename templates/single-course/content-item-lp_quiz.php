@@ -20,7 +20,7 @@ $can_view_item	= $user->can( 'view-item', $quiz->id, $course->id );
 			<h4><?php echo $item_quiz_title; ?></h4>
 		<?php endif; ?>
 			
-		<?php $have_questions && learn_press_get_template( 'quiz/countdown-simple.php' ); ?>
+		<?php $have_questions && learn_press_get_template( 'content-quiz/countdown-simple.php' ); ?>
 	</div>
 	<div>
 		<?php
@@ -35,23 +35,23 @@ $can_view_item	= $user->can( 'view-item', $quiz->id, $course->id );
 	<div id="quiz-<?php echo $quiz->id; ?>" <?php learn_press_quiz_class( 'learn-press-content-item-summary' ); ?>>
 		<?php if ( $user->has_quiz_status( array( 'completed' ), $quiz->id, $course->id ) ): ?>
 
-			<?php learn_press_get_template( 'quiz/result.php' ); ?>
+			<?php learn_press_get_template( 'content-quiz/result.php' ); ?>
 
 		<?php elseif ( $user->has( 'quiz-status', 'started', $quiz->id, $course->id ) ): ?>
 			<?php if ( $have_questions ): ?>
-				<?php learn_press_get_template( 'quiz/question-content.php' ); ?>
-			<?php endif;//learn_press_get_template( 'quiz/countdown.php' ); ?>
+				<?php learn_press_get_template( 'content-quiz/question-content.php' ); ?>
+			<?php endif;//learn_press_get_template( 'content-quiz/countdown.php' ); ?>
 
 		<?php else: ?>
 
-			<?php learn_press_get_template( 'quiz/description.php' ); ?>
-			<?php learn_press_get_template( 'quiz/intro.php' ); ?>
+			<?php learn_press_get_template( 'content-quiz/description.php' ); ?>
+			<?php learn_press_get_template( 'content-quiz/intro.php' ); ?>
 
 		<?php endif; ?>
 
 		<?php if ( $have_questions ) { ?>
-			<?php learn_press_get_template( 'quiz/buttons.php' ); ?>
-			<?php learn_press_get_template( 'quiz/questions.php' ); ?>
+			<?php learn_press_get_template( 'content-quiz/buttons.php' ); ?>
+			<?php learn_press_get_template( 'content-quiz/questions.php' ); ?>
 		<?php } else { ?>
 			<?php learn_press_display_message( __( 'No questions', 'learnpress' ) ); ?>
 		<?php } ?>

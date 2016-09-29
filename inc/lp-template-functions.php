@@ -350,7 +350,7 @@ if ( !function_exists( 'learn_press_course_content_lesson' ) ) {
 	 * Display course description
 	 */
 	function learn_press_course_content_lesson() {
-		learn_press_get_template( 'lesson/summary.php' );
+		learn_press_get_template( 'content-lesson/summary.php' );
 	}
 }
 
@@ -413,7 +413,7 @@ if ( !function_exists( 'learn_press_course_lesson_description' ) ) {
 	 * Display course lesson description
 	 */
 	function learn_press_course_lesson_description() {
-		learn_press_get_template( 'lesson/description.php' );
+		learn_press_get_template( 'content-lesson/description.php' );
 	}
 }
 
@@ -422,7 +422,7 @@ if ( !function_exists( 'learn_press_course_lesson_complete_button' ) ) {
 	 * Display lesson complete button
 	 */
 	function learn_press_course_lesson_complete_button() {
-		learn_press_get_template( 'lesson/complete-button.php' );
+		learn_press_get_template( 'content-lesson/complete-button.php' );
 	}
 }
 
@@ -431,7 +431,7 @@ if ( !function_exists( 'learn_press_course_lesson_navigation' ) ) {
 	 * Display lesson navigation
 	 */
 	function learn_press_course_lesson_navigation() {
-		learn_press_get_template( 'lesson/navigation.php' );
+		learn_press_get_template( 'content-lesson/navigation.php' );
 	}
 }
 
@@ -782,7 +782,7 @@ if ( !function_exists( 'learn_press_single_quiz_title' ) ) {
 	 * Output the title of the quiz
 	 */
 	function learn_press_single_quiz_title() {
-		learn_press_get_template( 'quiz/title.php' );
+		learn_press_get_template( 'content-quiz/title.php' );
 	}
 }
 
@@ -791,7 +791,7 @@ if ( !function_exists( 'learn_press_single_quiz_preview_mode' ) ) {
 	 * Output the title of the quiz
 	 */
 	function learn_press_single_quiz_preview_mode() {
-		learn_press_get_template( 'quiz/preview-mode.php' );
+		learn_press_get_template( 'content-quiz/preview-mode.php' );
 	}
 }
 
@@ -800,19 +800,19 @@ if ( !function_exists( 'learn_press_single_quiz_description' ) ) {
 	 * Output the content of the quiz
 	 */
 	function learn_press_single_quiz_description() {
-		learn_press_get_template( 'quiz/description.php' );
+		learn_press_get_template( 'content-quiz/description.php' );
 	}
 }
 
 if ( !function_exists( 'learn_press_single_quiz_left_start_wrap' ) ) {
 	function learn_press_single_quiz_left_start_wrap() {
-		learn_press_get_template( 'quiz/left-start-wrap.php' );
+		learn_press_get_template( 'content-quiz/left-start-wrap.php' );
 	}
 }
 
 if ( !function_exists( 'learn_press_single_quiz_left_end_wrap' ) ) {
 	function learn_press_single_quiz_left_end_wrap() {
-		learn_press_get_template( 'quiz/left-end-wrap.php' );
+		learn_press_get_template( 'content-quiz/left-end-wrap.php' );
 	}
 }
 
@@ -821,7 +821,7 @@ if ( !function_exists( 'learn_press_single_quiz_question' ) ) {
 	 * Output the single question for quiz
 	 */
 	function learn_press_single_quiz_question() {
-		learn_press_get_template( 'quiz/content-question.php' );
+		learn_press_get_template( 'content-quiz/content-question.php' );
 	}
 }
 
@@ -830,13 +830,13 @@ if ( !function_exists( 'learn_press_single_quiz_questions' ) ) {
 	 * Output the list of questions for quiz
 	 */
 	function learn_press_single_quiz_questions() {
-		learn_press_get_template( 'quiz/questions.php' );
+		learn_press_get_template( 'content-quiz/questions.php' );
 	}
 }
 
 if ( !function_exists( 'learn_press_after_quiz_question_title' ) ) {
 	function learn_press_single_quiz_question_answer( $question_id = null, $quiz_id = null ) {
-		learn_press_get_template( 'quiz/question-answer.php', array( 'question_id' => $question_id, 'quiz_id' => $quiz_id ) );
+		learn_press_get_template( 'content-quiz/question-answer.php', array( 'question_id' => $question_id, 'quiz_id' => $quiz_id ) );
 	}
 }
 
@@ -845,7 +845,7 @@ if ( !function_exists( 'learn_press_single_quiz_result' ) ) {
 	 * Output the result for the quiz
 	 */
 	function learn_press_single_quiz_result() {
-		learn_press_get_template( 'quiz/result.php' );
+		learn_press_get_template( 'content-quiz/result.php' );
 	}
 }
 
@@ -854,7 +854,7 @@ if ( !function_exists( 'learn_press_single_quiz_history' ) ) {
 	 * Output the history of a quiz
 	 */
 	function learn_press_single_quiz_history() {
-		learn_press_get_template( 'quiz/history.php' );
+		learn_press_get_template( 'content-quiz/history.php' );
 	}
 }
 
@@ -863,7 +863,7 @@ if ( !function_exists( 'learn_press_single_quiz_sidebar' ) ) {
 	 * Output the sidebar for a quiz
 	 */
 	function learn_press_single_quiz_sidebar() {
-		learn_press_get_template( 'quiz/sidebar.php' );
+		learn_press_get_template( 'content-quiz/sidebar.php' );
 	}
 }
 
@@ -872,7 +872,7 @@ if ( !function_exists( 'learn_press_single_quiz_timer' ) ) {
 	 * Output the quiz countdown timer
 	 */
 	function learn_press_single_quiz_timer() {
-		learn_press_get_template( 'quiz/timer.php' );
+		learn_press_get_template( 'content-quiz/timer.php' );
 	}
 }
 
@@ -881,7 +881,7 @@ if ( !function_exists( 'learn_press_single_quiz_buttons' ) ) {
 	 * Output the buttons for quiz actions
 	 */
 	function learn_press_single_quiz_buttons() {
-		learn_press_get_template( 'quiz/buttons.php' );
+		learn_press_get_template( 'content-quiz/buttons.php' );
 	}
 }
 
@@ -1405,7 +1405,7 @@ if ( !function_exists( 'learn_press_single_quiz_questions_nav' ) ) {
 	 * Output the navigation to next and previous questions
 	 */
 	function learn_press_single_quiz_questions_nav() {
-		learn_press_get_template( 'quiz/nav.php' );
+		learn_press_get_template( 'content-quiz/nav.php' );
 	}
 }
 
@@ -1427,7 +1427,7 @@ if ( !function_exists( 'learn_press_single_quiz_information' ) ) {
 	 *
 	 */
 	function learn_press_single_quiz_information() {
-		learn_press_get_template( 'quiz/intro.php' );
+		learn_press_get_template( 'content-quiz/intro.php' );
 	}
 }
 
@@ -1436,7 +1436,7 @@ if ( !function_exists( 'learn_press_single_quiz_information' ) ) {
 	 *
 	 */
 	function learn_press_single_quiz_information() {
-		learn_press_get_template( 'quiz/intro.php' );
+		learn_press_get_template( 'content-quiz/intro.php' );
 	}
 }
 
@@ -1445,7 +1445,7 @@ if ( !function_exists( 'learn_press_single_quiz_sidebar_buttons' ) ) {
 	 *
 	 */
 	function learn_press_single_quiz_sidebar_buttons() {
-		learn_press_get_template( 'quiz/sidebar-buttons.php' );
+		learn_press_get_template( 'content-quiz/sidebar-buttons.php' );
 	}
 }
 

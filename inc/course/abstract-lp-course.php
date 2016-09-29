@@ -1077,7 +1077,7 @@ abstract class LP_Abstract_Course
         );
         if ($next_item = $this->get_next_item($args)) {
             ob_start();
-            learn_press_get_template('lesson/next-button.php', array('item' => $next_item, 'course' => $this));
+            learn_press_get_template('content-lesson/next-button.php', array('item' => $next_item, 'course' => $this));
             return ob_get_clean();
         }
         return false;
@@ -1095,7 +1095,7 @@ abstract class LP_Abstract_Course
         );
         if ($next_item = $this->get_next_item($args)) {
             ob_start();
-            learn_press_get_template('lesson/prev-button.php', array('item' => $next_item, 'course' => $this));
+            learn_press_get_template('content-lesson/prev-button.php', array('item' => $next_item, 'course' => $this));
             return ob_get_clean();
         }
         return false;

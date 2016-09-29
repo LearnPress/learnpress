@@ -146,7 +146,6 @@ class LP_Assets {
 
 	public static function add_default_scripts( &$scripts ) {
 		$default_path = '/wp-content/plugins/learnpress/assets/';
-		//$scripts->default_dirs[] = $default_path;
 		$suffix = '';
 		$deps   = array( 'jquery', 'backbone', 'utils' );
 
@@ -205,17 +204,10 @@ class LP_Assets {
 		$styles->default_dirs[]  = $default_dirs;
 
 		self::add_default_styles( $styles );
-
-		//LP_Assets::enqueue_style( 'select2', RWMB_CSS_URL . 'select2/select2.css' );
-		//LP_Assets::enqueue_script( 'learn-press-select2', RWMB_JS_URL . 'select2/select2.min.js' );
-		//LP_Assets::enqueue_script( 'learn-press-modal-search-items' );
-		//LP_Assets::enqueue_script( 'learn-press-meta-box-course', learn_press_plugin_url( 'assets/js/admin/meta-box-course.js' ), array( 'jquery' ) );
-		//$styles->add( 'learn-press-meta-box-question', $default_path . 'css/admin/meta-box-question' . $suffix . '.css' );
 	}
 
 	public static function add_default_styles( &$styles ) {
 		$default_path = '/wp-content/plugins/learnpress/assets/';
-		//$styles->default_dirs[] = $default_path;
 		$suffix = '';
 		// global
 		$styles->add( 'learn-press-global', $default_path . 'css/global' . $suffix . '.css' );
@@ -228,8 +220,6 @@ class LP_Assets {
 
 		// frontend
 		$styles->add( 'learn-press-style', $default_path . 'css/learnpress.css' );
-
-		//print_r( $styles );
 	}
 
 	/**
@@ -290,6 +280,9 @@ class LP_Assets {
 		}
 	}
 
+	/**
+	 * @param $handle
+	 */
 	public static function add_script_concat( $handle ) {
 		global $wp_scripts;
 		if ( !$wp_scripts ) {
@@ -306,6 +299,9 @@ class LP_Assets {
 		}
 	}
 
+	/**
+	 * @param $handle
+	 */
 	public static function add_style_concat( $handle ) {
 		global $wp_styles;
 		if ( !$wp_styles ) {
@@ -352,7 +348,6 @@ class LP_Assets {
 		if ( !in_array( $handle, self::$styles ) && $src ) {
 			self::add_style( $handle, $src, $deps, $version, $media );
 		}
-		//wp_enqueue_style( $handle );
 		self::$_enqueue_styles[$handle] = func_get_args();
 	}
 
@@ -418,11 +413,13 @@ class LP_Assets {
 		if ( wp_script_is( $handle ) && $data ) {
 			$name = str_replace( '-', '_', $handle ) . '_params';
 			unset( self::$wp_params[$handle] );
-			//$data = learn_press_sanitize_json( $data );
-			//wp_localize_script( $handle, $name, apply_filters( $name, $data ) );
 		}
 	}
 
+	/**
+	 * @param        $code
+	 * @param string $handle
+	 */
 	public static function add_script_tag( $code, $handle = '' ) {
 		if ( empty( self::$wp_script_codes[$handle] ) ) {
 			self::$wp_script_codes[$handle] = '';
@@ -430,10 +427,19 @@ class LP_Assets {
 		self::$wp_script_codes[$handle] .= preg_replace( '!</?script(.*)>!', '', $code );
 	}
 
+	/**
+	 * wp_assets
+	 */
 	public static function wp_assets() {
 		do_action( 'learn_press_print_assets', is_admin() );
 	}
 
+	/**
+	 * @param $src
+	 * @param $handle
+	 *
+	 * @return mixed
+	 */
 	public static function script_params( $src, $handle ) {
 		$data = !empty( self::$wp_params[$handle] ) ? self::$wp_params[$handle] : false;
 		if ( wp_script_is( $handle ) && $data ) {
@@ -448,6 +454,9 @@ class LP_Assets {
 		return $src;
 	}
 
+	/**
+	 * localize_printed_scripts
+	 */
 	public static function localize_printed_scripts() {
 		if ( self::$scripts ) foreach ( self::$scripts as $handle ) {
 			self::localize_script( $handle );
@@ -460,6 +469,9 @@ class LP_Assets {
 
 	}
 
+	/**
+	 * _enqueue_scripts
+	 */
 	public static function _enqueue_scripts() {
 		if ( strpos( current_action(), 'enqueue_scripts' ) === false ) {
 			return;
@@ -486,6 +498,9 @@ class LP_Assets {
 		return $tag;
 	}
 
+	/**
+	 * include_script_file
+	 */
 	public function include_script_file() {
 		global $wp_scripts, $compress_scripts;
 
@@ -513,7 +528,9 @@ class LP_Assets {
 			echo $wp_scripts->print_html;
 	}
 
-
+	/**
+	 * include_stylesheet_file
+	 */
 	public function include_stylesheet_file() {
 
 		if ( did_action( 'learn_press_included_style_file' ) ) {
@@ -551,7 +568,7 @@ class LP_Assets {
 	}
 
 	/**
-	 * Load assets for frontend
+	 * Load assets
 	 */
 	public function load_scripts() {
 		if ( is_admin() ) {
@@ -610,4 +627,5 @@ class LP_Assets {
 		self::enqueue_script( 'learn-press-become-teacher' );
 	}
 }
+// Call class
 return new LP_Assets();

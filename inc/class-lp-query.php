@@ -3,6 +3,9 @@
 /**
  * Class LP_Query
  */
+
+defined( 'ABSPATH' ) || exit;
+
 class LP_Query {
 	/**
 	 * @var array
@@ -13,12 +16,9 @@ class LP_Query {
 	 * LP_Query constructor.
 	 */
 	public function __construct() {
-		//add_action( 'wp', array( $this, 'parse_query_vars_to_request' ) );
 		add_action( 'init', array( $this, 'add_rewrite_tags' ), 1000, 0 );
 		add_action( 'init', array( $this, 'add_rewrite_rules' ), 1000, 0 );
-
 		add_action( 'parse_query', array( $this, 'parse_request' ), 1000, 1 );
-		//add_filter( 'parse_request', array( $this, 'parse_request' ), 1000, 1 );
 	}
 
 	/**
@@ -45,9 +45,6 @@ class LP_Query {
 		$slug = preg_replace( '!^/!', '', $post_types[$course_type]->rewrite['slug'] );
 
 		$match = '^' . $slug . '/([^/]*)/(' . $post_types['lp_quiz']->rewrite['slug'] . ')?/([^/]*)?/?([^/]*)?';
-
-		/*if ( ! empty($req_uri) && strpos($match, $req_uri) === 0 && $req_uri != $request )
-			$request_match = $req_uri . '/' . $request;*/
 
 		$request_match = $request;
 		$course_id     = 0;
@@ -82,8 +79,6 @@ class LP_Query {
 				} else {
 					// If user is viewing a question then update current question for user
 					$question = learn_press_get_post_by_name( $matches[4], 'lp_question' );
-					//$course   = learn_press_get_post_by_name( $q->query_vars['lp_course'], 'lp_course' );
-
 					/**
 					 * If user has completed a quiz but they are accessing to a question inside quiz,
 					 * redirect them back to quiz to show results of that quiz instead
@@ -104,7 +99,6 @@ class LP_Query {
 						if ( $history_id = $wpdb->get_var( $query ) ) {
 							learn_press_update_user_item_meta( $history_id, 'current_question', $question->ID );
 						}
-						//LP_Cache::flush();
 					}
 				}
 			}
@@ -186,13 +180,10 @@ class LP_Query {
 		// lesson
 		$course_type = 'lp_course';
 		$post_types  = get_post_types( '', 'objects' );
-
 		$slug = preg_replace( '!^/!', '', $post_types[$course_type]->rewrite['slug'] );
-
 		$current_url  = learn_press_get_current_url();
 		$query_string = str_replace( trailingslashit( get_site_url() ), '', $current_url );
-		//if ( preg_match( '!^' . $slug . '/([^/]*)/?(.*)?!', $query_string, $matches ) ) {
-		//if ( !empty( $matches[2] ) ) {
+
 		add_rewrite_rule(
 			'^' . $slug . '/([^/]*)/(' . $post_types['lp_lesson']->rewrite['slug'] . ')?/(.*)?',
 			'index.php?' . $course_type . '=$matches[1]&lesson=$matches[3]',
@@ -205,48 +196,7 @@ class LP_Query {
 			'index.php?' . $course_type . '=$matches[1]&quiz=$matches[3]&question=$matches[4]',
 			'top'
 		);
-		//}
 
-		//global $wp_rewrite;
-		//unset( $wp_rewrite->rules[$slug . '/(.+?)(?:/([0-9]+))?/?$'] );
-		//}
-		//}
-
-
-		/*add_rewrite_rule(
-			apply_filters( 'learn_press_lesson_rewrite_rule', '^' . $slug . '/([^/]*)/?([^/]*)?/?' ),
-			apply_filters( 'learn_press_lesson_rewrite_rule_redirect', 'index.php?' . $course_type . '=$matches[1]&lesson=$matches[2]' ),
-			'top'
-		);*/
-
-		// question
-		/*$quiz_type   = LP_QUIZ_CPT;
-		$post_types  = get_post_types( array( 'name' => $quiz_type ), 'objects' );
-		$slug        = $post_types[$quiz_type]->rewrite['slug'];
-		$current_uri = learn_press_get_current_url();
-		if ( ( $quiz_endpoint = LP()->settings->get( 'quiz_endpoints.results' ) ) && preg_match( '/\/(' . $quiz_endpoint . ')\/([0-9]+)?/', $current_uri, $matches ) ) {
-			$rewrite_redirect = 'index.php?' . $quiz_type . '=$matches[1]';
-			if ( !empty( $matches[1] ) ) {
-				if ( !empty( $matches[2] ) ) {
-					$rewrite_redirect .= '&' . $matches[1] . '=' . $matches[2];
-				} else {
-					$rewrite_redirect .= '&' . $matches[1] . '=0';
-				}
-			}
-			add_rewrite_rule(
-				apply_filters( 'learn_press_quiz_results_rewrite_rule', '^' . $slug . '/([^/]*)/([^/]*)/?' ),
-				apply_filters( 'learn_press_quiz_results_rewrite_rule_redirect', $rewrite_redirect ),
-				'top'
-			);
-
-		} else {
-			add_rewrite_rule(
-				apply_filters( 'learn_press_question_rewrite_rule', '^' . $slug . '/([^/]*)/([^/]*)/?' ),
-				apply_filters( 'learn_press_question_rewrite_rule_redirect', 'index.php?' . $quiz_type . '=$matches[1]&question=$matches[2]' ),
-				'top'
-			);
-		}
-		*/
 		if ( $profile_id = learn_press_get_page_id( 'profile' ) ) {
 			add_rewrite_rule(
 				'^' . $rewrite_prefix . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?([^/]*)/?([^/]*)/?([^/]*)/?([^/]*)/?',
@@ -254,11 +204,14 @@ class LP_Query {
 				'top'
 			);
 		}
-
-
 		do_action( 'learn_press_add_rewrite_rules' );
 	}
 
+	/**
+	 * @param $query
+	 *
+	 * @return array
+	 */
 	function parse_course_request( $query ) {
 		$return = array();
 		if ( !empty( $query ) ) {

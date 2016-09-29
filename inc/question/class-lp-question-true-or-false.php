@@ -85,7 +85,7 @@ class LP_Question_True_Or_False extends LP_Abstract_Question {
 		if ( null === $answered ) {
 			$answered = $this->get_user_answered( $args );
 		}
-		$view     = learn_press_locate_template( 'question/single-choice/answer-options.php' );
+		$view     = learn_press_locate_template( 'content-question/single-choice/answer-options.php' );
 		include $view;
 	}
 
