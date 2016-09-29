@@ -598,6 +598,7 @@ class LP_Assets {
 		self::enqueue_script( 'learn-press-jalerts' );
 		self::enqueue_script( 'learn-press-global' );
 		self::enqueue_script( 'learn-press-js' );
+                self::enqueue_script( 'learn-press-add-to-cart' );
 		if ( learn_press_is_course() ) {
 			self::enqueue_script( 'learn-press-single-course' );
 			self::enqueue_script( 'learn-press-course-quiz' );
