@@ -1517,7 +1517,6 @@ function learn_press_template_loader( $template ) {
 		if ( !learn_press_user_can_view_order( !empty( $_REQUEST['order_id'] ) ? $_REQUEST['order_id'] : 0 ) ) {
 			learn_press_404_page();
 		}
-		global $post;
 		$post->post_content = '[learn_press_confirm_order]';
 	} elseif ( ( $page_id = learn_press_get_page_id( 'become_teacher_form' ) ) && is_page( $page_id ) ) {
 
@@ -1529,7 +1528,6 @@ function learn_press_template_loader( $template ) {
 			$find[] = "{$theme_template}/{$file}";
 		} else {
 			if ( learn_press_is_course() ) {
-
 				$file   = 'single-course.php';
 				$find[] = $file;
 				$find[] = "{$theme_template}/{$file}";
@@ -1545,10 +1543,15 @@ function learn_press_template_loader( $template ) {
 	if ( $file ) {
 		$template = locate_template( array_unique( $find ) );
 		if ( !$template ) {
+			/*if ( $file == 'single-course.php' ) {
+				add_filter('get_template_part_content', function(){
+					echo 'xxxxxxxxxxxxxxxxx';
+				});
+				$template = get_template_directory() . '/index.php';
+			}*/
 			$template = learn_press_plugin_path( 'templates/' ) . $file;
 		}
 	}
-
 	return $template;
 }
 

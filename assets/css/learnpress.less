@@ -209,17 +209,17 @@
         }
         .course-thumbnail {
             position: relative;
-            &img {
+            img {
                 max-width: 100%;
                 height: auto;
             }
             &:after {
-                box-shadow: 0 0 20px rgb(33, 4, 4) inset;
-                content: '';
+                box-shadow: 0 0 20px #FFF inset;
                 position: absolute;
                 width: 100%;
                 height: 100%;
                 left: 0;
+                top:0;
             }
         }
         .course-info {
@@ -899,8 +899,6 @@ body.block-content {
                 padding: 3px 10px;
                 .border-radius(4px);
                 overflow: hidden;
-                border-bottom: 2px solid #DDD;
-
                 span, span:after, &:before {
                     display: block;
                     position: absolute;

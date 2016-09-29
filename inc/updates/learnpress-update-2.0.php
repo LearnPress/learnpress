@@ -31,6 +31,19 @@ if ( LEARN_PRESS_UPDATE_DATABASE ) {
 		", 'start', 'end', 'status' );
 		$wpdb->query( $query );
 
+		// update meta_key name
+		/*
+		$args  = array( 'current_question', '_quiz_question', 'questions', '_quiz_questions', 'question_answers', '_quiz_question_answers', 'current_question', 'questions', 'question_answers' );
+		$query = $wpdb->prepare( "
+			UPDATE {$wpdb->prefix}learnpress_user_itemmeta
+			SET meta_key = CASE
+				WHEN meta_key = %s THEN %s
+				WHEN meta_key = %s THEN %s
+				WHEN meta_key = %s THEN %s
+			END
+			WHERE meta_key IN(%s, %s, %s)
+		", $args );*/
+
 		//fix course_id is empty in quiz item
 		$query = $wpdb->prepare( "
 			SELECT user_item_id, item_id
@@ -85,7 +98,7 @@ if ( LEARN_PRESS_UPDATE_DATABASE ) {
 		$query = "ALTER TABLE {$wpdb->learnpress_user_course_items} MODIFY COLUMN `user_course_item_id` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0;";
 		$wpdb->query( $query );
 
-		learn_press_update_log( '1.0.9', array( 'time' => time() ) );
+		learn_press_update_log( '2.0', array( 'time' => time() ) );
 	} catch ( Exception $ex ) {
 		$wpdb->query( "ROLLBACK;" );
 	}

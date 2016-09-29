@@ -22,9 +22,13 @@ switch ( $template ) {
 		echo '<div id="primary" class="content-area"><div id="content" role="main" class="site-content twentyfourteen"><div class="tfwc">';
 		break;
 	case 'twentyfifteen' :
-
 		echo '<div id="primary" class="content-area">';
 		echo "\t" . '<main id="main" class="site-main twentyfifteen" role="main">';
+		echo "\t\t" . '<div class="hentry">';
+		echo "\t\t\t" . '<div class="entry-content">';
+		break;
+	case 'twentysixteen' :
+		echo '<div id="primary" class="content-area twentysixteen"><main id="main" class="site-main" role="main">';
 		break;
 	default :
 		echo '<div id="container" class="container-wrap"><div id="content" role="main" class="container">';

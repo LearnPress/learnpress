@@ -7,7 +7,6 @@
 if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
-
 $template = get_option( 'template' );
 echo '</div><!-- // .learnpress-content -->';
 switch ( $template ) {
@@ -25,6 +24,9 @@ switch ( $template ) {
 		get_sidebar( 'content' );
 		break;
 	case 'twentyfifteen' :
+		echo '</div></div></main></div>';
+		break;
+	case 'twentysixteen' :
 		echo '</div></div>';
 		break;
 	default :

@@ -14,7 +14,7 @@ $quiz        = LP()->global['course-item'];
 $user        = LP()->user;
 $completed   = $user->get_quiz_status( $quiz->id ) == 'completed';
 $show_result = $quiz->show_result == 'yes';
-$checked     = $user->has_checked_answer( $this->id, $quiz->id ) || $completed;
+$checked     = $user->has_checked_answer( $this->id, $quiz->id );
 
 $args = array();
 if ( $show_result && $completed ) {
@@ -27,6 +27,7 @@ if ( $show_result && $completed ) {
 		<?php
 		foreach ( $answers as $k => $answer ):
 			$answer_class = array( 'answer-option' );
+			$disabled = '';
 			if ( $completed && $show_result || $checked ) {
 				$answer_correct = true;
 				if ( $checked && $answer['is_true'] == 'yes' ) {
@@ -41,14 +42,14 @@ if ( $show_result && $completed ) {
 				if ( !$answer_correct ) {
 					$answer_class[] = 'user-answer-false';
 				}
+				$disabled = ' disabled="disabled"';
 			}
 			?>
 			<li<?php echo $answer_class ? ' class="' . join( ' ', $answer_class ) . '"' : ''; ?> >
 
 				<?php do_action( 'learn_press_before_question_answer_text', $answer, $this ); ?>
-
 				<label>
-					<input type="radio" name="learn-press-question-<?php echo $this->id; ?>" <?php checked( $this->is_selected_option( $answer, $answered ) ); ?> value="<?php echo $answer['value']; ?>" <?php echo $checked ? 'disabled="disabled"' : ''; ?>>
+					<input type="radio" name="learn-press-question-<?php echo $this->id; ?>" <?php checked( $this->is_selected_option( $answer, $answered ) ); ?> value="<?php echo $answer['value']; ?>" <?php echo $disabled; ?>>
 					<p class="auto-check-lines"><?php echo apply_filters( 'learn_press_question_answer_text', $answer['text'], $answer, $this ); ?></p>
 				</label>
 

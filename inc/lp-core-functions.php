@@ -1176,7 +1176,11 @@ function learn_press_get_currency_symbol( $currency = '' ) {
 
 function learn_press_get_page_link( $key ) {
 	$page_id = LP()->settings->get( $key . '_page_id' );
-	$link    = apply_filters( 'learn_press_get_page_link', get_permalink( $page_id ), $page_id, $key );
+	if ( get_post_status( $page_id ) == 'publish' ) {
+		$link = apply_filters( 'learn_press_get_page_link', get_permalink( $page_id ), $page_id, $key );
+	} else {
+		$link = '';
+	}
 	return apply_filters( 'learn_press_get_page_' . $key . '_link', $link, $page_id );
 }
 
@@ -1870,7 +1874,6 @@ function learn_press_clear_notices() {
  */
 function learn_press_print_notices( $clear = true ) {
 	if ( $notices = learn_press_session_get( 'notices' ) ) {
-
 		// Allow to reorder the position of notices
 		$notice_types = apply_filters( 'learn_press_notice_types', array( 'error', 'success', 'notice' ) );
 
@@ -1920,7 +1923,7 @@ function _learn_press_print_notices( $content ) {
 }
 
 add_action( 'learn_press_before_single_course_summary', '_learn_press_print_notices', 0 );
-add_filter( 'the_content', '_learn_press_print_notices', 1000 );
+//add_filter( 'the_content', '_learn_press_print_notices', 1000 );
 
 /**
  * Filter the login url so third-party can be customize
@@ -2300,11 +2303,16 @@ function learn_press_user_profile_link( $user_id = 0, $tab = null ) {
 	if ( $tab ) {
 		$args['tab'] = $tab;
 	}
-	$args = array_map( '_learn_press_urlencode', $args );
-	if ( get_option( 'permalink_structure' ) /*&& learn_press_get_page_id( 'profile' )*/ ) {
-		$url = learn_press_get_page_link( 'profile' ) . join( "/", array_values( $args ) );
+	$args         = array_map( '_learn_press_urlencode', $args );
+	$profile_link = learn_press_get_page_link( 'profile' );
+	if ( $profile_link ) {
+		if ( get_option( 'permalink_structure' ) /*&& learn_press_get_page_id( 'profile' )*/ ) {
+			$url = $profile_link . join( "/", array_values( $args ) );
+		} else {
+			$url = add_query_arg( $args, $profile_link );
+		}
 	} else {
-		$url = add_query_arg( $args, learn_press_get_page_link( 'profile' ) );
+		$url = get_author_posts_url( $user_id );
 	}
 	return $url;
 }
@@ -2598,6 +2606,78 @@ function learn_press_update_log( $version, $data ) {
 	update_option( 'learn_press_update_logs', $logs );
 }
 
+//add_filter( 'template_include', 'abc_xyz', 10000 );
+function abc_xyz($a){
+	if(!learn_press_is_courses()){
+		return $a;
+	}
+	return $a;
+	global $wp_query;
+	$wp_query->posts_per_page = 1;
+	$wp_query->nopaging = true;
+	$wp_query->post_count = 1;
+
+	// If we don't have a post, load an empty one
+	if ( empty( $wp_query->post ) )
+		$wp_query->post = new WP_Post( new stdClass() );
+
+	$wp_query->post->ID = 0;
+	$wp_query->post->post_date = current_time( 'mysql' );
+	$wp_query->post->post_date_gmt = current_time( 'mysql', 1 );
+	$wp_query->post->post_content = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
+	$wp_query->post->post_title = 'ádasdsadsad';
+	$wp_query->post->post_excerpt = '';
+	$wp_query->post->post_status = 'publish';
+	$wp_query->post->comment_status = false;
+	$wp_query->post->ping_status = false;
+	$wp_query->post->post_password = '';
+	$wp_query->post->post_name = 'it-exchange-ghost-';
+	$wp_query->post->to_ping = '';
+	$wp_query->post->pinged = '';
+	$wp_query->post->post_modified = $wp_query->post->post_date;
+	$wp_query->post->post_modified_gmt = $wp_query->post->post_date_gmt;
+	$wp_query->post->post_content_filtered = '';
+	$wp_query->post->post_parent = 0;
+	$wp_query->post->guid = '';
+	$wp_query->post->menu_order = 0;
+	$wp_query->post->post_type = 'page';
+	$wp_query->post->post_mime_type = '';
+	$wp_query->post->comment_count = 0;
+	$wp_query->post->filter = 'raw';
+
+	$wp_query->posts = array( $wp_query->post );
+	$wp_query->found_posts = 1;
+	$wp_query->is_single = false; //false -- so comments_template() doesn't add comments
+	$wp_query->is_preview = false;
+	$wp_query->is_page = false; //false -- so comments_template() doesn't add comments
+	$wp_query->is_archive = false;
+	$wp_query->is_date = false;
+	$wp_query->is_year = false;
+	$wp_query->is_month = false;
+	$wp_query->is_day = false;
+	$wp_query->is_time = false;
+	$wp_query->is_author = false;
+	$wp_query->is_category = false;
+	$wp_query->is_tag = false;
+	$wp_query->is_tax = false;
+	$wp_query->is_search = false;
+	$wp_query->is_feed = false;
+	$wp_query->is_comment_feed = false;
+	$wp_query->is_trackback = false;
+	$wp_query->is_home = false;
+	$wp_query->is_404 = false;
+	$wp_query->is_comments_popup = false;
+	$wp_query->is_paged = false;
+	$wp_query->is_admin = false;
+	$wp_query->is_attachment = false;
+	$wp_query->is_singular = false;
+	$wp_query->is_posts_page = false;
+	$wp_query->is_post_type_archive = false;
+
+	//$GLOBALS['wp_query'] = $this->_wp_query;
+
+	return $a;
+}
 /*
 add_action( 'wp_default_scripts', 'learn_press_default_scripts' );
 add_action( 'wp_default_styles', 'learn_press_default_scripts' );

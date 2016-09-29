@@ -509,9 +509,9 @@ class LP_Abstract_User {
 				$question = 0;
 			}
 			// Update user quiz meta data
-			learn_press_update_user_item_meta( $return, '_quiz_questions', $questions );
-			learn_press_update_user_item_meta( $return, '_quiz_question', $question );
-			learn_press_update_user_item_meta( $return, '_quiz_question_answers', array() );
+			learn_press_update_user_item_meta( $return, 'questions', $questions );
+			learn_press_update_user_item_meta( $return, 'current_question', $question );
+			learn_press_update_user_item_meta( $return, 'question_answers', array() );
 
 			$response = $this->get_quiz_results( $quiz_id, $course_id, true );
 		}
@@ -804,10 +804,10 @@ class LP_Abstract_User {
 				}
 				if ( $item_ids && $meta = $this->_get_quiz_meta( $item_ids ) ) {
 					$maps = array(
-						'_quiz_questions'        => 'questions',
-						'_quiz_question'         => 'question',
-						'_quiz_question_answers' => 'question_answers',
-						'_quiz_question_checked' => 'question_checked'
+						'questions'        => 'questions',
+						'current_question'         => 'question',
+						'question_answers' => 'question_answers',
+						'question_checked' => 'question_checked'
 					);
 					foreach ( $meta as $k => $v ) {
 						if ( empty( $history[$this->id . '-' . $course_id . '-' . $v->item_id][$v->user_item_id] ) ) {
@@ -1075,7 +1075,7 @@ class LP_Abstract_User {
 	 */
 	public function can_purchase_course( $course_id ) {
 		$course      = learn_press_get_course( $course_id );
-		$purchasable = $course->is_purchasable() && !$this->has_purchased_course( $course_id );
+		$purchasable = $course->is_purchasable() && !$this->has_ordered_course( $course_id );
 		return apply_filters( 'learn_press_user_can_purchase_course', $purchasable, $this, $course_id );
 	}
 
@@ -1097,8 +1097,8 @@ class LP_Abstract_User {
 			$enrollable = false;
 		} elseif ( $course->is_free() ) {
 			$enrollable = true;
-		} elseif ( $course->is_purchasable() && ( $order_id = $this->has_purchased_course( $course_id ) ) ) {
-			$order      = LP_Order::instance( $order_id, true );
+		} elseif ( $course->is_purchasable() && ( $this->has_purchased_course( $course_id ) ) ) {
+			$order      = LP_Order::instance( $this->get_course_order( $course_id ), true );
 			$enrollable = !$this->has_enrolled_course( $course_id ) && ( $order && $order->has_status( 'completed' ) );
 		}
 		return apply_filters( 'learn_press_user_can_enroll_course', $enrollable, $this, $course_id );
@@ -1262,7 +1262,7 @@ class LP_Abstract_User {
 
 	public function get_incomplete_items( $course_id ) {
 		global $wpdb;
-		$query = $wpdb->prepare( "
+		$query    = $wpdb->prepare( "
 			SELECT user_item_id
 			FROM {$wpdb->learnpress_user_items}
 			WHERE user_id = %d
@@ -1280,7 +1280,7 @@ class LP_Abstract_User {
 			if ( !$this->can( 'finish-course', $course_id ) && 1 == 0 ) {
 				return false;
 			} else {
-				$updated = $wpdb->update(
+				$updated   = $wpdb->update(
 					$wpdb->prefix . 'learnpress_user_items',
 					array(
 						'end_time' => current_time( 'mysql' ),
@@ -1825,9 +1825,10 @@ class LP_Abstract_User {
 				SELECT uc.*
 				FROM {$wpdb->prefix}learnpress_user_items uc
 				INNER JOIN {$wpdb->posts} o ON o.ID = uc.item_id
-				WHERE uc.user_id = %d AND o.status = %s
+				WHERE uc.user_id = %d AND uc.status IS NOT NULL
+				AND uc.item_id = %d AND uc.item_type = %s
 				ORDER BY user_item_id DESC
-			", $this->id, 'enrolled' );
+			", $this->id, $course_id, 'lp_course' );
 
 			$info = array(
 				'start'  => null,
@@ -1976,7 +1977,7 @@ class LP_Abstract_User {
 		if ( $order ) {
 			$purchased = $order->post_status = 'lp-completed';
 		}*/
-		return apply_filters( 'learn_press_user_has_bought_course', $this->get_order_status( $course_id ) == 'lp-completed', $course_id, $this->id );
+		return apply_filters( 'learn_press_user_has_purchased_course', $this->get_order_status( $course_id ) == 'lp-completed', $course_id, $this->id );
 
 		$purchased = false;
 		$order     = $this->get_course_order( $course_id, 'object' );
@@ -1987,7 +1988,7 @@ class LP_Abstract_User {
 	}
 
 	public function has_ordered_course( $course_id ) {
-		return apply_filters( 'learn_press_user_has_ordered_course', !!$this->get_order_status( $course_id ), $course_id, $this->id );
+		return apply_filters( 'learn_press_user_has_ordered_course', $this->get_course_order( $course_id ), $course_id, $this->id );
 	}
 
 	public function get_order_status( $course_id ) {
@@ -1995,6 +1996,7 @@ class LP_Abstract_User {
 		$order  = !empty( $orders[$course_id] ) ? $orders[$course_id] : false;
 		return apply_filters( 'learn_press_user_has_ordered_course', $order ? $order->post_status : false, $course_id, $this->id );
 	}
+
 
 	public function has_completed_item( $item, $course_id = 0, $force = false ) {
 		$return  = false;
@@ -2053,6 +2055,10 @@ class LP_Abstract_User {
 	 * @return int
 	 */
 	public function get_course_order( $course_id, $return = '' ) {
+		$orders = $this->get_orders();
+		$order  = !empty( $orders[$course_id] ) ? $orders[$course_id] : false;
+
+		return $order ? ( $return == 'object' ? LP_Order::instance( $order->ID ) : $order->ID ) : false;
 		global $wpdb;
 		static $orders = array();
 
@@ -2506,7 +2512,7 @@ class LP_Abstract_User {
 		if ( !$history ) {
 			return false;
 		}
-		$checked = (array) learn_press_get_user_item_meta( $history->history_id, '_quiz_question_checked', true );
+		$checked = (array) learn_press_get_user_item_meta( $history->history_id, 'question_checked', true );
 		$checked = array_filter( $checked );
 		return in_array( $question_id, $checked );
 	}

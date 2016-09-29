@@ -525,7 +525,7 @@ function learn_press_get_user_question_answer( $args = '' ) {
 	);
 	$answered = null;
 	if ( $args['history_id'] ) {
-		$user_meta = learn_press_get_user_item_meta( $args['history_id'], '_quiz_question_answers', true );
+		$user_meta = learn_press_get_user_item_meta( $args['history_id'], 'question_answers', true );
 		if ( $user_meta && array_key_exists( $args['question_id'], $user_meta ) ) {
 			$answered = $user_meta[$args['question_id']];
 		}
@@ -533,7 +533,7 @@ function learn_press_get_user_question_answer( $args = '' ) {
 		$user    = learn_press_get_user( $args['user_id'] );
 		$history = $user->get_quiz_results( $args['quiz_id'], $args['course_id'] );
 		if ( $history ) {
-			$user_meta = learn_press_get_user_item_meta( $history->history_id, '_quiz_question_answers', true );
+			$user_meta = learn_press_get_user_item_meta( $history->history_id, 'question_answers', true );
 			if ( $user_meta && array_key_exists( $args['question_id'], $user_meta ) ) {
 				$answered = $user_meta[$args['question_id']];
 			}

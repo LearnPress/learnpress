@@ -1280,7 +1280,7 @@ abstract class LP_Abstract_Course
             }
             $query = $wpdb->prepare("
 				SELECT user_item_id, user_id, status, ref_id, item_id, item_type
-				FROM (SELECT * FROM wp_learnpress_user_items ORDER BY item_id, user_item_id DESC) x
+				FROM (SELECT * FROM {$wpdb->prefix}learnpress_user_items ORDER BY item_id, user_item_id DESC) x
 				GROUP BY item_id
 				HAVING user_id = %d
 				AND status = %s

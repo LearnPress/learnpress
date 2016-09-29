@@ -177,7 +177,7 @@ class LP_Question_Factory {
 		}
 		$question = LP_Question_Factory::get_question( $id );
 		$user     = LP()->user;
-		$question->render( array( 'answered' => $user->get_question_answers( $quiz_id, $id ), 'check' => true ) );
+		$question->render( array( 'quiz_id' => $quiz->id, 'course_id' => get_the_ID() , 'check' => true ) );
 	}
 
 	public static function show_hint( $id, $quiz_id ) {

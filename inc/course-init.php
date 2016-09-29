@@ -16,7 +16,8 @@ function learn_press_setup_pages() {
 		SELECT *
 		FROM {$wpdb->posts}
 		WHERE %d AND ID IN(" . join( ',', $page_ids ) . ")
-	", 1 );
+		AND post_status <> %s
+	", 1, 'trash' );
 	if ( !$pages = $wpdb->get_results( $query ) ) {
 		return;
 	}
@@ -53,6 +54,7 @@ function learn_press_setup_course_data( $the_course ) {
 
 	_learn_press_get_course_curriculum( $post->ID );
 	do_action( 'learn_press_setup_course_data_' . $post->ID );
+
 	return $post->ID;
 }
 
@@ -365,3 +367,4 @@ function _learn_press_setup_question( $id ) {
 	}
 	return $questions;
 }
+

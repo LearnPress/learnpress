@@ -102,7 +102,7 @@ class LP_Query {
 							WHERE user_id = %d AND item_id = %d AND item_type = %s and status <> %s
 						", learn_press_get_current_user_id(), $post->ID, 'lp_quiz', 'completed' );
 						if ( $history_id = $wpdb->get_var( $query ) ) {
-							learn_press_update_user_item_meta( $history_id, '_quiz_question', $question->ID );
+							learn_press_update_user_item_meta( $history_id, 'current_question', $question->ID );
 						}
 						//LP_Cache::flush();
 					}

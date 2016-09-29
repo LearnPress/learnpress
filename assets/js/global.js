@@ -923,7 +923,6 @@ if (typeof window.LP == 'undefined') {
 
 		$(document).on('click', '[data-block-content="yes"]', function () {
 			LP.blockContent();
-			console.log('show')
 		});
 		$('.learn-press-tooltip').tooltip({offset: [24, 24]});
 	});

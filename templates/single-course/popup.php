@@ -25,23 +25,25 @@ $user   = learn_press_get_current_user();
 					<a class="footer-control next-item" data-id="<?php echo $next_item; ?>" href="<?php echo $course->get_item_link( $next_item ); ?>"><?php echo get_the_title( $next_item ); ?></a>
 				<?php endif; ?>
 				-->
-				<?php if($user->has_finished_course($course->id)):?>
-					<button
-						class="button-retake-course"
-						data-id="<?php esc_attr_e( $course->id ); ?>"
-						data-block-content="yes"
-						data-security="<?php esc_attr_e( wp_create_nonce( 'retake-course-' . $course->id . '-' . $user->id ) ); ?>">
-						<?php esc_html_e( 'Retake', 'learnpress' ); ?>
-					</button>
+				<?php if ( $user->has( 'finished-course', $course->id ) ): ?>
+					<?php if ( $count = $user->can( 'retake-course', $course->id ) ): ?>
+						<button
+							class="button button-retake-course"
+							data-block-content="yes"
+							data-course_id="<?php echo esc_attr( $course->id ); ?>"
+							data-security="<?php echo esc_attr( wp_create_nonce( sprintf( 'learn-press-retake-course-%d-%d', $course->id, $user->id ) ) ); ?>">
+							<?php echo esc_html( sprintf( __( 'Retake course (+%d)', 'learnpress' ), $count ) ); ?>
+						</button>
+					<?php endif; ?>
 				<?php else: ?>
 					<button
 						class="button-finish-course"
 						data-id="<?php esc_attr_e( $course->id ); ?>"
 						data-block-content="yes"
-						data-security="<?php esc_attr_e( wp_create_nonce( 'finish-course-' . $course->id . '-' . $user->id ) ); ?>">
-						<?php esc_html_e( 'Finish', 'learnpress' ); ?>
+						data-security="<?php esc_attr_e( wp_create_nonce( 'learn-press-finish-course-' . $course->id . '-' . $user->id ) ); ?>">
+						<?php esc_html_e( 'Finish course', 'learnpress' ); ?>
 					</button>
-				<?php endif;?>
+				<?php endif; ?>
 			</div>
 		</div>
 	</div>

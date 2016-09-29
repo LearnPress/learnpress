@@ -12,7 +12,6 @@ if ( !defined( 'ABSPATH' ) ) {
 }
 ?>
 <?php get_header(); ?>
-
 <?php do_action( 'learn_press_before_main_content' ); ?>
 
 <?php if ( apply_filters( 'learn_press_show_page_title', true ) ) { ?>
@@ -46,5 +45,4 @@ if ( !defined( 'ABSPATH' ) ) {
 <?php endif; ?>
 
 <?php do_action( 'learn_press_after_main_content' ); ?>
-
 <?php get_footer(); ?>

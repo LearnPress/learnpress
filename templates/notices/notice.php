@@ -10,7 +10,6 @@
 if ( !defined( 'ABSPATH' ) ) {
 	exit;
 }
-
 if ( !$messages ) {
 	return;
 }

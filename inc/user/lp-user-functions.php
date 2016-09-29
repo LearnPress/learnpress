@@ -281,7 +281,7 @@ function learn_press_user_has_roles( $roles, $user_id = null ) {
 
 function learn_press_edit_admin_bar() {
 	global $wp_admin_bar;
-	if ( ( $profile = learn_press_get_page_id( 'profile' ) ) && get_post_type( $profile ) == 'page' && ( LP()->settings->get( 'admin_bar_link' ) == 'yes' ) ) {
+	if ( ( $profile = learn_press_get_page_id( 'profile' ) ) && get_post_type( $profile ) == 'page' && get_post_status( $profile ) != 'trash' && ( LP()->settings->get( 'admin_bar_link' ) == 'yes' ) ) {
 		$text                             = LP()->settings->get( 'admin_bar_link_text' );
 		$course_profile                   = array();
 		$course_profile['id']             = 'course_profile';

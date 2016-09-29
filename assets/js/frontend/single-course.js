@@ -37,9 +37,13 @@ if (typeof LearnPress == 'undefined') {
 		Course_Item = Backbone.Model.extend({
 			initialize     : function () {
 				this.on('change:content', this._changeContent);
+				this.on('change:current', this._changeCurrent);
 			},
 			_changeContent : function () {
 				LP.Hook.doAction('learn_press_update_item_content', this);
+			},
+			_changeCurrent : function (m) {
+
 			},
 			request        : function (args) {
 				var that = this;
@@ -190,6 +194,7 @@ if (typeof LearnPress == 'undefined') {
 						this.listenTo(e, 'change', this.onChange);
 					}
 				}
+				a.$el && a.$el.toggleClass('item-current', a.get('current'))
 			},
 			getNextItem: function () {
 				var next = false;
@@ -254,21 +259,15 @@ if (typeof LearnPress == 'undefined') {
 			}, this);
 			this._initHooks();
 
-			/*if (this.$('.course-item.item-current').length) {
-			 this.viewItem(this.$('.course-item.item-current .button-load-item').data('id'), {
-			 content: this.itemEl.html()
-			 });
-			 }*/
-			if (this.model.get('current_item')) {
-				this.viewItem(this.model.get('current_item'), {
+			if (this.$('.course-item.item-current').length) {
+				this.viewItem(this.$('.course-item.item-current .button-load-item').data('id'), {
 					content: this.itemEl.html()
 				});
-				//this.showPopup();
 			}
 		},
 		_initHooks       : function () {
 			LP.Hook.addAction('learn_press_update_item_content', this.updateItemContent);
-			$(document).on('learn_press_popup_remove', this.removePopup)
+			$(document).on('learn_press_popup_course_remove', this.removePopup)
 		},
 		_loadItem        : function (e) {
 			e.preventDefault();
@@ -460,6 +459,10 @@ if (typeof LearnPress == 'undefined') {
 		},
 		removePopup      : function () {
 			this.popup = null;
+			this.model.items.forEach(function (m) {
+				console.log(m.get('current'))
+				m.set('current', false);
+			})
 		},
 		getCurrentSection: function () {
 			return this.currentItem.$el.closest('.section');
@@ -595,11 +598,10 @@ if (typeof LearnPress == 'undefined') {
 			$('#learn-press-content-item').hide();
 			this.curriculumPlaceholder.replaceWith(this.$('#learn-press-course-curriculum'));
 			this.progressPlaceholder.replaceWith(this.$('.learn-press-course-results-progress'));
-
 			this.undelegateEvents();
 			this.remove();
 			$(document).off('focusin');
-			$('body').css('overflow', '').trigger('learn_press_popup_remove')
+			$('body').css('overflow', '').trigger('learn_press_popup_course_remove')
 		},
 		_loadItem           : function (e) {
 			e.preventDefault();
@@ -624,8 +626,9 @@ if (typeof LearnPress == 'undefined') {
 		(typeof window.LP_Course_Params != 'undefined') && $(document).ready(function () {
 			LP.$Course = new Course(LP_Course_Params);
 			LP.Hook.doAction('learn_press_course_initialize', LP.$Course);
-			$(window).trigger('resize.check-lines')
+			$(window).trigger('resize.check-lines');
 		});
+		loadmedia();
 	});
 
 	$(document).ajaxComplete(function (a, b, c) {
@@ -633,10 +636,23 @@ if (typeof LearnPress == 'undefined') {
 			$(document).trigger('ready');
 			$(window).trigger('resize');
 			LP.unblockContent();
+			loadmedia();
+			$('.learn-press-tooltip').tooltip({offset: [24, 24]});
 		}
 	}).ajaxError(function () {
 		LP.unblockContent();
 	});
+	function loadmedia() {
+		setTimeout(function () {
+			try {
+				//console.log(a.html())
+				window.wp.mediaelement.initialize();
+				console.log('mediaelement initialize');
+			} catch (e) {
+			}
+		}, 300);
+	}
+
 	return;
 
 	$(document).ready(function () {
@@ -648,6 +664,7 @@ if (typeof LearnPress == 'undefined') {
 				try {
 					//console.log(a.html())
 					window.wp.mediaelement.initialize();
+					console.log('mediaelement initialize');
 				} catch (e) {
 				}
 			}, 300);
