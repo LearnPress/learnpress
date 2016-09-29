@@ -84,14 +84,14 @@
 	color: #777;
 }
 .learnpress-search-notices.notice{
-        margin: 0 0 15px 0;
+        margin: 0 0 10px 0;
 }
 #learn-press-modal-search-items header input{
 	width: 100%;
 }
 #learn-press-modal-search-items article{
 	overflow: auto;
-	margin: 20px 0;
+	margin: 10px 0;
 }
 #learn-press-modal-search-items article .lp-list-items{
 	margin: 0;
