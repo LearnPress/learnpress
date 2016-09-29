@@ -189,10 +189,6 @@
 .learn-press-courses li.course .course-info > * {
   display: block;
 }
-.learn-press-courses li.course:nth-child(4n+1) {
-  clear: left;
-  margin-left: 0;
-}
 .learn-press-notice .button {
   float: right;
 }
@@ -1926,5 +1922,44 @@ body.block-content #learn-press-block-content {
   .learn-press-course-results-progress .course-progress {
     width: 100%;
     margin-right: 0;
+  }
+}
+@media (min-width: 992px) {
+  .learn-press-courses li.course:nth-child(4n+1) {
+    clear: left;
+  }
+}
+@media (max-width: 992px) {
+  .learn-press-courses {
+    margin: 0;
+  }
+}
+@media (max-width: 992px) and (min-width: 600px) {
+  .learn-press-courses li.course {
+    width: 31.33%;
+    margin: 0 2% 30px 0;
+    /* padding: 0 20px; */
+  }
+  .learn-press-courses li.course:nth-child(3n+1) {
+    clear: left;
+    margin-left: 0;
+  }
+}
+@media (max-width: 600px) and (min-width: 400px) {
+  .learn-press-courses li.course {
+    width: 48%;
+    margin: 0 2% 30px 0;
+    /* padding: 0 20px; */
+  }
+  .learn-press-courses li.course:nth-child(2n+1) {
+    clear: left;
+    margin-left: 0;
+  }
+}
+@media (max-width: 400px) {
+  .learn-press-courses li.course {
+    width: 100%;
+    margin: 0 0 30px 0;
+    clear: left;
   }
 }

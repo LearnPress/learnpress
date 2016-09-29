@@ -256,7 +256,6 @@ class LP_Checkout {
 				if ( !$this->payment_method instanceof LP_Gateway_Abstract ) {
 					// Payment Method
 					$available_gateways = LP_Gateways::instance()->get_available_payment_gateways();
-
 					if ( !isset( $available_gateways[$this->payment_method] ) ) {
 						$this->payment_method = '';
 						learn_press_add_notice( __( 'Invalid payment method.', 'learnpress' ), 'error' );
@@ -274,7 +273,6 @@ class LP_Checkout {
 				if ( $this->payment_method ) {
 					// Store the order is waiting for payment and each payment method should clear it
 					LP()->session->order_awaiting_payment = $order_id;
-
 					// Process Payment
 					$result  = $this->payment_method->process_payment( $order_id );
 					$success = !empty( $result['result'] ) ? $result['result'] == 'success' : false;
