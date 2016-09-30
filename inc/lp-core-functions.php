@@ -2678,6 +2678,7 @@ function abc_xyz($a){
 
 	return $a;
 }
+
 /*
 add_action( 'wp_default_scripts', 'learn_press_default_scripts' );
 add_action( 'wp_default_styles', 'learn_press_default_scripts' );

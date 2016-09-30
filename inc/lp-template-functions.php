@@ -1084,17 +1084,10 @@ function learn_press_setup_object_data( $post ) {
 		if ( isset( $GLOBALS['course'] ) ) {
 			unset( $GLOBALS['course'] );
 		}
-		$object = learn_press_get_course( $post );
+		$object                = learn_press_get_course( $post );
 		LP()->global['course'] = $object;
 		LP()->set_object( '_course', $object );
-	} elseif ( $post->post_type == LP_QUIZ_CPT ) {
-		if ( isset( $GLOBALS['quiz'] ) ) {
-			unset( $GLOBALS['quiz'] );
-		}
-		$object = $GLOBALS['quiz'] = learn_press_get_quiz( $post );
-		LP()->set_object( '_quiz', $object );
 	}
-
 	return $object;
 }
 

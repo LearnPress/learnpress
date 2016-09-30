@@ -145,9 +145,10 @@ class LP_Assets {
 	}
 
 	public static function add_default_scripts( &$scripts ) {
+
 		$default_path = '/wp-content/plugins/learnpress/assets/';
-		$suffix = '';
-		$deps   = array( 'jquery', 'backbone', 'utils' );
+		$suffix       = '';
+		$deps         = array( 'jquery', 'backbone', 'utils' );
 
 		// global
 		$scripts->add( 'learn-press-global', $default_path . 'js/global' . $suffix . '.js', $deps, false, 1 );
@@ -176,6 +177,8 @@ class LP_Assets {
 
 		// upgrade
 		$scripts->add( 'learn-press-upgrade', '/wp-content/plugins/learnpress/inc/updates/09/script' . $suffix . '.js', $deps, false, 1 );
+
+
 	}
 
 	/**
@@ -208,7 +211,7 @@ class LP_Assets {
 
 	public static function add_default_styles( &$styles ) {
 		$default_path = '/wp-content/plugins/learnpress/assets/';
-		$suffix = '';
+		$suffix       = '';
 		// global
 		$styles->add( 'learn-press-global', $default_path . 'css/global' . $suffix . '.css' );
 
@@ -479,6 +482,9 @@ class LP_Assets {
 		if ( !empty( self::$_enqueue_scripts ) ) {
 			foreach ( self::$_enqueue_scripts as $handle => $args ) {
 				call_user_func_array( 'wp_enqueue_script', array( $handle ) );
+				if(!empty(self::$wp_localize_scripts[$handle])){
+
+				}
 			}
 		}
 		if ( !empty( self::$_enqueue_styles ) ) {
@@ -486,6 +492,8 @@ class LP_Assets {
 				call_user_func_array( 'wp_enqueue_style', array( $handle ) );
 			}
 		}
+
+
 	}
 
 	/**
@@ -615,7 +623,7 @@ class LP_Assets {
 		self::enqueue_script( 'learn-press-jalerts' );
 		self::enqueue_script( 'learn-press-global' );
 		self::enqueue_script( 'learn-press-js' );
-                self::enqueue_script( 'learn-press-add-to-cart' );
+		self::enqueue_script( 'learn-press-add-to-cart' );
 		if ( learn_press_is_course() ) {
 			self::enqueue_script( 'learn-press-single-course' );
 			self::enqueue_script( 'learn-press-course-quiz' );
@@ -627,5 +635,6 @@ class LP_Assets {
 		self::enqueue_script( 'learn-press-become-teacher' );
 	}
 }
+
 // Call class
 return new LP_Assets();
