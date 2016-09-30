@@ -16,13 +16,13 @@ $can_view_item = $user->can( 'view-item', $item->id, $course->id );
 <?php
 if( $can_view_item == 'preview'):
 	?>
-<a class="" href="<?php echo get_edit_post_link( $item->id ); ?>"><?php _e('Edit lesson', 'learnpress'); ?></a>
-<hr/>
+	<a class="" href="<?php echo get_edit_post_link( $item->id ); ?>"><?php _e('Edit lesson', 'learnpress'); ?></a>
+	<hr/>
 	<?php
 endif;
 ?>
 <div class="learn-press-content-item-summary">
-	<?php echo $item->content; ?>
+	<?php echo apply_filters('learn_press_course_lesson_content', $item->content); ?>
 	<?php if ( $user->has_completed_lesson( $item->ID, $course->id ) ) { ?>
 		<?php learn_press_display_message( __( 'Congrats! You have completed this lesson', 'learnpress' ) ); ?>
 		<button class="" disabled="disabled"> <?php _e( 'Completed', 'learnpress' ); ?></button>

@@ -33,7 +33,7 @@ $students_list_avatar_size = apply_filters('learn_press_students_list_avatar_siz
                             <?php echo get_avatar(
                                 $student->ID,
                                 $students_list_avatar_size,
-                                'Mystery Man',
+                                '',
                                 $student->display_name,
                                 array(
                                     'class' => 'students_list_avatar'
@@ -49,6 +49,12 @@ $students_list_avatar_size = apply_filters('learn_press_students_list_avatar_siz
                         </a>
                     </li>
                 <?php endforeach; ?>
+                <?php
+                if ($course->students - count($students) > 0) {
+                    $other_student = $course->students - count($students);
+                    echo '<p>and ' . sprintf(_n('%s student enrolled.', '%s students enrolled.', $other_student, 'learnpress'), $other_student) . '</p>';
+                }
+                ?>
             </ul>
         <?php else: ?>
             <div class="students empty">
