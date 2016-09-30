@@ -429,7 +429,7 @@ if ( !function_exists( 'is_ajax' ) ) {
  * @return int
  */
 function learn_press_get_page_id( $name ) {
-	return LP_Settings::instance()->get( "{$name}_page_id", false );
+	return apply_filters( 'learn_press_get_page_id', LP_Settings::instance()->get( "{$name}_page_id", false ), $name );
 }
 
 /**
