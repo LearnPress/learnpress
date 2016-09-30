@@ -13,8 +13,12 @@
 				},
 				dataType: 'html',
 				success: function(response){
+                                        response = LP.parseJSON( response );
 					$button.addClass('added').removeClass('loading');
 					$view_cart.removeClass('hide-if-js');
+                                        if ( typeof response.redirect === 'string' ) {
+                                            window.location.href = response.redirect;
+                                        }
 				}
 			});
 			return false;

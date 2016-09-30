@@ -162,9 +162,9 @@ abstract class LP_Abstract_Post_Type {
 		}
 		// TODO: check more here
 		// prevent loop action
-		remove_action( 'save_post', array( $this, '_do_save' ) );
+		remove_action( 'save_post', array( $this, '_do_save' ), 10, 2 );
 		$this->_call_method( 'save', func_get_args() );
-		add_action( 'save_post', array( $this, '_do_save' ) );
+		add_action( 'save_post', array( $this, '_do_save' ), 10, 2 );
 	}
 
 	public function _do_output_meta_box( $post, $box ) {

@@ -158,7 +158,7 @@ class LP_Assets {
 		$scripts->add( 'learn-press-single-course', $default_path . 'js/frontend/single-course' . $suffix . '.js', $deps, false, 1 );
 		$scripts->add( 'learn-press-course-quiz', $default_path . 'js/frontend/quiz' . $suffix . '.js', $deps, false, 1 );
 		$scripts->add( 'learn-press-enroll', $default_path . 'js/frontend/enroll' . $suffix . '.js', $deps, false, 1 );
-		$scripts->add( 'learn-press-add-to-cart', $default_path . 'js/frontend/add-to-cart' . $suffix . '.js', $deps, false, 1 );
+//		$scripts->add( 'learn-press-add-to-cart', $default_path . 'js/frontend/add-to-cart' . $suffix . '.js', $deps, false, 1 );
 		$scripts->add( 'learn-press-timer', $default_path . 'js/jquery.timer' . $suffix . '.js', $deps, false, 1 );
 		$scripts->add( 'learn-press-checkout', $default_path . 'js/frontend/checkout' . $suffix . '.js', $deps, false, 1 );
 		$scripts->add( 'learn-press-course-lesson', $default_path . 'js/frontend/course-lesson' . $suffix . '.js', $deps, false, 1 );
@@ -615,7 +615,7 @@ class LP_Assets {
 		self::enqueue_script( 'learn-press-jalerts' );
 		self::enqueue_script( 'learn-press-global' );
 		self::enqueue_script( 'learn-press-js' );
-                self::enqueue_script( 'learn-press-add-to-cart' );
+//                self::enqueue_script( 'learn-press-add-to-cart' );
 		if ( learn_press_is_course() ) {
 			self::enqueue_script( 'learn-press-single-course' );
 			self::enqueue_script( 'learn-press-course-quiz' );
