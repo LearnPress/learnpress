@@ -57,9 +57,9 @@ if ( !class_exists( 'LP_Admin' ) ) {
 					'button_no'     => __( 'No', 'learnpress' )
 				)
 			);
-			echo '<script type="text/javascript">var LP_Settings = ' . json_encode( $js ) . '</script>';
+			LP_Assets::add_param( $js, false, 'learn-press-global', 'LP_Settings' );
 			if ( LP_Settings::instance()->get( 'debug' ) == 'yes' ) {
-				echo '<script type="text/javascript">var LEARN_PRESS_DEBUG = true;</script>';
+				LP_Assets::add_var( 'LEARN_PRESS_DEBUG', 'true', '__all' );
 			}
 			$did = true;
 		}

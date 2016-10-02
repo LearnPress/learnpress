@@ -19,7 +19,7 @@ class LP_Course extends LP_Abstract_Course {
 	public function frontend_assets() {
 		if ( learn_press_is_course() ) {
 			$translate = $this->_get_localize();
-			LP_Assets::add_localize( $translate, false, 'single-course' );
+			LP_Assets::add_localize( $translate, false, 'learn-press-single-course' );
 		}
 	}
 
