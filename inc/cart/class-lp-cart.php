@@ -148,13 +148,23 @@ class LP_Cart {
 
 		// Redirect to login page if user is not logged in
 		if ( !is_user_logged_in() ) {
+
 			$return_url = add_query_arg( $_POST, get_the_permalink( $course->id ) );
 			$return_url = apply_filters( 'learn_press_purchase_course_login_redirect_return_url', $return_url );
 			$redirect   = apply_filters( 'learn_press_purchase_course_login_redirect', learn_press_get_login_url( $return_url ) );
 
 			if ( $redirect !== false ) {
-				wp_redirect( $redirect );
-				exit();
+                                if ( is_ajax() ) {
+                                    learn_press_send_json(
+                                                array(
+                                                        'redirect' => $redirect,
+                                                        'result'   => 'success'
+                                                )
+                                        );
+                                } else {
+                                    wp_redirect( $redirect );
+                                    exit();
+                                }
 			}
 		}
 
@@ -222,10 +232,6 @@ class LP_Cart {
 		do_action( 'learn_press_add_to_cart', $course_id, $quantity, $item_data, $this );
 		$button = '';
 
-		if ( !is_user_logged_in() ) {
-
-		}
-
 		// if the course is FREE and no require checkout screen
 		if ( LP()->settings->get( 'no_checkout_free_course' ) == 'yes' && $this->total == 0 ) {
 			if ( !is_user_logged_in() ) {
@@ -279,7 +285,6 @@ class LP_Cart {
 			}
 		}
 
-
 		$redirect = apply_filters( 'learn_press_add_to_cart_redirect', $redirect, $course_id );
 
 		if ( is_ajax() ) {
@@ -305,6 +310,17 @@ class LP_Cart {
 	 */
 	public function has_item( $item_id ) {
 		return isset( $this->_cart_content['items'][$item_id] );
+	}
+
+	/**
+	 * Get an item in cart
+	 *
+	 * @param $item_id
+	 *
+	 * @return bool
+	 */
+	public function get_item( $item_id ) {
+		return $this->has_item( $item_id ) ? $this->_cart_content['items'][$item_id] : null;
 	}
 
 	/**

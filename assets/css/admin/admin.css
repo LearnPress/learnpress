@@ -631,7 +631,7 @@ body.post-type-lp_question #question_answer_ .inside {
   line-height: 1;
 }
 #questions .quiz-questions-heading .questions-toggle a {
-  color: #DDD;
+  color: #666666;
   box-shadow: none;
 }
 #questions .quiz-questions-heading .questions-toggle a:hover {
@@ -729,7 +729,7 @@ body.post-type-lp_question #question_answer_ .inside {
 }
 #questions .quiz-question-head .quiz-question-actions a {
   margin: 0 3px;
-  color: #DDD;
+  color: #666666;
   vertical-align: middle;
   box-shadow: none;
 }

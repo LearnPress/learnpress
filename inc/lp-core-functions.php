@@ -417,7 +417,7 @@ if ( !function_exists( 'is_ajax' ) ) {
 	 * @return bool
 	 */
 	function is_ajax() {
-		return defined( 'DOING_AJAX' );
+		return defined( 'DOING_AJAX' ) && DOING_AJAX;
 	}
 }
 
@@ -429,7 +429,7 @@ if ( !function_exists( 'is_ajax' ) ) {
  * @return int
  */
 function learn_press_get_page_id( $name ) {
-	return LP_Settings::instance()->get( "{$name}_page_id", false );
+	return apply_filters( 'learn_press_get_page_id', LP_Settings::instance()->get( "{$name}_page_id", false ), $name );
 }
 
 /**
