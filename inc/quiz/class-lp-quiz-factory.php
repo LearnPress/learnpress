@@ -129,25 +129,16 @@ class LP_Quiz_Factory {
 		}
 
 		if ( $user->has_quiz_status( array( 'started', 'completed' ), $quiz_id, $course_id ) ) {
-			learn_press_send_json(
-				array(
-					'result'   => 'error',
-					'message'  => array( 'title' => __( 'Error', 'learnpress' ), 'message' => __( 'Error while starting quiz', 'learnpress' ) ),
-					'data'     => $user->get_quiz_result(),
-					'redirect' => $quiz->permalink
-				)
-			);
+			$response['html'] = learn_press_get_template_content( 'single-course/content-item-lp_quiz.php' );
 		} else {
 			$result = $user->start_quiz( $quiz_id, $course_id );
 			if ( $result ) {
+				learn_press_setup_user_course_data( $user->id, $course_id );
 				$course             = learn_press_get_course( $course_id );
 				LP()->course        = $course;
 				LP()->user          = $user;
 				$response['status'] = $result->status;
-
-				//LP_Cache::flush();
-
-				$response['html'] = learn_press_get_template_content( 'single-course/content-item-lp_quiz.php' );
+				$response['html']   = learn_press_get_template_content( 'single-course/content-item-lp_quiz.php' );
 			} else {
 				$response['result'] = 'error';
 			}

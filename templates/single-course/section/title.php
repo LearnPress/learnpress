@@ -18,7 +18,7 @@ if ( $section_name === false ) {
 }
 ?>
 <h4 class="section-header">
-	<?php echo $section_name; ?>
+	<?php echo $section_name; ?>&nbsp;
 	<?php if ( $section_description = apply_filters( 'learn_press_curriculum_section_description', $section->section_description, $section ) ) { ?>
 		<p><?php echo $section_description; ?></p>
 	<?php } ?>

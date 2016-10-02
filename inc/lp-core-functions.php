@@ -699,6 +699,28 @@ function learn_press_get_course_duration_support() {
 	);
 }
 
+function learn_press_human_time_to_seconds( $time, $default = '' ) {
+	$duration      = learn_press_get_course_duration_support();
+	$duration_keys = array_keys( $duration );
+	if ( preg_match_all( '!([0-9]+)\s*(' . join( '|', $duration_keys ) . ')?!', $time, $matches ) ) {
+		$a1 = $matches[1][0];
+		$a2 = in_array( $matches[2][0], $duration_keys ) ? $matches[2][0] : '';
+	} else {
+		$a1 = absint( $time );
+		$a2 = '';
+	}
+	if ( $a2 ) {
+		$b  = array(
+			'minute' => 60,
+			'hour'   => 3600,
+			'day'    => 3600 * 24,
+			'week'   => 3600 * 24 * 7
+		);
+		$a1 = $a1 * $b[$a2];
+	}
+	return $a1;
+}
+
 /**
  * Return profile link of an user from a course
  *
@@ -2122,8 +2144,9 @@ function learn_press_front_scripts() {
 			'button_no'     => __( 'No', 'learnpress' )
 		)
 	);
-	LP_Assets::add_param( $js, '', array( 'learn-press-single-course', 'learn-press-global'), 'LP_Settings' );
+	LP_Assets::add_param( $js, '', array( 'learn-press-single-course', 'learn-press-global' ), 'LP_Settings' );
 }
+
 add_action( 'wp_print_scripts', 'learn_press_front_scripts' );
 
 function learn_press_set_user_timezone() {

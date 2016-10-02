@@ -1,6 +1,6 @@
 /* meta box course */
-.post-type-lp_course input[type="text"],
-.post-type-lp_course select {
+.rwmb-duration-wrapper input[type="text"],
+.rwmb-duration-wrapper select {
 	vertical-align: baseline;
 }
 .post-type-lp_course #postdivrich{

@@ -109,15 +109,15 @@ class LP_Assets {
 		if ( !is_admin() ) {
 			add_action( 'wp_enqueue_scripts', array( self::$_instance, 'load_scripts' ), $priory );
 			add_action( 'wp_enqueue_scripts', array( self::$_instance, 'wp_assets' ), $priory );
-			add_action( 'wp_print_scripts', array( self::$_instance, 'localize_printed_scripts' ), $priory );
-			add_action( 'wp_print_footer_scripts', array( self::$_instance, 'localize_printed_scripts' ), $priory );
+			//add_action( 'wp_print_scripts', array( self::$_instance, 'localize_printed_scripts' ), $priory );
+			add_action( 'wp_print_footer_scripts', array( self::$_instance, 'localize_printed_scripts' ), $priory + 10 );
 			add_action( 'wp_enqueue_scripts', array( __CLASS__, '_enqueue_scripts' ), $priory + 10 );
 
 		} else {
 			add_action( 'admin_enqueue_scripts', array( self::$_instance, 'load_scripts' ), $priory );
 			add_action( 'admin_enqueue_scripts', array( self::$_instance, 'wp_assets' ), $priory );
 			add_action( 'admin_print_scripts', array( self::$_instance, 'localize_printed_scripts' ), $priory );
-			add_action( 'admin_print_footer_scripts', array( self::$_instance, 'localize_printed_scripts' ), $priory );
+			add_action( 'admin_print_footer_scripts', array( self::$_instance, 'localize_printed_scripts' ), $priory + 10 );
 			add_action( 'admin_enqueue_scripts', array( __CLASS__, '_enqueue_scripts' ), $priory + 10 );
 		}
 		add_filter( 'script_loader_src', array( self::$_instance, 'script_localized' ), $priory + 10, 2 );
@@ -522,11 +522,13 @@ class LP_Assets {
 			echo "/* <![CDATA[ */\n";
 
 			if ( $has_localized ) {
-				echo "\n/* LearnPress Localized */\n";
-				foreach ( self::$localized as $handle => $src ) {
-					if ( !empty( self::$wp_localize_scripts[$handle] ) ) {
-						$name = str_replace( '-', '_', $handle ) . '_localize';
-						echo "var {$name} = " . wp_json_encode( self::$wp_localize_scripts[$handle] ) . ";\n";
+				if(self::$wp_localize_scripts) {
+					echo "\n/* LearnPress Localized */\n";
+					foreach ( self::$localized as $handle => $src ) {
+						if ( !empty( self::$wp_localize_scripts[$handle] ) ) {
+							$name = str_replace( '-', '_', $handle ) . '_localize';
+							echo "var {$name} = " . wp_json_encode( self::$wp_localize_scripts[$handle] ) . ";\n";
+						}
 					}
 				}
 			}
@@ -552,22 +554,26 @@ class LP_Assets {
 
 
 			if ( $has_localized ) {
-				if ( $has_localized ) foreach ( self::$localized as $handle => $src ) {
+				if ( self::$js_vars ) {
 					echo "\n/* Custom vars */\n";
-					if ( !empty( self::$js_vars[$handle] ) ) {
-						foreach ( self::$js_vars[$handle] as $name => $var ) {
-							echo "var {$name} = " . maybe_serialize( $var ) . ";\n";
+
+					foreach ( self::$localized as $handle => $src ) {
+						if ( !empty( self::$js_vars[$handle] ) ) {
+							foreach ( self::$js_vars[$handle] as $name => $var ) {
+								echo "var {$name} = " . maybe_serialize( $var ) . ";\n";
+							}
 						}
 					}
 				}
-
-				echo "\n/* LearnPress Custom Scripts */\n ( typeof jQuery != undefined ) && jQuery(function($){\n";
-				foreach ( self::$localized as $handle => $src ) {
-					if ( !empty( self::$wp_script_codes[$handle] ) ) {
-						echo( self::$wp_script_codes[$handle] );
+				if(self::$wp_script_codes) {
+					echo "\n/* LearnPress Custom Scripts */\n ( typeof jQuery != 'undefined' ) && jQuery(function($){\n";
+					foreach ( self::$localized as $handle => $src ) {
+						if ( !empty( self::$wp_script_codes[$handle] ) ) {
+							echo( self::$wp_script_codes[$handle] );
+						}
 					}
+					echo "\n});\n";
 				}
-				echo "\n});\n";
 			}
 
 			echo "/* ]]> */\n";

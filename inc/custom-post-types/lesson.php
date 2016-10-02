@@ -105,7 +105,9 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 						'name' => __( 'Lesson Duration', 'learnpress' ),
 						'id'   => "{$prefix}duration",
 						'type' => 'number',
-						'desc' => __( 'The length of the lesson (in minutes)', 'learnpress' ),
+						'type'         => 'duration',//'number',
+						'default_time' => 'minute',
+						'desc' => __( 'Duration of the lesson. Set 0 to disable', 'learnpress' ),
 						'std'  => 30,
 					),
 					array(

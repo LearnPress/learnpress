@@ -338,7 +338,7 @@ class LP_Quiz {
 					}
 					$value = get_post_meta( $this->id, $key, true );
 					if ( $key == '_lp_duration' ) {
-						$value = absint( $value ) * 60;
+						$value = learn_press_human_time_to_seconds( $value );
 					} elseif ( $key == '_lp_retake_count' ) {
 						$value = absint( $value );
 					}
