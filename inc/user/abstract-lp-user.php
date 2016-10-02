@@ -1944,13 +1944,13 @@ class LP_Abstract_User {
 			}
 		}
 		if ( $total_questions = sizeof( $questions ) ) {
-			$results['correct_percent'] = $results['correct'] / $total_questions * 100;
-			$results['wrong_percent']   = $results['wrong'] / $total_questions * 100;
-			$results['empty_percent']   = $results['empty'] / $total_questions * 100;
+			$results['correct_percent'] = round( $results['correct'] / $total_questions * 100 );
+			$results['wrong_percent']   = round( $results['wrong'] / $total_questions * 100 );
+			$results['empty_percent']   = round( $results['empty'] / $total_questions * 100 );
 		}
 		$results['time'] = $this->_calculate_quiz_time( $quiz, $progress );
 		if ( $results['quiz_mark'] ) {
-			$results['mark_percent'] = $results['mark'] / $results['quiz_mark'] * 100;
+			$results['mark_percent'] = round( $results['mark'] / $results['quiz_mark'] * 100 );
 		}
 		return apply_filters( 'learn_press_evaluate_quiz_results', $results, $quiz_id, $this->id );
 	}

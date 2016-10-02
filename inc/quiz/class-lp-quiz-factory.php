@@ -23,6 +23,7 @@ class LP_Quiz_Factory {
 			'finish-quiz'       => 'finish_quiz',
 			'retake-quiz'       => 'retake_quiz',
 			'check-question'    => 'check_question',
+			'fetch-question'    => 'fetch_question',
 			'get-question-hint' => 'get_question_hint'
 		);
 		foreach ( $actions as $k => $v ) {
@@ -134,9 +135,6 @@ class LP_Quiz_Factory {
 			$result = $user->start_quiz( $quiz_id, $course_id );
 			if ( $result ) {
 				learn_press_setup_user_course_data( $user->id, $course_id );
-				$course             = learn_press_get_course( $course_id );
-				LP()->course        = $course;
-				LP()->user          = $user;
 				$response['status'] = $result->status;
 				$response['html']   = learn_press_get_template_content( 'single-course/content-item-lp_quiz.php' );
 			} else {
@@ -227,13 +225,11 @@ class LP_Quiz_Factory {
 			);
 		} else {
 			$result = $user->retake_quiz( $quiz_id, $course_id );
-			learn_press_setup_user_course_data( $user->id, $course_id );
 			if ( $result ) {
-				$course             = learn_press_get_course( $course_id );
+				learn_press_setup_user_course_data( $user->id, $course_id );
+
 				$response['status'] = $result->status;
-				// update cache
-				LP_Cache::set_quiz_status( $user->id . '-' . $course->id . '-' . $quiz_id, $result->status );
-				$response['html'] = array(
+				$response['html']   = array(
 					'content'  => learn_press_get_template_content( 'single-course/content-item-lp_quiz.php' ),
 					'progress' => learn_press_get_template_content( 'single-course/progress.php' )
 				);
@@ -321,6 +317,17 @@ class LP_Quiz_Factory {
 
 		);
 		learn_press_send_json( $response );
+	}
+
+	public static function fetch_question() {
+		add_filter( 'learn_press_user_current_quiz_question', array( __CLASS__, '_current_question' ), 100, 4 );
+	}
+
+	public static function _current_question( $question_id, $quiz_id, $course_id, $user_id ) {
+		if ( !empty( $_REQUEST['lp-ajax'] ) && $_REQUEST['lp-ajax'] == 'fetch-question' ) {
+			$question_id = !empty( $_REQUEST['id'] ) ? $_REQUEST['id'] : $question_id;
+		}
+		return $question_id;
 	}
 
 	public static function get_question_hint() {

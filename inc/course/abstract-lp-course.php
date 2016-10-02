@@ -307,12 +307,12 @@ abstract class LP_Abstract_Course {
 
 				$curriculum[$this->id] = array();
 				$query                 = $wpdb->prepare( "
-				SELECT cc.*
-				FROM {$wpdb->posts} p
-				INNER JOIN {$wpdb->learnpress_sections} cc ON p.ID = cc.section_course_id
-				WHERE p.ID = %d
-				ORDER BY `section_order` ASC
-			", $this->id );
+					SELECT cc.*
+					FROM {$wpdb->posts} p
+					INNER JOIN {$wpdb->learnpress_sections} cc ON p.ID = cc.section_course_id
+					WHERE p.ID = %d
+					ORDER BY `section_order` ASC
+				", $this->id );
 				if ( $rows = $wpdb->get_results( $query, OBJECT_K ) ) {
 					$section_ids  = array_keys( $rows );
 					$how_many     = count( $section_ids );
@@ -1202,6 +1202,7 @@ abstract class LP_Abstract_Course {
 		$completed_items = array();
 		if ( $item_statuses ) {
 			if ( $curriculum_items = $this->post->curriculum_items ) {
+				$curriculum_items = maybe_unserialize($curriculum_items);
 				foreach ( $curriculum_items as $item_id ) {
 					$k = sprintf( '%d-%d-%d', $user_id, $this->id, $item_id );
 					if ( !empty( $item_statuses[$k] ) && $item_statuses[$k] == 'completed' ) {

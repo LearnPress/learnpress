@@ -1185,8 +1185,6 @@ body.post-type-lp_question #question_answer_ .inside {
 }
 .lp-label-counter {
   display: inline-block;
-  /* padding: 5px; */
-  line-height: 1;
   background-color: #0073AA;
   border-radius: 10px;
   height: 21px;
@@ -1197,7 +1195,10 @@ body.post-type-lp_question #question_answer_ .inside {
   padding: 0 5px;
 }
 .column-num_of_question,
-.column-duration {
+.column-preview,
+.column-duration,
+.column-type,
+.column-taxonomy-question_tag {
   width: 100px;
   text-align: left;
 }

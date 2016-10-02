@@ -54,7 +54,7 @@ class LP_Quiz {
 			$GLOBALS['learnpress_question_answers'] = array();
 		}
 		if ( is_numeric( $quiz ) ) {
-			$this->id   = absint( $quiz );
+			$this->id = absint( $quiz );
 		} elseif ( $quiz instanceof LP_Quiz ) {
 			$this->id = absint( $quiz->id );
 			//$this->post =  $quiz->post;
@@ -277,7 +277,7 @@ class LP_Quiz {
 	}
 
 	public function frontend_assets() {
-		if ( learn_press_is_course() && LP()->global['course-item']->id == $this->id ) {
+		if ( learn_press_is_course() && ( $quiz = LP()->global['course-item'] ) && $quiz->id == $this->id ) {
 			$translate = $this->get_localize();
 			LP_Assets::add_localize( $translate, false, 'learn-press-single-quiz' );
 			LP_Assets::add_param( $this->get_settings(), false, 'learn-press-single-quiz' );

@@ -254,10 +254,15 @@
 				new (function (a, b, c) {
 					$.ajax({
 						url     : next.get('url'),
+						data: {
+							id: next.get('id'),
+							'lp-ajax': 'fetch-question'
+						},
 						dataType: 'html',
 						success : function (response) {
 							var $html = $(response).contents().find('.learn-press-content-item-summary')
 							a.set('response', $html);
+							console.log($html)
 							LP.Hook.doAction('learn_press_next_question', next.get('id'), that);
 							$.isFunction(c) && c(a, b);
 						}
@@ -279,6 +284,10 @@
 			} else {
 				$.ajax({
 					url     : prev.get('url'),
+					data: {
+						id: prev.get('id'),
+						'lp-ajax': 'fetch-question'
+					},
 					dataType: 'html',
 					success : function (response) {
 						var $html = $(response).contents().find('.learn-press-content-item-summary')

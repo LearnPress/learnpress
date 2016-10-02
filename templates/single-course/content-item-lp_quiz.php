@@ -10,6 +10,7 @@ $quiz   = isset( $item ) ? $item : LP()->global['course-item'];
 if ( !$quiz ) {
 	return;
 }
+
 $have_questions = $quiz->get_questions();
 $can_view_item  = $user->can( 'view-item', $quiz->id, $course->id );
 
@@ -48,9 +49,9 @@ $can_view_item  = $user->can( 'view-item', $quiz->id, $course->id );
 			<?php learn_press_display_message( __( 'No questions', 'learnpress' ) ); ?>
 		<?php } ?>
 	</div>
-	<?php if ( $user->can_edit_item( $item->id, $course->id ) ): ?>
+	<?php if ( $user->can_edit_item( $quiz->id, $course->id ) ): ?>
 		<p class="edit-course-item-link">
-			<a class="" href="<?php echo get_edit_post_link( $item->id ); ?>"><?php _e( 'Edit quiz', 'learnpress' ); ?></a>
+			<a class="" href="<?php echo get_edit_post_link( $quiz->id ); ?>"><?php _e( 'Edit quiz', 'learnpress' ); ?></a>
 		</p>
 	<?php endif; ?>
 </div>

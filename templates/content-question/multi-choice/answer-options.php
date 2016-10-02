@@ -27,7 +27,8 @@ if ( $show_result && $completed ) {
 		<?php
 
 		foreach ( $answers as $k => $answer ):
-			$answer_class = array( 'answer-option' );
+			$answer_class = !$completed ? array( 'answer-option' ) : array('answer-option-result');
+
 			$disabled = '';
 			if ( $completed && $show_result || $checked ) {
 				$answer_correct = true;
