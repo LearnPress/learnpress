@@ -8,7 +8,7 @@ if ( !defined( 'ABSPATH' ) ) {
 }
 
 add_action('admin_head', function(){
-	print_r(get_post(130));
+//	print_r(get_post(130));
 
 });
 
