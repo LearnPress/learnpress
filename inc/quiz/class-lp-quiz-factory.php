@@ -227,7 +227,7 @@ class LP_Quiz_Factory {
 			$result = $user->retake_quiz( $quiz_id, $course_id );
 			if ( $result ) {
 				learn_press_setup_user_course_data( $user->id, $course_id );
-
+				LP()->global['course-item'] = LP_Quiz::get_quiz($quiz_id);
 				$response['status'] = $result->status;
 				$response['html']   = array(
 					'content'  => learn_press_get_template_content( 'single-course/content-item-lp_quiz.php' ),

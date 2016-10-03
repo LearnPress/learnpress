@@ -1108,16 +1108,25 @@ body.block-content {
 }
 
 .learn-press-tooltip {
-  font-family: dashicons;
   font-size: 20px;
   display: inline-block;
   vertical-align: middle;
-  color: #0f4956;
+  background: #0f4956;
   cursor: pointer;
-  &:before {
-    content: "\f223";
-  }
   line-height: 1;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  font-weight: 700;
+  position: relative;
+  &:before {
+    content: "?";
+    font-size: 13px;
+    color: white;
+    position: absolute;
+    top: 3px;
+    left: 6px;
+  }
 }
 
 .learn-press-tooltip-bubble {

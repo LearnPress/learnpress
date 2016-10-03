@@ -43,6 +43,7 @@ $course_results    = $course->evaluate_course_results();
 				</div>
 			</div>
 		</div>
+
 	</div>
 	<div class="course-progress">
 		<h4 class="lp-course-progress-heading">
@@ -70,4 +71,6 @@ $course_results    = $course->evaluate_course_results();
 			</div>
 		</div>
 	</div>
+
+	<?php learn_press_get_template( 'single-course/buttons.php' ); ?>
 </div>

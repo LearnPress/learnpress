@@ -17,7 +17,7 @@
 				try {
 					m.id = null;
 					m.destroy();
-				}catch (ex){
+				} catch (ex) {
 					console.log(ex, m)
 				}
 			});
@@ -124,10 +124,10 @@
 			this.on('add', function (model) {
 				this.listenTo(model, 'change', this.onChange);
 				this.listenTo(model, 'change:hasShowedHint', this.onChangedHint);
-				this.listenTo(model, 'change:checked', function(a){
-					if(a.changed['checked'] && a.changed['checked'] == 'yes'){
+				this.listenTo(model, 'change:checked', function (a) {
+					if (a.changed['checked'] && a.changed['checked'] == 'yes') {
 						var $dom = a.get('response');
-						if($dom) $dom.find('.button-check-answer').attr('disabled', true);
+						if ($dom) $dom.find('.button-check-answer').attr('disabled', true);
 					}
 				}, this);
 				model.set('index', this.len++);
@@ -142,23 +142,29 @@
 		},
 		onChange     : function (a, b) {
 
-			if (a.changed['current'] && a.get('current') == 'yes') {
-				this.current = a;
-				for (var i = 0; i < this.length; i++) {
-					var e = this.at(i);
-					if (e.get('id') == a.get('id')) {
-						continue;
+			if (a.changed['current']) {
+				if (a.get('current') != 'yes') {
+
+				} else {
+					this.current = a;
+					for (var i = 0; i < this.length; i++) {
+						var e = this.at(i);
+						if (e.get('id') == a.get('id')) {
+							$('.question-' + e.get('id')).toggleClass('current', true)
+							continue;
+						}
+						if (e.get('current') != 'yes') {
+							continue;
+						}
+						this.stopListening(e, 'change', this.onChange);
+						e.set('current', 'no');
+						this.listenTo(e, 'change', this.onChange);
+						$('.question-' + e.get('id')).toggleClass('current', false)
 					}
-					if (e.get('current') != 'yes') {
-						continue;
+					try {
+						this.view.updateUrl();
+					} catch (e) {
 					}
-					this.stopListening(e, 'change', this.onChange);
-					e.set('current', 'no');
-					this.listenTo(e, 'change', this.onChange);
-				}
-				try {
-					this.view.updateUrl();
-				} catch (e) {
 				}
 			}
 		}
@@ -166,7 +172,7 @@
 
 	Quiz.Model = Backbone.Model.extend({
 		_args                : null,
-		url: '',
+		url                  : '',
 		questions            : null,
 		initialize           : function (args) {
 			_.bindAll(this, 'getQuizData');
@@ -231,6 +237,7 @@
 			if (!current) {
 				return;
 			}
+			LP.Hook.doAction('learn_press_before_fetch_question', current.get('id'), that);
 			$.ajax({
 				url     : current.get('url'),
 				dataType: 'html',
@@ -246,6 +253,7 @@
 			if (!next) {
 				return;
 			}
+			LP.Hook.doAction('learn_press_before_next_question', next.get('id'), that);
 			next.set('current', 'yes');
 			if (next.get('response')) {
 				next.set('loaded', true);
@@ -254,8 +262,8 @@
 				new (function (a, b, c) {
 					$.ajax({
 						url     : next.get('url'),
-						data: {
-							id: next.get('id'),
+						data    : {
+							id       : next.get('id'),
 							'lp-ajax': 'fetch-question'
 						},
 						dataType: 'html',
@@ -277,6 +285,7 @@
 			if (!prev) {
 				return;
 			}
+			LP.Hook.doAction('learn_press_before_previous_question', prev.get('id'), that);
 			prev.set('current', 'yes');
 			if (prev.get('response')) {
 				prev.set('loaded', true);
@@ -284,8 +293,8 @@
 			} else {
 				$.ajax({
 					url     : prev.get('url'),
-					data: {
-						id: prev.get('id'),
+					data    : {
+						id       : prev.get('id'),
 						'lp-ajax': 'fetch-question'
 					},
 					dataType: 'html',
@@ -302,18 +311,7 @@
 		select               : function (id, callback) {
 			var question = this.questions.findWhere({id: id}),
 				that = this;
-			return;
-			question && question.submit({
-				data    : {
-					save_id        : that.get('question_id'),
-					question_answer: this.view.$('form').serializeJSON(), //$('input, select, textarea', this.view.$('form')).toJSON(),
-					time_remaining : that.get('time_remaining')
-				},
-				complete: function (response) {
-					that.set('question_id', id);
-					$.isFunction(callback) && callback.apply(that, [response])
-				}
-			});
+
 		},
 		getQuestionPosition  : function (question_id) {
 			question_id = question_id || this.get('question_id');
@@ -449,6 +447,10 @@
 			_.bindAll(this, '_onTick', 'itemUrl', '_loadQuestionCompleted', '_checkAnswer');
 
 			LP.Hook.addFilter('learn_press_get_current_item_url', this.itemUrl);
+			LP.Hook.addAction('learn_press_before_fetch_question', this.pause);
+			LP.Hook.addAction('learn_press_before_next_question', this.pause);
+			LP.Hook.addAction('learn_press_before_previous_question', this.pause);
+
 			this.model.current(true).set('response', this.$('.learn-press-content-item-summary'));
 			this.model.set('view', this);
 			this._initCountDown();
@@ -479,11 +481,13 @@
 			this.timeout = setTimeout(this._onTick, 1000);
 		},
 		_prevQuestion         : function (e) {
+			this.model.set('show-list', !!$('.lp-group-heading-title.active').length);
 			e.preventDefault();
 			this.model.current(true).set('response', this.$('.learn-press-content-item-summary'));
 			this.model.prev(this._loadQuestionCompleted);
 		},
 		_nextQuestion         : function (e) {
+			this.model.set('show-list', !!$('.lp-group-heading-title.active').length);
 			e.preventDefault();
 			this.model.current(true).set('response', this.$('.learn-press-content-item-summary'));
 			this.model.next(this._loadQuestionCompleted);
@@ -494,6 +498,10 @@
 				$oldElement = this.$('.learn-press-content-item-summary');
 			$newElement.show().insertAfter($oldElement);
 			$oldElement.detach();
+			if (this.model.get('show-list')) {
+				$newElement.find('.lp-group-heading-title').addClass('active');
+				$newElement.find('.lp-group-content-wrap').removeClass('hide-if-js')
+			}
 			this.updateButtons();
 			if (model.getCurrent('hasShowedHint') == 'yes') {
 				this.$('.button-hint').attr('disabled', true);
@@ -507,7 +515,6 @@
 			$(document).trigger('resize');
 			LP.setUrl(question.get('url'));
 			LP.unblockContent();
-			console.log('hide')
 		},
 		_showHint             : function (e) {
 			e.preventDefault();

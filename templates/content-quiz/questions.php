@@ -22,12 +22,12 @@ $no_permalink = $user->has_quiz_status( array( '', 'completed', 'viewed' ), $qui
 ?>
 
 <?php if ( $heading ) { ?>
-	<h4><?php echo $heading; ?></h4>
+	<h4 class="lp-group-heading-title" onclick="LP.toggleGroupSection('#learn-press-quiz-questions', this);"><?php echo $heading; ?></h4>
 <?php } ?>
 
 <?php if ( $quiz->has( 'questions' ) ): ?>
 
-	<div class="quiz-questions" id="learn-press-quiz-questions">
+	<div class="quiz-questions lp-group-content-wrap hide-if-js" id="learn-press-quiz-questions">
 
 		<?php do_action( 'learn_press_before_quiz_questions' ); ?>
 
