@@ -159,7 +159,7 @@
 .learn-press-courses li.course .course-thumbnail {
   position: relative;
 }
-.learn-press-courses li.course .course-thumbnailimg {
+.learn-press-courses li.course .course-thumbnail img {
   max-width: 100%;
   height: auto;
 }
