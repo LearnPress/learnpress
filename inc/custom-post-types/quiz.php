@@ -166,12 +166,13 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 								'std'     => 'global'
 							),
 							array(
-								'name' => __( 'Duration', 'learnpress' ),
-								'desc' => __( 'Duration of the quiz (in minutes). Auto submits when expire.', 'learnpress' ),
-								'id'   => "{$prefix}duration",
-								'type' => 'number',
-								'min'  => 0,
-								'std'  => 10
+								'name'         => __( 'Duration', 'learnpress' ),
+								'desc'         => __( 'Duration of the quiz. Set 0 to disable', 'learnpress' ),
+								'id'           => "{$prefix}duration",
+								'type'         => 'duration',//'number',
+								'default_time' => 'minute',
+								'min'          => 0,
+								'std'          => 10
 							),
 							array(
 								'name'    => __( 'Passing Grade Type', 'learnpress' ),

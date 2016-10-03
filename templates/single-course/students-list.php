@@ -16,7 +16,7 @@ $course = LP()->global['course'];
 $students_list_heading = apply_filters('learn_press_students_list_heading', __('Students Enrolled', 'leanpress'));
 $student_limit = apply_filters('learn_press_students_list_limit', -1);
 $show_avatar = apply_filters('learn_press_students_list_avatar', true);
-$students_list_avatar_size = apply_filters('learn_press_students_list_avatar_size', 64);
+$students_list_avatar_size = apply_filters('learn_press_students_list_avatar_size', 32);
 ?>
 <?php do_action('learn_press_before_student-list') ?>
     <div class="course-students-list">

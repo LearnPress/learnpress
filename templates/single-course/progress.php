@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit();
 
-$course = LP()->course;
+$course = LP()->global['course'];
 if ( !$course ) {
 	return;
 }
@@ -15,9 +15,7 @@ $status = LP()->user->get( 'course-status', $course->id );
 if ( !$status ) {
 	return;
 }
-
-$force = isset( $force ) ? $force : false;
-
+$force             = isset( $force ) ? $force : false;
 $num_of_decimal    = 0;
 $result            = $course->evaluate_course_results( null, $force );
 $current           = absint( $result );

@@ -267,9 +267,13 @@ class LP_Checkout {
 					$success = $this->payment_method->validate_fields();
 				}
 			}
+
 			if ( $success ) {
 
                                 $order_id = $this->create_order();
+
+                                // allow Third-party hook
+                                do_action( 'learn_press_checkout_order_processed', $order_id, $this );
 				if ( $this->payment_method ) {
 					// Store the order is waiting for payment and each payment method should clear it
 					LP()->session->order_awaiting_payment = $order_id;

@@ -102,11 +102,13 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 				'pages'  => array( LP_LESSON_CPT ),
 				'fields' => array(
 					array(
-						'name' => __( 'Lesson Duration', 'learnpress' ),
-						'id'   => "{$prefix}duration",
-						'type' => 'number',
-						'desc' => __( 'The length of the lesson (in minutes)', 'learnpress' ),
-						'std'  => 30,
+						'name'         => __( 'Lesson Duration', 'learnpress' ),
+						'id'           => "{$prefix}duration",
+						'type'         => 'number',
+						'type'         => 'duration',//'number',
+						'default_time' => 'minute',
+						'desc'         => __( 'Duration of the lesson. Set 0 to disable', 'learnpress' ),
+						'std'          => 30,
 					),
 					array(
 						'name'    => __( 'Preview Lesson', 'learnpress' ),
@@ -170,7 +172,8 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 				LP_COURSE_CPT => __( 'Course', 'learnpress' )
 			);
 			if ( current_theme_supports( 'post-formats' ) ) {
-				$new_columns['format'] = __( 'Format', 'learnpress' );
+				$new_columns['format']   = __( 'Format', 'learnpress' );
+				$new_columns['duration'] = __( 'Duration', 'learnpress' );
 			}
 			$new_columns['preview'] = __( 'Preview', 'learnpress' );
 			if ( false !== $pos && !array_key_exists( LP_COURSE_CPT, $columns ) ) {
@@ -233,6 +236,16 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 					break;
 				case 'format':
 					learn_press_item_meta_format( $post_id, __( 'Standard', 'learnpress' ) );
+					break;
+				case 'duration':
+					$duration = absint( get_post_meta( $post_id, '_lp_duration', true ) ) * 60;
+					if ( $duration >= 600 ) {
+						echo date( 'H:i:s', $duration );
+					} elseif ( $duration > 0 ) {
+						echo date( 'i:s', $duration );
+					} else {
+						echo '-';
+					}
 			}
 		}
 

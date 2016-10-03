@@ -7,6 +7,11 @@ if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
+add_action('admin_head', function(){
+	print_r(get_post(130));
+
+});
+
 /**
  * Cache static pages
  */
@@ -145,7 +150,7 @@ function _learn_press_get_course_curriculum( $course_id, $force = false ) {
 		}
 		$meta_cache_ids = array_merge( $meta_cache_ids, $item_ids );
 		$course                   = get_post( $course_id );
-		$course->curriculum_items = $item_ids;
+		$course->curriculum_items = is_admin() ? maybe_serialize( $item_ids ) : $item_ids;
 		wp_cache_replace( $course_id, $course, 'posts' );
 		if ( $quiz_ids ) {
 			$question_ids = _learn_press_get_quiz_questions( $quiz_ids );
@@ -264,7 +269,7 @@ function _learn_press_get_quiz_questions( $quiz_ids ) {
  * @param $user_id
  * @param $course_id
  */
-function learn_press_setup_user_course_data( $user_id, $course_id ) {
+function learn_press_setup_user_course_data( $user_id, $course_id, $force = false ) {
 	if ( !did_action( 'learn_press_setup_course_data_' . $course_id ) ) {
 		learn_press_setup_course_data( $course_id );
 	}
@@ -281,6 +286,7 @@ function learn_press_setup_user_course_data( $user_id, $course_id ) {
 	global $wpdb;
 	$course   = get_post( $course_id );
 	$item_ids = !empty( $course->curriculum_items ) ? $course->curriculum_items : array();
+	$item_ids = maybe_unserialize($item_ids);
 	if ( $item_ids ) {
 		$in    = implode( ', ', $item_ids );
 		$query = $wpdb->prepare( "
@@ -306,7 +312,7 @@ function learn_press_setup_user_course_data( $user_id, $course_id ) {
 		}
 		$item_statuses = LP_Cache::get_item_statuses( false, array() );
 		foreach ( $item_ids as $id ) {
-			if ( !array_key_exists( $id, $item_statuses ) ) {
+			if ( !array_key_exists( $id, $item_statuses ) || $force) {
 				$item_statuses[$user_id . '-' . $course_id . '-' . $id] = '';
 			}
 		}

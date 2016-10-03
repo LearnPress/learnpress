@@ -229,7 +229,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 					'notice_remove_section_item' => __( 'Are you sure you want to remove this item?', 'learnpress' )
 				),
 				null,
-				'admin-course'
+				'learn-press-mb-course'
 			);
 			if ( in_array( get_post_type(), array( LP_COURSE_CPT, LP_LESSON_CPT ) ) ) {
 				wp_enqueue_script( 'jquery-caret', LP()->plugin_url( 'assets/js/jquery.caret.js', 'jquery' ) );

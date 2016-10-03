@@ -22,7 +22,7 @@ reset( $history );
 $history_count = sizeof( $history );
 $view_id       = !empty( $_REQUEST['history_id'] ) ? $_REQUEST['history_id'] : key( $history );
 $heading       = sprintf( __( 'Other results (newest %d items)', 'learnpress' ), $limit );
-$heading       = apply_filters( 'learn_press_list_questions_heading', $heading );
+$heading       = apply_filters( 'learn_press_quiz_history_heading', $heading );
 ?>
 
 <?php if ( $heading ) { ?>
@@ -47,15 +47,12 @@ if ( $history_count > 1 ) {
 			<tr>
 				<td align="right"><?php echo $position; ?></td>
 				<td>
-					<?php echo date( get_option( 'date_format' ), $item->start ); ?>
-					<div><?php echo date( get_option( 'time_format' ), $item->start ); ?></div>
+					<?php echo date( get_option( 'date_format' ), strtotime( $item->start ) ); ?>
+					<div><?php echo date( get_option( 'time_format' ), strtotime( $item->start ) ); ?></div>
 				</td>
 				<td>
-					<?php if ( $item->results['quiz_mark'] ) { ?>
-						<?php printf( "%01.2f (%%)", ( $item->results['mark'] / $item->results['quiz_mark'] ) * 100 ); ?>
-					<?php } else { ?>
-						<?php printf( "%01.2f (%%)", 0 ); ?>
-					<?php } ?>
+					<?php $mark_percent = !empty( $item->mark_percent ) ? $item->mark_percent : 0; ?>
+					<?php printf( "%d%%", $mark_percent ); ?>
 				</td>
 			</tr>
 			<?php if ( $position >= $limit ) break;

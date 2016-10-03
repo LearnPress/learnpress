@@ -551,6 +551,11 @@ if ( !class_exists( 'LearnPress' ) ) {
 			}
 			add_post_type_support( 'lp_course', 'thumbnail' );
 
+                        // if enabled generate course thumnail on General Settings add new image sizes
+                        $enabled_course_thum = LP()->settings->get( 'generate_course_thumbnail', 'yes' );
+                        if ( $enabled_course_thum !== 'yes' ) {
+                            return;
+                        }
 			$sizes = apply_filters( 'learn_press_image_sizes', array( 'single_course', 'course_thumbnail' ) );
 
 			foreach ( $sizes as $image_size ) {
@@ -651,4 +656,3 @@ function load_learn_press() {
  * Create new instance of LearnPress and put it to global
  */
 $GLOBALS['LearnPress'] = LP();
-

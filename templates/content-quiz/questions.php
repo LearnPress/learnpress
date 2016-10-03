@@ -31,14 +31,14 @@ $no_permalink = $user->has_quiz_status( array( '', 'completed', 'viewed' ), $qui
 
 		<?php do_action( 'learn_press_before_quiz_questions' ); ?>
 
-		<ul class="quiz-questions-list">
+		<ol class="quiz-questions-list">
 			<?php if ( $questions = $quiz->get_questions() ) foreach ( $questions as $question ) { ?>
 				<li data-id="<?php echo $question->ID; ?>" <?php learn_press_question_class( $question->ID, array( 'user' => $user, 'quiz' => $quiz ) ); ?>>
 
 					<?php do_action( 'learn_press_before_quiz_question_title', $question->ID, $quiz->id ); ?>
 
 					<?php if ( $no_permalink ) { ?>
-						<?php printf( '<span class="question-title">%s</span>', get_the_title( $question->ID ) ); ?>
+						<?php printf( '<p class="question-title">%s</p>', get_the_title( $question->ID ) ); ?>
 					<?php } else { ?>
 						<?php printf( '<a class="question-title" href="%s">%s</a>', $quiz->get_question_link( $question->ID ), get_the_title( $question->ID ) ); ?>
 					<?php } ?>
@@ -47,7 +47,7 @@ $no_permalink = $user->has_quiz_status( array( '', 'completed', 'viewed' ), $qui
 
 				</li>
 			<?php } ?>
-		</ul>
+		</ol>
 
 		<?php do_action( 'learn_press_after_quiz_questions' ); ?>
 

@@ -37,7 +37,7 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
 					'quick_edit_name'               => __( 'Click to quick edit name', 'learnpress' ),
 					'save_course'                   => __( 'Save Course', 'learnpress' ),
 					'submit_course_review'          => __( 'Submit for Review', 'learnpress' )
-				), null, 'meta-box-course'
+				), null, 'learn-press-mb-course'
 			);
 		}
 
