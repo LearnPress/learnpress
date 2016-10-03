@@ -593,7 +593,8 @@ CREATE TABLE {$wpdb->prefix}learnpress_user_itemmeta (
   learnpress_user_item_id bigint(20) unsigned NOT NULL,
   meta_key varchar(45) NOT NULL DEFAULT '',
   meta_value text NOT NULL,
-  time datetime DEFAULT '0000-00-00 00:00:00',
+  create_time datetime DEFAULT '0000-00-00 00:00:00',
+  update_time datetime DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY  (meta_id)
 ) $collate;
 ";

@@ -800,19 +800,6 @@ body.block-content #learn-press-block-content {
 .single-quiz .quiz-questions-list .question-title {
   margin: 0 0 5px 0;
 }
-.single-quiz .quiz-questions-list .current a:after {
-  display: inline-block;
-  background-color: #0066cc;
-  color: #FFF;
-  font-size: 70%;
-  border-radius: 50%;
-  content: '?';
-  width: 20px;
-  height: 20px;
-  line-height: 20px;
-  text-align: center;
-  vertical-align: middle;
-}
 .single-quiz .quiz-description .learn-press-question-title,
 .single-quiz .question-content .learn-press-question-title {
   margin-bottom: 20px;
@@ -1890,22 +1877,6 @@ body.block-content #learn-press-block-content {
 }
 .single-lp_course .course-students-list .students p {
   margin-top: 15px;
-}
-.course-learning-summary .learn-press-course-results-progress .learn-press-course-buttons {
-  display: none;
-}
-.lp-group-heading-title {
-  cursor: pointer;
-}
-.lp-group-heading-title:after {
-  content: '+';
-  margin-left: 5px;
-}
-.lp-group-heading-title.active:after {
-  content: '-';
-}
-.lp-group-content-wrap {
-  margin-bottom: 40px;
 }
 @-moz-keyframes spin-12 {
   0% {

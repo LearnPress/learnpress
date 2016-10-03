@@ -564,10 +564,26 @@ class LP_Assets {
 		}
 	}
 
+	public static function remove_script( $handle ) {
+		if ( isset( self::$_enqueue_scripts[$handle] ) ) {
+			unset( self::$_enqueue_scripts[$handle] );
+		}
+		wp_deregister_script($handle);
+	}
+
+	public static function remove_style( $handle ) {
+		if ( isset( self::$_enqueue_styles[$handle] ) ) {
+			unset( self::$_enqueue_styles[$handle] );
+		}
+		wp_deregister_style($handle);
+
+	}
+
 	/**
 	 * _enqueue_scripts
 	 */
 	public static function _enqueue_scripts() {
+		do_action( 'learn_press_enqueue_scripts', __CLASS__ );
 		if ( strpos( current_action(), 'enqueue_scripts' ) === false ) {
 			return;
 		}
@@ -697,10 +713,10 @@ class LP_Assets {
 				self::enqueue_style( 'learn-press-modal-search-items' );
 				self::enqueue_script( 'learn-press-modal-search-items' );
 			}
-                        if ( $screen_id === 'settings_page_learn_press_settings' ) {
-                                LP_Assets::enqueue_style( 'learn-press-admin' );
-                                LP_Assets::enqueue_script( 'learn-press-admin-settings', LP()->plugin_url( 'assets/js/admin/settings.js' ) );
-                        }
+			if ( $screen_id === 'settings_page_learn_press_settings' ) {
+				LP_Assets::enqueue_style( 'learn-press-admin' );
+				LP_Assets::enqueue_script( 'learn-press-admin-settings', LP()->plugin_url( 'assets/js/admin/settings.js' ) );
+			}
 			return;
 		}
 
