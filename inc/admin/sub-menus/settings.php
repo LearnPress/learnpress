@@ -14,9 +14,6 @@ if ( !defined( 'ABSPATH' ) ) {
  * Setting page
  */
 function learn_press_settings_page() {
-	LP_Assets::enqueue_style( 'learn-press-admin' );
-	LP_Assets::enqueue_script( 'learn-press-admin-settings', LP()->plugin_url( 'assets/js/admin/settings.js' ) );
-
 
 	$current_tab = isset( $_GET['tab'] ) ? $_GET['tab'] : '';
 

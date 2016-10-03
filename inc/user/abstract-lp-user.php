@@ -2194,8 +2194,15 @@ class LP_Abstract_User {
 				'subtotal'        => $course->get_price(),
 				'total'           => $course->get_price()
 			);
-			learn_press_add_order_item( $order->id, $item );
+			$order_item = learn_press_add_order_item( $order->id, $item );
 			$ref_id = $order->id;
+			
+			# 3 add order itemmeta
+			learn_press_add_order_item_meta( $order_item, '_course_id', $course->id );
+			learn_press_add_order_item_meta( $order_item, '_quantity', 1 );
+			learn_press_add_order_item_meta( $order_item, '_subtotal', 0 );
+			learn_press_add_order_item_meta( $order_item, '_total', 0 );
+
 		} else {
 			$ref_id = $this->get_course_order( $course_id );
 		}
@@ -2218,7 +2225,7 @@ class LP_Abstract_User {
 		 * )
 		 * ) {
 		 */
-		# 3 enroll course
+		# 4 enroll course
 		if ( $wpdb->insert(
 			$wpdb->prefix . 'learnpress_user_items',
 			array(

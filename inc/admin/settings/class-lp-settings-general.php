@@ -90,6 +90,13 @@ class LP_Settings_General extends LP_Settings_Base {
 					'default' => 'yes',
 					'type'    => 'checkbox',
 					'desc'    => __( 'Turn on/off debug mode for developer', 'learnpress' )
+				),
+				array(
+					'title'   => __( 'Course thumbnail', 'learnpress' ),
+					'id'      => $this->get_field_name( 'generate_course_thumbnail' ),
+					'default' => 'yes',
+					'type'    => 'checkbox',
+					'desc'    => __( 'Turn on/off courses extra thumbnail', 'learnpress' )
 				)
 			)
 		);
