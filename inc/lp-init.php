@@ -7,11 +7,6 @@ if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-add_action('admin_head', function(){
-	print_r(get_post(130));
-
-});
-
 /**
  * Cache static pages
  */

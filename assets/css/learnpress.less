@@ -838,6 +838,21 @@ body.block-content {
         .question-title{
             margin: 0 0 5px 0;
         }
+        .current{
+            a:after{
+                display: inline-block;
+                background-color: #0066cc;
+                color: #FFF;
+                font-size: 70%;
+                border-radius: 50%;
+                content: '?';
+                width: 20px;
+                height: 20px;
+                line-height: 20px;
+                text-align: center;
+                vertical-align: middle;
+            }
+        }
     }
     .quiz-description,
     .question-content {
@@ -1235,6 +1250,29 @@ body.block-content {
             }
         }
     }
+
+}
+.course-learning-summary{
+    .learn-press-course-results-progress{
+        .learn-press-course-buttons{
+            display: none;
+        }
+    }
+}
+.lp-group-heading-title{
+    cursor: pointer;
+    &:after{
+        content: '+';
+        margin-left: 5px;
+    }
+    &.active{
+        &:after{
+            content: '-';
+        }
+    }
+}
+.lp-group-content-wrap{
+    margin-bottom: 40px;
 }
 
 @-moz-keyframes spin-12 {

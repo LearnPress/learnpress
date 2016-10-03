@@ -513,6 +513,8 @@ class LP_Abstract_User {
 			learn_press_update_user_item_meta( $return, 'current_question', $question );
 			learn_press_update_user_item_meta( $return, 'question_answers', array() );
 
+
+
 			$response = $this->get_quiz_results( $quiz_id, $course_id, true );
 		}
 		do_action( 'learn_press_user_retake_quiz', $response, $quiz_id, $this->id );

@@ -1071,6 +1071,7 @@ if ( !function_exists( 'learn_press_course_class' ) ) {
  */
 function learn_press_setup_object_data( $post ) {
 
+	global $course;
 	$object = null;
 
 	if ( is_int( $post ) )
@@ -1085,7 +1086,7 @@ function learn_press_setup_object_data( $post ) {
 			unset( $GLOBALS['course'] );
 		}
 		$object                = learn_press_get_course( $post );
-		LP()->global['course'] = $object;
+		LP()->global['course'] = $course = $object;
 		LP()->set_object( '_course', $object );
 	}
 	return $object;

@@ -506,21 +506,34 @@ if (typeof window.LP == 'undefined') {
 		}
 	};
 	LP = $.extend({
-		setUrl        : function (url, title) {
+		setUrl            : function (url, title) {
 			if (url) {
 				history.pushState({}, title, url);
 			}
 		},
-		getUrl        : function () {
+		toggleGroupSection: function (el, target) {
+			$(el).slideToggle();
+			$(target).toggleClass('active');
+		},
+		overflow          : function (el, v) {
+			var $el = $(el),
+				overflow = $el.css('overflow');
+			if (v) {
+				$el.css('overflow', v).data('overflow', overflow);
+			} else {
+				$el.css('overflow', $el.data('overflow'));
+			}
+		},
+		getUrl            : function () {
 			return window.location.href;
 		},
-		addQueryVar   : function (name, value, url) {
+		addQueryVar       : function (name, value, url) {
 			return (url == undefined ? window.location.href : url).addQueryVar(name, value);
 		},
-		removeQueryVar: function (name, url) {
+		removeQueryVar    : function (name, url) {
 			return (url == undefined ? window.location.href : url).removeQueryVar(name);
 		},
-		reload        : function (url) {
+		reload            : function (url) {
 			if (!url) {
 				url = window.location.href;
 			}
@@ -926,5 +939,5 @@ if (typeof window.LP == 'undefined') {
 		});
 		$('.learn-press-tooltip').tooltip({offset: [24, 24]});
 	});
-
+	LearnPress = LP;
 })(jQuery);

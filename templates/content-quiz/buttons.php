@@ -48,13 +48,6 @@ $question = $quiz->get_current_question();
 			data-security="<?php esc_attr_e( wp_create_nonce( 'retake-quiz-' . $user->id . '-' . $course->id . '-' . $quiz->id ) ); ?>">
 			<?php echo esc_html( sprintf( '%s (+%d)', __( 'Retake', 'learnpress' ), $remain ) ); ?>
 		</button>
-		<button
-			class="button-retake-quiz"
-			data-block-content="yes"
-			data-id="<?php esc_attr_e( $quiz->id ); ?>"
-			data-security="<?php esc_attr_e( wp_create_nonce( 'retake-quiz-' . $user->id . '-' . $course->id . '-' . $quiz->id ) ); ?>">
-			<?php echo esc_html( sprintf( '%s (+%d)', __( 'View questions', 'learnpress' ), $remain ) ); ?>
-		</button>
 	<?php endif; ?>
 
 	<?php if ( !$user->has( 'started-quiz', $quiz->id, $course->id ) ): ?>

@@ -26,38 +26,40 @@ $heading       = apply_filters( 'learn_press_quiz_history_heading', $heading );
 ?>
 
 <?php if ( $heading ) { ?>
-	<h4><?php echo $heading; ?></h4>
+	<h4 class="lp-group-heading-title" onclick="LP.toggleGroupSection('#lp-quiz-history', this);"><?php echo $heading; ?></h4>
 <?php } ?>
 
 <?php
 if ( $history_count > 1 ) {
 	$position = 0;
 	?>
-	<table class="quiz-history">
-		<thead>
-		<tr>
-			<th width="50" align="right">#</th>
-			<th><?php _e( 'Time', 'learnpress' ); ?></th>
-			<th><?php _e( 'Result', 'learnpress' ); ?></th>
-		</tr>
-		</thead>
-		<?php foreach ( $history as $item ) {
-			if ( $item->history_id == $view_id ) continue;
-			$position ++; ?>
+	<div class="lp-group-content-wrap hide-if-js" id="lp-quiz-history">
+		<table class="quiz-history">
+			<thead>
 			<tr>
-				<td align="right"><?php echo $position; ?></td>
-				<td>
-					<?php echo date( get_option( 'date_format' ), strtotime( $item->start ) ); ?>
-					<div><?php echo date( get_option( 'time_format' ), strtotime( $item->start ) ); ?></div>
-				</td>
-				<td>
-					<?php $mark_percent = !empty( $item->mark_percent ) ? $item->mark_percent : 0; ?>
-					<?php printf( "%d%%", $mark_percent ); ?>
-				</td>
+				<th width="50" align="right">#</th>
+				<th><?php _e( 'Time', 'learnpress' ); ?></th>
+				<th><?php _e( 'Result', 'learnpress' ); ?></th>
 			</tr>
-			<?php if ( $position >= $limit ) break;
-		} ?>
-	</table>
+			</thead>
+			<?php foreach ( $history as $item ) {
+				if ( $item->history_id == $view_id ) continue;
+				$position ++; ?>
+				<tr>
+					<td align="right"><?php echo $position; ?></td>
+					<td>
+						<?php echo date( get_option( 'date_format' ), strtotime( $item->start ) ); ?>
+						<div><?php echo date( get_option( 'time_format' ), strtotime( $item->start ) ); ?></div>
+					</td>
+					<td>
+						<?php $mark_percent = !empty( $item->mark_percent ) ? $item->mark_percent : 0; ?>
+						<?php printf( "%d%%", $mark_percent ); ?>
+					</td>
+				</tr>
+				<?php if ( $position >= $limit ) break;
+			} ?>
+		</table>
+	</div>
 	<?php
 
 } else {

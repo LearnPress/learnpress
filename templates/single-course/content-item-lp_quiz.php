@@ -55,7 +55,7 @@ $can_view_item  = $user->can( 'view-item', $quiz->id, $course->id );
 		</p>
 	<?php endif; ?>
 </div>
-<script>
-	window.Quiz_Params = <?php echo json_encode( $quiz->get_settings(), LP()->settings->get( 'debug' ) == 'yes' ? JSON_PRETTY_PRINT : '' );?>;
-</script>
+<?php LP_Assets::add_var( 'Quiz_Params', wp_json_encode( $quiz->get_settings() ), '__all' ); ?>
+<?php //LP_Assets::add_param( $quiz->get_settings(), '', '__all', 'Quiz_Params' ); ?>
+
 

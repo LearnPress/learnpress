@@ -399,10 +399,9 @@ if (typeof LearnPress == 'undefined') {
 					that.$('.course-item-' + that.currentItem.get('id'))
 						.removeClass('item-completed');
 					that.$('.learn-press-course-results-progress').replaceWith(response.html.progress);
+					///LP.reload(that.get('url'));
 					if (window.quiz) {
 						window.quiz.destroy();
-						//window.quiz.view.$el.removeData().unbind();
-						//window.quiz.view.remove();
 					}
 					if (typeof Quiz_Params) {
 						window.quiz = new LP_Quiz(Quiz_Params);
