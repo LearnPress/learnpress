@@ -58,7 +58,11 @@ $students_list_avatar_size = apply_filters('learn_press_students_list_avatar_siz
             </ul>
         <?php else: ?>
             <div class="students empty">
-                <?php echo apply_filters('learn_press_course_no_student', __('No student enrolled.', 'learnpress')) ?>
+                <?php if ($course->students) {
+                    echo apply_filters('learn_press_course_count_student', sprintf(_n('One student enrolled.', '%s students enrolled.', $course->students, 'learnpress'), $course->students));
+                } else {
+                    echo apply_filters('learn_press_course_no_student', __('No student enrolled.', 'learnpress'));
+                } ?>
             </div>
         <?php endif; ?>
     </div>
