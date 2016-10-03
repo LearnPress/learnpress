@@ -660,8 +660,8 @@ body.course-has-popup {
 }
 #course-curriculum-popup .learn-press-content-item-title {
   /*padding: 20px;
-    background: #F5F5F5;
-    margin: 0;*/
+        background: #F5F5F5;
+        margin: 0;*/
 }
 #course-curriculum-popup .learn-press-content-item-title.content-item-quiz-title h4 {
   float: left;
@@ -676,6 +676,7 @@ body.course-has-popup {
 }
 #course-curriculum-popup .learn-press-content-item-title.content-item-quiz-title .quiz-countdown:after,
 #course-curriculum-popup .learn-press-content-item-title.content-item-quiz-title .quiz-countdown:before {
+  padding: 0 10px;
   height: 3px;
   position: absolute;
   bottom: -3px;
@@ -699,7 +700,7 @@ body.course-has-popup {
 }
 #course-curriculum-popup .learn-press-content-item-summary {
   /*padding: 20px;
-    border-top: 1px solid #DDD;*/
+        border-top: 1px solid #DDD;*/
 }
 #course-curriculum-popup .learn-press-content-item-summary .quiz-question-title {
   margin-bottom: 20px;
@@ -792,15 +793,15 @@ body.block-content #learn-press-block-content {
   margin-bottom: 20px;
   clear: both;
 }
-.single-quiz .quiz-questions-list,
 .single-quiz .quiz-intro {
   list-style: none;
 }
-.single-quiz .quiz-description,
-.single-quiz .question-content {
-  /*float: left;
-    width: 100%;
-    padding-right: 340px;*/
+.single-quiz .quiz-questions-list {
+  margin: 0;
+  list-style-position: inside;
+}
+.single-quiz .quiz-questions-list .question-title {
+  margin: 0 0 5px 0;
 }
 .single-quiz .quiz-description .learn-press-question-title,
 .single-quiz .question-content .learn-press-question-title {
@@ -825,7 +826,7 @@ body.block-content #learn-press-block-content {
   position: absolute;
   border-radius: 50%;
   /*left: calc(50% - 100px);
-      top: calc(50% - 100px);*/
+            top: calc(50% - 100px);*/
   width: 260px;
   height: 260px;
   clip: rect(0, 260px, 260px, 130px);
@@ -835,7 +836,7 @@ body.block-content #learn-press-block-content {
   position: absolute;
   border-radius: 50%;
   /*left: calc(50% - 100px);
-        top: calc(50% - 100px);*/
+                top: calc(50% - 100px);*/
   width: 260px;
   height: 260px;
   clip: rect(0, 130px, 260px, 0);
@@ -912,7 +913,7 @@ body.block-content #learn-press-block-content {
   position: absolute;
   border-radius: 50%;
   /*left: calc(50% - 100px);
-      top: calc(50% - 100px);*/
+            top: calc(50% - 100px);*/
   width: 200px;
   height: 200px;
   clip: rect(0, 200px, 200px, 100px);
@@ -922,7 +923,7 @@ body.block-content #learn-press-block-content {
   position: absolute;
   border-radius: 50%;
   /*left: calc(50% - 100px);
-        top: calc(50% - 100px);*/
+                top: calc(50% - 100px);*/
   width: 200px;
   height: 200px;
   clip: rect(0, 100px, 200px, 0);
@@ -980,7 +981,7 @@ body.block-content #learn-press-block-content {
   position: absolute;
   border-radius: 50%;
   /*left: calc(50% - 100px);
-      top: calc(50% - 100px);*/
+            top: calc(50% - 100px);*/
   width: 200px;
   height: 200px;
   clip: rect(0, 200px, 200px, 100px);
@@ -990,7 +991,7 @@ body.block-content #learn-press-block-content {
   position: absolute;
   border-radius: 50%;
   /*left: calc(50% - 100px);
-        top: calc(50% - 100px);*/
+                top: calc(50% - 100px);*/
   width: 200px;
   height: 200px;
   clip: rect(0, 100px, 200px, 0);
@@ -1706,6 +1707,14 @@ body.block-content #learn-press-block-content {
   color: #FF0000;
   background: #F5F5F5;
 }
+.learn-press-question-options .answer-option-result label p {
+  display: inline-block;
+  margin: 0;
+  font-size: smaller;
+}
+.learn-press-question-options .answer-option-result label input[disabled] {
+  opacity: 1;
+}
 .learnpress-content {
   margin-bottom: 20px;
 }
@@ -1740,7 +1749,6 @@ body.block-content #learn-press-block-content {
 }
 /* COURSE QUIZ */
 .single-quiz .quiz-questions-list {
-  list-style: none;
   padding: 0;
 }
 .single-quiz .quiz-intro {
@@ -1748,6 +1756,10 @@ body.block-content #learn-press-block-content {
   padding: 10px 20px;
   background: #F5F5F5;
   margin: 0 0 20px 0;
+}
+.single-quiz h4 {
+  margin-bottom: 10px;
+  font-size: 18px;
 }
 .learn-press-tooltip {
   font-family: dashicons;

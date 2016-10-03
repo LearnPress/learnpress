@@ -24,7 +24,7 @@ $user   = learn_press_get_current_user();
 				<?php if ( $next_item = $course->get_next_item() ): ?>
 					<a class="footer-control next-item" data-id="<?php echo $next_item; ?>" href="<?php echo $course->get_item_link( $next_item ); ?>"><?php echo get_the_title( $next_item ); ?></a>
 				<?php endif; ?>
-				-->
+
 				<?php if ( $user->has( 'finished-course', $course->id ) ): ?>
 					<?php if ( $count = $user->can( 'retake-course', $course->id ) ): ?>
 						<button
@@ -43,7 +43,7 @@ $user   = learn_press_get_current_user();
 						data-security="<?php esc_attr_e( wp_create_nonce( 'learn-press-finish-course-' . $course->id . '-' . $user->id ) ); ?>">
 						<?php esc_html_e( 'Finish course', 'learnpress' ); ?>
 					</button>
-				<?php endif; ?>
+				<?php endif; ?>-->
 			</div>
 		</div>
 	</div>

@@ -10,23 +10,20 @@
 if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
+$course      = LP()->global['course'];
 $quiz        = LP()->global['course-item'];
-$user        = LP()->user;
-$completed   = $user->get_quiz_status( $quiz->id ) == 'completed';
-$show_result = $quiz->show_result == 'yes';
-$checked     = $user->has_checked_answer( $this->id, $quiz->id );
+$user        = learn_press_get_current_user();
+$completed   = $user->get_quiz_status( $quiz->id, $course->id ) == 'completed';
+$checked     = $user->has_checked_answer( $this->id, $quiz->id, $course->id );
+$show_result = !$completed ? $checked : $quiz->show_result == 'yes';
 
-$args = array();
-if ( $show_result && $completed ) {
-	$args['classes'] = 'checked';
-}
 ?>
 <?php if ( $answers = $this->answers ) : ?>
 
 	<ul class="learn-press-question-options">
 		<?php
 		foreach ( $answers as $k => $answer ):
-			$answer_class = array( 'answer-option' );
+			$answer_class = !$completed ? array( 'answer-option' ) : array('answer-option-result');
 			$disabled = '';
 			if ( $completed && $show_result || $checked ) {
 				$answer_correct = true;

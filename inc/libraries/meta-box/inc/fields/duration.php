@@ -15,12 +15,13 @@ if ( !class_exists( 'RWMB_Duration_Field' ) ) {
 		static function html( $meta, $field ) {
 			$duration      = learn_press_get_course_duration_support();
 			$duration_keys = array_keys( $duration );
+			$default_time  = !empty( $field['default_time'] ) ? $field['default_time'] : end( $duration_keys );
 			if ( preg_match_all( '!([0-9]+)\s*(' . join( '|', $duration_keys ) . ')?!', $meta, $matches ) ) {
 				$a1 = $matches[1][0];
-				$a2 = in_array( $matches[2][0], $duration_keys ) ? $matches[2][0] : end( $duration_keys );
+				$a2 = in_array( $matches[2][0], $duration_keys ) ? $matches[2][0] : $default_time;
 			} else {
 				$a1 = absint( $meta );
-				$a2 = end( $duration_keys );
+				$a2 = $default_time;
 			}
 			$html_option = '';
 			foreach ( $duration as $k => $v ) {

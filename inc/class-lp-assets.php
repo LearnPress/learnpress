@@ -44,6 +44,11 @@ class LP_Assets {
 	/**
 	 * @var array
 	 */
+	protected static $wp_param_names = array();
+
+	/**
+	 * @var array
+	 */
 	protected static $wp_script_codes = array();
 
 	/**
@@ -51,7 +56,12 @@ class LP_Assets {
 	 *
 	 * @var bool
 	 */
-	protected static $localized = false;
+	protected static $localized = array( '__all' => '' );
+
+	/**
+	 * @var array
+	 */
+	protected static $param_printed = array();
 
 	/**
 	 * @var int
@@ -79,6 +89,11 @@ class LP_Assets {
 	public static $registered = array();
 
 	/**
+	 * @var array
+	 */
+	protected static $js_vars = array();
+
+	/**
 	 * Constructor
 	 */
 	public function __construct() {
@@ -90,31 +105,44 @@ class LP_Assets {
 	 * Init Asset
 	 */
 	public static function init() {
+		$priory = 900;
 		if ( !is_admin() ) {
-			add_action( 'wp_enqueue_scripts', array( self::$_instance, 'load_scripts' ) );
-			add_action( 'wp_enqueue_scripts', array( self::$_instance, 'wp_assets' ) );
-			add_action( 'wp_print_scripts', array( self::$_instance, 'localize_printed_scripts' ), 5 );
-			add_action( 'wp_print_footer_scripts', array( self::$_instance, 'localize_printed_scripts' ), 5 );
-			add_action( 'wp_enqueue_scripts', array( __CLASS__, '_enqueue_scripts' ) );
+			add_action( 'wp_enqueue_scripts', array( self::$_instance, 'load_scripts' ), $priory );
+			add_action( 'wp_enqueue_scripts', array( self::$_instance, 'wp_assets' ), $priory );
+			//add_action( 'wp_print_scripts', array( self::$_instance, 'localize_printed_scripts' ), $priory );
+			add_action( 'wp_print_footer_scripts', array( self::$_instance, 'localize_printed_scripts' ), $priory + 10 );
+			add_action( 'wp_enqueue_scripts', array( __CLASS__, '_enqueue_scripts' ), $priory + 10 );
 
 		} else {
-			add_action( 'admin_enqueue_scripts', array( self::$_instance, 'load_scripts' ) );
-			add_action( 'admin_enqueue_scripts', array( self::$_instance, 'wp_assets' ) );
-			add_action( 'admin_print_scripts', array( self::$_instance, 'localize_printed_scripts' ), 5 );
-			add_action( 'admin_print_footer_scripts', array( self::$_instance, 'localize_printed_scripts' ), 5 );
-			add_action( 'admin_enqueue_scripts', array( __CLASS__, '_enqueue_scripts' ) );
+			add_action( 'admin_enqueue_scripts', array( self::$_instance, 'load_scripts' ), $priory );
+			add_action( 'admin_enqueue_scripts', array( self::$_instance, 'wp_assets' ), $priory );
+			add_action( 'admin_print_scripts', array( self::$_instance, 'localize_printed_scripts' ), $priory );
+			add_action( 'admin_print_footer_scripts', array( self::$_instance, 'localize_printed_scripts' ), $priory + 10 );
+			add_action( 'admin_enqueue_scripts', array( __CLASS__, '_enqueue_scripts' ), $priory + 10 );
 		}
-		add_filter( 'script_loader_src', array( self::$_instance, 'script_params' ), 999, 2 );
+		add_filter( 'script_loader_src', array( self::$_instance, 'script_localized' ), $priory + 10, 2 );
+		add_filter( 'script_loader_src', array( self::$_instance, 'script_params' ), $priory, 2 );
+
 		add_action( 'wp_default_scripts', array( __CLASS__, 'add_default_scripts' ) );
 		add_action( 'wp_default_styles', array( __CLASS__, 'add_default_styles' ) );
 		if ( !defined( 'LP_DEBUG' ) || ( false == LP_DEBUG ) ) {
-			add_filter( 'script_loader_tag', array( self::$_instance, 'unload_script_tag' ), 100, 3 );
-			add_filter( 'style_loader_tag', array( self::$_instance, 'unload_script_tag' ), 100, 3 );
-			add_action( 'wp_print_footer_scripts', array( self::$_instance, 'include_script_file' ), 10000 );
-			add_action( 'admin_print_footer_scripts', array( self::$_instance, 'include_script_file' ), 10000 );
-			add_action( 'wp_print_scripts', array( self::$_instance, 'include_stylesheet_file' ), 5 );
-			add_action( 'admin_print_scripts', array( self::$_instance, 'include_stylesheet_file' ), 5 );
+			add_filter( 'script_loader_tag', array( self::$_instance, 'unload_script_tag' ), $priory, 3 );
+			add_filter( 'style_loader_tag', array( self::$_instance, 'unload_script_tag' ), $priory, 3 );
+			add_action( 'wp_print_footer_scripts', array( self::$_instance, 'include_script_file' ), $priory );
+			add_action( 'admin_print_footer_scripts', array( self::$_instance, 'include_script_file' ), $priory );
+			add_action( 'wp_print_scripts', array( self::$_instance, 'include_stylesheet_file' ), $priory );
+			add_action( 'admin_print_scripts', array( self::$_instance, 'include_stylesheet_file' ), $priory );
 		}
+	}
+
+	public static function script_localized( $source, $handle ) {
+		if ( !empty( self::$wp_localize_scripts[$handle] ) ) {
+			self::$localized[$handle] = $source;
+		}
+		if ( !empty( self::$wp_params[$handle] ) ) {
+			self::$param_printed[] = $handle;
+		}
+		return $source;
 	}
 
 	/**
@@ -172,7 +200,7 @@ class LP_Assets {
 		$scripts->add( 'learn-press-mb-course', $default_path . 'js/admin/meta-box-course' . $suffix . '.js', $deps, false, 1 );
 		$scripts->add( 'learn-press-mb-quiz', $default_path . 'js/admin/meta-box-quiz' . $suffix . '.js', $deps, false, 1 );
 		$scripts->add( 'learn-press-mb-order', $default_path . 'js/admin/meta-box-order' . $suffix . '.js', $deps, false, 1 );
-		$scripts->add( 'learn-press-modal-search-items', $default_path . 'js/admin/modal-search-items' . $suffix . '.js', $deps, false, 1 );
+		$scripts->add( 'learn-press-modal-search-items', $default_path . 'js/admin/modal-search-items' . $suffix . '.js', array( 'learn-press-global' ), false, 1 );
 		$scripts->add( 'learn-press-order', $default_path . 'js/admin/meta-box-order' . $suffix . '.js', $deps, false, 1 );
 
 		// upgrade
@@ -361,14 +389,16 @@ class LP_Assets {
 	 * @param array $localize
 	 * @param       string
 	 */
-	public static function add_localize( $key, $localize = null, $handle = 'learn-press-js' ) {
+	public static function add_localize( $key, $localize = null, $handle = '' ) {
+		if ( !$handle ) {
+			$handle = is_admin() ? 'learn-press-admin' : 'learn-press-js';
+		}
+		if ( empty( self::$wp_localize_scripts[$handle] ) ) {
+			self::$wp_localize_scripts[$handle] = array();
+		}
 		if ( is_array( $key ) ) {
-			foreach ( $key as $k => $v ) {
-				self::add_localize( $k, $v, $handle );
-			}
+			self::$wp_localize_scripts[$handle] = array_merge( self::$wp_localize_scripts[$handle], $key );
 		} elseif ( is_string( $key ) && strlen( $key ) ) {
-			if ( !$handle ) $handle = 'learn-press-js';
-			if ( empty( self::$wp_localize_scripts[$handle] ) ) self::$wp_localize_scripts[$handle] = array();
 			self::$wp_localize_scripts[$handle][$key] = $localize;
 		}
 	}
@@ -379,17 +409,37 @@ class LP_Assets {
 	 * @param string
 	 * @param array
 	 * @param string
+	 * @param $name
 	 */
-	public static function add_param( $key, $param = null, $handle = 'learn-press-js' ) {
-		if ( is_array( $key ) ) {
-			foreach ( $key as $k => $v ) {
-				self::add_param( $k, $v, $handle );
-			}
-		} elseif ( is_string( $key ) && strlen( $key ) ) {
-			if ( !$handle ) $handle = 'learn-press-js';
-			if ( empty( self::$wp_params[$handle] ) ) self::$wp_params[$handle] = array();
-			self::$wp_params[$handle][$key] = $param;
+	public static function add_param( $key, $param = null, $handle = 'learn-press-js', $name = null ) {
+		if ( !$handle ) {
+			$handle = 'learn-press-js';
 		}
+		if ( is_array( $handle ) ) {
+			foreach ( $handle as $h ) {
+				self::add_param( $key, $param, $h, $name );
+			}
+			return;
+		}
+		if ( empty( $name ) ) {
+			$name = $handle;
+		}
+		if ( empty( self::$wp_params[$handle] ) ) {
+			self::$wp_params[$handle] = array( $name => array() );
+		}
+
+		if ( is_array( $key ) ) {
+			self::$wp_params[$handle][$name] = array_merge( self::$wp_params[$handle][$name], $key );
+		} elseif ( is_string( $key ) && strlen( $key ) ) {
+			self::$wp_params[$handle][$name][$key] = $param;
+		}
+	}
+
+	public static function add_var( $name, $value, $handle = 'learn-press-global' ) {
+		if ( empty( self::$js_vars[$handle] ) ) {
+			self::$js_vars[$handle] = array();
+		}
+		self::$js_vars[$handle][$name] = $value;
 	}
 
 	/**
@@ -398,6 +448,7 @@ class LP_Assets {
 	 * @param  mixed $handle
 	 */
 	private static function localize_script( $handle ) {
+		return;
 		$data = !empty( self::$wp_localize_scripts[$handle] ) ? self::$wp_localize_scripts[$handle] : false;
 		if ( wp_script_is( $handle ) && $data ) {
 			$name = str_replace( '-', '_', $handle ) . '_localize';
@@ -444,8 +495,10 @@ class LP_Assets {
 	 * @return mixed
 	 */
 	public static function script_params( $src, $handle ) {
-		$data = !empty( self::$wp_params[$handle] ) ? self::$wp_params[$handle] : false;
-		if ( wp_script_is( $handle ) && $data ) {
+		if ( empty( self::$param_printed[$handle] ) ) {
+			return $src;
+		}
+		if ( false/* wp_script_is( $handle ) && $data*/ ) {
 			$name = str_replace( '-', '_', $handle ) . '_params';
 			echo "<script type='text/javascript'>\n"; // CDATA and type='text/javascript' is not needed for HTML 5
 			echo "/* <![CDATA[ */\n";
@@ -461,15 +514,71 @@ class LP_Assets {
 	 * localize_printed_scripts
 	 */
 	public static function localize_printed_scripts() {
-		if ( self::$scripts ) foreach ( self::$scripts as $handle ) {
-			self::localize_script( $handle );
-			//self::script_params( $handle );
-			if ( !empty( self::$wp_script_codes[$handle] ) ) {
-				learn_press_get_template( 'global/scripts.php', array( 'code' => self::$wp_script_codes[$handle] ) );
-				unset( self::$wp_script_codes[$handle] );
-			}
-		}
+		$has_localized = !empty( self::$localized );
+		$has_params    = !empty( self::$param_printed );
+		$has_vars      = !empty( self::$js_vars );
+		if ( $has_localized || $has_params || $has_vars ) {
+			echo "<script type='text/javascript'>\n"; // CDATA and type='text/javascript' is not needed for HTML 5
+			echo "/* <![CDATA[ */\n";
 
+			if ( $has_localized ) {
+				if(self::$wp_localize_scripts) {
+					echo "\n/* LearnPress Localized */\n";
+					foreach ( self::$localized as $handle => $src ) {
+						if ( !empty( self::$wp_localize_scripts[$handle] ) ) {
+							$name = str_replace( '-', '_', $handle ) . '_localize';
+							echo "var {$name} = " . wp_json_encode( self::$wp_localize_scripts[$handle] ) . ";\n";
+						}
+					}
+				}
+			}
+			if ( $has_params ) {
+				$groups = array();
+				foreach ( self::$param_printed as $handle ) {
+					foreach ( self::$wp_params[$handle] as $name => $value ) {
+						$name = str_replace( '-', '_', $name );
+						if ( empty( $groups[$name] ) ) {
+							$groups[$name] = $value;
+						} else {
+							$groups[$name] = array_merge( $groups[$name], $value );
+						}
+					}
+				}
+				if ( $groups ) {
+					echo "\n/* LearnPress Params */\n";
+					foreach ( $groups as $name => $params ) {
+						echo "var {$name} = " . wp_json_encode( $params ) . ";\n";
+					}
+				}
+			}
+
+
+			if ( $has_localized ) {
+				if ( self::$js_vars ) {
+					echo "\n/* Custom vars */\n";
+
+					foreach ( self::$localized as $handle => $src ) {
+						if ( !empty( self::$js_vars[$handle] ) ) {
+							foreach ( self::$js_vars[$handle] as $name => $var ) {
+								echo "var {$name} = " . maybe_serialize( $var ) . ";\n";
+							}
+						}
+					}
+				}
+				if(self::$wp_script_codes) {
+					echo "\n/* LearnPress Custom Scripts */\n ( typeof jQuery != 'undefined' ) && jQuery(function($){\n";
+					foreach ( self::$localized as $handle => $src ) {
+						if ( !empty( self::$wp_script_codes[$handle] ) ) {
+							echo( self::$wp_script_codes[$handle] );
+						}
+					}
+					echo "\n});\n";
+				}
+			}
+
+			echo "/* ]]> */\n";
+			echo "</script>\n";
+		}
 	}
 
 	/**
@@ -482,9 +591,6 @@ class LP_Assets {
 		if ( !empty( self::$_enqueue_scripts ) ) {
 			foreach ( self::$_enqueue_scripts as $handle => $args ) {
 				call_user_func_array( 'wp_enqueue_script', array( $handle ) );
-				if(!empty(self::$wp_localize_scripts[$handle])){
-
-				}
 			}
 		}
 		if ( !empty( self::$_enqueue_styles ) ) {
@@ -492,8 +598,6 @@ class LP_Assets {
 				call_user_func_array( 'wp_enqueue_style', array( $handle ) );
 			}
 		}
-
-
 	}
 
 	/**
@@ -579,6 +683,7 @@ class LP_Assets {
 	 * Load assets
 	 */
 	public function load_scripts() {
+
 		if ( is_admin() ) {
 			$screen    = get_current_screen();
 			$screen_id = $screen->id;

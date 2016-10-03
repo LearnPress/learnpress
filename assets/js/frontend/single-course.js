@@ -474,13 +474,13 @@ if (typeof LearnPress == 'undefined') {
 		updateFooterNav  : function () {
 			var prev = this.model.getPrevItem(),
 				next = this.model.getNextItem();
-			this.$('#popup-footer').find('.prev-item, .next-item').remove();
+			/*this.$('#popup-footer').find('.prev-item, .next-item').remove();
 			if (prev) {
 				this.$('#popup-footer').append(Template('course-prev-item', prev.toJSON()));
 			}
 			if (next) {
 				this.$('#popup-footer').append(Template('course-next-item', next.toJSON()));
-			}
+			}*/
 		},
 		viewItem         : function (id, args) {
 			var item = this.model.getItem(id);

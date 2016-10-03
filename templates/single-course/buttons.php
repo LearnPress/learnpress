@@ -26,6 +26,9 @@ $enroll_button_text   = apply_filters( 'learn_press_enroll_button_text', __( 'En
 $retake_button_text   = apply_filters( 'learn_press_retake_button_text', __( 'Retake', 'learnpress' ) );
 ?>
 <div class="learn-press-course-buttons">
+
+	<?php do_action('learn_press_before_course_buttons', $course->id);?>
+
 	<?php
 
 	# -------------------------------
@@ -79,5 +82,7 @@ $retake_button_text   = apply_filters( 'learn_press_retake_button_text', __( 'Re
 		<?php learn_press_display_message( apply_filters( 'learn_press_user_can_not_purchase_course_message', __( 'Sorry, you can not purchase this course', 'learnpress' ), $course, $user ) ); ?>
 
 	<?php endif; ?>
+
+	<?php do_action('learn_press_after_course_buttons', $course->id);?>
 
 </div>

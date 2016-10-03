@@ -798,11 +798,17 @@ class LP_Abstract_User {
 					);
 					foreach ( $meta as $k => $v ) {
 						$_key = $this->id . '-' . $course_id . '-' . $v->item_id;
+						if ( empty( $history[$_key] ) ) {
+							continue;
+						}
 						if ( empty( $history[$_key][$v->user_item_id] ) ) {
 							continue;
 						}
-						$obj_key                                     = !empty( $maps[$v->meta_key] ) ? $maps[$v->meta_key] : $v->meta_key;
-						$history[$key][$v->user_item_id]->{$obj_key} = maybe_unserialize( $v->meta_value );
+						$obj_key = !empty( $maps[$v->meta_key] ) ? $maps[$v->meta_key] : $v->meta_key;
+						if ( !$obj_key ) {
+							continue;
+						}
+						$history[$_key][$v->user_item_id]->{$obj_key} = maybe_unserialize( $v->meta_value );
 					}
 				}
 			}
@@ -1099,6 +1105,21 @@ class LP_Abstract_User {
 		return apply_filters( 'learn_press_user_can_view_item', $return, $item_id, $course_id, $this->id );
 	}
 
+	public function can_edit_item( $item_id, $course_id = 0 ) {
+		$return = $this->is_admin();
+
+		if ( !$return ) {
+			if ( !$course_id ) {
+				$course_id = get_the_ID();
+			}
+			$course_author = learn_press_get_course_user( $course_id );
+			if ( $course_author && $course_author->id == $this->id ) {
+				$return = true;
+			}
+		}
+		return apply_filters( 'learn_press_user_can_edit_item', $return, $item_id, $course_id, $this->id );
+	}
+
 	/**
 	 * Return true if user can view a lesson
 	 *
@@ -1259,10 +1280,12 @@ class LP_Abstract_User {
 			if ( !$this->can( 'finish-course', $course_id ) && 1 == 0 ) {
 				return false;
 			} else {
+				$time      = current_time( 'timestamp' );
+				$expired   = $course->get_user_expired_time( $this->id );
 				$updated   = $wpdb->update(
 					$wpdb->prefix . 'learnpress_user_items',
 					array(
-						'end_time' => current_time( 'mysql' ),
+						'end_time' => date( 'Y-m-d H:i:s', $expired - $time < 0 ? $expired : $time ),
 						'status'   => 'finished'
 					),
 					array( 'user_id' => $this->id, 'item_id' => $course_id ),
@@ -1921,13 +1944,13 @@ class LP_Abstract_User {
 			}
 		}
 		if ( $total_questions = sizeof( $questions ) ) {
-			$results['correct_percent'] = $results['correct'] / $total_questions * 100;
-			$results['wrong_percent']   = $results['wrong'] / $total_questions * 100;
-			$results['empty_percent']   = $results['empty'] / $total_questions * 100;
+			$results['correct_percent'] = round( $results['correct'] / $total_questions * 100 );
+			$results['wrong_percent']   = round( $results['wrong'] / $total_questions * 100 );
+			$results['empty_percent']   = round( $results['empty'] / $total_questions * 100 );
 		}
 		$results['time'] = $this->_calculate_quiz_time( $quiz, $progress );
 		if ( $results['quiz_mark'] ) {
-			$results['mark_percent'] = $results['mark'] / $results['quiz_mark'] * 100;
+			$results['mark_percent'] = round( $results['mark'] / $results['quiz_mark'] * 100 );
 		}
 		return apply_filters( 'learn_press_evaluate_quiz_results', $results, $quiz_id, $this->id );
 	}
