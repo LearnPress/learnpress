@@ -36,7 +36,6 @@ switch ( $options['type'] ) {
 	case 'select' :
 	case 'multiselect' :
 
-
 		break;
 
 	// Radio inputs
@@ -79,7 +78,6 @@ switch ( $options['type'] ) {
 
 	// Checkbox input
 	case 'checkbox' :
-
 
 		break;
 		// Image width settings
