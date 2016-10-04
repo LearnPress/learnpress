@@ -81,8 +81,7 @@ switch ( $options['type'] ) {
 
 		break;
 		// Image width settings
-	case
-		'image_width' :
+        case 'image_width' :
 
 		$image_size       = str_replace( '_image_size', '', $options['id'] );
 		$size             = learn_press_get_image_size( $image_size );
