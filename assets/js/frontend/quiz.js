@@ -15,12 +15,17 @@
 		this.destroy = function () {
 			this.model.questions.forEach(function (m) {
 				try {
-					m.id = null;
-					m.destroy();
+					m instanceof Model_Question ? (
+						// prevent trigger 'sync' action
+						m.set('id', null),
+							m.destroy()
+					) : false;
 				} catch (ex) {
-					console.log(ex, m)
+					console.log(ex)
 				}
 			});
+			this.model.set('id', null);
+			this.model.destroy();
 			this.view.undelegateEvents();
 		}
 	}, Model_Question, List_Questions;
@@ -34,7 +39,9 @@
 		url       : function () {
 			return this.urlRoot;
 		},
-		urlRoot   : '',
+		urlRoot   : function () {
+			return 'abc';
+		},
 		initialize: function () {
 		},
 		element   : function () {
@@ -118,6 +125,9 @@
 	 */
 	Quiz.List_Questions = List_Questions = Backbone.Collection.extend({
 		url          : 'admin-ajax.php',
+		urlRoot      : function () {
+			return '';
+		},
 		len          : 0,
 		model        : Model_Question,
 		initialize   : function () {
@@ -172,7 +182,6 @@
 
 	Quiz.Model = Backbone.Model.extend({
 		_args                : null,
-		url                  : '',
 		questions            : null,
 		initialize           : function (args) {
 			_.bindAll(this, 'getQuizData');
@@ -442,33 +451,38 @@
 		},
 		timeout               : 0,
 		initialize            : function () {
-			var $el = $('#content-item-' + this.model.get('id'));
-			//this.setElement($el);
-			_.bindAll(this, '_onTick', 'itemUrl', '_loadQuestionCompleted', '_checkAnswer');
-
+			_.bindAll(this, 'pause', '_onTick', 'itemUrl', '_loadQuestionCompleted', '_checkAnswerCompleted', '_checkAnswer', '_onDestroy');
+			LP.Hook.addFilter('learn_press_before_finish_quiz', this.pause);
 			LP.Hook.addFilter('learn_press_get_current_item_url', this.itemUrl);
 			this.model.current(true).set('response', this.$('.learn-press-content-item-summary'));
 			this.model.set('view', this);
+			this.model.on('destroy', this._onDestroy);
 			this._initCountDown();
 			this.updateButtons();
+			console.log('Quiz initialized', this.model.toJSON())
 
 		},
 		_initCountDown        : function () {
 			if (this.model.get('status') != 'started' || this.model.get('totalTime') <= 0) {
 				return;
 			}
-			this.refreshCountdown();
+			this.updateCountdown();
 			$.inArray(this.model.get('status'), ['started']) >= 0 && setTimeout($.proxy(function () {
+				this.$('.quiz-countdown').removeClass('hide-if-js');
+				//console.log(this.$('.quiz-countdown').hasClass('hide-if-js'))
 				this.start();
 			}, this), 500);
 		},
 		_addLeadingZero       : function (n) {
 			return n < 10 ? "0" + n : "" + n;
 		},
+		_onDestroy            : function () {
+			this.pause();
+		},
 		_onTick               : function () {
 			this.timeout && clearTimeout(this.timeout);
 			var timer = this.model.inc();
-			this.refreshCountdown();
+			this.updateCountdown();
 			if (timer.remainingTime == 0) {
 				LP.Hook.doAction('learn_press_quiz_timeout', this);
 				this.$('.button-finish-quiz').trigger('click');
@@ -528,12 +542,13 @@
 			var that = this,
 				$button = $(e.target),
 				security = $button.data('security');
-
+			this.pause();
 			this.model.checkAnswer(this._checkAnswerCompleted, {
 				security: security
 			});
 		},
 		_checkAnswerCompleted : function (question) {
+			this.start();
 			LP.unblockContent();
 		},
 		updateButtons         : function () {
@@ -553,17 +568,20 @@
 		pause                 : function () {
 			this.timeout && clearTimeout(this.timeout);
 		},
-		refreshCountdown      : function () {
-			var localTimeZone = -(new Date().getTimezoneOffset()) / 60,
-				timeOffset = this.model.get('serverTime') - localTimeZone;
-			var startTime = this.model.get('startTime'),
-				endTime = startTime + this.model.get('totalTime'),
-				totalTime = this.model.getTotalTime('dhms'),
+		updateCountdown       : function () {
+			/*var localTimeZone = -(new Date().getTimezoneOffset()) / 60,
+			 timeOffset = this.model.get('serverTime') - localTimeZone;
+			 var startTime = this.model.get('startTime'),
+			 endTime = startTime + this.model.get('totalTime'),
+			 totalTime = this.model.getTotalTime('dhms'),
+			 remainingTime = this.model.getRemainingTime('dhms'),
+			 strTime = [],
+			 nowTime = new Date().getTime() / 1000;
+			 endTime += timeOffset * 3600;
+			 remainingTime = this.model._secondsToDHMS(endTime - nowTime);*/
+			var totalTime = this.model.getTotalTime('dhms'),
 				remainingTime = this.model.getRemainingTime('dhms'),
-				strTime = [],
-				nowTime = new Date().getTime() / 1000;
-			endTime += timeOffset * 3600;
-			remainingTime = this.model._secondsToDHMS(endTime - nowTime);
+				strTime = [];
 			if (totalTime.d) {
 				strTime.push(this._addLeadingZero(remainingTime.d));
 			}

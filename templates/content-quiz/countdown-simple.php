@@ -22,6 +22,6 @@ if ( strpos( $duration, ':' ) === false ) {
 	return;
 }
 ?>
-<div id="quiz-countdown" class="quiz-countdown" data-value="100">
+<div id="quiz-countdown" class="quiz-countdown hide-if-js" data-value="100">
 	<div class="countdown"><span><?php echo $quiz->get_duration_html(); ?></span></div>
 </div>

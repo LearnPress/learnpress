@@ -28,13 +28,11 @@ $can_view_item  = $user->can( 'view-item', $quiz->id, $course->id );
 		<?php if ( $user->has_quiz_status( array( 'completed' ), $quiz->id, $course->id ) ): ?>
 
 			<?php learn_press_get_template( 'content-quiz/result.php' ); ?>
-			<?php learn_press_get_template( 'content-quiz/history.php' ); ?>
 
 		<?php elseif ( $user->has( 'quiz-status', 'started', $quiz->id, $course->id ) ): ?>
 			<?php if ( $have_questions ): ?>
 				<?php learn_press_get_template( 'content-quiz/question-content.php' ); ?>
-			<?php endif;//learn_press_get_template( 'content-quiz/countdown.php' ); ?>
-
+			<?php endif; ?>
 		<?php else: ?>
 
 			<?php learn_press_get_template( 'content-quiz/description.php' ); ?>
@@ -49,12 +47,17 @@ $can_view_item  = $user->can( 'view-item', $quiz->id, $course->id );
 
 </div>
 <?php if ( $have_questions ) { ?>
+	<?php learn_press_get_template( 'content-quiz/history.php' ); ?>
 	<?php learn_press_get_template( 'content-quiz/questions.php' ); ?>
 <?php } else { ?>
 	<?php learn_press_display_message( __( 'No questions', 'learnpress' ) ); ?>
 <?php } ?>
 
-<script>
-	window.Quiz_Params = <?php echo json_encode( $quiz->get_settings(), LP()->settings->get( 'debug' ) == 'yes' ? JSON_PRETTY_PRINT : '' );?>;
+<script type="text/javascript">
+	if (typeof window.Quiz_Params != 'undefined') {
+		window.Quiz_Params = undefined;
+	}
+	window.Quiz_Params = <?php echo json_encode( $quiz->get_settings( $user->id, $course->id ), learn_press_debug_enable() ? JSON_PRETTY_PRINT : 0 );?>;
+
 </script>
 

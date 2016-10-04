@@ -67,7 +67,7 @@ class LP_Query {
 		if ( preg_match( "#^$match#", $request_match, $matches ) || preg_match( "#^$match#", urldecode( $request_match ), $matches ) ) {
 			// If request URI is a quiz permalink
 			if ( !empty( $matches[3] ) ) {
-				if ( !$post = learn_press_get_post_by_name( $matches[3], true, 'lp_quiz' ) ) {
+				if ( !$post = learn_press_get_post_by_name( $matches[3], 'lp_quiz', true ) ) {
 					return $q;
 				}
 				// If request URI does not contains a question

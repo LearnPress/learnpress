@@ -61,7 +61,7 @@ function learn_press_setup_course_data( $the_course ) {
 			}
 		}
 		if ( !$post ) {
-			$post = learn_press_get_post_by_name( $the_course );
+			$post = learn_press_get_post_by_name( $the_course, 'lp_course' );
 		}
 	}
 

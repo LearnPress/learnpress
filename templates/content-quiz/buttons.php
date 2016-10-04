@@ -12,7 +12,7 @@ if ( !defined( 'ABSPATH' ) ) {
 }
 $course = LP()->global['course'];
 $quiz   = LP()->global['course-item'];
-$user   = LP()->user;
+$user   = learn_press_get_current_user();
 if ( !$quiz ) {
 	return;
 }
@@ -50,7 +50,7 @@ $question = $quiz->get_current_question();
 		</button>
 	<?php endif; ?>
 
-	<?php if ( !$user->has( 'started-quiz', $quiz->id, $course->id ) ): ?>
+	<?php if ( $user->has_course_status( $course->id, array( 'enrolled' ) ) && !$user->has( 'started-quiz', $quiz->id, $course->id ) ): ?>
 		<button
 			class="button-start-quiz"
 			data-block-content="yes"

@@ -316,11 +316,11 @@ function _learn_press_get_course_terms_parent_usort_callback( $a, $b ) {
 	return ( $a->parent < $b->parent ) ? 1 : - 1;
 }
 
-function learn_press_get_post_by_name( $name, $single = true, $type = null ) {
+function learn_press_get_post_by_name( $name, $type, $single = true ) {
 	$post_names = LP_Cache::get_post_names( false, array() );
 	$post       = false;
-	if ( $post_names && !empty( $post_names[$name] ) ) {
-		$post = get_post( $post_names[$name] );
+	if ( !empty( $post_names[$type][$name] ) ) {
+		$post = get_post( $post_names[$type][$name] );
 		if ( $post && $type && $type == $post->post_type ) {
 
 		} else {
@@ -330,24 +330,20 @@ function learn_press_get_post_by_name( $name, $single = true, $type = null ) {
 	if ( $post ) {
 		return $post;
 	}
-	global $wpdb;
-	static $posts = array();
-	if ( empty( $posts[$name] ) ) {
+	if ( !$post ) {
+		global $wpdb;
 		$query = $wpdb->prepare( "
 			SELECT *
 			FROM {$wpdb->posts}
 			WHERE 1 AND post_name = %s
 		", $name );
-		if ( $type ) {
-			settype( $type, 'array' );
-			$query .= " AND post_type IN ('" . join( "','", $type ) . "')";
-		}
-		$posts[$name] = $wpdb->get_results( $query );
+
+		$query .= " AND post_type IN ('" . $type . "' )";
+
+		$post_names[$type][$name] = $wpdb->get_row( $query );
 	}
-	if ( $posts && $single ) {
-		return $posts[$name][0];
-	}
-	return $posts[$name];
+
+	return $post_names[$type][$name];
 }
 
 function learn_press_get_current_course() {
@@ -1535,7 +1531,7 @@ function learn_press_pre_get_posts( $q ) {
 
 		global $post;
 		$course_name = $q->get( 'lp_course' );
-		$post        = learn_press_get_post_by_name( $course_name, true, 'lp_course' );
+		$post        = learn_press_get_post_by_name( $course_name, 'lp_course', true );
 
 		if ( !$post ) {
 			learn_press_404_page();
@@ -1549,16 +1545,16 @@ function learn_press_pre_get_posts( $q ) {
 		if ( $course ) {
 			LP()->global['course'] = $course;
 			if ( $item_name = $q->get( 'lesson' ) ) {
-				$item = learn_press_get_post_by_name( $item_name, true, 'lp_lesson' );
+				$item = learn_press_get_post_by_name( $item_name, 'lp_lesson', true );
 				if ( $item ) {
 					$item_object = LP_Lesson::get_lesson( $item->ID );
 				}
 			} elseif ( $item_name = $q->get( 'quiz' ) ) {
-				$item = learn_press_get_post_by_name( $item_name, true, 'lp_quiz' );
+				$item = learn_press_get_post_by_name( $item_name, 'lp_quiz', true );
 				if ( $item ) {
 					$quiz = LP_Quiz::get_quiz( $item->ID );
 					if ( $question_name = $q->get( 'question' ) ) {
-						$question = learn_press_get_post_by_name( $question_name, true, 'lp_question' );
+						$question = learn_press_get_post_by_name( $question_name, 'lp_question', true );
 						if ( !$question ) {
 							learn_press_404_page();
 						} elseif ( !$quiz->has_question( $question->ID ) ) {

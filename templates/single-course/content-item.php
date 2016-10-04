@@ -8,7 +8,10 @@
 $course = learn_press_get_the_course();
 $item   = LP()->global['course-item'];
 $user   = learn_press_get_current_user();
-
+if ( !$item ) {
+	return;
+}
+$item_id = isset( $item->id ) ? $item->id : ( isset( $item->ID ) ? $item->ID : 0 );
 ?>
 <div id="learn-press-content-item">
 	<?php if ( $item ) { ?>
@@ -24,9 +27,9 @@ $user   = learn_press_get_current_user();
 
 	<?php } ?>
 
-	<?php if ( $user->can_edit_item( $item->id, $course->id ) ): ?>
+	<?php if ( $user->can_edit_item( $item_id, $course->id ) ): ?>
 		<p class="edit-course-item-link">
-			<a class="" href="<?php echo get_edit_post_link( $item->id ); ?>"><?php _e( 'Edit this item', 'learnpress' ); ?></a>
+			<a class="" href="<?php echo get_edit_post_link( $item_id ); ?>"><?php _e( 'Edit this item', 'learnpress' ); ?></a>
 		</p>
 	<?php endif; ?>
 

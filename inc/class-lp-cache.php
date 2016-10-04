@@ -10,6 +10,7 @@
 if ( !defined( 'ABSPATH' ) ) {
 	exit;
 }
+
 class LP_Cache {
 
 	/**
@@ -517,7 +518,7 @@ class LP_Cache {
 			if ( is_string( $section ) ) {
 				wp_cache_set( $section, '', self::$_group );
 			} else {
-				foreach ( $section as $sec ) {
+				foreach ( (array) $section as $sec ) {
 					self::flush( $sec );
 				}
 			}

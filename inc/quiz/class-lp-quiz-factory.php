@@ -226,10 +226,11 @@ class LP_Quiz_Factory {
 		} else {
 			$result = $user->retake_quiz( $quiz_id, $course_id );
 			if ( $result ) {
+				LP_Cache::flush( 'quiz-results', 'user-quiz-history', 'course-item-statuses', 'quiz-params' );
 				learn_press_setup_user_course_data( $user->id, $course_id );
-				LP()->global['course-item'] = LP_Quiz::get_quiz($quiz_id);
-				$response['status'] = $result->status;
-				$response['html']   = array(
+				LP()->global['course-item'] = LP_Quiz::get_quiz( $quiz_id );
+				$response['status']         = $result->status;
+				$response['html']           = array(
 					'content'  => learn_press_get_template_content( 'single-course/content-item-lp_quiz.php' ),
 					'progress' => learn_press_get_template_content( 'single-course/progress.php' )
 				);

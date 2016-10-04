@@ -514,7 +514,6 @@ class LP_Abstract_User {
 			learn_press_update_user_item_meta( $return, 'question_answers', array() );
 
 
-
 			$response = $this->get_quiz_results( $quiz_id, $course_id, true );
 		}
 		do_action( 'learn_press_user_retake_quiz', $response, $quiz_id, $this->id );
@@ -758,7 +757,7 @@ class LP_Abstract_User {
 				array( 'lp_quiz', $this->id, $course_id ),
 				$quizzes
 			);
-			$query          = $wpdb->prepare( "
+			$query = $wpdb->prepare( "
 				SELECT *
 				FROM $t1 uq
 				WHERE uq.item_type = %s
@@ -777,11 +776,16 @@ class LP_Abstract_User {
 				$item_ids = array();
 				foreach ( $results as $result ) {
 					$item_ids[] = $result->user_item_id;
-					if ( empty( $history[$this->id . '-' . $course_id . '-' . $result->item_id] ) ) {
-						$history[$this->id . '-' . $course_id . '-' . $result->item_id] = array();
+					$cache_key  = $this->id . '-' . $course_id . '-' . $result->item_id;
+					if ( empty( $history[$cache_key] ) ) {
+						$history[$cache_key] = array();
+					}
+					// limit newest 10 items
+					if ( sizeof( $history[$cache_key] ) >= 10 ) {
+						break;
 					}
 
-					$history[$this->id . '-' . $course_id . '-' . $result->item_id][$result->user_item_id] = (object) array(
+					$history[$cache_key][$result->user_item_id] = (object) array(
 						'history_id'       => $result->user_item_id,
 						'start'            => $result->start_time,
 						'end'              => $result->end_time,
@@ -864,6 +868,7 @@ class LP_Abstract_User {
 	 * @return mixed|void
 	 */
 	public function get_quiz_progress( $quiz_id, $course_id = 0 ) {
+		return $this->get_quiz_results( $quiz_id, $course_id );
 		if ( !$course_id ) {
 			$course_id = get_the_ID();
 		}
@@ -886,7 +891,7 @@ class LP_Abstract_User {
 	 */
 	public function get_current_quiz_question( $quiz_id, $course_id = 0 ) {
 		$question_id = 0;
-		if ( $progress = $this->get_quiz_progress( $quiz_id, $course_id ) ) {
+		if ( $progress = $this->get_quiz_results( $quiz_id, $course_id ) ) {
 			if ( !empty( $progress->question ) ) {
 				$question_id = $progress->question;
 			} elseif ( !empty( $progress->questions ) && is_array( $progress->questions ) ) {
@@ -2186,7 +2191,7 @@ class LP_Abstract_User {
 			$order      = learn_press_create_order( $order_data );
 
 			# 2 add order item
-			$item = array(
+			$item       = array(
 				'order_item_name' => $course->get_title(),
 				'course_id'       => $course->id,
 				'name'            => $course->get_title(),
@@ -2195,8 +2200,8 @@ class LP_Abstract_User {
 				'total'           => $course->get_price()
 			);
 			$order_item = learn_press_add_order_item( $order->id, $item );
-			$ref_id = $order->id;
-			
+			$ref_id     = $order->id;
+
 			# 3 add order itemmeta
 			learn_press_add_order_item_meta( $order_item, '_course_id', $course->id );
 			learn_press_add_order_item_meta( $order_item, '_quantity', 1 );
