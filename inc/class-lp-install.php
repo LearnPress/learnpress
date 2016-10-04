@@ -507,44 +507,6 @@ CREATE TABLE {$wpdb->prefix}learnpress_sections (
   section_description longtext NOT NULL,
   PRIMARY KEY  (section_id)
 ) $collate;
-";
-		/*$query .= "
-CREATE TABLE {$wpdb->prefix}learnpress_user_courses (
-  user_course_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  user_id bigint(20) unsigned NOT NULL DEFAULT '0',
-  course_id bigint(20) unsigned NOT NULL DEFAULT '0',
-  start_time datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  end_time datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  status varchar(45) NOT NULL DEFAULT '',
-  order_id bigint(20) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY  (user_course_id)
-) $collate;
-CREATE TABLE {$wpdb->prefix}learnpress_user_quizmeta (
-  learnpress_user_quiz_id bigint(20) unsigned NOT NULL,
-  meta_key varchar(45) NOT NULL DEFAULT '',
-  meta_value text NOT NULL,
-  meta_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  PRIMARY KEY  (meta_id)
-) $collate;
-CREATE TABLE {$wpdb->prefix}learnpress_user_quizzes (
-  user_quiz_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  user_id bigint(20) unsigned NOT NULL DEFAULT '0',
-  quiz_id bigint(20) unsigned NOT NULL DEFAULT '0',
-  course_id bigint(20) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY  (user_quiz_id)
-) $collate;
-CREATE TABLE {$wpdb->prefix}learnpress_user_lessons (
-  user_lesson_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  user_id bigint(20) unsigned NOT NULL,
-  lesson_id bigint(20) unsigned NOT NULL,
-  course_id bigint(20) DEFAULT NULL,
-  start_time datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  end_time datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  status varchar(20) DEFAULT NULL,
-  PRIMARY KEY  (user_lesson_id)
-) $collate;
-";*/
-		$query .= "
 CREATE TABLE  {$wpdb->prefix}learnpress_sessions (
   session_id bigint(20) NOT NULL AUTO_INCREMENT,
   session_key char(32) NOT NULL,
@@ -553,29 +515,6 @@ CREATE TABLE  {$wpdb->prefix}learnpress_sessions (
   UNIQUE KEY session_id (session_id),
   PRIMARY KEY  (session_key)
 ) $collate;
-";
-		if ( LEARN_PRESS_UPDATE_DATABASE ) {
-			/*$query .= "
-CREATE TABLE {$wpdb->prefix}learnpress_user_course_items (
-  user_course_item_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  user_id bigint(20) unsigned NOT NULL DEFAULT '0',
-  item_id bigint(20) unsigned NOT NULL DEFAULT '0',
-  course_id bigint(20) unsigned NOT NULL DEFAULT '0',
-  start_time datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  end_time datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  item_type varchar(45) NOT NULL DEFAULT '',
-  status varchar(45) NOT NULL DEFAULT '',
-  PRIMARY KEY  (user_course_item_id)
-) $collate;
-CREATE TABLE {$wpdb->prefix}learnpress_user_course_itemmeta (
-  meta_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  learnpress_user_course_item_id bigint(20) unsigned NOT NULL,
-  meta_key varchar(45) NOT NULL DEFAULT '',
-  meta_value text NOT NULL,
-  PRIMARY KEY  (meta_id)
-) $collate;
-";*/
-			$query .= "
 CREATE TABLE {$wpdb->prefix}learnpress_user_items (
   user_item_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   user_id bigint(20) unsigned NOT NULL DEFAULT '0',
@@ -592,12 +531,10 @@ CREATE TABLE {$wpdb->prefix}learnpress_user_itemmeta (
   meta_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   learnpress_user_item_id bigint(20) unsigned NOT NULL,
   meta_key varchar(45) NOT NULL DEFAULT '',
-  meta_value text NOT NULL,
-  time datetime DEFAULT '0000-00-00 00:00:00',
+  meta_value text NOT NULL
   PRIMARY KEY  (meta_id)
 ) $collate;
 ";
-		}
 		return $query;
 	}
 }

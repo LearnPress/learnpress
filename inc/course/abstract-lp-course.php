@@ -1202,7 +1202,7 @@ abstract class LP_Abstract_Course {
 		$completed_items = array();
 		if ( $item_statuses ) {
 			if ( $curriculum_items = $this->post->curriculum_items ) {
-				$curriculum_items = maybe_unserialize($curriculum_items);
+				$curriculum_items = maybe_unserialize( $curriculum_items );
 				foreach ( $curriculum_items as $item_id ) {
 					$k = sprintf( '%d-%d-%d', $user_id, $this->id, $item_id );
 					if ( !empty( $item_statuses[$k] ) && $item_statuses[$k] == 'completed' ) {
@@ -1430,6 +1430,9 @@ abstract class LP_Abstract_Course {
 
 		$output = apply_filters( 'learn_press_single_course_params', $output, $this->id );
 
+		LP_Assets::add_var( 'LP_Course_Params', wp_json_encode( $output ), 'learn-press-single-course' );
+
+		return;
 		if ( $args['echo'] ) {
 			echo '<script type="text/javascript">';
 			echo 'var LP_Course_Params = ' . wp_json_encode( $output, learn_press_debug_enable() ? JSON_PRETTY_PRINT : 0 );
@@ -1458,7 +1461,7 @@ abstract class LP_Abstract_Course {
 			if ( ( $view = $user->can( 'view-item', $item['id'] ) ) !== false ) {
 				$items[$k]['url']     = $this->get_item_link( $item['id'] );
 				$items[$k]['status']  = $user->get_item_status( $item['id'], $this->id );
-				$items[$k]['content'] = apply_filters( 'the_content', $item['content'] );
+				$items[$k]['content'] = '123';//apply_filters( 'the_content', $item['content'] );
 				if ( $view == 'preview' ) {
 
 				}

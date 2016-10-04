@@ -21,7 +21,4 @@ $can_view_item = $user->can( 'view-item', $item->id, $course->id );
 	<?php } else if ( !$user->has( 'finished-course', $course->id ) && $can_view_item != 'preview' ) { ?>
 		<button class="button-complete-item button-complete-lesson" data-security="<?php echo esc_attr( $security ); ?>"><?php _e( 'Complete', 'learnpress' ); ?></button>
 	<?php } ?>
-	<?php if ( $user->can_edit_item( $item->id, $course->id ) ): ?>
-		<p class="edit-course-item-link"><a class="" href="<?php echo get_edit_post_link( $item->id ); ?>"><?php _e( 'Edit lesson', 'learnpress' ); ?></a></p>
-	<?php endif; ?>
 </div>

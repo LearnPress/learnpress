@@ -44,17 +44,16 @@ $can_view_item  = $user->can( 'view-item', $quiz->id, $course->id );
 
 		<?php if ( $have_questions ) { ?>
 			<?php learn_press_get_template( 'content-quiz/buttons.php' ); ?>
-			<?php learn_press_get_template( 'content-quiz/questions.php' ); ?>
-		<?php } else { ?>
-			<?php learn_press_display_message( __( 'No questions', 'learnpress' ) ); ?>
 		<?php } ?>
 	</div>
-	<?php if ( $user->can_edit_item( $quiz->id, $course->id ) ): ?>
-		<p class="edit-course-item-link">
-			<a class="" href="<?php echo get_edit_post_link( $quiz->id ); ?>"><?php _e( 'Edit quiz', 'learnpress' ); ?></a>
-		</p>
-	<?php endif; ?>
+
 </div>
+<?php if ( $have_questions ) { ?>
+	<?php learn_press_get_template( 'content-quiz/questions.php' ); ?>
+<?php } else { ?>
+	<?php learn_press_display_message( __( 'No questions', 'learnpress' ) ); ?>
+<?php } ?>
+
 <script>
 	window.Quiz_Params = <?php echo json_encode( $quiz->get_settings(), LP()->settings->get( 'debug' ) == 'yes' ? JSON_PRETTY_PRINT : '' );?>;
 </script>

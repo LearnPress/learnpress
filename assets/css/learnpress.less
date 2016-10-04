@@ -240,10 +240,6 @@
         .course-info > * {
             display: block;
         }
-        &:nth-child(4n+1) {
-            clear: left;
-            margin-left: 0;
-        }
     }
 }
 
@@ -437,6 +433,7 @@
         float: left;
         width: 73%;
         margin-right: 2%;
+        clear: left;
     }
     .course-progress {
         float: left;
@@ -729,10 +726,10 @@ body.course-has-popup {
             .quiz-countdown {
                 float: right;
                 position: relative;
-                font-family: electric-number;
                 min-width: 100px;
                 background: #F5F5F5;
                 text-align: center;
+                font-size: 18px;
                 &:after, &:before {
                     padding: 0 10px;
                     height: 3px;
@@ -748,7 +745,7 @@ body.course-has-popup {
                 &:after {
                     background: #00adff;
                 }
-                &.xxx {
+                &.warning-time-over {
                     &:after {
                         background: #FF0000;
                     }
@@ -824,7 +821,7 @@ body.block-content {
 }
 
 /* COURSE QUIZ */
-.single-quiz {
+//.single-quiz {
     .quiz-buttons {
         margin-bottom: 20px;
         clear: both;
@@ -832,10 +829,10 @@ body.block-content {
     .quiz-intro {
         list-style: none;
     }
-    .quiz-questions-list{
+    .quiz-questions-list {
         margin: 0;
         list-style-position: inside;
-        .question-title{
+        .question-title {
             margin: 0 0 5px 0;
         }
     }
@@ -853,7 +850,7 @@ body.block-content {
         padding: 20px;
     }
     #quiz-countdown {
-        .progress-circle(@initialize: 100%, @size: 260px, @inside-size: 200px);
+        //.progress-circle(@initialize: 100%, @size: 260px, @inside-size: 200px);
         .progress-circle {
             overflow: hidden;
             box-shadow: 0 0 3px #bdbdbd inset;
@@ -946,7 +943,7 @@ body.block-content {
             }
         }
     }
-}
+//}
 
 .element-data-percent-loop (@i) when (@i <= 100) {
     .single-quiz .quiz-result-field[data-value="@{i}"]:before,
@@ -1041,13 +1038,13 @@ body.block-content {
         }
     }
     .answer-option-result {
-        label{
-            p{
+        label {
+            p {
                 display: inline-block;
                 margin: 0;
                 font-size: smaller;
             }
-            input[disabled]{
+            input[disabled] {
                 opacity: 1;
             }
         }
@@ -1104,23 +1101,32 @@ body.block-content {
         background: #F5F5F5;
         margin: 0 0 20px 0;
     }
-    h4{
+    h4 {
         margin-bottom: 10px;
         font-size: 18px;
     }
 }
 
 .learn-press-tooltip {
-    font-family: dashicons;
     font-size: 20px;
     display: inline-block;
     vertical-align: middle;
-    color: #0f4956;
+    background: #0f4956;
     cursor: pointer;
-    &:before {
-        content: "\f223";
-    }
     line-height: 1;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    font-weight: 700;
+    position: relative;
+    &:before {
+        content: "?";
+        font-size: 13px;
+        color: white;
+        position: absolute;
+        top: 3px;
+        left: 6px;
+    }
 }
 
 .learn-press-tooltip-bubble {
@@ -1137,7 +1143,7 @@ body.block-content {
 .learn-press-user-profile {
     .learn-press-tabs {
         list-style: none;
-        margin: 0 0 20px;
+        margin: 30px 0 20px;
         padding-left: 5px;
         border-bottom: 1px solid #DDD;
         & > li {

@@ -1523,6 +1523,7 @@ function learn_press_get_request( $key, $default = null, $hash = null ) {
  * @param $q
  */
 function learn_press_pre_get_posts( $q ) {
+	global $course;
 	// We only want to affect the main query and not in admin
 	if ( !$q->is_main_query() || is_admin() ) {
 		return;
@@ -2144,7 +2145,7 @@ function learn_press_front_scripts() {
 			'button_no'     => __( 'No', 'learnpress' )
 		)
 	);
-	LP_Assets::add_param( $js, '', array( 'learn-press-single-course', 'learn-press-global' ), 'LP_Settings' );
+	LP_Assets::add_var( 'LP_Settings', wp_json_encode( $js ), array( 'learn-press-single-course', 'learn-press-global' ) );
 }
 
 add_action( 'wp_print_scripts', 'learn_press_front_scripts' );

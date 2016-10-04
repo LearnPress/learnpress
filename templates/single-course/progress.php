@@ -43,10 +43,11 @@ $course_results    = $course->evaluate_course_results();
 				</div>
 			</div>
 		</div>
+
 	</div>
 	<div class="course-progress">
 		<h4 class="lp-course-progress-heading">
-			<?php esc_html_e( 'Your course results currently is' ); ?>
+			<?php esc_html_e( 'Course results' ); ?>
 			<?php
 			if ( $course->is_evaluation( 'evaluate_final_quiz' ) ) {
 				$tooltip = __( "Evaluated by results of final quiz", 'learnpress' );
@@ -70,4 +71,6 @@ $course_results    = $course->evaluate_course_results();
 			</div>
 		</div>
 	</div>
+
+	<?php learn_press_get_template( 'single-course/buttons.php' ); ?>
 </div>

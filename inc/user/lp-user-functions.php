@@ -561,7 +561,7 @@ function _learn_press_update_created_time_user_item_meta( $meta_id, $object_id, 
 	);
 }
 
-add_action( 'added_learnpress_user_item_meta', '_learn_press_update_created_time_user_item_meta', 10, 4 );
+///add_action( 'added_learnpress_user_item_meta', '_learn_press_update_created_time_user_item_meta', 10, 4 );
 
 /**
  * Update field updated_time after updated user item meta
@@ -584,7 +584,7 @@ function _learn_press_update_updated_time_user_item_meta( $meta_id, $object_id, 
 	);
 }
 
-add_action( 'updated_learnpress_user_item_meta', '_learn_press_update_updated_time_user_item_meta', 10, 4 );
+//add_action( 'updated_learnpress_user_item_meta', '_learn_press_update_updated_time_user_item_meta', 10, 4 );
 
 /**
  * @param     $status
