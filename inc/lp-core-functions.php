@@ -339,7 +339,9 @@ function learn_press_get_post_by_name( $name, $type, $single = true ) {
 		", $name );
 
 		$query .= " AND post_type IN ('" . $type . "' )";
-
+		if ( empty( $post_names[$type] ) ) {
+			$post_names[$type] = array();
+		}
 		$post_names[$type][$name] = $wpdb->get_row( $query );
 	}
 
