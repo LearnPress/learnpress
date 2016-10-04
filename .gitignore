@@ -1,2 +1,6 @@
 .DS_store
 .idea/
+
+__*.php
+
+node_modules/
