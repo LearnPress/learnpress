@@ -447,10 +447,6 @@
 			_.bindAll(this, '_onTick', 'itemUrl', '_loadQuestionCompleted', '_checkAnswer');
 
 			LP.Hook.addFilter('learn_press_get_current_item_url', this.itemUrl);
-			LP.Hook.addAction('learn_press_before_fetch_question', this.pause);
-			LP.Hook.addAction('learn_press_before_next_question', this.pause);
-			LP.Hook.addAction('learn_press_before_previous_question', this.pause);
-
 			this.model.current(true).set('response', this.$('.learn-press-content-item-summary'));
 			this.model.set('view', this);
 			this._initCountDown();
@@ -481,12 +477,14 @@
 			this.timeout = setTimeout(this._onTick, 1000);
 		},
 		_prevQuestion         : function (e) {
+			this.pause();
 			this.model.set('show-list', !!$('.lp-group-heading-title.active').length);
 			e.preventDefault();
 			this.model.current(true).set('response', this.$('.learn-press-content-item-summary'));
 			this.model.prev(this._loadQuestionCompleted);
 		},
 		_nextQuestion         : function (e) {
+			this.pause();
 			this.model.set('show-list', !!$('.lp-group-heading-title.active').length);
 			e.preventDefault();
 			this.model.current(true).set('response', this.$('.learn-press-content-item-summary'));
@@ -510,7 +508,7 @@
 				this.$('.button-hint').attr('disabled', false);
 				this.$('.question-hint-content').addClass('hide-if-js');
 			}
-
+			this.start();
 			$(window).trigger('load');
 			$(document).trigger('resize');
 			LP.setUrl(question.get('url'));
@@ -521,15 +519,8 @@
 			this.model.current().set('hasShowedHint', 'yes');
 			this.$('.button-hint').attr('disabled', true);
 			this.$('.question-hint-content').removeClass('hide-if-js');
-			return;
-			LP.$Course.view.blockContent();
-			this.model.showHint(this._showHintCompleted, {
-				security: $(e.target).data('security')
-			});
-
 		},
 		_showHintCompleted    : function (response) {
-			//$(response.html).this.
 			LP.unblockContent();
 		},
 		_checkAnswer          : function (e) {
@@ -546,9 +537,6 @@
 			LP.unblockContent();
 		},
 		updateButtons         : function () {
-			if (this.model.questions.length < 2) {
-				return;
-			}
 			if (this.model.get('status') == 'started') {
 				this.$('.button-prev-question').toggleClass('hide-if-js', this.model.isFirst());
 				this.$('.button-next-question').toggleClass('hide-if-js', this.model.isLast());
@@ -587,12 +575,6 @@
 
 			var t = parseInt(this.model.get('remainingTime') / this.model.get('totalTime') * 100);// * 360;
 			this.$('.quiz-countdown').attr('data-value', t).toggleClass('xxx', t < 10).find('.countdown').html(strTime.join(':'));
-			/**if (t < 180) {
-				this.$('.progress-circle').removeClass('gt-50');
-			}
-			 this.$('.fill').css({
-				transform: 'rotate(' + t + 'deg)'
-			});*/
 		},
 		itemUrl               : function (url, item) {
 			if (item.get('id') == this.model.get('id')) {

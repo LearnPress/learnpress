@@ -27,7 +27,7 @@ $no_permalink = $user->has_quiz_status( array( '', 'completed', 'viewed' ), $qui
 
 <?php if ( $quiz->has( 'questions' ) ): ?>
 
-	<div class="quiz-questions lp-group-content-wrap hide-if-js" id="learn-press-quiz-questions">
+	<div class="quiz-questions lp-group-content-wrap" id="learn-press-quiz-questions">
 
 		<?php do_action( 'learn_press_before_quiz_questions' ); ?>
 
