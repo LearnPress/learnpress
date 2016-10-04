@@ -98,6 +98,15 @@ if ( LEARN_PRESS_UPDATE_DATABASE ) {
 		$query = "ALTER TABLE {$wpdb->learnpress_user_course_items} MODIFY COLUMN `user_course_item_id` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0;";
 		$wpdb->query( $query );
 
+		$old_tables = array('user_course_items', 'user_course_itemmeta', 'user_quizzes', 'user_quizmeta', 'user_lessons');
+		$query_rename_tables = '';
+		foreach($old_tables as $old_table){
+			$query_rename_tables .= "RENAME table {$wpdb->prefix}learnpress_{$old_table} TO __{$wpdb->prefix}learnpress_{$old_table};\n";
+		}
+		// query for renaming unused tables to backup
+		// do not remove it permanently
+		@$wpdb->query($query_rename_tables);
+
 		learn_press_update_log( '2.0', array( 'time' => time() ) );
 	} catch ( Exception $ex ) {
 		$wpdb->query( "ROLLBACK;" );

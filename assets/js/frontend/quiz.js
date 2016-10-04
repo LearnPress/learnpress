@@ -574,7 +574,7 @@
 			strTime.push(this._addLeadingZero(remainingTime.s));
 
 			var t = parseInt(this.model.get('remainingTime') / this.model.get('totalTime') * 100);// * 360;
-			this.$('.quiz-countdown').attr('data-value', t).toggleClass('xxx', t < 10).find('.countdown').html(strTime.join(':'));
+			this.$('.quiz-countdown').attr('data-value', t).toggleClass('warning-time-over', t < 10).find('.countdown').html(strTime.join(':'));
 		},
 		itemUrl               : function (url, item) {
 			if (item.get('id') == this.model.get('id')) {

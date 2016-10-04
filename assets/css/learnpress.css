@@ -687,7 +687,7 @@ body.course-has-popup {
 #course-curriculum-popup .learn-press-content-item-title.content-item-quiz-title .quiz-countdown:after {
   background: #00adff;
 }
-#course-curriculum-popup .learn-press-content-item-title.content-item-quiz-title .quiz-countdown.xxx:after {
+#course-curriculum-popup .learn-press-content-item-title.content-item-quiz-title .quiz-countdown.warning-time-over:after {
   background: #FF0000;
 }
 #course-curriculum-popup .learn-press-content-item-title.content-item-quiz-title:after {
