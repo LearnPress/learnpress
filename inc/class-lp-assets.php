@@ -713,7 +713,7 @@ class LP_Assets {
 				self::enqueue_style( 'learn-press-modal-search-items' );
 				self::enqueue_script( 'learn-press-modal-search-items' );
 			}
-			if ( $screen_id === 'settings_page_learn_press_settings' ) {
+			if ( $screen_id === 'settings_page_learn_press_settings' || $screen_id === 'dashboard' ) {
 				LP_Assets::enqueue_style( 'learn-press-admin' );
 				LP_Assets::enqueue_script( 'learn-press-admin-settings', LP()->plugin_url( 'assets/js/admin/settings.js' ) );
 			}

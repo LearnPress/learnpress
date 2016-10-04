@@ -117,3 +117,18 @@ function learn_press_update_permalink_structure() {
 }
 
 add_action( 'init', 'learn_press_update_permalink_structure' );
+
+add_action( 'wp_dashboard_setup', 'learnpress_dashboard_widgets' );
+
+if ( !function_exists( 'learnpress_dashboard_widgets' ) ) {
+    /**
+     * Register dashboard widgets
+     * 
+     * LearnPress statistic
+     * Eduma statistic
+     * @since 2.0
+     */
+    function learnpress_dashboard_widgets() {
+        wp_add_dashboard_widget( 'learn_press_dashboard_widget', __( 'LearnPress Statistic' ), array( 'LP_Statistic_Learnpress', 'render' ) );
+    }
+}
