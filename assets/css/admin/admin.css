@@ -25,6 +25,12 @@
 .post-type-lp_course .column-students {
   width: 10%;
 }
+.post-type-lp_course #course_curriculum .curriculum-section-items .lp-item-empty td.section-item-input {
+  padding-left: 40px;
+}
+.post-type-lp_course #course_curriculum .curriculum-section-items .lp-item-empty td.section-item-input.hover {
+  padding-left: 0;
+}
 /* message box */
 #learn-press-message-box-block {
   position: fixed;
