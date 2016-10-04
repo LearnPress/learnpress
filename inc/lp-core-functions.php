@@ -321,19 +321,12 @@ function learn_press_get_post_by_name( $name, $type, $single = true ) {
 	$post       = false;
 	if ( !empty( $post_names[$type][$name] ) ) {
 		$post = get_post( $post_names[$type][$name] );
-		if ( $post && $type && $type == $post->post_type ) {
+	}
 
-		} else {
-			$post = false;
-		}
-	}
-	if ( $post ) {
-		return $post;
-	}
 	if ( !$post ) {
 		global $wpdb;
 		$query = $wpdb->prepare( "
-			SELECT *
+			SELECT ID
 			FROM {$wpdb->posts}
 			WHERE 1 AND post_name = %s
 		", $name );
@@ -342,10 +335,10 @@ function learn_press_get_post_by_name( $name, $type, $single = true ) {
 		if ( empty( $post_names[$type] ) ) {
 			$post_names[$type] = array();
 		}
-		$post_names[$type][$name] = $wpdb->get_row( $query );
+		$post  = $wpdb->get_var( $query );
+		$post_names[$type][$name] = $post;
 	}
-
-	return $post_names[$type][$name];
+	return $post ? get_post( $post_names[$type][$name] ) : false;
 }
 
 function learn_press_get_current_course() {
