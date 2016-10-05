@@ -26,6 +26,7 @@
 			});
 			this.model.set('id', null);
 			this.model.destroy();
+			this.view.destroy();
 			this.view.undelegateEvents();
 		}
 	}, Model_Question, List_Questions;
@@ -451,8 +452,8 @@
 		},
 		timeout               : 0,
 		initialize            : function () {
-			_.bindAll(this, 'pause', '_onTick', 'itemUrl', '_loadQuestionCompleted', '_checkAnswerCompleted', '_checkAnswer', '_onDestroy');
-			LP.Hook.addFilter('learn_press_before_finish_quiz', this.pause);
+			_.bindAll(this, 'pause', '_onTick', 'itemUrl', '_loadQuestionCompleted', '_checkAnswerCompleted', '_checkAnswer', '_onDestroy', 'destroy');
+			LP.Hook.addAction('learn_press_before_finish_quiz', this.destroy);
 			LP.Hook.addFilter('learn_press_get_current_item_url', this.itemUrl);
 			this.model.current(true).set('response', this.$('.learn-press-content-item-summary'));
 			this.model.set('view', this);
@@ -467,7 +468,7 @@
 				return;
 			}
 			this.updateCountdown();
-			$.inArray(this.model.get('status'), ['started']) >= 0 && setTimeout($.proxy(function () {
+			setTimeout($.proxy(function () {
 				this.$('.quiz-countdown').removeClass('hide-if-js');
 				//console.log(this.$('.quiz-countdown').hasClass('hide-if-js'))
 				this.start();
@@ -605,6 +606,11 @@
 				}
 			}
 			return url;
+		},
+		destroy               : function () {
+			this.pause();
+			LP.Hook.removeAction('learn_press_before_finish_quiz');
+			LP.Hook.removeFilter('learn_press_get_current_item_url');
 		}
 	});
 

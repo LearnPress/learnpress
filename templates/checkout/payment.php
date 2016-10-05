@@ -63,3 +63,6 @@ $count_gateways               = !empty( $available_gateways ) ? sizeof( $availab
 	<?php endif; ?>
 
 </div>
+
+<div class="learn-press"></div>
+<div class="adsad learn-press-asdasd"></div>
