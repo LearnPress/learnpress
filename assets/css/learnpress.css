@@ -795,7 +795,7 @@ body.block-content #learn-press-block-content {
   list-style: none;
 }
 .quiz-questions-list {
-  margin: 0;
+  margin: 0 0 20px 0;
   list-style-position: inside;
 }
 .quiz-questions-list .question-title {
