@@ -168,7 +168,7 @@ class LP_Quiz {
 				'nonce'           => wp_create_nonce( 'learn-press-quiz-action-' . $this->id . '-' . $user->id ),
 				'question'        => $question ? array( 'check_answer' => $question->can_check_answer() ) : false,
 				'totalTime'       => $this->duration,
-				'userTime'        => $duration - $r_time,
+				'userTime'        => $r_time > 0 ? $duration - $r_time : 0,
 				'currentQuestion' => get_post_field( 'post_name', $current_question_id ),
 				'usePermalink'    => get_option( 'permalink' ),
 				'courseId'        => $course_id
@@ -177,9 +177,11 @@ class LP_Quiz {
 				$js['result'] = $user->get_quiz_results( $this->id, $course_id, $force );
 			}
 			if ( $js['status'] == 'started' ) {
-				$history          = $user->get_quiz_results( $this->id, $course_id );
-				$js['startTime']  = strtotime( $history->start );
-				$js['serverTime'] = date( 'Z' ) / 3600;//date_timezone_get( date_default_timezone_get() );// get_option('gmt_offset');
+				if($history          = $user->get_quiz_results( $this->id, $course_id )) {
+
+					$js['startTime']  = strtotime( $history->start );
+					$js['serverTime'] = date( 'Z' ) / 3600;//date_timezone_get( date_default_timezone_get() );// get_option('gmt_offset');
+				}
 			}
 
 			$quiz_params[$key] = $js;

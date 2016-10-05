@@ -466,7 +466,7 @@ class LP_Abstract_User {
 					'user_item_id' => $progress->history_id
 				)
 			);
-
+			global $wpdb;
 			if ( $updated ) {
 				$return = $this->get_quiz_results( $quiz_id, $course_id, true );
 				//do_action( 'learn_press_user_finish_quiz', $progress, $quiz_id, $course_id, $this->id );
@@ -757,7 +757,7 @@ class LP_Abstract_User {
 				array( 'lp_quiz', $this->id, $course_id ),
 				$quizzes
 			);
-			$query = $wpdb->prepare( "
+			$query          = $wpdb->prepare( "
 				SELECT *
 				FROM $t1 uq
 				WHERE uq.item_type = %s
@@ -782,7 +782,7 @@ class LP_Abstract_User {
 					}
 					// limit newest 10 items
 					if ( sizeof( $history[$cache_key] ) >= 10 ) {
-						break;
+						//break;
 					}
 
 					$history[$cache_key][$result->user_item_id] = (object) array(
@@ -1087,7 +1087,7 @@ class LP_Abstract_User {
 			$enrollable = false;
 		} elseif ( !$course->is_required_enroll() ) {
 			$enrollable = false;
-		} elseif ( $course->is_free() ) {
+		} elseif ( $course->is_free() && $this->is_exists() ) {
 			$enrollable = true;
 		} elseif ( $course->is_purchasable() && ( $this->has_purchased_course( $course_id ) ) ) {
 			$order      = LP_Order::instance( $this->get_course_order( $course_id ), true );

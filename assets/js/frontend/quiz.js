@@ -239,7 +239,7 @@
 			return {
 				userTime     : userTime,
 				remainingTime: remainingTime
-			}
+			};
 		},
 		fetchCurrent         : function (callback) {
 			var current = this.getCurrent(),
@@ -460,7 +460,7 @@
 			this.model.on('destroy', this._onDestroy);
 			this._initCountDown();
 			this.updateButtons();
-			console.log('Quiz initialized', this.model.toJSON())
+			console.log('Quiz initialized', this.model.toJSON(), this.model.get('userTime'));
 
 		},
 		_initCountDown        : function () {
@@ -484,6 +484,7 @@
 			this.timeout && clearTimeout(this.timeout);
 			var timer = this.model.inc();
 			this.updateCountdown();
+
 			if (timer.remainingTime == 0) {
 				LP.Hook.doAction('learn_press_quiz_timeout', this);
 				this.$('.button-finish-quiz').trigger('click');
@@ -568,6 +569,7 @@
 		},
 		pause                 : function () {
 			this.timeout && clearTimeout(this.timeout);
+			console.log('Stopped');
 		},
 		updateCountdown       : function () {
 			/*var localTimeZone = -(new Date().getTimezoneOffset()) / 60,
@@ -593,7 +595,7 @@
 			strTime.push(this._addLeadingZero(remainingTime.s));
 
 			var t = parseInt(this.model.get('remainingTime') / this.model.get('totalTime') * 100);// * 360;
-			this.$('.quiz-countdown').attr('data-value', t).toggleClass('warning-time-over', t < 10).find('.countdown').html(strTime.join(':'));
+			this.$('.quiz-countdown').attr('data-value', t).attr('data-'+this.model.get('id'), 100).toggleClass('warning-time-over', t < 10).find('.countdown').html(strTime.join(':'));
 		},
 		itemUrl               : function (url, item) {
 			if (item.get('id') == this.model.get('id')) {
@@ -618,7 +620,7 @@
 	// DOM ready
 	LP.Hook.addAction('learn_press_course_initialize', function ($course) {
 		if (typeof Quiz_Params != 'undefined') {
-			window.quiz = new LP_Quiz($.extend({course: $course}, Quiz_Params));
+			//window.quiz = new LP_Quiz($.extend({course: $course}, Quiz_Params));
 			$course.view.updateUrl();
 		}
 	});

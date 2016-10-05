@@ -509,11 +509,7 @@ if (typeof window.LP == 'undefined') {
 		setUrl            : function (url, ember, title) {
 			if (url) {
 				history.pushState({}, title, url);
-				if (typeof window.onpopstate != 'undefined' && ember) {
-					$(window).bind('popstate.ember-location-' + ember, function (event) {
-						//window.location.href = window.location.href;
-					});
-				}
+				LP.Hook.doAction('learn_press_set_location_url', url);
 			}
 		},
 		toggleGroupSection: function (el, target) {

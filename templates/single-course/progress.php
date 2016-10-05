@@ -8,10 +8,11 @@
 defined( 'ABSPATH' ) || exit();
 
 $course = LP()->global['course'];
+$user   = learn_press_get_current_user();
 if ( !$course ) {
 	return;
 }
-$status = LP()->user->get( 'course-status', $course->id );
+$status = $user->get( 'course-status', $course->id );
 if ( !$status ) {
 	return;
 }
@@ -71,6 +72,7 @@ $course_results    = $course->evaluate_course_results();
 			</div>
 		</div>
 	</div>
-
-	<?php learn_press_get_template( 'single-course/buttons.php' ); ?>
+	<?php if ( $user->has_enrolled_course( $course->id ) ): ?>
+		<?php learn_press_get_template( 'single-course/buttons.php' ); ?>
+	<?php endif; ?>
 </div>
