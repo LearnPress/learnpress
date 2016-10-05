@@ -15,47 +15,49 @@ $have_questions = $quiz->get_questions();
 $can_view_item  = $user->can( 'view-item', $quiz->id, $course->id );
 
 ?>
-<div id="content-item-<?php echo $quiz->id; ?>">
-	<div class="learn-press-content-item-title content-item-quiz-title">
-		<?php if ( false !== ( $item_quiz_title = apply_filters( 'learn_press_item_quiz_title', $quiz->title ) ) ): ?>
-			<h4><?php echo $item_quiz_title; ?></h4>
-		<?php endif; ?>
-
-		<?php $have_questions && learn_press_get_template( 'content-quiz/countdown-simple.php' ); ?>
-	</div>
-
-	<div id="quiz-<?php echo $quiz->id; ?>" <?php learn_press_quiz_class( 'learn-press-content-item-summary' ); ?>>
-		<?php if ( $user->has_quiz_status( array( 'completed' ), $quiz->id, $course->id ) ): ?>
-
-			<?php learn_press_get_template( 'content-quiz/result.php' ); ?>
-
-		<?php elseif ( $user->has( 'quiz-status', 'started', $quiz->id, $course->id ) ): ?>
-			<?php if ( $have_questions ): ?>
-				<?php learn_press_get_template( 'content-quiz/question-content.php' ); ?>
+<div class="content-item-quiz">
+	<div id="content-item-<?php echo $quiz->id; ?>">
+		<div class="learn-press-content-item-title content-item-quiz-title">
+			<?php if ( false !== ( $item_quiz_title = apply_filters( 'learn_press_item_quiz_title', $quiz->title ) ) ): ?>
+				<h4><?php echo $item_quiz_title; ?></h4>
 			<?php endif; ?>
-		<?php else: ?>
 
-			<?php learn_press_get_template( 'content-quiz/description.php' ); ?>
-			<?php learn_press_get_template( 'content-quiz/intro.php' ); ?>
+			<?php $have_questions && learn_press_get_template( 'content-quiz/countdown-simple.php' ); ?>
+		</div>
 
-		<?php endif; ?>
+		<div id="quiz-<?php echo $quiz->id; ?>" class="learn-press-content-item-summary">
+			<?php if ( $user->has_quiz_status( array( 'completed' ), $quiz->id, $course->id ) ): ?>
 
-		<?php if ( $have_questions ) { ?>
-			<?php learn_press_get_template( 'content-quiz/buttons.php' ); ?>
-		<?php } ?>
+				<?php learn_press_get_template( 'content-quiz/result.php' ); ?>
+
+			<?php elseif ( $user->has( 'quiz-status', 'started', $quiz->id, $course->id ) ): ?>
+				<?php if ( $have_questions ): ?>
+					<?php learn_press_get_template( 'content-quiz/question-content.php' ); ?>
+				<?php endif; ?>
+			<?php else: ?>
+
+				<?php learn_press_get_template( 'content-quiz/description.php' ); ?>
+				<?php learn_press_get_template( 'content-quiz/intro.php' ); ?>
+
+			<?php endif; ?>
+
+			<?php if ( $have_questions ) { ?>
+				<?php learn_press_get_template( 'content-quiz/buttons.php' ); ?>
+			<?php } ?>
+		</div>
+
 	</div>
+	<?php if ( $have_questions ) { ?>
+		<?php learn_press_get_template( 'content-quiz/history.php' ); ?>
+		<?php learn_press_get_template( 'content-quiz/questions.php' ); ?>
+	<?php } else { ?>
+		<?php learn_press_display_message( __( 'No questions', 'learnpress' ) ); ?>
+	<?php } ?>
 
+	<script type="text/javascript">
+		if (typeof window.Quiz_Params != 'undefined') {
+			window.Quiz_Params = undefined;
+		}
+		window.Quiz_Params = <?php echo json_encode( $quiz->get_settings( $user->id, $course->id ), learn_press_debug_enable() ? JSON_PRETTY_PRINT : 0 );?>;
+	</script>
 </div>
-<?php if ( $have_questions ) { ?>
-	<?php learn_press_get_template( 'content-quiz/history.php' ); ?>
-	<?php learn_press_get_template( 'content-quiz/questions.php' ); ?>
-<?php } else { ?>
-	<?php learn_press_display_message( __( 'No questions', 'learnpress' ) ); ?>
-<?php } ?>
-
-<script type="text/javascript">
-	if (typeof window.Quiz_Params != 'undefined') {
-		window.Quiz_Params = undefined;
-	}
-	window.Quiz_Params = <?php echo json_encode( $quiz->get_settings( $user->id, $course->id ), learn_press_debug_enable() ? JSON_PRETTY_PRINT : 0 );?>;
-</script>

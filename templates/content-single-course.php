@@ -21,7 +21,7 @@ if ( post_password_required() ) {
 do_action( 'learn_press_before_single_course' ); ?>
 
 
-<div id="post-<?php the_ID(); ?>" <?php post_class(); ?> itemscope itemtype="http://schema.org/CreativeWork">
+<!--<div id="post-<?php the_ID(); ?>" <?php post_class(); ?> itemscope itemtype="http://schema.org/CreativeWork">-->
 
 	<?php do_action( 'learn_press_before_single_course_summary' ); ?>
 
@@ -41,6 +41,6 @@ do_action( 'learn_press_before_single_course' ); ?>
 
 	<?php do_action( 'learn_press_after_single_course_summary' ); ?>
 
-</div><!-- #post-## -->
+<!-- </div>#post-## -->
 
 <?php do_action( 'learn_press_after_single_course' ); ?>

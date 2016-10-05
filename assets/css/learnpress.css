@@ -763,6 +763,7 @@ body.course-has-popup {
   -ms-border-radius: 50%;
   -o-border-radius: 50%;
   border-radius: 50%;
+  box-sizing: border-box;
 }
 #learn-press-block-content:before {
   width: 96px;
@@ -773,15 +774,15 @@ body.course-has-popup {
   -webkit-clip-path: polygon(0px 100px, 100px 100px, 100px 50px, 50px 50px, 50px 0px, 0px 0px);
 }
 #learn-press-block-content span {
-  clip: rect(0, 100px, 50px, 50px);
-  width: 100px;
-  height: 100px;
+  clip: rect(0, 104px, 52px, 52px);
+  width: 104px;
+  height: 104px;
   margin-left: -50px;
   margin-top: -50px;
 }
 #learn-press-block-content span:before {
-  width: 100px;
-  height: 100px;
+  width: 104px;
+  height: 104px;
 }
 body.block-content #learn-press-block-content {
   display: block;
@@ -1878,15 +1879,15 @@ body.block-content #learn-press-block-content {
     -webkit-clip-path: polygon(0px 80px, 80px 80px, 80px 40px, 40px 40px, 40px 0px, 0px 0px);
   }
   #learn-press-block-content span {
-    clip: rect(0, 80px, 40px, 40px);
-    width: 80px;
-    height: 80px;
+    clip: rect(0, 84px, 42px, 42px);
+    width: 84px;
+    height: 84px;
     margin-left: -40px;
     margin-top: -40px;
   }
   #learn-press-block-content span:before {
-    width: 80px;
-    height: 80px;
+    width: 84px;
+    height: 84px;
   }
   .learn-press-course-results-progress .items-progress,
   .learn-press-course-results-progress .course-progress {

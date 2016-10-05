@@ -281,7 +281,7 @@ if (typeof LearnPress == 'undefined') {
 			if (!hash) {
 				return;
 			}
-			console.log('get:'+hash+','+this.cached[hash], this.cached)
+			console.log('get:' + hash + ',' + this.cached[hash], this.cached)
 		},
 		pushContent      : function (url) {
 			var hash = this.getHash(url);
@@ -312,8 +312,9 @@ if (typeof LearnPress == 'undefined') {
 					context : this,
 					item    : this.currentItem,
 					callback: function (response) {
+						var $html = $('<div />').html(response);
 						that.viewItem(id, {
-							content: $(response).html()
+							content: $html.find('[id="learn-press-content-item"]:last').html()
 						});
 						that.itemLoading = 0;
 						that.unblockContent();
@@ -416,7 +417,8 @@ if (typeof LearnPress == 'undefined') {
 				security : security,
 				course_id: this.model.get('id'),
 				callback : function (response, item) {
-					that.currentItem.set('content', response.html.content);
+					var $html = $('<div />').html(response.html.content);
+					that.currentItem.set('content', $html.find('.content-item-quiz:last'));
 					that.$('.course-item-' + that.currentItem.get('id'))
 						.removeClass('item-completed');
 					that.$('.learn-press-course-results-progress').replaceWith(response.html.progress);
@@ -471,12 +473,12 @@ if (typeof LearnPress == 'undefined') {
 				});
 			}
 		},
-		loadQuiz: function(){
+		loadQuiz         : function () {
 			if (window.$Quiz) {
 				window.$Quiz.destroy();
 			}
 			if (typeof window.Quiz_Params != 'undefined') {
-                            console.debug( window.Quiz_Params );
+				console.debug(window.Quiz_Params);
 				window.$Quiz = new LP_Quiz(window.Quiz_Params);
 			}
 		},
@@ -520,7 +522,7 @@ if (typeof LearnPress == 'undefined') {
 			this.updateUrl();
 			this.updateItemContent(item);
 			this.updateFooterNav();
-			if(item.get('type') == 'lp_quiz'){
+			if (item.get('type') == 'lp_quiz') {
 				this.loadQuiz();
 			}
 			return item;
