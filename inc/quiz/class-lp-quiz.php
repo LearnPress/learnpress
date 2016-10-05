@@ -177,9 +177,11 @@ class LP_Quiz {
 				$js['result'] = $user->get_quiz_results( $this->id, $course_id, $force );
 			}
 			if ( $js['status'] == 'started' ) {
-				$history          = $user->get_quiz_results( $this->id, $course_id );
-				$js['startTime']  = strtotime( $history->start );
-				$js['serverTime'] = date( 'Z' ) / 3600;//date_timezone_get( date_default_timezone_get() );// get_option('gmt_offset');
+				if($history          = $user->get_quiz_results( $this->id, $course_id )) {
+
+					$js['startTime']  = strtotime( $history->start );
+					$js['serverTime'] = date( 'Z' ) / 3600;//date_timezone_get( date_default_timezone_get() );// get_option('gmt_offset');
+				}
 			}
 
 			$quiz_params[$key] = $js;

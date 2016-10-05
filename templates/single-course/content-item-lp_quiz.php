@@ -58,6 +58,5 @@ $can_view_item  = $user->can( 'view-item', $quiz->id, $course->id );
 		window.Quiz_Params = undefined;
 	}
 	window.Quiz_Params = <?php echo json_encode( $quiz->get_settings( $user->id, $course->id ), learn_press_debug_enable() ? JSON_PRETTY_PRINT : 0 );?>;
-
 </script>
 

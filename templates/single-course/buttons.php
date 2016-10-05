@@ -27,7 +27,7 @@ $retake_button_text   = apply_filters( 'learn_press_retake_button_text', __( 'Re
 ?>
 <div class="learn-press-course-buttons">
 
-	<?php do_action('learn_press_before_course_buttons', $course->id);?>
+	<?php do_action( 'learn_press_before_course_buttons', $course->id ); ?>
 
 	<?php
 
@@ -74,7 +74,7 @@ $retake_button_text   = apply_filters( 'learn_press_retake_button_text', __( 'Re
 			<?php do_action( 'learn_press_before_purchase_button' ); ?>
 			<input type="hidden" name="_wp_http_referer" value="<?php echo get_the_permalink(); ?>" />
 			<input type="hidden" name="purchase-course" value="<?php echo $course->id; ?>" />
-			<button class="button purchase-button" data-block-content="yes"><?php echo $purchase_button_text; ?></button>
+			<button class="button purchase-button" data-block-content="yes"><?php echo $course->is_free() ? $enroll_button_text : $purchase_button_text; ?></button>
 			<?php do_action( 'learn_press_after_purchase_button' ); ?>
 		</form>
 	<?php else: ?>
@@ -83,6 +83,6 @@ $retake_button_text   = apply_filters( 'learn_press_retake_button_text', __( 'Re
 
 	<?php endif; ?>
 
-	<?php do_action('learn_press_after_course_buttons', $course->id);?>
+	<?php do_action( 'learn_press_after_course_buttons', $course->id ); ?>
 
 </div>

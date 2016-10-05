@@ -146,7 +146,6 @@ class LP_Quiz_Factory {
 
 	public static function finish_quiz() {
 		self::_verify_nonce( __FUNCTION__ );
-
 		$course_id = learn_press_get_request( 'course_id' );
 		$quiz_id   = learn_press_get_request( 'quiz_id' );
 		$user      = learn_press_get_current_user();
