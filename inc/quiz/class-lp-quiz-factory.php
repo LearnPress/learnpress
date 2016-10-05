@@ -133,6 +133,7 @@ class LP_Quiz_Factory {
 			$response['html'] = learn_press_get_template_content( 'single-course/content-item-lp_quiz.php' );
 		} else {
 			$result = $user->start_quiz( $quiz_id, $course_id );
+                        var_dump( $result ); die();
 			if ( $result ) {
 				learn_press_setup_user_course_data( $user->id, $course_id );
 				$response['status'] = $result->status;

@@ -25,7 +25,7 @@ if ( !class_exists( 'RWMB_Quiz_Questions_Field' ) ) {
 			$q->admin_script();*/
 			LP_Assets::enqueue_style( 'select2', RWMB_CSS_URL . 'select2/select2.css' );
 			LP_Assets::enqueue_script( 'select2', RWMB_JS_URL . 'select2/select2.min.js' );
-			LP_Assets::enqueue_script( 'learn-press-meta-box-quiz', learn_press_plugin_url( 'assets/js/admin/meta-box-quiz.js' ) );
+			LP_Assets::enqueue_script( 'learn-press-mb-quiz' );
 			LP_Assets::enqueue_script( 'learn-press-modal-search-items' );
 
 		}

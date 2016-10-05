@@ -2,7 +2,7 @@
  * Single course functions
  */
 if (typeof LearnPress == 'undefined') {
-	window.LP = window.LearnPress = {}
+	window.LP = window.LearnPress = {};
 }
 ;(function ($) {
 	"use strict";
@@ -53,7 +53,7 @@ if (typeof LearnPress == 'undefined') {
 				args = $.extend({
 					context : null,
 					callback: null
-				}, args || {})
+				}, args || {});
 				LP.ajax({
 					url     : this.get('url'),
 					action  : 'load-item',
@@ -102,7 +102,7 @@ if (typeof LearnPress == 'undefined') {
 				var args = $.extend({
 					course_id: 0,
 					quiz_id  : this.get('id'),
-					security : null,
+					security : null
 				}, args || {});
 				var data = this._validateObject(args), that = this;
 				LP.ajax({
@@ -194,7 +194,7 @@ if (typeof LearnPress == 'undefined') {
 						this.listenTo(e, 'change', this.onChange);
 					}
 				}
-				a.$el && a.$el.toggleClass('item-current', a.get('current'))
+				a.$el && a.$el.toggleClass('item-current', a.get('current'));
 			},
 			getNextItem: function () {
 				var next = false;
@@ -251,7 +251,7 @@ if (typeof LearnPress == 'undefined') {
 		currentItem      : null,
 		initialize       : function () {
 			var $item = this.$('.course-item');
-			_.bindAll(this, 'updateItemContent', '_tabClick', '_showPopup', 'removePopup');
+			_.bindAll(this, 'onPopState', 'updateItemContent', '_tabClick', '_showPopup', 'removePopup');
 			this.itemEl = this.$('#learn-press-content-item');
 			this.model.items.forEach(function (v, k) {
 				v.course = this;
@@ -264,10 +264,17 @@ if (typeof LearnPress == 'undefined') {
 					content: this.itemEl.html()
 				});
 			}
+			if (typeof window.onpopstate != 'undefined') {
+				$(window).on('popstate', this.onPopState);
+			}
+		},
+		onPopState       : function () {
+			var url = window.location.href;
+			console.log(this.model.get('url'), url);
 		},
 		_initHooks       : function () {
 			LP.Hook.addAction('learn_press_update_item_content', this.updateItemContent);
-			$(document).on('learn_press_popup_course_remove', this.removePopup)
+			$(document).on('learn_press_popup_course_remove', this.removePopup);
 		},
 		_loadItem        : function (e) {
 			e.preventDefault();
@@ -280,7 +287,7 @@ if (typeof LearnPress == 'undefined') {
 			this.blockContent();
 			this.itemLoading = id;
 			this.currentItem = this.model.getItem(id);
-			this.currentItem.set('content', '')
+			this.currentItem.set('content', '');
 			if (this.currentItem.get('content') == '') {
 				this.currentItem.request({
 					context : this,
@@ -353,7 +360,7 @@ if (typeof LearnPress == 'undefined') {
 			var that = this,
 				$button = $(e.target),
 				security = $button.data('security');
-			LP.Hook.doAction('learn_press_before_start_quiz', this.currentItem, this );
+			LP.Hook.doAction('learn_press_before_start_quiz', this.currentItem, this);
 			this.currentItem.start({
 				security : security,
 				course_id: this.model.get('id'),
@@ -363,7 +370,7 @@ if (typeof LearnPress == 'undefined') {
 					if (window.quiz) {
 						window.quiz.destroy();
 					}
-					if (typeof window.Quiz_Params != 'undefined') {
+					if (typeof window.Quiz_Params !== 'undefined') {
 						window.Quiz = new LP_Quiz(window.Quiz_Params);
 					}
 				}
@@ -373,7 +380,7 @@ if (typeof LearnPress == 'undefined') {
 			var that = this,
 				$button = $(e.target),
 				security = $button.data('security');
-			LP.Hook.doAction('learn_press_before_finish_quiz', this.currentItem, this );
+			LP.Hook.doAction('learn_press_before_finish_quiz', this.currentItem, this);
 			this.currentItem.finishQuiz({
 				security : security,
 				course_id: this.model.get('id'),
@@ -390,7 +397,7 @@ if (typeof LearnPress == 'undefined') {
 			var that = this,
 				$button = $(e.target),
 				security = $button.data('security');
-			LP.Hook.doAction('learn_press_before_retake_quiz', this.currentItem, this );
+			LP.Hook.doAction('learn_press_before_retake_quiz', this.currentItem, this);
 			this.currentItem.retakeQuiz && this.currentItem.retakeQuiz({
 				security : security,
 				course_id: this.model.get('id'),
@@ -458,16 +465,16 @@ if (typeof LearnPress == 'undefined') {
 		removePopup      : function () {
 			this.popup = null;
 			this.model.items.forEach(function (m) {
-				console.log(m.get('current'))
+				console.log(m.get('current'));
 				m.set('current', false);
-			})
+			});
 		},
 		getCurrentSection: function () {
 			return this.currentItem.$el.closest('.section');
 		},
 		updateItemContent: function (item) {
 			///this.itemEl.html(item.get('content'));
-			this.$('#popup-content-inner').html(item.get('content'))
+			this.$('#popup-content-inner').html(item.get('content'));
 		},
 		updateFooterNav  : function () {
 			var prev = this.model.getPrevItem(),
@@ -506,7 +513,7 @@ if (typeof LearnPress == 'undefined') {
 			}
 		},
 		blockContent     : function () {
-			LP.blockContent()
+			LP.blockContent();
 		},
 		unblockContent   : function () {
 			LP.unblockContent();

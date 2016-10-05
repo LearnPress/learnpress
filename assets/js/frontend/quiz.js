@@ -21,14 +21,14 @@
 							m.destroy()
 					) : false;
 				} catch (ex) {
-					console.log(ex)
+					console.log(ex);
 				}
 			});
 			this.model.set('id', null);
 			this.model.destroy();
 			this.view.destroy();
 			this.view.undelegateEvents();
-		}
+		};
 	}, Model_Question, List_Questions;
 
 	Quiz.Model_Question = Model_Question = Backbone.Model.extend({
