@@ -460,6 +460,7 @@ class LP_Assets {
 		$data = !empty( self::$wp_localize_scripts[$handle] ) ? self::$wp_localize_scripts[$handle] : false;
 		if ( wp_script_is( $handle ) && $data ) {
 			$name = str_replace( '-', '_', $handle ) . '_localize';
+                        var_dump($name); die();
 			unset( self::$wp_localize_scripts[$handle] );
 			wp_localize_script( $handle, $name, apply_filters( $name, $data ) );
 		}
