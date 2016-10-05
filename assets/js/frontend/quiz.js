@@ -229,17 +229,23 @@
 			}
 			return t;
 		},
-		inc                  : function () {
-			var userTime = this.get('userTime') + 1,
-				remainingTime = Math.max(this.get('totalTime') - userTime, 0);
-			this.set({
+		inc                  : function (seconds) {
+			var userTime = this.get('userTime') + (seconds || 1);
+			var t = {
 				userTime     : userTime,
-				remainingTime: remainingTime
-			});
-			return {
-				userTime     : userTime,
-				remainingTime: remainingTime
+				remainingTime: Math.max(this.get('totalTime') - userTime, 0)
 			};
+			this.set(t);
+			return t;
+		},
+		decr                 : function (seconds) {
+			var userTime = this.get('userTime') - (seconds || 1);
+			var t = {
+				userTime     : userTime,
+				remainingTime: Math.max(this.get('totalTime') - userTime, 0)
+			};
+			this.set(t);
+			return t;
 		},
 		fetchCurrent         : function (callback) {
 			var current = this.getCurrent(),
@@ -257,71 +263,61 @@
 				}
 			});
 		},
-		next                 : function (callback) {
+		next                 : function (callback, args) {
 			var next = this.findNext(),
-				that = this;
+				that = this,
+				id = 0;
 			if (!next) {
 				return;
 			}
-			LP.Hook.doAction('learn_press_before_next_question', next.get('id'), that);
-			next.set('current', 'yes');
-			if (next.get('response')) {
-				next.set('loaded', true);
-				$.isFunction(callback) && callback(next, that);
-			} else {
-				new (function (a, b, c) {
-					$.ajax({
-						url     : next.get('url'),
-						data    : {
-							id       : next.get('id'),
-							'lp-ajax': 'fetch-question'
-						},
-						dataType: 'html',
-						success : function (response) {
-							var $html = $(response).contents().find('.learn-press-content-item-summary')
-							a.set('response', $html);
-							console.log($html)
-							LP.Hook.doAction('learn_press_next_question', next.get('id'), that);
-							$.isFunction(c) && c(a, b);
-						}
-					})
-				})(next, that, callback);
-			}
-		}
-		,
-		prev                 : function (callback) {
+			id = parseInt(next.get('id'));
+			LP.Hook.doAction('learn_press_before_next_question', id, that);
+			this.select(id, function (args) {
+				LP.Hook.doAction('learn_press_previous_question', id, that);
+				callback && callback.apply(null, arguments);
+			}, args);
+		},
+		prev                 : function (callback, args) {
 			var prev = this.findPrev(),
-				that = this;
+				that = this,
+				id = 0;
 			if (!prev) {
 				return;
 			}
-			LP.Hook.doAction('learn_press_before_previous_question', prev.get('id'), that);
-			prev.set('current', 'yes');
-			if (prev.get('response')) {
-				prev.set('loaded', true);
-				$.isFunction(callback) && callback(prev, that);
+			id = prev.get('id');
+			LP.Hook.doAction('learn_press_before_previous_question', id, that);
+			this.select(id, function () {
+				LP.Hook.doAction('learn_press_previous_question', id, that);
+				callback && callback.apply(null, arguments);
+			}, args);
+		},
+		select               : function (id, callback, args) {
+			var question = this.questions.findWhere({id: parseInt(id)}),
+				that = this;
+			if (!question) {
+				return;
+			}
+			LP.Hook.doAction('learn_press_before_select_question', question, that);
+			question.set('current', 'yes');
+			if (question.get('response')) {
+				question.set('loaded', true);
+				$.isFunction(callback) && callback(question, that);
 			} else {
 				$.ajax({
-					url     : prev.get('url'),
-					data    : {
-						id       : prev.get('id'),
+					url     : question.get('url'),
+					data    : $.extend({
+						id       : question.get('id'),
 						'lp-ajax': 'fetch-question'
-					},
+					}, args || {}),
 					dataType: 'html',
 					success : function (response) {
 						var $html = $(response).contents().find('.learn-press-content-item-summary')
-						prev.set('response', $html);
-						LP.Hook.doAction('learn_press_previous_question', prev.get('id'), that);
-						$.isFunction(callback) && callback(prev, that);
+						question.set('response', $html);
+						$.isFunction(callback) && callback(question, that);
+						LP.Hook.doAction('learn_press_select_question', question, that);
 					}
 				})
 			}
-		}
-		,
-		select               : function (id, callback) {
-			var question = this.questions.findWhere({id: id}),
-				that = this;
-
 		},
 		getQuestionPosition  : function (question_id) {
 			question_id = question_id || this.get('question_id');
@@ -333,12 +329,12 @@
 		isLast               : function (question_id) {
 			question_id = question_id || this.getCurrent('id');
 			var q = this.questions.findWhere({id: parseInt(question_id)});
-			return q ? q.get('index') == this.questions.length - 1 : false;//this.getQuestionPosition(question_id) == (this.countQuestions() - 1);
+			return q ? q.get('index') == this.questions.length - 1 : false;
 		},
 		isFirst              : function (question_id) {
 			question_id = question_id || this.getCurrent('id');
 			var q = this.questions.findWhere({id: parseInt(question_id)});
-			return q ? q.get('index') == 0 : false;// this.getQuestionPosition(question_id) == 0;
+			return q ? q.get('index') == 0 : false;
 		},
 		findNext             : function (question_id) {
 			question_id = question_id || this.getCurrent('id');
@@ -445,12 +441,15 @@
 			return 'body';
 		},
 		events                : {
-			'click .button-prev-question': '_prevQuestion',
-			'click .button-next-question': '_nextQuestion',
-			'click .button-hint'         : '_showHint',
-			'click .button-check-answer' : '_checkAnswer'
+			'click .button-prev-question'               : '_prevQuestion',
+			'click .button-next-question'               : '_nextQuestion',
+			'click .button-hint'                        : '_showHint',
+			'click .button-check-answer'                : '_checkAnswer',
+			'click .quiz-questions-list .question-title': '_selectQuestion'
 		},
 		timeout               : 0,
+		delayTimeout          : 0,
+		delayTime             : 0,
 		initialize            : function () {
 			_.bindAll(this, 'pause', '_onTick', 'itemUrl', '_loadQuestionCompleted', '_checkAnswerCompleted', '_checkAnswer', '_onDestroy', 'destroy');
 			LP.Hook.addAction('learn_press_before_finish_quiz', this.destroy);
@@ -460,8 +459,6 @@
 			this.model.on('destroy', this._onDestroy);
 			this._initCountDown();
 			this.updateButtons();
-			console.log('Quiz initialized', this.model.toJSON(), this.model.get('userTime'));
-
 		},
 		_initCountDown        : function () {
 			if (this.model.get('status') != 'started' || this.model.get('totalTime') <= 0) {
@@ -470,7 +467,6 @@
 			this.updateCountdown();
 			setTimeout($.proxy(function () {
 				this.$('.quiz-countdown').removeClass('hide-if-js');
-				//console.log(this.$('.quiz-countdown').hasClass('hide-if-js'))
 				this.start();
 			}, this), 500);
 		},
@@ -490,21 +486,32 @@
 				this.$('.button-finish-quiz').trigger('click');
 				return;
 			}
-			this.timeout = setTimeout(this._onTick, 1000);
+			this.timeout = setTimeout(this._onTick, 990);
 		},
 		_prevQuestion         : function (e) {
-			this.pause();
-			this.model.set('show-list', !!$('.lp-group-heading-title.active').length);
 			e.preventDefault();
-			this.model.current(true).set('response', this.$('.learn-press-content-item-summary'));
-			this.model.prev(this._loadQuestionCompleted);
+			var delayTime = this.delayTime;
+			this._beforeFetchQuestion();
+			this.model.prev(this._loadQuestionCompleted, {delayTime: delayTime});
 		},
 		_nextQuestion         : function (e) {
-			this.pause();
-			this.model.set('show-list', !!$('.lp-group-heading-title.active').length);
 			e.preventDefault();
+			var delayTime = this.delayTime;
+			this._beforeFetchQuestion();
+			this.model.next(this._loadQuestionCompleted, {delayTime: delayTime});
+		},
+		_selectQuestion       : function (e) {
+			e.preventDefault();
+			var id = $(e.target).closest('li').attr('data-id'),
+				delayTime = this.delayTime;
+			this._beforeFetchQuestion();
+			this.model.select(id, this._loadQuestionCompleted, {delayTime: delayTime});
+		},
+		_beforeFetchQuestion  : function () {
+			LP.blockContent();
+			this.pause();
+			this.incrDelay(true);
 			this.model.current(true).set('response', this.$('.learn-press-content-item-summary'));
-			this.model.next(this._loadQuestionCompleted);
 		},
 		_loadQuestionCompleted: function (question, model) {
 			var loaded = model.get('loaded'),
@@ -565,11 +572,24 @@
 			}
 		},
 		start                 : function () {
+			this.delayTimeout && clearTimeout(this.delayTimeout);
+			//var time = this.delayTime.length ? this.delayTime[this.delayTime.length - 1] : 0;
+			//this.model.decr(time);
 			this._onTick();
+			//console.log(this.delayTime);
 		},
 		pause                 : function () {
 			this.timeout && clearTimeout(this.timeout);
-			console.log('Stopped');
+		},
+		incrDelay             : function (t) {
+			if (t) {
+				this.delayTime = 0;
+			}
+			this.delayTimeout && clearTimeout(this.delayTimeout);
+			this.delayTime++;
+			this.delayTimeout = setTimeout($.proxy(function () {
+				this.incrDelay();
+			}, this), 990);
 		},
 		updateCountdown       : function () {
 			/*var localTimeZone = -(new Date().getTimezoneOffset()) / 60,
@@ -595,7 +615,7 @@
 			strTime.push(this._addLeadingZero(remainingTime.s));
 
 			var t = parseInt(this.model.get('remainingTime') / this.model.get('totalTime') * 100);// * 360;
-			this.$('.quiz-countdown').attr('data-value', t).attr('data-'+this.model.get('id'), 100).toggleClass('warning-time-over', t < 10).find('.countdown').html(strTime.join(':'));
+			this.$('.quiz-countdown').attr('data-value', t).attr('data-' + this.model.get('id'), 100).toggleClass('warning-time-over', t < 10).find('.countdown').html(strTime.join(':'));
 		},
 		itemUrl               : function (url, item) {
 			if (item.get('id') == this.model.get('id')) {

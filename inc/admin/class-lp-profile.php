@@ -76,12 +76,12 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 						'tab_id'      => 'user_courses',
 						'tab_name'    => __( 'Courses', 'learnpress' ),
 						'tab_content' => apply_filters( 'learn_press_user_courses_tab_content', $content, $user )
-					),
+					)/*,
 					30 => array(
 						'tab_id'      => 'user_quizzes',
 						'tab_name'    => __( 'Quiz Results', 'learnpress' ),
 						'tab_content' => apply_filters( 'learn_press_user_quizzes_tab_content', $content, $user )
-					)
+					)*/
 				),
 				$user
 			);

@@ -531,7 +531,7 @@ CREATE TABLE {$wpdb->prefix}learnpress_user_itemmeta (
   meta_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   learnpress_user_item_id bigint(20) unsigned NOT NULL,
   meta_key varchar(45) NOT NULL DEFAULT '',
-  meta_value text NOT NULL
+  meta_value text NOT NULL,
   PRIMARY KEY  (meta_id)
 ) $collate;
 ";
