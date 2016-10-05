@@ -251,7 +251,7 @@ if (typeof LearnPress == 'undefined') {
 		currentItem      : null,
 		initialize       : function () {
 			var $item = this.$('.course-item');
-			_.bindAll(this, 'updateItemContent', '_tabClick', '_showPopup', 'removePopup');
+			_.bindAll(this, 'onPopState', 'updateItemContent', '_tabClick', '_showPopup', 'removePopup');
 			this.itemEl = this.$('#learn-press-content-item');
 			this.model.items.forEach(function (v, k) {
 				v.course = this;
@@ -264,6 +264,13 @@ if (typeof LearnPress == 'undefined') {
 					content: this.itemEl.html()
 				});
 			}
+			if (typeof window.onpopstate != 'undefined') {
+				$(window).on('popstate', this.onPopState);
+			}
+		},
+		onPopState       : function () {
+			var url = window.location.href;
+			console.log(this.model.get('url'), url)
 		},
 		_initHooks       : function () {
 			LP.Hook.addAction('learn_press_update_item_content', this.updateItemContent);
@@ -353,7 +360,7 @@ if (typeof LearnPress == 'undefined') {
 			var that = this,
 				$button = $(e.target),
 				security = $button.data('security');
-			LP.Hook.doAction('learn_press_before_start_quiz', this.currentItem, this );
+			LP.Hook.doAction('learn_press_before_start_quiz', this.currentItem, this);
 			this.currentItem.start({
 				security : security,
 				course_id: this.model.get('id'),
@@ -373,7 +380,7 @@ if (typeof LearnPress == 'undefined') {
 			var that = this,
 				$button = $(e.target),
 				security = $button.data('security');
-			LP.Hook.doAction('learn_press_before_finish_quiz', this.currentItem, this );
+			LP.Hook.doAction('learn_press_before_finish_quiz', this.currentItem, this);
 			this.currentItem.finishQuiz({
 				security : security,
 				course_id: this.model.get('id'),
@@ -390,7 +397,7 @@ if (typeof LearnPress == 'undefined') {
 			var that = this,
 				$button = $(e.target),
 				security = $button.data('security');
-			LP.Hook.doAction('learn_press_before_retake_quiz', this.currentItem, this );
+			LP.Hook.doAction('learn_press_before_retake_quiz', this.currentItem, this);
 			this.currentItem.retakeQuiz && this.currentItem.retakeQuiz({
 				security : security,
 				course_id: this.model.get('id'),

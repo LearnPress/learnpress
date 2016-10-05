@@ -506,9 +506,14 @@ if (typeof window.LP == 'undefined') {
 		}
 	};
 	LP = $.extend({
-		setUrl            : function (url, title) {
+		setUrl            : function (url, ember, title) {
 			if (url) {
 				history.pushState({}, title, url);
+				if (typeof window.onpopstate != 'undefined' && ember) {
+					$(window).bind('popstate.ember-location-' + ember, function (event) {
+						//window.location.href = window.location.href;
+					});
+				}
 			}
 		},
 		toggleGroupSection: function (el, target) {
@@ -937,6 +942,7 @@ if (typeof window.LP == 'undefined') {
 		$(document).on('click', '[data-block-content="yes"]', function () {
 			LP.blockContent();
 		});
+
 		$('.learn-press-tooltip').tooltip({offset: [24, 24]});
 	});
 	LearnPress = LP;
