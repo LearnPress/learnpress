@@ -63,7 +63,7 @@ $question = $quiz->get_current_question();
 	<?php if ( in_array( $status, array( 'started' ) ) ): ?>
 		<button
 			class="button-finish-quiz"
-			data-block-content="yes"
+			data-block-content="no"
 			data-id="<?php esc_attr_e( $quiz->id ); ?>"
 			data-security="<?php esc_attr_e( wp_create_nonce( 'finish-quiz-' . $user->id . '-' . $course->id . '-' . $quiz->id ) ); ?>">
 			<?php esc_html_e( 'Finish Quiz', 'learnpress' ); ?>
