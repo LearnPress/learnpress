@@ -1432,13 +1432,6 @@ abstract class LP_Abstract_Course {
 
 		LP_Assets::add_var( 'LP_Course_Params', wp_json_encode( $output ), 'learn-press-single-course' );
 
-		return;
-		if ( $args['echo'] ) {
-			echo '<script type="text/javascript">';
-			echo 'var LP_Course_Params = ' . wp_json_encode( $output, learn_press_debug_enable() ? JSON_PRETTY_PRINT : 0 );
-			echo '</script>';
-		}
-
 		return $output;
 	}
 
@@ -1461,7 +1454,6 @@ abstract class LP_Abstract_Course {
 			if ( ( $view = $user->can( 'view-item', $item['id'] ) ) !== false ) {
 				$items[$k]['url']     = $this->get_item_link( $item['id'] );
 				$items[$k]['status']  = $user->get_item_status( $item['id'], $this->id );
-				$items[$k]['content'] = '123';//apply_filters( 'the_content', $item['content'] );
 				if ( $view == 'preview' ) {
 
 				}

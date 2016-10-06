@@ -322,11 +322,10 @@ function learn_press_get_post_by_name( $name, $type, $single = true ) {
 	if ( !empty( $post_names[$type][$name] ) ) {
 		$post = get_post( $post_names[$type][$name] );
 	}
-
 	if ( !$post ) {
 		global $wpdb;
 		$query = $wpdb->prepare( "
-			SELECT ID
+			SELECT *
 			FROM {$wpdb->posts}
 			WHERE 1 AND post_name = %s
 		", $name );
@@ -335,8 +334,12 @@ function learn_press_get_post_by_name( $name, $type, $single = true ) {
 		if ( empty( $post_names[$type] ) ) {
 			$post_names[$type] = array();
 		}
-		$post  = $wpdb->get_var( $query );
-		$post_names[$type][$name] = $post;
+		if ( $post = $wpdb->get_row( $query ) ) {
+			wp_cache_set( $post->ID, $post, 'posts' );
+		}
+
+		$post_names[$type][$name] = $post ? $post->ID : 0;
+		LP_Cache::set_post_names( $post_names );
 	}
 	return $post ? get_post( $post_names[$type][$name] ) : false;
 }
@@ -954,7 +957,6 @@ function learn_press_get_own_courses( $user_id ) {
 }
 
 
-
 function learn_press_currency_positions() {
 	return apply_filters(
 		'learn_press_currency_positions',
@@ -1489,7 +1491,6 @@ function learn_press_get_request( $key, $default = null, $hash = null ) {
 	}
 	return $return;
 }
-
 
 
 /**

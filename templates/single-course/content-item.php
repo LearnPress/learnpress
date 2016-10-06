@@ -13,7 +13,7 @@ if ( !$item ) {
 }
 $item_id = isset( $item->id ) ? $item->id : ( isset( $item->ID ) ? $item->ID : 0 );
 ?>
-<div id="learn-press-content-item">
+<script type="text/html" id="learn-press-content-item">
 	<?php if ( $item ) { ?>
 		<?php if ( $user->can( 'view-item', $item->id, $course->id ) ) { ?>
 
@@ -32,5 +32,4 @@ $item_id = isset( $item->id ) ? $item->id : ( isset( $item->ID ) ? $item->ID : 0
 			<a class="" href="<?php echo get_edit_post_link( $item_id ); ?>"><?php _e( 'Edit this item', 'learnpress' ); ?></a>
 		</p>
 	<?php endif; ?>
-
-</div>
+</script>
