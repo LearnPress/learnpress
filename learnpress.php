@@ -480,6 +480,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 			require_once 'inc/admin/class-lp-admin-ajax.php';
 			require_once 'inc/class-lp-ajax.php';
 			require_once 'inc/class-lp-multi-language.php';
+			require_once 'inc/class-lp-page-controller.php';
 
 			if ( !empty( $_REQUEST['debug'] ) ) {
 				require_once( 'inc/debug.php' );

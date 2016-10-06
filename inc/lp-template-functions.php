@@ -1054,6 +1054,9 @@ if ( !function_exists( 'learn_press_course_class' ) ) {
 				//unset( $classes[$key] );
 			}
 		}
+		if ( $post_id === 0 ) {
+			$classes[] = 'page type-page';
+		}
 		if ( !$post_id || 'lp_course' !== get_post_type( $post_id ) ) {
 			return $classes;
 		}
@@ -1202,7 +1205,7 @@ if ( !function_exists( 'learn_press_page_controller' ) ) {
 		return $template;
 	}
 }
-add_filter( 'template_include', 'learn_press_page_controller' );
+//add_filter( 'template_include', 'learn_press_page_controller' );
 
 if ( !function_exists( 'learn_press_page_title' ) ) {
 
@@ -1501,149 +1504,6 @@ function learn_press_course_item_content( $item ) {
 	}
 }
 
-add_filter( 'template_include', 'learn_press_template_loader' );
-function learn_press_template_loader( $template ) {
-	global $post;
-
-	$file           = '';
-	$theme_template = learn_press_template_path();
-	if ( ( $page_id = learn_press_get_page_id( 'taken_course_confirm' ) ) && is_page( $page_id ) ) {
-		if ( !learn_press_user_can_view_order( !empty( $_REQUEST['order_id'] ) ? $_REQUEST['order_id'] : 0 ) ) {
-			learn_press_404_page();
-		}
-		$post->post_content = '[learn_press_confirm_order]';
-	} elseif ( ( $page_id = learn_press_get_page_id( 'become_teacher_form' ) ) && is_page( $page_id ) ) {
-
-		$post->post_content = '[learn_press_become_teacher_form]';
-	} else {
-		if ( is_post_type_archive( LP_COURSE_CPT ) || ( ( $page_id = learn_press_get_page_id( 'courses' ) ) && is_page( $page_id ) ) || ( is_tax( array( 'course_category', 'course_tag' ) ) ) ) {
-			$file   = 'archive-course.php';
-			$find[] = $file;
-			$find[] = "{$theme_template}/{$file}";
-		} else {
-			if ( learn_press_is_course() ) {
-				$file   = 'single-course.php';
-				$find[] = $file;
-				$find[] = "{$theme_template}/{$file}";
-
-			} elseif ( learn_press_is_quiz() ) {
-				$file   = 'single-quiz.php';
-				$find[] = $file;
-				$find[] = "{$theme_template}/{$file}";
-			}
-		}
-	}
-
-	if ( learn_press_is_course() ) {
-		if ( is_single() ) {
-			$template = get_page_template();
-			add_filter( 'the_content', 'fallback_filter_for_page_template' );
-		}
-	} elseif ( learn_press_is_courses() ) {
-		//$template = get_page_template();
-	} else {
-		if ( $file ) {
-			$template = locate_template( array_unique( $find ) );
-			if ( !$template ) {
-				$template = learn_press_plugin_path( 'templates/' ) . $file;
-			}
-		}
-	}
-	return $template;
-}
-
-function learn_press_template_loader3() {
-	ob_start();
-	learn_press_get_template( 'archive-course.php' );
-	return ob_get_clean();
-}
-
-function learn_press_template_loader2( $template ) {
-	if ( learn_press_is_courses() || learn_press_is_course_tag() || learn_press_is_course_category() ) {
-		global $wp_query;
-		LP()->wp_query = clone($wp_query);
-		$template      = get_page_template();
-
-		$wp_query->posts_per_page = 1;
-		$wp_query->nopaging       = true;
-		$wp_query->post_count     = 1;
-
-		// If we don't have a post, load an empty one
-		if ( empty( $wp_query->post ) )
-			$wp_query->post = new WP_Post( new stdClass() );
-
-		//$wp_query->post->ID                    = 69;
-		$wp_query->post->post_date             = current_time( 'mysql' );
-		$wp_query->post->post_date_gmt         = current_time( 'mysql', 1 );
-		$wp_query->post->post_content          = learn_press_template_loader3();
-		$wp_query->post->post_title            = 'sssssssssss';
-		$wp_query->post->post_excerpt          = '';
-		$wp_query->post->post_status           = 'publish';
-		$wp_query->post->comment_status        = false;
-		$wp_query->post->ping_status           = false;
-		$wp_query->post->post_password         = '';
-		$wp_query->post->post_name             = 'it-exchange-ghost-' . 'sdfdsfdsf';
-		$wp_query->post->to_ping               = '';
-		$wp_query->post->pinged                = '';
-		$wp_query->post->post_modified         = $wp_query->post->post_date;
-		$wp_query->post->post_modified_gmt     = $wp_query->post->post_date_gmt;
-		$wp_query->post->post_content_filtered = '';
-		$wp_query->post->post_parent           = 0;
-		$wp_query->post->guid                  = get_home_url() . '/' . '0';
-		$wp_query->post->menu_order            = 0;
-		$wp_query->post->post_type             = 'page';
-		$wp_query->post->post_mime_type        = '';
-		$wp_query->post->comment_count         = 0;
-		$wp_query->post->filter                = 'raw';
-
-		$wp_query->posts                = array( $wp_query->post );
-		$wp_query->found_posts          = 1;
-		$wp_query->is_single            = false; //false -- so comments_template() doesn't add comments
-		$wp_query->is_preview           = false;
-		$wp_query->is_page              = false; //false -- so comments_template() doesn't add comments
-		$wp_query->is_archive           = false;
-		$wp_query->is_date              = false;
-		$wp_query->is_year              = false;
-		$wp_query->is_month             = false;
-		$wp_query->is_day               = false;
-		$wp_query->is_time              = false;
-		$wp_query->is_author            = false;
-		$wp_query->is_category          = false;
-		$wp_query->is_tag               = false;
-		$wp_query->is_tax               = false;
-		$wp_query->is_search            = false;
-		$wp_query->is_feed              = false;
-		$wp_query->is_comment_feed      = false;
-		$wp_query->is_trackback         = false;
-		$wp_query->is_home              = false;
-		$wp_query->is_404               = false;
-		$wp_query->is_comments_popup    = false;
-		$wp_query->is_paged             = false;
-		$wp_query->is_admin             = false;
-		$wp_query->is_attachment        = false;
-		$wp_query->is_singular          = false;
-		$wp_query->is_posts_page        = false;
-		$wp_query->is_post_type_archive = false;
-
-		//$GLOBALS['wp_query'] = $wp_query;
-
-		remove_filter( 'template_include', 'learn_press_template_loader2', 10000000000 );
-		remove_filter( 'the_content', 'fallback_filter_for_page_template' );
-	}
-	return $template;
-}
-
-add_filter( 'template_include', 'learn_press_template_loader2', 10000000000 );
-
-function fallback_filter_for_page_template( $content ) {
-	$global_post = empty( $GLOBALS['post']->ID ) ? 0 : $GLOBALS['post']->ID;
-	remove_filter( 'the_content', 'fallback_filter_for_page_template' );
-	ob_start();
-	add_filter( 'the_content', 'wpautop' );
-	learn_press_get_template( 'content-single-course.php' );
-	remove_filter( 'the_content', 'wpautop' );
-	return ob_get_clean();
-}
 
 if ( !function_exists( 'learn_press_item_meta_type' ) ) {
 	function learn_press_item_meta_type( $course, $item ) { ?>

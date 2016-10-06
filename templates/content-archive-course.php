@@ -10,20 +10,10 @@
 if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
+global $post;
 ?>
-<?php //get_header(); ?>
 <?php do_action( 'learn_press_before_main_content' ); ?>
-<!--
-<?php if ( apply_filters( 'learn_press_show_page_title', true ) ) { ?>
 
-	<h1 class="page-title">
-
-		<?php learn_press_page_title(); ?>
-
-	</h1>
-
-<?php } ?>
--->
 <?php do_action( 'learn_press_archive_description' ); ?>
 
 <?php if ( LP()->wp_query->have_posts() ) : ?>
@@ -31,6 +21,7 @@ if ( !defined( 'ABSPATH' ) ) {
 	<?php do_action( 'learn_press_before_courses_loop' ); ?>
 
 	<?php learn_press_begin_courses_loop(); ?>
+
 	<?php while ( LP()->wp_query->have_posts() ) : LP()->wp_query->the_post(); ?>
 
 		<?php learn_press_get_template_part( 'content', 'course' ); ?>
@@ -44,4 +35,3 @@ if ( !defined( 'ABSPATH' ) ) {
 <?php endif; ?>
 
 <?php do_action( 'learn_press_after_main_content' ); ?>
-<?php //get_footer(); ?>
