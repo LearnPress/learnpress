@@ -11,6 +11,7 @@ if ( !defined( 'ABSPATH' ) ) {
 }
 
 $settings = LP()->settings;
+
 ?>
 <h3><?php _e( 'New order customer', 'learnpress' ); ?></h3>
 <p class="description">
@@ -24,7 +25,7 @@ $settings = LP()->settings;
                 <label for="learn-press-emails-new-order-enable"><?php _e( 'Enable', 'learnpress' ); ?></label></th>
             <td>
                 <input type="hidden" name="<?php echo $settings_class->get_field_name( 'emails_new_order_customer[enable]' ); ?>" value="no" />
-                <input id="learn-press-emails-new-order-enable" type="checkbox" name="<?php echo $settings_class->get_field_name( 'emails_new_order_customer[enable]' ); ?>" value="yes" <?php checked( $settings->get( 'emails_new_order_customer.enable' ) == 'yes' ); ?>" />
+                <input id="learn-press-emails-new-order-enable" type="checkbox" name="<?php echo $settings_class->get_field_name( 'emails_new_order_customer[enable]' ); ?>" value="yes" <?php checked( $settings->get( 'emails_new_order_customer.enable' ), 'yes' ); ?> />
             </td>
         </tr>
         <tr>
