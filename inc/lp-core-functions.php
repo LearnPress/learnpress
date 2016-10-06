@@ -335,7 +335,7 @@ function learn_press_get_post_by_name( $name, $type, $single = true ) {
 			$post_names[$type] = array();
 		}
 		if ( $post = $wpdb->get_row( $query ) ) {
-			wp_cache_set( $post->ID, $post, 'posts' );
+			//wp_cache_set( $post->ID, $post, 'posts' );
 		}
 
 		$post_names[$type][$name] = $post ? $post->ID : 0;

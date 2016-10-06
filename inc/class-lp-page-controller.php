@@ -16,6 +16,11 @@ class LP_Page_Controller {
 	protected static $_instance = null;
 
 	/**
+	 * @var bool
+	 */
+	protected $has_filter_content = false;
+
+	/**
 	 * LP_Page_Controller constructor.
 	 */
 	public function __construct() {
@@ -25,7 +30,16 @@ class LP_Page_Controller {
 		}
 		add_filter( 'template_include', array( $this, 'template_loader' ) );
 		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ), 10 );
+		add_action( 'learn_press_before_template_part', array( $this, 'before_template_part' ), 10, 4 );
 		add_shortcode( 'learn_press_archive_course', array( $this, 'archive_content' ) );
+	}
+
+	public function before_template_part( $template_name, $template_path, $located, $args ) {
+		if ( $this->has_filter_content && !in_array( $template_name, array( 'content-single-course.php' ) ) ) {
+			remove_filter( 'the_content', array( $this, 'single_content' ) );
+			$this->has_filter_content = false;
+			LP_Debug::instance()->add( 'remove filter content' );
+		}
 	}
 
 	public function template_loader( $template ) {
@@ -66,6 +80,7 @@ class LP_Page_Controller {
 			if ( learn_press_is_course() ) {
 				if ( is_single() ) {
 					add_filter( 'the_content', array( $this, 'single_content' ) );
+					$this->has_filter_content = true;
 				}
 			} elseif ( learn_press_is_courses() || learn_press_is_course_tag() || learn_press_is_course_category() ) {
 				$this->template_loader2( $template );
