@@ -3,7 +3,7 @@
  * Template for displaying countdown of the quiz
  *
  * @package LearnPress/Templates
- * @author ThimPress
+ * @author  ThimPress
  * @version 1.0
  */
 
@@ -19,6 +19,9 @@ if ( !$quiz ) {
 }
 $duration = $quiz->get_duration_html();
 if ( strpos( $duration, ':' ) === false ) {
+	return;
+}
+if ( $user->has_completed_quiz( $quiz->id, $course->id ) || $user->has_finished_course( $course->id ) ) {
 	return;
 }
 ?>

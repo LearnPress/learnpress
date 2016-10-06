@@ -25,6 +25,8 @@ class LP_Lesson {
 	 */
 	public $post = null;
 
+	public $content = '';
+
 	/**
 	 *
 	 * @var string
@@ -42,6 +44,7 @@ class LP_Lesson {
 			$this->id   = absint( $lesson->ID );
 			$this->post = $lesson;
 		}
+		$this->content = apply_filters( 'the_content', $this->post->post_content );
 	}
 
 	/**

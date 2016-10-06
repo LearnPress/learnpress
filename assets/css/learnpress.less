@@ -559,17 +559,16 @@
     }
 
     span {
-        clip: rect(0, @w, @w/2, @w/2);
-        width: @w;
-        height: @w;
+        clip: rect(0, @w+4, @w/2+2, @w/2+2);
+        width: @w+4;
+        height: @w+4;
         margin-left: -(@w/2);
         margin-top: -(@w/2);
         &:before {
-            width: @w;
-            height: @w;
+            width: @w+4;
+            height: @w+4;
         }
     }
-
 }
 
 /* POPUP */
@@ -810,6 +809,7 @@ body.course-has-popup {
             border: 6px solid #95e6f9;
             position: absolute;
             .border-radius(50%);
+            box-sizing: border-box;
         }
     }
     .learn-press-block-content-mixin(100px);

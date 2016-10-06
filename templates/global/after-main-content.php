@@ -7,6 +7,7 @@
 if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
+return;
 $template = get_option( 'template' );
 echo '</div><!-- // .learnpress-content -->';
 switch ( $template ) {
