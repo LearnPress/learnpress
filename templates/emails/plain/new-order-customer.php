@@ -21,7 +21,7 @@ do_action( 'learn_press_email_new_order_customer_before_table', $order, $plain_t
 
 learn_press_get_template( 'emails/plain/order-items-table.php', array( 'order' => $order ) );
 
-echo "\n" . sprintf( __( 'View order: %s', 'learnpress' ), $order->get_checkout_order_received_url() ) . "\n";
+echo "\n" . sprintf( __( 'View order: %s', 'learnpress' ), $order->get_view_order_url() ) . "\n";
 
 do_action( 'learn_press_email_new_order_customer_after_table', $order, $plain_text );
 ?>

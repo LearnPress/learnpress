@@ -16,7 +16,7 @@ if ( !defined( 'ABSPATH' ) ) {
 
     <?php learn_press_get_template( 'emails/order-items-table.php', array( 'order' => $order ) ); ?>
 
-<p><?php echo "\n" . sprintf( __( 'View order: <a href="%s">%s</a>', 'learnpress' ), $order->get_checkout_order_received_url(), $order->get_order_number() ); ?></p>
+<p><?php echo "\n" . sprintf( __( 'View order: <a href="%s">%s</a>', 'learnpress' ), $order->get_view_order_url(), $order->get_order_number() ); ?></p>
 
 <?php do_action( 'learn_press_email_new_order_customer_after_table', $order, $plain_text ); ?>
 
