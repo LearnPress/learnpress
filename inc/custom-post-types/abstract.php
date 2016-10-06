@@ -111,6 +111,9 @@ abstract class LP_Abstract_Post_Type {
 		if ( !$post ) {
 			return;
 		}
+		if ( empty( $post->post_type ) ) {
+			return;
+		}
 		if ( $post->post_type != $this->_post_type ) {
 			return;
 		}
@@ -306,7 +309,7 @@ abstract class LP_Abstract_Post_Type {
 	}
 
 	public function columns_content( $column, $post_id = 0 ) {
-		print_r(func_get_args());
+		print_r( func_get_args() );
 		die();
 		$callback = array( $this, "column_{$column}" );
 		if ( is_callable( $callback ) ) {

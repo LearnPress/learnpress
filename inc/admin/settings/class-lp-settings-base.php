@@ -96,6 +96,7 @@ class LP_Settings_Base {
         add_action( 'learn_press_sections_' . $this->id, array( $this, 'output_sections' ) );
         add_action( 'learn_press_settings_' . $this->id, array( $this, 'output' ) );
         add_action( 'learn_press_settings_save_' . $this->id, array( $this, 'save' ) );
+
     }
 
     /**

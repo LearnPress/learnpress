@@ -413,7 +413,7 @@ class LP_Email {
 
 		if ( current_user_can( 'edit_themes' ) && !empty( $code ) && !empty( $path ) ) {
 			$saved = false;
-			$file  = get_stylesheet_directory() . '/' . learn_press_template_path() . '/' . $path;
+			$file  = get_stylesheet_directory() . learn_press_template_path() . '/' . $path;
 			$code  = stripslashes( $code );
 			if ( is_writeable( $file ) ) {
 
@@ -435,7 +435,7 @@ class LP_Email {
 	}
 
 	public function get_theme_template_file( $template ) {
-		return get_stylesheet_directory() . '/' . apply_filters( 'learn_press_template_directory', 'learnpress', $template ) . '/' . $template;
+		return get_stylesheet_directory() . '/' . apply_filters( 'learn_press_template_directory', learn_press_template_path(), $template ) . '/' . $template;
 	}
 
 	public function admin_options( $obj ) {

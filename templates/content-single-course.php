@@ -17,30 +17,29 @@ if ( post_password_required() ) {
 	echo get_the_password_form();
 	return;
 }
+?>
+<?php do_action( 'learn_press_before_main_content' ); ?>
 
-do_action( 'learn_press_before_single_course' ); ?>
+	<?php do_action( 'learn_press_before_single_course' ); ?>
 
+		<?php do_action( 'learn_press_before_single_course_summary' ); ?>
 
-<!--<div id="post-<?php the_ID(); ?>" <?php post_class(); ?> itemscope itemtype="http://schema.org/CreativeWork">-->
+		<div class="course-summary">
 
-	<?php do_action( 'learn_press_before_single_course_summary' ); ?>
+			<?php if ( LP()->user->has( 'enrolled-course', $course->id ) || LP()->user->has( 'finished-course', $course->id ) ) { ?>
 
-	<div class="course-summary">
+				<?php learn_press_get_template( 'single-course/content-learning.php' ); ?>
 
-		<?php if ( LP()->user->has( 'enrolled-course', $course->id ) || LP()->user->has( 'finished-course', $course->id ) ) { ?>
+			<?php } else { ?>
 
-			<?php learn_press_get_template( 'single-course/content-learning.php' ); ?>
+				<?php learn_press_get_template( 'single-course/content-landing.php' ); ?>
 
-		<?php } else { ?>
+			<?php } ?>
 
-			<?php learn_press_get_template( 'single-course/content-landing.php' ); ?>
+		</div>
 
-		<?php } ?>
+		<?php do_action( 'learn_press_after_single_course_summary' ); ?>
 
-	</div>
+	<?php do_action( 'learn_press_after_single_course' ); ?>
 
-	<?php do_action( 'learn_press_after_single_course_summary' ); ?>
-
-<!-- </div>#post-## -->
-
-<?php do_action( 'learn_press_after_single_course' ); ?>
+<?php do_action( 'learn_press_after_main_content' ); ?>
