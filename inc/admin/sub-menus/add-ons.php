@@ -71,7 +71,7 @@ function learn_press_add_ons_page() {
                     <p><?php _e( 'It is easy to use and easy to install. Your dream online school is only a few clicks away. It also comes with a bonus package of premium add-ons for LearnPress LMS that worths 439$+.', 'learnpress' ); ?></p>
                     <p>
                         <a href="https://thimpress.com/education-wordpress-theme-education-wp/" class="button" target="_blank"><?php _e( 'Read all about it', 'learnpress' ); ?></a>
-                        <a href="https://themeforest.net/item/education-wordpress-theme-education-wp/14058034?s_rank=3" class="button button-primary" target="_blank"><?php _e( 'Get it now for only 64$', 'learnpress' ); ?></a>
+                        <a href="https://themeforest.net/item/education-wordpress-theme-education-wp/14058034?ref=ThimPress&utm_source=learnpress&utm_medium=addondashboard" class="button button-primary" target="_blank"><?php _e( 'Get it now for only 64$', 'learnpress' ); ?></a>
                     </p>
                 </div>
             <?php endif; ?>
