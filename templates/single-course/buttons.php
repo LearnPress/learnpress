@@ -38,7 +38,7 @@ $retake_button_text   = apply_filters( 'learn_press_retake_button_text', __( 'Re
 		<?php if ( $count = $user->can( 'retake-course', $course->id ) ): ?>
 			<button
 				class="button button-retake-course"
-				data-block-content="yes"
+				data-block-content="no"
 				data-course_id="<?php echo esc_attr( $course->id ); ?>"
 				data-security="<?php echo esc_attr( wp_create_nonce( sprintf( 'learn-press-retake-course-%d-%d', $course->id, $user->id ) ) ); ?>">
 				<?php echo esc_html( sprintf( __( 'Retake course (+%d)', 'learnpress' ), $count ) ); ?>

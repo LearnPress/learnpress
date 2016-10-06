@@ -128,7 +128,11 @@ if (typeof LearnPress == 'undefined') {
 					action  : 'finish-quiz',
 					data    : data,
 					dataType: 'json',
+                                        beforeSend: function() {
+                                                LP.blockContent();
+                                        },
 					success : function (response) {
+                                                LP.unblockContent();
 						$.isFunction(args.callback) && args.callback.call(args.context, response, that);
 					}
 				});
@@ -145,7 +149,11 @@ if (typeof LearnPress == 'undefined') {
 					action  : 'retake-quiz',
 					data    : data,
 					dataType: 'json',
+                                        beforeSend: function() {
+                                                LP.blockContent();
+                                        },
 					success : function (response) {
+                                                LP.unblockContent();
 						$.isFunction(args.callback) && args.callback.call(args.context, response, that);
 					}
 				});
@@ -395,15 +403,12 @@ if (typeof LearnPress == 'undefined') {
                     var that = this,
                                 $button = $(e.target),
                                 security = $button.data('security');
-                    jAlert( learn_press_single_course_localize.confirm_finish_quiz.message, learn_press_single_course_localize.confirm_finish_quiz.title, function( confirm ) {
+                    jConfirm( learn_press_single_course_localize.confirm_finish_quiz.message, learn_press_single_course_localize.confirm_finish_quiz.title, function( confirm ) {
                         if ( confirm ) {
                             LP.Hook.doAction('learn_press_before_finish_quiz', that.currentItem, that);
                             that.currentItem.finishQuiz({
                                     security : security,
                                     course_id: that.model.get('id'),
-                                    beforeSend: function() {
-                                            LP.blockContent();
-                                    },
                                     callback : function (response, item) {
                                             LP.unblockContent();
                                             that.currentItem.set('content', response.html.content);
@@ -421,23 +426,20 @@ if (typeof LearnPress == 'undefined') {
                         var that = this,
                                 $button = $(e.target),
                                 security = $button.data('security');
-                        jAlert( learn_press_single_course_localize.confirm_retake_quiz.message, learn_press_single_course_localize.confirm_retake_quiz.title, function( confirm ){
+//                        console.debug( 1 ); return;
+                        jConfirm( learn_press_single_course_localize.confirm_retake_quiz.message, learn_press_single_course_localize.confirm_retake_quiz.title, function( confirm ){
                             if ( confirm ) {
-                                LP.Hook.doAction('learn_press_before_retake_quiz', this.currentItem, this);
+                                LP.Hook.doAction('learn_press_before_retake_quiz', that.currentItem, that);
                                 that.currentItem.retakeQuiz && that.currentItem.retakeQuiz({
                                         security : security,
                                         course_id: that.model.get('id'),
-                                        beforeSend: function() {
-                                                LP.blockContent();
-                                        },
                                         callback : function (response, item) {
-                                                LP.unblockContent();
-											var $html = $('<div />').html(response.html.content);
-											that.currentItem.set('content', $html.find('.content-item-quiz:last'));
-											that.$('.course-item-' + that.currentItem.get('id'))
-												.removeClass('item-completed');
-											that.$('.learn-press-course-results-progress').replaceWith(response.html.progress);
-											that.loadQuiz();
+                                                var $html = $('<div />').html(response.html.content);
+                                                that.currentItem.set('content', $html.find('.content-item-quiz:last'));
+                                                that.$('.course-item-' + that.currentItem.get('id'))
+                                                        .removeClass('item-completed');
+                                                that.$('.learn-press-course-results-progress').replaceWith(response.html.progress);
+                                                that.loadQuiz();
                                         }
                                 });
                             }
@@ -446,17 +448,13 @@ if (typeof LearnPress == 'undefined') {
 		_retakeCourse    : function (e) {
 			e.preventDefault();
                         var that = this;
-                        jAlert( learn_press_single_course_localize.confirm_retake_course.message, learn_press_single_course_localize.confirm_retake_course.title, function( confirm ){
+                        jConfirm( learn_press_single_course_localize.confirm_retake_course.message, learn_press_single_course_localize.confirm_retake_course.title, function( confirm ){
                             if ( confirm ) {
                                 var $button = $(e.target),
                                         data = $button.data(),
                                         args = {
                                                 data    : data,
-                                                beforeSend: function() {
-                                                        LP.blockContent();
-                                                },
                                                 callback: function (response) {
-                                                        LP.unblockContent();
                                                         if (response.result === 'success') {
                                                                 if (response.redirect) {
                                                                         LP.reload(response.redirect);
@@ -471,17 +469,13 @@ if (typeof LearnPress == 'undefined') {
 		_finishCourse    : function (e) {
 			e.preventDefault();
                         var _this = this;
-                        jAlert( learn_press_single_course_localize.confirm_finish_course.message, learn_press_single_course_localize.confirm_finish_course.title, function( confirm ){
+                        jConfirm( learn_press_single_course_localize.confirm_finish_course.message, learn_press_single_course_localize.confirm_finish_course.title, function( confirm ){
                             if ( confirm ) {
                                 var $button = $(e.target),
                                         data = $button.data(),
                                         args = {
                                                 data    : data,
-                                                beforeSend: function() {
-                                                        LP.blockContent();
-                                                },
                                                 callback: function (response) {
-                                                        LP.unblockContent();
                                                         if (response.result === 'success') {
                                                                 if (response.redirect) {
                                                                         LP.reload(response.redirect);
@@ -594,7 +588,11 @@ if (typeof LearnPress == 'undefined') {
 				action  : 'retake-course',
 				data    : args.data,
 				dataType: 'json',
+                                beforeSend: function() {
+                                        LP.blockContent();
+                                },
 				success : function (response) {
+                                        LP.unblockContent();
 					$.isFunction(args.callback) && args.callback.call(args.context, response, that);
 				}
 			});
@@ -606,7 +604,11 @@ if (typeof LearnPress == 'undefined') {
 				action  : 'finish-course',
 				data    : args.data,
 				dataType: 'json',
+                                beforeSend: function() {
+                                        LP.blockContent();
+                                },
 				success : function (response) {
+                                        LP.unblockContent();
 					$.isFunction(args.callback) && args.callback.call(args.context, response, that);
 				}
 			});

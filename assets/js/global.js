@@ -566,12 +566,15 @@ if (typeof window.LP == 'undefined') {
 			var type = args.type || 'post',
 				dataType = args.dataType || 'json',
 				data = args.action ? $.extend(args.data, {'lp-ajax': args.action}) : args.data,
+                                beforeSend = args.beforeSend || function() {},
 				url = args.url || window.location.href;
+//                        console.debug( beforeSend );
 			$.ajax({
 				data    : data,
 				url     : url,
 				type    : type,
 				dataType: 'html',
+                                beforeSend: beforeSend.apply( null, args ),
 				success : function (raw) {
 					var response = LP.parseResponse(raw, dataType);
 					$.isFunction(args.success) && args.success(response, raw);
@@ -795,8 +798,8 @@ if (typeof window.LP == 'undefined') {
 				top    : '+=50',
 				opacity: 0
 			}, 250, function () {
-				$(this).remove()
-			})
+				$(this).remove();
+			});
 		}
 	}, LP);
 
@@ -813,8 +816,8 @@ if (typeof window.LP == 'undefined') {
 				rows = $e.rows();
 
 			p.call(this, rows);
-		})
-	}
+		});
+	};
 
 	$.fn.findNext = function (selector) {
 		var $selector = $(selector),
@@ -822,7 +825,7 @@ if (typeof window.LP == 'undefined') {
 			index = $selector.index($root),
 			$next = $selector.eq(index + 1);
 		return $next.length ? $next : false;
-	}
+	};
 
 	$.fn.findPrev = function (selector) {
 		var $selector = $(selector),
@@ -830,7 +833,7 @@ if (typeof window.LP == 'undefined') {
 			index = $selector.index($root),
 			$prev = $selector.eq(index - 1);
 		return $prev.length ? $prev : false;
-	}
+	};
 
 	$.each(['progress'], function (i, property) {
 		$.Tween.propHooks[property] = {
@@ -852,9 +855,9 @@ if (typeof window.LP == 'undefined') {
 				$(tween.elem).find('.fill').css({
 					transform: 'rotate(' + tween.end + 'deg)'
 				});
-				console.log(tween)
+				console.log(tween);
 			}
-		}
+		};
 	});
 
 	$.fn.progress = function (v) {

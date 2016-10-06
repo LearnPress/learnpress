@@ -43,7 +43,7 @@ $question = $quiz->get_current_question();
 	<?php if ( $user->has( 'quiz-status', 'completed', $quiz->id ) && $remain = $user->can( 'retake-quiz', $quiz->id ) ): ?>
 		<button
 			class="button-retake-quiz"
-			data-block-content="yes"
+			data-block-content="no"
 			data-id="<?php esc_attr_e( $quiz->id ); ?>"
 			data-security="<?php esc_attr_e( wp_create_nonce( 'retake-quiz-' . $user->id . '-' . $course->id . '-' . $quiz->id ) ); ?>">
 			<?php echo esc_html( sprintf( '%s (+%d)', __( 'Retake', 'learnpress' ), $remain ) ); ?>
