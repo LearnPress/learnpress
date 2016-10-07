@@ -30,11 +30,6 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 			add_action( 'init', array( $this, 'init_quiz' ) );
 
 			/**
-			 * Remove View Quiz when updated, published
-			 */
-			add_filter( 'post_updated_messages', array( $this, 'updated_messages' ) );
-
-			/**
 			 * Hide View Quiz link on Quiz table action
 			 */
 			add_filter( 'page_row_actions', array( $this, 'remove_view_link' ), 10, 2 );
@@ -514,58 +509,6 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 
 		private function _get_search() {
 			return isset( $_REQUEST['s'] ) ? $_REQUEST['s'] : false;
-		}
-
-		/**
-		 * Book update messages.
-		 *
-		 * See /wp-admin/edit-form-advanced.php
-		 *
-		 * @param array $messages Existing post update messages.
-		 *
-		 * @return array Amended post update messages with new CPT update messages.
-		 */
-		public function updated_messages( $messages ) {
-			$post             = get_post();
-			$post_type        = get_post_type( $post );
-			$post_type_object = get_post_type_object( $this->_post_type );
-			if ( $this->_post_type !== LP_QUIZ_CPT ) {
-				return $messages;
-			}
-			$messages[$this->_post_type] = array(
-				0  => '', // Unused. Messages start at index 1.
-				1  => __( 'Quiz updated.', 'learnpress' ),
-				2  => __( 'Custom field updated.', 'learnpress' ),
-				3  => __( 'Custom field deleted.', 'learnpress' ),
-				4  => __( 'Quiz updated.', 'learnpress' ),
-				/* translators: %s: date and time of the revision */
-				5  => isset( $_GET['revision'] ) ? sprintf( __( 'Book restored to revision from %s', 'learnpress' ), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
-				6  => __( 'Quiz published.', 'learnpress' ),
-				7  => __( 'Quiz saved.', 'learnpress' ),
-				8  => __( 'Quiz submitted.', 'learnpress' ),
-				9  => sprintf(
-					__( 'Quiz scheduled for: <strong>%1$s</strong>.', 'learnpress' ),
-					// translators: Publish box date format, see http://php.net/date
-					date_i18n( __( 'M j, Y @ G:i', 'learnpress' ), strtotime( $post->post_date ) )
-				),
-				10 => __( 'Quiz draft updated.', 'learnpress' )
-			);
-
-			if ( $post_type_object->publicly_queryable ) {
-				$permalink = get_permalink( $post->ID );
-
-				$view_link = sprintf( ' <a href="%s">%s</a>', esc_url( $permalink ), __( 'View Quiz', 'learnpress' ) );
-				$messages[$this->_post_type][1] .= learn_press_get_quiz_course_id( $post->ID ) ? $view_link : '';
-				$messages[$this->_post_type][6] .= learn_press_get_quiz_course_id( $post->ID ) ? $view_link : '';
-				$messages[$this->_post_type][9] .= learn_press_get_quiz_course_id( $post->ID ) ? $view_link : '';
-
-				$preview_permalink = add_query_arg( 'preview', 'true', $permalink );
-				$preview_link      = sprintf( ' <a target="_blank" href="%s">%s</a>', esc_url( $preview_permalink ), __( 'Preview Quiz', 'learnpress' ) );
-				$messages[$this->_post_type][8] .= $preview_link;
-				$messages[$this->_post_type][10] .= $preview_link;
-			}
-
-			return $messages;
 		}
 
 		/**

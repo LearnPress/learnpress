@@ -376,16 +376,19 @@ if ( !function_exists( 'learn_press_get_quiz_course_id' ) ) {
 }
 
 add_filter( 'post_type_link', 'learn_press_quiz_permalink', 10, 2 );
-function learn_press_quiz_permalink( $permalink, $post ) {
-	remove_filter( 'post_type_link', 'learn_press_quiz_permalink', 10, 2 );
-	if ( $post->post_type !== 'lp_quiz' ) {
-		return $permalink;
-	}
+if ( !function_exists( 'learn_press_quiz_permalink' ) ) {
+    function learn_press_quiz_permalink( $permalink, $post ) {
+            remove_filter( 'post_type_link', 'learn_press_quiz_permalink', 10, 2 );
+            if ( $post->post_type !== LP_QUIZ_CPT ) {
+                    return $permalink;
+            }
 
-	$course_id = learn_press_get_quiz_course_id( $post->ID );
-	if ( $course_id ) {
-		$permalink = learn_press_get_course_item_url( $course_id, $post->ID );
-	}
-	add_filter( 'post_type_link', 'learn_press_quiz_permalink', 10, 2 );
-	return $permalink;
+            $course_id = learn_press_get_quiz_course_id( $post->ID );
+            if ( $course_id ) {
+                    $permalink = learn_press_get_course_item_url( $course_id, $post->ID );
+            }
+            add_filter( 'post_type_link', 'learn_press_quiz_permalink', 10, 2 );
+            return $permalink;
+    }
+
 }

@@ -224,7 +224,6 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 						_e( 'Not assigned yet', 'learnpress' );
 					}
 
-
 					break;
 				case 'preview':
 					printf(

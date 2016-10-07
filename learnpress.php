@@ -424,7 +424,8 @@ if ( !class_exists( 'LearnPress' ) ) {
 			require_once 'inc/quiz/class-lp-quiz-factory.php';
 			require_once 'inc/quiz/class-lp-quiz.php';
 
-
+                        // lesson
+                        require_once 'inc/lesson/lp-lesson-functions.php';
 			// question
 			//require_once 'inc/question/lp-question.php';
 
@@ -442,7 +443,6 @@ if ( !class_exists( 'LearnPress' ) ) {
 			require_once 'inc/admin/class-lp-profile.php';
 			require_once 'inc/admin/class-lp-email.php';
 			// assets
-
 
 			if ( is_admin() ) {
 
