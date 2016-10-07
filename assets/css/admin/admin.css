@@ -346,6 +346,7 @@ li.quick_quiz {
   padding: 20px;
   background-color: #fff;
   border: 1px solid #ddd;
+  overflow: hidden;
 }
 #learn-press-add-ons-wrap .theme h2 {
   margin: 0 0 20px 0;
@@ -353,6 +354,8 @@ li.quick_quiz {
 }
 #learn-press-add-ons-wrap .theme img {
   width: 400px;
+  height: auto;
+  max-height: 100%;
   float: left;
   margin: 0 20px 20px 0;
 }

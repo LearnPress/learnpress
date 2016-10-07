@@ -14,12 +14,13 @@ if ( ! class_exists( 'RWMB_Number_Field' ) ) {
 		 */
 		static function html( $meta, $field ) {
 			return sprintf(
-				'<input type="number" class="rwmb-number" name="%s" id="%s" value="%s" step="%s" min="%s" placeholder="%s"/>',
+				'<input type="number" class="rwmb-number" name="%s" id="%s" value="%s" step="%s" min="%s" max="%s" placeholder="%s"/>',
 				$field['field_name'],
 				empty( $field['clone'] ) ? $field['id'] : '',
 				$meta,
 				$field['step'],
 				$field['min'],
+                                ! empty( $field['max'] ) ? $field['max'] : '',
 				$field['placeholder']
 			);
 		}

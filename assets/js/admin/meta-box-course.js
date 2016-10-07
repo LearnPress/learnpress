@@ -86,7 +86,10 @@
 				$row.attr({
 					'data-type': type
 				}).find('.lp-item-type').val(type);
-				$icon.addClass('item-selected').parent().hide().siblings().show().find('span').removeClass('item-selected');
+
+                                if ( $icon.addClass('item-selected').parent().siblings().length > 0 ) {
+                                    $icon.addClass('item-selected').parent().hide().siblings().show().find('span').removeClass('item-selected');
+                                }
 				var iconIindex = $icon.parent().index();
 				var pos = ( iconIindex === 0 ) ? 1 : iconIindex,
 					$rep = $icon.closest('.learn-press-dropdown-item-types').find('>span'),
