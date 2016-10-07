@@ -591,15 +591,17 @@ abstract class LP_Abstract_Course {
 
 		if ( $this->_students_list === null || $force ) {
 			$query                = $wpdb->prepare( "
-				SELECT ID, user_nicename, user_status, display_name
-				FROM {$wpdb->users} u
-				LEFT JOIN {$wpdb->prefix}learnpress_user_items uc
-					ON uc.user_id = u.ID
-				WHERE uc.item_id = %s
-					AND u.user_status = %s
-				GROUP BY u.ID
+				SELECT u.ID, user_nicename, user_status, display_name
+				FROM {$wpdb->posts} o
+				INNER JOIN {$wpdb->learnpress_order_items} oi ON oi.order_id = o.ID
+				INNER JOIN {$wpdb->learnpress_order_itemmeta} oim ON oim.learnpress_order_item_id = oi.order_item_id
+				AND oim.meta_key = %s AND oim.meta_value = %d
+				INNER JOIN {$wpdb->learnpress_user_items} ui  ON ui.ref_id = oi.order_id 
+				AND ui.ref_type = %s
+				INNER JOIN {$wpdb->users} u ON u.ID = ui.user_id
+				WHERE o.post_status = %s
 				LIMIT %d
-			", $this->id, '0', $limit );
+			", '_course_id', $this->id, 'lp_order', 'lp-completed',$limit);
 			$this->_students_list = $wpdb->get_results( $query );
 		}
 		return $this->_students_list;
