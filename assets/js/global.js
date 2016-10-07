@@ -187,7 +187,7 @@ if (typeof window.LP == 'undefined') {
 		quickConfirm   : function (elem, args) {
 			var $e = $(elem);
 			$('[learn-press-quick-confirm]').each(function () {
-				( $ins = $(this).data('quick-confirm') ) && (console.log($ins), $ins.destroy() );
+				( $ins = $(this).data('quick-confirm') ) && ( console.log($ins), $ins.destroy() );
 			});
 			!$e.attr('learn-press-quick-confirm') && $e.attr('learn-press-quick-confirm', 'true').data('quick-confirm',
 				new (function (elem, args) {
