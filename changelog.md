@@ -1,3 +1,23 @@
+**2.0**
+- Updated database structure for new functions
+- Removed "Cart" outside LearnPress core and separated to addon
+- Changed permalink of quiz and made it become a part of course's permalink
+- Allowed add course's section without a name
+- Added email system to send it to user after buying a course
+- Added popup lightbox to view course's item content in full-screen mode
+- Added option to show/hide list of questions in quiz
+- Added 'Sale Price' for course
+- Added option to randomize question's answer
+- Added option to combine all scripts/styles enqueued into one file
+- Added option to evaluate course's results by average results of quizzes
+- Added "Passing Grade" to quiz allow evaluate result of quiz is passed/failed
+- Added option to show name of user in profile
+- Fixed page does not load after logging in profile
+- Fixed quiz finish automatically right away after starting with duration is zero
+- Improved admin course editor
+- Show answer's explanation right away after user checking question's answer
+
+
 **0.9.14**
 - Fixed can not start a quiz for guest.
 - Fixed course evaluation error and shows wrong message
