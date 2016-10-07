@@ -1,4 +1,4 @@
-**2.0**
+**2.0 Beta 1**
 - Updated database structure for new functions
 - Removed "Cart" outside LearnPress core and separated to addon
 - Changed permalink of quiz and made it become a part of course's permalink
