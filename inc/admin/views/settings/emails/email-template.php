@@ -7,13 +7,12 @@
 			<div id="templates">
 				<?php
 				$templates = array(
-					'html'  => __( 'HTML template', 'learnpress' ),
-					'plain' => __( 'Plain text template', 'learnpress' )
+					'html'          => __( 'HTML template', 'learnpress' ),
+					'plain'         => __( 'Plain text template', 'learnpress' )
 				);
 
 				foreach ( $templates as $template_type => $title ) :
 					$template      = $this->get_template( 'template_' . $template_type );
-
 					if ( empty( $template ) ) {
 						continue;
 					}
@@ -78,6 +77,22 @@
 					<?php
 				endforeach;
 				?>
+                                <div class="template text_message" style="display: none;">
+                                    <?php
+                                        wp_editor(
+                                                $this->get_content_text_message(),
+                                                'learn_press_email_content_text_message',
+                                                array(
+                                                        'textarea_rows' => 20,
+                                                        'wpautop'       => false,
+                                                        'textarea_name' => $settings_class->get_field_name( 'emails_' . $this->id . '[content_text_message]' )
+                                                )
+                                        );
+                                    ?>
+                                    <p class="description">
+                                            <?php printf( '%s', $this->email_text_message_description ); ?>
+                                    </p>
+                                </div>
 			</div>
 		<?php } ?>
 	</td>
@@ -91,4 +106,4 @@
 		}).change();
 	});
 </script>
-<?php learn_press_enqueue_script( preg_replace( '!</?script>!', '', ob_get_clean() ) );?>
+<?php learn_press_enqueue_script( preg_replace( '!</?script>!', '', ob_get_clean() ) ); ?>

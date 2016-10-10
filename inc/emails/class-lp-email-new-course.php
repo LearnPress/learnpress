@@ -22,6 +22,7 @@ class LP_Email_New_Course extends LP_Email {
 		$this->default_subject = __( '[{site_title}] New course has submitted for review ({course_name})', 'learnpress' );
 		$this->default_heading = __( 'New course', 'learnpress' );
 		$this->recipient       = LP()->settings->get( 'emails_new_course.recipient' );
+                $this->email_text_message_description = sprintf( '%s [course_id], [course_title], [course_url], [user_email], [user_name], [user_profile_url]', __( 'Shortcodes', 'learnpress' ) );
 		parent::__construct();
 	}
 
@@ -83,6 +84,29 @@ class LP_Email_New_Course extends LP_Email {
 		) );
 		return ob_get_clean();
 	}
+
+        public function _prepare_content_text_message() {
+            $course = isset( $this->object['course'] ) ? $this->object['course'] : null;
+            $user = learn_press_get_course_user( $course->id );
+            if ( $course ) {
+                $this->text_search = array(
+                    '\[course\_id\]',
+                    '\[course\_title]',
+                    '\[course\_url\]',
+                    '\[user\_email\]',
+                    '\[user\_name\]',
+                    '\[user\_profile\_url\]',
+                );
+                $this->text_replace = array(
+                    $course->id,
+                    get_the_title( $course->id ),
+                    get_the_permalink( $course->id ),
+                    $user->user_email,
+                    $user->user_nicename,
+                    learn_press_user_profile_link( $user->id )
+                );
+            }
+        }
 
 	/**
 	 * @param string $format

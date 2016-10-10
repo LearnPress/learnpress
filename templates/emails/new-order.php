@@ -10,13 +10,6 @@ if ( !defined( 'ABSPATH' ) ) {
 }
 ?>
 
-<?php
-/**
- * @author  ThimPress
- * @package LearnPress/Templates
- * @version 1.0
- */
-?>
 <?php do_action( 'learn_press_email_header', $email_heading ); ?>
 
 	<p><?php printf( __( 'New order placed by <strong>%s</strong>', 'learnpress' ), $order->get_user_name() ); ?>
