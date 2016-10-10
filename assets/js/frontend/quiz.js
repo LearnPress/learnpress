@@ -293,15 +293,23 @@
 		},
 		select               : function (id, callback, args) {
 			var question = this.questions.findWhere({id: parseInt(id)}),
-				that = this;
+				that = this,
+				loadedCallback = function () {
+					$.isFunction(callback) && callback(question, that);
+					LP.Hook.doAction('learn_press_select_question', question, that);
+				};
 			if (!question) {
+				return;
+			}
+			if (question.get('current') == 'yes') {
+				LP.unblockContent();
 				return;
 			}
 			LP.Hook.doAction('learn_press_before_select_question', question, that);
 			question.set('current', 'yes');
+
 			if (question.get('response')) {
-				question.set('loaded', true);
-				$.isFunction(callback) && callback(question, that);
+				loadedCallback();
 			} else {
 				$.ajax({
 					url     : question.get('url'),
@@ -311,10 +319,9 @@
 					}, args || {}),
 					dataType: 'html',
 					success : function (response) {
-						var $html = $(response).contents().find('.learn-press-content-item-summary')
+						var $html = $(response).contents().find('.learn-press-content-item-summary');
 						question.set('response', $html);
-						$.isFunction(callback) && callback(question, that);
-						LP.Hook.doAction('learn_press_select_question', question, that);
+						loadedCallback();
 					}
 				})
 			}
@@ -504,6 +511,9 @@
 			e.preventDefault();
 			var id = $(e.target).closest('li').attr('data-id'),
 				delayTime = this.delayTime;
+			if (this.model.current().get('id') == id) {
+				return;
+			}
 			this._beforeFetchQuestion();
 			this.model.select(id, this._loadQuestionCompleted, {delayTime: delayTime});
 		},

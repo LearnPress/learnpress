@@ -1149,6 +1149,8 @@ function learn_press_get_message( $message, $type = 'success' ) {
 
 /**
  * Print out the message stored in the queue
+ *
+ * @param bool
  */
 function learn_press_print_messages( $clear = true ) {
 	$messages = learn_press_session_get( 'messages' );
@@ -1158,7 +1160,13 @@ function learn_press_print_messages( $clear = true ) {
 	}
 }
 
-add_action( 'learn_press_before_main_content', 'learn_press_print_messages', 50 );
+/**
+ * Displays messages before main content
+ */
+function _learn_press_print_messages(){
+	learn_press_print_messages(true);
+}
+add_action( 'learn_press_before_main_content', '_learn_press_print_messages', 50 );
 
 if ( !function_exists( 'learn_press_page_controller' ) ) {
 	/**
