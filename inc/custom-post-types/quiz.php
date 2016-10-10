@@ -188,14 +188,15 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 								'type' => 'number',
 								'min'  => 0,
 								'max'  => 100,
-								'std'  => 0
+								'std'  => 80
 							),
 							array(
 								'name' => __( 'Re-take', 'learnpress' ),
 								'id'   => "{$prefix}retake_count",
 								'type' => 'number',
 								'desc' => __( 'How many times the user can re-take this quiz. Set to 0 to disable', 'learnpress' ),
-								'min'  => 0
+								'min'  => 0,
+                                'std'  => 0
 							),
 							array(
 								'name'    => __( 'Show correct answer', 'learnpress' ),

@@ -192,7 +192,7 @@
     float: left;
     width: 23%;
     margin: 0 2% 30px 0;
-    /* padding: 0 20px; */
+    padding: 0;
     box-sizing: border-box;
     border: 1px solid #DDD;
     background: #FFF;
@@ -641,7 +641,6 @@ body.course-has-popup {
       height: 60px;
       background: #cc540d;
       border-bottom: 1px solid #ab4a10;
-      color: #FFF;
       .popup-menu {
         position: absolute;
         height: 60px;
@@ -678,11 +677,12 @@ body.course-has-popup {
           }
         }
       }
-      h3 {
+      .popup-title {
         margin: 0 0 0 350px;
         height: 60px;
         line-height: 60px;
         padding: 0 20px;
+        color: #FFF;
       }
 
     }
@@ -914,12 +914,12 @@ body.block-content {
     .quiz-result-field {
       position: relative;
       background: #F5F5F5;
+      color: #fff;
       margin: 0 0 8px 0;
       font-size: 12px;
-      padding: 3px 10px;
+      padding: 5px 10px;
       .border-radius(4px);
       overflow: hidden;
-      border-bottom: 2px solid #DDD;
 
       span, span:after, &:before {
         display: block;
@@ -947,15 +947,15 @@ body.block-content {
         padding: 0;
         width: 100%;
       }
-    }
-    .quiz-result-field.correct:before {
-      background: #22b4ff;
-    }
-    .quiz-result-field.wrong:before {
-      background: #ff5425;
-    }
-    .quiz-result-field.empty:before {
-      background: #d2bc5d;
+      &.correct {
+        background: #22b4ff;
+      }
+      &.wrong {
+        background: #ff5425;
+      }
+      &.empty {
+        color: #656D6D;
+      }
     }
   }
   .quiz-grade {

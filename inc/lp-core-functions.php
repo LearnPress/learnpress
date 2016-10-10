@@ -594,64 +594,6 @@ function learn_press_get_status_text( $status_id ) {
 	return $text;
 }
 
-/**
- * This helper function is useful in case a meta is not exists in database
- * but we need to set default value for it before get it's value
- *
- * @param $check
- * @param $object_id
- * @param $meta_key
- * @param $single
- *
- * @return string
- */
-function learn_press_get_default_post_meta( $check, $object_id, $meta_key, $single ) {
-
-	switch ( $meta_key ) {
-		// quiz
-		case '_lp_show_result':
-		case '_lp_show_check_answer':
-		case '_lp_show_hint':
-			// course
-		case '_lp_payment':
-		case '_lp_required_enroll':
-		case '_lp_course_result':
-			// lesson
-		case '_lp_preview':
-			remove_filter( 'get_post_metadata', 'learn_press_get_default_post_meta', 999 );
-			if ( !get_post_meta( $object_id, $meta_key, $single ) ) {
-				$_check    = false;
-				$post_type = get_post_type( $object_id );
-				if ( $post_type == 'lp_quiz' && in_array( $meta_key, array( '_lp_show_result', '_lp_show_check_answer', '_lp_show_hint' ) ) ) {
-					if ( $meta_key == '_lp_show_hint' ) {
-						$_check = 'yes';
-					} else {
-						$_check = 'no';
-					}
-				} elseif ( $post_type == 'lp_course' && in_array( $meta_key, array( '_lp_payment', '_lp_required_enroll', '_lp_course_result' ) ) ) {
-					if ( $meta_key == '_lp_course_result' ) {
-						$_check = 'evaluate_lesson';
-					} else if ( $meta_key == '_lp_required_enroll' ) {
-						$_check = 'yes';
-					} else {
-						$_check = 'no';
-					}
-				} elseif ( $post_type == 'lp_lesson' ) {
-					$_check = 'no';
-				}
-				if ( $_check ) {
-					$check = $_check;
-					update_post_meta( $object_id, $meta_key, $check );
-					update_meta_cache( 'post', array( $object_id ) );
-				}
-			}
-			add_filter( 'get_post_metadata', 'learn_press_get_default_post_meta', 999, 4 );
-	}
-	return $check;
-}
-
-add_filter( 'get_post_metadata', 'learn_press_get_default_post_meta', 999, 4 );
-
 // processing registration
 
 
