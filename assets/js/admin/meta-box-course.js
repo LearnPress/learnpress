@@ -58,7 +58,7 @@
 				this.render();
 				_.bindAll(this, 'render', 'searchItem', 'addItemsToSection', 'addItemToSection', 'addNewItem', 'toggleAddItemButtonState', 'getSelectedItems', '_sectionActionHandler', '_changeItemType', '_updateItem');
 				this.initPage();
-				LP.Hook.addAction('learn_press_message_box_before_resize', this.resetModalSearch)
+				LP.Hook.addAction('learn_press_message_box_before_resize', this.resetModalSearch);
 				LP.Hook.addAction('learn_press_message_box_resize', this.updateModalSearch);
 				$(document).on('learn_press_modal_search_items_response', this.addItemsToSection);
 				LP.Hook.addFilter('learn_press_modal_search_items_exclude', this.getSelectedItems);
@@ -120,7 +120,7 @@
 				$('.lp-modal-search ul').css('height', height - 120).css('overflow', 'auto');
 			},
 			resetModalSearch        : function ($app) {
-				$('.lp-modal-search ul').css('height', '').css('overflow', '')
+				$('.lp-modal-search ul').css('height', '').css('overflow', '');
 			},
 			initPage                : function () {
 				var that = this;
@@ -129,7 +129,7 @@
 					if ($(e.target).hasClass('no-submit')) {
 						return false;
 					}
-					return this.onSave()
+					return this.onSave();
 				}, this));
 				$('input[name="_lp_course_result"]').bind('click change', function () {
 					return;
@@ -746,7 +746,7 @@
 				}
 			},
 			render                  : function () {
-
+                            console.debug( 1 );
 			},
 			inputKeyPressEvent      : function (e) {
 				if (this.isShowing && e.keyCode == 13) {

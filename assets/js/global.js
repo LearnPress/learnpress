@@ -275,7 +275,7 @@ if (typeof window.LP == 'undefined') {
 					onHide  : null
 				}, args || {});
 
-				this.instances.push(args)
+				this.instances.push(args);
 				this.instance = args;
 
 				var $doc = $(document),
