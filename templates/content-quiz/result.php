@@ -49,7 +49,7 @@ $history = $user->get_quiz_results( $quiz->id );
 
 	<?php if ( $grade = $user->get_quiz_graduation( $quiz->id, $course->id ) ): ?>
 		<div class="quiz-grade">
-			<p><?php echo sprintf( __( 'Your quiz grade <span>%s</span>', 'learnpress' ), $grade ); ?></p>
+			<p><?php echo sprintf( __( 'Your quiz grade <span class="%s">%s</span>', 'learnpress' ), $grade, $grade ); ?></p>
 			<?php if ( 'point' == $quiz->passing_grade_type ) { ?>
 				<p><?php echo sprintf( __( 'Quiz requirement <span>%s</span>', 'learnpress' ), $quiz->passing_grade ); ?></p>
 			<?php } elseif ( 'percentage' == $quiz->passing_grade_type ) { ?>
