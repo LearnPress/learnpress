@@ -101,7 +101,7 @@ function learn_press_admin_update_settings() {
 		$section = !empty( $_REQUEST['section'] ) ? '&section=' . $_REQUEST['section'] : '';
 		LP_Admin_Notice::add( '<p><strong>' . __( 'Settings saved', 'learnpress' ) . '</strong></p>' );
 
-		wp_redirect( admin_url( 'options-general.php?page=learn_press_settings&tab=' . $current_tab . $section . '&settings-updated=true' ) );
+		wp_redirect( admin_url( 'admin.php?page=learn_press_settings&tab=' . $current_tab . $section . '&settings-updated=true' ) );
 		exit();
 	}
 }

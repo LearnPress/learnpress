@@ -359,7 +359,7 @@ class LP_Email {
 
 	public function get_content_html() {
 	}
-        
+
         private function _prepare_content_text_message() {}
 
         public function get_content_text_message() {
