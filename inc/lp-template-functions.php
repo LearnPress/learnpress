@@ -1103,18 +1103,41 @@ add_action( 'the_post', 'learn_press_setup_object_data' );
  * @param        $message
  * @param string $type
  */
+
 function learn_press_display_message( $message, $type = 'success' ) {
 
-	// get all notices added into queue
-	$notices = learn_press_session_get( 'notices' );
-	learn_press_session_set( 'notices', null );
+	// get all messages added into queue
+	$messages = learn_press_session_get( 'messages' );
+	learn_press_session_set( 'messages', null );
 
 	// add new notice and display
-	learn_press_add_notice( $message, $type );
-	echo learn_press_get_notices( true );
+	learn_press_add_message( $message, $type );
+	echo learn_press_get_messages( true );
 
-	// store back notices
-	learn_press_session_set( 'notices', $notices );
+	// store back messages
+	learn_press_session_set( 'messages', $messages );
+}
+
+/**
+ * Returns all notices added
+ *
+ * @param bool $clear
+ *
+ * @return string
+ */
+function learn_press_get_messages( $clear = false ) {
+	ob_start();
+	learn_press_print_messages( $clear );
+	return ob_get_clean();
+}
+
+function learn_press_add_message( $message, $type = 'success' ) {
+	$messages = learn_press_session_get( 'messages' );
+	if ( empty( $messages[$type] ) ) {
+		$messages[$type] = array();
+	}
+	$messages[$type][] = $message;
+	learn_press_session_set( 'messages', $messages );
 }
 
 function learn_press_get_message( $message, $type = 'success' ) {
@@ -1127,16 +1150,12 @@ function learn_press_get_message( $message, $type = 'success' ) {
 /**
  * Print out the message stored in the queue
  */
-function learn_press_print_messages() {
-	$messages = get_transient( 'learn_press_message' );
-	if ( $messages ) foreach ( $messages as $type => $message ) {
-		foreach ( $message as $mess ) {
-			echo '<div class="lp-message ' . $type . '">';
-			echo $mess;
-			echo '</div>';
-		}
+function learn_press_print_messages( $clear = true ) {
+	$messages = learn_press_session_get( 'messages' );
+	learn_press_get_template( 'global/message.php', array( 'messages' => $messages ) );
+	if ( $clear ) {
+		learn_press_session_set( 'messages', array() );
 	}
-	delete_transient( 'learn_press_message' );
 }
 
 add_action( 'learn_press_before_main_content', 'learn_press_print_messages', 50 );

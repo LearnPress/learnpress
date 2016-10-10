@@ -10,7 +10,7 @@
 
 defined( 'ABSPATH' ) || exit();
 
-class LP_Lesson {
+class LP_Lesson extends LP_Abstract_Course_Item {
 	/**
 	 * The lesson (post) ID.
 	 *
@@ -25,6 +25,9 @@ class LP_Lesson {
 	 */
 	public $post = null;
 
+	/**
+	 * @var mixed|string|void
+	 */
 	public $content = '';
 
 	/**
@@ -33,6 +36,11 @@ class LP_Lesson {
 	 */
 	public $lesson_type = null;
 
+	/**
+	 * LP_Lesson constructor.
+	 *
+	 * @param $lesson
+	 */
 	public function __construct( $lesson ) {
 		if ( is_numeric( $lesson ) ) {
 			$this->id   = absint( $lesson );
@@ -44,6 +52,7 @@ class LP_Lesson {
 			$this->id   = absint( $lesson->ID );
 			$this->post = $lesson;
 		}
+		parent::__construct( $this->post );
 		$this->content = apply_filters( 'the_content', $this->post->post_content );
 	}
 

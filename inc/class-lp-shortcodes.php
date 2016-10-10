@@ -195,7 +195,6 @@ class LP_Shortcodes {
 	 */
 	public static function become_teacher_form( $atts ) {
 		$user = learn_press_get_current_user();
-
 		$message = '';
 		$code    = 0;
 

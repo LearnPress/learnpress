@@ -35,7 +35,7 @@ class LP_Admin_Notice {
 	 * @param string $id      Custom id for html element's ID
 	 * @param        bool
 	 */
-	public static function add( $message, $type = 'updated', $id = '', $redirect = false ) {
+	public static function add( $message, $type = 'success', $id = '', $redirect = false ) {
 		if ( $redirect ) {
 			$notices = get_transient( 'learn_press_redirect_notices' );
 			if ( empty( $notices ) ) {

@@ -240,11 +240,13 @@
 }
 .lp-label {
   display: inline-block;
-  line-height: 1;
-  font-size: 65%;
-  vertical-align: baseline;
+  line-height: 24px;
+  font-size: 78%;
+  vertical-align: middle;
   color: #ffffff;
-  padding: 3px 8px;
+  padding: 0px 10px;
+  background: #DDD;
+  height: 24px;
   -webkit-border-radius: 4px;
   -khtml-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -263,6 +265,9 @@
 }
 .lp-label.lp-label-quiz {
   background-color: #53658c;
+}
+.lp-label.lp-label-preview {
+  background-color: #02a7ce;
 }
 .learn-press-content-protected-message {
   border: 3px solid #ff8484;
@@ -625,6 +630,9 @@ body.course-has-popup {
 }
 #course-curriculum-popup .learn-press-content-item-summary .quiz-question-title {
   margin-bottom: 20px;
+}
+#course-curriculum-popup .button-finish-quiz {
+  float: right;
 }
 .learnpress form.purchase-course {
   margin-bottom: 20px;
@@ -1702,6 +1710,13 @@ body.block-content #learn-press-block-content {
   padding: 0 10px;
   border: 1px solid #DDD;
   background-color: #FFF;
+}
+.learn-press-become-teacher-form ul {
+  list-style: none;
+  padding: 0;
+}
+.learn-press-become-teacher-form ul li {
+  margin-bottom: 20px;
 }
 /* jAlerts */
 #popup_container {

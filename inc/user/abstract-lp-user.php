@@ -1143,7 +1143,6 @@ class LP_Abstract_User {
 		}
 		$lesson = LP_Lesson::get_lesson( $lesson_id );
 		if ( $course = LP_Course::get_course( $course_id ) ) {
-
 			if ( $this->has( 'enrolled-course', $course_id ) || $this->has( 'finished-course', $course_id ) ) {
 				// or user has enrolled course
 				$view = 'enrolled';

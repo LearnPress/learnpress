@@ -164,11 +164,11 @@ class LP_Checkout {
 	public function validate_fields( $validate, $field, $checkout ) {
 		if ( $field['name'] == 'user_login' && empty( $this->user_login ) ) {
 			$validate = false;
-			learn_press_add_notice( __( 'Please enter user login', 'learnpress' ) );
+			learn_press_add_message( __( 'Please enter user login', 'learnpress' ) );
 		}
 		if ( $field['name'] == 'user_password' && empty( $this->user_pass ) ) {
 			$validate = false;
-			learn_press_add_notice( __( 'Please enter user password', 'learnpress' ) );
+			learn_press_add_message( __( 'Please enter user password', 'learnpress' ) );
 		}
 
 		return $validate;
@@ -219,7 +219,7 @@ class LP_Checkout {
 
 			if ( LP()->cart->needs_payment() && empty( $this->payment_method ) ) {
 				$success = false;
-				learn_press_add_notice( __( 'Please select a payment method', 'learnpress' ), 'error' );
+				learn_press_add_message( __( 'Please select a payment method', 'learnpress' ), 'error' );
 			} else {
 				//$this->payment_method = !empty( $_REQUEST['payment_method'] ) ? $_REQUEST['payment_method'] : '';
 				if ( $this->checkout_fields ) foreach ( $this->checkout_fields as $name => $field ) {
@@ -234,7 +234,7 @@ class LP_Checkout {
 					$creds['remember']      = true;
 					$user                   = wp_signon( $creds, is_ssl() );
 					if ( is_wp_error( $user ) ) {
-						learn_press_add_notice( $user->get_error_message(), 'error' );
+						learn_press_add_message( $user->get_error_message(), 'error' );
 						$success = false;
 					}
 				}
@@ -245,9 +245,9 @@ class LP_Checkout {
 				$item = LP_Course::get_course( $item['item_id'] );
 				if ( !$item ) {
 					$success = false;
-					learn_press_add_notice( __( 'Item %s does not exists.', 'learnpress' ), 'error' );
+					learn_press_add_message( __( 'Item %s does not exists.', 'learnpress' ), 'error' );
 				} elseif ( !$item->is_purchasable() ) {
-					learn_press_add_notice( sprintf( __( 'Item "%s" is not purchasable.', 'learnpress' ), get_the_title( $item->id ) ), 'error' );
+					learn_press_add_message( sprintf( __( 'Item "%s" is not purchasable.', 'learnpress' ), get_the_title( $item->id ) ), 'error' );
 					$success = false;
 				}
 			}
@@ -258,7 +258,7 @@ class LP_Checkout {
 					$available_gateways = LP_Gateways::instance()->get_available_payment_gateways();
 					if ( !isset( $available_gateways[$this->payment_method] ) ) {
 						$this->payment_method = '';
-						learn_press_add_notice( __( 'Invalid payment method.', 'learnpress' ), 'error' );
+						learn_press_add_message( __( 'Invalid payment method.', 'learnpress' ), 'error' );
 					} else {
 						$this->payment_method = $available_gateways[$this->payment_method];
 					}
@@ -302,7 +302,7 @@ class LP_Checkout {
 
 		} catch ( Exception $e ) {
 			if ( !empty( $e->getMessage() ) ) {
-				learn_press_add_notice( $e->getMessage(), 'error' );
+				learn_press_add_message( $e->getMessage(), 'error' );
 			}
 			$success = false;
 		}
