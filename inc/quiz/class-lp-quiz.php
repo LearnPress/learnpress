@@ -10,7 +10,7 @@
 
 defined( 'ABSPATH' ) || exit();
 
-class LP_Quiz {
+class LP_Quiz extends LP_Abstract_Course_Item {
 	/**
 	 * The quiz (post) ID.
 	 *
@@ -74,6 +74,7 @@ class LP_Quiz {
 			$this->_mark = $this->post->mark;
 		}
 
+		parent::__construct( $this->post );
 		//$this->course = LP_Course::get_course( $this->_lpr_course );
 		$this->_init();
 	}
@@ -177,7 +178,7 @@ class LP_Quiz {
 				$js['result'] = $user->get_quiz_results( $this->id, $course_id, $force );
 			}
 			if ( $js['status'] == 'started' ) {
-				if($history          = $user->get_quiz_results( $this->id, $course_id )) {
+				if ( $history = $user->get_quiz_results( $this->id, $course_id ) ) {
 
 					$js['startTime']  = strtotime( $history->start );
 					$js['serverTime'] = date( 'Z' ) / 3600;//date_timezone_get( date_default_timezone_get() );// get_option('gmt_offset');

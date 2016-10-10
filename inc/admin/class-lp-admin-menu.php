@@ -66,14 +66,6 @@ class LP_Admin_Menu {
 				'learn_press_statistics',
 				array( $this, 'menu_page' )
 			),
-			'settings'   => array(
-				'options-general.php',
-				__( 'LearnPress Settings', 'learnpress' ),
-				__( 'LearnPress', 'learnpress' ),
-				'manage_options',
-				'learn_press_settings',
-				'learn_press_settings_page'
-			),
 			'addons'     => array(
 				'learn_press',
 				__( 'Add-ons', 'learnpress' ),
@@ -81,6 +73,22 @@ class LP_Admin_Menu {
 				'manage_options',
 				'learn_press_add_ons',
 				'learn_press_add_ons_page'
+			),
+			'settings'   => array(
+				'learn_press',
+				__( 'Settings', 'learnpress' ),
+				__( 'Settings', 'learnpress' ),
+				'manage_options',
+				'learn_press_settings',
+				'learn_press_settings_page'
+			),
+			'tools' => array(
+				'learn_press',
+				__( 'Tools', 'learnpress' ),
+				__( 'Tools', 'learnpress' ),
+				'manage_options',
+				'learn_press_tools',
+				'learn_press_tools_page'
 			)
 		);
 
@@ -91,7 +99,7 @@ class LP_Admin_Menu {
 			call_user_func_array( 'add_submenu_page', $item );
 		}
 
-		add_submenu_page( 'tools.php', __( 'Database tools', 'learnpress' ), __( 'LearnPress', 'learnpress' ), 'manage_options', 'learn_press_tools', 'learn_press_tools_page' );
+		//add_submenu_page( 'tools.php', __( 'Database tools', 'learnpress' ), __( 'LearnPress', 'learnpress' ), 'manage_options', 'learn_press_tools', 'learn_press_tools_page' );
 	}
 
 	/*

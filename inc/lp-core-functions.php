@@ -1368,6 +1368,14 @@ function learn_press_process_become_a_teacher_form( $args = null ) {
 	return $return;
 }
 
+function learn_press_become_teacher_sent( $user_id = 0 ) {
+	$sent = learn_press_user_maybe_is_a_teacher( $user_id );
+	if ( !$sent ) {
+		$sent = get_transient( 'learn_press_become_teacher_sent_' . $user->id ) == 'yes';
+	}
+	return $sent;
+}
+
 function _learn_press_translate_user_roles( $translations, $text, $context, $domain ) {
 
 	$plugin_domain = 'learnpress';
@@ -1640,22 +1648,8 @@ function learn_press_get_register_url() {
  *
  * @return mixed
  */
-function learn_press_add_notice( $message, $type = 'notice' ) {
-	if ( $message === false ) {
-		return false;
-	}
-	$notices = learn_press_session_get( 'notices' );
-	if ( empty( $notices ) ) {
-		$notices = array(
-			'success' => array(),
-			'error'   => array(),
-			'notice'  => array()
-		);
-	}
-
-	$notices[$type][] = $message;
-
-	learn_press_session_set( 'notices', $notices );
+function learn_press_add_notice( $message, $type = 'updated' ) {
+	LP_Admin_Notice::add( $message, $type );
 }
 
 /**
@@ -1673,15 +1667,6 @@ function learn_press_setcookie( $name, $value, $expire = 0, $secure = false ) {
 		headers_sent( $file, $line );
 		trigger_error( "{$name} cookie cannot be set - headers already sent by {$file} on line {$line}", E_USER_NOTICE );
 	}
-}
-
-/**
- * Clear all notices in queue
- *
- */
-function learn_press_clear_notices() {
-	learn_press_session_set( 'notices', null );
-	do_action( 'learn_press_clear_notices' );
 }
 
 /**
@@ -1709,37 +1694,6 @@ function learn_press_print_notices( $clear = true ) {
 	}
 }
 
-/**
- * Returns all notices added
- *
- * @param bool $clear
- *
- * @return string
- */
-function learn_press_get_notices( $clear = false ) {
-	ob_start();
-	learn_press_print_notices( $clear );
-	return ob_get_clean();
-}
-
-/**
- * @param $content
- *
- * @return string
- */
-function _learn_press_print_notices( $content ) {
-	ob_start();
-	learn_press_print_notices();
-	$notices = ob_get_clean();
-	$content = $notices . $content;
-
-	if ( current_filter() != 'the_content' ) {
-		echo $content;
-	}
-	return $content;
-}
-
-add_action( 'learn_press_before_single_course_summary', '_learn_press_print_notices', 0 );
 //add_filter( 'the_content', '_learn_press_print_notices', 1000 );
 
 /**
@@ -2271,7 +2225,7 @@ function _learn_press_checkout_success_result( $results, $order_id ) {
 			}
 
 			if ( $course = learn_press_get_course( $course_id ) ) {
-				learn_press_add_notice( sprintf( __( 'Congrats! You\'ve enrolled course "%s".', 'learnpress' ), $course->get_title() ) );
+				learn_press_add_message( sprintf( __( 'Congrats! You\'ve enrolled course "%s".', 'learnpress' ), $course->get_title() ) );
 			}
 		}
 	}

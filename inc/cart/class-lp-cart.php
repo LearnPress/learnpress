@@ -241,7 +241,7 @@ class LP_Cart {
 				} else {
 					$redirect = add_query_arg( 'next', 'enroll-course', $redirect );
 				}
-				learn_press_add_notice( __( 'Please login to continue process.', 'learnpress' ) );
+				learn_press_add_message( __( 'Please login to continue process.', 'learnpress' ) );
 				$checkout_results['redirect'] = apply_filters( 'learn_press_no_checkout_free_course_redirect', $redirect );
 			} else {
 				add_filter( 'learn_press_checkout_success_result', '_learn_press_checkout_auto_enroll_free_course', 10, 2 );
@@ -261,7 +261,7 @@ class LP_Cart {
 				if ( LP()->settings->get( 'redirect_after_add' ) == 'yes' ) {
 					$redirect = learn_press_get_page_link( 'cart' );
 					if ( !$redirect ) {
-						learn_press_add_notice( sprintf( __( 'Cart page is not setting up.', 'learnpress' ) ) );
+						learn_press_add_message( sprintf( __( 'Cart page is not setting up.', 'learnpress' ) ) );
 						$redirect = learn_press_get_current_url();
 					} else {
 						$button = sprintf( '<a href="%s">%s</a>', get_the_permalink( $course_id ), __( 'Back to class', 'learnpress' ) );
@@ -269,17 +269,17 @@ class LP_Cart {
 				} else {
 					$redirect = get_the_permalink( $course_id );
 					if ( !learn_press_get_page_link( 'cart' ) ) {
-						learn_press_add_notice( sprintf( __( 'Checkout page is not setting up.', 'learnpress' ) ) );
+						learn_press_add_message( sprintf( __( 'Checkout page is not setting up.', 'learnpress' ) ) );
 					} else {
 						$button = sprintf( '<a href="%s">%s</a>', learn_press_get_page_link( 'cart' ), __( 'View cart', 'learnpress' ) );
 					}
 				}
-				learn_press_add_notice( sprintf( __( '<strong>%s</strong> has been added to your cart. %s', 'learnpress' ), get_the_title( $course_id ), $button ) );
+				learn_press_add_message( sprintf( __( '<strong>%s</strong> has been added to your cart. %s', 'learnpress' ), get_the_title( $course_id ), $button ) );
 
 			} else {
 				$redirect = learn_press_get_page_link( 'checkout' );
 				if ( !$redirect ) {
-					learn_press_add_notice( sprintf( __( 'Checkout page is not setting up.', 'learnpress' ) ) );
+					learn_press_add_message( sprintf( __( 'Checkout page is not setting up.', 'learnpress' ) ) );
 					$redirect = learn_press_get_current_url();
 				}
 			}
@@ -551,7 +551,7 @@ class LP_Cart {
 
 			// Checkout page is not setting up
 			if ( !$has_checkout ) {
-				learn_press_add_notice( __( 'Checkout page is not setup', 'learnpress' ), 'error' );
+				learn_press_add_message( __( 'Checkout page is not setup', 'learnpress' ), 'error' );
 			} else {
 				wp_redirect( apply_filters( 'learn_press_checkout_redirect', $redirect ) );
 				exit();

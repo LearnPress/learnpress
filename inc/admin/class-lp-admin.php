@@ -23,6 +23,45 @@ if ( !class_exists( 'LP_Admin' ) ) {
 			add_action( 'template_redirect', array( $this, '_redirect' ) );
 			add_action( 'delete_user', array( $this, 'delete_user_data' ) );
 			add_action( 'delete_user_form', array( $this, 'delete_user_form' ) );
+			add_action( 'wp_ajax_learn_press_rated', array( $this, 'rated' ) );
+			//add_action( 'admin_head', array( $this, 'admin_footer_text' ), 1 );
+			add_filter( 'admin_footer_text', array( $this, 'admin_footer_text' ), 1 );
+
+		}
+
+		public function rated() {
+			update_option( 'learn_press_message_user_rated', 'yes' );
+			die();
+		}
+
+		public function admin_footer_text( $footer_text ) {
+			$current_screen = get_current_screen();
+			$pages          = learn_press_get_screens();
+			if ( isset( $current_screen->id ) && apply_filters( 'learn_press_display_admin_footer_text', in_array( $current_screen->id, $pages ) ) ) {
+				if ( !get_option( 'learn_press_message_user_rated' ) ) {
+					$footer_text = sprintf( __( 'If you like <strong>LearnPress</strong> please leave us a %s&#9733;&#9733;&#9733;&#9733;&#9733;%s rating. A huge thanks in advance!', 'learnpress' ), '<a href="https://wordpress.org/support/plugin/learnpress/reviews/?filter=5#postform" target="_blank" class="lp-rating-link" data-rated="' . esc_attr__( 'Thanks :)', 'learnpress' ) . '">', '</a>' );
+					ob_start(); ?>
+					<script type="text/javascript">
+						var $ratingLink = $('a.lp-rating-link').click(function (e) {
+							$.ajax({
+								url    : '<?php echo admin_url( 'admin-ajax.php' );?>',
+								data   : {
+									action: 'learn_press_rated'
+								},
+								success: function () {
+									$ratingLink.parent().html($ratingLink.data('rated'));
+								}
+							});
+						});
+					</script>
+					<?php
+					$code = ob_get_clean();
+					LP_Assets::add_script_tag( $code, '__all' );
+					//LP_Admin_Notice::add( $footer_text, 'updated' );
+				} else {
+				}
+			}
+			return $footer_text;
 		}
 
 		function delete_user_form() {

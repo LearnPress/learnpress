@@ -591,17 +591,13 @@ abstract class LP_Abstract_Course {
 
 		if ( $this->_students_list === null || $force ) {
 			$query                = $wpdb->prepare( "
-				SELECT u.ID, user_nicename, user_status, display_name
-				FROM {$wpdb->posts} o
-				INNER JOIN {$wpdb->learnpress_order_items} oi ON oi.order_id = o.ID
-				INNER JOIN {$wpdb->learnpress_order_itemmeta} oim ON oim.learnpress_order_item_id = oi.order_item_id
-				AND oim.meta_key = %s AND oim.meta_value = %d
-				INNER JOIN {$wpdb->learnpress_user_items} ui  ON ui.ref_id = oi.order_id 
-				AND ui.ref_type = %s
-				INNER JOIN {$wpdb->users} u ON u.ID = ui.user_id
-				WHERE o.post_status = %s
+				SELECT DISTINCT u.*
+				FROM {$wpdb->users} u
+				INNER JOIN {$wpdb->prefix}learnpress_user_items ui ON ui.user_id = u.ID
+				WHERE ui.item_id = %d
+				AND ui.item_type = %s
 				LIMIT %d
-			", '_course_id', $this->id, 'lp_order', 'lp-completed',$limit);
+			", $this->id, LP_COURSE_CPT, $limit );
 			$this->_students_list = $wpdb->get_results( $query );
 		}
 		return $this->_students_list;
@@ -908,21 +904,32 @@ abstract class LP_Abstract_Course {
 	}
 
 	public function get_item( $thing = '' ) {
+		$return     = false;
 		$curriculum = $this->get_curriculum_items();
 		if ( !$curriculum ) {
-			return false;
+			return $return;
 		}
 		if ( !$thing ) {
-
+			return $return;
 		}
 		if ( $thing ) {
 			if ( is_numeric( $thing ) ) {
 				foreach ( $curriculum as $item ) {
 					if ( $item->ID == $thing ) {
+						switch ( $item->post_type ) {
+							case LP_QUIZ_CPT:
+								$return = new LP_Quiz( $item );
+								break;
+							case LP_LESSON_CPT:
+								$return = new LP_Lesson( $item );
+								break;
+						}
+						break;
 					}
 				}
 			}
 		}
+		return apply_filters( 'learn_press_course_item', $return, $item, $this->id );
 	}
 
 	public function get_item_link( $item_id ) {
@@ -1454,8 +1461,8 @@ abstract class LP_Abstract_Course {
 		);
 		if ( $items ) foreach ( $items as $k => $item ) {
 			if ( ( $view = $user->can( 'view-item', $item['id'] ) ) !== false ) {
-				$items[$k]['url']     = $this->get_item_link( $item['id'] );
-				$items[$k]['status']  = $user->get_item_status( $item['id'], $this->id );
+				$items[$k]['url']    = $this->get_item_link( $item['id'] );
+				$items[$k]['status'] = $user->get_item_status( $item['id'], $this->id );
 				if ( $view == 'preview' ) {
 
 				}
@@ -1467,4 +1474,5 @@ abstract class LP_Abstract_Course {
 
 		return $items;
 	}
+
 }
