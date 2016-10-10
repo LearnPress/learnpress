@@ -355,7 +355,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						'id'   => "{$prefix}duration",
 						'type' => 'duration',
 						'desc' => __( 'The duration of the course (by weeks)', 'learnpress' ),
-						'std'  => '10 week'
+						'std'  => '10 weeks'
 					),
 					array(
 						'name' => __( 'Maximum students', 'learnpress' ),
@@ -376,7 +376,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						'id'   => "{$prefix}retake_count",
 						'type' => 'number',
 						'desc' => __( 'How many times the user can re-take this course. Set to 0 to disable', 'learnpress' ),
-						'std'  => '0',
+						'std'  => 0,
 					),
 					array(
 						'name'    => __( 'Load media libraries', 'learnpress' ),
@@ -423,7 +423,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 							'evaluate_quizzes'    => __( 'Evaluate result of quizzes', 'learnpress' ),
 							'evaluate_final_quiz' => __( 'Evaluate result of final quiz', 'learnpress' )
 						),
-						'std'     => 'evaluate_lesson'
+						'std'     => 'evaluate_lesson',
 					),
 					array(
 						'name' => __( 'Passing condition value', 'learnpress' ),
@@ -432,7 +432,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						'min'  => 1,
 						'max'  => 100,
 						'desc' => __( 'The percentage of quiz result or lessons completed to finish the course', 'learnpress' ),
-						'std'  => 50
+						'std'  => 100,
 					)
 				)
 			);
