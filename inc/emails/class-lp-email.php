@@ -340,6 +340,7 @@ class LP_Email {
 		} else if ( in_array( $email_format, array( 'html', 'multipart' ) ) ) {
 			$email_content = $this->get_content_html();
 		} else {
+                        $this->_prepare_content_text_message();
                         $email_content = preg_replace( $this->text_search, $this->text_replace, $this->get_content_text_message() );
                 }
 
@@ -360,10 +361,9 @@ class LP_Email {
 	public function get_content_html() {
 	}
 
-        private function _prepare_content_text_message() {}
+        public function _prepare_content_text_message() {}
 
         public function get_content_text_message() {
-                $this->_prepare_content_text_message();
                 return apply_filters( 'learn_press_email_text_message_' . $this->id, LP()->settings->get( 'emails_' . $this->id . '.content_text_message' ) );
         }
 
@@ -389,6 +389,7 @@ class LP_Email {
 
 	public function get_content_format() {
 		switch ( $this->get_email_format() ) {
+			case 'text_message' :
 			case 'html' :
 				return 'text/html';
 			case 'multipart' :

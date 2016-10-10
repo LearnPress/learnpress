@@ -73,12 +73,12 @@ class LP_Email_Rejected_Course extends LP_Email {
             $user = learn_press_get_course_user( $course->id );
             if ( $course ) {
                 $this->text_search = array(
-                    '\[course\_id\]',
-                    '\[course\_title]',
-                    '\[course\_url\]',
-                    '\[user\_email\]',
-                    '\[user\_name\]',
-                    '\[user\_profile\_url\]',
+                    "/\[course\_id\]/",
+                    "/\[course\_title\]/",
+                    "/\[course\_url\]/",
+                    "/\[user\_email\]/",
+                    "/\[user\_name\]/",
+                    "/\[user\_profile\_url\]/",
                 );
                 $this->text_replace = array(
                     $course->id,

@@ -55,7 +55,6 @@ class LP_Email_New_Order extends LP_Email {
 		$this->object = array(
 			'order' => learn_press_get_order( $order_id )
 		);
-
 		$return = $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
 
 		return $return;
@@ -77,12 +76,12 @@ class LP_Email_New_Order extends LP_Email {
             $order = isset( $this->object['order'] ) ? $this->object['order'] : null;
             if ( $order ) {
                 $this->text_search = array(
-                    '\[order\_number\]',
-                    '\[order\_view\_url\]',
-                    '\[order\_total\]',
-                    '\[user\_email\]',
-                    '\[user\_name\]',
-                    '\[user\_profile\_url\]',
+                    "/\[order\_number\]/",
+                    "/\[order\_view\_url\]/",
+                    "/\[order\_total\]/",
+                    "/\[user\_email\]/",
+                    "/\[user\_name\]/",
+                    "/\[user\_profile\_url\]/",
                 );
                 $this->text_replace = array(
                     $order->get_order_number(),

@@ -381,12 +381,12 @@ class LP_Install {
 
 	public static function update_db_version( $version = null ) {
 		delete_option( 'learnpress_db_version' );
-		add_option( 'learnpress_db_version', is_null( $version ) ? LEARNPRESS_VERSION : $version );
+		update_option( 'learnpress_db_version', is_null( $version ) ? LEARNPRESS_VERSION : $version );
 	}
 
 	public static function update_version( $version = null ) {
 		delete_option( 'learnpress_version' );
-		add_option( 'learnpress_version', is_null( $version ) ? LEARNPRESS_VERSION : $version );
+		update_option( 'learnpress_version', is_null( $version ) ? LEARNPRESS_VERSION : $version );
 	}
 
 	private static function _create_options() {
@@ -408,7 +408,7 @@ class LP_Install {
 				foreach ( $options as $option ) {
 					if ( isset( $option['default'] ) && isset( $option['id'] ) ) {
 						$autoload = isset( $option['autoload'] ) ? (bool) $option['autoload'] : true;
-						add_option( $option['id'], $option['default'], '', ( $autoload ? 'yes' : 'no' ) );
+						update_option( $option['id'], $option['default'], '', ( $autoload ? 'yes' : 'no' ) );
 					}
 				}
 			}
@@ -422,7 +422,7 @@ class LP_Install {
 		);
 		foreach ( $custom_options as $option_name => $option_value ) {
 			if ( !get_option( $option_name ) ) {
-				add_option( $option_name, maybe_unserialize( $option_value ), 'yes' );
+				update_option( $option_name, maybe_unserialize( $option_value ), 'yes' );
 			}
 		}
 		set_transient( 'learn_press_install', 'yes', 24 * 3600 );

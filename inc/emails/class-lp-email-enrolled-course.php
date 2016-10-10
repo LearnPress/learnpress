@@ -36,7 +36,7 @@ class LP_Email_Enrolled_Course extends LP_Email {
 		include_once $view;
 	}
 
-	public function trigger( $user, $course_id, $user_course_id ) {
+	public function trigger( $course_id, $user, $user_course_id ) {
 		if ( !$this->enable ) {
 			return;
 		}
@@ -51,6 +51,7 @@ class LP_Email_Enrolled_Course extends LP_Email {
 			// TODO: ...
 			return;
 		}
+                $user = learn_press_get_user( $user );
 		$this->recipient = $user->user_email;
 
 		$this->find['site_title']  = '{site_title}';
@@ -88,12 +89,12 @@ class LP_Email_Enrolled_Course extends LP_Email {
             $user = isset( $this->object['user'] ) ? $this->object['user'] : null;
             if ( $course && $user ) {
                 $this->text_search = array(
-                    '\[course\_id\]',
-                    '\[course\_title]',
-                    '\[course\_url\]',
-                    '\[user\_email\]',
-                    '\[user\_name\]',
-                    '\[user\_profile\_url\]',
+                    "/\[course\_id\]/",
+                    "/\[course\_title\]/",
+                    "/\[course\_url\]/",
+                    "/\[user\_email\]/",
+                    "/\[user\_name\]/",
+                    "/\[user\_profile\_url\]/",
                 );
                 $this->text_replace = array(
                     $course->id,
