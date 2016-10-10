@@ -17,7 +17,7 @@ if ( ! class_exists( 'RWMB_Number_Field' ) ) {
 				'<input type="number" class="rwmb-number" name="%s" id="%s" value="%s" step="%s" min="%s" max="%s" placeholder="%s"/>',
 				$field['field_name'],
 				empty( $field['clone'] ) ? $field['id'] : '',
-				$meta,
+                $meta = isset($field['std']) ? $field['std'] : ($meta ? $meta : ''),
 				$field['step'],
 				$field['min'],
                                 ! empty( $field['max'] ) ? $field['max'] : '',
