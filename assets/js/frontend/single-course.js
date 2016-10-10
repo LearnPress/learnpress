@@ -1,7 +1,7 @@
 /**
  * Single course functions
  */
-if (typeof LearnPress == 'undefined') {
+if (typeof LearnPress === 'undefined') {
 	window.LP = window.LearnPress = {};
 }
 ;(function ($) {
@@ -34,7 +34,7 @@ if (typeof LearnPress == 'undefined') {
 				};
 			return tmpl_data ? $(template(tmpl_data)) : template;
 		},
-		Course_Item = Backbone.Model.extend({
+		Course_Item = window.Course_Item = Backbone.Model.extend({
 			initialize     : function () {
 				this.on('change:content', this._changeContent);
 				this.on('change:current', this._changeCurrent);
@@ -119,18 +119,17 @@ if (typeof LearnPress == 'undefined') {
 				var args = $.extend({
 					course_id: 0,
 					quiz_id  : this.get('id'),
-					security : null,
+					security : null
 				}, args || {});
 				var data = this._validateObject(args), that = this;
 				data = LP.Hook.applyFilters('learn_press_finish_quiz_data', data);
+                                var beforeSend = args.beforeSend || function() {};
 				LP.ajax({
 					url     : this.get('url'),
 					action  : 'finish-quiz',
 					data    : data,
 					dataType: 'json',
-                                        beforeSend: function() {
-                                                LP.blockContent();
-                                        },
+                                        beforeSend: beforeSend,
 					success : function (response) {
                                                 LP.unblockContent();
 						$.isFunction(args.callback) && args.callback.call(args.context, response, that);
@@ -141,7 +140,7 @@ if (typeof LearnPress == 'undefined') {
 				var args = $.extend({
 					course_id: 0,
 					quiz_id  : this.get('id'),
-					security : null,
+					security : null
 				}, args || {});
 				var data = this._validateObject(args), that = this;
 				LP.ajax({
@@ -407,31 +406,41 @@ if (typeof LearnPress == 'undefined') {
 		_finishQuiz      : function (e) {
                     var that = this,
                                 $button = $(e.target),
-                                security = $button.data('security');
-                    jConfirm( learn_press_single_course_localize.confirm_finish_quiz.message, learn_press_single_course_localize.confirm_finish_quiz.title, function( confirm ) {
-                        if ( confirm ) {
-                            LP.Hook.doAction('learn_press_before_finish_quiz', that.currentItem, that);
-                            that.currentItem.finishQuiz({
-                                    security : security,
-                                    course_id: that.model.get('id'),
-                                    callback : function (response, item) {
-                                            LP.unblockContent();
-                                            that.currentItem.set('content', response.html.content);
-                                            that.$('.course-item-' + that.currentItem.get('id'))
-                                                    .addClass('item-completed');
-                                            that.$('.learn-press-course-results-progress').replaceWith(response.html.progress);
-                                            LP.setUrl(that.currentItem.get('url'));
-                                    }
-                            });
-                        }
-                    } );
+                                security = $button.data('security'),
+                                do_finish = false;
+                        console.debug( e.originalEvent );
+                    if ( typeof e.originalEvent === 'undefined' ) {
+                        that._doFinishQuiz( security );
+                    } else {
+                        jConfirm( learn_press_single_course_localize.confirm_finish_quiz.message, learn_press_single_course_localize.confirm_finish_quiz.title, function( confirm ) {
+                            if ( confirm ) {
+                                that._doFinishQuiz( security );
+                            }
+                        } );
+                    }
 		},
+                _doFinishQuiz   : function( security ) {
+                    var that = this;
+                    LP.Hook.doAction('learn_press_before_finish_quiz', that.currentItem, that);
+                    that.currentItem.finishQuiz({
+                            security : security,
+                            course_id: that.model.get('id'),
+                            beforeSend: LP.blockContent(),
+                            callback : function (response, item) {
+                                    LP.unblockContent();
+                                    that.currentItem.set('content', response.html.content);
+                                    that.$('.course-item-' + that.currentItem.get('id'))
+                                            .addClass('item-completed');
+                                    that.$('.learn-press-course-results-progress').replaceWith(response.html.progress);
+                                    LP.setUrl(that.currentItem.get('url'));
+                            }
+                    });
+                },
 		_retakeQuiz      : function (e) {
                         e.preventDefault();
                         var that = this,
                                 $button = $(e.target),
                                 security = $button.data('security');
-//                        console.debug( 1 ); return;
                         jConfirm( learn_press_single_course_localize.confirm_retake_quiz.message, learn_press_single_course_localize.confirm_retake_quiz.title, function( confirm ){
                             if ( confirm ) {
                                 LP.Hook.doAction('learn_press_before_retake_quiz', that.currentItem, that);
@@ -512,7 +521,6 @@ if (typeof LearnPress == 'undefined') {
 				window.$Quiz.destroy();
 			}
 			if (typeof window.Quiz_Params !== 'undefined') {
-                            console.debug( window.Quiz_Params );
 				window.$Quiz = new LP_Quiz(window.Quiz_Params);
 			}
 		},
@@ -556,7 +564,7 @@ if (typeof LearnPress == 'undefined') {
 			this.updateUrl();
 			this.updateItemContent(item);
 			this.updateFooterNav();
-			if(item.get('type') == 'lp_quiz'){
+			if(item.get('type') === 'lp_quiz'){
 				this.loadQuiz();
 			}
 			loadmedia();

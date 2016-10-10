@@ -307,7 +307,6 @@
 			}
 			LP.Hook.doAction('learn_press_before_select_question', question, that);
 			question.set('current', 'yes');
-
 			if (question.get('response')) {
 				loadedCallback();
 			} else {

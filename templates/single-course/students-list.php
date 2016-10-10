@@ -50,8 +50,8 @@ $students_list_avatar_size = apply_filters('learn_press_students_list_avatar_siz
                     </li>
                 <?php endforeach; ?>
                 <?php
-                if ($course->students - count($students) > 0) {
-                    $other_student = $course->students - count($students);
+                $other_student = $course->students;
+                if ($other_student) {
                     echo '<p>and ' . sprintf(_n('one student enrolled.', '%s students enrolled.', $other_student, 'learnpress'), $other_student) . '</p>';
                 }
                 ?>
