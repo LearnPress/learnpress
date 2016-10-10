@@ -24,6 +24,8 @@ class LP_Email_Enrolled_Course extends LP_Email {
 		$this->default_subject = __( '[{site_title}] You have enrolled course ({course_name})', 'learnpress' );
 		$this->default_heading = __( 'Enrolled course', 'learnpress' );
 
+                $this->email_text_message_description = sprintf( '%s [course_id], [course_title], [course_url], [user_email], [user_name], [user_profile_url]', __( 'Shortcodes', 'learnpress' ) );
+
 		add_action( 'learn_press_user_enrolled_course_notification', array( $this, 'trigger' ), 99, 3 );
 
 		parent::__construct();
@@ -80,6 +82,29 @@ class LP_Email_Enrolled_Course extends LP_Email {
 		learn_press_get_template( $this->template_plain, $this->get_template_data( 'plain' ) );
 		return ob_get_clean();
 	}
+
+        public function _prepare_content_text_message() {
+            $course = isset( $this->object['course'] ) ? $this->object['course'] : null;
+            $user = isset( $this->object['user'] ) ? $this->object['user'] : null;
+            if ( $course && $user ) {
+                $this->text_search = array(
+                    '\[course\_id\]',
+                    '\[course\_title]',
+                    '\[course\_url\]',
+                    '\[user\_email\]',
+                    '\[user\_name\]',
+                    '\[user\_profile\_url\]',
+                );
+                $this->text_replace = array(
+                    $course->id,
+                    get_the_title( $course->id ),
+                    get_the_permalink( $course->id ),
+                    $user->user_email,
+                    $user->user_nicename,
+                    learn_press_user_profile_link( $user->id )
+                );
+            }
+        }
 
 	public function get_template_data( $format = 'plain' ) {
 		return array(

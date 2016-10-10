@@ -23,6 +23,7 @@ class LP_Email_User_Order_Completed extends LP_Email {
 
 		$this->default_subject = __( 'Your order on {order_date} is completed', 'learnpress' );
 		$this->default_heading = __( 'Your order {order_number} is completed', 'learnpress' );
+                $this->email_text_message_description = sprintf( '%s [course_id], [course_url], [user_email], [user_name], [user_profile_url]', __( 'Shortcodes', 'learnpress' ) );
 
 		add_action( 'learn_press_order_status_completed_notification', array( $this, 'trigger' ) );
 
@@ -88,6 +89,27 @@ class LP_Email_User_Order_Completed extends LP_Email {
 			'order'         => $this->object['order']
 		);
 	}
+
+        public function _prepare_content_text_message() {
+            $course = isset( $this->object['course'] ) ? $this->object['course'] : null;
+            $user = isset( $this->object['user'] ) ? $this->object['user'] : null;
+            if ( $course && $user ) {
+                $this->text_search = array(
+                    '\[course\_id\]',
+                    '\[course\_url\]',
+                    '\[user\_email\]',
+                    '\[user\_name\]',
+                    '\[user\_profile\_url\]',
+                );
+                $this->text_replace = array(
+                    $course->id,
+                    get_the_permalink( $course->id ),
+                    $user->user_email,
+                    $user->user_nicename,
+                    learn_press_user_profile_link( $user->id )
+                );
+            }
+        }
 }
 
 return new LP_Email_User_Order_Completed();
