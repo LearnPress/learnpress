@@ -22,7 +22,7 @@ if (!class_exists('RWMB_Radio_Field')) {
                 $html[] = sprintf(
                     $tpl,
                     $field['field_name'],
-                    $meta = isset($field['std']) ? $field['std'] : ($meta ? $meta : ''),
+                    $value,
                     checked($value, $meta, false),
                     $label
                 );
