@@ -64,7 +64,14 @@ class LP_Email_New_Order_Customer extends LP_Email {
 		$order           = learn_press_get_order( $order_id );
 		$this->recipient = $order->get_user( 'user_email' );
 
-		if ( !$this->recipient ) {
+                $items = $order->get_items();
+                $order_total = $order->order_total;
+                /**
+                 * Return if course is free because this order will be enrolled
+                 * 
+                 * In this case we use email enrolled-course
+                 */
+		if ( !$this->recipient || ( count( $items ) === 0 && floatval( $order_total ) == 0 ) ) {
 			return;
 		}
 		$this->find['site_title']    = '{site_title}';

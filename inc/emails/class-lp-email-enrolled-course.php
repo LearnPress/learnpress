@@ -36,7 +36,7 @@ class LP_Email_Enrolled_Course extends LP_Email {
 		include_once $view;
 	}
 
-	public function trigger( $course_id, $user, $user_course_id ) {
+	public function trigger( $course_id, $user_id, $user_course_id ) {
 		if ( !$this->enable ) {
 			return;
 		}
@@ -51,7 +51,7 @@ class LP_Email_Enrolled_Course extends LP_Email {
 			// TODO: ...
 			return;
 		}
-                $user = learn_press_get_user( $user );
+                $user = learn_press_get_user( $user_id );
 		$this->recipient = $user->user_email;
 
 		$this->find['site_title']  = '{site_title}';
