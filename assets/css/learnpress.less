@@ -192,7 +192,7 @@
     float: left;
     width: 23%;
     margin: 0 2% 30px 0;
-    padding: 0;
+    /* padding: 0 20px; */
     box-sizing: border-box;
     border: 1px solid #DDD;
     background: #FFF;
@@ -641,6 +641,7 @@ body.course-has-popup {
       height: 60px;
       background: #cc540d;
       border-bottom: 1px solid #ab4a10;
+      color: #FFF;
       .popup-menu {
         position: absolute;
         height: 60px;
@@ -677,12 +678,11 @@ body.course-has-popup {
           }
         }
       }
-      .popup-title {
+      h3 {
         margin: 0 0 0 350px;
         height: 60px;
         line-height: 60px;
         padding: 0 20px;
-        color: #FFF;
       }
 
     }
@@ -914,12 +914,12 @@ body.block-content {
     .quiz-result-field {
       position: relative;
       background: #F5F5F5;
-      color: #fff;
       margin: 0 0 8px 0;
       font-size: 12px;
-      padding: 5px 10px;
+      padding: 3px 10px;
       .border-radius(4px);
       overflow: hidden;
+      border-bottom: 2px solid #DDD;
 
       span, span:after, &:before {
         display: block;
@@ -947,15 +947,15 @@ body.block-content {
         padding: 0;
         width: 100%;
       }
-      &.correct {
-        background: #22b4ff;
-      }
-      &.wrong {
-        background: #ff5425;
-      }
-      &.empty {
-        color: #656D6D;
-      }
+    }
+    .quiz-result-field.correct:before {
+      background: #22b4ff;
+    }
+    .quiz-result-field.wrong:before {
+      background: #ff5425;
+    }
+    .quiz-result-field.empty:before {
+      background: #d2bc5d;
     }
   }
   .quiz-grade {
@@ -1086,21 +1086,24 @@ body.block-content {
 
 /** MESSAGE */
 .learn-press-message {
-  background: #F5F5F5;
-  border-left: 2px solid #00A0D2;
-  padding: 10px 20px;
-  margin-bottom: 20px;
-  button {
-    float: right;
-  }
-  &:after {
-    clear: both;
-    content: '';
-    display: block;
-  }
-  &.notice {
-    border-left-color: #b3d20a;
-  }
+    background: #F5F5F5;
+    border-left: 2px solid #00A0D2;
+    padding: 10px 20px 1px 20px;
+    margin-bottom: 20px;
+    button {
+        float: right;
+    }
+    p {
+        margin-bottom: 10px;
+    }
+    &:after {
+        clear: both;
+        content: '';
+        display: block;
+    }
+    &.notice {
+        border-left-color: #b3d20a;
+    }
 }
 
 /**/

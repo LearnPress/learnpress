@@ -21,7 +21,7 @@ $item_id = isset( $item->id ) ? $item->id : ( isset( $item->ID ) ? $item->ID : 0
 
 		<?php } else { ?>
 
-			<?php learn_press_get_template( 'single-course/content-protected.php' ); ?>
+			<?php learn_press_get_template( 'single-course/content-protected.php', array( 'item' => $item ) ); ?>
 
 		<?php } ?>
 
