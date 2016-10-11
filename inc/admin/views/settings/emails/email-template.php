@@ -1,18 +1,19 @@
 <tr>
 	<th scope="row">
-		<label for="learn-press-emails-new-course-email-content"><?php _e( 'Email content', 'learnpress' ); ?></label>
+		<label for="learn-press-emails-<?php echo $this->id;?>-email-content"><?php _e( 'Email content', 'learnpress' ); ?></label>
 	</th>
 	<td>
 		<?php if ( current_user_can( 'edit_themes' ) && ( !empty( $this->template_html ) || !empty( $this->template_plain ) ) ) { ?>
 			<div id="templates">
 				<?php
 				$templates = array(
-					'html'          => __( 'HTML template', 'learnpress' ),
-					'plain'         => __( 'Plain text template', 'learnpress' )
+					'html'  => __( 'HTML template', 'learnpress' ),
+					'plain' => __( 'Plain text template', 'learnpress' )
 				);
 
 				foreach ( $templates as $template_type => $title ) :
 					$template      = $this->get_template( 'template_' . $template_type );
+
 					if ( empty( $template ) ) {
 						continue;
 					}
@@ -106,4 +107,4 @@
 		}).change();
 	});
 </script>
-<?php learn_press_enqueue_script( preg_replace( '!</?script>!', '', ob_get_clean() ) ); ?>
+<?php learn_press_enqueue_script( preg_replace( '!</?script>!', '', ob_get_clean() ) );?>
