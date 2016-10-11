@@ -355,7 +355,8 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 									'end_time'   => '0000-00-00 00:00:00',
 									'status'     => $item_type == 'lp_lesson' ? 'started' : 'viewed',
 									'ref_id'     => $course_id,
-									'ref_type'   => 'lp_course'
+									'ref_type'   => 'lp_course',
+									'parent_id'  => $user->get_course_history_id( $course_id )
 								)
 							),
 							array(

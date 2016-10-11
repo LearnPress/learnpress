@@ -63,6 +63,8 @@
 				$(document).on('learn_press_modal_search_items_response', this.addItemsToSection);
 				LP.Hook.addFilter('learn_press_modal_search_items_exclude', this.getSelectedItems);
 				LP.Hook.addFilter('learn_press_create_new_item', this.newItemFilter);
+				$('#course_curriculum.postbox').removeClass('closed');
+
 			},
 			_focusItem              : function (e) {
 				$(e.target).closest('tr').removeClass('focus');
