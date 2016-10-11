@@ -33,7 +33,10 @@ if ( 'learn-press-remove-data' == learn_press_get_request( 'action' ) ) {
 		);
 		// drop all data in our tables
 		foreach ( $tables as $table ) {
-			$wpdb->query( "DELETE FROM {$wpdb->prefix}{$table}" );
+                        $table = $wpdb->prefix.$table;
+                        if ( $wpdb->get_var("SHOW TABLES LIKE '{$table}'") === $table ) {
+                            $wpdb->query( "DELETE FROM {$table}" );
+                        }
 		}
 
 		$query = "

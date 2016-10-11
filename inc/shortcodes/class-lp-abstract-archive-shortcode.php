@@ -159,7 +159,6 @@ if ( !class_exists( 'LP_Archive_Courses_Shortcode' ) ) {
 			return $course;
 		}
 
-
 		/**
 		 * get shortcode output
 		 * main function of shortcode
@@ -171,7 +170,6 @@ if ( !class_exists( 'LP_Archive_Courses_Shortcode' ) ) {
 
 			$template_file_name = static::get_template( $a );
 			$courses            = static::get_courses( $a );
-
 
 			if ( empty( $courses ) ) return;
 			$output = static::render( $courses, $a, $template_file_name );
@@ -229,7 +227,6 @@ if ( !class_exists( 'LP_Archive_Courses_Shortcode' ) ) {
 		 *
 		 * @param LP_Course current course
 		 */
-
 		public static function render( $courses, $a = null, $template_file_name = 'cards.php' ) {
 
 			$courses_count = sizeof( $courses );
@@ -276,11 +273,9 @@ if ( !class_exists( 'LP_Archive_Courses_Shortcode' ) ) {
 			add_action( 'wp_footer', array( __CLASS__, 'apply_script' ) );
 		}
 
-
 		/**
 		 * callback to apply shortcode script
 		 */
-
 		public static function apply_script() {
 			$url = static::$script_url;
 			$owl = LP()->js( 'owl.carousel.min.js' );
@@ -299,7 +294,6 @@ if ( !class_exists( 'LP_Archive_Courses_Shortcode' ) ) {
 		 * add default attributes
 		 * return array
 		 */
-
 		public static function add_default_atts() {
 			return null;
 		}
@@ -311,7 +305,6 @@ if ( !class_exists( 'LP_Archive_Courses_Shortcode' ) ) {
 		 *
 		 * @return  array default attributes
 		 */
-
 		public static function default_atts() {
 			$a = array(
 				'limit'                   => '8',
