@@ -93,7 +93,7 @@ if ( 'learn-press-remove-data' == learn_press_get_request( 'action' ) ) {
 		delete_option( 'learnpress_db_version' );
 		delete_option( 'learnpress_version' );
 		flush_rewrite_rules();
-		wp_redirect( admin_url( 'tools.php?page=learn_press_tools&learn-press-remove-data=1' ) );
+		wp_redirect( admin_url( 'admin.php?page=learn_press_tools&learn-press-remove-data=1' ) );
 		exit();
 	}
 }
@@ -164,8 +164,9 @@ if ( 'learn-press-remove-old-data' == learn_press_get_request( 'action' ) ) {
 		);
 	}
 
-	flush_rewrite_rules();
-	wp_redirect( admin_url( 'tools.php?page=learn_press_tools' ) );
+	//flush_rewrite_rules();
+	header('Location: '.admin_url( 'admin.php?page=learn_press_tools' ));
+	//wp_redirect( admin_url( 'admin.php?page=learn_press_tools' ) );
 	exit();
 }
 /**

@@ -28,7 +28,7 @@ class LP_Course extends LP_Abstract_Course {
 			'learn_press_single_course_js_params',
 			array(
 				'confirm_finish_course' => array(
-					'message' => sprintf( __( 'Are you sure you want to finish course %s', 'learnpress' ), get_the_title() ),
+					'message' => sprintf( __( 'Are you sure you want to finish course %s?', 'learnpress' ), get_the_title() ),
 					'title'   => __( 'Finish course', 'learnpress' )
 				),
 				'confirm_retake_course' => array(
