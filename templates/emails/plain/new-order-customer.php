@@ -14,16 +14,15 @@ if ( !defined( 'ABSPATH' ) ) {
 
 <?php
 
-printf( __( 'Order placed in <strong>%s</strong>', 'learnpress' ), get_option( 'blogname' ) );
-echo "\n\n";
+    printf( __( 'Order placed in <strong>%s</strong>', 'learnpress' ), get_option( 'blogname' ) ); echo "\n\n";
 
-do_action( 'learn_press_email_new_order_customer_before_table', $order, $plain_text );
+    do_action( 'learn_press_email_new_order_customer_before_table', $order, $plain_text );
 
-learn_press_get_template( 'emails/plain/order-items-table.php', array( 'order' => $order ) );
+    learn_press_get_template( 'emails/plain/order-items-table.php', array( 'order' => $order ) );
 
-echo "\n" . sprintf( __( 'View order: %s', 'learnpress' ), $order->get_view_order_url() ) . "\n";
+    echo "\n" . sprintf( __( 'View order: %s', 'learnpress' ), $order->get_view_order_url() ) . "\n";
 
-do_action( 'learn_press_email_new_order_customer_after_table', $order, $plain_text );
+    do_action( 'learn_press_email_new_order_customer_after_table', $order, $plain_text );
 ?>
 
 <?php echo $footer_text . "\n\n"; ?>

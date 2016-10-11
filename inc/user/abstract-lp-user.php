@@ -224,15 +224,6 @@ class LP_Abstract_User {
 			global $wpdb;
 
 			$timestamp = current_time( 'timestamp' );
-			/*$wpdb->insert(
-				$wpdb->learnpress_user_quizzes,
-				apply_filters( 'learn_press_user_quiz_history_data', array(
-					'user_id'   => $this->id,
-					'quiz_id'   => $quiz_id,
-					'course_id' => $course_id
-				), $this->id, $quiz_id, $course_id ),
-				array( '%d', '%d' )
-			);*/
 
 			$wpdb->insert(
 				$wpdb->prefix . 'learnpress_user_items',
@@ -705,8 +696,6 @@ class LP_Abstract_User {
 			$user_quiz = (array) $wpdb->get_row( $query );
 			if ( !empty( $user_quiz['user_quiz_id'] ) ) {
 				$user_quiz['history'] = $this->get_quiz_history( $quiz_id, $course_id );
-
-
 			}
 			$quizzes[$quiz_id] = $user_quiz;
 		}

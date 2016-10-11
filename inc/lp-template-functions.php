@@ -1163,9 +1163,10 @@ function learn_press_print_messages( $clear = true ) {
 /**
  * Displays messages before main content
  */
-function _learn_press_print_messages(){
-	learn_press_print_messages(true);
+function _learn_press_print_messages() {
+	learn_press_print_messages( true );
 }
+
 add_action( 'learn_press_before_main_content', '_learn_press_print_messages', 50 );
 
 if ( !function_exists( 'learn_press_page_controller' ) ) {
@@ -1683,5 +1684,54 @@ if ( !function_exists( '_learn_press_sort_course_tabs_callback' ) ) {
 		if ( $a['priority'] === $b['priority'] )
 			return 0;
 		return ( $a['priority'] < $b['priority'] ) ? - 1 : 1;
+	}
+}
+
+if ( !function_exists( 'learn_press_get_profile_display_name' ) ) {
+	/**
+	 * Get Display name publicly as in Profile page
+	 *
+	 * @param $user
+	 *
+	 * @return string
+	 */
+	function learn_press_get_profile_display_name( $user ) {
+		$option    = LP()->settings->get( 'profile_name_publicly' );
+		$info      = get_userdata( $user->ID );
+		$nicename  = $info->user_nicename;
+		$firstname = ( $info->first_name ) ? $info->first_name : '';
+		$lastname  = ( $info->last_name ) ? $info->last_name : '';
+		$nickname  = $info->nickname;
+		$firstlass = ( $firstname && $lastname ) ? $firstname . ' ' . $lastname : '';
+		$lastfirst = ( $firstname && $lastname ) ? $lastname . ' ' . $firstname : '';
+
+		$display = '';
+
+		switch ( $option ) {
+			case 'nice':
+				$display = $nicename;
+				break;
+			case 'first' :
+				$display = $firstname;
+				break;
+			case 'last' :
+				$display = $lastname;
+				break;
+			case 'nick' :
+				$display = $nickname;
+				break;
+			case 'firstlast' :
+				$display = $firstlass;
+				break;
+			case 'lastfirst' :
+				$display = $lastfirst;
+				break;
+			default:
+				$display = '';
+				break;
+		}
+
+		return ( $display ? $display : $nicename );
+
 	}
 }

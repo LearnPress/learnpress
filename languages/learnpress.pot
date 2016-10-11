@@ -2692,7 +2692,7 @@ msgstr ""
 
 #: inc/course/class-lp-course.php:31
 #, php-format
-msgid "Are you sure you want to finish course %s"
+msgid "Are you sure you want to finish course %s?"
 msgstr ""
 
 #: inc/course/lp-course-functions.php:129

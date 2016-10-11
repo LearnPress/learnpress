@@ -61,16 +61,6 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
                 // get user order
                 $user_id = intval( get_post_meta( $post_id, '_user_id', true ) );
 
-                /* $in_clause  = array_fill( 0, sizeof( $item_ids ), '%d' );
-                  $in_clause  = "IN(" . join( ',', $in_clause ) . ")";
-                  $query      = $wpdb->prepare( "
-                  SELECT oim.meta_value AS course_id
-                  FROM {$wpdb->prefix}learnpress_order_itemmeta oim
-                  INNER JOIN {$wpdb->prefix}learnpress_order_items oi ON oi.order_item_id = oim.learnpress_order_item_id AND oim.meta_key = %s
-                  WHERE oi.order_item_id $in_clause
-                  ", array_merge( array( '_course_id' ), $item_ids ) );
-                  $course_ids = $wpdb->get_col( $query ); */
-
                 // delete order item meta data
                 $query = "
 					DELETE FROM {$wpdb->prefix}learnpress_order_itemmeta
@@ -84,13 +74,6 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 					WHERE order_id = %d
 				", $post_id );
                 $wpdb->query( $query );
-
-                // delete user course related to order
-                /* $query = $wpdb->prepare( "
-                  DELETE FROM {$wpdb->prefix}learnpress_user_courses
-                  WHERE order_id = %d
-                  ", $post_id );
-                  $wpdb->query( $query ); */
 
                 // delete all data related user order
                 if ( $user_id ) {

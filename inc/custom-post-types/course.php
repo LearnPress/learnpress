@@ -182,12 +182,15 @@ if (!class_exists('LP_Course_Post_Type')) {
                 $post_id = learn_press_get_request('post');
                 if (wp_verify_nonce($nonce, 'delete_log_' . $post_id . '_' . $delete_log)) {
                     global $wpdb;
-                    $wpdb->query(
-                        $wpdb->prepare("
-							DELETE FROM {$wpdb->prefix}learnpress_review_logs
-							WHERE review_log_id = %d
-						", $delete_log)
-                    );
+                    $table = $wpdb->prefix . 'learnpress_review_logs';
+                    if ( $wpdb->get_var("SHOW TABLES LIKE '{$table}'") === $table ) {
+                            $wpdb->query(
+                                $wpdb->prepare("
+                                                                DELETE FROM {$table}
+                                                                WHERE review_log_id = %d
+                                                        ", $delete_log)
+                            );
+                    }
                     wp_redirect(admin_url('post.php?post=' . learn_press_get_request('post') . '&action=edit'));
                 }
             }
@@ -618,19 +621,22 @@ if (!class_exists('LP_Course_Post_Type')) {
         {
             global $wpdb;
             $view_all = learn_press_get_request('view_all_review');
-            $query = $wpdb->prepare("
-				SELECT SQL_CALC_FOUND_ROWS *
-				FROM {$wpdb->learnpress_review_logs}
-				WHERE course_id = %d
-				ORDER BY `date` DESC"
-                . ($view_all ? "" : " LIMIT 0, 10") . "
-			", $post->ID);
-            $reviews = $wpdb->get_results($query);
-            $total_reviews = $wpdb->get_var("SELECT FOUND_ROWS()");
-            $count_reviews = sizeof($reviews);
+            $table = $wpdb->prefix . 'learnpress_review_logs';
+            if ( $wpdb->get_var("SHOW TABLES LIKE '{$table}'") === $table ) {
+                $query = $wpdb->prepare("
+                                    SELECT SQL_CALC_FOUND_ROWS *
+                                    FROM {$wpdb->learnpress_review_logs}
+                                    WHERE course_id = %d
+                                    ORDER BY `date` DESC"
+                    . ($view_all ? "" : " LIMIT 0, 10") . "
+                            ", $post->ID);
+                $reviews = $wpdb->get_results($query);
+                $total_reviews = $wpdb->get_var("SELECT FOUND_ROWS()");
+                $count_reviews = sizeof($reviews);
 
-            $view = learn_press_get_admin_view('meta-boxes/course/review-logs.php');
-            include $view;
+                $view = learn_press_get_admin_view('meta-boxes/course/review-logs.php');
+                include $view;
+            }
         }
 
         /**
@@ -895,12 +901,15 @@ if (!class_exists('LP_Course_Post_Type')) {
                 $message = __('Your course has published', 'learnpress');
             }
             if (apply_filters('learn_press_review_log_message', $message, $post->ID, $user->id)) {
-                $query = $wpdb->prepare("
-					INSERT INTO {$wpdb->learnpress_review_logs}(`course_id`, `user_id`, `message`, `date`, `status`, `user_type`)
-					VALUES(%d, %d, %s, %s, %s, %s)
-				", $post->ID, $user->id, $message, current_time('mysql'), get_post_status($post->ID), $user->is_instructor() ? 'instructor' : 'reviewer');
-                $wpdb->query($query);
-                do_action('learn_press_update_review_log', $wpdb->insert_id, $post->ID, $user->id);
+                $table = $wpdb->prefix . 'learnpress_review_logs';
+                if ( $wpdb->get_var("SHOW TABLES LIKE '{$table}'") === $table ) {
+                    $query = $wpdb->prepare("
+                                            INSERT INTO {$wpdb->learnpress_review_logs}(`course_id`, `user_id`, `message`, `date`, `status`, `user_type`)
+                                            VALUES(%d, %d, %s, %s, %s, %s)
+                                    ", $post->ID, $user->id, $message, current_time('mysql'), get_post_status($post->ID), $user->is_instructor() ? 'instructor' : 'reviewer');
+                    $wpdb->query($query);
+                    do_action('learn_press_update_review_log', $wpdb->insert_id, $post->ID, $user->id);
+                }
             }
             if ($action == 'learn_press_course_submit_for_instructor') {
                 if (get_post_status($post->ID) == 'publish') {
