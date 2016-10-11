@@ -31,22 +31,15 @@ class LP_Settings_Pages extends LP_Settings_Base {
 
 	public function get_settings() {
 
-//		$user_info    = get_userdata( get_current_user_id() );
-//		$nicename     = $user_info->user_nicename;
-//		$firstname    = ( $user_info->first_name ) ? $user_info->first_name : '';
-//		$lastname     = ( $user_info->last_name ) ? $user_info->last_name : '';
-//		$nickname     = $user_info->nickname;
-//		$firstlass    = ( $firstname && $lastname ) ? $firstname . ' ' . $lastname : '';
-//		$lastfirst    = ( $firstname && $lastname ) ? $lastname . ' ' . $firstname : '';
-//		$display_name = array(
-//			$nicename  => $nicename,
-//			$firstname => $firstname,
-//			$lastname  => $lastname,
-//			$nickname  => $nickname,
-//			$firstlass => $firstlass,
-//			$lastfirst => $lastfirst,
-//		);
-//		$filter_name  = array_unique( array_filter( $display_name ) );
+		$display_name = array(
+			'nice' => esc_html__('Nicename','learnpress'),
+			'first' => esc_html__('First name','learnpress'),
+			'last' => esc_html__('Last name','learnpress'),
+			'nick' => esc_html__('Nickname','learnpress'),
+			'firstlast' => esc_html__('First name + Last name','learnpress'),
+			'lastfirst' => esc_html__('Last name + First name','learnpress'),
+
+		);
 
 		return apply_filters(
 			'learn_press_page_settings',
@@ -58,13 +51,13 @@ class LP_Settings_Pages extends LP_Settings_Base {
 					'default' => '',
 					'type'    => 'pages-dropdown'
 				),
-//				array(
-//					'title'   => __( 'Display name publicly as', 'learnpress' ),
-//					'id'      => $this->get_field_name( 'profile_name_publicly' ),
-//					'default' => 'nice',
-//					'type'    => 'select',
-//					'options' => $filter_name
-//				),
+				array(
+					'title'   => __( 'Display name publicly as', 'learnpress' ),
+					'id'      => $this->get_field_name( 'profile_name_publicly' ),
+					'default' => 'nice',
+					'type'    => 'select',
+					'options' => $display_name
+				),
 				array(
 					'title'   => __( 'Add link to admin bar', 'learnpress' ),
 					'id'      => $this->get_field_name( 'admin_bar_link' ),
