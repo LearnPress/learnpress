@@ -23,7 +23,7 @@ class LP_Email_New_Order_Customer extends LP_Email {
 
 		$this->default_subject = __( '[{site_title}] Order placed', 'learnpress' );
 		$this->default_heading = __( 'Order placed', 'learnpress' );
-                $this->email_text_message_description = sprintf( '%s [order_number], [order_total], [order_view_url], [user_email], [user_name], [user_profile_url]', __( 'Shortcodes', 'learnpress' ) );
+                $this->email_text_message_description = sprintf( '%s {{order_number}}, {{order_total}}, {{order_view_url}}, {{user_email}}, {{user_name}}, {{user_profile_url}}', __( 'Shortcodes', 'learnpress' ) );
 //        $this->recipient = LP()->settings->get( 'emails_' . $this->id . '.recipients', get_option( 'admin_email' ) );
 
 		add_action( 'learn_press_order_status_draft_to_pending_notification', array( $this, 'trigger' ) );
@@ -101,12 +101,12 @@ class LP_Email_New_Order_Customer extends LP_Email {
             $order = isset( $this->object['order'] ) ? $this->object['order'] : null;
             if ( $order ) {
                 $this->text_search = array(
-                    "/\[order\_number\]/",
-                    "/\[order\_view\_url\]/",
-                    "/\[order\_total\]/",
-                    "/\[user\_email\]/",
-                    "/\[user\_name\]/",
-                    "/\[user\_profile\_url\]/",
+                    "/\{\{order\_number\}\}/",
+                    "/\{\{order\_view\_url\}\}/",
+                    "/\{\{order\_total\}\}/",
+                    "/\{\{user\_email\}\}/",
+                    "/\{\{user\_name\}\}/",
+                    "/\{\{user\_profile\_url\}\}/",
                 );
                 $this->text_replace = array(
                     $order->get_order_number(),

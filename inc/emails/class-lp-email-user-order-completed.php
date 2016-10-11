@@ -23,7 +23,7 @@ class LP_Email_User_Order_Completed extends LP_Email {
 
 		$this->default_subject = __( 'Your order on {order_date} is completed', 'learnpress' );
 		$this->default_heading = __( 'Your order {order_number} is completed', 'learnpress' );
-                $this->email_text_message_description = sprintf( '%s [course_id], [course_url], [user_email], [user_name], [user_profile_url]', __( 'Shortcodes', 'learnpress' ) );
+                $this->email_text_message_description = sprintf( '%s {{order_number}}, {{order_total}}, {{order_view_url}}, {{user_email}}, {{user_name}}, {{user_profile_url}}', __( 'Shortcodes', 'learnpress' ) );
 
 		add_action( 'learn_press_order_status_completed_notification', array( $this, 'trigger' ) );
 
@@ -91,22 +91,23 @@ class LP_Email_User_Order_Completed extends LP_Email {
 	}
 
         public function _prepare_content_text_message() {
-            $course = isset( $this->object['course'] ) ? $this->object['course'] : null;
-            $user = isset( $this->object['user'] ) ? $this->object['user'] : null;
-            if ( $course && $user ) {
+            $order = isset( $this->object['order'] ) ? $this->object['order'] : null;
+            if ( $order ) {
                 $this->text_search = array(
-                    "\[course\_id\]",
-                    "\[course\_url\]",
-                    "\[user\_email\]",
-                    "\[user\_name\]",
-                    "\[user\_profile\_url\]",
+                    "/\{\{order\_number\}\}/",
+                    "/\{\{order\_view\_url\}\}/",
+                    "/\{\{order\_total\}\}/",
+                    "/\{\{user\_email\}\}/",
+                    "/\{\{user\_name\}\}/",
+                    "/\{\{user\_profile\_url\}\}/",
                 );
                 $this->text_replace = array(
-                    $course->id,
-                    get_the_permalink( $course->id ),
-                    $user->user_email,
-                    $user->user_nicename,
-                    learn_press_user_profile_link( $user->id )
+                    $order->get_order_number(),
+                    $order->get_view_order_url(),
+                    $order->get_formatted_order_total(),
+                    $order->get_user( 'user_email' ),
+                    $order->get_customer_name(),
+                    learn_press_user_profile_link( $order->user_id )
                 );
             }
         }
