@@ -943,9 +943,10 @@ if (typeof window.LP == 'undefined') {
             LP.blockContent();
         });
 
-        $('.learn-press-tooltip').tooltip({offset: [24, 24]});
+        $('.learn-press-tooltip, .lp-passing-conditional').tooltip({offset: [24, 24]});
 
-        $('.lp-passing-conditional').tooltip({offset: [24, 24]});
+        $('.learn-press-icon').tooltip({offset: [30, 30]});
+
     });
     LearnPress = LP;
 })(jQuery);

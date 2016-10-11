@@ -110,6 +110,18 @@
 
 }
 
+/* tooltip */
+.learn-press-tooltip-bubble {
+	position: absolute;
+	background: rgba(26, 26, 26, 0.9);
+	color: #ffffff;
+	padding: 8px 10px;
+	font-size: 12px;
+	z-index: 9999999;
+	line-height: 1;
+	border-radius: 3px;
+}
+
 .modal-inner{
 	margin: 20px;
 }
