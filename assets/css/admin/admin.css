@@ -1121,8 +1121,8 @@ body.post-type-lp_question #question_answer_ .inside {
   padding: 10px;
 }
 /*
-	TuNN added 21 03 2015
-	Modified 03 Apr 2015
+    TuNN added 21 03 2015
+    Modified 03 Apr 2015
 */
 /* Course Curriculumn meta box section*/
 /************ version 1.0 **************/
@@ -1177,6 +1177,9 @@ body.post-type-lp_question #question_answer_ .inside {
 /* ios checkbox */
 .learn-press-checkbox {
   display: none !important;
+}
+input.regular-text[id^="learn-press-emails"] {
+  width: 97%;
 }
 .ios-ui-select {
   background: #dddddd;
@@ -1240,9 +1243,6 @@ body.post-type-lp_question #question_answer_ .inside {
 }
 #learn-press-admin-settings .form-table th {
   padding: 20px 10px 20px 0 !important;
-}
-input.regular-text[id^="learn-press-emails"] {
-  width: 97%;
 }
 @-webkit-keyframes lp-spinner {
   0% {

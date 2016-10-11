@@ -22,7 +22,7 @@ class LP_Email_New_Course extends LP_Email {
 		$this->default_subject = __( '[{site_title}] New course has submitted for review ({course_name})', 'learnpress' );
 		$this->default_heading = __( 'New course', 'learnpress' );
 		$this->recipient       = LP()->settings->get( 'emails_new_course.recipient' );
-                $this->email_text_message_description = sprintf( '%s {{course_id}}, {{course_title}}, {{course_url}}, {{user_email}}, {{user_name}}, {{user_profile_url}}', __( 'Shortcodes', 'learnpress' ) );
+                $this->email_text_message_description = sprintf( '%s {{course_id}}, {{course_title}}, {{course_url}}, {{course_edit_url}}, {{user_email}}, {{user_name}}, {{user_profile_url}}', __( 'Shortcodes', 'learnpress' ) );
 		parent::__construct();
 	}
 
@@ -93,6 +93,7 @@ class LP_Email_New_Course extends LP_Email {
                     "/\{\{course\_id\}\}/",
                     "/\{\{course\_title\}\}/",
                     "/\{\{course\_url\}\}/",
+                    "/\{\{course\_edit\_url\}\}/",
                     "/\{\{user\_email\}\}/",
                     "/\{\{user\_name\}\}/",
                     "/\{\{user\_profile\_url\}\}/",
@@ -101,6 +102,7 @@ class LP_Email_New_Course extends LP_Email {
                     $course->id,
                     get_the_title( $course->id ),
                     get_the_permalink( $course->id ),
+                    get_edit_post_link( $course->id ),
                     $user->user_email,
                     $user->user_nicename,
                     learn_press_user_profile_link( $user->id )

@@ -28,40 +28,7 @@ function learn_press_delete_user_data( $user_id, $course_id = 0 ) {
 				" . ( $course_id ? " AND item_id = %d" : "" ) . "
 			", $query_args );
 	@$wpdb->query( $query );
-
-	return;
-
-	// delete all lessons user has learned
-	$query = $wpdb->prepare( "
-				DELETE FROM {$wpdb->prefix}learnpress_user_lessons
-				WHERE user_id = %d
-				" . ( $course_id ? " AND course_id = %d" : "" ) . "
-			", $query_args );
-	@$wpdb->query( $query );
-
-	// delete all quizzes user has started
-	$query = $wpdb->prepare( "
-				DELETE FROM a1, a2
-				USING {$wpdb->prefix}learnpress_user_quizzes AS a1
-				INNER JOIN {$wpdb->prefix}learnpress_user_quizmeta AS a2
-				WHERE a1.user_quiz_id = a2.learnpress_user_quiz_id
-				AND a1.user_id = %d
-				" . ( $course_id ? " AND course_id = %d" : "" ) . "
-			", $query_args );
-	@$wpdb->query( $query );
-
-	// delete all items user has started such as lessons, quizzes
-	$query = $wpdb->prepare( "
-				DELETE FROM a1, a2
-				USING {$wpdb->prefix}learnpress_user_course_items AS a1
-				INNER JOIN {$wpdb->prefix}learnpress_user_course_itemmeta AS a2
-				WHERE a1.user_course_item_id = a2.learnpress_user_course_item_id
-				AND a1.user_id = %d
-				" . ( $course_id ? " AND course_id = %d" : "" ) . "
-			", $query_args );
-	@$wpdb->query( $query );
 }
-
 
 /**
  * @return int
@@ -333,33 +300,37 @@ function learn_press_profile_tab_orders_content( $current, $tab, $user ) {
 	learn_press_get_template( 'profile/tabs/orders.php', array( 'user' => $user, 'current' => $current, 'tab' => $tab ) );
 }
 
-function learn_press_update_user_lesson_start_time() {
-	global $wpdb;
-	$course = LP()->global['course'];
-
-	if ( !$course->id || !( $lesson = $course->current_lesson ) ) {
-		return;
-	}
-	$query = $wpdb->prepare( "
-		SELECT user_lesson_id FROM {$wpdb->prefix}learnpress_user_lessons WHERE user_id = %d AND lesson_id = %d AND course_id = %d
-	", get_current_user_id(), $lesson->id, $course->id );
-	if ( $wpdb->get_row( $query ) ) {
-		return;
-	}
-	$wpdb->insert(
-		$wpdb->prefix . 'learnpress_user_lessons',
-		array(
-			'user_id'    => get_current_user_id(),
-			'lesson_id'  => $lesson->id,
-			'start_time' => current_time( 'mysql' ),
-			'status'     => 'stared',
-			'course_id'  => $course->id
-		),
-		array( '%d', '%d', '%s', '%s', '%d' )
-	);
-}
-
-add_action( 'learn_press_course_content_lesson', 'learn_press_update_user_lesson_start_time' );
+//function learn_press_update_user_lesson_start_time() {
+//	global $wpdb;
+//	$course = LP()->global['course'];
+//
+//	if ( !$course->id || !( $lesson = $course->current_lesson ) ) {
+//		return;
+//	}
+//        $table = $wpdb->prefix . 'learnpress_user_lessons';
+//        if ( $wpdb->get_var("SHOW TABLES LIKE '{$table}'") !== $table ) {
+//            return;
+//        }
+//	$query = $wpdb->prepare( "
+//		SELECT user_lesson_id FROM {$wpdb->prefix}learnpress_user_lessons WHERE user_id = %d AND lesson_id = %d AND course_id = %d
+//	", get_current_user_id(), $lesson->id, $course->id );
+//	if ( $wpdb->get_row( $query ) ) {
+//		return;
+//	}
+//	$wpdb->insert(
+//		$wpdb->prefix . 'learnpress_user_lessons',
+//		array(
+//			'user_id'    => get_current_user_id(),
+//			'lesson_id'  => $lesson->id,
+//			'start_time' => current_time( 'mysql' ),
+//			'status'     => 'stared',
+//			'course_id'  => $course->id
+//		),
+//		array( '%d', '%d', '%s', '%s', '%d' )
+//	);
+//}
+//
+//add_action( 'learn_press_course_content_lesson', 'learn_press_update_user_lesson_start_time' );
 
 function learn_press_get_profile_user() {
 	global $wp;

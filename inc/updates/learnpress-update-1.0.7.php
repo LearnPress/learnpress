@@ -1,4 +1,5 @@
 <?php
+defined( 'ABSPATH' ) || exit();
 
 if ( LEARN_PRESS_UPDATE_DATABASE ) {
 	global $wpdb;
@@ -11,8 +12,8 @@ if ( LEARN_PRESS_UPDATE_DATABASE ) {
 			INNER JOIN {$wpdb->prefix}learnpress_section_items lsi ON lsi.section_id = ls.section_id
 			WHERE lsi.item_id = uq.quiz_id
 		)
-		WHERE uq.course_id = 0 OR uq.course_id = NULL
-	" );
+		WHERE uq.course_id = %d OR uq.course_id = NULL
+	", 0 );
 
 	$wpdb->query( $query );
 

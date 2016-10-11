@@ -106,7 +106,6 @@ if ( LEARN_PRESS_UPDATE_DATABASE ) {
 			@$wpdb->query($query_rename_tables);
 		}
 
-
 		learn_press_update_log( '2.0', array( 'time' => time() ) );
 	} catch ( Exception $ex ) {
 		$wpdb->query( "ROLLBACK;" );

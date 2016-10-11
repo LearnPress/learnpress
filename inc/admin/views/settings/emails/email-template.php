@@ -25,23 +25,23 @@
 					<div class="template <?php echo $template_type == 'html' ? $template_type . ' multipart' : 'plain_text'; ?>" style="display: none;">
 
 						<?php if ( file_exists( $local_file ) ) { ?>
-							<?php if( $template_type == 'plain' ){ ?>
-								<div class="editor">
+							<?php //if( $template_type == 'plain' ){ ?>
+<!--								<div class="editor">
 									<textarea name="<?php echo $settings_class->get_field_name( 'emails_' . $this->id . '[email_content_plain]' );?>" class="code" cols="25" rows="20" style="width: 97%;"><?php echo file_get_contents( $local_file ); ?></textarea>
-								</div>
-							<?php } else { ?>
+								</div>-->
+							<?php //} else { ?>
 								<?php
-								wp_editor(
-									stripslashes( file_get_contents( $local_file ) ),
-									'learn_press_email_content_' . $template_type,
-									array(
-										'textarea_rows' => 20,
-										'wpautop'       => false,
-										'textarea_name' => $settings_class->get_field_name( 'emails_' . $this->id . '[email_content_html]' )
-									)
-								);
+//								wp_editor(
+//									stripslashes( file_get_contents( $local_file ) ),
+//									'learn_press_email_content_' . $template_type,
+//									array(
+//										'textarea_rows' => 20,
+//										'wpautop'       => false,
+//										'textarea_name' => $settings_class->get_field_name( 'emails_' . $this->id . '[email_content_html]' )
+//									)
+//								);
 								?>
-							<?php } ?>
+							<?php //} ?>
 							<h4><?php echo wp_kses_post( $title ); ?></h4>
 
 							<p class="description">
@@ -55,9 +55,9 @@
 								<?php endif; ?>
 							</p>
 						<?php } elseif ( file_exists( $template_file ) ) { ?>
-							<div class="editor">
+<!--							<div class="editor">
 								<textarea class="code" readonly="readonly" disabled="disabled" cols="25" rows="20" style="width: 97%;"><?php echo file_get_contents( $template_file ); ?></textarea>
-							</div>
+							</div>-->
 							<h4><?php echo wp_kses_post( $title ); ?></h4>
 							<p class="description">
 								<?php printf( __( 'To override and edit this email template copy <code>%s</code> to your theme folder: <code>%s</code>.', 'learnpress' ), plugin_basename( $template_file ), 'yourtheme/' . $template_dir . '/' . $template ); ?>
@@ -98,7 +98,7 @@
 		<?php } ?>
 	</td>
 </tr>
-<?php ob_start();?>
+<?php ob_start(); ?>
 <script>
 	jQuery(function($){
 		$('#learn_press_email_formats').change(function(){
@@ -107,4 +107,4 @@
 		}).change();
 	});
 </script>
-<?php learn_press_enqueue_script( preg_replace( '!</?script>!', '', ob_get_clean() ) );?>
+<?php learn_press_enqueue_script( preg_replace( '!</?script>!', '', ob_get_clean() ) ); ?>

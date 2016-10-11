@@ -29,7 +29,7 @@ if ( !empty( $support_types[$item->post_type] ) ) {
             <ul>
                 <?php foreach ( $support_types as $_type => $text ) { ?>
                     <li>
-                        <span class="learn-press-icon<?php echo $_type == $item_selected ? ' item-selected' : ''; ?> item-<?php echo $_type; ?>" title="<?php echo sprintf( __( 'Switch to %s', 'learnpress' ), $text ); ?>" data-type="<?php echo $_type; ?>"></span>
+                        <span class="learn-press-icon<?php echo $_type == $item_selected ? ' item-selected' : ''; ?> item-<?php echo $_type; ?>" data-content="<?php echo sprintf( __( 'Switch to %s', 'learnpress' ), $text ); ?>" data-type="<?php echo $_type; ?>"></span>
                     </li>
                 <?php } ?>
             </ul>
