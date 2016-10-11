@@ -1241,27 +1241,8 @@ body.post-type-lp_question #question_answer_ .inside {
 #learn-press-admin-settings .form-table th {
   padding: 20px 10px 20px 0 !important;
 }
-#learn_press_dashboard_widget{
-    overflow: hidden;
-}
-#learn_press_dashboard_widget .inside{
-    padding: 0;
-}
-#learn_press_dashboard_widget .rss-widget{
-    overflow: hidden;
-    padding: 0 12px 12px;
-}
-#learn_press_dashboard_widget .subsubsub{
-    border-top: 1px solid #efefef;
-    display: block;
-    width: 100%;
-}
-#learn_press_dashboard_widget .subsubsub ul{
-    padding: 5px;
-}
-#learn_press_dashboard_widget .subsubsub li{
-    margin: 0;
-    padding: 8px 12px;
+input.regular-text[id^="learn-press-emails"] {
+  width: 97%;
 }
 @-webkit-keyframes lp-spinner {
   0% {
