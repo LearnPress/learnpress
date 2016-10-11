@@ -23,7 +23,7 @@ class LP_Email_New_Order_Customer extends LP_Email {
 
 		$this->default_subject = __( '[{site_title}] Order placed', 'learnpress' );
 		$this->default_heading = __( 'Order placed', 'learnpress' );
-                $this->email_text_message_description = sprintf( '%s {{order_number}}, {{order_total}}, {{order_view_url}}, {{user_email}}, {{user_name}}, {{user_profile_url}}', __( 'Shortcodes', 'learnpress' ) );
+                $this->email_text_message_description = sprintf( '%s {{order_number}}, {{order_total}}, {{order_items_table}}, {{order_view_url}}, {{user_email}}, {{user_name}}, {{user_profile_url}}', __( 'Shortcodes', 'learnpress' ) );
 //        $this->recipient = LP()->settings->get( 'emails_' . $this->id . '.recipients', get_option( 'admin_email' ) );
 
 		add_action( 'learn_press_order_status_draft_to_pending_notification', array( $this, 'trigger' ) );
@@ -104,6 +104,7 @@ class LP_Email_New_Order_Customer extends LP_Email {
                     "/\{\{order\_number\}\}/",
                     "/\{\{order\_view\_url\}\}/",
                     "/\{\{order\_total\}\}/",
+                    "/\{\{order\_items\_table\}\}/",
                     "/\{\{user\_email\}\}/",
                     "/\{\{user\_name\}\}/",
                     "/\{\{user\_profile\_url\}\}/",
@@ -112,6 +113,7 @@ class LP_Email_New_Order_Customer extends LP_Email {
                     $order->get_order_number(),
                     $order->get_view_order_url(),
                     $order->get_formatted_order_total(),
+                    learn_press_get_template_content( 'emails/order-items-table.php', array( 'order' => $order ) ),
                     $order->get_user( 'user_email' ),
                     $order->get_customer_name(),
                     learn_press_user_profile_link( $order->user_id )
