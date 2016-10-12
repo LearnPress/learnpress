@@ -31,6 +31,40 @@
 .post-type-lp_course #course_curriculum .curriculum-section-items .lp-item-empty td.section-item-input.hover {
   padding-left: 0;
 }
+#learn-press-admin-settings .nav-tab-wrapper {
+  margin-bottom: 20px;
+}
+#learn-press-admin-settings .subsubsub {
+  float: left;
+  width: 240px;
+  position: relative;
+  z-index: 10;
+  margin: 0 -260px 0 20px;
+  padding-top: 11px;
+}
+#learn-press-admin-settings .subsubsub li {
+  display: block;
+}
+#learn-press-admin-settings .subsubsub li a {
+  display: block;
+}
+#learn-press-admin-settings .learn-press-settings-wrap {
+  float: left;
+  padding: 0 0 15px 300px;
+  background: #FFF;
+  z-index: 0;
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+}
+#learn-press-admin-settings .learn-press-settings-wrap:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-left: 1px solid #DDD;
+  margin-left: -30px;
+}
 /* message box */
 #learn-press-message-box-block {
   position: fixed;
@@ -1243,6 +1277,10 @@ input.regular-text[id^="learn-press-emails"] {
 }
 #learn-press-admin-settings .form-table th {
   padding: 20px 10px 20px 0 !important;
+}
+#learn-press-admin-settings input,
+#learn-press-admin-settings select {
+  vertical-align: top;
 }
 @-webkit-keyframes lp-spinner {
   0% {

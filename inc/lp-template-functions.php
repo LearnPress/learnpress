@@ -1407,7 +1407,7 @@ function learn_press_locate_template( $template_name, $template_path = '', $defa
 
 	// Get default template
 	if ( !$template ) {
-		$template = $default_path . $template_name;
+		$template = trailingslashit( $default_path ) . $template_name;
 	}
 
 	// Return what we found

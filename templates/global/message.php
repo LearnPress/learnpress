@@ -12,7 +12,14 @@ if ( !$messages ) {
 ?>
 <?php foreach ( $messages as $type => $message ) { ?>
 	<?php if ( $message ): foreach ( $message as $content ) { ?>
-		<div class="learn-press-message <?php echo $type; ?>"><?php echo $content; ?></div>
+		<div class="learn-press-message <?php echo $type; ?>">
+			<?php
+			if ( !preg_match( '!<p>!', $content ) && !preg_match( '!<div>!', $content ) ) {
+				$content = sprintf( '<p>%s</p>', $content );
+			}
+			?>
+			<?php echo $content; ?>
+		</div>
 	<?php } ?>
 	<?php endif; ?>
 <?php } ?>

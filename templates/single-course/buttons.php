@@ -79,7 +79,7 @@ $retake_button_text   = apply_filters( 'learn_press_retake_button_text', __( 'Re
 		</form>
 	<?php else: ?>
 
-		<?php learn_press_display_message( apply_filters( 'learn_press_user_can_not_purchase_course_message', __( 'Sorry, you can not purchase this course', 'learnpress' ), $course, $user ) ); ?>
+		<?php learn_press_display_message( '<p>' . apply_filters( 'learn_press_user_can_not_purchase_course_message', __( 'Sorry, you can not purchase this course', 'learnpress' ), $course, $user ) . '</p>' ); ?>
 
 	<?php endif; ?>
 

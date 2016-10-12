@@ -108,19 +108,19 @@ class LP_Settings_Base {
 
 		if ( $sections && sizeof( $sections ) > 1 ) {
 			$array_keys = array_keys( $sections );
-			echo '<ul class="subsubsub clearfix">';
+			echo '<ul class="subsubsub">';
 			foreach ( $sections as $name => $section ) {
 				?>
 				<li>
 					<a href="<?php echo '?page=learn_press_settings&tab=' . $this->id . '&section=' . sanitize_title( $name ); ?>" class="<?php echo $current_section == $name ? 'current' : ''; ?>">
 						<?php echo $section['title']; ?>
 					</a>
-					<?php echo( end( $array_keys ) == $name ? '' : '|' ); ?>
+					<?php //echo( end( $array_keys ) == $name ? '' : '|' ); ?>
 				</li>
 				<?php
 			}
 			echo '</ul>';
-			echo '<div class="clear"></div>';
+			//echo '<div class="clear"></div>';
 		}
 	}
 

@@ -49,14 +49,14 @@ function learn_press_settings_page() {
 				<?php } ?>
 				<?php do_action( 'learn_press_settings_tabs' ); ?>
 			</h2>
-			<?php
-			do_action( 'learn_press_sections_' . $current_tab );
-			do_action( 'learn_press_settings_' . $current_tab );
-			?>
-			<p>
-				<button class="button button-primary"><?php _e( 'Save settings', 'learnpress' ); ?></button>
-			</p>
-			<?php wp_nonce_field( 'learn_press_settings', 'learn_press_settings_nonce' ); ?>
+			<?php do_action( 'learn_press_sections_' . $current_tab ); ?>
+			<div class="learn-press-settings-wrap">
+				<?php do_action( 'learn_press_settings_' . $current_tab ); ?>
+				<p>
+					<button class="button button-primary"><?php _e( 'Save settings', 'learnpress' ); ?></button>
+				</p>
+				<?php wp_nonce_field( 'learn_press_settings', 'learn_press_settings_nonce' ); ?>
+			</div>
 		</form>
 	</div>
 	<?php
