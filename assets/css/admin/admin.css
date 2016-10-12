@@ -1208,6 +1208,10 @@ body.post-type-lp_question #question_answer_ .inside {
 #learn-press-install-sample-data-notice .install-sample-data-loading {
   display: none;
 }
+/* learn_press_dashboard_widget */
+#learn_press_dashboard_widget .subsubsub {
+  float: none;
+}
 /* ios checkbox */
 .learn-press-checkbox {
   display: none !important;
