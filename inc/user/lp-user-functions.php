@@ -385,7 +385,7 @@ function learn_press_update_user_item_field( $fields, $where = false ) {
 	global $wpdb;
 
 	// Table fields
-	$table_fields = array( 'user_id' => '%d', 'item_id' => '%d', 'ref_id' => '%d', 'start_time' => '%s', 'end_time' => '%s', 'item_type' => '%s', 'status' => '%s', 'ref_type' => '%s' );
+	$table_fields = array( 'user_id' => '%d', 'item_id' => '%d', 'ref_id' => '%d', 'start_time' => '%s', 'end_time' => '%s', 'item_type' => '%s', 'status' => '%s', 'ref_type' => '%s', 'parent_id' => '%d' );
 
 	// Data and format
 	$data        = array();
@@ -446,7 +446,7 @@ function learn_press_get_user_item( $where, $single = true ) {
 	global $wpdb;
 
 	// Table fields
-	$table_fields = array( 'user_id' => '%d', 'item_id' => '%d', 'ref_id' => '%d', 'start_time' => '%s', 'end_time' => '%s', 'item_type' => '%s', 'status' => '%s', 'ref_type' => '%s' );
+	$table_fields = array( 'user_id' => '%d', 'item_id' => '%d', 'ref_id' => '%d', 'start_time' => '%s', 'end_time' => '%s', 'item_type' => '%s', 'status' => '%s', 'ref_type' => '%s', 'parent_id' => '%d' );
 
 	$where_str = array();
 	foreach ( $where as $field => $value ) {

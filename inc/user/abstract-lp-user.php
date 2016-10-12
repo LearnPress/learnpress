@@ -300,7 +300,6 @@ class LP_Abstract_User {
 		if ( !apply_filters( 'learn_press_before_user_start_quiz', true, $quiz_id, $course_id, $this->id ) ) {
 			return false;
 		}
-
 		$history = $this->get_quiz_history( $quiz_id, $course_id, null, true );
 		if ( !$history ) {
 			$return = learn_press_update_user_item_field(
@@ -311,7 +310,8 @@ class LP_Abstract_User {
 					'ref_id'     => $course_id,
 					'user_id'    => $this->id,
 					'item_type'  => 'lp_quiz',
-					'ref_type'   => 'lp_course'
+					'ref_type'   => 'lp_course',
+					'parent_id'  => $this->get_course_history_id( $course_id )
 				)
 			);
 		} else {
@@ -487,7 +487,8 @@ class LP_Abstract_User {
 				'start_time' => current_time( 'mysql' ),
 				'item_type'  => 'lp_quiz',
 				'status'     => 'started',
-				'ref_type'   => 'lp_course'
+				'ref_type'   => 'lp_course',
+				'parent_id'  => $this->get_course_history_id( $course_id )
 			)
 		);
 		if ( $return ) {
@@ -1828,16 +1829,18 @@ class LP_Abstract_User {
 			", $this->id, $course_id, 'lp_course' );
 
 			$info = array(
-				'start'  => null,
-				'end'    => null,
-				'status' => null
+				'history_id' => 0,
+				'start'      => null,
+				'end'        => null,
+				'status'     => null
 			);
 			if ( $result = $wpdb->get_row( $query ) ) {
-				$course          = learn_press_get_course( $course_id );
-				$info['start']   = $result->start_time;
-				$info['end']     = $result->end_time;
-				$info['status']  = $result->status;
-				$info['results'] = $course->evaluate_course_results( $this->id );
+				$course             = learn_press_get_course( $course_id );
+				$info['history_id'] = $result->user_item_id;
+				$info['start']      = $result->start_time;
+				$info['end']        = $result->end_time;
+				$info['status']     = $result->status;
+				$info['results']    = $course->evaluate_course_results( $this->id );
 			}
 			$user_course_info[$this->id][$course_id] = $info;
 			LP_Cache::set_course_info( $user_course_info );
@@ -1851,6 +1854,11 @@ class LP_Abstract_User {
 
 		$this->_parse_item_order_of_course( $course_id );
 		return apply_filters( 'learn_press_user_course_info', $info, $this, $course_id );
+	}
+
+	public function get_course_history_id( $course_id ) {
+		$history = $this->get_course_info( $course_id );
+		return !empty( $history['history_id'] ) ? $history['history_id'] : 0;
 	}
 
 	public function get_course_status( $course_id ) {

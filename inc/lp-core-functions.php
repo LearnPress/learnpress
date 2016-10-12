@@ -2095,6 +2095,7 @@ function learn_press_auto_enroll_user_to_courses( $order_id ) {
 		if ( $user->has( 'enrolled-course', $course->id ) ) {
 			continue;
 		}
+		$course_result = $user->get_course_info( $course->id );
 //                error. this scripts will create new order each course item
 //		$return = $user->enroll( $course->id, $order_id );
 		$return = learn_press_update_user_item_field( array(
@@ -2105,7 +2106,8 @@ function learn_press_auto_enroll_user_to_courses( $order_id ) {
 			'end_time'   => '0000-00-00 00:00:00',
 			'ref_id'     => $course->id,
 			'item_type'  => 'lp_course',
-			'ref_type'   => 'lp_order'
+			'ref_type'   => 'lp_order',
+			'parent_id'  => $user->get_course_history_id($course->id)
 		) );
 	}
 	return $return;

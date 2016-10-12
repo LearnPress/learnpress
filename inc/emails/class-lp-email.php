@@ -197,26 +197,26 @@ class LP_Email {
 		' '                                             // Runs of spaces, post-handling
 	);
 
-        /**
-         * List of pattern search corresponding to patterns replace.
-         *
-         * @var array text shortcode
-         */
-        public $text_search = array();
+	/**
+	 * List of pattern search corresponding to patterns replace.
+	 *
+	 * @var array text shortcode
+	 */
+	public $text_search = array();
 
-        /**
-         * List of pattern to replace
-         *
-         * @var array text replace
-         */
-        public $text_replace = array();
+	/**
+	 * List of pattern to replace
+	 *
+	 * @var array text replace
+	 */
+	public $text_replace = array();
 
-        /**
-         * Text message description
-         *
-         * @var string
-         */
-        public $email_text_message_description = '';
+	/**
+	 * Text message description
+	 *
+	 * @var string
+	 */
+	public $email_text_message_description = '';
 
 	public function __construct() {
 		$this->id = str_replace( '-', '_', $this->id );
@@ -334,15 +334,15 @@ class LP_Email {
 	}
 
 	public function get_content() {
-                $email_format = $this->get_email_format();
+		$email_format = $this->get_email_format();
 		if ( $email_format == 'plain_text' ) {
 			$email_content = preg_replace( $this->plain_search, $this->plain_replace, strip_tags( $this->get_content_plain() ) );
 		} else if ( in_array( $email_format, array( 'html', 'multipart' ) ) ) {
 			$email_content = $this->get_content_html();
 		} else {
-                        $this->_prepare_content_text_message();
-                        $email_content = preg_replace( $this->text_search, $this->text_replace, $this->get_content_text_message() );
-                }
+			$this->_prepare_content_text_message();
+			$email_content = preg_replace( $this->text_search, $this->text_replace, $this->get_content_text_message() );
+		}
 
 		return wordwrap( $email_content, 70 );
 	}
@@ -361,11 +361,12 @@ class LP_Email {
 	public function get_content_html() {
 	}
 
-        public function _prepare_content_text_message() {}
+	public function _prepare_content_text_message() {
+	}
 
-        public function get_content_text_message() {
-                return apply_filters( 'learn_press_email_text_message_' . $this->id, LP()->settings->get( 'emails_' . $this->id . '.content_text_message' ) );
-        }
+	public function get_content_text_message() {
+		return apply_filters( 'learn_press_email_text_message_' . $this->id, LP()->settings->get( 'emails_' . $this->id . '.content_text_message' ) );
+	}
 
 	public function get_headers() {
 		return apply_filters( 'learn_press_email_headers', "Content-Type: " . $this->get_content_format() . "\r\n", $this->id, $this->object );
@@ -376,11 +377,19 @@ class LP_Email {
 	}
 
 	public function get_from_address() {
-		return sanitize_email( LP()->settings->get( 'emails_general.from_email' ) );
+		$email = sanitize_email( LP()->settings->get( 'emails_general.from_email' ) );
+		if ( !is_email( $email ) ) {
+			$email = get_option( 'admin_email' );
+		}
+		return $email;
 	}
 
 	public function get_from_name() {
-		return sanitize_email( LP()->settings->get( 'emails_general.from_name' ) );
+		$name = sanitize_email( LP()->settings->get( 'emails_general.from_name' ) );
+		if ( empty( $name ) ) {
+			$name = get_option( 'blogname' );
+		}
+		return $name;
 	}
 
 	public function get_blogname() {
@@ -412,7 +421,7 @@ class LP_Email {
 			// get CSS styles
 			ob_start();
 			learn_press_get_template( 'emails/email-styles.php' );
-			$css = apply_filters( 'learn_press_email_styles', ob_get_clean() );
+			$css = apply_filters( 'learn_press_email_styles', ob_get_clean(), $this->id, $this );
 
 			try {
 				LP()->_include( 'libraries/class-emogrifier.php' );
