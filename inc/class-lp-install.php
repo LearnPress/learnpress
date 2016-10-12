@@ -512,7 +512,7 @@ class LP_Install {
                             status varchar(45) NOT NULL DEFAULT '',
                             user_type varchar(45) NOT NULL DEFAULT '',
                             PRIMARY KEY  (review_log_id)
-                        ) $collate";
+                        ) $collate;";
                 }
                 $table = $wpdb->prefix . 'learnpress_section_items';
                 if ( $wpdb->get_var("SHOW TABLES LIKE '{$table}'") !== $table ) {
@@ -524,7 +524,7 @@ class LP_Install {
                             item_order bigint(20) unsigned NOT NULL DEFAULT '0',
                             item_type varchar(45),
                             PRIMARY KEY  (section_item_id)
-                        ) $collate";
+                        ) $collate;";
                 }
                 $table = $wpdb->prefix . 'learnpress_sections';
                 if ( $wpdb->get_var("SHOW TABLES LIKE '{$table}'") !== $table ) {
