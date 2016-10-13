@@ -151,9 +151,5 @@ if ( !class_exists( 'LP_Email_Enrolled_Course' ) ) {
 		}
 	}
 }
-add_action( 'wp_head', function () {
-	$a = new LP_Email_Enrolled_Course();
-	$a->trigger( 37 ,1, 1);
-	die();
-} );
+
 return new LP_Email_Enrolled_Course();
