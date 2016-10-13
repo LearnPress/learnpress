@@ -52,6 +52,7 @@ $settings = LP()->settings;
                 </p>
             </td>
         </tr>
+        <!--
         <tr>
             <th scope="row">
                 <label for="learn-press-emails-new-order-email-format"><?php _e( 'Email format', 'learnpress' ); ?></label>
@@ -60,6 +61,7 @@ $settings = LP()->settings;
                 <?php learn_press_email_formats_dropdown( array( 'name' => $settings_class->get_field_name( 'emails_new_order_customer[email_format]' ), 'id' => 'learn_press_email_formats', 'selected' => $settings->get( 'emails_new_order_customer.email_format', $default ) ) ); ?>
             </td>
         </tr>
+        -->
         <?php
         $view = learn_press_get_admin_view( 'settings/emails/email-template.php' );
         include_once $view;

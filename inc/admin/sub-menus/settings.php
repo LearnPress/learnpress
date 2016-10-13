@@ -33,7 +33,7 @@ function learn_press_settings_page() {
 		</div>
 	<?php endif; ?>
 
-	<div class="wrap" id="learn-press-admin-settings">
+	<div class="wrap no-subtabs" id="learn-press-admin-settings">
 		<div id="learn-press-updating-message" class="error hide-if-js">
 			<p><?php esc_html_e( 'Settings changed. Updating...', 'learnpress' ); ?></p>
 		</div>

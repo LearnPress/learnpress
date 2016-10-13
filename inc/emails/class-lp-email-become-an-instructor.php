@@ -40,25 +40,25 @@ class LP_Email_Become_An_Instructor extends LP_Email {
 
 		$this->recipient = $user->user_email;
 
-		$this->find['site_title']  = '{site_title}';
-		$this->find['course_name'] = '{course_name}';
-		$this->find['course_date'] = '{course_date}';
-
-		$this->replace['site_title']  = $this->get_blogname();
-		$this->replace['course_name'] = get_the_title( $course_id );
-		$this->replace['course_date'] = get_the_date( null, $course_id );
-
-		$this->object = array(
-			'course' => $course_id,
-			'user'   => $user
+		$this->object = $this->get_common_template_data(
+			$this->email_format == 'plain_text' ? 'plain' : 'html',
+			array(
+				'user_id'        => $user->id,
+				'user_name'      => learn_press_get_profile_display_name( $user ),
+				'course_id'      => $course_id,
+				'course_name'    => get_the_title( $course_id ),
+				'course_url'     => get_the_permalink( $course_id )
+			)
 		);
+
+		$this->variables = $this->data_to_variables( $this->object );
 
 		$return = $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
 
 		return $return;
 	}
 
-	public function get_content_html() {
+	/*public function get_content_html() {
 		ob_start();
 		learn_press_get_template( $this->template_html, array(
 			'email_heading' => $this->get_heading(),
@@ -105,7 +105,7 @@ class LP_Email_Become_An_Instructor extends LP_Email {
                     learn_press_user_profile_link( $user->id )
                 );
             }
-        }
+        }*/
 }
 
 return new LP_Email_Become_An_Instructor();

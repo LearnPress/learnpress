@@ -1,21 +1,9 @@
-<?php
-/**
- * @author  ThimPress
- * @package LearnPress/Classes
- * @version 1.0
- */
+{{header}}
 
-if ( !defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
-$user_course = learn_press_get_course_user( $course->id );
+<p>Dear <strong>{{course_user_name}},</strong></p>
 
-?>
-<?php do_action( 'learn_press_email_header', $email_heading ); ?>
+<p>Congratulation! The course you created here <a href="{{course_edit_url}}">{{course_name}}</a> is available now.</p>
 
-	<p><?php printf( __( 'Dear <strong>%s</strong>', 'learnpress' ), $user_course->display_name ); ?></p>
-	<p><?php printf( __( 'Congratulation! The course you created (< a href="%s">%s</a>) is available now.', 'learnpress' ), get_the_permalink( $course->id ), get_the_title( $course->id ) ); ?></p>
-	<p><?php _e( 'Best regards,', 'learnpress' ); ?></p>
-	<p><?php _e( '<em>Administration</em>', 'learnpress' ); ?></p>
+<p>Click <a href="{{course_url}}">{{course_url}}</a> to view your course.</p>
 
-<?php do_action( 'learn_press_email_footer', $footer_text ); ?>
+{{footer}}

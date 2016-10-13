@@ -49,6 +49,7 @@ $settings = LP()->settings;
 			</p>
 		</td>
 	</tr>
+	<!--
 	<tr>
 		<th scope="row">
 			<label for="learn-press-emails-enrolled-course-email-format"><?php _e( 'Email format', 'learnpress' ); ?></label>
@@ -56,7 +57,7 @@ $settings = LP()->settings;
 		<td>
 			<?php learn_press_email_formats_dropdown( array( 'name' => $settings_class->get_field_name( 'emails_enrolled_course[email_format]' ), 'id' => 'learn_press_email_formats', 'selected' => $settings->get( 'emails_enrolled_course.email_format' ) ) ); ?>
 		</td>
-	</tr>
+	</tr>-->
 	<?php
 	$view = learn_press_get_admin_view( 'settings/emails/email-template.php' );
 	include_once $view;

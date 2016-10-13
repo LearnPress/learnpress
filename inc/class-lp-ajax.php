@@ -364,6 +364,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 								'%d', '%d', '%s', '%s', '%s', '%s', '%d', '%s'
 							)
 						);
+						print_r($wpdb);
 						$user_item_id = $wpdb->insert_id;
 					}
 				}

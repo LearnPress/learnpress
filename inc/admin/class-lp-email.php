@@ -97,4 +97,6 @@ class LP_Email_bakup {
 
 		return wp_mail( $this->to, $this->filter( $this->subject ), stripslashes( $this->message ), $headers );
 	}
+
+
 }

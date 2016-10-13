@@ -51,14 +51,14 @@ $settings = LP()->settings;
 			</p>
 		</td>
 	</tr>
-	<tr>
+	<!--<tr>
 		<th scope="row">
 			<label for="learn-press-emails-new-order-email-format"><?php _e( 'Email format', 'learnpress' ); ?></label>
 		</th>
 		<td>
 			<?php learn_press_email_formats_dropdown( array( 'name' => $settings_class->get_field_name( 'emails_user_order_completed[email_format]' ), 'id' => 'learn_press_email_formats', 'selected' => $settings->get( 'emails_user_order_completed.email_format', $default ) ) ); ?>
 		</td>
-	</tr>
+	</tr>-->
 	<?php
 	$view = learn_press_get_admin_view( 'settings/emails/email-template.php' );
 	include_once $view;

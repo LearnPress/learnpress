@@ -1,22 +1,7 @@
-<?php
-/**
- * @author  ThimPress
- * @package LearnPress/Templates
- * @version 1.0
- */
+{{header}}
 
-if ( !defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
-?>
-<?php do_action( 'learn_press_email_header', $email_heading ); ?>
+<p>You have been enrolled the course <a href="{{course_url}}">{{course_name}}</a>.</p>
 
-<p>
-	<?php printf( __( 'You have been enrolled the course <a href="%s">%s</a>.', 'learnpress' ), get_the_permalink( $course->id ), get_the_title( $course->id ) ); ?>
-</p>
+<p>Please <a href="{{login_url}}">login</a> and start learning now.</p>
 
-<p>
-	<?php printf( __( 'Please <a href="%s">login</a> and start learning now.', 'learnpress' ), $login_url ); ?>
-</p>
-
-<?php do_action( 'learn_press_email_footer', $footer_text ); ?>
+{{footer}}
