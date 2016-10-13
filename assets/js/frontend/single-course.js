@@ -409,7 +409,7 @@ if (typeof LearnPress === 'undefined') {
 				$button = $(e.target),
 				security = $button.data('security'),
 				do_finish = false;
-			console.debug(e.originalEvent);
+
 			if (typeof e.originalEvent === 'undefined') {
 				that._doFinishQuiz(security);
 			} else {

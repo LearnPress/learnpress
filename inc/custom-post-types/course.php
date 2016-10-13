@@ -545,7 +545,7 @@ if (!class_exists('LP_Course_Post_Type')) {
                         'class' => 'lp-course-price-field lp-course-sale_price-field' . ($payment != 'yes' ? ' hide-if-js' : '')
                     ),
                     array(
-                        'name' => __('Start', 'learnpress'),
+                        'name' => __('Sale start date', 'learnpress'),
                         'id' => "{$prefix}sale_start",
                         'type' => 'datetime',
                         'desc' => '',
@@ -553,7 +553,7 @@ if (!class_exists('LP_Course_Post_Type')) {
                         'class' => 'lp-course-price-field lp-course-sale_start-field' . ($payment != 'yes' ? ' hide-if-js' : '')
                     ),
                     array(
-                        'name' => __('End', 'learnpress'),
+                        'name' => __('Sale end date', 'learnpress'),
                         'id' => "{$prefix}sale_end",
                         'type' => 'datetime',
                         'desc' => '',

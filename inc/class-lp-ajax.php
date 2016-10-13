@@ -344,27 +344,21 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 						$item_type = get_post_type( $item_id );
 					}
 					if ( apply_filters( 'learn_press_insert_user_item_data', true, $item_id, $course_id ) && $can_view_item != 'preview' ) {
-						$insert       = $wpdb->insert(
-							$wpdb->prefix . 'learnpress_user_items',
-							apply_filters(
+
+                                                $user_item_id = learn_press_update_user_item_field( apply_filters(
 								'learn_press_user_item_data',
 								array(
-									'user_id'    => get_current_user_id(),
-									'item_id'    => learn_press_get_request( 'id' ),
-									'item_type'  => $item_type,
-									'start_time' => $item_type == 'lp_lesson' ? current_time( 'mysql' ) : '0000-00-00 00:00:00',
-									'end_time'   => '0000-00-00 00:00:00',
-									'status'     => $item_type == 'lp_lesson' ? 'started' : 'viewed',
-									'ref_id'     => $course_id,
-									'ref_type'   => 'lp_course',
-									'parent_id'  => $user->get_course_history_id( $course_id )
-								)
-							),
-							array(
-								'%d', '%d', '%s', '%s', '%s', '%s', '%d', '%s'
-							)
-						);
-						$user_item_id = $wpdb->insert_id;
+                                                                        'status'     => 'started',
+                                                                        'start_time' => $item_type == 'lp_lesson' ? current_time( 'mysql' ) : '0000-00-00 00:00:00',
+                                                                        'end_time'   => '0000-00-00 00:00:00',
+                                                                        'item_id'    => learn_press_get_request( 'id' ),
+                                                                        'ref_id'     => $course_id,
+                                                                        'user_id'    => get_current_user_id(),
+                                                                        'item_type'  => $item_type,
+                                                                        'ref_type'   => LP_COURSE_CPT,
+                                                                        'parent_id'  => $user->get_course_history_id( $course_id )
+                                                                )
+							) );
 					}
 				}
 				// display content item

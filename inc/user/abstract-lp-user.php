@@ -309,8 +309,8 @@ class LP_Abstract_User {
 					'item_id'    => $quiz_id,
 					'ref_id'     => $course_id,
 					'user_id'    => $this->id,
-					'item_type'  => 'lp_quiz',
-					'ref_type'   => 'lp_course',
+					'item_type'  => LP_QUIZ_CPT,
+					'ref_type'   => LP_COURSE_CPT,
 					'parent_id'  => $this->get_course_history_id( $course_id )
 				)
 			);
