@@ -288,24 +288,32 @@ function learn_press_setup_user_course_data( $user_id, $course_id, $force = fals
 	if ( $item_ids ) {
 		$in    = implode( ', ', $item_ids );
 		$query = $wpdb->prepare( "
-		SELECT * FROM {$wpdb->prefix}learnpress_user_items t1
-		WHERE user_id = %d
-		AND item_id = %d
-		UNION
-		(
-			SELECT * FROM {$wpdb->prefix}learnpress_user_items t2
-			WHERE user_id = %d AND ref_id = %d
-			AND user_item_id = (
-				SELECT MAX(user_item_id) FROM {$wpdb->prefix}learnpress_user_items
-				WHERE user_id = %d and ref_id = %d
-				AND item_id = t2.item_id
+			SELECT * FROM {$wpdb->prefix}learnpress_user_items t1
+			WHERE user_id = %d
+			AND item_id = %d
+			UNION
+			(
+				SELECT * FROM {$wpdb->prefix}learnpress_user_items t2
+				WHERE user_id = %d AND ref_id = %d
+				AND user_item_id = (
+					SELECT MAX(user_item_id) FROM {$wpdb->prefix}learnpress_user_items
+					WHERE user_id = %d and ref_id = %d
+					AND item_id = t2.item_id
+				)
+				AND item_id IN({$in})
 			)
-			AND item_id IN({$in})
-		)
-		ORDER BY user_item_id ASC
-	", $user_id, $course_id, $user_id, $course_id, $user_id, $course_id );
-		$items = $wpdb->get_results( $query );
-		if ( !$items ) {
+			ORDER BY user_item_id ASC
+		", $user_id, $course_id, $user_id, $course_id, $user_id, $course_id );
+	}else{
+		$query = $wpdb->prepare( "
+			SELECT * FROM {$wpdb->prefix}learnpress_user_items t1
+			WHERE user_id = %d
+			AND item_id = %d
+		", $user_id, $course_id);
+	}
+	$items = $wpdb->get_results( $query );
+
+	if ( !$items ) {
 			return;
 		}
 		$item_statuses = LP_Cache::get_item_statuses( false, array() );
@@ -318,7 +326,6 @@ function learn_press_setup_user_course_data( $user_id, $course_id, $force = fals
 			$item_statuses[$user_id . '-' . $course_id . '-' . $item->item_id] = $item->status;
 		}
 		LP_Cache::set_item_statuses( $item_statuses );
-	}
 }
 
 /**

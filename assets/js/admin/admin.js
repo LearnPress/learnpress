@@ -821,7 +821,8 @@ jQuery(document).ready( function($) {
 			});
 		}
 		
-		$('.rwmb-datetime[name$="lp_sale_start"')
+		if( jQuery('.rwmb-datetime[name$="lp_sale_start"]').first().length ){
+			jQuery('.rwmb-datetime[name$="lp_sale_start"]')
 				.first()
 				.datepicker(
 					'option', 
@@ -829,7 +830,7 @@ jQuery(document).ready( function($) {
 					function(a, b) { 
 						var minDate = new Date(a);
 						console.log(minDate);
-						$('.rwmb-datetime[name$="lp_sale_end"')
+						jQuery('.rwmb-datetime[name$="lp_sale_end"')
 						.first()
 						.datepicker(
 							'option', 
@@ -838,6 +839,7 @@ jQuery(document).ready( function($) {
 						);
 					}
 				);
+		}
 		
 	});
 	
