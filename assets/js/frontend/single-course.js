@@ -290,7 +290,7 @@ if (typeof LearnPress === 'undefined') {
 				return;
 			}
 			this.cached[hash] = Math.random();
-			console.log('push:' + hash)
+			//console.log('push:' + hash)
 		},
 		_initHooks         : function () {
 			LP.Hook.addAction('learn_press_update_item_content', this.updateItemContent);
@@ -433,6 +433,7 @@ if (typeof LearnPress === 'undefined') {
 					that.$('.course-item-' + that.currentItem.get('id'))
 						.addClass('item-completed');
 					that.$('.learn-press-course-results-progress').replaceWith(response.html.progress);
+					that.$('.learn-press-course-buttons').replaceWith($(response.html.buttons));
 					LP.setUrl(that.currentItem.get('url'));
 				}
 			});
@@ -454,6 +455,7 @@ if (typeof LearnPress === 'undefined') {
 							that.$('.course-item-' + that.currentItem.get('id'))
 								.removeClass('item-completed');
 							that.$('.learn-press-course-results-progress').replaceWith(response.html.progress);
+							that.$('.learn-press-course-buttons').replaceWith($(response.html.buttons));
 							that.loadQuiz();
 						}
 					});
@@ -528,7 +530,6 @@ if (typeof LearnPress === 'undefined') {
 		removePopup        : function () {
 			this.popup = null;
 			this.model.items.forEach(function (m) {
-				console.log(m.get('current'));
 				m.set('current', false);
 			});
 		},

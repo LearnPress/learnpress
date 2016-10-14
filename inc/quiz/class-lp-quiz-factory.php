@@ -193,7 +193,8 @@ class LP_Quiz_Factory {
 				LP_Cache::set_quiz_status( $user->id . '-' . $course->id . '-' . $quiz_id, $result->status );
 				$response['html'] = array(
 					'content'  => learn_press_get_template_content( 'single-course/content-item-lp_quiz.php' ),
-					'progress' => learn_press_get_template_content( 'single-course/progress.php' )
+					'progress' => learn_press_get_template_content( 'single-course/progress.php' ),
+					'buttons' => learn_press_get_template_content( 'single-course/buttons.php' )
 				);
 			} else {
 				$response['result'] = 'error';
@@ -231,7 +232,8 @@ class LP_Quiz_Factory {
 				$response['status']         = $result->status;
 				$response['html']           = array(
 					'content'  => learn_press_get_template_content( 'single-course/content-item-lp_quiz.php' ),
-					'progress' => learn_press_get_template_content( 'single-course/progress.php' )
+					'progress' => learn_press_get_template_content( 'single-course/progress.php' ),
+					'buttons'  => learn_press_get_template_content( 'single-course/buttons.php' )
 				);
 			} else {
 				$response['result'] = 'error';

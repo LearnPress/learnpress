@@ -9,14 +9,14 @@ if ( LEARN_PRESS_UPDATE_DATABASE ) {
 	$wpdb->query( "START TRANSACTION;" );
 
 	try {
-                $table = $wpdb->prefix . 'learnpress_user_items';
-                if ( $wpdb->get_var("SHOW TABLES LIKE '{$table}'") === $table ) {
-                    $wpdb->query( "TRUNCATE {$table}" );
-                }
-                $table = $wpdb->prefix . 'learnpress_user_itemmeta';
-                if ( $wpdb->get_var("SHOW TABLES LIKE '{$table}'") === $table ) {
-                    $wpdb->query( "TRUNCATE {$table}" );
-                }
+		$table = $wpdb->prefix . 'learnpress_user_items';
+		if ( $wpdb->get_var( "SHOW TABLES LIKE '{$table}'" ) === $table ) {
+			$wpdb->query( "TRUNCATE {$table}" );
+		}
+		$table = $wpdb->prefix . 'learnpress_user_itemmeta';
+		if ( $wpdb->get_var( "SHOW TABLES LIKE '{$table}'" ) === $table ) {
+			$wpdb->query( "TRUNCATE {$table}" );
+		}
 		$query = $wpdb->prepare( "
 			INSERT INTO {$wpdb->prefix}learnpress_user_items(`user_item_id`, `user_id`, `item_id`, `item_type`, `start_time`, `end_time`, `status`, `ref_id`, `ref_type`)
 			(
@@ -101,24 +101,26 @@ if ( LEARN_PRESS_UPDATE_DATABASE ) {
 		//$query = "ALTER TABLE {$wpdb->prefix}learnpress_user_courses` MODIFY COLUMN `user_course_item_id` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0;";
 
 		// remove auto-increment
-                $table = $wpdb->prefix . 'learnpress_user_course_items';
-                if ( $wpdb->get_var("SHOW TABLES LIKE '{$table}'") === $table ) {
-                    $query = "ALTER TABLE {$wpdb->prefix}learnpress_user_course_items MODIFY COLUMN `user_course_item_id` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0;";
-                    $wpdb->query( $query );
-                }
+		$table = $wpdb->prefix . 'learnpress_user_course_items';
+		if ( $wpdb->get_var( "SHOW TABLES LIKE '{$table}'" ) === $table ) {
+			$query = "ALTER TABLE {$wpdb->prefix}learnpress_user_course_items MODIFY COLUMN `user_course_item_id` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0;";
+			$wpdb->query( $query );
+		}
 
-		$old_tables = array('user_courses', 'user_course_items', 'user_course_itemmeta', 'user_quizzes', 'user_quizmeta', 'user_lessons');
-		foreach($old_tables as $old_table){
-                        $table = $wpdb->prefix . 'learnpress_' . $old_table;
-                        if ( $wpdb->get_var("SHOW TABLES LIKE '{$table}'") === $table ) {
-                            $query_rename_tables = "RENAME table {$table} TO __{$table};";
-                            // query for renaming unused tables to backup
-                            // do not remove it permanently
-                            @$wpdb->query($query_rename_tables);
-                        }
+		$old_tables = array( 'user_courses', 'user_course_items', 'user_course_itemmeta', 'user_quizzes', 'user_quizmeta', 'user_lessons' );
+		foreach ( $old_tables as $old_table ) {
+			$table = $wpdb->prefix . 'learnpress_' . $old_table;
+			if ( $wpdb->get_var( "SHOW TABLES LIKE '{$table}'" ) === $table ) {
+				$query_rename_tables = "RENAME table {$table} TO __{$table};";
+				// query for renaming unused tables to backup
+				// do not remove it permanently
+				@$wpdb->query( $query_rename_tables );
+			}
 		}
 
 		learn_press_update_log( '2.0', array( 'time' => time() ) );
+
+		do_action( 'learn_press_upgrade_database', '2.0' );
 	} catch ( Exception $ex ) {
 		$wpdb->query( "ROLLBACK;" );
 	}

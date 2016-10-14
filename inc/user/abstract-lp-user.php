@@ -136,7 +136,7 @@ class LP_Abstract_User {
 		}
 
 		global $wpdb;
-		echo $query = $wpdb->prepare( "
+		$query = $wpdb->prepare( "
 			SELECT ui.*
 			FROM {$wpdb->prefix}learnpress_user_items ui
 			LEFT JOIN {$wpdb->posts} p ON p.ID = ui.item_id
@@ -149,7 +149,6 @@ class LP_Abstract_User {
 
 			}
 		}
-		print_r( $items );
 	}
 
 	/**

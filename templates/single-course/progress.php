@@ -76,7 +76,7 @@ $course_results = $course->evaluate_course_results();
             </div>
         </div>
     </div>
-    <?php if ($user->has_enrolled_course($course->id)): ?>
+    <?php /*if ($user->has_enrolled_course($course->id)): ?>
         <?php learn_press_get_template('single-course/buttons.php'); ?>
-    <?php endif; ?>
+    <?php endif;*/ ?>
 </div>

@@ -50,12 +50,20 @@ $retake_button_text   = apply_filters( 'learn_press_retake_button_text', __( 'Re
 	# Enrolled Course
 	# -------------------------------
 	elseif ( $user->has( 'enrolled-course', $course->id ) ): ?>
+		<?php
+		$can_finish = $user->can_finish_course( $course->id );
+		if ( $can_finish ) {
+			$finish_course_security = wp_create_nonce( sprintf( 'learn-press-finish-course-' . $course->id . '-' . $user->id ) );
+		} else {
+			$finish_course_security = '';
+		}
+		?>
 		<button
 			id="learn-press-finish-course"
-			class="button-finish-course"
+			class="button-finish-course<?php echo !$can_finish ? ' hide-if-js' : ''; ?>"
 			data-block-content="no"
 			data-id="<?php echo esc_attr( $course->id ); ?>"
-			data-security="<?php echo esc_attr( wp_create_nonce( sprintf( 'learn-press-finish-course-' . $course->id . '-' . $user->id ) ) ); ?>">
+			data-security="<?php echo esc_attr( $finish_course_security ); ?>">
 			<?php esc_html_e( 'Finish course', 'learnpress' ); ?>
 		</button>
 	<?php elseif ( $user->can( 'enroll-course', $course->id ) ) : ?>
