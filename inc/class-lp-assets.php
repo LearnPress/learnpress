@@ -244,6 +244,10 @@ class LP_Assets {
 
 		// admin
 		$styles->add( 'learn-press-admin', $default_path . 'css/admin/admin' . $suffix . '.css' );
+		$styles->add( 'learn-press-jquery.ui.datepicker', $default_path . 'css/admin/jquery.ui.datepicker' . $suffix . '.css' );
+		$styles->add( 'learn-press-jquery.ui.theme', $default_path . 'css/admin/jquery.ui.theme' . $suffix . '.css' );
+		$styles->add( 'learn-press-jquery.ui.core', $default_path . 'css/admin/jquery.ui.core' . $suffix . '.css' );
+		$styles->add( 'learn-press-jquery.ui.slider', $default_path . 'css/admin/jquery.ui.slider' . $suffix . '.css' );
 		$styles->add( 'learn-press-mb-course', $default_path . 'css/admin/meta-box-course' . $suffix . '.css' );
 		$styles->add( 'learn-press-mb-question', $default_path . 'css/admin/meta-box-question' . $suffix . '.css' );
 		$styles->add( 'learn-press-mb-order', $default_path . 'css/admin/meta-box-order' . $suffix . '.css' );
@@ -460,7 +464,8 @@ class LP_Assets {
 		$data = !empty( self::$wp_localize_scripts[$handle] ) ? self::$wp_localize_scripts[$handle] : false;
 		if ( wp_script_is( $handle ) && $data ) {
 			$name = str_replace( '-', '_', $handle ) . '_localize';
-                        var_dump($name); die();
+			var_dump( $name );
+			die();
 			unset( self::$wp_localize_scripts[$handle] );
 			wp_localize_script( $handle, $name, apply_filters( $name, $data ) );
 		}
@@ -569,14 +574,14 @@ class LP_Assets {
 		if ( isset( self::$_enqueue_scripts[$handle] ) ) {
 			unset( self::$_enqueue_scripts[$handle] );
 		}
-		wp_deregister_script($handle);
+		wp_deregister_script( $handle );
 	}
 
 	public static function remove_style( $handle ) {
 		if ( isset( self::$_enqueue_styles[$handle] ) ) {
 			unset( self::$_enqueue_styles[$handle] );
 		}
-		wp_deregister_style($handle);
+		wp_deregister_style( $handle );
 
 	}
 
@@ -691,6 +696,12 @@ class LP_Assets {
 
 			if ( in_array( $screen_id, learn_press_get_screens() ) || in_array( $page_id, learn_press_get_admin_pages() ) ) {
 				self::enqueue_style( 'learn-press-global' );
+
+				self::enqueue_style( 'learn-press-jquery.ui.datepicker' );
+				self::enqueue_style( 'learn-press-jquery.ui.theme' );
+				self::enqueue_style( 'learn-press-jquery.ui.core' );
+				self::enqueue_style( 'learn-press-jquery.ui.slider' );
+
 				self::enqueue_style( 'learn-press-admin' );
 				self::enqueue_style( 'learn-press-icons' );
 				self::enqueue_script( 'learn-press-global' );
@@ -732,6 +743,7 @@ class LP_Assets {
 		}
 		self::enqueue_script( 'learn-press-jalerts' );
 		self::enqueue_script( 'learn-press-global' );
+
 		self::enqueue_script( 'learn-press-js' );
 //                self::enqueue_script( 'learn-press-add-to-cart' );
 		if ( learn_press_is_course() ) {

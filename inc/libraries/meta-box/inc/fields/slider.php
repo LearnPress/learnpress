@@ -11,9 +11,6 @@ if ( ! class_exists( 'RWMB_Slider_Field' ) ) {
 		 */
 		static function admin_enqueue_scripts() {
 			$url = RWMB_CSS_URL . 'jqueryui';
-			wp_enqueue_style( 'jquery-ui-core', "{$url}/jquery.ui.core.css", array(), '1.8.17' );
-			wp_enqueue_style( 'jquery-ui-theme', "{$url}/jquery.ui.theme.css", array(), '1.8.17' );
-			wp_enqueue_style( 'jquery-ui-slider', "{$url}/jquery.ui.slider.css", array(), '1.8.17' );
 			wp_enqueue_style( 'rwmb-slider', RWMB_CSS_URL . 'slider.css' );
 
 			wp_enqueue_script( 'rwmb-slider', RWMB_JS_URL . 'slider.js', array( 'jquery-ui-slider', 'jquery-ui-widget', 'jquery-ui-mouse', 'jquery-ui-core' ), RWMB_VER, true );
