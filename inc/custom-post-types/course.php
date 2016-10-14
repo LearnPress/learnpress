@@ -540,7 +540,7 @@ if (!class_exists('LP_Course_Post_Type')) {
                         'type' => 'number',
                         'min' => 0,
                         'step' => 0.01,
-                        'desc' => '',
+                        'desc' => '<a href="#" id="'.$prefix.'sale_price_schedule">'.__('Schedule', 'learnpress').'</a>',
                         'std' => $sale_price,
                         'class' => 'lp-course-price-field lp-course-sale_price-field' . ($payment != 'yes' ? ' hide-if-js' : '')
                     ),
@@ -548,9 +548,9 @@ if (!class_exists('LP_Course_Post_Type')) {
                         'name' => __('Sale start date', 'learnpress'),
                         'id' => "{$prefix}sale_start",
                         'type' => 'datetime',
-                        'desc' => '',
+                        'desc' => '<a href="#" id="'.$prefix.'sale_price_schedule_cancel">'.__('Cancel', 'learnpress').'</a>',
                         'std' => $start_date,
-                        'class' => 'lp-course-price-field lp-course-sale_start-field' . ($payment != 'yes' ? ' hide-if-js' : '')
+                        'class' => 'lp-course-sale_start-field hide'
                     ),
                     array(
                         'name' => __('Sale end date', 'learnpress'),
@@ -558,7 +558,7 @@ if (!class_exists('LP_Course_Post_Type')) {
                         'type' => 'datetime',
                         'desc' => '',
                         'std' => $end_date,
-                        'class' => 'lp-course-price-field lp-course-sale_end-field' . ($payment != 'yes' ? ' hide-if-js' : '')
+                        'class' => 'lp-course-sale_end-field hide'
                     )
                 );
             } else {
