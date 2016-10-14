@@ -821,7 +821,7 @@ jQuery(document).ready( function($) {
 			});
 		}
 		
-		$('.rwmb-datetime[name$="lp_sale_start"')
+		$('.rwmb-datetime[name$="lp_sale_start"]')
 				.first()
 				.datepicker(
 					'option', 
