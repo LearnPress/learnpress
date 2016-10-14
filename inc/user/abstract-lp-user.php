@@ -296,7 +296,6 @@ class LP_Abstract_User {
 	 * @return array|void
 	 */
 	public function start_quiz( $quiz_id, $course_id = 0 ) {
-
 		if ( !apply_filters( 'learn_press_before_user_start_quiz', true, $quiz_id, $course_id, $this->id ) ) {
 			return false;
 		}

@@ -44,4 +44,3 @@ if ( !$order->get_items() ) {
 	<?php endforeach; ?>
 	</tbody>
 </table>
-

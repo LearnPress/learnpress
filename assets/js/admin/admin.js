@@ -820,24 +820,24 @@ jQuery(document).ready( function($) {
 			  	var switchery = new Switchery( html, { size: 'small' } );
 			});
 		}
-		
-		$('.rwmb-datetime[name$="lp_sale_start"')
-				.first()
-				.datepicker(
-					'option', 
-					'onSelect', 
-					function(a, b) { 
-						var minDate = new Date(a);
-						console.log(minDate);
-						$('.rwmb-datetime[name$="lp_sale_end"')
-						.first()
-						.datepicker(
-							'option', 
-							'minDate', 
-							minDate
-						);
-					}
-				);
+		if ( typeof $.fn.datepicker !== 'undefined' ) {
+                    $('.rwmb-datetime[name$="lp_sale_start"')
+                                    .first()
+                                    .datepicker(
+                                            'option', 
+                                            'onSelect', 
+                                            function(a, b) { 
+                                                    var minDate = new Date(a);
+                                                    $('.rwmb-datetime[name$="lp_sale_end"')
+                                                    .first()
+                                                    .datepicker(
+                                                            'option', 
+                                                            'minDate', 
+                                                            minDate
+                                                    );
+                                            }
+                                    );
+                }
 		
 	});
 	

@@ -1,23 +1,9 @@
-<?php
-/**
- * @author ThimPress
- * @package LearnPress/Templates
- * @version 1.0
- */
+== {{email_heading}} ==
 
-if ( !defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
-?>
+Dear {{user_name}}
+	
+You have been finished course {{course_url}} ({{course_name}}).
 
-<?php echo "= " . $email_heading . " =\n\n";?>
-
-<?php printf( __( 'You have been finished course "%s" (%s).', 'learnpress' ), get_the_title( $course_id ), get_the_permalink( $course_id ) ); echo "\n\n"; ?>
-
-<?php printf( __( 'Please go to your profile %s and view your course results.', 'learnpress' ), $profile_url ); echo "\n\n"; ?>
-
-<?php printf( __( 'Best regards,', 'learnpress' ) ); echo "\n\n"; ?>
-
-<?php printf( __( 'Administration', 'learnpress' ) ); echo "\n\n"; ?>
-
-<?php echo $footer_text . "\n\n"; ?>
+Please got to your profile {{user_profile_url}} and view your course results.
+	
+{{footer_text}}

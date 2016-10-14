@@ -348,13 +348,13 @@ if ( !class_exists( 'LP_AJAX' ) ) {
                                                 $user_item_id = learn_press_update_user_item_field( apply_filters(
 								'learn_press_user_item_data',
 								array(
-                                                                        'status'     => 'started',
-                                                                        'start_time' => $item_type == 'lp_lesson' ? current_time( 'mysql' ) : '0000-00-00 00:00:00',
-                                                                        'end_time'   => '0000-00-00 00:00:00',
-                                                                        'item_id'    => learn_press_get_request( 'id' ),
-                                                                        'ref_id'     => $course_id,
                                                                         'user_id'    => get_current_user_id(),
+                                                                        'item_id'    => learn_press_get_request( 'id' ),
+                                                                        'start_time' => $item_type == LP_LESSON_CPT ? current_time( 'mysql' ) : '0000-00-00 00:00:00',
+                                                                        'end_time'   => '0000-00-00 00:00:00',
+                                                                        'ref_id'     => $course_id,
                                                                         'item_type'  => $item_type,
+                                                                        'status'     => $item_type == LP_LESSON_CPT ? 'started' : 'viewed',
                                                                         'ref_type'   => LP_COURSE_CPT,
                                                                         'parent_id'  => $user->get_course_history_id( $course_id )
                                                                 )

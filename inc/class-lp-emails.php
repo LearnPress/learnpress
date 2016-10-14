@@ -25,7 +25,7 @@ class LP_Emails {
 	 *
 	 * @since 1.0
 	 * @static
-	 * @return LP_Mail instance
+	 * @return LP_Emails instance
 	 */
 	public static function instance() {
 		if ( is_null( self::$_instance ) ) {
@@ -50,6 +50,9 @@ class LP_Emails {
 	}
 
 	public function __construct() {
+		if ( did_action( 'learn_press_emails_init' ) ) {
+			return;
+		}
 		LP()->_include( 'emails/class-lp-email.php' );
 		$this->emails['LP_Email_New_Order']            = include( 'emails/class-lp-email-new-order.php' );
 		$this->emails['LP_Email_New_Order_Customer']   = include( 'emails/class-lp-email-new-order-customer.php' );
@@ -74,12 +77,26 @@ class LP_Emails {
 		do_action( 'learn_press_emails_init', $this );
 	}
 
-	public function email_header( $heading ) {
+	public function email_header( $heading, $return = false ) {
+		ob_start();
 		learn_press_get_template( 'emails/email-header.php', array( 'email_heading' => $heading ) );
+		$header = ob_get_clean();
+		if ( !$return ) {
+			echo $header;
+		} else {
+			return $header;
+		}
 	}
 
-	public function email_footer( $footer_text ) {
+	public function email_footer( $footer_text, $return = false ) {
+		ob_start();
 		learn_press_get_template( 'emails/email-footer.php', array( 'footer_text' => $footer_text ) );
+		$footer = ob_get_clean();
+		if ( !$return ) {
+			echo $footer;
+		} else {
+			return $footer;
+		}
 	}
 
 	public static function send_email() {

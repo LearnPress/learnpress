@@ -188,10 +188,10 @@ function learn_press_email_formats_dropdown( $args = array() ) {
 		)
 	);
 	$formats = array(
-                'text_message'  => __( 'Text message', 'learnpress' ),
-		'plain_text'    => __( 'Plain text', 'learnpress' ),
-		'html'          => __( 'HTML', 'learnpress' ),
-		'multipart'     => __( 'Multipart', 'learnpress' )
+		//'text_message' => __( 'Text message', 'learnpress' ),
+		'plain_text'   => __( 'Plain text', 'learnpress' ),
+		'html'         => __( 'HTML', 'learnpress' ),
+		//'multipart'    => __( 'Multipart', 'learnpress' )
 	);
 	$output  = sprintf( '<select name="%s" id="%s" class="%s" %s>', $args['name'], $args['id'], $args['class'], '' );
 	foreach ( $formats as $name => $text ) {

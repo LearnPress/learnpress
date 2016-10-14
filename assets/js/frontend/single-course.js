@@ -528,7 +528,6 @@ if (typeof LearnPress === 'undefined') {
 		removePopup        : function () {
 			this.popup = null;
 			this.model.items.forEach(function (m) {
-				console.log(m.get('current'));
 				m.set('current', false);
 			});
 		},

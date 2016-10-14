@@ -148,7 +148,7 @@
 	color: #444;
 }
 #course_curriculum .curriculum-section.lp-empty-section .curriculum-section-content{
-	display: none;
+	_display: none;
 }
 #course_curriculum .curriculum-section-items{
 	border-collapse: collapse;

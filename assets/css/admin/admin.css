@@ -31,6 +31,20 @@
 .post-type-lp_course #course_curriculum .curriculum-section-items .lp-item-empty td.section-item-input.hover {
   padding-left: 0;
 }
+#learn-press-admin-settings #learn_press_email_formats {
+  margin-bottom: 10px;
+}
+#learn-press-admin-settings .learn-press-email-variables {
+  margin-left: 0;
+  margin-top: 5px;
+}
+#learn-press-admin-settings .learn-press-email-variables li {
+  display: inline-block;
+  cursor: pointer;
+}
+#learn-press-admin-settings .learn-press-email-variables li:hover {
+  color: #0085ba;
+}
 #learn-press-admin-settings .nav-tab-wrapper {
   margin-bottom: 20px;
 }
@@ -47,6 +61,8 @@
 }
 #learn-press-admin-settings .subsubsub li a {
   display: block;
+  outline: none;
+  box-shadow: none;
 }
 #learn-press-admin-settings .learn-press-settings-wrap {
   float: left;
@@ -64,6 +80,17 @@
   bottom: 0;
   border-left: 1px solid #DDD;
   margin-left: -30px;
+}
+#learn-press-admin-settings.no-subtabs .learn-press-settings-wrap {
+  float: none;
+  margin-left: 0;
+  padding-left: 25px;
+}
+#learn-press-admin-settings.no-subtabs .learn-press-settings-wrap:before {
+  display: none;
+}
+#learn-press-admin-settings.no-subtabs .subsubsub {
+  display: none;
 }
 /* message box */
 #learn-press-message-box-block {

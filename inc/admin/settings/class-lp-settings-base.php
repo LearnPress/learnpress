@@ -91,7 +91,7 @@ class LP_Settings_Base {
 					add_action( 'learn_press_section_' . $this->id . '_' . $id, $callback );
 				}
 			}
-
+		self::$current_tab = $current_tab;
 		// hooks
 		add_action( 'learn_press_sections_' . $this->id, array( $this, 'output_sections' ) );
 		add_action( 'learn_press_settings_' . $this->id, array( $this, 'output' ) );
@@ -121,6 +121,7 @@ class LP_Settings_Base {
 			}
 			echo '</ul>';
 			//echo '<div class="clear"></div>';
+		}else{
 		}
 	}
 
@@ -138,7 +139,7 @@ class LP_Settings_Base {
 		foreach ( $_POST as $k => $v ) {
 			if ( ( strpos( $k, 'learn_press_' ) === false ) || ( !apply_filters( 'learn_press_abort_update_option', true, $k ) ) )
 				continue;
-			update_option( $k, apply_filters( 'learn_press_update_option_value', $v, $k ) );
+			update_option( $k, apply_filters( 'learn_press_update_option_value', ( $v ), $k ) );
 		}
 	}
 

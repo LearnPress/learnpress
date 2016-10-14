@@ -22,7 +22,69 @@
 		});
 	}
 
+	function _insertVariableToEditor(edId, variable) {
+		var ed = null,
+			editorId = null,
+			activeEditor = tinyMCE.activeEditor;
+		for (editorId in tinyMCE.editors) {
+			if (editorId == edId) {
+				break;
+			}
+			editorId = null;
+		}
+		if (!editorId) {
+			_insertVariableToTextarea(edId, variable);
+			return;
+		}
+		if(activeEditor && $(activeEditor.getElement()).attr('id') == editorId){
+			activeEditor.execCommand('insertHTML', false, variable);
+			if($(activeEditor.getElement()).is(':visible')){
+				_insertVariableToTextarea(edId, variable);
+			}
+		}else{
+
+		}
+	}
+
+	function _insertVariableToTextarea(eId, varibale) {
+		var $el = $('#' + eId).get(0);
+		if (document.selection) {
+			$el.focus();
+			sel = document.selection.createRange();
+			sel.text = varibale;
+			$el.focus();
+		}
+		else if ($el.selectionStart || $el.selectionStart == '0') {
+			var startPos = $el.selectionStart;
+			var endPos = $el.selectionEnd;
+			var scrollTop = $el.scrollTop;
+			$el.value = $el.value.substring(0, startPos) + varibale + $el.value.substring(endPos, $el.value.length);
+			$el.focus();
+			$el.selectionStart = startPos + varibale.length;
+			$el.selectionEnd = startPos + varibale.length;
+			$el.scrollTop = scrollTop;
+		} else {
+			$el.value += varibale;
+			$el.focus();
+		}
+	}
+
 	function _ready() {
+
+		$('#learn_press_email_formats').change(function () {
+			$('.learn-press-email-template.' + this.value).removeClass('hide-if-js').siblings().addClass('hide-if-js');
+		});
+		$('.learn-press-email-variables').each(function () {
+			var $list = $(this),
+				hasEditor = $list.hasClass('has-editor');
+			$list.on('click', 'li', function () {
+				if (hasEditor) {
+					_insertVariableToEditor($list.attr('data-target'), $(this).data('variable'));
+				} else {
+					_insertVariableToTextarea($list.attr('data-target'), $(this).data('variable'));
+				}
+			})
+		});
 
 		$('.learn-press-dropdown-pages').each(function () {
 			$(this).change(function () {
@@ -120,6 +182,10 @@
 				window.location.href = redirect;
 			}
 		});
+
+		if ($('#learn-press-admin-settings .subsubsub').length) {
+			$('#learn-press-admin-settings').removeClass('no-subtabs')
+		}
 		// hold current settings to know if user changed anything
 		oldData = $('#mainform').serialize();
 	}

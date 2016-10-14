@@ -218,14 +218,40 @@ class LP_Email {
 	 */
 	public $email_text_message_description = '';
 
+	/**
+	 * @var string
+	 */
+	public $template_path = '';
+
+	/**
+	 * @var null
+	 */
+	public $variables = null;
+
+	/**
+	 * @var null
+	 */
+	public $support_variables = null;
+
+	/**
+	 * LP_Email constructor.
+	 */
 	public function __construct() {
 		$this->id = str_replace( '-', '_', $this->id );
 		if ( is_null( $this->template_base ) ) {
 			$this->template_base = LP()->plugin_path( 'templates/' );
 		}
 		if ( $this->is_current() ) {
-			add_filter( 'learn_press_update_option_value', array( $this, '_remove_email_content_from_option' ), 99, 2 );
+			///add_filter( 'learn_press_update_option_value', array( $this, '_remove_email_content_from_option' ), 99, 2 );
 			$this->template_actions();
+		}
+
+		if ( empty( $this->template_path ) ) {
+			$this->template_path = learn_press_template_path();
+		}
+
+		if ( !$this->object ) {
+			$this->object = array();
 		}
 
 		$this->heading      = LP()->settings->get( 'emails_' . $this->id . '.heading', $this->default_heading );
@@ -322,7 +348,12 @@ class LP_Email {
 	}
 
 	public function format_string( $string ) {
-		return str_replace( apply_filters( 'learn_press_email_format_string_find', $this->find, $this ), apply_filters( 'learn_press_email_format_string_replace', $this->replace, $this ), $string );
+		$search = $replace = array();
+		if ( is_array( $this->variables ) ) {
+			$search  = array_keys( $this->variables );
+			$replace = array_values( $this->variables );
+		}
+		return str_replace( apply_filters( 'learn_press_email_format_string_find', $search, $this ), apply_filters( 'learn_press_email_format_string_replace', $replace, $this ), $string );
 	}
 
 	public function get_recipient() {
@@ -344,6 +375,13 @@ class LP_Email {
 			$email_content = preg_replace( $this->text_search, $this->text_replace, $this->get_content_text_message() );
 		}
 
+		if ( is_array( $this->variables ) ) {
+			$search        = array_keys( $this->variables );
+			$replace       = array_values( $this->variables );
+			$email_content = str_replace( $search, $replace, $email_content );
+		}
+
+
 		return wordwrap( $email_content, 70 );
 	}
 
@@ -355,10 +393,38 @@ class LP_Email {
 		return apply_filters( 'learn_press_email_footer_text_' . $this->id, LP()->settings->get( 'emails_general.footer_text' ) );
 	}
 
-	public function get_content_plain() {
+	public function get_content_html() {
+		$template   = $this->get_template( 'template_html' );
+		$local_file = $this->get_theme_template_file( $template, $this->template_path );
+		if ( file_exists( $local_file ) ) {
+			$args = $this->get_template_data( 'html' );
+			is_array( $args ) && extract( $args );
+			ob_start();
+			include $local_file;
+			$content = ob_get_clean();
+		} else {
+			$template_file = $this->template_base . $template;
+			$content       = LP()->settings->get( 'emails_' . $this->id . '.email_content_html', file_get_contents( $template_file ) );
+			$content       = stripslashes( $content );
+		}
+		return $content;
 	}
 
-	public function get_content_html() {
+	public function get_content_plain() {
+		$template   = $this->get_template( 'template_plain' );
+		$local_file = $this->get_theme_template_file( $template, $this->template_path );
+		if ( file_exists( $local_file ) ) {
+			$args = $this->get_template_data( 'plain' );
+			is_array( $args ) && extract( $args );
+			ob_start();
+			include $local_file;
+			$content = ob_get_clean();
+		} else {
+			$template_file = $this->template_base . $template;
+			$content       = LP()->settings->get( 'emails_' . $this->id . '.email_content_plain', file_get_contents( $template_file ) );
+			$content       = stripslashes( $content );
+		}
+		return $content;
 	}
 
 	public function _prepare_content_text_message() {
@@ -450,7 +516,7 @@ class LP_Email {
 	}
 
 	protected function save_template( $code, $path ) {
-
+		return;
 		if ( current_user_can( 'edit_themes' ) && !empty( $code ) && !empty( $path ) ) {
 			$saved = false;
 			$file  = trailingslashit( get_stylesheet_directory() ) . trailingslashit( learn_press_template_path() ) . $path;
@@ -474,8 +540,8 @@ class LP_Email {
 		}
 	}
 
-	public function get_theme_template_file( $template ) {
-		return trailingslashit( get_stylesheet_directory() ) . trailingslashit( apply_filters( 'learn_press_template_directory', learn_press_template_path(), $template ) ) . $template;
+	public function get_theme_template_file( $template, $template_path = null ) {
+		return trailingslashit( get_stylesheet_directory() ) . trailingslashit( apply_filters( 'learn_press_template_directory', $template_path ? $template_path : learn_press_template_path(), $template ) ) . $template;
 	}
 
 	public function admin_options( $obj ) {
@@ -488,7 +554,7 @@ class LP_Email {
 		add_filter( 'wp_mail_from_name', array( $this, 'get_from_name' ) );
 		add_filter( 'wp_mail_content_type', array( $this, 'get_content_format' ) );
 
-		$message = apply_filters( 'learn_press_mail_content', $this->apply_style_inline( $message ) );
+		$message = apply_filters( 'learn_press_mail_content', $this->apply_style_inline( $message ), $this );
 		$return  = wp_mail( $to, $subject, $message, $headers, $attachments );
 
 		if ( LP()->settings->get( 'debug' ) == 'yes' ) {
@@ -516,5 +582,52 @@ class LP_Email {
 	 */
 	public function get_template_data( $format = 'plain' ) {
 		return array( 'plain_text' => $format == 'plain' );
+	}
+
+	public function get_common_template_data( $format = 'plain' ) {
+		$heading     = strip_tags( $this->get_heading() );
+		$footer_text = strip_tags( $this->get_footer_text() );
+		if ( $format != 'plain' ) {
+			$header = LP_Emails::instance()->email_header( $heading, true );
+			$footer = LP_Emails::instance()->email_footer( $footer_text, true );
+		} else {
+			$header = $heading;
+			$footer = $footer_text;
+		}
+		$admin_user = get_user_by( 'email', get_option( 'admin_email' ) );
+		$common     = array(
+			'header'           => $header,
+			'footer'           => $footer,
+			'email_heading'    => $heading,
+			'footer_text'      => $footer_text,
+			'site_url'         => get_site_url(),
+			'site_title'       => $this->get_blogname(),
+			'site_admin_email' => get_option( 'admin_email' ),
+			'site_admin_name'  => learn_press_get_profile_display_name( $admin_user ),
+			'login_url'        => learn_press_get_login_url(),
+			'plain_text'       => $format == 'plain'
+		);
+		if ( ( $num = func_num_args() ) > 1 ) {
+			for ( $i = 1; $i < $num; $i ++ ) {
+				$a = func_get_arg( $i );
+				if ( is_array( $a ) ) {
+					$common = array_merge( $common, $a );
+				}
+			}
+		}
+		return $common;
+	}
+
+	public function data_to_variables( $data = null ) {
+		if ( !$data ) {
+			$data = $this->get_common_template_data();
+		}
+		$variables = array();
+		if ( is_array( $data ) ) {
+			foreach ( $data as $k => $v ) {
+				$variables["{{" . $k . "}}"] = $v;
+			}
+		}
+		return $variables;
 	}
 }
