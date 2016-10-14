@@ -574,6 +574,7 @@ class LP_Install {
                             status varchar(45) NOT NULL DEFAULT '',
                             ref_id bigint(20) unsigned NOT NULL DEFAULT '0',
                             ref_type varchar(45) DEFAULT '',
+                            parent_id bigint(20),
                             PRIMARY KEY  (user_item_id)
                         ) $collate;";
 		}
