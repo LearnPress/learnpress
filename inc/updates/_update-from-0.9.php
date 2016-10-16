@@ -1026,8 +1026,10 @@ class LP_Upgrade_From_09 {
                                                                         'parent_id'  => 0
                                                                 ) );
                                                 $user_course_items[$course_id] = $user_item_id;
-                                                foreach ( self::$courses_map['section_items'] as $old_item_id => $new ) {
-                                                    $user_parent_items[$old_item_id] = $course_id;
+                                                if ( ! empty( self::$courses_map[$course_id]['section_items'] ) ) {
+                                                        foreach ( self::$courses_map[$course_id]['section_items'] as $old_item_id => $new ) {
+                                                                $user_parent_items[$old_item_id] = $course_id;
+                                                        }
                                                 }
 					}
 				}
@@ -1066,19 +1068,22 @@ class LP_Upgrade_From_09 {
 					if ( empty( self::$quizzes_map[$old_quiz_id] ) ) {
 						continue;
 					}
+                                        if ( !isset( $user_parent_items[$old_quiz_id] ) ) {
+//                                            var_dump($user_parent_items, $old_quiz_id, self::$courses_map); die();
+                                        }
                                         $item_id = !empty( self::$quizzes_map[$old_quiz_id] ) ? self::$quizzes_map[$old_quiz_id] : '';
                                         $old_course_id = ! empty( $user_parent_items[$old_quiz_id] ) ? $user_parent_items[$old_quiz_id] : 0;
                                         $new_course_id   = ! empty( self::$courses_map[$old_course_id] ) ? self::$courses_map[$old_course_id]['id'] : 0;
                                         $user_quiz_id = learn_press_update_user_item_field( array(
                                                                         'status'     => !empty( $user_meta->quiz_completed[$old_quiz_id] ) ? 'completed' : 'started',
                                                                         'start_time' => date( 'Y-m-d H:i:s', $time ),
-                                                                        'end_time'   => !empty( $user_meta->quiz_completed[$old_quiz_id] ) ? $user_meta->quiz_completed[$old_quiz_id] : '0000-00-00 00:00:00',
+                                                                        'end_time'   => !empty( $user_meta->quiz_completed[$old_quiz_id] ) ? date( 'Y-m-d H:i:s', $user_meta->quiz_completed[$old_quiz_id] ) : '0000-00-00 00:00:00',
                                                                         'user_id'    => $user_meta->user_id,
                                                                         'item_id'    => $item_id,
                                                                         'item_type'  => LP_QUIZ_CPT,
                                                                         'ref_id'     => $new_course_id,
                                                                         'ref_type'   => LP_COURSE_CPT,
-                                                                        'parent_id'  => isset( $user_parent_items[$old_quiz_id] ) ? $user_parent_items[$old_quiz_id] : 0
+                                                                        'parent_id'  => isset( $user_course_items[$old_course_id] ) ? $user_course_items[$old_course_id] : 0
                                                                 ) );
 
                                         if ( !empty( $user_meta->quiz_current_question ) ) {
