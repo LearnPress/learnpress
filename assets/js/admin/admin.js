@@ -839,6 +839,26 @@ jQuery(document).ready( function($) {
                                     );
                 }
 		
+		if( jQuery('.rwmb-datetime[name$="lp_sale_start"]').first().length ){
+			jQuery('.rwmb-datetime[name$="lp_sale_start"]')
+				.first()
+				.datepicker(
+					'option', 
+					'onSelect', 
+					function(a, b) { 
+						var minDate = new Date(a);
+						console.log(minDate);
+						jQuery('.rwmb-datetime[name$="lp_sale_end"')
+						.first()
+						.datepicker(
+							'option', 
+							'minDate', 
+							minDate
+						);
+					}
+				);
+		}
+		
 	});
 	
 	

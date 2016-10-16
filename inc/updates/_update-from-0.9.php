@@ -997,9 +997,12 @@ class LP_Upgrade_From_09 {
 		}
 		foreach ( $user_meta_rows as $user_meta ) {
 			$user_meta     = $this->_parse_user_meta( $user_meta );
+//                        var_dump(self::$courses_map[28]['section_items'][26], self::$courses_map, $user_meta); die();
 			$new_course_id = 0;
-                        $user_item_maps = array();
+                        $user_course_items = array();
+                        $user_parent_items = array();
 			if ( !empty( $user_meta->user_course ) && !empty( $user_meta->course_time ) ) {
+                                $user_meta->user_course = array_unique( $user_meta->user_course );
 				foreach ( $user_meta->user_course as $course_id ) {
 					if ( !empty( self::$courses_map[$course_id] ) && !empty( $user_meta->course_time[$course_id] ) ) {
 						$new_course_id   = self::$courses_map[$course_id]['id'];
@@ -1010,17 +1013,6 @@ class LP_Upgrade_From_09 {
 						} else {
 							$course_order = 0;
 						}
-//						$wpdb->insert(
-//							$wpdb->prefix . 'learnpress_user_courses',
-//							array(
-//								'user_id'    => $user_meta->user_id,
-//								'course_id'  => $new_course_id,
-//								'start_time' => date( 'Y-m-d H:i:s', $course_time['start'] ),
-//								'end_time'   => $course_end_time ? date( 'Y-m-d H:i:s', $course_end_time ) : '',
-//								'status'     => $course_end_time ? 'completed' : 'started',
-//								'order_id'   => !empty( self::$orders_map[$course_order] ) ? self::$orders_map[$course_order] : ''
-//							)
-//						);
                                                 $user = learn_press_get_user( $user_meta->user_id );
                                                 $user_item_id = learn_press_update_user_item_field( array(
                                                                         'user_id'    => $user_meta->user_id,
@@ -1033,9 +1025,14 @@ class LP_Upgrade_From_09 {
                                                                         'ref_type'   => LP_ORDER_CPT,
                                                                         'parent_id'  => 0
                                                                 ) );
+                                                $user_course_items[$course_id] = $user_item_id;
+                                                foreach ( self::$courses_map['section_items'] as $old_item_id => $new ) {
+                                                    $user_parent_items[$old_item_id] = $course_id;
+                                                }
 					}
 				}
 			}
+                        $user_lesson_items = array();
 			if ( !empty( $user_meta->lesson_completed ) ) {
 				foreach ( $user_meta->lesson_completed as $old_course_id => $_lessons ) {
 					$lesson_start_time = null;
@@ -1044,19 +1041,11 @@ class LP_Upgrade_From_09 {
 						$lesson_start_time = !empty( $user_meta->course_time[$old_course_id]['start'] ) ? $user_meta->course_time[$old_course_id]['start'] : '';
 						$lesson_end_time   = !empty( $user_meta->course_time[$old_course_id]['end'] ) ? $user_meta->course_time[$old_course_id]['end'] : '';
 					}
+                                        if ( ! empty( self::$courses_map[$old_course_id] ) ) {
+                                            $new_course_id   = self::$courses_map[$old_course_id]['id'];
+                                        }
 					if ( $_lessons ) foreach ( $_lessons as $old_lesson_id ) {
-//						$wpdb->insert(
-//							$wpdb->prefix . 'learnpress_user_lessons',
-//							array(
-//								'user_id'    => $user_meta->user_id,
-//								'course_id'  => $new_course_id,
-//								'start_time' => $lesson_start_time ? date( 'Y-m-d H:i:s', $lesson_start_time ) : '0000-00-00 00:00:00',
-//								'end_time'   => $lesson_end_time ? date( 'Y-m-d H:i:s', $lesson_end_time ) : '0000-00-00 00:00:00',
-//								'status'     => $lesson_end_time ? 'completed' : 'started',
-//								'lesson_id'  => !empty( self::$lessons_map[$old_lesson_id] ) ? self::$lessons_map[$old_lesson_id] : ''
-//							)
-//						);
-                                                $user = learn_press_get_user( $user_meta->user_id );
+                                                $item_id = !empty( self::$lessons_map[$old_lesson_id] ) ? self::$lessons_map[$old_lesson_id] : '';
                                                 $user_item_id = learn_press_update_user_item_field( array(
                                                                         'status'     => $lesson_end_time ? 'completed' : 'started',
                                                                         'start_time' => $lesson_start_time ? date( 'Y-m-d H:i:s', $lesson_start_time ) : '0000-00-00 00:00:00',
@@ -1066,8 +1055,9 @@ class LP_Upgrade_From_09 {
                                                                         'item_type'  => LP_LESSON_CPT,
                                                                         'ref_id'     => $new_course_id,
                                                                         'ref_type'   => LP_COURSE_CPT,
-                                                                        'parent_id'  => $user->get_course_history_id( $course_id )
+                                                                        'parent_id'  => isset( $user_course_items[$old_course_id] ) ? $user_course_items[$old_course_id] : 0
                                                                 ) );
+                                                $user_lesson_items[$old_lesson_id] = $user_item_id;
 					}
 				}
 			}
@@ -1076,54 +1066,27 @@ class LP_Upgrade_From_09 {
 					if ( empty( self::$quizzes_map[$old_quiz_id] ) ) {
 						continue;
 					}
-					$wpdb->insert(
-						$wpdb->prefix . "learnpress_user_quizzes",
-						array(
-							'user_id' => $user_meta->user_id,
-							'quiz_id' => self::$quizzes_map[$old_quiz_id]
-						)
-					);
-					$user_quiz_id = $wpdb->insert_id;
-					if ( !$user_quiz_id ) {
-						continue;
-					}
-					/**
-					 * Added 1.0.4
-					 */
-					@$wpdb->update(
-						$wpdb->learnpress_user_quizzes,
-						array(
-							'course_id' => $new_course_id
-						),
-						array( 'user_quiz_id' => $user_quiz_id ),
-						array( '%d' ),
-						array( '%d' )
-					);
-					//
-					learn_press_add_user_quiz_meta( $user_quiz_id, 'start', $time );
-					if ( !empty( $user_meta->quiz_completed ) ) {
-						if ( !empty( $user_meta->quiz_completed[$old_quiz_id] ) ) {
-							learn_press_add_user_quiz_meta( $user_quiz_id, 'end', $user_meta->quiz_completed[$old_quiz_id] );
-							learn_press_add_user_quiz_meta( $user_quiz_id, 'status', 'completed' );
-						}
-					}
-					if ( !empty( $user_meta->quiz_current_question ) ) {
+                                        $item_id = !empty( self::$quizzes_map[$old_quiz_id] ) ? self::$quizzes_map[$old_quiz_id] : '';
+                                        $old_course_id = ! empty( $user_parent_items[$old_quiz_id] ) ? $user_parent_items[$old_quiz_id] : 0;
+                                        $new_course_id   = ! empty( self::$courses_map[$old_course_id] ) ? self::$courses_map[$old_course_id]['id'] : 0;
+                                        $user_quiz_id = learn_press_update_user_item_field( array(
+                                                                        'status'     => !empty( $user_meta->quiz_completed[$old_quiz_id] ) ? 'completed' : 'started',
+                                                                        'start_time' => date( 'Y-m-d H:i:s', $time ),
+                                                                        'end_time'   => !empty( $user_meta->quiz_completed[$old_quiz_id] ) ? $user_meta->quiz_completed[$old_quiz_id] : '0000-00-00 00:00:00',
+                                                                        'user_id'    => $user_meta->user_id,
+                                                                        'item_id'    => $item_id,
+                                                                        'item_type'  => LP_QUIZ_CPT,
+                                                                        'ref_id'     => $new_course_id,
+                                                                        'ref_type'   => LP_COURSE_CPT,
+                                                                        'parent_id'  => isset( $user_parent_items[$old_quiz_id] ) ? $user_parent_items[$old_quiz_id] : 0
+                                                                ) );
+
+                                        if ( !empty( $user_meta->quiz_current_question ) ) {
 						if ( !empty( $user_meta->quiz_current_question[$old_quiz_id] ) ) {
-							learn_press_add_user_quiz_meta( $user_quiz_id, 'current_question', self::$questions_map[$user_meta->quiz_current_question[$old_quiz_id]] );
+							learn_press_update_user_item_meta( $user_quiz_id, 'current_question', self::$questions_map[$user_meta->quiz_current_question[$old_quiz_id]] );
 						}
 					}
-					if ( !empty( $user_meta->quiz_questions ) ) {
-						if ( !empty( $user_meta->quiz_questions[$old_quiz_id] ) ) {
-							$quiz_questions = array();
-							foreach ( $user_meta->quiz_questions[$old_quiz_id] as $old_question_id ) {
-								if ( !empty( self::$questions_map[$old_question_id] ) ) {
-									$quiz_questions[] = self::$questions_map[$old_question_id];
-								}
-							}
-							learn_press_add_user_quiz_meta( $user_quiz_id, 'questions', $quiz_questions );
-						}
-					}
-					if ( !empty( $user_meta->quiz_question_answer ) ) {
+                                        if ( !empty( $user_meta->quiz_question_answer ) ) {
 						if ( !empty( $user_meta->quiz_question_answer[$old_quiz_id] ) ) {
 							$question_answers = array();
 							foreach ( $user_meta->quiz_question_answer[$old_quiz_id] as $old_question_id => $answer ) {
@@ -1131,20 +1094,20 @@ class LP_Upgrade_From_09 {
 									$question_answers[self::$questions_map[$old_question_id]] = $answer;
 								}
 							}
-							learn_press_add_user_quiz_meta( $user_quiz_id, 'question_answers', $question_answers );
+							learn_press_update_user_item_meta( $user_quiz_id, 'question_answers', $question_answers );
 						}
 					}
-                                        $user_quiz_id = learn_press_update_user_item_field( array(
-                                                                        'status'     => $lesson_end_time ? 'completed' : 'started',
-                                                                        'start_time' => $user_meta->quiz_completed[$old_quiz_id],
-                                                                        'end_time'   => $user_meta->quiz_completed[$old_quiz_id],
-                                                                        'user_id'    => $user_meta->user_id,
-                                                                        'item_id'    => !empty( self::$lessons_map[$old_lesson_id] ) ? self::$lessons_map[$old_lesson_id] : '',
-                                                                        'item_type'  => LP_QUIZ_CPT,
-                                                                        'ref_id'     => $new_course_id,
-                                                                        'ref_type'   => LP_COURSE_CPT,
-                                                                        'parent_id'  => $user->get_course_history_id( $course_id )
-                                                                ) );
+                                        if ( !empty( $user_meta->quiz_questions ) ) {
+						if ( !empty( $user_meta->quiz_questions[$old_quiz_id] ) ) {
+							$quiz_questions = array();
+							foreach ( $user_meta->quiz_questions[$old_quiz_id] as $old_question_id ) {
+								if ( !empty( self::$questions_map[$old_question_id] ) ) {
+									$quiz_questions[] = self::$questions_map[$old_question_id];
+								}
+							}
+                                                        learn_press_update_user_item_meta( $user_quiz_id, 'question_answers', $quiz_questions );
+						}
+					}
 				}
 			}
 		}

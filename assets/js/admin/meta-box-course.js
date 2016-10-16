@@ -149,7 +149,31 @@
 					$('.lp-course-required-enroll').toggleClass('hide-if-js', !toggle);
 				})
 				$chkPayment.filter(':checked').trigger('change');
-
+				
+				// add schedule button
+				if( $('input[name="_lp_sale_start"]').val()!='' ){
+					$('.lp-course-sale_start-field').show();
+					$('.lp-course-sale_end-field').show();
+					$('#_lp_sale_price_schedule').hide();
+				}
+				$('#_lp_sale_price_schedule').on('click', function(event){
+					event.preventDefault();
+					$('.lp-course-sale_start-field').show();
+					$('.lp-course-sale_end-field').show();
+					$(this).hide();
+				});
+				$('#_lp_sale_price_schedule_cancel').on('click', function(event){
+					event.preventDefault();
+					$('.lp-course-sale_start-field').hide();
+					$('.lp-course-sale_end-field').hide();
+					$('input[name="_lp_sale_start"]').val('');
+					$('input[name="_lp_sale_end"]').val('');
+					$('#_lp_sale_price_schedule').show();
+				});
+				
+				
+				
+				
 				if ($('input[name="_lp_course_result"]:checked').length == 0) {
 					$('input[name="_lp_course_result"]').filter(function () {
 						return this.value == 'evaluate_lesson';

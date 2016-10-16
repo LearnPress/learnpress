@@ -136,7 +136,7 @@ class LP_Abstract_User {
 		}
 
 		global $wpdb;
-		echo $query = $wpdb->prepare( "
+		$query = $wpdb->prepare( "
 			SELECT ui.*
 			FROM {$wpdb->prefix}learnpress_user_items ui
 			LEFT JOIN {$wpdb->posts} p ON p.ID = ui.item_id
@@ -149,7 +149,6 @@ class LP_Abstract_User {
 
 			}
 		}
-		print_r( $items );
 	}
 
 	/**
@@ -1371,10 +1370,13 @@ class LP_Abstract_User {
 	 * @return bool
 	 */
 	public function has_enrolled_course( $course_id, $force = false ) {
+
 		if ( $enrolled = $this->has_purchased_course( $course_id ) ) {
+
 			$item_statuses = LP_Cache::get_item_statuses( false, array() );
 			$key           = sprintf( '%d-%d-%d', $this->id, $course_id, $course_id );
 			$enrolled      = false;
+
 			if ( !empty( $item_statuses[$key] ) && $item_statuses[$key] != '' ) {
 				$enrolled = true;
 			}

@@ -1840,6 +1840,45 @@ function learn_press_front_scripts() {
 
 add_action( 'wp_print_scripts', 'learn_press_front_scripts' );
 
+/**
+ * Auto insert new item to user_items table when user viewing a lesson
+ *
+ * @param $located
+ * @param $template_name
+ * @param $template_path
+ *
+ * @return mixed
+ */
+function learn_press_add_user_item_if_needed( $located, $template_name, $template_path ) {
+	if ( $template_name == 'single-course/content-item-lp_lesson.php' ) {
+		$items       = LP_Cache::get_item_statuses( false, array() );
+		$user_id     = get_current_user_id();
+		$course_id   = get_the_ID();
+		$course_item = LP()->global['course-item'];
+		if ( $course_id && $course_item && !empty( $items[$user_id . '-' . $course_id . '-' . $course_id] ) ) {
+			$key = sprintf( '%d-%d-%d', $user_id, $course_id, $course_item->ID );
+			if ( empty( $items[$key] ) || $items[$key] == '' ) {
+				global $wpdb;
+				$parent_id = $wpdb->get_var( $wpdb->prepare( "SELECT user_item_id FROM {$wpdb->prefix}learnpress_user_items WHERE user_id = %d AND item_id = %d", $user_id, $course_id ) );
+				learn_press_update_user_item_field(
+					array(
+						'user_id'    => $user_id,
+						'item_id'    => $course_item->ID,
+						'start_time' => current_time( 'mysql' ),
+						'item_type'  => get_post_type( $course_item->ID ),
+						'ref_type'   => LP_COURSE_CPT,
+						'status'     => get_post_type( $course_item->ID ) == LP_LESSON_CPT ? 'started' : 'viewed',
+						'ref_id'     => $course_id,
+						'parent_id'  => $parent_id
+					)
+				);
+			}
+		}
+	}
+	return $located;
+}
+add_filter( 'learn_press_locate_template', 'learn_press_add_user_item_if_needed', 10, 3 );
+
 function learn_press_set_user_timezone() {
 	?>
 	<script type="text/javascript">
@@ -2107,7 +2146,7 @@ function learn_press_auto_enroll_user_to_courses( $order_id ) {
 			'ref_id'     => $course->id,
 			'item_type'  => 'lp_course',
 			'ref_type'   => 'lp_order',
-			'parent_id'  => $user->get_course_history_id($course->id)
+			'parent_id'  => $user->get_course_history_id( $course->id )
 		) );
 	}
 	return $return;

@@ -508,13 +508,15 @@
 		},
 		_selectQuestion       : function (e) {
 			e.preventDefault();
-			var id = $(e.target).closest('li').attr('data-id'),
-				delayTime = this.delayTime;
-			if (this.model.current().get('id') == id) {
-				return;
+			if(this.model.get('status')=='started') {
+				var id = $(e.target).closest('li').attr('data-id'),
+					delayTime = this.delayTime;
+				if (this.model.current().get('id') == id) {
+					return;
+				}
+				this._beforeFetchQuestion();
+				this.model.select(id, this._loadQuestionCompleted, {delayTime: delayTime});
 			}
-			this._beforeFetchQuestion();
-			this.model.select(id, this._loadQuestionCompleted, {delayTime: delayTime});
 		},
 		_beforeFetchQuestion  : function () {
 			LP.blockContent();
@@ -581,11 +583,11 @@
 			}
 		},
 		start                 : function () {
+			if (this.model.get('status') != 'started' || this.model.get('totalTime') <= 0) {
+				return;
+			}
 			this.delayTimeout && clearTimeout(this.delayTimeout);
-			//var time = this.delayTime.length ? this.delayTime[this.delayTime.length - 1] : 0;
-			//this.model.decr(time);
 			this._onTick();
-			//console.log(this.delayTime);
 		},
 		pause                 : function () {
 			this.timeout && clearTimeout(this.timeout);
