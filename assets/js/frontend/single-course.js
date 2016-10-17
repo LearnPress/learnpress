@@ -308,7 +308,7 @@ if (typeof LearnPress === 'undefined') {
 				var $section = $(this),
 					id = $section.data('id'),
 					data = sections[id];
-				$section.find('.section-header span').html(LP.Hook.applyFilters('section_header_span_text', data[1] + ' / ' + data[0]));
+				$section.find('.section-header span.step').html(LP.Hook.applyFilters('section_header_span_text', data[1] + ' / ' + data[0]));
 			});
 			$itemProgress.eq(0).html(itemsCompleted);
 			$itemProgress.eq(1).html(itemsCount);
@@ -456,6 +456,7 @@ if (typeof LearnPress === 'undefined') {
 		_toggleSection     : function (e) {
 			var $head = $(e.target).closest('.section-header'),
 				$sec = $head.siblings('ul.section-content');
+                        $head.find('.collapse').toggleClass( 'plus' );
 			$sec.slideToggle();
 		},
 		_tabClick          : function (e) {

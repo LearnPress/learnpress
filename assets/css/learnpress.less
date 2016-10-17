@@ -271,11 +271,36 @@
         &:hover {
             background: #DDD;
         }
-        span {
+        .meta {
             font-size: smaller;
             font-weight: normal;
             float: right;
-            margin-top: 5px;
+            /*margin-top: 5px;*/
+            .collapse{
+                display: inline-block;
+                position: relative;
+                font-family: 'lp-icons';
+                background: #95e6f9;
+                width: 24px;
+                height: 24px;
+                line-height: 24px;
+                text-align: center;
+                color: #FFF;
+                border-radius: 5px;
+                vertical-align: middle;
+                margin-left: 5px;
+                &:before{
+                    content: "\ea0b";
+                }
+                &:hover{
+                    cursor: pointer;
+                }
+                &.plus{
+                    &:before{
+                        content: "\ea0a";
+                    }
+                }
+            }
         }
     }
     .course-item {
