@@ -120,14 +120,16 @@
 			$(document.body).trigger('learn_press_modal_search_items_before_remove', this);
 			this.undelegateEvents();
 			$(document).off('focusin');
-			$(document.body).css({
-				'overflow': 'auto'
-			});
+//			$(document.body).css({
+//				'overflow': 'auto'
+//			});
+                        $(document.body).removeAttr( 'style' );
 			this.remove();
 			LP.MessageBox.hide();
 			$(document.body).trigger('learn_press_modal_search_items_removed', this);
 		},
 		_addItems                : function (e) {
+                        e.preventDefault();
 			$(document.body).trigger('learn_press_modal_search_items_response', [this, this.getItems()]);
 			this.refreshModal(e);
 			if ($(e.target).hasClass('close')) {

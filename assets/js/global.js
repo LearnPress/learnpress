@@ -328,7 +328,7 @@ if (typeof window.LP == 'undefined') {
                     .unbind('scroll.message-box', this.update);
             } else {
                 if (this.instance) {
-                    this._createWindow(this.instance.message, this.instance.title, this.instance.buttons)
+                    this._createWindow(this.instance.message, this.instance.title, this.instance.buttons);
                 }
             }
 
@@ -704,7 +704,7 @@ if (typeof window.LP == 'undefined') {
         log: function () {
             //if (typeof LEARN_PRESS_DEBUG != 'undefined' && LEARN_PRESS_DEBUG && console) {
             for (var i = 0, n = arguments.length; i < n; i++) {
-                console.log(arguments[i]);
+//                console.log(arguments[i]);
             }
             //}
         },
@@ -743,13 +743,13 @@ if (typeof window.LP == 'undefined') {
         alert: function (localize, callback) {
             var title = '',
                 message = '';
-            if (typeof localize == 'string') {
+            if (typeof localize === 'string') {
                 message = localize;
             } else {
-                if (typeof localize['title'] != 'undefined') {
+                if (typeof localize['title'] !== 'undefined') {
                     title = localize['title'];
                 }
-                if (typeof localize['message'] != 'undefined') {
+                if (typeof localize['message'] !== 'undefined') {
                     message = localize['message'];
                 }
             }
@@ -763,13 +763,13 @@ if (typeof window.LP == 'undefined') {
             var title = '',
                 message = '';
 
-            if (typeof localize == 'string') {
+            if (typeof localize === 'string') {
                 message = localize;
             } else {
-                if (typeof localize['title'] != 'undefined') {
+                if (typeof localize['title'] !== 'undefined') {
                     title = localize['title'];
                 }
-                if (typeof localize['message'] != 'undefined') {
+                if (typeof localize['message'] !== 'undefined') {
                     message = localize['message'];
                 }
             }
@@ -794,7 +794,7 @@ if (typeof window.LP == 'undefined') {
             if ($container) {
                 $container.replaceWith($holder);
             }
-            $container.appendTo($(document.body))
+            $container.appendTo($(document.body));
             $container.stop().animate({
                 top: '+=50',
                 opacity: 0
@@ -809,7 +809,7 @@ if (typeof window.LP == 'undefined') {
         var lh = $(this).css('line-height').replace("px", "");
         $(this).attr({height: h, 'line-height': lh});
         return Math.floor(h / parseInt(lh));
-    }
+    };
 
     $.fn.checkLines = function (p) {
         return this.each(function () {
@@ -876,8 +876,8 @@ if (typeof window.LP == 'undefined') {
                 transform: 'rotate(' + t + 'deg)'
             });
 
-        })
-    }
+        });
+    };
 
     function __initSubtabs() {
         $('.learn-press-subtabs').each(function () {
@@ -896,13 +896,13 @@ if (typeof window.LP == 'undefined') {
                 return $(this).attr('href') == window.location.hash;
             }).trigger('click');
             if (!current) {
-                $tabs.first().trigger('click')
+                $tabs.first().trigger('click');
             }
-        })
+        });
     }
 
     $(document).ready(function () {
-        if (typeof $.alerts != 'undefined') {
+        if (typeof $.alerts !== 'undefined') {
             $.alerts.overlayColor = '#000';
             $.alerts.overlayOpacity = 0.5;
         }
