@@ -13,12 +13,13 @@ if ( !defined( 'ABSPATH' ) ) {
 
 $settings = LP()->settings;
 ?>
+
 <table class="form-table">
 	<tbody>
-	<?php do_action( 'learn_press_before_' . $this->id . '_' . $this->section['id'] . '_settings_fields', $this ); ?>
-	<?php foreach ( $this->get_settings() as $field ) { ?>
-		<?php $this->output_field( $field ); ?>
-	<?php } ?>
+	<?php
+		do_action( 'learn_press_before_' . $this->id . '_' . $this->section['id'] . '_settings_fields', $this );
+		$this->output_settings();
+	?>
 	</tbody>
 
 </table>
