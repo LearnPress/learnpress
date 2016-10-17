@@ -22,5 +22,8 @@ if ( $section_name === false ) {
 	<?php if ( $section_description = apply_filters( 'learn_press_curriculum_section_description', $section->section_description, $section ) ) { ?>
 		<p><?php echo $section_description; ?></p>
 	<?php } ?>
-	<span><?php printf( __( '%d / %d', 'learnpress' ), $user->get_completed_items_in_section( $course->id, $section->section_id, $force ), sizeof( $section->items ) ); ?></span>
+        <span class="meta">
+            <span class="step"><?php printf( __( '%d / %d', 'learnpress' ), $user->get_completed_items_in_section( $course->id, $section->section_id, $force ), sizeof( $section->items ) ); ?></span>
+            <span class="collapse"></span>
+        </span>
 </h4>
