@@ -16,16 +16,19 @@ if ( !function_exists( 'learn_press_tool_request_actions' ) ) {
     function learn_press_tool_request_actions() {
         $action = learn_press_get_request( 'action' );
         if ( ! $action ) return;
-
-        switch ( $action ) {
-            case 'learn-press-remove-data':
-                    learn_press_remove_data();
-                break;
-            case 'learn-press-remove-old-data':
-                    learn_press_remove_old_data();
-                break;
-            default:
-                break;
+        if ( current_user_can( 'manage_options' ) ) {
+            switch ( $action ) {
+                case 'learn-press-remove-data':
+                        learn_press_remove_data();
+                    break;
+                case 'learn-press-remove-old-data':
+                        learn_press_remove_old_data();
+                    break;
+                default:
+                    break;
+            }
+        } else {
+            wp_die( __( 'Sorry, you are nto allowed to access this page.', 'learnpress' ) );
         }
     }
 
