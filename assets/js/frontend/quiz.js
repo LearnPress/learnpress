@@ -29,7 +29,7 @@
 			this.view.destroy();
 			this.view.undelegateEvents();
 		};
-	}, Model_Question, List_Questions;
+	}, Model_Question, List_Questions, windowTarget = parent.window || window;
 
 	Quiz.Model_Question = Model_Question = Backbone.Model.extend({
 		defaults  : {
@@ -302,7 +302,7 @@
 				return;
 			}
 			if (question.get('current') == 'yes') {
-				LP.unblockContent();
+				windowTarget.LP.unblockContent();
 				return;
 			}
 			LP.Hook.doAction('learn_press_before_select_question', question, that);
@@ -451,7 +451,11 @@
 			'click .button-next-question'               : '_nextQuestion',
 			'click .button-hint'                        : '_showHint',
 			'click .button-check-answer'                : '_checkAnswer',
-			'click .quiz-questions-list .question-title': '_selectQuestion'
+			'click .quiz-questions-list .question-title': '_selectQuestion',
+			'click .button-start-quiz'                  : '_startQuiz',
+			'click .button-finish-quiz'                 : '_finishQuiz',
+			'click .button-retake-quiz'                 : '_retakeQuiz',
+			'click .button-complete-item'               : '_completeItem',
 		},
 		timeout               : 0,
 		delayTimeout          : 0,
@@ -465,6 +469,7 @@
 			this.model.on('destroy', this._onDestroy);
 			this._initCountDown();
 			this.updateButtons();
+			this.windowTarget = windowTarget;
 		},
 		_initCountDown        : function () {
 			if (this.model.get('status') != 'started' || this.model.get('totalTime') <= 0) {
@@ -508,7 +513,7 @@
 		},
 		_selectQuestion       : function (e) {
 			e.preventDefault();
-			if(this.model.get('status')=='started') {
+			if (this.model.get('status') == 'started') {
 				var id = $(e.target).closest('li').attr('data-id'),
 					delayTime = this.delayTime;
 				if (this.model.current().get('id') == id) {
@@ -519,7 +524,7 @@
 			}
 		},
 		_beforeFetchQuestion  : function () {
-			LP.blockContent();
+			windowTarget.LP.blockContent();
 			this.pause();
 			this.incrDelay(true);
 			this.model.current(true).set('response', this.$('.learn-press-content-item-summary'));
@@ -546,7 +551,7 @@
 			$(window).trigger('load');
 			$(document).trigger('resize');
 			LP.setUrl(question.get('url'));
-			LP.unblockContent();
+			windowTarget.LP.unblockContent();
 		},
 		_showHint             : function (e) {
 			e.preventDefault();
@@ -555,7 +560,7 @@
 			this.$('.question-hint-content').removeClass('hide-if-js');
 		},
 		_showHintCompleted    : function (response) {
-			LP.unblockContent();
+			windowTarget.LP.unblockContent();
 		},
 		_checkAnswer          : function (e) {
 			e.preventDefault();
@@ -569,7 +574,7 @@
 		},
 		_checkAnswerCompleted : function (question) {
 			this.start();
-			LP.unblockContent();
+			windowTarget.LP.unblockContent();
 		},
 		updateButtons         : function () {
 			if (this.model.get('status') == 'started') {
@@ -644,10 +649,208 @@
 			this.pause();
 			LP.Hook.removeAction('learn_press_before_finish_quiz');
 			LP.Hook.removeFilter('learn_press_get_current_item_url');
+		},
+		/********************************/
+		_startQuiz            : function (e) {
+			var that = this,
+				$button = $(e.target),
+				security = $button.data('security');
+
+			windowTarget.LP.blockContent()
+			LP.Hook.doAction('learn_press_before_start_quiz', this.currentItem, this);
+
+			var $form = $($button.get(0).form);
+			$form.find('input[name="security"]').val(security);
+			$form.find('input[name="lp-ajax"]').val($button.data('action'));
+			$form.submit();
+			return false;
+
+			this.startQuiz({
+				security: security,
+				callback: function (response, item) {
+					that.$('#learn-press-content-item').html(response.html);
+					var data = response.course_result;
+					data.messageType = 'update-course';
+					LP.sendMessage(data, parent.window);
+				}
+			});
+		},
+		_finishQuiz           : function (e) {
+			var that = this,
+				$button = $(e.target),
+				security = $button.data('security'),
+				do_finish = false;
+			if (typeof e.originalEvent === 'undefined') {
+				that._doFinishQuiz(security);
+			} else {
+				windowTarget.jConfirm(learn_press_single_course_localize.confirm_finish_quiz.message, learn_press_single_course_localize.confirm_finish_quiz.title, function (confirm) {
+					if (confirm) {
+						that._doFinishQuiz(security);
+					}
+				});
+			}
+		},
+		_doFinishQuiz         : function (security) {
+			var that = this;
+			LP.Hook.doAction('learn_press_before_finish_quiz', that.currentItem, that);
+			that.finishQuiz({
+				security  : security,
+				beforeSend: windowTarget.LP.blockContent(),
+				callback  : function (response, item) {
+					windowTarget.LP.unblockContent();
+					that.$('#learn-press-content-item').html(response.html.content);
+					/*that.currentItem.set('content', response.html.content);
+					 that.$('.course-item-' + that.currentItem.get('id'))
+					 .addClass('item-completed');*/
+					//that.$('.learn-press-course-results-progress').replaceWith(response.html.progress);
+					//that.$('.learn-press-course-buttons').replaceWith($(response.html.buttons));
+					windowTarget.LP.setUrl(that.model.get('permalink'));
+					var data = response.course_result;
+					data.messageType = 'update-course';
+					LP.sendMessage(data, windowTarget);
+				}
+			});
+		},
+		_retakeQuiz           : function (e) {
+			e.preventDefault();
+			var that = this,
+				$button = $(e.target),
+				security = $button.data('security');
+			windowTarget.jConfirm(learn_press_single_course_localize.confirm_retake_quiz.message, learn_press_single_course_localize.confirm_retake_quiz.title, function (confirm) {
+				if (confirm) {
+					LP.Hook.doAction('learn_press_before_retake_quiz', that.currentItem, that);
+					that.retakeQuiz && that.retakeQuiz({
+						security: security,
+						callback: function (response, item) {
+							//var $html = $('<div />').html(response.html.content);
+							//that.currentItem.set('content', $html.find('.content-item-quiz:last'));
+							//that.$('.course-item-' + that.currentItem.get('id'))
+							//	.removeClass('item-completed');
+							//that.$('.learn-press-course-results-progress').replaceWith(response.html.progress);
+							//that.$('.learn-press-course-buttons').replaceWith($(response.html.buttons));
+							//that.loadQuiz();
+							that.$('#learn-press-content-item').html(response.html.content);
+							var data = response.course_result;
+							data.messageType = 'update-course';
+							LP.sendMessage(data, windowTarget);
+						}
+					});
+				}
+			});
+		},
+
+		complete       : function (args) {
+			var that = this;
+			args = $.extend({
+				context : null,
+				callback: null,
+				format  : 'json'
+			}, this.toJSON(), args || {});
+			var data = {};
+
+			// Omit unwanted fields
+			_.forEach(args, function (v, k) {
+				if (($.inArray(k, ['content', 'current', 'title', 'url']) == -1) && !$.isFunction(v)) {
+					data[k] = v;
+				}
+				;
+			});
+			LP.ajax({
+				url     : this.get('url'),
+				action  : 'complete-item',
+				data    : data,
+				dataType: 'json',
+				success : function (response) {
+					///response = LP.parseJSON(response);
+					LP.Hook.doAction('learn_press_course_item_completed', response, that);
+					response = LP.Hook.applyFilters('learn_press_course_item_complete_response', response, that);
+					$.isFunction(args.callback) && args.callback.call(args.context, response, that);
+				}
+			});
+		},
+		startQuiz      : function (args) {
+			var args = $.extend({
+				course_id: this.model.get('courseId'),
+				quiz_id  : this.model.get('id'),
+				security : null
+			}, args || {});
+			var data = this._validateObject(args), that = this;
+			LP.ajax({
+				url     : this.model.get('url'),
+				action  : 'start-quiz',
+				data    : data,
+				dataType: 'json',
+				success : function (response) {
+					$.isFunction(args.callback) && args.callback.call(args.context, response, that);
+				}
+			});
+		},
+		finishQuiz     : function (args) {
+			var args = $.extend({
+				course_id: this.model.get('courseId'),
+				quiz_id  : this.model.get('id'),
+				security : null
+			}, args || {});
+			var data = this._validateObject(args), that = this;
+			data = LP.Hook.applyFilters('learn_press_finish_quiz_data', data);
+			var beforeSend = args.beforeSend || function () {
+				};
+			LP.ajax({
+				url       : this.model.get('url'),
+				action    : 'finish-quiz',
+				data      : data,
+				dataType  : 'json',
+				beforeSend: beforeSend,
+				success   : function (response) {
+					windowTarget.LP.unblockContent();
+					$.isFunction(args.callback) && args.callback.call(args.context, response, that);
+				}
+			});
+		},
+		retakeQuiz     : function (args) {
+			var args = $.extend({
+				course_id: this.model.get('courseId'),
+				quiz_id  : this.model.get('id'),
+				security : null
+			}, args || {});
+			console.log(args)
+			var data = this._validateObject(args), that = this;
+			LP.ajax({
+				url       : this.model.get('url'),
+				action    : 'retake-quiz',
+				data      : data,
+				dataType  : 'json',
+				beforeSend: function () {
+					windowTarget.LP.blockContent();
+				},
+				success   : function (response) {
+					windowTarget.LP.unblockContent();
+					$.isFunction(args.callback) && args.callback.call(args.context, response, that);
+				}
+			});
+		},
+		_toJSON        : function () {
+			// call parent method
+			var json = Course_Item.__super__.toJSON.apply(this, arguments);
+		},
+		_validateObject: function (obj) {
+			var ret = {};
+			for (var i in obj) {
+				if (!$.isFunction(obj[i])) {
+					ret[i] = obj[i];
+				}
+			}
+			return ret;
 		}
 	});
 
 	window.LP_Quiz = Quiz;
+	$(document).ready(function () {
+		if (typeof Quiz_Params != 'undefined') {
+			window.quiz = new LP_Quiz($.extend({course: LP.$Course}, Quiz_Params));
+		}
+		windowTarget.LP.unblockContent();
+	})
 	// DOM ready
 	LP.Hook.addAction('learn_press_course_initialize', function ($course) {
 		if (typeof Quiz_Params != 'undefined') {

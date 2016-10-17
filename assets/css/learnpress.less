@@ -434,13 +434,13 @@
     margin-bottom: 40px;
     .items-progress {
         float: left;
-        width: 73%;
+        width: 68%;
         margin-right: 2%;
         clear: left;
     }
     .course-progress {
         float: left;
-        width: 25%;
+        width: 30%;
     }
     .number, .percentage-sign {
         display: inline-block;
@@ -726,7 +726,16 @@ body.course-has-popup {
             }
         }
     }
-
+    iframe{
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        border: none;
+        margin: 0;
+        background: #FFF;
+    }
     .learn-press-content-item-title {
         /*padding: 20px;
         background: #F5F5F5;
@@ -829,6 +838,7 @@ body.course-has-popup {
             box-sizing: border-box;
         }
     }
+
     .learn-press-block-content-mixin(80px);
 }
 
@@ -1256,6 +1266,7 @@ body.block-content {
             margin-bottom: 20px;
         }
     }
+
 }
 
 .single-lp_course {
@@ -1271,6 +1282,14 @@ body.block-content {
             p {
                 margin-top: 15px;
             }
+        }
+    }
+    .lp_course{
+        .entry-content{
+            width: 100%;
+        }
+        .entry-footer{
+            display: none;
         }
     }
 }
@@ -1290,6 +1309,28 @@ body.block-content {
 /* fill in blank */
 input.blank-fill-correct {
     width: auto;
+}
+
+body.content-item-only{
+    background: #FFF;
+    opacity: 0;
+    .learn-press-content-item-only {
+        position: fixed;
+        z-index: 9999999;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: #FFF;
+        overflow: auto;
+        padding: 20px;
+        margin: 0;
+    }
+
+    #learn-press-content-item {
+        border: none;
+        display: block;
+    }
 }
 
 @-moz-keyframes spin-12 {
@@ -1422,4 +1463,17 @@ input.blank-fill-correct {
         }
     }
 
+}
+/* full width with twentysixteen theme */
+@media screen and (min-width: 61.5625em) {
+    body.single-lp_course {
+        article.lp_course {
+            .entry-content {
+                width: 100%;
+            }
+            .entry-footer {
+                display: none;
+            }
+        }
+    }
 }

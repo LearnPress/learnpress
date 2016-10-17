@@ -85,7 +85,7 @@ if ( !class_exists( 'LP_Email_Enrolled_Course' ) ) {
 					'user_id'          => $user_id,
 					'user_name'        => learn_press_get_profile_display_name( $user ),
 					'user_email'       => $user->user_email,
-					'user_profile_url' => 'xxxxxxxxxxxxx'
+					'user_profile_url' => learn_press_user_profile_link($user->id)
 				)
 			);
 

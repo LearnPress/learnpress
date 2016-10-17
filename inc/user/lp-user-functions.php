@@ -30,6 +30,16 @@ function learn_press_delete_user_data( $user_id, $course_id = 0 ) {
 	@$wpdb->query( $query );
 }
 
+function learn_press_get_user_item_id( $user_id, $item_id ) {
+	static $user_item_ids = array();
+	if ( empty( $user_item_ids[$user_id . '-' . $item_id] ) ) {
+		global $wpdb;
+		$query                                    = $wpdb->prepare( "SELECT user_item_id FROM {$wpdb->prefix}learnpress_user_items WHERE user_id = %d AND item_id = %d ORDER BY user_item_id DESC LIMIT 0,1", $user_id, $item_id );
+		$user_item_ids[$user_id . '-' . $item_id] = $wpdb->get_var( $query );
+	}
+	return $user_item_ids[$user_id . '-' . $item_id];
+}
+
 /**
  * @return int
  */

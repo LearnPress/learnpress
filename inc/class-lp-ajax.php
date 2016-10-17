@@ -302,6 +302,8 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 						/**
 						 * Flush cache to force update
 						 */
+						/*LP_Cache::flush( 'user-completed-items' );
+						//LP_Cache::set_completed_items()_status( $user->id . '-' . $course_id . '-' . $id, 'completed' );
 						learn_press_setup_user_course_data( $user->id, $course_id );
 						$course                     = learn_press_get_course( $course_id );
 						LP()->course                = $course;
@@ -313,15 +315,17 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 						if ( $section_id = learn_press_get_request( 'section_id' ) ) {
 							$response['html']['section_header'] = learn_press_get_template_content( 'single-course/section/title.php', array( 'section' => $course->get_curriculum( $section_id ) ) );
 						}
+						$response['course_result']    = $user->get_course_info2( $course_id );
 						$response['html']['progress'] = learn_press_get_template_content( 'single-course/progress.php' );
 						$response['html']['buttons']  = learn_press_get_template_content( 'single-course/buttons.php' );
-						$response['html']['content']  = learn_press_get_template_content( 'single-course/content-item-lp_lesson.php' );
+						$response['html']['content']  = learn_press_get_template_content( 'single-course/content-item-lp_lesson.php' );*/
 					}
 				} else {
 					do_action( 'learn_press_user_request_complete_item', $_REQUEST );
 				}
 			}
-			learn_press_send_json( $response );
+			wp_redirect(learn_press_get_current_url());die();
+			///learn_press_send_json( $response );
 		}
 
 		/**
@@ -343,21 +347,28 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 						$item_type = get_post_type( $item_id );
 					}
 					if ( apply_filters( 'learn_press_insert_user_item_data', true, $item_id, $course_id ) && $can_view_item != 'preview' ) {
-
-                                                $user_item_id = learn_press_update_user_item_field( apply_filters(
+						$insert = $wpdb->insert(
+							$wpdb->prefix . 'learnpress_user_items',
+							apply_filters(
 								'learn_press_user_item_data',
 								array(
-                                                                        'user_id'    => get_current_user_id(),
-                                                                        'item_id'    => learn_press_get_request( 'id' ),
-                                                                        'start_time' => $item_type == LP_LESSON_CPT ? current_time( 'mysql' ) : '0000-00-00 00:00:00',
-                                                                        'end_time'   => '0000-00-00 00:00:00',
-                                                                        'ref_id'     => $course_id,
-                                                                        'item_type'  => $item_type,
-                                                                        'status'     => $item_type == LP_LESSON_CPT ? 'started' : 'viewed',
-                                                                        'ref_type'   => LP_COURSE_CPT,
-                                                                        'parent_id'  => $user->get_course_history_id( $course_id )
-                                                                )
-							) );
+									'user_id'    => get_current_user_id(),
+									'item_id'    => learn_press_get_request( 'id' ),
+									'item_type'  => $item_type,
+									'start_time' => $item_type == 'lp_lesson' ? current_time( 'mysql' ) : '0000-00-00 00:00:00',
+									'end_time'   => '0000-00-00 00:00:00',
+									'status'     => $item_type == 'lp_lesson' ? 'started' : 'viewed',
+									'ref_id'     => $course_id,
+									'ref_type'   => 'lp_course',
+									'parent_id'  => $user->get_course_history_id( $course_id )
+								)
+							),
+							array(
+								'%d', '%d', '%s', '%s', '%s', '%s', '%d', '%s'
+							)
+						);
+						print_r( $wpdb );
+						$user_item_id = $wpdb->insert_id;
 					}
 				}
 				// display content item

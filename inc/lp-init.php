@@ -6,6 +6,10 @@
 if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
+add_action( 'learn_press_parse_query', '_learn_press_setup_user_course_data' );
+function _learn_press_setup_user_course_data( $query ) {
+	learn_press_setup_user_course_data( get_current_user_id(), $query->query_vars['course_id'] );
+}
 
 /**
  * Cache static pages
@@ -268,6 +272,7 @@ function _learn_press_get_quiz_questions( $quiz_ids ) {
  * @param $course_id
  */
 function learn_press_setup_user_course_data( $user_id, $course_id, $force = false ) {
+
 	if ( !did_action( 'learn_press_setup_course_data_' . $course_id ) ) {
 		learn_press_setup_course_data( $course_id );
 	}
@@ -281,7 +286,7 @@ function learn_press_setup_user_course_data( $user_id, $course_id, $force = fals
 	 */
 	_learn_press_get_user_course_orders();
 
-	global $wpdb;
+	global $wpdb, $lp_query;
 	$course   = get_post( $course_id );
 	$item_ids = !empty( $course->curriculum_items ) ? $course->curriculum_items : array();
 	$item_ids = maybe_unserialize( $item_ids );
@@ -304,28 +309,46 @@ function learn_press_setup_user_course_data( $user_id, $course_id, $force = fals
 			)
 			ORDER BY user_item_id ASC
 		", $user_id, $course_id, $user_id, $course_id, $user_id, $course_id );
-	}else{
+	} else {
 		$query = $wpdb->prepare( "
 			SELECT * FROM {$wpdb->prefix}learnpress_user_items t1
 			WHERE user_id = %d
 			AND item_id = %d
-		", $user_id, $course_id);
+		", $user_id, $course_id );
 	}
 	$items = $wpdb->get_results( $query );
 
 	if ( !$items ) {
-			return;
+		return;
+	}
+	$item_statuses = LP_Cache::get_item_statuses( false, array() );
+	foreach ( $item_ids as $id ) {
+		if ( !array_key_exists( $id, $item_statuses ) || $force ) {
+			$item_statuses[$user_id . '-' . $course_id . '-' . $id] = '';
 		}
-		$item_statuses = LP_Cache::get_item_statuses( false, array() );
-		foreach ( $item_ids as $id ) {
-			if ( !array_key_exists( $id, $item_statuses ) || $force ) {
-				$item_statuses[$user_id . '-' . $course_id . '-' . $id] = '';
-			}
+	}
+	foreach ( $items as $item ) {
+		$item_statuses[$user_id . '-' . $course_id . '-' . $item->item_id] = $item->status;
+	}
+	if ( !empty( $lp_query->query_vars['lesson'] ) && !empty( $item_statuses[$user_id . '-' . $course_id . '-' . $course_id] ) && $item_statuses[$user_id . '-' . $course_id . '-' . $course_id] != 'finished' ) {
+		$user_item_id = learn_press_get_user_item_id( $user_id, $course_id );
+		$lesson       = learn_press_get_post_by_name( $lp_query->query_vars['lesson'], LP_LESSON_CPT );
+		if ( empty( $item_statuses[$user_id . '-' . $course_id . '-' . $lesson->ID] ) ) {
+			learn_press_update_user_item_field(
+				array(
+					'user_id'    => $user_id,
+					'item_id'    => $lesson->ID,
+					'start_time' => current_time( 'mysql' ),
+					'item_type'  => get_post_type( $lesson->ID ),
+					'ref_type'   => LP_COURSE_CPT,
+					'status'     => get_post_type( $lesson->ID ) == LP_LESSON_CPT ? 'started' : 'viewed',
+					'ref_id'     => $course_id,
+					'parent_id'  => $user_item_id
+				)
+			);
 		}
-		foreach ( $items as $item ) {
-			$item_statuses[$user_id . '-' . $course_id . '-' . $item->item_id] = $item->status;
-		}
-		LP_Cache::set_item_statuses( $item_statuses );
+	}
+	LP_Cache::set_item_statuses( $item_statuses );
 }
 
 /**

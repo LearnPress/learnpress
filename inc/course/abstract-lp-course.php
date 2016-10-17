@@ -717,6 +717,7 @@ abstract class LP_Abstract_Course {
 			if ( $curriculum ) foreach ( $curriculum as $section ) {
 				if ( empty( $section->items ) ) continue;
 				foreach ( $section->items as $loop_item ) {
+					$loop_item->section_id = $section->section_id;
 					if ( $field ) {
 						$item       = array();
 						$item_array = (array) $loop_item;
@@ -1447,16 +1448,14 @@ abstract class LP_Abstract_Course {
 	/**
 	 * Get items params for single course params
 	 */
-	public function get_items_params() {
+	public function get_items_params( $user_id = null ) {
 		global $wpdb;
-
-		$user = learn_press_get_current_user();
-
+		$user  = learn_press_get_current_user( $user_id );
 		$items = $this->get_curriculum_items(
 			array(
-				'field'        => array( 'item_id', 'item_type', 'post_title', 'post_content' ),
-				'field_map'    => array( 'id', 'type', 'title', 'content' ),
-				'field_format' => array( '%d', '%s', '%s' )
+				'field'        => array( 'item_id', 'item_type', 'post_title', 'section_id' ),
+				'field_map'    => array( 'id', 'type', 'title' ),
+				'field_format' => array( '%d', '%s', '%s', '%d' )
 			)
 		);
 		if ( $items ) foreach ( $items as $k => $item ) {
@@ -1469,6 +1468,9 @@ abstract class LP_Abstract_Course {
 			} else {
 				$items[$k]['url']    = '';
 				$items[$k]['status'] = '';
+			}
+			if($item['type'] == LP_QUIZ_CPT){
+				//$items[$k]['result'] = $user->get_quiz_results($item['id'], $this->id);
 			}
 		}
 

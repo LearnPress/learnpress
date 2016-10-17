@@ -48,7 +48,14 @@ $nonce = wp_create_nonce(
 <?php } else { ?>
 
 	<?php if ( !LP()->user->has( 'finished-course', $course->id ) && LP()->user->has( 'enrolled-course', $course->id ) ) { ?>
-		<?php
+		<form method="post">
+			<input type="hidden" name="id" value="<?php echo $lesson->id;?>" />
+			<input type="hidden" name="course_id" value="<?php echo $course->id;?>" />
+			<input type="hidden" name="nonce" value="<?php echo $nonce;?>" />
+			<input type="hidden" name="lp-ajax" value="complete-item" />
+
+			<button class="xcomplete-lesson-button">XXXX</button>
+			<?php
 		echo apply_filters(
 			'learn_press_user_completed_lesson_button',
 			sprintf(
@@ -60,6 +67,7 @@ $nonce = wp_create_nonce(
 			)
 		);
 		?>
+		</form>
 	<?php } ?>
 
 <?php } ?>

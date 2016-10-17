@@ -1372,22 +1372,21 @@ class LP_Abstract_User {
 	public function has_enrolled_course( $course_id, $force = false ) {
 
 		if ( $enrolled = $this->has_purchased_course( $course_id ) ) {
-
 			$item_statuses = LP_Cache::get_item_statuses( false, array() );
 			$key           = sprintf( '%d-%d-%d', $this->id, $course_id, $course_id );
 			$enrolled      = false;
-
-			if ( !empty( $item_statuses[$key] ) && $item_statuses[$key] != '' ) {
+			if ( !array_key_exists( $key, $item_statuses ) ) {
+				$enrolled = $item_statuses[$key] = $this->_has_enrolled_course( $course_id );
+			} elseif ( !empty( $item_statuses[$key] ) && $item_statuses[$key] != '' ) {
 				$enrolled = true;
 			}
 		}
 		return apply_filters( 'learn_press_user_has_enrolled_course', $enrolled, $this, $course_id );
-		$key = sprintf( '%d-%d', $this->id, $course_id );
+	}
 
-		if ( empty( $enrolled_courses[$key] ) || $force ) {
-			//$info = $this->get_course_info( $course_id );
-			global $wpdb;
-			$query                  = $wpdb->prepare( "
+	private function _has_enrolled_course( $course_id ) {
+		global $wpdb;
+		$query = $wpdb->prepare( "
 				SELECT status
 				FROM {$wpdb->prefix}learnpress_user_items
 				WHERE user_id = %d
@@ -1395,10 +1394,7 @@ class LP_Abstract_User {
 				AND status <> %s
 				LIMIT 0, 1
 			", $this->id, $course_id, '' );
-			$enrolled_courses[$key] = $wpdb->get_var( $query ) ? true : false;
-			LP_Cache::set_enrolled_courses( $key, $enrolled_courses[$key] );
-		}
-		return apply_filters( 'learn_press_user_has_enrolled_course', $enrolled_courses[$key], $this, $course_id );
+		return $wpdb->get_var( $query ) ? true : false;
 	}
 
 	/**
@@ -1675,7 +1671,7 @@ class LP_Abstract_User {
 	 */
 	public function is_exists_lesson( $lesson_id, $course_id ) {
 		global $wpdb;
-		$query   = $wpdb->prepare( "
+		echo $query = $wpdb->prepare( "
 			SELECT *
 			FROM {$wpdb->prefix}learnpress_user_items
 			WHERE user_id = %d
@@ -1740,12 +1736,15 @@ class LP_Abstract_User {
 				array(
 					'user_id'    => $this->id,
 					'item_id'    => $lesson_id,
+					'item_type'  => LP_LESSON_CPT,
 					'ref_id'     => $course_id,
+					'ref_type'   => LP_COURSE_CPT,
 					'start_time' => current_time( 'mysql' ),
 					'end_time'   => current_time( 'mysql' ),
-					'status'     => 'completed'
+					'status'     => 'completed',
+					'parent_id'  => learn_press_get_user_item_id( $this->id, $course_id )
 				),
-				array( '%d', '%d', '%d', '%s', '%s', '%s' )
+				array( '%d', '%d', '%s', '%d', '%s', '%s', '%s', '%s', '%d' )
 			);
 			$updated = $wpdb->insert_id;
 			if ( !$updated ) {
@@ -1842,6 +1841,7 @@ class LP_Abstract_User {
 				$info['end']        = $result->end_time;
 				$info['status']     = $result->status;
 				$info['results']    = $course->evaluate_course_results( $this->id );
+				$info['items']      = $course->get_items_params( $this->id );
 			}
 			$user_course_info[$this->id][$course_id] = $info;
 			LP_Cache::set_course_info( $user_course_info );
@@ -2373,6 +2373,24 @@ class LP_Abstract_User {
 			}
 		}
 		return $data;
+	}
+
+	public function get_course_info2( $course_id ) {
+		$course_info = $this->get_course_info( $course_id );
+		if ( !empty( $course_info['items'] ) ) {
+			foreach ( $course_info['items'] as $k => $item ) {
+				if ( $item['type'] == 'lp_quiz' ) {
+					$result                   = $this->get_quiz_results( $item['id'], 37 );
+					$course_info['items'][$k] = array_merge(
+						$course_info['items'][$k],
+						array(
+							'results' => $result ? $result->mark_percent : 0
+						)
+					);
+				}
+			}
+		}
+		return $course_info;
 	}
 
 	public function is_answered_question( $question_id, $quiz_id = null ) {

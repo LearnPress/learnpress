@@ -2,7 +2,7 @@
  * Common functions/utils used in all page
  */
 if (typeof window.LP == 'undefined') {
-    window.LP = window.LearnPress = {};
+	window.LP = window.LearnPress = {};
 }
 
 (function ($) {
@@ -307,64 +307,64 @@ if (typeof window.LP == 'undefined') {
         },
         blockUI: function (message) {
 
-            message = (message !== false ? ( message ? message : 'Wait a moment' ) : '') + '<div class="message-box-animation"></div>';
-            this.show(message);
-        },
-        hide: function (delay, instance) {
-            if (instance) {
-                this._removeInstance(instance.id);
-            } else if (this.instance) {
-                this._removeInstance(this.instance.id);
-            }
-            if (this.instances.length == 0) {
-                if (this.$block) {
-                    this.$block.hide();
-                }
-                if (this.$window) {
-                    this.$window.hide();
-                }
-                $(window)
-                    .unbind('resize.message-box', this.update)
-                    .unbind('scroll.message-box', this.update);
-            } else {
-                if (this.instance) {
-                    this._createWindow(this.instance.message, this.instance.title, this.instance.buttons);
-                }
-            }
+			message = (message !== false ? ( message ? message : 'Wait a moment' ) : '') + '<div class="message-box-animation"></div>';
+			this.show(message);
+		},
+		hide           : function (delay, instance) {
+			if (instance) {
+				this._removeInstance(instance.id);
+			} else if (this.instance) {
+				this._removeInstance(this.instance.id);
+			}
+			if (this.instances.length == 0) {
+				if (this.$block) {
+					this.$block.hide();
+				}
+				if (this.$window) {
+					this.$window.hide();
+				}
+				$(window)
+					.unbind('resize.message-box', this.update)
+					.unbind('scroll.message-box', this.update);
+			} else {
+				if (this.instance) {
+					this._createWindow(this.instance.message, this.instance.title, this.instance.buttons)
+				}
+			}
 
-        },
-        update: function (force) {
-            var that = this,
-                $wrap = this.$window.find('#message-box-wrap'),
-                timer = $wrap.data('timer'),
-                _update = function () {
-                    LP.Hook.doAction('learn_press_message_box_before_resize', that);
-                    var $content = $wrap.find('.message-box-content').css("height", "").css('overflow', 'hidden'),
-                        width = $wrap.outerWidth(),
-                        height = $wrap.outerHeight(),
-                        contentHeight = $content.height(),
-                        windowHeight = $(window).height(),
-                        top = $wrap.offset().top;
-                    if (contentHeight > windowHeight - 50) {
-                        $content.css({
-                            height: windowHeight - 25
-                        });
-                        height = $wrap.outerHeight();
-                    } else {
-                        $content.css("height", "").css('overflow', '');
-                    }
-                    $wrap.css({
-                        marginTop: ( $(window).height() - height ) / 2
-                    });
-                    LP.Hook.doAction('learn_press_message_box_resize', height, that);
-                };
-            if (force) _update();
-            timer && clearTimeout(timer);
-            timer = setTimeout(_update, 250);
-        },
-        _removeInstance: function (id) {
-            for (var i = 0; i < this.instances.length; i++) {
-                if (this.instances[i].id == id) {
+		},
+		update         : function (force) {
+			var that = this,
+				$wrap = this.$window.find('#message-box-wrap'),
+				timer = $wrap.data('timer'),
+				_update = function () {
+					LP.Hook.doAction('learn_press_message_box_before_resize', that);
+					var $content = $wrap.find('.message-box-content').css("height", "").css('overflow', 'hidden'),
+						width = $wrap.outerWidth(),
+						height = $wrap.outerHeight(),
+						contentHeight = $content.height(),
+						windowHeight = $(window).height(),
+						top = $wrap.offset().top;
+					if (contentHeight > windowHeight - 50) {
+						$content.css({
+							height: windowHeight - 25
+						});
+						height = $wrap.outerHeight();
+					} else {
+						$content.css("height", "").css('overflow', '');
+					}
+					$wrap.css({
+						marginTop: ( $(window).height() - height ) / 2
+					});
+					LP.Hook.doAction('learn_press_message_box_resize', height, that);
+				};
+			if (force) _update();
+			timer && clearTimeout(timer);
+			timer = setTimeout(_update, 250);
+		},
+		_removeInstance: function (id) {
+			for (var i = 0; i < this.instances.length; i++) {
+				if (this.instances[i].id == id) {
 
                     this.instances.splice(i, 1);
 
@@ -699,117 +699,131 @@ if (typeof window.LP == 'undefined') {
                     .toString();
             }
 
-            return retId;
-        },
-        log: function () {
-            //if (typeof LEARN_PRESS_DEBUG != 'undefined' && LEARN_PRESS_DEBUG && console) {
-            for (var i = 0, n = arguments.length; i < n; i++) {
-//                console.log(arguments[i]);
-            }
-            //}
-        },
-        blockContent: function () {
-            if ($('#learn-press-block-content').length == 0) {
-                $(LP.template('learn-press-template-block-content', {})).appendTo($('body'));
-            }
-            var $root = $('body').addClass('block-content'),
-                overflow = $root.css('overflow');
-            $root.css('overflow', 'hidden').attr('overflow', overflow);
-        },
-        unblockContent: function () {
-            setTimeout(function () {
-                var $root = $('body, html').removeClass('block-content'),
-                    overflow = $root.attr('overflow');
-                $root.css('overflow', overflow).removeAttr('overflow');
-            }, 350);
-        },
-        template: _.memoize(function (id, data) {
-            var compiled,
-                options = {
-                    evaluate: /<#([\s\S]+?)#>/g,
-                    interpolate: /\{\{\{([\s\S]+?)\}\}\}/g,
-                    escape: /\{\{([^\}]+?)\}\}(?!\})/g,
-                    variable: 'data'
-                };
+			return retId;
+		},
+		log           : function () {
+			//if (typeof LEARN_PRESS_DEBUG != 'undefined' && LEARN_PRESS_DEBUG && console) {
+			for (var i = 0, n = arguments.length; i < n; i++) {
+				console.log(arguments[i]);
+			}
+			//}
+		},
+		blockContent  : function () {
+			if ($('#learn-press-block-content').length == 0) {
+				$(LP.template('learn-press-template-block-content', {})).appendTo($('body'));
+			}
+			var $root = $('body').addClass('block-content'),
+				overflow = $root.css('overflow');
+			$root.css('overflow', 'hidden').attr('overflow', overflow);
+		},
+		unblockContent: function () {
+			setTimeout(function () {
+				var $root = $('body, html').removeClass('block-content'),
+					overflow = $root.attr('overflow');
+				$root.css('overflow', overflow).removeAttr('overflow');
+			}, 350);
+		},
+		template      : _.memoize(function (id, data) {
+			var compiled,
+				options = {
+					evaluate   : /<#([\s\S]+?)#>/g,
+					interpolate: /\{\{\{([\s\S]+?)\}\}\}/g,
+					escape     : /\{\{([^\}]+?)\}\}(?!\})/g,
+					variable   : 'data'
+				};
 
-            var tmpl = function (data) {
-                compiled = compiled || _.template($('#' + id).html(), null, options);
-                return compiled(data);
-            };
-            return data ? tmpl(data) : tmpl;
-        }, function (a, b) {
-            return JSON.stringify(b);
-        }),
-        alert: function (localize, callback) {
-            var title = '',
-                message = '';
-            if (typeof localize === 'string') {
-                message = localize;
-            } else {
-                if (typeof localize['title'] !== 'undefined') {
-                    title = localize['title'];
-                }
-                if (typeof localize['message'] !== 'undefined') {
-                    message = localize['message'];
-                }
-            }
-            $.alerts.alert(message, title, function (e) {
-                LP._on_alert_hide();
-                callback && callback(e);
-            });
-            this._on_alert_show();
-        },
-        confirm: function (localize, callback) {
-            var title = '',
-                message = '';
+			var tmpl = function (data) {
+				compiled = compiled || _.template($('#' + id).html(), null, options);
+				return compiled(data);
+			};
+			return data ? tmpl(data) : tmpl;
+		}, function (a, b) {
+			return JSON.stringify(b);
+		}),
+		alert         : function (localize, callback) {
+			var title = '',
+				message = '';
+			if (typeof localize == 'string') {
+				message = localize;
+			} else {
+				if (typeof localize['title'] != 'undefined') {
+					title = localize['title'];
+				}
+				if (typeof localize['message'] != 'undefined') {
+					message = localize['message'];
+				}
+			}
+			$.alerts.alert(message, title, function (e) {
+				LP._on_alert_hide();
+				callback && callback(e);
+			});
+			this._on_alert_show();
+		},
+		confirm       : function (localize, callback) {
+			var title = '',
+				message = '';
 
-            if (typeof localize === 'string') {
-                message = localize;
-            } else {
-                if (typeof localize['title'] !== 'undefined') {
-                    title = localize['title'];
-                }
-                if (typeof localize['message'] !== 'undefined') {
-                    message = localize['message'];
-                }
-            }
-            $.alerts.confirm(message, title, function (e) {
-                LP._on_alert_hide();
-                callback && callback(e);
-            });
-            this._on_alert_show();
+			if (typeof localize == 'string') {
+				message = localize;
+			} else {
+				if (typeof localize['title'] != 'undefined') {
+					title = localize['title'];
+				}
+				if (typeof localize['message'] != 'undefined') {
+					message = localize['message'];
+				}
+			}
+			$.alerts.confirm(message, title, function (e) {
+				LP._on_alert_hide();
+				callback && callback(e);
+			});
+			this._on_alert_show();
 
-        },
-        _on_alert_show: function () {
-            var $container = $('#popup_container'),
-                $placeholder = $('<span id="popup_container_placeholder" />').insertAfter($container).data('xxx', $container);
-            $container.stop().css('top', '-=50').css('opacity', '0').animate({
-                top: '+=50',
-                opacity: 1
-            }, 250);
-        },
-        _on_alert_hide: function () {
-            var $holder = $("#popup_container_placeholder"),
-                $container = $holder.data('xxx');
-            if ($container) {
-                $container.replaceWith($holder);
-            }
-            $container.appendTo($(document.body));
-            $container.stop().animate({
-                top: '+=50',
-                opacity: 0
-            }, 250, function () {
-                $(this).remove();
-            });
-        }
-    }, LP);
+		},
+		_on_alert_show: function () {
+			var $container = $('#popup_container'),
+				$placeholder = $('<span id="popup_container_placeholder" />').insertAfter($container).data('xxx', $container);
+			$container.stop().css('top', '-=50').css('opacity', '0').animate({
+				top    : '+=50',
+				opacity: 1
+			}, 250);
+		},
+		_on_alert_hide: function () {
+			var $holder = $("#popup_container_placeholder"),
+				$container = $holder.data('xxx');
+			if ($container) {
+				$container.replaceWith($holder);
+			}
+			$container.appendTo($(document.body))
+			$container.stop().animate({
+				top    : '+=50',
+				opacity: 0
+			}, 250, function () {
+				$(this).remove();
+			});
+		},
+		sendMessage   : function (data, object, targetOrigin, transfer) {
+			if ($.isPlainObject(data)) {
+				data = JSON.stringify(data);
+			}
+			object = object || window;
+			targetOrigin = targetOrigin || '*';
+			object.postMessage(data, targetOrigin, transfer);
+		},
+		receiveMessage: function (evt, b) {
+			var target = event.origin || event.originalEvent.origin,
+				data = event.data || event.originalEvent.data;
+			var json = data.indexOf('{') == 0 ? LP.parseJSON(data) : false;
+			LP.Hook.doAction('learn_press_receive_message', json ? json : data, target);
+		}
+	}, LP);
 
-    $.fn.rows = function () {
-        var h = $(this).height();
-        var lh = $(this).css('line-height').replace("px", "");
-        $(this).attr({height: h, 'line-height': lh});
-        return Math.floor(h / parseInt(lh));
-    };
+	$.fn.rows = function () {
+		var h = $(this).height();
+		var lh = $(this).css('line-height').replace("px", "");
+		$(this).attr({height: h, 'line-height': lh});
+		return Math.floor(h / parseInt(lh));
+	}
 
     $.fn.checkLines = function (p) {
         return this.each(function () {
@@ -828,125 +842,126 @@ if (typeof window.LP == 'undefined') {
         return $next.length ? $next : false;
     };
 
-    $.fn.findPrev = function (selector) {
-        var $selector = $(selector),
-            $root = this.first(),
-            index = $selector.index($root),
-            $prev = $selector.eq(index - 1);
-        return $prev.length ? $prev : false;
-    };
+	$.fn.findPrev = function (selector) {
+		var $selector = $(selector),
+			$root = this.first(),
+			index = $selector.index($root),
+			$prev = $selector.eq(index - 1);
+		return $prev.length ? $prev : false;
+	};
 
-    $.each(['progress'], function (i, property) {
-        $.Tween.propHooks[property] = {
-            get: function (tween) {
-                return $(tween.elem).css('transform');
-            },
-            set: function (tween) {
-                /*var style = tween.elem.style;
-                 var p_begin = parseColor($(tween.elem).css(property));
-                 var p_end = parseColor(tween.end);
-                 tween.run = function(progress) {
-                 style[property] = calculateColor(p_begin, p_end, progress);
-                 }*/
-                if (tween.now < 180) {
-                    $(this).find('.progress-circle').removeClass('gt-50');
-                } else {
-                    $(this).find('.progress-circle').addClass('gt-50');
-                }
-                $(tween.elem).find('.fill').css({
-                    transform: 'rotate(' + tween.end + 'deg)'
-                });
-                console.log(tween);
-            }
-        };
-    });
+	$.each(['progress'], function (i, property) {
+		$.Tween.propHooks[property] = {
+			get: function (tween) {
+				return $(tween.elem).css('transform');
+			},
+			set: function (tween) {
+				/*var style = tween.elem.style;
+				 var p_begin = parseColor($(tween.elem).css(property));
+				 var p_end = parseColor(tween.end);
+				 tween.run = function(progress) {
+				 style[property] = calculateColor(p_begin, p_end, progress);
+				 }*/
+				if (tween.now < 180) {
+					$(this).find('.progress-circle').removeClass('gt-50');
+				} else {
+					$(this).find('.progress-circle').addClass('gt-50');
+				}
+				$(tween.elem).find('.fill').css({
+					transform: 'rotate(' + tween.end + 'deg)'
+				});
+			}
+		};
+	});
 
-    $.fn.progress = function (v) {
-        return this.each(function () {
-            var t = parseInt(v / 100 * 360),
-                timer = null,
-                $this = $(this);
+	$.fn.progress = function (v) {
+		return this.each(function () {
+			var t = parseInt(v / 100 * 360),
+				timer = null,
+				$this = $(this);
 
-            if (t < 180) {
-                $this.find('.progress-circle').removeClass('gt-50');
-            } else {
-                $this.find('.progress-circle').addClass('gt-50');
-            }
-            $this.find('.fill').css({
-                transform: 'rotate(' + t + 'deg)'
-            });
+			if (t < 180) {
+				$this.find('.progress-circle').removeClass('gt-50');
+			} else {
+				$this.find('.progress-circle').addClass('gt-50');
+			}
+			$this.find('.fill').css({
+				transform: 'rotate(' + t + 'deg)'
+			});
 
-        });
-    };
+		})
+	}
 
-    function __initSubtabs() {
-        $('.learn-press-subtabs').each(function () {
-            var $tabContainer = $(this),
-                $tabs = $tabContainer.find('a'),
-                current = null;
-            $tabs.click(function (e) {
-                var $tab = $(this),
-                    $contentID = $tab.attr('href');
-                $tab.parent().addClass('current').siblings().removeClass('current');
-                current = $($contentID).addClass('current');
-                current.siblings().removeClass('current');
-                //LP.setUrl($contentID);
-                e.preventDefault();
-            }).filter(function () {
-                return $(this).attr('href') == window.location.hash;
-            }).trigger('click');
-            if (!current) {
-                $tabs.first().trigger('click');
-            }
-        });
-    }
+	function __initSubtabs() {
+		$('.learn-press-subtabs').each(function () {
+			var $tabContainer = $(this),
+				$tabs = $tabContainer.find('a'),
+				current = null;
+			$tabs.click(function (e) {
+				var $tab = $(this),
+					$contentID = $tab.attr('href');
+				$tab.parent().addClass('current').siblings().removeClass('current');
+				current = $($contentID).addClass('current');
+				current.siblings().removeClass('current');
+				//LP.setUrl($contentID);
+				e.preventDefault();
+			}).filter(function () {
+				return $(this).attr('href') == window.location.hash;
+			}).trigger('click');
+			if (!current) {
+				$tabs.first().trigger('click')
+			}
+		})
+	}
 
-    $(document).ready(function () {
-        if (typeof $.alerts !== 'undefined') {
-            $.alerts.overlayColor = '#000';
-            $.alerts.overlayOpacity = 0.5;
-        }
+	$(document).ready(function () {
+		if (typeof $.alerts != 'undefined') {
+			$.alerts.overlayColor = '#000';
+			$.alerts.overlayOpacity = 0.5;
+		}
 
-        $('body')
-            .on('click', '.learn-press-nav-tabs li a', function (e) {
-                e.preventDefault();
-                var $tab = $(this);
-                $tab.closest('li').addClass('active').siblings().removeClass('active');
-                $($tab.attr('data-tab')).addClass('active').siblings().removeClass('active');
-            });
-        $('.learn-press-nav-tabs li.active a').trigger('click');
+		$('body')
+			.on('click', '.learn-press-nav-tabs li a', function (e) {
+				e.preventDefault();
+				var $tab = $(this);
+				$tab.closest('li').addClass('active').siblings().removeClass('active');
+				$($tab.attr('data-tab')).addClass('active').siblings().removeClass('active');
+			});
+		$('.learn-press-nav-tabs li.active a').trigger('click');
 
-        ///
-        (function () {
-            var timer = null,
-                callback = function () {
-                    $('.auto-check-lines').checkLines(function (r) {
-                        if (r > 1) {
-                            $(this).removeClass('single-lines');
-                        } else {
-                            $(this).addClass('single-lines');
-                        }
-                        $(this).attr('rows', r);
-                    });
-                };
-            $(window).on('resize.check-lines', function () {
-                if (timer) {
-                    timer && clearTimeout(timer);
-                    timer = setTimeout(callback, 300);
-                } else {
-                    callback();
-                }
-            });
-        })();
+		///
+		(function () {
+			var timer = null,
+				callback = function () {
+					$('.auto-check-lines').checkLines(function (r) {
+						if (r > 1) {
+							$(this).removeClass('single-lines');
+						} else {
+							$(this).addClass('single-lines');
+						}
+						$(this).attr('rows', r);
+					});
+				};
+			$(window).on('resize.check-lines', function () {
+				if (timer) {
+					timer && clearTimeout(timer);
+					timer = setTimeout(callback, 300);
+				} else {
+					callback();
+				}
+			});
+		})();
 
-        $(document).on('click', '[data-block-content="yes"]', function () {
-            LP.blockContent();
-        });
+		$(document).on('click', '[data-block-content="yes"]', function () {
+			LP.blockContent();
+		});
 
-        $('.learn-press-tooltip, .lp-passing-conditional').tooltip({offset: [24, 24]});
+		$('.learn-press-tooltip, .lp-passing-conditional').tooltip({offset: [24, 24]});
 
-        $('.learn-press-icon').tooltip({offset: [30, 30]});
+		$('.learn-press-icon').tooltip({offset: [30, 30]});
 
-    });
-    LearnPress = LP;
+		//$(window).on("message onmessage", LP.receiveMessage, false);
+		window.addEventListener("message", LP.receiveMessage, false);
+	});
+	LearnPress = LP;
 })(jQuery);
