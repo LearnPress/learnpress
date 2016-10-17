@@ -772,7 +772,7 @@
 				}
 			},
 			render                  : function () {
-                            console.debug( 1 );
+
 			},
 			inputKeyPressEvent      : function (e) {
 				if (this.isShowing && e.keyCode == 13) {

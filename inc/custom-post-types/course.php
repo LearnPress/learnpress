@@ -548,7 +548,6 @@ if (!class_exists('LP_Course_Post_Type')) {
                         'name' => __('Sale start date', 'learnpress'),
                         'id' => "{$prefix}sale_start",
                         'type' => 'datetime',
-                        'desc' => '<a href="#" id="'.$prefix.'sale_price_schedule_cancel">'.__('Cancel', 'learnpress').'</a>',
                         'std' => $start_date,
                         'class' => 'lp-course-sale_start-field hide'
                     ),
@@ -556,7 +555,7 @@ if (!class_exists('LP_Course_Post_Type')) {
                         'name' => __('Sale end date', 'learnpress'),
                         'id' => "{$prefix}sale_end",
                         'type' => 'datetime',
-                        'desc' => '',
+                        'desc' => '<a href="#" id="'.$prefix.'sale_price_schedule_cancel">'.__('Cancel', 'learnpress').'</a>',
                         'std' => $end_date,
                         'class' => 'lp-course-sale_end-field hide'
                     )
