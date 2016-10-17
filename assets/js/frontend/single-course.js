@@ -356,12 +356,9 @@ if (typeof LearnPress === 'undefined') {
             if (!id || this.itemLoading) {
                 return;
             }
-
             if ($target.closest('.course-item').hasClass('item-current') && !f.force) {
                 return;
             }
-            console.log('_loadItem')
-
             this.blockContent();
             if (this.currentItem) {
                 var $iframe = this.currentItem.get('content');
@@ -369,49 +366,22 @@ if (typeof LearnPress === 'undefined') {
             }
             this.itemLoading = id;
             this.currentItem = this.model.getItem(id);
-            ///this.currentItem.set('content', '');
             this.showPopup();
             var $content = this.currentItem.get('content'),
                 isNew = !($content && $content.length);
             if (!$content) {
-                /*this.currentItem.request({
-                 context : this,
-                 item    : this.currentItem,
-                 callback: function (response) {
-                 var $html = $('<div />').html(response);
-                 that.viewItem(id, {
-                 content: $html.find('[id="learn-press-content-item"]:last').html()
-                 });
-                 that.itemLoading = 0;
-                 that.unblockContent();
-                 },
-                 error   : function () {
-                 that.itemLoading = 0;
-                 that.unblockContent();
-                 }
-                 });*/
                 $content = $('<iframe />');
                 this.currentItem.set('content', $content);
-
-
             }
-            /* else {
-             that.viewItem(id);
-             that.itemLoading = 0;
-             //that.unblockContent();
-             console.log('xxx')
-             this.$('#popup-content-inner').html($content);
-             }*/
+
             that.viewItem(id);
             this.$('#popup-content-inner').html($content);
             if (isNew) {
-                $content.attr('src', $(e.target).attr('href') + '?content-item-only=yes')
+                $content.attr('src', this.currentItem.get('url') + '?content-item-only=yes')
             }
             $content.unbind('load').load(function () {
                 that.itemLoading = 0;
-                //LP.unblockContent();
             })
-            console.log('LOAD ITEM')
         },
         viewItem: function (id, args) {
             var item = this.model.getItem(id);
