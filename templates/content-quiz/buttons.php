@@ -68,7 +68,7 @@ $question = $quiz->get_current_question();
 			<?php esc_html_e( 'Finish Quiz', 'learnpress' ); ?>
 		</button>
 	<?php endif; ?>
-	<input type="hidden" name="id" value="<?php echo esc_attr( $quiz->id ); ?>" />
+	<input type="hidden" name="quiz_id" value="<?php echo esc_attr( $quiz->id ); ?>" />
 	<input type="hidden" name="course_id" value="<?php echo esc_attr( $course->id ); ?>" />
 	<input type="hidden" name="security" value="" />
 	<input type="hidden" name="lp-ajax" value="" />

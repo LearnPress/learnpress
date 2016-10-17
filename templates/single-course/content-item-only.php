@@ -5,6 +5,7 @@ $user = learn_press_get_course_user();
 ?>
 
 	<div class="learn-press-content-item-only">
+		<?php learn_press_print_messages();?>
 		<?php learn_press_get_template( 'single-course/content-item.php' ); ?>
 	</div>
 
