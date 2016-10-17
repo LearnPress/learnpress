@@ -19,17 +19,6 @@ $settings = LP()->settings;
 		<?php foreach( $this->get_settings() as $field ){?>
 			<?php $this->output_field( $field );?>
 		<?php }?>
-		<?php if( 1 == 0 ){?>
-		<tr>
-			<th scope="row"><label><?php _e( 'Profile page', 'learnpress' ); ?></label></th>
-			<td>
-				<?php
-				$profile_page_id = $settings->get( 'profile_page_id', 0 );
-				learn_press_pages_dropdown( $this->get_field_name( "profile_page_id" ), $profile_page_id );
-				?>
-			</td>
-		</tr>
-		<?php }?>
 		<?php do_action( 'learn_press_after_' . $this->id . '_settings_fields', $this ); ?>
 		</tbody>
 	</table>
