@@ -302,6 +302,8 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 						/**
 						 * Flush cache to force update
 						 */
+						/*LP_Cache::flush( 'user-completed-items' );
+						//LP_Cache::set_completed_items()_status( $user->id . '-' . $course_id . '-' . $id, 'completed' );
 						learn_press_setup_user_course_data( $user->id, $course_id );
 						$course                     = learn_press_get_course( $course_id );
 						LP()->course                = $course;
@@ -313,15 +315,17 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 						if ( $section_id = learn_press_get_request( 'section_id' ) ) {
 							$response['html']['section_header'] = learn_press_get_template_content( 'single-course/section/title.php', array( 'section' => $course->get_curriculum( $section_id ) ) );
 						}
+						$response['course_result']    = $user->get_course_info2( $course_id );
 						$response['html']['progress'] = learn_press_get_template_content( 'single-course/progress.php' );
 						$response['html']['buttons']  = learn_press_get_template_content( 'single-course/buttons.php' );
-						$response['html']['content']  = learn_press_get_template_content( 'single-course/content-item-lp_lesson.php' );
+						$response['html']['content']  = learn_press_get_template_content( 'single-course/content-item-lp_lesson.php' );*/
 					}
 				} else {
 					do_action( 'learn_press_user_request_complete_item', $_REQUEST );
 				}
 			}
-			learn_press_send_json( $response );
+			wp_redirect(learn_press_get_current_url());die();
+			///learn_press_send_json( $response );
 		}
 
 		/**
@@ -343,7 +347,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 						$item_type = get_post_type( $item_id );
 					}
 					if ( apply_filters( 'learn_press_insert_user_item_data', true, $item_id, $course_id ) && $can_view_item != 'preview' ) {
-						$insert       = $wpdb->insert(
+						$insert = $wpdb->insert(
 							$wpdb->prefix . 'learnpress_user_items',
 							apply_filters(
 								'learn_press_user_item_data',
@@ -363,7 +367,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 								'%d', '%d', '%s', '%s', '%s', '%s', '%d', '%s'
 							)
 						);
-						print_r($wpdb);
+						print_r( $wpdb );
 						$user_item_id = $wpdb->insert_id;
 					}
 				}

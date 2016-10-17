@@ -1735,3 +1735,17 @@ if ( !function_exists( 'learn_press_get_profile_display_name' ) ) {
 
 	}
 }
+function learn_press_is_content_item_only() {
+	return !empty( $_REQUEST['content-item-only'] );
+}
+
+add_action( 'get_header', 'learn_press_load_content_item_only' );
+function learn_press_load_content_item_only( $name ) {
+	if ( learn_press_is_content_item_only() ) {
+		if ( LP()->global['course-item'] ) {
+			remove_action( 'get_header', 'learn_press_load_content_item_only' );
+			include LP_PLUGIN_PATH . 'templates/single-course/content-item-only.php';
+			die();
+		}
+	}
+}

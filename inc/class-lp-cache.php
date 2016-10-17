@@ -259,7 +259,7 @@ class LP_Cache {
 	 * @return array|bool|mixed
 	 */
 	public static function get_completed_items( $key = false, $def = false ) {
-		return self::_get_cache( 'user-completed-item', $key, $def );
+		return self::_get_cache( 'user-completed-items', $key, $def );
 	}
 
 	/**

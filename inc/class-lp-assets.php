@@ -185,11 +185,12 @@ class LP_Assets {
 		$scripts->add( 'learn-press-js', $default_path . 'js/frontend/learnpress' . $suffix . '.js', $deps, false, 1 );
 		$scripts->add( 'learn-press-single-course', $default_path . 'js/frontend/single-course' . $suffix . '.js', $deps, false, 1 );
 		$scripts->add( 'learn-press-course-quiz', $default_path . 'js/frontend/quiz' . $suffix . '.js', $deps, false, 1 );
+		$scripts->add( 'learn-press-course-lesson', $default_path . 'js/frontend/lesson' . $suffix . '.js', $deps, false, 1 );
 		$scripts->add( 'learn-press-enroll', $default_path . 'js/frontend/enroll' . $suffix . '.js', $deps, false, 1 );
 //		$scripts->add( 'learn-press-add-to-cart', $default_path . 'js/frontend/add-to-cart' . $suffix . '.js', $deps, false, 1 );
 		$scripts->add( 'learn-press-timer', $default_path . 'js/jquery.timer' . $suffix . '.js', $deps, false, 1 );
 		$scripts->add( 'learn-press-checkout', $default_path . 'js/frontend/checkout' . $suffix . '.js', $deps, false, 1 );
-		$scripts->add( 'learn-press-course-lesson', $default_path . 'js/frontend/course-lesson' . $suffix . '.js', $deps, false, 1 );
+		//$scripts->add( 'learn-press-course-lesson', $default_path . 'js/frontend/course-lesson' . $suffix . '.js', $deps, false, 1 );
 		$scripts->add( 'learn-press-become-teacher', $default_path . 'js/frontend/become-teacher' . $suffix . '.js', $deps, false, 1 );
 
 		// admin
@@ -688,7 +689,7 @@ class LP_Assets {
 	 * Load assets
 	 */
 	public function load_scripts() {
-
+		$user = learn_press_get_course_user();
 		if ( is_admin() ) {
 			$screen    = get_current_screen();
 			$screen_id = $screen->id;
@@ -749,7 +750,10 @@ class LP_Assets {
 		if ( learn_press_is_course() ) {
 			self::enqueue_script( 'learn-press-single-course' );
 			self::enqueue_script( 'learn-press-course-quiz' );
-			self::enqueue_script( 'learn-press-enroll' );
+			self::enqueue_script( 'learn-press-course-lesson' );
+			if ( !$user->has_course_status( 'enrolled', 'finished' ) ) {
+				self::enqueue_script( 'learn-press-enroll' );
+			}
 		}
 		if ( learn_press_is_checkout() ) {
 			self::enqueue_script( 'learn-press-checkout' );

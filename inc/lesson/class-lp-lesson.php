@@ -53,7 +53,6 @@ class LP_Lesson extends LP_Abstract_Course_Item {
 			$this->post = $lesson;
 		}
 		parent::__construct( $this->post );
-		$this->content = apply_filters( 'the_content', $this->post->post_content );
 	}
 
 	/**
@@ -72,12 +71,12 @@ class LP_Lesson extends LP_Abstract_Course_Item {
 			case 'ID':
 				$value = $this->id;
 				break;
-			case 'title':
+			/*case 'title':
 				$value = $this->post->post_title;
 				break;
 			case 'content':
-				$value = apply_filters( 'the_content', $this->post->post_content );
-				break;
+				$value = $this->get_content();
+				break;*/
 			default:
 				$value = get_post_meta( $this->id, '_lp_' . $key, true );
 				if ( !empty( $value ) ) {
@@ -85,6 +84,28 @@ class LP_Lesson extends LP_Abstract_Course_Item {
 				}
 		}
 		return $value;
+	}
+
+	public function get_title() {
+		return get_the_title( $this->id );
+	}
+
+	public function get_content() {
+		if ( !did_action( 'learn_press_get_content_' . $this->id ) ) {
+			global $post, $wp_query;
+			$post  = get_post( $this->id );
+			$posts = apply_filters( 'the_posts', array( $post ), $wp_query );
+			if ( $posts ) {
+				$post = $posts[0];
+			}
+			setup_postdata( $post );
+			ob_start();
+			the_content();
+			$this->content = ob_get_clean();
+			wp_reset_postdata();
+			do_action( 'learn_press_get_content_' . $this->id );
+		}
+		return $this->content;
 	}
 
 	public function is( $tag ) {
@@ -101,6 +122,17 @@ class LP_Lesson extends LP_Abstract_Course_Item {
 
 	public function is_previewable() {
 		return apply_filters( 'learn_press_lesson_preview', $this->preview == 'yes', $this );
+	}
+
+	public function get_settings( $user_id, $course_id ) {
+		$item_statuses = LP_Cache::get_item_statuses( false, array() );
+		return array(
+			'userId'   => $user_id,
+			'courseId' => $course_id,
+			'id'       => $this->id,
+			'status'   => !empty( $item_statuses[$this->id] ) ? $item_statuses[$this->id] : '',
+			'type'     => LP_LESSON_CPT
+		);
 	}
 
 	/**

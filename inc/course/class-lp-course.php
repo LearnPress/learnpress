@@ -57,7 +57,7 @@ class LP_Course extends LP_Abstract_Course {
 	 * @param bool  $the_course
 	 * @param array $args
 	 *
-	 * @return bool
+	 * @return LP_Course|bool
 	 */
 	public static function get_course( $the_course = false, $args = array() ) {
 		$the_course = self::get_course_object( $the_course );

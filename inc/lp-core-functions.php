@@ -1877,7 +1877,7 @@ function learn_press_add_user_item_if_needed( $located, $template_name, $templat
 	}
 	return $located;
 }
-add_filter( 'learn_press_locate_template', 'learn_press_add_user_item_if_needed', 10, 3 );
+//add_filter( 'learn_press_locate_template', 'learn_press_add_user_item_if_needed', 10, 3 );
 
 function learn_press_set_user_timezone() {
 	?>

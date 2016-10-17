@@ -23,7 +23,7 @@ $course_item = $course->get_item( $item->ID );
 	<?php endif; ?>
 	<?php if ( $user->can_view_item( $item->ID, $course->id ) !== false ) { ?>
 		<?php if ( $item->post_type == 'lp_quiz' && $result = $user->get_quiz_results( $item->ID ) ) { ?>
-			<span class="item-loop-meta-text"><?php echo sprintf( '%d%%', round( $result->mark_percent ) ); ?></span>
+			<span class="item-loop-meta-text item-result"><?php echo sprintf( '%d%%', round( $result->mark_percent ) ); ?></span>
 		<?php } ?>
 		<?php if ( $item_status == 'completed' ) { ?>
 			<span class="lp-icon item-status" title="<?php esc_attr_e( 'Completed', 'learnpress' ); ?>"></span>

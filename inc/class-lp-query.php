@@ -103,8 +103,8 @@ class LP_Query {
 				}
 			}
 		}
+		$this->query_vars['course_id'] = $course_id;
 		do_action_ref_array( 'learn_press_parse_query', array( &$this ) );
-		learn_press_setup_user_course_data( get_current_user_id(), $course_id );
 		return $q;
 	}
 
