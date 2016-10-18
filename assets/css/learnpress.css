@@ -1662,6 +1662,13 @@ body.block-content #learn-press-block-content {
 .course-meta {
   margin-bottom: 20px;
 }
+.course-meta .course-origin-price {
+  padding-right: 5px;
+  text-decoration: line-through;
+}
+.course-meta .course-price {
+  font-weight: bold;
+}
 /** MESSAGE */
 .learn-press-message {
   background: #F5F5F5;

@@ -11,55 +11,66 @@
 }
 
 [class^="lp-icon-"], [class*=" lp-icon-"] {
-  /* use !important to prevent issues with browser extensions that change fonts */
-  font-family: 'lp-icons' !important;
-  speak: none;
-  font-style: normal;
-  font-weight: normal;
-  font-variant: normal;
-  text-transform: none;
-  line-height: 1;
+    /* use !important to prevent issues with browser extensions that change fonts */
+    font-family: 'lp-icons' !important;
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
 
-  /* Better Font Rendering =========== */
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 .lp-icon-file-text2:before {
-  content: "\e926";
+    content: "\e926";
 }
+
 .lp-icon-file-picture:before {
-  content: "\e927";
+    content: "\e927";
 }
+
 .lp-icon-file-music:before {
-  content: "\e928";
+    content: "\e928";
 }
+
 .lp-icon-file-video:before {
-  content: "\e92a";
+    content: "\e92a";
 }
+
 .lp-icon-file-zip:before {
-  content: "\e92b";
+    content: "\e92b";
 }
+
 .lp-icon-paste:before {
-  content: "\e92d";
+    content: "\e92d";
 }
+
 .lp-icon-alarm:before {
-  content: "\e950";
+    content: "\e950";
 }
+
 .lp-icon-cross:before {
-  content: "\ea0f";
+    content: "\ea0f";
 }
+
 .lp-icon-checkmark:before {
-  content: "\ea10";
+    content: "\ea10";
 }
+
 .lp-icon-spinner2:before {
-  content: "\e97b";
+    content: "\e97b";
 }
+
 .lp-icon-plus:before {
-  content: "\ea0a";
+    content: "\ea0a";
 }
+
 .lp-icon-minus:before {
-  content: "\ea0b";
+    content: "\ea0b";
 }
 
 .clearfix:after {
@@ -313,7 +324,7 @@
             font-weight: normal;
             float: right;
             /*margin-top: 5px;*/
-            .collapse{
+            .collapse {
                 display: inline-block;
                 position: relative;
                 font-family: 'lp-icons';
@@ -326,14 +337,14 @@
                 border-radius: 5px;
                 vertical-align: middle;
                 margin-left: 5px;
-                &:before{
+                &:before {
                     content: "\ea0b";
                 }
-                &:hover{
+                &:hover {
                     cursor: pointer;
                 }
-                &.plus{
-                    &:before{
+                &.plus {
+                    &:before {
                         content: "\ea0a";
                     }
                 }
@@ -788,7 +799,7 @@ body.course-has-popup {
             }
         }
     }
-    iframe{
+    iframe {
         position: absolute;
         top: 0;
         left: 0;
@@ -1158,6 +1169,14 @@ body.block-content {
 
 .course-meta {
     margin-bottom: 20px;
+    .course-origin-price {
+        padding-right: 5px;
+        text-decoration: line-through;
+    }
+    .course-price {
+        font-weight: bold;
+    }
+
 }
 
 /** MESSAGE */
@@ -1346,11 +1365,11 @@ body.block-content {
             }
         }
     }
-    .lp_course{
-        .entry-content{
+    .lp_course {
+        .entry-content {
             width: 100%;
         }
-        .entry-footer{
+        .entry-footer {
             display: none;
         }
     }
@@ -1373,7 +1392,7 @@ input.blank-fill-correct {
     width: auto;
 }
 
-body.content-item-only{
+body.content-item-only {
     background: #FFF;
     opacity: 0;
     .learn-press-content-item-only {
@@ -1526,6 +1545,7 @@ body.content-item-only{
     }
 
 }
+
 /* full width with twentysixteen theme */
 @media screen and (min-width: 61.5625em) {
     body.single-lp_course {
