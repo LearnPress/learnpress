@@ -18,6 +18,6 @@ if ( !$quiz->id ) {
 }
 ?>
 
-<?php if ( false !== ( $item_quiz_content = apply_filters( 'learn_press_item_quiz_content', $quiz->content ) ) ): ?>
+<?php if ( false !== ( $item_quiz_content = apply_filters( 'learn_press_item_quiz_content', $quiz->get_content() ) ) ): ?>
 	<div class="quiz-description"><?php echo $item_quiz_content; ?></div>
 <?php endif; ?>

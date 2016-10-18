@@ -263,6 +263,7 @@
 #learn-press-course-curriculum .course-item.item-has-status .item-status {
   display: inline-block;
   background: #d6d6d6;
+  margin-left: 5px;
 }
 #learn-press-course-curriculum .course-item.item-has-status .item-status:before {
   content: '\ea10';
@@ -390,6 +391,9 @@
   margin-right: 2%;
   clear: left;
 }
+.learn-press-course-results-progress .lp-course-progress-heading {
+  margin-bottom: 10px;
+}
 .learn-press-course-results-progress .course-progress {
   float: left;
   width: 30%;
@@ -399,12 +403,9 @@
   display: inline-block;
   vertical-align: bottom;
   line-height: 1;
-}
-.learn-press-course-results-progress .number {
-  font-size: 40px;
+  font-size: 25px;
 }
 .learn-press-course-results-progress .percentage-sign {
-  font-size: 16px;
   margin-left: 5px;
 }
 .learn-press-course-results-progress:after {
@@ -541,7 +542,7 @@ body.course-has-popup {
   font-size: smaller;
 }
 #course-curriculum-popup #popup-sidebar .learn-press-course-results-progress {
-  padding: 5px 20px;
+  padding: 15px 20px;
   margin-bottom: 0;
 }
 #course-curriculum-popup #popup-sidebar .learn-press-course-results-progress .items-progress,
@@ -655,12 +656,13 @@ body.course-has-popup {
 }
 .learn-press-content-item-title {
   margin-bottom: 20px;
-  font-size: 24px;
   border-bottom: 2px solid #DDD;
   padding-bottom: 20px;
 }
 .learn-press-content-item-title.content-item-quiz-title h4 {
   float: left;
+  font-size: 24px;
+  margin-bottom: 0;
 }
 .learn-press-content-item-title.content-item-quiz-title .quiz-countdown {
   float: right;
@@ -685,6 +687,7 @@ body.course-has-popup {
 }
 .learn-press-content-item-title.content-item-quiz-title .quiz-countdown:after {
   background: #00adff;
+  padding: 0;
 }
 .learn-press-content-item-title.content-item-quiz-title .quiz-countdown.warning-time-over:after {
   background: #FF0000;
@@ -701,6 +704,19 @@ body.course-has-popup {
 }
 .learn-press-content-item-summary .quiz-question-title {
   margin-bottom: 20px;
+}
+.learn-press-content-item-summary .learn-press-question-explanation,
+.learn-press-content-item-summary .learn-press-question-hint {
+  background: #F5F5F5;
+  padding: 15px 20px;
+  font-style: italic;
+  margin-bottom: 20px;
+}
+.learn-press-content-item-summary .learn-press-question-explanation .hint-title,
+.learn-press-content-item-summary .learn-press-question-hint .hint-title,
+.learn-press-content-item-summary .learn-press-question-explanation .explanation-title,
+.learn-press-content-item-summary .learn-press-question-hint .explanation-title {
+  font-style: normal;
 }
 .button-finish-quiz {
   float: right;
@@ -802,8 +818,14 @@ body.block-content #learn-press-block-content {
   margin: 0 0 20px 0;
   list-style-position: inside;
 }
+.quiz-questions-list li {
+  margin: 0 0 10px 0;
+}
 .quiz-questions-list .question-title {
   margin: 0 0 5px 0;
+}
+.quiz-questions-list .current .question-title {
+  font-weight: bold;
 }
 .quiz-description .learn-press-question-title,
 .question-content .learn-press-question-title {
@@ -1804,12 +1826,17 @@ body.block-content #learn-press-block-content {
   padding: 10px 20px;
   background: #18B6C7;
   color: #FFF;
+  font-size: 18px;
+  margin-bottom: 0;
 }
 #popup_container #popup_content {
   padding: 20px;
 }
 #popup_container #popup_content #popup_message {
   margin-bottom: 20px;
+}
+#popup_container #popup_panel {
+  text-align: center;
 }
 .single-lp_course .course-students-list {
   margin-top: 10px;

@@ -410,6 +410,7 @@
         &.item-has-status .item-status {
             display: inline-block;
             background: #d6d6d6;
+            margin-left: 5px;
             &:before {
                 content: '\ea10';
             }
@@ -511,6 +512,9 @@
         margin-right: 2%;
         clear: left;
     }
+    .lp-course-progress-heading{
+        margin-bottom: 10px;
+    }
     .course-progress {
         float: left;
         width: 30%;
@@ -519,12 +523,9 @@
         display: inline-block;
         vertical-align: bottom;
         line-height: 1;
-    }
-    .number {
-        font-size: 40px;
+        font-size: 25px;
     }
     .percentage-sign {
-        font-size: 16px;
         margin-left: 5px;
     }
     &:after {
@@ -691,7 +692,7 @@ body.course-has-popup {
             font-size: smaller;
         }
         .learn-press-course-results-progress {
-            padding: 5px 20px;
+            padding: 15px 20px;
             margin-bottom: 0;
             .items-progress, .course-progress {
                 width: 100%;
@@ -806,12 +807,13 @@ body.course-has-popup {
 }
 .learn-press-content-item-title {
     margin-bottom: 20px;
-    font-size: 24px;
     border-bottom: 2px solid #DDD;
     padding-bottom: 20px;
     &.content-item-quiz-title {
         h4 {
             float: left;
+            font-size: 24px;
+            margin-bottom: 0;
         }
         .quiz-countdown {
             float: right;
@@ -834,6 +836,7 @@ body.course-has-popup {
             }
             &:after {
                 background: #00adff;
+                padding: 0;
             }
             &.warning-time-over {
                 &:after {
@@ -853,6 +856,15 @@ body.course-has-popup {
     margin-bottom: 30px;
     .quiz-question-title {
         margin-bottom: 20px;
+    }
+    .learn-press-question-explanation, .learn-press-question-hint{
+        background: #F5F5F5;
+        padding: 15px 20px;
+        font-style: italic;
+        margin-bottom: 20px;
+        .hint-title, .explanation-title{
+            font-style: normal;
+        }
     }
 }
 .button-finish-quiz {
@@ -930,8 +942,16 @@ body.block-content {
 .quiz-questions-list {
     margin: 0 0 20px 0;
     list-style-position: inside;
+    li{
+        margin: 0 0 10px 0;
+    }
     .question-title {
         margin: 0 0 5px 0;
+    }
+    .current{
+        .question-title{
+            font-weight: bold;
+        }
     }
 }
 
@@ -1334,6 +1354,8 @@ body.block-content {
         padding: 10px 20px;
         background: #18B6C7;
         color: #FFF;
+        font-size: 18px;
+        margin-bottom: 0;
     }
 
     #popup_content {
@@ -1343,6 +1365,9 @@ body.block-content {
         }
     }
 
+    #popup_panel{
+        text-align: center;
+    }
 }
 
 .single-lp_course {

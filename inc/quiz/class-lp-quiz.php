@@ -39,6 +39,8 @@ class LP_Quiz extends LP_Abstract_Course_Item {
 	 */
 	protected $_mark = null;
 
+	public $content = '';
+
 	/**
 	 * @var array
 	 */
@@ -329,9 +331,7 @@ class LP_Quiz extends LP_Abstract_Course_Item {
 			case 'title':
 				$value = $this->post->post_title;
 				break;
-			case 'content':
-				$value = apply_filters( 'the_content', $this->post->post_content );
-				break;
+
 			default:
 				if ( array_key_exists( $key, self::$_meta[$this->id] ) ) {
 					$value = self::$_meta[$this->id][$key];
@@ -352,6 +352,24 @@ class LP_Quiz extends LP_Abstract_Course_Item {
 			$this->$key = $value;
 		}
 		return $value;
+	}
+
+	public function get_content() {
+		if ( !did_action( 'learn_press_get_content_' . $this->id ) ) {
+			global $post, $wp_query;
+			$post  = get_post( $this->id );
+			$posts = apply_filters( 'the_posts', array( $post ), $wp_query );
+			if ( $posts ) {
+				$post = $posts[0];
+			}
+			setup_postdata( $post );
+			ob_start();
+			the_content();
+			$this->content = ob_get_clean();
+			wp_reset_postdata();
+			do_action( 'learn_press_get_content_' . $this->id );
+		}
+		return $this->content;
 	}
 
 	/**

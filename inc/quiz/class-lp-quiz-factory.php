@@ -142,7 +142,7 @@ class LP_Quiz_Factory {
 				$response['result'] = 'error';
 			}
 		}
-		wp_redirect( learn_press_get_current_url() );
+		wp_redirect( add_query_arg( array( 'done-action' => 'start-quiz' ), learn_press_get_current_url() ) );
 		exit();
 		learn_press_send_json( $response );
 	}
@@ -217,7 +217,7 @@ class LP_Quiz_Factory {
 				learn_press_add_message( __( 'Finish quiz failed', 'learnpress' ) );
 			}
 		}
-		wp_redirect( add_query_arg( 'content-item-only', 'yes', $course->get_item_link( $quiz_id ) ) );
+		wp_redirect( add_query_arg( array( 'content-item-only' => 'yes', 'done-action' => 'finish-quiz' ), $course->get_item_link( $quiz_id ) ) );
 		exit();
 	}
 
@@ -254,7 +254,7 @@ class LP_Quiz_Factory {
 
 			}
 		}
-		wp_redirect( learn_press_get_current_url() );
+		wp_redirect( add_query_arg( 'done-action', 'retake-quiz', learn_press_get_current_url() ) );
 		exit();
 		learn_press_send_json( $response );
 	}
@@ -299,42 +299,11 @@ class LP_Quiz_Factory {
 					learn_press_update_user_item_meta( $history->history_id, 'question_checked', $checked );
 				}
 			}
-
-			////LP_Cache::flush();
 		}
 		learn_press_setup_user_course_data( $user_id, $course_id );
 		$question = LP_Question_Factory::get_question( $question_id );
 		$question->render( array( 'quiz_id' => $quiz_id, 'course_id' => $course_id, 'force' => true ) );
 		exit();
-		////$question_answer = LP_Question_Factory::save_question_if_needed( $question_id, $quiz_id, $user_id );
-		if ( !$quiz || !$quiz->id ) {
-			return;
-		}
-		if ( $quiz->show_check_answer != 'yes' ) {
-			return;
-		}
-		if ( $quiz ) {
-			$quiz->check_question( $question_id, $user );
-		}
-		if ( $question_id && $question = LP_Question_Factory::get_question( $question_id ) ) {
-			$include = apply_filters( 'learn_press_check_question_answers_include_fields', null, $question_id, $quiz_id, $user_id );
-			$exclude = apply_filters( 'learn_press_check_question_answers_exclude_fields', array( 'text' ), $question_id, $quiz_id, $user_id );
-			$checked = $question->get_answers( $include, $exclude );
-			if ( $checked ) {
-				$checked = array_values( $checked );
-			}
-		} else {
-			$checked = false;
-		}
-		$checked = apply_filters( 'learn_press_check_question_answers', $checked, $question_id, $quiz_id, $user_id );
-
-		$response = array(
-			'result'   => 'success',
-			'checked'  => $checked,
-			'answered' => $question_answer
-
-		);
-		learn_press_send_json( $response );
 	}
 
 	public static function fetch_question() {

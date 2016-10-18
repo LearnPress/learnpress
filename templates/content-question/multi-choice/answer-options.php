@@ -62,9 +62,8 @@ if ( $show_result && $completed ) {
 			</li>
 		<?php endforeach; ?>
 		<?php if ( $checked && $explanation = $this->explanation ): ?>
-			<li class="question-explanation">
-				<?php echo do_shortcode( $explanation ); ?>
-			</li>
+			<?php learn_press_get_template( 'content-question/explanation.php', array( 'explanation' => $explanation ) ); ?>
+
 		<?php endif; ?>
 	</ul>
 <?php endif; ?>

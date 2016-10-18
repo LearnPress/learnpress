@@ -2398,7 +2398,7 @@ class LP_Abstract_User {
 		if ( !empty( $course_info['items'] ) ) {
 			foreach ( $course_info['items'] as $k => $item ) {
 				if ( $item['type'] == 'lp_quiz' ) {
-					$result                   = $this->get_quiz_results( $item['id'], 37 );
+					$result                   = $this->get_quiz_results( $item['id'], $course_id );
 					$course_info['items'][$k] = array_merge(
 						$course_info['items'][$k],
 						array(
