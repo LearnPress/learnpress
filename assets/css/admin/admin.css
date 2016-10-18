@@ -430,10 +430,10 @@ li.quick_quiz {
     padding: 5px;
   }
   .learn-press-add-ons .enable-now:before {
-    margin: 0px !important;
+    margin: 0 !important;
   }
   .learn-press-add-ons .enable-now:before {
-    margin: 0px !important;
+    margin: 0 !important;
   }
   #learn-press-add-ons-wrap .theme img {
     width: 50%;
