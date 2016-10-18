@@ -17,7 +17,7 @@ global $post;
 
 	<?php do_action( 'learn_press_before_profile_tab_' . $subtab . '_loop_course' ); ?>
 
-	<?php the_title( sprintf( '<a href="%s" rel="bookmark">', esc_url( get_permalink() ) ), '</a>' ); ?>
+	<?php learn_press_get_template_part('content', 'course');?>
 
 	<?php do_action( 'learn_press_after_profile_tab_' . $subtab . '_loop_course' ); ?>
 

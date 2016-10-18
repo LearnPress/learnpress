@@ -401,7 +401,7 @@
   line-height: 1;
 }
 .learn-press-course-results-progress .number {
-  font-size: 48px;
+  font-size: 40px;
 }
 .learn-press-course-results-progress .percentage-sign {
   font-size: 16px;
@@ -418,7 +418,7 @@
 .lp-course-progress .lp-progress-bar {
   height: 15px;
   background: #DDD;
-  margin: 10px 0 20px 0;
+  margin: 10px 0 15px 0;
   overflow: hidden;
   -webkit-border-radius: 3px;
   -khtml-border-radius: 3px;
@@ -541,7 +541,7 @@ body.course-has-popup {
   font-size: smaller;
 }
 #course-curriculum-popup #popup-sidebar .learn-press-course-results-progress {
-  padding: 20px;
+  padding: 5px 20px;
   margin-bottom: 0;
 }
 #course-curriculum-popup #popup-sidebar .learn-press-course-results-progress .items-progress,
@@ -1661,6 +1661,13 @@ body.block-content #learn-press-block-content {
 }
 .course-meta {
   margin-bottom: 20px;
+}
+.course-meta .course-origin-price {
+  padding-right: 5px;
+  text-decoration: line-through;
+}
+.course-meta .course-price {
+  font-weight: bold;
 }
 /** MESSAGE */
 .learn-press-message {

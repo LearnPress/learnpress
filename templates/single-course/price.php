@@ -18,15 +18,12 @@ if ( learn_press_is_enrolled_course() ) {
 }
 
 ?>
-<?php if ( $price_html = $course->get_price_html() ) : ?>
+<?php if ( $price = $course->get_price_html() ) {
 
-	<span class="course-price"><?php echo $price_html; ?></span>
-	<?php 
-	if ( $course->get_origin_price() != $course->get_price() ) {
-		$origin_price_html = $course->get_origin_price_html();
-		?>
-	<span class="course-origin-price"><?php echo $origin_price_html; ?></span>
-		<?php
+	$origin_price = $course->get_origin_price_html();
+	if ( $price != $origin_price ) {
+		echo '<span class="course-origin-price">' . $origin_price . '</span>';
 	}
-	?>
-<?php endif; ?>
+	echo '<span class="course-price">' . $price . '</span>';
+}
+?>

@@ -27,7 +27,7 @@ $paged   = !empty( $_REQUEST['section'] ) && $_REQUEST['section'] == $subtab ? g
 
 <?php if ( $courses ) : ?>
 
-	<ul class="profile-courses courses-list own">
+	<ul class="learn-press-courses profile-courses courses-list own">
 
 		<?php foreach ( $courses as $post ): ?>
 			<?php setup_postdata( $post ); ?>

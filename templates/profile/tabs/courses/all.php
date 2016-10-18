@@ -23,7 +23,7 @@ $heading = apply_filters( 'learn_press_profile_tab_courses_enrolled_heading', fa
 
 <?php if ( $courses ) : ?>
 
-	<ul class="profile-courses courses-list enrolled">
+	<ul class="learn-press-courses profile-courses courses-list enrolled">
 
 		<?php foreach ( $courses as $post ) {
 			setup_postdata( $post ); ?>
