@@ -1342,6 +1342,7 @@
 						// Set helper cell sizes to match the original sizes
 						$(this).width($originals.eq(index).width());
 					});
+                                        $helper.height( $( tr ).height() + 10 );
 
 					$(tr).parent().append($helper);
 

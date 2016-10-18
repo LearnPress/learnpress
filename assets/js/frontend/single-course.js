@@ -416,7 +416,7 @@ if (typeof LearnPress === 'undefined') {
                 course_id: this.model.get('id'),
                 section_id: $section.length ? $section.data('id') : 0,
                 callback: function (response, item) {
-                    if (response.result == 'success') {
+                    if (response.result === 'success') {
                         // highlight item
                         item.$el.removeClass('item-started').addClass('item-completed focus off');
                         // then restore back after 3 seconds
@@ -427,7 +427,7 @@ if (typeof LearnPress === 'undefined') {
                         that.$('.learn-press-course-results-progress').replaceWith($(response.html.progress));
                         $section.find('.section-header').replaceWith($(response.html.section_header));
                         that.$('.learn-press-course-buttons').replaceWith($(response.html.buttons));
-                        that.currentItem.set('content', $(response.html.content))
+                        that.currentItem.set('content', $(response.html.content));
                     }
                     LP.unblockContent();
                 }
@@ -441,9 +441,9 @@ if (typeof LearnPress === 'undefined') {
         },
         _tabClick: function (e) {
             var tab = $(e.target).closest('.learn-press-nav-tab').data('tab');
-            if (tab == 'overview') {
+            if (tab === 'overview') {
                 //LP.setUrl(this.model.get('url'))
-            } else if (tab == 'curriculum') {
+            } else if (tab === 'curriculum') {
                 if (this.currentItem) {
                     //LP.setUrl(this.currentItem.get('url'))
                 }
@@ -678,7 +678,7 @@ if (typeof LearnPress === 'undefined') {
 			return this.items.getPrevItem();
 		},
 		getItems    : function (args) {
-			return typeof args == 'undefined' ? this.items : this.items.where(args);
+			return typeof args === 'undefined' ? this.items : this.items.where(args);
 		},
 		getCurrent  : function () {
 		}
@@ -689,6 +689,8 @@ if (typeof LearnPress === 'undefined') {
 		events              : {
 			'click .popup-close': '_closePopup'
 			//'click .button-load-item': '_loadItem'
+			,'click .sidebar-hide-btn': '_closeSidebar'
+			,'click .sidebar-show-btn': '_showSidebar'
 		},
 		initialize          : function (args) {
 			_.bindAll(this, '_ajaxLoadItemSuccess');
@@ -711,7 +713,7 @@ if (typeof LearnPress === 'undefined') {
 			this.curriculumPlaceholder.insertAfter($curriculum);
 			$curriculum.appendTo(this.$('#popup-sidebar'));
 
-			$('body').css({overflow: 'hidden'})
+			$('body').css({overflow: 'hidden'});
 		},
 		_closePopup         : function (e) {
 			e.preventDefault();
@@ -722,10 +724,20 @@ if (typeof LearnPress === 'undefined') {
 			this.undelegateEvents();
 			this.remove();
 			$(document).off('focusin');
-			$('body').css('overflow', '').trigger('learn_press_popup_course_remove')
+			$('body').css('overflow', '').trigger('learn_press_popup_course_remove');
+		},
+		_closeSidebar         : function (e) {
+			e.preventDefault();
+			$('#popup-main').css('left','0px');
+			$('#popup-main .sidebar-show-btn').css('display','inline-block');
+		},
+		_showSidebar         : function (e) {
+			e.preventDefault();
+			$('#popup-main').css('left','350px');
+			$('#popup-main .sidebar-show-btn').css('display','none');
 		},
 		_loadItem           : function (e) {
-			var $iframe = $('<iframe />').src($(e.target).attr('href') + '?content-item-only=yes')
+			var $iframe = $('<iframe />').src($(e.target).attr('href') + '?content-item-only=yes');
 			this.$('#popup-content-inner').html($iframe);
 			return '';
 			e.preventDefault();
@@ -735,7 +747,7 @@ if (typeof LearnPress === 'undefined') {
 			});
 		},
 		_ajaxLoadItemSuccess: function (response) {
-			this.$('#popup-content-inner').html($(response).contents().find('.lp_course'))
+			this.$('#popup-content-inner').html($(response).contents().find('.lp_course'));
 		}
 	}),
 		Course.ModelPopup = Backbone.Model.extend({
@@ -791,6 +803,6 @@ if (typeof LearnPress === 'undefined') {
 				} catch (e) {
 				}
 			}, 300);
-		})
+		});
 	});
 })(jQuery);
