@@ -181,7 +181,6 @@ class LP_Checkout {
 		if ( strtolower( $_SERVER['REQUEST_METHOD'] ) != 'post' ) {
 			return;
 		}
-
 		/**
 		 * Set default fields from request
 		 */
@@ -218,13 +217,13 @@ class LP_Checkout {
 			}
 
 			if ( LP()->cart->needs_payment() && empty( $this->payment_method ) ) {
-				$success = false;
+				$success = 5;
 				learn_press_add_message( __( 'Please select a payment method', 'learnpress' ), 'error' );
 			} else {
 				//$this->payment_method = !empty( $_REQUEST['payment_method'] ) ? $_REQUEST['payment_method'] : '';
 				if ( $this->checkout_fields ) foreach ( $this->checkout_fields as $name => $field ) {
 					if ( !apply_filters( 'learn_press_checkout_validate_field', true, array( 'name' => $name, 'text' => $field ), $this ) ) {
-						$success = false;
+						$success = 10;
 					}
 				}
 				if ( !is_user_logged_in() && isset( $this->checkout_fields['user_login'] ) && isset( $this->checkout_fields['user_password'] ) ) {
@@ -235,7 +234,7 @@ class LP_Checkout {
 					$user                   = wp_signon( $creds, is_ssl() );
 					if ( is_wp_error( $user ) ) {
 						learn_press_add_message( $user->get_error_message(), 'error' );
-						$success = false;
+						$success = 15;
 					}
 				}
 				LP()->session->set( 'chosen_payment_method', $this->payment_method );
@@ -244,14 +243,14 @@ class LP_Checkout {
 			foreach ( LP()->cart->get_items() as $item ) {
 				$item = LP_Course::get_course( $item['item_id'] );
 				if ( !$item ) {
-					$success = false;
+					$success = 20;
 					learn_press_add_message( __( 'Item %s does not exists.', 'learnpress' ), 'error' );
 				} elseif ( !$item->is_purchasable() ) {
 					learn_press_add_message( sprintf( __( 'Item "%s" is not purchasable.', 'learnpress' ), get_the_title( $item->id ) ), 'error' );
-					$success = false;
+					$success = 25;
 				}
 			}
-			if ( $success && LP()->cart->needs_payment() ) {
+			if ( $success === true && LP()->cart->needs_payment() ) {
 
 				if ( !$this->payment_method instanceof LP_Gateway_Abstract ) {
 					// Payment Method
@@ -264,22 +263,21 @@ class LP_Checkout {
 					}
 				}
 				if ( $this->payment_method ) {
-					$success = $this->payment_method->validate_fields();
+					$success = $this->payment_method->validate_fields() ? true : 30;
 				}
 			}
+			if ( $success === true ) {
 
-			if ( $success ) {
+				$order_id = $this->create_order();
 
-                                $order_id = $this->create_order();
-
-                                // allow Third-party hook
-                                do_action( 'learn_press_checkout_order_processed', $order_id, $this );
+				// allow Third-party hook
+				do_action( 'learn_press_checkout_order_processed', $order_id, $this );
 				if ( $this->payment_method ) {
 					// Store the order is waiting for payment and each payment method should clear it
 					LP()->session->order_awaiting_payment = $order_id;
 					// Process Payment
 					$result  = $this->payment_method->process_payment( $order_id );
-					$success = !empty( $result['result'] ) ? $result['result'] == 'success' : false;
+					$success = !empty( $result['result'] ) ? $result['result'] == 'success' : 35;
 				} else {
 					// ensure that no order is waiting for payment
 					$order = new LP_Order( $order_id );
@@ -288,7 +286,7 @@ class LP_Checkout {
 					}
 				}
 				// Redirect to success/confirmation/payment page
-				if ( $success ) {
+				if ( $success === true ) {
 					$result = apply_filters( 'learn_press_checkout_success_result', $result, $order_id );
 					if ( is_ajax() ) {
 						learn_press_send_json( $result );
@@ -304,19 +302,20 @@ class LP_Checkout {
 			if ( !empty( $e->getMessage() ) ) {
 				learn_press_add_message( $e->getMessage(), 'error' );
 			}
-			$success = false;
+			$success = 40;
 		}
 
 		// Get all messages
 		$error_messages = '';
-		if ( !$success ) {
+		if ( $success !== true ) {
 			ob_start();
 			learn_press_print_notices();
 			$error_messages = ob_get_clean();
 		}
 
 		$result = array(
-			'result'   => $success ? 'success' : 'fail',
+			'result'   => $success === true ? 'success' : 'fail',
+			'code'     => $success,
 			'messages' => $error_messages,
 			'redirect' => ''
 		);

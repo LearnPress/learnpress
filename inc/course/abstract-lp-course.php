@@ -858,8 +858,11 @@ abstract class LP_Abstract_Course {
 		// TODO: needs to check more criteria, currently only check if this course is required enrollment
 		$is_purchasable = $this->is_required_enroll() && $this->post->post_status == 'publish';
 		if ( $is_purchasable ) {
-			$count_in_order = $this->count_in_order( array( 'completed', 'processing' ) );
-			$is_purchasable = $is_purchasable && ( $count_in_order < $this->max_students );
+			$max_allowed = $this->max_students;
+			if ( $max_allowed > 0 ) {
+				$count_in_order = $this->count_in_order( array( 'completed', 'processing' ) );
+				$is_purchasable = $is_purchasable && ( $count_in_order < $max_allowed );
+			}
 		}
 		return apply_filters( 'learn_press_item_is_purchasable', $is_purchasable, $this->id );
 	}
@@ -1469,7 +1472,7 @@ abstract class LP_Abstract_Course {
 				$items[$k]['url']    = '';
 				$items[$k]['status'] = '';
 			}
-			if($item['type'] == LP_QUIZ_CPT){
+			if ( $item['type'] == LP_QUIZ_CPT ) {
 				//$items[$k]['result'] = $user->get_quiz_results($item['id'], $this->id);
 			}
 		}

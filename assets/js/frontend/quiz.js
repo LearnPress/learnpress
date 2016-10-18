@@ -434,12 +434,16 @@
 				return undefined;
 			}
 			var $html = question.get('response'),
-				$form = $('<form />'),
 				answer = {};
 			if ($html) {
-				$form.html($html.clone());
+				var $form = $html.find('form');
+				if (!$form.length) {
+					$form = $('<form />');
+					$form.html($html.clone());
+				}
 				answer = $form.serializeJSON();
 			}
+			console.log($html, answer)
 			return LP.Hook.applyFilters('learn_press_question_answer_data', answer, $form, question, this);
 		}
 	});
@@ -461,6 +465,7 @@
 		timeout               : 0,
 		delayTimeout          : 0,
 		delayTime             : 0,
+		localized             : null,
 		initialize            : function () {
 			_.bindAll(this, 'pause', '_onTick', 'itemUrl', '_loadQuestionCompleted', '_checkAnswerCompleted', '_checkAnswer', '_onDestroy', 'destroy');
 			LP.Hook.addAction('learn_press_before_finish_quiz', this.destroy);
@@ -471,6 +476,7 @@
 			this._initCountDown();
 			this.updateButtons();
 			this.windowTarget = windowTarget;
+			this.localized = window.learn_press_single_course_localize || {};
 		},
 		_initCountDown        : function () {
 			if (this.model.get('status') != 'started' || this.model.get('totalTime') <= 0) {
@@ -641,6 +647,36 @@
 			LP.Hook.removeFilter('learn_press_get_current_item_url');
 		},
 		/********************************/
+		_submit               : function (args) {
+			var data = {};
+			data = this.model.getQuizData(data);
+			console.log(data);
+			return;
+			return;
+			args = $.extend({
+				security: '',
+				action  : ''
+			}, args || {});
+			windowTarget.LP.blockContent();
+			LP.Hook.doAction('learn_press_before_start_quiz', this.currentItem, this);
+			var $form = this.$('form.quiz-buttons');
+			$form.find('input[name="security"]').val(args.security);
+			$form.find('input[name="lp-ajax"]').val(args.action);
+			$form.submit();
+		},
+		_confirm              : function (localize, onYes, onNo) {
+			var that = this,
+				loc = this.localized[localize] || {},
+				message = loc.message || '',
+				title = loc.title || '';
+			windowTarget.jConfirm(message, title, function (confirm) {
+				if (confirm && $.isFunction(onYes)) {
+					onYes.call(that);
+				} else if ($.isFunction(onNo)) {
+					onNo.call(that);
+				}
+			});
+		},
 		_startQuiz            : function (e) {
 			var that = this,
 				$button = $(e.target),
@@ -659,18 +695,10 @@
 				$button = $(e.target),
 				security = $button.data('security'),
 				do_finish = false;
-			windowTarget.jConfirm(learn_press_single_course_localize.confirm_finish_quiz.message, learn_press_single_course_localize.confirm_finish_quiz.title, function (confirm) {
-				if (confirm) {
-					//that._doFinishQuiz(security);
-					windowTarget.LP.blockContent();
-					LP.Hook.doAction('learn_press_before_start_quiz', this.currentItem, this);
-
-					var $form = $($button.get(0).form);
-					$form.find('input[name="security"]').val(security);
-					$form.find('input[name="lp-ajax"]').val($button.data('action'));
-					$form.submit();
-				}
+			this._confirm('confirm_finish_quiz', function () {
+				that._submit($button.data());
 			});
+
 
 			return false;
 
@@ -833,7 +861,7 @@
 	LP.Hook.addAction('learn_press_course_initialize', function ($course) {
 		if (typeof Quiz_Params != 'undefined') {
 			//window.quiz = new LP_Quiz($.extend({course: $course}, Quiz_Params));
-			windowTarget.$course.view.updateUrl();
+			//windowTarget.$course.view.updateUrl();
 		}
 	});
 

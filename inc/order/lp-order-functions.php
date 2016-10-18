@@ -59,7 +59,6 @@ function learn_press_create_order( $order_data ) {
 		$order_id   = wp_insert_post( $order_data );
 	}
 
-
 	if ( $order_id ) {
 		$order = LP_Order::instance( $order_id );
 

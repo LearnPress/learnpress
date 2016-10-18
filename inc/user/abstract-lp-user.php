@@ -657,7 +657,7 @@ class LP_Abstract_User
 					FROM {$wpdb->learnpress_user_items} WHERE user_id = %d AND ref_id = %d AND item_id IN(" . join(', ', $in) . ") ORDER BY user_item_id DESC
 					) AS X GROUP BY id
 				", $args );*/
-                echo $query = $wpdb->prepare("
+                $query = $wpdb->prepare("
                     SELECT o.item_id, o.status
                     FROM {$wpdb->prefix}learnpress_user_items o
                     WHERE user_item_id = (SELECT MAX(user_item_id) FROM {$wpdb->prefix}learnpress_user_items s2 WHERE s2.item_id = o.item_id)

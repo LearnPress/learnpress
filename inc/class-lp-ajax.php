@@ -47,7 +47,6 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 		 * @param $var
 		 */
 		public static function do_ajax( $var ) {
-
 			if ( !defined( 'DOING_AJAX' ) ) {
 				define( 'DOING_AJAX', true );
 			}
@@ -399,6 +398,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			$question_id = !empty( $_REQUEST['question_id'] ) ? absint( $_REQUEST['question_id'] ) : 0;
 			$user_id     = !empty( $_REQUEST['user_id'] ) ? absint( $_REQUEST['user_id'] ) : 0;
 			global $quiz;
+			echo 'xxxxxxxxxxxxxxxxxxxxxx';
 			$quiz      = LP_Quiz::get_quiz( $quiz_id );
 			LP()->quiz = $quiz;
 			do_action( 'learn_press_load_quiz_question', $question_id, $quiz_id, $user_id );

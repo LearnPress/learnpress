@@ -34,7 +34,7 @@ class LP_Request_Handler {
 
 		//add_action( 'wp_loaded', array( __CLASS__, 'get_header' ), - 1000 );
 		//add_action( 'admin_head', array( __CLASS__, 'process_request' ), 1000 );
-		add_action( 'learn_press_parse_query', array( __CLASS__, 'process_request' ) );
+		add_action( 'wp', array( __CLASS__, 'process_request' ), 50 );
 		LP_Request_Handler::register( 'purchase-course', 'learn_press_purchase_course_handler', 20 );
 		LP_Request_Handler::register( 'enroll-course', 'learn_press_purchase_course_handler', 20 );
 	}
