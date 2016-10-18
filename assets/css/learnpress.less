@@ -769,12 +769,6 @@ body.course-has-popup {
             #popup-content-inner {
                 margin: 20px 40px;
             }
-            .learn-press-content-item-title {
-                margin-bottom: 20px;
-                font-size: 24px;
-                border-bottom: 2px solid #DDD;
-                padding-bottom: 20px;
-            }
         }
         #popup-footer {
             position: absolute;
@@ -809,59 +803,60 @@ body.course-has-popup {
         margin: 0;
         background: #FFF;
     }
-    .learn-press-content-item-title {
-        /*padding: 20px;
-        background: #F5F5F5;
-        margin: 0;*/
-        &.content-item-quiz-title {
-            h4 {
-                float: left;
+}
+.learn-press-content-item-title {
+    margin-bottom: 20px;
+    font-size: 24px;
+    border-bottom: 2px solid #DDD;
+    padding-bottom: 20px;
+    &.content-item-quiz-title {
+        h4 {
+            float: left;
+        }
+        .quiz-countdown {
+            float: right;
+            position: relative;
+            min-width: 100px;
+            background: #F5F5F5;
+            text-align: center;
+            font-size: 18px;
+            &:after, &:before {
+                padding: 0 10px;
+                height: 3px;
+                position: absolute;
+                bottom: -3px;
+                background: #000;
+                content: '';
+                left: 0;
             }
-            .quiz-countdown {
-                float: right;
-                position: relative;
-                min-width: 100px;
-                background: #F5F5F5;
-                text-align: center;
-                font-size: 18px;
-                &:after, &:before {
-                    padding: 0 10px;
-                    height: 3px;
-                    position: absolute;
-                    bottom: -3px;
-                    background: #000;
-                    content: '';
-                    left: 0;
-                }
-                &:before {
-                    width: 100%;
-                }
+            &:before {
+                width: 100%;
+            }
+            &:after {
+                background: #00adff;
+            }
+            &.warning-time-over {
                 &:after {
-                    background: #00adff;
-                }
-                &.warning-time-over {
-                    &:after {
-                        background: #FF0000;
-                    }
-                }
-                .countdown {
-
+                    background: #FF0000;
                 }
             }
-            .clearfix();
+            .countdown {
+
+            }
         }
+        .clearfix();
     }
-    .learn-press-content-item-summary {
-        /*padding: 20px;
-        border-top: 1px solid #DDD;*/
-        margin-bottom: 30px;
-        .quiz-question-title {
-            margin-bottom: 20px;
-        }
+}
+.learn-press-content-item-summary {
+    /*padding: 20px;
+    border-top: 1px solid #DDD;*/
+    margin-bottom: 30px;
+    .quiz-question-title {
+        margin-bottom: 20px;
     }
-    .button-finish-quiz {
-        float: right;
-    }
+}
+.button-finish-quiz {
+    float: right;
 }
 
 .learnpress form.purchase-course {
@@ -1415,8 +1410,25 @@ body.content-item-only {
 }
 
 .lp-group-heading-title{
-    &.toggle-off, .toggle-on{
+    &.toggle-off, &.toggle-on{
         cursor: pointer;
+        .toggle-icon{
+            display: inline-block;
+            font-size: larger;
+            line-height: 1;
+            font-weight: bold;
+            margin-left: 5px;
+            &:before{
+                content: '+';
+            }
+        }
+    }
+    &.toggle-on{
+        .toggle-icon{
+            &:before{
+                content: '-';
+            }
+        }
     }
 }
 

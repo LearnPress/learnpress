@@ -17,6 +17,11 @@ $user = learn_press_get_course_user();
 					data = <?php echo wp_json_encode( array_merge( $user->get_course_info2( get_the_ID() ), array( 'messageType' => 'update-course' ) ) );?>;
 				$('html, body').css('opacity', 1);
 				windowTarget.LP.unblockContent();
+				setTimeout(function(){
+					$('.learn-press-message').each(function(){
+						$(this).fadeOut();
+					})
+				}, 3000);
 				LP.sendMessage(data, windowTarget);
 			});
 		});

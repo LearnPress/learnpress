@@ -183,16 +183,18 @@ class LP_Quiz_Factory {
 				if ( !preg_match( '!^learn-press-question-([0-9]+)$!', $key, $matches ) ) {
 					continue;
 				}
-				$question_id = absint( $matches[1] );
-				//print_r($matches);
-				//settype( $_POST[$key], 'array' );
-				//if ( array_key_exists( 'learn-press-question-' . $question_id, $data ) ) {
+				$question_id                  = absint( $matches[1] );
 				$update_answers[$question_id] = $_POST[$key];
-				//}
-				$update = true;
+				$update                       = true;
 			}
 			if ( $update ) {
 				learn_press_update_user_item_meta( $history->history_id, 'question_answers', $update_answers );
+			}
+			$auto = learn_press_get_request( 'auto_finish' );
+			if ( $auto ) {
+				$args = array( 'auto_finish' => 'yes' );
+			} else {
+				$args = array();
 			}
 			/*
 				foreach ( $answers as $question_id => $data ) {
@@ -204,33 +206,19 @@ class LP_Quiz_Factory {
 				print_r($update_answers);*/
 			///}
 
-			$result = $user->finish_quiz( $quiz_id, $course_id );
-			///learn_press_setup_user_course_data( $user->id, $course_id );
-
+			$result = $user->finish_quiz( $quiz_id, $course_id, $args );
 			if ( $result ) {
-
-
-				/*$course             = learn_press_get_course( $course_id );
-				$response['status'] = $result->status;
-
-				// update cache
-				LP_Cache::set_quiz_status( $user->id . '-' . $course->id . '-' . $quiz_id, $result->status );
-				$response['html']          = array(
-					'content'  => learn_press_get_template_content( 'single-course/content-item-lp_quiz.php' ),
-					'progress' => learn_press_get_template_content( 'single-course/progress.php' ),
-					'buttons'  => learn_press_get_template_content( 'single-course/buttons.php' )
-				);
-				$response['course_result'] = self::get_course_info( $user->id, $course_id );*/
-				learn_press_add_message( __( 'You have finished quiz', 'learnpress' ) );
+				if ( !empty( $args['auto_finish'] ) ) {
+					learn_press_add_message( __( 'You quiz has finished automatically', 'learnpress' ) );
+				} else {
+					learn_press_add_message( __( 'You have finished quiz', 'learnpress' ) );
+				}
 			} else {
-				//$response['result'] = 'error';
 				learn_press_add_message( __( 'Finish quiz failed', 'learnpress' ) );
-
 			}
 		}
 		wp_redirect( add_query_arg( 'content-item-only', 'yes', $course->get_item_link( $quiz_id ) ) );
 		exit();
-		learn_press_send_json( $response );
 	}
 
 	public static function retake_quiz() {
@@ -259,10 +247,10 @@ class LP_Quiz_Factory {
 					'progress' => learn_press_get_template_content( 'single-course/progress.php' ),
 					'buttons'  => learn_press_get_template_content( 'single-course/buttons.php' )
 				);*/
-				learn_press_add_message( __( 'You have finished quiz', 'learnpress' ) );
+				learn_press_add_message( __( 'You have retaken quiz', 'learnpress' ) );
 			} else {
 				//$response['result'] = 'error';
-				learn_press_add_message( __( 'Finish quiz failed', 'learnpress' ) );
+				learn_press_add_message( __( 'Retake quiz failed', 'learnpress' ) );
 
 			}
 		}

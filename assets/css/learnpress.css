@@ -523,22 +523,6 @@ body.course-has-popup {
 #course-curriculum-popup * {
   box-sizing: border-box;
 }
-
-#course-curriculum-popup .sidebar-hide-btn,.sidebar-show-btn {
-	height: 40px;
-	width: 40px;
-	font-size: 40px;
-	line-height: 1.5;
-	cursor: pointer; 
-	cursor: hand;
-	color: white;
-}
-
-
-#course-curriculum-popup .sidebar-show-btn {
-	display:none;
-}
-
 #course-curriculum-popup #popup-sidebar {
   float: left;
   width: 350px;
@@ -637,12 +621,6 @@ body.course-has-popup {
 #course-curriculum-popup #popup-main #popup-content #popup-content-inner {
   margin: 20px 40px;
 }
-#course-curriculum-popup #popup-main #popup-content .learn-press-content-item-title {
-  margin-bottom: 20px;
-  font-size: 24px;
-  border-bottom: 2px solid #DDD;
-  padding-bottom: 20px;
-}
 #course-curriculum-popup #popup-main #popup-footer {
   position: absolute;
   bottom: 0;
@@ -675,15 +653,16 @@ body.course-has-popup {
   margin: 0;
   background: #FFF;
 }
-#course-curriculum-popup .learn-press-content-item-title {
-  /*padding: 20px;
-        background: #F5F5F5;
-        margin: 0;*/
+.learn-press-content-item-title {
+  margin-bottom: 20px;
+  font-size: 24px;
+  border-bottom: 2px solid #DDD;
+  padding-bottom: 20px;
 }
-#course-curriculum-popup .learn-press-content-item-title.content-item-quiz-title h4 {
+.learn-press-content-item-title.content-item-quiz-title h4 {
   float: left;
 }
-#course-curriculum-popup .learn-press-content-item-title.content-item-quiz-title .quiz-countdown {
+.learn-press-content-item-title.content-item-quiz-title .quiz-countdown {
   float: right;
   position: relative;
   min-width: 100px;
@@ -691,8 +670,8 @@ body.course-has-popup {
   text-align: center;
   font-size: 18px;
 }
-#course-curriculum-popup .learn-press-content-item-title.content-item-quiz-title .quiz-countdown:after,
-#course-curriculum-popup .learn-press-content-item-title.content-item-quiz-title .quiz-countdown:before {
+.learn-press-content-item-title.content-item-quiz-title .quiz-countdown:after,
+.learn-press-content-item-title.content-item-quiz-title .quiz-countdown:before {
   padding: 0 10px;
   height: 3px;
   position: absolute;
@@ -701,29 +680,29 @@ body.course-has-popup {
   content: '';
   left: 0;
 }
-#course-curriculum-popup .learn-press-content-item-title.content-item-quiz-title .quiz-countdown:before {
+.learn-press-content-item-title.content-item-quiz-title .quiz-countdown:before {
   width: 100%;
 }
-#course-curriculum-popup .learn-press-content-item-title.content-item-quiz-title .quiz-countdown:after {
+.learn-press-content-item-title.content-item-quiz-title .quiz-countdown:after {
   background: #00adff;
 }
-#course-curriculum-popup .learn-press-content-item-title.content-item-quiz-title .quiz-countdown.warning-time-over:after {
+.learn-press-content-item-title.content-item-quiz-title .quiz-countdown.warning-time-over:after {
   background: #FF0000;
 }
-#course-curriculum-popup .learn-press-content-item-title.content-item-quiz-title:after {
+.learn-press-content-item-title.content-item-quiz-title:after {
   content: '';
   display: block;
   clear: both;
 }
-#course-curriculum-popup .learn-press-content-item-summary {
+.learn-press-content-item-summary {
   /*padding: 20px;
-        border-top: 1px solid #DDD;*/
+    border-top: 1px solid #DDD;*/
   margin-bottom: 30px;
 }
-#course-curriculum-popup .learn-press-content-item-summary .quiz-question-title {
+.learn-press-content-item-summary .quiz-question-title {
   margin-bottom: 20px;
 }
-#course-curriculum-popup .button-finish-quiz {
+.button-finish-quiz {
   float: right;
 }
 .learnpress form.purchase-course {
@@ -1888,8 +1867,23 @@ body.content-item-only #learn-press-content-item {
   display: block;
 }
 .lp-group-heading-title.toggle-off,
-.lp-group-heading-title .toggle-on {
+.lp-group-heading-title.toggle-on {
   cursor: pointer;
+}
+.lp-group-heading-title.toggle-off .toggle-icon,
+.lp-group-heading-title.toggle-on .toggle-icon {
+  display: inline-block;
+  font-size: larger;
+  line-height: 1;
+  font-weight: bold;
+  margin-left: 5px;
+}
+.lp-group-heading-title.toggle-off .toggle-icon:before,
+.lp-group-heading-title.toggle-on .toggle-icon:before {
+  content: '+';
+}
+.lp-group-heading-title.toggle-on .toggle-icon:before {
+  content: '-';
 }
 @-moz-keyframes spin-12 {
   0% {

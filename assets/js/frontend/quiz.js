@@ -443,7 +443,6 @@
 				}
 				answer = $form.serializeJSON();
 			}
-			console.log($html, answer)
 			return LP.Hook.applyFilters('learn_press_question_answer_data', answer, $form, question, this);
 		}
 	});
@@ -504,7 +503,7 @@
 				this.$('.button-finish-quiz').trigger('click');
 				return;
 			}
-			this.timeout = setTimeout(this._onTick, 990);
+			this.timeout = setTimeout(this._onTick, 1000);
 		},
 		_prevQuestion         : function (e) {
 			e.preventDefault();
@@ -658,9 +657,9 @@
 			windowTarget.LP.blockContent();
 			LP.Hook.doAction('learn_press_before_start_quiz', this.currentItem, this);
 			var $form = this.$('form.quiz-buttons');
-			this.model.questions.forEach(function(m){
+			this.model.questions.forEach(function (m) {
 				var $content = m.get('response');
-				if(!$content){
+				if (!$content) {
 					return;
 				}
 				var $question = $content.find('.quiz-question-content').clone().hide();
@@ -668,6 +667,10 @@
 			})
 			$form.find('input[name="security"]').val(args.security);
 			$form.find('input[name="lp-ajax"]').val(args.action);
+			var extraArgs = _.omit(args, ['security', 'action']);
+			_.forEach(extraArgs, function(v, k){
+				$form.append('<input type="hidden" name="'+k+'" value="'+v+'" />');
+			});
 			$form.submit();
 		},
 		_confirm              : function (localize, onYes, onNo) {
@@ -701,20 +704,11 @@
 				$button = $(e.target),
 				security = $button.data('security'),
 				do_finish = false;
-			this._confirm('confirm_finish_quiz', function () {
-				that._submit($button.data());
-			});
-
-
-			return false;
-
 			if (typeof e.originalEvent === 'undefined') {
-				that._doFinishQuiz(security);
+				that._submit($.extend($button.data(), {auto_finish: 'yes'}));
 			} else {
-				windowTarget.jConfirm(learn_press_single_course_localize.confirm_finish_quiz.message, learn_press_single_course_localize.confirm_finish_quiz.title, function (confirm) {
-					if (confirm) {
-						that._doFinishQuiz(security);
-					}
+				this._confirm('confirm_finish_quiz', function () {
+					that._submit($button.data());
 				});
 			}
 		},
@@ -825,7 +819,6 @@
 				quiz_id  : this.model.get('id'),
 				security : null
 			}, args || {});
-			console.log(args)
 			var data = this._validateObject(args), that = this;
 			LP.ajax({
 				url       : this.model.get('url'),
