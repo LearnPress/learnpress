@@ -650,9 +650,7 @@
 		_submit               : function (args) {
 			var data = {};
 			data = this.model.getQuizData(data);
-			console.log(data);
-			return;
-			return;
+
 			args = $.extend({
 				security: '',
 				action  : ''
@@ -660,6 +658,14 @@
 			windowTarget.LP.blockContent();
 			LP.Hook.doAction('learn_press_before_start_quiz', this.currentItem, this);
 			var $form = this.$('form.quiz-buttons');
+			this.model.questions.forEach(function(m){
+				var $content = m.get('response');
+				if(!$content){
+					return;
+				}
+				var $question = $content.find('.quiz-question-content').clone().hide();
+				$form.append($question);
+			})
 			$form.find('input[name="security"]').val(args.security);
 			$form.find('input[name="lp-ajax"]').val(args.action);
 			$form.submit();

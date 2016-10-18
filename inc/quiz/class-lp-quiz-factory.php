@@ -166,25 +166,43 @@ class LP_Quiz_Factory {
 			);
 		} else {
 			$answers = learn_press_get_request( 'answers' );
-			if ( $answers ) {
-				$history = $user->get_quiz_results( $quiz_id, $course_id, true );
-				if ( !$history ) {
-					learn_press_send_json(
-						array(
-							'result'  => 'error',
-							'message' => array( 'title' => __( 'Error', 'learnpress' ), 'message' => __( 'Error while finish quiz', 'learnpress' ) )
-						)
-					);
+			//if ( $answers ) {
+			$history = $user->get_quiz_results( $quiz_id, $course_id, true );
+			if ( !$history ) {
+				learn_press_send_json(
+					array(
+						'result'  => 'error',
+						'message' => array( 'title' => __( 'Error', 'learnpress' ), 'message' => __( 'Error while finish quiz', 'learnpress' ) )
+					)
+				);
+			}
+			$update_answers = (array) $history->question_answers;
+			$keys           = array_keys( $_POST );
+			$update         = false;
+			foreach ( $keys as $key ) {
+				if ( !preg_match( '!^learn-press-question-([0-9]+)$!', $key, $matches ) ) {
+					continue;
 				}
-				$update_answers = (array) $history->question_answers;
+				$question_id = absint( $matches[1] );
+				//print_r($matches);
+				//settype( $_POST[$key], 'array' );
+				//if ( array_key_exists( 'learn-press-question-' . $question_id, $data ) ) {
+				$update_answers[$question_id] = $_POST[$key];
+				//}
+				$update = true;
+			}
+			if ( $update ) {
+				learn_press_update_user_item_meta( $history->history_id, 'question_answers', $update_answers );
+			}
+			/*
 				foreach ( $answers as $question_id => $data ) {
 					settype( $data, 'array' );
 					if ( array_key_exists( 'learn-press-question-' . $question_id, $data ) ) {
 						$update_answers[$question_id] = $data['learn-press-question-' . $question_id];
 					}
 				}
-				learn_press_update_user_item_meta( $history->history_id, 'question_answers', $update_answers );
-			}
+				print_r($update_answers);*/
+			///}
 
 			$result = $user->finish_quiz( $quiz_id, $course_id );
 			///learn_press_setup_user_course_data( $user->id, $course_id );
