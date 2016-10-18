@@ -112,6 +112,25 @@ add_action( 'learn_press_profile_tab_courses_own', 'learn_press_profile_tab_cour
 add_action( 'learn_press_after_profile_tab_all_loop_course', 'learn_press_after_profile_tab_loop_course', 5 );
 add_action( 'learn_press_after_profile_tab_own_loop_course', 'learn_press_after_profile_tab_loop_course', 5 );
 
+
+add_filter('learn_press_profile_tab_endpoints', function($endpoints) {
+	$endpoints['edit'] = 'edit';
+	return $endpoints;
+});
+
+add_filter('the_content', function($content) {
+	global $wp;
+	$query_vars = $wp->query_vars;
+	$user = learn_press_get_current_user();
+	if( !$user ) {
+		$content = learn_press_get_template('profile/private-area.php');
+	} elseif (!empty($query_vars['user']) && !empty($query_vars['view']) && $query_vars['view'] == 'edit' && $user && isset($user->user->data->user_login) && $query_vars['user'] == $user->user->data->user_login ) {
+		$content = learn_press_get_template('profile/edit.php');
+	}
+	return $content;
+});
+
+
 add_action( 'learn_press_single_quiz_summary', 'learn_press_single_quiz_preview_mode', 5 );
 add_action( 'learn_press_single_quiz_summary', 'learn_press_single_quiz_left_start_wrap', 10 );
 add_action( 'learn_press_single_quiz_summary', 'learn_press_single_quiz_question', 15 );
