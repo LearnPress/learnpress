@@ -418,7 +418,7 @@ li.quick_quiz {
   height: auto;
   max-height: 100%;
   float: left;
-  margin: 0 20px 20px 0;
+  margin: 0 20px 0 0;
 }
 @media (max-width: 1280px) {
   .learn-press-add-ons > li {
