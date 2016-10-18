@@ -7,7 +7,7 @@
  * @version 1.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
+if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
@@ -15,10 +15,9 @@ $course = LP()->global['course'];
 
 printf(
 	'<span class="course-author" aria-hidden="true" itemprop="author">
-		%s<a href="%s">%s</a>%s
+		%s %s</a>%s
 	</span>',
 	apply_filters( 'before_instructor_link', __( 'Instructor: ', 'learnpress' ) ),
-	apply_filters( 'learn_press_instructor_profile_link', '#', null, $course->id ),
-	get_the_author(),
+	apply_filters( 'learn_press_instructor_profile_link', $course->get_instructor_html(), null, $course->id ),
 	apply_filters( 'after_instructor_link', '' )
 );
