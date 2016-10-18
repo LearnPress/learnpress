@@ -813,9 +813,11 @@ body.block-content #learn-press-block-content {
 }
 .quiz-intro {
   list-style: none;
+  padding: 0;
 }
 .quiz-questions-list {
   margin: 0 0 20px 0;
+  padding: 0;
   list-style-position: inside;
 }
 .quiz-questions-list li {
@@ -1041,6 +1043,9 @@ body.block-content #learn-press-block-content {
 }
 .quiz-result .quiz-result-summary .quiz-result-field.empty {
   color: #656D6D;
+}
+.quiz-result .quiz-result-time p {
+  margin: 0 0 10px 0;
 }
 .quiz-result .quiz-grade p {
   margin: 0 0 10px 0;
@@ -1827,7 +1832,7 @@ body.block-content #learn-press-block-content {
   background: #18B6C7;
   color: #FFF;
   font-size: 18px;
-  margin-bottom: 0;
+  margin: 0;
 }
 #popup_container #popup_content {
   padding: 20px;

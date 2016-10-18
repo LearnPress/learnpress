@@ -312,11 +312,12 @@ if (typeof LearnPress === 'undefined') {
 				$section.find('.section-header span.step').html(LP.Hook.applyFilters('section_header_span_text', data[1] + '/' + data[0]));
 			});
 			$itemProgress.eq(0).html(data.completed_items_text.replace('%d', itemsCompleted).replace('%d', itemsCount));
-			var passingCondition = this.$('.lp-course-progress').data('passing-condition');
-			this.$('.button-finish-course').toggleClass('hide-if-js', !data.results >= passingCondition);
+			var passingCondition = parseInt(this.$('.course-progress .lp-course-progress').data('passing-condition'));
+			this.$('.button-finish-course').toggleClass('hide-if-js', !(data.results >= passingCondition));
 			if (data.setUrl) {
 				LP.setUrl(data.setUrl);
 			}
+			console.log(data.results , passingCondition,this.$('.lp-course-progress'));
 		},
 		getHash            : function (url) {
 			var courseUrl = this.model.get('url'),
