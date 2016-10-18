@@ -689,6 +689,8 @@ if (typeof LearnPress === 'undefined') {
 		events              : {
 			'click .popup-close': '_closePopup'
 			//'click .button-load-item': '_loadItem'
+			,'click .sidebar-hide-btn': '_closeSidebar'
+			,'click .sidebar-show-btn': '_showSidebar'
 		},
 		initialize          : function (args) {
 			_.bindAll(this, '_ajaxLoadItemSuccess');
@@ -723,6 +725,16 @@ if (typeof LearnPress === 'undefined') {
 			this.remove();
 			$(document).off('focusin');
 			$('body').css('overflow', '').trigger('learn_press_popup_course_remove')
+		},
+		_closeSidebar         : function (e) {
+			e.preventDefault();
+			$('#popup-main').css('left','0px');
+			$('#popup-main .sidebar-show-btn').css('display','inline-block');
+		},
+		_showSidebar         : function (e) {
+			e.preventDefault();
+			$('#popup-main').css('left','350px');
+			$('#popup-main .sidebar-show-btn').css('display','none');
 		},
 		_loadItem           : function (e) {
 			var $iframe = $('<iframe />').src($(e.target).attr('href') + '?content-item-only=yes')

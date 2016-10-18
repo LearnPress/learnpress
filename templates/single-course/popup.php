@@ -3,14 +3,14 @@ $course = learn_press_get_course( get_the_ID() );
 $user   = learn_press_get_current_user();
 ?>
 <script type="text/template" id="learn-press-template-curriculum-popup">
-	<div id="course-curriculum-popup">
+	<div id="course-curriculum-popup" class="sidebar-hide">
 		<div id="popup-sidebar">
 			<?php //learn_press_get_template( 'single-course/curriculum.php' ); ?>
 		</div>
 		<div id="popup-main">
 			<div id="popup-header">
-				<div class="popup-menu"></div>
-				<h3 class="popup-title"><?php echo $course->get_title(); ?></h3>
+				<div class="popup-menu"><span class="sidebar-hide-btn dashicons dashicons-no"></span></div>
+				<h3 class="popup-title"><span class="sidebar-show-btn dashicons dashicons-menu"></span><?php echo $course->get_title(); ?></h3>
 				<a class="popup-close"></a>
 			</div>
 			<div id="popup-content">

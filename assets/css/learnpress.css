@@ -523,6 +523,22 @@ body.course-has-popup {
 #course-curriculum-popup * {
   box-sizing: border-box;
 }
+
+#course-curriculum-popup .sidebar-hide-btn,.sidebar-show-btn {
+	height: 40px;
+	width: 40px;
+	font-size: 40px;
+	line-height: 1.5;
+	cursor: pointer; 
+	cursor: hand;
+	color: white;
+}
+
+
+#course-curriculum-popup .sidebar-show-btn {
+	display:none;
+}
+
 #course-curriculum-popup #popup-sidebar {
   float: left;
   width: 350px;
