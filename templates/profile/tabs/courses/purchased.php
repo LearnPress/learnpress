@@ -7,7 +7,7 @@
  * @version 1.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
+if ( !defined( 'ABSPATH' ) ) {
 	exit;
 }
 
@@ -23,7 +23,7 @@ $heading = apply_filters( 'learn_press_profile_tab_courses_purchased_heading', f
 
 <?php if ( $courses ) : ?>
 
-	<ul class="profile-courses courses-list enrolled">
+	<ul class="learn-press-courses profile-courses courses-list enrolled">
 
 		<?php foreach ( $courses as $post ): setup_postdata( $post ); ?>
 			<?php setup_postdata( $post ); ?>
