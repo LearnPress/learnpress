@@ -34,7 +34,7 @@ jQuery(function ($) {
 
         var options = getDataOptions();
 
-        function  getDataOptions() {
+        function getDataOptions() {
             var dataOptions = carouselElement.data();
             for(var op in defaultOptions){
                 var prop = op.toLowerCase();

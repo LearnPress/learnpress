@@ -2455,3 +2455,48 @@ function learn_press_debug() {
 		die();
 	}
 }
+
+if ( !function_exists( 'learn_press_profile_localize_script' ) ) {
+
+    /**
+     * Translate javascript text
+     */
+    function learn_press_profile_localize_script( $assets ) {
+            $translate = array(
+                    'confirm_cancel_order'  => array(
+                        'message' => __( 'Are you sure you want to cancel order?', 'learnpress' ),
+                        'title'   => __( 'Cancel Order', 'learnpress' )
+                    )
+            );
+            $assets::add_localize( $translate );
+    }
+    
+}
+add_action( 'learn_press_enqueue_scripts', 'learn_press_profile_localize_script' );
+
+add_action( 'init', 'learn_press_cancel_order_processer' );
+if ( !function_exists( 'learn_press_cancel_order_processer' ) ) {
+    function learn_press_cancel_order_processer() {
+        if ( empty( $_REQUEST['cancel-order'] ) || empty( $_REQUEST['lp-nonce'] ) || !wp_verify_nonce( $_REQUEST['lp-nonce'], 'cancel-order' ) || is_admin() ) {
+            return;
+        }
+
+        $order_id = absint( $_REQUEST['cancel-order'] );
+        $order = learn_press_get_order( $order_id );
+
+        $url = learn_press_user_profile_link( $user->id, LP()->settings->get( 'profile_endpoints.profile-orders' ) );
+        if ( ! $order ) {
+            learn_press_add_message( sprintf( __( 'Order number <strong>%s</strong> not found', 'learnpress' ), $order_id ), 'error' );
+        } else if ( $order->has_status( 'pending' ) ) {
+            $order->update_status( 'cancelled' );
+            $order->add_note( __( 'Order cancelled by customer', 'learnpress' ) );
+
+            // set updated message
+            learn_press_add_message( sprintf( __( 'Order number <strong>%s</strong> has been cancelled', 'learnpress' ), $order->get_order_number() ) );
+            $url = $order->get_cancel_order_url( true );
+        } else {
+            learn_press_add_message( sprintf( __( 'Order number <strong>%s</strong> can not cancelled', 'learnpress' ), $order->get_order_number() ), 'error' );
+        }
+        wp_safe_redirect( $url ); exit();
+    }
+}
