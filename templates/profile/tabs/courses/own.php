@@ -31,7 +31,8 @@ $paged   = !empty( $_REQUEST['section'] ) && $_REQUEST['section'] == $subtab ? g
 
 		<?php foreach ( $courses as $post ): ?>
 			<?php setup_postdata( $post ); ?>
-			<?php learn_press_get_template( 'profile/tabs/courses/loop.php', array( 'subtab' => 'own' ) ); ?>
+			<?php learn_press_get_template( 'profile/tabs/courses/loop.php', array( 'subtab' => 'own', 'user' => $user, 'course_id' => $post->ID ) ); ?>
+
 
 		<?php endforeach; ?>
 
