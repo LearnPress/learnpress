@@ -7,6 +7,7 @@
  * @version 1.0
  */
 defined( 'ABSPATH' ) || exit();
+learn_press_print_messages();
 ?>
 <?php if( $orders = $user->get_orders() ): ?>
 
@@ -23,7 +24,14 @@ defined( 'ABSPATH' ) || exit();
 		<tr>
 			<td><?php echo $order->get_order_number();?></td>
 			<td><?php echo date_i18n( get_option( 'date_format' ), strtotime( $order->order_date ) ); ?></td>
-			<td><?php echo $order->get_order_status();?></td>
+			<td>
+                            <?php echo $order->get_order_status();?>
+                            <?php
+                                if ( $order->has_status( 'pending' ) ) :
+                                    printf( '(<small><a href="%s" class="%s">%s</a></small>)', $order->get_cancel_order_url(), 'cancel-order', __( 'Cancel', 'learnpress' ) );
+                                endif;
+                            ?>
+                        </td>
 			<td><?php echo $order->get_formatted_order_total();?></td>
 			<td>
 				<?php

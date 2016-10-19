@@ -192,6 +192,7 @@ class LP_Assets {
 		$scripts->add( 'learn-press-checkout', $default_path . 'js/frontend/checkout' . $suffix . '.js', $deps, false, 1 );
 		//$scripts->add( 'learn-press-course-lesson', $default_path . 'js/frontend/course-lesson' . $suffix . '.js', $deps, false, 1 );
 		$scripts->add( 'learn-press-become-teacher', $default_path . 'js/frontend/become-teacher' . $suffix . '.js', $deps, false, 1 );
+                $scripts->add( 'learn-press-profile', $default_path . 'js/frontend/profile' . $suffix . '.js', $deps, false, 1 );
 
 		// admin
 		$scripts->add( 'learn-press-admin', $default_path . 'js/admin/admin' . $suffix . '.js', $deps, false, 1 );
@@ -205,7 +206,6 @@ class LP_Assets {
 
 		// upgrade
 		$scripts->add( 'learn-press-upgrade', '/wp-content/plugins/learnpress/inc/updates/09/script' . $suffix . '.js', $deps, false, 1 );
-
 
 	}
 
@@ -759,6 +759,10 @@ class LP_Assets {
 			self::enqueue_script( 'learn-press-checkout' );
 		}
 		self::enqueue_script( 'learn-press-become-teacher' );
+
+                if ( learn_press_is_profile() ) {
+                    self::enqueue_script( 'learn-press-profile' );
+                }       
 	}
 }
 

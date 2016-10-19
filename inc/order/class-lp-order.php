@@ -406,7 +406,18 @@ class LP_Order {
 		return apply_filters( 'learn_press_view_order_url', $view_order_url, $this );
 	}
 
-	public function add_note( $note ) {
+        public function get_cancel_order_url( $force = false ) {
+            $user = learn_press_get_current_user();
+            $url = learn_press_user_profile_link( $user->id, LP()->settings->get( 'profile_endpoints.profile-orders' ) );
+            if ( ! $force ) {
+                $url = add_query_arg( 'cancel-order', $this->id, $url );
+            } else {
+                $url = add_query_arg( 'cancelled-order', $this->id, $url );
+            }
+            return apply_filters( 'learn_press_cancel_order_url', wp_nonce_url( $url, 'cancel-order', 'lp-nonce' ) );
+        }
+
+	public function add_note( $note = null ) {
 		if ( is_user_logged_in() ) {
 			$user                 = get_user_by( 'id', get_current_user_id() );
 			$comment_author       = $user->display_name;
