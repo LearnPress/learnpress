@@ -382,33 +382,33 @@
   margin-bottom: 20px;
 }
 /** COURSE PROGRESS **/
-.learn-press-course-results-progress {
+.single-lp_course .learn-press-course-results-progress {
   margin-bottom: 40px;
 }
-.learn-press-course-results-progress .items-progress {
+.single-lp_course .learn-press-course-results-progress .items-progress {
   float: left;
   width: 68%;
   margin-right: 2%;
   clear: left;
 }
-.learn-press-course-results-progress .lp-course-progress-heading {
+.single-lp_course .learn-press-course-results-progress .lp-course-progress-heading {
   margin-bottom: 10px;
 }
-.learn-press-course-results-progress .course-progress {
+.single-lp_course .learn-press-course-results-progress .course-progress {
   float: left;
   width: 30%;
 }
-.learn-press-course-results-progress .number,
-.learn-press-course-results-progress .percentage-sign {
+.single-lp_course .learn-press-course-results-progress .number,
+.single-lp_course .learn-press-course-results-progress .percentage-sign {
   display: inline-block;
   vertical-align: bottom;
   line-height: 1;
   font-size: 25px;
 }
-.learn-press-course-results-progress .percentage-sign {
+.single-lp_course .learn-press-course-results-progress .percentage-sign {
   margin-left: 5px;
 }
-.learn-press-course-results-progress:after {
+.single-lp_course .learn-press-course-results-progress:after {
   display: block;
   content: '';
   clear: both;
@@ -1796,8 +1796,15 @@ body.block-content #learn-press-block-content {
 .learn-press-user-profile .learn-press-tabs-wrapper-x .learn-press-subtab-content.current {
   display: block;
 }
+.learn-press-user-profile .learn-press-tabs-wrapper-x .learn-press-subtab-content li.course h3 {
+  padding-bottom: 10px;
+}
 .learn-press-user-profile .learn-press-tabs-wrapper-x .learn-press-subtab-content .profile-courses {
   list-style-type: none;
+}
+.learn-press-user-profile .learn-press-tabs-wrapper-x .learn-press-subtab-content .profile-courses .learn-press-course-results-progress {
+  padding: 0 15px 15px 15px;
+  margin: 0;
 }
 .learn-press-pagination {
   text-align: center;

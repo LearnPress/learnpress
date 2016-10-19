@@ -631,11 +631,14 @@ if ( !function_exists( 'learn_press_after_profile_tab_loop_course' ) ) {
 	 *
 	 * @param LP_User
 	 */
-	function learn_press_after_profile_tab_loop_course() {
-		global $post;
-		if ( !empty( $post->course_status ) ) {
-			echo '<span class="course-status ' . esc_attr( $post->course_status ) . '">' . $post->course_status . '</span>';
-		}
+	function learn_press_after_profile_tab_loop_course($user, $course_id) {
+
+		$args              = array(
+			'user'   => $user,
+			'course_id' => $course_id
+		);
+		learn_press_get_template( 'profile/tabs/courses/progress.php', $args );
+
 	}
 }
 

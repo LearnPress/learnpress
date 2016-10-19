@@ -9,16 +9,16 @@
 
 if ( !defined( 'ABSPATH' ) ) {
 	exit;
-}
+} ?>
 
-global $post;
-?>
-<li>
+<li class="course">
+	<?php
+	do_action( 'learn_press_before_profile_tab_' . $subtab . '_loop_course' );
 
-	<?php do_action( 'learn_press_before_profile_tab_' . $subtab . '_loop_course' ); ?>
+	learn_press_get_template( 'profile/tabs/courses/index.php' );
 
-	<?php learn_press_get_template_part('content', 'course');?>
-
-	<?php do_action( 'learn_press_after_profile_tab_' . $subtab . '_loop_course' ); ?>
-
+	do_action( 'learn_press_after_profile_tab_' . $subtab . '_loop_course', $user, $course_id );
+	?>
 </li>
+
+<?php

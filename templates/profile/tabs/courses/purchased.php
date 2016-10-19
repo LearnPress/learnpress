@@ -27,7 +27,7 @@ $heading = apply_filters( 'learn_press_profile_tab_courses_purchased_heading', f
 
 		<?php foreach ( $courses as $post ): setup_postdata( $post ); ?>
 			<?php setup_postdata( $post ); ?>
-			<?php learn_press_get_template( 'profile/tabs/courses/loop.php', array( 'subtab' => 'purchased' ) ); ?>
+			<?php learn_press_get_template( 'profile/tabs/courses/loop.php', array( 'subtab' => 'purchased', 'user' => $user, 'course_id' => $post->ID ) ); ?>
 
 		<?php endforeach; ?>
 	</ul>
