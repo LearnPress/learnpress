@@ -596,16 +596,15 @@ function learn_press_user_update_user_info(){
 				require_once(ABSPATH . "wp-admin" . '/includes/file.php');
 				require_once(ABSPATH . "wp-admin" . '/includes/media.php');
 			}
-
-			if ($_FILES) {
+			$attach_id = 0;
+			if ( $_FILES ) {
 				foreach ($_FILES as $file => $array) {
 					if ($_FILES[$file]['error'] !== UPLOAD_ERR_OK) {
 						return "upload error : " . $_FILES[$file]['error'];
 					}
-					$attach_id = media_handle_upload( $file, $new_post );
-				}   
+					$attach_id = media_handle_upload( $file, 0 );
+				}
 			}
-
 			if ($attach_id > 0){
 				update_user_meta( $user->id, '_lp_profile_picture', $attach_id );
 			}
