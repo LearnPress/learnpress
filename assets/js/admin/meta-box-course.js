@@ -147,6 +147,16 @@
 					var toggle = this.value != 'yes';
 					$('.lp-course-price-field').toggleClass('hide-if-js', toggle).attr('xxx', Math.random());
 					$('.lp-course-required-enroll').toggleClass('hide-if-js', !toggle);
+					if(toggle){
+						$('.lp-course-sale_start-field').hide();
+						$('.lp-course-sale_end-field').hide();
+					}else{
+						if( $('input[name="_lp_sale_start"]').val()!='' ){
+							$('.lp-course-sale_start-field').show();
+							$('.lp-course-sale_end-field').show();
+							$('#_lp_sale_price_schedule').hide();
+						}
+					}
 				})
 				$chkPayment.filter(':checked').trigger('change');
 				
