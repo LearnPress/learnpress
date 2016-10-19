@@ -68,7 +68,6 @@ class LP_Shortcodes {
 					if ( $query ) {
 						$profile_endpoints = (array) LP()->settings->get( 'profile_endpoints' );
 						$endpoints         = array_keys( $profile_endpoints );
-
 						foreach ( $query as $k => $v ) {
 							if ( ( $k == 'view' ) ) {
 								if ( !$v ) {
