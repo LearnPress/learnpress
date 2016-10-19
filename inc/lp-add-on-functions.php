@@ -180,7 +180,7 @@ function learn_press_get_add_ons( $options = array() ) {
 					$plugins[$plugin_file]           = (array) $wp_plugins[$plugin_file];
 					$plugins[$plugin_file]['source'] = 'wp';
 				} else {
-					$plugin_data = _get_plugin_data_markup_translate( $plugin_file, $plugin_data, false, true );
+					$plugin_data           = _get_plugin_data_markup_translate( $plugin_file, $plugin_data, false, true );
 					$plugins[$plugin_file] = array(
 						'name'              => $plugin_data['Name'],
 						'slug'              => $plugin_slug,
@@ -330,7 +330,7 @@ function learn_press_get_add_ons_from_wp( $args = null ) {
 			'icons'           => true,
 			'active_installs' => true
 		),
-		//'tag'				=> $tag,
+		//'tag'               => $tag,
 		// Send the locale and installed plugin slugs to the API so it can provide context-sensitive results.
 		'locale'            => get_locale(),
 		'installed_plugins' => learn_press_get_installed_plugin_slugs(),
@@ -356,7 +356,7 @@ function learn_press_get_add_ons_from_wp( $args = null ) {
 		if ( is_array( $api->plugins ) ) {
 			$all_plugins = get_plugins();
 			// filter plugins with tag contains 'learnpress'
-			$_plugins = array_filter( $api->plugins, create_function( '$plugin', 'return $plugin->slug != \'learnpress\';' ) );
+			$_plugins = array_filter( $api->plugins, create_function( '$plugin', 'return preg_match(\'!^learnpress.*!\', $plugin->slug);' ) );
 
 			// Ensure that the array is indexed from 0
 			$_plugins = array_values( $_plugins );
@@ -505,7 +505,7 @@ function learn_press_add_ons_content_tab_more( $current ) {
 add_action( 'learn_press_add_ons_content_tab_more', 'learn_press_add_ons_content_tab_more' );
 
 function learn_press_add_ons_content_tab_bundle_activate( $current ) {
-	$add_ons     = learn_press_get_add_ons_from_wp(
+	$add_ons = learn_press_get_add_ons_from_wp(
 		array(
 			'transient_key' => 'lp_ba_add_ons',
 			'include'       => learn_press_get_bundle_activate_add_ons(),
