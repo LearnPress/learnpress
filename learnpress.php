@@ -241,8 +241,12 @@ if ( !class_exists( 'LearnPress' ) ) {
 			add_action( 'after_setup_theme', array( $this, 'setup_theme' ) );
 			add_action( 'load-post.php', array( $this, 'load_meta_box' ), - 10 );
 			add_action( 'load-post-new.php', array( $this, 'load_meta_box' ), - 10 );
+                        add_action( 'plugins_loaded', array( $this, 'loaded' ), 0 );
 		}
 
+                public function loaded() {
+                    do_action( 'learn_press_loaded', $this );
+                }
 
 		public function load_meta_box() {
 			if ( !defined( 'RWMB_VER' ) ) {

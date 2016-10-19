@@ -1,7 +1,6 @@
 <?php
 $option_value     = $this->get_option( $options['id'], $options['default'] );
 $visbility_class = array();
-
 if ( !isset( $options['hide_if_checked'] ) ) {
 	$options['hide_if_checked'] = false;
 }

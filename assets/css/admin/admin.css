@@ -92,6 +92,12 @@
 #learn-press-admin-settings.no-subtabs .subsubsub {
   display: none;
 }
+#learn-press-admin-settings input[type="radio"] {
+    margin: 0 !important;
+}
+#learn-press-admin-settings label{
+    line-height: 1;
+}
 /* message box */
 #learn-press-message-box-block {
   position: fixed;
