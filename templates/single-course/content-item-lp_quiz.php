@@ -55,10 +55,6 @@ $can_view_item  = $user->can( 'view-item', $quiz->id, $course->id );
 		<?php learn_press_display_message( __( 'No questions', 'learnpress' ) ); ?>
 	<?php } ?>
 
-	<script type="text/javascript">
-		if (typeof window.Quiz_Params != 'undefined') {
-			window.Quiz_Params = undefined;
-		}
-		window.Quiz_Params = <?php echo json_encode( $quiz->get_settings( $user->id, $course->id ), learn_press_debug_enable() ? JSON_PRETTY_PRINT : 0 );?>;
-	</script>
+	<?php LP_Assets::add_var( 'LP_Quiz_Params', wp_json_encode( $quiz->get_settings( $user->id, $course->id ) ), '__all' ); ?>
+
 </div>

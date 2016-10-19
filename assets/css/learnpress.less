@@ -512,7 +512,7 @@
         margin-right: 2%;
         clear: left;
     }
-    .lp-course-progress-heading{
+    .lp-course-progress-heading {
         margin-bottom: 10px;
     }
     .course-progress {
@@ -805,6 +805,7 @@ body.course-has-popup {
         background: #FFF;
     }
 }
+
 .learn-press-content-item-title {
     margin-bottom: 20px;
     border-bottom: 2px solid #DDD;
@@ -850,6 +851,7 @@ body.course-has-popup {
         .clearfix();
     }
 }
+
 .learn-press-content-item-summary {
     /*padding: 20px;
     border-top: 1px solid #DDD;*/
@@ -857,16 +859,17 @@ body.course-has-popup {
     .quiz-question-title {
         margin-bottom: 20px;
     }
-    .learn-press-question-explanation, .learn-press-question-hint{
+    .learn-press-question-explanation, .learn-press-question-hint {
         background: #F5F5F5;
         padding: 15px 20px;
         font-style: italic;
         margin-bottom: 20px;
-        .hint-title, .explanation-title{
+        .hint-title, .explanation-title {
             font-style: normal;
         }
     }
 }
+
 .button-finish-quiz {
     float: right;
 }
@@ -944,14 +947,14 @@ body.block-content {
     margin: 0 0 20px 0;
     padding: 0;
     list-style-position: inside;
-    li{
+    li {
         margin: 0 0 10px 0;
     }
     .question-title {
         margin: 0 0 5px 0;
     }
-    .current{
-        .question-title{
+    .current {
+        .question-title {
             font-weight: bold;
         }
     }
@@ -1058,7 +1061,7 @@ body.block-content {
             }
         }
     }
-    .quiz-result-time p{
+    .quiz-result-time p {
         margin: 0 0 10px 0;
     }
     .quiz-grade {
@@ -1157,6 +1160,10 @@ body.block-content {
         &.answer-true label p {
             background: #00b9eb;
             color: #FFF;
+        }
+        &:hover label p {
+            background: #D4D4D4;
+            cursor: pointer;
         }
         &.user-answer-false {
             background: #F5F5F5;
@@ -1370,7 +1377,7 @@ body.block-content {
         }
     }
 
-    #popup_panel{
+    #popup_panel {
         text-align: center;
     }
 }
@@ -1439,23 +1446,23 @@ body.content-item-only {
     }
 }
 
-.lp-group-heading-title{
-    &.toggle-off, &.toggle-on{
+.lp-group-heading-title {
+    &.toggle-off, &.toggle-on {
         cursor: pointer;
-        .toggle-icon{
+        .toggle-icon {
             display: inline-block;
             font-size: larger;
             line-height: 1;
             font-weight: bold;
             margin-left: 5px;
-            &:before{
+            &:before {
                 content: '+';
             }
         }
     }
-    &.toggle-on{
-        .toggle-icon{
-            &:before{
+    &.toggle-on {
+        .toggle-icon {
+            &:before {
                 content: '-';
             }
         }

@@ -34,25 +34,23 @@ $data = array_merge( $user->get_course_info2( get_the_ID() ), $data );
 		<?php learn_press_print_messages(); ?>
 		<?php learn_press_get_template( 'single-course/content-item.php' ); ?>
 	</div>
-
-	<script type="text/javascript">
-		jQuery(function ($) {
-			// Ready again!
-			$(document).ready(function () {
-				var windowTarget = (parent.window || window),
-					data = <?php echo wp_json_encode( $data );?>;
-				$('html, body').css('opacity', 1);
-				windowTarget.LP.unblockContent();
-				setTimeout(function () {
-					$('.learn-press-message').each(function () {
-						$(this).fadeOut();
-					})
-				}, 3000);
-				LP.sendMessage(data, windowTarget);
-			});
+<?php ob_start(); ?>
+	<script>
+		// Ready again!
+		$(document).ready(function () {
+			var windowTarget = (parent.window || window),
+				data = <?php echo wp_json_encode( $data ); ?>;
+			$('html, body').css('opacity', 1);
+			windowTarget.LP.unblockContent();
+			setTimeout(function () {
+				$('.learn-press-message').each(function () {
+					$(this).fadeOut();
+				})
+			}, 3000);
+			LP.sendMessage(data, windowTarget);
 		});
 	</script>
-
+<?php LP_Assets::add_script_tag( preg_replace( '!</?script>!', '', ob_get_clean() ), '__all' ); ?>
 <?php
 // Get footer for our template
 learn_press_get_template( 'single-course/footer-content-item-only.php' );

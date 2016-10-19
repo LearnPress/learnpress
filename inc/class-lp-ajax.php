@@ -295,36 +295,16 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 				if ( $type == 'lp_lesson' ) {
 					$results = $user->complete_lesson( $id, $course_id );
 					if ( is_wp_error( $results ) ) {
-						$response['result']  = 'fail';
-						$response['message'] = $results->get_error_message();
+						learn_press_add_message( __( 'Finish lesson has failed.', 'learnpress' ) );
 					} elseif ( $results !== false ) {
-						/**
-						 * Flush cache to force update
-						 */
-						/*LP_Cache::flush( 'user-completed-items' );
-						//LP_Cache::set_completed_items()_status( $user->id . '-' . $course_id . '-' . $id, 'completed' );
-						learn_press_setup_user_course_data( $user->id, $course_id );
-						$course                     = learn_press_get_course( $course_id );
-						LP()->course                = $course;
-						LP()->user                  = $user;
-						$response['course_results'] = $results;
-						$response['result']         = 'success';
-						$response['status']         = 'completed';
-						$response['html']           = array();
-						if ( $section_id = learn_press_get_request( 'section_id' ) ) {
-							$response['html']['section_header'] = learn_press_get_template_content( 'single-course/section/title.php', array( 'section' => $course->get_curriculum( $section_id ) ) );
-						}
-						$response['course_result']    = $user->get_course_info2( $course_id );
-						$response['html']['progress'] = learn_press_get_template_content( 'single-course/progress.php' );
-						$response['html']['buttons']  = learn_press_get_template_content( 'single-course/buttons.php' );
-						$response['html']['content']  = learn_press_get_template_content( 'single-course/content-item-lp_lesson.php' );*/
+						learn_press_add_message( __( 'You have finished lesson.', 'learnpress' ) );
 					}
 				} else {
 					do_action( 'learn_press_user_request_complete_item', $_REQUEST );
 				}
 			}
-			wp_redirect(learn_press_get_current_url());die();
-			///learn_press_send_json( $response );
+			wp_redirect( learn_press_get_current_url() );
+			die();
 		}
 
 		/**
@@ -398,7 +378,6 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			$question_id = !empty( $_REQUEST['question_id'] ) ? absint( $_REQUEST['question_id'] ) : 0;
 			$user_id     = !empty( $_REQUEST['user_id'] ) ? absint( $_REQUEST['user_id'] ) : 0;
 			global $quiz;
-			echo 'xxxxxxxxxxxxxxxxxxxxxx';
 			$quiz      = LP_Quiz::get_quiz( $quiz_id );
 			LP()->quiz = $quiz;
 			do_action( 'learn_press_load_quiz_question', $question_id, $quiz_id, $user_id );

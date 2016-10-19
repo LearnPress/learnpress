@@ -1472,9 +1472,6 @@ abstract class LP_Abstract_Course {
 				$items[$k]['url']    = '';
 				$items[$k]['status'] = '';
 			}
-			if ( $item['type'] == LP_QUIZ_CPT ) {
-				//$items[$k]['result'] = $user->get_quiz_results($item['id'], $this->id);
-			}
 		}
 
 		return $items;

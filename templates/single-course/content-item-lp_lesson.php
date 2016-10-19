@@ -15,10 +15,9 @@ $can_view_item = $user->can( 'view-item', $item->id, $course->id );
 <h2 class="learn-press-content-item-title"><?php echo $item->get_title(); ?></h2>
 <div class="learn-press-content-item-summary">
 
-	<?php learn_press_get_template('content-lesson/description.php');?>
+	<?php learn_press_get_template( 'content-lesson/description.php' ); ?>
 
 	<?php if ( $user->has_completed_lesson( $item->ID, $course->id ) ) { ?>
-		<?php learn_press_display_message( __( 'Congrats! You have completed this lesson', 'learnpress' ) ); ?>
 		<button class="" disabled="disabled"> <?php _e( 'Completed', 'learnpress' ); ?></button>
 	<?php } else if ( !$user->has( 'finished-course', $course->id ) && $can_view_item != 'preview' ) { ?>
 
@@ -35,9 +34,5 @@ $can_view_item = $user->can( 'view-item', $item->id, $course->id );
 	<?php } ?>
 </div>
 <?php LP_Assets::enqueue_script( 'learn-press-course-lesson' ); ?>
-<script type="text/javascript">
-	if (typeof window.Lesson_Params != 'undefined') {
-		window.Lesson_Params = undefined;
-	}
-	window.Lesson_Params = <?php echo wp_json_encode( $item->get_settings( $user->id, $course->id ) );?>;
-</script>
+
+<?php LP_Assets::add_var( 'LP_Lesson_Params', wp_json_encode( $item->get_settings( $user->id, $course->id ) ), '__all' ); ?>

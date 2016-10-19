@@ -1661,6 +1661,10 @@ body.block-content #learn-press-block-content {
   background: #00b9eb;
   color: #FFF;
 }
+.learn-press-question-options > li.answer-option:hover label p {
+  background: #D4D4D4;
+  cursor: pointer;
+}
 .learn-press-question-options > li.answer-option.user-answer-false {
   background: #F5F5F5;
 }
