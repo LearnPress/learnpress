@@ -579,3 +579,83 @@ function learn_press_user_has_quiz_status( $status, $quiz_id = 0, $user_id = 0, 
 	$user = learn_press_get_user( $user_id );
 	return $user->has_quiz_status( $status, $quiz_id, $course_id );
 }
+
+add_action( 'init', 'learn_press_user_update_user_info' );
+
+function learn_press_user_update_user_info(){
+	if( !empty($_POST) && isset($_POST['from']) && isset($_POST['action']) && $_POST['from']=='profile' && $_POST['action']=='update') {
+		$user			= learn_press_get_current_user();
+		$user_id		= learn_press_get_current_user_id();
+		$user_info = get_userdata($user->id);
+		// upload profile picture
+		$profile_picture_type = filter_input( INPUT_POST,'profile_picture_type', FILTER_SANITIZE_STRING );
+		update_user_meta( $user->id, '_lp_profile_picture_type', $profile_picture_type );
+		if( $profile_picture_type == 'picture' ) {
+			if (!function_exists('wp_generate_attachment_metadata')){
+				require_once(ABSPATH . "wp-admin" . '/includes/image.php');
+				require_once(ABSPATH . "wp-admin" . '/includes/file.php');
+				require_once(ABSPATH . "wp-admin" . '/includes/media.php');
+			}
+
+			if ($_FILES) {
+				foreach ($_FILES as $file => $array) {
+					if ($_FILES[$file]['error'] !== UPLOAD_ERR_OK) {
+						return "upload error : " . $_FILES[$file]['error'];
+					}
+					$attach_id = media_handle_upload( $file, $new_post );
+				}   
+			}
+
+			if ($attach_id > 0){
+				update_user_meta( $user->id, '_lp_profile_picture', $attach_id );
+			}
+		}
+
+		// check old pass
+		$old_pass	= filter_input(INPUT_POST, 'pass0');
+		$check_old_pass = false;
+		if( !$old_pass ) {
+			$check_old_pass = false;
+		} else {
+			$cuser = wp_get_current_user();
+			require_once( ABSPATH . 'wp-includes/class-phpass.php');
+			$wp_hasher = new PasswordHash(8, TRUE);
+			if( $wp_hasher->CheckPassword( $old_pass, $cuser->data->user_pass ) ) {
+				$check_old_pass = true;
+			}
+		}
+		
+		if( !$check_old_pass ) {
+			_e('old password incorect!','learnpress');
+		}
+
+		// check new pass
+		$new_pass = filter_input(INPUT_POST, 'pass1');
+		$new_pass2 = filter_input(INPUT_POST, 'pass2');
+		$hash_pass = '';
+		if( $new_pass != $new_pass2 ) {
+			_e('retype new password incorect!','learnpress');
+		} else {
+			$hash_pass = wp_hash_password( $new_pass );
+		}
+
+		$update_data	= array(
+			'ID' => $user_id,
+			'user_url'			=> filter_input(INPUT_POST, 'url', FILTER_SANITIZE_URL),
+			'user_email'		=> filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL),
+			'first_name'	=> filter_input(INPUT_POST, 'first_name', FILTER_SANITIZE_STRING),
+			'last_name'	=> filter_input(INPUT_POST, 'last_name', FILTER_SANITIZE_STRING),
+			'description'	=> filter_input(INPUT_POST, 'description', FILTER_SANITIZE_STRING),
+		);
+		
+		if($hash_pass){
+			$update_data['user_pass'] = $hash_pass;
+		}
+
+		$user_id = wp_update_user( $update_data );
+		if( $user_id ){
+			_e('Your change is saved','learnpress');
+		}
+
+	}
+}

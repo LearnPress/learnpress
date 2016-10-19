@@ -532,7 +532,7 @@ class LP_Cart {
 			$this->empty_cart();
 		}
 		$this->add_to_cart( $course_id, 1, $_POST );
-		$redirect      = learn_press_get_page_link( 'checkout' );
+		$redirect      = learn_press_get_checkout_url();
 		$has_checkout  = $redirect ? true : false;
 		$need_checkout = $this->needs_payment();
 
