@@ -24,8 +24,7 @@ if(!$profile_picture_type){
 $profile_picture_src	= '';
 if($profile_picture_type == 'picture'){
 	$profile_picture	= get_user_meta($user->id,'_lp_profile_picture',true);
-	echo '<pre>' . print_r($profile_picture) . '</pre>';
-	$profile_picture_src = '';
+	$profile_picture_src = wp_get_attachment_image_src($profile_picture, 'thumbnail')[0];
 } else {
 	$profile_picture_src = 'http://2.gravatar.com/avatar/'.  md5($user_info->user_email).'?s=96&amp;d=mm&amp;r=g';
 }
@@ -33,7 +32,7 @@ if($profile_picture_type == 'picture'){
 if ($user) :
 ?>
 	<div class="user-profile-edit-form" id="learn-press-user-profile-edit-form">
-		<form id="your-profile" action="" method="post" novalidate="novalidate">
+		<form id="your-profile" action="" method="post" enctype="multipart/form-data" novalidate="novalidate">
 			<p>
 				<input type="hidden" name="from" value="profile">
 				<input type="hidden" name="checkuser_id" value="2">
