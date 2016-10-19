@@ -25,7 +25,7 @@ if ( !empty( $tabs ) && !empty( $tabs[$current] ) ) : ?>
 				<p class="user-bio"><?php echo get_user_meta( $user->id, 'description', true ); ?></p>
 			<?php endif; ?>
 			<?php if($cuser->id == $user->ID): ?>
-				<a href="<?php esc_attr_e($profile_link);?>/edit" class="button-secondary"><?php _e('Edit Profile','learnpress')?></a>
+				<a href="<?php esc_attr_e($profile_link.$user->user_login);?>/edit" class="button-secondary"><?php _e('Edit Profile','learnpress')?></a>
 			<?php endif;?>
 		</div>
 	</div>
