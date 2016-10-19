@@ -17,6 +17,18 @@ $user_info = get_userdata($user->id);
 $username = $user_info->user_login;
 $first_name = $user_info->first_name;
 $last_name = $user_info->last_name;
+$profile_picture_type	= get_user_meta($user->id,'_lp_profile_picture_type',true);
+if(!$profile_picture_type){
+	$profile_picture_type = 'gavatar';
+}
+$profile_picture_src	= '';
+if($profile_picture_type == 'picture'){
+	$profile_picture	= get_user_meta($user->id,'_lp_profile_picture',true);
+	echo '<pre>' . print_r($profile_picture) . '</pre>';
+	$profile_picture_src = '';
+} else {
+	$profile_picture_src = 'http://2.gravatar.com/avatar/'.  md5($user_info->user_email).'?s=96&amp;d=mm&amp;r=g';
+}
 
 if ($user) :
 ?>
@@ -26,6 +38,35 @@ if ($user) :
 				<input type="hidden" name="from" value="profile">
 				<input type="hidden" name="checkuser_id" value="2">
 			</p>
+			
+			<h2><?php _e('About Yourself', 'learnpress'); ?></h2>
+			<table class="form-table">
+				<tbody>
+					<tr class="user-profile-picture">
+						<th><?php _e( 'Profile Picture', 'learnpress' ); ?></th>
+						<td>
+							<img alt="" src="<?php esc_attr_e($profile_picture_src);?>" class="avatar avatar-96 photo" height="96" width="96"/>
+							<br>
+							<select name="profile_picture_type">
+								<option value="gavatar" <?php echo $profile_picture_type == 'gavatar'?' selected="selected"':''; ?>><?php _e('Gavatar','learnpress');?></option>
+								<option value="picture" <?php echo $profile_picture_type == 'picture'?' selected="selected"':''; ?>><?php _e('Picture','learnpress');?></option>
+							</select>
+							<div id="profile-picture-gavatar">
+								<p class="description"><?php _e( 'You can change your profile picture on', 'learnpress' );?> <a href="https://en.gravatar.com/"><?php _e('Gravatar', 'learnpress');?></a>.</p>
+							</div>
+							<div id="profile-picture-picture">
+								<input type="file" name="profile_picture"/>
+							</div>
+						</td>
+					</tr>
+					<tr class="user-description-wrap">
+						<th><label for="description"><?php _e('Biographical Info','learnpress');?></label></th>
+						<td><textarea name="description" id="description" rows="5" cols="30"><?php esc_html_e($user_info->description); ?></textarea>
+							<p class="description"><?php _e('Share a little biographical information to fill out your profile. This may be shown publicly.','learnpress'); ?></p></td>
+					</tr>
+				</tbody>
+			</table>
+
 			<h2><?php _e('Name','learnpress');?></h2>
 
 			<table class="form-table">
@@ -61,22 +102,6 @@ if ($user) :
 
 				</tbody></table>
 
-			<h2><?php _e('About Yourself', 'learnpress'); ?></h2>
-			<table class="form-table">
-				<tbody><tr class="user-description-wrap">
-						<th><label for="description"><?php _e('Biographical Info','learnpress');?></label></th>
-						<td><textarea name="description" id="description" rows="5" cols="30"><?php esc_html_e($user_info->description); ?></textarea>
-							<p class="description"><?php _e('Share a little biographical information to fill out your profile. This may be shown publicly.','learnpress'); ?></p></td>
-					</tr>
-					<tr class="user-profile-picture">
-						<th><?php _e( 'Profile Picture', 'learnpress' ); ?></th>
-						<td>
-							<img alt="" src="http://2.gravatar.com/avatar/b82f5287726e78f4f4ab19de21282ee9?s=96&amp;d=mm&amp;r=g" srcset="http://2.gravatar.com/avatar/b82f5287726e78f4f4ab19de21282ee9?s=192&amp;d=mm&amp;r=g 2x" class="avatar avatar-96 photo" height="96" width="96">		<p class="description">You can change your profile picture on <a href="https://en.gravatar.com/">Gravatar</a>.</p>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-
 			<h2><?php _e('Account Management', 'learnpress'); ?></h2>
 			<div><button type="button" class="button button-secondary" onclick="jQuery('#user_profile_password_form').show();return;"><?php _e('Change Password', 'learnpress'); ?></button></div>
 			<table id="user_profile_password_form" class="form-table" style="display: none;">
@@ -103,9 +128,9 @@ if ($user) :
 				</tbody>
 			</table>
 			<input type="hidden" name="action" value="update">
-			<input type="hidden" name="user_id" id="user_id" value="2">
+			<input type="hidden" name="user_id" id="user_id" value="<?php esc_attr_e($user->id);?>">
 
-			<p class="submit"><input type="submit" name="submit" id="submit" class="button button-primary" value="Update Profile"></p>
+			<p class="submit"><input type="submit" name="submit" id="submit" class="button button-primary" value="<?php _e('Update Profile', 'learnpress'); ?>"></p>
 		</form>
 	</div>
 <?php 
