@@ -158,17 +158,11 @@ class LP_Quiz extends LP_Abstract_Course_Item {
 			$r_time              = ( $time_remaining = $user->get_quiz_time_remaining( $this->id, $course_id ) ) !== false && !in_array( $user->get_quiz_status( $this->id, $course_id, $force ), array( '', 'completed' ) ) ? $time_remaining : $this->duration;
 
 			$js = array(
-				'time_format'     => $this->duration >= 300 ? 'h%:m%:s%' : 'm%:s%',
-				'total_time'      => $this->duration,
 				'id'              => $this->id,
 				'questions'       => array_values( $this->get_question_params( $questions, $current_question_id ) ),//$questions,
-				'question_id'     => $current_question_id,
 				'status'          => $user->get_quiz_status( $this->id, $course_id, $force ),
-				'time_remaining'  => $r_time,//( $time_remaining = $user->get_quiz_time_remaining( $this->id ) ) !== false && !in_array( $user->get_quiz_status( $this->id ), array( '', 'completed' ) ) ? $time_remaining : $this->duration,
 				'permalink'       => get_the_permalink(),
 				'ajaxurl'         => admin_url( 'admin-ajax.php' ),
-				'user_id'         => $user->id,
-				'nonce'           => wp_create_nonce( 'learn-press-quiz-action-' . $this->id . '-' . $user->id ),
 				'question'        => $question ? array( 'check_answer' => $question->can_check_answer() ) : false,
 				'totalTime'       => $this->duration,
 				'userTime'        => $r_time > 0 ? $duration - $r_time : 0,

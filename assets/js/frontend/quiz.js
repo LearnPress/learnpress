@@ -843,17 +843,10 @@
 
 	window.LP_Quiz = Quiz;
 	$(document).ready(function () {
-		if (typeof Quiz_Params != 'undefined') {
-			window.quiz = new LP_Quiz($.extend({course: LP.$Course}, Quiz_Params));
+		if (typeof LP_Quiz_Params != 'undefined') {
+			window.$LP_Quiz = new LP_Quiz($.extend({course: LP.$LP_Course}, LP_Quiz_Params));
 		}
 		windowTarget.LP.unblockContent();
 	})
-	// DOM ready
-	LP.Hook.addAction('learn_press_course_initialize', function ($course) {
-		if (typeof Quiz_Params != 'undefined') {
-			//window.quiz = new LP_Quiz($.extend({course: $course}, Quiz_Params));
-			//windowTarget.$course.view.updateUrl();
-		}
-	});
 
 })(jQuery);

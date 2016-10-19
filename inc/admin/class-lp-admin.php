@@ -57,7 +57,6 @@ if ( !class_exists( 'LP_Admin' ) ) {
 					<?php
 					$code = ob_get_clean();
 					LP_Assets::add_script_tag( $code, '__all' );
-					//LP_Admin_Notice::add( $footer_text, 'updated' );
 				} else {
 				}
 			}

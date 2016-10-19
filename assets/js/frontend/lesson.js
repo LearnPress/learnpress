@@ -98,17 +98,10 @@
 
 	window.LP_Lesson = Lesson;
 	$(document).ready(function () {
-		if (typeof Lesson_Params != 'undefined') {
-			window.lesson = new LP_Lesson($.extend({course: LP.$Course}, Lesson_Params));
+		if (typeof LP_Lesson_Params != 'undefined') {
+			window.$LP_Lesson = new LP_Lesson($.extend({course: LP.$LP_Course}, LP_Lesson_Params));
 		}
 		windowTarget.LP.unblockContent();
 	})
-	// DOM ready
-	LP.Hook.addAction('learn_press_course_initialize', function ($course) {
-		if (typeof Quiz_Params != 'undefined') {
-			//window.quiz = new LP_Quiz($.extend({course: $course}, Quiz_Params));
-			$course.view.updateUrl();
-		}
-	});
 
 })(jQuery);

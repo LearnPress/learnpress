@@ -151,7 +151,7 @@ class LP_Assets {
 	 */
 	public static function default_scripts( &$scripts ) {
 		if ( !defined( 'LEARNPRESS_VERSION' ) ) {
-			define( 'LEARNPRESS_VERSION', '1.1' );
+			define( 'LEARNPRESS_VERSION', '2.0' );
 		}
 
 		$develop_src = false !== strpos( LEARNPRESS_VERSION, '-src' );
@@ -187,12 +187,10 @@ class LP_Assets {
 		$scripts->add( 'learn-press-course-quiz', $default_path . 'js/frontend/quiz' . $suffix . '.js', $deps, false, 1 );
 		$scripts->add( 'learn-press-course-lesson', $default_path . 'js/frontend/lesson' . $suffix . '.js', $deps, false, 1 );
 		$scripts->add( 'learn-press-enroll', $default_path . 'js/frontend/enroll' . $suffix . '.js', $deps, false, 1 );
-//		$scripts->add( 'learn-press-add-to-cart', $default_path . 'js/frontend/add-to-cart' . $suffix . '.js', $deps, false, 1 );
 		$scripts->add( 'learn-press-timer', $default_path . 'js/jquery.timer' . $suffix . '.js', $deps, false, 1 );
 		$scripts->add( 'learn-press-checkout', $default_path . 'js/frontend/checkout' . $suffix . '.js', $deps, false, 1 );
-		//$scripts->add( 'learn-press-course-lesson', $default_path . 'js/frontend/course-lesson' . $suffix . '.js', $deps, false, 1 );
 		$scripts->add( 'learn-press-become-teacher', $default_path . 'js/frontend/become-teacher' . $suffix . '.js', $deps, false, 1 );
-                $scripts->add( 'learn-press-profile', $default_path . 'js/frontend/profile' . $suffix . '.js', $deps, false, 1 );
+		$scripts->add( 'learn-press-profile', $default_path . 'js/frontend/profile' . $suffix . '.js', $deps, false, 1 );
 
 		// admin
 		$scripts->add( 'learn-press-admin', $default_path . 'js/admin/admin' . $suffix . '.js', $deps, false, 1 );
@@ -216,7 +214,7 @@ class LP_Assets {
 	 */
 	public static function default_styles( &$styles ) {
 		if ( !defined( 'LEARNPRESS_VERSION' ) ) {
-			define( 'LEARNPRESS_VERSION', '1.1' );
+			define( 'LEARNPRESS_VERSION', '2.0' );
 		}
 
 		$develop_src = false !== strpos( LEARNPRESS_VERSION, '-src' );
@@ -379,11 +377,6 @@ class LP_Assets {
 			}
 			self::add_style_concat( $handle );
 		}
-		return;
-		if ( !in_array( $handle, self::$styles ) && $src ) {
-			self::add_style( $handle, $src, $deps, $version, $media );
-		}
-		self::$_enqueue_styles[$handle] = func_get_args();
 	}
 
 	/**
@@ -456,23 +449,6 @@ class LP_Assets {
 	}
 
 	/**
-	 * Localize script
-	 *
-	 * @param  mixed $handle
-	 */
-	private static function localize_script( $handle ) {
-		return;
-		$data = !empty( self::$wp_localize_scripts[$handle] ) ? self::$wp_localize_scripts[$handle] : false;
-		if ( wp_script_is( $handle ) && $data ) {
-			$name = str_replace( '-', '_', $handle ) . '_localize';
-			var_dump( $name );
-			die();
-			unset( self::$wp_localize_scripts[$handle] );
-			wp_localize_script( $handle, $name, apply_filters( $name, $data ) );
-		}
-	}
-
-	/**
 	 * @param        $code
 	 * @param string $handle
 	 */
@@ -500,14 +476,13 @@ class LP_Assets {
 		if ( $has_localized || $has_params || $has_vars ) {
 			echo "<script type='text/javascript'>\n"; // CDATA and type='text/javascript' is not needed for HTML 5
 			echo "/* <![CDATA[ */\n";
-
 			if ( $has_localized ) {
 				if ( self::$wp_localize_scripts ) {
 					echo "\n/* LearnPress Localized */\n";
 					foreach ( self::$localized as $handle => $src ) {
 						if ( !empty( self::$wp_localize_scripts[$handle] ) ) {
 							$name = str_replace( '-', '_', $handle ) . '_localize';
-							echo "var {$name} = " . json_encode( self::$wp_localize_scripts[$handle] ) . ";\n\n\n\n";
+							echo "var {$name} = " . json_encode( self::$wp_localize_scripts[$handle] ) . ";\n";
 						}
 					}
 				}
@@ -533,7 +508,7 @@ class LP_Assets {
 				if ( $groups ) {
 					echo "\n/* LearnPress Params */\n";
 					foreach ( $groups as $name => $code ) {
-						echo "\nvar {$name} = " . wp_json_encode( $code ) . ";\n";
+						echo "var {$name} = " . wp_json_encode( $code ) . ";\n";
 					}
 				}
 			}
@@ -550,7 +525,7 @@ class LP_Assets {
 									continue;
 								}
 								$abort[] = $name;
-								echo "\nvar {$name} = " . maybe_serialize( $var ) . ";\n";
+								echo "var {$name} = " . maybe_serialize( $var ) . ";\n";
 							}
 						}
 					}
@@ -744,9 +719,7 @@ class LP_Assets {
 		}
 		self::enqueue_script( 'learn-press-jalerts' );
 		self::enqueue_script( 'learn-press-global' );
-
 		self::enqueue_script( 'learn-press-js' );
-//                self::enqueue_script( 'learn-press-add-to-cart' );
 		if ( learn_press_is_course() ) {
 			self::enqueue_script( 'learn-press-single-course' );
 			self::enqueue_script( 'learn-press-course-quiz' );
@@ -760,9 +733,9 @@ class LP_Assets {
 		}
 		self::enqueue_script( 'learn-press-become-teacher' );
 
-                if ( learn_press_is_profile() ) {
-                    self::enqueue_script( 'learn-press-profile' );
-                }       
+		if ( learn_press_is_profile() ) {
+			self::enqueue_script( 'learn-press-profile' );
+		}
 	}
 }
 
