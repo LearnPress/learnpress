@@ -23,7 +23,7 @@ if ( $section_name === false ) {
 		<p><?php echo $section_description; ?></p>
 	<?php } ?>
         <span class="meta">
-            <span class="step"><?php printf( __( '%d / %d', 'learnpress' ), $user->get_completed_items_in_section( $course->id, $section->section_id, $force ), sizeof( $section->items ) ); ?></span>
+            <span class="step"><?php printf( __( '%d/%d', 'learnpress' ), $user->get_completed_items_in_section( $course->id, $section->section_id, $force ), sizeof( $section->items ) ); ?></span>
             <span class="collapse"></span>
         </span>
 </h4>

@@ -30,14 +30,9 @@ $course_results = $course->evaluate_course_results();
 <div class="learn-press-course-results-progress">
     <div class="items-progress">
         <?php if ($heading !== false): ?>
-            <h4 class="lp-course-progress-heading"><?php echo 'Items completed'; ?></h4>
+            <h4 class="lp-course-progress-heading"><?php echo esc_html_e('Items completed', 'learnpress'); ?></h4>
         <?php endif; ?>
-        <?php ///echo $course->get_course_result_html( null, $force ); ?>
-        <div>
-            <span class="number"><?php echo $completed_items; ?></span>
-            <span class="percentage-sign">/<?php echo $course_items; ?></span>
-        </div>
-
+        <span class="number"><?php printf( __('%d of %d items', 'learnpress'), $completed_items, $course_items); ?></span>
         <div class="lp-course-progress">
             <div class="lp-progress-bar">
                 <div class="lp-progress-value"
@@ -49,7 +44,7 @@ $course_results = $course->evaluate_course_results();
     </div>
     <div class="course-progress">
         <h4 class="lp-course-progress-heading">
-            <?php esc_html_e('Course results'); ?>
+            <?php esc_html_e('Course results', 'learnpress'); ?>
             <?php
             if ($course->is_evaluation('evaluate_final_quiz')) {
                 $tooltip = __("Evaluated by results of final quiz", 'learnpress');

@@ -26,7 +26,7 @@ $heading       = apply_filters( 'learn_press_quiz_history_heading', $heading );
 ?>
 
 <?php if ( $heading ) { ?>
-	<h4 class="lp-group-heading-title" onclick="LP.toggleGroupSection('#lp-quiz-history', this);"><?php echo $heading; ?></h4>
+	<h4 class="lp-group-heading-title toggle-off" onclick="LP.toggleGroupSection('#lp-quiz-history', this);"><?php echo $heading; ?><span class="toggle-icon"></span></h4>
 <?php } ?>
 
 <?php

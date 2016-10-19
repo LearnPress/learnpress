@@ -33,6 +33,7 @@ $question = $quiz->get_current_question();
 			<button
 				class="button-check-answer"
 				data-id="<?php esc_attr_e( $quiz->id ); ?>"
+				data-action="check-answer"
 				data-security="<?php esc_attr_e( wp_create_nonce( 'check-question-' . $user->id . '-' . $course->id . '-' . $quiz->id ) ); ?>">
 				<?php esc_html_e( 'Check', 'learnpress' ); ?>
 			</button>

@@ -40,13 +40,12 @@ $history = $user->get_quiz_results( $quiz->id );
 				<span data-text="<?php echo esc_attr( $text ); ?>"></span>
 			</div>
 		<?php endforeach; ?>
-		<?php if ( $quiz->duration > 0 ): ?>
-			<div class="quiz-result-time">
-				<?php echo sprintf( __( 'Your time: %s', 'learnpress' ), learn_press_seconds_to_time( $history->time ) ); ?>
-			</div>
-		<?php endif; ?>
 	</div>
-
+	<?php if ( $quiz->duration > 0 ): ?>
+		<p class="quiz-result-time">
+			<?php echo sprintf( __( 'Your time: %s', 'learnpress' ), learn_press_seconds_to_time( $history->time ) ); ?>
+		</p>
+	<?php endif; ?>
 	<?php if ( $grade = $user->get_quiz_graduation( $quiz->id, $course->id ) ): ?>
 		<div class="quiz-grade">
 			<p><?php echo sprintf( __( 'Your quiz grade <span class="%s">%s</span>', 'learnpress' ), $grade, $grade ); ?></p>

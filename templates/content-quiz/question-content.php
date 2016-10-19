@@ -27,7 +27,7 @@ $question = LP_Question_Factory::get_question( $question_id );
 	<h4 class="quiz-question-title"><?php echo $title; ?></h4>
 <?php endif; ?>
 <div class="quiz-question-content">
-	<form method="post" name="quiz-question-content">
+	<div method="post" name="quiz-question-content">
 	<?php if ( false !== ( $content = apply_filters( 'learn_press_quiz_question_content', $question->get_content() ) ) ): ?>
 		<div class="question-content">
 			<?php echo $content; ?>
@@ -37,5 +37,5 @@ $question = LP_Question_Factory::get_question( $question_id );
 	$question->render( array( 'quiz_id' => $quiz->id, 'course_id' => $course->id ) );
 	?>
 	<?php learn_press_get_template( 'content-question/hint.php', array( 'quiz' => $quiz ) ); ?>
-	</form>
+	</div>
 </div>

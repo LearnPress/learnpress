@@ -436,14 +436,11 @@
 			var $html = question.get('response'),
 				answer = {};
 			if ($html) {
-				var $form = $html.find('form');
-				if (!$form.length) {
+				var $content = $html.find('.quiz-question-content'),
 					$form = $('<form />');
-					$form.html($html.clone());
-				}
+				$form.html($content.clone());
 				answer = $form.serializeJSON();
 			}
-			console.log($html, answer)
 			return LP.Hook.applyFilters('learn_press_question_answer_data', answer, $form, question, this);
 		}
 	});
@@ -477,6 +474,10 @@
 			this.updateButtons();
 			this.windowTarget = windowTarget;
 			this.localized = window.learn_press_single_course_localize || {};
+			$(document).ready(function () {
+				$(window).trigger('load');
+				$(document).trigger('resize');
+			})
 		},
 		_initCountDown        : function () {
 			if (this.model.get('status') != 'started' || this.model.get('totalTime') <= 0) {
@@ -504,7 +505,7 @@
 				this.$('.button-finish-quiz').trigger('click');
 				return;
 			}
-			this.timeout = setTimeout(this._onTick, 990);
+			this.timeout = setTimeout(this._onTick, 1000);
 		},
 		_prevQuestion         : function (e) {
 			e.preventDefault();
@@ -557,7 +558,7 @@
 			this.start();
 			$(window).trigger('load');
 			$(document).trigger('resize');
-			LP.setUrl(question.get('url'));
+			windowTarget.LP.setUrl(question.get('url'));
 			windowTarget.LP.unblockContent();
 		},
 		_showHint             : function (e) {
@@ -574,13 +575,13 @@
 			var that = this,
 				$button = $(e.target),
 				security = $button.data('security');
+			windowTarget.LP.blockContent();
 			this.pause();
-			this.model.checkAnswer(this._checkAnswerCompleted, {
-				security: security
-			});
+			this.model.checkAnswer(this._checkAnswerCompleted, $button.data());
 		},
 		_checkAnswerCompleted : function (question) {
 			this.start();
+			this.$('.button-check-answer, .button-hint').hide();
 			windowTarget.LP.unblockContent();
 		},
 		updateButtons         : function () {
@@ -650,9 +651,7 @@
 		_submit               : function (args) {
 			var data = {};
 			data = this.model.getQuizData(data);
-			console.log(data);
-			return;
-			return;
+
 			args = $.extend({
 				security: '',
 				action  : ''
@@ -660,8 +659,20 @@
 			windowTarget.LP.blockContent();
 			LP.Hook.doAction('learn_press_before_start_quiz', this.currentItem, this);
 			var $form = this.$('form.quiz-buttons');
+			this.model.questions.forEach(function (m) {
+				var $content = m.get('response');
+				if (!$content) {
+					return;
+				}
+				var $question = $content.find('.quiz-question-content').clone().hide();
+				$form.append($question);
+			})
 			$form.find('input[name="security"]').val(args.security);
 			$form.find('input[name="lp-ajax"]').val(args.action);
+			var extraArgs = _.omit(args, ['security', 'action']);
+			_.forEach(extraArgs, function (v, k) {
+				$form.append('<input type="hidden" name="' + k + '" value="' + v + '" />');
+			});
 			$form.submit();
 		},
 		_confirm              : function (localize, onYes, onNo) {
@@ -679,38 +690,25 @@
 		},
 		_startQuiz            : function (e) {
 			var that = this,
-				$button = $(e.target),
-				security = $button.data('security');
-
-			windowTarget.LP.blockContent();
-			LP.Hook.doAction('learn_press_before_start_quiz', this.currentItem, this);
-
-			var $form = $($button.get(0).form);
-			$form.find('input[name="security"]').val(security);
-			$form.find('input[name="lp-ajax"]').val($button.data('action'));
-			$form.submit();
+				$button = $(e.target);
+			windowTarget.LP.Hook.doAction('learn_press_before_start_quiz', this);
+			this._submit($button.data());
+			return false;
 		},
 		_finishQuiz           : function (e) {
 			var that = this,
-				$button = $(e.target),
-				security = $button.data('security'),
-				do_finish = false;
-			this._confirm('confirm_finish_quiz', function () {
-				that._submit($button.data());
-			});
-
-
-			return false;
-
+				$button = $(e.target);
+			e.preventDefault();
 			if (typeof e.originalEvent === 'undefined') {
-				that._doFinishQuiz(security);
+				windowTarget.LP.Hook.doAction('learn_press_before_finish_quiz', this);
+				that._submit($.extend($button.data(), {auto_finish: 'yes'}));
 			} else {
-				windowTarget.jConfirm(learn_press_single_course_localize.confirm_finish_quiz.message, learn_press_single_course_localize.confirm_finish_quiz.title, function (confirm) {
-					if (confirm) {
-						that._doFinishQuiz(security);
-					}
+				this._confirm('confirm_finish_quiz', function () {
+					windowTarget.LP.Hook.doAction('learn_press_before_finish_quiz', this);
+					that._submit($button.data());
 				});
 			}
+			return false;
 		},
 		_doFinishQuiz         : function (security) {
 			var that = this;
@@ -731,18 +729,12 @@
 		_retakeQuiz           : function (e) {
 			e.preventDefault();
 			var that = this,
-				$button = $(e.target),
-				security = $button.data('security');
-			windowTarget.jConfirm(learn_press_single_course_localize.confirm_retake_quiz.message, learn_press_single_course_localize.confirm_retake_quiz.title, function (confirm) {
-				if (confirm) {
-					windowTarget.LP.blockContent();
-					LP.Hook.doAction('learn_press_before_retake_quiz', that.currentItem, that);
-					var $form = $($button.get(0).form);
-					$form.find('input[name="security"]').val(security);
-					$form.find('input[name="lp-ajax"]').val($button.data('action'));
-					$form.submit();
-				}
+				$button = $(e.target);
+			this._confirm('confirm_retake_quiz', function () {
+				LP.Hook.doAction('learn_press_before_retake_quiz', this);
+				that._submit($button.data());
 			});
+			return false;
 		},
 
 		complete       : function (args) {
@@ -819,7 +811,6 @@
 				quiz_id  : this.model.get('id'),
 				security : null
 			}, args || {});
-			console.log(args)
 			var data = this._validateObject(args), that = this;
 			LP.ajax({
 				url       : this.model.get('url'),

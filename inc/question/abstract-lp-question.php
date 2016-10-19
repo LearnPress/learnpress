@@ -32,6 +32,8 @@ class LP_Abstract_Question {
 	 */
 	public $question_type = null;
 
+	public $content = '';
+
 	/**
 	 * @var bool
 	 */
@@ -87,7 +89,21 @@ class LP_Abstract_Question {
 	}
 
 	public function get_content() {
-		return apply_filters( 'the_content', $this->post->post_content );
+		if ( !did_action( 'learn_press_get_content_' . $this->id ) ) {
+			global $post, $wp_query;
+			$post  = get_post( $this->id );
+			$posts = apply_filters( 'the_posts', array( $post ), $wp_query );
+			if ( $posts ) {
+				$post = $posts[0];
+			}
+			setup_postdata( $post );
+			ob_start();
+			the_content();
+			$this->content = ob_get_clean();
+			wp_reset_postdata();
+			do_action( 'learn_press_get_content_' . $this->id );
+		}
+		return $this->content;
 	}
 
 	/**

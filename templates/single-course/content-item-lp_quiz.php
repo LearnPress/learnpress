@@ -27,7 +27,8 @@ $can_view_item  = $user->can( 'view-item', $quiz->id, $course->id );
 
 		<div id="quiz-<?php echo $quiz->id; ?>" class="learn-press-content-item-summary">
 			<?php if ( $user->has_quiz_status( array( 'completed' ), $quiz->id, $course->id ) ): ?>
-
+				<?php learn_press_get_template( 'content-quiz/description.php' ); ?>
+				<?php learn_press_get_template( 'content-quiz/intro.php' ); ?>
 				<?php learn_press_get_template( 'content-quiz/result.php' ); ?>
 
 			<?php elseif ( $user->has( 'quiz-status', 'started', $quiz->id, $course->id ) ): ?>

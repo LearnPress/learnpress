@@ -410,6 +410,7 @@
         &.item-has-status .item-status {
             display: inline-block;
             background: #d6d6d6;
+            margin-left: 5px;
             &:before {
                 content: '\ea10';
             }
@@ -511,6 +512,9 @@
         margin-right: 2%;
         clear: left;
     }
+    .lp-course-progress-heading{
+        margin-bottom: 10px;
+    }
     .course-progress {
         float: left;
         width: 30%;
@@ -519,12 +523,9 @@
         display: inline-block;
         vertical-align: bottom;
         line-height: 1;
-    }
-    .number {
-        font-size: 40px;
+        font-size: 25px;
     }
     .percentage-sign {
-        font-size: 16px;
         margin-left: 5px;
     }
     &:after {
@@ -691,7 +692,7 @@ body.course-has-popup {
             font-size: smaller;
         }
         .learn-press-course-results-progress {
-            padding: 5px 20px;
+            padding: 15px 20px;
             margin-bottom: 0;
             .items-progress, .course-progress {
                 width: 100%;
@@ -769,12 +770,6 @@ body.course-has-popup {
             #popup-content-inner {
                 margin: 20px 40px;
             }
-            .learn-press-content-item-title {
-                margin-bottom: 20px;
-                font-size: 24px;
-                border-bottom: 2px solid #DDD;
-                padding-bottom: 20px;
-            }
         }
         #popup-footer {
             position: absolute;
@@ -809,59 +804,71 @@ body.course-has-popup {
         margin: 0;
         background: #FFF;
     }
-    .learn-press-content-item-title {
-        /*padding: 20px;
-        background: #F5F5F5;
-        margin: 0;*/
-        &.content-item-quiz-title {
-            h4 {
-                float: left;
+}
+.learn-press-content-item-title {
+    margin-bottom: 20px;
+    border-bottom: 2px solid #DDD;
+    padding-bottom: 20px;
+    &.content-item-quiz-title {
+        h4 {
+            float: left;
+            font-size: 24px;
+            margin-bottom: 0;
+        }
+        .quiz-countdown {
+            float: right;
+            position: relative;
+            min-width: 100px;
+            background: #F5F5F5;
+            text-align: center;
+            font-size: 18px;
+            &:after, &:before {
+                padding: 0 10px;
+                height: 3px;
+                position: absolute;
+                bottom: -3px;
+                background: #000;
+                content: '';
+                left: 0;
             }
-            .quiz-countdown {
-                float: right;
-                position: relative;
-                min-width: 100px;
-                background: #F5F5F5;
-                text-align: center;
-                font-size: 18px;
-                &:after, &:before {
-                    padding: 0 10px;
-                    height: 3px;
-                    position: absolute;
-                    bottom: -3px;
-                    background: #000;
-                    content: '';
-                    left: 0;
-                }
-                &:before {
-                    width: 100%;
-                }
+            &:before {
+                width: 100%;
+            }
+            &:after {
+                background: #00adff;
+                padding: 0;
+            }
+            &.warning-time-over {
                 &:after {
-                    background: #00adff;
-                }
-                &.warning-time-over {
-                    &:after {
-                        background: #FF0000;
-                    }
-                }
-                .countdown {
-
+                    background: #FF0000;
                 }
             }
-            .clearfix();
+            .countdown {
+
+            }
+        }
+        .clearfix();
+    }
+}
+.learn-press-content-item-summary {
+    /*padding: 20px;
+    border-top: 1px solid #DDD;*/
+    margin-bottom: 30px;
+    .quiz-question-title {
+        margin-bottom: 20px;
+    }
+    .learn-press-question-explanation, .learn-press-question-hint{
+        background: #F5F5F5;
+        padding: 15px 20px;
+        font-style: italic;
+        margin-bottom: 20px;
+        .hint-title, .explanation-title{
+            font-style: normal;
         }
     }
-    .learn-press-content-item-summary {
-        /*padding: 20px;
-        border-top: 1px solid #DDD;*/
-        margin-bottom: 30px;
-        .quiz-question-title {
-            margin-bottom: 20px;
-        }
-    }
-    .button-finish-quiz {
-        float: right;
-    }
+}
+.button-finish-quiz {
+    float: right;
 }
 
 .learnpress form.purchase-course {
@@ -930,13 +937,23 @@ body.block-content {
 
 .quiz-intro {
     list-style: none;
+    padding: 0;
 }
 
 .quiz-questions-list {
     margin: 0 0 20px 0;
+    padding: 0;
     list-style-position: inside;
+    li{
+        margin: 0 0 10px 0;
+    }
     .question-title {
         margin: 0 0 5px 0;
+    }
+    .current{
+        .question-title{
+            font-weight: bold;
+        }
     }
 }
 
@@ -1040,6 +1057,9 @@ body.block-content {
                 color: #656D6D;
             }
         }
+    }
+    .quiz-result-time p{
+        margin: 0 0 10px 0;
     }
     .quiz-grade {
         p {
@@ -1339,6 +1359,8 @@ body.block-content {
         padding: 10px 20px;
         background: #18B6C7;
         color: #FFF;
+        font-size: 18px;
+        margin: 0;
     }
 
     #popup_content {
@@ -1348,6 +1370,9 @@ body.block-content {
         }
     }
 
+    #popup_panel{
+        text-align: center;
+    }
 }
 
 .single-lp_course {
@@ -1411,6 +1436,29 @@ body.content-item-only {
     #learn-press-content-item {
         border: none;
         display: block;
+    }
+}
+
+.lp-group-heading-title{
+    &.toggle-off, &.toggle-on{
+        cursor: pointer;
+        .toggle-icon{
+            display: inline-block;
+            font-size: larger;
+            line-height: 1;
+            font-weight: bold;
+            margin-left: 5px;
+            &:before{
+                content: '+';
+            }
+        }
+    }
+    &.toggle-on{
+        .toggle-icon{
+            &:before{
+                content: '-';
+            }
+        }
     }
 }
 
