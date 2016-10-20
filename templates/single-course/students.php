@@ -15,6 +15,6 @@ $course = LP()->global['course'];
 
 ?>
 
-<span class="course-students">
+<p class="course-students">
 	<?php echo $course->get_students_html(); ?>
-</span>
+</p>

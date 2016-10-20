@@ -1854,6 +1854,9 @@ body.block-content #learn-press-block-content {
 #popup_container #popup_panel {
   text-align: center;
 }
+.single-lp_course .course-students {
+  padding-top: 10px;
+}
 .single-lp_course .course-students-list {
   margin-top: 10px;
 }
