@@ -724,7 +724,7 @@ class LP_Assets {
 			self::enqueue_script( 'learn-press-single-course' );
 			self::enqueue_script( 'learn-press-course-quiz' );
 			self::enqueue_script( 'learn-press-course-lesson' );
-			if ( !$user->has_course_status( 'enrolled', 'finished' ) ) {
+			if ( !$user->has_course_status( null, array( 'enrolled', 'finished' ) ) ) {
 				self::enqueue_script( 'learn-press-enroll' );
 			}
 		}

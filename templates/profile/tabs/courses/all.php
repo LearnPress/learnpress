@@ -26,9 +26,10 @@ $heading = apply_filters( 'learn_press_profile_tab_courses_enrolled_heading', fa
 	<ul class="learn-press-courses profile-courses courses-list enrolled">
 
 		<?php foreach ( $courses as $post ) {
-			setup_postdata( $post ); ?>
+			setup_postdata( $post );
+			?>
 
-			<?php learn_press_get_template( 'profile/tabs/courses/loop.php', array( 'subtab' => 'all' ) ); ?>
+			<?php learn_press_get_template( 'profile/tabs/courses/loop.php', array( 'subtab' => 'all', 'user' => $user, 'course_id' => $post->ID ) ); ?>
 
 		<?php } ?>
 	</ul>

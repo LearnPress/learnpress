@@ -504,34 +504,36 @@
 }
 
 /** COURSE PROGRESS **/
-.learn-press-course-results-progress {
-    margin-bottom: 40px;
-    .items-progress {
-        float: left;
-        width: 68%;
-        margin-right: 2%;
-        clear: left;
-    }
-    .lp-course-progress-heading {
-        margin-bottom: 10px;
-    }
-    .course-progress {
-        float: left;
-        width: 30%;
-    }
-    .number, .percentage-sign {
-        display: inline-block;
-        vertical-align: bottom;
-        line-height: 1;
-        font-size: 25px;
-    }
-    .percentage-sign {
-        margin-left: 5px;
-    }
-    &:after {
-        display: block;
-        content: '';
-        clear: both;
+.single-lp_course {
+    .learn-press-course-results-progress {
+        margin-bottom: 40px;
+        .items-progress {
+            float: left;
+            width: 68%;
+            margin-right: 2%;
+            clear: left;
+        }
+        .lp-course-progress-heading {
+            margin-bottom: 10px;
+        }
+        .course-progress {
+            float: left;
+            width: 30%;
+        }
+        .number, .percentage-sign {
+            display: inline-block;
+            vertical-align: bottom;
+            line-height: 1;
+            font-size: 25px;
+        }
+        .percentage-sign {
+            margin-left: 5px;
+        }
+        &:after {
+            display: block;
+            content: '';
+            clear: both;
+        }
     }
 }
 
@@ -1319,8 +1321,17 @@ body.block-content {
             &.current {
                 display: block;
             }
+            li.course {
+                h3 {
+                    padding-bottom: 10px;
+                }
+            }
             .profile-courses {
                 list-style-type: none;
+                .learn-press-course-results-progress {
+                    padding: 0 15px 15px 15px;
+                    margin: 0;
+                }
             }
         }
     }

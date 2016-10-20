@@ -22,8 +22,12 @@ $course_item = $course->get_item( $item->ID );
 		<span class="lp-label lp-label-preview"><?php _e( 'Preview', 'learnpress' ); ?></span>
 	<?php endif; ?>
 	<?php if ( $user->can_view_item( $item->ID, $course->id ) !== false ) { ?>
-		<?php if ( $item->post_type == 'lp_quiz' && $result = $user->get_quiz_results( $item->ID ) ) { ?>
-			<span class="item-loop-meta-text item-result"><?php echo sprintf( '%d%%', round( $result->mark_percent ) ); ?></span>
+		<?php if ( $item->post_type == 'lp_quiz' ) { ?>
+			<span class="item-loop-meta-text item-result">
+				<?php if( $result = $user->get_quiz_results( $item->ID )):?>
+				<?php echo sprintf( '%d%%', round( $result->mark_percent ) ); ?>
+				<?php endif;?>
+			</span>
 		<?php } ?>
 		<?php if ( $item_status == 'completed' ) { ?>
 			<span class="lp-icon item-status" title="<?php esc_attr_e( 'Completed', 'learnpress' ); ?>"></span>

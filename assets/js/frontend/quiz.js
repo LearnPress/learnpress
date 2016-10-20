@@ -434,10 +434,10 @@
 				return undefined;
 			}
 			var $html = question.get('response'),
-				answer = {};
+				answer = {},
+				$form = $('<form />');
 			if ($html) {
-				var $content = $html.find('.quiz-question-content'),
-					$form = $('<form />');
+				var $content = $html.find('.quiz-question-content');
 				$form.html($content.clone());
 				answer = $form.serializeJSON();
 			}
