@@ -266,7 +266,7 @@ class LP_Quiz_Factory {
 		$quiz_id     = learn_press_get_request( 'quiz_id' );
 		$course_id   = learn_press_get_request( 'course_id' );
 		$question_id = learn_press_get_request( 'question_id' );
-		$user        = learn_press_get_user( $user_id );
+		$user        = learn_press_get_current_user( $user_id );
 		$quiz        = LP_Quiz::get_quiz( $quiz_id );
 		LP()->set_object( 'quiz', $quiz, true );
 		if ( !$user->has_checked_answer( $question_id, $quiz_id, $course_id ) ) {
@@ -299,6 +299,7 @@ class LP_Quiz_Factory {
 					learn_press_update_user_item_meta( $history->history_id, 'question_checked', $checked );
 				}
 			}
+		}else{
 		}
 		learn_press_setup_user_course_data( $user_id, $course_id );
 		$question = LP_Question_Factory::get_question( $question_id );

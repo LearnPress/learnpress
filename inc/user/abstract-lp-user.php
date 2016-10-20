@@ -1916,6 +1916,9 @@ class LP_Abstract_User {
 		$quiz_results = LP_Cache::get_quiz_results( false, array() );
 
 		$key = $this->id . '-' . $course_id . '-' . $quiz_id;
+		if(get_class($this)=='LP_User_Guest'){
+			print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 10));
+		}
 		if ( !array_key_exists( $key, $quiz_results ) || $force ) {
 			if ( $history = $this->get_quiz_history( $quiz_id, $course_id, false, $force ) ) {
 				$quiz_results[$key] = reset( $history );

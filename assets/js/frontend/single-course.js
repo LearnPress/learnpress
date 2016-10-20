@@ -379,7 +379,7 @@ if (typeof LearnPress === 'undefined') {
 			that.viewItem(id);
 			this.$('#popup-content-inner').html($content);
 			if (isNew) {
-				$content.attr('src', this.currentItem.get('url') + '?content-item-only=yes')
+				$content.attr('src', LP.addQueryVar('content-item-only', 'yes', this.currentItem.get('url')))
 			}
 			$content.unbind('load').load(function () {
 				that.itemLoading = 0;
@@ -452,7 +452,7 @@ if (typeof LearnPress === 'undefined') {
 			}
 		},
 
-		_retakeCourse      : function (e) {
+		_retakeCourse    : function (e) {
 			e.preventDefault();
 			var that = this;
 			jConfirm(learn_press_single_course_localize.confirm_retake_course.message, learn_press_single_course_localize.confirm_retake_course.title, function (confirm) {
@@ -473,7 +473,7 @@ if (typeof LearnPress === 'undefined') {
 				}
 			});
 		},
-		_finishCourse      : function (e) {
+		_finishCourse    : function (e) {
 			e.preventDefault();
 			var _this = this;
 			jConfirm(learn_press_single_course_localize.confirm_finish_course.message, learn_press_single_course_localize.confirm_finish_course.title, function (confirm) {
@@ -494,14 +494,14 @@ if (typeof LearnPress === 'undefined') {
 				}
 			});
 		},
-		_showPopup         : function (e) {
+		_showPopup       : function (e) {
 			e.preventDefault();
 			var args = {
 				model : new Course.ModelPopup(),
 				course: this
 			};
 		},
-		showPopup          : function () {
+		showPopup        : function () {
 			if (!this.popup) {
 				this.popup = new Course.Popup({
 					model : new Course.ModelPopup(),
@@ -509,7 +509,7 @@ if (typeof LearnPress === 'undefined') {
 				});
 			}
 		},
-		loadQuiz           : function () {
+		loadQuiz         : function () {
 			if (window.$Quiz) {
 				window.$Quiz.destroy();
 			}
@@ -517,20 +517,20 @@ if (typeof LearnPress === 'undefined') {
 				window.$Quiz = new LP_Quiz(window.LP_Quiz_Params);
 			}
 		},
-		removePopup        : function () {
+		removePopup      : function () {
 			this.popup = null;
 			this.model.items.forEach(function (m) {
 				m.set('current', false);
 			});
 		},
-		getCurrentSection  : function () {
+		getCurrentSection: function () {
 			return this.currentItem.$el.closest('.section');
 		},
-		updateItemContent  : function (item) {
+		updateItemContent: function (item) {
 			///this.itemEl.html(item.get('content'));
 			this.$('#popup-content-inner').html(item.get('content'));
 		},
-		updateFooterNav    : function () {
+		updateFooterNav  : function () {
 			var prev = this.model.getPrevItem(),
 				next = this.model.getNextItem();
 			/*this.$('#popup-footer').find('.prev-item, .next-item').remove();
