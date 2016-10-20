@@ -631,11 +631,11 @@ function learn_press_user_update_user_info(){
 		// check new pass
 		$new_pass = filter_input(INPUT_POST, 'pass1');
 		$new_pass2 = filter_input(INPUT_POST, 'pass2');
-		$hash_pass = '';
+	
 		if( $new_pass != $new_pass2 ) {
 			_e('retype new password incorect!','learnpress');
 		} else {
-			$hash_pass = wp_hash_password( $new_pass );
+			wp_set_password( $new_pass, $user_id );
 		}
 
 		$update_data	= array(
@@ -646,10 +646,6 @@ function learn_press_user_update_user_info(){
 			'last_name'	=> filter_input(INPUT_POST, 'last_name', FILTER_SANITIZE_STRING),
 			'description'	=> filter_input(INPUT_POST, 'description', FILTER_SANITIZE_STRING),
 		);
-		
-		if($hash_pass){
-			$update_data['user_pass'] = $hash_pass;
-		}
 
 		$user_id = wp_update_user( $update_data );
 		if( $user_id ){
