@@ -462,3 +462,10 @@ function _learn_press_setup_question( $id ) {
 }
 
 learn_press_setup_pages();
+
+
+add_action( 'init', 'learn_press_remove_course_comment' );
+
+function learn_press_remove_course_comment() {
+	remove_post_type_support( 'lp_course', 'comments' );
+}
