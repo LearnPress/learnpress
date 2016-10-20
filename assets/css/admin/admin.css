@@ -1319,6 +1319,13 @@ input.regular-text[id^="learn-press-emails"] {
 #learn-press-admin-settings select {
   vertical-align: top;
 }
+#learn-press-duplicate-course h3{
+    margin: 0 0 20px 0;
+    padding: 10px;
+    background-color: #fff;
+    font-size: 15px;
+    font-weight: 400;
+}
 @-webkit-keyframes lp-spinner {
   0% {
     -webkit-transform: rotate(0deg);

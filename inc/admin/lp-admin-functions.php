@@ -203,7 +203,6 @@ function learn_press_email_formats_dropdown( $args = array() ) {
 	return $output;
 }
 
-
 /**************************************************/
 /**************************************************/
 /**************************************************/
@@ -214,8 +213,12 @@ function learn_press_email_formats_dropdown( $args = array() ) {
 function learn_press_admin_localize_script() {
 	if ( defined( 'DOING_AJAX' ) || !is_admin() ) return;
 	$translate = array(
-		'quizzes_is_not_available' => __( 'Quiz is not available', 'learnpress' ),
-		'lessons_is_not_available' => __( 'Lesson is not available', 'learnpress' )
+		'quizzes_is_not_available'  => __( 'Quiz is not available', 'learnpress' ),
+		'lessons_is_not_available'  => __( 'Lesson is not available', 'learnpress' ),
+                'duplicate_course'          => array(
+                    'title'     => __( 'Duplicate course', 'learnpress' ),
+                    'message'   => __( 'Duplicate course curriculum?', 'learnpress' )
+                )
 	);
 	LP_Assets::add_localize( $translate );
 }
@@ -935,7 +938,7 @@ function learn_press_add_row_action_link( $actions ) {
 			array(
 				'link'  => $duplicate_link,
 				'title' => __( 'Duplicate this course', 'learnpress' ),
-				'class' => ''
+				'class' => 'lp-duplicate-course'
 			)
 		);
 		$links          = apply_filters( 'learn_press_row_action_links', $duplicate_link );
@@ -988,7 +991,7 @@ function learn_press_process_duplicate_action() {
 	$wp_list_table = _get_list_table( 'WP_Posts_List_Table' );
 	$action        = $wp_list_table->current_action();
 
-	if ( isset( $_REQUEST['action'] ) && ( $action = $_REQUEST['action'] ) == 'lp-duplicate-course' ) {
+	if ( isset( $_REQUEST['action'] ) && $action == 'lp-duplicate-course' ) {
 		$post_id = isset( $_REQUEST['post'] ) ? $_REQUEST['post'] : 0;
 		$nonce   = !empty( $_REQUEST['nonce'] ) ? $_REQUEST['nonce'] : '';
 		if ( !wp_verify_nonce( $nonce, 'lp-duplicate-' . $post_id ) ) {
@@ -1027,7 +1030,7 @@ function learn_press_process_duplicate_action() {
 			'to_ping'        => $post->to_ping,
 			'menu_order'     => $post->menu_order
 		);
-
+var_dump( _learn_press_get_course_curriculum( $post_id ) ); die();
 		// insert new course and get it ID
 		$new_post_id = wp_insert_post( $args );
 

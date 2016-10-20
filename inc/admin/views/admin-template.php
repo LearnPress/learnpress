@@ -29,3 +29,22 @@
 		</footer>
 	</div>
 </script>
+<script type="text/html" id="tmpl-learn-press-duplicate-course">
+	<div id="learn-press-duplicate-course" class="modal-inner lp-modal-search">
+		<header>
+                        <h3><?php _e( 'Duplicate', 'learnpress' ); ?> <strong>{{ data.title }}</strong> <?php _e( 'course', 'learnpress' ); ?></h3>
+		</header>
+		<footer>
+			<input type="hidden" name="course-id" value="{{ data.id }}" />
+			<button class="lp-duplicate-course all-content button learn-press-tooltip" data-text="<?php esc_attr_e( 'Duplicating', 'learnpress' ) ?>" data-content="<?php esc_attr_e( 'Including: sections, lessons, quizzes, questions, question answers', 'learnpress' ); ?>">
+				<?php _e( 'All Content', 'learnpress' ); ?>
+			</button>
+			<button class="lp-duplicate-course button learn-press-tooltip" data-text="<?php esc_attr_e( 'Duplicating', 'learnpress' ) ?>" data-content="<?php esc_attr_e( 'Including: sections, lessons (no content), quizzes(no content)', 'learnpress' ); ?>">
+				<?php _e( 'No Content', 'learnpress' ); ?>
+			</button>
+			<button class="close-modal button" onclick="LP.MessageBox.hide();">
+				<?php _e( 'Close', 'learnpress' ); ?>
+			</button>
+		</footer>
+	</div>
+</script>

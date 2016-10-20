@@ -111,7 +111,7 @@ if (typeof window.LP == 'undefined') {
 			});
 			$el.data('tooltip', true);
 		});
-	}
+	};
 	$.fn.hasEvent = function (name) {
 		var events = $(this).data('events');
 		if (typeof events.LP == 'undefined') {
@@ -123,7 +123,7 @@ if (typeof window.LP == 'undefined') {
 			}
 		}
 		return false;
-	}
+	};
 	$.fn.dataToJSON = function () {
 		var json = {};
 		$.each(this[0].attributes, function () {
@@ -133,14 +133,14 @@ if (typeof window.LP == 'undefined') {
 			}
 		});
 		return json;
-	}
+	};
 
 	String.prototype.getQueryVar = function (name) {
 		name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
 		var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
 			results = regex.exec(this);
 		return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-	}
+	};
 	String.prototype.addQueryVar = function (name, value) {
 		var url = this;
 		if (name.match(/\[/)) {
@@ -155,14 +155,14 @@ if (typeof window.LP == 'undefined') {
 			}
 		}
 		return url;
-	}
+	};
 	String.prototype.removeQueryVar = function (name) {
 		var url = this;
 		name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
 		var regex = new RegExp("[\\?&]" + name + "([\[][^=]*)?=([^&#]*)", 'g');
 		url = url.replace(regex, '');
 		return url;
-	}
+	};
 
 	if ($.isEmptyObject("") == false) {
 		$.isEmptyObject = function (a) {
@@ -172,7 +172,7 @@ if (typeof window.LP == 'undefined') {
 				}
 			}
 			return true;
-		}
+		};
 	}
 
 	LP.MessageBox = {
@@ -301,7 +301,7 @@ if (typeof window.LP == 'undefined') {
 					setTimeout(function () {
 						LP.MessageBox.hide();
 						$.isFunction(args.onHide) && args.onHide.call(LP.MessageBox, args);
-					}, args.autohide)
+					}, args.autohide);
 				}
 			}, this)();
 		},
@@ -328,7 +328,7 @@ if (typeof window.LP == 'undefined') {
 					.unbind('scroll.message-box', this.update);
 			} else {
 				if (this.instance) {
-					this._createWindow(this.instance.message, this.instance.title, this.instance.buttons)
+					this._createWindow(this.instance.message, this.instance.title, this.instance.buttons);
 				}
 			}
 
@@ -371,10 +371,10 @@ if (typeof window.LP == 'undefined') {
 					var len = this.instances.length;
 					if (len) {
 						this.instance = this.instances[len - 1];
-						this.$window.attr('instance', this.instance.id)
+						this.$window.attr('instance', this.instance.id);
 					} else {
 						this.instance = false;
-						this.$window.removeAttr('instance')
+						this.$window.removeAttr('instance');
 					}
 					break;
 				}
@@ -429,7 +429,7 @@ if (typeof window.LP == 'undefined') {
 			}).data('instance', this.instance);
 			return $button;
 		}
-	}
+	};
 	LP.Hook = {
 		hooks       : {action: {}, filter: {}},
 		addAction   : function (action, callable, priority, tag) {
@@ -475,7 +475,7 @@ if (typeof window.LP == 'undefined') {
 				var hooks = this.hooks[hookType][action], hook;
 				//sort by priority
 				hooks.sort(function (a, b) {
-					return a["priority"] - b["priority"]
+					return a["priority"] - b["priority"];
 				});
 				for (var i = 0; i < hooks.length; i++) {
 					hook = hooks[i].callable;
@@ -550,9 +550,9 @@ if (typeof window.LP == 'undefined') {
 		parseResponse: function (response, type) {
 			var m = response.match(/<!-- LP_AJAX_START -->(.*)<!-- LP_AJAX_END -->/);
 			if (m) {
-				response = m[1]
+				response = m[1];
 			}
-			return (type || "json") == "json" ? this.parseJSON(response) : response
+			return (type || "json") == "json" ? this.parseJSON(response) : response;
 		},
 		parseJSON    : function (data) {
 			var m = data.match(/<!-- LP_AJAX_START -->(.*)<!-- LP_AJAX_END -->/);
@@ -829,7 +829,7 @@ if (typeof window.LP == 'undefined') {
 		var lh = $(this).css('line-height').replace("px", "");
 		$(this).attr({height: h, 'line-height': lh});
 		return Math.floor(h / parseInt(lh));
-	}
+	};
 
 	$.fn.checkLines = function (p) {
 		return this.each(function () {
@@ -895,8 +895,8 @@ if (typeof window.LP == 'undefined') {
 				transform: 'rotate(' + t + 'deg)'
 			});
 
-		})
-	}
+		});
+	};
 
 	function __initSubtabs() {
 		$('.learn-press-subtabs').each(function () {
@@ -915,9 +915,9 @@ if (typeof window.LP == 'undefined') {
 				return $(this).attr('href') == window.location.hash;
 			}).trigger('click');
 			if (!current) {
-				$tabs.first().trigger('click')
+				$tabs.first().trigger('click');
 			}
-		})
+		});
 	}
 
 	$(document).ready(function () {

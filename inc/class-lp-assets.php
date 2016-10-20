@@ -666,6 +666,7 @@ class LP_Assets {
 	public function load_scripts() {
 		$user = learn_press_get_course_user();
 		if ( is_admin() ) {
+                        global $pagenow;
 			$screen    = get_current_screen();
 			$screen_id = $screen->id;
 			$page_id   = !empty( $_REQUEST['page'] ) ? $_REQUEST['page'] : '';
@@ -706,6 +707,9 @@ class LP_Assets {
 				LP_Assets::enqueue_style( 'learn-press-admin' );
 				LP_Assets::enqueue_script( 'learn-press-admin-settings', LP()->plugin_url( 'assets/js/admin/settings.js' ) );
 			}
+                        if ( $screen_id === 'edit-lp_course' && $pagenow === 'edit.php' ) {
+                                LP_Assets::enqueue_script( 'learn-press-duplicate-course', LP()->plugin_url( 'assets/js/admin/duplicate-course.js' ) );
+                        }
 			return;
 		}
 
