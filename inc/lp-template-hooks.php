@@ -149,3 +149,24 @@ add_action( 'learn_press_single_quiz_summary', 'learn_press_single_quiz_sidebar'
 add_action( 'learn_press_single_quiz_sidebar', 'learn_press_single_quiz_information', 5 );
 add_action( 'learn_press_single_quiz_sidebar', 'learn_press_single_quiz_timer', 10 );
 add_action( 'learn_press_single_quiz_sidebar', 'learn_press_single_quiz_buttons', 15 );*/
+
+/**
+ * Redirect profile page if 'view' = 'courses'
+ * and 'courses' not exists in URL
+ */
+add_action( 'template_redirect', 'learn_press_redirect_profile', 10 );
+if ( !function_exists( 'learn_press_redirect_profile' ) ) {
+    function learn_press_redirect_profile( $template ) {
+        global $wp_query, $wp;
+        if ( ! empty( $wp_query->query['page_id'] ) && learn_press_get_page_id( 'profile' ) == $wp_query->query['page_id'] ) {
+            parse_str( $wp->matched_query, $query );
+            if ( empty( $query['view'] ) && ! empty( $wp->query_vars['view'] ) ) {
+                $user = learn_press_get_current_user();
+                $url = learn_press_user_profile_link( $user->id, $wp->query_vars['view'] );
+                wp_redirect( $url ); exit();
+            }
+        }
+
+        return $template;
+    }
+}

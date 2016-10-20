@@ -4,7 +4,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 1.0
+ * @version 2.0
  */
 
 if ( !defined( 'ABSPATH' ) ) {
@@ -29,9 +29,6 @@ $sublink = learn_press_user_profile_link( $user->id, $current );
 		<?php } ?>
 	</ul>
 <?php foreach ( $subtabs as $subid => $subtitle ) { ?>
-	<?php if ( $subid !== $subtab ) {
-		continue;
-	} ?>
 	<div id="learn-press-subtab-<?php echo esc_attr( $subid ); ?>" class="learn-press-subtab-content<?php echo ( $subid == $subtab || ( !$subtab && $subid == $firstid ) ) ? ' current' : ''; ?>">
 		<?php do_action( 'learn_press_profile_tab_courses_' . $subid, $user, $subid ); ?>
 	</div>

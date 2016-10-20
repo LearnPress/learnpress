@@ -4,16 +4,13 @@
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 1.0
+ * @version 2.0
  */
 
 if ( !defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( !user_can( $user->ID, 'edit_lp_courses' ) ) {
-	return;
-}
 global $post, $wp;
 $heading = apply_filters( 'learn_press_profile_tab_courses_own_heading', false );
 $paged   = !empty( $_REQUEST['section'] ) && $_REQUEST['section'] == $subtab ? get_query_var( 'paged' ) : 1;
