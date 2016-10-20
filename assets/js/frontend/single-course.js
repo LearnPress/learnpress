@@ -644,6 +644,7 @@ if (typeof LearnPress === 'undefined') {
 			$curriculum.appendTo(this.$('#popup-sidebar'));
 
 			$('body').css({overflow: 'hidden'});
+			$(".sidebar-show-btn").hide();
 		},
 		_closePopup         : function (e) {
 			e.preventDefault();
