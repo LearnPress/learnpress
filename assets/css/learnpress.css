@@ -1937,6 +1937,9 @@ body.content-item-only #learn-press-content-item {
   font-size: 34px;
   margin-top: 10px;
 }
+.sidebar-hide-btn {
+  margin-left: 20px;
+}
 .sidebar-show-btn {
   cursor: pointer;
   margin-right: 30px;
