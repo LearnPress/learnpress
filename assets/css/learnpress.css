@@ -1928,6 +1928,19 @@ body.content-item-only #learn-press-content-item {
 .lp-group-heading-title.toggle-on .toggle-icon:before {
   content: '-';
 }
+.sidebar-hide-btn,
+.sidebar-show-btn {
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  display: inline-block;
+  font-size: 34px;
+  margin-top: 10px;
+}
+.sidebar-show-btn {
+  cursor: pointer;
+  margin-right: 30px;
+}
 @-moz-keyframes spin-12 {
   0% {
     -moz-transform: rotate(0deg) translate(0px);
