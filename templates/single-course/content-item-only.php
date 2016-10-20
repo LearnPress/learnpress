@@ -36,6 +36,7 @@ $data = array_merge( $user->get_course_info2( get_the_ID() ), $data );
 	</div>
 <?php ob_start(); ?>
 	<script>
+
 		// Ready again!
 		$(document).ready(function () {
 			var windowTarget = (parent.window || window),
@@ -48,7 +49,15 @@ $data = array_merge( $user->get_course_info2( get_the_ID() ), $data );
 				})
 			}, 3000);
 			LP.sendMessage(data, windowTarget);
+			$('a').click(function () {
+				var link = $(this).attr('href');
+				if (link) {
+					windowTarget.open(link, "_blank");
+					return false;
+				}
+			})
 		});
+
 	</script>
 <?php LP_Assets::add_script_tag( preg_replace( '!</?script>!', '', ob_get_clean() ), '__all' ); ?>
 <?php

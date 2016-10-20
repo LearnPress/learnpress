@@ -262,7 +262,11 @@ if ( !class_exists( 'LearnPress' ) ) {
 			if ( !empty( $_REQUEST['view-log'] ) ) {
 				$log = $_REQUEST['view-log'];
 				echo '<pre>';
-				@readfile( learn_press_get_log_file_path( $log ) );
+				if ( is_multisite() ) {
+					$log = "{$log}-" . get_current_blog_id();
+				}
+				echo $log = learn_press_get_log_file_path( $log );
+				@readfile( $log );
 				echo '<pre>';
 				die();
 			}

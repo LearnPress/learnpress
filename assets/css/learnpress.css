@@ -1044,7 +1044,7 @@ body.block-content #learn-press-block-content {
 .quiz-result .quiz-result-summary .quiz-result-field.empty {
   color: #656D6D;
 }
-.quiz-result .quiz-result-time p {
+.quiz-result p.quiz-result-time {
   margin: 0 0 10px 0;
 }
 .quiz-result .quiz-grade p {

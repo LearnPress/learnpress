@@ -242,9 +242,11 @@
 				$el = $('label[for="_lp_passing_grade"]');
 			switch (t) {
 				case 'percentage':
+					$el.closest('.rwmb-field').show();
 					t = '%';
 					break;
 				case 'point':
+					$el.closest('.rwmb-field').show();
 					break;
 				case 'no':
 				case '':
