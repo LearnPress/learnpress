@@ -8,7 +8,7 @@ $user   = learn_press_get_current_user();
 		</div>
 		<div id="popup-main">
 			<div id="popup-header">
-				<div class="popup-menu"><span class="sidebar-hide-btn dashicons dashicons-no"></span></div>
+				<div class="popup-menu"><span class="sidebar-hide-btn dashicons dashicons-arrow-left-alt2"></span></div>
 				<h3 class="popup-title">
 					<span class="sidebar-show-btn dashicons dashicons-menu"></span><?php echo $course->get_title(); ?>
 				</h3>
