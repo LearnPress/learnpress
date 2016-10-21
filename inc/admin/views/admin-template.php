@@ -38,7 +38,7 @@
 			<button class="lp-duplicate-course all-content button learn-press-tooltip" data-id="{{ data.id }}" data-nonce="<?php echo esc_attr( wp_create_nonce( 'lp-duplicate-course' ) ) ?>" data-text="<?php esc_attr_e( 'Duplicating ...', 'learnpress' ) ?>" data-content="<?php esc_attr_e( 'Duplicate course\'s curriculum', 'learnpress' ); ?>">
 				<?php _e( 'All Content', 'learnpress' ); ?>
 			</button>
-			<button class="lp-duplicate-course button learn-press-tooltip" data-id="{{ data.id }}" data-nonce="<?php echo esc_attr( wp_create_nonce( 'lp-duplicate-course' ) ) ?>" data-text="<?php esc_attr_e( 'Duplicating ...', 'learnpress' ) ?>" data-content="<?php esc_attr_e( 'Duplicate course no curriculum)', 'learnpress' ); ?>">
+			<button class="lp-duplicate-course button learn-press-tooltip" data-id="{{ data.id }}" data-nonce="<?php echo esc_attr( wp_create_nonce( 'lp-duplicate-course' ) ) ?>" data-text="<?php esc_attr_e( 'Duplicating ...', 'learnpress' ) ?>" data-content="<?php esc_attr_e( 'Duplicate course no curriculum', 'learnpress' ); ?>">
 				<?php _e( 'No Content', 'learnpress' ); ?>
 			</button>
 			<button class="close-modal button" onclick="LP.MessageBox.hide();">
