@@ -698,7 +698,7 @@ body.course-has-popup {
             margin-bottom: 0;
             .items-progress, .course-progress {
                 width: 100%;
-                margin-right: 0;
+                margin: 0 !important;
             }
         }
     }
@@ -1413,7 +1413,7 @@ body.block-content {
     }
     .lp_course {
         .entry-content {
-            width: 100%;
+            //width: 100%;
         }
         .entry-footer {
             display: none;
@@ -1604,6 +1604,18 @@ body.content-item-only {
     0% {
         -webkit-transform: rotate(360deg) translate(0px);
         transform: rotate(360deg) translate(0px);
+    }
+}
+
+@media screen and (max-width: 1250px) {
+    .single-lp_course .learn-press-course-results-progress {
+        .items-progress, .course-progress {
+            float: none;
+            width: 100%;
+        }
+        .items-progress {
+            margin-bottom: 50px;
+        }
     }
 }
 
