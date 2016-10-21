@@ -1081,6 +1081,7 @@ body.block-content {
         }
     }
 }
+
 .element-data-percent-loop (@i) when (@i <= 100) {
     .single-quiz .quiz-result-field[data-value="@{i}"]:before,
     .single-quiz .quiz-result-field[data-value="@{i}"] span,
@@ -1498,6 +1499,54 @@ body.content-item-only {
 .sidebar-show-btn {
     cursor: pointer;
     margin-right: 30px;
+}
+
+.user-profile-edit-form {
+    .info-field {
+        margin-bottom: 20px;
+    }
+
+    .description {
+        margin-top: 5px;
+    }
+
+    .user-profile-picture {
+        clear: both;
+        .picture, .change-picture {
+            display: inline-block;
+        }
+        .change-picture {
+            .description {
+                margin: 0 0 10px 0;
+            }
+        }
+        img {
+            float: left;
+            margin-right: 20px;
+        }
+    }
+
+    .profile-field-name {
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .change-password {
+        margin-bottom: 10px;
+    }
+
+    #user_profile_password_form {
+        input {
+            margin-bottom: 20px;
+        }
+        .description {
+            margin-top: -15px;
+        }
+    }
+
+    .update-profile {
+        margin-top: 20px;
+    }
 }
 
 @-moz-keyframes spin-12 {

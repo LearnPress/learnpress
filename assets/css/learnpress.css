@@ -572,8 +572,6 @@ body.course-has-popup {
   height: 60px;
   width: 350px;
   border-right: 1px solid #ab4a10;
-  text-align: right;
-  color: white;
 }
 #course-curriculum-popup #popup-main #popup-header .popup-close {
   width: 59px;
@@ -1948,6 +1946,42 @@ body.content-item-only #learn-press-content-item {
 .sidebar-show-btn {
   cursor: pointer;
   margin-right: 30px;
+}
+.user-profile-edit-form .info-field {
+  margin-bottom: 20px;
+}
+.user-profile-edit-form .description {
+  margin-top: 5px;
+}
+.user-profile-edit-form .user-profile-picture {
+  clear: both;
+}
+.user-profile-edit-form .user-profile-picture .picture,
+.user-profile-edit-form .user-profile-picture .change-picture {
+  display: inline-block;
+}
+.user-profile-edit-form .user-profile-picture .change-picture .description {
+  margin: 0 0 10px 0;
+}
+.user-profile-edit-form .user-profile-picture img {
+  float: left;
+  margin-right: 20px;
+}
+.user-profile-edit-form .profile-field-name {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+.user-profile-edit-form .change-password {
+  margin-bottom: 10px;
+}
+.user-profile-edit-form #user_profile_password_form input {
+  margin-bottom: 20px;
+}
+.user-profile-edit-form #user_profile_password_form .description {
+  margin-top: -15px;
+}
+.user-profile-edit-form .update-profile {
+  margin-top: 20px;
 }
 @-moz-keyframes spin-12 {
   0% {
