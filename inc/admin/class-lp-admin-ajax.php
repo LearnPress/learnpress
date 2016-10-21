@@ -47,7 +47,9 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 				'update_add_on_status'            => false,
 				'plugin_install'                  => false,
 				'bundle_activate_add_ons'         => false,
-				'install_sample_data'             => false
+				'install_sample_data'             => false,
+                                // Duplicate Course
+                                'duplicate_course'                => false,
 			);
 			foreach ( $ajaxEvents as $ajaxEvent => $nopriv ) {
 				add_action( 'wp_ajax_learnpress_' . $ajaxEvent, array( __CLASS__, $ajaxEvent ) );
@@ -961,6 +963,119 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			update_option( '_lpr_ignore_setting_up', 1, true );
 			die;
 		}
+
+                public static function duplicate_course() {
+                    if ( empty( $_POST['course_id'] ) || empty( $_POST['_nonce'] ) || !wp_verify_nonce( $_POST['_nonce'], 'lp-duplicate-course' ) ) {
+                        return;
+                    }
+                    $course_id = absint( $_POST['course_id'] );
+                    $duplicate_content = ! empty( $_POST['content'] ) && $_POST['content'] ? true : false;
+                    if ( !function_exists( '_learn_press_get_course_curriculum' ) ) {
+                        require_once LP_PLUGIN_PATH . 'inc/lp-init.php';
+                    }
+                    $results = array(
+                        'redirect'  => admin_url( 'edit.php?post_type=' . LP_COURSE_CPT )
+                    );
+
+                    if ( $course_id && is_array( $course_id ) ) {
+                        $course_id = array_shift( $course_id );
+                    }
+                    // check for post is exists
+                    if ( ! $course_id || ! ( $post = get_post( $course_id ) ) ) {
+                        LP_Admin_Notice::add_redirect( __( '<p>Op! The course does not exists</p>', 'learnpress' ), 'error' );
+                    } else {
+                        // ensure that user can create course
+                        if ( !current_user_can( 'edit_posts' ) ) {
+                            LP_Admin_Notice::add_redirect( __( '<p>Sorry! You have not permission to duplicate this course</p>', 'learnpress' ), 'error' );
+                        } else {
+                            // duplicate course
+                            $new_course_id = learn_press_duplicate_post( $course_id );
+                            if ( ! $new_course_id || is_wp_error( $new_course_id ) ) {
+                                LP_Admin_Notice::add_redirect( __( '<p>Sorry! Duplicate the course failed!</p>', 'learnpress' ), 'error' );
+                            } else {
+                                $curriculums = _learn_press_get_course_curriculum( $course_id );
+                                foreach ( $curriculums as $section_id => $section ) {
+                                    $new_section_id = learn_press_course_insert_section( array(
+                                        'section_name'          => $section->section_name,
+                                        'section_course_id'     => $new_course_id,
+                                        'section_order'         => $section->section_order,
+                                        'section_description'   => $section->section_description
+                                    ) );
+
+                                    if ( $section->items ) {
+                                        foreach ( $section->items as $item ) {
+                                            // duplicate item
+                                            $item_id = learn_press_duplicate_post( $item->ID, array( 'post_status' => 'publish' ), $meta = true );
+                                            if ( $duplicate_content ) {
+                                                $section_item_id = learn_press_course_insert_section_item( array(
+                                                    'section_id'    => $new_section_id,
+                                                    'item_id'       => $item_id,
+                                                    'item_order'    => $item->item_order,
+                                                    'item_type'     => $item->item_type
+                                                ) );
+                                                if ( $item->post_type === LP_QUIZ_CPT ) {
+                                                    $questions = _learn_press_get_quiz_questions( $item->ID );
+                                                    if ( $questions ) {
+                                                        foreach ( $questions as $question_id ) {
+                                                            $new_question_id = learn_press_duplicate_post( $question_id );
+                                                            
+                                                            // learnpress_quiz_questions
+                                                            $sql = $wpdb->prepare( "
+                                                                        SELECT * $wpdb->learnpress_quiz_questions WHERE quiz_id = %d AND question_id = %d
+                                                                    ", $item->ID, $question_id );
+                                                            $quiz_question_data = $wpdb->get_row( $sql );
+                                                            if ( $quiz_question_data ) {
+                                                                $wpdb->insert(
+                                                                        $wpdb->learnpress_quiz_questions,
+                                                                        array(
+                                                                            'quiz_id'           => $item_id,
+                                                                            'question_id'       => $new_question_id,
+                                                                            'question_order'    => $quiz_question_data->question_order,
+                                                                            'params'            => $quiz_question_data->params
+                                                                        ),
+                                                                        array(
+                                                                            '%d',
+                                                                            '%d',
+                                                                            '%d',
+                                                                            '%s'
+                                                                        )
+                                                                    );
+                                                            }
+                                                            // learnpress_question_answers
+                                                            $sql = $wpdb->prepare( "
+                                                                        SELECT * $wpdb->learnpress_question_answers WHERE question_id = %d
+                                                                    ", $question_id );
+                                                            $question_answers = $wpdb->get_row( $sql );
+                                                            if ( $question_answers ) {
+                                                                $wpdb->insert(
+                                                                        $wpdb->learnpress_question_answers,
+                                                                        array(
+                                                                            'question_id'    => $new_question_id,
+                                                                            'answer_data'    => $question_answers->answer_data,
+                                                                            'answer_order'   => $question_answers->answer_order
+                                                                        ),
+                                                                        array(
+                                                                            '%d',
+                                                                            '%d',
+                                                                            '%s'
+                                                                        )
+                                                                    );
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                $results['redirect'] = admin_url( 'post.php?post=' . $new_course_id . '&action=edit' );
+                            }
+                        }
+                    }
+
+                    learn_press_send_json( $results ); die();
+                }
 	}
 }
 LP_Admin_Ajax::init();

@@ -24,7 +24,6 @@ function learn_press_get_quiz_questions( $quiz_id = null, $only_ids = true ) {
 	return ( $quiz = LP_Quiz::get_quiz( $quiz_id ) ) ? $quiz->get_questions() : false;
 }
 
-
 function learn_press_question_class( $question = null, $args = array() /*, $classes = null, $user_id = null, $context = null*/ ) {
 	$course  = LP()->global['course'];
 	$args    = wp_parse_args(

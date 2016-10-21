@@ -866,7 +866,7 @@ jQuery(document).ready( function($) {
 
 (function($){
 
-    $( document ).on( 'click', '.lp-duplicate-course', function( e ){
+    $( document ).on( 'click', '.wp-list-table .lp-duplicate-course', function( e ){
         e.preventDefault();
         var _this = $( this ),
             _tr = _this.closest( 'tr' ),
