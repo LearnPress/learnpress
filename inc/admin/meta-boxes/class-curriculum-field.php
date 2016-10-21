@@ -41,7 +41,6 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
 			);
 		}
 
-
 		/**
 		 * Get field HTML
 		 *

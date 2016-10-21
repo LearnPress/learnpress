@@ -838,7 +838,7 @@ jQuery(document).ready( function($) {
                                             }
                                     );
                 }
-		
+
 		if( jQuery('.rwmb-datetime[name$="lp_sale_start"]').first().length ){
 			jQuery('.rwmb-datetime[name$="lp_sale_start"]')
 				.first()
@@ -862,4 +862,23 @@ jQuery(document).ready( function($) {
 	});
 	
 	
+})(jQuery);
+
+(function($){
+
+    $( document ).on( 'click', '.lp-duplicate-course', function( e ){
+        e.preventDefault();
+        var _this = $( this ),
+            _tr = _this.closest( 'tr' ),
+            _id = _tr.find('.check-column input[type="checkbox"]').val(),
+            _title = _tr.find( '.title strong' ).text();
+
+            _this.LP_Course_Duplicator( {
+                _target: _this,
+                course_id: _id,
+                course_title: _title
+            } );
+        return false;
+    } );
+
 })(jQuery);

@@ -572,6 +572,8 @@ body.course-has-popup {
   height: 60px;
   width: 350px;
   border-right: 1px solid #ab4a10;
+  text-align: right;
+  color: white;
 }
 #course-curriculum-popup #popup-main #popup-header .popup-close {
   width: 59px;

@@ -25,7 +25,7 @@
 						var m = d.match(/(lp-.*)\s?/);
 						return m ? m[0] : '';
 					}).addClass($option.val()).fadeIn('fast');
-			})
+			});
 		},
 		userSuggest       : function () {
 			var id = ( typeof current_site_id !== 'undefined' ) ? '&site_id=' + current_site_id : '';
@@ -51,7 +51,7 @@
 						$(this).removeClass('open');
 					},
 					select   : function (a, b) {
-						LP.log(a, b)
+						LP.log(a, b);
 					}
 				});
 			});
@@ -60,7 +60,7 @@
 			this.$('#learn-press-courses-result').css('height', height - 120).css('overflow', 'auto');
 		},
 		updateModal       : function ($app) {
-			this.$('#learn-press-courses-result').css('height', '').css('overflow', '')
+			this.$('#learn-press-courses-result').css('height', '').css('overflow', '');
 		},
 		_addItem          : function (e) {
 			var $form = $('#learn-press-modal-add-order-courses');
@@ -88,7 +88,7 @@
 				success : function (response) {
 					LP.log(response);
 					response = LP.parseJSON(response);
-					if (response.result == 'success') {
+					if (response.result === 'success') {
 						var $order_table = that.$('.order-items'),
 							$no_item = $order_table.find('.no-order-items');
 						$(response.item_html).insertBefore($no_item);
@@ -99,7 +99,7 @@
 						$no_item.addClass('hide-if-js');
 					}
 				}
-			})
+			});
 
 			return false;
 		},
@@ -123,11 +123,11 @@
 				dataType: 'text',
 				success : function (response) {
 					response = LP.parseJSON(response);
-					if (response.result == 'success') {
+					if (response.result === 'success') {
 						var $order_table = that.$('.order-items'),
 							$no_item = $order_table.find('.no-order-items'),
 							$other_items = $item.siblings().filter(function () {
-								return !$(this).is($no_item)
+								return !$(this).is($no_item);
 							});
 						$order_table.find('.order-subtotal').html(response.order_data.subtotal_html);
 						$order_table.find('.order-total').html(response.order_data.total_html);
@@ -138,7 +138,7 @@
 			});
 		},
 		calculateTotal    : function (e) {
-			LP.log(e)
+			LP.log(e);
 		},
 		fetchResults      : function (results) {
 			var $list = this.$('#learn-press-courses-result'),
