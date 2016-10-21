@@ -1313,7 +1313,7 @@ function learn_press_process_become_a_teacher_form( $args = null ) {
 function learn_press_become_teacher_sent( $user_id = 0 ) {
 	$sent = learn_press_user_maybe_is_a_teacher( $user_id );
 	if ( !$sent ) {
-		$sent = get_transient( 'learn_press_become_teacher_sent_' . $user->id ) == 'yes';
+		$sent = get_transient( 'learn_press_become_teacher_sent_' . $user_id ) == 'yes';
 	}
 	return $sent;
 }
