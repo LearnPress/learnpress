@@ -6,6 +6,26 @@
 if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
+add_action( 'init', '_learn_press_upgrade_table' );
+/**
+ * Add column parent_id into user_tables if it does not exists
+ *
+ * TODO: remove in next version
+ */
+function _learn_press_upgrade_table() {
+	if ( get_option( 'learn_press_upgrade_table_20' ) != 'yes' ) {
+		global $wpdb;
+		$query = "SHOW COLUMNS FROM {$wpdb->prefix}learnpress_user_items LIKE 'parent_id'";
+		if ( $row = $wpdb->get_var( $query ) ) {
+			return;
+		}
+		$query = "ALTER TABLE {$wpdb->prefix}learnpress_user_items ADD COLUMN `parent_id` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 AFTER `ref_type`;";
+		if ( $wpdb->query( $query ) ) {
+			update_option( 'learn_press_upgrade_table_20', 'yes' );
+		}
+	}
+}
+
 add_action( 'learn_press_parse_query', '_learn_press_setup_user_course_data' );
 function _learn_press_setup_user_course_data( $query ) {
 	learn_press_setup_user_course_data( get_current_user_id(), $query->query_vars['course_id'] );
