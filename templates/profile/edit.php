@@ -69,7 +69,7 @@ if ( $user ) :
 			<div class="user-user-login-wrap info-field">
 				<p class="profile-field-name"><?php esc_html_e( 'Username', 'learnpress' ) ?></p>
 				<input type="text" name="user_login" id="user_login" value="<?php esc_attr_e( $user->user->data->user_login ); ?>" disabled="disabled" class="regular-text">
-				<span class="description"><?php esc_html_e( 'Usernames cannot be changed.', 'learnpress' ) ?></span>
+				<p class="description"><?php esc_html_e( 'Username cannot be changed.', 'learnpress' ) ?></p>
 			</div>
 
 			<div class="user-first-name-wrap info-field">
