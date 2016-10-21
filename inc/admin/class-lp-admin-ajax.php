@@ -1068,13 +1068,13 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
                                         }
                                     }
                                 }
-
+                                LP_Admin_Notice::add_redirect( sprintf( '<strong>%s</strong> %s', get_the_title( $course_id ), __( ' course has duplicated', 'learnpress' ) ), 'updated' );
                                 $results['redirect'] = admin_url( 'post.php?post=' . $new_course_id . '&action=edit' );
                             }
                         }
                     }
 
-                    learn_press_send_json( $results ); die();
+                    wp_send_json( $results ); die();
                 }
 	}
 }

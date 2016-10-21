@@ -60,16 +60,14 @@
                 url: ajaxurl,
                 type: 'POST',
                 data: data,
+                dataType: 'json',
                 beforeSend: function() {
                     _this.text( processing );
                     _this.attr( 'data-text', processing );
-                },
-                success: function( res ){
-                    res = LP.parseJSON( res );
-                    console.debug( res );
-                    if ( typeof res.redirect !== 'undefined' ) {
-                        window.location.href = res.redirect;
-                    }
+                }
+            }).done(function( res ){
+                if ( typeof res.redirect !== 'undefined' ) {
+                    window.location.href = res.redirect;
                 }
             });
             return false;
