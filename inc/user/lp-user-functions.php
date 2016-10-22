@@ -583,31 +583,36 @@ function learn_press_user_has_quiz_status( $status, $quiz_id = 0, $user_id = 0, 
 add_action( 'init', 'learn_press_user_update_user_info' );
 
 function learn_press_user_update_user_info() {
+	global $wp;
 	if ( !empty( $_POST ) && isset( $_POST['from'] ) && isset( $_POST['action'] ) && $_POST['from'] == 'profile' && $_POST['action'] == 'update' ) {
+		
 		$user      = learn_press_get_current_user();
 		$user_id   = learn_press_get_current_user_id();
 		$user_info = get_userdata( $user->id );
 		// upload profile picture
 		$profile_picture_type = filter_input( INPUT_POST, 'profile_picture_type', FILTER_SANITIZE_STRING );
 		update_user_meta( $user->id, '_lp_profile_picture_type', $profile_picture_type );
+		
 		if ( $profile_picture_type == 'picture' ) {
-			if ( !function_exists( 'wp_generate_attachment_metadata' ) ) {
-				require_once( ABSPATH . "wp-admin" . '/includes/image.php' );
-				require_once( ABSPATH . "wp-admin" . '/includes/file.php' );
-				require_once( ABSPATH . "wp-admin" . '/includes/media.php' );
-			}
-			$attach_id = 0;
-			if ( $_FILES ) {
+			if ( isset($_FILES['profile_picture']['size']) && $_FILES['profile_picture']['size'] ) {
+				if ( !function_exists( 'wp_generate_attachment_metadata' ) ) {
+					require_once( ABSPATH . "wp-admin" . '/includes/image.php' );
+					require_once( ABSPATH . "wp-admin" . '/includes/file.php' );
+					require_once( ABSPATH . "wp-admin" . '/includes/media.php' );
+				}
+				$attach_id = 0;
+			
 				foreach ( $_FILES as $file => $array ) {
 					if ( $_FILES[$file]['error'] !== UPLOAD_ERR_OK ) {
 						return "upload error : " . $_FILES[$file]['error'];
 					}
 					$attach_id = media_handle_upload( $file, 0 );
 				}
+				if ( $attach_id > 0 ) {
+					update_user_meta( $user->id, '_lp_profile_picture', $attach_id );
+				}
 			}
-			if ( $attach_id > 0 ) {
-				update_user_meta( $user->id, '_lp_profile_picture', $attach_id );
-			}
+			
 		}
 
 		// check old pass
@@ -637,6 +642,7 @@ function learn_press_user_update_user_info() {
 				wp_set_password( $new_pass, $user_id );
 			}
 		}
+
 		$update_data = array(
 			'ID'			=> $user_id,
 			'user_url'		=> filter_input( INPUT_POST, 'url', FILTER_SANITIZE_URL ),
@@ -648,11 +654,14 @@ function learn_press_user_update_user_info() {
 			'description'	=> filter_input( INPUT_POST, 'description', FILTER_SANITIZE_STRING ),
 		);
 
-		$user_id = wp_update_user( $update_data );
-		if ( $user_id ) {
+		$res = wp_update_user( $update_data );
+		if ( $res ) {
 			_e( 'Your change is saved', 'learnpress' );
 		}
 
+		$current_url = learn_press_get_page_link( 'profile' ) . $user->user_login.'/edit';
+		wp_redirect($current_url);
+		exit();
 	}
 }
 
