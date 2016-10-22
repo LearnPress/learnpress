@@ -294,9 +294,9 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 				if ( $type == 'lp_lesson' ) {
 					$results = $user->complete_lesson( $id, $course_id );
 					if ( is_wp_error( $results ) ) {
-						learn_press_add_message( __( 'Finish lesson has failed.', 'learnpress' ) );
+						learn_press_add_message( __( 'Error while completing lesson.', 'learnpress' ) );
 					} elseif ( $results !== false ) {
-						learn_press_add_message( __( 'You have finished lesson.', 'learnpress' ) );
+						learn_press_add_message( __( 'You have completed lesson.', 'learnpress' ) );
 					}
 				} else {
 					do_action( 'learn_press_user_request_complete_item', $_REQUEST );

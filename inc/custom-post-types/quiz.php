@@ -162,7 +162,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 							),
 							array(
 								'name'         => __( 'Duration', 'learnpress' ),
-								'desc'         => __( 'Duration of the quiz. Set 0 to disable', 'learnpress' ),
+								'desc'         => __( 'Duration of the quiz. Set 0 to disable.', 'learnpress' ),
 								'id'           => "{$prefix}duration",
 								'type'         => 'duration',//'number',
 								'default_time' => 'minute',
@@ -196,7 +196,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 								'type' => 'number',
 								'desc' => __( 'How many times the user can re-take this quiz. Set to 0 to disable', 'learnpress' ),
 								'min'  => 0,
-                                'std'  => 0
+								'std'  => 0
 							),
 							array(
 								'name'    => __( 'Show correct answer', 'learnpress' ),
@@ -213,7 +213,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 								'name'    => __( 'Show check answer', 'learnpress' ),
 								'id'      => "{$prefix}show_check_answer",
 								'type'    => 'radio',
-								'desc'    => __( 'Show button to check answer', 'learnpress' ),
+								'desc'    => __( 'Show button to check answer while doing quiz.', 'learnpress' ),
 								'options' => array(
 									'no'  => __( 'No', 'learnpress' ),
 									'yes' => __( 'Yes', 'learnpress' )
@@ -224,7 +224,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 								'name'    => __( 'Show hint', 'learnpress' ),
 								'id'      => "{$prefix}show_hint",
 								'type'    => 'radio',
-								'desc'    => __( 'Show button to hint answer', 'learnpress' ),
+								'desc'    => __( 'Show button to hint answer while doing quiz.', 'learnpress' ),
 								'options' => array(
 									'no'  => __( 'No', 'learnpress' ),
 									'yes' => __( 'Yes', 'learnpress' )
@@ -235,7 +235,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 								'name'    => __( 'Show explanation', 'learnpress' ),
 								'id'      => "{$prefix}show_explanation",
 								'type'    => 'radio',
-								'desc'    => __( 'Show button to explain answer', 'learnpress' ),
+								'desc'    => __( 'Show explanation of question after user checking answer.', 'learnpress' ),
 								'options' => array(
 									'no'  => __( 'No', 'learnpress' ),
 									'yes' => __( 'Yes', 'learnpress' )
