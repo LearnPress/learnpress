@@ -17,26 +17,29 @@ if ( LEARN_PRESS_UPDATE_DATABASE ) {
 		if ( $wpdb->get_var( "SHOW TABLES LIKE '{$table}'" ) === $table ) {
 			$wpdb->query( "TRUNCATE {$table}" );
 		}
-		$query = $wpdb->prepare( "
-			INSERT INTO {$wpdb->prefix}learnpress_user_items(`user_item_id`, `user_id`, `item_id`, `item_type`, `start_time`, `end_time`, `status`, `ref_id`, `ref_type`)
-			(
-				SELECT uq.user_quiz_id, uq.user_id, uq.quiz_id, %s, FROM_UNIXTIME(uqm1.meta_value) as start_date, FROM_UNIXTIME(uqm2.meta_value) as start_date, uqm3.meta_value as status, 0, %s
-				FROM {$wpdb->prefix}learnpress_user_quizzes uq
-				INNER JOIN {$wpdb->prefix}learnpress_user_quizmeta uqm1 ON uq.user_quiz_id = uqm1.learnpress_user_quiz_id AND uqm1.meta_key = %s
-				INNER JOIN {$wpdb->prefix}learnpress_user_quizmeta uqm2 ON uq.user_quiz_id = uqm2.learnpress_user_quiz_id AND uqm2.meta_key = %s
-				INNER JOIN {$wpdb->prefix}learnpress_user_quizmeta uqm3 ON uq.user_quiz_id = uqm3.learnpress_user_quiz_id AND uqm3.meta_key = %s
-			)
-		", 'lp_quiz', 'lp_course', 'start', 'end', 'status' );
-		$wpdb->query( $query );
 
-		$query = $wpdb->prepare( "
-			INSERT INTO {$wpdb->learnpress_user_itemmeta}(`learnpress_user_item_id`, `meta_key`, `meta_value`)
-			SELECT learnpress_user_quiz_id, meta_key, meta_value
-			FROM {$wpdb->prefix}learnpress_user_quizmeta
-			WHERE meta_key <> %s AND meta_key <> %s AND meta_key <> %s
-		", 'start', 'end', 'status' );
-		$wpdb->query( $query );
+		$table = $wpdb->prefix . 'learnpress_user_quizzes';
+		if ( $wpdb->get_var( "SHOW TABLES LIKE '{$table}'" ) === $table ) {
+			$query = $wpdb->prepare( "
+				INSERT INTO {$wpdb->prefix}learnpress_user_items(`user_item_id`, `user_id`, `item_id`, `item_type`, `start_time`, `end_time`, `status`, `ref_id`, `ref_type`)
+				(
+					SELECT uq.user_quiz_id, uq.user_id, uq.quiz_id, %s, FROM_UNIXTIME(uqm1.meta_value) as start_date, FROM_UNIXTIME(uqm2.meta_value) as start_date, uqm3.meta_value as status, 0, %s
+					FROM {$wpdb->prefix}learnpress_user_quizzes uq
+					INNER JOIN {$wpdb->prefix}learnpress_user_quizmeta uqm1 ON uq.user_quiz_id = uqm1.learnpress_user_quiz_id AND uqm1.meta_key = %s
+					INNER JOIN {$wpdb->prefix}learnpress_user_quizmeta uqm2 ON uq.user_quiz_id = uqm2.learnpress_user_quiz_id AND uqm2.meta_key = %s
+					INNER JOIN {$wpdb->prefix}learnpress_user_quizmeta uqm3 ON uq.user_quiz_id = uqm3.learnpress_user_quiz_id AND uqm3.meta_key = %s
+				)
+			", 'lp_quiz', 'lp_course', 'start', 'end', 'status' );
+			$wpdb->query( $query );
 
+			$query = $wpdb->prepare( "
+				INSERT INTO {$wpdb->learnpress_user_itemmeta}(`learnpress_user_item_id`, `meta_key`, `meta_value`)
+				SELECT learnpress_user_quiz_id, meta_key, meta_value
+				FROM {$wpdb->prefix}learnpress_user_quizmeta
+				WHERE meta_key <> %s AND meta_key <> %s AND meta_key <> %s
+			", 'start', 'end', 'status' );
+			$wpdb->query( $query );
+		}
 		// update meta_key name
 		/*
 		$args  = array( 'current_question', '_quiz_question', 'questions', '_quiz_questions', 'question_answers', '_quiz_question_answers', 'current_question', 'questions', 'question_answers' );
@@ -84,19 +87,25 @@ if ( LEARN_PRESS_UPDATE_DATABASE ) {
 			}
 		}
 
-		$query = $wpdb->prepare( "
-			INSERT INTO {$wpdb->learnpress_user_items}(`user_id`, `item_id`, `item_type`, `start_time`, `end_time`, `status`, `ref_id`, `ref_type`)
-			SELECT `user_id`, `course_id`, %s, `start_time`, `end_time`, `status`, `order_id`, %s
-			FROM {$wpdb->prefix}learnpress_user_courses
-		", 'lp_course', 'lp_order' );
-		$wpdb->query( $query );
+		$table = $wpdb->prefix . 'learnpress_user_courses';
+		if ( $wpdb->get_var( "SHOW TABLES LIKE '{$table}'" ) === $table ) {
+			$query = $wpdb->prepare( "
+				INSERT INTO {$wpdb->learnpress_user_items}(`user_id`, `item_id`, `item_type`, `start_time`, `end_time`, `status`, `ref_id`, `ref_type`)
+				SELECT `user_id`, `course_id`, %s, `start_time`, `end_time`, `status`, `order_id`, %s
+				FROM {$wpdb->prefix}learnpress_user_courses
+			", 'lp_course', 'lp_order' );
+			$wpdb->query( $query );
+		}
 
-		$query = $wpdb->prepare( "
-			INSERT INTO {$wpdb->learnpress_user_items}(`user_id`, `item_id`, `item_type`, `start_time`, `end_time`, `status`, `ref_id`, `ref_type`)
-			SELECT user_id, lesson_id, %s, if(start_time, start_time, %s), if(end_time, end_time, %s), status, course_id, %s
-			FROM {$wpdb->prefix}learnpress_user_lessons
-		", 'lp_lesson', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 'lp_course' );
-		$wpdb->query( $query );
+		$table = $wpdb->prefix . 'learnpress_user_lessons';
+		if ( $wpdb->get_var( "SHOW TABLES LIKE '{$table}'" ) === $table ) {
+			$query = $wpdb->prepare( "
+				INSERT INTO {$wpdb->learnpress_user_items}(`user_id`, `item_id`, `item_type`, `start_time`, `end_time`, `status`, `ref_id`, `ref_type`)
+				SELECT user_id, lesson_id, %s, if(start_time, start_time, %s), if(end_time, end_time, %s), status, course_id, %s
+				FROM {$wpdb->prefix}learnpress_user_lessons
+			", 'lp_lesson', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 'lp_course' );
+			$wpdb->query( $query );
+		}
 		// remove auto-increment
 		//$query = "ALTER TABLE {$wpdb->prefix}learnpress_user_courses` MODIFY COLUMN `user_course_item_id` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0;";
 

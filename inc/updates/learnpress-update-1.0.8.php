@@ -32,9 +32,12 @@ if ( LEARN_PRESS_UPDATE_DATABASE ) {
             " );
 	}
 
-	// delete columns start_date, end_date
-	$query = $wpdb->query( "
-		ALTER TABLE {$wpdb->prefix}learnpress_user_course_items DROP COLUMN `start_date`, DROP COLUMN `end_date`;
-	" );
+	$table = $wpdb->prefix . 'learnpress_user_course_items';
+	if ( $wpdb->get_var( "SHOW TABLES LIKE '{$table}'" ) === $table ) {
+		// delete columns start_date, end_date
+		$query = $wpdb->query( "
+			ALTER TABLE {$wpdb->prefix}learnpress_user_course_items DROP COLUMN `start_date`, DROP COLUMN `end_date`;
+		" );
+	}
 	learn_press_update_log( '1.0.8', array( 'time' => time() ) );
 }
