@@ -582,75 +582,113 @@ function learn_press_user_has_quiz_status( $status, $quiz_id = 0, $user_id = 0, 
 
 add_action( 'init', 'learn_press_user_update_user_info' );
 
-function learn_press_user_update_user_info(){
-	if( !empty($_POST) && isset($_POST['from']) && isset($_POST['action']) && $_POST['from']=='profile' && $_POST['action']=='update') {
-		$user			= learn_press_get_current_user();
-		$user_id		= learn_press_get_current_user_id();
-		$user_info = get_userdata($user->id);
+function learn_press_user_update_user_info() {
+	if ( !empty( $_POST ) && isset( $_POST['from'] ) && isset( $_POST['action'] ) && $_POST['from'] == 'profile' && $_POST['action'] == 'update' ) {
+		$user      = learn_press_get_current_user();
+		$user_id   = learn_press_get_current_user_id();
+		$user_info = get_userdata( $user->id );
 		// upload profile picture
-		$profile_picture_type = filter_input( INPUT_POST,'profile_picture_type', FILTER_SANITIZE_STRING );
+		$profile_picture_type = filter_input( INPUT_POST, 'profile_picture_type', FILTER_SANITIZE_STRING );
 		update_user_meta( $user->id, '_lp_profile_picture_type', $profile_picture_type );
-		if( $profile_picture_type == 'picture' ) {
-			if (!function_exists('wp_generate_attachment_metadata')){
-				require_once(ABSPATH . "wp-admin" . '/includes/image.php');
-				require_once(ABSPATH . "wp-admin" . '/includes/file.php');
-				require_once(ABSPATH . "wp-admin" . '/includes/media.php');
+		if ( $profile_picture_type == 'picture' ) {
+			if ( !function_exists( 'wp_generate_attachment_metadata' ) ) {
+				require_once( ABSPATH . "wp-admin" . '/includes/image.php' );
+				require_once( ABSPATH . "wp-admin" . '/includes/file.php' );
+				require_once( ABSPATH . "wp-admin" . '/includes/media.php' );
 			}
 			$attach_id = 0;
 			if ( $_FILES ) {
-				foreach ($_FILES as $file => $array) {
-					if ($_FILES[$file]['error'] !== UPLOAD_ERR_OK) {
+				foreach ( $_FILES as $file => $array ) {
+					if ( $_FILES[$file]['error'] !== UPLOAD_ERR_OK ) {
 						return "upload error : " . $_FILES[$file]['error'];
 					}
 					$attach_id = media_handle_upload( $file, 0 );
 				}
 			}
-			if ($attach_id > 0){
+			if ( $attach_id > 0 ) {
 				update_user_meta( $user->id, '_lp_profile_picture', $attach_id );
 			}
 		}
 
 		// check old pass
-		$old_pass	= filter_input(INPUT_POST, 'pass0');
+		$old_pass       = filter_input( INPUT_POST, 'pass0' );
 		$check_old_pass = false;
-		if( !$old_pass ) {
+		if ( !$old_pass ) {
 			$check_old_pass = false;
 		} else {
 			$cuser = wp_get_current_user();
-			require_once( ABSPATH . 'wp-includes/class-phpass.php');
-			$wp_hasher = new PasswordHash(8, TRUE);
-			if( $wp_hasher->CheckPassword( $old_pass, $cuser->data->user_pass ) ) {
+			require_once( ABSPATH . 'wp-includes/class-phpass.php' );
+			$wp_hasher = new PasswordHash( 8, TRUE );
+			if ( $wp_hasher->CheckPassword( $old_pass, $cuser->data->user_pass ) ) {
 				$check_old_pass = true;
 			}
 		}
-		
-		if( !$check_old_pass ) {
-			_e('old password incorect!','learnpress');
+
+		if ( !$check_old_pass ) {
+			_e( 'old password incorect!', 'learnpress' );
 		}
 
 		// check new pass
-		$new_pass = filter_input(INPUT_POST, 'pass1');
-		$new_pass2 = filter_input(INPUT_POST, 'pass2');
-	
-		if( $new_pass != $new_pass2 ) {
-			_e('retype new password incorect!','learnpress');
+		$new_pass  = filter_input( INPUT_POST, 'pass1' );
+		$new_pass2 = filter_input( INPUT_POST, 'pass2' );
+
+		if ( $new_pass != $new_pass2 ) {
+			_e( 'retype new password incorect!', 'learnpress' );
 		} else {
 			wp_set_password( $new_pass, $user_id );
 		}
 
-		$update_data	= array(
-			'ID' => $user_id,
-			'user_url'			=> filter_input(INPUT_POST, 'url', FILTER_SANITIZE_URL),
-			'user_email'		=> filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL),
-			'first_name'	=> filter_input(INPUT_POST, 'first_name', FILTER_SANITIZE_STRING),
-			'last_name'	=> filter_input(INPUT_POST, 'last_name', FILTER_SANITIZE_STRING),
-			'description'	=> filter_input(INPUT_POST, 'description', FILTER_SANITIZE_STRING),
+		$update_data = array(
+			'ID'          => $user_id,
+			'user_url'    => filter_input( INPUT_POST, 'url', FILTER_SANITIZE_URL ),
+			'user_email'  => filter_input( INPUT_POST, 'email', FILTER_SANITIZE_EMAIL ),
+			'first_name'  => filter_input( INPUT_POST, 'first_name', FILTER_SANITIZE_STRING ),
+			'last_name'   => filter_input( INPUT_POST, 'last_name', FILTER_SANITIZE_STRING ),
+			'description' => filter_input( INPUT_POST, 'description', FILTER_SANITIZE_STRING ),
 		);
 
 		$user_id = wp_update_user( $update_data );
-		if( $user_id ){
-			_e('Your change is saved','learnpress');
+		if ( $user_id ) {
+			_e( 'Your change is saved', 'learnpress' );
 		}
 
+	}
+}
+
+add_action( 'learn_press_before_purchase_course_handler', '_learn_press_before_purchase_course_handler', 10, 2 );
+function _learn_press_before_purchase_course_handler( $course_id, $cart ) {
+	// Redirect to login page if user is not logged in
+	if ( !is_user_logged_in() ) {
+		$return_url = add_query_arg( $_POST, get_the_permalink( $course_id ) );
+		$return_url = apply_filters( 'learn_press_purchase_course_login_redirect_return_url', $return_url );
+		$redirect   = apply_filters( 'learn_press_purchase_course_login_redirect', learn_press_get_login_url( $return_url ) );
+		learn_press_add_message( __( 'Please login to enroll this course', 'learnpress' ) );
+		if ( $redirect !== false ) {
+			if ( is_ajax() ) {
+				learn_press_send_json(
+					array(
+						'redirect' => $redirect,
+						'result'   => 'success'
+					)
+				);
+			} else {
+				wp_redirect( $redirect );
+				exit();
+			}
+		}
+	} else {
+		$user     = learn_press_get_current_user();
+		$redirect = false;
+		if ( $user->has_finished_course( $course_id ) ) {
+			learn_press_add_message( __( 'You have already finished course', 'learnpress' ) );
+			$redirect = true;
+		} elseif ( $user->has_purchased_course( $course_id ) ) {
+			learn_press_add_message( __( 'You have already enrolled course', 'learnpress' ) );
+			$redirect = true;
+		}
+		if ( $redirect ) {
+			wp_redirect( get_the_permalink( $course_id ) );
+			exit();
+		}
 	}
 }

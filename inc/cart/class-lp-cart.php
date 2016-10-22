@@ -146,28 +146,6 @@ class LP_Cart {
 			return;
 		}
 
-		// Redirect to login page if user is not logged in
-		if ( !is_user_logged_in() ) {
-
-			$return_url = add_query_arg( $_POST, get_the_permalink( $course->id ) );
-			$return_url = apply_filters( 'learn_press_purchase_course_login_redirect_return_url', $return_url );
-			$redirect   = apply_filters( 'learn_press_purchase_course_login_redirect', learn_press_get_login_url( $return_url ) );
-
-			if ( $redirect !== false ) {
-                                if ( is_ajax() ) {
-                                    learn_press_send_json(
-                                                array(
-                                                        'redirect' => $redirect,
-                                                        'result'   => 'success'
-                                                )
-                                        );
-                                } else {
-                                    wp_redirect( $redirect );
-                                    exit();
-                                }
-			}
-		}
-
 		/**
 		 * Generate course information and stores into session
 		 * for redirection if needed then we can remove it immediately
@@ -528,6 +506,9 @@ class LP_Cart {
 	 * @param $course_id
 	 */
 	public function purchase_course_handler( $course_id ) {
+
+		do_action( 'learn_press_before_purchase_course_handler', $course_id, $this );
+
 		if ( apply_filters( 'learn_press_purchase_single_course', true ) ) {
 			$this->empty_cart();
 		}
@@ -538,15 +519,24 @@ class LP_Cart {
 
 		// In case the course is FREE and "No checkout free course" is turn off
 		if ( !$need_checkout ) {
-			require_once LP_PLUGIN_PATH . '/inc/gateways/class-lp-gateway-none.php';
-			$checkout = learn_press_get_checkout( array( 'payment_method' => new LP_Gateway_None() ) );
+			$user = learn_press_get_course_user();
+			if ( !$user->has_purchased_course( $course_id )/* || $user->has_finished_course( $course_id ) */ ) {
+				require_once LP_PLUGIN_PATH . '/inc/gateways/class-lp-gateway-none.php';
+				$checkout = learn_press_get_checkout( array( 'payment_method' => new LP_Gateway_None() ) );
 
-			/**
-			 * + Auto enroll
-			 */
-			add_filter( 'learn_press_checkout_success_result', '_learn_press_checkout_success_result', 10, 2 );
-			$results = $checkout->process_checkout();
-			remove_filter( 'learn_press_checkout_success_result', '_learn_press_checkout_success_result', 10 );
+				/**
+				 * + Auto enroll
+				 */
+				add_filter( 'learn_press_checkout_success_result', '_learn_press_checkout_success_result', 10, 2 );
+				$results = $checkout->process_checkout();
+				remove_filter( 'learn_press_checkout_success_result', '_learn_press_checkout_success_result', 10 );
+			}/* else {
+				if ( $user->has_finished_course( $course_id ) ) {
+					learn_press_add_message( __( 'You have already finished course', 'learnpress' ) );
+				} else {
+					learn_press_add_message( __( 'You have already enrolled course', 'learnpress' ) );
+				}
+			}*/
 		} else {
 
 			// Checkout page is not setting up

@@ -21,6 +21,7 @@ class LP_Shortcodes {
 			'learn_press_confirm_order'       => __CLASS__ . '::confirm_order',
 			'learn_press_profile'             => __CLASS__ . '::profile',
 			'learn_press_become_teacher_form' => __CLASS__ . '::become_teacher_form',
+			'learn_press_login_form'          => __CLASS__ . '::login_form',
 			'learn_press_checkout'            => __CLASS__ . '::checkout',
 		);
 
@@ -51,16 +52,14 @@ class LP_Shortcodes {
 							die();
 						}
 					} else {
-						ob_start();
-						add_filter( 'login_form_bottom', array( __CLASS__, '_login_form_bottom' ), 10, 2 );
-						wp_login_form(
-							array(
-								'form_id' => 'learn-press-form-login',
-								'context' => 'learn-press-login'
-							)
-						);
-						$content            = ob_get_clean();
-						$post->post_content = $content;
+						if ( !preg_match( '/\[learn_press_login_form\s?(.*)\]/', $post->post_content ) ) {
+							if ( !empty( $_REQUEST['redirect_to'] ) ) {
+								$redirect = $_REQUEST['redirect_to'];
+							} else {
+								$redirect = '';
+							}
+							$post->post_content .= '[learn_press_login_form redirect="' . esc_attr( $redirect ) . '"]';
+						}
 					}
 				} else {
 					$query = array();
@@ -82,10 +81,11 @@ class LP_Shortcodes {
 							}
 						}
 					}
+					if ( !preg_match( '/\[learn_press_profile\s?(.*)\]/', $post->post_content ) ) {
+						$post->post_content .= '[learn_press_profile]';
+					}
 				}
-				if ( !preg_match( '/\[learn_press_profile\s?(.*)\]/', $post->post_content ) ) {
-					$post->post_content .= '[learn_press_profile]';
-				}
+
 			} elseif ( $page_id == learn_press_get_page_id( 'become_a_teacher' ) ) {
 				if ( !preg_match( '/\[learn_press_become_teacher_form\s?(.*)\]/', $post->post_content ) ) {
 					$post->post_content .= '[learn_press_become_teacher_form]';
@@ -104,7 +104,10 @@ class LP_Shortcodes {
 	}
 
 	public static function wrapper_shortcode( $content ) {
-		return '<div class="learnpress">' . $content . '</div>';
+		ob_start();
+		learn_press_print_messages();
+		$html = ob_get_clean();
+		return '<div class="learnpress">' . $html . $content . '</div>';
 	}
 
 	/**
@@ -194,7 +197,7 @@ class LP_Shortcodes {
 	 * @return string
 	 */
 	public static function become_teacher_form( $atts ) {
-		$user = learn_press_get_current_user();
+		$user    = learn_press_get_current_user();
 		$message = '';
 		$code    = 0;
 
@@ -277,7 +280,7 @@ class LP_Shortcodes {
 		ob_start();
 		if ( !$user ) {
 			if ( empty( $wp_query->query['user'] ) ) {
-				learn_press_get_template( 'profile/private-area.php' );
+				//learn_press_get_template( 'profile/private-area.php' );
 			} else {
 				learn_press_display_message( sprintf( __( 'The user %s is not available!', 'learnpress' ), $wp_query->query['user'] ), 'error' );
 			}
@@ -335,6 +338,16 @@ class LP_Shortcodes {
 		$output .= ob_get_clean();
 
 		return self::wrapper_shortcode( $output );
+	}
+
+	static function login_form( $atts, $content = '' ) {
+		$atts = shortcode_atts(
+			array(
+				'redirect' => ''
+			),
+			$atts
+		);
+		return self::wrapper_shortcode( learn_press_get_template_content( 'profile/login-form.php', $atts ) );
 	}
 }
 

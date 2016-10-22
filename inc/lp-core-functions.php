@@ -1649,6 +1649,16 @@ function learn_press_get_login_url( $redirect = null ) {
 	return apply_filters( 'learn_press_login_url', wp_login_url( $redirect ) );
 }
 
+function _learn_press_get_login_url( $url ) {
+	if ( $profile_page = learn_press_get_page_link( 'profile' ) ) {
+		$a   = parse_url( $url );
+		$url = $profile_page . ( !empty( $a['query'] ) ? '?' . $a['query'] : '' );
+	}
+	return $url;
+}
+
+add_filter( 'learn_press_login_url', '_learn_press_get_login_url', 10 );
+
 function learn_press_get_endpoint_url( $name, $value, $url ) {
 	if ( !$url )
 		$url = get_permalink();
@@ -1877,6 +1887,7 @@ function learn_press_add_user_item_if_needed( $located, $template_name, $templat
 	}
 	return $located;
 }
+
 //add_filter( 'learn_press_locate_template', 'learn_press_add_user_item_if_needed', 10, 3 );
 
 function learn_press_set_user_timezone() {
@@ -2134,9 +2145,8 @@ function learn_press_auto_enroll_user_to_courses( $order_id ) {
 		if ( $user->has( 'enrolled-course', $course->id ) ) {
 			continue;
 		}
-		$course_result = $user->get_course_info( $course->id );
-//                error. this scripts will create new order each course item
-//		$return = $user->enroll( $course->id, $order_id );
+		// error. this scripts will create new order each course item
+		// $return = $user->enroll( $course->id, $order_id );
 		$return = learn_press_update_user_item_field( array(
 			'user_id'    => learn_press_get_current_user_id(),
 			'item_id'    => $course->id,
@@ -2148,6 +2158,8 @@ function learn_press_auto_enroll_user_to_courses( $order_id ) {
 			'ref_type'   => 'lp_order',
 			'parent_id'  => $user->get_course_history_id( $course->id )
 		) );
+
+
 	}
 	return $return;
 }
@@ -2458,45 +2470,46 @@ function learn_press_debug() {
 
 if ( !function_exists( 'learn_press_profile_localize_script' ) ) {
 
-    /**
-     * Translate javascript text
-     */
-    function learn_press_profile_localize_script( $assets ) {
-            $translate = array(
-                    'confirm_cancel_order'  => array(
-                        'message' => __( 'Are you sure you want to cancel order?', 'learnpress' ),
-                        'title'   => __( 'Cancel Order', 'learnpress' )
-                    )
-            );
-            $assets::add_localize( $translate );
-    }
-    
+	/**
+	 * Translate javascript text
+	 */
+	function learn_press_profile_localize_script( $assets ) {
+		$translate = array(
+			'confirm_cancel_order' => array(
+				'message' => __( 'Are you sure you want to cancel order?', 'learnpress' ),
+				'title'   => __( 'Cancel Order', 'learnpress' )
+			)
+		);
+		$assets::add_localize( $translate );
+	}
+
 }
 add_action( 'learn_press_enqueue_scripts', 'learn_press_profile_localize_script' );
 
 add_action( 'init', 'learn_press_cancel_order_processer' );
 if ( !function_exists( 'learn_press_cancel_order_processer' ) ) {
-    function learn_press_cancel_order_processer() {
-        if ( empty( $_REQUEST['cancel-order'] ) || empty( $_REQUEST['lp-nonce'] ) || !wp_verify_nonce( $_REQUEST['lp-nonce'], 'cancel-order' ) || is_admin() ) {
-            return;
-        }
+	function learn_press_cancel_order_processer() {
+		if ( empty( $_REQUEST['cancel-order'] ) || empty( $_REQUEST['lp-nonce'] ) || !wp_verify_nonce( $_REQUEST['lp-nonce'], 'cancel-order' ) || is_admin() ) {
+			return;
+		}
 
-        $order_id = absint( $_REQUEST['cancel-order'] );
-        $order = learn_press_get_order( $order_id );
+		$order_id = absint( $_REQUEST['cancel-order'] );
+		$order    = learn_press_get_order( $order_id );
 
-        $url = learn_press_user_profile_link( $user->id, LP()->settings->get( 'profile_endpoints.profile-orders' ) );
-        if ( ! $order ) {
-            learn_press_add_message( sprintf( __( 'Order number <strong>%s</strong> not found', 'learnpress' ), $order_id ), 'error' );
-        } else if ( $order->has_status( 'pending' ) ) {
-            $order->update_status( 'cancelled' );
-            $order->add_note( __( 'Order cancelled by customer', 'learnpress' ) );
+		$url = learn_press_user_profile_link( $user->id, LP()->settings->get( 'profile_endpoints.profile-orders' ) );
+		if ( !$order ) {
+			learn_press_add_message( sprintf( __( 'Order number <strong>%s</strong> not found', 'learnpress' ), $order_id ), 'error' );
+		} else if ( $order->has_status( 'pending' ) ) {
+			$order->update_status( 'cancelled' );
+			$order->add_note( __( 'Order cancelled by customer', 'learnpress' ) );
 
-            // set updated message
-            learn_press_add_message( sprintf( __( 'Order number <strong>%s</strong> has been cancelled', 'learnpress' ), $order->get_order_number() ) );
-            $url = $order->get_cancel_order_url( true );
-        } else {
-            learn_press_add_message( sprintf( __( 'Order number <strong>%s</strong> can not cancelled', 'learnpress' ), $order->get_order_number() ), 'error' );
-        }
-        wp_safe_redirect( $url ); exit();
-    }
+			// set updated message
+			learn_press_add_message( sprintf( __( 'Order number <strong>%s</strong> has been cancelled', 'learnpress' ), $order->get_order_number() ) );
+			$url = $order->get_cancel_order_url( true );
+		} else {
+			learn_press_add_message( sprintf( __( 'Order number <strong>%s</strong> can not cancelled', 'learnpress' ), $order->get_order_number() ), 'error' );
+		}
+		wp_safe_redirect( $url );
+		exit();
+	}
 }

@@ -188,13 +188,10 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			$error  = is_wp_error( $user );
 			$return = array(
 				'result'   => $error ? 'error' : 'success',
-				'redirect' => !$error && !empty( $data['redirect_to'] ) ? $data['redirect_to'] : ''
+				'redirect' => ( !$error && !empty( $data['redirect_to'] ) ) ? $data['redirect_to'] : ''
 			);
 			if ( $error ) {
-				$return['message'] = array(
-					'title'   => __( 'Login failed', 'learnpress' ),
-					'message' => $user->get_error_message() ? $user->get_error_message() : __( 'Please enter your username and/or password', 'learnpress' )
-				);
+				$return['message'] = learn_press_get_message( $user->get_error_message() ? $user->get_error_message() : __( 'Please enter your username and/or password', 'learnpress' ) );
 			} else {
 				wp_set_current_user( $user->ID );
 				$next = learn_press_get_request( 'next' );
@@ -222,7 +219,9 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 						$checkout = LP()->checkout()->process_checkout();
 					} else {
 					}
+					return;
 				}
+				$return['message'] = learn_press_get_message( sprintf( __( 'Welcome back, %s! Redirecting...', 'learnpress' ), learn_press_get_profile_display_name( $user ) ) );
 			}
 			learn_press_send_json( $return );
 		}
@@ -233,8 +232,8 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 		public static function _request_add_to_cart() {
 			$cart      = learn_press_get_cart();
 			$course_id = learn_press_get_request( 'purchase-course' );
+
 			$cart->add_to_cart( $course_id );
-//			$res    = $cart->add_to_cart( $course_id );
 			$return = array(
 				'result'   => 'success',
 				'redirect' => learn_press_get_checkout_url()
