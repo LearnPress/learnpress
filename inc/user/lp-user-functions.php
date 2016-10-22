@@ -626,25 +626,26 @@ function learn_press_user_update_user_info() {
 
 		if ( !$check_old_pass ) {
 			_e( 'old password incorect!', 'learnpress' );
-		}
-
-		// check new pass
-		$new_pass  = filter_input( INPUT_POST, 'pass1' );
-		$new_pass2 = filter_input( INPUT_POST, 'pass2' );
-
-		if ( $new_pass != $new_pass2 ) {
-			_e( 'retype new password incorect!', 'learnpress' );
 		} else {
-			wp_set_password( $new_pass, $user_id );
-		}
+			// check new pass
+			$new_pass  = filter_input( INPUT_POST, 'pass1' );
+			$new_pass2 = filter_input( INPUT_POST, 'pass2' );
 
+			if ( $new_pass != $new_pass2 ) {
+				_e( 'retype new password incorect!', 'learnpress' );
+			} else {
+				wp_set_password( $new_pass, $user_id );
+			}
+		}
 		$update_data = array(
-			'ID'          => $user_id,
-			'user_url'    => filter_input( INPUT_POST, 'url', FILTER_SANITIZE_URL ),
-			'user_email'  => filter_input( INPUT_POST, 'email', FILTER_SANITIZE_EMAIL ),
-			'first_name'  => filter_input( INPUT_POST, 'first_name', FILTER_SANITIZE_STRING ),
-			'last_name'   => filter_input( INPUT_POST, 'last_name', FILTER_SANITIZE_STRING ),
-			'description' => filter_input( INPUT_POST, 'description', FILTER_SANITIZE_STRING ),
+			'ID'			=> $user_id,
+			'user_url'		=> filter_input( INPUT_POST, 'url', FILTER_SANITIZE_URL ),
+			'user_email'	=> filter_input( INPUT_POST, 'email', FILTER_SANITIZE_EMAIL ),
+			'first_name'	=> filter_input( INPUT_POST, 'first_name', FILTER_SANITIZE_STRING ),
+			'last_name'		=> filter_input( INPUT_POST, 'last_name', FILTER_SANITIZE_STRING ),
+			'display_name'	=> filter_input(INPUT_POST, 'display_name', FILTER_SANITIZE_STRING),
+			'nickname'		=> filter_input(INPUT_POST, 'nickname', FILTER_SANITIZE_STRING),
+			'description'	=> filter_input( INPUT_POST, 'description', FILTER_SANITIZE_STRING ),
 		);
 
 		$user_id = wp_update_user( $update_data );
