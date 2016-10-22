@@ -698,7 +698,7 @@ body.course-has-popup {
             margin-bottom: 0;
             .items-progress, .course-progress {
                 width: 100%;
-                margin-right: 0;
+                margin: 0 !important;
             }
         }
     }
@@ -1081,6 +1081,7 @@ body.block-content {
         }
     }
 }
+
 .element-data-percent-loop (@i) when (@i <= 100) {
     .single-quiz .quiz-result-field[data-value="@{i}"]:before,
     .single-quiz .quiz-result-field[data-value="@{i}"] span,
@@ -1412,7 +1413,7 @@ body.block-content {
     }
     .lp_course {
         .entry-content {
-            width: 100%;
+            //width: 100%;
         }
         .entry-footer {
             display: none;
@@ -1500,6 +1501,54 @@ body.content-item-only {
     margin-right: 30px;
 }
 
+.user-profile-edit-form {
+    .info-field {
+        margin-bottom: 20px;
+    }
+
+    .description {
+        margin-top: 5px;
+    }
+
+    .user-profile-picture {
+        clear: both;
+        .picture, .change-picture {
+            display: inline-block;
+        }
+        .change-picture {
+            .description {
+                margin: 0 0 10px 0;
+            }
+        }
+        img {
+            float: left;
+            margin-right: 20px;
+        }
+    }
+
+    .profile-field-name {
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .change-password {
+        margin-bottom: 10px;
+    }
+
+    #user_profile_password_form {
+        input {
+            margin-bottom: 20px;
+        }
+        .description {
+            margin-top: -15px;
+        }
+    }
+
+    .update-profile {
+        margin-top: 20px;
+    }
+}
+
 @-moz-keyframes spin-12 {
     0% {
         -moz-transform: rotate(0deg) translate(0px);
@@ -1555,6 +1604,18 @@ body.content-item-only {
     0% {
         -webkit-transform: rotate(360deg) translate(0px);
         transform: rotate(360deg) translate(0px);
+    }
+}
+
+@media screen and (max-width: 1250px) {
+    .single-lp_course .learn-press-course-results-progress {
+        .items-progress, .course-progress {
+            float: none;
+            width: 100%;
+        }
+        .items-progress {
+            margin-bottom: 50px;
+        }
     }
 }
 

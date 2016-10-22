@@ -68,7 +68,6 @@ class LP_Quiz extends LP_Abstract_Course_Item {
 		_learn_press_get_quiz_questions( $this->id );
 		$this->post = get_post( $this->id );
 
-
 		if ( empty( self::$_meta[$this->id] ) ) {
 			self::$_meta[$this->id] = array();
 		}

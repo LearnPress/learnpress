@@ -548,7 +548,7 @@ body.course-has-popup {
 #course-curriculum-popup #popup-sidebar .learn-press-course-results-progress .items-progress,
 #course-curriculum-popup #popup-sidebar .learn-press-course-results-progress .course-progress {
   width: 100%;
-  margin-right: 0;
+  margin: 0 !important;
 }
 #course-curriculum-popup #popup-main {
   position: absolute;
@@ -572,8 +572,6 @@ body.course-has-popup {
   height: 60px;
   width: 350px;
   border-right: 1px solid #ab4a10;
-  text-align: right;
-  color: white;
 }
 #course-curriculum-popup #popup-main #popup-header .popup-close {
   width: 59px;
@@ -1873,9 +1871,6 @@ body.block-content #learn-press-block-content {
 .single-lp_course .course-students-list .students p {
   margin-top: 15px;
 }
-.single-lp_course .lp_course .entry-content {
-  width: 100%;
-}
 .single-lp_course .lp_course .entry-footer {
   display: none;
 }
@@ -1949,6 +1944,42 @@ body.content-item-only #learn-press-content-item {
   cursor: pointer;
   margin-right: 30px;
 }
+.user-profile-edit-form .info-field {
+  margin-bottom: 20px;
+}
+.user-profile-edit-form .description {
+  margin-top: 5px;
+}
+.user-profile-edit-form .user-profile-picture {
+  clear: both;
+}
+.user-profile-edit-form .user-profile-picture .picture,
+.user-profile-edit-form .user-profile-picture .change-picture {
+  display: inline-block;
+}
+.user-profile-edit-form .user-profile-picture .change-picture .description {
+  margin: 0 0 10px 0;
+}
+.user-profile-edit-form .user-profile-picture img {
+  float: left;
+  margin-right: 20px;
+}
+.user-profile-edit-form .profile-field-name {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+.user-profile-edit-form .change-password {
+  margin-bottom: 10px;
+}
+.user-profile-edit-form #user_profile_password_form input {
+  margin-bottom: 20px;
+}
+.user-profile-edit-form #user_profile_password_form .description {
+  margin-top: -15px;
+}
+.user-profile-edit-form .update-profile {
+  margin-top: 20px;
+}
 @-moz-keyframes spin-12 {
   0% {
     -moz-transform: rotate(0deg) translate(0px);
@@ -1999,6 +2030,16 @@ body.content-item-only #learn-press-content-item {
   0% {
     -webkit-transform: rotate(360deg) translate(0px);
     transform: rotate(360deg) translate(0px);
+  }
+}
+@media screen and (max-width: 1250px) {
+  .single-lp_course .learn-press-course-results-progress .items-progress,
+  .single-lp_course .learn-press-course-results-progress .course-progress {
+    float: none;
+    width: 100%;
+  }
+  .single-lp_course .learn-press-course-results-progress .items-progress {
+    margin-bottom: 50px;
   }
 }
 @media screen and (max-width: 768px) {

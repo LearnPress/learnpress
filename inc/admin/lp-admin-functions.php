@@ -1030,7 +1030,7 @@ function learn_press_process_duplicate_action() {
 			'to_ping'        => $post->to_ping,
 			'menu_order'     => $post->menu_order
 		);
-var_dump( _learn_press_get_course_curriculum( $post_id ) ); die();
+
 		// insert new course and get it ID
 		$new_post_id = wp_insert_post( $args );
 
@@ -1387,4 +1387,124 @@ function learn_press_get_notice_dismiss( $context, $type = 'transient' ) {
 		return get_transient( 'learn_press_dismiss_notice_' . $context );
 	}
 	return get_option( 'learn_press_dismiss_notice_' . $context );
+}
+
+if ( !function_exists( 'learn_press_course_insert_section' ) ) {
+
+    function learn_press_course_insert_section( $section = array() ) {
+        global $wpdb;
+        $section = wp_parse_args(
+            $section,
+            array(
+                'section_name' => '',
+                'section_course_id' => 0,
+                'section_order' => 0,
+                'section_description' => ''
+            )
+        );
+        $section = stripslashes_deep($section);
+        extract($section);
+
+        $insert_data = compact('section_name', 'section_course_id', 'section_order', 'section_description');
+        $wpdb->insert(
+            $wpdb->learnpress_sections,
+            $insert_data,
+            array('%s', '%d', '%d')
+        );
+
+        return $wpdb->insert_id;
+    }
+    
+}
+
+if ( !function_exists( 'learn_press_course_insert_section_item' ) ) {
+
+    function learn_press_course_insert_section_item( $item_data = array() ) {
+        global $wpdb;
+        $wpdb->insert(
+                    $wpdb->learnpress_section_items,
+                    array(
+                        'section_id'    => $item_data['section_id'],
+                        'item_id'       => $item_data['item_id'],
+                        'item_order'    => $item_data['item_order'],
+                        'item_type'     => $item_data['item_type']
+                    ),
+                    array(
+                        '%d',
+                        '%d',
+                        '%d',
+                        '%s',
+                    )
+                );
+        return $wpdb->insert_id;
+    }
+
+}
+
+if ( !function_exists( 'learn_press_duplicate_post' ) ) {
+
+    function learn_press_duplicate_post( $post_id = null, $args = array(), $meta = true ) {
+        $post = get_post( $post_id );
+        if ( ! $post ) return;
+        $defalts   = array(
+                        'comment_status' => $post->comment_status,
+                        'ping_status'    => $post->ping_status,
+                        'post_author'    => get_current_user_id(),
+                        'post_content'   => $post->post_content,
+                        'post_excerpt'   => $post->post_excerpt,
+                        'post_parent'    => $post->post_parent,
+                        'post_password'  => $post->post_password,
+                        'post_status'    => 'draft',
+                        'post_title'     => $post->post_title . ' - Copy',
+                        'post_type'      => $post->post_type,
+                        'to_ping'        => $post->to_ping,
+                        'menu_order'     => $post->menu_order
+                );
+        $args = wp_parse_args( $args, $defalts );
+        $new_post_id = wp_insert_post( $args );
+
+        if ( $meta ) {
+            learn_press_duplicate_post_meta( $post_id, $new_post_id );
+            // assign related tags/categories to new course
+            $taxonomies = get_object_taxonomies( $post->post_type );
+            foreach ( $taxonomies as $taxonomy ) {
+                    $post_terms = wp_get_object_terms( $post_id, $taxonomy, array( 'fields' => 'slugs' ) );
+                    wp_set_object_terms( $new_post_id, $post_terms, $taxonomy, false );
+            }
+        }
+        return apply_filters( 'learn_press_duplicate_post', $new_post_id, $post_id );
+    }
+}
+
+if ( !function_exists( 'learn_press_duplicate_post_meta' ) ) {
+    /**
+     * duplicate all post meta just in two SQL queries
+     */
+    function learn_press_duplicate_post_meta( $old_post_id, $new_post_id, $excerpt = array() ) {
+        global $wpdb;
+        $post_meta_infos = $wpdb->get_results( "SELECT meta_key, meta_value FROM $wpdb->postmeta WHERE post_id=$old_post_id" );
+        if ( count( $post_meta_infos )!= 0 ) {
+                $excerpt = array_merge( array( '_edit_lock', '_edit_last' ), $excerpt );
+                $sql_query = "INSERT INTO $wpdb->postmeta (post_id, meta_key, meta_value) ";
+                $sql_query_sel = array();
+                foreach ( $post_meta_infos as $meta ) {
+                    if ( in_array( $meta->meta_value, $excerpt ) ) {
+                        continue;
+                    }
+                    $meta_key = $meta->meta_key;
+                    $meta_value = addslashes($meta->meta_value);
+                    $sql_query_sel[]= "SELECT $new_post_id, '$meta_key', '$meta_value'";
+                }
+                $sql_query.= implode(" UNION ALL ", $sql_query_sel);
+                $wpdb->query( $sql_query );
+        }
+    }
+    
+}
+
+if ( !function_exists( '_learn_press_get_course_curriculum' ) ) {
+    require_once LP_PLUGIN_PATH . 'inc/lp-init.php';
+//    $curriculums = _learn_press_get_course_curriculum( 7222 );
+//    var_dump($curriculums[2]->items); die();
+//    var_dump(_learn_press_get_quiz_questions(6854)); die();
 }

@@ -67,7 +67,7 @@ add_action( 'learn_press_content_learning_summary', 'learn_press_course_remainin
 add_action( 'learn_press_content_learning_summary', 'learn_press_course_curriculum_popup', 60 );
 add_action( 'learn_press_content_learning_summary', 'learn_press_course_buttons', 65 );
 
-add_action( 'learn_press_after_content_learning', 'learn_press_course_students_list', 5 );
+add_action( 'learn_press_content_learning_summary', 'learn_press_course_students_list', 75 );
 //add_action( 'learn_press_course_content_lesson', 'learn_press_course_content_lesson', 5 );
 
 /*
