@@ -702,3 +702,24 @@ function _learn_press_before_purchase_course_handler( $course_id, $cart ) {
 		}
 	}
 }
+
+function learn_press_profile_tab_endpoints_edit_profile($endpoints){
+	$endpoints['edit'] = 'edit';
+	return $endpoints;
+}
+
+add_filter( 'learn_press_profile_tab_endpoints', 'learn_press_profile_tab_endpoints_edit_profile' );
+
+function learn_press_profile_tab_layout_edit_profile($content) {
+	global $wp, $wpdb;
+	$query_vars = $wp->query_vars;
+	$user = learn_press_get_current_user();
+	if( !$user ) {
+		$content = learn_press_get_template('profile/private-area.php');
+	} elseif (!empty($query_vars['user']) && !empty($query_vars['view']) && $query_vars['view'] == 'edit' && $user && isset($user->user->data->user_login) && $query_vars['user'] == $user->user->data->user_login ) {
+		$content = learn_press_get_template('profile/edit.php');
+	}
+	return $content;
+}
+
+add_filter('the_content', 'learn_press_profile_tab_layout_edit_profile');
