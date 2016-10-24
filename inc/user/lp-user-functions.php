@@ -710,16 +710,6 @@ function learn_press_profile_tab_endpoints_edit_profile($endpoints){
 
 add_filter( 'learn_press_profile_tab_endpoints', 'learn_press_profile_tab_endpoints_edit_profile' );
 
-function learn_press_profile_tab_layout_edit_profile($content) {
-	global $wp, $wpdb;
-	$query_vars = $wp->query_vars;
-	$user = learn_press_get_current_user();
-	if( !$user ) {
-		$content = learn_press_get_template('profile/private-area.php');
-	} elseif (!empty($query_vars['user']) && !empty($query_vars['view']) && $query_vars['view'] == 'edit' && $user && isset($user->user->data->user_login) && $query_vars['user'] == $user->user->data->user_login ) {
-		$content = learn_press_get_template('profile/edit.php');
-	}
-	return $content;
+function learn_press_profile_tab_edit_content( $current, $tab, $user ) {
+	learn_press_get_template( 'profile/tabs/edit.php', array( 'user' => $user, 'current' => $current, 'tab' => $tab ) );
 }
-
-add_filter('the_content', 'learn_press_profile_tab_layout_edit_profile');

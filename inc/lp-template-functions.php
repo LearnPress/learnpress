@@ -690,6 +690,10 @@ if ( !function_exists( 'learn_press_user_profile_tabs' ) ) {
 				'title'    => __( 'Orders', 'learnpress' ),
 				'callback' => 'learn_press_profile_tab_orders_content'
 			);
+			$defaults['edit'] = array(
+				'title'    => __( 'Edit', 'learnpress' ),
+				'callback' => 'learn_press_profile_tab_edit_content'
+			);
 		}
 
 		$tabs = apply_filters( 'learn_press_user_profile_tabs', $defaults, $user );
