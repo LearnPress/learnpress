@@ -1723,6 +1723,7 @@ body.block-content #learn-press-block-content {
 }
 .learn-press-checkout-payment .payment-methods {
   list-style: none;
+  margin: 0;
 }
 /* COURSE QUIZ */
 .single-quiz .quiz-questions-list {
@@ -1980,6 +1981,38 @@ body.content-item-only #learn-press-content-item {
 .user-profile-edit-form .update-profile {
   margin-top: 20px;
 }
+.payment-method-form.payment_method_authorizenet {
+  background: #f7f7f7;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  padding-top: 25px;
+}
+.payment-method-form.payment_method_authorizenet .row-fluid {
+  clear: both;
+  padding-bottom: 25px;
+}
+.payment-method-form.payment_method_authorizenet .row-fluid .span6:first-child {
+  width: 50%;
+  float: left;
+}
+.payment-method-form.payment_method_authorizenet .row-fluid .span6:first-child label {
+  margin-left: 17px;
+}
+.payment-method-form.payment_method_authorizenet .row-fluid .span6:first-child select,
+.payment-method-form.payment_method_authorizenet .row-fluid .span6:first-child input {
+  margin-left: 10px;
+}
+.payment-method-form.payment_method_authorizenet .row-fluid .span6 select,
+.payment-method-form.payment_method_authorizenet .row-fluid .span6 input {
+  padding: 8px 0;
+}
+.payment-method-form.payment_method_authorizenet .row-fluid .span6 select.required {
+  color: #000;
+}
+.place-order-action {
+  margin-top: 20px;
+}
 @-moz-keyframes spin-12 {
   0% {
     -moz-transform: rotate(0deg) translate(0px);
@@ -2114,5 +2147,31 @@ body.content-item-only #learn-press-content-item {
   }
   body.single-lp_course article.lp_course .entry-footer {
     display: none;
+  }
+}
+@media screen and (max-width: 615px) {
+  .payment-method-form.payment_method_authorizenet .row-fluid {
+    padding-bottom: 15px;
+  }
+  .payment-method-form.payment_method_authorizenet .row-fluid .span6:first-child {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+  .payment-method-form.payment_method_authorizenet .row-fluid .span6 label {
+    margin-left: 17px;
+  }
+  .payment-method-form.payment_method_authorizenet .row-fluid .span6 select,
+  .payment-method-form.payment_method_authorizenet .row-fluid .span6 input {
+    margin-left: 10px;
+  }
+  .payment-method-form.payment_method_authorizenet .row-fluid .span6 select,
+  .payment-method-form.payment_method_authorizenet .row-fluid .span6 input {
+    padding: 8px 0;
+  }
+  .payment-method-form.payment_method_authorizenet .row-fluid .span6 select.required {
+    color: #000;
+  }
+  .payment-method-form.payment_method_authorizenet .row-fluid .span6 #learn-press-authorizenet-payment-expmonth {
+    margin-bottom: 10px;
   }
 }
