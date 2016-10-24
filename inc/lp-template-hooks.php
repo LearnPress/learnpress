@@ -155,3 +155,14 @@ if ( !function_exists( 'learn_press_redirect_profile' ) ) {
         return $template;
     }
 }
+
+
+function learn_press_comments_template_query_args( $comment_args ) { 
+	$post_type = get_post_type( $comment_args['post_id'] );
+	if( $post_type == 'lp_course' ) {
+		$comment_args['type__not_in']='review';
+	}
+	return $comment_args;
+}
+
+add_filter( 'comments_template_query_args' , 'learn_press_comments_template_query_args' );

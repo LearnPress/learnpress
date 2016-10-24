@@ -466,9 +466,9 @@ function _learn_press_setup_question( $id ) {
 			if ( !$answer_data = maybe_unserialize( $row->answer_data ) ) {
 				continue;
 			}
-			$answer_data['id']                                          = $row->question_answer_id;
-			$answer_data['order']                                       = $row->answer_order;
-			$answer_data['type']                                        = $row->type;
+			$answer_data['id']		= $row->question_answer_id;
+			$answer_data['order']	= $row->answer_order;
+			$answer_data['type']	= $row->type;
 			$questions[$question_id]->answers[$row->question_answer_id] = $answer_data;
 		}
 		foreach ( $questions as $question ) {
@@ -483,9 +483,11 @@ function _learn_press_setup_question( $id ) {
 
 learn_press_setup_pages();
 
-
-add_action( 'init', 'learn_press_remove_course_comment' );
-
-function learn_press_remove_course_comment() {
-	remove_post_type_support( 'lp_course', 'comments' );
-}
+#
+# stop support comment for 
+#
+//add_action( 'init', 'learn_press_remove_course_comment' );
+//
+//function learn_press_remove_course_comment() {
+//	remove_post_type_support( 'lp_course', 'comments' );
+//}
