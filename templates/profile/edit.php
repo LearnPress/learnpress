@@ -24,7 +24,7 @@ $first_name           = $user_info->first_name;
 $last_name            = $user_info->last_name;
 $profile_picture_type = get_user_meta( $user->id, '_lp_profile_picture_type', true );
 if ( !$profile_picture_type ) {
-	$profile_picture_type = 'gavatar';
+	$profile_picture_type = 'gravatar';
 }
 $profile_picture_src = '';
 if ( $profile_picture_type == 'picture' ) {
@@ -50,10 +50,10 @@ if ( $user ) :
 				<img alt="" src="<?php esc_attr_e( $profile_picture_src ); ?>" class="avatar avatar-96 photo" height="96" width="96" />
 				<div class="change-picture">
 					<select name="profile_picture_type">
-						<option value="gavatar" <?php echo $profile_picture_type == 'gavatar' ? ' selected="selected"' : ''; ?>><?php _e( 'Gavatar', 'learnpress' ); ?></option>
+						<option value="gravatar" <?php echo $profile_picture_type == 'gravatar' ? ' selected="selected"' : ''; ?>><?php _e( 'Gavatar', 'learnpress' ); ?></option>
 						<option value="picture" <?php echo $profile_picture_type == 'picture' ? ' selected="selected"' : ''; ?>><?php _e( 'Picture', 'learnpress' ); ?></option>
 					</select>
-					<div id="profile-picture-gavatar">
+					<div id="profile-picture-gravatar">
 						<p class="description"><?php _e( 'You can change your profile picture on', 'learnpress' ); ?>
 							<a href="https://en.gravatar.com/"><?php _e( 'Gravatar', 'learnpress' ); ?></a>.</p>
 					</div>
