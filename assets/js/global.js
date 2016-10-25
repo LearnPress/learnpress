@@ -966,6 +966,15 @@ if (typeof window.LP == 'undefined') {
 
 		$('.learn-press-icon').tooltip({offset: [30, 30]});
 
+		$('.learn-press-message[data-autoclose]').each(function(){
+			var $el = $(this), delay = parseInt($el.data('autoclose'));
+			if(delay){
+				setTimeout(function($el){
+					$el.fadeOut();
+				}, delay, $el);
+			}
+		})
+
 		//$(window).on("message onmessage", LP.receiveMessage, false);
 		window.addEventListener("message", LP.receiveMessage, false);
 	});

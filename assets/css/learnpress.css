@@ -573,13 +573,34 @@ body.course-has-popup {
   width: 350px;
   border-right: 1px solid #ab4a10;
 }
-#course-curriculum-popup #popup-main #popup-header .popup-close {
+#course-curriculum-popup #popup-main #popup-header .popup-close,
+#course-curriculum-popup #popup-main #popup-header .sidebar-hide-btn,
+#course-curriculum-popup #popup-main #popup-header .sidebar-show-btn {
   width: 59px;
   height: 59px;
   position: absolute;
-  right: 0;
   top: 0;
   cursor: pointer;
+  font-size: 34px;
+  line-height: 60px;
+  text-align: center;
+  color: #FFF;
+}
+#course-curriculum-popup #popup-main #popup-header .popup-close:hover,
+#course-curriculum-popup #popup-main #popup-header .sidebar-hide-btn:hover,
+#course-curriculum-popup #popup-main #popup-header .sidebar-show-btn:hover {
+  background: #b34c10;
+}
+#course-curriculum-popup #popup-main #popup-header .sidebar-hide-btn {
+  left: 0;
+}
+#course-curriculum-popup #popup-main #popup-header .sidebar-show-btn {
+  position: relative;
+  margin-left: -20px;
+  margin-right: 20px;
+}
+#course-curriculum-popup #popup-main #popup-header .popup-close {
+  right: 0;
 }
 #course-curriculum-popup #popup-main #popup-header .popup-close:before,
 #course-curriculum-popup #popup-main #popup-header .popup-close:after {
@@ -610,6 +631,7 @@ body.course-has-popup {
   line-height: 60px;
   padding: 0 20px;
   color: #FFF;
+  position: relative;
 }
 #course-curriculum-popup #popup-main #popup-content {
   position: absolute;
@@ -1929,22 +1951,20 @@ body.content-item-only #learn-press-content-item {
 .lp-group-heading-title.toggle-on .toggle-icon:before {
   content: '-';
 }
-.sidebar-hide-btn,
-.sidebar-show-btn {
-  cursor: pointer;
-  width: 32px;
-  height: 32px;
-  display: inline-block;
-  font-size: 34px;
-  margin-top: 10px;
-}
-.sidebar-hide-btn {
-  margin-left: 20px;
-}
-.sidebar-show-btn {
-  cursor: pointer;
-  margin-right: 30px;
-}
+/*
+.sidebar-hide-btn, .sidebar-show-btn {
+    cursor: pointer;
+    width: 60px;
+    height: 60px;
+    display: inline-block;
+    font-size: 34px;
+    line-height: 60px;
+    text-align: center;
+    color: #FFF;
+    position: absolute;
+
+
+}*/
 .user-profile-edit-form .info-field {
   margin-bottom: 20px;
 }

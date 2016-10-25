@@ -519,7 +519,7 @@ class LP_Cart {
 
 		// In case the course is FREE and "No checkout free course" is turn off
 		if ( !$need_checkout ) {
-			$user = learn_press_get_course_user();
+			$user = learn_press_get_current_user();
 			if ( !$user->has_purchased_course( $course_id )/* || $user->has_finished_course( $course_id ) */ ) {
 				require_once LP_PLUGIN_PATH . '/inc/gateways/class-lp-gateway-none.php';
 				$checkout = learn_press_get_checkout( array( 'payment_method' => new LP_Gateway_None() ) );
