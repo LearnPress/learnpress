@@ -702,3 +702,14 @@ function _learn_press_before_purchase_course_handler( $course_id, $cart ) {
 		}
 	}
 }
+
+function learn_press_profile_tab_endpoints_edit_profile($endpoints){
+	$endpoints['edit'] = 'edit';
+	return $endpoints;
+}
+
+add_filter( 'learn_press_profile_tab_endpoints', 'learn_press_profile_tab_endpoints_edit_profile' );
+
+function learn_press_profile_tab_edit_content( $current, $tab, $user ) {
+	learn_press_get_template( 'profile/tabs/edit.php', array( 'user' => $user, 'current' => $current, 'tab' => $tab ) );
+}

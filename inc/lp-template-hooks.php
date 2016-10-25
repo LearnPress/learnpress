@@ -118,22 +118,7 @@ add_action( 'learn_press_after_quiz_question_title', 'learn_press_single_quiz_qu
 add_action( 'learn_press_order_received', 'learn_press_order_details_table', 5 );
 add_action( 'learn_press_before_template_part', 'learn_press_generate_template_information', 999, 4 );
 
-add_filter( 'learn_press_profile_tab_endpoints', function ( $endpoints ) {
-	$endpoints['edit'] = 'edit';
-	return $endpoints;
-} );
 
-add_filter('the_content', function($content) {
-	global $wp, $wpdb;
-	$query_vars = $wp->query_vars;
-	$user = learn_press_get_current_user();
-	if( !$user ) {
-		$content = learn_press_get_template('profile/private-area.php');
-	} elseif (!empty($query_vars['user']) && !empty($query_vars['view']) && $query_vars['view'] == 'edit' && $user && isset($user->user->data->user_login) && $query_vars['user'] == $user->user->data->user_login ) {
-		$content = learn_press_get_template('profile/edit.php');
-	}
-	return $content;
-});
 
 /*
 add_action( 'learn_press_single_quiz_summary', 'learn_press_single_quiz_preview_mode', 5 );
@@ -170,3 +155,14 @@ if ( !function_exists( 'learn_press_redirect_profile' ) ) {
         return $template;
     }
 }
+
+
+function learn_press_comments_template_query_args( $comment_args ) { 
+	$post_type = get_post_type( $comment_args['post_id'] );
+	if( $post_type == 'lp_course' ) {
+		$comment_args['type__not_in']='review';
+	}
+	return $comment_args;
+}
+
+add_filter( 'comments_template_query_args' , 'learn_press_comments_template_query_args' );

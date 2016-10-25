@@ -54,7 +54,8 @@
                         course_id: id,
                         _nonce: nonce,
                         action: 'learnpress_duplicate_course'
-                    };
+                    },
+                    buttons = _this.parents( '#learn-press-duplicate-course' ).find( 'button' );
             data.content = _this.hasClass( 'all-content' ) ? 1 : 0;
             $.ajax({
                 url: ajaxurl,
@@ -64,6 +65,7 @@
                 beforeSend: function() {
                     _this.text( processing );
                     _this.attr( 'data-text', processing );
+                    buttons.attr( 'disabled', true );
                 }
             }).done(function( res ){
                 if ( typeof res.redirect !== 'undefined' ) {

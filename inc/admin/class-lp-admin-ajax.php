@@ -968,6 +968,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
                     if ( empty( $_POST['course_id'] ) || empty( $_POST['_nonce'] ) || !wp_verify_nonce( $_POST['_nonce'], 'lp-duplicate-course' ) ) {
                         return;
                     }
+                    global $wpdb;
                     $course_id = absint( $_POST['course_id'] );
                     $duplicate_content = ! empty( $_POST['content'] ) && $_POST['content'] ? true : false;
                     if ( !function_exists( '_learn_press_get_course_curriculum' ) ) {
@@ -1014,14 +1015,16 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
                                                     'item_type'     => $item->item_type
                                                 ) );
                                                 if ( $item->post_type === LP_QUIZ_CPT ) {
-                                                    $questions = _learn_press_get_quiz_questions( $item->ID );
+//                                                    $questions = _learn_press_get_quiz_questions( $item->ID );
+                                                    $quiz = LP_Quiz::get_quiz( $item->ID );
+                                                    $questions = $quiz->get_questions();
                                                     if ( $questions ) {
+                                                        $questions = array_keys( $questions );
                                                         foreach ( $questions as $question_id ) {
                                                             $new_question_id = learn_press_duplicate_post( $question_id );
-                                                            
                                                             // learnpress_quiz_questions
                                                             $sql = $wpdb->prepare( "
-                                                                        SELECT * $wpdb->learnpress_quiz_questions WHERE quiz_id = %d AND question_id = %d
+                                                                        SELECT * FROM $wpdb->learnpress_quiz_questions WHERE quiz_id = %d AND question_id = %d
                                                                     ", $item->ID, $question_id );
                                                             $quiz_question_data = $wpdb->get_row( $sql );
                                                             if ( $quiz_question_data ) {
@@ -1043,23 +1046,25 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
                                                             }
                                                             // learnpress_question_answers
                                                             $sql = $wpdb->prepare( "
-                                                                        SELECT * $wpdb->learnpress_question_answers WHERE question_id = %d
+                                                                        SELECT * FROM $wpdb->learnpress_question_answers WHERE question_id = %d
                                                                     ", $question_id );
-                                                            $question_answers = $wpdb->get_row( $sql );
+                                                            $question_answers = $wpdb->get_results( $sql );
                                                             if ( $question_answers ) {
-                                                                $wpdb->insert(
-                                                                        $wpdb->learnpress_question_answers,
-                                                                        array(
-                                                                            'question_id'    => $new_question_id,
-                                                                            'answer_data'    => $question_answers->answer_data,
-                                                                            'answer_order'   => $question_answers->answer_order
-                                                                        ),
-                                                                        array(
-                                                                            '%d',
-                                                                            '%d',
-                                                                            '%s'
-                                                                        )
-                                                                    );
+                                                                foreach ( $question_answers as $q_a ) {
+                                                                    $wpdb->insert(
+                                                                            $wpdb->learnpress_question_answers,
+                                                                            array(
+                                                                                'question_id'    => $new_question_id,
+                                                                                'answer_data'    => $q_a->answer_data,
+                                                                                'answer_order'   => $q_a->answer_order
+                                                                            ),
+                                                                            array(
+                                                                                '%d',
+                                                                                '%s',
+                                                                                '%s'
+                                                                            )
+                                                                        );
+                                                                }
                                                             }
                                                         }
                                                     }

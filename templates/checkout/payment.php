@@ -35,9 +35,18 @@ $count_gateways               = !empty( $available_gateways ) ? sizeof( $availab
 
 				<?php do_action( 'learn_press_before_payments' ); ?>
 
-				<?php foreach ( $available_gateways as $gateway ) { ?>
+				<?php $order = 1; ?>
+				<?php foreach ( $available_gateways as $gateway ) {
 
-					<?php learn_press_get_template( 'checkout/payment-method.php', array( 'gateway' => $gateway, 'selected' => $count_gateways ) ); ?>
+					if ( $order == 1 ) {
+						learn_press_get_template( 'checkout/payment-method.php', array( 'gateway' => $gateway, 'selected' => $gateway->id ) );
+					} else {
+						learn_press_get_template( 'checkout/payment-method.php', array( 'gateway' => $gateway, 'selected' => '' ) );
+					}
+
+					$order ++;
+
+					?>
 
 				<?php } ?>
 

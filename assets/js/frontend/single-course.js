@@ -267,14 +267,14 @@ if (typeof LearnPress === 'undefined') {
 			this._initHooks();
 			this._loadDefaultContent();
 
-			if (typeof window.onpopstate != 'undefined') {
+			if (typeof window.onpopstate !== 'undefined') {
 				$(window).on('popstate', this.onPopState);
 			}
 
 			LP.Hook.addAction('learn_press_receive_message', this.receiveMessage);
 		},
 		receiveMessage     : function (data) {
-			if (data.messageType == 'update-course') {
+			if (data.messageType === 'update-course') {
 				this.update(data);
 			}
 		},
@@ -291,16 +291,16 @@ if (typeof LearnPress === 'undefined') {
 				if (!sections[item.section_id]) {
 					sections[item.section_id] = [0, 0];
 				}
-				if (item.status == 'completed') {
+				if (item.status === 'completed') {
 					itemsCompleted++;
 					$item.addClass('item-has-status item-completed');
 					sections[item.section_id][1]++;
 				} else if (item.status) {
 					$item.addClass('item-has-status').removeClass('item-completed');
 				} else {
-					$item.removeClass('item-has-status').removeClass('item-completed')
+					$item.removeClass('item-has-status').removeClass('item-completed');
 				}
-				if (item.type == 'lp_quiz') {
+				if (item.type === 'lp_quiz') {
 					$item.find('.item-result').html(LP.Hook.applyFilters('item_result_text', item.results + '%'));
 				}
 				sections[item.section_id][0]++;
@@ -339,7 +339,7 @@ if (typeof LearnPress === 'undefined') {
 		},
 		_initHooks         : function () {
 			LP.Hook.addAction('learn_press_update_item_content', this.updateItemContent);
-			LP.Hook.addAction('learn_press_set_location_url', this.pushContent)
+			LP.Hook.addAction('learn_press_set_location_url', this.pushContent);
 
 			$(document).on('learn_press_popup_course_remove', this.removePopup);
 		},
@@ -347,7 +347,7 @@ if (typeof LearnPress === 'undefined') {
 			var that = this;
 			setTimeout(function () {
 				that.$('.course-item.item-current .button-load-item').trigger('click', {force: true});
-			}, 500)
+			}, 500);
 		},
 		_loadItem          : function (e, f) {
 			e.preventDefault();
@@ -379,11 +379,11 @@ if (typeof LearnPress === 'undefined') {
 			that.viewItem(id);
 			this.$('#popup-content-inner').html($content);
 			if (isNew) {
-				$content.attr('src', LP.addQueryVar('content-item-only', 'yes', this.currentItem.get('url')))
+				$content.attr('src', LP.addQueryVar('content-item-only', 'yes', this.currentItem.get('url')));
 			}
 			$content.unbind('load').load(function () {
 				that.itemLoading = 0;
-			})
+			});
 		},
 		viewItem           : function (id, args) {
 			var item = this.model.getItem(id);
@@ -533,13 +533,13 @@ if (typeof LearnPress === 'undefined') {
 		updateFooterNav  : function () {
 			var prev = this.model.getPrevItem(),
 				next = this.model.getNextItem();
-			/*this.$('#popup-footer').find('.prev-item, .next-item').remove();
-			 if (prev) {
-			 this.$('#popup-footer').append(Template('course-prev-item', prev.toJSON()));
-			 }
-			 if (next) {
-			 this.$('#popup-footer').append(Template('course-next-item', next.toJSON()));
-			 }*/
+			this.$('#popup-footer').find('.prev-item, .next-item').remove();
+                        if (prev) {
+                            this.$('#popup-footer').append(Template('course-prev-item', prev.toJSON()));
+                        }
+                        if (next) {
+                            this.$('#popup-footer').append(Template('course-next-item', next.toJSON()));
+                        }
 		},
 
 		updateUrl     : function (url) {
