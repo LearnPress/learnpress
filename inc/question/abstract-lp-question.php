@@ -214,7 +214,6 @@ class LP_Abstract_Question {
 		/**
 		 * Question post type should be cached
 		 */
-
 		if ( $question_post = get_post( $this->id ) ) {
 			$answers = !empty( $question_post->answers ) ? maybe_unserialize( $question_post->answers ) : array();
 		}

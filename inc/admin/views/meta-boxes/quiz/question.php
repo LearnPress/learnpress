@@ -28,6 +28,7 @@ if ( empty ( $question->id ) ) {
 			<a href="" data-action="expand" class="dashicons dashicons-plus <?php echo $is_hidden ? '' : 'hide-if-js'; ?>" title="<?php _e( 'Expand', 'learnpress' ); ?>"></a>
 			<a href="" data-action="collapse" class="dashicons dashicons-minus <?php echo !$is_hidden ? '' : 'hide-if-js'; ?>" title="<?php _e( 'Collapse', 'learnpress' ); ?>"></a>
 			<a href="<?php echo get_edit_post_link( $question->id ); ?>" class="dashicons dashicons-edit" data-action="" title="<?php _e( 'Edit', 'learnpress' ); ?>"></a>
+                        <a href="" data-action="duplicate" class="dashicons-before dashicons-admin-page" title="<?php _e( 'Duplicate', 'learnpress' ); ?>" data-id="<?php echo esc_attr( $question->id ); ?>" data-quiz="<?php echo esc_attr( $post->ID ) ?>"></a>
 			<a href="<?php echo wp_nonce_url( admin_url( 'admin-ajax.php?action=learnpress_remove_quiz_question&quiz_id=' . $post->ID . '&question_id=' . $question->id ), 'remove_quiz_question', 'remove-nonce' ); ?>"
 			   class="dashicons dashicons-trash"
 			   data-action="remove"

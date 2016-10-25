@@ -250,6 +250,7 @@ class LP_Assets {
 		$styles->add( 'learn-press-mb-course', $default_path . 'css/admin/meta-box-course' . $suffix . '.css' );
 		$styles->add( 'learn-press-mb-question', $default_path . 'css/admin/meta-box-question' . $suffix . '.css' );
 		$styles->add( 'learn-press-mb-order', $default_path . 'css/admin/meta-box-order' . $suffix . '.css' );
+                $styles->add( 'learn-press-jalerts', $default_path . 'css/jalert' . $suffix . '.css' );
 
 		// frontend
 		$styles->add( 'learn-press-style', $default_path . 'css/learnpress.css' );
@@ -707,8 +708,12 @@ class LP_Assets {
 				LP_Assets::enqueue_style( 'learn-press-admin' );
 				LP_Assets::enqueue_script( 'learn-press-admin-settings', LP()->plugin_url( 'assets/js/admin/settings.js' ) );
 			}
-                        if ( $screen_id === 'edit-lp_course' && $pagenow === 'edit.php' ) {
+                        if ( $pagenow === 'edit.php' && $screen_id === 'edit-lp_course' ) {
                                 LP_Assets::enqueue_script( 'learn-press-duplicate-course', LP()->plugin_url( 'assets/js/admin/duplicate-course.js' ) );
+                        }
+                        if ( $pagenow === 'post.php' && $screen_id === 'lp_quiz'  ) {
+                            self::enqueue_style( 'learn-press-jalerts' );
+                            self::enqueue_script( 'learn-press-jalerts' );
                         }
 			return;
 		}
