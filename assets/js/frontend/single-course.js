@@ -683,11 +683,10 @@ if (typeof LearnPress === 'undefined') {
 			this.$('#popup-content-inner').html($(response).contents().find('.lp_course'));
 		}
 	}),
-		Course.ModelPopup = Backbone.Model.extend({
-			initialize: function () {
-			}
-		});
-
+        Course.ModelPopup = Backbone.Model.extend({
+                initialize: function () {
+                }
+        });
 
 	LP.Course = Course;
 	$(document).ready(function () {
@@ -697,7 +696,6 @@ if (typeof LearnPress === 'undefined') {
 			LP.Hook.doAction('learn_press_course_initialize', LP.$LP_Course);
 			$(window).trigger('resize.check-lines');
 		});
-
 
 	});
 

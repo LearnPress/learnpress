@@ -316,6 +316,18 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 				AND question_id = %d
 			", $quiz_id, $question_id );
 			$wpdb->query( $query );
+
+                        // trigger change user memorize question types
+                        $user_id = get_current_user_id();
+                        $type = get_post_meta( $question_id, '_lp_type', true );
+                        if ( $type ) {
+                            $question_types = get_user_meta( $user_id, '_learn_press_memorize_question_types', true );
+                            $question_types = ! $question_types ? array() : $question_types;
+                            $counter = ! empty ( $question_types[$type] ) && $question_types[$type] ? absint( $question_types[$type] ) : 0;
+                            $question_types[$type] = $counter ? $counter-- : 0;
+                            update_user_meta( $user_id, '_learn_press_memorize_question_types', $question_types );
+                        }
+                        // end trigger change user memorize question types
 			die();
 		}
 
@@ -684,6 +696,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			$quiz_id  = learn_press_get_request( 'quiz_id' );
 			$type     = learn_press_get_request( 'type' );
 			$name     = learn_press_get_request( 'name' );
+                        $user_id  = get_current_user_id();
 			$response = array(
 				'id' => $id
 			);
@@ -718,6 +731,14 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 				$question = LP_Question_Factory::get_question( $id );
 				learn_press_admin_view( 'meta-boxes/quiz/question.php', array( 'question' => $question ) );
 				$response['html'] = ob_get_clean();
+                                
+                                // trigger change user memorize question types
+                                $question_types = get_user_meta( $user_id, '_learn_press_memorize_question_types', true );
+                                $question_types = ! $question_types ? array() : $question_types;
+                                $type = get_post_meta( $id, '_lp_type', true );
+                                $question_types[$type] = ! empty ( $question_types[$type] ) ? absint( $question_types[$type] ) + 1 : 1;
+                                update_user_meta( $user_id, '_learn_press_memorize_question_types', $question_types );
+                                // end trigger change user memorize question types
 			}
 			learn_press_send_json( $response );
 			die();
@@ -730,6 +751,15 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 
 				do_action( 'learn_press_convert_question_type', $question_id, $from, $to, $data );
 				$question = LP_Question_Factory::get_question( $question_id, array( 'type' => $to ) );
+
+                                // trigger change user memorize question types
+                                $user_id = get_current_user_id();
+                                $question_types = get_user_meta( $user_id, '_learn_press_memorize_question_types', true );
+                                $question_types[$from] = ! empty( $question_types[$from] ) && $question_types[$from] ? absint( $question_types[$from] ) - 1 : 0;
+                                $question_types[$to] = ! empty( $question_types[$to] ) && $question_types[$to] ? absint( $question_types[$to] ) + 1 : 1;
+                                update_user_meta( $user_id, '_learn_press_memorize_question_types', $question_types );
+                                // end trigger change user memorize question types
+
 				learn_press_send_json(
 					array(
 						'html' => $question->admin_interface( array( 'echo' => false ) ),

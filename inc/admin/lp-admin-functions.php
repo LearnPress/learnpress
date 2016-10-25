@@ -1502,9 +1502,36 @@ if ( !function_exists( 'learn_press_duplicate_post_meta' ) ) {
     
 }
 
-if ( !function_exists( '_learn_press_get_course_curriculum' ) ) {
-    require_once LP_PLUGIN_PATH . 'inc/lp-init.php';
-//    $curriculums = _learn_press_get_course_curriculum( 7222 );
-//    var_dump($curriculums[2]->items); die();
-//    var_dump(_learn_press_get_quiz_questions(6854)); die();
+add_filter( 'learn_press_question_types', 'learn_press_sort_questions', 99 );
+if ( !function_exists( 'learn_press_sort_questions' ) ) {
+    function learn_press_sort_questions( $types ) {
+        $user_id = get_current_user_id();
+        $question_types = get_user_meta( $user_id, '_learn_press_memorize_question_types', true );
+        if ( ! empty( $question_types ) ) {
+            $sort = array();
+            // re-sort array descending
+            arsort( $question_types );
+            $new_types = array();
+            $ktypes = array_keys( $types );
+
+            for( $i = 0; $i < count( $ktypes ) - 1; $i++ ) {
+                $max = $i;
+                if ( !isset( $question_types[ $ktypes[$i] ] ) ) {
+                    $question_types[ $ktypes[$i] ] = 0;
+                }
+                for( $j = $i + 1; $j < count( $ktypes ); $j++ ) {
+                    if ( isset( $question_types[ $ktypes[$j] ], $question_types[ $ktypes[$max] ] ) 
+                            && $question_types[ $ktypes[$j] ] > $question_types[ $ktypes[$max] ] ) {
+                        $max = $j;
+                    }
+                }
+                $tmp = $ktypes[$i];
+                $ktypes[$i] = $ktypes[$max];
+                $ktypes[$max] = $tmp;
+            }
+            $ktypes = array_flip( $ktypes );
+            $types = array_merge( $ktypes, $types );
+        }
+        return $types;
+    }
 }
