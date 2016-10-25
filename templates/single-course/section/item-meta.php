@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit();
 
-$user        = learn_press_get_course_user();
+$user        = learn_press_get_current_user();
 $course      = LP()->global['course'];
 $item_status = $user->get_item_status( $item->ID );
 $security    = wp_create_nonce( sprintf( 'complete-item-%d-%d-%d', $user->id, $course->id, $item->ID ) );

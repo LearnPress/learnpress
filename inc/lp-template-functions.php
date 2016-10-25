@@ -985,12 +985,12 @@ function learn_press_get_messages( $clear = false ) {
 	return ob_get_clean();
 }
 
-function learn_press_add_message( $message, $type = 'success' ) {
+function learn_press_add_message( $message, $type = 'success', $autoclose = false ) {
 	$messages = learn_press_session_get( 'messages' );
 	if ( empty( $messages[$type] ) ) {
 		$messages[$type] = array();
 	}
-	$messages[$type][] = $message;
+	$messages[$type][] = array( 'content' => $message, 'autoclose' => $autoclose );
 	learn_press_session_set( 'messages', $messages );
 }
 
