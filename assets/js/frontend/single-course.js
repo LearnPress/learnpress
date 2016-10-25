@@ -659,12 +659,14 @@ if (typeof LearnPress === 'undefined') {
 		},
 		_closeSidebar       : function (e) {
 			e.preventDefault();
-			$('#popup-main').css('left', '0px');
+			$('#popup-sidebar').stop().animate({'margin-left': -350});
+			$('#popup-main').stop().animate({'left': '0px'});
 			$('#popup-main .sidebar-show-btn').css('display', 'inline-block');
 		},
 		_showSidebar        : function (e) {
 			e.preventDefault();
-			$('#popup-main').css('left', '350px');
+			$('#popup-sidebar').stop().animate({'margin-left': '0'});
+			$('#popup-main').stop().animate({'left': '350px'});
 			$('#popup-main .sidebar-show-btn').css('display', 'none');
 		},
 		_loadItem           : function (e) {
