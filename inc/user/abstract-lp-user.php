@@ -1917,7 +1917,7 @@ class LP_Abstract_User {
 
 		$key = $this->id . '-' . $course_id . '-' . $quiz_id;
 		if(get_class($this)=='LP_User_Guest'){
-			print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 10));
+//			print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 10));
 		}
 		if ( !array_key_exists( $key, $quiz_results ) || $force ) {
 			if ( $history = $this->get_quiz_history( $quiz_id, $course_id, false, $force ) ) {
