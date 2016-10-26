@@ -100,9 +100,9 @@
 						$content.find('.learn-press-question-options').replaceWith($(response).filter('.learn-press-question-options'));
 					}
 					that.set({checked: 'yes', response: $content});
-					$.isFunction(args.complete) && args.complete.call(that, response)
+					$.isFunction(args.complete) && args.complete.call(that, response);
 				}
-			})
+			});
 		},
 		showHint  : function (args) {
 			var that = this;
@@ -116,9 +116,9 @@
 				}, args.data || {}),
 				success: function (response, raw) {
 					that.set('checked', response.checked);
-					$.isFunction(args.complete) && args.complete.call(that, response)
+					$.isFunction(args.complete) && args.complete.call(that, response);
 				}
-			})
+			});
 		}
 	});
 	/**
@@ -136,7 +136,7 @@
 				this.listenTo(model, 'change', this.onChange);
 				this.listenTo(model, 'change:hasShowedHint', this.onChangedHint);
 				this.listenTo(model, 'change:checked', function (a) {
-					if (a.changed['checked'] && a.changed['checked'] == 'yes') {
+					if (a.changed['checked'] && a.changed['checked'] === 'yes') {
 						var $dom = a.get('response');
 						if ($dom) $dom.find('.button-check-answer').attr('disabled', true);
 					}
@@ -144,7 +144,7 @@
 				model.set('index', this.len++);
 			}, this);
 			this.on('change:view', function () {
-				this.questions.view = this.get('view')
+				this.questions.view = this.get('view');
 			});
 
 		},
@@ -154,14 +154,14 @@
 		onChange     : function (a, b) {
 
 			if (a.changed['current']) {
-				if (a.get('current') != 'yes') {
+				if (a.get('current') !== 'yes') {
 
 				} else {
 					this.current = a;
 					for (var i = 0; i < this.length; i++) {
 						var e = this.at(i);
 						if (e.get('id') == a.get('id')) {
-							$('.question-' + e.get('id')).toggleClass('current', true)
+							$('.question-' + e.get('id')).toggleClass('current', true);
 							continue;
 						}
 						if (e.get('current') != 'yes') {
@@ -188,7 +188,7 @@
 			_.bindAll(this, 'getQuizData');
 			this._args = args || {};
 			this.on('change:view', function () {
-				this.questions.view = this.get('view')
+				this.questions.view = this.get('view');
 			});
 			this._initQuestions();
 			this.set('remainingTime', args.totalTime - args.userTime);
@@ -301,7 +301,7 @@
 			if (!question) {
 				return;
 			}
-			if (question.get('current') == 'yes') {
+			if (question.get('current') === 'yes') {
 				windowTarget.LP.unblockContent();
 				return;
 			}
@@ -323,7 +323,7 @@
 						question.set('response', $html);
 						loadedCallback();
 					}
-				})
+				});
 			}
 		},
 		getQuestionPosition  : function (question_id) {
@@ -380,7 +380,7 @@
 		},
 		getIds               : function () {
 			return $.map(this.get('questions'), function (i, v) {
-				return parseInt(i.id)
+				return parseInt(i.id);
 			});
 		},
 		showHint             : function (callback, args) {
@@ -457,7 +457,7 @@
 			'click .button-start-quiz'                  : '_startQuiz',
 			'click .button-finish-quiz'                 : '_finishQuiz',
 			'click .button-retake-quiz'                 : '_retakeQuiz',
-			'click .button-complete-item'               : '_completeItem',
+			'click .button-complete-item'               : '_completeItem'
 		},
 		timeout               : 0,
 		delayTimeout          : 0,
@@ -477,7 +477,7 @@
 			$(document).ready(function () {
 				$(window).trigger('load');
 				$(document).trigger('resize');
-			})
+			});
 		},
 		_initCountDown        : function () {
 			if (this.model.get('status') != 'started' || this.model.get('totalTime') <= 0) {
@@ -545,10 +545,10 @@
 			$oldElement.detach();
 			if (this.model.get('show-list')) {
 				$newElement.find('.lp-group-heading-title').addClass('active');
-				$newElement.find('.lp-group-content-wrap').removeClass('hide-if-js')
+				$newElement.find('.lp-group-content-wrap').removeClass('hide-if-js');
 			}
 			this.updateButtons();
-			if (model.getCurrent('hasShowedHint') == 'yes') {
+			if (model.getCurrent('hasShowedHint') === 'yes') {
 				this.$('.button-hint').attr('disabled', true);
 				this.$('.question-hint-content').removeClass('hide-if-js');
 			} else {
@@ -585,13 +585,13 @@
 			windowTarget.LP.unblockContent();
 		},
 		updateButtons         : function () {
-			if (this.model.get('status') == 'started') {
+			if (this.model.get('status') === 'started') {
 				this.$('.button-prev-question').toggleClass('hide-if-js', this.model.isFirst());
 				this.$('.button-next-question').toggleClass('hide-if-js', this.model.isLast());
 				var current = this.model.current();
 				if (current) {
-					this.$('.button-check-answer').toggleClass('hide-if-js', current.get('hasCheckAnswer') != 'yes');
-					this.$('.button-hint').toggleClass('hide-if-js', current.get('hasHint') != 'yes');
+					this.$('.button-check-answer').toggleClass('hide-if-js', current.get('hasCheckAnswer') !== 'yes');
+					this.$('.button-hint').toggleClass('hide-if-js', current.get('hasHint') !== 'yes');
 				}
 			}
 		},
@@ -666,7 +666,7 @@
 				}
 				var $question = $content.find('.quiz-question-content').clone().hide();
 				$form.append($question);
-			})
+			});
 			$form.find('input[name="security"]').val(args.security);
 			$form.find('input[name="lp-ajax"]').val(args.action);
 			var extraArgs = _.omit(args, ['security', 'action']);
@@ -847,6 +847,6 @@
 			window.$LP_Quiz = new LP_Quiz($.extend({course: LP.$LP_Course}, LP_Quiz_Params));
 		}
 		windowTarget.LP.unblockContent();
-	})
+	});
 
 })(jQuery);

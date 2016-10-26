@@ -310,7 +310,6 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 		 * Request load item content
 		 */
 		public static function _request_load_item() {
-
 			global $wpdb;
 			$user      = learn_press_get_current_user();
 			$item_id   = learn_press_get_request( 'id' );

@@ -191,6 +191,13 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 					}
 					break;
 				case 'lp_question':
+                                        $query    = $wpdb->prepare( "
+						SELECT question_id
+						FROM {$wpdb->prefix}learnpress_quiz_questions
+						WHERE %d
+					", 1 );
+					$exclude2 = $wpdb->get_col( $query );
+                                        break;
 
 			}
 			if ( $exclude2 && $exclude ) {
