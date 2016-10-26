@@ -218,7 +218,6 @@ class LP_Quiz extends LP_Abstract_Course_Item {
 					$_question->hasCheckAnswer = learn_press_question_type_support( $question->type, 'check-answer' ) ? 'yes' : 'no';
 					$_question->checked        = array();
 				}
-
 				if ( $show_hint == 'yes' && empty( $question->hasHint ) ) {
 					$_question->hasHint = get_post_meta( $question->ID, '_lp_hint', true ) ? 'yes' : 'no';
 				}
