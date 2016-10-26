@@ -55,7 +55,7 @@ $data = array_merge( $user->get_course_info2( get_the_ID() ), $data );
 					windowTarget.open(link, "_blank");
 					return false;
 				}
-			})
+			});
 		});
 
 	</script>
