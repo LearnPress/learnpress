@@ -44,7 +44,7 @@ $data = array_merge( $user->get_course_info2( get_the_ID() ), $data );
 			$('html, body').css('opacity', 1);
 			windowTarget.LP.unblockContent();
 
-			LP.sendMessage(data, windowTarget);
+			LP.sendMessage(LP.Hook.applyFilters('learn_press_content_item_send_data', data, windowTarget), windowTarget);
 			$('a:not(.js-action)').click(function () {
 				var link = $(this).attr('href');
 				if (link) {
