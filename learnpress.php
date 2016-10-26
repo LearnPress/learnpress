@@ -241,16 +241,17 @@ if ( !class_exists( 'LearnPress' ) ) {
 			add_action( 'after_setup_theme', array( $this, 'setup_theme' ) );
 			add_action( 'load-post.php', array( $this, 'load_meta_box' ), - 10 );
 			add_action( 'load-post-new.php', array( $this, 'load_meta_box' ), - 10 );
-                        add_action( 'plugins_loaded', array( $this, 'loaded' ), 0 );
+			add_action( 'plugins_loaded', array( $this, 'loaded' ), 0 );
 		}
 
-                public function loaded() {
-                    do_action( 'learn_press_loaded', $this );
-                }
+		public function loaded() {
+			do_action( 'learn_press_loaded', $this );
+		}
 
 		public function load_meta_box() {
 			if ( !defined( 'RWMB_VER' ) ) {
 				require_once 'inc/libraries/meta-box/meta-box.php';
+				do_action( 'learn_press_meta_box_loaded' );
 			}
 		}
 
@@ -435,8 +436,8 @@ if ( !class_exists( 'LearnPress' ) ) {
 			require_once 'inc/quiz/class-lp-quiz-factory.php';
 			require_once 'inc/quiz/class-lp-quiz.php';
 
-                        // lesson
-                        require_once 'inc/lesson/lp-lesson-functions.php';
+			// lesson
+			require_once 'inc/lesson/lp-lesson-functions.php';
 			// question
 			//require_once 'inc/question/lp-question.php';
 
@@ -563,11 +564,11 @@ if ( !class_exists( 'LearnPress' ) ) {
 			}
 			add_post_type_support( 'lp_course', 'thumbnail' );
 
-                        // if enabled generate course thumnail on General Settings add new image sizes
-                        $enabled_course_thum = LP()->settings->get( 'generate_course_thumbnail', 'yes' );
-                        if ( $enabled_course_thum !== 'yes' ) {
-                            return;
-                        }
+			// if enabled generate course thumnail on General Settings add new image sizes
+			$enabled_course_thum = LP()->settings->get( 'generate_course_thumbnail', 'yes' );
+			if ( $enabled_course_thum !== 'yes' ) {
+				return;
+			}
 			$sizes = apply_filters( 'learn_press_image_sizes', array( 'single_course', 'course_thumbnail' ) );
 
 			foreach ( $sizes as $image_size ) {
