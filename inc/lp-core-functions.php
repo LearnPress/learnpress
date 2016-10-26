@@ -1480,10 +1480,9 @@ if ( !function_exists( 'learn_press_is_course_archive' ) ) {
 	 * @return bool
 	 */
 	function learn_press_is_course_archive() {
-		return ( is_post_type_archive( 'lp_course' ) || ( learn_press_get_page_id( 'course' ) && is_page( learn_press_get_page_id( 'course' ) ) ) ) ? true : false;
+		return ( ( defined( 'LEARNPRESS_IS_COURSES' ) && LEARNPRESS_IS_COURSES ) || is_post_type_archive( 'lp_course' ) || ( learn_press_get_page_id( 'course' ) && is_page( learn_press_get_page_id( 'course' ) ) ) ) ? true : false;
 	}
 }
-
 
 if ( !function_exists( 'learn_press_is_course_taxonomy' ) ) {
 
@@ -2370,79 +2369,6 @@ function learn_press_update_log( $version, $data ) {
 		$logs[$version] = $data;
 	}
 	update_option( 'learn_press_update_logs', $logs );
-}
-
-//add_filter( 'template_include', 'abc_xyz', 10000 );
-function abc_xyz( $a ) {
-	if ( !learn_press_is_courses() ) {
-		return $a;
-	}
-	return $a;
-	global $wp_query;
-	$wp_query->posts_per_page = 1;
-	$wp_query->nopaging       = true;
-	$wp_query->post_count     = 1;
-
-	// If we don't have a post, load an empty one
-	if ( empty( $wp_query->post ) )
-		$wp_query->post = new WP_Post( new stdClass() );
-
-	$wp_query->post->ID                    = 0;
-	$wp_query->post->post_date             = current_time( 'mysql' );
-	$wp_query->post->post_date_gmt         = current_time( 'mysql', 1 );
-	$wp_query->post->post_content          = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
-	$wp_query->post->post_title            = 'ádasdsadsad';
-	$wp_query->post->post_excerpt          = '';
-	$wp_query->post->post_status           = 'publish';
-	$wp_query->post->comment_status        = false;
-	$wp_query->post->ping_status           = false;
-	$wp_query->post->post_password         = '';
-	$wp_query->post->post_name             = 'it-exchange-ghost-';
-	$wp_query->post->to_ping               = '';
-	$wp_query->post->pinged                = '';
-	$wp_query->post->post_modified         = $wp_query->post->post_date;
-	$wp_query->post->post_modified_gmt     = $wp_query->post->post_date_gmt;
-	$wp_query->post->post_content_filtered = '';
-	$wp_query->post->post_parent           = 0;
-	$wp_query->post->guid                  = '';
-	$wp_query->post->menu_order            = 0;
-	$wp_query->post->post_type             = 'page';
-	$wp_query->post->post_mime_type        = '';
-	$wp_query->post->comment_count         = 0;
-	$wp_query->post->filter                = 'raw';
-
-	$wp_query->posts                = array( $wp_query->post );
-	$wp_query->found_posts          = 1;
-	$wp_query->is_single            = false; //false -- so comments_template() doesn't add comments
-	$wp_query->is_preview           = false;
-	$wp_query->is_page              = false; //false -- so comments_template() doesn't add comments
-	$wp_query->is_archive           = false;
-	$wp_query->is_date              = false;
-	$wp_query->is_year              = false;
-	$wp_query->is_month             = false;
-	$wp_query->is_day               = false;
-	$wp_query->is_time              = false;
-	$wp_query->is_author            = false;
-	$wp_query->is_category          = false;
-	$wp_query->is_tag               = false;
-	$wp_query->is_tax               = false;
-	$wp_query->is_search            = false;
-	$wp_query->is_feed              = false;
-	$wp_query->is_comment_feed      = false;
-	$wp_query->is_trackback         = false;
-	$wp_query->is_home              = false;
-	$wp_query->is_404               = false;
-	$wp_query->is_comments_popup    = false;
-	$wp_query->is_paged             = false;
-	$wp_query->is_admin             = false;
-	$wp_query->is_attachment        = false;
-	$wp_query->is_singular          = false;
-	$wp_query->is_posts_page        = false;
-	$wp_query->is_post_type_archive = false;
-
-	//$GLOBALS['wp_query'] = $this->_wp_query;
-
-	return $a;
 }
 
 /*

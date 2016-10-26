@@ -40,7 +40,7 @@ $no_permalink = $user->has_quiz_status( array( '', 'completed', 'viewed' ), $qui
 					<?php if ( $no_permalink ) { ?>
 						<?php printf( '<p class="question-title">%s</p>', get_the_title( $question->ID ) ); ?>
 					<?php } else { ?>
-						<?php printf( '<a class="question-title" href="%s">%s</a>', $quiz->get_question_link( $question->ID ), get_the_title( $question->ID ) ); ?>
+						<?php printf( '<a class="question-title js-action" href="%s">%s</a>', $quiz->get_question_link( $question->ID ), get_the_title( $question->ID ) ); ?>
 					<?php } ?>
 
 					<?php do_action( 'learn_press_after_quiz_question_title', $question->ID, $quiz->id ); ?>
