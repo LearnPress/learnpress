@@ -50,6 +50,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 				'install_sample_data'             => false,
                                 // Duplicate Course
                                 'duplicate_course'                => false,
+                                'duplicate_question'              => false
 			);
 			foreach ( $ajaxEvents as $ajaxEvent => $nopriv ) {
 				add_action( 'wp_ajax_learnpress_' . $ajaxEvent, array( __CLASS__, $ajaxEvent ) );
@@ -1110,6 +1111,91 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
                     }
 
                     wp_send_json( $results ); die();
+                }
+
+                public static function duplicate_question() {
+                    if ( empty( $_POST['_nonce'] ) || !wp_verify_nonce( $_POST['_nonce'], 'duplicate-question' ) ) {
+                        return;
+                    }
+                    global $wpdb;
+                    $question_id = learn_press_get_request( 'question-id' );
+                    $quiz_id = learn_press_get_request( 'quiz-id' );
+                    $new_question_id = learn_press_duplicate_post( $question_id );
+                    // learnpress_quiz_questions
+                    $sql = $wpdb->prepare( "
+                                SELECT * FROM $wpdb->learnpress_quiz_questions WHERE quiz_id = %d AND question_id = %d
+                            ", $quiz_id, $question_id );
+                    $quiz_question_data = $wpdb->get_row( $sql );
+                    $max_order = $wpdb->get_var( $wpdb->prepare( "SELECT max(question_order) FROM {$wpdb->prefix}learnpress_quiz_questions WHERE quiz_id = %d", $quiz_id ) );
+
+                    if ( $quiz_question_data ) {
+                        $wpdb->insert(
+                                $wpdb->learnpress_quiz_questions,
+                                array(
+                                    'quiz_id'           => $quiz_id,
+                                    'question_id'       => $new_question_id,
+                                    'question_order'    => $max_order + 1,
+                                    'params'            => $quiz_question_data->params
+                                ),
+                                array(
+                                    '%d',
+                                    '%d',
+                                    '%d',
+                                    '%s'
+                                )
+                            );
+                    }
+                    // learnpress_question_answers
+                    $sql = $wpdb->prepare( "
+                                SELECT * FROM $wpdb->learnpress_question_answers WHERE question_id = %d
+                            ", $question_id );
+                    $question_answers = $wpdb->get_results( $sql );
+                    if ( $question_answers ) {
+                        foreach ( $question_answers as $q_a ) {
+                            $wpdb->insert(
+                                    $wpdb->learnpress_question_answers,
+                                    array(
+                                        'question_id'    => $new_question_id,
+                                        'answer_data'    => $q_a->answer_data,
+                                        'answer_order'   => $q_a->answer_order
+                                    ),
+                                    array(
+                                        '%d',
+                                        '%s',
+                                        '%s'
+                                    )
+                                );
+                        }
+                    }
+                    if ( $new_question_id && $quiz_id ) {
+                            $max_order = $wpdb->get_var( $wpdb->prepare( "SELECT max(question_order) FROM {$wpdb->prefix}learnpress_quiz_questions WHERE quiz_id = %d", $quiz_id ) );
+                            $wpdb->insert(
+                                    $wpdb->prefix . 'learnpress_quiz_questions',
+                                    array(
+                                            'quiz_id'        => $quiz_id,
+                                            'question_id'    => $new_question_id,
+                                            'question_order' => $max_order + 1
+                                    ),
+                                    array( '%d', '%d', '%d' )
+                            );
+                            ob_start();
+                            $question = LP_Question_Factory::get_question( $new_question_id );
+                            $post = get_post( $quiz_id );
+                            setup_postdata( $post );
+                            _learn_press_setup_question( $new_question_id );
+                            learn_press_admin_view( 'meta-boxes/quiz/question.php', array( 'question' => $question ) );
+                            $response['html'] = ob_get_clean();
+
+                            // trigger change user memorize question types
+                            $question_types = get_user_meta( $user_id, '_learn_press_memorize_question_types', true );
+                            $question_types = ! $question_types ? array() : $question_types;
+                            $type = get_post_meta( $new_question_id, '_lp_type', true );
+                            $question_types[$type] = ! empty ( $question_types[$type] ) ? absint( $question_types[$type] ) + 1 : 1;
+                            update_user_meta( $user_id, '_learn_press_memorize_question_types', $question_types );
+                            // end trigger change user memorize question types
+                    }
+                    learn_press_send_json( $response );
+                    die();
                 }
 	}
 }

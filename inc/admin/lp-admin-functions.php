@@ -218,6 +218,14 @@ function learn_press_admin_localize_script() {
                 'duplicate_course'          => array(
                     'title'     => __( 'Duplicate course', 'learnpress' ),
                     'message'   => __( 'Duplicate course curriculum?', 'learnpress' )
+                ),
+                'duplicate_question'        => array(
+                    'title'     => __( 'Duplicate Question', 'learnpress' ),
+                    'message'   => __( 'Do you want to duplicate this question?', 'learnpress' )
+                ),
+                'remove_question' => __( 'Do you want to remove this question from quiz?', 'learnpress' ),
+                'nonces'        => array(
+                    'duplicate_question'    => wp_create_nonce( 'duplicate-question' )
                 )
 	);
 	LP_Assets::add_localize( $translate );

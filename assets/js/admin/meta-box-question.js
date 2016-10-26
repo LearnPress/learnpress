@@ -14,7 +14,7 @@ if (typeof window.LP == 'undefined') {
 		return true;
 	}).addAction('question_option_added', function($el){
 		//$el.find('input[type="text"]').focus();
-	})
+	});
 
 	LP.Question = {
 		_getEmptyOption: function(question_id){
@@ -81,7 +81,7 @@ if (typeof window.LP == 'undefined') {
 					response = LP.parseJSON(response);
 					var $newQuestion = $(response.html);
 					$('#learn-press-list-questions').append($newQuestion);
-					LP.Question._hideQuestion(args.id)
+					LP.Question._hideQuestion(args.id);
 					LP.Hook.doAction('learn_press_add_quiz_question', $newQuestion, args);
 				}
 			});
@@ -94,7 +94,7 @@ if (typeof window.LP == 'undefined') {
 		},
 		_showQuestion: function(question){
 			if($.type( question ) == 'number' ) {
-				question = $('#learn-press-dropdown-questions .question a[data-id="' + question + '"]').parent()
+				question = $('#learn-press-dropdown-questions .question a[data-id="' + question + '"]').parent();
 			}
 			$(question).removeClass('added');
 		}
@@ -302,6 +302,31 @@ if (typeof window.LP == 'undefined') {
 							updateHiddenQuestions();
 						});
 					break;
+				case 'duplicate':
+					if ( jConfirm( learn_press_admin_localize.duplicate_question.message, learn_press_admin_localize.duplicate_question.title, function( confirm ){
+                                            if ( confirm ) {
+                                                var buttons = $('#popup_panel').find( 'button' );
+                                                $.ajax({
+                                                    url: LP_Settings.ajax,
+                                                    type: 'POST',
+                                                    dataType: 'html',
+                                                    data: {
+                                                        'question-id' : $link.attr( 'data-id' ),
+                                                        'quiz-id'     : $link.attr( 'data-quiz' ),
+                                                        'action'      : 'learnpress_duplicate_question',
+                                                        '_nonce'      : learn_press_admin_localize.nonces.duplicate_question
+                                                    },
+                                                    beforeSend: function(){
+                                                        buttons.attr( 'disabled', true );
+                                                    }
+                                                }).done( function( response ){
+                                                    response = LP.parseJSON(response);
+                                                    var $newQuestion = $(response.html);
+                                                    $('#learn-press-list-questions').append($newQuestion);
+                                                } );
+                                            }
+                                        } ) );
+					break;
 				case 'remove':
 					LP.MessageBox.quickConfirm($link, {
 						onOk: function(a){
@@ -324,7 +349,7 @@ if (typeof window.LP == 'undefined') {
 						data: $(this).closest('.quiz-question')
 					});
 					break;
-					LP.MessageBox.show('Do you want to remove this question from quiz?', {
+					LP.MessageBox.show( learn_press_admin_localize.remove_question, {
 						buttons: 'yesNo',
 						data: $(this).closest('.quiz-question'),
 						events: {
