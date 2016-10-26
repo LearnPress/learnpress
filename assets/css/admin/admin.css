@@ -1245,6 +1245,27 @@ body.post-type-lp_question #question_answer_ .inside {
 #learn_press_dashboard_widget .subsubsub {
   float: none;
 }
+.learnpress-statistic-status{
+    overflow: hidden;
+}
+.learnpress-statistic-status li{
+    display: inline-block;
+    float: left;
+}
+.learnpress-statistic-status li.halp-width{
+    width: 50%;
+}
+.learnpress-statistic-status li a{
+    padding: 10px 20px;
+    display: block;
+}
+.learnpress-statistic-status li span{
+    font-size: 20px;
+    display: block;
+}
+.learnpress-statistic-status li small{
+    color: #666;
+}
 /* ios checkbox */
 .learn-press-checkbox {
   display: none !important;

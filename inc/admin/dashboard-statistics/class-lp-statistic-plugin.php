@@ -2,9 +2,9 @@
 
 defined( 'ABSPATH' ) || exit();
 
-if ( !class_exists( 'LP_Statistic_Learnpress' ) ) :
+if ( !class_exists( 'LP_Statistic_Plugin' ) ) :
 
-    class LP_Statistic_Learnpress {
+    class LP_Statistic_Plugin {
 
         /**
          * LearnPress statistic layout
@@ -47,10 +47,10 @@ if ( !class_exists( 'LP_Statistic_Learnpress' ) ) :
                     </div>
                     <ul class="subsubsub">
                         <li>
-                            <?php printf( '<strong>%s</strong>: %s', __( 'Published', 'learnpress' ), date_i18n( get_option( 'date_format' ), strtotime( $plugins_data->added ) ) ) ?>
+                            <?php printf( '<strong>%s</strong>: %s', __( 'Published', 'learnpress' ), date_i18n( get_option( 'date_format' ), strtotime( $plugins_data->added ) ) ) ?> | 
                         </li>
                         <li>
-                            <?php printf( '<strong>%s</strong>: %s', __( 'Updated', 'learnpress' ), date_i18n( get_option( 'date_format' ), strtotime( $plugins_data->last_updated ) ) ) ?>
+                            <?php printf( '<strong>%s</strong>: %s', __( 'Updated', 'learnpress' ), date_i18n( get_option( 'date_format' ), strtotime( $plugins_data->last_updated ) ) ) ?> | 
                         </li>
                         <li>
                             <?php printf( '<strong>%s</strong>: %s', __( 'Current Version', 'learnpress' ), $plugins_data->version ) ?>

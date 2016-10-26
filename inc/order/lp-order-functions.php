@@ -498,9 +498,9 @@ function learn_press_get_orders( $args = array() ) {
 	}
 
 	$args = apply_filters( 'learn_press_get_orders_get_posts_args', $args );
-
-	if ( $orders = get_posts( $args ) ) {
-
+        $orders = get_posts( $args );
+	if ( $orders ) {
+            // do somethings
 	}
 
 	return apply_filters( 'learn_press_get_orders', $orders, $args );
