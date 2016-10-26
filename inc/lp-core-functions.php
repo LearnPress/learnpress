@@ -1480,7 +1480,10 @@ if ( !function_exists( 'learn_press_is_course_archive' ) ) {
 	 * @return bool
 	 */
 	function learn_press_is_course_archive() {
-		return ( ( defined( 'LEARNPRESS_IS_COURSES' ) && LEARNPRESS_IS_COURSES ) || is_post_type_archive( 'lp_course' ) || ( learn_press_get_page_id( 'course' ) && is_page( learn_press_get_page_id( 'course' ) ) ) ) ? true : false;
+		$is_courses  = defined( 'LEARNPRESS_IS_COURSES' ) && LEARNPRESS_IS_COURSES;
+		$is_tag      = defined( 'LEARNPRESS_IS_TAG' ) && LEARNPRESS_IS_TAG;
+		$is_category = defined( 'LEARNPRESS_IS_CATEGORY' ) && LEARNPRESS_IS_CATEGORY;
+		return ( $is_courses || $is_category || is_post_type_archive( 'lp_course' ) || ( learn_press_get_page_id( 'course' ) && is_page( learn_press_get_page_id( 'course' ) ) ) ) ? true : false;
 	}
 }
 
@@ -1507,7 +1510,7 @@ if ( !function_exists( 'learn_press_is_course_category' ) ) {
 	 * @return bool
 	 */
 	function learn_press_is_course_category( $term = '' ) {
-		return is_tax( 'course_category', $term );
+		return ( defined( 'LEARNPRESS_IS_CATEGORY' ) && LEARNPRESS_IS_CATEGORY ) || is_tax( 'course_category', $term );
 	}
 }
 
@@ -1522,7 +1525,7 @@ if ( !function_exists( 'learn_press_is_course_tag' ) ) {
 	 * @return bool
 	 */
 	function learn_press_is_course_tag( $term = '' ) {
-		return is_tax( 'course_tag', $term );
+		return ( defined( 'LEARNPRESS_IS_TAG' ) && LEARNPRESS_IS_TAG ) || is_tax( 'course_tag', $term );
 	}
 }
 

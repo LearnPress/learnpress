@@ -161,7 +161,6 @@ class LP_Page_Controller {
 
 			remove_filter( 'the_content', array( $this, 'single_content' ) );
 			remove_filter( 'the_content', 'wpautop' );
-
 		}
 
 		return $template;
