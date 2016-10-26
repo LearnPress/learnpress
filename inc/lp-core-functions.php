@@ -1495,7 +1495,7 @@ if ( !function_exists( 'learn_press_is_course_taxonomy' ) ) {
 	 * @return bool
 	 */
 	function learn_press_is_course_taxonomy() {
-		return is_tax( get_object_taxonomies( 'lp_course' ) );
+		return ( defined( 'LEARNPRESS_IS_TAX' ) && LEARNPRESS_IS_TAX ) || is_tax( get_object_taxonomies( 'lp_course' ) );
 	}
 }
 

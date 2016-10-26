@@ -100,6 +100,7 @@ class LP_Page_Controller {
 		define( 'LEARNPRESS_IS_COURSES', learn_press_is_courses() );
 		define( 'LEARNPRESS_IS_TAG', learn_press_is_course_tag() );
 		define( 'LEARNPRESS_IS_CATEGORY', learn_press_is_course_category() );
+		define( 'LEARNPRESS_IS_TAX', is_tax( get_object_taxonomies( 'lp_course' ) ) );
 
 		if ( LEARNPRESS_IS_COURSES || LEARNPRESS_IS_TAG || LEARNPRESS_IS_CATEGORY ) {
 			global $wp_query, $post;
