@@ -129,6 +129,7 @@ if ( !function_exists( 'learnpress_dashboard_widgets' ) ) {
      * @since 2.0
      */
     function learnpress_dashboard_widgets() {
-        wp_add_dashboard_widget( 'learn_press_dashboard_widget', __( 'LearnPress Statistic' ), array( 'LP_Statistic_Learnpress', 'render' ) );
+        wp_add_dashboard_widget( 'learn_press_dashboard_widget', __( 'LearnPress Plugin', 'learnpress' ), array( 'LP_Statistic_Plugin', 'render' ) );
+        wp_add_dashboard_widget( 'learn_press_dashboard_widget_status', __( 'LearnPress Status', 'learnpress' ), array( 'LP_Statistic_Status', 'render' ) );
     }
 }
