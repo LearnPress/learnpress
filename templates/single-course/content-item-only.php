@@ -49,13 +49,16 @@ $data = array_merge( $user->get_course_info2( get_the_ID() ), $data );
 				})
 			}, 3000);*/
 			LP.sendMessage(data, windowTarget);
-			$('a:not(.js-action)').click(function () {
-				var link = $(this).attr('href');
-				if (link) {
-					windowTarget.open(link, "_blank");
-					return false;
-				}
-			})
+			setTimeout(function(){
+				$('a:not(.js-action)').click(function () {
+					var link = $(this).attr('href');
+					if (link) {
+						windowTarget.open(link, "_blank");
+						return false;
+					}
+				})
+			}, 2000)
+
 		});
 
 	</script>
