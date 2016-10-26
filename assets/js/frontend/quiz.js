@@ -565,7 +565,7 @@
 			e.preventDefault();
 			this.model.current().set('hasShowedHint', 'yes');
 			this.$('.button-hint').attr('disabled', true);
-			this.$('.question-hint-content').removeClass('hide-if-js');
+			this.$('.learn-press-question-hint').removeClass('hide-if-js');
 		},
 		_showHintCompleted    : function (response) {
 			windowTarget.LP.unblockContent();

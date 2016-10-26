@@ -100,6 +100,7 @@ class LP_Page_Controller {
 		define( 'LEARNPRESS_IS_COURSES', learn_press_is_courses() );
 		define( 'LEARNPRESS_IS_TAG', learn_press_is_course_tag() );
 		define( 'LEARNPRESS_IS_CATEGORY', learn_press_is_course_category() );
+		define( 'LEARNPRESS_IS_TAX', is_tax( get_object_taxonomies( 'lp_course' ) ) );
 
 		if ( LEARNPRESS_IS_COURSES || LEARNPRESS_IS_TAG || LEARNPRESS_IS_CATEGORY ) {
 			global $wp_query, $post;
@@ -110,15 +111,17 @@ class LP_Page_Controller {
 			$wp_query->posts_per_page = 1;
 			$wp_query->nopaging       = true;
 			$wp_query->post_count     = 1;
-
 			// If we don't have a post, load an empty one
 			if ( !empty( $this->queried_object ) ) {
 				$wp_query->post = $this->queried_object;
 			} elseif ( empty( $wp_query->post ) ) {
 				$wp_query->post = new WP_Post( new stdClass() );
+			} elseif ( $wp_query->post->post_type != 'page' ) {
+				// Do not show content of post if it is not a page
+				$wp_query->post->post_content = '';
 			}
-
 			$content = $wp_query->post->post_content;
+
 			if ( preg_match( '/\[learn_press_archive_course\s?(.*)\]/', $content ) ) {
 				$content = do_shortcode( $content );
 			} else {
@@ -161,7 +164,6 @@ class LP_Page_Controller {
 
 			remove_filter( 'the_content', array( $this, 'single_content' ) );
 			remove_filter( 'the_content', 'wpautop' );
-
 		}
 
 		return $template;
