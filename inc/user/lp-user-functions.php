@@ -719,7 +719,7 @@ function learn_press_filter_get_avatar( $avatar, $id_or_email='', $size=array(),
 	if( !is_numeric($id_or_email) && is_string( $id_or_email) ) {
 		$user		= get_user_by( 'email', $id_or_email );
 		$user_id	= $user->id;
-	} elseif(  is_int( $id_or_email ) ) {
+	} elseif(  is_numeric( $id_or_email ) ) {
 		$user_id = $id_or_email;
 	} elseif(  is_object( $id_or_email ) && isset( $id_or_email->user_id ) && $id_or_email->user_id ) {
 		$user_id = $id_or_email->user_id;
