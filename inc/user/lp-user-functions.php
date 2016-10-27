@@ -728,7 +728,7 @@ function learn_press_filter_get_avatar( $avatar, $id_or_email='', $size=array(),
 		return;
 	}
 	$profile_picture     = get_user_meta( $user_id, '_lp_profile_picture', true );
-	$profile_picture_src = wp_get_attachment_image_src( $profile_picture, 'thumbnail' )[0];
+	$profile_picture_src = wp_get_attachment_image_src( $profile_picture, array($size['width'],$size['height']) )[0];
 	$avatar = '<img alt="" src="'.esc_attr( $profile_picture_src ).'" class="avatar avatar-'.$size['size'].' photo" height="'.$size['height'].'" width="'.$size['width'].'" />';
 	return $avatar;
 }
