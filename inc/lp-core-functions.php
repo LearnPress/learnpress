@@ -1483,7 +1483,7 @@ if ( !function_exists( 'learn_press_is_course_archive' ) ) {
 		$is_courses  = defined( 'LEARNPRESS_IS_COURSES' ) && LEARNPRESS_IS_COURSES;
 		$is_tag      = defined( 'LEARNPRESS_IS_TAG' ) && LEARNPRESS_IS_TAG;
 		$is_category = defined( 'LEARNPRESS_IS_CATEGORY' ) && LEARNPRESS_IS_CATEGORY;
-		return ( $is_courses || $is_category || $is_tag || is_post_type_archive( 'lp_course' ) || ( learn_press_get_page_id( 'course' ) && is_page( learn_press_get_page_id( 'course' ) ) ) ) ? true : false;
+		return ( ( $is_courses || $is_category || $is_tag ) || is_post_type_archive( 'lp_course' ) || ( learn_press_get_page_id( 'course' ) && is_page( learn_press_get_page_id( 'course' ) ) ) ) ? true : false;
 	}
 }
 

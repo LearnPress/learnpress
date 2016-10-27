@@ -51,13 +51,7 @@ class LP_Settings_Pages extends LP_Settings_Base {
 					'default' => '',
 					'type'    => 'pages-dropdown'
 				),
-				array(
-					'title'   => __( 'Display name publicly as', 'learnpress' ),
-					'id'      => $this->get_field_name( 'profile_name_publicly' ),
-					'default' => 'nice',
-					'type'    => 'select',
-					'options' => $display_name
-				),
+
 				array(
 					'title'   => __( 'Add link to admin bar', 'learnpress' ),
 					'id'      => $this->get_field_name( 'admin_bar_link' ),

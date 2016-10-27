@@ -516,7 +516,7 @@ if ( !function_exists( 'learn_press_output_user_profile_order' ) ) {
 	 */
 	function learn_press_output_user_profile_order( $user, $current, $tabs ) {
 
-		//learn_press_get_template( 'profile/tabs/orders.php', array( 'user' => $user, 'tabs' => $tabs, 'current' => $current ) );
+//		learn_press_get_template( 'profile/tabs/orders.php', array( 'user' => $user, 'tabs' => $tabs, 'current' => $current ) );
 	}
 }
 
@@ -690,13 +690,16 @@ if ( !function_exists( 'learn_press_user_profile_tabs' ) ) {
 				'title'    => __( 'Orders', 'learnpress' ),
 				'callback' => 'learn_press_profile_tab_orders_content'
 			);
-			$defaults['edit'] = array(
-				'title'    => __( 'Edit', 'learnpress' ),
+		}
+		
+		$tabs = apply_filters( 'learn_press_user_profile_tabs', $defaults, $user );
+		if ( $user->id == get_current_user_id() ) {
+			$tabs['edit'] = array(
+				'title'    => apply_filters('learn_press_user_profile_tab_edit_title',__( 'Edit', 'learnpress' )),
 				'callback' => 'learn_press_profile_tab_edit_content'
 			);
 		}
-
-		$tabs = apply_filters( 'learn_press_user_profile_tabs', $defaults, $user );
+		
 
 		foreach ( $tabs as $slug => $opt ) {
 			if ( !empty( $defaults[$slug] ) ) {
@@ -1518,41 +1521,7 @@ if ( !function_exists( 'learn_press_get_profile_display_name' ) ) {
 	function learn_press_get_profile_display_name( $user ) {
 		$option    = LP()->settings->get( 'profile_name_publicly' );
 		$info      = get_userdata( $user->ID );
-		$nicename  = $info->user_nicename;
-		$firstname = ( $info->first_name ) ? $info->first_name : '';
-		$lastname  = ( $info->last_name ) ? $info->last_name : '';
-		$nickname  = $info->nickname;
-		$firstlass = ( $firstname && $lastname ) ? $firstname . ' ' . $lastname : '';
-		$lastfirst = ( $firstname && $lastname ) ? $lastname . ' ' . $firstname : '';
-
-		$display = '';
-
-		switch ( $option ) {
-			case 'nice':
-				$display = $nicename;
-				break;
-			case 'first' :
-				$display = $firstname;
-				break;
-			case 'last' :
-				$display = $lastname;
-				break;
-			case 'nick' :
-				$display = $nickname;
-				break;
-			case 'firstlast' :
-				$display = $firstlass;
-				break;
-			case 'lastfirst' :
-				$display = $lastfirst;
-				break;
-			default:
-				$display = '';
-				break;
-		}
-
-		return ( $display ? $display : $nicename );
-
+		return $info->display_name;
 	}
 }
 function learn_press_is_content_item_only() {

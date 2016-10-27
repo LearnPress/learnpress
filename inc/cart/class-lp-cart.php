@@ -445,7 +445,7 @@ class LP_Cart {
 
 		learn_press_session_set( $this->_cart_session_key, $this->get_default_cart_content() );
 
-		$this->get_cart_from_session();
+		$this->get_cart_from_session( true );
 
 		do_action( 'learn_press_emptied_cart' );
 
