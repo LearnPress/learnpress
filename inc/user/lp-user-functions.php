@@ -713,3 +713,24 @@ add_filter( 'learn_press_profile_tab_endpoints', 'learn_press_profile_tab_endpoi
 function learn_press_profile_tab_edit_content( $current, $tab, $user ) {
 	learn_press_get_template( 'profile/tabs/edit.php', array( 'user' => $user, 'current' => $current, 'tab' => $tab ) );
 }
+
+function learn_press_filter_get_avatar( $avatar, $id_or_email='', $size=array(), $default='', $alt=''){
+	$user_id = 0;
+	if(!is_numeric( $id_or_email)){
+		$user = get_user_by( 'email', 'user@example.com' );
+		$user_id = $user->id;
+	} else {
+		$user_id = $id_or_email;
+	}
+	// get user data
+	$profile_picture_type = get_user_meta( $user_id, '_lp_profile_picture_type', true );
+	if ( !$profile_picture_type || $profile_picture_type == 'gravatar' ) {
+		return '';
+	}
+	$profile_picture     = get_user_meta( $user_id, '_lp_profile_picture', true );
+	$profile_picture_src = wp_get_attachment_image_src( $profile_picture, 'thumbnail' )[0];
+	$avatar = '<img alt="" src="'.esc_attr( $profile_picture_src ).'" class="avatar avatar-'.$size['size'].' photo" height="'.$size['height'].'" width="'.$size['width'].'" />';
+	return $avatar;
+}
+
+add_filter( 'pre_get_avatar', 'learn_press_filter_get_avatar',1, 5  );
