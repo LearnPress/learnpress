@@ -38,10 +38,12 @@ class LP_Query {
 			return $q;
 		}
 		remove_filter( 'do_parse_request', array( $this, 'get_current_quiz_question' ), 1010, 3 );
-		// lesson
 		$course_type = 'lp_course';
 		$post_types  = get_post_types( '', 'objects' );
 
+		if ( empty( $post_types[$course_type] ) ) {
+			return;
+		}
 		$slug = preg_replace( '!^/!', '', $post_types[$course_type]->rewrite['slug'] );
 
 		$match = '^' . $slug . '/([^/]*)/(' . $post_types['lp_quiz']->rewrite['slug'] . ')?/([^/]*)?/?([^/]*)?';
@@ -178,9 +180,9 @@ class LP_Query {
 		}
 		$rewrite_prefix = get_option( 'learn_press_permalink_structure' );
 		// lesson
-		$course_type = 'lp_course';
-		$post_types  = get_post_types( '', 'objects' );
-		$slug = preg_replace( '!^/!', '', $post_types[$course_type]->rewrite['slug'] );
+		$course_type  = 'lp_course';
+		$post_types   = get_post_types( '', 'objects' );
+		$slug         = preg_replace( '!^/!', '', $post_types[$course_type]->rewrite['slug'] );
 		$current_url  = learn_press_get_current_url();
 		$query_string = str_replace( trailingslashit( get_site_url() ), '', $current_url );
 
