@@ -1738,6 +1738,9 @@ body.block-content #learn-press-block-content {
 .learn-press-message.notice {
   border-left-color: #b3d20a;
 }
+.learn-press-message ul {
+  list-style-type: none;
+}
 /**/
 .learn-press-checkout-comment,
 .learn-press-checkout-payment {

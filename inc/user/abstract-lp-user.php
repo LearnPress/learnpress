@@ -1119,7 +1119,9 @@ class LP_Abstract_User {
 			$order      = LP_Order::instance( $this->get_course_order( $course_id ), true );
 			$enrollable = !$this->has_enrolled_course( $course_id ) && ( $order && $order->has_status( 'completed' ) );
 		}
-		return apply_filters( 'learn_press_user_can_enroll_course', $enrollable, $this, $course_id );
+		$enrollable = apply_filters( 'learn_press_user_can_enroll_course', $enrollable, $this, $course_id );
+
+		return $enrollable;
 	}
 
 	public function can_view_item( $item_id, $course_id = 0 ) {
@@ -1916,7 +1918,7 @@ class LP_Abstract_User {
 		$quiz_results = LP_Cache::get_quiz_results( false, array() );
 
 		$key = $this->id . '-' . $course_id . '-' . $quiz_id;
-		if(get_class($this)=='LP_User_Guest'){
+		if ( get_class( $this ) == 'LP_User_Guest' ) {
 //			print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 10));
 		}
 		if ( !array_key_exists( $key, $quiz_results ) || $force ) {
