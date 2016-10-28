@@ -1720,7 +1720,7 @@ body.block-content #learn-press-block-content {
 /** MESSAGE */
 .learn-press-message {
   background: #F5F5F5;
-  border-left: 2px solid #00A0D2;
+  border-left: 5px solid #00A0D2;
   padding: 10px 20px 1px 20px;
   margin-bottom: 20px;
 }
@@ -1737,6 +1737,9 @@ body.block-content #learn-press-block-content {
 }
 .learn-press-message.notice {
   border-left-color: #b3d20a;
+}
+.learn-press-message.error {
+  border-left-color: #b81c23;
 }
 .learn-press-message ul {
   list-style-type: none;

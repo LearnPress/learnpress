@@ -1108,7 +1108,7 @@ class LP_Abstract_User {
 		# condition
 		$course = LP_Course::get_course( $course_id );
 		// check if course is purchasable
-		$enrollable = false;
+		$enrollable = true;
 		if ( !$course ) {
 			$enrollable = false;
 		} elseif ( !$course->is_required_enroll() ) {
@@ -1120,6 +1120,8 @@ class LP_Abstract_User {
 			$enrollable = !$this->has_enrolled_course( $course_id ) && ( $order && $order->has_status( 'completed' ) );
 		}
 		$enrollable = apply_filters( 'learn_press_user_can_enroll_course', $enrollable, $this, $course_id );
+
+		var_dump( $enrollable );
 
 		return $enrollable;
 	}
