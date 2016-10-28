@@ -1121,8 +1121,6 @@ class LP_Abstract_User {
 		}
 		$enrollable = apply_filters( 'learn_press_user_can_enroll_course', $enrollable, $this, $course_id );
 
-		var_dump( $enrollable );
-
 		return $enrollable;
 	}
 
