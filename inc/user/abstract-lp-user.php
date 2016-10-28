@@ -2347,7 +2347,8 @@ class LP_Abstract_User {
 					FROM {$wpdb->posts} c
 					LEFT JOIN {$wpdb->prefix}learnpress_user_items uc ON c.ID = uc.item_id AND uc.user_id = %d
 					WHERE post_type = %s
-					AND post_author = %d
+						AND ( c.post_status = %s OR c.post_status = %s)
+						AND post_author = %d
 					UNION
 					SELECT c.*, uc.status as course_status
 					FROM {$wpdb->posts} c
@@ -2357,7 +2358,7 @@ class LP_Abstract_User {
 						AND c.post_status = %s
 				) a GROUP BY a.ID
 			", $args['user_id'],
-				LP_COURSE_CPT, $this->id,
+				LP_COURSE_CPT,  'publish', 'draft', $this->id,
 				$args['user_id'], LP_COURSE_CPT, 'publish'
 			);
 			$query .= $where . $order . $limit;
