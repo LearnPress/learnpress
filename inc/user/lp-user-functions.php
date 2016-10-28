@@ -584,8 +584,10 @@ add_action( 'init', 'learn_press_user_update_user_info' );
 
 function learn_press_user_update_user_info() {
 	global $wp;
+	if( is_admin()){
+		return;
+	}
 	if ( !empty( $_POST ) && isset( $_POST['from'] ) && isset( $_POST['action'] ) && $_POST['from'] == 'profile' && $_POST['action'] == 'update' ) {
-		
 		$user      = learn_press_get_current_user();
 		$user_id   = learn_press_get_current_user_id();
 		$user_info = get_userdata( $user->id );
