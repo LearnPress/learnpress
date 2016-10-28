@@ -43,5 +43,11 @@
 		});
 
 		$('#learn-press-form-login input[type="text"]').focus();
+		
+		$('#lp_profile_type_select').on('change', function(){
+			$(this).val();
+			$('.lp_profile_type_panel').hide();
+			$('#profile-picture-'+$(this).val()).show();
+		});
 	});
 })(jQuery);

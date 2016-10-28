@@ -583,7 +583,7 @@ function learn_press_user_has_quiz_status( $status, $quiz_id = 0, $user_id = 0, 
 add_action( 'init', 'learn_press_user_update_user_info' );
 
 function learn_press_user_update_user_info() {
-	global $wp;
+	global $wp, $wpdb;
 	if( is_admin()){
 		return;
 	}
@@ -641,7 +641,9 @@ function learn_press_user_update_user_info() {
 			if ( $new_pass != $new_pass2 ) {
 				_e( 'retype new password incorect!', 'learnpress' );
 			} else {
-				wp_set_password( $new_pass, $user_id );
+				$userdata['ID'] = $user_id;
+				$userdata['user_pass'] = $new_pass;
+				wp_update_user( $userdata );
 			}
 		}
 

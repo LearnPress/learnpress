@@ -49,15 +49,15 @@ if ( $user ) :
 				<p class="profile-field-name"><?php _e( 'Profile Picture', 'learnpress' ); ?></p>
 				<img alt="" src="<?php echo esc_attr( $profile_picture_src ); ?>" class="avatar avatar-96 photo" height="96" width="96" />
 				<div class="change-picture">
-					<select name="profile_picture_type">
+					<select name="profile_picture_type" id="lp_profile_type_select">
 						<option value="gravatar" <?php echo $profile_picture_type == 'gravatar' ? ' selected="selected"' : ''; ?>><?php _e( 'Gavatar', 'learnpress' ); ?></option>
 						<option value="picture" <?php echo $profile_picture_type == 'picture' ? ' selected="selected"' : ''; ?>><?php _e( 'Picture', 'learnpress' ); ?></option>
 					</select>
-					<div id="profile-picture-gravatar">
+					<div id="profile-picture-gravatar" class="lp_profile_type_panel"<?php echo $profile_picture_type != 'gravatar' ? ' style="display: none;"':'';?>>
 						<p class="description"><?php _e( 'You can change your profile picture on', 'learnpress' ); ?>
 							<a href="https://en.gravatar.com/"><?php _e( 'Gravatar', 'learnpress' ); ?></a>.</p>
 					</div>
-					<div id="profile-picture-picture">
+					<div id="profile-picture-picture" class="lp_profile_type_panel"<?php echo $profile_picture_type != 'picture' ? ' style="display: none;"':'';?>>
 						<input type="file" name="profile_picture" />
 					</div>
 				</div>
