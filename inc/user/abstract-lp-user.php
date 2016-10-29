@@ -1916,7 +1916,7 @@ class LP_Abstract_User {
 		$quiz_results = LP_Cache::get_quiz_results( false, array() );
 
 		$key = $this->id . '-' . $course_id . '-' . $quiz_id;
-		if(get_class($this)=='LP_User_Guest'){
+		if ( get_class( $this ) == 'LP_User_Guest' ) {
 //			print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 10));
 		}
 		if ( !array_key_exists( $key, $quiz_results ) || $force ) {
@@ -2651,5 +2651,59 @@ class LP_Abstract_User {
 	 */
 	public function is_exists() {
 		return $this->ID > 0;
+	}
+
+	public function get_upload_profile_src() {
+		if ( empty( $this->uploaded_profile_src ) ) {
+			$profile_picture = $this->profile_picture;
+			$attachment      = wp_get_attachment_image_src( $profile_picture, 'thumbnail' );
+			if ( $attachment ) {
+				$this->uploaded_profile_src = $attachment[0];
+			} else {
+				$this->uploaded_profile_src = false;
+			}
+		}
+		return $this->uploaded_profile_src;
+	}
+
+	public function get_profile_picture( $type = '' ) {
+		if ( empty( $type ) ) {
+			$type = $this->profile_picture_type;
+		}
+		if ( $type == 'picture' ) {
+			if ( $profile_picture_src = $this->get_upload_profile_src() ) {
+				$this->profile_picture_src = $profile_picture_src;
+				add_filter( 'get_avatar_url', array( $this, 'get_avatar_url' ), 10, 3 );
+			}
+		}
+		$avatar = get_avatar( $this->id );
+		remove_filter( 'get_avatar_url', array( $this, 'get_avatar_url' ), 10 );
+		return $avatar;
+	}
+
+	public function get_profile_picture_src() {
+		//if ( empty( $this->profile_picture_src ) ) {
+			$profile_picture_type = $this->profile_picture_type;
+			if ( $profile_picture_type == 'picture' ) {
+				if ( $profile_picture_src = $this->get_upload_profile_src() ) {
+					$this->profile_picture_src = $profile_picture_src;
+					add_filter( 'get_avatar_url', array( $this, 'get_avatar_url' ), 10, 3 );
+				}
+			} else {
+				$avatar_data               = get_avatar_data( $this->id );
+				$this->profile_picture_src = $avatar_data['url'];
+			}
+		///}
+		return $this->profile_picture_src;
+	}
+
+	public function get_avatar_url( $url, $id_or_email, $args ) {
+		if ( is_numeric( $id_or_email ) && $id_or_email == $this->id ) {
+			$url = $this->profile_picture_src;
+		}if ( $id_or_email == $this->user_login ) {
+			$url = $this->profile_picture_src;
+		}
+		///
+		return $url;
 	}
 }

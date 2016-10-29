@@ -652,7 +652,7 @@ if ( !function_exists( 'learn_press_user_profile_tabs' ) ) {
 	 */
 	function learn_press_user_profile_tabs( $user = null ) {
 		if ( !$user ) {
-			$user = get_user_by( 'id', get_current_user_id() );
+			$user = learn_press_get_current_user();
 		}
 		$course_endpoint = LP()->settings->get( 'profile_endpoints.profile-courses' );
 		if ( !$course_endpoint ) {

@@ -16,6 +16,9 @@
 - Fixed quiz finish automatically right away after starting with duration is zero
 - Improved admin course editor
 - Show answer's explanation right away after user checking question's answer
+- Added tab Edit in user profile to edit their information
+- Supported shortcode inside content of lesson/quiz
+
 
 
 **0.9.14**

@@ -2054,7 +2054,11 @@ function learn_press_user_profile_link( $user_id = 0, $tab = null ) {
 	if ( !$user_id ) {
 		$user = get_user_by( 'id', get_current_user_id() );
 	} else {
-		$user = get_user_by( 'id', $user_id );
+		if ( is_numeric( $user_id ) ) {
+			$user = get_user_by( 'id', $user_id );
+		} else {
+			$user = get_user_by( 'login', $user_id );
+		}
 	}
 
 	if ( !$user ) {
@@ -2067,6 +2071,8 @@ function learn_press_user_profile_link( $user_id = 0, $tab = null ) {
 	);
 	if ( $tab ) {
 		$args['tab'] = $tab;
+	} else {
+		$args['tab'] = learn_press_get_current_profile_tab();
 	}
 	$args         = array_map( '_learn_press_urlencode', $args );
 	$profile_link = learn_press_get_page_link( 'profile' );

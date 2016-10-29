@@ -73,6 +73,12 @@
     content: "\ea0b";
 }
 
+.clearfix(){
+    display: block;
+    content: '';
+    clear: both;
+}
+
 .clearfix:after {
     display: block;
     content: '';
@@ -221,7 +227,7 @@
 }
 
 .hide-if-js {
-    display: none;
+    display: none !important;
 }
 
 /* Archive courses */
@@ -1539,6 +1545,9 @@ body.content-item-only {
         img {
             float: left;
             margin-right: 20px;
+        }
+        &:after{
+            .clearfix();
         }
     }
 

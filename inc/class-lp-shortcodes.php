@@ -64,6 +64,10 @@ class LP_Shortcodes {
 				} else {
 					$query = array();
 					parse_str( $wp->matched_query, $query );
+					if ( empty( $query['view'] ) ) {
+						wp_redirect( learn_press_user_profile_link( $wp->query_vars['user'] ) );
+						die();
+					}
 					if ( $query ) {
 						$profile_endpoints = (array) LP()->settings->get( 'profile_endpoints' );
 						$endpoints         = array_keys( $profile_endpoints );
@@ -275,8 +279,8 @@ class LP_Shortcodes {
 		} else {
 			$user = get_user_by( 'id', get_current_user_id() );
 		}
-
 		$output = '';
+
 		ob_start();
 		if ( !$user ) {
 			if ( empty( $wp_query->query['user'] ) ) {
@@ -286,6 +290,7 @@ class LP_Shortcodes {
 			}
 
 		} else {
+
 			$user = LP_User::get_user( $user->ID );
 			$tabs = learn_press_user_profile_tabs( $user );
 			if ( !empty( $wp->query_vars['view'] ) ) {

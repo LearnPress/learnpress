@@ -80,7 +80,7 @@
 }
 /* PROGRESS CIRCLE */
 .hide-if-js {
-  display: none;
+  display: none !important;
 }
 /* Archive courses */
 .learn-press-courses {
@@ -680,6 +680,11 @@ body.course-has-popup {
   margin-bottom: 20px;
   border-bottom: 2px solid #DDD;
   padding-bottom: 20px;
+}
+.learn-press-content-item-title.content-item-quiz-title {
+  display: block;
+  content: '';
+  clear: both;
 }
 .learn-press-content-item-title.content-item-quiz-title h4 {
   float: left;
@@ -1984,6 +1989,16 @@ body.content-item-only #learn-press-content-item {
 .user-profile-edit-form .user-profile-picture img {
   float: left;
   margin-right: 20px;
+}
+.user-profile-edit-form .user-profile-picture:after {
+  display: block;
+  content: '';
+  clear: both;
+}
+.user-profile-edit-form .user-profile-picture:after:after {
+  content: '';
+  display: block;
+  clear: both;
 }
 .user-profile-edit-form .profile-field-name {
   font-weight: bold;

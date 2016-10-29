@@ -119,7 +119,6 @@ add_action( 'learn_press_order_received', 'learn_press_order_details_table', 5 )
 add_action( 'learn_press_before_template_part', 'learn_press_generate_template_information', 999, 4 );
 
 
-
 /*
 add_action( 'learn_press_single_quiz_summary', 'learn_press_single_quiz_preview_mode', 5 );
 add_action( 'learn_press_single_quiz_summary', 'learn_press_single_quiz_left_start_wrap', 10 );
@@ -139,21 +138,22 @@ add_action( 'learn_press_single_quiz_sidebar', 'learn_press_single_quiz_buttons'
  * Redirect profile page if 'view' = 'courses'
  * and 'courses' not exists in URL
  */
-add_action( 'template_redirect', 'learn_press_redirect_profile', 10 );
+/*add_action( 'template_redirect', 'learn_press_redirect_profile', 10 );
 if ( !function_exists( 'learn_press_redirect_profile' ) ) {
 
 	function learn_press_redirect_profile( $template ) {
 		global $wp_query, $wp;
-		
+
 		if ( !empty( $wp_query->query['page_id'] ) && learn_press_get_page_id( 'profile' ) == $wp_query->query['page_id'] ) {
 			parse_str( $wp->matched_query, $query );
 			if ( empty( $query['view'] ) && !empty( $wp->query_vars['view'] ) ) {
 				$user = learn_press_get_current_user();
-				$url = learn_press_user_profile_link( $user->id, $wp->query_vars['view'] );
+				$url  = learn_press_user_profile_link( $user->id, $wp->query_vars['view'] );
 				if ( !$url ) {
 					$redirect_url = get_permalink() . $wp_query->query['user'];
-					$url = wp_login_url( $redirect_url );
+					$url          = wp_login_url( $redirect_url );
 				}
+				die('ddddddddddddd');
 				wp_redirect( $url );
 				exit();
 			}
@@ -161,14 +161,14 @@ if ( !function_exists( 'learn_press_redirect_profile' ) ) {
 		return $template;
 	}
 
-}
+}*/
 
-function learn_press_comments_template_query_args( $comment_args ) { 
+function learn_press_comments_template_query_args( $comment_args ) {
 	$post_type = get_post_type( $comment_args['post_id'] );
-	if( $post_type == 'lp_course' ) {
-		$comment_args['type__not_in']='review';
+	if ( $post_type == 'lp_course' ) {
+		$comment_args['type__not_in'] = 'review';
 	}
 	return $comment_args;
 }
 
-add_filter( 'comments_template_query_args' , 'learn_press_comments_template_query_args' );
+add_filter( 'comments_template_query_args', 'learn_press_comments_template_query_args' );

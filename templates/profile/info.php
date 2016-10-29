@@ -19,7 +19,7 @@ $cuser        = learn_press_get_current_user();
 if ( !empty( $tabs ) && !empty( $tabs[$current] ) ) : ?>
 	<div class="user-info" id="learn-press-user-info">
 		<div class="user-basic-info">
-			<span class="user-avatar"><?php echo get_avatar( $user->ID ); ?></span>
+			<span class="user-avatar"><?php echo $user->get_profile_picture( ); ?></span>
 			<strong class="user-nicename"><?php echo learn_press_get_profile_display_name( $user ); ?></strong>
 			<?php if ( $description = get_user_meta( $user->id, 'description', true ) ): ?>
 				<p class="user-bio"><?php echo get_user_meta( $user->id, 'description', true ); ?></p>
