@@ -758,3 +758,12 @@ function learn_press_filter_get_avatar( $avatar, $id_or_email = '', $size = arra
 }
 
 add_filter( 'pre_get_avatar', 'learn_press_filter_get_avatar', 1, 5 );
+
+function _learn_press_redirect_logout_redirect() {
+	if ( !is_admin() && $redirect = learn_press_get_page_link('profile') ) {
+		wp_redirect( $redirect );
+		exit();
+	}
+}
+
+add_action( 'wp_logout', '_learn_press_redirect_logout_redirect' );
