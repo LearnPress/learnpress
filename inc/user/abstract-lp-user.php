@@ -1108,7 +1108,7 @@ class LP_Abstract_User {
 		# condition
 		$course = LP_Course::get_course( $course_id );
 		// check if course is purchasable
-		$enrollable = false;
+		$enrollable = true;
 		if ( !$course ) {
 			$enrollable = false;
 		} elseif ( !$course->is_required_enroll() ) {
@@ -1119,7 +1119,9 @@ class LP_Abstract_User {
 			$order      = LP_Order::instance( $this->get_course_order( $course_id ), true );
 			$enrollable = !$this->has_enrolled_course( $course_id ) && ( $order && $order->has_status( 'completed' ) );
 		}
-		return apply_filters( 'learn_press_user_can_enroll_course', $enrollable, $this, $course_id );
+		$enrollable = apply_filters( 'learn_press_user_can_enroll_course', $enrollable, $this, $course_id );
+
+		return $enrollable;
 	}
 
 	public function can_view_item( $item_id, $course_id = 0 ) {
@@ -2345,7 +2347,8 @@ class LP_Abstract_User {
 					FROM {$wpdb->posts} c
 					LEFT JOIN {$wpdb->prefix}learnpress_user_items uc ON c.ID = uc.item_id AND uc.user_id = %d
 					WHERE post_type = %s
-					AND post_author = %d
+						AND ( c.post_status = %s OR c.post_status = %s)
+						AND post_author = %d
 					UNION
 					SELECT c.*, uc.status as course_status
 					FROM {$wpdb->posts} c
@@ -2355,7 +2358,7 @@ class LP_Abstract_User {
 						AND c.post_status = %s
 				) a GROUP BY a.ID
 			", $args['user_id'],
-				LP_COURSE_CPT, $this->id,
+				LP_COURSE_CPT,  'publish', 'draft', $this->id,
 				$args['user_id'], LP_COURSE_CPT, 'publish'
 			);
 			$query .= $where . $order . $limit;

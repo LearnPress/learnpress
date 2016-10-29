@@ -479,7 +479,6 @@ function learn_press_handle_purchase_request() {
 	learn_press_do_transaction( $requested_transaction_method );
 }
 
-
 function learn_press_get_orders( $args = array() ) {
 	$defaults = array(
 		'post_type' => LP_ORDER_CPT,
@@ -718,4 +717,19 @@ function _learn_press_checkout_auto_enroll_free_course( $result, $order_id ) {
 		LP()->cart->empty_cart();
 	}
 	return $result;
+}
+
+if ( !function_exists( '_learn_press_total_raised' ) ) {
+    function _learn_press_total_raised() {
+        $orders = learn_press_get_orders( array( 'post_status' => 'lp-completed' ) );
+        $total = 0;
+        if ( $orders ) {
+            foreach( $orders as $order ) {
+                $order = learn_press_get_order( $order->ID );
+                $total = $total + $order->order_total;
+            }
+        }
+
+        return apply_filters( '_learn_press_total_raised', learn_press_format_price( $total, true ), $total );
+    }
 }

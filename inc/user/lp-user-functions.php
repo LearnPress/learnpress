@@ -583,7 +583,10 @@ function learn_press_user_has_quiz_status( $status, $quiz_id = 0, $user_id = 0, 
 add_action( 'init', 'learn_press_user_update_user_info' );
 
 function learn_press_user_update_user_info() {
-	global $wp;
+	global $wp, $wpdb;
+	if( is_admin()){
+		return;
+	}
 	if ( !empty( $_POST ) && isset( $_POST['from'] ) && isset( $_POST['action'] ) && $_POST['from'] == 'profile' && $_POST['action'] == 'update' ) {
 		$user      = learn_press_get_current_user();
 		$user_id   = learn_press_get_current_user_id();
@@ -616,6 +619,7 @@ function learn_press_user_update_user_info() {
 					update_user_meta( $user->id, '_lp_profile_picture', $attach_id );
 				}
 			}
+			
 		}
 		if ( !empty( $_POST['pass0'] ) && !empty( $_POST['pass1'] ) && !empty( $_POST['pass1'] ) ) {
 			// check old pass
@@ -641,9 +645,10 @@ function learn_press_user_update_user_info() {
 
 				if ( $new_pass != $new_pass2 ) {
 					learn_press_add_message( __( 'Retype new password incorrect!', 'learnpress' ) );
-				} else {
-					wp_set_password( $new_pass, $user_id );
-				}
+
+				$userdata['ID'] = $user_id;
+				$userdata['user_pass'] = $new_pass;
+				wp_update_user( $userdata );
 			}
 		}
 		$update_data = array(

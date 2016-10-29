@@ -77,7 +77,7 @@ if ( $user ) :
 				<p class="profile-field-name"><?php esc_html_e( 'Last Name', 'learnpress' ) ?></p>
 				<input type="text" name="last_name" id="last_name" value="<?php echo esc_attr( $last_name ); ?>" class="regular-text">
 			</div>
-
+			
 			<div class="user-nickname-wrap info-field">
 				<p class="profile-field-name"><?php _e( 'Nickname' ); ?>
 					<span class="description"><?php _e( '(required)' ); ?></span></p>

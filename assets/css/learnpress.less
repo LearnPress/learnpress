@@ -745,7 +745,7 @@ body.course-has-popup {
                     background: #b34c10;
                 }
             }
-            .sidebar-hide-btn{
+            .sidebar-hide-btn {
                 left: 0;
             }
             .sidebar-show-btn {
@@ -753,7 +753,7 @@ body.course-has-popup {
                 margin-left: -20px;
                 margin-right: 20px;
             }
-            .popup-close{
+            .popup-close {
                 right: 0;
                 &:before,
                 &:after {
@@ -1237,7 +1237,7 @@ body.block-content {
 /** MESSAGE */
 .learn-press-message {
     background: #F5F5F5;
-    border-left: 2px solid #00A0D2;
+    border-left: 5px solid #00A0D2;
     padding: 10px 20px 1px 20px;
     margin-bottom: 20px;
     button {
@@ -1253,6 +1253,12 @@ body.block-content {
     }
     &.notice {
         border-left-color: #b3d20a;
+    }
+    &.error {
+        border-left-color: #b81c23;
+    }
+    ul {
+        list-style-type: none;
     }
 }
 
@@ -1307,6 +1313,7 @@ body.block-content {
         left: 3px;
     }
 }
+
 .learn-press-user-profile {
     .learn-press-tabs {
         list-style: none;
@@ -1508,6 +1515,7 @@ body.content-item-only {
         }
     }
 }
+
 /*
 .sidebar-hide-btn, .sidebar-show-btn {
     cursor: pointer;
