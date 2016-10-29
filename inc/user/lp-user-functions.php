@@ -584,7 +584,7 @@ add_action( 'init', 'learn_press_user_update_user_info' );
 
 function learn_press_user_update_user_info() {
 	global $wp, $wpdb;
-	if( is_admin()){
+	if ( is_admin() ) {
 		return;
 	}
 	if ( !empty( $_POST ) && isset( $_POST['from'] ) && isset( $_POST['action'] ) && $_POST['from'] == 'profile' && $_POST['action'] == 'update' ) {
@@ -619,7 +619,7 @@ function learn_press_user_update_user_info() {
 					update_user_meta( $user->id, '_lp_profile_picture', $attach_id );
 				}
 			}
-			
+
 		}
 		if ( !empty( $_POST['pass0'] ) && !empty( $_POST['pass1'] ) && !empty( $_POST['pass1'] ) ) {
 			// check old pass
@@ -646,9 +646,10 @@ function learn_press_user_update_user_info() {
 				if ( $new_pass != $new_pass2 ) {
 					learn_press_add_message( __( 'Retype new password incorrect!', 'learnpress' ) );
 
-				$userdata['ID'] = $user_id;
-				$userdata['user_pass'] = $new_pass;
-				wp_update_user( $userdata );
+					$userdata['ID']        = $user_id;
+					$userdata['user_pass'] = $new_pass;
+					wp_update_user( $userdata );
+				}
 			}
 		}
 		$update_data = array(
