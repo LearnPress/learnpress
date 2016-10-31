@@ -2669,7 +2669,7 @@ class LP_Abstract_User {
 		return $this->uploaded_profile_src;
 	}
 
-	public function get_profile_picture( $type = '' ) {
+	public function get_profile_picture( $type = '',$size=96 ) {
 		if ( empty( $type ) ) {
 			$type = $this->profile_picture_type;
 		}
@@ -2679,7 +2679,7 @@ class LP_Abstract_User {
 				add_filter( 'get_avatar_url', array( $this, 'get_avatar_url' ), 10, 3 );
 			}
 		}
-		$avatar = get_avatar( $this->id );
+		$avatar = get_avatar( $this->id, $size );
 		remove_filter( 'get_avatar_url', array( $this, 'get_avatar_url' ), 10 );
 		return $avatar;
 	}
