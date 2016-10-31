@@ -1108,7 +1108,7 @@ class LP_Abstract_User {
 		# condition
 		$course = LP_Course::get_course( $course_id );
 		// check if course is purchasable
-		$enrollable = true;
+		$enrollable = false;
 		if ( !$course ) {
 			$enrollable = false;
 		} elseif ( !$course->is_required_enroll() ) {
