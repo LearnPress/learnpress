@@ -10,6 +10,9 @@ if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
+if ( !( learn_press_is_courses() || learn_press_is_search() ) ) {
+	return;
+}
 ?>
 <form method="get" name="search-course" class="learn-press-search-course-form">
 	<input type="text" name="s" class="search-course-input" value="<?php echo $s; ?>" placeholder="<?php _e( 'Search course...', 'learnpress' ); ?>" />
