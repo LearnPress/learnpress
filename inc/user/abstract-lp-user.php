@@ -2656,7 +2656,7 @@ class LP_Abstract_User {
 		return $this->ID > 0;
 	}
 
-	public function get_upload_profile_src( $size = 96 ) {
+	public function get_upload_profile_src( $size = 'thumbnai' ) {
 		if ( empty( $this->uploaded_profile_src ) ) {
 			$profile_picture = $this->profile_picture;
 			$attachment      = wp_get_attachment_image_src( $profile_picture, $size );
