@@ -1255,7 +1255,7 @@ function learn_press_one_click_install_sample_data_notice() {
                 	<p>Importing...</p>
 				</div>
             </div>',
-			__( 'You haven\'t got any course yet! Would you like to import sample data?', 'learnpress' ),
+			__( 'You haven\'t got any courses yet! Would you like to import sample data?', 'learnpress' ),
 			__( 'If yes, it requires to install addon name', 'learnpress' ),
 			__( 'LearnPress Import/Export', 'learnpress' ),
 			__( 'but don\'t worry because it is completely automated.', 'learnpress' ),

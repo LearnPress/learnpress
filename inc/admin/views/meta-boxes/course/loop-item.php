@@ -36,7 +36,7 @@ if ( !empty( $support_types[$item->post_type] ) ) {
         </div>
     </td>
     <td class="section-item-input">
-        <input type="text" autocomplete="off" name="<?php echo $group_name; ?>[name]" class="lp-item-name no-submit" data-field="item-name" value="<?php echo esc_attr( $item->post_title ); ?>" placeholder="<?php _e( 'Enter the name of the new item here and press Enter', 'learnpress' ); ?>" />
+        <input type="text" autocomplete="off" name="<?php echo $group_name; ?>[name]" class="lp-item-name no-submit" data-field="item-name" value="<?php echo esc_attr( $item->post_title ); ?>" placeholder="<?php _e( 'Add new item here and press Enter', 'learnpress' ); ?>" />
         <input type="hidden" name="<?php echo $group_name; ?>[old_name]" value="<?php echo esc_attr( $item->post_title ); ?>" />
         <input type="hidden" name="<?php echo $group_name; ?>[item_id]" value="<?php echo $item_id; ?>" />
         <input type="hidden" name="<?php echo $group_name; ?>[section_item_id]" value="<?php echo $section_item_id; ?>" />

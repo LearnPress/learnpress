@@ -35,7 +35,7 @@ $heading = apply_filters( 'learn_press_profile_tab_courses_finished_heading', fa
 
 <?php else: ?>
 
-	<?php learn_press_display_message( __( 'You haven\'t finished any course yet!', 'learnpress' ) ); ?>
+	<?php learn_press_display_message( __( 'You haven\'t finished any courses yet!', 'learnpress' ) ); ?>
 
 <?php endif ?>
 

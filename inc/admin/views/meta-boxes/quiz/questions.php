@@ -31,7 +31,7 @@ $hidden_all = sizeof( $hidden ) && ( sizeof( array_diff( $hidden, $question_ids 
 			<?php $exclude_ids = array_keys( $questions ); endif; ?>
 	</div>
 	<div class="question-actions">
-		<input type="text" class="regular-text no-submit" name="lp-new-question-name" placeholder="<?php _e( 'Enter the name of the new question and press Enter', 'learnpress' );?>" />
+		<input type="text" class="regular-text no-submit" name="lp-new-question-name" placeholder="<?php _e( 'Add question title and press Enter', 'learnpress' );?>" />
 		<div class="button lp-button-dropdown lp-button-add-question disabled">
 			<span class="lp-dropdown-label lp-add-new-item"><?php _e( 'Add New', 'learnpress' );?></span>
 			<span class="lp-dropdown-arrow">+</span>

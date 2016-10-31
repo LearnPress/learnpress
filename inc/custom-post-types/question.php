@@ -101,8 +101,8 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 					'edit_item'          => __( 'Edit Question', 'learnpress' ),
 					'update_item'        => __( 'Update Question', 'learnpress' ),
 					'search_items'       => __( 'Search Questions', 'learnpress' ),
-					'not_found'          => __( 'No question found', 'learnpress' ),
-					'not_found_in_trash' => __( 'No question found in trash', 'learnpress' ),
+					'not_found'          => __( 'No questions found', 'learnpress' ),
+					'not_found_in_trash' => __( 'No questions found in trash', 'learnpress' ),
 				),
 				'public'             => false, // disable access directly via permalink url
 				'publicly_queryable' => false,

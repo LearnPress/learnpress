@@ -66,7 +66,7 @@ if ( $is_hidden ) {
         <?php if ( $buttons = apply_filters( 'learn_press_loop_section_buttons', array() ) ): ?>
             <br />
             <div class="lp-add-buttons">
-                    <!--<input type="text" class="regular-text no-submit" name="lp-new-item-name" placeholder="<?php _e( 'Enter the name of the new question or quiz', 'learnpress' ); ?>" />
+                    <!--<input type="text" class="regular-text no-submit" name="lp-new-item-name" placeholder="<?php _e( 'Add new lesson or quiz and press Enter', 'learnpress' ); ?>" />
                     <div class="button lp-button-dropdown lp-button-add-item disabled">
                             <span class="lp-dropdown-label lp-add-new-item"><?php _e( 'Add New', 'learnpress' ); ?></span>
                             <span class="lp-dropdown-arrow">+</span>

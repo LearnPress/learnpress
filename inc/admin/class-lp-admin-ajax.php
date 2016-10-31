@@ -402,7 +402,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 					', $id, $question );
 				}
 			} else {
-				echo '<li>' . __( 'No question found', 'learnpress' ) . '</li>';
+				echo '<li>' . __( 'No questions found', 'learnpress' ) . '</li>';
 			}
 
 			$response = array(
