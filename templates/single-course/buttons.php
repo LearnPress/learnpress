@@ -70,7 +70,7 @@ $retake_button_text   = apply_filters( 'learn_press_retake_button_text', __( 'Re
 
 			<input type="hidden" name="lp-ajax" value="enroll-course" />
 			<input type="hidden" name="enroll-course" value="<?php echo $course->id; ?>" />
-			<button class="button enroll-button" data-block-content="yes"><?php echo $course->is_free() ? $enroll_button_text : $purchase_button_text; ?></button>
+			<button class="button enroll-button" data-block-content="yes"><?php echo $enroll_button_text; ?></button>
 
 			<?php do_action( 'learn_press_after_enroll_button' ); ?>
 		</form>
