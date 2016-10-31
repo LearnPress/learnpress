@@ -1288,7 +1288,7 @@ function learn_press_process_become_a_teacher_form( $args = null ) {
 		$to_email        = array( get_option( 'admin_email' ) );
 		$message_headers = '';
 		$subject         = __( 'Please moderate', 'learnpress' );
-		$notify_message  = sprintf( __( 'The user <a href="%s">%s</a> want to be a teacher.', 'learnpress' ), admin_url( 'user-edit.php?user_id=' . $user->id ), $user->user_login ) . "\r\n";
+		$notify_message  = sprintf( __( 'The user <a href="%s">%s</a> wants to be a teacher.', 'learnpress' ), admin_url( 'user-edit.php?user_id=' . $user->id ), $user->user_login ) . "\r\n";
 
 		$notify_message .= sprintf( __( 'Name: %s', 'learnpress' ), $args['name'] ) . "\r\n";
 		$notify_message .= sprintf( __( 'Email: %s', 'learnpress' ), $args['email'] ) . "\r\n";
@@ -2300,21 +2300,21 @@ if ( defined( 'LP_ENABLE_CART' ) && LP_ENABLE_CART ) {
 				),
 				array(
 					'title'   => __( 'Enable cart', 'learnpress' ),
-					'desc'    => __( 'Check this option to enable user can purchase multiple course at one time', 'learnpress' ),
+					'desc'    => __( 'Check this option to enable user purchase multiple courses at one time.', 'learnpress' ),
 					'id'      => $class->get_field_name( 'enable_cart' ),
 					'default' => 'yes',
 					'type'    => 'checkbox'
 				),
 				array(
 					'title'   => __( 'Add to cart redirect', 'learnpress' ),
-					'desc'    => __( 'Redirect to checkout immediately after add course to cart', 'learnpress' ),
+					'desc'    => __( 'Redirect to checkout immediately after adding course to cart.', 'learnpress' ),
 					'id'      => $class->get_field_name( 'redirect_after_add' ),
 					'default' => 'yes',
 					'type'    => 'checkbox'
 				),
 				array(
 					'title'   => __( 'AJAX add to cart', 'learnpress' ),
-					'desc'    => __( 'Using AJAX to add course to the cart', 'learnpress' ),
+					'desc'    => __( 'Using AJAX to add course to cart.', 'learnpress' ),
 					'id'      => $class->get_field_name( 'ajax_add_to_cart' ),
 					'default' => 'no',
 					'type'    => 'checkbox'

@@ -24,7 +24,7 @@ $quizzes = learn_press_get_quizzes( $user->id, $args );
 	</ul>
 <?php else : ?>
 
-	<?php learn_press_display_message( __( 'You haven\'t started any quizzes!', 'learnpress' ) );?>
+	<?php learn_press_display_message( __( 'You haven\'t started any quiz!', 'learnpress' ) );?>
 
 <?php endif; ?>
 

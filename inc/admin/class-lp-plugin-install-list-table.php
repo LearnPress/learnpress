@@ -159,7 +159,7 @@ class LP_Plugin_Install_List_Table extends WP_List_Table {
 
 
     public function no_items() {
-        $message = __( 'No plugins found.', 'learnpress' );
+        $message = __( 'No plugin found.', 'learnpress' );
 
         echo '<div class="no-plugin-results">' . $message . '</div>';
     }

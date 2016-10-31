@@ -15,7 +15,7 @@ get_header(); ?>
 <?php do_action( 'learn_press_before_main_content' ); ?>
 
 <div class="restrict-access-page">
-	<?php learn_press_display_message( __( 'You have not got permission to view this area. Please contact administrator for more details.', 'learnpress' ) ); ?>
+	<?php learn_press_display_message( __( 'You have no permission to view this area. Please contact site\'s administrators for more details.', 'learnpress' ) ); ?>
 </div>
 
 <?php do_action( 'learn_press_after_main_content' ); ?>

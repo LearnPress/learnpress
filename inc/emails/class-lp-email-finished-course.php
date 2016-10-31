@@ -21,7 +21,7 @@ if ( !class_exists( 'LP_Email_Finished_Course' ) ) {
 			$this->template_html  = 'emails/finished-course.php';
 			$this->template_plain = 'emails/plain/finished-course.php';
 
-			$this->default_subject = __( '[{{site_title}}] You have finished course ({{course_name}})', 'learnpress' );
+			$this->default_subject = __( '[{{site_title}}] You have finished this course ({{course_name}})', 'learnpress' );
 			$this->default_heading = __( 'Finished course', 'learnpress' );
 
 			$this->support_variables = array(

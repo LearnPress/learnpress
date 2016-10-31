@@ -14,7 +14,7 @@ $settings = LP()->settings;
 ?>
 <h3><?php _e( 'Enrolled course', 'learnpress' ); ?></h3>
 <p class="description">
-	<?php _e( 'Send this email to user when they enroll to course', 'learnpress' ); ?>
+	<?php _e( 'Send this email to user when they enroll in the course.', 'learnpress' ); ?>
 </p>
 <table class="form-table">
 	<tbody>

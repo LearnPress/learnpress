@@ -22,7 +22,7 @@ if ( !class_exists( 'LP_Email_New_Course' ) ) {
 			$this->template_html  = 'emails/new-course.php';
 			$this->template_plain = 'emails/plain/new-course.php';
 
-			$this->default_subject = __( '[{{site_title}}] New course has submitted for review ({{course_name}})', 'learnpress' );
+			$this->default_subject = __( '[{{site_title}}] New course has been submitted for review ({{course_name}})', 'learnpress' );
 			$this->default_heading = __( 'New course', 'learnpress' );
 			$this->recipient       = LP()->settings->get( 'emails_new_course.recipient' );
 
