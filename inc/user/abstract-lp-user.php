@@ -2656,10 +2656,10 @@ class LP_Abstract_User {
 		return $this->ID > 0;
 	}
 
-	public function get_upload_profile_src() {
+	public function get_upload_profile_src( $size = 96 ) {
 		if ( empty( $this->uploaded_profile_src ) ) {
 			$profile_picture = $this->profile_picture;
-			$attachment      = wp_get_attachment_image_src( $profile_picture, 'thumbnail' );
+			$attachment      = wp_get_attachment_image_src( $profile_picture, $size );
 			if ( $attachment ) {
 				$this->uploaded_profile_src = $attachment[0];
 			} else {
@@ -2674,7 +2674,7 @@ class LP_Abstract_User {
 			$type = $this->profile_picture_type;
 		}
 		if ( $type == 'picture' ) {
-			if ( $profile_picture_src = $this->get_upload_profile_src() ) {
+			if ( $profile_picture_src = $this->get_upload_profile_src($size) ) {
 				$this->profile_picture_src = $profile_picture_src;
 				add_filter( 'get_avatar_url', array( $this, 'get_avatar_url' ), 10, 3 );
 			}
