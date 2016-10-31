@@ -17,6 +17,8 @@ add_action( 'learn_press_after_main_content', 'learn_press_wrapper_end' );
 /* breadcrumb */
 add_action( 'learn_press_before_main_content', 'learn_press_breadcrumb' );
 
+add_action( 'learn_press_before_main_content', 'learn_press_search_form' );
+
 /* archive courses */
 add_action( 'learn_press_courses_loop_item_title', 'learn_press_courses_loop_item_thumbnail', 10 );
 add_action( 'learn_press_courses_loop_item_title', 'learn_press_courses_loop_item_title', 10 );

@@ -490,7 +490,9 @@ class LP_Email {
 			$css = apply_filters( 'learn_press_email_styles', ob_get_clean(), $this->id, $this );
 
 			try {
-				LP()->_include( 'libraries/class-emogrifier.php' );
+				if ( !class_exists( 'Emogrifier' ) ) {
+					LP()->_include( 'libraries/class-emogrifier.php' );
+				}
 				// apply CSS styles inline for picky email clients
 				$emogrifier = new Emogrifier( $content, $css );
 				$content    = $emogrifier->emogrify();

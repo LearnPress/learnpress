@@ -83,7 +83,7 @@ class LP_Page_Controller {
 					add_filter( 'the_content', array( $this, 'single_content' ) );
 					$this->has_filter_content = true;
 				}
-			} elseif ( learn_press_is_courses() || learn_press_is_course_tag() || learn_press_is_course_category() ) {
+			} elseif ( learn_press_is_courses() || learn_press_is_course_tag() || learn_press_is_course_category() || learn_press_is_search() ) {
 				$this->template_loader2( $template );
 			}
 		}

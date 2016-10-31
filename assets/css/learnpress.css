@@ -2054,6 +2054,19 @@ body.content-item-only #learn-press-content-item {
 .place-order-action {
   margin-top: 20px;
 }
+.learn-press-search-course-form {
+  margin-bottom: 20px;
+}
+.learn-press-search-course-form input.search-course-input[name="s"] {
+  margin-right: -200px;
+  width: 100%;
+}
+.learn-press-search-course-form .search-course-button {
+  vertical-align: middle;
+  float: right;
+  z-index: 10;
+  position: relative;
+}
 @-moz-keyframes spin-12 {
   0% {
     -moz-transform: rotate(0deg) translate(0px);

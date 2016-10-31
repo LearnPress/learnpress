@@ -1370,13 +1370,16 @@ function learn_press_posts_where_statement_search( $where ) {
 	 * from => ( wp_2_posts.post_status = 'publish' OR wp_2_posts.post_status = 'private') OR wp_2_terms.name LIKE '%s%'
 	 * to => ( ( wp_2_posts.post_status = 'publish' OR wp_2_posts.post_status = 'private') OR wp_2_terms.name LIKE '%s%' )
 	 */
+	$a = preg_match( '!(' . $wpdb->posts . '.post_status)!', $where );
+	$b = preg_match( '!(OR\s+' . $wpdb->terms . '.name LIKE \'%' . $wp_query->get( 's' ) . '%\')!', $where );
 
-	// append ( to the start of the block
-	$where = preg_replace( '!(' . $wpdb->posts . '.post_status)!', '( $1', $where, 1 );
+	if ( $a && $b ) {
+		// append ( to the start of the block
+		$where = preg_replace( '!(' . $wpdb->posts . '.post_status)!', '( $1', $where, 1 );
 
-	// appdn ) to the end of the block
-	$where = preg_replace( '!(OR\s+' . $wpdb->terms . '.name LIKE \'%' . $wp_query->get( 's' ) . '%\')!', '$1 )', $where );
-
+		// append ) to the end of the block
+		$where = preg_replace( '!(OR\s+' . $wpdb->terms . '.name LIKE \'%' . $wp_query->get( 's' ) . '%\')!', '$1 )', $where );
+	}
 	remove_filter( 'posts_where', 'learn_press_posts_where_statement_search', 99 );
 
 	return $where;
@@ -2138,7 +2141,7 @@ function learn_press_search_template( $template ) {
 	return $template;
 }
 
-add_filter( 'template_include', 'learn_press_search_template', 69 );
+//add_filter( 'template_include', 'learn_press_search_template', 69 );
 
 function learn_press_redirect_search() {
 	if ( learn_press_is_search() ) {
