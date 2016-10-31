@@ -624,7 +624,7 @@ function learn_press_user_update_user_info() {
 			} else {
 				// check new pass
 				$new_pass  = filter_input( INPUT_POST, 'pass1' );
-				$new_pass2 = filter_input( INPUT_POST, 'c' );
+				$new_pass2 = filter_input( INPUT_POST, 'pass2' );
 
 				if ( $new_pass != $new_pass2 ) {
 					learn_press_add_message( __( 'Retype new password incorrect!', 'learnpress' ) );
