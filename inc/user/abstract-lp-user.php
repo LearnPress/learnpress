@@ -2358,7 +2358,7 @@ class LP_Abstract_User {
 						AND c.post_status = %s
 				) a GROUP BY a.ID
 			", $args['user_id'],
-				LP_COURSE_CPT,  'publish', 'draft', $this->id,
+				LP_COURSE_CPT, 'publish', 'draft', $this->id,
 				$args['user_id'], LP_COURSE_CPT, 'publish'
 			);
 			$query .= $where . $order . $limit;
@@ -2656,7 +2656,7 @@ class LP_Abstract_User {
 		return $this->ID > 0;
 	}
 
-	public function get_upload_profile_src( $size = 'thumbnai' ) {
+	public function get_upload_profile_src( $size = 'thumbnail' ) {
 		if ( empty( $this->uploaded_profile_src ) ) {
 			$profile_picture = $this->profile_picture;
 			$attachment      = wp_get_attachment_image_src( $profile_picture, $size );
@@ -2669,12 +2669,12 @@ class LP_Abstract_User {
 		return $this->uploaded_profile_src;
 	}
 
-	public function get_profile_picture( $type = '',$size=96 ) {
+	public function get_profile_picture( $type = '', $size = 96 ) {
 		if ( empty( $type ) ) {
 			$type = $this->profile_picture_type;
 		}
 		if ( $type == 'picture' ) {
-			if ( $profile_picture_src = $this->get_upload_profile_src($size) ) {
+			if ( $profile_picture_src = $this->get_upload_profile_src( $size ) ) {
 				$this->profile_picture_src = $profile_picture_src;
 				add_filter( 'get_avatar_url', array( $this, 'get_avatar_url' ), 10, 3 );
 			}
@@ -2686,16 +2686,16 @@ class LP_Abstract_User {
 
 	public function get_profile_picture_src() {
 		//if ( empty( $this->profile_picture_src ) ) {
-			$profile_picture_type = $this->profile_picture_type;
-			if ( $profile_picture_type == 'picture' ) {
-				if ( $profile_picture_src = $this->get_upload_profile_src() ) {
-					$this->profile_picture_src = $profile_picture_src;
-					add_filter( 'get_avatar_url', array( $this, 'get_avatar_url' ), 10, 3 );
-				}
-			} else {
-				$avatar_data               = get_avatar_data( $this->id );
-				$this->profile_picture_src = $avatar_data['url'];
+		$profile_picture_type = $this->profile_picture_type;
+		if ( $profile_picture_type == 'picture' ) {
+			if ( $profile_picture_src = $this->get_upload_profile_src() ) {
+				$this->profile_picture_src = $profile_picture_src;
+				add_filter( 'get_avatar_url', array( $this, 'get_avatar_url' ), 10, 3 );
 			}
+		} else {
+			$avatar_data               = get_avatar_data( $this->id );
+			$this->profile_picture_src = $avatar_data['url'];
+		}
 		///}
 		return $this->profile_picture_src;
 	}
@@ -2703,7 +2703,8 @@ class LP_Abstract_User {
 	public function get_avatar_url( $url, $id_or_email, $args ) {
 		if ( is_numeric( $id_or_email ) && $id_or_email == $this->id ) {
 			$url = $this->profile_picture_src;
-		}if ( $id_or_email == $this->user_login ) {
+		}
+		if ( $id_or_email == $this->user_login ) {
 			$url = $this->profile_picture_src;
 		}
 		///

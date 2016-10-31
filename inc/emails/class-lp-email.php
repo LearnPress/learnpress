@@ -481,6 +481,11 @@ class LP_Email {
 		return $this->email_format && class_exists( 'DOMDocument' ) ? $this->email_format : 'plain_text';
 	}
 
+	/**
+	 * @param $content
+	 *
+	 * @return string
+	 */
 	public function apply_style_inline( $content ) {
 		if ( in_array( $this->get_content_format(), array( 'text/html', 'multipart/alternative' ) ) && class_exists( 'DOMDocument' ) ) {
 
