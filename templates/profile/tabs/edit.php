@@ -41,7 +41,7 @@ if ( $user ) :
 				</div>
 				<div class="change-picture">
 					<select name="profile_picture_type">
-						<option value="gravatar" <?php echo $profile_picture_type == 'gravatar' ? ' selected="selected"' : ''; ?>><?php _e( 'Gavatar', 'learnpress' ); ?></option>
+						<option value="gravatar" <?php echo $profile_picture_type == 'gravatar' ? ' selected="selected"' : ''; ?>><?php _e( 'Gravatar', 'learnpress' ); ?></option>
 						<option value="picture" <?php echo $profile_picture_type == 'picture' ? ' selected="selected"' : ''; ?>><?php _e( 'Picture', 'learnpress' ); ?></option>
 					</select>
 					<div id="profile-picture-gravatar" class="<?php echo $profile_picture_type != 'gravatar' ? 'hide-if-js' : ''; ?>">
@@ -79,8 +79,8 @@ if ( $user ) :
 			</div>
 
 			<div class="user-nickname-wrap info-field">
-				<p class="profile-field-name"><?php _e( 'Nickname' ); ?>
-					<span class="description"><?php _e( '(required)' ); ?></span></p>
+				<p class="profile-field-name"><?php _e( 'Nickname','learnpress' ); ?>
+					<span class="description"><?php _e( '(required)','learnpress' ); ?></span></p>
 				<td>
 					<input type="text" name="nickname" id="nickname" value="<?php echo esc_attr( $user_info->nickname ) ?>" class="regular-text" />
 				</td>

@@ -621,6 +621,7 @@ function learn_press_user_update_user_info() {
 
 			if ( !$check_old_pass ) {
 				learn_press_add_message( __( 'Old password incorrect!', 'learnpress' ) );
+				return;
 			} else {
 				// check new pass
 				$new_pass  = filter_input( INPUT_POST, 'pass1' );
