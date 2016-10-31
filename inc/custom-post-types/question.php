@@ -161,14 +161,14 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 						'name' => __( 'Question explanation', 'learnpress' ),
 						'id'   => "{$prefix}explanation",
 						'type' => 'textarea',
-						'desc' => __( 'Explanation why an option is true and other is false', 'learnpress' ),
+						'desc' => __( 'Explain why an option is true and other is false', 'learnpress' ),
 						'std'  => null
 					),
 					array(
 						'name' => __( 'Question hint', 'learnpress' ),
 						'id'   => "{$prefix}hint",
 						'type' => 'textarea',
-						'desc' => __( 'Instruction for user select the right answer', 'learnpress' ),
+						'desc' => __( 'Instruction for user to select the right answer.', 'learnpress' ),
 						'std'  => null
 					)
 				)
@@ -190,11 +190,11 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 					var $title = $('#title'),
 						is_error = false;
 					if (0 == $title.val().length) {
-						alert('<?php _e( 'Please enter the title of the question', 'learnpress' );?>');
+						alert('<?php _e( 'Please enter the title of the question.', 'learnpress' );?>');
 						$title.focus();
 						is_error = true;
 					} else if ($('.lpr-question-types').length && ( 0 == $('.lpr-question-types').val().length )) {
-						alert('<?php _e( 'Please a type of question', 'learnpress' );?>');
+						alert('<?php _e( 'Please enter question type.', 'learnpress' );?>');
 						$('.lpr-question-types').focus();
 						is_error = true;
 					}

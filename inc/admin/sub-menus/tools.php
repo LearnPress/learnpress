@@ -210,10 +210,10 @@ function learn_press_tools_page() {
 			<h2><?php _e( 'Upgrade courses', 'learnpress' ); ?></h2>
 			<p><?php _e( 'Upgrade courses, lessons, quizzes and questions from version less than 1.0.', 'learnpress' ); ?></p>
 			<div class="learn-press-message">
-				<?php _e( 'Use this action to force system upgrade outdated data to new version.', 'learnpress' ); ?>
+				<?php _e( 'Use this action to force system to upgrade outdated data to latest version.', 'learnpress' ); ?>
 			</div>
 			<div class="learn-press-error">
-				<?php _e( 'All course will be upgraded whether you have done this action in the past. So please remove all courses before upgrade to prevent courses is duplicated.', 'learnpress' ); ?>
+				<?php _e( 'All courses will be upgraded whether you have done this action in the past. So please remove all courses before you upgrade to prevent duplicated courses.', 'learnpress' ); ?>
 			</div>
 			<p>
 				<a class="button" href="<?php echo wp_nonce_url( admin_url( 'options-general.php?page=learn_press_upgrade_from_09&force=true' ), 'learn-press-upgrade-09' ); ?>"><?php esc_html_e( 'Upgrade', 'learnpress' ); ?></a>
@@ -224,11 +224,11 @@ function learn_press_tools_page() {
 			<p><?php _e( 'Remove all courses, lessons, quizzes and questions', 'learnpress' ); ?></p>
 			<form method="post" name="learn-press-form-remove-data">
 				<div class="learn-press-message learn-press-error">
-					<?php _e( 'Be careful before use this action!', 'learnpress' ); ?>
+					<?php _e( 'Be careful before using this action!', 'learnpress' ); ?>
 				</div>
 				<label class="hide-if-js">
 					<input type="checkbox" name="action" value="learn-press-remove-data" />
-					<?php _e( 'Check this box and click button again to confirm.', 'learnpress' ); ?>
+					<?php _e( 'Check this box and click this button again to confirm.', 'learnpress' ); ?>
 				</label>
 				<p>
 					<button class="button button-fade"><?php esc_html_e( 'Remove', 'learnpress' ); ?></button>
@@ -241,11 +241,11 @@ function learn_press_tools_page() {
 			<p><?php _e( 'Remove all courses, lessons, quizzes and questions from version less than 1.0.', 'learnpress' ); ?></p>
 			<form method="post" name="learn-press-form-remove-data">
 				<div class="learn-press-message learn-press-error">
-					<?php _e( 'Be careful before use this action! Only use this action in case all data is outdated has upgraded.', 'learnpress' ); ?>
+					<?php _e( 'Be careful before using this action! Only use this action in case all outdated data has been upgraded.', 'learnpress' ); ?>
 				</div>
 				<label class="hide-if-js">
 					<input type="checkbox" name="action" value="learn-press-remove-old-data" />
-					<?php _e( 'Check this box and click button again to confirm.', 'learnpress' ); ?>
+					<?php _e( 'Check this box and click this button again to confirm.', 'learnpress' ); ?>
 				</label>
 				<p>
 					<button class="button button-fade"><?php esc_html_e( 'Remove', 'learnpress' ); ?></button>

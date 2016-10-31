@@ -35,7 +35,7 @@ $heading = apply_filters( 'learn_press_profile_tab_courses_purchased_heading', f
 
 <?php else: ?>
 
-	<?php learn_press_display_message( __( 'You haven\'t purchased any courses yet!', 'learnpress' ) ); ?>
+	<?php learn_press_display_message( __( 'You haven\'t purchased any course yet!', 'learnpress' ) ); ?>
 
 <?php endif ?>
 

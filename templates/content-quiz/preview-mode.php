@@ -12,4 +12,4 @@
 if ( !is_preview() ) {
 	return;
 }
-learn_press_display_message( __( 'You are currently view quiz in preview mode', 'learnpress' ), 'error' );
+learn_press_display_message( __( 'You are currently viewing quiz in preview mode.', 'learnpress' ), 'error' );

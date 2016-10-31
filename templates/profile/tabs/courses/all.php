@@ -37,7 +37,7 @@ $heading = apply_filters( 'learn_press_profile_tab_courses_enrolled_heading', fa
 	<?php learn_press_paging_nav( array( 'num_pages' => $num_pages ) ); ?>
 <?php else: ?>
 
-	<?php learn_press_display_message( __( 'You haven\'t got any courses yet!', 'learnpress' ) ); ?>
+	<?php learn_press_display_message( __( 'You haven\'t got any course yet!', 'learnpress' ) ); ?>
 
 <?php endif ?>
 

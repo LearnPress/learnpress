@@ -15,7 +15,7 @@ $settings       = LP()->settings;
 ?>
 <h3><?php _e( 'New course for review', 'learnpress' ); ?></h3>
 <p class="description">
-	<?php _e( 'Settings for email when a new course submit for review', 'learnpress' ); ?>
+	<?php _e( 'Email settings when a new course is submitted for review.', 'learnpress' ); ?>
 </p>
 <table class="form-table">
 	<tbody>

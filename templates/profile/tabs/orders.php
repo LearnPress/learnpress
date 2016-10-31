@@ -52,5 +52,5 @@ learn_press_print_messages();
 </table>
 
 <?php else: ?>
-	<?php learn_press_display_message( __( 'You have not got any orders yet!', 'learnpress' ) ); ?>
+	<?php learn_press_display_message( __( 'You have not got any order yet!', 'learnpress' ) ); ?>
 <?php endif; ?>

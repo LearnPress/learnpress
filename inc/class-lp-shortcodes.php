@@ -206,16 +206,16 @@ class LP_Shortcodes {
 		$code    = 0;
 
 		if ( !is_user_logged_in() ) {
-			$message = __( "Please login to fill out this form", 'learnpress' );
+			$message = __( "Please login to fill in this form.", 'learnpress' );
 			$code    = 1;
 		} elseif ( in_array( LP_TEACHER_ROLE, $user->user->roles ) ) {
-			$message = __( "You are a teacher now", 'learnpress' );
+			$message = __( "You are a teacher now.", 'learnpress' );
 			$code    = 2;
 		} elseif ( get_transient( 'learn_press_become_teacher_sent_' . $user->id ) == 'yes' ) {
 			$message = __( 'Your request has been sent! We will get in touch with you soon!', 'learnpress' );
 			$code    = 3;
 		} elseif ( learn_press_user_maybe_is_a_teacher() ) {
-			$message = __( 'Your role is allowed to create a course', 'learnpress' );
+			$message = __( 'Your role is allowed to create a course.', 'learnpress' );
 			$code    = 4;
 		}
 
@@ -228,7 +228,7 @@ class LP_Shortcodes {
 				'method'                     => 'post',
 				'action'                     => '',
 				'title'                      => __( 'Become a Teacher', 'learnpress' ),
-				'description'                => __( 'Fill out your information and send to us to become a teacher', 'learnpress' ),
+				'description'                => __( 'Fill in your information and send us to become a teacher.', 'learnpress' ),
 				'submit_button_text'         => __( 'Submit', 'learnpress' ),
 				'submit_button_process_text' => __( 'Processing', 'learnpress' )
 			),

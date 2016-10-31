@@ -115,7 +115,7 @@ class LP_Quiz_Factory {
 			learn_press_send_json(
 				array(
 					'result'  => 'error',
-					'message' => array( 'title' => __( 'Error', 'learnpress' ), 'message' => __( 'You need to login to do this quiz.', 'learnpress' ) )
+					'message' => array( 'title' => __( 'Error', 'learnpress' ), 'message' => __( 'You need to login to take this quiz.', 'learnpress' ) )
 				)
 			);
 		}
@@ -124,7 +124,7 @@ class LP_Quiz_Factory {
 			learn_press_send_json(
 				array(
 					'result'  => 'error',
-					'message' => array( 'title' => __( 'Error', 'learnpress' ), 'message' => __( 'You can not start quiz in preview mode.', 'learnpress' ) )
+					'message' => array( 'title' => __( 'Error', 'learnpress' ), 'message' => __( 'You can not start a quiz in preview mode.', 'learnpress' ) )
 				)
 			);
 		}

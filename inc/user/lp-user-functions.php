@@ -718,7 +718,7 @@ function _learn_press_before_purchase_course_handler( $course_id, $cart ) {
 			learn_press_add_message( __( 'You have already finished course', 'learnpress' ) );
 			$redirect = true;
 		} elseif ( $user->has_purchased_course( $course_id ) ) {
-			learn_press_add_message( __( 'You have already enrolled course', 'learnpress' ) );
+			learn_press_add_message( __( 'You have already enrolled in this course', 'learnpress' ) );
 			$redirect = true;
 		}
 		if ( $redirect ) {
