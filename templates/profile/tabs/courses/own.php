@@ -46,7 +46,7 @@ $paged   = !empty( $_REQUEST['section'] ) && $_REQUEST['section'] == $subtab ? g
 
 <?php else: ?>
 
-	<?php learn_press_display_message( __( 'You haven\'t got any published course yet!', 'learnpress' ) ); ?>
+	<?php learn_press_display_message( __( 'You haven\'t got any published courses yet!', 'learnpress' ) ); ?>
 
 <?php endif ?>
 

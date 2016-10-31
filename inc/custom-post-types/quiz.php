@@ -95,7 +95,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 							'add_new'            => __( 'New Quiz', 'learnpress' ),
 							'update_item'        => __( 'Update Quiz', 'learnpress' ),
 							'search_items'       => __( 'Search Quizzes', 'learnpress' ),
-							'not_found'          => sprintf( __( 'You have not got any quiz yet. Click <a href="%s">Add new</a> to start', 'learnpress' ), admin_url( 'post-new.php?post_type=lp_quiz' ) ),
+							'not_found'          => sprintf( __( 'You have not got any quizzes yet. Click <a href="%s">Add new</a> to start', 'learnpress' ), admin_url( 'post-new.php?post_type=lp_quiz' ) ),
 							'not_found_in_trash' => __( 'No quiz found in Trash', 'learnpress' )
 						),
 						'public'             => true,
