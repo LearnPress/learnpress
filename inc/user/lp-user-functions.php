@@ -590,7 +590,53 @@ function learn_press_user_update_user_info() {
 	if ( !empty( $_POST ) && isset( $_POST['from'] ) && isset( $_POST['action'] ) && $_POST['from'] == 'profile' && $_POST['action'] == 'update' ) {
 		$user      = learn_press_get_current_user();
 		$user_id   = learn_press_get_current_user_id();
-		$user_info = get_userdata( $user->id );
+//		$user_info = get_userdata( $user->id );
+
+		$update_data = array(
+			'ID'           => $user_id,
+			'user_url'     => filter_input( INPUT_POST, 'url', FILTER_SANITIZE_URL ),
+			'user_email'   => filter_input( INPUT_POST, 'email', FILTER_SANITIZE_EMAIL ),
+			'first_name'   => filter_input( INPUT_POST, 'first_name', FILTER_SANITIZE_STRING ),
+			'last_name'    => filter_input( INPUT_POST, 'last_name', FILTER_SANITIZE_STRING ),
+			'display_name' => filter_input( INPUT_POST, 'display_name', FILTER_SANITIZE_STRING ),
+			'nickname'     => filter_input( INPUT_POST, 'nickname', FILTER_SANITIZE_STRING ),
+			'description'  => filter_input( INPUT_POST, 'description', FILTER_SANITIZE_STRING ),
+		);
+
+		# check and update pass word
+		if ( !empty( $_POST['pass0'] ) && !empty( $_POST['pass1'] ) && !empty( $_POST['pass1'] ) ) {
+			// check old pass
+			$old_pass       = filter_input( INPUT_POST, 'pass0' );
+			$check_old_pass = false;
+			if ( !$old_pass ) {
+				$check_old_pass = false;
+			} else {
+				$cuser = wp_get_current_user();
+				require_once( ABSPATH . 'wp-includes/class-phpass.php' );
+				$wp_hasher = new PasswordHash( 8, TRUE );
+				if ( $wp_hasher->CheckPassword( $old_pass, $cuser->data->user_pass ) ) {
+					$check_old_pass = true;
+				}
+			}
+
+			if ( !$check_old_pass ) {
+				learn_press_add_message( __( 'Old password incorrect!', 'learnpress' ) );
+				return;
+			} else {
+				// check new pass
+				$new_pass  = filter_input( INPUT_POST, 'pass1' );
+				$new_pass2 = filter_input( INPUT_POST, 'pass2' );
+
+				if ( $new_pass != $new_pass2 ) {
+					learn_press_add_message( __( 'Retype new password incorrect!', 'learnpress' ) );
+					return;
+				} else {
+					$update_data['user_pass'] = $new_pass;
+				}
+			}
+		}
+		
+		
 		// upload profile picture
 		$profile_picture_type = filter_input( INPUT_POST, 'profile_picture_type', FILTER_SANITIZE_STRING );
 		update_user_meta( $user->id, '_lp_profile_picture_type', $profile_picture_type );
@@ -619,49 +665,10 @@ function learn_press_user_update_user_info() {
 					update_user_meta( $user->id, '_lp_profile_picture', $attach_id );
 				}
 			}
-
 		}
-		if ( !empty( $_POST['pass0'] ) && !empty( $_POST['pass1'] ) && !empty( $_POST['pass1'] ) ) {
-			// check old pass
-			$old_pass       = filter_input( INPUT_POST, 'pass0' );
-			$check_old_pass = false;
-			if ( !$old_pass ) {
-				$check_old_pass = false;
-			} else {
-				$cuser = wp_get_current_user();
-				require_once( ABSPATH . 'wp-includes/class-phpass.php' );
-				$wp_hasher = new PasswordHash( 8, TRUE );
-				if ( $wp_hasher->CheckPassword( $old_pass, $cuser->data->user_pass ) ) {
-					$check_old_pass = true;
-				}
-			}
-
-			if ( !$check_old_pass ) {
-				learn_press_add_message( __( 'Old password incorrect!', 'learnpress' ) );
-			} else {
-				// check new pass
-				$new_pass  = filter_input( INPUT_POST, 'pass1' );
-				$new_pass2 = filter_input( INPUT_POST, 'c' );
-
-				if ( $new_pass != $new_pass2 ) {
-					learn_press_add_message( __( 'Retype new password incorrect!', 'learnpress' ) );
-
-					$userdata['ID']        = $user_id;
-					$userdata['user_pass'] = $new_pass;
-					wp_update_user( $userdata );
-				}
-			}
-		}
-		$update_data = array(
-			'ID'           => $user_id,
-			'user_url'     => filter_input( INPUT_POST, 'url', FILTER_SANITIZE_URL ),
-			'user_email'   => filter_input( INPUT_POST, 'email', FILTER_SANITIZE_EMAIL ),
-			'first_name'   => filter_input( INPUT_POST, 'first_name', FILTER_SANITIZE_STRING ),
-			'last_name'    => filter_input( INPUT_POST, 'last_name', FILTER_SANITIZE_STRING ),
-			'display_name' => filter_input( INPUT_POST, 'display_name', FILTER_SANITIZE_STRING ),
-			'nickname'     => filter_input( INPUT_POST, 'nickname', FILTER_SANITIZE_STRING ),
-			'description'  => filter_input( INPUT_POST, 'description', FILTER_SANITIZE_STRING ),
-		);
+		
+		
+		
 
 		$res = wp_update_user( $update_data );
 		if ( $res ) {
