@@ -180,16 +180,11 @@
 					$('input[name="_lp_sale_end"]').val('');
 					$('#_lp_sale_price_schedule').show();
 				});
-				
-				
-				
-				
 				if ($('input[name="_lp_course_result"]:checked').length == 0) {
 					$('input[name="_lp_course_result"]').filter(function () {
 						return this.value == 'evaluate_lesson';
 					}).prop('checked', true)
 				}
-
 
 				$(document).on('mouseover', '.lp-modal-search li', function () {
 					$(this).addClass('highlighting').siblings().removeClass('highlighting');
@@ -660,7 +655,8 @@
 					}
 					$li.remove();
 				});
-
+                                // restart sortable
+                                _makeListSortable();
 			},
 			addItemToSection        : function ($item, $section) {
 				var $last = $section.find('.curriculum-section-items .lp-section-item:last');
