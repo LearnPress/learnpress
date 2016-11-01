@@ -421,7 +421,8 @@ class LP_Install {
 				foreach ( $options as $option ) {
 					if ( isset( $option['default'] ) && isset( $option['id'] ) ) {
 						$autoload = isset( $option['autoload'] ) ? (bool) $option['autoload'] : true;
-						update_option( $option['id'], $option['default'], '', ( $autoload ? 'yes' : 'no' ) );
+                                                $value = get_option( $option['id'], $option['default'] );
+						update_option( $option['id'], $value, '', ( $autoload ? 'yes' : 'no' ) );
 					}
 				}
 			}
