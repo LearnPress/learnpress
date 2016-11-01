@@ -553,6 +553,7 @@
 				var tmpl = wp.template('section-item'),
 					$item = $(tmpl(args || {}));
 				$item = LP.Hook.applyFilters('learn_press_create_new_item', $item, $section);
+                                _makeListSortable();
 				return $item;
 			},
 			needCreateNewSection    : function () {
