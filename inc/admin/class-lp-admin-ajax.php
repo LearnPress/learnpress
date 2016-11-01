@@ -1175,16 +1175,6 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
                         }
                     }
                     if ( $new_question_id && $quiz_id ) {
-                            $max_order = $wpdb->get_var( $wpdb->prepare( "SELECT max(question_order) FROM {$wpdb->prefix}learnpress_quiz_questions WHERE quiz_id = %d", $quiz_id ) );
-                            $wpdb->insert(
-                                    $wpdb->prefix . 'learnpress_quiz_questions',
-                                    array(
-                                            'quiz_id'        => $quiz_id,
-                                            'question_id'    => $new_question_id,
-                                            'question_order' => $max_order + 1
-                                    ),
-                                    array( '%d', '%d', '%d' )
-                            );
                             ob_start();
                             $question = LP_Question_Factory::get_question( $new_question_id );
                             $post = get_post( $quiz_id );
