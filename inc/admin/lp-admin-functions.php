@@ -962,7 +962,13 @@ function learn_press_add_row_action_link( $actions ) {
 			$link = sprintf( '<a href="%s" class="%s">%s</a>', $link['link'], $link['class'], $link['title'] );
 		}
 		$actions['lpr-course-row-action'] = $link;
-	}
+	} else if ( LP_QUIZ_CPT === $post->post_type ) {
+            
+        } else if ( LP_QUESTION_CPT === $post->post_type ) {
+            
+        } else if ( LP_LESSON_CPT === $post->post_type ) {
+            
+        }
 	return $actions;
 }
 
@@ -1542,4 +1548,195 @@ if ( !function_exists( 'learn_press_sort_questions' ) ) {
         }
         return $types;
     }
+}
+
+if ( !function_exists( 'learn_press_dulicate_course' ) ) {
+    
+    function learn_press_dulicate_course( $course_id = null, $force = true ) {
+        if ( !function_exists( '_learn_press_get_course_curriculum' ) ) {
+            require_once LP_PLUGIN_PATH . 'inc/lp-init.php';
+        }
+        global $wpdb;
+
+        if ( $course_id && is_array( $course_id ) ) {
+            $course_id = array_shift( $course_id );
+        }
+        // check for post is exists
+        if ( ! $course_id || ! ( $post = get_post( $course_id ) ) ) {
+            return new WP_Error( __( '<p>Op! The course does not exists</p>', 'learnpress' ) );
+        } else {
+            // ensure that user can create course
+            if ( !current_user_can( 'edit_posts' ) ) {
+                return new WP_Error( __( '<p>Sorry! You have not permission to duplicate this course</p>', 'learnpress' ) );
+            } else {
+                // duplicate course
+                $new_course_id = learn_press_duplicate_post( $course_id );
+                if ( ! $new_course_id || is_wp_error( $new_course_id ) ) {
+                    return new WP_Error( __( '<p>Sorry! Duplicate course failed!</p>', 'learnpress' ) );
+                } else {
+                    $curriculums = _learn_press_get_course_curriculum( $course_id );
+                    foreach ( $curriculums as $section_id => $section ) {
+                        $new_section_id = learn_press_course_insert_section( array(
+                            'section_name'          => $section->section_name,
+                            'section_course_id'     => $new_course_id,
+                            'section_order'         => $section->section_order,
+                            'section_description'   => $section->section_description
+                        ) );
+
+                        if ( $section->items ) {
+                            foreach ( $section->items as $item ) {
+                                // duplicate item
+                                $item_id = learn_press_duplicate_post( $item->ID, array( 'post_status' => 'publish' ), $meta = true );
+                                if ( $force ) {
+                                    $section_item_id = learn_press_course_insert_section_item( array(
+                                        'section_id'    => $new_section_id,
+                                        'item_id'       => $item_id,
+                                        'item_order'    => $item->item_order,
+                                        'item_type'     => $item->item_type
+                                    ) );
+                                    if ( $item->post_type === LP_QUIZ_CPT ) {
+//                                                    $questions = _learn_press_get_quiz_questions( $item->ID );
+                                        $quiz = LP_Quiz::get_quiz( $item->ID );
+                                        $questions = $quiz->get_questions();
+                                        if ( $questions ) {
+                                            $questions = array_keys( $questions );
+                                            foreach ( $questions as $question_id ) {
+                                                $new_question_id = learn_press_duplicate_post( $question_id );
+                                                // learnpress_quiz_questions
+                                                $sql = $wpdb->prepare( "
+                                                            SELECT * FROM $wpdb->learnpress_quiz_questions WHERE quiz_id = %d AND question_id = %d
+                                                        ", $item->ID, $question_id );
+                                                $quiz_question_data = $wpdb->get_row( $sql );
+                                                if ( $quiz_question_data ) {
+                                                    $wpdb->insert(
+                                                            $wpdb->learnpress_quiz_questions,
+                                                            array(
+                                                                'quiz_id'           => $item_id,
+                                                                'question_id'       => $new_question_id,
+                                                                'question_order'    => $quiz_question_data->question_order,
+                                                                'params'            => $quiz_question_data->params
+                                                            ),
+                                                            array(
+                                                                '%d',
+                                                                '%d',
+                                                                '%d',
+                                                                '%s'
+                                                            )
+                                                        );
+                                                }
+                                                // learnpress_question_answers
+                                                $sql = $wpdb->prepare( "
+                                                            SELECT * FROM $wpdb->learnpress_question_answers WHERE question_id = %d
+                                                        ", $question_id );
+                                                $question_answers = $wpdb->get_results( $sql );
+                                                if ( $question_answers ) {
+                                                    foreach ( $question_answers as $q_a ) {
+                                                        $wpdb->insert(
+                                                                $wpdb->learnpress_question_answers,
+                                                                array(
+                                                                    'question_id'    => $new_question_id,
+                                                                    'answer_data'    => $q_a->answer_data,
+                                                                    'answer_order'   => $q_a->answer_order
+                                                                ),
+                                                                array(
+                                                                    '%d',
+                                                                    '%s',
+                                                                    '%s'
+                                                                )
+                                                            );
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    return $new_course_id;
+                }
+            }
+        }
+    }
+
+}
+
+if ( !function_exists( 'learn_press_duplicate_question' ) ) {
+
+    function learn_press_duplicate_question( $question_id = null, $quiz_id = null ) {
+        if ( ! $question_id || ! get_post( $question_id ) ) {
+            return new WP_Error( sprintf( __( 'Question id %s is not exists.', 'learnpress' ), $question_id ) );
+        }
+        if ( ! $quiz_id || ! get_post( $quiz_id ) ) {
+            return new WP_Error( sprintf( __( 'Quiz id %s is not exists.', 'learnpress' ), $quiz_id ) );
+        }
+
+        global $wpdb;
+        $new_question_id = learn_press_duplicate_post( $question_id );
+        // learnpress_quiz_questions
+        $sql = $wpdb->prepare( "
+                    SELECT * FROM $wpdb->learnpress_quiz_questions WHERE quiz_id = %d AND question_id = %d
+                ", $quiz_id, $question_id );
+        $quiz_question_data = $wpdb->get_row( $sql );
+        $max_order = $wpdb->get_var( $wpdb->prepare( "SELECT max(question_order) FROM {$wpdb->prefix}learnpress_quiz_questions WHERE quiz_id = %d", $quiz_id ) );
+
+        if ( $quiz_question_data ) {
+            $wpdb->insert(
+                    $wpdb->learnpress_quiz_questions,
+                    array(
+                        'quiz_id'           => $quiz_id,
+                        'question_id'       => $new_question_id,
+                        'question_order'    => $max_order + 1,
+                        'params'            => $quiz_question_data->params
+                    ),
+                    array(
+                        '%d',
+                        '%d',
+                        '%d',
+                        '%s'
+                    )
+                );
+        }
+        // learnpress_question_answers
+        $sql = $wpdb->prepare( "
+                    SELECT * FROM $wpdb->learnpress_question_answers WHERE question_id = %d
+                ", $question_id );
+        $question_answers = $wpdb->get_results( $sql );
+        if ( $question_answers ) {
+            foreach ( $question_answers as $q_a ) {
+                $wpdb->insert(
+                        $wpdb->learnpress_question_answers,
+                        array(
+                            'question_id'    => $new_question_id,
+                            'answer_data'    => $q_a->answer_data,
+                            'answer_order'   => $q_a->answer_order
+                        ),
+                        array(
+                            '%d',
+                            '%s',
+                            '%s'
+                        )
+                    );
+            }
+        }
+        
+        return $new_question_id;
+    }
+
+}
+
+if ( !function_exists( 'learn_press_duplicate_quiz' ) ) {
+
+    function learn_press_duplicate_quiz( $quiz_id = null ) {
+        
+    }
+    
+}
+
+if ( !function_exists( 'learn_press_duplicate_lesson' ) ) {
+
+    function learn_press_duplicate_lesson( $lesson_id = null ) {
+        
+    }
+    
 }
