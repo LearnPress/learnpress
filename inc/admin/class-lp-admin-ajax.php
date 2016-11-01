@@ -345,7 +345,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			$quiz_id = learn_press_get_request( 'quiz_id' );
 			$user    = learn_press_get_current_user();
 			if ( !$user->is_admin() && get_post_field( 'post_author', $quiz_id ) != get_current_user_id() ) {
-				wp_die( __( 'You have not permission to access this section', 'learnpress' ) );
+				wp_die( __( 'You have no permission to access this section.', 'learnpress' ) );
 			}
 			$term    = (string) ( stripslashes( learn_press_get_request( 'term' ) ) );
 			$exclude = array();
@@ -402,7 +402,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 					', $id, $question );
 				}
 			} else {
-				echo '<li>' . __( 'No question found', 'learnpress' ) . '</li>';
+				echo '<li>' . __( 'No questions found', 'learnpress' ) . '</li>';
 			}
 
 			$response = array(
@@ -689,10 +689,10 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 					$response['html']      = '<a href="' . get_edit_post_link( $page_id ) . '" target="_blank">' . __( 'Edit Page', 'learnpress' ) . '</a>&nbsp;';
 					$response['html'] .= '<a href="' . get_permalink( $page_id ) . '" target="_blank">' . __( 'View Page', 'learnpress' ) . '</a>';
 				} else {
-					$response['error'] = __( 'Error! Can not create page. Please try again!', 'learnpress' );
+					$response['error'] = __( 'Error! Create page failed. Please try again!', 'learnpress' );
 				}
 			} else {
-				$response['error'] = __( 'Page name is empty!', 'learnpress' );
+				$response['error'] = __( 'Empty page name!', 'learnpress' );
 			}
 			learn_press_send_json( $response );
 			die();
@@ -775,7 +775,8 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 					)
 				);
 			} else {
-				throw new Exception( __( 'Convert question type must be specify the id, source and destination type', 'learnpress' ) );
+				//throw new Exception( __( 'Convert question type must be specify the id, source and destination type', 'learnpress' ) );
+				throw new Exception( __( 'Something went wrong! Please try again or ask <a href="https://wordpress.org/support/">support forums</a>.', 'learnpress' ) );
 			}
 			die();
 		}
@@ -814,7 +815,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 							);
 							$response['url']     = $url = $url . '&' . http_build_query( $postdata ) . "\n";
 							$response['result']  = 'success';
-							$response['message'] = sprintf( '<p>%s <a href="edit.php?post_type=lp_course">%s</a> </p>', __( 'Import sample data successfully.', 'learnpress' ), __( 'View courses', 'learnpress' ) );
+							$response['message'] = sprintf( '<p>%s <a href="edit.php?post_type=lp_course">%s</a> </p>', __( 'Import sample data successes.', 'learnpress' ), __( 'View courses', 'learnpress' ) );
 						}
 					}
 					if ( $response['result'] == 'fail' ) {
@@ -1030,7 +1031,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
                             // duplicate course
                             $new_course_id = learn_press_duplicate_post( $course_id );
                             if ( ! $new_course_id || is_wp_error( $new_course_id ) ) {
-                                LP_Admin_Notice::add_redirect( __( '<p>Sorry! Duplicate the course failed!</p>', 'learnpress' ), 'error' );
+                                LP_Admin_Notice::add_redirect( __( '<p>Sorry! Duplicate course failed!</p>', 'learnpress' ), 'error' );
                             } else {
                                 $curriculums = _learn_press_get_course_curriculum( $course_id );
                                 foreach ( $curriculums as $section_id => $section ) {

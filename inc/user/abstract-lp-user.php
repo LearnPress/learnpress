@@ -1119,7 +1119,9 @@ class LP_Abstract_User {
 			$order      = LP_Order::instance( $this->get_course_order( $course_id ), true );
 			$enrollable = !$this->has_enrolled_course( $course_id ) && ( $order && $order->has_status( 'completed' ) );
 		}
-		return apply_filters( 'learn_press_user_can_enroll_course', $enrollable, $this, $course_id );
+		$enrollable = apply_filters( 'learn_press_user_can_enroll_course', $enrollable, $this, $course_id );
+
+		return $enrollable;
 	}
 
 	public function can_view_item( $item_id, $course_id = 0 ) {
@@ -1916,7 +1918,7 @@ class LP_Abstract_User {
 		$quiz_results = LP_Cache::get_quiz_results( false, array() );
 
 		$key = $this->id . '-' . $course_id . '-' . $quiz_id;
-		if(get_class($this)=='LP_User_Guest'){
+		if ( get_class( $this ) == 'LP_User_Guest' ) {
 //			print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 10));
 		}
 		if ( !array_key_exists( $key, $quiz_results ) || $force ) {
@@ -2345,7 +2347,8 @@ class LP_Abstract_User {
 					FROM {$wpdb->posts} c
 					LEFT JOIN {$wpdb->prefix}learnpress_user_items uc ON c.ID = uc.item_id AND uc.user_id = %d
 					WHERE post_type = %s
-					AND post_author = %d
+						AND ( c.post_status = %s OR c.post_status = %s)
+						AND post_author = %d
 					UNION
 					SELECT c.*, uc.status as course_status
 					FROM {$wpdb->posts} c
@@ -2355,7 +2358,7 @@ class LP_Abstract_User {
 						AND c.post_status = %s
 				) a GROUP BY a.ID
 			", $args['user_id'],
-				LP_COURSE_CPT, $this->id,
+				LP_COURSE_CPT, 'publish', 'draft', $this->id,
 				$args['user_id'], LP_COURSE_CPT, 'publish'
 			);
 			$query .= $where . $order . $limit;
@@ -2651,5 +2654,60 @@ class LP_Abstract_User {
 	 */
 	public function is_exists() {
 		return $this->ID > 0;
+	}
+
+	public function get_upload_profile_src( $size = 'thumbnail' ) {
+		if ( empty( $this->uploaded_profile_src ) ) {
+			$profile_picture = $this->profile_picture;
+			$attachment      = wp_get_attachment_image_src( $profile_picture, $size );
+			if ( $attachment ) {
+				$this->uploaded_profile_src = $attachment[0];
+			} else {
+				$this->uploaded_profile_src = false;
+			}
+		}
+		return $this->uploaded_profile_src;
+	}
+
+	public function get_profile_picture( $type = '', $size = 96 ) {
+		if ( empty( $type ) ) {
+			$type = $this->profile_picture_type;
+		}
+		if ( $type == 'picture' ) {
+			if ( $profile_picture_src = $this->get_upload_profile_src( $size ) ) {
+				$this->profile_picture_src = $profile_picture_src;
+				add_filter( 'get_avatar_url', array( $this, 'get_avatar_url' ), 10, 3 );
+			}
+		}
+		$avatar = get_avatar( $this->id, $size );
+		remove_filter( 'get_avatar_url', array( $this, 'get_avatar_url' ), 10 );
+		return $avatar;
+	}
+
+	public function get_profile_picture_src() {
+		//if ( empty( $this->profile_picture_src ) ) {
+		$profile_picture_type = $this->profile_picture_type;
+		if ( $profile_picture_type == 'picture' ) {
+			if ( $profile_picture_src = $this->get_upload_profile_src() ) {
+				$this->profile_picture_src = $profile_picture_src;
+				add_filter( 'get_avatar_url', array( $this, 'get_avatar_url' ), 10, 3 );
+			}
+		} else {
+			$avatar_data               = get_avatar_data( $this->id );
+			$this->profile_picture_src = $avatar_data['url'];
+		}
+		///}
+		return $this->profile_picture_src;
+	}
+
+	public function get_avatar_url( $url, $id_or_email, $args ) {
+		if ( is_numeric( $id_or_email ) && $id_or_email == $this->id ) {
+			$url = $this->profile_picture_src;
+		}
+		if ( $id_or_email == $this->user_login ) {
+			$url = $this->profile_picture_src;
+		}
+		///
+		return $url;
 	}
 }

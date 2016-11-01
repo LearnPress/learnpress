@@ -481,6 +481,11 @@ class LP_Email {
 		return $this->email_format && class_exists( 'DOMDocument' ) ? $this->email_format : 'plain_text';
 	}
 
+	/**
+	 * @param $content
+	 *
+	 * @return string
+	 */
 	public function apply_style_inline( $content ) {
 		if ( in_array( $this->get_content_format(), array( 'text/html', 'multipart/alternative' ) ) && class_exists( 'DOMDocument' ) ) {
 
@@ -490,7 +495,9 @@ class LP_Email {
 			$css = apply_filters( 'learn_press_email_styles', ob_get_clean(), $this->id, $this );
 
 			try {
-				LP()->_include( 'libraries/class-emogrifier.php' );
+				if ( !class_exists( 'Emogrifier' ) ) {
+					LP()->_include( 'libraries/class-emogrifier.php' );
+				}
 				// apply CSS styles inline for picky email clients
 				$emogrifier = new Emogrifier( $content, $css );
 				$content    = $emogrifier->emogrify();

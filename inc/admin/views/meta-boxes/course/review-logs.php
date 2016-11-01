@@ -6,7 +6,7 @@ $index = $total_reviews;
 	<?php if ( $total_reviews ) { ?>
 		<?php printf( _nx( '%d review', '%d reviews', $total_reviews, 'learnpress' ), $total_reviews ); ?>
 	<?php } else { ?>
-		<?php _e( 'This course has not got any review yet', 'learnpress' ); ?>
+		<?php _e( 'This course has not got any reviews yet', 'learnpress' ); ?>
 	<?php } ?>
 </h4>
 <ul class="learn-press-review-logs clearfix">

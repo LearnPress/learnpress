@@ -78,6 +78,6 @@ $base_type = get_option( 'learn_press_course_base_type' );
 	<td>
 		<input name="course_permalink_structure" id="course_permalink_structure" type="text" value="<?php echo esc_attr( $course_permalink ); ?>" class="regular-text code" />
 
-		<p class="description"><?php _e( 'Enter a custom base to use. A base <strong>must</strong> be set or WordPress will use default instead.', 'learnpress' ); ?></p>
+		<p class="description"><?php _e( 'Enter a custom base to use. A base <strong>must</strong> be set or WordPress will use default values instead.', 'learnpress' ); ?></p>
 	</td>
 </tr>

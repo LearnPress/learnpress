@@ -495,7 +495,7 @@ function learn_press_add_ons_content_tab_more( $current ) {
 	$add_ons = learn_press_get_all_add_ons( array( 'transient_key' => 'lp_more_add_ons', 'force' => wp_verify_nonce( learn_press_get_request( 'check' ), 'check_more' ) ) );
 
 	$time        = get_option( '_transient_timeout_lp_more_add_ons' );
-	$description = __( 'All add-ons we are provided.', 'learnpress' );
+	$description = __( 'All add-ons we provide.', 'learnpress' );
 	$description .= ' ' . sprintf( __( 'Last checked %s ago', 'learnpress' ), human_time_diff( $time - LP_ADD_ON_TRANSIENT_TIME ) );
 	$description .= ' ' . sprintf( __( '<a href="%s">%s</a>' ), admin_url( 'admin.php?page=learn_press_add_ons&tab=more&check=' . wp_create_nonce( 'check_more' ) ), __( 'Check again!', 'learnpress' ) );
 	learn_press_add_on_tab_description( $description );
@@ -581,7 +581,7 @@ function learn_press_get_add_on_action_link( $plugin, $file ) {
 
 function learn_press_output_add_ons_list( $add_ons, $tab = '' ) {
 	if ( !is_array( $add_ons ) || sizeof( $add_ons ) == 0 ) {
-		printf( '<h3>%s</h3>', __( 'No add-ons found', 'learnpress' ) );
+		printf( '<h3>%s</h3>', __( 'No add-on found', 'learnpress' ) );
 		return false;
 	}
 	echo '<ul class="learn-press-add-ons widefat ' . $tab . '">';

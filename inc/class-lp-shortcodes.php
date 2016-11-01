@@ -64,6 +64,10 @@ class LP_Shortcodes {
 				} else {
 					$query = array();
 					parse_str( $wp->matched_query, $query );
+					if ( empty( $query['view'] ) ) {
+						wp_redirect( learn_press_user_profile_link( $wp->query_vars['user'] ) );
+						die();
+					}
 					if ( $query ) {
 						$profile_endpoints = (array) LP()->settings->get( 'profile_endpoints' );
 						$endpoints         = array_keys( $profile_endpoints );
@@ -202,16 +206,16 @@ class LP_Shortcodes {
 		$code    = 0;
 
 		if ( !is_user_logged_in() ) {
-			$message = __( "Please login to fill out this form", 'learnpress' );
+			$message = __( "Please login to fill in this form.", 'learnpress' );
 			$code    = 1;
 		} elseif ( in_array( LP_TEACHER_ROLE, $user->user->roles ) ) {
-			$message = __( "You are a teacher now", 'learnpress' );
+			$message = __( "You are a teacher now.", 'learnpress' );
 			$code    = 2;
 		} elseif ( get_transient( 'learn_press_become_teacher_sent_' . $user->id ) == 'yes' ) {
 			$message = __( 'Your request has been sent! We will get in touch with you soon!', 'learnpress' );
 			$code    = 3;
 		} elseif ( learn_press_user_maybe_is_a_teacher() ) {
-			$message = __( 'Your role is allowed to create a course', 'learnpress' );
+			$message = __( 'Your role is allowed to create a course.', 'learnpress' );
 			$code    = 4;
 		}
 
@@ -224,7 +228,7 @@ class LP_Shortcodes {
 				'method'                     => 'post',
 				'action'                     => '',
 				'title'                      => __( 'Become a Teacher', 'learnpress' ),
-				'description'                => __( 'Fill out your information and send to us to become a teacher', 'learnpress' ),
+				'description'                => __( 'Fill in your information and send us to become a teacher.', 'learnpress' ),
 				'submit_button_text'         => __( 'Submit', 'learnpress' ),
 				'submit_button_process_text' => __( 'Processing', 'learnpress' )
 			),
@@ -275,8 +279,8 @@ class LP_Shortcodes {
 		} else {
 			$user = get_user_by( 'id', get_current_user_id() );
 		}
-
 		$output = '';
+
 		ob_start();
 		if ( !$user ) {
 			if ( empty( $wp_query->query['user'] ) ) {
@@ -286,6 +290,7 @@ class LP_Shortcodes {
 			}
 
 		} else {
+
 			$user = LP_User::get_user( $user->ID );
 			$tabs = learn_press_user_profile_tabs( $user );
 			if ( !empty( $wp->query_vars['view'] ) ) {

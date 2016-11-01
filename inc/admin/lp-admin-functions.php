@@ -1010,11 +1010,11 @@ function learn_press_process_duplicate_action() {
 		}
 		// check for post is exists
 		if ( !( $post_id && $post = get_post( $post_id ) ) ) {
-			wp_die( __( 'Op! The course does not exists', 'learnpress' ) );
+			wp_die( __( 'Oops! The course does not exists.', 'learnpress' ) );
 		}
 		// ensure that user can create course
 		if ( !current_user_can( 'edit_posts' ) ) {
-			wp_die( __( 'Sorry! You have not permission to duplicate this course', 'learnpress' ) );
+			wp_die( __( 'Sorry! You have not permission to duplicate this course.', 'learnpress' ) );
 		}
 
 		// assign course to current user
@@ -1043,7 +1043,7 @@ function learn_press_process_duplicate_action() {
 		$new_post_id = wp_insert_post( $args );
 
 		if ( !$new_post_id ) {
-			LP_Admin_Notice::add_redirect( __( '<p>Sorry! Duplicate the course failed!</p>', 'learnpress' ) );
+			LP_Admin_Notice::add_redirect( __( '<p>Sorry! Duplicate course failed!</p>', 'learnpress' ) );
 			wp_redirect( admin_url( 'edit.php?post_type=lp_course' ) );
 			exit();
 		}
@@ -1256,7 +1256,7 @@ function learn_press_one_click_install_sample_data_notice() {
 				</div>
             </div>',
 			__( 'You haven\'t got any courses yet! Would you like to import sample data?', 'learnpress' ),
-			__( 'If yes, it requires to install addon named', 'learnpress' ),
+			__( 'If yes, it requires to install addon name', 'learnpress' ),
 			__( 'LearnPress Import/Export', 'learnpress' ),
 			__( 'but don\'t worry because it is completely automated.', 'learnpress' ),
 			__( 'Import now', 'learnpress' ),

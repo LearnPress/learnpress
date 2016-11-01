@@ -10,14 +10,16 @@
 if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
+$user   = learn_press_get_current_user();
 $course = learn_press_get_the_course();
 $quiz   = LP()->global['course-item'];
 
-if ( !$quiz->retake_count || !LP()->user->has( 'completed-quiz', $quiz->id, $course->id ) ) {
+if ( !$quiz->retake_count || !$user->has( 'completed-quiz', $quiz->id, $course->id ) ) {
 	return;
 }
+
 $limit   = 10;
-$history = LP()->user->get_quiz_history( $quiz->id, $course->id );
+$history = $user->get_quiz_history( $quiz->id, $course->id );
 reset( $history );
 $history_count = sizeof( $history );
 $view_id       = !empty( $_REQUEST['history_id'] ) ? $_REQUEST['history_id'] : key( $history );
@@ -26,7 +28,8 @@ $heading       = apply_filters( 'learn_press_quiz_history_heading', $heading );
 ?>
 
 <?php if ( $heading ) { ?>
-	<h4 class="lp-group-heading-title toggle-off" onclick="LP.toggleGroupSection('#lp-quiz-history', this);"><?php echo $heading; ?><span class="toggle-icon"></span></h4>
+	<h4 class="lp-group-heading-title toggle-off" onclick="LP.toggleGroupSection('#lp-quiz-history', this);"><?php echo $heading; ?>
+		<span class="toggle-icon"></span></h4>
 <?php } ?>
 
 <?php
@@ -44,6 +47,7 @@ if ( $history_count > 1 ) {
 			</thead>
 			<?php foreach ( $history as $item ) {
 				if ( $item->history_id == $view_id ) continue;
+				$results = $user->evaluate_quiz_results( $quiz->id, $item );
 				$position ++; ?>
 				<tr>
 					<td align="right"><?php echo $position; ?></td>
@@ -52,7 +56,7 @@ if ( $history_count > 1 ) {
 						<div><?php echo date( get_option( 'time_format' ), strtotime( $item->start ) ); ?></div>
 					</td>
 					<td>
-						<?php $mark_percent = !empty( $item->mark_percent ) ? $item->mark_percent : 0; ?>
+						<?php $mark_percent = !empty( $results['mark_percent'] ) ? $results['mark_percent'] : 0; ?>
 						<?php printf( "%d%%", $mark_percent ); ?>
 					</td>
 				</tr>

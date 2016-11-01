@@ -19,14 +19,14 @@ if ( !class_exists( 'LP_Admin' ) ) {
 		public function __construct() {
 			$this->includes();
 			add_action( 'admin_print_scripts', array( $this, 'plugin_js_settings' ) );
-			//add_action( 'init', array( $this, 'include_update' ) );
 			add_action( 'template_redirect', array( $this, '_redirect' ) );
 			add_action( 'delete_user', array( $this, 'delete_user_data' ) );
 			add_action( 'delete_user_form', array( $this, 'delete_user_form' ) );
 			add_action( 'wp_ajax_learn_press_rated', array( $this, 'rated' ) );
-			//add_action( 'admin_head', array( $this, 'admin_footer_text' ), 1 );
 			add_filter( 'admin_footer_text', array( $this, 'admin_footer_text' ), 1 );
-
+			if ( !get_option( 'permalink_structure' ) ) {
+				learn_press_add_notice( sprintf( __( 'LearnPress requires permalink option <strong>Post name</strong> is enabled. Please enable it <a href="%s">here</a> to ensure that all functions work properly.', 'learnpress' ), admin_url( 'options-permalink.php' ) ), 'error' );
+			}
 		}
 
 		public function rated() {

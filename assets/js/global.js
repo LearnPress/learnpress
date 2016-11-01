@@ -513,7 +513,12 @@ if (typeof window.LP == 'undefined') {
 			}
 		},
 		toggleGroupSection: function (el, target) {
-			$(el).slideToggle(function () {
+			var $el = $(el),
+				isHide = $el.hasClass('hide-if-js');
+			if(isHide){
+				$el.hide().removeClass('hide-if-js');
+			}
+			$el.removeClass('hide-if-js').slideToggle(function () {
 				var $this = $(this);
 				if ($this.is(':visible')) {
 					$(target).addClass('toggle-on').removeClass('toggle-off');

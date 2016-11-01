@@ -1240,7 +1240,7 @@ msgstr ""
 
 #: inc/admin/lp-admin-functions.php:1179
 msgid "You haven't got any courses yet! Would you like to import sample data?"
-msgstr "You haven't got any course yet! Would you like to import sample data?"
+msgstr "You haven't got any courses yet! Would you like to import sample data?"
 
 #: inc/admin/lp-admin-functions.php:1180
 msgid "If yes, it requires to install addon named"
@@ -2780,7 +2780,7 @@ msgstr ""
 #: inc/custom-post-types/course.php:169
 #, c-format
 msgid ""
-"You have not got any course yet. Click <a href=\"%s\">Add new</a> to start"
+"You have not got any courses yet. Click <a href=\"%s\">Add new</a> to start"
 msgstr ""
 
 #: inc/custom-post-types/course.php:170
@@ -4314,11 +4314,11 @@ msgstr "You haven't started any quiz!"
 
 #: templates/profile/tabs/courses/all.php:39
 msgid "You haven't got any courses yet!"
-msgstr "You haven't got any course yet!"
+msgstr "You haven't got any courses yet!"
 
 #: templates/profile/tabs/courses/finished.php:38
 msgid "You haven't finished any courses yet!"
-msgstr "You haven't finished any course yet!"
+msgstr "You haven't finished any courses yet!"
 
 #: templates/profile/tabs/courses/learning.php:38
 msgid "You haven't got any learning courses!"

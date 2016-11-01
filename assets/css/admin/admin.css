@@ -1242,65 +1242,8 @@ body.post-type-lp_question #question_answer_ .inside {
   display: none;
 }
 /* learn_press_dashboard_widget */
-#learn_press_dashboard_widget span{
-    margin: 0;
-}
 #learn_press_dashboard_widget .subsubsub {
   float: none;
-}
-.learnpress-statistic-status{
-    overflow: hidden;
-}
-.learnpress-statistic-status li{
-    display: inline-block;
-    position: relative;
-    margin: 0;
-    float: left;
-    width: 33.33333%;
-    border-bottom: 1px solid #eee;
-}
-.learnpress-statistic-status li .total-raised:before{
-    font-family: Dashicons;
-    content: "\f185";
-    float: left;
-    margin-right: 10px;
-    font-size: 30px;
-}
-.learnpress-statistic-status li.full-width{
-    width: 100%;
-}
-.learnpress-statistic-status li.halp-width{
-    width: 50%;
-}
-.learnpress-statistic-status li.halp-width:nth-child(2n+1):after{
-    position: absolute;
-    content: '';
-    top: 0;
-    bottom: 0;
-    right: 0;
-    width: 1px;
-    background-color: #eee;
-}
-.learnpress-statistic-status li a{
-    padding: 10px 20px;
-    display: block;
-}
-.learnpress-statistic-status li span{
-    font-size: 20px;
-    display: block;
-}
-.learnpress-statistic-status li small{
-    color: #907f7f;
-    font-size: 12px;
-}
-.learnpress-statistic-status li.featured-theme{
-    padding: 10px 20px;
-}
-.learnpress-statistic-status li.featured-theme a,
-.learnpress-statistic-status li.featured-theme span{
-    display: inline;
-    padding: 0;
-    font-size: 12px;
 }
 /* ios checkbox */
 .learn-press-checkbox {
@@ -1375,13 +1318,6 @@ input.regular-text[id^="learn-press-emails"] {
 #learn-press-admin-settings input,
 #learn-press-admin-settings select {
   vertical-align: top;
-}
-#learn-press-duplicate-course h3{
-    margin: 0 0 20px 0;
-    padding: 10px;
-    background-color: #fff;
-    font-size: 15px;
-    font-weight: 400;
 }
 @-webkit-keyframes lp-spinner {
   0% {

@@ -1288,7 +1288,7 @@ function learn_press_process_become_a_teacher_form( $args = null ) {
 		$to_email        = array( get_option( 'admin_email' ) );
 		$message_headers = '';
 		$subject         = __( 'Please moderate', 'learnpress' );
-		$notify_message  = sprintf( __( 'The user <a href="%s">%s</a> want to be a teacher.', 'learnpress' ), admin_url( 'user-edit.php?user_id=' . $user->id ), $user->user_login ) . "\r\n";
+		$notify_message  = sprintf( __( 'The user <a href="%s">%s</a> wants to be a teacher.', 'learnpress' ), admin_url( 'user-edit.php?user_id=' . $user->id ), $user->user_login ) . "\r\n";
 
 		$notify_message .= sprintf( __( 'Name: %s', 'learnpress' ), $args['name'] ) . "\r\n";
 		$notify_message .= sprintf( __( 'Email: %s', 'learnpress' ), $args['email'] ) . "\r\n";
@@ -1370,13 +1370,16 @@ function learn_press_posts_where_statement_search( $where ) {
 	 * from => ( wp_2_posts.post_status = 'publish' OR wp_2_posts.post_status = 'private') OR wp_2_terms.name LIKE '%s%'
 	 * to => ( ( wp_2_posts.post_status = 'publish' OR wp_2_posts.post_status = 'private') OR wp_2_terms.name LIKE '%s%' )
 	 */
+	$a = preg_match( '!(' . $wpdb->posts . '.post_status)!', $where );
+	$b = preg_match( '!(OR\s+' . $wpdb->terms . '.name LIKE \'%' . $wp_query->get( 's' ) . '%\')!', $where );
 
-	// append ( to the start of the block
-	$where = preg_replace( '!(' . $wpdb->posts . '.post_status)!', '( $1', $where, 1 );
+	if ( $a && $b ) {
+		// append ( to the start of the block
+		$where = preg_replace( '!(' . $wpdb->posts . '.post_status)!', '( $1', $where, 1 );
 
-	// appdn ) to the end of the block
-	$where = preg_replace( '!(OR\s+' . $wpdb->terms . '.name LIKE \'%' . $wp_query->get( 's' ) . '%\')!', '$1 )', $where );
-
+		// append ) to the end of the block
+		$where = preg_replace( '!(OR\s+' . $wpdb->terms . '.name LIKE \'%' . $wp_query->get( 's' ) . '%\')!', '$1 )', $where );
+	}
 	remove_filter( 'posts_where', 'learn_press_posts_where_statement_search', 99 );
 
 	return $where;
@@ -2054,7 +2057,11 @@ function learn_press_user_profile_link( $user_id = 0, $tab = null ) {
 	if ( !$user_id ) {
 		$user = get_user_by( 'id', get_current_user_id() );
 	} else {
-		$user = get_user_by( 'id', $user_id );
+		if ( is_numeric( $user_id ) ) {
+			$user = get_user_by( 'id', $user_id );
+		} else {
+			$user = get_user_by( 'login', $user_id );
+		}
 	}
 
 	if ( !$user ) {
@@ -2067,6 +2074,8 @@ function learn_press_user_profile_link( $user_id = 0, $tab = null ) {
 	);
 	if ( $tab ) {
 		$args['tab'] = $tab;
+	} else {
+		$args['tab'] = learn_press_get_current_profile_tab();
 	}
 	$args         = array_map( '_learn_press_urlencode', $args );
 	$profile_link = learn_press_get_page_link( 'profile' );
@@ -2132,7 +2141,7 @@ function learn_press_search_template( $template ) {
 	return $template;
 }
 
-add_filter( 'template_include', 'learn_press_search_template', 69 );
+//add_filter( 'template_include', 'learn_press_search_template', 69 );
 
 function learn_press_redirect_search() {
 	if ( learn_press_is_search() ) {
@@ -2294,21 +2303,21 @@ if ( defined( 'LP_ENABLE_CART' ) && LP_ENABLE_CART ) {
 				),
 				array(
 					'title'   => __( 'Enable cart', 'learnpress' ),
-					'desc'    => __( 'Check this option to enable user can purchase multiple course at one time', 'learnpress' ),
+					'desc'    => __( 'Check this option to enable user purchase multiple courses at one time.', 'learnpress' ),
 					'id'      => $class->get_field_name( 'enable_cart' ),
 					'default' => 'yes',
 					'type'    => 'checkbox'
 				),
 				array(
 					'title'   => __( 'Add to cart redirect', 'learnpress' ),
-					'desc'    => __( 'Redirect to checkout immediately after add course to cart', 'learnpress' ),
+					'desc'    => __( 'Redirect to checkout immediately after adding course to cart.', 'learnpress' ),
 					'id'      => $class->get_field_name( 'redirect_after_add' ),
 					'default' => 'yes',
 					'type'    => 'checkbox'
 				),
 				array(
 					'title'   => __( 'AJAX add to cart', 'learnpress' ),
-					'desc'    => __( 'Using AJAX to add course to the cart', 'learnpress' ),
+					'desc'    => __( 'Using AJAX to add course to cart.', 'learnpress' ),
 					'id'      => $class->get_field_name( 'ajax_add_to_cart' ),
 					'default' => 'no',
 					'type'    => 'checkbox'

@@ -21,7 +21,7 @@ function learn_press_add_ons_page() {
 	?>
 	<div id="learn-press-add-ons-wrap" class="wrap">
 	<h2><?php echo __( 'LearnPress Add-ons', 'learnpress' ); ?></h2>
-	<!-- <p class="top-description"><?php _e( 'Add-ons are features that you can add or remove depending on your needs', 'learnpress' ); ?></p>-->
+	<!-- <p class="top-description"><?php _e( 'Features add-ons that you can add or remove depending on your needs.', 'learnpress' ); ?></p>-->
 	<ul class="subsubsub">
 		<?php
 		do_action( 'learn_press_add_ons_before_head_tab' );

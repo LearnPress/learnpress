@@ -13,26 +13,12 @@ global $wp_query;
 $user = learn_press_get_current_user();
 
 $user_info = get_userdata( $user->id );
-//var_dump($user_info);
-//$vars = get_object_vars($user_info);
-//echo '<pre>'.print_r($vars, true).'</pre>';
-//$profileuser = get_user_to_edit($user_id);
 
 $username             = $user_info->user_login;
-$nick_name				= $user_info->nickname;
+$nick_name            = $user_info->nickname;
 $first_name           = $user_info->first_name;
 $last_name            = $user_info->last_name;
-$profile_picture_type = get_user_meta( $user->id, '_lp_profile_picture_type', true );
-if ( !$profile_picture_type ) {
-	$profile_picture_type = 'gravatar';
-}
-$profile_picture_src = '';
-if ( $profile_picture_type == 'picture' ) {
-	$profile_picture     = get_user_meta( $user->id, '_lp_profile_picture', true );
-	$profile_picture_src = wp_get_attachment_image_src( $profile_picture, 'thumbnail' )[0];
-} else {
-	$profile_picture_src = 'http://2.gravatar.com/avatar/' . md5( $user_info->user_email ) . '?s=96&amp;d=mm&amp;r=g';
-}
+$profile_picture_type = $user->profile_picture_type;
 
 if ( $user ) :
 	?>
@@ -47,17 +33,22 @@ if ( $user ) :
 
 			<div class="user-profile-picture info-field">
 				<p class="profile-field-name"><?php _e( 'Profile Picture', 'learnpress' ); ?></p>
-				<img alt="" src="<?php echo esc_attr( $profile_picture_src ); ?>" class="avatar avatar-96 photo" height="96" width="96" />
+				<div class="profile-avatar-current <?php echo $profile_picture_type == 'gravatar' ? 'avatar-picture' : 'avatar-gravatar'; ?>">
+					<?php echo $user->get_profile_picture( $profile_picture_type == 'gravatar' ? 'gravatar' : 'picture' ); ?>
+				</div>
+				<div class="profile-avatar-hidden hide-if-js <?php echo $profile_picture_type != 'gravatar' ? 'avatar-picture' : 'avatar-gravatar'; ?>">
+					<?php echo $user->get_profile_picture( $profile_picture_type == 'gravatar' ? 'picture' : 'gravatar' ); ?>
+				</div>
 				<div class="change-picture">
 					<select name="profile_picture_type">
-						<option value="gravatar" <?php echo $profile_picture_type == 'gravatar' ? ' selected="selected"' : ''; ?>><?php _e( 'Gavatar', 'learnpress' ); ?></option>
+						<option value="gravatar" <?php echo $profile_picture_type == 'gravatar' ? ' selected="selected"' : ''; ?>><?php _e( 'Gravatar', 'learnpress' ); ?></option>
 						<option value="picture" <?php echo $profile_picture_type == 'picture' ? ' selected="selected"' : ''; ?>><?php _e( 'Picture', 'learnpress' ); ?></option>
 					</select>
-					<div id="profile-picture-gravatar">
+					<div id="profile-picture-gravatar" class="<?php echo $profile_picture_type != 'gravatar' ? 'hide-if-js' : ''; ?>">
 						<p class="description"><?php _e( 'You can change your profile picture on', 'learnpress' ); ?>
 							<a href="https://en.gravatar.com/"><?php _e( 'Gravatar', 'learnpress' ); ?></a>.</p>
 					</div>
-					<div id="profile-picture-picture">
+					<div id="profile-picture-picture" class="<?php echo $profile_picture_type == 'gravatar' ? 'hide-if-js' : ''; ?>">
 						<input type="file" name="profile_picture" />
 					</div>
 				</div>
@@ -86,26 +77,29 @@ if ( $user ) :
 				<p class="profile-field-name"><?php esc_html_e( 'Last Name', 'learnpress' ) ?></p>
 				<input type="text" name="last_name" id="last_name" value="<?php echo esc_attr( $last_name ); ?>" class="regular-text">
 			</div>
-			
+
 			<div class="user-nickname-wrap info-field">
-				<p class="profile-field-name"><?php _e('Nickname'); ?><span class="description"><?php _e('(required)'); ?></span></p>
-				<td><input type="text" name="nickname" id="nickname" value="<?php echo esc_attr($user_info->nickname) ?>" class="regular-text" /></td>
+				<p class="profile-field-name"><?php _e( 'Nickname','learnpress' ); ?>
+					<span class="description"><?php _e( '(required)','learnpress' ); ?></span></p>
+				<td>
+					<input type="text" name="nickname" id="nickname" value="<?php echo esc_attr( $user_info->nickname ) ?>" class="regular-text" />
+				</td>
 			</div>
 			<div class="user-last-name-wrap info-field">
 				<p class="profile-field-name"><?php esc_html_e( 'Display name publicly as', 'learnpress' ) ?></p>
 				<select name="display_name" id="display_name">
-				<?php
-					$public_display = array();
-					$public_display['display_nickname']  = $user_info->nickname;
-					$public_display['display_username']  = $user_info->user_login;
+					<?php
+					$public_display                     = array();
+					$public_display['display_nickname'] = $user_info->nickname;
+					$public_display['display_username'] = $user_info->user_login;
 
-					if ( !empty($user_info->first_name) )
+					if ( !empty( $user_info->first_name ) )
 						$public_display['display_firstname'] = $user_info->first_name;
 
-					if ( !empty($user_info->last_name) )
+					if ( !empty( $user_info->last_name ) )
 						$public_display['display_lastname'] = $user_info->last_name;
 
-					if ( !empty($user_info->first_name) && !empty($user_info->last_name) ) {
+					if ( !empty( $user_info->first_name ) && !empty( $user_info->last_name ) ) {
 						$public_display['display_firstlast'] = $user_info->first_name . ' ' . $user_info->last_name;
 						$public_display['display_lastfirst'] = $user_info->last_name . ' ' . $user_info->first_name;
 					}
@@ -119,11 +113,11 @@ if ( $user ) :
 					$public_display = array_unique( $public_display );
 
 					foreach ( $public_display as $id => $item ) {
-				?>
+						?>
 						<option <?php selected( $user_info->display_name, $item ); ?>><?php echo $item; ?></option>
-				<?php
+						<?php
 					}
-				?>
+					?>
 				</select>
 			</div>
 
@@ -142,9 +136,9 @@ if ( $user ) :
 
 			<h2><?php _e( 'Account Management', 'learnpress' ); ?></h2>
 			<div class="change-password">
-				<a href="javascript:jQuery('#user_profile_password_form').toggle();"><?php _e( 'Change Password', 'learnpress' ); ?></a>
+				<a href="" id="learn-press-toggle-password"><?php _e( 'Change Password', 'learnpress' ); ?></a>
 			</div>
-			<div id="user_profile_password_form" style="display: none">
+			<div id="user_profile_password_form" class="hide-if-js">
 
 				<p class="profile-field-name"><?php _e( 'Old Password', 'learnpress' ); ?></p>
 				<input type="password" id="pass0" name="pass0" autocomplete="off" class="regular-text" />
@@ -158,11 +152,11 @@ if ( $user ) :
 
 			</div>
 
-			<input type="hidden" name="action" value="update">
-			<input type="hidden" name="user_id" id="user_id" value="<?php echo esc_attr( $user->id ); ?>">
-
+			<input type="hidden" name="action" value="update" />
+			<input type="hidden" name="user_id" id="user_id" value="<?php echo esc_attr( $user->id ); ?>" />
+			<input type="hidden" name="profile-nonce" value="<?php echo esc_attr( wp_create_nonce( 'learn-press-user-profile-' . $user->id ) ); ?>" />
 			<p class="submit update-profile">
-				<input type="submit" name="submit" id="submit" class="button button-primary" value="<?php _e( 'Update Profile', 'learnpress' ); ?>">
+				<input type="submit" name="submit" id="submit" class="button button-primary" value="<?php _e( 'Update Profile', 'learnpress' ); ?>" />
 			</p>
 		</form>
 	</div>

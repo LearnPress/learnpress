@@ -2762,7 +2762,7 @@ msgstr ""
 #: inc/custom-post-types/course.php:169
 #, php-format
 msgid ""
-"You have not got any course yet. Click <a href=\"%s\">Add new</a> to start"
+"You have not got any courses yet. Click <a href=\"%s\">Add new</a> to start"
 msgstr ""
 
 #: inc/custom-post-types/course.php:170

@@ -109,14 +109,14 @@ class LP_Quiz extends LP_Abstract_Course_Item {
 		$localize = array(
 			'confirm_finish_quiz' => array(
 				'title'   => __( 'Finish quiz', 'learnpress' ),
-				'message' => __( 'Are you sure you want to completely finish this quiz?', 'learnpress' )
+				'message' => __( 'Are you sure you want to finish this quiz?', 'learnpress' )
 			),
 			'confirm_retake_quiz' => array(
 				'title'   => __( 'Retake quiz', 'learnpress' ),
 				'message' => __( 'Are you sure you want to retake this quiz?', 'learnpress' )
 			),
 			'quiz_time_is_over'   => array(
-				'title'   => __( 'Time over' ),
+				'title'   => __( 'Time out!' ),
 				'message' => __( 'The time is over! Your quiz will automate come to finish', 'learnpress' )
 			),
 			'finished_quiz'       => __( 'Congrats! You have finished this quiz', 'learnpress' ),

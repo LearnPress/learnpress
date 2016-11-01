@@ -172,7 +172,7 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
 					<td>
 						<input type="checkbox" />
 
-						<p class="description"><?php _e( 'User must be completed the final quiz to finish a section', 'learnpress' ); ?></p>
+						<p class="description"><?php _e( 'User must be complete the final quiz to finish a section.', 'learnpress' ); ?></p>
 
 					</td>
 				</tr>

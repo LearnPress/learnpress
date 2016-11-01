@@ -22,7 +22,7 @@ if ( !class_exists( 'LP_Email_Enrolled_Course' ) ) {
 			$this->template_html  = 'emails/enrolled-course.php';
 			$this->template_plain = 'emails/plain/enrolled-course.php';
 
-			$this->default_subject = __( '[{{site_title}}] You have enrolled course ({{course_name}})', 'learnpress' );
+			$this->default_subject = __( '[{{site_title}}]  You have enrolled in this course ({{course_name}})', 'learnpress' );
 			$this->default_heading = __( 'Enrolled course', 'learnpress' );
 
 			$this->support_variables = array(

@@ -42,6 +42,27 @@
 			return false;
 		});
 
+		$('.user-profile-edit-form').on('change', 'select[name="profile_picture_type"]', function () {
+			var selected = $(this).val();
+			$('.profile-avatar-hidden, .profile-avatar-current').each(function () {
+				$(this).toggleClass('hide-if-js', function () {
+					return !$(this).hasClass(selected);
+				});
+			});
+			$('#profile-picture-gravatar').toggleClass('hide-if-js', selected == 'picture');
+			$('#profile-picture-picture').toggleClass('hide-if-js', selected != 'picture');
+		});
+
+		$('#learn-press-toggle-password').click(function (e) {
+			e.preventDefault();
+			var $el = $('#user_profile_password_form');
+			if ($el.hasClass('hide-if-js')) {
+				$el.removeClass('hide-if-js').hide();
+			}
+			$el.slideToggle(function () {
+				$el.find('input').attr('disabled', !$el.is(':visible'));
+			});
+		});
 		$('#learn-press-form-login input[type="text"]').focus();
 	});
 })(jQuery);

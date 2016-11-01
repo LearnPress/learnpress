@@ -269,7 +269,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 				'edit_item'          => __( 'Edit Course', 'learnpress' ),
 				'update_item'        => __( 'Update Course', 'learnpress' ),
 				'search_items'       => __( 'Search Courses', 'learnpress' ),
-				'not_found'          => sprintf( __( 'You have not got any course yet. Click <a href="%s">Add new</a> to start', 'learnpress' ), admin_url( 'post-new.php?post_type=lp_course' ) ),
+				'not_found'          => sprintf( __( 'You have not got any courses yet. Click <a href="%s">Add new</a> to start', 'learnpress' ), admin_url( 'post-new.php?post_type=lp_course' ) ),
 				'not_found_in_trash' => __( 'No course found in Trash', 'learnpress' )
 			);
 			$course_base      = $settings->get( 'course_base' );
@@ -364,14 +364,14 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						'name' => __( 'Maximum students', 'learnpress' ),
 						'id'   => "{$prefix}max_students",
 						'type' => 'number',
-						'desc' => __( 'Maximum number of students can be enroll this course', 'learnpress' ),
+						'desc' => __( 'Maximum number of students who can enroll in this course.', 'learnpress' ),
 						'std'  => 1000,
 					),
 					array(
 						'name' => __( 'Students enrolled', 'learnpress' ),
 						'id'   => "{$prefix}students",
 						'type' => 'number',
-						'desc' => __( 'How many students has took this course', 'learnpress' ),
+						'desc' => __( 'How many students has taken this course.', 'learnpress' ),
 						'std'  => 0,
 					),
 					array(
@@ -408,7 +408,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		public static function assessment_meta_box() {
 			$post_id            = learn_press_get_request( 'post' );
 			$prefix             = '_lp_';
-			$course_result_desc = __( 'The way to assess the result of course for a student', 'learnpress' );
+			$course_result_desc = __( 'The method to assess the result of a student for a course.', 'learnpress' );
 			if ( $post_id && get_post_meta( $post_id, '_lp_course_result', true ) == 'evaluate_final_quiz' && !get_post_meta( $post_id, '_lp_final_quiz', true ) ) {
 				$course_result_desc .= __( '<br /><strong>Note! </strong>No final quiz in course, please add a final quiz', 'learnpress' );
 			}
@@ -426,7 +426,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						'options' => array(
 							'evaluate_lesson'     => __( 'Evaluate lessons', 'learnpress' ),
 							'evaluate_quizzes'    => __( 'Evaluate result of quizzes', 'learnpress' ),
-							'evaluate_final_quiz' => __( 'Evaluate result of final quiz', 'learnpress' )
+							'evaluate_final_quiz' => __( 'Evaluate the result of the final quiz', 'learnpress' )
 						),
 						'std'     => 'evaluate_lesson',
 					),
@@ -464,7 +464,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						'name'    => __( 'Course payment', 'learnpress' ),
 						'id'      => "{$prefix}payment",
 						'type'    => 'radio',
-						'desc'    => __( 'If Paid be checked, An administrator will review then set course price and commission', 'learnpress' ),
+						'desc'    => __( 'If Paid is checked, An administrator will review then set course price and commission.', 'learnpress' ),
 						'options' => array(
 							'no'  => __( 'Free', 'learnpress' ),
 							'yes' => __( 'Paid', 'learnpress' ),
@@ -490,7 +490,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 					if ( $type != 'free' ) {
 						$suggest_price = get_post_meta( $course_id, '_lp_suggestion_price', true );
 						if ( isset( $suggest_price ) ) {
-							$message = __( 'This course is enrolled require and the suggestion price is ', 'learnpress' ) . '<span>' . learn_press_get_currency_symbol() . $suggest_price . '</span>';
+							$message = __( 'This course is required enrollment and the suggested price is ', 'learnpress' ) . '<span>' . learn_press_get_currency_symbol() . $suggest_price . '</span>';
 							$price   = $suggest_price;
 						}
 
@@ -877,7 +877,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			$message = learn_press_get_request( 'review_message' );
 
 			if ( !$message && !$user->is_instructor() && get_post_status( $post->ID ) == 'publish' ) {
-				$message = __( 'Your course has published', 'learnpress' );
+				$message = __( 'Your course has been published', 'learnpress' );
 			}
 			if ( apply_filters( 'learn_press_review_log_message', $message, $post->ID, $user->id ) ) {
 				$table = $wpdb->prefix . 'learnpress_review_logs';

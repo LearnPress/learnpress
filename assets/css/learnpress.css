@@ -80,7 +80,7 @@
 }
 /* PROGRESS CIRCLE */
 .hide-if-js {
-  display: none;
+  display: none !important;
 }
 /* Archive courses */
 .learn-press-courses {
@@ -680,6 +680,11 @@ body.course-has-popup {
   margin-bottom: 20px;
   border-bottom: 2px solid #DDD;
   padding-bottom: 20px;
+}
+.learn-press-content-item-title.content-item-quiz-title {
+  display: block;
+  content: '';
+  clear: both;
 }
 .learn-press-content-item-title.content-item-quiz-title h4 {
   float: left;
@@ -1720,7 +1725,7 @@ body.block-content #learn-press-block-content {
 /** MESSAGE */
 .learn-press-message {
   background: #F5F5F5;
-  border-left: 2px solid #00A0D2;
+  border-left: 5px solid #00A0D2;
   padding: 10px 20px 1px 20px;
   margin-bottom: 20px;
 }
@@ -1737,6 +1742,12 @@ body.block-content #learn-press-block-content {
 }
 .learn-press-message.notice {
   border-left-color: #b3d20a;
+}
+.learn-press-message.error {
+  border-left-color: #b81c23;
+}
+.learn-press-message ul {
+  list-style-type: none;
 }
 /**/
 .learn-press-checkout-comment,
@@ -1985,6 +1996,16 @@ body.content-item-only #learn-press-content-item {
   float: left;
   margin-right: 20px;
 }
+.user-profile-edit-form .user-profile-picture:after {
+  display: block;
+  content: '';
+  clear: both;
+}
+.user-profile-edit-form .user-profile-picture:after:after {
+  content: '';
+  display: block;
+  clear: both;
+}
 .user-profile-edit-form .profile-field-name {
   font-weight: bold;
   margin-bottom: 10px;
@@ -2032,6 +2053,19 @@ body.content-item-only #learn-press-content-item {
 }
 .place-order-action {
   margin-top: 20px;
+}
+.learn-press-search-course-form {
+  margin-bottom: 20px;
+}
+.learn-press-search-course-form input.search-course-input[name="s"] {
+  margin-right: -200px;
+  width: 100%;
+}
+.learn-press-search-course-form .search-course-button {
+  vertical-align: middle;
+  float: right;
+  z-index: 10;
+  position: relative;
 }
 @-moz-keyframes spin-12 {
   0% {

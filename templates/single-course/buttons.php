@@ -52,9 +52,9 @@ $retake_button_text   = apply_filters( 'learn_press_retake_button_text', __( 'Re
 		<?php
 		$can_finish = $user->can_finish_course( $course->id );
 		//if ( $can_finish ) {
-			$finish_course_security = wp_create_nonce( sprintf( 'learn-press-finish-course-' . $course->id . '-' . $user->id ) );
+		$finish_course_security = wp_create_nonce( sprintf( 'learn-press-finish-course-' . $course->id . '-' . $user->id ) );
 		//} else {
-			//$finish_course_security = '';
+		//$finish_course_security = '';
 		//}
 		?>
 		<button
@@ -78,7 +78,9 @@ $retake_button_text   = apply_filters( 'learn_press_retake_button_text', __( 'Re
 		<form name="purchase-course" class="purchase-course" method="post" enctype="multipart/form-data">
 			<?php do_action( 'learn_press_before_purchase_button' ); ?>
 			<input type="hidden" name="purchase-course" value="<?php echo $course->id; ?>" />
-			<button class="button purchase-button" data-block-content="yes"><?php echo $course->is_free() ? $enroll_button_text : $purchase_button_text; ?></button>
+			<button class="button purchase-button" data-block-content="yes">
+				<?php echo $course->is_free() ? $enroll_button_text : $purchase_button_text; ?>
+			</button>
 			<?php do_action( 'learn_press_after_purchase_button' ); ?>
 		</form>
 	<?php else: ?>

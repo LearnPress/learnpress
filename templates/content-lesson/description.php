@@ -22,7 +22,7 @@ if ( !$item ) {
 
 	<?php else: ?>
 
-		<?php learn_press_display_message( __( 'This lesson has not got the content', 'learnpress' ) ); ?>
+		<?php learn_press_display_message( __( 'This lesson has no content', 'learnpress' ) ); ?>
 
 	<?php endif; ?>
 

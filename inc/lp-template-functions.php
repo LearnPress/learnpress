@@ -181,6 +181,23 @@ if ( !function_exists( 'learn_press_breadcrumb' ) ) {
 	}
 }
 
+if ( !function_exists( 'learn_press_search_form' ) ) {
+	/**
+	 * Output the breadcrumb of archive courses
+	 *
+	 * @param array
+	 */
+	function learn_press_search_form() {
+		if ( !empty( $_REQUEST['s'] ) && !empty( $_REQUEST['ref'] ) && 'course' == $_REQUEST['ref'] ) {
+			$s = $_REQUEST['s'];
+		} else {
+			$s = '';
+		}
+
+		learn_press_get_template( 'search-form.php', array( 's' => $s ) );
+	}
+}
+
 if ( !function_exists( 'learn_press_output_single_course_learning_summary' ) ) {
 	/**
 	 * Output the content of learning course content
@@ -631,10 +648,10 @@ if ( !function_exists( 'learn_press_after_profile_tab_loop_course' ) ) {
 	 *
 	 * @param LP_User
 	 */
-	function learn_press_after_profile_tab_loop_course($user, $course_id) {
+	function learn_press_after_profile_tab_loop_course( $user, $course_id ) {
 
-		$args              = array(
-			'user'   => $user,
+		$args = array(
+			'user'      => $user,
 			'course_id' => $course_id
 		);
 		learn_press_get_template( 'profile/tabs/courses/progress.php', $args );
@@ -652,7 +669,7 @@ if ( !function_exists( 'learn_press_user_profile_tabs' ) ) {
 	 */
 	function learn_press_user_profile_tabs( $user = null ) {
 		if ( !$user ) {
-			$user = get_user_by( 'id', get_current_user_id() );
+			$user = learn_press_get_current_user();
 		}
 		$course_endpoint = LP()->settings->get( 'profile_endpoints.profile-courses' );
 		if ( !$course_endpoint ) {
@@ -691,15 +708,15 @@ if ( !function_exists( 'learn_press_user_profile_tabs' ) ) {
 				'callback' => 'learn_press_profile_tab_orders_content'
 			);
 		}
-		
+
 		$tabs = apply_filters( 'learn_press_user_profile_tabs', $defaults, $user );
 		if ( $user->id == get_current_user_id() ) {
 			$tabs['edit'] = array(
-				'title'    => apply_filters('learn_press_user_profile_tab_edit_title',__( 'Edit', 'learnpress' )),
+				'title'    => apply_filters( 'learn_press_user_profile_tab_edit_title', __( 'Edit', 'learnpress' ) ),
 				'callback' => 'learn_press_profile_tab_edit_content'
 			);
 		}
-		
+
 
 		foreach ( $tabs as $slug => $opt ) {
 			if ( !empty( $defaults[$slug] ) ) {
@@ -1519,8 +1536,8 @@ if ( !function_exists( 'learn_press_get_profile_display_name' ) ) {
 	 * @return string
 	 */
 	function learn_press_get_profile_display_name( $user ) {
-		$option    = LP()->settings->get( 'profile_name_publicly' );
-		$info      = get_userdata( $user->ID );
+		$option = LP()->settings->get( 'profile_name_publicly' );
+		$info   = get_userdata( $user->ID );
 		return $info->display_name;
 	}
 }

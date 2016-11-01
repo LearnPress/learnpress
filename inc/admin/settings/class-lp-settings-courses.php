@@ -80,14 +80,14 @@ class LP_Settings_Courses extends LP_Settings_Base {
 				),
 				array(
 					'title'   => __( 'Review course before publish', 'learnpress' ),
-					'desc'    => __( 'The course need to review by admin before it can be published', 'learnpress' ),
+					'desc'    => __( 'The course needs to be reviewed by admin before it can be published.', 'learnpress' ),
 					'id'      => $this->get_field_name( 'required_review' ),
 					'default' => 'yes',
 					'type'    => 'checkbox'
 				),
 				array(
 					'title'   => __( 'Enable edit published course', 'learnpress' ),
-					'desc'    => __( 'Allows instructor edit the course that published without review.<br /> If this option is disabled, the course status will be changed to Pending Review when the instructor update course', 'learnpress' ),
+					'desc'    => __( 'Allow instructors to edit the course that are published without review.<br /> If this option is disabled, the course status will be changed to Pending Review when the instructor update course.', 'learnpress' ),
 					'id'      => $this->get_field_name( 'enable_edit_published' ),
 					'default' => 'yes',
 					'type'    => 'checkbox'
@@ -105,7 +105,7 @@ class LP_Settings_Courses extends LP_Settings_Base {
 				),
 				array(
 					'title'   => __( 'Courses limit', 'learnpress' ),
-					'desc'    => __( 'Number of courses display per page', 'learnpress' ),
+					'desc'    => __( 'Number of courses displayed per page.', 'learnpress' ),
 					'id'      => $this->get_field_name( 'archive_course_limit' ),
 					'default' => '10',
 					'type'    => 'number'

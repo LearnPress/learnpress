@@ -23,7 +23,7 @@ if(!class_exists('LP_Email_User_Order_Completed')) {
 			$this->template_html  = 'emails/user-order-completed.php';
 			$this->template_plain = 'emails/plain/user-order-completed.php';
 
-			$this->default_subject = __( 'Your order on {{order_date}} is completed', 'learnpress' );
+			$this->default_subject = __( 'Your order {{order_date}} is completed', 'learnpress' );
 			$this->default_heading = __( 'Your order {{order_number}} is completed', 'learnpress' );
 
 			$this->support_variables = array(

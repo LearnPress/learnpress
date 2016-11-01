@@ -40,7 +40,7 @@ $settings = LP()->settings;
 		<th scope="row"><label for="learn-press-emails-general-header-image"><?php _e( 'Header image', 'learnpress' ); ?></label></th>
 		<td>
 			<input id="learn-press-emails-general-header-image" class="regular-text" type="text" name="<?php echo $this->get_field_name( 'emails_general[header_image]');?>" value="<?php echo $settings->get( 'emails_general.header_image' ); ?>" />
-			<p class="description"><?php _e( 'The image display in the top of email', 'learnpress' );?></p>
+			<p class="description"><?php _e( 'The image will be displayed in the top of the email.', 'learnpress' );?></p>
 		</td>
 	</tr>
 	<tr>

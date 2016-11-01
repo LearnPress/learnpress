@@ -712,7 +712,7 @@ function _learn_press_checkout_auto_enroll_free_course( $result, $order_id ) {
 		}
 	}
 	if ( $enrolled ) {
-		learn_press_add_message( sprintf( __( 'You have enrolled course. <a href="%s">Order details</a>', 'learnpress' ), $result['redirect'] ) );
+		learn_press_add_message( sprintf( __( 'You have enrolled in this course. <a href="%s">Order details</a>', 'learnpress' ), $result['redirect'] ) );
 		$result['redirect'] = get_the_permalink( $enrolled );
 		LP()->cart->empty_cart();
 	}

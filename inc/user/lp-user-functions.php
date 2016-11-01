@@ -583,86 +583,111 @@ function learn_press_user_has_quiz_status( $status, $quiz_id = 0, $user_id = 0, 
 add_action( 'init', 'learn_press_user_update_user_info' );
 
 function learn_press_user_update_user_info() {
-	global $wp;
+	global $wp, $wpdb;
+	if ( is_admin() ) {
+		return;
+	}
 	if ( !empty( $_POST ) && isset( $_POST['from'] ) && isset( $_POST['action'] ) && $_POST['from'] == 'profile' && $_POST['action'] == 'update' ) {
-		
 		$user      = learn_press_get_current_user();
 		$user_id   = learn_press_get_current_user_id();
-		$user_info = get_userdata( $user->id );
+//		$user_info = get_userdata( $user->id );
+
+		$update_data = array(
+			'ID'           => $user_id,
+			'user_url'     => filter_input( INPUT_POST, 'url', FILTER_SANITIZE_URL ),
+			'user_email'   => filter_input( INPUT_POST, 'email', FILTER_SANITIZE_EMAIL ),
+			'first_name'   => filter_input( INPUT_POST, 'first_name', FILTER_SANITIZE_STRING ),
+			'last_name'    => filter_input( INPUT_POST, 'last_name', FILTER_SANITIZE_STRING ),
+			'display_name' => filter_input( INPUT_POST, 'display_name', FILTER_SANITIZE_STRING ),
+			'nickname'     => filter_input( INPUT_POST, 'nickname', FILTER_SANITIZE_STRING ),
+			'description'  => filter_input( INPUT_POST, 'description', FILTER_SANITIZE_STRING ),
+		);
+
+		# check and update pass word
+		if ( !empty( $_POST['pass0'] ) && !empty( $_POST['pass1'] ) && !empty( $_POST['pass1'] ) ) {
+			// check old pass
+			$old_pass       = filter_input( INPUT_POST, 'pass0' );
+			$check_old_pass = false;
+			if ( !$old_pass ) {
+				$check_old_pass = false;
+			} else {
+				$cuser = wp_get_current_user();
+				require_once( ABSPATH . 'wp-includes/class-phpass.php' );
+				$wp_hasher = new PasswordHash( 8, TRUE );
+				if ( $wp_hasher->CheckPassword( $old_pass, $cuser->data->user_pass ) ) {
+					$check_old_pass = true;
+				}
+			}
+
+			if ( !$check_old_pass ) {
+				learn_press_add_message( __( 'Old password incorrect!', 'learnpress' ) );
+				return;
+			} else {
+				// check new pass
+				$new_pass  = filter_input( INPUT_POST, 'pass1' );
+				$new_pass2 = filter_input( INPUT_POST, 'pass2' );
+
+				if ( $new_pass != $new_pass2 ) {
+					learn_press_add_message( __( 'Retype new password incorrect!', 'learnpress' ) );
+					return;
+				} else {
+					$update_data['user_pass'] = $new_pass;
+				}
+			}
+		}
+		
+		
 		// upload profile picture
 		$profile_picture_type = filter_input( INPUT_POST, 'profile_picture_type', FILTER_SANITIZE_STRING );
 		update_user_meta( $user->id, '_lp_profile_picture_type', $profile_picture_type );
-		
+
 		if ( $profile_picture_type == 'picture' ) {
-			if ( isset($_FILES['profile_picture']['size']) && $_FILES['profile_picture']['size'] ) {
+			if ( isset( $_FILES['profile_picture']['size'] ) && $_FILES['profile_picture']['size'] ) {
 				if ( !function_exists( 'wp_generate_attachment_metadata' ) ) {
 					require_once( ABSPATH . "wp-admin" . '/includes/image.php' );
 					require_once( ABSPATH . "wp-admin" . '/includes/file.php' );
 					require_once( ABSPATH . "wp-admin" . '/includes/media.php' );
 				}
 				$attach_id = 0;
-			
+
 				foreach ( $_FILES as $file => $array ) {
 					if ( $_FILES[$file]['error'] !== UPLOAD_ERR_OK ) {
 						return "upload error : " . $_FILES[$file]['error'];
 					}
+					add_filter( 'upload_dir', 'learn_press_user_profile_picture_upload_dir' );
 					$attach_id = media_handle_upload( $file, 0 );
+					remove_filter( 'upload_dir', 'learn_press_user_profile_picture_upload_dir' );
 				}
 				if ( $attach_id > 0 ) {
+					if ( $old_id = get_user_meta( $user->id, '_lp_profile_picture', true ) ) {
+						wp_delete_attachment( $old_id, true );
+					}
 					update_user_meta( $user->id, '_lp_profile_picture', $attach_id );
 				}
 			}
-			
 		}
-
-		// check old pass
-		$old_pass       = filter_input( INPUT_POST, 'pass0' );
-		$check_old_pass = false;
-		if ( !$old_pass ) {
-			$check_old_pass = false;
-		} else {
-			$cuser = wp_get_current_user();
-			require_once( ABSPATH . 'wp-includes/class-phpass.php' );
-			$wp_hasher = new PasswordHash( 8, TRUE );
-			if ( $wp_hasher->CheckPassword( $old_pass, $cuser->data->user_pass ) ) {
-				$check_old_pass = true;
-			}
-		}
-
-		if ( !$check_old_pass ) {
-			_e( 'old password incorect!', 'learnpress' );
-		} else {
-			// check new pass
-			$new_pass  = filter_input( INPUT_POST, 'pass1' );
-			$new_pass2 = filter_input( INPUT_POST, 'pass2' );
-
-			if ( $new_pass != $new_pass2 ) {
-				_e( 'retype new password incorect!', 'learnpress' );
-			} else {
-				wp_set_password( $new_pass, $user_id );
-			}
-		}
-
-		$update_data = array(
-			'ID'			=> $user_id,
-			'user_url'		=> filter_input( INPUT_POST, 'url', FILTER_SANITIZE_URL ),
-			'user_email'	=> filter_input( INPUT_POST, 'email', FILTER_SANITIZE_EMAIL ),
-			'first_name'	=> filter_input( INPUT_POST, 'first_name', FILTER_SANITIZE_STRING ),
-			'last_name'		=> filter_input( INPUT_POST, 'last_name', FILTER_SANITIZE_STRING ),
-			'display_name'	=> filter_input(INPUT_POST, 'display_name', FILTER_SANITIZE_STRING),
-			'nickname'		=> filter_input(INPUT_POST, 'nickname', FILTER_SANITIZE_STRING),
-			'description'	=> filter_input( INPUT_POST, 'description', FILTER_SANITIZE_STRING ),
-		);
+		
+		
+		
 
 		$res = wp_update_user( $update_data );
 		if ( $res ) {
-			_e( 'Your change is saved', 'learnpress' );
+			learn_press_add_message( __( 'Your change is saved', 'learnpress' ) );
 		}
-
-		$current_url = learn_press_get_page_link( 'profile' ) . $user->user_login.'/edit';
-		wp_redirect($current_url);
-		exit();
+		if ( !empty( $_POST['profile-nonce'] ) && wp_verify_nonce( $_POST['profile-nonce'], 'learn-press-user-profile-' . $user->id ) ) {
+			$current_url = learn_press_get_page_link( 'profile' ) . $user->user_login . '/edit';
+			wp_redirect( $current_url );
+			exit();
+		}
 	}
+}
+
+function learn_press_user_profile_picture_upload_dir( $args ) {
+	$subdir         = '/learn-press-profile';
+	$args['path']   = str_replace( $args['subdir'], $subdir, $args['path'] );
+	$args['url']    = str_replace( $args['subdir'], $subdir, $args['url'] );
+	$args['subdir'] = $subdir;
+	return $args;
 }
 
 add_action( 'learn_press_before_purchase_course_handler', '_learn_press_before_purchase_course_handler', 10, 2 );
@@ -693,7 +718,7 @@ function _learn_press_before_purchase_course_handler( $course_id, $cart ) {
 			learn_press_add_message( __( 'You have already finished course', 'learnpress' ) );
 			$redirect = true;
 		} elseif ( $user->has_purchased_course( $course_id ) ) {
-			learn_press_add_message( __( 'You have already enrolled course', 'learnpress' ) );
+			learn_press_add_message( __( 'You have already enrolled in this course', 'learnpress' ) );
 			$redirect = true;
 		}
 		if ( $redirect ) {
@@ -703,7 +728,7 @@ function _learn_press_before_purchase_course_handler( $course_id, $cart ) {
 	}
 }
 
-function learn_press_profile_tab_endpoints_edit_profile($endpoints){
+function learn_press_profile_tab_endpoints_edit_profile( $endpoints ) {
 	$endpoints['edit'] = 'edit';
 	return $endpoints;
 }
@@ -714,25 +739,38 @@ function learn_press_profile_tab_edit_content( $current, $tab, $user ) {
 	learn_press_get_template( 'profile/tabs/edit.php', array( 'user' => $user, 'current' => $current, 'tab' => $tab ) );
 }
 
-function learn_press_filter_get_avatar( $avatar, $id_or_email='', $size=array(), $default='', $alt=''){
-	$user_id = 0;
-	if( !is_numeric($id_or_email) && is_string( $id_or_email) ) {
-		$user		= get_user_by( 'email', $id_or_email );
-		$user_id	= $user->id;
-	} elseif(  is_numeric( $id_or_email ) ) {
-		$user_id = $id_or_email;
-	} elseif(  is_object( $id_or_email ) && isset( $id_or_email->user_id ) && $id_or_email->user_id ) {
-		$user_id = $id_or_email->user_id;
+function learn_press_filter_get_avatar( $avatar, $id_or_email = '', $size = array(), $default = '', $alt = '' ) {
+	global $parent_file;
+	if ( $parent_file == 'users.php' ) {
+		$user_id = 0;
+		if ( !is_numeric( $id_or_email ) && is_string( $id_or_email ) ) {
+			if ( $user = get_user_by( 'email', $id_or_email ) ) {
+				$user_id = $user->id;
+			}
+		} elseif ( is_numeric( $id_or_email ) ) {
+			$user_id = $id_or_email;
+		} elseif ( is_object( $id_or_email ) && isset( $id_or_email->user_id ) && $id_or_email->user_id ) {
+			$user_id = $id_or_email->user_id;
+		}
+		// get user data
+		$profile_picture_type = get_user_meta( $user_id, '_lp_profile_picture_type', true );
+		if ( !$profile_picture_type || $profile_picture_type == 'gravatar' ) {
+			return;
+		}
+		$profile_picture     = get_user_meta( $user_id, '_lp_profile_picture', true );
+		$profile_picture_src = wp_get_attachment_image_src( $profile_picture, array( $size['width'], $size['height'] ) )[0];
+		$avatar              = '<img alt="" src="' . esc_attr( $profile_picture_src ) . '" class="avatar avatar-' . $size['size'] . ' photo" height="' . $size['height'] . '" width="' . $size['width'] . '" />';
 	}
-	// get user data
-	$profile_picture_type = get_user_meta( $user_id, '_lp_profile_picture_type', true );
-	if ( !$profile_picture_type || $profile_picture_type == 'gravatar' ) {
-		return;
-	}
-	$profile_picture     = get_user_meta( $user_id, '_lp_profile_picture', true );
-	$profile_picture_src = wp_get_attachment_image_src( $profile_picture, array($size['width'],$size['height']) )[0];
-	$avatar = '<img alt="" src="'.esc_attr( $profile_picture_src ).'" class="avatar avatar-'.$size['size'].' photo" height="'.$size['height'].'" width="'.$size['width'].'" />';
 	return $avatar;
 }
 
-add_filter( 'pre_get_avatar', 'learn_press_filter_get_avatar',1, 5  );
+add_filter( 'pre_get_avatar', 'learn_press_filter_get_avatar', 1, 5 );
+
+function _learn_press_redirect_logout_redirect() {
+	if ( !is_admin() && $redirect = learn_press_get_page_link('profile') ) {
+		wp_redirect( $redirect );
+		exit();
+	}
+}
+
+add_action( 'wp_logout', '_learn_press_redirect_logout_redirect' );
