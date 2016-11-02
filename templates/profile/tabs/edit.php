@@ -49,7 +49,20 @@ if ( $user ) :
 							<a href="https://en.gravatar.com/"><?php _e( 'Gravatar', 'learnpress' ); ?></a>.</p>
 					</div>
 					<div id="profile-picture-picture" class="<?php echo $profile_picture_type == 'gravatar' ? 'hide-if-js' : ''; ?>">
-						<input type="file" name="profile_picture" />
+						<!--<input type="file" name="profile_picture" />-->
+						<input type="hidden" id="lp-user-profile-picture-data" name="profile_picture_data" />
+						<a href="javascript:void(0);" class="button-primary change-profile-picutre-text" onupload="0"><?php _e('Change Profile Picture', 'learnpress');?></a>
+						<div class="image-editor" style="display:none;">
+							<input type="file" class="cropit-image-input" name="profile_picture">
+							<div class="cropit-preview"></div>
+							<div class="image-size-label">
+								<?php _e( 'Resize image', 'learnpress' );?>
+							</div>
+							<input type="range" class="cropit-image-zoom-input">
+							<span class="rotate-ccw dashicons dashicons-image-rotate-left"></span>
+							<span class="rotate-cw dashicons dashicons-image-rotate-right"></span>
+							<a class="export"><?php _e( 'Done', 'learnpress' );?></a>
+						</div>
 					</div>
 				</div>
 			</div>

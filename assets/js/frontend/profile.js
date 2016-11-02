@@ -64,5 +64,46 @@
 			});
 		});
 		$('#learn-press-form-login input[type="text"]').focus();
+
+		$('#profile-picture-picture a.change-profile-picutre-text').click( function( event ){
+			event.preventDefault();
+			if($(this).attr('onupload')=='1'){
+				$('#profile-picture-picture .image-editor').hide();
+				$(this).attr('onupload','0');
+			}else{
+				$('#profile-picture-picture .image-editor').show();
+				$(this).attr('onupload','1');
+			}
+			
+		});
+
+		$('#profile-picture-picture .image-editor').cropit({
+			imageState: {
+				src: 'http://lorempixel.com/500/400/',
+			},
+		});
+
+		$('#profile-picture-picture .rotate-cw').click(function (event) {
+			event.preventDefault();
+			$('.image-editor').cropit('rotateCW');
+		});
+
+		$('#profile-picture-picture .rotate-ccw').click(function (event) {
+			event.preventDefault();
+			$('.image-editor').cropit('rotateCCW');
+		});
+
+		$('#profile-picture-picture .export').click(function (event) {
+			event.preventDefault();
+			var imageData = $('.image-editor').cropit( 'export' );
+			console.log('abc');
+			$('#lp-user-profile-picture-data').val( imageData );
+			$('img.avatar').attr( 'src', imageData );
+			$('img.avatar').attr( 'srcset', imageData );
+			$('.profile-avatar-current img').attr( 'src', imageData );
+			$('#profile-picture-picture .image-editor').hide();
+		});
+
+
 	});
 })(jQuery);

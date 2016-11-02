@@ -1840,6 +1840,39 @@ body.block-content #learn-press-block-content {
   padding: 0 15px 15px 15px;
   margin: 0;
 }
+/* crop user profile picture */
+.cropit-preview {
+	background-color: #f8f8f8;
+	background-size: cover;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	margin-top: 7px;
+	width: 250px;
+	height: 250px;
+}
+.cropit-preview-image {
+	max-width: none;
+	max-height: none;
+}
+
+.cropit-preview-image-container {
+	cursor: move;
+}
+
+.image-size-label {
+	margin-top: 10px;
+}
+
+input, .export {
+	display: block;
+}
+
+button {
+	margin-top: 10px;
+}
+/* end of crop user profile picture */
+
+
 .learn-press-pagination {
   text-align: center;
 }
@@ -1992,7 +2025,7 @@ body.content-item-only #learn-press-content-item {
 .user-profile-edit-form .user-profile-picture .change-picture .description {
   margin: 0 0 10px 0;
 }
-.user-profile-edit-form .user-profile-picture img {
+.user-profile-edit-form .user-profile-picture .profile-avatar-current img {
   float: left;
   margin-right: 20px;
 }
