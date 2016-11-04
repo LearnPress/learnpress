@@ -588,8 +588,8 @@ function learn_press_user_update_user_info() {
 		return;
 	}
 	if ( !empty( $_POST ) && isset( $_POST['from'] ) && isset( $_POST['action'] ) && $_POST['from'] == 'profile' && $_POST['action'] == 'update' ) {
-		$user      = learn_press_get_current_user();
-		$user_id   = learn_press_get_current_user_id();
+		$user    = learn_press_get_current_user();
+		$user_id = learn_press_get_current_user_id();
 //		$user_info = get_userdata( $user->id );
 
 		$update_data = array(
@@ -635,28 +635,28 @@ function learn_press_user_update_user_info() {
 				}
 			}
 		}
-		
-		
+
+
 		// upload profile picture
 		$profile_picture_type = filter_input( INPUT_POST, 'profile_picture_type', FILTER_SANITIZE_STRING );
-		
+
 
 		if ( $profile_picture_type == 'picture' ) {
 
-			$upload		= wp_get_upload_dir();
+			$upload     = wp_get_upload_dir();
 			$upload_dir = $upload['basedir'] . '/learn-press-profile/' . $user_id;
-			if(!is_dir( $upload_dir )){
+			if ( !is_dir( $upload_dir ) ) {
 				mkdir( $upload_dir );
 			}
 			# get old file
-			$filename_old = get_user_meta($user_id, '_lp_profile_picture', true);
-			if( file_exists( $upload_dir . '/' . $filename_old ) ) {
+			$filename_old = get_user_meta( $user_id, '_lp_profile_picture', true );
+			if ( file_exists( $upload_dir . '/' . $filename_old ) ) {
 				unlink( $upload_dir . '/' . $filename_old );
 			}
-			$data		= explode(',',$_POST['profile_picture_data']);
-			$imgtype	= explode('/', $data[0]);
-			$filename	= isset( $_FILES['profile_picture']['name'] ) && $_FILES['profile_picture']['name'] ? $_FILES['profile_picture']['name']:'avatar'.$imgtype[1];
-			if(file_put_contents( $upload_dir.'/'.$filename, base64_decode($data[1]) )){
+			$data     = explode( ',', $_POST['profile_picture_data'] );
+			$imgtype  = explode( '/', $data[0] );
+			$filename = isset( $_FILES['profile_picture']['name'] ) && $_FILES['profile_picture']['name'] ? $_FILES['profile_picture']['name'] : 'avatar' . $imgtype[1];
+			if ( file_put_contents( $upload_dir . '/' . $filename, base64_decode( $data[1] ) ) ) {
 				update_user_meta( $user->id, '_lp_profile_picture', $filename );
 			}
 //			if ( isset( $_FILES['profile_picture']['size'] ) && $_FILES['profile_picture']['size'] ) {
@@ -773,9 +773,23 @@ function learn_press_filter_get_avatar( $avatar, $id_or_email = '', $size = arra
 		if ( !$profile_picture_type || $profile_picture_type == 'gravatar' ) {
 			return;
 		}
-		$profile_picture     = get_user_meta( $user_id, '_lp_profile_picture', true );
-		$profile_picture_src = wp_get_attachment_image_src( $profile_picture, array( $size['width'], $size['height'] ) )[0];
-		$avatar              = '<img alt="" src="' . esc_attr( $profile_picture_src ) . '" class="avatar avatar-' . $size['size'] . ' photo" height="' . $size['height'] . '" width="' . $size['width'] . '" />';
+		$profile_picture = get_user_meta( $user_id, '_lp_profile_picture', true );
+		$array_sizes     = array( 200, 200 );
+		if ( is_array( $size ) ) {
+			if ( !empty( $size['width'] ) ) {
+				$array_sizes[0] = $size['width'];
+			}
+			if ( !empty( $size['height'] ) ) {
+				$array_sizes[1] = $size['height'];
+			}
+			$profile_picture_src = wp_get_attachment_image_src( $profile_picture, $array_sizes );
+		} else {
+			$profile_picture_src = wp_get_attachment_image_src( $profile_picture, $size );
+		}
+		if ( is_array( $profile_picture_src ) ) {
+			$profile_picture_src = $profile_picture_src[0];
+		}
+		$avatar = '<img alt="" src="' . esc_attr( $profile_picture_src ) . '" class="avatar avatar-' . $size['size'] . ' photo" height="' . $size['height'] . '" width="' . $size['width'] . '" />';
 	}
 	return $avatar;
 }
@@ -783,7 +797,7 @@ function learn_press_filter_get_avatar( $avatar, $id_or_email = '', $size = arra
 add_filter( 'pre_get_avatar', 'learn_press_filter_get_avatar', 1, 5 );
 
 function _learn_press_redirect_logout_redirect() {
-	if ( !is_admin() && $redirect = learn_press_get_page_link('profile') ) {
+	if ( !is_admin() && $redirect = learn_press_get_page_link( 'profile' ) ) {
 		wp_redirect( $redirect );
 		exit();
 	}

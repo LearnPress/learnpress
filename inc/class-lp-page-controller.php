@@ -84,6 +84,7 @@ class LP_Page_Controller {
 				if ( is_single() ) {
 					global $post;
 					$post->post_content = $this->single_content( null );
+					//add_filter( 'the_content', array( $this, 'single_content' ), $this->_filter_content_priority );
 					$this->has_filter_content = true;
 				}
 			} elseif ( learn_press_is_courses() || learn_press_is_course_tag() || learn_press_is_course_category() || learn_press_is_search() ) {

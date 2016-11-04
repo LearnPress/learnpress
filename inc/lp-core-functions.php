@@ -2452,21 +2452,22 @@ if ( !function_exists( 'learn_press_profile_localize_script' ) ) {
 				'title'   => __( 'Cancel Order', 'learnpress' )
 			)
 		);
-		$assets::add_localize( $translate );
+		LP_Assets::add_localize( $translate );
 	}
 
 }
 add_action( 'learn_press_enqueue_scripts', 'learn_press_profile_localize_script' );
 
-add_action( 'init', 'learn_press_cancel_order_processer' );
-if ( !function_exists( 'learn_press_cancel_order_processer' ) ) {
-	function learn_press_cancel_order_processer() {
+add_action( 'init', 'learn_press_cancel_order_process' );
+if ( !function_exists( 'learn_press_cancel_order_process' ) ) {
+	function learn_press_cancel_order_process() {
 		if ( empty( $_REQUEST['cancel-order'] ) || empty( $_REQUEST['lp-nonce'] ) || !wp_verify_nonce( $_REQUEST['lp-nonce'], 'cancel-order' ) || is_admin() ) {
 			return;
 		}
 
 		$order_id = absint( $_REQUEST['cancel-order'] );
 		$order    = learn_press_get_order( $order_id );
+		$user     = learn_press_get_current_user();
 
 		$url = learn_press_user_profile_link( $user->id, LP()->settings->get( 'profile_endpoints.profile-orders' ) );
 		if ( !$order ) {

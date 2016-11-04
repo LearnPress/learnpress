@@ -154,7 +154,13 @@ class LP_Quiz extends LP_Abstract_Course_Item {
 			$current_question_id = $user->get_current_quiz_question( $this->id, $course->id );
 			$question            = LP_Question_Factory::get_question( $current_question_id );
 			$duration            = $this->duration;
-			$r_time              = ( $time_remaining = $user->get_quiz_time_remaining( $this->id, $course_id ) ) !== false && !in_array( $user->get_quiz_status( $this->id, $course_id, $force ), array( '', 'completed' ) ) ? $time_remaining : $this->duration;
+			$remaining           = $user->get_quiz_time_remaining( $this->id, $course_id );
+			if($remaining === false){
+				$remaining = $this->duration;
+			}elseif($remaining < 0 ){
+				$remaining = 0;
+			}
+			//$r_time              = ( $remaining > 0 ) && !in_array( $user->get_quiz_status( $this->id, $course_id, $force ), array( '', 'completed' ) ) ? $remaining : $this->duration;
 
 			$js = array(
 				'id'              => $this->id,
@@ -164,7 +170,7 @@ class LP_Quiz extends LP_Abstract_Course_Item {
 				'ajaxurl'         => admin_url( 'admin-ajax.php' ),
 				'question'        => $question ? array( 'check_answer' => $question->can_check_answer() ) : false,
 				'totalTime'       => $this->duration,
-				'userTime'        => $r_time > 0 ? $duration - $r_time : 0,
+				'userTime'        => $duration - $remaining,
 				'currentQuestion' => get_post_field( 'post_name', $current_question_id ),
 				'usePermalink'    => get_option( 'permalink' ),
 				'courseId'        => $course_id

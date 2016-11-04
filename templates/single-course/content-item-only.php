@@ -28,8 +28,13 @@ if ( !empty( $_REQUEST['done-action'] ) ) {
 	}
 }
 $data = array_merge( $user->get_course_info2( get_the_ID() ), $data );
-?>
 
+?>
+	<style type="text/css">
+		html{
+			overflow: hidden;
+		}
+	</style>
 	<div class="learn-press-content-item-only">
 		<?php learn_press_print_messages(); ?>
 		<?php learn_press_get_template( 'single-course/content-item.php' ); ?>

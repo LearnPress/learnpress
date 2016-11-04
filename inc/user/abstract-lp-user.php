@@ -345,9 +345,11 @@ class LP_Abstract_User {
 		$course_id = $this->_get_course_id( $course_id );
 		$remaining = false;
 		if ( $progress = $this->get_quiz_progress( $quiz_id, $course_id ) ) {
-			$quiz      = LP_Quiz::get_quiz( $quiz_id );
-			$remaining = $quiz->duration + strtotime( $progress->start ) - current_time( 'timestamp' );
-			if ( $remaining < 0 ) $remaining = 0;
+			if ( $progress->status != 'completed' ) {
+				$quiz      = LP_Quiz::get_quiz( $quiz_id );
+				$remaining = $quiz->duration + strtotime( $progress->start ) - current_time( 'timestamp' );
+			}
+			//if ( $remaining < 0 ) $remaining = 0;
 		}
 		return apply_filters( 'learn_press_user_quiz_time_remaining', $remaining, $quiz_id, $course_id, $this->id );
 	}
@@ -2659,10 +2661,10 @@ class LP_Abstract_User {
 	public function get_upload_profile_src( $size = 'thumbnail' ) {
 		if ( empty( $this->uploaded_profile_src ) ) {
 			$profile_picture = $this->profile_picture;
-			$upload = wp_get_upload_dir();
-			$user_id = $this->id;
-			if( file_exists( $upload['basedir'].'\learn-press-profile\\'.$user_id.'\\'.$profile_picture) ) {
-				$this->uploaded_profile_src = $upload['baseurl'].'/learn-press-profile/'.$user_id.'/'.$profile_picture;
+			$upload          = wp_get_upload_dir();
+			$user_id         = $this->id;
+			if ( file_exists( $upload['basedir'] . '\learn-press-profile\\' . $user_id . '\\' . $profile_picture ) ) {
+				$this->uploaded_profile_src = $upload['baseurl'] . '/learn-press-profile/' . $user_id . '/' . $profile_picture;
 			} else {
 				$this->uploaded_profile_src = false;
 			}
