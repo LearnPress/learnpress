@@ -9,7 +9,7 @@ if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 $user         = learn_press_get_current_user();
-$course       = learn_press_get_course();
+$course       = learn_press_get_the_course();
 $section_name = apply_filters( 'learn_press_curriculum_section_name', $section->section_name, $section );
 $force        = isset( $force ) ? $force : false;
 

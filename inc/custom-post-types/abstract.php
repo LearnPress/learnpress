@@ -88,8 +88,8 @@ abstract class LP_Abstract_Post_Type {
 		add_action( 'admin_footer-post.php', array( $this, 'print_js_template' ) );
 		add_action( 'admin_footer-post-new.php', array( $this, 'print_js_template' ) );
 		add_action( 'pre_get_posts', array( $this, 'update_default_meta' ) );
-                
-                add_filter( 'post_updated_messages', array( $this, 'updated_messages' ) );
+
+		add_filter( 'post_updated_messages', array( $this, 'updated_messages' ) );
 
 		$args = wp_parse_args(
 			$args,
@@ -311,8 +311,7 @@ abstract class LP_Abstract_Post_Type {
 	}
 
 	public function columns_content( $column, $post_id = 0 ) {
-		print_r( func_get_args() );
-		die();
+		return;
 		$callback = array( $this, "column_{$column}" );
 		if ( is_callable( $callback ) ) {
 			call_user_func_array( $callback, func_get_args() );
@@ -399,63 +398,63 @@ abstract class LP_Abstract_Post_Type {
 		}
 		return $return;
 	}
-        
-        public function updated_messages( $messages ) {
-            $post             = get_post();
-            $post_type        = get_post_type( $post );
-            $post_type_object = get_post_type_object( $this->_post_type );
-            if ( $this->_post_type !== $post_type ) {
-                    return $messages;
-            }
-            $messages[$this->_post_type] = array(
-                    0  => '', // Unused. Messages start at index 1.
-                    1  => sprintf( '%s %s', $post_type_object->labels->singular_name, __( 'updated.', 'learnpress' ) ),
-                    2  => __( 'Custom field updated.', 'learnpress' ),
-                    3  => __( 'Custom field deleted.', 'learnpress' ),
-                    4  => sprintf( '%s %s', $post_type_object->labels->singular_name, __( 'updated.', 'learnpress' ) ),
-                    /* translators: %s: date and time of the revision */
-                    5  => isset( $_GET['revision'] ) ? sprintf( __( 'Lesson restored to revision from %s', 'learnpress' ), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
-                    6  => sprintf( '%s %s', $post_type_object->labels->singular_name, __( 'published.', 'learnpress' ) ),
-                    7  => sprintf( '%s %s', $post_type_object->labels->singular_name, __( 'saved.', 'learnpress' ) ),
-                    8  => sprintf( '%s %s', $post_type_object->labels->singular_name, __( 'submitted.', 'learnpress' ) ),
-                    9  => sprintf(
-                            sprintf( '%s %s', $post_type_object->labels->singular_name, __( 'scheduled for: <strong>%1$s</strong>.', 'learnpress' ) ),
-                            // translators: Publish box date format, see http://php.net/date
-                            date_i18n( __( 'M j, Y @ G:i', 'learnpress' ), strtotime( $post->post_date ) )
-                    ),
-                    10 => sprintf( '% %s', $post_type_object->labels->singular_name, __( 'draft updated.', 'learnpress' ) )
-            );
 
-            if ( $post_type_object->publicly_queryable ) {
-                    $permalink = get_permalink( $post->ID );
+	public function updated_messages( $messages ) {
+		$post             = get_post();
+		$post_type        = get_post_type( $post );
+		$post_type_object = get_post_type_object( $this->_post_type );
+		if ( $this->_post_type !== $post_type ) {
+			return $messages;
+		}
+		$messages[$this->_post_type] = array(
+			0  => '', // Unused. Messages start at index 1.
+			1  => sprintf( '%s %s', $post_type_object->labels->singular_name, __( 'updated.', 'learnpress' ) ),
+			2  => __( 'Custom field updated.', 'learnpress' ),
+			3  => __( 'Custom field deleted.', 'learnpress' ),
+			4  => sprintf( '%s %s', $post_type_object->labels->singular_name, __( 'updated.', 'learnpress' ) ),
+			/* translators: %s: date and time of the revision */
+			5  => isset( $_GET['revision'] ) ? sprintf( __( 'Lesson restored to revision from %s', 'learnpress' ), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
+			6  => sprintf( '%s %s', $post_type_object->labels->singular_name, __( 'published.', 'learnpress' ) ),
+			7  => sprintf( '%s %s', $post_type_object->labels->singular_name, __( 'saved.', 'learnpress' ) ),
+			8  => sprintf( '%s %s', $post_type_object->labels->singular_name, __( 'submitted.', 'learnpress' ) ),
+			9  => sprintf(
+				sprintf( '%s %s', $post_type_object->labels->singular_name, __( 'scheduled for: <strong>%1$s</strong>.', 'learnpress' ) ),
+				// translators: Publish box date format, see http://php.net/date
+				date_i18n( __( 'M j, Y @ G:i', 'learnpress' ), strtotime( $post->post_date ) )
+			),
+			10 => sprintf( '% %s', $post_type_object->labels->singular_name, __( 'draft updated.', 'learnpress' ) )
+		);
 
-                    $view_link = sprintf( ' <a href="%s">%s</a>', esc_url( $permalink ), sprintf( '%s %s', __( 'View', 'learnpress' ), $post_type_object->labels->singular_name ) );
-                    switch( $this->_post_type ) {
-                        case LP_LESSON_CPT:
-                                $view_link = learn_press_get_lesson_course_id($post->ID) ? $view_link : '';
-                            break;
-                        case LP_QUIZ_CPT:
-                                $view_link = learn_press_get_quiz_course_id( $post->ID ) ? $view_link : '';
-                            break;
-                        case LP_ORDER_CPT:
-                                $order = learn_press_get_order( $post->ID );
-                                $view_link = $order->get_view_order_url();
-                                $view_link = sprintf( ' <a href="%s">%s</a>', esc_url( $view_link ), sprintf( '%s %s', __( 'View', 'learnpress' ), $post_type_object->labels->singular_name ) );
-                            break;
-                        case LP_QUESTION_CPT:
-                                $view_link = '';
-                            break;
-                    }
-                    $messages[$this->_post_type][1] .= $view_link;
-                    $messages[$this->_post_type][6] .= $view_link;
-                    $messages[$this->_post_type][9] .= $view_link;
+		if ( $post_type_object->publicly_queryable ) {
+			$permalink = get_permalink( $post->ID );
 
-                    $preview_permalink = add_query_arg( 'preview', 'true', $permalink );
-                    $preview_link      = sprintf( ' <a target="_blank" href="%s">%s</a>', esc_url( $preview_permalink ), sprintf( '%s %s', __( 'Preview', 'learnpress' ), $post_type_object->labels->singular_name ) );
-                    $messages[$this->_post_type][8] .= $preview_link;
-                    $messages[$this->_post_type][10] .= $preview_link;
-            }
+			$view_link = sprintf( ' <a href="%s">%s</a>', esc_url( $permalink ), sprintf( '%s %s', __( 'View', 'learnpress' ), $post_type_object->labels->singular_name ) );
+			switch ( $this->_post_type ) {
+				case LP_LESSON_CPT:
+					$view_link = learn_press_get_lesson_course_id( $post->ID ) ? $view_link : '';
+					break;
+				case LP_QUIZ_CPT:
+					$view_link = learn_press_get_quiz_course_id( $post->ID ) ? $view_link : '';
+					break;
+				case LP_ORDER_CPT:
+					$order     = learn_press_get_order( $post->ID );
+					$view_link = $order->get_view_order_url();
+					$view_link = sprintf( ' <a href="%s">%s</a>', esc_url( $view_link ), sprintf( '%s %s', __( 'View', 'learnpress' ), $post_type_object->labels->singular_name ) );
+					break;
+				case LP_QUESTION_CPT:
+					$view_link = '';
+					break;
+			}
+			$messages[$this->_post_type][1] .= $view_link;
+			$messages[$this->_post_type][6] .= $view_link;
+			$messages[$this->_post_type][9] .= $view_link;
 
-            return $messages;
-        }
+			$preview_permalink = add_query_arg( 'preview', 'true', $permalink );
+			$preview_link      = sprintf( ' <a target="_blank" href="%s">%s</a>', esc_url( $preview_permalink ), sprintf( '%s %s', __( 'Preview', 'learnpress' ), $post_type_object->labels->singular_name ) );
+			$messages[$this->_post_type][8] .= $preview_link;
+			$messages[$this->_post_type][10] .= $preview_link;
+		}
+
+		return $messages;
+	}
 }

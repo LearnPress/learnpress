@@ -2088,7 +2088,7 @@ function learn_press_user_profile_link( $user_id = 0, $tab = null ) {
 	} else {
 		$url = get_author_posts_url( $user_id );
 	}
-	return $url;
+	return apply_filters( 'learn_press_user_profile_link', $url, $user_id, $tab );
 }
 
 function _learn_press_urlencode( $string ) {

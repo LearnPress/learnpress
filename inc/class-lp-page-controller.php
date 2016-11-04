@@ -20,6 +20,8 @@ class LP_Page_Controller {
 	 */
 	protected $has_filter_content = false;
 
+	protected $_filter_content_priority = 10000000;
+
 	/**
 	 * LP_Page_Controller constructor.
 	 */
@@ -36,7 +38,7 @@ class LP_Page_Controller {
 
 	public function before_template_part( $template_name, $template_path, $located, $args ) {
 		if ( $this->has_filter_content && !in_array( $template_name, array( 'content-single-course.php' ) ) ) {
-			remove_filter( 'the_content', array( $this, 'single_content' ) );
+			remove_filter( 'the_content', array( $this, 'single_content' ), $this->_filter_content_priority );
 			$this->has_filter_content = false;
 			LP_Debug::instance()->add( 'remove filter content' );
 		}
@@ -80,7 +82,8 @@ class LP_Page_Controller {
 			$template = get_page_template();
 			if ( learn_press_is_course() ) {
 				if ( is_single() ) {
-					add_filter( 'the_content', array( $this, 'single_content' ) );
+					global $post;
+					$post->post_content = $this->single_content( null );
 					$this->has_filter_content = true;
 				}
 			} elseif ( learn_press_is_courses() || learn_press_is_course_tag() || learn_press_is_course_category() || learn_press_is_search() ) {
@@ -162,7 +165,7 @@ class LP_Page_Controller {
 
 			//$GLOBALS['post'] = $this->queried_object;
 
-			remove_filter( 'the_content', array( $this, 'single_content' ) );
+			remove_filter( 'the_content', array( $this, 'single_content' ), $this->_filter_content_priority );
 			remove_filter( 'the_content', 'wpautop' );
 		}
 
@@ -175,7 +178,7 @@ class LP_Page_Controller {
 	 * @return string
 	 */
 	public function single_content( $content ) {
-		remove_filter( 'the_content', array( $this, 'single_content' ) );
+		remove_filter( 'the_content', array( $this, 'single_content' ), $this->_filter_content_priority );
 		add_filter( 'the_content', 'wpautop' );
 
 		ob_start();

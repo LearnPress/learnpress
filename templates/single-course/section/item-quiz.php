@@ -8,7 +8,7 @@
 if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
-$course = LP()->global['course'];
+$course   = LP()->global['course'];
 $viewable = learn_press_user_can_view_quiz( $item->ID, $course->id );//learn_press_is_enrolled_course();
 $tag      = $viewable ? 'a' : 'span';
 $target   = apply_filters( 'learn_press_section_item_link_target', '_blank', $item );
@@ -20,10 +20,10 @@ $target   = apply_filters( 'learn_press_section_item_link_target', '_blank', $it
 
 	<<?php echo $tag; ?> class="course-item-title button-load-item" target="<?php echo $target; ?>" <?php echo $viewable ? 'href="' . $course->get_item_link( $item->ID ) . '"' : ''; ?> data-id="<?php echo $item->ID; ?>">
 
-		<?php echo apply_filters( 'learn_press_section_item_title', get_the_title( $item->ID ), $item ); ?>
+	<?php echo apply_filters( 'learn_press_section_item_title', get_the_title( $item->ID ), $item ); ?>
 
-	</<?php echo $tag; ?>>
+</<?php echo $tag; ?>>
 
-	<?php do_action( 'learn_press_after_section_item_title', $item, $section, $course ); ?>
+<?php do_action( 'learn_press_after_section_item_title', $item, $section, $course ); ?>
 
 </li>

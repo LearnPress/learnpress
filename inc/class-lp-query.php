@@ -172,12 +172,7 @@ class LP_Query {
 	 * Add more custom rewrite rules
 	 */
 	function add_rewrite_rules() {
-		/**
-		 * For debugging to flush old rewrite rules and effects new
-		 */
-		if ( !empty( $_REQUEST['clean-cache'] ) ) {
-			flush_rewrite_rules();
-		}
+
 		$rewrite_prefix = get_option( 'learn_press_permalink_structure' );
 		// lesson
 		$course_type  = 'lp_course';

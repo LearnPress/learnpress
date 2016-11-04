@@ -17,7 +17,7 @@ if ( !defined( 'ABSPATH' ) ) {
  * @return LP_Course|mixed
  */
 function learn_press_get_course( $the_course = false ) {
-	return $the_course ? LP_Course::get_course( $the_course ) : LP()->course;
+	return $the_course ? LP_Course::get_course( $the_course ) : LP()->global['course'];
 }
 
 function learn_press_get_quiz( $the_quiz ) {
@@ -551,16 +551,21 @@ function need_to_updating() {
 }
 
 /* filter section item single course */
-function lean_press_get_course_sections() {
-	return apply_filters( 'lean_press_get_course_sections', array(
+function learn_press_get_course_sections() {
+	return apply_filters( 'learn_press_get_course_sections', array(
 		'lp_lesson',
 		'lp_quiz'
 	) );
 }
 
+function lean_press_get_course_sections() {
+	_deprecated_function( __FUNCTION__, '2.1', 'learn_press_get_course_sections' );
+	return learn_press_get_course_sections();
+}
+
 if ( !function_exists( 'learn_press_get_course_item_url' ) ) {
-    function learn_press_get_course_item_url( $course_id = null, $item_id = null ) {
-        $course = learn_press_get_course( $course_id );
-        return $course->get_item_link( $item_id );
-    }
+	function learn_press_get_course_item_url( $course_id = null, $item_id = null ) {
+		$course = learn_press_get_course( $course_id );
+		return $course->get_item_link( $item_id );
+	}
 }

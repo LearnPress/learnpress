@@ -30,8 +30,10 @@ if ( !function_exists( 'learn_press_wrapper_end' ) ) {
 
 if ( !function_exists( 'learn_press_single_course_args' ) ) {
 	function learn_press_single_course_args() {
-		$course = learn_press_get_course( get_the_ID() );
-		$course->output_args();
+		$course = LP()->global['course'];
+		if($course && $course->id) {
+			$course->output_args();
+		}
 	}
 }
 

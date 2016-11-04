@@ -299,8 +299,9 @@ class LP_Checkout {
 			}
 
 		} catch ( Exception $e ) {
-			if ( !empty( $e->getMessage() ) ) {
-				learn_press_add_message( $e->getMessage(), 'error' );
+			$has_error = $e->getMessage();
+			if ( !empty( $has_error ) ) {
+				learn_press_add_message( $has_error, 'error' );
 			}
 			$success = 40;
 		}
