@@ -639,37 +639,53 @@ function learn_press_user_update_user_info() {
 		
 		// upload profile picture
 		$profile_picture_type = filter_input( INPUT_POST, 'profile_picture_type', FILTER_SANITIZE_STRING );
-		update_user_meta( $user->id, '_lp_profile_picture_type', $profile_picture_type );
+		
 
 		if ( $profile_picture_type == 'picture' ) {
-			if ( isset( $_FILES['profile_picture']['size'] ) && $_FILES['profile_picture']['size'] ) {
-				if ( !function_exists( 'wp_generate_attachment_metadata' ) ) {
-					require_once( ABSPATH . "wp-admin" . '/includes/image.php' );
-					require_once( ABSPATH . "wp-admin" . '/includes/file.php' );
-					require_once( ABSPATH . "wp-admin" . '/includes/media.php' );
-				}
-				$attach_id = 0;
 
-				foreach ( $_FILES as $file => $array ) {
-					if ( $_FILES[$file]['error'] !== UPLOAD_ERR_OK ) {
-						return "upload error : " . $_FILES[$file]['error'];
-					}
-					add_filter( 'upload_dir', 'learn_press_user_profile_picture_upload_dir' );
-					$attach_id = media_handle_upload( $file, 0 );
-					remove_filter( 'upload_dir', 'learn_press_user_profile_picture_upload_dir' );
-				}
-				if ( $attach_id > 0 ) {
-					if ( $old_id = get_user_meta( $user->id, '_lp_profile_picture', true ) ) {
-						wp_delete_attachment( $old_id, true );
-					}
-					update_user_meta( $user->id, '_lp_profile_picture', $attach_id );
-				}
+			$upload		= wp_get_upload_dir();
+			$upload_dir = $upload['basedir'] . '/learn-press-profile/' . $user_id;
+			if(!is_dir( $upload_dir )){
+				mkdir( $upload_dir );
 			}
+			# get old file
+			$filename_old = get_user_meta($user_id, '_lp_profile_picture', true);
+			if( file_exists( $upload_dir . '/' . $filename_old ) ) {
+				unlink( $upload_dir . '/' . $filename_old );
+			}
+			$data		= explode(',',$_POST['profile_picture_data']);
+			$imgtype	= explode('/', $data[0]);
+			$filename	= isset( $_FILES['profile_picture']['name'] ) && $_FILES['profile_picture']['name'] ? $_FILES['profile_picture']['name']:'avatar'.$imgtype[1];
+			if(file_put_contents( $upload_dir.'/'.$filename, base64_decode($data[1]) )){
+				update_user_meta( $user->id, '_lp_profile_picture', $filename );
+			}
+//			if ( isset( $_FILES['profile_picture']['size'] ) && $_FILES['profile_picture']['size'] ) {
+//				if ( !function_exists( 'wp_generate_attachment_metadata' ) ) {
+//					require_once( ABSPATH . "wp-admin" . '/includes/image.php' );
+//					require_once( ABSPATH . "wp-admin" . '/includes/file.php' );
+//					require_once( ABSPATH . "wp-admin" . '/includes/media.php' );
+//				}
+//				$attach_id = 0;
+//
+//				foreach ( $_FILES as $file => $array ) {
+//					if ( $_FILES[$file]['error'] !== UPLOAD_ERR_OK ) {
+//						return "upload error : " . $_FILES[$file]['error'];
+//					}
+//					add_filter( 'upload_dir', 'learn_press_user_profile_picture_upload_dir' );
+//					$attach_id = media_handle_upload( $file, 0 );
+//					remove_filter( 'upload_dir', 'learn_press_user_profile_picture_upload_dir' );
+//				}
+//				if ( $attach_id > 0 ) {
+//					if ( $old_id = get_user_meta( $user->id, '_lp_profile_picture', true ) ) {
+//						wp_delete_attachment( $old_id, true );
+//					}
+//					update_user_meta( $user->id, '_lp_profile_picture', $attach_id );
+//				}
+//			}
+//			
 		}
-		
-		
-		
 
+		update_user_meta( $user->id, '_lp_profile_picture_type', $profile_picture_type );
 		$res = wp_update_user( $update_data );
 		if ( $res ) {
 			learn_press_add_message( __( 'Your change is saved', 'learnpress' ) );

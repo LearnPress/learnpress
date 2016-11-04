@@ -191,6 +191,7 @@ class LP_Assets {
 		$scripts->add( 'learn-press-checkout', $default_path . 'js/frontend/checkout' . $suffix . '.js', $deps, false, 1 );
 		$scripts->add( 'learn-press-become-teacher', $default_path . 'js/frontend/become-teacher' . $suffix . '.js', $deps, false, 1 );
 		$scripts->add( 'learn-press-profile', $default_path . 'js/frontend/profile' . $suffix . '.js', $deps, false, 1 );
+		$scripts->add( 'learn-press-jquery-cropit', $default_path . 'js/jquery.cropit' . $suffix . '.js', $deps, false, 1 );
 
 		// admin
 		$scripts->add( 'learn-press-admin', $default_path . 'js/admin/admin' . $suffix . '.js', $deps, false, 1 );
@@ -744,6 +745,7 @@ class LP_Assets {
 
 		if ( learn_press_is_profile() ) {
 			self::enqueue_script( 'learn-press-profile' );
+			self::enqueue_script( 'learn-press-jquery-cropit' );
 		}
 	}
 }

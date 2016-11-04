@@ -2659,9 +2659,10 @@ class LP_Abstract_User {
 	public function get_upload_profile_src( $size = 'thumbnail' ) {
 		if ( empty( $this->uploaded_profile_src ) ) {
 			$profile_picture = $this->profile_picture;
-			$attachment      = wp_get_attachment_image_src( $profile_picture, $size );
-			if ( $attachment ) {
-				$this->uploaded_profile_src = $attachment[0];
+			$upload = wp_get_upload_dir();
+			$user_id = $this->id;
+			if( file_exists( $upload['basedir'].'\learn-press-profile\\'.$user_id.'\\'.$profile_picture) ) {
+				$this->uploaded_profile_src = $upload['baseurl'].'/learn-press-profile/'.$user_id.'/'.$profile_picture;
 			} else {
 				$this->uploaded_profile_src = false;
 			}
