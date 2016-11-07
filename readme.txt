@@ -1,10 +1,10 @@
-=== LearnPress - WordPress LMS Plugin ===  
-Contributors: thimpress, tunnhn, halink0803, thongta, kendy73  
-Donate link:  
-Tags: WordPress LMS, LMS, eLearning, e-Learning, Learning Management System, LMS WordPress, Course, Courses, Quiz, Quizzes, Training, Guru, Sell Courses  
-Requires at least: 3.8  
-Tested up to: 4.5.2
-Stable tag: 2.0
+=== LearnPress - WordPress LMS Plugin ===
+Contributors: thimpress, tunnhn, thongta, kendy73
+Donate link:
+Tags: WordPress LMS, LMS, eLearning, e-Learning, Learning Management System, LMS WordPress, Course, Courses, Quiz, Quizzes, Training, Guru, Sell Courses
+Requires at least: 3.8
+Tested up to: 4.6.1
+Stable tag: 2.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -183,24 +183,38 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 2.0.1 =
++ Added duplication quiz/question/lesson in admin
++ Added crop user's avatar in profile
++ Fixed conflict with Yoast SEO make course content does not show correctly
++ Fixed some errors happen with older PHP version
++ Fixed progress bar does not update after completing an item
++ Fixed setting of some page lost after reactive
++ Fixed items can not drag and drop in course's curriculum
++ Fixed courses name is always show as "Auto Draft"
+
 = 2.0 =
 + Updated database structure for new functions
-+ Removed "Cart" outside LearnPress core and separated to addon
-+ Changed permalink of quiz and made it become a part of course's permalink
-+ Allowed add course's section without a name
++ Added view quiz inside a course with sub-permalink
++ Added allow add course's section without a name
 + Added email system to send it to user after buying a course
 + Added popup lightbox to view course's item content in full-screen mode
 + Added option to show/hide list of questions in quiz
 + Added 'Sale Price' for course
-+ Added option to randomize question's answer
 + Added option to combine all scripts/styles enqueued into one file
 + Added option to evaluate course's results by average results of quizzes
 + Added "Passing Grade" to quiz allow evaluate result of quiz is passed/failed
 + Added option to show name of user in profile
++ Added duplicate a question inside quiz
++ Added preview mode of course for instructor or admin
++ Added memorize question type is the most used
++ Added new tab to edit user information in profile page
 + Improved admin course editor
-+ Show answer's explanation right away after user checking question's answer
++ Removed "Cart" outside LearnPress core and separated to addon
++ Fixed show answer's explanation right away after user checking question's answer
 + Fixed page does not load after logging in profile
 + Fixed quiz finish automatically right away after starting with duration is zero
++ Fixed displays shortcodes inside content of quiz/lesson
 
 = 1.0.8 =
 + Fixed "Password protected content" feature
@@ -289,6 +303,6 @@ https://www.transifex.com/projects/p/learnpress/
 = 0.9.19 =
 In this version, we have changed a little bit about LearnPress Plugin directory structure and moved all add-ons to become independence plugins. If you face any problems relate to add-ons, please completely remove old version and re-install LearnPress. It does not affect your current data. Thank you.
 
-== Other note ==  
-<a href="http://docs.thimpress.com/learnpress" target="_blank">Documentation</a> is available in ThimPress site.  
-<a href="https://github.com/LearnPress/LearnPress/" target="_blank">LearnPress github repo.</a>  
+== Other note ==
+<a href="http://docs.thimpress.com/learnpress" target="_blank">Documentation</a> is available in ThimPress site.
+<a href="https://github.com/LearnPress/LearnPress/" target="_blank">LearnPress github repo.</a>
