@@ -256,7 +256,7 @@ if (typeof window.LP == 'undefined') {
 						$elem.removeAttr('learn-press-quick-confirm').data('quick-confirm', undefined);
 						;
 						stop();
-						console.log('die');
+
 					};
 				})(elem, args)
 			);
@@ -510,7 +510,6 @@ if (typeof window.LP == 'undefined') {
 			if (url) {
 				history.pushState({}, title, url);
 				LP.Hook.doAction('learn_press_set_location_url', url);
-				console.log('set url:'+url);
 			}
 		},
 		toggleGroupSection: function (el, target) {

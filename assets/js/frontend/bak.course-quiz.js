@@ -28,7 +28,6 @@ if (typeof LP == 'undefined') {
 		initialize: function () {
 			this.questions = new Questions();
 			this.questions.add(_.values(this.get('questions')));
-			console.log(this.questions.length);
 		}
 	});
 	$.extend(LP, {

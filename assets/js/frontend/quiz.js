@@ -67,8 +67,7 @@
 						//if (!that.get('content')) {
 						that.set(response.question);
 						if (response.permalink) {
-							LP.setUrl(response.permalink);console.log('6666');
-							console.log(response)
+							LP.setUrl(response.permalink);
 						}
 						//}
 						$.isFunction(args.complete) && args.complete.call(that, response);
@@ -559,8 +558,7 @@
 			this.start();
 			$(window).trigger('load');
 			$(document).trigger('resize');
-			windowTarget.LP.setUrl(question.get('url'));console.log('5555');
-			console.log(question)
+			windowTarget.LP.setUrl(question.get('url'));
 			windowTarget.LP.unblockContent();
 		},
 		_showHint             : function (e) {

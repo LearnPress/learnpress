@@ -20,6 +20,7 @@ if ( $course->is( 'viewing-item' ) ) {
 	}
 }*/
 
+
 $description_heading = apply_filters( 'learn_press_single_course_description_heading', __( 'Course Overview', 'learnpress' ), $course );
 ?>
 

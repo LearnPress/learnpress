@@ -847,7 +847,6 @@ jQuery(document).ready( function($) {
 					'onSelect', 
 					function(a, b) { 
 						var minDate = new Date(a);
-						console.log(minDate);
 						jQuery('.rwmb-datetime[name$="lp_sale_end"')
 						.first()
 						.datepicker(

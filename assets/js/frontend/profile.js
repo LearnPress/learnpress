@@ -96,7 +96,6 @@
 		$('#profile-picture-picture .export').click(function (event) {
 			event.preventDefault();
 			var imageData = $('.image-editor').cropit( 'export' );
-			console.log('abc');
 			$('#lp-user-profile-picture-data').val( imageData );
 			$('img.avatar').attr( 'src', imageData );
 			$('img.avatar').attr( 'srcset', imageData );
