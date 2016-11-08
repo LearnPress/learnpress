@@ -1850,6 +1850,9 @@ body.block-content #learn-press-block-content {
   padding: 0 15px 15px 15px;
   margin: 0;
 }
+.learn-press-user-profile .learn-press-tabs-wrapper-x button.learn-press-course-wishlist {
+  display: block;
+}
 .learn-press-user-profile .cropit-preview {
   background-color: #f8f8f8;
   background-size: cover;
