@@ -489,7 +489,7 @@ abstract class LP_Abstract_Course {
 	 * @return bool
 	 */
 	public function is_free() {
-		$is_free = ( ( 'no' == $this->payment ) || ( 0 >= $this->get_price() ) );
+		$is_free = ( ( 'no' == $this->payment ) || ( 0 >= $this->get_price() ) || ( 0 >= $this->get_sale_price() ) );
 		return apply_filters( 'learn_press_is_free_course', $is_free, $this );
 	}
 
