@@ -136,6 +136,11 @@
 .learn-press-courses li.course .course-instructor {
   margin-bottom: 20px;
 }
+.learn-press-courses li.course .course-origin-price {
+  float: right;
+  text-decoration: line-through;
+  padding-right: 5px;
+}
 .learn-press-courses li.course .course-price {
   float: right;
   color: #54b551;
@@ -196,6 +201,7 @@
 }
 #learn-press-course-curriculum .section-header .meta .collapse:before {
   content: "\ea0b";
+  margin: 0 auto;
 }
 #learn-press-course-curriculum .section-header .meta .collapse:hover {
   cursor: pointer;
@@ -1843,6 +1849,9 @@ body.block-content #learn-press-block-content {
 .learn-press-user-profile .learn-press-tabs-wrapper-x .learn-press-subtab-content .profile-courses .learn-press-course-results-progress {
   padding: 0 15px 15px 15px;
   margin: 0;
+}
+.learn-press-user-profile .learn-press-tabs-wrapper-x button.learn-press-course-wishlist {
+  display: block;
 }
 .learn-press-user-profile .cropit-preview {
   background-color: #f8f8f8;

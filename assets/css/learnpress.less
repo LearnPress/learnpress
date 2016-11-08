@@ -282,6 +282,11 @@
         .course-instructor {
             margin-bottom: 20px;
         }
+        .course-origin-price {
+            float: right;
+            text-decoration: line-through;
+            padding-right: 5px;
+        }
         .course-price {
             float: right;
             color: rgb(84, 181, 81);
@@ -345,6 +350,7 @@
                 margin-left: 5px;
                 &:before {
                     content: "\ea0b";
+                    margin: 0 auto;
                 }
                 &:hover {
                     cursor: pointer;
@@ -1367,6 +1373,9 @@ body.block-content {
                 }
             }
         }
+        button.learn-press-course-wishlist {
+            display: block;
+        }
     }
     /* crop user profile picture */
     .cropit-preview {
@@ -1655,7 +1664,7 @@ body.content-item-only {
         margin-right: -200px;
         width: 100%;
     }
-    .search-course-button{
+    .search-course-button {
         vertical-align: middle;
         float: right;
         z-index: 10;
