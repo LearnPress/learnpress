@@ -289,10 +289,10 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 				'show_in_nav_menus'  => true,
 				'taxonomies'         => array( 'course_category', 'course_tag' ),
 				'supports'           => array( 'title', 'editor', 'thumbnail', 'revisions', 'comments', 'excerpt' ),
-				'hierarchical'       => true,
+				'hierarchical'       => false,
 				'rewrite'            => $course_permalink ? array(
-					'slug'       => untrailingslashit( $course_permalink ),
-					'with_front' => false
+					'slug'         => untrailingslashit( $course_permalink ),
+					'with_front'   => false
 				) : false
 			);
 			return $args;

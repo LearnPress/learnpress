@@ -510,6 +510,7 @@ if (typeof window.LP == 'undefined') {
 			if (url) {
 				history.pushState({}, title, url);
 				LP.Hook.doAction('learn_press_set_location_url', url);
+				console.log('set url:'+url);
 			}
 		},
 		toggleGroupSection: function (el, target) {

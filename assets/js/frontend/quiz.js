@@ -67,7 +67,8 @@
 						//if (!that.get('content')) {
 						that.set(response.question);
 						if (response.permalink) {
-							LP.setUrl(response.permalink);
+							LP.setUrl(response.permalink);console.log('6666');
+							console.log(response)
 						}
 						//}
 						$.isFunction(args.complete) && args.complete.call(that, response);
@@ -558,7 +559,8 @@
 			this.start();
 			$(window).trigger('load');
 			$(document).trigger('resize');
-			windowTarget.LP.setUrl(question.get('url'));
+			windowTarget.LP.setUrl(question.get('url'));console.log('5555');
+			console.log(question)
 			windowTarget.LP.unblockContent();
 		},
 		_showHint             : function (e) {
@@ -634,11 +636,12 @@
 			if (item.get('id') == this.model.get('id')) {
 				var questionName = this.model.getCurrent('name'), reg;
 				if (questionName && this.model.get('status') !== 'completed') {
-					reg = new RegExp(questionName, '');
+					reg = new RegExp('!' + questionName + '/?$!', '');
 					if (!url.match(reg)) {
 						url = url.replace(/\/$/, '') + '/' + questionName + '/';
 					}
 				}
+
 			}
 			return url;
 		},
@@ -719,7 +722,7 @@
 				callback  : function (response, item) {
 					windowTarget.LP.unblockContent();
 					that.$('#learn-press-content-item').html(response.html.content);
-					windowTarget.LP.setUrl(that.model.get('permalink'));
+					windowTarget.LP.setUrl(that.model.get('permalink'));console.log('4444');
 					var data = response.course_result;
 					data.messageType = 'update-course';
 					LP.sendMessage(data, windowTarget);

@@ -20,7 +20,7 @@ class LP_Page_Controller {
 	 */
 	protected $has_filter_content = false;
 
-	protected $_filter_content_priority = 10000000;
+	protected $_filter_content_priority = 10;
 
 	/**
 	 * LP_Page_Controller constructor.
@@ -181,7 +181,6 @@ class LP_Page_Controller {
 	public function single_content( $content ) {
 		remove_filter( 'the_content', array( $this, 'single_content' ), $this->_filter_content_priority );
 		add_filter( 'the_content', 'wpautop' );
-
 		ob_start();
 		learn_press_get_template( 'content-single-course.php' );
 		$content = ob_get_clean();
