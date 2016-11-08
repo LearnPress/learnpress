@@ -136,6 +136,11 @@
 .learn-press-courses li.course .course-instructor {
   margin-bottom: 20px;
 }
+.learn-press-courses li.course .course-origin-price {
+  float: right;
+  text-decoration: line-through;
+  padding-right: 5px;
+}
 .learn-press-courses li.course .course-price {
   float: right;
   color: #54b551;
@@ -196,6 +201,7 @@
 }
 #learn-press-course-curriculum .section-header .meta .collapse:before {
   content: "\ea0b";
+  margin: 0 auto;
 }
 #learn-press-course-curriculum .section-header .meta .collapse:hover {
   cursor: pointer;
