@@ -33,7 +33,10 @@ $description_heading = apply_filters( 'learn_press_single_course_description_hea
 
 	<?php do_action( 'learn_press_begin_single_course_description' ); ?>
 
-	<?php the_content(); ?>
+	<?php
+	$content_post = get_post( $course->ID );
+	echo  $content_post->post_content;
+	?>
 
 	<?php do_action( 'learn_press_end_single_course_description' ); ?>
 
