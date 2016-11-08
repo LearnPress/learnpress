@@ -74,7 +74,7 @@ class LP_Settings_General extends LP_Settings_Base {
 					'title'   => __( 'Number of Decimals', 'learnpress' ),
 					'id'      => $this->get_field_name( 'number_of_decimals' ),
 					'default' => '2',
-					'type'    => 'text',
+					'type'    => 'number',
 					'options' => $this->_get_currency_positions()
 				),
 				array(

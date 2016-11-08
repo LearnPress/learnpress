@@ -136,6 +136,11 @@
 .learn-press-courses li.course .course-instructor {
   margin-bottom: 20px;
 }
+.learn-press-courses li.course .course-origin-price {
+  float: right;
+  text-decoration: line-through;
+  padding-right: 5px;
+}
 .learn-press-courses li.course .course-price {
   float: right;
   color: #54b551;
@@ -162,14 +167,17 @@
   margin: 0;
   padding: 20px 15px;
   border-top: 1px solid #FFF;
+  position: relative;
 }
 #learn-press-course-curriculum .section-header p {
   display: inline-block;
   font-weight: normal;
   font-style: italic;
   color: #999999;
-  font-size: smaller;
+  font-size: 14px;
   margin: 0;
+  padding: 10px 0;
+  text-transform: none;
 }
 #learn-press-course-curriculum .section-header:hover {
   background: #DDD;
@@ -177,8 +185,9 @@
 #learn-press-course-curriculum .section-header .meta {
   font-size: smaller;
   font-weight: normal;
-  float: right;
-  /*margin-top: 5px;*/
+  position: absolute;
+  right: 10px;
+  top: 20px;
 }
 #learn-press-course-curriculum .section-header .meta .collapse {
   display: inline-block;
@@ -196,6 +205,7 @@
 }
 #learn-press-course-curriculum .section-header .meta .collapse:before {
   content: "\ea0b";
+  margin: 0 auto;
 }
 #learn-press-course-curriculum .section-header .meta .collapse:hover {
   cursor: pointer;
@@ -463,7 +473,7 @@
 /** COURSE TABS **/
 .learn-press-tabs .learn-press-nav-tabs {
   list-style: none;
-  padding: 0 0 0 15px;
+  padding: 0;
   margin: 0 0 20px 0;
   border-bottom: 1px solid #DDD;
 }
@@ -477,11 +487,17 @@
   display: inline-block;
   padding: 10px 15px;
   outline: none;
+  box-shadow: none;
+  color: #686868;
+  border-bottom: 1px solid #DDD;
 }
 .learn-press-tabs .learn-press-nav-tabs .learn-press-nav-tab.active {
-  border: 1px solid #DDD;
-  border-top-right-radius: 5px;
-  border-top-left-radius: 5px;
+  border-bottom: 4px solid #007acc;
+}
+.learn-press-tabs .learn-press-nav-tabs .learn-press-nav-tab.active a {
+  color: #007acc;
+  border-bottom: none;
+  margin-bottom: -4px;
 }
 .learn-press-tabs .learn-press-nav-tabs .learn-press-nav-tab.active:after {
   position: absolute;
@@ -1797,29 +1813,33 @@ body.block-content #learn-press-block-content {
   /* crop user profile picture */
   /* end of crop user profile picture */
 }
+.learn-press-user-profile .user-basic-info p {
+  margin-top: 10px;
+}
 .learn-press-user-profile .learn-press-tabs {
   list-style: none;
   margin: 30px 0 20px;
-  padding-left: 5px;
   border-bottom: 1px solid #DDD;
 }
 .learn-press-user-profile .learn-press-tabs > li {
   float: left;
   list-style-type: none;
+  margin-bottom: -1px;
 }
 .learn-press-user-profile .learn-press-tabs > li > a {
-  box-shadow: none;
+  display: inline-block;
+  padding: 10px 15px;
   outline: none;
-  display: block;
-  border: none;
-  padding: 5px 10px;
+  box-shadow: none;
+  color: #686868;
+  border-bottom: 1px solid #DDD;
+}
+.learn-press-user-profile .learn-press-tabs > li.current {
+  border-bottom: 4px solid #007acc;
 }
 .learn-press-user-profile .learn-press-tabs > li.current a {
-  background-color: #FFF;
-  border: 1px solid #DDD;
-  border-bottom-color: transparent;
-  z-index: 10;
-  margin-bottom: -1px;
+  color: #007acc;
+  margin-bottom: -4px;
 }
 .learn-press-user-profile .learn-press-tabs-wrapper-x .learn-press-subtabs > li {
   display: inline-block;
@@ -1843,6 +1863,9 @@ body.block-content #learn-press-block-content {
 .learn-press-user-profile .learn-press-tabs-wrapper-x .learn-press-subtab-content .profile-courses .learn-press-course-results-progress {
   padding: 0 15px 15px 15px;
   margin: 0;
+}
+.learn-press-user-profile .learn-press-tabs-wrapper-x button.learn-press-course-wishlist {
+  display: block;
 }
 .learn-press-user-profile .cropit-preview {
   background-color: #f8f8f8;
@@ -1868,7 +1891,7 @@ body.block-content #learn-press-block-content {
   display: block;
 }
 .learn-press-user-profile button {
-  margin-top: 10px;
+  margin: 0 auto 10px auto;
 }
 .learn-press-pagination {
   text-align: center;
@@ -1923,6 +1946,7 @@ body.block-content #learn-press-block-content {
 }
 .single-lp_course .course-students-list {
   margin-top: 10px;
+  margin-bottom: 15px;
 }
 .single-lp_course .course-students-list .students {
   list-style-type: none;

@@ -282,6 +282,11 @@
         .course-instructor {
             margin-bottom: 20px;
         }
+        .course-origin-price {
+            float: right;
+            text-decoration: line-through;
+            padding-right: 5px;
+        }
         .course-price {
             float: right;
             color: rgb(84, 181, 81);
@@ -314,13 +319,16 @@
         margin: 0;
         padding: 20px 15px;
         border-top: 1px solid #FFF;
+        position: relative;
         p {
             display: inline-block;
             font-weight: normal;
             font-style: italic;
             color: rgb(153, 153, 153);
-            font-size: smaller;
+            font-size: 14px;
             margin: 0;
+            padding: 10px 0;
+            text-transform: none;
         }
         &:hover {
             background: #DDD;
@@ -328,8 +336,9 @@
         .meta {
             font-size: smaller;
             font-weight: normal;
-            float: right;
-            /*margin-top: 5px;*/
+            position: absolute;
+            right: 10px;
+            top: 20px;
             .collapse {
                 display: inline-block;
                 position: relative;
@@ -345,6 +354,7 @@
                 margin-left: 5px;
                 &:before {
                     content: "\ea0b";
+                    margin: 0 auto;
                 }
                 &:hover {
                     cursor: pointer;
@@ -592,7 +602,7 @@
 .learn-press-tabs {
     .learn-press-nav-tabs {
         list-style: none;
-        padding: 0 0 0 15px;
+        padding: 0;
         margin: 0 0 20px 0;
         border-bottom: 1px solid #DDD;
         .learn-press-nav-tab {
@@ -604,11 +614,17 @@
                 display: inline-block;
                 padding: 10px 15px;
                 outline: none;
+                box-shadow: none;
+                color: #686868;
+                border-bottom: 1px solid #DDD;
             }
             &.active {
-                border: 1px solid #DDD;
-                border-top-right-radius: 5px;
-                border-top-left-radius: 5px;
+                border-bottom: 4px solid #007acc;
+                a {
+                    color: #007acc;
+                    border-bottom: none;
+                    margin-bottom: -4px;
+                }
             }
             &.active:after {
                 position: absolute;
@@ -1315,27 +1331,33 @@ body.block-content {
 }
 
 .learn-press-user-profile {
+    .user-basic-info {
+        p {
+            margin-top: 10px;
+        }
+    }
     .learn-press-tabs {
         list-style: none;
         margin: 30px 0 20px;
-        padding-left: 5px;
         border-bottom: 1px solid #DDD;
         & > li {
             float: left;
             list-style-type: none;
+            margin-bottom: -1px;
             & > a {
-                box-shadow: none;
+                display: inline-block;
+                padding: 10px 15px;
                 outline: none;
-                display: block;
-                border: none;
-                padding: 5px 10px;
+                box-shadow: none;
+                color: #686868;
+                border-bottom: 1px solid #DDD;
             }
-            &.current a {
-                background-color: #FFF;
-                border: 1px solid #DDD;
-                border-bottom-color: transparent;
-                z-index: 10;
-                margin-bottom: -1px;
+            &.current {
+                border-bottom: 4px solid #007acc;
+                a {
+                    color: #007acc;
+                    margin-bottom: -4px;
+                }
             }
         }
     }
@@ -1367,6 +1389,9 @@ body.block-content {
                 }
             }
         }
+        button.learn-press-course-wishlist {
+            display: block;
+        }
     }
     /* crop user profile picture */
     .cropit-preview {
@@ -1396,7 +1421,7 @@ body.block-content {
     }
 
     button {
-        margin-top: 10px;
+        margin: 0 auto 10px auto;
     }
     /* end of crop user profile picture */
 }
@@ -1463,6 +1488,7 @@ body.block-content {
     }
     .course-students-list {
         margin-top: 10px;
+        margin-bottom: 15px;
         .students {
             list-style-type: none;
             margin: 0;
@@ -1655,7 +1681,7 @@ body.content-item-only {
         margin-right: -200px;
         width: 100%;
     }
-    .search-course-button{
+    .search-course-button {
         vertical-align: middle;
         float: right;
         z-index: 10;
