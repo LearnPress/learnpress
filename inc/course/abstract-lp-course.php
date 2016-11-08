@@ -489,7 +489,7 @@ abstract class LP_Abstract_Course {
 	 * @return bool
 	 */
 	public function is_free() {
-		$is_free = ( ( 'no' == $this->payment ) || ( 0 >= $this->get_price() ) || ( 0 >= $this->get_sale_price() ) );
+		$is_free = ( ( 'no' == $this->payment ) || ( 0 >= $this->get_price() ) );
 		return apply_filters( 'learn_press_is_free_course', $is_free, $this );
 	}
 
@@ -510,12 +510,13 @@ abstract class LP_Abstract_Course {
 	 * @return mixed
 	 */
 	public function get_sale_price() {
-		$res = 0;
-		if ( 'yes' == $this->payment ) {
-			$sale_price = floatval( get_post_meta( $this->id, '_lp_sale_price', true ) );
+		$res = null;
+		$sale_price = get_post_meta( $this->id, '_lp_sale_price', true );
+		if ( 'yes' == $this->payment && is_numeric( $sale_price )) {
+			$sale_price = floatval( $sale_price );
 			$start_date = get_post_meta( $this->id, '_lp_sale_start', true );
 			$end_date   = get_post_meta( $this->id, '_lp_sale_end', true );
-			$now        = time();
+			$now        = current_time( 'timestamp' );
 			$end        = strtotime( $end_date );
 			$start      = strtotime( $start_date );
 			if ( ( $now >= $start || !$start_date ) && ( $now <= $end || !$end_date ) && $sale_price ) {
@@ -537,7 +538,7 @@ abstract class LP_Abstract_Course {
 		} else {
 			$price      = floatval( $price );
 			$sale_price = $this->get_sale_price();
-			if ( $sale_price > 0 && $sale_price < $price ) {
+			if ( is_numeric($sale_price) ) {
 				$price = $sale_price;
 			}
 		}
