@@ -4,7 +4,7 @@
  */
 $upload_dir = wp_upload_dir();
 // version
-define( 'LEARNPRESS_VERSION', '2.0.1' );
+define( 'LEARNPRESS_VERSION', '2.0.2' );
 
 // Plugin paths and urls
 define( 'LP_PLUGIN_PATH', trailingslashit( plugin_dir_path( LP_PLUGIN_FILE ) ) );
