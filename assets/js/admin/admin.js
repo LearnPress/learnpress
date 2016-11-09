@@ -821,14 +821,14 @@ jQuery(document).ready( function($) {
 			});
 		}
 		if ( typeof $.fn.datepicker !== 'undefined' ) {
-                    $('.rwmb-datetime[name$="lp_sale_start"')
+                    $('.rwmb-datetime[name$="lp_sale_start"]')
                                     .first()
                                     .datepicker(
                                             'option', 
                                             'onSelect', 
                                             function(a, b) { 
                                                     var minDate = new Date(a);
-                                                    $('.rwmb-datetime[name$="lp_sale_end"')
+                                                    $('.rwmb-datetime[name$="lp_sale_end"]')
                                                     .first()
                                                     .datepicker(
                                                             'option', 
@@ -847,7 +847,7 @@ jQuery(document).ready( function($) {
 					'onSelect', 
 					function(a, b) { 
 						var minDate = new Date(a);
-						jQuery('.rwmb-datetime[name$="lp_sale_end"')
+						jQuery('.rwmb-datetime[name$="lp_sale_end"]')
 						.first()
 						.datepicker(
 							'option', 
