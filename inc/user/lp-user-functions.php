@@ -669,16 +669,23 @@ function learn_press_user_update_user_info() {
 					learn_press_add_message( __( 'Thumbnail of image profile not created', 'learnpress' ) );
 				} else {
 					$editor->set_quality( 90 );
-
-					$resized = $editor->resize( 96, 96, true );
-					if ( is_wp_error( $resized ) ){
-						learn_press_add_message( __( 'Thumbnail of image profile not created', 'learnpress' ) );
-					} else {
-						$dest_file = $editor->generate_filename( 'thumb' );
-						$saved = $editor->save( $dest_file );
-
-						if ( is_wp_error( $saved ) ) {
+					$lp = LP();
+					$lp_setting = $lp->settings;
+					$size = $lp_setting->get('profile_picture_thumbnai_size');
+					if(empty($size)){
+						$size = array( 'width'=>150, 'height'=>150, 'crop'=>'yes' );
+					}
+					if($size['crop']=='yes'){
+						$resized = $editor->resize( $size['width'], $size['height'], true );
+						if ( is_wp_error( $resized ) ){
 							learn_press_add_message( __( 'Thumbnail of image profile not created', 'learnpress' ) );
+						} else {
+							$dest_file = $editor->generate_filename( 'thumb' );
+							$saved = $editor->save( $dest_file );
+
+							if ( is_wp_error( $saved ) ) {
+								learn_press_add_message( __( 'Thumbnail of image profile not created', 'learnpress' ) );
+							}
 						}
 					}
 				}
