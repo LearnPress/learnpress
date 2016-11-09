@@ -230,6 +230,11 @@
 #learn-press-course-curriculum .course-item .lp-label-completed {
   display: none;
 }
+#learn-press-course-curriculum .course-item .course-item-title {
+  display: block;
+  margin-right: 95px;
+  box-shadow: none;
+}
 #learn-press-course-curriculum .course-item .course-item-title:before {
   display: inline-block;
   font-size: 16px;
@@ -294,8 +299,10 @@
 }
 #learn-press-course-curriculum .course-item-meta {
   display: block;
-  float: right;
   line-height: 1;
+  position: absolute;
+  top: 15px;
+  right: 5px;
 }
 .lp-icon {
   display: inline-block;

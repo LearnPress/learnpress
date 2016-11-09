@@ -203,9 +203,6 @@ class LP_Page_Controller {
 		if ( !$q->is_main_query() || is_admin() ) {
 			return $q;
 		}
-		if ( ( learn_press_is_courses() || learn_press_is_course_category() ) && $limit = absint( LP()->settings->get( 'archive_course_limit' ) ) ) {
-			$q->set( 'posts_per_page', $limit );
-		}
 		$this->queried_object = !empty( $q->queried_object_id ) ? $q->queried_object : false;
 		if ( $q->get( 'post_type' ) == 'lp_course' && is_single() ) {
 			global $post;
@@ -298,6 +295,10 @@ class LP_Page_Controller {
 			$q->is_post_type_archive = true;
 			$q->is_archive           = true;
 			$q->is_page              = true;
+		}
+
+		if ( ( learn_press_is_courses() || learn_press_is_course_category() ) && $limit = absint( LP()->settings->get( 'archive_course_limit' ) ) ) {
+			$q->set( 'posts_per_page', $limit );
 		}
 		return $q;
 	}
