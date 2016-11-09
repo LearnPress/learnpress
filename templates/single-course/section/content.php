@@ -9,7 +9,7 @@ if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 /* section item display inside a section */
-$learnpress_course_sections = lean_press_get_course_sections();
+$learnpress_course_sections = learn_press_get_course_sections();
 ?>
 
 <ul class="section-content">
