@@ -2115,6 +2115,13 @@ body.content-item-only #learn-press-content-item {
 .place-order-action {
   margin-top: 20px;
 }
+.woocommerce form .form-row.validate-email,
+.woocommerce form .form-row.validate-phone {
+  width: 100% !important;
+}
+.woocommerce .checkout_coupon .form-row-last input.button {
+  padding: 13px 10px !important;
+}
 .learn-press-search-course-form {
   margin-bottom: 20px;
 }
@@ -2253,6 +2260,11 @@ body.content-item-only #learn-press-content-item {
     width: 100%;
     margin: 0 0 30px 0;
     clear: left;
+  }
+}
+@media (max-width: 480px) {
+  .woocommerce .checkout_coupon .form-row {
+    width: 100%;
   }
 }
 /* full width with twentysixteen theme */
