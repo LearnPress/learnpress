@@ -77,22 +77,9 @@ if ( !function_exists( 'learn_press_remove_data' ) ) {
 							WHERE p.post_type IN ('lp_course', 'lp_lesson', 'lp_quiz', 'lp_question', 'lp_order', 'lp_cert')
 						";
 				$ids = $wpdb->get_col( $query );
-//				var_dump(taxonomy_exists('course_category'));
-//				$terms = get_terms(array( 'course_tag', 'course_category' ));
-//				echo '<pre>'.print_r($terms, true).'</pre>';
-//				$terms = wp_get_object_terms( $ids, array( 'course_tag', 'course_category' ) );
-//				echo '<pre>'.print_r($terms, true).'</pre>';
-//				echo '<pre>'.print_r($ids, true).'</pre>';
+
 				// delete all custom post types and meta data
 				if ( !empty( $ids ) ) {
-						# REMOVE term_relationships of posts
-						$q = "
-								DELETE FROM `tr`
-									USING {$wpdb->term_relationships} AS `tr` INNER JOIN {$wpdb->term_taxonomy} AS `tt` ON `tr`.`term_taxonomy_id`=`tt`.`term_taxonomy_id`
-								WHERE `tt`.`taxonomy` IN ('course_tag', 'course_category')
-						";
-						$wpdb->query($q);
-						
 						# REMOVE post and post meta
 						$q = $wpdb->prepare( "
 								DELETE FROM p, pm
@@ -106,18 +93,33 @@ if ( !function_exists( 'learn_press_remove_data' ) ) {
 										DELETE FROM {$wpdb->postmeta} WHERE meta_key = %s
 								", '_learn_press_upgraded' )
 						);
-
-						# Remove categories and tags
-						$q = $wpdb->prepare( "
-							DELETE tt , t 
-							FROM {$wpdb->term_taxonomy} tt
-									INNER JOIN
-								{$wpdb->terms} AS t ON tt.term_id = t.term_id 
-							WHERE
-								tt.taxonomy = IN('course_category','course_tag')");
-						$wpdb->query( $q );
 				}
-				// delete all options
+				
+				# REMOVE TERMS
+				# 1 REMOVE term_relationships of posts
+				$q = "
+						DELETE FROM `tr`
+							USING {$wpdb->term_relationships} AS `tr` INNER JOIN {$wpdb->term_taxonomy} AS `tt` ON `tr`.`term_taxonomy_id`=`tt`.`term_taxonomy_id`
+						WHERE `tt`.`taxonomy` IN ('course_tag', 'course_category')
+				";
+				$wpdb->query($q);
+
+				# 2 Remove categories and tags
+				$q = "
+					DELETE
+					FROM tt, t
+						USING {$wpdb->term_taxonomy} AS tt
+							INNER JOIN
+						{$wpdb->terms} AS t ON tt.term_id = t.term_id 
+					WHERE
+						tt.taxonomy IN('course_category','course_tag')";
+				$wpdb->query( $q );
+
+				# END REMOVE TERMS
+				
+				
+				
+				# DELETE all options
 				$q = $wpdb->prepare( "
 						DELETE FROM {$wpdb->options}
 						WHERE
