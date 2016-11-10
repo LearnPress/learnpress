@@ -775,7 +775,7 @@ body.course-has-popup {
                 margin-right: 20px;
             }
             .popup-close {
-                right: 0;
+                right: 20px;
                 &:before,
                 &:after {
                     content: '';
@@ -1680,6 +1680,22 @@ body.content-item-only {
     margin-top: 20px;
 }
 
+.woocommerce {
+    form .form-row {
+        &.validate-email, &.validate-phone {
+            width: 100% !important;
+        }
+    }
+
+    .checkout_coupon {
+        .form-row-last {
+            input.button {
+                padding: 13px 10px !important;
+            }
+        }
+    }
+}
+
 .learn-press-search-course-form {
     margin-bottom: 20px;
     input.search-course-input[name="s"] {
@@ -1826,6 +1842,16 @@ body.content-item-only {
 
 }
 
+@media (max-width: 480px) {
+    .woocommerce {
+        .checkout_coupon {
+            .form-row {
+                width: 100%;
+            }
+        }
+    }
+}
+
 @media (max-width: 400px) {
 
     .learn-press-courses {
@@ -1836,6 +1862,12 @@ body.content-item-only {
         }
     }
 
+}
+
+@media (max-width: 350px) {
+    #course-curriculum-popup #popup-sidebar {
+        width: 100%;
+    }
 }
 
 /* full width with twentysixteen theme */
