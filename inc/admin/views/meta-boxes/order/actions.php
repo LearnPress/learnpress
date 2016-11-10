@@ -42,6 +42,9 @@ if ( 0 != $post->ID ) {
 						?>
 					</select>
 					<div class="description order-status-description">
+						<?php if ( $order->get_status() == 'auto-draft' ) {
+							echo _learn_press_get_order_status_description( 'lp-pending' );
+						} ?>
 						<?php echo _learn_press_get_order_status_description( 'lp-' . $order->get_status() ); ?>
 					</div>
 				</div>
@@ -54,19 +57,19 @@ if ( 0 != $post->ID ) {
 					<input name="order-customer" type="text" class="wp-suggest-user ui-autocomplete-input" id="admin-email" data-autocomplete-type="search" data-autocomplete-field="user_email" autocomplete="off">
 					-->
 					<?php
-//					if($order->get_status() =='' || $order->has_status('pending') ) {
-						wp_dropdown_users(
-							array(
-								'show_option_none' => __( '[Guest]', 'learnpress' ),
-								'show_option_none' => __( '[Guest]', 'learnpress' ),
-								'name'             => 'order-customer',
-								'id'               => null,
-								'selected'         => $order->get_user( 'ID' )
-							)
-						);
-//					}else{
-//						echo $order->get_customer_name();
-//					}
+					//					if($order->get_status() =='' || $order->has_status('pending') ) {
+					wp_dropdown_users(
+						array(
+							'show_option_none' => __( '[Guest]', 'learnpress' ),
+							'show_option_none' => __( '[Guest]', 'learnpress' ),
+							'name'             => 'order-customer',
+							'id'               => null,
+							'selected'         => $order->get_user( 'ID' )
+						)
+					);
+					//					}else{
+					//						echo $order->get_customer_name();
+					//					}
 					?>
 				</div>
 
