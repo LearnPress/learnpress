@@ -623,7 +623,7 @@ body.course-has-popup {
   margin-right: 20px;
 }
 #course-curriculum-popup #popup-main #popup-header .popup-close {
-  right: 0;
+  right: 20px;
 }
 #course-curriculum-popup #popup-main #popup-header .popup-close:before,
 #course-curriculum-popup #popup-main #popup-header .popup-close:after {
@@ -2255,6 +2255,11 @@ body.content-item-only #learn-press-content-item {
     margin-left: 0;
   }
 }
+@media (max-width: 480px) {
+  .woocommerce .checkout_coupon .form-row {
+    width: 100%;
+  }
+}
 @media (max-width: 400px) {
   .learn-press-courses li.course {
     width: 100%;
@@ -2262,8 +2267,8 @@ body.content-item-only #learn-press-content-item {
     clear: left;
   }
 }
-@media (max-width: 480px) {
-  .woocommerce .checkout_coupon .form-row {
+@media (max-width: 350px) {
+  #course-curriculum-popup #popup-sidebar {
     width: 100%;
   }
 }
