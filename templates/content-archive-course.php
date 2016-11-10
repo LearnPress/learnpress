@@ -31,7 +31,8 @@ global $post;
 	<?php learn_press_end_courses_loop(); ?>
 
 	<?php do_action( 'learn_press_after_courses_loop' ); ?>
-
+<?php else: ?>
+	<?php learn_press_display_message( __( 'No course found.', 'learnpress' ), 'error' ); ?>
 <?php endif; ?>
 
 <?php do_action( 'learn_press_after_main_content' ); ?>
