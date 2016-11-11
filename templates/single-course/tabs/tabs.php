@@ -33,7 +33,9 @@ if ( !empty( $tabs ) ) : ?>
 		<?php $index = 0; ?>
 		<?php foreach ( $tabs as $key => $tab ) : ?>
 			<div class="learn-press-tab-panel learn-press-tab-panel-<?php echo esc_attr( $key ); ?> panel learn-press-tab<?php echo $index ++ == $active_index ? ' active' : ''; ?>" id="tab-<?php echo esc_attr( $tab['key'] ); ?>">
-				<?php call_user_func( $tab['callback'], $key, $tab ); ?>
+                                <?php if ( apply_filters( 'learn_press_allow_display_tab_section', true, $key, $tab ) ) : ?>
+                                    <?php call_user_func( $tab['callback'], $key, $tab ); ?>
+                                <?php endif; ?>
 			</div>
 		<?php endforeach; ?>
 	</div>

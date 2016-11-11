@@ -62,7 +62,7 @@ class LP_Emails {
 		$this->emails['LP_Email_Published_Course']     = include( 'emails/class-lp-email-published-course.php' );
 		$this->emails['LP_Email_Enrolled_Course']      = include( 'emails/class-lp-email-enrolled-course.php' );
 		$this->emails['LP_Email_Finished_Course']      = include( 'emails/class-lp-email-finished-course.php' );
-		//$this->emails['LP_Email_Become_An_Instructor'] = include( 'emails/class-lp-email-become-an-instructor.php' );
+		$this->emails['LP_Email_Become_An_Instructor'] = include( 'emails/class-lp-email-become-an-instructor.php' );
 
 		add_action( 'learn_press_course_submit_for_reviewer_notification', array( $this, 'review_course' ), 10, 2 );
 		add_action( 'learn_press_course_submit_rejected_notification', array( $this, 'course_rejected' ), 10 );
@@ -70,6 +70,7 @@ class LP_Emails {
 		add_action( 'learn_press_user_finish_course_notification', array( $this, 'finish_course' ), 10, 3 );
 		// Send email customer when order created
 		add_filter( 'learn_press_checkout_success_result_notification', array( $this, 'customer_new_order' ), 10, 2 );
+                add_action( 'set_user_role_notification', array( $this, 'become_an_teacher' ), 10, 3 );
 
 		add_action( 'learn_press_email_header', array( $this, 'email_header' ) );
 		add_action( 'learn_press_email_footer', array( $this, 'email_footer' ) );
@@ -162,6 +163,13 @@ class LP_Emails {
 		return $result;
 	}
 
+        public function become_an_teacher( $user_id, $role, $old_role ) {
+                if ( $role === LP_TEACHER_ROLE ) {
+                    $mail = $this->emails['LP_Email_Become_An_Instructor'];
+                    $mail->trigger( $user_id );
+                }
+        }
+
 	public static function init_email_notifications() {
 		$actions = apply_filters(
 			'learn_press_email_actions',
@@ -184,7 +192,9 @@ class LP_Emails {
 				'learn_press_order_status_draft_to_on-hold',
 				// Create order
 				'learn_press_checkout_success_result',
-				'learn_press_user_finish_course'
+				'learn_press_user_finish_course',
+                                // user become an teacher
+                                'set_user_role'
 			)
 		);
 		foreach ( $actions as $action ) {

@@ -19,42 +19,51 @@ class LP_Email_Become_An_Instructor extends LP_Email {
 		$this->template_plain = 'emails/plain/enrolled-course.php';
 
 		$this->default_subject = __( '[{site_title}] You have enrolled course ({course_name})', 'learnpress' );
-		$this->default_heading = __( 'Enrolled course', 'learnpress' );
+		$this->default_heading = __( 'Become an instructor', 'learnpress' );
 
                 $this->email_text_message_description = sprintf( '%s [course_id], [course_title], [course_url], [user_email], [user_name], [user_profile_url]', __( 'Shortcodes', 'learnpress' ) );
 
-		add_action( 'learn_press_user_enrolled_course_notification', array( $this, 'trigger' ), 99, 3 );
-
+                $this->support_variables = array(
+				'{{site_url}}',
+				'{{site_title}}',
+				'{{login_url}}',
+				'{{email_heading}}',
+				'{{user_email}}',
+                                '{{user_nicename}}'
+			);
 		parent::__construct();
 	}
 
 	public function admin_options( $settings_class ) {
-		$view = learn_press_get_admin_view( 'settings/emails/enrolled-course.php' );
+		$view = learn_press_get_admin_view( 'settings/emails/become-a-teacher.php' );
 		include_once $view;
 	}
 
-	public function trigger( $user, $course_id, $user_course_id ) {
+	public function trigger( $user ) {
 		if ( !$this->enable ) {
 			return;
 		}
 
+                $user = get_user_by( 'id', $user );
 		$this->recipient = $user->user_email;
-
 		$this->object = $this->get_common_template_data(
 			$this->email_format == 'plain_text' ? 'plain' : 'html',
 			array(
-				'user_id'        => $user->id,
-				'user_name'      => learn_press_get_profile_display_name( $user ),
-				'course_id'      => $course_id,
-				'course_name'    => get_the_title( $course_id ),
-				'course_url'     => get_the_permalink( $course_id )
+				'site_url'          => $user->id,
+				'site_title'        => learn_press_get_profile_display_name( get_user_by( 'id', $user ) ),
+				'login_url'         => wp_login_url(),
+                                'user_nicename'     => $user->user_nincename,
+                                'user_email'        => $user->user_email,
+                                'email_heading'     => $this->get_heading(),
+				'footer_text'       => $this->get_footer_text(),
+				'site_title'        => $this->get_blogname(),
+				'plain_text'        => $format == 'plain',
 			)
 		);
 
 		$this->variables = $this->data_to_variables( $this->object );
 
 		$return = $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
-
 		return $return;
 	}
 
