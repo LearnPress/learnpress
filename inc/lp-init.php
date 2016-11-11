@@ -315,9 +315,9 @@ function learn_press_setup_user_course_data( $user_id, $course_id, $force = fals
 		learn_press_setup_course_data( $course_id );
 	}
 	if ( !did_action( 'learn_press_parse_query' ) ) {
-		_doing_it_wrong( __FUNCTION__, __( '' ), LEARNPRESS_VERSION );
+	//	_doing_it_wrong( __FUNCTION__, __( '' ), LEARNPRESS_VERSION );
 
-		return;
+	//	return;
 	}
 
 	if ( !$course_id ) {
