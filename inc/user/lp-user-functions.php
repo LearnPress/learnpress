@@ -644,7 +644,11 @@ function learn_press_user_update_user_info() {
 		if ( $profile_picture_type == 'picture' ) {
 
 			$upload     = wp_get_upload_dir();
-			$upload_dir = $upload['basedir'] . '/learn-press-profile/' . $user_id;
+			$ppdir = $upload['basedir'] . DIRECTORY_SEPARATOR . 'learn-press-profile';
+			if ( !is_dir( $ppdir ) ) {
+				mkdir( $ppdir );
+			}
+			$upload_dir = $ppdir . DIRECTORY_SEPARATOR . $user_id;
 			if ( !is_dir( $upload_dir ) ) {
 				mkdir( $upload_dir );
 			}
@@ -689,7 +693,6 @@ function learn_press_user_update_user_info() {
 						}
 					}
 				}
-				
 				update_user_meta( $user->id, '_lp_profile_picture', $filename );
 			}
 		}
