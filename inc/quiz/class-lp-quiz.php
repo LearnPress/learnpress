@@ -155,9 +155,9 @@ class LP_Quiz extends LP_Abstract_Course_Item {
 			$question            = LP_Question_Factory::get_question( $current_question_id );
 			$duration            = $this->duration;
 			$remaining           = $user->get_quiz_time_remaining( $this->id, $course_id );
-			if($remaining === false){
+			if ( $remaining === false ) {
 				$remaining = $this->duration;
-			}elseif($remaining < 0 ){
+			} elseif ( $remaining < 0 ) {
 				$remaining = 0;
 			}
 			//$r_time              = ( $remaining > 0 ) && !in_array( $user->get_quiz_status( $this->id, $course_id, $force ), array( '', 'completed' ) ) ? $remaining : $this->duration;
@@ -461,23 +461,16 @@ class LP_Quiz extends LP_Abstract_Course_Item {
 				$questions[$v] = get_post( $v );
 			}
 		}
-		return $questions;
 
-		$questions = LP_Cache::get_quiz_questions( false, array() );
+		return apply_filters( 'learn_press_quiz_questions', $questions, $this->id, $force );
 
-		/**
-		 * Get data from database if it didn't do or force to do this
-		 */
-		if ( !array_key_exists( $this->id, $questions ) || $force ) {
-			$this_questions       = $this->_get_questions();
-			$questions[$this->id] = $this_questions;
-			// Update back to cache
-			LP_Cache::set_quiz_questions( $questions );
-		}
-		print_r( $questions[$this->id] );
-		return apply_filters( 'learn_press_quiz_questions', $questions[$this->id], $this->id, $force );
 	}
 
+	/**
+	 * Get all questions of a quiz from database
+	 *
+	 * @return array|null|object
+	 */
 	private function _get_questions() {
 		global $wpdb;
 		$query               = $wpdb->prepare( "

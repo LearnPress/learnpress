@@ -197,6 +197,7 @@ https://www.transifex.com/projects/p/learnpress/
 + Fixed youtube/vimeo video does not show fullscreen button in lesson content
 + Fixed search does not work while searching in a course category page
 + Fixed error while searching in course category page
++ Fixed layout broken if course item title is a little long
 
 = 2.0.2 =
 + Fixed 'Course Overview' does not show

@@ -349,7 +349,6 @@ class LP_Abstract_User {
 				$quiz      = LP_Quiz::get_quiz( $quiz_id );
 				$remaining = $quiz->duration + strtotime( $progress->start ) - current_time( 'timestamp' );
 			}
-			//if ( $remaining < 0 ) $remaining = 0;
 		}
 		return apply_filters( 'learn_press_user_quiz_time_remaining', $remaining, $quiz_id, $course_id, $this->id );
 	}
@@ -499,9 +498,8 @@ class LP_Abstract_User {
 	 */
 	public function retake_quiz( $quiz_id, $course_id ) {
 		$course_id = $this->_get_course_id( $course_id );
-
-		$response = false;
-		$return   = learn_press_update_user_item_field(
+		$response  = false;
+		$return    = learn_press_update_user_item_field(
 			array(
 				'user_id'    => learn_press_get_current_user_id(),
 				'item_id'    => $quiz_id,
@@ -527,10 +525,9 @@ class LP_Abstract_User {
 			learn_press_update_user_item_meta( $return, 'current_question', $question );
 			learn_press_update_user_item_meta( $return, 'question_answers', array() );
 
-
 			$response = $this->get_quiz_results( $quiz_id, $course_id, true );
 		}
-		do_action( 'learn_press_user_retake_quiz', $response, $quiz_id, $this->id );
+		do_action( 'learn_press_user_retake_quiz', $response, $quiz_id, $course_id, $this->id );
 		return $response;
 	}
 
@@ -655,11 +652,7 @@ class LP_Abstract_User {
 					array( $this->id, $course_id ),
 					$item_ids
 				);
-				/*echo $query               = $wpdb->prepare( "
-					SELECT * FROM(SELECT item_id as id, `status`
-					FROM {$wpdb->learnpress_user_items} WHERE user_id = %d AND ref_id = %d AND item_id IN(" . join(', ', $in) . ") ORDER BY user_item_id DESC
-					) AS X GROUP BY id
-				", $args );*/
+
 				$query = $wpdb->prepare( "
                     SELECT o.item_id, o.status
                     FROM {$wpdb->prefix}learnpress_user_items o
@@ -682,6 +675,9 @@ class LP_Abstract_User {
 						$item_statuses[$this->id . '-' . $course_id . '-' . $id] = false;
 					}
 				}
+			}
+			if ( empty( $item_statuses[$key] ) ) {
+				$item_statuses[$key] = '';
 			}
 			LP_Cache::set_item_statuses( $item_statuses );
 		}
@@ -2660,7 +2656,9 @@ class LP_Abstract_User {
 
 	/**
 	 * get upload profile src
+	 *
 	 * @param type $size null: get origin pictue, "thumbnail": get thumbnail picture
+	 *
 	 * @return type
 	 */
 	public function get_upload_profile_src( $size = '' ) {
@@ -2668,9 +2666,9 @@ class LP_Abstract_User {
 			$profile_picture = $this->profile_picture;
 			$upload          = wp_get_upload_dir();
 			$user_id         = $this->id;
-			if( $size == 'thumbnail' ) {
-				$pi = pathinfo($profile_picture);
-				$profile_picture = $pi['filename'].'-thumb'.'.'.$pi['extension'];
+			if ( $size == 'thumbnail' ) {
+				$pi              = pathinfo( $profile_picture );
+				$profile_picture = $pi['filename'] . '-thumb' . '.' . $pi['extension'];
 			}
 			if ( file_exists( $upload['basedir'] . '\learn-press-profile\\' . $user_id . '\\' . $profile_picture ) ) {
 				$this->uploaded_profile_src = $upload['baseurl'] . '/learn-press-profile/' . $user_id . '/' . $profile_picture;

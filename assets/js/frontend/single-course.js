@@ -700,6 +700,8 @@ if (typeof LearnPress === 'undefined') {
 			$(window).trigger('resize.check-lines');
 		});
 
+		//parent.window.location.href = parent.window.location.href;
+
 	});
 
 	$(document).ajaxComplete(function (a, b, c) {

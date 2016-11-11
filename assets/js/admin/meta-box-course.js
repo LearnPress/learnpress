@@ -1382,10 +1382,12 @@
 		$('#learn-press-button-toggle-editor').on('click _click', _toggleEditorHandler).trigger('_click');
 
 		_makeListSortable();
+
 	}
 
 	$(document)
 		.ready(_ready)
 		.on('click', '.items-toggle a', _toggleSectionsHandler);
+
 
 })(jQuery);
