@@ -19,6 +19,10 @@ class LP_Query {
 		add_action( 'init', array( $this, 'add_rewrite_tags' ), 1000, 0 );
 		add_action( 'init', array( $this, 'add_rewrite_rules' ), 1000, 0 );
 		add_action( 'parse_query', array( $this, 'parse_request' ), 1000, 1 );
+		/**
+		 * Add searching post by taxonomies
+		 */
+		add_action( 'pre_get_posts', array( $this, 'query_taxonomy' ) );
 	}
 
 	/**
@@ -421,5 +425,58 @@ class LP_Query {
 			$item = LP_Course::get_item( $item );
 		}
 		return $item;
+	}
+
+
+	public function query_taxonomy( $q ) {
+		// We only want to affect the main query
+		if ( !$q->is_main_query() ) {
+			return;
+		}
+		if ( is_search() ) {
+			add_filter( 'posts_where', array( $this, 'add_tax_search' ) );
+			add_filter( 'posts_join', array( $this, 'join_term' ) );
+			add_filter( 'posts_groupby', array( $this, 'tax_groupby' ) );
+		}
+	}
+
+	public function join_term( $join ) {
+		global $wp_query, $wpdb;
+
+		if ( !empty( $wp_query->query_vars['s'] ) && !is_admin() ) {
+			if ( !preg_match( '/' . $wpdb->term_relationships . '/', $join ) ) {
+				$join .= "LEFT JOIN $wpdb->term_relationships ON $wpdb->posts.ID = $wpdb->term_relationships.object_id ";
+			}
+			$join .= "LEFT JOIN $wpdb->term_taxonomy ON $wpdb->term_relationships.term_taxonomy_id = $wpdb->term_taxonomy.term_taxonomy_id ";
+			$join .= "LEFT JOIN $wpdb->terms ON $wpdb->term_taxonomy.term_id = $wpdb->terms.term_id ";
+		}
+
+		return $join;
+	}
+
+	public function add_tax_search( $where ) {
+		global $wp_query, $wpdb;
+
+		if ( !empty( $wp_query->query_vars['s'] ) && !is_admin() ) {
+			$escaped_s = esc_sql( $wp_query->query_vars['s'] );
+			$where .= "OR $wpdb->terms.name LIKE '%{$escaped_s}%'";
+		}
+
+		return $where;
+	}
+
+	public function tax_groupby( $groupby ) {
+		global $wpdb;
+		$groupby = "{$wpdb->posts}.ID";
+
+		$this->remove_query_tax();
+
+		return $groupby;
+	}
+
+	public function remove_query_tax() {
+		remove_filter( 'posts_where', 'learn_press_add_tax_search' );
+		remove_filter( 'posts_join', 'learn_press_join_term' );
+		remove_filter( 'posts_groupby', 'learn_press_tax_groupby' );
 	}
 }

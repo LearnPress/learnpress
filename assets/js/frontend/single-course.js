@@ -378,7 +378,7 @@ if (typeof LearnPress === 'undefined') {
 			var $content = this.currentItem.get('content'),
 				isNew = !($content && $content.length);
 			if (!$content) {
-				$content = $('<iframe />');
+				$content = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen />');
 				this.currentItem.set('content', $content);
 			}
 
@@ -673,7 +673,7 @@ if (typeof LearnPress === 'undefined') {
 			$('#popup-main .sidebar-show-btn').css('display', 'none');
 		},
 		_loadItem           : function (e) {
-			var $iframe = $('<iframe />').src($(e.target).attr('href') + '?content-item-only=yes');
+			var $iframe = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen />').src($(e.target).attr('href') + '?content-item-only=yes');
 			this.$('#popup-content-inner').html($iframe);
 			return '';
 			e.preventDefault();

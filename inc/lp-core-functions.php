@@ -677,59 +677,6 @@ function learn_press_course_profile_link( $course_id = 0 ) {
 }
 
 /*
- * Add searching post by taxonomies
- */
-add_action( 'pre_get_posts', 'learn_press_query_taxonomy' );
-function learn_press_query_taxonomy( $q ) {
-	// We only want to affect the main query
-	if ( !$q->is_main_query() ) {
-		return;
-	}
-	if ( is_search() ) {
-		add_filter( 'posts_where', 'learn_press_add_tax_search' );
-		add_filter( 'posts_join', 'learn_press_join_term' );
-		add_filter( 'posts_groupby', 'learn_press_tax_groupby' );
-		add_filter( 'wp', 'remove_query_tax' );
-	}
-}
-
-function learn_press_join_term( $join ) {
-	global $wp_query, $wpdb;
-
-	if ( !empty( $wp_query->query_vars['s'] ) && !is_admin() ) {
-		$join .= "LEFT JOIN $wpdb->term_relationships ON $wpdb->posts.ID = $wpdb->term_relationships.object_id ";
-		$join .= "LEFT JOIN $wpdb->term_taxonomy ON $wpdb->term_relationships.term_taxonomy_id = $wpdb->term_taxonomy.term_taxonomy_id ";
-		$join .= "LEFT JOIN $wpdb->terms ON $wpdb->term_taxonomy.term_id = $wpdb->terms.term_id ";
-	}
-
-	return $join;
-}
-
-function learn_press_add_tax_search( $where ) {
-	global $wp_query, $wpdb;
-
-	if ( !empty( $wp_query->query_vars['s'] ) && !is_admin() ) {
-		$escaped_s = esc_sql( $wp_query->query_vars['s'] );
-		$where .= "OR $wpdb->terms.name LIKE '%{$escaped_s}%'";
-	}
-
-	return $where;
-}
-
-function learn_press_tax_groupby( $groupby ) {
-	global $wpdb;
-	$groupby = "{$wpdb->posts}.ID";
-
-	return $groupby;
-}
-
-function remove_query_tax() {
-	remove_filter( 'posts_where', 'learn_press_add_tax_search' );
-	remove_filter( 'posts_join', 'learn_press_join_term' );
-	remove_filter( 'posts_groupby', 'learn_press_tax_groupby' );
-}
-
-/*
  * Course tabs
  */
 add_action( 'all_admin_notices', 'learn_press_admin_course_tabs' );
