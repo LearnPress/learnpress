@@ -670,8 +670,13 @@ class LP_Assets {
 		if ( is_admin() ) {
                         global $pagenow;
 			$screen    = get_current_screen();
+			
 			$screen_id = $screen->id;
 			$page_id   = !empty( $_REQUEST['page'] ) ? $_REQUEST['page'] : '';
+
+			if( in_array($screen_id, array('edit-course_tag','edit-course_category')) ) {
+				self::enqueue_style( 'learn-press-admin' );
+			}
 
 			if ( in_array( $screen_id, learn_press_get_screens() ) || in_array( $page_id, learn_press_get_admin_pages() ) ) {
 				self::enqueue_style( 'learn-press-global' );

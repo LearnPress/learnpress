@@ -24,7 +24,7 @@ $settings = LP()->settings;
 			<label for="learn-press-emails-enrolled-course-enable"><?php _e( 'Enable', 'learnpress' ); ?></label></th>
 		<td>
 			<input type="hidden" name="<?php echo $settings_class->get_field_name( 'emails_enrolled_course[enable]' ); ?>" value="no" />
-			<input id="learn-press-emails-enrolled-course-enable" type="checkbox" name="<?php echo $settings_class->get_field_name( 'emails_enrolled_course[enable]' ); ?>" value="yes" <?php checked( $settings->get( 'emails_enrolled_course.enable' ) == 'yes' ); ?>" />
+			<input id="learn-press-emails-enrolled-course-enable" type="checkbox" name="<?php echo $settings_class->get_field_name( 'emails_enrolled_course[enable]' ); ?>" value="yes" <?php checked( $settings->get( 'emails_enrolled_course.enable' ) == 'yes' ); ?> />
 		</td>
 	</tr>
 	<tr>

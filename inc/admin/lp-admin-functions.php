@@ -1397,7 +1397,7 @@ function learn_press_get_screens() {
 		$screen_id . '_page_learn_press_statistics',
 		$screen_id . '_page_learn_press_add_ons'
 	);
-	foreach ( array( 'lp_course', 'lp_lesson', 'lp_quiz', 'lp_question', 'lp_order' ) as $post_type ) {
+	foreach ( array( LP_COURSE_CPT, LP_LESSON_CPT, LP_QUIZ_CPT, LP_QUESTION_CPT, LP_ORDER_CPT ) as $post_type ) {
 		$screens[] = 'edit-' . $post_type;
 		$screens[] = $post_type;
 	}

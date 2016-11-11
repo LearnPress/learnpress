@@ -644,19 +644,23 @@ function learn_press_user_update_user_info() {
 		if ( $profile_picture_type == 'picture' ) {
 
 			$upload     = wp_get_upload_dir();
-			$upload_dir = $upload['basedir'] . '/learn-press-profile/' . $user_id;
+			$ppdir = $upload['basedir'] . DIRECTORY_SEPARATOR . 'learn-press-profile';
+			if ( !is_dir( $ppdir ) ) {
+				mkdir( $ppdir );
+			}
+			$upload_dir = $ppdir . DIRECTORY_SEPARATOR . $user_id;
 			if ( !is_dir( $upload_dir ) ) {
 				mkdir( $upload_dir );
 			}
 			# get old file
 			$filename_old = get_user_meta( $user_id, '_lp_profile_picture', true );
-			if ( file_exists( $upload_dir . '/' . $filename_old ) ) {
-				unlink( $upload_dir . '/' . $filename_old );
+			if ( is_file( $upload_dir . DIRECTORY_SEPARATOR . $filename_old ) ) {
+				unlink( $upload_dir . DIRECTORY_SEPARATOR . $filename_old );
 			}
 
 			$pathinfo_old = pathinfo($filename_old);
 			$thumb_old = $upload_dir . '/' . $pathinfo_old['filename'].'-thumb'. $pathinfo_old['extension'];
-			if ( file_exists( $thumb_old ) ) {
+			if ( is_file( $thumb_old ) ) {
 				unlink( $thumb_old );
 			}
 
@@ -689,7 +693,6 @@ function learn_press_user_update_user_info() {
 						}
 					}
 				}
-				
 				update_user_meta( $user->id, '_lp_profile_picture', $filename );
 			}
 		}

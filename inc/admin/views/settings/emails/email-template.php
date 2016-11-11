@@ -1,5 +1,5 @@
 <?php
-$email_format = $settings->get( 'emails_' . $this->id . '.email_format' );
+$email_format = $settings->get( 'emails_' . $this->id . '.email_format', 'plain_text' );
 ?>
 <tr>
 	<th scope="row">
@@ -18,7 +18,6 @@ $email_format = $settings->get( 'emails_' . $this->id . '.email_format' );
 				/*if ( empty( $template ) ) {
 					continue;
 				}*/
-
 				$local_file    = $this->get_theme_template_file( $template, $this->template_path );
 				$template_file = $this->template_base . $template;
 				$template_dir  = $this->template_path;//learn_press_template_path();
