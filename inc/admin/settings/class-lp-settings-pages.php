@@ -129,6 +129,16 @@ class LP_Settings_Pages extends LP_Settings_Base {
 					'placeholder' => '',
 					'desc'        => __( 'This is a slug and should be unique.', 'learnpress' ) . sprintf( ' %s <code>[profile/admin/order-details/123]</code>', __( 'Example link is', 'learnpress' ) )
 				),
+				array(
+					'title' => __( 'Profile picture', 'learnpress' ),
+					'type'  => 'title'
+				),
+				array(
+					'title'   => __( 'Thumbnail size', 'learnpress' ),
+					'id'      => $this->get_field_name( 'profile_picture_thumbnai_size' ),
+					'default' => array( 150, 150, 'yes' ),
+					'type'    => 'image-size'
+				),
 				array( 'section' => 'quiz' ),
 				array(
 					'title'   => __( 'Restrict access', 'learnpress' ),

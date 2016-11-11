@@ -15,10 +15,15 @@ add_action( 'init', '_learn_press_upgrade_table' );
 function _learn_press_upgrade_table() {
 	if ( get_option( 'learn_press_upgrade_table_20' ) != 'yes' ) {
 		global $wpdb;
+		if( $wpdb->get_var("SHOW TABLES LIKE '{$wpdb->prefix}learnpress_user_items'") != $wpdb->prefix."learnpress_user_items" ) {
+			return;
+		}
+		
 		$query = "SHOW COLUMNS FROM {$wpdb->prefix}learnpress_user_items LIKE 'parent_id'";
 		if ( $row = $wpdb->get_var( $query ) ) {
 			return;
 		}
+		
 		$query = "ALTER TABLE {$wpdb->prefix}learnpress_user_items ADD COLUMN `parent_id` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 AFTER `ref_type`;";
 		if ( $wpdb->query( $query ) ) {
 			update_option( 'learn_press_upgrade_table_20', 'yes' );
@@ -310,9 +315,9 @@ function learn_press_setup_user_course_data( $user_id, $course_id, $force = fals
 		learn_press_setup_course_data( $course_id );
 	}
 	if ( !did_action( 'learn_press_parse_query' ) ) {
-		_doing_it_wrong( __FUNCTION__, __( '' ), LEARNPRESS_VERSION );
+	//	_doing_it_wrong( __FUNCTION__, __( '' ), LEARNPRESS_VERSION );
 
-		return;
+	//	return;
 	}
 
 	if ( !$course_id ) {

@@ -2658,11 +2658,20 @@ class LP_Abstract_User {
 		return $this->ID > 0;
 	}
 
-	public function get_upload_profile_src( $size = 'thumbnail' ) {
+	/**
+	 * get upload profile src
+	 * @param type $size null: get origin pictue, "thumbnail": get thumbnail picture
+	 * @return type
+	 */
+	public function get_upload_profile_src( $size = '' ) {
 		if ( empty( $this->uploaded_profile_src ) ) {
 			$profile_picture = $this->profile_picture;
 			$upload          = wp_get_upload_dir();
 			$user_id         = $this->id;
+			if( $size == 'thumbnail' ) {
+				$pi = pathinfo($profile_picture);
+				$profile_picture = $pi['filename'].'-thumb'.'.'.$pi['extension'];
+			}
 			if ( file_exists( $upload['basedir'] . '\learn-press-profile\\' . $user_id . '\\' . $profile_picture ) ) {
 				$this->uploaded_profile_src = $upload['baseurl'] . '/learn-press-profile/' . $user_id . '/' . $profile_picture;
 			} else {

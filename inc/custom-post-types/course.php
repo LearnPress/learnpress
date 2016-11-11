@@ -721,8 +721,15 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		public function _save() {
 			global $wpdb, $post;
 
+			$preview = filter_input(INPUT_POST, 'wp-preview', FILTER_SANITIZE_STRING);
+
+			if( 'dopreview' == $preview && 'draft' == $post->post_status ) {
+				learn_press_add_message(__('Course Curriculum only appear if course is saved','learnpress'), $type);
+			}
+
 			$this->_reset_sections();
-			if ( !empty( $_REQUEST['_lp_curriculum'] ) ) {
+
+			if ( !empty( $_REQUEST['_lp_curriculum'] ) && 'dopreview' !== $preview ) {
 				$section_order = 0;
 				$query_update  = array();
 				$update_ids    = array();

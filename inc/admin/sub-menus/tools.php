@@ -36,11 +36,12 @@ if ( !function_exists( 'learn_press_tool_request_actions' ) ) {
 
 if ( !function_exists( 'learn_press_remove_data' ) ) {
 		function learn_press_remove_data() {
+				global $wpdb;
 				$nonce = learn_press_get_request( 'remove-data-nonce' );
 				if ( !wp_verify_nonce( $nonce, 'learn-press-remove-data' ) ) {
 						return;
 				}
-				global $wpdb;
+				
 				$tables = array(
 						'learnpress_sections',
 						'learnpress_section_items',
@@ -54,7 +55,11 @@ if ( !function_exists( 'learn_press_remove_data' ) ) {
 						'learnpress_order_itemmeta',
 						'learnpress_order_items'
 				);
-				// drop all data in our tables
+
+
+				# ----------------------------
+				# drop all data in our tables
+				# ----------------------------
 				foreach ( $tables as $table ) {
 						$table = $wpdb->prefix.$table;
 						if ( $wpdb->get_var("SHOW TABLES LIKE '{$table}'") === $table ) {
@@ -62,29 +67,23 @@ if ( !function_exists( 'learn_press_remove_data' ) ) {
 						}
 				}
 
+
+				# ----------------------------
+				# Get id of learnpress posts
+				# ----------------------------
 				$query = "
-								SELECT p.ID
-								FROM {$wpdb->posts} p
-								WHERE p.post_type IN ('lp_course', 'lp_lesson', 'lp_quiz', 'lp_question', 'lp_order', 'lp_cert')
+							SELECT p.ID
+							FROM {$wpdb->posts} p
+							WHERE p.post_type IN ('lp_course', 'lp_lesson', 'lp_quiz', 'lp_question', 'lp_order', 'lp_cert')
 						";
+				$ids = $wpdb->get_col( $query );
 
 				// delete all custom post types and meta data
-				if ( $ids = $wpdb->get_col( $query ) ) {
-						$object_terms = array();
-						foreach ( $ids as $post_id ) {
-								// get all terms
-								$terms = wp_get_object_terms( $post_id, array( 'course_tag', 'course_category' ) );
-								if ( $terms ) {
-										foreach ( $terms as $term ) {
-												$object_terms[$term->term_id] = $term->term_id;
-										}
-								}
-								LP_Debug::instance()->add( $terms );
-						}
-
+				if ( !empty( $ids ) ) {
+						# REMOVE post and post meta
 						$q = $wpdb->prepare( "
 								DELETE FROM p, pm
-								USING {$wpdb->posts} AS p INNER JOIN {$wpdb->postmeta} AS pm ON p.ID = pm.post_id AND p.post_type IN('lp_course', 'lp_lesson', 'lp_quiz', 'lp_question', 'lp_order', 'lp_cert')
+								USING {$wpdb->posts} AS p LEFT JOIN {$wpdb->postmeta} AS pm ON p.ID = pm.post_id AND p.post_type IN('lp_course', 'lp_lesson', 'lp_quiz', 'lp_question', 'lp_order', 'lp_cert')
 								WHERE %d AND p.ID IN (" . join( ',', $ids ) . ");
 						", 1 );
 						$wpdb->query( $q );
@@ -94,18 +93,33 @@ if ( !function_exists( 'learn_press_remove_data' ) ) {
 										DELETE FROM {$wpdb->postmeta} WHERE meta_key = %s
 								", '_learn_press_upgraded' )
 						);
-
-						if ( $object_terms ) {
-								$deleted_terms = array();
-								if ( $object_terms ) {
-										foreach ( $object_terms as $term_id => $taxonomy ) {
-												wp_delete_term( $term_id, $taxonomy );
-												$deleted_terms[$term_id] = $taxonomy;
-										}
-								}
-						}
 				}
-				// delete all options
+				
+				# REMOVE TERMS
+				# 1 REMOVE term_relationships of posts
+				$q = "
+						DELETE FROM `tr`
+							USING {$wpdb->term_relationships} AS `tr` INNER JOIN {$wpdb->term_taxonomy} AS `tt` ON `tr`.`term_taxonomy_id`=`tt`.`term_taxonomy_id`
+						WHERE `tt`.`taxonomy` IN ('course_tag', 'course_category')
+				";
+				$wpdb->query($q);
+
+				# 2 Remove categories and tags
+				$q = "
+					DELETE
+					FROM tt, t
+						USING {$wpdb->term_taxonomy} AS tt
+							INNER JOIN
+						{$wpdb->terms} AS t ON tt.term_id = t.term_id 
+					WHERE
+						tt.taxonomy IN('course_category','course_tag')";
+				$wpdb->query( $q );
+
+				# END REMOVE TERMS
+				
+				
+				
+				# DELETE all options
 				$q = $wpdb->prepare( "
 						DELETE FROM {$wpdb->options}
 						WHERE
@@ -115,18 +129,8 @@ if ( !function_exists( 'learn_press_remove_data' ) ) {
 				$wpdb->query( $q );
 				delete_option( 'learnpress_db_version' );
 				delete_option( 'learnpress_version' );
-				
-				# Remove categories
-				$q = $wpdb->prepare( "
-					DELETE tt , t 
-					FROM {$wpdb->term_taxonomy} tt
-							INNER JOIN
-						{$wpdb->terms} AS t ON tt.term_id = t.term_id 
-					WHERE
-						tt.taxonomy = 'course_category'");
-				$wpdb->query( $q );
+
 				LP_Admin_Notice::add( __( 'All courses, lessons, quizzes and questions have been removed', 'learnpress' ), 'updated', '', true );
-//                flush_rewrite_rules();
 				wp_redirect( admin_url( 'admin.php?page=learn_press_tools&learn-press-remove-data=1' ) );
 				exit();
 		}

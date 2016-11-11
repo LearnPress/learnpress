@@ -1618,6 +1618,42 @@ input.regular-text[id^="learn-press-emails"] {
     }
 }
 
+#learn_press_dashboard_widget_status {
+    .inside {
+        padding: 0;
+        margin-top: 0;
+        .learnpress-statistic-status {
+            margin-top: 0;
+            li {
+                width: 50%;
+                float: left;
+                > a {
+                    padding: 8px 12px;
+                    display: block;
+                }
+                &.full-width {
+                    width: 100%;
+                    float: none;
+                    clear: both;
+                    &:first-child {
+                        border-bottom: 1px solid #ececec;
+                        a {
+                            padding: 10px 12px;
+                        }
+                    }
+                    &:last-child {
+                        border-top: 1px solid #ececec;
+                        margin: 0 12px;
+                    }
+                    > a {
+                        display: inline-block;
+                    }
+                }
+            }
+        }
+    }
+}
+
 @-webkit-keyframes lp-spinner {
     0% {
         -webkit-transform: rotate(0deg);
