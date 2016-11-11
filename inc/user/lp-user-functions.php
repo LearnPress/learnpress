@@ -654,13 +654,13 @@ function learn_press_user_update_user_info() {
 			}
 			# get old file
 			$filename_old = get_user_meta( $user_id, '_lp_profile_picture', true );
-			if ( file_exists( $upload_dir . '/' . $filename_old ) ) {
-				unlink( $upload_dir . '/' . $filename_old );
+			if ( is_file( $upload_dir . DIRECTORY_SEPARATOR . $filename_old ) ) {
+				unlink( $upload_dir . DIRECTORY_SEPARATOR . $filename_old );
 			}
 
 			$pathinfo_old = pathinfo($filename_old);
 			$thumb_old = $upload_dir . '/' . $pathinfo_old['filename'].'-thumb'. $pathinfo_old['extension'];
-			if ( file_exists( $thumb_old ) ) {
+			if ( is_file( $thumb_old ) ) {
 				unlink( $thumb_old );
 			}
 
