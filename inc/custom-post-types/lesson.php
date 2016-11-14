@@ -306,11 +306,12 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 		 * @return string
 		 */
 		public function posts_orderby( $order_by_statement ) {
+			global $wpdb;
 			if ( !$this->_is_archive() ) {
 				return $order_by_statement;
 			}
 			if ( isset ( $_GET['orderby'] ) && isset ( $_GET['order'] ) ) {
-				$order_by_statement = "c.post_title {$_GET['order']}";
+				$order_by_statement = "{$wpdb->posts}.post_title {$_GET['order']}";
 			}
 			return $order_by_statement;
 		}
