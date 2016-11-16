@@ -11,6 +11,9 @@
 	}
 
 	$.fn.LP_Statistic_Users = function () {
+		if(parseInt($(this).length)===0){
+			return;
+		}
 		return $.each(this, function () {
 			var $buttons = $('.chart-buttons button').on('click', function () {
 					var $button = $(this),
@@ -59,6 +62,9 @@
 	}
 
 	$.fn.LP_Statistic_Courses = function () {
+		if(parseInt($(this).length)===0){
+			return;
+		}
 		return $.each(this, function () {
 			var $buttons = $('.chart-buttons button').on('click', function () {
 					var $button = $(this),
@@ -107,6 +113,9 @@
 	}
 
 	$.fn.LP_Statistic_Orders = function () {
+		if(parseInt($(this).length)===0){
+			return;
+		}
 		$('.panel_report_option').hide();
 		$('#panel_report_sales_by_'+$('#report_sales_by').val()).show();
 		$('#report_sales_by').on('change', function(){
@@ -122,6 +131,7 @@
 		 * @returns {Boolean}
 		 */
 		var LP_Statistic_Orders_Upgrade_Chart =function(){
+			console.log('abc');
 			var type = '', from = '', to = '', report_sales_by = 'date', cat_id = 0, course_id = 0;
 			report_sales_by = $('#report_sales_by').val();
 			$container = $('#learn-press-chart');
