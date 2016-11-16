@@ -80,6 +80,10 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 					. " WHERE post_type='lp_course' "
 							. " AND post_status in ('publish') "
 							. " AND post_title like %s";
+			if( current_user_can(LP_TEACHER_ROLE) ) {
+				$user_id = learn_press_get_current_user_id();
+				$sql .= " AND post_author=".intval($user_id)." ";
+			}
 			$s = '%'.filter_input( INPUT_GET, 'q' ).'%';
 			$query = $wpdb->prepare( $sql, $s );
 			$items = $wpdb->get_results($query);

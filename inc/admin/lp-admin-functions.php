@@ -590,11 +590,18 @@ function learn_press_get_chart_courses( $from = null, $by = null, $time_ago ) {
 
 			break;
 	}
+	
+	$query_where ='';
+	if( current_user_can(LP_TEACHER_ROLE) ) {
+		$user_id = learn_press_get_current_user_id();
+		$query_where .= $wpdb->prepare(" AND c.post_author=%d ", $user_id);
+	}
 
 	$query = $wpdb->prepare( "
 				SELECT count(c.ID) as c, DATE_FORMAT( c.post_date, %s) as d
 				FROM {$wpdb->posts} c
-				WHERE 1
+				WHERE 1 
+				{$query_where}
 				AND c.post_status IN('publish', 'pending') AND c.post_type = %s
 				GROUP BY d
 				HAVING d BETWEEN %s AND %s
@@ -609,6 +616,7 @@ function learn_press_get_chart_courses( $from = null, $by = null, $time_ago ) {
 				SELECT count(c.ID) as c, DATE_FORMAT( c.post_date, %s) as d
 				FROM {$wpdb->posts} c
 				WHERE 1
+				{$query_where}
 				AND c.post_status = %s AND c.post_type = %s
 				GROUP BY d
 				HAVING d BETWEEN %s AND %s
@@ -625,6 +633,7 @@ function learn_press_get_chart_courses( $from = null, $by = null, $time_ago ) {
 				FROM {$wpdb->posts} c
 				INNER JOIN {$wpdb->postmeta} cm ON cm.post_id = c.ID AND cm.meta_key = %s AND cm.meta_value = %s
 				WHERE 1
+				{$query_where}
 				AND c.post_status = %s AND c.post_type = %s
 				GROUP BY d
 				HAVING d BETWEEN %s AND %s
@@ -709,7 +718,8 @@ function learn_press_get_chart_courses( $from = null, $by = null, $time_ago ) {
  */
 function learn_press_get_chart_orders( $from = null, $by = null, $time_ago ) {
 	global $wpdb;
-
+//	var_dump( current_user_can(LP_TEACHER_ROLE) );
+//	exit();
 	$report_sales_by	= learn_press_get_request( 'report_sales_by' );
 	$course_id			= learn_press_get_request( 'course_id' );
 	$cat_id				= learn_press_get_request( 'cat_id' );
@@ -768,8 +778,15 @@ function learn_press_get_chart_orders( $from = null, $by = null, $time_ago ) {
 						. " ON lpoi.order_item_id=loim.learnpress_order_item_id "
 								. " AND loim.meta_key='_course_id' "
 								. " AND CAST(loim.meta_value AS SIGNED)=%d ";
+		if( current_user_can(LP_TEACHER_ROLE) ) {
+			$user_id = learn_press_get_current_user_id();
+			$sql_join .= $wpdb->prepare(" AND CAST(loim.meta_value AS SIGNED) IN "
+					. " ( "
+					. " SELECT ID FROM {$wpdb->posts} p WHERE p.ID = CAST(loim.meta_value AS SIGNED) AND `post_author`=".intval($user_id)
+					. " ) ");
+		}
 		$query_join .=  $wpdb->prepare( $sql_join, $course_id );
-				
+		
 	} elseif ( 'category' === $report_sales_by ) {
 		$sql_join .= " INNER JOIN `{$wpdb->prefix}learnpress_order_items` `lpoi` "
 						. " ON o.ID=lpoi.order_id "
@@ -777,12 +794,24 @@ function learn_press_get_chart_orders( $from = null, $by = null, $time_ago ) {
 						. " ON lpoi.order_item_id=loim.learnpress_order_item_id "
 								. " AND loim.meta_key='_course_id' "
 								. " AND CAST(loim.meta_value AS SIGNED) IN("
-								//sub category
+								//sub query
 									. " SELECT tr.object_id "
 									. " FROM wp_term_taxonomy tt INNER JOIN wp_term_relationships tr "
 									. " ON tt.term_taxonomy_id = tr.term_taxonomy_id AND tt.taxonomy='course_category' "
 									. " WHERE tt.term_id=%d)";
 		$query_join .=  $wpdb->prepare( $sql_join, $cat_id );
+	}
+	if( current_user_can(LP_TEACHER_ROLE) ) {
+		$user_id = learn_press_get_current_user_id();
+		$query_where .= $wpdb->prepare(" AND o.ID IN( SELECT oi.order_id 
+										FROM lptest.{$wpdb->prefix}learnpress_order_items oi 
+											inner join {$wpdb->prefix}learnpress_order_itemmeta oim 
+												on oi.order_item_id = oim.learnpress_order_item_id 
+													and oim.meta_key='_course_id' 
+													and cast(oim.meta_value as SIGNED) IN (
+														SELECT sp.ID FROM {$wpdb->prefix}posts sp WHERE sp.post_author=%d and sp.ID=cast(oim.meta_value as SIGNED) 
+													)
+										) ", $user_id);
 	}
 
 	$query = $wpdb->prepare( "
@@ -794,7 +823,7 @@ function learn_press_get_chart_orders( $from = null, $by = null, $time_ago ) {
 				HAVING d BETWEEN %s AND %s
 				ORDER BY d ASC
 			", $_sql_format, 'lp_order', $_from, $_to );
-
+//	echo $query;
 	if ( $_results = $wpdb->get_results( $query ) ) {
 		foreach ( $_results as $k => $v ) {
 //			$results['all'][$v->d] = $v;
@@ -811,7 +840,7 @@ function learn_press_get_chart_orders( $from = null, $by = null, $time_ago ) {
 				HAVING d BETWEEN %s AND %s
 				ORDER BY d ASC
 			", $_sql_format, 'lp_order', $_from, $_to );
-
+//	echo $query;
 	if ( $_results = $wpdb->get_results( $query ) ) {
 		foreach ( $_results as $k => $v ) {
 //			$results['completed'][$v->d] = $v;

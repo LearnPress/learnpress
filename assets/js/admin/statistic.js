@@ -112,6 +112,9 @@
 		$('#report_sales_by').on('change', function(){
 			$('.panel_report_option').hide();
 			$('#panel_report_sales_by_'+$(this).val()).show();
+			if('date'==$(this).val()){
+				LP_Statistic_Orders_Upgrade_Chart();
+			}
 		});
 
 		/**
