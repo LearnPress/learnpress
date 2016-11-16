@@ -8,11 +8,12 @@ $sections       = array(
 	'students'    => __( 'Students', 'learnpress' ),
 	'instructors' => __( 'Instructors', 'learnpress' ),
 );
+
 $section        = $this->section ? $this->section : 'students';
 $sections_count = sizeof( $sections );
 $count          = 0;
 ?>
-<div id="learn-press-statistic" class="learn-press-statistic-users">
+<div id="learn-press-statistic" class="learn-press-statistic-orders">
 	<ul class="subsubsub chart-buttons">
 		<li>
 			<button class="button" data-type="order-last-7-days" disabled="disabled"><?php _e( 'Last 7 Days', 'learnpress' ); ?></button>
@@ -37,6 +38,25 @@ $count          = 0;
 			</form>
 		</li>
 	</ul>
+	<div class="clear"></div>
+	<br/>
+	<div id="chart-options">
+		<?php _e( 'Sale by', 'learnpress' ); ?>
+		<select id="report_sales_by">
+			<option value="date"><?php _e( 'Date', 'learnpress' ); ?></option>
+			<option value="course"><?php _e( 'Course', 'learnpress' ); ?></option>
+			<option value="category"><?php _e( 'Course Category', 'learnpress' ); ?></option>
+		</select>
+		<span id="panel_report_sales_by_course" class="panel_report_option">
+			<?php _e( 'Select a course', 'learnpress' );?>
+			<input id="report-by-course-id" class="statistics-search-course" />
+		</span>
+		<span id="panel_report_sales_by_category" class="panel_report_option">
+			<?php _e( 'Select a course category', 'learnpress' );?>
+			<input id="report-by-course-category-id" class="statistics-search-course-category" />
+		</span>
+	</div>
+
 	<div class="clear"></div>
 	<ul class="chart-description">
 		<li class="all"><span><?php _e( 'All', 'learnpress' ); ?></span></li>

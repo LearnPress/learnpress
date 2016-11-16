@@ -36,6 +36,8 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 				'dismiss_notice'                  => false,
 				'search_users'                    => false,
 				'load_chart'                      => false,
+				'search_course'                   => false,
+				'search_course_category'			=> false,
 				/////////////
 				'quick_add_lesson'                => false,
 				'quick_add_quiz'                  => false,
@@ -69,6 +71,36 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 				require_once LP_PLUGIN_PATH . '/inc/admin/sub-menus/statistics.php';
 			}
 			LP_Admin_Submenu_Statistic::instance()->load_chart();
+		}
+
+		public static function search_course() {
+			global $wpdb;
+			$sql = "SELECT ID id, post_title text "
+					. " FROM {$wpdb->posts} "
+					. " WHERE post_type='lp_course' "
+							. " AND post_status in ('publish') "
+							. " AND post_title like %s";
+			$s = '%'.filter_input( INPUT_GET, 'q' ).'%';
+			$query = $wpdb->prepare( $sql, $s );
+			$items = $wpdb->get_results($query);
+			$data = array('items'=>$items);
+			echo json_encode($data);
+			exit();
+		}
+
+		public static function search_course_category() {
+			global $wpdb;
+			$sql = "SELECT `t`.`term_id` as `id`, "
+					. " `t`.`name` `text` "
+					. " FROM {$wpdb->terms} t "
+					. "		INNER JOIN {$wpdb->term_taxonomy} tt ON t.term_id = tt.term_id AND taxonomy='course_category' "
+					. " WHERE `t`.`name` LIKE %s";
+			$s = '%'.filter_input( INPUT_GET, 'q' ).'%';
+			$query = $wpdb->prepare( $sql, $s );
+			$items = $wpdb->get_results($query);
+			$data = array('items'=>$items);
+			echo json_encode($data);
+			exit();
 		}
 
 		public static function remove_course_items() {

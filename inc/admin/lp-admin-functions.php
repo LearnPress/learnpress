@@ -710,6 +710,10 @@ function learn_press_get_chart_courses( $from = null, $by = null, $time_ago ) {
 function learn_press_get_chart_orders( $from = null, $by = null, $time_ago ) {
 	global $wpdb;
 
+	$report_sales_by	= learn_press_get_request( 'report_sales_by' );
+	$course_id			= learn_press_get_request( 'course_id' );
+	$cat_id				= learn_press_get_request( 'cat_id' );
+
 	$labels   = array();
 	$datasets = array();
 	if ( is_null( $from ) ) {
@@ -755,32 +759,63 @@ function learn_press_get_chart_orders( $from = null, $by = null, $time_ago ) {
 			break;
 	}
 
+	$query_join		= '';
+	$query_where	= '';
+	if ( 'course' === $report_sales_by ) {
+		$sql_join .= " INNER JOIN `{$wpdb->prefix}learnpress_order_items` `lpoi` "
+						. " ON o.ID=lpoi.order_id "
+						. " INNER JOIN {$wpdb->prefix}learnpress_order_itemmeta loim "
+						. " ON lpoi.order_item_id=loim.learnpress_order_item_id "
+								. " AND loim.meta_key='_course_id' "
+								. " AND CAST(loim.meta_value AS SIGNED)=%d ";
+		$query_join .=  $wpdb->prepare( $sql_join, $course_id );
+				
+	} elseif ( 'category' === $report_sales_by ) {
+		$sql_join .= " INNER JOIN `{$wpdb->prefix}learnpress_order_items` `lpoi` "
+						. " ON o.ID=lpoi.order_id "
+						. " INNER JOIN {$wpdb->prefix}learnpress_order_itemmeta loim "
+						. " ON lpoi.order_item_id=loim.learnpress_order_item_id "
+								. " AND loim.meta_key='_course_id' "
+								. " AND CAST(loim.meta_value AS SIGNED) IN("
+								//sub category
+									. " SELECT tr.object_id "
+									. " FROM wp_term_taxonomy tt INNER JOIN wp_term_relationships tr "
+									. " ON tt.term_taxonomy_id = tr.term_taxonomy_id AND tt.taxonomy='course_category' "
+									. " WHERE tt.term_id=%d)";
+		$query_join .=  $wpdb->prepare( $sql_join, $cat_id );
+	}
+
 	$query = $wpdb->prepare( "
 				SELECT count(o.ID) as c, DATE_FORMAT( o.post_date, %s) as d
-				FROM {$wpdb->posts} o
-				WHERE 1
+				FROM {$wpdb->posts} o {$query_join}
+				WHERE 1 {$query_where}
 				AND o.post_status IN('lp-completed') AND o.post_type = %s
 				GROUP BY d
 				HAVING d BETWEEN %s AND %s
 				ORDER BY d ASC
 			", $_sql_format, 'lp_order', $_from, $_to );
+
 	if ( $_results = $wpdb->get_results( $query ) ) {
 		foreach ( $_results as $k => $v ) {
-			$results['all'][$v->d] = $v;
+//			$results['all'][$v->d] = $v;
+			$results['completed'][$v->d] = $v;
 		}
 	}
+
 	$query = $wpdb->prepare( "
 				SELECT count(o.ID) as c, DATE_FORMAT( o.post_date, %s) as d
-				FROM {$wpdb->posts} o
-				WHERE 1
+				FROM {$wpdb->posts} o {$query_join}
+				WHERE 1 {$query_where}
 				AND o.post_status IN('lp-pending', 'lp-processing') AND o.post_type = %s
 				GROUP BY d
 				HAVING d BETWEEN %s AND %s
 				ORDER BY d ASC
 			", $_sql_format, 'lp_order', $_from, $_to );
+
 	if ( $_results = $wpdb->get_results( $query ) ) {
 		foreach ( $_results as $k => $v ) {
-			$results['completed'][$v->d] = $v;
+//			$results['completed'][$v->d] = $v;
+			$results['pending'][$v->d] = $v;
 		}
 	}
 
@@ -790,12 +825,13 @@ function learn_press_get_chart_orders( $from = null, $by = null, $time_ago ) {
 		$labels[] = date( $date_format, $date );
 		$key      = date( $_key_format, $date );
 
-		$all       = !empty( $results['all'][$key] ) ? $results['all'][$key]->c : 0;
-		$completed = !empty( $results['completed'][$key] ) ? $results['completed'][$key]->c : 0;
+		$completed	= !empty( $results['completed'][$key] ) ? $results['completed'][$key]->c : 0;
+		$pending	= !empty( $results['pending'][$key] ) ? $results['pending'][$key]->c : 0;
+		$all		= $completed + $pending;
 
 		$datasets[0]['data'][] = $all;
 		$datasets[1]['data'][] = $completed;
-		$datasets[2]['data'][] = $all - $completed;
+		$datasets[2]['data'][] = $pending;
 	}
 
 	$dataset_params = array(
