@@ -1014,7 +1014,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			$results       = array(
 				'redirect' => admin_url( 'edit.php?post_type=' . LP_COURSE_CPT )
 			);
-			$new_course_id = learn_press_dulicate_course( $course_id, $force );
+			$new_course_id = learn_press_duplicate_course( $course_id, $force );
 			if ( is_wp_error( $course_id ) ) {
 				LP_Admin_Notice::add_redirect( $course_id->get_error_message(), 'error' );
 			} else {
@@ -1033,6 +1033,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			global $wpdb;
 			$question_id = learn_press_get_request( 'question-id' );
 			$quiz_id     = learn_press_get_request( 'quiz-id' );
+			$user_id = learn_press_get_current_user_id();
 
 			$new_question_id = learn_press_duplicate_question( $question_id, $quiz_id );
 			if ( !is_wp_error( $new_question_id ) ) {

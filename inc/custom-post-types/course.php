@@ -291,8 +291,8 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 				'supports'           => array( 'title', 'editor', 'thumbnail', 'revisions', 'comments', 'excerpt' ),
 				'hierarchical'       => false,
 				'rewrite'            => $course_permalink ? array(
-					'slug'         => untrailingslashit( $course_permalink ),
-					'with_front'   => false
+					'slug'       => untrailingslashit( $course_permalink ),
+					'with_front' => false
 				) : false
 			);
 			return $args;
@@ -478,11 +478,12 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			$payment = get_post_meta( $course_id, '_lp_payment', true );
 
 			if ( current_user_can( 'manage_options' ) ) {
-				$message    = __( 'If free, this field is empty or set 0. (Only admin can edit this field)', 'learnpress' );
-				$price      = 0;
+				$message = __( 'If free, this field is empty or set 0. (Only admin can edit this field)', 'learnpress' );
+				$price   = get_post_meta( $course_id, '_lp_price', true );;
 				$sale_price = 0;
 				$start_date = '';
 				$end_date   = '';
+				$course_id  = 0;
 
 				if ( isset( $_GET['post'] ) ) {
 					$course_id = $_GET['post'];
@@ -490,14 +491,13 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 					if ( $type != 'free' ) {
 						$suggest_price = get_post_meta( $course_id, '_lp_suggestion_price', true );
 						if ( isset( $suggest_price ) ) {
-							$message = __( 'This course is required enrollment and the suggested price is ', 'learnpress' ) . '<span>' . learn_press_get_currency_symbol() . $suggest_price . '</span>';
+							$message = sprintf( __( 'This course is required enrollment and the suggested price is <strong>%s</strong>', 'learnpress' ), learn_press_format_price( $suggest_price, true ) );
 							$price   = $suggest_price;
 						}
 
 						$sale_price = get_post_meta( $course_id, '_lp_sale_price', true );
 						$start_date = get_post_meta( $course_id, '_lp_sale_start', true );
 						$end_date   = get_post_meta( $course_id, '_lp_sale_end', true );
-
 					} else {
 						$message = __( 'This course is free.', 'learnpress' );
 					};
@@ -541,18 +541,24 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 					)
 				);
 			} else {
-				array_push(
-					$meta_box['fields'],
-					array(
-						'name'  => __( 'Course Suggestion Price', 'learnpress' ),
-						'id'    => "{$prefix}course_suggestion_price",
-						'type'  => 'number',
-						'min'   => 0,
-						'step'  => 0.01,
-						'desc'  => __( 'The course price you want to suggest for admin to set.', 'learnpress' ),
-						'class' => 'lp-course-price-field' . ( $payment != 'yes' ? ' hide-if-js' : '' ),
-						'std'   => 0
-					)
+
+				$meta_box['fields'][] = array(
+					'name'  => __( 'Course Suggestion Price', 'learnpress' ),
+					'id'    => "{$prefix}suggestion_price",
+					'type'  => 'number',
+					'min'   => 0,
+					'step'  => 0.01,
+					'desc'  => __( 'The course price you want to suggest for admin to set.', 'learnpress' ),
+					'class' => 'lp-course-price-field' . ( $payment != 'yes' ? ' hide-if-js' : '' ),
+					'std'   => 0
+				);
+				$price                = get_post_meta( $course_id, '_lp_price', true );
+				$meta_box['fields'][] = array(
+					'name'  => __( 'Price set by Admin', 'learnpress' ),
+					'id'    => "{$prefix}price",
+					'type'  => 'html',
+					'class' => 'lp-course-price-field' . ( $payment != 'yes' ? ' hide-if-js' : '' ),
+					'html'  => $price !== '' ? sprintf( '<strong>%s</strong>', learn_press_format_price( $price, true ) ) : __( 'Not set', 'learnpress' )
 				);
 			}
 			$meta_box['fields'] = array_merge(
@@ -721,10 +727,10 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		public function _save() {
 			global $wpdb, $post;
 
-			$preview = filter_input(INPUT_POST, 'wp-preview', FILTER_SANITIZE_STRING);
+			$preview = filter_input( INPUT_POST, 'wp-preview', FILTER_SANITIZE_STRING );
 
-			if( 'dopreview' == $preview && 'draft' == $post->post_status ) {
-				learn_press_add_message(__('Course Curriculum only appear if course is saved','learnpress'), $type);
+			if ( 'dopreview' == $preview && 'draft' == $post->post_status ) {
+				learn_press_add_message( __( 'Course Curriculum only appear if course is saved', 'learnpress' ), $type );
 			}
 
 			$this->_reset_sections();

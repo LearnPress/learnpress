@@ -145,8 +145,9 @@ function learn_press_get_current_url() {
 			$segs1 = explode( '/', get_site_url() );
 			$segs2 = explode( '/', $url );
 			if ( $removed = array_intersect( $segs1, $segs2 ) ) {
-				$segs2       = array_diff( $segs2, $removed );
-				$current_url = get_site_url() . '/' . join( '/', $segs2 );
+				if($segs2       = array_diff( $segs2, $removed )){
+					$current_url = get_site_url() . '/' . join( '/', $segs2 );
+				}
 			}
 		}
 	}

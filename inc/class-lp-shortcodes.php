@@ -352,7 +352,20 @@ class LP_Shortcodes {
 			),
 			$atts
 		);
+		add_filter( 'login_form_bottom', array( __CLASS__, 'login_form_bottom' ), 10, 2 );
 		return self::wrapper_shortcode( learn_press_get_template_content( 'profile/login-form.php', $atts ) );
+	}
+
+	public static function login_form_bottom( $html, $args ) {
+		ob_start();
+		?>
+		<p>
+			<a href="<?php echo wp_lostpassword_url();?>"><?php _e( 'Forgot password?', 'learnpress' ); ?></a>
+			&nbsp;|&nbsp;
+			<a href="<?php echo wp_registration_url();?>"><?php _e( 'Create new account', 'learnpress' ); ?></a>
+		</p>
+		<?php $html .= ob_get_clean();
+		return $html;
 	}
 }
 

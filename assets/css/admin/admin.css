@@ -4,8 +4,11 @@
  * @author ThimPress
  * @version 1.0
  */
-.rwmb-number-wrapper .rwmb-input {
-  padding-top: 16px;
+.rwmb-field {
+  margin: 20px 0 20px 0;
+}
+.rwmb-field .rwmb-input .rwmb-label {
+  margin-top: 0;
 }
 .lp-nav-tab-wrapper {
   border-bottom: 1px solid #ccc;
@@ -166,12 +169,6 @@
 .meta_box_course_lesson_quiz li input,
 .meta_box_course_lesson_quiz li select {
   min-width: 250px;
-}
-.rwmb-meta-box label {
-  color: #222;
-  font-weight: bold;
-  display: block;
-  margin: 16px 0;
 }
 .description {
   margin-top: 5px;
@@ -1178,7 +1175,7 @@ body.post-type-lp_question #question_answer_ .inside {
   color: #222;
   font-weight: bold;
   display: block;
-  margin: 16px 0;
+  margin: 0 0 16px 0;
 }
 .description {
   margin-top: 5px;

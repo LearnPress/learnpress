@@ -131,6 +131,7 @@ add_action( 'learn_press_update_order_status', 'learn_press_send_user_email_orde
  * @return void
  */
 function learn_press_add_user_roles() {
+
 	$settings = LP()->settings;
 	/* translators: user role */
 	_x( 'Instructor', 'User role' );

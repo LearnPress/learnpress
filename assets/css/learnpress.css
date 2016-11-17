@@ -283,6 +283,7 @@
 }
 #learn-press-course-curriculum .course-item.item-has-status .item-status:before {
   content: '\ea10';
+  color: #FFF;
 }
 #learn-press-course-curriculum .course-item.item-has-status.item-completed .item-status {
   background: #95e6f9;

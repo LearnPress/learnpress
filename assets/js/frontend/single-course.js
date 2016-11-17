@@ -399,7 +399,7 @@ if (typeof LearnPress === 'undefined') {
 			this.itemEl.show();
 			this.currentItem = item;
 			this.$('.item-current').removeClass('item-current');
-			this.$('.course-item [data-id="' + item.get('id') + '"]').parent().addClass('item-current');
+			this.$('.course-item [data-id="' + item.get('id') + '"]').closest('.course-item').addClass('item-current');
 			this.$('#course-curriculum-popup').attr('data-item-id', item.get('id'));
 			this.updateUrl();
 			//this.updateItemContent(item);

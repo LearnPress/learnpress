@@ -977,7 +977,7 @@ function learn_press_add_row_action_link( $actions ) {
         }
 	return $actions;
 }
-
+add_filter( 'post_row_actions', 'learn_press_add_row_action_link' );
 add_filter( 'page_row_actions', 'learn_press_add_row_action_link' );
 
 function learn_press_copy_post_meta( $from_id, $to_id ) {
@@ -1595,9 +1595,9 @@ if ( !function_exists( 'learn_press_sort_questions' ) ) {
     }
 }
 
-if ( !function_exists( 'learn_press_dulicate_course' ) ) {
+if ( !function_exists( 'learn_press_duplicate_course' ) ) {
     
-    function learn_press_dulicate_course( $course_id = null, $force = true ) {
+    function learn_press_duplicate_course( $course_id = null, $force = true ) {
         if ( !function_exists( '_learn_press_get_course_curriculum' ) ) {
             require_once LP_PLUGIN_PATH . 'inc/lp-init.php';
         }
