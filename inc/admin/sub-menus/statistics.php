@@ -43,11 +43,20 @@ class LP_Admin_Submenu_Statistic {
 	public function display() {
 		$this->tab     = isset( $_GET['tab'] ) ? $_GET['tab'] : 'users';
 		$this->section = isset( $_GET['section'] ) ? $_GET['section'] : '';
-		$tabs          = apply_filters( 'learn_press_statistics_tabs', array(
-			'users'   => __( 'Users', 'learnpress' ),
-			'courses' => __( 'Courses', 'learnpress' ),
-			'orders'  => __( 'Orders', 'learnpress' ),
-		) );
+		$tabs = array();
+		if( current_user_can(LP_TEACHER_ROLE) ) {
+			$this->tab     = isset( $_GET['tab'] ) ? $_GET['tab'] : 'courses';
+			$tabs          = apply_filters( 'learn_press_statistics_tabs', array(
+				'courses' => __( 'Courses', 'learnpress' ),
+				'orders'  => __( 'Orders', 'learnpress' ),
+			) );
+		} else {
+			$tabs          = apply_filters( 'learn_press_statistics_tabs', array(
+				'users'   => __( 'Users', 'learnpress' ),
+				'courses' => __( 'Courses', 'learnpress' ),
+				'orders'  => __( 'Orders', 'learnpress' ),
+			) );
+		}
 		echo '<div class="wrap">';
 		echo '<h2 class="nav-tab-wrapper">';
 		foreach ( $tabs as $tab => $name ) {
@@ -63,6 +72,9 @@ class LP_Admin_Submenu_Statistic {
 	 *
 	 */
 	public function get_stats_users() {
+		if( current_user_can(LP_TEACHER_ROLE) ) {
+			return;
+		}
 		require_once learn_press_get_admin_view( 'statistics/users.php' );
 	}
 

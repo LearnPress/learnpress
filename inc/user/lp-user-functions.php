@@ -642,7 +642,7 @@ function learn_press_user_update_user_info() {
 		$profile_picture_type = filter_input( INPUT_POST, 'profile_picture_type', FILTER_SANITIZE_STRING );
 
 
-		if ( $profile_picture_type == 'picture' ) {
+		if ( $profile_picture_type == 'picture' && isset($_POST['profile_picture_data']) && $_POST['profile_picture_data']!="" ) {
 
 			$upload     = wp_get_upload_dir();
 			$ppdir = $upload['basedir'] . DIRECTORY_SEPARATOR . 'learn-press-profile';
