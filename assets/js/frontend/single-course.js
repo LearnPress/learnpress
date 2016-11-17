@@ -275,8 +275,10 @@ if (typeof LearnPress === 'undefined') {
 			LP.Hook.addAction('learn_press_receive_message', this.receiveMessage);
 			if (typeof localStorage != 'undefined') {
 				var expanded = localStorage.getItem("lp-item-expanded");
-				if (expanded) {
-					$('#learn-press-content-item').toggleClass('expand', expanded);
+				if (expanded=='yes') {
+					console.log('xxx:', expanded);
+
+					this.expand(true);
 				}
 			}
 		},
@@ -351,13 +353,19 @@ if (typeof LearnPress === 'undefined') {
 			//console.log('push:' + hash)
 		},
 		_expand            : function (e) {
-			var expanded = window.parent.jQuery('#popup-main').toggleClass('expand').hasClass('expand');
-			$('#learn-press-content-item').toggleClass('expand', expanded);
-			if (localStorage) {
-				localStorage.setItem("lp-item-expanded", expanded ? 1 : 0);
+			e && e.preventDefault();
+			this.expand();
+		},
+		expand             : function (expand) {
+			if (typeof expand == 'undefined') {
+				expand = !window.parent.jQuery('#popup-main').hasClass('expand');
 			}
-			e.preventDefault();
-			console.log(expanded)
+			window.parent.jQuery('#popup-main').toggleClass('expand', expand);
+			$('#learn-press-content-item').toggleClass('expand', expand);
+			if (localStorage) {
+				localStorage.setItem("lp-item-expanded", expand ? 'yes' : 'no');
+			}
+			console.log(localStorage.getItem("lp-item-expanded"));
 		},
 		_initHooks         : function () {
 			LP.Hook.addAction('learn_press_update_item_content', this.updateItemContent);
