@@ -202,7 +202,7 @@ function learn_press_add_user_roles() {
 	$admin->add_cap( 'edit_others_' . $order_cap );
 }
 
-add_action( 'init', 'learn_press_add_user_roles' );
+add_action( 'learn_press_ready', 'learn_press_add_user_roles' );
 
 function learn_press_get_user_questions( $user_id = null, $args = array() ) {
 	if ( !$user_id ) {

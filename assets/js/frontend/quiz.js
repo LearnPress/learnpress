@@ -507,6 +507,7 @@
 			}
 			this.timeout = setTimeout(this._onTick, 1000);
 		},
+
 		_prevQuestion         : function (e) {
 			e.preventDefault();
 			var delayTime = this.delayTime;
@@ -720,7 +721,8 @@
 				callback  : function (response, item) {
 					windowTarget.LP.unblockContent();
 					that.$('#learn-press-content-item').html(response.html.content);
-					windowTarget.LP.setUrl(that.model.get('permalink'));console.log('4444');
+					windowTarget.LP.setUrl(that.model.get('permalink'));
+					console.log('4444');
 					var data = response.course_result;
 					data.messageType = 'update-course';
 					LP.sendMessage(data, windowTarget);

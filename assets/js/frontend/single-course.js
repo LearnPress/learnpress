@@ -240,17 +240,18 @@ if (typeof LearnPress === 'undefined') {
 		itemEl             : null,
 		cached             : {},
 		events             : {
-			'click .viewable .button-load-item': '_loadItem',
-			'click .prev-item, .next-item'     : '_loadItem',
-			'click .viewable'                  : '_loadItem',
-			'click .section-header'            : '_toggleSection',
-			'click .learn-press-nav-tab'       : '_tabClick',
+			'click .viewable .button-load-item'               : '_loadItem',
+			'click .prev-item, .next-item'                    : '_loadItem',
+			'click .viewable'                                 : '_loadItem',
+			'click .section-header'                           : '_toggleSection',
+			'click .learn-press-nav-tab'                      : '_tabClick',
 			/*'click .button-start-quiz'         : '_startQuiz',
 			 'click .button-finish-quiz'        : '_finishQuiz',
 			 'click .button-retake-quiz'        : '_retakeQuiz',
 			 'click .button-complete-item'      : '_completeItem',*/
-			'click .button-retake-course'      : '_retakeCourse',
-			'click .button-finish-course'      : '_finishCourse'
+			'click .button-retake-course'                     : '_retakeCourse',
+			'click .button-finish-course'                     : '_finishCourse',
+			'click .learn-press-content-item-title .lp-expand': '_expand'
 
 			//'click #learn-press-button-complete-item': '_c'
 		},
@@ -272,6 +273,12 @@ if (typeof LearnPress === 'undefined') {
 			}
 
 			LP.Hook.addAction('learn_press_receive_message', this.receiveMessage);
+			if (typeof localStorage != 'undefined') {
+				var expanded = localStorage.getItem("lp-item-expanded");
+				if (expanded) {
+					$('#learn-press-content-item').toggleClass('expand', expanded);
+				}
+			}
 		},
 		receiveMessage     : function (data) {
 			if (data.messageType === 'update-course') {
@@ -288,7 +295,7 @@ if (typeof LearnPress === 'undefined') {
 				$progress = this.$('.course-progress').find('.number, .percentage-sign'),
 				$itemProgress = this.$('.items-progress').find('.number, .percentage-sign');
 			$progress.eq(0).html(parseInt(data.results));
-                        this.$('.lp-progress-value').width( parseInt(data.results) + '%' );
+			this.$('.lp-progress-value').width(parseInt(data.results) + '%');
 			data.items && data.items.forEach(function (item) {
 				var $item = this.$('.course-item.course-item-' + item.id);
 				if (!sections[item.section_id]) {
@@ -312,7 +319,7 @@ if (typeof LearnPress === 'undefined') {
 				var $section = $(this),
 					id = $section.data('id'),
 					data = sections[id];
-				if(!data){
+				if (!data) {
 					return;
 				}
 				$section.find('.section-header span.step').html(LP.Hook.applyFilters('section_header_span_text', data[1] + '/' + data[0]));
@@ -342,6 +349,15 @@ if (typeof LearnPress === 'undefined') {
 			}
 			this.cached[hash] = Math.random();
 			//console.log('push:' + hash)
+		},
+		_expand            : function (e) {
+			var expanded = window.parent.jQuery('#popup-main').toggleClass('expand').hasClass('expand');
+			$('#learn-press-content-item').toggleClass('expand', expanded);
+			if (localStorage) {
+				localStorage.setItem("lp-item-expanded", expanded ? 1 : 0);
+			}
+			e.preventDefault();
+			console.log(expanded)
 		},
 		_initHooks         : function () {
 			LP.Hook.addAction('learn_press_update_item_content', this.updateItemContent);

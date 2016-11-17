@@ -21,7 +21,7 @@ $can_view_item  = $user->can( 'view-item', $quiz->id, $course->id );
 			<?php if ( false !== ( $item_quiz_title = apply_filters( 'learn_press_item_quiz_title', $quiz->title ) ) ): ?>
 				<h4><?php echo $item_quiz_title; ?></h4>
 			<?php endif; ?>
-
+			<a href="" class="lp-expand dashicons-editor-expand dashicons"></a>
 			<?php $have_questions && learn_press_get_template( 'content-quiz/countdown-simple.php' ); ?>
 		</div>
 

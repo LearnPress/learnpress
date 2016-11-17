@@ -1707,7 +1707,7 @@ class LP_Abstract_User {
 	 */
 	public function is_exists_lesson( $lesson_id, $course_id ) {
 		global $wpdb;
-		echo $query = $wpdb->prepare( "
+		$query = $wpdb->prepare( "
 			SELECT *
 			FROM {$wpdb->prefix}learnpress_user_items
 			WHERE user_id = %d

@@ -12,7 +12,10 @@ $item          = LP()->global['course-item'];
 $security      = wp_create_nonce( sprintf( 'complete-item-%d-%d-%d', $user->id, $course->id, $item->ID ) );
 $can_view_item = $user->can( 'view-item', $item->id, $course->id );
 ?>
-<h2 class="learn-press-content-item-title"><?php echo $item->get_title(); ?></h2>
+<h2 class="learn-press-content-item-title">
+	<a href="" class="lp-expand dashicons-editor-expand dashicons"></a>
+	<?php echo $item->get_title(); ?>
+</h2>
 <div class="learn-press-content-item-summary">
 
 	<?php learn_press_get_template( 'content-lesson/description.php' ); ?>

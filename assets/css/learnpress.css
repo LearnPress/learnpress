@@ -672,6 +672,7 @@ body.course-has-popup {
   left: 0;
   right: 0;
   overflow: auto;
+  transition: top linear 0.25s, bottom linear 0.25s;
 }
 #course-curriculum-popup #popup-main #popup-content #popup-content-inner {
   margin: 20px 40px;
@@ -697,6 +698,25 @@ body.course-has-popup {
 }
 #course-curriculum-popup #popup-main #popup-footer .footer-control.next-item {
   float: right;
+}
+#course-curriculum-popup #popup-main #popup-header,
+#course-curriculum-popup #popup-main #popup-footer {
+  transition: opacity linear 0.25s;
+}
+#course-curriculum-popup #popup-main.expand {
+  position: fixed;
+  left: 0;
+  padding: 0 20%;
+  top: 0;
+  bottom: 0;
+}
+#course-curriculum-popup #popup-main.expand #popup-header,
+#course-curriculum-popup #popup-main.expand #popup-footer {
+  opacity: 0;
+}
+#course-curriculum-popup #popup-main.expand #popup-content {
+  top: 0;
+  bottom: 0;
 }
 #course-curriculum-popup iframe {
   position: absolute;
@@ -755,6 +775,16 @@ body.course-has-popup {
   content: '';
   display: block;
   clear: both;
+}
+.learn-press-content-item-title .lp-expand {
+  float: right;
+  width: 43px;
+  height: 43px;
+  line-height: 43px;
+  background: #F5F5F5;
+  margin: 0 10px;
+  border: 1px solid #DDD;
+  outline: none;
 }
 .learn-press-content-item-summary {
   /*padding: 20px;
@@ -2012,6 +2042,13 @@ body.content-item-only .learn-press-content-item-only {
 body.content-item-only #learn-press-content-item {
   border: none;
   display: block;
+  transition: max-width linear 0.25s;
+  margin: 0 auto;
+  max-width: 1000px;
+  width: 90%;
+}
+body.content-item-only #learn-press-content-item.expand {
+  max-width: 1200px;
 }
 .lp-group-heading-title.toggle-off,
 .lp-group-heading-title.toggle-on {
