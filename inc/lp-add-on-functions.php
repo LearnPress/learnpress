@@ -120,7 +120,7 @@ function learn_press_print_get_more_tab( $current ) {
 }
 
 function learn_press_get_add_on_icons( $plugin_data, $plugin_file ) {
-	$plugin_path = ABSPATH . 'wp-content/plugins/' . $plugin_file;
+	$plugin_path = ABSPATH . LP_WP_CONTENT . '/plugins/' . $plugin_file;
 	$icon_path   = dirname( $plugin_path ) . '/assets/images';
 	$icons       = array(
 		'2x' => '',

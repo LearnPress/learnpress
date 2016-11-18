@@ -1,6 +1,6 @@
 <?php
 //template script
-$template_script = get_site_url() . '/wp-content/plugins/learnpress/assets/js/frontend/shortcodes.js';
+$template_script = get_site_url() . '/' . LP_WP_CONTENT . '/plugins/learnpress/assets/js/frontend/shortcodes.js';
 ?>
 
 <div class="<?php echo 'archive-course-collection-outer recent ' . $a['template'] . '  ' . $a["css_class"] ?>">

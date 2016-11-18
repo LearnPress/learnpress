@@ -173,7 +173,7 @@ class LP_Assets {
 
 	public static function add_default_scripts( &$scripts ) {
 
-		$default_path = plugins_url('learnpress/assets/');
+		$default_path = plugins_url( 'learnpress/assets/' );
 		$suffix       = '';
 		$deps         = array( 'jquery', 'backbone', 'utils' );
 
@@ -202,10 +202,10 @@ class LP_Assets {
 		$scripts->add( 'learn-press-mb-order', $default_path . 'js/admin/meta-box-order' . $suffix . '.js', $deps, false, 1 );
 		$scripts->add( 'learn-press-modal-search-items', $default_path . 'js/admin/modal-search-items' . $suffix . '.js', array( 'learn-press-global' ), false, 1 );
 		$scripts->add( 'learn-press-order', $default_path . 'js/admin/meta-box-order' . $suffix . '.js', $deps, false, 1 );
-		$scripts->add( 'learn-press-statistics-select2', '/wp-content/plugins/learnpress/inc/libraries/meta-box/js/select2/select2.min.js', $deps, false, 1 );
+		$scripts->add( 'learn-press-statistics-select2', '/' . LP_WP_CONTENT . '/plugins/learnpress/inc/libraries/meta-box/js/select2/select2.min.js', $deps, false, 1 );
 
 		// upgrade
-		$scripts->add( 'learn-press-upgrade', '/wp-content/plugins/learnpress/inc/updates/09/script' . $suffix . '.js', $deps, false, 1 );
+		$scripts->add( 'learn-press-upgrade', '/' . LP_WP_CONTENT . '/plugins/learnpress/inc/updates/09/script' . $suffix . '.js', $deps, false, 1 );
 
 	}
 
@@ -238,7 +238,7 @@ class LP_Assets {
 	}
 
 	public static function add_default_styles( &$styles ) {
-		$default_path = plugins_url('learnpress/assets/');
+		$default_path = plugins_url( 'learnpress/assets/' );
 		$suffix       = '';
 		// global
 		$styles->add( 'learn-press-global', $default_path . 'css/global' . $suffix . '.css' );
@@ -253,7 +253,7 @@ class LP_Assets {
 		$styles->add( 'learn-press-mb-question', $default_path . 'css/admin/meta-box-question' . $suffix . '.css' );
 		$styles->add( 'learn-press-mb-order', $default_path . 'css/admin/meta-box-order' . $suffix . '.css' );
 		$styles->add( 'learn-press-jalerts', $default_path . 'css/jalert' . $suffix . '.css' );
-		$styles->add( 'learn-press-statistics-select2', '/wp-content/plugins/learnpress/inc/libraries/meta-box/css/select2/select2.css' );
+		$styles->add( 'learn-press-statistics-select2', '/' . LP_WP_CONTENT . '/plugins/learnpress/inc/libraries/meta-box/css/select2/select2.css' );
 
 		// frontend
 		$styles->add( 'learn-press-style', $default_path . 'css/learnpress.css' );
@@ -617,7 +617,7 @@ class LP_Assets {
 			$concat = str_split( $concat, 128 );
 			$concat = 'load%5B%5D=' . implode( '&load%5B%5D=', $concat );
 
-			$src = get_site_url() . "/wp-content/plugins/learnpress/assets/load-scripts.php?" . $concat . "&c={$zip}&ver=" . $wp_scripts->default_version;
+			$src = get_site_url() . "/" . LP_WP_CONTENT . "/plugins/learnpress/assets/load-scripts.php?" . $concat . "&c={$zip}&ver=" . $wp_scripts->default_version;
 			echo "<script type='text/javascript' src='" . esc_attr( $src ) . "'></script>\n";
 		}
 
@@ -649,7 +649,7 @@ class LP_Assets {
 			$concat = str_split( $concat, 128 );
 			$concat = 'load%5B%5D=' . implode( '&load%5B%5D=', $concat );
 
-			$href = get_site_url() . "/wp-content/plugins/learnpress/assets/load-styles.php?" . $concat . "&c={$zip}&ver=" . $ver;
+			$href = get_site_url() . "/" . LP_WP_CONTENT . "/plugins/learnpress/assets/load-styles.php?" . $concat . "&c={$zip}&ver=" . $ver;
 			echo "<link rel='stylesheet' href='" . esc_attr( $href ) . "' type='text/css' media='all' />\n";
 
 			if ( !empty( $wp_styles->print_code ) ) {
@@ -671,12 +671,12 @@ class LP_Assets {
 		$user = learn_press_get_course_user();
 		if ( is_admin() ) {
 			global $pagenow;
-			$screen    = get_current_screen();
-			
+			$screen = get_current_screen();
+
 			$screen_id = $screen->id;
 			$page_id   = !empty( $_REQUEST['page'] ) ? $_REQUEST['page'] : '';
 
-			if( in_array($screen_id, array('edit-course_tag','edit-course_category')) ) {
+			if ( in_array( $screen_id, array( 'edit-course_tag', 'edit-course_category' ) ) ) {
 				self::enqueue_style( 'learn-press-admin' );
 			}
 
@@ -721,12 +721,12 @@ class LP_Assets {
 				LP_Assets::enqueue_script( 'learn-press-duplicate-course', LP()->plugin_url( 'assets/js/admin/duplicate-course.js' ) );
 			}
 
-			if ( $pagenow === 'post.php' && $screen_id === 'lp_quiz'  ) {
+			if ( $pagenow === 'post.php' && $screen_id === 'lp_quiz' ) {
 				self::enqueue_style( 'learn-press-jalerts' );
 				self::enqueue_script( 'learn-press-jalerts' );
 			}
 
-			if( 'learnpress_page_learn_press_statistics' === $screen_id ) {
+			if ( 'learnpress_page_learn_press_statistics' === $screen_id ) {
 				self::enqueue_script( 'learn-press-statistics-select2' );
 				self::enqueue_style( 'learn-press-statistics-select2' );
 			}

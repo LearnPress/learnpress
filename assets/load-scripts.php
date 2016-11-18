@@ -7,9 +7,9 @@
 error_reporting( 0 );
 
 /** Set ABSPATH for execution */
-define( 'ABSPATH', str_replace( 'wp-content/plugins/learnpress/assets/load-scripts.php', '', $_SERVER['SCRIPT_FILENAME'] ) );
+define( 'ABSPATH', str_replace( LP_WP_CONTENT . '/plugins/learnpress/assets/load-scripts.php', '', $_SERVER['SCRIPT_FILENAME'] ) );
 define( 'WPINC', 'wp-includes' );
-define( 'LP_PATH', '/wp-content/plugins/learnpress/' );
+define( 'LP_PATH', '/' . LP_WP_CONTENT . '/plugins/learnpress/' );
 $load = $_GET['load'];
 if ( is_array( $load ) )
 	$load = implode( '', $load );

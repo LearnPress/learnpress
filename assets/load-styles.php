@@ -9,10 +9,10 @@ error_reporting( 0 );
 
 /** Set ABSPATH for execution */
 if ( !defined( 'ABSPATH' ) ) {
-	define( 'ABSPATH', str_replace( 'wp-content/plugins/learnpress/assets/load-styles.php', '', $_SERVER['SCRIPT_FILENAME'] ) );
+	define( 'ABSPATH', str_replace( LP_WP_CONTENT . '/plugins/learnpress/assets/load-styles.php', '', $_SERVER['SCRIPT_FILENAME'] ) );
 }
 define( 'WPINC', 'wp-includes' );
-define( 'LP_PATH', '/wp-content/plugins/learnpress/' );
+define( 'LP_PATH', '/' . LP_WP_CONTENT . '/plugins/learnpress/' );
 require( ABSPATH . 'wp-admin/includes/noop.php' );
 require( ABSPATH . WPINC . '/script-loader.php' );
 require( ABSPATH . WPINC . '/version.php' );
