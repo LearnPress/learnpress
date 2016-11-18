@@ -600,14 +600,6 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 
 			$prefix = '_lp_';
 
-			$class       = '';
-			$post_author = '';
-			if ( isset( $_GET['post'] ) && isset( get_post( $_GET['post'] )->post_author ) ) {
-				$post_author = get_post( $_GET['post'] )->post_author;
-				if ( $post_author != get_current_user_id() && !current_user_can( 'manage_options' ) ) {
-					$class = 'hidden';
-				}
-			}
 			$include = array();
 			$role    = array( 'administrator', 'contributor', 'author', 'editor', 'subscriber', 'lp_teacher' );
 
@@ -617,9 +609,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 				$users_by_role = get_users( array( 'role' => $_role ) );
 				if ( $users_by_role ) {
 					foreach ( $users_by_role as $user ) {
-						if ( $user->ID != $post_author ) {
-							$include[$user->ID] = $user->user_login;
-						}
+						$include[$user->ID] = $user->user_login;
 					}
 				}
 			}
@@ -634,7 +624,6 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						'name'        => __( 'Author', 'learnpress' ),
 						'id'          => "{$prefix}course_author",
 						'desc'        => '',
-						'class'       => $class,
 						'multiple'    => false,
 						'type'        => 'select_advanced',
 						'placeholder' => __( 'Select author', 'learnpress' ),
