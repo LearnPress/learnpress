@@ -287,7 +287,7 @@ if ( !class_exists( 'LP_Archive_Courses_Shortcode' ) ) {
 		 * define static variable
 		 */
 		public static function init_const() {
-			static::$template_dir = LP_PLUGIN_PATH . '/inc/shortcodes/recent_courses/templates/';
+			static::$template_dir = LP_PLUGIN_PATH . '/inc/shortcodes/recent-courses/templates/';
 		}
 
 		/**

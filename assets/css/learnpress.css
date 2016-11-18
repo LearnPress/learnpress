@@ -2181,6 +2181,32 @@ body.content-item-only #learn-press-content-item.expand {
   z-index: 10;
   position: relative;
 }
+/* Shortcode/Widgets */
+.recent-courses-widget .course-meta-data > div,
+.popular-courses-widget .course-meta-data > div,
+.featured-courses-widget .course-meta-data > div {
+  display: inline-block;
+}
+.recent-courses-widget .course-meta-data > div:after,
+.popular-courses-widget .course-meta-data > div:after,
+.featured-courses-widget .course-meta-data > div:after {
+  content: '/';
+}
+.recent-courses-widget .course-meta-data > div:last-child:after,
+.popular-courses-widget .course-meta-data > div:last-child:after,
+.featured-courses-widget .course-meta-data > div:last-child:after {
+  content: '';
+}
+.recent-courses-widget .course-title,
+.popular-courses-widget .course-title,
+.featured-courses-widget .course-title {
+  margin: 5px 0;
+}
+.recent-courses-widget .course-entry,
+.popular-courses-widget .course-entry,
+.featured-courses-widget .course-entry {
+  margin-bottom: 20px;
+}
 @-moz-keyframes spin-12 {
   0% {
     -moz-transform: rotate(0deg) translate(0px);

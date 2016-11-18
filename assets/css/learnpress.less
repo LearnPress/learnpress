@@ -1756,6 +1756,28 @@ body.content-item-only {
     }
 }
 
+/* Shortcode/Widgets */
+.recent-courses-widget, .popular-courses-widget, .featured-courses-widget {
+    .course-meta-data {
+        > div {
+            display: inline-block;
+            &:after {
+                content: '/';
+            }
+            &:last-child:after {
+                content: '';
+            }
+        }
+
+    }
+    .course-title {
+        margin: 5px 0;
+    }
+    .course-entry {
+        margin-bottom: 20px;
+    }
+}
+
 @-moz-keyframes spin-12 {
     0% {
         -moz-transform: rotate(0deg) translate(0px);

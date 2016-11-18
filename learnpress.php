@@ -467,15 +467,15 @@ if ( !class_exists( 'LearnPress' ) ) {
 				// Include short-code file
 				require_once 'inc/shortcodes/profile-page.php';
 				require_once 'inc/shortcodes/archive-courses.php';
-				require_once 'inc/shortcodes/recent_courses/recent-courses.php';
-				require_once 'inc/shortcodes/popular_courses/popular-course.php';
-				require_once 'inc/shortcodes/featured_courses/featured-course.php';
+				require_once 'inc/shortcodes/recent-courses/recent-courses.php';
+				require_once 'inc/shortcodes/popular-courses/popular-course.php';
+				require_once 'inc/shortcodes/featured-courses/featured-course.php';
 			}
 
 			//include widgets
-			require_once 'inc/widgets/recent_courses/recent-course-widget.php';
-			require_once 'inc/widgets/popular_courses/popular-course-widget.php';
-			require_once 'inc/widgets/featured_courses/featured-course-widget.php';
+			require_once 'inc/widgets/recent-courses/recent-course-widget.php';
+			require_once 'inc/widgets/popular-courses/popular-course-widget.php';
+			require_once 'inc/widgets/featured-courses/featured-course-widget.php';
 
 			// include template functions
 			require_once( 'inc/lp-template-functions.php' );

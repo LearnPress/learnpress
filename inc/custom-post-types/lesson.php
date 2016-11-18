@@ -96,30 +96,32 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 
 		public function add_meta_boxes() {
 			$prefix     = '_lp_';
-			$meta_boxes = array(
-				'id'     => 'lesson_settings',
-				'title'  => __( 'Lesson Settings', 'learnpress' ),
-				'pages'  => array( LP_LESSON_CPT ),
-				'fields' => array(
-					array(
-						'name'         => __( 'Lesson Duration', 'learnpress' ),
-						'id'           => "{$prefix}duration",
-						'type'         => 'number',
-						'type'         => 'duration',//'number',
-						'default_time' => 'minute',
-						'desc'         => __( 'Duration of the lesson. Set 0 to disable', 'learnpress' ),
-						'std'          => 30,
-					),
-					array(
-						'name'    => __( 'Preview Lesson', 'learnpress' ),
-						'id'      => "{$prefix}preview",
-						'type'    => 'radio',
-						'desc'    => __( 'If this is a preview lesson, then student can view this lesson content without taking the course', 'learnpress' ),
-						'options' => array(
-							'yes' => __( 'Yes', 'learnpress' ),
-							'no'  => __( 'No', 'learnpress' ),
+			$meta_boxes = apply_filters( 'learn_press_lesson_meta_box_args',
+				array(
+					'id'     => 'lesson_settings',
+					'title'  => __( 'Lesson Settings', 'learnpress' ),
+					'pages'  => array( LP_LESSON_CPT ),
+					'fields' => array(
+						array(
+							'name'         => __( 'Lesson Duration', 'learnpress' ),
+							'id'           => "{$prefix}duration",
+							'type'         => 'number',
+							'type'         => 'duration',//'number',
+							'default_time' => 'minute',
+							'desc'         => __( 'Duration of the lesson. Set 0 to disable', 'learnpress' ),
+							'std'          => 30,
 						),
-						'std'     => 'no'
+						array(
+							'name'    => __( 'Preview Lesson', 'learnpress' ),
+							'id'      => "{$prefix}preview",
+							'type'    => 'radio',
+							'desc'    => __( 'If this is a preview lesson, then student can view this lesson content without taking the course', 'learnpress' ),
+							'options' => array(
+								'yes' => __( 'Yes', 'learnpress' ),
+								'no'  => __( 'No', 'learnpress' ),
+							),
+							'std'     => 'no'
+						)
 					)
 				)
 			);

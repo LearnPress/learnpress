@@ -81,9 +81,9 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 	 *
 	 */
 	public function __construct() {
-		$this->id          = 'paypal';
+		$this->id = 'paypal';
 
-		$this->method_title = 'Paypal';
+		$this->method_title       = 'Paypal';
 		$this->method_description = 'Make payment via Paypal';
 
 		$this->title       = 'Paypal';
@@ -275,7 +275,14 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 	}
 
 	public function get_payment_form() {
-		return $this->get_description();
+		$output = '';
+		if ( $this->settings->get( 'paypal_sandbox_mode' ) == 'yes' ) {
+			if ( !is_email( $this->settings->get( 'paypal_sandbox_email' ) ) ) {
+				$output .= __( 'Paypal settings is not setup', 'learnpress' );
+			}
+		}
+		$output .= $this->get_description();
+		return $output;
 	}
 
 	public function process_order_paypal_standard() {

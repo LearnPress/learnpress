@@ -382,18 +382,16 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						'std'  => 0,
 					),
 					array(
-						'name'    => __( 'Load media libraries', 'learnpress' ),
-						'id'      => "{$prefix}load_media",
+						'name'    => __( 'Featured', 'learnpress' ),
+						'id'      => "{$prefix}featured",
 						'type'    => 'radio',
-						'desc'    =>
-							__( wp_kses( 'Load media assets for shortcode. Only use this option if you use shortcode <code>[audio]</code> in your course or lesson content',
-								array( 'code' => array() ) ), 'learnpress' ),
+						'desc'    => __( 'Set course as featured', 'learnpress' ),
 						'std'     => 'no',
 						'options' => array(
-							'no'  => __( 'No', 'learnpress' ),
-							'yes' => __( 'Yes', 'learnpress' )
+							'yes' => __( 'Yes', 'learnpress' ),
+							'no'  => __( 'No', 'learnpress' )
 						)
-					),
+					)
 				)
 			);
 
