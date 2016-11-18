@@ -117,7 +117,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 
 			$prefix = '_lp_';
 
-			$author = get_post_meta( $course_id, $prefix . 'course_author', true );
+			$author = $_POST[$prefix . 'course_author'];
 			if ( isset( $author ) && $author ) {
 				$args = array(
 					'ID'          => $course_id,
@@ -625,6 +625,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						'id'          => "{$prefix}course_author",
 						'desc'        => '',
 						'multiple'    => false,
+						'allowClear'  => false,
 						'type'        => 'select_advanced',
 						'placeholder' => __( 'Select author', 'learnpress' ),
 						'options'     => $include
@@ -674,6 +675,22 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 
 				$view = learn_press_get_admin_view( 'meta-boxes/course/review-logs.php' );
 				include $view;
+			}
+		}
+
+		/**
+		 *
+		 */
+		public function save() {
+			$prefix = '_lp_';
+
+			$author = get_post_meta( get_the_ID(), $prefix . 'course_author', true );
+			if ( isset( $author ) && $author ) {
+				$args = array(
+					'ID'          => get_the_ID(),
+					'post_author' => $author
+				);
+				wp_update_post( $args );
 			}
 		}
 
