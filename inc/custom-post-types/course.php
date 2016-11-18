@@ -114,6 +114,17 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		}
 
 		public function update_course( $course_id ) {
+
+			$prefix = '_lp_';
+
+			$author = get_post_meta( $course_id, $prefix . 'course_author', true );
+			if ( isset( $author ) && $author ) {
+				$args = array(
+					'ID'          => $course_id,
+					'post_author' => $author
+				);
+				wp_update_post( $args );
+			}
 			/*learn_press_debug( $_REQUEST );
 			die();*/
 		}
@@ -309,6 +320,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			new RW_Meta_Box( self::settings_meta_box() );
 			new RW_Meta_Box( self::assessment_meta_box() );
 			new RW_Meta_Box( self::payment_meta_box() );
+			new RW_Meta_Box( self::author_meta_box() );
 			parent::add_meta_boxes();
 		}
 
@@ -577,6 +589,51 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 				)
 			);
 			return apply_filters( 'learn_press_course_payment_meta_box_args', $meta_box );
+		}
+
+		/**
+		 * Course author
+		 *
+		 * @return mixed|null|void
+		 */
+		public static function author_meta_box() {
+
+			$prefix = '_lp_';
+
+			$include = array();
+			$role    = array( 'administrator', 'contributor', 'author', 'editor', 'subscriber', 'lp_teacher' );
+
+			$role = apply_filters( 'learn_press_course_author_role_meta_box', $role );
+
+			foreach ( $role as $_role ) {
+				$users_by_role = get_users( array( 'role' => $_role ) );
+				if ( $users_by_role ) {
+					foreach ( $users_by_role as $user ) {
+						$include[$user->ID] = $user->user_login;
+					}
+				}
+			}
+
+			$meta_box = array(
+				'id'       => 'author_settings',
+				'title'    => __( 'Author Settings', 'learnpress' ),
+				'pages'    => array( LP_COURSE_CPT ),
+				'priority' => 'high',
+				'fields'   => array(
+					array(
+						'name'        => __( 'Author', 'learnpress' ),
+						'id'          => "{$prefix}course_author",
+						'desc'        => '',
+						'multiple'    => false,
+						'type'        => 'select_advanced',
+						'placeholder' => __( 'Select author', 'learnpress' ),
+						'options'     => $include
+					)
+				)
+			);
+
+			return apply_filters( 'learn_press_course_author_meta_box', $meta_box );
+
 		}
 
 		/**
