@@ -173,7 +173,7 @@ class LP_Assets {
 
 	public static function add_default_scripts( &$scripts ) {
 
-		$default_path = '/wp-content/plugins/learnpress/assets/';
+		$default_path = plugins_url('learnpress/assets/');
 		$suffix       = '';
 		$deps         = array( 'jquery', 'backbone', 'utils' );
 
@@ -238,7 +238,7 @@ class LP_Assets {
 	}
 
 	public static function add_default_styles( &$styles ) {
-		$default_path = '/wp-content/plugins/learnpress/assets/';
+		$default_path = plugins_url('learnpress/assets/');
 		$suffix       = '';
 		// global
 		$styles->add( 'learn-press-global', $default_path . 'css/global' . $suffix . '.css' );
