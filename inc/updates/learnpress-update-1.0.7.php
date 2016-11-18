@@ -22,7 +22,7 @@ if ( LEARN_PRESS_UPDATE_DATABASE ) {
 
         $table = $wpdb->prefix . 'learnpress_user_course_items';
         if ( $wpdb->get_var("SHOW TABLES LIKE '{$table}'") === $table ) {
-            $wpdb->query( "DELETE FROM {$wpdb->prefix}learnpress_user_course_items" );
+            //$wpdb->query( "DELETE FROM {$wpdb->prefix}learnpress_user_course_items" );
             learn_press_reset_auto_increment( "learnpress_user_course_items" );
 
             $query = $wpdb->prepare( "
@@ -46,7 +46,7 @@ if ( LEARN_PRESS_UPDATE_DATABASE ) {
 
         $table = $wpdb->prefix . 'learnpress_user_course_itemmeta';
         if ( $wpdb->get_var("SHOW TABLES LIKE '{$table}'") === $table ) {
-            $wpdb->query( "DELETE FROM {$wpdb->prefix}learnpress_user_course_itemmeta" );
+            //$wpdb->query( "DELETE FROM {$wpdb->prefix}learnpress_user_course_itemmeta" );
             learn_press_reset_auto_increment( "learnpress_user_course_itemmeta" );
             $query = $wpdb->prepare( "
                     INSERT INTO {$wpdb->prefix}learnpress_user_course_itemmeta(learnpress_user_course_item_id, meta_key, meta_value)

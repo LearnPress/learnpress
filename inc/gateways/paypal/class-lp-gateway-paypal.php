@@ -275,13 +275,21 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 	}
 
 	public function get_payment_form() {
-		$output = '';
-		if ( $this->settings->get( 'paypal_sandbox_mode' ) == 'yes' ) {
-			if ( !is_email( $this->settings->get( 'paypal_sandbox_email' ) ) ) {
-				$output .= __( 'Paypal settings is not setup', 'learnpress' );
+		$output = $this->get_description();;
+		$error  = false;
+		if ( $this->settings->get( 'paypal_sandbox' ) == 'yes' ) {
+			if ( false == is_email( $this->settings->get( 'paypal_sandbox_email' ) ) ) {
+				$error = true;
+			}
+		} else {
+			if ( false == is_email( $this->settings->get( 'paypal_email' ) ) ) {
+				$error = true;
 			}
 		}
-		$output .= $this->get_description();
+		if ( $error ) {
+			$output .= learn_press_get_message( __( 'Paypal settings is not setup', 'learnpress' ), 'error' );
+			$output .= '<input type="hidden" name="payment_method_paypal-error" value="yes" />';
+		}
 		return $output;
 	}
 

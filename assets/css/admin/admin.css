@@ -84,6 +84,11 @@
   border-left: 1px solid #DDD;
   margin-left: -30px;
 }
+#learn-press-admin-settings .learn-press-settings-wrap:after {
+  content: '';
+  display: block;
+  clear: both;
+}
 #learn-press-admin-settings.no-subtabs .learn-press-settings-wrap {
   float: none;
   margin-left: 0;

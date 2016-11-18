@@ -1254,11 +1254,13 @@ class LP_Abstract_User {
 	}
 
 	public function has_course_status( $course_id, $statuses ) {
-		$status = $this->get_course_status( $course_id );
-		if ( is_array( $statuses ) ) {
-			return in_array( $status, $statuses );
-		} elseif ( is_string( $statuses ) ) {
-			return $statuses == $status;
+		if($this->has_purchased_course($course_id)) {
+			$status = $this->get_course_status( $course_id );
+			if ( is_array( $statuses ) ) {
+				return in_array( $status, $statuses );
+			} elseif ( is_string( $statuses ) ) {
+				return $statuses == $status;
+			}
 		}
 		return false;
 	}
@@ -1389,10 +1391,19 @@ class LP_Abstract_User {
 		}
 	}
 
-	public function get_orders() {
+	public function get_orders( $last_order = true ) {
 		_learn_press_get_user_course_orders( $this->id );
-		$orders = LP_Cache::get_user_course_order( false, array() );
-		return !empty( $orders[$this->id] ) ? $orders[$this->id] : false;
+		$all_orders = LP_Cache::get_user_course_order( false, array() );
+		$my_orders  = !empty( $all_orders[$this->id] ) ? $all_orders[$this->id] : false;
+		if ( $last_order && $my_orders ) {
+			$last_orders = array();
+			foreach ( $my_orders as $course_id => $orders ) {
+				$last_orders[$course_id] = array_pop( $orders );
+			}
+		} else {
+			$last_orders = $my_orders;
+		}
+		return $last_orders;
 	}
 
 
@@ -1707,7 +1718,7 @@ class LP_Abstract_User {
 	 */
 	public function is_exists_lesson( $lesson_id, $course_id ) {
 		global $wpdb;
-		$query = $wpdb->prepare( "
+		$query   = $wpdb->prepare( "
 			SELECT *
 			FROM {$wpdb->prefix}learnpress_user_items
 			WHERE user_id = %d
@@ -2014,20 +2025,7 @@ class LP_Abstract_User {
 	 * @return bool
 	 */
 	public function has_purchased_course( $course_id ) {
-		/*$purchased = false;
-		$orders    = $this->get_orders();
-		$order     = !empty( $orders[$course_id] ) ? $orders[$course_id] : false;
-		if ( $order ) {
-			$purchased = $order->post_status = 'lp-completed';
-		}*/
 		return apply_filters( 'learn_press_user_has_purchased_course', $this->get_order_status( $course_id ) == 'lp-completed', $course_id, $this->id );
-
-		$purchased = false;
-		$order     = $this->get_course_order( $course_id, 'object' );
-		if ( $order && $order->has_status( array( 'processing', 'completed' ) ) ) {
-			$purchased = $order->id;
-		}
-		return apply_filters( 'learn_press_user_has_purchased_course', $purchased, $course_id, $this->id, $order ? $order->id : 0 );
 	}
 
 	public function has_ordered_course( $course_id ) {
@@ -2104,34 +2102,6 @@ class LP_Abstract_User {
 		$order  = !empty( $orders[$course_id] ) ? $orders[$course_id] : false;
 
 		return $order ? ( $return == 'object' ? LP_Order::instance( $order->ID ) : $order->ID ) : false;
-		global $wpdb;
-		static $orders = array();
-
-		$key = sprintf( '%d_%d', $this->id, $course_id );
-
-		if ( empty( $orders[$key] ) ) {
-			$query = $wpdb->prepare( "
-				SELECT order_id
-				FROM {$wpdb->posts} o
-				INNER JOIN {$wpdb->postmeta} om ON om.post_id = o.ID AND om.meta_key = %s AND om.meta_value = %d
-				INNER JOIN {$wpdb->learnpress_order_items} oi ON o.ID = oi.order_ID
-				INNER JOIN {$wpdb->learnpress_order_itemmeta} oim ON oim.learnpress_order_item_id= oi.order_item_id AND oim.meta_key = %s AND oim.meta_value = %d
-				WHERE o.post_status IN ('lp-processing', 'lp-pending', 'lp-completed')
-				ORDER BY order_id DESC
-			", '_user_id', $this->id, '_course_id', $course_id );
-
-			$order_id = $wpdb->get_var( $query );
-			//$this->_parse_item_order_of_course( $course_id );
-			$orders[$key] = $order_id;
-		} else {
-			$order_id = $orders[$key];
-		}
-		if ( $order_id && $return == 'object' ) {
-			$order = LP_Order::instance( $order_id );
-		} else {
-			$order = $order_id;
-		}
-		return $order;
 	}
 
 	/**
@@ -2719,5 +2689,9 @@ class LP_Abstract_User {
 		}
 		///
 		return $url;
+	}
+
+	public function can_access_course( $course_id ) {
+		return apply_filters( 'learn_press_user_can_access_course', $this->get_order_status( $course_id ) == 'lp-completed', $course_id, $this->id );
 	}
 }

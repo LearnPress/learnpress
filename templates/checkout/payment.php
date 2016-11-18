@@ -4,7 +4,7 @@
  *
  * @author        ThimPress
  * @package       LearnPress/Templates
- * @version       1.0
+ * @version       2.0.4
  */
 
 if ( !defined( 'ABSPATH' ) ) {
@@ -63,7 +63,7 @@ $count_gateways               = !empty( $available_gateways ) ? sizeof( $availab
 
 			<?php do_action( 'learn_press_order_before_submit' ); ?>
 
-			<?php echo apply_filters( 'learn_press_order_button_html', '<input type="submit" class="button alt" name="learn_press_checkout_place_order" id="learn-press-checkout" data-processing-text="' . esc_attr( $order_button_text_processing ) . '" value="' . esc_attr( $order_button_text ) . '" data-value="' . esc_attr( $order_button_text ) . '" />' ); ?>
+			<?php echo apply_filters( 'learn_press_order_button_html', '<input type="submit" class="button alt" name="learn_press_checkout_place_order" id="learn-press-checkout-place-order" data-processing-text="' . esc_attr( $order_button_text_processing ) . '" value="' . esc_attr( $order_button_text ) . '" data-value="' . esc_attr( $order_button_text ) . '" disabled="disabled" />' ); ?>
 
 			<?php do_action( 'learn_press_order_after_submit' ); ?>
 
@@ -72,6 +72,3 @@ $count_gateways               = !empty( $available_gateways ) ? sizeof( $availab
 	<?php endif; ?>
 
 </div>
-
-<div class="learn-press"></div>
-<div class="adsad learn-press-asdasd"></div>

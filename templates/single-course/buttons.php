@@ -85,8 +85,11 @@ $retake_button_text   = apply_filters( 'learn_press_retake_button_text', __( 'Re
 		</form>
 	<?php else: ?>
 
-		<?php learn_press_display_message( '<p>' . apply_filters( 'learn_press_user_can_not_purchase_course_message', __( 'Sorry, you can not purchase this course', 'learnpress' ), $course, $user ) . '</p>' ); ?>
-
+		<?php if ( $user->get_order_status( $course->id ) != 'lp-completed' ): ?>
+			<?php learn_press_display_message( '<p>' . apply_filters( 'learn_press_user_course_pending_message', __( 'You have purchased this course. Please wait for approval.', 'learnpress' ), $course, $user ) . '</p>' ); ?>
+		<?php else: ?>
+			<?php learn_press_display_message( '<p>' . apply_filters( 'learn_press_user_can_not_purchase_course_message', __( 'Sorry, you can not purchase this course', 'learnpress' ), $course, $user ) . '</p>' ); ?>
+		<?php endif; ?>
 	<?php endif; ?>
 
 	<?php do_action( 'learn_press_after_course_buttons', $course->id ); ?>
