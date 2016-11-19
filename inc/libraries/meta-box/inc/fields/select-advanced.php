@@ -55,12 +55,18 @@ if ( !class_exists( 'RWMB_Select_Advanced_Field' ) ) {
 		static function normalize_field( $field ) {
 			$field = parent::normalize_field( $field );
 
+			if ( isset( $field['allowClear'] ) && $field['allowClear'] === false ) {
+				$field['allowClear'] = false;
+			} else {
+				$field['allowClear'] = true;
+			}
+
 			$field = wp_parse_args( $field, array(
 				'js_options' => array(),
 			) );
 
 			$field['js_options'] = wp_parse_args( $field['js_options'], array(
-				'allowClear'  => $field['allowClear'] === false ? false : true,
+				'allowClear'  => $field['allowClear'],
 				'width'       => 'resolve',
 				'placeholder' => $field['placeholder'],
 			) );
