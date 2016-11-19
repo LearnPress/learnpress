@@ -9,14 +9,14 @@ if ( LEARN_PRESS_UPDATE_DATABASE ) {
 	$wpdb->query( "START TRANSACTION;" );
 
 	try {
-		$table = $wpdb->prefix . 'learnpress_user_items';
+		/*$table = $wpdb->prefix . 'learnpress_user_items';
 		if ( $wpdb->get_var( "SHOW TABLES LIKE '{$table}'" ) === $table ) {
-			$wpdb->query( "TRUNCATE {$table}" );
+			//$wpdb->query( "TRUNCATE {$table}" );
 		}
 		$table = $wpdb->prefix . 'learnpress_user_itemmeta';
 		if ( $wpdb->get_var( "SHOW TABLES LIKE '{$table}'" ) === $table ) {
-			$wpdb->query( "TRUNCATE {$table}" );
-		}
+			//$wpdb->query( "TRUNCATE {$table}" );
+		}*/
 
 		$table = $wpdb->prefix . 'learnpress_user_quizzes';
 		if ( $wpdb->get_var( "SHOW TABLES LIKE '{$table}'" ) === $table ) {

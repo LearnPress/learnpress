@@ -7,7 +7,7 @@ Author: ThimPress
 Version: 2.0.4
 Author URI: http://thimpress.com
 Requires at least: 3.8
-Tested up to: 5.6.1
+Tested up to: 4.6.1
 
 Text Domain: learnpress
 Domain Path: /languages/
