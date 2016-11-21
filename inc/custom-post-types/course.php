@@ -620,7 +620,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 				'id'       => 'author_settings',
 				'title'    => __( 'Author Settings', 'learnpress' ),
 				'pages'    => array( LP_COURSE_CPT ),
-				'priority' => 'high',
+				'priority' => 'default',
 				'fields'   => array(
 					array(
 						'name'        => __( 'Author', 'learnpress' ),
