@@ -320,7 +320,9 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			new RW_Meta_Box( self::settings_meta_box() );
 			new RW_Meta_Box( self::assessment_meta_box() );
 			new RW_Meta_Box( self::payment_meta_box() );
-			new RW_Meta_Box( self::author_meta_box() );
+			if ( is_super_admin() ) {
+				new RW_Meta_Box( self::author_meta_box() );
+			}
 			parent::add_meta_boxes();
 		}
 
@@ -601,7 +603,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			$prefix = '_lp_';
 
 			$include = array();
-			$role    = array( 'administrator', 'contributor', 'author', 'editor', 'subscriber', 'lp_teacher' );
+			$role    = array( 'administrator', 'lp_teacher' );
 
 			$role = apply_filters( 'learn_press_course_author_role_meta_box', $role );
 
