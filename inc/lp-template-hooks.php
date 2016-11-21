@@ -198,3 +198,7 @@ if( !function_exists( 'learn_press_filter_get_comments_number' )){
 }
 
 add_filter( 'get_comments_number', 'learn_press_filter_get_comments_number' );
+
+
+add_action('learn_press_content_coming_soon_message', 'learn_press_content_coming_soon_message_callback');
+add_action('learn_press_content_coming_soon_countdown', 'learn_press_content_coming_soon_countdown_callback');

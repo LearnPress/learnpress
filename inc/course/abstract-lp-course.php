@@ -47,6 +47,9 @@ abstract class LP_Abstract_Course {
 	 * @var array
 	 */
 	protected static $_lessons = array();
+	
+	
+	protected $_is_coming_soon = null;
 
 	/**
 	 * Constructor gets the post object and sets the ID for the loaded course.
@@ -1480,6 +1483,40 @@ abstract class LP_Abstract_Course {
 		}
 
 		return $items;
+	}
+
+	public function is_coming_soon(){
+		$end_time = $current_time = 0;
+		if( $this->_is_coming_soon === null ){
+			$this->_is_coming_soon = false;
+			if( 'yes' === $this->coming_soon ) {
+				if( $this->coming_soon_end_time && $this->coming_soon_end_time !== '' ) {
+					$end_time = strtotime( $this->coming_soon_end_time );
+					$current_time = current_time( 'timestamp' );
+				}
+				if( $end_time == 0 || $end_time > $current_time ) {
+					$this->_is_coming_soon = true;
+				}
+			}
+		}
+		
+		return $this->_is_coming_soon;
+	}
+	
+	public function get_coming_soon_end_time(){
+		$end_time = 0;
+		if( $this->is_coming_soon() ) {
+			$end_time = strtotime( $this->coming_soon_end_time );
+		}
+		return $end_time;
+	}
+	
+	public function is_show_coming_soon_countdown(){
+		if( 'yes' == $this->coming_soon_countdown){
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 }

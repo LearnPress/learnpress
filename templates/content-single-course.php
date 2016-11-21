@@ -25,8 +25,10 @@ if ( post_password_required() ) {
 <?php do_action( 'learn_press_before_single_course_summary' ); ?>
 
 <div class="course-summary">
-
-	<?php if ( $user->has_course_status( $course->id, array( 'enrolled', 'finished' ) ) || !$course->is_require_enrollment() ) { ?>
+	
+	<?php if ( $course->is_coming_soon() ) { ?>
+		<?php learn_press_get_template( 'single-course/content-coming-soon.php' ); ?>
+	<?php } elseif ( $user->has_course_status( $course->id, array( 'enrolled', 'finished' ) ) || !$course->is_require_enrollment() ) { ?>
 		<?php learn_press_get_template( 'single-course/content-learning.php' ); ?>
 
 	<?php } else { ?>
@@ -41,4 +43,10 @@ if ( post_password_required() ) {
 
 <?php do_action( 'learn_press_after_single_course' ); ?>
 
-<?php do_action( 'learn_press_after_main_content' ); ?>
+<?php 
+if( ! $course->is_coming_soon() ) {
+	do_action( 'learn_press_after_main_content' );	
+}
+
+
+?>

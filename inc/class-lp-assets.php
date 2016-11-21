@@ -192,6 +192,8 @@ class LP_Assets {
 		$scripts->add( 'learn-press-become-teacher', $default_path . 'js/frontend/become-teacher' . $suffix . '.js', $deps, false, 1 );
 		$scripts->add( 'learn-press-profile', $default_path . 'js/frontend/profile' . $suffix . '.js', $deps, false, 1 );
 		$scripts->add( 'learn-press-jquery-cropit', $default_path . 'js/jquery.cropit' . $suffix . '.js', $deps, false, 1 );
+		$scripts->add( 'learn-press-jquery-mb-coming-soon', $default_path . 'js/jquery.mb-comingsoon' . $suffix . '.js', $deps, false, 1 );
+		$scripts->add( 'learn-press-course-coming-soon', $default_path . 'js/frontend/course_coming_soon' . $suffix . '.js', $deps, false, 1 );
 
 		// admin
 		$scripts->add( 'learn-press-admin', $default_path . 'js/admin/admin' . $suffix . '.js', $deps, false, 1 );
@@ -257,6 +259,7 @@ class LP_Assets {
 
 		// frontend
 		$styles->add( 'learn-press-style', $default_path . 'css/learnpress.css' );
+		$styles->add( 'learn-press-course-coming-soon', $default_path . 'css/learnpress-course-coming-soon.css' );
 	}
 
 	/**
@@ -747,6 +750,10 @@ class LP_Assets {
 		self::enqueue_script( 'learn-press-js' );
 		if ( learn_press_is_course() ) {
 			self::enqueue_script( 'learn-press-single-course' );
+			self::enqueue_style( 'learn-press-course-coming-soon' );
+			self::enqueue_script( 'learn-press-jquery-mb-coming-soon' );
+			self::enqueue_script( 'learn-press-course-coming-soon' );
+			
 			self::enqueue_script( 'learn-press-course-quiz' );
 			self::enqueue_script( 'learn-press-course-lesson' );
 			if ( !$user->has_course_status( null, array( 'enrolled', 'finished' ) ) ) {
