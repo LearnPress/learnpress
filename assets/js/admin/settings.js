@@ -160,19 +160,7 @@
 			} else if (e.keyCode == 27 && e.type == 'keydown') {
 				$(this).siblings('a').trigger('click')
 			}
-		}).on( 'change', '.woo_payment_type', function( e ) {
-                    e.preventDefault();
-
-                    var _this = $( this ),
-                            _value = _this.val(),
-                            _wrapper = $( '.woocommercer_payment_available' );
-                    if ( _value === 'payment' ) {
-                        _wrapper.removeClass( 'hide-if-js' );
-                    } else {
-                        _wrapper.addClass( 'hide-if-js' );
-                    }
-                    return false;
-                } );
+		});
 		$('#learn-press-admin-settings').on('click', '.nav-tab, .subsubsub > li > a', function (e) {
 			e.preventDefault();
 			var redirect = $(this).attr('href'),
@@ -196,8 +184,9 @@
 		});
 
 		if ($('#learn-press-admin-settings .subsubsub').length) {
-			$('#learn-press-admin-settings').removeClass('no-subtabs')
+			$('#learn-press-admin-settings').removeClass('no-subtabs');
 		}
+		$('.learn-press-settings-wrap').addClass('ready')
 		// hold current settings to know if user changed anything
 		oldData = $('#mainform').serialize();
 	}

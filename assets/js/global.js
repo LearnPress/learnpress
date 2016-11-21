@@ -823,7 +823,7 @@ if (typeof window.LP == 'undefined') {
 		},
 		receiveMessage: function (evt, b) {
 			var target = event.origin || event.originalEvent.origin,
-				data = event.data || event.originalEvent.data;
+				data = event.data || event.originalEvent.data || '';
 			var json = data.indexOf('{') == 0 ? LP.parseJSON(data) : false;
 			LP.Hook.doAction('learn_press_receive_message', json ? json : data, target);
 		}

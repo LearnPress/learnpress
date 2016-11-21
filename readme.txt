@@ -182,7 +182,7 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Screenshots ==  
 
-1. Curriculumn - Drag and Drop lesson or quiz.
+1. Curriculum - Drag and Drop lesson or quiz.
 2. Lesson content.
 3. Quiz preview.
 4. General settings.

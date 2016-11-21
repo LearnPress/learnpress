@@ -64,7 +64,6 @@
     .nav-tab-wrapper {
         margin-bottom: 20px;
     }
-
     .subsubsub {
         float: left;
         width: 240px;
@@ -89,6 +88,7 @@
         position: relative;
         width: 100%;
         box-sizing: border-box;
+        opacity: 0;
         &:before {
             content: '';
             position: absolute;
@@ -101,6 +101,9 @@
             content: '';
             display: block;
             clear: both;
+        }
+        &.ready{
+            opacity: 1;
         }
     }
     &.no-subtabs {

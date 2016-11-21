@@ -75,6 +75,7 @@
   position: relative;
   width: 100%;
   box-sizing: border-box;
+  opacity: 0;
 }
 #learn-press-admin-settings .learn-press-settings-wrap:before {
   content: '';
@@ -88,6 +89,9 @@
   content: '';
   display: block;
   clear: both;
+}
+#learn-press-admin-settings .learn-press-settings-wrap.ready {
+  opacity: 1;
 }
 #learn-press-admin-settings.no-subtabs .learn-press-settings-wrap {
   float: none;
