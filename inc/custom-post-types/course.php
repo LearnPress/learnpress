@@ -115,16 +115,6 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 
 		public function update_course( $course_id ) {
 
-			$prefix = '_lp_';
-
-			$author = $_POST[$prefix . 'course_author'];
-			if ( isset( $author ) && $author ) {
-				$args = array(
-					'ID'          => $course_id,
-					'post_author' => $author
-				);
-				wp_update_post( $args );
-			}
 			/*learn_press_debug( $_REQUEST );
 			die();*/
 		}
@@ -617,7 +607,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			}
 
 			$meta_box = array(
-				'id'       => 'author_settings',
+				'id'       => 'course_authors',
 				'title'    => __( 'Author Settings', 'learnpress' ),
 				'pages'    => array( LP_COURSE_CPT ),
 				'priority' => 'default',
