@@ -14,6 +14,7 @@
 			_.bindAll(this, 'resetModal', 'updateModal', '_updateDescription');
 			LP.Hook.addAction('learn_press_message_box_before_resize', this.resetModal);
 			LP.Hook.addAction('learn_press_message_box_resize', this.updateModal);
+			$(document).on('learn_press_modal_search_items_response', this.addItem2);
 			this.userSuggest();
 		},
 		_updateDescription: function (e) {
@@ -62,14 +63,75 @@
 		updateModal       : function ($app) {
 			this.$('#learn-press-courses-result').css('height', '').css('overflow', '');
 		},
-		_addItem          : function (e) {
-			var $form = $('#learn-press-modal-add-order-courses');
-			if ($form.length == 0) {
-				$form = $(wp.template('learn-press-modal-add-order-courses')());
-			}
-			LP.MessageBox.show($form);
+		showFormItems           : function ( type ) {
+			var $form = LP.ModalSearchItems({
+				template  : 'tmpl-learn-press-search-items',
+				type      : 'lp_course',
+				//section   : $button.closest('.curriculum-section'),
+				context   : 'course-items',
+				context_id: $('#post_ID').val(),
+				//exclude   : this.getSelectedItems(),
+				notices   : false
+			});
+			LP.MessageBox.show($form.$el);
+			$form.$el.find('header input').focus();
+
 		},
-		addItem           : function (e) {
+		_addItem          : function (e) {
+			this.showFormItems('lp_course','add-lp_course')
+//			var $form = $('#learn-press-modal-add-order-courses');
+//			if ($form.length == 0) {
+//				$form = $(wp.template('learn-press-modal-add-order-courses')());
+//			}
+//			LP.MessageBox.show($form);
+		},
+		addItem2           : function (e, $view, $items) {
+			var that		= this;
+			var selected	= $items; //$form.find('li:visible input:checked'),
+			if (e.ctrlKey) {
+				//return true;
+			}
+			var ids = [];
+			selected.each(function () {
+				ids.push( $(this).data('id') );
+			});
+
+			$.ajax({
+				url     : LP_Settings.ajax,
+				data    : {
+					action  : 'learnpress_add_item_to_order',
+					order_id: parseInt($('input#post_ID').val()),
+					item_id : ids,
+					nonce   : $('#learn-press-modal-add-order-courses').attr('data-nonce')
+				},
+				dataType: 'text',
+				type    : 'post',
+				success : function (response) {
+					LP.log(response);
+					response = LP.parseJSON(response);
+					if (response.result === 'success') {
+						var $order_table = $('.order-items'),
+							$no_item = $order_table.find('.no-order-items');
+						$(response.item_html).insertBefore($no_item);
+						$order_table.find('.order-subtotal').html(response.order_data.subtotal_html);
+						$order_table.find('.order-total').html(response.order_data.total_html);
+
+					selected.each(function () {
+						console.log($(this));
+						$(this).remove();
+					});
+						$no_item.addClass('hide-if-js');
+					}
+				}
+			});
+
+			return false;
+                // restart sortable
+//				 _makeListSortable();
+		},
+		addItem           : function (e, ids) {
+			console.log('add item to order');
+
 			var that = this,
 				$item = $(e.target);
 			if (e.ctrlKey) {

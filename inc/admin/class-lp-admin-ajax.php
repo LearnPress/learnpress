@@ -513,10 +513,10 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			}
 
 			// verify nonce
-			$nonce = learn_press_get_request( 'nonce' );
-			if ( !wp_verify_nonce( $nonce, 'add_item_to_order' ) ) {
-				die( __( 'Check nonce failed', 'learnpress' ) );
-			}
+//			$nonce = learn_press_get_request( 'nonce' );
+//			if ( !wp_verify_nonce( $nonce, 'add_item_to_order' ) ) {
+//				die( __( 'Check nonce failed', 'learnpress' ) );
+//			}
 
 			// validate order
 			$order_id = learn_press_get_request( 'order_id' );
@@ -525,51 +525,59 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			}
 
 			// validate item
-			$item_id = learn_press_get_request( 'item_id' );
-			$post    = get_post( $item_id );
-			if ( !$post || ( 'lp_course' !== $post->post_type ) ) {
-				die( __( 'Course invalid', 'learnpress' ) );
-			}
+			$item_ids = learn_press_get_request( 'item_id' );
+			$item_html = '';
+			$order_data = array();
+//			$order  = learn_press_get_order( $order_id );
+
+//			echo '<pre>'.print_r($item_ids, true).'</pre>';
+//			exit(''.__LINE__);
+			foreach( $item_ids as $item_id ):
+				$post    = get_post( $item_id );
+				if ( !$post || ( 'lp_course' !== $post->post_type ) ) {
+					continue;
+//					die( __( 'Course invalid', 'learnpress' ) );
+				}
+				$course = learn_press_get_course( $post->ID );
+				$item = array(
+					'course_id' => $course->id,
+					'name'      => $course->get_title(),
+					'quantity'  => 1,
+					'subtotal'  => $course->get_price(),
+					'total'     => $course->get_price()
+				);
+
+				// Add item
+				$item_id = learn_press_add_order_item( $order_id, array(
+					'order_item_name' => $item['name']
+				) );
+
+				$item['id'] = $item_id;
+
+				// Add item meta
+				if ( $item_id ) {
+					$item = apply_filters( 'learn_press_ajax_order_item', $item );
+
+					learn_press_add_order_item_meta( $item_id, '_course_id', $item['course_id'] );
+					learn_press_add_order_item_meta( $item_id, '_quantity', $item['quantity'] );
+					learn_press_add_order_item_meta( $item_id, '_subtotal', $item['subtotal'] );
+					learn_press_add_order_item_meta( $item_id, '_total', $item['total'] );
+
+					do_action( 'learn_press_ajax_add_order_item_meta', $item );
+				}
+
+				$order_data                  = learn_press_update_order_items( $order_id );
+				$currency_symbol             = learn_press_get_currency_symbol( $order_data['currency'] );
+				$order_data['subtotal_html'] = learn_press_format_price( $order_data['subtotal'], $currency_symbol );
+				$order_data['total_html']    = learn_press_format_price( $order_data['total'], $currency_symbol );
+
+				ob_start();
+				include learn_press_get_admin_view( 'meta-boxes/order/order-item.php' );
+				$item_html .= ob_get_clean();
+			endforeach;
 
 
-			$course = learn_press_get_course( $post->ID );
-			$order  = learn_press_get_order( $order_id );
-
-			$item = array(
-				'course_id' => $course->id,
-				'name'      => $course->get_title(),
-				'quantity'  => 1,
-				'subtotal'  => $course->get_price(),
-				'total'     => $course->get_price()
-			);
-
-			// Add item
-			$item_id = learn_press_add_order_item( $order_id, array(
-				'order_item_name' => $item['name']
-			) );
-
-			$item['id'] = $item_id;
-
-			// Add item meta
-			if ( $item_id ) {
-				$item = apply_filters( 'learn_press_ajax_order_item', $item );
-
-				learn_press_add_order_item_meta( $item_id, '_course_id', $item['course_id'] );
-				learn_press_add_order_item_meta( $item_id, '_quantity', $item['quantity'] );
-				learn_press_add_order_item_meta( $item_id, '_subtotal', $item['subtotal'] );
-				learn_press_add_order_item_meta( $item_id, '_total', $item['total'] );
-
-				do_action( 'learn_press_ajax_add_order_item_meta', $item );
-			}
-
-			$order_data                  = learn_press_update_order_items( $order_id );
-			$currency_symbol             = learn_press_get_currency_symbol( $order_data['currency'] );
-			$order_data['subtotal_html'] = learn_press_format_price( $order_data['subtotal'], $currency_symbol );
-			$order_data['total_html']    = learn_press_format_price( $order_data['total'], $currency_symbol );
-
-			ob_start();
-			include learn_press_get_admin_view( 'meta-boxes/order/order-item.php' );
-			$item_html = ob_get_clean();
+			
 
 			learn_press_send_json(
 				array(
