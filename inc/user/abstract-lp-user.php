@@ -342,13 +342,23 @@ class LP_Abstract_User {
 	}
 
 	public function get_quiz_time_remaining( $quiz_id, $course_id = 0 ) {
-		$course_id = $this->_get_course_id( $course_id );
-		$remaining = false;
-		if ( $progress = $this->get_quiz_progress( $quiz_id, $course_id ) ) {
-			if ( $progress->status != 'completed' ) {
-				$quiz      = LP_Quiz::get_quiz( $quiz_id );
-				$remaining = $quiz->duration + strtotime( $progress->start ) - current_time( 'timestamp' );
+		$course_id	= $this->_get_course_id( $course_id );
+		$remaining	= false;
+		$progress	= $this->get_quiz_progress( $quiz_id, $course_id );
+		if ( $progress && $progress->status != 'completed' ) {
+			$quiz      = LP_Quiz::get_quiz( $quiz_id );
+			$current_time = current_time( 'timestamp' );
+			$progress_start = strtotime($progress->start,$current_time);
+			$remaining = intval($quiz->duration) + $progress_start - $current_time;
+			if( isset( $_GET['lp_debug'] ) && $_GET['lp_debug'] == 'time_remaining' ) {
+				echo '<hr/>$current_time: ' . $current_time;
+				echo '<hr/>$progress_start: ' . $progress_start;
+				echo '<hr/>$quiz->duration: ' . intval($quiz->duration);
+				echo '<hr/>$remaining: ' . $remaining;
 			}
+		}
+		if( isset($_GET['lp_debug']) && $_GET['lp_debug'] == 'time_remaining' ){
+			echo '<hr/>$remaining: '.$remaining;
 		}
 		return apply_filters( 'learn_press_user_quiz_time_remaining', $remaining, $quiz_id, $course_id, $this->id );
 	}
@@ -891,6 +901,8 @@ class LP_Abstract_User {
 	 */
 	public function get_quiz_progress( $quiz_id, $course_id = 0 ) {
 		return $this->get_quiz_results( $quiz_id, $course_id );
+		/** 
+		 * 
 		if ( !$course_id ) {
 			$course_id = get_the_ID();
 		}
@@ -899,8 +911,9 @@ class LP_Abstract_User {
 		if ( $history ) {
 			$progress = reset( $history );
 		}
-
 		return apply_filters( 'learn_press_user_quiz_progress', $progress, $quiz_id, $course_id, $this->id );
+		 * 
+		 **/
 	}
 
 	/**

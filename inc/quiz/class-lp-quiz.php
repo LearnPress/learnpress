@@ -180,8 +180,7 @@ class LP_Quiz extends LP_Abstract_Course_Item {
 			}
 			if ( $js['status'] == 'started' ) {
 				if ( $history = $user->get_quiz_results( $this->id, $course_id ) ) {
-
-					$js['startTime']  = strtotime( $history->start );
+					$js['startTime']  = strtotime( $history->start, current_time( 'timestamp' ) );
 					$js['serverTime'] = date( 'Z' ) / 3600;//date_timezone_get( date_default_timezone_get() );// get_option('gmt_offset');
 				}
 			}
