@@ -170,6 +170,45 @@ function learn_press_dropdown_question_types( $args = array() ) {
 }
 
 /**
+ * List all registered question types into dropdown
+ *
+ * @param array
+ *
+ * @return string
+ */
+function learn_press_field_question_duration( $args = array() ) {
+	$args = wp_parse_args(
+		$args,
+		array(
+			'name'		=> 'learn-press-question-duration',
+			'id'		=> '',
+			'class'		=> 'rwmb-number',
+			'selected'	=> '',
+			'echo'		=> true,
+			'value'		=> 0,
+			'step'		=> 1,
+			'min'		=> 0,
+			'placeholder'		=> __('Minutes','learnpress'),
+		)
+	);
+	if ( !$args['id'] ) {
+		$args['id'] = $args['name'];
+	}
+
+	return sprintf(
+			'<input type="number" class="%s" name="%s" id="%s" value="%s" step="%s" min="%s" max="%s" placeholder="%s"/>',
+			$args['class'],
+			$args['name'],
+			empty($args['clone']) ? $args['id'] : '',
+			$args['value'],
+			$args['step'],
+			$args['min'],
+			!empty($args['max']) ? $args['max'] : '',
+			$args['placeholder']
+		).$args['placeholder'];
+}
+
+/**
  * Displays email formats support into a dropdown
  *
  * @param array $args

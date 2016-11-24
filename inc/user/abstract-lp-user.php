@@ -345,9 +345,31 @@ class LP_Abstract_User {
 		$course_id	= $this->_get_course_id( $course_id );
 		$remaining	= false;
 		$progress	= $this->get_quiz_progress( $quiz_id, $course_id );
+		# Debug
+		if( isset($_GET['lp_debug']) && $_GET['lp_debug'] == 'time_remaining' ){
+			$time = time();
+			$ctime = current_time("timestamp");
+			$ctime_true = current_time("timestamp", true);
+
+			$ctime_sql = current_time("mysql");
+			$ctime_sql_true = current_time("mysql", true);
+
+			echo '<table border="1">';
+
+			echo '<tr><td>$time: <br/>time();</td><td>' . $time .'</td></tr>';
+			echo '<tr><td>$ctime: <br/>current_time("timestamp");</td><td>' . $ctime.'</td></tr>';
+			echo '<tr><td>$ctime_true:<br/>current_time("timestamp", true); </td><td>' . $ctime_true.'</td></tr>';
+			echo '<tr><td>$ctime_sql: <br/>current_time("mysql")</td><td>' . $ctime_sql.'</td></tr>';
+			echo '<tr><td>strtotime($ctime_sql):</td><td>' . strtotime($ctime_sql).'</td></tr>';
+			echo '<tr><td>$ctime_sql_true:<br/>current_time("mysql", true) </td><td>' . $ctime_sql_true.'</td></tr>';
+			echo '<tr><td>strtotime($ctime_sql_true):</td><td>' . strtotime($ctime_sql_true).'</td></tr>';
+			echo '</table>';
+//			exit();
+		}
 		if ( $progress && $progress->status != 'completed' ) {
 			$quiz      = LP_Quiz::get_quiz( $quiz_id );
-			$current_time = current_time( 'timestamp' );
+//			$current_time = current_time( 'timestamp' );
+			$current_time = learn_press_get_current_time();
 			$progress_start = strtotime($progress->start,$current_time);
 			$remaining = intval($quiz->duration) + $progress_start - $current_time;
 			if( isset( $_GET['lp_debug'] ) && $_GET['lp_debug'] == 'time_remaining' ) {
@@ -359,6 +381,7 @@ class LP_Abstract_User {
 		}
 		if( isset($_GET['lp_debug']) && $_GET['lp_debug'] == 'time_remaining' ){
 			echo '<hr/>$remaining: '.$remaining;
+			exit();
 		}
 		return apply_filters( 'learn_press_user_quiz_time_remaining', $remaining, $quiz_id, $course_id, $this->id );
 	}

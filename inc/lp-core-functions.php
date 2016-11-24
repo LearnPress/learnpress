@@ -2434,3 +2434,18 @@ if ( !function_exists( 'learn_press_cancel_order_process' ) ) {
 		exit();
 	}
 }
+
+/**
+ * get current time to user for caculate remaining time of quiz
+ */
+function learn_press_get_current_time(){
+	$a		= current_time( "timestamp" );
+	$b		= current_time( "timestamp", true );
+	$c		= current_time( "mysql" );
+	$d		= strtotime( $c );
+	if($d == $a){
+		return $a;
+	}else{
+		return $b;
+	}
+}

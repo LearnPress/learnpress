@@ -36,6 +36,12 @@ if ( !class_exists( 'RWMB_Quiz_Questions_Field' ) ) {
 
 			add_action( 'wp_ajax_lpr_quiz_question_add', array( __CLASS__, 'quiz_question_add' ) );
 			add_action( 'wp_ajax_lpr_quiz_question_remove', array( __CLASS__, 'quiz_question_remove' ) );
+			add_filter('learn_press_question_top_buttons', array(__CLASS__, 'filter_question_top_buttons'));
+		}
+
+		public static function filter_question_top_buttons( $buttons, $obj=null ) {
+			$buttons['duration'] = learn_press_field_question_duration();
+			return $buttons;
 		}
 
 		public static function quiz_question_remove() {

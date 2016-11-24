@@ -161,13 +161,27 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 								'std'     => 'global'
 							),
 							array(
+								'name'         => __( 'Duration Type', 'learnpress' ),
+								'desc'         => __( 'Duration of the quiz. Set 0 to disable.', 'learnpress' ),
+								'id'           => "{$prefix}duration_type",
+								'type'         => 'radio',//'number',
+								'std'          => 10,
+								'options' => array(
+									'none' => __('None', 'learnpress'),
+									'quiz_duration' => __("Quiz duration", 'learnpress'),
+									'questions_duration' => __("Questions duration ", 'learnpress'),
+								),
+							),
+							array(
 								'name'         => __( 'Duration', 'learnpress' ),
 								'desc'         => __( 'Duration of the quiz. Set 0 to disable.', 'learnpress' ),
 								'id'           => "{$prefix}duration",
 								'type'         => 'duration',//'number',
 								'default_time' => 'minute',
 								'min'          => 0,
-								'std'          => 10
+								'std'          => 10,
+								'visible' => array("{$prefix}duration_type", 'quiz_duration'),
+								'hidden' => array("{$prefix}duration_type", '!=', 'quiz_duration')
 							),
 							array(
 								'name'    => __( 'Passing Grade Type', 'learnpress' ),
@@ -179,7 +193,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 									'percentage' => __( 'Percentage', 'learnpress' ),
 									'point'      => __( 'Point', 'learnpress' )
 								),
-								'std'     => 'percentage'
+								'std'     => 'percentage',
 							),
 							array(
 								'name' => __( 'Passing Grade (<span>%</span>)', 'learnpress' ),
