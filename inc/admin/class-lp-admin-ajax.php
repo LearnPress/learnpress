@@ -36,10 +36,10 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 				'dismiss_notice'                  => false,
 				'search_users'                    => false,
 				'load_chart'                      => false,
-				'search_course'                   => false,
+				'search_course'						=> false,
 				'search_course_category'			=> false,
 				/////////////
-				'quick_add_lesson'                => false,
+				'quick_add_lesson'					=> false,
 				'quick_add_quiz'                  => false,
 				'be_teacher'                      => false,
 				'custom_stats'                    => false,

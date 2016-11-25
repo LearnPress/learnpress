@@ -187,7 +187,7 @@ function learn_press_field_question_duration( $args = array(), $question ) {
 		$args,
 		array(
 			'name'		=> 'learn-press-question-duration',
-			'id'		=> 'learn-press-question-duration'.$question->id,
+			'id'		=> 'learn-press-question-duration-'.$question->id,
 			'class'		=> 'learn-press-question-duration',
 			'selected'	=> '',
 			'echo'		=> true,
