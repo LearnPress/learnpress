@@ -185,6 +185,7 @@ if ( !class_exists( 'RWMB_Quiz_Questions_Field' ) ) {
 					)
 				);
 				$values[] = $wpdb->prepare( "(%d, %d, %s, %d)", $insert_data['quiz_id'], $insert_data['question_id'], isset( $insert_data['param'] ) ? $insert_data['param'] : '', $order++ );
+				update_post_meta($id, '_question_duration', $data['duration']);
 			}
 
 			$query = "

@@ -178,15 +178,17 @@ function learn_press_dropdown_question_types( $args = array() ) {
  */
 function learn_press_field_question_duration( $args = array(), $question ) {
 	global $post;
-	$duration_type = get_post_meta($post->ID,"_lp_duration_type", true);
-	$wrap_class = 'learn-press-question-duration';
+	$duration_type	= get_post_meta( $post->ID, "_lp_duration_type", true );
+	$value			= get_post_meta( $question->id, '_question_duration', true );
+
+	$wrap_class		= 'learn-press-question-duration';
 	if('questions_duration' !== $duration_type ){
 		$wrap_class .= ' hide';
 	}
 	$args = wp_parse_args(
 		$args,
 		array(
-			'name'		=> 'learn-press-question-duration',
+			'name'		=> 'learn_press_question['.$question->id.'][duration]',
 			'id'		=> 'learn-press-question-duration-'.$question->id,
 			'class'		=> 'learn-press-question-duration',
 			'selected'	=> '',
@@ -194,12 +196,10 @@ function learn_press_field_question_duration( $args = array(), $question ) {
 			'value'		=> 0,
 			'step'		=> 1,
 			'min'		=> 0,
-			'placeholder'		=> __('Minutes','learnpress'),
+			'placeholder' => __('Minutes','learnpress'),
 		)
 	);
-	
-//	var_dump($duration_type);
-//	echo '<pre>'.print_r($args, true).'</pre>';
+	$args['value'] = $value;
 
 	if ( !$args['id'] ) {
 		$args['id'] = $args['name'];
