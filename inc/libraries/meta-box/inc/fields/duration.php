@@ -37,8 +37,9 @@ if ( !class_exists( 'RWMB_Duration_Field' ) ) {
 				$field['min'],
 				$field['placeholder']
 			) . sprintf(
-				'<select name="%s[]">%s</select>',
+				'<select name="%s[]" id="%s">%s</select>',
 				$field['field_name'],
+				empty( $field['clone'] ) ? $field['id'].'_select' : '',
 				$html_option
 			);
 		}

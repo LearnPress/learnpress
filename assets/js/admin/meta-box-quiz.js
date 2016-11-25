@@ -18,7 +18,9 @@
 				'click #lp-modal-quiz-questions .lp-add-item'              : 'addItemToQuiz',
 				'keyup input[name="lp-new-question-name"]'                 : 'toggleAddButtonState',
 				'keydown .no-submit'                                       : 'preventSubmitForm',
-				'click .lp-button-add-question'                            : 'addNewItem'
+				'click .lp-button-add-question'                            : 'addNewItem',
+				'change .lp_input_duration_type'							:'changeDurationType',
+				'change input.learn-press-question-duration'				:'updateQuizDuration',
 			},
 			initialize              : function () {
 				$('#learn-press-list-questions').sortable({
@@ -31,6 +33,29 @@
 				LP.Hook.addFilter('learn_press_modal_search_items_exclude', this.getSelectedItems);
 
 				$(document).on('learn_press_modal_search_items_response', this.addItemsToSection);
+			},
+			changeDurationType: function( event, $app ){
+				if( 'quiz_duration' === $(event.target).val() ) {
+					$('.rwmb-duration-wrapper').show('slow');
+					$('span.learn-press-question-duration').hide();
+				} else if('questions_duration'===$(event.target).val()){
+					this.updateQuizDuration();
+					$('#_lp_duration_select').val('minute');
+					$('span.learn-press-question-duration').show();
+					$('.rwmb-duration-wrapper').hide('slow');
+				} else {
+					$('span.learn-press-question-duration').hide();
+					$('.rwmb-duration-wrapper').hide('slow');
+					$('#_lp_duration').val(0);
+				}
+			},
+			updateQuizDuration: function(){
+				var duration = 0;
+				$('#_lp_duration_select').val('minute');
+				$('input.learn-press-question-duration').each(function(index, el){
+					duration += parseInt($(el).val());
+				});
+				$('#_lp_duration').val(duration);
 			},
 			updateModalSearch       : function (height, $app) {
 				$('.lp-modal-search ul.lp-list-items').css('height', height - 120).css('overflow', 'auto');
@@ -256,7 +281,7 @@
 		}).filter(':checked').trigger('change');
 	});
 
-	return
+	return;
 	var $doc = $(document),
 		$body = $(document.body);
 

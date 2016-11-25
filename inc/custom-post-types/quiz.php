@@ -120,7 +120,6 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 		}
 
 		public function add_meta_boxes() {
-
 			$prefix                                        = '_lp_';
 			$meta_box                                      = apply_filters(
 				'learn_press_quiz_question_meta_box_args',
@@ -139,7 +138,8 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 				)
 			);
 			$GLOBALS['learn_press_quiz_question_meta_box'] = new RW_Meta_Box( $meta_box );
-
+			$post_id = learn_press_get_request('post');
+			$duration_type = get_post_meta($post_id,"{$prefix}duration_type", true);
 			new RW_Meta_Box(
 				apply_filters( 'learn_press_quiz_general_meta_box', array(
 						'title'      => __( 'General Settings', 'learnpress' ),
@@ -164,6 +164,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 								'name'         => __( 'Duration Type', 'learnpress' ),
 								'desc'         => __( 'Duration of the quiz. Set 0 to disable.', 'learnpress' ),
 								'id'           => "{$prefix}duration_type",
+								'class'		   => 'lp_input_duration_type',
 								'type'         => 'radio',//'number',
 								'std'          => 10,
 								'options' => array(
@@ -181,7 +182,8 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 								'min'          => 0,
 								'std'          => 10,
 								'visible' => array("{$prefix}duration_type", 'quiz_duration'),
-								'hidden' => array("{$prefix}duration_type", '!=', 'quiz_duration')
+								'hidden' => array("{$prefix}duration_type", '!=', 'quiz_duration'),
+								'class' => "{$prefix}duration_type {$prefix}duration_type_quiz_duration".('quiz_duration'!==$duration_type?' hide':''),
 							),
 							array(
 								'name'    => __( 'Passing Grade Type', 'learnpress' ),

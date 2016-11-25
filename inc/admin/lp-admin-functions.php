@@ -176,13 +176,19 @@ function learn_press_dropdown_question_types( $args = array() ) {
  *
  * @return string
  */
-function learn_press_field_question_duration( $args = array() ) {
+function learn_press_field_question_duration( $args = array(), $question ) {
+	global $post;
+	$duration_type = get_post_meta($post->ID,"_lp_duration_type", true);
+	$wrap_class = 'learn-press-question-duration';
+	if('questions_duration' !== $duration_type ){
+		$wrap_class .= ' hide';
+	}
 	$args = wp_parse_args(
 		$args,
 		array(
 			'name'		=> 'learn-press-question-duration',
-			'id'		=> '',
-			'class'		=> 'rwmb-number',
+			'id'		=> 'learn-press-question-duration'.$question->id,
+			'class'		=> 'learn-press-question-duration',
 			'selected'	=> '',
 			'echo'		=> true,
 			'value'		=> 0,
@@ -191,11 +197,15 @@ function learn_press_field_question_duration( $args = array() ) {
 			'placeholder'		=> __('Minutes','learnpress'),
 		)
 	);
+	
+//	var_dump($duration_type);
+//	echo '<pre>'.print_r($args, true).'</pre>';
+
 	if ( !$args['id'] ) {
 		$args['id'] = $args['name'];
 	}
 
-	return sprintf(
+	return '<span class="'.esc_attr($wrap_class).'">'.sprintf(
 			'<input type="number" class="%s" name="%s" id="%s" value="%s" step="%s" min="%s" max="%s" placeholder="%s"/>',
 			$args['class'],
 			$args['name'],
@@ -205,7 +215,7 @@ function learn_press_field_question_duration( $args = array() ) {
 			$args['min'],
 			!empty($args['max']) ? $args['max'] : '',
 			$args['placeholder']
-		).$args['placeholder'];
+		).$args['placeholder'].'</span>';
 }
 
 /**
