@@ -517,9 +517,9 @@ abstract class LP_Abstract_Course {
 	 * @return mixed
 	 */
 	public function get_sale_price() {
-		$res = null;
+		$res        = null;
 		$sale_price = get_post_meta( $this->id, '_lp_sale_price', true );
-		if ( 'yes' == $this->payment && is_numeric( $sale_price )) {
+		if ( 'yes' == $this->payment && is_numeric( $sale_price ) ) {
 			$sale_price = floatval( $sale_price );
 			$start_date = get_post_meta( $this->id, '_lp_sale_start', true );
 			$end_date   = get_post_meta( $this->id, '_lp_sale_end', true );
@@ -545,7 +545,7 @@ abstract class LP_Abstract_Course {
 		} else {
 			$price      = floatval( $price );
 			$sale_price = $this->get_sale_price();
-			if ( is_numeric($sale_price) ) {
+			if ( is_numeric( $sale_price ) ) {
 				$price = $sale_price;
 			}
 		}
@@ -903,10 +903,11 @@ abstract class LP_Abstract_Course {
 
 	public function has_item( $item_id ) {
 		static $items = array();
-		if ( !$items ) {
-			$items = $this->get_curriculum_items( array( 'field' => 'ID'/*, 'force' => true */ ) );
+		if ( empty( $items[$this->id] ) ) {
+			$items[$this->id] = $this->get_curriculum_items( array( 'field' => 'ID'/*, 'force' => true */ ) );
 		}
-		return in_array( $item_id, $items );
+
+		return in_array( $item_id, (array) $items[$this->id] );
 	}
 
 	public function can_view_item( $item_id ) {

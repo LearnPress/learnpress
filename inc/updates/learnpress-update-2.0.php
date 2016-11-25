@@ -126,6 +126,8 @@ if ( LEARN_PRESS_UPDATE_DATABASE ) {
 				@$wpdb->query( $query_rename_tables );
 			}
 		}
+		// This line has added in version 2.0.5 to fix issue with bug can not do anything after active LP
+		$wpdb->query( "COMMIT;" );
 
 		learn_press_update_log( '2.0', array( 'time' => time() ) );
 

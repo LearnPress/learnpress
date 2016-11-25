@@ -726,8 +726,9 @@ function _learn_press_before_purchase_course_handler( $course_id, $cart ) {
 		$return_url = add_query_arg( $_POST, get_the_permalink( $course_id ) );
 		$return_url = apply_filters( 'learn_press_purchase_course_login_redirect_return_url', $return_url );
 		$redirect   = apply_filters( 'learn_press_purchase_course_login_redirect', learn_press_get_login_url( $return_url ) );
-		learn_press_add_message( __( 'Please login to enroll this course', 'learnpress' ) );
 		if ( $redirect !== false ) {
+			learn_press_add_message( __( 'Please login to enroll this course', 'learnpress' ) );
+
 			if ( is_ajax() ) {
 				learn_press_send_json(
 					array(
@@ -774,7 +775,7 @@ function learn_press_filter_get_avatar( $avatar, $id_or_email = '', $size = arra
 		$user_id = 0;
 		if ( !is_numeric( $id_or_email ) && is_string( $id_or_email ) ) {
 			if ( $user = get_user_by( 'email', $id_or_email ) ) {
-				$user_id = $user->id;
+				$user_id = $user->ID;
 			}
 		} elseif ( is_numeric( $id_or_email ) ) {
 			$user_id = $id_or_email;

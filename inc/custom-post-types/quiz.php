@@ -549,6 +549,9 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 		public function hide_view_quiz_link_if_not_assigned() {
 			$current_screen = get_current_screen();
 			global $post;
+			if ( !$post ) {
+				return;
+			}
 			if ( $current_screen->id === LP_QUIZ_CPT && !learn_press_get_quiz_course_id( $post->ID ) ) {
 				?>
 				<style type="text/css">

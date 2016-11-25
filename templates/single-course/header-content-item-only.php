@@ -5,6 +5,11 @@
  */
 function learn_press_footer_content_item_only() {
 	echo '<!-- LEARN-PRESS-REMOVE-UNWANTED-PARTS -->';
+	/**
+	 * Added in 2.0.5 to fix issue with some server does not
+	 * output the header
+	 */
+	remove_action( 'wp_footer', 'learn_press_footer_content_item_only', - 1000 );
 }
 add_action( 'wp_footer', 'learn_press_footer_content_item_only', - 1000 );
 

@@ -1,5 +1,5 @@
 <?php
-require_once LP_PLUGIN_PATH."/inc/shortcodes/class-lp-abstract-archive-shortcode.php";
+require_once LP_PLUGIN_PATH . "/inc/shortcodes/class-lp-abstract-archive-shortcode.php";
 
 
 /**
@@ -91,19 +91,17 @@ require_once LP_PLUGIN_PATH."/inc/shortcodes/class-lp-abstract-archive-shortcode
 
 
 if ( !class_exists( 'LP_Featured_Courses_Shortcode' ) ) {
-    /**
-     * Class LP_Featured_Courses_Shortcode
-     */
-    class LP_Featured_Courses_Shortcode extends LP_Archive_Courses_Shortcode
-    {
-        protected static $name = "featured_course";
+	/**
+	 * Class LP_Featured_Courses_Shortcode
+	 */
+	class LP_Featured_Courses_Shortcode extends LP_Archive_Courses_Shortcode {
+		protected $name = "featured-courses";
 
-        public static function get_courses($a)
-        {
-            global $wpdb;
-            $posts = $wpdb->get_results(
-                $wpdb->prepare(
-                    "SELECT DISTINCT * 
+		public function get_courses( $a ) {
+			global $wpdb;
+			$posts = $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT DISTINCT *
                     FROM wp_posts p
                         LEFT JOIN wp_postmeta as pmeta
                         ON p.ID=pmeta.post_id
@@ -113,24 +111,23 @@ if ( !class_exists( 'LP_Featured_Courses_Shortcode' ) ) {
                     AND meta_value = %s
                     ORDER BY p.post_date
                     LIMIT %d",
-                    '_lp_featured',
-                    LP_COURSE_CPT,
-                    'publish',
-                    '1',
-                    (int)$a['limit']
-                )
-            );
+					'_lp_featured',
+					LP_COURSE_CPT,
+					'publish',
+					'1',
+					(int) $a['limit']
+				)
+			);
 
-            $courses = array_map(array(get_called_class(), 'get_lp_course'), $posts);
-            return $courses;
-        }
+			$courses = array_map( array( $this, 'get_lp_course' ), $posts );
+			return $courses;
+		}
 
-        public static function add_default_atts(){
-            return array(
-                'limit' => "1",
-                );
-        }
-    }
-
-    LP_Featured_Courses_Shortcode::init();
+		public function add_default_atts() {
+			return array(
+				'limit' => "1",
+			);
+		}
+	}
 }
+return new LP_Featured_Courses_Shortcode();

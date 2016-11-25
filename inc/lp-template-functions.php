@@ -1308,6 +1308,9 @@ if ( !function_exists( 'learn_press_404_page' ) ) {
 	 */
 	function learn_press_404_page() {
 		global $wp_query;
+		if ( !empty( $_REQUEST['debug-404'] ) ) {
+			learn_press_debug( debug_backtrace( DEBUG_BACKTRACE_PROVIDE_OBJECT, $_REQUEST['debug-404'] ) );
+		}
 		$wp_query->set_404();
 		status_header( 404 );
 		get_template_part( 404 );

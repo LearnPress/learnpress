@@ -13,7 +13,7 @@ if ( !defined( 'ABSPATH' ) ) {
 
 $course = LP()->global['course'];
 
-$curriculum_heading = apply_filters( 'learn_press_curriculum_heading', __( 'Course Curriculum', 'learnpress' ) );
+$curriculum_heading = apply_filters( 'learn_press_curriculum_heading', '' );
 ?>
 <div class="course-curriculum" id="learn-press-course-curriculum">
 

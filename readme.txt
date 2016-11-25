@@ -191,7 +191,10 @@ https://www.transifex.com/projects/p/learnpress/
 7. Demo course page.
 8. Add-ons of LearnPress.  
 
-== Changelog ==  
+== Changelog ==
+
+= 2.0.5 =
++ Fixed lesson 404 in course popup
 
 = 2.0.4 =
 + Improved LearnPress statistic

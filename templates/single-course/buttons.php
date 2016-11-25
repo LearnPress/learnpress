@@ -77,11 +77,11 @@ $retake_button_text   = apply_filters( 'learn_press_retake_button_text', __( 'Re
 	<?php elseif ( $user->can( 'purchase-course', $course->id ) ) : ?>
 		<form name="purchase-course" class="purchase-course" method="post" enctype="multipart/form-data">
 			<?php do_action( 'learn_press_before_purchase_button' ); ?>
-			<input type="hidden" name="purchase-course" value="<?php echo $course->id; ?>" />
 			<button class="button purchase-button" data-block-content="yes">
 				<?php echo $course->is_free() ? $enroll_button_text : $purchase_button_text; ?>
 			</button>
 			<?php do_action( 'learn_press_after_purchase_button' ); ?>
+			<input type="hidden" name="purchase-course" value="<?php echo $course->id; ?>" />
 		</form>
 	<?php else: ?>
 

@@ -515,7 +515,7 @@ if (typeof window.LP == 'undefined') {
 		toggleGroupSection: function (el, target) {
 			var $el = $(el),
 				isHide = $el.hasClass('hide-if-js');
-			if(isHide){
+			if (isHide) {
 				$el.hide().removeClass('hide-if-js');
 			}
 			$el.removeClass('hide-if-js').slideToggle(function () {
@@ -821,11 +821,15 @@ if (typeof window.LP == 'undefined') {
 			targetOrigin = targetOrigin || '*';
 			object.postMessage(data, targetOrigin, transfer);
 		},
-		receiveMessage: function (evt, b) {
+		receiveMessage: function (event, b) {
 			var target = event.origin || event.originalEvent.origin,
 				data = event.data || event.originalEvent.data || '';
-			var json = data.indexOf('{') == 0 ? LP.parseJSON(data) : false;
-			LP.Hook.doAction('learn_press_receive_message', json ? json : data, target);
+			if (typeof data === 'string' || data instanceof String) {
+				if (data.indexOf('{') == 0) {
+					data = LP.parseJSON(data);
+				}
+			}
+			LP.Hook.doAction('learn_press_receive_message', data, target);
 		}
 	}, LP);
 
@@ -971,10 +975,10 @@ if (typeof window.LP == 'undefined') {
 
 		$('.learn-press-icon').tooltip({offset: [30, 30]});
 
-		$('.learn-press-message[data-autoclose]').each(function(){
+		$('.learn-press-message[data-autoclose]').each(function () {
 			var $el = $(this), delay = parseInt($el.data('autoclose'));
-			if(delay){
-				setTimeout(function($el){
+			if (delay) {
+				setTimeout(function ($el) {
 					$el.fadeOut();
 				}, delay, $el);
 			}

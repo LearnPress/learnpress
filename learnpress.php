@@ -468,8 +468,8 @@ if ( !class_exists( 'LearnPress' ) ) {
 				require_once 'inc/shortcodes/profile-page.php';
 				require_once 'inc/shortcodes/archive-courses.php';
 				require_once 'inc/shortcodes/recent-courses/recent-courses.php';
-				require_once 'inc/shortcodes/popular-courses/popular-course.php';
-				require_once 'inc/shortcodes/featured-courses/featured-course.php';
+				require_once 'inc/shortcodes/popular-courses/popular-courses.php';
+				require_once 'inc/shortcodes/featured-courses/featured-courses.php';
 			}
 
 			//include widgets

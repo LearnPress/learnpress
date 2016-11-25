@@ -1,5 +1,5 @@
 <?php
-require_once LP_PLUGIN_PATH."/inc/shortcodes/class-lp-abstract-archive-shortcode.php";
+require_once LP_PLUGIN_PATH . "/inc/shortcodes/class-lp-abstract-archive-shortcode.php";
 
 /**
  * Shortcode to display collection of recent courses
@@ -90,35 +90,32 @@ require_once LP_PLUGIN_PATH."/inc/shortcodes/class-lp-abstract-archive-shortcode
 
 
 if ( !class_exists( 'LP_Recent_Courses_Shortcode' ) ) {
-    /**
-     * Class LP_Recent_Courses_Shortcode
-     */
-    class LP_Recent_Courses_Shortcode extends LP_Archive_Courses_Shortcode
-    {
-        protected static $name = "recent_course";
+	/**
+	 * Class LP_Recent_Courses_Shortcode
+	 */
+	class LP_Recent_Courses_Shortcode extends LP_Archive_Courses_Shortcode {
+		protected $name = "recent-courses";
 
-        public static function get_courses($a)
-        {
-            global $wpdb;
-            $posts = $wpdb->get_results(
-                $wpdb->prepare(
-                    "SELECT DISTINCT ID FROM $wpdb->posts AS p
+		public function get_courses( $a ) {
+			global $wpdb;
+			$posts = $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT DISTINCT ID FROM $wpdb->posts AS p
         			WHERE p.post_type = %s
 		        	AND p.post_status = %s
 			        ORDER BY p.post_date DESC
 			        LIMIT %d",
-                    LP_COURSE_CPT,
-                    'publish',
-                    (int)$a['limit']
-                )
-            );
+					LP_COURSE_CPT,
+					'publish',
+					(int) $a['limit']
+				)
+			);
 
-            $courses = array_map(array(__CLASS__, 'get_lp_course'), $posts);
-            
-            return $courses;
+			$courses = array_map( array( $this, 'get_lp_course' ), $posts );
 
-        }
-    }
+			return $courses;
 
-    LP_Recent_Courses_Shortcode::init();
+		}
+	}
 }
+return new LP_Recent_Courses_Shortcode();

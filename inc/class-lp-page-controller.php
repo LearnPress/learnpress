@@ -20,7 +20,7 @@ class LP_Page_Controller {
 	 */
 	protected $has_filter_content = false;
 
-	protected $_filter_content_priority = 10;
+	protected $_filter_content_priority = 10000;
 
 	protected $_origin_post = null;
 
@@ -95,7 +95,7 @@ class LP_Page_Controller {
 					setup_postdata( $post );
 					$this->_origin_post = $post;
 					$post->post_content = $this->single_content( null );
-					//add_filter( 'the_content', array( $this, 'single_content' ), $this->_filter_content_priority );
+					add_filter( 'the_content', array( $this, 'single_content' ), $this->_filter_content_priority );
 					$this->has_filter_content = true;
 				}
 			} elseif ( learn_press_is_courses() || learn_press_is_course_tag() || learn_press_is_course_category() || learn_press_is_search() ) {
@@ -214,6 +214,8 @@ class LP_Page_Controller {
 	 * @return WP_Query
 	 */
 	public function pre_get_posts( $q ) {
+		remove_action( 'pre_get_posts', array( $this, 'pre_get_posts' ), 10 );
+
 		global $course;
 		// We only want to affect the main query and not in admin
 		if ( !$q->is_main_query() || is_admin() ) {
@@ -222,10 +224,15 @@ class LP_Page_Controller {
 		$this->queried_object = !empty( $q->queried_object_id ) ? $q->queried_object : false;
 		if ( $q->get( 'post_type' ) == 'lp_course' && is_single() ) {
 			global $post;
-			$course_name = $q->get( 'lp_course' );
-			$post        = learn_press_get_post_by_name( $course_name, 'lp_course', true );
+			if ( !empty( $q->query_vars['p'] ) && LP_COURSE_CPT == get_post_type( $q->query_vars['p'] ) ) {
+				$post = get_post( $q->query_vars['p'] );
+			} else {
+				$course_name = $q->get( 'lp_course' );
+				$post        = learn_press_get_post_by_name( $course_name, 'lp_course', true );
+			}
 
 			if ( !$post ) {
+				LP_Debug::instance()->add( sprintf( '%s: File %s, line #%d', '404', __FILE__, __LINE__ ) );
 				learn_press_404_page();
 			}
 			$course      = learn_press_get_course( $post->ID );
@@ -247,8 +254,10 @@ class LP_Page_Controller {
 						if ( $question_name = $q->get( 'question' ) ) {
 							$question = learn_press_get_post_by_name( $question_name, 'lp_question', true );
 							if ( !$question ) {
+								LP_Debug::instance()->add( sprintf( '%s: File %s, line #%d', '404', __FILE__, __LINE__ ) );
 								learn_press_404_page();
 							} elseif ( !$quiz->has_question( $question->ID ) ) {
+								LP_Debug::instance()->add( sprintf( '%s: File %s, line #%d', '404', __FILE__, __LINE__ ) );
 								learn_press_404_page();
 							} else {
 								LP()->global['quiz-question'] = $question;
@@ -260,8 +269,10 @@ class LP_Page_Controller {
 			}
 
 			if ( $item_name && !$item_object ) {
+				LP_Debug::instance()->add( sprintf( '%s: File %s, line #%d', '404', __FILE__, __LINE__ ) );
 				learn_press_404_page();
 			} elseif ( $item_object && !$course->has( 'item', $item_object->id ) ) {
+				LP_Debug::instance()->add( sprintf( '%s: File %s, line #%d', '404', __FILE__, __LINE__ ) );
 				learn_press_404_page();
 			} else {
 				LP()->global['course-item'] = $item_object;
@@ -316,6 +327,9 @@ class LP_Page_Controller {
 		if ( ( learn_press_is_courses() || learn_press_is_course_category() ) && $limit = absint( LP()->settings->get( 'archive_course_limit' ) ) ) {
 			$q->set( 'posts_per_page', $limit );
 		}
+
+		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ), 10 );
+
 		return $q;
 	}
 

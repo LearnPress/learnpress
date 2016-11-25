@@ -145,7 +145,7 @@ function learn_press_get_current_url() {
 			$segs1 = explode( '/', get_site_url() );
 			$segs2 = explode( '/', $url );
 			if ( $removed = array_intersect( $segs1, $segs2 ) ) {
-				if($segs2       = array_diff( $segs2, $removed )){
+				if ( $segs2 = array_diff( $segs2, $removed ) ) {
 					$current_url = get_site_url() . '/' . join( '/', $segs2 );
 				}
 			}
@@ -1636,6 +1636,9 @@ function learn_press_get_endpoint_url( $name, $value, $url ) {
 }
 
 function learn_press_add_endpoints() {
+	if ( is_admin() ) {
+		return;
+	}
 	if ( $endpoints = LP()->settings->get( 'checkout_endpoints' ) ) foreach ( $endpoints as $endpoint => $value ) {
 		$endpoint                   = preg_replace( '!_!', '-', $endpoint );
 		LP()->query_vars[$endpoint] = $value;
