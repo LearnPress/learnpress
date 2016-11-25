@@ -4,7 +4,7 @@ Donate link:
 Tags: WordPress LMS, LMS, eLearning, e-Learning, Learning Management System, LMS WordPress, Course, Courses, Quiz, Quizzes, Training, Guru, Sell Courses  
 Requires at least: 3.8  
 Tested up to: 4.6.1
-Stable tag: 2.0.4
+Stable tag: 2.0.5
 License: GPLv2 or later  
 License URI: http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -194,7 +194,19 @@ https://www.transifex.com/projects/p/learnpress/
 == Changelog ==
 
 = 2.0.5 =
++ Added "Coming Soon" courses
++ Added duration for questions
++ Improved lightbox in order editor to add items into the order
 + Fixed lesson 404 in course popup
++ Fixed issue with duration of quiz larger than 10 hours
++ Fixed quiz finish immediately after starting
++ Fixed js error in global.js
++ Fixed lesson does not load in popup
++ Fixed some functions/keywords does not support in PHP < 5.3
++ Fixed conflict with WPML make course become 404
++ Fixed PHP notice in multisites by using a property has deprecated
++ Removed hardcode wp-content
++ Removed heading title in tabs overview and curriculum
 
 = 2.0.4 =
 + Improved LearnPress statistic

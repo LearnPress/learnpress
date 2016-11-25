@@ -332,6 +332,10 @@ function learn_press_get_post_by_name( $name, $type, $single = true ) {
 		", $name );
 
 		$query .= " AND post_type IN ('" . $type . "' )";
+
+		if ( !is_admin() ) {
+			echo $query;
+		}
 		if ( empty( $post_names[$type] ) ) {
 			$post_names[$type] = array();
 		}
@@ -2441,14 +2445,14 @@ if ( !function_exists( 'learn_press_cancel_order_process' ) ) {
 /**
  * get current time to user for caculate remaining time of quiz
  */
-function learn_press_get_current_time(){
-	$a		= current_time( "timestamp" );
-	$b		= current_time( "timestamp", true );
-	$c		= current_time( "mysql" );
-	$d		= strtotime( $c );
-	if($d == $a){
+function learn_press_get_current_time() {
+	$a = current_time( "timestamp" );
+	$b = current_time( "timestamp", true );
+	$c = current_time( "mysql" );
+	$d = strtotime( $c );
+	if ( $d == $a ) {
 		return $a;
-	}else{
+	} else {
 		return $b;
 	}
 }

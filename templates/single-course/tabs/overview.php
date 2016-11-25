@@ -11,14 +11,12 @@ if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-$course = LP()->course;
+$course = LP()->global['course'];
 
-/*
-if ( $course->is( 'viewing-item' ) ) {
-	if ( false === apply_filters( 'learn_press_display_course_description_on_viewing_item', false ) ) {
-		return;
-	}
-}*/
+if ( !$course ) {
+	return;
+}
+
 $description_heading = apply_filters( 'learn_press_single_course_description_heading', '', $course );
 ?>
 
@@ -32,7 +30,7 @@ $description_heading = apply_filters( 'learn_press_single_course_description_hea
 
 	<?php do_action( 'learn_press_begin_single_course_description' ); ?>
 
-	<?php echo $course->get_description();?>
+	<?php echo $course->get_description(); ?>
 
 	<?php do_action( 'learn_press_end_single_course_description' ); ?>
 

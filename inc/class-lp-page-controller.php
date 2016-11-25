@@ -224,6 +224,12 @@ class LP_Page_Controller {
 		$this->queried_object = !empty( $q->queried_object_id ) ? $q->queried_object : false;
 		if ( $q->get( 'post_type' ) == 'lp_course' && is_single() ) {
 			global $post;
+
+			/**
+			 * Added in LP 2.0.5 to fix issue in some cases course become 404
+			 * including case course link is valid but it also get 404 if
+			 * plugin WPML is installed
+			 */
 			if ( !empty( $q->query_vars['p'] ) && LP_COURSE_CPT == get_post_type( $q->query_vars['p'] ) ) {
 				$post = get_post( $q->query_vars['p'] );
 			} else {

@@ -1565,20 +1565,20 @@ function learn_press_load_content_item_only( $name ) {
 
 add_action( 'get_header', 'learn_press_load_content_item_only' );
 
-if(!function_exists( 'learn_press_content_coming_soon_message_callback' )):
-	function learn_press_content_coming_soon_message_callback(  ){
+if ( !function_exists( 'learn_press_content_coming_soon_message_callback' ) ):
+	function learn_press_content_coming_soon_message_callback() {
 		$course = learn_press_get_course();
-		if($course->is_coming_soon() && is_string($course->coming_soon_msg) && $course->coming_soon_msg!==''){
+		if ( $course->is_coming_soon() && is_string( $course->coming_soon_msg ) && $course->coming_soon_msg !== '' ) {
 			echo $course->coming_soon_msg;
 		}
 	}
 endif;
 
-if( !function_exists( 'learn_press_content_coming_soon_countdown_callback') ):
-	function learn_press_content_coming_soon_countdown_callback( ){
+if ( !function_exists( 'learn_press_content_coming_soon_countdown_callback' ) ):
+	function learn_press_content_coming_soon_countdown_callback() {
 		$course = learn_press_get_course();
-		$time = $course->get_coming_soon_end_time();
-		if( $course->is_coming_soon() && $course->get_coming_soon_end_time() > 0 && $course->is_show_coming_soon_countdown()){
+		$time   = $course->get_coming_soon_end_time();
+		if ( $course->is_coming_soon() && $course->get_coming_soon_end_time() > 0 && $course->is_show_coming_soon_countdown() ) {
 			$date = new DateTime( date( 'Y-m-d H:i:s', $time ) );
 			?>
 			<div class="countdown learnpress-course-coming-soon" data-time="<?php echo esc_attr( $date->format( DATE_ATOM ) ) ?>" data-speed="500"></div>
@@ -1586,3 +1586,18 @@ if( !function_exists( 'learn_press_content_coming_soon_countdown_callback') ):
 		}
 	}
 endif;
+
+// Fix issue with course content is duplicated if theme use the_content instead of $course->get_description()
+add_filter( 'the_content', 'learn_press_course_the_content', 99999 );
+function learn_press_course_the_content( $content ) {
+	global $post;
+	if ( $post && $post->post_type == 'lp_course' ) {
+		$course = LP_Course::get_course( $post->ID );
+		if ( $course ) {
+			remove_filter( 'the_content', 'learn_press_course_the_content', 99999 );
+			$content = $course->get_description();
+			add_filter( 'the_content', 'learn_press_course_the_content', 99999 );
+		}
+	}
+	return $content;
+}
