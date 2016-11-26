@@ -185,9 +185,9 @@ class LP_Install {
 	}
 
 	public static function _auto_update() {
-		$learnpress_version = get_option('learnpress_version');
-		$x = explode('.', $learnpress_version);
-		if(intval($x[0])>=2){
+		$learnpress_version = get_option( 'learnpress_version' );
+		$x                  = explode( '.', $learnpress_version );
+		if ( intval( $x[0] ) >= 2 ) {
 			return;
 		}
 		self::get_update_versions();
@@ -426,7 +426,7 @@ class LP_Install {
 				foreach ( $options as $option ) {
 					if ( isset( $option['default'] ) && isset( $option['id'] ) ) {
 						$autoload = isset( $option['autoload'] ) ? (bool) $option['autoload'] : true;
-                                                $value = get_option( $option['id'], $option['default'] );
+						$value    = get_option( $option['id'], $option['default'] );
 						update_option( $option['id'], $value, '', ( $autoload ? 'yes' : 'no' ) );
 					}
 				}
