@@ -1922,6 +1922,20 @@ body.block-content #learn-press-block-content {
   width: 250px;
   height: 250px;
 }
+.learn-press-user-profile  .image-editor-btn span{
+	font-size: 40px;
+	width: 40px;
+    height: 40px;
+}
+.learn-press-user-profile  .image-editor-btn a {
+	text-decoration: none;
+}
+.learn-press-user-profile  button.cancel span {
+	color:red;
+}
+.learn-press-user-profile  button.export span {
+	color:green;
+}
 .learn-press-user-profile .cropit-preview-image {
   max-width: none;
   max-height: none;
@@ -1932,8 +1946,7 @@ body.block-content #learn-press-block-content {
 .learn-press-user-profile .image-size-label {
   margin-top: 10px;
 }
-.learn-press-user-profile input,
-.learn-press-user-profile .export {
+.learn-press-user-profile input {
   display: block;
 }
 .learn-press-user-profile button {
