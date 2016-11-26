@@ -21,7 +21,7 @@ class LP_User extends LP_Abstract_User {
 	 */
 	public static function get_user( $the_user, $force = false ) {
 		if ( is_numeric( $the_user ) ) {
-
+			
 		} elseif ( $the_user instanceof LP_Abstract_User ) {
 			$the_user = $the_user->id;
 		} elseif ( isset( $the_user->ID ) ) {
