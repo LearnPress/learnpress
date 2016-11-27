@@ -185,11 +185,6 @@ class LP_Install {
 	}
 
 	public static function _auto_update() {
-		$learnpress_version = get_option( 'learnpress_version' );
-		$x                  = explode( '.', $learnpress_version );
-		if ( intval( $x[0] ) >= 2 ) {
-			return;
-		}
 		self::get_update_versions();
 		self::update();
 	}
