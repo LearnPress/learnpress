@@ -213,14 +213,35 @@ class LP_Install {
 
 		return $page_id;
 	}
+	
+	/**
+	 * Remove learnpress page if total of learn page > 10
+	 * @global type $wpdb
+	 * @return type
+	 */
+	public static function _remove_pages(){
+		global $wpdb;
+		$sql = 'SELECT DISTINCT `post_id` FROM '.$wpdb->postmeta.' WHERE `meta_key`="_learn_press_page"';
+		$ids = $wpdb->get_col($sql);
+		if(  count( $ids ) < 10 ) {
+			return $ids;
+		}
+		$q = $wpdb->prepare( "
+				DELETE FROM p, pm
+				USING {$wpdb->posts} AS p LEFT JOIN {$wpdb->postmeta} AS pm ON p.ID = pm.post_id AND p.post_type IN('page')
+				WHERE %d AND p.post_status='publish' AND p.ID IN(". implode(',', $ids).")
+		", 1 );
+		$wpdb->query( $q );
+		return array();
+	}
 
 	public static function create_pages() {
 		global $wpdb;
-
-		$created_pages = get_option( "learn_press_created_pages", 0 );
-		if( $created_pages === 1 ){
+		$created_page = self::_remove_pages();
+		if( !empty($created_page) ) {
 			return;
 		}
+
 		$pages = array( 'checkout', 'cart', 'profile', 'courses', 'become_a_teacher' );
 		foreach ( $pages as $page ) {
 			$page_id = get_option( "learn_press_{$page}_page_id" );
@@ -272,7 +293,6 @@ class LP_Install {
 				update_post_meta( $page_id, '_learn_press_page', $page );
 			}
 		}
-		update_option( "learn_press_created_pages", 1 );
 		flush_rewrite_rules();
 	}
 
