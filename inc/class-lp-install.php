@@ -216,11 +216,16 @@ class LP_Install {
 
 	public static function create_pages() {
 		global $wpdb;
-		$pages = array( 'checkout', 'cart', 'profile', 'courses', 'become_a_teacher' );
 
+		$created_pages = get_option( "learn_press_created_pages", 0 );
+		if( $created_pages === 1 ){
+			return;
+		}
+		$pages = array( 'checkout', 'cart', 'profile', 'courses', 'become_a_teacher' );
 		foreach ( $pages as $page ) {
 			$page_id = get_option( "learn_press_{$page}_page_id" );
-			if ( $page_id && get_post_type( $page_id ) == 'page' && get_post_status( $page_id ) == 'publish' ) {
+//			if ( $page_id && get_post_type( $page_id ) == 'page' && get_post_status( $page_id ) == 'publish' ) {
+			if ( $page_id && get_post_type( $page_id ) == 'page' ) {
 				continue;
 			}
 			$page_id = self::_search_page( $page, $pages );
@@ -267,6 +272,7 @@ class LP_Install {
 				update_post_meta( $page_id, '_learn_press_page', $page );
 			}
 		}
+		update_option( "learn_press_created_pages", 1 );
 		flush_rewrite_rules();
 	}
 

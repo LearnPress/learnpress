@@ -311,6 +311,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			new RW_Meta_Box( self::assessment_meta_box() );
 			new RW_Meta_Box( self::payment_meta_box() );
 			new RW_Meta_Box( self::coming_soon_meta_box() );
+//			new RW_Meta_Box( self::video_meta_box() );
 			if ( is_super_admin() ) {
 				new RW_Meta_Box( self::author_meta_box() );
 			}
@@ -1283,6 +1284,42 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 				)
 			);
 			return apply_filters( 'learn_press_course_coming_soon_metabox', $meta_box );
+		}
+		
+		/**
+		 * Course video
+		 * @return mixed|null|void
+		 */
+		public static function video_meta_box() {
+			$prefix = '_lp_';
+			$meta_box = array(
+				'id'       => 'course_video',
+				'title'    => __( 'Course Video', 'learnpress' ),
+				'pages'    => array( LP_COURSE_CPT ),
+				'priority' => 'high',
+				'fields'   => array(
+					array(
+						'name' => __( 'Video ID', 'learnpress' ),
+						'id'   => "{$prefix}video_id",
+						'type' => 'text',
+						'desc' => __( 'The id of Youtube or Vimeo video', 'learnpress' ),
+						'std'  => ''
+					),
+					array(
+						'name'    => __( 'Video Type', 'learnpress' ),
+						'id'      => "{$prefix}video_type",
+						'type'    => 'select',
+						'desc'    => __( 'Chose video type', 'learnpress' ),
+						'std'     => 'youtube',
+						'options' => array(
+							'youtube' => __( 'Youtube', 'learnpress' ),
+							'vimeo'  => __( 'Vimeo', 'learnpress' )
+						)
+					)
+				)
+			);
+
+			return apply_filters( 'learn_press_course_video_meta_box_args', $meta_box );
 		}
 
 
