@@ -221,9 +221,12 @@ class LP_Install {
 	 */
 	public static function _remove_pages(){
 		global $wpdb;
-		$sql = 'SELECT DISTINCT `post_id` FROM '.$wpdb->postmeta.' WHERE `meta_key`="_learn_press_page"';
+		$sql = 'SELECT * '
+				. ' FROM '.$wpdb->posts.' p INNER JOIN  '.$wpdb->postmeta.' pm '
+				. ' ON p.ID=pm.post_id AND pm.meta_key="_learn_press_page" AND p.post_type="page";';
 		$ids = $wpdb->get_col($sql);
-		if(  count( $ids ) < 10 ) {
+		$count_ids = count( $ids );
+		if(  $count_ids < 10 ) {
 			return $ids;
 		}
 		$q = $wpdb->prepare( "
@@ -231,13 +234,22 @@ class LP_Install {
 				USING {$wpdb->posts} AS p LEFT JOIN {$wpdb->postmeta} AS pm ON p.ID = pm.post_id AND p.post_type IN('page')
 				WHERE %d AND p.post_status='publish' AND p.ID IN(". implode(',', $ids).")
 		", 1 );
+
 		$wpdb->query( $q );
+
+		$pages = array( 'checkout', 'cart', 'profile', 'courses', 'become_a_teacher' );
+		foreach ( $pages as $page ) {
+			delete_option("learn_press_{$page}_page_id");
+		}
+		sleep(5);
 		return array();
+		
 	}
 
 	public static function create_pages() {
 		global $wpdb;
 		$created_page = self::_remove_pages();
+
 		if( !empty($created_page) ) {
 			return;
 		}
