@@ -197,6 +197,7 @@ https://www.transifex.com/projects/p/learnpress/
 + Added "Coming Soon" courses
 + Added duration for questions
 + Improved lightbox in order editor to add items into the order
++ Fixed bug can not do anything in admin after activating LP
 + Fixed lesson 404 in course popup
 + Fixed issue with duration of quiz larger than 10 hours
 + Fixed quiz finish immediately after starting

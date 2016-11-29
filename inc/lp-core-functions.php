@@ -333,9 +333,6 @@ function learn_press_get_post_by_name( $name, $type, $single = true ) {
 
 		$query .= " AND post_type IN ('" . $type . "' )";
 
-		if ( !is_admin() ) {
-			echo $query;
-		}
 		if ( empty( $post_names[$type] ) ) {
 			$post_names[$type] = array();
 		}

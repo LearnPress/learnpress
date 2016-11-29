@@ -477,6 +477,7 @@ function learn_press_handle_purchase_request() {
 
 	$requested_transaction_method = empty( $_REQUEST[$method_var] ) ? false : $_REQUEST[$method_var];
 	learn_press_do_transaction( $requested_transaction_method );
+
 }
 
 function learn_press_get_orders( $args = array() ) {

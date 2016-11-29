@@ -491,7 +491,7 @@ class LP_Cache {
 			wp_cache_set( 'user-course-order', $key_or_value, self::$_group );
 			return $key_or_value;
 		}
-		return self::_set_cache( 'post-names', $key_or_value, $value );
+		return self::_set_cache( 'user-course-order', $key_or_value, $value );
 	}
 
 	/**
@@ -505,7 +505,9 @@ class LP_Cache {
 	}
 
 	/**
-	 * @param string $section
+	 * Flush cache by sections or LP group
+	 *
+	 * @param string|array $section
 	 */
 	public static function flush( $section = '' ) {
 		if ( func_num_args() > 1 ) {
@@ -523,7 +525,27 @@ class LP_Cache {
 				}
 			}
 		} else {
-			wp_cache_flush();
+			global $wp_object_cache;
+
+
+			if ( @$cache = $wp_object_cache->cache ) {
+				if ( !empty( $cache[self::$_group] ) ) {
+					unset( $cache[self::$_group] );
+					$wp_object_cache->cache = $cache;
+				}
+				if ( is_callable( array( $wp_object_cache, 'get_mc' ) ) ) {
+					$group = self::$_group;
+					foreach ( $wp_object_cache->mc as $bucket => $mc ) {
+						if ( $bucket !== $group ) {
+							continue;
+						}
+						if ( $wp_object_cache->reset_generation( $bucket ) === false ) {
+							$mc->flush();
+							$wp_object_cache->reset_generation( $bucket );
+						}
+					}
+				}
+			}
 		}
 	}
 
