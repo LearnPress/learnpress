@@ -59,9 +59,12 @@ if ( $user ) :
 								<?php _e( 'Resize image', 'learnpress' );?>
 							</div>
 							<input type="range" class="cropit-image-zoom-input">
-							<span class="rotate-ccw dashicons dashicons-image-rotate-left"></span>
-							<span class="rotate-cw dashicons dashicons-image-rotate-right"></span>
-							<a class="export"><?php _e( 'Done', 'learnpress' );?></a>
+							<div class="image-editor-btn">
+								<span class="rotate-ccw dashicons dashicons-image-rotate-left"></span>
+								<span class="rotate-cw dashicons dashicons-image-rotate-right"></span>
+							</div>
+								<button class="export button-primary" href="#"><span class="dashicons dashicons-yes"></span><?php _e( 'Done', 'learnpress' );?></button>
+								<button class="cancel" href="#"><span class="dashicons dashicons-no"></span><?php _e( 'Cancel', 'learnpress' );?></button>
 						</div>
 					</div>
 				</div>

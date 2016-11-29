@@ -102,6 +102,12 @@
 			$('.profile-avatar-current img').attr( 'src', imageData );
 			$('#profile-picture-picture .image-editor').hide();
 		});
+		
+		$('#profile-picture-picture .cancel').click(function (event) {
+			event.preventDefault();
+			$('#lp-user-profile-picture-data').val( );
+			$('#profile-picture-picture .image-editor').hide();
+		});
 
 
 	});

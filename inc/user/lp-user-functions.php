@@ -644,8 +644,8 @@ function learn_press_user_update_user_info() {
 
 		if ( $profile_picture_type == 'picture' && isset($_POST['profile_picture_data']) && $_POST['profile_picture_data']!="" ) {
 
-			$upload     = wp_get_upload_dir();
-			$ppdir = $upload['basedir'] . DIRECTORY_SEPARATOR . 'learn-press-profile';
+			$upload = wp_get_upload_dir();
+			$ppdir	= $upload['basedir'] . DIRECTORY_SEPARATOR . 'learn-press-profile';
 			if ( !is_dir( $ppdir ) ) {
 				mkdir( $ppdir );
 			}
@@ -655,21 +655,23 @@ function learn_press_user_update_user_info() {
 			}
 			# get old file
 			$filename_old = get_user_meta( $user_id, '_lp_profile_picture', true );
-			if ( is_file( $upload_dir . DIRECTORY_SEPARATOR . $filename_old ) ) {
-				unlink( $upload_dir . DIRECTORY_SEPARATOR . $filename_old );
-			}
+			
 
 			$pathinfo_old = pathinfo($filename_old);
-			$thumb_old = $upload_dir . '/' . $pathinfo_old['filename'].'-thumb'. $pathinfo_old['extension'];
-			if ( is_file( $thumb_old ) ) {
-				unlink( $thumb_old );
-			}
+			$thumb_old = $upload_dir . DIRECTORY_SEPARATOR . $pathinfo_old['filename'].'-thumb.'. $pathinfo_old['extension'];
 
 			$data     = explode( ',', $_POST['profile_picture_data'] );
-			$imgtype  = explode( '/', $data[0] );
-			$filename = isset( $_FILES['profile_picture']['name'] ) && $_FILES['profile_picture']['name'] ? $_FILES['profile_picture']['name'] : 'avatar' . $imgtype[1];
+			$result = array();
+			preg_match( "/\/([^;]*)/", $data[0], $result );
+			$imgtype = isset($result[1])?$result[1]:'png';
+			$filename = 'avatar_' . $user_id . '.'.$imgtype;
+			if( $filename_old == $filename ){
+				$filename = 'avatar_' . $user_id . '_1.'.$imgtype;
+			}
+
 			if ( file_put_contents( $upload_dir . '/' . $filename, base64_decode( $data[1] ) ) ) {
 				$editor = wp_get_image_editor( $upload_dir . '/' . $filename );
+				
 				if ( is_wp_error( $editor ) ){
 					learn_press_add_message( __( 'Thumbnail of image profile not created', 'learnpress' ) );
 				} else {
@@ -680,18 +682,25 @@ function learn_press_user_update_user_info() {
 					if(empty($size)){
 						$size = array( 'width'=>150, 'height'=>150, 'crop'=>'yes' );
 					}
-					if($size['crop']=='yes'){
+					if ( $size['crop'] == 'yes' ) {
 						$resized = $editor->resize( $size['width'], $size['height'], true );
-						if ( is_wp_error( $resized ) ){
+						if ( is_wp_error( $resized ) ) {
 							learn_press_add_message( __( 'Thumbnail of image profile not created', 'learnpress' ) );
 						} else {
 							$dest_file = $editor->generate_filename( 'thumb' );
 							$saved = $editor->save( $dest_file );
-
 							if ( is_wp_error( $saved ) ) {
 								learn_press_add_message( __( 'Thumbnail of image profile not created', 'learnpress' ) );
 							}
 						}
+					}
+
+					// remove old file
+					if ( is_file( $upload_dir . DIRECTORY_SEPARATOR . $filename_old ) ) {
+						unlink( $upload_dir . DIRECTORY_SEPARATOR . $filename_old );
+					}
+					if ( is_file( $thumb_old ) ) {
+						unlink( $thumb_old );
 					}
 				}
 				update_user_meta( $user->id, '_lp_profile_picture', $filename );

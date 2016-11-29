@@ -1810,7 +1810,7 @@ class LP_Abstract_User {
 					$result = new WP_Error( 'lesson-completed', $wpdb->last_error );
 				}
 			} else {
-				$result = new WP_Error( 'lesson-completed', __( 'You has already completed this lesson', 'learnpress' ) );
+				$result = new WP_Error( 'lesson-completed', __( 'You have already completed this lesson', 'learnpress' ) );
 			}
 		} else {
 			$wpdb->insert(

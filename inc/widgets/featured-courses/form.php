@@ -116,7 +116,7 @@
                 value=""><?php _e('hide bottom link', 'learnpress') ?></option>
             <option
                 <?php if($instance['bottom_link'] == 'all_course'){ echo 'selected'; } ?>
-                value="all_course"><?php _e('all course'); ?>
+                value="all_course"><?php _e('all courses', 'learnpress'); ?>
             </option>
         </select>
     </p>

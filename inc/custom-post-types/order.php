@@ -361,7 +361,7 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 					$links = array();
 					foreach ( $the_order->get_items() as $item ) {
 						if ( empty( $item['course_id'] ) || get_post_type( $item['course_id'] ) !== LP_COURSE_CPT ) {
-							$links[] = __( 'Course does not exists', 'learnpress' );
+							$links[] = __( 'Course does not exist', 'learnpress' );
 						} else {
 							$links[] = '<a href="' . get_the_permalink( $item['course_id'] ) . '">' . get_the_title( $item['course_id'] ) . '</a>';
 						}
