@@ -114,6 +114,13 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		}
 
 		public function update_course( $course_id ) {
+			global $wpdb;
+
+			$wpdb->update(
+				'wp_posts',
+				array( 'post_author' => $_POST['_lp_course_author'] ),
+				array( 'ID' => $course_id )
+			);
 
 			/*learn_press_debug( $_REQUEST );
 			die();*/
@@ -196,9 +203,9 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		public function toggle_editor_button( $post ) {
 			if ( $post->post_type == LP_COURSE_CPT ) {
 				?>
-				<button class="button button-primary"
-						data-hidden="<?php echo get_post_meta( $post->ID, '_lp_editor_hidden', true ); ?>" type="button"
-						id="learn-press-button-toggle-editor"><?php _e( 'Toggle Course Content', 'learnpress' ); ?></button>
+                <button class="button button-primary"
+                        data-hidden="<?php echo get_post_meta( $post->ID, '_lp_editor_hidden', true ); ?>" type="button"
+                        id="learn-press-button-toggle-editor"><?php _e( 'Toggle Course Content', 'learnpress' ); ?></button>
 				<?php
 			}
 		}
@@ -618,6 +625,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						'name'        => __( 'Author', 'learnpress' ),
 						'id'          => "{$prefix}course_author",
 						'desc'        => '',
+						'meta'        => false,
 						'multiple'    => false,
 						'allowClear'  => false,
 						'type'        => 'select_advanced',
@@ -676,16 +684,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 *
 		 */
 		public function save() {
-			$prefix = '_lp_';
 
-			$author = get_post_meta( get_the_ID(), $prefix . 'course_author', true );
-			if ( isset( $author ) && $author ) {
-				$args = array(
-					'ID'          => get_the_ID(),
-					'post_author' => $author
-				);
-				wp_update_post( $args );
-			}
 		}
 
 		/**
@@ -1229,7 +1228,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			return isset( $_REQUEST['s'] ) ? $_REQUEST['s'] : false;
 		}
 
-		
+
 		/**
 		 * Course assessment
 		 *
@@ -1239,7 +1238,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			$post_id            = learn_press_get_request( 'post' );
 			$prefix             = '_lp_';
 			$course_result_desc = __( 'The method to assess the result of a student for a course.', 'learnpress' );
-			$meta_box = array(
+			$meta_box           = array(
 				'id'       => 'course_coming_soon',
 				'title'    => __( 'Coming soon', 'learnpress' ),
 				'priority' => 'high',
@@ -1251,8 +1250,8 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						'type'    => 'radio',
 						'desc'    => __( 'Enable coming soon will show coming soon message on course detail page' ),
 						'options' => array(
-							'no'     => __( 'No', 'learnpress' ),
-							'yes'    => __( 'Yes', 'learnpress' ),
+							'no'  => __( 'No', 'learnpress' ),
+							'yes' => __( 'Yes', 'learnpress' ),
 						),
 						'std'     => 'no',
 					),
@@ -1270,14 +1269,14 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 //						'js_options' =>array('startDate'=>current_time( 'Y-m-d G:i:s' )),
 						'desc' => __( 'Set end time comming soon', 'learnpress' ),
 					)
-					, array(
-						'name' => __( 'Show Countdown', 'learnpress' ),
-						'id'   => "{$prefix}coming_soon_countdown",
+				, array(
+						'name'    => __( 'Show Countdown', 'learnpress' ),
+						'id'      => "{$prefix}coming_soon_countdown",
 						'type'    => 'radio',
-						'desc' => __( 'Show or hide countdown plugin', 'learnpress' ),
+						'desc'    => __( 'Show or hide countdown plugin', 'learnpress' ),
 						'options' => array(
-							'no'     => __( 'No', 'learnpress' ),
-							'yes'    => __( 'Yes', 'learnpress' ),
+							'no'  => __( 'No', 'learnpress' ),
+							'yes' => __( 'Yes', 'learnpress' ),
 						),
 						'std'     => 'no',
 					)
@@ -1285,13 +1284,13 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			);
 			return apply_filters( 'learn_press_course_coming_soon_metabox', $meta_box );
 		}
-		
+
 		/**
 		 * Course video
 		 * @return mixed|null|void
 		 */
 		public static function video_meta_box() {
-			$prefix = '_lp_';
+			$prefix   = '_lp_';
 			$meta_box = array(
 				'id'       => 'course_video',
 				'title'    => __( 'Course Video', 'learnpress' ),
@@ -1313,7 +1312,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						'std'     => 'youtube',
 						'options' => array(
 							'youtube' => __( 'Youtube', 'learnpress' ),
-							'vimeo'  => __( 'Vimeo', 'learnpress' )
+							'vimeo'   => __( 'Vimeo', 'learnpress' )
 						)
 					)
 				)
