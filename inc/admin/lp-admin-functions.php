@@ -1137,7 +1137,7 @@ function learn_press_process_duplicate_action() {
 		}
 		// check for post is exists
 		if ( !( $post_id && $post = get_post( $post_id ) ) ) {
-			wp_die( __( 'Oops! The course does not exists.', 'learnpress' ) );
+			wp_die( __( 'Oops! The course does not exist.', 'learnpress' ) );
 		}
 		// ensure that user can create course
 		if ( !current_user_can( 'edit_posts' ) ) {
@@ -1722,7 +1722,7 @@ if ( !function_exists( 'learn_press_duplicate_course' ) ) {
         }
         // check for post is exists
         if ( ! $course_id || ! ( $post = get_post( $course_id ) ) ) {
-            return new WP_Error( __( '<p>Op! The course does not exists</p>', 'learnpress' ) );
+            return new WP_Error( __( '<p>Op! The course does not exist</p>', 'learnpress' ) );
         } else {
             // ensure that user can create course
             if ( !current_user_can( 'edit_posts' ) ) {

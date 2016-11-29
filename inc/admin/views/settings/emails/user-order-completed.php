@@ -14,7 +14,7 @@ $settings = LP()->settings;
 ?>
 <h3><?php _e( 'User order completed', 'learnpress' ); ?></h3>
 <p class="description">
-	<?php _e( 'Send email to user when the order is completed', 'learnpress' ); ?>
+	<?php _e( 'Send email to user when the order is completed.', 'learnpress' ); ?>
 </p>
 <table class="form-table">
 	<tbody>

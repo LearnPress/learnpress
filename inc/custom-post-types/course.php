@@ -377,7 +377,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						'name' => __( 'Students enrolled', 'learnpress' ),
 						'id'   => "{$prefix}students",
 						'type' => 'number',
-						'desc' => __( 'How many students has taken this course.', 'learnpress' ),
+						'desc' => __( 'How many students have taken this course.', 'learnpress' ),
 						'std'  => 0,
 					),
 					array(
@@ -495,7 +495,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 					if ( $type != 'free' ) {
 						$suggest_price = get_post_meta( $course_id, '_lp_suggestion_price', true );
 						if ( isset( $suggest_price ) ) {
-							$message = sprintf( __( 'This course is required enrollment and the suggested price is <strong>%s</strong>', 'learnpress' ), learn_press_format_price( $suggest_price, true ) );
+							$message = sprintf( __( 'This course is requires enrollment and the suggested price is <strong>%s</strong>', 'learnpress' ), learn_press_format_price( $suggest_price, true ) );
 							$price   = $suggest_price;
 						}
 
