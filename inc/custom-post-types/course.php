@@ -318,7 +318,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			new RW_Meta_Box( self::assessment_meta_box() );
 			new RW_Meta_Box( self::payment_meta_box() );
 			new RW_Meta_Box( self::coming_soon_meta_box() );
-//			new RW_Meta_Box( self::video_meta_box() );
+			new RW_Meta_Box( self::video_meta_box() );
 			if ( is_super_admin() ) {
 				new RW_Meta_Box( self::author_meta_box() );
 			}
@@ -1310,11 +1310,25 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						'type'    => 'select',
 						'desc'    => __( 'Chose video type', 'learnpress' ),
 						'std'     => 'youtube',
-						'options' => array(
+						'options' => array (
 							'youtube' => __( 'Youtube', 'learnpress' ),
 							'vimeo'   => __( 'Vimeo', 'learnpress' )
 						)
-					)
+					),
+					array(
+						'name'    => __( 'Embed width', 'learnpress' ),
+						'id'      => "{$prefix}video_embed_width",
+						'type'    => 'number',
+						'desc'    => __( 'Set width of embed', 'learnpress' ),
+						'std'     => '560'
+					),
+					array(
+						'name'    => __( 'Embed height', 'learnpress' ),
+						'id'      => "{$prefix}video_embed_height",
+						'type'    => 'number',
+						'desc'    => __( 'Set height of embed', 'learnpress' ),
+						'std'     => '315'
+					),
 				)
 			);
 
