@@ -86,7 +86,15 @@ $retake_button_text   = apply_filters( 'learn_press_retake_button_text', __( 'Re
 	<?php else: ?>
 
 		<?php if ( $user->get_order_status( $course->id ) != 'lp-completed' ): ?>
-			<?php learn_press_display_message( '<p>' . apply_filters( 'learn_press_user_course_pending_message', __( 'You have purchased this course. Please wait for approval.', 'learnpress' ), $course, $user ) . '</p>' ); ?>
+			<form name="purchase-course" class="purchase-course" method="post" enctype="multipart/form-data">
+				<?php do_action( 'learn_press_before_purchase_button' ); ?>
+				<button class="button purchase-button" data-block-content="yes">
+					<?php echo $course->is_free() ? $enroll_button_text : $purchase_button_text; ?>
+				</button>
+				<?php do_action( 'learn_press_after_purchase_button' ); ?>
+				<input type="hidden" name="purchase-course" value="<?php echo $course->id; ?>" />
+			</form>
+			<?php //learn_press_display_message( '<p>' . apply_filters( 'learn_press_user_course_pending_message', __( 'You have purchased this course. Please wait for approval.', 'learnpress' ), $course, $user ) . '</p>' ); ?>
 		<?php else: ?>
 			<?php learn_press_display_message( '<p>' . apply_filters( 'learn_press_user_can_not_purchase_course_message', __( 'Sorry, you can not purchase this course', 'learnpress' ), $course, $user ) . '</p>' ); ?>
 		<?php endif; ?>

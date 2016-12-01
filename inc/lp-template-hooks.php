@@ -32,7 +32,7 @@ add_action( 'learn_press_after_courses_loop_item', 'learn_press_courses_loop_ite
 add_action( 'learn_press_after_courses_loop', 'learn_press_courses_pagination', 5 );
 
 /* single course content */
-add_action( 'learn_press_before_single_course', 'learn_press_single_course_args', 5 );
+add_action( 'wp_head', 'learn_press_single_course_args', 5 );
 add_action( 'learn_press_single_course_learning_summary', 'learn_press_output_single_course_learning_summary', 5 );
 add_action( 'learn_press_single_course_landing_summary', 'learn_press_output_single_course_landing_summary', 5 );
 

@@ -69,7 +69,7 @@
 }
 #learn-press-admin-settings .learn-press-settings-wrap {
   float: left;
-  padding: 0 0 15px 300px;
+  padding: 1px 0 15px 300px;
   background: #FFF;
   z-index: 0;
   position: relative;
@@ -1363,6 +1363,25 @@ input.regular-text[id^="learn-press-emails"] {
 }
 #learn_press_dashboard_widget_status .inside .learnpress-statistic-status li.full-width > a {
   display: inline-block;
+}
+.lp-template-overrides thead th h4 {
+  margin: 0;
+}
+.lp-template-overrides .lp-template-version {
+  width: 100px;
+}
+.lp-template-overrides .lp-template-version.outdated {
+  color: #FF0000;
+}
+.lp-template-overrides .lp-template-version.up-to-date {
+  color: #1859ff;
+}
+.lp-template-overrides .lp-template-version,
+.lp-template-overrides .lp-core-version {
+  font-weight: bold;
+}
+.lp-template-overrides .lp-template-file {
+  width: 50%;
 }
 @-webkit-keyframes lp-spinner {
   0% {

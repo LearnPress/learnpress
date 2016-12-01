@@ -112,7 +112,7 @@ class LP_Settings_Base {
 			foreach ( $sections as $name => $section ) {
 				?>
 				<li>
-					<a href="<?php echo '?page=learn_press_settings&tab=' . $this->id . '&section=' . sanitize_title( $name ); ?>" class="<?php echo $current_section == $name ? 'current' : ''; ?>">
+					<a href="<?php echo '?page=learn-press-settings&tab=' . $this->id . '&section=' . sanitize_title( $name ); ?>" class="<?php echo $current_section == $name ? 'current' : ''; ?>">
 						<?php echo $section['title']; ?>
 					</a>
 					<?php //echo( end( $array_keys ) == $name ? '' : '|' ); ?>

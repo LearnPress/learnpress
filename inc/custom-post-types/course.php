@@ -115,8 +115,6 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 
 		public function update_course( $course_id ) {
 
-			/*learn_press_debug( $_REQUEST );
-			die();*/
 		}
 
 
@@ -679,6 +677,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			$prefix = '_lp_';
 
 			$author = get_post_meta( get_the_ID(), $prefix . 'course_author', true );
+
 			if ( isset( $author ) && $author ) {
 				$args = array(
 					'ID'          => get_the_ID(),

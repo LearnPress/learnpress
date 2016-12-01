@@ -4,13 +4,13 @@
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 1.0
+ * @version 2.0.6
  */
 
 if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
-global $post;
+global $post, $wp_query;
 ?>
 <?php do_action( 'learn_press_before_main_content' ); ?>
 

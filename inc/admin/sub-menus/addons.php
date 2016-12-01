@@ -14,7 +14,7 @@ if ( !defined( 'ABSPATH' ) ) {
 /**
  * Add-on page
  */
-function learn_press_add_ons_page() {
+function learn_press_addons_page() {
 	$current = isset( $_GET['tab'] ) ? $_GET['tab'] : '';
         
         $theme = wp_get_theme();

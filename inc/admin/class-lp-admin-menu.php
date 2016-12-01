@@ -31,9 +31,8 @@ class LP_Admin_Menu {
 		// example: slug = learn_press_settings -> file = inc/admin/sub-menus/settings.php
 		$page = !empty ( $_REQUEST['page'] ) ? $_REQUEST['page'] : null;
 		if ( $page ) {
-
-			if ( strpos( $page, 'learn_press_' ) !== false ) {
-				$file = preg_replace( '!^learn_press_!', '', $page );
+			if ( strpos( $page, 'learn-press-' ) !== false ) {
+				$file = preg_replace( '!^learn-press-!', '', $page );
 				$file = str_replace( '_', '-', $file );
 				if ( file_exists( $file = LP_PLUGIN_PATH . "/inc/admin/sub-menus/{$file}.php" ) ) {
 					$this->_submenu = require_once $file;
@@ -63,7 +62,7 @@ class LP_Admin_Menu {
 				__( 'Statistics', 'learnpress' ),
 				__( 'Statistics', 'learnpress' ),
 				$capacity,
-				'learn_press_statistics',
+				'learn-press-statistics',
 				array( $this, 'menu_page' )
 			),
 			'addons'     => array(
@@ -71,15 +70,15 @@ class LP_Admin_Menu {
 				__( 'Add-ons', 'learnpress' ),
 				__( 'Add-ons', 'learnpress' ),
 				'manage_options',
-				'learn_press_add_ons',
-				'learn_press_add_ons_page'
+				'learn-press-addons',
+				'learn_press_addons_page'
 			),
 			'settings'   => array(
 				'learn_press',
 				__( 'Settings', 'learnpress' ),
 				__( 'Settings', 'learnpress' ),
 				'manage_options',
-				'learn_press_settings',
+				'learn-press-settings',
 				'learn_press_settings_page'
 			),
 			'tools' => array(
@@ -87,7 +86,7 @@ class LP_Admin_Menu {
 				__( 'Tools', 'learnpress' ),
 				__( 'Tools', 'learnpress' ),
 				'manage_options',
-				'learn_press_tools',
+				'learn-press-tools',
 				'learn_press_tools_page'
 			)
 		);

@@ -34,7 +34,7 @@ class LP_Page_Controller {
 		}
 		add_filter( 'template_include', array( $this, 'template_loader' ) );
 		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ), 10 );
-		add_action( 'learn_press_before_template_part', array( $this, 'before_template_part' ), 10, 4 );
+		//add_action( 'learn_press_before_template_part', array( $this, 'before_template_part' ), 10, 4 );
 		add_shortcode( 'learn_press_archive_course', array( $this, 'archive_content' ) );
 	}
 
@@ -45,13 +45,13 @@ class LP_Page_Controller {
 
 	}
 
-	public function before_template_part( $template_name, $template_path, $located, $args ) {
+	/*public function before_template_part( $template_name, $template_path, $located, $args ) {
 		if ( $this->has_filter_content && !in_array( $template_name, array( 'content-single-course.php' ) ) ) {
 			remove_filter( 'the_content', array( $this, 'single_content' ), $this->_filter_content_priority );
 			$this->has_filter_content = false;
 			LP_Debug::instance()->add( 'remove filter content' );
 		}
-	}
+	}*/
 
 	public function template_loader( $template ) {
 		global $post;
@@ -69,7 +69,7 @@ class LP_Page_Controller {
 		} elseif ( ( $page_id = learn_press_get_page_id( 'become_a_teacher' ) ) && is_page( $page_id ) && $page_id == $queried_object_id ) {
 			$post->post_content = '[learn_press_become_teacher_form]';
 		} else {
-			if ( is_post_type_archive( LP_COURSE_CPT ) || ( ( $page_id = learn_press_get_page_id( 'courses' ) ) && is_page( $page_id ) ) || ( is_tax( array( 'course_category', 'course_tag' ) ) ) ) {
+			if ( learn_press_is_courses() || learn_press_is_course_tag() || learn_press_is_course_category() || learn_press_is_search()){//is_post_type_archive( LP_COURSE_CPT ) || ( ( $page_id = learn_press_get_page_id( 'courses' ) ) && is_page( $page_id ) ) || ( is_tax( array( 'course_category', 'course_tag' ) ) ) ) {
 				$file   = 'archive-course.php';
 				$find[] = $file;
 				$find[] = "{$theme_template}/{$file}";
@@ -94,7 +94,7 @@ class LP_Page_Controller {
 					global $post;
 					setup_postdata( $post );
 					$this->_origin_post = $post;
-					//$post->post_content = $this->single_content( null );
+					$post->post_content = $this->single_content( null );
 					add_filter( 'the_content', array( $this, 'single_content' ), $this->_filter_content_priority );
 					$this->has_filter_content = true;
 				}
@@ -118,9 +118,8 @@ class LP_Page_Controller {
 		define( 'LEARNPRESS_IS_CATEGORY', learn_press_is_course_category() );
 		define( 'LEARNPRESS_IS_TAX', is_tax( get_object_taxonomies( 'lp_course' ) ) );
 		define( 'LEARNPRESS_IS_SEARCH', learn_press_is_search() );
+		if ( LEARNPRESS_IS_COURSES || LEARNPRESS_IS_TAG || LEARNPRESS_IS_CATEGORY || LEARNPRESS_IS_SEARCH || LEARNPRESS_IS_TAX ) {
 
-
-		if ( LEARNPRESS_IS_COURSES || LEARNPRESS_IS_TAG || LEARNPRESS_IS_CATEGORY || LEARNPRESS_IS_SEARCH ) {
 			global $wp_query, $post;
 			LP()->wp_query = clone( $wp_query );
 			$template      = get_page_template();
@@ -139,13 +138,16 @@ class LP_Page_Controller {
 			}
 			$content = $wp_query->post->post_content;
 
-			if ( preg_match( '/\[learn_press_archive_course\s?(.*)\]/', $content ) ) {
-				$content = do_shortcode( $content );
-			} else {
-				$content = $content . $this->archive_content();
+			if ( !preg_match( '/\[learn_press_archive_course\s?(.*)\]/', $content ) ) {
+				$content = $content . '[learn_press_archive_course]';//$this->archive_content();
 			}
 
-			$wp_query->post->ID     = 0;
+
+			$content = do_shortcode( $content );
+
+			//if ( empty( $wp_query->post->ID ) ) {
+				$wp_query->post->ID = 0;
+			//}
 			$wp_query->post->filter = 'raw';
 			if ( learn_press_is_course_category() ) {
 				$wp_query->post->post_title = single_term_title( '', false );//__( 'Course Category', 'learnpress' );
@@ -180,12 +182,6 @@ class LP_Page_Controller {
 			$wp_query->is_singular          = false;
 			$wp_query->is_posts_page        = false;
 			$wp_query->is_post_type_archive = false;
-
-
-			//$GLOBALS['post'] = $this->queried_object;
-
-			remove_filter( 'the_content', array( $this, 'single_content' ), $this->_filter_content_priority );
-			remove_filter( 'the_content', 'wpautop' );
 		}
 		return $template;
 	}
@@ -196,13 +192,14 @@ class LP_Page_Controller {
 	 * @return string
 	 */
 	public function single_content( $content ) {
+
 		remove_filter( 'the_content', array( $this, 'single_content' ), $this->_filter_content_priority );
 		add_filter( 'the_content', 'wpautop' );
 		ob_start();
 		learn_press_get_template( 'content-single-course.php' );
 		$content = ob_get_clean();
-
 		remove_filter( 'the_content', 'wpautop' );
+		add_filter( 'the_content', array( $this, 'single_content' ), $this->_filter_content_priority );
 		return $content;
 	}
 
@@ -214,14 +211,22 @@ class LP_Page_Controller {
 	 * @return WP_Query
 	 */
 	public function pre_get_posts( $q ) {
-		remove_action( 'pre_get_posts', array( $this, 'pre_get_posts' ), 10 );
 
 		global $course;
+
+		LP_Debug::instance()->add( $q, 'wp_query' );
+
 		// We only want to affect the main query and not in admin
 		if ( !$q->is_main_query() || is_admin() ) {
 			return $q;
 		}
+		remove_action( 'pre_get_posts', array( $this, 'pre_get_posts' ), 10 );
+
 		$this->queried_object = !empty( $q->queried_object_id ) ? $q->queried_object : false;
+
+		/**
+		 * If is single course content
+		 */
 		if ( $q->get( 'post_type' ) == 'lp_course' && is_single() ) {
 			global $post;
 
@@ -285,6 +290,10 @@ class LP_Page_Controller {
 			}
 		}
 
+
+		/**
+		 * If current page is used for courses page
+		 */
 		if ( $q->is_main_query() && $q->is_page() && ( $q->queried_object_id == ( $page_id = learn_press_get_page_id( 'courses' ) ) && $page_id ) ) {
 			$q->set( 'post_type', 'lp_course' );
 			$q->set( 'page', '' );
@@ -296,6 +305,7 @@ class LP_Page_Controller {
 			$q->is_page              = false;
 		}
 
+
 		if ( $q->is_home() && 'page' == get_option( 'show_on_front' ) && get_option( 'page_on_front' ) == learn_press_get_page_id( 'courses' ) ) {
 			$_query = wp_parse_args( $q->query );
 			if ( empty( $_query ) || !array_diff( array_keys( $_query ), array( 'preview', 'page', 'paged', 'cpage', 'orderby' ) ) ) {
@@ -304,8 +314,12 @@ class LP_Page_Controller {
 				$q->set( 'page_id', get_option( 'page_on_front' ) );
 				$q->set( 'post_type', 'lp_course' );
 			}
+
 		}
 
+		/**
+		 * If current page is used for courses page and set as home-page
+		 */
 		if ( $q->is_page() && 'page' == get_option( 'show_on_front' ) && $q->get( 'page_id' ) == learn_press_get_page_id( 'courses' ) && learn_press_get_page_id( 'courses' ) ) {
 
 			$q->set( 'post_type', 'lp_course' );
@@ -328,6 +342,7 @@ class LP_Page_Controller {
 			$q->is_post_type_archive = true;
 			$q->is_archive           = true;
 			$q->is_page              = true;
+
 		}
 
 		if ( ( learn_press_is_courses() || learn_press_is_course_category() ) && $limit = absint( LP()->settings->get( 'archive_course_limit' ) ) ) {

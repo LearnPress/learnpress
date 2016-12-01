@@ -61,7 +61,7 @@ class LP_Admin_Submenu_Statistic {
 		echo '<h2 class="nav-tab-wrapper">';
 		foreach ( $tabs as $tab => $name ) {
 			$class = ( $tab == $this->tab ) ? ' nav-tab-active' : '';
-			echo "<a class='nav-tab$class' href='?page=learn_press_statistics&tab=$tab'>$name</a>";
+			echo "<a class='nav-tab$class' href='?page=learn-press-statistics&tab=$tab'>$name</a>";
 		}
 		echo '</h2>';
 		do_action( 'learn_press_get_stats_' . $this->tab . '' );

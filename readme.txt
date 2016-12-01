@@ -193,6 +193,12 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 2.0.5.2 =
++ Fixed static pages are duplicated
+
+= 2.0.5.1 =
++ Removed prints SQL in code
+
 = 2.0.5 =
 + Added "Coming Soon" courses
 + Added duration for questions

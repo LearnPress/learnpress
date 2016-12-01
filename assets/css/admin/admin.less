@@ -82,7 +82,7 @@
     }
     .learn-press-settings-wrap {
         float: left;
-        padding: 0 0 15px 300px;
+        padding: 1px 0 15px 300px;
         background: #FFF;
         z-index: 0;
         position: relative;
@@ -1654,6 +1654,27 @@ input.regular-text[id^="learn-press-emails"] {
                 }
             }
         }
+    }
+}
+
+.lp-template-overrides{
+    thead th h4{
+        margin: 0;
+    }
+    .lp-template-version{
+        width: 100px;
+        &.outdated{
+            color: #FF0000;
+        }
+        &.up-to-date{
+            color: #1859ff;
+        }
+    }
+    .lp-template-version, .lp-core-version{
+        font-weight: bold;
+    }
+    .lp-template-file{
+        width: 50%;
     }
 }
 

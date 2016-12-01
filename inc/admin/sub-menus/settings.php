@@ -45,7 +45,7 @@ function learn_press_settings_page() {
 			<h2 class="nav-tab-wrapper">
 				<?php if ( $tabs ) foreach ( $tabs as $tab => $name ) { ?>
 					<?php $class = ( $tab == $current_tab ) ? ' nav-tab-active' : ''; ?>
-					<a class="nav-tab <?php echo $class; ?>" href="?page=learn_press_settings&tab=<?php echo $tab; ?>"><?php echo $name; ?></a>
+					<a class="nav-tab <?php echo $class; ?>" href="?page=learn-press-settings&tab=<?php echo $tab; ?>"><?php echo $name; ?></a>
 				<?php } ?>
 				<?php do_action( 'learn_press_settings_tabs' ); ?>
 			</h2>
@@ -101,7 +101,7 @@ function learn_press_admin_update_settings() {
 		$section = !empty( $_REQUEST['section'] ) ? '&section=' . $_REQUEST['section'] : '';
 		LP_Admin_Notice::add( '<p><strong>' . __( 'Settings saved', 'learnpress' ) . '</strong></p>' );
 
-		wp_redirect( admin_url( 'admin.php?page=learn_press_settings&tab=' . $current_tab . $section . '&settings-updated=true' ) );
+		wp_redirect( admin_url( 'admin.php?page=learn-press-settings&tab=' . $current_tab . $section . '&settings-updated=true' ) );
 		exit();
 	}
 }

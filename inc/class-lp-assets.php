@@ -685,7 +685,6 @@ class LP_Assets {
 
 			if ( in_array( $screen_id, learn_press_get_screens() ) || in_array( $page_id, learn_press_get_admin_pages() ) ) {
 				self::enqueue_style( 'learn-press-global' );
-
 				self::enqueue_style( 'learn-press-jquery.ui.datepicker' );
 				self::enqueue_style( 'learn-press-jquery.ui.theme' );
 				self::enqueue_style( 'learn-press-jquery.ui.core' );
@@ -715,7 +714,7 @@ class LP_Assets {
 				self::enqueue_script( 'learn-press-modal-search-items' );
 			}
 
-			if ( $screen_id === 'learnpress_page_learn_press_settings' || $screen_id === 'dashboard' ) {
+			if ( $screen_id === 'learnpress_page_learn-press-settings' || $screen_id === 'dashboard' ) {
 				LP_Assets::enqueue_style( 'learn-press-admin' );
 				LP_Assets::enqueue_script( 'learn-press-admin-settings', LP()->plugin_url( 'assets/js/admin/settings.js' ) );
 			}
@@ -729,7 +728,7 @@ class LP_Assets {
 				self::enqueue_script( 'learn-press-jalerts' );
 			}
 
-			if ( 'learnpress_page_learn_press_statistics' === $screen_id ) {
+			if ( 'learnpress_page_learn-press-statistics' === $screen_id ) {
 				self::enqueue_script( 'learn-press-statistics-select2' );
 				self::enqueue_style( 'learn-press-statistics-select2' );
 			}

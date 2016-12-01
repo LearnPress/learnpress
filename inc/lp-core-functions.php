@@ -317,6 +317,7 @@ function _learn_press_get_course_terms_parent_usort_callback( $a, $b ) {
 	return ( $a->parent < $b->parent ) ? 1 : - 1;
 }
 
+
 function learn_press_get_post_by_name( $name, $type, $single = true ) {
 	$post_names = LP_Cache::get_post_names( false, array() );
 	$post       = false;
@@ -557,7 +558,17 @@ if ( !function_exists( 'learn_press_paging_nav' ) ) :
 
 endif;
 
+/**
+ * Get number of pages by rows and items per page
+ *
+ * @param     $total
+ * @param int $limit
+ *
+ * @return int
+ */
 function learn_press_get_num_pages( $total, $limit = 10 ) {
+	// added to ensure $limit is greater than 1
+	$limit = max( 1, $limit );
 	if ( $total <= $limit ) {
 		return 1;
 	}
@@ -1435,7 +1446,7 @@ if ( !function_exists( 'learn_press_is_course_archive' ) ) {
 		$is_courses  = defined( 'LEARNPRESS_IS_COURSES' ) && LEARNPRESS_IS_COURSES;
 		$is_tag      = defined( 'LEARNPRESS_IS_TAG' ) && LEARNPRESS_IS_TAG;
 		$is_category = defined( 'LEARNPRESS_IS_CATEGORY' ) && LEARNPRESS_IS_CATEGORY;
-		return ( ( $is_courses || $is_category || $is_tag ) || is_post_type_archive( 'lp_course' ) || ( learn_press_get_page_id( 'course' ) && is_page( learn_press_get_page_id( 'course' ) ) ) ) ? true : false;
+		return ( ( $is_courses || $is_category || $is_tag ) || is_post_type_archive( 'lp_course' ) || ( learn_press_get_page_id( 'courses' ) && is_page( learn_press_get_page_id( 'courses' ) ) ) ) ? true : false;
 	}
 }
 

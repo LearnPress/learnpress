@@ -7,5 +7,5 @@ function learn_press_test_cache() {
 	}
 }
 
-add_action( 'wp_footer', 'learn_press_test_cache' );
+//add_action( 'wp_footer', 'learn_press_test_cache' );
 

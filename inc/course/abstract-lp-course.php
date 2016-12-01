@@ -47,8 +47,8 @@ abstract class LP_Abstract_Course {
 	 * @var array
 	 */
 	protected static $_lessons = array();
-	
-	
+
+
 	protected $_is_coming_soon = null;
 
 	/**
@@ -144,9 +144,12 @@ abstract class LP_Abstract_Course {
 					if ( ( $key == 'price' || $key == 'total' ) && get_post_meta( $this->id, '_lp_payment', true ) != 'yes' ) {
 						$value = 0;
 					}
-					if ( is_numeric( $value ) ) {
-						$value = strpos( '.', $value . '' ) !== false ? floatval( $value ) : intval( $value );
-					}
+					/*if ( $key == 'price' ) {
+						if ( is_numeric( $value ) ) {
+							$value = strpos( '.', $value . '' ) !== false ? floatval( $value ) : intval( $value );
+						}
+					}*/
+
 			}
 			if ( !empty( $value ) ) {
 				$this->$key = $value;
@@ -505,9 +508,11 @@ abstract class LP_Abstract_Course {
 	 * @return mixed
 	 */
 	public function get_origin_price() {
-		$price = 0;
-		if ( 'yes' == $this->payment ) {
-			$price = $this->price;
+		$price = $this->price;
+		if ( !$price || 'yes' != $this->payment ) {
+			$price = 0;
+		} else {
+			$price = floatval( $price );
 		}
 		return $price;
 	}
@@ -578,7 +583,7 @@ abstract class LP_Abstract_Course {
 	public function get_origin_price_html() {
 		$origin_price_html = '';
 		if ( !$this->is_free() ) {
-			$origin_price      = $this->get_origin_price();
+			$origin_price = $this->get_origin_price();
 			$origin_price      = learn_press_format_price( $origin_price, true );
 			$origin_price_html = apply_filters( 'learn_press_course_origin_price_html', $origin_price, $this );
 		}
@@ -1451,7 +1456,6 @@ abstract class LP_Abstract_Course {
 		);
 
 		$output = apply_filters( 'learn_press_single_course_params', $output, $this->id );
-
 		LP_Assets::add_var( 'LP_Course_Params', wp_json_encode( $output ), 'learn-press-single-course' );
 
 		return $output;
@@ -1486,34 +1490,34 @@ abstract class LP_Abstract_Course {
 		return $items;
 	}
 
-	public function is_coming_soon(){
+	public function is_coming_soon() {
 		$end_time = $current_time = 0;
-		if( $this->_is_coming_soon === null ){
+		if ( $this->_is_coming_soon === null ) {
 			$this->_is_coming_soon = false;
-			if( 'yes' === $this->coming_soon ) {
-				if( $this->coming_soon_end_time && $this->coming_soon_end_time !== '' ) {
-					$end_time = strtotime( $this->coming_soon_end_time );
+			if ( 'yes' === $this->coming_soon ) {
+				if ( $this->coming_soon_end_time && $this->coming_soon_end_time !== '' ) {
+					$end_time     = strtotime( $this->coming_soon_end_time );
 					$current_time = current_time( 'timestamp' );
 				}
-				if( $end_time == 0 || $end_time > $current_time ) {
+				if ( $end_time == 0 || $end_time > $current_time ) {
 					$this->_is_coming_soon = true;
 				}
 			}
 		}
-		
+
 		return $this->_is_coming_soon;
 	}
-	
-	public function get_coming_soon_end_time(){
+
+	public function get_coming_soon_end_time() {
 		$end_time = 0;
-		if( $this->is_coming_soon() ) {
+		if ( $this->is_coming_soon() ) {
 			$end_time = strtotime( $this->coming_soon_end_time );
 		}
 		return $end_time;
 	}
-	
-	public function is_show_coming_soon_countdown(){
-		if( 'yes' == $this->coming_soon_countdown){
+
+	public function is_show_coming_soon_countdown() {
+		if ( 'yes' == $this->coming_soon_countdown ) {
 			return true;
 		} else {
 			return false;
