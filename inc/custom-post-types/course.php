@@ -121,6 +121,8 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 				array( 'ID' => $course_id )
 			);
 
+			delete_post_meta( $course_id, '_lp_course_author' );
+
 		}
 
 
@@ -623,7 +625,6 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						'name'        => __( 'Author', 'learnpress' ),
 						'id'          => "{$prefix}course_author",
 						'desc'        => '',
-						'meta'        => false,
 						'multiple'    => false,
 						'allowClear'  => false,
 						'type'        => 'select_advanced',
