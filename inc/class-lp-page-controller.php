@@ -142,9 +142,15 @@ class LP_Page_Controller {
 				$content = $content . '[learn_press_archive_course]';//$this->archive_content();
 			}
 
-
+			$has_filter = false;
+			if ( has_filter( 'the_content', 'wpautop' ) ) {
+				$has_filter = true;
+				remove_filter( 'the_content', 'wpautop' );
+			}
 			$content = do_shortcode( $content );
-
+			if ( $has_filter ) {
+				has_filter( 'the_content', 'wpautop' );
+			}
 			//if ( empty( $wp_query->post->ID ) ) {
 			$wp_query->post->ID = 0;
 			//}

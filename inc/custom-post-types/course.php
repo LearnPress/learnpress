@@ -315,7 +315,6 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			new RW_Meta_Box( self::assessment_meta_box() );
 
 			new RW_Meta_Box( self::payment_meta_box() );
-			new RW_Meta_Box( self::coming_soon_meta_box() );
 			new RW_Meta_Box( self::video_meta_box() );
 			if ( is_super_admin() ) {
 				new RW_Meta_Box( self::author_meta_box() );
@@ -1224,63 +1223,6 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 
 		private function _get_search() {
 			return isset( $_REQUEST['s'] ) ? $_REQUEST['s'] : false;
-		}
-
-
-		/**
-		 * Course assessment
-		 *
-		 * @return mixed|null|void
-		 */
-		public static function coming_soon_meta_box() {
-			$post_id            = learn_press_get_request( 'post' );
-			$prefix             = '_lp_';
-			$course_result_desc = __( 'The method to assess the result of a student for a course.', 'learnpress' );
-			$meta_box           = array(
-				'id'       => 'course_coming_soon',
-				'title'    => __( 'Coming soon', 'learnpress' ),
-				'priority' => 'high',
-				'pages'    => array( LP_COURSE_CPT ),
-				'fields'   => array(
-					array(
-						'name'    => __( 'Enable Coming soon', 'learnpress' ),
-						'id'      => "{$prefix}coming_soon",
-						'type'    => 'radio',
-						'desc'    => __( 'Enable coming soon will show coming soon message on course detail page' ),
-						'options' => array(
-							'no'  => __( 'No', 'learnpress' ),
-							'yes' => __( 'Yes', 'learnpress' ),
-						),
-						'std'     => 'no',
-					),
-					array(
-						'name' => __( 'Coming soon message', 'learnpress' ),
-						'id'   => "{$prefix}coming_soon_msg",
-						'type' => 'text',
-						'desc' => __( 'The coming soon message will show in course details page', 'learnpress' ),
-						'std'  => __( 'This couse will coming soon', 'learnpress' ),
-					),
-					array(
-						'name' => __( 'Comming soon end time', 'learnpress' ),
-						'id'   => "{$prefix}coming_soon_end_time",
-						'type' => 'datetime',
-//						'js_options' =>array('startDate'=>current_time( 'Y-m-d G:i:s' )),
-						'desc' => __( 'Set end time comming soon', 'learnpress' ),
-					)
-				, array(
-						'name'    => __( 'Show Countdown', 'learnpress' ),
-						'id'      => "{$prefix}coming_soon_countdown",
-						'type'    => 'radio',
-						'desc'    => __( 'Show or hide countdown plugin', 'learnpress' ),
-						'options' => array(
-							'no'  => __( 'No', 'learnpress' ),
-							'yes' => __( 'Yes', 'learnpress' ),
-						),
-						'std'     => 'no',
-					)
-				)
-			);
-			return apply_filters( 'learn_press_course_coming_soon_metabox', $meta_box );
 		}
 
 		/**

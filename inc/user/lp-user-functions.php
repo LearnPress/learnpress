@@ -257,6 +257,9 @@ function learn_press_user_has_roles( $roles, $user_id = null ) {
 	return $has_role;
 }
 
+/**
+ * Add user profile link into admin bar
+ */
 function learn_press_edit_admin_bar() {
 	global $wp_admin_bar;
 	if ( ( $profile = learn_press_get_page_id( 'profile' ) ) && get_post_type( $profile ) == 'page' && get_post_status( $profile ) != 'trash' && ( LP()->settings->get( 'admin_bar_link' ) == 'yes' ) ) {
@@ -274,17 +277,6 @@ function learn_press_edit_admin_bar() {
 	if ( in_array( LP_TEACHER_ROLE, $current_user->roles ) || in_array( 'administrator', $current_user->roles ) ) {
 		return;
 	}
-	//if ( !class_exists( 'LP_Admin_Settings' ) ) return;
-	/**
-	 * $settings = LP_Admin_Settings::instance( 'general' );
-	 * if ( $settings->get( 'instructor_registration' ) ) {
-	 * $be_teacher           = array();
-	 * $be_teacher['id']     = 'be_teacher';
-	 * $be_teacher['parent'] = 'user-actions';
-	 * $be_teacher['title']  = __( 'Become An Instructor', 'learnpress' );
-	 * $be_teacher['href']   = '#';
-	 * $wp_admin_bar->add_menu( $be_teacher );
-	 * }*/
 }
 
 add_action( 'admin_bar_menu', 'learn_press_edit_admin_bar' );

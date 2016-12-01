@@ -2016,6 +2016,14 @@ function learn_press_get_current_profile_tab() {
 	return $current;
 }
 
+/**
+ * Get user profile link
+ *
+ * @param int  $user_id
+ * @param null $tab
+ *
+ * @return mixed|string|void
+ */
 function learn_press_user_profile_link( $user_id = 0, $tab = null ) {
 	if ( !$user_id ) {
 		$user = get_user_by( 'id', get_current_user_id() );
@@ -2031,7 +2039,6 @@ function learn_press_user_profile_link( $user_id = 0, $tab = null ) {
 		return '';
 	}
 	global $wp_query;
-	$page_id = !empty( $wp_query->queried_object_id ) ? $wp_query->queried_object_id : ( !empty( $wp_query->query_vars['page_id'] ) ? $wp_query->query_vars['page_id'] : - 1 );
 	$args    = array(
 		'user' => $user->user_login
 	);
@@ -2041,7 +2048,7 @@ function learn_press_user_profile_link( $user_id = 0, $tab = null ) {
 		$args['tab'] = learn_press_get_current_profile_tab();
 	}
 	$args         = array_map( '_learn_press_urlencode', $args );
-	$profile_link = learn_press_get_page_link( 'profile' );
+	$profile_link = trailingslashit( learn_press_get_page_link( 'profile' ) );
 	if ( $profile_link ) {
 		if ( get_option( 'permalink_structure' ) /*&& learn_press_get_page_id( 'profile' )*/ ) {
 			$url = $profile_link . join( "/", array_values( $args ) );
