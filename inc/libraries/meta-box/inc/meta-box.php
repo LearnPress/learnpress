@@ -300,7 +300,6 @@ if ( !class_exists( 'RW_Meta_Box' ) ) {
 			do_action( "rwmb_{$this->meta_box['id']}_before_save_post", $post_id );
 
 			foreach ( $this->fields as $field ) {
-				$create_meta = $field['meta'];
 				$name = $field['id'];
 				$old  = get_post_meta( $post_id, $name, !$field['multiple'] );
 				$new  = isset( $_POST[$name] ) ? $_POST[$name] : ( $field['multiple'] ? array() : '' );
@@ -317,9 +316,7 @@ if ( !class_exists( 'RW_Meta_Box' ) ) {
 
 				// Call defined method to save meta value, if there's no methods, call common one
 				//echo "[", self::get_class_name( $field ),$post_id, $name, $new, "]";
-				if ( $create_meta ) {
-					call_user_func( array( self::get_class_name( $field ), 'save' ), $new, $old, $post_id, $field );
-				}
+				call_user_func( array( self::get_class_name( $field ), 'save' ), $new, $old, $post_id, $field );
 
 			}
 			// After save action
