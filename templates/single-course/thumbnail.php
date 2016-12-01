@@ -10,10 +10,19 @@
 if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
-if (!has_post_thumbnail()) {
+global $post;
+$course = learn_press_get_course();
+$video_embed = $course->get_video_embed();
+if($video_embed):
+?>
+<div class="course-video">
+	<?php echo $video_embed; ?>
+</div>
+<?php
+endif;
+if ( !has_post_thumbnail() || $video_embed ) {
     return;
 }
-global $post;
 ?>
 <div class="course-thumbnail">
     <?php

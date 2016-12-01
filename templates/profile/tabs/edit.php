@@ -137,19 +137,6 @@ if ( $user ) :
 				</select>
 			</div>
 
-			<h2><?php _e( 'Contact Info', 'learnpress' ); ?></h2>
-
-			<div class="user-email-wrap info-field">
-				<p class="profile-field-name"><?php _e( 'Email', 'learnpress' ); ?>
-					<span class="description">(<?php _e( 'required', 'learnpress' ); ?>)</span></p>
-				<input type="email" name="email" id="email" value="<?php echo esc_attr( $user_info->user_email ); ?>" class="regular-text ltr">
-			</div>
-
-			<div class="user-url-wrap info-field">
-				<p class="profile-field-name"><?php _e( 'Website', 'learnpress' ); ?></p>
-				<input type="url" name="url" id="url" value="<?php echo esc_attr( $user_info->user_url ); ?>" class="regular-text code">
-			</div>
-
 			<h2><?php _e( 'Account Management', 'learnpress' ); ?></h2>
 			<div class="change-password">
 				<a href="" id="learn-press-toggle-password"><?php _e( 'Change Password', 'learnpress' ); ?></a>

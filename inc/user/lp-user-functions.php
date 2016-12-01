@@ -595,8 +595,8 @@ function learn_press_user_update_user_info() {
 
 		$update_data = array(
 			'ID'           => $user_id,
-			'user_url'     => filter_input( INPUT_POST, 'url', FILTER_SANITIZE_URL ),
-			'user_email'   => filter_input( INPUT_POST, 'email', FILTER_SANITIZE_EMAIL ),
+//			'user_url'     => filter_input( INPUT_POST, 'url', FILTER_SANITIZE_URL ),
+//			'user_email'   => filter_input( INPUT_POST, 'email', FILTER_SANITIZE_EMAIL ),
 			'first_name'   => filter_input( INPUT_POST, 'first_name', FILTER_SANITIZE_STRING ),
 			'last_name'    => filter_input( INPUT_POST, 'last_name', FILTER_SANITIZE_STRING ),
 			'display_name' => filter_input( INPUT_POST, 'display_name', FILTER_SANITIZE_STRING ),
@@ -777,47 +777,6 @@ add_filter( 'learn_press_profile_tab_endpoints', 'learn_press_profile_tab_endpoi
 function learn_press_profile_tab_edit_content( $current, $tab, $user ) {
 	learn_press_get_template( 'profile/tabs/edit.php', array( 'user' => $user, 'current' => $current, 'tab' => $tab ) );
 }
-
-function learn_press_filter_get_avatar( $avatar, $id_or_email = '', $size = array(), $default = '', $alt = '' ) {
-	global $parent_file;
-	if ( $parent_file == 'users.php' ) {
-		$user_id = 0;
-		if ( !is_numeric( $id_or_email ) && is_string( $id_or_email ) ) {
-			if ( $user = get_user_by( 'email', $id_or_email ) ) {
-				$user_id = $user->ID;
-			}
-		} elseif ( is_numeric( $id_or_email ) ) {
-			$user_id = $id_or_email;
-		} elseif ( is_object( $id_or_email ) && isset( $id_or_email->user_id ) && $id_or_email->user_id ) {
-			$user_id = $id_or_email->user_id;
-		}
-		// get user data
-		$profile_picture_type = get_user_meta( $user_id, '_lp_profile_picture_type', true );
-		if ( !$profile_picture_type || $profile_picture_type == 'gravatar' ) {
-			return;
-		}
-		$profile_picture = get_user_meta( $user_id, '_lp_profile_picture', true );
-		$array_sizes     = array( 200, 200 );
-		if ( is_array( $size ) ) {
-			if ( !empty( $size['width'] ) ) {
-				$array_sizes[0] = $size['width'];
-			}
-			if ( !empty( $size['height'] ) ) {
-				$array_sizes[1] = $size['height'];
-			}
-			$profile_picture_src = wp_get_attachment_image_src( $profile_picture, $array_sizes );
-		} else {
-			$profile_picture_src = wp_get_attachment_image_src( $profile_picture, $size );
-		}
-		if ( is_array( $profile_picture_src ) ) {
-			$profile_picture_src = $profile_picture_src[0];
-		}
-		$avatar = '<img alt="" src="' . esc_attr( $profile_picture_src ) . '" class="avatar avatar-' . $size['size'] . ' photo" height="' . $size['height'] . '" width="' . $size['width'] . '" />';
-	}
-	return $avatar;
-}
-
-add_filter( 'pre_get_avatar', 'learn_press_filter_get_avatar', 1, 5 );
 
 function _learn_press_redirect_logout_redirect() {
 	if ( !is_admin() && $redirect = learn_press_get_page_link( 'profile' ) ) {

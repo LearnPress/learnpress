@@ -1524,4 +1524,30 @@ abstract class LP_Abstract_Course {
 		}
 	}
 
+	public function get_video_embed(){
+		$video_id	= $this->video_id;
+		$video_type = $this->video_type;
+
+		if( !$video_id || !$video_type ) {
+			return false;
+		}
+
+		$embed	= '';
+		$height = $this->video_embed_height;
+		$width	= $this->video_embed_width;
+		
+		if( 'youtube' === $video_type ) {
+			$embed = '<iframe width="'.$width.'" height="'.$height.'" '
+					. 'src="https://www.youtube.com/embed/'.$video_id.'" '
+					. 'frameborder="0" allowfullscreen></iframe>';
+			
+		} elseif ( 'vimeo' === $video_type ) {
+			$embed = '<iframe width="'.$width.'" height="'.$height.'" '
+					. ' src="https://player.vimeo.com/video/'.$video_id.'" '
+					. 'frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+		}
+
+		return $embed;
+	}
+
 }

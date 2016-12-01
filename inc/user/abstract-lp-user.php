@@ -79,6 +79,7 @@ class LP_Abstract_User {
 			self::$_lessons[$this->id] = array();
 		}
 		add_action( 'pre_get_posts', array( $this, 'parse_query' ), 50 );
+		add_filter( 'pre_get_avatar', array( $this, 'pre_get_avatar_calback' ), 1, 5 );
 	}
 
 	public function _course_items_callback_filter( $a ) {
@@ -2712,7 +2713,7 @@ class LP_Abstract_User {
 			$avatar_data               = get_avatar_data( $this->id );
 			$this->profile_picture_src = $avatar_data['url'];
 		}
-		///}
+		//}
 		return $this->profile_picture_src;
 	}
 
@@ -2723,8 +2724,56 @@ class LP_Abstract_User {
 		if ( $id_or_email == $this->user_login ) {
 			$url = $this->profile_picture_src;
 		}
-		///
+		//
 		return $url;
+	}
+	
+	function pre_get_avatar_calback( $avatar, $id_or_email = '', $size = array(), $default = '', $alt = '' ) {
+
+		$user_id = 0;
+		if ( !is_numeric( $id_or_email ) && is_string( $id_or_email ) ) {
+			if ( $user = get_user_by( 'email', $id_or_email ) ) {
+				$user_id = $user->ID;
+			}
+		} elseif ( is_numeric( $id_or_email ) ) {
+			$user_id = $id_or_email;
+		} elseif ( is_object( $id_or_email ) && isset( $id_or_email->user_id ) && $id_or_email->user_id ) {
+			$user_id = $id_or_email->user_id;
+		}
+
+		// get user data
+		$profile_picture_type = get_user_meta( $user_id, '_lp_profile_picture_type', true );
+
+		if ( !$profile_picture_type || $profile_picture_type == 'gravatar' ) {
+			return;
+		}
+
+		$profile_picture_src = $this->get_upload_profile_src($size);
+		
+		$lp = LP();
+		$lp_setting = $lp->settings;
+		$setting_size = $lp_setting->get('profile_picture_thumbnai_size');
+		
+		$img_size	= '';
+		$height		= '';
+		$width		= '';
+		
+		if(!is_array($size)){
+			if( $size ==='thumbnail'){
+				$img_size = '';
+				$height = $setting_size['height'];
+				$width	= $setting_size['width'];
+			} else {
+				$height = 250;
+				$width	= 250;
+			}
+		} else {
+			$img_size = $size['size'];
+			$height = $size['height'];
+			$width	= $size['width'];
+		}
+		$avatar = '<img alt="" src="' . esc_attr( $profile_picture_src ) . '" class="avatar avatar-' . $img_size . ' photo" height="' . $height . '" width="' . $width . '" />';
+		return $avatar;
 	}
 
 	public function can_access_course( $course_id ) {
