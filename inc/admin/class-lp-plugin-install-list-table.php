@@ -143,7 +143,7 @@ class LP_Plugin_Install_List_Table extends WP_List_Table {
 
         $page = ! empty( $_REQUEST['page'] ) ? $_REQUEST['page'] : '';
         $tab = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : '';
-        if( 'learn_press_add_ons' != $page ) return;
+        if( 'learn-press-addons' != $page ) return;
 
         if( 'more' == $tab ){
             $add_ons = $learn_press_add_ons['more'];

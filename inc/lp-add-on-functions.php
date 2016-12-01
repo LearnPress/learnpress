@@ -101,7 +101,7 @@ function learn_press_print_add_on_tab( $current ) {
 	$active = ( empty( $current ) || 'installed' == $current ) ? 'nav-tab-active' : '';
 	?>
 	<h2 class="nav-tab-wrapper">
-		<a class="nav-tab <?php echo $active; ?>" href="<?php echo admin_url( 'admin.php?page=learn_press_add_ons' ); ?>"><?php _e( 'All', 'learnpress' ); ?></a>
+		<a class="nav-tab <?php echo $active; ?>" href="<?php echo admin_url( 'admin.php?page=learn-press-addons' ); ?>"><?php _e( 'All', 'learnpress' ); ?></a>
 		<?php do_action( 'learn_press_print_add_on_page_tab', $current ) ?>
 	</h2>
 	<?php
@@ -115,7 +115,7 @@ function learn_press_print_add_on_tab( $current ) {
 function learn_press_print_get_more_tab( $current ) {
 	$active = ( empty( $current ) || 'get_more' == $current ) ? 'nav-tab-active' : '';
 	?>
-	<a class="nav-tab <?php echo $active; ?>" href="<?php echo admin_url( 'admin.php?page=learn_press_add_ons&tab=get_more' ); ?>"><?php _e( 'Get More', 'learnpress' ); ?></a>
+	<a class="nav-tab <?php echo $active; ?>" href="<?php echo admin_url( 'admin.php?page=learn-press-addons&tab=get_more' ); ?>"><?php _e( 'Get More', 'learnpress' ); ?></a>
 	<?php
 }
 
@@ -497,7 +497,7 @@ function learn_press_add_ons_content_tab_more( $current ) {
 	$time        = get_option( '_transient_timeout_lp_more_add_ons' );
 	$description = __( 'All add-ons we provide.', 'learnpress' );
 	$description .= ' ' . sprintf( __( 'Last checked %s ago', 'learnpress' ), human_time_diff( $time - LP_ADD_ON_TRANSIENT_TIME ) );
-	$description .= ' ' . sprintf( __( '<a href="%s">%s</a>' ), admin_url( 'admin.php?page=learn_press_add_ons&tab=more&check=' . wp_create_nonce( 'check_more' ) ), __( 'Check again!', 'learnpress' ) );
+	$description .= ' ' . sprintf( __( '<a href="%s">%s</a>' ), admin_url( 'admin.php?page=learn-press-addons&tab=more&check=' . wp_create_nonce( 'check_more' ) ), __( 'Check again!', 'learnpress' ) );
 	learn_press_add_on_tab_description( $description );
 	learn_press_output_add_ons_list( $add_ons, $current );
 }
@@ -516,7 +516,7 @@ function learn_press_add_ons_content_tab_bundle_activate( $current ) {
 	$time        = get_option( '_transient_timeout_lp_ba_add_ons' );
 	$description = __( 'All add-ons that provide basic features for your LMS site.', 'learnpress' );
 	$description .= ' ' . sprintf( __( 'Last checked %s ago' ), human_time_diff( $time - LP_ADD_ON_TRANSIENT_TIME ) );
-	$description .= ' ' . sprintf( __( '<a href="%s">%s</a>' ), admin_url( 'admin.php?page=learn_press_add_ons&tab=bundle_activate&check=' . wp_create_nonce( 'check_bundle_activate' ) ), __( 'Check again!', 'learnpress' ) );
+	$description .= ' ' . sprintf( __( '<a href="%s">%s</a>' ), admin_url( 'admin.php?page=learn-press-addons&tab=bundle_activate&check=' . wp_create_nonce( 'check_bundle_activate' ) ), __( 'Check again!', 'learnpress' ) );
 
 	learn_press_add_on_tab_description( $description );
 	learn_press_output_add_ons_list( $add_ons, $current );

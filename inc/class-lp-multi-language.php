@@ -49,7 +49,7 @@ if ( !class_exists( 'LP_Multi_Language' ) ) {
 		 */
 		public static function plugin_links( $links ) {
 			$links[] = '<a href="https://github.com/LearnPress/LearnPress/wiki">' . __( 'Documentation', 'learnpress' ) . '</a>';
-			$links[] = '<a href="' . get_admin_url() . '/admin.php?page=learn_press_add_ons' . '">' . __( 'Add-ons', 'learnpress' ) . '</a>';
+			$links[] = '<a href="' . get_admin_url() . '/admin.php?page=learn-press-addons' . '">' . __( 'Add-ons', 'learnpress' ) . '</a>';
 
 			return $links;
 		}

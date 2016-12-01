@@ -115,9 +115,8 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 
 		public function update_course( $course_id ) {
 			global $wpdb;
-
 			$wpdb->update(
-				'wp_posts',
+				$wpdb->posts,
 				array( 'post_author' => $_POST['_lp_course_author'] ),
 				array( 'ID' => $course_id )
 			);
@@ -201,9 +200,9 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		public function toggle_editor_button( $post ) {
 			if ( $post->post_type == LP_COURSE_CPT ) {
 				?>
-                <button class="button button-primary"
-                        data-hidden="<?php echo get_post_meta( $post->ID, '_lp_editor_hidden', true ); ?>" type="button"
-                        id="learn-press-button-toggle-editor"><?php _e( 'Toggle Course Content', 'learnpress' ); ?></button>
+				<button class="button button-primary"
+						data-hidden="<?php echo get_post_meta( $post->ID, '_lp_editor_hidden', true ); ?>" type="button"
+						id="learn-press-button-toggle-editor"><?php _e( 'Toggle Course Content', 'learnpress' ); ?></button>
 				<?php
 			}
 		}
@@ -314,6 +313,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 
 			new RW_Meta_Box( self::settings_meta_box() );
 			new RW_Meta_Box( self::assessment_meta_box() );
+
 			new RW_Meta_Box( self::payment_meta_box() );
 			new RW_Meta_Box( self::coming_soon_meta_box() );
 			new RW_Meta_Box( self::video_meta_box() );
@@ -1308,24 +1308,24 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						'type'    => 'select',
 						'desc'    => __( 'Chose video type', 'learnpress' ),
 						'std'     => 'youtube',
-						'options' => array (
+						'options' => array(
 							'youtube' => __( 'Youtube', 'learnpress' ),
 							'vimeo'   => __( 'Vimeo', 'learnpress' )
 						)
 					),
 					array(
-						'name'    => __( 'Embed width', 'learnpress' ),
-						'id'      => "{$prefix}video_embed_width",
-						'type'    => 'number',
-						'desc'    => __( 'Set width of embed', 'learnpress' ),
-						'std'     => '560'
+						'name' => __( 'Embed width', 'learnpress' ),
+						'id'   => "{$prefix}video_embed_width",
+						'type' => 'number',
+						'desc' => __( 'Set width of embed', 'learnpress' ),
+						'std'  => '560'
 					),
 					array(
-						'name'    => __( 'Embed height', 'learnpress' ),
-						'id'      => "{$prefix}video_embed_height",
-						'type'    => 'number',
-						'desc'    => __( 'Set height of embed', 'learnpress' ),
-						'std'     => '315'
+						'name' => __( 'Embed height', 'learnpress' ),
+						'id'   => "{$prefix}video_embed_height",
+						'type' => 'number',
+						'desc' => __( 'Set height of embed', 'learnpress' ),
+						'std'  => '315'
 					),
 				)
 			);
