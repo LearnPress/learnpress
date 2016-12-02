@@ -115,16 +115,15 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 
 		public function update_course( $course_id ) {
 			global $wpdb;
-			$wpdb->update(
-				$wpdb->posts,
-				array( 'post_author' => $_POST['_lp_course_author'] ),
-				array( 'ID' => $course_id )
-			);
-
-			delete_post_meta( $course_id, '_lp_course_author' );
-
+			if( isset( $_POST['_lp_course_author'] ) ) {
+				$wpdb->update(
+					$wpdb->posts,
+					array( 'post_author' => $_POST['_lp_course_author'] ),
+					array( 'ID' => $course_id )
+				);
+				delete_post_meta( $course_id, '_lp_course_author' );
+			}
 		}
-
 
 		function admin_script() {
 			global $post_type;
