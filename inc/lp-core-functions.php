@@ -142,7 +142,7 @@ function learn_press_get_current_url() {
 	if ( !$current_url ) {
 		$url = untrailingslashit( $_SERVER['REQUEST_URI'] );
 		if ( !preg_match( '!^https?!', $url ) ) {
-			$siteurl = untrailingslashit( get_site_url() );
+			$siteurl = trailingslashit( get_site_url() );
 			$segs1   = explode( '/', $siteurl );
 			$segs2   = explode( '/', $url );
 			if ( $removed = array_intersect( $segs1, $segs2 ) ) {

@@ -101,9 +101,6 @@ class LP_Lesson extends LP_Abstract_Course_Item {
 			setup_postdata( $post );
 			ob_start();
 			the_content();
-			if ( comments_open() || get_comments_number() ) {
-				comments_template();
-			}
 			$this->content = ob_get_clean();
 			wp_reset_postdata();
 			do_action( 'learn_press_get_content_' . $this->id );

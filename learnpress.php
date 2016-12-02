@@ -246,8 +246,6 @@ if ( !class_exists( 'LearnPress' ) ) {
 
 		public function loaded() {
 			do_action( 'learn_press_loaded', $this );
-			echo learn_press_get_current_url(), "\n";
-			//echo add_query_arg('xxxxxxxxxxxxxxxxxxx', 'yes', learn_press_get_current_url());
 		}
 
 		public function load_meta_box() {

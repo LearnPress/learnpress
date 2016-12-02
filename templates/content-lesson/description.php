@@ -9,7 +9,7 @@ $course = LP()->global['course'];
 if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
-$item          = LP()->global['course-item'];
+$item = LP()->global['course-item'];
 if ( !$item ) {
 	return;
 }
