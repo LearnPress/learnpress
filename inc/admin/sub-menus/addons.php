@@ -45,7 +45,7 @@ function learn_press_addons_page() {
 				if ( !empty( $args['url'] ) ) {
 					$url = $args['url'];
 				} else {
-					$url = admin_url( 'admin.php?page=learn_press_add_ons&tab=' . $id );
+					$url = admin_url( 'admin.php?page=learn-press-addons&tab=' . $id );
 				}
 				$text = $args['text'];
 

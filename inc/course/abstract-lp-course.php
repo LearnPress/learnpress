@@ -48,9 +48,6 @@ abstract class LP_Abstract_Course {
 	 */
 	protected static $_lessons = array();
 
-
-	protected $_is_coming_soon = null;
-
 	/**
 	 * Constructor gets the post object and sets the ID for the loaded course.
 	 *
@@ -144,11 +141,11 @@ abstract class LP_Abstract_Course {
 					if ( ( $key == 'price' || $key == 'total' ) && get_post_meta( $this->id, '_lp_payment', true ) != 'yes' ) {
 						$value = 0;
 					}
-					/*if ( $key == 'price' ) {
-						if ( is_numeric( $value ) ) {
-							$value = strpos( '.', $value . '' ) !== false ? floatval( $value ) : intval( $value );
-						}
-					}*/
+				/*if ( $key == 'price' ) {
+					if ( is_numeric( $value ) ) {
+						$value = strpos( '.', $value . '' ) !== false ? floatval( $value ) : intval( $value );
+					}
+				}*/
 
 			}
 			if ( !empty( $value ) ) {
@@ -471,8 +468,12 @@ abstract class LP_Abstract_Course {
 	}
 
 	public function get_instructor() {
-		$user_data = get_userdata( $this->post->post_author );
-		return apply_filters( 'learn_press_course_instructor', $user_data->display_name, $this->id );
+		$user_data   = get_userdata( $this->post->post_author );
+		$author_name = '';
+		if ( $user_data ) {
+			$author_name = $user_data->display_name;
+		}
+		return apply_filters( 'learn_press_course_instructor', $author_name, $this->id );
 	}
 
 	public function get_instructor_html() {
@@ -583,7 +584,7 @@ abstract class LP_Abstract_Course {
 	public function get_origin_price_html() {
 		$origin_price_html = '';
 		if ( !$this->is_free() ) {
-			$origin_price = $this->get_origin_price();
+			$origin_price      = $this->get_origin_price();
 			$origin_price      = learn_press_format_price( $origin_price, true );
 			$origin_price_html = apply_filters( 'learn_press_course_origin_price_html', $origin_price, $this );
 		}
@@ -1490,61 +1491,28 @@ abstract class LP_Abstract_Course {
 		return $items;
 	}
 
-	public function is_coming_soon() {
-		$end_time = $current_time = 0;
-		if ( $this->_is_coming_soon === null ) {
-			$this->_is_coming_soon = false;
-			if ( 'yes' === $this->coming_soon ) {
-				if ( $this->coming_soon_end_time && $this->coming_soon_end_time !== '' ) {
-					$end_time     = strtotime( $this->coming_soon_end_time );
-					$current_time = current_time( 'timestamp' );
-				}
-				if ( $end_time == 0 || $end_time > $current_time ) {
-					$this->_is_coming_soon = true;
-				}
-			}
-		}
 
-		return $this->_is_coming_soon;
-	}
-
-	public function get_coming_soon_end_time() {
-		$end_time = 0;
-		if ( $this->is_coming_soon() ) {
-			$end_time = strtotime( $this->coming_soon_end_time );
-		}
-		return $end_time;
-	}
-
-	public function is_show_coming_soon_countdown() {
-		if ( 'yes' == $this->coming_soon_countdown ) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	public function get_video_embed(){
-		$video_id	= $this->video_id;
+	public function get_video_embed() {
+		$video_id   = $this->video_id;
 		$video_type = $this->video_type;
 
-		if( !$video_id || !$video_type ) {
+		if ( !$video_id || !$video_type ) {
 			return false;
 		}
 
-		$embed	= '';
+		$embed  = '';
 		$height = $this->video_embed_height;
-		$width	= $this->video_embed_width;
-		
-		if( 'youtube' === $video_type ) {
-			$embed = '<iframe width="'.$width.'" height="'.$height.'" '
-					. 'src="https://www.youtube.com/embed/'.$video_id.'" '
-					. 'frameborder="0" allowfullscreen></iframe>';
-			
+		$width  = $this->video_embed_width;
+
+		if ( 'youtube' === $video_type ) {
+			$embed = '<iframe width="' . $width . '" height="' . $height . '" '
+				. 'src="https://www.youtube.com/embed/' . $video_id . '" '
+				. 'frameborder="0" allowfullscreen></iframe>';
+
 		} elseif ( 'vimeo' === $video_type ) {
-			$embed = '<iframe width="'.$width.'" height="'.$height.'" '
-					. ' src="https://player.vimeo.com/video/'.$video_id.'" '
-					. 'frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+			$embed = '<iframe width="' . $width . '" height="' . $height . '" '
+				. ' src="https://player.vimeo.com/video/' . $video_id . '" '
+				. 'frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
 		}
 
 		return $embed;

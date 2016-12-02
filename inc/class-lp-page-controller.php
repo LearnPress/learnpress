@@ -29,7 +29,7 @@ class LP_Page_Controller {
 	 */
 	public function __construct() {
 		// Prevent duplicated actions
-		if ( self::$_instance ) {
+		if ( self::$_instance || is_admin() ) {
 			return;
 		}
 		add_filter( 'template_include', array( $this, 'template_loader' ) );
@@ -69,7 +69,7 @@ class LP_Page_Controller {
 		} elseif ( ( $page_id = learn_press_get_page_id( 'become_a_teacher' ) ) && is_page( $page_id ) && $page_id == $queried_object_id ) {
 			$post->post_content = '[learn_press_become_teacher_form]';
 		} else {
-			if ( learn_press_is_courses() || learn_press_is_course_tag() || learn_press_is_course_category() || learn_press_is_search()){//is_post_type_archive( LP_COURSE_CPT ) || ( ( $page_id = learn_press_get_page_id( 'courses' ) ) && is_page( $page_id ) ) || ( is_tax( array( 'course_category', 'course_tag' ) ) ) ) {
+			if ( learn_press_is_courses() || learn_press_is_course_tag() || learn_press_is_course_category() || learn_press_is_search() ) {//is_post_type_archive( LP_COURSE_CPT ) || ( ( $page_id = learn_press_get_page_id( 'courses' ) ) && is_page( $page_id ) ) || ( is_tax( array( 'course_category', 'course_tag' ) ) ) ) {
 				$file   = 'archive-course.php';
 				$find[] = $file;
 				$find[] = "{$theme_template}/{$file}";
@@ -142,11 +142,17 @@ class LP_Page_Controller {
 				$content = $content . '[learn_press_archive_course]';//$this->archive_content();
 			}
 
-
+			$has_filter = false;
+			if ( has_filter( 'the_content', 'wpautop' ) ) {
+				$has_filter = true;
+				remove_filter( 'the_content', 'wpautop' );
+			}
 			$content = do_shortcode( $content );
-
+			if ( $has_filter ) {
+				has_filter( 'the_content', 'wpautop' );
+			}
 			//if ( empty( $wp_query->post->ID ) ) {
-				$wp_query->post->ID = 0;
+			$wp_query->post->ID = 0;
 			//}
 			$wp_query->post->filter = 'raw';
 			if ( learn_press_is_course_category() ) {

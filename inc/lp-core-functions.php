@@ -140,18 +140,22 @@ function learn_press_is_endpoint_url( $endpoint = false ) {
 function learn_press_get_current_url() {
 	static $current_url;
 	if ( !$current_url ) {
-		$url = add_query_arg( '', '' );
+		$url = untrailingslashit( $_SERVER['REQUEST_URI'] );
 		if ( !preg_match( '!^https?!', $url ) ) {
-			$segs1 = explode( '/', get_site_url() );
-			$segs2 = explode( '/', $url );
+			$siteurl = trailingslashit( get_site_url() );
+			$segs1   = explode( '/', $siteurl );
+			$segs2   = explode( '/', $url );
 			if ( $removed = array_intersect( $segs1, $segs2 ) ) {
 				if ( $segs2 = array_diff( $segs2, $removed ) ) {
-					$current_url = get_site_url() . '/' . join( '/', $segs2 );
+					$current_url = $siteurl . join( '/', $segs2 );
+					if ( strpos( $current_url, '?' ) === false ) {
+						$current_url = trailingslashit( $current_url );
+					}
 				}
 			}
 		}
 	}
-	return learn_press_sanitize_url( $current_url );
+	return $current_url;
 }
 
 /**
@@ -568,7 +572,7 @@ endif;
  */
 function learn_press_get_num_pages( $total, $limit = 10 ) {
 	// added to ensure $limit is greater than 1
-	$limit = max( 1, $limit );
+	$limit = $limit <= 0 ? 10 : $limit;
 	if ( $total <= $limit ) {
 		return 1;
 	}
@@ -1443,6 +1447,10 @@ if ( !function_exists( 'learn_press_is_course_archive' ) ) {
 	 * @return bool
 	 */
 	function learn_press_is_course_archive() {
+		global $wp_query;
+		if ( empty( $wp_query->queried_object ) ) {
+			return false;
+		}
 		$is_courses  = defined( 'LEARNPRESS_IS_COURSES' ) && LEARNPRESS_IS_COURSES;
 		$is_tag      = defined( 'LEARNPRESS_IS_TAG' ) && LEARNPRESS_IS_TAG;
 		$is_category = defined( 'LEARNPRESS_IS_CATEGORY' ) && LEARNPRESS_IS_CATEGORY;
@@ -1649,13 +1657,17 @@ function learn_press_get_endpoint_url( $name, $value, $url ) {
 
 function learn_press_add_endpoints() {
 	if ( is_admin() ) {
-		return;
+		/*
+		 * Do not return even is admin because the endpoints will not effect while updating permalink
+		 * fixed 2.0.6
+		 */
+		//return;
 	}
 	if ( $endpoints = LP()->settings->get( 'checkout_endpoints' ) ) foreach ( $endpoints as $endpoint => $value ) {
 		$endpoint                   = preg_replace( '!_!', '-', $endpoint );
 		LP()->query_vars[$endpoint] = $value;
 
-		add_rewrite_endpoint( $value, EP_ROOT | EP_PAGES );
+		add_rewrite_endpoint( $value, EP_PAGES );
 	}
 
 	if ( $endpoints = LP()->settings->get( 'profile_endpoints' ) ) foreach ( $endpoints as $endpoint => $value ) {
@@ -1712,17 +1724,9 @@ function learn_press_do_parse_request( $parse, $q, $vars ) {
 function learn_press_parse_request() {
 	global $wp, $wp_rewrite;
 
-	//echo '<div style="display:none;">';
-	//print_r( $wp_rewrite );
-	//print_r( $wp );
 	if ( !empty( $wp->query_vars['lp_course'] ) && strpos( $wp->query_vars['lp_course'], '/' ) !== false ) {
 		flush_rewrite_rules();
 	}
-	//if ( !empty( $_REQUEST['clean-cache'] ) ) {
-	///
-	//}
-	//echo '</div>';
-
 
 	if ( !empty( $wp->query_vars['course-query-string'] ) ) {
 		$segments = explode( '/', $wp->query_vars['course-query-string'] );
@@ -2016,6 +2020,14 @@ function learn_press_get_current_profile_tab() {
 	return $current;
 }
 
+/**
+ * Get user profile link
+ *
+ * @param int  $user_id
+ * @param null $tab
+ *
+ * @return mixed|string|void
+ */
 function learn_press_user_profile_link( $user_id = 0, $tab = null ) {
 	if ( !$user_id ) {
 		$user = get_user_by( 'id', get_current_user_id() );
@@ -2031,8 +2043,7 @@ function learn_press_user_profile_link( $user_id = 0, $tab = null ) {
 		return '';
 	}
 	global $wp_query;
-	$page_id = !empty( $wp_query->queried_object_id ) ? $wp_query->queried_object_id : ( !empty( $wp_query->query_vars['page_id'] ) ? $wp_query->query_vars['page_id'] : - 1 );
-	$args    = array(
+	$args = array(
 		'user' => $user->user_login
 	);
 	if ( $tab ) {
@@ -2041,7 +2052,7 @@ function learn_press_user_profile_link( $user_id = 0, $tab = null ) {
 		$args['tab'] = learn_press_get_current_profile_tab();
 	}
 	$args         = array_map( '_learn_press_urlencode', $args );
-	$profile_link = learn_press_get_page_link( 'profile' );
+	$profile_link = trailingslashit( learn_press_get_page_link( 'profile' ) );
 	if ( $profile_link ) {
 		if ( get_option( 'permalink_structure' ) /*&& learn_press_get_page_id( 'profile' )*/ ) {
 			$url = $profile_link . join( "/", array_values( $args ) );

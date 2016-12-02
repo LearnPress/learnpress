@@ -454,7 +454,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			ob_start();
 			wp_remote_get( $url );
 			ob_get_clean();
-			echo wp_remote_get( admin_url( 'admin.php?page=learn_press_add_ons&tab=installed' ) );
+			echo wp_remote_get( admin_url( 'admin.php?page=learn-press-addons&tab=installed' ) );
 			die();
 		}
 

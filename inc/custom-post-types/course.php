@@ -115,12 +115,13 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 
 		public function update_course( $course_id ) {
 			global $wpdb;
-
 			$wpdb->update(
-				'wp_posts',
+				$wpdb->posts,
 				array( 'post_author' => $_POST['_lp_course_author'] ),
 				array( 'ID' => $course_id )
 			);
+
+			delete_post_meta( $course_id, '_lp_course_author' );
 
 		}
 
@@ -201,9 +202,9 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		public function toggle_editor_button( $post ) {
 			if ( $post->post_type == LP_COURSE_CPT ) {
 				?>
-                <button class="button button-primary"
-                        data-hidden="<?php echo get_post_meta( $post->ID, '_lp_editor_hidden', true ); ?>" type="button"
-                        id="learn-press-button-toggle-editor"><?php _e( 'Toggle Course Content', 'learnpress' ); ?></button>
+				<button class="button button-primary"
+						data-hidden="<?php echo get_post_meta( $post->ID, '_lp_editor_hidden', true ); ?>" type="button"
+						id="learn-press-button-toggle-editor"><?php _e( 'Toggle Course Content', 'learnpress' ); ?></button>
 				<?php
 			}
 		}
@@ -314,8 +315,8 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 
 			new RW_Meta_Box( self::settings_meta_box() );
 			new RW_Meta_Box( self::assessment_meta_box() );
+
 			new RW_Meta_Box( self::payment_meta_box() );
-			new RW_Meta_Box( self::coming_soon_meta_box() );
 			new RW_Meta_Box( self::video_meta_box() );
 			if ( is_super_admin() ) {
 				new RW_Meta_Box( self::author_meta_box() );
@@ -623,7 +624,6 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						'name'        => __( 'Author', 'learnpress' ),
 						'id'          => "{$prefix}course_author",
 						'desc'        => '',
-						'meta'        => false,
 						'multiple'    => false,
 						'allowClear'  => false,
 						'type'        => 'select_advanced',
@@ -1226,63 +1226,6 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			return isset( $_REQUEST['s'] ) ? $_REQUEST['s'] : false;
 		}
 
-
-		/**
-		 * Course assessment
-		 *
-		 * @return mixed|null|void
-		 */
-		public static function coming_soon_meta_box() {
-			$post_id            = learn_press_get_request( 'post' );
-			$prefix             = '_lp_';
-			$course_result_desc = __( 'The method to assess the result of a student for a course.', 'learnpress' );
-			$meta_box           = array(
-				'id'       => 'course_coming_soon',
-				'title'    => __( 'Coming soon', 'learnpress' ),
-				'priority' => 'high',
-				'pages'    => array( LP_COURSE_CPT ),
-				'fields'   => array(
-					array(
-						'name'    => __( 'Enable Coming soon', 'learnpress' ),
-						'id'      => "{$prefix}coming_soon",
-						'type'    => 'radio',
-						'desc'    => __( 'Enable coming soon will show coming soon message on course detail page' ),
-						'options' => array(
-							'no'  => __( 'No', 'learnpress' ),
-							'yes' => __( 'Yes', 'learnpress' ),
-						),
-						'std'     => 'no',
-					),
-					array(
-						'name' => __( 'Coming soon message', 'learnpress' ),
-						'id'   => "{$prefix}coming_soon_msg",
-						'type' => 'text',
-						'desc' => __( 'The coming soon message will show in course details page', 'learnpress' ),
-						'std'  => __( 'This couse will coming soon', 'learnpress' ),
-					),
-					array(
-						'name' => __( 'Comming soon end time', 'learnpress' ),
-						'id'   => "{$prefix}coming_soon_end_time",
-						'type' => 'datetime',
-//						'js_options' =>array('startDate'=>current_time( 'Y-m-d G:i:s' )),
-						'desc' => __( 'Set end time comming soon', 'learnpress' ),
-					)
-				, array(
-						'name'    => __( 'Show Countdown', 'learnpress' ),
-						'id'      => "{$prefix}coming_soon_countdown",
-						'type'    => 'radio',
-						'desc'    => __( 'Show or hide countdown plugin', 'learnpress' ),
-						'options' => array(
-							'no'  => __( 'No', 'learnpress' ),
-							'yes' => __( 'Yes', 'learnpress' ),
-						),
-						'std'     => 'no',
-					)
-				)
-			);
-			return apply_filters( 'learn_press_course_coming_soon_metabox', $meta_box );
-		}
-
 		/**
 		 * Course video
 		 * @return mixed|null|void
@@ -1308,24 +1251,24 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						'type'    => 'select',
 						'desc'    => __( 'Chose video type', 'learnpress' ),
 						'std'     => 'youtube',
-						'options' => array (
+						'options' => array(
 							'youtube' => __( 'Youtube', 'learnpress' ),
 							'vimeo'   => __( 'Vimeo', 'learnpress' )
 						)
 					),
 					array(
-						'name'    => __( 'Embed width', 'learnpress' ),
-						'id'      => "{$prefix}video_embed_width",
-						'type'    => 'number',
-						'desc'    => __( 'Set width of embed', 'learnpress' ),
-						'std'     => '560'
+						'name' => __( 'Embed width', 'learnpress' ),
+						'id'   => "{$prefix}video_embed_width",
+						'type' => 'number',
+						'desc' => __( 'Set width of embed', 'learnpress' ),
+						'std'  => '560'
 					),
 					array(
-						'name'    => __( 'Embed height', 'learnpress' ),
-						'id'      => "{$prefix}video_embed_height",
-						'type'    => 'number',
-						'desc'    => __( 'Set height of embed', 'learnpress' ),
-						'std'     => '315'
+						'name' => __( 'Embed height', 'learnpress' ),
+						'id'   => "{$prefix}video_embed_height",
+						'type' => 'number',
+						'desc' => __( 'Set height of embed', 'learnpress' ),
+						'std'  => '315'
 					),
 				)
 			);
