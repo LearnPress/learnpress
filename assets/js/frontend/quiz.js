@@ -457,7 +457,8 @@
 			'click .button-start-quiz'                  : '_startQuiz',
 			'click .button-finish-quiz'                 : '_finishQuiz',
 			'click .button-retake-quiz'                 : '_retakeQuiz',
-			'click .button-complete-item'               : '_completeItem'
+			'click .button-complete-item'               : '_completeItem',
+			'click #lp-navigation .nav-link a'							: '_click_nav_link'
 		},
 		timeout               : 0,
 		delayTimeout          : 0,
@@ -828,6 +829,17 @@
 					$.isFunction(args.callback) && args.callback.call(args.context, response, that);
 				}
 			});
+		},
+		_click_nav_link: function ( e ) {
+			e.preventDefault();
+			var $button = $(e.target);
+			var lesson_id = '';
+			if($button.prop("tagName").toLowerCase()!='a'){
+				lesson_id = $button.parent().attr('data-id');
+			} else {
+				lesson_id = $($button).attr('data-id');
+			}
+			$(windowTarget.document).find('.course-item.course-item-'+lesson_id+'.viewable').trigger('click');
 		},
 		_toJSON        : function () {
 			// call parent method
