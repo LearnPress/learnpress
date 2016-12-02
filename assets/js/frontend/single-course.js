@@ -386,12 +386,12 @@ if (typeof LearnPress === 'undefined') {
 				id = $target.hasClass('button-load-item') ? $target.data('id') : $target.find('.button-load-item').data('id');
 			f = f || {force: false};
 			if (!id || this.itemLoading) {
-				return;
+                return;
 			}
 			if ($target.closest('.course-item').hasClass('item-current') && !f.force) {
 				return;
 			}
-			this.blockContent();
+            this.blockContent();
 			if (this.currentItem) {
 				var $iframe = this.currentItem.get('content');
 				$iframe && $iframe.detach();
@@ -399,7 +399,7 @@ if (typeof LearnPress === 'undefined') {
 			this.itemLoading = id;
 			this.currentItem = this.model.getItem(id);
 			this.showPopup();
-			var $content = this.currentItem.get('content'),
+            var $content = this.currentItem.get('content'),
 				isNew = !($content && $content.length);
 			if (!$content) {
 				$content = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen />');

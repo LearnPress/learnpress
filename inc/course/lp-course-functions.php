@@ -569,3 +569,67 @@ if ( !function_exists( 'learn_press_get_course_item_url' ) ) {
 		return $course->get_item_link( $item_id );
 	}
 }
+
+if( !function_exists( 'learn_press_get_nav_course_item_url' ) ) {
+	function learn_press_get_nav_course_item_url( $course_id = null, $item_id = null, $content_only = false ) {
+		$course = learn_press_get_course( $course_id );
+		$curriculum_items = $course->post->curriculum_items;
+		$index = array_search( $item_id, $curriculum_items );
+		$return = array( 'back'=>'', 'next'=>'');
+		if( array_key_exists( $index - 1, $curriculum_items ) ) {
+			$back_item = get_post($curriculum_items[ $index - 1 ]);
+			$return['back'] = array(
+				'id' => $back_item->ID,
+				'link'=>$course->get_item_link( $curriculum_items[ $index - 1 ]  ),
+				'title'=>$back_item->post_title,
+			);
+			if($content_only){
+				$return['back']['link'] .= '?content-item-only=yes';
+			}
+		}
+		if( array_key_exists( $index + 1, $curriculum_items ) ) {
+			$next_item = get_post($curriculum_items[ $index + 1 ]);
+			$return['next'] = array(
+				'id' => $next_item->ID,
+				'link'=>$course->get_item_link( $curriculum_items[ $index + 1 ]  ),
+				'title'=>$next_item->post_title,
+			);
+			if($content_only){
+				$return['next']['link'] .= '?content-item-only=yes';
+			}
+		}
+		return $return;
+	}
+}
+
+if( !function_exists( 'learn_press_get_nav_course_item' ) ) {
+	function learn_press_get_nav_course_item( $course_id = null, $item_id = null, $content_only=false ) {
+		$nav = learn_press_get_nav_course_item_url($course_id, $item_id, $content_only);
+		$nav_html = '
+			<nav id="lp-navigation" class="navigation post-navigation" role="navigation">
+				<h2 class="screen-reader-text">' . __( 'Course item navigation', 'learnpress' ) . '</h2>
+				<div class="nav-links">';
+		if(isset($nav['back']['link'])){
+			$nav_html .= 
+					'<div class="nav-previous nav-link">
+						<a class="course-item-title button-load-item js-action" data-id="'.esc_attr($nav['back']['id']).'" '
+							. 'href="'.esc_attr($nav['back']['link']).'" rel="prev">'
+							. '<span class="meta-nav" aria-hidden="true">'.__('Previous', 'learnpress').'</span> <span class="screen-reader-text">'.__('Previous post:', 'learnpress').'</span> <span class="post-title">'.$nav['back']['title'].'</span></a>
+					</div>';
+		}	
+		if(isset($nav['next']['link'])){
+			$nav_html .= 
+					'<div class="nav-next nav-link">
+						<a class="course-item-title button-load-item js-action" data-id="'.esc_attr($nav['next']['id']).'" '
+							. 'href="'.esc_attr($nav['next']['link']).'" rel="next">'
+							. '<span class="meta-nav" aria-hidden="true">'.__('Next', 'learnpress').'</span> <span class="screen-reader-text">'.__('Next post:', 'learnpress').'</span> <span class="post-title">'.$nav['next']['title'].'</span></a>
+					</div>
+					';
+		}
+		$nav_html .= '
+				</div>
+			</nav>
+		';
+		echo $nav_html;
+	}
+}

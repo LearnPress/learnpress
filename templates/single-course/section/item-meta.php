@@ -12,13 +12,14 @@ $course      = LP()->global['course'];
 $item_status = $user->get_item_status( $item->ID );
 $security    = wp_create_nonce( sprintf( 'complete-item-%d-%d-%d', $user->id, $course->id, $item->ID ) );
 $course_item = $course->get_item( $item->ID );
+$status = $user->get_course_status( $course->id );
 ?>
 <div class="course-item-meta">
 
 	<?php do_action( 'learn_press_before_item_meta', $item ); ?>
 
 	<!--<span class="lp-label lp-label-viewing"><?php _e( 'Viewing', 'learnpress' ); ?></span>-->
-	<?php if ( $course_item->is_preview() ): ?>
+	<?php if ( $status != 'enrolled' && $course_item->is_preview() ): ?>
 		<span class="lp-label lp-label-preview"><?php _e( 'Preview', 'learnpress' ); ?></span>
 	<?php endif; ?>
 	<?php if ( $user->can_view_item( $item->ID, $course->id ) !== false ) { ?>

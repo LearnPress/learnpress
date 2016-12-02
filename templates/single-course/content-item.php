@@ -32,6 +32,7 @@ $item_id = isset( $item->id ) ? $item->id : ( isset( $item->ID ) ? $item->ID : 0
 			<a class="" href="<?php echo get_edit_post_link( $item_id ); ?>"><?php _e( 'Edit this item', 'learnpress' ); ?></a>
 		</p>
 	<?php endif; ?>
-		<?php $res=  the_posts_pagination( array( 'mid_size' => 2 ) );
-		next_posts_link();?>
+<?php 
+	learn_press_get_nav_course_item($course->id, $item_id, true);
+?>
 </div>
