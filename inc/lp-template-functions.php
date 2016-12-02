@@ -822,7 +822,7 @@ if ( !function_exists( 'learn_press_course_lesson_class' ) ) {
 			$classes[] = 'viewable';
 		}
 
-		$classes = array_unique( array_merge( $classes, $class ) );
+        $classes = array_unique( array_merge( $classes, $class ) );
 		if ( $echo ) {
 			echo 'class="' . implode( ' ', $classes ) . '"';
 		}
@@ -1602,3 +1602,4 @@ function learn_press_course_the_content( $content ) {
 	}
 	return $content;
 }
+

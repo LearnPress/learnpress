@@ -19,7 +19,6 @@ $nick_name            = $user_info->nickname;
 $first_name           = $user_info->first_name;
 $last_name            = $user_info->last_name;
 $profile_picture_type = $user->profile_picture_type;
-
 if ( $user ) :
 	?>
 	<div class="user-profile-edit-form" id="learn-press-user-profile-edit-form">
@@ -52,6 +51,7 @@ if ( $user ) :
 						<!--<input type="file" name="profile_picture" />-->
 						<input type="hidden" id="lp-user-profile-picture-data" name="profile_picture_data" />
 						<a href="javascript:void(0);" class="button-primary change-profile-picutre-text" onupload="0"><?php _e('Change Profile Picture', 'learnpress');?></a>
+                        <p class="description"><?php _e('Please use an image that\'s at least 250px in width and 250px in height.', 'learnpress'); ?></p>
 						<div class="image-editor" style="display:none;">
 							<input type="file" class="cropit-image-input" name="profile_picture">
 							<div class="cropit-preview"></div>
