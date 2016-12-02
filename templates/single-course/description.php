@@ -4,14 +4,14 @@
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 1.0
+ * @version 2.0.6
  */
 
 if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-$course = LP()->course;
+$course = LP()->global['course'];
 
 if ( $course->is( 'viewing-item' ) ) {
 	if ( false === apply_filters( 'learn_press_display_course_description_on_viewing_item', false ) ) {

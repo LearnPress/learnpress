@@ -84,6 +84,9 @@ function learn_press_lesson_comment_form( $lesson_id ) {
 	if ( get_post_type( $lesson_id ) != LP_LESSON_CPT ) {
 		return;
 	}
+
+
+
 	$post = get_post( $lesson_id );
 	setup_postdata( $post );
 	if ( comments_open() || get_comments_number() ) {

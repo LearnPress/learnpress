@@ -2475,3 +2475,9 @@ function learn_press_get_current_time() {
 		return $b;
 	}
 }
+
+
+function learn_press_is_added_to_cart( $course_id ) {
+	$cart = LP()->cart;
+	return $cart->has_item( $course_id );
+}

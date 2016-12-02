@@ -1939,22 +1939,24 @@ function learn_press_get_file_version( $file ) {
  * @return array|bool
  */
 function learn_press_get_theme_templates( $check = false ) {
+	$template_folder    = learn_press_template_path();
 	$template_path      = LP_PLUGIN_PATH . '/templates/';
 	$found_files        = array();
 	$outdated_templates = false;
+	$template_dir       = get_template_directory();
+	$stylesheet_dir     = get_stylesheet_directory();
+	$scanned_files      = learn_press_scan_template_files( $template_path );
 
-
-	$scanned_files = learn_press_scan_template_files( $template_path );
 
 	foreach ( $scanned_files as $file ) {
-		if ( file_exists( get_stylesheet_directory() . '/' . $file ) ) {
-			$theme_file = get_stylesheet_directory() . '/' . $file;
-		} elseif ( file_exists( get_stylesheet_directory() . '/learnpress/' . $file ) ) {
-			$theme_file = get_stylesheet_directory() . '/learnpress/' . $file;
-		} elseif ( file_exists( get_template_directory() . '/' . $file ) ) {
-			$theme_file = get_template_directory() . '/' . $file;
-		} elseif ( file_exists( get_template_directory() . '/learnpress/' . $file ) ) {
-			$theme_file = get_template_directory() . '/learnpress/' . $file;
+		if ( file_exists( $stylesheet_dir . '/' . $file ) ) {
+			$theme_file = $stylesheet_dir . '/' . $file;
+		} elseif ( file_exists( $stylesheet_dir . '/' . $template_folder . '/' . $file ) ) {
+			$theme_file = $stylesheet_dir . '/' . $template_folder . '/' . $file;
+		} elseif ( file_exists( $template_dir . '/' . $file ) ) {
+			$theme_file = $template_dir . '/' . $file;
+		} elseif ( file_exists( $template_dir . '/' . $template_folder . '/' . $file ) ) {
+			$theme_file = $template_dir . '/' . $template_folder . '/' . $file;
 		} else {
 			$theme_file = false;
 		}

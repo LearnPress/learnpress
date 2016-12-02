@@ -317,7 +317,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			new RW_Meta_Box( self::assessment_meta_box() );
 
 			new RW_Meta_Box( self::payment_meta_box() );
-			new RW_Meta_Box( self::video_meta_box() );
+			//new RW_Meta_Box( self::video_meta_box() );
 			if ( is_super_admin() ) {
 				new RW_Meta_Box( self::author_meta_box() );
 			}

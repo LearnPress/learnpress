@@ -4,7 +4,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 1.0
+ * @version 2.0.6
  */
 
 if ( !defined( 'ABSPATH' ) ) {
@@ -19,7 +19,7 @@ if ( !$course->is_required_enroll() ) {
 
 $course_status = learn_press_get_user_course_status();
 $user          = learn_press_get_current_user();
-
+$in_cart       = learn_press_is_added_to_cart( $course->id );
 // only show enroll button if user had not enrolled
 $purchase_button_text = apply_filters( 'learn_press_purchase_button_text', __( 'Buy this course', 'learnpress' ) );
 $enroll_button_text   = apply_filters( 'learn_press_enroll_button_text', __( 'Enroll', 'learnpress' ) );
@@ -84,8 +84,8 @@ $retake_button_text   = apply_filters( 'learn_press_retake_button_text', __( 'Re
 			<input type="hidden" name="purchase-course" value="<?php echo $course->id; ?>" />
 		</form>
 	<?php else: ?>
-
-		<?php if ( $user->get_order_status( $course->id ) != 'lp-completed' ): ?>
+		<?php $order_status = $user->get_order_status( $course->id ); ?>
+		<?php if ( in_array( $order_status, array( 'lp-pending', 'lp-refunded', 'lp-cancelled', 'lp-failed' ) ) ) { ?>
 			<form name="purchase-course" class="purchase-course" method="post" enctype="multipart/form-data">
 				<?php do_action( 'learn_press_before_purchase_button' ); ?>
 				<button class="button purchase-button" data-block-content="yes">
@@ -94,10 +94,11 @@ $retake_button_text   = apply_filters( 'learn_press_retake_button_text', __( 'Re
 				<?php do_action( 'learn_press_after_purchase_button' ); ?>
 				<input type="hidden" name="purchase-course" value="<?php echo $course->id; ?>" />
 			</form>
-			<?php //learn_press_display_message( '<p>' . apply_filters( 'learn_press_user_course_pending_message', __( 'You have purchased this course. Please wait for approval.', 'learnpress' ), $course, $user ) . '</p>' ); ?>
-		<?php else: ?>
+		<?php } elseif ( in_array( $order_status, array( 'lp-processing', 'lp-on-hold' ) ) ) { ?>
+			<?php learn_press_display_message( '<p>' . apply_filters( 'learn_press_user_course_pending_message', __( 'You have purchased this course. Please wait for approval.', 'learnpress' ), $course, $user ) . '</p>' ); ?>
+		<?php } elseif ( $order_status != 'lp-completed' ) { ?>
 			<?php learn_press_display_message( '<p>' . apply_filters( 'learn_press_user_can_not_purchase_course_message', __( 'Sorry, you can not purchase this course', 'learnpress' ), $course, $user ) . '</p>' ); ?>
-		<?php endif; ?>
+		<?php } ?>
 	<?php endif; ?>
 
 	<?php do_action( 'learn_press_after_course_buttons', $course->id ); ?>
