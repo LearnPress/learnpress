@@ -81,32 +81,34 @@ function learn_press_process_web_hooks() {
 
 add_action( 'wp_loaded', 'learn_press_process_web_hooks', 999 );
 
+/**
+ * Update status of lesson when view at first time
+ */
 function learn_press_header_item_only_view_first() {
-    global $wpdb;
+	global $wpdb;
 
-    $table  = $wpdb->prefix . 'learnpress_user_items';
-    $user   = learn_press_get_current_user();
-    $course = learn_press_get_the_course();
-    $item   = LP()->global['course-item'];
-    $status = $user->get_course_status( $course->id );
+	$table  = $wpdb->prefix . 'learnpress_user_items';
+	$user   = learn_press_get_current_user();
+	$course = learn_press_get_the_course();
+	$item   = LP()->global['course-item'];
+	$status = $user->get_course_status( $course->id );
 
-    if ($status === 'enrolled') {
+	if ( $status === 'enrolled' && $item ) {
+		/* Insert status for lesson */
+		if ( $wpdb->get_var( "SHOW TABLES LIKE '{$table}'" ) === $table ) {
 
-        /* Insert status for lesson */
-        if ( $wpdb->get_var( "SHOW TABLES LIKE '{$table}'" ) === $table ) {
+			$result = $wpdb->query("SELECT * FROM `$wpdb->learnpress_user_items` WHERE `item_id`= $item->ID");
+			if ($result === 0) {
+				$query = $wpdb->prepare("
+							  INSERT INTO {$wpdb->learnpress_user_items} (`user_id`, `item_id`, `start_time`, `end_time`, `item_type`, `status`, `ref_id`, `ref_type`, `parent_id`)
+							  VALUES ( $user->ID, $item->ID, %s, %s, %s, %s, $course->ID, %s, $user->ID )
+							", current_time( 'mysql' ), current_time( 'mysql' ), $item->_item->item_type, 'view', $course->post->post_type);
+				$wpdb->query($query);
+			}
+		}
+	}
 
-            $result = $wpdb->query("SELECT * FROM `$wpdb->learnpress_user_items` WHERE `item_id`= $item->ID");
-            if ($result === 0) {
-                $query = $wpdb->prepare("
-                              INSERT INTO {$wpdb->learnpress_user_items} (`user_id`, `item_id`, `start_time`, `end_time`, `item_type`, `status`, `ref_id`, `ref_type`, `parent_id`)
-                              VALUES ( $user->ID, $item->ID, %s, %s, %s, %s, $course->ID, %s, $user->ID )
-                            ", current_time( 'mysql' ), current_time( 'mysql' ), $item->_item->item_type, 'view', $course->post->post_type);
-                $wpdb->query($query);
-            }
-        }
-    }
-
-    LP_Cache::flush();
+	LP_Cache::flush();
 }
 
 add_action('learn_press_print_assets', 'learn_press_header_item_only_view_first');
