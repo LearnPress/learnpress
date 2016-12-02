@@ -85,6 +85,7 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 						'thumbnail',
 						'post-formats',
 						'revisions',
+						'comments'
 						//'excerpt'
 					),
 					'hierarchical'       => true,
@@ -136,7 +137,7 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 			LP_Assets::enqueue_style( 'select2', LP_PLUGIN_URL . '/lib/meta-box/css/select2/select2.css' );
 			ob_start();
 			?>
-			<script>
+            <script>
 				var form = $('#post');
 				form.submit(function (evt) {
 					var $title = $('#title'),
@@ -151,7 +152,7 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 						return false;
 					}
 				});
-			</script>
+            </script>
 			<?php
 			$script = ob_get_clean();
 			$script = preg_replace( '!</?script>!', '', $script );
