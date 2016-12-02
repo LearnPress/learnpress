@@ -1447,6 +1447,10 @@ if ( !function_exists( 'learn_press_is_course_archive' ) ) {
 	 * @return bool
 	 */
 	function learn_press_is_course_archive() {
+		global $wp_query;
+		if ( empty( $wp_query->queried_object ) ) {
+			return false;
+		}
 		$is_courses  = defined( 'LEARNPRESS_IS_COURSES' ) && LEARNPRESS_IS_COURSES;
 		$is_tag      = defined( 'LEARNPRESS_IS_TAG' ) && LEARNPRESS_IS_TAG;
 		$is_category = defined( 'LEARNPRESS_IS_CATEGORY' ) && LEARNPRESS_IS_CATEGORY;
