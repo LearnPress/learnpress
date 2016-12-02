@@ -140,18 +140,22 @@ function learn_press_is_endpoint_url( $endpoint = false ) {
 function learn_press_get_current_url() {
 	static $current_url;
 	if ( !$current_url ) {
-		$url = add_query_arg( '', '' );
+		$url = untrailingslashit( $_SERVER['REQUEST_URI'] );
 		if ( !preg_match( '!^https?!', $url ) ) {
-			$segs1 = explode( '/', get_site_url() );
-			$segs2 = explode( '/', $url );
+			$siteurl = untrailingslashit( get_site_url() );
+			$segs1   = explode( '/', $siteurl );
+			$segs2   = explode( '/', $url );
 			if ( $removed = array_intersect( $segs1, $segs2 ) ) {
 				if ( $segs2 = array_diff( $segs2, $removed ) ) {
-					$current_url = get_site_url() . '/' . join( '/', $segs2 );
+					$current_url = $siteurl . join( '/', $segs2 );
+					if ( strpos( $current_url, '?' ) === false ) {
+						$current_url = trailingslashit( $current_url );
+					}
 				}
 			}
 		}
 	}
-	return learn_press_sanitize_url( $current_url );
+	return $current_url;
 }
 
 /**
@@ -2039,7 +2043,7 @@ function learn_press_user_profile_link( $user_id = 0, $tab = null ) {
 		return '';
 	}
 	global $wp_query;
-	$args    = array(
+	$args = array(
 		'user' => $user->user_login
 	);
 	if ( $tab ) {

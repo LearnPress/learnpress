@@ -238,11 +238,15 @@ class LP_Assets {
 		self::add_default_styles( $styles );
 	}
 
+	/**
+	 * @param WP_Styles $styles
+	 */
 	public static function add_default_styles( &$styles ) {
 		$default_path = plugins_url( 'learnpress/assets/' );
 		$suffix       = '';
+		$deps         = array( 'dashicons' );
 		// global
-		$styles->add( 'learn-press-global', $default_path . 'css/global' . $suffix . '.css' );
+		$styles->add( 'learn-press-global', $default_path . 'css/global' . $suffix . '.css', $deps );
 
 		// admin
 		$styles->add( 'learn-press-admin', $default_path . 'css/admin/admin' . $suffix . '.css' );
@@ -257,7 +261,7 @@ class LP_Assets {
 		$styles->add( 'learn-press-statistics-select2', '/' . LP_WP_CONTENT . '/plugins/learnpress/inc/libraries/meta-box/css/select2/select2.css' );
 
 		// frontend
-		$styles->add( 'learn-press-style', $default_path . 'css/learnpress.css' );
+		$styles->add( 'learn-press-style', $default_path . 'css/learnpress.css', $deps );
 		do_action_ref_array( 'learn_press_add_default_styles', array( $styles, $default_path, $suffix ) );
 
 	}
