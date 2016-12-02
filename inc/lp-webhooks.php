@@ -92,7 +92,7 @@ function learn_press_header_item_only_view_first() {
 	$course = learn_press_get_the_course();
 	$item   = LP()->global['course-item'];
 	$status = $user->get_course_status( $course->id );
-
+// may be need add condition is not is_admin()
 	if ( $status === 'enrolled' && $item ) {
 		/* Insert status for lesson */
 		if ( $wpdb->get_var( "SHOW TABLES LIKE '{$table}'" ) === $table ) {
