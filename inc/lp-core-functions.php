@@ -572,7 +572,7 @@ endif;
  */
 function learn_press_get_num_pages( $total, $limit = 10 ) {
 	// added to ensure $limit is greater than 1
-	$limit = max( 1, $limit );
+	$limit = $limit <= 0 ? 10 : $limit;
 	if ( $total <= $limit ) {
 		return 1;
 	}
@@ -1657,13 +1657,17 @@ function learn_press_get_endpoint_url( $name, $value, $url ) {
 
 function learn_press_add_endpoints() {
 	if ( is_admin() ) {
-		return;
+		/*
+		 * Do not return even is admin because the endpoints will not effect while updating permalink
+		 * fixed 2.0.6
+		 */
+		//return;
 	}
 	if ( $endpoints = LP()->settings->get( 'checkout_endpoints' ) ) foreach ( $endpoints as $endpoint => $value ) {
 		$endpoint                   = preg_replace( '!_!', '-', $endpoint );
 		LP()->query_vars[$endpoint] = $value;
 
-		add_rewrite_endpoint( $value, EP_ROOT | EP_PAGES );
+		add_rewrite_endpoint( $value, EP_PAGES );
 	}
 
 	if ( $endpoints = LP()->settings->get( 'profile_endpoints' ) ) foreach ( $endpoints as $endpoint => $value ) {
@@ -1720,17 +1724,9 @@ function learn_press_do_parse_request( $parse, $q, $vars ) {
 function learn_press_parse_request() {
 	global $wp, $wp_rewrite;
 
-	//echo '<div style="display:none;">';
-	//print_r( $wp_rewrite );
-	//print_r( $wp );
 	if ( !empty( $wp->query_vars['lp_course'] ) && strpos( $wp->query_vars['lp_course'], '/' ) !== false ) {
 		flush_rewrite_rules();
 	}
-	//if ( !empty( $_REQUEST['clean-cache'] ) ) {
-	///
-	//}
-	//echo '</div>';
-
 
 	if ( !empty( $wp->query_vars['course-query-string'] ) ) {
 		$segments = explode( '/', $wp->query_vars['course-query-string'] );
