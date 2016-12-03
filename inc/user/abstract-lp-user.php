@@ -2677,7 +2677,8 @@ class LP_Abstract_User {
 				$pi              = pathinfo( $profile_picture );
 				$profile_picture = $pi['filename'] . '-thumb' . '.' . $pi['extension'];
 			}
-			if ( file_exists( $upload['basedir'] . '\learn-press-profile\\' . $user_id . '\\' . $profile_picture ) ) {
+			$file_path = $upload['basedir'] . DIRECTORY_SEPARATOR .  'learn-press-profile' . DIRECTORY_SEPARATOR . $user_id . DIRECTORY_SEPARATOR . $profile_picture;
+			if ( file_exists( $file_path ) ) {
 				$this->uploaded_profile_src = $upload['baseurl'] . '/learn-press-profile/' . $user_id . '/' . $profile_picture;
 			} else {
 				$this->uploaded_profile_src = false;
