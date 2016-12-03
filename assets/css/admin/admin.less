@@ -1661,6 +1661,27 @@ input.regular-text[id^="learn-press-emails"] {
     thead th h4{
         margin: 0;
     }
+    tbody th{
+        font-weight: bold;
+        p{
+            margin: 0 0 0 10px;
+            display: inline-block;
+            a{
+                font-weight: normal;
+                outline: none;
+                border: none;
+                box-shadow: none;
+                margin: 0;
+                padding: 2px 8px;
+                border-radius: 3px;
+                &.current{
+                    background: #00aadc;
+                    color: #FFF
+                }
+            }
+        }
+
+    }
     .lp-template-version{
         width: 100px;
         &.outdated{

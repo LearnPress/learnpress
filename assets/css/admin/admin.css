@@ -1367,6 +1367,26 @@ input.regular-text[id^="learn-press-emails"] {
 .lp-template-overrides thead th h4 {
   margin: 0;
 }
+.lp-template-overrides tbody th {
+  font-weight: bold;
+}
+.lp-template-overrides tbody th p {
+  margin: 0 0 0 10px;
+  display: inline-block;
+}
+.lp-template-overrides tbody th p a {
+  font-weight: normal;
+  outline: none;
+  border: none;
+  box-shadow: none;
+  margin: 0;
+  padding: 2px 8px;
+  border-radius: 3px;
+}
+.lp-template-overrides tbody th p a.current {
+  background: #00aadc;
+  color: #FFF;
+}
 .lp-template-overrides .lp-template-version {
   width: 100px;
 }

@@ -265,10 +265,45 @@ function learn_press_tools_page_database() {
 	<?php
 }
 
+/**
+ * Sort overrides templates are outdated first
+ *
+ * @param $a
+ * @param $b
+ *
+ * @return int
+ */
+function _learn_press_sort_templates( $a, $b ) {
+	if ( $a[3] && $b[3] ) {
+		return 0;
+	}
+	if ( $a[3] ) {
+		return - 1;
+	}
+	if ( $b[3] ) {
+		return 1;
+	}
+	return 0;
+}
+
+function _learn_press_get_theme_name( $folder ) {
+	$theme = wp_get_theme( $folder );
+	return !empty( $theme['Name'] ) ? $theme['Name'] : '';
+}
 
 function learn_press_tools_page_templates() {
 	$templates = learn_press_get_theme_templates();
 	$theme     = wp_get_theme();
+	usort( $templates, '_learn_press_sort_templates' );
+
+	$template_dir       = get_template_directory();
+	$stylesheet_dir     = get_stylesheet_directory();
+	$child_theme_folder = '';
+	$theme_folder       = '';
+	if ( $template_dir != $stylesheet_dir ) {
+		$child_theme_folder = basename( $stylesheet_dir );
+		$theme_folder       = basename( $template_dir );
+	}
 	?>
 	<table class="lp-template-overrides widefat" cellspacing="0">
 		<thead>
@@ -278,17 +313,38 @@ function learn_press_tools_page_templates() {
 			</th>
 		</tr>
 		</thead>
-		<tbody>
+		<tbody id="learn-press-template-files">
 		<?php if ( $templates ): ?>
 			<tr>
-				<td><?php _e( 'File', 'learnpress' ); ?></td>
-				<td>
+				<th>
+					<?php _e( 'File', 'learnpress' ); ?>
+					<p>
+						<a href="" class="learn-press-filter-template current" data-template=""><?php _e( 'All', 'learnpress' ); ?></a>
+						<?php if ( $theme_folder && $child_theme_folder ) { ?>
+							<a href="" class="learn-press-filter-template" data-template="<?php echo esc_attr( $theme_folder ); ?>"><?php echo _learn_press_get_theme_name( $theme_folder ); ?></a>
+							<a href="" class="learn-press-filter-template" data-template="<?php echo esc_attr( $child_theme_folder ); ?>"><?php echo _learn_press_get_theme_name( $child_theme_folder ); ?></a>
+						<?php } ?>
+						<a href="" class="learn-press-filter-template" data-outdated="yes"><?php _e( 'Outdated', 'learnpress' ); ?></a>
+					</p>
+				</th>
+				<th>
 					<?php _e( 'Version', 'learnpress' ); ?>
-				</td>
-				<td><?php _e( 'Core version', 'learnpress' ); ?></td>
+				</th>
+				<th><?php _e( 'Core version', 'learnpress' ); ?></th>
 			</tr>
 			<?php foreach ( $templates as $template ): ?>
-				<tr>
+				<?php
+				$template_folder = '';
+				if ( strpos( $template[0], $child_theme_folder ) !== false ) {
+					$template_folder = $child_theme_folder;
+				} else {
+					$template_folder = $theme_folder;
+				}
+				?>
+
+				<tr data-template="<?php echo esc_attr( $template_folder ); ?>" <?php if ( $template[3] ) {
+					echo 'data-outdated="yes"';
+				} ?>>
 					<td class="lp-template-file"><code><?php echo $template[0]; ?></code></td>
 					<td class="lp-template-version<?php echo $template[3] ? ' outdated' : ( $template[1] == '-' && $template[2] == '-' ? '' : ' up-to-date' ); ?>">
 						<span><?php echo $template[1]; ?></span>
@@ -305,6 +361,30 @@ function learn_press_tools_page_templates() {
 		<?php endif; ?>
 		</tbody>
 	</table>
+	<script type="text/javascript">
+		jQuery(function ($) {
+			$(document).on('click', '.learn-press-filter-template', function () {
+				var $link = $(this).addClass('current'),
+					template = $link.data('template'),
+					outdated = $link.data('outdated');
+				$link.siblings('a').removeClass('current');
+				if (!template) {
+					if(!outdated){
+						$('#learn-press-template-files tr[data-template]').removeClass('hide-if-js');
+					}else{
+						$('#learn-press-template-files tr[data-template]').map(function () {
+							$(this).toggleClass('hide-if-js', $(this).data('outdated') != outdated);
+						})
+					}
+				} else {
+					$('#learn-press-template-files tr[data-template]').map(function () {
+						$(this).toggleClass('hide-if-js', $(this).data('template') != template);
+					})
+				}
+				return false;
+			})
+		})
+	</script>
 	<?php
 }
 
@@ -350,7 +430,9 @@ function learn_press_tools_page() {
 					$check.parent().removeClass('hide-if-js');
 					return false;
 				}
-			})
+			});
+
+
 		})
 	</script>
 	<?php

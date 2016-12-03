@@ -4,7 +4,7 @@ Donate link:
 Tags: WordPress LMS, LMS, eLearning, e-Learning, Learning Management System, LMS WordPress, Course, Courses, Quiz, Quizzes, Training, Guru, Sell Courses  
 Requires at least: 3.8  
 Tested up to: 4.6.1
-Stable tag: 2.0.5
+Stable tag: 2.0.6
 License: GPLv2 or later  
 License URI: http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -192,6 +192,20 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.  
 
 == Changelog ==
+
+= 2.0.6 =
++ Added tool to check the templates are outdated in theme
++ Added avatar option of LP profile into WP profile
++ Added comment features for lesson
++ Removed unnecessary fields in LP profile page
++ Removed 'Preview' label for lesson if user is enrolled course
++ Fixed issue with WooSidebars
++ Fixed 'Tick' icon beside lesson for it's statuses
++ Fixed course's price does not show decimal numbers
++ Fixed user profile link is 404
++ Fixed issues with page builder and Yoast SEO plugins
++ Fixed division by zero for course pagination
++ Fixed message show in course and user can not click any where to buy
 
 = 2.0.5.2 =
 + Fixed static pages are duplicated

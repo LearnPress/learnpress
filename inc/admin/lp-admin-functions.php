@@ -1947,7 +1947,6 @@ function learn_press_get_theme_templates( $check = false ) {
 	$stylesheet_dir     = get_stylesheet_directory();
 	$scanned_files      = learn_press_scan_template_files( $template_path );
 
-
 	foreach ( $scanned_files as $file ) {
 		if ( file_exists( $stylesheet_dir . '/' . $file ) ) {
 			$theme_file = $stylesheet_dir . '/' . $file;
@@ -1988,7 +1987,7 @@ function learn_press_get_theme_templates( $check = false ) {
 			return $outdated_templates;
 		}
 	}
-	return $found_files;
+	return $check ? $outdated_templates : $found_files;
 }
 
 function learn_press_scan_template_files( $template_path ) {

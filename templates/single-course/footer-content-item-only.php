@@ -1,4 +1,8 @@
 <?php
+/**
+ * @author ThimPress
+ * @version 2.0.6
+ */
 ob_start();
 get_footer();
 $footer = ob_get_clean();
