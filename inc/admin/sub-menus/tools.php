@@ -206,8 +206,7 @@ if ( !function_exists( 'learn_press_remove_old_data' ) ) {
 function learn_press_tools_subtabs() {
 	$default_tabs = array(
 		'database'  => __( 'Database', 'learnpress' ),
-		'templates' => __( 'Templates', 'learnpress' ),
-		'extended'  => array( __( 'Extended', 'learnpress' ), 'xxxxxx' )
+		'templates' => __( 'Templates', 'learnpress' )
 	);
 	return apply_filters( 'learn_press_tools_subtabs', $default_tabs );
 }
@@ -335,7 +334,7 @@ function learn_press_tools_page_templates() {
 			<?php foreach ( $templates as $template ): ?>
 				<?php
 				$template_folder = '';
-				if ( strpos( $template[0], $child_theme_folder ) !== false ) {
+				if ( $child_theme_folder && strpos( $template[0], $child_theme_folder ) !== false ) {
 					$template_folder = $child_theme_folder;
 				} else {
 					$template_folder = $theme_folder;
