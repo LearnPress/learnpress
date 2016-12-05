@@ -148,37 +148,37 @@
 					$('.lp-course-price-field').toggleClass('hide-if-js', toggle).attr('xxx', Math.random());
 					$('.lp-course-required-enroll').toggleClass('hide-if-js', !toggle);
 					if(toggle){
-						$('.lp-course-sale_start-field').hide();
-						$('.lp-course-sale_end-field').hide();
+						$('.lp-course-sale_start-field').addClass('hide');
+						$('.lp-course-sale_end-field').addClass('hide');
 					}else{
 						if( $('input[name="_lp_sale_start"]').val()!='' ){
-							$('.lp-course-sale_start-field').show();
-							$('.lp-course-sale_end-field').show();
-							$('#_lp_sale_price_schedule').hide();
+							$('.lp-course-sale_start-field').removeClass('hide');
+							$('.lp-course-sale_end-field').removeClass('hide');
+							$('#_lp_sale_price_schedule').addClass('hide');
 						}
 					}
 				})
 				$chkPayment.filter(':checked').trigger('change');
-				
+
 				// add schedule button
 				if( $('input[name="_lp_sale_start"]').val()!='' ){
-					$('.lp-course-sale_start-field').show();
-					$('.lp-course-sale_end-field').show();
-					$('#_lp_sale_price_schedule').hide();
+					$('.lp-course-sale_start-field').removeClass('hide');
+					$('.lp-course-sale_end-field').removeClass('hide');
+					$('#_lp_sale_price_schedule').addClass('hide');
 				}
 				$('#_lp_sale_price_schedule').on('click', function(event){
 					event.preventDefault();
-					$('.lp-course-sale_start-field').show();
-					$('.lp-course-sale_end-field').show();
-					$(this).hide();
+					$('.lp-course-sale_start-field').removeClass('hide');
+					$('.lp-course-sale_end-field').removeClass('hide');
+					$(this).addClass('hide');
 				});
 				$('#_lp_sale_price_schedule_cancel').on('click', function(event){
 					event.preventDefault();
-					$('.lp-course-sale_start-field').hide();
-					$('.lp-course-sale_end-field').hide();
+					$('.lp-course-sale_start-field').addClass('hide');
+					$('.lp-course-sale_end-field').addClass('hide');
 					$('input[name="_lp_sale_start"]').val('');
 					$('input[name="_lp_sale_end"]').val('');
-					$('#_lp_sale_price_schedule').show();
+					$('#_lp_sale_price_schedule').removeClass('hide');
 				});
 				if ($('input[name="_lp_course_result"]:checked').length == 0) {
 					$('input[name="_lp_course_result"]').filter(function () {
