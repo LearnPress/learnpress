@@ -25,7 +25,17 @@ class LP_Install {
 	 */
 	private static $_update_files = array();
 
+	/**
+	 * @var null
+	 */
 	private static $_is_old_version = null;
+
+	/**
+	 * Default static pages used by LP
+	 *
+	 * @var array
+	 */
+	private static $_pages = array( 'checkout', 'cart', 'profile', 'courses', 'become_a_teacher' );
 
 	/**
 	 * Init
@@ -219,29 +229,29 @@ class LP_Install {
 	 * @global type $wpdb
 	 * @return type
 	 */
-	public static function _remove_pages(){
+	public static function _remove_pages() {
 		global $wpdb;
-		$sql = 'SELECT * '
-				. ' FROM '.$wpdb->posts.' p INNER JOIN  '.$wpdb->postmeta.' pm '
-				. ' ON p.ID=pm.post_id AND pm.meta_key="_learn_press_page" AND p.post_type="page";';
-		$ids = $wpdb->get_col($sql);
+		$sql       = 'SELECT * '
+			. ' FROM ' . $wpdb->posts . ' p INNER JOIN  ' . $wpdb->postmeta . ' pm '
+			. ' ON p.ID=pm.post_id AND pm.meta_key="_learn_press_page" AND p.post_type="page";';
+		$ids       = $wpdb->get_col( $sql );
 		$count_ids = count( $ids );
-		if(  $count_ids < 10 ) {
+		if ( $count_ids < 10 ) {
 			return $ids;
 		}
 		$q = $wpdb->prepare( "
 				DELETE FROM p, pm
 				USING {$wpdb->posts} AS p LEFT JOIN {$wpdb->postmeta} AS pm ON p.ID = pm.post_id AND p.post_type IN('page')
-				WHERE %d AND p.post_status='publish' AND p.ID IN(". implode(',', $ids).")
+				WHERE %d AND p.post_status='publish' AND p.ID IN(" . implode( ',', $ids ) . ")
 		", 1 );
 
 		$wpdb->query( $q );
 
-		$pages = array( 'checkout', 'cart', 'profile', 'courses', 'become_a_teacher' );
+		$pages = self::$_pages;
 		foreach ( $pages as $page ) {
-			delete_option("learn_press_{$page}_page_id");
+			delete_option( "learn_press_{$page}_page_id" );
 		}
-		sleep(5);
+		sleep( 5 );
 		return array();
 
 	}
@@ -250,11 +260,11 @@ class LP_Install {
 		global $wpdb;
 		$created_page = self::_remove_pages();
 
-		if( !empty($created_page) ) {
+		if ( !empty( $created_page ) ) {
 			return;
 		}
 
-		$pages = array( 'checkout', 'cart', 'profile', 'courses', 'become_a_teacher' );
+		$pages = self::$_pages;
 		foreach ( $pages as $page ) {
 			$page_id = get_option( "learn_press_{$page}_page_id" );
 			if ( $page_id && get_post_type( $page_id ) == 'page' && get_post_status( $page_id ) == 'publish' ) {
@@ -296,7 +306,7 @@ class LP_Install {
 							'comment_status' => 'closed'
 						)
 					);
-					if($inserted){
+					if ( $inserted ) {
 						$page_id = $inserted;
 					}
 				}

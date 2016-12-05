@@ -1,5 +1,5 @@
 === LearnPress - WordPress LMS Plugin ===  
-Contributors: thimpress, tunnhn, thongta, kendy73  
+Contributors: thimpress, tunnhn, phonglq.foobla, chinhtm, thongta, kendy73
 Donate link:  
 Tags: WordPress LMS, LMS, eLearning, e-Learning, Learning Management System, LMS WordPress, Course, Courses, Quiz, Quizzes, Training, Guru, Sell Courses  
 Requires at least: 3.8  
@@ -192,6 +192,11 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.  
 
 == Changelog ==
+
+= 2.0.6.1 =
++ Improved checking templates are outdated
++ Fixed bug avatar cannot change in user profile
++ Fixed several other bugs
 
 = 2.0.6 =
 + Added tool to check the templates are outdated in theme

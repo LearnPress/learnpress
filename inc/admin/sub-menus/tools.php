@@ -343,7 +343,7 @@ function learn_press_tools_page_templates() {
 
 				<tr data-template="<?php echo esc_attr( $template_folder ); ?>" <?php if ( $template[3] ) {
 					echo 'data-outdated="yes"';
-				} ?>>
+				} ?> class="template-row">
 					<td class="lp-template-file"><code><?php echo $template[0]; ?></code></td>
 					<td class="lp-template-version<?php echo $template[3] ? ' outdated' : ( $template[1] == '-' && $template[2] == '-' ? '' : ' up-to-date' ); ?>">
 						<span><?php echo $template[1]; ?></span>
@@ -351,26 +351,28 @@ function learn_press_tools_page_templates() {
 					<td class="lp-core-version"><span><?php echo $template[2]; ?></span></td>
 				</tr>
 			<?php endforeach; ?>
-		<?php else: ?>
-			<tr>
-				<td>
-					<?php _e( 'There is no template file has overwritten', 'learnpress' ); ?>
-				</td>
-			</tr>
 		<?php endif; ?>
+		<tr id="learn-press-no-templates" class="<?php echo $templates ? 'hide-if-js' : ''; ?>">
+			<td colspan="3">
+				<p><?php _e( 'There is no template file has overwritten', 'learnpress' ); ?></p>
+			</td>
+		</tr>
 		</tbody>
 	</table>
 	<script type="text/javascript">
 		jQuery(function ($) {
 			$(document).on('click', '.learn-press-filter-template', function () {
-				var $link = $(this).addClass('current'),
+				var $link = $(this),
 					template = $link.data('template'),
 					outdated = $link.data('outdated');
-				$link.siblings('a').removeClass('current');
+				if ($link.hasClass('current')) {
+					return;
+				}
+				$link.addClass('current').siblings('a').removeClass('current');
 				if (!template) {
-					if(!outdated){
+					if (!outdated) {
 						$('#learn-press-template-files tr[data-template]').removeClass('hide-if-js');
-					}else{
+					} else {
 						$('#learn-press-template-files tr[data-template]').map(function () {
 							$(this).toggleClass('hide-if-js', $(this).data('outdated') != outdated);
 						})
@@ -380,6 +382,7 @@ function learn_press_tools_page_templates() {
 						$(this).toggleClass('hide-if-js', $(this).data('template') != template);
 					})
 				}
+				$('#learn-press-no-templates').toggleClass('hide-if-js', !!$('#learn-press-template-files tr.template-row:not(.hide-if-js):first').length)
 				return false;
 			})
 		})

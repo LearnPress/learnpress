@@ -1403,6 +1403,9 @@ input.regular-text[id^="learn-press-emails"] {
 .lp-template-overrides .lp-template-file {
   width: 50%;
 }
+.lp-template-overrides #learn-press-no-templates td p {
+  color: #FF0000;
+}
 @-webkit-keyframes lp-spinner {
   0% {
     -webkit-transform: rotate(0deg);
