@@ -1299,7 +1299,7 @@ function learn_press_locate_template( $template_name, $template_path = '', $defa
  * @return string
  */
 function learn_press_template_path( $slash = false ) {
-	return apply_filters( 'learn_press_template_path', 'learnpress' ) . ( $slash ? '/' : '' );
+	return apply_filters( 'learn_press_template_path', 'learnpress', $slash ) . ( $slash ? '/' : '' );
 }
 
 
