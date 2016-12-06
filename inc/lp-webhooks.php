@@ -92,23 +92,53 @@ function learn_press_header_item_only_view_first() {
 	$course = learn_press_get_the_course();
 	$item   = LP()->global['course-item'];
 	$status = $user->get_course_status( $course->id );
-// may be need add condition is not is_admin()
+	// may be need add condition is not is_admin()
 	if ( $status === 'enrolled' && $item ) {
-		/* Insert status for lesson */
-		if ( $wpdb->get_var( "SHOW TABLES LIKE '{$table}'" ) === $table ) {
 
-			$result = $wpdb->query("SELECT * FROM `$wpdb->learnpress_user_items` WHERE `item_id`= $item->ID");
-			if ($result === 0) {
-				$query = $wpdb->prepare("
-							  INSERT INTO {$wpdb->learnpress_user_items} (`user_id`, `item_id`, `start_time`, `end_time`, `item_type`, `status`, `ref_id`, `ref_type`, `parent_id`)
-							  VALUES ( $user->ID, $item->ID, %s, %s, %s, %s, $course->ID, %s, $user->ID )
-							", current_time( 'mysql' ), current_time( 'mysql' ), $item->_item->item_type, 'view', $course->post->post_type);
-				$wpdb->query($query);
-			}
+		// If status is not null that means user has viewed this item
+		$item_status = $user->get_item_status( $item->ID, $course->id );
+		if ( !( '' == $item_status || false == $item_status ) ) {
+			return;
 		}
+		$item_status = 'viewed';
+		if ( $parent_id = learn_press_get_user_item_id( $user->id, $course->id ) ) {
+			learn_press_update_user_item_field(
+				array(
+					'user_id'    => $user->id,
+					'item_id'    => $item->ID,
+					'start_time' => current_time( 'mysql' ),
+					'end_time'   => '0000-00-00 00:00:00',
+					'item_type'  => $item->item_type,
+					'status'     => $item_status,
+					'ref_id'     => $course->id,
+					'ref_type'   => $course->post->post_type,
+					'parent_id'  => $parent_id
+				)
+			);
+		}
+		// Update cache
+		$item_statuses                                                  = LP_Cache::get_item_statuses( false, array() );
+		$item_statuses[$user->id . '-' . $course->id . '-' . $item->ID] = $item_status;
+		LP_Cache::set_item_statuses( $item_statuses );
+
+
+		/* Insert status for lesson */
+		// Consume many queries :(
+		/**if ( $wpdb->get_var( "SHOW TABLES LIKE '{$table}'" ) === $table ) {
+		 *
+		 * $result = $wpdb->query( "SELECT * FROM `$wpdb->learnpress_user_items` WHERE `item_id`= $item->ID" );
+		 * if ( $result === 0 ) {
+		 * $query = $wpdb->prepare( "
+		 * INSERT INTO {$wpdb->learnpress_user_items} (`user_id`, `item_id`, `start_time`, `end_time`, `item_type`, `status`, `ref_id`, `ref_type`, `parent_id`)
+		 * VALUES ( $user->ID, $item->ID, %s, %s, %s, %s, $course->ID, %s, $user->ID )
+		 * ", current_time( 'mysql' ), current_time( 'mysql' ), $item->_item->item_type, 'view', $course->post->post_type );
+		 * $wpdb->query( $query );
+		 * }
+		 * }*/
 	}
 
-	LP_Cache::flush();
+	// should not flush if we did not do anything
+	// LP_Cache::flush();
 }
 
-add_action('learn_press_print_assets', 'learn_press_header_item_only_view_first');
+add_action( 'learn_press_print_assets', 'learn_press_header_item_only_view_first' );

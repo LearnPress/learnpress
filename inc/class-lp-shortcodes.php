@@ -291,7 +291,7 @@ class LP_Shortcodes {
 
 		} else {
 
-			$user = LP_User::get_user( $user->ID );
+			$user = LP_User_Factory::get_user( $user->ID );
 			$tabs = learn_press_user_profile_tabs( $user );
 			if ( !empty( $wp->query_vars['view'] ) ) {
 				$current = $wp->query_vars['view'];

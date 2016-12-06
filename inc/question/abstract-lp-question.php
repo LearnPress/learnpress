@@ -458,7 +458,7 @@ class LP_Abstract_Question {
 
 	public function save_user_answer( $answer, $quiz_id, $user_id = null ) {
 		if ( $user_id ) {
-			$user = LP_User::get_user( $user_id );
+			$user = LP_User_Factory::get_user( $user_id );
 		} else {
 			$user = learn_press_get_current_user();
 		}

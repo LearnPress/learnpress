@@ -54,12 +54,26 @@ class LP_Page_Controller {
 	}*/
 
 	public function template_loader( $template ) {
-		global $post;
+		global $wp_query, $post;
 		$file           = '';
 		$find           = array();
 		$theme_template = learn_press_template_path();
 
-		global $wp_query;
+		/**
+		 * If is archive course page and a static page is used for displaying courses
+		 * we need to redirect it to the right page
+		 */
+		if ( is_post_type_archive( 'lp_course' ) ) {
+			if ( ( $page_id = learn_press_get_page_id( 'courses' ) ) && ( empty( $wp_query->queried_object_id ) || !empty( $wp_query->queried_object_id ) && $page_id != $wp_query->queried_object_id ) ) {
+				$redirect = learn_press_get_page_link( 'courses' );
+				// Prevent loop redirect
+				if ( !learn_press_is_current_url( $redirect ) ) {
+					wp_redirect( $redirect );
+					exit();
+				}
+			}
+		}
+
 		$queried_object_id = !empty( $wp_query->queried_object_id ) ? $wp_query->queried_object_id : 0;
 		if ( ( $page_id = learn_press_get_page_id( 'taken_course_confirm' ) ) && is_page( $page_id ) && $page_id == $queried_object_id ) {
 			if ( !learn_press_user_can_view_order( !empty( $_REQUEST['order_id'] ) ? $_REQUEST['order_id'] : 0 ) ) {
@@ -69,7 +83,7 @@ class LP_Page_Controller {
 		} elseif ( ( $page_id = learn_press_get_page_id( 'become_a_teacher' ) ) && is_page( $page_id ) && $page_id == $queried_object_id ) {
 			$post->post_content = '[learn_press_become_teacher_form]';
 		} else {
-			if ( learn_press_is_courses() || learn_press_is_course_tag() || learn_press_is_course_category() || learn_press_is_search() ) {//is_post_type_archive( LP_COURSE_CPT ) || ( ( $page_id = learn_press_get_page_id( 'courses' ) ) && is_page( $page_id ) ) || ( is_tax( array( 'course_category', 'course_tag' ) ) ) ) {
+			if ( learn_press_is_courses() || learn_press_is_course_tag() || learn_press_is_course_category() || learn_press_is_search() ) {
 				$file   = 'archive-course.php';
 				$find[] = $file;
 				$find[] = "{$theme_template}/{$file}";

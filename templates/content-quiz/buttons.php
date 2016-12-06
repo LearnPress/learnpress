@@ -4,7 +4,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 1.0
+ * @version 2.0.7
  */
 
 if ( !defined( 'ABSPATH' ) ) {
@@ -21,8 +21,9 @@ if ( $user->has( 'finished-course', $course->id ) ) {
 	return;
 }
 
-$status   = $user->get_quiz_status( $quiz->id );
+$status   = $user->get_quiz_status( $quiz->id, $course->id );
 $question = $quiz->get_current_question();
+
 ?>
 <form class="quiz-buttons" method="post">
 
@@ -40,17 +41,20 @@ $question = $quiz->get_current_question();
 			<button class="button-hint" data-security="<?php esc_attr_e( wp_create_nonce( 'get-question-hint-' . $user->id . '-' . $course->id . '-' . $quiz->id ) ); ?>"><?php esc_html_e( 'Hint', 'learnpress' ); ?></button>
 		<?php endif; ?>
 	<?php endif; ?>
-	<?php if ( $user->has( 'quiz-status', 'completed', $quiz->id ) && $remain = $user->can( 'retake-quiz', $quiz->id ) ): ?>
-		<button
-			class="button-retake-quiz"
-			data-action="retake-quiz"
-			data-id="<?php esc_attr_e( $quiz->id ); ?>"
-			data-security="<?php esc_attr_e( wp_create_nonce( 'retake-quiz-' . $user->id . '-' . $course->id . '-' . $quiz->id ) ); ?>">
-			<?php echo esc_html( sprintf( '%s (+%d)', __( 'Retake', 'learnpress' ), $remain ) ); ?>
-		</button>
-	<?php endif; ?>
 
-	<?php if ( $user->has_course_status( $course->id, array( 'enrolled' ) ) && !$user->has( 'started-quiz', $quiz->id, $course->id ) ): ?>
+	<?php if ( $user->has( 'quiz-status', 'completed', $quiz->id ) ): ?>
+
+		<?php if ( $remain = $user->can( 'retake-quiz', $quiz->id ) ): ?>
+			<button
+				class="button-retake-quiz"
+				data-action="retake-quiz"
+				data-id="<?php esc_attr_e( $quiz->id ); ?>"
+				data-security="<?php esc_attr_e( wp_create_nonce( 'retake-quiz-' . $user->id . '-' . $course->id . '-' . $quiz->id ) ); ?>">
+				<?php echo esc_html( sprintf( '%s (+%d)', __( 'Retake', 'learnpress' ), $remain ) ); ?>
+			</button>
+		<?php endif; ?>
+
+	<?php elseif ( $user->can_do_quiz( $quiz->id, $course->id ) ): ?>
 		<button
 			class="button-start-quiz"
 			data-action="start-quiz"

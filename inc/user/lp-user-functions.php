@@ -31,12 +31,13 @@ function learn_press_delete_user_data( $user_id, $course_id = 0 ) {
 }
 
 function learn_press_get_user_item_id( $user_id, $item_id ) {
-	static $user_item_ids = array();
+	$user_item_ids = LP_Cache::get_user_item_id( false, array() );
 	if ( empty( $user_item_ids[$user_id . '-' . $item_id] ) ) {
 		global $wpdb;
 		$query                                    = $wpdb->prepare( "SELECT user_item_id FROM {$wpdb->prefix}learnpress_user_items WHERE user_id = %d AND item_id = %d ORDER BY user_item_id DESC LIMIT 0,1", $user_id, $item_id );
 		$user_item_ids[$user_id . '-' . $item_id] = $wpdb->get_var( $query );
 	}
+	LP_Cache::set_user_item_id( $user_item_ids );
 	return $user_item_ids[$user_id . '-' . $item_id];
 }
 
@@ -58,16 +59,7 @@ function learn_press_get_current_user_id() {
  * @return LP_User
  */
 function learn_press_get_current_user( $user_id = 0 ) {
-	if ( !$user_id ) {
-		$user_id = get_current_user_id();
-	}
-	$current_user = false;
-	if ( $user_id ) {
-		$current_user = learn_press_get_user( $user_id );
-	} else {
-		$current_user = LP_User_Guest::instance();
-	}
-	return $current_user;
+	return LP_User_Factory::get_user( $user_id );
 }
 
 /**
@@ -79,50 +71,15 @@ function learn_press_get_current_user( $user_id = 0 ) {
  * @return LP_User_Guest|mixed
  */
 function learn_press_get_user( $user_id, $force = false ) {
-	if ( $user_id ) {
-		return LP_User::get_user( $user_id, $force );
+	if ( !function_exists( 'get_user_by' ) ) {
+		//_doing_it_wrong( 'learn_press_get_user', __FUNCTION__, LEARNPRESS_VERSION );
+		//return false;
 	}
-	return LP_User_Guest::instance();
+	//if ( get_user_by( 'ID', $user_id ) ) {
+	return LP_User_Factory::get_user( $user_id, $force );
+	//}
+	return false;
 }
-
-function learn_press_send_user_email_order( $status, $order_id ) {
-	return;
-	$status = strtolower( $status );
-	if ( 'completed' == $status ) {
-		$order        = new LP_Order( $order_id );
-		$mail_to      = $order->get_user( 'email' );
-		$instructors  = array();
-		$course_title = '';
-
-		$transaction_object = $order->get_items();
-		$items              = $transaction_object->products;
-		$item               = array_shift( $items );
-
-		$course = get_post( $item['id'] );
-
-		$course_title = get_the_title( $item['id'] );
-
-		$instructor                   = LP_User::get_user( $course->post_author );
-		$instructors[$instructor->ID] = $instructor->data->display_name;
-
-		learn_press_send_mail(
-			$mail_to,
-			'enrolled_course',
-			apply_filters(
-				'learn_press_vars_enrolled_course',
-				array(
-					'user_name'   => $order->get_user( 'display_name' ),
-					'course_name' => $course_title,
-					'course_link' => get_permalink( $item['id'] )
-				),
-				$course,
-				$instructor
-			)
-		);
-	}
-}
-
-add_action( 'learn_press_update_order_status', 'learn_press_send_user_email_order', 5, 2 );
 
 /**
  * Add more 2 user roles teacher and student
@@ -634,10 +591,10 @@ function learn_press_user_update_user_info() {
 		$profile_picture_type = filter_input( INPUT_POST, 'profile_picture_type', FILTER_SANITIZE_STRING );
 
 
-		if ( $profile_picture_type == 'picture' && isset($_POST['profile_picture_data']) && $_POST['profile_picture_data']!="" ) {
+		if ( $profile_picture_type == 'picture' && isset( $_POST['profile_picture_data'] ) && $_POST['profile_picture_data'] != "" ) {
 
 			$upload = wp_get_upload_dir();
-			$ppdir	= $upload['basedir'] . DIRECTORY_SEPARATOR . 'learn-press-profile';
+			$ppdir  = $upload['basedir'] . DIRECTORY_SEPARATOR . 'learn-press-profile';
 			if ( !is_dir( $ppdir ) ) {
 				mkdir( $ppdir );
 			}
@@ -647,32 +604,32 @@ function learn_press_user_update_user_info() {
 			}
 			# get old file
 			$filename_old = get_user_meta( $user_id, '_lp_profile_picture', true );
-			
 
-			$pathinfo_old = pathinfo($filename_old);
-			$thumb_old = $upload_dir . DIRECTORY_SEPARATOR . $pathinfo_old['filename'].'-thumb.'. $pathinfo_old['extension'];
 
-			$data     = explode( ',', $_POST['profile_picture_data'] );
+			$pathinfo_old = pathinfo( $filename_old );
+			$thumb_old    = $upload_dir . DIRECTORY_SEPARATOR . $pathinfo_old['filename'] . '-thumb.' . $pathinfo_old['extension'];
+
+			$data   = explode( ',', $_POST['profile_picture_data'] );
 			$result = array();
 			preg_match( "/\/([^;]*)/", $data[0], $result );
-			$imgtype = isset($result[1])?$result[1]:'png';
-			$filename = 'avatar_' . $user_id . '.'.$imgtype;
-			if( $filename_old == $filename ){
-				$filename = 'avatar_' . $user_id . '_1.'.$imgtype;
+			$imgtype  = isset( $result[1] ) ? $result[1] : 'png';
+			$filename = 'avatar_' . $user_id . '.' . $imgtype;
+			if ( $filename_old == $filename ) {
+				$filename = 'avatar_' . $user_id . '_1.' . $imgtype;
 			}
 
 			if ( file_put_contents( $upload_dir . '/' . $filename, base64_decode( $data[1] ) ) ) {
 				$editor = wp_get_image_editor( $upload_dir . '/' . $filename );
-				
-				if ( is_wp_error( $editor ) ){
+
+				if ( is_wp_error( $editor ) ) {
 					learn_press_add_message( __( 'Thumbnail of image profile not created', 'learnpress' ) );
 				} else {
 					$editor->set_quality( 90 );
-					$lp = LP();
+					$lp         = LP();
 					$lp_setting = $lp->settings;
-					$size = $lp_setting->get('profile_picture_thumbnai_size');
-					if(empty($size)){
-						$size = array( 'width'=>150, 'height'=>150, 'crop'=>'yes' );
+					$size       = $lp_setting->get( 'profile_picture_thumbnai_size' );
+					if ( empty( $size ) ) {
+						$size = array( 'width' => 150, 'height' => 150, 'crop' => 'yes' );
 					}
 					if ( $size['crop'] == 'yes' ) {
 						$resized = $editor->resize( $size['width'], $size['height'], true );
@@ -680,7 +637,7 @@ function learn_press_user_update_user_info() {
 							learn_press_add_message( __( 'Thumbnail of image profile not created', 'learnpress' ) );
 						} else {
 							$dest_file = $editor->generate_filename( 'thumb' );
-							$saved = $editor->save( $dest_file );
+							$saved     = $editor->save( $dest_file );
 							if ( is_wp_error( $saved ) ) {
 								learn_press_add_message( __( 'Thumbnail of image profile not created', 'learnpress' ) );
 							}

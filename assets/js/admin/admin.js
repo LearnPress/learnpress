@@ -1,33 +1,33 @@
-;(function($){
+;(function ($) {
 	var LP_Admin = window.LP_Admin = {
-		init: function(){
+		init          : function () {
 			var $doc = $(document);
-			$doc.on('click', '#learn-press-install-sample-data-notice a', this._importCourses )
+			$doc.on('click', '#learn-press-install-sample-data-notice a', this._importCourses)
 				.on('click', '.learn-press-admin-notice-dismiss', this._dismissNotice)
 				.on('click', '[data-remove-confirm]', this._confirm);
-			setTimeout(function() {
+			setTimeout(function () {
 				$('[data-remove-confirm]').each(function () {
 				})
 			}, 1000);
 		},
-		_confirm: function(e){
+		_confirm      : function (e) {
 			e.preventDefault();
 			return false;
 		},
-		_dismissNotice: function(e){
+		_dismissNotice: function (e) {
 
 			var $notice = $(e.target),
 				context = $notice.attr('data-context'),
 				transient = $notice.attr('data-transient');
-			if(context){
+			if (context) {
 				$.ajax({
 					url    : LP_Settings.ajax,
 					data   : {
-						action: 'learnpress_dismiss_notice',
-						context: context,
+						action   : 'learnpress_dismiss_notice',
+						context  : context,
 						transient: transient
 					},
-					success: function(response){
+					success: function (response) {
 						$notice.closest('.updated').fadeOut();
 						$notice.closest('.error').fadeOut();
 					}
@@ -35,41 +35,41 @@
 				return false;
 			}
 		},
-		_importCourses: function(e){
+		_importCourses: function (e) {
 			var $container = $('#learn-press-install-sample-data-notice'),
 				action = $(this).attr('data-action');
-			if( !action ){
+			if (!action) {
 				return;
 			}
 			e.preventDefault();
 
-			if( action == 'yes' ) {
-				 $container
-					 .find('.install-sample-data-notice').slideUp()
-					 .siblings('.install-sample-data-loading').slideDown()
-			}else{
+			if (action == 'yes') {
+				$container
+					.find('.install-sample-data-notice').slideUp()
+					.siblings('.install-sample-data-loading').slideDown()
+			} else {
 				$('#learn-press-install-sample-data-notice').fadeOut();
 			}
 			$.ajax({
-				url: ajaxurl,
+				url     : ajaxurl,
 				dataType: 'html',
-				type: 'post',
-				data:{
+				type    : 'post',
+				data    : {
 					action: 'learnpress_install_sample_data',
-					yes: action
+					yes   : action
 				},
-				success: function(response){
+				success : function (response) {
 					response = LP.parseJSON(response);
-					if( response.url ){
+					if (response.url) {
 						$.ajax({
-							url: response.url,
-							success: function(){
+							url    : response.url,
+							success: function () {
 								$container
 									.find('.install-sample-data-notice').html(response.message).slideDown()
 									.siblings('.install-sample-data-loading').slideUp();
 							}
 						});
-					}else {
+					} else {
 						$container
 							.find('.install-sample-data-notice').html(response.message).slideDown()
 							.siblings('.install-sample-data-loading').slideUp();
@@ -79,24 +79,25 @@
 		}
 	}
 	var $doc = $(document);
-	function _ready(){
+
+	function _ready() {
 		LP_Admin.init();
-		$(document).on('click', '.learn-press-add-ons .plugin-action-buttons a', function(e){
+		$(document).on('click', '.learn-press-add-ons .plugin-action-buttons a', function (e) {
 			e.preventDefault();
 			var $plugin = $(this).closest('.plugin-card');
-			if( $(this).hasClass('button-working') ){
+			if ($(this).hasClass('button-working')) {
 				return;
 			}
 			$(this).addClass('button-working disabled');
 			$.ajax({
-				url: $(this).attr('href'),
-				data: {},
-				success: function(r){
+				url    : $(this).attr('href'),
+				data   : {},
+				success: function (r) {
 					$.ajax({
-						url: window.location.href,
-						success: function(r){
-							var $p = $(r).find('#'+$plugin.attr('id'));
-							if( $p.length ) {
+						url    : window.location.href,
+						success: function (r) {
+							var $p = $(r).find('#' + $plugin.attr('id'));
+							if ($p.length) {
 								$plugin.replaceWith($p)
 							}
 						}
@@ -104,40 +105,41 @@
 				}
 			});
 		});
-		var $sandbox_mode   = $('#learn_press_paypal_sandbox_mode'),
-			$paypal_type    = $('#learn_press_paypal_type');
-		$paypal_type.change(function(){
-			$('.learn_press_paypal_type_security').toggleClass( 'hide-if-js', 'security' != this.value );
+		var $sandbox_mode = $('#learn_press_paypal_sandbox_mode'),
+			$paypal_type = $('#learn_press_paypal_type');
+		$paypal_type.change(function () {
+			$('.learn_press_paypal_type_security').toggleClass('hide-if-js', 'security' != this.value);
 		});
-		$sandbox_mode.change(function(){
-			this.checked ? $('.sandbox input').removeAttr( 'readonly' ) : $('.sandbox input').attr( 'readonly', true );
+		$sandbox_mode.change(function () {
+			this.checked ? $('.sandbox input').removeAttr('readonly') : $('.sandbox input').attr('readonly', true);
 		});
 
-		$('#learn_press_paypal_enable').change(function(){
+		$('#learn_press_paypal_enable').change(function () {
 			var $rows = $(this).closest('tr').siblings('tr');
-			if( this.checked ){
+			if (this.checked) {
 				$rows.css("display", "");
-			}else{
+			} else {
 				$rows.css("display", "none");
 			}
 		}).trigger('change');
 
-		$('.learn-press-toggle-lesson-preview').on('change', function(){
+		$('.learn-press-toggle-lesson-preview').on('change', function () {
 			$.ajax({
 				url     : LP_Settings.ajax,
 				data    : {
-					action: 'learnpress_toggle_lesson_preview',
-					lesson_id: this.value,
+					action     : 'learnpress_toggle_lesson_preview',
+					lesson_id  : this.value,
 					previewable: this.checked ? 'yes' : 'no',
-					nonce: $(this).attr('data-nonce')
+					nonce      : $(this).attr('data-nonce')
 				},
 				dataType: 'text',
-				success : function(response){
+				success : function (response) {
 					response = LP.parseJSON(response);
 				}
 			});
 		});
 	}
+
 	$doc.ready(_ready);
 })(jQuery);
 
@@ -198,9 +200,9 @@ jQuery(document).ready(function ($) {
 				action: 'learnpress_ignore_setting_up'
 			},
 			success: function () {
-				if( $link.attr('href') ){
+				if ($link.attr('href')) {
 					window.location.href = $link.attr('href');
-				}else {
+				} else {
 					$('#lpr-setting-up').remove();
 				}
 			}
@@ -208,10 +210,10 @@ jQuery(document).ready(function ($) {
 	});
 });
 
-jQuery(document).ready(function ($){
+jQuery(document).ready(function ($) {
 	var input = $('#_lpr_course_condition');
-	$('[name=_lpr_course_final]').change(function (){
-		if($('[value=yes]').is(':checked')){
+	$('[name=_lpr_course_final]').change(function () {
+		if ($('[value=yes]').is(':checked')) {
 			input.prop('disabled', false);
 		} else {
 			input.prop('disabled', true);
@@ -219,15 +221,15 @@ jQuery(document).ready(function ($){
 	})
 });
 
-jQuery(document).ready(function($){
-	$('#lpr-custom-time').submit(function(){
+jQuery(document).ready(function ($) {
+	$('#lpr-custom-time').submit(function () {
 		$.ajax({
-			url: ajaxurl,
-			data: $(this).serialize(),
-			success:function(response){
+			url     : ajaxurl,
+			data    : $(this).serialize(),
+			success : function (response) {
 				drawStudentsChart(response, config)
 			},
-			type: 'POST',
+			type    : 'POST',
 			dataType: 'json'
 		})
 		return false;
@@ -351,17 +353,17 @@ lprHook.addAction('lpr_admin_quiz_question_html', _lprAdminQuestionHTML);
 (function ($) {
 	var $doc = $(document),
 		$body = $(document.body);
-	$.fn.scrollTo = function(options){
-		return this.each(function(){
+	$.fn.scrollTo = function (options) {
+		return this.each(function () {
 			options = $.extend({
-				delay: 0,
+				delay : 0,
 				offset: 0,
-				speed: 'slow'
+				speed : 'slow'
 			}, options || {});
 
 			$('body')
-				.fadeIn( 0 )
-				.delay( options.delay )
+				.fadeIn(0)
+				.delay(options.delay)
 				.animate({
 					scrollTop: $(this).offset().top - options.offset
 				}, options.speed);
@@ -448,14 +450,14 @@ lprHook.addAction('lpr_admin_quiz_question_html', _lprAdminQuestionHTML);
 					state = $(this).data('state'),
 					checked = $(this).is(':checked');
 				$.ajax({
-					url: ajaxurl,
-					data: {
-						url: $chk.attr('data-url'),
+					url    : ajaxurl,
+					data   : {
+						url   : $chk.attr('data-url'),
 						plugin: $chk.attr('data-plugin'),
-						t: checked ? 'activate' : 'deactivate',
+						t     : checked ? 'activate' : 'deactivate',
 						action: 'learnpress_update_add_on_status'
 					},
-					success: function(response){
+					success: function (response) {
 
 						$chk.attr('data-url', response.url)
 							.attr('state', response.status)
@@ -464,23 +466,23 @@ lprHook.addAction('lpr_admin_quiz_question_html', _lprAdminQuestionHTML);
 				})
 			})
 			.lprFancyCheckbox();
-		$('#learn-press-add-ons-wrap').on('click', '.plugin-action-buttons a', function(evt){
+		$('#learn-press-add-ons-wrap').on('click', '.plugin-action-buttons a', function (evt) {
 			evt.preventDefault();
 			var $link = $(this), action = $link.data('action');
-			if( ! action ) return;
+			if (!action) return;
 			$link.addClass('disabled spinner');
 			$.ajax({
-				url: $link.attr('href'),
+				url     : $link.attr('href'),
 				dataType: 'html',
-				success: function(response){
-					if(action == 'install-now' || action == 'update-now' || action == 'active-now'){
-						if( $link.hasClass('thimpress') ){
+				success : function (response) {
+					if (action == 'install-now' || action == 'update-now' || action == 'active-now') {
+						if ($link.hasClass('thimpress')) {
 							response = LP.parseJSON(response);
-							$link.removeClass( 'spinner' );
-							if( response.status == 'activate' ){
+							$link.removeClass('spinner');
+							if (response.status == 'activate') {
 								$link.addClass('disabled').html(response.status_text).removeAttr('href').removeAttr('data-action');
 								$('.addon-status', $link.closest('.action-links')).html(response.status_text).addClass('enabled');
-							}else{
+							} else {
 								$link.removeClass('disabled');
 							}
 						}
@@ -489,23 +491,23 @@ lprHook.addAction('lpr_admin_quiz_question_html', _lprAdminQuestionHTML);
 			})
 		});
 
-		$('#learn-press-bundle-activate-add-ons').click(function(){
+		$('#learn-press-bundle-activate-add-ons').click(function () {
 			var $button = $(this);
 			$button.addClass('spinner').attr('disabled', 'disabled');
 			$.ajax({
-				url: ajaxurl,
-				data: {
+				url     : ajaxurl,
+				data    : {
 					action: 'learnpress_bundle_activate_add_ons'
 				},
 				dataType: 'html',
-				success: function(response){
+				success : function (response) {
 					response = LP.parseJSON(response);
-					if( response.addons ){
-						for(var slug in response.addons ){
+					if (response.addons) {
+						for (var slug in response.addons) {
 							var plugin = response.addons[slug];
-							if( 'activate' == plugin.status ){
-								$('.plugin-card-'+slug).find('.install-now.thimpress, .active-now.thimpress').addClass('disabled').attr('href', '').html(plugin.status_text);
-							}else{
+							if ('activate' == plugin.status) {
+								$('.plugin-card-' + slug).find('.install-now.thimpress, .active-now.thimpress').addClass('disabled').attr('href', '').html(plugin.status_text);
+							} else {
 
 							}
 						}
@@ -514,9 +516,9 @@ lprHook.addAction('lpr_admin_quiz_question_html', _lprAdminQuestionHTML);
 				}
 			})
 		});
-		(function() {
+		(function () {
 			var boxes = $('.post-type-lpr_quiz, .post-type-lpr_course, .post-type-lpr_lesson, .post-type-lpr_question').find('#postbox-container-1');
-			if( !boxes.length ) return;
+			if (!boxes.length) return;
 			var $win = $(window),
 				$container = $('#poststuff'),
 				currentOffset = 0;
@@ -525,32 +527,33 @@ lprHook.addAction('lpr_admin_quiz_question_html', _lprAdminQuestionHTML);
 					dir = $win.scrollTop() > currentOffset ? 'down' : 'up';
 				currentOffset = $win.scrollTop();
 
-				boxes.each(function(){
+				boxes.each(function () {
 					var $box = $(this),
 						box_height = $box.height(),
 						container_height = $container.height(),
 						max_scroll = container_height - box_height - 10,
 						scroll_top = $win.scrollTop(),
 						offset = ( scroll_top - $container.offset().top - $box.height() ) + $win.height();
-					if( max_scroll <= 0 ) return;
-					if( box_height < $win.height() ) offset = scroll_top - $container.offset().top + 50;
-					else{
-						if( offset >= max_scroll ) offset = max_scroll;
+					if (max_scroll <= 0) return;
+					if (box_height < $win.height()) offset = scroll_top - $container.offset().top + 50;
+					else {
+						if (offset >= max_scroll) offset = max_scroll;
 					}
-					$box.css("margin-top", Math.max( 0, offset ) );
+					$box.css("margin-top", Math.max(0, offset));
 				})
 			})
 		})();
 
-		$('.lpr-dropdown-pages').each( function(){
+		$('.lpr-dropdown-pages').each(function () {
 			var $select = $(this),
 				$form = $select.siblings('.lpr-quick-add-page-inline'),
 				$actions = $select.siblings('.lpr-quick-actions-inline');
-			function add_page_to_all_dropdowns( response ){
-				var pos = $.inArray( response.page.ID.toString() + "", response.ordering );
-				$('.lpr-dropdown-pages').each(function() {
+
+			function add_page_to_all_dropdowns(response) {
+				var pos = $.inArray(response.page.ID.toString() + "", response.ordering);
+				$('.lpr-dropdown-pages').each(function () {
 					var $select = $(this),
-						$new_option = $('<option value="'+response.page.ID+'">'+response.page.post_title+'</option>')
+						$new_option = $('<option value="' + response.page.ID + '">' + response.page.post_title + '</option>')
 					if (pos == 0) {
 						$('option', $select).each(function () {
 							if (parseInt($(this).val())) {
@@ -565,23 +568,24 @@ lprHook.addAction('lpr_admin_quiz_question_html', _lprAdminQuestionHTML);
 					}
 				});
 			}
-			$select.click(function(){
+
+			$select.click(function () {
 				$select.data('value', this.value)
-			}).change(function(){
+			}).change(function () {
 				var option = $(this).val();
 				$actions.addClass('hide-if-js');
-				if( option == 'add_new_page'){
+				if (option == 'add_new_page') {
 					$form.removeClass('hide-if-js').find('input').val('').focus();
 					$(this).attr('disabled', true);
-				}else if( ! isNaN(option) ){
+				} else if (!isNaN(option)) {
 					$.ajax({
-						url: ajaxurl,
-						data: {
-							action: 'learnpress_get_page_permalink',
+						url     : ajaxurl,
+						data    : {
+							action : 'learnpress_get_page_permalink',
 							page_id: option
 						},
-						success: function(response) {
-							if( response ) {
+						success : function (response) {
+							if (response) {
 								$actions.html(response).removeClass('hide-if-js')
 							}
 						},
@@ -589,58 +593,58 @@ lprHook.addAction('lpr_admin_quiz_question_html', _lprAdminQuestionHTML);
 					})
 				}
 			})//.trigger('change');
-			$form.on('keypress', 'input', function(evt){
-				if( evt.keyCode == 13 ){
+			$form.on('keypress', 'input', function (evt) {
+				if (evt.keyCode == 13) {
 					evt.preventDefault();
 					$(this).siblings('button').trigger('click');
 				}
-			}).on('keydown', 'input', function(evt){
-				if( evt.keyCode == 27 ){
+			}).on('keydown', 'input', function (evt) {
+				if (evt.keyCode == 27) {
 					$(this).siblings('a').trigger('click');
 				}
 			});
-			$('button', $form).click(function(){
+			$('button', $form).click(function () {
 				var $input = $(this).siblings('input');
-				if( ! $input.val().length ){
+				if (!$input.val().length) {
 					$input.focus();
 					return;
 				}
 				$form.block_ui();
 				$.ajax(ajaxurl, {
-					data: {
+					data    : {
 						action: 'learnpress_create_page',
-						title: $input.val()
+						title : $input.val()
 					},
-					success:function( response ){
-						if(response.page){
-							add_page_to_all_dropdowns( response );
+					success : function (response) {
+						if (response.page) {
+							add_page_to_all_dropdowns(response);
 							$select.removeAttr('disabled').val(response.page.ID);
 							$form.addClass('hide-if-js');
 							$actions.html(response.html).removeClass('hide-if-js');
-						}else{
+						} else {
 							alert(response.error);
-							$select.removeAttr('disabled').val( $select.data('value'));
-							if( $select.data('value') ) $actions.removeClass('hide-if-js');
+							$select.removeAttr('disabled').val($select.data('value'));
+							if ($select.data('value')) $actions.removeClass('hide-if-js');
 						}
 						$form.unblock_ui();
 					},
 					dataType: 'json',
-					type: 'post'
+					type    : 'post'
 				})
 			});
-			$('a', $form).click(function(evt){
+			$('a', $form).click(function (evt) {
 				evt.preventDefault();
 				$(this).parent().addClass('hide-if-js');
-				$select.removeAttr('disabled').val( $select.data('value') );
-				if( $select.data('value') ) $actions.removeClass('hide-if-js');
+				$select.removeAttr('disabled').val($select.data('value'));
+				if ($select.data('value')) $actions.removeClass('hide-if-js');
 			})
 		})
 
 	})
 
 	$.extend(LP, {
-		parse_json: function(response){
-			if( typeof reposnse == 'object' ) return response;
+		parse_json    : function (response) {
+			if (typeof reposnse == 'object') return response;
 			try {
 				var m = response.match(/<!-- LP_AJAX_START -->(.*)<!-- LP_AJAX_END -->/)
 
@@ -649,91 +653,93 @@ lprHook.addAction('lpr_admin_quiz_question_html', _lprAdminQuestionHTML);
 				} else {
 					response = JSON.parse(response)
 				}
-			}catch(e){ response = false }
+			} catch (e) {
+				response = false
+			}
 			return response;
 		},
-		block_page: function(args){
-			var block_page = $( '#lpr-page-block' );
-			if( block_page.length == 0 ){
-				block_page = $( wp.template( 'page-block' )()).appendTo($body);
-				block_page.click($.proxy( function(){ this.unblock_page() }, this ));
+		block_page    : function (args) {
+			var block_page = $('#lpr-page-block');
+			if (block_page.length == 0) {
+				block_page = $(wp.template('page-block')()).appendTo($body);
+				block_page.click($.proxy(function () {
+					this.unblock_page()
+				}, this));
 			}
-			args = $.extend( {
-				on_close: function () {
+			args = $.extend({
+				on_close       : function () {
 
 				},
 				backgroundColor: undefined,
-				opacity: undefined
-			}, args || {} );
-			$.each(['backgroundColor', 'opacity'], function(){
-				block_page.css( this, args[this] );
+				opacity        : undefined
+			}, args || {});
+			$.each(['backgroundColor', 'opacity'], function () {
+				block_page.css(this, args[this]);
 			})
 			block_page.data('args', args).show();
 		},
-		unblock_page: function(args){
-			args = $.extend( {
-
-			}, args || {} );
-			var block_page = $( '#lpr-page-block'),
+		unblock_page  : function (args) {
+			args = $.extend({}, args || {});
+			var block_page = $('#lpr-page-block'),
 				stored_args = block_page.data('args');
 			block_page.hide();
 
-			if( stored_args ){
-				$.each(['backgroundColor', 'opacity'], function(){
-					block_page.css( this, '' );
+			if (stored_args) {
+				$.each(['backgroundColor', 'opacity'], function () {
+					block_page.css(this, '');
 				});
 				$.isFunction(stored_args.on_close) && stored_args.on_close.call(block_page);
 			}
 		},
-		showLessonQuiz: function( pos, ed ){
-			var textNode        = $(ed.selection.getNode()),
-				iframe          = $('#content_ifr'),
-				form            = $('#form-quick-add-lesson-link'),
-				offset          = textNode.offset(),
-				iframe_offset   = iframe.offset(),
-				range           = ed.selection.getRng();
-			ed.execCommand('mceInsertContent', false,'<span id="learn_press_book_mark"></span>');
-			offset = $( '#learn_press_book_mark', textNode).position();
-			$( '#learn_press_book_mark', textNode).remove();
+		showLessonQuiz: function (pos, ed) {
+			var textNode = $(ed.selection.getNode()),
+				iframe = $('#content_ifr'),
+				form = $('#form-quick-add-lesson-link'),
+				offset = textNode.offset(),
+				iframe_offset = iframe.offset(),
+				range = ed.selection.getRng();
+			ed.execCommand('mceInsertContent', false, '<span id="learn_press_book_mark"></span>');
+			offset = $('#learn_press_book_mark', textNode).position();
+			$('#learn_press_book_mark', textNode).remove();
 			ed.selection.setRng(range);
-			if( form.length == 0 ){
-				form = $( wp.template('form-quick-add-lesson-link')()).css({zIndex: 99999}).appendTo($body);
+			if (form.length == 0) {
+				form = $(wp.template('form-quick-add-lesson-link')()).css({zIndex: 99999}).appendTo($body);
 				$('select', form).select2({
-					width: 300,
-					containerCssClass: 'lpr-container-dropdown',
-					dropdownCssClass: 'lpr-select-dropdown'
-				})
-					.on('select2-close', function(){
+						width            : 300,
+						containerCssClass: 'lpr-container-dropdown',
+						dropdownCssClass : 'lpr-select-dropdown'
+					})
+					.on('select2-close', function () {
 						$('#form-quick-add-lesson-link').hide();
 						tinyMCE.activeEditor.focus();
 					})
-					.on('select2-selecting', function(e){
+					.on('select2-selecting', function (e) {
 						var lesson_id = e.val;
-						if( !lesson_id ) return;
-						var ed          = tinymce.activeEditor,
-							shortcode   = '[quick_lesson_link id="'+lesson_id + '"]',
-							range       = ed.selection.getRng();
+						if (!lesson_id) return;
+						var ed = tinymce.activeEditor,
+							shortcode = '[quick_lesson_link id="' + lesson_id + '"]',
+							range = ed.selection.getRng();
 						range.startContainer.nodeValue = range.startContainer.nodeValue.replace(/@l/, '');
-						ed.selection.setCursorLocation( range.startContainer, range.startContainer.nodeValue.length )
+						ed.selection.setCursorLocation(range.startContainer, range.startContainer.nodeValue.length)
 						ed.selection.setContent(shortcode)
 						$('#form-quick-add-lesson-link').hide();
 					});
 			}
 			form.css({
-				top: iframe_offset.top + offset.top,
+				top : iframe_offset.top + offset.top,
 				left: iframe_offset.left + offset.left + 40
 			}).show();
 			$('select', form).select2('open');
 		}
 	});
 
-	$(document).ready(function(){
+	$(document).ready(function () {
 		var $add_new_h2 = $('body.post-type-lpr_course').find('.page-title-action, .add-new-h2'),
 			$reset_h2 = $('<a href="" class="page-title-action add-new-h2">Reset</a>');
 
 		$reset_h2
 			.insertAfter($add_new_h2)
-			.click(function(evt){
+			.click(function (evt) {
 				evt.preventDefault();
 				var link = window.location.href.replace(/reset-course-data=([0-9]+)/, '');
 				link += '&reset-course-data=' + $('input#post_ID').val();
@@ -742,22 +748,22 @@ lprHook.addAction('lpr_admin_quiz_question_html', _lprAdminQuestionHTML);
 	})
 })(jQuery)
 
-;(function() {
-	if( typeof tinymce == 'undefined' ){
+;
+(function () {
+	if (typeof tinymce == 'undefined') {
 		return;
 	}
-	tinymce.PluginManager.add('embed', function( editor )
-	{
+	tinymce.PluginManager.add('embed', function (editor) {
 		editor.addButton('embed', {
-			type: 'button',
-			text: 'Embed',
-			onclick: function(event) {
+			type   : 'button',
+			text   : 'Embed',
+			onclick: function (event) {
 				editor.windowManager.open({
-					title: 'Your video embed link',
-					body: [
+					title   : 'Your video embed link',
+					body    : [
 						{type: 'textbox', name: 'link', label: 'Your video embed link'}
 					],
-					onsubmit: function(e) {
+					onsubmit: function (e) {
 						// Insert content when the window form is submitted
 						editor.insertContent('[embed_video link=' + e.data.link + ']');
 					}
@@ -768,41 +774,41 @@ lprHook.addAction('lpr_admin_quiz_question_html', _lprAdminQuestionHTML);
 })();
 
 /* pointer.js */
-jQuery(document).ready( function($) {
-	if( typeof lpPointer == 'undefined' ){
+jQuery(document).ready(function ($) {
+	if (typeof lpPointer == 'undefined') {
 		return;
 	}
 	learn_press_open_pointer(0);
 	function learn_press_open_pointer(i) {
 		pointer = lpPointer.pointers[i];
-		options = $.extend( pointer.options, {
-			close: function() {
-				$.post( ajaxurl, {
+		options = $.extend(pointer.options, {
+			close: function () {
+				$.post(ajaxurl, {
 					pointer: pointer.pointer_id,
-					action: 'dismiss-wp-pointer'
+					action : 'dismiss-wp-pointer'
 				});
 			}
 		});
 
-		$(pointer.target).pointer( options ).pointer('open');
+		$(pointer.target).pointer(options).pointer('open');
 	}
 });
 
 /* ui.js */
-(function( $ ){
+(function ($) {
 	$.fn.extend({
-		iosCheckbox: function ( ) {
-			$(this).each(function (){
+		iosCheckbox: function () {
+			$(this).each(function () {
 				var $checkbox = $(this),
-					$ui = $("<div>",{class: 'ios-ui-select'}).append($("<div>",{class: 'inner'}));
-				if ($checkbox.is(":checked")){
+					$ui = $("<div>", {class: 'ios-ui-select'}).append($("<div>", {class: 'inner'}));
+				if ($checkbox.is(":checked")) {
 					$ui.addClass("checked");
 				}
 				$checkbox.after($ui)
-					.on('update', function(){
+					.on('update', function () {
 						$ui.trigger('update')
 					})//.hide().appendTo($ui);
-				$ui.on('click update', function (){
+				$ui.on('click update', function () {
 					$ui.toggleClass("checked");
 					$checkbox.prop('checked', $ui.hasClass("checked")).trigger('change')
 				});
@@ -810,74 +816,74 @@ jQuery(document).ready( function($) {
 		}
 	});
 
-	$(document).ready(function(){
+	$(document).ready(function () {
 		$('.learn-press-checkbox').iosCheckbox();
 
-		if ( typeof Switchery !== 'undefined' ) {
-			var elems = Array.prototype.slice.call( document.querySelectorAll('.rwmb-learnpress-switchbutton') );
+		if (typeof Switchery !== 'undefined') {
+			var elems = Array.prototype.slice.call(document.querySelectorAll('.rwmb-learnpress-switchbutton'));
 
-			elems.forEach(function(html) {
-			  	var switchery = new Switchery( html, { size: 'small' } );
+			elems.forEach(function (html) {
+				var switchery = new Switchery(html, {size: 'small'});
 			});
 		}
-		if ( typeof $.fn.datepicker !== 'undefined' ) {
-                    $('.rwmb-datetime[name$="lp_sale_start"]')
-                                    .first()
-                                    .datepicker(
-                                            'option', 
-                                            'onSelect', 
-                                            function(a, b) { 
-                                                    var minDate = new Date(a);
-                                                    $('.rwmb-datetime[name$="lp_sale_end"]')
-                                                    .first()
-                                                    .datepicker(
-                                                            'option', 
-                                                            'minDate', 
-                                                            minDate
-                                                    );
-                                            }
-                                    );
-                }
-
-		if( jQuery('.rwmb-datetime[name$="lp_sale_start"]').first().length ){
-			jQuery('.rwmb-datetime[name$="lp_sale_start"]')
+		if (typeof $.fn.datepicker !== 'undefined') {
+			$('.rwmb-datetime[name$="lp_sale_start"]')
 				.first()
 				.datepicker(
-					'option', 
-					'onSelect', 
-					function(a, b) { 
+					'option',
+					'onSelect',
+					function (a, b) {
 						var minDate = new Date(a);
-						jQuery('.rwmb-datetime[name$="lp_sale_end"]')
-						.first()
-						.datepicker(
-							'option', 
-							'minDate', 
-							minDate
-						);
+						$('.rwmb-datetime[name$="lp_sale_end"]')
+							.first()
+							.datepicker(
+								'option',
+								'minDate',
+								minDate
+							);
 					}
 				);
 		}
-		
+
+		if (jQuery('.rwmb-datetime[name$="lp_sale_start"]').first().length) {
+			jQuery('.rwmb-datetime[name$="lp_sale_start"]')
+				.first()
+				.datepicker(
+					'option',
+					'onSelect',
+					function (a, b) {
+						var minDate = new Date(a);
+						jQuery('.rwmb-datetime[name$="lp_sale_end"]')
+							.first()
+							.datepicker(
+								'option',
+								'minDate',
+								minDate
+							);
+					}
+				);
+		}
+
 	});
-	
-	
+
+
 })(jQuery);
 
-(function($){
+(function ($) {
 
-    $( document ).on( 'click', '.wp-list-table .lp-duplicate-course', function( e ){
-        e.preventDefault();
-        var _this = $( this ),
-            _tr = _this.closest( 'tr' ),
-            _id = _tr.find('.check-column input[type="checkbox"]').val(),
-            _title = _tr.find( '.title strong' ).text();
+	$(document).on('click', '.wp-list-table .lp-duplicate-course', function (e) {
+		e.preventDefault();
+		var _this = $(this),
+			_tr = _this.closest('tr'),
+			_id = _tr.find('.check-column input[type="checkbox"]').val(),
+			_title = _tr.find('.title strong').text();
 
-            _this.LP_Course_Duplicator( {
-                _target: _this,
-                course_id: _id,
-                course_title: _title
-            } );
-        return false;
-    } );
+		_this.LP_Course_Duplicator({
+			_target     : _this,
+			course_id   : _id,
+			course_title: _title
+		});
+		return false;
+	});
 
 })(jQuery);

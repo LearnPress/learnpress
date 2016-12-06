@@ -3,7 +3,7 @@
  * Template for display content of lesson
  *
  * @author  ThimPress
- * @version 2.0.6
+ * @version 2.0.7
  */
 global $lp_query, $wp_query;
 $user          = learn_press_get_current_user();
@@ -22,15 +22,14 @@ $can_view_item = $user->can( 'view-item', $item->id, $course->id );
 
 	<?php if ( $user->has_completed_lesson( $item->ID, $course->id ) ) { ?>
 		<button class="" disabled="disabled"> <?php _e( 'Completed', 'learnpress' ); ?></button>
-	<?php } else if ( !$user->has( 'finished-course', $course->id ) && $can_view_item != 'preview' ) { ?>
+	<?php } else if ( !$user->has( 'finished-course', $course->id ) && !in_array( $can_view_item, array( 'preview', 'no-required-enroll' ) ) ) { ?>
 
-		<form method="post">
+		<form method="post" name="learn-press-form-complete-lesson" class="learn-press-form">
 			<input type="hidden" name="id" value="<?php echo $item->id; ?>" />
 			<input type="hidden" name="course_id" value="<?php echo $course->id; ?>" />
 			<input type="hidden" name="security" value="<?php echo esc_attr( $security ); ?>" />
 			<input type="hidden" name="type" value="lp_lesson" />
 			<input type="hidden" name="lp-ajax" value="complete-item" />
-
 			<button class="button-complete-item button-complete-lesson"><?php echo __( 'Complete', 'learnpress' ); ?></button>
 
 		</form>
