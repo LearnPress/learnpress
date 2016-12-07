@@ -505,11 +505,36 @@ class LP_Cache {
 	}
 
 	/**
+	 * @param      $key_or_value
+	 * @param bool $value
+	 *
+	 * @return array|bool|mixed
+	 */
+	public static function set_user_item_id( $key_or_value, $value = false ) {
+		if ( func_num_args() == 1 ) {
+			wp_cache_set( 'user-item-id', $key_or_value, self::$_group );
+			return $key_or_value;
+		}
+		return self::_set_cache( 'user-item-id', $key_or_value, $value );
+	}
+
+	/**
+	 * @param bool $key
+	 * @param bool $def
+	 *
+	 * @return array|bool|mixed
+	 */
+	public static function get_user_item_id( $key = false, $def = false ) {
+		return self::_get_cache( 'user-item-id', $key, $def );
+	}
+
+	/**
 	 * Flush cache by sections or LP group
 	 *
 	 * @param string|array $section
 	 */
 	public static function flush( $section = '' ) {
+
 		if ( func_num_args() > 1 ) {
 			foreach ( func_get_args() as $arg ) {
 				self::flush( $arg );

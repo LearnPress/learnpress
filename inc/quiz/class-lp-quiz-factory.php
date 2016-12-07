@@ -144,7 +144,6 @@ class LP_Quiz_Factory {
 		}
 		wp_redirect( add_query_arg( array( 'done-action' => 'start-quiz' ), learn_press_get_current_url() ) );
 		exit();
-		learn_press_send_json( $response );
 	}
 
 	public static function finish_quiz() {

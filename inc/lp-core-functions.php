@@ -1448,13 +1448,12 @@ if ( !function_exists( 'learn_press_is_course_archive' ) ) {
 	 */
 	function learn_press_is_course_archive() {
 		global $wp_query;
-		if ( empty( $wp_query->queried_object ) ) {
-			return false;
-		}
-		$is_courses  = defined( 'LEARNPRESS_IS_COURSES' ) && LEARNPRESS_IS_COURSES;
-		$is_tag      = defined( 'LEARNPRESS_IS_TAG' ) && LEARNPRESS_IS_TAG;
-		$is_category = defined( 'LEARNPRESS_IS_CATEGORY' ) && LEARNPRESS_IS_CATEGORY;
-		return ( ( $is_courses || $is_category || $is_tag ) || is_post_type_archive( 'lp_course' ) || ( learn_press_get_page_id( 'courses' ) && is_page( learn_press_get_page_id( 'courses' ) ) ) ) ? true : false;
+		$queried_object_id = !empty( $wp_query->queried_object ) ? $wp_query->queried_object : 0;
+		$is_courses        = defined( 'LEARNPRESS_IS_COURSES' ) && LEARNPRESS_IS_COURSES;
+		$is_tag            = defined( 'LEARNPRESS_IS_TAG' ) && LEARNPRESS_IS_TAG;
+		$is_category       = defined( 'LEARNPRESS_IS_CATEGORY' ) && LEARNPRESS_IS_CATEGORY;
+		$page_id           = learn_press_get_page_id( 'courses' );
+		return ( ( $is_courses || $is_category || $is_tag ) || is_post_type_archive( 'lp_course' ) || ( $page_id && ( $queried_object_id && is_page( $page_id ) ) ) ) ? true : false;
 	}
 }
 
@@ -1581,6 +1580,18 @@ function learn_press_setcookie( $name, $value, $expire = 0, $secure = false ) {
 	} elseif ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
 		headers_sent( $file, $line );
 		trigger_error( "{$name} cookie cannot be set - headers already sent by {$file} on line {$line}", E_USER_NOTICE );
+	}
+}
+
+/**
+ * Clear cookie
+ *
+ * @param $name
+ */
+function learn_press_remove_cookie( $name ) {
+	setcookie( $name, '', time() - YEAR_IN_SECONDS, COOKIEPATH ? COOKIEPATH : '/', COOKIE_DOMAIN );
+	if ( array_key_exists( $name, $_COOKIE ) ) {
+		unset( $_COOKIE[$name] );
 	}
 }
 

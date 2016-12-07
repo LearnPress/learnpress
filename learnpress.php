@@ -232,7 +232,9 @@ if ( !class_exists( 'LearnPress' ) ) {
 		public function init_hooks() {
 			$plugin_basename = $this->plugin_basename();
 
+			add_action( 'activate_' . $plugin_basename, array( $this, 'on_activate' ) );
 			add_action( 'activate_' . $plugin_basename, array( 'LP_Install', 'install' ) );
+
 			add_action( 'init', array( $this, 'init' ), 15 );
 
 			add_action( 'widgets_init', array( $this, 'widgets_init' ) );
@@ -248,11 +250,32 @@ if ( !class_exists( 'LearnPress' ) ) {
 			do_action( 'learn_press_loaded', $this );
 		}
 
+		/**
+		 * Load metabox library
+		 */
 		public function load_meta_box() {
 			if ( !defined( 'RWMB_VER' ) ) {
 				require_once 'inc/libraries/meta-box/meta-box.php';
 				do_action( 'learn_press_meta_box_loaded' );
 			}
+		}
+
+		/**
+		 * Trigger this function while activating LP
+		 *
+		 * @hook learn_press_activate
+		 */
+		public function on_activate() {
+			do_action( 'learn_press_activate', $this );
+		}
+
+		/**
+		 * Trigger this function while deactivating LP
+		 *
+		 * @hook learn_press_deactivate
+		 */
+		public function on_deactivate() {
+			do_action( 'learn_press_deactivate', $this );
 		}
 
 		/**
@@ -448,6 +471,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 
 			// user API
 			require_once 'inc/user/lp-user-functions.php';
+			require_once 'inc/user/class-lp-user-factory.php';
 			require_once 'inc/user/abstract-lp-user.php';
 			require_once 'inc/user/class-lp-user.php';
 
@@ -503,6 +527,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 			}
 
 			$GLOBALS['lp_query'] = $this->query = new LP_Query();
+
 		}
 
 		/**
