@@ -197,13 +197,13 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 		public static function _modal_search_items_not_found( $message, $type ) {
 			switch ( $type ) {
 				case 'lp_lesson':
-					$message = __( 'No lessons found', 'learnpress' );
+					$message = __( 'There are no available lessons for this course, please use Adding New Item.', 'learnpress' );
 					break;
 				case 'lp_quiz':
-					$message = __( 'No quizzes found', 'learnpress' );
+					$message = __( 'There are no available quizzes for this course, please use Adding New Item.', 'learnpress' );
 					break;
 				case 'lp_question':
-					$message = __( 'No questions found', 'learnpress' );
+					$message = __( 'There are no available questions for this quiz, please use Adding New Item.', 'learnpress' );
 					break;
 			}
 			return $message;
@@ -342,7 +342,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 				'html'    => ob_get_clean(),
 				'data'    => $found_items,
 				'args'    => $args,
-				'notices' => '<div class="learnpress-search-notices notice notice-warning">' . sprintf( '<p>' . __( 'You can not assign a ', 'learnpress' ) . '<strong>%s</strong>' . __( ' to more ', 'learnpress' ) . '%s</p>', $item_object->labels->singular_name, $post_type->labels->name ) . '</div>'
+				'notices' => '<div class="learnpress-search-notices notice notice-warning">' . sprintf( '<p>' . __( 'A ', 'learnpress' ) . '<strong>%s</strong>' . __( ' is just used for only one ', 'learnpress' ) . '%s</p>', $item_object->labels->singular_name, $post_type->labels->name ) . '</div>'
 			);
 			learn_press_send_json( $response );
 		}
