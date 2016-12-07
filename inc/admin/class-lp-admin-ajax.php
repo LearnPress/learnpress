@@ -36,10 +36,10 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 				'dismiss_notice'                  => false,
 				'search_users'                    => false,
 				'load_chart'                      => false,
-				'search_course'						=> false,
-				'search_course_category'			=> false,
+				'search_course'                   => false,
+				'search_course_category'          => false,
 				/////////////
-				'quick_add_lesson'					=> false,
+				'quick_add_lesson'                => false,
 				'quick_add_quiz'                  => false,
 				'be_teacher'                      => false,
 				'custom_stats'                    => false,
@@ -76,34 +76,34 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 		public static function search_course() {
 			global $wpdb;
 			$sql = "SELECT ID id, post_title text "
-					. " FROM {$wpdb->posts} "
-					. " WHERE post_type='lp_course' "
-							. " AND post_status in ('publish') "
-							. " AND post_title like %s";
-			if( current_user_can(LP_TEACHER_ROLE) ) {
+				. " FROM {$wpdb->posts} "
+				. " WHERE post_type='lp_course' "
+				. " AND post_status in ('publish') "
+				. " AND post_title like %s";
+			if ( current_user_can( LP_TEACHER_ROLE ) ) {
 				$user_id = learn_press_get_current_user_id();
-				$sql .= " AND post_author=".intval($user_id)." ";
+				$sql .= " AND post_author=" . intval( $user_id ) . " ";
 			}
-			$s = '%'.filter_input( INPUT_GET, 'q' ).'%';
+			$s     = '%' . filter_input( INPUT_GET, 'q' ) . '%';
 			$query = $wpdb->prepare( $sql, $s );
-			$items = $wpdb->get_results($query);
-			$data = array('items'=>$items);
-			echo json_encode($data);
+			$items = $wpdb->get_results( $query );
+			$data  = array( 'items' => $items );
+			echo json_encode( $data );
 			exit();
 		}
 
 		public static function search_course_category() {
 			global $wpdb;
-			$sql = "SELECT `t`.`term_id` as `id`, "
-					. " `t`.`name` `text` "
-					. " FROM {$wpdb->terms} t "
-					. "		INNER JOIN {$wpdb->term_taxonomy} tt ON t.term_id = tt.term_id AND taxonomy='course_category' "
-					. " WHERE `t`.`name` LIKE %s";
-			$s = '%'.filter_input( INPUT_GET, 'q' ).'%';
+			$sql   = "SELECT `t`.`term_id` as `id`, "
+				. " `t`.`name` `text` "
+				. " FROM {$wpdb->terms} t "
+				. "		INNER JOIN {$wpdb->term_taxonomy} tt ON t.term_id = tt.term_id AND taxonomy='course_category' "
+				. " WHERE `t`.`name` LIKE %s";
+			$s     = '%' . filter_input( INPUT_GET, 'q' ) . '%';
 			$query = $wpdb->prepare( $sql, $s );
-			$items = $wpdb->get_results($query);
-			$data = array('items'=>$items);
-			echo json_encode($data);
+			$items = $wpdb->get_results( $query );
+			$data  = array( 'items' => $items );
+			echo json_encode( $data );
 			exit();
 		}
 
@@ -197,13 +197,16 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 		public static function _modal_search_items_not_found( $message, $type ) {
 			switch ( $type ) {
 				case 'lp_lesson':
-					$message = __( 'There are no available lessons for this course, please use Adding New Item.', 'learnpress' );
+					$message = __( 'There are no available lessons for this course, please use ', 'learnpress' );
+					$message .= '<a target="_blank" href="' . admin_url( 'post-new.php?post_type=lp_lesson' ) . '">' . esc_html__( 'Adding New Item.', 'learnpress' ) . '</a>';
 					break;
 				case 'lp_quiz':
-					$message = __( 'There are no available quizzes for this course, please use Adding New Item.', 'learnpress' );
+					$message = __( 'There are no available quizzes for this course, please use ', 'learnpress' );
+					$message .= '<a target="_blank" href="' . admin_url( 'post-new.php?post_type=lp_quiz' ) . '">' . esc_html__( 'Adding New Item.', 'learnpress' ) . '</a>';
 					break;
 				case 'lp_question':
-					$message = __( 'There are no available questions for this quiz, please use Adding New Item.', 'learnpress' );
+					$message = __( 'There are no available questions for this quiz, please use ', 'learnpress' );
+					$message .= '<a target="_blank" href="' . admin_url( 'post-new.php?post_type=lp_question' ) . '">' . esc_html__( 'Adding New Item.', 'learnpress' ) . '</a>';
 					break;
 			}
 			return $message;
@@ -525,21 +528,21 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			}
 
 			// validate item
-			$item_ids = learn_press_get_request( 'item_id' );
-			$item_html = '';
+			$item_ids   = learn_press_get_request( 'item_id' );
+			$item_html  = '';
 			$order_data = array();
 //			$order  = learn_press_get_order( $order_id );
 
 //			echo '<pre>'.print_r($item_ids, true).'</pre>';
 //			exit(''.__LINE__);
-			foreach( $item_ids as $item_id ):
-				$post    = get_post( $item_id );
+			foreach ( $item_ids as $item_id ):
+				$post = get_post( $item_id );
 				if ( !$post || ( 'lp_course' !== $post->post_type ) ) {
 					continue;
 //					die( __( 'Course invalid', 'learnpress' ) );
 				}
 				$course = learn_press_get_course( $post->ID );
-				$item = array(
+				$item   = array(
 					'course_id' => $course->id,
 					'name'      => $course->get_title(),
 					'quantity'  => 1,
@@ -576,8 +579,6 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 				$item_html .= ob_get_clean();
 			endforeach;
 
-
-			
 
 			learn_press_send_json(
 				array(
@@ -955,8 +956,8 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 		public static function get_page_permalink() {
 			$page_id = !empty( $_REQUEST['page_id'] ) ? $_REQUEST['page_id'] : '';
 			?>
-			<a href="<?php echo get_edit_post_link( $page_id ); ?>" target="_blank"><?php _e( 'Edit Page', 'learnpress' ); ?></a>
-			<a href="<?php echo get_permalink( $page_id ); ?>" target="_blank"><?php _e( 'View Page', 'learnpress' ); ?></a>
+            <a href="<?php echo get_edit_post_link( $page_id ); ?>" target="_blank"><?php _e( 'Edit Page', 'learnpress' ); ?></a>
+            <a href="<?php echo get_permalink( $page_id ); ?>" target="_blank"><?php _e( 'View Page', 'learnpress' ); ?></a>
 			<?php
 			die();
 		}
@@ -1077,7 +1078,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			global $wpdb;
 			$question_id = learn_press_get_request( 'question-id' );
 			$quiz_id     = learn_press_get_request( 'quiz-id' );
-			$user_id = learn_press_get_current_user_id();
+			$user_id     = learn_press_get_current_user_id();
 
 			$new_question_id = learn_press_duplicate_question( $question_id, $quiz_id );
 			if ( !is_wp_error( $new_question_id ) ) {
