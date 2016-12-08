@@ -71,14 +71,7 @@ function learn_press_get_current_user( $user_id = 0 ) {
  * @return LP_User_Guest|mixed
  */
 function learn_press_get_user( $user_id, $force = false ) {
-	if ( !function_exists( 'get_user_by' ) ) {
-		//_doing_it_wrong( 'learn_press_get_user', __FUNCTION__, LEARNPRESS_VERSION );
-		//return false;
-	}
-	//if ( get_user_by( 'ID', $user_id ) ) {
 	return LP_User_Factory::get_user( $user_id, $force );
-	//}
-	return false;
 }
 
 /**
@@ -627,7 +620,7 @@ function learn_press_user_update_user_info() {
 					$editor->set_quality( 90 );
 					$lp         = LP();
 					$lp_setting = $lp->settings;
-					$size       = $lp_setting->get( 'profile_picture_thumbnai_size' );
+					$size       = $lp_setting->get( 'profile_picture_thumbnail_size' );
 					if ( empty( $size ) ) {
 						$size = array( 'width' => 150, 'height' => 150, 'crop' => 'yes' );
 					}

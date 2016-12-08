@@ -36,6 +36,8 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			add_action( 'load-post.php', array( $this, 'post_actions' ) );
 			add_action( 'init', array( $this, 'register_taxonomy' ) );
 			add_action( 'init', array( $this, 'init_course' ) );
+			add_action( 'post_submitbox_start', array( $this, 'post_review_message_box' ) );
+
 
 			// filter
 			add_filter( "rwmb__lpr_course_price_html", array( $this, 'currency_symbol' ), 5, 3 );
@@ -115,13 +117,17 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 
 		public function update_course( $course_id ) {
 			global $wpdb;
-			if( isset( $_POST['_lp_course_author'] ) ) {
+			$course_origin_author = get_post_field( 'post_author', $course_id );
+
+			if ( !empty( $_POST['_lp_course_author'] ) ) {
 				$wpdb->update(
 					$wpdb->posts,
 					array( 'post_author' => $_POST['_lp_course_author'] ),
 					array( 'ID' => $course_id )
 				);
-				delete_post_meta( $course_id, '_lp_course_author' );
+			} elseif ( !( $course_author = get_post_meta( $course_id, '_lp_course_author', true ) ) || !get_user_by( 'id', $course_author ) ) {
+				update_post_meta( $course_id, '_lp_course_author', $course_author );
+				$_POST['_lp_course_author'] = $_REQUEST['_lp_course_author'] = $course_origin_author;
 			}
 		}
 
@@ -308,6 +314,13 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 * Add meta boxes to course post type page
 		 */
 		public function add_meta_boxes() {
+
+			$user = wp_get_current_user();
+			//print_r($user);
+
+			$post_type_object = get_post_type_object( LP_COURSE_CPT );
+			//print_r($post_type_object);
+
 			if ( !self::$_VER2 ) {
 				new RW_Meta_Box( self::curriculum_meta_box() );
 			}
@@ -316,6 +329,8 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			new RW_Meta_Box( self::assessment_meta_box() );
 
 			new RW_Meta_Box( self::payment_meta_box() );
+
+			$this->review_logs_meta_box();
 			//new RW_Meta_Box( self::video_meta_box() );
 			if ( is_super_admin() ) {
 				new RW_Meta_Box( self::author_meta_box() );
@@ -924,21 +939,66 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			elseif ( learn_press_get_request( 'learn_press_submit_course_notice_instructor' ) == 'yes' ) {
 				$action = 'learn_press_course_submit_for_instructor';
 			}
-
+			$old_status = $post->post_status;
+			$new_status = get_post_status( $post->ID );
+			// If course is submitted by administrator
 			if ( $user->is_admin() ) {
-				if ( $post->post_status != 'publish' && get_post_status( $post->ID ) == 'publish' ) {
-					do_action( 'learn_press_course_submit_approved', $post->ID );
-					delete_post_meta( $post->ID, '_lp_submit_for_reviewer', 'yes' );
-				} elseif ( get_post_status( $post->ID ) != 'publish' ) {
-					do_action( 'learn_press_course_submit_rejected', $post->ID );
-					delete_post_meta( $post->ID, '_lp_submit_for_reviewer', 'yes' );
+				if ( $old_status != 'publish' && $new_status == 'publish' ) {
+					$action = 'approved';
+				} elseif ( $new_status != 'publish' ) {
+					$action = 'rejected';
 				}
-			} elseif ( $user->is_instructor() ) {
-				if ( $post->post_status != 'publish' && get_post_meta( $post->ID, '_lp_submit_for_reviewer', true ) != 'yes' ) {
-					do_action( 'learn_press_course_submit_for_reviewer', $post->ID );
+				delete_post_meta( $post->ID, '_lp_submit_for_reviewer', 'yes' );
+			} elseif ( $user->is_instructor() ) { // Course is submitted by instructor
+				if ( $old_status != 'publish' && get_post_meta( $post->ID, '_lp_submit_for_reviewer', true ) != 'yes' ) {
+					$action = 'for_reviewer';
 					update_post_meta( $post->ID, '_lp_submit_for_reviewer', 'yes' );
 				}
 			}
+			if ( !$action ) {
+				return;
+			}
+
+			$message = learn_press_get_request( 'review-message' );
+
+			switch ( $action ) {
+				case 'approved':
+					if ( !$message ) {
+						$message = __( 'Course has approved by Reviewer', 'learnpress' );
+					}
+					break;
+				case 'rejected':
+					if ( !$message ) {
+						$message = __( 'Course has rejected by Reviewer', 'learnpress' );
+					}
+					break;
+				case 'for_reviewer':
+					if ( !$message ) {
+						$message = sprintf( __( 'Course has submitted by %s', 'learnpress' ), learn_press_get_profile_display_name( $user ) );
+					}
+					break;
+			}
+
+			if ( apply_filters( 'learn_press_review_log_message', $message, $post->ID, $user->id ) ) {
+				$table = $wpdb->prefix . 'learnpress_review_logs';
+				$wpdb->insert(
+					$table,
+					array(
+						'course_id' => $post->ID,
+						'user_id'   => $user->id,
+						'message'   => $message,
+						'date'      => current_time( 'mysql' ),
+						'status'    => $new_status,
+						'user_type' => $user->is_admin() ? 'reviewer' : 'instructor'
+					),
+					array( '%d', '%d', '%s', '%s', '%s', '%s' )
+				);
+				do_action( 'learn_press_update_review_log', $wpdb->insert_id, $post->ID, $user->id );
+			}
+
+			do_action( "learn_press_course_submit_{$action}", $post->ID );
+
+			return;
 
 			if ( !$action ) {
 				return;
@@ -1110,12 +1170,14 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 */
 		public function post_review_message_box() {
 			global $post;
+
 			if ( get_post_type( $post->ID ) != 'lp_course' ) {
 				return false;
 			}
 
 			//$user = learn_press_get_current_user();
 			$course_user = learn_press_get_user( get_post_field( 'post_author', $post->ID ) );
+
 			if ( $course_user->is_admin() ) {
 				return;
 			}
@@ -1130,6 +1192,8 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			/*if( $enable_edit_published ){
 				return;
 			}*/
+
+
 			learn_press_admin_view( 'meta-boxes/course/review-log' );
 		}
 

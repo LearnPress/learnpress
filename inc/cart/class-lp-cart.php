@@ -135,7 +135,6 @@ class LP_Cart {
 	public function add_to_cart( $course_id, $quantity = 1, $item_data = array() ) {
 
 		$course = learn_press_get_course( $course_id );
-
 		// course is not purchasable
 		if ( !$course->is_purchasable() ) {
 			learn_press_display_message( __( 'Sorry! This course is not purchasable.', 'learnpress' ) );
@@ -175,6 +174,7 @@ class LP_Cart {
 		}
 
 		do_action( 'learn_press_add_to_cart', $course_id, $quantity, $item_data, $this );
+
 		return;
 
 		if ( !learn_press_is_enable_cart() ) {

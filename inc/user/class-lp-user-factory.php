@@ -14,12 +14,13 @@ class LP_User_Factory {
 	/**
 	 * @var int
 	 */
-	protected static $_guest_transient = 2 * HOUR_IN_SECONDS;
+	protected static $_guest_transient = 0;
 
 	/**
 	 *
 	 */
 	public static function init() {
+		self::$_guest_transient = 2 * HOUR_IN_SECONDS;
 		add_action( 'wp_login', array( __CLASS__, 'clear_temp_user_data' ) );
 		add_action( 'learn_press_user_start_quiz', array( __CLASS__, 'start_quiz' ), 10, 4 );
 		add_action( 'learn_press_user_retake_quiz', array( __CLASS__, 'retake_quiz' ), 10, 4 );

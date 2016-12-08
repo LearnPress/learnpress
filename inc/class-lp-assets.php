@@ -109,21 +109,48 @@ class LP_Assets {
 		if ( !is_admin() ) {
 			add_action( 'wp_enqueue_scripts', array( self::$_instance, 'load_scripts' ), $priory );
 			add_action( 'wp_enqueue_scripts', array( self::$_instance, 'wp_assets' ), $priory );
-			//add_action( 'wp_print_scripts', array( self::$_instance, 'localize_printed_scripts' ), $priory );
 			add_action( 'wp_print_footer_scripts', array( __CLASS__, 'localize_printed_scripts' ), $priory + 10 );
 			add_action( 'wp_enqueue_scripts', array( __CLASS__, '_enqueue_scripts' ), $priory + 10 );
 
 		} else {
 			add_action( 'admin_enqueue_scripts', array( self::$_instance, 'load_scripts' ), $priory );
 			add_action( 'admin_enqueue_scripts', array( self::$_instance, 'wp_assets' ), $priory );
-			//add_action( 'admin_print_scripts', array( self::$_instance, 'localize_printed_scripts' ), $priory );
 			add_action( 'admin_print_footer_scripts', array( self::$_instance, 'localize_printed_scripts' ), $priory + 10 );
 			add_action( 'admin_enqueue_scripts', array( __CLASS__, '_enqueue_scripts' ), $priory + 10 );
 		}
 		add_filter( 'script_loader_src', array( __CLASS__, 'script_localized' ), $priory + 5, 2 );
 
-		add_action( 'wp_default_scripts', array( __CLASS__, 'add_default_scripts' ) );
-		add_action( 'wp_default_styles', array( __CLASS__, 'add_default_styles' ) );
+		/**
+		 * Check if action add_default_scripts has called then we need
+		 * to call method add_default_scripts directly to make scripts
+		 * work properly
+		 *
+		 * Fixed in ver 2.0.8
+		 */
+		if ( did_action( 'add_default_scripts' ) ) {
+			global $wp_scripts;
+			if ( $wp_scripts ) {
+				self::add_default_scripts( $wp_scripts );
+			}
+		} else {
+			add_action( 'wp_default_scripts', array( __CLASS__, 'add_default_scripts' ) );
+		}
+
+		/**
+		 * Check if action wp_default_styles has called then we need
+		 * to call method add_default_styles directly to make styles
+		 * work properly
+		 *
+		 * Fixed in ver 2.0.8
+		 */
+		if ( did_action( 'wp_default_styles' ) ) {
+			global $wp_styles;
+			if ( $wp_styles ) {
+				self::add_default_styles( $wp_styles );
+			}
+		} else {
+			add_action( 'wp_default_styles', array( __CLASS__, 'add_default_styles' ) );
+		}
 		if ( !defined( 'LP_DEBUG' ) || ( false == LP_DEBUG ) ) {
 			add_filter( 'script_loader_tag', array( self::$_instance, 'unload_script_tag' ), $priory, 3 );
 			add_filter( 'style_loader_tag', array( self::$_instance, 'unload_script_tag' ), $priory, 3 );

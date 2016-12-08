@@ -337,7 +337,6 @@ class LP_Abstract_User {
 		} else {
 			$item = false;
 		}
-die();
 		do_action( 'learn_press_user_start_quiz', $item, $quiz_id, $course_id, $this->id );
 		return $item;
 	}
@@ -669,7 +668,7 @@ die();
 	public function get_item_status( $item_id, $course_id = 0, $force = false ) {
 		$course_id = $this->_get_course_id( $course_id );
 
-		_learn_press_parse_user_item_statuses( $this->id, $course_id );
+		_learn_press_parse_user_item_statuses( $this->id, $course_id, $force );
 
 		// Force to update new course data
 		if ( $force ) {
@@ -699,7 +698,7 @@ die();
 				$item_statuses[$key] = false;
 				if ( $rows = $wpdb->get_results( $query ) ) {
 					foreach ( $rows as $row ) {
-						$item_statuses[$this->id . '-' . $course_id . '-' . $row->item_id] = $row->status;
+						$item_statuses[$this->id . '-' . $course_id . '-' . $row->item_id] = learn_press_validate_item_status($row);
 					}
 				}
 			}
@@ -1143,9 +1142,12 @@ die();
 	public function can_enroll_course( $course_id ) {
 		# condition
 		$course = LP_Course::get_course( $course_id );
+
 		// check if course is purchasable
 		$enrollable = false;
 		if ( !$course ) {
+			$enrollable = false;
+		} elseif ( $course->post->post_status !== 'publish' ) {
 			$enrollable = false;
 		} elseif ( !$course->is_required_enroll() ) {
 			$enrollable = false;
@@ -2868,16 +2870,16 @@ die();
 
 		// get user data
 		$profile_picture_type = get_user_meta( $user_id, '_lp_profile_picture_type', true );
+		$profile_picture_src  = $this->get_upload_profile_src( $size );
 
-		if ( !$profile_picture_type || $profile_picture_type == 'gravatar' ) {
-			return;
+		if ( !$profile_picture_type || $profile_picture_type == 'gravatar' || !$profile_picture_src ) {
+			return $avatar;
 		}
 
-		$profile_picture_src = $this->get_upload_profile_src( $size );
 
 		$lp           = LP();
 		$lp_setting   = $lp->settings;
-		$setting_size = $lp_setting->get( 'profile_picture_thumbnai_size' );
+		$setting_size = $lp_setting->get( 'profile_picture_thumbnail_size' );
 
 		$img_size = '';
 		$height   = '';

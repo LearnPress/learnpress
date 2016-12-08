@@ -212,7 +212,10 @@ class LP_Page_Controller {
 	 * @return string
 	 */
 	public function single_content( $content ) {
-
+		// Should not effect if current post is not a LP Course
+		if ( LP_COURSE_CPT != get_post_type() ) {
+			return $content;
+		}
 		remove_filter( 'the_content', array( $this, 'single_content' ), $this->_filter_content_priority );
 		add_filter( 'the_content', 'wpautop' );
 		ob_start();

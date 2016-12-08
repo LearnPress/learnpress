@@ -159,7 +159,7 @@
 					}
 				})
 				$chkPayment.filter(':checked').trigger('change');
-
+				
 				// add schedule button
 				if( $('input[name="_lp_sale_start"]').val()!='' ){
 					$('.lp-course-sale_start-field').removeClass('hide');
@@ -168,17 +168,17 @@
 				}
 				$('#_lp_sale_price_schedule').on('click', function(event){
 					event.preventDefault();
-					$('.lp-course-sale_start-field').removeClass('hide');
-					$('.lp-course-sale_end-field').removeClass('hide');
-					$(this).addClass('hide');
+					$('.lp-course-sale_start-field').show();
+					$('.lp-course-sale_end-field').show();
+					$(this).hide();
 				});
 				$('#_lp_sale_price_schedule_cancel').on('click', function(event){
 					event.preventDefault();
-					$('.lp-course-sale_start-field').addClass('hide');
-					$('.lp-course-sale_end-field').addClass('hide');
+					$('.lp-course-sale_start-field').hide();
+					$('.lp-course-sale_end-field').hide();
 					$('input[name="_lp_sale_start"]').val('');
 					$('input[name="_lp_sale_end"]').val('');
-					$('#_lp_sale_price_schedule').removeClass('hide');
+					$('#_lp_sale_price_schedule').show();
 				});
 				if ($('input[name="_lp_course_result"]:checked').length == 0) {
 					$('input[name="_lp_course_result"]').filter(function () {
@@ -1382,6 +1382,59 @@
 		$('#learn-press-button-toggle-editor').on('click _click', _toggleEditorHandler).trigger('_click');
 
 		_makeListSortable();
+
+		var pendingReview = $('input[name="learn-press-course-pending-review"]').val() == 'yes';
+
+		$('#post').submit(function (e) {
+			if (pendingReview) {
+				//return false;
+			}
+			var $review = $('textarea[name="review_message"]', this),
+				status = $('select#post_status', this).val(),
+				current_status = $('#learn-press-course-status').val(),
+				clicked = $(':focus', this).attr('name');
+
+			if (( ( clicked == 'save' || clicked == 'publish' ) && ( status != current_status ) || ( clicked == 'publish' ) && ( status == 'pending' ) ) && !($review.val() + '').length) {
+				alert('Please write your message to the Instructor');
+				var $check = $('input[name="learn_press_submit_course_notice_instructor"]').prop('checked', true);
+				$check.trigger('change');
+				return false;
+			} else {
+			}
+		});
+		$('#learn-press-notice-check').change(function () {
+			var that = this,
+				$review = $('textarea[name="review_message"]').prop('disabled', !this.checked),
+				$parent = $review.parent();
+			$parent[this.checked ? 'slideDown' : 'slideUp'](function () {
+				that.checked && $review.focus();
+			});
+		});
+
+		if (pendingReview) {
+			//$('#publish').prop('disabled', true);
+		}
+
+		jQuery('#post').submit(function (e) {
+			var $review = $('textarea[name="review_message"]');
+			if (!($review.val() + '').length && $('#learn-press-notice-check').is(':checked')) {
+				alert('Please write your message to the Reviewer');
+				$review.focus();
+				return false;
+			}
+		});
+
+		jQuery('#learn-press-notice-check').change(function () {
+			var checked = this.checked,
+				$review = jQuery('textarea[name="review_message"]').prop('disabled', !checked),
+				$parent = $review.parent();
+			$parent[checked ? 'slideDown' : 'slideUp'](function () {
+				checked && $review.focus();
+			});
+		});
+
+		$('#submitpost').css('visibility', 'visible');
+
 
 	}
 

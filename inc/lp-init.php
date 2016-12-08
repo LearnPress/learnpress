@@ -349,7 +349,7 @@ function learn_press_setup_user_course_data( $user_id, $course_id, $force = fals
 }
 
 function _learn_press_parse_user_item_statuses( $user_id, $course_id, $force = false ) {
-	if ( did_action( "learn_press_parse_user_item_statuses_{$user_id}_{$course_id}" ) ) {
+	if ( did_action( "learn_press_parse_user_item_statuses_{$user_id}_{$course_id}" ) && !$force ) {
 		return;
 	}
 	global $wpdb;
@@ -395,7 +395,7 @@ function _learn_press_parse_user_item_statuses( $user_id, $course_id, $force = f
 	}
 	if ( $items ) {
 		foreach ( $items as $item ) {
-			$item_statuses[$user_id . '-' . $course_id . '-' . $item->item_id] = $item->status;
+			$item_statuses[$user_id . '-' . $course_id . '-' . $item->item_id] = learn_press_validate_item_status( $item );
 		}
 	}
 
@@ -403,6 +403,23 @@ function _learn_press_parse_user_item_statuses( $user_id, $course_id, $force = f
 
 	do_action( "learn_press_parse_user_item_statuses", $user_id, $course_id );
 	do_action( "learn_press_parse_user_item_statuses_{$user_id}_{$course_id}" );
+}
+
+function learn_press_validate_item_status( $item ) {
+	$end_time = $item->end_time !== '0000-00-00 00:00:00';
+	$status   = $end_time > 0 ? ( $item->item_type != LP_COURSE_CPT ? 'completed' : 'finished' ) : $item->status;
+	if ( $end_time && !in_array( $item->status, array( 'completed', 'finished' ) ) ) {
+		global $wpdb;
+		$data           = (array) $item;
+		$data['status'] = $item->item_type != LP_COURSE_CPT ? 'completed' : 'finished';
+		learn_press_update_user_item_field(
+			$data,
+			array(
+				'user_item_id' => $item->user_item_id
+			)
+		);
+	}
+	return $status;
 }
 
 /**
