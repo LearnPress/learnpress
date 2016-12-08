@@ -12,5 +12,4 @@ defined( 'ABSPATH' ) || exit();
 
 class LP_User extends LP_Abstract_User {
 
-
 }

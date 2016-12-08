@@ -135,7 +135,7 @@ class LP_Settings_Pages extends LP_Settings_Base {
 				),
 				array(
 					'title'   => __( 'Thumbnail size', 'learnpress' ),
-					'id'      => $this->get_field_name( 'profile_picture_thumbnai_size' ),
+					'id'      => $this->get_field_name( 'profile_picture_thumbnail_size' ),
 					'default' => array( 150, 150, 'yes' ),
 					'type'    => 'image-size'
 				),

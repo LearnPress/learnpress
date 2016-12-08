@@ -89,9 +89,9 @@
 					'data-type': type
 				}).find('.lp-item-type').val(type);
 
-                                if ( $icon.addClass('item-selected').parent().siblings().length > 0 ) {
-                                    $icon.addClass('item-selected').parent().hide().siblings().show().find('span').removeClass('item-selected');
-                                }
+				if ($icon.addClass('item-selected').parent().siblings().length > 0) {
+					$icon.addClass('item-selected').parent().hide().siblings().show().find('span').removeClass('item-selected');
+				}
 				var iconIindex = $icon.parent().index();
 				var pos = ( iconIindex === 0 ) ? 1 : iconIindex,
 					$rep = $icon.closest('.learn-press-dropdown-item-types').find('>span'),
@@ -147,11 +147,11 @@
 					var toggle = this.value != 'yes';
 					$('.lp-course-price-field').toggleClass('hide-if-js', toggle).attr('xxx', Math.random());
 					$('.lp-course-required-enroll').toggleClass('hide-if-js', !toggle);
-					if(toggle){
+					if (toggle) {
 						$('.lp-course-sale_start-field').hide();
 						$('.lp-course-sale_end-field').hide();
-					}else{
-						if( $('input[name="_lp_sale_start"]').val()!='' ){
+					} else {
+						if ($('input[name="_lp_sale_start"]').val() != '') {
 							$('.lp-course-sale_start-field').show();
 							$('.lp-course-sale_end-field').show();
 							$('#_lp_sale_price_schedule').hide();
@@ -159,20 +159,20 @@
 					}
 				})
 				$chkPayment.filter(':checked').trigger('change');
-				
+
 				// add schedule button
-				if( $('input[name="_lp_sale_start"]').val()!='' ){
+				if ($('input[name="_lp_sale_start"]').val() != '') {
 					$('.lp-course-sale_start-field').show();
 					$('.lp-course-sale_end-field').show();
 					$('#_lp_sale_price_schedule').hide();
 				}
-				$('#_lp_sale_price_schedule').on('click', function(event){
+				$('#_lp_sale_price_schedule').on('click', function (event) {
 					event.preventDefault();
 					$('.lp-course-sale_start-field').show();
 					$('.lp-course-sale_end-field').show();
 					$(this).hide();
 				});
-				$('#_lp_sale_price_schedule_cancel').on('click', function(event){
+				$('#_lp_sale_price_schedule_cancel').on('click', function (event) {
 					event.preventDefault();
 					$('.lp-course-sale_start-field').hide();
 					$('.lp-course-sale_end-field').hide();
@@ -272,10 +272,12 @@
 			},
 			updatePublishAction     : function (e) {
 				if (e.target.checked) {
-					$('#publish').val(meta_box_course_localize.submit_course_review);
+					$('#publish').val(learn_press_mb_course_localize.submit_course_review);
 				} else {
-					$('#publish').val(meta_box_course_localize.save_course);
+					$('#publish').val(learn_press_mb_course_localize.save_course);
 				}
+				$('#submitpost').css('visibility', 'visible');
+
 			},
 			toggleButtonBulkActions : function (e) {
 				var $checkbox = $(e.target),
@@ -553,7 +555,7 @@
 				var tmpl = wp.template('section-item'),
 					$item = $(tmpl(args || {}));
 				$item = LP.Hook.applyFilters('learn_press_create_new_item', $item, $section);
-                                _makeListSortable();
+				_makeListSortable();
 				return $item;
 			},
 			needCreateNewSection    : function () {
@@ -594,7 +596,7 @@
 					context   : 'course-items',
 					context_id: $('#post_ID').val(),
 					exclude   : this.getSelectedItems(),
-                                        notices   : notices
+					notices   : notices
 				});
 				LP.MessageBox.show($form.$el);
 				$form.$el.find('header input').focus();
@@ -605,7 +607,7 @@
 					$button = $(e.target),
 					action = $button.data('action'),
 					type = $button.data('type'),
-                                        notices = $button.data('notices'),
+					notices = $button.data('notices'),
 					$form = null;
 				switch (action) {
 					case 'add-lp_quiz':
@@ -656,8 +658,8 @@
 					}
 					$li.remove();
 				});
-                                // restart sortable
-                                _makeListSortable();
+				// restart sortable
+				_makeListSortable();
 			},
 			addItemToSection        : function ($item, $section) {
 				var $last = $section.find('.curriculum-section-items .lp-section-item:last');
@@ -1305,7 +1307,6 @@
 			if ($(this).data('hidden') == 'yes') {
 				$('#postdivrich').addClass('hide-if-js');
 			}
-			$('#postdivrich').css('visibility', 'visible');
 		} else {
 			var is_hidden = 'yes';
 			if (!$('#postdivrich').toggleClass('hide-if-js').hasClass('hide-if-js')) {
@@ -1349,7 +1350,7 @@
 						// Set helper cell sizes to match the original sizes
 						$(this).width($originals.eq(index).width());
 					});
-                                        $helper.height( $( tr ).height() + 10 );
+					$helper.height($(tr).height() + 10);
 
 					$(tr).parent().append($helper);
 
@@ -1382,6 +1383,59 @@
 		$('#learn-press-button-toggle-editor').on('click _click', _toggleEditorHandler).trigger('_click');
 
 		_makeListSortable();
+
+		var pendingReview = $('input[name="learn-press-course-pending-review"]').val() == 'yes';
+
+		$('#post').submit(function (e) {
+			if (pendingReview) {
+				//return false;
+			}
+			var $review = $('textarea[name="review_message"]', this),
+				status = $('select#post_status', this).val(),
+				current_status = $('#learn-press-course-status').val(),
+				clicked = $(':focus', this).attr('name');
+
+			if (( ( clicked == 'save' || clicked == 'publish' ) && ( status != current_status ) || ( clicked == 'publish' ) && ( status == 'pending' ) ) && !($review.val() + '').length) {
+				alert('Please write your message to the Instructor');
+				var $check = $('input[name="learn_press_submit_course_notice_instructor"]').prop('checked', true);
+				$check.trigger('change');
+				return false;
+			} else {
+			}
+		});
+		$('#learn-press-notice-check').change(function () {
+			var that = this,
+				$review = $('textarea[name="review_message"]').prop('disabled', !this.checked),
+				$parent = $review.parent();
+			$parent[this.checked ? 'slideDown' : 'slideUp'](function () {
+				that.checked && $review.focus();
+			});
+		});
+
+		if (pendingReview) {
+			//$('#publish').prop('disabled', true);
+		}
+
+		jQuery('#post').submit(function (e) {
+			var $review = $('textarea[name="review_message"]');
+			if (!($review.val() + '').length && $('#learn-press-notice-check').is(':checked')) {
+				alert('Please write your message to the Reviewer');
+				$review.focus();
+				return false;
+			}
+		});
+
+		jQuery('#learn-press-notice-check').change(function () {
+			var checked = this.checked,
+				$review = jQuery('textarea[name="review_message"]').prop('disabled', !checked),
+				$parent = $review.parent();
+			$parent[checked ? 'slideDown' : 'slideUp'](function () {
+				checked && $review.focus();
+			});
+		});
+
+		$('#submitpost').css('visibility', 'visible');
+
 
 	}
 

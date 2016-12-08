@@ -85,6 +85,9 @@ add_action( 'wp_loaded', 'learn_press_process_web_hooks', 999 );
  * Update status of lesson when view at first time
  */
 function learn_press_header_item_only_view_first() {
+	if ( is_admin() || !learn_press_is_course() ) {
+		return;
+	}
 	global $wpdb;
 
 	$table  = $wpdb->prefix . 'learnpress_user_items';
@@ -108,7 +111,7 @@ function learn_press_header_item_only_view_first() {
 					'item_id'    => $item->ID,
 					'start_time' => current_time( 'mysql' ),
 					'end_time'   => '0000-00-00 00:00:00',
-					'item_type'  => $item->item_type,
+					'item_type'  => $item->post->item_type,
 					'status'     => $item_status,
 					'ref_id'     => $course->id,
 					'ref_type'   => $course->post->post_type,
