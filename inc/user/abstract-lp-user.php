@@ -337,7 +337,6 @@ class LP_Abstract_User {
 		} else {
 			$item = false;
 		}
-		die();
 		do_action( 'learn_press_user_start_quiz', $item, $quiz_id, $course_id, $this->id );
 		return $item;
 	}
