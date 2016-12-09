@@ -3,7 +3,7 @@ Contributors: thimpress, tunnhn, phonglq.foobla, chinhtm, thongta, kendy73
 Donate link:  
 Tags: WordPress LMS, LMS, eLearning, e-Learning, Learning Management System, LMS WordPress, Course, Courses, Quiz, Quizzes, Training, Guru, Sell Courses  
 Requires at least: 3.8  
-Tested up to: 4.6.1
+Tested up to: 4.7
 Stable tag: trunk
 License: GPLv2 or later  
 License URI: http://www.gnu.org/licenses/gpl-2.0.html  
@@ -192,6 +192,12 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.  
 
 == Changelog ==
+
+= 2.0.7.1 =
++ Fixed start quiz load infinite
++ Fixed version number does not update with WP 4.7
++ Fixed issue with course's item content
+
 
 = 2.0.6.1 =
 + Improved checking templates are outdated

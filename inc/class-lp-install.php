@@ -186,7 +186,12 @@ class LP_Install {
 			AND b.option_value < %d";
 		$wpdb->query( $wpdb->prepare( $sql, $wpdb->esc_like( '_transient_' ) . '%', $wpdb->esc_like( '_transient_timeout_' ) . '%', time() ) );
 
-		add_action( 'admin_init', array( __CLASS__, '_auto_update' ), - 15 );
+		// Fix for WP 4.7
+		if ( did_action( 'admin_init' ) ) {
+			self::_auto_update();
+		} else {
+			add_action( 'admin_init', array( __CLASS__, '_auto_update' ), - 15 );
+		}
 	}
 
 	private static function _create_cron_jobs() {
@@ -448,6 +453,7 @@ class LP_Install {
 	}
 
 	public static function update_version( $version = null ) {
+
 		delete_option( 'learnpress_version' );
 		update_option( 'learnpress_version', is_null( $version ) ? LEARNPRESS_VERSION : $version );
 	}

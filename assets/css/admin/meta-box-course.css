@@ -3,7 +3,8 @@
 .rwmb-duration-wrapper select {
   vertical-align: baseline;
 }
-.post-type-lp_course #postdivric {
+.post-type-lp_course #postdivric,
+.post-type-lp_course #submitpost {
   visibility: hidden;
 }
 #learn-press-review-message {
@@ -21,6 +22,8 @@
   padding: 5px 10px;
   color: #FFF;
   margin: -10px -10px 10px;
+  font-size: 12px;
+  font-style: italic;
 }
 #learn-press-button-toggle-editor {
   margin: 20px 0 0;
@@ -349,7 +352,7 @@
 }
 .learn-press-review-logs .review-message {
   font-style: italic;
-  font-size: 16px;
+  font-size: 14px;
   margin: 10px 0;
   color: #999;
 }
