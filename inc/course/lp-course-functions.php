@@ -576,26 +576,28 @@ if( !function_exists( 'learn_press_get_nav_course_item_url' ) ) {
 		$curriculum_items = $course->post->curriculum_items;
 		$index = array_search( $item_id, $curriculum_items );
 		$return = array( 'back'=>'', 'next'=>'');
-		if( array_key_exists( $index - 1, $curriculum_items ) ) {
-			$back_item = get_post($curriculum_items[ $index - 1 ]);
-			$return['back'] = array(
-				'id' => $back_item->ID,
-				'link'=>$course->get_item_link( $curriculum_items[ $index - 1 ]  ),
-				'title'=>$back_item->post_title,
-			);
-			if($content_only){
-				$return['back']['link'] .= '?content-item-only=yes';
+		if (is_array($curriculum_items)) {
+			if ( array_key_exists( $index - 1, $curriculum_items ) ) {
+				$back_item      = get_post( $curriculum_items[$index - 1] );
+				$return['back'] = array(
+					'id'    => $back_item->ID,
+					'link'  => $course->get_item_link( $curriculum_items[$index - 1] ),
+					'title' => $back_item->post_title,
+				);
+				if ( $content_only ) {
+					$return['back']['link'] .= '?content-item-only=yes';
+				}
 			}
-		}
-		if( array_key_exists( $index + 1, $curriculum_items ) ) {
-			$next_item = get_post($curriculum_items[ $index + 1 ]);
-			$return['next'] = array(
-				'id' => $next_item->ID,
-				'link'=>$course->get_item_link( $curriculum_items[ $index + 1 ]  ),
-				'title'=>$next_item->post_title,
-			);
-			if($content_only){
-				$return['next']['link'] .= '?content-item-only=yes';
+			if ( array_key_exists( $index + 1, $curriculum_items ) ) {
+				$next_item      = get_post( $curriculum_items[$index + 1] );
+				$return['next'] = array(
+					'id'    => $next_item->ID,
+					'link'  => $course->get_item_link( $curriculum_items[$index + 1] ),
+					'title' => $next_item->post_title,
+				);
+				if ( $content_only ) {
+					$return['next']['link'] .= '?content-item-only=yes';
+				}
 			}
 		}
 		return $return;
