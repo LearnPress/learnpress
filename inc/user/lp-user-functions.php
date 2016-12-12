@@ -621,11 +621,15 @@ function learn_press_user_update_user_info() {
 					$lp         = LP();
 					$lp_setting = $lp->settings;
 					$size       = $lp_setting->get( 'profile_picture_thumbnail_size' );
+
 					if ( empty( $size ) ) {
-						$size = array( 'width' => 150, 'height' => 150, 'crop' => 'yes' );
+						$size = array( 150, 150, 'yes' );
 					}
-					if ( $size['crop'] == 'yes' ) {
-						$resized = $editor->resize( $size['width'], $size['height'], true );
+
+					if ( isset($size[2]) && $size[2] == 'yes' ) {
+						$size_width 	= $size[0];
+						$size_height 	= $size[1];
+						$resized 		= $editor->resize( $size_width, $size_height, true );
 						if ( is_wp_error( $resized ) ) {
 							learn_press_add_message( __( 'Thumbnail of image profile not created', 'learnpress' ) );
 						} else {
