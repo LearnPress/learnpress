@@ -197,7 +197,7 @@ https://www.transifex.com/projects/p/learnpress/
 + Fixed start quiz load infinite
 + Fixed version number does not update with WP 4.7
 + Fixed issue with course's item content
-
++ Fixed styles can not load in some cases
 
 = 2.0.6.1 =
 + Improved checking templates are outdated

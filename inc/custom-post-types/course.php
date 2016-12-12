@@ -18,7 +18,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 */
 		protected static $_instance = null;
 
-		protected static $_enable_review = false;
+		protected static $_enable_review = true;
 
 		/**
 		 * Constructor
@@ -49,7 +49,6 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 				add_action( 'admin_enqueue_scripts', array( $this, 'admin_script' ) );
 				add_action( 'admin_print_scripts', array( $this, 'course_editor' ) );
 			}
-
 
 		}
 
@@ -187,7 +186,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			if ( empty( $post_id ) ) {
 				return;
 			}
-			if(self::$_enable_review) {
+			if ( self::$_enable_review ) {
 				if ( learn_press_get_current_user()->is_instructor() && 'yes' == get_post_meta( $post_id, '_lp_submit_for_reviewer', true ) ) {
 					LP_Admin_Notice::add_redirect( __( 'Sorry! You can not update a course while it is viewing!', 'learnpress' ), 'error' );
 					wp_redirect( admin_url( 'post.php?post=' . $post_id . '&action=edit' ) );
@@ -255,6 +254,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 */
 		public function admin_scripts() {
 			global $post;
+
 			$user = learn_press_get_current_user();
 			LP_Assets::add_localize(
 				array(
@@ -263,13 +263,15 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 				null,
 				'learn-press-mb-course'
 			);
-			if(self::$_enable_review) {
+			if ( get_post_type() == LP_COURSE_CPT && self::$_enable_review && !$this->_is_archive() ) {
 				LP_Assets::add_param( 'required_review', LP()->settings->get( 'required_review' ) == 'yes', 'learn-press-mb-course', 'LP_Settings' );
 				LP_Assets::add_param( 'enable_edit_published', LP()->settings->get( 'enable_edit_published' ) == 'yes', 'learn-press-mb-course', 'LP_Settings' );
 				LP_Assets::add_param( 'course_status', get_post_status(), 'learn-press-mb-course', 'LP_Settings' );
 				LP_Assets::add_param( 'edited_user', learn_press_get_current_user_id(), 'learn-press-mb-course', 'LP_Settings' );
 				LP_Assets::add_param( 'current_user', $post->post_author, 'learn-press-mb-course', 'LP_Settings' );
 				LP_Assets::add_param( 'current_user_type', $user->is_admin() ? 'admin' : 'instructor', 'learn-press-mb-course', 'LP_Settings' );
+				LP_Assets::add_param( 'pending_review', get_post_meta( $post->ID, '_lp_submit_for_reviewer', true ) == 'yes', 'learn-press-mb-course', 'LP_Settings' );
+
 			}
 			if ( in_array( get_post_type(), array( LP_COURSE_CPT, LP_LESSON_CPT ) ) ) {
 				wp_enqueue_script( 'jquery-caret', LP()->plugin_url( 'assets/js/jquery.caret.js', 'jquery' ) );
@@ -355,7 +357,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 
 			new RW_Meta_Box( self::payment_meta_box() );
 
-			if(self::$_enable_review) {
+			if ( self::$_enable_review ) {
 				$this->review_logs_meta_box();
 			}
 			//new RW_Meta_Box( self::video_meta_box() );
@@ -962,7 +964,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			$new_status            = get_post_status( $post->ID );
 			$required_review       = LP()->settings->get( 'required_review' ) == 'yes';
 			$enable_edit_published = LP()->settings->get( 'enable_edit_published' ) == 'yes';
-			$submit_for_review     = learn_press_get_request( 'learn-press-submit-for-review' ) == 'yes' || ( $required_review && !$enable_edit_published );
+			$submit_for_review     = learn_press_get_request( 'learn-press-submit-for-review' ) == 'yes' || !$required_review || $enable_edit_published;
 			// If course is submitted by administrator
 			if ( $user->is_admin() ) {
 				if ( $old_status != $new_status ) {
@@ -971,10 +973,10 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 					} elseif ( $new_status != 'publish' ) {
 						$action = 'rejected';
 					}
+					delete_post_meta( $post->ID, '_lp_submit_for_reviewer', 'yes' );
 				}
-				delete_post_meta( $post->ID, '_lp_submit_for_reviewer', 'yes' );
 			} elseif ( $user->is_instructor() ) { // Course is submitted by instructor
-				if ( $submit_for_review ) {
+				if ( $submit_for_review || ( $old_status != $new_status ) ) {
 					$action = 'for_reviewer';
 					update_post_meta( $post->ID, '_lp_submit_for_reviewer', 'yes' );
 				}
@@ -1023,9 +1025,10 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 				);
 				do_action( 'learn_press_update_review_log', $wpdb->insert_id, $post->ID, $user->id );
 			}
-
-			do_action( "learn_press_course_submit_{$action}", $post->ID );
-
+			if ( $action ) {
+				do_action( "learn_press_course_submit_{$action}", $post->ID, $user );
+				LP_Debug::instance()->add( 'do_action:' . "learn_press_course_submit_{$action}" );
+			}
 			return;
 
 			if ( !$action ) {
@@ -1258,7 +1261,6 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 * @return mixed|string
 		 */
 		public function posts_where_paged( $where ) {
-
 			if ( !$this->_is_archive() ) {
 				return $where;
 			}

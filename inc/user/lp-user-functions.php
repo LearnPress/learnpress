@@ -709,6 +709,21 @@ function _learn_press_before_purchase_course_handler( $course_id, $cart ) {
 	}
 }
 
+function learn_press_user_is($role, $user_id = 0){
+	if(!$user_id){
+		$user = learn_press_get_current_user();
+	}else{
+		$user = learn_press_get_user($user_id);
+	}
+	if($role == 'admin'){
+		return $user->is_admin();
+	}
+	if($role == 'instructor'){
+		return $user->is_instructor();
+	}
+	return $role;
+}
+
 function learn_press_profile_tab_endpoints_edit_profile( $endpoints ) {
 	$endpoints['edit'] = 'edit';
 	return $endpoints;
