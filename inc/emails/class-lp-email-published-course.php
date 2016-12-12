@@ -55,8 +55,10 @@ if ( !class_exists( 'LP_Email_Published_Course' ) ) {
 			include_once $view;
 		}
 
-		public function trigger( $course_id ) {
+		public function trigger( $course_id, $user ) {
 
+
+			print_r($this->enable);die();
 			if ( !$this->enable ) {
 				return;
 			}

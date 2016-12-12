@@ -151,14 +151,6 @@ if ( !class_exists( 'LP_Email_New_Course' ) ) {
 		 */
 		public function get_template_data( $format = 'plain' ) {
 			return $this->object;
-			array(
-				'email_heading' => $this->get_heading(),
-				'footer_text'   => $this->get_footer_text(),
-				'site_title'    => $this->get_blogname(),
-				'course_id'     => $this->object['course'],
-				'login_url'     => learn_press_get_login_url(),
-				'plain_text'    => $format == 'plain'
-			);
 		}
 	}
 }

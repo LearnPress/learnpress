@@ -1395,7 +1395,7 @@
 		var opts = LP_Settings,
 			$publish = $('#publish');
 
-		//$('#publish').val(learn_press_mb_course_localize.save_course);
+		$('#publish').val(learn_press_mb_course_localize.save_course);
 
 		$('#submitpost').css('visibility', 'visible');
 
@@ -1409,7 +1409,7 @@
 				alert('Your course is pending for reviewing');
 				return false;
 			}
-			if (opts.required_review && opts.enable_edit_published && opts.course_status == 'publish') {
+			if (opts.required_review && !opts.enable_edit_published && opts.course_status == 'publish') {
 				if (!confirm('You course will become to Pending')) {
 					return false;
 				}
@@ -1436,21 +1436,6 @@
 			});
 		});
 
-		if (pendingReview) {
-			//$('#publish').prop('disabled', true);
-		}
-
-		/*jQuery('#post').submit(function (e) {
-		 alert();
-		 return false;
-		 var $review = $('textarea[name="review_message"]');
-		 if (!($review.val() + '').length && $('#learn-press-notice-check').is(':checked')) {
-		 alert('Please write your message to the Reviewer');
-		 $review.focus();
-		 return false;
-		 }
-		 });*/
-
 		jQuery('#learn-press-notice-check').change(function () {
 			var checked = this.checked,
 				$review = jQuery('textarea[name="review_message"]').prop('disabled', !checked),
@@ -1462,7 +1447,15 @@
 
 
 		function canSubmit() {
-			return opts.user_type == 'admin' || !opts.required_review || (opts.course_status == 'publish' && opts.enable_edit_published) || (opts.current_user == opts.edited_user && opts.user_type != 'admin' && opts.course_status != 'publish');
+			if((opts.current_user_type == 'admin') || !opts.required_review || (opts.course_status == 'publish' && opts.enable_edit_published)){
+				return true;
+			}
+			if(!opts.pending_review){
+				return true;
+			}
+		//|| (opts.current_user == opts.edited_user && opts.user_type != 'admin'));
+			//(opts.current_user == opts.edited_user && opts.user_type != 'admin' && opts.course_status != 'publish');
+			return false;
 		}
 
 		if (!canSubmit()) {

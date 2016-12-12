@@ -177,6 +177,7 @@ class LP_Install {
 		self::_create_tables();
 		self::_create_cron_jobs();
 		self::create_files();
+		self::create_files();
 		self::create_pages();
 
 		$sql = "DELETE a, b FROM $wpdb->options a, $wpdb->options b
