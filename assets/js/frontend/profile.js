@@ -71,7 +71,11 @@
 				$('#profile-picture-picture .image-editor').hide();
 				$(this).attr('onupload','0');
 			}else{
+				if($('#profile-picture-picture .cropit-image-input').prop('disabled')){
+					$('#profile-picture-picture .cropit-image-input').prop('disabled','');
+				};
 				$('#profile-picture-picture .image-editor').show();
+				
 				$(this).attr('onupload','1');
 			}
 			
@@ -96,17 +100,24 @@
 		$('#profile-picture-picture .export').click(function (event) {
 			event.preventDefault();
 			var imageData = $('.image-editor').cropit( 'export' );
+			jQuery('.cropit-image-input').prop('disabled','disabled');
 			$('#lp-user-profile-picture-data').val( imageData );
 			$('img.avatar').attr( 'src', imageData );
 			$('img.avatar').attr( 'srcset', imageData );
 			$('.profile-avatar-current img').attr( 'src', imageData );
 			$('#profile-picture-picture .image-editor').hide();
+			if(!$('#profile-picture-picture .cropit-image-input').prop('disabled')){
+				$('#profile-picture-picture .cropit-image-input').prop('disabled','disabled');
+			};
 		});
 		
 		$('#profile-picture-picture .cancel').click(function (event) {
 			event.preventDefault();
 			$('#lp-user-profile-picture-data').val( );
 			$('#profile-picture-picture .image-editor').hide();
+			if(!$('#profile-picture-picture .cropit-image-input').prop('disabled')){
+				$('#profile-picture-picture .cropit-image-input').prop('disabled','disabled');
+			};
 		});
 
 
