@@ -3,12 +3,12 @@
  * By: Trent Richardson [http://trentrichardson.com]
  * Version 0.9.7
  * Last Modified: 10/02/2011
- * 
+ *
  * Copyright 2011 Trent Richardson
  * Dual licensed under the MIT and GPL licenses.
  * http://trentrichardson.com/Impromptu/GPL-LICENSE.txt
  * http://trentrichardson.com/Impromptu/MIT-LICENSE.txt
- * 
+ *
  * HERES THE CSS:
  * .ui-timepicker-div .ui-widget-header { margin-bottom: 8px; }
  * .ui-timepicker-div dl { text-align: left; }
@@ -19,6 +19,10 @@
  */
 
 (function (e) {
+    /* Check function jQuery.fn.timepicker exist*/
+    if (e.fn.timepicker != undefined) {
+        return;
+    }
 	function m() {
 		this.regional = [];
 		this.regional[""] = {currentText: "Now", closeText: "Done", ampm: false, amNames: ["AM", "A"], pmNames: ["PM", "P"], timeFormat: "hh:mm tt", timeSuffix: "", timeOnlyTitle: "Choose Time", timeText: "Time", hourText: "Hour", minuteText: "Minute", secondText: "Second", millisecText: "Millisecond", timezoneText: "Time Zone"};

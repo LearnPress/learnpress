@@ -61,7 +61,6 @@ if ( 0 != $post->ID ) {
 					wp_dropdown_users(
 						array(
 							'show_option_none' => __( '[Guest]', 'learnpress' ),
-							'show_option_none' => __( '[Guest]', 'learnpress' ),
 							'name'             => 'order-customer',
 							'id'               => null,
 							'selected'         => $order->get_user( 'ID' )

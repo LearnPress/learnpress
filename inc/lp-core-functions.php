@@ -2179,7 +2179,7 @@ function learn_press_auto_enroll_user_to_courses( $order_id ) {
 		// error. this scripts will create new order each course item
 		// $return = $user->enroll( $course->id, $order_id );
 		$return = learn_press_update_user_item_field( array(
-			'user_id'    => learn_press_get_current_user_id(),
+			'user_id'    => $user->ID,
 			'item_id'    => $course->id,
 			'start_time' => current_time( 'mysql' ),
 			'status'     => 'enrolled',
