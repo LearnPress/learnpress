@@ -166,7 +166,8 @@ function learn_press_get_current_url() {
  * @return bool
  */
 function learn_press_is_current_url( $url ) {
-	return strcmp( learn_press_get_current_url(), learn_press_sanitize_url( $url ) ) == 0;
+	$current_url = learn_press_get_current_url();
+	return ( $current_url && $url ) && strcmp( $current_url, learn_press_sanitize_url( $url ) ) == 0;
 }
 
 /**

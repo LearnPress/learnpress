@@ -23,8 +23,8 @@ if ( !class_exists( 'LP_Email_Published_Course' ) ) {
 			$this->template_html  = 'emails/published-course.php';
 			$this->template_plain = 'emails/plain/published-course.php';
 
-			$this->default_subject                = __( '[{site_title}] Your course {course_name} has been approved', 'learnpress' );
-			$this->default_heading                = __( 'Course approved', 'learnpress' );
+			$this->default_subject = __( '[{{site_title}}] Your course {{course_name}} has been approved', 'learnpress' );
+			$this->default_heading = __( 'Course approved', 'learnpress' );
 
 			$this->support_variables = array(
 				'{{site_url}}',
@@ -56,9 +56,6 @@ if ( !class_exists( 'LP_Email_Published_Course' ) ) {
 		}
 
 		public function trigger( $course_id, $user ) {
-
-
-			print_r($this->enable);die();
 			if ( !$this->enable ) {
 				return;
 			}

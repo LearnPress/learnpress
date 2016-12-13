@@ -120,7 +120,6 @@ class LP_Emails {
 
 	public function course_rejected( $course_id ) {
 		$course_user = learn_press_get_user( get_post_field( 'post_author', $course_id ) );
-
 		if ( !$course_user->is_admin() ) {
 			$mail = $this->emails['LP_Email_Rejected_Course'];
 			$mail->trigger( $course_id );
@@ -129,7 +128,6 @@ class LP_Emails {
 
 	public function course_approved( $course_id, $user ) {
 		$course_user = learn_press_get_user( get_post_field( 'post_author', $course_id ) );
-
 		if ( !$course_user->is_admin() ) {
 			$mail = $this->emails['LP_Email_Published_Course'];
 			$mail->trigger( $course_id, $user );

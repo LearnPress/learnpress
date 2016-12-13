@@ -1387,6 +1387,12 @@
 			});
 	}
 
+	function _translate(key, text_default) {
+		var texts = learn_press_mb_course_localize || {},
+			text = learn_press_mb_course_localize[key] || text_default || '';
+		return text;
+	}
+
 	function _ready() {
 		$('#learn-press-button-toggle-editor').on('click _click', _toggleEditorHandler).trigger('_click');
 
@@ -1407,26 +1413,26 @@
 
 		$('#post').submit(function (e) {
 			if (!canSubmit()) {
-				alert('Your course is pending for reviewing');
+				alert(_translate('user_warning_can_not_submit_course'));
 				return false;
 			}
-			if (opts.required_review && !opts.enable_edit_published && opts.course_status == 'publish') {
-				if (!confirm('You course will become to Pending')) {
+			if (opts.current_user_type != 'admin' && opts.required_review && !opts.enable_edit_published && opts.course_status == 'publish') {
+				if (!confirm(_translate('user_warning_course_publish_to_pending'))) {
 					return false;
 				}
 			}
-			var $review = $('textarea[name="review_message"]', this),
-				status = $('select#post_status', this).val(),
-				current_status = $('#learn-press-course-status').val(),
-				clicked = $(':focus', this).attr('name');
+			/*var $review = $('textarea[name="review_message"]', this),
+			 status = $('select#post_status', this).val(),
+			 current_status = $('#learn-press-course-status').val(),
+			 clicked = $(':focus', this).attr('name');
 
-			if (( ( clicked == 'save' || clicked == 'publish' ) && ( status != current_status ) || ( clicked == 'publish' ) && ( status == 'pending' ) ) && !($review.val() + '').length) {
-				alert('Please write your message to the Instructor');
-				var $check = $('input[name="learn_press_submit_course_notice_instructor"]').prop('checked', true);
-				$check.trigger('change');
-				return false;
-			} else {
-			}
+			 if (( ( clicked == 'save' || clicked == 'publish' ) && ( status != current_status ) || ( clicked == 'publish' ) && ( status == 'pending' ) ) && !($review.val() + '').length) {
+			 alert('Please write your message to the Instructor');
+			 var $check = $('input[name="learn_press_submit_course_notice_instructor"]').prop('checked', true);
+			 $check.trigger('change');
+			 return false;
+			 } else {
+			 }*/
 		});
 		$('#learn-press-notice-check').change(function () {
 			var that = this,
@@ -1448,13 +1454,13 @@
 
 
 		function canSubmit() {
-			if((opts.current_user_type == 'admin') || !opts.required_review || (opts.course_status == 'publish' && opts.enable_edit_published)){
+			if ((opts.current_user_type == 'admin') || !opts.required_review || (opts.course_status == 'publish' && opts.enable_edit_published)) {
 				return true;
 			}
-			if(!opts.pending_review){
+			if (!opts.pending_review) {
 				return true;
 			}
-		//|| (opts.current_user == opts.edited_user && opts.user_type != 'admin'));
+			//|| (opts.current_user == opts.edited_user && opts.user_type != 'admin'));
 			//(opts.current_user == opts.edited_user && opts.user_type != 'admin' && opts.course_status != 'publish');
 			return false;
 		}
@@ -1462,8 +1468,6 @@
 		if (!canSubmit()) {
 			$publish.prop('disabled', true);
 		}
-
-
 
 
 	}

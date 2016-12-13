@@ -184,6 +184,9 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		public function post_actions() {
 			$post_id = learn_press_get_request( 'post_ID' );
 			if ( empty( $post_id ) ) {
+				$post_id = learn_press_get_request( 'post' );
+			}
+			if ( empty( $post_id ) ) {
 				return;
 			}
 			if ( self::$_enable_review ) {
@@ -258,7 +261,9 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			$user = learn_press_get_current_user();
 			LP_Assets::add_localize(
 				array(
-					'notice_remove_section_item' => __( 'Are you sure you want to remove this item?', 'learnpress' ),
+					'notice_remove_section_item'             => __( 'Are you sure you want to remove this item?', 'learnpress' ),
+					'user_warning_course_publish_to_pending' => __( 'You course will become to Pending', 'learnpress' ),
+					'user_warning_can_not_submit_course'     => __( 'Your course is pending for reviewing', 'learnpress' )
 				),
 				null,
 				'learn-press-mb-course'
@@ -1008,7 +1013,6 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						$message = __( 'Course has updated by Reviewer', 'learnpress' );
 					}
 			}
-
 			if ( apply_filters( 'learn_press_review_log_message', $message, $post->ID, $user->id ) ) {
 				$table = $wpdb->prefix . 'learnpress_review_logs';
 				$wpdb->insert(
@@ -1027,7 +1031,6 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			}
 			if ( $action ) {
 				do_action( "learn_press_course_submit_{$action}", $post->ID, $user );
-				LP_Debug::instance()->add( 'do_action:' . "learn_press_course_submit_{$action}" );
 			}
 			return;
 

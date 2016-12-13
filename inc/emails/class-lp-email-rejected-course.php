@@ -53,6 +53,7 @@ if ( !class_exists( 'LP_Email_Rejected_Course' ) ) {
 		}
 
 		public function trigger( $course_id ) {
+
 			if ( !$this->enable ) {
 				return;
 			}

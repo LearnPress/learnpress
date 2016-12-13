@@ -242,7 +242,7 @@ class LP_Email {
 			$this->template_base = LP()->plugin_path( 'templates/' );
 		}
 		if ( $this->is_current() ) {
-			///add_filter( 'learn_press_update_option_value', array( $this, '_remove_email_content_from_option' ), 99, 2 );
+			$this->template_actions();
 			$this->template_actions();
 		}
 
@@ -564,13 +564,6 @@ class LP_Email {
 		$message = apply_filters( 'learn_press_mail_content', $this->apply_style_inline( $message ), $this );
 		$return  = wp_mail( $to, $subject, $message, $headers, $attachments );
 
-		if ( LP()->settings->get( 'debug' ) == 'yes' ) {
-			ob_start();
-			echo get_class( $this ) . '::' . __FUNCTION__ . "\n";
-			print_r( func_get_args() );
-			$log = ob_get_clean();
-			LP_Debug::instance()->add( $log );
-		}
 		remove_filter( 'wp_mail_from', array( $this, 'get_from_address' ) );
 		remove_filter( 'wp_mail_from_name', array( $this, 'get_from_name' ) );
 		remove_filter( 'wp_mail_content_type', array( $this, 'get_content_format' ) );
