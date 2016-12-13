@@ -822,7 +822,7 @@ if ( !function_exists( 'learn_press_course_lesson_class' ) ) {
 			$classes[] = 'viewable';
 		}
 
-        $classes = array_unique( array_merge( $classes, $class ) );
+		$classes = array_unique( array_merge( $classes, $class ) );
 		if ( $echo ) {
 			echo 'class="' . implode( ' ', $classes ) . '"';
 		}
@@ -1384,20 +1384,20 @@ if ( !function_exists( 'learn_press_item_meta_type' ) ) {
 
 		<?php if ( $item->post_type == 'lp_quiz' ) { ?>
 
-			<span class="lp-label lp-label-quiz"><?php _e( 'Quiz', 'learnpress' ); ?></span>
+            <span class="lp-label lp-label-quiz"><?php _e( 'Quiz', 'learnpress' ); ?></span>
 
 			<?php if ( $course->final_quiz == $item->ID ) { ?>
 
-				<span class="lp-label lp-label-final"><?php _e( 'Final', 'learnpress' ); ?></span>
+                <span class="lp-label lp-label-final"><?php _e( 'Final', 'learnpress' ); ?></span>
 
 			<?php } ?>
 
 		<?php } elseif ( $item->post_type == 'lp_lesson' ) { ?>
 
-			<span class="lp-label lp-label-lesson"><?php _e( 'Lesson', 'learnpress' ); ?></span>
+            <span class="lp-label lp-label-lesson"><?php _e( 'Lesson', 'learnpress' ); ?></span>
 			<?php if ( get_post_meta( $item->ID, '_lp_preview', true ) == 'yes' ) { ?>
 
-				<span class="lp-label lp-label-preview"><?php _e( 'Preview', 'learnpress' ); ?></span>
+                <span class="lp-label lp-label-preview"><?php _e( 'Preview', 'learnpress' ); ?></span>
 
 			<?php } ?>
 
@@ -1477,10 +1477,23 @@ if ( !function_exists( '_learn_press_default_course_tabs' ) ) {
 
 		// Curriculum
 		$defaults['curriculum'] = array(
-			'title'    => __( 'Course Curriculum', 'learnpress' ),
+			'title'    => __( 'Curriculum', 'learnpress' ),
 			'priority' => 30,
 			'callback' => 'learn_press_course_curriculum_tab'
 		);
+
+		$hide_students_list = get_post_meta( $course->ID, '_lp_hide_students_list', true );
+
+		if ( $hide_students_list != 'yes' ) {
+			// Students list
+			$defaults['students-list'] = array(
+				'title'    => __( 'Students', 'learnpress' ),
+				'priority' => 40,
+				'callback' => 'learn_press_course_students_list'
+			);
+		}
+
+//		learn_press_course_students_list
 
 		/**
 		 * Active Curriculum tab if user has enrolled course
@@ -1565,7 +1578,6 @@ function learn_press_load_content_item_only( $name ) {
 }
 
 add_action( 'get_header', 'learn_press_load_content_item_only' );
-
 
 
 // Fix issue with course content is duplicated if theme use the_content instead of $course->get_description()
