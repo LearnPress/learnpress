@@ -192,6 +192,11 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.  
 
 == Changelog ==
+= 2.0.7.2 =
++ Added Messaging between admin and instructors for reviewing and submitting course
++ Fixed loop redirect if a page is used for both home page and course page
++ Fixed warning notice while instructor submitting a course
++ Fixed several other bugs
 
 = 2.0.7.1 =
 + Fixed start quiz load infinite

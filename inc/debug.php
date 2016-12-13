@@ -7,5 +7,11 @@ function learn_press_test_cache() {
 	}
 }
 
-//add_action( 'wp_footer', 'learn_press_test_cache' );
+
+add_action( 'wp_footer', function () {
+	echo '1234';
+	$p = get_post_types( );
+	print_r( $p );
+	echo 'xxxxxxxxxx';
+} );
 

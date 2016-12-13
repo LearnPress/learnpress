@@ -1083,14 +1083,17 @@ function learn_press_add_row_action_link( $actions ) {
 		}
 		$actions['lpr-course-row-action'] = $link;
 	} else if ( LP_QUIZ_CPT === $post->post_type ) {
+		unset($actions['view']);
 		$url                              = admin_url( 'edit.php?post_type=' . LP_QUIZ_CPT . '&lp-action=lp-duplicate-quiz&post=' . $post->ID . '&nonce=' . wp_create_nonce( 'lp-duplicate-' . $post->ID ) );
 		$link                             = sprintf( '<a href="%s" class="lp-duplicate-lesson">%s</a>', $url, __( 'Duplicate this quiz', 'learnpress' ) );
 		$actions['lpr-course-row-action'] = $link;
 	} else if ( LP_QUESTION_CPT === $post->post_type ) {
+		unset($actions['view']);
 		$url                              = admin_url( 'edit.php?post_type=' . LP_QUESTION_CPT . '&lp-action=lp-duplicate-question&post=' . $post->ID . '&nonce=' . wp_create_nonce( 'lp-duplicate-' . $post->ID ) );
 		$link                             = sprintf( '<a href="%s" class="lp-duplicate-lesson">%s</a>', $url, __( 'Duplicate this question', 'learnpress' ) );
 		$actions['lpr-course-row-action'] = $link;
 	} else if ( LP_LESSON_CPT === $post->post_type ) {
+		unset($actions['view']);
 		$url                              = admin_url( 'edit.php?post_type=' . LP_LESSON_CPT . '&lp-action=lp-duplicate-lesson&post=' . $post->ID . '&nonce=' . wp_create_nonce( 'lp-duplicate-' . $post->ID ) );
 		$link                             = sprintf( '<a href="%s" class="lp-duplicate-lesson">%s</a>', $url, __( 'Duplicate this lesson', 'learnpress' ) );
 		$actions['lpr-course-row-action'] = $link;
