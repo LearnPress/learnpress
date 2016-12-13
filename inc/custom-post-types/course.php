@@ -417,7 +417,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						'name' => __( 'Duration', 'learnpress' ),
 						'id'   => "{$prefix}duration",
 						'type' => 'duration',
-						'desc' => __( 'The duration of the course (by weeks)', 'learnpress' ),
+						'desc' => __( 'The duration of the course (by weeks).', 'learnpress' ),
 						'std'  => '10 weeks'
 					),
 					array(
@@ -438,14 +438,14 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						'name' => __( 'Re-take course', 'learnpress' ),
 						'id'   => "{$prefix}retake_count",
 						'type' => 'number',
-						'desc' => __( 'How many times the user can re-take this course. Set to 0 to disable', 'learnpress' ),
+						'desc' => __( 'How many times the user can re-take this course. Set to 0 to disable.', 'learnpress' ),
 						'std'  => 0,
 					),
 					array(
 						'name'    => __( 'Featured', 'learnpress' ),
 						'id'      => "{$prefix}featured",
 						'type'    => 'radio',
-						'desc'    => __( 'Set course as featured', 'learnpress' ),
+						'desc'    => __( 'Set course as featured.', 'learnpress' ),
 						'std'     => 'no',
 						'options' => array(
 							'yes' => __( 'Yes', 'learnpress' ),
@@ -494,7 +494,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						'type' => 'number',
 						'min'  => 1,
 						'max'  => 100,
-						'desc' => __( 'The percentage of quiz result or lessons completed to finish the course', 'learnpress' ),
+						'desc' => __( 'The percentage of quiz result or lessons completed to finish the course.', 'learnpress' ),
 						'std'  => 80,
 					)
 				)
@@ -626,7 +626,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						'name'    => __( 'Requires enroll', 'learnpress' ),
 						'id'      => "{$prefix}required_enroll",
 						'type'    => 'radio',
-						'desc'    => __( 'Require users logged in to study or public to all', 'learnpress' ),
+						'desc'    => __( 'Require users logged in to study or public to all.', 'learnpress' ),
 						'options' => array(
 							'yes' => __( 'Yes, enroll is required', 'learnpress' ),
 							'no'  => __( 'No', 'learnpress' ),
