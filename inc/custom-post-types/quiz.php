@@ -160,19 +160,19 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 								),
 								'std'     => 'global'
 							),
-							array(
-								'name'         => __( 'Duration Type', 'learnpress' ),
-								'desc'         => __( 'Duration of the quiz. Set 0 to disable.', 'learnpress' ),
-								'id'           => "{$prefix}duration_type",
-								'class'		   => 'lp_input_duration_type',
-								'type'         => 'radio',//'number',
-								'std'          => 10,
-								'options' => array(
-									'none' => __('None', 'learnpress'),
-									'quiz_duration' => __("Quiz duration", 'learnpress'),
-									'questions_duration' => __("Questions duration ", 'learnpress'),
-								),
-							),
+//							array(
+//								'name'         => __( 'Duration Type', 'learnpress' ),
+//								'desc'         => __( 'Duration of the quiz. Set 0 to disable.', 'learnpress' ),
+//								'id'           => "{$prefix}duration_type",
+//								'class'		   => 'lp_input_duration_type',
+//								'type'         => 'radio',//'number',
+//								'std'          => 10,
+//								'options' => array(
+//									'none' => __('None', 'learnpress'),
+//									'quiz_duration' => __("Quiz duration", 'learnpress'),
+//									'questions_duration' => __("Questions duration ", 'learnpress'),
+//								),
+//							),
 							array(
 								'name'         => __( 'Duration', 'learnpress' ),
 								'desc'         => __( 'Duration of the quiz. Set 0 to disable.', 'learnpress' ),
@@ -181,9 +181,9 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 								'default_time' => 'minute',
 								'min'          => 0,
 								'std'          => 10,
-								'visible' => array("{$prefix}duration_type", 'quiz_duration'),
-								'hidden' => array("{$prefix}duration_type", '!=', 'quiz_duration'),
-								'class' => "{$prefix}duration_type {$prefix}duration_type_quiz_duration".('quiz_duration'!==$duration_type?' hide':''),
+//								'visible' => array("{$prefix}duration_type", 'quiz_duration'),
+//								'hidden' => array("{$prefix}duration_type", '!=', 'quiz_duration'),
+//								'class' => "{$prefix}duration_type {$prefix}duration_type_quiz_duration".('quiz_duration'!==$duration_type?' hide':''),
 							),
 							array(
 								'name'    => __( 'Passing Grade Type', 'learnpress' ),
