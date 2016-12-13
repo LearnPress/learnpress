@@ -219,6 +219,7 @@ class LP_Assets {
 		$scripts->add( 'learn-press-become-teacher', $default_path . 'js/frontend/become-teacher' . $suffix . '.js', $deps, false, 1 );
 		$scripts->add( 'learn-press-profile', $default_path . 'js/frontend/profile' . $suffix . '.js', $deps, false, 1 );
 		$scripts->add( 'learn-press-jquery-cropit', $default_path . 'js/jquery.cropit' . $suffix . '.js', $deps, false, 1 );
+		$scripts->add( 'learn-press-jquery-ocupload', $default_path . 'js/jquery.ocupload' . $suffix . '.js', $deps, false, 1 );
 
 		// admin
 		$scripts->add( 'learn-press-admin', $default_path . 'js/admin/admin' . $suffix . '.js', $deps, false, 1 );
@@ -794,6 +795,7 @@ class LP_Assets {
 		if ( learn_press_is_profile() ) {
 			self::enqueue_script( 'learn-press-profile' );
 			self::enqueue_script( 'learn-press-jquery-cropit' );
+			self::enqueue_script( 'learn-press-jquery-ocupload' );
 		}
 		do_action( 'learn_press_load_scripts' );
 	}

@@ -527,13 +527,131 @@ add_action( 'init', 'learn_press_user_update_user_info' );
 
 function learn_press_user_update_user_info() {
 	global $wp, $wpdb;
+	$user    = learn_press_get_current_user();
+	$user_id = learn_press_get_current_user_id();
+	if(!$user_id){
+		return;
+	}
 	if ( is_admin() ) {
 		return;
 	}
 	if ( !empty( $_POST ) && isset( $_POST['from'] ) && isset( $_POST['action'] ) && $_POST['from'] == 'profile' && $_POST['action'] == 'update' ) {
-		$user    = learn_press_get_current_user();
-		$user_id = learn_press_get_current_user_id();
-//		$user_info = get_userdata( $user->id );
+		# CREATE SOME DIRECTORY
+		$upload = wp_get_upload_dir();
+		$ppdir  = $upload['basedir'] . DIRECTORY_SEPARATOR . 'learn-press-profile';
+		if ( !is_dir( $ppdir ) ) {
+			mkdir( $ppdir );
+		}
+		$upload_dir = $ppdir . DIRECTORY_SEPARATOR . $user_id;
+		if ( !is_dir( $upload_dir ) ) {
+			mkdir( $upload_dir );
+		}
+		$upload_dir_tmp = $upload_dir . DIRECTORY_SEPARATOR . 'tmp';
+		if ( !is_dir( $upload_dir_tmp ) ) {
+			mkdir( $upload_dir_tmp );
+		}
+		$lp_profile_url = $upload['baseurl'].'/learn-press-profile/' . $user_id.'/';
+		#
+		# UPLOAD TEMP FILE
+		#
+		if( isset($_POST['sub_action']) && 'upload_avatar' === $_POST['sub_action'] && isset( $_FILES['image'] ) ){
+			$image_name = $_FILES['image']['name'];
+			$image_tmp = $_FILES['image']['tmp_name'];
+			$image_size = intval($_FILES['image']['size']);
+			$image_type = strtolower($_FILES['image']['type']);
+			$filename = strtolower( pathinfo( $image_name, PATHINFO_FILENAME ) );
+			$file_ext = strtolower( pathinfo( $image_name, PATHINFO_EXTENSION ) );
+
+			if((!empty($_FILES["image"])) && ($_FILES['image']['error'] == 0)) {
+				$allowed_image_types = array('image/pjpeg' => "jpg", 'image/jpeg' => "jpg", 'image/jpg' => "jpg", 'image/png' => "png", 'image/x-png' => "png", 'image/gif' => "gif");
+				$mine_types = array_keys( $allowed_image_types );
+				$image_exts = array_values( $allowed_image_types );
+				if ( !in_array( $image_type, $mine_types ) ) {
+					$return = array(
+						'return' => false,
+						'message' => __( 'Only', 'learnpress' ) . ' <strong>' . implode( ',', $image_exts ) . '</strong> ' . __( 'images accepted for upload', 'learnpress' )
+					);
+					learn_press_send_json( $return );
+				}
+				if ( $image_size > 3*1048576 ) {
+					$return = array(
+						'return' => false,
+						'message' => __( 'Images must be under 1MB in size', 'learnpress' )
+					);
+					learn_press_send_json( $return );
+				}
+			}else{
+				$return = array(
+					'return' => false,
+					'message' => __( 'Please select an image for upload', 'learnpress' )
+				);
+				learn_press_send_json( $return );
+			}
+
+			if (isset($_FILES['image']['name'])){
+				// upload picture to tmp folder
+				
+				$path_image_tmp = $upload_dir_tmp.DIRECTORY_SEPARATOR.$filename.'.'.$file_ext;
+				if(  file_exists( $path_image_tmp ) ){
+					$filename .= '1';
+					$path_image_tmp = $upload_dir_tmp.DIRECTORY_SEPARATOR.$filename.'.'.$file_ext;
+				}
+				$uploaded = move_uploaded_file($image_tmp, $path_image_tmp);
+				chmod($path_image_tmp, 0777);
+				$message = $uploaded ? __('Image is uploaded success','learnpress'):__('Error on upload image','learnpress');
+				$return = array(
+					'return' => $uploaded,
+					'message' => $message
+				);
+				if( $uploaded ) {
+					$return['avatar_tmp'] = $lp_profile_url. 'tmp/'.$filename.'.'.$file_ext;
+					$return['avatar_tmp_filename'] = $filename.'.'.$file_ext;
+				}
+				learn_press_send_json( $return );
+			}
+			exit();
+		}
+		# END OF UPLOAD TEMP PROFILE PICTURE
+		
+		#
+		# CROP THUMBNAIL
+		#
+		if( isset($_POST['sub_action']) && 'crop_avatar' === $_POST['sub_action'] && isset( $_POST['avatar_filename'] ) ){
+			$avatar_filename = filter_input(INPUT_POST, 'avatar_filename',FILTER_SANITIZE_STRING);
+			$editor = wp_get_image_editor( $upload_dir_tmp.DIRECTORY_SEPARATOR.$avatar_filename );
+			if ( is_wp_error( $editor ) ) {
+				learn_press_add_message( __( 'Thumbnail of image profile not created', 'learnpress' ) );
+			} else {
+				#calculator new width height
+				$size_current = $editor->get_size();
+				$zoom = floatval($_POST['zoom']);
+				$offset = $_POST['offset'];
+				$size_new = array(
+					'width'		=> $size_current['width'] * $zoom, 
+					'height'	=> $size_current['height'] * $zoom
+				);
+				$editor->resize( $size_new['width'], $size_new['height'], true );
+				$offset_x = max(intval($offset['x']),-intval($offset['x']) );
+				$offset_y = max(intval($offset['y']),-intval($offset['y']) );
+				$editor->crop( $offset_x, $offset_y, 248, 248 );
+				$saved = $editor->save( $upload_dir.DIRECTORY_SEPARATOR.$avatar_filename );
+				$res = array();
+				if ( is_wp_error( $saved ) ) {
+					$res['return']	=false;
+					$res['message'] =__( 'Error on crop user picture profile ', 'learnpress' );
+					$res['avatar_filename'] ='';
+					$res['avatar_url']		='';
+				} else {
+					$res['return']	= true;
+					$res['message'] = __( 'Create user picture profile success', 'learnpress' );
+					$res['avatar_filename']	= $avatar_filename;
+					$res['avatar_url']		= $lp_profile_url.$avatar_filename;
+				}
+				learn_press_send_json($res);
+			}
+			exit();
+		}
+		# END OF CROP THUMBNAIL
 
 		$update_data = array(
 			'ID'           => $user_id,
@@ -579,40 +697,15 @@ function learn_press_user_update_user_info() {
 			}
 		}
 
-
 		// upload profile picture
 		$profile_picture_type = filter_input( INPUT_POST, 'profile_picture_type', FILTER_SANITIZE_STRING );
 
-
 		if ( $profile_picture_type == 'picture' && isset( $_POST['profile_picture_data'] ) && $_POST['profile_picture_data'] != "" ) {
 
-			$upload = wp_get_upload_dir();
-			$ppdir  = $upload['basedir'] . DIRECTORY_SEPARATOR . 'learn-press-profile';
-			if ( !is_dir( $ppdir ) ) {
-				mkdir( $ppdir );
-			}
-			$upload_dir = $ppdir . DIRECTORY_SEPARATOR . $user_id;
-			if ( !is_dir( $upload_dir ) ) {
-				mkdir( $upload_dir );
-			}
-			# get old file
-			$filename_old = get_user_meta( $user_id, '_lp_profile_picture', true );
-
-
-			$pathinfo_old = pathinfo( $filename_old );
-			$thumb_old    = $upload_dir . DIRECTORY_SEPARATOR . $pathinfo_old['filename'] . '-thumb.' . $pathinfo_old['extension'];
-
-			$data   = explode( ',', $_POST['profile_picture_data'] );
-			$result = array();
-			preg_match( "/\/([^;]*)/", $data[0], $result );
-			$imgtype  = isset( $result[1] ) ? $result[1] : 'png';
-			$filename = 'avatar_' . $user_id . '.' . $imgtype;
-			if ( $filename_old == $filename ) {
-				$filename = 'avatar_' . $user_id . '_1.' . $imgtype;
-			}
-
-			if ( file_put_contents( $upload_dir . '/' . $filename, base64_decode( $data[1] ) ) ) {
-				$editor = wp_get_image_editor( $upload_dir . '/' . $filename );
+			$filename = filter_input(INPUT_POST,'profile_picture_data', FILTER_SANITIZE_STRING);
+			$avatar_file_path = $upload_dir.DIRECTORY_SEPARATOR.$filename;
+			if ( file_exists( $avatar_file_path ) ) {
+				$editor = wp_get_image_editor( $avatar_file_path );
 
 				if ( is_wp_error( $editor ) ) {
 					learn_press_add_message( __( 'Thumbnail of image profile not created', 'learnpress' ) );
@@ -639,14 +732,6 @@ function learn_press_user_update_user_info() {
 								learn_press_add_message( __( 'Thumbnail of image profile not created', 'learnpress' ) );
 							}
 						}
-					}
-
-					// remove old file
-					if ( is_file( $upload_dir . DIRECTORY_SEPARATOR . $filename_old ) ) {
-						unlink( $upload_dir . DIRECTORY_SEPARATOR . $filename_old );
-					}
-					if ( is_file( $thumb_old ) ) {
-						unlink( $thumb_old );
 					}
 				}
 				update_user_meta( $user->id, '_lp_profile_picture', $filename );

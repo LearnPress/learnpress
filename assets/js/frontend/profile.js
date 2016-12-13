@@ -75,18 +75,26 @@
 					$('#profile-picture-picture .cropit-image-input').prop('disabled','');
 				};
 				$('#profile-picture-picture .image-editor').show();
-				
+				$('#lp-button-choose-file').upload(
+					{
+						'name':'image',
+						params:{from:'profile','action':'update','sub_action':'upload_avatar'},
+						'onComplete':function(response){
+							response = LP.parseJSON(response);
+							console.log(response);
+							if(response.return && response.avatar_tmp ) {
+								/* Load Image in to crop */
+								$('.image-editor').cropit('imageSrc',response.avatar_tmp);
+								$('.image-editor').attr('avatar-filename',response.avatar_tmp_filename);
+							}
+						}
+					}
+				);
 				$(this).attr('onupload','1');
 			}
-			
 		});
 
-		$('#profile-picture-picture .image-editor').cropit({
-			imageState: {
-				src: 'http://lorempixel.com/500/400/',
-			},
-		});
-
+		$('#profile-picture-picture .image-editor').cropit();
 		$('#profile-picture-picture .rotate-cw').click(function (event) {
 			event.preventDefault();
 			$('.image-editor').cropit('rotateCW');
@@ -99,25 +107,42 @@
 
 		$('#profile-picture-picture .export').click(function (event) {
 			event.preventDefault();
-			var imageData = $('.image-editor').cropit( 'export' );
-			jQuery('.cropit-image-input').prop('disabled','disabled');
-			$('#lp-user-profile-picture-data').val( imageData );
-			$('img.avatar').attr( 'src', imageData );
-			$('img.avatar').attr( 'srcset', imageData );
-			$('.profile-avatar-current img').attr( 'src', imageData );
-			$('#profile-picture-picture .image-editor').hide();
-			if(!$('#profile-picture-picture .cropit-image-input').prop('disabled')){
-				$('#profile-picture-picture .cropit-image-input').prop('disabled','disabled');
+			var zoom			= $('.image-editor').cropit('zoom');
+			var offset			= $('.image-editor').cropit('offset');
+			var avatar_filename = $('.image-editor').attr('avatar-filename');
+			var datas = {
+				from:'profile',
+				'action':'update',
+				'sub_action':'crop_avatar',
+				'avatar_filename':avatar_filename,
+				'zoom':zoom, 
+				'offset':offset
 			};
+			
+			/** Crop avatar and create avatar thumbnail **/
+			$.ajax({
+					url     : LP.getUrl(),
+					dataType: 'html',
+					data    : datas,
+					type    : 'post',
+					success : function (response) {
+						response = LP.parseJSON(response);
+						var avatar_filename = response.avatar_filename;
+						var avatar_url = response.avatar_url;
+						$('#lp-user-profile-picture-data').val( avatar_filename );
+						$('img.avatar').attr( 'src', avatar_url );
+						$('img.avatar').attr( 'srcset', avatar_url );
+						$('.profile-avatar-current img').attr( 'src', avatar_url );
+						$('#profile-picture-picture .image-editor').hide();
+					}
+				});
+				return;
 		});
 		
 		$('#profile-picture-picture .cancel').click(function (event) {
 			event.preventDefault();
 			$('#lp-user-profile-picture-data').val( );
 			$('#profile-picture-picture .image-editor').hide();
-			if(!$('#profile-picture-picture .cropit-image-input').prop('disabled')){
-				$('#profile-picture-picture .cropit-image-input').prop('disabled','disabled');
-			};
 		});
 
 

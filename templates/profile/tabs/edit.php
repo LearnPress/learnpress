@@ -48,12 +48,13 @@ if ( $user ) :
 							<a href="https://en.gravatar.com/"><?php _e( 'Gravatar', 'learnpress' ); ?></a>.</p>
 					</div>
 					<div id="profile-picture-picture" class="<?php echo $profile_picture_type == 'gravatar' ? 'hide-if-js' : ''; ?>">
-						<!--<input type="file" name="profile_picture" />-->
 						<input type="hidden" id="lp-user-profile-picture-data" name="profile_picture_data" />
 						<a href="javascript:void(0);" class="button-primary change-profile-picutre-text" onupload="0"><?php _e('Change Profile Picture', 'learnpress');?></a>
                         <p class="description"><?php _e('Please use an image that\'s at least 250px in width and 250px in height.', 'learnpress'); ?></p>
+						
 						<div class="image-editor" style="display:none;">
-							<input type="file" class="cropit-image-input" name="profile_picture">
+							<a href="#" id="lp-button-choose-file"><span class="dashicons dashicons-format-image"></span><?php _e( 'Choose File', 'learnpress' );?></a>
+<!--							<input type="file" class="cropit-image-input" name="profile_picture">-->
 							<div class="cropit-preview"></div>
 							<div class="image-size-label">
 								<?php _e( 'Resize image', 'learnpress' );?>
@@ -63,7 +64,7 @@ if ( $user ) :
 								<span class="rotate-ccw dashicons dashicons-image-rotate-left"></span>
 								<span class="rotate-cw dashicons dashicons-image-rotate-right"></span>
 							</div>
-								<button class="export button-primary" href="#"><span class="dashicons dashicons-yes"></span><?php _e( 'Done', 'learnpress' );?></button>
+								<button class="export button-primary" href="#"><span class="dashicons dashicons-yes"></span>&nbsp;<?php _e( 'Done', 'learnpress' );?></button>
 								<button class="cancel" href="#"><span class="dashicons dashicons-no"></span><?php _e( 'Cancel', 'learnpress' );?></button>
 						</div>
 					</div>
