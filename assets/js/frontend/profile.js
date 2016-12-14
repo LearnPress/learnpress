@@ -63,6 +63,7 @@
 				$el.find('input').attr('disabled', !$el.is(':visible'));
 			});
 		});
+
 		$('#learn-press-form-login input[type="text"]').focus();
 
 		$('#profile-picture-picture a.change-profile-picutre-text').click( function( event ){
