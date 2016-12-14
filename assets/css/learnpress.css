@@ -1990,10 +1990,31 @@ body.block-content #learn-press-block-content {
 #popup_container #popup_panel {
   text-align: center;
 }
-.single-lp_course .course-students {
+.single-lp_course .course-summary .course-students {
   padding-top: 10px;
 }
-.single-lp_course .lp_course .entry-footer {
+.single-lp_course .course-summary .course-students-list .students {
+  clear: both;
+}
+.single-lp_course .course-summary .course-students-list .students .user-info {
+  margin-bottom: 10px;
+}
+.single-lp_course .course-summary .course-students-list .students li {
+  display: block;
+  width: 45%;
+  float: left;
+  margin-right: 10px;
+}
+.single-lp_course .course-summary .course-students-list .students li .course-progress {
+  width: 100%;
+}
+.single-lp_course .course-summary .course-students-list .students li .course-progress .lp-course-progress {
+  margin-top: -5px;
+}
+.single-lp_course .course-summary .course-students-list p {
+  clear: both;
+}
+.single-lp_course .course-summary .lp_course .entry-footer {
   display: none;
 }
 .course-students-list {

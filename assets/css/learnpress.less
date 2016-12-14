@@ -1531,15 +1531,37 @@ body.block-content {
 }
 
 .single-lp_course {
-    .course-students {
-        padding-top: 10px;
-    }
-    .lp_course {
-        .entry-content {
-            //width: 100%;
+    .course-summary {
+        .course-students {
+            padding-top: 10px;
         }
-        .entry-footer {
-            display: none;
+        .course-students-list {
+            .students {
+                clear: both;
+                .user-info {
+                    margin-bottom: 10px;
+                }
+                li {
+                    display: block;
+                    width: 45%;
+                    float: left;
+                    margin-right: 10px;
+                    .course-progress {
+                        width: 100%;
+                        .lp-course-progress {
+                            margin-top: -5px;
+                        }
+                    }
+                }
+            }
+            p {
+                clear: both;
+            }
+        }
+        .lp_course {
+            .entry-footer {
+                display: none;
+            }
         }
     }
 }
