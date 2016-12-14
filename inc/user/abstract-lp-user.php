@@ -2797,18 +2797,18 @@ class LP_Abstract_User {
 	 *
 	 * @return false|string
 	 */
-	public function get_profile_picture( $type = '', $size = 96 ) {
+	public function get_profile_picture( $type = '', $size =96 ) {
 		if ( empty( $type ) ) {
 			$type = $this->profile_picture_type;
 		}
 		if ( $type == 'picture' ) {
 			if ( $profile_picture_src = $this->get_upload_profile_src( $size ) ) {
 				$this->profile_picture_src = $profile_picture_src;
-//				add_filter( 'get_avatar_url', array( $this, 'get_avatar_url' ), 10, 3 );
 			}
+			$avatar = get_avatar( $this->id, $size );
+		} else{
+			$avatar = get_avatar( $this->id, $size, '', '', array('gravatar'=>true) );
 		}
-		$avatar = get_avatar( $this->id, $size );
-		remove_filter( 'get_avatar_url', array( $this, 'get_avatar_url' ), 10 );
 		return $avatar;
 	}
 
@@ -2820,14 +2820,12 @@ class LP_Abstract_User {
 		if ( $profile_picture_type == 'picture' ) {
 			if ( $profile_picture_src = $this->get_upload_profile_src() ) {
 				$this->profile_picture_src = $profile_picture_src;
-//				add_filter( 'get_avatar_url', array( $this, 'get_avatar_url' ), 10, 3 );
 			}
 		} else {
 			$avatar_data               = get_avatar_data( $this->id );
 			$this->profile_picture_src = $avatar_data['url'];
 		}
-		var_dump($this->profile_picture_src);
-		exit();
+
 		return $this->profile_picture_src;
 	}
 

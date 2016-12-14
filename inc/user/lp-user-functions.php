@@ -706,7 +706,7 @@ function learn_press_user_update_user_info() {
 					if ( is_wp_error( $editor ) ) {
 						learn_press_add_message( __( 'Thumbnail of image profile not created', 'learnpress' ) );
 					} else {
-						$editor->set_quality( 90 );
+						$editor->set_quality(90);
 						$lp         = LP();
 						$lp_setting = $lp->settings;
 						$size       = $lp_setting->get( 'profile_picture_thumbnail_size' );
@@ -756,7 +756,10 @@ if(  !function_exists( 'learn_press_pre_get_avatar_callback' ) ){
 	 *
 	 * @return string|void
 	 */
-	function learn_press_pre_get_avatar_callback( $avatar, $id_or_email = '', $size = array(), $default = '', $alt = '' ) {
+	function learn_press_pre_get_avatar_callback( $avatar, $id_or_email = '', $size ) {
+		if ( (isset( $size['gravatar'] ) && $size['gravatar']) || ($size['default'] && $size['force_default']) ) {
+			return;
+		}
 		$user_id = 0;
 		if ( !is_numeric( $id_or_email ) && is_string( $id_or_email ) ) {
 			if ( $user = get_user_by( 'email', $id_or_email ) ) {
@@ -770,7 +773,9 @@ if(  !function_exists( 'learn_press_pre_get_avatar_callback' ) ){
 		$profile_picture_type = get_user_meta( $user_id, '_lp_profile_picture_type', true );
 		$upload = wp_get_upload_dir();
 		$profile_picture = get_user_meta( $user_id, '_lp_profile_picture', true );
-		
+		if ( !$profile_picture ) {
+			return;
+		}
 		$user_profile_picture_dir = $upload['basedir'] . DIRECTORY_SEPARATOR. 'learn-press-profile' . DIRECTORY_SEPARATOR . $user_id . DIRECTORY_SEPARATOR;
 		$user_profile_picture_url = $upload['baseurl'] . '/learn-press-profile/' . $user_id . '/';
 		
