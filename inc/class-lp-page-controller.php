@@ -108,7 +108,6 @@ class LP_Page_Controller {
 					global $post;
 					setup_postdata( $post );
 					$this->_origin_post = $post;
-					$post->post_content = $this->single_content( null );
 					add_filter( 'the_content', array( $this, 'single_content' ), $this->_filter_content_priority );
 					$this->has_filter_content = true;
 				}
