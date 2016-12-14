@@ -87,6 +87,11 @@
 								/* Load Image in to crop */
 								$('.image-editor').cropit('imageSrc',response.avatar_tmp);
 								$('.image-editor').attr('avatar-filename',response.avatar_tmp_filename);
+								LP.alert(response.message);
+							} else if (!response.return){
+								$('.image-editor').cropit('imageSrc','');
+								$('.image-editor').attr('avatar-filename','');
+								LP.alert(response.message);
 							}
 						}
 					}

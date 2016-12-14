@@ -566,6 +566,7 @@ function learn_press_user_update_user_info() {
 				$allowed_image_types = array('image/pjpeg' => "jpg", 'image/jpeg' => "jpg", 'image/jpg' => "jpg", 'image/png' => "png", 'image/x-png' => "png", 'image/gif' => "gif");
 				$mine_types = array_keys( $allowed_image_types );
 				$image_exts = array_values( $allowed_image_types );
+				$image_size_limit = 2;
 				if ( !in_array( $image_type, $mine_types ) ) {
 					$return = array(
 						'return' => false,
@@ -573,10 +574,10 @@ function learn_press_user_update_user_info() {
 					);
 					learn_press_send_json( $return );
 				}
-				if ( $image_size > 3*1048576 ) {
+				if ( $image_size > $image_size_limit*1048576 ) {
 					$return = array(
 						'return' => false,
-						'message' => __( 'Images must be under 1MB in size', 'learnpress' )
+						'message' => __( 'Images must be under', 'learnpress').' '.$image_size_limit.__('MB in size', 'learnpress' )
 					);
 					learn_press_send_json( $return );
 				}
@@ -652,7 +653,6 @@ function learn_press_user_update_user_info() {
 			exit();
 		}
 		# END OF CROP PROFILE PICUTRE
-
 		$update_data = array(
 			'ID'           => $user_id,
 //			'user_url'     => filter_input( INPUT_POST, 'url', FILTER_SANITIZE_URL ),
@@ -663,7 +663,6 @@ function learn_press_user_update_user_info() {
 			'nickname'     => filter_input( INPUT_POST, 'nickname', FILTER_SANITIZE_STRING ),
 			'description'  => filter_input( INPUT_POST, 'description', FILTER_SANITIZE_STRING ),
 		);
-
 		# check and update pass word
 		if ( !empty( $_POST['pass0'] ) && !empty( $_POST['pass1'] ) && !empty( $_POST['pass1'] ) ) {
 			// check old pass
@@ -679,7 +678,6 @@ function learn_press_user_update_user_info() {
 					$check_old_pass = true;
 				}
 			}
-
 			if ( !$check_old_pass ) {
 				learn_press_add_message( __( 'Old password incorrect!', 'learnpress' ) );
 				return;
@@ -687,7 +685,6 @@ function learn_press_user_update_user_info() {
 				// check new pass
 				$new_pass  = filter_input( INPUT_POST, 'pass1' );
 				$new_pass2 = filter_input( INPUT_POST, 'pass2' );
-
 				if ( $new_pass != $new_pass2 ) {
 					learn_press_add_message( __( 'Retype new password incorrect!', 'learnpress' ) );
 					return;
@@ -696,27 +693,16 @@ function learn_press_user_update_user_info() {
 				}
 			}
 		}
-
 		// upload profile picture
 		$profile_picture_type = filter_input( INPUT_POST, 'profile_picture_type', FILTER_SANITIZE_STRING );
-		
 		if ( $profile_picture_type == 'picture' && isset( $_POST['profile_picture_data'] ) && $_POST['profile_picture_data'] != "" ) {
 			$filename = filter_input(INPUT_POST,'profile_picture_data', FILTER_SANITIZE_STRING);
 			$avatar_file_path = $upload_dir.DIRECTORY_SEPARATOR.$filename;
 			if ( file_exists( $avatar_file_path ) ) {
 				update_user_meta( $user->id, '_lp_profile_picture', $filename );
-				
 				# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 				#	START:	Create Thumbnai for Profile Picture
-				#
 					$editor = wp_get_image_editor( $avatar_file_path );
-//					echo '<hr/>';
-//					var_dump( $avatar_file_path );
-//					echo '<hr/>';
-//					var_dump( $editor );
-//					echo '<hr/>';
-//					exit('' . __LINE__ );
-					
 					if ( is_wp_error( $editor ) ) {
 						learn_press_add_message( __( 'Thumbnail of image profile not created', 'learnpress' ) );
 					} else {
@@ -725,11 +711,11 @@ function learn_press_user_update_user_info() {
 						$lp_setting = $lp->settings;
 						$size       = $lp_setting->get( 'profile_picture_thumbnail_size' );
 						if ( empty( $size ) ) {
-							$size = array( 150, 150, 'yes' );
+							$size = array( 'width'=>150, 'height'=>150, 'crop'=>'yes' );
 						}
-						if ( isset($size[2]) && $size[2] == 'yes' ) {
-							$size_width 	= $size[0];
-							$size_height 	= $size[1];
+						if ( isset($size['crop']) && $size['crop'] == 'yes' ) {
+							$size_width 	= $size['width'];
+							$size_height 	= $size['height'];
 							$resized 		= $editor->resize( $size_width, $size_height, true );
 							if ( is_wp_error( $resized ) ) {
 								learn_press_add_message( __( 'Thumbnail of image profile not created', 'learnpress' ) );
@@ -742,7 +728,6 @@ function learn_press_user_update_user_info() {
 							}
 						}
 					}
-				#
 				#	END:	Create Thumbnai for Profile Picture
 				# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 			}
