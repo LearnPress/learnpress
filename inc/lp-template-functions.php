@@ -566,7 +566,7 @@ if ( !function_exists( 'learn_press_profile_tab_courses_learning' ) ) {
 	 *
 	 * @param LP_User
 	 */
-	function learn_press_profile_tab_courses_learning( $user, $tab ) {
+	function learn_press_profile_tab_courses_learning( $user, $tab = null ) {
 		$args              = array(
 			'user'   => $user,
 			'subtab' => $tab
@@ -587,7 +587,7 @@ if ( !function_exists( 'learn_press_profile_tab_courses_purchased' ) ) {
 	 *
 	 * @param LP_User
 	 */
-	function learn_press_profile_tab_courses_purchased( $user, $tab ) {
+	function learn_press_profile_tab_courses_purchased( $user, $tab = null ) {
 		$args              = array(
 			'user'   => $user,
 			'subtab' => $tab
@@ -608,7 +608,7 @@ if ( !function_exists( 'learn_press_profile_tab_courses_finished' ) ) {
 	 *
 	 * @param LP_User
 	 */
-	function learn_press_profile_tab_courses_finished( $user, $tab ) {
+	function learn_press_profile_tab_courses_finished( $user, $tab = null ) {
 		$args              = array(
 			'user'   => $user,
 			'subtab' => $tab
@@ -629,7 +629,7 @@ if ( !function_exists( 'learn_press_profile_tab_courses_own' ) ) {
 	 *
 	 * @param LP_User
 	 */
-	function learn_press_profile_tab_courses_own( $user, $tab ) {
+	function learn_press_profile_tab_courses_own( $user, $tab = null ) {
 		$args              = array(
 			'user'   => $user,
 			'subtab' => $tab
