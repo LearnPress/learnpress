@@ -1993,23 +1993,23 @@ body.block-content #learn-press-block-content {
 .single-lp_course .course-students {
   padding-top: 10px;
 }
-.single-lp_course .course-students-list {
+.single-lp_course .lp_course .entry-footer {
+  display: none;
+}
+.course-students-list {
   margin-top: 10px;
   margin-bottom: 15px;
 }
-.single-lp_course .course-students-list .students {
+.course-students-list .students {
   list-style-type: none;
   margin: 0;
 }
-.single-lp_course .course-students-list .students li {
+.course-students-list .students li {
   display: inline-block;
   margin-right: 10px;
 }
-.single-lp_course .course-students-list .students p {
+.course-students-list .students p {
   margin-top: 15px;
-}
-.single-lp_course .lp_course .entry-footer {
-  display: none;
 }
 /* tooltip */
 .learn-press-tooltip-bubble {
