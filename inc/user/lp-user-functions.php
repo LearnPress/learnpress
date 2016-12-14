@@ -772,7 +772,6 @@ if(  !function_exists( 'learn_press_pre_get_avatar_callback' ) ){
 	 * @return string|void
 	 */
 	function learn_press_pre_get_avatar_callback( $avatar, $id_or_email = '', $size = array(), $default = '', $alt = '' ) {
-		var_dump($id_or_email);
 		$user_id = 0;
 		if ( !is_numeric( $id_or_email ) && is_string( $id_or_email ) ) {
 			if ( $user = get_user_by( 'email', $id_or_email ) ) {
