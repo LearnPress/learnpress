@@ -1935,10 +1935,7 @@ body.block-content #learn-press-block-content {
 .learn-press-user-profile .image-size-label {
   margin-top: 10px;
 }
-.learn-press-user-profile input,
-.learn-press-user-profile .export {
-  display: block;
-}
+
 .learn-press-user-profile button {
   margin: 0 auto 10px auto;
 }
