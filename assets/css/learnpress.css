@@ -1935,7 +1935,10 @@ body.block-content #learn-press-block-content {
 .learn-press-user-profile .image-size-label {
   margin-top: 10px;
 }
-
+.learn-press-user-profile input,
+.learn-press-user-profile .export {
+  display: block;
+}
 .learn-press-user-profile button {
   margin: 0 auto 10px auto;
 }
@@ -1997,10 +2000,12 @@ body.block-content #learn-press-block-content {
   margin-bottom: 10px;
 }
 .single-lp_course .course-summary .course-students-list .students li {
+  margin-right: 10px;
+}
+.single-lp_course .course-summary .course-students-list .students li.user-login {
   display: block;
   width: 45%;
   float: left;
-  margin-right: 10px;
 }
 .single-lp_course .course-summary .course-students-list .students li .course-progress {
   width: 100%;
@@ -2399,95 +2404,4 @@ body.content-item-only #learn-press-content-item.expand {
   .payment-method-form.payment_method_authorizenet .row-fluid .span6 #learn-press-authorizenet-payment-expmonth {
     margin-bottom: 10px;
   }
-}
-
-/**  STYLE PROFILE **/
-/** dropdown box **/
-.lpbtns-change-picture {
-	display: none;
-	position: absolute;
-	background: greenyellow;
-	border: solid 1px black;
-	list-style: none;
-	margin: 0;
-	padding: 0;
-}
-
-.lpbtns-change-picture li {
-	border: solid 1px black;
-	padding: 10px;
-}
-
-.lp_radio_profile_picture_type {
-	display: none;
-}
-
-/** upload-crop box **/
-
-#lpbox-upload-crop-profile-picture {
-	display:none;
-	border: solid 1px gray;
-	padding: 10px;
-	max-width: 500px;
-	background-color: ghostwhite;
-}
-#lpbox-upload-crop-profile-picture .lpbox-title {
-	font-size: 20px;
-}
-
-#lpbox-upload-crop-profile-picture .image-editor {
-	width:300px;
-	float:left;
-}
-
-#lpbox-upload-crop-profile-picture .image-editor .image-editor-btn {
-	margin: 10px auto;
-	text-align: center !important;
-}
-
-#lpbox-upload-crop-profile-picture .image-editor .image-editor-btn .input {
-	display:inline-block !important;
-}
-
-#lpbox-upload-crop-profile-picture .image-editor .cropit-preview {
-	margin: 0 auto;
-}
-
-#lpbox-upload-crop-profile-picture .image-editor-sidebar-right {
-	width:150px;
-	float:left;
-}
-
-.image-editor-sidebar-right a {
-	display:block;
-	text-align:center;
-	margin: 10px 0;
-}
-
-.image-editor-sidebar-right .dashicons {
-	line-height: 1.5;
-	margin-right:5px;
-}
-
-/**
- MMMM
-**/
-#lpbox-upload-crop-profile-picture .cropit-preview {
-	background-color: #f8f8f8;
-	background-size: cover;
-	border: 1px solid #ccc;
-	border-radius: 3px;
-	margin-top: 7px;
-	width: 252px;
-	height: 252px;
-}
-#lpbox-upload-crop-profile-picture .cropit-preview-image {
-	max-width: none;
-	max-height: none;
-}
-#lpbox-upload-crop-profile-picture .cropit-preview-image-container {
-	cursor: move;
-}
-#lpbox-upload-crop-profile-picture .image-size-label {
-	margin-top: 10px;
 }

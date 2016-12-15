@@ -46,14 +46,14 @@ if ( $user ) :
 							<li role="presentation" class="<?php echo esc_attr( $class_gravatar_selected ); ?>">
 								<input type="radio" class="lp_radio_profile_picture_type" id="profile_picture_type_radio_gravatar" name="profile_picture_type" value="gravatar" <?php checked( 'gravatar', $profile_picture_type ) ?>/>
 								<label for="profile_picture_type_radio_gravatar" class="lp_label_profile_picture_type" id="lpbtn-use-gravatar"><?php _e('Use Gravatar','learnpress'); ?></label>
-								<div><small><?php _e( 'You can change your profile picture on', 'learnpress' ); ?>
-										<a href="https://en.gravatar.com/"><?php _e( 'Gravatar', 'learnpress' ); ?></a>.</small></div>
+<!--							<div><small><?php _e( 'You can change your profile picture on', 'learnpress' ); ?>
+										<a href="https://en.gravatar.com/"><?php _e( 'Gravatar', 'learnpress' ); ?></a>.</small></div>-->
 							</li>
 							<li role="presentation">
 								<input type="radio" class="lp_radio_profile_picture_type" id="profile_picture_type_radio_picture" name="profile_picture_type" value="picture" <?php checked( 'picture', $profile_picture_type ) ?>/>
 								<label for="profile_picture_type_radio_picture" class="lp_label_profile_picture_type" id="lpbtn-use-picture"><?php _e('User Picture','learnpress'); ?></label></li>
 							<li role="presentation">
-								<label id="lpbtn-upload-picture"><?php _e('Upload New Picture','learnpress'); ?></label></li>
+								<label class="lp_label_profile_picture_type" id="lpbtn-upload-picture"><?php _e('Upload New Picture','learnpress'); ?></label></li>
 						</ul>
 <!--					<input type="hidden" name="profile_picture_type" id="profile_picture_type" value="<?php echo esc_attr( $profile_picture_type ); ?>"/>-->
 <!--

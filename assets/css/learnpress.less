@@ -9,7 +9,6 @@
     font-weight: normal;
     font-style: normal;
 }
-
 [class^="lp-icon-"], [class*=" lp-icon-"] {
     /* use !important to prevent issues with browser extensions that change fonts */
     font-family: 'lp-icons' !important;
@@ -1542,10 +1541,12 @@ body.block-content {
                     margin-bottom: 10px;
                 }
                 li {
-                    display: block;
-                    width: 45%;
-                    float: left;
                     margin-right: 10px;
+                    &.user-login {
+                        display: block;
+                        width: 45%;
+                        float: left;
+                    }
                     .course-progress {
                         width: 100%;
                         .lp-course-progress {
