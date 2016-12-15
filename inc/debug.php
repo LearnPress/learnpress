@@ -13,5 +13,9 @@ add_action( 'wp_footer', function () {
 	$p = get_post_types( );
 	print_r( $p );
 	echo 'xxxxxxxxxx';
+
+	echo 'Test gitflow';
+	echo 'Test gitflow';
+  echo 'chinhtm';
 } );
 
