@@ -29,12 +29,17 @@ $students_list_avatar_size = apply_filters( 'learn_press_students_list_avatar_si
 		<?php $passing_condition = round( $course->passing_condition, 0 ); ?>
 
         <ul class="students">
-			<?php foreach ( $students as $student ):
-				$student = LP_User_Factory::get_user( $student->ID );
-				$result = $student->get_course_info2( $course->ID );
+			<?php foreach ( $students as $student ): ?>
+
+				<?php
+				$result = '';
+				if ( is_user_logged_in() ) {
+					$student = LP_User_Factory::get_user( $student->ID );
+					$result  = $student->get_course_info2( $course->ID );
+				}
 				?>
 
-                <li>
+                <li class="student-enrolled<?php echo ( $result ) ? ' user-login' : ''; ?>">
                     <div class="user-info">
 						<?php if ( $show_avatar ): ?>
 							<?php echo get_avatar( $student->ID, $students_list_avatar_size, '', $student->display_name, array( 'class' => 'students_list_avatar' ) ); ?>
@@ -43,21 +48,23 @@ $students_list_avatar_size = apply_filters( 'learn_press_students_list_avatar_si
 							<?php echo $student->display_name ?>
                         </a>
                     </div>
-                    <div class="learn-press-course-results-progress">
-                        <div class="course-progress">
-                            <span class="course-result"><?php echo $result['results'] . '%'; ?></span>
-                            <div class="lp-course-progress">
-                                <div class="lp-progress-bar">
-                                    <div class="lp-progress-value" style="width: <?php echo $result['results']; ?>%;">
+					<?php if ( $result ) : ?>
+                        <div class="learn-press-course-results-progress">
+                            <div class="course-progress">
+                                <span class="course-result"><?php echo $result['results'] . '%'; ?></span>
+                                <div class="lp-course-progress">
+                                    <div class="lp-progress-bar">
+                                        <div class="lp-progress-value" style="width: <?php echo $result['results']; ?>%;">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="lp-passing-conditional"
-                                     data-content="<?php printf( esc_html__( 'Passing condition: %s%%', 'learnpress' ), $passing_condition ); ?>"
-                                     style="left: <?php echo esc_attr( $passing_condition ); ?>%;">
+                                    <div class="lp-passing-conditional"
+                                         data-content="<?php printf( esc_html__( 'Passing condition: %s%%', 'learnpress' ), $passing_condition ); ?>"
+                                         style="left: <?php echo esc_attr( $passing_condition ); ?>%;">
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+					<?php endif; ?>
                 </li>
 			<?php endforeach; ?>
         </ul>
