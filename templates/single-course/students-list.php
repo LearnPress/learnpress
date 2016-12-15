@@ -29,7 +29,8 @@ $students_list_avatar_size = apply_filters( 'learn_press_students_list_avatar_si
 		<?php $passing_condition = round( $course->passing_condition, 0 ); ?>
 
         <ul class="students">
-			<?php foreach ( $students as $student ): ?>
+
+            <?php foreach ( $students as $student ): ?>
 
 				<?php
 				$result = '';
@@ -66,7 +67,9 @@ $students_list_avatar_size = apply_filters( 'learn_press_students_list_avatar_si
                         </div>
 					<?php endif; ?>
                 </li>
+
 			<?php endforeach; ?>
+
         </ul>
 		<?php
 		$other_student = $course->students;
