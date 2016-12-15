@@ -1,6 +1,7 @@
 ;(function ($) {
 	"use strict";
 	$(document).ready(function () {
+		alert("Hello man :D");
 		$(document).on('click', '.table-orders .cancel-order', function (e) {
 			e.preventDefault();
 			var _this = $(this),
