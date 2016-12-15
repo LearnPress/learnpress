@@ -42,6 +42,30 @@
 			return false;
 		});
 
+		$('#learn-press-toggle-password').click(function (e) {
+			e.preventDefault();
+			var $el = $('#user_profile_password_form');
+			if ($el.hasClass('hide-if-js')) {
+				$el.removeClass('hide-if-js').hide();
+			}
+			$el.slideToggle(function () {
+				$el.find('input').attr('disabled', !$el.is(':visible'));
+			});
+		});
+
+		$('#learn-press-form-login input[type="text"]').focus();
+		/**
+		 * Show hide dropdown menu
+		 */
+		$('#lpbtn-change-picture').click(function(event){
+			event.preventDefault();
+			if( $('.dropdown-menu.lpbtns-change-picture').css('display')=='none' ) {
+				$('.dropdown-menu.lpbtns-change-picture').show();
+			} else {
+				$('.dropdown-menu.lpbtns-change-picture').hide();
+			}
+		});
+
 		$('.user-profile-edit-form').on('change', 'select[name="profile_picture_type"]', function () {
 			var selected = $(this).val();
 			$('.profile-avatar-hidden, .profile-avatar-current').each(function () {
@@ -53,71 +77,100 @@
 			$('#profile-picture-picture').toggleClass('hide-if-js', selected != 'picture');
 		});
 
-		$('#learn-press-toggle-password').click(function (e) {
-			e.preventDefault();
-			var $el = $('#user_profile_password_form');
-			if ($el.hasClass('hide-if-js')) {
-				$el.removeClass('hide-if-js').hide();
+		$('#lpbtn-use-gravatar').click( function(event){
+			$('.dropdown-menu.lpbtns-change-picture').hide();
+			$('.profile-picture.avatar-picture').hide();
+			$('.profile-picture.avatar-gravatar').show();
+		});
+
+		$('#lpbtn-use-picture').click( function(event){
+			$('.dropdown-menu.lpbtns-change-picture').hide();
+			var current_picture = $('#lp-user-profile-picture-data').attr('data-current');
+			if( !current_picture ){
+				LP.confirm(
+						{
+							'title':'Upload Picture',
+							'message':'Go to upload new profile picture now'
+						}, function(result){
+					if(result){
+						$('#lpbox-upload-crop-profile-picture').slideDown();
+					}
+				});
 			}
-			$el.slideToggle(function () {
-				$el.find('input').attr('disabled', !$el.is(':visible'));
-			});
 		});
-		$('#learn-press-form-login input[type="text"]').focus();
 
-		$('#profile-picture-picture a.change-profile-picutre-text').click( function( event ){
+		$('#lpbtn-upload-picture').click(function(event){
 			event.preventDefault();
-			if($(this).attr('onupload')=='1'){
-				$('#profile-picture-picture .image-editor').hide();
-				$(this).attr('onupload','0');
-			}else{
-				if($('#profile-picture-picture .cropit-image-input').prop('disabled')){
-					$('#profile-picture-picture .cropit-image-input').prop('disabled','');
-				};
-				$('#profile-picture-picture .image-editor').show();
-				
-				$(this).attr('onupload','1');
-			}
-			
-		});
-
-		$('#profile-picture-picture .image-editor').cropit({
-			imageState: {
-				src: 'http://lorempixel.com/500/400/',
-			},
-		});
-
-		$('#profile-picture-picture .rotate-cw').click(function (event) {
-			event.preventDefault();
-			$('.image-editor').cropit('rotateCW');
-		});
-
-		$('#profile-picture-picture .rotate-ccw').click(function (event) {
-			event.preventDefault();
-			$('.image-editor').cropit('rotateCCW');
-		});
-
-		$('#profile-picture-picture .export').click(function (event) {
-			event.preventDefault();
-			var imageData = $('.image-editor').cropit( 'export' );
-			jQuery('.cropit-image-input').prop('disabled','disabled');
-			$('#lp-user-profile-picture-data').val( imageData );
-			$('img.avatar').attr( 'src', imageData );
-			$('img.avatar').attr( 'srcset', imageData );
-			$('.profile-avatar-current img').attr( 'src', imageData );
-			$('#profile-picture-picture .image-editor').hide();
-			if(!$('#profile-picture-picture .cropit-image-input').prop('disabled')){
-				$('#profile-picture-picture .cropit-image-input').prop('disabled','disabled');
-			};
+			$('.dropdown-menu.lpbtns-change-picture').hide();
+			$('#lpbox-upload-crop-profile-picture').slideDown();
 		});
 		
-		$('#profile-picture-picture .cancel').click(function (event) {
+		$('#lp-ocupload-picture').upload(
+			{
+				'name':'image',
+				params:{from:'profile','action':'update','sub_action':'upload_avatar'},
+				'onComplete':function(response){
+					response = LP.parseJSON(response);
+					console.log(response);
+					if(response.return && response.avatar_tmp ) {
+						/* Load Image in to crop */
+						$('.image-editor').cropit('imageSrc',response.avatar_tmp);
+						$('.image-editor').attr('avatar-filename',response.avatar_tmp_filename);
+						LP.alert(response.message);
+					} else if (!response.return){
+						$('.image-editor').cropit('imageSrc','');
+						$('.image-editor').attr('avatar-filename','');
+						LP.alert(response.message);
+					}
+				}
+			}
+		);
+
+		$('#lp-button-choose-file').click(function(event){
+			event.preventDefault();
+			$('#lp-ocupload-picture').parent().find('form input[name="image"]').trigger('click');
+		});
+
+		$('#lpbox-upload-crop-profile-picture .image-editor').cropit();
+
+		$('#lp-button-apply-changes').click(function (event) {
+			event.preventDefault();
+			var zoom			= $('.image-editor').cropit('zoom');
+			var offset			= $('.image-editor').cropit('offset');
+			var avatar_filename = $('.image-editor').attr('avatar-filename');
+			var datas = {
+				from:'profile',
+				'action':'update',
+				'sub_action':'crop_avatar',
+				'avatar_filename':avatar_filename,
+				'zoom':zoom, 
+				'offset':offset
+			};
+			
+			/** Crop avatar and create avatar thumbnail **/
+			$.ajax({
+					url     : LP.getUrl(),
+					dataType: 'html',
+					data    : datas,
+					type    : 'post',
+					success : function (response) {
+						response = LP.parseJSON(response);
+						var avatar_filename = response.avatar_filename;
+						var avatar_url = response.avatar_url;
+						$('#lp-user-profile-picture-data').val( avatar_filename );
+						$('img.avatar').attr( 'src', avatar_url );
+						$('img.avatar').attr( 'srcset', avatar_url );
+						$('.profile-avatar-current img').attr( 'src', avatar_url );
+						$('#lpbox-upload-crop-profile-picture').slideUp();
+					}
+				});
+				return;
+		});
+		
+		$('#lp-button-cancel-changes').click(function (event) {
 			event.preventDefault();
 			$('#lp-user-profile-picture-data').val( );
-			$('#profile-picture-picture .image-editor').hide();
-			if(!$('#profile-picture-picture .cropit-image-input').prop('disabled')){
-				$('#profile-picture-picture .cropit-image-input').prop('disabled','disabled');
-			};
+			$('#lpbox-upload-crop-profile-picture').slideUp();
 		});
 
 

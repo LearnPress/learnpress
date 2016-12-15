@@ -79,7 +79,6 @@ class LP_Abstract_User {
 			self::$_lessons[$this->id] = array();
 		}
 		add_action( 'pre_get_posts', array( $this, 'parse_query' ), 50 );
-		add_filter( 'pre_get_avatar', array( $this, 'pre_get_avatar_callback' ), 1, 5 );
 	}
 
 	public function _course_items_callback_filter( $a ) {
@@ -2776,11 +2775,13 @@ class LP_Abstract_User {
 			$profile_picture = $this->profile_picture;
 			$upload          = wp_get_upload_dir();
 			$user_id         = $this->id;
+
 			if ( $size == 'thumbnail' ) {
 				$pi              = pathinfo( $profile_picture );
 				$profile_picture = $pi['filename'] . '-thumb' . '.' . $pi['extension'];
 			}
 			$file_path = $upload['basedir'] . DIRECTORY_SEPARATOR . 'learn-press-profile' . DIRECTORY_SEPARATOR . $user_id . DIRECTORY_SEPARATOR . $profile_picture;
+			
 			if ( file_exists( $file_path ) ) {
 				$this->uploaded_profile_src = $upload['baseurl'] . '/learn-press-profile/' . $user_id . '/' . $profile_picture;
 			} else {
@@ -2796,18 +2797,18 @@ class LP_Abstract_User {
 	 *
 	 * @return false|string
 	 */
-	public function get_profile_picture( $type = '', $size = 96 ) {
+	public function get_profile_picture( $type = '', $size =96 ) {
 		if ( empty( $type ) ) {
 			$type = $this->profile_picture_type;
 		}
 		if ( $type == 'picture' ) {
 			if ( $profile_picture_src = $this->get_upload_profile_src( $size ) ) {
 				$this->profile_picture_src = $profile_picture_src;
-				add_filter( 'get_avatar_url', array( $this, 'get_avatar_url' ), 10, 3 );
 			}
+			$avatar = get_avatar( $this->id, $size );
+		} else{
+			$avatar = get_avatar( $this->id, $size, '', '', array('gravatar'=>true) );
 		}
-		$avatar = get_avatar( $this->id, $size );
-		remove_filter( 'get_avatar_url', array( $this, 'get_avatar_url' ), 10 );
 		return $avatar;
 	}
 
@@ -2819,12 +2820,12 @@ class LP_Abstract_User {
 		if ( $profile_picture_type == 'picture' ) {
 			if ( $profile_picture_src = $this->get_upload_profile_src() ) {
 				$this->profile_picture_src = $profile_picture_src;
-				add_filter( 'get_avatar_url', array( $this, 'get_avatar_url' ), 10, 3 );
 			}
 		} else {
 			$avatar_data               = get_avatar_data( $this->id );
 			$this->profile_picture_src = $avatar_data['url'];
 		}
+
 		return $this->profile_picture_src;
 	}
 
@@ -2842,65 +2843,7 @@ class LP_Abstract_User {
 		if ( $id_or_email == $this->user_login ) {
 			$url = $this->profile_picture_src;
 		}
-		//
 		return $url;
-	}
-
-	/**
-	 * @param        $avatar
-	 * @param string $id_or_email
-	 * @param array  $size
-	 * @param string $default
-	 * @param string $alt
-	 *
-	 * @return string|void
-	 */
-	function pre_get_avatar_callback( $avatar, $id_or_email = '', $size = array(), $default = '', $alt = '' ) {
-
-		$user_id = 0;
-		if ( !is_numeric( $id_or_email ) && is_string( $id_or_email ) ) {
-			if ( $user = get_user_by( 'email', $id_or_email ) ) {
-				$user_id = $user->ID;
-			}
-		} elseif ( is_numeric( $id_or_email ) ) {
-			$user_id = $id_or_email;
-		} elseif ( is_object( $id_or_email ) && isset( $id_or_email->user_id ) && $id_or_email->user_id ) {
-			$user_id = $id_or_email->user_id;
-		}
-
-		// get user data
-		$profile_picture_type = get_user_meta( $user_id, '_lp_profile_picture_type', true );
-		$profile_picture_src  = $this->get_upload_profile_src( $size );
-
-		if ( !$profile_picture_type || $profile_picture_type == 'gravatar' || !$profile_picture_src ) {
-			return $avatar;
-		}
-
-
-		$lp           = LP();
-		$lp_setting   = $lp->settings;
-		$setting_size = $lp_setting->get( 'profile_picture_thumbnail_size' );
-
-		$img_size = '';
-		$height   = '';
-		$width    = '';
-
-		if ( !is_array( $size ) ) {
-			if ( $size === 'thumbnail' ) {
-				$img_size = '';
-				$height   = $setting_size['height'];
-				$width    = $setting_size['width'];
-			} else {
-				$height = 250;
-				$width  = 250;
-			}
-		} else {
-			$img_size = $size['size'];
-			$height   = $size['height'];
-			$width    = $size['width'];
-		}
-		$avatar = '<img alt="" src="' . esc_attr( $profile_picture_src ) . '" class="avatar avatar-' . $img_size . ' photo" height="' . $height . '" width="' . $width . '" />';
-		return $avatar;
 	}
 
 	/**
