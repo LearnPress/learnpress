@@ -2406,20 +2406,28 @@ body.content-item-only #learn-press-content-item.expand {
 .lpbtns-change-picture {
 	display: none;
 	position: absolute;
-	background: greenyellow;
-	border: solid 1px black;
 	list-style: none;
-	margin: 0;
-	padding: 0;
+    margin: 0;
+    padding: 0;
+    background-color: #F5F5F5;
 }
 
 .lpbtns-change-picture li {
 	border: solid 1px black;
-	padding: 10px;
 }
 
 .lp_radio_profile_picture_type {
 	display: none;
+}
+
+.lp_label_profile_picture_type{
+	padding: 5px 10px;
+	display: block;
+	cursor: pointer;
+}
+
+.lp_label_profile_picture_type:hover{
+	background-color:palegreen;
 }
 
 /** upload-crop box **/
