@@ -301,9 +301,10 @@
     float: right;
 }
 
-.learn-press-form{
+.learn-press-form {
     margin-bottom: 20px;
 }
+
 //
 
 #learn-press-course-curriculum {
@@ -1530,30 +1531,53 @@ body.block-content {
 }
 
 .single-lp_course {
-    .course-students {
-        padding-top: 10px;
-    }
-    .course-students-list {
-        margin-top: 10px;
-        margin-bottom: 15px;
-        .students {
-            list-style-type: none;
-            margin: 0;
-            li {
-                display: inline-block;
-                margin-right: 10px;
+    .course-summary {
+        .course-students {
+            padding-top: 10px;
+        }
+        .course-students-list {
+            .students {
+                clear: both;
+                .user-info {
+                    margin-bottom: 10px;
+                }
+                li {
+                    display: block;
+                    width: 45%;
+                    float: left;
+                    margin-right: 10px;
+                    .course-progress {
+                        width: 100%;
+                        .lp-course-progress {
+                            margin-top: -5px;
+                        }
+                    }
+                }
             }
             p {
-                margin-top: 15px;
+                clear: both;
+            }
+        }
+        .lp_course {
+            .entry-footer {
+                display: none;
             }
         }
     }
-    .lp_course {
-        .entry-content {
-            //width: 100%;
+}
+
+.course-students-list {
+    margin-top: 10px;
+    margin-bottom: 15px;
+    .students {
+        list-style-type: none;
+        margin: 0;
+        li {
+            display: inline-block;
+            margin-right: 10px;
         }
-        .entry-footer {
-            display: none;
+        p {
+            margin-top: 15px;
         }
     }
 }

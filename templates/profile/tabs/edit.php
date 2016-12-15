@@ -4,21 +4,21 @@
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 1.0
+ * @version 2.0
  */
 if ( !defined( 'ABSPATH' ) ) {
 	exit;
 }
 global $wp_query;
 $user = learn_press_get_current_user();
-
 $user_info = get_userdata( $user->id );
-
 $username             = $user_info->user_login;
 $nick_name            = $user_info->nickname;
 $first_name           = $user_info->first_name;
 $last_name            = $user_info->last_name;
-$profile_picture_type = $user->profile_picture_type;
+$profile_picture_type = $user->profile_picture_type?$user->profile_picture_type:'gravatar';
+$profile_picture = $user->profile_picture;
+$class_gravatar_selected = ( 'gravatar' === $profile_picture_type ) ? 'gravatar_selected' : '';
 if ( $user ) :
 	?>
 	<div class="user-profile-edit-form" id="learn-press-user-profile-edit-form">
@@ -32,44 +32,61 @@ if ( $user ) :
 
 			<div class="user-profile-picture info-field">
 				<p class="profile-field-name"><?php _e( 'Profile Picture', 'learnpress' ); ?></p>
-				<div class="profile-avatar-current <?php echo $profile_picture_type == 'gravatar' ? 'avatar-picture' : 'avatar-gravatar'; ?>">
-					<?php echo $user->get_profile_picture( $profile_picture_type == 'gravatar' ? 'gravatar' : 'picture' ); ?>
-				</div>
-				<div class="profile-avatar-hidden hide-if-js <?php echo $profile_picture_type != 'gravatar' ? 'avatar-picture' : 'avatar-gravatar'; ?>">
-					<?php echo $user->get_profile_picture( $profile_picture_type == 'gravatar' ? 'picture' : 'gravatar' ); ?>
-				</div>
-				<div class="change-picture">
-					<select name="profile_picture_type">
-						<option value="gravatar" <?php echo $profile_picture_type == 'gravatar' ? ' selected="selected"' : ''; ?>><?php _e( 'Gravatar', 'learnpress' ); ?></option>
-						<option value="picture" <?php echo $profile_picture_type == 'picture' ? ' selected="selected"' : ''; ?>><?php _e( 'Picture', 'learnpress' ); ?></option>
-					</select>
-					<div id="profile-picture-gravatar" class="<?php echo $profile_picture_type != 'gravatar' ? 'hide-if-js' : ''; ?>">
-						<p class="description"><?php _e( 'You can change your profile picture on', 'learnpress' ); ?>
-							<a href="https://en.gravatar.com/"><?php _e( 'Gravatar', 'learnpress' ); ?></a>.</p>
+				<div id="profile-picture-wrap">
+					<div class="profile-picture profile-avatar-current <?php echo $profile_picture_type == 'gravatar' ? 'avatar-picture' : 'avatar-gravatar'; ?>">
+						<?php echo $user->get_profile_picture( $profile_picture_type == 'gravatar' ? 'gravatar' : 'picture', 248 ); ?>
 					</div>
-					<div id="profile-picture-picture" class="<?php echo $profile_picture_type == 'gravatar' ? 'hide-if-js' : ''; ?>">
-						<!--<input type="file" name="profile_picture" />-->
-						<input type="hidden" id="lp-user-profile-picture-data" name="profile_picture_data" />
-						<a href="javascript:void(0);" class="button-primary change-profile-picutre-text" onupload="0"><?php _e('Change Profile Picture', 'learnpress');?></a>
-                        <p class="description"><?php _e('Please use an image that\'s at least 250px in width and 250px in height.', 'learnpress'); ?></p>
-						<div class="image-editor" style="display:none;">
-							<input type="file" class="cropit-image-input" name="profile_picture">
+					<div class="profile-picture profile-avatar-hidden hide-if-js <?php echo $profile_picture_type != 'gravatar' ? 'avatar-picture' : 'avatar-gravatar'; ?>">
+						<?php echo $user->get_profile_picture( $profile_picture_type == 'gravatar' ? 'picture' : 'gravatar' ); ?>
+					</div>
+					<div class="clear"></div>
+					<div class="dropdown">
+						<a href="#" id="lpbtn-change-picture" class=""><?php _e('Change Picture','learnpress'); ?></a>
+						<ul class="dropdown-menu lpbtns-change-picture" role="menu" >
+							<li role="presentation" class="<?php echo esc_attr( $class_gravatar_selected ); ?>">
+								<input type="radio" class="lp_radio_profile_picture_type" id="profile_picture_type_radio_gravatar" name="profile_picture_type" value="gravatar" <?php checked( 'gravatar', $profile_picture_type ) ?>/>
+								<label for="profile_picture_type_radio_gravatar" class="lp_label_profile_picture_type" id="lpbtn-use-gravatar"><?php _e('Use Gravatar','learnpress'); ?></label>
+								<div><small><?php _e( 'You can change your profile picture on', 'learnpress' ); ?>
+										<a href="https://en.gravatar.com/"><?php _e( 'Gravatar', 'learnpress' ); ?></a>.</small></div>
+							</li>
+							<li role="presentation">
+								<input type="radio" class="lp_radio_profile_picture_type" id="profile_picture_type_radio_picture" name="profile_picture_type" value="picture" <?php checked( 'picture', $profile_picture_type ) ?>/>
+								<label for="profile_picture_type_radio_picture" class="lp_label_profile_picture_type" id="lpbtn-use-picture"><?php _e('User Picture','learnpress'); ?></label></li>
+							<li role="presentation">
+								<label id="lpbtn-upload-picture"><?php _e('Upload New Picture','learnpress'); ?></label></li>
+						</ul>
+<!--					<input type="hidden" name="profile_picture_type" id="profile_picture_type" value="<?php echo esc_attr( $profile_picture_type ); ?>"/>-->
+<!--
+						<select name="profile_picture_type" class="hidden">
+							<option value="gravatar" <?php echo $profile_picture_type == 'gravatar' ? ' selected="selected"' : ''; ?>><?php _e( 'Gravatar', 'learnpress' ); ?></option>
+							<option value="picture" <?php echo $profile_picture_type == 'picture' ? ' selected="selected"' : ''; ?>><?php _e( 'Picture', 'learnpress' ); ?></option>
+						</select>
+-->
+					</div>
+				</div>
+				<div id="lpbox-upload-crop-profile-picture">
+					<input type="hidden" id="lp-user-profile-picture-data" data-current="<?php echo esc_attr( $profile_picture ); ?>" name="profile_picture_data" />
+					<div class="lpbox-title"><?php _e('Upload Picture','learnpress'); ?></div>
+                    <p class="description"><small><?php _e('Please use an image that\'s at least 250px in width, 250px in height and under 2MB in size', 'learnpress'); ?></small></p>
+					<div id="image-editor-wrap">
+						<div class="image-editor image-editor-sidebar-left">
 							<div class="cropit-preview"></div>
-							<div class="image-size-label">
-								<?php _e( 'Resize image', 'learnpress' );?>
-							</div>
-							<input type="range" class="cropit-image-zoom-input">
 							<div class="image-editor-btn">
-								<span class="rotate-ccw dashicons dashicons-image-rotate-left"></span>
-								<span class="rotate-cw dashicons dashicons-image-rotate-right"></span>
+<!--							<span class="rotate-ccw dashicons dashicons-image-rotate-left"></span>
+								<span class="rotate-cw dashicons dashicons-image-rotate-right"></span>-->
+								<input type="range" class="cropit-image-zoom-input">
 							</div>
-								<button class="export button-primary" href="#"><span class="dashicons dashicons-yes"></span><?php _e( 'Done', 'learnpress' );?></button>
-								<button class="cancel" href="#"><span class="dashicons dashicons-no"></span><?php _e( 'Cancel', 'learnpress' );?></button>
+						</div>
+						<div class="image-editor-sidebar-right">
+							<a class="button" href="#" id="lp-button-choose-file"><span class="dashicons dashicons-format-image"></span><?php _e( 'Choose File', 'learnpress' );?></a>
+							<a class="export button-primary" id="lp-button-apply-changes" href="#"><span class="dashicons dashicons-yes"></span>&nbsp;<?php _e( 'Apply Changes', 'learnpress' );?></a>
+							<a class="cancel" id="lp-button-cancel-changes" href="#"><span class="dashicons dashicons-no"></span><?php _e( 'Cancel', 'learnpress' );?></a>
+							<div id="lp-ocupload-picture"></div>
 						</div>
 					</div>
+						<div class="clear"></div>
 				</div>
 			</div>
-
 			<div class="user-description-wrap info-field">
 				<p class="profile-field-name"><?php _e( 'Biographical Info', 'learnpress' ); ?></p>
 				<textarea name="description" id="description" rows="5" cols="30"><?php esc_html_e( $user_info->description ); ?></textarea>
@@ -77,12 +94,6 @@ if ( $user ) :
 			</div>
 
 			<h2><?php _e( 'Name', 'learnpress' ); ?></h2>
-
-			<div class="user-user-login-wrap info-field">
-				<p class="profile-field-name"><?php esc_html_e( 'Username', 'learnpress' ) ?></p>
-				<input type="text" name="user_login" id="user_login" value="<?php echo esc_attr( $user->user->data->user_login ); ?>" disabled="disabled" class="regular-text">
-				<p class="description"><?php esc_html_e( 'Username cannot be changed.', 'learnpress' ) ?></p>
-			</div>
 
 			<div class="user-first-name-wrap info-field">
 				<p class="profile-field-name"><?php esc_html_e( 'First Name', 'learnpress' ); ?></p>
