@@ -41,8 +41,9 @@ if (typeof window.LP === 'undefined') {
 			} else {
 				checkoutButton.removeAttr('disabled');
 			}
-			if ($(this).data('order_button_text')) {
-				checkoutButton.val(checkoutButton.data('order_button_text'));
+			var order_button_text = $(this).data('order_button_text');
+			if (order_button_text) {
+				checkoutButton.val(order_button_text);
 			} else {
 				checkoutButton.val(checkoutButton.data('value'));
 			}

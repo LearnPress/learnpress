@@ -771,7 +771,7 @@ if(  !function_exists( 'learn_press_pre_get_avatar_callback' ) ){
 			$user_id = $id_or_email->user_id;
 		}
 		$profile_picture_type = get_user_meta( $user_id, '_lp_profile_picture_type', true );
-		$upload = wp_get_upload_dir();
+		$upload = wp_upload_dir();
 		$profile_picture = get_user_meta( $user_id, '_lp_profile_picture', true );
 		if ( !$profile_picture ) {
 			return;
