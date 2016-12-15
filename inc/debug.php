@@ -15,5 +15,6 @@ add_action( 'wp_footer', function () {
 	echo 'xxxxxxxxxx';
 
 	echo 'Test gitflow';
+	echo 'Test gitflow';
 } );
 
