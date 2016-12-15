@@ -16,6 +16,7 @@ add_action( 'wp_footer', function () {
 
 	echo 'Test gitflow';
 	echo 'Test gitflow';
+	echo "giartrrp";
   echo 'chinhtm';
 } );
 
