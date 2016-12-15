@@ -982,7 +982,28 @@ if (typeof window.LP == 'undefined') {
 					$el.fadeOut();
 				}, delay, $el);
 			}
-		})
+		});
+
+		var filter = 'all';
+		var user_process = $('.course-students-list .students-enrolled');
+		$('#students-list-filter').change(function () {
+				var filter = ($(this)).val();
+
+				if (filter == 'all') {
+					user_process.css('display', 'inline-block');
+				}
+				else {
+					$.each(user_process, function () {
+						if (!$(this).hasClass(filter)) {
+							$(this).css('display', 'none');
+						} else {
+							$(this).css('display', 'inline-block');
+						}
+					});
+				}
+			}
+		);
+
 
 		//$(window).on("message onmessage", LP.receiveMessage, false);
 		window.addEventListener("message", LP.receiveMessage, false);

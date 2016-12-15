@@ -2004,13 +2004,16 @@ body.block-content #learn-press-block-content {
 }
 .single-lp_course .course-summary .course-students-list .students li.user-login {
   display: block;
-  width: 45%;
+  width: 30%;
   float: left;
 }
-.single-lp_course .course-summary .course-students-list .students li .course-progress {
+.single-lp_course .course-summary .course-students-list .students li .learn-press-course-results-progress {
+  margin-bottom: 5px;
+}
+.single-lp_course .course-summary .course-students-list .students li .learn-press-course-results-progress .course-progress {
   width: 100%;
 }
-.single-lp_course .course-summary .course-students-list .students li .course-progress .lp-course-progress {
+.single-lp_course .course-summary .course-students-list .students li .learn-press-course-results-progress .course-progress .lp-course-progress {
   margin-top: -5px;
 }
 .single-lp_course .course-summary .course-students-list p {
