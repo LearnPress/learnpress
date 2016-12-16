@@ -1033,6 +1033,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			if ( $action ) {
 				do_action( "learn_press_course_submit_{$action}", $post->ID, $user );
 			}
+
 			return;
 
 			if ( !$action ) {
