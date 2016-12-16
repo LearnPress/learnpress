@@ -39,6 +39,7 @@ $status                = get_post_status();
 				<p class="description submitdelete">
 					<?php _e( 'Warning! Your course will become Pending Review for admins to review before it can be published when you update.' ); ?>
 				</p>
+				<textarea class="widefat" rows="5" id="review-message" name="review-message" resize="none" placeholder="<?php _e( 'Message to Reviewer', 'learnpress' ); ?>"></textarea>
 			<?php } ?>
 		<?php } ?>
 	<?php elseif ( $user->is_admin() && !$course_user->is_admin() ): ?>
@@ -46,13 +47,7 @@ $status                = get_post_status();
 		<?php if ( $status != 'publish' ) { ?>
 			<p class="lp-pending-review-message"><?php _e( 'This course is pending for reviewing', 'learnpress' ); ?></p>
 		<?php } ?>
-		<!--
-				<p>
-			<label>
-				<input type="checkbox" id="learn-press-notice-check" name="learn_press_submit_course_notice_instructor" value="yes" />
-				<?php _e( 'Message to Instructor', 'learnpress' ); ?>
-			</label>
-		</p>-->
+
 		<textarea class="widefat" rows="5" name="review-message" resize="none" placeholder="<?php _e( 'Message to Instructor', 'learnpress' ); ?>"></textarea>
 	<?php endif; ?>
 </div>

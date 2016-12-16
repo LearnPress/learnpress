@@ -190,7 +190,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 				return;
 			}
 			if ( self::$_enable_review ) {
-				if ( learn_press_get_current_user()->is_instructor() && 'yes' == get_post_meta( $post_id, '_lp_submit_for_reviewer', true ) ) {
+				if ( !empty( $_POST ) && learn_press_get_current_user()->is_instructor() && 'yes' == get_post_meta( $post_id, '_lp_submit_for_reviewer', true ) ) {
 					LP_Admin_Notice::add_redirect( __( 'Sorry! You can not update a course while it is viewing!', 'learnpress' ), 'error' );
 					wp_redirect( admin_url( 'post.php?post=' . $post_id . '&action=edit' ) );
 					exit();
@@ -212,6 +212,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						);
 					}
 					wp_redirect( admin_url( 'post.php?post=' . learn_press_get_request( 'post' ) . '&action=edit' ) );
+					exit();
 				}
 			}
 		}
@@ -969,7 +970,8 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			$new_status            = get_post_status( $post->ID );
 			$required_review       = LP()->settings->get( 'required_review' ) == 'yes';
 			$enable_edit_published = LP()->settings->get( 'enable_edit_published' ) == 'yes';
-			$submit_for_review     = learn_press_get_request( 'learn-press-submit-for-review' ) == 'yes' || !$required_review || $enable_edit_published;
+
+			$submit_for_review = learn_press_get_request( 'learn-press-submit-for-review' ) == 'yes' || ( ( !$required_review || $enable_edit_published ) );
 			// If course is submitted by administrator
 			if ( $user->is_admin() ) {
 				if ( $old_status != $new_status ) {
@@ -981,7 +983,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 					delete_post_meta( $post->ID, '_lp_submit_for_reviewer', 'yes' );
 				}
 			} elseif ( $user->is_instructor() ) { // Course is submitted by instructor
-				if ( $submit_for_review || ( $old_status != $new_status ) ) {
+				if ( ( $submit_for_review || ( $old_status != $new_status ) ) && $post->post_status != 'auto-draft' ) {
 					$action = 'for_reviewer';
 					update_post_meta( $post->ID, '_lp_submit_for_reviewer', 'yes' );
 				}
