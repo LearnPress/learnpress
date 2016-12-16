@@ -1,7 +1,6 @@
 ;(function ($) {
 	"use strict";
 	$(document).ready(function () {
-		alert("Hello man :D");
 		$(document).on('click', '.table-orders .cancel-order', function (e) {
 			e.preventDefault();
 			var _this = $(this),
@@ -58,15 +57,6 @@
 		/**
 		 * Show hide dropdown menu
 		 */
-		$('#lpbtn-change-picture').click(function(event){
-			event.preventDefault();
-			if( $('.dropdown-menu.lpbtns-change-picture').css('display')=='none' ) {
-				$('.dropdown-menu.lpbtns-change-picture').show();
-			} else {
-				$('.dropdown-menu.lpbtns-change-picture').hide();
-			}
-		});
-
 		$('.user-profile-edit-form').on('change', 'select[name="profile_picture_type"]', function () {
 			var selected = $(this).val();
 			$('.profile-avatar-hidden, .profile-avatar-current').each(function () {
@@ -74,36 +64,38 @@
 					return !$(this).hasClass(selected);
 				});
 			});
-			$('#profile-picture-gravatar').toggleClass('hide-if-js', selected == 'picture');
-			$('#profile-picture-picture').toggleClass('hide-if-js', selected != 'picture');
 		});
 
-		$('#lpbtn-use-gravatar').click( function(event){
-			$('.dropdown-menu.lpbtns-change-picture').hide();
-			$('.profile-picture.avatar-picture').hide();
-			$('.profile-picture.avatar-gravatar').show();
+		$('#lp-menu-change-picture .menu-item-use-gravatar').click( function(event){
+			$('#lp-profile_picture_type').val('gravatar').trigger('change');
+			$('#lp-menu-change-picture .dropdown-menu li').show();
+			$(this).hide();
 		});
-
-		$('#lpbtn-use-picture').click( function(event){
-			$('.dropdown-menu.lpbtns-change-picture').hide();
+		
+		$('#lp-menu-change-picture .menu-item-use-picture').click( function(event){
 			var current_picture = $('#lp-user-profile-picture-data').attr('data-current');
 			if( !current_picture ){
-				LP.confirm(
-						{
-							'title':'Upload Picture',
-							'message':'Go to upload new profile picture now'
-						}, function(result){
-					if(result){
-						$('#lpbox-upload-crop-profile-picture').slideDown();
-					}
-				});
+				$('#lp-button-choose-file').trigger('click');
+//				$('#lpbox-upload-crop-profile-picture').slideDown();
+//				LP.confirm(
+//					{
+//						'title':'Upload Picture',
+//						'message':'Go to upload new profile picture now'
+//					}, function(result){
+//						if(result){
+//							$('#lpbox-upload-crop-profile-picture').slideDown();
+//						}
+//					}
+//				);
+			} else {
+				$('#lp-profile_picture_type').val('picture').trigger('change');
+				$('#lp-menu-change-picture .dropdown-menu li').show();
 			}
+			$(this).hide();
 		});
 
-		$('#lpbtn-upload-picture').click(function(event){
-			event.preventDefault();
-			$('.dropdown-menu.lpbtns-change-picture').hide();
-			$('#lpbox-upload-crop-profile-picture').slideDown();
+		$('#lp-menu-change-picture .menu-item-upload-picture').click( function(event){
+			$('#lp-button-choose-file').trigger('click');
 		});
 		
 		$('#lp-ocupload-picture').upload(
@@ -117,7 +109,8 @@
 						/* Load Image in to crop */
 						$('.image-editor').cropit('imageSrc',response.avatar_tmp);
 						$('.image-editor').attr('avatar-filename',response.avatar_tmp_filename);
-						LP.alert(response.message);
+//						LP.alert(response.message);
+						$('#lpbox-upload-crop-profile-picture').slideDown();
 					} else if (!response.return){
 						$('.image-editor').cropit('imageSrc','');
 						$('.image-editor').attr('avatar-filename','');
