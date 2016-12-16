@@ -82,7 +82,7 @@
 
 	function _ready() {
 		LP_Admin.init();
-		$(document).on('click', '.learn-press-add-ons .plugin-action-buttons a', function (e) {
+		$(document).on('click', '.learn-press-add-ons .plugin-action-buttons a:not(.lp-not-ajax)', function (e) {
 			e.preventDefault();
 			var $plugin = $(this).closest('.plugin-card');
 			if ($(this).hasClass('button-working')) {
@@ -466,7 +466,7 @@ lprHook.addAction('lpr_admin_quiz_question_html', _lprAdminQuestionHTML);
 				})
 			})
 			.lprFancyCheckbox();
-		$('#learn-press-add-ons-wrap').on('click', '.plugin-action-buttons a', function (evt) {
+		$('#learn-press-add-ons-wrap').on('click', '.plugin-action-buttons a:not(.lp-not-ajax)', function (evt) {
 			evt.preventDefault();
 			var $link = $(this), action = $link.data('action');
 			if (!action) return;
