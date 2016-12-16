@@ -628,7 +628,7 @@ function learn_press_user_update_user_info() {
 #	
 		if( isset($_POST['sub_action']) && 'crop_avatar' === $_POST['sub_action'] && isset( $_POST['avatar_filename'] ) ){
 			$avatar_filename = filter_input(INPUT_POST, 'avatar_filename',FILTER_SANITIZE_STRING);
-			$avatar_filepath = $upload_dir.DIRECTORY_SEPARATOR.$avatar_filename
+			$avatar_filepath = $upload_dir.DIRECTORY_SEPARATOR.$avatar_filename;
 			$editor = wp_get_image_editor( $upload_dir_tmp.DIRECTORY_SEPARATOR.$avatar_filename );
 			if ( is_wp_error( $editor ) ) {
 				learn_press_add_message( __( 'Thumbnail of image profile not created', 'learnpress' ) );
