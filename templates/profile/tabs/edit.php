@@ -72,13 +72,13 @@ if ( $user ) :
 							</div>
 						</div>
 						<div class="image-editor-sidebar-right">
-							<a class="button" href="#" id="lp-button-choose-file"><span class="dashicons dashicons-format-image"></span><?php _e( 'Choose File', 'learnpress' );?></a>
-							<a class="export button-primary" id="lp-button-apply-changes" href="#"><span class="dashicons dashicons-yes"></span>&nbsp;<?php _e( 'Apply Changes', 'learnpress' );?></a>
-							<a class="cancel" id="lp-button-cancel-changes" href="#"><span class="dashicons dashicons-no"></span><?php _e( 'Cancel', 'learnpress' );?></a>
+							<a href="#" id="lp-button-choose-file"><span class="dashicons dashicons-format-image"></span><?php _e( 'Choose File', 'learnpress' );?></a>
+							<a href="#" id="lp-button-apply-changes"><span class="dashicons dashicons-yes"></span>&nbsp;<?php _e( 'Apply Changes', 'learnpress' );?></a>
+							<a href="#" id="lp-button-cancel-changes"><span class="dashicons dashicons-no"></span><?php _e( 'Cancel', 'learnpress' );?></a>
 							<div id="lp-ocupload-picture"></div>
 						</div>
 					</div>
-						<div class="clear"></div>
+					<div class="clear"></div>
 				</div>
 			</div>
 			<div class="user-description-wrap info-field">
