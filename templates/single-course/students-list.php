@@ -29,15 +29,17 @@ $students_list_avatar_size = apply_filters( 'learn_press_students_list_avatar_si
 		<?php $passing_condition = round( $course->passing_condition, 0 ); ?>
 
 		<?php if ( is_user_logged_in() ): ?>
-            <label for="students-list-filter"><?php echo esc_html__( 'Student filter', 'learnpress' ); ?></label>
-            <select id="students-list-filter">
-				<?php
-				$filters = learn_press_get_students_list_filter();
-				foreach ( $filters as $key => $filter ) {
-					echo '<option value="' . esc_attr( $key ) . '">' . esc_html( $filter ) . '</option>';
-				}
-				?>
-            </select>
+            <div class="filter-students">
+                <label for="students-list-filter"><?php echo esc_html__( 'Student filter', 'learnpress' ); ?></label>
+                <select id="students-list-filter">
+					<?php
+					$filters = learn_press_get_students_list_filter();
+					foreach ( $filters as $key => $filter ) {
+						echo '<option value="' . esc_attr( $key ) . '">' . esc_html( $filter ) . '</option>';
+					}
+					?>
+                </select>
+            </div>
 		<?php endif; ?>
 
         <ul class="students">

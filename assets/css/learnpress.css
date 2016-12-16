@@ -1993,21 +1993,40 @@ body.block-content #learn-press-block-content {
 .single-lp_course .course-summary .course-students {
   padding-top: 10px;
 }
+.single-lp_course .course-summary .course-students-list .students-list-title {
+  float: left;
+}
+.single-lp_course .course-summary .course-students-list .filter-students {
+  float: right;
+}
 .single-lp_course .course-summary .course-students-list .students {
   clear: both;
 }
 .single-lp_course .course-summary .course-students-list .students .user-info {
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 }
 .single-lp_course .course-summary .course-students-list .students li {
   margin-right: 10px;
 }
 .single-lp_course .course-summary .course-students-list .students li.user-login {
   display: block;
-  width: 30%;
+  width: 100%;
   float: left;
 }
+.single-lp_course .course-summary .course-students-list .students li .user-info {
+  position: relative;
+  float: left;
+  width: 150px;
+}
+.single-lp_course .course-summary .course-students-list .students li .user-info a {
+  position: absolute;
+  margin-left: 5px;
+  bottom: 0;
+}
 .single-lp_course .course-summary .course-students-list .students li .learn-press-course-results-progress {
+  width: 80%;
+  float: left;
+  margin-top: -15px;
   margin-bottom: 5px;
 }
 .single-lp_course .course-summary .course-students-list .students li .learn-press-course-results-progress .course-progress {
