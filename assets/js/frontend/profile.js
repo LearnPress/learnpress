@@ -61,6 +61,7 @@
 			var selected = $(this).val();
 			$('.profile-avatar-hidden, .profile-avatar-current').each(function () {
 				$(this).toggleClass('hide-if-js', function () {
+					console.log(this);
 					return !$(this).hasClass(selected);
 				});
 			});
@@ -140,7 +141,7 @@
 				'zoom':zoom, 
 				'offset':offset
 			};
-			
+
 			/** Crop avatar and create avatar thumbnail **/
 			$.ajax({
 					url     : LP.getUrl(),
@@ -151,10 +152,11 @@
 						response = LP.parseJSON(response);
 						var avatar_filename = response.avatar_filename;
 						var avatar_url = response.avatar_url;
-						$('#lp-user-profile-picture-data').val( avatar_filename );
-						$('img.avatar').attr( 'src', avatar_url );
-						$('img.avatar').attr( 'srcset', avatar_url );
-						$('.profile-avatar-current img').attr( 'src', avatar_url );
+//						$('#lp-user-profile-picture-data').val( avatar_filename );
+						$('.profile-picture.avatar-gravatar img').attr( 'src', avatar_url );
+						$('#lp-profile_picture_type').val('picture').trigger('change');
+						$('#lp-menu-change-picture .dropdown-menu li').removeClass('lp-menu-item-selected');
+						$('#lp-menu-change-picture .dropdown-menu li.lp-menu-use-gravatar').addClass('lp-menu-item-selected');
 						$('#lpbox-upload-crop-profile-picture').slideUp();
 					}
 				});
