@@ -400,17 +400,6 @@ li.quick_quiz {
 .learn-press-add-ons .action-links > span.disabled {
   color: #FF0000;
 }
-.learn-press-add-ons .action-links .price {
-    color: #439fdf;
-    font-weight: 700;
-    font-size: 15px;
-    line-height: 1.6em;
-}
-.learn-press-add-ons .action-links .price del{
-    font-weight: 400;
-    color: #aaa;
-    padding-right: 5px;
-}
 .learn-press-add-ons .plugin-icon img {
   max-width: 100%;
 }

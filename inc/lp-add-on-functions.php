@@ -816,13 +816,7 @@ function learn_press_output_premium_add_ons_list($add_ons, $tab = '') {
                 </div>
                 <div class="desc column-description">
                     <p><?php echo $add_on['short_description']; ?></p>
-
                     <p class="authors"><?php printf( __( '<cite>By %s</cite>', 'learnpress' ), $add_on['author'] ); ?></p>
-                </div>
-                <div class="desc column-buy">
-                    <p>
-
-                    </p>
                 </div>
             </div>
         </li>
@@ -885,11 +879,6 @@ function learn_press_output_related_themes_list($add_ons, $tab = '') {
                     <p><?php echo $add_on['short_description']; ?></p>
 
                     <p class="authors"><?php printf( __( '<cite>By %s</cite>', 'learnpress' ), $add_on['author'] ); ?></p>
-                </div>
-                <div class="desc column-buy">
-                    <p>
-
-                    </p>
                 </div>
             </div>
         </li>
