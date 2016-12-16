@@ -991,7 +991,6 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			$message = learn_press_get_request( 'review-message' );
 			if ( !$action && !$message ) {
 				return;
-				//$action = 'admin-update';
 			}
 
 			switch ( $action ) {
