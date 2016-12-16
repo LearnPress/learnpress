@@ -536,7 +536,9 @@ function learn_press_user_update_user_info() {
 		return;
 	}
 	if ( !empty( $_POST ) && isset( $_POST['from'] ) && isset( $_POST['action'] ) && $_POST['from'] == 'profile' && $_POST['action'] == 'update' ) {
-		# CREATE SOME DIRECTORY
+# - - - - - - - - - - - - - - - - - - - -
+# CREATE SOME DIRECTORY
+#
 		$upload = wp_get_upload_dir();
 		$ppdir  = $upload['basedir'] . DIRECTORY_SEPARATOR . 'learn-press-profile';
 		if ( !is_dir( $ppdir ) ) {
@@ -551,18 +553,23 @@ function learn_press_user_update_user_info() {
 			mkdir( $upload_dir_tmp );
 		}
 		$lp_profile_url = $upload['baseurl'].'/learn-press-profile/' . $user_id.'/';
-		#
-		# UPLOAD TEMP FILE
-		#
+#
+# CREATE SOME DIRECTORY
+# - - - - - - - - - - - - - - - - - - - -
+		
+
+# - - - - - - - - - - - - - - - - - - - -
+# UPLOAD TEMP PICTURE PROFILE
+#
 		if( isset($_POST['sub_action']) && 'upload_avatar' === $_POST['sub_action'] && isset( $_FILES['image'] ) ){
 			$image_name = $_FILES['image']['name'];
-			$image_tmp = $_FILES['image']['tmp_name'];
+			$image_tmp	= $_FILES['image']['tmp_name'];
 			$image_size = intval($_FILES['image']['size']);
 			$image_type = strtolower($_FILES['image']['type']);
-			$filename = strtolower( pathinfo( $image_name, PATHINFO_FILENAME ) );
-			$file_ext = strtolower( pathinfo( $image_name, PATHINFO_EXTENSION ) );
+			$filename	= strtolower( pathinfo( $image_name, PATHINFO_FILENAME ) );
+			$file_ext	= strtolower( pathinfo( $image_name, PATHINFO_EXTENSION ) );
 
-			if((!empty($_FILES["image"])) && ($_FILES['image']['error'] == 0)) {
+			if ( (!empty( $_FILES["image"] )) && ($_FILES['image']['error'] == 0) ) {
 				$allowed_image_types = array('image/pjpeg' => "jpg", 'image/jpeg' => "jpg", 'image/jpg' => "jpg", 'image/png' => "png", 'image/x-png' => "png", 'image/gif' => "gif");
 				$mine_types = array_keys( $allowed_image_types );
 				$image_exts = array_values( $allowed_image_types );
@@ -581,7 +588,7 @@ function learn_press_user_update_user_info() {
 					);
 					learn_press_send_json( $return );
 				}
-			}else{
+			} else {
 				$return = array(
 					'return' => false,
 					'message' => __( 'Please select an image for upload', 'learnpress' )
@@ -612,18 +619,21 @@ function learn_press_user_update_user_info() {
 			}
 			exit();
 		}
-		# END OF UPLOAD TEMP PROFILE PICTURE
-		
-		#
-		# CROP PROFILE PICTURE
-		#
+# 
+# END OF UPLOAD TEMP PROFILE PICTURE
+# - - - - - - - - - - - - - - - - - - - -
+
+# - - - - - - - - - - - - - - - - - - - -
+# CREATE PROFILE PICTURE & THUMBNAIL
+#	
 		if( isset($_POST['sub_action']) && 'crop_avatar' === $_POST['sub_action'] && isset( $_POST['avatar_filename'] ) ){
 			$avatar_filename = filter_input(INPUT_POST, 'avatar_filename',FILTER_SANITIZE_STRING);
+			$avatar_filepath = $upload_dir.DIRECTORY_SEPARATOR.$avatar_filename
 			$editor = wp_get_image_editor( $upload_dir_tmp.DIRECTORY_SEPARATOR.$avatar_filename );
 			if ( is_wp_error( $editor ) ) {
 				learn_press_add_message( __( 'Thumbnail of image profile not created', 'learnpress' ) );
 			} else {
-				#calculator new width height
+				# Calculator new width height
 				$size_current = $editor->get_size();
 				$zoom = floatval($_POST['zoom']);
 				$offset = $_POST['offset'];
@@ -635,16 +645,55 @@ function learn_press_user_update_user_info() {
 				$offset_x = max(intval($offset['x']),-intval($offset['x']) );
 				$offset_y = max(intval($offset['y']),-intval($offset['y']) );
 				$editor->crop( $offset_x, $offset_y, 248, 248 );
-				$saved = $editor->save( $upload_dir.DIRECTORY_SEPARATOR.$avatar_filename );
+				$saved = $editor->save( $upload_dir.DIRECTORY_SEPARATOR.$avatar_filename );				
 				$res = array();
+				
 				if ( is_wp_error( $saved ) ) {
 					$res['return']	=false;
 					$res['message'] =__( 'Error on crop user picture profile ', 'learnpress' );
 					$res['avatar_filename'] ='';
 					$res['avatar_url']		='';
 				} else {
+					
+					# - - - - - - - - - - - - - - - - - - - -
+					# Create Thumbnai
+					#
+					if ( file_exists( $avatar_filepath ) ) {
+						$editor2 = wp_get_image_editor( $avatar_filepath );
+							if ( is_wp_error( $editor2 ) ) {
+								learn_press_add_message( __( 'Thumbnail of image profile not created', 'learnpress' ) );
+							} else {
+								$editor2->set_quality(90);
+								$lp         = LP();
+								$lp_setting = $lp->settings;
+								$size       = $lp_setting->get( 'profile_picture_thumbnail_size' );
+								if ( empty( $size ) ) {
+									$size = array( 'width'=>150, 'height'=>150, 'crop'=>'yes' );
+								}
+								if ( isset($size['crop']) && $size['crop'] == 'yes' ) {
+									$size_width 	= $size['width'];
+									$size_height 	= $size['height'];
+									$resized 		= $editor2->resize( $size_width, $size_height, true );
+									if ( is_wp_error( $resized ) ) {
+										learn_press_add_message( __( 'Thumbnail of image profile not created', 'learnpress' ) );
+									} else {
+										$dest_file = $editor2->generate_filename( 'thumb' );
+										$saved     = $editor2->save( $dest_file );
+										if ( is_wp_error( $saved ) ) {
+											learn_press_add_message( __( 'Thumbnail of image profile not created', 'learnpress' ) );
+										}
+									}
+								}
+							}
+					}
+					#
+					# Create Thumbnai for Profile Picture
+					# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+					update_user_meta( $user->id, '_lp_profile_picture', $avatar_filename );
+					update_user_meta( $user->id, '_lp_profile_picture_type', 'picture' );
 					$res['return']	= true;
-					$res['message'] = __( 'Create user picture profile success', 'learnpress' );
+					$res['message'] = __( 'Profile picture is changed', 'learnpress' );
 					$res['avatar_filename']	= $avatar_filename;
 					$res['avatar_url']		= $lp_profile_url.$avatar_filename;
 				}
@@ -652,7 +701,14 @@ function learn_press_user_update_user_info() {
 			}
 			exit();
 		}
-		# END OF CROP PROFILE PICUTRE
+#		
+# CREATE PROFILE PICTURE & THUMBNAIL
+# - - - - - - - - - - - - - - - - - - - -
+		
+		
+# - - - - - - - - - - - - - - - - - - - -
+# UPDATE USER INFO
+#	
 		$update_data = array(
 			'ID'           => $user_id,
 //			'user_url'     => filter_input( INPUT_POST, 'url', FILTER_SANITIZE_URL ),
@@ -693,46 +749,8 @@ function learn_press_user_update_user_info() {
 				}
 			}
 		}
-		// upload profile picture
-		$profile_picture_type = filter_input( INPUT_POST, 'profile_picture_type', FILTER_SANITIZE_STRING );
-		if ( $profile_picture_type == 'picture' && isset( $_POST['profile_picture_data'] ) && $_POST['profile_picture_data'] != "" ) {
-			$filename = filter_input(INPUT_POST,'profile_picture_data', FILTER_SANITIZE_STRING);
-			$avatar_file_path = $upload_dir.DIRECTORY_SEPARATOR.$filename;
-			if ( file_exists( $avatar_file_path ) ) {
-				update_user_meta( $user->id, '_lp_profile_picture', $filename );
-				# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-				#	START:	Create Thumbnai for Profile Picture
-					$editor = wp_get_image_editor( $avatar_file_path );
-					if ( is_wp_error( $editor ) ) {
-						learn_press_add_message( __( 'Thumbnail of image profile not created', 'learnpress' ) );
-					} else {
-						$editor->set_quality(90);
-						$lp         = LP();
-						$lp_setting = $lp->settings;
-						$size       = $lp_setting->get( 'profile_picture_thumbnail_size' );
-						if ( empty( $size ) ) {
-							$size = array( 'width'=>150, 'height'=>150, 'crop'=>'yes' );
-						}
-						if ( isset($size['crop']) && $size['crop'] == 'yes' ) {
-							$size_width 	= $size['width'];
-							$size_height 	= $size['height'];
-							$resized 		= $editor->resize( $size_width, $size_height, true );
-							if ( is_wp_error( $resized ) ) {
-								learn_press_add_message( __( 'Thumbnail of image profile not created', 'learnpress' ) );
-							} else {
-								$dest_file = $editor->generate_filename( 'thumb' );
-								$saved     = $editor->save( $dest_file );
-								if ( is_wp_error( $saved ) ) {
-									learn_press_add_message( __( 'Thumbnail of image profile not created', 'learnpress' ) );
-								}
-							}
-						}
-					}
-				#	END:	Create Thumbnai for Profile Picture
-				# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-			}
-		}
 
+		$profile_picture_type = filter_input( INPUT_POST, 'profile_picture_type', FILTER_SANITIZE_STRING );
 		update_user_meta( $user->id, '_lp_profile_picture_type', $profile_picture_type );
 		$res = wp_update_user( $update_data );
 		if ( $res ) {
@@ -743,6 +761,11 @@ function learn_press_user_update_user_info() {
 			wp_redirect( $current_url );
 			exit();
 		}
+#
+# UPDATE USER INFO
+# - - - - - - - - - - - - - - - - - - - -
+
+
 	}
 }
 
