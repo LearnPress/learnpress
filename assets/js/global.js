@@ -984,15 +984,18 @@ if (typeof window.LP == 'undefined') {
 			}
 		});
 
-		var filter = 'all';
-		var user_process = $('.course-students-list .students-enrolled');
+		var filter = 'all',
+			user_process = $('.course-students-list .students-enrolled'),
+			additional_student = $('.additional-students');
 		$('#students-list-filter').change(function () {
 				var filter = ($(this)).val();
 
 				if (filter == 'all') {
 					user_process.css('display', 'inline-block');
+					additional_student.css('display', 'block');
 				}
 				else {
+					additional_student.css('display', 'none');
 					$.each(user_process, function () {
 						if (!$(this).hasClass(filter)) {
 							$(this).css('display', 'none');

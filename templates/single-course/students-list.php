@@ -88,7 +88,7 @@ $students_list_avatar_size = apply_filters( 'learn_press_students_list_avatar_si
 		<?php
 		$other_student = $course->students;
 		if ( $other_student ) {
-			echo '<p>and ' . sprintf( _n( 'one student enrolled.', '%s students enrolled.', $other_student, 'learnpress' ), $other_student ) . '</p>';
+			echo '<p class="additional-students">and ' . sprintf( _n( 'one student enrolled.', '%s students enrolled.', $other_student, 'learnpress' ), $other_student ) . '</p>';
 		}
 		?>
 	<?php else: ?>
