@@ -1999,46 +1999,6 @@ body.block-content #learn-press-block-content {
 .single-lp_course .course-summary .course-students-list .filter-students {
   float: right;
 }
-.single-lp_course .course-summary .course-students-list .students {
-  clear: both;
-}
-.single-lp_course .course-summary .course-students-list .students .user-info {
-  margin-bottom: 15px;
-}
-.single-lp_course .course-summary .course-students-list .students li {
-  margin-right: 10px;
-}
-.single-lp_course .course-summary .course-students-list .students li.user-login {
-  display: block;
-  width: 100%;
-  float: left;
-}
-.single-lp_course .course-summary .course-students-list .students li .user-info {
-  position: relative;
-  float: left;
-  width: 150px;
-}
-.single-lp_course .course-summary .course-students-list .students li .user-info a {
-  position: absolute;
-  margin-left: 5px;
-  bottom: 0;
-}
-.single-lp_course .course-summary .course-students-list .students li .learn-press-course-results-progress {
-  width: 80%;
-  float: left;
-  margin-top: -15px;
-  margin-bottom: 5px;
-}
-.single-lp_course .course-summary .course-students-list .students li .learn-press-course-results-progress .course-progress {
-  width: 100%;
-}
-.single-lp_course .course-summary .course-students-list .students li .learn-press-course-results-progress .course-progress .lp-course-progress {
-  margin-top: -5px;
-}
-.single-lp_course .course-summary .course-students-list .additional-students {
-  clear: both;
-  margin-bottom: 0;
-}
 .single-lp_course .course-summary .lp_course .entry-footer {
   display: none;
 }
@@ -2051,15 +2011,44 @@ body.block-content #learn-press-block-content {
   margin-bottom: 15px;
 }
 .course-students-list .students {
-  list-style-type: none;
-  margin: 0;
+  clear: both;
+}
+.course-students-list .students .user-info {
+  margin-bottom: 15px;
 }
 .course-students-list .students li {
-  display: inline-block;
   margin-right: 10px;
 }
-.course-students-list .students p {
-  margin-top: 15px;
+.course-students-list .students li.user-login {
+  display: block;
+  width: 100%;
+  float: left;
+}
+.course-students-list .students li .user-info {
+  position: relative;
+  float: left;
+  width: 150px;
+}
+.course-students-list .students li .user-info a {
+  position: absolute;
+  margin-left: 5px;
+  bottom: 0;
+}
+.course-students-list .students li .learn-press-course-results-progress {
+  width: 80%;
+  float: left;
+  margin-top: -15px;
+  margin-bottom: 5px;
+}
+.course-students-list .students li .learn-press-course-results-progress .course-progress {
+  width: 100%;
+}
+.course-students-list .students li .learn-press-course-results-progress .course-progress .lp-course-progress {
+  margin-top: -5px;
+}
+.course-students-list .additional-students {
+  clear: both;
+  margin-bottom: 0;
 }
 /* tooltip */
 .learn-press-tooltip-bubble {
@@ -2539,4 +2528,3 @@ body.content-item-only #learn-press-content-item.expand {
 #lpbox-upload-crop-profile-picture .image-size-label {
   margin-top: 10px;
 }
-/*# sourceMappingURL=learnpress.css.map */

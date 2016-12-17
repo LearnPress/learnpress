@@ -985,8 +985,8 @@ if (typeof window.LP == 'undefined') {
 		});
 
 		var filter = 'all',
-			user_process = $('.course-students-list .students-enrolled'),
-			additional_student = $('.additional-students');
+			user_process = $('.course-summary .course-students-list .students-enrolled'),
+			additional_student = $('.course-summary .additional-students');
 		$('#students-list-filter').change(function () {
 				var filter = ($(this)).val();
 

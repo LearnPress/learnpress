@@ -43,20 +43,21 @@ $students_list_avatar_size = apply_filters( 'learn_press_students_list_avatar_si
 		<?php endif; ?>
 
         <ul class="students">
-			<?php foreach ( $students as $student ):
+			<?php foreach ( $students as $student ) {
 
-				$result = '';
+				$result = $process = '';
 				if ( is_user_logged_in() ) {
+					learn_press_setup_user_course_data( $student->ID, $course->ID, true );
 					$student = LP_User_Factory::get_user( $student->ID );
 					$result  = $student->get_course_info2( $course->ID );
 				}
 				?>
 
-                <li class="students-enrolled <?php if ( $result ) {
-					echo 'user-login ';
-					echo ( $result['results'] == 100 ) ? 'finished' : 'in-progress';
+				<?php if ( $result ) {
+					$process .= ( $result['results'] == 100 ) ? 'finished' : 'in-progress';
 				} ?>
-                    ">
+
+                <li class="students-enrolled <?php echo ( $result ) ? 'user-login ' . $process : ''; ?>">
                     <div class="user-info">
 						<?php if ( $show_avatar ): ?>
 							<?php echo get_avatar( $student->ID, $students_list_avatar_size, '', $student->display_name, array( 'class' => 'students_list_avatar' ) ); ?>
@@ -83,7 +84,7 @@ $students_list_avatar_size = apply_filters( 'learn_press_students_list_avatar_si
                         </div>
 					<?php endif; ?>
                 </li>
-			<?php endforeach; ?>
+			<?php } ?>
         </ul>
 		<?php
 		$other_student = $course->students;

@@ -1542,46 +1542,6 @@ body.block-content {
             .filter-students {
                 float: right;
             }
-            .students {
-                clear: both;
-                .user-info {
-                    margin-bottom: 15px;
-                }
-                li {
-                    margin-right: 10px;
-                    &.user-login {
-                        display: block;
-                        width: 100%;
-                        float: left;
-                    }
-                    .user-info {
-                        position: relative;
-                        float: left;
-                        width: 150px;
-                        a {
-                            position: absolute;
-                            margin-left: 5px;
-                            bottom: 0;
-                        }
-                    }
-                    .learn-press-course-results-progress {
-                        width: 80%;
-                        float: left;
-                        margin-top: -15px;
-                        margin-bottom: 5px;
-                        .course-progress {
-                            width: 100%;
-                            .lp-course-progress {
-                                margin-top: -5px;
-                            }
-                        }
-                    }
-                }
-            }
-            .additional-students {
-                clear: both;
-                margin-bottom: 0;
-            }
         }
         .lp_course {
             .entry-footer {
@@ -1599,15 +1559,44 @@ body.block-content {
     margin-top: 10px;
     margin-bottom: 15px;
     .students {
-        list-style-type: none;
-        margin: 0;
+        clear: both;
+        .user-info {
+            margin-bottom: 15px;
+        }
         li {
-            display: inline-block;
             margin-right: 10px;
+            &.user-login {
+                display: block;
+                width: 100%;
+                float: left;
+            }
+            .user-info {
+                position: relative;
+                float: left;
+                width: 150px;
+                a {
+                    position: absolute;
+                    margin-left: 5px;
+                    bottom: 0;
+                }
+            }
+            .learn-press-course-results-progress {
+                width: 80%;
+                float: left;
+                margin-top: -15px;
+                margin-bottom: 5px;
+                .course-progress {
+                    width: 100%;
+                    .lp-course-progress {
+                        margin-top: -5px;
+                    }
+                }
+            }
         }
-        p {
-            margin-top: 15px;
-        }
+    }
+    .additional-students {
+        clear: both;
+        margin-bottom: 0;
     }
 }
 
