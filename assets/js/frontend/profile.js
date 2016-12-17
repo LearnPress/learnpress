@@ -57,52 +57,41 @@
 		/**
 		 * Show hide dropdown menu
 		 */
-		$('#lpbtn-change-picture').click(function(event){
-			event.preventDefault();
-			if( $('.dropdown-menu.lpbtns-change-picture').css('display')=='none' ) {
-				$('.dropdown-menu.lpbtns-change-picture').show();
-			} else {
-				$('.dropdown-menu.lpbtns-change-picture').hide();
-			}
-		});
-
 		$('.user-profile-edit-form').on('change', 'select[name="profile_picture_type"]', function () {
-			var selected = $(this).val();
-			$('.profile-avatar-hidden, .profile-avatar-current').each(function () {
-				$(this).toggleClass('hide-if-js', function () {
-					return !$(this).hasClass(selected);
-				});
+			$('.profile-avatar-hidden, .profile-avatar-current' ).each(function () {
+				$(this).toggleClass('hide-if-js');
 			});
-			$('#profile-picture-gravatar').toggleClass('hide-if-js', selected == 'picture');
-			$('#profile-picture-picture').toggleClass('hide-if-js', selected != 'picture');
+			$('.menu-item-use-gravatar, .menu-item-use-picture' ).each(function () {
+				$(this).toggleClass('lp-menu-item-selected');
+			});
 		});
 
-		$('#lpbtn-use-gravatar').click( function(event){
-			$('.dropdown-menu.lpbtns-change-picture').hide();
-			$('.profile-picture.avatar-picture').hide();
-			$('.profile-picture.avatar-gravatar').show();
+		$('#lp-menu-change-picture .menu-item-use-gravatar').click( function(event){
+			$('#lp-profile_picture_type').val('gravatar').trigger('change');
 		});
-
-		$('#lpbtn-use-picture').click( function(event){
-			$('.dropdown-menu.lpbtns-change-picture').hide();
+		
+		$('#lp-menu-change-picture .menu-item-use-picture').click( function(event){
 			var current_picture = $('#lp-user-profile-picture-data').attr('data-current');
 			if( !current_picture ){
-				LP.confirm(
-						{
-							'title':'Upload Picture',
-							'message':'Go to upload new profile picture now'
-						}, function(result){
-					if(result){
-						$('#lpbox-upload-crop-profile-picture').slideDown();
-					}
-				});
+				$('#lp-button-choose-file').trigger('click');
+//				$('#lpbox-upload-crop-profile-picture').slideDown();
+//				LP.confirm(
+//					{
+//						'title':'Upload Picture',
+//						'message':'Go to upload new profile picture now'
+//					}, function(result){
+//						if(result){
+//							$('#lpbox-upload-crop-profile-picture').slideDown();
+//						}
+//					}
+//				);
+			} else {
+				$('#lp-profile_picture_type').val('picture').trigger('change');
 			}
 		});
 
-		$('#lpbtn-upload-picture').click(function(event){
-			event.preventDefault();
-			$('.dropdown-menu.lpbtns-change-picture').hide();
-			$('#lpbox-upload-crop-profile-picture').slideDown();
+		$('#lp-menu-change-picture .menu-item-upload-picture').click( function(event){
+			$('#lp-button-choose-file').trigger('click');
 		});
 		
 		$('#lp-ocupload-picture').upload(
@@ -116,7 +105,8 @@
 						/* Load Image in to crop */
 						$('.image-editor').cropit('imageSrc',response.avatar_tmp);
 						$('.image-editor').attr('avatar-filename',response.avatar_tmp_filename);
-						LP.alert(response.message);
+//						LP.alert(response.message);
+						$('#lpbox-upload-crop-profile-picture').slideDown();
 					} else if (!response.return){
 						$('.image-editor').cropit('imageSrc','');
 						$('.image-editor').attr('avatar-filename','');
@@ -133,6 +123,7 @@
 
 		$('#lpbox-upload-crop-profile-picture .image-editor').cropit();
 
+		
 		$('#lp-button-apply-changes').click(function (event) {
 			event.preventDefault();
 			var zoom			= $('.image-editor').cropit('zoom');
@@ -146,8 +137,7 @@
 				'zoom':zoom, 
 				'offset':offset
 			};
-			
-			/** Crop avatar and create avatar thumbnail **/
+			/** Create avatar, thumbnail and update picture option **/
 			$.ajax({
 					url     : LP.getUrl(),
 					dataType: 'html',
@@ -157,10 +147,8 @@
 						response = LP.parseJSON(response);
 						var avatar_filename = response.avatar_filename;
 						var avatar_url = response.avatar_url;
-						$('#lp-user-profile-picture-data').val( avatar_filename );
-						$('img.avatar').attr( 'src', avatar_url );
-						$('img.avatar').attr( 'srcset', avatar_url );
-						$('.profile-avatar-current img').attr( 'src', avatar_url );
+						$('.profile-picture.avatar-gravatar img').attr( 'src', avatar_url );
+						$('#lp-profile_picture_type').val('picture').trigger('change');
 						$('#lpbox-upload-crop-profile-picture').slideUp();
 					}
 				});
@@ -169,7 +157,6 @@
 		
 		$('#lp-button-cancel-changes').click(function (event) {
 			event.preventDefault();
-			$('#lp-user-profile-picture-data').val( );
 			$('#lpbox-upload-crop-profile-picture').slideUp();
 		});
 

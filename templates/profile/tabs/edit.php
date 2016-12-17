@@ -18,7 +18,8 @@ $first_name           = $user_info->first_name;
 $last_name            = $user_info->last_name;
 $profile_picture_type = $user->profile_picture_type?$user->profile_picture_type:'gravatar';
 $profile_picture = $user->profile_picture;
-$class_gravatar_selected = ( 'gravatar' === $profile_picture_type ) ? 'gravatar_selected' : '';
+$class_gravatar_selected = ( 'gravatar' === $profile_picture_type ) ? ' lp-menu-item-selected' : '';
+$class_picture_selected = ( 'picture' === $profile_picture_type ) ? ' lp-menu-item-selected' : '';
 if ( $user ) :
 	?>
 	<div class="user-profile-edit-form" id="learn-press-user-profile-edit-form">
@@ -27,9 +28,7 @@ if ( $user ) :
 				<input type="hidden" name="from" value="profile">
 				<input type="hidden" name="checkuser_id" value="2">
 			</p>
-
 			<h2><?php _e( 'About Yourself', 'learnpress' ); ?></h2>
-
 			<div class="user-profile-picture info-field">
 				<p class="profile-field-name"><?php _e( 'Profile Picture', 'learnpress' ); ?></p>
 				<div id="profile-picture-wrap">
@@ -37,32 +36,27 @@ if ( $user ) :
 						<?php echo $user->get_profile_picture( $profile_picture_type == 'gravatar' ? 'gravatar' : 'picture', 248 ); ?>
 					</div>
 					<div class="profile-picture profile-avatar-hidden hide-if-js <?php echo $profile_picture_type != 'gravatar' ? 'avatar-picture' : 'avatar-gravatar'; ?>">
-						<?php echo $user->get_profile_picture( $profile_picture_type == 'gravatar' ? 'picture' : 'gravatar' ); ?>
+						<?php echo $user->get_profile_picture( $profile_picture_type == 'gravatar' ? 'picture' : 'gravatar', 248 ); ?>
 					</div>
 					<div class="clear"></div>
-					<div class="dropdown">
-						<a href="#" id="lpbtn-change-picture" class=""><?php _e('Change Picture','learnpress'); ?></a>
-						<ul class="dropdown-menu lpbtns-change-picture" role="menu" >
-							<li role="presentation" class="<?php echo esc_attr( $class_gravatar_selected ); ?>">
-								<input type="radio" class="lp_radio_profile_picture_type" id="profile_picture_type_radio_gravatar" name="profile_picture_type" value="gravatar" <?php checked( 'gravatar', $profile_picture_type ) ?>/>
-								<label for="profile_picture_type_radio_gravatar" class="lp_label_profile_picture_type" id="lpbtn-use-gravatar"><?php _e('Use Gravatar','learnpress'); ?></label>
-<!--							<div><small><?php _e( 'You can change your profile picture on', 'learnpress' ); ?>
-										<a href="https://en.gravatar.com/"><?php _e( 'Gravatar', 'learnpress' ); ?></a>.</small></div>-->
-							</li>
-							<li role="presentation">
-								<input type="radio" class="lp_radio_profile_picture_type" id="profile_picture_type_radio_picture" name="profile_picture_type" value="picture" <?php checked( 'picture', $profile_picture_type ) ?>/>
-								<label for="profile_picture_type_radio_picture" class="lp_label_profile_picture_type" id="lpbtn-use-picture"><?php _e('User Picture','learnpress'); ?></label></li>
-							<li role="presentation">
-								<label class="lp_label_profile_picture_type" id="lpbtn-upload-picture"><?php _e('Upload New Picture','learnpress'); ?></label></li>
-						</ul>
-<!--					<input type="hidden" name="profile_picture_type" id="profile_picture_type" value="<?php echo esc_attr( $profile_picture_type ); ?>"/>-->
-<!--
-						<select name="profile_picture_type" class="hidden">
-							<option value="gravatar" <?php echo $profile_picture_type == 'gravatar' ? ' selected="selected"' : ''; ?>><?php _e( 'Gravatar', 'learnpress' ); ?></option>
-							<option value="picture" <?php echo $profile_picture_type == 'picture' ? ' selected="selected"' : ''; ?>><?php _e( 'Picture', 'learnpress' ); ?></option>
-						</select>
--->
-					</div>
+					<ul id="lp-menu-change-picture">
+						<li class="dropdown">
+							<span class="lp-label-change-picture"><?php _e('Change Picture','learnpress'); ?></span>
+							<select name="profile_picture_type" id="lp-profile_picture_type" class="hidden">
+								<option value="gravatar" <?php selected( 'gravatar', $profile_picture_type ) ?>><?php _e( 'Gravatar', 'learnpress' ); ?></option>
+								<option value="picture" <?php selected( 'picture', $profile_picture_type ) ?>><?php _e( 'Picture', 'learnpress' ); ?></option>
+							</select>
+							<ul class="dropdown-menu" role="menu" >
+								<li class="menu-item-use-gravatar<?php echo esc_attr( $class_gravatar_selected ); ?>">
+									<span><?php _e('Use Gravatar','learnpress'); ?></span></li>
+								<li class="menu-item-use-picture<?php echo esc_attr( $class_picture_selected ); ?>">
+									<span><?php _e('Use Picture','learnpress'); ?></span></li>
+								<li  class="menu-item-upload-picture">
+									<span><?php _e('Upload Picture','learnpress'); ?></span></li>
+							</ul>
+							
+						</li>
+					</ul>
 				</div>
 				<div id="lpbox-upload-crop-profile-picture">
 					<input type="hidden" id="lp-user-profile-picture-data" data-current="<?php echo esc_attr( $profile_picture ); ?>" name="profile_picture_data" />
@@ -78,13 +72,13 @@ if ( $user ) :
 							</div>
 						</div>
 						<div class="image-editor-sidebar-right">
-							<a class="button" href="#" id="lp-button-choose-file"><span class="dashicons dashicons-format-image"></span><?php _e( 'Choose File', 'learnpress' );?></a>
-							<a class="export button-primary" id="lp-button-apply-changes" href="#"><span class="dashicons dashicons-yes"></span>&nbsp;<?php _e( 'Apply Changes', 'learnpress' );?></a>
-							<a class="cancel" id="lp-button-cancel-changes" href="#"><span class="dashicons dashicons-no"></span><?php _e( 'Cancel', 'learnpress' );?></a>
+							<a href="#" id="lp-button-choose-file"><span class="dashicons dashicons-format-image"></span><?php _e( 'Choose File', 'learnpress' );?></a>
+							<a href="#" id="lp-button-apply-changes"><span class="dashicons dashicons-yes"></span>&nbsp;<?php _e( 'Apply Changes', 'learnpress' );?></a>
+							<a href="#" id="lp-button-cancel-changes"><span class="dashicons dashicons-no"></span><?php _e( 'Cancel', 'learnpress' );?></a>
 							<div id="lp-ocupload-picture"></div>
 						</div>
 					</div>
-						<div class="clear"></div>
+					<div class="clear"></div>
 				</div>
 			</div>
 			<div class="user-description-wrap info-field">
