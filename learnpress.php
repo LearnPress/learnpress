@@ -212,9 +212,9 @@ if ( !class_exists( 'LearnPress' ) ) {
 			// Register custom-post-type and taxonomies
 			require_once 'inc/custom-post-types/abstract.php';
 			require_once 'inc/custom-post-types/course.php';
-			require_once 'inc/custom-post-types/quiz.php';
+            require_once 'inc/custom-post-types/lesson.php';
+            require_once 'inc/custom-post-types/quiz.php';
 			require_once 'inc/custom-post-types/question.php';
-			require_once 'inc/custom-post-types/lesson.php';
 			require_once 'inc/custom-post-types/order.php';
 		}
 
