@@ -345,7 +345,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 				'html'    => ob_get_clean(),
 				'data'    => $found_items,
 				'args'    => $args,
-				'notices' => '<div class="learnpress-search-notices notice notice-warning">' . sprintf( '<p>' . __( 'A ', 'learnpress' ) . '<strong>%s</strong>' . __( ' is just used for only one ', 'learnpress' ) . '%s</p>', $item_object->labels->singular_name, $post_type->labels->name ) . '</div>'
+                'notices' => '<div class="learnpress-search-notices notice notice-warning">' . sprintf( '<p>' . __( 'A ', 'learnpress' ) . '<span style="text-transform: lowercase;">%s</span>' . __( ' is just used for only one ', 'learnpress' ) . '<span style="text-transform: lowercase;">%s</span></p>', $item_object->labels->singular_name, $post_type->labels->name ) . '</div>'
 			);
 			learn_press_send_json( $response );
 		}
