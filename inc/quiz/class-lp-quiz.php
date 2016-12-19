@@ -116,7 +116,7 @@ class LP_Quiz extends LP_Abstract_Course_Item {
 				'message' => __( 'Are you sure you want to retake this quiz?', 'learnpress' )
 			),
 			'quiz_time_is_over'   => array(
-				'title'   => __( 'Time out!' ),
+				'title'   => __( 'Time out!', 'learnpress' ),
 				'message' => __( 'The time is over! Your quiz will automate come to finish', 'learnpress' )
 			),
 			'finished_quiz'       => __( 'Congrats! You have finished this quiz', 'learnpress' ),
