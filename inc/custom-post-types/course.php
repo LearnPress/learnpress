@@ -1134,13 +1134,15 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			$values = array_values( $columns );
 			$pos    = array_search( 'title', $keys );
 			if ( $pos !== false ) {
-				array_splice( $keys, $pos + 1, 0, array( 'sections', 'students', 'price' ) );
+				array_splice( $keys, $pos + 1, 0, array( 'author', 'sections', 'students', 'price' ) );
 				array_splice( $values, $pos + 1, 0, array(
+				    __( 'Author', 'learnpress' ),
 					__( 'Content', 'learnpress' ),
 					__( 'Students', 'learnpress' ),
 					__( 'Price', 'learnpress' ) ) );
 				$columns = array_combine( $keys, $values );
 			} else {
+				$columns['author']   = __( 'Author', 'learnpress' );
 				$columns['sections'] = __( 'Content', 'learnpress' );
 				$columns['students'] = __( 'Students', 'learnpress' );
 				$columns['price']    = __( 'Price', 'learnpress' );
@@ -1160,6 +1162,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			global $post;
 			$course = LP_Course::get_course( $post->ID );
 			switch ( $column ) {
+
 				case 'sections':
 					$sections = $course->get_curriculum();
 					if ( $sections ) {
@@ -1303,6 +1306,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 * @return mixed
 		 */
 		public function sortable_columns( $columns ) {
+            $columns['author'] = 'author';
 			$columns['price'] = 'price';
 
 			return $columns;

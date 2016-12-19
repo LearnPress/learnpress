@@ -172,7 +172,8 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 			// append new column after title column
 			$pos         = array_search( 'title', array_keys( $columns ) );
 			$new_columns = array(
-				LP_COURSE_CPT => __( 'Course', 'learnpress' )
+                'author'        => __( 'Author', 'learnpress' ),
+				LP_COURSE_CPT   => __( 'Course', 'learnpress' )
 			);
 			if ( current_theme_supports( 'post-formats' ) ) {
 				$new_columns['format']   = __( 'Format', 'learnpress' );
@@ -326,6 +327,7 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 		 */
 		public function sortable_columns( $columns ) {
 			$columns[LP_COURSE_CPT] = 'course-name';
+			$columns['author'] = 'author';
 			return $columns;
 		}
 
