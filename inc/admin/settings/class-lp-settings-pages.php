@@ -141,17 +141,6 @@ class LP_Settings_Pages extends LP_Settings_Base {
 				),
 				array( 'section' => 'quiz' ),
 				array(
-					'title'   => __( 'Restrict access', 'learnpress' ),
-					'id'      => $this->get_field_name( 'quiz_restrict_access' ),
-					'default' => '404',
-					'type'    => 'select',
-					'desc'    => __( 'Page to display if the user has no permission to view quiz.', 'learnpress' ),
-					'options' => array(
-						'404'    => __( '404 page', 'learnpress' ),
-						'custom' => __( 'Restrict page', 'learnpress' ),
-					)
-				),
-				array(
 					'title' => __( 'Endpoints', 'learnpress' ),
 					'type'  => 'title'
 				),
