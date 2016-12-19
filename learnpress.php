@@ -12,7 +12,6 @@ Tested up to: 4.6.1
 Text Domain: learnpress
 Domain Path: /languages/
 */
-
 /**
  * Prevent loading this file directly
  */
@@ -696,3 +695,5 @@ function load_learn_press() {
  * Create new instance of LearnPress and put it to global
  */
 $GLOBALS['LearnPress'] = LP();
+
+// this code from test-x
