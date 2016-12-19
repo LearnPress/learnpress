@@ -206,8 +206,7 @@ if ( !function_exists( 'learn_press_remove_old_data' ) ) {
 function learn_press_tools_subtabs() {
 	$default_tabs = array(
 		'database'  => __( 'Database', 'learnpress' ),
-		'templates' => __( 'Templates', 'learnpress' ),
-		'course' => __( 'Course', 'learnpress' )
+		'templates' => __( 'Templates', 'learnpress' )
 	);
 	return apply_filters( 'learn_press_tools_subtabs', $default_tabs );
 }
