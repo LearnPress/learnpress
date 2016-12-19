@@ -1441,37 +1441,114 @@ body.block-content {
             display: block;
         }
     }
-    /* crop user profile picture */
-    .cropit-preview {
-        background-color: #f8f8f8;
-        background-size: cover;
-        border: 1px solid #ccc;
-        border-radius: 3px;
-        margin-top: 7px;
-        width: 250px;
-        height: 250px;
-    }
-    .cropit-preview-image {
-        max-width: none;
-        max-height: none;
-    }
 
-    .cropit-preview-image-container {
-        cursor: move;
-    }
+	/**  STYLE PROFILE **/
+	/* Change Picture Menu */
+	#lp-menu-change-picture {
+		list-style: none;
+		.lp-label-change-picture {
+			display: block;
+			color: blueviolet;
+			padding: 2px 10px;
+			border: solid 1px gray;
+			cursor: pointer;
+		}
+		.dropdown {
+			display: inline-block;
+			&:hover {
+				.dropdown-menu {
+					display: block;
+				}
+			}
+			.dropdown-menu {
+				display: none;
+				position: absolute;
+				list-style: none;
+				margin: 0 !important;
+				padding: 0;
+				background-color: #F5F5F5;
+				li {
+					display: block;
+					cursor: pointer;
+					border: solid 1px #999999;
+					border-bottom: none;
+					padding: 3px 10px;
+					&:hover{
+						color: blue;
+						background-color: lightblue;
+					}
+					&:last-child {
+						border-bottom: solid 1px #999999;
+					}
+					&.lp-menu-item-selected {
+						background: royalblue;
+					}
+				}
+			}
+		}
+	}
+	
+	#lp-profile_picture_type {
+		display: none;
+	}
+	
+	/** upload-crop box **/
 
-    .image-size-label {
-        margin-top: 10px;
-    }
-
-    input, .export {
-        display: block;
-    }
-
-    button {
-        margin: 0 auto 10px auto;
-    }
-    /* end of crop user profile picture */
+	#lpbox-upload-crop-profile-picture {
+		display:none;
+		border: solid 1px gray;
+		padding: 10px;
+		max-width: 500px;
+		background-color: ghostwhite;
+		.lpbox-title {
+			font-size: 20px;
+		}
+		.image-editor {
+			width:300px;
+			float:left;
+			
+			.cropit-preview {
+				background-color: #f8f8f8;
+				background-size: cover;
+				border: 1px solid #ccc;
+				border-radius: 3px;
+				margin-top: 7px;
+				width: 252px;
+				height: 252px;
+				.cropit-preview-image-container {
+					cursor: move;
+					.cropit-preview-image {
+						max-width: none;
+						max-height: none;
+					}
+				}
+				
+			}
+			.image-editor-btn {
+				margin: 10px auto;
+				text-align: center !important;
+				.input {
+					display:inline-block !important;
+				}
+			}
+			.cropit-preview {
+				margin: 0 auto;
+			}
+		}
+		.image-editor-sidebar-right {
+			width:150px;
+			float:left;
+			a {
+				display:block;
+				text-align:center;
+				margin: 10px 0;
+			}
+			.dashicons {
+				line-height: 1.5;
+				margin-right:5px;
+			}
+		}
+	}
 }
 
 .learn-press-pagination {
@@ -2026,125 +2103,4 @@ body.content-item-only {
             }
         }
     }
-}
-
-/**  STYLE PROFILE **/
-/** dropdown box **/
-/* Change Picture Menu */
-#lp-menu-change-picture {
-	list-style: none;
-}
-.lp-label-change-picture {
-	display: block;
-	color: blueviolet;
-	padding: 2px 10px;
-	border: solid 1px gray;
-	cursor: pointer;
-}
-#lp-profile_picture_type {
-	display: none;
-}
-#lp-menu-change-picture .dropdown {
-	display: inline-block;
-}
-#lp-menu-change-picture .dropdown:hover .dropdown-menu {
-	display: block;
-}
-
-#lp-menu-change-picture .dropdown-menu {
-	display: none;
-	position: absolute;
-	list-style: none;
-    margin: 0 !important;
-    padding: 0;
-    background-color: #F5F5F5;
-}
-
-#lp-menu-change-picture .dropdown-menu li {
-	display: block;
-	cursor: pointer;
-	border: solid 1px #999999;
-	border-bottom: none;
-	padding: 3px 10px;
-}
-#lp-menu-change-picture .dropdown-menu li:hover {
-	color: blue;
-	background-color: lightblue;
-}
-
-#lp-menu-change-picture .dropdown-menu li:last-child {
-	border-bottom: solid 1px #999999;
-}
-#lp-menu-change-picture .dropdown-menu .lp-menu-item-selected{
-	display: none;
-}
-
-/** upload-crop box **/
-
-#lpbox-upload-crop-profile-picture {
-	display:none;
-	border: solid 1px gray;
-	padding: 10px;
-	max-width: 500px;
-	background-color: ghostwhite;
-}
-#lpbox-upload-crop-profile-picture .lpbox-title {
-	font-size: 20px;
-}
-
-#lpbox-upload-crop-profile-picture .image-editor {
-	width:300px;
-	float:left;
-}
-
-#lpbox-upload-crop-profile-picture .image-editor .image-editor-btn {
-	margin: 10px auto;
-	text-align: center !important;
-}
-
-#lpbox-upload-crop-profile-picture .image-editor .image-editor-btn .input {
-	display:inline-block !important;
-}
-
-#lpbox-upload-crop-profile-picture .image-editor .cropit-preview {
-	margin: 0 auto;
-}
-
-#lpbox-upload-crop-profile-picture .image-editor-sidebar-right {
-	width:150px;
-	float:left;
-}
-
-.image-editor-sidebar-right a {
-	display:block;
-	text-align:center;
-	margin: 10px 0;
-}
-
-.image-editor-sidebar-right .dashicons {
-	line-height: 1.5;
-	margin-right:5px;
-}
-
-/**
- MMMM
-**/
-#lpbox-upload-crop-profile-picture .cropit-preview {
-	background-color: #f8f8f8;
-	background-size: cover;
-	border: 1px solid #ccc;
-	border-radius: 3px;
-	margin-top: 7px;
-	width: 252px;
-	height: 252px;
-}
-#lpbox-upload-crop-profile-picture .cropit-preview-image {
-	max-width: none;
-	max-height: none;
-}
-#lpbox-upload-crop-profile-picture .cropit-preview-image-container {
-	cursor: move;
-}
-#lpbox-upload-crop-profile-picture .image-size-label {
-	margin-top: 10px;
 }
