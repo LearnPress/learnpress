@@ -19,8 +19,8 @@
 				'keyup input[name="lp-new-question-name"]'                 : 'toggleAddButtonState',
 				'keydown .no-submit'                                       : 'preventSubmitForm',
 				'click .lp-button-add-question'                            : 'addNewItem',
-				'change .lp_input_duration_type'							:'changeDurationType',
-				'change input.learn-press-question-duration'				:'updateQuizDuration',
+				'change .lp_input_duration_type'                           : 'changeDurationType',
+				'change input.learn-press-question-duration'               : 'updateQuizDuration',
 			},
 			initialize              : function () {
 				$('#learn-press-list-questions').sortable({
@@ -34,11 +34,11 @@
 
 				$(document).on('learn_press_modal_search_items_response', this.addItemsToSection);
 			},
-			changeDurationType: function( event, $app ){
-				if( 'quiz_duration' === $(event.target).val() ) {
+			changeDurationType      : function (event, $app) {
+				if ('quiz_duration' === $(event.target).val()) {
 					$('.rwmb-duration-wrapper').show('slow');
 					$('span.learn-press-question-duration').hide();
-				} else if('questions_duration'===$(event.target).val()){
+				} else if ('questions_duration' === $(event.target).val()) {
 					this.updateQuizDuration();
 					$('#_lp_duration_select').val('minute');
 					$('span.learn-press-question-duration').show();
@@ -49,10 +49,10 @@
 					$('#_lp_duration').val(0);
 				}
 			},
-			updateQuizDuration: function(){
+			updateQuizDuration      : function () {
 				var duration = 0;
 				$('#_lp_duration_select').val('minute');
-				$('input.learn-press-question-duration').each(function(index, el){
+				$('input.learn-press-question-duration').each(function (index, el) {
 					duration += parseInt($(el).val());
 				});
 				$('#_lp_duration').val(duration);
@@ -264,7 +264,11 @@
 
 		$('input[name="_lp_passing_grade_type"]').change(function () {
 			var t = $('input[name="_lp_passing_grade_type"]:checked').val(),
-				$el = $('label[for="_lp_passing_grade"]');
+				$el = $('label[for="_lp_passing_grade"]'),
+				passing_grade = $('input[name="_lp_passing_grade"]');
+
+			console.log(passing_grade);
+
 			switch (t) {
 				case 'percentage':
 					$el.closest('.rwmb-field').show();
@@ -272,6 +276,7 @@
 					break;
 				case 'point':
 					$el.closest('.rwmb-field').show();
+					passing_grade.removeAttr('max');
 					break;
 				case 'no':
 				case '':
