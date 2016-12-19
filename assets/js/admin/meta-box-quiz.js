@@ -267,8 +267,6 @@
 				$el = $('label[for="_lp_passing_grade"]'),
 				passing_grade = $('input[name="_lp_passing_grade"]');
 
-			console.log(passing_grade);
-
 			switch (t) {
 				case 'percentage':
 					$el.closest('.rwmb-field').show();
