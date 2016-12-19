@@ -96,7 +96,7 @@ We are developing and improving LearnPress day by day and bringing new features 
 
 
 
-###LearnPress have been translated into the following languages###  
+###LearnPress has been translated into the following languages###
 
 1. English  
 2. French  
