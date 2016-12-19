@@ -272,6 +272,7 @@
 			switch (t) {
 				case 'percentage':
 					$el.closest('.rwmb-field').show();
+					passing_grade.attr('max', 100);
 					t = '%';
 					break;
 				case 'point':
