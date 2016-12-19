@@ -758,7 +758,7 @@ function learn_press_admin_course_tabs() {
 
 add_action( 'admin_footer', 'learn_press_show_menu' );
 function learn_press_show_menu() {
-	if ( isset( $_GET['post_type'] ) && $_GET['post_type'] == 'lp_course' ) {
+	if ( (isset( $_GET['post_type'] ) && $_GET['post_type'] == 'lp_course' ) ) {
 		?>
         <script type="text/javascript">
 			jQuery(window).load(function ($) {
@@ -776,6 +776,25 @@ function learn_press_show_menu() {
         </script>
 		<?php
 	}
+
+	if ( isset($_GET['post_type']) ) {
+        ?>
+        <script type="text/javascript">
+            (function ($){
+
+                var $lpMainMenu = $('#toplevel_page_learn_press'),
+                    href = 'edit.php?post_type=<?php echo $_GET['post_type']; ?>',
+                    $current = $('a[href="'+ href +'"]', $lpMainMenu);
+
+                if ($current.length) {
+                    $current.addClass('current');
+                    $current.parent('li').addClass('current');
+                }
+            })(jQuery)
+        </script>
+        <?php
+
+    }
 }
 
 /**
