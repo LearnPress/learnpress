@@ -34,7 +34,7 @@ if ( empty ( $question->id ) ) {
 			   data-action="remove"
 			   data-confirm-remove="<?php _e( 'Are you sure you want to remove this question?', 'learnpress' ); ?>"
 			   title="<?php _e( 'Remove', 'learnpress' ); ?>"></a>
-			<a href="" class="move"></a>
+			<a href="" class="move dashicons dashicons-menu"></a>
 		</p>
 	</div>
 	<div class="quiz-question-content<?php echo $is_hidden ? ' hide-if-js' : ''; ?>">
