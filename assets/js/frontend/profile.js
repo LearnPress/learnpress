@@ -58,11 +58,12 @@
 		 * Show hide dropdown menu
 		 */
 		$('.user-profile-edit-form').on('change', 'select[name="profile_picture_type"]', function () {
+			var avata_type = $(this).val();
 			$('.profile-avatar-hidden, .profile-avatar-current' ).each(function () {
-				$(this).toggleClass('hide-if-js');
+				$(this).toggleClass('hide-if-js', $(this).hasClass('avatar-'+avata_type) );
 			});
 			$('.menu-item-use-gravatar, .menu-item-use-picture' ).each(function () {
-				$(this).toggleClass('lp-menu-item-selected');
+				$(this).toggleClass('lp-menu-item-selected', $(this).hasClass('menu-item-use-'+avata_type));
 			});
 		});
 
@@ -74,17 +75,6 @@
 			var current_picture = $('#lp-user-profile-picture-data').attr('data-current');
 			if( !current_picture ){
 				$('#lp-button-choose-file').trigger('click');
-//				$('#lpbox-upload-crop-profile-picture').slideDown();
-//				LP.confirm(
-//					{
-//						'title':'Upload Picture',
-//						'message':'Go to upload new profile picture now'
-//					}, function(result){
-//						if(result){
-//							$('#lpbox-upload-crop-profile-picture').slideDown();
-//						}
-//					}
-//				);
 			} else {
 				$('#lp-profile_picture_type').val('picture').trigger('change');
 			}
@@ -101,13 +91,12 @@
 				'onComplete':function(response){
 					response = LP.parseJSON(response);
 					console.log(response);
-					if(response.return && response.avatar_tmp ) {
+					if( response.return && response.avatar_tmp ) {
 						/* Load Image in to crop */
 						$('.image-editor').cropit('imageSrc',response.avatar_tmp);
 						$('.image-editor').attr('avatar-filename',response.avatar_tmp_filename);
-//						LP.alert(response.message);
 						$('#lpbox-upload-crop-profile-picture').slideDown();
-					} else if (!response.return){
+					} else if ( !response.return ){
 						$('.image-editor').cropit('imageSrc','');
 						$('.image-editor').attr('avatar-filename','');
 						LP.alert(response.message);
@@ -145,11 +134,11 @@
 					type    : 'post',
 					success : function (response) {
 						response = LP.parseJSON(response);
-						var avatar_filename = response.avatar_filename;
 						var avatar_url = response.avatar_url;
 						$('.profile-picture.avatar-gravatar img').attr( 'src', avatar_url );
 						$('#lp-profile_picture_type').val('picture').trigger('change');
 						$('#lpbox-upload-crop-profile-picture').slideUp();
+						LP.alert(response.message);
 					}
 				});
 				return;

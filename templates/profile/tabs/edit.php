@@ -33,10 +33,10 @@ if ( $user ) :
 				<p class="profile-field-name"><?php _e( 'Profile Picture', 'learnpress' ); ?></p>
 				<div id="profile-picture-wrap">
 					<div class="profile-picture profile-avatar-current <?php echo $profile_picture_type == 'gravatar' ? 'avatar-picture' : 'avatar-gravatar'; ?>">
-						<?php echo $user->get_profile_picture( $profile_picture_type == 'gravatar' ? 'gravatar' : 'picture', 248 ); ?>
+						<?php echo $user->get_profile_picture( $profile_picture_type == 'gravatar' ? 'gravatar' : 'picture' ); ?>
 					</div>
 					<div class="profile-picture profile-avatar-hidden hide-if-js <?php echo $profile_picture_type != 'gravatar' ? 'avatar-picture' : 'avatar-gravatar'; ?>">
-						<?php echo $user->get_profile_picture( $profile_picture_type == 'gravatar' ? 'picture' : 'gravatar', 248 ); ?>
+						<?php echo $user->get_profile_picture( $profile_picture_type == 'gravatar' ? 'picture' : 'gravatar' ); ?>
 					</div>
 					<div class="clear"></div>
 					<ul id="lp-menu-change-picture">
@@ -66,8 +66,10 @@ if ( $user ) :
 						<div class="image-editor image-editor-sidebar-left">
 							<div class="cropit-preview"></div>
 							<div class="image-editor-btn">
-<!--							<span class="rotate-ccw dashicons dashicons-image-rotate-left"></span>
-								<span class="rotate-cw dashicons dashicons-image-rotate-right"></span>-->
+<!--							
+								<span class="rotate-ccw dashicons dashicons-image-rotate-left"></span>
+								<span class="rotate-cw dashicons dashicons-image-rotate-right"></span>
+-->
 								<input type="range" class="cropit-image-zoom-input">
 							</div>
 						</div>

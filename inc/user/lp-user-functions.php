@@ -598,7 +598,6 @@ function learn_press_user_update_user_info() {
 
 			if (isset($_FILES['image']['name'])){
 				// upload picture to tmp folder
-				
 				$path_image_tmp = $upload_dir_tmp.DIRECTORY_SEPARATOR.$filename.'.'.$file_ext;
 				if(  file_exists( $path_image_tmp ) ){
 					$filename .= '1';
@@ -606,6 +605,17 @@ function learn_press_user_update_user_info() {
 				}
 				$uploaded = move_uploaded_file($image_tmp, $path_image_tmp);
 				chmod($path_image_tmp, 0777);
+				if($uploaded){
+					$editor3 = wp_get_image_editor( $path_image_tmp );
+					if ( !is_wp_error( $editor3 ) ) {
+						# Calculator new width height
+						$size_current = $editor3->get_size();
+						if($size_current['width'] < 250 || $size_current['width']<250 ){
+							$editor3->resize(250, 250, true);
+							$saved = $editor3->save();	
+						}
+					}
+				}
 				$message = $uploaded ? __('Image is uploaded success','learnpress'):__('Error on upload image','learnpress');
 				$return = array(
 					'return' => $uploaded,
