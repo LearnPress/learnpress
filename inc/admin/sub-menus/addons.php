@@ -60,7 +60,7 @@ function learn_press_addons_page() {
 
             <?php do_action( 'learn_press_add_ons_content_tab_' . $current, $current ); ?>
 
-            <?php if ( strtolower( $theme->name ) !== 'eduma' ) : ?>
+            <?php if ( strtolower( $theme->name ) !== 'eduma'  && $current != 'related_themes') : ?>
                 <div class="theme">
                     <a href="https://themeforest.net/item/education-wordpress-theme-education-wp/14058034?s_rank=3">
                         <img src="https://thimpress.com/wp-content/uploads/2016/09/01_preview-4.jpg" />

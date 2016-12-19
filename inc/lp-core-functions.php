@@ -553,10 +553,10 @@ if ( !function_exists( 'learn_press_paging_nav' ) ) :
 
 		if ( $links ) :
 			?>
-			<div class="<?php echo $args['wrapper_class']; ?>">
+            <div class="<?php echo $args['wrapper_class']; ?>">
 				<?php echo $links; ?>
-			</div>
-			<!-- .pagination -->
+            </div>
+            <!-- .pagination -->
 			<?php
 		endif;
 	}
@@ -1895,7 +1895,7 @@ function learn_press_add_user_item_if_needed( $located, $template_name, $templat
 
 function learn_press_set_user_timezone() {
 	?>
-	<script type="text/javascript">
+    <script type="text/javascript">
 		(function (factory) {
 			if (typeof define === 'function' && define.amd) {
 				// AMD (Register as an anonymous module)
@@ -1968,9 +1968,9 @@ function learn_press_set_user_timezone() {
 				// Read
 
 				var result = key ? undefined : {},
-				// To prevent the for loop in the first place assign an empty array
-				// in case there are no cookies at all. Also prevents odd result when
-				// calling $.cookie().
+					// To prevent the for loop in the first place assign an empty array
+					// in case there are no cookies at all. Also prevents odd result when
+					// calling $.cookie().
 					cookies = document.cookie ? document.cookie.split('; ') : [],
 					i = 0,
 					l = cookies.length;
@@ -2005,7 +2005,7 @@ function learn_press_set_user_timezone() {
 
 		}));
 		jQuery.cookie('timezone', new Date().getTimezoneOffset());
-	</script>
+    </script>
 	<?php
 }
 

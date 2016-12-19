@@ -135,7 +135,8 @@ class LP_User_Factory {
 	 * @return mixed|void
 	 */
 	public static function get_user_class() {
-		return apply_filters( 'learn_press_user_class', is_user_logged_in() ? 'LP_User' : 'LP_User_Guest' );
+		$is_logged_in = function_exists( 'is_user_logged_in' ) && is_user_logged_in();
+		return apply_filters( 'learn_press_user_class', $is_logged_in ? 'LP_User' : 'LP_User_Guest' );
 	}
 
 	/**

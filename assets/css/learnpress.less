@@ -9,6 +9,7 @@
     font-weight: normal;
     font-style: normal;
 }
+
 [class^="lp-icon-"], [class*=" lp-icon-"] {
     /* use !important to prevent issues with browser extensions that change fonts */
     font-family: 'lp-icons' !important;
@@ -1440,37 +1441,114 @@ body.block-content {
             display: block;
         }
     }
-    /* crop user profile picture */
-    .cropit-preview {
-        background-color: #f8f8f8;
-        background-size: cover;
-        border: 1px solid #ccc;
-        border-radius: 3px;
-        margin-top: 7px;
-        width: 250px;
-        height: 250px;
-    }
-    .cropit-preview-image {
-        max-width: none;
-        max-height: none;
-    }
 
-    .cropit-preview-image-container {
-        cursor: move;
-    }
+	/**  STYLE PROFILE **/
+	/* Change Picture Menu */
+	#lp-menu-change-picture {
+		list-style: none;
+		.lp-label-change-picture {
+			display: block;
+			color: blueviolet;
+			padding: 2px 10px;
+			border: solid 1px gray;
+			cursor: pointer;
+		}
+		.dropdown {
+			display: inline-block;
+			&:hover {
+				.dropdown-menu {
+					display: block;
+				}
+			}
+			.dropdown-menu {
+				display: none;
+				position: absolute;
+				list-style: none;
+				margin: 0 !important;
+				padding: 0;
+				background-color: #F5F5F5;
+				li {
+					display: block;
+					cursor: pointer;
+					border: solid 1px #999999;
+					border-bottom: none;
+					padding: 3px 10px;
+					&:hover{
+						color: blue;
+						background-color: lightblue;
+					}
+					&:last-child {
+						border-bottom: solid 1px #999999;
+					}
+					&.lp-menu-item-selected {
+						background: royalblue;
+					}
+				}
+			}
+		}
+	}
+	
+	#lp-profile_picture_type {
+		display: none;
+	}
+	
+	/** upload-crop box **/
 
-    .image-size-label {
-        margin-top: 10px;
-    }
-
-    input, .export {
-        display: block;
-    }
-
-    button {
-        margin: 0 auto 10px auto;
-    }
-    /* end of crop user profile picture */
+	#lpbox-upload-crop-profile-picture {
+		display:none;
+		border: solid 1px gray;
+		padding: 10px;
+		max-width: 500px;
+		background-color: ghostwhite;
+		.lpbox-title {
+			font-size: 20px;
+		}
+		.image-editor {
+			width:300px;
+			float:left;
+			
+			.cropit-preview {
+				background-color: #f8f8f8;
+				background-size: cover;
+				border: 1px solid #ccc;
+				border-radius: 3px;
+				margin-top: 7px;
+				width: 252px;
+				height: 252px;
+				.cropit-preview-image-container {
+					cursor: move;
+					.cropit-preview-image {
+						max-width: none;
+						max-height: none;
+					}
+				}
+				
+			}
+			.image-editor-btn {
+				margin: 10px auto;
+				text-align: center !important;
+				.input {
+					display:inline-block !important;
+				}
+			}
+			.cropit-preview {
+				margin: 0 auto;
+			}
+		}
+		.image-editor-sidebar-right {
+			width:150px;
+			float:left;
+			a {
+				display:block;
+				text-align:center;
+				margin: 10px 0;
+			}
+			.dashicons {
+				line-height: 1.5;
+				margin-right:5px;
+			}
+		}
+	}
 }
 
 .learn-press-pagination {
@@ -1535,28 +1613,11 @@ body.block-content {
             padding-top: 10px;
         }
         .course-students-list {
-            .students {
-                clear: both;
-                .user-info {
-                    margin-bottom: 10px;
-                }
-                li {
-                    margin-right: 10px;
-                    &.user-login {
-                        display: block;
-                        width: 45%;
-                        float: left;
-                    }
-                    .course-progress {
-                        width: 100%;
-                        .lp-course-progress {
-                            margin-top: -5px;
-                        }
-                    }
-                }
+            .students-list-title {
+                float: left;
             }
-            p {
-                clear: both;
+            .filter-students {
+                float: right;
             }
         }
         .lp_course {
@@ -1565,21 +1626,54 @@ body.block-content {
             }
         }
     }
+    .learn-press-message {
+        clear: both;
+        margin-top: 25px;
+    }
 }
 
 .course-students-list {
     margin-top: 10px;
     margin-bottom: 15px;
     .students {
-        list-style-type: none;
-        margin: 0;
+        clear: both;
+        .user-info {
+            margin-bottom: 15px;
+        }
         li {
-            display: inline-block;
             margin-right: 10px;
+            &.user-login {
+                display: block;
+                width: 100%;
+                float: left;
+            }
+            .user-info {
+                position: relative;
+                float: left;
+                width: 150px;
+                a {
+                    position: absolute;
+                    margin-left: 5px;
+                    bottom: 0;
+                }
+            }
+            .learn-press-course-results-progress {
+                width: 80%;
+                float: left;
+                margin-top: -15px;
+                margin-bottom: 5px;
+                .course-progress {
+                    width: 100%;
+                    .lp-course-progress {
+                        margin-top: -5px;
+                    }
+                }
+            }
         }
-        p {
-            margin-top: 15px;
-        }
+    }
+    .additional-students {
+        clear: both;
+        margin-bottom: 0;
     }
 }
 
