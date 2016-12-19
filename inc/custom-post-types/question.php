@@ -366,7 +366,7 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 		 * @return mixed
 		 */
 		public function sortable_columns( $columns ) {
-			$columns[LP_QUIZ_CPT] = 'quiz-name';
+			$columns[LP_QUIZ_CPT] = 'quiz-name'; // Minh Chinh
 			return $columns;
 		}
 
