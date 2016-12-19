@@ -240,6 +240,7 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 		public function columns_head( $columns ) {
 			$pos         = array_search( 'title', array_keys( $columns ) );
 			$new_columns = array(
+				'author' => __( 'Author', 'learnpress' ),
 				LP_QUIZ_CPT => __( 'Quiz', 'learnpress' ),
 				'type'      => __( 'Type', 'learnpress' )
 			);
@@ -366,7 +367,8 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 		 * @return mixed
 		 */
 		public function sortable_columns( $columns ) {
-			$columns[LP_QUIZ_CPT] = 'quiz-name'; // Minh Chinh
+			$columns['author'] = 'author';
+			$columns[LP_QUIZ_CPT] = 'quiz-name';
 			return $columns;
 		}
 
