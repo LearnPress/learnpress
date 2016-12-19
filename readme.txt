@@ -2,7 +2,7 @@
 Contributors: thimpress, tunnhn, phonglq.foobla, chinhtm, thongta, kendy73
 Donate link:  
 Tags: WordPress LMS, LMS, eLearning, e-Learning, Learning Management System, LMS WordPress, Course, Courses, Quiz, Quizzes, Training, Guru, Sell Courses  
-Requires at least: 3.8  
+Requires at least: 3.8
 Tested up to: 4.7
 Stable tag: trunk
 License: GPLv2 or later  
