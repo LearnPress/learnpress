@@ -886,4 +886,32 @@ jQuery(document).ready(function ($) {
 		return false;
 	});
 
+    $(document).on('click', '.lp-close-notice', function (event) {
+
+        var $parent = $(this).closest('.learnpress-search-notices');
+
+        if ($parent.length) {
+
+            event.preventDefault();
+
+            var slug = $parent.data('postType'),
+                user = $parent.data('user');
+
+            $parent.remove();
+            $.ajax({
+                url: ajaxurl,
+                type: 'POST',
+                data: {
+                    action: 'learnpress_remove_notice_popup',
+                    slug: slug,
+                    user: user
+                },
+                complete: function (response) {
+                   console.log('Hidden Notice');
+                }
+
+            })
+        }
+    });
+
 })(jQuery);

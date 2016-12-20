@@ -1,8 +1,8 @@
 === LearnPress - WordPress LMS Plugin ===  
-Contributors: thimpress, tunnhn, phonglq.foobla, chinhtm, thongta, kendy73
+Contributors: thimpress, tunnhn, phonglq.foobla, chinhtm, thongta, kendy73, leehld
 Donate link:  
 Tags: WordPress LMS, LMS, eLearning, e-Learning, Learning Management System, LMS WordPress, Course, Courses, Quiz, Quizzes, Training, Guru, Sell Courses  
-Requires at least: 3.8  
+Requires at least: 3.8
 Tested up to: 4.7
 Stable tag: trunk
 License: GPLv2 or later  
@@ -192,6 +192,13 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.  
 
 == Changelog ==
+= 2.0.8 =
++ Fixed loop redirecting while saving course for instructor
++ Fixed "Place Order" is empty if Paypal is selected
++ Improved some admin sections
++ Improved uploading user profile picture
++ Enabled VC load lesson for building page
+
 = 2.0.7.2 =
 + Added Messaging between admin and instructors for reviewing and submitting course
 + Fixed loop redirect if a page is used for both home page and course page
