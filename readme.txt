@@ -16,16 +16,17 @@ A WordPress LMS Plugin to create WordPress Learning Management System. Turn your
 
 LearnPress is free and always be free, but it has premium high quality WordPress Plugin which will probably help you make money from your **WordPress based LMS**, try and see how it is. LearnPress WordPress Online Course plugin is lightweight but super powerful with lots of add-ons to empower its core system.
 
-> **One-time discount - 10 days left**
-
+> **Christmas & New Year Week Sale - 10 Days Left**
 
 > [Click here](http://eepurl.com/cbKSQX) to get a coupon for 25% Off all LearnPress Add-ons
 
 > Or you can [buy Education WP theme](http://themeforest.net/item/education-wordpress-theme-education-wp/14058034?utm_source=wporg&utm_medium=learnpressDC&ref=thimpress&utm_campaign=learnpress) for only 64$ and get all of them.
 
-###LMS & Education WordPress Themes###  
+> **HOT!!** [WordPress theme for Coaches, Trainers, Teachers - Coaching WP](https://themeforest.net/item/speaker-and-life-coach-wordpress-theme-coaching-wp/17097658?utm_source=wporg&utm_medium=learnpressDC&ref=thimpress&utm_campaign=learnpress) is also FOR SALE at only $59, LearnPress included.
 
-Take a look at Premium **[Education WordPress Theme](http://themeforest.net/item/education-wordpress-theme-education-wp/14058034?utm_source=wporg&utm_medium=learnpress&ref=thimpress&utm_campaign=learnpress)** & **[LMS WordPress Theme](http://themeforest.net/item/lms-wordpress-theme-elearning-wp/11797847?utm_source=wporg&utm_medium=learnpress&ref=thimpress&utm_campaign=learnpress)** (someone calls it LMS WordPress Template) we designed to work with LearnPress, all developers are welcome to develop WordPress LMS Theme based on LMS plugin for WordPress - LearnPress. More WordPress LMS Themes will come soon, both free WordPress themes as well as premium WordPress themes for LearnPress.
+###LMS & Education WordPress Themes###
+
+Take a look at Premium **[Education WordPress Theme](http://themeforest.net/item/education-wordpress-theme-education-wp/14058034?utm_source=wporg&utm_medium=learnpress&ref=thimpress&utm_campaign=learnpress)**, **[Coaching WordPress Theme](https://themeforest.net/item/speaker-and-life-coach-wordpress-theme-coaching-wp/17097658?utm_source=wporg&utm_medium=learnpress&ref=thimpress&utm_campaign=learnpress)** & **[LMS WordPress Theme](http://themeforest.net/item/lms-wordpress-theme-elearning-wp/11797847?utm_source=wporg&utm_medium=learnpress&ref=thimpress&utm_campaign=learnpress)** (someone calls it LMS WordPress Template) we designed to work with LearnPress, all developers are welcome to develop WordPress LMS Theme based on LMS plugin for WordPress - LearnPress. More WordPress LMS Themes will come soon, both free WordPress themes as well as premium WordPress themes for LearnPress.
 
 ###LearnPress Tutorials###
 
