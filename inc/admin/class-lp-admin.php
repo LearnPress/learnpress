@@ -27,27 +27,7 @@ if ( !class_exists( 'LP_Admin' ) ) {
 			if ( !get_option( 'permalink_structure' ) ) {
 				learn_press_add_notice( sprintf( __( 'LearnPress requires permalink option <strong>Post name</strong> is enabled. Please enable it <a href="%s">here</a> to ensure that all functions work properly.', 'learnpress' ), admin_url( 'options-permalink.php' ) ), 'error' );
 			}
-			add_action( 'admin_notices', array( $this, 'notice_outdated_templates' ) );
-		}
-
-		public function notice_outdated_templates() {
-			$page = '';
-			$tab  = '';
-			if ( !empty( $_REQUEST['page'] ) ) {
-				$page = $_REQUEST['page'];
-			}
-
-			if ( !empty( $_REQUEST['tab'] ) ) {
-				$tab = $_REQUEST['tab'];
-			}
-
-			if ( $page == 'learn-press-tools' && $tab == 'templates' ) {
-				return;
-			}
-
-			if ( learn_press_get_theme_templates( true ) ) {
-				learn_press_admin_view( 'html-admin-notice-templates' );
-			}
+//			add_action( 'admin_notices', array( $this, 'notice_outdated_templates' ) );
 		}
 
 		public function rated() {
