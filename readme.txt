@@ -1,5 +1,5 @@
 === LearnPress - WordPress LMS Plugin ===  
-Contributors: thimpress, tunnhn, phonglq.foobla, chinhtm, thongta, kendy73
+Contributors: thimpress, tunnhn, phonglq.foobla, chinhtm, thongta, kendy73, leehld
 Donate link:  
 Tags: WordPress LMS, LMS, eLearning, e-Learning, Learning Management System, LMS WordPress, Course, Courses, Quiz, Quizzes, Training, Guru, Sell Courses  
 Requires at least: 3.8
