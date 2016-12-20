@@ -886,4 +886,13 @@ jQuery(document).ready(function ($) {
 		return false;
 	});
 
+	$(document).ready( function () {
+
+		var $premiumAddons = $('.premium_add_ons');
+
+		if ($premiumAddons.length) {
+			$premiumAddons.addClass('active');
+		}
+	});
+
 })(jQuery);

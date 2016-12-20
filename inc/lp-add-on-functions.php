@@ -779,7 +779,9 @@ function learn_press_output_premium_add_ons_list($add_ons, $tab = '') {
                     $add_on['icons'] = learn_press_get_add_on_icon('');
                 }
                 ?>
-                <span class="plugin-icon"><img src="<?php echo esc_url($add_on['icons']); ?>"></span>
+                <a href="<?php esc_url($add_on['permarklink']); ?>">
+                    <span class="plugin-icon"><img src="<?php echo esc_url($add_on['icons']); ?>"></span>
+                </a>
 
                 <div class="name column-name">
                     <h3><a href="<?php echo esc_url($add_on['permarklink'])?>"><?php echo $add_on['name']; ?></a></h3>

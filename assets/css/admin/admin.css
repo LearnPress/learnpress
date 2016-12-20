@@ -383,6 +383,15 @@ li.quick_quiz {
 .learn-press-add-ons .plugin-card-top {
   min-height: 180px;
 }
+.premium_add_ons.active .column-description p{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+  line-height: 1.6em;
+  max-height: 8em;
+}
 .learn-press-add-ons .button.spinner {
   background: url(../../images/spinner.gif) no-repeat 4px !important;
   padding-left: 30px;
