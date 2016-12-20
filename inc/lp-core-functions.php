@@ -378,8 +378,8 @@ function learn_press_print_script() {
 	global $learn_press_queued_js, $learn_press_queued_js_tag;
 	if ( !empty( $learn_press_queued_js ) ) {
 		?>
-		<!-- LearnPress JavaScript -->
-		<script type="text/javascript">jQuery(function ($) {
+        <!-- LearnPress JavaScript -->
+        <script type="text/javascript">jQuery(function ($) {
 				<?php
 				// Sanitize
 				$learn_press_queued_js = wp_check_invalid_utf8( $learn_press_queued_js );
@@ -389,7 +389,7 @@ function learn_press_print_script() {
 				echo $learn_press_queued_js;
 				?>
 			});
-		</script>
+        </script>
 		<?php
 		unset( $learn_press_queued_js );
 	}
@@ -758,9 +758,9 @@ function learn_press_admin_course_tabs() {
 
 add_action( 'admin_footer', 'learn_press_show_menu' );
 function learn_press_show_menu() {
-    if ( (isset( $_GET['post_type'] ) && $_GET['post_type'] == 'lp_course' ) ) {
+	if ( ( isset( $_GET['post_type'] ) && $_GET['post_type'] == 'lp_course' ) ) {
 		?>
-		<script type="text/javascript">
+        <script type="text/javascript">
 			jQuery(window).load(function ($) {
 				<?php
 				if ( isset ( $_GET['taxonomy'] ) ) {
@@ -773,28 +773,28 @@ function learn_press_show_menu() {
 				?>
 				jQuery("#toplevel_page_learn_press .wp-first-item").addClass('current');
 			});
-		</script>
+        </script>
 		<?php
 	}
 
-    if ( isset($_GET['post_type']) ) {
-        ?>
+	if ( isset( $_GET['post_type'] ) ) {
+		?>
         <script type="text/javascript">
-            (function ($){
+			(function ($) {
 
-                var $lpMainMenu = $('#toplevel_page_learn_press'),
-                    href = 'edit.php?post_type=<?php echo $_GET['post_type']; ?>',
-                    $current = $('a[href="'+ href +'"]', $lpMainMenu);
+				var $lpMainMenu = $('#toplevel_page_learn_press'),
+					href = 'edit.php?post_type=<?php echo $_GET['post_type']; ?>',
+					$current = $('a[href="' + href + '"]', $lpMainMenu);
 
-                if ($current.length) {
-                    $current.addClass('current');
-                    $current.parent('li').addClass('current');
-                }
-            })(jQuery)
+				if ($current.length) {
+					$current.addClass('current');
+					$current.parent('li').addClass('current');
+				}
+			})(jQuery)
         </script>
-        <?php
+		<?php
 
-    }
+	}
 }
 
 /**
@@ -2518,80 +2518,82 @@ function learn_press_is_added_to_cart( $course_id ) {
  *  + LP Profile page is not setup
  *  + LP Checkout page is not setup
  */
-add_action('admin_bar_menu', 'lp_warning_message_settings');
-add_action( 'wp_ajax_lp_remove_admin_warning', 'lp_remove_admin_warning');
-add_action( 'wp_ajax_nopriv_lp_remove_admin_warning', 'lp_remove_admin_warning');
-if (!function_exists('lp_warning_message_settings')) {
+add_action( 'admin_bar_menu', 'lp_warning_message_settings' );
+add_action( 'wp_ajax_lp_remove_admin_warning', 'lp_remove_admin_warning' );
+add_action( 'wp_ajax_nopriv_lp_remove_admin_warning', 'lp_remove_admin_warning' );
+if ( !function_exists( 'lp_warning_message_settings' ) ) {
 
-    /* Check permission is admin */
+	/* Check permission is admin */
 
-    function lp_warning_message_settings( $admin_bar ) {
+	function lp_warning_message_settings( $admin_bar ) {
 
-        global $LearnPress;
+		global $LearnPress;
 
-        $args = array(
-            array(
-                'name_option' => 'learn_press_profile_page_id',
-                'id' => 'lp-admin-warning-profile',
-                'title' => __('Profile Page', 'learnpress'),
-                'url' => admin_url('admin.php?page=learn-press-settings&tab=pages')
-            ),
-            array(
-                'name_option' => 'learn_press_checkout_page_id',
-                'id' => 'lp-admin-warning-checkout',
-                'title' => __('Checkout Page', 'learnpress'),
-                'url' => admin_url('admin.php?page=learn-press-settings&tab=checkout')
-            ),
-        );
+		$args = array(
+			array(
+				'name_option' => 'learn_press_profile_page_id',
+				'id'          => 'lp-admin-warning-profile',
+				'title'       => __( 'Profile Page', 'learnpress' ),
+				'url'         => admin_url( 'admin.php?page=learn-press-settings&tab=pages' )
+			),
+			array(
+				'name_option' => 'learn_press_checkout_page_id',
+				'id'          => 'lp-admin-warning-checkout',
+				'title'       => __( 'Checkout Page', 'learnpress' ),
+				'url'         => admin_url( 'admin.php?page=learn-press-settings&tab=checkout' )
+			),
+		);
 
-        $user = $LearnPress->user;
-        $role = $user->user->roles[0];
+		$user = $LearnPress->user;
+		$role = $user->user->roles[0];
 
-        if ($role === 'administrator') {
+		if ( $role === 'administrator' ) {
 
-            $count = 0;
+			$count = 0;
 
-            /* Add submenu*/
-            foreach ($args as $arg) {
+			/* Add submenu*/
+			foreach ( $args as $arg ) {
 
-                $item_page_id = get_option($arg['name_option']);
-                $item_transient = get_transient($arg['id']);
+				$item_page_id   = get_option( $arg['name_option'] );
+				$item_transient = get_transient( $arg['id'] );
+				$item_page      = get_post( $item_page_id );
 
-                if (empty($item_transient) && (empty($item_page_id) || empty($item_page = get_post($item_page_id)))) {
+				if ( empty( $item_transient ) && ( empty( $item_page_id ) || empty( $item_page ) ) ) {
 
-                    $count ++;
-                    $admin_bar->add_menu(array(
-                        'id'    => $arg['id'],
-                        'parent' => 'lp-admin-warning',
-                        'title' => $arg['title'] .'<span class="lp-hide-warning" title="'.__('Hidden', 'learnpress').'">x</span>',
-                        'href'  => $arg['url'],
-                        'meta'  => array(
-                            'title' => __('Go to setup ', 'learnpress') . $arg['title'],
-                            'class' => $arg['id']
-                        )
-                    ));
-                }
-            }
+					$count ++;
+					$admin_bar->add_menu( array(
+						'id'     => $arg['id'],
+						'parent' => 'lp-admin-warning',
+						'title'  => $arg['title'] . '<span class="lp-hide-warning" title="' . __( 'Hidden', 'learnpress' ) . '">x</span>',
+						'href'   => $arg['url'],
+						'meta'   => array(
+							'title' => __( 'Go to setup ', 'learnpress' ) . $arg['title'],
+							'class' => $arg['id']
+						)
+					) );
+				}
+			}
 
-            /* Add Admin Menu */
-            if (!empty($count)) {
-                $admin_bar->add_menu(array(
-                    'id'    => 'lp-admin-warning',
-                    'parent' => 'top-secondary',
-                    'title' => __('LP Setup Page', 'learnpress') .'<span class="lp-count-warning">'. $count .'</span>',
-                    'href'  => '',
-                    'meta'  => array(
-                        'title' => __('Warning! You need setup all pages', 'learnpress'),
-                        'class' => 'lp-admin-warning'
-                    ),
-                ));
-            }
+			/* Add Admin Menu */
+			if ( !empty( $count ) ) {
+				$admin_bar->add_menu( array(
+					'id'     => 'lp-admin-warning',
+					'parent' => 'top-secondary',
+					'title'  => __( 'LP Setup Page', 'learnpress' ) . '<span class="lp-count-warning">' . $count . '</span>',
+					'href'   => '',
+					'meta'   => array(
+						'title' => __( 'Warning! You need setup all pages', 'learnpress' ),
+						'class' => 'lp-admin-warning'
+					),
+				) );
+			}
 
-            ?>
+			?>
             <style type="text/css">
                 #wp-admin-bar-lp-admin-warning {
                     padding-right: 15px;
                 }
+
                 #wp-admin-bar-lp-admin-warning .lp-count-warning {
                     position: absolute;
                     top: 0;
@@ -2605,6 +2607,7 @@ if (!function_exists('lp_warning_message_settings')) {
                     text-align: center;
                     color: #ffffff;
                 }
+
                 #wp-admin-bar-lp-admin-warning .lp-hide-warning {
                     position: absolute;
                     top: 0;
@@ -2615,71 +2618,71 @@ if (!function_exists('lp_warning_message_settings')) {
                 }
             </style>
             <script type="text/javascript">
-                (function ($){
+				(function ($) {
 
-                    $(document).ready( function () {
+					$(document).ready(function () {
 
-                        var $lpAdminWarning = $('#wp-admin-bar-lp-admin-warning');
+						var $lpAdminWarning = $('#wp-admin-bar-lp-admin-warning');
 
-                        $('.lp-hide-warning', $lpAdminWarning).click( function (event) {
+						$('.lp-hide-warning', $lpAdminWarning).click(function (event) {
 
-                            event.preventDefault();
-                            event.stopPropagation();
+							event.preventDefault();
+							event.stopPropagation();
 
-                            var $this = $(this),
-                                name = $this.closest('li').attr('class');
+							var $this = $(this),
+								name = $this.closest('li').attr('class');
 
-                            $.ajax({
-                                url: ajaxurl,
-                                data: {
-                                    action: 'lp_remove_admin_warning',
-                                    name: name
-                                },
-                                type: 'POST',
-                                complete: function (response) {
+							$.ajax({
+								url     : ajaxurl,
+								data    : {
+									action: 'lp_remove_admin_warning',
+									name  : name
+								},
+								type    : 'POST',
+								complete: function (response) {
 
-                                    var $subMenu = $('.ab-sub-wrapper', $lpAdminWarning),
-                                        $count = $('.lp-count-warning', $lpAdminWarning),
-                                        count = $count.text();
+									var $subMenu = $('.ab-sub-wrapper', $lpAdminWarning),
+										$count = $('.lp-count-warning', $lpAdminWarning),
+										count = $count.text();
 
-                                    count = parseInt(count);
-                                    count --;
+									count = parseInt(count);
+									count--;
 
-                                    $count.text(count);
-                                    $this.closest('li').remove();
+									$count.text(count);
+									$this.closest('li').remove();
 
-                                    if (!$subMenu.find('li').length) {
-                                        $subMenu.remove();
-                                    }
-                                }
-                            })
-                        });
+									if (!$subMenu.find('li').length) {
+										$subMenu.remove();
+									}
+								}
+							})
+						});
 
-                    });
+					});
 
-                })(jQuery)
+				})(jQuery)
             </script>
-            <?php
-        }
-    }
+			<?php
+		}
+	}
 
 }
 
-if (!function_exists('lp_remove_admin_warning')) {
+if ( !function_exists( 'lp_remove_admin_warning' ) ) {
 
-    function lp_remove_admin_warning() {
+	function lp_remove_admin_warning() {
 
-        if (isset($_POST['action']) && $_POST['action'] === 'lp_remove_admin_warning' && isset($_POST['name'])) {
+		if ( isset( $_POST['action'] ) && $_POST['action'] === 'lp_remove_admin_warning' && isset( $_POST['name'] ) ) {
 
-            if (empty($transient_profile)) {
-                set_transient($_POST['name'], true, 60*60*12); // Cache in 24 hours
-            }
-            echo 'success';
-            wp_die();
+			if ( empty( $transient_profile ) ) {
+				set_transient( $_POST['name'], true, 60 * 60 * 12 ); // Cache in 24 hours
+			}
+			echo 'success';
+			wp_die();
 
-        }
+		}
 
-        echo 'error';
-        wp_die();
-    }
+		echo 'error';
+		wp_die();
+	}
 }
