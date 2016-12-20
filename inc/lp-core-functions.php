@@ -2684,3 +2684,15 @@ if (!function_exists('lp_remove_admin_warning')) {
         wp_die();
     }
 }
+
+
+// Show filters for students list
+function learn_press_get_students_list_filter() {
+	$filter = array(
+		'all'         => esc_html__( 'All', 'learnpress' ),
+		'in-progress' => esc_html__( 'In Progress', 'learnpress' ),
+		'finished'    => esc_html__( 'Finished', 'learnpress' )
+	);
+
+	return apply_filters( 'learn_press_get_students_list_filter', $filter );
+}
