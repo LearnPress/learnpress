@@ -28,17 +28,36 @@ $students_list_avatar_size = apply_filters( 'learn_press_students_list_avatar_si
 
 		<?php $passing_condition = round( $course->passing_condition, 0 ); ?>
 
-        <ul class="students">
-			<?php foreach ( $students as $student ):
+		<?php if ( is_user_logged_in() ): ?>
+            <div class="filter-students">
+                <label for="students-list-filter"><?php echo esc_html__( 'Student filter', 'learnpress' ); ?></label>
+                <select id="students-list-filter">
+					<?php
+					$filters = learn_press_get_students_list_filter();
+					foreach ( $filters as $key => $filter ) {
+						echo '<option value="' . esc_attr( $key ) . '">' . esc_html( $filter ) . '</option>';
+					}
+					?>
+                </select>
+            </div>
+		<?php endif; ?>
 
-				$result = '';
+        <ul class="students">
+			<?php foreach ( $students as $student ) {
+
+				$result = $process = '';
 				if ( is_user_logged_in() ) {
+					learn_press_setup_user_course_data( $student->ID, $course->ID, true );
 					$student = LP_User_Factory::get_user( $student->ID );
 					$result  = $student->get_course_info2( $course->ID );
 				}
 				?>
 
-                <li class="students-enrolled <?php echo ( $result ) ? ' user-login' : ''; ?>">
+				<?php if ( $result ) {
+					$process .= ( $result['results'] == 100 ) ? 'finished' : 'in-progress';
+				} ?>
+
+                <li class="students-enrolled <?php echo ( $result ) ? 'user-login ' . $process : ''; ?>">
                     <div class="user-info">
 						<?php if ( $show_avatar ): ?>
 							<?php echo get_avatar( $student->ID, $students_list_avatar_size, '', $student->display_name, array( 'class' => 'students_list_avatar' ) ); ?>
@@ -65,12 +84,12 @@ $students_list_avatar_size = apply_filters( 'learn_press_students_list_avatar_si
                         </div>
 					<?php endif; ?>
                 </li>
-			<?php endforeach; ?>
+			<?php } ?>
         </ul>
 		<?php
 		$other_student = $course->students;
 		if ( $other_student ) {
-			echo '<p>and ' . sprintf( _n( 'one student enrolled.', '%s students enrolled.', $other_student, 'learnpress' ), $other_student ) . '</p>';
+			echo '<p class="additional-students">and ' . sprintf( _n( 'one student enrolled.', '%s students enrolled.', $other_student, 'learnpress' ), $other_student ) . '</p>';
 		}
 		?>
 	<?php else: ?>
