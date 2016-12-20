@@ -309,7 +309,7 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 
 			$columns = array_merge( $columns, $existing );
 
-			//dfgfdgdfgdfgd
+			//
 
 			return $columns;
 		}
@@ -437,7 +437,7 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 				'rewrite'            => array( 'slug' => LP_ORDER_CPT, 'hierarchical' => true, 'with_front' => true ),
 				'supports'           => array(
 					'title',
-                    'custom-fields'
+					'comments'
 				)
 			);
 		}

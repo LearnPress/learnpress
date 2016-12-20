@@ -14,8 +14,8 @@ $hidden_all = sizeof( $hidden ) && ( sizeof( array_diff( $hidden, $question_ids 
 	<h3 class="quiz-questions-heading">
 		<?php _e( 'Questions', 'learnpress' ); ?>
 		<p align="right" class="questions-toggle">
-			<a href="" data-action="expand" class="dashicons dashicons-plus <?php echo $hidden_all ? '' : ' hide-if-js';?>" title="<?php _e( 'Expand All', 'learnpress' ); ?>"></a>
-			<a href="" data-action="collapse" class="dashicons dashicons-minus <?php echo !$hidden_all ? '' : ' hide-if-js';?>" title="<?php _e( 'Collapse All', 'learnpress' ); ?>"></a>
+			<a href="" data-action="expand" class="dashicons dashicons-arrow-down <?php echo $hidden_all ? '' : ' hide-if-js';?>" title="<?php _e( 'Expand All', 'learnpress' ); ?>"></a>
+			<a href="" data-action="collapse" class="dashicons dashicons-arrow-up <?php echo !$hidden_all ? '' : ' hide-if-js';?>" title="<?php _e( 'Collapse All', 'learnpress' ); ?>"></a>
 		</p>
 	</h3>
 
