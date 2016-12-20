@@ -193,6 +193,12 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.  
 
 == Changelog ==
+= 2.0.8.2 =
++ Fixed outdated templates notice
+
+= 2.0.8.1 =
++ Fixed some functions does not support in PHP < 5.5
+
 = 2.0.8 =
 + Fixed loop redirecting while saving course for instructor
 + Fixed "Place Order" is empty if Paypal is selected
