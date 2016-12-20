@@ -553,10 +553,10 @@ if ( !function_exists( 'learn_press_paging_nav' ) ) :
 
 		if ( $links ) :
 			?>
-            <div class="<?php echo $args['wrapper_class']; ?>">
+			<div class="<?php echo $args['wrapper_class']; ?>">
 				<?php echo $links; ?>
-            </div>
-            <!-- .pagination -->
+			</div>
+			<!-- .pagination -->
 			<?php
 		endif;
 	}
@@ -1895,7 +1895,7 @@ function learn_press_add_user_item_if_needed( $located, $template_name, $templat
 
 function learn_press_set_user_timezone() {
 	?>
-    <script type="text/javascript">
+	<script type="text/javascript">
 		(function (factory) {
 			if (typeof define === 'function' && define.amd) {
 				// AMD (Register as an anonymous module)
@@ -1968,9 +1968,9 @@ function learn_press_set_user_timezone() {
 				// Read
 
 				var result = key ? undefined : {},
-					// To prevent the for loop in the first place assign an empty array
-					// in case there are no cookies at all. Also prevents odd result when
-					// calling $.cookie().
+				// To prevent the for loop in the first place assign an empty array
+				// in case there are no cookies at all. Also prevents odd result when
+				// calling $.cookie().
 					cookies = document.cookie ? document.cookie.split('; ') : [],
 					i = 0,
 					l = cookies.length;
@@ -2005,7 +2005,7 @@ function learn_press_set_user_timezone() {
 
 		}));
 		jQuery.cookie('timezone', new Date().getTimezoneOffset());
-    </script>
+	</script>
 	<?php
 }
 
@@ -2554,11 +2554,11 @@ if (!function_exists('lp_warning_message_settings')) {
             /* Add submenu*/
             foreach ($args as $arg) {
 
-                $item_page_id = get_option($arg['name_option']);
-                $item_transient = get_transient($arg['id']);
-                $item_page = get_post($item_page_id);
+				$item_page_id   = get_option( $arg['name_option'] );
+				$item_transient = get_transient( $arg['id'] );
+				$item_page      = get_post( $item_page_id );
 
-                if (empty($item_transient) && (empty($item_page_id) || empty($item_page))) {
+				if ( empty( $item_transient ) && ( empty( $item_page_id ) || empty( $item_page ) ) ) {
 
                     $count ++;
                     $admin_bar->add_menu(array(
@@ -2683,4 +2683,16 @@ if (!function_exists('lp_remove_admin_warning')) {
         echo 'error';
         wp_die();
     }
+}
+
+
+// Show filters for students list
+function learn_press_get_students_list_filter() {
+	$filter = array(
+		'all'         => esc_html__( 'All', 'learnpress' ),
+		'in-progress' => esc_html__( 'In Progress', 'learnpress' ),
+		'finished'    => esc_html__( 'Finished', 'learnpress' )
+	);
+
+	return apply_filters( 'learn_press_get_students_list_filter', $filter );
 }
