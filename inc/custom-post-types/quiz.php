@@ -336,6 +336,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 				$columns = array_merge(
 					array_slice( $columns, 0, $pos + 1 ),
 					array(
+                        'author'          => __( 'Author', 'learnpress' ),
 						LP_COURSE_CPT     => __( 'Course', 'learnpress' ),
 						'num_of_question' => __( 'Questions', 'learnpress' ),
 						'duration'        => __( 'Duration', 'learnpress' )
@@ -503,6 +504,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 * @return mixed
 		 */
 		public function sortable_columns( $columns ) {
+			$columns['author']     = 'author';
 			$columns[LP_COURSE_CPT]     = 'course-name';
 			$columns['num_of_question'] = 'question-count';
 			return $columns;
