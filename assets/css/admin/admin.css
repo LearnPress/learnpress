@@ -811,19 +811,6 @@ body.post-type-lp_question #question_answer_ .inside {
   position: relative;
   z-index: 999;
 }
-#questions .quiz-question {
-  margin: -1px 0 0 0;
-}
-#questions .quiz-question .learn-press-question {
-  padding: 20px 20px 5px 20px;
-  background-color: #FFF;
-  border: 1px solid #DDD;
-  border-top: none;
-}
-#questions .quiz-question.is-hidden .quiz-question-head,
-#questions .quiz-question.is-hidden .question-name {
-  background-color: #FFF;
-}
 #questions .quiz-question-head .quiz-question-actions {
   float: right;
   margin: 1px 0;
@@ -838,14 +825,6 @@ body.post-type-lp_question #question_answer_ .inside {
 }
 #questions .quiz-question-head .quiz-question-actions a:hover {
   color: #00a0d2;
-}
-#questions .quiz-question-head .quiz-question-actions a.move {
-  cursor: url("../../images/openhand.cur") 7 5, default;
-  position: absolute;
-  right: 14px;
-  height: 50px;
-  top: 0;
-  width: 12px;
 }
 #questions .quiz-question-head:hover .quiz-question-actions {
   visibility: visible;
@@ -1425,6 +1404,10 @@ input.regular-text[id^="learn-press-emails"] {
 .rwmb-quiz_questions-wrapper .quiz-questions-heading a {
   font-size: 32px;
   color: #0073aa;
+  box-shadow: none;
+}
+.rwmb-quiz_questions-wrapper .quiz-questions-heading a.dashicons-arrow-down::before {
+  margin-left: -10px;
 }
 .rwmb-quiz_questions-wrapper .quiz-questions-heading a:hover {
   color: #00a0d2;
@@ -1442,6 +1425,9 @@ input.regular-text[id^="learn-press-emails"] {
 .rwmb-quiz_questions-wrapper #learn-press-list-questions .quiz-question:nth-child(2n+1) {
   background-color: #FCFCFC;
 }
+.rwmb-quiz_questions-wrapper #learn-press-list-questions .quiz-question:nth-child(2n+1) .question-name {
+  background-color: #FCFCFC;
+}
 .rwmb-quiz_questions-wrapper #learn-press-list-questions .quiz-question .quiz-question-head {
   padding: 0 20px;
   position: relative;
@@ -1455,4 +1441,23 @@ input.regular-text[id^="learn-press-emails"] {
 }
 .rwmb-quiz_questions-wrapper #learn-press-list-questions .quiz-question .quiz-question-head .question-name {
   font-size: 16px;
+}
+.rwmb-quiz_questions-wrapper #learn-press-list-questions .quiz-question .quiz-question-head .move {
+  color: #666;
+  cursor: url("../../images/openhand.cur") 7 5, default;
+  position: absolute;
+  right: 14px;
+  height: 50px;
+  top: 5px;
+  width: 12px;
+  box-shadow: none;
+}
+.rwmb-quiz_questions-wrapper #learn-press-list-questions .quiz-question .quiz-question-head .move:hover {
+  color: #00a0d2;
+}
+.rwmb-quiz_questions-wrapper #learn-press-list-questions .quiz-question .quiz-question-head:hover .quiz-question-actions {
+  margin-right: 20px;
+}
+.rwmb-quiz_questions-wrapper #learn-press-list-questions .quiz-question .quiz-question-head:hover .quiz-question-actions .dashicons-admin-page::before {
+  margin-top: 2px;
 }

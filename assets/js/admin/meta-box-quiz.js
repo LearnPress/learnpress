@@ -24,7 +24,7 @@
 			},
 			initialize              : function () {
 				$('#learn-press-list-questions').sortable({
-					handle: '.quiz-question-actions .move',
+					handle: '.quiz-question-head .move',
 					axis  : 'y'
 				});
 				_.bindAll(this, 'addItemsToSection', 'getSelectedItems');
