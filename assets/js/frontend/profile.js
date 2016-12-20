@@ -205,7 +205,7 @@
 				}
 			}
 			if (check_form) {
-				$(this).submit();
+				$('#learn-press-user-profile-edit-form form#your-profile').submit();
 			}
 		});
 
