@@ -1461,3 +1461,6 @@ input.regular-text[id^="learn-press-emails"] {
 .rwmb-quiz_questions-wrapper #learn-press-list-questions .quiz-question .quiz-question-head:hover .quiz-question-actions .dashicons-admin-page::before {
   margin-top: 2px;
 }
+.rwmb-quiz_questions-wrapper #learn-press-list-questions .quiz-question .quiz-question-content {
+  padding: 0 20px;
+}
