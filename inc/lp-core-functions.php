@@ -2554,11 +2554,11 @@ if (!function_exists('lp_warning_message_settings')) {
             /* Add submenu*/
             foreach ($args as $arg) {
 
-                $item_page_id = get_option($arg['name_option']);
-                $item_transient = get_transient($arg['id']);
-                $item_page = get_post($item_page_id);
+				$item_page_id   = get_option( $arg['name_option'] );
+				$item_transient = get_transient( $arg['id'] );
+				$item_page      = get_post( $item_page_id );
 
-                if (empty($item_transient) && (empty($item_page_id) || empty($item_page))) {
+				if ( empty( $item_transient ) && ( empty( $item_page_id ) || empty( $item_page ) ) ) {
 
                     $count ++;
                     $admin_bar->add_menu(array(

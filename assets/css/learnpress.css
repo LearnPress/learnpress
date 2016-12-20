@@ -1859,8 +1859,9 @@ body.block-content #learn-press-block-content {
   left: 3px;
 }
 .learn-press-user-profile {
-  /* crop user profile picture */
-  /* end of crop user profile picture */
+  /**  STYLE PROFILE **/
+  /* Change Picture Menu */
+  /** upload-crop box **/
 }
 .learn-press-user-profile .user-basic-info p {
   margin-top: 10px;
@@ -1916,31 +1917,102 @@ body.block-content #learn-press-block-content {
 .learn-press-user-profile .learn-press-tabs-wrapper-x button.learn-press-course-wishlist {
   display: block;
 }
-.learn-press-user-profile .cropit-preview {
+.learn-press-user-profile #lp-menu-change-picture {
+  list-style: none;
+}
+.learn-press-user-profile #lp-menu-change-picture .lp-label-change-picture {
+  display: block;
+  color: blueviolet;
+  padding: 2px 10px;
+  border: solid 1px gray;
+  cursor: pointer;
+}
+.learn-press-user-profile #lp-menu-change-picture .dropdown {
+  display: inline-block;
+}
+.learn-press-user-profile #lp-menu-change-picture .dropdown:hover .dropdown-menu {
+  display: block;
+}
+.learn-press-user-profile #lp-menu-change-picture .dropdown .dropdown-menu {
+  display: none;
+  position: absolute;
+  list-style: none;
+  margin: 0 !important;
+  padding: 0;
+  background-color: #F5F5F5;
+}
+.learn-press-user-profile #lp-menu-change-picture .dropdown .dropdown-menu li {
+  display: block;
+  cursor: pointer;
+  border: solid 1px #999999;
+  border-bottom: none;
+  padding: 3px 10px;
+}
+.learn-press-user-profile #lp-menu-change-picture .dropdown .dropdown-menu li:hover {
+  color: blue;
+  background-color: lightblue;
+}
+.learn-press-user-profile #lp-menu-change-picture .dropdown .dropdown-menu li:last-child {
+  border-bottom: solid 1px #999999;
+}
+.learn-press-user-profile #lp-menu-change-picture .dropdown .dropdown-menu li.lp-menu-item-selected {
+  background: royalblue;
+}
+.learn-press-user-profile #lp-profile_picture_type {
+  display: none;
+}
+.learn-press-user-profile #lpbox-upload-crop-profile-picture {
+  display: none;
+  border: solid 1px gray;
+  padding: 10px;
+  max-width: 500px;
+  background-color: ghostwhite;
+}
+.learn-press-user-profile #lpbox-upload-crop-profile-picture .lpbox-title {
+  font-size: 20px;
+}
+.learn-press-user-profile #lpbox-upload-crop-profile-picture .image-editor {
+  width: 300px;
+  float: left;
+}
+.learn-press-user-profile #lpbox-upload-crop-profile-picture .image-editor .cropit-preview {
   background-color: #f8f8f8;
   background-size: cover;
   border: 1px solid #ccc;
   border-radius: 3px;
   margin-top: 7px;
-  width: 250px;
-  height: 250px;
+  width: 252px;
+  height: 252px;
 }
-.learn-press-user-profile .cropit-preview-image {
+.learn-press-user-profile #lpbox-upload-crop-profile-picture .image-editor .cropit-preview .cropit-preview-image-container {
+  cursor: move;
+}
+.learn-press-user-profile #lpbox-upload-crop-profile-picture .image-editor .cropit-preview .cropit-preview-image-container .cropit-preview-image {
   max-width: none;
   max-height: none;
 }
-.learn-press-user-profile .cropit-preview-image-container {
-  cursor: move;
+.learn-press-user-profile #lpbox-upload-crop-profile-picture .image-editor .image-editor-btn {
+  margin: 10px auto;
+  text-align: center !important;
 }
-.learn-press-user-profile .image-size-label {
-  margin-top: 10px;
+.learn-press-user-profile #lpbox-upload-crop-profile-picture .image-editor .image-editor-btn .input {
+  display: inline-block !important;
 }
-.learn-press-user-profile input,
-.learn-press-user-profile .export {
+.learn-press-user-profile #lpbox-upload-crop-profile-picture .image-editor .cropit-preview {
+  margin: 0 auto;
+}
+.learn-press-user-profile #lpbox-upload-crop-profile-picture .image-editor-sidebar-right {
+  width: 150px;
+  float: left;
+}
+.learn-press-user-profile #lpbox-upload-crop-profile-picture .image-editor-sidebar-right a {
   display: block;
+  text-align: center;
+  margin: 10px 0;
 }
-.learn-press-user-profile button {
-  margin: 0 auto 10px auto;
+.learn-press-user-profile #lpbox-upload-crop-profile-picture .image-editor-sidebar-right .dashicons {
+  line-height: 1.5;
+  margin-right: 5px;
 }
 .learn-press-pagination {
   text-align: center;
@@ -1993,46 +2065,62 @@ body.block-content #learn-press-block-content {
 .single-lp_course .course-summary .course-students {
   padding-top: 10px;
 }
-.single-lp_course .course-summary .course-students-list .students {
-  clear: both;
-}
-.single-lp_course .course-summary .course-students-list .students .user-info {
-  margin-bottom: 10px;
-}
-.single-lp_course .course-summary .course-students-list .students li {
-  margin-right: 10px;
-}
-.single-lp_course .course-summary .course-students-list .students li.user-login {
-  display: block;
-  width: 45%;
+.single-lp_course .course-summary .course-students-list .students-list-title {
   float: left;
 }
-.single-lp_course .course-summary .course-students-list .students li .course-progress {
-  width: 100%;
-}
-.single-lp_course .course-summary .course-students-list .students li .course-progress .lp-course-progress {
-  margin-top: -5px;
-}
-.single-lp_course .course-summary .course-students-list p {
-  clear: both;
+.single-lp_course .course-summary .course-students-list .filter-students {
+  float: right;
 }
 .single-lp_course .course-summary .lp_course .entry-footer {
   display: none;
+}
+.single-lp_course .learn-press-message {
+  clear: both;
+  margin-top: 25px;
 }
 .course-students-list {
   margin-top: 10px;
   margin-bottom: 15px;
 }
 .course-students-list .students {
-  list-style-type: none;
-  margin: 0;
+  clear: both;
+}
+.course-students-list .students .user-info {
+  margin-bottom: 15px;
 }
 .course-students-list .students li {
-  display: inline-block;
   margin-right: 10px;
 }
-.course-students-list .students p {
-  margin-top: 15px;
+.course-students-list .students li.user-login {
+  display: block;
+  width: 100%;
+  float: left;
+}
+.course-students-list .students li .user-info {
+  position: relative;
+  float: left;
+  width: 150px;
+}
+.course-students-list .students li .user-info a {
+  position: absolute;
+  margin-left: 5px;
+  bottom: 0;
+}
+.course-students-list .students li .learn-press-course-results-progress {
+  width: 80%;
+  float: left;
+  margin-top: -15px;
+  margin-bottom: 5px;
+}
+.course-students-list .students li .learn-press-course-results-progress .course-progress {
+  width: 100%;
+}
+.course-students-list .students li .learn-press-course-results-progress .course-progress .lp-course-progress {
+  margin-top: -5px;
+}
+.course-students-list .additional-students {
+  clear: both;
+  margin-bottom: 0;
 }
 /* tooltip */
 .learn-press-tooltip-bubble {
