@@ -2880,6 +2880,7 @@ class LP_Abstract_User {
 
 	public static function get_user() {
 		_deprecated_function( __CLASS__ . '::' . __FUNCTION__, '2.0.7', 'LP_User_Factory::get_user' );
-		return call_user_func_array( array( 'LP_User_Factory', 'get_user' ), func_get_args() );
+		$func_args = func_get_args();
+		return call_user_func_array( array( 'LP_User_Factory', 'get_user' ), $func_args );
 	}
 }

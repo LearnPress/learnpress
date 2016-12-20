@@ -168,7 +168,8 @@ abstract class LP_Abstract_Post_Type {
 		// TODO: check more here
 		// prevent loop action
 		remove_action( 'save_post', array( $this, '_do_save' ), 10, 2 );
-		$this->_call_method( 'save', func_get_args() );
+		$func_args = func_get_args();
+		$this->_call_method( 'save', $func_args );
 		add_action( 'save_post', array( $this, '_do_save' ), 10, 2 );
 	}
 
@@ -196,7 +197,8 @@ abstract class LP_Abstract_Post_Type {
 		if ( !$this->_check_post() ) {
 			return;
 		}
-		return $this->_call_method( 'before_delete', func_get_args() );
+		$func_args = func_get_args();
+		return $this->_call_method( 'before_delete', $func_args );
 	}
 
 	public function _posts_fields( $fields ) {
@@ -314,7 +316,8 @@ abstract class LP_Abstract_Post_Type {
 		return;
 		$callback = array( $this, "column_{$column}" );
 		if ( is_callable( $callback ) ) {
-			call_user_func_array( $callback, func_get_args() );
+			$func_args = func_get_args();
+			call_user_func_array( $callback, $func_args );
 		}
 	}
 
@@ -322,8 +325,8 @@ abstract class LP_Abstract_Post_Type {
 		if ( !$this->_check_post() ) {
 			return $actions;
 		}
-
-		return $this->_call_method( 'row_actions', func_get_args() );
+		$func_args = func_get_args();
+		return $this->_call_method( 'row_actions', $func_args );
 	}
 
 	public function row_actions( $actions, $post ) {
