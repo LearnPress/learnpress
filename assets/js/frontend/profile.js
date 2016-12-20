@@ -1,5 +1,5 @@
 ;(function ($) {
-	"use strict";
+	'use strict';
 	$(document).ready(function () {
 		$(document).on('click', '.table-orders .cancel-order', function (e) {
 			e.preventDefault();
@@ -69,21 +69,25 @@
 
 		$('#lp-menu-change-picture .menu-item-use-gravatar').click( function(event){
 			$('#lp-profile_picture_type').val('gravatar').trigger('change');
+			$('#lpbox-upload-crop-profile-picture').slideUp();
 		});
 		
 		$('#lp-menu-change-picture .menu-item-use-picture').click( function(event){
 			var current_picture = $('#lp-user-profile-picture-data').attr('data-current');
 			if( !current_picture ){
-				$('#lp-button-choose-file').trigger('click');
+//				$('#lp-button-choose-file').trigger('click');
+				$('#lpbox-upload-crop-profile-picture').slideDown();
 			} else {
 				$('#lp-profile_picture_type').val('picture').trigger('change');
+				$('#lpbox-upload-crop-profile-picture').slideUp();
 			}
 		});
 
 		$('#lp-menu-change-picture .menu-item-upload-picture').click( function(event){
-			$('#lp-button-choose-file').trigger('click');
+//			$('#lp-button-choose-file').trigger('click');
+			$('#lpbox-upload-crop-profile-picture').slideDown();
 		});
-		
+
 		$('#lp-ocupload-picture').upload(
 			{
 				'name':'image',
@@ -99,7 +103,10 @@
 					} else if ( !response.return ){
 						$('.image-editor').cropit('imageSrc','');
 						$('.image-editor').attr('avatar-filename','');
-						LP.alert(response.message);
+//						LP.alert(response.message);
+						$('.user-profile-picture.info-field .learn-press-message').remove();
+						$('.user-profile-picture.info-field').prepend(response.message);
+						
 					}
 				}
 			}
@@ -138,7 +145,8 @@
 						$('.profile-picture.avatar-gravatar img').attr( 'src', avatar_url );
 						$('#lp-profile_picture_type').val('picture').trigger('change');
 						$('#lpbox-upload-crop-profile-picture').slideUp();
-						LP.alert(response.message);
+						$('.user-profile-picture.info-field .learn-press-message').remove();
+						$('.user-profile-picture.info-field').prepend(response.message);
 					}
 				});
 				return;
@@ -149,6 +157,82 @@
 			$('#lpbox-upload-crop-profile-picture').slideUp();
 		});
 
+		$('#learn-press-user-profile-edit-form form#your-profile input[name="submit"]').on('click', function(event){
+			event.preventDefault();
+			var check_form	= true;
+			var check_focus = false;
+			/**
+			 * VALIDATE FORM
+			 */
+//			console.log( '' === $('#your-profile #nickname' ).val());
+			if ('' === $('#your-profile #nickname').val()) {
+				if (0 === $('#your-profile #nickname').next('span.error').length) {
+					$('<span class="error">This field is required</span>').insertAfter($('#your-profile #nickname'));
+				}
+				check_form = false;
+				//document.getElementById('nickname').focus();
+				$('#your-profile #nickname').focus();
+				check_focus = true;
+			} else {
+				$('#your-profile #nickname').next('span.error').remove();
+			}
+
+			if ('' !== $('#your-profile #pass0').val()) {
+				if ('' === $('#your-profile #pass1').val()) {
+					if (0 === $('#your-profile #pass1').next('span.error').length) {
+						$('<span class="error">This field is required</span>').insertAfter($('#your-profile #pass1'));
+					}
+					check_form = false;
+					if (!check_focus) {
+						$('#your-profile #pass1').focus();
+						check_focus = true;
+					}
+				} else {
+					$('#your-profile #pass1').next('span.error').remove();
+				}
+
+				if ('' === $('#your-profile #pass2').val()) {
+					if (0 === $('#your-profile #pass2').next('span.error').length) {
+						$('<span class="error">This field is required</span>').insertAfter($('#your-profile #pass2'));
+					}
+					check_form = false;
+					if ( !check_focus ) {
+						$('#your-profile #pass2').focus();
+						check_focus = true;
+					}
+				} else {
+					$(this.pass2).next('span.error').remove();
+				}
+			}
+			if (check_form) {
+				$(this).submit();
+			}
+		});
+
+		$('#learn-press-user-profile-edit-form #your-profile input#nickname').on('change',function(){
+			if(''===$(this).val()){
+				if(0 === $(this).next('span.error').length){;
+					$('<span class="error">This field is required</span>').insertAfter($(this));
+				}
+			} else {
+				$(this).next('span.error').remove();
+			}
+		});
+		
+		$('#learn-press-user-profile-edit-form #your-profile input#pass1').on('change',function(){
+			
+		});
+		
+		$('#learn-press-user-profile-edit-form #your-profile input#pass2').on('keyup',function(){
+			var pass1 = $('#your-profile input#pass1').val();
+			if( pass1 !== $(this).val() ){
+				if(0 === $(this).next('span.error').length){;
+					$('<span class="error"> Password and confirmation password do not match</span>').insertAfter($(this));
+				}
+			} else {
+				$(this).next('span.error').remove();
+			}
+		});
 
 	});
 })(jQuery);
