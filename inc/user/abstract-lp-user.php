@@ -2051,6 +2051,8 @@ class LP_Abstract_User {
 		return apply_filters( 'learn_press_evaluate_quiz_results', $results, $quiz_id, $this->id );
 	}
 
+
+
 	/**
 	 * @param $quiz
 	 * @param $progress

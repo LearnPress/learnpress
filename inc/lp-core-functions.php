@@ -777,15 +777,23 @@ function learn_press_show_menu() {
 		<?php
 	}
 
+<<<<<<< Updated upstream
     if ( isset($_GET['post_type']) ) {
         ?>
         <script type="text/javascript">
             (function ($){
+=======
+	if ( isset( $_GET['post_type'] ) ) {
+		?>
+		<script type="text/javascript">
+			(function ($) {
+>>>>>>> Stashed changes
 
                 var $lpMainMenu = $('#toplevel_page_learn_press'),
                     href = 'edit.php?post_type=<?php echo $_GET['post_type']; ?>',
                     $current = $('a[href="'+ href +'"]', $lpMainMenu);
 
+<<<<<<< Updated upstream
                 if ($current.length) {
                     $current.addClass('current');
                     $current.parent('li').addClass('current');
@@ -793,6 +801,15 @@ function learn_press_show_menu() {
             })(jQuery)
         </script>
         <?php
+=======
+				if ($current.length) {
+					$current.addClass('current');
+					$current.parent('li').addClass('current');
+				}
+			})(jQuery)
+		</script>
+		<?php
+>>>>>>> Stashed changes
 
     }
 }
@@ -2508,6 +2525,7 @@ function learn_press_get_current_time() {
 }
 
 
+
 function learn_press_is_added_to_cart( $course_id ) {
 	$cart = LP()->cart;
 	return $cart->has_item( $course_id );
@@ -2560,6 +2578,7 @@ if (!function_exists('lp_warning_message_settings')) {
 
 				if ( empty( $item_transient ) && ( empty( $item_page_id ) || empty( $item_page ) ) ) {
 
+<<<<<<< Updated upstream
                     $count ++;
                     $admin_bar->add_menu(array(
                         'id'    => $arg['id'],
@@ -2617,6 +2636,67 @@ if (!function_exists('lp_warning_message_settings')) {
             </style>
             <script type="text/javascript">
                 (function ($){
+=======
+					$count ++;
+					$admin_bar->add_menu( array(
+						'id'     => $arg['id'],
+						'parent' => 'lp-admin-warning',
+						'title'  => $arg['title'] . '<span class="lp-hide-warning" title="' . __( 'Hidden', 'learnpress' ) . '">x</span>',
+						'href'   => $arg['url'],
+						'meta'   => array(
+							'title' => __( 'Go to setup ', 'learnpress' ) . $arg['title'],
+							'class' => $arg['id']
+						)
+					) );
+				}
+			}
+
+			/* Add Admin Menu */
+			if ( !empty( $count ) ) {
+				$admin_bar->add_menu( array(
+					'id'     => 'lp-admin-warning',
+					'parent' => 'top-secondary',
+					'title'  => __( 'LP Setup Page', 'learnpress' ) . '<span class="lp-count-warning">' . $count . '</span>',
+					'href'   => '',
+					'meta'   => array(
+						'title' => __( 'Warning! You need setup all pages', 'learnpress' ),
+						'class' => 'lp-admin-warning'
+					),
+				) );
+			}
+
+			?>
+			<style type="text/css">
+				#wp-admin-bar-lp-admin-warning {
+					padding-right: 15px;
+				}
+
+				#wp-admin-bar-lp-admin-warning .lp-count-warning {
+					position: absolute;
+					top: 0;
+					right: 0;
+					font-size: 11px;
+					border-radius: 50%;
+					background: red;
+					line-height: 15px;
+					width: 15px;
+					height: 15px;
+					text-align: center;
+					color: #ffffff;
+				}
+
+				#wp-admin-bar-lp-admin-warning .lp-hide-warning {
+					position: absolute;
+					top: 0;
+					right: 0;
+					line-height: inherit;
+					padding-right: 12px;
+					padding-left: 12px;
+				}
+			</style>
+			<script type="text/javascript">
+				(function ($) {
+>>>>>>> Stashed changes
 
                     $(document).ready( function () {
 
@@ -2658,11 +2738,19 @@ if (!function_exists('lp_warning_message_settings')) {
 
                     });
 
+<<<<<<< Updated upstream
                 })(jQuery)
             </script>
             <?php
         }
     }
+=======
+				})(jQuery)
+			</script>
+			<?php
+		}
+	}
+>>>>>>> Stashed changes
 
 }
 
