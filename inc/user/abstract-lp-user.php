@@ -2807,7 +2807,7 @@ class LP_Abstract_User {
 			if ( $profile_picture_src = $this->get_upload_profile_src( $size ) ) {
 				$this->profile_picture_src = $profile_picture_src;
 			}
-			$avatar = get_avatar( $this->id, $size );
+			$avatar = get_avatar( $this->id, $size, '', '', array('gravatar'=>false) );
 		} else{
 			$avatar = get_avatar( $this->id, $size, '', '', array('gravatar'=>true) );
 		}

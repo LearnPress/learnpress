@@ -92,6 +92,9 @@
 			{
 				'name':'image',
 				params:{from:'profile','action':'update','sub_action':'upload_avatar'},
+				'onSubmit':function(){
+					LP.blockContent();
+				},
 				'onComplete':function(response){
 					response = LP.parseJSON(response);
 					console.log(response);
@@ -100,12 +103,19 @@
 						$('.image-editor').cropit('imageSrc',response.avatar_tmp);
 						$('.image-editor').attr('avatar-filename',response.avatar_tmp_filename);
 						$('#lpbox-upload-crop-profile-picture').slideDown();
+						LP.unblockContent();
+						$('body, html').css('overflow','visible');
+						$('.user-profile-picture.info-field .learn-press-message').remove();
+						var message = '<div class="learn-press-message success"><p>'+response.message+'</p></div>';
+						$('.user-profile-picture.info-field').prepend(message);
 					} else if ( !response.return ){
 						$('.image-editor').cropit('imageSrc','');
 						$('.image-editor').attr('avatar-filename','');
-//						LP.alert(response.message);
+						LP.unblockContent();
+						$('body, html').css('overflow','visible');
 						$('.user-profile-picture.info-field .learn-press-message').remove();
-						$('.user-profile-picture.info-field').prepend(response.message);
+						var message = '<div class="learn-press-message error"><p>'+response.message+'</p></div>';
+						$('.user-profile-picture.info-field').prepend(message);
 						
 					}
 				}
@@ -139,12 +149,17 @@
 					dataType: 'html',
 					data    : datas,
 					type    : 'post',
+					beforeSend: function(){
+						LP.blockContent();
+					},
 					success : function (response) {
 						response = LP.parseJSON(response);
 						var avatar_url = response.avatar_url;
 						$('.profile-picture.avatar-gravatar img').attr( 'src', avatar_url );
 						$('#lp-profile_picture_type').val('picture').trigger('change');
 						$('#lpbox-upload-crop-profile-picture').slideUp();
+						LP.unblockContent();
+						$('body, html').css('overflow','visible');
 						$('.user-profile-picture.info-field .learn-press-message').remove();
 						$('.user-profile-picture.info-field').prepend(response.message);
 					}
@@ -167,7 +182,7 @@
 //			console.log( '' === $('#your-profile #nickname' ).val());
 			if ('' === $('#your-profile #nickname').val()) {
 				if (0 === $('#your-profile #nickname').next('span.error').length) {
-					$('<span class="error">This field is required</span>').insertAfter($('#your-profile #nickname'));
+					$('<span class="error">'+lp_profile_translation.msg_field_is_required+'</span>').insertAfter($('#your-profile #nickname'));
 				}
 				check_form = false;
 				//document.getElementById('nickname').focus();
@@ -180,7 +195,7 @@
 			if ('' !== $('#your-profile #pass0').val()) {
 				if ('' === $('#your-profile #pass1').val()) {
 					if (0 === $('#your-profile #pass1').next('span.error').length) {
-						$('<span class="error">This field is required</span>').insertAfter($('#your-profile #pass1'));
+						$('<span class="error">'+lp_profile_translation.msg_field_is_required+'</span>').insertAfter($('#your-profile #pass1'));
 					}
 					check_form = false;
 					if (!check_focus) {
@@ -193,7 +208,7 @@
 
 				if ('' === $('#your-profile #pass2').val()) {
 					if (0 === $('#your-profile #pass2').next('span.error').length) {
-						$('<span class="error">This field is required</span>').insertAfter($('#your-profile #pass2'));
+						$('<span class="error">'+lp_profile_translation.msg_field_is_required+'</span>').insertAfter($('#your-profile #pass2'));
 					}
 					check_form = false;
 					if ( !check_focus ) {
@@ -205,14 +220,38 @@
 				}
 			}
 			if (check_form) {
-				$('#learn-press-user-profile-edit-form form#your-profile').submit();
+//				$('#learn-press-user-profile-edit-form form#your-profile').submit();
+				var datas = $('#learn-press-user-profile-edit-form form#your-profile').serializeArray();
+				$.ajax({
+					url     : LP.getUrl(),
+					dataType: 'html',
+					data    : datas,
+					type    : 'post',
+					beforeSend: function(){
+						LP.blockContent();
+					},
+					success : function (response) {
+						response = LP.parseJSON(response);
+						var avatar_url = response.avatar_url;
+						$('.profile-picture.avatar-gravatar img').attr( 'src', avatar_url );
+						$('#lp-profile_picture_type').val('picture').trigger('change');
+						$('#lpbox-upload-crop-profile-picture').slideUp();
+						LP.unblockContent();
+						$('body, html').css('overflow','visible');
+						$('.user-profile-picture.info-field .learn-press-message').remove();
+						$('.user-profile-picture.info-field').prepend(response.message);
+						$('html, body').animate({
+							scrollTop: $('.user-profile-picture.info-field .learn-press-message').offset().top-100
+						}, 500);
+					}
+				});
 			}
 		});
 
 		$('#learn-press-user-profile-edit-form #your-profile input#nickname').on('change',function(){
 			if(''===$(this).val()){
 				if(0 === $(this).next('span.error').length){;
-					$('<span class="error">This field is required</span>').insertAfter($(this));
+					$('<span class="error">'+lp_profile_translation.msg_field_is_required+'</span>').insertAfter($(this));
 				}
 			} else {
 				$(this).next('span.error').remove();
@@ -227,7 +266,7 @@
 			var pass1 = $('#your-profile input#pass1').val();
 			if( pass1 !== $(this).val() ){
 				if(0 === $(this).next('span.error').length){;
-					$('<span class="error"> Password and confirmation password do not match</span>').insertAfter($(this));
+					$('<span class="error">'+lp_profile_translation.confim_pass_not_match+'</span>').insertAfter($(this));
 				}
 			} else {
 				$(this).next('span.error').remove();
