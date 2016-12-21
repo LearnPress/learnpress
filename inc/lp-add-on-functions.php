@@ -39,7 +39,7 @@ function learn_press_count_add_ons() {
                 break;
 
             case 'related_themes':
-                $count = learn_press_get_add_ons_theme();
+                $count = learn_press_get_count_theme();
                 $count = sizeof($count);
                 break;
 			default:
@@ -589,34 +589,145 @@ function learn_press_get_add_ons_premium() {
 add_action( 'learn_press_add_ons_content_tab_premium_add_ons', 'learn_press_add_ons_content_tab_premium_add_ons' );
 
 function learn_press_add_ons_content_tab_related_themes($current) {
-   $related_themes = learn_press_get_add_ons_theme();
-
+    $related_themes = learn_press_get_relate_theme();
     $time        = get_option( '_transient_timeout_lp_ba_add_ons' );
     $description = __( 'All add-ons we provide.', 'learnpress' );
     $description .= ' ' . sprintf( __( 'Last checked %s ago', 'learnpress' ), human_time_diff( $time - LP_ADD_ON_TRANSIENT_TIME ) );
-    $description .= ' ' . sprintf( __( '<a href="%s">%s</a>' ), admin_url( 'admin.php?page=learn-press-addons&tab=related_themes&check=' . wp_create_nonce( 'check_more' ) ), __( 'Check again!', 'learnpress' ) );
+    $description .= ' ' . sprintf( __( '<a href="%s">%s</a>' ), admin_url( 'admin.php?page=learn-press-addons&tab=related_themes&check=' . wp_create_nonce( 'check_again_theme' ) ), __( 'Check again!', 'learnpress' ) );
     learn_press_add_on_tab_description( $description );
     learn_press_output_related_themes_list( $related_themes, $current );
 }
 
-function learn_press_get_add_ons_theme() {
-    global $learnpress_add_on_theme;
-    if (!empty($learnpress_add_on_theme)) {
-        return $learnpress_add_on_theme;
+function learn_press_get_count_theme() {
+
+    if (isset($_GET['check']) && wp_verify_nonce($_GET['check'], 'check_again_theme')) {
+        delete_transient('learnpress_addon_list_theme');
+        delete_transient('learnpress_list_items_detail');
     }
-    $add_ons = array();
-    $url = 'https://thimpress.com/?thimpress_get_addons=theme';
-    $response = wp_remote_get(esc_url_raw($url), array('decompress' => false));
+
+    $list_theme = get_transient('learnpress_addon_list_theme');
+    if (!empty($list_theme)) {
+        $list_theme = json_decode($list_theme);
+        return $list_theme;
+    }
+
+    $url = 'https://api.envato.com/v1/market/new-files-from-user:thimpress,themeforest.json';
+    $args = array(
+        'headers' => array(
+            "Authorization" => "Bearer BmYcBsYXlSoVe0FekueDxqNGz2o3JRaP"
+        )
+    );
+    $response = wp_remote_request( $url, $args );
+
     if (!is_wp_error($response)) {
         $response = wp_remote_retrieve_body($response);
         $response = json_decode($response, true);
-        if (!empty($response)) {
-            $add_ons = $response;
+        if (!empty($response) && !empty($response['new-files-from-user'])) {
+            $list_theme = $response['new-files-from-user'];
+            $temp = json_encode($list_theme);
+
+            set_transient('learnpress_addon_list_theme', $temp, 7 * DAY_IN_SECONDS);
+
+            return $list_theme;
+
         }
     }
-    $learnpress_add_on_theme = $add_ons;
 
-    return $add_ons;
+}
+
+function learn_press_get_relate_theme() {
+
+    $list_items_detail = get_transient('learnpress_list_items_detail');
+
+    if (!empty($list_items_detail)) {
+        $list_items_detail = json_decode($list_items_detail, true);
+
+        return $list_items_detail;
+    }
+
+    $list_theme = get_transient('learnpress_addon_list_theme');
+    $list_theme = json_decode($list_theme);
+
+    if (is_array($list_theme)) {
+        $args = array(
+            'headers' => array(
+                "Authorization" => "Bearer BmYcBsYXlSoVe0FekueDxqNGz2o3JRaP"
+            )
+        );
+        foreach ($list_theme as $theme) {
+            $url = 'https://api.envato.com/v3/market/catalog/item?id=' . $theme->id;
+            $response = wp_remote_request( $url, $args );
+
+            if (!is_wp_error($response)) {
+                $response = wp_remote_retrieve_body($response);
+                $response = json_decode($response, true);
+
+                $list_items_detail[] = $response;
+            }
+        }
+
+        $temp = json_encode($list_items_detail);
+        set_transient('learnpress_list_items_detail', $temp, 7 * DAY_IN_SECONDS);
+
+        return $list_items_detail;
+    }
+
+    return array();
+}
+
+function learn_press_get_add_ons_themes() {
+    global $learnpress_list_themes;
+    $list_theme = array();
+
+    if (!empty($learnpress_list_themes)) {
+        return $learnpress_list_themes;
+    }
+
+    if (!get_transient('learnpress_theme_premium') !== false) {
+        $list_theme = get_transient('learnpress_theme_premium');
+        $list_theme = json_decode($list_theme);
+
+        if (empty($learnpress_list_themes)) {
+            $learnpress_list_themes = $list_theme;
+        }
+        return $list_theme;
+    }
+
+    $url = 'https://api.envato.com/v1/market/new-files-from-user:thimpress,themeforest.json';
+    $args = array(
+        'headers' => array(
+            "Authorization" => "Bearer BmYcBsYXlSoVe0FekueDxqNGz2o3JRaP"
+        )
+    );
+    $response = wp_remote_request( $url, $args );
+
+    if (!is_wp_error($response)) {
+        $response = wp_remote_retrieve_body($response);
+        $response = json_decode($response, true);
+        if (!empty($response) && !empty($response['new-files-from-user'])) {
+            $add_ons = $response['new-files-from-user'];
+
+            foreach ($add_ons as $add_on) {
+                $url = 'https://api.envato.com/v3/market/catalog/item?id=' . $add_on['id'];
+                $response = wp_remote_request( $url, $args );
+
+                if (!is_wp_error($response)) {
+                    $response = wp_remote_retrieve_body($response);
+                    $response = json_decode($response, true);
+
+                    $list_theme[] = $response;
+                }
+            }
+        }
+        if (empty($learnpress_list_themes)) {
+            $learnpress_list_themes = $list_theme;
+        }
+        $learnpress_add_on_theme = json_encode($list_theme);
+
+
+        set_transient('learnpress_theme_premium', $learnpress_add_on_theme, 7 * DAY_IN_SECONDS);
+    }
+    return $list_theme;
 }
 
 
@@ -686,12 +797,6 @@ function learn_press_output_add_ons_list( $add_ons, $tab = '' ) {
 	foreach ( $add_ons as $file => $add_on ) {
 
 		$action_links = learn_press_get_add_on_action_link( $add_on, $file );
-		/*if ( is_plugin_active( $file ) ) {
-			$action_links[] = '<input data-state="enabled" type="checkbox" class="lpr-fancy-checkbox" checked="checked" data-plugin="' . $file . '" data-url="' . wp_nonce_url( "plugins.php?action=deactivate&plugin={$file}", 'deactivate-plugin_' . $file ) . '" />';
-		} else {
-			$action_links[] = '<input data-state="disabled" type="checkbox" class="lpr-fancy-checkbox" data-plugin="' . $file . '" data-url="' . wp_nonce_url( "plugins.php?action=activate&plugin={$file}", 'activate-plugin_' . $file ) . '" />';
-		}*/
-
 
 		?>
 		<li class="plugin-card plugin-card-learnpress" id="learn-press-plugin-<?php echo $add_on['slug']; ?>">
@@ -835,52 +940,50 @@ function learn_press_output_related_themes_list($add_ons, $tab = '') {
     echo '<ul class="learn-press-add-ons widefat ' . $tab . '">';
     foreach ( $add_ons as $file => $add_on ) {
         ?>
-        <li class="plugin-card plugin-card-learnpress" id="learn-press-plugin-<?php echo $add_on['slug']; ?>">
+        <li class="plugin-card plugin-card-learnpress" id="learn-press-theme-<?php echo $add_on['id']; ?>">
             <div class="plugin-card-top">
-                <?php
-                if (empty($add_on['icons'])) {
-                    $add_on['icons'] = learn_press_get_add_on_icon('');
-                }
-                ?>
-                <span class="plugin-icon"><img src="<?php echo esc_url($add_on['icons']); ?>"></span>
-
-                <div class="name column-name">
-                    <h3><a href="<?php echo esc_url($add_on['permarklink'])?>"><?php echo $add_on['name']; ?></a></h3>
+                <div class="image-thumbnail">
+                    <a href="#">
+                        <img src="<?php echo esc_url($add_on['previews']['landscape_preview']['landscape_url']); ?>" alt="<?php echo esc_attr($add_on['wordpress_theme_metadata']['theme_name'])?>">
+                    </a>
                 </div>
-                <div class="action-links">
-                    <ul class="plugin-action-buttons">
-                        <li>
-                            <a class="button lp-not-ajax" data-slug="<?php echo esc_attr($add_on['slug']); ?>" href="<?php echo esc_url($add_on['permarklink'])?>" aria-label="<?php _e('Buy Now', 'learnpress'); ?>" data-name="<?php _e('Buy Now', 'learnpress'); ?>">
-                                <span><?php _e('Buy Now', 'learnpress'); ?></span>
-                            </a>
-                        </li>
-                        <li>
-                            <span class="price">
-                                <?php
-                                if (!empty($add_on['sale']) && absint($add_on['regular_price']) != 0) {
-                                    ?>
-                                    <del>
-                                        <span class="amount">
-                                            <span class="currencySymbol">$</span><?php echo esc_html($add_on['regular_price']); ?>
-                                        </span>
-                                    </del>
-                                    <?php
-                                }
-                                ?>
 
-                                <ins>
-                                    <span class="amount">
-                                        <span class="currencySymbol">$</span><?php echo esc_html($add_on['price']); ?>
-                                    </span>
-                                </ins>
+                <div class="theme-content">
+                    <h2 class="theme-title">
+                        <a href="<?php esc_url($add_on['url']); ?>">
+                            <?php echo wp_kses_post($add_on['name']); ?>
+                        </a>
+                    </h2>
+                    <div class="theme-detail">
+                        <div class="theme-price">
+                            <?php echo $add_on['price_cents']/100 .__('$', 'learnpress');?>
+                        </div>
+                        <div class="number-sale">
+                            <?php echo $add_on['number_of_sales'] .__(' sales', 'learnpress'); ?>
+                        </div>
+                    </div>
+
+                    <div class="theme-description">
+                        <?php
+                        $description = $add_on['description'];
+                        $description = preg_replace("/<(.*?)>/", '', $description);
+                        echo wp_kses_post($description);
+
+                        ?>
+                    </div>
+                    <div class="theme-footer">
+                        <?php
+                        $demo = $add_on['attributes'][4];
+                        ?>
+                        <a class="button button-primary" href="<?php echo esc_url($add_on['url']); ?>"><?php echo __('Get it now for only ', 'learnpress') ?></a>
+                        <a class="button" href="<?php echo esc_url($demo['value']); ?>"><?php _e('View Demo', 'learnpress'); ?></a>
+                        <div class="theme-rating">
+                            <span class="">
+                                <?php wp_star_rating( array( 'rating' => $add_on['rating'], 'type' => 'rating', 'number' => $add_on['rating_count'] ) ); ?>
                             </span>
-                        </li>
-                    </ul>
-                </div>
-                <div class="desc column-description">
-                    <p><?php echo $add_on['short_description']; ?></p>
-
-                    <p class="authors"><?php printf( __( '<cite>By %s</cite>', 'learnpress' ), $add_on['author'] ); ?></p>
+                            <span class="count-rating">(<?php echo $add_on['rating_count'];?>)</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </li>
