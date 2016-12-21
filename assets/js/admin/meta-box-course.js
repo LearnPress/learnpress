@@ -89,9 +89,9 @@
 					'data-type': type
 				}).find('.lp-item-type').val(type);
 
-                                if ( $icon.addClass('item-selected').parent().siblings().length > 0 ) {
-                                    $icon.addClass('item-selected').parent().hide().siblings().show().find('span').removeClass('item-selected');
-                                }
+				if ($icon.addClass('item-selected').parent().siblings().length > 0) {
+					$icon.addClass('item-selected').parent().hide().siblings().show().find('span').removeClass('item-selected');
+				}
 				var iconIindex = $icon.parent().index();
 				var pos = ( iconIindex === 0 ) ? 1 : iconIindex,
 					$rep = $icon.closest('.learn-press-dropdown-item-types').find('>span'),
@@ -147,11 +147,11 @@
 					var toggle = this.value != 'yes';
 					$('.lp-course-price-field').toggleClass('hide-if-js', toggle).attr('xxx', Math.random());
 					$('.lp-course-required-enroll').toggleClass('hide-if-js', !toggle);
-					if(toggle){
+					if (toggle) {
 						$('.lp-course-sale_start-field').addClass('hide');
 						$('.lp-course-sale_end-field').addClass('hide');
-					}else{
-						if( $('input[name="_lp_sale_start"]').val()!='' ){
+					} else {
+						if ($('input[name="_lp_sale_start"]').val() != '') {
 							$('.lp-course-sale_start-field').removeClass('hide');
 							$('.lp-course-sale_end-field').removeClass('hide');
 							$('#_lp_sale_price_schedule').addClass('hide');
@@ -159,20 +159,20 @@
 					}
 				})
 				$chkPayment.filter(':checked').trigger('change');
-				
+
 				// add schedule button
-				if( $('input[name="_lp_sale_start"]').val()!='' ){
+				if ($('input[name="_lp_sale_start"]').val() != '') {
 					$('.lp-course-sale_start-field').removeClass('hide');
 					$('.lp-course-sale_end-field').removeClass('hide');
 					$('#_lp_sale_price_schedule').addClass('hide');
 				}
-				$('#_lp_sale_price_schedule').on('click', function(event){
+				$('#_lp_sale_price_schedule').on('click', function (event) {
 					event.preventDefault();
 					$('.lp-course-sale_start-field').show();
 					$('.lp-course-sale_end-field').show();
 					$(this).hide();
 				});
-				$('#_lp_sale_price_schedule_cancel').on('click', function(event){
+				$('#_lp_sale_price_schedule_cancel').on('click', function (event) {
 					event.preventDefault();
 					$('.lp-course-sale_start-field').hide();
 					$('.lp-course-sale_end-field').hide();
@@ -561,7 +561,7 @@
 				var tmpl = wp.template('section-item'),
 					$item = $(tmpl(args || {}));
 				$item = LP.Hook.applyFilters('learn_press_create_new_item', $item, $section);
-                                _makeListSortable();
+				_makeListSortable();
 				return $item;
 			},
 			needCreateNewSection    : function () {
@@ -602,7 +602,7 @@
 					context   : 'course-items',
 					context_id: $('#post_ID').val(),
 					exclude   : this.getSelectedItems(),
-                                        notices   : notices
+					notices   : notices
 				});
 				LP.MessageBox.show($form.$el);
 				$form.$el.find('header input').focus();
@@ -613,7 +613,7 @@
 					$button = $(e.target),
 					action = $button.data('action'),
 					type = $button.data('type'),
-                                        notices = $button.data('notices'),
+					notices = $button.data('notices'),
 					$form = null;
 				switch (action) {
 					case 'add-lp_quiz':
@@ -664,8 +664,8 @@
 					}
 					$li.remove();
 				});
-                                // restart sortable
-                                _makeListSortable();
+				// restart sortable
+				_makeListSortable();
 			},
 			addItemToSection        : function ($item, $section) {
 				var $last = $section.find('.curriculum-section-items .lp-section-item:last');
@@ -1357,7 +1357,7 @@
 						// Set helper cell sizes to match the original sizes
 						$(this).width($originals.eq(index).width());
 					});
-                                        $helper.height( $( tr ).height() + 10 );
+					$helper.height($(tr).height() + 10);
 
 					$(tr).parent().append($helper);
 
@@ -1467,13 +1467,81 @@
 		if (!canSubmit()) {
 			$publish.prop('disabled', true);
 		}
+		$('#course_curriculum-sortables').sortable('disable');
 
+		if (LP_Settings.enable_course_tabs == 'yes') {
+			meta_boxes_to_tabs();
+		}
+	}
 
+	function meta_boxes_to_tabs() {
+		var $tabWrapper = $('#course-tabs'),
+			requestedTab = window.location.href.getQueryVar('tab');
+		$('#normal-sortables .postbox:visible').each(function () {
+			var $tabContent = $(this).removeClass('closed');
+			$tabWrapper.append('<li><a data-tab="' + $tabContent.attr('id') + '" href="">' + $tabContent.find('.ui-sortable-handle').text() + '</a></li>');
+			if (!requestedTab) {
+				requestedTab = $tabContent.attr('id');
+			}
+		});
+		$(document).on('click', '#course-tabs :not(#switch-course-metaboxes) a', function () {
+			var $tab = $(this),
+				id = $tab.data('tab'),
+				url = window.location.href;
+
+			$('#' + id + '.postbox').addClass('active').siblings('.active').removeClass('active');
+			$tab.parent().addClass('active').siblings().removeClass('active');
+			url = url.removeQueryVar('tab').addQueryVar('tab', id);
+			LP.setUrl(url);
+			$(window).trigger('scroll');
+			return false;
+		})
+		/*.on('click', '#switch-course-metaboxes', function () {
+		 var url = window.location.href;
+		 url = url.removeQueryVar('tab').addQueryVar('switch-course-tab', 'off');
+		 LP.reload(url);
+		 });*/
+		$('#course-tabs [data-tab="' + requestedTab + '"]').trigger('click');
 	}
 
 	$(document)
 		.ready(_ready)
-		.on('click', '.items-toggle a', _toggleSectionsHandler);
+		.on('click', '.items-toggle a', _toggleSectionsHandler)
+		.on('click', '#toggle-meta-boxes', function (e) {
+			e.preventDefault();
+			var $boxes = $('#normal-sortables .postbox:visible'),
+				show = $boxes.first().hasClass('closed');
+			// We do not want wp run ajax for each meta box
+			$boxes.filter(':lt(' + ($boxes.length - 1) + ')').toggleClass('closed', !show);
+
+			// Tell wp api update meta box states by trigger click event in the last item
+			$boxes.last().toggleClass('closed', show).find('.handlediv').trigger('click');
+		}).on('click', '#reorder-course-tabs', function (e) {
+		e.preventDefault();
+		$(this).hide();
+		$('#complete-reorder-course-tabs').show();
+		$('#course-tabs').sortable({
+			axis  : 'x',
+			items : 'li:not(#switch-course-metaboxes)',
+			update: function (e, ui) {
+				var tab = ui.item.find('a').data('tab'),
+					$prev = ui.item.prev(),
+					$next = ui.item.next();
+				if ($prev.length) {
+					$('#' + tab + '.postbox').insertAfter($('#' + $prev.find('a').data('tab') + '.postbox'));
+				} else {
+					$('#' + tab + '.postbox').insertBefore($('#' + $next.find('a').data('tab') + '.postbox'));
+
+				}
+			}
+		}).sortable('enable');
+	}).on('click', '#complete-reorder-course-tabs', function (e) {
+		e.preventDefault();
+		$(this).hide();
+		$('#reorder-course-tabs').show();
+		$('#course-tabs').sortable('disable');
+	})
 
 
-})(jQuery);
+})
+(jQuery);
