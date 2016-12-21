@@ -707,7 +707,6 @@ class LP_Assets {
 		if ( is_admin() ) {
 			global $pagenow;
 			$screen = get_current_screen();
-
 			$screen_id = $screen->id;
 			$page_id   = !empty( $_REQUEST['page'] ) ? $_REQUEST['page'] : '';
 
@@ -793,6 +792,12 @@ class LP_Assets {
 		self::enqueue_script( 'learn-press-become-teacher' );
 
 		if ( learn_press_is_profile() ) {
+			// Localize the script with new data
+			$translation_array = array(
+				'confim_pass_not_match' => __( 'Password and confirmation password do not match', 'learnpress' ),
+				'msg_field_is_required' => __('This field is required','learnpress')
+			);
+			wp_localize_script( 'learn-press-profile', 'lp_profile_translation', $translation_array );
 			self::enqueue_script( 'learn-press-profile' );
 			self::enqueue_script( 'learn-press-jquery-cropit' );
 			self::enqueue_script( 'learn-press-jquery-ocupload' );
