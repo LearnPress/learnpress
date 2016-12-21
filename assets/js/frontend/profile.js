@@ -232,10 +232,6 @@
 					},
 					success : function (response) {
 						response = LP.parseJSON(response);
-						var avatar_url = response.avatar_url;
-						$('.profile-picture.avatar-gravatar img').attr( 'src', avatar_url );
-						$('#lp-profile_picture_type').val('picture').trigger('change');
-						$('#lpbox-upload-crop-profile-picture').slideUp();
 						LP.unblockContent();
 						$('body, html').css('overflow','visible');
 						$('.user-profile-picture.info-field .learn-press-message').remove();
