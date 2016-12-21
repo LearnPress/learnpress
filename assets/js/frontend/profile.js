@@ -232,6 +232,8 @@
 					},
 					success : function (response) {
 						response = LP.parseJSON(response);
+						$('#your-profile #pass0, #your-profile #pass1, #your-profile #pass2').val('');
+						$('#user_profile_password_form').slideUp();
 						LP.unblockContent();
 						$('body, html').css('overflow','visible');
 						$('.user-profile-picture.info-field .learn-press-message').remove();
