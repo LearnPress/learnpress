@@ -122,16 +122,16 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 	}
 	if ( $allow_create ) {
 		ob_start(); ?>
-		<button class="button button-quick-add-page" data-id="<?php echo $id; ?>" type="button"><?php _e( 'Create', 'learnpress' ); ?></button>
-		<p class="learn-press-quick-add-page-inline <?php echo $id; ?> hide-if-js">
-			<input type="text" placeholder="<?php esc_attr_e( 'New page title', 'learnpress' ); ?>" />
-			<button class="button" type="button"><?php esc_html_e( 'Ok [Enter]', 'learnpress' ); ?></button>
-			<a href=""><?php _e( 'Cancel [ESC]', 'learnpress' ); ?></a>
-		</p>
-		<p class="learn-press-quick-add-page-actions <?php echo $id; ?><?php echo $selected ? '' : ' hide-if-js'; ?>">
-			<a class="edit-page" href="<?php echo get_edit_post_link( $selected ); ?>" target="_blank"><?php _e( 'Edit Page', 'learnpress' ); ?></a>
-			<a class="view-page" href="<?php echo get_permalink( $selected ); ?>" target="_blank"><?php _e( 'View Page', 'learnpress' ); ?></a>
-		</p>
+        <button class="button button-quick-add-page" data-id="<?php echo $id; ?>" type="button"><?php _e( 'Create', 'learnpress' ); ?></button>
+        <p class="learn-press-quick-add-page-inline <?php echo $id; ?> hide-if-js">
+            <input type="text" placeholder="<?php esc_attr_e( 'New page title', 'learnpress' ); ?>" />
+            <button class="button" type="button"><?php esc_html_e( 'Ok [Enter]', 'learnpress' ); ?></button>
+            <a href=""><?php _e( 'Cancel [ESC]', 'learnpress' ); ?></a>
+        </p>
+        <p class="learn-press-quick-add-page-actions <?php echo $id; ?><?php echo $selected ? '' : ' hide-if-js'; ?>">
+            <a class="edit-page" href="<?php echo get_edit_post_link( $selected ); ?>" target="_blank"><?php _e( 'Edit Page', 'learnpress' ); ?></a>
+            <a class="view-page" href="<?php echo get_permalink( $selected ); ?>" target="_blank"><?php _e( 'View Page', 'learnpress' ); ?></a>
+        </p>
 		<?php $output .= ob_get_clean();
 	}
 	if ( $echo ) {
@@ -212,16 +212,16 @@ function learn_press_field_question_duration( $args = array(), $question ) {
 	}
 
 	return '<span class="' . esc_attr( $wrap_class ) . '">' . sprintf(
-		'<input type="number" class="%s" name="%s" id="%s" value="%s" step="%s" min="%s" max="%s" placeholder="%s"/>',
-		$args['class'],
-		$args['name'],
-		empty( $args['clone'] ) ? $args['id'] : '',
-		$args['value'],
-		$args['step'],
-		$args['min'],
-		!empty( $args['max'] ) ? $args['max'] : '',
-		$args['placeholder']
-	) . $args['placeholder'] . '</span>';
+			'<input type="number" class="%s" name="%s" id="%s" value="%s" step="%s" min="%s" max="%s" placeholder="%s"/>',
+			$args['class'],
+			$args['name'],
+			empty( $args['clone'] ) ? $args['id'] : '',
+			$args['value'],
+			$args['step'],
+			$args['min'],
+			!empty( $args['max'] ) ? $args['max'] : '',
+			$args['placeholder']
+		) . $args['placeholder'] . '</span>';
 }
 
 /**
@@ -686,14 +686,14 @@ function learn_press_get_chart_courses( $from = null, $by = null, $time_ago ) {
 	$query = $wpdb->prepare( "
 				SELECT count(c.ID) as c, DATE_FORMAT( c.post_date, %s) as d
 				FROM {$wpdb->posts} c
-				INNER JOIN {$wpdb->postmeta} cm ON cm.post_id = c.ID AND cm.meta_key = %s AND (cm.meta_value = %s OR cm.meta_value = 1 )
+				INNER JOIN {$wpdb->postmeta} cm ON cm.post_id = c.ID AND cm.meta_key = %s AND (cm.meta_value = %s OR cm.meta_value = %s )
 				WHERE 1
 				{$query_where}
 				AND c.post_status = %s AND c.post_type = %s
 				GROUP BY d
 				HAVING d BETWEEN %s AND %s
 				ORDER BY d ASC
-			", $_sql_format, '_lp_payment', 'yes', 'publish', 'lp_course', $_from, $_to );
+			", $_sql_format, '_lp_payment', 'yes', '1', 'publish', 'lp_course', $_from, $_to );
 	if ( $_results = $wpdb->get_results( $query ) ) {
 		foreach ( $_results as $k => $v ) {
 			$results['paid'][$v->d] = $v;
@@ -1083,17 +1083,17 @@ function learn_press_add_row_action_link( $actions ) {
 		}
 		$actions['lpr-course-row-action'] = $link;
 	} else if ( LP_QUIZ_CPT === $post->post_type ) {
-		unset($actions['view']);
+		unset( $actions['view'] );
 		$url                              = admin_url( 'edit.php?post_type=' . LP_QUIZ_CPT . '&lp-action=lp-duplicate-quiz&post=' . $post->ID . '&nonce=' . wp_create_nonce( 'lp-duplicate-' . $post->ID ) );
 		$link                             = sprintf( '<a href="%s" class="lp-duplicate-lesson">%s</a>', $url, __( 'Duplicate this quiz', 'learnpress' ) );
 		$actions['lpr-course-row-action'] = $link;
 	} else if ( LP_QUESTION_CPT === $post->post_type ) {
-		unset($actions['view']);
+		unset( $actions['view'] );
 		$url                              = admin_url( 'edit.php?post_type=' . LP_QUESTION_CPT . '&lp-action=lp-duplicate-question&post=' . $post->ID . '&nonce=' . wp_create_nonce( 'lp-duplicate-' . $post->ID ) );
 		$link                             = sprintf( '<a href="%s" class="lp-duplicate-lesson">%s</a>', $url, __( 'Duplicate this question', 'learnpress' ) );
 		$actions['lpr-course-row-action'] = $link;
 	} else if ( LP_LESSON_CPT === $post->post_type ) {
-		unset($actions['view']);
+		unset( $actions['view'] );
 		$url                              = admin_url( 'edit.php?post_type=' . LP_LESSON_CPT . '&lp-action=lp-duplicate-lesson&post=' . $post->ID . '&nonce=' . wp_create_nonce( 'lp-duplicate-' . $post->ID ) );
 		$link                             = sprintf( '<a href="%s" class="lp-duplicate-lesson">%s</a>', $url, __( 'Duplicate this lesson', 'learnpress' ) );
 		$actions['lpr-course-row-action'] = $link;
@@ -1291,12 +1291,12 @@ add_action( 'load-edit.php', 'learn_press_process_duplicate_action' );
 function learn_press_admin_notice_bundle_activation() {
 	if ( !empty( $_REQUEST['tab'] ) && ( 'bundle_activate' != $_REQUEST['tab'] ) && learn_press_get_notice_dismiss( 'bundle-addon-install', '' ) != 'off' ) {
 		?>
-		<div class="updated">
-			<p>
+        <div class="updated">
+            <p>
 				<?php printf( __( 'Want full free features? Click <a href="%s">here</a> to install LearnPress Add-ons Bundle for free!', 'learnpress' ), admin_url( 'admin.php?page=learn-press-addons&tab=bundle_activate' ) ); ?>
 				<?php printf( '<a href="" class="learn-press-admin-notice-dismiss" data-context="bundle-addon-install" data-transient="-1"></a>' ); ?>
-			</p>
-		</div>
+            </p>
+        </div>
 		<?php
 	}
 }
@@ -1374,9 +1374,9 @@ function learn_press_user_become_a_teacher_notice() {
 	if ( $user_id = learn_press_get_request( 'user_id' ) && learn_press_get_request( 'become-a-teacher-accepted' ) == 'yes' ) {
 		$user = new WP_User( $user_id );
 		?>
-		<div class="updated">
-			<p><?php printf( __( 'The user %s has become a teacher', 'learnpress' ), $user->user_login ); ?></p>
-		</div>
+        <div class="updated">
+            <p><?php printf( __( 'The user %s has become a teacher', 'learnpress' ), $user->user_login ); ?></p>
+        </div>
 		<?php
 	}
 }

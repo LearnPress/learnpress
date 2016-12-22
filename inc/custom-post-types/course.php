@@ -584,13 +584,9 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 					array(
 						'name'    => __( 'Featured', 'learnpress' ),
 						'id'      => "{$prefix}featured",
-						'type'    => 'radio',
+						'type'    => 'checkbox',
 						'desc'    => __( 'Set course as featured.', 'learnpress' ),
-						'std'     => 'no',
-						'options' => array(
-							'yes' => __( 'Yes', 'learnpress' ),
-							'no'  => __( 'No', 'learnpress' )
-						)
+						'default' => 'no',
 					)
 				)
 			);

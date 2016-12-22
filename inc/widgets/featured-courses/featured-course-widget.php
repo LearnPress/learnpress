@@ -135,10 +135,10 @@ class LP_Featured_Course_Widget extends WP_Widget {
                     LEFT JOIN {$wpdb->postmeta} as pmeta ON p.ID=pmeta.post_id AND pmeta.meta_key = %s
                     WHERE p.post_type = %s
 						AND p.post_status = %s
-						AND meta_value = %s
+						AND (meta_value = %s OR meta_value = %s)
                     ORDER BY p.post_date
                     LIMIT %d
-                ", '_lp_featured', LP_COURSE_CPT, 'publish', 'yes', (int) $instance['limit']
+                ", '_lp_featured', LP_COURSE_CPT, 'publish', 'yes', '1', (int) $instance['limit']
 			)
 		);
 		$courses = array_map( array( $this, 'get_lp_course' ), $posts );
