@@ -16,7 +16,7 @@ $user            = LP()->user;
 $completed       = $user->has_quiz_status( 'completed', $quiz->id, $course->id );
 $course_finished = $user->has_finished_course( $course->id );
 $checked         = $user->has_checked_answer( $this->id, $quiz->id, $course->id );
-$show_result     = $quiz->show_result == 'yes';
+$show_result     = ($quiz->show_result == 'yes' || $quiz->show_result == 1);
 $args            = array();
 
 if ( $show_result && $completed ) {

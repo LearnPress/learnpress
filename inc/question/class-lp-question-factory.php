@@ -172,7 +172,7 @@ class LP_Question_Factory {
 		$quiz   = LP_Quiz::get_quiz( $quiz_id );
 		$status = LP()->user->get_quiz_status( $quiz_id );
 
-		if ( $status != 'completed' || $quiz->show_result != 'yes' ) {
+		if ( $status != 'completed' || ($quiz->show_result != 'yes' && $quiz->show_result != 1) ) {
 			return;
 		}
 		$question = LP_Question_Factory::get_question( $id );
