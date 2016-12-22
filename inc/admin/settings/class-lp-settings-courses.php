@@ -108,7 +108,10 @@ class LP_Settings_Courses extends LP_Settings_Base {
 					'desc'    => __( 'Number of courses displayed per page.', 'learnpress' ),
 					'id'      => $this->get_field_name( 'archive_course_limit' ),
 					'default' => '10',
-					'type'    => 'number'
+					'type'    => 'number',
+                    'custom_attributes' => array(
+                        'min' => '1'
+                    )
 				),
 				array(
 					'title' => __( 'Course thumbnail', 'learnpress' ),
