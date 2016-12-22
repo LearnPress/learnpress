@@ -353,7 +353,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			);
             $dismiss_notice = 'learnpress_notice_' . $item_object->name .'_' . $user->id;
             $dismiss_notice = get_transient($dismiss_notice);
-            if ($dismiss_notice) {
+            if ($dismiss_notice || $item_object->name === 'lp_course') { // Check lp_course to hidden notice in order post
                 unset($response['notices']);
             }
 			learn_press_send_json( $response );
