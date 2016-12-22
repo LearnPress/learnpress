@@ -534,9 +534,9 @@ class LP_Cache {
 	 * @param string|array $section
 	 */
 	public static function flush( $section = '' ) {
-
+		$func_args = func_get_args();
 		if ( func_num_args() > 1 ) {
-			foreach ( func_get_args() as $arg ) {
+			foreach ( $func_args as $arg ) {
 				self::flush( $arg );
 			}
 			return;
