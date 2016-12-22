@@ -886,16 +886,7 @@ jQuery(document).ready(function ($) {
 		return false;
 	});
 
-	$(document).ready( function () {
-
-		var $premiumAddons = $('.premium_add_ons');
-
-		if ($premiumAddons.length) {
-			$premiumAddons.addClass('active');
-		}
-	});
-
-    $(document).on('click', '.lp-close-notice', function (event) {
+    $(document).on('click', '.learnpress-dismiss-notice', function (event) {
 
         var $parent = $(this).closest('.learnpress-search-notices');
 
@@ -906,7 +897,6 @@ jQuery(document).ready(function ($) {
             var slug = $parent.data('postType'),
                 user = $parent.data('user');
 
-            $parent.remove();
             $.ajax({
                 url: ajaxurl,
                 type: 'POST',
@@ -916,7 +906,8 @@ jQuery(document).ready(function ($) {
                     user: user
                 },
                 complete: function (response) {
-                   console.log('Hidden Notice');
+                    $parent.remove();
+                    console.log('Dismiss Notice');
                 }
 
             })
