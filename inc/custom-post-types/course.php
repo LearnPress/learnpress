@@ -141,12 +141,13 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			} else {
 				if ( learn_press_get_user_option( 'hide-notice-switch-course-tabs' ) != 'yes' ) {
 					?>
-					<div class="message updated">
+					<div class="message updated learn-press-message">
 						<p><?php _e( 'Would you like to see the meta boxes in tabs style?', 'learnpress' ); ?></p>
 						<p>
 							<a class="button" href="<?php echo add_query_arg( 'switch-course-tabs', 'on', get_edit_post_link() ); ?>"><?php _e( 'Switch meta boxes to tabs', 'learnpress' ); ?></a>
-							<a class="button" href="<?php echo add_query_arg( 'hide-notice-switch-course-tabs', 'yes', get_edit_post_link() ); ?>"><?php _e( 'Hide', 'learnpress' ); ?></a>
+							<a class="button" href="<?php echo add_query_arg( 'lp-hide-notice', 'switch-course-tabs', get_edit_post_link() ); ?>"><?php _e( 'Hide', 'learnpress' ); ?></a>
 						</p>
+						<?php printf( '<a href="%s" class="learn-press-admin-notice-dismiss"></a>', add_query_arg( 'lp-hide-notice', 'switch-course-tabs', get_edit_post_link() ) ); ?>
 					</div>
 					<?php
 				}
@@ -169,12 +170,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 				wp_redirect( $link );
 				exit();
 			}
-			if ( learn_press_get_request( 'hide-notice-switch-course-tabs' ) == 'yes' ) {
-				learn_press_update_user_option( 'hide-notice-switch-course-tabs', 'yes' );
-				$link = get_edit_post_link( learn_press_get_request( 'post' ), 'redirect' );
-				wp_redirect( $link );
-				exit();
-			}
+
 			add_action( 'edit_form_after_editor', array( $this, 'curriculum_editor' ), 10 );
 			if ( learn_press_get_user_option( 'course-tabs' ) == 'yes' ) {
 				LP_Assets::add_param( 'enable_course_tabs', 'yes', '__all', 'LP_Settings' );

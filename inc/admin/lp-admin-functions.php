@@ -1083,17 +1083,17 @@ function learn_press_add_row_action_link( $actions ) {
 		}
 		$actions['lpr-course-row-action'] = $link;
 	} else if ( LP_QUIZ_CPT === $post->post_type ) {
-		unset($actions['view']);
+		unset( $actions['view'] );
 		$url                              = admin_url( 'edit.php?post_type=' . LP_QUIZ_CPT . '&lp-action=lp-duplicate-quiz&post=' . $post->ID . '&nonce=' . wp_create_nonce( 'lp-duplicate-' . $post->ID ) );
 		$link                             = sprintf( '<a href="%s" class="lp-duplicate-lesson">%s</a>', $url, __( 'Duplicate this quiz', 'learnpress' ) );
 		$actions['lpr-course-row-action'] = $link;
 	} else if ( LP_QUESTION_CPT === $post->post_type ) {
-		unset($actions['view']);
+		unset( $actions['view'] );
 		$url                              = admin_url( 'edit.php?post_type=' . LP_QUESTION_CPT . '&lp-action=lp-duplicate-question&post=' . $post->ID . '&nonce=' . wp_create_nonce( 'lp-duplicate-' . $post->ID ) );
 		$link                             = sprintf( '<a href="%s" class="lp-duplicate-lesson">%s</a>', $url, __( 'Duplicate this question', 'learnpress' ) );
 		$actions['lpr-course-row-action'] = $link;
 	} else if ( LP_LESSON_CPT === $post->post_type ) {
-		unset($actions['view']);
+		unset( $actions['view'] );
 		$url                              = admin_url( 'edit.php?post_type=' . LP_LESSON_CPT . '&lp-action=lp-duplicate-lesson&post=' . $post->ID . '&nonce=' . wp_create_nonce( 'lp-duplicate-' . $post->ID ) );
 		$link                             = sprintf( '<a href="%s" class="lp-duplicate-lesson">%s</a>', $url, __( 'Duplicate this lesson', 'learnpress' ) );
 		$actions['lpr-course-row-action'] = $link;
@@ -1289,12 +1289,12 @@ function learn_press_process_duplicate_action() {
 add_action( 'load-edit.php', 'learn_press_process_duplicate_action' );
 
 function learn_press_admin_notice_bundle_activation() {
-	if ( !empty( $_REQUEST['tab'] ) && ( 'bundle_activate' != $_REQUEST['tab'] ) && learn_press_get_notice_dismiss( 'bundle-addon-install', '' ) != 'off' ) {
+	if ( !empty( $_REQUEST['tab'] ) && ( 'bundle_activate' != $_REQUEST['tab'] ) && learn_press_get_user_option( 'hide-notice-bundle-addon-install' ) != 'yes' ) {
 		?>
-		<div class="updated">
+		<div class="updated learn-press-message">
 			<p>
 				<?php printf( __( 'Want full free features? Click <a href="%s">here</a> to install LearnPress Add-ons Bundle for free!', 'learnpress' ), admin_url( 'admin.php?page=learn-press-addons&tab=bundle_activate' ) ); ?>
-				<?php printf( '<a href="" class="learn-press-admin-notice-dismiss" data-context="bundle-addon-install" data-transient="-1"></a>' ); ?>
+				<?php printf( '<a href="%s" class="learn-press-admin-notice-dismiss"></a>', add_query_arg( 'lp-hide-notice', 'bundle-addon-install', learn_press_get_current_url() ) ); ?>
 			</p>
 		</div>
 		<?php
