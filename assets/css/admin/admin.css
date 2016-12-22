@@ -383,6 +383,15 @@ li.quick_quiz {
 .learn-press-add-ons .plugin-card-top {
   min-height: 180px;
 }
+.premium_add_ons.active .column-description p {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+  line-height: 1.6em;
+  max-height: 8em;
+}
 .learn-press-add-ons .button.spinner {
   background: url(../../images/spinner.gif) no-repeat 4px !important;
   padding-left: 30px;
@@ -442,6 +451,76 @@ li.quick_quiz {
   max-height: 100%;
   float: left;
   margin: 0 20px 0 0;
+}
+.related_themes .plugin-card-top {
+  padding-bottom: 0;
+}
+.related_themes .theme-content {
+  position: relative;
+}
+.related_themes .image-thumbnail img {
+  width: 100%;
+}
+.related_themes .theme-description {
+  margin: 0 0 25px 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 6;
+  line-height: 1.6em;
+  max-height: 9.6em;
+}
+.related_themes .theme-title {
+  margin-right: 100px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 22px;
+  line-height: 1.6em;
+  margin-bottom: 0;
+  min-height: 3.2em;
+}
+.related_themes .theme-title a {
+  color: #545454;
+}
+.related_themes .theme-rating {
+  float: right;
+  display: inline-block;
+}
+.related_themes .star-rating {
+  display: inline-block;
+}
+.related_themes .count-rating {
+  font-size: 15px;
+  position: relative;
+  top: 2px;
+}
+.related_themes .theme-detail {
+  position: absolute;
+  right: 3px;
+  top: 0;
+  text-align: right;
+  line-height: 1.6em;
+}
+.related_themes .theme-detail:after {
+  content: '';
+  display: block;
+  clear: both;
+}
+.related_themes .theme-detail .theme-price {
+  display: inline-block;
+  font-size: 24px;
+  color: #545454;
+  font-weight: 700;
+  line-height: 1.6em;
+}
+.related_themes .theme-footer {
+  clear: both;
+  margin-left: -20px;
+  margin-right: -20px;
+  padding: 20px;
+  background-color: #fafafa;
+  border-top: 1px solid #ddd;
+  overflow: hidden;
 }
 @media (max-width: 1280px) {
   .learn-press-add-ons > li {

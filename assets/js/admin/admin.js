@@ -886,6 +886,15 @@ jQuery(document).ready(function ($) {
 		return false;
 	});
 
+	$(document).ready( function () {
+
+		var $premiumAddons = $('.premium_add_ons');
+
+		if ($premiumAddons.length) {
+			$premiumAddons.addClass('active');
+		}
+	});
+
     $(document).on('click', '.lp-close-notice', function (event) {
 
         var $parent = $(this).closest('.learnpress-search-notices');

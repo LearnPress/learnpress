@@ -1107,6 +1107,8 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 				update_user_meta( $user_id, '_learn_press_memorize_question_types', $question_types );
 				// end trigger change user memorize question types
 				learn_press_send_json( $response );
+
+
 				die();
 			}
 		}
