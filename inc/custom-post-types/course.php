@@ -673,12 +673,6 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 
 			$payment = get_post_meta( $course_id, '_lp_payment', true );
 
-//			echo '<pre>';
-//			var_dump( $payment );
-//			echo '</pre>';
-//			die();
-
-
 			if ( current_user_can( 'manage_options' ) ) {
 				$message = __( 'If free, this field is empty or set 0. (Only admin can edit this field)', 'learnpress' );
 				$price   = get_post_meta( $course_id, '_lp_price', true );;
@@ -712,7 +706,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						'step'  => 0.01,
 						'desc'  => $message,
 						'std'   => $price,
-						'class' => 'lp-course-price-field' . ( ( $payment != 'yes' || $payment != 1 ) ? ' hide-if-js' : '' )
+						'class' => 'lp-course-price-field' . ( ( $payment == 'yes' || $payment == 1 ) ? '' : ' hide-if-js' )
 					),
 					array(
 						'name'  => __( 'Sale Price', 'learnpress' ),
@@ -722,7 +716,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						'step'  => 0.01,
 						'desc'  => '<a href="#" id="' . $prefix . 'sale_price_schedule">' . __( 'Schedule', 'learnpress' ) . '</a>',
 						'std'   => $sale_price,
-						'class' => 'lp-course-price-field lp-course-sale_price-field' . ( ( $payment != 'yes' || $payment != 1 ) ? ' hide-if-js' : '' )
+						'class' => 'lp-course-price-field lp-course-sale_price-field' . ( ( $payment == 'yes' || $payment == 1 ) ? '' : ' hide-if-js' )
 					),
 					array(
 						'name'  => __( 'Sale start date', 'learnpress' ),
@@ -749,7 +743,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 					'min'   => 0,
 					'step'  => 0.01,
 					'desc'  => __( 'The course price you want to suggest for admin to set.', 'learnpress' ),
-					'class' => 'lp-course-price-field' . ( ( $payment != 'yes' || $payment != 1 ) ? ' hide-if-js' : '' ),
+					'class' => 'lp-course-price-field' . ( ( $payment == 'yes' || $payment == 1 ) ? '' : ' hide-if-js' ),
 					'std'   => 0
 				);
 				$price                = get_post_meta( $course_id, '_lp_price', true );
@@ -757,7 +751,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 					'name'  => __( 'Price set by Admin', 'learnpress' ),
 					'id'    => "{$prefix}price",
 					'type'  => 'html',
-					'class' => 'lp-course-price-field' . ( ( $payment != 'yes' || $payment != 1 ) ? ' hide-if-js' : '' ),
+					'class' => 'lp-course-price-field' . ( ( $payment == 'yes' || $payment == 1 ) ? '' : ' hide-if-js' ),
 					'html'  => $price !== '' ? sprintf( '<strong>%s</strong>', learn_press_format_price( $price, true ) ) : __( 'Not set', 'learnpress' )
 				);
 			}
@@ -774,7 +768,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 							'no'  => __( 'No', 'learnpress' ),
 						),
 						'std'     => 'yes',
-						'class'   => 'lp-course-required-enroll' . ( ( $payment != 'yes' || $payment != 1 ) ? ' hide-if-js' : '' )
+						'class'   => 'lp-course-required-enroll' . ( ( $payment == 'yes' || $payment == 1 ) ? ' hide-if-js' : '' )
 					)
 				)
 			);
@@ -1350,7 +1344,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 				case 'price':
 					$price   = get_post_meta( $post->ID, '_lp_price', true );
 					$is_paid = get_post_meta( $post->ID, '_lp_payment', true );
-					if ( $is_paid === 'yes' && $price ) {
+					if ( ( $is_paid === 'yes' || $is_paid == 1 ) && $price ) {
 						echo sprintf( '<a href="%s">%s</a>', add_query_arg( 'filter_price', $price ), learn_press_format_price( get_post_meta( $post->ID, '_lp_price', true ), true ) );
 					} else {
 						echo sprintf( '<a href="%s">%s</a>', add_query_arg( 'filter_price', 0 ), __( 'Free', 'learnpress' ) );

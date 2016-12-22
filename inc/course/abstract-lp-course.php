@@ -137,8 +137,9 @@ abstract class LP_Abstract_Course {
 					} else {
 						$single = true;
 					}
-					$value = get_post_meta( $this->id, '_lp_' . $key, $single );
-					if ( ( $key == 'price' || $key == 'total' ) && get_post_meta( $this->id, '_lp_payment', true ) != 'yes' ) {
+					$value   = get_post_meta( $this->id, '_lp_' . $key, $single );
+					$payment = get_post_meta( $this->id, '_lp_payment', true );
+					if ( ( $key == 'price' || $key == 'total' ) && ( $payment == 'no' && $payment == 0 ) ) {
 						$value = 0;
 					}
 				/*if ( $key == 'price' ) {

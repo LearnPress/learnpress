@@ -343,9 +343,9 @@ class LP_Upgrade_From_09 {
 				//
 				case '_lp_payment':
 					if ( $new_value == 'free' ) {
-						$new_value = 'no';
+						$new_value = 0;
 					} elseif ( $new_value == 'not_free' ) {
-						$new_value = 'yes';
+						$new_value = 1;
 					}
 					break;
 				case '_lp_required_enroll':
