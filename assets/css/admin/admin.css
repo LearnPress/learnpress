@@ -8,6 +8,9 @@
   color: #000;
   font-weight: bold;
 }
+.xyz .abc {
+  font-size: 10000px;
+}
 .rwmb-field {
   margin: 20px 0 20px 0;
 }
