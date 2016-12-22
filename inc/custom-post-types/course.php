@@ -181,7 +181,6 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 				LP_Assets::add_param( 'enable_course_tabs', 'yes', '__all', 'LP_Settings' );
 				add_filter( 'admin_body_class', array( $this, 'admin_body_class' ) );
 			}
-			//print_r(new WP_Query(array('post_type' => 'lp_course', 'author'=>1)));
 		}
 
 		public function admin_body_class( $classes ) {
