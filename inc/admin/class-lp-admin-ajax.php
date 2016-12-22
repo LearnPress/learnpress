@@ -349,7 +349,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 				'html'    => ob_get_clean(),
 				'data'    => $found_items,
 				'args'    => $args,
-                'notices' => '<div class="learnpress-search-notices notice notice-warning" data-post-type="'. esc_attr($item_object->name) .'" data-user="'. esc_attr($user->id) .'">' . sprintf( '<p>' . __( 'A ', 'learnpress' ) . '<span style="text-transform: lowercase;">%s</span>' . __( ' is just used for only one ', 'learnpress' ) . '<span style="text-transform: lowercase;">%s</span></p>', $item_object->labels->singular_name, $post_type->labels->name ) . '<a class="learnpress-dismiss-notice"></a></div>'
+                'notices' => '<div class="learnpress-search-notices notice notice-warning" data-post-type="'. esc_attr($item_object->name) .'" data-user="'. esc_attr($user->id) .'">' . sprintf( '<p>' . __( 'A ', 'learnpress' ) . '<span style="text-transform: lowercase;">%s</span>' . __( ' is just used for only one ', 'learnpress' ) . '<span style="text-transform: lowercase;">%s</span></p>', $item_object->labels->singular_name, $post_type->labels->singular_name ) . '<a class="learnpress-dismiss-notice"></a></div>'
 			);
             $dismiss_notice = 'learnpress_notice_' . $item_object->name .'_' . $user->id;
             $dismiss_notice = get_transient($dismiss_notice);
