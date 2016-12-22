@@ -1395,7 +1395,7 @@ if ( !function_exists( 'learn_press_item_meta_type' ) ) {
 		<?php } elseif ( $item->post_type == 'lp_lesson' ) { ?>
 
             <span class="lp-label lp-label-lesson"><?php _e( 'Lesson', 'learnpress' ); ?></span>
-			<?php if ( get_post_meta( $item->ID, '_lp_preview', true ) == 'yes' ) { ?>
+			<?php if ( get_post_meta( $item->ID, '_lp_preview', true ) == 'yes' || get_post_meta( $item->ID, '_lp_preview', true ) == 1  ) { ?>
 
                 <span class="lp-label lp-label-preview"><?php _e( 'Preview', 'learnpress' ); ?></span>
 

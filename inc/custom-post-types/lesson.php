@@ -115,13 +115,9 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 						array(
 							'name'    => __( 'Preview Lesson', 'learnpress' ),
 							'id'      => "{$prefix}preview",
-							'type'    => 'radio',
+							'type'    => 'checkbox',
 							'desc'    => __( 'If this is a preview lesson, then student can view this lesson content without taking the course', 'learnpress' ),
-							'options' => array(
-								'yes' => __( 'Yes', 'learnpress' ),
-								'no'  => __( 'No', 'learnpress' ),
-							),
-							'std'     => 'no'
+							'default' => 'no'
 						)
 					)
 				)
@@ -172,8 +168,8 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 			// append new column after title column
 			$pos         = array_search( 'title', array_keys( $columns ) );
 			$new_columns = array(
-                'author'        => __( 'Author', 'learnpress' ),
-				LP_COURSE_CPT   => __( 'Course', 'learnpress' )
+				'author'      => __( 'Author', 'learnpress' ),
+				LP_COURSE_CPT => __( 'Course', 'learnpress' )
 			);
 			if ( current_theme_supports( 'post-formats' ) ) {
 				$new_columns['format']   = __( 'Format', 'learnpress' );
@@ -230,9 +226,10 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 
 					break;
 				case 'preview':
+					$preview = get_post_meta( $post_id, '_lp_preview', true );
 					printf(
 						'<input type="checkbox" class="learn-press-checkbox learn-press-toggle-lesson-preview" %s value="%s" data-nonce="%s" />',
-						get_post_meta( $post_id, '_lp_preview', true ) == 'yes' ? ' checked="checked"' : '',
+						( $preview == 'yes' || $preview == 1 ) ? ' checked="checked"' : '',
 						$post_id,
 						wp_create_nonce( 'learn-press-toggle-lesson-preview' )
 					);
@@ -327,7 +324,7 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 		 */
 		public function sortable_columns( $columns ) {
 			$columns[LP_COURSE_CPT] = 'course-name';
-			$columns['author'] = 'author';
+			$columns['author']      = 'author';
 			return $columns;
 		}
 
@@ -355,7 +352,7 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 			$meta = apply_filters( 'learn_press_default_lesson_meta',
 				array(
 					'_lp_duration' => 10,
-					'_lp_preview'  => 'no'
+					'_lp_preview'  => 0
 				)
 			);
 			foreach ( $meta as $key => $value ) {

@@ -129,7 +129,7 @@
 				data    : {
 					action     : 'learnpress_toggle_lesson_preview',
 					lesson_id  : this.value,
-					previewable: this.checked ? 'yes' : 'no',
+					previewable: this.checked ? '1' : '0',
 					nonce      : $(this).attr('data-nonce')
 				},
 				dataType: 'text',
@@ -705,10 +705,10 @@ lprHook.addAction('lpr_admin_quiz_question_html', _lprAdminQuestionHTML);
 			if (form.length == 0) {
 				form = $(wp.template('form-quick-add-lesson-link')()).css({zIndex: 99999}).appendTo($body);
 				$('select', form).select2({
-						width            : 300,
-						containerCssClass: 'lpr-container-dropdown',
-						dropdownCssClass : 'lpr-select-dropdown'
-					})
+					width            : 300,
+					containerCssClass: 'lpr-container-dropdown',
+					dropdownCssClass : 'lpr-select-dropdown'
+				})
 					.on('select2-close', function () {
 						$('#form-quick-add-lesson-link').hide();
 						tinyMCE.activeEditor.focus();
@@ -886,32 +886,32 @@ jQuery(document).ready(function ($) {
 		return false;
 	});
 
-    $(document).on('click', '.lp-close-notice', function (event) {
+	$(document).on('click', '.lp-close-notice', function (event) {
 
-        var $parent = $(this).closest('.learnpress-search-notices');
+		var $parent = $(this).closest('.learnpress-search-notices');
 
-        if ($parent.length) {
+		if ($parent.length) {
 
-            event.preventDefault();
+			event.preventDefault();
 
-            var slug = $parent.data('postType'),
-                user = $parent.data('user');
+			var slug = $parent.data('postType'),
+				user = $parent.data('user');
 
-            $parent.remove();
-            $.ajax({
-                url: ajaxurl,
-                type: 'POST',
-                data: {
-                    action: 'learnpress_remove_notice_popup',
-                    slug: slug,
-                    user: user
-                },
-                complete: function (response) {
-                   console.log('Hidden Notice');
-                }
+			$parent.remove();
+			$.ajax({
+				url     : ajaxurl,
+				type    : 'POST',
+				data    : {
+					action: 'learnpress_remove_notice_popup',
+					slug  : slug,
+					user  : user
+				},
+				complete: function (response) {
+					console.log('Hidden Notice');
+				}
 
-            })
-        }
-    });
+			})
+		}
+	});
 
 })(jQuery);

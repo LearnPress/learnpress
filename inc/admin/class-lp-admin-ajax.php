@@ -53,8 +53,8 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 				// Duplicate Course
 				'duplicate_course'                => false,
 				'duplicate_question'              => false,
-                // Remove Notice
-                'remove_notice_popup'             => false
+				// Remove Notice
+				'remove_notice_popup'             => false
 
 
 			);
@@ -343,19 +343,19 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 				echo '<li>' . apply_filters( 'learn_press_modal_search_items_not_found', __( 'No item found', 'learnpress' ), $type ) . '</li>';
 			}
 
-			$item_object = $type ? get_post_type_object( $type ) : '';
-			$post_type   = $context_id ? get_post_type_object( get_post_type( $context_id ) ) : '';
-			$response    = array(
+			$item_object    = $type ? get_post_type_object( $type ) : '';
+			$post_type      = $context_id ? get_post_type_object( get_post_type( $context_id ) ) : '';
+			$response       = array(
 				'html'    => ob_get_clean(),
 				'data'    => $found_items,
 				'args'    => $args,
-                'notices' => '<div class="learnpress-search-notices notice notice-warning">' . sprintf( '<p>' . __( 'A ', 'learnpress' ) . '<span style="text-transform: lowercase;">%s</span>' . __( ' is just used for only one ', 'learnpress' ) . '<span style="text-transform: lowercase;">%s</span></p>', $item_object->labels->singular_name, $post_type->labels->name ) . '</div>'
+				'notices' => '<div class="learnpress-search-notices notice notice-warning">' . sprintf( '<p>' . __( 'A ', 'learnpress' ) . '<span style="text-transform: lowercase;">%s</span>' . __( ' is just used for only one ', 'learnpress' ) . '<span style="text-transform: lowercase;">%s</span></p>', $item_object->labels->singular_name, $post_type->labels->name ) . '</div>'
 			);
-            $dismiss_notice = 'learnpress_notice_' . $item_object->name .'_' . $user->id;
-            $dismiss_notice = get_transient($dismiss_notice);
-            if ($dismiss_notice) {
-                unset($response['notices']);
-            }
+			$dismiss_notice = 'learnpress_notice_' . $item_object->name . '_' . $user->id;
+			$dismiss_notice = get_transient( $dismiss_notice );
+			if ( $dismiss_notice ) {
+				unset( $response['notices'] );
+			}
 			learn_press_send_json( $response );
 		}
 
@@ -651,7 +651,11 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 		public static function toggle_lesson_preview() {
 			$id = learn_press_get_request( 'lesson_id' );
 			if ( get_post_type( $id ) == 'lp_lesson' && wp_verify_nonce( learn_press_get_request( 'nonce' ), 'learn-press-toggle-lesson-preview' ) ) {
-				update_post_meta( $id, '_lp_preview', learn_press_get_request( 'previewable' ) );
+				$previewable = learn_press_get_request( 'previewable' );
+				if ( is_null( $previewable ) ) {
+					$previewable = '0';
+				}
+				update_post_meta( $id, '_lp_preview', $previewable );
 			}
 			die();
 		}
@@ -1113,21 +1117,21 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 
 		public static function remove_notice_popup() {
 
-		    if ( isset($_POST['action']) && $_POST['action'] === 'learnpress_remove_notice_popup'
-                && isset($_POST['slug']) && !empty($_POST['slug'])
-                && isset($_POST['user']) && !empty($_POST['user'])
-            ) {
+			if ( isset( $_POST['action'] ) && $_POST['action'] === 'learnpress_remove_notice_popup'
+				&& isset( $_POST['slug'] ) && !empty( $_POST['slug'] )
+				&& isset( $_POST['user'] ) && !empty( $_POST['user'] )
+			) {
 
-		        $slug = 'learnpress_notice_' . $_POST['slug'] .'_' . $_POST['user'];
+				$slug = 'learnpress_notice_' . $_POST['slug'] . '_' . $_POST['user'];
 
-                set_transient($slug, true, 30 * HOUR_IN_SECONDS);
+				set_transient( $slug, true, 30 * HOUR_IN_SECONDS );
 
-            }
+			}
 
-            wp_die();
+			wp_die();
 
 
-        }
+		}
 
 	}
 }
