@@ -664,7 +664,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						'name'    => __( 'Course payment', 'learnpress' ),
 						'id'      => "{$prefix}payment",
 						'type'    => 'checkbox',
-						'desc'    => __( 'If Paid is checked, An administrator will review then set course price and commission.', 'learnpress' ),
+						'desc'    => __( 'If it is checked, An administrator will review then set course price and commission.', 'learnpress' ),
 						'default' => 'yes',
 						'class'   => 'lp-course-payment-field'
 					)
