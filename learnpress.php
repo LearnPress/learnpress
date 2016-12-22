@@ -696,4 +696,6 @@ function load_learn_press() {
  */
 $GLOBALS['LearnPress'] = LP();
 
-// this code from test-x
+/**
+ * Ignore admin.css
+ */
