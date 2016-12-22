@@ -4,6 +4,10 @@
  * @author ThimPress
  * @version 1.0
  */
+.xyz {
+  color: #000;
+  font-weight: bold;
+}
 .rwmb-field {
   margin: 20px 0 20px 0;
 }
