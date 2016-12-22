@@ -224,13 +224,9 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 							array(
 								'name'    => __( 'Show check answer', 'learnpress' ),
 								'id'      => "{$prefix}show_check_answer",
-								'type'    => 'radio',
+								'type'    => 'checkbox',
 								'desc'    => __( 'Show button to check answer while doing quiz.', 'learnpress' ),
-								'options' => array(
-									'no'  => __( 'No', 'learnpress' ),
-									'yes' => __( 'Yes', 'learnpress' )
-								),
-								'std'     => 'no'
+								'default'     => 'no'
 							),
 							array(
 								'name'    => __( 'Show hint', 'learnpress' ),

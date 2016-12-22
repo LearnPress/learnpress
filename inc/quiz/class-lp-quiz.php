@@ -203,7 +203,7 @@ class LP_Quiz extends LP_Abstract_Course_Item {
 			$show_check_answer = $this->show_check_answer;
 			$show_hint         = $this->show_hint;
 			$show_explanation  = $this->show_explanation;
-			if ( $show_check_answer == 'yes' ) {
+			if ( $show_check_answer == 'yes' || $show_check_answer == 1  ) {
 				if ( $history = $user->get_quiz_results( $this->id ) ) {
 					$checked_answers = !empty( $history->checked ) ? (array) $history->checked : array();
 				} else {
@@ -218,7 +218,7 @@ class LP_Quiz extends LP_Abstract_Course_Item {
 					'name'  => get_post_field( 'post_name', $question->ID ),
 					'url'   => trailingslashit( $this->get_question_link( $question->ID ) )
 				);
-				if ( $show_check_answer == 'yes' ) {
+				if ( $show_check_answer == 'yes' || $show_check_answer == 1 ) {
 					//$_question->check_answer = learn_press_question_type_support( $question->type, 'check-answer' );
 					$_question->hasCheckAnswer = learn_press_question_type_support( $question->type, 'check-answer' ) ? 'yes' : 'no';
 					$_question->checked        = array();
@@ -247,7 +247,7 @@ class LP_Quiz extends LP_Abstract_Course_Item {
 					}
 				//}
 				*/
-				if ( $show_check_answer == 'yes' ) {
+				if ( $show_check_answer == 'yes' || $show_check_answer == 1) {
 					if ( in_array( $question->ID, $checked_answers ) ) {
 						if ( !empty( $question->answers ) ) {
 							foreach ( $question->answers as $answer ) {
