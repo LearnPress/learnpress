@@ -761,13 +761,9 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 					array(
 						'name'    => __( 'Requires enroll', 'learnpress' ),
 						'id'      => "{$prefix}required_enroll",
-						'type'    => 'radio',
+						'type'    => 'checkbox',
 						'desc'    => __( 'Require users logged in to study or public to all.', 'learnpress' ),
-						'options' => array(
-							'yes' => __( 'Yes, enroll is required', 'learnpress' ),
-							'no'  => __( 'No', 'learnpress' ),
-						),
-						'std'     => 'yes',
+						'default' => 'yes',
 						'class'   => 'lp-course-required-enroll' . ( ( $payment == 'yes' || $payment == 1 ) ? ' hide-if-js' : '' )
 					)
 				)

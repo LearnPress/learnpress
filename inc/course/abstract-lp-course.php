@@ -267,7 +267,7 @@ abstract class LP_Abstract_Course {
 		if ( func_get_args() ) {
 			$required = $this->required_enroll == func_get_arg( 0 );
 		} else {
-			$required = $this->required_enroll !== 'no';
+			$required = $this->required_enroll === 'yes' || $this->required_enroll == 1;
 		}
 		$required = $required || ( $this->payment == 'yes' || $this->payment == 1 );
 		//$is_require = empty( $is_require ) || ( $is_require == 'yes' ) ? true : false;

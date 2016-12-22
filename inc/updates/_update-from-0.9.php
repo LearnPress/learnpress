@@ -350,9 +350,9 @@ class LP_Upgrade_From_09 {
 					break;
 				case '_lp_required_enroll':
 					if ( $this->_is_false_value( $new_value ) ) {
-						$new_value = 'no';
+						$new_value = 0;
 					} else {
-						$new_value = 'yes';
+						$new_value = 1;
 					}
 					break;
 				case '_lp_cert': // update certificate
