@@ -1248,6 +1248,15 @@ function learn_press_process_duplicate_action() {
 
 	// duplicate action
 	$action  = !empty( $_REQUEST['lp-action'] ) ? $_REQUEST['lp-action'] : '';
+	$actions = array(
+		'lp-duplicate-question',
+		'lp-duplicate-lesson',
+		'lp-duplicate-quiz'
+	);
+	if ( !in_array( $action, $actions ) ) {
+		return;
+	}
+
 	$post_id = !empty ( $_REQUEST['post'] ) ? $_REQUEST['post'] : 0;
 	$nonce   = !empty( $_REQUEST['nonce'] ) ? $_REQUEST['nonce'] : '';
 	if ( !$post_id || !wp_verify_nonce( $nonce, 'lp-duplicate-' . $post_id ) ) return;
@@ -1289,12 +1298,12 @@ function learn_press_process_duplicate_action() {
 add_action( 'load-edit.php', 'learn_press_process_duplicate_action' );
 
 function learn_press_admin_notice_bundle_activation() {
-	if ( !empty( $_REQUEST['tab'] ) && ( 'bundle_activate' != $_REQUEST['tab'] ) && learn_press_get_notice_dismiss( 'bundle-addon-install', '' ) != 'off' ) {
+	if ( !empty( $_REQUEST['tab'] ) && ( 'bundle_activate' != $_REQUEST['tab'] ) && learn_press_get_user_option( 'hide-notice-bundle-addon-install' ) != 'yes' ) {
 		?>
-        <div class="updated">
+        <div class="updated learn-press-message">
             <p>
 				<?php printf( __( 'Want full free features? Click <a href="%s">here</a> to install LearnPress Add-ons Bundle for free!', 'learnpress' ), admin_url( 'admin.php?page=learn-press-addons&tab=bundle_activate' ) ); ?>
-				<?php printf( '<a href="" class="learn-press-admin-notice-dismiss" data-context="bundle-addon-install" data-transient="-1"></a>' ); ?>
+				<?php printf( '<a href="%s" class="learn-press-admin-notice-dismiss"></a>', add_query_arg( 'lp-hide-notice', 'bundle-addon-install', learn_press_get_current_url() ) ); ?>
             </p>
         </div>
 		<?php

@@ -480,6 +480,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 * @return mixed
 		 */
 		public function sortable_columns( $columns ) {
+			$columns['author']          = 'author';
 			$columns[LP_COURSE_CPT]     = 'course-name';
 			$columns['num_of_question'] = 'question-count';
 			return $columns;
