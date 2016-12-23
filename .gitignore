@@ -4,6 +4,7 @@
 __*.php
 
 node_modules/
+/assets/css/admin/admin.css
 /assets/fonts/iconfont.ttf
 /assets/fonts/iconfont.woff
 /assets/fonts/icons.eot
@@ -16,3 +17,4 @@ node_modules/
 /assets/fonts/icon.woff
 /assets/fonts/iconfont.eot
 /assets/fonts/iconfont.svg
+
