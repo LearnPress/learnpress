@@ -122,16 +122,16 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 	}
 	if ( $allow_create ) {
 		ob_start(); ?>
-		<button class="button button-quick-add-page" data-id="<?php echo $id; ?>" type="button"><?php _e( 'Create', 'learnpress' ); ?></button>
-		<p class="learn-press-quick-add-page-inline <?php echo $id; ?> hide-if-js">
-			<input type="text" placeholder="<?php esc_attr_e( 'New page title', 'learnpress' ); ?>" />
-			<button class="button" type="button"><?php esc_html_e( 'Ok [Enter]', 'learnpress' ); ?></button>
-			<a href=""><?php _e( 'Cancel [ESC]', 'learnpress' ); ?></a>
-		</p>
-		<p class="learn-press-quick-add-page-actions <?php echo $id; ?><?php echo $selected ? '' : ' hide-if-js'; ?>">
-			<a class="edit-page" href="<?php echo get_edit_post_link( $selected ); ?>" target="_blank"><?php _e( 'Edit Page', 'learnpress' ); ?></a>
-			<a class="view-page" href="<?php echo get_permalink( $selected ); ?>" target="_blank"><?php _e( 'View Page', 'learnpress' ); ?></a>
-		</p>
+        <button class="button button-quick-add-page" data-id="<?php echo $id; ?>" type="button"><?php _e( 'Create', 'learnpress' ); ?></button>
+        <p class="learn-press-quick-add-page-inline <?php echo $id; ?> hide-if-js">
+            <input type="text" placeholder="<?php esc_attr_e( 'New page title', 'learnpress' ); ?>" />
+            <button class="button" type="button"><?php esc_html_e( 'Ok [Enter]', 'learnpress' ); ?></button>
+            <a href=""><?php _e( 'Cancel [ESC]', 'learnpress' ); ?></a>
+        </p>
+        <p class="learn-press-quick-add-page-actions <?php echo $id; ?><?php echo $selected ? '' : ' hide-if-js'; ?>">
+            <a class="edit-page" href="<?php echo get_edit_post_link( $selected ); ?>" target="_blank"><?php _e( 'Edit Page', 'learnpress' ); ?></a>
+            <a class="view-page" href="<?php echo get_permalink( $selected ); ?>" target="_blank"><?php _e( 'View Page', 'learnpress' ); ?></a>
+        </p>
 		<?php $output .= ob_get_clean();
 	}
 	if ( $echo ) {
@@ -212,16 +212,16 @@ function learn_press_field_question_duration( $args = array(), $question ) {
 	}
 
 	return '<span class="' . esc_attr( $wrap_class ) . '">' . sprintf(
-		'<input type="number" class="%s" name="%s" id="%s" value="%s" step="%s" min="%s" max="%s" placeholder="%s"/>',
-		$args['class'],
-		$args['name'],
-		empty( $args['clone'] ) ? $args['id'] : '',
-		$args['value'],
-		$args['step'],
-		$args['min'],
-		!empty( $args['max'] ) ? $args['max'] : '',
-		$args['placeholder']
-	) . $args['placeholder'] . '</span>';
+			'<input type="number" class="%s" name="%s" id="%s" value="%s" step="%s" min="%s" max="%s" placeholder="%s"/>',
+			$args['class'],
+			$args['name'],
+			empty( $args['clone'] ) ? $args['id'] : '',
+			$args['value'],
+			$args['step'],
+			$args['min'],
+			!empty( $args['max'] ) ? $args['max'] : '',
+			$args['placeholder']
+		) . $args['placeholder'] . '</span>';
 }
 
 /**
@@ -1252,11 +1252,11 @@ function learn_press_process_duplicate_action() {
 		'lp-duplicate-question',
 		'lp-duplicate-lesson',
 		'lp-duplicate-quiz'
-		);
-	if( !in_array($action, $actions) ){
+	);
+	if ( !in_array( $action, $actions ) ) {
 		return;
 	}
-	
+
 	$post_id = !empty ( $_REQUEST['post'] ) ? $_REQUEST['post'] : 0;
 	$nonce   = !empty( $_REQUEST['nonce'] ) ? $_REQUEST['nonce'] : '';
 	if ( !$post_id || !wp_verify_nonce( $nonce, 'lp-duplicate-' . $post_id ) ) return;
@@ -1368,9 +1368,9 @@ function learn_press_user_become_a_teacher_notice() {
 	if ( $user_id = learn_press_get_request( 'user_id' ) && learn_press_get_request( 'become-a-teacher-accepted' ) == 'yes' ) {
 		$user = new WP_User( $user_id );
 		?>
-		<div class="updated">
-			<p><?php printf( __( 'The user %s has become a teacher', 'learnpress' ), $user->user_login ); ?></p>
-		</div>
+        <div class="updated">
+            <p><?php printf( __( 'The user %s has become a teacher', 'learnpress' ), $user->user_login ); ?></p>
+        </div>
 		<?php
 	}
 }
