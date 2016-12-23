@@ -56,6 +56,9 @@ function learn_press_addons_page() {
 		do_action( 'learn_press_add_ons_after_head_tab' );
 		?>
 	</ul>
+    <p class="search-box">
+        <input type="text" class="lp-search-addon" value="" placeholder="<?php _e('Search...', 'learnpress'); ?>">
+    </p>
 	<div class="clear"></div>
 
             <?php do_action( 'learn_press_add_ons_content_tab_' . $current, $current ); ?>
