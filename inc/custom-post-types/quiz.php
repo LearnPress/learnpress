@@ -217,7 +217,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 							array(
 								'name'    => __( 'Show correct answer', 'learnpress' ),
 								'id'      => "{$prefix}show_result",
-								'type'    => 'checkbox',
+								'type'    => 'yes_no',
 								'desc'    => __( 'Show the correct answer in result of the quiz.', 'learnpress' ),
 								'default'     => 'no'
 							),

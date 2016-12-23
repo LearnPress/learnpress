@@ -433,9 +433,9 @@ class LP_Upgrade_From_09 {
 				case '_lp_show_result':
 				case '_lp_show_check_answer':
 					if ( $this->_is_false_value( $new_value ) ) {
-						$new_value = 0;
+						$new_value = 'no';
 					} else {
-						$new_value = 1;
+						$new_value = 'yes';
 					}
 			}
 			add_post_meta( $new_id, $new_key, $new_value );

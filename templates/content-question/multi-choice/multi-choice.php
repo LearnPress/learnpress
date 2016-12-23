@@ -15,7 +15,7 @@ $quiz = LP()->global['course-item'];
 $user = LP()->user;
 
 $completed   = $user->get_quiz_status( $quiz->id ) == 'completed';
-$show_result = ($quiz->show_result == 'yes' || $quiz->show_result == 1);
+$show_result = $quiz->show_result == 'yes';
 $checked     = $user->has_checked_answer( $this->id, $quiz->id ) || $completed;
 
 $args = array();
