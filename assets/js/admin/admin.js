@@ -129,7 +129,7 @@
 				data    : {
 					action     : 'learnpress_toggle_lesson_preview',
 					lesson_id  : this.value,
-					previewable: this.checked ? '1' : '0',
+					previewable: this.checked ? 'yes' : 'no',
 					nonce      : $(this).attr('data-nonce')
 				},
 				dataType: 'text',

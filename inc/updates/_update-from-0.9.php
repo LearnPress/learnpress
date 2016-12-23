@@ -469,9 +469,9 @@ class LP_Upgrade_From_09 {
 			switch ( $new_key ) {
 				case '_lp_preview':
 					if ( $this->_is_false_value( $new_value ) || $new_value == 'not_preview' ) {
-						$new_value = 0;
+						$new_value = 'no';
 					} else {
-						$new_value = 1;
+						$new_value = 'yes';
 					}
 			}
 			add_post_meta( $new_id, $new_key, $new_value );

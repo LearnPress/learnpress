@@ -115,7 +115,7 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 						array(
 							'name'    => __( 'Preview Lesson', 'learnpress' ),
 							'id'      => "{$prefix}preview",
-							'type'    => 'checkbox',
+							'type'    => 'yes_no',
 							'desc'    => __( 'If this is a preview lesson, then student can view this lesson content without taking the course', 'learnpress' ),
 							'default' => 'no'
 						)
@@ -226,10 +226,9 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 
 					break;
 				case 'preview':
-					$preview = get_post_meta( $post_id, '_lp_preview', true );
 					printf(
 						'<input type="checkbox" class="learn-press-checkbox learn-press-toggle-lesson-preview" %s value="%s" data-nonce="%s" />',
-						( $preview == 'yes' || $preview == 1 ) ? ' checked="checked"' : '',
+						get_post_meta( $post_id, '_lp_preview', true ) == 'yes' ? ' checked="checked"' : '',
 						$post_id,
 						wp_create_nonce( 'learn-press-toggle-lesson-preview' )
 					);
@@ -352,7 +351,7 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 			$meta = apply_filters( 'learn_press_default_lesson_meta',
 				array(
 					'_lp_duration' => 10,
-					'_lp_preview'  => 0
+					'_lp_preview'  => 'no'
 				)
 			);
 			foreach ( $meta as $key => $value ) {

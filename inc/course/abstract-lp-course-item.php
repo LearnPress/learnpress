@@ -25,7 +25,6 @@ abstract class LP_Abstract_Course_Item {
 	 *
 	 */
 	public function is_preview() {
-		$preview = get_post_meta( $this->id, '_lp_preview', true );
-		return ( $preview == 'yes' || $preview == 1 );
+		return get_post_meta( $this->id, '_lp_preview', true ) == 'yes';
 	}
 }
