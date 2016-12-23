@@ -1297,21 +1297,6 @@ function learn_press_process_duplicate_action() {
 
 add_action( 'load-edit.php', 'learn_press_process_duplicate_action' );
 
-function learn_press_admin_notice_bundle_activation() {
-	if ( !empty( $_REQUEST['tab'] ) && ( 'bundle_activate' != $_REQUEST['tab'] ) && learn_press_get_user_option( 'hide-notice-bundle-addon-install' ) != 'yes' ) {
-		?>
-        <div class="updated learn-press-message">
-            <p>
-				<?php printf( __( 'Want full free features? Click <a href="%s">here</a> to install LearnPress Add-ons Bundle for free!', 'learnpress' ), admin_url( 'admin.php?page=learn-press-addons&tab=bundle_activate' ) ); ?>
-				<?php printf( '<a href="%s" class="learn-press-admin-notice-dismiss"></a>', add_query_arg( 'lp-hide-notice', 'bundle-addon-install', learn_press_get_current_url() ) ); ?>
-            </p>
-        </div>
-		<?php
-	}
-}
-
-add_action( 'admin_notices', 'learn_press_admin_notice_bundle_activation' );
-
 /**
  * Install a plugin
  *

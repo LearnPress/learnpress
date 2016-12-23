@@ -372,6 +372,33 @@ li.quiz, li.lesson, li.quick_lesson, li.quick_quiz {
 
 .learn-press-add-ons {
     margin: 20px 0 0;
+
+    .lp-search-addon {
+        margin: 0;
+        width: 280px;
+        font-size: 16px;
+        font-weight: 300;
+        line-height: 1.5;
+        padding: 3px 5px;
+        height: 32px;
+    }
+    &.learnpress-premium-plugin {
+
+        .column-description {
+
+            p {
+                margin: 0;
+                line-height: inherit;
+            }
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 4;
+            line-height: 1.6em;
+            max-height: 6.4em;
+        }
+    }
 }
 
 .learn-press-add-ons:after {
