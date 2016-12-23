@@ -15,18 +15,24 @@ define( 'LP_ADD_ON_TRANSIENT_TIME', 60 * 5 );
 function learn_press_count_add_ons() {
 	$count_fields = apply_filters(
 		'learn_press_count_add_ons_fields',
-		array( 'installed', 'bundle_activate', 'more', 'premium_add_ons', 'related_themes' )
+		array( 'installed', 'all_plugins', 'related_themes' )
 	);
 
-	$count        = 0;
+	$count = 0;
 	foreach ( $count_fields as $type ) {
 		switch ( $type ) {
 			case 'installed':
 				$count = sizeof( learn_press_get_add_ons() );
 				break;
-			case 'bundle_activate':
-				$count = sizeof( learn_press_get_bundle_activate_add_ons() );
-				break;
+
+            case 'all_plugins':
+                $all_plugins = learnpress_get_all_plugins();
+                $count = 0;
+                foreach ($all_plugins as $items) {
+                    $count += sizeof($items);
+                }
+                break;
+
 			case 'more':
 				if ( $plugins = learn_press_get_all_add_ons() ) {
 					$count = sizeof( $plugins );
@@ -39,9 +45,10 @@ function learn_press_count_add_ons() {
                 break;
 
             case 'related_themes':
-                $count = learn_press_get_count_theme();
+                $count = learn_press_get_add_ons_theme();
                 $count = sizeof($count);
                 break;
+
 			default:
 				$count = apply_filters( 'learn_press_count_add_ons_' . $type );
 
@@ -60,20 +67,6 @@ function learn_press_get_all_add_ons( $args = array() ) {
 	return apply_filters( 'learn_press_all_add_ons', $addons );
 }
 
-function learn_press_get_bundle_activate_add_ons() {
-	$defaults = array(
-		'learnpress-course-review',
-		'learnpress-import-export',
-		'learnpress-prerequisites-courses',
-		'learnpress-wishlist'
-	);
-	return apply_filters( 'learn_press_bundle_activate_add_ons', $defaults );
-}
-
-function learn_press_get_more_add_ons() {
-	$defaults = array();
-}
-
 require_once( LP_PLUGIN_PATH . '/inc/admin/class-lp-upgrader.php' );
 /**
  * Default tabs for add ons page
@@ -88,11 +81,11 @@ function learn_press_get_add_on_tabs() {
 			'class' => '',
 			'url'   => ''
 		),
-		'bundle_activate' => array(
-			'text'  => sprintf( __( 'Bundle Activate <span class="count">(%s)</span>', 'learnpress' ), $counts['bundle_activate'] ), __( '', 'learnpress' ),
-			'class' => '',
-			'url'   => ''
-		),
+        'all_plugins'   => array(
+            'text'  => sprintf( __( 'All Plugins <span class="count">(%s)</span>', 'learnpress' ), $counts['all_plugins'] ),
+            'class' => '',
+            'url'   => ''
+        ),
 		'more'            => array(
 			'text'  => sprintf( __( 'Get more <span class="count">(%s)</span>', 'learnpress' ), $counts['more'] ), __( '', 'learnpress' ),
 			'class' => '',
@@ -235,6 +228,22 @@ function learn_press_get_add_ons( $options = array() ) {
 	}
 
 	return $plugins;
+}
+
+/**
+ * Get All Plugins: Free and Premium
+ */
+function learnpress_get_all_plugins() {
+
+    $all_plugins = array();
+
+    /* Get free plugins into wordpress.org */
+    $all_plugins['free'] = learn_press_get_all_add_ons();
+
+    /* Get premium plugins into site thimpress.com */
+    $all_plugins['premium'] = learn_press_get_add_ons_premium();
+
+    return $all_plugins;
 }
 
 function learn_press_get_installed_plugin_slugs() {
@@ -509,63 +518,95 @@ function learn_press_add_ons_content_tab_installed( $current ) {
 	learn_press_add_on_tab_description( __( 'All add-ons that you have installed', 'learnpress' ) );
 	learn_press_output_add_ons_list( $add_ons, $current );
 }
-
 add_action( 'learn_press_add_ons_content_tab_installed', 'learn_press_add_ons_content_tab_installed' );
 
-function learn_press_add_ons_content_tab_more( $current ) {
-	$add_ons = learn_press_get_all_add_ons( array( 'transient_key' => 'lp_more_add_ons', 'force' => wp_verify_nonce( learn_press_get_request( 'check' ), 'check_more' ) ) );
+function learn_press_add_ons_content_tab_all_plugins($current) {
 
-	$time        = get_option( '_transient_timeout_lp_more_add_ons' );
-	$description = __( 'All add-ons we provide.', 'learnpress' );
-	$description .= ' ' . sprintf( __( 'Last checked %s ago', 'learnpress' ), human_time_diff( $time - LP_ADD_ON_TRANSIENT_TIME ) );
-	$description .= ' ' . sprintf( __( '<a href="%s">%s</a>' ), admin_url( 'admin.php?page=learn-press-addons&tab=more&check=' . wp_create_nonce( 'check_more' ) ), __( 'Check again!', 'learnpress' ) );
-	learn_press_add_on_tab_description( $description );
-	learn_press_output_add_ons_list( $add_ons, $current );
-}
-
-add_action( 'learn_press_add_ons_content_tab_more', 'learn_press_add_ons_content_tab_more' );
-
-function learn_press_add_ons_content_tab_bundle_activate( $current ) {
-	$add_ons = learn_press_get_add_ons_from_wp(
-		array(
-			'transient_key' => 'lp_ba_add_ons',
-			'include'       => learn_press_get_bundle_activate_add_ons(),
-			'force'         => wp_verify_nonce( learn_press_get_request( 'check' ), 'check_bundle_activate' )
-		)
-	);
-
-	$time        = get_option( '_transient_timeout_lp_ba_add_ons' );
-	$description = __( 'All add-ons that provide basic features for your LMS site.', 'learnpress' );
-	$description .= ' ' . sprintf( __( 'Last checked %s ago' ), human_time_diff( $time - LP_ADD_ON_TRANSIENT_TIME ) );
-	$description .= ' ' . sprintf( __( '<a href="%s">%s</a>' ), admin_url( 'admin.php?page=learn-press-addons&tab=bundle_activate&check=' . wp_create_nonce( 'check_bundle_activate' ) ), __( 'Check again!', 'learnpress' ) );
-
-	learn_press_add_on_tab_description( $description );
-	learn_press_output_add_ons_list( $add_ons, $current );
-}
-
-add_action( 'learn_press_add_ons_content_tab_bundle_activate', 'learn_press_add_ons_content_tab_bundle_activate' );
-
-function learn_press_add_ons_content_tab_premium_add_ons($current) {
-
-    $add_ons = learn_press_get_add_ons_premium();
-
-    $time        = get_option( '_transient_timeout_lp_ba_add_ons' );
+    $time        = get_option( '_transient_timeout_lp_plugin_premium' );
     $description = __( 'All add-ons we provide.', 'learnpress' );
     $description .= ' ' . sprintf( __( 'Last checked %s ago', 'learnpress' ), human_time_diff( $time - LP_ADD_ON_TRANSIENT_TIME ) );
-    $description .= ' ' . sprintf( __( '<a href="%s">%s</a>' ), admin_url( 'admin.php?page=learn-press-addons&tab=premium_add_ons&check=' . wp_create_nonce( 'check_more' ) ), __( 'Check again!', 'learnpress' ) );
+    $description .= ' ' . sprintf( __( '<a href="%s">%s</a>' ), admin_url( 'admin.php?page=learn-press-addons&tab=all_plugins&check=' . wp_create_nonce( 'lp_check_all_plugins' ) ), __( 'Check again!', 'learnpress' ) );
     learn_press_add_on_tab_description( $description );
-    learn_press_output_premium_add_ons_list( $add_ons, $current );
 
+    $all_plugins = array();
+
+    /* Get Free Plugins */
+    $all_plugins['free'] = learn_press_get_all_add_ons( array( 'transient_key' => 'lp_more_add_ons', 'force' => wp_verify_nonce( learn_press_get_request( 'check' ), 'lp_check_all_plugins' ) ) );
+
+    learn_press_output_all_plugins_list( $all_plugins, $current );
+}
+add_action( 'learn_press_add_ons_content_tab_all_plugins', 'learn_press_add_ons_content_tab_all_plugins' );
+
+function learn_press_output_all_plugins_list( $add_ons, $tab ) {
+
+    if ( !is_array( $add_ons ) || sizeof( $add_ons ) == 0 ) {
+        printf( '<h3>%s</h3>', __( 'No add-on found', 'learnpress' ) );
+        return false;
+    }
+    /* Free Plugins */
+    $free_plugins = learn_press_get_all_add_ons( array( 'transient_key' => 'lp_more_add_ons', 'force' => wp_verify_nonce( learn_press_get_request( 'check' ), 'lp_check_all_plugins' ) ) );
+    learn_press_output_add_ons_list($free_plugins, 'lp-add-on-free');
+
+    /* Premium Plugins */
+    $premium_plugins = get_transient('lp_plugin_premium');
+    $premium_plugins = json_decode($premium_plugins, true);
+    learn_press_output_premium_add_ons_list( $premium_plugins, 'lp-add-on-premium' );
 }
 
 function learn_press_get_add_ons_premium() {
 
-    global $learnpress_add_on_premium;
-    if (!empty($learnpress_add_on_premium)) {
-        return $learnpress_add_on_premium;
+    if (isset($_GET['check']) && wp_verify_nonce($_GET['check'], 'lp_check_all_plugins')) {
+        delete_transient('lp_plugin_premium');
+    }
+
+    $plugins = get_transient('lp_plugin_premium');
+
+    if (empty($plugins)) {
+        $url = 'https://thimpress.com/?thimpress_get_addons=premium';
+        $response = wp_remote_get(esc_url_raw($url), array('decompress' => false));
+        if (!is_wp_error($response)) {
+            $response = wp_remote_retrieve_body($response);
+            $response = json_decode($response, true);
+            if (!empty($response)) {
+                $plugins = $response;
+            }
+        }
+        if (!empty($plugins)) {
+            foreach ($plugins as $key => $add_on) {
+                if (empty($add_on['price'])) {
+                    unset($plugins[$key]);
+                }
+            }
+        }
+        set_transient('lp_plugin_premium', json_encode($plugins), LP_ADD_ON_TRANSIENT_TIME);
+    }
+    else {
+        $plugins = json_decode($plugins, true);
+    }
+    return $plugins;
+}
+
+function learn_press_add_ons_content_tab_related_themes($current) {
+   $related_themes = learn_press_get_add_ons_theme();
+
+    $time        = get_option( '_transient_timeout_lp_related_themes' );
+    $description = __( 'All add-ons we provide.', 'learnpress' );
+    $description .= ' ' . sprintf( __( 'Last checked %s ago', 'learnpress' ), human_time_diff( $time - LP_ADD_ON_TRANSIENT_TIME ) );
+    $description .= ' ' . sprintf( __( '<a href="%s">%s</a>' ), admin_url( 'admin.php?page=learn-press-addons&tab=related_themes&check=' . wp_create_nonce( 'lp_check_related_themes' ) ), __( 'Check again!', 'learnpress' ) );
+    learn_press_add_on_tab_description( $description );
+    learn_press_output_related_themes_list( $related_themes, $current );
+}
+
+function learn_press_get_add_ons_theme() {
+
+    if (isset($_GET['check']) && wp_verify_nonce($_GET['check'], 'lp_check_related_themes')) {
+    }
+    global $learnpress_add_on_theme;
+    if (!empty($learnpress_add_on_theme)) {
+        return $learnpress_add_on_theme;
     }
     $add_ons = array();
-    $url = 'https://thimpress.com/?thimpress_get_addons=premium';
+    $url = 'https://thimpress.com/?thimpress_get_addons=theme';
     $response = wp_remote_get(esc_url_raw($url), array('decompress' => false));
     if (!is_wp_error($response)) {
         $response = wp_remote_retrieve_body($response);
@@ -574,162 +615,10 @@ function learn_press_get_add_ons_premium() {
             $add_ons = $response;
         }
     }
-    if (!empty($add_ons)) {
-        foreach ($add_ons as $key => $add_on) {
-            if (empty($add_on['price'])) {
-                unset($add_ons[$key]);
-            }
+    $learnpress_add_on_theme = $add_ons;
 
-        }
-    }
-    $learnpress_add_on_premium = $add_ons;
     return $add_ons;
 }
-
-add_action( 'learn_press_add_ons_content_tab_premium_add_ons', 'learn_press_add_ons_content_tab_premium_add_ons' );
-
-function learn_press_add_ons_content_tab_related_themes($current) {
-    $related_themes = learn_press_get_relate_theme();
-    $time        = get_option( '_transient_timeout_lp_ba_add_ons' );
-    $description = __( 'All add-ons we provide.', 'learnpress' );
-    $description .= ' ' . sprintf( __( 'Last checked %s ago', 'learnpress' ), human_time_diff( $time - LP_ADD_ON_TRANSIENT_TIME ) );
-    $description .= ' ' . sprintf( __( '<a href="%s">%s</a>' ), admin_url( 'admin.php?page=learn-press-addons&tab=related_themes&check=' . wp_create_nonce( 'check_again_theme' ) ), __( 'Check again!', 'learnpress' ) );
-    learn_press_add_on_tab_description( $description );
-    learn_press_output_related_themes_list( $related_themes, $current );
-}
-
-function learn_press_get_count_theme() {
-
-    if (isset($_GET['check']) && wp_verify_nonce($_GET['check'], 'check_again_theme')) {
-        delete_transient('learnpress_addon_list_theme');
-        delete_transient('learnpress_list_items_detail');
-    }
-
-    $list_theme = get_transient('learnpress_addon_list_theme');
-    if (!empty($list_theme)) {
-        $list_theme = json_decode($list_theme);
-        return $list_theme;
-    }
-
-    $url = 'https://api.envato.com/v1/market/new-files-from-user:thimpress,themeforest.json';
-    $args = array(
-        'headers' => array(
-            "Authorization" => "Bearer BmYcBsYXlSoVe0FekueDxqNGz2o3JRaP"
-        )
-    );
-    $response = wp_remote_request( $url, $args );
-
-    if (!is_wp_error($response)) {
-        $response = wp_remote_retrieve_body($response);
-        $response = json_decode($response, true);
-        if (!empty($response) && !empty($response['new-files-from-user'])) {
-            $list_theme = $response['new-files-from-user'];
-            $temp = json_encode($list_theme);
-
-            set_transient('learnpress_addon_list_theme', $temp, 7 * DAY_IN_SECONDS);
-
-            return $list_theme;
-
-        }
-    }
-
-}
-
-function learn_press_get_relate_theme() {
-
-    $list_items_detail = get_transient('learnpress_list_items_detail');
-
-    if (!empty($list_items_detail)) {
-        $list_items_detail = json_decode($list_items_detail, true);
-
-        return $list_items_detail;
-    }
-
-    $list_theme = get_transient('learnpress_addon_list_theme');
-    $list_theme = json_decode($list_theme);
-
-    if (is_array($list_theme)) {
-        $args = array(
-            'headers' => array(
-                "Authorization" => "Bearer BmYcBsYXlSoVe0FekueDxqNGz2o3JRaP"
-            )
-        );
-        foreach ($list_theme as $theme) {
-            $url = 'https://api.envato.com/v3/market/catalog/item?id=' . $theme->id;
-            $response = wp_remote_request( $url, $args );
-
-            if (!is_wp_error($response)) {
-                $response = wp_remote_retrieve_body($response);
-                $response = json_decode($response, true);
-
-                $list_items_detail[] = $response;
-            }
-        }
-
-        $temp = json_encode($list_items_detail);
-        set_transient('learnpress_list_items_detail', $temp, 7 * DAY_IN_SECONDS);
-
-        return $list_items_detail;
-    }
-
-    return array();
-}
-
-function learn_press_get_add_ons_themes() {
-    global $learnpress_list_themes;
-    $list_theme = array();
-
-    if (!empty($learnpress_list_themes)) {
-        return $learnpress_list_themes;
-    }
-
-    if (!get_transient('learnpress_theme_premium') !== false) {
-        $list_theme = get_transient('learnpress_theme_premium');
-        $list_theme = json_decode($list_theme);
-
-        if (empty($learnpress_list_themes)) {
-            $learnpress_list_themes = $list_theme;
-        }
-        return $list_theme;
-    }
-
-    $url = 'https://api.envato.com/v1/market/new-files-from-user:thimpress,themeforest.json';
-    $args = array(
-        'headers' => array(
-            "Authorization" => "Bearer BmYcBsYXlSoVe0FekueDxqNGz2o3JRaP"
-        )
-    );
-    $response = wp_remote_request( $url, $args );
-
-    if (!is_wp_error($response)) {
-        $response = wp_remote_retrieve_body($response);
-        $response = json_decode($response, true);
-        if (!empty($response) && !empty($response['new-files-from-user'])) {
-            $add_ons = $response['new-files-from-user'];
-
-            foreach ($add_ons as $add_on) {
-                $url = 'https://api.envato.com/v3/market/catalog/item?id=' . $add_on['id'];
-                $response = wp_remote_request( $url, $args );
-
-                if (!is_wp_error($response)) {
-                    $response = wp_remote_retrieve_body($response);
-                    $response = json_decode($response, true);
-
-                    $list_theme[] = $response;
-                }
-            }
-        }
-        if (empty($learnpress_list_themes)) {
-            $learnpress_list_themes = $list_theme;
-        }
-        $learnpress_add_on_theme = json_encode($list_theme);
-
-
-        set_transient('learnpress_theme_premium', $learnpress_add_on_theme, 7 * DAY_IN_SECONDS);
-    }
-    return $list_theme;
-}
-
 
 add_action( 'learn_press_add_ons_content_tab_related_themes', 'learn_press_add_ons_content_tab_related_themes' );
 
@@ -790,14 +679,14 @@ function learn_press_get_add_on_action_link( $plugin, $file ) {
 
 function learn_press_output_add_ons_list( $add_ons, $tab = '' ) {
 	if ( !is_array( $add_ons ) || sizeof( $add_ons ) == 0 ) {
-		printf( '<h3>%s</h3>', __( 'No add-on found', 'learnpress' ) );
+		printf( '<h3>%s</h3>', __( 'No free add-on found', 'learnpress' ) );
 		return false;
 	}
+	echo '<h2 class="leanrpress-addon-title">'. __('Free Plugins') . '<span> ('. sizeof($add_ons) .')</span>' .'</h2>';
 	echo '<ul class="learn-press-add-ons widefat ' . $tab . '">';
 	foreach ( $add_ons as $file => $add_on ) {
 
 		$action_links = learn_press_get_add_on_action_link( $add_on, $file );
-
 		?>
 		<li class="plugin-card plugin-card-learnpress" id="learn-press-plugin-<?php echo $add_on['slug']; ?>">
 			<div class="plugin-card-top">
@@ -869,11 +758,11 @@ function learn_press_output_add_ons_list( $add_ons, $tab = '' ) {
 }
 
 function learn_press_output_premium_add_ons_list($add_ons, $tab = '') {
-
     if ( !is_array( $add_ons ) || sizeof( $add_ons ) == 0 ) {
-        printf( '<h3>%s</h3>', __( 'No add-on found', 'learnpress' ) );
+        printf( '<h3>%s</h3>', __( 'No premium add-on found', 'learnpress' ) );
         return false;
     }
+    echo '<h2 class="leanrpress-addon-title">'. __('Premium Plugins') . '<span> ('. sizeof($add_ons) .') </span>' .'</h2>';
     echo '<ul class="learn-press-add-ons widefat ' . $tab . '">';
     foreach ( $add_ons as $file => $add_on ) {
         ?>
@@ -884,9 +773,7 @@ function learn_press_output_premium_add_ons_list($add_ons, $tab = '') {
                     $add_on['icons'] = learn_press_get_add_on_icon('');
                 }
                 ?>
-                <a href="<?php esc_url($add_on['permarklink']); ?>">
-                    <span class="plugin-icon"><img src="<?php echo esc_url($add_on['icons']); ?>"></span>
-                </a>
+                <span class="plugin-icon"><img src="<?php echo esc_url($add_on['icons']); ?>"></span>
 
                 <div class="name column-name">
                     <h3><a href="<?php echo esc_url($add_on['permarklink'])?>"><?php echo $add_on['name']; ?></a></h3>
@@ -940,50 +827,52 @@ function learn_press_output_related_themes_list($add_ons, $tab = '') {
     echo '<ul class="learn-press-add-ons widefat ' . $tab . '">';
     foreach ( $add_ons as $file => $add_on ) {
         ?>
-        <li class="plugin-card plugin-card-learnpress" id="learn-press-theme-<?php echo $add_on['id']; ?>">
+        <li class="plugin-card plugin-card-learnpress" id="learn-press-plugin-<?php echo $add_on['slug']; ?>">
             <div class="plugin-card-top">
-                <div class="image-thumbnail">
-                    <a href="#">
-                        <img src="<?php echo esc_url($add_on['previews']['landscape_preview']['landscape_url']); ?>" alt="<?php echo esc_attr($add_on['wordpress_theme_metadata']['theme_name'])?>">
-                    </a>
+                <?php
+                if (empty($add_on['icons'])) {
+                    $add_on['icons'] = learn_press_get_add_on_icon('');
+                }
+                ?>
+                <span class="plugin-icon"><img src="<?php echo esc_url($add_on['icons']); ?>"></span>
+
+                <div class="name column-name">
+                    <h3><a href="<?php echo esc_url($add_on['permarklink'])?>"><?php echo $add_on['name']; ?></a></h3>
                 </div>
+                <div class="action-links">
+                    <ul class="plugin-action-buttons">
+                        <li>
+                            <a class="button lp-not-ajax" data-slug="<?php echo esc_attr($add_on['slug']); ?>" href="<?php echo esc_url($add_on['permarklink'])?>" aria-label="<?php _e('Buy Now', 'learnpress'); ?>" data-name="<?php _e('Buy Now', 'learnpress'); ?>">
+                                <span><?php _e('Buy Now', 'learnpress'); ?></span>
+                            </a>
+                        </li>
+                        <li>
+                            <span class="price">
+                                <?php
+                                if (!empty($add_on['sale']) && absint($add_on['regular_price']) != 0) {
+                                    ?>
+                                    <del>
+                                        <span class="amount">
+                                            <span class="currencySymbol">$</span><?php echo esc_html($add_on['regular_price']); ?>
+                                        </span>
+                                    </del>
+                                    <?php
+                                }
+                                ?>
 
-                <div class="theme-content">
-                    <h2 class="theme-title">
-                        <a href="<?php esc_url($add_on['url']); ?>">
-                            <?php echo wp_kses_post($add_on['name']); ?>
-                        </a>
-                    </h2>
-                    <div class="theme-detail">
-                        <div class="theme-price">
-                            <?php echo $add_on['price_cents']/100 .__('$', 'learnpress');?>
-                        </div>
-                        <div class="number-sale">
-                            <?php echo $add_on['number_of_sales'] .__(' sales', 'learnpress'); ?>
-                        </div>
-                    </div>
-
-                    <div class="theme-description">
-                        <?php
-                        $description = $add_on['description'];
-                        $description = preg_replace("/<(.*?)>/", '', $description);
-                        echo wp_kses_post($description);
-
-                        ?>
-                    </div>
-                    <div class="theme-footer">
-                        <?php
-                        $demo = $add_on['attributes'][4];
-                        ?>
-                        <a class="button button-primary" href="<?php echo esc_url($add_on['url']); ?>"><?php echo __('Get it now for only ', 'learnpress') ?></a>
-                        <a class="button" href="<?php echo esc_url($demo['value']); ?>"><?php _e('View Demo', 'learnpress'); ?></a>
-                        <div class="theme-rating">
-                            <span class="">
-                                <?php wp_star_rating( array( 'rating' => $add_on['rating'], 'type' => 'rating', 'number' => $add_on['rating_count'] ) ); ?>
+                                <ins>
+                                    <span class="amount">
+                                        <span class="currencySymbol">$</span><?php echo esc_html($add_on['price']); ?>
+                                    </span>
+                                </ins>
                             </span>
-                            <span class="count-rating">(<?php echo $add_on['rating_count'];?>)</span>
-                        </div>
-                    </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="desc column-description">
+                    <p><?php echo $add_on['short_description']; ?></p>
+
+                    <p class="authors"><?php printf( __( '<cite>By %s</cite>', 'learnpress' ), $add_on['author'] ); ?></p>
                 </div>
             </div>
         </li>
@@ -997,10 +886,3 @@ function learn_press_add_on_admin_script() {
 }
 
 add_action( 'admin_enqueue_scripts', 'learn_press_add_on_admin_script' );
-
-function learn_press_get_premium_add_ons( $addons ) {
-	$add                          = end( $addons );
-	$addons['this-is-new-add-on'] = $add;
-	return $addons;
-}
-//add_filter( 'learn_press_all_add_ons', 'learn_press_get_premium_add_ons' );
