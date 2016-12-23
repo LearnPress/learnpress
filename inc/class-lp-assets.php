@@ -709,19 +709,13 @@ class LP_Assets {
 			$screen = get_current_screen();
 			$screen_id = $screen->id;
 			$page_id   = !empty( $_REQUEST['page'] ) ? $_REQUEST['page'] : '';
-
-			if ( in_array( $screen_id, array( 'edit-course_tag', 'edit-course_category' ) ) ) {
-				self::enqueue_style( 'learn-press-admin' );
-			}
-
+			self::enqueue_style( 'learn-press-admin' );
 			if ( in_array( $screen_id, learn_press_get_screens() ) || in_array( $page_id, learn_press_get_admin_pages() ) ) {
 				self::enqueue_style( 'learn-press-global' );
 				self::enqueue_style( 'learn-press-jquery.ui.datepicker' );
 				self::enqueue_style( 'learn-press-jquery.ui.theme' );
 				self::enqueue_style( 'learn-press-jquery.ui.core' );
 				self::enqueue_style( 'learn-press-jquery.ui.slider' );
-
-				self::enqueue_style( 'learn-press-admin' );
 				self::enqueue_style( 'learn-press-icons' );
 				self::enqueue_script( 'learn-press-global' );
 				self::enqueue_script( 'learn-press-admin' );
