@@ -23,7 +23,7 @@ if ( !class_exists( 'RWMB_Yes_No_Field' ) ) {
 				'<input type="checkbox" class="rwmb-yes-no" name="%s" id="%s" value="1" %s>',
 				$field['field_name'],
 				$field['id'],
-				empty( $meta ) ? checked( $field['default'], 'yes', false ) : checked( $meta, 'yes', false )
+				empty( $meta ) ? checked( $field['std'], 'yes', false ) : checked( $meta, 'yes', false )
 			);
 		}
 

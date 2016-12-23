@@ -586,7 +586,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						'id'      => "{$prefix}featured",
 						'type'    => 'yes_no',
 						'desc'    => __( 'Set course as featured.', 'learnpress' ),
-						'default' => 'no',
+						'std' => 'no',
 					)
 				)
 			);
@@ -661,7 +661,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						'id'      => "{$prefix}payment",
 						'type'    => 'yes_no',
 						'desc'    => __( 'If it is checked, An administrator will review then set course price and commission.', 'learnpress' ),
-						'default' => 'no',
+						'std' => 'no',
 						'class'   => 'lp-course-payment-field'
 					)
 				)
@@ -759,7 +759,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						'id'      => "{$prefix}required_enroll",
 						'type'    => 'yes_no',
 						'desc'    => __( 'Require users logged in to study or public to all.', 'learnpress' ),
-						'default' => 'yes',
+						'std' => 'yes',
 						'class'   => 'lp-course-required-enroll' . ( ( $payment == 'yes' ) ? ' hide-if-js' : '' )
 					)
 				)
