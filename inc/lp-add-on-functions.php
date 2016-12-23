@@ -70,7 +70,7 @@ function learnpress_get_all_plugins() {
 
     $plugins['free']    = learn_press_get_all_add_ons();
     $plugins['premium'] = learn_press_get_add_ons_premium();
-        // chinhtm
+        // chinhtmss
     return $plugins;
 }
 
