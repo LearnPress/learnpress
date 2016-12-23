@@ -156,7 +156,7 @@ if ( $user ) :
 				<p class="profile-field-name"><?php _e( 'New Password', 'learnpress' ); ?></p>
 				<input type="password" name="pass1" id="pass1" class="regular-text" value="" />
 
-				<p class="profile-field-name"><?php _e( 'Repeat New Password', 'learnpress' ); ?></p>
+				<p class="profile-field-name"><?php _e( 'Confirmation password', 'learnpress' ); ?></p>
 				<input name="pass2" type="password" id="pass2" class="regular-text" value="" />
 				<p class="description"><?php _e( 'Type your new password again.', 'learnpress' ); ?></p>
 
@@ -170,6 +170,11 @@ if ( $user ) :
 			</p>
 		</form>
 	</div>
+<script type="text/template" id="learn-press-template-block-content">
+ <div id="learn-press-block-content" class="popup-block-content">
+  <span></span>
+ </div>
+</script>
 	<?php
 endif;
 ?>

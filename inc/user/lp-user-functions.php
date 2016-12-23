@@ -527,12 +527,13 @@ add_action( 'init', 'learn_press_user_update_user_info' );
 
 function learn_press_user_update_user_info() {
 	global $wp, $wpdb;
-	$user    = learn_press_get_current_user();
-	$user_id = learn_press_get_current_user_id();
-	if ( !$user_id ) {
-		return;
-	}
-	if ( is_admin() ) {
+	$user             = learn_press_get_current_user();
+	$user_id          = learn_press_get_current_user_id();
+	$message_template = '<div class="learn-press-message %s">'
+		. '<p>%s</p>'
+		. '</div>';
+
+	if ( !$user_id || is_admin() ) {
 		return;
 	}
 	if ( !empty( $_POST ) && isset( $_POST['from'] ) && isset( $_POST['action'] ) && $_POST['from'] == 'profile' && $_POST['action'] == 'update' ) {
@@ -575,23 +576,27 @@ function learn_press_user_update_user_info() {
 				$image_exts          = array_values( $allowed_image_types );
 				$image_size_limit    = 2;
 				if ( !in_array( $image_type, $mine_types ) ) {
-					$return = array(
+					$_message = __( 'Only', 'learnpress' ) . ' <strong>' . implode( ',', $image_exts ) . '</strong> ' . __( 'images accepted for upload', 'learnpress' );
+					$message  = sprintf( $message_template, 'error', $_message );
+					$return   = array(
 						'return'  => false,
-						'message' => __( 'Only', 'learnpress' ) . ' <strong>' . implode( ',', $image_exts ) . '</strong> ' . __( 'images accepted for upload', 'learnpress' )
+						'message' => $message
 					);
 					learn_press_send_json( $return );
 				}
 				if ( $image_size > $image_size_limit * 1048576 ) {
-					$return = array(
+					$message = __( 'Images must be under', 'learnpress' ) . ' ' . $image_size_limit . __( 'MB in size', 'learnpress' );
+					$return  = array(
 						'return'  => false,
-						'message' => __( 'Images must be under', 'learnpress' ) . ' ' . $image_size_limit . __( 'MB in size', 'learnpress' )
+						'message' => $message
 					);
 					learn_press_send_json( $return );
 				}
 			} else {
-				$return = array(
+				$message = __( 'Please select an image for upload', 'learnpress' );
+				$return  = array(
 					'return'  => false,
-					'message' => __( 'Please select an image for upload', 'learnpress' )
+					'message' => $message
 				);
 				learn_press_send_json( $return );
 			}
@@ -616,8 +621,10 @@ function learn_press_user_update_user_info() {
 						}
 					}
 				}
-				$message = $uploaded ? __( 'Image is uploaded success', 'learnpress' ) : __( 'Error on upload image', 'learnpress' );
-				$return  = array(
+
+				$_message = $uploaded ? __( 'Image is uploaded success', 'learnpress' ) : __( 'Error on upload image', 'learnpress' );
+				$message  = sprintf( $message_template, 'success', $_message );
+				$return   = array(
 					'return'  => $uploaded,
 					'message' => $message
 				);
@@ -655,12 +662,14 @@ function learn_press_user_update_user_info() {
 				$offset_x = max( intval( $offset['x'] ), - intval( $offset['x'] ) );
 				$offset_y = max( intval( $offset['y'] ), - intval( $offset['y'] ) );
 				$editor->crop( $offset_x, $offset_y, 248, 248 );
-				$saved = $editor->save( $upload_dir . DIRECTORY_SEPARATOR . $avatar_filename );
-				$res   = array();
-
+				$saved          = $editor->save( $upload_dir . DIRECTORY_SEPARATOR . $avatar_filename );
+				$res            = array();
+				$res['message'] = '';
 				if ( is_wp_error( $saved ) ) {
+					$_message               = __( 'Error on crop user picture profile ', 'learnpress' );
+					$message                = sprintf( $message_template, 'error', $_message );
 					$res['return']          = false;
-					$res['message']         = __( 'Error on crop user picture profile ', 'learnpress' );
+					$res['message']         = $message;
 					$res['avatar_filename'] = '';
 					$res['avatar_url']      = '';
 				} else {
@@ -671,7 +680,10 @@ function learn_press_user_update_user_info() {
 					if ( file_exists( $avatar_filepath ) ) {
 						$editor2 = wp_get_image_editor( $avatar_filepath );
 						if ( is_wp_error( $editor2 ) ) {
-							learn_press_add_message( __( 'Thumbnail of image profile not created', 'learnpress' ) );
+//								learn_press_add_message( __( 'Thumbnail of image profile not created', 'learnpress' ) );
+							$_message = __( 'Thumbnail of image profile not created', 'learnpress' );
+							$message  = sprintf( $message_template, 'error', $_message );
+							$res['message'] .= $message;
 						} else {
 							$editor2->set_quality( 90 );
 							$lp         = LP();
@@ -685,12 +697,18 @@ function learn_press_user_update_user_info() {
 								$size_height = $size['height'];
 								$resized     = $editor2->resize( $size_width, $size_height, true );
 								if ( is_wp_error( $resized ) ) {
-									learn_press_add_message( __( 'Thumbnail of image profile not created', 'learnpress' ) );
+//										learn_press_add_message( __( 'Thumbnail of image profile not created', 'learnpress' ) );
+									$_message = __( 'Thumbnail of image profile not created', 'learnpress' );
+									$message  = sprintf( $message_template, 'error', $_message );
+									$res['message'] .= $message;
 								} else {
 									$dest_file = $editor2->generate_filename( 'thumb' );
 									$saved     = $editor2->save( $dest_file );
 									if ( is_wp_error( $saved ) ) {
-										learn_press_add_message( __( 'Thumbnail of image profile not created', 'learnpress' ) );
+//											learn_press_add_message( __( 'Thumbnail of image profile not created', 'learnpress' ) );
+										$_message = __( 'Thumbnail of image profile not created', 'learnpress' );
+										$message  = sprintf( $message_template, 'error', $_message );
+										$res['message'] .= $message;
 									}
 								}
 							}
@@ -702,8 +720,10 @@ function learn_press_user_update_user_info() {
 
 					update_user_meta( $user->id, '_lp_profile_picture', $avatar_filename );
 					update_user_meta( $user->id, '_lp_profile_picture_type', 'picture' );
-					$res['return']          = true;
-					$res['message']         = __( 'Profile picture is changed', 'learnpress' );
+					$_message      = __( 'Profile picture is changed', 'learnpress' );
+					$message       = sprintf( $message_template, 'success', $_message );
+					$res['return'] = true;
+					$res['message'] .= $message;
 					$res['avatar_filename'] = $avatar_filename;
 					$res['avatar_url']      = $lp_profile_url . $avatar_filename;
 				}
@@ -719,6 +739,7 @@ function learn_press_user_update_user_info() {
 # - - - - - - - - - - - - - - - - - - - -
 # UPDATE USER INFO
 #	
+		$return      = array();
 		$update_data = array(
 			'ID'           => $user_id,
 //			'user_url'     => filter_input( INPUT_POST, 'url', FILTER_SANITIZE_URL ),
@@ -745,14 +766,28 @@ function learn_press_user_update_user_info() {
 				}
 			}
 			if ( !$check_old_pass ) {
-				learn_press_add_message( __( 'Old password incorrect!', 'learnpress' ) );
+//				learn_press_add_message( __( 'Old password incorrect!', 'learnpress' ), 'error' );
+				$_message               = __( 'Old password incorrect!', 'learnpress' );
+				$message                = sprintf( $message_template, 'error', $_message );
+				$return['return']       = false;
+				$return['message']      = $message;
+				$return['redirect_url'] = '';
+				learn_press_send_json( $return );
+				exit();
 				return;
 			} else {
 				// check new pass
 				$new_pass  = filter_input( INPUT_POST, 'pass1' );
 				$new_pass2 = filter_input( INPUT_POST, 'pass2' );
 				if ( $new_pass != $new_pass2 ) {
-					learn_press_add_message( __( 'Retype new password incorrect!', 'learnpress' ) );
+//					learn_press_add_message( __( 'Confirmation password incorrect!', 'learnpress' ), 'error' );
+					$_message               = __( 'Confirmation password incorrect!', 'learnpress' );
+					$message                = sprintf( $message_template, 'error', $_message );
+					$return['return']       = false;
+					$return['message']      = $message;
+					$return['redirect_url'] = '';
+					learn_press_send_json( $return );
+					exit();
 					return;
 				} else {
 					$update_data['user_pass'] = $new_pass;
@@ -764,13 +799,33 @@ function learn_press_user_update_user_info() {
 		update_user_meta( $user->id, '_lp_profile_picture_type', $profile_picture_type );
 		$res = wp_update_user( $update_data );
 		if ( $res ) {
-			learn_press_add_message( __( 'Your change is saved', 'learnpress' ) );
-		}
-		if ( !empty( $_POST['profile-nonce'] ) && wp_verify_nonce( $_POST['profile-nonce'], 'learn-press-user-profile-' . $user->id ) ) {
-			$current_url = learn_press_get_page_link( 'profile' ) . $user->user_login . '/edit';
-			wp_redirect( $current_url );
+//			learn_press_add_message( __( 'Your change is saved', 'learnpress' ) );
+			$_message               = __( 'Your change is saved', 'learnpress' );
+			$message                = sprintf( $message_template, 'success', $_message );
+			$return['return']       = true;
+			$return['message']      = $message;
+			$return['redirect_url'] = '';
+			learn_press_send_json( $return );
+			exit();
+		} else {
+//			learn_press_add_message( __( 'Error on update your profile info', 'learnpress' ) );
+			$_message               = __( 'Error on update your profile info', 'learnpress' );
+			$message                = sprintf( $message_template, 'error', $_message );
+			$return['return']       = false;
+			$return['message']      = $message;
+			$return['redirect_url'] = '';
+			learn_press_send_json( $return );
 			exit();
 		}
+
+		$current_url = learn_press_get_page_link( 'profile' ) . $user->user_login . '/edit';
+		wp_redirect( $current_url );
+		exit();
+//		if ( !empty( $_POST['profile-nonce'] ) && wp_verify_nonce( $_POST['profile-nonce'], 'learn-press-user-profile-' . $user->id ) ) {
+//			$current_url = learn_press_get_page_link( 'profile' ) . $user->user_login . '/edit';
+//			wp_redirect( $current_url );
+//			exit();
+//		}
 #
 # UPDATE USER INFO
 # - - - - - - - - - - - - - - - - - - - -
@@ -820,7 +875,9 @@ if ( !function_exists( 'learn_press_pre_get_avatar_callback' ) ) {
 			}
 		}
 		$profile_picture_src = $user_profile_picture_url . $profile_picture;
-		if ( !$profile_picture_type || $profile_picture_type == 'gravatar' || !$profile_picture_src ) {
+		if ( ( !isset( $size['gravatar'] ) || !isset( $size['gravatar'] ) && ( $size['gravatar'] ) )
+			&& ( !$profile_picture_type || $profile_picture_type == 'gravatar' || !$profile_picture_src )
+		) {
 			return $avatar;
 		}
 		$lp           = LP();
@@ -941,7 +998,7 @@ function learn_press_update_user_option( $name, $value, $id = 0 ) {
 	$key            = 'learnpress_user_options';
 	$options        = get_user_option( $key, $id );
 	$options[$name] = $value;
-	update_user_option( $id, $key, $options );
+	update_user_option( $id, $key, $options, true );
 }
 
 function learn_press_delete_user_option( $name, $id = 0 ) {
@@ -952,7 +1009,7 @@ function learn_press_delete_user_option( $name, $id = 0 ) {
 	$options = get_user_option( $key, $id );
 	if ( is_array( $options ) && array_key_exists( $name, $options ) ) {
 		unset( $options[$name] );
-		update_user_option( $id, $key, $options );
+		update_user_option( $id, $key, $options, true );
 		return true;
 	}
 	return false;

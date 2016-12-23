@@ -60,21 +60,6 @@ function learn_press_addons_page() {
 
             <?php do_action( 'learn_press_add_ons_content_tab_' . $current, $current ); ?>
 
-            <?php if ( strtolower( $theme->name ) !== 'eduma'  && $current != 'related_themes') : ?>
-                <div class="theme">
-                    <a href="https://themeforest.net/item/education-wordpress-theme-education-wp/14058034?s_rank=3">
-                        <img src="https://thimpress.com/wp-content/uploads/2016/09/01_preview-4.jpg" />
-                    </a>
-                    <h2><?php _e( 'Looking for an excellent LMS and Education WordPress theme?', 'learnpress' ); ?></h2>
-                    <p><?php printf( '%s <strong>%s</strong>', __( 'We recommend Education WP,', 'learnpress' ), __( 'the #1 Best Selling Education Theme of 2016', 'learnpress' ) ); ?></p>
-                    <p><?php _e( 'Education WP is completely dedicated to learning with 10+ pre-designed demos and full functionalities for schools, universities, kindergartens, training centers, eLearnings, MOOCS or online courses websites.', 'learnpress' ); ?></p>
-                    <p><?php _e( 'It is easy to use and easy to install. Your dream online school is only a few clicks away. It also comes with a bonus package of premium add-ons for LearnPress LMS that worths 439$+.', 'learnpress' ); ?></p>
-                    <p>
-                        <a href="https://thimpress.com/education-wordpress-theme-education-wp/" class="button" target="_blank"><?php _e( 'Read all about it', 'learnpress' ); ?></a>
-                        <a href="https://themeforest.net/item/education-wordpress-theme-education-wp/14058034?ref=ThimPress&utm_source=learnpress&utm_medium=addondashboard" class="button button-primary" target="_blank"><?php _e( 'Get it now for only 64$', 'learnpress' ); ?></a>
-                    </p>
-                </div>
-            <?php endif; ?>
 	</div>
 	<?php
 }
