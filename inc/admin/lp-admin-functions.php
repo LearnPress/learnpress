@@ -1247,6 +1247,14 @@ function learn_press_process_duplicate_action() {
 	}
 
 	// duplicate action
+	$actions = array(
+		'lp-duplicate-question',
+		'lp-duplicate-lesson',
+		'lp-duplicate-quiz'
+		);
+	if( !in_array($action, $actions) ){
+		return;
+	}
 	$action  = !empty( $_REQUEST['lp-action'] ) ? $_REQUEST['lp-action'] : '';
 	$post_id = !empty ( $_REQUEST['post'] ) ? $_REQUEST['post'] : 0;
 	$nonce   = !empty( $_REQUEST['nonce'] ) ? $_REQUEST['nonce'] : '';
