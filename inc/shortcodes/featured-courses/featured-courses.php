@@ -108,14 +108,13 @@ if ( !class_exists( 'LP_Featured_Courses_Shortcode' ) ) {
                             AND pmeta.meta_key = %s
                     WHERE p.post_type = %s
                     AND p.post_status = %s
-                    AND (meta_value = %s OR meta_value = %s)
+                    AND meta_value = %s
                     ORDER BY p.post_date
                     LIMIT %d",
 					'_lp_featured',
 					LP_COURSE_CPT,
 					'publish',
 					'yes',
-					'1',
 					(int) $a['limit']
 				)
 			);
