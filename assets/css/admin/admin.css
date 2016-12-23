@@ -1464,3 +1464,8 @@ input.regular-text[id^="learn-press-emails"] {
 .rwmb-quiz_questions-wrapper #learn-press-list-questions .quiz-question .quiz-question-content {
   padding: 0 20px;
 }
+.post-type-lp_quiz #general-settings a {
+  font-size: 14px;
+  font-weight: 400;
+  margin-left: 10px;
+}

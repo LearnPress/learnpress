@@ -154,7 +154,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 								'id'      => "{$prefix}show_hide_question",
 								'type'    => 'radio',
 								'options' => array(
-									'global' => __( 'Global Setting', 'learnpress' ),
+									'global' => __( wp_kses( 'Global Setting <a target="_blank" href="' . admin_url( 'admin.php?page=learn-press-settings&tab=courses' ) . '">Go to the setting</a>', array( 'a' => array( 'href' => array(), 'target' => array() ) ) ), 'learnpress' ),
 									'show'   => __( 'Show', 'learnpress' ),
 									'hide'   => __( 'Hide', 'learnpress' )
 								),
