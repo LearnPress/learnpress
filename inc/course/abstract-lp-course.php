@@ -137,16 +137,10 @@ abstract class LP_Abstract_Course {
 					} else {
 						$single = true;
 					}
-					$value   = get_post_meta( $this->id, '_lp_' . $key, $single );
-					$payment = get_post_meta( $this->id, '_lp_payment', true );
-					if ( ( $key == 'price' || $key == 'total' ) && ( $payment != 'yes' ) ) {
+					$value = get_post_meta( $this->id, '_lp_' . $key, $single );
+					if ( ( $key == 'price' || $key == 'total' ) && get_post_meta( $this->id, '_lp_payment', true ) != 'yes' ) {
 						$value = 0;
 					}
-				/*if ( $key == 'price' ) {
-					if ( is_numeric( $value ) ) {
-						$value = strpos( '.', $value . '' ) !== false ? floatval( $value ) : intval( $value );
-					}
-				}*/
 
 			}
 			if ( !empty( $value ) ) {
@@ -264,14 +258,13 @@ abstract class LP_Abstract_Course {
 	 * @return bool
 	 */
 	public function is_required_enroll() {
+
 		if ( func_get_args() ) {
 			$required = $this->required_enroll == func_get_arg( 0 );
 		} else {
-			$required = $this->required_enroll === 'yes' || $this->required_enroll == 1;
+			$required = $this->required_enroll !== 'no';
 		}
-		$required = $required || ( $this->payment == 'yes' || $this->payment == 1 );
-		//$is_require = empty( $is_require ) || ( $is_require == 'yes' ) ? true : false;
-		///return apply_filters( 'learn_press_is_require_enrollment', $is_require, $this );
+		$required = $required || ( $this->payment == 'yes' );
 
 		return apply_filters( 'learn_press_course_required_enroll', $required, $this );
 	}
@@ -501,7 +494,7 @@ abstract class LP_Abstract_Course {
 	 * @return bool
 	 */
 	public function is_free() {
-		$is_free = ( ( 'no' == $this->payment ) || ( 0 == $this->payment ) || ( 0 >= $this->get_price() ) );
+		$is_free = ( 'no' == $this->payment || ( 0 >= $this->get_price() ) );
 		return apply_filters( 'learn_press_is_free_course', $is_free, $this );
 	}
 
@@ -511,7 +504,7 @@ abstract class LP_Abstract_Course {
 	 */
 	public function get_origin_price() {
 		$price = $this->price;
-		if ( !$price || ( 'no' == $this->payment || 0 == $this->payment ) ) {
+		if ( !$price || 'yes' != $this->payment ) {
 			$price = 0;
 		} else {
 			$price = floatval( $price );
@@ -526,7 +519,7 @@ abstract class LP_Abstract_Course {
 	public function get_sale_price() {
 		$res        = null;
 		$sale_price = get_post_meta( $this->id, '_lp_sale_price', true );
-		if ( ( 'yes' == $this->payment || 1 == $this->payment ) && is_numeric( $sale_price ) ) {
+		if ( 'yes' == $this->payment && is_numeric( $sale_price ) ) {
 			$sale_price = floatval( $sale_price );
 			$start_date = get_post_meta( $this->id, '_lp_sale_start', true );
 			$end_date   = get_post_meta( $this->id, '_lp_sale_end', true );
@@ -547,7 +540,7 @@ abstract class LP_Abstract_Course {
 	 */
 	public function get_price() {
 		$price = $this->price;
-		if ( !$price || ( 'no' == $this->payment || 0 == $this->payment ) ) {
+		if ( !$price || 'yes' != $this->payment ) {
 			$price = 0;
 		} else {
 			$price      = floatval( $price );
@@ -905,7 +898,7 @@ abstract class LP_Abstract_Course {
 	}
 
 	public function need_payment() {
-		return $this->payment == 1;
+		return $this->payment == 'yes';
 	}
 
 	public function has_item( $item_id ) {
