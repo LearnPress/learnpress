@@ -19,9 +19,6 @@ if ( !class_exists( 'RWMB_Yes_No_Field' ) ) {
 		 * @return string
 		 */
 		static function html( $meta, $field ) {
-			echo '<pre>';
-			var_dump( $meta );
-			echo '</pre>';
 			return sprintf(
 				'<input type="checkbox" class="rwmb-yes-no" name="%s" id="%s" value="1" %s>',
 				$field['field_name'],

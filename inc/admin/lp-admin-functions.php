@@ -686,14 +686,14 @@ function learn_press_get_chart_courses( $from = null, $by = null, $time_ago ) {
 	$query = $wpdb->prepare( "
 				SELECT count(c.ID) as c, DATE_FORMAT( c.post_date, %s) as d
 				FROM {$wpdb->posts} c
-				INNER JOIN {$wpdb->postmeta} cm ON cm.post_id = c.ID AND cm.meta_key = %s AND (cm.meta_value = %s OR cm.meta_value = %s )
+				INNER JOIN {$wpdb->postmeta} cm ON cm.post_id = c.ID AND cm.meta_key = %s AND cm.meta_value = %s
 				WHERE 1
 				{$query_where}
 				AND c.post_status = %s AND c.post_type = %s
 				GROUP BY d
 				HAVING d BETWEEN %s AND %s
 				ORDER BY d ASC
-			", $_sql_format, '_lp_payment', 'yes', '1', 'publish', 'lp_course', $_from, $_to );
+			", $_sql_format, '_lp_payment', 'yes', 'publish', 'lp_course', $_from, $_to );
 	if ( $_results = $wpdb->get_results( $query ) ) {
 		foreach ( $_results as $k => $v ) {
 			$results['paid'][$v->d] = $v;

@@ -144,7 +144,6 @@
 
 				///////////
 				var $chkPayment = $('input[name="_lp_payment"]').on('click', function () {
-					// var toggle = this.value != 'yes';
 					var toggle = !($(this).is(':checked'));
 					$('.lp-course-price-field').toggleClass('hide-if-js', toggle).attr('xxx', Math.random());
 					$('.lp-course-required-enroll').toggleClass('hide-if-js', !toggle);
