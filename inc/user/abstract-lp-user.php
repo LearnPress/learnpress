@@ -1431,13 +1431,11 @@ class LP_Abstract_User {
 	}
 
 	public function get_orders( $last_order = true ) {
-		_learn_press_get_user_course_orders( $this->id );
-		$all_orders = LP_Cache::get_user_course_order( false, array() );
-		$my_orders  = !empty( $all_orders[$this->id] ) ? $all_orders[$this->id] : false;
+		$my_orders = _learn_press_get_user_course_orders( $this->id );
 		if ( $last_order && $my_orders ) {
 			$last_orders = array();
 			foreach ( $my_orders as $course_id => $orders ) {
-				$last_orders[$course_id] = array_pop( $orders );
+				$last_orders[$course_id] = reset( $orders );
 			}
 		} else {
 			$last_orders = $my_orders;

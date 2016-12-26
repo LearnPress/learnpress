@@ -12,6 +12,19 @@ if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
+function learn_press_get_post() {
+	global $post;
+	$post_id = !empty( $post ) ? $post->ID : 0;
+	if ( empty( $post_id ) ) {
+		$post_id = learn_press_get_request( 'post' );
+	}
+
+	if ( empty( $post_id ) ) {
+		$post_id = learn_press_get_request( 'post_ID' );
+	}
+	return absint($post_id);
+}
+
 /**
  * Get the LearnPress plugin url
  *
@@ -2697,4 +2710,12 @@ function learn_press_get_students_list_filter() {
 	);
 
 	return apply_filters( 'learn_press_get_students_list_filter', $filter );
+}
+
+
+function learn_press_debug_hidden(){
+	$args = func_get_args();
+	echo '<div class="learn-press-debug-hidden" style="display:none;">';
+	call_user_func_array( 'learn_press_debug', $args );
+	echo '</div>';
 }
