@@ -141,11 +141,6 @@ abstract class LP_Abstract_Course {
 					if ( ( $key == 'price' || $key == 'total' ) && get_post_meta( $this->id, '_lp_payment', true ) != 'yes' ) {
 						$value = 0;
 					}
-				/*if ( $key == 'price' ) {
-					if ( is_numeric( $value ) ) {
-						$value = strpos( '.', $value . '' ) !== false ? floatval( $value ) : intval( $value );
-					}
-				}*/
 
 			}
 			if ( !empty( $value ) ) {
@@ -263,14 +258,13 @@ abstract class LP_Abstract_Course {
 	 * @return bool
 	 */
 	public function is_required_enroll() {
+
 		if ( func_get_args() ) {
 			$required = $this->required_enroll == func_get_arg( 0 );
 		} else {
 			$required = $this->required_enroll !== 'no';
 		}
 		$required = $required || ( $this->payment == 'yes' );
-		//$is_require = empty( $is_require ) || ( $is_require == 'yes' ) ? true : false;
-		///return apply_filters( 'learn_press_is_require_enrollment', $is_require, $this );
 
 		return apply_filters( 'learn_press_course_required_enroll', $required, $this );
 	}
@@ -500,7 +494,7 @@ abstract class LP_Abstract_Course {
 	 * @return bool
 	 */
 	public function is_free() {
-		$is_free = ( ( 'no' == $this->payment ) || ( 0 >= $this->get_price() ) );
+		$is_free = ( 'no' == $this->payment || ( 0 >= $this->get_price() ) );
 		return apply_filters( 'learn_press_is_free_course', $is_free, $this );
 	}
 

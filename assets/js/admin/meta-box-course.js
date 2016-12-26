@@ -143,8 +143,8 @@
 				}).filter(":checked").trigger('change');
 
 				///////////
-				var $chkPayment = $('input[name="_lp_payment"]').on('change', function () {
-					var toggle = this.value != 'yes';
+				var $chkPayment = $('input[name="_lp_payment"]').on('click', function () {
+					var toggle = !($(this).is(':checked'));
 					$('.lp-course-price-field').toggleClass('hide-if-js', toggle).attr('xxx', Math.random());
 					$('.lp-course-required-enroll').toggleClass('hide-if-js', !toggle);
 					if (toggle) {
@@ -300,22 +300,22 @@
 					return this.checked
 				}).length )
 					? (
-					$checkbox.closest('.curriculum-section-content')
+						$checkbox.closest('.curriculum-section-content')
+							.find('.item-bulk-actions button')
+							.removeAttr('disabled')
+							.removeClass('hide-if-js')
+							.map(function () {
+								var $b = $(this);
+								$b.attr('data-action') == 'cancel' ? $b.removeClass('hide-if-js') : $b.html($b.attr('data-title') + ' (+' + len + ')').show()
+							})
+					)
+					: $checkbox.closest('.curriculum-section-content')
 						.find('.item-bulk-actions button')
-						.removeAttr('disabled')
-						.removeClass('hide-if-js')
+						.hide()
 						.map(function () {
 							var $b = $(this);
-							$b.attr('data-action') == 'cancel' ? $b.removeClass('hide-if-js') : $b.html($b.attr('data-title') + ' (+' + len + ')').show()
-						})
-				)
-					: $checkbox.closest('.curriculum-section-content')
-					.find('.item-bulk-actions button')
-					.hide()
-					.map(function () {
-						var $b = $(this);
-						$b.attr('data-action') == 'cancel' ? $b.hide() : $b.html($b.attr('data-title')).hide()
-					});
+							$b.attr('data-action') == 'cancel' ? $b.hide() : $b.html($b.attr('data-title')).hide()
+						});
 				$checkbox.closest('.lp-section-item').toggleClass('remove', e.target.checked);
 				if (len == $all.length) {
 					$checkAll.attr('checked', 'checked')
@@ -1493,6 +1493,7 @@
 			$tab.parent().addClass('active').siblings().removeClass('active');
 			url = url.removeQueryVar('tab').addQueryVar('tab', id);
 			LP.setUrl(url);
+			$('#course-tab').val(id);
 			$(window).trigger('scroll');
 			return false;
 		})

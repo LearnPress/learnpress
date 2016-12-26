@@ -705,10 +705,10 @@ lprHook.addAction('lpr_admin_quiz_question_html', _lprAdminQuestionHTML);
 			if (form.length == 0) {
 				form = $(wp.template('form-quick-add-lesson-link')()).css({zIndex: 99999}).appendTo($body);
 				$('select', form).select2({
-						width            : 300,
-						containerCssClass: 'lpr-container-dropdown',
-						dropdownCssClass : 'lpr-select-dropdown'
-					})
+					width            : 300,
+					containerCssClass: 'lpr-container-dropdown',
+					dropdownCssClass : 'lpr-select-dropdown'
+				})
 					.on('select2-close', function () {
 						$('#form-quick-add-lesson-link').hide();
 						tinyMCE.activeEditor.focus();
@@ -886,32 +886,78 @@ jQuery(document).ready(function ($) {
 		return false;
 	});
 
-    $(document).on('click', '.learnpress-dismiss-notice', function (event) {
 
-        var $parent = $(this).closest('.learnpress-search-notices');
+	$(document).on('click', '.learnpress-dismiss-notice', function (event) {
 
-        if ($parent.length) {
+		var $parent = $(this).closest('.learnpress-search-notices');
 
-            event.preventDefault();
+		if ($parent.length) {
 
-            var slug = $parent.data('postType'),
-                user = $parent.data('user');
+			event.preventDefault();
 
-            $.ajax({
-                url: ajaxurl,
-                type: 'POST',
-                data: {
-                    action: 'learnpress_remove_notice_popup',
-                    slug: slug,
-                    user: user
-                },
-                complete: function (response) {
-                    $parent.remove();
-                    console.log('Dismiss Notice');
-                }
+			var slug = $parent.data('postType'),
+				user = $parent.data('user');
 
-            })
-        }
-    });
 
+			$.ajax({
+				url     : ajaxurl,
+				type    : 'POST',
+				data    : {
+					action: 'learnpress_remove_notice_popup',
+					slug  : slug,
+					user  : user
+				},
+				complete: function (response) {
+					$parent.remove();
+					console.log('Dismiss Notice');
+				}
+
+			})
+		}
+	});
+
+	/* Search Addon & Theme */
+	var $wrapAddon 	= $('#learn-press-add-ons-wrap'),
+		$addOnClone = $wrapAddon.clone(true);
+
+	$wrapAddon.data('addOnClone', $addOnClone);
+    $wrapAddon.on('keydown change', '.lp-search-addon', function (event) {
+
+		var $this = $(this);
+
+		setTimeout ( function () {
+
+            var txt 			= $this.val(),
+				$clone 			= $wrapAddon.data('addOnClone').clone(true),
+                $wrapFreeAddon 	= $('.learnpress-free-plugin-wrap', $clone),
+                $wrapPremium 	= $('.learnpress-premium-plugin-wrap', $clone);
+
+            txt = txt.trim().toUpperCase();
+
+            $('.plugin-card-learnpress', $clone).each( function (index, item) {
+
+            	var $that = $(this),
+					title;
+
+            	if ( $('.theme-title > a', this).length ) { // Get title in tab Related Themes
+					title = $('.theme-title > a', this).text();
+				}
+				else if ( $('.plugin-card-top .column-name h3', this) ) { // Get title in tab Instaled & Plugin
+            		title = $('.plugin-card-top .column-name h3', this).text();
+				}
+				title = title.trim().toUpperCase();
+
+            	if ( txt != '' && title.indexOf(txt) == -1) {
+					$that.remove();
+				}
+			});
+
+            $('.learnpress-count-addon', $wrapFreeAddon).text($('.plugin-card-learnpress:not(.lp-addon-hidden)', $wrapFreeAddon).length);
+            $('.learnpress-count-addon', $wrapPremium).text($('.plugin-card-learnpress:not(.lp-addon-hidden)', $wrapPremium).length);
+
+            $('> .learn-press-add-ons', $wrapAddon).remove();
+            $wrapAddon.append($('> .learn-press-add-ons', $clone));
+
+        }, 100);
+	});
 })(jQuery);

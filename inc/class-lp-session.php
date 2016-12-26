@@ -93,8 +93,9 @@ class LP_Session {
 			if ( !empty( $content['items'] ) ) {
 				$total = 0;
 				foreach ( $content['items'] as $id => $data ) {
-					$price = get_post_meta( $data['item_id'], '_lp_price', true );
-					if ( get_post_meta( $data['item_id'], '_lp_payment', true ) != 'yes' || !$price ) {
+					$price   = get_post_meta( $data['item_id'], '_lp_price', true );
+					$payment = get_post_meta( $data['item_id'], '_lp_payment', true );
+					if ( $payment != 'yes' || !$price ) {
 						$price = 0;
 					}
 					$content['items'][$id]['subtotal'] = $content['items'][$id]['total'] = $data['quantity'] * $price;

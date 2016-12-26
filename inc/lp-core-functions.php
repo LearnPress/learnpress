@@ -2573,8 +2573,8 @@ if ( !function_exists( 'lp_warning_message_settings' ) ) {
 
 				if ( empty( $item_transient ) && ( empty( $item_page_id ) || empty( $item_page ) ) ) {
 
-                    $count ++;
-                    $admin_bar->add_menu( array(
+					$count ++;
+					$admin_bar->add_menu( array(
 						'id'     => $arg['id'],
 						'parent' => 'lp-admin-warning',
 						'title'  => $arg['title'] . '<span class="lp-hide-warning" title="' . __( 'Hidden', 'learnpress' ) . '">x</span>',
@@ -2584,7 +2584,7 @@ if ( !function_exists( 'lp_warning_message_settings' ) ) {
 							'class' => $arg['id']
 						)
 					) );
-                }
+				}
 			}
 
 			/* Add Admin Menu */
