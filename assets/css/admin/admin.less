@@ -381,6 +381,21 @@ li.quiz, li.lesson, li.quick_lesson, li.quick_quiz {
 
 .learn-press-add-ons {
     margin: 20px 0 0;
+
+    .lp-addon-hidden {
+        display: none !important;
+    }
+    .lp-active:nth-of-type(2n+1) {
+        clear: none;
+        margin-right: 0;
+        margin-left: 8px;
+    }
+    .lp-active:nth-of-type(2n) {
+        clear: both;
+        margin-right: 8px;
+        margin-left: 0;
+    }
+
     &.learnpress-premium-plugin {
 
         .column-description {

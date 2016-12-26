@@ -332,6 +332,19 @@ li.quick_quiz {
 .learn-press-add-ons {
   margin: 20px 0 0;
 }
+.learn-press-add-ons .lp-addon-hidden {
+  display: none !important;
+}
+.learn-press-add-ons .lp-active:nth-of-type(2n+1) {
+  clear: none;
+  margin-right: 0;
+  margin-left: 8px;
+}
+.learn-press-add-ons .lp-active:nth-of-type(2n) {
+  clear: both;
+  margin-right: 8px;
+  margin-left: 0;
+}
 .learn-press-add-ons.learnpress-premium-plugin .column-description {
   overflow: hidden;
   text-overflow: ellipsis;

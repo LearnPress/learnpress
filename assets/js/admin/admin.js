@@ -916,4 +916,48 @@ jQuery(document).ready(function ($) {
 		}
 	});
 
+	/* Search Addon & Theme */
+	var $wrapAddon 	= $('#learn-press-add-ons-wrap'),
+		$addOnClone = $wrapAddon.clone(true);
+
+	$wrapAddon.data('addOnClone', $addOnClone);
+    $wrapAddon.on('keydown change', '.lp-search-addon', function (event) {
+
+		var $this = $(this);
+
+		setTimeout ( function () {
+
+            var txt 			= $this.val(),
+				$clone 			= $wrapAddon.data('addOnClone').clone(true),
+                $wrapFreeAddon 	= $('.learnpress-free-plugin-wrap', $clone),
+                $wrapPremium 	= $('.learnpress-premium-plugin-wrap', $clone);
+
+            txt = txt.trim().toUpperCase();
+
+            $('.plugin-card-learnpress', $clone).each( function (index, item) {
+
+            	var $that = $(this),
+					title;
+
+            	if ( $('.theme-title > a', this).length ) { // Get title in tab Related Themes
+					title = $('.theme-title > a', this).text();
+				}
+				else if ( $('.plugin-card-top .column-name h3', this) ) { // Get title in tab Instaled & Plugin
+            		title = $('.plugin-card-top .column-name h3', this).text();
+				}
+				title = title.trim().toUpperCase();
+
+            	if ( txt != '' && title.indexOf(txt) == -1) {
+					$that.remove();
+				}
+			});
+
+            $('.learnpress-count-addon', $wrapFreeAddon).text($('.plugin-card-learnpress:not(.lp-addon-hidden)', $wrapFreeAddon).length);
+            $('.learnpress-count-addon', $wrapPremium).text($('.plugin-card-learnpress:not(.lp-addon-hidden)', $wrapPremium).length);
+
+            $('> .learn-press-add-ons', $wrapAddon).remove();
+            $wrapAddon.append($('> .learn-press-add-ons', $clone));
+
+        }, 100);
+	});
 })(jQuery);

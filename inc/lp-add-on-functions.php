@@ -560,7 +560,7 @@ function learn_press_add_ons_content_tab_related_themes($current) {
     $related_themes = learn_press_get_relate_theme();
     $time           = get_option( '_transient_timeout_lp_addon_related_themes' );
     $description    = __( 'All add-ons we provide.', 'learnpress' );
-    $description   .= ' ' . sprintf( __( 'Last checked %s ago', 'learnpress' ), human_time_diff( $time - LP_ADD_ON_TRANSIENT_TIME ) );
+    $description   .= ' ' . sprintf( __( 'Last checked %s ago', 'learnpress' ), human_time_diff( $time - 24 * LP_ADD_ON_TRANSIENT_TIME ) );
     $description   .= ' ' . sprintf( __( '<a href="%s">%s</a>' ), admin_url( 'admin.php?page=learn-press-addons&tab=related_themes&check=' . wp_create_nonce( 'lp_check_related_themes' ) ), __( 'Check again!', 'learnpress' ) );
     learn_press_add_on_tab_description( $description );
     learn_press_output_related_themes_list( $related_themes, $current );
@@ -591,7 +591,7 @@ function learn_press_get_count_theme() {
         if (!empty($response) && !empty($response['new-files-from-user'])) {
             $list_theme = $response['new-files-from-user'];
 
-            set_transient('lp_addon_related_themes', $list_theme, LP_ADD_ON_TRANSIENT_TIME);
+            set_transient('lp_addon_related_themes', $list_theme, 24 * LP_ADD_ON_TRANSIENT_TIME);
 
             return $list_theme;
 
@@ -781,7 +781,7 @@ function learn_press_output_add_ons_all_plugins( $plugins, $tab = '' ) {
             $sort_plugins[$key] = $plugins['free'][$key];
         }
         ?>
-        <li>
+        <li class="learnpress-free-plugin-wrap">
             <?php learn_press_output_add_ons_list( $sort_plugins , 'learnpress-free-plugin'); ?>
         </li>
         <?php
@@ -790,7 +790,7 @@ function learn_press_output_add_ons_all_plugins( $plugins, $tab = '' ) {
     // Render Premium Plugins
     if ( !empty( $plugins['premium'] ) ) {
         ?>
-        <li>
+        <li class="learnpress-premium-plugin-wrap">
             <?php learn_press_output_premium_add_ons_list( $plugins['premium'] , 'learnpress-premium-plugin' ); ?>
         </li>
         <?php
@@ -802,7 +802,7 @@ function learn_press_output_add_ons_all_plugins( $plugins, $tab = '' ) {
 function learn_press_output_add_ons_list( $add_ons, $tab = '' ) {
 
     if ($tab === 'learnpress-free-plugin') {
-        echo '<h2>'. __('Free Plugins', 'learnpress') .' ('. sizeof($add_ons) .') </h2>';
+        echo '<h2>'. __('Free Plugins', 'learnpress') .' (<span class="learnpress-count-addon">'. sizeof($add_ons) .'</span>) </h2>';
     }
     echo '<ul class="learn-press-add-ons widefat ' . $tab . '">';
     foreach ( $add_ons as $file => $add_on ) {
@@ -881,7 +881,7 @@ function learn_press_output_add_ons_list( $add_ons, $tab = '' ) {
 
 function learn_press_output_premium_add_ons_list($add_ons, $tab = '') {
 
-    echo '<h2>'. __('Premium Plugins', 'learnpress') .' ('. sizeof($add_ons) .') </h2>';
+    echo '<h2>'. __('Premium Plugins', 'learnpress') .' (<span class="learnpress-count-addon">'. sizeof($add_ons) .'</span>) </h2>';
     echo '<ul class="learn-press-add-ons widefat ' . $tab . '">';
     foreach ( $add_ons as $file => $add_on ) {
         $add_on['permarklink'] .= '?ref=ThimPress&utm_source=lp-backend&utm_medium=lp-addondashboard';
