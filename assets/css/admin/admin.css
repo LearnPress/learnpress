@@ -320,10 +320,7 @@ li.quick_quiz {
   text-decoration: none;
   content: attr(data-text-disable);
 }
-.learn-press-add-ons {
-  margin: 20px 0 0;
-}
-.learn-press-add-ons .lp-search-addon {
+.lp-search-addon {
   margin: 0;
   width: 280px;
   font-size: 16px;
@@ -331,6 +328,9 @@ li.quick_quiz {
   line-height: 1.5;
   padding: 3px 5px;
   height: 32px;
+}
+.learn-press-add-ons {
+  margin: 20px 0 0;
 }
 .learn-press-add-ons.learnpress-premium-plugin .column-description {
   overflow: hidden;
