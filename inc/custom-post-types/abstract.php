@@ -248,7 +248,7 @@ abstract class LP_Abstract_Post_Type {
 
 	public function add_meta_boxes() {
 		do_action( 'learn_press_add_meta_boxes', $this->_post_type, $this );
-		do_action( "learn_press_{$this->_post_type}add_meta_boxes", $this );
+		do_action( "learn_press_{$this->_post_type}_add_meta_boxes", $this );
 		if ( !$this->_meta_boxes ) {
 			return;
 		}

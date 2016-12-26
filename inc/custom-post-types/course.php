@@ -39,6 +39,8 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			add_action( 'load-post.php', array( $this, 'post_actions' ) );
 			add_action( 'init', array( $this, 'register_taxonomy' ) );
 			add_action( 'init', array( $this, 'init_course' ) );
+
+			add_filter( 'get_edit_post_link', array( $this, 'add_course_tab_arg' ) );
 			if ( self::$_enable_review ) {
 				add_action( 'post_submitbox_start', array( $this, 'post_review_message_box' ) );
 			}
@@ -51,6 +53,13 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 				add_action( 'admin_print_scripts', array( $this, 'course_editor' ) );
 			}
 
+		}
+
+		public function add_course_tab_arg( $m ) {
+			if ( array_key_exists( '_lp_curriculum', $_POST ) && !empty( $_POST['course-tab'] ) ) {
+				$m = add_query_arg( 'tab', $_POST['course-tab'], $m );
+			}
+			return $m;
 		}
 
 		/**
@@ -137,6 +146,8 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						<a href="<?php echo add_query_arg( 'switch-course-tabs', 'off', get_edit_post_link() ); ?>"><?php _e( 'Switch to meta boxes', 'learnpress' ); ?></a>
 					</li>
 				</ul>
+				<input type="hidden" id="course-tab" name="course-tab" value="<?php echo !empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : ''; ?>" />
+
 				<?php
 			} else {
 				if ( learn_press_get_user_option( 'hide-notice-switch-course-tabs' ) != 'yes' ) {

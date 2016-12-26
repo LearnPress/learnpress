@@ -1493,6 +1493,7 @@
 			$tab.parent().addClass('active').siblings().removeClass('active');
 			url = url.removeQueryVar('tab').addQueryVar('tab', id);
 			LP.setUrl(url);
+			$('#course-tab').val(id);
 			$(window).trigger('scroll');
 			return false;
 		})

@@ -697,7 +697,7 @@ class LP_Abstract_User {
 				$item_statuses[$key] = false;
 				if ( $rows = $wpdb->get_results( $query ) ) {
 					foreach ( $rows as $row ) {
-						$item_statuses[$this->id . '-' . $course_id . '-' . $row->item_id] = learn_press_validate_item_status($row);
+						$item_statuses[$this->id . '-' . $course_id . '-' . $row->item_id] = learn_press_validate_item_status( $row );
 					}
 				}
 			}
@@ -1430,14 +1430,19 @@ class LP_Abstract_User {
 		}
 	}
 
+	/**
+	 * Get last order of an user of all courses
+	 *
+	 * @param bool $last_order
+	 *
+	 * @return array
+	 */
 	public function get_orders( $last_order = true ) {
-		_learn_press_get_user_course_orders( $this->id );
-		$all_orders = LP_Cache::get_user_course_order( false, array() );
-		$my_orders  = !empty( $all_orders[$this->id] ) ? $all_orders[$this->id] : false;
+		$my_orders = _learn_press_get_user_course_orders( $this->id );
 		if ( $last_order && $my_orders ) {
 			$last_orders = array();
 			foreach ( $my_orders as $course_id => $orders ) {
-				$last_orders[$course_id] = array_pop( $orders );
+				$last_orders[$course_id] = reset( $orders );
 			}
 		} else {
 			$last_orders = $my_orders;
@@ -2050,7 +2055,6 @@ class LP_Abstract_User {
 		}
 		return apply_filters( 'learn_press_evaluate_quiz_results', $results, $quiz_id, $this->id );
 	}
-
 
 
 	/**
@@ -2783,7 +2787,7 @@ class LP_Abstract_User {
 				$profile_picture = $pi['filename'] . '-thumb' . '.' . $pi['extension'];
 			}
 			$file_path = $upload['basedir'] . DIRECTORY_SEPARATOR . 'learn-press-profile' . DIRECTORY_SEPARATOR . $user_id . DIRECTORY_SEPARATOR . $profile_picture;
-			
+
 			if ( file_exists( $file_path ) ) {
 				$this->uploaded_profile_src = $upload['baseurl'] . '/learn-press-profile/' . $user_id . '/' . $profile_picture;
 			} else {
@@ -2799,7 +2803,7 @@ class LP_Abstract_User {
 	 *
 	 * @return false|string
 	 */
-	public function get_profile_picture( $type = '', $size =96 ) {
+	public function get_profile_picture( $type = '', $size = 96 ) {
 		if ( empty( $type ) ) {
 			$type = $this->profile_picture_type;
 		}
@@ -2807,9 +2811,9 @@ class LP_Abstract_User {
 			if ( $profile_picture_src = $this->get_upload_profile_src( $size ) ) {
 				$this->profile_picture_src = $profile_picture_src;
 			}
-			$avatar = get_avatar( $this->id, $size, '', '', array('gravatar'=>false) );
-		} else{
-			$avatar = get_avatar( $this->id, $size, '', '', array('gravatar'=>true) );
+			$avatar = get_avatar( $this->id, $size, '', '', array( 'gravatar' => false ) );
+		} else {
+			$avatar = get_avatar( $this->id, $size, '', '', array( 'gravatar' => true ) );
 		}
 		return $avatar;
 	}
