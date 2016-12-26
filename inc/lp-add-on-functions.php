@@ -92,7 +92,7 @@ function learn_press_get_add_on_tabs() {
             'url'   => ''
         ),
         'all_plugins'       => array(
-            'text'  => sprintf( __( 'Plugins <span class="count">(%s)</span>', 'learnpress' ), $counts['all_plugins'] ),
+            'text'  => sprintf( __( 'Add-ons <span class="count">(%s)</span>', 'learnpress' ), $counts['all_plugins'] ),
             'class' => '',
             'url'   => ''
         ),
@@ -802,7 +802,7 @@ function learn_press_output_add_ons_all_plugins( $plugins, $tab = '' ) {
 function learn_press_output_add_ons_list( $add_ons, $tab = '' ) {
 
     if ($tab === 'learnpress-free-plugin') {
-        echo '<h2>'. __('Free Plugins', 'learnpress') .' (<span class="learnpress-count-addon">'. sizeof($add_ons) .'</span>) </h2>';
+        echo '<h2>'. __('Free Add-ons', 'learnpress') .' (<span class="learnpress-count-addon">'. sizeof($add_ons) .'</span>) </h2>';
     }
     echo '<ul class="learn-press-add-ons widefat ' . $tab . '">';
     foreach ( $add_ons as $file => $add_on ) {
@@ -881,7 +881,7 @@ function learn_press_output_add_ons_list( $add_ons, $tab = '' ) {
 
 function learn_press_output_premium_add_ons_list($add_ons, $tab = '') {
 
-    echo '<h2>'. __('Premium Plugins', 'learnpress') .' (<span class="learnpress-count-addon">'. sizeof($add_ons) .'</span>) </h2>';
+    echo '<h2>'. __('Premium Add-ons', 'learnpress') .' (<span class="learnpress-count-addon">'. sizeof($add_ons) .'</span>) </h2>';
     echo '<ul class="learn-press-add-ons widefat ' . $tab . '">';
     foreach ( $add_ons as $file => $add_on ) {
         $add_on['permarklink'] .= '?ref=ThimPress&utm_source=lp-backend&utm_medium=lp-addondashboard';
