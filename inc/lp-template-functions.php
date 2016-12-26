@@ -1314,8 +1314,6 @@ if ( !function_exists( 'learn_press_404_page' ) ) {
 		}
 		$wp_query->set_404();
 		status_header( 404 );
-		get_template_part( 404 );
-		exit();
 	}
 }
 
@@ -1328,7 +1326,7 @@ if ( !function_exists( 'learn_press_course_curriculum_popup' ) ) {
 
 if ( !function_exists( 'learn_press_generate_template_information' ) ) {
 	function learn_press_generate_template_information( $template_name, $template_path, $located, $args ) {
-		$debug = learn_press_get_request( 'debug' );
+		$debug = learn_press_get_request( 'show-template-location' );
 		if ( $debug == 'on' ) {
 			echo "<!-- Template Location:" . str_replace( array( LP_PLUGIN_PATH, ABSPATH ), '', $located ) . " -->";
 		}
@@ -1384,20 +1382,20 @@ if ( !function_exists( 'learn_press_item_meta_type' ) ) {
 
 		<?php if ( $item->post_type == 'lp_quiz' ) { ?>
 
-            <span class="lp-label lp-label-quiz"><?php _e( 'Quiz', 'learnpress' ); ?></span>
+			<span class="lp-label lp-label-quiz"><?php _e( 'Quiz', 'learnpress' ); ?></span>
 
 			<?php if ( $course->final_quiz == $item->ID ) { ?>
 
-                <span class="lp-label lp-label-final"><?php _e( 'Final', 'learnpress' ); ?></span>
+				<span class="lp-label lp-label-final"><?php _e( 'Final', 'learnpress' ); ?></span>
 
 			<?php } ?>
 
 		<?php } elseif ( $item->post_type == 'lp_lesson' ) { ?>
 
-            <span class="lp-label lp-label-lesson"><?php _e( 'Lesson', 'learnpress' ); ?></span>
+			<span class="lp-label lp-label-lesson"><?php _e( 'Lesson', 'learnpress' ); ?></span>
 			<?php if ( get_post_meta( $item->ID, '_lp_preview', true ) == 'yes' ) { ?>
 
-                <span class="lp-label lp-label-preview"><?php _e( 'Preview', 'learnpress' ); ?></span>
+				<span class="lp-label lp-label-preview"><?php _e( 'Preview', 'learnpress' ); ?></span>
 
 			<?php } ?>
 
