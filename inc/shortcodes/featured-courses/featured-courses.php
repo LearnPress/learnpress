@@ -114,7 +114,7 @@ if ( !class_exists( 'LP_Featured_Courses_Shortcode' ) ) {
 					'_lp_featured',
 					LP_COURSE_CPT,
 					'publish',
-					'1',
+					'yes',
 					(int) $a['limit']
 				)
 			);

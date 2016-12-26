@@ -705,10 +705,10 @@ lprHook.addAction('lpr_admin_quiz_question_html', _lprAdminQuestionHTML);
 			if (form.length == 0) {
 				form = $(wp.template('form-quick-add-lesson-link')()).css({zIndex: 99999}).appendTo($body);
 				$('select', form).select2({
-						width            : 300,
-						containerCssClass: 'lpr-container-dropdown',
-						dropdownCssClass : 'lpr-select-dropdown'
-					})
+					width            : 300,
+					containerCssClass: 'lpr-container-dropdown',
+					dropdownCssClass : 'lpr-select-dropdown'
+				})
 					.on('select2-close', function () {
 						$('#form-quick-add-lesson-link').hide();
 						tinyMCE.activeEditor.focus();
@@ -886,32 +886,34 @@ jQuery(document).ready(function ($) {
 		return false;
 	});
 
-    $(document).on('click', '.learnpress-dismiss-notice', function (event) {
 
-        var $parent = $(this).closest('.learnpress-search-notices');
+	$(document).on('click', '.learnpress-dismiss-notice', function (event) {
 
-        if ($parent.length) {
+		var $parent = $(this).closest('.learnpress-search-notices');
 
-            event.preventDefault();
+		if ($parent.length) {
 
-            var slug = $parent.data('postType'),
-                user = $parent.data('user');
+			event.preventDefault();
 
-            $.ajax({
-                url: ajaxurl,
-                type: 'POST',
-                data: {
-                    action: 'learnpress_remove_notice_popup',
-                    slug: slug,
-                    user: user
-                },
-                complete: function (response) {
-                    $parent.remove();
-                    console.log('Dismiss Notice');
-                }
+			var slug = $parent.data('postType'),
+				user = $parent.data('user');
 
-            })
-        }
-    });
+
+			$.ajax({
+				url     : ajaxurl,
+				type    : 'POST',
+				data    : {
+					action: 'learnpress_remove_notice_popup',
+					slug  : slug,
+					user  : user
+				},
+				complete: function (response) {
+					$parent.remove();
+					console.log('Dismiss Notice');
+				}
+
+			})
+		}
+	});
 
 })(jQuery);

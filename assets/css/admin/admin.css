@@ -323,6 +323,28 @@ li.quick_quiz {
 .learn-press-add-ons {
   margin: 20px 0 0;
 }
+.learn-press-add-ons .lp-search-addon {
+  margin: 0;
+  width: 280px;
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 1.5;
+  padding: 3px 5px;
+  height: 32px;
+}
+.learn-press-add-ons.learnpress-premium-plugin .column-description {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  line-height: 1.6em;
+  max-height: 6.4em;
+}
+.learn-press-add-ons.learnpress-premium-plugin .column-description p {
+  margin: 0;
+  line-height: inherit;
+}
 .learn-press-add-ons:after {
   display: block;
   clear: both;
@@ -1560,4 +1582,9 @@ input.regular-text[id^="learn-press-emails"] {
 }
 .rwmb-quiz_questions-wrapper #learn-press-list-questions .quiz-question .quiz-question-content {
   padding: 0 20px;
+}
+.post-type-lp_quiz #general-settings a {
+  font-size: 14px;
+  font-weight: 400;
+  margin-left: 10px;
 }

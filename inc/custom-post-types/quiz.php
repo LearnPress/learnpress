@@ -138,8 +138,8 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 				)
 			);
 			$GLOBALS['learn_press_quiz_question_meta_box'] = new RW_Meta_Box( $meta_box );
-			$post_id = learn_press_get_request('post');
-			$duration_type = get_post_meta($post_id,"{$prefix}duration_type", true);
+			$post_id                                       = learn_press_get_request( 'post' );
+			$duration_type                                 = get_post_meta( $post_id, "{$prefix}duration_type", true );
 			new RW_Meta_Box(
 				apply_filters( 'learn_press_quiz_general_meta_box', array(
 						'title'      => __( 'General Settings', 'learnpress' ),
@@ -154,25 +154,12 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 								'id'      => "{$prefix}show_hide_question",
 								'type'    => 'radio',
 								'options' => array(
-									'global' => __( 'Global Setting', 'learnpress' ),
+									'global' => __( wp_kses( 'Global Setting <a target="_blank" href="' . admin_url( 'admin.php?page=learn-press-settings&tab=courses' ) . '">Go to the setting</a>', array( 'a' => array( 'href' => array(), 'target' => array() ) ) ), 'learnpress' ),
 									'show'   => __( 'Show', 'learnpress' ),
 									'hide'   => __( 'Hide', 'learnpress' )
 								),
 								'std'     => 'global'
 							),
-//							array(
-//								'name'         => __( 'Duration Type', 'learnpress' ),
-//								'desc'         => __( 'Duration of the quiz. Set 0 to disable.', 'learnpress' ),
-//								'id'           => "{$prefix}duration_type",
-//								'class'		   => 'lp_input_duration_type',
-//								'type'         => 'radio',//'number',
-//								'std'          => 10,
-//								'options' => array(
-//									'none' => __('None', 'learnpress'),
-//									'quiz_duration' => __("Quiz duration", 'learnpress'),
-//									'questions_duration' => __("Questions duration ", 'learnpress'),
-//								),
-//							),
 							array(
 								'name'         => __( 'Duration', 'learnpress' ),
 								'desc'         => __( 'Duration of the quiz. Set 0 to disable.', 'learnpress' ),
@@ -181,9 +168,6 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 								'default_time' => 'minute',
 								'min'          => 0,
 								'std'          => 10,
-//								'visible' => array("{$prefix}duration_type", 'quiz_duration'),
-//								'hidden' => array("{$prefix}duration_type", '!=', 'quiz_duration'),
-//								'class' => "{$prefix}duration_type {$prefix}duration_type_quiz_duration".('quiz_duration'!==$duration_type?' hide':''),
 							),
 							array(
 								'name'    => __( 'Passing Grade Type', 'learnpress' ),
@@ -215,31 +199,23 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 								'std'  => 0
 							),
 							array(
-								'name'    => __( 'Show correct answer', 'learnpress' ),
-								'id'      => "{$prefix}show_result",
-								'type'    => 'radio',
-								'desc'    => __( 'Show the correct answer in result of the quiz.', 'learnpress' ),
-								'options' => array(
-									'no'  => __( 'No', 'learnpress' ),
-									'yes' => __( 'Yes', 'learnpress' )
-								),
-								'std'     => 'no'
+								'name' => __( 'Show correct answer', 'learnpress' ),
+								'id'   => "{$prefix}show_result",
+								'type' => 'yes_no',
+								'desc' => __( 'Show the correct answer in result of the quiz.', 'learnpress' ),
+								'std'  => 'no'
 							),
 							array(
-								'name'    => __( 'Show check answer', 'learnpress' ),
-								'id'      => "{$prefix}show_check_answer",
-								'type'    => 'radio',
-								'desc'    => __( 'Show button to check answer while doing quiz.', 'learnpress' ),
-								'options' => array(
-									'no'  => __( 'No', 'learnpress' ),
-									'yes' => __( 'Yes', 'learnpress' )
-								),
-								'std'     => 'no'
+								'name' => __( 'Show check answer', 'learnpress' ),
+								'id'   => "{$prefix}show_check_answer",
+								'type' => 'yes_no',
+								'desc' => __( 'Show button to check answer while doing quiz.', 'learnpress' ),
+								'std'  => 'no'
 							),
 							array(
 								'name'    => __( 'Show hint', 'learnpress' ),
 								'id'      => "{$prefix}show_hint",
-								'type'    => 'radio',
+								'type'    => 'yes_no',
 								'desc'    => __( 'Show button to hint answer while doing quiz.', 'learnpress' ),
 								'options' => array(
 									'no'  => __( 'No', 'learnpress' ),
@@ -250,7 +226,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 							array(
 								'name'    => __( 'Show explanation', 'learnpress' ),
 								'id'      => "{$prefix}show_explanation",
-								'type'    => 'radio',
+								'type'    => 'yes_no',
 								'desc'    => __( 'Show explanation of question after user checking answer.', 'learnpress' ),
 								'options' => array(
 									'no'  => __( 'No', 'learnpress' ),
@@ -269,7 +245,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 			if ( LP_QUIZ_CPT != get_post_type() ) return;
 			ob_start();
 			?>
-			<script>
+            <script>
 				var form = $('#post');
 
 				form.submit(function (evt) {
@@ -282,7 +258,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 						is_error = true;
 					}
 
-					/* hook */
+                    /* hook */
 					is_error = form.triggerHandler('learn_press_question_before_update') === false;
 
 					if (window.learn_press_before_update_quiz_message.length /*true == is_error*/) {
@@ -293,7 +269,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 						return false;
 					}
 				});
-			</script>
+            </script>
 			<?php
 			$script = ob_get_clean();
 			$script = preg_replace( '!</?script>!', '', $script );
@@ -301,21 +277,21 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 
 			ob_start();
 			?>
-			<script type="text/html" id="tmpl-form-quick-add-question">
-				<div id="lpr-form-quick-add-question" class="lpr-quick-add-form">
-					<input type="text">
-					<select class="lpr-question-types lpr-select2" name="lpr_question[type]" id="lpr-quiz-question-type">
+            <script type="text/html" id="tmpl-form-quick-add-question">
+                <div id="lpr-form-quick-add-question" class="lpr-quick-add-form">
+                    <input type="text">
+                    <select class="lpr-question-types lpr-select2" name="lpr_question[type]" id="lpr-quiz-question-type">
 						<?php if ( $questions = learn_press_question_types() ): ?>
 							<?php foreach ( $questions as $type => $name ): ?>
-								<option value="<?php echo $type; ?>"><?php echo $name; ?></option>
+                                <option value="<?php echo $type; ?>"><?php echo $name; ?></option>
 							<?php endforeach; ?>
 						<?php endif; ?>
-					</select>
-					<button class="button" data-action="add" type="button"><?php _e( 'Add [Enter]', 'learnpress' ); ?></button>
-					<button data-action="cancel" class="button" type="button"><?php _e( 'Cancel [ESC]', 'learnpress' ); ?></button>
-					<span class="lpr-ajaxload">...</span>
-				</div>
-			</script>
+                    </select>
+                    <button class="button" data-action="add" type="button"><?php _e( 'Add [Enter]', 'learnpress' ); ?></button>
+                    <button data-action="cancel" class="button" type="button"><?php _e( 'Cancel [ESC]', 'learnpress' ); ?></button>
+                    <span class="lpr-ajaxload">...</span>
+                </div>
+            </script>
 			<?php
 			$js_template = ob_get_clean();
 			learn_press_enqueue_script( $js_template, true );
@@ -336,7 +312,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 				$columns = array_merge(
 					array_slice( $columns, 0, $pos + 1 ),
 					array(
-					    'author'          => __( 'Author', 'learnpress' ),
+						'author'          => __( 'Author', 'learnpress' ),
 						LP_COURSE_CPT     => __( 'Course', 'learnpress' ),
 						'num_of_question' => __( 'Questions', 'learnpress' ),
 						'duration'        => __( 'Duration', 'learnpress' )
@@ -556,12 +532,12 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 			}
 			if ( $current_screen->id === LP_QUIZ_CPT && !learn_press_get_quiz_course_id( $post->ID ) ) {
 				?>
-				<style type="text/css">
-					#wp-admin-bar-view,
-					#edit-slug-box {
-						display: none;
-					}
-				</style>
+                <style type="text/css">
+                    #wp-admin-bar-view,
+                    #edit-slug-box {
+                        display: none;
+                    }
+                </style>
 				<?php
 			}
 		}

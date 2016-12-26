@@ -121,7 +121,7 @@ class LP_Lesson extends LP_Abstract_Course_Item {
 	}
 
 	public function is_previewable() {
-		return apply_filters( 'learn_press_lesson_preview', $this->preview == 'yes', $this );
+		return apply_filters( 'learn_press_lesson_preview', $this->preview == 1, $this );
 	}
 
 	public function get_settings( $user_id, $course_id ) {
