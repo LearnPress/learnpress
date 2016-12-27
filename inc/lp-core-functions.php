@@ -432,7 +432,7 @@ if ( !function_exists( 'is_ajax' ) ) {
 	 * @return bool
 	 */
 	function is_ajax() {
-		return defined( 'DOING_AJAX' ) && DOING_AJAX;
+		return defined( 'LP_DOING_AJAX' ) && LP_DOING_AJAX;
 	}
 }
 
@@ -1409,7 +1409,7 @@ function learn_press_send_json( $data ) {
 	@header( 'Content-Type: application/json; charset=' . get_option( 'blog_charset' ) );
 	echo wp_json_encode( $data );
 	echo '<!-- LP_AJAX_END -->';
-	if ( defined( 'DOING_AJAX' ) && DOING_AJAX )
+	if ( defined( 'LP_DOING_AJAX' ) && LP_DOING_AJAX )
 		wp_die();
 	else
 		die;
