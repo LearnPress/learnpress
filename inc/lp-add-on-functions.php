@@ -35,7 +35,7 @@ function learn_press_count_add_ons() {
                 break;
 
             case 'related_themes':
-                $count = learn_press_get_count_theme();
+                $count = learn_press_related_theme();
                 $count = sizeof($count);
                 break;
             default:
@@ -557,7 +557,7 @@ function learn_press_get_add_ons_premium() {
 
 function learn_press_add_ons_content_tab_related_themes($current) {
 
-    $related_themes = learn_press_get_relate_theme();
+    $related_themes = get_transient('lp_addon_related_themes');
     $time           = get_option( '_transient_timeout_lp_addon_related_themes' );
     $description    = __( 'All add-ons we provide.', 'learnpress' );
     $description   .= ' ' . sprintf( __( 'Last checked %s ago', 'learnpress' ), human_time_diff( $time - 24 * LP_ADD_ON_TRANSIENT_TIME ) );
@@ -566,18 +566,16 @@ function learn_press_add_ons_content_tab_related_themes($current) {
     learn_press_output_related_themes_list( $related_themes, $current );
 }
 
-function learn_press_get_count_theme() {
-
+function learn_press_related_theme() {
     if ( isset( $_GET['check'] ) && wp_verify_nonce( $_GET['check'], 'lp_check_related_themes' ) ) {
         delete_transient( 'lp_addon_related_themes' );
-        delete_transient( 'learnpress_list_items_detail' );
     }
     $list_theme = get_transient( 'lp_addon_related_themes' );
     if (!empty($list_theme)) {
         return $list_theme;
     }
 
-    $url = 'https://api.envato.com/v1/market/new-files-from-user:thimpress,themeforest.json';
+    $url = 'https://api.envato.com/v1/discovery/search/search/item?site=themeforest.net&username=thimpress';
     $args = array(
         'headers' => array(
             "Authorization" => "Bearer BmYcBsYXlSoVe0FekueDxqNGz2o3JRaP"
@@ -586,10 +584,12 @@ function learn_press_get_count_theme() {
     $response = wp_remote_request( $url, $args );
 
     if (!is_wp_error($response)) {
+
         $response = wp_remote_retrieve_body($response);
         $response = json_decode($response, true);
-        if (!empty($response) && !empty($response['new-files-from-user'])) {
-            $list_theme = $response['new-files-from-user'];
+
+        if (!empty($response) && !empty($response['matches'])) {
+            $list_theme = $response['matches'];
 
             set_transient('lp_addon_related_themes', $list_theme, 24 * LP_ADD_ON_TRANSIENT_TIME);
 
@@ -597,43 +597,6 @@ function learn_press_get_count_theme() {
 
         }
     }
-
-}
-
-function learn_press_get_relate_theme() {
-
-    $list_items_detail = get_transient('learnpress_list_items_detail');
-
-    if (!empty($list_items_detail)) {
-        return $list_items_detail;
-    }
-
-    $list_theme = get_transient('lp_addon_related_themes');
-
-    if (is_array($list_theme)) {
-        $args = array(
-            'headers' => array(
-                "Authorization" => "Bearer BmYcBsYXlSoVe0FekueDxqNGz2o3JRaP"
-            )
-        );
-        foreach ($list_theme as $theme) {
-            $url = 'https://api.envato.com/v3/market/catalog/item?id=' . $theme['id'];
-            $response = wp_remote_request( $url, $args );
-
-            if (!is_wp_error($response)) {
-                $response = wp_remote_retrieve_body($response);
-                $response = json_decode($response, true);
-
-                $list_items_detail[] = $response;
-            }
-
-        }
-        set_transient('learnpress_list_items_detail', $list_items_detail, LP_ADD_ON_TRANSIENT_TIME);
-
-        return $list_items_detail;
-    }
-
-    return array();
 }
 
 function learn_press_get_add_ons_themes() {
@@ -764,6 +727,7 @@ function learn_press_output_add_ons_all_plugins( $plugins, $tab = '' ) {
     if ( $size === 0 ) {
         printf( '<h3>%s</h3>', __( 'No add-on found', 'learnpress' ) );
         return false;
+
     }
 
     echo '<ul class="learn-press-add-ons widefat ' . $tab . '">';
@@ -940,6 +904,43 @@ function learn_press_output_related_themes_list($add_ons, $tab = '') {
         printf( '<h3>%s</h3>', __( 'No theme found', 'learnpress' ) );
         return false;
     }
+    /* ID of items education */
+    $themes_education = $add_ons;
+
+    $themes_id = array(
+        '14058034' => 'eduma',
+        '17097658' => 'coach',
+        '11797847' => 'lms'
+    );
+    foreach( $themes_education as $key => $theme ) {
+
+        if ( !array_key_exists( $theme['id'], $themes_id ) ) {
+            unset($themes_education[$key]);
+        }
+        else {
+            unset($add_ons[$key]);
+        }
+    }
+    $list_themes = array(
+        'education'  => $themes_education,
+        'other'      => $add_ons
+    );
+
+    echo '<ul class="learn-press-add-ons widefat ' . $tab . '">';
+    foreach ( $list_themes as $file => $list ) {
+        $functions = 'learn_press_output_related_themes_list_' . $file
+        ?>
+        <li class="learnpress-theme-<?php echo esc_attr($file); ?>">
+            <?php call_user_func($functions, $list, $file); ?>
+        </li>
+        <?php
+    }
+    echo '</ul>';
+
+}
+
+function learn_press_output_related_themes_list_education( $add_ons, $tab ) {
+    echo '<h2 class="learnpress-title">'. __('Education Support') .' (<span class="learnpress-count">'. sizeof($add_ons) .'</span>) </h2>';
     echo '<ul class="learn-press-add-ons widefat ' . $tab . '">';
     foreach ( $add_ons as $file => $add_on ) {
         $add_on['url'] .= '?ref=ThimPress&utm_source=lp-backend&utm_medium=lp-addondashboard';
@@ -977,15 +978,75 @@ function learn_press_output_related_themes_list($add_ons, $tab = '') {
                     </div>
                     <div class="theme-footer">
                         <?php
-                        $demo = $add_on['attributes'][4];
+                        $demo           = $add_on['attributes'][4];
+                        $demo['value'] .= '?ref=ThimPress&utm_source=lp-backend&utm_medium=lp-addondashboard';
                         ?>
                         <a class="button button-primary" href="<?php echo esc_url($add_on['url']); ?>"><?php echo __('Get it now for only ', 'learnpress') ?></a>
                         <a class="button" href="<?php echo esc_url($demo['value']); ?>"><?php _e('View Demo', 'learnpress'); ?></a>
                         <div class="theme-rating">
                             <span class="">
-                                <?php wp_star_rating( array( 'rating' => $add_on['rating'], 'type' => 'rating', 'number' => $add_on['rating_count'] ) ); ?>
+                                <?php wp_star_rating( array( 'rating' => $add_on['rating']['rating'], 'type' => 'rating', 'number' => $add_on['rating']['count'] ) ); ?>
                             </span>
-                            <span class="count-rating">(<?php echo $add_on['rating_count'];?>)</span>
+                            <span class="count-rating">(<?php echo $add_on['rating']['count'];?>)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </li>
+        <?php
+    }
+    echo '</ul>';
+}
+
+function learn_press_output_related_themes_list_other( $add_ons, $tab ) {
+    echo '<h2 class="learnpress-title">'. __('Other') .' (<span class="learnpress-count">'. sizeof($add_ons) .'</span>) </h2>';
+    echo '<ul class="learn-press-add-ons widefat ' . $tab . '">';
+    foreach ( $add_ons as $file => $add_on ) {
+        $add_on['url'] .= '?ref=ThimPress&utm_source=lp-backend&utm_medium=lp-addondashboard';
+        ?>
+        <li class="plugin-card plugin-card-learnpress" id="learn-press-theme-<?php echo $add_on['id']; ?>">
+            <div class="plugin-card-top">
+                <div class="image-thumbnail">
+                    <a href="<?php echo esc_url($add_on['url']); ?>">
+                        <img src="<?php echo esc_url($add_on['previews']['landscape_preview']['landscape_url']); ?>" alt="<?php echo esc_attr($add_on['wordpress_theme_metadata']['theme_name'])?>">
+                    </a>
+                </div>
+
+                <div class="theme-content">
+                    <h2 class="theme-title">
+                        <a href="<?php echo esc_url($add_on['url']); ?>">
+                            <?php echo wp_kses_post($add_on['name']); ?>
+                        </a>
+                    </h2>
+                    <div class="theme-detail">
+                        <div class="theme-price">
+                            <?php echo $add_on['price_cents']/100 .__('$', 'learnpress');?>
+                        </div>
+                        <div class="number-sale">
+                            <?php echo $add_on['number_of_sales'] .__(' sales', 'learnpress'); ?>
+                        </div>
+                    </div>
+
+                    <div class="theme-description">
+                        <?php
+                        $description = $add_on['description'];
+                        $description = preg_replace("/<(.*?)>/", '', $description);
+                        echo wp_kses_post($description);
+
+                        ?>
+                    </div>
+                    <div class="theme-footer">
+                        <?php
+                        $demo           = $add_on['attributes'][4];
+                        $demo['value'] .= '?ref=ThimPress&utm_source=lp-backend&utm_medium=lp-addondashboard';
+                        ?>
+                        <a class="button button-primary" href="<?php echo esc_url($add_on['url']); ?>"><?php echo __('Get it now for only ', 'learnpress') ?></a>
+                        <a class="button" href="<?php echo esc_url($demo['value']); ?>"><?php _e('View Demo', 'learnpress'); ?></a>
+                        <div class="theme-rating">
+                            <span class="">
+                                <?php wp_star_rating( array( 'rating' => $add_on['rating']['rating'], 'type' => 'rating', 'number' => $add_on['rating']['count'] ) ); ?>
+                            </span>
+                            <span class="count-rating">(<?php echo $add_on['rating']['count'];?>)</span>
                         </div>
                     </div>
                 </div>
