@@ -415,6 +415,79 @@ function learn_press_print_script() {
 add_action( 'wp_footer', 'learn_press_print_script' );
 add_action( 'admin_footer', 'learn_press_print_script' );
 
+/* Advertise in page admin */
+if ( !function_exists( 'leanrpress_advertise_in_admin' ) ) {
+
+    function leanrpress_advertise_in_admin() {
+
+        $admin_post_type = array(
+            'lp_course',
+            'lp_lesson',
+            'lp_quiz',
+            'lp_question',
+            'lp_order'
+        );
+        $pages = array(
+            'learnpress_page_learn-press-statistics',
+            'learnpress_page_learn-press-settings',
+            'learnpress_page_learn-press-tools'
+
+        );
+        $themes_id = array(
+            '14058034' => 'eduma',
+            '17097658' => 'coach',
+            '11797847' => 'lms'
+        );
+
+        $screen = get_current_screen();
+
+        if ( ( in_array($screen->post_type, $admin_post_type ) && $screen->base === 'edit' )
+        || ( in_array($screen->id, $pages ) ) ) {
+
+            $current_theme = wp_get_theme();
+
+            // Get items education
+            $list_themes = learn_press_related_theme();
+
+            foreach( $list_themes as $key => $theme ) {
+
+                if ( !array_key_exists( $theme['id'], $themes_id ) || $themes_id[$theme['id']] === $current_theme->name ) {
+                    unset($list_themes[$key]);
+                }
+            }
+            shuffle($list_themes);
+            ?>
+            <div id="learn-press-add-ons-wrap" class="learnpress-advertis-admin">
+                <?php
+                foreach ( $list_themes as $theme ) {
+                    $theme['url']  .= '?ref=ThimPress&utm_source=lp-backend&utm_medium=lp-addondashboard';
+                    $url_demo       = $theme['attributes'][4]['value'] . '?ref=ThimPress&utm_source=lp-backend&utm_medium=lp-addondashboard';
+                    ?>
+                    <div id="thimpress-<?php echo esc_attr($theme['id']); ?>" class="theme">
+                        <a href="<?php echo esc_url($theme['url']); ?>">
+                            <img src="<?php echo esc_url($theme['previews']['landscape_preview']['landscape_url'])?>" />
+                        </a>
+                        <h2><a href="<?php echo esc_url($theme['url']); ?>"><?php  echo $theme['name']; ?></a></h2>
+                        <p class="learpress-description">
+                            <?php echo wp_kses_post($theme['description']); ?>
+                        </p>
+                        <p class="theme-controls">
+                            <a href="<?php echo esc_url($theme['url']); ?>" class="button button-primary" target="_blank"><?php _e( 'Get it now', 'learnpress' ); ?></a>
+                            <a href="<?php echo esc_url($url_demo); ?>" class="button" target="_blank"><?php _e( 'View Demo', 'learnpress' ); ?></a>
+                        </p>
+                    </div>
+                    <?php
+                }
+                ?>
+            </div>
+            <?php
+        }
+
+    }
+}
+
+add_action( 'admin_footer', 'leanrpress_advertise_in_admin', -10 );
+
 /**
  * @param string $str
  * @param int    $lines

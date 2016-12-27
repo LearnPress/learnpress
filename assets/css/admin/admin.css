@@ -286,6 +286,80 @@ li.quick_quiz {
 /*
 * Add on page
 */
+.learnpress-advertis-admin {
+  margin-left: 160px;
+  padding: 10px 20px;
+  position: relative;
+}
+.learnpress-advertis-admin .learnpress-wrap-items {
+  position: relative;
+  margin-bottom: 30px;
+  -webkit-transition: visibility 1s, opacity 1s;
+  transition: visibility 1s, opacity 1s;
+}
+.learnpress-advertis-admin .learnpress-item {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  visibility: hidden;
+  opacity: 0;
+  -webkit-transition: visibility 0.5s linear, opacity 0.5s linear;
+  transition: visibility 0.5s linear, opacity 0.5s linear;
+}
+.learnpress-advertis-admin .learnpress-active {
+  visibility: visible;
+  opacity: 1;
+}
+.learnpress-advertis-admin .learnpress-controls {
+  position: absolute;
+  bottom: 30px;
+  left: 0;
+  right: 0;
+  height: 50px;
+  -ms-transform: translateY(-50%);
+  -webkit-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+.learnpress-advertis-admin .learnpress-controls:after {
+  content: '';
+  clear: both;
+  display: block;
+}
+.learnpress-advertis-admin .learnpress-controls .prev-item,
+.learnpress-advertis-admin .learnpress-controls .next-item {
+  position: absolute;
+  top: 0;
+  font-family: 'dashicons';
+  width: 40px;
+  height: 40px;
+  border: 1px solid #000;
+  line-height: 40px;
+  font-size: 16px;
+  color: #000;
+  cursor: pointer;
+}
+.learnpress-advertis-admin .learnpress-controls .prev-item {
+  right: 100px;
+}
+.learnpress-advertis-admin .learnpress-controls .prev-item:before {
+  content: "\f341";
+  display: block;
+  text-align: center;
+}
+.learnpress-advertis-admin .learnpress-controls .next-item {
+  right: 50px;
+}
+.learnpress-advertis-admin .learnpress-controls .next-item:before {
+  content: "\f345";
+  display: block;
+  text-align: center;
+}
+@media only screen and (max-width: 960px) {
+  .learnpress-advertis-admin {
+    margin-left: 36px;
+  }
+}
 .lpr-add-ons-wrapper .add-on-info {
   width: 65%;
   display: inline-block;
@@ -486,6 +560,11 @@ li.quick_quiz {
   background-color: #fff;
   border: 1px solid #ddd;
   overflow: hidden;
+  margin-bottom: 30px;
+}
+#learn-press-add-ons-wrap .theme-controls {
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 #learn-press-add-ons-wrap .theme h2 {
   margin: 0 0 20px 0;
@@ -496,7 +575,7 @@ li.quick_quiz {
   height: auto;
   max-height: 100%;
   float: left;
-  margin: 0 20px 0 0;
+  margin: 0 20px 0.5em 0;
 }
 .related_themes .plugin-card-top {
   padding-bottom: 0;
