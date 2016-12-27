@@ -469,18 +469,24 @@ if ( !function_exists( 'leanrpress_advertise_in_admin' ) ) {
                     $theme['description'] = array_splice($theme['description'], 0, sizeof($theme['description']) - 1);
                     $theme['description'] = implode(" ", $theme['description'])." ...";
                     ?>
-                    <div id="thimpress-<?php echo esc_attr($theme['id']); ?>" class="theme">
-                        <a href="<?php echo esc_url($theme['url']); ?>">
-                            <img src="<?php echo esc_url($theme['previews']['landscape_preview']['landscape_url'])?>" />
-                        </a>
-                        <h2><a href="<?php echo esc_url($theme['url']); ?>"><?php  echo $theme['name']; ?></a></h2>
-                        <p class="learpress-description">
-                            <?php echo wp_kses_post($theme['description']); ?>
-                        </p>
-                        <p class="theme-controls">
-                            <a href="<?php echo esc_url($theme['url']); ?>" class="button button-primary" target="_blank"><?php _e( 'Get it now', 'learnpress' ); ?></a>
-                            <a href="<?php echo esc_url($url_demo); ?>" class="button" target="_blank"><?php _e( 'View Demo', 'learnpress' ); ?></a>
-                        </p>
+                    <div id="thimpress-<?php echo esc_attr($theme['id']); ?>" class="item">
+                        <div class="theme-thumbnail">
+                            <a href="<?php echo esc_url($theme['url']); ?>">
+                                <img src="<?php echo esc_url($theme['previews']['landscape_preview']['landscape_url'])?>" />
+                            </a>
+                        </div>
+
+                        <div class="theme-detail">
+                            <h2><a href="<?php echo esc_url($theme['url']); ?>"><?php  echo $theme['name']; ?></a></h2>
+                            <p class="learpress-description">
+                                <?php echo wp_kses_post($theme['description']); ?>
+                            </p>
+                            <p class="theme-controls">
+                                <a href="<?php echo esc_url($theme['url']); ?>" class="button button-primary" target="_blank"><?php _e( 'Get it now', 'learnpress' ); ?></a>
+                                <a href="<?php echo esc_url($url_demo); ?>" class="button" target="_blank"><?php _e( 'View Demo', 'learnpress' ); ?></a>
+                            </p>
+                        </div>
+
                     </div>
                     <?php
                 }
