@@ -462,6 +462,12 @@ if ( !function_exists( 'leanrpress_advertise_in_admin' ) ) {
                 foreach ( $list_themes as $theme ) {
                     $theme['url']  .= '?ref=ThimPress&utm_source=lp-backend&utm_medium=lp-addondashboard';
                     $url_demo       = $theme['attributes'][4]['value'] . '?ref=ThimPress&utm_source=lp-backend&utm_medium=lp-addondashboard';
+
+                    $theme['description'] = preg_replace( '/(?<=\S,)(?=\S)/', ' ', $theme['description'] );
+                    $theme['description'] = str_replace( "\n", ' ', $theme['description'] );
+                    $theme['description'] = explode(" ", $theme['description']);
+                    $theme['description'] = array_splice($theme['description'], 0, sizeof($theme['description']) - 1);
+                    $theme['description'] = implode(" ", $theme['description'])." ...";
                     ?>
                     <div id="thimpress-<?php echo esc_attr($theme['id']); ?>" class="theme">
                         <a href="<?php echo esc_url($theme['url']); ?>">

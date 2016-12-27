@@ -293,15 +293,16 @@ li.quick_quiz {
 }
 .learnpress-advertis-admin .learnpress-wrap-items {
   position: relative;
-  margin-bottom: 30px;
+  overflow: hidden;
   -webkit-transition: visibility 1s, opacity 1s;
   transition: visibility 1s, opacity 1s;
 }
 .learnpress-advertis-admin .learnpress-item {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
+  position: relative;
+  float: left;
+  margin-right: -100%;
+  width: 100%;
+  box-sizing: border-box;
   visibility: hidden;
   opacity: 0;
   -webkit-transition: visibility 0.5s linear, opacity 0.5s linear;
@@ -564,7 +565,7 @@ li.quick_quiz {
 }
 #learn-press-add-ons-wrap .theme-controls {
   margin-top: 20px;
-  margin-bottom: 20px;
+  margin-bottom: 0;
 }
 #learn-press-add-ons-wrap .theme h2 {
   margin: 0 0 20px 0;
@@ -575,7 +576,7 @@ li.quick_quiz {
   height: auto;
   max-height: 100%;
   float: left;
-  margin: 0 20px 0.5em 0;
+  margin: 0 20px 0 0;
 }
 .related_themes .plugin-card-top {
   padding-bottom: 0;

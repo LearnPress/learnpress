@@ -965,14 +965,12 @@ jQuery(document).ready(function ($) {
 			activeItem: function (index) {
 
 				var _this 	= this,
-					$item 	= _this.$items[index],
-					height 	= $item.outerHeight();
+					$item 	= _this.$items[index];
 
 				if ( _this.$currentActive ) {
 					_this.$currentActive.removeClass('learnpress-active');
 				}
 				$item.addClass('learnpress-active');
-				_this.$wrapSlider.height(height);
 				_this.currentActive = index;
 				_this.$currentActive = $item;
 
@@ -1020,6 +1018,10 @@ jQuery(document).ready(function ($) {
 
                 _this.$btnPrev.on('click', function () {
 					_this.prevItem();
+				});
+
+                $(window).resize( function () {
+
 				});
 			}
 
