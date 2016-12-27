@@ -122,16 +122,16 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 	}
 	if ( $allow_create ) {
 		ob_start(); ?>
-        <button class="button button-quick-add-page" data-id="<?php echo $id; ?>" type="button"><?php _e( 'Create', 'learnpress' ); ?></button>
-        <p class="learn-press-quick-add-page-inline <?php echo $id; ?> hide-if-js">
-            <input type="text" placeholder="<?php esc_attr_e( 'New page title', 'learnpress' ); ?>" />
-            <button class="button" type="button"><?php esc_html_e( 'Ok [Enter]', 'learnpress' ); ?></button>
-            <a href=""><?php _e( 'Cancel [ESC]', 'learnpress' ); ?></a>
-        </p>
-        <p class="learn-press-quick-add-page-actions <?php echo $id; ?><?php echo $selected ? '' : ' hide-if-js'; ?>">
-            <a class="edit-page" href="<?php echo get_edit_post_link( $selected ); ?>" target="_blank"><?php _e( 'Edit Page', 'learnpress' ); ?></a>
-            <a class="view-page" href="<?php echo get_permalink( $selected ); ?>" target="_blank"><?php _e( 'View Page', 'learnpress' ); ?></a>
-        </p>
+		<button class="button button-quick-add-page" data-id="<?php echo $id; ?>" type="button"><?php _e( 'Create', 'learnpress' ); ?></button>
+		<p class="learn-press-quick-add-page-inline <?php echo $id; ?> hide-if-js">
+			<input type="text" placeholder="<?php esc_attr_e( 'New page title', 'learnpress' ); ?>" />
+			<button class="button" type="button"><?php esc_html_e( 'Ok [Enter]', 'learnpress' ); ?></button>
+			<a href=""><?php _e( 'Cancel [ESC]', 'learnpress' ); ?></a>
+		</p>
+		<p class="learn-press-quick-add-page-actions <?php echo $id; ?><?php echo $selected ? '' : ' hide-if-js'; ?>">
+			<a class="edit-page" href="<?php echo get_edit_post_link( $selected ); ?>" target="_blank"><?php _e( 'Edit Page', 'learnpress' ); ?></a>
+			<a class="view-page" href="<?php echo get_permalink( $selected ); ?>" target="_blank"><?php _e( 'View Page', 'learnpress' ); ?></a>
+		</p>
 		<?php $output .= ob_get_clean();
 	}
 	if ( $echo ) {
@@ -212,16 +212,16 @@ function learn_press_field_question_duration( $args = array(), $question ) {
 	}
 
 	return '<span class="' . esc_attr( $wrap_class ) . '">' . sprintf(
-			'<input type="number" class="%s" name="%s" id="%s" value="%s" step="%s" min="%s" max="%s" placeholder="%s"/>',
-			$args['class'],
-			$args['name'],
-			empty( $args['clone'] ) ? $args['id'] : '',
-			$args['value'],
-			$args['step'],
-			$args['min'],
-			!empty( $args['max'] ) ? $args['max'] : '',
-			$args['placeholder']
-		) . $args['placeholder'] . '</span>';
+		'<input type="number" class="%s" name="%s" id="%s" value="%s" step="%s" min="%s" max="%s" placeholder="%s"/>',
+		$args['class'],
+		$args['name'],
+		empty( $args['clone'] ) ? $args['id'] : '',
+		$args['value'],
+		$args['step'],
+		$args['min'],
+		!empty( $args['max'] ) ? $args['max'] : '',
+		$args['placeholder']
+	) . $args['placeholder'] . '</span>';
 }
 
 /**
@@ -1368,9 +1368,9 @@ function learn_press_user_become_a_teacher_notice() {
 	if ( $user_id = learn_press_get_request( 'user_id' ) && learn_press_get_request( 'become-a-teacher-accepted' ) == 'yes' ) {
 		$user = new WP_User( $user_id );
 		?>
-        <div class="updated">
-            <p><?php printf( __( 'The user %s has become a teacher', 'learnpress' ), $user->user_login ); ?></p>
-        </div>
+		<div class="updated">
+			<p><?php printf( __( 'The user %s has become a teacher', 'learnpress' ), $user->user_login ); ?></p>
+		</div>
 		<?php
 	}
 }
@@ -1936,23 +1936,32 @@ function learn_press_get_file_version( $file ) {
  * @return array|bool
  */
 function learn_press_get_theme_templates( $check = false ) {
-	$template_folder    = learn_press_template_path();
-	$template_path      = LP_PLUGIN_PATH . '/templates/';
-	$found_files        = array();
-	$outdated_templates = false;
-	$template_dir       = get_template_directory();
-	$stylesheet_dir     = get_stylesheet_directory();
-	$scanned_files      = learn_press_scan_template_files( $template_path );
+	$template_folder = learn_press_template_path();
+	$template_path   = LP_PLUGIN_PATH . '/templates/';
+	$template_dir    = get_template_directory();
+	$stylesheet_dir  = get_stylesheet_directory();
+	$t_folder        = basename( $template_dir );
+	$s_folder        = basename( $stylesheet_dir );
 
+	$found_files        = array( $t_folder => array(), $s_folder => array() );
+	$outdated_templates = false;
+
+	$scanned_files = learn_press_scan_template_files( $template_path );
 	foreach ( $scanned_files as $file ) {
+		$theme_folder = '';
+
 		if ( file_exists( $stylesheet_dir . '/' . $file ) ) {
-			$theme_file = $stylesheet_dir . '/' . $file;
+			$theme_file   = $stylesheet_dir . '/' . $file;
+			$theme_folder = $s_folder;
 		} elseif ( file_exists( $stylesheet_dir . '/' . $template_folder . '/' . $file ) ) {
-			$theme_file = $stylesheet_dir . '/' . $template_folder . '/' . $file;
+			$theme_file   = $stylesheet_dir . '/' . $template_folder . '/' . $file;
+			$theme_folder = $s_folder;
 		} elseif ( file_exists( $template_dir . '/' . $file ) ) {
-			$theme_file = $template_dir . '/' . $file;
+			$theme_file   = $template_dir . '/' . $file;
+			$theme_folder = $t_folder;
 		} elseif ( file_exists( $template_dir . '/' . $template_folder . '/' . $file ) ) {
-			$theme_file = $template_dir . '/' . $template_folder . '/' . $file;
+			$theme_file   = $template_dir . '/' . $template_folder . '/' . $file;
+			$theme_folder = $t_folder;
 		} else {
 			$theme_file = false;
 		}
@@ -1965,14 +1974,14 @@ function learn_press_get_theme_templates( $check = false ) {
 				if ( !$outdated_templates ) {
 					$outdated_templates = true;
 				}
-				$found_files[] = array(
+				$found_files[$theme_folder][] = array(
 					str_replace( WP_CONTENT_DIR . '/themes/', '', $theme_file ),
 					$theme_version ? $theme_version : '-',
 					$core_version,
 					true
 				);
 			} else {
-				$found_files[] = array(
+				$found_files[$theme_folder][] = array(
 					str_replace( WP_CONTENT_DIR . '/themes/', '', $theme_file ),
 					$theme_version ? $theme_version : '?',
 					$core_version ? $core_version : '?',
@@ -1984,6 +1993,8 @@ function learn_press_get_theme_templates( $check = false ) {
 			return $outdated_templates;
 		}
 	}
+	$found_files = array_merge( $found_files[$t_folder], $found_files[$s_folder] );
+
 	return $check ? $outdated_templates : $found_files;
 }
 

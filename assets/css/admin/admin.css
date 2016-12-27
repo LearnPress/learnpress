@@ -4,13 +4,6 @@
  * @author ThimPress
  * @version 1.0
  */
-.xyz {
-  color: #000;
-  font-weight: bold;
-}
-.xyz .abc {
-  font-size: 10000px;
-}
 .rwmb-field {
   margin: 20px 0 20px 0;
 }
@@ -1458,6 +1451,9 @@ input.regular-text[id^="learn-press-emails"] {
 }
 #learn_press_dashboard_widget_status .inside .learnpress-statistic-status li.full-width > a {
   display: inline-block;
+}
+.lp-template-overrides {
+  margin-top: 20px;
 }
 .lp-template-overrides thead th h4 {
   margin: 0;

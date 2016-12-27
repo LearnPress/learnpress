@@ -193,6 +193,14 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.  
 
 == Changelog ==
+= 2.0.9 =
++ Improved some sections in admin
++ Added tab 'Related Themes'
++ Fixed error with PHP version before 5.3.x
++ Fixed bug get order incorrect
++ Added option to switch WP Metaboxes into tabs style
++ And more
+
 = 2.0.8.2 =
 + Fixed outdated templates notice
 
