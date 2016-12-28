@@ -93,10 +93,10 @@ class LP_Settings_Courses extends LP_Settings_Base {
 					'type'    => 'checkbox'
 				),
 				array(
-					'title'   => __( 'Hide list of question in quiz', 'learnpress' ),
-					'desc'    => __( 'Hide list of question in quiz<br /> If this option is enabled, the course status will be changed to Pending Review when the instructor update course', 'learnpress' ),
+					'title'   => __( 'Show list of question in quiz', 'learnpress' ),
+					'desc'    => __( 'Show/Hide list questions in quiz.', 'learnpress' ),
 					'id'      => $this->get_field_name( 'disable_question_in_quiz' ),
-					'default' => 'no',
+					'default' => 'yes',
 					'type'    => 'checkbox'
 				),
 				array(
