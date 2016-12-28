@@ -104,14 +104,14 @@ class LP_Settings_Courses extends LP_Settings_Base {
 					'type'  => 'title'
 				),
 				array(
-					'title'   => __( 'Courses limit', 'learnpress' ),
-					'desc'    => __( 'Number of courses displayed per page.', 'learnpress' ),
-					'id'      => $this->get_field_name( 'archive_course_limit' ),
-					'default' => '10',
-					'type'    => 'number',
-                    'custom_attributes' => array(
-                        'min' => '1'
-                    )
+					'title'             => __( 'Courses limit', 'learnpress' ),
+					'desc'              => __( 'Number of courses displayed per page.', 'learnpress' ),
+					'id'                => $this->get_field_name( 'archive_course_limit' ),
+					'default'           => '10',
+					'type'              => 'number',
+					'custom_attributes' => array(
+						'min' => '1'
+					)
 				),
 				array(
 					'title' => __( 'Course thumbnail', 'learnpress' ),
@@ -121,7 +121,7 @@ class LP_Settings_Courses extends LP_Settings_Base {
 					'title'   => __( 'Single course', 'learnpress' ),
 					'id'      => $this->get_field_name( 'single_course_image_size' ),
 					'default' => array( 800, 450, 'yes' ),
-					'type'    => 'image-size'
+					'type'    => 'image-size',
 				),
 				array(
 					'title'   => __( 'Course thumbnail', 'learnpress' ),
