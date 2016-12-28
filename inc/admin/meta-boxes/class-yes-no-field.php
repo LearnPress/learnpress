@@ -13,12 +13,18 @@ if ( !class_exists( 'RWMB_Yes_No_Field' ) ) {
 		/**
 		 * Get field HTML
 		 *
-		 * @param mixed $meta
-		 * @param array $field
+		 * @param string $html
+		 * @param mixed  $meta
+		 * @param mixed  $field
 		 *
 		 * @return string
 		 */
-		static function html( $meta, $field ) {
+		static function html( $html, $meta, $field = '' ) {
+			if ( is_array( $field ) && isset( $field['field_name'] ) ) {
+			} else {
+				$field = $meta;
+				$meta  = $html;
+			}
 			return sprintf(
 				'<input type="checkbox" class="rwmb-yes-no" name="%s" id="%s" value="1" %s>',
 				$field['field_name'],
@@ -42,6 +48,15 @@ if ( !class_exists( 'RWMB_Yes_No_Field' ) ) {
 		 */
 		static function value( $new, $old, $post_id, $field ) {
 			return empty( $new ) ? 'no' : 'yes';
+		}
+
+		static function begin_html( $html, $meta, $field = '' ) {
+			if ( is_array( $field ) && isset( $field['field_name'] ) ) {
+				return RW_Meta_Box::begin_html( $html, $meta, $field );
+			} else {
+				return RWMB_Field::begin_html( $html, $meta );
+			}
+
 		}
 	}
 }
