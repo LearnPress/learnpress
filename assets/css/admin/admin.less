@@ -124,6 +124,32 @@
     label {
         line-height: 1;
     }
+    .lp-group-title {
+        padding: 0 0 10px;
+        border-bottom: 3px solid #563d7c;
+        display: inline-block;
+        margin: 0;
+    }
+    input[type="text"],
+    input[type="email"],
+    input[type="number"],
+    input[type="tel"],
+    input[type="password"],
+    select {
+        vertical-align: top;
+    }
+    input[type="checkbox"] {
+        opacity: 1;
+    }
+    .lp-setting-field{
+        span{
+            vertical-align: top;
+            line-height: 24px;
+        }
+        .lp-sign-times{
+            font-size: 19px;
+        }
+    }
 }
 
 /* message box */
@@ -345,7 +371,7 @@ li.quiz, li.lesson, li.quick_lesson, li.quick_quiz {
         position: relative;
         overflow: hidden;
         -webkit-transition: visibility 1s, opacity 1s;
-        transition:  visibility 1s, opacity 1s;
+        transition: visibility 1s, opacity 1s;
         padding: 20px;
         background-color: #fff;
         border: 1px solid #ddd;
@@ -368,7 +394,7 @@ li.quiz, li.lesson, li.quick_lesson, li.quick_quiz {
         visibility: hidden;
         opacity: 0;
         -webkit-transition: visibility 0.5s linear, opacity 0.5s linear;
-        transition:  visibility 0.5s linear, opacity 0.5s linear;
+        transition: visibility 0.5s linear, opacity 0.5s linear;
 
     }
     img {
@@ -430,13 +456,14 @@ li.quiz, li.lesson, li.quick_lesson, li.quick_quiz {
         }
     }
 
-    @media only screen and (max-width:960px) {
+    @media only screen and (max-width: 960px) {
         margin-left: 36px;
 
         .theme-thumbnail {
             float: none;
             width: 100%;
         }
+
         .theme-detail {
             margin-top: 20px;
             margin-left: 0;
@@ -481,6 +508,7 @@ li.quiz, li.lesson, li.quick_lesson, li.quick_quiz {
     text-decoration: none;
     content: attr(data-text-disable);
 }
+
 .lp-search-addon {
     margin: 0;
     width: 280px;
@@ -691,6 +719,7 @@ li.quiz, li.lesson, li.quick_lesson, li.quick_quiz {
     overflow: hidden;
     margin-bottom: 30px;
 }
+
 #learn-press-add-ons-wrap .theme-controls {
     margin-top: 20px;
     margin-bottom: 0;
@@ -1821,16 +1850,6 @@ input.regular-text[id^="learn-press-emails"] {
 .column-taxonomy-question_tag {
     width: 100px;
     text-align: left;
-}
-
-#learn-press-admin-settings .form-table th {
-    padding: 20px 10px 20px 0 !important;
-}
-
-#learn-press-admin-settings {
-    input, select {
-        vertical-align: top;
-    }
 }
 
 #learn_press_dashboard_widget {

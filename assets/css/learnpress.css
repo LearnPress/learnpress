@@ -1863,6 +1863,133 @@ body.block-content #learn-press-block-content {
   /* Change Picture Menu */
   /** upload-crop box **/
 }
+.learn-press-user-profile .lp-avatar-preview {
+  position: relative;
+  float: left;
+}
+.learn-press-user-profile .lp-avatar-preview .profile-picture {
+  height: 200px;
+  width: 200px;
+  float: left;
+  margin-right: -100%;
+}
+.learn-press-user-profile .lp-avatar-preview .profile-picture img {
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+}
+.learn-press-user-profile .lp-avatar-preview .profile-picture.profile-avatar-hidden {
+  display: none;
+}
+.learn-press-user-profile .lp-avatar-preview .lp-avatar-preview-actions {
+  position: absolute;
+  top: 50%;
+  width: 100%;
+  margin-top: -14px;
+  text-align: center;
+}
+.learn-press-user-profile .lp-avatar-preview .lp-avatar-preview-actions a {
+  text-decoration: none;
+  font-size: 12px;
+  background: #FFF;
+  display: inline-block;
+  box-shadow: none;
+  padding: 5px 10px;
+}
+.learn-press-user-profile .lp-avatar-preview .lp-avatar-upload-progress {
+  position: absolute;
+  height: 10px;
+  width: 180px;
+  background: #FFF;
+  top: 50%;
+  margin-top: -5px;
+  left: 10px;
+  display: none;
+}
+.learn-press-user-profile .lp-avatar-preview .lp-avatar-upload-progress .lp-avatar-upload-progress-value {
+  width: 0;
+  height: 10px;
+  background: #563d7c;
+}
+.learn-press-user-profile .lp-avatar-preview .lp-avatar-upload-error {
+  display: none;
+}
+.learn-press-user-profile .lp-avatar-preview .lp-avatar-preview-actions {
+  display: none;
+}
+.learn-press-user-profile .lp-avatar-preview:hover .lp-avatar-preview-actions {
+  display: block;
+}
+.learn-press-user-profile .lp-avatar-preview.uploading .lp-avatar-preview-actions,
+.learn-press-user-profile .lp-avatar-preview.upload-error .lp-avatar-preview-actions {
+  display: none;
+}
+.learn-press-user-profile .lp-avatar-preview.uploading .lp-avatar-upload-progress,
+.learn-press-user-profile .lp-avatar-preview.upload-error .lp-avatar-upload-progress {
+  display: block;
+}
+.learn-press-user-profile .lp-avatar-preview.uploading:before,
+.learn-press-user-profile .lp-avatar-preview.upload-error:before {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  opacity: 0.5;
+  content: '';
+}
+.learn-press-user-profile .lp-avatar-preview.upload-error .lp-avatar-upload-error {
+  display: block;
+}
+.learn-press-user-profile .lp-avatar-preview.croping .lp-avatar-preview-actions {
+  display: none;
+}
+.learn-press-user-profile .lp-avatar-preview.croping .lp-avatar-crop-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  overflow: hidden;
+}
+.learn-press-user-profile .lp-avatar-preview.croping .lp-avatar-crop-image img {
+  max-width: inherit;
+}
+.learn-press-user-profile .lp-avatar-preview.croping .lp-avatar-crop-image .ui-slider {
+  position: absolute;
+  height: 10px;
+  bottom: 10px;
+  left: 10px;
+  right: 10px;
+  background: #FF0000;
+}
+.learn-press-user-profile .lp-avatar-preview.croping .lp-avatar-crop-image .ui-slider .ui-slider-handle {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  background: #ffffff;
+  position: absolute;
+}
+.learn-press-user-profile .lp-avatar-preview:after {
+  display: block;
+  content: '';
+  clear: both;
+}
+.learn-press-user-profile .lp-avatar-preview:after:after {
+  content: '';
+  display: block;
+  clear: both;
+}
+.learn-press-user-profile .lp-edit-profile:after {
+  display: block;
+  content: '';
+  clear: both;
+}
+.learn-press-user-profile .lp-edit-profile:after:after {
+  content: '';
+  display: block;
+  clear: both;
+}
 .learn-press-user-profile .user-basic-info p {
   margin-top: 10px;
 }

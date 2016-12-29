@@ -4,22 +4,32 @@
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 2.0
+ * @version 2.1.0
  */
 if ( !defined( 'ABSPATH' ) ) {
 	exit;
 }
+
+$section = !empty( $_REQUEST['section'] ) ? $_REQUEST['section'] : 'avatar';
+?>
+
+<?php
+
+learn_press_get_template( 'profile/tabs/edit/' . $section . '.php' );
+
+return;
+
 global $wp_query;
-$user = learn_press_get_current_user();
-$user_info = get_userdata( $user->id );
-$username             = $user_info->user_login;
-$nick_name            = $user_info->nickname;
-$first_name           = $user_info->first_name;
-$last_name            = $user_info->last_name;
-$profile_picture_type = $user->profile_picture_type?$user->profile_picture_type:'gravatar';
-$profile_picture = $user->profile_picture;
+$user                    = learn_press_get_current_user();
+$user_info               = get_userdata( $user->id );
+$username                = $user_info->user_login;
+$nick_name               = $user_info->nickname;
+$first_name              = $user_info->first_name;
+$last_name               = $user_info->last_name;
+$profile_picture_type    = $user->profile_picture_type ? $user->profile_picture_type : 'gravatar';
+$profile_picture         = $user->profile_picture;
 $class_gravatar_selected = ( 'gravatar' === $profile_picture_type ) ? ' lp-menu-item-selected' : '';
-$class_picture_selected = ( 'picture' === $profile_picture_type ) ? ' lp-menu-item-selected' : '';
+$class_picture_selected  = ( 'picture' === $profile_picture_type ) ? ' lp-menu-item-selected' : '';
 if ( $user ) :
 	?>
 	<div class="user-profile-edit-form" id="learn-press-user-profile-edit-form">
@@ -41,42 +51,47 @@ if ( $user ) :
 					<div class="clear"></div>
 					<ul id="lp-menu-change-picture">
 						<li class="dropdown">
-							<span class="lp-label-change-picture"><?php _e('Change Picture','learnpress'); ?></span>
+							<span class="lp-label-change-picture"><?php _e( 'Change Picture', 'learnpress' ); ?></span>
 							<select name="profile_picture_type" id="lp-profile_picture_type" class="hidden">
 								<option value="gravatar" <?php selected( 'gravatar', $profile_picture_type ) ?>><?php _e( 'Gravatar', 'learnpress' ); ?></option>
 								<option value="picture" <?php selected( 'picture', $profile_picture_type ) ?>><?php _e( 'Picture', 'learnpress' ); ?></option>
 							</select>
-							<ul class="dropdown-menu" role="menu" >
+							<ul class="dropdown-menu" role="menu">
 								<li class="menu-item-use-gravatar<?php echo esc_attr( $class_gravatar_selected ); ?>">
-									<span><?php _e('Use Gravatar','learnpress'); ?></span></li>
+									<span><?php _e( 'Use Gravatar', 'learnpress' ); ?></span></li>
 								<li class="menu-item-use-picture<?php echo esc_attr( $class_picture_selected ); ?>">
-									<span><?php _e('Use Picture','learnpress'); ?></span></li>
-								<li  class="menu-item-upload-picture">
-									<span><?php _e('Upload Picture','learnpress'); ?></span></li>
+									<span><?php _e( 'Use Picture', 'learnpress' ); ?></span></li>
+								<li class="menu-item-upload-picture">
+									<span><?php _e( 'Upload Picture', 'learnpress' ); ?></span></li>
 							</ul>
-							
+
 						</li>
 					</ul>
 				</div>
 				<div id="lpbox-upload-crop-profile-picture">
 					<input type="hidden" id="lp-user-profile-picture-data" data-current="<?php echo esc_attr( $profile_picture ); ?>" name="profile_picture_data" />
-					<div class="lpbox-title"><?php _e('Upload Picture','learnpress'); ?></div>
-                    <p class="description"><small><?php _e('Please use an image that\'s at least 250px in width, 250px in height and under 2MB in size', 'learnpress'); ?></small></p>
+					<div class="lpbox-title"><?php _e( 'Upload Picture', 'learnpress' ); ?></div>
+					<p class="description">
+						<small><?php _e( 'Please use an image that\'s at least 250px in width, 250px in height and under 2MB in size', 'learnpress' ); ?></small>
+					</p>
 					<div id="image-editor-wrap">
 						<div class="image-editor image-editor-sidebar-left">
 							<div class="cropit-preview"></div>
 							<div class="image-editor-btn">
-<!--							
-								<span class="rotate-ccw dashicons dashicons-image-rotate-left"></span>
-								<span class="rotate-cw dashicons dashicons-image-rotate-right"></span>
--->
+								<!--
+																<span class="rotate-ccw dashicons dashicons-image-rotate-left"></span>
+																<span class="rotate-cw dashicons dashicons-image-rotate-right"></span>
+								-->
 								<input type="range" class="cropit-image-zoom-input">
 							</div>
 						</div>
 						<div class="image-editor-sidebar-right">
-							<a href="#" id="lp-button-choose-file"><span class="dashicons dashicons-format-image"></span><?php _e( 'Choose File', 'learnpress' );?></a>
-							<a href="#" id="lp-button-apply-changes"><span class="dashicons dashicons-yes"></span>&nbsp;<?php _e( 'Apply Changes', 'learnpress' );?></a>
-							<a href="#" id="lp-button-cancel-changes"><span class="dashicons dashicons-no"></span><?php _e( 'Cancel', 'learnpress' );?></a>
+							<a href="#" id="lp-button-choose-file"><span class="dashicons dashicons-format-image"></span><?php _e( 'Choose File', 'learnpress' ); ?>
+							</a>
+							<a href="#" id="lp-button-apply-changes"><span class="dashicons dashicons-yes"></span>&nbsp;<?php _e( 'Apply Changes', 'learnpress' ); ?>
+							</a>
+							<a href="#" id="lp-button-cancel-changes"><span class="dashicons dashicons-no"></span><?php _e( 'Cancel', 'learnpress' ); ?>
+							</a>
 							<div id="lp-ocupload-picture"></div>
 						</div>
 					</div>
@@ -102,8 +117,8 @@ if ( $user ) :
 			</div>
 
 			<div class="user-nickname-wrap info-field">
-				<p class="profile-field-name"><?php _e( 'Nickname','learnpress' ); ?>
-					<span class="description"><?php _e( '(required)','learnpress' ); ?></span></p>
+				<p class="profile-field-name"><?php _e( 'Nickname', 'learnpress' ); ?>
+					<span class="description"><?php _e( '(required)', 'learnpress' ); ?></span></p>
 				<td>
 					<input type="text" name="nickname" id="nickname" value="<?php echo esc_attr( $user_info->nickname ) ?>" class="regular-text" />
 				</td>
@@ -170,11 +185,11 @@ if ( $user ) :
 			</p>
 		</form>
 	</div>
-<script type="text/template" id="learn-press-template-block-content">
- <div id="learn-press-block-content" class="popup-block-content">
-  <span></span>
- </div>
-</script>
+	<script type="text/template" id="learn-press-template-block-content">
+		<div id="learn-press-block-content" class="popup-block-content">
+			<span></span>
+		</div>
+	</script>
 	<?php
 endif;
 ?>

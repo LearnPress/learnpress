@@ -217,7 +217,7 @@ class LP_Assets {
 		$scripts->add( 'learn-press-timer', $default_path . 'js/jquery.timer' . $suffix . '.js', $deps, false, 1 );
 		$scripts->add( 'learn-press-checkout', $default_path . 'js/frontend/checkout' . $suffix . '.js', $deps, false, 1 );
 		$scripts->add( 'learn-press-become-teacher', $default_path . 'js/frontend/become-teacher' . $suffix . '.js', $deps, false, 1 );
-		$scripts->add( 'learn-press-profile', $default_path . 'js/frontend/profile' . $suffix . '.js', $deps, false, 1 );
+		$scripts->add( 'learn-press-profile', $default_path . 'js/frontend/profile' . $suffix . '.js', array( 'jquery', 'backbone', 'utils', 'plupload', 'jquery-ui-slider', 'jquery-ui-draggable' ), false, 1 );
 		$scripts->add( 'learn-press-jquery-cropit', $default_path . 'js/jquery.cropit' . $suffix . '.js', $deps, false, 1 );
 		$scripts->add( 'learn-press-jquery-ocupload', $default_path . 'js/jquery.ocupload' . $suffix . '.js', $deps, false, 1 );
 

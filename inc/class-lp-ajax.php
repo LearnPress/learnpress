@@ -27,14 +27,16 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 				'not_going'           => false,
 				'take_course'         => true,
 				'start_quiz'          => true,
-				'fetch_question'      => true
+				'fetch_question'      => true,
+				'upload-user-avatar'  => false
 			);
 
 			foreach ( $ajaxEvents as $ajax_event => $nopriv ) {
-				add_action( 'wp_ajax_learnpress_' . $ajax_event, array( __CLASS__, $ajax_event ) );
+				$ajax_func = preg_replace( '/-/', '_', $ajax_event );
+				add_action( 'wp_ajax_learnpress_' . $ajax_event, array( __CLASS__, $ajax_func ) );
 
 				if ( $nopriv ) {
-					add_action( 'wp_ajax_nopriv_learnpress_' . $ajax_event, array( __CLASS__, $ajax_event ) );
+					add_action( 'wp_ajax_nopriv_learnpress_' . $ajax_event, array( __CLASS__, $ajax_func ) );
 				}
 			}
 
@@ -64,6 +66,28 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 				return;
 			}
 			learn_press_send_json( $result );
+		}
+
+		public static function upload_user_avatar() {
+			$file = $_FILES['lp-upload-avatar'];
+			add_filter( 'upload_dir', array( __CLASS__, '_user_avatar_upload_dir' ) );
+			$result = wp_handle_upload( $file,
+				array(
+					'test_form' => false
+				)
+			);
+			remove_filter( 'upload_dir', array( __CLASS__, '_user_avatar_upload_dir' ) );
+
+			learn_press_send_json( $result );
+		}
+
+		public static function _user_avatar_upload_dir( $dir ) {
+			$subdir        = $dir['subdir'];
+			$dir['subdir'] = '/learnpress/user-avatar/' . get_current_user_id();
+			$dir['url']    = str_replace( $subdir, $dir['subdir'], $dir['url'] );
+			$dir['path']   = str_replace( $subdir, $dir['subdir'], $dir['path'] );
+
+			return $dir;
 		}
 
 		/**
