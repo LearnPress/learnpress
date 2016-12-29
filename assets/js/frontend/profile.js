@@ -32,12 +32,7 @@
 			up.files.splice(0, up.files.length - 1);
 			that.$('.lp-avatar-preview').addClass('uploading');
 			that.$('.lp-avatar-upload-progress-value').width(0);
-			setTimeout(function () {
-				that.uploader.setOption('multipart', true);
-				that.uploader.setOption('multipart_params', {xxx: 100});
-				that.uploader.start();
-			}, 1000);
-			console.log(up.files)
+			that.uploader.start();
 		},
 		uploadProgress: function (up, file) {
 			this.$('.lp-avatar-upload-progress-value').css('width', file.percent + "%");
@@ -135,6 +130,7 @@
 				stop : function () {
 					lx = parseInt($img.css('left'));
 					tx = parseInt($img.css('top'));
+					console.log(lx, tx);
 				}
 			})
 			$crop.find('.lp-zoom').slider({
