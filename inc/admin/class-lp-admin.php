@@ -26,14 +26,56 @@ if ( !class_exists( 'LP_Admin' ) ) {
 			add_filter( 'admin_footer_text', array( $this, 'admin_footer_text' ), 1 );
 
 			add_action( 'admin_notices', array( $this, 'notice_outdated_templates' ) );
-			add_action( 'init', array( $this, 'notice_required_permalink' ) );
+			add_action( 'admin_notices', array( $this, 'notice_setup_page' ) );
+			add_action( 'admin_notices', array( $this, 'notice_required_permalink' ) );
 
 		}
 
 		public function notice_required_permalink() {
-			if ( !get_option( 'permalink_structure' ) && current_user_can( 'manage_options' ) ) {
-				learn_press_add_notice( sprintf( __( 'LearnPress requires permalink option <strong>Post name</strong> is enabled. Please enable it <a href="%s">here</a> to ensure that all functions work properly.', 'learnpress' ), admin_url( 'options-permalink.php' ) ), 'error' );
+
+			if ( current_user_can( 'manage_options' ) ) {
+
+				if ( !get_option( 'permalink_structure' ) ) {
+					learn_press_add_notice( sprintf( __( 'LearnPress requires permalink option <strong>Post name</strong> is enabled. Please enable it <a href="%s">here</a> to ensure that all functions work properly.', 'learnpress' ), admin_url( 'options-permalink.php' ) ), 'error' );
+				}
 			}
+		}
+
+		public function notice_setup_page() {
+
+			$args = array(
+				array(
+					'name_option' => 'learn_press_profile_page_id',
+					'id'          => 'lp-admin-warning-profile',
+					'title'       => __( 'Profile Page', 'learnpress' ),
+					'url'         => admin_url( 'admin.php?page=learn-press-settings&tab=pages' )
+				),
+				array(
+					'name_option' => 'learn_press_checkout_page_id',
+					'id'          => 'lp-admin-warning-checkout',
+					'title'       => __( 'Checkout Page', 'learnpress' ),
+					'url'         => admin_url( 'admin.php?page=learn-press-settings&tab=checkout' )
+				),
+			);
+
+			$notice = '';
+
+			if ( current_user_can( 'manage_options' ) ) {
+
+				foreach ( $args as $arg ) {
+					$item_page_id   = get_option( $arg['name_option'] );
+					$item_transient = get_transient( $arg['id'] );
+					$item_page      = get_post( $item_page_id );
+
+					if ( empty( $item_transient ) && ( empty( $item_page_id ) || empty( $item_page ) ) ) {
+
+						$notice .= __( 'Learnpress requires set up ' . $arg['title'] . '. Please set it up ' . wp_kses( '<a href="' . $arg['url'] . '">' . 'here' . '</a>', array( 'a' => array( 'href' => array() ), 'br' => array() ) ) . ' to ensure that all functions work properly.  <br />', 'learnpress' );
+					}
+				}
+
+			}
+
+			return $notice ? learn_press_add_notice( $notice, 'error' ) : '';
 		}
 
 		public function notice_outdated_templates() {
