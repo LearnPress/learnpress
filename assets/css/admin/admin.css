@@ -105,10 +105,24 @@
   display: none;
 }
 #learn-press-admin-settings input[type="radio"] {
-  margin: 0 !important;
+  margin: 0;
 }
 #learn-press-admin-settings label {
   line-height: 1;
+}
+#learn-press-admin-settings input[name="learn_press_single_course_image_size[width]"],
+#learn-press-admin-settings input[name="learn_press_single_course_image_size[height]"],
+#learn-press-admin-settings input[name="learn_press_course_thumbnail_image_size[width]"],
+#learn-press-admin-settings input[name="learn_press_course_thumbnail_image_size[height]"] {
+  margin-top: -4px;
+}
+#learn-press-admin-settings input[name="learn_press_single_course_image_size[crop]"],
+#learn-press-admin-settings input[name="learn_press_course_thumbnail_image_size[crop]"] {
+  margin-top: 3px;
+}
+#learn-press-admin-settings input[name="learn_press_course_base"] {
+  margin-top: 3px;
+  margin-right: 3px;
 }
 /* message box */
 #learn-press-message-box-block {
@@ -286,6 +300,126 @@ li.quick_quiz {
 /*
 * Add on page
 */
+.learnpress-advertis-admin {
+  margin-left: 160px;
+  padding: 10px 20px;
+  position: relative;
+}
+.learnpress-advertis-admin > .item {
+  display: none;
+}
+.learnpress-advertis-admin > .item:first-child {
+  display: block;
+}
+.learnpress-advertis-admin .learnpress-wrap-items {
+  position: relative;
+  overflow: hidden;
+  -webkit-transition: visibility 1s, opacity 1s;
+  transition: visibility 1s, opacity 1s;
+  padding: 20px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  margin-bottom: 30px;
+}
+.learnpress-advertis-admin .theme-thumbnail {
+  float: left;
+  width: 35%;
+}
+.learnpress-advertis-admin .theme-detail {
+  margin-left: 35%;
+  padding-left: 20px;
+}
+.learnpress-advertis-admin .learnpress-item {
+  position: relative;
+  float: left;
+  margin-right: -100%;
+  width: 100%;
+  box-sizing: border-box;
+  visibility: hidden;
+  opacity: 0;
+  -webkit-transition: visibility 0.5s linear, opacity 0.5s linear;
+  transition: visibility 0.5s linear, opacity 0.5s linear;
+}
+.learnpress-advertis-admin img {
+  width: 100%;
+  height: auto;
+  float: none;
+}
+.learnpress-advertis-admin .learnpress-active {
+  visibility: visible;
+  opacity: 1;
+}
+.learnpress-advertis-admin .learnpress-controls {
+  position: absolute;
+  bottom: 30px;
+  left: 0;
+  right: 0;
+  height: 50px;
+  -ms-transform: translateY(-50%);
+  -webkit-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+.learnpress-advertis-admin .learnpress-controls:after {
+  content: '';
+  clear: both;
+  display: block;
+}
+.learnpress-advertis-admin .learnpress-controls .prev-item,
+.learnpress-advertis-admin .learnpress-controls .next-item {
+  position: absolute;
+  top: 0;
+  font-family: 'dashicons';
+  width: 40px;
+  height: 40px;
+  border: 1px solid #000;
+  line-height: 40px;
+  font-size: 16px;
+  color: #000;
+  cursor: pointer;
+}
+.learnpress-advertis-admin .learnpress-controls .prev-item {
+  right: 95px;
+}
+.learnpress-advertis-admin .learnpress-controls .prev-item:before {
+  content: "\f341";
+  display: block;
+  text-align: center;
+}
+.learnpress-advertis-admin .learnpress-controls .next-item {
+  right: 45px;
+}
+.learnpress-advertis-admin .learnpress-controls .next-item:before {
+  content: "\f345";
+  display: block;
+  text-align: center;
+}
+@media only screen and (max-width: 1200px) {
+  .learnpress-advertis-admin .theme-thumbnail {
+    width: 50%;
+  }
+  .learnpress-advertis-admin .theme-detail {
+    margin-left: 50%;
+  }
+}
+@media only screen and (max-width: 960px) {
+  .learnpress-advertis-admin {
+    margin-left: 36px;
+  }
+  .learnpress-advertis-admin .theme-thumbnail {
+    float: none;
+    width: 100%;
+  }
+  .learnpress-advertis-admin .theme-detail {
+    margin-top: 20px;
+    margin-left: 0;
+    padding-left: 0;
+  }
+}
+@media screen and (max-width: 782px) {
+  .learnpress-advertis-admin {
+    margin-left: 0;
+  }
+}
 .lpr-add-ons-wrapper .add-on-info {
   width: 65%;
   display: inline-block;
@@ -486,6 +620,11 @@ li.quick_quiz {
   background-color: #fff;
   border: 1px solid #ddd;
   overflow: hidden;
+  margin-bottom: 30px;
+}
+#learn-press-add-ons-wrap .theme-controls {
+  margin-top: 20px;
+  margin-bottom: 0;
 }
 #learn-press-add-ons-wrap .theme h2 {
   margin: 0 0 20px 0;

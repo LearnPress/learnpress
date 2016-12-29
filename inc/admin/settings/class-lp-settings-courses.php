@@ -57,6 +57,9 @@ class LP_Settings_Courses extends LP_Settings_Base {
 	}
 
 	public function get_settings() {
+
+		$generate_course_thumbnail = get_option( 'learn_press_generate_course_thumbnail' ) ? get_option( 'learn_press_generate_course_thumbnail' ) : 'no';
+
 		return apply_filters(
 			'learn_press_courses_settings',
 			array(
@@ -93,10 +96,10 @@ class LP_Settings_Courses extends LP_Settings_Base {
 					'type'    => 'checkbox'
 				),
 				array(
-					'title'   => __( 'Hide list of question in quiz', 'learnpress' ),
-					'desc'    => __( 'Hide list of question in quiz<br /> If this option is enabled, the course status will be changed to Pending Review when the instructor update course', 'learnpress' ),
+					'title'   => __( 'Show list of question in quiz', 'learnpress' ),
+					'desc'    => __( 'Show/Hide list questions in quiz.', 'learnpress' ),
 					'id'      => $this->get_field_name( 'disable_question_in_quiz' ),
-					'default' => 'no',
+					'default' => 'yes',
 					'type'    => 'checkbox'
 				),
 				array(
@@ -104,30 +107,39 @@ class LP_Settings_Courses extends LP_Settings_Base {
 					'type'  => 'title'
 				),
 				array(
-					'title'   => __( 'Courses limit', 'learnpress' ),
-					'desc'    => __( 'Number of courses displayed per page.', 'learnpress' ),
-					'id'      => $this->get_field_name( 'archive_course_limit' ),
-					'default' => '10',
-					'type'    => 'number',
-                    'custom_attributes' => array(
-                        'min' => '1'
-                    )
+					'title'             => __( 'Courses limit', 'learnpress' ),
+					'desc'              => __( 'Number of courses displayed per page.', 'learnpress' ),
+					'id'                => $this->get_field_name( 'archive_course_limit' ),
+					'default'           => '10',
+					'type'              => 'number',
+					'custom_attributes' => array(
+						'min' => '1'
+					)
 				),
 				array(
 					'title' => __( 'Course thumbnail', 'learnpress' ),
 					'type'  => 'title'
 				),
 				array(
+					'title'   => __( 'Extra thumbnail', 'learnpress' ),
+					'id'      => $this->get_field_name( 'generate_course_thumbnail' ),
+					'default' => 'yes',
+					'type'    => 'checkbox',
+					'desc'    => __( 'Turn on/off courses extra thumbnail', 'learnpress' ),
+				),
+				array(
 					'title'   => __( 'Single course', 'learnpress' ),
 					'id'      => $this->get_field_name( 'single_course_image_size' ),
 					'default' => array( 800, 450, 'yes' ),
-					'type'    => 'image-size'
+					'type'    => 'image-size',
+					'class'   => 'single-course-thumbnail' . ( ( $generate_course_thumbnail == 'no' ) ? ' hide-if-js' : '' )
 				),
 				array(
-					'title'   => __( 'Course thumbnail', 'learnpress' ),
+					'title'   => __( 'Courses page', 'learnpress' ),
 					'id'      => $this->get_field_name( 'course_thumbnail_image_size' ),
 					'default' => array( 400, 250, 'yes' ),
-					'type'    => 'image-size'
+					'type'    => 'image-size',
+					'class'   => 'archive-course-thumbnail' . ( ( $generate_course_thumbnail == 'no' ) ? ' hide-if-js' : '' )
 				),
 				array(
 					'title' => __( 'Single course permalink', 'learnpress' ),
