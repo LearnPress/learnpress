@@ -441,8 +441,9 @@ if ( !function_exists( 'leanrpress_advertise_in_admin' ) ) {
 
         $screen = get_current_screen();
 
-        if ( ( in_array($screen->post_type, $admin_post_type ) && $screen->base === 'edit' )
-        || ( in_array($screen->id, $pages ) ) ) {
+		if ( ( in_array( $screen->post_type, $admin_post_type ) && $screen->base === 'edit' )
+			|| ( in_array( $screen->id, $pages ) )
+		) {
 
             $current_theme = wp_get_theme();
 
@@ -2610,6 +2611,34 @@ function learn_press_is_added_to_cart( $course_id ) {
 	$cart = LP()->cart;
 	return $cart->has_item( $course_id );
 }
+
+/**
+ * Create some warning messages:
+ *  + LP Profile page is not setup
+ *  + LP Checkout page is not setup
+ */
+add_action( 'wp_ajax_lp_remove_admin_warning', 'lp_remove_admin_warning' );
+add_action( 'wp_ajax_nopriv_lp_remove_admin_warning', 'lp_remove_admin_warning' );
+
+if ( !function_exists( 'lp_remove_admin_warning' ) ) {
+
+	function lp_remove_admin_warning() {
+
+		if ( isset( $_POST['action'] ) && $_POST['action'] === 'lp_remove_admin_warning' && isset( $_POST['name'] ) ) {
+
+			if ( empty( $transient_profile ) ) {
+				set_transient( $_POST['name'], true, 60 * 60 * 12 ); // Cache in 24 hours
+			}
+			echo 'success';
+			wp_die();
+
+		}
+
+		echo 'error';
+		wp_die();
+	}
+}
+
 
 // Show filters for students list
 function learn_press_get_students_list_filter() {
