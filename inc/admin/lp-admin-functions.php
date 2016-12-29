@@ -266,7 +266,7 @@ function learn_press_email_formats_dropdown( $args = array() ) {
  * Translate javascript text
  */
 function learn_press_admin_localize_script() {
-	if ( defined( 'DOING_AJAX' ) || !is_admin() ) return;
+	if ( defined( 'LP_DOING_AJAX' ) || !is_admin() ) return;
 	$translate = array(
 		'quizzes_is_not_available' => __( 'Quiz is not available', 'learnpress' ),
 		'lessons_is_not_available' => __( 'Lesson is not available', 'learnpress' ),

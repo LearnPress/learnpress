@@ -36,12 +36,12 @@
 			_insertVariableToTextarea(edId, variable);
 			return;
 		}
-		if(activeEditor && $(activeEditor.getElement()).attr('id') == editorId){
+		if (activeEditor && $(activeEditor.getElement()).attr('id') == editorId) {
 			activeEditor.execCommand('insertHTML', false, variable);
-			if($(activeEditor.getElement()).is(':visible')){
+			if ($(activeEditor.getElement()).is(':visible')) {
 				_insertVariableToTextarea(edId, variable);
 			}
-		}else{
+		} else {
 
 		}
 	}
@@ -70,6 +70,14 @@
 	}
 
 	function _ready() {
+
+		var $generate_thumbnail = $('input[name="learn_press_generate_course_thumbnail"]').on('click', function () {
+			var toggle = !($(this).is(':checked'));
+			console.log(toggle);
+			$('.single-course-thumbnail').toggleClass('hide-if-js', toggle);
+			$('.archive-course-thumbnail').toggleClass('hide-if-js', toggle);
+		});
+		$generate_thumbnail.filter(':checked').trigger('change');
 
 		$('#learn_press_email_formats').change(function () {
 			$('.learn-press-email-template.' + this.value).removeClass('hide-if-js').siblings().addClass('hide-if-js');
