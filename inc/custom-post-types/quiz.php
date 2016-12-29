@@ -537,33 +537,18 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
                     #wp-admin-bar-view {
                         display: none;
                     }
-                    #sample-permalink a{
+                    #sample-permalink a {
                         pointer-events: none;
                         cursor: default;
                         text-decoration: none;
                         color: #666;
                     }
+                    #preview-action {
+                        display: none;
+                    }
                 </style>
 				<?php
 			}
-			else {
-			    ?>
-                <script type="application/javascript">
-                    (function ($){
-                        $(document).ready( function () {
-                            $('#sample-permalink a').click( function (event) {
-
-                                event.preventDefault();
-
-                                var $this = $(this);
-                                window.location = $this.text();
-
-                            });
-                        });
-                    })(jQuery)
-                </script>
-                <?php
-            }
 		}
 
 		public  function get_sample_permalink_html( $return, $post_id , $new_title, $new_slug, $post ) {
