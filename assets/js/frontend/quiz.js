@@ -194,6 +194,7 @@
 			this.set('remainingTime', args.totalTime - args.userTime);
 			LP.Hook.addFilter('learn_press_finish_quiz_data', this.getQuizData);
 
+			this.prepareQuestion( {delayTime: this.delayTime} )
 		},
 		_initQuestions       : function () {
 			this.questions = new List_Questions();
@@ -325,7 +326,44 @@
 					}
 				});
 			}
+
+			/* Prepare next question & prev question */
+            this.prepareQuestion(args)
 		},
+        prepareQuestion		 : function (args) {
+
+            var next = this.findNext(),
+				prev = this.findPrev();
+
+            if (next) {
+                this.prepareResponse(parseInt(next.get('id')), args);
+            }
+            if (prev) {
+                this.prepareResponse(parseInt(prev.get('id')), args);
+			}
+		},
+        prepareResponse		 : function (id, args) {
+
+            var question = this.questions.findWhere({id: parseInt(id)});
+
+            if (question.get('response')) {
+				return;
+			}
+
+            $.ajax({
+                url     : question.get('url'),
+                data    : $.extend({
+                    id       : question.get('id'),
+                    data     : $('form[name="quiz-question-content"]').serialize(),
+                    'lp-ajax': 'fetch-question'
+                }, args || {}),
+                dataType: 'html',
+                success : function (response) {
+                    var $html = $(response).contents().find('.learn-press-content-item-summary');
+                    question.set('response', $html);
+                }
+            });
+        },
 		getQuestionPosition  : function (question_id) {
 			question_id = question_id || this.get('question_id');
 			return _.indexOf(this.getIds(), question_id);
@@ -520,6 +558,7 @@
 			var delayTime = this.delayTime;
 			this._beforeFetchQuestion();
 			this.model.next(this._loadQuestionCompleted, {delayTime: delayTime});
+
 		},
 		_selectQuestion       : function (e) {
 			e.preventDefault();
@@ -723,7 +762,6 @@
 					windowTarget.LP.unblockContent();
 					that.$('#learn-press-content-item').html(response.html.content);
 					windowTarget.LP.setUrl(that.model.get('permalink'));
-					console.log('4444');
 					var data = response.course_result;
 					data.messageType = 'update-course';
 					LP.sendMessage(data, windowTarget);

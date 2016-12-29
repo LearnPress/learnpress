@@ -1,0 +1,330 @@
+.counter-group {
+    margin:  30px auto;
+    display: inline-block;
+}
+
+.counter-group:before,
+.counter-group:after {
+    content: " ";
+    display: table;
+}
+
+.counter-group:after {
+    clear: both;
+}
+
+.counter-block {
+    float:        left;
+    margin-right: 20px;
+}
+
+.counter-block .counter {
+    position:    relative;
+    width:       100px;
+    height:      50px;
+    overflow:    hidden;
+    font-weight: 700;
+}
+
+.counter-block .counter .number {
+    padding:          1%;
+    width:            46%;
+    height:           98%;
+    background-color: #fff;
+    color:            #444;
+    position:         absolute;
+    font-size:        40px;
+    line-height:      50px;
+    top:              -10000px;
+    text-align:       center;
+}
+
+.counter-block .counter .number.tens {
+    left: 0;
+}
+
+.counter-block .counter .number.units {
+    left: 50%;
+}
+
+.counter-block .counter .number.hundreds {
+    display: none;
+}
+
+.counter-block .counter .number.show {
+    top:     0;
+    z-index: 2;
+}
+
+.counter-block .counter .number.hidden-down {
+    top: 100%;
+}
+
+.counter-block .counter .number.hidden-up {
+    top:     -100%;
+    z-index: 100;
+}
+
+.counter-block .counter.with-hundreds {
+    width: 300px;
+}
+
+.counter-block .counter.with-hundreds .number {
+    width: 30.66%;
+}
+
+.counter-block .counter.with-hundreds .number.tens {
+    left: 33.33%;
+}
+
+.counter-block .counter.with-hundreds .number.units {
+    left: 66.66%;
+}
+
+.counter-block .counter.with-hundreds .number.hundreds {
+    display: block;
+    left:    0;
+}
+
+.counter-block .counter-caption {
+    font-size:  100%;
+    text-align: center;
+}
+
+.ob_discount {
+    background:    none repeat scroll 0 0 #000000;
+    border-radius: 3px;
+    height:        10px;
+    width:         100%;
+    clear:         both;
+    max-width:     300px;
+}
+
+.ob_sale {
+    background:    none repeat scroll 0 0 #CCCCCC;
+    border-radius: 2px;
+    height:        10px;
+}
+
+/*Product Categories*/
+/*Shortcode*/
+.ob_shortcode.woocommerce ul.products li.product {
+    width: auto;
+}
+.ob_shortcode .ob_discount {
+    width: 100%
+}
+.ob_shortcode .counter-block .counter .number {
+    font-size:   19px;
+    height:      auto;
+    line-height: 19px;
+    padding:     0;
+}
+.ob_shortcode .counter-block .counter {
+    height:      19px;
+    line-height: 19px;
+    margin:      0 auto;
+    width:       44px;
+}
+.ob_shortcode .counter-block .counter.with-hundreds {
+    width: 66px;
+}
+.ob_shortcode .counter-group {
+    margin: 10px auto;
+}
+.ob_shortcode .counter-block {
+    margin-right: 5px;
+}
+.ob_shortcode .counter-block .counter-caption {
+    font-size:      13px;
+    text-transform: capitalize;
+}
+/*Widget*/
+.ob_widget.woocommerce ul.products li.product {
+    width: auto;
+}
+.ob_widget .ob_discount {
+    width: 100%
+}
+.ob_widget .counter-block .counter .number {
+    font-size:   19px;
+    height:      auto;
+    line-height: 19px;
+    padding:     0;
+}
+.ob_widget .counter-block .counter {
+    height:      19px;
+    line-height: 19px;
+    margin:      0;
+    width:       40px;
+}
+.ob_widget .counter-block .counter.with-hundreds {
+    width: 60px;
+}
+.ob_widget .counter-group {
+    margin: 10px auto;
+}
+.ob_widget .counter-block {
+    margin-right: 0;
+}
+.ob_widget .counter-block .counter-caption {
+    font-size:      10px;
+    text-transform: capitalize;
+}
+/*Categories*/
+/*Widget*/
+.ob_categories.woocommerce ul.products li.product {
+    width: 200px;
+}
+.ob_categories .ob_discount {
+    width: 100%
+}
+.ob_categories .counter-block .counter .number {
+    font-size:   19px;
+    height:      auto;
+    line-height: 19px;
+    padding:     0;
+    margin:      0;
+}
+.ob_categories .counter-block .counter {
+    height:      15px;
+    height:      19px;
+    line-height: 19px;
+    margin:      0 auto;
+    width:       44px;
+}
+.ob_categories .counter-block .counter.with-hundreds {
+    width: 66px;
+}
+.ob_categories .counter-group {
+    margin: 10px auto;
+}
+.ob_categories .counter-block {
+    margin-right: 0;
+}
+.ob_categories .counter-block .counter-caption {
+    font-size:      13px;
+    text-transform: capitalize;
+}
+/*Detail*/
+.widget_product_detail .counter-block .counter .number {
+    width:   29px;
+    margin:  0;
+    padding: 0;
+}
+.widget_product_detail .counter-block .counter {
+    width: 61px;
+}
+.widget_product_detail .counter-block .counter.with-hundreds {
+    width: 91px;
+}
+.ob_categories {
+    min-width: 200px;
+}
+.ob_product_avariable_detail:not(:first-child) {
+    display: none;
+}
+@media (max-width: 992px) {
+    .counter-group {
+        margin: 10px auto;
+    }
+    .counter-block {
+        margin-right: 10px;
+    }
+    .counter-block .counter {
+        width:       120px;
+        height:      100px;
+        overflow:    hidden;
+        font-weight: 700;
+    }
+    .counter-block .counter.with-hundreds {
+        width: 180px;
+    }
+    .counter-block .counter .number {
+        font-size:   78px;
+        line-height: 90px;
+    }
+    .counter-block .counter-caption {
+        font-size: 100%;
+    }
+    /*Detail*/
+    .widget_product_detail .counter-block .counter .number {
+        width: 45px;
+    }
+    .widget_product_detail .counter-block .counter {
+        width: 95px;
+    }
+}
+
+@media (max-width: 768px) {
+    .counter-group {
+        margin: 0 auto;
+    }
+    .counter-block {
+        margin-right: 8px;
+    }
+    .counter-block .counter {
+        width:  96px;
+        height: 80px;
+    }
+    .counter-block .counter.with-hundreds {
+        width: 144px;
+    }
+    .counter-block .counter .number {
+        font-size:   78px;
+        line-height: 72px;
+    }
+    .counter-block .counter.with-hundreds {
+        width: 144px;
+    }
+    .counter-block .counter-caption {
+        font-size: 85%;
+    }
+}
+
+@media (max-width: 480px) {
+    .counter-block .counter {
+        width:  61px;
+        height: 52px;
+    }
+    .counter-block .counter .number {
+        font-size:   55px;
+        line-height: 50px;
+    }
+    .counter-block .counter.with-hundreds {
+        width: 91px;
+    }
+    .counter-block .counter-caption {
+        font-size: 70%;
+    }
+    .widget_product_detail .counter-block .counter {
+        width: 70px;
+    }
+    .widget_product_detail .counter-block .counter .number {
+        font-size: 40px;
+        width:     31px;
+    }
+}
+
+.ob_wrapper {
+    clear: both;
+}
+/*Fix short code on revolution slider*/
+.ob_shortcode > ul.shortcode_products li {
+    visibility: visible;
+}
+code.thim-position-code {
+    background: #FFD1B6;
+    font-size: smaller;
+    font-style: italic;
+    color: #FFF;
+    padding: 2px 5px;
+    white-space: nowrap;
+    margin: 0 3px 0 0;
+    position: relative;
+    z-index: 999;
+    display: block;
+}
+.thim-countdown{
+    clear: both;
+}
