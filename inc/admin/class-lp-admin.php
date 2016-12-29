@@ -58,24 +58,41 @@ if ( !class_exists( 'LP_Admin' ) ) {
 				),
 			);
 
-			$notice = '';
-
 			if ( current_user_can( 'manage_options' ) ) {
 
-				foreach ( $args as $arg ) {
+				$notice = esc_html__( 'The following required page(s) are currently missing: ', 'learnpress' );
+				$count  = 0;
+				$pages  = array();
+
+				foreach ( $args as $key => $arg ) {
 					$item_page_id   = get_option( $arg['name_option'] );
 					$item_transient = get_transient( $arg['id'] );
 					$item_page      = get_post( $item_page_id );
 
 					if ( empty( $item_transient ) && ( empty( $item_page_id ) || empty( $item_page ) ) ) {
+						$count ++;
+						$pages[] = array(
+							'url'   => $arg['url'],
+							'title' => $arg['title']
+						);
 
-						$notice .= __( 'Learnpress requires set up ' . $arg['title'] . '. Please set it up ' . wp_kses( '<a href="' . $arg['url'] . '">' . 'here' . '</a>', array( 'a' => array( 'href' => array() ), 'br' => array() ) ) . ' to ensure that all functions work properly.  <br />', 'learnpress' );
 					}
 				}
 
-			}
+				foreach ( $pages as $key => $page ) {
+					if ( $key == ( $count - 1 ) && $count != 1 ) {
+						$notice .= esc_html__( ' and ', 'learnpress' );
+					}
+					$notice .= __( wp_kses( '<a href="' . $page['url'] . '">' . $page['title'] . '</a>', array( 'a' => array( 'href' => array() ) ) ), 'learnpress' );
+				}
 
-			return $notice ? learn_press_add_notice( $notice, 'error' ) : '';
+
+				$notice .= '.' . esc_html__( ' Please click to the link to set it up, ensure all functions work properly.', 'learnpress' );
+
+				return $count ? learn_press_add_notice( $notice, 'error' ) : '';
+			}
+			return '';
+
 		}
 
 		public function notice_outdated_templates() {
