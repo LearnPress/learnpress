@@ -118,21 +118,14 @@
 				lx = -(wx - data.viewWidth) / 2;
 			}
 			$img.draggable({
-				start: function () {
-					return;
-					$img.css({
-						left      : $img.css('margin-left'),
-						top       : $img.css('margin-top'),
-						marginTop : 0,
-						marginLeft: 0
-					})
-				},
-				stop : function () {
+				stop: function () {
 					lx = parseInt($img.css('left'));
 					tx = parseInt($img.css('top'));
 					console.log(lx, tx);
 				}
-			})
+			});
+			console.log(lx, tx);
+
 			$crop.find('.lp-zoom').slider({
 				create: function () {
 					$img.css({
@@ -142,12 +135,6 @@
 						left  : lx
 					})
 				},
-				start : function (e, ui) {
-					$(this).data({
-						top : $img.css('top'),
-						left: $img.css('left')
-					});
-				},
 				slide : function (e, ui) {
 					var $this = $(this),
 						nw = wx + (ui.value / 100) * data.width * 2,
@@ -156,8 +143,9 @@
 						width : nw,
 						height: nh,
 						top   : tx + (data.viewHeight - nh) / 2,
-						left  : lx + (data.viewWidth - nw) / 2
+						left  : (data.viewWidth - nw) / 2
 					})
+					console.log(lx / 2, lx, tx)
 				}
 			});
 		}
