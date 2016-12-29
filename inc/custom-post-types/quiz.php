@@ -35,9 +35,10 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 			add_filter( 'page_row_actions', array( $this, 'remove_view_link' ), 10, 2 );
 
 			/**
-			 * Hide View Quiz link if not assinged to Course
+			 * Hide View Quiz link if not assigned to Course
 			 */
 			add_action( 'admin_footer', array( $this, 'hide_view_quiz_link_if_not_assigned' ) );
+
 			parent::__construct( $post_type, $args );
 		}
 
@@ -515,7 +516,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 */
 		public function remove_view_link( $actions, $post ) {
 			$post_id = $post->ID;
-			if ( $post->post_type === LP_QUIZ_CPT && !learn_press_get_quiz_course_id( $post->ID ) ) {
+			if ( $post->post_type === LP_QUIZ_CPT && !learn_press_get_item_course_id( $post->ID, $post->post_type ) ) {
 				unset( $actions['view'] );
 			}
 			return $actions;
@@ -530,17 +531,50 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 			if ( !$post ) {
 				return;
 			}
-			if ( $current_screen->id === LP_QUIZ_CPT && !learn_press_get_quiz_course_id( $post->ID ) ) {
+			if ( $current_screen->id === LP_QUIZ_CPT && !learn_press_get_item_course_id( $post->ID, $post->post_type ) ) {
 				?>
                 <style type="text/css">
-                    #wp-admin-bar-view,
-                    #edit-slug-box {
+                    #wp-admin-bar-view {
                         display: none;
+                    }
+                    #sample-permalink a{
+                        pointer-events: none;
+                        cursor: default;
+                        text-decoration: none;
+                        color: #666;
                     }
                 </style>
 				<?php
 			}
+			else {
+			    ?>
+                <script type="application/javascript">
+                    (function ($){
+                        $(document).ready( function () {
+                            $('#sample-permalink a').click( function (event) {
+
+                                event.preventDefault();
+
+                                var $this = $(this);
+                                window.location = $this.text();
+
+                            });
+                        });
+                    })(jQuery)
+                </script>
+                <?php
+            }
 		}
+
+		public  function get_sample_permalink_html( $return, $post_id , $new_title, $new_slug, $post ) {
+
+		    if ( $post->post_type == 'lp_quiz' ) {
+		        var_dump($return);
+            }
+
+		    return $return;
+
+        }
 
 		public static function instance() {
 			if ( !self::$_instance ) {

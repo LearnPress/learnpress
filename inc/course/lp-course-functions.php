@@ -570,6 +570,40 @@ if ( !function_exists( 'learn_press_get_course_item_url' ) ) {
 	}
 }
 
+if ( !function_exists( 'learn_press_get_sample_link_course_item_url' ) ) {
+
+    function learn_press_get_sample_link_course_item_url( $item_id = null) {
+
+        if ( !$item_id ) {
+            return;
+        }
+
+        $permalink          = get_the_permalink( $item_id );
+        $course_page_id     = get_option( 'learn_press_courses_page_id' );
+
+        if ( !empty($course_page_id) && get_post( $course_page_id ) != false ) {
+
+            $post_types     = get_post_types( null, 'objects' );
+            $item_type      = get_post_type( $item_id );
+            $permalink      = trailingslashit( get_the_permalink( $course_page_id ) );
+            $course_slug    = basename( $permalink );
+            $permalink      = str_replace( $course_slug, 'course/sample-course', $permalink );
+            $post_name      = get_post_field( 'post_name', $item_id );
+            $prefix         = preg_replace( '!^/!', '', trailingslashit( $post_types[$item_type]->rewrite['slug'] ) );
+
+            if ( '' != get_option( 'permalink_structure' ) && get_post_status( $course_page_id ) != 'draft' ) {
+                $permalink .= $prefix . $post_name;
+            }
+            else {
+                $key       = preg_replace( '!lp_!', '', get_post_type( $item_id ) );
+                $permalink = add_query_arg( array( $key => $post_name ), $permalink );
+            }
+        }
+        return $permalink;
+
+    }
+}
+
 if ( !function_exists( 'learn_press_get_nav_course_item_url' ) ) {
 	function learn_press_get_nav_course_item_url( $course_id = null, $item_id = null, $content_only = false ) {
 		$course           = learn_press_get_course( $course_id );
@@ -634,4 +668,104 @@ if ( !function_exists( 'learn_press_get_nav_course_item' ) ) {
 		';
 		echo $nav_html;
 	}
+}
+/**
+ * Update url lesson & quiz in admin page
+ */
+
+if ( !function_exists( 'learn_press_get_item_course_id' ) ) {
+
+    function learn_press_get_item_course_id( $post_id , $post_type ) {
+
+        global $wpdb;
+
+        /**
+         * Get Course id by Quiz post_id
+         *
+         * @global type $wpdb
+         *
+         * @param type  $post_id
+         *
+         * @return $course_id
+         */
+        if ( $post_type == LP_QUIZ_CPT ) {
+            $query = $wpdb->prepare( "SELECT section.section_course_id FROM {$wpdb->learnpress_sections} AS section"
+                . " INNER JOIN {$wpdb->learnpress_section_items} AS item ON item.section_id = section.section_id"
+                . " INNER JOIN {$wpdb->posts} AS course ON course.ID = section.section_course_id"
+                . " WHERE course.post_type = %s"
+                . " AND course.post_status = %s"
+                . " AND item.item_type = %s"
+                . " AND item.item_id = %d"
+                . " LIMIT 1", LP_COURSE_CPT, 'publish', LP_QUIZ_CPT, $post_id );
+
+            return apply_filters( 'learn_press_get_quiz_course_id', absint( $wpdb->get_var( $query ) ), $post_id );
+        }
+
+        /**
+         * Get Course id by Lesson post_id
+         *
+         * @global type $wpdb
+         *
+         * @param type  $post_id
+         *
+         * @return $course_id
+         */
+
+        if ( $post_type == LP_LESSON_CPT ) {
+
+            $query = $wpdb->prepare( "SELECT section.section_course_id FROM {$wpdb->learnpress_sections} AS section"
+                . " INNER JOIN {$wpdb->learnpress_section_items} AS item ON item.section_id = section.section_id"
+                . " INNER JOIN {$wpdb->posts} AS course ON course.ID = section.section_course_id"
+                . " WHERE course.post_type = %s"
+                . " AND course.post_status = %s"
+                . " AND item.item_type = %s"
+                . " AND item.item_id = %d"
+                . " LIMIT 1", LP_COURSE_CPT, 'publish', LP_LESSON_CPT, $post_id );
+
+            return apply_filters( 'learn_press_get_lesson_course_id', absint( $wpdb->get_var( $query ) ), $post_id );
+
+        }
+
+    }
+}
+
+add_filter('get_sample_permalink', 'learn_press_item_sample_permalink', 10, 5);
+
+if ( !function_exists( 'learn_press_item_sample_permalink' ) ) {
+
+    function learn_press_item_sample_permalink( $permalink, $post_id, $title, $name, $post ){
+
+        $permalink  = str_replace( '/' .$post->post_name, '/%pagename%' , $permalink );
+        return  $permalink;
+    }
+
+}
+
+add_filter( 'post_type_link', 'learn_press_quiz_permalink', 10, 2 );
+
+if ( !function_exists( 'learn_press_quiz_permalink' ) ) {
+
+    function learn_press_quiz_permalink( $permalink, $post ) {
+
+        if( !empty(LP()->global['item_permalinks'][$post->ID])){
+            return LP()->global['item_permalinks'][$post->ID];
+        }
+        remove_filter( 'post_type_link', 'learn_press_quiz_permalink', 10);
+
+        if ( $post->post_type !== LP_QUIZ_CPT && $post->post_type !== LP_LESSON_CPT) {
+            return $permalink;
+        }
+
+        $course_id = learn_press_get_item_course_id( $post->ID, $post->post_type );
+        if ( $course_id ) {
+            $permalink = learn_press_get_course_item_url( $course_id, $post->ID );
+        }
+        else {
+
+            $permalink = learn_press_get_sample_link_course_item_url( $post->ID );
+        }
+        LP()->global['item_permalinks'][$post->ID] = $permalink;
+        add_filter( 'post_type_link', 'learn_press_quiz_permalink', 10, 2 );
+        return $permalink;
+    }
 }

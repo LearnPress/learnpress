@@ -17,7 +17,14 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 		 * @param $post_type
 		 */
 		public function __construct( $post_type ) {
+
 			$this->add_map_method( 'before_delete', 'delete_course_item' );
+
+            /**
+             * Hide View Quiz link if not assigned to Course
+             */
+            add_action( 'admin_footer', array( $this, 'hide_view__link_if_not_assigned' ) );
+
 			parent::__construct( $post_type );
 		}
 
