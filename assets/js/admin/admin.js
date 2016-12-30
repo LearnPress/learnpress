@@ -916,48 +916,184 @@ jQuery(document).ready(function ($) {
 		}
 	});
 
-	/* Search Addon & Theme */
-	var $wrapAddon 	= $('#learn-press-add-ons-wrap'),
-		$addOnClone = $wrapAddon.clone(true);
+	$.fn.learnpressSlider = function (opts) {
 
-	$wrapAddon.data('addOnClone', $addOnClone);
-    $wrapAddon.on('keydown change', '.lp-search-addon', function (event) {
+		var $self = $(this),
+			defaults = {
+				active: 0
+			},
+			options = $.extend(defaults, $self.data(), opts);
 
-		var $this = $(this);
+		var LeanpressSlider = {
 
-		setTimeout ( function () {
+			$el			: $self,
+			options		: options,
+			$items		: [],
+			$control	: $('<div class="learnpress-controls"><div class="next-item"></div><div class="prev-item"></div></div>'),
+			$wrapSlider : $('<div class="learnpress-wrap-items"></div>'),
 
-            var txt 			= $this.val(),
-				$clone 			= $wrapAddon.data('addOnClone').clone(true),
-                $wrapFreeAddon 	= $('.learnpress-free-plugin-wrap', $clone),
-                $wrapPremium 	= $('.learnpress-premium-plugin-wrap', $clone);
+			init		: function () {
 
-            txt = txt.trim().toUpperCase();
+				var _this = this;
 
-            $('.plugin-card-learnpress', $clone).each( function (index, item) {
+				_this.createHTML();
+				_this.events();
 
-            	var $that = $(this),
-					title;
+				_this.$el.data({
+					'LearnpressSlider' 			: _this,
+					'LearnpressSliderOptions'	: _this.options
+				});
+			},
 
-            	if ( $('.theme-title > a', this).length ) { // Get title in tab Related Themes
-					title = $('.theme-title > a', this).text();
+            createHTML: function () {
+
+				var _this 			= this;
+
+				$('> *', _this.$el).each( function (index, item) {
+
+					_this.$items.push( $(this) );
+					$(this).addClass( 'learnpress-item' );
+					_this.$wrapSlider.append( this );
+
+				});
+
+                _this.$el.append(_this.$wrapSlider).append(_this.$control);
+                _this.activeItem(_this.options.active);
+
+			},
+
+			activeItem: function (index) {
+
+				var _this 	= this,
+					$item 	= _this.$items[index];
+
+				if ( _this.$currentActive ) {
+					_this.$currentActive.removeClass('learnpress-active');
 				}
-				else if ( $('.plugin-card-top .column-name h3', this) ) { // Get title in tab Instaled & Plugin
-            		title = $('.plugin-card-top .column-name h3', this).text();
+				$item.addClass('learnpress-active');
+				_this.currentActive = index;
+				_this.$currentActive = $item;
+
+			},
+
+			nextItem: function () {
+
+
+                var _this 	= this,
+					index 	= _this.currentActive + 1;
+
+                if ( index >= _this.totalItems ) {
+                    index = 0;
+                }
+
+                _this.activeItem(index);
+			},
+
+			prevItem: function () {
+
+				var _this = this,
+					index = _this.currentActive - 1;
+
+				if ( index <= -1 ) {
+                    index = _this.totalItems - 1;
 				}
-				title = title.trim().toUpperCase();
 
-            	if ( txt != '' && title.indexOf(txt) == -1) {
-					$that.remove();
-				}
-			});
+                _this.activeItem(index);
 
-            $('.learnpress-count-addon', $wrapFreeAddon).text($('.plugin-card-learnpress:not(.lp-addon-hidden)', $wrapFreeAddon).length);
-            $('.learnpress-count-addon', $wrapPremium).text($('.plugin-card-learnpress:not(.lp-addon-hidden)', $wrapPremium).length);
 
-            $('> .learn-press-add-ons', $wrapAddon).remove();
-            $wrapAddon.append($('> .learn-press-add-ons', $clone));
+			},
 
-        }, 100);
+            events: function () {
+
+				var _this = this;
+
+				_this.$btnNext 		= $('.next-item', _this.$control);
+				_this.$btnPrev 		= $('.prev-item', _this.$control);
+				_this.totalItems 	= _this.$items.length;
+
+
+                _this.$btnNext.on('click', function () {
+					_this.nextItem();
+				});
+
+                _this.$btnPrev.on('click', function () {
+					_this.prevItem();
+				});
+
+                $(window).resize( function () {
+
+				});
+			}
+
+		};
+
+        LeanpressSlider.init();
+
+	};
+
+	$(document).ready( function() {
+
+		/* Search Addon & Theme */
+
+        var $wrapAddon 	= $('#learn-press-add-ons-wrap'),
+            $addOnClone = $wrapAddon.clone(true);
+
+        $wrapAddon.data('addOnClone', $addOnClone);
+        $wrapAddon.on('keydown change', '.lp-search-addon', function (event) {
+
+            var $this = $(this);
+
+            setTimeout ( function () {
+
+                var txt 					= $this.val(),
+                    $clone 					= $wrapAddon.data('addOnClone').clone(true),
+                    $wrapFreeAddon 			= $('.learnpress-free-plugin-wrap', $clone),
+                    $wrapPremium 			= $('.learnpress-premium-plugin-wrap', $clone),
+					$wrapThemesEducation	= $('.learnpress-theme-education', $clone),
+					$wrapThemesOther		= $('.learnpress-theme-other', $clone);
+
+                txt = txt.trim().toUpperCase();
+
+                $('.plugin-card-learnpress', $clone).each( function (index, item) {
+
+                    var $that = $(this),
+                        title;
+
+                    if ( $('.theme-title > a', this).length ) { // Get title in tab Related Themes
+                        title = $('.theme-title > a', this).text();
+                    }
+                    else if ( $('.plugin-card-top .column-name h3', this) ) { // Get title in tab Instaled & Plugin
+                        title = $('.plugin-card-top .column-name h3', this).text();
+                    }
+                    title = title.trim().toUpperCase();
+
+                    if ( txt != '' && title.indexOf(txt) == -1) {
+                        $that.remove();
+                    }
+                });
+
+                /* Count for plugin */
+                $('.learnpress-count-addon', $wrapFreeAddon).text($('.plugin-card-learnpress:not(.lp-addon-hidden)', $wrapFreeAddon).length);
+                $('.learnpress-count-addon', $wrapPremium).text($('.plugin-card-learnpress:not(.lp-addon-hidden)', $wrapPremium).length);
+
+				/* Count for theme */
+                $('.learnpress-count', $wrapThemesEducation).text($('.plugin-card-learnpress:not(.lp-addon-hidden)', $wrapThemesEducation).length);
+                $('.learnpress-count', $wrapThemesOther).text($('.plugin-card-learnpress:not(.lp-addon-hidden)', $wrapThemesOther).length);
+
+                $('> .learn-press-add-ons', $wrapAddon).remove();
+                $wrapAddon.append($('> .learn-press-add-ons', $clone));
+
+            }, 100);
+        });
+
 	});
+
+	$(window).load( function () {
+
+		/* Slider Advertise Themes */
+		if ( $('.learnpress-advertis-admin').length ) {
+            $('.learnpress-advertis-admin').learnpressSlider();
+		}
+	});
+
 })(jQuery);

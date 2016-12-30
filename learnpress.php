@@ -388,11 +388,11 @@ if ( !class_exists( 'LearnPress' ) ) {
 				case 'admin' :
 					return is_admin();
 				case 'ajax' :
-					return defined( 'DOING_AJAX' );
+					return defined( 'LP_DOING_AJAX' );
 				case 'cron' :
 					return defined( 'DOING_CRON' );
 				case 'frontend' :
-					return ( !is_admin() || defined( 'DOING_AJAX' ) ) && !defined( 'DOING_CRON' );
+					return ( !is_admin() || defined( 'LP_DOING_AJAX' ) ) && !defined( 'DOING_CRON' );
 			}
 		}
 

@@ -24,10 +24,75 @@ if ( !class_exists( 'LP_Admin' ) ) {
 			add_action( 'delete_user_form', array( $this, 'delete_user_form' ) );
 			add_action( 'wp_ajax_learn_press_rated', array( $this, 'rated' ) );
 			add_filter( 'admin_footer_text', array( $this, 'admin_footer_text' ), 1 );
-			if ( !get_option( 'permalink_structure' ) ) {
-				learn_press_add_notice( sprintf( __( 'LearnPress requires permalink option <strong>Post name</strong> is enabled. Please enable it <a href="%s">here</a> to ensure that all functions work properly.', 'learnpress' ), admin_url( 'options-permalink.php' ) ), 'error' );
-			}
+
 			add_action( 'admin_notices', array( $this, 'notice_outdated_templates' ) );
+			add_action( 'admin_notices', array( $this, 'notice_setup_page' ) );
+			add_action( 'admin_notices', array( $this, 'notice_required_permalink' ) );
+
+		}
+
+		public function notice_required_permalink() {
+
+			if ( current_user_can( 'manage_options' ) ) {
+
+				if ( !get_option( 'permalink_structure' ) ) {
+					learn_press_add_notice( sprintf( __( 'LearnPress requires permalink option <strong>Post name</strong> is enabled. Please enable it <a href="%s">here</a> to ensure that all functions work properly.', 'learnpress' ), admin_url( 'options-permalink.php' ) ), 'error' );
+				}
+			}
+		}
+
+		public function notice_setup_page() {
+
+			$args = array(
+				array(
+					'name_option' => 'learn_press_profile_page_id',
+					'id'          => 'lp-admin-warning-profile',
+					'title'       => __( 'Profile Page', 'learnpress' ),
+					'url'         => admin_url( 'admin.php?page=learn-press-settings&tab=pages' )
+				),
+				array(
+					'name_option' => 'learn_press_checkout_page_id',
+					'id'          => 'lp-admin-warning-checkout',
+					'title'       => __( 'Checkout Page', 'learnpress' ),
+					'url'         => admin_url( 'admin.php?page=learn-press-settings&tab=checkout' )
+				),
+			);
+
+			if ( current_user_can( 'manage_options' ) ) {
+
+				$notice = esc_html__( 'The following required page(s) are currently missing: ', 'learnpress' );
+				$count  = 0;
+				$pages  = array();
+
+				foreach ( $args as $key => $arg ) {
+					$item_page_id   = get_option( $arg['name_option'] );
+					$item_transient = get_transient( $arg['id'] );
+					$item_page      = get_post( $item_page_id );
+
+					if ( empty( $item_transient ) && ( empty( $item_page_id ) || empty( $item_page ) ) ) {
+						$count ++;
+						$pages[] = array(
+							'url'   => $arg['url'],
+							'title' => $arg['title']
+						);
+
+					}
+				}
+
+				foreach ( $pages as $key => $page ) {
+					if ( $key == ( $count - 1 ) && $count != 1 ) {
+						$notice .= esc_html__( ' and ', 'learnpress' );
+					}
+					$notice .= __( wp_kses( '<a href="' . $page['url'] . '">' . $page['title'] . '</a>', array( 'a' => array( 'href' => array() ) ) ), 'learnpress' );
+				}
+
+
+				$notice .= '.' . esc_html__( ' Please click to the link to set it up, ensure all functions work properly.', 'learnpress' );
+
+				return $count ? learn_press_add_notice( $notice, 'error' ) : '';
+			}
+			return '';
+
 		}
 
 		public function notice_outdated_templates() {
@@ -62,7 +127,7 @@ if ( !class_exists( 'LP_Admin' ) ) {
 				if ( !get_option( 'learn_press_message_user_rated' ) ) {
 					$footer_text = sprintf( __( 'If you like <strong>LearnPress</strong> please leave us a %s&#9733;&#9733;&#9733;&#9733;&#9733;%s rating. A huge thanks in advance!', 'learnpress' ), '<a href="https://wordpress.org/support/plugin/learnpress/reviews/?filter=5#postform" target="_blank" class="lp-rating-link" data-rated="' . esc_attr__( 'Thanks :)', 'learnpress' ) . '">', '</a>' );
 					ob_start(); ?>
-					<script type="text/javascript">
+                    <script type="text/javascript">
 						var $ratingLink = $('a.lp-rating-link').click(function (e) {
 							$.ajax({
 								url    : '<?php echo admin_url( 'admin-ajax.php' );?>',
@@ -74,7 +139,7 @@ if ( !class_exists( 'LP_Admin' ) ) {
 								}
 							});
 						});
-					</script>
+                    </script>
 					<?php
 					$code = ob_get_clean();
 					LP_Assets::add_script_tag( $code, '__all' );
