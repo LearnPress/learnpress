@@ -77,7 +77,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 				)
 			);
 			remove_filter( 'upload_dir', array( __CLASS__, '_user_avatar_upload_dir' ) );
-
+			$dir = dirname($result['file']);
 			learn_press_send_json( $result );
 		}
 

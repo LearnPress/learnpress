@@ -1863,6 +1863,9 @@ body.block-content #learn-press-block-content {
   /* Change Picture Menu */
   /** upload-crop box **/
 }
+.learn-press-user-profile #lp-user-edit-avatar .moxie-shim {
+  display: none;
+}
 .learn-press-user-profile .lp-avatar-preview {
   position: relative;
   float: left;
@@ -1955,20 +1958,47 @@ body.block-content #learn-press-block-content {
 .learn-press-user-profile .lp-avatar-preview.croping .lp-avatar-crop-image img {
   max-width: inherit;
 }
-.learn-press-user-profile .lp-avatar-preview.croping .lp-avatar-crop-image .ui-slider {
+.learn-press-user-profile .lp-avatar-preview.croping .lp-avatar-crop-image .lp-crop-controls {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 30px;
+}
+.learn-press-user-profile .lp-avatar-preview.croping .lp-avatar-crop-image .lp-crop-controls .lp-zoom {
   position: absolute;
   height: 10px;
   bottom: 10px;
   left: 10px;
-  right: 10px;
+  right: 30px;
   background: #FF0000;
 }
-.learn-press-user-profile .lp-avatar-preview.croping .lp-avatar-crop-image .ui-slider .ui-slider-handle {
+.learn-press-user-profile .lp-avatar-preview.croping .lp-avatar-crop-image .lp-crop-controls .lp-zoom .ui-slider {
+  position: absolute;
+  left: 0;
+  right: 10px;
+  height: 100%;
+}
+.learn-press-user-profile .lp-avatar-preview.croping .lp-avatar-crop-image .lp-crop-controls .lp-zoom .ui-slider .ui-slider-handle {
   display: inline-block;
   width: 10px;
   height: 10px;
   background: #ffffff;
   position: absolute;
+}
+.learn-press-user-profile .lp-avatar-preview.croping .lp-avatar-crop-image .lp-crop-controls .lp-cancel-upload {
+  text-decoration: none;
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  box-shadow: none;
+}
+.learn-press-user-profile .lp-avatar-preview.croping .lp-avatar-crop-image .lp-crop-controls:before {
+  position: absolute;
+  height: 30px;
+  width: 100%;
+  content: '';
+  background: #000;
+  opacity: 0.5;
 }
 .learn-press-user-profile .lp-avatar-preview:after {
   display: block;

@@ -10,7 +10,8 @@
 	UserProfile.View = Backbone.View.extend({
 		events        : {
 			'click #lp-remove-upload-photo': '_removePhoto',
-			'click #lp-upload-photo'       : '_upload'
+			'click #lp-upload-photo'       : '_upload',
+			'click .lp-cancel-upload'       : '_cancel'
 		},
 		el            : 'body',
 		uploader      : null,
@@ -26,6 +27,11 @@
 		},
 		_upload       : function (e) {
 			e.preventDefault();
+		},
+		_cancel       : function (e) {
+			e.preventDefault();
+			this.$crop && this.$crop.remove();
+			this.$('.lp-avatar-preview').removeClass('croping');
 		},
 		filesAdded    : function (up, files) {
 			var that = this;
@@ -60,6 +66,7 @@
 			}
 		},
 		crop          : function () {
+			this.model.set('r', Math.random())
 			new UserProfile.Crop(this);
 		},
 		_getUploader  : function () {
@@ -91,17 +98,20 @@
 			return this.uploader;
 		}
 	});
-
+	console.log(-391 > -391);
 	UserProfile.Model = Backbone.Model.extend({});
 	UserProfile.Crop = function ($view) {
 		var data = $view.model.toJSON(),
 			$crop = $(LP.template('tmpl-crop-user-avatar')(data));
 		$crop.appendTo($view.$('.lp-avatar-preview').addClass('croping'));
+		$view.$crop = $crop;
 		var $img = $crop.find('img'),
 			wx = 0,
 			hx = 0,
 			lx = 0,
-			tx = 0;
+			tx = 0,
+			nw = 0,
+			nh = 0;
 		this.initCrop = function () {
 			var r1 = data.viewWidth / data.viewHeight,
 				r2 = data.width / data.height;
@@ -117,35 +127,70 @@
 				tx = 0;
 				lx = -(wx - data.viewWidth) / 2;
 			}
+			nw = wx;
+			nh = hx;
 			$img.draggable({
-				stop: function () {
+				drag: function (e, ui) {
+					if (ui.position.left > 0) {
+						ui.position.left = 0;
+					}
+					if (ui.position.top > 0) {
+						ui.position.top = 0;
+					}
+					var xx = data.viewWidth - nw,
+						yy = data.viewHeight - nh;
+					if (xx > ui.position.left) {
+						ui.position.left = xx;
+					}
+					if (yy > ui.position.top) {
+						ui.position.top = yy;
+					}
+				},
+				stop: function (e, ui) {
 					lx = parseInt($img.css('left'));
 					tx = parseInt($img.css('top'));
-					console.log(lx, tx);
+					dd = (Math.abs(lx) + data.viewWidth / 2) / nw;
+					bb = (Math.abs(tx) + data.viewHeight / 2) / nh;
+
 				}
 			});
-			console.log(lx, tx);
-
-			$crop.find('.lp-zoom').slider({
+			var dd = (Math.abs(lx) + data.viewWidth / 2) / wx,
+				bb = (Math.abs(tx) + data.viewHeight / 2) / hx;
+			$crop.find('.lp-zoom > div').slider({
 				create: function () {
 					$img.css({
 						width : wx,
 						height: hx,
 						top   : tx,
 						left  : lx
-					})
+					});
+					console.log('create');
 				},
 				slide : function (e, ui) {
-					var $this = $(this),
-						nw = wx + (ui.value / 100) * data.width * 2,
-						nh = hx + (ui.value / 100) * data.height * 2;
+					nw = wx + (ui.value / 100) * data.width * 2;
+					nh = hx + (ui.value / 100) * data.height * 2;
+					var nl = data.viewWidth / 2 - (nw * dd),// parseInt((data.viewWidth - nw) / 2),
+						nt = data.viewHeight / 2 - nh * bb;//parseInt((data.viewHeight - nh) / 2);
+					if (nl > 0) {
+						nl = 0;
+					}
+					if (nt > 0) {
+						nt = 0;
+					}
+					var xx = parseInt(data.viewWidth - nw),
+						yy = parseInt(data.viewHeight - nh);
+					if (xx > nl) {
+						nl = lx = xx;
+					}
+					if (yy > nt) {
+						nt = tx = yy;
+					}
 					$img.css({
 						width : nw,
 						height: nh,
-						top   : tx + (data.viewHeight - nh) / 2,
-						left  : (data.viewWidth - nw) / 2
-					})
-					console.log(lx / 2, lx, tx)
+						top   : nt,
+						left  : nl
+					});
 				}
 			});
 		}
@@ -156,7 +201,7 @@
 	$(document).ready(function () {
 		new UserProfile({
 			viewWidth : 300,
-			viewHeight: 200
+			viewHeight: 300
 		})
 	});
 	$(document).on('click', '.table-orders .cancel-order', function (e) {

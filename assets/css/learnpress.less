@@ -1379,6 +1379,11 @@ body.block-content {
 }
 
 .learn-press-user-profile {
+    #lp-user-edit-avatar {
+        .moxie-shim {
+            display: none;
+        }
+    }
     .lp-avatar-preview {
         position: relative;
         float: left;
@@ -1458,36 +1463,66 @@ body.block-content {
                 display: block;
             }
         }
+
         &.croping {
             .lp-avatar-preview-actions {
                 display: none;
             }
-            .lp-avatar-crop-image{
+            .lp-avatar-crop-image {
                 position: absolute;
-                top:0;
+                top: 0;
                 left: 0;
                 width: 100%;
                 height: 100%;
                 background: #000;
                 overflow: hidden;
-                img{
+
+                img {
                     max-width: inherit;
                 }
-                .ui-slider{
+                .lp-crop-controls{
                     position: absolute;
-                    height: 10px;
-                    bottom: 10px;
-                    left: 10px;
-                    right:10px;
-                    background: #FF0000;
-                    .ui-slider-handle{
-                        display: inline-block;
-                        width: 10px;
-                        height: 10px;
-                        background: rgb(255, 255, 255);
+                    bottom: 0;
+                    width: 100%;
+                    height:30px;
+                    .lp-zoom {
                         position: absolute;
+                        height: 10px;
+                        bottom: 10px;
+                        left: 10px;
+                        right: 30px;
+                        background: #FF0000;
+                        .ui-slider {
+                            position: absolute;
+                            left: 0;
+                            right: 10px;
+                            height: 100%;
+                            .ui-slider-handle {
+                                display: inline-block;
+                                width: 10px;
+                                height: 10px;
+                                background: rgb(255, 255, 255);
+                                position: absolute;
+                            }
+                        }
+                    }
+                    .lp-cancel-upload {
+                        text-decoration: none;
+                        position: absolute;
+                        bottom: 5px;
+                        right: 5px;
+                        box-shadow: none;
+                    }
+                    &:before{
+                        position: absolute;
+                        height:30px;
+                        width: 100%;
+                        content: '';
+                        background: #000;
+                        opacity: 0.5;
                     }
                 }
+
             }
         }
         &:after {
