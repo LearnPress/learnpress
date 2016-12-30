@@ -35,16 +35,23 @@ define( 'RWMB_FIELDS_DIR', trailingslashit( RWMB_INC_DIR . 'fields' ) );
 // Helper function to retrieve meta value
 require_once RWMB_INC_DIR . 'helpers.php';
 
-if ( is_admin() ) {
-	require_once RWMB_INC_DIR . 'common.php';
-	require_once RWMB_INC_DIR . 'field.php';
+if(!defined('LP_METABOX_INC')){
+	define('LP_METABOX_INC', LP_PLUGIN_PATH . 'inc/libraries/meta-box/inc/');
+}
 
+if ( is_admin() ) {
+	//require_once RWMB_INC_DIR . 'common.php';
+	if(!class_exists('RWMB_Field')){
+		require_once LP_METABOX_INC . 'field.php';
+	}
 	// Field classes
 	foreach ( glob( RWMB_FIELDS_DIR . '*.php' ) as $file ) {
 		require_once $file;
 	}
 
 	// Main file
-	require_once RWMB_INC_DIR . 'meta-box.php';
-	require_once RWMB_INC_DIR . 'init.php';
+	require_once LP_METABOX_INC . 'meta-box.php';
+	if(!function_exists('rwmb_register_meta_boxes')){
+		require_once LP_METABOX_INC . 'init.php';
+	}
 }
