@@ -1,6 +1,7 @@
 ;(function ($) {
 	'use strict';
 	$(document).ready(function () {
+		$('#user_profile_password_form input').attr('disabled', 'disabled');
 		$(document).on('click', '.table-orders .cancel-order', function (e) {
 			e.preventDefault();
 			var _this = $(this),

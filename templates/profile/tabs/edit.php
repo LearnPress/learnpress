@@ -4,7 +4,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 2.0
+ * @version 2.1
  */
 if ( !defined( 'ABSPATH' ) ) {
 	exit;
@@ -151,13 +151,13 @@ if ( $user ) :
 			<div id="user_profile_password_form" class="hide-if-js">
 
 				<p class="profile-field-name"><?php _e( 'Old Password', 'learnpress' ); ?></p>
-				<input type="password" id="pass0" name="pass0" autocomplete="off" class="regular-text" />
+				<input type="password" id="pass0" name="pass0" autocomplete="off" class="regular-text" disabled="disabled" />
 
 				<p class="profile-field-name"><?php _e( 'New Password', 'learnpress' ); ?></p>
-				<input type="password" name="pass1" id="pass1" class="regular-text" value="" />
+				<input type="password" name="pass1" id="pass1" class="regular-text" value="" disabled="disabled" />
 
 				<p class="profile-field-name"><?php _e( 'Confirmation password', 'learnpress' ); ?></p>
-				<input name="pass2" type="password" id="pass2" class="regular-text" value="" />
+				<input name="pass2" type="password" id="pass2" class="regular-text" value="" disabled="disabled"/>
 				<p class="description"><?php _e( 'Type your new password again.', 'learnpress' ); ?></p>
 
 			</div>
