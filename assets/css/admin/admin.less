@@ -119,10 +119,25 @@
         }
     }
     input[type="radio"] {
-        margin: 0 !important;
+        margin: 0;
     }
     label {
         line-height: 1;
+    }
+    input[name="learn_press_single_course_image_size[width]"],
+    input[name="learn_press_single_course_image_size[height]"],
+    input[name="learn_press_course_thumbnail_image_size[width]"],
+    input[name="learn_press_course_thumbnail_image_size[height]"] {
+        margin-top: -4px;
+    }
+    input[name="learn_press_single_course_image_size[crop]"],
+    input[name="learn_press_course_thumbnail_image_size[crop]"] {
+        margin-top: 3px;
+    }
+
+    input[name="learn_press_course_base"] {
+        margin-top: 3px;
+        margin-right: 3px;
     }
 }
 
@@ -328,6 +343,134 @@ li.quiz, li.lesson, li.quick_lesson, li.quick_quiz {
 /*
 * Add on page
 */
+.learnpress-advertis-admin {
+
+    margin-left: 160px;
+    padding: 10px 20px;
+    position: relative;
+
+    > .item {
+        display: none;
+    }
+    > .item:first-child {
+        display: block;
+    }
+
+    .learnpress-wrap-items {
+        position: relative;
+        overflow: hidden;
+        -webkit-transition: visibility 1s, opacity 1s;
+        transition:  visibility 1s, opacity 1s;
+        padding: 20px;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        margin-bottom: 30px;
+    }
+    .theme-thumbnail {
+        float: left;
+        width: 35%;
+    }
+    .theme-detail {
+        margin-left: 35%;
+        padding-left: 20px;
+    }
+    .learnpress-item {
+        position: relative;
+        float: left;
+        margin-right: -100%;
+        width: 100%;
+        box-sizing: border-box;
+        visibility: hidden;
+        opacity: 0;
+        -webkit-transition: visibility 0.5s linear, opacity 0.5s linear;
+        transition:  visibility 0.5s linear, opacity 0.5s linear;
+
+    }
+    img {
+        width: 100%;
+        height: auto;
+        float: none;
+    }
+    .learnpress-active {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    .learnpress-controls {
+
+        &:after {
+            content: '';
+            clear: both;
+            display: block;
+        }
+
+        position: absolute;
+        bottom: 30px;
+        left: 0;
+        right: 0;
+        height: 50px;
+        -ms-transform: translateY(-50%);
+        -webkit-transform: translateY(-50%);
+        transform: translateY(-50%);
+
+        .prev-item,
+        .next-item {
+            position: absolute;
+            top: 0;
+            font-family: 'dashicons';
+            width: 40px;
+            height: 40px;
+            border: 1px solid #000;
+            line-height: 40px;
+            font-size: 16px;
+            color: #000;
+            cursor: pointer;
+        }
+        .prev-item {
+            right: 95px;
+            &:before {
+                content: "\f341";
+                display: block;
+                text-align: center;
+            }
+        }
+        .next-item {
+            right: 45px;
+
+            &:before {
+                content: "\f345";
+                display: block;
+                text-align: center;
+            }
+        }
+    }
+    @media only screen and (max-width:1200px) {
+        .theme-thumbnail {
+            width: 50%;
+        }
+        .theme-detail {
+            margin-left: 50%;
+        }
+    }
+
+    @media only screen and (max-width:960px) {
+        margin-left: 36px;
+
+        .theme-thumbnail {
+            float: none;
+            width: 100%;
+        }
+        .theme-detail {
+            margin-top: 20px;
+            margin-left: 0;
+            padding-left: 0;
+        }
+
+    }
+    @media screen and (max-width: 782px) {
+        margin-left: 0;
+    }
+}
 
 .lpr-add-ons-wrapper .add-on-info {
     width: 65%;
@@ -361,6 +504,7 @@ li.quiz, li.lesson, li.quick_lesson, li.quick_quiz {
     text-decoration: none;
     content: attr(data-text-disable);
 }
+
 .lp-search-addon {
     margin: 0;
     width: 280px;
@@ -569,6 +713,11 @@ li.quiz, li.lesson, li.quick_lesson, li.quick_quiz {
     background-color: #fff;
     border: 1px solid #ddd;
     overflow: hidden;
+    margin-bottom: 30px;
+}
+#learn-press-add-ons-wrap .theme-controls {
+    margin-top: 20px;
+    margin-bottom: 0;
 }
 
 #learn-press-add-ons-wrap .theme h2 {

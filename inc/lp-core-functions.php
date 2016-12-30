@@ -22,7 +22,7 @@ function learn_press_get_post() {
 	if ( empty( $post_id ) ) {
 		$post_id = learn_press_get_request( 'post_ID' );
 	}
-	return absint($post_id);
+	return absint( $post_id );
 }
 
 /**
@@ -391,8 +391,8 @@ function learn_press_print_script() {
 	global $learn_press_queued_js, $learn_press_queued_js_tag;
 	if ( !empty( $learn_press_queued_js ) ) {
 		?>
-		<!-- LearnPress JavaScript -->
-		<script type="text/javascript">jQuery(function ($) {
+        <!-- LearnPress JavaScript -->
+        <script type="text/javascript">jQuery(function ($) {
 				<?php
 				// Sanitize
 				$learn_press_queued_js = wp_check_invalid_utf8( $learn_press_queued_js );
@@ -402,7 +402,7 @@ function learn_press_print_script() {
 				echo $learn_press_queued_js;
 				?>
 			});
-		</script>
+        </script>
 		<?php
 		unset( $learn_press_queued_js );
 	}
@@ -414,6 +414,92 @@ function learn_press_print_script() {
 
 add_action( 'wp_footer', 'learn_press_print_script' );
 add_action( 'admin_footer', 'learn_press_print_script' );
+
+/* Advertise in page admin */
+if ( !function_exists( 'leanrpress_advertise_in_admin' ) ) {
+
+	function leanrpress_advertise_in_admin() {
+
+		$admin_post_type = array(
+			'lp_course',
+			'lp_lesson',
+			'lp_quiz',
+			'lp_question',
+			'lp_order'
+		);
+		$pages           = array(
+			'learnpress_page_learn-press-statistics',
+			'learnpress_page_learn-press-settings',
+			'learnpress_page_learn-press-tools'
+
+		);
+		$themes_id       = array(
+			'14058034' => 'eduma',
+			'17097658' => 'coach',
+			'11797847' => 'lms'
+		);
+
+		$screen = get_current_screen();
+
+		if ( ( in_array( $screen->post_type, $admin_post_type ) && $screen->base === 'edit' )
+			|| ( in_array( $screen->id, $pages ) )
+		) {
+
+			$current_theme = wp_get_theme();
+
+			// Get items education
+			$list_themes = learn_press_related_theme();
+
+			foreach ( $list_themes as $key => $theme ) {
+
+				if ( !array_key_exists( $theme['id'], $themes_id ) || $themes_id[$theme['id']] === $current_theme->name ) {
+					unset( $list_themes[$key] );
+				}
+			}
+			shuffle( $list_themes );
+			?>
+            <div id="learn-press-add-ons-wrap" class="learnpress-advertis-admin">
+				<?php
+				foreach ( $list_themes as $theme ) {
+					$theme['url'] .= '?ref=ThimPress&utm_source=lp-backend&utm_medium=lp-addondashboard';
+					$url_demo = $theme['attributes'][4]['value'] . '?ref=ThimPress&utm_source=lp-backend&utm_medium=lp-addondashboard';
+
+					$theme['description'] = preg_replace( '/(?<=\S,)(?=\S)/', ' ', $theme['description'] );
+					$theme['description'] = str_replace( "\n", ' ', $theme['description'] );
+					$theme['description'] = explode( " ", $theme['description'] );
+					$theme['description'] = array_splice( $theme['description'], 0, sizeof( $theme['description'] ) - 1 );
+					$theme['description'] = implode( " ", $theme['description'] ) . " ...";
+					?>
+                    <div id="thimpress-<?php echo esc_attr( $theme['id'] ); ?>" class="item">
+                        <div class="theme-thumbnail">
+                            <a href="<?php echo esc_url( $theme['url'] ); ?>">
+                                <img src="<?php echo esc_url( $theme['previews']['landscape_preview']['landscape_url'] ) ?>" />
+                            </a>
+                        </div>
+
+                        <div class="theme-detail">
+                            <h2><a href="<?php echo esc_url( $theme['url'] ); ?>"><?php echo $theme['name']; ?></a></h2>
+                            <p class="learpress-description">
+								<?php echo wp_kses_post( $theme['description'] ); ?>
+                            </p>
+                            <p class="theme-controls">
+                                <a href="<?php echo esc_url( $theme['url'] ); ?>" class="button button-primary" target="_blank"><?php _e( 'Get it now', 'learnpress' ); ?></a>
+                                <a href="<?php echo esc_url( $url_demo ); ?>" class="button" target="_blank"><?php _e( 'View Demo', 'learnpress' ); ?></a>
+                            </p>
+                        </div>
+
+                    </div>
+					<?php
+				}
+				?>
+            </div>
+			<?php
+		}
+
+	}
+}
+
+add_action( 'admin_footer', 'leanrpress_advertise_in_admin', - 10 );
 
 /**
  * @param string $str
@@ -432,7 +518,7 @@ if ( !function_exists( 'is_ajax' ) ) {
 	 * @return bool
 	 */
 	function is_ajax() {
-		return defined( 'DOING_AJAX' ) && DOING_AJAX;
+		return defined( 'LP_DOING_AJAX' ) && LP_DOING_AJAX;
 	}
 }
 
@@ -566,10 +652,10 @@ if ( !function_exists( 'learn_press_paging_nav' ) ) :
 
 		if ( $links ) :
 			?>
-			<div class="<?php echo $args['wrapper_class']; ?>">
+            <div class="<?php echo $args['wrapper_class']; ?>">
 				<?php echo $links; ?>
-			</div>
-			<!-- .pagination -->
+            </div>
+            <!-- .pagination -->
 			<?php
 		endif;
 	}
@@ -773,7 +859,7 @@ add_action( 'admin_footer', 'learn_press_show_menu' );
 function learn_press_show_menu() {
 	if ( ( isset( $_GET['post_type'] ) && $_GET['post_type'] == 'lp_course' ) ) {
 		?>
-		<script type="text/javascript">
+        <script type="text/javascript">
 			jQuery(window).load(function ($) {
 				<?php
 				if ( isset ( $_GET['taxonomy'] ) ) {
@@ -786,13 +872,13 @@ function learn_press_show_menu() {
 				?>
 				jQuery("#toplevel_page_learn_press .wp-first-item").addClass('current');
 			});
-		</script>
+        </script>
 		<?php
 	}
 
 	if ( isset( $_GET['post_type'] ) ) {
 		?>
-		<script type="text/javascript">
+        <script type="text/javascript">
 			(function ($) {
 
 				var $lpMainMenu = $('#toplevel_page_learn_press'),
@@ -804,7 +890,7 @@ function learn_press_show_menu() {
 					$current.parent('li').addClass('current');
 				}
 			})(jQuery)
-		</script>
+        </script>
 		<?php
 
 	}
@@ -1409,7 +1495,7 @@ function learn_press_send_json( $data ) {
 	@header( 'Content-Type: application/json; charset=' . get_option( 'blog_charset' ) );
 	echo wp_json_encode( $data );
 	echo '<!-- LP_AJAX_END -->';
-	if ( defined( 'DOING_AJAX' ) && DOING_AJAX )
+	if ( defined( 'LP_DOING_AJAX' ) && LP_DOING_AJAX )
 		wp_die();
 	else
 		die;
@@ -1908,7 +1994,7 @@ function learn_press_add_user_item_if_needed( $located, $template_name, $templat
 
 function learn_press_set_user_timezone() {
 	?>
-	<script type="text/javascript">
+    <script type="text/javascript">
 		(function (factory) {
 			if (typeof define === 'function' && define.amd) {
 				// AMD (Register as an anonymous module)
@@ -1981,9 +2067,9 @@ function learn_press_set_user_timezone() {
 				// Read
 
 				var result = key ? undefined : {},
-				// To prevent the for loop in the first place assign an empty array
-				// in case there are no cookies at all. Also prevents odd result when
-				// calling $.cookie().
+					// To prevent the for loop in the first place assign an empty array
+					// in case there are no cookies at all. Also prevents odd result when
+					// calling $.cookie().
 					cookies = document.cookie ? document.cookie.split('; ') : [],
 					i = 0,
 					l = cookies.length;
@@ -2018,7 +2104,7 @@ function learn_press_set_user_timezone() {
 
 		}));
 		jQuery.cookie('timezone', new Date().getTimezoneOffset());
-	</script>
+    </script>
 	<?php
 }
 
@@ -2531,155 +2617,8 @@ function learn_press_is_added_to_cart( $course_id ) {
  *  + LP Profile page is not setup
  *  + LP Checkout page is not setup
  */
-add_action( 'admin_bar_menu', 'lp_warning_message_settings' );
 add_action( 'wp_ajax_lp_remove_admin_warning', 'lp_remove_admin_warning' );
 add_action( 'wp_ajax_nopriv_lp_remove_admin_warning', 'lp_remove_admin_warning' );
-if ( !function_exists( 'lp_warning_message_settings' ) ) {
-
-	/* Check permission is admin */
-
-	function lp_warning_message_settings( $admin_bar ) {
-
-		global $LearnPress;
-
-		$args = array(
-			array(
-				'name_option' => 'learn_press_profile_page_id',
-				'id'          => 'lp-admin-warning-profile',
-				'title'       => __( 'Profile Page', 'learnpress' ),
-				'url'         => admin_url( 'admin.php?page=learn-press-settings&tab=pages' )
-			),
-			array(
-				'name_option' => 'learn_press_checkout_page_id',
-				'id'          => 'lp-admin-warning-checkout',
-				'title'       => __( 'Checkout Page', 'learnpress' ),
-				'url'         => admin_url( 'admin.php?page=learn-press-settings&tab=checkout' )
-			),
-		);
-
-		$user = $LearnPress->user;
-		$role = $user->user->roles[0];
-
-		if ( $role === 'administrator' ) {
-
-			$count = 0;
-
-			/* Add submenu*/
-			foreach ( $args as $arg ) {
-
-				$item_page_id   = get_option( $arg['name_option'] );
-				$item_transient = get_transient( $arg['id'] );
-				$item_page      = get_post( $item_page_id );
-
-				if ( empty( $item_transient ) && ( empty( $item_page_id ) || empty( $item_page ) ) ) {
-
-					$count ++;
-					$admin_bar->add_menu( array(
-						'id'     => $arg['id'],
-						'parent' => 'lp-admin-warning',
-						'title'  => $arg['title'] . '<span class="lp-hide-warning" title="' . __( 'Hidden', 'learnpress' ) . '">x</span>',
-						'href'   => $arg['url'],
-						'meta'   => array(
-							'title' => __( 'Go to setup ', 'learnpress' ) . $arg['title'],
-							'class' => $arg['id']
-						)
-					) );
-				}
-			}
-
-			/* Add Admin Menu */
-			if ( !empty( $count ) ) {
-				$admin_bar->add_menu( array(
-					'id'     => 'lp-admin-warning',
-					'parent' => 'top-secondary',
-					'title'  => __( 'LP Setup Page', 'learnpress' ) . '<span class="lp-count-warning">' . $count . '</span>',
-					'href'   => '',
-					'meta'   => array(
-						'title' => __( 'Warning! You need setup all pages', 'learnpress' ),
-						'class' => 'lp-admin-warning'
-					),
-				) );
-			}
-
-			?>
-			<style type="text/css">
-				#wp-admin-bar-lp-admin-warning {
-					padding-right: 15px;
-				}
-
-				#wp-admin-bar-lp-admin-warning .lp-count-warning {
-					position: absolute;
-					top: 0;
-					right: 0;
-					font-size: 11px;
-					border-radius: 50%;
-					background: red;
-					line-height: 15px;
-					width: 15px;
-					height: 15px;
-					text-align: center;
-					color: #ffffff;
-				}
-
-				#wp-admin-bar-lp-admin-warning .lp-hide-warning {
-					position: absolute;
-					top: 0;
-					right: 0;
-					line-height: inherit;
-					padding-right: 12px;
-					padding-left: 12px;
-				}
-			</style>
-			<script type="text/javascript">
-				(function ($) {
-
-					$(document).ready(function () {
-
-						var $lpAdminWarning = $('#wp-admin-bar-lp-admin-warning');
-
-						$('.lp-hide-warning', $lpAdminWarning).click(function (event) {
-
-							event.preventDefault();
-							event.stopPropagation();
-
-							var $this = $(this),
-								name = $this.closest('li').attr('class');
-
-							$.ajax({
-								url     : ajaxurl,
-								data    : {
-									action: 'lp_remove_admin_warning',
-									name  : name
-								},
-								type    : 'POST',
-								complete: function (response) {
-
-									var $subMenu = $('.ab-sub-wrapper', $lpAdminWarning),
-										$count = $('.lp-count-warning', $lpAdminWarning),
-										count = $count.text();
-
-									count = parseInt(count);
-									count--;
-
-									$count.text(count);
-									$this.closest('li').remove();
-
-									if (!$subMenu.find('li').length) {
-										$subMenu.remove();
-									}
-								}
-							})
-						});
-
-					});
-
-				})(jQuery)
-			</script>
-			<?php
-		}
-	}
-
-}
 
 if ( !function_exists( 'lp_remove_admin_warning' ) ) {
 
@@ -2713,7 +2652,7 @@ function learn_press_get_students_list_filter() {
 }
 
 
-function learn_press_debug_hidden(){
+function learn_press_debug_hidden() {
 	$args = func_get_args();
 	echo '<div class="learn-press-debug-hidden" style="display:none;">';
 	call_user_func_array( 'learn_press_debug', $args );
