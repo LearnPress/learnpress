@@ -17,9 +17,42 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 		 * @param $post_type
 		 */
 		public function __construct( $post_type ) {
+
 			$this->add_map_method( 'before_delete', 'delete_course_item' );
+
+            /**
+             * Hide View Quiz link if not assigned to Course
+             */
+            add_action( 'admin_footer', array( $this, 'hide_view_lesson_link_if_not_assigned' ) );
+
 			parent::__construct( $post_type );
 		}
+
+		public function hide_view_lesson_link_if_not_assigned() {
+            $current_screen = get_current_screen();
+            global $post;
+            if ( !$post ) {
+                return;
+            }
+            if ( $current_screen->id === LP_LESSON_CPT && !learn_press_get_item_course_id( $post->ID, $post->post_type ) ) {
+                ?>
+                <style type="text/css">
+                    #wp-admin-bar-view {
+                        display: none;
+                    }
+                    #sample-permalink a {
+                        pointer-events: none;
+                        cursor: default;
+                        text-decoration: none;
+                        color: #666;
+                    }
+                    #preview-action {
+                        display: none;
+                    }
+                </style>
+                <?php
+            }
+        }
 
 		public function delete_course_item( $post_id ) {
 			global $wpdb;

@@ -949,7 +949,7 @@ function learn_press_output_related_themes_list_education( $add_ons, $tab ) {
             <div class="plugin-card-top">
                 <div class="image-thumbnail">
                     <a href="<?php echo esc_url($add_on['url']); ?>">
-                        <img src="<?php echo esc_url($add_on['previews']['landscape_preview']['landscape_url']); ?>" alt="<?php echo esc_attr($add_on['wordpress_theme_metadata']['theme_name'])?>">
+                        <img src="<?php echo esc_url($add_on['previews']['landscape_preview']['landscape_url']); ?>" alt="<?php echo esc_attr($add_on['name']); ?>">
                     </a>
                 </div>
 
@@ -1008,7 +1008,7 @@ function learn_press_output_related_themes_list_other( $add_ons, $tab ) {
             <div class="plugin-card-top">
                 <div class="image-thumbnail">
                     <a href="<?php echo esc_url($add_on['url']); ?>">
-                        <img src="<?php echo esc_url($add_on['previews']['landscape_preview']['landscape_url']); ?>" alt="<?php echo esc_attr($add_on['wordpress_theme_metadata']['theme_name'])?>">
+                        <img src="<?php echo esc_url($add_on['previews']['landscape_preview']['landscape_url']); ?>" alt="<?php echo esc_attr($add_on['name']); ?>">
                     </a>
                 </div>
 
