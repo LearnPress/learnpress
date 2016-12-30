@@ -1593,3 +1593,22 @@ function learn_press_course_the_content( $content ) {
 	return $content;
 }
 
+add_action( 'template_redirect', 'learn_press_check_access_lesson' );
+
+function learn_press_check_access_lesson() {
+	$queried_post_type = get_query_var( 'post_type' );
+	if ( is_single() && 'lp_lesson' == $queried_post_type ) {
+		$course = learn_press_get_course();
+		if( !$course ) {
+			learn_press_404_page();
+			return;
+		}
+		$post = get_post();
+		$user = learn_press_get_current_user();
+		$can_view = $user->can_view_item( $post->ID, $course->id );
+		if ( !$can_view ) {
+			learn_press_404_page();
+			return;
+		}
+	}
+}
