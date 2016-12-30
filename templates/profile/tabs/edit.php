@@ -48,6 +48,8 @@ $first_tab = 'basic-information';
 			<div class="user-profile-section-content">
 				<?php include learn_press_locate_template( 'profile/tabs/edit/' . $section . '.php' ); ?>
 			</div>
+			
+			<button><?php _e( 'Update', 'learnpress' ); ?></button>
 		</form>
 	</div>
 <?php

@@ -98,7 +98,6 @@
 			return this.uploader;
 		}
 	});
-	console.log(-391 > -391);
 	UserProfile.Model = Backbone.Model.extend({});
 	UserProfile.Crop = function ($view) {
 		var data = $view.model.toJSON(),
@@ -200,8 +199,8 @@
 
 	$(document).ready(function () {
 		new UserProfile({
-			viewWidth : 300,
-			viewHeight: 300
+			viewWidth : 200,
+			viewHeight: 200
 		})
 	});
 	$(document).on('click', '.table-orders .cancel-order', function (e) {
