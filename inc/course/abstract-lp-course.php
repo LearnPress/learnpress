@@ -953,22 +953,21 @@ abstract class LP_Abstract_Course {
 				return false;
 			}
 			$permalink  = get_the_permalink( $item_id );
-			$post_types = get_post_types( null, 'objects' );
+            $post_types = get_post_types( null, 'objects' );
 			$item_type  = get_post_type( $item_id );
-			switch ( $item_type ) {
+            switch ( $item_type ) {
 				case 'lp_lesson':
 				case 'lp_quiz':
 					$permalink = trailingslashit( get_the_permalink( $this->id ) );
-
 					$post_name = get_post_field( 'post_name', $item_id );
 					$prefix    = preg_replace( '!^/!', '', trailingslashit( $post_types[$item_type]->rewrite['slug'] ) );//"{$item_id}-";
 
 					if ( '' != get_option( 'permalink_structure' ) && get_post_status( $this->id ) != 'draft' ) {
 						$permalink .= $prefix . $post_name;
-					} else {
+                    } else {
 						$key       = preg_replace( '!lp_!', '', get_post_type( $item_id ) );
 						$permalink = add_query_arg( array( $key => $post_name ), $permalink );
-					}
+                    }
 					break;
 			}
 			$permalink        = trailingslashit( $permalink );
