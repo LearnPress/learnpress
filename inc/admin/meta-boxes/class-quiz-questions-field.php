@@ -36,12 +36,6 @@ if ( !class_exists( 'RWMB_Quiz_Questions_Field' ) ) {
 
 			add_action( 'wp_ajax_lpr_quiz_question_add', array( __CLASS__, 'quiz_question_add' ) );
 			add_action( 'wp_ajax_lpr_quiz_question_remove', array( __CLASS__, 'quiz_question_remove' ) );
-			add_filter('learn_press_question_top_buttons', array(__CLASS__, 'filter_question_top_buttons'),10,3);
-		}
-
-		public static function filter_question_top_buttons( $buttons, $question ) {
-			$buttons['duration'] = learn_press_field_question_duration(array(), $question);
-			return $buttons;
 		}
 
 		public static function quiz_question_remove() {
@@ -185,7 +179,6 @@ if ( !class_exists( 'RWMB_Quiz_Questions_Field' ) ) {
 					)
 				);
 				$values[] = $wpdb->prepare( "(%d, %d, %s, %d)", $insert_data['quiz_id'], $insert_data['question_id'], isset( $insert_data['param'] ) ? $insert_data['param'] : '', $order++ );
-				update_post_meta($id, '_question_duration', $data['duration']);
 			}
 
 			$query = "
