@@ -2081,6 +2081,7 @@ class LP_Abstract_User {
 	 * @return bool
 	 */
 	public function has_purchased_course( $course_id ) {
+
 		return apply_filters( 'learn_press_user_has_purchased_course', $this->get_order_status( $course_id ) == 'lp-completed', $course_id, $this->id );
 	}
 
