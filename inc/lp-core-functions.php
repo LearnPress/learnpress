@@ -517,7 +517,7 @@ if ( !function_exists( 'is_ajax' ) ) {
 	 * @access public
 	 * @return bool
 	 */
-	function is_ajax() {
+	function is_lp_ajax() {
 		return defined( 'LP_DOING_AJAX' ) && LP_DOING_AJAX;
 	}
 }
