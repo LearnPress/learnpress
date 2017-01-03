@@ -225,7 +225,18 @@
 		new UserProfile({
 			viewWidth : 200,
 			viewHeight: 200
-		})
+		});
+
+		$('form[name="lp-edit-profile"]').submit(function () {
+			$.ajax({
+				data: $(this).serializeJSON(),
+				type: 'post',
+				success: function (r) {
+					console.log(r)
+				}
+			});
+			return false;
+		});
 	});
 	$(document).on('click', '.table-orders .cancel-order', function (e) {
 		e.preventDefault();

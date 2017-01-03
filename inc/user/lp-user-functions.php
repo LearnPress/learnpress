@@ -1055,8 +1055,8 @@ function learn_press_update_user_profile() {
 		$dst_h = $data['height'];
 		$src_x = $points[0];
 		$src_y = $points[1];
-		$src_w = $points[2];
-		$src_h = $points[3];
+		$src_w = $points[2] - $points[0];
+		$src_h = $points[3] - $points[1];
 		var_dump( $dst_w, $dst_h, $src_x, $src_y, $src_w, $src_h );
 		imagecopyresampled( $im_crop, $im, $dst_x, $dst_y, $src_x, $src_y, $dst_w, $dst_h, $src_w, $src_h );
 		if ( 'jpg' == $filetype['ext'] ) {

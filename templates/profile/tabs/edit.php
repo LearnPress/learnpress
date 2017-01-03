@@ -31,7 +31,7 @@ $edit_tabs = array(
 $first_tab = 'basic-information';
 ?>
 	<div id="lp-user-profile-form" class="lp-user-profile-form">
-		<form method="post">
+		<form method="post" name="lp-edit-profile">
 			<ul class="learn-press-subtabs">
 				<?php foreach ( $edit_tabs as $sub_key => $title ): ?>
 					<?php

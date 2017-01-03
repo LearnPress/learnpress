@@ -91,7 +91,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 
 		public static function _user_avatar_upload_dir( $dir ) {
 			$subdir        = $dir['subdir'];
-			$dir['subdir'] = '/learnpress/user-avatar/' . get_current_user_id();
+			$dir['subdir'] = '/learn-press-profile/' . get_current_user_id();
 			$dir['url']    = str_replace( $subdir, $dir['subdir'], $dir['url'] );
 			$dir['path']   = str_replace( $subdir, $dir['subdir'], $dir['path'] );
 
