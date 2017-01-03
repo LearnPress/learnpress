@@ -509,7 +509,7 @@ function learn_press_email_new_line( $lines = 1, $str = "\r\n" ) {
 	echo str_repeat( $str, $lines );
 }
 
-if ( !function_exists( 'is_ajax' ) ) {
+if ( !function_exists( 'is_lp_ajax' ) ) {
 
 	/**
 	 * is_ajax - Returns true when the page is loaded via ajax.
@@ -517,7 +517,7 @@ if ( !function_exists( 'is_ajax' ) ) {
 	 * @access public
 	 * @return bool
 	 */
-	function is_ajax() {
+	function is_lp_ajax() {
 		return defined( 'LP_DOING_AJAX' ) && LP_DOING_AJAX;
 	}
 }
