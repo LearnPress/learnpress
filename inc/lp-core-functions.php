@@ -22,7 +22,7 @@ function learn_press_get_post() {
 	if ( empty( $post_id ) ) {
 		$post_id = learn_press_get_request( 'post_ID' );
 	}
-	return absint($post_id);
+	return absint( $post_id );
 }
 
 /**
@@ -418,88 +418,88 @@ add_action( 'admin_footer', 'learn_press_print_script' );
 /* Advertise in page admin */
 if ( !function_exists( 'leanrpress_advertise_in_admin' ) ) {
 
-    function leanrpress_advertise_in_admin() {
+	function leanrpress_advertise_in_admin() {
 
-        $admin_post_type = array(
-            'lp_course',
-            'lp_lesson',
-            'lp_quiz',
-            'lp_question',
-            'lp_order'
-        );
-        $pages = array(
-            'learnpress_page_learn-press-statistics',
-            'learnpress_page_learn-press-settings',
-            'learnpress_page_learn-press-tools'
+		$admin_post_type = array(
+			'lp_course',
+			'lp_lesson',
+			'lp_quiz',
+			'lp_question',
+			'lp_order'
+		);
+		$pages           = array(
+			'learnpress_page_learn-press-statistics',
+			'learnpress_page_learn-press-settings',
+			'learnpress_page_learn-press-tools'
 
-        );
-        $themes_id = array(
-            '14058034' => 'eduma',
-            '17097658' => 'coach',
-            '11797847' => 'lms'
-        );
+		);
+		$themes_id       = array(
+			'14058034' => 'eduma',
+			'17097658' => 'coach',
+			'11797847' => 'lms'
+		);
 
-        $screen = get_current_screen();
+		$screen = get_current_screen();
 
 		if ( ( in_array( $screen->post_type, $admin_post_type ) && $screen->base === 'edit' )
 			|| ( in_array( $screen->id, $pages ) )
 		) {
 
-            $current_theme = wp_get_theme();
+			$current_theme = wp_get_theme();
 
-            // Get items education
-            $list_themes = learn_press_related_theme();
+			// Get items education
+			$list_themes = learn_press_related_theme();
 
-            foreach( $list_themes as $key => $theme ) {
+			foreach ( $list_themes as $key => $theme ) {
 
-                if ( !array_key_exists( $theme['id'], $themes_id ) || $themes_id[$theme['id']] === $current_theme->name ) {
-                    unset($list_themes[$key]);
-                }
-            }
-            shuffle($list_themes);
-            ?>
-            <div id="learn-press-add-ons-wrap" class="learnpress-advertis-admin">
-                <?php
-                foreach ( $list_themes as $theme ) {
-                    $theme['url']  .= '?ref=ThimPress&utm_source=lp-backend&utm_medium=lp-addondashboard';
-                    $url_demo       = $theme['attributes'][4]['value'] . '?ref=ThimPress&utm_source=lp-backend&utm_medium=lp-addondashboard';
+				if ( !array_key_exists( $theme['id'], $themes_id ) || $themes_id[$theme['id']] === $current_theme->name ) {
+					unset( $list_themes[$key] );
+				}
+			}
+			shuffle( $list_themes );
+			?>
+			<div id="learn-press-add-ons-wrap" class="learnpress-advertis-admin">
+				<?php
+				foreach ( $list_themes as $theme ) {
+					$theme['url'] .= '?ref=ThimPress&utm_source=lp-backend&utm_medium=lp-addondashboard';
+					$url_demo = $theme['attributes'][4]['value'] . '?ref=ThimPress&utm_source=lp-backend&utm_medium=lp-addondashboard';
 
-                    $theme['description'] = preg_replace( '/(?<=\S,)(?=\S)/', ' ', $theme['description'] );
-                    $theme['description'] = str_replace( "\n", ' ', $theme['description'] );
-                    $theme['description'] = explode(" ", $theme['description']);
-                    $theme['description'] = array_splice($theme['description'], 0, sizeof($theme['description']) - 1);
-                    $theme['description'] = implode(" ", $theme['description'])." ...";
-                    ?>
-                    <div id="thimpress-<?php echo esc_attr($theme['id']); ?>" class="item">
-                        <div class="theme-thumbnail">
-                            <a href="<?php echo esc_url($theme['url']); ?>">
-                                <img src="<?php echo esc_url($theme['previews']['landscape_preview']['landscape_url'])?>" />
-                            </a>
-                        </div>
+					$theme['description'] = preg_replace( '/(?<=\S,)(?=\S)/', ' ', $theme['description'] );
+					$theme['description'] = str_replace( "\n", ' ', $theme['description'] );
+					$theme['description'] = explode( " ", $theme['description'] );
+					$theme['description'] = array_splice( $theme['description'], 0, sizeof( $theme['description'] ) - 1 );
+					$theme['description'] = implode( " ", $theme['description'] ) . " ...";
+					?>
+					<div id="thimpress-<?php echo esc_attr( $theme['id'] ); ?>" class="item">
+						<div class="theme-thumbnail">
+							<a href="<?php echo esc_url( $theme['url'] ); ?>">
+								<img src="<?php echo esc_url( $theme['previews']['landscape_preview']['landscape_url'] ) ?>" />
+							</a>
+						</div>
 
-                        <div class="theme-detail">
-                            <h2><a href="<?php echo esc_url($theme['url']); ?>"><?php  echo $theme['name']; ?></a></h2>
-                            <p class="learpress-description">
-                                <?php echo wp_kses_post($theme['description']); ?>
-                            </p>
-                            <p class="theme-controls">
-                                <a href="<?php echo esc_url($theme['url']); ?>" class="button button-primary" target="_blank"><?php _e( 'Get it now', 'learnpress' ); ?></a>
-                                <a href="<?php echo esc_url($url_demo); ?>" class="button" target="_blank"><?php _e( 'View Demo', 'learnpress' ); ?></a>
-                            </p>
-                        </div>
+						<div class="theme-detail">
+							<h2><a href="<?php echo esc_url( $theme['url'] ); ?>"><?php echo $theme['name']; ?></a></h2>
+							<p class="learpress-description">
+								<?php echo wp_kses_post( $theme['description'] ); ?>
+							</p>
+							<p class="theme-controls">
+								<a href="<?php echo esc_url( $theme['url'] ); ?>" class="button button-primary" target="_blank"><?php _e( 'Get it now', 'learnpress' ); ?></a>
+								<a href="<?php echo esc_url( $url_demo ); ?>" class="button" target="_blank"><?php _e( 'View Demo', 'learnpress' ); ?></a>
+							</p>
+						</div>
 
-                    </div>
-                    <?php
-                }
-                ?>
-            </div>
-            <?php
-        }
+					</div>
+					<?php
+				}
+				?>
+			</div>
+			<?php
+		}
 
-    }
+	}
 }
 
-add_action( 'admin_footer', 'leanrpress_advertise_in_admin', -10 );
+add_action( 'admin_footer', 'leanrpress_advertise_in_admin', - 10 );
 
 /**
  * @param string $str
@@ -1495,10 +1495,7 @@ function learn_press_send_json( $data ) {
 	@header( 'Content-Type: application/json; charset=' . get_option( 'blog_charset' ) );
 	echo wp_json_encode( $data );
 	echo '<!-- LP_AJAX_END -->';
-	if ( defined( 'LP_DOING_AJAX' ) && LP_DOING_AJAX )
-		wp_die();
-	else
-		die;
+	die;
 }
 
 /**
@@ -2652,7 +2649,7 @@ function learn_press_get_students_list_filter() {
 }
 
 
-function learn_press_debug_hidden(){
+function learn_press_debug_hidden() {
 	$args = func_get_args();
 	echo '<div class="learn-press-debug-hidden" style="display:none;">';
 	call_user_func_array( 'learn_press_debug', $args );
