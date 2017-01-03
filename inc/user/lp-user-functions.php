@@ -1026,3 +1026,46 @@ function learn_press_get_user_option( $name, $id = 0 ) {
 	}
 	return false;
 }
+
+function learn_press_update_user_profile() {
+	if ( !LP()->is_request( 'post' ) ) {
+		return;
+	}
+	$nonce = learn_press_get_request( 'profile-nonce' );
+	if ( !wp_verify_nonce( $nonce, 'learn-press-update-user-profile-' . get_current_user_id() ) ) {
+		return;
+	}
+	$upload_dir = wp_upload_dir();
+	$data       = learn_press_get_request( 'lp-user-avatar-crop' );
+	$path       = $upload_dir['basedir'] . $data['name'];
+	$filetype   = wp_check_filetype( $path );
+	if ( 'jpg' == $filetype['ext'] ) {
+		$im = imagecreatefromjpeg( $path );
+	} elseif ( 'png' == $filetype['ext'] ) {
+		$im = imagecreatefrompng( $path );
+	} else {
+		return;
+	}
+	$points  = explode( ',', $data['points'] );
+	$im_crop = imagecreatetruecolor( $data['width'], $data['height'] );
+	if ( $im !== false ) {
+		$dst_x = 0;
+		$dst_y = 0;
+		$dst_w = $data['width'];
+		$dst_h = $data['height'];
+		$src_x = $points[0];
+		$src_y = $points[1];
+		$src_w = $points[2];
+		$src_h = $points[3];
+		var_dump( $dst_w, $dst_h, $src_x, $src_y, $src_w, $src_h );
+		imagecopyresampled( $im_crop, $im, $dst_x, $dst_y, $src_x, $src_y, $dst_w, $dst_h, $src_w, $src_h );
+		if ( 'jpg' == $filetype['ext'] ) {
+			imagejpeg( $im_crop, dirname( $path ) . '/xxxx.jpg' );
+		} elseif ( 'png' == $filetype['ext'] ) {
+			imagepng( $im_crop, dirname( $path ) . '/xxxx.png' );
+		}
+	}
+	die();
+}
+
+add_action( 'init', 'learn_press_update_user_profile' );

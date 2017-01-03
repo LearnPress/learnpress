@@ -193,6 +193,9 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.  
 
 == Changelog ==
+= 2.0.9.1 =
++ Fixed several bugs
+
 = 2.0.9 =
 + Improved some sections in admin
 + Added tab 'Related Themes'

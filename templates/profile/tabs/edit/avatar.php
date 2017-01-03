@@ -23,6 +23,11 @@ $gravatar_img = $user->get_profile_picture( 'gravatar' );
 			</div>
 			<a href="" class="lp-cancel-upload dashicons dashicons-no-alt"></a>
 		</div>
+		<input type="text" name="lp-user-avatar-crop[name]" data-name="name" value="{{data.name}}" />
+		<input type="text" name="lp-user-avatar-crop[width]" data-name="width" value="" />
+		<input type="text" name="lp-user-avatar-crop[height]" data-name="height" value="" />
+		<input type="text" name="lp-user-avatar-crop[points]" data-name="points" value="" />
+
 	</div>
 </script>
 <div id="lp-user-edit-avatar" class="lp-edit-profile lp-edit-avatar">

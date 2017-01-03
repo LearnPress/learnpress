@@ -70,14 +70,22 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 
 		public static function upload_user_avatar() {
 			$file = $_FILES['lp-upload-avatar'];
-			add_filter( 'upload_dir', array( __CLASS__, '_user_avatar_upload_dir' ) );
-			$result = wp_handle_upload( $file,
+			add_filter( 'upload_dir', array( __CLASS__, '_user_avatar_upload_dir' ), 10000 );
+			$upload_dir = wp_upload_dir();
+			$result     = wp_handle_upload( $file,
 				array(
 					'test_form' => false
 				)
 			);
-			remove_filter( 'upload_dir', array( __CLASS__, '_user_avatar_upload_dir' ) );
-			$dir = dirname($result['file']);
+			remove_filter( 'upload_dir', array( __CLASS__, '_user_avatar_upload_dir' ), 10000 );
+			if ( is_array( $result ) ) {
+				$result['name'] = $upload_dir['subdir'] . '/' . basename($result['file']);
+				unset( $result['file'] );
+			} else {
+				$result = array(
+					'error' => __( 'Upload profile avatar error.', 'learnpress' )
+				);
+			}
 			learn_press_send_json( $result );
 		}
 

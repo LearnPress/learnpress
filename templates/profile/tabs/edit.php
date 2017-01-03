@@ -48,8 +48,12 @@ $first_tab = 'basic-information';
 			<div class="user-profile-section-content">
 				<?php include learn_press_locate_template( 'profile/tabs/edit/' . $section . '.php' ); ?>
 			</div>
-			
-			<button><?php _e( 'Update', 'learnpress' ); ?></button>
+
+			<input type="hidden" name="user_id" id="user_id" value="<?php echo esc_attr( $user->id ); ?>" />
+			<input type="hidden" name="profile-nonce" value="<?php echo esc_attr( wp_create_nonce( 'learn-press-update-user-profile-' . $user->id ) ); ?>" />
+			<p class="submit update-profile">
+				<input type="submit" name="submit" id="submit" class="button button-primary" value="<?php _e( 'Update Profile', 'learnpress' ); ?>" />
+			</p>
 		</form>
 	</div>
 <?php
@@ -217,7 +221,7 @@ if ( $user ) :
 
 			<input type="hidden" name="action" value="update" />
 			<input type="hidden" name="user_id" id="user_id" value="<?php echo esc_attr( $user->id ); ?>" />
-			<input type="hidden" name="profile-nonce" value="<?php echo esc_attr( wp_create_nonce( 'learn-press-user-profile-' . $user->id ) ); ?>" />
+			<input type="hidden" name="profile-nonce" value="<?php echo esc_attr( wp_create_nonce( 'learn-press-update-user-profile-' . $user->id ) ); ?>" />
 			<p class="submit update-profile">
 				<input type="submit" name="submit" id="submit" class="button button-primary" value="<?php _e( 'Update Profile', 'learnpress' ); ?>" />
 			</p>

@@ -11,7 +11,7 @@
 		events        : {
 			'click #lp-remove-upload-photo': '_removePhoto',
 			'click #lp-upload-photo'       : '_upload',
-			'click .lp-cancel-upload'       : '_cancel'
+			'click .lp-cancel-upload'      : '_cancel'
 		},
 		el            : 'body',
 		uploader      : null,
@@ -56,11 +56,10 @@
 				$("<img/>") // Make in memory copy of image to avoid css issues
 					.attr("src", response.url)
 					.load(function () {
-						that.model.set({
-							url   : response.url,
+						that.model.set($.extend(response, {
 							width : this.width,
 							height: this.height
-						});
+						}));
 						that.crop()
 					});
 			}
@@ -100,7 +99,8 @@
 	});
 	UserProfile.Model = Backbone.Model.extend({});
 	UserProfile.Crop = function ($view) {
-		var data = $view.model.toJSON(),
+		var self = this,
+			data = $view.model.toJSON(),
 			$crop = $(LP.template('tmpl-crop-user-avatar')(data));
 		$crop.appendTo($view.$('.lp-avatar-preview').addClass('croping'));
 		$view.$crop = $crop;
@@ -157,13 +157,12 @@
 				bb = (Math.abs(tx) + data.viewHeight / 2) / hx;
 			$crop.find('.lp-zoom > div').slider({
 				create: function () {
-					$img.css({
+					self.update({
 						width : wx,
 						height: hx,
 						top   : tx,
 						left  : lx
 					});
-					console.log('create');
 				},
 				slide : function (e, ui) {
 					nw = wx + (ui.value / 100) * data.width * 2;
@@ -184,12 +183,37 @@
 					if (yy > nt) {
 						nt = tx = yy;
 					}
-					$img.css({
+					self.update({
 						width : nw,
 						height: nh,
 						top   : nt,
 						left  : nl
 					});
+				}
+			});
+		}
+		this.update = function (args) {
+			$img.css({
+				width : args.width,
+				height: args.height,
+				top   : args.top,
+				left  : args.left
+			});
+			var r = args.width / data.width,
+				left = Math.abs(args.left / r),
+				top = Math.abs(args.top / r),
+				right = left + data.viewWidth / r,
+				bottom = top + data.viewHeight / r;
+			var cropData = $.extend(args, {
+				width : data.viewWidth,
+				height: data.viewHeight,
+				points: [left, top, right, bottom].join(',')
+			});
+			$crop.find('input[name^="lp-user-avatar-crop"]').each(function () {
+				var $input = $(this),
+					name = $input.data('name');
+				if (name != 'name') {
+					$input.val(cropData[name]);
 				}
 			});
 		}
