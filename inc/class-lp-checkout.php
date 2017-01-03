@@ -288,7 +288,7 @@ class LP_Checkout {
 				// Redirect to success/confirmation/payment page
 				if ( $success === true ) {
 					$result = apply_filters( 'learn_press_checkout_success_result', $result, $order_id );
-					if ( is_ajax() ) {
+					if ( is_lp_ajax() ) {
 						learn_press_send_json( $result );
 					} else {
 						wp_redirect( $result['redirect'] );
