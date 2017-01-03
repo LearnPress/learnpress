@@ -677,17 +677,23 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			$payment = get_post_meta( $course_id, '_lp_payment', true );
 
 			if ( current_user_can( 'manage_options' ) ) {
-				$message = __( 'If free, this field is empty or set 0. (Only admin can edit this field)', 'learnpress' );
-				$price   = get_post_meta( $course_id, '_lp_price', true );;
+//				$message = __( 'If free, this field is empty or set 0. (Only admin can edit this field)', 'learnpress' );
+				$message = '';
+				$price   = get_post_meta( $course_id, '_lp_price', true );
 				$sale_price = 0;
 				$start_date = '';
 				$end_date   = '';
 
 				if ( isset( $_GET['post'] ) ) {
-					$course_id = $_GET['post'];
+					$course_id  = $_GET['post'];
+
 					if ( $payment != 'free' ) {
-						$suggest_price = get_post_meta( $course_id, '_lp_suggestion_price', true );
-						if ( isset( $suggest_price ) ) {
+						$suggest_price  = get_post_meta( $course_id, '_lp_suggestion_price', true );
+						$course         = get_post( $course_id );
+
+						$author         = get_userdata( $course->post_author ) ;
+
+						if ( isset( $suggest_price ) && $author->roles[0] === 'lp_teacher' ) {
 							$message = sprintf( __( 'This course is requires enrollment and the suggested price is <strong>%s</strong>', 'learnpress' ), learn_press_format_price( $suggest_price, true ) );
 							$price   = $suggest_price;
 						}
