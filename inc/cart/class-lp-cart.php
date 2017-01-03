@@ -226,7 +226,7 @@ class LP_Cart {
 				$checkout_results = LP_Checkout::instance()->process_checkout();
 			}
 			$redirect = $checkout_results['redirect'];
-			/*if ( is_ajax() ) {
+			/*if ( is_lp_ajax() ) {
 				learn_press_send_json(
 					$checkout_results
 				);
@@ -265,7 +265,7 @@ class LP_Cart {
 
 		$redirect = apply_filters( 'learn_press_add_to_cart_redirect', $redirect, $course_id );
 
-		if ( is_ajax() ) {
+		if ( is_lp_ajax() ) {
 			learn_press_send_json(
 				array(
 					'redirect' => $redirect,
