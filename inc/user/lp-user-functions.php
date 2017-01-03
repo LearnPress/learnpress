@@ -865,6 +865,13 @@ if ( !function_exists( 'learn_press_pre_get_avatar_callback' ) ) {
 			$user_id = $id_or_email;
 		} elseif ( is_object( $id_or_email ) && isset( $id_or_email->user_id ) && $id_or_email->user_id ) {
 			$user_id = $id_or_email->user_id;
+		} elseif ( is_object( $id_or_email ) && $id_or_email instanceof WP_Comment ) {
+			if ( $user = get_user_by( 'email', $id_or_email->comment_author_email ) ) {
+				$user_id = $user->ID;
+			}
+		}
+		if( !$user_id ) {
+			return;
 		}
 		$profile_picture_type	= get_user_option( '_lp_profile_picture_type', $user_id );
 		$profile_picture		= get_user_option( '_lp_profile_picture', $user_id );
@@ -925,7 +932,7 @@ function _learn_press_before_purchase_course_handler( $course_id, $cart ) {
 		if ( $redirect !== false ) {
 			learn_press_add_message( __( 'Please login to enroll this course', 'learnpress' ) );
 
-			if ( is_ajax() ) {
+			if ( is_lp_ajax() ) {
 				learn_press_send_json(
 					array(
 						'redirect' => $redirect,
