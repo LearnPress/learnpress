@@ -910,16 +910,19 @@ add_filter( 'pre_get_avatar', 'learn_press_pre_get_avatar_callback', 1, 5 );
 
 
 function learn_press_user_profile_picture_upload_dir( $width_user = true ) {
-	$args   = wp_upload_dir();
-	$subdir = apply_filters( 'learn_press_user_profile_folder', 'learn-press-profile', $width_user );
-	if ( $width_user ) {
-		$subdir .= '/' . get_current_user_id();
+	static $upload_dir;
+	if ( !$upload_dir ) {
+		$upload_dir = wp_upload_dir();
+		$subdir     = apply_filters( 'learn_press_user_profile_folder', 'learn-press-profile', $width_user );
+		if ( $width_user ) {
+			$subdir .= '/' . get_current_user_id();
+		}
+		$subdir               = '/' . $subdir;
+		$upload_dir['path']   = str_replace( $upload_dir['subdir'], $subdir, $upload_dir['path'] );
+		$upload_dir['url']    = str_replace( $upload_dir['subdir'], $subdir, $upload_dir['url'] );
+		$upload_dir['subdir'] = $subdir;
 	}
-	$subdir         = '/' . $subdir;
-	$args['path']   = str_replace( $args['subdir'], $subdir, $args['path'] );
-	$args['url']    = str_replace( $args['subdir'], $subdir, $args['url'] );
-	$args['subdir'] = $subdir;
-	return $args;
+	return $upload_dir;
 }
 
 add_action( 'learn_press_before_purchase_course_handler', '_learn_press_before_purchase_course_handler', 10, 2 );
@@ -1078,9 +1081,8 @@ function learn_press_update_user_profile() {
 		if ( !file_exists( $output ) ) {
 			return;
 		}
-		update_user_meta( get_current_user_id(), '_lp_profile_picture', $output );
+		update_user_meta( get_current_user_id(), '_lp_profile_picture',preg_replace('!^/!', '', $upload_dir['subdir']) . '/' . $newname );
 	}
-	die();
 }
 
 add_action( 'init', 'learn_press_update_user_profile' );

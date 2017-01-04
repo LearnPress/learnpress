@@ -2761,17 +2761,17 @@ class LP_Abstract_User {
 	public function get_upload_profile_src( $size = '' ) {
 		if ( empty( $this->uploaded_profile_src ) ) {
 			$profile_picture = $this->profile_picture;
-			$upload          = wp_get_upload_dir();
+			$upload          = learn_press_user_profile_picture_upload_dir();
 			$user_id         = $this->id;
 
 			if ( $size == 'thumbnail' ) {
 				$pi              = pathinfo( $profile_picture );
 				$profile_picture = $pi['filename'] . '-thumb' . '.' . $pi['extension'];
 			}
-			$file_path = $upload['basedir'] . DIRECTORY_SEPARATOR . 'learn-press-profile' . DIRECTORY_SEPARATOR . $user_id . DIRECTORY_SEPARATOR . $profile_picture;
+			$file_path = $upload['basedir'] . DIRECTORY_SEPARATOR . $profile_picture;
 
 			if ( file_exists( $file_path ) ) {
-				$this->uploaded_profile_src = $upload['baseurl'] . '/learn-press-profile/' . $user_id . '/' . $profile_picture;
+				$this->uploaded_profile_src = $upload['baseurl'] . $profile_picture;
 			} else {
 				$this->uploaded_profile_src = false;
 			}

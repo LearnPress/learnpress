@@ -70,6 +70,8 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 
 		public static function upload_user_avatar() {
 			$file = $_FILES['lp-upload-avatar'];
+			$upload_dir = learn_press_user_profile_picture_upload_dir();
+
 			add_filter( 'upload_dir', array( __CLASS__, '_user_avatar_upload_dir' ), 10000 );
 
 			//$upload_dir = wp_upload_dir();
@@ -81,9 +83,9 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 				)
 			);
 
-			$upload_dir = learn_press_user_profile_picture_upload_dir();
 
 			remove_filter( 'upload_dir', array( __CLASS__, '_user_avatar_upload_dir' ), 10000 );
+
 			if ( is_array( $result ) ) {
 				$result['name'] = $upload_dir['subdir'] . '/' . basename( $result['file'] );
 				unset( $result['file'] );
