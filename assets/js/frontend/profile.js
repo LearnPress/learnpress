@@ -150,7 +150,12 @@
 					tx = parseInt($img.css('top'));
 					dd = (Math.abs(lx) + data.viewWidth / 2) / nw;
 					bb = (Math.abs(tx) + data.viewHeight / 2) / nh;
-
+					self.update({
+						width : nw,
+						height: nh,
+						top   : tx,
+						left  : lx
+					});
 				}
 			});
 			var dd = (Math.abs(lx) + data.viewWidth / 2) / wx,
@@ -200,13 +205,14 @@
 				left  : args.left
 			});
 			var r = args.width / data.width,
-				left = Math.abs(args.left / r),
-				top = Math.abs(args.top / r),
-				right = left + data.viewWidth / r,
-				bottom = top + data.viewHeight / r;
+				left = parseInt(Math.abs(args.left / r)),
+				top = parseInt(Math.abs(args.top / r)),
+				right = left + parseInt(data.viewWidth / r),
+				bottom = top + parseInt(data.viewHeight / r);
 			var cropData = $.extend(args, {
 				width : data.viewWidth,
 				height: data.viewHeight,
+				r     : r,
 				points: [left, top, right, bottom].join(',')
 			});
 			$crop.find('input[name^="lp-user-avatar-crop"]').each(function () {
@@ -229,8 +235,8 @@
 
 		$('form[name="lp-edit-profile"]').submit(function () {
 			$.ajax({
-				data: $(this).serializeJSON(),
-				type: 'post',
+				data   : $(this).serializeJSON(),
+				type   : 'post',
 				success: function (r) {
 					console.log(r)
 				}

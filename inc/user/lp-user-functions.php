@@ -1049,6 +1049,7 @@ function learn_press_update_user_profile() {
 	$points  = explode( ',', $data['points'] );
 	$im_crop = imagecreatetruecolor( $data['width'], $data['height'] );
 	if ( $im !== false ) {
+		$user  = wp_get_current_user();
 		$dst_x = 0;
 		$dst_y = 0;
 		$dst_w = $data['width'];
@@ -1057,13 +1058,22 @@ function learn_press_update_user_profile() {
 		$src_y = $points[1];
 		$src_w = $points[2] - $points[0];
 		$src_h = $points[3] - $points[1];
-		var_dump( $dst_w, $dst_h, $src_x, $src_y, $src_w, $src_h );
 		imagecopyresampled( $im_crop, $im, $dst_x, $dst_y, $src_x, $src_y, $dst_w, $dst_h, $src_w, $src_h );
+		$newname = md5( $user->user_login );
+		$output  = dirname( dirname( $path ) );
 		if ( 'jpg' == $filetype['ext'] ) {
-			imagejpeg( $im_crop, dirname( $path ) . '/xxxx.jpg' );
+			$newname .= '.jpg';
+			$output .= '/' . $newname;
+			imagejpeg( $im_crop, $output );
 		} elseif ( 'png' == $filetype['ext'] ) {
-			imagepng( $im_crop, dirname( $path ) . '/xxxx.png' );
+			$newname .= '.png';
+			$output .= '/' . $newname;
+			imagepng( $im_crop, $output );
 		}
+		if ( !file_exists( $output ) ) {
+			return;
+		}
+		print_r($upload_dir);
 	}
 	die();
 }
