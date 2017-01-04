@@ -1043,45 +1043,50 @@ function learn_press_update_user_profile() {
 	if ( !wp_verify_nonce( $nonce, 'learn-press-update-user-profile-' . get_current_user_id() ) ) {
 		return;
 	}
-	$upload_dir = learn_press_user_profile_picture_upload_dir();//wp_upload_dir();
-	$data       = learn_press_get_request( 'lp-user-avatar-crop' );
-	$path       = $upload_dir['basedir'] . $data['name'];
-	$filetype   = wp_check_filetype( $path );
-	if ( 'jpg' == $filetype['ext'] ) {
-		$im = imagecreatefromjpeg( $path );
-	} elseif ( 'png' == $filetype['ext'] ) {
-		$im = imagecreatefrompng( $path );
+	$upload_dir = learn_press_user_profile_picture_upload_dir();
+
+	if ( learn_press_get_request( 'lp-user-avatar-custom' ) != 'yes' ) {
+		delete_user_meta( get_current_user_id(), '_lp_profile_picture' );
 	} else {
-		return;
-	}
-	$points  = explode( ',', $data['points'] );
-	$im_crop = imagecreatetruecolor( $data['width'], $data['height'] );
-	if ( $im !== false ) {
-		$user  = wp_get_current_user();
-		$dst_x = 0;
-		$dst_y = 0;
-		$dst_w = $data['width'];
-		$dst_h = $data['height'];
-		$src_x = $points[0];
-		$src_y = $points[1];
-		$src_w = $points[2] - $points[0];
-		$src_h = $points[3] - $points[1];
-		imagecopyresampled( $im_crop, $im, $dst_x, $dst_y, $src_x, $src_y, $dst_w, $dst_h, $src_w, $src_h );
-		$newname = md5( $user->user_login );
-		$output  = dirname( dirname( $path ) );
+		$data     = learn_press_get_request( 'lp-user-avatar-crop' );
+		$path     = $upload_dir['basedir'] . $data['name'];
+		$filetype = wp_check_filetype( $path );
 		if ( 'jpg' == $filetype['ext'] ) {
-			$newname .= '.jpg';
-			$output .= '/' . $newname;
-			imagejpeg( $im_crop, $output );
+			$im = imagecreatefromjpeg( $path );
 		} elseif ( 'png' == $filetype['ext'] ) {
-			$newname .= '.png';
-			$output .= '/' . $newname;
-			imagepng( $im_crop, $output );
-		}
-		if ( !file_exists( $output ) ) {
+			$im = imagecreatefrompng( $path );
+		} else {
 			return;
 		}
-		update_user_meta( get_current_user_id(), '_lp_profile_picture',preg_replace('!^/!', '', $upload_dir['subdir']) . '/' . $newname );
+		$points  = explode( ',', $data['points'] );
+		$im_crop = imagecreatetruecolor( $data['width'], $data['height'] );
+		if ( $im !== false ) {
+			$user  = wp_get_current_user();
+			$dst_x = 0;
+			$dst_y = 0;
+			$dst_w = $data['width'];
+			$dst_h = $data['height'];
+			$src_x = $points[0];
+			$src_y = $points[1];
+			$src_w = $points[2] - $points[0];
+			$src_h = $points[3] - $points[1];
+			imagecopyresampled( $im_crop, $im, $dst_x, $dst_y, $src_x, $src_y, $dst_w, $dst_h, $src_w, $src_h );
+			$newname = md5( $user->user_login );
+			$output  = dirname( $path );
+			if ( 'jpg' == $filetype['ext'] ) {
+				$newname .= '.jpg';
+				$output .= '/' . $newname;
+				imagejpeg( $im_crop, $output );
+			} elseif ( 'png' == $filetype['ext'] ) {
+				$newname .= '.png';
+				$output .= '/' . $newname;
+				imagepng( $im_crop, $output );
+			}
+			if ( !file_exists( $output ) ) {
+				return;
+			}
+			update_user_meta( get_current_user_id(), '_lp_profile_picture', preg_replace( '!^/!', '', $upload_dir['subdir'] ) . '/' . $newname );
+		}
 	}
 }
 

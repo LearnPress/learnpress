@@ -35,6 +35,7 @@ $gravatar_img = $user->get_profile_picture( 'gravatar' );
 		<div class="profile-picture profile-avatar-current">
 			<?php if ( $custom_img ) { ?>
 				<img src="<?php echo $custom_img; ?>" />
+				<input type="hidden" name="lp-user-avatar-custom" value="yes" />
 			<?php } else { ?>
 				<?php echo $gravatar_img; ?>
 			<?php } ?>

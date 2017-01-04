@@ -22,7 +22,7 @@
 		},
 		_removePhoto  : function (e) {
 			e.preventDefault();
-			this.$('.profile-picture').toggle();
+			this.$('.profile-picture').toggle().filter('.profile-avatar-current').remove();
 			this.$('#lp-remove-upload-photo').hide();
 		},
 		_upload       : function (e) {

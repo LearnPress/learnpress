@@ -2764,14 +2764,13 @@ class LP_Abstract_User {
 			$upload          = learn_press_user_profile_picture_upload_dir();
 			$user_id         = $this->id;
 
-			if ( $size == 'thumbnail' ) {
+			/*if ( $size == 'thumbnail' ) {
 				$pi              = pathinfo( $profile_picture );
 				$profile_picture = $pi['filename'] . '-thumb' . '.' . $pi['extension'];
-			}
+			}*/
 			$file_path = $upload['basedir'] . DIRECTORY_SEPARATOR . $profile_picture;
-
 			if ( file_exists( $file_path ) ) {
-				$this->uploaded_profile_src = $upload['baseurl'] . $profile_picture;
+				$this->uploaded_profile_src = $upload['baseurl'] . '/' . $profile_picture;
 			} else {
 				$this->uploaded_profile_src = false;
 			}

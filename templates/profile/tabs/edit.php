@@ -16,7 +16,7 @@ $username                = $user_info->user_login;
 $nick_name               = $user_info->nickname;
 $first_name              = $user_info->first_name;
 $last_name               = $user_info->last_name;
-$profile_picture_type    = $user->profile_picture_type ? $user->profile_picture_type : 'gravatar';
+$profile_picture_type    = $user->profile_picture ? 'picture' : 'gravatar';
 $profile_picture         = $user->profile_picture;
 $class_gravatar_selected = ( 'gravatar' === $profile_picture_type ) ? ' lp-menu-item-selected' : '';
 $class_picture_selected  = ( 'picture' === $profile_picture_type ) ? ' lp-menu-item-selected' : '';
