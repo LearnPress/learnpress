@@ -925,7 +925,7 @@ function _learn_press_before_purchase_course_handler( $course_id, $cart ) {
 		if ( $redirect !== false ) {
 			learn_press_add_message( __( 'Please login to enroll this course', 'learnpress' ) );
 
-			if ( is_lp_ajax() ) {
+			if ( learn_press_is_ajax() ) {
 				learn_press_send_json(
 					array(
 						'redirect' => $redirect,
