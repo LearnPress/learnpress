@@ -214,11 +214,12 @@ function learn_press_edit_admin_bar() {
 	global $wp_admin_bar;
 	if ( ( $profile = learn_press_get_page_id( 'profile' ) ) && get_post_type( $profile ) == 'page' && get_post_status( $profile ) != 'trash' && ( LP()->settings->get( 'admin_bar_link' ) == 'yes' ) ) {
 		$text                             = LP()->settings->get( 'admin_bar_link_text' );
+		$user_id = learn_press_get_current_user_id();
 		$course_profile                   = array();
 		$course_profile['id']             = 'course_profile';
 		$course_profile['parent']         = 'user-actions';
 		$course_profile['title']          = $text ? $text : get_the_title( $profile );
-		$course_profile['href']           = learn_press_user_profile_link();
+		$course_profile['href']           = learn_press_user_profile_link($user_id,'course');
 		$course_profile['meta']['target'] = LP()->settings->get( 'admin_bar_link_target' );
 		$wp_admin_bar->add_menu( $course_profile );
 	}
