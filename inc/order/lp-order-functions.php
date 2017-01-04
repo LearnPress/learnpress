@@ -655,11 +655,11 @@ function learn_press_get_order_statuses( $prefix = true ) {
 		$prefix . 'pending'    => _x( 'Pending', 'Order status', 'learnpress' ),
 		$prefix . 'processing' => _x( 'Processing', 'Order status', 'learnpress' ),
 		$prefix . 'completed'  => _x( 'Completed', 'Order status', 'learnpress' ),
-		$prefix . 'on-hold'    => _x( 'On Hold', 'Order status', 'learnpress' ),
-		$prefix . 'refunded'   => _x( 'Refunded', 'Order status', 'learnpress' ),
-		$prefix . 'failed'     => _x( 'Failed', 'Order status', 'learnpress' ),
 		$prefix . 'cancelled'  => _x( 'Cancelled', 'Order status', 'learnpress' )
-	);
+//		$prefix . 'refunded'   => _x( 'Refunded', 'Order status', 'learnpress' ),
+//		$prefix . 'failed'     => _x( 'Failed', 'Order status', 'learnpress' ),
+//		$prefix . 'on-hold'    => _x( 'On Hold', 'Order status', 'learnpress' ),
+    );
 
 	return apply_filters( 'learn_press_order_statuses', $order_statuses );
 }
@@ -668,12 +668,12 @@ function _learn_press_get_order_status_description( $status ) {
 	static $descriptions = null;
 	$descriptions = array(
 		'lp-pending'    => __( 'Order received in case user buy a course but doesn\'t finalise the order.', 'learnpress' ),
-		'lp-failed'     => __( 'Payment failed or was declined (unpaid).', 'learnpress' ),
 		'lp-processing' => __( 'Payment received and the order is awaiting fulfillment.', 'learnpress' ),
 		'lp-completed'  => __( 'Order fulfilled and complete.', 'learnpress' ),
-		'lp-on-hold'    => __( 'Awaiting payment.', 'learnpress' ),
-		'lp-cancelled'  => __( 'The order is cancelled by an admin or the customer.', 'learnpress' ),
-		'lp-refunded'   => __( 'Refunded is to indicate that the refund to the customer has been sent.', 'learnpress' )
+		'lp-cancelled'  => __( 'The order is cancelled by an admin or the customer.', 'learnpress' )
+//		'lp-on-hold'    => __( 'Awaiting payment.', 'learnpress' ),
+//		'lp-failed'     => __( 'Payment failed or was declined (unpaid).', 'learnpress' ),
+//		'lp-refunded'   => __( 'Refunded is to indicate that the refund to the customer has been sent.', 'learnpress' )
 	);
 	return apply_filters( 'learn_press_order_status_description', !empty( $descriptions[$status] ) ? $descriptions[$status] : '' );
 }
