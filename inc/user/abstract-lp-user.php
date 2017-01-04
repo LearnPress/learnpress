@@ -1215,6 +1215,12 @@ class LP_Abstract_User {
 				$view = 'no-required-enroll';
 			}
 		}
+
+		// Disable preview lesson when course status is pending
+		if ( get_post_status( $course_id ) == 'pending' ) {
+            $view = false;
+        }
+
 		return apply_filters( 'learn_press_user_view_lesson', $view, $lesson_id, $this->id, $course_id );
 	}
 
@@ -1244,6 +1250,12 @@ class LP_Abstract_User {
 				$view = 'no-required-enroll';
 			}
 		}
+
+        // Disable preview course when course status is pending
+        if ( get_post_status( $course_id ) == 'pending' ) {
+            $view = false;
+        }
+
 		return apply_filters( 'learn_press_user_view_quiz', $view, $quiz_id, $this->id, $course_id );
 	}
 
