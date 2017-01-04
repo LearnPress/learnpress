@@ -193,6 +193,11 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.  
 
 == Changelog ==
+= 2.1.0 =
++ Fixed bugs related to AJAX calling
++ Fixed bugs related to updating user profile
++ Fixed open question to new tab in quiz editor
+
 = 2.0.9 =
 + Improved some sections in admin
 + Added tab 'Related Themes'
