@@ -1379,6 +1379,129 @@ body.block-content {
 }
 
 .learn-press-user-profile {
+
+    .lp-edit-profile {
+        &:after {
+            .clearfix();
+        }
+    }
+    .user-basic-info {
+        p {
+            margin-top: 10px;
+        }
+    }
+    .learn-press-tabs {
+        list-style: none;
+        margin: 30px 0 20px;
+        border-bottom: 1px solid #DDD;
+        & > li {
+            float: left;
+            list-style-type: none;
+            margin-bottom: -1px;
+            & > a {
+                display: inline-block;
+                padding: 10px 15px;
+                outline: none;
+                box-shadow: none;
+                color: #686868;
+                border-bottom: 1px solid #DDD;
+            }
+            &.current {
+                border-bottom: 4px solid #007acc;
+                a {
+                    color: #007acc;
+                    margin-bottom: -4px;
+                }
+            }
+        }
+    }
+    .learn-press-subtabs {
+        & > li {
+            display: inline-block;
+            margin-right: 10px;
+            &.current {
+                font-weight: bold;
+            }
+        }
+    }
+    .learn-press-subtab-content {
+        display: none;
+        margin-bottom: 20px;
+        &.current {
+            display: block;
+        }
+        li.course {
+            h3 {
+                padding-bottom: 10px;
+            }
+        }
+        .profile-courses {
+            list-style-type: none;
+            .learn-press-course-results-progress {
+                padding: 0 15px 15px 15px;
+                margin: 0;
+            }
+        }
+    }
+    button.learn-press-course-wishlist {
+        display: block;
+    }
+
+    .user-profile-edit-form {
+
+        .info-field {
+            margin-bottom: 20px;
+        }
+
+        .description {
+            margin-top: 5px;
+        }
+
+        .user-profile-picture {
+            clear: both;
+            .picture, .change-picture {
+                display: inline-block;
+            }
+            .change-picture {
+                .description {
+                    margin: 0 0 10px 0;
+                }
+            }
+            img {
+                float: left;
+                margin-right: 20px;
+            }
+            &:after {
+                .clearfix();
+            }
+        }
+
+        .profile-field-name {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .change-password {
+            margin-bottom: 10px;
+        }
+
+        #user_profile_password_form {
+            input {
+                margin-bottom: 20px;
+            }
+            .description {
+                margin-top: -15px;
+            }
+        }
+
+        .update-profile {
+            margin-top: 20px;
+        }
+    }
+
+    .learn-press-subtab-content {
+        display: block;
+    }
     #lp-user-edit-avatar {
         .moxie-shim {
             display: none;
@@ -1479,11 +1602,11 @@ body.block-content {
                 img {
                     max-width: inherit;
                 }
-                .lp-crop-controls{
+                .lp-crop-controls {
                     position: absolute;
                     bottom: 0;
                     width: 100%;
-                    height:30px;
+                    height: 30px;
                     .lp-zoom {
                         position: absolute;
                         height: 10px;
@@ -1512,9 +1635,9 @@ body.block-content {
                         right: 5px;
                         box-shadow: none;
                     }
-                    &:before{
+                    &:before {
                         position: absolute;
-                        height:30px;
+                        height: 30px;
                         width: 100%;
                         content: '';
                         background: #000;
@@ -1525,73 +1648,6 @@ body.block-content {
         }
         &:after {
             .clearfix();
-        }
-    }
-    .lp-edit-profile {
-        &:after {
-            .clearfix();
-        }
-    }
-    .user-basic-info {
-        p {
-            margin-top: 10px;
-        }
-    }
-    .learn-press-tabs {
-        list-style: none;
-        margin: 30px 0 20px;
-        border-bottom: 1px solid #DDD;
-        & > li {
-            float: left;
-            list-style-type: none;
-            margin-bottom: -1px;
-            & > a {
-                display: inline-block;
-                padding: 10px 15px;
-                outline: none;
-                box-shadow: none;
-                color: #686868;
-                border-bottom: 1px solid #DDD;
-            }
-            &.current {
-                border-bottom: 4px solid #007acc;
-                a {
-                    color: #007acc;
-                    margin-bottom: -4px;
-                }
-            }
-        }
-    }
-    .learn-press-tabs-wrapper-x {
-        .learn-press-subtabs {
-            & > li {
-                display: inline-block;
-                margin-right: 10px;
-                &.current {
-                    font-weight: bold;
-                }
-            }
-        }
-        .learn-press-subtab-content {
-            display: none;
-            &.current {
-                display: block;
-            }
-            li.course {
-                h3 {
-                    padding-bottom: 10px;
-                }
-            }
-            .profile-courses {
-                list-style-type: none;
-                .learn-press-course-results-progress {
-                    padding: 0 15px 15px 15px;
-                    margin: 0;
-                }
-            }
-        }
-        button.learn-press-course-wishlist {
-            display: block;
         }
     }
 
@@ -1913,57 +1969,6 @@ body.content-item-only {
 
 
 }*/
-
-.user-profile-edit-form {
-    .info-field {
-        margin-bottom: 20px;
-    }
-
-    .description {
-        margin-top: 5px;
-    }
-
-    .user-profile-picture {
-        clear: both;
-        .picture, .change-picture {
-            display: inline-block;
-        }
-        .change-picture {
-            .description {
-                margin: 0 0 10px 0;
-            }
-        }
-        img {
-            float: left;
-            margin-right: 20px;
-        }
-        &:after {
-            .clearfix();
-        }
-    }
-
-    .profile-field-name {
-        font-weight: bold;
-        margin-bottom: 10px;
-    }
-
-    .change-password {
-        margin-bottom: 10px;
-    }
-
-    #user_profile_password_form {
-        input {
-            margin-bottom: 20px;
-        }
-        .description {
-            margin-top: -15px;
-        }
-    }
-
-    .update-profile {
-        margin-top: 20px;
-    }
-}
 
 .payment-method-form {
     &.payment_method_authorizenet {

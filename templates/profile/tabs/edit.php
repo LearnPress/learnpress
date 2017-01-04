@@ -45,7 +45,7 @@ $first_tab = 'basic-information';
 					</li>
 				<?php endforeach; ?>
 			</ul>
-			<div class="user-profile-section-content">
+			<div class="learn-press-subtab-content user-profile-section-content">
 				<?php include learn_press_locate_template( 'profile/tabs/edit/' . $section . '.php' ); ?>
 			</div>
 

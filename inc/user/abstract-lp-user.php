@@ -130,25 +130,7 @@ class LP_Abstract_User {
 		} else {
 			return;
 		}
-		return;
-		if ( !$this->_course_items ) {
-			return;
-		}
 
-		global $wpdb;
-		$query = $wpdb->prepare( "
-			SELECT ui.*
-			FROM {$wpdb->prefix}learnpress_user_items ui
-			LEFT JOIN {$wpdb->posts} p ON p.ID = ui.item_id
-			WHERE p.ID IN(" . join( ',', $course_items ) . ")
-			AND ui.user_id = %d
-			AND ui.ref_id = %d
-		", $this->id, $course->id );
-		if ( $items = $wpdb->get_results( $query, OBJECT_K ) ) {
-			foreach ( $items as $item ) {
-
-			}
-		}
 	}
 
 	/**

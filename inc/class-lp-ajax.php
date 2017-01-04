@@ -71,15 +71,21 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 		public static function upload_user_avatar() {
 			$file = $_FILES['lp-upload-avatar'];
 			add_filter( 'upload_dir', array( __CLASS__, '_user_avatar_upload_dir' ), 10000 );
-			$upload_dir = wp_upload_dir();
+
+			//$upload_dir = wp_upload_dir();
+			//die('xxxxxxxxxxxxxxxxxxx');
+
 			$result     = wp_handle_upload( $file,
 				array(
 					'test_form' => false
 				)
 			);
+
+			$upload_dir = learn_press_user_profile_picture_upload_dir();
+
 			remove_filter( 'upload_dir', array( __CLASS__, '_user_avatar_upload_dir' ), 10000 );
 			if ( is_array( $result ) ) {
-				$result['name'] = $upload_dir['subdir'] . '/' . basename($result['file']);
+				$result['name'] = $upload_dir['subdir'] . '/' . basename( $result['file'] );
 				unset( $result['file'] );
 			} else {
 				$result = array(
@@ -90,11 +96,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 		}
 
 		public static function _user_avatar_upload_dir( $dir ) {
-			$subdir        = $dir['subdir'];
-			$dir['subdir'] = '/learn-press-profile/' . get_current_user_id();
-			$dir['url']    = str_replace( $subdir, $dir['subdir'], $dir['url'] );
-			$dir['path']   = str_replace( $subdir, $dir['subdir'], $dir['path'] );
-
+			$dir = learn_press_user_profile_picture_upload_dir();
 			return $dir;
 		}
 

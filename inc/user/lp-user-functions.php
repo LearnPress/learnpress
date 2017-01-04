@@ -909,8 +909,13 @@ if ( !function_exists( 'learn_press_pre_get_avatar_callback' ) ) {
 add_filter( 'pre_get_avatar', 'learn_press_pre_get_avatar_callback', 1, 5 );
 
 
-function learn_press_user_profile_picture_upload_dir( $args ) {
-	$subdir         = '/learn-press-profile';
+function learn_press_user_profile_picture_upload_dir( $width_user = true ) {
+	$args   = wp_upload_dir();
+	$subdir = apply_filters( 'learn_press_user_profile_folder', 'learn-press-profile', $width_user );
+	if ( $width_user ) {
+		$subdir .= '/' . get_current_user_id();
+	}
+	$subdir         = '/' . $subdir;
 	$args['path']   = str_replace( $args['subdir'], $subdir, $args['path'] );
 	$args['url']    = str_replace( $args['subdir'], $subdir, $args['url'] );
 	$args['subdir'] = $subdir;
@@ -1035,7 +1040,7 @@ function learn_press_update_user_profile() {
 	if ( !wp_verify_nonce( $nonce, 'learn-press-update-user-profile-' . get_current_user_id() ) ) {
 		return;
 	}
-	$upload_dir = wp_upload_dir();
+	$upload_dir = learn_press_user_profile_picture_upload_dir();//wp_upload_dir();
 	$data       = learn_press_get_request( 'lp-user-avatar-crop' );
 	$path       = $upload_dir['basedir'] . $data['name'];
 	$filetype   = wp_check_filetype( $path );
@@ -1073,7 +1078,7 @@ function learn_press_update_user_profile() {
 		if ( !file_exists( $output ) ) {
 			return;
 		}
-		print_r($upload_dir);
+		update_user_meta( get_current_user_id(), '_lp_profile_picture', $output );
 	}
 	die();
 }

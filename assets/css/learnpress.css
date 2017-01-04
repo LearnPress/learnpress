@@ -1863,6 +1863,120 @@ body.block-content #learn-press-block-content {
   /* Change Picture Menu */
   /** upload-crop box **/
 }
+.learn-press-user-profile .lp-edit-profile:after {
+  display: block;
+  content: '';
+  clear: both;
+}
+.learn-press-user-profile .lp-edit-profile:after:after {
+  content: '';
+  display: block;
+  clear: both;
+}
+.learn-press-user-profile .user-basic-info p {
+  margin-top: 10px;
+}
+.learn-press-user-profile .learn-press-tabs {
+  list-style: none;
+  margin: 30px 0 20px;
+  border-bottom: 1px solid #DDD;
+}
+.learn-press-user-profile .learn-press-tabs > li {
+  float: left;
+  list-style-type: none;
+  margin-bottom: -1px;
+}
+.learn-press-user-profile .learn-press-tabs > li > a {
+  display: inline-block;
+  padding: 10px 15px;
+  outline: none;
+  box-shadow: none;
+  color: #686868;
+  border-bottom: 1px solid #DDD;
+}
+.learn-press-user-profile .learn-press-tabs > li.current {
+  border-bottom: 4px solid #007acc;
+}
+.learn-press-user-profile .learn-press-tabs > li.current a {
+  color: #007acc;
+  margin-bottom: -4px;
+}
+.learn-press-user-profile .learn-press-subtabs > li {
+  display: inline-block;
+  margin-right: 10px;
+}
+.learn-press-user-profile .learn-press-subtabs > li.current {
+  font-weight: bold;
+}
+.learn-press-user-profile .learn-press-subtab-content {
+  display: none;
+  margin-bottom: 20px;
+}
+.learn-press-user-profile .learn-press-subtab-content.current {
+  display: block;
+}
+.learn-press-user-profile .learn-press-subtab-content li.course h3 {
+  padding-bottom: 10px;
+}
+.learn-press-user-profile .learn-press-subtab-content .profile-courses {
+  list-style-type: none;
+}
+.learn-press-user-profile .learn-press-subtab-content .profile-courses .learn-press-course-results-progress {
+  padding: 0 15px 15px 15px;
+  margin: 0;
+}
+.learn-press-user-profile button.learn-press-course-wishlist {
+  display: block;
+}
+.learn-press-user-profile .user-profile-edit-form .info-field {
+  margin-bottom: 20px;
+}
+.learn-press-user-profile .user-profile-edit-form .description {
+  margin-top: 5px;
+}
+.learn-press-user-profile .user-profile-edit-form .user-profile-picture {
+  clear: both;
+}
+.learn-press-user-profile .user-profile-edit-form .user-profile-picture .picture,
+.learn-press-user-profile .user-profile-edit-form .user-profile-picture .change-picture {
+  display: inline-block;
+}
+.learn-press-user-profile .user-profile-edit-form .user-profile-picture .change-picture .description {
+  margin: 0 0 10px 0;
+}
+.learn-press-user-profile .user-profile-edit-form .user-profile-picture img {
+  float: left;
+  margin-right: 20px;
+}
+.learn-press-user-profile .user-profile-edit-form .user-profile-picture:after {
+  display: block;
+  content: '';
+  clear: both;
+}
+.learn-press-user-profile .user-profile-edit-form .user-profile-picture:after:after {
+  content: '';
+  display: block;
+  clear: both;
+}
+.learn-press-user-profile .user-profile-edit-form .profile-field-name {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+.learn-press-user-profile .user-profile-edit-form .change-password {
+  margin-bottom: 10px;
+}
+.learn-press-user-profile .user-profile-edit-form #user_profile_password_form input {
+  margin-bottom: 20px;
+}
+.learn-press-user-profile .user-profile-edit-form #user_profile_password_form .description {
+  margin-top: -15px;
+}
+.learn-press-user-profile .user-profile-edit-form .update-profile {
+  margin-top: 20px;
+}
+.learn-press-user-profile .learn-press-subtab-content {
+  display: block;
+}
 .learn-press-user-profile #lp-user-edit-avatar .moxie-shim {
   display: none;
 }
@@ -2009,70 +2123,6 @@ body.block-content #learn-press-block-content {
   content: '';
   display: block;
   clear: both;
-}
-.learn-press-user-profile .lp-edit-profile:after {
-  display: block;
-  content: '';
-  clear: both;
-}
-.learn-press-user-profile .lp-edit-profile:after:after {
-  content: '';
-  display: block;
-  clear: both;
-}
-.learn-press-user-profile .user-basic-info p {
-  margin-top: 10px;
-}
-.learn-press-user-profile .learn-press-tabs {
-  list-style: none;
-  margin: 30px 0 20px;
-  border-bottom: 1px solid #DDD;
-}
-.learn-press-user-profile .learn-press-tabs > li {
-  float: left;
-  list-style-type: none;
-  margin-bottom: -1px;
-}
-.learn-press-user-profile .learn-press-tabs > li > a {
-  display: inline-block;
-  padding: 10px 15px;
-  outline: none;
-  box-shadow: none;
-  color: #686868;
-  border-bottom: 1px solid #DDD;
-}
-.learn-press-user-profile .learn-press-tabs > li.current {
-  border-bottom: 4px solid #007acc;
-}
-.learn-press-user-profile .learn-press-tabs > li.current a {
-  color: #007acc;
-  margin-bottom: -4px;
-}
-.learn-press-user-profile .learn-press-tabs-wrapper-x .learn-press-subtabs > li {
-  display: inline-block;
-  margin-right: 10px;
-}
-.learn-press-user-profile .learn-press-tabs-wrapper-x .learn-press-subtabs > li.current {
-  font-weight: bold;
-}
-.learn-press-user-profile .learn-press-tabs-wrapper-x .learn-press-subtab-content {
-  display: none;
-}
-.learn-press-user-profile .learn-press-tabs-wrapper-x .learn-press-subtab-content.current {
-  display: block;
-}
-.learn-press-user-profile .learn-press-tabs-wrapper-x .learn-press-subtab-content li.course h3 {
-  padding-bottom: 10px;
-}
-.learn-press-user-profile .learn-press-tabs-wrapper-x .learn-press-subtab-content .profile-courses {
-  list-style-type: none;
-}
-.learn-press-user-profile .learn-press-tabs-wrapper-x .learn-press-subtab-content .profile-courses .learn-press-course-results-progress {
-  padding: 0 15px 15px 15px;
-  margin: 0;
-}
-.learn-press-user-profile .learn-press-tabs-wrapper-x button.learn-press-course-wishlist {
-  display: block;
 }
 .learn-press-user-profile #lp-menu-change-picture {
   list-style: none;
@@ -2354,52 +2404,6 @@ body.content-item-only #learn-press-content-item.expand {
 
 
 }*/
-.user-profile-edit-form .info-field {
-  margin-bottom: 20px;
-}
-.user-profile-edit-form .description {
-  margin-top: 5px;
-}
-.user-profile-edit-form .user-profile-picture {
-  clear: both;
-}
-.user-profile-edit-form .user-profile-picture .picture,
-.user-profile-edit-form .user-profile-picture .change-picture {
-  display: inline-block;
-}
-.user-profile-edit-form .user-profile-picture .change-picture .description {
-  margin: 0 0 10px 0;
-}
-.user-profile-edit-form .user-profile-picture img {
-  float: left;
-  margin-right: 20px;
-}
-.user-profile-edit-form .user-profile-picture:after {
-  display: block;
-  content: '';
-  clear: both;
-}
-.user-profile-edit-form .user-profile-picture:after:after {
-  content: '';
-  display: block;
-  clear: both;
-}
-.user-profile-edit-form .profile-field-name {
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-.user-profile-edit-form .change-password {
-  margin-bottom: 10px;
-}
-.user-profile-edit-form #user_profile_password_form input {
-  margin-bottom: 20px;
-}
-.user-profile-edit-form #user_profile_password_form .description {
-  margin-top: -15px;
-}
-.user-profile-edit-form .update-profile {
-  margin-top: 20px;
-}
 .payment-method-form.payment_method_authorizenet {
   background: #f7f7f7;
   border-radius: 5px;
