@@ -556,6 +556,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 		    if ( $post->post_type == 'lp_quiz' ) {
 		        var_dump($return);
             }
+            is_ajax();
 
 		    return $return;
 
