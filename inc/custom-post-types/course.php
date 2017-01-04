@@ -327,7 +327,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			if ( empty( $post_id ) ) {
 				return;
 			}
-			if ( self::$_enable_review ) {
+            if ( self::$_enable_review ) {
 				if ( !empty( $_POST ) && learn_press_get_current_user()->is_instructor() && 'yes' == get_post_meta( $post_id, '_lp_submit_for_reviewer', true ) ) {
 					LP_Admin_Notice::add_redirect( __( 'Sorry! You can not update a course while it is viewing!', 'learnpress' ), 'error' );
 					wp_redirect( admin_url( 'post.php?post=' . $post_id . '&action=edit' ) );
@@ -667,7 +667,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						'name'  => __( 'Course payment', 'learnpress' ),
 						'id'    => "{$prefix}payment",
 						'type'  => 'yes_no',
-						'desc'  => __( 'If it is checked, An administrator will review then set course price and commission.', 'learnpress' ),
+						'desc'  => __( '', 'learnpress' ),
 						'std'   => 'no',
 						'class' => 'lp-course-payment-field'
 					)
@@ -677,17 +677,23 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			$payment = get_post_meta( $course_id, '_lp_payment', true );
 
 			if ( current_user_can( 'manage_options' ) ) {
-				$message = __( 'If free, this field is empty or set 0. (Only admin can edit this field)', 'learnpress' );
-				$price   = get_post_meta( $course_id, '_lp_price', true );;
+//				$message = __( 'If free, this field is empty or set 0. (Only admin can edit this field)', 'learnpress' );
+				$message = '';
+				$price   = get_post_meta( $course_id, '_lp_price', true );
 				$sale_price = 0;
 				$start_date = '';
 				$end_date   = '';
 
 				if ( isset( $_GET['post'] ) ) {
-					$course_id = $_GET['post'];
+					$course_id  = $_GET['post'];
+
 					if ( $payment != 'free' ) {
-						$suggest_price = get_post_meta( $course_id, '_lp_suggestion_price', true );
-						if ( isset( $suggest_price ) ) {
+						$suggest_price  = get_post_meta( $course_id, '_lp_suggestion_price', true );
+						$course         = get_post( $course_id );
+
+						$author         = get_userdata( $course->post_author ) ;
+
+						if ( isset( $suggest_price ) && $author->roles[0] === 'lp_teacher' ) {
 							$message = sprintf( __( 'This course is requires enrollment and the suggested price is <strong>%s</strong>', 'learnpress' ), learn_press_format_price( $suggest_price, true ) );
 							$price   = $suggest_price;
 						}
@@ -705,7 +711,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						'name'  => __( 'Price', 'learnpress' ),
 						'id'    => "{$prefix}price",
 						'type'  => 'number',
-						'min'   => 0,
+						'min'   => 0.01,
 						'step'  => 0.01,
 						'desc'  => $message,
 						'std'   => $price,
@@ -738,7 +744,14 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 					)
 				);
 			} else {
-
+                $price                = get_post_meta( $course_id, '_lp_price', true );
+                $meta_box['fields'][] = array(
+                    'name'  => __( 'Price set by Admin', 'learnpress' ),
+                    'id'    => "{$prefix}price",
+                    'type'  => 'html',
+                    'class' => 'lp-course-price-field' . ( $payment != 'yes' ? ' hide-if-js' : '' ),
+                    'html'  => $price !== '' ? sprintf( '<strong>%s</strong>', learn_press_format_price( $price, true ) ) : __( 'Not set', 'learnpress' )
+                );
 				$meta_box['fields'][] = array(
 					'name'  => __( 'Course Suggestion Price', 'learnpress' ),
 					'id'    => "{$prefix}suggestion_price",
@@ -749,14 +762,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 					'class' => 'lp-course-price-field' . ( $payment != 'yes' ? ' hide-if-js' : '' ),
 					'std'   => 0
 				);
-				$price                = get_post_meta( $course_id, '_lp_price', true );
-				$meta_box['fields'][] = array(
-					'name'  => __( 'Price set by Admin', 'learnpress' ),
-					'id'    => "{$prefix}price",
-					'type'  => 'html',
-					'class' => 'lp-course-price-field' . ( $payment != 'yes' ? ' hide-if-js' : '' ),
-					'html'  => $price !== '' ? sprintf( '<strong>%s</strong>', learn_press_format_price( $price, true ) ) : __( 'Not set', 'learnpress' )
-				);
+
 			}
 			$meta_box['fields'] = array_merge(
 				$meta_box['fields'],
@@ -1130,6 +1136,10 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 					delete_post_meta( $post->ID, '_lp_submit_for_reviewer', 'yes' );
 				}
 			} elseif ( $user->is_instructor() ) { // Course is submitted by instructor
+
+                if ( $enable_edit_published && ( $old_status == $new_status && $new_status == 'publish' ) ) {
+                    $submit_for_review = false;
+                }
 				if ( ( $submit_for_review || ( $old_status != $new_status ) ) && $post->post_status != 'auto-draft' ) {
 					$action = 'for_reviewer';
 					update_post_meta( $post->ID, '_lp_submit_for_reviewer', 'yes' );
@@ -1220,16 +1230,17 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		}
 
 		public
-		function before_save_curriculum() {
+        function before_save_curriculum() {
 
 			global $post, $pagenow;
 
 			// Ensure that we are editing course in admin side
+
 			if ( ( $pagenow != 'post.php' ) || ( get_post_type() != LP_COURSE_CPT ) ) {
 				return;
 			}
 
-			remove_action( 'save_post', array( $this, 'before_save_curriculum' ), 1000 );
+			remove_action( 'save_post', array( $this, 'before_save_curriculum' ), 1 );
 			//remove_action( 'rwmb_course_curriculum_before_save_post', array( $this, 'before_save_curriculum' ) );
 
 			$user                  = LP()->user;
@@ -1244,6 +1255,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 					),
 					array( '%d', '%s' )
 				);
+
 			}
 
 			$new_status = get_post_status( $post->ID );
