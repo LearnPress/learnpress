@@ -96,22 +96,24 @@ if ( !class_exists( 'LP_Admin' ) ) {
 		}
 
 		public function notice_outdated_templates() {
-			$page = '';
-			$tab  = '';
-			if ( !empty( $_REQUEST['page'] ) ) {
-				$page = $_REQUEST['page'];
-			}
+			if ( current_user_can( 'manage_options' ) ) {
+				$page = '';
+				$tab  = '';
+				if ( !empty( $_REQUEST['page'] ) ) {
+					$page = $_REQUEST['page'];
+				}
 
-			if ( !empty( $_REQUEST['tab'] ) ) {
-				$tab = $_REQUEST['tab'];
-			}
+				if ( !empty( $_REQUEST['tab'] ) ) {
+					$tab = $_REQUEST['tab'];
+				}
 
-			if ( $page == 'learn-press-tools' && $tab == 'templates' ) {
-				return;
-			}
+				if ( $page == 'learn-press-tools' && $tab == 'templates' ) {
+					return;
+				}
 
-			if ( learn_press_get_theme_templates( true ) ) {
-				learn_press_admin_view( 'html-admin-notice-templates' );
+				if ( learn_press_get_theme_templates( true ) ) {
+					learn_press_admin_view( 'html-admin-notice-templates' );
+				}
 			}
 		}
 
