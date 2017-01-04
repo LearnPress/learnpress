@@ -735,6 +735,10 @@ if ( !function_exists( 'learn_press_item_sample_permalink' ) ) {
 
     function learn_press_item_sample_permalink( $permalink, $post_id, $title, $name, $post ){
 
+        if ( $post->post_type !== LP_QUIZ_CPT && $post->post_type !== LP_LESSON_CPT) {
+            return $permalink;
+        }
+
         $permalink  = str_replace( '/' .$post->post_name, '/%pagename%' , $permalink );
         return  $permalink;
     }
