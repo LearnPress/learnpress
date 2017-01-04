@@ -1480,19 +1480,6 @@ if ( !function_exists( '_learn_press_default_course_tabs' ) ) {
 			'callback' => 'learn_press_course_curriculum_tab'
 		);
 
-		$hide_students_list = get_post_meta( $course->ID, '_lp_hide_students_list', true );
-
-		if ( $hide_students_list != 'yes' ) {
-			// Students list
-			$defaults['students-list'] = array(
-				'title'    => __( 'Students', 'learnpress' ),
-				'priority' => 40,
-				'callback' => 'learn_press_course_students_list'
-			);
-		}
-
-//		learn_press_course_students_list
-
 		/**
 		 * Active Curriculum tab if user has enrolled course
 		 */
