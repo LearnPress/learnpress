@@ -2270,7 +2270,7 @@ function learn_press_get_subtabs_course() {
 
 add_action( 'learn_press_order_status_completed', 'learn_press_auto_enroll_user_to_courses' );
 function learn_press_auto_enroll_user_to_courses( $order_id ) {
-	if ( LP()->settings->get( 'disable_auto_enroll' ) == 'yes' ) {
+	if ( LP()->settings->get( 'auto_enroll' ) == 'no' ) {
 		return;
 	}
 	if ( !$order = learn_press_get_order( $order_id ) ) {
@@ -2447,10 +2447,6 @@ if ( defined( 'LP_ENABLE_CART' ) && LP_ENABLE_CART ) {
 			$located = learn_press_locate_template( 'single-course/enroll-button-new.php', $template_path, $default_path );
 		}
 		return $located;
-	}
-
-	if ( get_option( 'learn_press_no_checkout_free_course' ) !== 'yes' ) {
-		///update_option( 'learn_press_no_checkout_free_course', 'yes' );
 	}
 }
 

@@ -551,17 +551,6 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 			}
 		}
 
-		public  function get_sample_permalink_html( $return, $post_id , $new_title, $new_slug, $post ) {
-
-		    if ( $post->post_type == 'lp_quiz' ) {
-		        var_dump($return);
-            }
-            is_ajax();
-
-		    return $return;
-
-        }
-
 		public static function instance() {
 			if ( !self::$_instance ) {
 				self::$_instance = new self( LP_QUIZ_CPT, '' );
