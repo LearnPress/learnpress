@@ -6,11 +6,8 @@
  * Time: 9:10 AM
  */
 ?>
-<h2><?php _e( 'Account Management', 'learnpress' ); ?></h2>
-<div class="change-password">
-	<a href="" id="learn-press-toggle-password"><?php _e( 'Change Password', 'learnpress' ); ?></a>
-</div>
-<div id="user_profile_password_form" class="hide-if-js">
+
+<div id="user_profile_password_form">
 
 	<p class="profile-field-name"><?php _e( 'Old Password', 'learnpress' ); ?></p>
 	<input type="password" id="pass0" name="pass0" autocomplete="off" class="regular-text" />

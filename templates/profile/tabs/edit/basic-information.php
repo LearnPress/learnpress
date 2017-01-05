@@ -4,8 +4,6 @@
 	<p class="description"><?php _e( 'Share a little biographical information to fill out your profile. This may be shown publicly.', 'learnpress' ); ?></p>
 </div>
 
-<h2><?php _e( 'Name', 'learnpress' ); ?></h2>
-
 <div class="user-first-name-wrap info-field">
 	<p class="profile-field-name"><?php esc_html_e( 'First Name', 'learnpress' ); ?></p>
 	<input type="text" name="first_name" id="first_name" value="<?php echo esc_attr( $first_name ); ?>" class="regular-text">

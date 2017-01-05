@@ -859,13 +859,15 @@ if ( !function_exists( 'learn_press_pre_get_avatar_callback' ) ) {
 			$user_id = $id_or_email->user_id;
 		}
 		$profile_picture_type = get_user_meta( $user_id, '_lp_profile_picture_type', true );
-		$upload               = wp_upload_dir();
-		$profile_picture      = get_user_meta( $user_id, '_lp_profile_picture', true );
+		$upload               = learn_press_user_profile_picture_upload_dir();
+		wp_upload_dir();
+		$profile_picture = get_user_meta( $user_id, '_lp_profile_picture', true );
 		if ( !$profile_picture ) {
 			return;
 		}
-		$user_profile_picture_dir = $upload['basedir'] . DIRECTORY_SEPARATOR . 'learn-press-profile' . DIRECTORY_SEPARATOR . $user_id . DIRECTORY_SEPARATOR;
-		$user_profile_picture_url = $upload['baseurl'] . '/learn-press-profile/' . $user_id . '/';
+
+		$user_profile_picture_dir = trailingslashit( $upload['basedir'] );// . DIRECTORY_SEPARATOR . 'learn-press-profile' . DIRECTORY_SEPARATOR . $user_id . DIRECTORY_SEPARATOR;
+		$user_profile_picture_url = trailingslashit( $upload['baseurl'] );// . '/learn-press-profile/' . $user_id . '/';
 
 		if ( $size === 'thumbnail' ) {
 			$pi                    = pathinfo( $profile_picture );
