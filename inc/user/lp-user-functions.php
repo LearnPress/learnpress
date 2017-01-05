@@ -219,7 +219,7 @@ function learn_press_edit_admin_bar() {
 		$course_profile['id']             = 'course_profile';
 		$course_profile['parent']         = 'user-actions';
 		$course_profile['title']          = $text ? $text : get_the_title( $profile );
-		$course_profile['href']           = learn_press_user_profile_link($user_id,'course');
+		$course_profile['href']           = learn_press_user_profile_link($user_id);
 		$course_profile['meta']['target'] = LP()->settings->get( 'admin_bar_link_target' );
 		$wp_admin_bar->add_menu( $course_profile );
 	}
@@ -728,7 +728,7 @@ function learn_press_user_update_user_info() {
 					update_user_option( $user->id, '_lp_profile_picture_type', 'picture', true );
 					update_user_option( $user->id, '_lp_profile_picture', $avatar_filename, true );
 					update_user_option( $user->id, '_lp_profile_picture_url', $lp_profile_url . $avatar_filename, true );
-					
+
 					$_message      = __( 'Profile picture is changed', 'learnpress' );
 					$message       = sprintf( $message_template, 'success', $_message );
 					$res['return'] = true;

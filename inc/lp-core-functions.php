@@ -461,16 +461,16 @@ if ( !function_exists( 'leanrpress_advertise_in_admin' ) ) {
 			<div id="learn-press-add-ons-wrap" class="learnpress-advertis-admin">
 				<?php
 				foreach ( $list_themes as $theme ) {
-                    $theme['url'] = add_query_arg( array(
-                        'ref'           => 'ThimPress',
-                        'utm_source'    => 'lp-backend',
-                        'utm_medium'    => 'lp-addondashboard'
-                    ), $theme['url'] );
-                    $url_demo = add_query_arg( array(
-                        'ref'           => 'ThimPress',
-                        'utm_source'    => 'lp-backend',
-                        'utm_medium'    => 'lp-addondashboard'
-                    ), $theme['attributes'][4]['value'] );
+					$theme['url'] = add_query_arg( array(
+						'ref'        => 'ThimPress',
+						'utm_source' => 'lp-backend',
+						'utm_medium' => 'lp-addondashboard'
+					), $theme['url'] );
+					$url_demo     = add_query_arg( array(
+						'ref'        => 'ThimPress',
+						'utm_source' => 'lp-backend',
+						'utm_medium' => 'lp-addondashboard'
+					), $theme['attributes'][4]['value'] );
 
 					$theme['description'] = preg_replace( '/(?<=\S,)(?=\S)/', ' ', $theme['description'] );
 					$theme['description'] = str_replace( "\n", ' ', $theme['description'] );
@@ -2142,11 +2142,14 @@ function learn_press_sanitize_json( $string ) {
 function learn_press_get_current_profile_tab() {
 	global $wp_query;
 	$current = '';
-	if ( !empty( $_REQUEST['tab'] ) ) {
-		$current = $_REQUEST['tab'];
-	} else if ( !empty( $wp_query->query_vars['tab'] ) ) {
-		$current = $wp_query->query_vars['tab'];
-	} else {
+	if ( !is_admin() ) {
+		if ( !empty( $_REQUEST['tab'] ) ) {
+			$current = $_REQUEST['tab'];
+		} else if ( !empty( $wp_query->query_vars['tab'] ) ) {
+			$current = $wp_query->query_vars['tab'];
+		}
+	}
+	if ( empty( $current ) ) {
 		if ( $tabs = learn_press_user_profile_tabs() ) {
 			$tab_keys = array_keys( $tabs );
 			$current  = reset( $tab_keys );
