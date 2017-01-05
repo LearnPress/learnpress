@@ -2135,20 +2135,29 @@ function learn_press_sanitize_json( $string ) {
 	return $string;
 }
 
-function learn_press_get_current_profile_tab() {
-	global $wp_query;
+function learn_press_get_current_profile_tab( $default = true ) {
+	global $wp_query, $wp;
 	$current = '';
 	if ( !empty( $_REQUEST['tab'] ) ) {
 		$current = $_REQUEST['tab'];
 	} else if ( !empty( $wp_query->query_vars['tab'] ) ) {
 		$current = $wp_query->query_vars['tab'];
+	} else if ( !empty( $wp->query_vars['view'] ) ) {
+		$current = $wp->query_vars['view'];
 	} else {
-		if ( $tabs = learn_press_user_profile_tabs() ) {
+		if ( $default && $tabs = learn_press_user_profile_tabs() ) {
 			$tab_keys = array_keys( $tabs );
 			$current  = reset( $tab_keys );
 		}
 	}
 	return $current;
+}
+
+function learn_press_profile_tab_exists( $tab ) {
+	if ( $tabs = learn_press_user_profile_tabs() ) {
+		return !empty( $tabs[$tab] ) ? true : false;
+	}
+	return false;
 }
 
 /**

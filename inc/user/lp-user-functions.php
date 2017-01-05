@@ -253,6 +253,16 @@ function learn_press_profile_tab_orders_content( $current, $tab, $user ) {
 	learn_press_get_template( 'profile/tabs/orders.php', array( 'user' => $user, 'current' => $current, 'tab' => $tab ) );
 }
 
+function learn_press_get_profile_user() {
+	global $wp_query;
+	if ( isset( $wp_query->query['user'] ) ) {
+		$user = get_user_by( 'login', urldecode( $wp_query->query['user'] ) );
+	} else {
+		$user = get_user_by( 'id', get_current_user_id() );
+	}
+	return $user;
+}
+
 //function learn_press_update_user_lesson_start_time() {
 //	global $wpdb;
 //	$course = LP()->global['course'];
@@ -284,11 +294,6 @@ function learn_press_profile_tab_orders_content( $current, $tab, $user ) {
 //}
 //
 //add_action( 'learn_press_course_content_lesson', 'learn_press_update_user_lesson_start_time' );
-
-function learn_press_get_profile_user() {
-	global $wp;
-	return !empty( $wp->query_vars['user'] ) ? get_user_by( 'login', $wp->query_vars['user'] ) : false;
-}
 
 /**
  * Add instructor registration button to register page and admin bar
@@ -1000,6 +1005,12 @@ function learn_press_update_user_option( $name, $value, $id = 0 ) {
 	update_user_option( $id, $key, $options, true );
 }
 
+/**
+ * @param     $name
+ * @param int $id
+ *
+ * @return bool
+ */
 function learn_press_delete_user_option( $name, $id = 0 ) {
 	if ( !$id ) {
 		$id = get_current_user_id();
@@ -1014,6 +1025,12 @@ function learn_press_delete_user_option( $name, $id = 0 ) {
 	return false;
 }
 
+/**
+ * @param     $name
+ * @param int $id
+ *
+ * @return bool
+ */
 function learn_press_get_user_option( $name, $id = 0 ) {
 	if ( !$id ) {
 		$id = get_current_user_id();

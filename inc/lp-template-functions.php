@@ -958,8 +958,7 @@ function learn_press_setup_object_data( $post ) {
 	if ( !$post ) {
 		return $object;
 	}
-	//print_r($post);
-	//echo 'xxxxxxxxxxxxxxxx';
+
 	if ( $post->post_type == LP_COURSE_CPT ) {
 		if ( isset( $GLOBALS['course'] ) ) {
 			unset( $GLOBALS['course'] );
@@ -1553,9 +1552,8 @@ if ( !function_exists( 'learn_press_get_profile_display_name' ) ) {
 	 * @return string
 	 */
 	function learn_press_get_profile_display_name( $user ) {
-		$option = LP()->settings->get( 'profile_name_publicly' );
 		$info   = get_userdata( $user->ID );
-		return $info->display_name;
+		return $info ? $info->display_name : '';
 	}
 }
 function learn_press_is_content_item_only() {

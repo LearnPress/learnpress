@@ -74,6 +74,13 @@ class LP_Page_Controller {
 			}
 		}
 
+		if ( learn_press_is_profile() ) {
+			$current_tab = learn_press_get_current_profile_tab( false );
+			if ( $current_tab && !learn_press_profile_tab_exists( $current_tab ) ) {
+				wp_redirect( learn_press_get_page_link( 'profile' ) );
+				exit();
+			}
+		}
 		$queried_object_id = !empty( $wp_query->queried_object_id ) ? $wp_query->queried_object_id : 0;
 		if ( ( $page_id = learn_press_get_page_id( 'taken_course_confirm' ) ) && is_page( $page_id ) && $page_id == $queried_object_id ) {
 			if ( !learn_press_user_can_view_order( !empty( $_REQUEST['order_id'] ) ? $_REQUEST['order_id'] : 0 ) ) {
