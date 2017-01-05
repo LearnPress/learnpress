@@ -1858,6 +1858,27 @@ body.block-content #learn-press-block-content {
   top: 2px;
   left: 3px;
 }
+/* Form field */
+.lp-form-field-wrap {
+  list-style: none;
+  margin: 0 0 20px 0;
+}
+.lp-form-field-wrap .lp-form-field {
+  list-style: none;
+  margin: 0 0 20px 0;
+}
+.lp-form-field-wrap .lp-form-field .lp-form-field-label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+.lp-form-field-wrap .lp-form-field .lp-form-field-input {
+  font-size: smaller;
+  font-style: italic;
+}
+.lp-form-field-wrap .lp-form-field .lp-field-error-message {
+  color: #FF0000;
+}
 .learn-press-user-profile {
   /**  STYLE PROFILE **/
   /* Change Picture Menu */
@@ -2050,8 +2071,8 @@ body.block-content #learn-press-block-content {
   position: absolute;
   width: 100%;
   height: 100%;
-  background: #000;
-  opacity: 0.5;
+  background: #FFF;
+  opacity: 0.4;
   content: '';
 }
 .learn-press-user-profile .lp-avatar-preview.upload-error .lp-avatar-upload-error {
@@ -2084,7 +2105,7 @@ body.block-content #learn-press-block-content {
   bottom: 10px;
   left: 10px;
   right: 30px;
-  background: #FF0000;
+  background: #563d7a;
 }
 .learn-press-user-profile .lp-avatar-preview.croping .lp-avatar-crop-image .lp-crop-controls .lp-zoom .ui-slider {
   position: absolute;
@@ -2095,9 +2116,13 @@ body.block-content #learn-press-block-content {
 .learn-press-user-profile .lp-avatar-preview.croping .lp-avatar-crop-image .lp-crop-controls .lp-zoom .ui-slider .ui-slider-handle {
   display: inline-block;
   width: 10px;
-  height: 10px;
-  background: #ffffff;
+  height: 14px;
+  background: #FFF;
   position: absolute;
+  margin-top: -2px;
+  border: 1px solid #563d7a;
+  box-shadow: none;
+  outline: none;
 }
 .learn-press-user-profile .lp-avatar-preview.croping .lp-avatar-crop-image .lp-crop-controls .lp-cancel-upload {
   text-decoration: none;
@@ -2111,8 +2136,8 @@ body.block-content #learn-press-block-content {
   height: 30px;
   width: 100%;
   content: '';
-  background: #000;
-  opacity: 0.5;
+  background: #FFF;
+  opacity: 0.4;
 }
 .learn-press-user-profile .lp-avatar-preview:after {
   display: block;

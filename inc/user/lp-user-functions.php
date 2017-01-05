@@ -523,7 +523,7 @@ function learn_press_user_has_quiz_status( $status, $quiz_id = 0, $user_id = 0, 
 	return $user->has_quiz_status( $status, $quiz_id, $course_id );
 }
 
-add_action( 'init', 'learn_press_user_update_user_info' );
+//add_action( 'init', 'learn_press_user_update_user_info' );
 
 function learn_press_user_update_user_info() {
 	global $wp, $wpdb;
@@ -742,8 +742,6 @@ function learn_press_user_update_user_info() {
 		$return      = array();
 		$update_data = array(
 			'ID'           => $user_id,
-//			'user_url'     => filter_input( INPUT_POST, 'url', FILTER_SANITIZE_URL ),
-//			'user_email'   => filter_input( INPUT_POST, 'email', FILTER_SANITIZE_EMAIL ),
 			'first_name'   => filter_input( INPUT_POST, 'first_name', FILTER_SANITIZE_STRING ),
 			'last_name'    => filter_input( INPUT_POST, 'last_name', FILTER_SANITIZE_STRING ),
 			'display_name' => filter_input( INPUT_POST, 'display_name', FILTER_SANITIZE_STRING ),
@@ -766,7 +764,6 @@ function learn_press_user_update_user_info() {
 				}
 			}
 			if ( !$check_old_pass ) {
-//				learn_press_add_message( __( 'Old password incorrect!', 'learnpress' ), 'error' );
 				$_message               = __( 'Old password incorrect!', 'learnpress' );
 				$message                = sprintf( $message_template, 'error', $_message );
 				$return['return']       = false;
@@ -780,7 +777,6 @@ function learn_press_user_update_user_info() {
 				$new_pass  = filter_input( INPUT_POST, 'pass1' );
 				$new_pass2 = filter_input( INPUT_POST, 'pass2' );
 				if ( $new_pass != $new_pass2 ) {
-//					learn_press_add_message( __( 'Confirmation password incorrect!', 'learnpress' ), 'error' );
 					$_message               = __( 'Confirmation password incorrect!', 'learnpress' );
 					$message                = sprintf( $message_template, 'error', $_message );
 					$return['return']       = false;
@@ -799,7 +795,6 @@ function learn_press_user_update_user_info() {
 		update_user_meta( $user->id, '_lp_profile_picture_type', $profile_picture_type );
 		$res = wp_update_user( $update_data );
 		if ( $res ) {
-//			learn_press_add_message( __( 'Your change is saved', 'learnpress' ) );
 			$_message               = __( 'Your change is saved', 'learnpress' );
 			$message                = sprintf( $message_template, 'success', $_message );
 			$return['return']       = true;
@@ -808,7 +803,6 @@ function learn_press_user_update_user_info() {
 			learn_press_send_json( $return );
 			exit();
 		} else {
-//			learn_press_add_message( __( 'Error on update your profile info', 'learnpress' ) );
 			$_message               = __( 'Error on update your profile info', 'learnpress' );
 			$message                = sprintf( $message_template, 'error', $_message );
 			$return['return']       = false;
@@ -821,16 +815,6 @@ function learn_press_user_update_user_info() {
 		$current_url = learn_press_get_page_link( 'profile' ) . $user->user_login . '/edit';
 		wp_redirect( $current_url );
 		exit();
-//		if ( !empty( $_POST['profile-nonce'] ) && wp_verify_nonce( $_POST['profile-nonce'], 'learn-press-user-profile-' . $user->id ) ) {
-//			$current_url = learn_press_get_page_link( 'profile' ) . $user->user_login . '/edit';
-//			wp_redirect( $current_url );
-//			exit();
-//		}
-#
-# UPDATE USER INFO
-# - - - - - - - - - - - - - - - - - - - -
-
-
 	}
 }
 
@@ -839,8 +823,6 @@ if ( !function_exists( 'learn_press_pre_get_avatar_callback' ) ) {
 	 * @param        $avatar
 	 * @param string $id_or_email
 	 * @param array  $size
-	 * @param string $default
-	 * @param string $alt
 	 *
 	 * @return string|void
 	 */
@@ -923,6 +905,13 @@ function learn_press_user_profile_picture_upload_dir( $width_user = true ) {
 		$upload_dir['path']   = str_replace( $upload_dir['subdir'], $subdir, $upload_dir['path'] );
 		$upload_dir['url']    = str_replace( $upload_dir['subdir'], $subdir, $upload_dir['url'] );
 		$upload_dir['subdir'] = $subdir;
+
+		// Point path/url to main site if we are in multisite
+		if ( is_multisite() && !( is_main_network() && is_main_site() && defined( 'MULTISITE' ) ) ) {
+			foreach ( array( 'path', 'url', 'basedir', 'baseurl' ) as $v ) {
+				$upload_dir[$v] = str_replace( '/sites/' . get_current_blog_id(), '', $upload_dir[$v] );
+			}
+		}
 	}
 	return $upload_dir;
 }
@@ -1037,6 +1026,40 @@ function learn_press_get_user_option( $name, $id = 0 ) {
 	return false;
 }
 
+/**
+ * @param LP_User
+ *
+ * @return array
+ */
+function learn_press_get_display_name_publicly( $user_info ) {
+	$public_display                     = array();
+	$public_display['display_nickname'] = $user_info->nickname;
+	$public_display['display_username'] = $user_info->user_login;
+
+	if ( !empty( $user_info->first_name ) )
+		$public_display['display_firstname'] = $user_info->first_name;
+
+	if ( !empty( $user_info->last_name ) )
+		$public_display['display_lastname'] = $user_info->last_name;
+
+	if ( !empty( $user_info->first_name ) && !empty( $user_info->last_name ) ) {
+		$public_display['display_firstlast'] = $user_info->first_name . ' ' . $user_info->last_name;
+		$public_display['display_lastfirst'] = $user_info->last_name . ' ' . $user_info->first_name;
+	}
+
+	if ( !in_array( $user_info->display_name, $public_display ) ) // Only add this if it isn't duplicated elsewhere
+	{
+		$public_display = array( 'display_displayname' => $user_info->display_name ) + $public_display;
+	}
+
+	$public_display = array_map( 'trim', $public_display );
+	$public_display = array_unique( $public_display );
+	return apply_filters( 'learn_press_display_name_publicly', $public_display );
+}
+
+/**
+ * Check and update user information from request in user profile page
+ */
 function learn_press_update_user_profile() {
 	if ( !LP()->is_request( 'post' ) ) {
 		return;
@@ -1045,51 +1068,138 @@ function learn_press_update_user_profile() {
 	if ( !wp_verify_nonce( $nonce, 'learn-press-update-user-profile-' . get_current_user_id() ) ) {
 		return;
 	}
-	$upload_dir = learn_press_user_profile_picture_upload_dir();
-
-	if ( learn_press_get_request( 'lp-user-avatar-custom' ) != 'yes' ) {
-		delete_user_meta( get_current_user_id(), '_lp_profile_picture' );
-	} else {
-		$data     = learn_press_get_request( 'lp-user-avatar-crop' );
-		$path     = $upload_dir['basedir'] . $data['name'];
-		$filetype = wp_check_filetype( $path );
-		if ( 'jpg' == $filetype['ext'] ) {
-			$im = imagecreatefromjpeg( $path );
-		} elseif ( 'png' == $filetype['ext'] ) {
-			$im = imagecreatefrompng( $path );
-		} else {
-			return;
-		}
-		$points  = explode( ',', $data['points'] );
-		$im_crop = imagecreatetruecolor( $data['width'], $data['height'] );
-		if ( $im !== false ) {
-			$user  = wp_get_current_user();
-			$dst_x = 0;
-			$dst_y = 0;
-			$dst_w = $data['width'];
-			$dst_h = $data['height'];
-			$src_x = $points[0];
-			$src_y = $points[1];
-			$src_w = $points[2] - $points[0];
-			$src_h = $points[3] - $points[1];
-			imagecopyresampled( $im_crop, $im, $dst_x, $dst_y, $src_x, $src_y, $dst_w, $dst_h, $src_w, $src_h );
-			$newname = md5( $user->user_login );
-			$output  = dirname( $path );
-			if ( 'jpg' == $filetype['ext'] ) {
-				$newname .= '.jpg';
-				$output .= '/' . $newname;
-				imagejpeg( $im_crop, $output );
-			} elseif ( 'png' == $filetype['ext'] ) {
-				$newname .= '.png';
-				$output .= '/' . $newname;
-				imagepng( $im_crop, $output );
-			}
-			if ( !file_exists( $output ) ) {
-				return;
-			}
-			update_user_meta( get_current_user_id(), '_lp_profile_picture', preg_replace( '!^/!', '', $upload_dir['subdir'] ) . '/' . $newname );
-		}
-	}
+	$section = learn_press_get_request( 'lp-profile-section' );
+	do_action( 'learn_press_update_user_profile_' . $section );
+	do_action( 'learn_press_update_user_profile', $section );
 }
 
 add_action( 'init', 'learn_press_update_user_profile' );
+
+/**
+ * Update user avatar
+ */
+function learn_press_update_user_profile_avatar() {
+	$upload_dir = learn_press_user_profile_picture_upload_dir();
+	if ( learn_press_get_request( 'lp-user-avatar-custom' ) != 'yes' ) {
+		delete_user_meta( get_current_user_id(), '_lp_profile_picture' );
+	} else {
+		$data = learn_press_get_request( 'lp-user-avatar-crop' );
+		if ( $data && ( $path = $upload_dir['basedir'] . $data['name'] ) && file_exists( $path ) ) {
+			$filetype = wp_check_filetype( $path );
+			if ( 'jpg' == $filetype['ext'] ) {
+				$im = imagecreatefromjpeg( $path );
+			} elseif ( 'png' == $filetype['ext'] ) {
+				$im = imagecreatefrompng( $path );
+			} else {
+				return;
+			}
+			$points  = explode( ',', $data['points'] );
+			$im_crop = imagecreatetruecolor( $data['width'], $data['height'] );
+			if ( $im !== false ) {
+				$user  = wp_get_current_user();
+				$dst_x = 0;
+				$dst_y = 0;
+				$dst_w = $data['width'];
+				$dst_h = $data['height'];
+				$src_x = $points[0];
+				$src_y = $points[1];
+				$src_w = $points[2] - $points[0];
+				$src_h = $points[3] - $points[1];
+				imagecopyresampled( $im_crop, $im, $dst_x, $dst_y, $src_x, $src_y, $dst_w, $dst_h, $src_w, $src_h );
+				$newname = md5( $user->user_login );
+				$output  = dirname( $path );
+				if ( 'jpg' == $filetype['ext'] ) {
+					$newname .= '.jpg';
+					$output .= '/' . $newname;
+					imagejpeg( $im_crop, $output );
+				} elseif ( 'png' == $filetype['ext'] ) {
+					$newname .= '.png';
+					$output .= '/' . $newname;
+					imagepng( $im_crop, $output );
+				}
+				if ( file_exists( $output ) ) {
+					update_user_meta( get_current_user_id(), '_lp_profile_picture', preg_replace( '!^/!', '', $upload_dir['subdir'] ) . '/' . $newname );
+				}
+			}
+			@unlink( $path );
+		}
+	}
+	learn_press_add_message( __( 'Your avatar updated', 'learnpress' ) );
+	wp_redirect( learn_press_get_current_url() );
+	exit;
+}
+
+add_action( 'learn_press_update_user_profile_avatar', 'learn_press_update_user_profile_avatar' );
+
+/**
+ * Update user basic information
+ */
+function learn_press_update_user_profile_basic_information() {
+	$user_id     = learn_press_get_current_user_id();
+	$update_data = array(
+		'ID'           => $user_id,
+		'first_name'   => filter_input( INPUT_POST, 'first_name', FILTER_SANITIZE_STRING ),
+		'last_name'    => filter_input( INPUT_POST, 'last_name', FILTER_SANITIZE_STRING ),
+		'display_name' => filter_input( INPUT_POST, 'display_name', FILTER_SANITIZE_STRING ),
+		'nickname'     => filter_input( INPUT_POST, 'nickname', FILTER_SANITIZE_STRING ),
+		'description'  => filter_input( INPUT_POST, 'description', FILTER_SANITIZE_STRING ),
+	);
+	$res         = wp_update_user( $update_data );
+	if ( $res ) {
+		$message = __( 'Your change is saved', 'learnpress' );
+	} else {
+		$message = __( 'Error on update your profile info', 'learnpress' );
+	}
+	$current_url = learn_press_get_current_url();
+	learn_press_add_message( $message );
+	wp_redirect( $current_url );
+	exit();
+}
+
+add_action( 'learn_press_update_user_profile_basic-information', 'learn_press_update_user_profile_basic_information' );
+
+/**
+ * Change password
+ */
+function learn_press_update_user_profile_change_password() {
+	# check and update pass word
+	// check old pass
+	$old_pass       = filter_input( INPUT_POST, 'pass0' );
+	$check_old_pass = false;
+	if ( !$old_pass ) {
+		$check_old_pass = false;
+	} else {
+		$cuser = wp_get_current_user();
+		require_once( ABSPATH . 'wp-includes/class-phpass.php' );
+		$wp_hasher = new PasswordHash( 8, TRUE );
+		if ( $wp_hasher->CheckPassword( $old_pass, $cuser->data->user_pass ) ) {
+			$check_old_pass = true;
+		}
+	}
+	if ( !$check_old_pass ) {
+		$message = __( 'Old password incorrect!', 'learnpress' );
+	} else {
+		// check new pass
+		$new_pass  = filter_input( INPUT_POST, 'pass1' );
+		$new_pass2 = filter_input( INPUT_POST, 'pass2' );
+		if ( $new_pass != $new_pass2 ) {
+			$message = __( 'Confirmation password incorrect!', 'learnpress' );
+		} else {
+			$update_data = array(
+				'user_pass' => $new_pass,
+				'ID'        => learn_press_get_current_user_id()
+			);
+			if ( wp_update_user( $update_data ) ) {
+				$message = __( 'Your password updated', 'learnpress' );
+			} else {
+				$message = __( 'Change your password failed', 'learnpress' );
+			}
+		}
+	}
+	learn_press_add_message( $message );
+	wp_redirect( learn_press_get_current_url() );
+	exit;
+}
+
+add_action( 'learn_press_update_user_profile_change-password', 'learn_press_update_user_profile_change_password' );
+

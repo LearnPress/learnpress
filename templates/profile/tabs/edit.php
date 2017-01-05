@@ -36,23 +36,27 @@ $first_tab = 'basic-information';
 				<?php foreach ( $edit_tabs as $sub_key => $title ): ?>
 					<?php
 					$classes = array();
-					?>
-					<li>
-						<?php if ( ( $section && $section == $sub_key ) || ( !$section && $sub_key == $first_tab ) ): $classes[] = 'current'; ?>
-						<?php else: ?>
-						<?php endif; ?>
-						<a class="<?php echo join( ' ', $classes ); ?>" href="<?php echo esc_url( add_query_arg( 'section', $sub_key, $url_tab ) ); ?>"><?php echo esc_html( $title ); ?></a>
+					if ( ( $section && $section == $sub_key ) || ( !$section && $sub_key == $first_tab ) ) {
+						$classes[] = 'current';
+					} ?>
+					<li class="<?php echo join( ' ', $classes ); ?>">
+						<?php if ( in_array( 'current', $classes ) ) { ?>
+							<span><?php echo esc_html( $title ); ?></span>
+						<?php } else { ?>
+							<a href="<?php echo esc_url( add_query_arg( 'section', $sub_key, $url_tab ) ); ?>"><?php echo esc_html( $title ); ?></a>
+						<?php } ?>
 					</li>
 				<?php endforeach; ?>
 			</ul>
 			<div class="learn-press-subtab-content user-profile-section-content">
 				<?php include learn_press_locate_template( 'profile/tabs/edit/' . $section . '.php' ); ?>
+				<input type="hidden" name="lp-profile-section" value="<?php echo $section; ?>" />
 			</div>
 
 			<input type="hidden" name="user_id" id="user_id" value="<?php echo esc_attr( $user->id ); ?>" />
 			<input type="hidden" name="profile-nonce" value="<?php echo esc_attr( wp_create_nonce( 'learn-press-update-user-profile-' . $user->id ) ); ?>" />
 			<p class="submit update-profile">
-				<input type="submit" name="submit" id="submit" class="button button-primary" value="<?php _e( 'Update', 'learnpress' ); ?>" />
+				<input disabled="disabled" type="submit" name="submit" id="submit" class="button button-primary" value="<?php _e( 'Update', 'learnpress' ); ?>" />
 			</p>
 		</form>
 	</div>

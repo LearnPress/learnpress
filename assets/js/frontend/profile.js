@@ -13,7 +13,7 @@
 			'click #lp-upload-photo'       : '_upload',
 			'click .lp-cancel-upload'      : '_cancel'
 		},
-		el            : 'body',
+		el            : '#lp-user-profile-form',
 		uploader      : null,
 		initialize    : function () {
 			console.log()
@@ -24,6 +24,7 @@
 			e.preventDefault();
 			this.$('.profile-picture').toggle().filter('.profile-avatar-current').remove();
 			this.$('#lp-remove-upload-photo').hide();
+			this.$('#submit').prop('disabled', false);
 		},
 		_upload       : function (e) {
 			e.preventDefault();
@@ -67,6 +68,7 @@
 		crop          : function () {
 			this.model.set('r', Math.random())
 			new UserProfile.Crop(this);
+			this.$('#submit').prop('disabled', false);
 		},
 		_getUploader  : function () {
 			if (this.uploader) {
@@ -227,13 +229,35 @@
 	}
 
 
-	$(document).ready(function () {
-		new UserProfile({
-			viewWidth : 200,
-			viewHeight: 200
+	$(document).on('submit', '#learn-press-form-login', function (e) {
+		var $form = $(this),
+			data = $form.serialize();
+		$form.find('.learn-press-error, .learn-press-notice, .learn-press-message').fadeOut();
+		$form.find('input').attr('disabled', true);
+		LP.doAjax({
+			data   : {
+				'lp-ajax': 'login',
+				data     : data
+			},
+			success: function (response, raw) {
+				LP.showMessages(response.message, $form, 'LOGIN_ERROR');
+				if (response.result == 'error') {
+					$form.find('input').attr('disabled', false);
+					$('#learn-press-form-login input[type="text"]').focus();
+				}
+				if (response.redirect) {
+					LP.reload(response.redirect);
+				}
+			},
+			error  : function () {
+				LP.showMessages('', $form, 'LOGIN_ERROR');
+				$form.find('input').attr('disabled', false);
+				$('#learn-press-form-login input[type="text"]').focus();
+			}
 		});
-
+		return false;
 	});
+
 	$(document).on('click', '.table-orders .cancel-order', function (e) {
 		e.preventDefault();
 		var _this = $(this),
@@ -244,36 +268,48 @@
 			}
 		});
 		return false;
-	}).on('click', '#lp-remove-upload-photo', function () {
+	});
+	$(document).ready(function () {
+		var $form = $('#lp-user-profile-form form'),
+			oldData = $form.serialize(),
+			timer = null,
+			$passwordForm = $form.find('#lp-profile-edit-password-form');
 
-		$(document).on('submit', '#learn-press-form-login', function (e) {
-			var $form = $(this),
-				data = $form.serialize();
-			$form.find('.learn-press-error, .learn-press-notice, .learn-press-message').fadeOut();
-			$form.find('input').attr('disabled', true);
-			LP.doAjax({
-				data   : {
-					'lp-ajax': 'login',
-					data     : data
-				},
-				success: function (response, raw) {
-					LP.showMessages(response.message, $form, 'LOGIN_ERROR');
-					if (response.result == 'error') {
-						$form.find('input').attr('disabled', false);
-						$('#learn-press-form-login input[type="text"]').focus();
-					}
-					if (response.redirect) {
-						LP.reload(response.redirect);
-					}
-				},
-				error  : function () {
-					LP.showMessages('', $form, 'LOGIN_ERROR');
-					$form.find('input').attr('disabled', false);
-					$('#learn-press-form-login input[type="text"]').focus();
-				}
+		function _checkData() {
+			return $form.serialize() != oldData;
+		}
+
+		function _timerCallback() {
+			$form.find('#submit').prop('disabled', !_checkData());
+		}
+
+		if ($passwordForm.length == 0) {
+			$form.on('keyup change', 'input, textarea, select', function () {
+				timer && clearTimeout(timer);
+				timer = setTimeout(_timerCallback, 300);
 			});
-			return false;
+		} else {
+			$passwordForm.on('change keyup', 'input', function (e) {
+				var $target = $(e.target),
+					targetName = $target.attr('name'),
+					$oldPass = $form.find('#pass0'),
+					$newPass = $form.find('#pass1'),
+					$confirmPass = $form.find('#pass2'),
+					match = !(($newPass.val() || $confirmPass.val()) && $newPass.val() != $confirmPass.val());
+				$form.find('#lp-password-not-match').toggleClass('hide-if-js', match);
+				$form.find('#submit').prop('disabled', !match || !$oldPass.val() || !$newPass.val() || !$confirmPass.val());
+			});
+		}
+		// avatar
+		new UserProfile({
+			viewWidth : 200,
+			viewHeight: 200
 		});
+	});
+
+	return;
+	$(document).on('click', '#lp-remove-upload-photo', function () {
+
 
 		$('#learn-press-toggle-password').click(function (e) {
 			e.preventDefault();

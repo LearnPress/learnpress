@@ -1378,6 +1378,28 @@ body.block-content {
     }
 }
 
+/* Form field */
+.lp-form-field-wrap {
+    list-style: none;
+    margin: 0 0 20px 0;
+    .lp-form-field {
+        list-style: none;
+        margin: 0 0 20px 0;
+        .lp-form-field-label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .lp-form-field-input {
+            font-size: smaller;
+            font-style: italic;
+        }
+        .lp-field-error-message{
+            color: #FF0000;
+        }
+    }
+}
+
 .learn-press-user-profile {
 
     .lp-edit-profile {
@@ -1576,8 +1598,8 @@ body.block-content {
                 position: absolute;
                 width: 100%;
                 height: 100%;
-                background: #000;
-                opacity: 0.5;
+                background: #FFF;
+                opacity: 0.4;
                 content: '';
             }
         }
@@ -1613,7 +1635,7 @@ body.block-content {
                         bottom: 10px;
                         left: 10px;
                         right: 30px;
-                        background: #FF0000;
+                        background: #563d7a;
                         .ui-slider {
                             position: absolute;
                             left: 0;
@@ -1622,9 +1644,13 @@ body.block-content {
                             .ui-slider-handle {
                                 display: inline-block;
                                 width: 10px;
-                                height: 10px;
-                                background: rgb(255, 255, 255);
+                                height: 14px;
+                                background: #FFF;
                                 position: absolute;
+                                margin-top: -2px;
+                                border: 1px solid #563d7a;
+                                box-shadow: none;
+                                outline: none;
                             }
                         }
                     }
@@ -1640,8 +1666,8 @@ body.block-content {
                         height: 30px;
                         width: 100%;
                         content: '';
-                        background: #000;
-                        opacity: 0.5;
+                        background: #FFF;
+                        opacity: 0.4;
                     }
                 }
             }
