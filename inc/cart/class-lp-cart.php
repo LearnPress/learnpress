@@ -275,7 +275,7 @@ class LP_Cart {
 
 		$redirect = apply_filters( 'learn_press_add_to_cart_redirect', $redirect, $course_id );
 
-		if ( is_lp_ajax() ) {
+		if ( learn_press_is_ajax() ) {
 			learn_press_send_json(
 				array(
 					'redirect' => $redirect,

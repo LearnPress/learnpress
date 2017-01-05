@@ -1033,8 +1033,7 @@ jQuery(document).ready(function ($) {
 
 	$(document).ready( function() {
 
-		/* Search Addon & Theme */
-
+		// Search Add-ons & Theme
         var $wrapAddon 	= $('#learn-press-add-ons-wrap'),
             $addOnClone = $wrapAddon.clone(true);
 
@@ -1072,7 +1071,7 @@ jQuery(document).ready(function ($) {
                     }
                 });
 
-                /* Count for plugin */
+                // Count for plugin
                 $('.learnpress-count-addon', $wrapFreeAddon).text($('.plugin-card-learnpress:not(.lp-addon-hidden)', $wrapFreeAddon).length);
                 $('.learnpress-count-addon', $wrapPremium).text($('.plugin-card-learnpress:not(.lp-addon-hidden)', $wrapPremium).length);
 
@@ -1085,6 +1084,22 @@ jQuery(document).ready(function ($) {
 
             }, 100);
         });
+
+        // Hidden Button Preview In Course When Course Status Is Pending
+		var $bodyCourse	= $('.post-type-lp_course');
+
+		if ( $bodyCourse.length ) {
+
+			var $minorPubish 	= $('#minor-publishing', $bodyCourse),
+				$postPreview	= $('#post-preview', $minorPubish),
+				$postStatus 	= $('#hidden_post_status', $minorPubish),
+				postStatus 		= $postStatus.val();
+
+			if ( postStatus && postStatus === 'pending' ) {
+                $postPreview.hide();
+			}
+		}
+
 
 	});
 
