@@ -538,7 +538,6 @@ if ( !function_exists( 'learn_press_output_user_profile_order' ) ) {
 //		learn_press_get_template( 'profile/tabs/orders.php', array( 'user' => $user, 'tabs' => $tabs, 'current' => $current ) );
 	}
 }
-
 if ( !function_exists( 'learn_press_profile_tab_courses_all' ) ) {
 	/**
 	 * Display user profile tabs

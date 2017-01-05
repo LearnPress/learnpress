@@ -104,6 +104,11 @@
   border: 1px solid #DDD;
   background: #FFF;
 }
+.learn-press-courses li.course .view-more {
+  padding: 0 15px;
+  text-decoration: none;
+  box-shadow: none;
+}
 .learn-press-courses li.course h3 {
   padding: 15px;
   margin: 0;

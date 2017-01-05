@@ -7,10 +7,11 @@
  * @version 2.0
  */
 
+
 if ( !defined( 'ABSPATH' ) ) {
 	exit;
 }
-
+/*
 global $post, $wp;
 $heading = apply_filters( 'learn_press_profile_tab_courses_own_heading', false );
 $paged   = !empty( $_REQUEST['section'] ) && $_REQUEST['section'] == $subtab ? get_query_var( 'paged' ) : 1;
@@ -51,3 +52,4 @@ $paged   = !empty( $_REQUEST['section'] ) && $_REQUEST['section'] == $subtab ? g
 <?php endif ?>
 
 <?php wp_reset_postdata(); // do not forget to call this function here! ?>
+*/
