@@ -860,25 +860,8 @@ if ( !function_exists( 'learn_press_pre_get_avatar_callback' ) ) {
 		} elseif ( is_object( $id_or_email ) && isset( $id_or_email->user_id ) && $id_or_email->user_id ) {
 			$user_id = $id_or_email->user_id;
 		}
-		$user                 = LP_User_Factory::get_user( $user_id );
-		$profile_picture_type = get_user_meta( $user_id, '_lp_profile_picture_type', true );
-		$upload               = learn_press_user_profile_picture_upload_dir();
-
-		$profile_picture = get_user_meta( $user_id, '_lp_profile_picture', true );
-		if ( !$profile_picture ) {
-			return $avatar;
-		}
-
-		$user_profile_picture_dir = trailingslashit( $upload['basedir'] );// . DIRECTORY_SEPARATOR . 'learn-press-profile' . DIRECTORY_SEPARATOR . $user_id . DIRECTORY_SEPARATOR;
-		$user_profile_picture_url = trailingslashit( $upload['baseurl'] );// . '/learn-press-profile/' . $user_id . '/';
-
-
+		$user = LP_User_Factory::get_user( $user_id );
 		if ( $profile_picture_src = $user->get_upload_profile_src() ) {// $user_profile_picture_url . $profile_picture;
-			if ( ( !isset( $size['gravatar'] ) || !isset( $size['gravatar'] ) && ( $size['gravatar'] ) )
-				&& ( !$profile_picture_type || $profile_picture_type == 'gravatar' || !$profile_picture_src )
-			) {
-				return $avatar;
-			}
 			$lp           = LP();
 			$lp_setting   = $lp->settings;
 			$setting_size = $lp_setting->get( 'profile_picture_thumbnail_size' );

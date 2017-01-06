@@ -2798,17 +2798,15 @@ class LP_Abstract_User {
 	 * @return false|string
 	 */
 	public function get_profile_picture( $type = '', $size = 96 ) {
-		if ( empty( $type ) ) {
-			$type = $this->profile_picture_type;
+		if ( $type == 'gravatar' ) {
+			remove_filter( 'pre_get_avatar', 'learn_press_pre_get_avatar_callback', 1, 5 );
 		}
-		if ( $type == 'picture' ) {
-			if ( $profile_picture_src = $this->get_upload_profile_src( $size ) ) {
-				$this->profile_picture_src = $profile_picture_src;
-			}
-			$avatar = get_avatar( $this->id, $size, '', '', array( 'gravatar' => false ) );
-		} else {
-			$avatar = get_avatar( $this->id, $size, '', '', array( 'gravatar' => true ) );
+		if ( $profile_picture_src = $this->get_upload_profile_src( $size ) ) {
+			$this->profile_picture_src = $profile_picture_src;
 		}
+		$avatar = get_avatar( $this->id, $size, '', '', array( 'gravatar' => false ) );
+		add_filter( 'pre_get_avatar', 'learn_press_pre_get_avatar_callback', 1, 5 );
+
 		return $avatar;
 	}
 
