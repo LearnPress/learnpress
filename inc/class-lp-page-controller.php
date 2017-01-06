@@ -36,6 +36,25 @@ class LP_Page_Controller {
 		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ), 10 );
 		//add_action( 'learn_press_before_template_part', array( $this, 'before_template_part' ), 10, 4 );
 		add_shortcode( 'learn_press_archive_course', array( $this, 'archive_content' ) );
+		add_filter( 'request', array( $this, 'remove_course_post_format' ), 1 );
+	}
+
+	/**
+	 * In preview mode, if there is a 'post_format' in query var
+	 * wp check and replace our post-type to post. This make preview
+	 * course item become 404
+	 *
+	 * @param $qv
+	 *
+	 * @return mixed
+	 */
+	public function remove_course_post_format( $qv ) {
+		if ( !empty( $qv['post_type'] ) && LP_COURSE_CPT === $qv['post_type'] ) {
+			if ( !empty( $qv['post_format'] ) ) {
+				unset( $qv['post_format'] );
+			}
+		}
+		return $qv;
 	}
 
 	public function fix_global_post( $post, $query ) {
@@ -74,10 +93,24 @@ class LP_Page_Controller {
 			}
 		}
 
+		/**
+		 * Check if user is viewing a course's item but they do not have
+		 * permission to view it
+		 */
+		if ( learn_press_is_course() ) {
+			if ( !empty( LP()->global['course-item'] ) && $course_item = LP()->global['course-item'] ) {
+				$user = learn_press_get_current_user();
+				if ( !$user->can_view_item( $course_item->id ) ) {
+					wp_redirect( get_the_permalink() );
+					exit();
+				}
+			}
+		}
+
 		$queried_object_id = !empty( $wp_query->queried_object_id ) ? $wp_query->queried_object_id : 0;
 		if ( ( $page_id = learn_press_get_page_id( 'taken_course_confirm' ) ) && is_page( $page_id ) && $page_id == $queried_object_id ) {
 			if ( !learn_press_user_can_view_order( !empty( $_REQUEST['order_id'] ) ? $_REQUEST['order_id'] : 0 ) ) {
-				learn_press_404_page();
+				learn_press_is_404();
 			}
 			$post->post_content = '[learn_press_confirm_order]';
 		} elseif ( ( $page_id = learn_press_get_page_id( 'become_a_teacher' ) ) && is_page( $page_id ) && $page_id == $queried_object_id ) {
@@ -266,7 +299,8 @@ class LP_Page_Controller {
 
 			if ( !$post ) {
 				LP_Debug::instance()->add( sprintf( '%s: File %s, line #%d', '404', __FILE__, __LINE__ ) );
-				learn_press_404_page();
+				learn_press_is_404();
+				return $q;
 			}
 			$course      = learn_press_get_course( $post->ID );
 			$item        = null;
@@ -288,10 +322,10 @@ class LP_Page_Controller {
 							$question = learn_press_get_post_by_name( $question_name, 'lp_question', true );
 							if ( !$question ) {
 								LP_Debug::instance()->add( sprintf( '%s: File %s, line #%d', '404', __FILE__, __LINE__ ) );
-								learn_press_404_page();
+								learn_press_is_404();
 							} elseif ( !$quiz->has_question( $question->ID ) ) {
 								LP_Debug::instance()->add( sprintf( '%s: File %s, line #%d', '404', __FILE__, __LINE__ ) );
-								learn_press_404_page();
+								learn_press_is_404();
 							} else {
 								LP()->global['quiz-question'] = $question;
 							}
@@ -303,13 +337,14 @@ class LP_Page_Controller {
 
 			if ( $item_name && !$item_object ) {
 				LP_Debug::instance()->add( sprintf( '%s: File %s, line #%d', '404', __FILE__, __LINE__ ) );
-				learn_press_404_page();
+				learn_press_is_404();
 			} elseif ( $item_object && !$course->has( 'item', $item_object->id ) ) {
 				LP_Debug::instance()->add( sprintf( '%s: File %s, line #%d', '404', __FILE__, __LINE__ ) );
-				learn_press_404_page();
+				learn_press_is_404();
 			} else {
 				LP()->global['course-item'] = $item_object;
 			}
+			return $q;
 		}
 
 

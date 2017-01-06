@@ -139,9 +139,9 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 
 			if ( learn_press_get_user_option( 'course-tabs' ) == 'yes' ) {
 				?>
-                <ul id="course-tabs">
-                    <li id="switch-course-metaboxes">
-                        <!--<a href="" id="reorder-course-tabs"><?php _e( 'Reorder', 'learnpress' ); ?></a>
+				<ul id="course-tabs">
+					<li id="switch-course-metaboxes">
+						<!--<a href="" id="reorder-course-tabs"><?php _e( 'Reorder', 'learnpress' ); ?></a>
 						<a href="" id="complete-reorder-course-tabs"><?php _e( 'Ok', 'learnpress' ); ?></a>-->
 						<a href="<?php echo add_query_arg( 'switch-course-tabs', 'off', get_edit_post_link() ); ?>"><?php _e( 'Switch to meta boxes', 'learnpress' ); ?></a>
 					</li>
@@ -152,19 +152,19 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			} else {
 				if ( learn_press_get_user_option( 'hide-notice-switch-course-tabs' ) != 'yes' ) {
 					?>
-                    <div class="message updated learn-press-message">
-                        <p><?php _e( 'Would you like to see the meta boxes in tabs style?', 'learnpress' ); ?></p>
-                        <p>
-                            <a class="button" href="<?php echo add_query_arg( 'switch-course-tabs', 'on', get_edit_post_link() ); ?>"><?php _e( 'Switch meta boxes to tabs', 'learnpress' ); ?></a>
-                            <a class="button" href="<?php echo add_query_arg( 'lp-hide-notice', 'switch-course-tabs', get_edit_post_link() ); ?>"><?php _e( 'Hide', 'learnpress' ); ?></a>
-                        </p>
+					<div class="message updated learn-press-message">
+						<p><?php _e( 'Would you like to see the meta boxes in tabs style?', 'learnpress' ); ?></p>
+						<p>
+							<a class="button" href="<?php echo add_query_arg( 'switch-course-tabs', 'on', get_edit_post_link() ); ?>"><?php _e( 'Switch meta boxes to tabs', 'learnpress' ); ?></a>
+							<a class="button" href="<?php echo add_query_arg( 'lp-hide-notice', 'switch-course-tabs', get_edit_post_link() ); ?>"><?php _e( 'Hide', 'learnpress' ); ?></a>
+						</p>
 						<?php printf( '<a href="%s" class="learn-press-admin-notice-dismiss"></a>', add_query_arg( 'lp-hide-notice', 'switch-course-tabs', get_edit_post_link() ) ); ?>
-                    </div>
+					</div>
 					<?php
 				}
 				?>
-                <a id="toggle-meta-boxes" href=""><?php _e( 'Toggle', 'learnpress' ); ?></a>
-                <a id="switch-course-tabs" href="<?php echo add_query_arg( 'switch-course-tabs', 'on', get_edit_post_link() ); ?>"><?php _e( 'Switch to tabs', 'learnpress' ); ?></a>
+				<a id="toggle-meta-boxes" href=""><?php _e( 'Toggle', 'learnpress' ); ?></a>
+				<a id="switch-course-tabs" href="<?php echo add_query_arg( 'switch-course-tabs', 'on', get_edit_post_link() ); ?>"><?php _e( 'Switch to tabs', 'learnpress' ); ?></a>
 				<?php
 			}
 		}
@@ -327,7 +327,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			if ( empty( $post_id ) ) {
 				return;
 			}
-            if ( self::$_enable_review ) {
+			if ( self::$_enable_review ) {
 				if ( !empty( $_POST ) && learn_press_get_current_user()->is_instructor() && 'yes' == get_post_meta( $post_id, '_lp_submit_for_reviewer', true ) ) {
 					LP_Admin_Notice::add_redirect( __( 'Sorry! You can not update a course while it is viewing!', 'learnpress' ), 'error' );
 					wp_redirect( admin_url( 'post.php?post=' . $post_id . '&action=edit' ) );
@@ -363,9 +363,9 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		public function toggle_editor_button( $post ) {
 			if ( $post->post_type == LP_COURSE_CPT ) {
 				?>
-                <button class="button button-primary"
-                        data-hidden="<?php echo get_post_meta( $post->ID, '_lp_editor_hidden', true ); ?>" type="button"
-                        id="learn-press-button-toggle-editor"><?php _e( 'Toggle Course Content', 'learnpress' ); ?></button>
+				<button class="button button-primary"
+						data-hidden="<?php echo get_post_meta( $post->ID, '_lp_editor_hidden', true ); ?>" type="button"
+						id="learn-press-button-toggle-editor"><?php _e( 'Toggle Course Content', 'learnpress' ); ?></button>
 				<?php
 			}
 		}
@@ -678,20 +678,20 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 
 			if ( current_user_can( 'manage_options' ) ) {
 //				$message = __( 'If free, this field is empty or set 0. (Only admin can edit this field)', 'learnpress' );
-				$message = '';
-				$price   = get_post_meta( $course_id, '_lp_price', true );
+				$message    = '';
+				$price      = get_post_meta( $course_id, '_lp_price', true );
 				$sale_price = 0;
 				$start_date = '';
 				$end_date   = '';
 
 				if ( isset( $_GET['post'] ) ) {
-					$course_id  = $_GET['post'];
+					$course_id = $_GET['post'];
 
 					if ( $payment != 'free' ) {
-						$suggest_price  = get_post_meta( $course_id, '_lp_suggestion_price', true );
-						$course         = get_post( $course_id );
+						$suggest_price = get_post_meta( $course_id, '_lp_suggestion_price', true );
+						$course        = get_post( $course_id );
 
-						$author         = get_userdata( $course->post_author ) ;
+						$author = get_userdata( $course->post_author );
 
 						if ( isset( $suggest_price ) && $author->roles[0] === 'lp_teacher' ) {
 							$message = sprintf( __( 'This course is requires enrollment and the suggested price is <strong>%s</strong>', 'learnpress' ), learn_press_format_price( $suggest_price, true ) );
@@ -744,14 +744,14 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 					)
 				);
 			} else {
-                $price                = get_post_meta( $course_id, '_lp_price', true );
-                $meta_box['fields'][] = array(
-                    'name'  => __( 'Price set by Admin', 'learnpress' ),
-                    'id'    => "{$prefix}price",
-                    'type'  => 'html',
-                    'class' => 'lp-course-price-field' . ( $payment != 'yes' ? ' hide-if-js' : '' ),
-                    'html'  => $price !== '' ? sprintf( '<strong>%s</strong>', learn_press_format_price( $price, true ) ) : __( 'Not set', 'learnpress' )
-                );
+				$price                = get_post_meta( $course_id, '_lp_price', true );
+				$meta_box['fields'][] = array(
+					'name'  => __( 'Price set by Admin', 'learnpress' ),
+					'id'    => "{$prefix}price",
+					'type'  => 'html',
+					'class' => 'lp-course-price-field' . ( $payment != 'yes' ? ' hide-if-js' : '' ),
+					'html'  => $price !== '' ? sprintf( '<strong>%s</strong>', learn_press_format_price( $price, true ) ) : __( 'Not set', 'learnpress' )
+				);
 				$meta_box['fields'][] = array(
 					'name'  => __( 'Course Suggestion Price', 'learnpress' ),
 					'id'    => "{$prefix}suggestion_price",
@@ -1137,9 +1137,9 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 				}
 			} elseif ( $user->is_instructor() ) { // Course is submitted by instructor
 
-                if ( $enable_edit_published && ( $old_status == $new_status && $new_status == 'publish' ) ) {
-                    $submit_for_review = false;
-                }
+				if ( $enable_edit_published && ( $old_status == $new_status && $new_status == 'publish' ) ) {
+					$submit_for_review = false;
+				}
 				if ( ( $submit_for_review || ( $old_status != $new_status ) ) && $post->post_status != 'auto-draft' ) {
 					$action = 'for_reviewer';
 					update_post_meta( $post->ID, '_lp_submit_for_reviewer', 'yes' );
@@ -1230,7 +1230,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		}
 
 		public
-        function before_save_curriculum() {
+		function before_save_curriculum() {
 
 			global $post, $pagenow;
 

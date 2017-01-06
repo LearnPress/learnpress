@@ -1459,8 +1459,7 @@
 			if (!opts.pending_review) {
 				return true;
 			}
-			//|| (opts.current_user == opts.edited_user && opts.user_type != 'admin'));
-			//(opts.current_user == opts.edited_user && opts.user_type != 'admin' && opts.course_status != 'publish');
+
 			return false;
 		}
 
