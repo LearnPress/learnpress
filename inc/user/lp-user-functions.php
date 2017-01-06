@@ -859,6 +859,13 @@ if ( !function_exists( 'learn_press_pre_get_avatar_callback' ) ) {
 			$user_id = $id_or_email;
 		} elseif ( is_object( $id_or_email ) && isset( $id_or_email->user_id ) && $id_or_email->user_id ) {
 			$user_id = $id_or_email->user_id;
+		} elseif ( is_object( $id_or_email ) && $id_or_email instanceof WP_Comment ) {
+			if ( $user = get_user_by( 'email', $id_or_email->comment_author_email ) ) {
+				$user_id = $user->ID;
+			}
+		}
+		if( !$user_id ) {
+			return;
 		}
 		$user = LP_User_Factory::get_user( $user_id );
 		if ( $profile_picture_src = $user->get_upload_profile_src() ) {// $user_profile_picture_url . $profile_picture;
