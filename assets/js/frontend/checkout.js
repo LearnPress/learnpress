@@ -95,16 +95,14 @@ if (typeof window.LP === 'undefined') {
 							var $error = '';
 							if (!response.messages) {
 								if (response.code && response.code == 30) {
-									$error = learn_press_js_localize.invalid_field;
+									LP.Checkout.showErrors('<div class="learn-press-error">' + learn_press_js_localize.invalid_field + '</div>');
 								} else {
-									$error = learn_press_js_localize.unknown_error;
+									LP.Checkout.showErrors('<div class="learn-press-error">' + learn_press_js_localize.unknown_error + '</div>');
 								}
 							} else {
-								$error = response.messages;
+								LP.Checkout.showErrors(response.messages);
 							}
-							if ($error) {
-								LP.Checkout.showErrors($error);
-							}
+
 						} else if (response.result === 'success') {
 							if (response.redirect) {
 								$place_order.val('Redirecting');
