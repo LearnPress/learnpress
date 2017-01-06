@@ -865,7 +865,7 @@ if ( !function_exists( 'learn_press_pre_get_avatar_callback' ) ) {
 			}
 		}
 		if( !$user_id ) {
-			return;
+			return $avatar;
 		}
 		$user = LP_User_Factory::get_user( $user_id );
 		if ( $profile_picture_src = $user->get_upload_profile_src() ) {// $user_profile_picture_url . $profile_picture;
