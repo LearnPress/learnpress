@@ -213,13 +213,19 @@ function learn_press_user_has_roles( $roles, $user_id = null ) {
 function learn_press_edit_admin_bar() {
 	global $wp_admin_bar;
 	if ( ( $profile = learn_press_get_page_id( 'profile' ) ) && get_post_type( $profile ) == 'page' && get_post_status( $profile ) != 'trash' && ( LP()->settings->get( 'admin_bar_link' ) == 'yes' ) ) {
+		if ( $tabs = learn_press_user_profile_tabs() ) {
+			$keys      = array_keys( $tabs );
+			$first_tab = reset( $keys );
+		} else {
+			$first_tab = '';
+		}
 		$text                             = LP()->settings->get( 'admin_bar_link_text' );
-		$user_id = learn_press_get_current_user_id();
+		$user_id                          = learn_press_get_current_user_id();
 		$course_profile                   = array();
 		$course_profile['id']             = 'course_profile';
 		$course_profile['parent']         = 'user-actions';
 		$course_profile['title']          = $text ? $text : get_the_title( $profile );
-		$course_profile['href']           = learn_press_user_profile_link($user_id);
+		$course_profile['href']           = learn_press_user_profile_link( $user_id, $first_tab );
 		$course_profile['meta']['target'] = LP()->settings->get( 'admin_bar_link_target' );
 		$wp_admin_bar->add_menu( $course_profile );
 	}
@@ -573,14 +579,14 @@ function learn_press_user_update_user_info() {
 
 			if ( ( !empty( $_FILES["image"] ) ) && ( $_FILES['image']['error'] == 0 ) ) {
 				$allowed_image_types = array( 'image/pjpeg' => "jpg", 'image/jpeg' => "jpg", 'image/jpg' => "jpg", 'image/png' => "png", 'image/x-png' => "png", 'image/gif' => "gif" );
-				$mine_types = array_keys( $allowed_image_types );
-				$image_exts = array_values( $allowed_image_types );
+				$mine_types          = array_keys( $allowed_image_types );
+				$image_exts          = array_values( $allowed_image_types );
 				# caculate $image_size_limit
-				$max_upload			= intval(ini_get('upload_max_filesize'));
-				$max_post			= intval(ini_get('post_max_size'));
-				$memory_limit		= intval(ini_get('memory_limit'));
-				$image_size_limit	= min($max_upload, $max_post, $memory_limit, WP_MEMORY_LIMIT);
-				if( !$image_size_limit ) {
+				$max_upload       = intval( ini_get( 'upload_max_filesize' ) );
+				$max_post         = intval( ini_get( 'post_max_size' ) );
+				$memory_limit     = intval( ini_get( 'memory_limit' ) );
+				$image_size_limit = min( $max_upload, $max_post, $memory_limit, WP_MEMORY_LIMIT );
+				if ( !$image_size_limit ) {
 					$image_size_limit = 1;
 				}
 				if ( !in_array( $image_type, $mine_types ) ) {
@@ -695,7 +701,7 @@ function learn_press_user_update_user_info() {
 							$lp         = LP();
 							$lp_setting = $lp->settings;
 							$size       = $lp_setting->get( 'profile_picture_thumbnail_size' );
-							if ( empty( $size ) || !isset($size['width']) ) {
+							if ( empty( $size ) || !isset( $size['width'] ) ) {
 								$size = array( 'width' => 150, 'height' => 150, 'crop' => 'yes' );
 							}
 							if ( isset( $size['crop'] ) && $size['crop'] == 'yes' ) {
@@ -867,9 +873,9 @@ if ( !function_exists( 'learn_press_pre_get_avatar_callback' ) ) {
 		} elseif ( is_object( $id_or_email ) && isset( $id_or_email->user_id ) && $id_or_email->user_id ) {
 			$user_id = $id_or_email->user_id;
 		}
-		$profile_picture_type	= get_user_option( '_lp_profile_picture_type', $user_id );
-		$profile_picture		= get_user_option( '_lp_profile_picture', $user_id );
-		$profile_picture_src	= get_user_option( '_lp_profile_picture_url', $user_id );
+		$profile_picture_type = get_user_option( '_lp_profile_picture_type', $user_id );
+		$profile_picture      = get_user_option( '_lp_profile_picture', $user_id );
+		$profile_picture_src  = get_user_option( '_lp_profile_picture_url', $user_id );
 		if ( !$profile_picture ) {
 			return;
 		}
@@ -884,9 +890,9 @@ if ( !function_exists( 'learn_press_pre_get_avatar_callback' ) ) {
 		$lp           = LP();
 		$lp_setting   = $lp->settings;
 		$setting_size = $lp_setting->get( 'profile_picture_thumbnail_size' );
-		$img_size = '';
-		$height   = '';
-		$width    = '';
+		$img_size     = '';
+		$height       = '';
+		$width        = '';
 		if ( !is_array( $size ) ) {
 			if ( $size === 'thumbnail' ) {
 				$img_size = '';

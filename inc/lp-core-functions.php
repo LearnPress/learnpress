@@ -2193,7 +2193,7 @@ function learn_press_user_profile_link( $user_id = 0, $tab = null ) {
 	$profile_link = trailingslashit( learn_press_get_page_link( 'profile' ) );
 	if ( $profile_link ) {
 		if ( get_option( 'permalink_structure' ) /*&& learn_press_get_page_id( 'profile' )*/ ) {
-			$url = $profile_link . join( "/", array_values( $args ) );
+			$url = $profile_link . join( "/", array_values( $args ) ) . '/';
 		} else {
 			$url = add_query_arg( $args, $profile_link );
 		}
