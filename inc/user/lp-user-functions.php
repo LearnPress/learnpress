@@ -848,7 +848,7 @@ if ( !function_exists( 'learn_press_pre_get_avatar_callback' ) ) {
 	 */
 	function learn_press_pre_get_avatar_callback( $avatar, $id_or_email = '', $size ) {
 		if ( ( isset( $size['gravatar'] ) && $size['gravatar'] ) || ( $size['default'] && $size['force_default'] ) ) {
-			return;
+			return $avatar;
 		}
 		$user_id = 0;
 		if ( !is_numeric( $id_or_email ) && is_string( $id_or_email ) ) {
@@ -859,54 +859,36 @@ if ( !function_exists( 'learn_press_pre_get_avatar_callback' ) ) {
 			$user_id = $id_or_email;
 		} elseif ( is_object( $id_or_email ) && isset( $id_or_email->user_id ) && $id_or_email->user_id ) {
 			$user_id = $id_or_email->user_id;
-		}
-		$profile_picture_type = get_user_meta( $user_id, '_lp_profile_picture_type', true );
-		$upload               = learn_press_user_profile_picture_upload_dir();
-		wp_upload_dir();
-		$profile_picture = get_user_meta( $user_id, '_lp_profile_picture', true );
-		if ( !$profile_picture ) {
-			return;
-		}
-
-		$user_profile_picture_dir = trailingslashit( $upload['basedir'] );// . DIRECTORY_SEPARATOR . 'learn-press-profile' . DIRECTORY_SEPARATOR . $user_id . DIRECTORY_SEPARATOR;
-		$user_profile_picture_url = trailingslashit( $upload['baseurl'] );// . '/learn-press-profile/' . $user_id . '/';
-
-		if ( $size === 'thumbnail' ) {
-			$pi                    = pathinfo( $profile_picture );
-			$profile_picture_thumb = $pi['filename'] . '-thumb' . '.' . $pi['extension'];
-			if ( file_exists( $user_profile_picture_dir . $profile_picture_thumb ) ) {
-				$profile_picture = $profile_picture_thumb;
+		} elseif ( is_object( $id_or_email ) && $id_or_email instanceof WP_Comment ) {
+			if ( $user = get_user_by( 'email', $id_or_email->comment_author_email ) ) {
+				$user_id = $user->ID;
 			}
 		}
-		$profile_picture_src = $user_profile_picture_url . $profile_picture;
-		if ( ( !isset( $size['gravatar'] ) || !isset( $size['gravatar'] ) && ( $size['gravatar'] ) )
-			&& ( !$profile_picture_type || $profile_picture_type == 'gravatar' || !$profile_picture_src )
-		) {
+		if( !$user_id ) {
 			return $avatar;
 		}
-		$lp           = LP();
-		$lp_setting   = $lp->settings;
-		$setting_size = $lp_setting->get( 'profile_picture_thumbnail_size' );
-
-		$img_size = '';
-		$height   = '';
-		$width    = '';
-
-		if ( !is_array( $size ) ) {
-			if ( $size === 'thumbnail' ) {
-				$img_size = '';
-				$height   = $setting_size['height'];
-				$width    = $setting_size['width'];
+		$user = LP_User_Factory::get_user( $user_id );
+		if ( $profile_picture_src = $user->get_upload_profile_src() ) {// $user_profile_picture_url . $profile_picture;
+			$lp           = LP();
+			$lp_setting   = $lp->settings;
+			$setting_size = $lp_setting->get( 'profile_picture_thumbnail_size' );
+			$img_size     = '';
+			if ( !is_array( $size ) ) {
+				if ( $size === 'thumbnail' ) {
+					$img_size = '';
+					$height   = $setting_size['height'];
+					$width    = $setting_size['width'];
+				} else {
+					$height = 250;
+					$width  = 250;
+				}
 			} else {
-				$height = 250;
-				$width  = 250;
+				$img_size = $size['size'];
+				$height   = $size['height'];
+				$width    = $size['width'];
 			}
-		} else {
-			$img_size = $size['size'];
-			$height   = $size['height'];
-			$width    = $size['width'];
+			$avatar = '<img alt="Admin bar avatar" src="' . esc_attr( $profile_picture_src ) . '" class="avatar avatar-' . $img_size . ' photo" height="' . $height . '" width="' . $width . '" />';
 		}
-		$avatar = '<img alt="" src="' . esc_attr( $profile_picture_src ) . '" class="avatar avatar-' . $img_size . ' photo" height="' . $height . '" width="' . $width . '" />';
 		return $avatar;
 	}
 }
@@ -1151,6 +1133,7 @@ function learn_press_update_user_profile_avatar() {
 				}
 				if ( file_exists( $output ) ) {
 					update_user_meta( get_current_user_id(), '_lp_profile_picture', preg_replace( '!^/!', '', $upload_dir['subdir'] ) . '/' . $newname );
+					update_user_meta( get_current_user_id(), '_lp_profile_picture_changed', 'yes' );
 				}
 			}
 			@unlink( $path );

@@ -467,21 +467,22 @@ if ( !function_exists( 'leanrpress_advertise_in_admin' ) ) {
 						unset( $list_themes[$key] );
 					}
 				}
-				shuffle( $list_themes );
-				?>
-				<div id="learn-press-add-ons-wrap" class="learnpress-advertis-admin">
-					<?php
-					foreach ( $list_themes as $theme ) {
-						$theme['url'] = add_query_arg( array(
-							'ref'        => 'ThimPress',
-							'utm_source' => 'lp-backend',
-							'utm_medium' => 'lp-addondashboard'
-						), $theme['url'] );
-						$url_demo     = add_query_arg( array(
-							'ref'        => 'ThimPress',
-							'utm_source' => 'lp-backend',
-							'utm_medium' => 'lp-addondashboard'
-						), $theme['attributes'][4]['value'] );*/
+			}
+			shuffle( $list_themes );
+			?>
+			<div id="learn-press-add-ons-wrap" class="learnpress-advertis-admin">
+				<?php
+				foreach ( $list_themes as $theme ) {
+					$theme['url'] = add_query_arg( array(
+						'ref'        => 'ThimPress',
+						'utm_source' => 'lp-backend',
+						'utm_medium' => 'lp-addondashboard'
+					), $theme['url'] );
+					$url_demo     = add_query_arg( array(
+						'ref'        => 'ThimPress',
+						'utm_source' => 'lp-backend',
+						'utm_medium' => 'lp-addondashboard'
+					), $theme['attributes'][4]['value'] );*/
 
 					$theme['description'] = preg_replace( '/(?<=\S,)(?=\S)/', ' ', $theme['description'] );
 					$theme['description'] = str_replace( "\n", ' ', $theme['description'] );
@@ -489,6 +490,7 @@ if ( !function_exists( 'leanrpress_advertise_in_admin' ) ) {
 					$theme['description'] = array_splice( $theme['description'], 0, sizeof( $theme['description'] ) - 1 );
 					$theme['description'] = implode( " ", $theme['description'] ) . " ...";
 					?>
+
                     <div id="thimpress-<?php echo esc_attr( $theme['id'] ); ?>" class="item">
                         <div class="theme-thumbnail">
                             <a href="<?php echo esc_url( $theme['url'] ); ?>">
@@ -512,6 +514,7 @@ if ( !function_exists( 'leanrpress_advertise_in_admin' ) ) {
 				}
 				?>
             </div>
+
 			<?php
 		}
 
@@ -2657,7 +2660,6 @@ function learn_press_is_added_to_cart( $course_id ) {
  *  + LP Profile page is not setup
  *  + LP Checkout page is not setup
  */
-//add_action( 'admin_bar_menu', 'lp_warning_message_settings' );
 add_action( 'wp_ajax_lp_remove_admin_warning', 'lp_remove_admin_warning' );
 add_action( 'wp_ajax_nopriv_lp_remove_admin_warning', 'lp_remove_admin_warning' );
 

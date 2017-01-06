@@ -823,7 +823,9 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 				$question_types[$to]   = !empty( $question_types[$to] ) && $question_types[$to] ? absint( $question_types[$to] ) + 1 : 1;
 				update_user_meta( $user_id, '_learn_press_memorize_question_types', $question_types );
 				// end trigger change user memorize question types
-
+				if('auto-draft'=== $question->post->post_status){
+					$question->answers = $question->get_default_answers(false);
+				}
 				learn_press_send_json(
 					array(
 						'html' => $question->admin_interface( array( 'echo' => false ) ),

@@ -178,7 +178,6 @@ class LP_Session_Handler {
 	}
 
 	public function get_cache_prefix( $group = LP_SESSION_CACHE_GROUP ) {
-		// Get cache key - uses cache key wc_orders_cache_prefix to invalidate when needed
 		$prefix = wp_cache_get( 'learn_press_' . $group . '_cache_prefix', $group );
 
 		if ( false === $prefix ) {

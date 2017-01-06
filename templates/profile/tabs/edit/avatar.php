@@ -11,9 +11,6 @@ $custom_img   = $user->get_upload_profile_src();
 $gravatar_img = $user->get_profile_picture( 'gravatar' );
 
 ?>
-<h3>
-	<?php _e( 'Add a nice photo of yourself for your profile.', 'learnpress' ); ?>
-</h3>
 <script type="text/html" id="tmpl-crop-user-avatar">
 	<div class="lp-avatar-crop-image" style="width: {{data.viewWidth}}px; height: {{data.viewHeight}}px;">
 		<img src="{{data.url}}?r={{data.r}}" />
@@ -31,32 +28,40 @@ $gravatar_img = $user->get_profile_picture( 'gravatar' );
 	</div>
 </script>
 <div id="lp-user-edit-avatar" class="lp-edit-profile lp-edit-avatar">
-	<div class="lp-avatar-preview">
-		<div class="profile-picture profile-avatar-current">
-			<?php if ( $custom_img ) { ?>
-				<img src="<?php echo $custom_img; ?>" />
-			<?php } else { ?>
-				<?php echo $gravatar_img; ?>
-			<?php } ?>
-		</div>
-		<?php if ( $custom_img ) { ?>
-			<div class="profile-picture profile-avatar-hidden">
-				<?php echo $gravatar_img; ?>
+	<ul class="lp-form-field-wrap">
+		<li class="lp-form-field">
+			<div class="lp-form-field-input">
+				<div class="lp-avatar-preview">
+					<div class="profile-picture profile-avatar-current">
+						<?php if ( $custom_img ) { ?>
+							<img src="<?php echo $custom_img; ?>" />
+						<?php } else { ?>
+							<?php echo $gravatar_img; ?>
+						<?php } ?>
+					</div>
+					<?php if ( $custom_img ) { ?>
+						<div class="profile-picture profile-avatar-hidden">
+							<?php echo $gravatar_img; ?>
+						</div>
+					<?php } ?>
+
+					<div class="lp-avatar-upload-progress">
+						<div class="lp-avatar-upload-progress-value"></div>
+					</div>
+
+					<div class="lp-avatar-preview-actions">
+						<a href="" id="lp-upload-photo"><?php _e( 'Upload', 'learnpress' ); ?></a>
+						<?php if ( $custom_img != '' ): ?>
+							<a href="" id="lp-remove-upload-photo"><?php _e( 'Remove', 'learnpress' ); ?></a>
+						<?php endif; ?>
+					</div>
+
+					<div class="lp-avatar-upload-error">
+					</div>
+				</div>
+				<div class="clearfix"></div>
+				<p class="description"><?php _e('Hover on your current avatar to upload new photo', 'learnpress');?></p>
 			</div>
-		<?php } ?>
-
-		<div class="lp-avatar-upload-progress">
-			<div class="lp-avatar-upload-progress-value"></div>
-		</div>
-
-		<div class="lp-avatar-preview-actions">
-			<a href="" id="lp-upload-photo"><?php _e( 'Upload', 'learnpress' ); ?></a>
-			<?php if ( $user->profile_picture != '' ): ?>
-				<a href="" id="lp-remove-upload-photo"><?php _e( 'Remove', 'learnpress' ); ?></a>
-			<?php endif; ?>
-		</div>
-
-		<div class="lp-avatar-upload-error">
-		</div>
-	</div>
+		</li>
+	</ul>
 </div>
