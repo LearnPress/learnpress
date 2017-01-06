@@ -1597,7 +1597,7 @@ function learn_press_check_access_lesson() {
 	} elseif( is_single() && 'lp_course' == $queried_post_type ) {
 		$course = learn_press_get_course();
 		$item = LP()->global['course-item'];
-		if( 'lp_lesson' === $item->post->post_type){
+		if( is_object($item) && isset( $item->post->post_type ) && 'lp_lesson' === $item->post->post_type){
 			$user = learn_press_get_current_user();
 			$can_view = $user->can_view_item( $item->id, $course->id );
 			if ( !$can_view ) {

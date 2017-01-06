@@ -483,42 +483,42 @@ if ( !function_exists( 'leanrpress_advertise_in_admin' ) ) {
 						'utm_medium' => 'lp-addondashboard'
 					), $theme['attributes'][4]['value'] );*/
 
-                    $theme['description'] = preg_replace( '/(?<=\S,)(?=\S)/', ' ', $theme['description'] );
-                    $theme['description'] = str_replace( "\n", ' ', $theme['description'] );
-                    $theme['description'] = explode(" ", $theme['description']);
-                    $theme['description'] = array_splice($theme['description'], 0, sizeof($theme['description']) - 1);
-                    $theme['description'] = implode(" ", $theme['description'])." ...";
-                    ?>
-                    <div id="thimpress-<?php echo esc_attr($theme['id']); ?>" class="item">
-                        <div class="theme-thumbnail">
-                            <a href="<?php echo esc_url($theme['url']); ?>">
-                                <img src="<?php echo esc_url($theme['previews']['landscape_preview']['landscape_url'])?>" />
-                            </a>
-                        </div>
+					$theme['description'] = preg_replace( '/(?<=\S,)(?=\S)/', ' ', $theme['description'] );
+					$theme['description'] = str_replace( "\n", ' ', $theme['description'] );
+					$theme['description'] = explode( " ", $theme['description'] );
+					$theme['description'] = array_splice( $theme['description'], 0, sizeof( $theme['description'] ) - 1 );
+					$theme['description'] = implode( " ", $theme['description'] ) . " ...";
+					?>
+					<div id="thimpress-<?php echo esc_attr( $theme['id'] ); ?>" class="item">
+						<div class="theme-thumbnail">
+							<a href="<?php echo esc_url( $theme['url'] ); ?>">
+								<img src="<?php echo esc_url( $theme['previews']['landscape_preview']['landscape_url'] ) ?>" />
+							</a>
+						</div>
 
-                        <div class="theme-detail">
-                            <h2><a href="<?php echo esc_url($theme['url']); ?>"><?php  echo $theme['name']; ?></a></h2>
-                            <p class="learpress-description">
-                                <?php echo wp_kses_post($theme['description']); ?>
-                            </p>
-                            <p class="theme-controls">
-                                <a href="<?php echo esc_url($theme['url']); ?>" class="button button-primary" target="_blank"><?php _e( 'Get it now', 'learnpress' ); ?></a>
-                                <a href="<?php echo esc_url($url_demo); ?>" class="button" target="_blank"><?php _e( 'View Demo', 'learnpress' ); ?></a>
-                            </p>
-                        </div>
+						<div class="theme-detail">
+							<h2><a href="<?php echo esc_url( $theme['url'] ); ?>"><?php echo $theme['name']; ?></a></h2>
+							<p class="learpress-description">
+								<?php echo wp_kses_post( $theme['description'] ); ?>
+							</p>
+							<p class="theme-controls">
+								<a href="<?php echo esc_url( $theme['url'] ); ?>" class="button button-primary" target="_blank"><?php _e( 'Get it now', 'learnpress' ); ?></a>
+								<a href="<?php echo esc_url( $url_demo ); ?>" class="button" target="_blank"><?php _e( 'View Demo', 'learnpress' ); ?></a>
+							</p>
+						</div>
 
-                    </div>
-                    <?php
-                }
-                ?>
-            </div>
-            <?php
-        }
+					</div>
+					<?php
+				}
+				?>
+			</div>
+			<?php
+		}
 
-    }
+	}
 }
 
-add_action( 'admin_footer', 'leanrpress_advertise_in_admin', -10 );
+add_action( 'admin_footer', 'leanrpress_advertise_in_admin', - 10 );
 
 /**
  * @param string $str
@@ -2642,7 +2642,6 @@ function learn_press_is_added_to_cart( $course_id ) {
  *  + LP Profile page is not setup
  *  + LP Checkout page is not setup
  */
-//add_action( 'admin_bar_menu', 'lp_warning_message_settings' );
 add_action( 'wp_ajax_lp_remove_admin_warning', 'lp_remove_admin_warning' );
 add_action( 'wp_ajax_nopriv_lp_remove_admin_warning', 'lp_remove_admin_warning' );
 
