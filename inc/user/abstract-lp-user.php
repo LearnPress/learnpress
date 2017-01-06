@@ -2853,7 +2853,7 @@ class LP_Abstract_User {
 	 * @return mixed|void
 	 */
 	public function can_access_course( $course_id ) {
-		return apply_filters( 'learn_press_user_can_access_course', $this->get_order_status( $course_id ) == 'lp - completed', $course_id, $this->id );
+		return apply_filters( 'learn_press_user_can_access_course', $this->get_order_status( $course_id ) == 'lp-completed', $course_id, $this->id );
 	}
 
 	/**
@@ -2868,9 +2868,9 @@ class LP_Abstract_User {
 	public function can_do_quiz( $quiz_id, $course_id = 0 ) {
 		$course = LP_Course::get_course( $course_id );
 		if ( $course->is_require_enrollment() ) {
-			$can = $this->has_course_status( $course_id, array( 'enrolled' ) ) && !$this->has( 'started - quiz', $quiz_id, $course_id );
+			$can = $this->has_course_status( $course_id, array( 'enrolled' ) ) && !$this->has( 'started-quiz', $quiz_id, $course_id );
 		} else {
-			$can = !$this->has( 'started - quiz', $quiz_id, $course_id );
+			$can = !$this->has( 'started-quiz', $quiz_id, $course_id );
 		}
 		return apply_filters( 'learn_press_user_can_do_quiz', $can, $quiz_id, $this->id, $course_id );
 	}
