@@ -1200,8 +1200,8 @@ class LP_Abstract_User {
 
 		// Disable preview lesson when course status is pending
 		if ( get_post_status( $course_id ) == 'pending' ) {
-            $view = false;
-        }
+			$view = false;
+		}
 
 		return apply_filters( 'learn_press_user_view_lesson', $view, $lesson_id, $this->id, $course_id );
 	}
@@ -1233,10 +1233,10 @@ class LP_Abstract_User {
 			}
 		}
 
-        // Disable preview course when course status is pending
-        if ( get_post_status( $course_id ) == 'pending' ) {
-            $view = false;
-        }
+		// Disable preview course when course status is pending
+		if ( get_post_status( $course_id ) == 'pending' ) {
+			$view = false;
+		}
 
 		return apply_filters( 'learn_press_user_view_quiz', $view, $quiz_id, $this->id, $course_id );
 	}
@@ -2778,6 +2778,11 @@ class LP_Abstract_User {
 				$file_path = $upload['basedir'] . DIRECTORY_SEPARATOR . $profile_picture;
 				if ( file_exists( $file_path ) ) {
 					$this->uploaded_profile_src = $upload['baseurl'] . '/' . $profile_picture;
+					// no cache for first time after avatar changed
+					if ( $this->profile_picture_changed == 'yes' ) {
+						$this->uploaded_profile_src = add_query_arg( 'r', md5( rand( 0, 10 ) / rand( 1, 1000000 ) ), $this->uploaded_profile_src );
+						delete_user_meta( $this->id, '_lp_profile_picture_changed' );
+					}
 				} else {
 					$this->uploaded_profile_src = false;
 				}

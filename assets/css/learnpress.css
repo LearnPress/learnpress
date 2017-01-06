@@ -1877,9 +1877,10 @@ body.block-content #learn-press-block-content {
   font-weight: bold;
   margin-bottom: 5px;
 }
-.lp-form-field-wrap .lp-form-field .lp-form-field-input {
+.lp-form-field-wrap .lp-form-field .lp-form-field-input .description {
   font-size: smaller;
   font-style: italic;
+  margin-top: 5px;
 }
 .lp-form-field-wrap .lp-form-field .lp-field-error-message {
   color: #FF0000;
