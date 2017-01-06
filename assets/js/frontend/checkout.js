@@ -92,10 +92,18 @@ if (typeof window.LP === 'undefined') {
 					success : function (response) {
 						response = LP.parseJSON(response);
 						if (response.result === 'fail') {
-							if (response.messages) {
-								LP.Checkout.showErrors(response.messages);
+							var $error = '';
+							if (!response.messages) {
+								if (response.code && response.code == 30) {
+									$error = learn_press_js_localize.invalid_field;
+								} else {
+									$error = learn_press_js_localize.unknown_error;
+								}
 							} else {
-								LP.Checkout.showErrors('<div class="learn-press-error">Unknown error!</div>');
+								$error = response.messages;
+							}
+							if ($error) {
+								LP.Checkout.showErrors($error);
 							}
 						} else if (response.result === 'success') {
 							if (response.redirect) {

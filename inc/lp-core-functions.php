@@ -391,8 +391,8 @@ function learn_press_print_script() {
 	global $learn_press_queued_js, $learn_press_queued_js_tag;
 	if ( !empty( $learn_press_queued_js ) ) {
 		?>
-		<!-- LearnPress JavaScript -->
-		<script type="text/javascript">jQuery(function ($) {
+        <!-- LearnPress JavaScript -->
+        <script type="text/javascript">jQuery(function ($) {
 				<?php
 				// Sanitize
 				$learn_press_queued_js = wp_check_invalid_utf8( $learn_press_queued_js );
@@ -402,7 +402,7 @@ function learn_press_print_script() {
 				echo $learn_press_queued_js;
 				?>
 			});
-		</script>
+        </script>
 		<?php
 		unset( $learn_press_queued_js );
 	}
@@ -458,13 +458,14 @@ if ( !function_exists( 'leanrpress_advertise_in_admin' ) ) {
 			}
 			shuffle( $list_themes );
 			?>
-			<div id="learn-press-add-ons-wrap" class="learnpress-advertis-admin">
+            <div id="learn-press-add-ons-wrap" class="learnpress-advertis-admin">
 				<?php
 				foreach ( $list_themes as $theme ) {
 					$theme['url'] .= '?ref=ThimPress&utm_source=lp-backend&utm_medium=lp-addondashboard';
 					$url_demo = $theme['attributes'][4]['value'] . '?ref=ThimPress&utm_source=lp-backend&utm_medium=lp-addondashboard';
-				/*if ( !array_key_exists( $theme['id'], $themes_id ) || $themes_id[$theme['id']] === $current_theme->name ) {
-					unset( $list_themes[$key] );
+					/*if ( !array_key_exists( $theme['id'], $themes_id ) || $themes_id[$theme['id']] === $current_theme->name ) {
+						unset( $list_themes[$key] );
+					}
 				}
 			}
 			shuffle( $list_themes );
@@ -489,29 +490,31 @@ if ( !function_exists( 'leanrpress_advertise_in_admin' ) ) {
 					$theme['description'] = array_splice( $theme['description'], 0, sizeof( $theme['description'] ) - 1 );
 					$theme['description'] = implode( " ", $theme['description'] ) . " ...";
 					?>
-					<div id="thimpress-<?php echo esc_attr( $theme['id'] ); ?>" class="item">
-						<div class="theme-thumbnail">
-							<a href="<?php echo esc_url( $theme['url'] ); ?>">
-								<img src="<?php echo esc_url( $theme['previews']['landscape_preview']['landscape_url'] ) ?>" />
-							</a>
-						</div>
 
-						<div class="theme-detail">
-							<h2><a href="<?php echo esc_url( $theme['url'] ); ?>"><?php echo $theme['name']; ?></a></h2>
-							<p class="learpress-description">
+                    <div id="thimpress-<?php echo esc_attr( $theme['id'] ); ?>" class="item">
+                        <div class="theme-thumbnail">
+                            <a href="<?php echo esc_url( $theme['url'] ); ?>">
+                                <img src="<?php echo esc_url( $theme['previews']['landscape_preview']['landscape_url'] ) ?>" />
+                            </a>
+                        </div>
+
+                        <div class="theme-detail">
+                            <h2><a href="<?php echo esc_url( $theme['url'] ); ?>"><?php echo $theme['name']; ?></a></h2>
+                            <p class="learpress-description">
 								<?php echo wp_kses_post( $theme['description'] ); ?>
-							</p>
-							<p class="theme-controls">
-								<a href="<?php echo esc_url( $theme['url'] ); ?>" class="button button-primary" target="_blank"><?php _e( 'Get it now', 'learnpress' ); ?></a>
-								<a href="<?php echo esc_url( $url_demo ); ?>" class="button" target="_blank"><?php _e( 'View Demo', 'learnpress' ); ?></a>
-							</p>
-						</div>
+                            </p>
+                            <p class="theme-controls">
+                                <a href="<?php echo esc_url( $theme['url'] ); ?>" class="button button-primary" target="_blank"><?php _e( 'Get it now', 'learnpress' ); ?></a>
+                                <a href="<?php echo esc_url( $url_demo ); ?>" class="button" target="_blank"><?php _e( 'View Demo', 'learnpress' ); ?></a>
+                            </p>
+                        </div>
 
-					</div>
+                    </div>
 					<?php
 				}
 				?>
-			</div>
+            </div>
+
 			<?php
 		}
 
@@ -671,10 +674,10 @@ if ( !function_exists( 'learn_press_paging_nav' ) ) :
 
 		if ( $links ) :
 			?>
-			<div class="<?php echo $args['wrapper_class']; ?>">
+            <div class="<?php echo $args['wrapper_class']; ?>">
 				<?php echo $links; ?>
-			</div>
-			<!-- .pagination -->
+            </div>
+            <!-- .pagination -->
 			<?php
 		endif;
 	}
@@ -878,7 +881,7 @@ add_action( 'admin_footer', 'learn_press_show_menu' );
 function learn_press_show_menu() {
 	if ( ( isset( $_GET['post_type'] ) && $_GET['post_type'] == 'lp_course' ) ) {
 		?>
-		<script type="text/javascript">
+        <script type="text/javascript">
 			jQuery(window).load(function ($) {
 				<?php
 				if ( isset ( $_GET['taxonomy'] ) ) {
@@ -891,13 +894,13 @@ function learn_press_show_menu() {
 				?>
 				jQuery("#toplevel_page_learn_press .wp-first-item").addClass('current');
 			});
-		</script>
+        </script>
 		<?php
 	}
 
 	if ( isset( $_GET['post_type'] ) ) {
 		?>
-		<script type="text/javascript">
+        <script type="text/javascript">
 			(function ($) {
 
 				var $lpMainMenu = $('#toplevel_page_learn_press'),
@@ -909,7 +912,7 @@ function learn_press_show_menu() {
 					$current.parent('li').addClass('current');
 				}
 			})(jQuery)
-		</script>
+        </script>
 		<?php
 
 	}
@@ -2010,7 +2013,7 @@ function learn_press_add_user_item_if_needed( $located, $template_name, $templat
 
 function learn_press_set_user_timezone() {
 	?>
-	<script type="text/javascript">
+    <script type="text/javascript">
 		(function (factory) {
 			if (typeof define === 'function' && define.amd) {
 				// AMD (Register as an anonymous module)
@@ -2083,9 +2086,9 @@ function learn_press_set_user_timezone() {
 				// Read
 
 				var result = key ? undefined : {},
-				// To prevent the for loop in the first place assign an empty array
-				// in case there are no cookies at all. Also prevents odd result when
-				// calling $.cookie().
+					// To prevent the for loop in the first place assign an empty array
+					// in case there are no cookies at all. Also prevents odd result when
+					// calling $.cookie().
 					cookies = document.cookie ? document.cookie.split('; ') : [],
 					i = 0,
 					l = cookies.length;
@@ -2120,7 +2123,7 @@ function learn_press_set_user_timezone() {
 
 		}));
 		jQuery.cookie('timezone', new Date().getTimezoneOffset());
-	</script>
+    </script>
 	<?php
 }
 
@@ -2586,6 +2589,21 @@ if ( !function_exists( 'learn_press_profile_localize_script' ) ) {
 
 }
 add_action( 'learn_press_enqueue_scripts', 'learn_press_profile_localize_script' );
+
+if ( !function_exists( 'learn_press_checkout_localize_script' ) ) {
+
+	/**
+	 * Translate javascript text
+	 */
+	function learn_press_checkout_localize_script() {
+		$translate = array(
+			'unknown_error' => __( 'Unknown error!', 'learnpress' ),
+			'invalid_field' => __( 'Invalid field!', 'learnpress' ),
+		);
+		LP_Assets::add_localize( $translate );
+	}
+}
+add_action( 'learn_press_enqueue_scripts', 'learn_press_checkout_localize_script' );
 
 add_action( 'init', 'learn_press_cancel_order_process' );
 if ( !function_exists( 'learn_press_cancel_order_process' ) ) {
