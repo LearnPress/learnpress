@@ -135,6 +135,9 @@
   font-size: 14px;
   overflow: hidden;
 }
+.learn-press-courses li.course .course-students {
+  float: left;
+}
 .learn-press-courses li.course .course-instructor {
   margin-bottom: 20px;
 }
@@ -1860,10 +1863,41 @@ body.block-content #learn-press-block-content {
   top: 2px;
   left: 3px;
 }
+/* Form field */
+.lp-form-field-wrap {
+  list-style: none;
+  margin: 0 0 20px 0;
+}
+.lp-form-field-wrap .lp-form-field {
+  list-style: none;
+  margin: 0 0 20px 0;
+}
+.lp-form-field-wrap .lp-form-field .lp-form-field-label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+.lp-form-field-wrap .lp-form-field .lp-form-field-input {
+  font-size: smaller;
+  font-style: italic;
+}
+.lp-form-field-wrap .lp-form-field .lp-field-error-message {
+  color: #FF0000;
+}
 .learn-press-user-profile {
   /**  STYLE PROFILE **/
   /* Change Picture Menu */
   /** upload-crop box **/
+}
+.learn-press-user-profile .lp-edit-profile:after {
+  display: block;
+  content: '';
+  clear: both;
+}
+.learn-press-user-profile .lp-edit-profile:after:after {
+  content: '';
+  display: block;
+  clear: both;
 }
 .learn-press-user-profile .user-basic-info p {
   margin-top: 10px;
@@ -1893,31 +1927,232 @@ body.block-content #learn-press-block-content {
   color: #007acc;
   margin-bottom: -4px;
 }
-.learn-press-user-profile .learn-press-tabs-wrapper-x .learn-press-subtabs > li {
+.learn-press-user-profile .learn-press-subtabs > li {
   display: inline-block;
   margin-right: 10px;
 }
-.learn-press-user-profile .learn-press-tabs-wrapper-x .learn-press-subtabs > li.current {
+.learn-press-user-profile .learn-press-subtabs > li.current {
   font-weight: bold;
 }
-.learn-press-user-profile .learn-press-tabs-wrapper-x .learn-press-subtab-content {
+.learn-press-user-profile .learn-press-subtab-content {
   display: none;
+  margin-bottom: 20px;
 }
-.learn-press-user-profile .learn-press-tabs-wrapper-x .learn-press-subtab-content.current {
+.learn-press-user-profile .learn-press-subtab-content.current {
   display: block;
 }
-.learn-press-user-profile .learn-press-tabs-wrapper-x .learn-press-subtab-content li.course h3 {
+.learn-press-user-profile .learn-press-subtab-content li.course h3 {
   padding-bottom: 10px;
 }
-.learn-press-user-profile .learn-press-tabs-wrapper-x .learn-press-subtab-content .profile-courses {
+.learn-press-user-profile .learn-press-subtab-content .profile-courses {
   list-style-type: none;
 }
-.learn-press-user-profile .learn-press-tabs-wrapper-x .learn-press-subtab-content .profile-courses .learn-press-course-results-progress {
+.learn-press-user-profile .learn-press-subtab-content .profile-courses .learn-press-course-results-progress {
   padding: 0 15px 15px 15px;
   margin: 0;
 }
-.learn-press-user-profile .learn-press-tabs-wrapper-x button.learn-press-course-wishlist {
+.learn-press-user-profile button.learn-press-course-wishlist {
   display: block;
+}
+.learn-press-user-profile .user-profile-edit-form .info-field {
+  margin-bottom: 20px;
+}
+.learn-press-user-profile .user-profile-edit-form .description {
+  margin-top: 5px;
+}
+.learn-press-user-profile .user-profile-edit-form .user-profile-picture {
+  clear: both;
+}
+.learn-press-user-profile .user-profile-edit-form .user-profile-picture .picture,
+.learn-press-user-profile .user-profile-edit-form .user-profile-picture .change-picture {
+  display: inline-block;
+}
+.learn-press-user-profile .user-profile-edit-form .user-profile-picture .change-picture .description {
+  margin: 0 0 10px 0;
+}
+.learn-press-user-profile .user-profile-edit-form .user-profile-picture img {
+  float: left;
+  margin-right: 20px;
+}
+.learn-press-user-profile .user-profile-edit-form .user-profile-picture:after {
+  display: block;
+  content: '';
+  clear: both;
+}
+.learn-press-user-profile .user-profile-edit-form .user-profile-picture:after:after {
+  content: '';
+  display: block;
+  clear: both;
+}
+.learn-press-user-profile .user-profile-edit-form .profile-field-name {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+.learn-press-user-profile .user-profile-edit-form .change-password {
+  margin-bottom: 10px;
+}
+.learn-press-user-profile .user-profile-edit-form #user_profile_password_form input {
+  margin-bottom: 20px;
+}
+.learn-press-user-profile .user-profile-edit-form #user_profile_password_form .description {
+  margin-top: -15px;
+}
+.learn-press-user-profile .user-profile-edit-form .update-profile {
+  margin-top: 20px;
+}
+.learn-press-user-profile .learn-press-subtab-content {
+  display: block;
+}
+.learn-press-user-profile #lp-user-edit-avatar .moxie-shim {
+  display: none;
+}
+.learn-press-user-profile .lp-avatar-preview {
+  position: relative;
+  float: left;
+}
+.learn-press-user-profile .lp-avatar-preview .profile-picture {
+  height: 200px;
+  width: 200px;
+  float: left;
+  margin-right: -100%;
+}
+.learn-press-user-profile .lp-avatar-preview .profile-picture img {
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+}
+.learn-press-user-profile .lp-avatar-preview .profile-picture.profile-avatar-hidden {
+  display: none;
+}
+.learn-press-user-profile .lp-avatar-preview .lp-avatar-preview-actions {
+  position: absolute;
+  top: 50%;
+  width: 100%;
+  margin-top: -14px;
+  text-align: center;
+}
+.learn-press-user-profile .lp-avatar-preview .lp-avatar-preview-actions a {
+  text-decoration: none;
+  font-size: 12px;
+  background: #FFF;
+  display: inline-block;
+  box-shadow: none;
+  padding: 5px 10px;
+}
+.learn-press-user-profile .lp-avatar-preview .lp-avatar-upload-progress {
+  position: absolute;
+  height: 10px;
+  width: 180px;
+  background: #FFF;
+  top: 50%;
+  margin-top: -5px;
+  left: 10px;
+  display: none;
+}
+.learn-press-user-profile .lp-avatar-preview .lp-avatar-upload-progress .lp-avatar-upload-progress-value {
+  width: 0;
+  height: 10px;
+  background: #563d7c;
+}
+.learn-press-user-profile .lp-avatar-preview .lp-avatar-upload-error {
+  display: none;
+}
+.learn-press-user-profile .lp-avatar-preview .lp-avatar-preview-actions {
+  display: none;
+}
+.learn-press-user-profile .lp-avatar-preview:hover .lp-avatar-preview-actions {
+  display: block;
+}
+.learn-press-user-profile .lp-avatar-preview.uploading .lp-avatar-preview-actions,
+.learn-press-user-profile .lp-avatar-preview.upload-error .lp-avatar-preview-actions {
+  display: none;
+}
+.learn-press-user-profile .lp-avatar-preview.uploading .lp-avatar-upload-progress,
+.learn-press-user-profile .lp-avatar-preview.upload-error .lp-avatar-upload-progress {
+  display: block;
+}
+.learn-press-user-profile .lp-avatar-preview.uploading:before,
+.learn-press-user-profile .lp-avatar-preview.upload-error:before {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: #FFF;
+  opacity: 0.4;
+  content: '';
+}
+.learn-press-user-profile .lp-avatar-preview.upload-error .lp-avatar-upload-error {
+  display: block;
+}
+.learn-press-user-profile .lp-avatar-preview.croping .lp-avatar-preview-actions {
+  display: none;
+}
+.learn-press-user-profile .lp-avatar-preview.croping .lp-avatar-crop-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  overflow: hidden;
+}
+.learn-press-user-profile .lp-avatar-preview.croping .lp-avatar-crop-image img {
+  max-width: inherit;
+}
+.learn-press-user-profile .lp-avatar-preview.croping .lp-avatar-crop-image .lp-crop-controls {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 30px;
+}
+.learn-press-user-profile .lp-avatar-preview.croping .lp-avatar-crop-image .lp-crop-controls .lp-zoom {
+  position: absolute;
+  height: 10px;
+  bottom: 10px;
+  left: 10px;
+  right: 30px;
+  background: #563d7a;
+}
+.learn-press-user-profile .lp-avatar-preview.croping .lp-avatar-crop-image .lp-crop-controls .lp-zoom .ui-slider {
+  position: absolute;
+  left: 0;
+  right: 10px;
+  height: 100%;
+}
+.learn-press-user-profile .lp-avatar-preview.croping .lp-avatar-crop-image .lp-crop-controls .lp-zoom .ui-slider .ui-slider-handle {
+  display: inline-block;
+  width: 10px;
+  height: 14px;
+  background: #FFF;
+  position: absolute;
+  margin-top: -2px;
+  border: 1px solid #563d7a;
+  box-shadow: none;
+  outline: none;
+}
+.learn-press-user-profile .lp-avatar-preview.croping .lp-avatar-crop-image .lp-crop-controls .lp-cancel-upload {
+  text-decoration: none;
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  box-shadow: none;
+}
+.learn-press-user-profile .lp-avatar-preview.croping .lp-avatar-crop-image .lp-crop-controls:before {
+  position: absolute;
+  height: 30px;
+  width: 100%;
+  content: '';
+  background: #FFF;
+  opacity: 0.4;
+}
+.learn-press-user-profile .lp-avatar-preview:after {
+  display: block;
+  content: '';
+  clear: both;
+}
+.learn-press-user-profile .lp-avatar-preview:after:after {
+  content: '';
+  display: block;
+  clear: both;
 }
 .learn-press-user-profile #lp-menu-change-picture {
   list-style: none;
@@ -2146,52 +2381,6 @@ body.content-item-only #learn-press-content-item.expand {
 
 
 }*/
-.user-profile-edit-form .info-field {
-  margin-bottom: 20px;
-}
-.user-profile-edit-form .description {
-  margin-top: 5px;
-}
-.user-profile-edit-form .user-profile-picture {
-  clear: both;
-}
-.user-profile-edit-form .user-profile-picture .picture,
-.user-profile-edit-form .user-profile-picture .change-picture {
-  display: inline-block;
-}
-.user-profile-edit-form .user-profile-picture .change-picture .description {
-  margin: 0 0 10px 0;
-}
-.user-profile-edit-form .user-profile-picture img {
-  float: left;
-  margin-right: 20px;
-}
-.user-profile-edit-form .user-profile-picture:after {
-  display: block;
-  content: '';
-  clear: both;
-}
-.user-profile-edit-form .user-profile-picture:after:after {
-  content: '';
-  display: block;
-  clear: both;
-}
-.user-profile-edit-form .profile-field-name {
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-.user-profile-edit-form .change-password {
-  margin-bottom: 10px;
-}
-.user-profile-edit-form #user_profile_password_form input {
-  margin-bottom: 20px;
-}
-.user-profile-edit-form #user_profile_password_form .description {
-  margin-top: -15px;
-}
-.user-profile-edit-form .update-profile {
-  margin-top: 20px;
-}
 .payment-method-form.payment_method_authorizenet {
   background: #f7f7f7;
   border-radius: 5px;

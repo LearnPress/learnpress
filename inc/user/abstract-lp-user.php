@@ -130,25 +130,7 @@ class LP_Abstract_User {
 		} else {
 			return;
 		}
-		return;
-		if ( !$this->_course_items ) {
-			return;
-		}
 
-		global $wpdb;
-		$query = $wpdb->prepare( "
-			SELECT ui.*
-			FROM {$wpdb->prefix}learnpress_user_items ui
-			LEFT JOIN {$wpdb->posts} p ON p.ID = ui.item_id
-			WHERE p.ID IN(" . join( ',', $course_items ) . ")
-			AND ui.user_id = %d
-			AND ui.ref_id = %d
-		", $this->id, $course->id );
-		if ( $items = $wpdb->get_results( $query, OBJECT_K ) ) {
-			foreach ( $items as $item ) {
-
-			}
-		}
 	}
 
 	/**
@@ -2791,20 +2773,14 @@ class LP_Abstract_User {
 	 */
 	public function get_upload_profile_src( $size = '' ) {
 		if ( empty( $this->uploaded_profile_src ) ) {
-			$profile_picture = $this->profile_picture;
-			$upload          = wp_get_upload_dir();
-			$user_id         = $this->id;
-
-			if ( $size == 'thumbnail' ) {
-				$pi              = pathinfo( $profile_picture );
-				$profile_picture = $pi['filename'] . '-thumb' . '.' . $pi['extension'];
-			}
-			$file_path = $upload['basedir'] . DIRECTORY_SEPARATOR . 'learn-press-profile' . DIRECTORY_SEPARATOR . $user_id . DIRECTORY_SEPARATOR . $profile_picture;
-
-			if ( file_exists( $file_path ) ) {
-				$this->uploaded_profile_src = $upload['baseurl'] . '/learn-press-profile/' . $user_id . '/' . $profile_picture;
-			} else {
-				$this->uploaded_profile_src = false;
+			if ( $profile_picture = $this->profile_picture ) {
+				$upload    = learn_press_user_profile_picture_upload_dir();
+				$file_path = $upload['basedir'] . DIRECTORY_SEPARATOR . $profile_picture;
+				if ( file_exists( $file_path ) ) {
+					$this->uploaded_profile_src = $upload['baseurl'] . '/' . $profile_picture;
+				} else {
+					$this->uploaded_profile_src = false;
+				}
 			}
 		}
 		return $this->uploaded_profile_src;
@@ -2873,7 +2849,7 @@ class LP_Abstract_User {
 	 * @return mixed|void
 	 */
 	public function can_access_course( $course_id ) {
-		return apply_filters( 'learn_press_user_can_access_course', $this->get_order_status( $course_id ) == 'lp-completed', $course_id, $this->id );
+		return apply_filters( 'learn_press_user_can_access_course', $this->get_order_status( $course_id ) == 'lp - completed', $course_id, $this->id );
 	}
 
 	/**
@@ -2888,9 +2864,9 @@ class LP_Abstract_User {
 	public function can_do_quiz( $quiz_id, $course_id = 0 ) {
 		$course = LP_Course::get_course( $course_id );
 		if ( $course->is_require_enrollment() ) {
-			$can = $this->has_course_status( $course_id, array( 'enrolled' ) ) && !$this->has( 'started-quiz', $quiz_id, $course_id );
+			$can = $this->has_course_status( $course_id, array( 'enrolled' ) ) && !$this->has( 'started - quiz', $quiz_id, $course_id );
 		} else {
-			$can = !$this->has( 'started-quiz', $quiz_id, $course_id );
+			$can = !$this->has( 'started - quiz', $quiz_id, $course_id );
 		}
 		return apply_filters( 'learn_press_user_can_do_quiz', $can, $quiz_id, $this->id, $course_id );
 	}

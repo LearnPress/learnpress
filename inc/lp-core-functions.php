@@ -461,6 +461,17 @@ if ( !function_exists( 'leanrpress_advertise_in_admin' ) ) {
 			<div id="learn-press-add-ons-wrap" class="learnpress-advertis-admin">
 				<?php
 				foreach ( $list_themes as $theme ) {
+					$theme['url'] .= '?ref=ThimPress&utm_source=lp-backend&utm_medium=lp-addondashboard';
+					$url_demo = $theme['attributes'][4]['value'] . '?ref=ThimPress&utm_source=lp-backend&utm_medium=lp-addondashboard';
+				/*if ( !array_key_exists( $theme['id'], $themes_id ) || $themes_id[$theme['id']] === $current_theme->name ) {
+					unset( $list_themes[$key] );
+				}
+			}
+			shuffle( $list_themes );
+			?>
+			<div id="learn-press-add-ons-wrap" class="learnpress-advertis-admin">
+				<?php
+				foreach ( $list_themes as $theme ) {
 					$theme['url'] = add_query_arg( array(
 						'ref'        => 'ThimPress',
 						'utm_source' => 'lp-backend',
@@ -470,44 +481,44 @@ if ( !function_exists( 'leanrpress_advertise_in_admin' ) ) {
 						'ref'        => 'ThimPress',
 						'utm_source' => 'lp-backend',
 						'utm_medium' => 'lp-addondashboard'
-					), $theme['attributes'][4]['value'] );
+					), $theme['attributes'][4]['value'] );*/
 
-					$theme['description'] = preg_replace( '/(?<=\S,)(?=\S)/', ' ', $theme['description'] );
-					$theme['description'] = str_replace( "\n", ' ', $theme['description'] );
-					$theme['description'] = explode( " ", $theme['description'] );
-					$theme['description'] = array_splice( $theme['description'], 0, sizeof( $theme['description'] ) - 1 );
-					$theme['description'] = implode( " ", $theme['description'] ) . " ...";
-					?>
-					<div id="thimpress-<?php echo esc_attr( $theme['id'] ); ?>" class="item">
-						<div class="theme-thumbnail">
-							<a href="<?php echo esc_url( $theme['url'] ); ?>">
-								<img src="<?php echo esc_url( $theme['previews']['landscape_preview']['landscape_url'] ) ?>" />
-							</a>
-						</div>
+                    $theme['description'] = preg_replace( '/(?<=\S,)(?=\S)/', ' ', $theme['description'] );
+                    $theme['description'] = str_replace( "\n", ' ', $theme['description'] );
+                    $theme['description'] = explode(" ", $theme['description']);
+                    $theme['description'] = array_splice($theme['description'], 0, sizeof($theme['description']) - 1);
+                    $theme['description'] = implode(" ", $theme['description'])." ...";
+                    ?>
+                    <div id="thimpress-<?php echo esc_attr($theme['id']); ?>" class="item">
+                        <div class="theme-thumbnail">
+                            <a href="<?php echo esc_url($theme['url']); ?>">
+                                <img src="<?php echo esc_url($theme['previews']['landscape_preview']['landscape_url'])?>" />
+                            </a>
+                        </div>
 
-						<div class="theme-detail">
-							<h2><a href="<?php echo esc_url( $theme['url'] ); ?>"><?php echo $theme['name']; ?></a></h2>
-							<p class="learpress-description">
-								<?php echo wp_kses_post( $theme['description'] ); ?>
-							</p>
-							<p class="theme-controls">
-								<a href="<?php echo esc_url( $theme['url'] ); ?>" class="button button-primary" target="_blank"><?php _e( 'Get it now', 'learnpress' ); ?></a>
-								<a href="<?php echo esc_url( $url_demo ); ?>" class="button" target="_blank"><?php _e( 'View Demo', 'learnpress' ); ?></a>
-							</p>
-						</div>
+                        <div class="theme-detail">
+                            <h2><a href="<?php echo esc_url($theme['url']); ?>"><?php  echo $theme['name']; ?></a></h2>
+                            <p class="learpress-description">
+                                <?php echo wp_kses_post($theme['description']); ?>
+                            </p>
+                            <p class="theme-controls">
+                                <a href="<?php echo esc_url($theme['url']); ?>" class="button button-primary" target="_blank"><?php _e( 'Get it now', 'learnpress' ); ?></a>
+                                <a href="<?php echo esc_url($url_demo); ?>" class="button" target="_blank"><?php _e( 'View Demo', 'learnpress' ); ?></a>
+                            </p>
+                        </div>
 
-					</div>
-					<?php
-				}
-				?>
-			</div>
-			<?php
-		}
+                    </div>
+                    <?php
+                }
+                ?>
+            </div>
+            <?php
+        }
 
-	}
+    }
 }
 
-add_action( 'admin_footer', 'leanrpress_advertise_in_admin', - 10 );
+add_action( 'admin_footer', 'leanrpress_advertise_in_admin', -10 );
 
 /**
  * @param string $str
@@ -2139,23 +2150,29 @@ function learn_press_sanitize_json( $string ) {
 	return $string;
 }
 
-function learn_press_get_current_profile_tab() {
-	global $wp_query;
+function learn_press_get_current_profile_tab( $default = true ) {
+	global $wp_query, $wp;
 	$current = '';
-	if ( !is_admin() ) {
-		if ( !empty( $_REQUEST['tab'] ) ) {
-			$current = $_REQUEST['tab'];
-		} else if ( !empty( $wp_query->query_vars['tab'] ) ) {
-			$current = $wp_query->query_vars['tab'];
-		}
-	}
-	if ( empty( $current ) ) {
-		if ( $tabs = learn_press_user_profile_tabs() ) {
+	if ( !empty( $_REQUEST['tab'] ) ) {
+		$current = $_REQUEST['tab'];
+	} else if ( !empty( $wp_query->query_vars['tab'] ) ) {
+		$current = $wp_query->query_vars['tab'];
+	} else if ( !empty( $wp->query_vars['view'] ) ) {
+		$current = $wp->query_vars['view'];
+	} else {
+		if ( $default && $tabs = learn_press_user_profile_tabs() ) {
 			$tab_keys = array_keys( $tabs );
 			$current  = reset( $tab_keys );
 		}
 	}
 	return $current;
+}
+
+function learn_press_profile_tab_exists( $tab ) {
+	if ( $tabs = learn_press_user_profile_tabs() ) {
+		return !empty( $tabs[$tab] ) ? true : false;
+	}
+	return false;
 }
 
 /**
@@ -2625,6 +2642,7 @@ function learn_press_is_added_to_cart( $course_id ) {
  *  + LP Profile page is not setup
  *  + LP Checkout page is not setup
  */
+//add_action( 'admin_bar_menu', 'lp_warning_message_settings' );
 add_action( 'wp_ajax_lp_remove_admin_warning', 'lp_remove_admin_warning' );
 add_action( 'wp_ajax_nopriv_lp_remove_admin_warning', 'lp_remove_admin_warning' );
 

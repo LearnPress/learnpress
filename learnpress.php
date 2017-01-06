@@ -383,7 +383,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 		 *
 		 * @return bool
 		 */
-		private function is_request( $type ) {
+		public function is_request( $type ) {
 			switch ( $type ) {
 				case 'admin' :
 					return is_admin();
@@ -393,6 +393,8 @@ if ( !class_exists( 'LearnPress' ) ) {
 					return defined( 'DOING_CRON' );
 				case 'frontend' :
 					return ( !is_admin() || defined( 'LP_DOING_AJAX' ) ) && !defined( 'DOING_CRON' );
+				default:
+					return strtolower($_SERVER['REQUEST_METHOD']) == $type;
 			}
 		}
 

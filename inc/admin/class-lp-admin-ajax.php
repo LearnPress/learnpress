@@ -55,8 +55,6 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 				'duplicate_question'              => false,
 				// Remove Notice
 				'remove_notice_popup'             => false
-
-
 			);
 			foreach ( $ajaxEvents as $ajaxEvent => $nopriv ) {
 				add_action( 'wp_ajax_learnpress_' . $ajaxEvent, array( __CLASS__, $ajaxEvent ) );
@@ -969,8 +967,8 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 		public static function get_page_permalink() {
 			$page_id = !empty( $_REQUEST['page_id'] ) ? $_REQUEST['page_id'] : '';
 			?>
-            <a href="<?php echo get_edit_post_link( $page_id ); ?>" target="_blank"><?php _e( 'Edit Page', 'learnpress' ); ?></a>
-            <a href="<?php echo get_permalink( $page_id ); ?>" target="_blank"><?php _e( 'View Page', 'learnpress' ); ?></a>
+			<a href="<?php echo get_edit_post_link( $page_id ); ?>" target="_blank"><?php _e( 'Edit Page', 'learnpress' ); ?></a>
+			<a href="<?php echo get_permalink( $page_id ); ?>" target="_blank"><?php _e( 'View Page', 'learnpress' ); ?></a>
 			<?php
 			die();
 		}

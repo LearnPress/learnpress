@@ -685,8 +685,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 				$end_date   = '';
 
 				if ( isset( $_GET['post'] ) ) {
-					$course_id  = $_GET['post'];
-
+					$course_id = $_GET['post'];
 					if ( $payment != 'free' ) {
 						$suggest_price  = get_post_meta( $course_id, '_lp_suggestion_price', true );
 						$course         = get_post( $course_id );
@@ -711,7 +710,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						'name'  => __( 'Price', 'learnpress' ),
 						'id'    => "{$prefix}price",
 						'type'  => 'number',
-						'min'   => 0.01,
+						'min'   => 0,
 						'step'  => 0.01,
 						'desc'  => $message,
 						'std'   => $price,
@@ -1230,7 +1229,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		}
 
 		public
-        function before_save_curriculum() {
+		function before_save_curriculum() {
 
 			global $post, $pagenow;
 
@@ -1255,7 +1254,6 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 					),
 					array( '%d', '%s' )
 				);
-
 			}
 
 			$new_status = get_post_status( $post->ID );
