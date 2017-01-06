@@ -848,7 +848,11 @@ function learn_press_output_premium_add_ons_list($add_ons, $tab = '') {
     echo '<h2>'. __('Premium Add-ons', 'learnpress') .' (<span class="learnpress-count-addon">'. sizeof($add_ons) .'</span>) </h2>';
     echo '<ul class="learn-press-add-ons widefat ' . $tab . '">';
     foreach ( $add_ons as $file => $add_on ) {
-        $add_on['permarklink'] .= '?ref=ThimPress&utm_source=lp-backend&utm_medium=lp-addondashboard';
+        $add_on['permarklink'] = add_query_arg( array(
+            'ref'           => 'ThimPress',
+            'utm_source'    => 'lp-backend',
+            'utm_medium'    => 'lp-addondashboard'
+        ), $add_on['permarklink'] );
         ?>
         <li class="plugin-card plugin-card-learnpress" id="learn-press-plugin-<?php echo $add_on['slug']; ?>">
             <div class="plugin-card-top">
@@ -943,7 +947,11 @@ function learn_press_output_related_themes_list_education( $add_ons, $tab ) {
     echo '<h2 class="learnpress-title">'. __('Education Support') .' (<span class="learnpress-count">'. sizeof($add_ons) .'</span>) </h2>';
     echo '<ul class="learn-press-add-ons widefat ' . $tab . '">';
     foreach ( $add_ons as $file => $add_on ) {
-        $add_on['url'] .= '?ref=ThimPress&utm_source=lp-backend&utm_medium=lp-addondashboard';
+        $add_on['url'] = add_query_arg( array(
+            'ref'           => 'ThimPress',
+            'utm_source'    => 'lp-backend',
+            'utm_medium'    => 'lp-addondashboard'
+        ), $add_on['url'] );
         ?>
         <li class="plugin-card plugin-card-learnpress" id="learn-press-theme-<?php echo $add_on['id']; ?>">
             <div class="plugin-card-top">
@@ -978,10 +986,14 @@ function learn_press_output_related_themes_list_education( $add_ons, $tab ) {
                     </div>
                     <div class="theme-footer">
                         <?php
-                        $demo           = $add_on['attributes'][4];
-                        $demo['value'] .= '?ref=ThimPress&utm_source=lp-backend&utm_medium=lp-addondashboard';
+                        $demo               = $add_on['attributes'][4];
+                        $demo['value']      = add_query_arg( array(
+                            'ref'           => 'ThimPress',
+                            'utm_source'    => 'lp-backend',
+                            'utm_medium'    => 'lp-addondashboard'
+                        ), $demo['value'] );
                         ?>
-                        <a class="button button-primary" href="<?php echo esc_url($add_on['url']); ?>"><?php echo __('Get it now for only ', 'learnpress') ?></a>
+                        <a class="button button-primary" href="<?php echo esc_url($add_on['url']); ?>"><?php echo __('Get it now', 'learnpress') ?></a>
                         <a class="button" href="<?php echo esc_url($demo['value']); ?>"><?php _e('View Demo', 'learnpress'); ?></a>
                         <div class="theme-rating">
                             <span class="">
@@ -1002,7 +1014,11 @@ function learn_press_output_related_themes_list_other( $add_ons, $tab ) {
     echo '<h2 class="learnpress-title">'. __('Other') .' (<span class="learnpress-count">'. sizeof($add_ons) .'</span>) </h2>';
     echo '<ul class="learn-press-add-ons widefat ' . $tab . '">';
     foreach ( $add_ons as $file => $add_on ) {
-        $add_on['url'] .= '?ref=ThimPress&utm_source=lp-backend&utm_medium=lp-addondashboard';
+        $add_on['url'] = add_query_arg( array(
+            'ref'           => 'ThimPress',
+            'utm_source'    => 'lp-backend',
+            'utm_medium'    => 'lp-addondashboard'
+        ), $add_on['url'] );
         ?>
         <li class="plugin-card plugin-card-learnpress" id="learn-press-theme-<?php echo $add_on['id']; ?>">
             <div class="plugin-card-top">
@@ -1038,9 +1054,13 @@ function learn_press_output_related_themes_list_other( $add_ons, $tab ) {
                     <div class="theme-footer">
                         <?php
                         $demo           = $add_on['attributes'][4];
-                        $demo['value'] .= '?ref=ThimPress&utm_source=lp-backend&utm_medium=lp-addondashboard';
+                        $demo['value']      = add_query_arg( array(
+                            'ref'           => 'ThimPress',
+                            'utm_source'    => 'lp-backend',
+                            'utm_medium'    => 'lp-addondashboard'
+                        ), $demo['value'] );
                         ?>
-                        <a class="button button-primary" href="<?php echo esc_url($add_on['url']); ?>"><?php echo __('Get it now for only ', 'learnpress') ?></a>
+                        <a class="button button-primary" href="<?php echo esc_url($add_on['url']); ?>"><?php echo __('Get it now', 'learnpress') ?></a>
                         <a class="button" href="<?php echo esc_url($demo['value']); ?>"><?php _e('View Demo', 'learnpress'); ?></a>
                         <div class="theme-rating">
                             <span class="">

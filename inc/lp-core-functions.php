@@ -461,8 +461,16 @@ if ( !function_exists( 'leanrpress_advertise_in_admin' ) ) {
 			<div id="learn-press-add-ons-wrap" class="learnpress-advertis-admin">
 				<?php
 				foreach ( $list_themes as $theme ) {
-					$theme['url'] .= '?ref=ThimPress&utm_source=lp-backend&utm_medium=lp-addondashboard';
-					$url_demo = $theme['attributes'][4]['value'] . '?ref=ThimPress&utm_source=lp-backend&utm_medium=lp-addondashboard';
+                    $theme['url'] = add_query_arg( array(
+                        'ref'           => 'ThimPress',
+                        'utm_source'    => 'lp-backend',
+                        'utm_medium'    => 'lp-addondashboard'
+                    ), $theme['url'] );
+                    $url_demo = add_query_arg( array(
+                        'ref'           => 'ThimPress',
+                        'utm_source'    => 'lp-backend',
+                        'utm_medium'    => 'lp-addondashboard'
+                    ), $theme['attributes'][4]['value'] );
 
 					$theme['description'] = preg_replace( '/(?<=\S,)(?=\S)/', ' ', $theme['description'] );
 					$theme['description'] = str_replace( "\n", ' ', $theme['description'] );

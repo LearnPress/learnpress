@@ -355,7 +355,6 @@ li.quick_quiz {
 .learnpress-advertis-admin .learnpress-controls {
   position: absolute;
   bottom: 30px;
-  left: 0;
   right: 0;
   height: 50px;
   -ms-transform: translateY(-50%);
