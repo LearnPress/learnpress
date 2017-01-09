@@ -136,7 +136,7 @@ class LP_User_Factory {
 	 *
 	 * @return mixed|void
 	 */
-	public static function get_user_class( $the_id ) {
+	public static function get_user_class( $the_id = 0 ) {
 		if ( $the_id && get_userdata( $the_id ) ) {
 			$class = 'LP_User';
 		} else {
