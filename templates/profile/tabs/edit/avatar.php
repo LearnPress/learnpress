@@ -35,9 +35,9 @@ if ( !is_array( $thumb_size ) ) {
 		<li class="lp-form-field">
 			<div class="lp-form-field-input">
 				<div class="lp-avatar-preview" style="width: <?php echo $thumb_size['width']; ?>px;height: <?php echo $thumb_size['height']; ?>px;">
-					<div class="profile - picture profile - avatar - current">
+					<div class="profile-picture profile-avatar-current">
 						<?php if ( $custom_img ) { ?>
-							<img src=" <?php echo $custom_img; ?>" />
+							<img src="<?php echo $custom_img; ?>" />
 						<?php } else { ?>
 							<?php echo $gravatar_img; ?>
 						<?php } ?>
