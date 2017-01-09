@@ -1952,7 +1952,10 @@ function learn_press_front_scripts() {
 			'button_no'     => __( 'No', 'learnpress' )
 		)
 	);
-	LP_Assets::add_var( 'LP_Settings', wp_json_encode( $js ), array( 'learn-press-single-course', 'learn-press-global' ) );
+	//LP_Assets::add_var( 'LP_Settings', wp_json_encode( $js ), array( 'learn-press-single-course', 'learn-press-global' ) );
+	foreach ( $js as $k => $v ) {
+		LP_Assets::add_param( $k, $v, array( 'learn-press-single-course', 'learn-press-global' ), 'LP_Settings' );
+	}
 }
 
 add_action( 'wp_print_scripts', 'learn_press_front_scripts' );

@@ -184,7 +184,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 
 			add_action( 'edit_form_after_editor', array( $this, 'curriculum_editor' ), 10 );
 			if ( learn_press_get_user_option( 'course-tabs' ) == 'yes' ) {
-				LP_Assets::add_param( 'enable_course_tabs', 'yes', '__all', 'LP_Settings' );
+				LP_Assets::add_param( 'enable_course_tabs', 'yes', 'learn-press-mb-course', 'LP_Settings' );
 				add_filter( 'admin_body_class', array( $this, 'admin_body_class' ) );
 			}
 		}

@@ -37,6 +37,18 @@
 .post-type-lp_course .type-lp_course.status-pending .row-actions .view {
   display: none;
 }
+#learn-press-admin-settings {
+  /*input[name="learn_press_single_course_image_size[width]"],
+    input[name="learn_press_single_course_image_size[height]"],
+    input[name="learn_press_course_thumbnail_image_size[width]"],
+    input[name="learn_press_course_thumbnail_image_size[height]"] {
+        margin-top: -4px;
+    }
+    input[name="learn_press_single_course_image_size[crop]"],
+    input[name="learn_press_course_thumbnail_image_size[crop]"] {
+        margin-top: 3px;
+    }*/
+}
 #learn-press-admin-settings #learn_press_email_formats {
   margin-bottom: 10px;
 }
@@ -112,16 +124,6 @@
 }
 #learn-press-admin-settings label {
   line-height: 1;
-}
-#learn-press-admin-settings input[name="learn_press_single_course_image_size[width]"],
-#learn-press-admin-settings input[name="learn_press_single_course_image_size[height]"],
-#learn-press-admin-settings input[name="learn_press_course_thumbnail_image_size[width]"],
-#learn-press-admin-settings input[name="learn_press_course_thumbnail_image_size[height]"] {
-  margin-top: -4px;
-}
-#learn-press-admin-settings input[name="learn_press_single_course_image_size[crop]"],
-#learn-press-admin-settings input[name="learn_press_course_thumbnail_image_size[crop]"] {
-  margin-top: 3px;
 }
 #learn-press-admin-settings input[name="learn_press_course_base"] {
   margin-top: 3px;
@@ -1653,7 +1655,7 @@ input.regular-text[id^="learn-press-emails"] {
   width: 50%;
 }
 .lp-template-overrides #learn-press-no-templates td p {
-  color: #FF0000;
+  color: #0073aa;
 }
 @-webkit-keyframes lp-spinner {
   0% {
