@@ -92,11 +92,17 @@ if (typeof window.LP === 'undefined') {
 					success : function (response) {
 						response = LP.parseJSON(response);
 						if (response.result === 'fail') {
-							if (response.messages) {
-								LP.Checkout.showErrors(response.messages);
+							var $error = '';
+							if (!response.messages) {
+								if (response.code && response.code == 30) {
+									LP.Checkout.showErrors('<div class="learn-press-error">' + learn_press_js_localize.invalid_field + '</div>');
+								} else {
+									LP.Checkout.showErrors('<div class="learn-press-error">' + learn_press_js_localize.unknown_error + '</div>');
+								}
 							} else {
-								LP.Checkout.showErrors('<div class="learn-press-error">Unknown error!</div>');
+								LP.Checkout.showErrors(response.messages);
 							}
+
 						} else if (response.result === 'success') {
 							if (response.redirect) {
 								$place_order.val('Redirecting');
