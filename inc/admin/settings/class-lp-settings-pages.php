@@ -143,12 +143,12 @@ class LP_Settings_Pages extends LP_Settings_Base {
 					'default' => array( 150, 150, 'yes' ),
 					'type'    => 'image-size'
 				),
-				array(
+				/*array(
 					'title'   => __( 'Crop', 'learnpress' ),
 					'id'      => $this->get_field_name( 'profile_picture_crop' ),
 					'default' => 'yes',
 					'type'    => 'checkbox'
-				),
+				),*/
 				array( 'section' => 'quiz' ),
 				array(
 					'title' => __( 'Endpoints', 'learnpress' ),

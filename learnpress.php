@@ -520,13 +520,6 @@ if ( !class_exists( 'LearnPress' ) ) {
 			require_once 'inc/class-lp-multi-language.php';
 			require_once 'inc/class-lp-page-controller.php';
 
-			if ( !empty( $_REQUEST['debug'] ) ) {
-				require_once( 'inc/debug.php' );
-			}
-			if ( file_exists( LP_PLUGIN_PATH . '/test-functions.php' ) ) {
-				include_once LP_PLUGIN_PATH . '/test-functions.php';
-			}
-
 			$GLOBALS['lp_query'] = $this->query = new LP_Query();
 
 		}

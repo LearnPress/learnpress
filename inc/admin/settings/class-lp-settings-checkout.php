@@ -49,17 +49,10 @@ class LP_Settings_Checkout extends LP_Settings_Base {
 			'learn_press_checkout_settings',
 			array(
 				array(
-					'title'   => __( 'No checkout Free course', 'learnpress' ),
-					'desc'    => __( 'Check this option to allow user to enroll course immediately without adding to cart.', 'learnpress' ),
-					'id'      => $this->get_field_name( 'no_checkout_free_course' ),
+					'title'   => __( 'Auto enroll', 'learnpress' ),
+					'desc'    => __( 'Auto enroll a user after they buy a course.', 'learnpress' ),
+					'id'      => $this->get_field_name( 'auto_enroll' ),
 					'default' => 'yes',
-					'type'    => 'checkbox'
-				),
-				array(
-					'title'   => __( 'Disable auto enroll', 'learnpress' ),
-					'desc'    => __( 'Disable auto enroll a user after they buy a course.', 'learnpress' ),
-					'id'      => $this->get_field_name( 'disable_auto_enroll' ),
-					'default' => 'no',
 					'type'    => 'checkbox'
 				),
 				array(

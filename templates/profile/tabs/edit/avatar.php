@@ -9,7 +9,10 @@
 $user         = learn_press_get_current_user();
 $custom_img   = $user->get_upload_profile_src();
 $gravatar_img = $user->get_profile_picture( 'gravatar' );
-
+$thumb_size   = LP()->settings->get( 'profile_picture_thumbnail_size' );
+if ( !is_array( $thumb_size ) ) {
+	$thumb_size = array( 'width' => 200, 'height' => 200 );
+}
 ?>
 <script type="text/html" id="tmpl-crop-user-avatar">
 	<div class="lp-avatar-crop-image" style="width: {{data.viewWidth}}px; height: {{data.viewHeight}}px;">
@@ -31,7 +34,7 @@ $gravatar_img = $user->get_profile_picture( 'gravatar' );
 	<ul class="lp-form-field-wrap">
 		<li class="lp-form-field">
 			<div class="lp-form-field-input">
-				<div class="lp-avatar-preview">
+				<div class="lp-avatar-preview" style="width: <?php echo $thumb_size['width']; ?>px;height: <?php echo $thumb_size['height']; ?>px;">
 					<div class="profile-picture profile-avatar-current">
 						<?php if ( $custom_img ) { ?>
 							<img src="<?php echo $custom_img; ?>" />
@@ -60,7 +63,7 @@ $gravatar_img = $user->get_profile_picture( 'gravatar' );
 					</div>
 				</div>
 				<div class="clearfix"></div>
-				<p class="description"><?php _e('Hover on your current avatar to upload new photo', 'learnpress');?></p>
+				<p class="description"><?php _e( 'Hover on your current avatar to upload new photo', 'learnpress' ); ?></p>
 			</div>
 		</li>
 	</ul>
