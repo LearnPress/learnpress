@@ -146,6 +146,7 @@
 					if (yy > ui.position.top) {
 						ui.position.top = yy;
 					}
+					$(document.body).addClass('profile-dragging');
 				},
 				stop: function (e, ui) {
 					lx = parseInt($img.css('left'));
@@ -158,6 +159,7 @@
 						top   : tx,
 						left  : lx
 					});
+					$(document.body).removeClass('profile-dragging');
 				}
 			});
 			var dd = (Math.abs(lx) + data.viewWidth / 2) / wx,
@@ -196,6 +198,10 @@
 						top   : nt,
 						left  : nl
 					});
+					$(document.body).addClass('profile-resizing');
+				},
+				stop: function(){
+					$(document.body).removeClass('profile-resizing');
 				}
 			});
 		}

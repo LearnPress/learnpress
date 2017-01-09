@@ -1402,11 +1402,12 @@ body.block-content {
             font-style: italic;
             margin-top: 5px;
         }
-        .lp-field-error-message{
+        .lp-field-error-message {
             color: #FF0000;
         }
     }
 }
+
 .learn-press-user-profile {
 
     .lp-edit-profile {
@@ -1630,6 +1631,7 @@ body.block-content {
                 overflow: hidden;
                 img {
                     max-width: inherit;
+                    cursor: move;
                 }
                 .lp-crop-controls {
                     position: absolute;
@@ -1658,6 +1660,7 @@ body.block-content {
                                 border: 1px solid #563d7a;
                                 box-shadow: none;
                                 outline: none;
+                                cursor: ew-resize;
                             }
                         }
                     }
@@ -1683,113 +1686,122 @@ body.block-content {
             .clearfix();
         }
     }
-	/**  STYLE PROFILE **/
-	/* Change Picture Menu */
-	#lp-menu-change-picture {
-		list-style: none;
-		.lp-label-change-picture {
-			display: block;
-			color: blueviolet;
-			padding: 2px 10px;
-			border: solid 1px gray;
-			cursor: pointer;
-		}
-		.dropdown {
-			display: inline-block;
-			&:hover {
-				.dropdown-menu {
-					display: block;
-				}
-			}
-			.dropdown-menu {
-				display: none;
-				position: absolute;
-				list-style: none;
-				margin: 0 !important;
-				padding: 0;
-				background-color: #F5F5F5;
-				li {
-					display: block;
-					cursor: pointer;
-					border: solid 1px #999999;
-					border-bottom: none;
-					padding: 3px 10px;
-					&:hover{
-						color: blue;
-						background-color: lightblue;
-					}
-					&:last-child {
-						border-bottom: solid 1px #999999;
-					}
-					&.lp-menu-item-selected {
-						background: royalblue;
-					}
-				}
-			}
-		}
-	}
-	
-	#lp-profile_picture_type {
-		display: none;
-	}
-	
-	/** upload-crop box **/
+    /**  STYLE PROFILE **/
+    /* Change Picture Menu */
+    #lp-menu-change-picture {
+        list-style: none;
+        .lp-label-change-picture {
+            display: block;
+            color: blueviolet;
+            padding: 2px 10px;
+            border: solid 1px gray;
+            cursor: pointer;
+        }
+        .dropdown {
+            display: inline-block;
+            &:hover {
+                .dropdown-menu {
+                    display: block;
+                }
+            }
+            .dropdown-menu {
+                display: none;
+                position: absolute;
+                list-style: none;
+                margin: 0 !important;
+                padding: 0;
+                background-color: #F5F5F5;
+                li {
+                    display: block;
+                    cursor: pointer;
+                    border: solid 1px #999999;
+                    border-bottom: none;
+                    padding: 3px 10px;
+                    &:hover {
+                        color: blue;
+                        background-color: lightblue;
+                    }
+                    &:last-child {
+                        border-bottom: solid 1px #999999;
+                    }
+                    &.lp-menu-item-selected {
+                        background: royalblue;
+                    }
+                }
+            }
+        }
+    }
 
-	#lpbox-upload-crop-profile-picture {
-		display:none;
-		border: solid 1px gray;
-		padding: 10px;
-		max-width: 500px;
-		background-color: ghostwhite;
-		.lpbox-title {
-			font-size: 20px;
-		}
-		.image-editor {
-			width:300px;
-			float:left;
-			
-			.cropit-preview {
-				background-color: #f8f8f8;
-				background-size: cover;
-				border: 1px solid #ccc;
-				border-radius: 3px;
-				margin-top: 7px;
-				width: 252px;
-				height: 252px;
-				.cropit-preview-image-container {
-					cursor: move;
-					.cropit-preview-image {
-						max-width: none;
-						max-height: none;
-					}
-				}
-				
-			}
-			.image-editor-btn {
-				margin: 10px auto;
-				text-align: center !important;
-				.input {
-					display:inline-block !important;
-				}
-			}
-			.cropit-preview {
-				margin: 0 auto;
-			}
-		}
-		.image-editor-sidebar-right {
-			width:150px;
-			float:left;
-			a {
-				display:block;
-				text-align:center;
-				margin: 10px 0;
-			}
-			.dashicons {
-				line-height: 1.5;
-				margin-right:5px;
-			}
-		}
-	}
+    #lp-profile_picture_type {
+        display: none;
+    }
+
+    /** upload-crop box **/
+
+    #lpbox-upload-crop-profile-picture {
+        display: none;
+        border: solid 1px gray;
+        padding: 10px;
+        max-width: 500px;
+        background-color: ghostwhite;
+        .lpbox-title {
+            font-size: 20px;
+        }
+        .image-editor {
+            width: 300px;
+            float: left;
+
+            .cropit-preview {
+                background-color: #f8f8f8;
+                background-size: cover;
+                border: 1px solid #ccc;
+                border-radius: 3px;
+                margin-top: 7px;
+                width: 252px;
+                height: 252px;
+                .cropit-preview-image-container {
+                    cursor: move;
+                    .cropit-preview-image {
+                        max-width: none;
+                        max-height: none;
+                    }
+                }
+
+            }
+            .image-editor-btn {
+                margin: 10px auto;
+                text-align: center !important;
+                .input {
+                    display: inline-block !important;
+                }
+            }
+            .cropit-preview {
+                margin: 0 auto;
+            }
+        }
+        .image-editor-sidebar-right {
+            width: 150px;
+            float: left;
+            a {
+                display: block;
+                text-align: center;
+                margin: 10px 0;
+            }
+            .dashicons {
+                line-height: 1.5;
+                margin-right: 5px;
+            }
+        }
+    }
+}
+
+body {
+    &.profile-dragging {
+        cursor: move !important;
+    }
+    &.profile-resizing {
+        cursor: ew-resize !important;
+    }
 }
 
 .learn-press-pagination {
