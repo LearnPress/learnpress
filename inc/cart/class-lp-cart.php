@@ -117,7 +117,7 @@ class LP_Cart {
 
 	public function get_cart() {
 		if ( !did_action( 'wp_loaded' ) ) {
-			_doing_it_wrong( __FUNCTION__, __( 'Get cart should not be called before the wp_loaded action.', 'woocommerce' ), '2.3' );
+			_doing_it_wrong( __FUNCTION__, __( 'Get cart should not be called before the wp_loaded action.', 'learnpress' ), '2.3' );
 		}
 		if ( !did_action( 'learn_press_cart_loaded_from_session' ) ) {
 			$this->get_cart_from_session();

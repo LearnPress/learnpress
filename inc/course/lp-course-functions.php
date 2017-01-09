@@ -101,6 +101,16 @@ function learn_press_get_question_quizzes( $question_id ) {
 	return $wpdb->get_results( $query );
 }
 
+function _learn_press_usort_terms_by_ID( $terms ) {
+	$version = get_bloginfo('version');
+	if( version_compare ($version, '4.7', '>=') ){
+		$terms = wp_list_sort($terms, 'term_id');
+	}else{
+		usort( $terms, '_usort_terms_by_ID' );
+	}
+	return $terms;
+}
+
 function learn_press_course_post_type_link( $permalink, $post ) {
 	if ( $post->post_type !== 'lp_course' ) {
 		return $permalink;
@@ -115,8 +125,7 @@ function learn_press_course_post_type_link( $permalink, $post ) {
 	$terms = get_the_terms( $post->ID, 'course_category' );
 
 	if ( !empty( $terms ) ) {
-		usort( $terms, '_usort_terms_by_ID' ); // order by ID
-
+		$terms = _learn_press_usort_terms_by_ID( $terms ); // order by ID
 		$category_object = apply_filters( 'learn_press_course_post_type_link_course_category', $terms[0], $terms, $post );
 		$category_object = get_term( $category_object, 'course_category' );
 		$course_category = $category_object->slug;

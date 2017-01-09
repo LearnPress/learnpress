@@ -23,6 +23,7 @@ class LP_Gateways {
 	}
 
 	public function init() {
+//		return;
 		if ( !$this->payment_gateways ) {
 			$gateways = array(
 				'paypal' => 'LP_Gateway_Paypal'

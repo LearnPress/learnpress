@@ -35,13 +35,13 @@ class LP_Settings_General extends LP_Settings_Base {
 					'default' => 'no',
 					'type'    => 'checkbox'
 				),
-				array(
+				/*array(
 					'title'   => __( 'Auto update post name', 'learnpress' ),
 					'desc'    => __( 'The post\'s name will update along with the title when changes title of lesson or quiz  in course curriculum or question in quiz<br />The permalink also is changed, therefore uncheck this if you don\'t want to change the permalink', 'learnpress' ),
 					'id'      => $this->get_field_name( 'auto_update_post_name' ),
 					'default' => 'no',
 					'type'    => 'checkbox'
-				),
+				),*/
 				array(
 					'title'   => __( 'Currency', 'learnpress' ),
 					'id'      => $this->get_field_name( 'currency' ),

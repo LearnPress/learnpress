@@ -43,7 +43,7 @@ class LP_Question_True_Or_False extends LP_Abstract_Question {
 
 	public function get_default_answers( $answers = false ) {
 		if ( !$answers ) {
-			if( $this->id ){
+			if( $this->id && $this->post->post_status !=='auto-draft' ){
 				global $wpdb;
 				$sql = $wpdb->prepare( "SELECT * FROM $wpdb->learnpress_question_answers "
 						. " WHERE question_id = %d"

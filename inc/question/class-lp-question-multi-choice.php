@@ -55,18 +55,18 @@ class LP_Question_Multi_Choice extends LP_Abstract_Question {
 
 	public function get_default_answers( $answers = false ) {
 		if ( !$answers ) {
-			if( $this->id ){
+			if ( $this->id && $this->post->post_status !== 'auto-draft' ) {
 				global $wpdb;
-				$sql = $wpdb->prepare( "SELECT * FROM $wpdb->learnpress_question_answers "
-						. " WHERE question_id = %d"
-						. " ORDER BY `answer_order`", $this->id );
+				$sql              = $wpdb->prepare( "SELECT * FROM $wpdb->learnpress_question_answers "
+					. " WHERE question_id = %d"
+					. " ORDER BY `answer_order`", $this->id );
 				$question_answers = $wpdb->get_results( $sql );
-				$answers = array();
-				foreach ( $question_answers as $qa ){
-					$answers[]=unserialize( $qa->answer_data );
+				$answers          = array();
+				foreach ( $question_answers as $qa ) {
+					$answers[] = unserialize( $qa->answer_data );
 				}
 			}
-			if( !empty( $answers ) ) {
+			if ( !empty( $answers ) ) {
 				return $answers;
 			}
 			$answers = array(
