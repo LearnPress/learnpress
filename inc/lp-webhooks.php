@@ -54,10 +54,10 @@ function learn_press_get_web_hook( $key ) {
  */
 function learn_press_process_web_hooks() {
 	$web_hooks           = learn_press_get_web_hooks();
-	$web_hooks_processed = false;
+	$web_hooks_processed = array();
 	foreach ( $web_hooks as $key => $param ) {
 		if ( !empty( $_REQUEST[$param] ) ) {
-			$web_hooks_processed           = true;
+			//$web_hooks_processed           = true;
 			$request_scheme                = is_ssl() ? 'https://' : 'http://';
 			$requested_web_hook_url        = untrailingslashit( $request_scheme . $_SERVER['HTTP_HOST'] ) . $_SERVER['REQUEST_URI'];
 			$parsed_requested_web_hook_url = parse_url( $requested_web_hook_url );
@@ -70,12 +70,22 @@ function learn_press_process_web_hooks() {
 			} else {
 
 			}
+			$web_hooks_processed[$param] = $_REQUEST;
 			break;
 		}
 	}
 	if ( $web_hooks_processed ) {
 		do_action( 'learn_press_web_hooks_processed' );
-		wp_die( __( 'LearnPress webhook process Complete', 'learnpress' ), __( 'LearnPress webhook process Complete', 'learnpress' ), array( 'response' => 200 ) );
+		ob_start();
+		foreach ( $web_hooks_processed as $k => $v ) {
+			echo "\n===============================================================\n<br />";
+			printf( __( 'LearnPress webhook %s process completed', 'learnpress' ), $k );
+			echo "\n<pre>";
+			print_r( $v );
+			echo "</pre>\n===============================================================\n";
+		}
+		$output = ob_get_clean();
+		wp_die( $output, __( 'LearnPress webhook process Complete', 'learnpress' ), array( 'response' => 200 ) );
 	}
 }
 
