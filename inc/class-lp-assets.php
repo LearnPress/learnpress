@@ -706,7 +706,7 @@ class LP_Assets {
 		$user = learn_press_get_course_user();
 		if ( is_admin() ) {
 			global $pagenow;
-			$screen = get_current_screen();
+			$screen    = get_current_screen();
 			$screen_id = $screen->id;
 			$page_id   = !empty( $_REQUEST['page'] ) ? $_REQUEST['page'] : '';
 			self::enqueue_style( 'learn-press-admin' );
@@ -789,9 +789,12 @@ class LP_Assets {
 			// Localize the script with new data
 			$translation_array = array(
 				'confim_pass_not_match' => __( 'Password and confirmation password do not match', 'learnpress' ),
-				'msg_field_is_required' => __('This field is required','learnpress')
+				'msg_field_is_required' => __( 'This field is required', 'learnpress' )
 			);
 			wp_localize_script( 'learn-press-profile', 'lp_profile_translation', $translation_array );
+
+			self::add_param( 'avatar_size',  LP()->settings->get( 'profile_picture_thumbnail_size' ), 'learn-press-profile', 'LP_Settings' );
+
 			self::enqueue_script( 'learn-press-profile' );
 			self::enqueue_script( 'learn-press-jquery-cropit' );
 			self::enqueue_script( 'learn-press-jquery-ocupload' );
