@@ -461,17 +461,6 @@ if ( !function_exists( 'leanrpress_advertise_in_admin' ) ) {
 			<div id="learn-press-add-ons-wrap" class="learnpress-advertis-admin">
 				<?php
 				foreach ( $list_themes as $theme ) {
-					$theme['url'] .= '?ref=ThimPress&utm_source=lp-backend&utm_medium=lp-addondashboard';
-					$url_demo = $theme['attributes'][4]['value'] . '?ref=ThimPress&utm_source=lp-backend&utm_medium=lp-addondashboard';
-				/*if ( !array_key_exists( $theme['id'], $themes_id ) || $themes_id[$theme['id']] === $current_theme->name ) {
-					unset( $list_themes[$key] );
-				}
-			}
-			shuffle( $list_themes );
-			?>
-			<div id="learn-press-add-ons-wrap" class="learnpress-advertis-admin">
-				<?php
-				foreach ( $list_themes as $theme ) {
 					$theme['url'] = add_query_arg( array(
 						'ref'        => 'ThimPress',
 						'utm_source' => 'lp-backend',
@@ -481,7 +470,7 @@ if ( !function_exists( 'leanrpress_advertise_in_admin' ) ) {
 						'ref'        => 'ThimPress',
 						'utm_source' => 'lp-backend',
 						'utm_medium' => 'lp-addondashboard'
-					), $theme['attributes'][4]['value'] );*/
+					), $theme['attributes'][4]['value'] );
 
 					$theme['description'] = preg_replace( '/(?<=\S,)(?=\S)/', ' ', $theme['description'] );
 					$theme['description'] = str_replace( "\n", ' ', $theme['description'] );
@@ -2298,18 +2287,22 @@ function learn_press_get_subtabs_course() {
 
 add_action( 'learn_press_order_status_completed', 'learn_press_auto_enroll_user_to_courses' );
 function learn_press_auto_enroll_user_to_courses( $order_id ) {
-	if ( LP()->settings->get( 'disable_auto_enroll' ) == 'yes' ) {
+	if ( LP()->settings->get( 'auto_enroll' ) == 'no' ) {
 		return;
 	}
+
 	if ( !$order = learn_press_get_order( $order_id ) ) {
 		return;
 	}
+
 	if ( !$items = $order->get_items() ) {
 		return;
 	}
+
 	if ( !$user = $order->get_user() ) {
 		return;
 	}
+
 	$return = 0;
 	foreach ( $items as $item_id => $item ) {
 		$course = learn_press_get_course( $item['course_id'] );
@@ -2476,10 +2469,6 @@ if ( defined( 'LP_ENABLE_CART' ) && LP_ENABLE_CART ) {
 		}
 		return $located;
 	}
-
-	if ( get_option( 'learn_press_no_checkout_free_course' ) !== 'yes' ) {
-		///update_option( 'learn_press_no_checkout_free_course', 'yes' );
-	}
 }
 
 /**
@@ -2554,7 +2543,9 @@ function learn_press_default_scripts( $wp_scripts ) {
 }*/
 
 // Debugging
-include_once "debug.php";
+if ( !empty( $_REQUEST['debug'] ) ) {
+	require_once( 'debug.php' );
+}
 
 function learn_press_debug() {
 	$args = func_get_args();
