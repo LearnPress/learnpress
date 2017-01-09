@@ -461,16 +461,16 @@ if ( !function_exists( 'leanrpress_advertise_in_admin' ) ) {
 			<div id="learn-press-add-ons-wrap" class="learnpress-advertis-admin">
 				<?php
 				foreach ( $list_themes as $theme ) {
-                    $theme['url'] = add_query_arg( array(
-                        'ref'           => 'ThimPress',
-                        'utm_source'    => 'lp-backend',
-                        'utm_medium'    => 'lp-addondashboard'
-                    ), $theme['url'] );
-                    $url_demo = add_query_arg( array(
-                        'ref'           => 'ThimPress',
-                        'utm_source'    => 'lp-backend',
-                        'utm_medium'    => 'lp-addondashboard'
-                    ), $theme['attributes'][4]['value'] );
+					$theme['url'] = add_query_arg( array(
+						'ref'        => 'ThimPress',
+						'utm_source' => 'lp-backend',
+						'utm_medium' => 'lp-addondashboard'
+					), $theme['url'] );
+					$url_demo     = add_query_arg( array(
+						'ref'        => 'ThimPress',
+						'utm_source' => 'lp-backend',
+						'utm_medium' => 'lp-addondashboard'
+					), $theme['attributes'][4]['value'] );
 
 					$theme['description'] = preg_replace( '/(?<=\S,)(?=\S)/', ' ', $theme['description'] );
 					$theme['description'] = str_replace( "\n", ' ', $theme['description'] );
@@ -2281,15 +2281,19 @@ function learn_press_auto_enroll_user_to_courses( $order_id ) {
 	if ( LP()->settings->get( 'disable_auto_enroll' ) == 'yes' ) {
 		return;
 	}
+
 	if ( !$order = learn_press_get_order( $order_id ) ) {
 		return;
 	}
+
 	if ( !$items = $order->get_items() ) {
 		return;
 	}
+
 	if ( !$user = $order->get_user() ) {
 		return;
 	}
+
 	$return = 0;
 	foreach ( $items as $item_id => $item ) {
 		$course = learn_press_get_course( $item['course_id'] );
@@ -2534,7 +2538,9 @@ function learn_press_default_scripts( $wp_scripts ) {
 }*/
 
 // Debugging
-include_once "debug.php";
+if ( !empty( $_REQUEST['debug'] ) ) {
+	require_once( 'debug.php' );
+}
 
 function learn_press_debug() {
 	$args = func_get_args();
