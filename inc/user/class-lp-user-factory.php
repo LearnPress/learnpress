@@ -121,7 +121,7 @@ class LP_User_Factory {
 		if ( empty( $the_id ) ) {
 			$the_id = get_current_user_id();
 		}
-		$user_class = self::get_user_class();
+		$user_class = self::get_user_class( $the_id );
 		if ( empty( self::$_users[$the_id] ) || $force ) {
 			self::$_users[$the_id] = new $user_class( $the_id );
 		}
@@ -132,11 +132,18 @@ class LP_User_Factory {
 	/**
 	 * Get class name for User Object
 	 *
+	 * @param int
+	 *
 	 * @return mixed|void
 	 */
-	public static function get_user_class() {
-		$is_logged_in = function_exists( 'is_user_logged_in' ) && is_user_logged_in();
-		return apply_filters( 'learn_press_user_class', $is_logged_in ? 'LP_User' : 'LP_User_Guest' );
+	public static function get_user_class( $the_id = 0 ) {
+		if ( $the_id && get_userdata( $the_id ) ) {
+			$class = 'LP_User';
+		} else {
+			$is_logged_in = function_exists( 'is_user_logged_in' ) && is_user_logged_in();
+			$class        = $is_logged_in ? 'LP_User' : 'LP_User_Guest';
+		}
+		return apply_filters( 'learn_press_user_class', $class );
 	}
 
 	/**
