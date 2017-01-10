@@ -2013,8 +2013,6 @@ body.block-content #learn-press-block-content {
   background-color: #DDD;
 }
 .learn-press-user-profile .lp-avatar-preview .profile-picture {
-  height: 200px;
-  width: 200px;
   float: left;
   margin-right: -100%;
 }
@@ -2099,6 +2097,7 @@ body.block-content #learn-press-block-content {
 }
 .learn-press-user-profile .lp-avatar-preview.croping .lp-avatar-crop-image img {
   max-width: inherit;
+  cursor: move;
 }
 .learn-press-user-profile .lp-avatar-preview.croping .lp-avatar-crop-image .lp-crop-controls {
   position: absolute;
@@ -2130,6 +2129,7 @@ body.block-content #learn-press-block-content {
   border: 1px solid #563d7a;
   box-shadow: none;
   outline: none;
+  cursor: ew-resize;
 }
 .learn-press-user-profile .lp-avatar-preview.croping .lp-avatar-crop-image .lp-crop-controls .lp-cancel-upload {
   text-decoration: none;
@@ -2252,6 +2252,12 @@ body.block-content #learn-press-block-content {
 .learn-press-user-profile #lpbox-upload-crop-profile-picture .image-editor-sidebar-right .dashicons {
   line-height: 1.5;
   margin-right: 5px;
+}
+body.profile-dragging {
+  cursor: move !important;
+}
+body.profile-resizing {
+  cursor: ew-resize !important;
 }
 .learn-press-pagination {
   text-align: center;

@@ -478,12 +478,13 @@ if ( !function_exists( 'leanrpress_advertise_in_admin' ) ) {
 					$theme['description'] = array_splice( $theme['description'], 0, sizeof( $theme['description'] ) - 1 );
 					$theme['description'] = implode( " ", $theme['description'] ) . " ...";
 					?>
-					<div id="thimpress-<?php echo esc_attr( $theme['id'] ); ?>" class="item">
-						<div class="theme-thumbnail">
-							<a href="<?php echo esc_url( $theme['url'] ); ?>">
-								<img src="<?php echo esc_url( $theme['previews']['landscape_preview']['landscape_url'] ) ?>" />
-							</a>
-						</div>
+
+                    <div id="thimpress-<?php echo esc_attr( $theme['id'] ); ?>" class="item">
+                        <div class="theme-thumbnail">
+                            <a href="<?php echo esc_url( $theme['url'] ); ?>">
+                                <img src="<?php echo esc_url( $theme['previews']['landscape_preview']['landscape_url'] ) ?>" />
+                            </a>
+                        </div>
 
 						<div class="theme-detail">
 							<h2><a href="<?php echo esc_url( $theme['url'] ); ?>"><?php echo $theme['name']; ?></a></h2>
@@ -2580,6 +2581,21 @@ if ( !function_exists( 'learn_press_profile_localize_script' ) ) {
 
 }
 add_action( 'learn_press_enqueue_scripts', 'learn_press_profile_localize_script' );
+
+if ( !function_exists( 'learn_press_checkout_localize_script' ) ) {
+
+	/**
+	 * Translate javascript text
+	 */
+	function learn_press_checkout_localize_script() {
+		$translate = array(
+			'unknown_error' => __( 'Unknown error!', 'learnpress' ),
+			'invalid_field' => __( 'Invalid field!', 'learnpress' ),
+		);
+		LP_Assets::add_localize( $translate );
+	}
+}
+add_action( 'learn_press_enqueue_scripts', 'learn_press_checkout_localize_script' );
 
 add_action( 'init', 'learn_press_cancel_order_process' );
 if ( !function_exists( 'learn_press_cancel_order_process' ) ) {
