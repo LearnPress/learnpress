@@ -4,7 +4,7 @@
  *
  * @package LearnPress/Templates
  * @author  ThimPress
- * @version 2.1.0
+ * @version 2.1.1
  */
 $user         = learn_press_get_current_user();
 $custom_img   = $user->get_upload_profile_src();
