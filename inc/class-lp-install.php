@@ -179,7 +179,6 @@ class LP_Install {
 		self::create_files();
 		self::create_files();
 		self::create_pages();
-
 		$sql = "DELETE a, b FROM $wpdb->options a, $wpdb->options b
 			WHERE a.option_name LIKE %s
 			AND a.option_name NOT LIKE %s
