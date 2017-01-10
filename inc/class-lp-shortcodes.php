@@ -77,7 +77,7 @@ class LP_Shortcodes {
 									$v = reset( $profile_endpoints );
 								}
 								if ( !in_array( $v, apply_filters( 'learn_press_profile_tab_endpoints', $profile_endpoints ) ) ) {
-									learn_press_404_page();
+									learn_press_is_404();
 								}
 							}
 							if ( !empty( $v ) ) {
