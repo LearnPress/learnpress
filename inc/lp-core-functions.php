@@ -2171,7 +2171,6 @@ function learn_press_user_profile_link( $user_id = 0, $tab = null ) {
 			$user = get_user_by( 'id', $user_id );
 		}
 		else {
-			$user_id = str_replace( array('%20', '+'), ' ', $user_id);
 			$user = get_user_by( 'login', $user_id );
 		}
 	}
