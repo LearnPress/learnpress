@@ -1998,14 +1998,21 @@ body.block-content #learn-press-block-content {
 .learn-press-user-profile .user-profile-edit-form #user_profile_password_form .description {
   margin-top: -15px;
 }
-.learn-press-user-profile .user-profile-edit-form .update-profile {
-  margin-top: 20px;
+.learn-press-user-profile .update-profile {
+  border-top: 2px solid #DDD;
+  padding-top: 20px;
 }
 .learn-press-user-profile .learn-press-subtab-content {
   display: block;
 }
 .learn-press-user-profile #lp-user-edit-avatar .moxie-shim {
   display: none;
+}
+.learn-press-user-profile #lp-user-edit-avatar .lp-form-field-avatar {
+  float: left;
+}
+.learn-press-user-profile #lp-user-edit-avatar #lp-avatar-actions {
+  margin: 20px 0;
 }
 .learn-press-user-profile .lp-avatar-preview {
   position: relative;
