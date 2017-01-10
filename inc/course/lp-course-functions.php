@@ -601,7 +601,10 @@ if ( !function_exists( 'learn_press_get_sample_link_course_item_url' ) ) {
             $prefix         = preg_replace( '!^/!', '', trailingslashit( $post_types[$item_type]->rewrite['slug'] ) );
 
             if ( '' != get_option( 'permalink_structure' ) && get_post_status( $course_page_id ) != 'draft' ) {
-                $permalink .= $prefix . $post_name;
+
+//                $permalink .= $prefix . $post_name;
+	            $permalink = $post_name;
+
             }
             else {
                 $key       = preg_replace( '!lp_!', '', get_post_type( $item_id ) );
@@ -748,7 +751,9 @@ if ( !function_exists( 'learn_press_item_sample_permalink' ) ) {
             return $permalink;
         }
 
-        $permalink  = str_replace( '/' .$post->post_name, '/%pagename%' , $permalink );
+//	    $permalink  = str_replace( $post->post_name, '%pagename%' , $permalink );
+	    $permalink[0] = str_replace( $post->post_name, '%pagename%' , $permalink[0] );
+
         return  $permalink;
     }
 
