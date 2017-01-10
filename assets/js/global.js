@@ -749,7 +749,7 @@ if (typeof window.LP == 'undefined') {
 			};
 			return data ? tmpl(data) : tmpl;
 		}, function (a, b) {
-			return JSON.stringify(b);
+			return a + '-' + JSON.stringify(b);
 		}),
 		alert         : function (localize, callback) {
 			var title = '',
