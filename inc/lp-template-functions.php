@@ -1303,11 +1303,11 @@ function learn_press_template_path( $slash = false ) {
 }
 
 
-if ( !function_exists( 'learn_press_404_page' ) ) {
+if ( !function_exists( 'learn_press_is_404' ) ) {
 	/**
-	 * Display 404 page
+	 * Set header is 404
 	 */
-	function learn_press_404_page() {
+	function learn_press_is_404() {
 		global $wp_query;
 		if ( !empty( $_REQUEST['debug-404'] ) ) {
 			learn_press_debug( debug_backtrace( DEBUG_BACKTRACE_PROVIDE_OBJECT, $_REQUEST['debug-404'] ) );
@@ -1317,6 +1317,14 @@ if ( !function_exists( 'learn_press_404_page' ) ) {
 	}
 }
 
+if ( !function_exists( 'learn_press_404_page' ) ) {
+	/**
+	 * Display 404 page
+	 */
+	function learn_press_404_page() {
+		learn_press_is_404();
+	}
+}
 
 if ( !function_exists( 'learn_press_course_curriculum_popup' ) ) {
 	function learn_press_course_curriculum_popup() {
@@ -1360,7 +1368,7 @@ function learn_press_permission_view_quiz( $template ) {
 				$template = learn_press_locate_template( 'global/restrict-access.php' );
 				break;
 			default:
-				learn_press_404_page();
+				learn_press_is_404();
 		}
 	}
 
@@ -1600,14 +1608,14 @@ function learn_press_check_access_lesson() {
 	if ( is_single() && 'lp_lesson' == $queried_post_type ) {
 		$course = learn_press_get_course();
 		if( !$course ) {
-			learn_press_404_page();
+			learn_press_is_404();
 			return;
 		}
 		$post = get_post();
 		$user = learn_press_get_current_user();
 		$can_view = $user->can_view_item( $post->ID, $course->id );
 		if ( !$can_view ) {
-			learn_press_404_page();
+			learn_press_is_404();
 			return;
 		}
 	}
