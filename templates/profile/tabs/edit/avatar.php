@@ -12,6 +12,14 @@ $gravatar_img = $user->get_profile_picture( 'gravatar' );
 $thumb_size   = LP()->settings->get( 'profile_picture_thumbnail_size' );
 if ( !is_array( $thumb_size ) ) {
 	$thumb_size = array( 'width' => 200, 'height' => 200 );
+} else {
+	$thumb_size = array();
+	if ( !empty( $thumb_size[0] ) ) {
+		$thumb_size['width'] = absint( $thumb_size[0] );
+	}
+	if ( !empty( $thumb_size[1] ) ) {
+		$thumb_size['height'] = absint( $thumb_size[1] );
+	}
 }
 ?>
 <script type="text/html" id="tmpl-crop-user-avatar">
