@@ -2015,6 +2015,7 @@ body.block-content #learn-press-block-content {
 .learn-press-user-profile .lp-avatar-preview .profile-picture {
   float: left;
   margin-right: -100%;
+  width: 100%;
 }
 .learn-press-user-profile .lp-avatar-preview .profile-picture img {
   width: 100%;
