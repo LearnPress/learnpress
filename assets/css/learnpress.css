@@ -2013,8 +2013,6 @@ body.block-content #learn-press-block-content {
   background-color: #DDD;
 }
 .learn-press-user-profile .lp-avatar-preview .profile-picture {
-  height: 200px;
-  width: 200px;
   float: left;
   margin-right: -100%;
 }

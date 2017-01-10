@@ -1,4 +1,4 @@
-1/ Profile
+1/ Profile edit
 2/ Issue with some Checkout settings (https://app.asana.com/0/26798781129771/235872267722593)
 3/ Checkout page show 'Internal Server Error'
 4/ Preview lesson/quiz (assigned to a course) show 404
