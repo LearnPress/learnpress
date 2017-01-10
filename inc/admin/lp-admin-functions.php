@@ -1457,7 +1457,7 @@ function learn_press_request_query( $vars = array() ) {
 	return $vars;
 }
 
-add_filter( 'request', 'learn_press_request_query' );
+add_filter( 'request', 'learn_press_request_query', 0 );
 
 function _learn_press_reset_course_data() {
 	if ( empty( $_REQUEST['reset-course-data'] ) ) {

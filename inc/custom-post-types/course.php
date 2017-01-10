@@ -184,7 +184,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 
 			add_action( 'edit_form_after_editor', array( $this, 'curriculum_editor' ), 10 );
 			if ( learn_press_get_user_option( 'course-tabs' ) == 'yes' ) {
-				LP_Assets::add_param( 'enable_course_tabs', 'yes', 'learn-press-mb-course', 'LP_Settings' );
+				LP_Assets::add_param( 'enable_course_tabs', 'yes', '__all', 'LP_Settings' );
 				add_filter( 'admin_body_class', array( $this, 'admin_body_class' ) );
 			}
 		}
@@ -685,7 +685,8 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 				$end_date   = '';
 
 				if ( isset( $_GET['post'] ) ) {
-					$course_id = $_GET['post'];
+					$course_id  = $_GET['post'];
+
 					if ( $payment != 'free' ) {
 						$suggest_price  = get_post_meta( $course_id, '_lp_suggestion_price', true );
 						$course         = get_post( $course_id );
@@ -710,7 +711,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						'name'  => __( 'Price', 'learnpress' ),
 						'id'    => "{$prefix}price",
 						'type'  => 'number',
-						'min'   => 0,
+						'min'   => 0.01,
 						'step'  => 0.01,
 						'desc'  => $message,
 						'std'   => $price,
@@ -1229,7 +1230,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		}
 
 		public
-		function before_save_curriculum() {
+        function before_save_curriculum() {
 
 			global $post, $pagenow;
 
@@ -1254,6 +1255,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 					),
 					array( '%d', '%s' )
 				);
+
 			}
 
 			$new_status = get_post_status( $post->ID );
