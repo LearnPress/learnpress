@@ -149,14 +149,25 @@ class LP_Settings_Courses extends LP_Settings_Base {
 					'title'   => __( 'Single course permalink', 'learnpress' ),
 					'type'    => 'course-permalink',
 					'default' => ''
-				)/*,
+				),
 				array(
-					'title'   => __( 'Auto navigation item', 'learnpress' ),
-					'type'    => 'auto_nav_course_item',
-					'default' => 'yes',
-					'type'    => 'checkbox',
-					'desc'    => __( 'Navigate to next item after user complete', 'learnpress' )
-				)*/
+					'title' => __( 'Course item slug', 'learnpress' ),
+					'type'  => 'title'
+				),
+				array(
+					'title'   => __( 'Lesson', 'learnpress' ),
+					'type'    => 'text',
+					'id'      => $this->get_field_name( 'lesson_slug' ),
+					'desc'    => __( sprintf( '%s/course/sample-course/<code>lessons</code>/sample-lesson/', home_url() ), 'learnpress' ),
+					'default' => 'lessons'
+				),
+				array(
+					'title'   => __( 'Quiz', 'learnpress' ),
+					'type'    => 'text',
+					'id'      => $this->get_field_name( 'quizzes_slug' ),
+					'desc'    => __( sprintf( '%s/course/sample-course/<code>quiz</code>/sample-lesson/', home_url() ), 'learnpress' ),
+					'default' => 'quizzes'
+				)
 			)
 		);
 	}
