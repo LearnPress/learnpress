@@ -416,9 +416,9 @@ add_action( 'wp_footer', 'learn_press_print_script' );
 add_action( 'admin_footer', 'learn_press_print_script' );
 
 /* Advertise in page admin */
-if ( !function_exists( 'leanrpress_advertise_in_admin' ) ) {
+if ( !function_exists( 'learn_press_advertise_in_admin' ) ) {
 
-	function leanrpress_advertise_in_admin() {
+	function learn_press_advertise_in_admin() {
 
 		$admin_post_type = array(
 			'lp_course',
@@ -508,7 +508,7 @@ if ( !function_exists( 'leanrpress_advertise_in_admin' ) ) {
 	}
 }
 
-add_action( 'admin_footer', 'leanrpress_advertise_in_admin', - 10 );
+add_action( 'admin_footer', 'learn_press_advertise_in_admin', - 10 );
 
 /**
  * @param string $str
