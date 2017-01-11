@@ -178,7 +178,7 @@ class LP_Assets {
 	 */
 	public static function default_scripts( &$scripts ) {
 		if ( !defined( 'LEARNPRESS_VERSION' ) ) {
-			define( 'LEARNPRESS_VERSION', '2.0' );
+			define( 'LEARNPRESS_VERSION', '2.1.1' );
 		}
 
 		$develop_src = false !== strpos( LEARNPRESS_VERSION, '-src' );
@@ -245,7 +245,7 @@ class LP_Assets {
 	 */
 	public static function default_styles( &$styles ) {
 		if ( !defined( 'LEARNPRESS_VERSION' ) ) {
-			define( 'LEARNPRESS_VERSION', '2.0' );
+			define( 'LEARNPRESS_VERSION', '2.1.1' );
 		}
 
 		$develop_src = false !== strpos( LEARNPRESS_VERSION, '-src' );
