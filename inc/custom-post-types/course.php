@@ -1036,9 +1036,6 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 										'ID'         => $_item['item_id'],
 										'post_title' => $_item['name']
 									);
-									if ( LP()->settings->get( 'auto_update_post_name' ) == 'yes' ) {
-										$update_data['post_name'] = sanitize_title( $_item['name'] );
-									}
 									// prevent update the meta of course for the items when update items
 									$_post = $this->_cleanPostData();
 									wp_update_post( $update_data );
