@@ -164,8 +164,8 @@ class LP_Settings_Courses extends LP_Settings_Base {
 				array(
 					'title'   => __( 'Quiz', 'learnpress' ),
 					'type'    => 'text',
-					'id'      => $this->get_field_name( 'quizzes_slug' ),
-					'desc'    => __( sprintf( '%s/course/sample-course/<code>quiz</code>/sample-lesson/', home_url() ), 'learnpress' ),
+					'id'      => $this->get_field_name( 'quiz_slug' ),
+					'desc'    => __( sprintf( '%s/course/sample-course/<code>quizzes</code>/sample-lesson/', home_url() ), 'learnpress' ),
 					'default' => 'quizzes'
 				)
 			)

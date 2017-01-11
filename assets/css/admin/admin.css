@@ -333,6 +333,7 @@ li.quick_quiz {
   margin-left: 160px;
   padding: 10px 20px;
   position: relative;
+  overflow: hidden;
 }
 .learnpress-advertis-admin > .item {
   display: none;
