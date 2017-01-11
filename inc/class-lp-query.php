@@ -225,6 +225,7 @@ class LP_Query {
 	 */
 	function add_rewrite_rules() {
 
+		return;
 		$rewrite_prefix = get_option( 'learn_press_permalink_structure' );
 		// lesson
 		$course_type  = 'lp_course';
@@ -237,6 +238,8 @@ class LP_Query {
 		}
 		$current_url  = learn_press_get_current_url();
 		$query_string = str_replace( trailingslashit( get_site_url() ), '', $current_url );
+
+		$post_types['lp_quiz']->rewrite['slug'] = 'new-quizzes';
 
 		if ( $has_category ) {
 			add_rewrite_rule(

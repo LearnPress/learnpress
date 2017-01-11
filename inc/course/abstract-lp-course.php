@@ -961,6 +961,7 @@ abstract class LP_Abstract_Course {
 					$permalink = trailingslashit( get_the_permalink( $this->id ) );
 					$post_name = get_post_field( 'post_name', $item_id );
 					$slug = $post_types[$item_type]->rewrite['slug'];
+
 //		            $custom_prefix  = '';
 //
 //		            if ( $slug === 'lessons' ) {
