@@ -65,8 +65,13 @@ class LP_Shortcodes {
 					$query = array();
 					parse_str( $wp->matched_query, $query );
 					if ( empty( $query['view'] ) ) {
-						wp_redirect( learn_press_user_profile_link( $wp->query_vars['user'] ) );
-						die();
+						$redirect = learn_press_user_profile_link( $wp->query_vars['user'] );
+
+						if ( !empty($redirect ) ) {
+							wp_redirect( $redirect );
+							die();
+						}
+
 					}
 					if ( $query ) {
 						$profile_endpoints = (array) LP()->settings->get( 'profile_endpoints' );
