@@ -247,6 +247,9 @@ abstract class LP_Abstract_Post_Type {
 	}
 
 	public function add_meta_boxes() {
+		if ( $this->_post_type != learn_press_get_requested_post_type() ) {
+			return;
+		}
 		do_action( 'learn_press_add_meta_boxes', $this->_post_type, $this );
 		do_action( "learn_press_{$this->_post_type}_add_meta_boxes", $this );
 		if ( !$this->_meta_boxes ) {
@@ -434,8 +437,8 @@ abstract class LP_Abstract_Post_Type {
 			$view_link = sprintf( ' <a href="%s">%s</a>', esc_url( $permalink ), sprintf( '%s %s', __( 'View', 'learnpress' ), $post_type_object->labels->singular_name ) );
 			switch ( $this->_post_type ) {
 				case LP_LESSON_CPT:
-                case LP_QUIZ_CPT:
-                    $view_link = learn_press_get_item_course_id( $post->ID, $post->post_type ) ? $view_link : '';
+				case LP_QUIZ_CPT:
+					$view_link = learn_press_get_item_course_id( $post->ID, $post->post_type ) ? $view_link : '';
 					break;
 				case LP_ORDER_CPT:
 					$order     = learn_press_get_order( $post->ID );

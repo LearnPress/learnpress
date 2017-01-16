@@ -139,9 +139,9 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 
 			if ( learn_press_get_user_option( 'course-tabs' ) == 'yes' ) {
 				?>
-                <ul id="course-tabs">
-                    <li id="switch-course-metaboxes">
-                        <!--<a href="" id="reorder-course-tabs"><?php _e( 'Reorder', 'learnpress' ); ?></a>
+				<ul id="course-tabs">
+					<li id="switch-course-metaboxes">
+						<!--<a href="" id="reorder-course-tabs"><?php _e( 'Reorder', 'learnpress' ); ?></a>
 						<a href="" id="complete-reorder-course-tabs"><?php _e( 'Ok', 'learnpress' ); ?></a>-->
                         <a href="<?php echo add_query_arg( 'switch-course-tabs', 'off', get_edit_post_link() ); ?>"><?php _e( 'Switch to meta boxes', 'learnpress' ); ?></a>
                     </li>
@@ -152,19 +152,19 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			} else {
 				if ( learn_press_get_user_option( 'hide-notice-switch-course-tabs' ) != 'yes' ) {
 					?>
-                    <div class="message updated learn-press-message">
-                        <p><?php _e( 'Would you like to see the meta boxes in tabs style?', 'learnpress' ); ?></p>
-                        <p>
-                            <a class="button" href="<?php echo add_query_arg( 'switch-course-tabs', 'on', get_edit_post_link() ); ?>"><?php _e( 'Switch meta boxes to tabs', 'learnpress' ); ?></a>
-                            <a class="button" href="<?php echo add_query_arg( 'lp-hide-notice', 'switch-course-tabs', get_edit_post_link() ); ?>"><?php _e( 'Hide', 'learnpress' ); ?></a>
-                        </p>
+					<div class="message updated learn-press-message">
+						<p><?php _e( 'Would you like to see the meta boxes in tabs style?', 'learnpress' ); ?></p>
+						<p>
+							<a class="button" href="<?php echo add_query_arg( 'switch-course-tabs', 'on', get_edit_post_link() ); ?>"><?php _e( 'Switch meta boxes to tabs', 'learnpress' ); ?></a>
+							<a class="button" href="<?php echo add_query_arg( 'lp-hide-notice', 'switch-course-tabs', get_edit_post_link() ); ?>"><?php _e( 'Hide', 'learnpress' ); ?></a>
+						</p>
 						<?php printf( '<a href="%s" class="learn-press-admin-notice-dismiss"></a>', add_query_arg( 'lp-hide-notice', 'switch-course-tabs', get_edit_post_link() ) ); ?>
-                    </div>
+					</div>
 					<?php
 				}
 				?>
-                <a id="toggle-meta-boxes" href=""><?php _e( 'Toggle', 'learnpress' ); ?></a>
-                <a id="switch-course-tabs" href="<?php echo add_query_arg( 'switch-course-tabs', 'on', get_edit_post_link() ); ?>"><?php _e( 'Switch to tabs', 'learnpress' ); ?></a>
+				<a id="toggle-meta-boxes" href=""><?php _e( 'Toggle', 'learnpress' ); ?></a>
+				<a id="switch-course-tabs" href="<?php echo add_query_arg( 'switch-course-tabs', 'on', get_edit_post_link() ); ?>"><?php _e( 'Switch to tabs', 'learnpress' ); ?></a>
 				<?php
 			}
 		}
@@ -389,9 +389,9 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		public function toggle_editor_button( $post ) {
 			if ( $post->post_type == LP_COURSE_CPT ) {
 				?>
-                <button class="button button-primary"
-                        data-hidden="<?php echo get_post_meta( $post->ID, '_lp_editor_hidden', true ); ?>" type="button"
-                        id="learn-press-button-toggle-editor"><?php _e( 'Toggle Course Content', 'learnpress' ); ?></button>
+				<button class="button button-primary"
+						data-hidden="<?php echo get_post_meta( $post->ID, '_lp_editor_hidden', true ); ?>" type="button"
+						id="learn-press-button-toggle-editor"><?php _e( 'Toggle Course Content', 'learnpress' ); ?></button>
 				<?php
 			}
 		}
@@ -515,24 +515,14 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		/**
 		 * Add meta boxes to course post type page
 		 */
-		public
-		function add_meta_boxes() {
-
-			$user = wp_get_current_user();
-			//print_r($user);
-
-			$post_type_object = get_post_type_object( LP_COURSE_CPT );
-			//print_r($post_type_object);
-
-			if ( !self::$_VER2 ) {
-				new RW_Meta_Box( self::curriculum_meta_box() );
+		public function add_meta_boxes() {
+			if ( LP_COURSE_CPT != learn_press_get_requested_post_type() ) {
+				return;
 			}
-
+			new RW_Meta_Box( self::curriculum_meta_box() );
 			new RW_Meta_Box( self::settings_meta_box() );
 			new RW_Meta_Box( self::assessment_meta_box() );
-
 			new RW_Meta_Box( self::payment_meta_box() );
-
 			if ( self::$_enable_review ) {
 				$this->review_logs_meta_box();
 			}
@@ -548,8 +538,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 *
 		 * @return mixed|null|void
 		 */
-		public
-		static function curriculum_meta_box() {
+		public static function curriculum_meta_box() {
 			$prefix = '_lp_';
 
 			$meta_box = array(

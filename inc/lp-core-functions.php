@@ -479,12 +479,12 @@ if ( !function_exists( 'learn_press_advertise_in_admin' ) ) {
 					$theme['description'] = implode( " ", $theme['description'] ) . " ...";
 					?>
 
-                    <div id="thimpress-<?php echo esc_attr( $theme['id'] ); ?>" class="item">
-                        <div class="theme-thumbnail">
-                            <a href="<?php echo esc_url( $theme['url'] ); ?>">
-                                <img src="<?php echo esc_url( $theme['previews']['landscape_preview']['landscape_url'] ) ?>" />
-                            </a>
-                        </div>
+					<div id="thimpress-<?php echo esc_attr( $theme['id'] ); ?>" class="item">
+						<div class="theme-thumbnail">
+							<a href="<?php echo esc_url( $theme['url'] ); ?>">
+								<img src="<?php echo esc_url( $theme['previews']['landscape_preview']['landscape_url'] ) ?>" />
+							</a>
+						</div>
 
 						<div class="theme-detail">
 							<h2><a href="<?php echo esc_url( $theme['url'] ); ?>"><?php echo $theme['name']; ?></a></h2>
@@ -2182,8 +2182,7 @@ function learn_press_user_profile_link( $user_id = 0, $tab = null ) {
 	} else {
 		if ( is_numeric( $user_id ) ) {
 			$user = get_user_by( 'id', $user_id );
-		}
-		else {
+		} else {
 			$user = get_user_by( 'login', $user_id );
 		}
 	}
@@ -2646,6 +2645,17 @@ function learn_press_get_current_time() {
 function learn_press_is_added_to_cart( $course_id ) {
 	$cart = LP()->cart;
 	return $cart->has_item( $course_id );
+}
+
+function learn_press_get_requested_post_type() {
+	global $pagenow;
+	if ( $pagenow == 'post-new.php' && !empty( $_GET['post_type'] ) ) {
+		$post_type = $_REQUEST['post_type'];
+	} else {
+		$post_id   = learn_press_get_post();
+		$post_type = get_post_type( $post_id );
+	}
+	return $post_type;
 }
 
 /**

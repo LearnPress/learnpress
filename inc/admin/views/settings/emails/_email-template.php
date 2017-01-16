@@ -20,12 +20,20 @@
 					$local_file    = $this->get_theme_template_file( $template );
 					$template_file = $this->template_base . $template;
 					$template_dir  = learn_press_template_path();
+
+					$theme_dir      = get_template_directory();
+					$stylesheet_dir = get_stylesheet_directory();
+
+					if ( $theme_dir != $stylesheet_dir ) {
+						$theme_dir = $stylesheet_dir;
+					}
+					$theme_folder = basename( $theme_dir );
 					?>
 					<div class="template <?php echo $template_type == 'html' ? $template_type . ' multipart' : 'plain_text'; ?>">
 
 						<?php if ( file_exists( $local_file ) ): ?>
 							<p class="description">
-								<?php printf( __( 'This template has been overridden by your theme and can be found in: <code>%s</code>. Please open the file in an editor program to edit', 'learnpress' ), 'yourtheme/' . $template_dir . '/' . $template ); ?>
+								<?php printf( __( 'This template has been overridden by your theme and can be found in: <code>%s</code>. Please open the file in an editor program to edit', 'learnpress' ), $theme_folder . '/' . $template_dir . '/' . $template ); ?>
 							</p>
 						<?php else: ?>
 
@@ -52,7 +60,7 @@
 							<h4><?php echo wp_kses_post( $title ); ?></h4>
 
 							<p class="description">
-								<?php printf( __( 'This template has been overridden by your theme and can be found in: <code>%s</code>.', 'learnpress' ), 'yourtheme/' . $template_dir . '/' . $template ); ?>
+								<?php printf( __( 'This template has been overridden by your theme and can be found in: <code>%s</code>.', 'learnpress' ), $theme_folder . '/' . $template_dir . '/' . $template ); ?>
 							</p>
 							<p>
 								<?php if ( is_writable( $local_file ) ) : ?>

@@ -193,6 +193,16 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.  
 
 == Changelog ==
+= 2.1.1 =
++ Added options to change value of lessons/quizzes in course item permalink
++ Improved edit profile page
++ Improved permalink for lesson/quiz
++ Improved some options
++ Improved some sections in admin
++ Fixed "Preview change" button show 404 page
++ Fixed question show randomly when starting quiz
++ Fixed username contains spacing
+
 = 2.1.0 =
 + Fixed bugs related to AJAX calling
 + Fixed bugs related to updating user profile

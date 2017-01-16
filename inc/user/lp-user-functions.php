@@ -864,7 +864,7 @@ if ( !function_exists( 'learn_press_pre_get_avatar_callback' ) ) {
 				$user_id = $user->ID;
 			}
 		}
-		if( !$user_id ) {
+		if ( !$user_id ) {
 			return $avatar;
 		}
 		$user = LP_User_Factory::get_user( $user_id );
@@ -1217,4 +1217,24 @@ function learn_press_update_user_profile_change_password() {
 }
 
 add_action( 'learn_press_update_user_profile_change-password', 'learn_press_update_user_profile_change_password' );
+
+function learn_press_get_avatar_thumb_size() {
+	$avatar_size_settings = LP()->settings->get( 'profile_picture_thumbnail_size' );
+	$avatar_size          = array();
+	if ( !empty( $avatar_size_settings['width'] ) ) {
+		$avatar_size['width'] = absint( $avatar_size_settings['width'] );
+	} elseif ( !empty( $avatar_size_settings[0] ) ) {
+		$avatar_size['width'] = absint( $avatar_size_settings[0] );
+	} else {
+		$avatar_size['width'] = 150;
+	}
+	if ( !empty( $avatar_size_settings['height'] ) ) {
+		$avatar_size['height'] = absint( $avatar_size_settings['height'] );
+	} elseif ( !empty( $avatar_size_settings[1] ) ) {
+		$avatar_size['height'] = absint( $avatar_size_settings[1] );
+	} else {
+		$avatar_size['height'] = 150;
+	}
+	return $avatar_size;
+}
 

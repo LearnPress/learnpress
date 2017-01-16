@@ -480,65 +480,8 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 		 * Register new post status for order
 		 */
 		public function register_post_statues() {
-			global $lp_order_statuses;
-			$lp_order_statuses                  = array();
-			$lp_order_statuses['lp-completed']  = array(
-				'label'                     => _x( 'Completed', 'Order status', 'learnpress' ),
-				'public'                    => false,
-				'exclude_from_search'       => false,
-				'show_in_admin_all_list'    => true,
-				'show_in_admin_status_list' => true,
-				'label_count'               => _n_noop( 'Completed <span class="count">(%s)</span>', 'Completed <span class="count">(%s)</span>', 'learnpress' )
-			);
-			$lp_order_statuses['lp-processing'] = array(
-				'label'                     => _x( 'Processing', 'Order status', 'learnpress' ),
-				'public'                    => false,
-				'exclude_from_search'       => false,
-				'show_in_admin_all_list'    => true,
-				'show_in_admin_status_list' => true,
-				'label_count'               => _n_noop( 'Processing <span class="count">(%s)</span>', 'Processing <span class="count">(%s)</span>', 'learnpress' )
-			);
-			$lp_order_statuses['lp-pending']    = array(
-				'label'                     => _x( 'Pending Payment', 'Order status', 'learnpress' ),
-				'public'                    => false,
-				'exclude_from_search'       => false,
-				'show_in_admin_all_list'    => true,
-				'show_in_admin_status_list' => true,
-				'label_count'               => _n_noop( 'Pending Payment <span class="count">(%s)</span>', 'Pending Payment <span class="count">(%s)</span>', 'learnpress' )
-			);
-			$lp_order_statuses['lp-cancelled']  = array(
-				'label'                     => _x( 'Cancelled', 'Order status', 'learnpress' ),
-				'public'                    => false,
-				'exclude_from_search'       => false,
-				'show_in_admin_all_list'    => true,
-				'show_in_admin_status_list' => true,
-				'label_count'               => _n_noop( 'Cancelled <span class="count">(%s)</span>', 'Cancelled <span class="count">(%s)</span>', 'learnpress' )
-			);
-//			$lp_order_statuses['lp-on-hold']    = array(
-//				'label'                     => _x( 'On Hold', 'Order status', 'learnpress' ),
-//				'public'                    => false,
-//				'exclude_from_search'       => false,
-//				'show_in_admin_all_list'    => true,
-//				'show_in_admin_status_list' => true,
-//				'label_count'               => _n_noop( 'On Hold <span class="count">(%s)</span>', 'On Hold <span class="count">(%s)</span>', 'learnpress' )
-//			);
-//			$lp_order_statuses['lp-refunded']   = array(
-//				'label'                     => _x( 'Refunded', 'Order status', 'learnpress' ),
-//				'public'                    => false,
-//				'exclude_from_search'       => false,
-//				'show_in_admin_all_list'    => true,
-//				'show_in_admin_status_list' => true,
-//				'label_count'               => _n_noop( 'Refunded <span class="count">(%s)</span>', 'Refunded <span class="count">(%s)</span>', 'learnpress' )
-//			);
-//			$lp_order_statuses['lp-failed']     = array(
-//				'label'                     => _x( 'Failed', 'Order status', 'learnpress' ),
-//				'public'                    => false,
-//				'exclude_from_search'       => false,
-//				'show_in_admin_all_list'    => true,
-//				'show_in_admin_status_list' => true,
-//				'label_count'               => _n_noop( 'Failed <span class="count">(%s)</span>', 'Failed <span class="count">(%s)</span>', 'learnpress' )
-//			);
-			foreach ( $lp_order_statuses as $status => $args ) {
+			$statuses = learn_press_get_register_order_statuses();
+			foreach ( $statuses as $status => $args ) {
 				register_post_status( $status, $args );
 			}
 		}

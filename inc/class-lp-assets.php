@@ -178,7 +178,7 @@ class LP_Assets {
 	 */
 	public static function default_scripts( &$scripts ) {
 		if ( !defined( 'LEARNPRESS_VERSION' ) ) {
-			define( 'LEARNPRESS_VERSION', '2.0' );
+			define( 'LEARNPRESS_VERSION', '2.1.1' );
 		}
 
 		$develop_src = false !== strpos( LEARNPRESS_VERSION, '-src' );
@@ -245,7 +245,7 @@ class LP_Assets {
 	 */
 	public static function default_styles( &$styles ) {
 		if ( !defined( 'LEARNPRESS_VERSION' ) ) {
-			define( 'LEARNPRESS_VERSION', '2.0' );
+			define( 'LEARNPRESS_VERSION', '2.1.1' );
 		}
 
 		$develop_src = false !== strpos( LEARNPRESS_VERSION, '-src' );
@@ -793,7 +793,9 @@ class LP_Assets {
 			);
 			wp_localize_script( 'learn-press-profile', 'lp_profile_translation', $translation_array );
 
-			self::add_param( 'avatar_size',  LP()->settings->get( 'profile_picture_thumbnail_size' ), 'learn-press-profile', 'LP_Settings' );
+
+
+			self::add_param( 'avatar_size', learn_press_get_avatar_thumb_size(), 'learn-press-profile', 'LP_Settings' );
 
 			self::enqueue_script( 'learn-press-profile' );
 			self::enqueue_script( 'learn-press-jquery-cropit' );
