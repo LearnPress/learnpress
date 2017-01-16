@@ -12,10 +12,15 @@ if ( !class_exists( 'LP_Statistic_Status' ) ) :
 		 * @since 2.0
 		 */
 		public static function render() {
-			global $lp_order_statuses;
-			$eduma_data = self::get_eduma_info( 14058034 );
-//            $total_orders = learn_press_get_orders( array( 'post_status' => array_keys( $lp_order_statuses ) ) );
+			$order_statuses    = learn_press_get_register_order_statuses();
+			$eduma_data        = self::get_eduma_info( 14058034 );
+			$xx                = array_keys( $order_statuses );
 			$specific_statuses = array( 'lp-completed', 'lp-failed', 'lp-on-hold' );
+			foreach ( $xx as $status ) {
+				if ( !in_array( $status, $specific_statuses ) ) {
+					$specific_statuses[] = $status;
+				}
+			}
 			?>
 			<ul class="learnpress-statistic-status">
 				<li class="full-width">
@@ -26,31 +31,38 @@ if ( !class_exists( 'LP_Statistic_Status' ) ) :
                             </span>
 					</a>
 				</li>
-				<?php foreach ( $specific_statuses as $status ) : $count = count( learn_press_get_orders( array( 'post_status' => $status ) ) ); ?>
+				<?php foreach ( $specific_statuses as $status ) : ?>
+					<?php
+					$status_object = get_post_status_object( $status );
+					if ( !$status_object ) {
+						continue;
+					}
+					$count = count( learn_press_get_orders( array( 'post_status' => $status ) ) );
+					?>
 					<li>
-						<a href="<?php echo esc_url( admin_url( 'edit.php?post_status=' . LP_ORDER_CPT . '&post_type=' . $status ) ); ?>" class="<?php echo esc_attr( $status ) ?>">
-							<span><?php printf( translate_nooped_plural( _n_noop( '%d order', '%d orders' ), $count, 'learnpress' ), $count ) ?></span>
-							<?php printf( '%s', get_post_status_object( $status )->label ) ?>
-						</a>
-					</li>
-				<?php endforeach; ?>
-				<?php foreach ( $lp_order_statuses as $status => $args ) : if ( in_array( $status, $specific_statuses ) ) continue;
-					$count = count( learn_press_get_orders( array( 'post_status' => $status ) ) ); ?>
-					<li>
-						<a href="<?php echo esc_url( admin_url( 'edit.php?post_status=' . LP_ORDER_CPT . '&post_type=' . $status ) ); ?>" class="<?php echo esc_attr( $status ) ?>">
-							<span><?php printf( translate_nooped_plural( _n_noop( '%d order', '%d orders' ), $count, 'learnpress' ), $count ) ?></span>
-							<?php printf( '%s', get_post_status_object( $status )->label ) ?>
-						</a>
+						<?php if ( $count ): ?>
+							<a href="<?php echo esc_url( admin_url( 'edit.php?post_status=' . LP_ORDER_CPT . '&post_type=' . $status ) ); ?>" class="<?php echo esc_attr( $status ) ?>">
+								<span><?php printf( translate_nooped_plural( _n_noop( '%d order', '%d orders' ), $count, 'learnpress' ), $count ) ?></span>
+								<?php printf( '%s', $status_object->label ); ?>
+							</a>
+						<?php else: ?>
+							<span class="<?php echo esc_attr( $status ) ?>">
+								<span><?php printf( translate_nooped_plural( _n_noop( '%d order', '%d orders' ), $count, 'learnpress' ), $count ) ?></span>
+								<?php printf( '%s', $status_object->label ); ?>
+							</span>
+						<?php endif; ?>
 					</li>
 				<?php endforeach; ?>
 				<li class="full-width featured-theme">
-					<span><?php _e( 'Featured: ', 'learnpress' ); ?></span>
-					<a href="<?php echo esc_url( $eduma_data['item']['url'] ) ?>">
-						<?php echo esc_html( $eduma_data['item']['item'] ) ?>
-					</a>-
-					<span class="price"><?php printf( '%s%s', '$', $eduma_data['item']['cost'] ) ?></span>
-					<span><?php _e( 'Created by: ', 'learnpress' ) ?></span>
-					<a href="https://thimpress.com/" class="author"><?php echo esc_html( $eduma_data['item']['user'] ); ?></a>
+					<p>
+						<a href="<?php echo esc_url( $eduma_data['item']['url'] ) ?>">
+							<?php echo esc_html( $eduma_data['item']['item'] ) ?>
+						</a> - <?php printf( '%s%s', '$', $eduma_data['item']['cost'] ) ?>
+					</p>
+					<p>
+						<?php _e( 'Created by: ', 'learnpress' ) ?>
+						<a href="https://thimpress.com/" class="author"><?php echo esc_html( $eduma_data['item']['user'] ); ?></a>
+					</p>
 				</li>
 			</ul>
 			<?php

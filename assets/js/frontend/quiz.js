@@ -310,6 +310,15 @@
 			question.set('current', 'yes');
 			if (question.get('response')) {
 				loadedCallback();
+				$.ajax({
+					url     : question.get('url'),
+					data    : $.extend({
+						id       : question.get('id'),
+						'lp-ajax': 'fetch-question',
+						'lp-update-current-question': true
+					}, args || {}),
+					dataType: 'html'
+				});
 			} else {
 				$.ajax({
 					url     : question.get('url'),
@@ -344,7 +353,8 @@
 		},
         prepareResponse		 : function (id, args) {
 
-            var question = this.questions.findWhere({id: parseInt(id)});
+            var question = this.questions.findWhere({id: parseInt(id)}),
+	            currentQuestion = this.current();
 
             if (question.get('response')) {
 				return;
@@ -355,7 +365,9 @@
                 data    : $.extend({
                     id       : question.get('id'),
                     data     : $('form[name="quiz-question-content"]').serialize(),
-                    'lp-ajax': 'fetch-question'
+                    'lp-ajax': 'fetch-question',
+	                'lp-current-question': currentQuestion.get('id')
+
                 }, args || {}),
                 dataType: 'html',
                 success : function (response) {

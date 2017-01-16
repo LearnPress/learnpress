@@ -538,7 +538,6 @@ if ( !function_exists( 'learn_press_output_user_profile_order' ) ) {
 //		learn_press_get_template( 'profile/tabs/orders.php', array( 'user' => $user, 'tabs' => $tabs, 'current' => $current ) );
 	}
 }
-
 if ( !function_exists( 'learn_press_profile_tab_courses_all' ) ) {
 	/**
 	 * Display user profile tabs
@@ -958,8 +957,7 @@ function learn_press_setup_object_data( $post ) {
 	if ( !$post ) {
 		return $object;
 	}
-	//print_r($post);
-	//echo 'xxxxxxxxxxxxxxxx';
+
 	if ( $post->post_type == LP_COURSE_CPT ) {
 		if ( isset( $GLOBALS['course'] ) ) {
 			unset( $GLOBALS['course'] );
@@ -1488,19 +1486,6 @@ if ( !function_exists( '_learn_press_default_course_tabs' ) ) {
 			'callback' => 'learn_press_course_curriculum_tab'
 		);
 
-		$hide_students_list = get_post_meta( $course->ID, '_lp_hide_students_list', true );
-
-		if ( $hide_students_list != 'yes' ) {
-			// Students list
-			$defaults['students-list'] = array(
-				'title'    => __( 'Students', 'learnpress' ),
-				'priority' => 40,
-				'callback' => 'learn_press_course_students_list'
-			);
-		}
-
-//		learn_press_course_students_list
-
 		/**
 		 * Active Curriculum tab if user has enrolled course
 		 */
@@ -1561,9 +1546,8 @@ if ( !function_exists( 'learn_press_get_profile_display_name' ) ) {
 	 * @return string
 	 */
 	function learn_press_get_profile_display_name( $user ) {
-		$option = LP()->settings->get( 'profile_name_publicly' );
 		$info   = get_userdata( $user->ID );
-		return $info->display_name;
+		return $info ? $info->display_name : '';
 	}
 }
 function learn_press_is_content_item_only() {
@@ -1617,6 +1601,17 @@ function learn_press_check_access_lesson() {
 		if ( !$can_view ) {
 			learn_press_is_404();
 			return;
+		}
+	} elseif( is_single() && 'lp_course' == $queried_post_type ) {
+		$course = learn_press_get_course();
+		$item = LP()->global['course-item'];
+		if( is_object($item) && isset( $item->post->post_type ) && 'lp_lesson' === $item->post->post_type){
+			$user = learn_press_get_current_user();
+			$can_view = $user->can_view_item( $item->id, $course->id );
+			if ( !$can_view ) {
+				learn_press_404_page();
+				return;
+			}
 		}
 	}
 }

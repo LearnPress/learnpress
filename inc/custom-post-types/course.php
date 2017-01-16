@@ -489,24 +489,14 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		/**
 		 * Add meta boxes to course post type page
 		 */
-		public
-		function add_meta_boxes() {
-
-			$user = wp_get_current_user();
-			//print_r($user);
-
-			$post_type_object = get_post_type_object( LP_COURSE_CPT );
-			//print_r($post_type_object);
-
-			if ( !self::$_VER2 ) {
-				new RW_Meta_Box( self::curriculum_meta_box() );
+		public function add_meta_boxes() {
+			if ( LP_COURSE_CPT != learn_press_get_requested_post_type() ) {
+				return;
 			}
-
+			new RW_Meta_Box( self::curriculum_meta_box() );
 			new RW_Meta_Box( self::settings_meta_box() );
 			new RW_Meta_Box( self::assessment_meta_box() );
-
 			new RW_Meta_Box( self::payment_meta_box() );
-
 			if ( self::$_enable_review ) {
 				$this->review_logs_meta_box();
 			}
@@ -522,8 +512,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 *
 		 * @return mixed|null|void
 		 */
-		public
-		static function curriculum_meta_box() {
+		public static function curriculum_meta_box() {
 			$prefix = '_lp_';
 
 			$meta_box = array(
@@ -1036,9 +1025,6 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 										'ID'         => $_item['item_id'],
 										'post_title' => $_item['name']
 									);
-									if ( LP()->settings->get( 'auto_update_post_name' ) == 'yes' ) {
-										$update_data['post_name'] = sanitize_title( $_item['name'] );
-									}
 									// prevent update the meta of course for the items when update items
 									$_post = $this->_cleanPostData();
 									wp_update_post( $update_data );

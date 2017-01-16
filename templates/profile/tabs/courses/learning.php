@@ -10,6 +10,7 @@
 if ( !defined( 'ABSPATH' ) ) {
 	exit;
 }
+/*
 
 global $post;
 $heading = apply_filters( 'learn_press_profile_tab_courses_learning_heading', false );
@@ -40,3 +41,5 @@ $heading = apply_filters( 'learn_press_profile_tab_courses_learning_heading', fa
 <?php endif ?>
 
 <?php wp_reset_postdata(); // do not forget to call this function here! ?>
+
+*/

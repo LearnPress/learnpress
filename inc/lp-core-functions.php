@@ -416,9 +416,9 @@ add_action( 'wp_footer', 'learn_press_print_script' );
 add_action( 'admin_footer', 'learn_press_print_script' );
 
 /* Advertise in page admin */
-if ( !function_exists( 'leanrpress_advertise_in_admin' ) ) {
+if ( !function_exists( 'learn_press_advertise_in_admin' ) ) {
 
-	function leanrpress_advertise_in_admin() {
+	function learn_press_advertise_in_admin() {
 
 		$admin_post_type = array(
 			'lp_course',
@@ -478,6 +478,7 @@ if ( !function_exists( 'leanrpress_advertise_in_admin' ) ) {
 					$theme['description'] = array_splice( $theme['description'], 0, sizeof( $theme['description'] ) - 1 );
 					$theme['description'] = implode( " ", $theme['description'] ) . " ...";
 					?>
+
 					<div id="thimpress-<?php echo esc_attr( $theme['id'] ); ?>" class="item">
 						<div class="theme-thumbnail">
 							<a href="<?php echo esc_url( $theme['url'] ); ?>">
@@ -507,7 +508,7 @@ if ( !function_exists( 'leanrpress_advertise_in_admin' ) ) {
 	}
 }
 
-add_action( 'admin_footer', 'leanrpress_advertise_in_admin', - 10 );
+add_action( 'admin_footer', 'learn_press_advertise_in_admin', - 10 );
 
 /**
  * @param string $str
@@ -1952,7 +1953,10 @@ function learn_press_front_scripts() {
 			'button_no'     => __( 'No', 'learnpress' )
 		)
 	);
-	LP_Assets::add_var( 'LP_Settings', wp_json_encode( $js ), array( 'learn-press-single-course', 'learn-press-global' ) );
+	//LP_Assets::add_var( 'LP_Settings', wp_json_encode( $js ), array( 'learn-press-single-course', 'learn-press-global' ) );
+	foreach ( $js as $k => $v ) {
+		LP_Assets::add_param( $k, $v, array( 'learn-press-single-course', 'learn-press-global' ), 'LP_Settings' );
+	}
 }
 
 add_action( 'wp_print_scripts', 'learn_press_front_scripts' );
@@ -2139,20 +2143,29 @@ function learn_press_sanitize_json( $string ) {
 	return $string;
 }
 
-function learn_press_get_current_profile_tab() {
-	global $wp_query;
+function learn_press_get_current_profile_tab( $default = true ) {
+	global $wp_query, $wp;
 	$current = '';
 	if ( !empty( $_REQUEST['tab'] ) ) {
 		$current = $_REQUEST['tab'];
 	} else if ( !empty( $wp_query->query_vars['tab'] ) ) {
 		$current = $wp_query->query_vars['tab'];
+	} else if ( !empty( $wp->query_vars['view'] ) ) {
+		$current = $wp->query_vars['view'];
 	} else {
-		if ( $tabs = learn_press_user_profile_tabs() ) {
+		if ( $default && $tabs = learn_press_user_profile_tabs() ) {
 			$tab_keys = array_keys( $tabs );
 			$current  = reset( $tab_keys );
 		}
 	}
 	return $current;
+}
+
+function learn_press_profile_tab_exists( $tab ) {
+	if ( $tabs = learn_press_user_profile_tabs() ) {
+		return !empty( $tabs[$tab] ) ? true : false;
+	}
+	return false;
 }
 
 /**
@@ -2169,8 +2182,7 @@ function learn_press_user_profile_link( $user_id = 0, $tab = null ) {
 	} else {
 		if ( is_numeric( $user_id ) ) {
 			$user = get_user_by( 'id', $user_id );
-		}
-		else {
+		} else {
 			$user = get_user_by( 'login', $user_id );
 		}
 	}
@@ -2191,7 +2203,7 @@ function learn_press_user_profile_link( $user_id = 0, $tab = null ) {
 	$profile_link = trailingslashit( learn_press_get_page_link( 'profile' ) );
 	if ( $profile_link ) {
 		if ( get_option( 'permalink_structure' ) /*&& learn_press_get_page_id( 'profile' )*/ ) {
-			$url = $profile_link . join( "/", array_values( $args ) );
+			$url = $profile_link . join( "/", array_values( $args ) ) . '/';
 		} else {
 			$url = add_query_arg( $args, $profile_link );
 		}
@@ -2570,6 +2582,21 @@ if ( !function_exists( 'learn_press_profile_localize_script' ) ) {
 }
 add_action( 'learn_press_enqueue_scripts', 'learn_press_profile_localize_script' );
 
+if ( !function_exists( 'learn_press_checkout_localize_script' ) ) {
+
+	/**
+	 * Translate javascript text
+	 */
+	function learn_press_checkout_localize_script() {
+		$translate = array(
+			'unknown_error' => __( 'Unknown error!', 'learnpress' ),
+			'invalid_field' => __( 'Invalid field!', 'learnpress' ),
+		);
+		LP_Assets::add_localize( $translate );
+	}
+}
+add_action( 'learn_press_enqueue_scripts', 'learn_press_checkout_localize_script' );
+
 add_action( 'init', 'learn_press_cancel_order_process' );
 if ( !function_exists( 'learn_press_cancel_order_process' ) ) {
 	function learn_press_cancel_order_process() {
@@ -2618,6 +2645,17 @@ function learn_press_get_current_time() {
 function learn_press_is_added_to_cart( $course_id ) {
 	$cart = LP()->cart;
 	return $cart->has_item( $course_id );
+}
+
+function learn_press_get_requested_post_type() {
+	global $pagenow;
+	if ( $pagenow == 'post-new.php' && !empty( $_GET['post_type'] ) ) {
+		$post_type = $_REQUEST['post_type'];
+	} else {
+		$post_id   = learn_press_get_post();
+		$post_type = get_post_type( $post_id );
+	}
+	return $post_type;
 }
 
 /**

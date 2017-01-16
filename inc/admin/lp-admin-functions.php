@@ -1993,8 +1993,11 @@ function learn_press_get_theme_templates( $check = false ) {
 			return $outdated_templates;
 		}
 	}
-	$found_files = array_merge( $found_files[$t_folder], $found_files[$s_folder] );
-
+	if ( sizeof( $found_files ) > 1 ) {
+		$found_files = array_merge( $found_files[$t_folder], $found_files[$s_folder] );
+	} else {
+		$found_files = reset( $found_files );
+	}
 	return $check ? $outdated_templates : $found_files;
 }
 

@@ -37,6 +37,18 @@
 .post-type-lp_course .type-lp_course.status-pending .row-actions .view {
   display: none;
 }
+#learn-press-admin-settings {
+  /*input[name="learn_press_single_course_image_size[width]"],
+    input[name="learn_press_single_course_image_size[height]"],
+    input[name="learn_press_course_thumbnail_image_size[width]"],
+    input[name="learn_press_course_thumbnail_image_size[height]"] {
+        margin-top: -4px;
+    }
+    input[name="learn_press_single_course_image_size[crop]"],
+    input[name="learn_press_course_thumbnail_image_size[crop]"] {
+        margin-top: 3px;
+    }*/
+}
 #learn-press-admin-settings #learn_press_email_formats {
   margin-bottom: 10px;
 }
@@ -108,24 +120,38 @@
   display: none;
 }
 #learn-press-admin-settings input[type="radio"] {
-  margin: 0;
+  margin: 0 !important;
 }
 #learn-press-admin-settings label {
   line-height: 1;
 }
-#learn-press-admin-settings input[name="learn_press_single_course_image_size[width]"],
-#learn-press-admin-settings input[name="learn_press_single_course_image_size[height]"],
-#learn-press-admin-settings input[name="learn_press_course_thumbnail_image_size[width]"],
-#learn-press-admin-settings input[name="learn_press_course_thumbnail_image_size[height]"] {
-  margin-top: -4px;
-}
-#learn-press-admin-settings input[name="learn_press_single_course_image_size[crop]"],
-#learn-press-admin-settings input[name="learn_press_course_thumbnail_image_size[crop]"] {
-  margin-top: 3px;
-}
 #learn-press-admin-settings input[name="learn_press_course_base"] {
   margin-top: 3px;
   margin-right: 3px;
+}
+#learn-press-admin-settings .lp-group-title {
+  padding: 0 0 10px;
+  border-bottom: 3px solid #563d7c;
+  display: inline-block;
+  margin: 0;
+}
+#learn-press-admin-settings input[type="text"],
+#learn-press-admin-settings input[type="email"],
+#learn-press-admin-settings input[type="number"],
+#learn-press-admin-settings input[type="tel"],
+#learn-press-admin-settings input[type="password"],
+#learn-press-admin-settings select {
+  vertical-align: top;
+}
+#learn-press-admin-settings input[type="checkbox"] {
+  opacity: 1;
+}
+#learn-press-admin-settings .lp-setting-field span {
+  vertical-align: top;
+  line-height: 24px;
+}
+#learn-press-admin-settings .lp-setting-field .lp-sign-times {
+  font-size: 19px;
 }
 /* message box */
 #learn-press-message-box-block {
@@ -1547,13 +1573,6 @@ input.regular-text[id^="learn-press-emails"] {
   width: 100px;
   text-align: left;
 }
-#learn-press-admin-settings .form-table th {
-  padding: 20px 10px 20px 0 !important;
-}
-#learn-press-admin-settings input,
-#learn-press-admin-settings select {
-  vertical-align: top;
-}
 #learn_press_dashboard_widget .rss-widget ul li {
   margin-bottom: 10px !important;
 }
@@ -1571,7 +1590,8 @@ input.regular-text[id^="learn-press-emails"] {
   width: 50%;
   float: left;
 }
-#learn_press_dashboard_widget_status .inside .learnpress-statistic-status li > a {
+#learn_press_dashboard_widget_status .inside .learnpress-statistic-status li > a,
+#learn_press_dashboard_widget_status .inside .learnpress-statistic-status li > span {
   padding: 8px 12px;
   display: block;
 }
@@ -1636,7 +1656,7 @@ input.regular-text[id^="learn-press-emails"] {
   width: 50%;
 }
 .lp-template-overrides #learn-press-no-templates td p {
-  color: #FF0000;
+  color: #0073aa;
 }
 @-webkit-keyframes lp-spinner {
   0% {

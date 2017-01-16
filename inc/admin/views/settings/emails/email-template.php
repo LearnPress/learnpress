@@ -35,13 +35,21 @@ $email_format = $settings->get( 'emails_' . $this->id . '.email_format', 'plain_
 				$content_plain = stripslashes( $settings->get( 'emails_' . $this->id . '.email_content_plain', file_get_contents( $template_file ) ) );
 
 				$has_local_file = file_exists( $local_file );
+
+				$theme_dir      = get_template_directory();
+				$stylesheet_dir = get_stylesheet_directory();
+
+				if ( $theme_dir != $stylesheet_dir ) {
+					$theme_dir = $stylesheet_dir;
+				}
+				$theme_folder = basename( $theme_dir );
 				?>
 				<div class="<?php echo join( ' ', $classes ); ?>">
 
 					<?php if ( $has_local_file ): ?>
 						<textarea rows="10" style="width: 90%;" readonly="readonly"><?php echo stripslashes( file_get_contents( $local_file ) ); ?></textarea>
 						<p class="description">
-							<?php printf( __( 'This template has been overridden by your theme and can be found in: <code>%s</code>. Please open the file in an editor program to edit', 'learnpress' ), 'yourtheme/' . $template_dir . '/' . $template ); ?>
+							<?php printf( __( 'This template has been overridden by your theme and can be found in: <code>%s</code>. <br />Please open the file in an editor program to edit', 'learnpress' ), $theme_folder . '/' . $template_dir . '/' . $template ); ?>
 						</p>
 					<?php endif; ?>
 					<div class="<?php echo $has_local_file ? 'hide-if-js' : ''; ?>">
@@ -74,7 +82,7 @@ $email_format = $settings->get( 'emails_' . $this->id . '.email_format', 'plain_
 							</ol>
 						<?php endif; ?>
 						<p class="description">
-							<?php printf( __( 'To override and edit this email template copy <code>%s</code> to your theme folder: <code>%s</code>.', 'learnpress' ), plugin_basename( $template_file ), 'yourtheme/' . $template_dir . '/' . $template ); ?>
+							<?php printf( __( 'To override and edit this email template copy <code>%s</code> to your theme folder: <code>%s</code>.', 'learnpress' ), plugin_basename( $template_file ), $theme_folder . '/' . $template_dir . '/' . $template ); ?>
 						</p>
 					<?php endif; ?>
 				</div>

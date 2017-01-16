@@ -311,9 +311,24 @@ class LP_Quiz_Factory {
 	}
 
 	public static function _current_question( $question_id, $quiz_id, $course_id, $user_id ) {
+		$user       = learn_press_get_current_user();
+		$history    = $user->get_quiz_results( $quiz_id, $course_id, true );
+
 		if ( !empty( $_REQUEST['lp-ajax'] ) && $_REQUEST['lp-ajax'] == 'fetch-question' ) {
 			$question_id = !empty( $_REQUEST['id'] ) ? $_REQUEST['id'] : $question_id;
+			learn_press_update_user_item_meta( $history->history_id, 'lp_current_question_after_close', $question_id );
 		}
+
+		if (!empty($_REQUEST['lp-update-current-question'])) {
+			$current_id = absint( $_REQUEST['id'] );
+			learn_press_update_user_item_meta( $history->history_id, 'lp_current_question_after_close', $current_id );
+		}
+
+		if ( !empty( $_REQUEST['lp-current-question'] ) ) {
+			$current_id = absint( $_REQUEST['lp-current-question'] );
+			learn_press_update_user_item_meta( $history->history_id, 'lp_current_question_after_close', $current_id );
+		}
+
 		return $question_id;
 	}
 
