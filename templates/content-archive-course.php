@@ -25,7 +25,6 @@ global $post, $wp_query;
 	<?php while ( LP()->wp_query->have_posts() ) : LP()->wp_query->the_post(); ?>
 
 		<?php learn_press_get_template_part( 'content', 'course' ); ?>
-		<?php //print_r(LP()->wp_query);?>
 
 	<?php endwhile; ?>
 
