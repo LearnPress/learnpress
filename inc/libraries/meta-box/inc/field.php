@@ -1,5 +1,5 @@
 <?php
-if ( ! class_exists( 'RWMB_Field ' ) ) {
+if ( !class_exists( 'RWMB_Field ' ) ) {
 	class RWMB_Field {
 		/**
 		 * Add actions
@@ -131,10 +131,10 @@ if ( ! class_exists( 'RWMB_Field ' ) ) {
 			if ( 'hidden' === $field['type'] ) {
 				$classes[] = 'hidden';
 			}
-			if ( ! empty( $field['required'] ) ) {
+			if ( !empty( $field['required'] ) ) {
 				$classes[] = 'required';
 			}
-			if ( ! empty( $field['class'] ) ) {
+			if ( !empty( $field['class'] ) ) {
 				$classes[] = $field['class'];
 			}
 
@@ -167,6 +167,17 @@ if ( ! class_exists( 'RWMB_Field ' ) ) {
 			return '';
 		}
 
+		static function _sanitize_args() {
+			$args = func_get_args();
+			$size = sizeof( $args );
+			if ( $size == 2 ) {
+				return array( $args[0], $args[1], '' );
+			} elseif ( $size == 3 ) {
+				return array( $args[1], $args[2], $args[0] );
+			}
+			return $args;
+		}
+
 		/**
 		 * Show begin HTML markup for fields
 		 *
@@ -176,6 +187,10 @@ if ( ! class_exists( 'RWMB_Field ' ) ) {
 		 * @return string
 		 */
 		static function begin_html( $meta, $field ) {
+
+			$args = call_user_func_array( array( __CLASS__, '_sanitize_args' ), func_get_args() );
+			list( $meta, $field, $html ) = $args;
+
 			if ( empty( $field['name'] ) ) {
 				return '<div class="rwmb-input">';
 			}
@@ -199,6 +214,10 @@ if ( ! class_exists( 'RWMB_Field ' ) ) {
 		 * @return string
 		 */
 		static function end_html( $meta, $field ) {
+
+			$args = call_user_func_array( array( __CLASS__, '_sanitize_args' ), func_get_args() );
+			list( $meta, $field, $html ) = $args;
+
 			$button = $field['clone'] ? call_user_func( array( RW_Meta_Box::get_class_name( $field ), 'add_clone_button' ) ) : '';
 			$desc   = $field['desc'] ? "<p id='{$field['id']}_description' class='description'>{$field['desc']}</p>" : '';
 
@@ -236,10 +255,10 @@ if ( ! class_exists( 'RWMB_Field ' ) ) {
 		 * @return mixed
 		 */
 		static function meta( $post_id, $saved, $field ) {
-			$meta = get_post_meta( $post_id, $field['id'], ! $field['multiple'] );
+			$meta = get_post_meta( $post_id, $field['id'], !$field['multiple'] );
 
 			// Use $field['std'] only when the meta box hasn't been saved (i.e. the first time we run)
-			$meta = ( ! $saved && '' === $meta || array() === $meta ) ? $field['std'] : $meta;
+			$meta = ( !$saved && '' === $meta || array() === $meta ) ? $field['std'] : $meta;
 
 			// Escape attributes for non-wysiwyg fields
 			if ( 'wysiwyg' !== $field['type'] ) {
@@ -282,12 +301,12 @@ if ( ! class_exists( 'RWMB_Field ' ) ) {
 
 			if ( $field['multiple'] ) {
 				foreach ( $new as $new_value ) {
-					if ( ! in_array( $new_value, $old ) ) {
+					if ( !in_array( $new_value, $old ) ) {
 						add_post_meta( $post_id, $name, $new_value, false );
 					}
 				}
 				foreach ( $old as $old_value ) {
-					if ( ! in_array( $old_value, $new ) ) {
+					if ( !in_array( $old_value, $new ) ) {
 						delete_post_meta( $post_id, $name, $old_value );
 					}
 				}
