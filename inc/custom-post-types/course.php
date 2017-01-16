@@ -262,14 +262,32 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 
 			$course     = LP_Course::get_course( $course_id );
 			$curriculum = $course->get_curriculum_items();
-			$item_ids   = array();
+			// course curriculum items / quiz items / questions of quiz
+			$item_ids = $quiz_ids = $question_ids = array();
 
+			// get curriculum item
 			foreach ( $curriculum as $item ) {
 				$item_ids[] = (int) $item->ID;
+
+				// filter quiz item
+				if ( get_post_type( $item->ID ) == LP_QUIZ_CPT ) {
+					$quiz_ids[] = $item->ID;
+				}
 			}
 
-			$ids = array_merge( (array) $course_id, $item_ids );
+			// get question items
+			foreach ( $quiz_ids as $quiz_id ) {
+				$quiz      = LP_Quiz::get_quiz( $quiz_id );
+				$questions = $quiz->get_questions();
+				foreach ( $questions as $question ) {
+					$question_ids[] = $question->ID;
+				}
+			}
 
+			// merge all post type on course
+			$ids = array_merge( (array) $course_id, $item_ids, $question_ids );
+
+			// update post author
 			if ( !empty( $_POST['_lp_course_author'] ) ) {
 				foreach ( $ids as $id ) {
 					$wpdb->update(
