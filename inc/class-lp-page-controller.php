@@ -73,6 +73,8 @@ class LP_Page_Controller {
 	}*/
 
 	public function template_loader( $template ) {
+
+
 		global $wp_query, $post;
 		$file           = '';
 		$find           = array();
@@ -127,6 +129,7 @@ class LP_Page_Controller {
 				$file   = 'archive-course.php';
 				$find[] = $file;
 				$find[] = "{$theme_template}/{$file}";
+
 			} else {
 				if ( learn_press_is_course() ) {
 					$file   = 'single-course.php';
@@ -241,6 +244,7 @@ class LP_Page_Controller {
 			$wp_query->is_singular          = false;
 			$wp_query->is_posts_page        = false;
 			$wp_query->is_post_type_archive = false;
+
 		}
 		return $template;
 	}
@@ -255,6 +259,7 @@ class LP_Page_Controller {
 		if ( LP_COURSE_CPT != get_post_type() ) {
 			return $content;
 		}
+
 		remove_filter( 'the_content', array( $this, 'single_content' ), $this->_filter_content_priority );
 		add_filter( 'the_content', 'wpautop' );
 		ob_start();
@@ -286,12 +291,12 @@ class LP_Page_Controller {
 
 		$this->queried_object = !empty( $q->queried_object_id ) ? $q->queried_object : false;
 
+		global $wp, $wp_rewrite;
 		/**
 		 * If is single course content
 		 */
-		if ( $q->get( 'post_type' ) == 'lp_course' && is_single()) {
+		if ( $q->get( 'post_type' ) == 'lp_course' && is_single() ) {
 			global $post;
-
 			/**
 			 * Added in LP 2.0.5 to fix issue in some cases course become 404
 			 * including case course link is valid but it also get 404 if
@@ -303,9 +308,6 @@ class LP_Page_Controller {
 				$course_name = $q->get( 'lp_course' );
 				$post        = learn_press_get_post_by_name( $course_name, 'lp_course', true );
 			}
-
-			global $wp, $wp_rewrite;
-			learn_press_debug($this,$q, $wp,$wp_rewrite);
 
 			if ( !$post ) {
 				LP_Debug::instance()->add( sprintf( '%s: File %s, line #%d', '404', __FILE__, __LINE__ ) );
@@ -391,9 +393,6 @@ class LP_Page_Controller {
 
 			$q->set( 'post_type', 'lp_course' );
 			$q->set( 'page_id', '' );
-			if ( isset( $q->query['paged'] ) ) {
-				$q->set( 'paged', $q->query['paged'] );
-			}
 
 			global $wp_post_types;
 
@@ -414,6 +413,10 @@ class LP_Page_Controller {
 
 		if ( ( learn_press_is_courses() || learn_press_is_course_category() ) && $limit = absint( LP()->settings->get( 'archive_course_limit' ) ) ) {
 			$q->set( 'posts_per_page', $limit );
+		}
+
+		if ( isset( $q->query['page'] ) ) {
+			$q->set( 'paged', $q->query['page'] );
 		}
 
 		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ), 10 );

@@ -273,9 +273,15 @@ class LP_Query {
 		if ( $course_page_id = learn_press_get_page_id( 'courses' ) ) {
 			add_rewrite_rule(
 				'^' . $rewrite_prefix . get_post_field( 'post_name', $course_page_id ) . '/page/([0-9]{1,})/?$',
-				'index.php?page_id=' . $profile_id . '&paged=$matches[1]',
+				'index.php?pagename=' . get_post_field( 'post_name', $course_page_id ) . '&page=$matches[1]',
 				'top'
 			);
+			/**
+			add_rewrite_rule(
+				'^' . $rewrite_prefix . get_post_field( 'post_name', $course_page_id ) . '/page/([0-9]{1,})/?$',
+				'index.php?page_id=' . $course_page_id . '&paged=$matches[1]',
+				'top'
+			);*/
 		}
 		do_action( 'learn_press_add_rewrite_rules' );
 		return;
