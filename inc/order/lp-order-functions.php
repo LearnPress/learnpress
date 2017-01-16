@@ -497,10 +497,10 @@ function learn_press_get_orders( $args = array() ) {
 		$args['meta_query'][] = $meta_query;
 	}
 
-	$args = apply_filters( 'learn_press_get_orders_get_posts_args', $args );
-        $orders = get_posts( $args );
+	$args   = apply_filters( 'learn_press_get_orders_get_posts_args', $args );
+	$orders = get_posts( $args );
 	if ( $orders ) {
-            // do somethings
+		// do somethings
 	}
 
 	return apply_filters( 'learn_press_get_orders', $orders, $args );
@@ -650,7 +650,14 @@ function learn_press_get_order_status_label( $order_id = 0 ) {
 }
 
 function learn_press_get_order_statuses( $prefix = true ) {
-	$prefix         = $prefix ? 'lp-' : '';
+	$prefix = $prefix ? 'lp-' : '';
+	/*$register_statues = learn_press_get_register_order_statuses();
+	$order_statuses= array();
+	foreach($register_statues as $k => $v){
+		if($prefix){
+
+		}
+	}*/
 	$order_statuses = array(
 		$prefix . 'pending'    => _x( 'Pending', 'Order status', 'learnpress' ),
 		$prefix . 'processing' => _x( 'Processing', 'Order status', 'learnpress' ),
@@ -659,9 +666,70 @@ function learn_press_get_order_statuses( $prefix = true ) {
 //		$prefix . 'refunded'   => _x( 'Refunded', 'Order status', 'learnpress' ),
 //		$prefix . 'failed'     => _x( 'Failed', 'Order status', 'learnpress' ),
 //		$prefix . 'on-hold'    => _x( 'On Hold', 'Order status', 'learnpress' ),
-    );
+	);
 
 	return apply_filters( 'learn_press_order_statuses', $order_statuses );
+}
+
+function learn_press_get_register_order_statuses() {
+	$order_statues                  = array();
+	$order_statues['lp-completed']  = array(
+		'label'                     => _x( 'Completed', 'Order status', 'learnpress' ),
+		'public'                    => false,
+		'exclude_from_search'       => false,
+		'show_in_admin_all_list'    => true,
+		'show_in_admin_status_list' => true,
+		'label_count'               => _n_noop( 'Completed <span class="count">(%s)</span>', 'Completed <span class="count">(%s)</span>', 'learnpress' )
+	);
+	$order_statues['lp-processing'] = array(
+		'label'                     => _x( 'Processing', 'Order status', 'learnpress' ),
+		'public'                    => false,
+		'exclude_from_search'       => false,
+		'show_in_admin_all_list'    => true,
+		'show_in_admin_status_list' => true,
+		'label_count'               => _n_noop( 'Processing <span class="count">(%s)</span>', 'Processing <span class="count">(%s)</span>', 'learnpress' )
+	);
+	$order_statues['lp-pending']    = array(
+		'label'                     => _x( 'Pending Payment', 'Order status', 'learnpress' ),
+		'public'                    => false,
+		'exclude_from_search'       => false,
+		'show_in_admin_all_list'    => true,
+		'show_in_admin_status_list' => true,
+		'label_count'               => _n_noop( 'Pending Payment <span class="count">(%s)</span>', 'Pending Payment <span class="count">(%s)</span>', 'learnpress' )
+	);
+	$order_statues['lp-cancelled']  = array(
+		'label'                     => _x( 'Cancelled', 'Order status', 'learnpress' ),
+		'public'                    => false,
+		'exclude_from_search'       => false,
+		'show_in_admin_all_list'    => true,
+		'show_in_admin_status_list' => true,
+		'label_count'               => _n_noop( 'Cancelled <span class="count">(%s)</span>', 'Cancelled <span class="count">(%s)</span>', 'learnpress' )
+	);
+//			$lp_order_statuses['lp-on-hold']    = array(
+//				'label'                     => _x( 'On Hold', 'Order status', 'learnpress' ),
+//				'public'                    => false,
+//				'exclude_from_search'       => false,
+//				'show_in_admin_all_list'    => true,
+//				'show_in_admin_status_list' => true,
+//				'label_count'               => _n_noop( 'On Hold <span class="count">(%s)</span>', 'On Hold <span class="count">(%s)</span>', 'learnpress' )
+//			);
+//			$lp_order_statuses['lp-refunded']   = array(
+//				'label'                     => _x( 'Refunded', 'Order status', 'learnpress' ),
+//				'public'                    => false,
+//				'exclude_from_search'       => false,
+//				'show_in_admin_all_list'    => true,
+//				'show_in_admin_status_list' => true,
+//				'label_count'               => _n_noop( 'Refunded <span class="count">(%s)</span>', 'Refunded <span class="count">(%s)</span>', 'learnpress' )
+//			);
+//			$lp_order_statuses['lp-failed']     = array(
+//				'label'                     => _x( 'Failed', 'Order status', 'learnpress' ),
+//				'public'                    => false,
+//				'exclude_from_search'       => false,
+//				'show_in_admin_all_list'    => true,
+//				'show_in_admin_status_list' => true,
+//				'label_count'               => _n_noop( 'Failed <span class="count">(%s)</span>', 'Failed <span class="count">(%s)</span>', 'learnpress' )
+//			);
+	return $order_statues;
 }
 
 function _learn_press_get_order_status_description( $status ) {
@@ -721,16 +789,16 @@ function _learn_press_checkout_auto_enroll_free_course( $result, $order_id ) {
 }
 
 if ( !function_exists( '_learn_press_total_raised' ) ) {
-    function _learn_press_total_raised() {
-        $orders = learn_press_get_orders( array( 'post_status' => 'lp-completed' ) );
-        $total = 0;
-        if ( $orders ) {
-            foreach( $orders as $order ) {
-                $order = learn_press_get_order( $order->ID );
-                $total = $total + $order->order_total;
-            }
-        }
+	function _learn_press_total_raised() {
+		$orders = learn_press_get_orders( array( 'post_status' => 'lp-completed' ) );
+		$total  = 0;
+		if ( $orders ) {
+			foreach ( $orders as $order ) {
+				$order = learn_press_get_order( $order->ID );
+				$total = $total + $order->order_total;
+			}
+		}
 
-        return apply_filters( '_learn_press_total_raised', learn_press_format_price( $total, true ), $total );
-    }
+		return apply_filters( '_learn_press_total_raised', learn_press_format_price( $total, true ), $total );
+	}
 }

@@ -1590,7 +1590,8 @@ input.regular-text[id^="learn-press-emails"] {
   width: 50%;
   float: left;
 }
-#learn_press_dashboard_widget_status .inside .learnpress-statistic-status li > a {
+#learn_press_dashboard_widget_status .inside .learnpress-statistic-status li > a,
+#learn_press_dashboard_widget_status .inside .learnpress-statistic-status li > span {
   padding: 8px 12px;
   display: block;
 }

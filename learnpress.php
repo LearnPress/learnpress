@@ -211,8 +211,8 @@ if ( !class_exists( 'LearnPress' ) ) {
 			// Register custom-post-type and taxonomies
 			require_once 'inc/custom-post-types/abstract.php';
 			require_once 'inc/custom-post-types/course.php';
-            require_once 'inc/custom-post-types/lesson.php';
-            require_once 'inc/custom-post-types/quiz.php';
+			require_once 'inc/custom-post-types/lesson.php';
+			require_once 'inc/custom-post-types/quiz.php';
 			require_once 'inc/custom-post-types/question.php';
 			require_once 'inc/custom-post-types/order.php';
 		}
@@ -253,10 +253,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 		 * Load metabox library
 		 */
 		public function load_meta_box() {
-			if ( !defined( 'RWMB_VER' ) ) {
-				require_once 'inc/libraries/meta-box/meta-box.php';
-				do_action( 'learn_press_meta_box_loaded' );
-			}
+			require_once 'inc/libraries/meta-box/meta-box.php';
 		}
 
 		/**
@@ -394,7 +391,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 				case 'frontend' :
 					return ( !is_admin() || defined( 'LP_DOING_AJAX' ) ) && !defined( 'DOING_CRON' );
 				default:
-					return strtolower($_SERVER['REQUEST_METHOD']) == $type;
+					return strtolower( $_SERVER['REQUEST_METHOD'] ) == $type;
 			}
 		}
 
