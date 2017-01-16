@@ -282,7 +282,7 @@ class LP_Page_Controller {
 		/**
 		 * If is single course content
 		 */
-		if ( $q->get( 'post_type' ) == 'lp_course' && is_single() ) {
+		if ( $q->get( 'post_type' ) == 'lp_course' && is_single()) {
 			global $post;
 
 			/**
@@ -296,6 +296,9 @@ class LP_Page_Controller {
 				$course_name = $q->get( 'lp_course' );
 				$post        = learn_press_get_post_by_name( $course_name, 'lp_course', true );
 			}
+
+			global $wp, $wp_rewrite;
+			learn_press_debug($this,$q, $wp,$wp_rewrite);
 
 			if ( !$post ) {
 				LP_Debug::instance()->add( sprintf( '%s: File %s, line #%d', '404', __FILE__, __LINE__ ) );
