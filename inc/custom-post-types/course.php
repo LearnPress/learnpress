@@ -259,17 +259,25 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 
 		public function update_course( $course_id ) {
 			global $wpdb;
-			$course_origin_author = get_post_field( 'post_author', $course_id );
+
+			$course     = LP_Course::get_course( $course_id );
+			$curriculum = $course->get_curriculum_items();
+			$item_ids   = array();
+
+			foreach ( $curriculum as $item ) {
+				$item_ids[] = (int) $item->ID;
+			}
+
+			$ids = array_merge( (array) $course_id, $item_ids );
 
 			if ( !empty( $_POST['_lp_course_author'] ) ) {
-				$wpdb->update(
-					$wpdb->posts,
-					array( 'post_author' => $_POST['_lp_course_author'] ),
-					array( 'ID' => $course_id )
-				);
-			} elseif ( !( $course_author = get_post_meta( $course_id, '_lp_course_author', true ) ) || !get_user_by( 'id', $course_author ) ) {
-				update_post_meta( $course_id, '_lp_course_author', $course_author );
-				$_POST['_lp_course_author'] = $_REQUEST['_lp_course_author'] = $course_origin_author;
+				foreach ( $ids as $id ) {
+					$wpdb->update(
+						$wpdb->posts,
+						array( 'post_author' => $_POST['_lp_course_author'] ),
+						array( 'ID' => $id )
+					);
+				}
 			}
 		}
 
