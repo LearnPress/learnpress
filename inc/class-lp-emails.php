@@ -138,10 +138,8 @@ class LP_Emails {
 		if ( !$user = learn_press_get_user( $user_id ) ) {
 			return;
 		}
-		if ( $user->is_admin() ) {
-			$mail = $this->emails['LP_Email_Finished_Course'];
-			$mail->trigger( $course_id, $user->id, $result );
-		}
+		$mail = $this->emails['LP_Email_Finished_Course'];
+		$mail->trigger( $course_id, $user->id, $result );
 	}
 
 	/**
