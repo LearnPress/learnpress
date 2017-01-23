@@ -119,7 +119,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 			// hooks
 			$this->init_hooks();
 			// let third parties know that we're ready
-			do_action( 'learn_press_ready' );
+			//do_action( 'learn_press_ready' );
 		}
 
 		public function __get( $key ) {
@@ -246,6 +246,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 		}
 
 		public function loaded() {
+			do_action( 'learn_press_ready' );
 			do_action( 'learn_press_loaded', $this );
 		}
 
