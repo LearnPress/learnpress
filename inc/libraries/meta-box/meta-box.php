@@ -58,3 +58,4 @@ if ( is_admin() ) {
 		require_once LP_METABOX_INC . 'init.php';
 	}
 }
+do_action( 'learn_press_meta_box_loaded' );
