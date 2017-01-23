@@ -94,7 +94,9 @@ class LP_Page_Controller {
 					}
 				}
 				if ( $_GET ) {
-					$redirect = add_query_arg( $_GET, $redirect );
+					foreach ( $_GET as $k => $v ) {
+						$redirect = add_query_arg( $k, urlencode( $v ), $redirect );
+					}
 				}
 				// Prevent loop redirect
 				if ( $page_id != get_option( 'page_on_front' ) && !learn_press_is_current_url( $redirect ) ) {
