@@ -108,7 +108,7 @@ class LP_User_Factory {
 	 * @param      $the_user
 	 * @param bool $force
 	 *
-	 * @return mixed
+	 * @return LP_Abstract_User
 	 */
 	public static function get_user( $the_user, $force = false ) {
 		if ( is_numeric( $the_user ) ) {

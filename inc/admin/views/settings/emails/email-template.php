@@ -72,8 +72,10 @@ $email_format = $settings->get( 'emails_' . $this->id . '.email_format', 'plain_
 					</div>
 
 					<?php if ( !$has_local_file ): ?>
-						<?php if ( $this->support_variables ): ?>
-							<p><strong><?php esc_html_e( 'Click on variables to add it into email content', 'learnpress' ); ?></strong></p>
+						<?php if ( $this->get_variables_support() ): ?>
+							<p>
+								<strong><?php esc_html_e( 'Click on variables to add it into email content', 'learnpress' ); ?></strong>
+							</p>
 							<ol class="learn-press-email-variables<?php echo $template_type == 'html' ? ' has-editor' : ''; ?>" data-target="<?php echo esc_attr( 'learn_press_emails_' . $this->id . '_' . $template_type ); ?>">
 								<?php foreach ( $this->support_variables as $variable ): ?>
 									<li data-variable="<?php echo esc_attr( $variable ); ?>">
