@@ -193,6 +193,16 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.  
 
 == Changelog ==
+= 2.1.2 =
++ Fixed Assign course's items to user when assigning course
++ Fixed Options to change key 'lessons' and 'quizzes' when viewing a lesson/quiz in a course.
++ Fixed Course pagination issue in some case
++ Fixed Can not add to cart for non-loggedin user (woocommerce addon)
++ Fixed Broken cert when previewing to print in single course (Certificate)
++ Fixed Paid memberships show user as deleted after buying course (Paid membership)
++ Fixed overwrite templates issue (Paid membership)
++ Fixed "page isn’t working" when creating a new post type (conflict with metabox in the-7 theme)
+
 = 2.1.1 =
 + Added options to change value of lessons/quizzes in course item permalink
 + Improved edit profile page
