@@ -250,6 +250,17 @@ class LP_Query {
 				'top'
 			);
 		} else {
+
+			$custom_slug_lesson= sanitize_title_with_dashes( LP()->settings->get( 'lesson_slug' ) );
+			$custom_slug_quiz = sanitize_title_with_dashes( LP()->settings->get( 'quiz_slug' ) );
+
+			if ( !empty( $custom_slug_lesson ) ) {
+				$post_types['lp_lesson']->rewrite['slug'] = $custom_slug_lesson;
+			}
+			if ( !empty( $custom_slug_quiz ) ) {
+				$post_types['lp_quiz']->rewrite['slug'] = $custom_slug_quiz;
+			}
+
 			add_rewrite_rule(
 				'^' . $slug . '/([^/]+)(?:/' . $post_types['lp_lesson']->rewrite['slug'] . '/([^/]+))/?$',
 				'index.php?' . $course_type . '=$matches[1]&lesson=$matches[2]',

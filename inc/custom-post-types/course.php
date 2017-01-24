@@ -143,10 +143,10 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 					<li id="switch-course-metaboxes">
 						<!--<a href="" id="reorder-course-tabs"><?php _e( 'Reorder', 'learnpress' ); ?></a>
 						<a href="" id="complete-reorder-course-tabs"><?php _e( 'Ok', 'learnpress' ); ?></a>-->
-						<a href="<?php echo add_query_arg( 'switch-course-tabs', 'off', get_edit_post_link() ); ?>"><?php _e( 'Switch to meta boxes', 'learnpress' ); ?></a>
-					</li>
-				</ul>
-				<input type="hidden" id="course-tab" name="course-tab" value="<?php echo !empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : ''; ?>" />
+                        <a href="<?php echo add_query_arg( 'switch-course-tabs', 'off', get_edit_post_link() ); ?>"><?php _e( 'Switch to meta boxes', 'learnpress' ); ?></a>
+                    </li>
+                </ul>
+                <input type="hidden" id="course-tab" name="course-tab" value="<?php echo !empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : ''; ?>" />
 
 				<?php
 			} else {
@@ -259,17 +259,43 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 
 		public function update_course( $course_id ) {
 			global $wpdb;
-			$course_origin_author = get_post_field( 'post_author', $course_id );
 
+			$course     = LP_Course::get_course( $course_id );
+			$curriculum = $course->get_curriculum_items();
+			// course curriculum items / quiz items / questions of quiz
+			$item_ids = $quiz_ids = $question_ids = array();
+
+			// get curriculum item
+			foreach ( $curriculum as $item ) {
+				$item_ids[] = (int) $item->ID;
+
+				// filter quiz item
+				if ( get_post_type( $item->ID ) == LP_QUIZ_CPT ) {
+					$quiz_ids[] = $item->ID;
+				}
+			}
+
+			// get question items
+			foreach ( $quiz_ids as $quiz_id ) {
+				$quiz      = LP_Quiz::get_quiz( $quiz_id );
+				$questions = $quiz->get_questions();
+				foreach ( $questions as $question ) {
+					$question_ids[] = $question->ID;
+				}
+			}
+
+			// merge all post type on course
+			$ids = array_merge( (array) $course_id, $item_ids, $question_ids );
+
+			// update post author
 			if ( !empty( $_POST['_lp_course_author'] ) ) {
-				$wpdb->update(
-					$wpdb->posts,
-					array( 'post_author' => $_POST['_lp_course_author'] ),
-					array( 'ID' => $course_id )
-				);
-			} elseif ( !( $course_author = get_post_meta( $course_id, '_lp_course_author', true ) ) || !get_user_by( 'id', $course_author ) ) {
-				update_post_meta( $course_id, '_lp_course_author', $course_author );
-				$_POST['_lp_course_author'] = $_REQUEST['_lp_course_author'] = $course_origin_author;
+				foreach ( $ids as $id ) {
+					$wpdb->update(
+						$wpdb->posts,
+						array( 'post_author' => $_POST['_lp_course_author'] ),
+						array( 'ID' => $id )
+					);
+				}
 			}
 		}
 
@@ -777,6 +803,10 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		public
 		static function author_meta_box() {
 
+			$course_id = !empty( $_GET['post'] ) ? $_GET['post'] : 0;
+
+			$author = get_post( $course_id ) ? get_post( $course_id )->post_author : '';
+
 			$prefix = '_lp_';
 
 			$include = array();
@@ -800,14 +830,14 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 				'priority' => 'default',
 				'fields'   => array(
 					array(
-						'name'        => __( 'Author', 'learnpress' ),
-						'id'          => "{$prefix}course_author",
-						'desc'        => '',
-						'multiple'    => false,
-						'allowClear'  => false,
-						'type'        => 'select_advanced',
-						'placeholder' => __( 'Select author', 'learnpress' ),
-						'options'     => $include
+						'name'       => __( 'Author', 'learnpress' ),
+						'id'         => "{$prefix}course_author",
+						'desc'       => '',
+						'multiple'   => false,
+						'allowClear' => false,
+						'type'       => 'select',
+						'options'    => $include,
+						'std'        => $author
 					)
 				)
 			);

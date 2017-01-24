@@ -587,30 +587,17 @@ if ( !function_exists( 'learn_press_get_sample_link_course_item_url' ) ) {
             return;
         }
 
+
         $permalink          = get_the_permalink( $item_id );
-        $course_page_id     = get_option( 'learn_press_courses_page_id' );
+	    $post_name          = get_post_field( 'post_name', $item_id );
 
-        if ( !empty($course_page_id) && get_post( $course_page_id ) != false ) {
-
-            $post_types     = get_post_types( null, 'objects' );
-            $item_type      = get_post_type( $item_id );
-            $permalink      = trailingslashit( get_the_permalink( $course_page_id ) );
-            $course_slug    = basename( $permalink );
-            $permalink      = str_replace( $course_slug, 'course/sample-course', $permalink );
-            $post_name      = get_post_field( 'post_name', $item_id );
-            $prefix         = preg_replace( '!^/!', '', trailingslashit( $post_types[$item_type]->rewrite['slug'] ) );
-
-            if ( '' != get_option( 'permalink_structure' ) && get_post_status( $course_page_id ) != 'draft' ) {
-
-//                $permalink .= $prefix . $post_name;
-	            $permalink = $post_name;
-
-            }
-            else {
-                $key       = preg_replace( '!lp_!', '', get_post_type( $item_id ) );
-                $permalink = add_query_arg( array( $key => $post_name ), $permalink );
-            }
-        }
+	    if ( '' != get_option( 'permalink_structure' ) ) {
+		    $permalink = $post_name;
+	    }
+	    else {
+		    $key       = preg_replace( '!lp_!', '', get_post_type( $item_id ) );
+		    $permalink = add_query_arg( array( $key => $post_name ), $permalink );
+	    }
         return $permalink;
 
     }
