@@ -42,3 +42,5 @@ define( 'LP_DEBUG', true );
 
 // Options
 define( 'LP_USE_ATTRIBUTES', true );
+define( 'LP_WIDGET_PATH', LP_PLUGIN_PATH . 'inc/widgets' );
+define( 'LP_WIDGET_URL', LP_PLUGIN_URL . 'inc/widgets' );
