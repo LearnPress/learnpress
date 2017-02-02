@@ -143,10 +143,10 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 					<li id="switch-course-metaboxes">
 						<!--<a href="" id="reorder-course-tabs"><?php _e( 'Reorder', 'learnpress' ); ?></a>
 						<a href="" id="complete-reorder-course-tabs"><?php _e( 'Ok', 'learnpress' ); ?></a>-->
-                        <a href="<?php echo add_query_arg( 'switch-course-tabs', 'off', get_edit_post_link() ); ?>"><?php _e( 'Switch to meta boxes', 'learnpress' ); ?></a>
-                    </li>
-                </ul>
-                <input type="hidden" id="course-tab" name="course-tab" value="<?php echo !empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : ''; ?>" />
+						<a href="<?php echo add_query_arg( 'switch-course-tabs', 'off', get_edit_post_link() ); ?>"><?php _e( 'Switch to meta boxes', 'learnpress' ); ?></a>
+					</li>
+				</ul>
+				<input type="hidden" id="course-tab" name="course-tab" value="<?php echo !empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : ''; ?>" />
 
 				<?php
 			} else {
@@ -519,8 +519,22 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			if ( LP_COURSE_CPT != learn_press_get_requested_post_type() ) {
 				return;
 			}
+			new LP_Meta_Box_Tabs(
+				array(
+					'post_type' => LP_COURSE_CPT,
+					'tabs'      => array(
+						array(
+							'title'    => __( 'X1', 'learnpress' ),
+							'callback' => ''
+						),
+						new RW_Meta_Box( self::settings_meta_box() ),
+						new RW_Meta_Box( self::assessment_meta_box() )
+					)
+				)
+			);
+
 			new RW_Meta_Box( self::curriculum_meta_box() );
-			new RW_Meta_Box( self::settings_meta_box() );
+			/*new RW_Meta_Box( self::settings_meta_box() );
 			new RW_Meta_Box( self::assessment_meta_box() );
 			new RW_Meta_Box( self::payment_meta_box() );
 			if ( self::$_enable_review ) {
@@ -529,7 +543,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			//new RW_Meta_Box( self::video_meta_box() );
 			if ( is_super_admin() ) {
 				new RW_Meta_Box( self::author_meta_box() );
-			}
+			}*/
 			parent::add_meta_boxes();
 		}
 
@@ -565,8 +579,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 * @return mixed|null|void
 		 */
 
-		public
-		static function settings_meta_box() {
+		public static function settings_meta_box() {
 			$prefix = '_lp_';
 
 			$meta_box = array(
