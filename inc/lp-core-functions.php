@@ -810,6 +810,22 @@ function learn_press_admin_course_tabs() {
 	if ( !is_admin() ) {
 		return;
 	}
+
+	$current_page_id = get_current_screen()->id;
+	$current_user    = wp_get_current_user();
+	if ( !in_array( 'administrator', $current_user->roles ) ) {
+		return;
+	}
+
+	$pages = apply_filters(
+		'learn_press_admin_tabs_on_pages',
+		array( 'edit-lp_course', 'edit-course_category', 'edit-course_tag', 'lp_course' )
+	);
+
+	if ( !in_array( $current_page_id, $pages ) ) {
+		return;
+	}
+
 	$admin_tabs = apply_filters(
 		'learn_press_admin_tabs_info',
 		array(
@@ -833,35 +849,17 @@ function learn_press_admin_course_tabs() {
 
 		)
 	);
-	ksort( $admin_tabs );
-	$tabs = array();
-	foreach ( $admin_tabs as $key => $value ) {
-		array_push( $tabs, $key );
-	}
-	$pages              = apply_filters(
-		'learn_press_admin_tabs_on_pages',
-		array( 'edit-lp_course', 'edit-course_category', 'edit-course_tag', 'lp_course' )
-	);
-	$admin_tabs_on_page = array();
-	foreach ( $pages as $page ) {
-		$admin_tabs_on_page[$page] = $tabs;
-	}
-
-
-	$current_page_id = get_current_screen()->id;
-	$current_user    = wp_get_current_user();
-	if ( !in_array( 'administrator', $current_user->roles ) ) {
+	if ( !$admin_tabs ) {
 		return;
 	}
-	if ( !empty( $admin_tabs_on_page[$current_page_id] ) && count( $admin_tabs_on_page[$current_page_id] ) ) {
-		echo '<h2 class="nav-tab-wrapper lp-nav-tab-wrapper">';
-		foreach ( $admin_tabs_on_page[$current_page_id] as $admin_tab_id ) {
+	ksort( $admin_tabs );
 
-			$class = ( $admin_tabs[$admin_tab_id]["id"] == $current_page_id ) ? "nav-tab nav-tab-active" : "nav-tab";
-			echo '<a href="' . admin_url( $admin_tabs[$admin_tab_id]["link"] ) . '" class="' . $class . ' nav-tab-' . $admin_tabs[$admin_tab_id]["id"] . '">' . $admin_tabs[$admin_tab_id]["name"] . '</a>';
-		}
-		echo '</h2>';
+	echo '<h2 class="nav-tab-wrapper lp-nav-tab-wrapper">';
+	foreach ( $admin_tabs as $admin_tab ) {
+		$class = ( $admin_tab["id"] == $current_page_id ) ? "nav-tab nav-tab-active" : "nav-tab";
+		echo '<a href="' . admin_url( $admin_tab["link"] ) . '" class="' . $class . ' nav-tab-' . $admin_tab["id"] . '">' . $admin_tab["name"] . '</a>';
 	}
+	echo '</h2>';
 }
 
 add_action( 'admin_footer', 'learn_press_show_menu' );

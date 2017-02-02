@@ -440,14 +440,15 @@ if ( !class_exists( 'LearnPress' ) ) {
 				require_once( 'inc/admin/settings/class-lp-settings-base.php' );
 			}
 			$this->settings = LP_Settings::instance();
-			//if ( !is_admin() ) {
 			require_once 'inc/class-lp-assets.php';
-			//}
 			require_once 'inc/question/abstract-lp-question.php';
 			require_once 'inc/question/class-lp-question-factory.php';
-
 			$this->include_post_types();
 
+			require_once 'inc/class-lp-widget.php';
+			if ( defined( 'LP_USE_ATTRIBUTES' ) && LP_USE_ATTRIBUTES ) {
+				require_once 'inc/attributes/lp-attributes-functions.php';
+			}
 			// course
 			require_once 'inc/course/lp-course-functions.php';
 			require_once 'inc/course/abstract-lp-course.php';

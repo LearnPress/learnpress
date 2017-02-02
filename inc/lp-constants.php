@@ -39,3 +39,6 @@ define( 'LP_TEACHER_ROLE', 'lp_teacher' );
 
 // Turn debug mode on/off
 define( 'LP_DEBUG', true );
+
+// Options
+define( 'LP_USE_ATTRIBUTES', true );
