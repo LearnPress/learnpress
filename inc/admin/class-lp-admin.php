@@ -111,7 +111,7 @@ if ( !class_exists( 'LP_Admin' ) ) {
 					return;
 				}
 
-				if ( learn_press_get_theme_templates( true ) ) {
+				if ( learn_press_detect_outdated_template() ) {
 					learn_press_admin_view( 'html-admin-notice-templates' );
 				}
 			}
