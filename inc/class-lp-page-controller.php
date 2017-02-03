@@ -58,7 +58,8 @@ class LP_Page_Controller {
 	}
 
 	public function fix_global_post( $post, $query ) {
-		global $post;
+		global $wp_query;
+
 		//$post = $this->_origin_post;
 
 
@@ -179,6 +180,19 @@ class LP_Page_Controller {
 		return ob_get_clean();
 	}
 
+	/**
+	 * @param $title
+	 *
+	 * @return mixed
+	 */
+	public function page_title( $title ) {
+		global $wp_query;
+		if ( !empty( $wp_query->queried_object_id ) ) {
+			$title['title'] = get_the_title($wp_query->queried_object_id );
+		}
+		return $title;
+	}
+
 	public function template_loader2( $template ) {
 		define( 'LEARNPRESS_IS_COURSES', learn_press_is_courses() );
 		define( 'LEARNPRESS_IS_TAG', learn_press_is_course_tag() );
@@ -187,9 +201,23 @@ class LP_Page_Controller {
 		define( 'LEARNPRESS_IS_SEARCH', learn_press_is_search() );
 		if ( LEARNPRESS_IS_COURSES || LEARNPRESS_IS_TAG || LEARNPRESS_IS_CATEGORY || LEARNPRESS_IS_SEARCH || LEARNPRESS_IS_TAX ) {
 
-			global $wp_query, $post;
+			global $wp_query, $post, $wp;
+
 			LP()->wp_query = clone( $wp_query );
 			$template      = get_page_template();
+			/**
+			 * Fix in case a static page is used for archive course page and
+			 * it's slug is the same with course archive slug (courses).
+			 * In this case, WP know it as a course archive page not a
+			 * single page.
+			 */
+			if ( ( $course_page_id = learn_press_get_page_id( 'courses' ) ) && ( $course_page_slug = get_post_field( 'post_name', $course_page_id ) ) ) {
+				if ( $course_page_slug == 'courses' ) {
+					$wp_query->queried_object_id = $course_page_id;
+					$this->queried_object        = $wp_query->queried_object = get_post( $course_page_id );
+					add_filter( 'document_title_parts', array( $this, 'page_title' ) );
+				}
+			}
 
 			$wp_query->posts_per_page = 1;
 			$wp_query->nopaging       = true;

@@ -146,7 +146,6 @@ class LP_Breadcrumb {
 		} else {
 			$post = get_post( $post_id );
 		}
-
 		if ( 'lp_course' === get_post_type( $post ) ) {
 			$this->prepend_courses_page();
 			if ( $terms = learn_press_get_course_terms( $post->ID, 'course_category', array( 'orderby' => 'parent', 'order' => 'DESC' ) ) ) {
@@ -207,17 +206,17 @@ class LP_Breadcrumb {
 	}
 
 	/**
-	 * Product tag trail
+	 * Course tag trail
 	 */
 	private function add_crumbs_course_tag() {
 		$current_term = $GLOBALS['wp_query']->get_queried_object();
 
 		$this->prepend_courses_page();
-		$this->add_crumb( sprintf( __( 'Products tagged &ldquo;%s&rdquo;', 'learnpress' ), $current_term->name ) );
+		$this->add_crumb( sprintf( __( 'Courses tagged &ldquo;%s&rdquo;', 'learnpress' ), $current_term->name ) );
 	}
 
 	/**
-	 * Shop breadcrumb
+	 * Courses archive breadcrumb
 	 */
 	private function add_crumbs_courses() {
 		if ( get_option( 'page_on_front' ) == learn_press_get_page_id( 'courses' ) ) {
@@ -227,8 +226,8 @@ class LP_Breadcrumb {
 		$_name = learn_press_get_page_id( 'courses' ) ? get_the_title( learn_press_get_page_id( 'courses' ) ) : '';
 
 		if ( !$_name ) {
-			$product_post_type = get_post_type_object( 'product' );
-			$_name             = $product_post_type->labels->singular_name;
+			$course_post_type = get_post_type_object( 'course' );
+			$_name             = $course_post_type->labels->singular_name;
 		}
 
 		$this->add_crumb( $_name, get_post_type_archive_link( 'lp_course' ) );

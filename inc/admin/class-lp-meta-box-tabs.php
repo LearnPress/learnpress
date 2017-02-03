@@ -16,7 +16,15 @@ if ( !class_exists( 'LP_Meta_Box_Tabs' ) ) {
 			$this->args = wp_parse_args( $args, $defaults );
 
 			add_action( 'edit_form_after_editor', array( $this, 'display' ), 10 );
+			add_filter( 'get_edit_post_link', array( $this, 'add_tab_arg' ) );
 			//add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
+		}
+
+		public function add_tab_arg( $m ) {
+			if ( array_key_exists( 'learn-press-meta-box-tab', $_REQUEST ) && !empty( $_REQUEST['learn-press-meta-box-tab'] ) ) {
+				$m = add_query_arg( 'tab', $_REQUEST['learn-press-meta-box-tab'], $m );
+			}
+			return $m;
 		}
 
 		public function display() {
@@ -55,7 +63,6 @@ if ( !class_exists( 'LP_Meta_Box_Tabs' ) ) {
 					$this->opt( 'priority' )
 				);
 				add_filter( "postbox_classes_{$post_type}_" . $this->opt( 'id' ), array( $this, 'postbox_classes' ) );
-
 			}
 		}
 
