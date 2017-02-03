@@ -442,7 +442,7 @@ function _learn_press_get_user_course_orders( $user_id = 0, $force = false ) {
 			INNER JOIN {$wpdb->prefix}learnpress_order_itemmeta oim ON oim.learnpress_order_item_id = oi.order_item_id AND meta_key = %s
 			INNER JOIN {$wpdb->prefix}postmeta om ON om.post_id = oi.order_id AND om.meta_key = %s AND om.meta_value = %d
 			INNER JOIN {$wpdb->posts} o ON o.ID = om.post_id AND o.post_status <> %s
-			WHERE o.post_type = %s
+			WHERE o.post_type = %s ORDER BY ID ASC
 		", '_course_id', '_user_id', $user_id, 'trash', LP_ORDER_CPT );
 		if ( $rows = $wpdb->get_results( $query ) ) {
 			foreach ( $rows as $row ) {
