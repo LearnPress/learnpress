@@ -1,23 +1,51 @@
 <?php
+global $wp_meta_boxes, $post;
+
 $tabs = $this->get_tabs( 'tabs' );
 if ( !$tabs ) {
 	return;
 }
 $current_tab = !empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : '';
 ?>
-<div class="learn-press-tabs">
-	<ul>
+<div class="learn-press-tabs initialize">
+	<ul class="heading-tabs">
 		<?php
 		$remove_meta_boxes = array();
-		foreach ( $tabs as $tab ) {
+		foreach ( $tabs as $k => $tab ) {
 			if ( is_array( $tab ) ) {
 				$tab = wp_parse_args(
 					$tab, array(
 						'title'    => '',
 						'id'       => '',
-						'callback' => ''
+						'callback' => '',
+						'meta_box' => ''
 					)
 				);
+				if ( $tab['meta_box'] ) {
+					call_user_func( $tab['callback'] );
+
+					$page     = get_post_type();
+					$contexts = array( 'normal', 'advanced' );
+					foreach ( $contexts as $context ) {
+						if ( isset( $wp_meta_boxes[$page][$context] ) ) {
+							foreach ( array( 'high', 'sorted', 'core', 'default', 'low' ) as $priority ) {
+								if ( isset( $wp_meta_boxes[$page][$context][$priority] ) ) {
+									foreach ( (array) $wp_meta_boxes[$page][$context][$priority] as $box ) {
+										if ( false == $box || !$box['title'] || $box['id'] != ( $tab['meta_box'] ) )
+											continue;
+										ob_start();
+										call_user_func( $box['callback'], $post, $box );
+										$tab['content'] = ob_get_clean();
+										$tab['title']   = $box['title'];
+										$tab['id']      = $box['id'];
+										unset( $wp_meta_boxes[$page][$context][$priority] );
+										break 3;
+									}
+								}
+							}
+						}
+					}
+				}
 			} elseif ( $tab instanceof RW_Meta_Box ) {
 				$metabox             = $tab;
 				$tab                 = array(
@@ -27,41 +55,51 @@ $current_tab = !empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : '';
 				);
 				$remove_meta_boxes[] = $metabox;
 			}
+			if ( empty( $tab['id'] ) ) {
+				$tab['id'] = sanitize_title( $tab['title'] );
+			}
 			if ( empty( $current_tab ) || ( $current_tab == $tab['id'] ) ) {
 				$current_tab = $tab;
 			}
-			echo '<li>';
+			echo '<li' . ( is_array( $current_tab ) && $current_tab['id'] == $tab['id'] ? ' class="active"' : '' ) . '>';
 			?>
 			<a href="<?php echo add_query_arg( 'tab', $tab['id'], learn_press_get_current_url() ); ?>"><?php echo esc_html( $tab['title'] ); ?></a>
 			<?php
 			echo '</li>';
+			$tabs[$k] = $tab;
 		}
 		?>
 	</ul>
-	<div class="learn-press-tab-content">
+	<ul class="learn-press-tab-content">
 		<?php
-		global $wp_meta_boxes;
-		if ( $current_tab ) {
-			if ( is_callable( $current_tab['callback'] ) ) {
-				call_user_func( $current_tab['callback'] );
+		foreach ( $tabs as $tab ) {
+			echo '<li id="meta-box-tab-' . $tab['id'] . '" class="' . $tab['id'] . ( is_array( $current_tab ) && $current_tab['id'] == $tab['id'] ? ' active' : '' ) . '">';
+			if ( !empty( $tab['content'] ) ) {
+				echo $tab['content'];
+			} elseif ( !empty( $tab['callback'] ) && is_callable( $tab['callback'] ) ) {
+				call_user_func( $tab['callback'] );
 			} else {
-				do_action( 'learn_press_meta_box_tab_content', $current_tab );
+				do_action( 'learn_press_meta_box_tab_content', $tab );
 			}
-			echo '<input type="text" name="learn-press-meta-box-tab" value="' . $current_tab['id'] . '" />';
+			echo '</li>';
 		}
 		if ( !empty( $remove_meta_boxes ) ) {
 			foreach ( $remove_meta_boxes as $meta_box ) {
-				$mbox = $meta_box->meta_box;
-				foreach ( $mbox['post_types'] as $page ) {
-					remove_meta_box( $mbox['id'], $page, $mbox['context'] );
+				if ( $meta_box instanceof RW_Meta_Box ) {
+					$mbox = $meta_box->meta_box;
+					foreach ( $mbox['post_types'] as $page ) {
+						remove_meta_box( $mbox['id'], $page, $mbox['context'] );
+						$wp_meta_boxes[$page][$mbox['context']]['sorted'][$mbox['id']] = false;
+					}
+				} else {
 
-					$wp_meta_boxes[$page][$mbox['context']]['sorted'][$mbox['id']] = false;
-					//if($wp_meta_boxes[$page]['normal'][$priority][$id] = false;
-					//remove_meta_box( $mbox->meta_box['id'], $mbox->meta_box['post_types'], 'sorted' );
 				}
 			}
 		}
+		if ( is_array( $current_tab ) ) {
+			echo '<input type="hidden" name="learn-press-meta-box-tab" value="' . $current_tab['id'] . '" />';
+		}
 		//learn_press_debug( $wp_meta_boxes['lp_course'] );
 		?>
-	</div>
+	</ul>
 </div>

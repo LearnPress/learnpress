@@ -135,6 +135,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 				}
 			}
 
+			return;
 			//learn_press_debug($wp_meta_boxes['lp_course']);
 
 			if ( learn_press_get_user_option( 'course-tabs' ) == 'yes' ) {
@@ -519,17 +520,24 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			if ( LP_COURSE_CPT != learn_press_get_requested_post_type() ) {
 				return;
 			}
+			$default_tabs = array(
+				new RW_Meta_Box( self::settings_meta_box() ),
+				new RW_Meta_Box( self::assessment_meta_box() ),
+				new RW_Meta_Box( self::payment_meta_box() )
+			);
+			if ( self::$_enable_review ) {
+				$default_tabs[] = array(
+					'callback' => array( $this, 'review_logs_meta_box' ),
+					'meta_box' => 'review_logs'
+				);
+			}
+			if ( is_super_admin() ) {
+				$default_tabs[] = new RW_Meta_Box( self::author_meta_box() );
+			}
 			new LP_Meta_Box_Tabs(
 				array(
 					'post_type' => LP_COURSE_CPT,
-					'tabs'      => array(
-						array(
-							'title'    => __( 'X1', 'learnpress' ),
-							'callback' => ''
-						),
-						new RW_Meta_Box( self::settings_meta_box() ),
-						new RW_Meta_Box( self::assessment_meta_box() )
-					)
+					'tabs'      => $default_tabs
 				)
 			);
 
@@ -813,8 +821,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 *
 		 * @return mixed|null|void
 		 */
-		public
-		static function author_meta_box() {
+		public static function author_meta_box() {
 
 			$course_id = !empty( $_GET['post'] ) ? $_GET['post'] : 0;
 
@@ -880,8 +887,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 *
 		 * @param $post
 		 */
-		public
-		function review_logs_content( $post ) {
+		public function review_logs_content( $post ) {
 			global $wpdb;
 			$view_all = learn_press_get_request( 'view_all_review' );
 			$table    = $wpdb->prefix . 'learnpress_review_logs';

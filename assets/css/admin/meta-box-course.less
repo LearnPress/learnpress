@@ -583,6 +583,78 @@ tr.focus .learn-press-dropdown-item-types > span.learn-press-icon {
     color: #0085ba;
 }
 
+.learn-press-tabs {
+    border: 1px solid #DDD;
+    background: #FFF;
+    ul.heading-tabs {
+        padding: 0;
+        margin: 0 10px;
+        > li {
+            float: left;
+            margin: 0;
+            position: relative;
+            a {
+                display: block;
+                padding: 15px 5px 15px 5px;
+                font-size: 14px;
+                text-decoration: none;
+                outline: none;
+                box-shadow: none;
+            }
+            &.active {
+                a {
+                    font-weight: bold;
+                }
+                &:after {
+                    border: 1px solid #DDD;
+                    -webkit-transform: rotate(45deg);
+                    display: inline-block;
+                    width: 10px;
+                    height: 10px;
+                    content: '';
+                    position: absolute;
+                    left: 50%;
+                    margin-left: -6px;
+                    bottom: -6px;
+                    background: #FFF;
+                    border-bottom: 0;
+                    border-right: 0;
+                }
+            }
+        }
+    }
+    .learn-press-tab-content {
+        > li {
+            padding: 0 20px 0px 20px;
+            border-top: 1px solid #DDD;
+            float: left;
+            width: 100%;
+            margin-right: -100%;
+        }
+        margin: 0;
+    }
+    &.initialize {
+        .learn-press-tab-content > li {
+            visibility: hidden;
+        }
+    }
+    &:not(.initialize) {
+        .learn-press-tab-content > li {
+            display: none;
+            &.active {
+                display: block;
+            }
+        }
+    }
+    > ul {
+        &:after {
+            clear: both;
+            content: '';
+            display: block;
+        }
+    }
+}
+
 .post-type-lp_course {
     #switch-course-tabs,
     #toggle-meta-boxes {
@@ -626,7 +698,7 @@ tr.focus .learn-press-dropdown-item-types > span.learn-press-icon {
             &.ui-sortable:not(.ui-sortable-disabled) {
                 li.ui-sortable-handle {
                     position: relative;
-                    a{
+                    a {
                         border: 1px solid #ddd;
                         padding: 0px 5px;
                         margin: 0 5px;
