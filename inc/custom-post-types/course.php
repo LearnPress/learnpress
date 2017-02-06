@@ -134,40 +134,6 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 					}
 				}
 			}
-
-			return;
-			//learn_press_debug($wp_meta_boxes['lp_course']);
-
-			if ( learn_press_get_user_option( 'course-tabs' ) == 'yes' ) {
-				?>
-				<ul id="course-tabs">
-					<li id="switch-course-metaboxes">
-						<!--<a href="" id="reorder-course-tabs"><?php _e( 'Reorder', 'learnpress' ); ?></a>
-						<a href="" id="complete-reorder-course-tabs"><?php _e( 'Ok', 'learnpress' ); ?></a>-->
-						<a href="<?php echo add_query_arg( 'switch-course-tabs', 'off', get_edit_post_link() ); ?>"><?php _e( 'Switch to meta boxes', 'learnpress' ); ?></a>
-					</li>
-				</ul>
-				<input type="hidden" id="course-tab" name="course-tab" value="<?php echo !empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : ''; ?>" />
-
-				<?php
-			} else {
-				if ( learn_press_get_user_option( 'hide-notice-switch-course-tabs' ) != 'yes' ) {
-					?>
-					<div class="message updated learn-press-message">
-						<p><?php _e( 'Would you like to see the meta boxes in tabs style?', 'learnpress' ); ?></p>
-						<p>
-							<a class="button" href="<?php echo add_query_arg( 'switch-course-tabs', 'on', get_edit_post_link() ); ?>"><?php _e( 'Switch meta boxes to tabs', 'learnpress' ); ?></a>
-							<a class="button" href="<?php echo add_query_arg( 'lp-hide-notice', 'switch-course-tabs', get_edit_post_link() ); ?>"><?php _e( 'Hide', 'learnpress' ); ?></a>
-						</p>
-						<?php printf( '<a href="%s" class="learn-press-admin-notice-dismiss"></a>', add_query_arg( 'lp-hide-notice', 'switch-course-tabs', get_edit_post_link() ) ); ?>
-					</div>
-					<?php
-				}
-				?>
-				<a id="toggle-meta-boxes" href=""><?php _e( 'Toggle', 'learnpress' ); ?></a>
-				<a id="switch-course-tabs" href="<?php echo add_query_arg( 'switch-course-tabs', 'on', get_edit_post_link() ); ?>"><?php _e( 'Switch to tabs', 'learnpress' ); ?></a>
-				<?php
-			}
 		}
 
 		public function init_course() {

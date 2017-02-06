@@ -70,7 +70,7 @@ $current_tab = !empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : '';
 		}
 		?>
 	</ul>
-	<ul class="learn-press-tab-content">
+	<ul class="learn-press-tab-content" data-text="<?php esc_attr_e( 'Initializing...', 'learnpress' ); ?>">
 		<?php
 		foreach ( $tabs as $tab ) {
 			echo '<li id="meta-box-tab-' . $tab['id'] . '" class="' . $tab['id'] . ( is_array( $current_tab ) && $current_tab['id'] == $tab['id'] ? ' active' : '' ) . '">';
@@ -99,7 +99,6 @@ $current_tab = !empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : '';
 		if ( is_array( $current_tab ) ) {
 			echo '<input type="hidden" name="learn-press-meta-box-tab" value="' . $current_tab['id'] . '" />';
 		}
-		//learn_press_debug( $wp_meta_boxes['lp_course'] );
 		?>
 	</ul>
 </div>
