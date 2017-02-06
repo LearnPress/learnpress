@@ -388,7 +388,7 @@ class LP_Order {
 
 		$view_order_endpoint = urlencode( $view_order_endpoint );
 		if ( get_option( 'permalink_structure' ) ) {
-			$view_order_url = learn_press_get_page_link( 'profile' ) . $user->user_login . '/' . $view_order_endpoint . '/' . $this->id;
+			$view_order_url = learn_press_get_page_link( 'profile' ) . $user->user_login . '/' . $view_order_endpoint . '/' . $this->id . '/';
 		} else {
 			$args         = array(
 				'user' => $user->user_login
