@@ -16,6 +16,19 @@ class LP_Schedules
         $this->_update_user_course_expired();
         //add_action( 'learn_press_update_user_course_schedule', array( $this, 'user_course_schedule' ) );
     }
+	
+	private function _check_table_exit($tablename='',$prefix=''){
+		global $wpdb;
+		if(!$prefix){
+			$prefix = $wpdb->prefix;
+		}
+		$table_name = $prefix.$tablename;
+		if($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
+			return false;
+		} else {
+			return true;
+		}
+	}
 
     /**
      * Auto finished course when time is expired for users
@@ -23,21 +36,19 @@ class LP_Schedules
     private function _update_user_course_expired()
     {
         global $wpdb;
-
         /**
          * Find all courses that user did not finish yet
          */
-        if (!$wpdb->prefix . 'learnpress_user_items') {
+        if (! $this->_check_table_exit('learnpress_user_items') ) {
             return;
         }
-
         $query = $wpdb->prepare("
 			SELECT *
 			FROM {$wpdb->prefix}learnpress_user_items
 			WHERE end_time = %s
 			AND item_type = %s
 			LIMIT 0, 10
-		", '0000-00-00 00:00:00', 'lp_course');
+		", '0000-00-00 00:00:00', 'lp_course');	
         if ($results = $wpdb->get_results($query)) {
             foreach ($results as $row) {
                 $course = learn_press_get_course($row->item_id);
