@@ -241,14 +241,7 @@
 
 				}
 
-				$('#postbox-container-2').prepend($('#course_tabs'));
-				$('#course_tabs #course-tabs-h3 a').click(function (e) {
-					e.preventDefault();
-					var id = $(this).attr('href'),
-						$box = $(id);
-					$(window).scrollTop($box.offset().top - 120);
-				});
-				$('<div id="course_tabs_placeholder" />').insertAfter($('#course_tabs'));
+
 
 				$(document)
 					.on('keyup', '.lp-modal-search input[name="lp-item-name"]', this.searchItem)

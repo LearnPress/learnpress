@@ -223,6 +223,7 @@ if ( !class_exists( 'LP_Admin' ) ) {
 			// Admin menu
 			include_once( 'class-lp-admin-menu.php' );
 
+			include_once( 'class-lp-meta-box-tabs.php' );
 
 		}
 	}
