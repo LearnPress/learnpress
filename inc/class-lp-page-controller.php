@@ -124,8 +124,11 @@ class LP_Page_Controller {
 		if ( learn_press_is_profile() ) {
 			$current_tab = learn_press_get_current_profile_tab( false );
 			if ( $current_tab && !learn_press_profile_tab_exists( $current_tab ) ) {
-				wp_redirect( learn_press_get_page_link( 'profile' ) );
-				exit();
+				global $wp;
+				if ( empty( $wp->query_vars['view'] ) ) {
+					wp_redirect( learn_press_get_page_link( 'profile' ) );
+					exit();
+				}
 			}
 		}
 		$queried_object_id = !empty( $wp_query->queried_object_id ) ? $wp_query->queried_object_id : 0;
@@ -188,7 +191,7 @@ class LP_Page_Controller {
 	public function page_title( $title ) {
 		global $wp_query;
 		if ( !empty( $wp_query->queried_object_id ) ) {
-			$title['title'] = get_the_title($wp_query->queried_object_id );
+			$title['title'] = get_the_title( $wp_query->queried_object_id );
 		}
 		return $title;
 	}
