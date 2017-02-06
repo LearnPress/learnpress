@@ -953,7 +953,7 @@ class LP_Abstract_User {
 		}
 		$user                = learn_press_get_current_user();
 		$history             = $user->get_quiz_results( $quiz_id, $course_id, true );
-		$current_question_id = learn_press_get_user_item_meta( $history->history_id, 'lp_current_question_after_close', true );
+		$current_question_id = $history? learn_press_get_user_item_meta( $history->history_id, 'lp_current_question_after_close', true ):array();
 		if ( !empty( $current_question_id ) ) {
 			$question_id = $current_question_id;
 		}
