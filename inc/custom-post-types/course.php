@@ -134,39 +134,6 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 					}
 				}
 			}
-
-			//learn_press_debug($wp_meta_boxes['lp_course']);
-
-			if ( learn_press_get_user_option( 'course-tabs' ) == 'yes' ) {
-				?>
-				<ul id="course-tabs">
-					<li id="switch-course-metaboxes">
-						<!--<a href="" id="reorder-course-tabs"><?php _e( 'Reorder', 'learnpress' ); ?></a>
-						<a href="" id="complete-reorder-course-tabs"><?php _e( 'Ok', 'learnpress' ); ?></a>-->
-                        <a href="<?php echo add_query_arg( 'switch-course-tabs', 'off', get_edit_post_link() ); ?>"><?php _e( 'Switch to meta boxes', 'learnpress' ); ?></a>
-                    </li>
-                </ul>
-                <input type="hidden" id="course-tab" name="course-tab" value="<?php echo !empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : ''; ?>" />
-
-				<?php
-			} else {
-				if ( learn_press_get_user_option( 'hide-notice-switch-course-tabs' ) != 'yes' ) {
-					?>
-					<div class="message updated learn-press-message">
-						<p><?php _e( 'Would you like to see the meta boxes in tabs style?', 'learnpress' ); ?></p>
-						<p>
-							<a class="button" href="<?php echo add_query_arg( 'switch-course-tabs', 'on', get_edit_post_link() ); ?>"><?php _e( 'Switch meta boxes to tabs', 'learnpress' ); ?></a>
-							<a class="button" href="<?php echo add_query_arg( 'lp-hide-notice', 'switch-course-tabs', get_edit_post_link() ); ?>"><?php _e( 'Hide', 'learnpress' ); ?></a>
-						</p>
-						<?php printf( '<a href="%s" class="learn-press-admin-notice-dismiss"></a>', add_query_arg( 'lp-hide-notice', 'switch-course-tabs', get_edit_post_link() ) ); ?>
-					</div>
-					<?php
-				}
-				?>
-				<a id="toggle-meta-boxes" href=""><?php _e( 'Toggle', 'learnpress' ); ?></a>
-				<a id="switch-course-tabs" href="<?php echo add_query_arg( 'switch-course-tabs', 'on', get_edit_post_link() ); ?>"><?php _e( 'Switch to tabs', 'learnpress' ); ?></a>
-				<?php
-			}
 		}
 
 		public function init_course() {
@@ -519,8 +486,29 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			if ( LP_COURSE_CPT != learn_press_get_requested_post_type() ) {
 				return;
 			}
+			$default_tabs = array(
+				new RW_Meta_Box( self::settings_meta_box() ),
+				new RW_Meta_Box( self::assessment_meta_box() ),
+				new RW_Meta_Box( self::payment_meta_box() )
+			);
+			if ( self::$_enable_review ) {
+				$default_tabs[] = array(
+					'callback' => array( $this, 'review_logs_meta_box' ),
+					'meta_box' => 'review_logs'
+				);
+			}
+			if ( is_super_admin() ) {
+				$default_tabs[] = new RW_Meta_Box( self::author_meta_box() );
+			}
+			new LP_Meta_Box_Tabs(
+				array(
+					'post_type' => LP_COURSE_CPT,
+					'tabs'      => $default_tabs
+				)
+			);
+
 			new RW_Meta_Box( self::curriculum_meta_box() );
-			new RW_Meta_Box( self::settings_meta_box() );
+			/*new RW_Meta_Box( self::settings_meta_box() );
 			new RW_Meta_Box( self::assessment_meta_box() );
 			new RW_Meta_Box( self::payment_meta_box() );
 			if ( self::$_enable_review ) {
@@ -529,7 +517,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			//new RW_Meta_Box( self::video_meta_box() );
 			if ( is_super_admin() ) {
 				new RW_Meta_Box( self::author_meta_box() );
-			}
+			}*/
 			parent::add_meta_boxes();
 		}
 
@@ -565,8 +553,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 * @return mixed|null|void
 		 */
 
-		public
-		static function settings_meta_box() {
+		public static function settings_meta_box() {
 			$prefix = '_lp_';
 
 			$meta_box = array(
@@ -800,8 +787,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 *
 		 * @return mixed|null|void
 		 */
-		public
-		static function author_meta_box() {
+		public static function author_meta_box() {
 
 			$course_id = !empty( $_GET['post'] ) ? $_GET['post'] : 0;
 
@@ -867,8 +853,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 *
 		 * @param $post
 		 */
-		public
-		function review_logs_content( $post ) {
+		public function review_logs_content( $post ) {
 			global $wpdb;
 			$view_all = learn_press_get_request( 'view_all_review' );
 			$table    = $wpdb->prefix . 'learnpress_review_logs';

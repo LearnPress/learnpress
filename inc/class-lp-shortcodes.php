@@ -67,7 +67,7 @@ class LP_Shortcodes {
 					if ( empty( $query['view'] ) ) {
 						$redirect = learn_press_user_profile_link( $wp->query_vars['user'] );
 
-						if ( !empty($redirect ) ) {
+						if ( !empty( $redirect ) ) {
 							wp_redirect( $redirect );
 							die();
 						}
@@ -93,6 +93,7 @@ class LP_Shortcodes {
 					if ( !preg_match( '/\[learn_press_profile\s?(.*)\]/', $post->post_content ) ) {
 						$post->post_content .= '[learn_press_profile]';
 					}
+
 				}
 
 			} elseif ( $page_id == learn_press_get_page_id( 'become_a_teacher' ) ) {
@@ -299,17 +300,16 @@ class LP_Shortcodes {
 			$tabs = learn_press_user_profile_tabs( $user );
 			if ( !empty( $wp->query_vars['view'] ) ) {
 				$current = $wp->query_vars['view'];
-			}else{
+			} else {
 				$current = '';
 			}
-			if ( empty( $tabs[$current] ) ) {
+			if ( empty( $tabs[$current] ) && empty( $wp->query_vars['view'] ) ) {
 				$tab_keys = array_keys( $tabs );
 				$current  = reset( $tab_keys );
 			}
 			$_REQUEST['tab'] = $current;
 			$_POST['tab']    = $current;
 			$_GET['tab']     = $current;
-
 			if ( !learn_press_current_user_can_view_profile_section( $current, $user ) ) {
 				learn_press_get_template( 'profile/private-area.php' );
 			} else {

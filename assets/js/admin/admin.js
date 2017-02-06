@@ -84,9 +84,9 @@
 		LP_Admin.init();
 		$(document).on('click', '.plugin-action-buttons a', function (e) {
 
-            if ( $(e.target).closest( '.learnpress-premium-plugin' ).length ) {
-                return;
-            }
+			if ($(e.target).closest('.learnpress-premium-plugin').length) {
+				return;
+			}
 
 			e.preventDefault();
 			var $plugin = $(this).closest('.plugin-card');
@@ -473,7 +473,7 @@ lprHook.addAction('lpr_admin_quiz_question_html', _lprAdminQuestionHTML);
 			.lprFancyCheckbox();
 		$('#learn-press-add-ons-wrap').on('click', '.plugin-action-buttons a', function (evt) {
 
-			if ( $(evt.target).closest( '.learnpress-premium-plugin' ).length ) {
+			if ($(evt.target).closest('.learnpress-premium-plugin').length) {
 				return;
 			}
 			evt.preventDefault();
@@ -714,10 +714,10 @@ lprHook.addAction('lpr_admin_quiz_question_html', _lprAdminQuestionHTML);
 			if (form.length == 0) {
 				form = $(wp.template('form-quick-add-lesson-link')()).css({zIndex: 99999}).appendTo($body);
 				$('select', form).select2({
-					width            : 300,
-					containerCssClass: 'lpr-container-dropdown',
-					dropdownCssClass : 'lpr-select-dropdown'
-				})
+						width            : 300,
+						containerCssClass: 'lpr-container-dropdown',
+						dropdownCssClass : 'lpr-select-dropdown'
+					})
 					.on('select2-close', function () {
 						$('#form-quick-add-lesson-link').hide();
 						tinyMCE.activeEditor.focus();
@@ -935,13 +935,13 @@ jQuery(document).ready(function ($) {
 
 		var LeanpressSlider = {
 
-			$el			: $self,
-			options		: options,
-			$items		: [],
-			$control	: $('<div class="learnpress-controls"><div class="next-item"></div><div class="prev-item"></div></div>'),
-			$wrapSlider : $('<div class="learnpress-wrap-items"></div>'),
+			$el        : $self,
+			options    : options,
+			$items     : [],
+			$control   : $('<div class="learnpress-controls"><div class="next-item"></div><div class="prev-item"></div></div>'),
+			$wrapSlider: $('<div class="learnpress-wrap-items"></div>'),
 
-			init		: function () {
+			init: function () {
 
 				var _this = this;
 
@@ -949,34 +949,34 @@ jQuery(document).ready(function ($) {
 				_this.events();
 
 				_this.$el.data({
-					'LearnpressSlider' 			: _this,
-					'LearnpressSliderOptions'	: _this.options
+					'LearnpressSlider'       : _this,
+					'LearnpressSliderOptions': _this.options
 				});
 			},
 
-            createHTML: function () {
+			createHTML: function () {
 
-				var _this 			= this;
+				var _this = this;
 
-				$('> *', _this.$el).each( function (index, item) {
+				$('> *', _this.$el).each(function (index, item) {
 
-					_this.$items.push( $(this) );
-					$(this).addClass( 'learnpress-item' );
-					_this.$wrapSlider.append( this );
+					_this.$items.push($(this));
+					$(this).addClass('learnpress-item');
+					_this.$wrapSlider.append(this);
 
 				});
 
-                _this.$el.append(_this.$wrapSlider).append(_this.$control);
-                _this.activeItem(_this.options.active);
+				_this.$el.append(_this.$wrapSlider).append(_this.$control);
+				_this.activeItem(_this.options.active);
 
 			},
 
 			activeItem: function (index) {
 
-				var _this 	= this,
-					$item 	= _this.$items[index];
+				var _this = this,
+					$item = _this.$items[index];
 
-				if ( _this.$currentActive ) {
+				if (_this.$currentActive) {
 					_this.$currentActive.removeClass('learnpress-active');
 				}
 				$item.addClass('learnpress-active');
@@ -988,14 +988,14 @@ jQuery(document).ready(function ($) {
 			nextItem: function () {
 
 
-                var _this 	= this,
-					index 	= _this.currentActive + 1;
+				var _this = this,
+					index = _this.currentActive + 1;
 
-                if ( index >= _this.totalItems ) {
-                    index = 0;
-                }
+				if (index >= _this.totalItems) {
+					index = 0;
+				}
 
-                _this.activeItem(index);
+				_this.activeItem(index);
 			},
 
 			prevItem: function () {
@@ -1003,121 +1003,144 @@ jQuery(document).ready(function ($) {
 				var _this = this,
 					index = _this.currentActive - 1;
 
-				if ( index <= -1 ) {
-                    index = _this.totalItems - 1;
+				if (index <= -1) {
+					index = _this.totalItems - 1;
 				}
 
-                _this.activeItem(index);
+				_this.activeItem(index);
 
 
 			},
 
-            events: function () {
+			events: function () {
 
 				var _this = this;
 
-				_this.$btnNext 		= $('.next-item', _this.$control);
-				_this.$btnPrev 		= $('.prev-item', _this.$control);
-				_this.totalItems 	= _this.$items.length;
+				_this.$btnNext = $('.next-item', _this.$control);
+				_this.$btnPrev = $('.prev-item', _this.$control);
+				_this.totalItems = _this.$items.length;
 
 
-                _this.$btnNext.on('click', function () {
+				_this.$btnNext.on('click', function () {
 					_this.nextItem();
 				});
 
-                _this.$btnPrev.on('click', function () {
+				_this.$btnPrev.on('click', function () {
 					_this.prevItem();
 				});
 
-                $(window).resize( function () {
+				$(window).resize(function () {
 
 				});
 			}
 
 		};
 
-        LeanpressSlider.init();
+		LeanpressSlider.init();
 
 	};
 
-	$(document).ready( function() {
+	$(document).ready(function () {
 
 		// Search Add-ons & Theme
-        var $wrapAddon 	= $('#learn-press-add-ons-wrap'),
-            $addOnClone = $wrapAddon.clone(true);
+		var $wrapAddon = $('#learn-press-add-ons-wrap'),
+			$addOnClone = $wrapAddon.clone(true);
 
-        $wrapAddon.data('addOnClone', $addOnClone);
-        $wrapAddon.on('keydown change', '.lp-search-addon', function (event) {
+		$wrapAddon.data('addOnClone', $addOnClone);
+		$wrapAddon.on('keydown change', '.lp-search-addon', function (event) {
 
-            var $this = $(this);
+			var $this = $(this);
 
-            setTimeout ( function () {
+			setTimeout(function () {
 
-                var txt 					= $this.val(),
-                    $clone 					= $wrapAddon.data('addOnClone').clone(true),
-                    $wrapFreeAddon 			= $('.learnpress-free-plugin-wrap', $clone),
-                    $wrapPremium 			= $('.learnpress-premium-plugin-wrap', $clone),
-					$wrapThemesEducation	= $('.learnpress-theme-education', $clone),
-					$wrapThemesOther		= $('.learnpress-theme-other', $clone);
+				var txt = $this.val(),
+					$clone = $wrapAddon.data('addOnClone').clone(true),
+					$wrapFreeAddon = $('.learnpress-free-plugin-wrap', $clone),
+					$wrapPremium = $('.learnpress-premium-plugin-wrap', $clone),
+					$wrapThemesEducation = $('.learnpress-theme-education', $clone),
+					$wrapThemesOther = $('.learnpress-theme-other', $clone);
 
-                txt = txt.trim().toUpperCase();
+				txt = txt.trim().toUpperCase();
 
-                $('.plugin-card-learnpress', $clone).each( function (index, item) {
+				$('.plugin-card-learnpress', $clone).each(function (index, item) {
 
-                    var $that = $(this),
-                        title;
+					var $that = $(this),
+						title;
 
-                    if ( $('.theme-title > a', this).length ) { // Get title in tab Related Themes
-                        title = $('.theme-title > a', this).text();
-                    }
-                    else if ( $('.plugin-card-top .column-name h3', this) ) { // Get title in tab Instaled & Plugin
-                        title = $('.plugin-card-top .column-name h3', this).text();
-                    }
-                    title = title.trim().toUpperCase();
+					if ($('.theme-title > a', this).length) { // Get title in tab Related Themes
+						title = $('.theme-title > a', this).text();
+					}
+					else if ($('.plugin-card-top .column-name h3', this)) { // Get title in tab Instaled & Plugin
+						title = $('.plugin-card-top .column-name h3', this).text();
+					}
+					title = title.trim().toUpperCase();
 
-                    if ( txt != '' && title.indexOf(txt) == -1) {
-                        $that.remove();
-                    }
-                });
+					if (txt != '' && title.indexOf(txt) == -1) {
+						$that.remove();
+					}
+				});
 
-                // Count for plugin
-                $('.learnpress-count-addon', $wrapFreeAddon).text($('.plugin-card-learnpress:not(.lp-addon-hidden)', $wrapFreeAddon).length);
-                $('.learnpress-count-addon', $wrapPremium).text($('.plugin-card-learnpress:not(.lp-addon-hidden)', $wrapPremium).length);
+				// Count for plugin
+				$('.learnpress-count-addon', $wrapFreeAddon).text($('.plugin-card-learnpress:not(.lp-addon-hidden)', $wrapFreeAddon).length);
+				$('.learnpress-count-addon', $wrapPremium).text($('.plugin-card-learnpress:not(.lp-addon-hidden)', $wrapPremium).length);
 
 				/* Count for theme */
-                $('.learnpress-count', $wrapThemesEducation).text($('.plugin-card-learnpress:not(.lp-addon-hidden)', $wrapThemesEducation).length);
-                $('.learnpress-count', $wrapThemesOther).text($('.plugin-card-learnpress:not(.lp-addon-hidden)', $wrapThemesOther).length);
+				$('.learnpress-count', $wrapThemesEducation).text($('.plugin-card-learnpress:not(.lp-addon-hidden)', $wrapThemesEducation).length);
+				$('.learnpress-count', $wrapThemesOther).text($('.plugin-card-learnpress:not(.lp-addon-hidden)', $wrapThemesOther).length);
 
-                $('> .learn-press-add-ons', $wrapAddon).remove();
-                $wrapAddon.append($('> .learn-press-add-ons', $clone));
+				$('> .learn-press-add-ons', $wrapAddon).remove();
+				$wrapAddon.append($('> .learn-press-add-ons', $clone));
 
-            }, 100);
-        });
+			}, 100);
+		});
 
-        // Hidden Button Preview In Course When Course Status Is Pending
-		var $bodyCourse	= $('.post-type-lp_course');
+		// Hidden Button Preview In Course When Course Status Is Pending
+		var $bodyCourse = $('.post-type-lp_course');
 
-		if ( $bodyCourse.length ) {
+		if ($bodyCourse.length) {
 
-			var $minorPubish 	= $('#minor-publishing', $bodyCourse),
-				$postPreview	= $('#post-preview', $minorPubish),
-				$postStatus 	= $('#hidden_post_status', $minorPubish),
-				postStatus 		= $postStatus.val();
+			var $minorPubish = $('#minor-publishing', $bodyCourse),
+				$postPreview = $('#post-preview', $minorPubish),
+				$postStatus = $('#hidden_post_status', $minorPubish),
+				postStatus = $postStatus.val();
 
-			if ( postStatus && postStatus === 'pending' ) {
-                $postPreview.hide();
+			if (postStatus && postStatus === 'pending') {
+				$postPreview.hide();
 			}
 		}
-
-
 	});
 
-	$(window).load( function () {
+	$.fn.metaBoxTabs = function () {
+		return $.each(this, function () {
+			var $el = $(this),
+				tabs = $el.data('metaBoxTabs');
+			if (!tabs) {
+				$el.find('.heading-tabs a').click(function (e) {
+					e.preventDefault();
+					var $a = $(this),
+						$li = $a.parent(),
+						url = $a.attr('href'),
+						id = url.getQueryVar('tab');
+					$li.addClass('active').siblings().removeClass('active');
+					$el.find('#meta-box-tab-' + id).addClass('active').siblings().removeClass('active');
+					LP.setUrl(url);
+					console.log(id)
+					//$(window).scrollTop($box.offset().top - 120);
+				});
+				$el.data('metaBoxTabs', tabs);
+				$el.removeClass('initialize');
+			}
+		})
+	}
 
+	$(window).load(function () {
 		/* Slider Advertise Themes */
-		if ( $('.learnpress-advertis-admin').length ) {
-            $('.learnpress-advertis-admin').learnpressSlider();
+		if ($('.learnpress-advertis-admin').length) {
+			$('.learnpress-advertis-admin').learnpressSlider();
 		}
+		$('.learn-press-tabs').metaBoxTabs();
+		//
+
 	});
 
 })(jQuery);
