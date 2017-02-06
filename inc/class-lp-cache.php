@@ -510,6 +510,30 @@ class LP_Cache {
 	 *
 	 * @return array|bool|mixed
 	 */
+	public static function set_user_profile_orders( $key_or_value, $value = false ) {
+		if ( func_num_args() == 1 ) {
+			wp_cache_set( 'user-profile-orders', $key_or_value, self::$_group );
+			return $key_or_value;
+		}
+		return self::_set_cache( 'user-profile-orders', $key_or_value, $value );
+	}
+
+	/**
+	 * @param bool $key
+	 * @param bool $def
+	 *
+	 * @return array|bool|mixed
+	 */
+	public static function get_user_profile_orders( $key = false, $def = false ) {
+		return self::_get_cache( 'user-profile-orders', $key, $def );
+	}
+
+	/**
+	 * @param      $key_or_value
+	 * @param bool $value
+	 *
+	 * @return array|bool|mixed
+	 */
 	public static function set_user_item_id( $key_or_value, $value = false ) {
 		if ( func_num_args() == 1 ) {
 			wp_cache_set( 'user-item-id', $key_or_value, self::$_group );
