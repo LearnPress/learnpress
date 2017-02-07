@@ -186,6 +186,8 @@ class LP_Install {
 			AND b.option_value < %d";
 		$wpdb->query( $wpdb->prepare( $sql, $wpdb->esc_like( '_transient_' ) . '%', $wpdb->esc_like( '_transient_timeout_' ) . '%', time() ) );
 
+		learn_press_delete_user_option( 'hide-notice-template-files' );
+		
 		// Fix for WP 4.7
 		if ( did_action( 'admin_init' ) ) {
 			self::_auto_update();
