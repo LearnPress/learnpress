@@ -166,12 +166,12 @@
     input[type="checkbox"] {
         opacity: 1;
     }
-    .lp-setting-field{
-        span{
+    .lp-setting-field {
+        span {
             vertical-align: top;
             line-height: 24px;
         }
-        .lp-sign-times{
+        .lp-sign-times {
             font-size: 19px;
         }
     }
@@ -397,7 +397,7 @@ li.quiz, li.lesson, li.quick_lesson, li.quick_quiz {
         position: relative;
         overflow: hidden;
         -webkit-transition: visibility 1s, opacity 1s;
-        transition:  visibility 1s, opacity 1s;
+        transition: visibility 1s, opacity 1s;
         padding: 20px;
         background-color: #fff;
         border: 1px solid #ddd;
@@ -420,7 +420,7 @@ li.quiz, li.lesson, li.quick_lesson, li.quick_quiz {
         visibility: hidden;
         opacity: 0;
         -webkit-transition: visibility 0.5s linear, opacity 0.5s linear;
-        transition:  visibility 0.5s linear, opacity 0.5s linear;
+        transition: visibility 0.5s linear, opacity 0.5s linear;
 
     }
     img {
@@ -480,22 +480,24 @@ li.quiz, li.lesson, li.quick_lesson, li.quick_quiz {
             }
         }
     }
-    @media only screen and (max-width:1200px) {
+    @media only screen and (max-width: 1200px) {
         .theme-thumbnail {
             width: 50%;
         }
+
         .theme-detail {
             margin-left: 50%;
         }
     }
 
-    @media only screen and (max-width:960px) {
+    @media only screen and (max-width: 960px) {
         margin-left: 36px;
 
         .theme-thumbnail {
             float: none;
             width: 100%;
         }
+
         .theme-detail {
             margin-top: 20px;
             margin-left: 0;
@@ -540,6 +542,7 @@ li.quiz, li.lesson, li.quick_lesson, li.quick_quiz {
     text-decoration: none;
     content: attr(data-text-disable);
 }
+
 .lp-search-addon {
     margin: 0;
     width: 280px;
@@ -750,6 +753,7 @@ li.quiz, li.lesson, li.quick_lesson, li.quick_quiz {
     overflow: hidden;
     margin-bottom: 30px;
 }
+
 #learn-press-add-ons-wrap .theme-controls {
     margin-top: 20px;
     margin-bottom: 0;
@@ -2088,5 +2092,185 @@ input.regular-text[id^="learn-press-emails"] {
             font-weight: 400;
             margin-left: 10px;
         }
+    }
+}
+
+.learn-press-tabs {
+    border: 1px solid #DDD;
+    background: #FFF;
+    ul.heading-tabs {
+        padding: 0 10px;
+        margin: 0px;
+        border-bottom: 1px solid #DDD;
+
+        > li {
+            float: left;
+            margin: 0;
+            position: relative;
+            a {
+                display: block;
+                padding: 15px 10px 15px 10px;
+                font-size: 14px;
+                text-decoration: none;
+                outline: none;
+                box-shadow: none;
+            }
+            &:before {
+                content: '';
+                border-right: 1px solid #DDD;
+                position: absolute;
+                right: 0;
+                height: 20px;
+                top: 50%;
+                margin-top: -10px;
+            }
+            &.active {
+                a {
+                    /*font-weight: bold;*/
+                    color: #002a3e;
+                }
+                &:after {
+                    border: 1px solid #DDD;
+                    -webkit-transform: rotate(45deg);
+                    -moz-transform: rotate(45deg);
+                    -ms-transform: rotate(45deg);
+                    -o-transform: rotate(45deg);
+                    display: inline-block;
+                    width: 10px;
+                    height: 10px;
+                    content: '';
+                    position: absolute;
+                    left: 50%;
+                    margin-left: -6px;
+                    bottom: -6px;
+                    background: #FFF;
+                    border-bottom: 0;
+                    border-right: 0;
+                }
+            }
+            &:last-child {
+                &:before {
+                    display: none;
+                }
+            }
+        }
+    }
+
+    .learn-press-tab-content {
+        > li {
+            padding: 0 20px 0px 20px;
+            float: left;
+            width: 100%;
+            margin-right: -100%;
+            box-sizing: border-box;
+        }
+        margin: 0;
+    }
+    &.initialize {
+        .learn-press-tab-content > li {
+            visibility: hidden;
+        }
+        .learn-press-tab-content {
+            position: relative;
+            &:before {
+                content: attr(data-text);
+                position: absolute;
+                height: 40px;
+                font-size: 24px;
+                line-height: 40px;
+                width: 50%;
+                text-align: center;
+                margin-left: 25%;
+                top: 50%;
+                margin-top: -20px;
+                color: #a0a0a0;
+
+                animation: learn-press-meta-box-tabs-initialize-animation linear 1s;
+                animation-iteration-count: infinite;
+                -webkit-animation: learn-press-meta-box-tabs-initialize-animation linear 1s;
+                -webkit-animation-iteration-count: infinite;
+                -moz-animation: learn-press-meta-box-tabs-initialize-animation linear 1s;
+                -moz-animation-iteration-count: infinite;
+                -o-animation: learn-press-meta-box-tabs-initialize-animation linear 1s;
+                -o-animation-iteration-count: infinite;
+                -ms-animation: learn-press-meta-box-tabs-initialize-animation linear 1s;
+                -ms-animation-iteration-count: infinite;
+            }
+        }
+    }
+    &:not(.initialize) {
+        .learn-press-tab-content > li {
+            display: none;
+            &.active {
+                display: block;
+            }
+        }
+    }
+    > ul {
+        &:after {
+            clear: both;
+            content: '';
+            display: block;
+        }
+    }
+}
+
+@keyframes learn-press-meta-box-tabs-initialize-animation {
+    0% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+@-moz-keyframes learn-press-meta-box-tabs-initialize-animation {
+    0% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+@-webkit-keyframes learn-press-meta-box-tabs-initialize-animation {
+    0% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+@-o-keyframes learn-press-meta-box-tabs-initialize-animation {
+    0% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+@-ms-keyframes learn-press-meta-box-tabs-initialize-animation {
+    0% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
     }
 }

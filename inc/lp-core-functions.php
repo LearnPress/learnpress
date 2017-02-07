@@ -2683,6 +2683,19 @@ if ( !function_exists( 'lp_remove_admin_warning' ) ) {
 	}
 }
 
+function learn_press_get_graduation_text( $slug ) {
+	switch ( $slug ) {
+		case 'passed':
+			$text = __( 'Passed', 'learnpress' );
+			break;
+		case 'failed':
+			$text = __( 'Failed', 'learnpress' );
+			break;
+		default:
+			$text = $slug;
+	}
+	return apply_filters( 'learn_press_quiz_graduation_text', $text, $slug );
+}
 
 // Show filters for students list
 function learn_press_get_students_list_filter() {

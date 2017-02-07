@@ -1,6 +1,9 @@
-1/ Profile edit
-2/ Issue with some Checkout settings (https://app.asana.com/0/26798781129771/235872267722593)
-3/ Checkout page show 'Internal Server Error'
-4/ Preview lesson/quiz (assigned to a course) show 404
-5/ Wrong profile link when viewing from admin side
-6/ Improve tab Courses in profile page
++ Assign course's items to user when assigning course
++ Options to change key 'lessons' and 'quizzes' when viewing a lesson/quiz in a course.
+(Section "Course item slug" in wp-admin/admin.php?page=learn-press-settings&tab=courses)
++ Course pagination issue in some case
++ Can not add to cart for non-loggedin user (woocommerce addon)
++ Broken cert when previewing to print in single course (Certificate)
++ Paid memberships show user as deleted after buying course (Paid membership)
++ Fixed overwrite templates issue (Paid membership)
++ "page isn’t working" when creating a new post type (conflict with metabox in the-7 theme)

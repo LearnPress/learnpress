@@ -260,6 +260,10 @@ class LP_Email {
 		$this->enable       = LP()->settings->get( 'emails_' . $this->id . '.enable' ) == 'yes';
 	}
 
+	public function get_variables_support() {
+		return apply_filters( 'learn_press_email_variables_support', $this->support_variables, $this );
+	}
+
 	public function __get( $key ) {
 		if ( !empty( $this->{$key} ) ) {
 			return $this->{$key};
@@ -353,7 +357,9 @@ class LP_Email {
 			$search  = array_keys( $this->variables );
 			$replace = array_values( $this->variables );
 		}
-		return str_replace( apply_filters( 'learn_press_email_format_string_find', $search, $this ), apply_filters( 'learn_press_email_format_string_replace', $replace, $this ), $string );
+		$search  = apply_filters( 'learn_press_email_format_string_find', $search, $this );
+		$replace = apply_filters( 'learn_press_email_format_string_replace', $replace, $this );
+		return str_replace( $search, $replace, $string );
 	}
 
 	public function get_recipient() {
@@ -375,12 +381,15 @@ class LP_Email {
 			$email_content = preg_replace( $this->text_search, $this->text_replace, $this->get_content_text_message() );
 		}
 
+		/*$search = array();
+		$replace = array();
+
 		if ( is_array( $this->variables ) ) {
 			$search        = array_keys( $this->variables );
 			$replace       = array_values( $this->variables );
-			$email_content = str_replace( $search, $replace, $email_content );
-		}
+		}*/
 
+		$email_content = $this->format_string( $email_content );
 
 		return wordwrap( $email_content, 70 );
 	}
