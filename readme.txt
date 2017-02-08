@@ -193,6 +193,13 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.  
 
 == Changelog ==
+= 2.1.3 =
++ Fixed wrong notice outdated templates
++ Fixed issue when viewing order details in profile
++ Improved admin course tabs
++ Fixed course does not finish automatically when expired
++ Fixed translation issue with failed/passed strings
+
 = 2.1.2 =
 + Fixed Assign course's items to user when assigning course
 + Fixed Options to change key 'lessons' and 'quizzes' when viewing a lesson/quiz in a course.
