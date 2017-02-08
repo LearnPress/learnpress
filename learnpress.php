@@ -235,7 +235,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 
 			add_action( 'init', array( $this, 'init' ), 15 );
 
-			add_action( 'widgets_init', array( $this, 'widgets_init' ) );
+			///add_action( 'widgets_init', array( $this, 'widgets_init' ) );
 
 			add_action( 'template_redirect', 'learn_press_handle_purchase_request' );
 			add_action( 'after_setup_theme', array( $this, 'setup_theme' ) );
