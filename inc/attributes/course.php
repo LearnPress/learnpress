@@ -1,57 +1,193 @@
 <?php
 
 /**
+ * Add attributes feature for course
  *
+ * @since 2.1.4
  */
 if ( !class_exists( 'LP_Course_Attributes' ) ) {
+	/**
+	 * Class LP_Course_Attributes
+	 */
 	class LP_Course_Attributes {
+		/**
+		 * @var string
+		 */
 		private $_tax = '';
 
+		/**
+		 * @var bool
+		 */
 		private $_screen = false;
 
+		/**
+		 * @var null
+		 */
+		private $_attribute_terms = null;
+
+		/**
+		 * LP_Course_Attributes constructor.
+		 */
 		public function __construct() {
-			add_action( 'init', array( $this, 'register' ), 100 );
+			add_action( 'init', array( $this, 'register' ), 10 );
 			add_action( 'load-edit-tags.php', array( $this, 'ready' ) );
+			add_action( 'pre_delete_term', array( $this, 'pre_delete_term' ), 10, 2 );
+			add_action( 'delete_term', array( $this, 'delete_terms' ), 10, 5 );
 
 			add_filter( 'learn_press_admin_tabs_info', array( $this, 'admin_tab' ) );
 			add_filter( "course_attribute_row_actions", array( $this, 'row_actions' ), 10, 2 );
 			add_filter( 'terms_clauses', array( $this, 'term_clauses' ), 10, 3 );
 			add_filter( 'learn_press_admin_tabs_on_pages', array( $this, 'admin_tabs_pages' ) );
+
+			add_filter( 'learn_press_lp_course_tabs', array( $this, 'course_attributes_tab' ) );
+			add_action( 'learn_press_admin_load_scripts', array( $this, 'admin_scripts' ) );
+
+			LP_Request_Handler::register(
+				array(
+					array(
+						'priority' => 100,
+						'action'   => 'remove-course-attribute-terms',
+						'callback' => array( $this, 'remove_terms' )
+					),
+					array(
+						'action'   => 'add-attribute-to-course',
+						'callback' => array( $this, 'add_attribute_to_course' )
+					),
+					array(
+						'action'   => 'add-attribute-value',
+						'callback' => array( $this, 'add_attribute_value' )
+					)
+				)
+			);
 		}
 
+		public function add_attribute_value( $course_id ) {
+
+			if ( LP_COURSE_CPT != get_post_type( $course_id ) ) {
+				return;
+			}
+
+			$taxonomy = learn_press_get_request( 'taxonomy' );
+			$name     = learn_press_get_request( 'name' );
+
+			if ( $new = learn_press_add_course_attribute( $name ) ) {
+
+			}
+		}
+
+		public function add_attribute_to_course( $course_id ) {
+			$taxonomy = learn_press_get_request( 'taxonomy' );
+
+			if ( LP_COURSE_CPT != get_post_type( $course_id ) ) {
+				return;
+			}
+
+			if ( $term = learn_press_add_attribute_to_course( $course_id, $taxonomy ) ) {
+				include learn_press_get_admin_view( 'meta-boxes/course/html-course-attribute' );
+			}
+
+			die();
+		}
+
+		public function admin_scripts() {
+			LP_Assets::enqueue_script( 'learn-press-course-attributes' );
+			LP_Assets::enqueue_script( 'select2' );
+			LP_Assets::enqueue_style( 'learn-press-course-attributes' );
+			LP_Assets::enqueue_style( 'learn-press-statistics-select2' );
+
+		}
+
+		public function course_attributes_tab( $tabs ) {
+			$tabs['attributes'] = array(
+				'title'    => __( 'Attributes', 'learnpress' ),
+				'callback' => array( $this, 'course_attributes' )
+			);
+			return $tabs;
+		}
+
+		public function course_attributes() {
+			include learn_press_admin_view( 'meta-boxes/course/attributes' );
+		}
+
+		public function remove_terms( $attribute ) {
+			if ( learn_press_delete_attribute_terms( $attribute ) ) {
+				learn_press_add_notice( 'Deleted attribute terms', 'learnpress' );
+			}
+			wp_redirect( remove_query_arg( 'remove-course-attribute-terms' ) );
+		}
+
+		/**
+		 * @param int     $term
+		 * @param int     $tt_id
+		 * @param string  $taxonomy
+		 * @param WP_Term $deleted_term
+		 * @param array   $object_ids
+		 *
+		 * @return array|bool
+		 */
+		public function delete_terms( $term, $tt_id, $taxonomy, $deleted_term, $object_ids ) {
+			if ( LP_COURSE_ATTRIBUTE != $taxonomy ) {
+				return false;
+			}
+			return learn_press_delete_attribute_terms( $deleted_term->slug );
+		}
+
+		public function pre_delete_term( $term, $taxonomy ) {
+
+		}
+
+		/**
+		 *
+		 */
 		public function ready() {
-			if ( !empty( $_REQUEST['taxonomy'] ) && strpos( $_REQUEST['taxonomy'], 'course_attribute' ) !== false ) {
+			if ( !empty( $_REQUEST['taxonomy'] ) && strpos( $_REQUEST['taxonomy'], LP_COURSE_ATTRIBUTE ) !== false ) {
 				$this->_tax    = $_REQUEST['taxonomy'];
 				$this->_screen = get_current_screen();
-				if ( $this->_screen->id == 'edit-course_attribute' ) {
+				if ( $this->_screen->id == 'edit-' . LP_COURSE_ATTRIBUTE ) {
 					add_filter( "manage_{$this->_screen->id}_columns", array( $this, 'columns' ) );
 					add_filter( "manage_{$this->_tax}_custom_column", array( $this, 'column' ), 10, 3 );
 				}
 			}
 		}
 
+		/**
+		 * @param $content
+		 * @param $column_name
+		 * @param $term_id
+		 *
+		 * @return string
+		 */
 		public function column( $content, $column_name, $term_id ) {
 			if ( $column_name == 'terms' ) {
+				$attribute = get_term( $term_id );
+
 				if ( $terms = learn_press_get_attribute_terms( $term_id ) ) {
-					$attribute   = get_term( $term_id );
 					$term_labels = array();
 					foreach ( $terms as $term ) {
 						$term_labels[] = sprintf( '<a href="%s">%s</a>', get_edit_term_link( $term->term_id, $term->taxonomy, LP_COURSE_CPT ), $term->name );
 					}
 					$content = join( ', ', $term_labels );
 
-					$content .= '<div class="row-actions">' . $this->terms_row_actions( $attribute ) . '</div>';
+				} else {
+					$content .= __( 'No terms found.', 'learnpress' );
 				}
+				$content .= '<div class="row-actions">' . $this->terms_row_actions( $attribute ) . '</div>';
+
 			}
 			return $content;
 		}
 
+		/**
+		 * @param $tax
+		 *
+		 * @return string
+		 */
 		public function terms_row_actions( $tax ) {
 			$uri           = wp_doing_ajax() ? wp_get_referer() : $_SERVER['REQUEST_URI'];
 			$edit_link     = add_query_arg(
 				'wp_http_referer',
 				urlencode( wp_unslash( $uri ) ),
-				add_query_arg( array( 'taxonomy' => 'course_attribute-' . $tax->slug, 'post_type' => LP_COURSE_CPT ), admin_url( 'term.php' ) )
+				add_query_arg( array( 'taxonomy' => LP_COURSE_ATTRIBUTE . '-' . $tax->slug, 'post_type' => LP_COURSE_CPT ), admin_url( 'term.php' ) )
 			);
 			$terms_actions = array(
 				'edit'   => sprintf(
@@ -62,7 +198,7 @@ if ( !class_exists( 'LP_Course_Attributes' ) ) {
 				),
 				'delete' => sprintf(
 					'<a href="%s" aria-label="%s" >%s </a > ',
-					esc_url( $edit_link ),
+					esc_url( add_query_arg( 'remove-course-attribute-terms', $tax->term_id ) ),
 					'',
 					__( 'Clear', 'learnpress' )
 				)
@@ -70,35 +206,57 @@ if ( !class_exists( 'LP_Course_Attributes' ) ) {
 			return join( ' | ', $terms_actions );
 		}
 
+		/**
+		 * @param $columns
+		 *
+		 * @return mixed
+		 */
 		public function columns( $columns ) {
-			if ( $this->_tax == 'course_attribute' && !empty( $columns['posts'] ) ) {
+			if ( $this->_tax == LP_COURSE_ATTRIBUTE && !empty( $columns['posts'] ) ) {
 				unset( $columns['posts'] );
 			}
 			$columns['terms'] = __( 'Terms', 'learnpress' );
 			return $columns;
 		}
 
+		/**
+		 * @param $pages
+		 *
+		 * @return array
+		 */
 		public function admin_tabs_pages( $pages ) {
-			if ( !empty( $_REQUEST['taxonomy'] ) && strpos( $_REQUEST['taxonomy'], 'course_attribute' ) !== false ) {
+			if ( !empty( $_REQUEST['taxonomy'] ) && strpos( $_REQUEST['taxonomy'], LP_COURSE_ATTRIBUTE ) !== false ) {
 				$screen_id = get_current_screen()->id;
 				$pages[]   = $screen_id;
 			}
 			return $pages;
 		}
 
+		/**
+		 * @param $a
+		 * @param $b
+		 * @param $c
+		 *
+		 * @return mixed
+		 */
 		public function term_clauses( $a, $b, $c ) {
 			//print_r( func_get_args() );
 			return $a;
 		}
 
+		/**
+		 * @param $tabs
+		 *
+		 * @return array
+		 */
 		public function admin_tab( $tabs ) {
-			if ( !empty( $_REQUEST['taxonomy'] ) && strpos( $_REQUEST['taxonomy'], 'course_attribute' ) !== false ) {
+			if ( !empty( $_REQUEST['taxonomy'] ) && strpos( $_REQUEST['taxonomy'], LP_COURSE_ATTRIBUTE ) !== false ) {
 				$screen_id = get_current_screen()->id;
 			} else {
-				$screen_id = 'edit-course_attribute';
+				$screen_id = 'edit-' . LP_COURSE_ATTRIBUTE;
 			}
 			$tabs[] = array(
-				"link" => "edit-tags.php?taxonomy=course_attribute&post_type=lp_course",
+				"link" => "edit-tags.php?taxonomy=" . LP_COURSE_ATTRIBUTE . "&post_type=lp_course",
 				"name" => __( "Attributes", "learnpress" ),
 				"id"   => $screen_id,
 			);
@@ -107,7 +265,7 @@ if ( !class_exists( 'LP_Course_Attributes' ) ) {
 
 		public function register() {
 			register_taxonomy(
-				'course_attribute',
+				LP_COURSE_ATTRIBUTE,
 				array( 'lp_course' ),
 				array(
 					'label'        => __( 'Attribute', 'learnpress' ),
@@ -123,25 +281,34 @@ if ( !class_exists( 'LP_Course_Attributes' ) ) {
 					'show_in_menu' => 'learn_press',
 					'public'       => false,
 					'rewrite'      => array(
-						'slug'         => 'course_attribute',//empty( $permalinks['category_base'] ) ? _x( 'product - category', 'slug', 'woocommerce' ) : $permalinks['category_base'],
+						'slug'         => LP_COURSE_ATTRIBUTE,//empty( $permalinks['category_base'] ) ? _x( 'product - category', 'slug', 'woocommerce' ) : $permalinks['category_base'],
 						'with_front'   => false,
 						'hierarchical' => true,
 					),
 				)
 			);
 
-			if ( $attributes = learn_press_get_course_attributes() ) {
+			if ( $attributes = learn_press_get_attributes() ) {
 				foreach ( $attributes as $attribute ) {
 					$this->_register_custom_attribute( $attribute );
 				}
 			}
 		}
 
+		/**
+		 * @param $actions
+		 * @param $tag
+		 *
+		 * @return mixed
+		 */
 		public function row_actions( $actions, $tag ) {
 
 			return $actions;
 		}
 
+		/**
+		 * @param $attribute
+		 */
 		private function _register_custom_attribute( $attribute ) {
 			$name          = $attribute->name;
 			$singular_name = $attribute->name;

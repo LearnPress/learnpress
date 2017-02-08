@@ -473,6 +473,9 @@ tr.focus .learn-press-dropdown-item-types > span.learn-press-icon {
 .learn-press-dropdown-item-types li span.learn-press-icon.item-selected {
   color: #0085ba;
 }
+.learn-press-course-attributes {
+  margin: 20px 0;
+}
 .post-type-lp_course #switch-course-tabs,
 .post-type-lp_course #toggle-meta-boxes {
   float: right;

@@ -33,7 +33,12 @@ if ( !class_exists( 'LP_Widget_Course_Attributes' ) ) {
 					)
 				)
 			);
+			add_filter( 'learn_press_widget_display_content', 'learn_press_is_course' );
 			parent::__construct();
+		}
+
+		public function show() {
+			echo 'xxxxxx';
 		}
 	}
 }

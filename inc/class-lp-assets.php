@@ -226,6 +226,8 @@ class LP_Assets {
 		$scripts->add( 'learn-press-admin-settings', $default_path . 'js/admin/settings' . $suffix . '.js', $deps, false, 1 );
 		$scripts->add( 'learn-press-mb-question', $default_path . 'js/admin/meta-box-question' . $suffix . '.js', $deps, false, 1 );
 		$scripts->add( 'learn-press-mb-course', $default_path . 'js/admin/meta-box-course' . $suffix . '.js', $deps, false, 1 );
+		$scripts->add( 'learn-press-course-attributes', $default_path . 'js/admin/attributes' . $suffix . '.js', $deps, false, 1 );
+
 		$scripts->add( 'learn-press-mb-quiz', $default_path . 'js/admin/meta-box-quiz' . $suffix . '.js', $deps, false, 1 );
 		$scripts->add( 'learn-press-mb-order', $default_path . 'js/admin/meta-box-order' . $suffix . '.js', $deps, false, 1 );
 		$scripts->add( 'learn-press-modal-search-items', $default_path . 'js/admin/modal-search-items' . $suffix . '.js', array( 'learn-press-global' ), false, 1 );
@@ -283,6 +285,7 @@ class LP_Assets {
 		$styles->add( 'learn-press-jquery.ui.core', $default_path . 'css/admin/jquery.ui.core' . $suffix . '.css' );
 		$styles->add( 'learn-press-jquery.ui.slider', $default_path . 'css/admin/jquery.ui.slider' . $suffix . '.css' );
 		$styles->add( 'learn-press-mb-course', $default_path . 'css/admin/meta-box-course' . $suffix . '.css' );
+		$styles->add( 'learn-press-course-attributes', $default_path . 'css/admin/attributes' . $suffix . '.css' );
 		$styles->add( 'learn-press-mb-question', $default_path . 'css/admin/meta-box-question' . $suffix . '.css' );
 		$styles->add( 'learn-press-mb-order', $default_path . 'css/admin/meta-box-order' . $suffix . '.css' );
 		$styles->add( 'learn-press-jalerts', $default_path . 'css/jalert' . $suffix . '.css' );
@@ -792,7 +795,6 @@ class LP_Assets {
 				'msg_field_is_required' => __( 'This field is required', 'learnpress' )
 			);
 			wp_localize_script( 'learn-press-profile', 'lp_profile_translation', $translation_array );
-
 
 
 			self::add_param( 'avatar_size', learn_press_get_avatar_thumb_size(), 'learn-press-profile', 'LP_Settings' );

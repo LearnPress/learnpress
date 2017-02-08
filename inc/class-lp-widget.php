@@ -115,6 +115,9 @@ if ( !class_exists( 'LP_Widget' ) ) {
 			$this->args     = $args;
 			$this->instance = $instance;
 
+			if ( !apply_filters( 'learn_press_widget_display_content', true, $this ) ) {
+				return;
+			}
 			$this->before_widget();
 			$this->show();
 			$this->after_widget();
@@ -134,7 +137,7 @@ if ( !class_exists( 'LP_Widget' ) ) {
 		}
 
 		public function show() {
-			learn_press_debug( $this->args, $this->instance );
+			printf( __( 'Function %s should be overwritten in child class', 'learnpress' ), __FUNCTION__ );
 		}
 
 		public function form( $instance ) {
