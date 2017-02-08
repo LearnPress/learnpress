@@ -118,6 +118,10 @@ if ( !class_exists( 'LP_Widget' ) ) {
 			if ( !apply_filters( 'learn_press_widget_display_content', true, $this ) ) {
 				return;
 			}
+
+			if ( !apply_filters( 'learn_press_widget_display_content-' . $this->id_base, true, $this ) ) {
+				return;
+			}
 			$this->before_widget();
 			$this->show();
 			$this->after_widget();

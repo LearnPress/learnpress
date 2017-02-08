@@ -95,3 +95,4 @@ function learn_press_add_attribute_to_course( $course_id, $taxonomy ) {
  * Register widgets
  */
 LP_Widget::register( 'course-attributes' );
+LP_Widget::register( 'course-filters' );

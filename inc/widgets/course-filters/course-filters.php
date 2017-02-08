@@ -1,9 +1,9 @@
 <?php
-if ( !class_exists( 'LP_Widget_Course_Attributes' ) ) {
+if ( !class_exists( 'LP_Widget_Course_Filters' ) ) {
 	/**
-	 * Class LP_Widget_Course_Attribute
+	 * Class LP_Widget_Course_Filters
 	 */
-	class LP_Widget_Course_Attributes extends LP_Widget {
+	class LP_Widget_Course_Filters extends LP_Widget {
 		public function __construct() {
 			$prefix        = '';
 			$this->options = array(
@@ -34,7 +34,7 @@ if ( !class_exists( 'LP_Widget_Course_Attributes' ) ) {
 				)
 			);
 			parent::__construct();
-			add_filter( 'learn_press_widget_display_content-'.$this->id_base, 'learn_press_is_course' );
+			add_filter( 'learn_press_widget_display_content-' . $this->id_base, 'learn_press_is_courses' );
 
 		}
 
