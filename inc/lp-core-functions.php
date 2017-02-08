@@ -448,7 +448,11 @@ if ( !function_exists( 'learn_press_advertise_in_admin' ) ) {
 			$current_theme = wp_get_theme();
 
 			// Get items education
-			$list_themes = learn_press_related_theme();
+			$list_themes = (array)learn_press_related_theme();
+
+			if ( empty ( $list_themes ) ) {
+				return false;
+			}
 
 			foreach ( $list_themes as $key => $theme ) {
 
