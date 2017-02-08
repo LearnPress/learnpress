@@ -38,7 +38,38 @@ if ( !class_exists( 'LP_Widget_Course_Attributes' ) ) {
 		}
 
 		public function show() {
-			echo 'xxxxxx';
+			$postId     = get_the_ID();
+			$attributes = learn_press_get_course_attributes( $postId );
+			if ( !$attributes ) {
+				return;
+			}
+			$start = microtime( true );
+			?>
+			<ul>
+				<?php
+				foreach ( $attributes as $attribute ) {
+					$taxonomy = get_term_by( 'slug', $attribute['name'], LP_COURSE_ATTRIBUTE );
+					?>
+					<li>
+						<h4><?php echo $taxonomy->name; ?></h4>
+						<?php
+						$values = wp_get_object_terms( $postId, LP_COURSE_ATTRIBUTE . '-' . $attribute['name'] );
+						if ( !$values ) {
+							continue;
+						}
+						?>
+						<ul>
+							<?php foreach ( $values as $value ) { ?>
+								<li><?php echo $value->name; ?></li>
+							<?php } ?>
+						</ul>
+					</li>
+					<?php
+				}
+				?>
+			</ul>
+			<?php
+			echo microtime( true ) - $start;
 		}
 	}
 }

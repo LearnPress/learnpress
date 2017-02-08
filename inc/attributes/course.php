@@ -56,9 +56,30 @@ if ( !class_exists( 'LP_Course_Attributes' ) ) {
 					array(
 						'action'   => 'add-attribute-value',
 						'callback' => array( $this, 'add_attribute_value' )
+					),
+					array(
+						'action'   => 'save-attributes',
+						'callback' => array( $this, 'save_attributes' )
 					)
 				)
 			);
+		}
+
+		public function save_attributes( $course_id ) {
+			$data       = learn_press_get_request( 'data' );
+			$attributes = array();
+			parse_str( $data, $attributes );
+			if ( $attributes ) {
+				$attributes = $attributes['course-attribute-values'];
+				foreach ( $attributes as $taxonomy_id => $values ) {
+					if ( !$values ) {
+						continue;
+					}
+					$taxonomy = get_term( $taxonomy_id, LP_COURSE_ATTRIBUTE );
+					wp_set_object_terms( $course_id, $values, LP_COURSE_ATTRIBUTE . '-' . $taxonomy->slug );
+				}
+			}
+			die();
 		}
 
 		public function add_attribute_value( $course_id ) {
@@ -69,10 +90,23 @@ if ( !class_exists( 'LP_Course_Attributes' ) ) {
 
 			$taxonomy = learn_press_get_request( 'taxonomy' );
 			$name     = learn_press_get_request( 'name' );
+			$new      = learn_press_add_course_attribute_value( $name, $taxonomy );
+			$response = array();
+			if ( !is_wp_error( $new ) ) {
+				$term             = get_term_by( 'term_taxonomy_id', $new['term_taxonomy_id'] );
+				$response['slug'] = $term->slug;
+				$response['name'] = $term->name;
 
-			if ( $new = learn_press_add_course_attribute( $name ) ) {
-
+				$response['result'] = 'success';
+			} elseif ( !$new ) {
+				$response['result'] = 'error';
+				$response['error']  = __( 'Unknown error', 'learnpress' );
+			} else {
+				$response['result'] = 'error';
+				$response['error']  = $new->get_error_messages();
 			}
+			learn_press_send_json( $response );
+			die();
 		}
 
 		public function add_attribute_to_course( $course_id ) {
@@ -82,7 +116,8 @@ if ( !class_exists( 'LP_Course_Attributes' ) ) {
 				return;
 			}
 
-			if ( $term = learn_press_add_attribute_to_course( $course_id, $taxonomy ) ) {
+			if ( $attribute = learn_press_add_attribute_to_course( $course_id, $taxonomy ) ) {
+				$postId = $course_id;
 				include learn_press_get_admin_view( 'meta-boxes/course/html-course-attribute' );
 			}
 
@@ -353,7 +388,7 @@ if ( !class_exists( 'LP_Course_Attributes' ) ) {
 			);
 
 			register_taxonomy(
-				sprintf( 'course_attribute-%s', $attribute->slug ),
+				sprintf( '%s-%s', LP_COURSE_ATTRIBUTE, $attribute->slug ),
 				apply_filters( 'learn_press_course_attribute_object_' . $attribute->slug, array( 'lp_course' ) ),
 				apply_filters( 'learn_press_course_attribute_args_' . $attribute->slug, $tax_data )
 			);

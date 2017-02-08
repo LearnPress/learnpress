@@ -58,7 +58,7 @@ function learn_press_add_course_attribute_value( $name, $taxonomy ) {
 		return false;
 	}
 
-	$new_value = wp_insert_term( $name, $taxonomy );
+	$new_value = wp_insert_term( $name, sprintf( '%s-%s', LP_COURSE_ATTRIBUTE, $term->slug ) );
 	return $new_value;
 }
 
@@ -88,7 +88,7 @@ function learn_press_add_attribute_to_course( $course_id, $taxonomy ) {
 	$attributes = apply_filters( 'learn_press_update_course_attributes_data', $attributes, $course_id, $term );
 
 	update_post_meta( $course_id, '_lp_attributes', $attributes );
-	return $term;
+	return $attribute;
 }
 
 /**

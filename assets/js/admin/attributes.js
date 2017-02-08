@@ -1,28 +1,53 @@
 ;(function ($) {
-	function addAttribute(button) {
+	var select2Options = {
+		formatNoMatches: function () {
+			$(document).off('keyup.addNewAttributeValueEvent');
+			$(document).on('keyup.addNewAttributeValueEvent', '.select2-input', addNewAttributeValueEvent);
+			return 'No match found, <code>Ctrl + Enter</code> to add new attribute';
+		},
+		formatMatches  : function () {
+			$(document).off('keyup.addNewAttributeValueEvent');
+		}
+	}, postId = 0;
+
+	function getPostId() {
+		if (!postId) {
+			postId = $('input[name="post_ID"]').val();
+		}
+		return postId;
+	}
+
+	function addAttributeToCourse(button) {
 		$(button).addClass('disabled');
 		$.post({
-			url    : window.location.href.addQueryVar('add-course-attribute', $('input[name="post_ID"]').val()),
+			url    : window.location.href.addQueryVar('add-attribute-to-course', getPostId()),
 			data   : $().extend({}, $(button).data()),
 			success: function (response) {
 				var $html = $('.course-attributes');
 				$(response).appendTo($html);
-				$html.find('.course-attribute-values').select2()
+				$html.find('.course-attribute-values').select2(select2Options)
 			}
 		})
 	}
 
-	function addNewAttributeValue(name, taxonomy) {
+	function addNewAttributeValue(name, taxonomy, el) {
+		var $li = $(el).closest('.learn-press-attribute');
 		$.post({
-			url    : window.location.href.addQueryVar('add-attribute-value', $('input[name="post_ID"]').val()),
-			data   : {
+			url     : window.location.href.addQueryVar('add-attribute-value', getPostId()),
+			data    : {
 				name    : name,
 				taxonomy: taxonomy
 			},
-			success: function (response) {
-				var $html = $('.course-attributes');
-				$(response).appendTo($html);
-				$html.find('.course-attribute-values').select2()
+			dataType: 'text',
+			success : function (response) {
+				response = LP.parseJSON(response);
+				if (response.result == 'success') {
+					$li.find('select.course-attribute-values').append('<option value="' + response.slug + '" selected="selected">' + response.name + '</option>').change();
+				} else {
+					if (response.message) {
+						alert(response.message);
+					}
+				}
 			}
 		})
 	}
@@ -33,24 +58,30 @@
 			if ($sel.length == 0) {
 				return;
 			}
-			addNewAttributeValue($sel.val(), $sel.closest('.learn-press-attribute').data('taxonomy'))
+			addNewAttributeValue($sel.val(), $sel.closest('.learn-press-attribute').data('taxonomy'), this)
 		}
 	}
 
-	$(document).ready(function () {
-		$(document).on('click', '.add-attribute:not(.disabled)', function () {
-			addAttribute(this);
-		}).on('keyup.addNewAttributeValueEvent', '.select2-input', addNewAttributeValueEvent);
-		$('.course-attribute-values').select2({
-			formatNoMatches: function () {
-				$(document).off('keyup.addNewAttributeValueEvent');
-				$(document).on('keyup.addNewAttributeValueEvent', '.select2-input', addNewAttributeValueEvent);
-				return 'No match found, <code>Ctrl + Enter</code> to add new attribute';
+	function saveAttributesEvent(e) {
+		$.post({
+			url    : window.location.href.addQueryVar('save-attributes', getPostId()),
+			data   : {
+				data: $('.course-attributes').find('input, select, textarea').serialize(),
 			},
-			formatMatches  : function () {
-				$(document).off('keyup.addNewAttributeValueEvent');
+			success: function () {
+
 			}
 		});
+	}
+
+	$(document).ready(function () {
+		$(document)
+			.on('click', '.add-attribute:not(.disabled)', function () {
+				addAttributeToCourse(this);
+			})
+			.on('click', '#save-attributes', saveAttributesEvent)
+			.on('keyup.addNewAttributeValueEvent', '.select2-input', addNewAttributeValueEvent);
+		$('.course-attribute-values').select2(select2Options);
 
 	});
 })(jQuery);
