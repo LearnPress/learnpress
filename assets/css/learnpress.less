@@ -1524,9 +1524,8 @@ body.block-content {
             }
         }
 
-
     }
-    .update-profile{
+    .update-profile {
         border-top: 2px solid #DDD;
         padding-top: 20px;
     }
@@ -1537,10 +1536,10 @@ body.block-content {
         .moxie-shim {
             display: none;
         }
-        .lp-form-field-avatar{
+        .lp-form-field-avatar {
             float: left;
         }
-        #lp-avatar-actions{
+        #lp-avatar-actions {
             margin: 20px 0;
         }
     }
@@ -1943,6 +1942,65 @@ body.content-item-only {
     }
     .course-entry {
         margin-bottom: 20px;
+    }
+}
+
+/* widget attributes */
+.lp-course-attributes {
+    list-style: none;
+    margin-left: 0;
+    li {
+        list-style: none;
+        margin-bottom: 10px;
+    }
+    .lp-course-attribute-values {
+        list-style: none;
+        margin-left: 0;
+    }
+    &.course-attributes {
+        .lp-course-attribute-values {
+            li {
+                display: inline-block;
+                padding: 3px 8px;
+                background: #F0F0F0;
+                border-radius: 4px;
+                margin: 0 5px 5px 0;
+            }
+        }
+    }
+    &.course-filters {
+        .lp-course-attribute-values {
+            li{
+                &:before{
+                    font-family: dashicons;
+                    border-radius: 50%;
+                    background: #DDD;
+                    display: inline-block;
+                    width: 16px;
+                    height: 16px;
+                    text-align: center;
+                    line-height: 16px;
+                    color: #FFF;
+                    font-size: 16px;
+                    vertical-align: middle;
+                    margin-right: 5px;
+                    content:'';
+                }
+                &:hover:before{
+                    background: #4acfff;
+                }
+            }
+            li.active {
+                &:before {
+                    content: "\f147";
+                    background: #4acfff;
+                }
+                &:hover:before {
+                    content: "\f335";
+                    background: #a20000;
+                }
+            }
+        }
     }
 }
 

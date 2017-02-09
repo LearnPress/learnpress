@@ -45,10 +45,21 @@ function learn_press_delete_attribute_terms( $attribute ) {
 	return $deleted_terms;
 }
 
+/**
+ * @param $course_id
+ *
+ * @return mixed
+ */
 function learn_press_get_course_attributes( $course_id ) {
 	return get_post_meta( $course_id, '_lp_attributes', true );
 }
 
+/**
+ * @param $name
+ * @param $taxonomy
+ *
+ * @return array|bool|WP_Error
+ */
 function learn_press_add_course_attribute_value( $name, $taxonomy ) {
 
 	if ( !$name || term_exists( $name, $taxonomy ) ) {
@@ -62,6 +73,11 @@ function learn_press_add_course_attribute_value( $name, $taxonomy ) {
 	return $new_value;
 }
 
+/**
+ * @param $name
+ *
+ * @return array|bool|WP_Error
+ */
 function learn_press_add_course_attribute( $name ) {
 
 	if ( !$name || term_exists( $name, LP_COURSE_ATTRIBUTE ) ) {
@@ -72,6 +88,12 @@ function learn_press_add_course_attribute( $name ) {
 	return $new_value;
 }
 
+/**
+ * @param $course_id
+ * @param $taxonomy
+ *
+ * @return bool|mixed|void
+ */
 function learn_press_add_attribute_to_course( $course_id, $taxonomy ) {
 	if ( !$term = get_term_by( 'slug', $taxonomy, LP_COURSE_ATTRIBUTE ) ) {
 		return false;
@@ -90,9 +112,48 @@ function learn_press_add_attribute_to_course( $course_id, $taxonomy ) {
 	update_post_meta( $course_id, '_lp_attributes', $attributes );
 	return $attribute;
 }
+/**
+ * @param WP_Query $q
+ */
+add_filter( 'pre_get_posts', function ( $q ) {
+	global $lp_tax_query;
+	if ( empty( $_REQUEST['course-filter'] ) ) {
+		return;
+	}
+
+	if ( !$q->is_main_query() ) {
+		return;
+	}
+	if ( LP_COURSE_CPT != $q->get( 'post_type' ) ) {
+		return $q;
+	}
+
+	if ( $attribute_taxonomies = learn_press_get_attributes() ) {
+		$tax_query = array();
+		foreach ( $attribute_taxonomies as $tax ) {
+			$attribute    = $tax->slug;
+			$taxonomy     = LP_COURSE_ATTRIBUTE . '-' . $attribute;
+			$filter_terms = !empty( $_GET['filter_' . $attribute] ) ? explode( ',', $_GET['filter_' . $attribute] ) : array();
+
+			if ( empty( $filter_terms ) || !taxonomy_exists( $taxonomy ) ) {
+				continue;
+			}
+
+			$tax_query[] = array(
+				'taxonomy'         => $taxonomy,
+				'field'            => 'slug',
+				'terms'            => $filter_terms,
+				'operator'         => 'IN', //'and' === $data['query_type'] ? 'AND' : 'IN',
+				'include_children' => false,
+			);
+		}
+		$lp_tax_query = $tax_query;
+		$q->set( 'tax_query', $tax_query );
+	}
+	return $q;
+}, 1000 );
 
 /**
  * Register widgets
  */
-LP_Widget::register( 'course-attributes' );
-LP_Widget::register( 'course-filters' );
+LP_Widget::register( array( 'course-attributes', 'course-filters' ) );

@@ -2715,3 +2715,5 @@ function learn_press_debug_hidden() {
 	call_user_func_array( 'learn_press_debug', $args );
 	echo '</div>';
 }
+
+

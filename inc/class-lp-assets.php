@@ -805,6 +805,10 @@ class LP_Assets {
 		}
 		do_action( 'learn_press_load_scripts' );
 	}
+
+	public static function url( $file = '' ) {
+		return LP_PLUGIN_URL . "assets/{$file}";
+	}
 }
 
 // Call class

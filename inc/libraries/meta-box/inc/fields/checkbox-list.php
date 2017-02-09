@@ -2,7 +2,7 @@
 // Prevent loading this file directly
 defined( 'ABSPATH' ) || exit;
 
-if ( ! class_exists( 'RWMB_Checkbox_List_Field' ) ) {
+if ( !class_exists( 'RWMB_Checkbox_List_Field' ) ) {
 	class RWMB_Checkbox_List_Field extends RWMB_Field {
 		/**
 		 * Get field HTML
@@ -13,6 +13,11 @@ if ( ! class_exists( 'RWMB_Checkbox_List_Field' ) ) {
 		 * @return string
 		 */
 		static function html( $meta, $field ) {
+			if ( empty( $field['multiple'] ) || ( $field['multiple'] == true ) || ( $field['multiple'] == 'yes' ) ) {
+				$multiple = true;
+			} else {
+				$multiple = false;
+			}
 			$meta = (array) $meta;
 			$html = array();
 			$tpl  = '<label><input type="checkbox" class="rwmb-checkbox-list" name="%s" value="%s"%s> %s</label>';
@@ -20,7 +25,7 @@ if ( ! class_exists( 'RWMB_Checkbox_List_Field' ) ) {
 			foreach ( $field['options'] as $value => $label ) {
 				$html[] = sprintf(
 					$tpl,
-					$field['field_name'],
+					sprintf( '%s%s', $field['field_name'], $multiple ? '[]' : '' ),
 					$value,
 					checked( in_array( $value, $meta ), 1, false ),
 					$label
@@ -47,7 +52,7 @@ if ( ! class_exists( 'RWMB_Checkbox_List_Field' ) ) {
 		 */
 		static function meta( $post_id, $saved, $field ) {
 			$meta = get_post_meta( $post_id, $field['id'], $field['clone'] );
-			$meta = ( ! $saved && '' === $meta || array() === $meta ) ? $field['std'] : $meta;
+			$meta = ( !$saved && '' === $meta || array() === $meta ) ? $field['std'] : $meta;
 			$meta = array_map( 'esc_attr', (array) $meta );
 
 			return $meta;
@@ -66,7 +71,7 @@ if ( ! class_exists( 'RWMB_Checkbox_List_Field' ) ) {
 		 * @param $field
 		 */
 		static function save( $new, $old, $post_id, $field ) {
-			if ( ! $field['clone'] ) {
+			if ( !$field['clone'] ) {
 				parent::save( $new, $old, $post_id, $field );
 
 				return;
@@ -89,7 +94,7 @@ if ( ! class_exists( 'RWMB_Checkbox_List_Field' ) ) {
 		static function normalize_field( $field ) {
 			$field['multiple']   = true;
 			$field['field_name'] = $field['id'];
-			if ( ! $field['clone'] ) {
+			if ( !$field['clone'] ) {
 				$field['field_name'] .= '[]';
 			}
 

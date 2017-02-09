@@ -39,6 +39,10 @@ if ( !class_exists( 'LP_Widget' ) ) {
 		 * @var string
 		 */
 		private $_name_prefix = 'LearnPress - ';
+
+		/**
+		 * @var array
+		 */
 		private $map_fields = array();
 
 		/**
@@ -82,12 +86,12 @@ if ( !class_exists( 'LP_Widget' ) ) {
 		public function __construct( $args = array() ) {
 			$defaults = array( 'id_base' => '', 'name' => '', 'widget_options' => '', 'control_options' => '' );
 			$args     = wp_parse_args( $args, $defaults );
-			$args     = self::parse_widget_args(
+			$args     = $this->_parse_widget_args(
 				$args,
 				strtolower( str_replace( array( 'LP_Widget_', '_' ), array( '', '-' ), get_class( $this ) ) )
 			);
 			list( $id_base, $name, $widget_options, $control_options ) = $args;
-			parent::__construct( $this->_id_prefix . $id_base, $this->_name_prefix . $name, $widget_options, $control_options );
+			parent::__construct( $id_base, $this->_name_prefix . $name, $widget_options, $control_options );
 		}
 
 		public function field_data( $data, $object_id, $meta_key, $single ) {
@@ -144,39 +148,49 @@ if ( !class_exists( 'LP_Widget' ) ) {
 			printf( __( 'Function %s should be overwritten in child class', 'learnpress' ), __FUNCTION__ );
 		}
 
+		/**
+		 * Display widget settings with meta-box fields
+		 *
+		 * @param mixed $instance
+		 *
+		 * @return mixed
+		 */
 		public function form( $instance ) {
 			$this->instance = $instance;
 			add_filter( 'get_post_metadata', array( $this, 'field_data' ), 10, 4 );
-			//learn_press_get_widget_template( $this->get_slug(), 'form.php', array( 'widget' => $this ) );
 			if ( !$this->options ) {
 				return;
 			}
 			global $post;
+			//
 			$post = (object) array( 'ID' => 1, 'post_type' => 'lp-post-widget' );
 			setup_postdata( $post );
 			require_once LP_PLUGIN_PATH . 'inc/libraries/meta-box/meta-box.php';
+
 			$this->options = RW_Meta_Box::normalize_fields( $this->options );
+
+			$this->options = $this->normalize_options();
+
 			foreach ( $this->options as $field ) {
 				$origin_id                      = $field['id'];
 				$field['field_name']            = $this->get_field_name( $field['id'] );
-				$field['id']                    = $this->get_field_id( $field['id'] );//sanitize_title( $field['field_name'] );
+				$field['id']                    = $this->get_field_id( $field['id'] );
 				$this->map_fields[$field['id']] = $origin_id;
-
 				call_user_func( array( RW_Meta_Box::get_class_name( $field ), 'show' ), $field, false );
 			}
 			wp_reset_postdata();
 			remove_filter( 'get_post_metadata', array( $this, 'field_data' ) );
+		}
 
+		public function normalize_options(){
+			return $this->options;
 		}
 
 		/**
 		 * Find template and display it
-		 *
-		 * @param $args
-		 * @param $instance
 		 */
-		public function get_template( $args, $instance ) {
-			learn_press_get_widget_template( $this->get_slug(), 'default.php', array( 'x' => 100 ) );
+		public function get_template() {
+			learn_press_get_widget_template( $this->get_slug(), 'default.php' );
 		}
 
 		/**
@@ -202,14 +216,26 @@ if ( !class_exists( 'LP_Widget' ) ) {
 		}
 
 		/**
-		 * @param string
+		 * Register new widget
+		 *
+		 * @param string|array
 		 * @param mixed
 		 */
 		public static function register( $type, $args = '' ) {
-			self::$_widgets[$type] = $args;
-			if ( !self::$_has_registered ) {
-				add_action( 'widgets_init', array( __CLASS__, 'do_register' ) );
-				self::$_has_registered = true;
+			if ( is_array( $type ) ) {
+				foreach ( $type as $k => $t ) {
+					if ( is_array( $t ) ) {
+						self::register( $k, $t );
+					} else {
+						self::register( $t );
+					}
+				}
+			} else {
+				self::$_widgets[$type] = $args;
+				if ( !self::$_has_registered ) {
+					add_action( 'widgets_init', array( __CLASS__, 'do_register' ) );
+					self::$_has_registered = true;
+				}
 			}
 		}
 
@@ -254,8 +280,8 @@ if ( !class_exists( 'LP_Widget' ) ) {
 		 *
 		 * @return array
 		 */
-		private static function parse_widget_args( $args, $type ) {
-			$id_base         = !empty( $args['id_base'] ) ? $args['id_base'] : 'lp-widget-' . $type;
+		private function _parse_widget_args( $args, $type ) {
+			$id_base         = !empty( $args['id_base'] ) ? $args['id_base'] : $this->_id_prefix . $type;
 			$name            = !empty( $args['name'] ) ? $args['name'] : ucwords( str_replace( '-', ' ', $type ) );
 			$widget_options  = !empty( $args['widget_options'] ) ? $args['widget_options'] : array();
 			$control_options = !empty( $args['control_options'] ) ? $args['control_options'] : array();
@@ -286,7 +312,20 @@ function learn_press_get_widget_theme_template_path( $slug ) {
  * @param       $template_name
  * @param array $args
  */
-function learn_press_get_widget_template( $slug, $template_name, $args = array() ) {
+function learn_press_get_widget_template( $slug, $template_name = 'default.php', $args = array() ) {
 	$template_path = learn_press_get_widget_template_path( $slug );
-	learn_press_get_template( $template_name, $args, learn_press_template_path() . "/widgets/{$slug}", $template_path );
+	learn_press_get_template( $template_name ? $template_name : 'default.php', $args, learn_press_template_path() . "/widgets/{$slug}", $template_path );
 }
+
+/**
+ * Display a template of a widget
+ *
+ * @param       $slug
+ * @param       $template_name
+ * @param array $args
+ */
+function learn_press_locate_widget_template( $slug, $template_name = 'default.php' ) {
+	$template_path = learn_press_get_widget_template_path( $slug );
+	return learn_press_locate_template( $template_name ? $template_name : 'default.php', learn_press_template_path() . "/widgets/{$slug}", $template_path );
+}
+

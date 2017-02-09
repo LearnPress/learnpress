@@ -490,11 +490,6 @@ if ( !class_exists( 'LearnPress' ) ) {
 				require_once 'inc/shortcodes/featured-courses/featured-courses.php';
 			}
 
-			//include widgets
-			require_once 'inc/widgets/recent-courses/recent-course-widget.php';
-			require_once 'inc/widgets/popular-courses/popular-course-widget.php';
-			require_once 'inc/widgets/featured-courses/featured-course-widget.php';
-
 			// include template functions
 			require_once( 'inc/lp-template-functions.php' );
 			require_once( 'inc/lp-template-hooks.php' );

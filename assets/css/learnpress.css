@@ -2373,6 +2373,52 @@ body.content-item-only #learn-press-content-item.expand {
 .featured-courses-widget .course-entry {
   margin-bottom: 20px;
 }
+/* widget attributes */
+.lp-course-attributes {
+  list-style: none;
+  margin-left: 0;
+}
+.lp-course-attributes li {
+  list-style: none;
+  margin-bottom: 10px;
+}
+.lp-course-attributes .lp-course-attribute-values {
+  list-style: none;
+  margin-left: 0;
+}
+.lp-course-attributes.course-attributes .lp-course-attribute-values li {
+  display: inline-block;
+  padding: 3px 8px;
+  background: #F0F0F0;
+  border-radius: 4px;
+  margin: 0 5px 5px 0;
+}
+.lp-course-attributes.course-filters .lp-course-attribute-values li:before {
+  font-family: dashicons;
+  border-radius: 50%;
+  background: #DDD;
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  text-align: center;
+  line-height: 16px;
+  color: #FFF;
+  font-size: 16px;
+  vertical-align: middle;
+  margin-right: 5px;
+  content: '';
+}
+.lp-course-attributes.course-filters .lp-course-attribute-values li:hover:before {
+  background: #4acfff;
+}
+.lp-course-attributes.course-filters .lp-course-attribute-values li.active:before {
+  content: "\f147";
+  background: #4acfff;
+}
+.lp-course-attributes.course-filters .lp-course-attribute-values li.active:hover:before {
+  content: "\f335";
+  background: #a20000;
+}
 @-moz-keyframes spin-12 {
   0% {
     -moz-transform: rotate(0deg) translate(0px);
