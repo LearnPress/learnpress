@@ -984,7 +984,11 @@ function learn_press_profile_tab_edit_content( $current, $tab, $user ) {
 }
 
 function _learn_press_redirect_logout_redirect() {
-	if ( !is_admin() && $redirect = learn_press_get_page_link( 'profile' ) ) {
+	$redirect_to = $_REQUEST['redirect_to'];
+	$admin_url   = admin_url();
+	$pos = strpos( $redirect_to, $admin_url );
+	if ( $pos === false ) {
+		$redirect = learn_press_get_page_link( 'profile' );
 		wp_redirect( $redirect );
 		exit();
 	}
