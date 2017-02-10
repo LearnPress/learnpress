@@ -39,7 +39,8 @@ class LP_Schedules
         /**
          * Find all courses that user did not finish yet
          */
-        if (! $this->_check_table_exit('learnpress_user_items') ) {
+	    if (!$wpdb->prefix . 'learnpress_user_items') {
+//        if (! $this->_check_table_exit('learnpress_user_items') ) {
             return;
         }
         $query = $wpdb->prepare("
