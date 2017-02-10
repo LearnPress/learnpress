@@ -1865,6 +1865,10 @@ input.regular-text[id^="learn-press-emails"] {
   content: '';
   display: block;
 }
+/* Metabox Widget */
+.widget-inside .description {
+  padding: 0;
+}
 @keyframes learn-press-meta-box-tabs-initialize-animation {
   0% {
     opacity: 0;

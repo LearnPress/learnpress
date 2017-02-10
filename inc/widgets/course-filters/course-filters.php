@@ -7,18 +7,32 @@ if ( !class_exists( 'LP_Widget_Course_Filters' ) ) {
 		public function __construct() {
 			$prefix        = '';
 			$this->options = array(
-				'title'     => array(
+				'title'         => array(
 					'name' => __( 'Title', 'learnpress' ),
 					'id'   => "{$prefix}title",
 					'type' => 'text',
 					'std'  => __( 'Course filters', 'learnpress' )
 				),
-				'filter_by' => array(
+				'filter_by'     => array(
 					'name'    => __( 'Filter by', 'learnpress' ),
 					'id'      => "{$prefix}filter_by",
 					'type'    => 'checkbox_list',
 					'std'     => '',
 					'options' => ''
+				),
+				'ajax_filter'   => array(
+					'name' => __( 'Ajax filter', 'learnpress' ),
+					'id'   => "{$prefix}ajax_filter",
+					'type' => 'checkbox',
+					'std'  => '0',
+					'desc' => __( 'Use ajax to fetch content after filtering', 'learnpress' )
+				),
+				'button_filter' => array(
+					'name' => __( 'Button filter', 'learnpress' ),
+					'id'   => "{$prefix}button_filter",
+					'type' => 'checkbox',
+					'std'  => '0',
+					'desc' => __( 'If checked, user has to click this button to start filtering', 'learnpress' )
 				)
 			);
 			parent::__construct();

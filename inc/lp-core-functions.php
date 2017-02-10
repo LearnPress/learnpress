@@ -624,7 +624,7 @@ if ( !function_exists( 'learn_press_paging_nav' ) ) :
 				'num_pages'     => 0,
 				'paged'         => get_query_var( 'paged' ) ? get_query_var( 'paged' ) : 1,
 				'wrapper_class' => 'learn-press-pagination',
-				'base'          => false
+				'base'          => false,
 			)
 		);
 		if ( $args['num_pages'] < 2 ) {

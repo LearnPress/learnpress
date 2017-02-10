@@ -46,7 +46,14 @@
 			} else {
 				filterUrl = removeAttribute(attribute, value);
 			}
-			LP.reload(filterUrl)
+			LP.setUrl(filterUrl);
+			$.ajax({
+				url    : filterUrl,
+				success: function (res) {
+					var $newContent = $(res).contents().find('.entry-content');
+					$('.entry-content').replaceWith($newContent);
+				}
+			})
 		})
 	});
 })(jQuery);
