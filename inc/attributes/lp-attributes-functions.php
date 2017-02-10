@@ -112,6 +112,7 @@ function learn_press_add_attribute_to_course( $course_id, $taxonomy ) {
 	update_post_meta( $course_id, '_lp_attributes', $attributes );
 	return $attribute;
 }
+
 /**
  * @param WP_Query $q
  */
@@ -129,11 +130,16 @@ add_filter( 'pre_get_posts', function ( $q ) {
 	}
 
 	if ( $attribute_taxonomies = learn_press_get_attributes() ) {
-		$tax_query = array();
+		$attribute_operator = 'and' === strtolower( learn_press_get_request( 'attribute_operator' ) ) ? 'AND' : 'OR';
+		$value_operator     = 'and' === strtolower( learn_press_get_request( 'value_operator' ) ) ? 'AND' : 'IN';
+		$tax_query          = array(
+			'relation' => $attribute_operator
+		);
 		foreach ( $attribute_taxonomies as $tax ) {
 			$attribute    = $tax->slug;
 			$taxonomy     = LP_COURSE_ATTRIBUTE . '-' . $attribute;
 			$filter_terms = !empty( $_GET['filter_' . $attribute] ) ? explode( ',', $_GET['filter_' . $attribute] ) : array();
+
 
 			if ( empty( $filter_terms ) || !taxonomy_exists( $taxonomy ) ) {
 				continue;
@@ -143,7 +149,7 @@ add_filter( 'pre_get_posts', function ( $q ) {
 				'taxonomy'         => $taxonomy,
 				'field'            => 'slug',
 				'terms'            => $filter_terms,
-				'operator'         => 'IN', //'and' === $data['query_type'] ? 'AND' : 'IN',
+				'operator'         => $value_operator,
 				'include_children' => false,
 			);
 		}

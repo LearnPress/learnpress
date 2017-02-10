@@ -10,10 +10,6 @@ $object_terms = ( wp_get_object_terms( $postId, $object_terms ) );
 foreach ( $attributes as $attribute ) {
 	$taxonomy = get_term_by( 'slug', $attribute['name'], LP_COURSE_ATTRIBUTE );
 	$output .= '<li><h4>' . $taxonomy->name . '</h4>';
-	/*$values = wp_get_object_terms( $postId, LP_COURSE_ATTRIBUTE . '-' . $attribute['name'] );
-	if ( !$values ) {
-	continue;
-	}*/
 	$output .= '<ul class="lp-course-attribute-values">';
 	foreach ( $object_terms as $value ) {
 		if ( $value->taxonomy != LP_COURSE_ATTRIBUTE . '-' . $attribute['name'] ) {

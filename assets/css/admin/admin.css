@@ -1866,8 +1866,17 @@ input.regular-text[id^="learn-press-emails"] {
   display: block;
 }
 /* Metabox Widget */
-.widget-inside .description {
+#widgets-right .widgets-holder-wrap .rwmb-label {
+  margin-bottom: 5px;
+}
+#widgets-right .widgets-holder-wrap .rwmb-input input[type="text"] {
+  width: 100%;
+}
+#widgets-right .widgets-holder-wrap .description {
   padding: 0;
+  margin-top: 5px;
+  font-size: small;
+  font-style: italic;
 }
 @keyframes learn-press-meta-box-tabs-initialize-animation {
   0% {

@@ -7,27 +7,47 @@ if ( !class_exists( 'LP_Widget_Course_Filters' ) ) {
 		public function __construct() {
 			$prefix        = '';
 			$this->options = array(
-				'title'         => array(
+				'title'                      => array(
 					'name' => __( 'Title', 'learnpress' ),
 					'id'   => "{$prefix}title",
 					'type' => 'text',
 					'std'  => __( 'Course filters', 'learnpress' )
 				),
-				'filter_by'     => array(
+				'filter_by'                  => array(
 					'name'    => __( 'Filter by', 'learnpress' ),
 					'id'      => "{$prefix}filter_by",
 					'type'    => 'checkbox_list',
 					'std'     => '',
 					'options' => ''
 				),
-				'ajax_filter'   => array(
+				'attribute_operation' => array(
+					'name'    => __( 'Attribute operation', 'learnpress' ),
+					'id'      => "{$prefix}attribute_operator",
+					'type'    => 'select',
+					'std'     => 'and',
+					'options' => array(
+						'and' => __( 'And', 'learnpress' ),
+						'or'  => __( 'Or', 'learnpress' )
+					)
+				),
+				'value_operation'     => array(
+					'name'    => __( 'Value operation', 'learnpress' ),
+					'id'      => "{$prefix}value_operator",
+					'type'    => 'select',
+					'std'     => 'and',
+					'options' => array(
+						'and' => __( 'And', 'learnpress' ),
+						'or'  => __( 'Or', 'learnpress' )
+					)
+				),
+				'ajax_filter'                => array(
 					'name' => __( 'Ajax filter', 'learnpress' ),
 					'id'   => "{$prefix}ajax_filter",
 					'type' => 'checkbox',
 					'std'  => '0',
-					'desc' => __( 'Use ajax to fetch content after filtering', 'learnpress' )
+					'desc' => __( 'Use ajax to fetch content while filtering', 'learnpress' )
 				),
-				'button_filter' => array(
+				'button_filter'              => array(
 					'name' => __( 'Button filter', 'learnpress' ),
 					'id'   => "{$prefix}button_filter",
 					'type' => 'checkbox',

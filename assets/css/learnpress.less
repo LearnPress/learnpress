@@ -1970,8 +1970,8 @@ body.content-item-only {
     }
     &.course-filters {
         .lp-course-attribute-values {
-            li{
-                &:before{
+            li {
+                a:before {
                     font-family: dashicons;
                     border-radius: 50%;
                     background: #DDD;
@@ -1984,18 +1984,18 @@ body.content-item-only {
                     font-size: 16px;
                     vertical-align: middle;
                     margin-right: 5px;
-                    content:'';
+                    content: '';
                 }
-                &:hover:before{
+                &:hover a:before {
                     background: #4acfff;
                 }
             }
             li.active {
-                &:before {
+                a:before {
                     content: "\f147";
                     background: #4acfff;
                 }
-                &:hover:before {
+                &:hover a:before {
                     content: "\f335";
                     background: #a20000;
                 }

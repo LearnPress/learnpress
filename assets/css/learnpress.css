@@ -2393,7 +2393,7 @@ body.content-item-only #learn-press-content-item.expand {
   border-radius: 4px;
   margin: 0 5px 5px 0;
 }
-.lp-course-attributes.course-filters .lp-course-attribute-values li:before {
+.lp-course-attributes.course-filters .lp-course-attribute-values li a:before {
   font-family: dashicons;
   border-radius: 50%;
   background: #DDD;
@@ -2408,14 +2408,14 @@ body.content-item-only #learn-press-content-item.expand {
   margin-right: 5px;
   content: '';
 }
-.lp-course-attributes.course-filters .lp-course-attribute-values li:hover:before {
+.lp-course-attributes.course-filters .lp-course-attribute-values li:hover a:before {
   background: #4acfff;
 }
-.lp-course-attributes.course-filters .lp-course-attribute-values li.active:before {
+.lp-course-attributes.course-filters .lp-course-attribute-values li.active a:before {
   content: "\f147";
   background: #4acfff;
 }
-.lp-course-attributes.course-filters .lp-course-attribute-values li.active:hover:before {
+.lp-course-attributes.course-filters .lp-course-attribute-values li.active:hover a:before {
   content: "\f335";
   background: #a20000;
 }
