@@ -97,7 +97,7 @@ function learn_press_get_add_on_tabs() {
             'url'   => ''
         ),
         'related_themes' => array(
-            'text' => sprintf( __( 'Related Themes <span class="count">(%s)</span>', 'learnpress' ), $counts['related_themes'] ), __( '', 'learnpress' ),
+            'text' => sprintf( __( 'Related Themes <span class="count">(%s)</span>', 'learnpress' ), $counts['related_themes'] ),
             'class' => '',
             'url'   => ''
         )

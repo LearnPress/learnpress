@@ -34,7 +34,7 @@ if ( $is_hidden ) {
         <p class="lp-section-actions lp-button-actions">
             <a href="" data-action="expand" class="dashicons dashicons-arrow-down<?php echo $is_hidden ? '' : ' hide-if-js'; ?>" title="<?php _e( 'Expand', 'learnpress' ); ?>"></a>
             <a href="" data-action="collapse" class="dashicons dashicons-arrow-up<?php echo !$is_hidden ? '' : ' hide-if-js'; ?>" title="<?php _e( 'Collapse', 'learnpress' ); ?>"></a>
-            <a href="" data-action="remove" class="dashicons dashicons-trash" data-confirm-remove="<?php _e( 'Are you sure you want to remove this section?', 'learnpress' ); ?>"><?php _e( '', 'learnpress' ); ?></a>
+            <a href="" data-action="remove" class="dashicons dashicons-trash" data-confirm-remove="<?php _e( 'Are you sure you want to remove this section?', 'learnpress' ); ?>"></a>
             <a href="" class="move"></a>
         </p>
     </h3>
