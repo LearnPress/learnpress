@@ -251,8 +251,8 @@ class LP_Query {
 			);
 		} else {
 
-			$custom_slug_lesson= sanitize_title_with_dashes( LP()->settings->get( 'lesson_slug' ) );
-			$custom_slug_quiz = sanitize_title_with_dashes( LP()->settings->get( 'quiz_slug' ) );
+			$custom_slug_lesson = sanitize_title_with_dashes( LP()->settings->get( 'lesson_slug' ) );
+			$custom_slug_quiz   = sanitize_title_with_dashes( LP()->settings->get( 'quiz_slug' ) );
 
 			if ( !empty( $custom_slug_lesson ) ) {
 				$post_types['lp_lesson']->rewrite['slug'] = $custom_slug_lesson;
@@ -275,7 +275,7 @@ class LP_Query {
 
 		if ( $profile_id = learn_press_get_page_id( 'profile' ) ) {
 			add_rewrite_rule(
-				'^' . $rewrite_prefix . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?([^/]*)/?([^/]*)/?([^/]*)/?([^/]*)/?',
+				'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?([^/]*)/?([^/]*)/?([^/]*)/?([^/]*)/?',
 				'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&id=$matches[3]&paged=$matches[4]',
 				'top'
 			);
@@ -283,16 +283,16 @@ class LP_Query {
 
 		if ( $course_page_id = learn_press_get_page_id( 'courses' ) ) {
 			add_rewrite_rule(
-				'^' . $rewrite_prefix . get_post_field( 'post_name', $course_page_id ) . '/page/([0-9]{1,})/?$',
+				'^' . get_post_field( 'post_name', $course_page_id ) . '/page/([0-9]{1,})/?$',
 				'index.php?pagename=' . get_post_field( 'post_name', $course_page_id ) . '&page=$matches[1]',
 				'top'
 			);
 			/**
-			add_rewrite_rule(
-				'^' . $rewrite_prefix . get_post_field( 'post_name', $course_page_id ) . '/page/([0-9]{1,})/?$',
-				'index.php?page_id=' . $course_page_id . '&paged=$matches[1]',
-				'top'
-			);*/
+			 * add_rewrite_rule(
+			 * '^' . $rewrite_prefix . get_post_field( 'post_name', $course_page_id ) . '/page/([0-9]{1,})/?$',
+			 * 'index.php?page_id=' . $course_page_id . '&paged=$matches[1]',
+			 * 'top'
+			 * );*/
 		}
 		do_action( 'learn_press_add_rewrite_rules' );
 		return;
