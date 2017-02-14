@@ -214,6 +214,7 @@ if ( !class_exists( 'LP_Admin' ) ) {
 		 * Include all classes and functions used for admin
 		 */
 		public function includes() {
+			//crazy tu
 			// Common function used in admin
 			include_once( 'lp-admin-functions.php' );
 			// Admin actions
