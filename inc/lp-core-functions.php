@@ -460,6 +460,9 @@ if ( !function_exists( 'learn_press_advertise_in_admin' ) ) {
 					unset( $list_themes[$key] );
 				}
 			}
+			if ( empty ( $list_themes ) ) {
+				return false;
+			}
 			shuffle( $list_themes );
 			?>
 			<div id="learn-press-add-ons-wrap" class="learnpress-advertis-admin">

@@ -2246,12 +2246,46 @@ body.profile-resizing {
 #popup_container #popup_panel {
   text-align: center;
 }
+.learn-press-auto-redirect-next-item {
+  display: none;
+}
+.learn-press-auto-redirect-next-item.active {
+  display: block;
+}
 .single-lp_course .course-summary .lp_course .entry-footer {
   display: none;
 }
 .single-lp_course .learn-press-message {
+  position: relative;
   clear: both;
   margin-top: 25px;
+}
+.single-lp_course .learn-press-message .learn-press-countdown {
+  display: inline-block;
+  width: 1.5em;
+  height: 1.5em;
+  background: #cc540d;
+  text-align: center;
+  border-radius: 50%;
+  line-height: 1.5em;
+  font-size: 0.8em;
+  color: #fff;
+}
+.single-lp_course .learn-press-message .learnpress-dismiss-notice {
+  display: inline-block;
+  position: absolute;
+  right: 1em;
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  -webkit-transform: translateY(-50%);
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+.single-lp_course .learn-press-message .learnpress-dismiss-notice:before {
+  font-size: 1.2em;
+  color: red;
+  content: "\f153";
+  font-family: dashicons;
 }
 /* tooltip */
 .learn-press-tooltip-bubble {

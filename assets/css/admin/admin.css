@@ -92,6 +92,9 @@
   box-sizing: border-box;
   opacity: 0;
 }
+#learn-press-admin-settings .learn-press-settings-wrap input[name="learn_press_auto_redirect_message"] {
+  width: 80%;
+}
 #learn-press-admin-settings .learn-press-settings-wrap:before {
   content: '';
   position: absolute;
