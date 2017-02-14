@@ -45,8 +45,8 @@ if ( !empty( $support_types[$item->post_type] ) ) {
     <td class="section-item-actions">
         <p class="lp-item-actions lp-button-actions">
             <?php do_action( 'learn_press_admin_begin_section_item_actions', $item, $section ); ?>
-            <a href="<?php echo absint( $item_id ) ? get_edit_post_link( $item_id ) : '{{data.edit_link}}'; ?>" class="lp-item-action lp-edit dashicons dashicons-edit" target="_blank"><?php _e( '', 'learnpress' ); ?></a>
-            <a href="" class="lp-item-action lp-remove dashicons dashicons-trash" data-confirm-remove="<?php _e( 'Are you sure you want to remove this item?', 'learnpress' ); ?>"><?php _e( '', 'learnpress' ); ?></a>
+            <a href="<?php echo absint( $item_id ) ? get_edit_post_link( $item_id ) : '{{data.edit_link}}'; ?>" class="lp-item-action lp-edit dashicons dashicons-edit" target="_blank"></a>
+            <a href="" class="lp-item-action lp-remove dashicons dashicons-trash" data-confirm-remove="<?php _e( 'Are you sure you want to remove this item?', 'learnpress' ); ?>"></a>
             <span class="item-checkbox">
                 <input type="checkbox" value="<?php echo $section_item_id; ?>" />
 				<a class="dashicons dashicons-menu"></a>

@@ -145,7 +145,7 @@ class LP_Question_Multi_Choice extends LP_Abstract_Question {
 
 					</td>
 					<td>
-						<input type="text" class="lpr-answer-text" name="lpr_question[<?php echo $post_id; ?>][answer][text][__INDEX__<?php echo $i; ?>]" value="<?php echo esc_attr( $this->get( 'options.answer.' . $i . '.text', __( '', 'learnpress' ) ) ); ?>" />
+						<input type="text" class="lpr-answer-text" name="lpr_question[<?php echo $post_id; ?>][answer][text][__INDEX__<?php echo $i; ?>]" value="<?php echo esc_attr( $this->get( 'options.answer.' . $i . '.text', '' ) ); ?>" />
 					</td>
 					<td align="center" class="lpr-remove-answer"><i class="dashicons dashicons-trash"></td>
 				</tr>

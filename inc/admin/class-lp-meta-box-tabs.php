@@ -49,7 +49,8 @@ if ( !class_exists( 'LP_Meta_Box_Tabs' ) ) {
 		 */
 		public function add_tab_arg( $url ) {
 			if ( array_key_exists( 'learn-press-meta-box-tab', $_REQUEST ) && !empty( $_REQUEST['learn-press-meta-box-tab'] ) ) {
-				$m = add_query_arg( 'tab', $_REQUEST['learn-press-meta-box-tab'], $url );
+				$url = remove_query_arg('tab', $url	);
+				$url = add_query_arg( 'tab', $_REQUEST['learn-press-meta-box-tab'], $url );
 			}
 			return $url;
 		}

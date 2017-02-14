@@ -128,7 +128,7 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 					'pages'  => array( LP_QUESTION_CPT ),
 					'fields' => array(
 						array(
-							'name' => __( '', 'learnpress' ),
+							'name' => '',
 							'id'   => "_lp_question_answer",
 							'type' => 'question'
 						)

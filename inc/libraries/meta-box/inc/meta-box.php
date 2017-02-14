@@ -108,11 +108,9 @@ if ( !class_exists( 'RW_Meta_Box' ) ) {
 			}
 
 			wp_enqueue_style( 'rwmb', RWMB_CSS_URL . 'style.css', array(), RWMB_VER );
-
 			// Load clone script conditionally
 			$has_clone = false;
 			$fields    = self::get_fields( $this->fields );
-
 			foreach ( $fields as $field ) {
 				if ( $field['clone'] ) {
 					$has_clone = true;
