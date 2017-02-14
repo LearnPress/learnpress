@@ -4,14 +4,14 @@
  * Class LP_Settings_Courses
  */
 class LP_Settings_Courses extends LP_Settings_Base {
-	public function __construct () {
+	public function __construct() {
 		$this->id   = 'courses';
 		$this->text = __( 'Courses', 'learnpress' );
 
 		parent::__construct();
 	}
 
-	public function _get_sections () {
+	public function _get_sections() {
 		$sections = array(
 			'general' => array(
 				'id'    => 'general',
@@ -22,7 +22,7 @@ class LP_Settings_Courses extends LP_Settings_Base {
 		return $sections = apply_filters( 'learn_press_settings_sections_' . $this->id, $sections );
 	}
 
-	public function save () {
+	public function save() {
 		parent::save();
 		$course_permalink = $_POST['learn_press_course_base'];
 		update_option( 'learn_press_course_base_type', $course_permalink );
@@ -52,12 +52,12 @@ class LP_Settings_Courses extends LP_Settings_Base {
 		}
 	}
 
-	public function output () {
+	public function output() {
 		$view = learn_press_get_admin_view( 'settings/courses.php' );
 		require_once $view;
 	}
 
-	public function get_settings () {
+	public function get_settings() {
 
 		$generate_course_thumbnail = get_option( 'learn_press_generate_course_thumbnail' ) ? get_option( 'learn_press_generate_course_thumbnail' ) : 'no';
 
@@ -107,13 +107,13 @@ class LP_Settings_Courses extends LP_Settings_Base {
 					'title'   => __( 'Auto redirect next lesson', 'learnpress' ),
 					'desc'    => __( 'Redirect to the next lesson after completed the lesson', 'learnpress' ),
 					'id'      => $this->get_field_name( 'auto_redirect_next_lesson' ),
-					'default' => 'yes',
+					'default' => 'no',
 					'type'    => 'checkbox'
 				),
 				array(
-					'title'   => __( 'Time delay redirect', 'learnpress' ),
-					'desc'    => __( 'The item will be redirected after certain amount of time, unit: seconds (s)', 'learpress' ),
-					'id'      => $this->get_field_name( 'auto_redirect_time' ),
+					'title'             => __( 'Time delay redirect', 'learnpress' ),
+					'desc'              => __( 'The item will be redirected after certain amount of time, unit: seconds (s)', 'learnpress' ),
+					'id'                => $this->get_field_name( 'auto_redirect_time' ),
 					'default'           => '3',
 					'type'              => 'number',
 					'custom_attributes' => array(
@@ -125,7 +125,7 @@ class LP_Settings_Courses extends LP_Settings_Base {
 					'desc'    => '',
 					'id'      => $this->get_field_name( 'auto_redirect_message' ),
 					'default' => 'Redirecting to the next item ... ',
-					'type'    => 'textarea'
+					'type'    => 'text'
 				),
 				array(
 					'title' => __( 'Archive', 'learnpress' ),
