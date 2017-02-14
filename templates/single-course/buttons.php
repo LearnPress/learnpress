@@ -67,15 +67,25 @@ $external_link_buy_course = apply_filters( 'learn_press_external_link_buy_course
 			<?php esc_html_e( 'Finish course', 'learnpress' ); ?>
 		</button>
 	<?php elseif ( $user->can( 'enroll-course', $course->id ) === true ) : ?>
-		<form name="enroll-course" class="enroll-course" method="post" enctype="multipart/form-data">
-			<?php do_action( 'learn_press_before_enroll_button' ); ?>
+		<?php if ( !empty( $external_link_buy_course ) && $user->can( 'purchase-course', $course->id ) ) : ?>
+			<?php do_action( 'learn_press_before_external_link_buy_course' ); ?>
+			<div class="purchase-course">
+				<a href="<?php echo esc_url($external_link_buy_course); ?>" class="button purchase-button">
+					<?php echo $purchase_button_text; ?>
+				</a>
+			</div>
+			<?php do_action( 'learn_press_after_external_link_buy_course' ); ?>
+		<?php else : ?>
+			<form name="enroll-course" class="enroll-course" method="post" enctype="multipart/form-data">
+				<?php do_action( 'learn_press_before_enroll_button' ); ?>
 
-			<input type="hidden" name="lp-ajax" value="enroll-course" />
-			<input type="hidden" name="enroll-course" value="<?php echo $course->id; ?>" />
-			<button class="button enroll-button" data-block-content="yes"><?php echo $enroll_button_text; ?></button>
+				<input type="hidden" name="lp-ajax" value="enroll-course" />
+				<input type="hidden" name="enroll-course" value="<?php echo $course->id; ?>" />
+				<button class="button enroll-button" data-block-content="yes"><?php echo $enroll_button_text; ?></button>
 
-			<?php do_action( 'learn_press_after_enroll_button' ); ?>
-		</form>
+				<?php do_action( 'learn_press_after_enroll_button' ); ?>
+			</form>
+		<?php endif; ?>
 	<?php elseif ( $user->can( 'purchase-course', $course->id ) ) : ?>
 
 		<?php if ( empty( $external_link_buy_course ) ) : ?>
