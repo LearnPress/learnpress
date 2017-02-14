@@ -1162,7 +1162,9 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			$required_review       = LP()->settings->get( 'required_review' ) == 'yes';
 			$enable_edit_published = LP()->settings->get( 'enable_edit_published' ) == 'yes';
 
-			$submit_for_review = learn_press_get_request( 'learn-press-submit-for-review' ) == 'yes' || ( ( ! $required_review || $enable_edit_published ) );
+//			$submit_for_review = learn_press_get_request( 'learn-press-submit-for-review' ) == 'yes' || ( ( !$required_review || $enable_edit_published ) );
+			$submit_for_review = learn_press_get_request( 'learn-press-submit-for-review' ) == 'yes' || ( ( $required_review ) );
+
 			// If course is submitted by administrator
 			if ( $user->is_admin() ) {
 				if ( $old_status != $new_status ) {
