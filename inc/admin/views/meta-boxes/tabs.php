@@ -84,12 +84,17 @@ $current_tab = !empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : '';
 			echo '</li>';
 		}
 		if ( !empty( $remove_meta_boxes ) ) {
+			$contexts = array( 'normal', 'side', 'advanced' );
 			foreach ( $remove_meta_boxes as $meta_box ) {
 				if ( $meta_box instanceof RW_Meta_Box ) {
 					$mbox = $meta_box->meta_box;
 					foreach ( $mbox['post_types'] as $page ) {
-						remove_meta_box( $mbox['id'], $page, $mbox['context'] );
-						$wp_meta_boxes[$page][$mbox['context']]['sorted'][$mbox['id']] = false;
+						foreach ( $contexts as $context ) {
+							remove_meta_box( $mbox['id'], $page, $context );
+							if ( !empty( $wp_meta_boxes[$page][$context]['sorted'][$mbox['id']] ) ) {
+								$wp_meta_boxes[$page][$context]['sorted'][$mbox['id']] = false;
+							}
+						}
 					}
 				} else {
 
