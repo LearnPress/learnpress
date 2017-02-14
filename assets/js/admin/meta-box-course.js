@@ -1425,7 +1425,7 @@
 			 return false;
 			 } else {
 			 }*/
-		});
+		}).attr('novalidate', 'true');
 		$('#learn-press-notice-check').change(function () {
 			var that = this,
 				$review = $('textarea[name="review_message"]').prop('disabled', !this.checked),
