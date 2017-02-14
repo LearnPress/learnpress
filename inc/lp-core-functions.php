@@ -448,7 +448,7 @@ if ( !function_exists( 'learn_press_advertise_in_admin' ) ) {
 			$current_theme = wp_get_theme();
 
 			// Get items education
-			$list_themes = (array)learn_press_related_theme();
+			$list_themes = (array) learn_press_related_theme();
 
 			if ( empty ( $list_themes ) ) {
 				return false;
@@ -2729,29 +2729,28 @@ function learn_press_debug_hidden() {
 # fix bug: wrong comment reply link
 add_filter( 'comment_reply_link', 'learn_press_comment_reply_link', 10, 4 );
 
-function learn_press_comment_reply_link( $link, $args=array(), $comment=null, $post=null ){
-	$post_types = array('lp_lesson', 'lp_quiz');
-	$post_type = get_post_type($post);
-	if(  in_array( $post_type, $post_types )){
+function learn_press_comment_reply_link( $link, $args = array(), $comment = null, $post = null ) {
+	$post_types = array( 'lp_lesson', 'lp_quiz' );
+	$post_type  = get_post_type( $post );
+	if ( in_array( $post_type, $post_types ) ) {
 
-		if ( get_option( 'comment_registration' ) && ! is_user_logged_in() ) {
+		if ( get_option( 'comment_registration' ) && !is_user_logged_in() ) {
 			$link = sprintf( '<a rel="nofollow" class="comment-reply-login" href="%s">%s</a>',
-					esc_url( wp_login_url( get_permalink() ) ),
-					$args['login_text']
+				esc_url( wp_login_url( get_permalink() ) ),
+				$args['login_text']
 			);
 		} else {
 			$onclick = sprintf( 'return addComment.moveForm( "%1$s-%2$s", "%2$s", "%3$s", "%4$s" )',
-					$args['add_below'], $comment->comment_ID, $args['respond_id'], $post->ID
+				$args['add_below'], $comment->comment_ID, $args['respond_id'], $post->ID
 			);
 
 			$link = sprintf( "<a rel='nofollow' class='comment-reply-link' href='%s' onclick='%s' aria-label='%s'>%s</a>",
-					esc_url( add_query_arg( array('replytocom'=> $comment->comment_ID, 'content-item-only'=>'yes') , get_permalink( $post->ID ) ) ) . "#" . $args['respond_id'],
-					$onclick,
-					esc_attr( sprintf( $args['reply_to_text'], $comment->comment_author ) ),
-					$args['reply_text']
+				esc_url( add_query_arg( array( 'replytocom' => $comment->comment_ID, 'content-item-only' => 'yes' ), get_permalink( $post->ID ) ) ) . "#" . $args['respond_id'],
+				$onclick,
+				esc_attr( sprintf( $args['reply_to_text'], $comment->comment_author ) ),
+				$args['reply_text']
 			);
 		}
 	}
 	return $link;
 }
-# -------------------------------
