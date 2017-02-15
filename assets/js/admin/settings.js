@@ -174,7 +174,7 @@
 		}).on('change update', '#learn_press_auto_redirect_next_lesson', function (e) {
 			var $depend = $('#learn_press_auto_redirect_message, #learn_press_auto_redirect_time').closest('tr');
 			$depend.toggleClass('hide-if-js', !e.target.checked);
-		});
+		}).on('click', '.learn-press-single-course-permalink input[type="radio"]', funcion(){});
 
 		$('#learn_press_required_review, #learn_press_auto_redirect_next_lesson').trigger('update');
 		$('#learn-press-admin-settings').on('click', '.nav-tab, .subsubsub > li > a', function (e) {
