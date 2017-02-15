@@ -57,7 +57,6 @@ $base_type = get_option( 'learn_press_course_base_type' );
 			if ( !$is_checked && $course_permalink == null && $k == 1 ) {
 				$is_checked = true;
 			}
-			echo "[",$course_permalink,',',$is_checked,',', $k,"]";
 			$is_checked = checked( $is_checked, true, false );
 			if ( $is_custom && $is_checked ) {
 				$is_custom = false;
@@ -73,7 +72,7 @@ $base_type = get_option( 'learn_press_course_base_type' );
 		</td>
 	</tr>
 <?php endforeach; ?>
-<tr class="learn-press-single-course-permalink">
+<tr class="learn-press-single-course-permalink custom-base">
 	<th>
 		<label>
 			<input name="<?php echo $this->get_field_name( "course_base" ); ?>" id="learn_press_custom_permalink" type="radio" value="custom" <?php checked( $is_custom || ( $base_type == 'custom' ), true ); ?> />
