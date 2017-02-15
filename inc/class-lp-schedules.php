@@ -39,8 +39,8 @@ class LP_Schedules
         /**
          * Find all courses that user did not finish yet
          */
-	    if (!$wpdb->prefix . 'learnpress_user_items') {
-//        if (! $this->_check_table_exit('learnpress_user_items') ) {
+//	    if (!$wpdb->prefix . 'learnpress_user_items') {
+        if (! $this->_check_table_exit('learnpress_user_items') ) {
             return;
         }
         $query = $wpdb->prepare("
@@ -55,6 +55,7 @@ class LP_Schedules
                 $course = learn_press_get_course($row->item_id);
                 if (!$course) continue;
                 $expired = $course->is_expired($row->user_id);
+
                 if (0 >= $expired) {
 
                     $user = learn_press_get_user($row->user_id);

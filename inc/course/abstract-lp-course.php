@@ -1483,7 +1483,7 @@ abstract class LP_Abstract_Course {
 			)
 		);
 		if ( $items ) foreach ( $items as $k => $item ) {
-			if ( ( $view = $user->can( 'view-item', $item['id'] ) ) !== false ) {
+			if ( ( $view = $user->can( 'view-item', $item['id'], $this->id ) ) !== false ) {
 				$items[$k]['url']    = $this->get_item_link( $item['id'] );
 				$items[$k]['status'] = $user->get_item_status( $item['id'], $this->id );
 				if ( $view == 'preview' ) {
