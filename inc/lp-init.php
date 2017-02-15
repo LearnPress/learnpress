@@ -3,7 +3,7 @@
  * Functions that are used to init a course to reduce SQL queries
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
+if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 add_action( 'init', '_learn_press_upgrade_table' );
@@ -12,8 +12,8 @@ add_action( 'init', '_learn_press_upgrade_table' );
  *
  * TODO: remove in next version
  */
-function _learn_press_upgrade_table () {
-	if ( get_option( 'learn_press_upgrade_table_20' ) != 'yes' ) {
+function _learn_press_upgrade_table() {
+	if ( version_compare( LEARNPRESS_VERSION, '2.1.0', '<' ) ) {
 		global $wpdb;
 		if ( $wpdb->get_var( "SHOW TABLES LIKE '{$wpdb->prefix}learnpress_user_items'" ) != $wpdb->prefix . "learnpress_user_items" ) {
 			return;
@@ -32,14 +32,14 @@ function _learn_press_upgrade_table () {
 }
 
 add_action( 'learn_press_parse_query', '_learn_press_setup_user_course_data' );
-function _learn_press_setup_user_course_data ( $query ) {
+function _learn_press_setup_user_course_data( $query ) {
 	learn_press_setup_user_course_data( get_current_user_id(), $query->query_vars['course_id'] );
 }
 
 /**
  * Cache static pages
  */
-function learn_press_setup_pages () {
+function learn_press_setup_pages() {
 	global $wpdb;
 	$pages    = array( 'courses', 'profile', 'become_a_teacher', 'checkout' );
 	$page_ids = array();
@@ -49,7 +49,7 @@ function learn_press_setup_pages () {
 			$page_ids[] = $id;
 		}
 	}
-	if ( ! $page_ids ) {
+	if ( !$page_ids ) {
 		return;
 	}
 	$query = $wpdb->prepare( "
@@ -58,7 +58,7 @@ function learn_press_setup_pages () {
 		WHERE %d AND ID IN(" . join( ',', $page_ids ) . ")
 		AND post_status <> %s
 	", 1, 'trash' );
-	if ( ! $pages = $wpdb->get_results( $query ) ) {
+	if ( !$pages = $wpdb->get_results( $query ) ) {
 		return;
 	}
 	foreach ( $pages as $page ) {
@@ -73,7 +73,7 @@ function learn_press_setup_pages () {
  *
  * @return bool|int
  */
-function learn_press_setup_course_data ( $the_course ) {
+function learn_press_setup_course_data( $the_course ) {
 	global $wp_query;
 	$course = false;
 	$post   = false;
@@ -84,17 +84,17 @@ function learn_press_setup_course_data ( $the_course ) {
 	} elseif ( isset( $the_course->ID ) ) {
 		$post = $the_course;
 	} elseif ( is_string( $the_course ) ) {
-		if ( ! empty( $wp_query->queried_object ) ) {
+		if ( !empty( $wp_query->queried_object ) ) {
 			if ( $wp_query->queried_object->post_name == $the_course ) {
 				$post = $wp_query->queried_object;
 			}
 		}
-		if ( ! $post ) {
+		if ( !$post ) {
 			$post = learn_press_get_post_by_name( $the_course, 'lp_course' );
 		}
 	}
 
-	if ( ! $post || $post->post_type != LP_COURSE_CPT ) {
+	if ( !$post || $post->post_type != LP_COURSE_CPT ) {
 		return $course;
 	}
 	_learn_press_get_course_curriculum( $post->ID );
@@ -109,11 +109,11 @@ function learn_press_setup_course_data ( $the_course ) {
  *
  * @return array
  */
-function _learn_press_get_course_curriculum ( $course_id, $force = false ) {
+function _learn_press_get_course_curriculum( $course_id, $force = false ) {
 	$curriculum     = LP_Cache::get_course_curriculum( false, array() );
 	$post_names     = LP_Cache::get_post_names( false, array() );
 	$meta_cache_ids = array();
-	if ( ! array_key_exists( $course_id, $curriculum ) || $force ) {
+	if ( !array_key_exists( $course_id, $curriculum ) || $force ) {
 		global $wpdb;
 		$query       = $wpdb->prepare( "
 			SELECT s.*, si.*, p.*
@@ -131,13 +131,13 @@ function _learn_press_get_course_curriculum ( $course_id, $force = false ) {
 		", $course_id );
 		$_curriculum = array();
 		$rows        = $wpdb->get_results( $query );
-		if ( ! $rows ) {
+		if ( !$rows ) {
 			return false;
 		}
-		if ( ! function_exists( 'get_default_post_to_edit' ) ) {
+		if ( !function_exists( 'get_default_post_to_edit' ) ) {
 			include_once ABSPATH . '/wp-admin/includes/post.php';
 		}
-		$empty_post = (array)get_default_post_to_edit();
+		$empty_post = (array) get_default_post_to_edit();
 		$section_id = 0;
 		$item_ids   = array();
 		$quiz_ids   = array();
@@ -157,8 +157,8 @@ function _learn_press_get_course_curriculum ( $course_id, $force = false ) {
 				) {
 					$section->{$prop} = $row->{$prop};
 				}
-				$section->items             = array();
-				$_curriculum[ $section_id ] = $section;
+				$section->items           = array();
+				$_curriculum[$section_id] = $section;
 			}
 			$item = new stdClass();
 			foreach ( array( 'section_item_id', 'section_id', 'item_id', 'item_order', 'item_type' ) as $prop ) {
@@ -170,17 +170,17 @@ function _learn_press_get_course_curriculum ( $course_id, $force = false ) {
 					$item->{$prop} = $row->{$prop};
 				}
 			}
-			$_curriculum[ $section_id ]->items[] = $item;
-			$item_ids[]                          = $item->ID;
+			$_curriculum[$section_id]->items[] = $item;
+			$item_ids[]                        = $item->ID;
 			if ( $item->post_type == LP_QUIZ_CPT ) {
 				$quiz_ids[] = $item->ID;
 			} elseif ( $item->post_type == LP_LESSON_CPT ) {
 				$lesson_ids[] = $item->ID;
 			}
-			if ( empty( $post_names[ $item->post_type ] ) ) {
-				$post_names[ $item->post_type ] = array();
+			if ( empty( $post_names[$item->post_type] ) ) {
+				$post_names[$item->post_type] = array();
 			}
-			$post_names[ $item->post_type ][ $item->post_name ] = $item->ID;
+			$post_names[$item->post_type][$item->post_name] = $item->ID;
 			wp_cache_delete( $item->ID, 'posts' );
 			wp_cache_add( $item->ID, $item, 'posts' );
 		}
@@ -195,10 +195,10 @@ function _learn_press_get_course_curriculum ( $course_id, $force = false ) {
 			}
 		}
 		update_meta_cache( 'post', $meta_cache_ids );
-		$curriculum[ $course_id ] = $_curriculum;
+		$curriculum[$course_id] = $_curriculum;
 		LP_Cache::set_course_curriculum( $curriculum );
 	} else {
-		$_curriculum = $curriculum[ $course_id ];
+		$_curriculum = $curriculum[$course_id];
 	}
 	LP_Cache::set_post_names( $post_names );
 
@@ -210,17 +210,17 @@ function _learn_press_get_course_curriculum ( $course_id, $force = false ) {
  *
  * @return array
  */
-function _learn_press_get_quiz_questions ( $quiz_ids ) {
+function _learn_press_get_quiz_questions( $quiz_ids ) {
 	global $wpdb;
 	settype( $quiz_ids, 'array' );
 	for ( $n = sizeof( $quiz_ids ), $i = $n - 1; $i >= 0; $i -- ) {
-		$q = wp_cache_get( $quiz_ids[ $i ], 'posts' );
+		$q = wp_cache_get( $quiz_ids[$i], 'posts' );
 		if ( $q && property_exists( $q, 'questions' ) ) {
-			unset( $quiz_ids[ $i ] );
+			unset( $quiz_ids[$i] );
 		}
 	}
 	$meta_cache_ids = array();
-	if ( ! $quiz_ids ) {
+	if ( !$quiz_ids ) {
 		return $meta_cache_ids;
 	}
 	$marks          = array();
@@ -252,43 +252,43 @@ function _learn_press_get_quiz_questions ( $quiz_ids ) {
 			foreach ( $answers as $row ) {
 				if ( $row->id != $question_id ) {
 					$question_id = $row->id;
-					if ( empty( $questions[ $question_id ] ) ) {
+					if ( empty( $questions[$question_id] ) ) {
 						continue;
 					}
-					$questions[ $question_id ]->answers = array();
-					$questions[ $question_id ]->type    = $row->type;
+					$questions[$question_id]->answers = array();
+					$questions[$question_id]->type    = $row->type;
 				}
-				if ( ! $answer_data = maybe_unserialize( $row->answer_data ) ) {
+				if ( !$answer_data = maybe_unserialize( $row->answer_data ) ) {
 					continue;
 				}
-				$answer_data['id']                                              = $row->question_answer_id;
-				$answer_data['order']                                           = $row->answer_order;
-				$answer_data['type']                                            = $row->type;
-				$questions[ $question_id ]->answers[ $row->question_answer_id ] = $answer_data;
+				$answer_data['id']                                          = $row->question_answer_id;
+				$answer_data['order']                                       = $row->answer_order;
+				$answer_data['type']                                        = $row->type;
+				$questions[$question_id]->answers[$row->question_answer_id] = $answer_data;
 			}
 		}
 
 		foreach ( $questions as $question ) {
-			if ( ! isset( $marks[ $question->quiz_id ] ) ) {
-				$marks[ $question->quiz_id ] = 0;
+			if ( !isset( $marks[$question->quiz_id] ) ) {
+				$marks[$question->quiz_id] = 0;
 			}
-			if ( empty( $quiz_questions[ $question->quiz_id ] ) ) {
-				$quiz_questions[ $question->quiz_id ] = array();
+			if ( empty( $quiz_questions[$question->quiz_id] ) ) {
+				$quiz_questions[$question->quiz_id] = array();
 			}
-			$marks[ $question->quiz_id ] += $question->mark;
-			$quiz_questions[ $question->quiz_id ][] = $question->ID;
+			$marks[$question->quiz_id] += $question->mark;
+			$quiz_questions[$question->quiz_id][] = $question->ID;
 			wp_cache_add( $question->ID, $question, 'posts' );
-			$post_names[ $question->post_name ] = $question->ID;
+			$post_names[$question->post_name] = $question->ID;
 		}
 
 		$meta_cache_ids = array_merge( $meta_cache_ids, $question_ids );
 		foreach ( $marks as $id => $mark ) {
 			$quiz            = get_post( $id );
 			$quiz->mark      = $mark;
-			$quiz->questions = is_admin() ? maybe_serialize( $quiz_questions[ $id ] ) : $quiz_questions[ $id ];
+			$quiz->questions = is_admin() ? maybe_serialize( $quiz_questions[$id] ) : $quiz_questions[$id];
 			wp_cache_delete( $id, 'posts' );
 			wp_cache_add( $id, $quiz, 'posts' );
-			$post_names[ $quiz->post_name ] = $id;
+			$post_names[$quiz->post_name] = $id;
 		}
 	}
 	$fetched_ids = array_keys( $marks );
@@ -309,18 +309,18 @@ function _learn_press_get_quiz_questions ( $quiz_ids ) {
  * @param $user_id
  * @param $course_id
  */
-function learn_press_setup_user_course_data ( $user_id, $course_id, $force = false ) {
+function learn_press_setup_user_course_data( $user_id, $course_id, $force = false ) {
 
-	if ( ! did_action( 'learn_press_setup_course_data_' . $course_id ) ) {
+	if ( !did_action( 'learn_press_setup_course_data_' . $course_id ) ) {
 		learn_press_setup_course_data( $course_id );
 	}
-	if ( ! did_action( 'learn_press_parse_query' ) ) {
+	if ( !did_action( 'learn_press_parse_query' ) ) {
 		//	_doing_it_wrong( __FUNCTION__, __( '' ), LEARNPRESS_VERSION );
 
 		//	return;
 	}
 
-	if ( ! $course_id ) {
+	if ( !$course_id ) {
 		$course_id = get_the_ID();
 	}
 
@@ -330,10 +330,10 @@ function learn_press_setup_user_course_data ( $user_id, $course_id, $force = fal
 	_learn_press_get_user_course_orders();
 	_learn_press_parse_user_item_statuses( $user_id, $course_id );
 	global $lp_query;
-	if ( ! empty( $lp_query->query_vars['lesson'] ) && ! empty( $item_statuses[ $user_id . '-' . $course_id . '-' . $course_id ] ) && $item_statuses[ $user_id . '-' . $course_id . '-' . $course_id ] != 'finished' ) {
+	if ( !empty( $lp_query->query_vars['lesson'] ) && !empty( $item_statuses[$user_id . '-' . $course_id . '-' . $course_id] ) && $item_statuses[$user_id . '-' . $course_id . '-' . $course_id] != 'finished' ) {
 		$user_item_id = learn_press_get_user_item_id( $user_id, $course_id );
 		$lesson       = learn_press_get_post_by_name( $lp_query->query_vars['lesson'], LP_LESSON_CPT );
-		if ( empty( $item_statuses[ $user_id . '-' . $course_id . '-' . $lesson->ID ] ) ) {
+		if ( empty( $item_statuses[$user_id . '-' . $course_id . '-' . $lesson->ID] ) ) {
 			learn_press_update_user_item_field( array(
 				'user_id'    => $user_id,
 				'item_id'    => $lesson->ID,
@@ -348,16 +348,16 @@ function learn_press_setup_user_course_data ( $user_id, $course_id, $force = fal
 	}
 }
 
-function _learn_press_parse_user_item_statuses ( $user_id, $course_id, $force = false ) {
-	if ( did_action( "learn_press_parse_user_item_statuses_{$user_id}_{$course_id}" ) && ! $force ) {
+function _learn_press_parse_user_item_statuses( $user_id, $course_id, $force = false ) {
+	if ( did_action( "learn_press_parse_user_item_statuses_{$user_id}_{$course_id}" ) && !$force ) {
 		return;
 	}
 	global $wpdb;
-	if ( ! $course_id ) {
+	if ( !$course_id ) {
 		$course_id = get_the_ID();
 	}
 	$course   = get_post( $course_id );
-	$item_ids = ! empty( $course->curriculum_items ) ? $course->curriculum_items : array();
+	$item_ids = !empty( $course->curriculum_items ) ? $course->curriculum_items : array();
 	$item_ids = maybe_unserialize( $item_ids );
 	if ( $item_ids ) {
 		$in    = implode( ', ', $item_ids );
@@ -389,13 +389,13 @@ function _learn_press_parse_user_item_statuses ( $user_id, $course_id, $force = 
 
 	$item_statuses = LP_Cache::get_item_statuses( false, array() );
 	foreach ( $item_ids as $id ) {
-		if ( ! array_key_exists( $id, $item_statuses ) || $force ) {
-			$item_statuses[ $user_id . '-' . $course_id . '-' . $id ] = '';
+		if ( !array_key_exists( $id, $item_statuses ) || $force ) {
+			$item_statuses[$user_id . '-' . $course_id . '-' . $id] = '';
 		}
 	}
 	if ( $items ) {
 		foreach ( $items as $item ) {
-			$item_statuses[ $user_id . '-' . $course_id . '-' . $item->item_id ] = learn_press_validate_item_status( $item );
+			$item_statuses[$user_id . '-' . $course_id . '-' . $item->item_id] = learn_press_validate_item_status( $item );
 		}
 	}
 
@@ -405,12 +405,12 @@ function _learn_press_parse_user_item_statuses ( $user_id, $course_id, $force = 
 	do_action( "learn_press_parse_user_item_statuses_{$user_id}_{$course_id}" );
 }
 
-function learn_press_validate_item_status ( $item ) {
+function learn_press_validate_item_status( $item ) {
 	$end_time = $item->end_time !== '0000-00-00 00:00:00';
 	$status   = $end_time > 0 ? ( $item->item_type != LP_COURSE_CPT ? 'completed' : 'finished' ) : $item->status;
-	if ( $end_time && ! in_array( $item->status, array( 'completed', 'finished' ) ) ) {
+	if ( $end_time && !in_array( $item->status, array( 'completed', 'finished' ) ) ) {
 		global $wpdb;
-		$data           = (array)$item;
+		$data           = (array) $item;
 		$data['status'] = $item->item_type != LP_COURSE_CPT ? 'completed' : 'finished';
 		learn_press_update_user_item_field(
 			$data,
@@ -429,13 +429,13 @@ function learn_press_validate_item_status ( $item ) {
  *
  * @return array
  */
-function _learn_press_get_user_course_orders ( $user_id = 0, $force = false ) {
+function _learn_press_get_user_course_orders( $user_id = 0, $force = false ) {
 	global $wpdb;
-	if ( ! $user_id ) {
+	if ( !$user_id ) {
 		$user_id = learn_press_get_current_user_id();
 	}
 	$data = LP_Cache::get_user_course_order( false, array() );
-	if ( ! array_key_exists( $user_id, $data ) || $force ) {
+	if ( !array_key_exists( $user_id, $data ) || $force ) {
 		$results = array();
 		$query   = $wpdb->prepare( "
 			SELECT o.*, oim.meta_value as course_id
@@ -447,29 +447,29 @@ function _learn_press_get_user_course_orders ( $user_id = 0, $force = false ) {
 		", '_course_id', '_user_id', $user_id, 'trash', LP_ORDER_CPT );
 		if ( $rows = $wpdb->get_results( $query ) ) {
 			foreach ( $rows as $row ) {
-				if ( empty( $results[ $row->course_id ] ) ) {
-					$results[ $row->course_id ] = array(
+				if ( empty( $results[$row->course_id] ) ) {
+					$results[$row->course_id] = array(
 						$row->ID => $row
 					);
 				} else {
-					$results[ $row->course_id ]             = array_reverse( $results[ $row->course_id ], true );
-					$results[ $row->course_id ][ $row->ID ] = $row;
-					$results[ $row->course_id ]             = array_reverse( $results[ $row->course_id ], true );
+					$results[$row->course_id]           = array_reverse( $results[$row->course_id], true );
+					$results[$row->course_id][$row->ID] = $row;
+					$results[$row->course_id]           = array_reverse( $results[$row->course_id], true );
 				}
 			}
 		}
-		$data[ $user_id ] = $results;
+		$data[$user_id] = $results;
 		LP_Cache::set_user_course_order( $data );
 	} else {
-		$results = $data[ $user_id ];
+		$results = $data[$user_id];
 	}
 
 	return $results;
 }
 
-function _learn_press_get_user_profile_orders ( $user_id = 0, $paged = 1, $limit = 10 ) {
+function _learn_press_get_user_profile_orders( $user_id = 0, $paged = 1, $limit = 10 ) {
 	global $wpdb;
-	if ( ! $user_id ) {
+	if ( !$user_id ) {
 		$user_id = learn_press_get_current_user_id();
 	}
 	if ( empty( $paged ) ) {
@@ -480,7 +480,7 @@ function _learn_press_get_user_profile_orders ( $user_id = 0, $paged = 1, $limit
 	}
 	$data = LP_Cache::get_user_profile_orders( false, array() );
 
-	if ( ! array_key_exists( $user_id, $data ) ) {
+	if ( !array_key_exists( $user_id, $data ) ) {
 		$limit   = absint( $limit );
 		$offset  = absint( $paged - 1 ) * $limit;
 		$results = array();
@@ -499,14 +499,14 @@ function _learn_press_get_user_profile_orders ( $user_id = 0, $paged = 1, $limit
 			$results['num_pages'] = ceil( $results['total'] / $limit );
 			$rows                 = array_slice( $rows, $offset, $limit );
 			foreach ( $rows as $row ) {
-				$results['rows'][ $row->ID ] = $row;
+				$results['rows'][$row->ID] = $row;
 			}
 		}
 
-		$data[ $user_id ] = $results;
+		$data[$user_id] = $results;
 		LP_Cache::set_user_profile_orders( $data );
 	} else {
-		$results = $data[ $user_id ];
+		$results = $data[$user_id];
 	}
 
 
@@ -518,7 +518,7 @@ function _learn_press_get_user_profile_orders ( $user_id = 0, $paged = 1, $limit
  *
  * @return array
  */
-function _learn_press_setup_question ( $id ) {
+function _learn_press_setup_question( $id ) {
 	global $wpdb;
 	settype( $id, 'array' );
 	$query     = $wpdb->prepare( "
@@ -535,18 +535,18 @@ function _learn_press_setup_question ( $id ) {
 		$question_id = 0;
 		foreach ( $answers as $row ) {
 			if ( $row->ID != $question_id ) {
-				$question_id                        = $row->ID;
-				$questions[ $question_id ]          = $row;
-				$questions[ $question_id ]->answers = array();
-				$questions[ $question_id ]->type    = $row->type;
+				$question_id                      = $row->ID;
+				$questions[$question_id]          = $row;
+				$questions[$question_id]->answers = array();
+				$questions[$question_id]->type    = $row->type;
 			}
-			if ( ! $answer_data = maybe_unserialize( $row->answer_data ) ) {
+			if ( !$answer_data = maybe_unserialize( $row->answer_data ) ) {
 				continue;
 			}
-			$answer_data['id']                                              = $row->question_answer_id;
-			$answer_data['order']                                           = $row->answer_order;
-			$answer_data['type']                                            = $row->type;
-			$questions[ $question_id ]->answers[ $row->question_answer_id ] = $answer_data;
+			$answer_data['id']                                          = $row->question_answer_id;
+			$answer_data['order']                                       = $row->answer_order;
+			$answer_data['type']                                        = $row->type;
+			$questions[$question_id]->answers[$row->question_answer_id] = $answer_data;
 		}
 		foreach ( $questions as $question ) {
 			$question->answers = maybe_serialize( $question->answers );
