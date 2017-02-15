@@ -988,9 +988,12 @@ function _learn_press_redirect_logout_redirect() {
 	$admin_url   = admin_url();
 	$pos = strpos( $redirect_to, $admin_url );
 	if ( $pos === false ) {
-		$redirect = learn_press_get_page_link( 'profile' );
-		wp_redirect( $redirect );
-		exit();
+		$page_id	= LP()->settings->get('logout_redirect_page_id');
+		$page_url	= get_page_link($page_id);
+		if( $page_id && $page_url ) {
+			wp_redirect( $page_url );
+			exit();
+		}
 	}
 }
 
