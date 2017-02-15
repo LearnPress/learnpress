@@ -497,7 +497,7 @@ class LP_Install {
 				update_option( $option_name, maybe_unserialize( $option_value ), 'yes' );
 			}
 		}
-		set_transient( 'learn_press_install', 'yes', 24 * 3600 );
+		update_option( 'learn_press_install', 'yes');
 	}
 
 	private static function _create_tables() {

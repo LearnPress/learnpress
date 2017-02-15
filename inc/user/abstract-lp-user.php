@@ -953,7 +953,7 @@ class LP_Abstract_User {
 		}
 		$user                = learn_press_get_current_user();
 		$history             = $user->get_quiz_results( $quiz_id, $course_id, true );
-		$current_question_id = $history? learn_press_get_user_item_meta( $history->history_id, 'lp_current_question_after_close', true ):array();
+		$current_question_id = $history ? learn_press_get_user_item_meta( $history->history_id, 'lp_current_question_after_close', true ) : array();
 		if ( !empty( $current_question_id ) ) {
 			$question_id = $current_question_id;
 		}
@@ -2422,9 +2422,13 @@ class LP_Abstract_User {
 			);
 			$query .= $where . $order . $limit;
 
-			$data          = array(
-				'rows' => $wpdb->get_results( $query )
+			$data = array(
+				'rows' => $wpdb->get_results( $query, OBJECT_K )
 			);
+			if ( $data['rows'] ) {
+				$course_ids = array_keys( $data['rows'] );
+				learn_press_setup_user_course_data( $this->id, $course_ids );
+			}
 			$data['count'] = $wpdb->get_var( "SELECT FOUND_ROWS();" );
 
 			$courses[$key] = $data;
@@ -2624,9 +2628,10 @@ class LP_Abstract_User {
 			", '_course_id', '_user_id', 'lp-completed', 'lp-processing', 'lp-on-hold', 'lp_course', 'publish', $args['user_id'] );
 			$query .= $limit;
 
-			$data          = array(
+			$data = array(
 				'rows' => $wpdb->get_results( $query, OBJECT_K )
 			);
+
 			$data['count'] = $wpdb->get_var( "SELECT FOUND_ROWS();" );
 
 			$courses[$key] = $data;
@@ -2643,6 +2648,7 @@ class LP_Abstract_User {
 	public function get_own_courses( $args = array() ) {
 		global $wpdb;
 		static $courses = array();
+
 		$args = wp_parse_args(
 			$args,
 			array(

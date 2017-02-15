@@ -302,9 +302,9 @@ if ( !class_exists( 'LearnPress' ) ) {
 
 			LP_Emails::instance();
 
-			if ( get_transient( 'learn_press_install' ) == 'yes' ) {
+			if ( get_option( 'learn_press_install' ) == 'yes' ) {
 				flush_rewrite_rules();
-				delete_transient( 'learn_press_install' );
+				delete_option( 'learn_press_install' );
 			}
 		}
 
