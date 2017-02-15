@@ -615,9 +615,9 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					array(
 						'name' => __( 'External link buy course', 'learnpress' ),
 						'id'   => "{$prefix}external_link_buy_course",
-						'type' => 'text',
+						'type' => 'url',
 						'desc' => __( 'Redirect to this url when you press button buy this course', 'learnpress' ),
-						'std'  => 'no',
+						'std'  => '',
 					)
 				)
 			);
