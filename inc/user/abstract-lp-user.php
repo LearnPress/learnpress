@@ -953,7 +953,7 @@ class LP_Abstract_User {
 		}
 		$user                = learn_press_get_current_user();
 		$history             = $user->get_quiz_results( $quiz_id, $course_id, true );
-		$current_question_id = $history? learn_press_get_user_item_meta( $history->history_id, 'lp_current_question_after_close', true ):array();
+		$current_question_id = $history ? learn_press_get_user_item_meta( $history->history_id, 'lp_current_question_after_close', true ) : array();
 		if ( !empty( $current_question_id ) ) {
 			$question_id = $current_question_id;
 		}
@@ -1896,49 +1896,26 @@ class LP_Abstract_User {
 	/**
 	 * Return current status of course for user
 	 *
-	 * @param $course_id
-	 * @param $field
+	 * @param      $course_id
+	 * @param      $field
+	 * @param bool $force
 	 *
 	 * @return mixed
 	 */
-	public function get_course_info( $course_id, $field = null ) {
+	public function get_course_info( $course_id, $field = null, $force = false ) {
 		if ( !$course_id ) {
 			return false;
 		}
-		global $wpdb;
-		//static $user_course_info = array();
 		$user_course_info = LP_Cache::get_course_info( false, array() );
 		if ( empty( $user_course_info[$this->id] ) ) {
 			$user_course_info[$this->id] = array();
 		}
-		if ( $course_id && empty( $user_course_info[$this->id][$course_id] ) ) {
-			$query = $wpdb->prepare( "
-				SELECT uc.*
-				FROM {$wpdb->prefix}learnpress_user_items uc
-				INNER JOIN {$wpdb->posts} o ON o.ID = uc.item_id
-				WHERE uc.user_id = %d AND uc.status IS NOT NULL
-				AND uc.item_id = %d AND uc.item_type = %s
-				ORDER BY user_item_id DESC
-			", $this->id, $course_id, 'lp_course' );
-
-			$info = array(
-				'history_id' => 0,
-				'start'      => null,
-				'end'        => null,
-				'status'     => null
-			);
-			if ( $result = $wpdb->get_row( $query ) ) {
-				$course             = learn_press_get_course( $course_id );
-				$info['history_id'] = $result->user_item_id;
-				$info['start']      = $result->start_time;
-				$info['end']        = $result->end_time;
-				$info['status']     = $result->status;
-				$info['results']    = $course->evaluate_course_results( $this->id );
-				$info['items']      = $course->get_items_params( $this->id );
+		if ( $course_id && !array_key_exists( $course_id, $user_course_info[$this->id] ) || $force ) {
+			if ( $result = learn_press_get_user_courses_info( $this->id, array( $course_id ) ) ) {
+				foreach ( $result as $cid => $data ) {
+					$user_course_info[$this->id][$cid] = $data;
+				}
 			}
-			$user_course_info[$this->id][$course_id] = $info;
-			LP_Cache::set_course_info( $user_course_info );
-
 		}
 		if ( $field && array_key_exists( $field, $user_course_info[$this->id][$course_id] ) ) {
 			$info = $user_course_info[$this->id][$course_id][$field];
@@ -2422,9 +2399,15 @@ class LP_Abstract_User {
 			);
 			$query .= $where . $order . $limit;
 
-			$data          = array(
-				'rows' => $wpdb->get_results( $query )
+			$data = array(
+				'rows' => $wpdb->get_results( $query, OBJECT_K )
 			);
+			if ( $data['rows'] ) {
+				$course_ids = array_keys( $data['rows'] );
+				learn_press_setup_user_course_data( $this->id, $course_ids );
+				learn_press_get_user_courses_info( $this->id, $course_ids );
+
+			}
 			$data['count'] = $wpdb->get_var( "SELECT FOUND_ROWS();" );
 
 			$courses[$key] = $data;
@@ -2624,9 +2607,10 @@ class LP_Abstract_User {
 			", '_course_id', '_user_id', 'lp-completed', 'lp-processing', 'lp-on-hold', 'lp_course', 'publish', $args['user_id'] );
 			$query .= $limit;
 
-			$data          = array(
+			$data = array(
 				'rows' => $wpdb->get_results( $query, OBJECT_K )
 			);
+
 			$data['count'] = $wpdb->get_var( "SELECT FOUND_ROWS();" );
 
 			$courses[$key] = $data;
@@ -2643,6 +2627,7 @@ class LP_Abstract_User {
 	public function get_own_courses( $args = array() ) {
 		global $wpdb;
 		static $courses = array();
+
 		$args = wp_parse_args(
 			$args,
 			array(

@@ -206,8 +206,21 @@ class LP_Page_Controller {
 
 			global $wp_query, $post, $wp;
 
+			if ( !empty( $wp_query->posts ) ) {
+				$ids = array();
+				foreach ( $wp_query->posts as $_post ) {
+					$ids[] = $_post->ID;
+					$_post = sanitize_post( $_post, 'raw' );
+					wp_cache_add( $_post->ID, $_post, 'posts' );
+				}
+				_learn_press_get_courses_curriculum( $ids );
+				_learn_press_get_users_enrolled_courses( $ids );
+				update_meta_cache( 'post', $ids );
+			}
 			LP()->wp_query = clone( $wp_query );
-			$template      = get_page_template();
+
+
+			$template = get_page_template();
 			/**
 			 * Fix in case a static page is used for archive course page and
 			 * it's slug is the same with course archive slug (courses).
