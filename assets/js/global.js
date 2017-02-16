@@ -729,7 +729,7 @@ if (typeof window.LP == 'undefined') {
 		},
 		unblockContent: function () {
 			setTimeout(function () {
-				var $root = $('body, html').removeClass('block-content'),
+				var $root = $('body').removeClass('block-content'),
 					overflow = $root.attr('overflow');
 				$root.css('overflow', overflow).removeAttr('overflow');
 			}, 350);

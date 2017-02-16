@@ -27,12 +27,6 @@ $user   = learn_press_get_current_user();
 <script type="text/template" id="learn-press-template-course-prev-item">
 	<a class="footer-control prev-item hide-if-js button-load-item" data-id="{{data.id}}" href="{{data.url}}"><span>&larr;</span>{{data.title}}</a>
 </script>
-
 <script type="text/template" id="learn-press-template-course-next-item">
 	<a class="footer-control next-item hide-if-js button-load-item" data-id="{{data.id}}" href="{{data.url}}">{{data.title}}<span>&rarr;</span></a>
-</script>
-<script type="text/template" id="learn-press-template-block-content">
-	<div id="learn-press-block-content" class="popup-block-content">
-		<span></span>
-	</div>
 </script>

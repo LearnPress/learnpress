@@ -1615,3 +1615,14 @@ function learn_press_check_access_lesson() {
 		}
 	}
 }
+
+add_action( 'wp_head', 'learn_press_js_template' );
+function learn_press_js_template() {
+	?>
+	<script type="text/template" id="learn-press-template-block-content">
+		<div id="learn-press-block-content" class="popup-block-content">
+			<span></span>
+		</div>
+	</script>
+	<?php
+}
