@@ -46,7 +46,10 @@ $args              = array(
                     );
 $limit             = LP()->settings->get( 'profile_courses_limit', 10 );
 $limit             = apply_filters( 'learn_press_profile_tab_courses_all_limit', $limit );
+learn_press_execute_time();
 $courses           = $user->get( 'courses', array( 'limit' => $limit ) );
+learn_press_execute_time();
+
 $num_pages         = learn_press_get_num_pages( $user->_get_found_rows(), $limit );
 $args['courses']   = $courses;
 $args['num_pages'] = $num_pages;
