@@ -10,9 +10,50 @@ class LP_Schedules {
 	 * LP_Schedules constructor.
 	 */
 	public function __construct() {
-		//add_action( 'learn_press_user_enrolled_course', array( $this, 'user_enrolled_course' ), 100, 3 );
-		$this->_update_user_course_expired();
-		//add_action( 'learn_press_update_user_course_schedule', array( $this, 'user_course_schedule' ) );
+		if ( learn_press_get_request( 'action' ) == 'heartbeat' || !is_admin() ) {
+			$this->_update_user_course_expired();
+		}
+		if ( !wp_next_scheduled( 'learn_press_delete_user_guest_transient' ) ) {
+			wp_schedule_event( time(), 'daily', 'learn_press_delete_user_guest_transient' );
+		}
+		add_action( 'learn_press_delete_user_guest_transient', array( $this, 'delete_user_guest_transient' ) );
+	}
+
+	public function delete_user_guest_transient() {
+		global $wpdb;
+		$time = time();
+		$sql  = "DELETE a, b FROM $wpdb->options a, $wpdb->options b
+			WHERE a.option_name LIKE %s
+			AND a.option_name NOT LIKE %s
+			AND b.option_name = CONCAT( '_transient_timeout_', SUBSTRING( a.option_name, 12 ) )
+			AND b.option_value < %d";
+		$wpdb->query(
+			$wpdb->prepare(
+				$sql,
+				$wpdb->esc_like( '_transient_' ) . '%',
+				$wpdb->esc_like( '_transient_timeout_' ) . '%',
+				$wpdb->esc_like( '_transient_learn_press_user_guest_' . '%' ),
+				$time
+			)
+		);
+
+		if ( is_main_site() && is_main_network() ) {
+			$sql = "DELETE a, b FROM $wpdb->options a, $wpdb->options b
+				WHERE a.option_name LIKE %s
+				AND a.option_name NOT LIKE %s
+				AND b.option_name = CONCAT( '_site_transient_timeout_', SUBSTRING( a.option_name, 17 ) )
+				AND a.option_name LIKE %s
+				AND b.option_value < %d";
+			$wpdb->query(
+				$wpdb->prepare(
+					$sql,
+					$wpdb->esc_like( '_site_transient_' ) . '%',
+					$wpdb->esc_like( '_site_transient_timeout_' ) . '%',
+					$wpdb->esc_like( '_site_transient_learn_press_user_guest_' . '%' ),
+					$time
+				)
+			);
+		}
 	}
 
 	/**

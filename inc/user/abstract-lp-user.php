@@ -2402,14 +2402,13 @@ class LP_Abstract_User {
 			$data = array(
 				'rows' => $wpdb->get_results( $query, OBJECT_K )
 			);
+			$data['count'] = $wpdb->get_var( "SELECT FOUND_ROWS();" );
+
 			if ( $data['rows'] ) {
 				$course_ids = array_keys( $data['rows'] );
 				learn_press_setup_user_course_data( $this->id, $course_ids );
 				learn_press_get_user_courses_info( $this->id, $course_ids );
-
 			}
-			$data['count'] = $wpdb->get_var( "SELECT FOUND_ROWS();" );
-
 			$courses[$key] = $data;
 		}
 		$this->_FOUND_ROWS = $courses[$key]['count'];

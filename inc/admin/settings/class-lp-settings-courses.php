@@ -25,7 +25,6 @@ class LP_Settings_Courses extends LP_Settings_Base {
 	public function save() {
 		parent::save();
 		$course_permalink = $_POST['learn_press_course_base'];
-		update_option( 'learn_press_course_base_type', $course_permalink );
 		if ( $course_permalink == 'custom' ) {
 			$course_permalink = trim( $_POST['course_permalink_structure'], '/' );
 
@@ -34,8 +33,10 @@ class LP_Settings_Courses extends LP_Settings_Base {
 			}
 
 			$course_permalink = '/' . $course_permalink;
-		} elseif ( empty( $course_permalink ) ) {
-			$course_permalink = false;
+			update_option( 'learn_press_course_base_type', 'custom' );
+
+		} else {
+			delete_option( 'learn_press_course_base_type' );
 		}
 
 		$course_base = untrailingslashit( $course_permalink );

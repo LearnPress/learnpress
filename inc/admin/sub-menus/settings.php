@@ -54,6 +54,7 @@ function learn_press_settings_page() {
 				<?php do_action( 'learn_press_settings_' . $current_tab ); ?>
 				<p>
 					<button class="button button-primary"><?php _e( 'Save settings', 'learnpress' ); ?></button>
+					<a class="button" href="<?php echo wp_nonce_url( add_query_arg( 'reset', 'yes' ), 'learn-press-reset-settings' ); ?>" id="learn-press-reset-settings" data-text="<?php esc_attr_e( 'Do you want to restore all settings to default?', 'learnpress' ); ?>"><?php _e( 'Reset', 'learnpress' ); ?></a>
 				</p>
 				<?php wp_nonce_field( 'learn_press_settings', 'learn_press_settings_nonce' ); ?>
 			</div>
@@ -83,6 +84,16 @@ function learn_press_admin_update_settings() {
 		if ( !class_exists( $class_name ) ) {
 
 		}
+	}
+
+	if ( learn_press_get_request( 'reset' ) == 'yes' && wp_verify_nonce( learn_press_get_request( '_wpnonce' ), 'learn-press-reset-settings' ) ) {
+		global $wpdb;
+		$sql = "
+			DELETE FROM {$wpdb->options} WHERE option_name LIKE %s
+		";
+		$wpdb->query( $wpdb->prepare( $sql, $wpdb->esc_like( 'learn_press_' ) . '%' ) );
+		wp_redirect( remove_query_arg( array( 'reset', '_wpnonce' ) ) );
+		exit();
 	}
 
 	if ( !empty( $_POST ) ) {
