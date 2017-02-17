@@ -2752,3 +2752,18 @@ function learn_press_comment_reply_link( $link, $args=array(), $comment=null, $p
 	return $link;
 }
 # -------------------------------
+
+# -------------------------------
+# Validation Data Settings Page Before Save
+add_filter( 'learn_press_update_option_value', 'learn_press_validation_data_before_save', 10, 2 );
+
+function learn_press_validation_data_before_save( $value = '', $name = '' ) {
+	if ( $name === 'learn_press_profile_endpoints' ) {
+
+		if (empty($value['profile-courses'])) {
+			$value['profile-courses'] = 'courses';
+		}
+	}
+
+	return $value;
+}

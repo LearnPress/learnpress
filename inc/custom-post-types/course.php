@@ -923,13 +923,12 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		function _insert_item( $item = array() ) {
 			$_post = $this->_cleanPostData();
 
-			$item_id    = wp_insert_post(
-				array(
-					'post_title'  => $item['post_title'],
-					'post_type'   => $item['post_type'],
-					'post_status' => 'publish'
-				)
-			);
+			$args_item = apply_filters('learnpress_course_insert_item_args', array(
+				'post_title'  => $item['post_title'],
+				'post_type'   => $item['post_type'],
+				'post_status' => 'publish'
+			));
+			$item_id    = wp_insert_post($args_item);
 			$item['ID'] = $item_id;
 
 			$this->_resetPostData( $_post );
@@ -1040,6 +1039,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 										'ID'         => $_item['item_id'],
 										'post_title' => $_item['name']
 									);
+									$update_data = apply_filters('learnpress_course_update_data_item_args', $update_data);
 									// prevent update the meta of course for the items when update items
 									$_post = $this->_cleanPostData();
 									wp_update_post( $update_data );
@@ -1125,7 +1125,6 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			$required_review       = LP()->settings->get( 'required_review' ) == 'yes';
 			$enable_edit_published = LP()->settings->get( 'enable_edit_published' ) == 'yes';
 
-//			$submit_for_review = learn_press_get_request( 'learn-press-submit-for-review' ) == 'yes' || ( ( !$required_review || $enable_edit_published ) );
 			$submit_for_review = learn_press_get_request( 'learn-press-submit-for-review' ) == 'yes' || ( ( $required_review ) );
 
 			// If course is submitted by administrator
