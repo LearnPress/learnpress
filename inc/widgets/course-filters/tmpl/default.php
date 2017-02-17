@@ -21,13 +21,17 @@ $has_filtered = false;
 		if ( !( false === $in || in_array( LP_COURSE_ATTRIBUTE . '-' . $attribute->slug, $in ) ) ) {
 			continue;
 		}
+		$values = learn_press_get_attribute_terms( $attribute->term_id );
+		if ( !$values ) {
+			continue;
+		}
+		$has_attribute_values = false;
+		ob_start();
 		?>
 		<li data-attribute="filter_<?php echo $attribute->slug; ?>">
-			<h4><?php echo $attribute->name; ?></h4>
+			<h4 class="lp-course-attribute-name"><?php echo $attribute->name; ?></h4>
 			<?php
-			$values = learn_press_get_attribute_terms( $attribute->term_id );
 			//$term_counts = $this->get_filtered_term_course_counts( wp_list_pluck( $values, 'term_id' ), LP_COURSE_ATTRIBUTE . '-' . $attribute->slug, $this->instance['value_operator'] );
-
 			$tax = false;
 			if ( $lp_tax_query )
 				foreach ( $lp_tax_query as $k => $_tax ) {
@@ -40,33 +44,37 @@ $has_filtered = false;
 						break;
 					}
 				}
-			if ( $values ) {
-				?>
-				<ul class="lp-course-attribute-values">
-					<?php foreach ( $values as $value ) {
-						if ( !$value->count ) {
-							continue;
-						}
-						$count = isset( $term_counts[$value->term_id] ) ? $term_counts[$value->term_id] : 0;
-						if ( !$count ) {
-							continue;
-						}
-						$classes = array();
-						if ( $tax && in_array( $value->slug, $tax['terms'] ) ) {
-							$classes[]    = "active";
-							$has_filtered = true;
-						}
-						?>
-						<li class="<?php echo join( ' ', $classes ); ?>" data-value="<?php echo $value->slug; ?>">
-							<a href=""><?php echo $value->name; ?></a>
-							<span>(<?php echo $count; ?>)</span>
-						</li>
-					<?php } ?>
-				</ul>
-				<?php
-			}
 			?>
+			<ul class="lp-course-attribute-values">
+				<?php foreach ( $values as $value ) {
+					if ( !$value->count ) {
+						continue;
+					}
+					$count = isset( $term_counts[$value->term_id] ) ? $term_counts[$value->term_id] : 0;
+					if ( !$count ) {
+						continue;
+					}
+					$classes = array( 'lp-course-attribute-value' );
+					if ( $tax && in_array( $value->slug, $tax['terms'] ) ) {
+						$classes[]    = "active";
+						$has_filtered = true;
+					}
+					$has_attribute_values = true;
+					?>
+					<li class="<?php echo join( ' ', $classes ); ?>" data-value="<?php echo $value->slug; ?>">
+						<a href=""><?php echo $value->name; ?></a>
+						<span>(<?php echo $count; ?>)</span>
+					</li>
+				<?php } ?>
+			</ul>
+
 		</li>
+		<?php
+		$output = ob_get_clean();
+		if ( $has_attribute_values ) {
+			echo $output;
+		}
+		?>
 	<?php } ?>
 </ul>
 <input type="hidden" name="attribute_operation" value="<?php echo empty( $this->instance['attribute_operation'] ) || strtolower( $this->instance['attribute_operation'] ) == 'and' ? 'and' : 'or'; ?>">
