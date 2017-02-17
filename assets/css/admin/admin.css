@@ -92,6 +92,9 @@
   box-sizing: border-box;
   opacity: 0;
 }
+#learn-press-admin-settings .learn-press-settings-wrap input[name="learn_press_auto_redirect_message"] {
+  width: 80%;
+}
 #learn-press-admin-settings .learn-press-settings-wrap:before {
   content: '';
   position: absolute;
@@ -108,10 +111,18 @@
 #learn-press-admin-settings .learn-press-settings-wrap.ready {
   opacity: 1;
 }
+#learn-press-admin-settings .learn-press-settings-wrap #learn-press-reset-settings {
+  float: right;
+  opacity: 0.5;
+}
+#learn-press-admin-settings .learn-press-settings-wrap #learn-press-reset-settings:hover {
+  opacity: 1;
+}
 #learn-press-admin-settings.no-subtabs .learn-press-settings-wrap {
   float: none;
   margin-left: 0;
   padding-left: 25px;
+  padding-right: 25px;
 }
 #learn-press-admin-settings.no-subtabs .learn-press-settings-wrap:before {
   display: none;
@@ -1819,7 +1830,7 @@ input.regular-text[id^="learn-press-emails"] {
   margin: 0;
 }
 .learn-press-tabs .learn-press-tab-content > li {
-  padding: 0 20px 0px 20px;
+  padding: 0 20px 10px 20px;
   float: left;
   width: 100%;
   margin-right: -100%;

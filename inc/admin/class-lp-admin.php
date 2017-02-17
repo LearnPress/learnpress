@@ -111,7 +111,7 @@ if ( !class_exists( 'LP_Admin' ) ) {
 					return;
 				}
 
-				if ( learn_press_get_theme_templates( true ) ) {
+				if ( learn_press_detect_outdated_template() ) {
 					learn_press_admin_view( 'html-admin-notice-templates' );
 				}
 			}
@@ -214,6 +214,7 @@ if ( !class_exists( 'LP_Admin' ) ) {
 		 * Include all classes and functions used for admin
 		 */
 		public function includes() {
+			//crazy tu
 			// Common function used in admin
 			include_once( 'lp-admin-functions.php' );
 			// Admin actions

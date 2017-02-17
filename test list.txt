@@ -1,9 +1,0 @@
-+ Assign course's items to user when assigning course
-+ Options to change key 'lessons' and 'quizzes' when viewing a lesson/quiz in a course.
-(Section "Course item slug" in wp-admin/admin.php?page=learn-press-settings&tab=courses)
-+ Course pagination issue in some case
-+ Can not add to cart for non-loggedin user (woocommerce addon)
-+ Broken cert when previewing to print in single course (Certificate)
-+ Paid memberships show user as deleted after buying course (Paid membership)
-+ Fixed overwrite templates issue (Paid membership)
-+ "page isn’t working" when creating a new post type (conflict with metabox in the-7 theme)

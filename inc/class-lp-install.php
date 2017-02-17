@@ -186,6 +186,8 @@ class LP_Install {
 			AND b.option_value < %d";
 		$wpdb->query( $wpdb->prepare( $sql, $wpdb->esc_like( '_transient_' ) . '%', $wpdb->esc_like( '_transient_timeout_' ) . '%', time() ) );
 
+		learn_press_delete_user_option( 'hide-notice-template-files' );
+		
 		// Fix for WP 4.7
 		if ( did_action( 'admin_init' ) ) {
 			self::_auto_update();
@@ -495,7 +497,7 @@ class LP_Install {
 				update_option( $option_name, maybe_unserialize( $option_value ), 'yes' );
 			}
 		}
-		set_transient( 'learn_press_install', 'yes', 24 * 3600 );
+		update_option( 'learn_press_install', 'yes');
 	}
 
 	private static function _create_tables() {

@@ -97,7 +97,7 @@ function learn_press_get_add_on_tabs() {
             'url'   => ''
         ),
         'related_themes' => array(
-            'text' => sprintf( __( 'Related Themes <span class="count">(%s)</span>', 'learnpress' ), $counts['related_themes'] ), __( '', 'learnpress' ),
+            'text' => sprintf( __( 'Related Themes <span class="count">(%s)</span>', 'learnpress' ), $counts['related_themes'] ),
             'class' => '',
             'url'   => ''
         )
@@ -587,7 +587,6 @@ function learn_press_related_theme() {
 
         $response = wp_remote_retrieve_body($response);
         $response = json_decode($response, true);
-
         if (!empty($response) && !empty($response['matches'])) {
             $list_theme = $response['matches'];
 
@@ -597,6 +596,8 @@ function learn_press_related_theme() {
 
         }
     }
+
+    return array();
 }
 
 function learn_press_get_add_ons_themes() {

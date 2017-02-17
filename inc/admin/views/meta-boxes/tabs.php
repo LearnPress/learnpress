@@ -55,6 +55,9 @@ $current_tab = !empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : '';
 				);
 				$remove_meta_boxes[] = $metabox;
 			}
+			if ( empty( $tab['title'] ) ) {
+				continue;
+			}
 			if ( empty( $tab['id'] ) ) {
 				$tab['id'] = sanitize_title( $tab['title'] );
 			}
@@ -73,6 +76,9 @@ $current_tab = !empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : '';
 	<ul class="learn-press-tab-content" data-text="<?php esc_attr_e( 'Initializing...', 'learnpress' ); ?>">
 		<?php
 		foreach ( $tabs as $tab ) {
+			if ( empty( $tab['title'] ) ) {
+				continue;
+			}
 			echo '<li id="meta-box-tab-' . $tab['id'] . '" class="' . $tab['id'] . ( is_array( $current_tab ) && $current_tab['id'] == $tab['id'] ? ' active' : '' ) . '">';
 			if ( !empty( $tab['content'] ) ) {
 				echo $tab['content'];
@@ -84,12 +90,17 @@ $current_tab = !empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : '';
 			echo '</li>';
 		}
 		if ( !empty( $remove_meta_boxes ) ) {
+			$contexts = array( 'normal', 'side', 'advanced' );
 			foreach ( $remove_meta_boxes as $meta_box ) {
 				if ( $meta_box instanceof RW_Meta_Box ) {
 					$mbox = $meta_box->meta_box;
 					foreach ( $mbox['post_types'] as $page ) {
-						remove_meta_box( $mbox['id'], $page, $mbox['context'] );
-						$wp_meta_boxes[$page][$mbox['context']]['sorted'][$mbox['id']] = false;
+						foreach ( $contexts as $context ) {
+							remove_meta_box( $mbox['id'], $page, $context );
+							if ( !empty( $wp_meta_boxes[$page][$context]['sorted'][$mbox['id']] ) ) {
+								$wp_meta_boxes[$page][$context]['sorted'][$mbox['id']] = false;
+							}
+						}
 					}
 				} else {
 

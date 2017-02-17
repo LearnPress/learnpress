@@ -130,8 +130,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 					'id'         => 'questions',
 					'fields'     => array(
 						array(
-							'name' => __( '', 'learnpress' ),
-							'desc' => __( '', 'learnpress' ),
+							'name' => '',
 							'id'   => "{$prefix}questions",
 							'type' => 'quiz_questions'
 						)

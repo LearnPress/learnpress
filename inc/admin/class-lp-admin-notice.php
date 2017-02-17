@@ -38,8 +38,9 @@ class LP_Admin_Notice {
 		} else {
 			learn_press_update_user_option( 'hide-notice-' . $notice, 'yes' );
 		}
-		if ( $redirect = apply_filters( 'learn_press_hide_notice_redirect', remove_query_arg( 'lp-hide-notice', learn_press_get_current_url() ) ) ) {
-			wp_redirect( $redirect );
+
+		if ( $redirect = apply_filters( 'learn_press_hide_notice_redirect', remove_query_arg( 'lp-hide-notice' ) ) ) {
+			wp_redirect( untrailingslashit( $redirect ) );
 			exit();
 		}
 	}

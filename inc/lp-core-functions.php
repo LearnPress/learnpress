@@ -448,13 +448,20 @@ if ( !function_exists( 'learn_press_advertise_in_admin' ) ) {
 			$current_theme = wp_get_theme();
 
 			// Get items education
-			$list_themes = learn_press_related_theme();
+			$list_themes = (array) learn_press_related_theme();
+
+			if ( empty ( $list_themes ) ) {
+				return false;
+			}
 
 			foreach ( $list_themes as $key => $theme ) {
 
 				if ( !array_key_exists( $theme['id'], $themes_id ) || $themes_id[$theme['id']] === $current_theme->name ) {
 					unset( $list_themes[$key] );
 				}
+			}
+			if ( empty ( $list_themes ) ) {
+				return false;
 			}
 			shuffle( $list_themes );
 			?>
@@ -624,7 +631,7 @@ if ( !function_exists( 'learn_press_paging_nav' ) ) :
 				'num_pages'     => 0,
 				'paged'         => get_query_var( 'paged' ) ? get_query_var( 'paged' ) : 1,
 				'wrapper_class' => 'learn-press-pagination',
-				'base'          => false,
+				'base'          => false
 			)
 		);
 		if ( $args['num_pages'] < 2 ) {
@@ -1028,8 +1035,8 @@ function learn_press_get_payment_currencies() {
 		'HUF' => 'Hungarian Forint (Ft)',
 		'ISK' => 'Icelandic krona (Kr.)',
 		'IDR' => 'Indonesia Rupiah (Rp)',
-		'INR' => 'Indian Rupee (Rs.)',
-		'NPR' => 'Nepali Rupee (Rs.)',
+		'INR' => 'Indian Rupee (₹)',
+		'NPR' => 'Nepali Rupee (रू)',
 		'ILS' => 'Israeli Shekel (₪)',
 		'JPY' => 'Japanese Yen (¥)',
 		'KIP' => 'Lao Kip (₭)',
@@ -1136,7 +1143,7 @@ function learn_press_get_currency_symbol( $currency = '' ) {
 			$currency_symbol = '&#8362;';
 			break;
 		case 'INR' :
-			$currency_symbol = 'Rs.';
+			$currency_symbol = '₹';
 			break;
 		case 'ISK' :
 			$currency_symbol = 'Kr.';
@@ -1157,7 +1164,7 @@ function learn_press_get_currency_symbol( $currency = '' ) {
 			$currency_symbol = '&#107;&#114;';
 			break;
 		case 'NPR' :
-			$currency_symbol = 'Rs.';
+			$currency_symbol = 'रू';
 			break;
 		case 'PHP' :
 			$currency_symbol = '&#8369;';
@@ -2708,10 +2715,52 @@ function learn_press_get_students_list_filter() {
 	return apply_filters( 'learn_press_get_students_list_filter', $filter );
 }
 
+function learn_press_execute_time() {
+	static $time;
+	if ( empty( $time ) ) {
+		$time = microtime( true );
+		return $time;
+	} else {
+		$execute_time = microtime( true ) - $time;
+		echo "Execute time " . $execute_time;
+		$time = 0;
+		return $execute_time;
+	}
+}
 
 function learn_press_debug_hidden() {
 	$args = func_get_args();
 	echo '<div class="learn-press-debug-hidden" style="display:none;">';
 	call_user_func_array( 'learn_press_debug', $args );
 	echo '</div>';
+}
+
+# -------------------------------
+# fix bug: wrong comment reply link
+add_filter( 'comment_reply_link', 'learn_press_comment_reply_link', 10, 4 );
+
+function learn_press_comment_reply_link( $link, $args = array(), $comment = null, $post = null ) {
+	$post_types = array( 'lp_lesson', 'lp_quiz' );
+	$post_type  = get_post_type( $post );
+	if ( in_array( $post_type, $post_types ) ) {
+
+		if ( get_option( 'comment_registration' ) && !is_user_logged_in() ) {
+			$link = sprintf( '<a rel="nofollow" class="comment-reply-login" href="%s">%s</a>',
+				esc_url( wp_login_url( get_permalink() ) ),
+				$args['login_text']
+			);
+		} else {
+			$onclick = sprintf( 'return addComment.moveForm( "%1$s-%2$s", "%2$s", "%3$s", "%4$s" )',
+				$args['add_below'], $comment->comment_ID, $args['respond_id'], $post->ID
+			);
+
+			$link = sprintf( "<a rel='nofollow' class='comment-reply-link' href='%s' onclick='%s' aria-label='%s'>%s</a>",
+				esc_url( add_query_arg( array( 'replytocom' => $comment->comment_ID, 'content-item-only' => 'yes' ), get_permalink( $post->ID ) ) ) . "#" . $args['respond_id'],
+				$onclick,
+				esc_attr( sprintf( $args['reply_to_text'], $comment->comment_author ) ),
+				$args['reply_text']
+			);
+		}
+	}
+	return $link;
 }

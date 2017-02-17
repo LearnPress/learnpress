@@ -43,6 +43,8 @@ abstract class LP_Abstract_Course {
 	 */
 	protected $_students_list = null;
 
+	public static $course_users = array();
+
 	/**
 	 * @var array
 	 */
@@ -419,16 +421,23 @@ abstract class LP_Abstract_Course {
 	public function get_users_enrolled( $force = false ) {
 
 		global $wpdb;
-		if ( $this->_count_users === null || $force ) {
-			$query              = $wpdb->prepare( "
+		if ( ( $this->_count_users === null && !array_key_exists( $this->id, self::$course_users ) ) || $force ) {
+			/*$query = $wpdb->prepare( "
 				SELECT count(o.ID)
 				FROM {$wpdb->posts} o
 				INNER JOIN {$wpdb->learnpress_order_items} oi ON oi.order_id = o.ID
 				INNER JOIN {$wpdb->learnpress_order_itemmeta} oim ON oim.learnpress_order_item_id = oi.order_item_id
 				AND oim.meta_key = %s AND oim.meta_value = %d
 				WHERE o.post_status = %s
-			", '_course_id', $this->id, 'lp-completed' );
-			$this->_count_users = $wpdb->get_var( $query );
+			", '_course_id', $this->id, 'lp-completed' );*/
+			self::$course_users = _learn_press_get_users_enrolled_courses( array( $this->id ) );
+			/*
+			$this->_count_users = $wpdb->get_var( $query );*/
+		}
+		if ( !array_key_exists( $this->id, self::$course_users ) ) {
+			$this->_count_users = 0;
+		} else {
+			$this->_count_users = absint( self::$course_users[$this->id] );
 		}
 		return $this->_count_users;
 	}
@@ -953,14 +962,14 @@ abstract class LP_Abstract_Course {
 				return false;
 			}
 			$permalink  = get_the_permalink( $item_id );
-            $post_types = get_post_types( null, 'objects' );
+			$post_types = get_post_types( null, 'objects' );
 			$item_type  = get_post_type( $item_id );
-            switch ( $item_type ) {
+			switch ( $item_type ) {
 				case 'lp_lesson':
 				case 'lp_quiz':
 					$permalink = trailingslashit( get_the_permalink( $this->id ) );
 					$post_name = get_post_field( 'post_name', $item_id );
-					$slug = $post_types[$item_type]->rewrite['slug'];
+					$slug      = $post_types[$item_type]->rewrite['slug'];
 
 //		            $custom_prefix  = '';
 //
@@ -974,14 +983,14 @@ abstract class LP_Abstract_Course {
 //		            if ( !empty( $custom_prefix ) ) {
 //			            $slug = sanitize_title_with_dashes( $custom_prefix );
 //		            }
-	                $prefix    = preg_replace( '!^/!', '', trailingslashit( $slug ));//"{$item_id}-";
+					$prefix = preg_replace( '!^/!', '', trailingslashit( $slug ) );//"{$item_id}-";
 
-	                if ( '' != get_option( 'permalink_structure' ) && get_post_status( $this->id ) != 'draft' ) {
+					if ( '' != get_option( 'permalink_structure' ) && get_post_status( $this->id ) != 'draft' ) {
 						$permalink .= $prefix . $post_name;
-                    } else {
+					} else {
 						$key       = preg_replace( '!lp_!', '', get_post_type( $item_id ) );
 						$permalink = add_query_arg( array( $key => $post_name ), $permalink );
-                    }
+					}
 					break;
 			}
 			$permalink        = trailingslashit( $permalink );
@@ -1483,7 +1492,7 @@ abstract class LP_Abstract_Course {
 			)
 		);
 		if ( $items ) foreach ( $items as $k => $item ) {
-			if ( ( $view = $user->can( 'view-item', $item['id'] ) ) !== false ) {
+			if ( ( $view = $user->can( 'view-item', $item['id'], $this->id ) ) !== false ) {
 				$items[$k]['url']    = $this->get_item_link( $item['id'] );
 				$items[$k]['status'] = $user->get_item_status( $item['id'], $this->id );
 				if ( $view == 'preview' ) {

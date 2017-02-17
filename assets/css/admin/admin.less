@@ -98,6 +98,9 @@
         width: 100%;
         box-sizing: border-box;
         opacity: 0;
+        input[name="learn_press_auto_redirect_message"] {
+            width: 80%;
+        }
         &:before {
             content: '';
             position: absolute;
@@ -114,12 +117,21 @@
         &.ready {
             opacity: 1;
         }
+        #learn-press-reset-settings {
+            float: right;
+            opacity: 0.5;
+            &:hover {
+                opacity: 1;
+            }
+        }
     }
     &.no-subtabs {
         .learn-press-settings-wrap {
             float: none;
             margin-left: 0;
             padding-left: 25px;
+            padding-right: 25px;
+
             &:before {
                 display: none;
             }
@@ -2158,7 +2170,7 @@ input.regular-text[id^="learn-press-emails"] {
 
     .learn-press-tab-content {
         > li {
-            padding: 0 20px 0px 20px;
+            padding: 0 20px 10px 20px;
             float: left;
             width: 100%;
             margin-right: -100%;
