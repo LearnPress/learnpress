@@ -19,10 +19,20 @@ function learn_press_get_attributes() {
  * @return array|int|WP_Error
  */
 function learn_press_get_attribute_terms( $attribute ) {
-	if ( is_numeric( $attribute ) && !is_wp_error( $term = get_term( $attribute, LP_COURSE_ATTRIBUTE ) ) ) {
-		$attribute = $term->slug;
+	$terms = array();
+	if ( is_array( $attribute ) ) {
+		foreach ( $attribute as $attr ) {
+			$_terms = learn_press_get_attribute_terms( $attr );
+			if ( is_array( $terms ) ) {
+				$terms = array_merge( $terms, $_terms );
+			}
+		}
+	} else {
+		if ( is_numeric( $attribute ) && !is_wp_error( $term = get_term( $attribute, LP_COURSE_ATTRIBUTE ) ) ) {
+			$attribute = $term->slug;
+		}
+		$terms = get_terms( sprintf( '%s-%s', LP_COURSE_ATTRIBUTE, $attribute ), array( 'hide_empty' => false ) );
 	}
-	$terms = get_terms( sprintf( '%s-%s', LP_COURSE_ATTRIBUTE, $attribute ), array( 'hide_empty' => false ) );
 	return $terms;
 }
 

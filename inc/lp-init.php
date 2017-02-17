@@ -21,6 +21,7 @@ function _learn_press_upgrade_table() {
 
 		$query = "SHOW COLUMNS FROM {$wpdb->prefix}learnpress_user_items LIKE 'parent_id'";
 		if ( $row = $wpdb->get_var( $query ) ) {
+			update_option( 'learn_press_upgrade_table_20', 'yes' );
 			return;
 		}
 

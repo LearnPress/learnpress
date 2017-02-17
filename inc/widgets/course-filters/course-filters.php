@@ -85,10 +85,6 @@ if ( !class_exists( 'LP_Widget_Course_Filters' ) ) {
 			return $tax_query;
 		}
 
-		/**
-		 * Get the meta query which was used by the main query.
-		 * @return array
-		 */
 		public static function get_main_meta_query() {
 			global $wp_the_query;
 
@@ -98,15 +94,15 @@ if ( !class_exists( 'LP_Widget_Course_Filters' ) ) {
 			return $meta_query;
 		}
 
-		protected function get_filtered_term_product_counts( $term_ids, $taxonomy, $query_type ) {
+		protected function get_filtered_term_course_counts( $term_ids, $taxonomy, $query_type ) {
 			global $wpdb;
 
 			$tax_query  = $this->get_main_tax_query();
 			$meta_query = $this->get_main_meta_query();
-
+			settype( $taxonomy, 'array' );
 			if ( 'or' === $query_type ) {
 				foreach ( $tax_query as $key => $query ) {
-					if ( $taxonomy === $query['taxonomy'] ) {
+					if ( in_array( $query['taxonomy'], $taxonomy ) ) {//} === $query['taxonomy'] ) {
 						unset( $tax_query[$key] );
 					}
 				}
@@ -117,31 +113,29 @@ if ( !class_exists( 'LP_Widget_Course_Filters' ) ) {
 			$meta_query_sql = $meta_query->get_sql( 'post', $wpdb->posts, 'ID' );
 			$tax_query_sql  = $tax_query->get_sql( $wpdb->posts, 'ID' );
 
-			// Generate query
 			$query           = array();
 			$query['select'] = "SELECT COUNT( DISTINCT {$wpdb->posts}.ID ) as term_count, terms.term_id as term_count_id";
 			$query['from']   = "FROM {$wpdb->posts}";
 			$query['join']   = "
-			INNER JOIN {$wpdb->term_relationships} AS term_relationships ON {$wpdb->posts}.ID = term_relationships.object_id
-			INNER JOIN {$wpdb->term_taxonomy} AS term_taxonomy USING( term_taxonomy_id )
-			INNER JOIN {$wpdb->terms} AS terms USING( term_id )
+				INNER JOIN {$wpdb->term_relationships} AS term_relationships ON {$wpdb->posts}.ID = term_relationships.object_id
+				INNER JOIN {$wpdb->term_taxonomy} AS term_taxonomy USING( term_taxonomy_id )
+				INNER JOIN {$wpdb->terms} AS terms USING( term_id )
 			" . $tax_query_sql['join'] . $meta_query_sql['join'];
 
 			$query['where'] = "
-			WHERE {$wpdb->posts}.post_type IN ( 'lp_course' )
-			AND {$wpdb->posts}.post_status = 'publish'
+				WHERE {$wpdb->posts}.post_type IN ( 'lp_course' )
+				AND {$wpdb->posts}.post_status = 'publish'
 			" . $tax_query_sql['where'] . $meta_query_sql['where'] . "
-			AND terms.term_id IN (" . implode( ',', array_map( 'absint', $term_ids ) ) . ")
-		";
+				AND terms.term_id IN (" . implode( ',', array_map( 'absint', $term_ids ) ) . ")
+			";
 
 			if ( $search = $this->get_main_search_query_sql() ) {
 				$query['where'] .= ' AND ' . $search;
 			}
-
 			$query['group_by'] = "GROUP BY terms.term_id";
-			$query             = apply_filters( 'learn_press_get_filtered_term_product_counts_query', $query );
-			$query = implode( ' ', $query );
-			$results = $wpdb->get_results( $query );
+			$query             = apply_filters( 'learn_press_get_filtered_term_course_counts_query', $query );
+			$query             = implode( ' ', $query );
+			$results           = $wpdb->get_results( $query );
 
 			return wp_list_pluck( $results, 'term_count', 'term_count_id' );
 		}
@@ -157,9 +151,7 @@ if ( !class_exists( 'LP_Widget_Course_Filters' ) ) {
 			$sql          = array();
 
 			foreach ( $search_terms as $term ) {
-				// Terms prefixed with '-' should be excluded.
 				$include = '-' !== substr( $term, 0, 1 );
-
 				if ( $include ) {
 					$like_op  = 'LIKE';
 					$andor_op = 'OR';
@@ -168,12 +160,11 @@ if ( !class_exists( 'LP_Widget_Course_Filters' ) ) {
 					$andor_op = 'AND';
 					$term     = substr( $term, 1 );
 				}
-
 				$like  = '%' . $wpdb->esc_like( $term ) . '%';
 				$sql[] = $wpdb->prepare( "(($wpdb->posts.post_title $like_op %s) $andor_op ($wpdb->posts.post_excerpt $like_op %s) $andor_op ($wpdb->posts.post_content $like_op %s))", $like, $like, $like );
 			}
 
-			if ( ! empty( $sql ) && ! is_user_logged_in() ) {
+			if ( !empty( $sql ) && !is_user_logged_in() ) {
 				$sql[] = "($wpdb->posts.post_password = '')";
 			}
 

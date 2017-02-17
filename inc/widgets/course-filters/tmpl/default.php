@@ -6,6 +6,16 @@ if ( !$attributes ) {
 	return;
 }
 global $lp_tax_query;
+
+$attribute_ids    = wp_list_pluck( $attributes, 'term_id' );
+$attribute_values = learn_press_get_attribute_terms( $attribute_ids );
+$taxonomies       = wp_list_pluck( $attributes, 'slug' );
+foreach ( $taxonomies as $k => $v ) {
+	$taxonomies[$k] = LP_COURSE_ATTRIBUTE . '-' . $v;
+}
+$term_counts = $this->get_filtered_term_course_counts( wp_list_pluck( $attribute_values, 'term_id' ), $taxonomies, $this->instance['value_operator'] );
+
+learn_press_debug( $term_counts );
 ?>
 <ul class="lp-course-attributes course-filters" data-ajax="<?php echo !empty( $this->instance['ajax_filter'] ) ? 'yes' : 'no'; ?>">
 	<?php foreach ( $attributes as $attribute ) {
@@ -16,9 +26,10 @@ global $lp_tax_query;
 		<li data-attribute="filter_<?php echo $attribute->slug; ?>">
 			<h4><?php echo $attribute->name; ?></h4>
 			<?php
-			$values      = learn_press_get_attribute_terms( $attribute->term_id );
-			$term_counts = $this->get_filtered_term_product_counts( wp_list_pluck( $values, 'term_id' ), LP_COURSE_ATTRIBUTE . '-' . $attribute->slug, 'or' );
-			$tax         = false;
+			$values = learn_press_get_attribute_terms( $attribute->term_id );
+			//$term_counts = $this->get_filtered_term_course_counts( wp_list_pluck( $values, 'term_id' ), LP_COURSE_ATTRIBUTE . '-' . $attribute->slug, $this->instance['value_operator'] );
+
+			$tax = false;
 			if ( $lp_tax_query )
 				foreach ( $lp_tax_query as $k => $_tax ) {
 					$tax = false;

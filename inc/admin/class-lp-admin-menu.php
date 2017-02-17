@@ -26,6 +26,9 @@ class LP_Admin_Menu {
 		add_action( 'admin_menu', array( $this, 'notify_new_course' ) );
 		add_action( 'init', array( $this, 'menu_content' ) );
 		add_action( 'init', 'learn_press_admin_update_settings', 1000 );
+		if ( apply_filters( 'learn_press_show_admin_bar_courses_page', true ) ) {
+			add_action( 'admin_bar_menu', array( $this, 'admin_bar_menus' ), 50 );
+		}
 
 		// auto include file for admin page
 		// example: slug = learn_press_settings -> file = inc/admin/sub-menus/settings.php
@@ -39,6 +42,27 @@ class LP_Admin_Menu {
 				}
 			}
 		}
+	}
+
+	public function admin_bar_menus( $wp_admin_bar ) {
+		if ( !is_admin() || !is_user_logged_in() ) {
+			return;
+		}
+
+		if ( !is_user_member_of_blog() && !is_super_admin() ) {
+			return;
+		}
+
+		if ( get_option( 'page_on_front' ) == learn_press_get_page_id( 'courses' ) ) {
+			return;
+		}
+
+		$wp_admin_bar->add_node( array(
+			'parent' => 'site-name',
+			'id'     => 'courses-page',
+			'title'  => __( 'View Courses', 'learnpress' ),
+			'href'   => learn_press_get_page_link( 'courses' )
+		) );
 	}
 
 	/**
@@ -81,7 +105,7 @@ class LP_Admin_Menu {
 				'learn-press-settings',
 				'learn_press_settings_page'
 			),
-			'tools' => array(
+			'tools'      => array(
 				'learn_press',
 				__( 'Tools', 'learnpress' ),
 				__( 'Tools', 'learnpress' ),
