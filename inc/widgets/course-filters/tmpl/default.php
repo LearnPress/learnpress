@@ -13,9 +13,8 @@ $taxonomies       = wp_list_pluck( $attributes, 'slug' );
 foreach ( $taxonomies as $k => $v ) {
 	$taxonomies[$k] = LP_COURSE_ATTRIBUTE . '-' . $v;
 }
-$term_counts = $this->get_filtered_term_course_counts( wp_list_pluck( $attribute_values, 'term_id' ), $taxonomies, $this->instance['value_operator'] );
-
-learn_press_debug( $term_counts );
+$term_counts  = $this->get_filtered_term_course_counts( wp_list_pluck( $attribute_values, 'term_id' ), $taxonomies, $this->instance['value_operator'] );
+$has_filtered = false;
 ?>
 <ul class="lp-course-attributes course-filters" data-ajax="<?php echo !empty( $this->instance['ajax_filter'] ) ? 'yes' : 'no'; ?>">
 	<?php foreach ( $attributes as $attribute ) {
@@ -54,7 +53,8 @@ learn_press_debug( $term_counts );
 						}
 						$classes = array();
 						if ( $tax && in_array( $value->slug, $tax['terms'] ) ) {
-							$classes[] = "active";
+							$classes[]    = "active";
+							$has_filtered = true;
 						}
 						?>
 						<li class="<?php echo join( ' ', $classes ); ?>" data-value="<?php echo $value->slug; ?>">
@@ -72,8 +72,9 @@ learn_press_debug( $term_counts );
 <input type="hidden" name="attribute_operation" value="<?php echo empty( $this->instance['attribute_operation'] ) || strtolower( $this->instance['attribute_operation'] ) == 'and' ? 'and' : 'or'; ?>">
 <input type="hidden" name="value_operation" value="<?php echo empty( $this->instance['value_operation'] ) || strtolower( $this->instance['value_operation'] ) == 'and' ? 'and' : 'or'; ?>">
 <?php if ( !empty( $this->instance['button_filter'] ) ) { ?>
-	<button class="lp-button-filter" disabled="disabled"><?php _e( 'Filter', 'learnpress' ); ?></button>
+	<button type="button" class="lp-button-filter" disabled="disabled"><?php _e( 'Filter', 'learnpress' ); ?></button>
 <?php } ?>
+<button type="button" class="lp-button-reset-filter" <?php echo $has_filtered ? '' : 'disabled="disabled"'; ?>"><?php _e( 'Reset', 'learnpress' ); ?></button>
 <script type="text/javascript">
 	jQuery(document).ready(function ($) {
 		$('#<?php echo $this->args['widget_id'];?>').courseFilters(<?php echo wp_json_encode( $this->instance );?>);

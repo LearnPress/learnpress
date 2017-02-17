@@ -2545,8 +2545,8 @@ function learn_press_default_scripts( $wp_scripts ) {
 }*/
 
 // Debugging
-if ( !empty( $_REQUEST['debug'] ) ) {
-	require_once( 'debug.php' );
+if ( !empty( $_REQUEST['debug'] ) && file_exists( LP_PLUGIN_PATH . '/inc/debug.php' ) ) {
+	require_once( LP_PLUGIN_PATH . '/inc/debug.php' );
 }
 
 function learn_press_debug() {

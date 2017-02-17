@@ -2,6 +2,7 @@
 .idea/
 __*.php
 node_modules/
+/inc/debug.php
 /assets/css/learnpress.css
 /assets/css/admin/admin.css
 /assets/fonts/iconfont.ttf

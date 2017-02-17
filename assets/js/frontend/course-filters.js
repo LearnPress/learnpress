@@ -12,7 +12,8 @@
 				widgetID = $widget.attr('id'),
 				filterUrl = window.location.href.addQueryVar('course-filter', 'yes'),
 				oldFilterUrl = filterUrl,
-				$buttonFilter = $widget.find('.lp-button-filter');
+				$buttonFilter = $widget.find('.lp-button-filter'),
+				$buttonReset = $widget.find('.lp-button-reset-filter');
 			options = $.extend({}, defaults, options || {});
 
 			filterUrl = filterUrl
@@ -46,7 +47,18 @@
 				return filterUrl;
 			}
 
+			function hasFiltered() {
+				return $('#' + widgetID + ' .lp-course-attribute-values li.active').length;
+			}
+
+			function validateUrl(url) {
+				// remove paged in query
+				url = url.replace(/\/page\/[0-9]+/, '').removeQueryVar('paged');
+				return url;
+			}
+
 			function doFilter() {
+				filterUrl = validateUrl(filterUrl);
 				if (oldFilterUrl == filterUrl) {
 					return;
 				}
@@ -72,11 +84,46 @@
 				$buttonFilter.prop('disabled', true);
 			}
 
+			function toggleControls() {
+				filterUrl = validateUrl(filterUrl);
+				var url = filterUrl;
+				if (!hasFiltered()) {
+					url = url
+						.removeQueryVar('attribute_operator')
+						.removeQueryVar('value_operator')
+						.removeQueryVar('course-filter');
+				}
+				if ($buttonFilter.length == 0) {
+					doFilter();
+				} else {
+					if (filterUrl == oldFilterUrl) {
+						$buttonFilter.prop('disabled', true);
+					} else {
+						$buttonFilter.prop('disabled', false);
+					}
+					$buttonReset.prop('disabled', !hasFiltered());
+				}
+				LP.setUrl(url);
+			}
+
 			if ($buttonFilter.length) {
 				$buttonFilter.off('click').on('click', function () {
 					doFilter()
 				})
 			}
+			$buttonReset.off('click').on('click', function () {
+				$('#' + widgetID + ' .lp-course-attribute-values li.active a').each(function () {
+					var $this = $(this),
+						$li = $this.parent(),
+						$attribute = $li.closest('.lp-course-attribute-values').parent(),
+						attribute = $attribute.data('attribute'),
+						value = $li.data('value');
+					$li.removeClass('active');
+					filterUrl = filterUrl.removeQueryVar(attribute);
+				});
+				$(this).prop('disabled', true);
+				toggleControls();
+			})
 			$(document)
 				.off('click', '#' + widgetID + ' .lp-course-attribute-values a')
 				.on('click', '#' + widgetID + ' .lp-course-attribute-values a', function (e) {
@@ -92,15 +139,7 @@
 					} else {
 						filterUrl = removeAttribute(attribute, value);
 					}
-					if ($buttonFilter.length == 0) {
-						doFilter();
-					} else {
-						if (filterUrl == oldFilterUrl) {
-							$buttonFilter.prop('disabled', true);
-						} else {
-							$buttonFilter.prop('disabled', false);
-						}
-					}
+					toggleControls();
 				});
 		});
 	}
