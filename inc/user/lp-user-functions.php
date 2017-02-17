@@ -1268,8 +1268,14 @@ function learn_press_get_user_courses_info( $user_id, $course_ids ) {
 	if ( empty( $user_course_info[$user_id] ) ) {
 		$user_course_info[$user_id] = array();
 	}
+	// Set default data if a course is not existing in database
 	foreach ( $course_ids as $cid ) {
-		$user_course_info[$user_id][$cid] = array();
+		$user_course_info[$user_id][$cid] = array(
+			'history_id' => 0,
+			'start'      => null,
+			'end'        => null,
+			'status'     => null
+		);
 	}
 	if ( $result = $wpdb->get_results( $query ) ) {
 		foreach ( $result as $row ) {
