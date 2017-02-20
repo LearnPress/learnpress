@@ -171,9 +171,12 @@
 		}).on('change update', '#learn_press_required_review', function(e){
 			var $depend = $('input[name="learn_press_enable_edit_published"]').closest('tr');
 			$depend.toggleClass('hide-if-js', !e.target.checked).find('input[type="checkbox"]').prop('disabled', !e.target.checked)
+		}).on('change update', '#learn_press_auto_redirect_next_lesson', function (e) {
+			var $depend = $('#learn_press_auto_redirect_message, #learn_press_auto_redirect_time').closest('tr');
+			$depend.toggleClass('hide-if-js', !e.target.checked);
 		});
 
-		$('#learn_press_required_review').trigger('update');
+		$('#learn_press_required_review, #learn_press_auto_redirect_next_lesson').trigger('update');
 		$('#learn-press-admin-settings').on('click', '.nav-tab, .subsubsub > li > a', function (e) {
 			e.preventDefault();
 			var redirect = $(this).attr('href'),

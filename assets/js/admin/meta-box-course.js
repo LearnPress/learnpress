@@ -1460,80 +1460,10 @@
 		}
 		$('#course_curriculum-sortables').sortable('disable');
 
-		if (LP_Settings.enable_course_tabs == 'yes') {
-			meta_boxes_to_tabs();
-		}
-	}
 
-	function meta_boxes_to_tabs() {
-		var $tabWrapper = $('#course-tabs'),
-			requestedTab = window.location.href.getQueryVar('tab');
-		$('#normal-sortables .postbox:visible').each(function () {
-			var $tabContent = $(this).removeClass('closed');
-			$tabWrapper.append('<li><a data-tab="' + $tabContent.attr('id') + '" href="">' + $tabContent.find('.ui-sortable-handle').text() + '</a></li>');
-			if (!requestedTab) {
-				requestedTab = $tabContent.attr('id');
-			}
-		});
-		$(document).on('click', '#course-tabs :not(#switch-course-metaboxes) a', function () {
-			var $tab = $(this),
-				id = $tab.data('tab'),
-				url = window.location.href;
-
-			$('#' + id + '.postbox').addClass('active').siblings('.active').removeClass('active');
-			$tab.parent().addClass('active').siblings().removeClass('active');
-			url = url.removeQueryVar('tab').addQueryVar('tab', id);
-			LP.setUrl(url);
-			$('#course-tab').val(id);
-			$(window).trigger('scroll');
-			return false;
-		})
-		/*.on('click', '#switch-course-metaboxes', function () {
-		 var url = window.location.href;
-		 url = url.removeQueryVar('tab').addQueryVar('switch-course-tab', 'off');
-		 LP.reload(url);
-		 });*/
-		$('#course-tabs [data-tab="' + requestedTab + '"]').trigger('click');
 	}
 
 	$(document)
-		.ready(_ready)
-		.on('click', '.items-toggle a', _toggleSectionsHandler)
-		.on('click', '#toggle-meta-boxes', function (e) {
-			e.preventDefault();
-			var $boxes = $('#normal-sortables .postbox:visible'),
-				show = $boxes.first().hasClass('closed');
-			// We do not want wp run ajax for each meta box
-			$boxes.filter(':lt(' + ($boxes.length - 1) + ')').toggleClass('closed', !show);
-
-			// Tell wp api update meta box states by trigger click event in the last item
-			$boxes.last().toggleClass('closed', show).find('.handlediv').trigger('click');
-		}).on('click', '#reorder-course-tabs', function (e) {
-		e.preventDefault();
-		$(this).hide();
-		$('#complete-reorder-course-tabs').show();
-		$('#course-tabs').sortable({
-			axis  : 'x',
-			items : 'li:not(#switch-course-metaboxes)',
-			update: function (e, ui) {
-				var tab = ui.item.find('a').data('tab'),
-					$prev = ui.item.prev(),
-					$next = ui.item.next();
-				if ($prev.length) {
-					$('#' + tab + '.postbox').insertAfter($('#' + $prev.find('a').data('tab') + '.postbox'));
-				} else {
-					$('#' + tab + '.postbox').insertBefore($('#' + $next.find('a').data('tab') + '.postbox'));
-
-				}
-			}
-		}).sortable('enable');
-	}).on('click', '#complete-reorder-course-tabs', function (e) {
-		e.preventDefault();
-		$(this).hide();
-		$('#reorder-course-tabs').show();
-		$('#course-tabs').sortable('disable');
-	})
-
-
+		.ready(_ready);
 })
 (jQuery);

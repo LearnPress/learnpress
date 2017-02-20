@@ -18,6 +18,7 @@ class LP_Settings_Courses extends LP_Settings_Base {
 				'title' => __( 'General', 'learnpress' )
 			)
 		);
+
 		return $sections = apply_filters( 'learn_press_settings_sections_' . $this->id, $sections );
 	}
 
@@ -101,6 +102,30 @@ class LP_Settings_Courses extends LP_Settings_Base {
 					'id'      => $this->get_field_name( 'disable_question_in_quiz' ),
 					'default' => 'yes',
 					'type'    => 'checkbox'
+				),
+				array(
+					'title'   => __( 'Auto redirect next lesson', 'learnpress' ),
+					'desc'    => __( 'Redirect to the next lesson after completed the lesson', 'learnpress' ),
+					'id'      => $this->get_field_name( 'auto_redirect_next_lesson' ),
+					'default' => 'no',
+					'type'    => 'checkbox'
+				),
+				array(
+					'title'             => __( 'Time delay redirect', 'learnpress' ),
+					'desc'              => __( 'The item will be redirected after certain amount of time, unit: seconds (s)', 'learnpress' ),
+					'id'                => $this->get_field_name( 'auto_redirect_time' ),
+					'default'           => '3',
+					'type'              => 'number',
+					'custom_attributes' => array(
+						'min' => '0'
+					)
+				),
+				array(
+					'title'   => __( 'Auto redirect message ', 'learnpress' ),
+					'desc'    => '',
+					'id'      => $this->get_field_name( 'auto_redirect_message' ),
+					'default' => 'Redirecting to the next item ... ',
+					'type'    => 'text'
 				),
 				array(
 					'title' => __( 'Archive', 'learnpress' ),

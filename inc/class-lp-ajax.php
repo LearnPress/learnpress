@@ -1,10 +1,10 @@
 <?php
 
-if ( !defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-if ( !class_exists( 'LP_AJAX' ) ) {
+if ( ! class_exists( 'LP_AJAX' ) ) {
 	/**
 	 * Class LP_AJAX
 	 */
@@ -12,7 +12,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 		/**
 		 * Init common ajax events
 		 */
-		public static function init() {
+		public static function init () {
 			$ajaxEvents = array(
 				'load_quiz_question'  => true,
 				'load_prev_question'  => false,
@@ -48,8 +48,8 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 		 *
 		 * @param $var
 		 */
-		public static function do_ajax( $var ) {
-			if ( !defined( 'LP_DOING_AJAX' ) ) {
+		public static function do_ajax ( $var ) {
+			if ( ! defined( 'LP_DOING_AJAX' ) ) {
 				define( 'LP_DOING_AJAX', true );
 			}
 			LP_Gateways::instance()->get_available_payment_gateways();
@@ -60,6 +60,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 				$result = call_user_func( $callback );
 			} elseif ( has_action( 'learn_press_ajax_handler_' . $var ) ) {
 				do_action( 'learn_press_ajax_handler_' . $var );
+
 				return;
 			}
 			if ( learn_press_get_request( 'format' ) == 'html' ) {
@@ -68,13 +69,13 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			learn_press_send_json( $result );
 		}
 
-		public static function upload_user_avatar() {
-			$file = $_FILES['lp-upload-avatar'];
+		public static function upload_user_avatar () {
+			$file       = $_FILES['lp-upload-avatar'];
 			$upload_dir = learn_press_user_profile_picture_upload_dir();
 
 			add_filter( 'upload_dir', array( __CLASS__, '_user_avatar_upload_dir' ), 10000 );
 
-			$result     = wp_handle_upload( $file,
+			$result = wp_handle_upload( $file,
 				array(
 					'test_form' => false
 				)
@@ -92,15 +93,16 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			learn_press_send_json( $result );
 		}
 
-		public static function _user_avatar_upload_dir( $dir ) {
+		public static function _user_avatar_upload_dir ( $dir ) {
 			$dir = learn_press_user_profile_picture_upload_dir();
+
 			return $dir;
 		}
 
 		/**
 		 * Become a teacher
 		 */
-		public static function _request_become_a_teacher() {
+		public static function _request_become_a_teacher () {
 			$response = learn_press_process_become_a_teacher_form(
 				array(
 					'name'  => learn_press_get_request( 'bat_name' ),
@@ -116,7 +118,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 		 *
 		 * @return array|mixed|void
 		 */
-		public static function _request_checkout() {
+		public static function _request_checkout () {
 			return LP()->checkout->process_checkout_handler();
 		}
 
@@ -126,9 +128,9 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 		 * @return bool
 		 * @throws Exception
 		 */
-		public static function _request_enroll_course() {
+		public static function _request_enroll_course () {
 			$course_id = learn_press_get_request( 'enroll-course' );
-			if ( !$course_id ) {
+			if ( ! $course_id ) {
 				throw new Exception( __( 'Invalid course', 'learnpress' ) );
 			}
 			$insert_id = LP()->user->enroll( $course_id );
@@ -155,6 +157,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 				wp_redirect( $response['redirect'] );
 				exit();
 			}
+
 			return false;
 		}
 
@@ -163,7 +166,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 		 *
 		 * @return array
 		 */
-		public static function _request_checkout_login() {
+		public static function _request_checkout_login () {
 			$result = array(
 				'result' => 'success'
 			);
@@ -194,13 +197,14 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			if ( $result['result'] == 'fail' ) {
 				$result['messages'] = $messages;
 			}
+
 			return $result;
 		}
 
 		/**
 		 * Request login in profile
 		 */
-		public static function _request_login() {
+		public static function _request_login () {
 			$data_str = learn_press_get_request( 'data' );
 			$data     = null;
 			if ( $data_str ) {
@@ -219,7 +223,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			$error  = is_wp_error( $user );
 			$return = array(
 				'result'   => $error ? 'error' : 'success',
-				'redirect' => ( !$error && !empty( $data['redirect_to'] ) ) ? $data['redirect_to'] : ''
+				'redirect' => ( ! $error && ! empty( $data['redirect_to'] ) ) ? $data['redirect_to'] : ''
 			);
 			if ( $error ) {
 				$return['message'] = learn_press_get_message( $user->get_error_message() ? $user->get_error_message() : __( 'Please enter your username and/or password', 'learnpress' ) );
@@ -250,6 +254,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 						$checkout = LP()->checkout()->process_checkout();
 					} else {
 					}
+
 					return;
 				}
 				$return['message'] = learn_press_get_message( sprintf( __( 'Welcome back, %s! Redirecting...', 'learnpress' ), learn_press_get_profile_display_name( $user ) ) );
@@ -260,7 +265,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 		/**
 		 * Request add-to-cart a course
 		 */
-		public static function _request_add_to_cart() {
+		public static function _request_add_to_cart () {
 			$cart      = learn_press_get_cart();
 			$course_id = learn_press_get_request( 'purchase-course' );
 
@@ -279,7 +284,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 		/**
 		 * Request finish course
 		 */
-		public static function _request_finish_course() {
+		public static function _request_finish_course () {
 			$nonce     = learn_press_get_request( 'security' );
 			$course_id = absint( learn_press_get_request( 'id' ) );
 			$user      = learn_press_get_current_user();
@@ -287,7 +292,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			$course = LP_Course::get_course( $course_id );
 
 			$nonce_action = sprintf( 'learn-press-finish-course-%d-%d', $course_id, $user->id );
-			if ( !$user->id || !$course || !wp_verify_nonce( $nonce, $nonce_action ) ) {
+			if ( ! $user->id || ! $course || ! wp_verify_nonce( $nonce, $nonce_action ) ) {
 				wp_die( __( 'Access denied!', 'learnpress' ) );
 			}
 
@@ -311,24 +316,94 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 		/**
 		 * Request complete an item
 		 */
-		public static function _request_complete_item() {
+		public static function _request_complete_item () {
 			$user      = learn_press_get_current_user();
 			$id        = learn_press_get_request( 'id' );
-			$course_id = !empty( $_REQUEST['course_id'] ) ? $_REQUEST['course_id'] : get_the_ID();
+			$course_id = ! empty( $_REQUEST['course_id'] ) ? $_REQUEST['course_id'] : get_the_ID();
 			$type      = learn_press_get_request( 'type' );
 			$security  = learn_press_get_request( 'security' );
 			$response  = array();
-			if ( !wp_verify_nonce( $security, sprintf( 'complete-item-%d-%d-%d', $user->id, $course_id, $id ) ) ) {
+			if ( ! wp_verify_nonce( $security, sprintf( 'complete-item-%d-%d-%d', $user->id, $course_id, $id ) ) ) {
 				$response['result']  = 'fail';
 				$response['message'] = __( 'Bad request!', 'learnpress' );
 			} else {
 				if ( $type == 'lp_lesson' ) {
 					$results = $user->complete_lesson( $id, $course_id );
+
 					if ( is_wp_error( $results ) ) {
 						learn_press_add_message( __( 'Error while completing lesson.', 'learnpress' ) );
 					} elseif ( $results !== false ) {
-						learn_press_add_message( __( 'You have completed lesson.', 'learnpress' ) );
+
+						$message   = __( 'You have completed lesson', 'learnpress' );
+						$auto_next = LP()->settings->get( 'auto_redirect_next_lesson' );
+						$time      = LP()->settings->get( 'auto_redirect_time' );
+						$time      = absint( $time );
+
+						if ( $auto_next === 'yes' ) {
+							ob_start();
+							?>
+							<script type="text/javascript">
+
+								'use strict';
+
+								(function ($) {
+
+									$(document).ready(function () {
+
+										var $nextItem = $('.button-load-item', '#lp-navigation .nav-next'),
+											$message = $('.learn-press-auto-redirect-next-item'),
+											time = <?php echo esc_js( $time ); ?>;
+
+										if ($nextItem.length) {
+
+											time = !parseInt(time) ? 0 : parseInt(time);
+
+											if (!time) {
+												$nextItem.trigger('click');
+											}
+											else {
+												if ($message.length) {
+
+													$message.addClass('active');
+
+													var $count = $('.learn-press-countdown', $message),
+														interval = setInterval(function () {
+
+															if (time <= 1) {
+																clearInterval(interval);
+																$nextItem.trigger('click');
+															}
+															else {
+																$count.text(--time);
+															}
+
+														}, 1000);
+
+													$('.learnpress-dismiss-notice', $message).on('click', function () {
+
+														clearInterval(interval);
+
+														$message.hide(200, function () {
+															$(this).remove();
+														});
+
+													});
+												}
+											}
+
+										}
+									});
+
+								})(jQuery);
+							</script>
+							<?php
+							$message .= ob_get_contents();
+							ob_get_clean();
+						}
+						learn_press_add_message( $message );
+
 					}
+
 				} else {
 					do_action( 'learn_press_user_request_complete_item', $_REQUEST );
 				}
@@ -340,7 +415,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 		/**
 		 * Request load item content
 		 */
-		public static function _request_load_item() {
+		public static function _request_load_item () {
 			global $wpdb;
 			$user      = learn_press_get_current_user();
 			$item_id   = learn_press_get_request( 'id' );
@@ -349,9 +424,9 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			$can_view_item = $user->can( 'view-item', $item_id, $course_id );
 			if ( $can_view_item ) {
 				// Update user item if it's not updated
-				if ( !$user->get_item_status( $item_id, $course_id ) ) {
+				if ( ! $user->get_item_status( $item_id, $course_id ) ) {
 					$item_type = learn_press_get_request( 'type' );
-					if ( !$item_type ) {
+					if ( ! $item_type ) {
 						$item_type = get_post_type( $item_id );
 					}
 					if ( apply_filters( 'learn_press_insert_user_item_data', true, $item_id, $course_id ) && $can_view_item != 'preview' ) {
@@ -372,7 +447,14 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 								)
 							),
 							array(
-								'%d', '%d', '%s', '%s', '%s', '%s', '%d', '%s'
+								'%d',
+								'%d',
+								'%s',
+								'%s',
+								'%s',
+								'%s',
+								'%d',
+								'%s'
 							)
 						);
 						print_r( $wpdb );
@@ -393,19 +475,19 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 		 * Student take course
 		 * @return void
 		 */
-		public static function take_course() {
-			$payment_method = !empty( $_POST['payment_method'] ) ? $_POST['payment_method'] : '';
-			$course_id      = !empty( $_POST['course_id'] ) ? intval( $_POST['course_id'] ) : false;
+		public static function take_course () {
+			$payment_method = ! empty( $_POST['payment_method'] ) ? $_POST['payment_method'] : '';
+			$course_id      = ! empty( $_POST['course_id'] ) ? intval( $_POST['course_id'] ) : false;
 			do_action( 'learn_press_take_course', $course_id, $payment_method );
 		}
 
 		/**
 		 * Load quiz question
 		 */
-		public static function load_quiz_question() {
-			$quiz_id     = !empty( $_REQUEST['quiz_id'] ) ? absint( $_REQUEST['quiz_id'] ) : 0;
-			$question_id = !empty( $_REQUEST['question_id'] ) ? absint( $_REQUEST['question_id'] ) : 0;
-			$user_id     = !empty( $_REQUEST['user_id'] ) ? absint( $_REQUEST['user_id'] ) : 0;
+		public static function load_quiz_question () {
+			$quiz_id     = ! empty( $_REQUEST['quiz_id'] ) ? absint( $_REQUEST['quiz_id'] ) : 0;
+			$question_id = ! empty( $_REQUEST['question_id'] ) ? absint( $_REQUEST['question_id'] ) : 0;
+			$user_id     = ! empty( $_REQUEST['user_id'] ) ? absint( $_REQUEST['user_id'] ) : 0;
 			global $quiz;
 			$quiz      = LP_Quiz::get_quiz( $quiz_id );
 			LP()->quiz = $quiz;
@@ -419,7 +501,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 					)
 				);
 			}
-			if ( !$quiz_id || !$question_id ) {
+			if ( ! $quiz_id || ! $question_id ) {
 				learn_press_send_json(
 					array(
 						'result'  => 'error',
@@ -454,7 +536,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 		/**
 		 * Finish quiz
 		 */
-		public static function finish_quiz() {
+		public static function finish_quiz () {
 			$user    = learn_press_get_current_user();
 			$quiz_id = learn_press_get_request( 'quiz_id' );
 			$user->finish_quiz( $quiz_id );
@@ -467,10 +549,10 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 		/**
 		 *  Retake a quiz
 		 */
-		public static function retake_quiz() {
+		public static function retake_quiz () {
 			die( __FUNCTION__ );
 			// verify nonce
-			if ( !wp_verify_nonce( learn_press_get_request( 'nonce' ), 'retake-quiz' ) ) {
+			if ( ! wp_verify_nonce( learn_press_get_request( 'nonce' ), 'retake-quiz' ) ) {
 				learn_press_send_json(
 					array(
 						'result'  => 'fail',
@@ -487,7 +569,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 		/**
 		 * Load lesson content
 		 */
-		public static function load_lesson_content() {
+		public static function load_lesson_content () {
 			learn_press_debug( $_REQUEST );
 			global $post;
 			$lesson_id = $_POST['lesson_id'];
@@ -508,7 +590,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 		/**
 		 * Complete lesson
 		 */
-		public static function complete_lesson() {
+		public static function complete_lesson () {
 			$nonce        = learn_press_get_request( 'nonce' );
 			$item_id      = learn_press_get_request( 'id' );
 			$course_id    = learn_press_get_request( 'course_id' );
@@ -520,14 +602,14 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			);
 			$nonce_action = sprintf( 'learn-press-complete-%s-%d-%d-%d', $post->post_type, $post->ID, $course->id, $user->id );
 			// security check
-			if ( !$post || ( $post && !wp_verify_nonce( $nonce, $nonce_action ) ) ) {
+			if ( ! $post || ( $post && ! wp_verify_nonce( $nonce, $nonce_action ) ) ) {
 				$response['result']  = 'error';
 				$response['message'] = __( 'Error! Invalid lesson or security checked failure', 'learnpress' );
 			}
 
 			if ( $response['result'] == 'success' ) {
 				$result = $user->complete_lesson( $item_id );
-				if ( !is_wp_error( $result ) ) {
+				if ( ! is_wp_error( $result ) ) {
 					$can_finish                = $user->can_finish_course( $course_id );
 					$response['button_text']   = '<span class="dashicons dashicons-yes"></span>' . __( 'Completed', 'learnpress' );
 					$response['course_result'] = round( $result * 100, 0 );
@@ -554,7 +636,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 		/**
 		 * Retake course action
 		 */
-		public static function _request_retake_course() {
+		public static function _request_retake_course () {
 			$security        = learn_press_get_request( 'security' );
 			$course_id       = learn_press_get_request( 'course_id' );
 			$user            = learn_press_get_current_user();
@@ -564,11 +646,11 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			);
 			$security_action = sprintf( 'learn-press-retake-course-%d-%d', $course->id, $user->id );
 			// security check
-			if ( !wp_verify_nonce( $security, $security_action ) ) {
+			if ( ! wp_verify_nonce( $security, $security_action ) ) {
 				$response['message'] = __( 'Error! Invalid lesson or security checked failure', 'learnpress' );
 			} else {
 				if ( $user->can( 'retake-course', $course_id ) ) {
-					if ( !$result = $user->retake_course( $course_id ) ) {
+					if ( ! $result = $user->retake_course( $course_id ) ) {
 						$response['message'] = __( 'Error!', 'learnpress' );
 					} else {
 						learn_press_add_message( sprintf( __( 'You have retaken course "%s"', 'learnpress' ), $course->get_title() ) );
@@ -582,9 +664,9 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 			learn_press_send_json( $response );
 		}
 
-		public static function start_quiz() {
-			$quiz_id = !empty( $_REQUEST['quiz_id'] ) ? absint( $_REQUEST['quiz_id'] ) : 0;
-			if ( !$quiz_id ) {
+		public static function start_quiz () {
+			$quiz_id = ! empty( $_REQUEST['quiz_id'] ) ? absint( $_REQUEST['quiz_id'] ) : 0;
+			if ( ! $quiz_id ) {
 				learn_press_send_json(
 					array(
 						'result'  => 'error',
@@ -596,7 +678,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 
 			$quiz = LP_Quiz::get_quiz( $quiz_id );
 
-			if ( !$quiz->id || $quiz->id != $quiz_id ) {
+			if ( ! $quiz->id || $quiz->id != $quiz_id ) {
 				learn_press_send_json(
 					array(
 						'result'  => 'error',
@@ -638,7 +720,7 @@ if ( !class_exists( 'LP_AJAX' ) ) {
 					break;
 				default:
 					$result           = $user->start_quiz();
-					$current_question = !empty( $result['current_question'] ) ? $result['current_question'] : $user->get_current_question_id( $quiz_id );
+					$current_question = ! empty( $result['current_question'] ) ? $result['current_question'] : $user->get_current_question_id( $quiz_id );
 					learn_press_send_json(
 						array(
 							'result'           => 'success',
