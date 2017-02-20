@@ -2737,6 +2737,10 @@ function learn_press_debug_hidden() {
 	echo '</div>';
 }
 
+function learn_press_is_negative_value( $value ) {
+	return in_array( $value, array( 'no', 'off', 'false', '0', 0, ) ) || $value || $value == '';
+}
+
 # -------------------------------
 # fix bug: wrong comment reply link
 add_filter( 'comment_reply_link', 'learn_press_comment_reply_link', 10, 4 );

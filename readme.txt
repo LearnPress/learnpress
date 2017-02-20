@@ -193,6 +193,12 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.  
 
 == Changelog ==
+= 2.1.5 =
++ Removed "Show/Hide" questions option of quiz in Global Settings
++ Removed option "Show/Hide" explanation for quiz
++ Removed "Preview" label of course items if course is no required enroll
++
+
 = 2.1.3 =
 + Fixed wrong notice outdated templates
 + Fixed issue when viewing order details in profile
