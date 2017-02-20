@@ -226,6 +226,7 @@
   border-radius: 5px;
   vertical-align: middle;
   margin-left: 5px;
+  font-size: 10px;
 }
 #learn-press-course-curriculum .section-header .meta .collapse:before {
   content: "\ea0b";
