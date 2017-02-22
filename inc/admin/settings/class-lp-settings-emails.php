@@ -145,6 +145,12 @@ class LP_Settings_Emails extends LP_Settings_Base {
 		}
 	}
 
+	public function output_section_enrolled_course_admin () {
+		if ( $email = $this->get_email_class( 'enrolled_course_admin' ) ) {
+			$email->admin_options( $this );
+		}
+	}
+
 	public function output_section_finished_course () {
 		if ( $email = $this->get_email_class( 'finished_course' ) ) {
 			$email->admin_options( $this );

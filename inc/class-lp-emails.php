@@ -63,6 +63,7 @@ class LP_Emails {
 		$this->emails['LP_Email_Rejected_Course']          = include( 'emails/class-lp-email-rejected-course.php' );
 		$this->emails['LP_Email_Published_Course']         = include( 'emails/class-lp-email-published-course.php' );
 		$this->emails['LP_Email_Enrolled_Course']          = include( 'emails/class-lp-email-enrolled-course.php' );
+		$this->emails['LP_Email_Enrolled_Course_Admin']          = include( 'emails/class-lp-email-enrolled-course-admin.php' );
 		$this->emails['LP_Email_Finished_Course']          = include( 'emails/class-lp-email-finished-course.php' );
 		$this->emails['LP_Email_Update_Course']            = include( 'emails/class-lp-email-update-course.php' );
 		$this->emails['LP_Email_Become_An_Instructor']     = include( 'emails/class-lp-email-become-an-instructor.php' );
