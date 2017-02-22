@@ -458,7 +458,6 @@ function _learn_press_parse_user_item_statuses ( $user_id, $course_id, $force = 
 			$item_statuses[ $user_id . '-' . $course_id . '-' . $item->item_id ] = learn_press_validate_item_status( $item );
 		}
 	}
-
 	LP_Cache::set_item_statuses( $item_statuses );
 
 	do_action( "learn_press_parse_user_item_statuses", $user_id, $course_id );

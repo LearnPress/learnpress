@@ -945,6 +945,7 @@ body.block-content #learn-press-block-content {
 .quiz-intro {
   list-style: none;
   padding: 0;
+  margin-left: 0;
 }
 .quiz-questions-list {
   margin: 0 0 20px 0;

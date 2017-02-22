@@ -105,6 +105,7 @@ class LP_Settings_Courses extends LP_Settings_Base {
 					'default' => 'yes',
 					'type'    => 'checkbox'
 				),*/
+				/* Temporary remove from 2.1.5
 				array(
 					'title'   => __( 'Auto redirect next lesson', 'learnpress' ),
 					'desc'    => __( 'Redirect to the next lesson after completed the lesson', 'learnpress' ),
@@ -128,7 +129,7 @@ class LP_Settings_Courses extends LP_Settings_Base {
 					'id'      => $this->get_field_name( 'auto_redirect_message' ),
 					'default' => 'Redirecting to the next item ... ',
 					'type'    => 'text'
-				),
+				),*/
 				array(
 					'title' => __( 'Archive', 'learnpress' ),
 					'type'  => 'title'

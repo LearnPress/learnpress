@@ -84,7 +84,10 @@ class LP_Schedules {
 			foreach ( $results as $row ) {
 				$course = learn_press_get_course( $row->item_id );
 				if ( !$course ) continue;
-				$expired = $course->is_expired( $row->user_id );
+				$check_args = array(
+					'start_time' => strtotime( $row->start_time )
+				);
+				$expired    = $course->is_expired( $row->user_id, $check_args );
 				if ( 0 >= $expired ) {
 
 					$user = learn_press_get_user( $row->user_id );

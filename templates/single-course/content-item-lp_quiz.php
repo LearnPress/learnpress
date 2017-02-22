@@ -42,9 +42,9 @@ $can_view_item  = $user->can( 'view-item', $quiz->id, $course->id );
 
 			<?php endif; ?>
 
-			<?php if ( $have_questions ) { ?>
+			<?php //if ( $have_questions ) { ?>
 				<?php learn_press_get_template( 'content-quiz/buttons.php' ); ?>
-			<?php } ?>
+			<?php // } ?>
 		</div>
 
 	</div>

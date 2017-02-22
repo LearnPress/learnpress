@@ -1418,17 +1418,19 @@ abstract class LP_Abstract_Course {
 	 * Get expired time of this course if user has enrolled
 	 *
 	 * @param int $user_id
+	 * @param     mixed
 	 *
 	 * @return mixed|null|void
 	 */
-	public function get_user_expired_time( $user_id = 0 ) {
+	public function get_user_expired_time( $user_id = 0, $args = array() ) {
+
 		if ( !$user_id ) {
 			$user_id = get_current_user_id();
 		}
 		$duration    = $this->get_duration();
 		$user        = learn_press_get_user( $user_id );
 		$course_info = $user->get_course_info( $this->id );
-		$start_time  = intval( strtotime( $course_info['start'] ) );
+		$start_time  = array_key_exists( 'start_time', $args ) ? $args['start_time'] : intval( strtotime( $course_info['start'] ) );
 		if ( $duration == 0 ) {
 			$duration = DAY_IN_SECONDS * 365 * 100;
 		}
@@ -1440,15 +1442,16 @@ abstract class LP_Abstract_Course {
 	 * Checks if this course has expired
 	 *
 	 * @param int $user_id
+	 * @param mixed
 	 *
 	 * @return mixed|null|void
 	 */
-	public function is_expired( $user_id = 0 ) {
+	public function is_expired( $user_id = 0, $args = array() ) {
+		settype($args, 'array');
 		if ( !$user_id ) {
 			$user_id = get_current_user_id();
 		}
-		//echo "[".$this->get_user_expired_time( $user_id ), ',',current_time( 'timestamp' ),']';
-		return apply_filters( 'learn_press_user_course_expired', $this->get_user_expired_time( $user_id ) - current_time( 'timestamp' ) );
+		return apply_filters( 'learn_press_user_course_expired', $this->get_user_expired_time( $user_id, $args ) - current_time( 'timestamp' ) );
 	}
 
 	/**

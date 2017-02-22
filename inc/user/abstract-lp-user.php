@@ -1366,22 +1366,6 @@ class LP_Abstract_User {
 				);
 				$null_time = '0000-00-00 00:00';
 
-				/*$incomplete_items = $this->get_incomplete_items( $course_id );
-				if ( $incomplete_items ) {
-					$update    = $wpdb->prepare( "
-						UPDATE {$wpdb->prefix}learnpress_user_items
-						SET end_time = %s, status = CASE
-							WHEN item_type = %s THEN %s
-							ELSE %s
-							END
-						WHERE
-							user_id = %d
-							AND (( item_id = %d AND item_type = %s) OR (ref_id = %d and ref_type = %s))
-							AND `status` NOT IN(%s, %s)
-					", $null_time, 'lp_course', 'finished', 'completed', $this->id, $course_id, 'lp_course', $course_id, 'lp_order', 'finished', 'completed' );
-					$wpdb->query( $update );
-
-				}*/
 				$return = $wpdb->get_var(
 					$wpdb->prepare( "
 							SELECT user_item_id

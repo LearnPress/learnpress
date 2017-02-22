@@ -718,7 +718,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 
 						$author = get_userdata( $course->post_author );
 
-						if ( isset( $suggest_price ) && $author->roles[0] === 'lp_teacher' ) {
+						if ( isset( $suggest_price ) && !empty($author->roles[0]) && $author->roles[0] === 'lp_teacher' ) {
 							$message = sprintf( __( 'This course is requires enrollment and the suggested price is <strong>%s</strong>', 'learnpress' ), learn_press_format_price( $suggest_price, true ) );
 							$price   = $suggest_price;
 						}
