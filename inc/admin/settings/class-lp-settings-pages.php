@@ -169,7 +169,7 @@ class LP_Settings_Pages extends LP_Settings_Base {
 					'default' => '',
 					'type'    => 'pages-dropdown'
 				)
-			)
+			), $this
 		);
 	}
 
