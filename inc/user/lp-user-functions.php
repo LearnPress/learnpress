@@ -1303,3 +1303,12 @@ function learn_press_get_user_courses_info( $user_id, $course_ids ) {
 	LP_Cache::set_course_info( $user_course_info );
 	return $user_course_info[$user_id];
 }
+
+add_action( 'init', 'learn_press_set_user_cookie_for_guest' );
+function learn_press_set_user_cookie_for_guest() {
+	if ( is_user_logged_in() ) {
+		setcookie( 'wordpress_logged_in_' . md5( 'guest' ), md5( time() ), - 10000 );
+		return;
+	}
+	setcookie( 'wordpress_logged_in_' . md5( 'guest' ), md5( time() ), time() + 3600 );
+}

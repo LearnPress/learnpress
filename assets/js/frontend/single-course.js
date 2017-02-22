@@ -275,9 +275,7 @@ if (typeof LearnPress === 'undefined') {
 			LP.Hook.addAction('learn_press_receive_message', this.receiveMessage);
 			if (typeof localStorage != 'undefined') {
 				var expanded = localStorage.getItem("lp-item-expanded");
-				if (expanded=='yes') {
-					console.log('xxx:', expanded);
-
+				if (expanded == 'yes') {
 					this.expand(true);
 				}
 			}
@@ -386,12 +384,12 @@ if (typeof LearnPress === 'undefined') {
 				id = $target.hasClass('button-load-item') ? $target.data('id') : $target.find('.button-load-item').data('id');
 			f = f || {force: false};
 			if (!id || this.itemLoading) {
-                return;
+				return;
 			}
 			if ($target.closest('.course-item').hasClass('item-current') && !f.force) {
 				return;
 			}
-            this.blockContent();
+			this.blockContent();
 			if (this.currentItem) {
 				var $iframe = this.currentItem.get('content');
 				$iframe && $iframe.detach();
@@ -399,7 +397,7 @@ if (typeof LearnPress === 'undefined') {
 			this.itemLoading = id;
 			this.currentItem = this.model.getItem(id);
 			this.showPopup();
-            var $content = this.currentItem.get('content'),
+			var $content = this.currentItem.get('content'),
 				isNew = !($content && $content.length);
 			if (!$content) {
 				$content = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen />');
@@ -669,8 +667,11 @@ if (typeof LearnPress === 'undefined') {
 
 			this.curriculumPlaceholder.insertAfter($curriculum);
 			$curriculum.appendTo(this.$('#popup-sidebar'));
-
-			$('body').css({overflow: 'hidden'});
+			$('html, body').each(function () {
+				var $root = $(this).addClass('block-content'),
+					overflow = $root.css('overflow');
+				$root.css('overflow', 'hidden').attr('overflow', overflow);
+			})
 			$(".sidebar-show-btn").hide();
 		},
 		_closePopup         : function (e) {
@@ -681,8 +682,11 @@ if (typeof LearnPress === 'undefined') {
 			this.progressPlaceholder.replaceWith(this.$('.learn-press-course-results-progress'));
 			this.undelegateEvents();
 			this.remove();
-			$(document).off('focusin');
-			$('body').css('overflow', '').trigger('learn_press_popup_course_remove');
+
+			var $root = $(this).removeClass('block-content'),
+				overflow = $root.attr('overflow');
+			$root.css('overflow', overflow).removeAttr('overflow');
+			$(document).off('focusin').trigger('learn_press_popup_course_remove');
 		},
 		_closeSidebar       : function (e) {
 			e.preventDefault();
