@@ -246,9 +246,9 @@ class LP_Order {
 		return $customer_name;
 	}
 
-	public function customer_exists(){
-		$user_id       = $this->user_id;
-		$user          = learn_press_get_user( $user_id );
+	public function customer_exists() {
+		$user_id = $this->user_id;
+		$user    = learn_press_get_user( $user_id );
 		return $user->is_exists();
 	}
 
@@ -406,16 +406,16 @@ class LP_Order {
 		return apply_filters( 'learn_press_view_order_url', $view_order_url, $this );
 	}
 
-        public function get_cancel_order_url( $force = false ) {
-            $user = learn_press_get_current_user();
-            $url = learn_press_user_profile_link( $user->id, LP()->settings->get( 'profile_endpoints.profile-orders' ) );
-            if ( ! $force ) {
-                $url = add_query_arg( 'cancel-order', $this->id, $url );
-            } else {
-                $url = add_query_arg( 'cancelled-order', $this->id, $url );
-            }
-            return apply_filters( 'learn_press_cancel_order_url', wp_nonce_url( $url, 'cancel-order', 'lp-nonce' ) );
-        }
+	public function get_cancel_order_url( $force = false ) {
+		$user = learn_press_get_current_user();
+		$url  = learn_press_user_profile_link( $user->id, LP()->settings->get( 'profile_endpoints.profile-orders' ) );
+		if ( !$force ) {
+			$url = add_query_arg( 'cancel-order', $this->id, $url );
+		} else {
+			$url = add_query_arg( 'cancelled-order', $this->id, $url );
+		}
+		return apply_filters( 'learn_press_cancel_order_url', wp_nonce_url( $url, 'cancel-order', 'lp-nonce' ) );
+	}
 
 	public function add_note( $note = null ) {
 		if ( is_user_logged_in() ) {
@@ -444,6 +444,12 @@ class LP_Order {
 
 	public function get_user_name() {
 		return apply_filters( 'learn_press_order_user_name', sprintf( _x( '%1$s', 'full name', 'learnpress' ), $this->get_user( 'user_login' ) ) );
+	}
+
+	public function is_multi_users() {
+		$multiple = $this->get_status() == 'auto-draft' && 'yes' == learn_press_get_request( 'multi-users' );
+		$multiple = $multiple || ( 'yes' == get_post_meta( $this->id, '_lp_multi_users', true ) );
+		return $multiple;
 	}
 
 	/**

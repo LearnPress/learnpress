@@ -26,12 +26,20 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 			add_action( 'admin_init', array( $this, 'remove_box' ) );
 			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 			add_filter( 'admin_footer', array( $this, 'admin_footer' ) );
+			add_action( 'add_meta_boxes', array( $this, 'post_new' ) );
 
 			$this
 				->add_map_method( 'before_delete', 'delete_order_items' )
 				->add_map_method( 'save', 'save_order' );
 
 			parent::__construct( $post_type );
+		}
+
+		public function post_new() {
+			global $post;
+			if ( $post && $post->post_type == 'lp_order' && $post->post_status == 'auto-draft' && learn_press_get_request( 'multi-users' ) == 'yes' ) {
+				update_post_meta( $post->ID, '_lp_multi_users', 'yes' );
+			}
 		}
 
 		public function enqueue_scripts() {
@@ -83,17 +91,54 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 		}
 
 		public function save_order( $post_id ) {
-			global $action;
+			global $action, $wpdb;
 			if ( wp_is_post_revision( $post_id ) )
 				return;
 			if ( $action == 'editpost' && get_post_type( $post_id ) == 'lp_order' ) {
 				remove_action( 'save_post', array( $this, 'save_order' ) );
-
+				echo '<pre>';
 				$user_id = learn_press_get_request( 'order-customer' );
-				//$postdata = array( 'post_status' => $status, 'ID' => $post_id );
-				///wp_update_post( $postdata );
+				$order   = learn_press_get_order( $post_id );
+				if ( $order->is_multi_users() ) {
+					settype( $user_id, 'array' );
+					$sql       = "
+						SELECT meta_value
+						FROM {$wpdb->postmeta}
+						WHERE post_id = %d
+						AND meta_key = %s
+					";
+					$sql = $wpdb->prepare( $sql, $post_id, '_user_id' );
+					$old_users = $wpdb->get_col( $sql );
+					if ( $old_users ) {
+						$remove_users = array_diff( $old_users, $user_id );
+						$add_users    = array_diff( $user_id, $old_users );
+						$edit_users   = array_intersect( $user_id, $old_users );
+					} else {
+						$remove_users = false;
+						$add_users    = $user_id;
+					}
+					if ( $remove_users ) {
+						$format = array_fill( 0, sizeof( $remove_users ), '%d' );
+						$args   = array_merge( array( $post_id, '_user_id' ), $remove_users );
+						$sql    = "DELETE FROM {$wpdb->postmeta} WHERE post_id = %d AND meta_key = %s AND meta_value IN(" . join( ',', $format ) . ")";
+						$wpdb->query( $wpdb->prepare( $sql, $args ) );
+						//echo $wpdb->prepare( $sql, $args );
+					}
+					if ( $add_users ) {
+						$values = array();
+						foreach ( $add_users as $id ) {
+							$values[] = sprintf( "(%d, '%s', %d)", $post_id, '_user_id', $id );
+						}
+						$sql = "INSERT INTO {$wpdb->postmeta}(post_id, meta_key, meta_value) VALUES" . join( ',', $values );
+						$wpdb->query( $sql );
+					}
+					update_post_meta( $post_id, '_lp_multi_users', 'yes', 'yes' );
+					//delete_post_meta( $post_id, '_user_id' );
 
-				update_post_meta( $post_id, '_user_id', $user_id > 0 ? $user_id : 0 );
+				} else {
+					update_post_meta( $post_id, '_user_id', $user_id > 0 ? $user_id : 0 );
+					delete_post_meta( $post_id, '_lp_multi_users' );
+				}
 
 				$order_statuses = learn_press_get_order_statuses();
 				$order_statuses = array_keys( $order_statuses );
@@ -102,7 +147,6 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 				if ( !in_array( $status, $order_statuses ) ) {
 					$status = reset( $order_statuses );
 				}
-				$order = learn_press_get_order( $post_id );
 				$order->update_status( $status );
 			}
 		}
@@ -437,7 +481,7 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 				'rewrite'            => array( 'slug' => LP_ORDER_CPT, 'hierarchical' => true, 'with_front' => true ),
 				'supports'           => array(
 					'title',
-                    'custom-fields'
+					'custom-fields'
 				)
 			);
 		}

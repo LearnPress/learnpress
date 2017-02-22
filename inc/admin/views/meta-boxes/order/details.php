@@ -18,7 +18,13 @@ global $post;
 	</div>
 	<div class="order-user-data clearfix">
 		<div class="order-user-avatar">
-			<?php echo get_avatar( $order->get_user( 'ID' ), 120 ); ?>
+			<?php if ( $order->is_multi_users() ) { ?>
+				<div class="avatar-multiple-users">
+					<span></span>
+				</div>
+			<?php } else { ?>
+				<?php echo get_avatar( $order->get_user( 'ID' ), 120 ); ?>
+			<?php } ?>
 		</div>
 		<div class="order-user-meta">
 			<div class="user-display-name">
@@ -90,7 +96,7 @@ global $post;
 	<?php if ( $note = get_the_excerpt() ) { ?>
 		<br />
 		<h3><?php _e( 'Customer Note', 'learnpress' ); ?></h3>
-		<p class="order-note description"><?php echo $note;?></p>
+		<p class="order-note description"><?php echo $note; ?></p>
 	<?php } ?>
 </div>
 <script type="text/html" id="tmpl-learn-press-modal-add-order-courses">

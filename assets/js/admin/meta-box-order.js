@@ -14,6 +14,16 @@
 			_.bindAll(this, 'resetModal', 'updateModal', '_updateDescription');
 			LP.Hook.addAction('learn_press_message_box_before_resize', this.resetModal);
 			LP.Hook.addAction('learn_press_message_box_resize', this.updateModal);
+
+			var $selectUsers = this.$('#order-customer');
+			if ($selectUsers.attr('multiple') == 'multiple') {
+				$selectUsers.select2();
+			}
+			var $add_new_h2 = $('body.post-type-lp_order').find('.page-title-action, .add-new-h2'),
+				$add_h2 = $('<a href="post-new.php?post_type=lp_order&multi-users=yes" class="page-title-action add-new-h2">Add order multiple users</a>');
+			$add_h2
+				.insertAfter($add_new_h2)
+
 			$(document).on('learn_press_modal_search_items_response', this.addItem2);
 			this.userSuggest();
 		},
@@ -63,7 +73,7 @@
 		updateModal       : function ($app) {
 			this.$('#learn-press-courses-result').css('height', '').css('overflow', '');
 		},
-		showFormItems           : function ( type ) {
+		showFormItems     : function (type) {
 			var $form = LP.ModalSearchItems({
 				template  : 'tmpl-learn-press-search-items',
 				type      : 'lp_course',
@@ -78,22 +88,22 @@
 
 		},
 		_addItem          : function (e) {
-			this.showFormItems('lp_course','add-lp_course')
+			this.showFormItems('lp_course', 'add-lp_course')
 //			var $form = $('#learn-press-modal-add-order-courses');
 //			if ($form.length == 0) {
 //				$form = $(wp.template('learn-press-modal-add-order-courses')());
 //			}
 //			LP.MessageBox.show($form);
 		},
-		addItem2           : function (e, $view, $items) {
-			var that		= this;
-			var selected	= $items; //$form.find('li:visible input:checked'),
+		addItem2          : function (e, $view, $items) {
+			var that = this;
+			var selected = $items; //$form.find('li:visible input:checked'),
 			if (e.ctrlKey) {
 				//return true;
 			}
 			var ids = [];
 			selected.each(function () {
-				ids.push( $(this).data('id') );
+				ids.push($(this).data('id'));
 			});
 
 			$.ajax({
@@ -116,17 +126,17 @@
 						$order_table.find('.order-subtotal').html(response.order_data.subtotal_html);
 						$order_table.find('.order-total').html(response.order_data.total_html);
 
-					selected.each(function () {
-						console.log($(this));
-						$(this).remove();
-					});
+						selected.each(function () {
+							console.log($(this));
+							$(this).remove();
+						});
 						$no_item.addClass('hide-if-js');
 					}
 				}
 			});
 
 			return false;
-                // restart sortable
+			// restart sortable
 //				 _makeListSortable();
 		},
 		addItem           : function (e, ids) {
