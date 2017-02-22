@@ -10,6 +10,12 @@
 .rwmb-field .rwmb-input .rwmb-label {
   margin-top: 0;
 }
+.rwmb-field .rwmb-input .option-desc {
+  font-weight: normal;
+  padding-left: 24px;
+  font-style: italic;
+  margin-top: 3px;
+}
 .lp-nav-tab-wrapper {
   border-bottom: 1px solid #ccc;
   margin: 0;
