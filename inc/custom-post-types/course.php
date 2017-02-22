@@ -650,10 +650,9 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						'type'    => 'radio',
 						'desc'    => $course_result_desc,
 						'options' => array(
-							'evaluate_lesson'         => __( 'Evaluate lessons', 'learnpress' ) . sprintf( '<p class="description option-desc">%s</p>', __( 'Evaluate by lessons user has completed per total lessons in course.', 'learnpress' ) ),
-							'evaluate_quizzes'        => __( 'Evaluate result of quizzes', 'learnpress' ) . sprintf( '<p class="description option-desc">%s</p>', __( 'Evaluate by average results of all quizzes in course.', 'learnpress' ) ),
-							'evaluate_passed_quizzes' => __( 'Evaluate by passed quizzes', 'learnpress' ) . sprintf( '<p class="description option-desc">%s</p>', __( 'Evaluate by average results of all quizzes has passed in course.', 'learnpress' ) ),
-							'evaluate_final_quiz'     => __( 'Evaluate the result of the final quiz', 'learnpress' ) . sprintf( '<p class="description option-desc">%s</p>', __( 'Evaluate by results of final quiz in course.', 'learnpress' ) )
+							'evaluate_lesson'     => __( 'Evaluate lessons', 'learnpress' ),
+							'evaluate_quizzes'    => __( 'Evaluate result of quizzes', 'learnpress' ),
+							'evaluate_final_quiz' => __( 'Evaluate the result of the final quiz', 'learnpress' )
 						),
 						'std'     => 'evaluate_lesson',
 					),
