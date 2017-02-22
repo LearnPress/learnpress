@@ -7,7 +7,7 @@
  * @package LearnPress/Classes
  * @version 1.0
  */
-if ( !defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
@@ -27,29 +27,30 @@ class LP_Emails {
 	 * @static
 	 * @return LP_Emails instance
 	 */
-	public static function instance() {
+	public static function instance () {
 		if ( is_null( self::$_instance ) ) {
 			self::$_instance = new self();
 			self::init_email_notifications();
 		}
+
 		return self::$_instance;
 	}
 
 	/**
 	 * @version 1.0
 	 */
-	public function __clone() {
+	public function __clone () {
 		_doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?', 'learnpress' ), '1.0' );
 	}
 
 	/**
 	 * @version 1.0
 	 */
-	public function __wakeup() {
+	public function __wakeup () {
 		_doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?', 'learnpress' ), '1.0' );
 	}
 
-	public function __construct() {
+	public function __construct () {
 		if ( did_action( 'learn_press_emails_init' ) ) {
 			return;
 		}
@@ -62,6 +63,7 @@ class LP_Emails {
 		$this->emails['LP_Email_Published_Course']     = include( 'emails/class-lp-email-published-course.php' );
 		$this->emails['LP_Email_Enrolled_Course']      = include( 'emails/class-lp-email-enrolled-course.php' );
 		$this->emails['LP_Email_Finished_Course']      = include( 'emails/class-lp-email-finished-course.php' );
+		$this->emails['LP_Email_Update_Course']        = include( 'emails/class-lp-email-update-course.php' );
 		$this->emails['LP_Email_Become_An_Instructor'] = include( 'emails/class-lp-email-become-an-instructor.php' );
 
 		add_action( 'learn_press_course_submit_for_reviewer_notification', array( $this, 'review_course' ), 10, 2 );
@@ -78,32 +80,33 @@ class LP_Emails {
 		do_action( 'learn_press_emails_init', $this );
 	}
 
-	public function email_header( $heading, $return = false ) {
+	public function email_header ( $heading, $return = false ) {
 		ob_start();
 		learn_press_get_template( 'emails/email-header.php', array( 'email_heading' => $heading ) );
 		$header = ob_get_clean();
-		if ( !$return ) {
+		if ( ! $return ) {
 			echo $header;
 		} else {
 			return $header;
 		}
 	}
 
-	public function email_footer( $footer_text, $return = false ) {
+	public function email_footer ( $footer_text, $return = false ) {
 		ob_start();
 		learn_press_get_template( 'emails/email-footer.php', array( 'footer_text' => $footer_text ) );
 		$footer = ob_get_clean();
-		if ( !$return ) {
+		if ( ! $return ) {
 			echo $footer;
 		} else {
 			return $footer;
 		}
 	}
 
-	public static function send_email() {
+	public static function send_email () {
 		self::instance();
 		$args = func_get_args();
 		do_action_ref_array( current_filter() . '_notification', $args );
+
 		return isset( $args[0] ) ? $args[0] : null;
 	}
 
@@ -113,29 +116,29 @@ class LP_Emails {
 	 * @param $course_id
 	 * @param $user
 	 */
-	public function review_course( $course_id, $user ) {
+	public function review_course ( $course_id, $user ) {
 		$mail = $this->emails['LP_Email_New_Course'];
 		$mail->trigger( $course_id, $user );
 	}
 
-	public function course_rejected( $course_id ) {
+	public function course_rejected ( $course_id ) {
 		$course_user = learn_press_get_user( get_post_field( 'post_author', $course_id ) );
-		if ( !$course_user->is_admin() ) {
+		if ( ! $course_user->is_admin() ) {
 			$mail = $this->emails['LP_Email_Rejected_Course'];
 			$mail->trigger( $course_id );
 		}
 	}
 
-	public function course_approved( $course_id, $user ) {
+	public function course_approved ( $course_id, $user ) {
 		$course_user = learn_press_get_user( get_post_field( 'post_author', $course_id ) );
-		if ( !$course_user->is_admin() ) {
+		if ( ! $course_user->is_admin() ) {
 			$mail = $this->emails['LP_Email_Published_Course'];
 			$mail->trigger( $course_id, $user );
 		}
 	}
 
-	public function finish_course( $course_id, $user_id, $result ) {
-		if ( !$user = learn_press_get_user( $user_id ) ) {
+	public function finish_course ( $course_id, $user_id, $result ) {
+		if ( ! $user = learn_press_get_user( $user_id ) ) {
 			return;
 		}
 		$mail = $this->emails['LP_Email_Finished_Course'];
@@ -150,20 +153,21 @@ class LP_Emails {
 	 *
 	 * @return array
 	 */
-	public function customer_new_order( $result, $order_id ) {
+	public function customer_new_order ( $result, $order_id ) {
 		$mail = $this->emails['LP_Email_New_Order_Customer'];
 		$mail->trigger( $order_id );
+
 		return $result;
 	}
 
-	public function become_an_teacher( $user_id, $role, $old_role ) {
+	public function become_an_teacher ( $user_id, $role, $old_role ) {
 		if ( $role === LP_TEACHER_ROLE ) {
 			$mail = $this->emails['LP_Email_Become_An_Instructor'];
 			$mail->trigger( $user_id );
 		}
 	}
 
-	public static function init_email_notifications() {
+	public static function init_email_notifications () {
 		$actions = apply_filters(
 			'learn_press_email_actions',
 			array(

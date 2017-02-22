@@ -618,6 +618,13 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'type' => 'text',
 						'desc' => __( 'Redirect to this url when you press button buy this course', 'learnpress' ),
 						'std'  => 'no',
+					),
+					array(
+						'name' => __('Send mail update course', 'learnpress'),
+						'id' => "{$prefix}send_mail_update_course",
+						'type' => 'yes_no',
+						'desc' => __('Send email for all user have enrolled when this course is updated.', 'learnpress'),
+						'std' => 'no'
 					)
 				)
 			);

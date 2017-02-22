@@ -141,6 +141,12 @@ class LP_Settings_Emails extends LP_Settings_Base {
 		}
 	}
 
+	public function output_section_update_course() {
+		if ( $email = $this->get_email_class( 'update_course' ) ) {
+			$email->admin_options( $this );
+		}
+	}
+
 	public function output_section_become_an_instructor() {
 		if ( $email = $this->get_email_class( 'become_an_instructor' ) ) {
 			$email->admin_options( $this );
