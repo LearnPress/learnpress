@@ -96,81 +96,82 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 				return;
 			if ( $action == 'editpost' && get_post_type( $post_id ) == 'lp_order' ) {
 				remove_action( 'save_post', array( $this, 'save_order' ) );
-				echo '<pre>';
 				$user_id = learn_press_get_request( 'order-customer' );
 				$order   = learn_press_get_order( $post_id );
-				ob_start();
+				/**
+				 * A simpler way is remove all meta_key are _user_id and then
+				 * add new user_id as new meta_key but this maybe make our database
+				 * increase the auto-increment each time order is updated
+				 * in case the user_id is not changed
+				 */
 				if ( $order->is_multi_users() ) {
 					settype( $user_id, 'array' );
-					$sql = "
-						SELECT meta_value
+					$sql       = "
+						SELECT meta_id, meta_value
 						FROM {$wpdb->postmeta}
 						WHERE post_id = %d
 						AND meta_key = %s
 					";
-					echo $sql = $wpdb->prepare( $sql, $post_id, '_user_id' );
-					$old_users = $wpdb->get_col( $sql );
-					if ( $old_users ) {
-						$remove_users = array_diff( $old_users, $user_id );
-						$add_users    = array_diff( $user_id, $old_users );
-						$edit_users   = array_intersect( $user_id, $old_users );
-					} else {
-						$remove_users = false;
-						$add_users    = $user_id;
-					}
-					if ( $remove_users && $add_users ) {
-						$cases = array();
-
-						$updated_users = array();
-						foreach ( $add_users as $k => $id ) {
-							if ( empty( $remove_users[$k] ) ) {
-								break;
+					$sql       = $wpdb->prepare( $sql, $post_id, '_user_id' );
+					if ( $existed = $wpdb->get_results( $sql ) ) {
+						$cases      = array();
+						$edited     = array();
+						$meta_ids   = array();
+						$remove_ids = array(0);
+						foreach ( $existed as $k => $r ) {
+							if ( empty( $user_id[$k] ) ) {
+								$remove_ids[] = $r->meta_id;
+								continue;
 							}
-							$cases[]         = $wpdb->prepare( "WHEN meta_value = %d THEN %d", $remove_users[$k], $id );
-							$updated_users[] = $remove_users[$k];
+							$cases[]    = $wpdb->prepare( "WHEN meta_id = %d THEN %d", $r->meta_id, $user_id[$k] );
+							$edited[]   = $user_id[$k];
+							$meta_ids[] = $r->meta_id;
 						}
-						if ( $updated_users ) {
-							$remove_users = array_diff( $remove_users, $updated_users );
-							$sql          = "
-								UPDATE {$wpdb->postmeta}
-								SET meta_value = CASE
-								" . join( "\n", $cases ) . "
-								END
-								WHERE post_id = %d
-								AND meta_key = %s
-							";
-
-						}
-
+						$sql = "
+							UPDATE {$wpdb->postmeta}
+							SET meta_value = CASE
+							" . join( "\n", $cases ) . "
+							ELSE meta_value
+							END
+							WHERE meta_id IN(" . join( ', ', $meta_ids ) . ")
+							AND post_id = %d
+							AND meta_key = %s
+						";
+						$sql = $wpdb->prepare( $sql, $post_id, '_user_id' );
+						$wpdb->query( $sql );
+						$user_id = array_diff( $user_id, $edited );
 					}
-					if ( $remove_users ) {
-						$format = array_fill( 0, sizeof( $remove_users ), '%d' );
-						$args   = array_merge( array( $post_id, '_user_id' ), $remove_users );
-						$sql    = "DELETE FROM {$wpdb->postmeta} WHERE post_id = %d AND meta_key = %s AND meta_value IN(" . join( ',', $format ) . ")";
-						$wpdb->query( $wpdb->prepare( $sql, $args ) );
-						echo $wpdb->prepare( $sql, $args );
-					}
-					if ( $add_users ) {
+					if ( $user_id ) {
 						$values = array();
-						foreach ( $add_users as $id ) {
+						foreach ( $user_id as $id ) {
 							$values[] = sprintf( "(%d, '%s', %d)", $post_id, '_user_id', $id );
 						}
-						echo $sql = "INSERT INTO {$wpdb->postmeta}(post_id, meta_key, meta_value) VALUES" . join( ',', $values );
+						$sql = "INSERT INTO {$wpdb->postmeta}(post_id, meta_key, meta_value) VALUES" . join( ',', $values );
+						$wpdb->query( $sql );
+					}
+					$sql = "
+						SELECT meta_id FROM wp_postmeta WHERE meta_id NOT IN(" . join( ',', $remove_ids ) . ") AND post_id = %d AND meta_key = %s GROUP BY meta_value
+					";
+					$sql = $wpdb->prepare( $sql, $post_id, '_user_id' );
+					$keep_users = $wpdb->get_col( $sql );
+					if ( $keep_users ) {
+						$sql = "
+							DELETE
+							FROM {$wpdb->postmeta}
+							WHERE post_id = %d
+							AND meta_key = %s
+							AND ( meta_id NOT IN(" . join( ',', $keep_users ) . ") OR meta_value = 0)
+						";
+						echo $sql = $wpdb->prepare( $sql, $post_id, '_user_id' );
 						$wpdb->query( $sql );
 					}
 					update_post_meta( $post_id, '_lp_multi_users', 'yes', 'yes' );
-					//delete_post_meta( $post_id, '_user_id' );
+					learn_press_reset_auto_increment($wpdb->postmeta);
 
 				} else {
 					update_post_meta( $post_id, '_user_id', $user_id > 0 ? $user_id : 0 );
 					delete_post_meta( $post_id, '_lp_multi_users' );
 				}
-				print_r( $_REQUEST );
-				print_r( $remove_users );
-				print_r( $add_users );
-				print_r( $edit_users );
-
-				LP_Debug::instance()->add( ob_get_clean(), 'log', true );
 
 				$order_statuses = learn_press_get_order_statuses();
 				$order_statuses = array_keys( $order_statuses );

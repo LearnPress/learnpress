@@ -27,16 +27,19 @@ global $post;
 			<?php } ?>
 		</div>
 		<div class="order-user-meta">
-			<div class="user-display-name">
-				<?php echo $order->get_customer_name(); ?>
-			</div>
-			<div class="user-email">
-				<?php $user_email = $order->get_user( 'user_email' );
-				echo empty( $user_email ) ? '' : $user_email; ?>
-			</div>
-			<div class="user-ip-address">
-				<?php echo $order->user_ip_address; ?>
-			</div>
+			<?php if ( $order->is_multi_users() ) { ?>
+			<?php } else { ?>
+				<div class="user-display-name">
+					<?php echo $order->get_customer_name(); ?>
+				</div>
+				<div class="user-email">
+					<?php $user_email = $order->get_user( 'user_email' );
+					echo empty( $user_email ) ? '' : $user_email; ?>
+				</div>
+				<div class="user-ip-address">
+					<?php echo $order->user_ip_address; ?>
+				</div>
+			<?php } ?>
 			<?php if ( $title = $order->get_payment_method_title() ) { ?>
 				<div class="payment-method-title">
 					<?php echo $order->order_total == 0 ? $title : sprintf( __( 'Pay via <strong>%s</strong>', 'learnpress' ), $title ); ?>

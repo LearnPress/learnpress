@@ -337,12 +337,35 @@ class LP_Order {
 	}
 
 	public function get_user( $field = '' ) {
-
 		$user = learn_press_get_user( $this->user_id );
 		if ( $field ) {
 			return $user->{$field};
 		}
 		return $user;
+	}
+
+	public function get_users() {
+		$users = false;
+		if ( $this->is_multi_users() ) {
+			$users = get_post_meta( $this->id, '_user_id' );
+		}
+		return $users;
+	}
+
+	public function dropdown_users() {
+		$order_users = $this->get_users();
+		$users       = get_users( array() );
+		echo '<select name="order-customer[]" id="order-customer" multiple="multiple">';
+		foreach ( (array) $users as $user ) {
+			$user->ID = (int) $user->ID;
+			if ( in_array( $user->ID, $order_users ) ) {
+				$found_selected = true;
+			} else {
+				$found_selected = false;
+			}
+			echo sprintf( '<option value="%d"%s>%s</option>', $user->ID, selected( $found_selected, true, false ), $user->user_login );
+		}
+		echo '</select>';
 	}
 
 	public function __get( $key ) {

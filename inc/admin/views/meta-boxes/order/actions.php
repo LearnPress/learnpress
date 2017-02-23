@@ -59,19 +59,7 @@ if ( 0 != $post->ID ) {
 					-->
 					<?php
 					if ( $order->is_multi_users() ) {
-						$html_select = str_replace( '<select ', '<select multiple="multiple" ', wp_dropdown_users(
-							array(
-								'show_option_none' => 0,
-								'name'             => 'order-customer',
-								'id'               => null,
-								'selected'         => $order->get_user( 'ID' ),
-								'echo'             => 0
-							)
-						) );
-						if ( preg_match_all( '~name=["|\'](.*)["|\']~iSU', $html_select, $m ) ) {
-							$html_select = str_replace( $m[0][0], 'name="' . $m[1][0] . '[]"', $html_select );
-						}
-						echo $html_select;
+						$order->dropdown_users();
 						?>
 						<input type="hidden" name="multi-users" value="yes" />
 						<?php
