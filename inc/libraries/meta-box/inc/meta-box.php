@@ -288,6 +288,10 @@ if ( !class_exists( 'RW_Meta_Box' ) ) {
 			if ( defined( 'DOING_AUTOSAVE' ) && !$this->meta_box['autosave'] ) {
 				return;
 			}
+
+			// Added from 2.1.4
+			remove_action('save_post', array($this, 'save_post'));
+
 			// Make sure meta is added to the post, not a revision
 			if ( $the_post = wp_is_post_revision( $post_id ) ) {
 				$post_id = $the_post;
