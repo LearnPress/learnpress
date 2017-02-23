@@ -51,7 +51,7 @@ if ( !class_exists( 'LP_Widget_Course_Filters' ) ) {
 					'name' => __( 'Button filter', 'learnpress' ),
 					'id'   => "{$prefix}button_filter",
 					'type' => 'checkbox',
-					'std'  => '0',
+					'std'  => '1',
 					'desc' => __( 'If checked, user has to click this button to start filtering', 'learnpress' )
 				)
 			);

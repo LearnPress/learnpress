@@ -98,7 +98,7 @@ if ( !class_exists( 'LP_Widget' ) ) {
 			global $post;
 			if ( $post->post_type == 'lp-post-widget' ) {
 				$key  = !empty( $this->map_fields[$meta_key] ) ? $this->map_fields[$meta_key] : $meta_key;
-				$data = array_key_exists( $key, $this->instance ) ? $this->instance[$key] : '';
+				$data = array_key_exists( $key, $this->instance ) ? ( $this->instance[$key] === false ? '' : $this->instance[$key] ) : '';
 			}
 			return $data;
 		}
@@ -182,7 +182,7 @@ if ( !class_exists( 'LP_Widget' ) ) {
 			remove_filter( 'get_post_metadata', array( $this, 'field_data' ) );
 		}
 
-		public function normalize_options(){
+		public function normalize_options() {
 			return $this->options;
 		}
 
