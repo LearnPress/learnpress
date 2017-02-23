@@ -193,11 +193,15 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.  
 
 == Changelog ==
-= 2.1.5 =
+= 2.1.4 =
++ Added option for external link of "Buy this course"
++ Improved user roles while edit a course and it's items
 + Removed "Show/Hide" questions option of quiz in Global Settings
 + Removed option "Show/Hide" explanation for quiz
 + Removed "Preview" label of course items if course is no required enroll
-+
++ Fixed guest user can not start quiz on wpengine site
++ Fixed "Start quiz" does not show for "No require enrollment" course
++ Fixed course id is missing after duplicating course
 
 = 2.1.3 =
 + Fixed wrong notice outdated templates
