@@ -99,15 +99,16 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 				echo '<pre>';
 				$user_id = learn_press_get_request( 'order-customer' );
 				$order   = learn_press_get_order( $post_id );
+				ob_start();
 				if ( $order->is_multi_users() ) {
 					settype( $user_id, 'array' );
-					$sql       = "
+					$sql = "
 						SELECT meta_value
 						FROM {$wpdb->postmeta}
 						WHERE post_id = %d
 						AND meta_key = %s
 					";
-					$sql = $wpdb->prepare( $sql, $post_id, '_user_id' );
+					echo $sql = $wpdb->prepare( $sql, $post_id, '_user_id' );
 					$old_users = $wpdb->get_col( $sql );
 					if ( $old_users ) {
 						$remove_users = array_diff( $old_users, $user_id );
@@ -117,19 +118,44 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 						$remove_users = false;
 						$add_users    = $user_id;
 					}
+					if ( $remove_users && $add_users ) {
+						$cases = array();
+
+						$updated_users = array();
+						foreach ( $add_users as $k => $id ) {
+							if ( empty( $remove_users[$k] ) ) {
+								break;
+							}
+							$cases[]         = $wpdb->prepare( "WHEN meta_value = %d THEN %d", $remove_users[$k], $id );
+							$updated_users[] = $remove_users[$k];
+						}
+						if ( $updated_users ) {
+							$remove_users = array_diff( $remove_users, $updated_users );
+							$sql          = "
+								UPDATE {$wpdb->postmeta}
+								SET meta_value = CASE
+								" . join( "\n", $cases ) . "
+								END
+								WHERE post_id = %d
+								AND meta_key = %s
+							";
+
+						}
+
+					}
 					if ( $remove_users ) {
 						$format = array_fill( 0, sizeof( $remove_users ), '%d' );
 						$args   = array_merge( array( $post_id, '_user_id' ), $remove_users );
 						$sql    = "DELETE FROM {$wpdb->postmeta} WHERE post_id = %d AND meta_key = %s AND meta_value IN(" . join( ',', $format ) . ")";
 						$wpdb->query( $wpdb->prepare( $sql, $args ) );
-						//echo $wpdb->prepare( $sql, $args );
+						echo $wpdb->prepare( $sql, $args );
 					}
 					if ( $add_users ) {
 						$values = array();
 						foreach ( $add_users as $id ) {
 							$values[] = sprintf( "(%d, '%s', %d)", $post_id, '_user_id', $id );
 						}
-						$sql = "INSERT INTO {$wpdb->postmeta}(post_id, meta_key, meta_value) VALUES" . join( ',', $values );
+						echo $sql = "INSERT INTO {$wpdb->postmeta}(post_id, meta_key, meta_value) VALUES" . join( ',', $values );
 						$wpdb->query( $sql );
 					}
 					update_post_meta( $post_id, '_lp_multi_users', 'yes', 'yes' );
@@ -139,6 +165,12 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 					update_post_meta( $post_id, '_user_id', $user_id > 0 ? $user_id : 0 );
 					delete_post_meta( $post_id, '_lp_multi_users' );
 				}
+				print_r( $_REQUEST );
+				print_r( $remove_users );
+				print_r( $add_users );
+				print_r( $edit_users );
+
+				LP_Debug::instance()->add( ob_get_clean(), 'log', true );
 
 				$order_statuses = learn_press_get_order_statuses();
 				$order_statuses = array_keys( $order_statuses );
