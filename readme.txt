@@ -202,6 +202,8 @@ https://www.transifex.com/projects/p/learnpress/
 + Fixed guest user can not start quiz on wpengine site
 + Fixed "Start quiz" does not show for "No require enrollment" course
 + Fixed course id is missing after duplicating course
++ Fixed course results is incorrect with 'Evaluate lessons' option
++ And more...
 
 = 2.1.3 =
 + Fixed wrong notice outdated templates
