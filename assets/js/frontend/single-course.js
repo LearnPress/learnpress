@@ -297,7 +297,7 @@ if (typeof LearnPress === 'undefined') {
 				$progress = this.$('.course-progress').find('.number, .percentage-sign'),
 				$itemProgress = this.$('.items-progress').find('.number, .percentage-sign');
 			$progress.eq(0).html(parseInt(data.results));
-			this.$('.lp-progress-value').width(parseInt(data.results) + '%');
+			this.$('.course-progress .lp-progress-value').width(parseInt(data.results) + '%');
 			data.items && data.items.forEach(function (item) {
 				var $item = this.$('.course-item.course-item-' + item.id);
 				if (!sections[item.section_id]) {
