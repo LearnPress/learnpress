@@ -473,10 +473,11 @@ if ( !class_exists( 'LearnPress' ) ) {
 			require_once 'inc/user/class-lp-user-factory.php';
 			require_once 'inc/user/abstract-lp-user.php';
 			require_once 'inc/user/class-lp-user.php';
+			require_once 'inc/user/class-lp-profile.php';
+
 
 			// others
 			require_once 'inc/class-lp-session-handler.php';
-			require_once 'inc/admin/class-lp-profile.php';
 			require_once 'inc/admin/class-lp-email.php';
 			// assets
 
