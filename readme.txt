@@ -203,6 +203,7 @@ https://www.transifex.com/projects/p/learnpress/
 + Fixed "Start quiz" does not show for "No require enrollment" course
 + Fixed course id is missing after duplicating course
 + Fixed course results is incorrect with 'Evaluate lessons' option
++ Fixed wrong review course before publish
 + And more...
 
 = 2.1.3 =
