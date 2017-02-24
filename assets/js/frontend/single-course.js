@@ -363,7 +363,6 @@ if (typeof LearnPress === 'undefined') {
 			if (localStorage) {
 				localStorage.setItem("lp-item-expanded", expand ? 'yes' : 'no');
 			}
-			console.log(localStorage.getItem("lp-item-expanded"));
 		},
 		_initHooks         : function () {
 			LP.Hook.addAction('learn_press_update_item_content', this.updateItemContent);
@@ -667,12 +666,15 @@ if (typeof LearnPress === 'undefined') {
 
 			this.curriculumPlaceholder.insertAfter($curriculum);
 			$curriculum.appendTo(this.$('#popup-sidebar'));
-			$('html, body').each(function () {
-				var $root = $(this).addClass('block-content'),
-					overflow = $root.css('overflow');
-				$root.css('overflow', 'hidden').attr('overflow', overflow);
-			})
+			//$('html, body').each(function () {
+			//	var $root = $(this).addClass('block-content'),
+			//		dataOverflow = $root.attr('overflow'),
+			//		overflow = dataOverflow != undefined ? dataOverflow : $root.css('overflow');
+			//	$root.css('overflow', 'hidden').attr('overflow', overflow);
+			//})
+			LP.blockContent();
 			$(".sidebar-show-btn").hide();
+			$(document).on('learn_press_unblock_content', this.hideScrollBar);
 		},
 		_closePopup         : function (e) {
 			e.preventDefault();
@@ -683,10 +685,17 @@ if (typeof LearnPress === 'undefined') {
 			this.undelegateEvents();
 			this.remove();
 
-			var $root = $(this).removeClass('block-content'),
+			/*var $root = $(this).removeClass('block-content'),
 				overflow = $root.attr('overflow');
-			$root.css('overflow', overflow).removeAttr('overflow');
-			$(document).off('focusin').trigger('learn_press_popup_course_remove');
+			$root.css('overflow', overflow).removeAttr('overflow');*/
+			LP.unblockContent();
+			$('html, body').css('overflow', '');
+			$(document).off('focusin').trigger('learn_press_popup_course_remove').unbind('learn_press_unblock_content', this.hideScrollBar);
+		},
+		hideScrollBar                 : function () {
+			$('html, body').each(function () {
+				var $root = $(this).css('overflow', 'hidden');
+			})
 		},
 		_closeSidebar       : function (e) {
 			e.preventDefault();

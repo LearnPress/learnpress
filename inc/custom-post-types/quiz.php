@@ -153,7 +153,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 								'id'      => "{$prefix}show_hide_question",
 								'type'    => 'radio',
 								'options' => array(
-									// Removed from 2.1.5
+									// Removed from 2.1.4
 									//'global' => __( wp_kses( 'Global Setting <a target="_blank" href="' . admin_url( 'admin.php?page=learn-press-settings&tab=courses' ) . '">Go to the setting</a>', array( 'a' => array( 'href' => array(), 'target' => array() ) ) ), 'learnpress' ),
 									'show'   => __( 'Show', 'learnpress' ),
 									'hide'   => __( 'Hide', 'learnpress' )
@@ -223,7 +223,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 								),
 								'std'     => 'no'
 							)
-							// Removed from 2.1.5,
+							// Removed from 2.1.4,
 							/*
 							array(
 								'name'    => __( 'Show explanation', 'learnpress' ),

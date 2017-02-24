@@ -2,7 +2,7 @@
 /**
  * @author        ThimPress
  * @package       LearnPress/Templates
- * @version       2.1.5
+ * @version       2.1.4
  */
 
 defined( 'ABSPATH' ) || exit();

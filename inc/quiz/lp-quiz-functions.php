@@ -351,7 +351,7 @@ if ( !function_exists( 'learn_press_quiz_is_hide_question' ) ) {
 		if ( !$quiz_id ) return false;
 		$meta = get_post_meta( $quiz_id, '_lp_show_hide_question', true );
 		if ( $meta === 'hide' || $meta == '' || is_null( $meta )
-			// Removed from 2.1.5
+			// Removed from 2.1.4
 			/* || ( $meta === 'global' && LP()->settings->get( 'disable_question_in_quiz' ) === 'yes' ) */
 		) {
 			return true;

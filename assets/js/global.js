@@ -724,10 +724,12 @@ if (typeof window.LP == 'undefined') {
 				$(LP.template('learn-press-template-block-content', {})).appendTo($('body'));
 			}
 			LP.hideMainScrollbar().addClass('block-content');
+			$(document).trigger('learn_press_block_content');
 		},
 		unblockContent   : function () {
 			setTimeout(function () {
 				LP.showMainScrollbar().removeClass('block-content');
+				$(document).trigger('learn_press_unblock_content');
 			}, 350);
 		},
 		hideMainScrollbar: function (el) {

@@ -97,7 +97,7 @@ class LP_Settings_Courses extends LP_Settings_Base {
 					'default' => 'yes',
 					'type'    => 'checkbox'
 				),
-				// Removed from 2.1.5
+				// Removed from 2.1.4
 				/*array(
 					'title'   => __( 'Show list of question in quiz', 'learnpress' ),
 					'desc'    => __( 'Show/Hide list questions in quiz.', 'learnpress' ),
@@ -105,7 +105,7 @@ class LP_Settings_Courses extends LP_Settings_Base {
 					'default' => 'yes',
 					'type'    => 'checkbox'
 				),*/
-				/* Temporary remove from 2.1.5
+				/* Temporary remove from 2.1.4
 				array(
 					'title'   => __( 'Auto redirect next lesson', 'learnpress' ),
 					'desc'    => __( 'Redirect to the next lesson after completed the lesson', 'learnpress' ),
