@@ -658,6 +658,7 @@ class LP_Abstract_User {
 
 		$item_statuses = LP_Cache::get_item_statuses( false, array() );
 		$key           = sprintf( '%d-%d-%d', $this->id, $course_id, $item_id );
+		///echo __FILE__; print_r($item_statuses); echo "\n";
 
 		if ( ( !array_key_exists( $key, $item_statuses ) || $force ) ) {
 			if ( $item_ids = $this->get_course_items( '', 'key', $course_id ) ) {

@@ -1152,7 +1152,8 @@ abstract class LP_Abstract_Course {
 		$quizzes = $this->get_quizzes();
 
 		if ( ( $this->course_result == 'evaluate_lesson' ) || !$quizzes ) {
-			$results = $this->_evaluate_course_by_items( $user_id, $force );//$this->_evaluate_course_by_lesson( $user_id, $force );
+			//$results = $this->_evaluate_course_by_items( $user_id, $force );
+			$results = $this->_evaluate_course_by_lesson( $user_id, $force );
 		} else {
 			if ( $this->course_result == 'evaluate_final_quiz' ) {
 				$results = $this->_evaluate_course_by_quiz( $user_id, $force );
@@ -1220,7 +1221,7 @@ abstract class LP_Abstract_Course {
 		if ( !array_key_exists( $key, $evaluate_course_by_lesson ) || $force ) {
 			$course_lessons                  = $this->get_lessons( array( 'field' => 'ID' ) );
 			$completed_lessons               = $this->get_completed_lessons( $user_id );
-			$evaluate_course_by_lesson[$key] = min( $completed_lessons / sizeof( $course_lessons ), 1 );
+			$evaluate_course_by_lesson[$key] = min( $completed_lessons / sizeof( $course_lessons ), 1 ) * 100;
 			LP_Cache::set_evaluate_course_by_lesson( $key, $evaluate_course_by_lesson[$key] );
 		}
 		return apply_filters( 'learn_press_evaluation_course_lesson', $evaluate_course_by_lesson[$key], $this->id, $user_id );
@@ -1239,9 +1240,7 @@ abstract class LP_Abstract_Course {
 		if ( !$user_id ) {
 			$user_id = get_current_user_id();
 		}
-		//$completed_items = LP_Cache::get_completed_items( false, array() );
-		$key = $user_id . '-' . $this->id;
-
+		_learn_press_parse_user_item_statuses( $user_id, $this->id );
 		$item_statuses   = LP_Cache::get_item_statuses( false, array() );
 		$completed_items = array();
 		if ( $item_statuses ) {
@@ -1256,33 +1255,6 @@ abstract class LP_Abstract_Course {
 			}
 		}
 		return apply_filters( 'learn_press_user_completed_items', $completed_items, $this->id, $user_id );
-		if ( !array_key_exists( $key, $completed_items ) || $force ) {
-			global $wpdb;
-			$course_items = $this->get_curriculum_items( array( 'field' => 'ID' ) );
-			if ( !$course_items ) {
-				return 0;
-			}
-			if ( $items ) {
-				$in_item_types = array_fill( 0, sizeof( $items ), '%s' );
-				$item_types    = $wpdb->prepare( " AND item_type IN(" . join( ',', $in_item_types ) . ") ", $items );
-			} else {
-				$item_types = '';
-			}
-			$query                 = $wpdb->prepare( "
-				SELECT user_item_id, user_id, status, ref_id, item_id, item_type
-				FROM (SELECT * FROM {$wpdb->prefix}learnpress_user_items ORDER BY item_id, user_item_id DESC) x
-				GROUP BY item_id
-				HAVING user_id = %d
-				AND status = %s
-				AND ref_id = %d
-				AND item_id IN(" . join( ",", $course_items ) . ")
-				" . $item_types . "
-			", $user_id, 'completed', $this->id );
-			$user_item_ids         = $wpdb->get_col( $query );
-			$completed_items[$key] = $user_item_ids;
-			LP_Cache::set_completed_items( $completed_items );
-		}
-		return apply_filters( 'learn_press_user_completed_items', $completed_items[$key], $this->id, $user_id );
 	}
 
 	/**
@@ -1442,12 +1414,12 @@ abstract class LP_Abstract_Course {
 	 * Checks if this course has expired
 	 *
 	 * @param int $user_id
-	 * @param mixed
+	 * @param     mixed
 	 *
 	 * @return mixed|null|void
 	 */
 	public function is_expired( $user_id = 0, $args = array() ) {
-		settype($args, 'array');
+		settype( $args, 'array' );
 		if ( !$user_id ) {
 			$user_id = get_current_user_id();
 		}
