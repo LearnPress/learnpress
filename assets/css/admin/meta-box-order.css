@@ -122,6 +122,16 @@
 	left: 31px;
 	color: #a1adbb;
 }
+#order_details .order-users > strong{
+	font-weight: bold;
+}
+#order_details .order-users p{
+	font-style: italic;
+	margin: 5px 0 15px 0;
+}
+#order_details .payment-method-title{
+	font-weight: bold;
+}
 
 /*************************************************************/
 .post-type-lpr_order .column-title {

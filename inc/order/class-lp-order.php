@@ -469,10 +469,38 @@ class LP_Order {
 		return apply_filters( 'learn_press_order_user_name', sprintf( _x( '%1$s', 'full name', 'learnpress' ), $this->get_user( 'user_login' ) ) );
 	}
 
+	/**
+	 * Check to see if this order is for multi users
+	 *
+	 * @since 2.1.5
+	 *
+	 * @return bool
+	 */
 	public function is_multi_users() {
 		$multiple = $this->get_status() == 'auto-draft' && 'yes' == learn_press_get_request( 'multi-users' );
 		$multiple = $multiple || ( 'yes' == get_post_meta( $this->id, '_lp_multi_users', true ) );
 		return $multiple;
+	}
+
+	/**
+	 * Print the list of all users has assigned to this order
+	 * in case this order is for multi users
+	 *
+	 * @since 2.1.5
+	 */
+	public function print_users() {
+		if ( $user_ids = get_post_meta( $this->id, '_user_id' ) ) {
+			global $wpdb;
+			$format_ids = array_fill( 0, sizeof( $user_ids ), '%d' );
+			$users      = $wpdb->get_results( $wpdb->prepare( "SELECT user_login, user_email FROM {$wpdb->users} WHERE ID IN(" . join( ',', $format_ids ) . ")", $user_ids ) );
+			$size       = sizeof( $users );
+			foreach ( $users as $i => $user ) {
+				printf( '<strong>%s</strong> ( %s )', $user->user_login, $user->user_email );
+				if ( $i < $size - 1 ) {
+					echo ', ';
+				}
+			}
+		}
 	}
 
 	/**

@@ -28,6 +28,10 @@ global $post;
 		</div>
 		<div class="order-user-meta">
 			<?php if ( $order->is_multi_users() ) { ?>
+				<div class="order-users">
+					<strong><?php _e( 'Customers', 'learnpress' ); ?></strong>
+					<p><?php $order->print_users(); ?></p>
+				</div>
 			<?php } else { ?>
 				<div class="user-display-name">
 					<?php echo $order->get_customer_name(); ?>

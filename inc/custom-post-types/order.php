@@ -106,18 +106,18 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 				 */
 				if ( $order->is_multi_users() ) {
 					settype( $user_id, 'array' );
-					$sql       = "
+					$sql = "
 						SELECT meta_id, meta_value
 						FROM {$wpdb->postmeta}
 						WHERE post_id = %d
 						AND meta_key = %s
 					";
-					$sql       = $wpdb->prepare( $sql, $post_id, '_user_id' );
+					$sql = $wpdb->prepare( $sql, $post_id, '_user_id' );
 					if ( $existed = $wpdb->get_results( $sql ) ) {
 						$cases      = array();
 						$edited     = array();
 						$meta_ids   = array();
-						$remove_ids = array(0);
+						$remove_ids = array( 0 );
 						foreach ( $existed as $k => $r ) {
 							if ( empty( $user_id[$k] ) ) {
 								$remove_ids[] = $r->meta_id;
@@ -149,10 +149,10 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 						$sql = "INSERT INTO {$wpdb->postmeta}(post_id, meta_key, meta_value) VALUES" . join( ',', $values );
 						$wpdb->query( $sql );
 					}
-					$sql = "
+					$sql        = "
 						SELECT meta_id FROM wp_postmeta WHERE meta_id NOT IN(" . join( ',', $remove_ids ) . ") AND post_id = %d AND meta_key = %s GROUP BY meta_value
 					";
-					$sql = $wpdb->prepare( $sql, $post_id, '_user_id' );
+					$sql        = $wpdb->prepare( $sql, $post_id, '_user_id' );
 					$keep_users = $wpdb->get_col( $sql );
 					if ( $keep_users ) {
 						$sql = "
@@ -166,7 +166,7 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 						$wpdb->query( $sql );
 					}
 					update_post_meta( $post_id, '_lp_multi_users', 'yes', 'yes' );
-					learn_press_reset_auto_increment($wpdb->postmeta);
+					learn_press_reset_auto_increment( $wpdb->postmeta );
 
 				} else {
 					update_post_meta( $post_id, '_user_id', $user_id > 0 ? $user_id : 0 );
@@ -408,13 +408,17 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 			$the_order = learn_press_get_order( $post->ID );
 			switch ( $column ) {
 				case 'order_student':
-					if ( $the_order->customer_exists() ) {
-						$user = learn_press_get_user( $the_order->user_id );
-						printf( '<a href="user-edit.php?user_id=%d">%s (%s)</a>', $the_order->user_id, $user->user_login, $user->display_name );
-						?><?php
-						printf( '<br /><span>%s</span>', $user->user_email );
+					if ( $the_order->is_multi_users() ) {
+						$the_order->print_users();
 					} else {
-						echo $the_order->get_customer_name();
+						if ( $the_order->customer_exists() ) {
+							$user = learn_press_get_user( $the_order->user_id );
+							printf( '<a href="user-edit.php?user_id=%d">%s (%s)</a>', $the_order->user_id, $user->user_login, $user->display_name );
+							?><?php
+							printf( '<br /><span>%s</span>', $user->user_email );
+						} else {
+							echo $the_order->get_customer_name();
+						}
 					}
 					break;
 				case 'order_status' :

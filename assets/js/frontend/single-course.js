@@ -329,6 +329,7 @@ if (typeof LearnPress === 'undefined') {
 			$itemProgress.eq(0).html(data.completed_items_text.replace('%d', itemsCompleted).replace('%d', itemsCount));
 			var passingCondition = parseInt(this.$('.course-progress .lp-course-progress').data('passing-condition'));
 			this.$('.button-finish-course').toggleClass('hide-if-js', !(data.results >= passingCondition));
+			
 			if (data.setUrl) {
 				LP.setUrl(data.setUrl);
 			}
