@@ -370,12 +370,18 @@ class LP_Quiz_Factory {
 			if ( $error_message === false ) {
 				$error_message = array( 'title' => __( 'Error', 'learnpress' ), 'message' => sprintf( __( 'Action %s failed! Please contact site\'s administrator for more information.', 'learnpress' ), $action ) );
 			}
-			learn_press_send_json(
-				array(
-					'result'  => 'error',
-					'message' => $error_message
-				)
-			);
+			if(learn_press_is_ajax()) {
+				learn_press_send_json(
+					array(
+						'result'  => 'error',
+						'message' => $error_message
+					)
+				);
+			}else{
+				learn_press_add_message($error_message['message']);
+				wp_redirect(learn_press_get_current_url());
+				exit();
+			}
 		}
 		return array(
 			'course_id' => $course_id,

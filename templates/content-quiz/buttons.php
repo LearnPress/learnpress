@@ -77,4 +77,5 @@ $question = $quiz->get_current_question();
 	<input type="hidden" name="course_id" value="<?php echo esc_attr( $course->id ); ?>" />
 	<input type="hidden" name="security" value="" />
 	<input type="hidden" name="lp-ajax" value="" />
+	<input type="hidden" name="noajax" value="yes" />
 </form>

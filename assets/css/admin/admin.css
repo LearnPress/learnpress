@@ -10,6 +10,12 @@
 .rwmb-field .rwmb-input .rwmb-label {
   margin-top: 0;
 }
+.rwmb-field .rwmb-input .option-desc {
+  font-weight: normal;
+  padding-left: 24px;
+  font-style: italic;
+  margin-top: 3px;
+}
 .lp-nav-tab-wrapper {
   border-bottom: 1px solid #ccc;
   margin: 0;
@@ -111,10 +117,18 @@
 #learn-press-admin-settings .learn-press-settings-wrap.ready {
   opacity: 1;
 }
+#learn-press-admin-settings .learn-press-settings-wrap #learn-press-reset-settings {
+  float: right;
+  opacity: 0.5;
+}
+#learn-press-admin-settings .learn-press-settings-wrap #learn-press-reset-settings:hover {
+  opacity: 1;
+}
 #learn-press-admin-settings.no-subtabs .learn-press-settings-wrap {
   float: none;
   margin-left: 0;
   padding-left: 25px;
+  padding-right: 25px;
 }
 #learn-press-admin-settings.no-subtabs .learn-press-settings-wrap:before {
   display: none;
@@ -1822,7 +1836,7 @@ input.regular-text[id^="learn-press-emails"] {
   margin: 0;
 }
 .learn-press-tabs .learn-press-tab-content > li {
-  padding: 0 20px 0px 20px;
+  padding: 0 20px 10px 20px;
   float: left;
   width: 100%;
   margin-right: -100%;

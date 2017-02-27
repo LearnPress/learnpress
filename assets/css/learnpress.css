@@ -226,6 +226,7 @@
   border-radius: 5px;
   vertical-align: middle;
   margin-left: 5px;
+  font-size: 10px;
 }
 #learn-press-course-curriculum .section-header .meta .collapse:before {
   content: "\ea0b";
@@ -944,6 +945,7 @@ body.block-content #learn-press-block-content {
 .quiz-intro {
   list-style: none;
   padding: 0;
+  margin-left: 0;
 }
 .quiz-questions-list {
   margin: 0 0 20px 0;
@@ -1829,8 +1831,9 @@ body.block-content #learn-press-block-content {
 .learn-press-message {
   background: #F5F5F5;
   border-left: 5px solid #00A0D2;
-  padding: 10px 20px 10px 20px;
+  padding: 10px 20px 0px 20px;
   margin-bottom: 20px;
+  overflow: hidden;
 }
 .learn-press-message button {
   float: right;

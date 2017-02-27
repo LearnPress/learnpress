@@ -440,7 +440,7 @@ class LP_Upgrade_From_09 {
 			}
 			add_post_meta( $new_id, $new_key, $new_value );
 		}
-		update_post_meta( $new_id, '_lp_show_explanation', 'no' );
+		//update_post_meta( $new_id, '_lp_show_explanation', 'no' );
 		update_post_meta( $new_id, '_lp_show_hint', 'yes' );
 		/**
 		 * Update other meta data

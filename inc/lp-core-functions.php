@@ -534,7 +534,7 @@ if ( !function_exists( 'learn_press_is_ajax' ) ) {
 	 * @return bool
 	 */
 	function learn_press_is_ajax() {
-		return defined( 'LP_DOING_AJAX' ) && LP_DOING_AJAX;
+		return defined( 'LP_DOING_AJAX' ) && LP_DOING_AJAX && 'yes' != learn_press_get_request('noajax');
 	}
 }
 
@@ -1037,8 +1037,8 @@ function learn_press_get_payment_currencies() {
 		'HUF' => 'Hungarian Forint (Ft)',
 		'ISK' => 'Icelandic krona (Kr.)',
 		'IDR' => 'Indonesia Rupiah (Rp)',
-		'INR' => 'Indian Rupee (Rs.)',
-		'NPR' => 'Nepali Rupee (Rs.)',
+		'INR' => 'Indian Rupee (₹)',
+		'NPR' => 'Nepali Rupee (रू)',
 		'ILS' => 'Israeli Shekel (₪)',
 		'JPY' => 'Japanese Yen (¥)',
 		'KIP' => 'Lao Kip (₭)',
@@ -1145,7 +1145,7 @@ function learn_press_get_currency_symbol( $currency = '' ) {
 			$currency_symbol = '&#8362;';
 			break;
 		case 'INR' :
-			$currency_symbol = 'Rs.';
+			$currency_symbol = '₹';
 			break;
 		case 'ISK' :
 			$currency_symbol = 'Kr.';
@@ -1166,7 +1166,7 @@ function learn_press_get_currency_symbol( $currency = '' ) {
 			$currency_symbol = '&#107;&#114;';
 			break;
 		case 'NPR' :
-			$currency_symbol = 'Rs.';
+			$currency_symbol = 'रू';
 			break;
 		case 'PHP' :
 			$currency_symbol = '&#8369;';
@@ -2717,12 +2717,28 @@ function learn_press_get_students_list_filter() {
 	return apply_filters( 'learn_press_get_students_list_filter', $filter );
 }
 
+function learn_press_execute_time() {
+	static $time;
+	if ( empty( $time ) ) {
+		$time = microtime( true );
+		return $time;
+	} else {
+		$execute_time = microtime( true ) - $time;
+		echo "Execute time " . $execute_time;
+		$time = 0;
+		return $execute_time;
+	}
+}
 
 function learn_press_debug_hidden() {
 	$args = func_get_args();
 	echo '<div class="learn-press-debug-hidden" style="display:none;">';
 	call_user_func_array( 'learn_press_debug', $args );
 	echo '</div>';
+}
+
+function learn_press_is_negative_value( $value ) {
+	return in_array( $value, array( 'no', 'off', 'false', '0', 0, ) ) || $value || $value == '';
 }
 
 # -------------------------------
