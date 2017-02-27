@@ -490,7 +490,6 @@ if ( !class_exists( 'LearnPress' ) ) {
 				// shortcodes
 				require_once 'inc/class-lp-shortcodes.php';
 				// Include short-code file
-				require_once 'inc/shortcodes/profile-page.php';
 				require_once 'inc/shortcodes/archive-courses.php';
 				require_once 'inc/shortcodes/recent-courses/recent-courses.php';
 				require_once 'inc/shortcodes/popular-courses/popular-courses.php';
