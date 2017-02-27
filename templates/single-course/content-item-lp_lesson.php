@@ -22,7 +22,39 @@ $can_view_item = $user->can( 'view-item', $item->id, $course->id );
 
 	<?php if ( $user->has_completed_lesson( $item->ID, $course->id ) ) { ?>
 		<button class="" disabled="disabled"> <?php _e( 'Completed', 'learnpress' ); ?></button>
-	<?php } else if ( !$user->has( 'finished-course', $course->id ) && !in_array( $can_view_item, array( 'preview', 'no-required-enroll' ) ) ) { ?>
+		<?php
+		// Auto redirect the next item (lesson or quiz) after completed current lesson
+		$auto_next = LP()->settings->get( 'auto_redirect_next_lesson' );
+		$message   = LP()->settings->get( 'auto_redirect_message' );
+		$time      = 0;
+
+		if ( $auto_next === 'yes' ) {
+			if ( ! empty( LP()->settings->get( 'auto_redirect_time' ) ) ) {
+				$time = LP()->settings->get( 'auto_redirect_time' );
+				$time = absint( $time );
+			}
+			?>
+			<div class="learn-press-auto-redirect-next-item" data-time-redirect="<?php echo esc_attr( $time ); ?>">
+				<?php
+				if ( ! empty( $message ) ) {
+					?>
+					<p class="learn-press-message">
+						<?php echo wp_kses_post( $message ); ?>
+						<span class="learn-press-countdown"><?php echo wp_kses_post( $time ); ?></span>
+						<span class="learnpress-dismiss-notice"></span>
+					</p>
+					<?php
+				}
+				?>
+			</div>
+			<?php
+		}
+		?>
+	<?php } else if ( ! $user->has( 'finished-course', $course->id ) && ! in_array( $can_view_item, array(
+			'preview',
+			'no-required-enroll'
+		) )
+	) { ?>
 
 		<form method="post" name="learn-press-form-complete-lesson" class="learn-press-form">
 			<input type="hidden" name="id" value="<?php echo $item->id; ?>" />

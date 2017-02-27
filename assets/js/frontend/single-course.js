@@ -275,9 +275,7 @@ if (typeof LearnPress === 'undefined') {
 			LP.Hook.addAction('learn_press_receive_message', this.receiveMessage);
 			if (typeof localStorage != 'undefined') {
 				var expanded = localStorage.getItem("lp-item-expanded");
-				if (expanded=='yes') {
-					console.log('xxx:', expanded);
-
+				if (expanded == 'yes') {
 					this.expand(true);
 				}
 			}
@@ -365,7 +363,6 @@ if (typeof LearnPress === 'undefined') {
 			if (localStorage) {
 				localStorage.setItem("lp-item-expanded", expand ? 'yes' : 'no');
 			}
-			console.log(localStorage.getItem("lp-item-expanded"));
 		},
 		_initHooks         : function () {
 			LP.Hook.addAction('learn_press_update_item_content', this.updateItemContent);
@@ -386,12 +383,12 @@ if (typeof LearnPress === 'undefined') {
 				id = $target.hasClass('button-load-item') ? $target.data('id') : $target.find('.button-load-item').data('id');
 			f = f || {force: false};
 			if (!id || this.itemLoading) {
-                return;
+				return;
 			}
 			if ($target.closest('.course-item').hasClass('item-current') && !f.force) {
 				return;
 			}
-            this.blockContent();
+			this.blockContent();
 			if (this.currentItem) {
 				var $iframe = this.currentItem.get('content');
 				$iframe && $iframe.detach();
@@ -399,7 +396,7 @@ if (typeof LearnPress === 'undefined') {
 			this.itemLoading = id;
 			this.currentItem = this.model.getItem(id);
 			this.showPopup();
-            var $content = this.currentItem.get('content'),
+			var $content = this.currentItem.get('content'),
 				isNew = !($content && $content.length);
 			if (!$content) {
 				$content = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen />');
@@ -669,9 +666,15 @@ if (typeof LearnPress === 'undefined') {
 
 			this.curriculumPlaceholder.insertAfter($curriculum);
 			$curriculum.appendTo(this.$('#popup-sidebar'));
-
-			$('body').css({overflow: 'hidden'});
+			//$('html, body').each(function () {
+			//	var $root = $(this).addClass('block-content'),
+			//		dataOverflow = $root.attr('overflow'),
+			//		overflow = dataOverflow != undefined ? dataOverflow : $root.css('overflow');
+			//	$root.css('overflow', 'hidden').attr('overflow', overflow);
+			//})
+			LP.blockContent();
 			$(".sidebar-show-btn").hide();
+			$(document).on('learn_press_unblock_content', this.hideScrollBar);
 		},
 		_closePopup         : function (e) {
 			e.preventDefault();
@@ -681,8 +684,18 @@ if (typeof LearnPress === 'undefined') {
 			this.progressPlaceholder.replaceWith(this.$('.learn-press-course-results-progress'));
 			this.undelegateEvents();
 			this.remove();
-			$(document).off('focusin');
-			$('body').css('overflow', '').trigger('learn_press_popup_course_remove');
+
+			/*var $root = $(this).removeClass('block-content'),
+				overflow = $root.attr('overflow');
+			$root.css('overflow', overflow).removeAttr('overflow');*/
+			LP.unblockContent();
+			$('html, body').css('overflow', '');
+			$(document).off('focusin').trigger('learn_press_popup_course_remove').unbind('learn_press_unblock_content', this.hideScrollBar);
+		},
+		hideScrollBar                 : function () {
+			$('html, body').each(function () {
+				var $root = $(this).css('overflow', 'hidden');
+			})
 		},
 		_closeSidebar       : function (e) {
 			e.preventDefault();

@@ -14,12 +14,12 @@ $courses_page_id  = learn_press_get_page_id( 'courses' );
 $base_slug        = urldecode( ( $courses_page_id > 0 && get_post( $courses_page_id ) ) ? get_page_uri( $courses_page_id ) : _x( 'courses', 'default-slug', 'learnpress' ) );
 $course_base      = _x( 'course', 'default-slug', 'learnpress' );
 
-if( !$course_permalink ){
+/*if ( !$course_permalink ) {
 	global $wpdb;
-	if( $wpdb->get_results( $wpdb->prepare( "SELECT count(option_id) FROM {$wpdb->options} WHERE option_name = %s", 'learn_press_course_base' ) ) == 0 ){
+	if ( $wpdb->get_results( $wpdb->prepare( "SELECT count(option_id) FROM {$wpdb->options} WHERE option_name = %s", 'learn_press_course_base' ) ) == 0 ) {
 		//$course_permalink = '/courses';
 	}
-}
+}*/
 $structures = array(
 	0 => array(
 		'value' => '',
@@ -43,17 +43,19 @@ $structures = array(
 	)
 );
 
-$is_custom = true;
 $base_type = get_option( 'learn_press_course_base_type' );
+$is_custom = ( $base_type == 'custom' && $course_permalink != '' );
+
 ?>
 <?php foreach ( $structures as $k => $structure ): ?>
-	<tr<?php if ( $k == 2 || $k == 3 ) {
-		echo ' class="learn-press-courses-page-id';
-		echo !$courses_page_id ? ' hide-if-js"' : '""';
-	}; ?> >
+	<tr class="learn-press-single-course-permalink<?php if ( $k == 2 || $k == 3 ) {
+		echo ' learn-press-courses-page-id';
+		echo !$courses_page_id ? ' hide-if-js' : '';
+	}; ?>">
 		<th>
 			<?php
-			$is_checked = checked( ( $course_permalink == '' && $structure['value'] == '' ) || ( $structure['value'] == trailingslashit( $course_permalink ) ), true, false );
+			$is_checked = ( $course_permalink == '' && $structure['value'] == '' ) || ( $structure['value'] == trailingslashit( $course_permalink ) );
+			$is_checked = checked( $is_checked, true, false );
 			if ( $is_custom && $is_checked ) {
 				$is_custom = false;
 			}
@@ -68,16 +70,17 @@ $base_type = get_option( 'learn_press_course_base_type' );
 		</td>
 	</tr>
 <?php endforeach; ?>
-<tr>
+<tr class="learn-press-single-course-permalink custom-base">
 	<th>
 		<label>
-			<input name="<?php echo $this->get_field_name( "course_base" ); ?>" id="learn_press_custom_permalink" type="radio" value="custom" <?php checked( $is_custom || ( $base_type == 'custom' ), true ); ?> />
+			<input name="<?php echo $this->get_field_name( "course_base" ); ?>" id="learn_press_custom_permalink" type="radio" value="custom" <?php checked( $is_custom, true ); ?> />
 			<?php _e( 'Custom Base', 'learnpress' ); ?>
 		</label>
 	</th>
 	<td>
-		<input name="course_permalink_structure" id="course_permalink_structure" type="text" value="<?php echo esc_attr( $course_permalink ); ?>" class="regular-text code" />
-
+		<input name="course_permalink_structure" id="course_permalink_structure" <?php if ( !$is_custom ) {
+			echo 'readonly="readonly"';
+		} ?> type="text" value="<?php if($course_permalink) echo esc_attr( trailingslashit( $course_permalink ) ); ?>" class="regular-text code" />
 		<p class="description"><?php _e( 'Enter a custom base to use. A base <strong>must</strong> be set or WordPress will use default values instead.', 'learnpress' ); ?></p>
 	</td>
 </tr>

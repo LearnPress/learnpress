@@ -168,12 +168,23 @@
 			} else if (e.keyCode == 27 && e.type == 'keydown') {
 				$(this).siblings('a').trigger('click')
 			}
-		}).on('change update', '#learn_press_required_review', function(e){
+		}).on('change update', '#learn_press_required_review', function (e) {
 			var $depend = $('input[name="learn_press_enable_edit_published"]').closest('tr');
 			$depend.toggleClass('hide-if-js', !e.target.checked).find('input[type="checkbox"]').prop('disabled', !e.target.checked)
+		}).on('change update', '#learn_press_auto_redirect_next_lesson', function (e) {
+			var $depend = $('#learn_press_auto_redirect_message, #learn_press_auto_redirect_time').closest('tr');
+			$depend.toggleClass('hide-if-js', !e.target.checked);
+		}).on('change', '.learn-press-single-course-permalink input[type="radio"]', function () {
+			var $check = $(this),
+				$row = $check.closest('.learn-press-single-course-permalink');
+			if ($row.hasClass('custom-base')) {
+				$row.find('input[type="text"]').prop('readonly', false);
+			} else {
+				$row.siblings('.custom-base').find('input[type="text"]').prop('readonly', true);
+			}
 		});
 
-		$('#learn_press_required_review').trigger('update');
+		$('#learn_press_required_review, #learn_press_auto_redirect_next_lesson').trigger('update');
 		$('#learn-press-admin-settings').on('click', '.nav-tab, .subsubsub > li > a', function (e) {
 			e.preventDefault();
 			var redirect = $(this).attr('href'),
@@ -195,11 +206,16 @@
 				window.location.href = redirect;
 			}
 		});
-
 		if ($('#learn-press-admin-settings .subsubsub').length) {
 			$('#learn-press-admin-settings').removeClass('no-subtabs');
 		}
 		$('.learn-press-settings-wrap').addClass('ready')
+			.on('click', '#learn-press-reset-settings', function () {
+				if (!confirm($(this).data('text'))) {
+					return false;
+				}
+			});
+
 		// hold current settings to know if user changed anything
 		oldData = $('#mainform').serialize();
 	}

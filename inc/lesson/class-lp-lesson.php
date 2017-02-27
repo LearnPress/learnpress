@@ -94,7 +94,9 @@ class LP_Lesson extends LP_Abstract_Course_Item {
 		if ( !did_action( 'learn_press_get_content_' . $this->id ) ) {
 			global $post, $wp_query;
 			$post  = get_post( $this->id );
-			$posts = apply_filters( 'the_posts', array( $post ), $wp_query );
+			//$posts = apply_filters( 'the_posts', array( $post ), $wp_query );
+			$posts = apply_filters_ref_array( 'the_posts', array( array( $post ), &$wp_query ) );
+
 			if ( $posts ) {
 				$post = $posts[0];
 			}

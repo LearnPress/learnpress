@@ -1,3 +1,19 @@
+/*
+    - PROGRESS CIRCLE
+    - Archive courses
+    - Course Curriculum
+    - BREADCRUMB
+    - COURSE PROGRESS
+    - COURSE TABS
+    - POPUP STYLE
+    - COURSE QUIZ
+    - Form field
+    - jAlerts
+    - tooltip
+    - fill in blank
+    - Shortcode/Widgets
+ */
+
 @icon-url: '../fonts/lp-icons';
 @font-face {
     font-family: 'lp-icons';
@@ -312,7 +328,7 @@
     margin-bottom: 20px;
 }
 
-//
+/* Course Curriculum */
 
 #learn-press-course-curriculum {
     ul.curriculum-sections,
@@ -363,6 +379,7 @@
                 border-radius: 5px;
                 vertical-align: middle;
                 margin-left: 5px;
+                font-size: 10px;
                 &:before {
                     content: "\ea0b";
                     margin: 0 auto;
@@ -699,7 +716,29 @@
     }
 }
 
-/* POPUP */
+.learn-press-course-buttons {
+
+    a.button {
+        display: inline-block;
+        font-size: 16px;
+        background: #1a1a1a;
+        border: 0;
+        border-radius: 2px;
+        color: #fff;
+        font-family: Montserrat, "Helvetica Neue", sans-serif;
+        font-weight: 700;
+        letter-spacing: 0.046875em;
+        line-height: 1;
+        padding: 0.84375em 0.875em 0.78125em;
+        text-transform: uppercase;
+
+        &:hover {
+            background: #007acc;
+        }
+    }
+}
+
+/* POPUP STYLE */
 
 #popup_overlay {
     z-index: 10000000 !important;
@@ -1031,7 +1070,6 @@ body.block-content {
 }
 
 /* COURSE QUIZ */
-//.single-quiz {
 .quiz-buttons {
     margin-bottom: 20px;
     clear: both;
@@ -1040,6 +1078,7 @@ body.block-content {
 .quiz-intro {
     list-style: none;
     padding: 0;
+    margin-left: 0;
 }
 
 .quiz-questions-list {
@@ -1309,8 +1348,9 @@ body.block-content {
 .learn-press-message {
     background: #F5F5F5;
     border-left: 5px solid #00A0D2;
-    padding: 10px 20px 10px 20px;
+    padding: 10px 20px 0px 20px;
     margin-bottom: 20px;
+    overflow: hidden;
     button {
         float: right;
     }
@@ -1759,7 +1799,13 @@ body {
         text-align: center;
     }
 }
+.learn-press-auto-redirect-next-item {
+    display: none;
 
+    &.active {
+        display: block;
+    }
+}
 .single-lp_course {
     .course-summary {
         .lp_course {
@@ -1769,9 +1815,43 @@ body {
         }
     }
     .learn-press-message {
+        position: relative;
         clear: both;
         margin-top: 25px;
+
+        .learn-press-countdown {
+            display: inline-block;
+            width: 1.5em;
+            height: 1.5em;
+            background: #cc540d;
+            text-align: center;
+            border-radius: 50%;
+            line-height: 1.5em;
+            font-size: 0.8em;
+            color: #fff;
+        }
+        .learnpress-dismiss-notice {
+            display: inline-block;
+            position: absolute;
+            right: 1em;
+            top: 50%;
+            -ms-transform: translateY(-50%);
+            -webkit-transform: translateY(-50%);
+            transform: translateY(-50%);
+            cursor: pointer;
+
+            &:before {
+                font-size: 1.2em;
+                color: red;
+                content: "\f153";
+                font-family: dashicons;
+            }
+        }
+
     }
+
+
+
 }
 
 /* tooltip */

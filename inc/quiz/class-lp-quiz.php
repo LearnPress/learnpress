@@ -202,12 +202,11 @@ class LP_Quiz extends LP_Abstract_Course_Item {
 			$user              = learn_press_get_current_user();
 			$show_check_answer = $this->show_check_answer;
 			$show_hint         = $this->show_hint;
-			$show_explanation  = $this->show_explanation;
+			$checked_answers = array();
+			//$show_explanation  = $this->show_explanation;
 			if ( $show_check_answer == 'yes' ) {
 				if ( $history = $user->get_quiz_results( $this->id ) ) {
 					$checked_answers = !empty( $history->checked ) ? (array) $history->checked : array();
-				} else {
-					$checked_answers = array();
 				}
 			}
 			foreach ( $questions as $question_id => $question ) {
@@ -226,9 +225,9 @@ class LP_Quiz extends LP_Abstract_Course_Item {
 				if ( $show_hint == 'yes' && empty( $question->hasHint ) ) {
 					$_question->hasHint = get_post_meta( $question->ID, '_lp_hint', true ) ? 'yes' : 'no';
 				}
-				if ( $show_explanation == 'yes' && empty( $question->hasExplanation ) ) {
+				/*if ( $show_explanation == 'yes' && empty( $question->hasExplanation ) ) {
 					$_question->hasExplanation = get_post_meta( $question->ID, '_lp_explanation', true ) ? 'yes' : 'no';
-				}
+				}*/
 				/*if ( empty( $results[$row->id] ) ) {
 					$results[$row->id] = (object) array(
 						'id'   => absint( $row->id ),
@@ -265,14 +264,6 @@ class LP_Quiz extends LP_Abstract_Course_Item {
 					$_question->current = 'yes';
 				}
 				$results[$question->ID] = $_question;
-				continue;
-				if ( in_array( $row->id, $checked_answers ) ) {
-					$checked = maybe_unserialize( $row->answer_data );
-					unset( $checked['text'] );
-					$results[$row->id]->checked[$row->question_answer_id] = $checked;
-				} else {
-					$results[$row->id]->checked = false;
-				}
 			}
 		}
 		return apply_filters( 'learn_press_quiz_param_questions', $results, $this->id );
@@ -355,7 +346,9 @@ class LP_Quiz extends LP_Abstract_Course_Item {
 		if ( !did_action( 'learn_press_get_content_' . $this->id ) ) {
 			global $post, $wp_query;
 			$post  = get_post( $this->id );
-			$posts = apply_filters( 'the_posts', array( $post ), $wp_query );
+			//$posts = apply_filters( 'the_posts', array( $post ), $wp_query );
+			$posts = apply_filters_ref_array( 'the_posts', array( array( $post ), &$wp_query ) );
+
 			if ( $posts ) {
 				$post = $posts[0];
 			}

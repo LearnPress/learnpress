@@ -1123,8 +1123,8 @@ jQuery(document).ready(function ($) {
 						id = url.getQueryVar('tab');
 					$li.addClass('active').siblings().removeClass('active');
 					$el.find('#meta-box-tab-' + id).addClass('active').siblings().removeClass('active');
+					$el.find('input[name="learn-press-meta-box-tab"]').val(id);
 					LP.setUrl(url);
-					console.log(id)
 					//$(window).scrollTop($box.offset().top - 120);
 				});
 				$el.data('metaBoxTabs', tabs);

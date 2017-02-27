@@ -128,7 +128,7 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 					'pages'  => array( LP_QUESTION_CPT ),
 					'fields' => array(
 						array(
-							'name' => __( '', 'learnpress' ),
+							'name' => '',
 							'id'   => "_lp_question_answer",
 							'type' => 'question'
 						)
@@ -153,7 +153,7 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 						'id'    => "{$prefix}mark",
 						'type'  => 'number',
 						'clone' => false,
-						'desc'  => __( 'Mark for choosing the right answer', 'learnpress' ),
+						'desc'  => __( 'Mark for choosing the right answer.', 'learnpress' ),
 						'min'   => 1,
 						'std'   => 1
 					),
@@ -161,14 +161,14 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 						'name' => __( 'Question explanation', 'learnpress' ),
 						'id'   => "{$prefix}explanation",
 						'type' => 'textarea',
-						'desc' => __( 'Explain why an option is true and other is false', 'learnpress' ),
+						'desc' => __( 'Explain why an option is true and other is false. The text will be shown when user click on \'Check answer\' button.', 'learnpress' ),
 						'std'  => null
 					),
 					array(
 						'name' => __( 'Question hint', 'learnpress' ),
 						'id'   => "{$prefix}hint",
 						'type' => 'textarea',
-						'desc' => __( 'Instruction for user to select the right answer.', 'learnpress' ),
+						'desc' => __( 'Instruction for user to select the right answer. The text will be shown when user clicking \'Hint\' button.', 'learnpress' ),
 						'std'  => null
 					)
 				)
