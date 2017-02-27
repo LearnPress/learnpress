@@ -1615,3 +1615,9 @@ function learn_press_check_access_lesson() {
 		}
 	}
 }
+
+function learn_press_fontend_js_template() {
+	learn_press_get_template( 'global/js-template.php' );
+}
+
+add_action( 'wp_footer', 'learn_press_fontend_js_template' );
