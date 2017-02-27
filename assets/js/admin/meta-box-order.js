@@ -17,7 +17,9 @@
 
 			var $selectUsers = this.$('#order-customer');
 			if ($selectUsers.attr('multiple') == 'multiple') {
-				$selectUsers.select2();
+				$selectUsers.select2({
+					width: $('#minor-publishing .misc-pub-section').innerWidth() - 20
+				});
 			}
 			var $add_new_h2 = $('body.post-type-lp_order').find('.page-title-action, .add-new-h2'),
 				$add_h2 = $('<a href="post-new.php?post_type=lp_order&multi-users=yes" class="page-title-action add-new-h2">Add order multiple users</a>');

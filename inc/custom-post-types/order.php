@@ -90,84 +90,95 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 			}
 		}
 
+		/**
+		 * Process when saving order with multi users
+		 *
+		 * @param $post_id
+		 * @param $user_id
+		 */
+		private function _save_order_multi_users( $post_id, $user_id ) {
+			global $wpdb;
+			settype( $user_id, 'array' );
+			$sql = "
+				SELECT meta_id, meta_value
+				FROM {$wpdb->postmeta}
+				WHERE post_id = %d
+				AND meta_key = %s
+			";
+			$sql = $wpdb->prepare( $sql, $post_id, '_user_id' );
+			/**
+			 * A simpler way is remove all meta_key are _user_id and then
+			 * add new user_id as new meta_key but this maybe make our database
+			 * increase the auto-increment each time order is updated
+			 * in case the user_id is not changed
+			 */
+			if ( $existed = $wpdb->get_results( $sql ) ) {
+				$cases      = array();
+				$edited     = array();
+				$meta_ids   = array();
+				$remove_ids = array( 0 );
+				foreach ( $existed as $k => $r ) {
+					if ( empty( $user_id[$k] ) ) {
+						$remove_ids[] = $r->meta_id;
+						continue;
+					}
+					$cases[]    = $wpdb->prepare( "WHEN meta_id = %d THEN %d", $r->meta_id, $user_id[$k] );
+					$edited[]   = $user_id[$k];
+					$meta_ids[] = $r->meta_id;
+				}
+				$sql = "
+					UPDATE {$wpdb->postmeta}
+					SET meta_value = CASE
+					" . join( "\n", $cases ) . "
+					ELSE meta_value
+					END
+					WHERE meta_id IN(" . join( ', ', $meta_ids ) . ")
+					AND post_id = %d
+					AND meta_key = %s
+				";
+				$sql = $wpdb->prepare( $sql, $post_id, '_user_id' );
+				$wpdb->query( $sql );
+				$user_id = array_diff( $user_id, $edited );
+			}
+			if ( $user_id ) {
+				$values = array();
+				foreach ( $user_id as $id ) {
+					$values[] = sprintf( "(%d, '%s', %d)", $post_id, '_user_id', $id );
+				}
+				$sql = "INSERT INTO {$wpdb->postmeta}(post_id, meta_key, meta_value) VALUES" . join( ',', $values );
+				$wpdb->query( $sql );
+			}
+			$sql        = "
+				SELECT meta_id FROM wp_postmeta WHERE meta_id NOT IN(" . join( ',', $remove_ids ) . ") AND post_id = %d AND meta_key = %s GROUP BY meta_value
+			";
+			$sql        = $wpdb->prepare( $sql, $post_id, '_user_id' );
+			$keep_users = $wpdb->get_col( $sql );
+			if ( $keep_users ) {
+				$sql = "
+					DELETE
+					FROM {$wpdb->postmeta}
+					WHERE post_id = %d
+					AND meta_key = %s
+					AND ( meta_id NOT IN(" . join( ',', $keep_users ) . ") OR meta_value = 0)
+				";
+				$sql = $wpdb->prepare( $sql, $post_id, '_user_id' );
+				$wpdb->query( $sql );
+			}
+			update_post_meta( $post_id, '_lp_multi_users', 'yes', 'yes' );
+			learn_press_reset_auto_increment( $wpdb->postmeta );
+		}
+
 		public function save_order( $post_id ) {
-			global $action, $wpdb;
+			global $action;
 			if ( wp_is_post_revision( $post_id ) )
 				return;
 			if ( $action == 'editpost' && get_post_type( $post_id ) == 'lp_order' ) {
 				remove_action( 'save_post', array( $this, 'save_order' ) );
 				$user_id = learn_press_get_request( 'order-customer' );
 				$order   = learn_press_get_order( $post_id );
-				/**
-				 * A simpler way is remove all meta_key are _user_id and then
-				 * add new user_id as new meta_key but this maybe make our database
-				 * increase the auto-increment each time order is updated
-				 * in case the user_id is not changed
-				 */
-				if ( $order->is_multi_users() ) {
-					settype( $user_id, 'array' );
-					$sql = "
-						SELECT meta_id, meta_value
-						FROM {$wpdb->postmeta}
-						WHERE post_id = %d
-						AND meta_key = %s
-					";
-					$sql = $wpdb->prepare( $sql, $post_id, '_user_id' );
-					if ( $existed = $wpdb->get_results( $sql ) ) {
-						$cases      = array();
-						$edited     = array();
-						$meta_ids   = array();
-						$remove_ids = array( 0 );
-						foreach ( $existed as $k => $r ) {
-							if ( empty( $user_id[$k] ) ) {
-								$remove_ids[] = $r->meta_id;
-								continue;
-							}
-							$cases[]    = $wpdb->prepare( "WHEN meta_id = %d THEN %d", $r->meta_id, $user_id[$k] );
-							$edited[]   = $user_id[$k];
-							$meta_ids[] = $r->meta_id;
-						}
-						$sql = "
-							UPDATE {$wpdb->postmeta}
-							SET meta_value = CASE
-							" . join( "\n", $cases ) . "
-							ELSE meta_value
-							END
-							WHERE meta_id IN(" . join( ', ', $meta_ids ) . ")
-							AND post_id = %d
-							AND meta_key = %s
-						";
-						$sql = $wpdb->prepare( $sql, $post_id, '_user_id' );
-						$wpdb->query( $sql );
-						$user_id = array_diff( $user_id, $edited );
-					}
-					if ( $user_id ) {
-						$values = array();
-						foreach ( $user_id as $id ) {
-							$values[] = sprintf( "(%d, '%s', %d)", $post_id, '_user_id', $id );
-						}
-						$sql = "INSERT INTO {$wpdb->postmeta}(post_id, meta_key, meta_value) VALUES" . join( ',', $values );
-						$wpdb->query( $sql );
-					}
-					$sql        = "
-						SELECT meta_id FROM wp_postmeta WHERE meta_id NOT IN(" . join( ',', $remove_ids ) . ") AND post_id = %d AND meta_key = %s GROUP BY meta_value
-					";
-					$sql        = $wpdb->prepare( $sql, $post_id, '_user_id' );
-					$keep_users = $wpdb->get_col( $sql );
-					if ( $keep_users ) {
-						$sql = "
-							DELETE
-							FROM {$wpdb->postmeta}
-							WHERE post_id = %d
-							AND meta_key = %s
-							AND ( meta_id NOT IN(" . join( ',', $keep_users ) . ") OR meta_value = 0)
-						";
-						echo $sql = $wpdb->prepare( $sql, $post_id, '_user_id' );
-						$wpdb->query( $sql );
-					}
-					update_post_meta( $post_id, '_lp_multi_users', 'yes', 'yes' );
-					learn_press_reset_auto_increment( $wpdb->postmeta );
 
+				if ( $order->is_multi_users() ) {
+					$this->_save_order_multi_users( $post_id, $user_id );
 				} else {
 					update_post_meta( $post_id, '_user_id', $user_id > 0 ? $user_id : 0 );
 					delete_post_meta( $post_id, '_lp_multi_users' );
@@ -179,6 +190,16 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 
 				if ( !in_array( $status, $order_statuses ) ) {
 					$status = reset( $order_statuses );
+				}
+
+				global $post;
+				if ( empty( $post->post_title ) ) {
+					wp_update_post(
+						array(
+							'ID'         => $post_id,
+							'post_title' => __( 'Order on', 'learnpress' ) . ' ' . current_time( "l jS F Y h:i:s A" )
+						)
+					);
 				}
 				$order->update_status( $status );
 			}

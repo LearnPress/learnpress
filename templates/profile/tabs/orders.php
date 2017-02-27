@@ -4,7 +4,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Template
- * @version 1.0
+ * @version x.x
  */
 defined( 'ABSPATH' ) || exit();
 
@@ -32,7 +32,7 @@ if ( $orders = _learn_press_get_user_profile_orders( $user_id, $page, $limit ) )
 					<td><?php echo $order->get_order_number(); ?></td>
 					<td><?php echo date_i18n( get_option( 'date_format' ), strtotime( $order->order_date ) ); ?></td>
 					<td>
-						<?php echo $order->get_order_status(); ?>
+						<?php echo $order->get_order_status_html(); ?>
 						<?php
 						if ( $order->has_status( 'pending' ) ) :
 							printf( '(<small><a href="%s" class="%s">%s</a></small>)', $order->get_cancel_order_url(), 'cancel-order', __( 'Cancel', 'learnpress' ) );

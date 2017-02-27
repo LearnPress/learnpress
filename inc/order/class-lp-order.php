@@ -175,9 +175,26 @@ class LP_Order {
 		$statuses = learn_press_get_order_statuses();
 		$status   = '';
 		if ( !empty( $statuses[$this->post_status] ) ) {
-			$status = $statuses[$this->post_status];
+			$status = str_replace( 'lp-', '', $this->post_status );
+		} else {
+			$status = $this->post_status;
 		}
 		return apply_filters( 'learn_press_get_order_status', $status, $this );
+	}
+
+	public function get_order_status_html() {
+		$statuses = learn_press_get_order_statuses();
+		$status   = '';
+		if ( !empty( $statuses[$this->post_status] ) ) {
+			$status = $statuses[$this->post_status];
+		} elseif ( $this->post_status == 'trash' ) {
+			$status = __( 'Removed', 'learnpress' );
+		} else {
+			$status = ucfirst( $this->post_status );
+		}
+		$class = 'order-status order-status-' . sanitize_title( $status );
+		$html  = sprintf( '<span class="%s">%s</span>', apply_filters( 'learn_press_order_status_class', $class, $status, $this ), $status, $this );
+		return apply_filters( 'learn_press_order_status_html', $html, $this );
 	}
 
 	/**
@@ -500,6 +517,8 @@ class LP_Order {
 					echo ', ';
 				}
 			}
+		} else {
+			_e( 'No user assigned', 'learnpress' );
 		}
 	}
 

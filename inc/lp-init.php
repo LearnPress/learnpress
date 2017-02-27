@@ -488,7 +488,7 @@ function _learn_press_get_user_profile_orders ( $user_id = 0, $paged = 1, $limit
 			SELECT DISTINCT po.*, oi.order_id
 			FROM {$wpdb->prefix}learnpress_order_items oi
 			INNER JOIN {$wpdb->prefix}postmeta pm ON  pm.post_id = oi.order_id AND pm.meta_key = %s AND pm.meta_value = %d
-			INNER JOIN {$wpdb->prefix}posts po ON po.ID = oi.order_id 
+			RIGHT JOIN {$wpdb->prefix}posts po ON po.ID = oi.order_id
 			WHERE po.post_type = %s ORDER BY ID DESC
 		", '_user_id', $user_id, LP_ORDER_CPT );
 		if ( $rows = $wpdb->get_results( $query ) ) {
