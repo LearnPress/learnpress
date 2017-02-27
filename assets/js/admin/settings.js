@@ -222,7 +222,7 @@
 		(function () {
 			$('.learn-press-dropdown-pages').each(function () {
 				var $sel = $(this);
-				$sel.css('width', $sel.width() + 30).find('option').each(function () {
+				$sel.css('width', $sel.width() + 50).find('option').each(function () {
 					$(this).html($(this).html().replace(/&nbsp;&nbsp;&nbsp;/g, ''));
 				});
 				$sel.select2();
