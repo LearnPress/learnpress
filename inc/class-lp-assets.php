@@ -230,7 +230,9 @@ class LP_Assets {
 		$scripts->add( 'learn-press-mb-order', $default_path . 'js/admin/meta-box-order' . $suffix . '.js', $deps, false, 1 );
 		$scripts->add( 'learn-press-modal-search-items', $default_path . 'js/admin/modal-search-items' . $suffix . '.js', array( 'learn-press-global' ), false, 1 );
 		$scripts->add( 'learn-press-order', $default_path . 'js/admin/meta-box-order' . $suffix . '.js', $deps, false, 1 );
-		$scripts->add( 'learn-press-statistics-select2', '/' . LP_WP_CONTENT . '/plugins/learnpress/inc/libraries/meta-box/js/select2/select2.min.js', $deps, false, 1 );
+		//$scripts->add( 'learn-press-statistics-select2', '/' . LP_WP_CONTENT . '/plugins/learnpress/inc/libraries/meta-box/js/select2/select2.min.js', $deps, false, 1 );
+
+		$scripts->add( 'learn-press-select2', '/' . LP_WP_CONTENT . '/plugins/learnpress/inc/libraries/meta-box/js/select2/select2.min.js', $deps, false, 1 );
 
 		// upgrade
 		$scripts->add( 'learn-press-upgrade', '/' . LP_WP_CONTENT . '/plugins/learnpress/inc/updates/09/script' . $suffix . '.js', $deps, false, 1 );
@@ -286,7 +288,9 @@ class LP_Assets {
 		$styles->add( 'learn-press-mb-question', $default_path . 'css/admin/meta-box-question' . $suffix . '.css' );
 		$styles->add( 'learn-press-mb-order', $default_path . 'css/admin/meta-box-order' . $suffix . '.css' );
 		$styles->add( 'learn-press-jalerts', $default_path . 'css/jalert' . $suffix . '.css' );
-		$styles->add( 'learn-press-statistics-select2', '/' . LP_WP_CONTENT . '/plugins/learnpress/inc/libraries/meta-box/css/select2/select2.css' );
+		//$styles->add( 'learn-press-statistics-select2', '/' . LP_WP_CONTENT . '/plugins/learnpress/inc/libraries/meta-box/css/select2/select2.css' );
+		$styles->add( 'learn-press-select2', '/' . LP_WP_CONTENT . '/plugins/learnpress/inc/libraries/meta-box/css/select2/select2.css' );
+
 
 		// frontend
 		$styles->add( 'learn-press-style', $default_path . 'css/learnpress.css', $deps );
@@ -741,6 +745,9 @@ class LP_Assets {
 
 			if ( $screen_id === 'learnpress_page_learn-press-settings' || $screen_id === 'dashboard' ) {
 				LP_Assets::enqueue_style( 'learn-press-admin' );
+				LP_Assets::enqueue_style( 'learn-press-select2' );
+
+				LP_Assets::enqueue_script( 'learn-press-select2' );
 				LP_Assets::enqueue_script( 'learn-press-admin-settings', LP()->plugin_url( 'assets/js/admin/settings.js' ) );
 			}
 
@@ -792,7 +799,6 @@ class LP_Assets {
 				'msg_field_is_required' => __( 'This field is required', 'learnpress' )
 			);
 			wp_localize_script( 'learn-press-profile', 'lp_profile_translation', $translation_array );
-
 
 
 			self::add_param( 'avatar_size', learn_press_get_avatar_thumb_size(), 'learn-press-profile', 'LP_Settings' );
