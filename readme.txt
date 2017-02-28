@@ -193,6 +193,11 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.  
 
 == Changelog ==
+
+= 2.1.4.1 =
++ Fixed warning empty object
++ Fixed 404 page with custom slug for lesson or quiz
+
 = 2.1.4 =
 + Added option for external link of "Buy this course"
 + Improved user roles while edit a course and it's items
