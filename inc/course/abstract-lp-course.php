@@ -969,21 +969,21 @@ abstract class LP_Abstract_Course {
 				case 'lp_quiz':
 					$permalink = trailingslashit( get_the_permalink( $this->id ) );
 					$post_name = get_post_field( 'post_name', $item_id );
-					$slug      = $post_types[$item_type]->rewrite['slug'];
-
-//		            $custom_prefix  = '';
-//
-//		            if ( $slug === 'lessons' ) {
-//			            $custom_prefix = LP()->settings->get( 'lesson_slug' );
-//		            }
-//		            else if ( $slug === 'quizzes' ) {
-//			            $custom_prefix = LP()->settings->get( 'quizzes_slug' );
-//		            }
-//
-//		            if ( !empty( $custom_prefix ) ) {
-//			            $slug = sanitize_title_with_dashes( $custom_prefix );
-//		            }
-					$prefix = preg_replace( '!^/!', '', trailingslashit( $slug ) );//"{$item_id}-";
+					$slug      = '';
+					if ( $item_type == 'lp_quiz' ) {
+						if ( $custom_prefix = LP()->settings->get( 'quiz_slug' ) ) {
+							$slug = $custom_prefix;
+						}
+					} elseif ( $item_type == 'lp_lesson' ) {
+						if ( $custom_prefix = LP()->settings->get( 'lesson_slug' ) ) {
+							$slug = $custom_prefix;
+						}
+					}
+					if ( empty( $slug ) ) {
+						$slug = $post_types[$item_type]->rewrite['slug'];
+					}
+					$slug   = sanitize_title_with_dashes( $slug );
+					$prefix = preg_replace( '!^/!', '', trailingslashit( $slug ) );
 
 					if ( '' != get_option( 'permalink_structure' ) && get_post_status( $this->id ) != 'draft' ) {
 						$permalink .= $prefix . $post_name;
