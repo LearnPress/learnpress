@@ -201,7 +201,9 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 						)
 					);
 				}
-				$order->update_status( $status );
+
+				$force = learn_press_get_request( 'trigger-order-action' ) == 'yes';
+				$order->update_status( $status, $force );
 			}
 		}
 

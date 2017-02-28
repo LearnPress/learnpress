@@ -24,7 +24,16 @@
 			var $add_new_h2 = $('body.post-type-lp_order').find('.page-title-action, .add-new-h2'),
 				$add_h2 = $('<a href="post-new.php?post_type=lp_order&multi-users=yes" class="page-title-action add-new-h2">Add order multiple users</a>');
 			$add_h2
-				.insertAfter($add_new_h2)
+				.insertAfter($add_new_h2);
+
+			$('select[name="order-status"]').on('init change', function () {
+				var $sel = $(this),
+					$sec = $('.order-action-section'),
+					status = $sel.data('status');
+				console.log(status, $sel.val())
+				$sec.toggleClass('hide-if-js', status != $sel.val());
+			}).trigger('init');
+
 
 			$(document).on('learn_press_modal_search_items_response', this.addItem2);
 			this.userSuggest();
@@ -32,13 +41,11 @@
 		_updateDescription: function (e) {
 			var $sel = $(e.target),
 				$option = $sel.find('option:selected');
-			$sel.siblings('.description').fadeOut('fast', function () {
-				$(this).html($option.attr('data-desc'))
-					.removeClass(function (c, d) {
-						var m = d.match(/(lp-.*)\s?/);
-						return m ? m[0] : '';
-					}).addClass($option.val()).fadeIn('fast');
-			});
+			$sel.siblings('.description').hide().html($option.attr('data-desc'))
+				.removeClass(function (c, d) {
+					var m = d.match(/(lp-.*)\s?/);
+					return m ? m[0] : '';
+				}).addClass($option.val()).show();
 		},
 		userSuggest       : function () {
 			var id = ( typeof current_site_id !== 'undefined' ) ? '&site_id=' + current_site_id : '';

@@ -34,7 +34,7 @@ if ( 0 != $post->ID ) {
 					<label>
 						<?php _e( 'Order status', 'learnpress' ); ?>
 					</label>
-					<select name="order-status">
+					<select name="order-status" data-status="<?php echo 'lp-' . $order->get_status(); ?>">
 						<?php
 						$statuses = learn_press_get_order_statuses();
 						foreach ( $statuses as $status => $status_name ) {
@@ -42,12 +42,20 @@ if ( 0 != $post->ID ) {
 						}
 						?>
 					</select>
+
 					<div class="description order-status-description">
 						<?php if ( $order->get_status() == 'auto-draft' ) {
 							echo _learn_press_get_order_status_description( 'lp-pending' );
 						} ?>
 						<?php echo _learn_press_get_order_status_description( 'lp-' . $order->get_status() ); ?>
 					</div>
+				</div>
+				<div class="misc-pub-section hide-if-js order-action-section">
+					<label for="trigger-order-action">
+						<input type="checkbox" name="trigger-order-action" id="trigger-order-action" value="yes" />
+						<?php _e( 'Trigger order status action', 'learnpress' ); ?>
+					</label>
+					<p class="description"><?php esc_attr_e( 'Check this option to force an action to be triggered. Normally, an action only is triggered after changing to an another action.', 'learnpress' ); ?></p>
 				</div>
 
 				<div class="misc-pub-section">

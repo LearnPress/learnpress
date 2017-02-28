@@ -569,14 +569,25 @@ class LP_Email {
 		add_filter( 'wp_mail_from', array( $this, 'get_from_address' ) );
 		add_filter( 'wp_mail_from_name', array( $this, 'get_from_name' ) );
 		add_filter( 'wp_mail_content_type', array( $this, 'get_content_format' ) );
-
+		$return  = false;
 		$message = apply_filters( 'learn_press_mail_content', $this->apply_style_inline( $message ), $this );
-		$return  = wp_mail( $to, $subject, $message, $headers, $attachments );
-
+		if ( !is_array( $to ) ) {
+			$to = str_split( ',', $to );
+		}
+		$separated = apply_filters( 'learn_press_email_to_separated', false, $to, $this );
+		if ( !$separated ) {
+			$return = wp_mail( $to, $subject, $message, $headers, $attachments );
+			LP_Debug::instance()->add(func_get_args());
+		} else {
+			if ( is_array( $to ) && ( $n = sizeof( $to ) ) > 0 ) {
+				foreach ( $to as $t ) {
+					$return = wp_mail( $t, $subject, $message, $headers, $attachments );
+				}
+			}
+		}
 		remove_filter( 'wp_mail_from', array( $this, 'get_from_address' ) );
 		remove_filter( 'wp_mail_from_name', array( $this, 'get_from_name' ) );
 		remove_filter( 'wp_mail_content_type', array( $this, 'get_content_format' ) );
-
 		return $return;
 	}
 

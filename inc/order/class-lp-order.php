@@ -107,16 +107,17 @@ class LP_Order {
 	 * Updates order to new status if needed
 	 *
 	 * @param mixed $new_status
+	 * @param bool  $force Force to update/trigger action even the status is not changed
 	 *
 	 * @return bool
 	 * @throws Exception
 	 */
-	public function update_status( $new_status = 'pending' ) {
+	public function update_status( $new_status = 'pending', $force = false ) {
 		global $post;
 		$new_status = 'lp-' === substr( $new_status, 0, 3 ) ? substr( $new_status, 3 ) : $new_status;
 		$old_status = $this->get_status();
 
-		if ( $new_status !== $old_status && in_array( $new_status, array_keys( learn_press_get_order_statuses( false ) ) ) ) {
+		if ( ( $new_status !== $old_status || $force ) && in_array( $new_status, array_keys( learn_press_get_order_statuses( false ) ) ) ) {
 			// Update the order
 			global $wpdb;
 			$updated = $wpdb->update( $wpdb->posts, array( 'post_status' => 'lp-' . $new_status ), array( 'ID' => $this->id ), array( '%s' ) );
@@ -520,6 +521,37 @@ class LP_Order {
 		} else {
 			_e( 'No user assigned', 'learnpress' );
 		}
+	}
+
+	/**
+	 * Get email of user has bought this order.
+	 * In case this order is for multi users return an array with multi email addresses.
+	 *
+	 * @since 2.1.5
+	 *
+	 * @return mixed|array
+	 */
+	public function get_user_data() {
+		$data = false;
+		if ( $user_ids = get_post_meta( $this->id, '_user_id' ) ) {
+			global $wpdb;
+			$format = array_fill( 0, sizeof( $user_ids ), '%d' );
+			$sql    = "
+				SELECT ID, user_email as email, display_name as name
+				FROM {$wpdb->users} u
+				WHERE ID IN(" . join( ', ', $format ) . ")
+			";
+			$data   = $wpdb->get_results( $wpdb->prepare( $sql, $user_ids ), OBJECT_K );
+		}
+		return $data;
+	}
+
+	public function get_user_email() {
+		$email = false;
+		if ( $user = learn_press_get_user( $this->user_id ) ) {
+			$email = $user->user_email;
+		}
+		return $email;
 	}
 
 	/**

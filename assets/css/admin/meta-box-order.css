@@ -8,8 +8,6 @@
 .post-type-lp_order .column-order_student {
 	width: 12%;
 }
-.post-type-lpr_order #post-body-content,
-.post-type-lpr_order #postbox-container-1,
 #order_details .ui-sortable-handle,
 #order_details .handlediv {
 	display: none !important;
@@ -133,27 +131,7 @@
 	font-weight: bold;
 }
 
-/*************************************************************/
-.post-type-lpr_order .column-title {
-	width: 120px;
-}
-.post-type-lpr_order .column-order_student {
-	width: 100px;
-}
-.post-type-lpr_order .column-order_date {
-	width: 150px;
-}
-.post-type-lpr_order .column-order_total {
-	width: 100px;
-	text-align: right;
-}
-.post-type-lpr_order .column-order_status {
-	width: 100px;
-}
-.post-type-lp_order #minor-publishing-actions,
-.post-type-lp_order #submitdiv .handlediv {
-	display: none;
-}
+
 .order-status-description {
 	font-size: smaller;
 	background: #CEE8FF;
