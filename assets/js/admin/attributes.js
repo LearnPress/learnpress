@@ -81,7 +81,12 @@
 			})
 			.on('click', '#save-attributes', saveAttributesEvent)
 			.on('keyup.addNewAttributeValueEvent', '.select2-input', addNewAttributeValueEvent);
-		$('.course-attribute-values').select2(select2Options);
+
+		var $courseAttributes = $('.course-attribute-values') ;
+
+		if ($courseAttributes.length) {
+			$courseAttributes.select2(select2Options);
+		}
 
 	});
 })(jQuery);
