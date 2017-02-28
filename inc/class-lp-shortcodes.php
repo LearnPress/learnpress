@@ -156,36 +156,57 @@ class LP_Shortcodes {
 
 	public static function recent_courses ( $atts ) {
 
-		$type = $limit = $order_by = $order = $author = '';
+		$limit = $order_by = $order = '';
 
 		$atts = shortcode_atts( array(
-			'type'     => 'publish', // select one of [publish, trash, pending,..]
-			'limit'    => '8',
-			'author'   => '',
-			'order_by' => 'date',
-			'order'    => 'DESC'
+			'limit'    => 10,
+			'order_by' => 'date', // select one of [date, title, status, comment_count]
+			'order'    => 'DESC' // select on of [DESC, ASC]
 		), $atts );
 
 		extract( $atts );
 
-		$arg_query = array(
-			'post_type'      => 'lp_course',
-			'type'           => $type,
-			'page'           => 0,
-			'posts_per_page' => absint( $limit ),
-			'orderby'        => $order_by,
-			'order'          => $order,
-		);
+		// Validation date
+		$arr_orders_by = ['post_date', 'post_title', 'post_status', 'comment_count'];
+		$arr_orders = ['DESC', 'ASC'];
+		$order = strtoupper($order);
 
-		if ( ! empty( $author ) ) {
-			$arg_query['author_name'] = $author;
+		if ( !in_array($order_by, $arr_orders_by) || !in_array('post_'.$order_by, $arr_orders_by)) {
+			$order_by = 'post_date';
+		}
+		else {
+			if ($order_by !== 'comment_count') {
+				$order_by = 'post_' .$order_by;
+			}
 		}
 
-		$query = new WP_Query( $arg_query );
+		if (!in_array($order, $arr_orders)) {
+			$order = 'DESC';
+		}
+		if (!absint($limit)) {
+			$limit = 10;
+		}
+
+		global $wpdb;
+
+		$posts   = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT DISTINCT p.*
+						FROM $wpdb->posts AS p
+						WHERE p.post_type = %s
+						AND p.post_status = %s
+						ORDER BY p.{$order_by} {$order}
+						LIMIT %d
+					",
+				LP_COURSE_CPT,
+				'publish',
+				(int) absint( $limit )
+			)
+		);
 
 		ob_start();
 
-		self::render_shortcode_archive( $query );
+		self::render_shortcode_archive( $posts );
 
 		return self::wrapper_shortcode( ob_get_clean() );
 
@@ -193,38 +214,56 @@ class LP_Shortcodes {
 
 	public static function featured_courses ( $atts ) {
 
-		$type = $limit = $order_by = $order = $author = '';
+		$limit = $order_by = $order = '';
 
 		$atts = shortcode_atts( array(
-			'type'     => 'publish', // select one of [publish, trash, pending,..]
-			'limit'    => '8',
-			'author'   => '',
-			'order_by' => 'date',
-			'order'    => 'DESC'
+			'limit'    => 10,
+			'order_by' => 'date', // select one of [date, title, status, comment_count]
+			'order'    => 'DESC' // select on of [DESC, ASC]
 		), $atts );
 
 		extract( $atts );
 
-		$arg_query = array(
-			'post_type'      => 'lp_course',
-			'type'           => $type,
-			'page'           => 0,
-			'posts_per_page' => absint( $limit ),
-			'orderby'        => $order_by,
-			'order'          => $order,
-			'meta_key'       => '_lp_featured',
-			'meta_value'     => 'yes'
-		);
+		// Validation date
+		$arr_orders_by = ['post_date', 'post_title', 'post_status', 'comment_count'];
+		$arr_orders = ['DESC', 'ASC'];
+		$order = strtoupper($order);
 
-		if ( ! empty( $author ) ) {
-			$arg_query['author_name'] = $author;
+		if ( !in_array($order_by, $arr_orders_by) || !in_array('post_'.$order_by, $arr_orders_by)) {
+			$order_by = 'post_date';
+		}
+		else {
+			if ($order_by !== 'comment_count') {
+				$order_by = 'post_' .$order_by;
+			}
 		}
 
-		$query = new WP_Query( $arg_query );
+		if (!in_array($order, $arr_orders)) {
+			$order = 'DESC';
+		}
+		if (!absint($limit)) {
+			$limit = 10;
+		}
+
+		global $wpdb;
+
+		$posts   = $wpdb->get_results(
+			$wpdb->prepare( "
+				SELECT DISTINCT *
+                    FROM {$wpdb->posts} p
+                    LEFT JOIN {$wpdb->postmeta} as pmeta ON p.ID=pmeta.post_id AND pmeta.meta_key = %s
+                    WHERE p.post_type = %s
+						AND p.post_status = %s
+						AND meta_value = %s
+                    ORDER BY p.{$order_by} {$order}
+                    LIMIT %d
+                ", '_lp_featured', LP_COURSE_CPT, 'publish', 'yes', absint($limit)
+			)
+		);
 
 		ob_start();
 
-		self::render_shortcode_archive( $query );
+		self::render_shortcode_archive( $posts );
 
 		return self::wrapper_shortcode( ob_get_clean() );
 
@@ -232,23 +271,27 @@ class LP_Shortcodes {
 
 	public static function popular_courses ( $atts ) {
 
-		global $wpdb;
-
-		$type = $limit = $order_by = $order = $author = '';
+		$limit = $order_by = $order = '';
 
 		$atts = shortcode_atts( array(
-			'type'     => 'publish', // select one of [publish, trash, pending,..]
-			'limit'    => '8',
-			'order'    => 'DESC'
+			'limit'    => 10,
+			'order'    => 'DESC' // select on of [DESC, ASC]
 		), $atts );
 
 		extract( $atts );
 
-		$arg_query = array(
-			'type'           => $type,
-			'orderby'        => $order_by,
-			'order'          => $order,
-		);
+		// Validation date
+		$arr_orders = ['DESC', 'ASC'];
+		$order = strtoupper($order);
+
+		if (!in_array($order, $arr_orders)) {
+			$order = 'DESC';
+		}
+		if (!absint($limit)) {
+			$limit = 10;
+		}
+
+		global $wpdb;
 
 		$query = $wpdb->prepare(
 			"SELECT po.*, count(*) as number_enrolled 
@@ -264,40 +307,41 @@ class LP_Shortcodes {
 			LP_COURSE_CPT,
 			'enrolled',
 			'finished',
-			$type,
-			(int) absint( $limit )
+			'publish',
+			absint($limit)
 		);
 
 		$posts = $wpdb->get_results(
 			$query
 		);
-		var_dump($query);
 
 		ob_start();
-		var_dump($query);
-//		self::render_shortcode_archive( $posts );
+
+		self::render_shortcode_archive( $posts );
 
 		return self::wrapper_shortcode( ob_get_clean() );
 
 	}
 
-	public static function render_shortcode_archive ( $query = '' ) {
+	public static function render_shortcode_archive ( $lp_posts = array() ) {
+		global $post;
+		if ( !empty( $lp_posts ) ) {
+			do_action( 'learn_press_before_courses_loop' );
 
-		if ( empty( $query ) ) {
-			return '';
+			learn_press_begin_courses_loop();
+
+			foreach ( $lp_posts as $post ) {
+				setup_postdata($post);
+				learn_press_get_template_part( 'content', 'course' );
+			}
+
+			learn_press_end_courses_loop();
+		}
+		else {
+			learn_press_display_message( __( 'No course found.', 'learnpress' ), 'error' );
+
 		}
 
-		if ( $query->have_posts() ) :
-
-			do_action( 'learn_press_before_courses_loop' );
-			learn_press_begin_courses_loop();
-			while ( $query->have_posts() ) : $query->the_post();
-				learn_press_get_template_part( 'content', 'course' );
-			endwhile;
-			learn_press_end_courses_loop();
-		else:
-			learn_press_display_message( __( 'No course found.', 'learnpress' ), 'error' );
-		endif;
 		wp_reset_postdata();
 	}
 
