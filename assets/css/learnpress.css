@@ -168,6 +168,13 @@
 .learn-press-courses li.course .course-info > * {
   display: block;
 }
+.course-origin-price {
+  text-decoration: line-through;
+  padding-right: 5px;
+}
+.course-price {
+  color: #54b551;
+}
 .learn-press-notice .button {
   float: right;
 }

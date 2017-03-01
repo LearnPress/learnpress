@@ -526,7 +526,7 @@ abstract class LP_Abstract_Course {
 	 * @return mixed
 	 */
 	public function get_sale_price() {
-		$res        = null;
+		$res        = '';
 		$sale_price = get_post_meta( $this->id, '_lp_sale_price', true );
 		if ( 'yes' == $this->payment && is_numeric( $sale_price ) ) {
 			$sale_price = floatval( $sale_price );
@@ -535,11 +535,15 @@ abstract class LP_Abstract_Course {
 			$now        = current_time( 'timestamp' );
 			$end        = strtotime( $end_date );
 			$start      = strtotime( $start_date );
-			if ( ( $now >= $start || !$start_date ) && ( $now <= $end || !$end_date ) && $sale_price ) {
+			if ( ( $now >= $start || !$start_date ) && ( $now <= $end || !$end_date ) ) {
 				$res = $sale_price;
 			}
 		}
 		return $res;
+	}
+
+	public function has_sale_price() {
+
 	}
 
 	/**
@@ -586,11 +590,12 @@ abstract class LP_Abstract_Course {
 	 */
 	public function get_origin_price_html() {
 		$origin_price_html = '';
-		if ( !$this->is_free() ) {
-			$origin_price      = $this->get_origin_price();
+		//if ( 'yes' == $this->payment && 0 < $this->price ) {
+		if ( $origin_price = $this->get_origin_price() ) {
 			$origin_price      = learn_press_format_price( $origin_price, true );
 			$origin_price_html = apply_filters( 'learn_press_course_origin_price_html', $origin_price, $this );
 		}
+		//}
 		return $origin_price_html;
 	}
 
