@@ -20,13 +20,7 @@ $current = learn_press_get_current_profile_tab();
 		}
 		?>
 		<li class="<?php echo esc_attr( $key ); ?>_tab<?php echo $current == $key ? ' current' : ''; ?>">
-			<?php /*
-			<?php if ( get_option( 'permalink_structure' ) ) : ?>
-
-			<?php else: ?>
-				<a href="<?php echo add_query_arg( array( 'user' => $user->user_login, 'tab' => $key ), learn_press_get_page_link( 'profile' ) ); ?>" data-slug="<?php echo add_query_arg( '', '', learn_press_get_page_link( 'profile' ) . $user->user_login ) . '/' . $key; ?>"><?php echo apply_filters( 'learn_press_profile_' . $key . '_tab_title', esc_html( $tab['title'] ), $key ); ?></a>
-			<?php endif; ?>
- 			*/
+			<?php
 			$link = learn_press_user_profile_link( $user->id, $key );
 			?>
 			<a href="<?php echo esc_url( $link ); ?>" data-slug="<?php echo esc_attr( $link ); ?>"><?php echo apply_filters( 'learn_press_profile_' . $key . '_tab_title', esc_html( $tab['title'] ), $key ); ?></a>

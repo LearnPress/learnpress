@@ -18,19 +18,32 @@ global $post;
 	</div>
 	<div class="order-user-data clearfix">
 		<div class="order-user-avatar">
-			<?php echo get_avatar( $order->get_user( 'ID' ), 120 ); ?>
+			<?php if ( $order->is_multi_users() ) { ?>
+				<div class="avatar-multiple-users">
+					<span></span>
+				</div>
+			<?php } else { ?>
+				<?php echo get_avatar( $order->get_user( 'ID' ), 120 ); ?>
+			<?php } ?>
 		</div>
 		<div class="order-user-meta">
-			<div class="user-display-name">
-				<?php echo $order->get_customer_name(); ?>
-			</div>
-			<div class="user-email">
-				<?php $user_email = $order->get_user( 'user_email' );
-				echo empty( $user_email ) ? '' : $user_email; ?>
-			</div>
-			<div class="user-ip-address">
-				<?php echo $order->user_ip_address; ?>
-			</div>
+			<?php if ( $order->is_multi_users() ) { ?>
+				<div class="order-users">
+					<strong><?php _e( 'Customers', 'learnpress' ); ?></strong>
+					<p><?php $order->print_users(); ?></p>
+				</div>
+			<?php } else { ?>
+				<div class="user-display-name">
+					<?php echo $order->get_customer_name(); ?>
+				</div>
+				<div class="user-email">
+					<?php $user_email = $order->get_user( 'user_email' );
+					echo empty( $user_email ) ? '' : $user_email; ?>
+				</div>
+				<div class="user-ip-address">
+					<?php echo $order->user_ip_address; ?>
+				</div>
+			<?php } ?>
 			<?php if ( $title = $order->get_payment_method_title() ) { ?>
 				<div class="payment-method-title">
 					<?php echo $order->order_total == 0 ? $title : sprintf( __( 'Pay via <strong>%s</strong>', 'learnpress' ), $title ); ?>
@@ -90,7 +103,7 @@ global $post;
 	<?php if ( $note = get_the_excerpt() ) { ?>
 		<br />
 		<h3><?php _e( 'Customer Note', 'learnpress' ); ?></h3>
-		<p class="order-note description"><?php echo $note;?></p>
+		<p class="order-note description"><?php echo $note; ?></p>
 	<?php } ?>
 </div>
 <script type="text/html" id="tmpl-learn-press-modal-add-order-courses">
