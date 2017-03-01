@@ -534,7 +534,7 @@ if ( !function_exists( 'learn_press_is_ajax' ) ) {
 	 * @return bool
 	 */
 	function learn_press_is_ajax() {
-		return defined( 'LP_DOING_AJAX' ) && LP_DOING_AJAX && 'yes' != learn_press_get_request('noajax');
+		return defined( 'LP_DOING_AJAX' ) && LP_DOING_AJAX && 'yes' != learn_press_get_request( 'noajax' );
 	}
 }
 
@@ -1214,7 +1214,7 @@ function learn_press_get_currency_symbol( $currency = '' ) {
 
 function learn_press_get_page_link( $key ) {
 	$page_id = LP()->settings->get( $key . '_page_id' );
-	if ( get_post_status( $page_id ) == 'publish' ) {
+	if ( $page_id && get_post_status( $page_id ) == 'publish' ) {
 		$link = apply_filters( 'learn_press_get_page_link', get_permalink( $page_id ), $page_id, $key );
 	} else {
 		$link = '';
@@ -2778,7 +2778,7 @@ add_filter( 'learn_press_update_option_value', 'learn_press_validation_data_befo
 function learn_press_validation_data_before_save( $value = '', $name = '' ) {
 	if ( $name === 'learn_press_profile_endpoints' ) {
 
-		if (empty($value['profile-courses'])) {
+		if ( empty( $value['profile-courses'] ) ) {
 			$value['profile-courses'] = 'courses';
 		}
 	}

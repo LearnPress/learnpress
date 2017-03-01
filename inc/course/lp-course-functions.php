@@ -774,3 +774,4 @@ if ( !function_exists( 'learn_press_quiz_permalink' ) ) {
         return $permalink;
     }
 }
+

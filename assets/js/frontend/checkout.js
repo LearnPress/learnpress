@@ -76,7 +76,7 @@ if (typeof window.LP === 'undefined') {
 		},
 		doCheckout         : function () {
 			var $form = $(this),
-				$place_order = $form.find('#learn-press-checkout'),
+				$place_order = $form.find('#learn-press-checkout-place-order'),
 				processing_text = $place_order.attr('data-processing-text'),
 				text = $place_order.attr('value');
 			if ($form.triggerHandler('learn_press_checkout_place_order') !== false && $form.triggerHandler('learn_press_checkout_place_order_' + $('#order_review').find('input[name=payment_method]:checked').val()) !== false) {
@@ -84,6 +84,7 @@ if (typeof window.LP === 'undefined') {
 					$place_order.val(processing_text);
 				}
 				$place_order.prop('disabled', true);
+				LP.blockContent();
 				$.ajax({
 					url     : LP_Settings.siteurl + '/?lp-ajax=checkout',
 					dataType: 'html',
@@ -112,12 +113,13 @@ if (typeof window.LP === 'undefined') {
 						}
 						$place_order.val(text);
 						$place_order.prop('disabled', false);
+						LP.unblockContent();
 					},
 					error   : function (jqXHR, textStatus, errorThrown) {
 						LP.Checkout.showErrors('<div class="learn-press-error">' + errorThrown + '</div>');
 						$place_order.val(text);
 						$place_order.prop('disabled', false);
-
+						LP.unblockContent();
 					}
 				});
 			}
