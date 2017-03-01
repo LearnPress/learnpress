@@ -83,7 +83,17 @@ class LP_Settings_General extends LP_Settings_Base {
 					'default' => 'yes',
 					'type'    => 'checkbox',
 					'desc'    => __( 'Turn on/off debug mode for developer', 'learnpress' )
-				)
+				),
+				array(
+					'title' => __( 'Logout', 'learnpress' ),
+					'type'  => 'title'
+				),
+				array(
+					'title'   => __( 'Redirect to page', 'learnpress' ),
+					'id'      => $this->get_field_name( 'logout_redirect_page_id' ),
+					'default' => '',
+					'type'    => 'pages-dropdown'
+				),
 			)
 		);
 	}
