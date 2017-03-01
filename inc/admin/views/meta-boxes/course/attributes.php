@@ -33,13 +33,6 @@ $postId = $post ? $post->ID : 0;
 		</ul>
 
 		<button class="button button-primary" type="button" id="save-attributes"><?php _e( 'Save attributes', 'learnpres' ); ?></button>
-		<script type="text/javascript">
-			jQuery(function($){
-				$.fn.select2.locales.en.formatNoMatches = function(){
-					return "xya";
-				}
-			})
-		</script>
 		<?php
 	} else {
 		printf( '<p class="description">%s <a class="button button-primary" href="%s">%s</a></p>',

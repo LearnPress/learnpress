@@ -14,7 +14,11 @@ if ( !class_exists( 'LP_Widget' ) ) {
 		/**
 		 * @var array
 		 */
-		private static $_widgets = array();
+		private static $_widgets = array(
+			'featured-courses' => '',
+			'popular-courses'  => '',
+			'recent-courses'   => ''
+		);
 
 		/**
 		 * @var bool
@@ -182,7 +186,7 @@ if ( !class_exists( 'LP_Widget' ) ) {
 			remove_filter( 'get_post_metadata', array( $this, 'field_data' ) );
 		}
 
-		public function normalize_options() {
+		public function normalize_options(){
 			return $this->options;
 		}
 
@@ -320,9 +324,10 @@ function learn_press_get_widget_template( $slug, $template_name = 'default.php',
 /**
  * Display a template of a widget
  *
- * @param       $slug
- * @param       $template_name
- * @param array $args
+ * @param string $slug
+ * @param string $template_name
+ *
+ * @return string
  */
 function learn_press_locate_widget_template( $slug, $template_name = 'default.php' ) {
 	$template_path = learn_press_get_widget_template_path( $slug );
