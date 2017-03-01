@@ -197,6 +197,53 @@
     }
 }
 
+.learnpress_page_learn-press-settings {
+    .select2-result {
+        .select2-result-label {
+            position: relative;
+            &:before {
+                display: inline-block;
+                border-bottom: 1px solid #23282d;
+                width: 20px;
+                position: absolute;
+                top:50%;
+                left: 8px;
+            }
+            &:hover{
+                &:before{
+                    border-color: #FFF;
+                }
+            }
+        }
+        &.level-1 {
+            .select2-result-label {
+                padding-left: 35px;
+                &:before {
+                    content: '';
+                }
+            }
+        }
+        &.level-2 {
+            .select2-result-label {
+                padding-left: 60px;
+                &:before {
+                    left: 35px;
+                    content: '';
+                }
+            }
+        }
+        &.level-3 {
+            .select2-result-label {
+                padding-left: 85px;
+                &:before {
+                    left: 60px;
+                    content: '';
+                }
+            }
+        }
+    }
+}
+
 /* message box */
 #learn-press-message-box-block {
     position: fixed;
