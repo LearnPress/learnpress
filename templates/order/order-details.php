@@ -2,7 +2,7 @@
 /**
  * @author        ThimPress
  * @package       LearnPress/Templates
- * @version       2.x
+ * @version       2.1.4.2
  */
 
 if ( !defined( 'ABSPATH' ) ) {
