@@ -193,6 +193,11 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.  
 
 == Changelog ==
+= 2.x =
++ Added filter current time
++ Added logout redirection
++ Improved email system
+
 = 2.1.4 =
 + Added option for external link of "Buy this course"
 + Improved user roles while edit a course and it's items
