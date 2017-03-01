@@ -95,7 +95,6 @@ if ( !class_exists( 'LP_Email_User_Order_Completed' ) ) {
 						$this->object['order_user_name']  = $data->name;
 						$this->object['order_detail_url'] = learn_press_user_profile_link( $uid, 'orders' );
 						$this->variables                  = $this->data_to_variables( $this->object );
-
 						$r = $this->send( $data->email, $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
 					}
 				}
