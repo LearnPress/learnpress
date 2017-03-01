@@ -2147,3 +2147,197 @@ if ( ! function_exists( 'learn_press_duplicate_lesson' ) ) {
 	}
 
 }
+
+
+
+/**
+ * Get general data to render in chart
+ *
+ * @param null $from
+ * @param null $by
+ * @param      $time_ago
+ *
+ * @return array
+ */
+function learn_press_get_chart_general ( $from = null, $by = null, $time_ago ) {
+	global $wpdb;
+
+	$labels   = array();
+	$datasets = array();
+
+	if ( is_null( $from ) ) {
+		$from = current_time( 'mysql' );
+	}
+
+	if ( is_null( $by ) ) {
+		$by = 'days';
+	}
+
+	$results   = array(
+		'all'     => array(),
+		'public'  => array(),
+		'pending' => array(),
+		'free'    => array(),
+		'paid'    => array()
+	);
+
+	$results = array(
+		'course' => array(),
+		'lesson' => array(),
+		'quiz' => array(),
+		'student' => array(),
+		'teacher' => array(),
+		'revenue' => array()
+	);
+	var_dump($results);
+	exit();
+	// get 
+
+	$from_time = is_numeric( $from ) ? $from : strtotime( $from );
+
+	switch ( $by ) {
+		case 'days':
+			$date_format = 'M d Y';
+			$_from       = - $time_ago + 1;
+			$_from       = date( 'Y-m-d', strtotime( "{$_from} {$by}", $from_time ) );
+			$_to         = date( 'Y-m-d', $from_time );
+			$_sql_format = '%Y-%m-%d';
+			$_key_format = 'Y-m-d';
+			break;
+		
+		case 'months':
+			$date_format = 'M Y';
+			$_from       = - $time_ago + 1;
+			$_from       = date( 'Y-m-01', strtotime( "{$_from} {$by}", $from_time ) );
+			$days        = date( 't', mktime( 0, 0, 0, date( 'm', $from_time ), 1, date( 'Y', $from_time ) ) );
+			$_to         = date( 'Y-m-' . $days, $from_time );
+			$_sql_format = '%Y-%m';
+			$_key_format = 'Y-m';
+			break;
+		
+		case 'years':
+			$date_format = 'Y';
+			$_from       = - $time_ago + 1;
+			$_from       = date( 'Y-01-01', strtotime( "{$_from} {$by}", $from_time ) );
+			$days        = date( 't', mktime( 0, 0, 0, date( 'm', $from_time ), 1, date( 'Y', $from_time ) ) );
+			$_to         = date( 'Y-12-' . $days, $from_time );
+			$_sql_format = '%Y';
+			$_key_format = 'Y';
+			break;
+		
+	}
+
+	$query_where = '';
+	if ( current_user_can( LP_TEACHER_ROLE ) ) {
+		$user_id = learn_press_get_current_user_id();
+		$query_where .= $wpdb->prepare( " AND c.post_author=%d ", $user_id );
+	}
+
+	$query = $wpdb->prepare( "
+				SELECT count(c.ID) as c, DATE_FORMAT( c.post_date, %s) as d
+				FROM {$wpdb->posts} c
+				WHERE 1
+				{$query_where}
+				AND c.post_status IN('publish', 'pending') AND c.post_type = %s
+				GROUP BY d
+				HAVING d BETWEEN %s AND %s
+				ORDER BY d ASC
+			", $_sql_format, 'lp_course', $_from, $_to );
+	if ( $_results = $wpdb->get_results( $query ) ) {
+		foreach ( $_results as $k => $v ) {
+			$results['all'][ $v->d ] = $v;
+		}
+	}
+	$query = $wpdb->prepare( "
+				SELECT count(c.ID) as c, DATE_FORMAT( c.post_date, %s) as d
+				FROM {$wpdb->posts} c
+				WHERE 1
+				{$query_where}
+				AND c.post_status = %s AND c.post_type = %s
+				GROUP BY d
+				HAVING d BETWEEN %s AND %s
+				ORDER BY d ASC
+			", $_sql_format, 'publish', 'lp_course', $_from, $_to );
+	if ( $_results = $wpdb->get_results( $query ) ) {
+		foreach ( $_results as $k => $v ) {
+			$results['publish'][ $v->d ] = $v;
+		}
+	}
+
+	$query = $wpdb->prepare( "
+				SELECT count(c.ID) as c, DATE_FORMAT( c.post_date, %s) as d
+				FROM {$wpdb->posts} c
+				INNER JOIN {$wpdb->postmeta} cm ON cm.post_id = c.ID AND cm.meta_key = %s AND cm.meta_value = %s
+				WHERE 1
+				{$query_where}
+				AND c.post_status = %s AND c.post_type = %s
+				GROUP BY d
+				HAVING d BETWEEN %s AND %s
+				ORDER BY d ASC
+			", $_sql_format, '_lp_payment', 'yes', 'publish', 'lp_course', $_from, $_to );
+	if ( $_results = $wpdb->get_results( $query ) ) {
+		foreach ( $_results as $k => $v ) {
+			$results['paid'][ $v->d ] = $v;
+		}
+	}
+
+	for ( $i = - $time_ago + 1; $i <= 0; $i ++ ) {
+		$date     = strtotime( "$i $by", $from_time );
+		$labels[] = date( $date_format, $date );
+		$key      = date( $_key_format, $date );
+
+		$all     = ! empty( $results['all'][ $key ] ) ? $results['all'][ $key ]->c : 0;
+		$publish = ! empty( $results['publish'][ $key ] ) ? $results['publish'][ $key ]->c : 0;
+		$paid    = ! empty( $results['paid'][ $key ] ) ? $results['paid'][ $key ]->c : 0;
+
+		$datasets[0]['data'][] = $all;
+		$datasets[1]['data'][] = $publish;
+		$datasets[2]['data'][] = $all - $publish;
+		$datasets[3]['data'][] = $paid;
+		$datasets[4]['data'][] = $all - $paid;
+	}
+
+	$dataset_params = array(
+		array(
+			'color1' => 'rgba(47, 167, 255, %s)',
+			'color2' => '#FFF',
+			'label'  => __( 'All', 'learnpress' )
+		),
+		array(
+			'color1' => 'rgba(212, 208, 203, %s)',
+			'color2' => '#FFF',
+			'label'  => __( 'Publish', 'learnpress' )
+		),
+		array(
+			'color1' => 'rgba(234, 199, 155, %s)',
+			'color2' => '#FFF',
+			'label'  => __( 'Pending', 'learnpress' )
+		),
+		array(
+			'color1' => 'rgba(234, 199, 155, %s)',
+			'color2' => '#FFF',
+			'label'  => __( 'Paid', 'learnpress' )
+		),
+		array(
+			'color1' => 'rgba(234, 199, 155, %s)',
+			'color2' => '#FFF',
+			'label'  => __( 'Free', 'learnpress' )
+		)
+	);
+
+	foreach ( $dataset_params as $k => $v ) {
+		$datasets[ $k ]['fillColor']            = sprintf( $v['color1'], '0.2' );
+		$datasets[ $k ]['strokeColor']          = sprintf( $v['color1'], '1' );
+		$datasets[ $k ]['pointColor']           = sprintf( $v['color1'], '1' );
+		$datasets[ $k ]['pointStrokeColor']     = $v['color2'];
+		$datasets[ $k ]['pointHighlightFill']   = $v['color2'];
+		$datasets[ $k ]['pointHighlightStroke'] = sprintf( $v['color1'], '1' );
+		$datasets[ $k ]['label']                = $v['label'];
+	}
+
+	return array(
+		'labels'   => $labels,
+		'datasets' => $datasets,
+		'sql'      => $query
+	);
+}
