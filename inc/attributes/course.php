@@ -141,7 +141,7 @@ if ( !class_exists( 'LP_Course_Attributes' ) ) {
 		}
 
 		public function course_attributes() {
-			include learn_press_admin_view( 'meta-boxes/course/attributes' );
+			learn_press_admin_view( 'meta-boxes/course/attributes' );
 		}
 
 		public function remove_terms( $attribute ) {
