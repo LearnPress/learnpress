@@ -1311,7 +1311,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			delete_post_meta( $post->ID, '_lp_curriculum' );
 			//add_action( 'rwmb_course_curriculum_before_save_post', array( $this, 'before_save_curriculum' ) );
 		}
-
+		// test
 		public static function enqueue_scripts() {
 
 		}
