@@ -1268,8 +1268,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			}
 		}
 
-		public
-		function before_save_curriculum() {
+		public function before_save_curriculum() {
 
 			global $post, $pagenow;
 

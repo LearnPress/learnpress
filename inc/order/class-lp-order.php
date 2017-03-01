@@ -117,7 +117,7 @@ class LP_Order {
 		$new_status = 'lp-' === substr( $new_status, 0, 3 ) ? substr( $new_status, 3 ) : $new_status;
 		$old_status = $this->get_status();
 
-		if ( ( $new_status !== $old_status || $force ) && in_array( $new_status, array_keys( learn_press_get_order_statuses( false ) ) ) ) {
+		if ( ( ( $new_status !== $old_status ) || $force ) && in_array( $new_status, array_keys( learn_press_get_order_statuses( false ) ) ) ) {
 			// Update the order
 			global $wpdb;
 			$updated = $wpdb->update( $wpdb->posts, array( 'post_status' => 'lp-' . $new_status ), array( 'ID' => $this->id ), array( '%s' ) );
