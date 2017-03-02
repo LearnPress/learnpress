@@ -196,6 +196,7 @@ https://www.transifex.com/projects/p/learnpress/
 
 = 2.1.4.2 =
 + Fixed issue can not view lesson
++ Fixed "sale price" option does not work correctly
 
 = 2.1.4.1 =
 + Fixed warning empty object
