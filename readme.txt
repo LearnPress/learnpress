@@ -194,6 +194,9 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==
 
+= 2.1.4.2 =
++ Fixed issue can not view lesson
+
 = 2.1.4.1 =
 + Fixed warning empty object
 + Fixed 404 page with custom slug for lesson or quiz
