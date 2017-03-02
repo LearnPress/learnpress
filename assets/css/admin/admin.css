@@ -228,6 +228,11 @@
 .description {
   margin-top: 5px;
 }
+.description.option-desc {
+  font-weight: normal;
+  margin: 8px 0 10px 24px;
+  font-size: smaller;
+}
 .dashed-placeholder {
   border: 2px dashed #999;
   padding: 10px;
