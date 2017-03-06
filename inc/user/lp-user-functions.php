@@ -972,12 +972,13 @@ function learn_press_user_is( $role, $user_id = 0 ) {
 	return $role;
 }
 
-function learn_press_profile_tab_endpoints_edit_profile( $endpoints ) {
-	$endpoints['edit'] = 'edit';
-	return $endpoints;
-}
-
-add_filter( 'learn_press_profile_tab_endpoints', 'learn_press_profile_tab_endpoints_edit_profile' );
+//function learn_press_profile_tab_endpoints_edit_profile( $endpoints ) {
+//	$endpoints['edit'] = 'edit';
+//	print_r($endpoints);
+//	return $endpoints;
+//}
+//
+//add_filter( 'learn_press_profile_tab_endpoints', 'learn_press_profile_tab_endpoints_edit_profile' );
 
 function learn_press_profile_tab_edit_content( $current, $tab, $user ) {
 	learn_press_get_template( 'profile/tabs/edit.php', array( 'user' => $user, 'current' => $current, 'tab' => $tab ) );
@@ -988,13 +989,25 @@ function _learn_press_redirect_logout_redirect() {
 	$admin_url   = admin_url();
 	$pos         = strpos( $redirect_to, $admin_url );
 	if ( $pos === false ) {
-		$page_id	= LP()->settings->get('logout_redirect_page_id');
-		$page_url	= get_page_link($page_id);
-		if( $page_id && $page_url ) {
+		$page_id  = LP()->settings->get( 'logout_redirect_page_id' );
+		$page_url = get_page_link( $page_id );
+		if ( $page_id && $page_url ) {
 			wp_redirect( $page_url );
 			exit();
 		}
 	}
+}
+
+function learn_press_get_profile_endpoints() {
+	$endpoints = (array) LP()->settings->get( 'profile_endpoints' );
+	if ( $tabs = LP_Profile::instance()->get_tabs() ) {
+		foreach ( $tabs as $slug => $info ) {
+			if ( empty( $endpoints[$slug] ) ) {
+				$endpoints[$slug] = $slug;
+			}
+		}
+	}
+	return apply_filters( 'learn_press_profile_tab_endpoints', $endpoints );
 }
 
 add_action( 'wp_logout', '_learn_press_redirect_logout_redirect' );
@@ -1259,7 +1272,7 @@ function learn_press_get_user_courses_info( $user_id, $course_ids ) {
 	$format           = array_merge( $format, $course_ids, array( 'lp_course' ) );
 	$in               = array_fill( 0, sizeof( $course_ids ), '%d' );
 	$user_course_info = LP_Cache::get_course_info( false, array() );
-	$query = $wpdb->prepare( "
+	$query            = $wpdb->prepare( "
 		SELECT uc.*
 		FROM {$wpdb->prefix}learnpress_user_items uc
 		INNER JOIN {$wpdb->posts} o ON o.ID = uc.item_id

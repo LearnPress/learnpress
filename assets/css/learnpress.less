@@ -1453,7 +1453,19 @@ body.block-content {
 }
 
 .learn-press-user-profile {
-
+    #learn-press-user-info{
+        .user-avatar {
+            width: 150px;
+            float: left;
+            .avatar {
+                border-radius: 0;
+                width: 100%;
+            }
+        }
+        .user-basic-info{
+            margin-left: 170px;
+        }
+    }
     .lp-edit-profile {
         &:after {
             .clearfix();
@@ -1463,6 +1475,7 @@ body.block-content {
         p {
             margin-top: 10px;
         }
+
     }
     .learn-press-tabs {
         list-style: none;
