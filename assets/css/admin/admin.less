@@ -7,12 +7,20 @@
 // admin variables
 @primary-icon-color: #666666;
 @primary-icon-hover-color: #00a0d2;
+
 .rwmb-field {
     margin: 20px 0 20px 0;
-}
-
-.rwmb-field .rwmb-input .rwmb-label {
-    margin-top: 0;
+    .rwmb-input {
+        .rwmb-label {
+            margin-top: 0;
+        }
+        .option-desc {
+            font-weight: normal;
+            padding-left: 24px;
+            font-style: italic;
+            margin-top: 3px;
+        }
+    }
 }
 
 .lp-nav-tab-wrapper {
@@ -117,12 +125,21 @@
         &.ready {
             opacity: 1;
         }
+        #learn-press-reset-settings {
+            float: right;
+            opacity: 0.5;
+            &:hover {
+                opacity: 1;
+            }
+        }
     }
     &.no-subtabs {
         .learn-press-settings-wrap {
             float: none;
             margin-left: 0;
             padding-left: 25px;
+            padding-right: 25px;
+
             &:before {
                 display: none;
             }
@@ -176,6 +193,53 @@
         }
         .lp-sign-times {
             font-size: 19px;
+        }
+    }
+}
+
+.learnpress_page_learn-press-settings {
+    .select2-result {
+        .select2-result-label {
+            position: relative;
+            &:before {
+                display: inline-block;
+                border-bottom: 1px solid #23282d;
+                width: 20px;
+                position: absolute;
+                top:50%;
+                left: 8px;
+            }
+            &:hover{
+                &:before{
+                    border-color: #FFF;
+                }
+            }
+        }
+        &.level-1 {
+            .select2-result-label {
+                padding-left: 35px;
+                &:before {
+                    content: '';
+                }
+            }
+        }
+        &.level-2 {
+            .select2-result-label {
+                padding-left: 60px;
+                &:before {
+                    left: 35px;
+                    content: '';
+                }
+            }
+        }
+        &.level-3 {
+            .select2-result-label {
+                padding-left: 85px;
+                &:before {
+                    left: 60px;
+                    content: '';
+                }
+            }
         }
     }
 }
@@ -1763,7 +1827,8 @@ body.post-type-lp_question #question_answer_ .inside {
 
 .post-type-lp_order #submitpost .misc-pub-section label {
     display: block;
-    font-weight: bold;
+    font-weight: 600;
+    margin-bottom: 8px;
 }
 
 #learn-press-order {
@@ -2166,7 +2231,7 @@ input.regular-text[id^="learn-press-emails"] {
 
     .learn-press-tab-content {
         > li {
-            padding: 0 20px 0px 20px;
+            padding: 0 20px 10px 20px;
             float: left;
             width: 100%;
             margin-right: -100%;

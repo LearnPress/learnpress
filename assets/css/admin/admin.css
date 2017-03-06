@@ -10,6 +10,12 @@
 .rwmb-field .rwmb-input .rwmb-label {
   margin-top: 0;
 }
+.rwmb-field .rwmb-input .option-desc {
+  font-weight: normal;
+  padding-left: 24px;
+  font-style: italic;
+  margin-top: 3px;
+}
 .lp-nav-tab-wrapper {
   border-bottom: 1px solid #ccc;
   margin: 0;
@@ -111,10 +117,18 @@
 #learn-press-admin-settings .learn-press-settings-wrap.ready {
   opacity: 1;
 }
+#learn-press-admin-settings .learn-press-settings-wrap #learn-press-reset-settings {
+  float: right;
+  opacity: 0.5;
+}
+#learn-press-admin-settings .learn-press-settings-wrap #learn-press-reset-settings:hover {
+  opacity: 1;
+}
 #learn-press-admin-settings.no-subtabs .learn-press-settings-wrap {
   float: none;
   margin-left: 0;
   padding-left: 25px;
+  padding-right: 25px;
 }
 #learn-press-admin-settings.no-subtabs .learn-press-settings-wrap:before {
   display: none;
@@ -155,6 +169,40 @@
 }
 #learn-press-admin-settings .lp-setting-field .lp-sign-times {
   font-size: 19px;
+}
+.learnpress_page_learn-press-settings .select2-result .select2-result-label {
+  position: relative;
+}
+.learnpress_page_learn-press-settings .select2-result .select2-result-label:before {
+  display: inline-block;
+  border-bottom: 1px solid #23282d;
+  width: 20px;
+  position: absolute;
+  top: 50%;
+  left: 8px;
+}
+.learnpress_page_learn-press-settings .select2-result .select2-result-label:hover:before {
+  border-color: #FFF;
+}
+.learnpress_page_learn-press-settings .select2-result.level-1 .select2-result-label {
+  padding-left: 35px;
+}
+.learnpress_page_learn-press-settings .select2-result.level-1 .select2-result-label:before {
+  content: '';
+}
+.learnpress_page_learn-press-settings .select2-result.level-2 .select2-result-label {
+  padding-left: 60px;
+}
+.learnpress_page_learn-press-settings .select2-result.level-2 .select2-result-label:before {
+  left: 35px;
+  content: '';
+}
+.learnpress_page_learn-press-settings .select2-result.level-3 .select2-result-label {
+  padding-left: 85px;
+}
+.learnpress_page_learn-press-settings .select2-result.level-3 .select2-result-label:before {
+  left: 60px;
+  content: '';
 }
 /* message box */
 #learn-press-message-box-block {
@@ -1471,7 +1519,8 @@ body.post-type-lp_question #question_answer_ .inside {
 }
 .post-type-lp_order #submitpost .misc-pub-section label {
   display: block;
-  font-weight: bold;
+  font-weight: 600;
+  margin-bottom: 8px;
 }
 #learn-press-order {
   margin: 15px;
@@ -1827,7 +1876,7 @@ input.regular-text[id^="learn-press-emails"] {
   margin: 0;
 }
 .learn-press-tabs .learn-press-tab-content > li {
-  padding: 0 20px 0px 20px;
+  padding: 0 20px 10px 20px;
   float: left;
   width: 100%;
   margin-right: -100%;

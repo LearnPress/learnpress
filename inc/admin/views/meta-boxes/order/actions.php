@@ -3,6 +3,7 @@ global $post, $action;
 $post_type        = $post->post_type;
 $post_type_object = get_post_type_object( $post_type );
 $can_publish      = current_user_can( $post_type_object->cap->publish_posts );
+$is_multiple      =
 
 $datef = __( 'M j, Y @ H:i' );
 if ( 0 != $post->ID ) {
@@ -33,7 +34,7 @@ if ( 0 != $post->ID ) {
 					<label>
 						<?php _e( 'Order status', 'learnpress' ); ?>
 					</label>
-					<select name="order-status">
+					<select name="order-status" data-status="<?php echo 'lp-' . $order->get_status(); ?>">
 						<?php
 						$statuses = learn_press_get_order_statuses();
 						foreach ( $statuses as $status => $status_name ) {
@@ -41,12 +42,20 @@ if ( 0 != $post->ID ) {
 						}
 						?>
 					</select>
+
 					<div class="description order-status-description">
 						<?php if ( $order->get_status() == 'auto-draft' ) {
 							echo _learn_press_get_order_status_description( 'lp-pending' );
 						} ?>
 						<?php echo _learn_press_get_order_status_description( 'lp-' . $order->get_status() ); ?>
 					</div>
+				</div>
+				<div class="misc-pub-section hide-if-js order-action-section">
+					<label for="trigger-order-action">
+						<input type="checkbox" name="trigger-order-action" id="trigger-order-action" value="yes" />
+						<?php _e( 'Trigger order status action', 'learnpress' ); ?>
+					</label>
+					<p class="description"><?php esc_attr_e( 'Check this option to force an action to be triggered. Normally, an action only is triggered after changing to an another action.', 'learnpress' ); ?></p>
 				</div>
 
 				<div class="misc-pub-section">
@@ -57,15 +66,29 @@ if ( 0 != $post->ID ) {
 					<input name="order-customer" type="text" class="wp-suggest-user ui-autocomplete-input" id="admin-email" data-autocomplete-type="search" data-autocomplete-field="user_email" autocomplete="off">
 					-->
 					<?php
-					//					if($order->get_status() =='' || $order->has_status('pending') ) {
-					wp_dropdown_users(
-						array(
-							'show_option_none' => __( '[Guest]', 'learnpress' ),
-							'name'             => 'order-customer',
-							'id'               => null,
-							'selected'         => $order->get_user( 'ID' )
-						)
-					);
+					if ( $order->is_multi_users() ) {
+						$order->dropdown_users();
+						?>
+						<input type="hidden" name="multi-users" value="yes" />
+						<?php
+						wp_enqueue_style( 'select2', RWMB_CSS_URL . 'select2/select2.css' );
+						wp_enqueue_script( 'select2', RWMB_JS_URL . 'select2/select2.min.js' );
+					} else {
+						wp_dropdown_users(
+							array(
+								'show_option_none' => __( '[Guest]', 'learnpress' ),
+								'name'             => 'order-customer',
+								'id'               => null,
+								'selected'         => $order->get_user( 'ID' )
+							)
+						);
+					}
+					if ( $order->get_status() == 'auto-draft' && !$order->is_multi_users() ) {
+						?>
+						--
+						<a href="<?php echo add_query_arg( 'multi-users', 'yes' ); ?>"><?php _e( 'Multiple users', 'learnpress' ); ?></a>
+						<?php
+					}
 					//					}else{
 					//						echo $order->get_customer_name();
 					//					}
