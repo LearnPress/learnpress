@@ -10,11 +10,14 @@
 .rwmb-field .rwmb-input .rwmb-label {
   margin-top: 0;
 }
-.rwmb-field .rwmb-input .option-desc {
+.rwmb-field .rwmb-input .description {
+  margin-top: 5px;
+}
+.rwmb-field .rwmb-input .description.option-desc {
   font-weight: normal;
-  padding-left: 24px;
+  margin: 8px 0 10px 24px;
+  font-size: smaller;
   font-style: italic;
-  margin-top: 3px;
 }
 .lp-nav-tab-wrapper {
   border-bottom: 1px solid #ccc;
@@ -272,14 +275,6 @@
 .meta_box_course_lesson_quiz li input,
 .meta_box_course_lesson_quiz li select {
   min-width: 250px;
-}
-.description {
-  margin-top: 5px;
-}
-.description.option-desc {
-  font-weight: normal;
-  margin: 8px 0 10px 24px;
-  font-size: smaller;
 }
 .dashed-placeholder {
   border: 2px dashed #999;

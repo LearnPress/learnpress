@@ -14,11 +14,14 @@
         .rwmb-label {
             margin-top: 0;
         }
-        .option-desc {
-            font-weight: normal;
-            padding-left: 24px;
-            font-style: italic;
-            margin-top: 3px;
+        .description {
+            margin-top: 5px;
+            &.option-desc {
+                font-weight: normal;
+                margin: 8px 0 10px 24px;
+                font-size: smaller;
+                font-style: italic;
+            }
         }
     }
 }
@@ -206,11 +209,11 @@
                 border-bottom: 1px solid #23282d;
                 width: 20px;
                 position: absolute;
-                top:50%;
+                top: 50%;
                 left: 8px;
             }
-            &:hover{
-                &:before{
+            &:hover {
+                &:before {
                     border-color: #FFF;
                 }
             }
@@ -324,15 +327,6 @@
 .meta_box_course_lesson_quiz li input,
 .meta_box_course_lesson_quiz li select {
     min-width: 250px;
-}
-
-.description {
-    margin-top: 5px;
-    &.option-desc{
-        font-weight: normal;
-        margin: 8px 0 10px 24px;
-        font-size: smaller;
-    }
 }
 
 .dashed-placeholder {
