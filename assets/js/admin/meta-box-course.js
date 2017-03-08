@@ -251,17 +251,7 @@
 					.on('change', 'input[name="learn-press-submit-for-review"]', this.toggleMessage);
 
 				$('input[name="learn_press_submit_course_notice_reviewer"]').trigger('change');
-				$(window).scroll(function () {
-					return;
-					var $holder = $('#course_tabs_placeholder'),
-						$tabs = $('#course_tabs'),
-						top = $holder.offset().top;
-					if ($(window).scrollTop() > top) {
-						$tabs.css('width', $tabs.width()).addClass('fixed');
-					} else {
-						$tabs.css('width', '').removeClass('fixed');
-					}
-				});
+
 			},
 			toggleMessage           : function (e) {
 				if (e.target.checked) {

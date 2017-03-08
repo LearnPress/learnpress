@@ -18,27 +18,6 @@ if ( !class_exists( 'RWMB_Curriculum_Field' ) ) {
 		 */
 		public static function admin_enqueue_scripts() {
 
-			LP_Assets::enqueue_script( 'learn-press-modal-search-items' );
-			LP_Assets::add_localize(
-				array(
-					'confirm_remove_section_lesson' => __( 'Do you want to remove this lesson permanently?', 'learnpress' ),
-					'confirm_remove_section_quiz'   => __( 'Do you want to remove this quiz permanently?', 'learnpress' ),
-					'confirm_remove_section'        => __( 'Do you want to remove this section permanently?', 'learnpress' ),
-					'add_new_quiz'                  => __( 'New quiz added', 'learnpress' ),
-					'add_new_lesson'                => __( 'New lesson added', 'learnpress' ),
-					'add_new_section'               => __( 'New section added', 'learnpress' ),
-					'remove_section_lesson'         => __( 'The lesson removed', 'learnpress' ),
-					'remove_section_quiz'           => __( 'The quiz removed', 'learnpress' ),
-					'remove_section'                => __( 'The section removed', 'learnpress' ),
-					'section_ordered'               => __( 'The ordering completed', 'learnpress' ),
-					'add_lesson_to_section'         => __( 'Lesson added to section completed!', 'learnpress' ),
-					'add_quiz_to_section'           => __( 'Quiz added to section completed!', 'learnpress' ),
-					'update_lesson_quiz'            => __( '%s updated', 'learnpress' ),
-					'quick_edit_name'               => __( 'Click to quick edit name', 'learnpress' ),
-					'save_course'                   => __( 'Save Course', 'learnpress' ),
-					'submit_course_review'          => __( 'Submit for Review', 'learnpress' )
-				), null, 'learn-press-mb-course'
-			);
 		}
 
 		/**

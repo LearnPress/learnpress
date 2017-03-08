@@ -397,20 +397,36 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 *
 		 * @static
 		 */
-		public
-		function admin_scripts() {
+		public function admin_scripts() {
 			global $post;
 
 			$user = learn_press_get_current_user();
+
+			LP_Assets::enqueue_script( 'learn-press-modal-search-items' );
 			LP_Assets::add_localize(
 				array(
+					'confirm_remove_section_lesson'          => __( 'Do you want to remove this lesson permanently?', 'learnpress' ),
+					'confirm_remove_section_quiz'            => __( 'Do you want to remove this quiz permanently?', 'learnpress' ),
+					'confirm_remove_section'                 => __( 'Do you want to remove this section permanently?', 'learnpress' ),
+					'add_new_quiz'                           => __( 'New quiz added', 'learnpress' ),
+					'add_new_lesson'                         => __( 'New lesson added', 'learnpress' ),
+					'add_new_section'                        => __( 'New section added', 'learnpress' ),
+					'remove_section_lesson'                  => __( 'The lesson removed', 'learnpress' ),
+					'remove_section_quiz'                    => __( 'The quiz removed', 'learnpress' ),
+					'remove_section'                         => __( 'The section removed', 'learnpress' ),
+					'section_ordered'                        => __( 'The ordering completed', 'learnpress' ),
+					'add_lesson_to_section'                  => __( 'Lesson added to section completed!', 'learnpress' ),
+					'add_quiz_to_section'                    => __( 'Quiz added to section completed!', 'learnpress' ),
+					'update_lesson_quiz'                     => __( '%s updated', 'learnpress' ),
+					'quick_edit_name'                        => __( 'Click to quick edit name', 'learnpress' ),
+					'save_course'                            => __( 'Save Course', 'learnpress' ),
+					'submit_course_review'                   => __( 'Submit for Review', 'learnpress' ),
 					'notice_remove_section_item'             => __( 'Are you sure you want to remove this item?', 'learnpress' ),
 					'user_warning_course_publish_to_pending' => __( 'You course will become to Pending', 'learnpress' ),
 					'user_warning_can_not_submit_course'     => __( 'Your course is pending for reviewing', 'learnpress' )
-				),
-				null,
-				'learn-press-mb-course'
+				), null, 'learn-press-mb-course'
 			);
+			
 			if ( get_post_type() == LP_COURSE_CPT && self::$_enable_review && !$this->_is_archive() ) {
 				LP_Assets::add_param( 'required_review', LP()->settings->get( 'required_review' ) == 'yes', 'learn-press-mb-course', 'LP_Settings' );
 				LP_Assets::add_param( 'enable_edit_published', LP()->settings->get( 'enable_edit_published' ) == 'yes', 'learn-press-mb-course', 'LP_Settings' );
@@ -430,16 +446,14 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		/**
 		 * Print js template
 		 */
-		public
-		function print_js_template() {
+		public function print_js_template() {
 			if ( get_post_type() != LP_COURSE_CPT ) {
 				return;
 			}
 			learn_press_admin_view( 'meta-boxes/course/js-template.php' );
 		}
 
-		public
-		function currency_symbol(
+		public function currency_symbol(
 			$input_html, $field, $sub_meta
 		) {
 			return $input_html . '<span class="lpr-course-price-symbol">' . learn_press_get_currency_symbol() . '</span>';
@@ -448,8 +462,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		/**
 		 * Register course post type
 		 */
-		public
-		function register() {
+		public function register() {
 			$settings         = LP_Settings::instance();
 			$labels           = array(
 				'name'               => _x( 'Courses', 'Post Type General Name', 'learnpress' ),
