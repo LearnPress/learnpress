@@ -4,7 +4,7 @@ Plugin Name: LearnPress
 Plugin URI: http://thimpress.com/learnpress
 Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
 Author: ThimPress
-Version: 2.1.4
+Version: 2.1.4.2
 Author URI: http://thimpress.com
 Requires at least: 3.8
 Tested up to: 4.7
@@ -466,10 +466,11 @@ if ( !class_exists( 'LearnPress' ) ) {
 			require_once 'inc/user/class-lp-user-factory.php';
 			require_once 'inc/user/abstract-lp-user.php';
 			require_once 'inc/user/class-lp-user.php';
+			require_once 'inc/user/class-lp-profile.php';
+
 
 			// others
 			require_once 'inc/class-lp-session-handler.php';
-			require_once 'inc/admin/class-lp-profile.php';
 			require_once 'inc/admin/class-lp-email.php';
 			// assets
 
@@ -481,7 +482,17 @@ if ( !class_exists( 'LearnPress' ) ) {
 
 				// shortcodes
 				require_once 'inc/class-lp-shortcodes.php';
+				// Include short-code file
+				/*require_once 'inc/shortcodes/archive-courses.php';
+				require_once 'inc/shortcodes/recent-courses/recent-courses.php';
+				require_once 'inc/shortcodes/popular-courses/popular-courses.php';
+				require_once 'inc/shortcodes/featured-courses/featured-courses.php';*/
 			}
+
+			//include widgets
+			/*require_once 'inc/widgets/recent-courses/recent-course-widget.php';
+			require_once 'inc/widgets/popular-courses/popular-course-widget.php';
+			require_once 'inc/widgets/featured-courses/featured-course-widget.php';*/
 
 			// include template functions
 			require_once( 'inc/lp-template-functions.php' );

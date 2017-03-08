@@ -147,18 +147,18 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 						'context'    => 'normal',
 						'priority'   => 'high',
 						'fields'     => array(
-							// ,
 							array(
 								'name'    => __( 'Show/Hide Question', 'learnpress' ),
 								'desc'    => __( 'Show/Hide list questions on this quiz.', 'learnpress' ),
 								'id'      => "{$prefix}show_hide_question",
 								'type'    => 'radio',
 								'options' => array(
-									'global' => __( wp_kses( 'Global Setting <a target="_blank" href="' . admin_url( 'admin.php?page=learn-press-settings&tab=courses' ) . '">Go to the setting</a>', array( 'a' => array( 'href' => array(), 'target' => array() ) ) ), 'learnpress' ),
+									// Removed from 2.1.4
+									//'global' => __( wp_kses( 'Global Setting <a target="_blank" href="' . admin_url( 'admin.php?page=learn-press-settings&tab=courses' ) . '">Go to the setting</a>', array( 'a' => array( 'href' => array(), 'target' => array() ) ) ), 'learnpress' ),
 									'show'   => __( 'Show', 'learnpress' ),
 									'hide'   => __( 'Hide', 'learnpress' )
 								),
-								'std'     => 'global'
+								'std'     => 'hide'
 							),
 							array(
 								'name'         => __( 'Duration', 'learnpress' ),
@@ -222,7 +222,9 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 									'yes' => __( 'Yes', 'learnpress' )
 								),
 								'std'     => 'no'
-							),
+							)
+							// Removed from 2.1.4,
+							/*
 							array(
 								'name'    => __( 'Show explanation', 'learnpress' ),
 								'id'      => "{$prefix}show_explanation",
@@ -233,7 +235,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 									'yes' => __( 'Yes', 'learnpress' )
 								),
 								'std'     => 'no'
-							)
+							)*/
 						)
 					)
 				)

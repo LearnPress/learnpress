@@ -23,9 +23,10 @@
 			url    : window.location.href.addQueryVar('add-attribute-to-course', getPostId()),
 			data   : $().extend({}, $(button).data()),
 			success: function (response) {
-				var $html = $('.course-attributes');
-				$(response).appendTo($html);
-				$html.find('.course-attribute-values').select2(select2Options)
+				var $html = $('.course-attributes'),
+					$newHtml = $(response);
+				$newHtml.appendTo($html);
+				$newHtml.find('.course-attribute-values').select2(select2Options)
 			}
 		})
 	}
@@ -82,7 +83,7 @@
 			.on('click', '#save-attributes', saveAttributesEvent)
 			.on('keyup.addNewAttributeValueEvent', '.select2-input', addNewAttributeValueEvent);
 
-		var $courseAttributes = $('.course-attribute-values') ;
+		var $courseAttributes = $('.course-attribute-values');
 
 		if ($courseAttributes.length) {
 			$courseAttributes.select2(select2Options);

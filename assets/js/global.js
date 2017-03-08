@@ -727,16 +727,38 @@ if (typeof window.LP == 'undefined') {
 			if ($('#learn-press-block-content').length == 0) {
 				$(LP.template('learn-press-template-block-content', {})).appendTo($('body'));
 			}
-			var $root = $('body').addClass('block-content'),
-				overflow = $root.css('overflow');
-			$root.css('overflow', 'hidden').attr('overflow', overflow);
+			LP.hideMainScrollbar().addClass('block-content');
+			$(document).trigger('learn_press_block_content');
 		},
 		unblockContent: function () {
 			setTimeout(function () {
-				var $root = $('body').removeClass('block-content'),
+				LP.showMainScrollbar().removeClass('block-content');
+				$(document).trigger('learn_press_unblock_content');
+			}, 350);
+		},
+		hideMainScrollbar: function (el) {
+			if (!el) {
+				el = 'html, body';
+			}
+			var $el = $(el);
+			$el.each(function () {
+				var $root = $(this),
+					overflow = $root.css('overflow');
+				$root.css('overflow', 'hidden').attr('overflow', overflow);
+			});
+			return $el;
+		},
+		showMainScrollbar: function (el) {
+			if (!el) {
+				el = 'html, body';
+			}
+			var $el = $(el);
+			$el.each(function () {
+				var $root = $(this),
 					overflow = $root.attr('overflow');
 				$root.css('overflow', overflow).removeAttr('overflow');
-			}, 350);
+			});
+			return $el;
 		},
 		template      : _.memoize(function (id, data) {
 			var compiled,

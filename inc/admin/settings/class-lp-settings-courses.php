@@ -97,13 +97,15 @@ class LP_Settings_Courses extends LP_Settings_Base {
 					'default' => 'yes',
 					'type'    => 'checkbox'
 				),
-				array(
+				// Removed from 2.1.4
+				/*array(
 					'title'   => __( 'Show list of question in quiz', 'learnpress' ),
 					'desc'    => __( 'Show/Hide list questions in quiz.', 'learnpress' ),
 					'id'      => $this->get_field_name( 'disable_question_in_quiz' ),
 					'default' => 'yes',
 					'type'    => 'checkbox'
-				),
+				),*/
+				/* Temporary remove from 2.1.4
 				array(
 					'title'   => __( 'Auto redirect next lesson', 'learnpress' ),
 					'desc'    => __( 'Redirect to the next lesson after completed the lesson', 'learnpress' ),
@@ -127,7 +129,7 @@ class LP_Settings_Courses extends LP_Settings_Base {
 					'id'      => $this->get_field_name( 'auto_redirect_message' ),
 					'default' => 'Redirecting to the next item ... ',
 					'type'    => 'text'
-				),
+				),*/
 				array(
 					'title' => __( 'Archive', 'learnpress' ),
 					'type'  => 'title'

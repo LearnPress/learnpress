@@ -319,7 +319,13 @@
         }
     }
 }
-
+.course-origin-price {
+    text-decoration: line-through;
+    padding-right: 5px;
+}
+.course-price {
+    color: rgb(84, 181, 81);
+}
 .learn-press-notice .button {
     float: right;
 }
@@ -379,6 +385,7 @@
                 border-radius: 5px;
                 vertical-align: middle;
                 margin-left: 5px;
+                font-size: 10px;
                 &:before {
                     content: "\ea0b";
                     margin: 0 auto;
@@ -484,7 +491,6 @@
     .course-item-meta {
         display: block;
         line-height: 1;
-        __position: absolute;
         top: 15px;
         right: 15px;
         float: right;
@@ -1069,7 +1075,6 @@ body.block-content {
 }
 
 /* COURSE QUIZ */
-//.single-quiz {
 .quiz-buttons {
     margin-bottom: 20px;
     clear: both;
@@ -1078,6 +1083,7 @@ body.block-content {
 .quiz-intro {
     list-style: none;
     padding: 0;
+    margin-left: 0;
 }
 
 .quiz-questions-list {
@@ -1115,7 +1121,6 @@ body.block-content {
 }
 
 #quiz-countdown {
-    //.progress-circle(@initialize: 100%, @size: 260px, @inside-size: 200px);
     .progress-circle {
         overflow: hidden;
         box-shadow: 0 0 3px #bdbdbd inset;
@@ -1562,9 +1567,8 @@ body.block-content {
                 margin-top: -15px;
             }
         }
-
     }
-    .update-profile {
+    .update-profile{
         border-top: 2px solid #DDD;
         padding-top: 20px;
     }
@@ -1575,10 +1579,10 @@ body.block-content {
         .moxie-shim {
             display: none;
         }
-        .lp-form-field-avatar {
+        .lp-form-field-avatar{
             float: left;
         }
-        #lp-avatar-actions {
+        #lp-avatar-actions{
             margin: 20px 0;
         }
     }
@@ -1661,7 +1665,6 @@ body.block-content {
                 display: block;
             }
         }
-
         &.croping {
             .lp-avatar-preview-actions {
                 display: none;
@@ -1920,22 +1923,7 @@ body.content-item-only {
         }
     }
 }
-
 /*
-.sidebar-hide-btn, .sidebar-show-btn {
-    cursor: pointer;
-    width: 60px;
-    height: 60px;
-    display: inline-block;
-    font-size: 34px;
-    line-height: 60px;
-    text-align: center;
-    color: #FFF;
-    position: absolute;
-
-
-}*/
-
 .payment-method-form {
     &.payment_method_authorizenet {
         background: #f7f7f7;
@@ -1966,7 +1954,7 @@ body.content-item-only {
             }
         }
     }
-}
+}*/
 
 .place-order-action {
     margin-top: 20px;
@@ -1999,6 +1987,14 @@ body.content-item-only {
         float: right;
         z-index: 10;
         position: relative;
+    }
+}
+
+.table-orders{
+    .order-status{
+        &.order-status-removed{
+            color: #FF0000;
+        }
     }
 }
 
@@ -2214,7 +2210,7 @@ body.content-item-only {
     }
 
 }
-
+/*
 @media (max-width: 480px) {
     .woocommerce {
         .checkout_coupon {
@@ -2224,7 +2220,7 @@ body.content-item-only {
         }
     }
 }
-
+*/
 @media (max-width: 400px) {
 
     .learn-press-courses {
@@ -2256,7 +2252,7 @@ body.content-item-only {
         }
     }
 }
-
+/*
 @media screen and (max-width: 615px) {
     .payment-method-form {
         &.payment_method_authorizenet {
@@ -2287,3 +2283,4 @@ body.content-item-only {
         }
     }
 }
+*/

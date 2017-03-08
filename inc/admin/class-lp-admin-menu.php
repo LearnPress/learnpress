@@ -105,7 +105,7 @@ class LP_Admin_Menu {
 				'learn-press-settings',
 				'learn_press_settings_page'
 			),
-			'tools'      => array(
+			'tools' => array(
 				'learn_press',
 				__( 'Tools', 'learnpress' ),
 				__( 'Tools', 'learnpress' ),
@@ -121,8 +121,6 @@ class LP_Admin_Menu {
 		if ( $menu_items ) foreach ( $menu_items as $item ) {
 			call_user_func_array( 'add_submenu_page', $item );
 		}
-
-		//add_submenu_page( 'tools.php', __( 'Database tools', 'learnpress' ), __( 'LearnPress', 'learnpress' ), 'manage_options', 'learn_press_tools', 'learn_press_tools_page' );
 	}
 
 	/*

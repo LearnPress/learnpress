@@ -130,7 +130,7 @@ if ( !function_exists( 'learn_press_remove_data' ) ) {
 		delete_option( 'learnpress_version' );
 
 		LP_Admin_Notice::add( __( 'All courses, lessons, quizzes and questions have been removed', 'learnpress' ), 'updated', '', true );
-		wp_redirect( admin_url( 'admin.php?page=learn_press_tools&learn-press-remove-data=1' ) );
+		wp_redirect( admin_url( 'admin.php?page=learn-press-tools&learn-press-remove-data=1' ) );
 		exit();
 	}
 }
@@ -197,8 +197,8 @@ if ( !function_exists( 'learn_press_remove_old_data' ) ) {
 
 		LP_Admin_Notice::add( __( 'Outdated data from version less than 1.0 have been removed', 'learnpress' ), 'updated', '', true );
 		//flush_rewrite_rules();
-//            header('Location: '.admin_url( 'admin.php?page=learn_press_tools' ));
-		wp_redirect( admin_url( 'admin.php?page=learn_press_tools' ) );
+//            header('Location: '.admin_url( 'admin.php?page=learn-press-tools' ));
+		wp_redirect( admin_url( 'admin.php?page=learn-press-tools' ) );
 		exit();
 	}
 }

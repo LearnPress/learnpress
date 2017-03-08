@@ -4,11 +4,26 @@
  * @author ThimPress
  * @version 1.0
  */
+input:focus::-webkit-input-placeholder {
+  color: transparent !important;
+}
+input:focus::-moz-placeholder {
+  color: transparent !important;
+}
+input:focus:-moz-placeholder {
+  color: transparent !important;
+}
 .rwmb-field {
   margin: 20px 0 20px 0;
 }
 .rwmb-field .rwmb-input .rwmb-label {
   margin-top: 0;
+}
+.rwmb-field .rwmb-input .option-desc {
+  font-weight: normal;
+  padding-left: 24px;
+  font-style: italic;
+  margin-top: 3px;
 }
 .lp-nav-tab-wrapper {
   border-bottom: 1px solid #ccc;
@@ -23,19 +38,6 @@
 }
 .learn-press-quick-add-page-inline > * {
   vertical-align: top;
-}
-.post-type-lp_course .column-price,
-.post-type-lp_course .column-students {
-  width: 10%;
-}
-.post-type-lp_course #course_curriculum .curriculum-section-items .lp-item-empty td.section-item-input {
-  padding-left: 40px;
-}
-.post-type-lp_course #course_curriculum .curriculum-section-items .lp-item-empty td.section-item-input.hover {
-  padding-left: 0;
-}
-.post-type-lp_course .type-lp_course.status-pending .row-actions .view {
-  display: none;
 }
 #learn-press-admin-settings {
   /*input[name="learn_press_single_course_image_size[width]"],
@@ -163,6 +165,40 @@
 }
 #learn-press-admin-settings .lp-setting-field .lp-sign-times {
   font-size: 19px;
+}
+.learnpress_page_learn-press-settings .select2-result .select2-result-label {
+  position: relative;
+}
+.learnpress_page_learn-press-settings .select2-result .select2-result-label:before {
+  display: inline-block;
+  border-bottom: 1px solid #23282d;
+  width: 20px;
+  position: absolute;
+  top: 50%;
+  left: 8px;
+}
+.learnpress_page_learn-press-settings .select2-result .select2-result-label:hover:before {
+  border-color: #FFF;
+}
+.learnpress_page_learn-press-settings .select2-result.level-1 .select2-result-label {
+  padding-left: 35px;
+}
+.learnpress_page_learn-press-settings .select2-result.level-1 .select2-result-label:before {
+  content: '';
+}
+.learnpress_page_learn-press-settings .select2-result.level-2 .select2-result-label {
+  padding-left: 60px;
+}
+.learnpress_page_learn-press-settings .select2-result.level-2 .select2-result-label:before {
+  left: 35px;
+  content: '';
+}
+.learnpress_page_learn-press-settings .select2-result.level-3 .select2-result-label {
+  padding-left: 85px;
+}
+.learnpress_page_learn-press-settings .select2-result.level-3 .select2-result-label:before {
+  left: 60px;
+  content: '';
 }
 /* message box */
 #learn-press-message-box-block {
@@ -1474,7 +1510,8 @@ body.post-type-lp_question #question_answer_ .inside {
 }
 .post-type-lp_order #submitpost .misc-pub-section label {
   display: block;
-  font-weight: bold;
+  font-weight: 600;
+  margin-bottom: 8px;
 }
 #learn-press-order {
   margin: 15px;

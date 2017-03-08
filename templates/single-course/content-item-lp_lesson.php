@@ -29,7 +29,7 @@ $can_view_item = $user->can( 'view-item', $item->id, $course->id );
 		$time      = 0;
 
 		if ( $auto_next === 'yes' ) {
-			if ( ! empty( LP()->settings->get( 'auto_redirect_time' ) ) ) {
+			if ( LP()->settings->get( 'auto_redirect_time' ) ) {
 				$time = LP()->settings->get( 'auto_redirect_time' );
 				$time = absint( $time );
 			}
