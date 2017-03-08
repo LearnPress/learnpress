@@ -198,6 +198,10 @@ https://www.transifex.com/projects/p/learnpress/
 + Added logout redirection
 + Improved email system
 
+= 2.1.4.2 =
++ Fixed issue can not view lesson
++ Fixed "sale price" option does not work correctly
+
 = 2.1.4.1 =
 + Fixed warning empty object
 + Fixed 404 page with custom slug for lesson or quiz
