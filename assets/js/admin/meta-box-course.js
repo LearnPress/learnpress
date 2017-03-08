@@ -30,7 +30,7 @@
 				'keyup'                                         : 'processKeyEvents',
 				'click .lp-section-item .lp-remove'             : '_removeItem',
 				'click .lp-toggle'                              : 'toggleSection',
-				'click .lp-course-curriculum-toggle a'          : 'toggleSections',
+				'click .curriculum-heading .items-toggle a'     : 'toggleSections',
 				'keyup input.no-submit'                         : 'onEnterInput',
 				'update input.no-submit'                        : 'onEnterInput',
 				'keydown'                                       : 'preventSubmit',
@@ -251,17 +251,7 @@
 					.on('change', 'input[name="learn-press-submit-for-review"]', this.toggleMessage);
 
 				$('input[name="learn_press_submit_course_notice_reviewer"]').trigger('change');
-				$(window).scroll(function () {
-					return;
-					var $holder = $('#course_tabs_placeholder'),
-						$tabs = $('#course_tabs'),
-						top = $holder.offset().top;
-					if ($(window).scrollTop() > top) {
-						$tabs.css('width', $tabs.width()).addClass('fixed');
-					} else {
-						$tabs.css('width', '').removeClass('fixed');
-					}
-				});
+
 			},
 			toggleMessage           : function (e) {
 				if (e.target.checked) {
@@ -574,10 +564,11 @@
 				e.preventDefault();
 				var $target = $(e.target);
 				if ($target.attr('data-action') == 'expand') {
-					this.$('.curriculum-section:not(.lp-empty-section) .lp-curriculum-section-content').slideDown();
+					this.$('.curriculum-section:not(.lp-empty-section) .curriculum-section-content').slideDown();
 				} else {
-					this.$('.curriculum-section:not(.lp-empty-section) .lp-curriculum-section-content').slideUp();
+					this.$('.curriculum-section:not(.lp-empty-section) .curriculum-section-content').slideUp();
 				}
+				$target.addClass('hide-if-js').siblings('a').removeClass('hide-if-js');
 			},
 			getSelectedItems        : function () {
 				return this.$('.lp-section-item[data-item_id]').map(function () {
