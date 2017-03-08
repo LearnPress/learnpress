@@ -30,7 +30,7 @@
 				'keyup'                                         : 'processKeyEvents',
 				'click .lp-section-item .lp-remove'             : '_removeItem',
 				'click .lp-toggle'                              : 'toggleSection',
-				'click .lp-course-curriculum-toggle a'          : 'toggleSections',
+				'click .curriculum-heading .items-toggle a'     : 'toggleSections',
 				'keyup input.no-submit'                         : 'onEnterInput',
 				'update input.no-submit'                        : 'onEnterInput',
 				'keydown'                                       : 'preventSubmit',
@@ -564,10 +564,11 @@
 				e.preventDefault();
 				var $target = $(e.target);
 				if ($target.attr('data-action') == 'expand') {
-					this.$('.curriculum-section:not(.lp-empty-section) .lp-curriculum-section-content').slideDown();
+					this.$('.curriculum-section:not(.lp-empty-section) .curriculum-section-content').slideDown();
 				} else {
-					this.$('.curriculum-section:not(.lp-empty-section) .lp-curriculum-section-content').slideUp();
+					this.$('.curriculum-section:not(.lp-empty-section) .curriculum-section-content').slideUp();
 				}
+				$target.addClass('hide-if-js').siblings('a').removeClass('hide-if-js');
 			},
 			getSelectedItems        : function () {
 				return this.$('.lp-section-item[data-item_id]').map(function () {

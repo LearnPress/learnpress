@@ -4,6 +4,15 @@
  * @author ThimPress
  * @version 1.0
  */
+input:focus::-webkit-input-placeholder {
+  color: transparent !important;
+}
+input:focus::-moz-placeholder {
+  color: transparent !important;
+}
+input:focus:-moz-placeholder {
+  color: transparent !important;
+}
 .rwmb-field {
   margin: 20px 0 20px 0;
 }
@@ -29,19 +38,6 @@
 }
 .learn-press-quick-add-page-inline > * {
   vertical-align: top;
-}
-.post-type-lp_course .column-price,
-.post-type-lp_course .column-students {
-  width: 10%;
-}
-.post-type-lp_course #course_curriculum .curriculum-section-items .lp-item-empty td.section-item-input {
-  padding-left: 40px;
-}
-.post-type-lp_course #course_curriculum .curriculum-section-items .lp-item-empty td.section-item-input.hover {
-  padding-left: 0;
-}
-.post-type-lp_course .type-lp_course.status-pending .row-actions .view {
-  display: none;
 }
 #learn-press-admin-settings {
   /*input[name="learn_press_single_course_image_size[width]"],
