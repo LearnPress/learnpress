@@ -237,7 +237,15 @@ class LP_Query {
 		}
 		$current_url  = learn_press_get_current_url();
 		$query_string = str_replace( trailingslashit( get_site_url() ), '', $current_url );
+		$custom_slug_lesson = sanitize_title_with_dashes( LP()->settings->get( 'lesson_slug' ) );
+		$custom_slug_quiz   = sanitize_title_with_dashes( LP()->settings->get( 'quiz_slug' ) );
 
+		if ( !empty( $custom_slug_lesson ) ) {
+			$post_types['lp_lesson']->rewrite['slug'] = $custom_slug_lesson;
+		}
+		if ( !empty( $custom_slug_quiz ) ) {
+			$post_types['lp_quiz']->rewrite['slug'] = $custom_slug_quiz;
+		}
 		if ( $has_category ) {
 			add_rewrite_rule(
 				'^' . $slug . '(?:/' . $post_types['lp_lesson']->rewrite['slug'] . '/([^/]+))/?$',
@@ -250,16 +258,6 @@ class LP_Query {
 				'top'
 			);
 		} else {
-
-			$custom_slug_lesson = sanitize_title_with_dashes( LP()->settings->get( 'lesson_slug' ) );
-			$custom_slug_quiz   = sanitize_title_with_dashes( LP()->settings->get( 'quiz_slug' ) );
-
-			if ( !empty( $custom_slug_lesson ) ) {
-				$post_types['lp_lesson']->rewrite['slug'] = $custom_slug_lesson;
-			}
-			if ( !empty( $custom_slug_quiz ) ) {
-				$post_types['lp_quiz']->rewrite['slug'] = $custom_slug_quiz;
-			}
 
 			add_rewrite_rule(
 				'^' . $slug . '/([^/]+)(?:/' . $post_types['lp_lesson']->rewrite['slug'] . '/([^/]+))/?$',
