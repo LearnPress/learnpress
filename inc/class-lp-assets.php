@@ -293,7 +293,7 @@ class LP_Assets {
 
 
 		// frontend
-		$styles->add( 'learn-press-style', $default_path . 'css/learnpress.css', $deps, null, $ver );
+		$styles->add( 'learn-press-style', $default_path . 'css/learnpress.css', $deps, $ver );
 		do_action_ref_array( 'learn_press_add_default_styles', array( $styles, $default_path, $suffix ) );
 
 	}
