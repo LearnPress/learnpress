@@ -33,26 +33,36 @@
     }
 }
 
-#learn-press-button-toggle-editor {
-    margin: 20px 0 0;
-}
-
-#course_curriculum {
+#lp-course-curriculum {
     border: none;
     background-color: transparent;
+    margin: 20px 0;
 }
 
-#course_curriculum .handlediv,
-#course_curriculum .hndle {
-    display: none;
+.post-type-lp_course {
+    & .column-price, & .column-students {
+        width: 10%;
+    }
+
+    #lp-course-curriculum .curriculum-section-items .lp-item-empty td.section-item-input {
+        padding-left: 40px;
+        &.hover {
+            padding-left: 0;
+        }
+    }
+
+    .type-lp_course {
+
+        &.status-pending {
+            .row-actions .view {
+                display: none;
+            }
+        }
+    }
+
 }
 
-#course_curriculum .inside {
-    margin: 0;
-    padding: 0;
-}
-
-#course_curriculum .curriculum-heading {
+#lp-course-curriculum .curriculum-heading {
     margin: 0 0 20px 0;
     padding: 10px 20px;
     background-color: #FFF;
@@ -60,7 +70,7 @@
     border: 1px solid #DDD;
 }
 
-#course_curriculum .curriculum-heading .description {
+#lp-course-curriculum .curriculum-heading .description {
     font-weight: normal;
     color: #999;
     display: block;
@@ -68,14 +78,14 @@
     margin-top: 10px;;
 }
 
-#course_curriculum .curriculum-heading .items-toggle {
+#lp-course-curriculum .curriculum-heading .items-toggle {
     float: right;
     margin: -33px 7px 0 0;
     line-height: 1;
     box-shadow: none;
 }
 
-#course_curriculum .curriculum-heading .items-toggle a {
+#lp-course-curriculum .curriculum-heading .items-toggle a {
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
     box-shadow: none;
@@ -83,27 +93,27 @@
 
 }
 
-#course_curriculum .curriculum-sections {
+#lp-course-curriculum .curriculum-sections {
     margin: 0;
     background-color: #FFF;
     border-bottom: 1px solid #DDD;
 }
 
-#course_curriculum .curriculum-section {
+#lp-course-curriculum .curriculum-section {
     margin: -1px 0 0 0;
     background-color: #FFF;
     border-bottom: 1px solid #DDD;
     position: relative;
 }
 
-#course_curriculum .curriculum-section.ui-sortable-placeholder {
+#lp-course-curriculum .curriculum-section.ui-sortable-placeholder {
     background-image: url("../../images/stripe.png");
     visibility: visible !important;
     border: 1px solid #DDD;
     border-bottom: none;
 }
 
-#course_curriculum .curriculum-section-head {
+#lp-course-curriculum .curriculum-section-head {
     border: 1px solid #DDD;
     background-color: #F9F9F9;
     border-bottom: none;
@@ -112,22 +122,22 @@
     padding: 3px 20px;
 }
 
-#course_curriculum .curriculum-section-head input {
+#lp-course-curriculum .curriculum-section-head input {
     background-color: #F9F9F9;
 }
 
-#course_curriculum .curriculum-section-head .lp-section-actions {
+#lp-course-curriculum .curriculum-section-head .lp-section-actions {
     float: right;
     margin: 14px 0;
     visibility: hidden;
     position: relative;
 }
 
-#course_curriculum .curriculum-section:not(.lp-empty-section) .curriculum-section-head:hover .lp-section-actions {
+#lp-course-curriculum .curriculum-section:not(.lp-empty-section) .curriculum-section-head:hover .lp-section-actions {
     visibility: visible;
 }
 
-#course_curriculum .curriculum-section .lp-section-actions a {
+#lp-course-curriculum .curriculum-section .lp-section-actions a {
     vertical-align: middle;
     color: #666666;
     width: 24px;
@@ -135,21 +145,21 @@
     box-shadow: none;
 }
 
-#course_curriculum .curriculum-section .lp-section-actions a[data-action="expand"] {
+#lp-course-curriculum .curriculum-section .lp-section-actions a[data-action="expand"] {
     line-height: 28px;
 }
 
-#course_curriculum .curriculum-section .lp-section-actions a:before {
+#lp-course-curriculum .curriculum-section .lp-section-actions a:before {
     width: 24px;
     height: 24px;
     font-size: 24px;
 }
 
-#course_curriculum .curriculum-section .lp-section-actions a:hover {
+#lp-course-curriculum .curriculum-section .lp-section-actions a:hover {
     color: #00a0d2;
 }
 
-#course_curriculum .curriculum-section .curriculum-section-head .lp-section-actions .move {
+#lp-course-curriculum .curriculum-section .curriculum-section-head .lp-section-actions .move {
     cursor: url("../../../assets/images/openhand.cur") 7 5, default;
     position: absolute;
     right: -15px;
@@ -159,7 +169,7 @@
     width: 20px;
 }
 
-#course_curriculum .curriculum-section-content {
+#lp-course-curriculum .curriculum-section-content {
     border: 1px solid #DDD;
     padding: 20px;
     border-bottom-width: 0;
@@ -167,11 +177,11 @@
     box-sizing: border-box;
 }
 
-#course_curriculum .curriculum-section.ui-sortable-helper {
+#lp-course-curriculum .curriculum-section.ui-sortable-helper {
     border-bottom: 1px solid #DDD;
 }
 
-#course_curriculum .curriculum-section-head .lp-section-name {
+#lp-course-curriculum .curriculum-section-head .lp-section-name {
     border: none;
     outline: none;
     box-shadow: none;
@@ -183,87 +193,87 @@
     height: 50px;
 }
 
-#course_curriculum .curriculum-section-head .lp-section-name:focus {
+#lp-course-curriculum .curriculum-section-head .lp-section-name:focus {
     color: #444;
 }
 
-#course_curriculum .curriculum-section.lp-empty-section .curriculum-section-content {
+#lp-course-curriculum .curriculum-section.lp-empty-section .curriculum-section-content {
     _display: none;
 }
 
-#course_curriculum .curriculum-section-items {
+#lp-course-curriculum .curriculum-section-items {
     border-collapse: collapse;
     width: 100%;
 }
 
-#course_curriculum .curriculum-section-items .lp-section-item {
+#lp-course-curriculum .curriculum-section-items .lp-section-item {
     border: 1px dashed #DDD;
     margin: -1px 0 0 0;
     padding: 5px 0;
     background-color: #FFF;
 }
 
-#course_curriculum .curriculum-section-items .lp-section-item:nth-child(2n+1),
-#course_curriculum .curriculum-section-items .lp-section-item:nth-child(2n+1) .section-item-input input {
+#lp-course-curriculum .curriculum-section-items .lp-section-item:nth-child(2n+1),
+#lp-course-curriculum .curriculum-section-items .lp-section-item:nth-child(2n+1) .section-item-input input {
     background-color: #FCFCFC;
 }
 
-#course_curriculum .curriculum-section-items .lp-section-item .lp-item-actions {
+#lp-course-curriculum .curriculum-section-items .lp-section-item .lp-item-actions {
     margin: 0;
     float: right;
     position: relative;
 }
 
-#course_curriculum .curriculum-section-items .lp-section-item .lp-item-actions a {
+#lp-course-curriculum .curriculum-section-items .lp-section-item .lp-item-actions a {
     vertical-align: middle;
     color: #666;
     margin-top: -2px;
     box-shadow: none;
 }
 
-#course_curriculum .curriculum-section-items .lp-section-item .lp-item-actions a:hover {
+#lp-course-curriculum .curriculum-section-items .lp-section-item .lp-item-actions a:hover {
     color: #00a0d2;
 }
 
-#course_curriculum .curriculum-section-items .lp-section-item[data-item_id=""] .lp-edit {
+#lp-course-curriculum .curriculum-section-items .lp-section-item[data-item_id=""] .lp-edit {
     display: none;
 }
 
-#course_curriculum .curriculum-section-items .lp-section-item.lp-item-empty .lp-item-actions {
+#lp-course-curriculum .curriculum-section-items .lp-section-item.lp-item-empty .lp-item-actions {
     display: none;
 }
 
-#course_curriculum .lp-section-item.ui-sortable-helper td {
+#lp-course-curriculum .lp-section-item.ui-sortable-helper td {
 
 }
 
-#course_curriculum .lp-section-item.ui-sortable-placeholder {
+#lp-course-curriculum .lp-section-item.ui-sortable-placeholder {
     visibility: visible !important;
 }
 
-#course_curriculum .lp-section-item.ui-sortable-placeholder td {
+#lp-course-curriculum .lp-section-item.ui-sortable-placeholder td {
     background-image: url("../../../assets/images/stripe.png");
     border-bottom: none;
 }
 
-#course_curriculum .lp-item-actions > * {
+#lp-course-curriculum .lp-item-actions > * {
     visibility: hidden;
 }
 
-#course_curriculum .lp-item-actions > a {
+#lp-course-curriculum .lp-item-actions > a {
 }
 
-#course_curriculum .item-bulk-actions {
+#lp-course-curriculum .item-bulk-actions {
     text-align: right;
     margin-top: 0;
     margin-bottom: 15px;
 }
 
-#course_curriculum .lp-section-item:not(.lp-item-empty):hover .lp-item-actions > * {
+#lp-course-curriculum .lp-section-item:not(.lp-item-empty):hover .lp-item-actions > * {
     visibility: visible;
 }
 
-#course_curriculum .curriculum-section-items .lp-section-item:not(.lp-item-empty) .item-checkbox {
+#lp-course-curriculum .curriculum-section-items .lp-section-item:not(.lp-item-empty) .item-checkbox {
     display: inline-block;
     height: 34px;
     border: none;
@@ -274,32 +284,32 @@
     visibility: visible;
 }
 
-#course_curriculum .curriculum-section-items .lp-section-item .item-checkbox input {
+#lp-course-curriculum .curriculum-section-items .lp-section-item .item-checkbox input {
     opacity: 0.4;
 }
 
-#course_curriculum .curriculum-section-items .lp-section-item:not(.lp-item-empty):hover .item-checkbox input {
+#lp-course-curriculum .curriculum-section-items .lp-section-item:not(.lp-item-empty):hover .item-checkbox input {
     opacity: 1;
 }
 
-#course_curriculum .lp-item-lp_lesson .handle.learn-press-icon:before {
+#lp-course-curriculum .lp-item-lp_lesson .handle.learn-press-icon:before {
     content: "\e900";
 }
 
-#course_curriculum .lp-item-lp_quiz .handle.learn-press-icon:before {
+#lp-course-curriculum .lp-item-lp_quiz .handle.learn-press-icon:before {
     content: "\e901";
 }
 
-#course_curriculum .lp-section-item.lp-item-new .handle {
+#lp-course-curriculum .lp-section-item.lp-item-new .handle {
     color: #999;
 }
 
-#course_curriculum .curriculum-section-items .lp-section-item:hover,
-#course_curriculum .curriculum-section-items .lp-section-item:hover input.lp-item-name {
+#lp-course-curriculum .curriculum-section-items .lp-section-item:hover,
+#lp-course-curriculum .curriculum-section-items .lp-section-item:hover input.lp-item-name {
     background-color: #F9F9F9;
 }
 
-#course_curriculum .lp-section-item .handle {
+#lp-course-curriculum .lp-section-item .handle {
     width: 32px;
     height: 32px;
     display: inline-block;
@@ -310,15 +320,15 @@
     color: #00A0D2;
 }
 
-#course_curriculum .lp-section-item.remove input.lp-item-name {
+#lp-course-curriculum .lp-section-item.remove input.lp-item-name {
     color: #FF0000;
 }
 
-#course_curriculum .lp-section-item.ui-sortable-helper {
+#lp-course-curriculum .lp-section-item.ui-sortable-helper {
 
 }
 
-#course_curriculum .lp-section-item input.lp-item-name {
+#lp-course-curriculum .lp-section-item input.lp-item-name {
     color: #777;
     border: none;
     box-shadow: none;
@@ -331,7 +341,7 @@
     white-space: nowrap;
 }
 
-#course_curriculum .lp-section-describe {
+#lp-course-curriculum .lp-section-describe {
     border: none;
     box-shadow: none;
     color: #999;
@@ -341,12 +351,12 @@
     padding-left: 0;
 }
 
-#course_curriculum .curriculum-section-items .lp-section-item input.lp-item-name:focus,
-#course_curriculum input:focus {
+#lp-course-curriculum .curriculum-section-items .lp-section-item input.lp-item-name:focus,
+#lp-course-curriculum input:focus {
     color: #444;
 }
 
-#course_curriculum .lp-section-item .section-item-icon {
+#lp-course-curriculum .lp-section-item .section-item-icon {
     width: 32px;
     white-space: nowrap;
 }
@@ -364,19 +374,19 @@
     border: 1px solid transparent;
 }
 
-#course_curriculum .lp-section-item .learn-press-icon.item-lp_quiz:before {
+#lp-course-curriculum .lp-section-item .learn-press-icon.item-lp_quiz:before {
     content: "\f469";
 }
 
-#course_curriculum .lp-section-item .learn-press-icon.item-lp_lesson:before {
+#lp-course-curriculum .lp-section-item .learn-press-icon.item-lp_lesson:before {
     content: "\f330";
 }
 
-#course_curriculum .lp-section-item .learn-press-icon.item-selected,
-#course_curriculum .lp-section-item[data-item_id=""] .learn-press-icon:hover {
+#lp-course-curriculum .lp-section-item .learn-press-icon.item-selected,
+#lp-course-curriculum .lp-section-item[data-item_id=""] .learn-press-icon:hover {
 }
 
-#course_curriculum .lp-section-item td {
+#lp-course-curriculum .lp-section-item td {
     height: 30px;
 }
 

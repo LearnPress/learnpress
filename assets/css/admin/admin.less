@@ -8,6 +8,18 @@
 @primary-icon-color: #666666;
 @primary-icon-hover-color: #00a0d2;
 
+input:focus::-webkit-input-placeholder {
+    color: transparent !important;
+}
+
+input:focus::-moz-placeholder {
+    color: transparent !important;
+}
+
+input:focus:-moz-placeholder {
+    color: transparent !important;
+}
+
 .rwmb-field {
     margin: 20px 0 20px 0;
     .rwmb-input {
@@ -41,29 +53,6 @@
 
 .learn-press-quick-add-page-inline > * {
     vertical-align: top;
-}
-
-.post-type-lp_course {
-    & .column-price, & .column-students {
-        width: 10%;
-    }
-
-    #course_curriculum .curriculum-section-items .lp-item-empty td.section-item-input {
-        padding-left: 40px;
-        &.hover {
-            padding-left: 0;
-        }
-    }
-
-    .type-lp_course {
-
-        &.status-pending {
-            .row-actions .view {
-                display: none;
-            }
-        }
-    }
-
 }
 
 #learn-press-admin-settings {

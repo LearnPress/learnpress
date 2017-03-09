@@ -34,7 +34,7 @@
 		},
 		render           : function () {
 			this.$editor = this.template('course-editor');
-			var $curriculum = this.$editor.find('#course-curriculum');
+			var $curriculum = this.$editor.find('#lp-course-curriculum');
 			this.model.sections.forEach(function (section) {
 				var $section = this._createSection(section);
 				$curriculum.append($section);
@@ -69,8 +69,8 @@
 				axis       : 'y',
 				handle     : '.section-item-move',
 				connectWith: '.section-items',
-				stop: function(e, ui){
-					if(!ui.item.hasClass('ui-draggable')){
+				stop       : function (e, ui) {
+					if (!ui.item.hasClass('ui-draggable')) {
 						return;
 					}
 					var temp_id = parseInt($(this).closest('.course-section').data('temp_id')),
@@ -88,7 +88,7 @@
 			$section.find('.section-content-types li').draggable({
 				revert           : 'invalid',
 				connectToSortable: '.section-items',
-				helper           : function(){
+				helper           : function () {
 
 					var $helper = $(this).clone();
 					$helper.get(0).className = 'ui-draggable ui-draggable-handle course-section-item';
@@ -99,7 +99,7 @@
 				accept: '.dashicons',
 				drop  : function (e, ui) {
 
-					if(!xxx.check(10)){
+					if (!xxx.check(10)) {
 						//return;
 					}
 
@@ -149,7 +149,7 @@
 			this.model.sections.add(section);
 
 			var $section = this._createSection(section);
-			this.$editor.find('#course-curriculum').append($section);
+			this.$editor.find('#lp-course-curriculum').append($section);
 			$section.find('.section-name').focus();
 		},
 		_showContentTypes: function (e) {
