@@ -2190,7 +2190,7 @@ function learn_press_user_profile_link( $user_id = 0, $tab = null ) {
 		if ( is_numeric( $user_id ) ) {
 			$user = get_user_by( 'id', $user_id );
 		} else {
-			$user = get_user_by( 'login', $user_id );
+			$user = get_user_by( 'login', urldecode($user_id) );
 		}
 	}
 
