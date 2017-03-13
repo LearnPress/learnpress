@@ -196,10 +196,11 @@ https://www.transifex.com/projects/p/learnpress/
 = 2.1.5 =
 + Added feature allow creating an order for multi users
 + Added option to force an action can be triggered after updated order
-+ Improved emails system ( add emails: order status changed for user, course enrolled for admin, course updated for admin )
 + Added hook for logout redirection
++ Improved emails system ( add emails: order status changed for user, course enrolled for admin, course updated for admin )
 + Fixed 'Preview' label can not click-able
 + Fixed option 'Show correct answer' does not work correctly
++ Re-added Recent/Popular/Featured widgets and shortcodes
 
 = 2.1.4.2 =
 + Fixed issue can not view lesson
