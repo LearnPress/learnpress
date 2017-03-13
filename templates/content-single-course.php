@@ -17,6 +17,7 @@ if ( post_password_required() ) {
 	echo get_the_password_form();
 	return;
 }
+
 ?>
 <?php do_action( 'learn_press_before_main_content' ); ?>
 

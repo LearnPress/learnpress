@@ -1214,7 +1214,7 @@ function learn_press_get_currency_symbol( $currency = '' ) {
 
 function learn_press_get_page_link( $key ) {
 	$page_id = LP()->settings->get( $key . '_page_id' );
-	if ( $page_id && get_post_status( $page_id ) == 'publish' ) {
+	if ( get_post_status( $page_id ) == 'publish' ) {
 		$link = apply_filters( 'learn_press_get_page_link', get_permalink( $page_id ), $page_id, $key );
 	} else {
 		$link = '';
@@ -2313,6 +2313,7 @@ function learn_press_auto_enroll_user_to_courses( $order_id ) {
 	if ( !$users = $order->get_user_data() ) {
 		return;
 	}
+
 	$return = 0;
 	foreach ( $items as $item_id => $item ) {
 		$course = learn_press_get_course( $item['course_id'] );
@@ -2770,7 +2771,10 @@ function learn_press_comment_reply_link( $link, $args = array(), $comment = null
 			);
 
 			$link = sprintf( "<a rel='nofollow' class='comment-reply-link' href='%s' onclick='%s' aria-label='%s'>%s</a>",
-				esc_url( add_query_arg( array( 'replytocom' => $comment->comment_ID, 'content-item-only' => 'yes' ), get_permalink( $post->ID ) ) ) . "#" . $args['respond_id'],
+				esc_url( add_query_arg( array(
+					'replytocom'        => $comment->comment_ID,
+					'content-item-only' => 'yes'
+				), get_permalink( $post->ID ) ) ) . "#" . $args['respond_id'],
 				$onclick,
 				esc_attr( sprintf( $args['reply_to_text'], $comment->comment_author ) ),
 				$args['reply_text']

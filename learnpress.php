@@ -309,13 +309,6 @@ if ( !class_exists( 'LearnPress' ) ) {
 		}
 
 		/**
-		 * Init widgets
-		 */
-		public function widgets_init() {
-			do_action( 'lp_widgets_init' );
-		}
-
-		/**
 		 * Get session object instance
 		 *
 		 * @return mixed
@@ -440,13 +433,14 @@ if ( !class_exists( 'LearnPress' ) ) {
 				require_once( 'inc/admin/settings/class-lp-settings-base.php' );
 			}
 			$this->settings = LP_Settings::instance();
-			//if ( !is_admin() ) {
 			require_once 'inc/class-lp-assets.php';
-			//}
 			require_once 'inc/question/abstract-lp-question.php';
 			require_once 'inc/question/class-lp-question-factory.php';
-
 			$this->include_post_types();
+
+			if ( defined( 'LP_USE_ATTRIBUTES' ) && LP_USE_ATTRIBUTES ) {
+				require_once 'inc/attributes/lp-attributes-functions.php';
+			}
 
 			// course
 			require_once 'inc/course/lp-course-functions.php';
@@ -489,17 +483,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 
 				// shortcodes
 				require_once 'inc/class-lp-shortcodes.php';
-				// Include short-code file
-				require_once 'inc/shortcodes/archive-courses.php';
-				require_once 'inc/shortcodes/recent-courses/recent-courses.php';
-				require_once 'inc/shortcodes/popular-courses/popular-courses.php';
-				require_once 'inc/shortcodes/featured-courses/featured-courses.php';
 			}
-
-			//include widgets
-			require_once 'inc/widgets/recent-courses/recent-course-widget.php';
-			require_once 'inc/widgets/popular-courses/popular-course-widget.php';
-			require_once 'inc/widgets/featured-courses/featured-course-widget.php';
 
 			// include template functions
 			require_once( 'inc/lp-template-functions.php' );
@@ -517,6 +501,9 @@ if ( !class_exists( 'LearnPress' ) ) {
 			require_once 'inc/class-lp-ajax.php';
 			require_once 'inc/class-lp-multi-language.php';
 			require_once 'inc/class-lp-page-controller.php';
+
+			// widgets
+			LP_Widget::register( array( 'featured-courses', 'popular-courses', 'recent-courses' ) );
 
 			$GLOBALS['lp_query'] = $this->query = new LP_Query();
 

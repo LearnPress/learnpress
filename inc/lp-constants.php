@@ -39,3 +39,8 @@ define( 'LP_TEACHER_ROLE', 'lp_teacher' );
 
 // Turn debug mode on/off
 define( 'LP_DEBUG', true );
+
+// Options
+define( 'LP_USE_ATTRIBUTES', false );
+define( 'LP_WIDGET_PATH', LP_PLUGIN_PATH . 'inc/widgets' );
+define( 'LP_WIDGET_URL', LP_PLUGIN_URL . 'inc/widgets' );

@@ -89,7 +89,7 @@ class LP_Page_Controller {
 
 				if ( !empty( $wp_query->query['paged'] ) ) {
 					if ( $wp_rewrite->using_permalinks() ) {
-						$redirect = $redirect . 'page/' . $wp_query->query['paged'];
+						$redirect = $redirect . 'page/' . $wp_query->query['paged'] . '/';
 					} else {
 						$redirect = add_query_arg( 'paged', $wp_query->query['paged'], $redirect );
 					}
