@@ -335,8 +335,17 @@ function _learn_press_get_course_terms_parent_usort_callback( $a, $b ) {
 	return ( $a->parent < $b->parent ) ? 1 : - 1;
 }
 
-
+/**
+ * @param      $name
+ * @param      $type
+ * @param bool $single
+ *
+ * @return array|bool|null|WP_Post
+ */
 function learn_press_get_post_by_name( $name, $type, $single = true ) {
+	// Ensure that post name has to be sanitized. Fixed in 2.1.6
+	$name       = sanitize_title( $name );
+
 	$post_names = LP_Cache::get_post_names( false, array() );
 	$post       = false;
 	if ( !empty( $post_names[$type][$name] ) ) {
@@ -2643,7 +2652,7 @@ if ( !function_exists( 'learn_press_cancel_order_process' ) ) {
  */
 function learn_press_get_current_time() {
 	$current_time = apply_filters( 'learn_press_get_current_time', 0 );
-	if( $current_time > 0 ) {
+	if ( $current_time > 0 ) {
 		return $current_time;
 	}
 	$a = current_time( "timestamp" );

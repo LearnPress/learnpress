@@ -235,13 +235,11 @@ function _learn_press_get_courses_curriculum( $course_ids, $force = false ) {
 						$fetched_posts[] = $quiz_id;
 					}
 				}
-				foreach($quiz_ids as $quiz_id){
+				foreach ( $quiz_ids as $quiz_id ) {
 					//print_r(wp_cache_get($quiz_id, 'posts'));
 				}
 
 				if ( $fetched_posts ) {
-					print_r($fetched_posts);
-					die();
 					$quiz_ids = array_diff( $quiz_ids, $fetched_posts );
 
 					if ( $quiz_ids ) {

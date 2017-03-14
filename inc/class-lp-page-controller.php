@@ -361,7 +361,7 @@ class LP_Page_Controller {
 				$post = get_post( $q->query_vars['p'] );
 			} else {
 				$course_name = $q->get( 'lp_course' );
-				$post        = learn_press_get_post_by_name( $course_name, 'lp_course', true );
+				$post = learn_press_get_post_by_name( $course_name, 'lp_course', true );
 			}
 
 			if ( !$post ) {

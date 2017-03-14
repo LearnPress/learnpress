@@ -688,3 +688,16 @@ function load_learn_press() {
  * Create new instance of LearnPress and put it to global
  */
 $GLOBALS['LearnPress'] = LP();
+
+
+add_action('wp_redirect', function($url){
+	$i = learn_press_get_request('index');
+	if(!$i){ $i = 1; }
+	$url = add_query_arg('index', $i++, $url);
+	if($i > 10){
+		die();
+	}
+
+	LP_Debug::instance()->add(func_get_args());
+	return $url;
+});
