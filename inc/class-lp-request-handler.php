@@ -40,6 +40,7 @@ class LP_Request_Handler {
 	}
 
 	public static function get_header() {
+		die();
 		ob_start();
 	}
 

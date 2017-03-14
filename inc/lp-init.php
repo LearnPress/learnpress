@@ -229,9 +229,27 @@ function _learn_press_get_courses_curriculum( $course_ids, $force = false ) {
 			}
 			wp_cache_replace( $course_id, $course, 'posts' );
 			if ( $quiz_ids ) {
-				$question_ids = _learn_press_get_quiz_questions( $quiz_ids );
-				if ( $question_ids ) {
-					$meta_cache_ids = array_merge( $meta_cache_ids, $question_ids );
+				$fetched_posts = array();
+				foreach ( $quiz_ids as $quiz_id ) {
+					if ( wp_cache_get( $quiz_id, 'posts' ) ) {
+						$fetched_posts[] = $quiz_id;
+					}
+				}
+				foreach($quiz_ids as $quiz_id){
+					//print_r(wp_cache_get($quiz_id, 'posts'));
+				}
+
+				if ( $fetched_posts ) {
+					print_r($fetched_posts);
+					die();
+					$quiz_ids = array_diff( $quiz_ids, $fetched_posts );
+
+					if ( $quiz_ids ) {
+						$question_ids = _learn_press_get_quiz_questions( $quiz_ids );
+						if ( $question_ids ) {
+							$meta_cache_ids = array_merge( $meta_cache_ids, $question_ids );
+						}
+					}
 				}
 			}
 			$curriculum[$course_id] = $_curriculum;
