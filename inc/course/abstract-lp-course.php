@@ -1131,12 +1131,22 @@ abstract class LP_Abstract_Course {
 		return apply_filters( 'learn_press_course_result_html', $html, $this->id, $user_id );
 	}
 
-	protected function _evaluate_course_by_items( $user_id = 0, $force = false ) {
+	protected function _evaluate_course_by_items( $user_id = 0, $force = false, $type='' ) {
 		$items  = $this->get_curriculum_items();
 		$result = 0;
 		if ( $items ) {
-			$completed_items = $this->count_completed_items( $user_id, $force );
+			$completed_items = $this->count_completed_items( $user_id, $force, $type );
 			$result          = round( $completed_items / sizeof( $items ) * 100 );
+		}
+		return apply_filters( 'learn_press_course_results_by_items', $result, $this->id, $user_id );
+	}
+
+	protected function _evaluate_course_by_lessons( $user_id = 0, $force = false, $type='' ) {
+		$lessons = $this->get_lessons();
+		$result = 0;
+		if ( $lessons ) {
+			$completed_items = $this->count_completed_items( $user_id, $force, 'lp_lesson' );
+			$result          = round( $completed_items / sizeof( $lessons ) * 100 );
 		}
 		return apply_filters( 'learn_press_course_results_by_items', $result, $this->id, $user_id );
 	}
@@ -1241,7 +1251,8 @@ abstract class LP_Abstract_Course {
 	 *
 	 * @return int|mixed|null|void
 	 */
-	public function get_completed_items( $user_id = 0, $items = array(), $force = false ) {
+	public function get_completed_items( $user_id = 0, $force = false, $type='' ) {
+//	public function get_completed_items( $user_id = 0, $items = array(), $force = false, $type='' ) {
 		if ( !$user_id ) {
 			$user_id = get_current_user_id();
 		}
@@ -1252,6 +1263,9 @@ abstract class LP_Abstract_Course {
 			if ( $curriculum_items = $this->post->curriculum_items ) {
 				$curriculum_items = maybe_unserialize( $curriculum_items );
 				foreach ( $curriculum_items as $item_id ) {
+					if( $type && $type!==  get_post_type( $item_id)){
+						continue;
+					}
 					$k = sprintf( '%d-%d-%d', $user_id, $this->id, $item_id );
 					if ( !empty( $item_statuses[$k] ) && $item_statuses[$k] == 'completed' ) {
 						$completed_items[] = $item_id;
@@ -1268,8 +1282,8 @@ abstract class LP_Abstract_Course {
 	 *
 	 * @return mixed|void
 	 */
-	public function count_completed_items( $user_id = 0, $force = false ) {
-		$items = $this->get_completed_items( $user_id, $force );
+	public function count_completed_items( $user_id = 0, $force = false, $type='' ) {
+		$items = $this->get_completed_items( $user_id, $force, $type );
 		$count = 0;
 		if ( $items ) {
 			$count = sizeof( $items );

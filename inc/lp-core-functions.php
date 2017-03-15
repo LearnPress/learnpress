@@ -335,8 +335,17 @@ function _learn_press_get_course_terms_parent_usort_callback( $a, $b ) {
 	return ( $a->parent < $b->parent ) ? 1 : - 1;
 }
 
-
+/**
+ * @param      $name
+ * @param      $type
+ * @param bool $single
+ *
+ * @return array|bool|null|WP_Post
+ */
 function learn_press_get_post_by_name( $name, $type, $single = true ) {
+	// Ensure that post name has to be sanitized. Fixed in 2.1.6
+	$name       = sanitize_title( $name );
+
 	$post_names = LP_Cache::get_post_names( false, array() );
 	$post       = false;
 	if ( !empty( $post_names[$type][$name] ) ) {
@@ -2310,34 +2319,39 @@ function learn_press_auto_enroll_user_to_courses( $order_id ) {
 		return;
 	}
 
-	if ( !$user = $order->get_user() ) {
+	if ( !$users = $order->get_user_data() ) {
 		return;
 	}
-
 	$return = 0;
 	foreach ( $items as $item_id => $item ) {
 		$course = learn_press_get_course( $item['course_id'] );
 		if ( !$course ) {
 			continue;
 		}
-		if ( $user->has( 'enrolled-course', $course->id ) ) {
-			continue;
+		foreach ( $users as $uid => $data ) {
+			$user = learn_press_get_user( $uid );
+			if ( !$user->is_exists() ) {
+				continue;
+			}
+			if ( $user->has( 'enrolled-course', $course->id ) ) {
+				continue;
+			}
+			// error. this scripts will create new order each course item
+			// $return = $user->enroll( $course->id, $order_id );
+			$return = learn_press_update_user_item_field( array(
+				'user_id'    => $user->ID,
+				'item_id'    => $course->id,
+				'start_time' => current_time( 'mysql' ),
+				'status'     => 'enrolled',
+				'end_time'   => '0000-00-00 00:00:00',
+				'ref_id'     => $order->id, //$course->id,
+				'item_type'  => 'lp_course',
+				'ref_type'   => 'lp_order',
+				'parent_id'  => $user->get_course_history_id( $course->id )
+			) );
+			///learn_press_update_user_item_meta( $return, '_lp_order', $order->id );
+			//learn_press_update_user_item_meta( $return, '_lp_active', 'yes' );
 		}
-		// error. this scripts will create new order each course item
-		// $return = $user->enroll( $course->id, $order_id );
-		$return = learn_press_update_user_item_field( array(
-			'user_id'    => $user->ID,
-			'item_id'    => $course->id,
-			'start_time' => current_time( 'mysql' ),
-			'status'     => 'enrolled',
-			'end_time'   => '0000-00-00 00:00:00',
-			'ref_id'     => $course->id,
-			'item_type'  => 'lp_course',
-			'ref_type'   => 'lp_order',
-			'parent_id'  => $user->get_course_history_id( $course->id )
-		) );
-
-
 	}
 	return $return;
 }
@@ -2637,6 +2651,10 @@ if ( !function_exists( 'learn_press_cancel_order_process' ) ) {
  * get current time to user for caculate remaining time of quiz
  */
 function learn_press_get_current_time() {
+	$current_time = apply_filters( 'learn_press_get_current_time', 0 );
+	if ( $current_time > 0 ) {
+		return $current_time;
+	}
 	$a = current_time( "timestamp" );
 	$b = current_time( "timestamp", true );
 	$c = current_time( "mysql" );

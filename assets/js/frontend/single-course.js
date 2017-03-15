@@ -295,7 +295,7 @@ if (typeof LearnPress === 'undefined') {
 				$progress = this.$('.course-progress').find('.number, .percentage-sign'),
 				$itemProgress = this.$('.items-progress').find('.number, .percentage-sign');
 			$progress.eq(0).html(parseInt(data.results));
-			this.$('.lp-progress-value').width(parseInt(data.results) + '%');
+			this.$('.course-progress .lp-progress-value').width(parseInt(data.results) + '%');
 			data.items && data.items.forEach(function (item) {
 				var $item = this.$('.course-item.course-item-' + item.id);
 				if (!sections[item.section_id]) {
@@ -327,6 +327,7 @@ if (typeof LearnPress === 'undefined') {
 			$itemProgress.eq(0).html(data.completed_items_text.replace('%d', itemsCompleted).replace('%d', itemsCount));
 			var passingCondition = parseInt(this.$('.course-progress .lp-course-progress').data('passing-condition'));
 			this.$('.button-finish-course').toggleClass('hide-if-js', !(data.results >= passingCondition));
+			
 			if (data.setUrl) {
 				LP.setUrl(data.setUrl);
 			}

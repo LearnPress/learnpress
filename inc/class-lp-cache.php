@@ -591,8 +591,8 @@ class LP_Cache {
 						if ( $wp_object_cache->reset_generation( $bucket ) === false ) {
 							$mc->flush();
 							$wp_object_cache->reset_generation( $bucket );
-						}
 					}
+				}
 				}
 			}
 		}

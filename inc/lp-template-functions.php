@@ -672,62 +672,7 @@ if ( !function_exists( 'learn_press_user_profile_tabs' ) ) {
 		if ( !$user ) {
 			$user = learn_press_get_current_user();
 		}
-		$course_endpoint = LP()->settings->get( 'profile_endpoints.profile-courses' );
-		if ( !$course_endpoint ) {
-			$course_endpoint = 'profile-courses';
-		}
-
-		$quiz_endpoint = LP()->settings->get( 'profile_endpoints.profile-quizzes' );
-		if ( !$quiz_endpoint ) {
-			$quiz_endpoint = 'profile-quizzes';
-		}
-
-		$order_endpoint = LP()->settings->get( 'profile_endpoints.profile-orders' );
-		if ( !$order_endpoint ) {
-			$order_endpoint = 'profile-orders';
-		}
-
-		$view_order_endpoint = LP()->settings->get( 'profile_endpoints' );
-		if ( !$view_order_endpoint ) {
-			$view_order_endpoint = 'order';
-		}
-
-		$defaults = array(
-			$course_endpoint => array(
-				'title'    => __( 'Courses', 'learnpress' ),
-				'callback' => 'learn_press_profile_tab_courses_content'
-			),
-			/*$quiz_endpoint   => array(
-				'title'    => __( 'Quiz Results', 'learnpress' ),
-				'callback' => 'learn_press_profile_tab_quizzes_content'
-			)*/
-		);
-
-		if ( $user->id == get_current_user_id() ) {
-			$defaults[$order_endpoint] = array(
-				'title'    => __( 'Orders', 'learnpress' ),
-				'callback' => 'learn_press_profile_tab_orders_content'
-			);
-		}
-
-		$tabs = apply_filters( 'learn_press_user_profile_tabs', $defaults, $user );
-		if ( $user->id == get_current_user_id() ) {
-			$tabs['edit'] = array(
-				'title'    => apply_filters( 'learn_press_user_profile_tab_edit_title', __( 'Edit', 'learnpress' ) ),
-				'callback' => 'learn_press_profile_tab_edit_content'
-			);
-		}
-
-
-		foreach ( $tabs as $slug => $opt ) {
-			if ( !empty( $defaults[$slug] ) ) {
-				continue;
-			}
-			LP()->query_vars[$slug] = $slug;
-			add_rewrite_endpoint( $slug, EP_ROOT | EP_PAGES );
-		}
-
-		return $tabs;
+		return LP_Profile::instance($user->id)->get_tabs();
 	}
 }
 
@@ -737,8 +682,12 @@ if ( !function_exists( 'learn_press_output_user_profile_info' ) ) {
 	 *
 	 * @param $user
 	 */
-	function learn_press_output_user_profile_info( $user, $current, $tabs ) {
-		learn_press_get_template( 'profile/info.php', array( 'user' => $user, 'tabs' => $tabs, 'current' => $current ) );
+	function learn_press_output_user_profile_info ( $user, $current, $tabs ) {
+		learn_press_get_template( 'profile/info.php', array(
+			'user'    => $user,
+			'tabs'    => $tabs,
+			'current' => $current
+		) );
 	}
 }
 
@@ -753,9 +702,12 @@ if ( !function_exists( 'learn_press_single_quiz_title' ) ) {
 }
 
 
-if ( !function_exists( 'learn_press_after_quiz_question_title' ) ) {
-	function learn_press_single_quiz_question_answer( $question_id = null, $quiz_id = null ) {
-		learn_press_get_template( 'content-quiz/question-answer.php', array( 'question_id' => $question_id, 'quiz_id' => $quiz_id ) );
+if ( ! function_exists( 'learn_press_after_quiz_question_title' ) ) {
+	function learn_press_single_quiz_question_answer ( $question_id = null, $quiz_id = null ) {
+		learn_press_get_template( 'content-quiz/question-answer.php', array(
+			'question_id' => $question_id,
+			'quiz_id'     => $quiz_id
+		) );
 	}
 }
 
@@ -795,8 +747,11 @@ if ( !function_exists( 'learn_press_course_lesson_class' ) ) {
 			return '';
 		}
 
-		if ( is_string( $class ) && $class ) $class = preg_split( '!\s+!', $class );
-		else $class = array();
+		if ( is_string( $class ) && $class ) {
+			$class = preg_split( '!\s+!', $class );
+		} else {
+			$class = array();
+		}
 
 		$classes = array(
 			'course-lesson course-item course-item-' . $lesson_id
@@ -845,8 +800,11 @@ if ( !function_exists( 'learn_press_course_quiz_class' ) ) {
 		if ( !$course_id ) {
 			$course_id = get_the_ID();
 		}
-		if ( is_string( $class ) && $class ) $class = preg_split( '!\s+!', $class );
-		else $class = array();
+		if ( is_string( $class ) && $class ) {
+			$class = preg_split( '!\s+!', $class );
+		} else {
+			$class = array();
+		}
 
 		$course = learn_press_get_course( $course_id );
 		if ( !$course ) {
@@ -1173,7 +1131,10 @@ function learn_press_get_template_part( $slug, $name = '' ) {
 
 	// Look in yourtheme/slug-name.php and yourtheme/learnpress/slug-name.php
 	if ( $name ) {
-		$template = locate_template( array( "{$slug}-{$name}.php", learn_press_template_path() . "/{$slug}-{$name}.php" ) );
+		$template = locate_template( array(
+			"{$slug}-{$name}.php",
+			learn_press_template_path() . "/{$slug}-{$name}.php"
+		) );
 	}
 
 	// Get default slug-name.php
@@ -1545,7 +1506,10 @@ if ( !function_exists( 'learn_press_get_profile_display_name' ) ) {
 	 *
 	 * @return string
 	 */
-	function learn_press_get_profile_display_name( $user ) {
+	function learn_press_get_profile_display_name ( $user ) {
+		if ( empty( $user ) ) {
+			return '';
+		}
 		$info = get_userdata( $user->ID );
 		return $info ? $info->display_name : '';
 	}

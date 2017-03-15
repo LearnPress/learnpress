@@ -339,7 +339,6 @@
 #learn-press-course-curriculum .course-item-meta {
   display: block;
   line-height: 1;
-  __position: absolute;
   top: 15px;
   right: 15px;
   float: right;
@@ -1928,6 +1927,17 @@ body.block-content #learn-press-block-content {
 .lp-form-field-wrap .lp-form-field .lp-field-error-message {
   color: #FF0000;
 }
+.learn-press-user-profile #learn-press-user-info .user-avatar {
+  width: 150px;
+  float: left;
+}
+.learn-press-user-profile #learn-press-user-info .user-avatar .avatar {
+  border-radius: 0;
+  width: 100%;
+}
+.learn-press-user-profile #learn-press-user-info .user-basic-info {
+  margin-left: 170px;
+}
 .learn-press-user-profile .lp-edit-profile:after {
   display: block;
   content: '';
@@ -2359,48 +2369,37 @@ body.content-item-only #learn-press-content-item.expand {
   content: '-';
 }
 /*
-.sidebar-hide-btn, .sidebar-show-btn {
-    cursor: pointer;
-    width: 60px;
-    height: 60px;
-    display: inline-block;
-    font-size: 34px;
-    line-height: 60px;
-    text-align: center;
-    color: #FFF;
-    position: absolute;
-
-
+.payment-method-form {
+    &.payment_method_authorizenet {
+        background: #f7f7f7;
+        border-radius: 5px;
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+        padding-top: 25px;
+        .row-fluid {
+            clear: both;
+            padding-bottom: 25px;
+            .span6 {
+                &:first-child {
+                    width: 50%;
+                    float: left;
+                    label {
+                        margin-left: 17px;
+                    }
+                    select, input {
+                        margin-left: 10px;
+                    }
+                }
+                select, input {
+                    padding: 8px 0;
+                }
+                select.required {
+                    color: #000;
+                }
+            }
+        }
+    }
 }*/
-.payment-method-form.payment_method_authorizenet {
-  background: #f7f7f7;
-  border-radius: 5px;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  padding-top: 25px;
-}
-.payment-method-form.payment_method_authorizenet .row-fluid {
-  clear: both;
-  padding-bottom: 25px;
-}
-.payment-method-form.payment_method_authorizenet .row-fluid .span6:first-child {
-  width: 50%;
-  float: left;
-}
-.payment-method-form.payment_method_authorizenet .row-fluid .span6:first-child label {
-  margin-left: 17px;
-}
-.payment-method-form.payment_method_authorizenet .row-fluid .span6:first-child select,
-.payment-method-form.payment_method_authorizenet .row-fluid .span6:first-child input {
-  margin-left: 10px;
-}
-.payment-method-form.payment_method_authorizenet .row-fluid .span6 select,
-.payment-method-form.payment_method_authorizenet .row-fluid .span6 input {
-  padding: 8px 0;
-}
-.payment-method-form.payment_method_authorizenet .row-fluid .span6 select.required {
-  color: #000;
-}
 .place-order-action {
   margin-top: 20px;
 }
@@ -2423,6 +2422,9 @@ body.content-item-only #learn-press-content-item.expand {
   float: right;
   z-index: 10;
   position: relative;
+}
+.table-orders .order-status.order-status-removed {
+  color: #FF0000;
 }
 /* Shortcode/Widgets */
 .recent-courses-widget .course-meta-data > div,
@@ -2570,11 +2572,17 @@ body.content-item-only #learn-press-content-item.expand {
     margin-left: 0;
   }
 }
+/*
 @media (max-width: 480px) {
-  .woocommerce .checkout_coupon .form-row {
-    width: 100%;
-  }
+    .woocommerce {
+        .checkout_coupon {
+            .form-row {
+                width: 100%;
+            }
+        }
+    }
 }
+*/
 @media (max-width: 400px) {
   .learn-press-courses li.course {
     width: 100%;
@@ -2596,29 +2604,35 @@ body.content-item-only #learn-press-content-item.expand {
     display: none;
   }
 }
+/*
 @media screen and (max-width: 615px) {
-  .payment-method-form.payment_method_authorizenet .row-fluid {
-    padding-bottom: 15px;
-  }
-  .payment-method-form.payment_method_authorizenet .row-fluid .span6:first-child {
-    width: 100%;
-    margin-bottom: 15px;
-  }
-  .payment-method-form.payment_method_authorizenet .row-fluid .span6 label {
-    margin-left: 17px;
-  }
-  .payment-method-form.payment_method_authorizenet .row-fluid .span6 select,
-  .payment-method-form.payment_method_authorizenet .row-fluid .span6 input {
-    margin-left: 10px;
-  }
-  .payment-method-form.payment_method_authorizenet .row-fluid .span6 select,
-  .payment-method-form.payment_method_authorizenet .row-fluid .span6 input {
-    padding: 8px 0;
-  }
-  .payment-method-form.payment_method_authorizenet .row-fluid .span6 select.required {
-    color: #000;
-  }
-  .payment-method-form.payment_method_authorizenet .row-fluid .span6 #learn-press-authorizenet-payment-expmonth {
-    margin-bottom: 10px;
-  }
+    .payment-method-form {
+        &.payment_method_authorizenet {
+            .row-fluid {
+                padding-bottom: 15px;
+                .span6 {
+                    &:first-child {
+                        width: 100%;
+                        margin-bottom: 15px;
+                    }
+                    label {
+                        margin-left: 17px;
+                    }
+                    select, input {
+                        margin-left: 10px;
+                    }
+                    select, input {
+                        padding: 8px 0;
+                    }
+                    select.required {
+                        color: #000;
+                    }
+                    #learn-press-authorizenet-payment-expmonth {
+                        margin-bottom: 10px;
+                    }
+                }
+            }
+        }
+    }
 }
+*/

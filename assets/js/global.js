@@ -142,7 +142,9 @@ if (typeof window.LP == 'undefined') {
 		return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 	};
 	String.prototype.addQueryVar = function (name, value) {
-		var url = this;
+		var url = this,
+			m = url.split('#');
+		url = m[0];
 		if (name.match(/\[/)) {
 			url += url.match(/\?/) ? '&' : '?';
 			url += name + '=' + value;
@@ -154,14 +156,16 @@ if (typeof window.LP == 'undefined') {
 				url += name + '=' + value;
 			}
 		}
-		return url;
+		return url + ( m[1] ? '#' + m[1] : '');
 	};
 	String.prototype.removeQueryVar = function (name) {
-		var url = this;
+		var url = this,
+			m = url.split('#');
+		url = m[0];
 		name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
 		var regex = new RegExp("[\\?&]" + name + "([\[][^=]*)?=([^&#]*)", 'g');
 		url = url.replace(regex, '');
-		return url;
+		return url + ( m[1] ? '#' + m[1] : '');
 	};
 
 	if ($.isEmptyObject("") == false) {

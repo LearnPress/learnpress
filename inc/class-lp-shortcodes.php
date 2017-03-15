@@ -74,14 +74,14 @@ class LP_Shortcodes {
 
 					}
 					if ( $query ) {
-						$profile_endpoints = (array) LP()->settings->get( 'profile_endpoints' );
-						$endpoints         = array_keys( $profile_endpoints );
+
+						$endpoints = learn_press_get_profile_endpoints();
 						foreach ( $query as $k => $v ) {
 							if ( ( $k == 'view' ) ) {
 								if ( !$v ) {
-									$v = reset( $profile_endpoints );
+									$v = reset( $endpoints );
 								}
-								if ( !in_array( $v, apply_filters( 'learn_press_profile_tab_endpoints', $profile_endpoints ) ) ) {
+								if ( !in_array( $v, $endpoints) ) {
 									learn_press_is_404();
 								}
 							}

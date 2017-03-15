@@ -491,7 +491,6 @@
     .course-item-meta {
         display: block;
         line-height: 1;
-        __position: absolute;
         top: 15px;
         right: 15px;
         float: right;
@@ -1122,7 +1121,6 @@ body.block-content {
 }
 
 #quiz-countdown {
-    //.progress-circle(@initialize: 100%, @size: 260px, @inside-size: 200px);
     .progress-circle {
         overflow: hidden;
         box-shadow: 0 0 3px #bdbdbd inset;
@@ -1455,7 +1453,19 @@ body.block-content {
 }
 
 .learn-press-user-profile {
-
+    #learn-press-user-info{
+        .user-avatar {
+            width: 150px;
+            float: left;
+            .avatar {
+                border-radius: 0;
+                width: 100%;
+            }
+        }
+        .user-basic-info{
+            margin-left: 170px;
+        }
+    }
     .lp-edit-profile {
         &:after {
             .clearfix();
@@ -1465,6 +1475,7 @@ body.block-content {
         p {
             margin-top: 10px;
         }
+
     }
     .learn-press-tabs {
         list-style: none;
@@ -1569,8 +1580,6 @@ body.block-content {
                 margin-top: -15px;
             }
         }
-
-
     }
     .update-profile{
         border-top: 2px solid #DDD;
@@ -1669,7 +1678,6 @@ body.block-content {
                 display: block;
             }
         }
-
         &.croping {
             .lp-avatar-preview-actions {
                 display: none;
@@ -1928,22 +1936,7 @@ body.content-item-only {
         }
     }
 }
-
 /*
-.sidebar-hide-btn, .sidebar-show-btn {
-    cursor: pointer;
-    width: 60px;
-    height: 60px;
-    display: inline-block;
-    font-size: 34px;
-    line-height: 60px;
-    text-align: center;
-    color: #FFF;
-    position: absolute;
-
-
-}*/
-
 .payment-method-form {
     &.payment_method_authorizenet {
         background: #f7f7f7;
@@ -1974,7 +1967,7 @@ body.content-item-only {
             }
         }
     }
-}
+}*/
 
 .place-order-action {
     margin-top: 20px;
@@ -2007,6 +2000,14 @@ body.content-item-only {
         float: right;
         z-index: 10;
         position: relative;
+    }
+}
+
+.table-orders{
+    .order-status{
+        &.order-status-removed{
+            color: #FF0000;
+        }
     }
 }
 
@@ -2163,7 +2164,7 @@ body.content-item-only {
     }
 
 }
-
+/*
 @media (max-width: 480px) {
     .woocommerce {
         .checkout_coupon {
@@ -2173,7 +2174,7 @@ body.content-item-only {
         }
     }
 }
-
+*/
 @media (max-width: 400px) {
 
     .learn-press-courses {
@@ -2205,7 +2206,7 @@ body.content-item-only {
         }
     }
 }
-
+/*
 @media screen and (max-width: 615px) {
     .payment-method-form {
         &.payment_method_authorizenet {
@@ -2236,3 +2237,4 @@ body.content-item-only {
         }
     }
 }
+*/

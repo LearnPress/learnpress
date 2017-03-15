@@ -2384,7 +2384,7 @@ class LP_Abstract_User {
 			);
 			$query .= $where . $order . $limit;
 
-			$data = array(
+			$data          = array(
 				'rows' => $wpdb->get_results( $query, OBJECT_K )
 			);
 			$data['count'] = $wpdb->get_var( "SELECT FOUND_ROWS();" );
@@ -2851,6 +2851,10 @@ class LP_Abstract_User {
 			$can = !$this->has( 'started-quiz', $quiz_id, $course_id );
 		}
 		return apply_filters( 'learn_press_user_can_do_quiz', $can, $quiz_id, $this->id, $course_id );
+	}
+
+	public function get_role() {
+		return $this->is_admin() ? 'admin' : ( $this->is_instructor() ? 'instructor' : 'user' );
 	}
 
 	public static function get_user() {

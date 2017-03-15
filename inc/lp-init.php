@@ -229,9 +229,25 @@ function _learn_press_get_courses_curriculum( $course_ids, $force = false ) {
 			}
 			wp_cache_replace( $course_id, $course, 'posts' );
 			if ( $quiz_ids ) {
-				$question_ids = _learn_press_get_quiz_questions( $quiz_ids );
-				if ( $question_ids ) {
-					$meta_cache_ids = array_merge( $meta_cache_ids, $question_ids );
+				$fetched_posts = array();
+				foreach ( $quiz_ids as $quiz_id ) {
+					if ( wp_cache_get( $quiz_id, 'posts' ) ) {
+						$fetched_posts[] = $quiz_id;
+					}
+				}
+				foreach ( $quiz_ids as $quiz_id ) {
+					//print_r(wp_cache_get($quiz_id, 'posts'));
+				}
+
+				if ( $fetched_posts ) {
+					$quiz_ids = array_diff( $quiz_ids, $fetched_posts );
+
+					if ( $quiz_ids ) {
+						$question_ids = _learn_press_get_quiz_questions( $quiz_ids );
+						if ( $question_ids ) {
+							$meta_cache_ids = array_merge( $meta_cache_ids, $question_ids );
+						}
+					}
 				}
 			}
 			$curriculum[$course_id] = $_curriculum;
@@ -548,7 +564,7 @@ function _learn_press_get_user_profile_orders( $user_id = 0, $paged = 1, $limit 
 			SELECT DISTINCT po.*, oi.order_id
 			FROM {$wpdb->prefix}learnpress_order_items oi
 			INNER JOIN {$wpdb->prefix}postmeta pm ON  pm.post_id = oi.order_id AND pm.meta_key = %s AND pm.meta_value = %d
-			INNER JOIN {$wpdb->prefix}posts po ON po.ID = oi.order_id 
+			RIGHT JOIN {$wpdb->prefix}posts po ON po.ID = oi.order_id
 			WHERE po.post_type = %s ORDER BY ID DESC
 		", '_user_id', $user_id, LP_ORDER_CPT );
 		if ( $rows = $wpdb->get_results( $query ) ) {
