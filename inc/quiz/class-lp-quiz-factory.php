@@ -30,6 +30,15 @@ class LP_Quiz_Factory {
 			LP_Request_Handler::register_ajax( $k, array( __CLASS__, $v ) );
 		}
 		add_action( 'learn_press_after_single_quiz_summary', array( __CLASS__, 'output_quiz_params' ) );
+		add_action( 'delete_post', array( __CLASS__, 'delete_quiz' ), 10, 2 );
+	}
+
+	public static function delete_quiz( $post_id, $force=false ) {
+		global $wpdb;
+		if('lp_quiz' === get_post_type($post_id) ){
+			$sql = 'DELETE FROM `'.$wpdb->prefix.'learnpress_quiz_questions` AS lqq WHERE `lqq`.`quiz_id` = '.$post_id;
+			$wpdb->query($sql);
+		}
 	}
 
 	public static function output_quiz_params( $quiz ) {
