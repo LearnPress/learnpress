@@ -39,7 +39,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			add_action( 'init', array( $this, 'register_taxonomy' ) );
 			add_filter( 'get_edit_post_link', array( $this, 'add_course_tab_arg' ) );
 			add_filter( "rwmb__lpr_course_price_html", array( $this, 'currency_symbol' ), 5, 3 );
-
+			add_filter( 'learn_press_loop_section_buttons', array( __CLASS__, 'add_section_buttons' ) );
 			if ( self::$_enable_review ) {
 				add_action( 'post_submitbox_start', array( $this, 'post_review_message_box' ) );
 			}
@@ -49,6 +49,25 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 				add_action( 'admin_print_scripts', array( $this, 'course_editor' ) );
 			}
 
+		}
+
+		public static function add_section_buttons( $buttons ) {
+			$buttons = array_merge(
+				$buttons,
+				array(
+					array(
+						'id'   => 'add-lesson',
+						'text' => __( 'Add Lesson', 'learnpress' ),
+						'attr' => 'data-action="add-lesson" data-type="lp_lesson"'
+					),
+					array(
+						'id'   => 'add-quiz',
+						'text' => __( 'Add Quiz', 'learnpress' ),
+						'attr' => 'data-action="add-quiz" data-type="lp_quiz"'
+					)
+				)
+			);
+			return $buttons;
 		}
 
 		public function add_course_tab_arg( $m ) {
