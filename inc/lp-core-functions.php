@@ -2734,7 +2734,8 @@ function learn_press_execute_time() {
 		return $time;
 	} else {
 		$execute_time = microtime( true ) - $time;
-		echo "Execute time " . $execute_time;
+
+		echo "Execute time " . $execute_time . "\n";
 		$time = 0;
 		return $execute_time;
 	}

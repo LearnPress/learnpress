@@ -988,9 +988,9 @@ function _learn_press_redirect_logout_redirect() {
 	$admin_url   = admin_url();
 	$pos         = strpos( $redirect_to, $admin_url );
 	if ( $pos === false ) {
-		$page_id	= LP()->settings->get('logout_redirect_page_id');
-		$page_url	= get_page_link($page_id);
-		if( $page_id && $page_url ) {
+		$page_id  = LP()->settings->get( 'logout_redirect_page_id' );
+		$page_url = get_page_link( $page_id );
+		if ( $page_id && $page_url ) {
 			wp_redirect( $page_url );
 			exit();
 		}
@@ -1259,7 +1259,7 @@ function learn_press_get_user_courses_info( $user_id, $course_ids ) {
 	$format           = array_merge( $format, $course_ids, array( 'lp_course' ) );
 	$in               = array_fill( 0, sizeof( $course_ids ), '%d' );
 	$user_course_info = LP_Cache::get_course_info( false, array() );
-	$query = $wpdb->prepare( "
+	$query            = $wpdb->prepare( "
 		SELECT uc.*
 		FROM {$wpdb->prefix}learnpress_user_items uc
 		INNER JOIN {$wpdb->posts} o ON o.ID = uc.item_id
@@ -1311,11 +1311,18 @@ function learn_press_get_user_courses_info( $user_id, $course_ids ) {
 	return $user_course_info[$user_id];
 }
 
-add_action( 'init', 'learn_press_set_user_cookie_for_guest' );
 function learn_press_set_user_cookie_for_guest() {
-	if ( is_user_logged_in() ) {
-		setcookie( 'wordpress_logged_in_' . md5( 'guest' ), md5( time() ), - 10000 );
-		return;
+	if ( learn_press_is_course() ) {
+		$guest_key = 'wordpress_logged_in_' . md5( 'guest' );
+		if ( is_user_logged_in() ) {
+			if ( !empty( $_COOKIE[$guest_key] ) ) {
+				setcookie( 'wordpress_logged_in_' . md5( 'guest' ), md5( time() ), - 10000 );
+			}
+		} else {
+			if ( empty( $_COOKIE[$guest_key] ) ) {
+				setcookie( 'wordpress_logged_in_' . md5( 'guest' ), md5( time() ), time() + 3600 );
+			}
+		}
 	}
-	setcookie( 'wordpress_logged_in_' . md5( 'guest' ), md5( time() ), time() + 3600 );
 }
+add_action( 'wp', 'learn_press_set_user_cookie_for_guest' );

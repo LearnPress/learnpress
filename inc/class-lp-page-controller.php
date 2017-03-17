@@ -336,7 +336,6 @@ class LP_Page_Controller {
 
 		global $course;
 
-		LP_Debug::instance()->add( $q, 'wp_query' );
 
 		// We only want to affect the main query and not in admin
 		if ( !$q->is_main_query() || is_admin() ) {

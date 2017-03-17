@@ -286,7 +286,7 @@ class LP_Abstract_User {
 	public function start_quiz( $quiz_id, $course_id = 0 ) {
 		$course_id = $this->_get_course_id( $course_id );
 		if ( !apply_filters( 'learn_press_before_user_start_quiz', true, $quiz_id, $course_id, $this->id ) ) {
-			//return false;
+			return false;
 		}
 		$history = $this->get_quiz_history( $quiz_id, $course_id, null, true );
 		if ( !$history ) {
@@ -459,6 +459,9 @@ class LP_Abstract_User {
 	 * @return mixed
 	 */
 	public function finish_quiz( $quiz_id, $course_id, $args = '' ) {
+		if ( !apply_filters( 'learn_press_before_user_finish_quiz', true, $quiz_id, $course_id, $this->id ) ) {
+			return false;
+		}
 		$course_id = $this->_get_course_id( $course_id );
 
 		$quiz = LP_Quiz::get_quiz( $quiz_id );
@@ -511,6 +514,9 @@ class LP_Abstract_User {
 	 * @throws Exception
 	 */
 	public function retake_quiz( $quiz_id, $course_id ) {
+		if ( !apply_filters( 'learn_press_before_user_retake_quiz', true, $quiz_id, $course_id, $this->id ) ) {
+			return false;
+		}
 		$course_id = $this->_get_course_id( $course_id );
 		$response  = false;
 		$return    = learn_press_update_user_item_field(

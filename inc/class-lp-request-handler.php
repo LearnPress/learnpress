@@ -28,7 +28,10 @@ class LP_Request_Handler {
 	 * Constructor
 	 */
 	public static function init() {
-
+		if(strtolower($_SERVER['REQUEST_METHOD']) == 'post'){
+			LP_Cache::flush();
+			//wp_cache_delete( 'course-curriculum', 'learnpress');
+		}
 		//add_action( 'wp_loaded', array( __CLASS__, 'get_header' ), - 1000 );
 		//add_action( 'wp_head', array( __CLASS__, 'process_request' ), 1000 );
 

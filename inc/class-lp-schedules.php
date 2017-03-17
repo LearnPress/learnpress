@@ -11,7 +11,7 @@ class LP_Schedules {
 	 */
 	public function __construct() {
 		if ( learn_press_get_request( 'action' ) == 'heartbeat' || !is_admin() ) {
-			$this->_update_user_course_expired();
+			//$this->_update_user_course_expired();
 		}
 		if ( !wp_next_scheduled( 'learn_press_delete_user_guest_transient' ) ) {
 			wp_schedule_event( time(), 'daily', 'learn_press_delete_user_guest_transient' );
@@ -67,11 +67,19 @@ class LP_Schedules {
 		if ( empty( $wpdb->learnpress_user_items ) ) {
 			return;
 		}
-		$query = $wpdb->prepare( "
+		echo $query = $wpdb->prepare( "
 			SELECT *
 			FROM {$wpdb->prefix}learnpress_user_items
-			WHERE end_time = %s
-			AND item_type = %s
+			WHERE user_item_id IN(
+				SELECT user_item_id FROM(
+					SELECT user_item_id
+					FROM {$wpdb->prefix}learnpress_user_items
+					WHERE end_time = %s
+					AND item_type = %s
+					GROUP BY item_id
+					ORDER BY user_item_id DESC
+				) AS X
+			)
 			LIMIT 0, 10
 		", '0000-00-00 00:00:00', 'lp_course' );
 		if ( $results = $wpdb->get_results( $query ) ) {
