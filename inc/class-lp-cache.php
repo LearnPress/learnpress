@@ -644,20 +644,20 @@ class LP_Cache {
 			try {
 				$reflection       = new ReflectionClass( "LP_Cache" );
 				$staticProperties = $reflection->getStaticProperties();
-				foreach ( $staticProperties as $key => $value) {
-					if ( in_array( $key, array('_group') )) {
+				foreach ( $staticProperties as $key => $value ) {
+					if ( in_array( $key, array( '_group' ) ) ) {
 						continue;
 					}
 					wp_cache_delete( $value, self::$_group );
 				}
-				add_filter('wp_redirect', array(__CLASS__, 'cache_flush'));
+				add_filter( 'wp_redirect', array( __CLASS__, 'cache_flush' ) );
 			} catch ( Exception $ex ) {
 			}
 		}
 	}
 
-	public static function cache_flush($url){
-		return add_query_arg( 'cache-flush', microtime(true), $url);
+	public static function cache_flush( $url ) {
+		return add_query_arg( 'cache-flush', microtime( true ), $url );
 	}
 
 	/**
@@ -687,20 +687,20 @@ class LP_Cache {
 	private static function _get_cache( $key, $field = false, $def = false ) {
 		$cached = wp_cache_get( $key, self::$_group );
 		if ( is_array( $cached ) && $field ) {
-			$return = !array_key_exists( $field, $cached ) ? $cached[$field] : false;
+			$return = array_key_exists( $field, $cached ) ? $cached[$field] : false;
 		} else {
 			$return = $cached;
 		}
-		return $return ? $return : $def;
+		return ( $return || $def === false ) ? $return : $def;
 	}
 
-	public static function init(){
-		add_action('init', array(__CLASS__, 'redirect'));
+	public static function init() {
+		add_action( 'init', array( __CLASS__, 'redirect' ) );
 
 	}
 
-	public static function redirect(){
-		if(!empty($_REQUEST['cache-flush'])){
+	public static function redirect() {
+		if ( !empty( $_REQUEST['cache-flush'] ) ) {
 		}
 	}
 }

@@ -16,6 +16,8 @@ class LP_User_Factory {
 	 */
 	protected static $_guest_transient = 0;
 
+	public static $_deleted_users = array();
+
 	/**
 	 *
 	 */
@@ -137,9 +139,14 @@ class LP_User_Factory {
 	 * @return mixed|void
 	 */
 	public static function get_user_class( $the_id = 0 ) {
-		if ( $the_id && get_userdata( $the_id ) ) {
+		$deleted     = in_array( $the_id, self::$_deleted_users );
+		$exists_user = !$deleted ? get_userdata( $the_id ) : false;
+		if ( $exists_user ) {
 			$class = 'LP_User';
 		} else {
+			if ( !$deleted ) {
+				self::$_deleted_users[] = $the_id;
+			}
 			$is_logged_in = function_exists( 'is_user_logged_in' ) && is_user_logged_in();
 			$class        = $is_logged_in ? 'LP_User' : 'LP_User_Guest';
 		}

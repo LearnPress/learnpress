@@ -1253,59 +1253,71 @@ function learn_press_get_avatar_thumb_size() {
  */
 function learn_press_get_user_courses_info( $user_id, $course_ids ) {
 	global $wpdb;
-	settype( $course_ids, 'array' );
-
-	$format           = array( $user_id );
-	$format           = array_merge( $format, $course_ids, array( 'lp_course' ) );
-	$in               = array_fill( 0, sizeof( $course_ids ), '%d' );
 	$user_course_info = LP_Cache::get_course_info( false, array() );
-	$query            = $wpdb->prepare( "
-		SELECT uc.*
-		FROM {$wpdb->prefix}learnpress_user_items uc
-		INNER JOIN {$wpdb->posts} o ON o.ID = uc.item_id
-		WHERE uc.user_id = %d AND uc.status IS NOT NULL
-		AND uc.item_id IN(" . join( ',', $in ) . ") AND uc.item_type = %s
-		ORDER BY user_item_id DESC
-	", $format );//$this->id, $course_id, 'lp_course' );
-	//$course_id        = reset( $course_ids );
-	if ( empty( $user_course_info[$user_id] ) ) {
-		$user_course_info[$user_id] = array();
-	}
 
-	if ( $result = $wpdb->get_results( $query ) ) {
-		foreach ( $result as $row ) {
-			$course_id = $row->item_id;
-			if ( !empty( $user_course_info[$user_id][$course_id]['history_id'] ) ) {
+	if ( $user_id ) {
+		settype( $course_ids, 'array' );
+		$format = array( $user_id );
+		$format = array_merge( $format, $course_ids, array( 'lp_course' ) );
+		$in     = array_fill( 0, sizeof( $course_ids ), '%d' );
+		$query  = $wpdb->prepare( "
+			SELECT uc.*
+			FROM {$wpdb->prefix}learnpress_user_items uc
+			INNER JOIN {$wpdb->posts} o ON o.ID = uc.item_id
+			WHERE uc.user_id = %d AND uc.status IS NOT NULL
+			AND uc.item_id IN(" . join( ',', $in ) . ") AND uc.item_type = %s
+			ORDER BY user_item_id DESC
+		", $format );
+		if ( empty( $user_course_info[$user_id] ) ) {
+			$user_course_info[$user_id] = array();
+		}
+
+		if ( $result = $wpdb->get_results( $query ) ) {
+			foreach ( $result as $row ) {
+				$course_id = $row->item_id;
+				if ( !empty( $user_course_info[$user_id][$course_id]['history_id'] ) ) {
+					continue;
+				}
+				//$row                                    = $result;
+				$info                                   = array(
+					'history_id' => 0,
+					'start'      => null,
+					'end'        => null,
+					'status'     => null
+				);
+				$course                                 = learn_press_get_course( $course_id );
+				$info['history_id']                     = $row->user_item_id;
+				$info['start']                          = $row->start_time;
+				$info['end']                            = $row->end_time;
+				$info['status']                         = $row->status;
+				$info['results']                        = $course->evaluate_course_results( $user_id );
+				$info['items']                          = $course->get_items_params( $user_id );
+				$user_course_info[$user_id][$course_id] = $info;
+			}
+		}
+		// Set default data if a course is not existing in database
+		foreach ( $course_ids as $cid ) {
+			if ( isset( $user_course_info[$user_id], $user_course_info[$user_id][$cid] ) ) {
 				continue;
 			}
-			//$row                                    = $result;
-			$info                                   = array(
+			$user_course_info[$user_id][$cid] = array(
 				'history_id' => 0,
 				'start'      => null,
 				'end'        => null,
 				'status'     => null
 			);
-			$course                                 = learn_press_get_course( $course_id );
-			$info['history_id']                     = $row->user_item_id;
-			$info['start']                          = $row->start_time;
-			$info['end']                            = $row->end_time;
-			$info['status']                         = $row->status;
-			$info['results']                        = $course->evaluate_course_results( $user_id );
-			$info['items']                          = $course->get_items_params( $user_id );
-			$user_course_info[$user_id][$course_id] = $info;
 		}
-	}
-	// Set default data if a course is not existing in database
-	foreach ( $course_ids as $cid ) {
-		if ( isset( $user_course_info[$user_id], $user_course_info[$user_id][$cid] ) ) {
-			continue;
+	} else {
+		// Set default data if a course is not existing in database
+		$user_course_info[$user_id] = array();
+		foreach ( $course_ids as $cid ) {
+			$user_course_info[$user_id][$cid] = array(
+				'history_id' => 0,
+				'start'      => null,
+				'end'        => null,
+				'status'     => null
+			);
 		}
-		$user_course_info[$user_id][$cid] = array(
-			'history_id' => 0,
-			'start'      => null,
-			'end'        => null,
-			'status'     => null
-		);
 	}
 	LP_Cache::set_course_info( $user_course_info );
 	return $user_course_info[$user_id];
@@ -1325,4 +1337,5 @@ function learn_press_set_user_cookie_for_guest() {
 		}
 	}
 }
+
 add_action( 'wp', 'learn_press_set_user_cookie_for_guest' );

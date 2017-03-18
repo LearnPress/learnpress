@@ -11,10 +11,6 @@
 defined( 'ABSPATH' ) || exit();
 
 class LP_Abstract_User {
-	/**
-	 * @var array
-	 */
-	static protected $_users = array();
 
 	/**
 	 * @var int
@@ -61,6 +57,8 @@ class LP_Abstract_User {
 	 */
 	protected $_course_items = array();
 
+	protected static $_users = array();
+
 	/**
 	 * Constructor
 	 *
@@ -69,12 +67,20 @@ class LP_Abstract_User {
 	 * @throws Exception
 	 */
 	public function __construct( $the_user = 0 ) {
-		if ( $user = get_user_by( 'id', $the_user ) ) {
-			$this->user = $user;
-			$this->id   = $user->ID;
-		} else {
-			//throw new Exception( sprintf( __( 'The user with ID = %d is not exists', 'learnpress' ), $the_user ) );
+		$deleted = in_array( $the_user, LP_User_Factory::$_deleted_users );
+		$user    = !$deleted ? get_user_by( 'id', $the_user ) : false;
+
+		if ( !$user ) {
+			$user = (object) array(
+				'ID' => 0
+			);
+			if ( !$deleted ) {
+				LP_User_Factory::$_deleted_users[] = $the_user;
+			}
 		}
+
+		$this->user = $user;
+		$this->id   = $user->ID;
 		if ( empty( self::$_lessons[$this->id] ) ) {
 			self::$_lessons[$this->id] = array();
 		}
@@ -2182,6 +2188,9 @@ class LP_Abstract_User {
 	 */
 	private function _parse_item_order_of_course( $course_id ) {
 		static $courses_parsed = array();
+		if ( !$this->id ) {
+			return;
+		}
 		if ( !empty( $courses_parsed[$this->id . '-' . $course_id] ) ) {
 			return true;
 		}
@@ -2391,7 +2400,7 @@ class LP_Abstract_User {
 			);
 			$query .= $where . $order . $limit;
 
-			$data = array(
+			$data          = array(
 				'rows' => $wpdb->get_results( $query, OBJECT_K )
 			);
 			$data['count'] = $wpdb->get_var( "SELECT FOUND_ROWS();" );

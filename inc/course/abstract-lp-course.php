@@ -302,85 +302,14 @@ abstract class LP_Abstract_Course {
 		if ( !$this->id ) {
 			return false;
 		}
-		if ( false ) {
-			$curriculum = LP_Cache::get_course_curriculum( false, array() );
-
-			if ( !array_key_exists( $this->id, $curriculum ) || $force ) {
-				global $wpdb;
-
-				$curriculum[$this->id] = array();
-				$query                 = $wpdb->prepare( "
-					SELECT cc.*
-					FROM {$wpdb->posts} p
-					INNER JOIN {$wpdb->learnpress_sections} cc ON p.ID = cc.section_course_id
-					WHERE p.ID = %d
-					ORDER BY `section_order` ASC
-				", $this->id );
-				if ( $rows = $wpdb->get_results( $query, OBJECT_K ) ) {
-					$section_ids  = array_keys( $rows );
-					$how_many     = count( $section_ids );
-					$placeholders = array_fill( 0, $how_many, '%d' );
-					$in           = implode( ', ', $placeholders );
-
-					$query         = $wpdb->prepare( "
-						SELECT si.*, p.*
-						FROM {$wpdb->posts} p
-						INNER JOIN {$wpdb->prefix}learnpress_section_items si ON si.item_id = p.ID
-						INNER JOIN {$wpdb->prefix}learnpress_sections s ON s.section_id = si.section_id
-						WHERE s.section_id IN( $in )
-						ORDER BY s.section_order, si.item_order ASC
-					", $section_ids );
-					$section_items = $wpdb->get_results( $query );
-					$post_ids      = array();
-					foreach ( $rows as $row ) {
-						$section        = $row;
-						$section->items = array();
-						if ( $section_items ) {
-							$count = 0;
-							foreach ( $section_items as $item ) {
-								if ( $item->section_id == $row->section_id ) {
-									$section->items[] = $item;
-									/**
-									 * Add item to 'posts' cache group
-									 */
-									$item_post = wp_cache_get( $item->ID, 'posts' );
-									if ( !$item_post ) {
-										wp_cache_add( $item->ID, $item, 'posts' );
-									}
-									$post_ids[] = $item->ID;
-									$count ++;
-								} else {
-									if ( $count ) break;
-								}
-							}
-						}
-						$curriculum[$this->id][$section->section_id] = $section;
-					}
-					// update all meta data into cache
-					update_meta_cache( 'post', $post_ids );
-					//SELECT post_id, meta_key, meta_value FROM wp_postmeta WHERE post_id IN
-				}
+		$curriculum = _learn_press_get_course_curriculum( $this->id, $force );
+		$return     = false;
+		if ( $section_id ) {
+			if ( !empty( $curriculum[$section_id] ) ) {
+				$return = $curriculum[$section_id];
 			}
-			LP_Cache::set_course_curriculum( $curriculum );
-			$return = false;
-			if ( $section_id ) {
-				if ( !empty( $curriculum[$this->id][$section_id] ) ) {
-					$return = $curriculum[$this->id][$section_id];
-				}
-			} else {
-				$return = $curriculum[$this->id];
-			}
-		} // end if(false)
-		else {
-			$curriculum = _learn_press_get_course_curriculum( $this->id, $force );
-			$return     = false;
-			if ( $section_id ) {
-				if ( !empty( $curriculum[$section_id] ) ) {
-					$return = $curriculum[$section_id];
-				}
-			} else {
-				$return = $curriculum;
-			}
+		} else {
+			$return = $curriculum;
 		}
 		return apply_filters( 'learn_press_course_curriculum', $return, $this->id, $section_id );
 	}
@@ -891,24 +820,30 @@ abstract class LP_Abstract_Course {
 
 	public function count_in_order( $statuses = 'completed' ) {
 		global $wpdb;
+		static $data = array();
 		settype( $statuses, 'array' );
 		foreach ( $statuses as $k => $v ) {
 			if ( !preg_match( '/^lp-/', $v ) ) {
 				$statuses[$k] = 'lp-' . $v;
 			}
 		}
-		$in_clause = join( ',', array_fill( 0, sizeof( $statuses ), '%s' ) );
-		$query     = $wpdb->prepare( "
-			SELECT count(oim.meta_id)
-			FROM {$wpdb->learnpress_order_itemmeta} oim
-			INNER JOIN {$wpdb->learnpress_order_items} oi ON oi.order_item_id = oim.learnpress_order_item_id
-				AND oim.meta_key = %s
-				AND oim.meta_value = %d
-			INNER JOIN {$wpdb->posts} o ON o.ID = oi.order_id
-			WHERE o.post_type = %s
-			AND o.post_status IN ($in_clause)
-		", array_merge( array( '_course_id', $this->id, 'lp_order' ), $statuses ) );
-		return $wpdb->get_var( $query );
+		sort( $statuses );
+		$key = md5( serialize( $statuses ) );
+		if ( empty( $data[$key] ) ) {
+			$in_clause  = join( ',', array_fill( 0, sizeof( $statuses ), '%s' ) );
+			$query      = $wpdb->prepare( "
+				SELECT count(oim.meta_id)
+				FROM {$wpdb->learnpress_order_itemmeta} oim
+				INNER JOIN {$wpdb->learnpress_order_items} oi ON oi.order_item_id = oim.learnpress_order_item_id
+					AND oim.meta_key = %s
+					AND oim.meta_value = %d
+				INNER JOIN {$wpdb->posts} o ON o.ID = oi.order_id
+				WHERE o.post_type = %s
+				AND o.post_status IN ($in_clause)
+			", array_merge( array( '_course_id', $this->id, 'lp_order' ), $statuses ) );
+			$data[$key] = $wpdb->get_var( $query );
+		}
+		return $data[$key];
 	}
 
 	public function need_payment() {
@@ -1131,7 +1066,7 @@ abstract class LP_Abstract_Course {
 		return apply_filters( 'learn_press_course_result_html', $html, $this->id, $user_id );
 	}
 
-	protected function _evaluate_course_by_items( $user_id = 0, $force = false, $type='' ) {
+	protected function _evaluate_course_by_items( $user_id = 0, $force = false, $type = '' ) {
 		$items  = $this->get_curriculum_items();
 		$result = 0;
 		if ( $items ) {
@@ -1141,9 +1076,9 @@ abstract class LP_Abstract_Course {
 		return apply_filters( 'learn_press_course_results_by_items', $result, $this->id, $user_id );
 	}
 
-	protected function _evaluate_course_by_lessons( $user_id = 0, $force = false, $type='' ) {
+	protected function _evaluate_course_by_lessons( $user_id = 0, $force = false, $type = '' ) {
 		$lessons = $this->get_lessons();
-		$result = 0;
+		$result  = 0;
 		if ( $lessons ) {
 			$completed_items = $this->count_completed_items( $user_id, $force, 'lp_lesson' );
 			$result          = round( $completed_items / sizeof( $lessons ) * 100 );
@@ -1251,7 +1186,7 @@ abstract class LP_Abstract_Course {
 	 *
 	 * @return int|mixed|null|void
 	 */
-	public function get_completed_items( $user_id = 0, $force = false, $type='' ) {
+	public function get_completed_items( $user_id = 0, $force = false, $type = '' ) {
 //	public function get_completed_items( $user_id = 0, $items = array(), $force = false, $type='' ) {
 		if ( !$user_id ) {
 			$user_id = get_current_user_id();
@@ -1263,7 +1198,7 @@ abstract class LP_Abstract_Course {
 			if ( $curriculum_items = $this->post->curriculum_items ) {
 				$curriculum_items = maybe_unserialize( $curriculum_items );
 				foreach ( $curriculum_items as $item_id ) {
-					if( $type && $type!==  get_post_type( $item_id)){
+					if ( $type && $type !== get_post_type( $item_id ) ) {
 						continue;
 					}
 					$k = sprintf( '%d-%d-%d', $user_id, $this->id, $item_id );
@@ -1282,7 +1217,7 @@ abstract class LP_Abstract_Course {
 	 *
 	 * @return mixed|void
 	 */
-	public function count_completed_items( $user_id = 0, $force = false, $type='' ) {
+	public function count_completed_items( $user_id = 0, $force = false, $type = '' ) {
 		$items = $this->get_completed_items( $user_id, $force, $type );
 		$count = 0;
 		if ( $items ) {

@@ -3,6 +3,7 @@
  * Functions that are used to init a course to reduce SQL queries
  */
 
+
 if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
@@ -42,33 +43,32 @@ function _learn_press_setup_user_course_data( $query ) {
  */
 function learn_press_setup_pages() {
 	global $wpdb;
-	$pages    = array( 'courses', 'profile', 'become_a_teacher', 'checkout' );
-	$page_ids = array();
-	foreach ( $pages as $page ) {
-		$id = get_option( 'learn_press_' . $page . '_page_id' );
-		if ( $id ) {
-			$page_ids[] = $id;
+	static $pages = false;
+	if ( $pages == false ) {
+		$pages    = array( 'courses', 'profile', 'become_a_teacher', 'checkout' );
+		$page_ids = array();
+		foreach ( $pages as $page ) {
+			$id = get_option( 'learn_press_' . $page . '_page_id' );
+			if ( $id ) {
+				$page_ids[] = $id;
+			}
+		}
+		if ( !$page_ids ) {
+			return;
+		}
+		$query = $wpdb->prepare( "
+			SELECT *
+			FROM {$wpdb->posts}
+			WHERE %d AND ID IN(" . join( ',', $page_ids ) . ")
+			AND post_status <> %s
+		", 1, 'trash' );
+		if ( !$pages = $wpdb->get_results( $query ) ) {
+			return;
+		}
+		foreach ( $pages as $page ) {
+			wp_cache_add( $page->ID, $page, 'posts' );
 		}
 	}
-	if ( !$page_ids ) {
-		return;
-	}
-	$query = $wpdb->prepare( "
-		SELECT *
-		FROM {$wpdb->posts}
-		WHERE %d AND ID IN(" . join( ',', $page_ids ) . ")
-		AND post_status <> %s
-	", 1, 'trash' );
-	if ( !$pages = $wpdb->get_results( $query ) ) {
-		return;
-	}
-
-	foreach ( $pages as $page ) {
-		wp_cache_add( $page->ID, $page, 'posts' );
-
-	}
-
-
 }
 
 /**
@@ -144,21 +144,22 @@ function _learn_press_get_courses_curriculum( $course_ids, $force = false ) {
 	$post_names = LP_Cache::get_post_names( false, array() );
 	$in         = array_fill( 0, sizeof( $course_ids ), '%d' );
 	$query      = $wpdb->prepare( "
-			SELECT s.*, si.*, p.*
-			FROM {$wpdb->prefix}posts p
-			INNER JOIN {$wpdb->prefix}learnpress_section_items si ON si.item_id = p.ID
-			INNER JOIN {$wpdb->prefix}learnpress_sections s ON s.section_id = si.section_id
-			WHERE s.section_id IN(
-				SELECT cc.section_id
-					FROM {$wpdb->prefix}posts p
-					INNER JOIN {$wpdb->prefix}learnpress_sections cc ON p.ID = cc.section_course_id
-					WHERE p.ID IN(" . join( ',', $in ) . ")
-					ORDER BY `section_order` ASC
-			 )
-			ORDER BY s.section_course_id, s.section_order, si.item_order ASC
-		", $course_ids );
-	asort( $course_ids );
+		SELECT s.*, si.*, p.*
+		FROM {$wpdb->prefix}posts p
+		INNER JOIN {$wpdb->prefix}learnpress_section_items si ON si.item_id = p.ID
+		INNER JOIN {$wpdb->prefix}learnpress_sections s ON s.section_id = si.section_id
+		WHERE s.section_id IN(
+			SELECT cc.section_id
+				FROM {$wpdb->prefix}posts p
+				INNER JOIN {$wpdb->prefix}learnpress_sections cc ON p.ID = cc.section_course_id
+				WHERE p.ID IN(" . join( ',', $in ) . ")
+				ORDER BY `section_order` ASC
+		 )
+		ORDER BY s.section_course_id, s.section_order, si.item_order ASC
+	", $course_ids );
 
+
+	asort( $course_ids );
 	if ( $posts = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $wpdb->posts WHERE ID IN (" . join( ',', $in ) . ")", $course_ids ) ) ) {
 		foreach ( $posts as $_post ) {
 			$_post = sanitize_post( $_post, 'raw' );
@@ -216,7 +217,9 @@ function _learn_press_get_courses_curriculum( $course_ids, $force = false ) {
 				$_curriculum[$section_id]->items[] = $item;
 				$item_ids[]                        = $item->ID;
 				if ( $item->post_type == LP_QUIZ_CPT ) {
-					$quiz_ids[] = $item->ID;
+					if ( false == wp_cache_get( $item->ID, 'posts' ) ) {
+						$quiz_ids[] = $item->ID;
+					}
 				} elseif ( $item->post_type == LP_LESSON_CPT ) {
 					$lesson_ids[] = $item->ID;
 				}
@@ -224,6 +227,16 @@ function _learn_press_get_courses_curriculum( $course_ids, $force = false ) {
 					$post_names[$item->post_type] = array();
 				}
 				$post_names[$item->post_type][$item->post_name] = $item->ID;
+				if ( $item->post_type == LP_QUIZ_CPT ) {
+					$cached_post = wp_cache_get( $item->ID, 'posts' );
+					if ( $cached_post ) {
+						foreach ( array( 'mark', 'questions' ) as $prop ) {
+							if ( property_exists( $cached_post, $prop ) ) {
+								$item->{$prop} = $cached_post->{$prop};
+							}
+						}
+					}
+				}
 				wp_cache_delete( $item->ID, 'posts' );
 				wp_cache_add( $item->ID, $item, 'posts' );
 			}
@@ -240,6 +253,7 @@ function _learn_press_get_courses_curriculum( $course_ids, $force = false ) {
 			}
 			$curriculum[$course_id] = $_curriculum;
 		}
+		$meta_cache_ids = array_unique( $meta_cache_ids );
 		update_meta_cache( 'post', $meta_cache_ids );
 		LP_Cache::set_course_curriculum( $curriculum );
 		LP_Cache::set_post_names( $post_names );
@@ -254,18 +268,19 @@ function _learn_press_get_courses_curriculum( $course_ids, $force = false ) {
  * @return array
  */
 function _learn_press_get_course_curriculum( $course_id, $force = false ) {
-	$curriculum = LP_Cache::get_course_curriculum( false, array() );
-	//$post_names     = LP_Cache::get_post_names( false, array() );
-	if ( !array_key_exists( $course_id, $curriculum ) || $force ) {
+	//return learn_press_get_course_curriculumx( $course_id, $force );
+	$curriculum = LP_Cache::get_course_curriculum( $course_id );
+	if ( ( $curriculum == false ) || $force ) {
 		$curriculum = _learn_press_get_courses_curriculum( array( $course_id ), $force );
 		if ( empty( $curriculum[$course_id] ) ) {
 			$curriculum[$course_id] = array();
 		}
+		$curriculum = $curriculum[$course_id];
 	}
-	$_curriculum = $curriculum[$course_id];
-
-	return $_curriculum;
+	return $curriculum;
 }
+
+include_once "new-functions.php";
 
 /**
  * @param $quiz_ids
@@ -301,14 +316,14 @@ function _learn_press_get_quiz_questions( $quiz_ids ) {
 		$format_ids   = array_fill( 0, sizeof( $question_ids ), '%d' );
 		$prepare_args = array_merge( array( '_lp_type', 'lp_question' ), $question_ids );
 		$query        = $wpdb->prepare( "
-					SELECT qa.question_answer_id, ID as id, pm.meta_value as type, qa.answer_data as answer_data, answer_order
-					FROM {$wpdb->posts} p
-					INNER JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID AND pm.meta_key = %s
-					INNER JOIN {$wpdb->prefix}learnpress_quiz_questions qq ON qq.question_id = p.ID
-					RIGHT JOIN {$wpdb->prefix}learnpress_question_answers qa ON qa.question_id = p.ID
-					WHERE qq.quiz_id IN (" . join( ',', $quiz_ids ) . ")
-					ORDER BY id, qq.question_order, answer_order ASC
-				", $prepare_args );
+			SELECT qa.question_answer_id, ID as id, pm.meta_value as type, qa.answer_data as answer_data, answer_order
+			FROM {$wpdb->posts} p
+			INNER JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID AND pm.meta_key = %s
+			INNER JOIN {$wpdb->prefix}learnpress_quiz_questions qq ON qq.question_id = p.ID
+			RIGHT JOIN {$wpdb->prefix}learnpress_question_answers qa ON qa.question_id = p.ID
+			WHERE qq.quiz_id IN (" . join( ',', $quiz_ids ) . ")
+			ORDER BY id, qq.question_order, answer_order ASC
+		", $prepare_args );
 		if ( $answers = $wpdb->get_results( $query ) ) {
 			$question_id = 0;
 			foreach ( $answers as $row ) {
@@ -622,7 +637,6 @@ function _learn_press_setup_question( $id ) {
 	return $questions;
 }
 
-learn_press_setup_pages();
 
 #
 # stop support comment for 
