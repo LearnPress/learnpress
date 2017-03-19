@@ -11,12 +11,27 @@ class LP_Schedules {
 	 */
 	public function __construct() {
 		if ( learn_press_get_request( 'action' ) == 'heartbeat' || !is_admin() ) {
-			$this->_update_user_course_expired();
+			//$this->_update_user_course_expired();
 		}
+		add_filter( 'cron_schedules', array( $this, 'add_custom_cron_intervals' ), 10, 1 );
+
+		if ( !wp_next_scheduled( 'learn_press_schedule_update_user_items' ) ) {
+			wp_schedule_event( time(), 'ten_minutes', 'learn_press_schedule_update_user_items' );
+		}
+		add_action( 'learn_press_schedule_update_user_items', array( $this, 'schedule_update_user_items' ) );
+
 		if ( !wp_next_scheduled( 'learn_press_delete_user_guest_transient' ) ) {
 			wp_schedule_event( time(), 'daily', 'learn_press_delete_user_guest_transient' );
 		}
 		add_action( 'learn_press_delete_user_guest_transient', array( $this, 'delete_user_guest_transient' ) );
+	}
+
+	function add_custom_cron_intervals( $schedules ) {
+		$schedules['ten_minutes'] = array(
+			'interval' => 600,
+			'display'  => 'Once Every 10 Minutes'
+		);
+		return (array) $schedules;
 	}
 
 	public function delete_user_guest_transient() {
@@ -56,6 +71,11 @@ class LP_Schedules {
 		}
 	}
 
+	public function schedule_update_user_items() {
+		$this->_update_user_course_expired();
+		LP_Debug::instance()->add( __FUNCTION__ );
+	}
+
 	/**
 	 * Auto finished course when time is expired for users
 	 */
@@ -83,7 +103,7 @@ class LP_Schedules {
 			LIMIT 0, 10
 		", '0000-00-00 00:00:00', 'lp_course' );*/
 
-		$query = $wpdb->prepare("
+		$query = $wpdb->prepare( "
 			SELECT *
 			FROM {$wpdb->prefix}learnpress_user_items
 			WHERE user_item_id IN(
@@ -95,7 +115,7 @@ class LP_Schedules {
 				GROUP BY item_id, user_id
 			  )
 			LIMIT 0, 10
-		",'0000-00-00 00:00:00', 'lp_course', 'finished');
+		", '0000-00-00 00:00:00', 'lp_course', 'finished' );
 
 		if ( $results = $wpdb->get_results( $query ) ) {
 			$ids = array();
