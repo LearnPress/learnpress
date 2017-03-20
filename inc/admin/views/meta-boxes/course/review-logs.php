@@ -12,11 +12,11 @@ $index = $total_reviews;
 <?php if ( $total_reviews ) { ?>
 	<ul class="learn-press-review-logs clearfix">
 		<?php foreach ( $reviews as $review ) { ?>
-			<?php $user = get_userdata( $review->user_id ); ?>
+			<?php $user = LP_User_Factory::get_user( $review->user_id ); ?>
 			<li>
 				<div class="review-index">#<?php echo $index --; ?></div>
 				<div class="review-user">
-					<span class="user-avatar"><?php echo get_avatar( $review->user_id ); ?></span>
+					<span class="user-avatar"><?php echo $user->get_profile_picture(); ?></span>
 				</div>
 				<div class="review-content">
 					<strong class="user-nicename"><?php echo learn_press_get_profile_display_name( $user ); ?></strong>

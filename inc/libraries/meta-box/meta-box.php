@@ -41,21 +41,31 @@ if ( !defined( 'RWMB_VER' ) ) {
 if ( !defined( 'LP_METABOX_INC' ) ) {
 	define( 'LP_METABOX_INC', LP_PLUGIN_PATH . 'inc/libraries/meta-box/inc/' );
 }
-
 if ( is_admin() ) {
 	//require_once RWMB_INC_DIR . 'common.php';
 	if ( !class_exists( 'RWMB_Field' ) ) {
 		require_once LP_METABOX_INC . 'field.php';
 	}
-	// Field classes
-	foreach ( glob( RWMB_FIELDS_DIR . '*.php' ) as $file ) {
-		require_once $file;
+
+	if ( defined( 'RWMB_FIELDS_DIR' ) ) {
+		// Field classes
+		foreach ( glob( RWMB_FIELDS_DIR . '*.php' ) as $file ) {
+			require_once $file;
+		}
 	}
 
-	// Main file
-	require_once LP_METABOX_INC . 'meta-box.php';
-	if ( !function_exists( 'rwmb_register_meta_boxes' ) ) {
-		require_once LP_METABOX_INC . 'init.php';
+	// Field classes
+	foreach ( glob( LP_PLUGIN_PATH . 'inc/admin/meta-boxes/*.php' ) as $file ) {
+		require_once $file;
 	}
+	if ( !class_exists( 'RWMB_Loader' ) && !class_exists( 'RW_Meta_Box' ) ) {
+		// Main file
+		require_once LP_METABOX_INC . 'meta-box.php';
+		if ( !function_exists( 'rwmb_register_meta_boxes' ) ) {
+			require_once LP_METABOX_INC . 'init.php';
+		}
+	}
+
+
 }
 do_action( 'learn_press_meta_box_loaded' );
