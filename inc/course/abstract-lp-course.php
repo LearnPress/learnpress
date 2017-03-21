@@ -348,27 +348,18 @@ abstract class LP_Abstract_Course {
 	 * @return int
 	 */
 	public function get_users_enrolled( $force = false ) {
-
-		global $wpdb;
+		$this->_count_users = LP_Cache::get_enrolled_courses( $this->id );
+		return $this->_count_users;
+		/*
 		if ( ( $this->_count_users === null && !array_key_exists( $this->id, self::$course_users ) ) || $force ) {
-			/*$query = $wpdb->prepare( "
-				SELECT count(o.ID)
-				FROM {$wpdb->posts} o
-				INNER JOIN {$wpdb->learnpress_order_items} oi ON oi.order_id = o.ID
-				INNER JOIN {$wpdb->learnpress_order_itemmeta} oim ON oim.learnpress_order_item_id = oi.order_item_id
-				AND oim.meta_key = %s AND oim.meta_value = %d
-				WHERE o.post_status = %s
-			", '_course_id', $this->id, 'lp-completed' );*/
 			self::$course_users = _learn_press_get_users_enrolled_courses( array( $this->id ) );
-			/*
-			$this->_count_users = $wpdb->get_var( $query );*/
 		}
 		if ( !array_key_exists( $this->id, self::$course_users ) ) {
 			$this->_count_users = 0;
 		} else {
 			$this->_count_users = absint( self::$course_users[$this->id] );
 		}
-		return $this->_count_users;
+		return $this->_count_users;*/
 	}
 
 	/**
@@ -668,6 +659,9 @@ abstract class LP_Abstract_Course {
 			if ( $curriculum ) foreach ( $curriculum as $section ) {
 				if ( empty( $section->items ) ) continue;
 				foreach ( $section->items as $loop_item ) {
+					if ( empty( $section->section_id ) ) {
+						continue;
+					}
 					$loop_item->section_id = $section->section_id;
 					if ( $field ) {
 						$item       = array();
@@ -829,7 +823,7 @@ abstract class LP_Abstract_Course {
 		}
 		sort( $statuses );
 		$key = md5( serialize( $statuses ) );
-		if ( empty( $data[$key] ) ) {
+		if ( !array_key_exists($key, $data ) ) {
 			$in_clause  = join( ',', array_fill( 0, sizeof( $statuses ), '%s' ) );
 			$query      = $wpdb->prepare( "
 				SELECT count(oim.meta_id)

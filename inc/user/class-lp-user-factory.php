@@ -146,6 +146,14 @@ class LP_User_Factory {
 		} else {
 			if ( !$deleted ) {
 				self::$_deleted_users[] = $the_id;
+				/**
+				 * Prevent loading user does not exists in database
+				 */
+				$user                   = new LP_User_Guest( $the_id );
+				wp_cache_add( $the_id, $user, 'users' );
+				wp_cache_add( '', $the_id, 'userlogins' );
+				wp_cache_add( '', $the_id, 'useremail' );
+				wp_cache_add( '', $the_id, 'userslugs' );
 			}
 			$is_logged_in = function_exists( 'is_user_logged_in' ) && is_user_logged_in();
 			$class        = $is_logged_in ? 'LP_User' : 'LP_User_Guest';

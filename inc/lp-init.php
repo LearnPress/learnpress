@@ -110,24 +110,33 @@ function learn_press_setup_course_data( $the_course ) {
 
 function _learn_press_get_users_enrolled_courses( $course_ids ) {
 	global $wpdb;
-	static $counts = array();
-	$in       = array_fill( 0, sizeof( $course_ids ), '%d' );
-	$format   = array( '_course_id' );
-	$format   = array_merge( $format, $course_ids );
-	$format[] = 'lp-completed';
-	$query    = $wpdb->prepare( "
-		SELECT oim.meta_value as course_id, count(o.ID) as count
-		FROM {$wpdb->posts} o
-		INNER JOIN {$wpdb->learnpress_order_items} oi ON oi.order_id = o.ID
-		INNER JOIN {$wpdb->learnpress_order_itemmeta} oim ON oim.learnpress_order_item_id = oi.order_item_id
-		AND oim.meta_key = %s
-		AND oim.meta_value IN(" . join( ',', $in ) . ")
-		WHERE o.post_status = %s
-		GROUP BY oim.meta_value
-	", $format );
-	if ( $results = $wpdb->get_results( $query ) ) {
-		foreach ( $results as $c => $v ) {
-			$counts[$v->course_id] = absint( $v->count );
+	$counts = LP_Cache::get_enrolled_courses( false, array() );
+	if ( $counts ) {
+		$remove_ids = array();
+		foreach ( $counts as $id => $data ) {
+			$remove_ids[] = $id;
+		}
+		$course_ids = array_diff( $course_ids, $remove_ids );
+	}
+	if ( $course_ids ) {
+		$in       = array_fill( 0, sizeof( $course_ids ), '%d' );
+		$format   = array( '_course_id' );
+		$format   = array_merge( $format, $course_ids );
+		$format[] = 'lp-completed';
+		$query    = $wpdb->prepare( "
+			SELECT oim.meta_value as course_id, count(o.ID) as count
+			FROM {$wpdb->posts} o
+			INNER JOIN {$wpdb->learnpress_order_items} oi ON oi.order_id = o.ID
+			INNER JOIN {$wpdb->learnpress_order_itemmeta} oim ON oim.learnpress_order_item_id = oi.order_item_id
+			AND oim.meta_key = %s
+			AND oim.meta_value IN(" . join( ',', $in ) . ")
+			WHERE o.post_status = %s
+			GROUP BY oim.meta_value
+		", $format );
+		if ( $results = $wpdb->get_results( $query ) ) {
+			foreach ( $results as $c => $v ) {
+				$counts[$v->course_id] = absint( $v->count );
+			}
 		}
 	}
 	foreach ( $course_ids as $course_id ) {
@@ -135,15 +144,32 @@ function _learn_press_get_users_enrolled_courses( $course_ids ) {
 			$counts[$course_id] = 0;
 		}
 	}
+	LP_Cache::set_enrolled_courses( $counts );
 	return $counts;
 }
 
-function _learn_press_get_courses_curriculum( $course_ids, $force = false ) {
+function _learn_press_get_courses_curriculum( $course_ids, $force = false, $parse_items = true ) {
 	global $wpdb;
 	$curriculum = LP_Cache::get_course_curriculum( false, array() );
 	$post_names = LP_Cache::get_post_names( false, array() );
-	$in         = array_fill( 0, sizeof( $course_ids ), '%d' );
-	$query      = $wpdb->prepare( "
+
+	$remove_courses = array();
+	foreach ( $course_ids as $course_id ) {
+		if ( array_key_exists( $course_id, $curriculum ) ) {
+			$remove_courses[] = $course_id;
+		} else {
+			$curriculum[$course_id] = array();
+		}
+	}
+
+	if ( $remove_courses ) {
+		$course_ids = array_diff( $course_ids, $remove_courses );
+	}
+	if ( !$course_ids ) {
+		return;
+	}
+	$in    = array_fill( 0, sizeof( $course_ids ), '%d' );
+	$query = $wpdb->prepare( "
 		SELECT s.*, si.*, p.*
 		FROM {$wpdb->prefix}posts p
 		INNER JOIN {$wpdb->prefix}learnpress_section_items si ON si.item_id = p.ID
@@ -157,9 +183,8 @@ function _learn_press_get_courses_curriculum( $course_ids, $force = false ) {
 		 )
 		ORDER BY s.section_course_id, s.section_order, si.item_order ASC
 	", $course_ids );
-
-
 	asort( $course_ids );
+
 	if ( $posts = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $wpdb->posts WHERE ID IN (" . join( ',', $in ) . ")", $course_ids ) ) ) {
 		foreach ( $posts as $_post ) {
 			$_post = sanitize_post( $_post, 'raw' );
@@ -184,7 +209,7 @@ function _learn_press_get_courses_curriculum( $course_ids, $force = false ) {
 			$lesson_ids = array();
 
 			foreach ( $rows as $row ) {
-				if ( $course_id != $row->section_course_id ) {
+				if ( $course_id != $row->section_course_id || empty( $row->section_id ) ) {
 					continue;
 				}
 				if ( $row->section_id != $section_id ) {
@@ -245,7 +270,7 @@ function _learn_press_get_courses_curriculum( $course_ids, $force = false ) {
 			$course                   = get_post( $course_id );
 			$course->curriculum_items = is_admin() ? maybe_serialize( $item_ids ) : $item_ids;
 			wp_cache_replace( $course_id, $course, 'posts' );
-			if ( $quiz_ids ) {
+			if ( $quiz_ids && $parse_items ) {
 				$question_ids = _learn_press_get_quiz_questions( $quiz_ids );
 				if ( $question_ids ) {
 					$meta_cache_ids = array_merge( $meta_cache_ids, $question_ids );
@@ -255,6 +280,22 @@ function _learn_press_get_courses_curriculum( $course_ids, $force = false ) {
 		}
 		$meta_cache_ids = array_unique( $meta_cache_ids );
 		update_meta_cache( 'post', $meta_cache_ids );
+		$attachment_ids = array();
+		foreach ( $meta_cache_ids as $id ) {
+			if ( $postmeta = wp_cache_get( $id, 'post_meta' ) ) {
+				if ( array_key_exists( '_thumbnail_id', $postmeta ) ) {
+					$attachment_ids[] = $postmeta['_thumbnail_id'][0];
+				}
+			}
+		}
+		if ( $attachment_ids ) {
+			update_meta_cache( 'post', $attachment_ids );
+			if ( $attachments = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->posts} WHERE ID IN(" . join( ',', $attachment_ids ) . ") AND post_type=%s", 'attachment' ) ) ) {
+				foreach ( $attachments as $attachment ) {
+					wp_cache_add( $attachment->ID, $attachment, 'posts' );
+				}
+			}
+		}
 		LP_Cache::set_course_curriculum( $curriculum );
 		LP_Cache::set_post_names( $post_names );
 	}
@@ -389,8 +430,6 @@ function _learn_press_get_quiz_questions( $quiz_ids ) {
 function learn_press_setup_user_course_data( $user_id, $course_id, $force = false ) {
 	if ( is_array( $course_id ) ) {
 		_learn_press_get_courses_curriculum( $course_id );
-		//_learn_press_parse_user_item_statuses( $user_id, $course_id );
-
 		foreach ( $course_id as $cid ) {
 			learn_press_setup_user_course_data( $user_id, $cid, $force );
 		}
@@ -569,7 +608,8 @@ function _learn_press_get_user_profile_orders( $user_id = 0, $paged = 1, $limit 
 			INNER JOIN {$wpdb->prefix}postmeta pm ON  pm.post_id = oi.order_id AND pm.meta_key = %s AND pm.meta_value = %d
 			RIGHT JOIN {$wpdb->prefix}posts po ON po.ID = oi.order_id
 			WHERE po.post_type = %s ORDER BY ID DESC
-		", '_user_id', $user_id, LP_ORDER_CPT );
+			LIMIT %d, %d
+		", '_user_id', $user_id, LP_ORDER_CPT, $offset, $limit );
 		if ( $rows = $wpdb->get_results( $query ) ) {
 			$results['total']     = count( $rows );
 			$results['paged']     = $paged;
@@ -577,9 +617,13 @@ function _learn_press_get_user_profile_orders( $user_id = 0, $paged = 1, $limit 
 			$results['offset']    = $offset;
 			$results['num_pages'] = ceil( $results['total'] / $limit );
 			$rows                 = array_slice( $rows, $offset, $limit );
+			$order_ids            = array();
 			foreach ( $rows as $row ) {
 				$results['rows'][$row->ID] = $row;
+				wp_cache_add( $row->ID, $row, 'posts' );
+				$order_ids[] = $row->ID;
 			}
+			update_meta_cache( 'post', $order_ids );
 		}
 
 		$data[$user_id] = $results;
@@ -637,6 +681,7 @@ function _learn_press_setup_question( $id ) {
 	return $questions;
 }
 
+learn_press_setup_pages();
 
 #
 # stop support comment for 

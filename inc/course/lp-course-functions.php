@@ -754,3 +754,22 @@ if ( !function_exists( 'learn_press_quiz_permalink' ) ) {
 	}
 }
 
+add_action( 'template_include', 'learn_press_prepare_archive_courses' );
+function learn_press_prepare_archive_courses() {
+	global $wp_query;
+	$query = !empty( LP()->wp_query ) ? LP()->wp_query : $wp_query;
+	if ( !$query || !$query->is_main_query() ) {
+		return;
+	}
+	if ( !empty( $query->posts ) ) {
+		$ids = array();
+		foreach ( $query->posts as $_post ) {
+			$ids[] = $_post->ID;
+			$_post = sanitize_post( $_post, 'raw' );
+			wp_cache_add( $_post->ID, $_post, 'posts' );
+		}
+		_learn_press_get_courses_curriculum( $ids, false, false );
+		_learn_press_get_users_enrolled_courses( $ids );
+		//update_meta_cache( 'post', $ids );
+	}
+}

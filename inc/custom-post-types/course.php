@@ -1215,7 +1215,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			global $wpdb, $post;
 			$request          = $_POST;
 			$payment          = $request['_lp_payment'] == 1;
-			$price            = absint( $request['_lp_price'] );
+			$price            = floatval( $request['_lp_price'] );
 			$sale_price       = $request['_lp_sale_price'];
 			$sale_price_start = $request['_lp_sale_start'];
 			$sale_price_end   = $request['_lp_sale_end'];

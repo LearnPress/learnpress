@@ -1221,8 +1221,6 @@ function learn_press_get_currency_symbol( $currency = '' ) {
 }
 
 function learn_press_get_page_link( $key ) {
-	learn_press_setup_pages();
-
 	$page_id = LP()->settings->get( $key . '_page_id' );
 	if ( get_post_status( $page_id ) == 'publish' ) {
 		$link = apply_filters( 'learn_press_get_page_link', get_permalink( $page_id ), $page_id, $key );
@@ -2745,7 +2743,7 @@ function learn_press_get_students_list_filter() {
 	return apply_filters( 'learn_press_get_students_list_filter', $filter );
 }
 
-function learn_press_execute_time() {
+function learn_press_execute_time( $n = 1 ) {
 	static $time;
 	if ( empty( $time ) ) {
 		$time = microtime( true );
@@ -2753,7 +2751,7 @@ function learn_press_execute_time() {
 	} else {
 		$execute_time = microtime( true ) - $time;
 
-		echo "Execute time " . ( 1000 * $execute_time ) . "\n";
+		echo "Execute time " . $n * $execute_time . "\n";
 		$time = 0;
 		return $execute_time;
 	}

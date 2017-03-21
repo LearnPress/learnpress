@@ -333,7 +333,7 @@ class LP_Cache {
 	 *
 	 * @return array|bool|mixed
 	 */
-	public static function set_enrolled_courses( $key_or_value, $value ) {
+	public static function set_enrolled_courses( $key_or_value, $value = false ) {
 		if ( func_num_args() == 1 ) {
 			wp_cache_set( self::$_user_enrolled_courses, $key_or_value, self::$_group );
 			return $key_or_value;
