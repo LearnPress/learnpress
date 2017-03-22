@@ -36,7 +36,7 @@ class LP_Quiz_Factory {
 	public static function delete_quiz( $post_id, $force=false ) {
 		global $wpdb;
 		if('lp_quiz' === get_post_type($post_id) ){
-			$sql = 'DELETE FROM `'.$wpdb->prefix.'learnpress_quiz_questions` AS lqq WHERE `lqq`.`quiz_id` = '.$post_id;
+			$sql = 'DELETE FROM `'.$wpdb->prefix.'learnpress_quiz_questions` WHERE `quiz_id` = '.$post_id;
 			$wpdb->query($sql);
 		}
 	}

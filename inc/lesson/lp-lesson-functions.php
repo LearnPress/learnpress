@@ -62,9 +62,20 @@ if (!function_exists('lesson_comment_reply_link')) {
 add_filter('cancel_comment_reply_link', 'lesson_cancel_comment_reply_link', 10, 3);
 
 if (!function_exists('lesson_cancel_comment_reply_link')) {
-    function lesson_cancel_comment_reply_link($formatted_link, $link, $text) {
+	function lesson_cancel_comment_reply_link( $formatted_link, $link, $text ) {
+		$formatted_link = str_replace( 'cancel-comment-reply-link"', 'cancel-comment-reply-link" class="js-action"', $formatted_link );
+		return $formatted_link;
+	}
+}
 
-        $formatted_link = str_replace('cancel-comment-reply-link"', 'cancel-comment-reply-link" class="js-action"', $formatted_link);
-        return $formatted_link;
-    }
+/**
+ * Remove data section after remove lesson
+ */
+add_action( 'delete_post', 'learn_press_lesson_before_delete_post', 10, 2 );
+function learn_press_lesson_before_delete_post( $post_id, $force=false ) {
+	global $wpdb;
+	if( 'lp_lesson' === get_post_type( $post_id ) ) {
+		$sql = 'DELETE FROM `'.$wpdb->prefix.'learnpress_section_items` WHERE `item_id` = '.$post_id.' AND `item_type` = "lp_lesson"';
+		$wpdb->query($sql);
+	}
 }

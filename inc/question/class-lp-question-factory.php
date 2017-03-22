@@ -60,6 +60,7 @@ class LP_Question_Factory {
 		return self::$_instances[$the_id];
 	}
 
+
 	/**
 	 * @param  string
 	 *
@@ -160,11 +161,25 @@ class LP_Question_Factory {
 		add_action( 'learn_press_after_quiz_question_title', array( __CLASS__, 'show_answer' ), 100, 2 );
 		add_action( 'learn_press_after_question_wrap', array( __CLASS__, 'show_hint' ), 100, 2 );
 		add_action( 'learn_press_after_question_wrap', array( __CLASS__, 'show_explanation' ), 110, 2 );
+		add_action( 'delete_post', array( __CLASS__, 'delete_question' ), 10, 2 );
 
 		LP_Question_Factory::add_template( 'multi-choice-option', LP_Question_Multi_Choice::admin_js_template() );
 		LP_Question_Factory::add_template( 'single-choice-option', LP_Question_Single_Choice::admin_js_template() );
 
 		do_action( 'learn_press_question_factory_init', __CLASS__ );
+	}
+
+
+	public static function delete_question( $post_id, $force=false ) {
+		global $wpdb;
+		if( 'lp_question' === get_post_type($post_id) ) {
+			// remove question answears
+			$sql = 'DELETE FROM `'.$wpdb->prefix.'learnpress_question_answers` WHERE `question_id` = '.$post_id;
+			$wpdb->query($sql);
+			// remove question in quiz
+			$sql = 'DELETE FROM `'.$wpdb->prefix.'learnpress_quiz_questions` WHERE `question_id` = '.$post_id;
+			$wpdb->query($sql);
+		}
 	}
 
 	public static function show_answer( $id, $quiz_id ) {
