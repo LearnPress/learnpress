@@ -1083,8 +1083,11 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 					$submit_for_review = false;
 				}
 				if ( ( $submit_for_review || ( $old_status != $new_status ) ) && $post->post_status != 'auto-draft' ) {
-					$action = 'for_reviewer';
-					update_post_meta( $post->ID, '_lp_submit_for_reviewer', 'yes' );
+					if( isset( $_POST['learn-press-submit-for-review'] ) && $_POST['learn-press-submit-for-review'] === 'yes' ) 
+					{
+						$action = 'for_reviewer';
+						update_post_meta( $post->ID, '_lp_submit_for_reviewer', 'yes' );
+					}
 				}
 			}
 			$message = learn_press_get_request( 'review-message' );
@@ -1147,9 +1150,9 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			remove_action( 'save_post', array( $this, 'before_save_curriculum' ), 1 );
 			//remove_action( 'rwmb_course_curriculum_before_save_post', array( $this, 'before_save_curriculum' ) );
 
-			$user                  = LP()->user;
-			$required_review       = LP()->settings->get( 'required_review' ) == 'yes';
-			$enable_edit_published = LP()->settings->get( 'enable_edit_published' ) == 'yes';
+			$user					= LP()->user;
+			$required_review		= LP()->settings->get( 'required_review' ) == 'yes';
+			$enable_edit_published 	= LP()->settings->get( 'enable_edit_published' ) == 'yes';
 
 			if ( $user->is_instructor() && $required_review && !$enable_edit_published ) {
 				wp_update_post(
