@@ -166,16 +166,21 @@ class LP_Query {
 			$slug         = preg_replace( '!(%?course_category%?)!', '(.+?)/([^/]+)', $slug );
 			$has_category = true;
 		}
-		$current_url  = learn_press_get_current_url();
-		$query_string = str_replace( trailingslashit( get_site_url() ), '', $current_url );
+		$current_url        = learn_press_get_current_url();
+		$query_string       = str_replace( trailingslashit( get_site_url() ), '', $current_url );
 		$custom_slug_lesson = sanitize_title_with_dashes( LP()->settings->get( 'lesson_slug' ) );
 		$custom_slug_quiz   = sanitize_title_with_dashes( LP()->settings->get( 'quiz_slug' ) );
 
+		/**
+		 * Use urldecode to convert an encoded string to normal.
+		 * This fixed the issue with custom slug of lesson/quiz in some languages
+		 * Eg: урока
+		 */
 		if ( !empty( $custom_slug_lesson ) ) {
-			$post_types['lp_lesson']->rewrite['slug'] = $custom_slug_lesson;
+			$post_types['lp_lesson']->rewrite['slug'] = urldecode( $custom_slug_lesson );
 		}
 		if ( !empty( $custom_slug_quiz ) ) {
-			$post_types['lp_quiz']->rewrite['slug'] = $custom_slug_quiz;
+			$post_types['lp_quiz']->rewrite['slug'] = urldecode( $custom_slug_quiz );
 		}
 		if ( $has_category ) {
 			add_rewrite_rule(
@@ -216,51 +221,8 @@ class LP_Query {
 				'index.php?pagename=' . get_post_field( 'post_name', $course_page_id ) . '&page=$matches[1]',
 				'top'
 			);
-			/**
-			 * add_rewrite_rule(
-			 * '^' . $rewrite_prefix . get_post_field( 'post_name', $course_page_id ) . '/page/([0-9]{1,})/?$',
-			 * 'index.php?page_id=' . $course_page_id . '&paged=$matches[1]',
-			 * 'top'
-			 * );*/
 		}
 		do_action( 'learn_press_add_rewrite_rules' );
-		return;
-
-		/**
-		 * Lesson permalink without category
-		 */
-		/*add_rewrite_rule(
-			'^' . $slug . '/([^/]*)/(' . $post_types['lp_lesson']->rewrite['slug'] . ')/([^/]+)/?$',
-			'index.php?' . $course_type . '=$matches[1]&lesson=$matches[3]',
-			'top'
-		);*/
-
-		/**
-		 * Quiz permalink with category inside
-		 */
-		add_rewrite_rule(
-			'^course/(.+?)/([^/]+)(?:/' . $post_types['lp_quiz']->rewrite['slug'] . '/([^/]+))/?$',
-			'index.php?' . $course_type . '=$matches[2]&course_category=$matches[1]&quiz=$matches[3]',
-			'top'
-		);
-
-		/**
-		 * Lesson permalink without category
-		 */
-		add_rewrite_rule(
-			'^' . $slug . '/([^/]*)/(' . $post_types['lp_quiz']->rewrite['slug'] . ')/([^/]+)/?$',
-			'index.php?' . $course_type . '=$matches[1]&quiz=$matches[3]',
-			'top'
-		);
-
-
-		/*add_rewrite_rule(
-			'^' . $slug . '/([^/]*)/(' . $post_types['lp_quiz']->rewrite['slug'] . ')?/([^/]*)?/?([^/]*)?',
-			'index.php?' . $course_type . '=$matches[1]&quiz=$matches[3]&question=$matches[4]',
-			'top'
-		);*/
-
-
 	}
 
 	/**

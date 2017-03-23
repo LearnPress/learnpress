@@ -348,7 +348,7 @@ function learn_press_get_post_by_name( $name, $type, $single = true ) {
 			SELECT *
 			FROM {$wpdb->posts}
 			WHERE 1 AND post_name = %s
-		", $name );
+		", sanitize_title( $name ) );
 
 		$query .= " AND post_type IN ('" . $type . "' )";
 

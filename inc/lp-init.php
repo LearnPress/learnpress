@@ -14,6 +14,7 @@ add_action( 'init', '_learn_press_upgrade_table' );
  * TODO: remove in next version
  */
 function _learn_press_upgrade_table() {
+
 	if ( version_compare( LEARNPRESS_VERSION, '2.1.0', '<' ) ) {
 		global $wpdb;
 		if ( $wpdb->get_var( "SHOW TABLES LIKE '{$wpdb->prefix}learnpress_user_items'" ) != $wpdb->prefix . "learnpress_user_items" ) {

@@ -203,7 +203,18 @@ if ( !class_exists( 'LP_Widget' ) ) {
 				$field['field_name']            = $this->get_field_name( $field['id'] );
 				$field['id']                    = $this->get_field_id( $field['id'] );
 				$this->map_fields[$field['id']] = $origin_id;
-				call_user_func( array( RW_Meta_Box::get_class_name( $field ), 'show' ), $field, false );
+				$callable                       = array( 'RW_Meta_Box', 'get_class_name' );
+				if ( !is_callable( $callable ) ) {
+					$callable = array( 'RW_Field', 'get_class_name' );
+				}
+				if ( is_callable( $callable ) ) {
+					$field_class = call_user_func( $callable, $field );
+				} else {
+					$field_class = false;
+				}
+				if ( $field_class ) {
+					call_user_func( array( $field_class, 'show' ), $field, false );
+				}
 				//var_dump(RW_Meta_Box::get_class_name( $field ));
 			}
 			wp_reset_postdata();
@@ -352,7 +363,8 @@ function learn_press_get_widget_theme_template_path( $slug ) {
  */
 function learn_press_get_widget_template( $slug, $template_name = 'default.php', $args = array() ) {
 	//$template_path = learn_press_get_widget_template_path( $slug );
-	$template = "widgets/{$slug}/" . ( $template_name ? $template_name : 'default.php' );die();
+	$template = "widgets/{$slug}/" . ( $template_name ? $template_name : 'default.php' );
+	die();
 	learn_press_get_template( $template );// $template_name ? $template_name : 'default.php', $args, learn_press_template_path() . "/widgets/{$slug}", LP_PLUGIN_PATH . "/widgets/{$slug}" );
 }
 
