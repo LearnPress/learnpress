@@ -769,7 +769,7 @@ function learn_press_prepare_archive_courses() {
 			wp_cache_add( $_post->ID, $_post, 'posts' );
 		}
 		_learn_press_get_courses_curriculum( $ids, false, false );
-		_learn_press_get_users_enrolled_courses( $ids );
+		_learn_press_count_users_enrolled_courses( $ids );
 		//update_meta_cache( 'post', $ids );
 	}
 }

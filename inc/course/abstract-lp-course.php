@@ -352,7 +352,7 @@ abstract class LP_Abstract_Course {
 		return $this->_count_users;
 		/*
 		if ( ( $this->_count_users === null && !array_key_exists( $this->id, self::$course_users ) ) || $force ) {
-			self::$course_users = _learn_press_get_users_enrolled_courses( array( $this->id ) );
+			self::$course_users = _learn_press_count_users_enrolled_courses( array( $this->id ) );
 		}
 		if ( !array_key_exists( $this->id, self::$course_users ) ) {
 			$this->_count_users = 0;
@@ -530,7 +530,6 @@ abstract class LP_Abstract_Course {
 
 		global $wpdb;
 		if ( $limit < 0 ) $limit = PHP_INT_MAX;
-
 		if ( $this->_students_list === null || $force ) {
 			$query                = $wpdb->prepare( "
 				SELECT DISTINCT u.*
@@ -543,7 +542,6 @@ abstract class LP_Abstract_Course {
 			$this->_students_list = $wpdb->get_results( $query );
 		}
 		return $this->_students_list;
-
 	}
 
 

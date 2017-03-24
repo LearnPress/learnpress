@@ -1292,6 +1292,15 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 
 			$columns['taxonomy-course_category'] = __( 'Categories', 'learnpress' );
 
+			global $wp_query;
+			if ( $wp_query->is_main_query() ) {
+				if ( LP_COURSE_CPT == $wp_query->query['post_type'] && $wp_query->posts ) {
+					$post_ids = wp_list_pluck( $wp_query->posts, 'ID' );
+					_learn_press_get_courses_curriculum( $post_ids, false, false );
+					_learn_press_count_users_enrolled_courses( $post_ids );
+				}
+			}
+
 			return $columns;
 		}
 
@@ -1343,6 +1352,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 					break;
 				case 'students' :
 					echo '<span class=lp-label-counter>' . count( $course->get_students_list( true ) ) . '</span>';
+					echo $course->get_users_enrolled();
 
 			}
 		}
@@ -1379,8 +1389,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			learn_press_admin_view( 'meta-boxes/course/review-log' );
 		}
 
-		public
-		function posts_fields(
+		public function posts_fields(
 			$fields
 		) {
 			if ( !$this->_is_archive() ) {
@@ -1400,8 +1409,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 *
 		 * @return string
 		 */
-		public
-		function posts_join_paged(
+		public function posts_join_paged(
 			$join
 		) {
 			if ( !$this->_is_archive() ) {
@@ -1418,8 +1426,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 *
 		 * @return mixed|string
 		 */
-		public
-		function posts_where_paged(
+		public function posts_where_paged(
 			$where
 		) {
 			if ( !$this->_is_archive() ) {
@@ -1442,8 +1449,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 *
 		 * @return string
 		 */
-		public
-		function posts_orderby(
+		public function posts_orderby(
 			$order_by_statement
 		) {
 			if ( !$this->_is_archive() ) {
@@ -1462,8 +1468,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 *
 		 * @return mixed
 		 */
-		public
-		function sortable_columns(
+		public function sortable_columns(
 			$columns
 		) {
 			$columns['author'] = 'author';
@@ -1472,8 +1477,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			return $columns;
 		}
 
-		private
-		function _is_archive() {
+		private function _is_archive() {
 			global $pagenow, $post_type;
 			if ( !is_admin() || ( $pagenow != 'edit.php' ) || ( LP_COURSE_CPT != $post_type ) ) {
 				return false;
@@ -1482,13 +1486,11 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			return true;
 		}
 
-		private
-		function _get_orderby() {
+		private function _get_orderby() {
 			return isset( $_REQUEST['orderby'] ) ? $_REQUEST['orderby'] : '';
 		}
 
-		private
-		function _get_search() {
+		private function _get_search() {
 			return isset( $_REQUEST['s'] ) ? $_REQUEST['s'] : false;
 		}
 
@@ -1496,8 +1498,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 * Course video
 		 * @return mixed|null|void
 		 */
-		public
-		static function video_meta_box() {
+		public static function video_meta_box() {
 			$prefix   = '_lp_';
 			$meta_box = array(
 				'id'       => 'course_video',
@@ -1544,8 +1545,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		}
 
 
-		public
-		static function instance() {
+		public static function instance() {
 			if ( !self::$_instance ) {
 				self::$_instance = new self( LP_COURSE_CPT );
 			}

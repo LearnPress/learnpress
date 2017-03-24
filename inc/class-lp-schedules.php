@@ -123,7 +123,7 @@ class LP_Schedules {
 				$ids[] = $row->item_id;
 			}
 			_learn_press_get_courses_curriculum( $ids );
-			_learn_press_get_users_enrolled_courses( $ids );
+			_learn_press_count_users_enrolled_courses( $ids );
 			foreach ( $results as $row ) {
 				$course = learn_press_get_course( $row->item_id );
 				if ( !$course ) continue;
