@@ -1352,7 +1352,6 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 					break;
 				case 'students' :
 					echo '<span class=lp-label-counter>' . count( $course->get_students_list( true ) ) . '</span>';
-					echo $course->get_users_enrolled();
 
 			}
 		}
