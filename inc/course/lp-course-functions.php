@@ -755,7 +755,7 @@ if ( !function_exists( 'learn_press_quiz_permalink' ) ) {
 }
 
 add_action( 'template_include', 'learn_press_prepare_archive_courses' );
-function learn_press_prepare_archive_courses() {
+function learn_press_prepare_archive_courses( $template ) {
 	global $wp_query;
 	$query = !empty( LP()->wp_query ) ? LP()->wp_query : $wp_query;
 	if ( !$query || !$query->is_main_query() ) {
@@ -772,4 +772,5 @@ function learn_press_prepare_archive_courses() {
 		_learn_press_count_users_enrolled_courses( $ids );
 		//update_meta_cache( 'post', $ids );
 	}
+	return $template;
 }
