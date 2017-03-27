@@ -193,6 +193,9 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.  
 
 == Changelog ==
+= 2.1.5.3 =
++ Fixed a bug when using template_include filter
+
 = 2.1.5.2 =
 + Fixed some warning messaages
 + Fixed orders display missing in user profile
