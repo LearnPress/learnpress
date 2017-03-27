@@ -5,7 +5,6 @@
  * @version 1.0
  */
 
-_deprecated_file( __FILE__, '2.1.5' );
 defined( 'ABSPATH' ) || exit();
 
 function learn_press_profile_shortcode() {

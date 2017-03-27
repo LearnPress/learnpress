@@ -348,7 +348,7 @@ function learn_press_get_post_by_name( $name, $type, $single = true ) {
 			SELECT *
 			FROM {$wpdb->posts}
 			WHERE 1 AND post_name = %s
-		", $name );
+		", sanitize_title( $name ) );
 
 		$query .= " AND post_type IN ('" . $type . "' )";
 
@@ -573,10 +573,18 @@ function learn_press_seconds_to_time( $seconds, $separator = ':' ) {
 function learn_press_post_object( $defaults = false ) {
 	static $post_object = false;
 	if ( !$post_object ) {
-		global $wpdb;
-		$post_object = new stdClass();
-		foreach ( $wpdb->get_col( "DESC " . $wpdb->posts, 0 ) as $column_name ) {
-			$post_object->{$column_name} = null;
+		if ( !function_exists( 'get_default_post_to_edit' ) ) {
+			@include_once ABSPATH . '/wp-admin/includes/post.php';
+		}
+
+		if ( function_exists( 'get_default_post_to_edit' ) ) {
+			$post_object = get_default_post_to_edit();
+		} else {
+			global $wpdb;
+			$post_object = new stdClass();
+			foreach ( $wpdb->get_col( "DESC " . $wpdb->posts, 0 ) as $column_name ) {
+				$post_object->{$column_name} = null;
+			}
 		}
 	}
 	settype( $defaults, 'array' );
@@ -1214,7 +1222,7 @@ function learn_press_get_currency_symbol( $currency = '' ) {
 
 function learn_press_get_page_link( $key ) {
 	$page_id = LP()->settings->get( $key . '_page_id' );
-	if ( $page_id && get_post_status( $page_id ) == 'publish' ) {
+	if ( get_post_status( $page_id ) == 'publish' ) {
 		$link = apply_filters( 'learn_press_get_page_link', get_permalink( $page_id ), $page_id, $key );
 	} else {
 		$link = '';
@@ -2185,13 +2193,21 @@ function learn_press_profile_tab_exists( $tab ) {
  */
 function learn_press_user_profile_link( $user_id = 0, $tab = null ) {
 	if ( !$user_id ) {
-		$user = get_user_by( 'id', get_current_user_id() );
-	} else {
+		$user_id = get_current_user_id();
+	}
+	$user    = false;
+	$deleted = in_array( $user_id, LP_User_Factory::$_deleted_users );
+	if ( !$deleted ) {
 		if ( is_numeric( $user_id ) ) {
 			$user = get_user_by( 'id', $user_id );
 		} else {
 			$user = get_user_by( 'login', $user_id );
 		}
+	} else {
+		return '';
+	}
+	if ( !$deleted && !$user ) {
+		LP_User_Factory::$_deleted_users[] = $user_id;
 	}
 
 	if ( !$user ) {
@@ -2313,6 +2329,7 @@ function learn_press_auto_enroll_user_to_courses( $order_id ) {
 	if ( !$users = $order->get_user_data() ) {
 		return;
 	}
+
 	$return = 0;
 	foreach ( $items as $item_id => $item ) {
 		$course = learn_press_get_course( $item['course_id'] );
@@ -2643,7 +2660,7 @@ if ( !function_exists( 'learn_press_cancel_order_process' ) ) {
  */
 function learn_press_get_current_time() {
 	$current_time = apply_filters( 'learn_press_get_current_time', 0 );
-	if( $current_time > 0 ) {
+	if ( $current_time > 0 ) {
 		return $current_time;
 	}
 	$a = current_time( "timestamp" );
@@ -2726,14 +2743,15 @@ function learn_press_get_students_list_filter() {
 	return apply_filters( 'learn_press_get_students_list_filter', $filter );
 }
 
-function learn_press_execute_time() {
+function learn_press_execute_time( $n = 1 ) {
 	static $time;
 	if ( empty( $time ) ) {
 		$time = microtime( true );
 		return $time;
 	} else {
 		$execute_time = microtime( true ) - $time;
-		echo "Execute time " . $execute_time;
+
+		echo "Execute time " . $n * $execute_time . "\n";
 		$time = 0;
 		return $execute_time;
 	}
@@ -2770,7 +2788,10 @@ function learn_press_comment_reply_link( $link, $args = array(), $comment = null
 			);
 
 			$link = sprintf( "<a rel='nofollow' class='comment-reply-link' href='%s' onclick='%s' aria-label='%s'>%s</a>",
-				esc_url( add_query_arg( array( 'replytocom' => $comment->comment_ID, 'content-item-only' => 'yes' ), get_permalink( $post->ID ) ) ) . "#" . $args['respond_id'],
+				esc_url( add_query_arg( array(
+					'replytocom'        => $comment->comment_ID,
+					'content-item-only' => 'yes'
+				), get_permalink( $post->ID ) ) ) . "#" . $args['respond_id'],
 				$onclick,
 				esc_attr( sprintf( $args['reply_to_text'], $comment->comment_author ) ),
 				$args['reply_text']

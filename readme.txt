@@ -193,10 +193,15 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.  
 
 == Changelog ==
-= 2.x =
-+ Added filter current time
-+ Added logout redirection
-+ Improved email system
+= 2.1.5 =
++ Added feature allow creating an order for multi users
++ Added option to force an action can be triggered after updated order
++ Added hook for logout redirection
++ Improved emails system ( add emails: order status changed for user, course enrolled for admin, course updated for admin )
++ Improved sql queries performance
++ Fixed 'Preview' label can not click-able
++ Fixed option 'Show correct answer' does not work correctly
++ Re-added Recent/Popular/Featured widgets and shortcodes
 
 = 2.1.4.2 =
 + Fixed issue can not view lesson

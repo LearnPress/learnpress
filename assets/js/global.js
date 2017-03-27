@@ -143,6 +143,8 @@ if (typeof window.LP == 'undefined') {
 	};
 	String.prototype.addQueryVar = function (name, value) {
 		var url = this;
+		var m = url.split('#');
+		url = m[0];
 		if (name.match(/\[/)) {
 			url += url.match(/\?/) ? '&' : '?';
 			url += name + '=' + value;
@@ -154,14 +156,16 @@ if (typeof window.LP == 'undefined') {
 				url += name + '=' + value;
 			}
 		}
-		return url;
+		return url + (m[1] ? '#' + m[1] : '');
 	};
 	String.prototype.removeQueryVar = function (name) {
 		var url = this;
+		var m = url.split('#');
+		url = m[0];
 		name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
 		var regex = new RegExp("[\\?&]" + name + "([\[][^=]*)?=([^&#]*)", 'g');
 		url = url.replace(regex, '');
-		return url;
+		return url + (m[1] ? '#' + m[1] : '');
 	};
 
 	if ($.isEmptyObject("") == false) {
@@ -617,21 +621,21 @@ if (typeof window.LP == 'undefined') {
 			});
 		},
 
-		funcArgs2Array   : function (args) {
+		funcArgs2Array: function (args) {
 			var arr = [];
 			for (var i = 0; i < args.length; i++) {
 				arr.push(args[i]);
 			}
 			return arr;
 		},
-		addFilter        : function (action, callback) {
+		addFilter     : function (action, callback) {
 			var $doc = $(document),
 				event = 'LP.' + action;
 			$doc.on(event, callback);
 			LP.log($doc.data('events'));
 			return this;
 		},
-		applyFilters     : function () {
+		applyFilters  : function () {
 			var $doc = $(document),
 				action = arguments[0],
 				args = this.funcArgs2Array(arguments);
@@ -641,10 +645,10 @@ if (typeof window.LP == 'undefined') {
 			}
 			return args[1];
 		},
-		addAction        : function (action, callback) {
+		addAction     : function (action, callback) {
 			return this.addFilter(action, callback);
 		},
-		doAction         : function () {
+		doAction      : function () {
 			var $doc = $(document),
 				action = arguments[0],
 				args = this.funcArgs2Array(arguments);
@@ -653,7 +657,7 @@ if (typeof window.LP == 'undefined') {
 				$doc.trigger.apply($doc, args);
 			}
 		},
-		toElement        : function (element, args) {
+		toElement     : function (element, args) {
 			if ($(element).length == 0) {
 				return;
 			}
@@ -670,7 +674,7 @@ if (typeof window.LP == 'undefined') {
 					scrollTop: $(element).offset().top - args.offset
 				}, args.duration, args.callback);
 		},
-		uniqueId         : function (prefix, more_entropy) {
+		uniqueId      : function (prefix, more_entropy) {
 			if (typeof prefix === 'undefined') {
 				prefix = '';
 			}
@@ -712,21 +716,21 @@ if (typeof window.LP == 'undefined') {
 
 			return retId;
 		},
-		log              : function () {
+		log           : function () {
 			//if (typeof LEARN_PRESS_DEBUG != 'undefined' && LEARN_PRESS_DEBUG && console) {
 			for (var i = 0, n = arguments.length; i < n; i++) {
 				console.log(arguments[i]);
 			}
 			//}
 		},
-		blockContent     : function () {
+		blockContent  : function () {
 			if ($('#learn-press-block-content').length == 0) {
 				$(LP.template('learn-press-template-block-content', {})).appendTo($('body'));
 			}
 			LP.hideMainScrollbar().addClass('block-content');
 			$(document).trigger('learn_press_block_content');
 		},
-		unblockContent   : function () {
+		unblockContent: function () {
 			setTimeout(function () {
 				LP.showMainScrollbar().removeClass('block-content');
 				$(document).trigger('learn_press_unblock_content');
@@ -756,7 +760,7 @@ if (typeof window.LP == 'undefined') {
 			});
 			return $el;
 		},
-		template         : _.memoize(function (id, data) {
+		template      : _.memoize(function (id, data) {
 			var compiled,
 				options = {
 					evaluate   : /<#([\s\S]+?)#>/g,
@@ -773,7 +777,7 @@ if (typeof window.LP == 'undefined') {
 		}, function (a, b) {
 			return a + '-' + JSON.stringify(b);
 		}),
-		alert            : function (localize, callback) {
+		alert         : function (localize, callback) {
 			var title = '',
 				message = '';
 			if (typeof localize == 'string') {
@@ -792,7 +796,7 @@ if (typeof window.LP == 'undefined') {
 			});
 			this._on_alert_show();
 		},
-		confirm          : function (localize, callback) {
+		confirm       : function (localize, callback) {
 			var title = '',
 				message = '';
 
@@ -813,7 +817,7 @@ if (typeof window.LP == 'undefined') {
 			this._on_alert_show();
 
 		},
-		_on_alert_show   : function () {
+		_on_alert_show: function () {
 			var $container = $('#popup_container'),
 				$placeholder = $('<span id="popup_container_placeholder" />').insertAfter($container).data('xxx', $container);
 			$container.stop().css('top', '-=50').css('opacity', '0').animate({
@@ -821,7 +825,7 @@ if (typeof window.LP == 'undefined') {
 				opacity: 1
 			}, 250);
 		},
-		_on_alert_hide   : function () {
+		_on_alert_hide: function () {
 			var $holder = $("#popup_container_placeholder"),
 				$container = $holder.data('xxx');
 			if ($container) {
@@ -835,7 +839,7 @@ if (typeof window.LP == 'undefined') {
 				$(this).remove();
 			});
 		},
-		sendMessage      : function (data, object, targetOrigin, transfer) {
+		sendMessage   : function (data, object, targetOrigin, transfer) {
 			if ($.isPlainObject(data)) {
 				data = JSON.stringify(data);
 			}
@@ -843,7 +847,7 @@ if (typeof window.LP == 'undefined') {
 			targetOrigin = targetOrigin || '*';
 			object.postMessage(data, targetOrigin, transfer);
 		},
-		receiveMessage   : function (event, b) {
+		receiveMessage: function (event, b) {
 			var target = event.origin || event.originalEvent.origin,
 				data = event.data || event.originalEvent.data || '';
 			if (typeof data === 'string' || data instanceof String) {
@@ -929,12 +933,6 @@ if (typeof window.LP == 'undefined') {
 		});
 	};
 
-	$.fn.placeholderEffective = function () {
-		return $.each(this, function () {
-
-		})
-	}
-
 	function __initSubtabs() {
 		$('.learn-press-subtabs').each(function () {
 			var $tabContainer = $(this),
@@ -972,22 +970,6 @@ if (typeof window.LP == 'undefined') {
 			});
 		$('.learn-press-nav-tabs li.active a').trigger('click');
 
-		/*$(document).on('focus', 'input', function () {
-			var $el = $(this),
-				placeholder = $el.attr('placeholder');
-			if (!placeholder) {
-				return;
-			}
-			$el.data('placeholder', placeholder);
-			$el.removeAttr('placeholder');
-		}).on('blur', 'input', function () {
-			var $el = $(this),
-				placeholder = $el.data('placeholder');
-			if (!placeholder) {
-				return;
-			}
-			$el.prop('placeholder', placeholder);
-		});*/
 		///
 		(function () {
 			var timer = null,

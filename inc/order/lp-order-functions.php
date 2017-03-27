@@ -506,6 +506,55 @@ function learn_press_get_orders( $args = array() ) {
 	return apply_filters( 'learn_press_get_orders', $orders, $args );
 }
 
+/**
+ * Count orders by it's status
+ *
+ * @param array $args
+ *
+ * @return array
+ */
+function learn_press_count_orders( $args = array() ) {
+	if ( is_string( $args ) ) {
+		$args = array( 'status' => $args );
+	} else {
+		$args = wp_parse_args(
+			$args,
+			array(
+				'status' => ''
+			)
+		);
+	}
+	global $wpdb;
+	$statuses = $args['status'];
+	if ( !$statuses ) {
+		$statuses = learn_press_get_register_order_statuses();
+		$statuses = array_keys( $statuses );
+	}
+	settype( $statuses, 'array' );
+	$size_of_status = sizeof( $statuses );
+	foreach ( $statuses as $k => $status ) {
+		$statuses[$k] = !preg_match( '~^lp-~', $status ) ? 'lp-' . $status : $status;
+	}
+	$format     = array_fill( 0, $size_of_status, '%s' );
+	$counts     = array_fill_keys( $statuses, 0 );
+	$statuses[] = LP_ORDER_CPT;
+	$query      = $wpdb->prepare( "
+		SELECT COUNT(ID) AS count, post_status AS status
+		FROM {$wpdb->posts} o
+		WHERE post_status IN(" . join( ',', $format ) . ")
+		AND post_type = %s
+		GROUP BY o.post_status
+	", $statuses );
+	if ( $results = $wpdb->get_results( $query ) ) {
+		foreach ( $results as $result ) {
+			if ( array_key_exists( $result->status, $counts ) ) {
+				$counts[$result->status] = absint( $result->count );
+			}
+		}
+	}
+	return $size_of_status > 1 ? $counts : reset( $counts );
+}
+
 function learn_press_get_course_price_text( $price, $course_id ) {
 	if ( !$price && LP_COURSE_CPT == get_post_type( $course_id ) ) {
 		$price = __( 'Free', 'learnpress' );
@@ -649,7 +698,7 @@ function learn_press_get_order_status_label( $order_id = 0 ) {
 	return !empty( $statuses[$status] ) ? $statuses[$status] : __( 'Pending', 'learnpress' );
 }
 
-function learn_press_get_order_statuses( $prefix = true ) {
+function learn_press_get_order_statuses( $prefix = true, $status_only = false ) {
 	$prefix = $prefix ? 'lp-' : '';
 	/*$register_statues = learn_press_get_register_order_statuses();
 	$order_statuses= array();
@@ -667,6 +716,10 @@ function learn_press_get_order_statuses( $prefix = true ) {
 //		$prefix . 'failed'     => _x( 'Failed', 'Order status', 'learnpress' ),
 //		$prefix . 'on-hold'    => _x( 'On Hold', 'Order status', 'learnpress' ),
 	);
+
+	if ( $status_only ) {
+		$order_statuses = array_keys( $order_statuses );
+	}
 
 	return apply_filters( 'learn_press_order_statuses', $order_statuses );
 }
