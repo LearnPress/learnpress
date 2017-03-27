@@ -167,8 +167,8 @@ class LP_Shortcodes {
 		extract( $atts );
 
 		// Validation date
-		$arr_orders_by = ['post_date', 'post_title', 'post_status', 'comment_count'];
-		$arr_orders = ['DESC', 'ASC'];
+		$arr_orders_by = array('post_date', 'post_title', 'post_status', 'comment_count');
+		$arr_orders = array('DESC', 'ASC');
 		$order = strtoupper($order);
 
 		if ( !in_array($order_by, $arr_orders_by) || !in_array('post_'.$order_by, $arr_orders_by)) {
@@ -225,8 +225,8 @@ class LP_Shortcodes {
 		extract( $atts );
 
 		// Validation date
-		$arr_orders_by = ['post_date', 'post_title', 'post_status', 'comment_count'];
-		$arr_orders = ['DESC', 'ASC'];
+		$arr_orders_by = array('post_date', 'post_title', 'post_status', 'comment_count');
+		$arr_orders = array('DESC', 'ASC');
 		$order = strtoupper($order);
 
 		if ( !in_array($order_by, $arr_orders_by) || !in_array('post_'.$order_by, $arr_orders_by)) {
@@ -281,7 +281,7 @@ class LP_Shortcodes {
 		extract( $atts );
 
 		// Validation date
-		$arr_orders = ['DESC', 'ASC'];
+		$arr_orders = array('DESC', 'ASC');
 		$order = strtoupper($order);
 
 		if (!in_array($order, $arr_orders)) {
