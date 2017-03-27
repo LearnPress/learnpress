@@ -1214,7 +1214,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		private function _update_price() {
 			global $wpdb, $post;
 			$request          = $_POST;
-			$payment          = $request['_lp_payment'] == 1;
+			$payment          = learn_press_get_request('_lp_payment') == 1;
 			$price            = floatval( $request['_lp_price'] );
 			$sale_price       = $request['_lp_sale_price'];
 			$sale_price_start = $request['_lp_sale_start'];

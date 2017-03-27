@@ -698,7 +698,7 @@ function learn_press_get_order_status_label( $order_id = 0 ) {
 	return !empty( $statuses[$status] ) ? $statuses[$status] : __( 'Pending', 'learnpress' );
 }
 
-function learn_press_get_order_statuses( $prefix = true ) {
+function learn_press_get_order_statuses( $prefix = true, $status_only = false ) {
 	$prefix = $prefix ? 'lp-' : '';
 	/*$register_statues = learn_press_get_register_order_statuses();
 	$order_statuses= array();
@@ -716,6 +716,10 @@ function learn_press_get_order_statuses( $prefix = true ) {
 //		$prefix . 'failed'     => _x( 'Failed', 'Order status', 'learnpress' ),
 //		$prefix . 'on-hold'    => _x( 'On Hold', 'Order status', 'learnpress' ),
 	);
+
+	if ( $status_only ) {
+		$order_statuses = array_keys( $order_statuses );
+	}
 
 	return apply_filters( 'learn_press_order_statuses', $order_statuses );
 }

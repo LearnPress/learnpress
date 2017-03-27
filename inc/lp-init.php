@@ -600,17 +600,23 @@ function _learn_press_get_user_profile_orders( $user_id = 0, $paged = 1, $limit 
 	$data = LP_Cache::get_user_profile_orders( false, array() );
 
 	if ( !array_key_exists( $user_id, $data ) ) {
-		$limit   = absint( $limit );
-		$offset  = absint( $paged - 1 ) * $limit;
-		$results = array();
-		$query   = $wpdb->prepare( "
-			SELECT DISTINCT po.*, oi.order_id
+		$limit         = absint( $limit );
+		$offset        = absint( $paged - 1 ) * $limit;
+		$results       = array();
+		$statuses      = learn_press_get_order_statuses( true, true );
+		$status_format = array_fill( 0, sizeof( $statuses ), '%s' );
+		$args          = array( '_user_id', $user_id, LP_ORDER_CPT, $user_id, $offset, $limit );
+		array_splice( $args, 3, 0, $statuses );
+		$query = $wpdb->prepare( "
+			SELECT DISTINCT po.*, oi.order_id, pm.meta_value as user_id
 			FROM {$wpdb->prefix}learnpress_order_items oi
 			INNER JOIN {$wpdb->prefix}postmeta pm ON  pm.post_id = oi.order_id AND pm.meta_key = %s AND pm.meta_value = %d
 			RIGHT JOIN {$wpdb->prefix}posts po ON po.ID = oi.order_id
-			WHERE po.post_type = %s ORDER BY ID DESC
+			WHERE po.post_type = %s AND po.post_status IN(" . join( ',', $status_format ) . ")
+			HAVING user_id = %d
+			ORDER BY ID DESC
 			LIMIT %d, %d
-		", '_user_id', $user_id, LP_ORDER_CPT, $offset, $limit );
+		", $args );
 		if ( $rows = $wpdb->get_results( $query ) ) {
 			$results['total']     = count( $rows );
 			$results['paged']     = $paged;
@@ -632,8 +638,6 @@ function _learn_press_get_user_profile_orders( $user_id = 0, $paged = 1, $limit 
 	} else {
 		$results = $data[$user_id];
 	}
-
-
 	return $results;
 }
 

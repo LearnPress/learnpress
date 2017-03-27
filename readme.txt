@@ -198,6 +198,7 @@ https://www.transifex.com/projects/p/learnpress/
 + Added option to force an action can be triggered after updated order
 + Added hook for logout redirection
 + Improved emails system ( add emails: order status changed for user, course enrolled for admin, course updated for admin )
++ Improved sql queries performance
 + Fixed 'Preview' label can not click-able
 + Fixed option 'Show correct answer' does not work correctly
 + Re-added Recent/Popular/Featured widgets and shortcodes
