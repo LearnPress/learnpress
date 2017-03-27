@@ -298,7 +298,7 @@ class LP_Quiz_Factory {
 					learn_press_update_user_item_meta( $history->history_id, 'question_checked', $checked );
 				}
 			}
-		}else{
+		} else {
 		}
 		learn_press_setup_user_course_data( $user_id, $course_id );
 		$question = LP_Question_Factory::get_question( $question_id );
@@ -311,15 +311,15 @@ class LP_Quiz_Factory {
 	}
 
 	public static function _current_question( $question_id, $quiz_id, $course_id, $user_id ) {
-		$user       = learn_press_get_current_user();
-		$history    = $user->get_quiz_results( $quiz_id, $course_id, true );
+		$user    = learn_press_get_current_user();
+		$history = $user->get_quiz_results( $quiz_id, $course_id, true );
 
 		if ( !empty( $_REQUEST['lp-ajax'] ) && $_REQUEST['lp-ajax'] == 'fetch-question' ) {
 			$question_id = !empty( $_REQUEST['id'] ) ? $_REQUEST['id'] : $question_id;
 			learn_press_update_user_item_meta( $history->history_id, 'lp_current_question_after_close', $question_id );
 		}
 
-		if (!empty($_REQUEST['lp-update-current-question'])) {
+		if ( !empty( $_REQUEST['lp-update-current-question'] ) ) {
 			$current_id = absint( $_REQUEST['id'] );
 			learn_press_update_user_item_meta( $history->history_id, 'lp_current_question_after_close', $current_id );
 		}
@@ -359,6 +359,7 @@ class LP_Quiz_Factory {
 	 * @return mixed
 	 */
 	public static function _verify_nonce( $action, $error_message = false ) {
+		do_action( 'learn_press_before_verify_quiz_action_none' );
 		$action    = str_replace( '_', '-', $action );
 		$course_id = learn_press_get_request( 'course_id', 0 );
 		$quiz_id   = learn_press_get_request( 'quiz_id', 0 );
@@ -370,16 +371,16 @@ class LP_Quiz_Factory {
 			if ( $error_message === false ) {
 				$error_message = array( 'title' => __( 'Error', 'learnpress' ), 'message' => sprintf( __( 'Action %s failed! Please contact site\'s administrator for more information.', 'learnpress' ), $action ) );
 			}
-			if(learn_press_is_ajax()) {
+			if ( learn_press_is_ajax() ) {
 				learn_press_send_json(
 					array(
 						'result'  => 'error',
 						'message' => $error_message
 					)
 				);
-			}else{
-				learn_press_add_message($error_message['message']);
-				wp_redirect(learn_press_get_current_url());
+			} else {
+				learn_press_add_message( $error_message['message'] );
+				wp_redirect( learn_press_get_current_url() );
 				exit();
 			}
 		}

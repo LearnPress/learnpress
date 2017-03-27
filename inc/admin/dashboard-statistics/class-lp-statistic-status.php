@@ -21,6 +21,8 @@ if ( !class_exists( 'LP_Statistic_Status' ) ) :
 					$specific_statuses[] = $status;
 				}
 			}
+			$counts = learn_press_count_orders( array( 'status' => $specific_statuses ) );
+			setup_postdata()
 			?>
 			<ul class="learnpress-statistic-status">
 				<li class="full-width">
@@ -37,7 +39,7 @@ if ( !class_exists( 'LP_Statistic_Status' ) ) :
 					if ( !$status_object ) {
 						continue;
 					}
-					$count = count( learn_press_get_orders( array( 'post_status' => $status ) ) );
+					$count = $counts[$status];
 					?>
 					<li>
 						<?php if ( $count ): ?>

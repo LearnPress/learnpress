@@ -988,9 +988,12 @@ function _learn_press_redirect_logout_redirect() {
 	$admin_url   = admin_url();
 	$pos         = strpos( $redirect_to, $admin_url );
 	if ( $pos === false ) {
-		$redirect = learn_press_get_page_link( 'profile' );
-		wp_redirect( $redirect );
-		exit();
+		$page_id  = LP()->settings->get( 'logout_redirect_page_id' );
+		$page_url = get_page_link( $page_id );
+		if ( $page_id && $page_url ) {
+			wp_redirect( $page_url );
+			exit();
+		}
 	}
 }
 
@@ -1250,69 +1253,89 @@ function learn_press_get_avatar_thumb_size() {
  */
 function learn_press_get_user_courses_info( $user_id, $course_ids ) {
 	global $wpdb;
-	settype( $course_ids, 'array' );
-
-	$format           = array( $user_id );
-	$format           = array_merge( $format, $course_ids, array( 'lp_course' ) );
-	$in               = array_fill( 0, sizeof( $course_ids ), '%d' );
 	$user_course_info = LP_Cache::get_course_info( false, array() );
-	$query = $wpdb->prepare( "
-		SELECT uc.*
-		FROM {$wpdb->prefix}learnpress_user_items uc
-		INNER JOIN {$wpdb->posts} o ON o.ID = uc.item_id
-		WHERE uc.user_id = %d AND uc.status IS NOT NULL
-		AND uc.item_id IN(" . join( ',', $in ) . ") AND uc.item_type = %s
-		ORDER BY user_item_id DESC
-	", $format );//$this->id, $course_id, 'lp_course' );
-	//$course_id        = reset( $course_ids );
-	if ( empty( $user_course_info[$user_id] ) ) {
-		$user_course_info[$user_id] = array();
-	}
 
-	if ( $result = $wpdb->get_results( $query ) ) {
-		foreach ( $result as $row ) {
-			$course_id = $row->item_id;
-			if ( !empty( $user_course_info[$user_id][$course_id]['history_id'] ) ) {
+	if ( $user_id ) {
+		settype( $course_ids, 'array' );
+		$format = array( $user_id );
+		$format = array_merge( $format, $course_ids, array( 'lp_course' ) );
+		$in     = array_fill( 0, sizeof( $course_ids ), '%d' );
+		$query  = $wpdb->prepare( "
+			SELECT uc.*
+			FROM {$wpdb->prefix}learnpress_user_items uc
+			INNER JOIN {$wpdb->posts} o ON o.ID = uc.item_id
+			WHERE uc.user_id = %d AND uc.status IS NOT NULL
+			AND uc.item_id IN(" . join( ',', $in ) . ") AND uc.item_type = %s
+			ORDER BY user_item_id DESC
+		", $format );
+		if ( empty( $user_course_info[$user_id] ) ) {
+			$user_course_info[$user_id] = array();
+		}
+
+		if ( $result = $wpdb->get_results( $query ) ) {
+			foreach ( $result as $row ) {
+				$course_id = $row->item_id;
+				if ( !empty( $user_course_info[$user_id][$course_id]['history_id'] ) ) {
+					continue;
+				}
+				//$row                                    = $result;
+				$info                                   = array(
+					'history_id' => 0,
+					'start'      => null,
+					'end'        => null,
+					'status'     => null
+				);
+				$course                                 = learn_press_get_course( $course_id );
+				$info['history_id']                     = $row->user_item_id;
+				$info['start']                          = $row->start_time;
+				$info['end']                            = $row->end_time;
+				$info['status']                         = $row->status;
+				$info['results']                        = $course->evaluate_course_results( $user_id );
+				$info['items']                          = $course->get_items_params( $user_id );
+				$user_course_info[$user_id][$course_id] = $info;
+			}
+		}
+		// Set default data if a course is not existing in database
+		foreach ( $course_ids as $cid ) {
+			if ( isset( $user_course_info[$user_id], $user_course_info[$user_id][$cid] ) ) {
 				continue;
 			}
-			//$row                                    = $result;
-			$info                                   = array(
+			$user_course_info[$user_id][$cid] = array(
 				'history_id' => 0,
 				'start'      => null,
 				'end'        => null,
 				'status'     => null
 			);
-			$course                                 = learn_press_get_course( $course_id );
-			$info['history_id']                     = $row->user_item_id;
-			$info['start']                          = $row->start_time;
-			$info['end']                            = $row->end_time;
-			$info['status']                         = $row->status;
-			$info['results']                        = $course->evaluate_course_results( $user_id );
-			$info['items']                          = $course->get_items_params( $user_id );
-			$user_course_info[$user_id][$course_id] = $info;
 		}
-	}
-	// Set default data if a course is not existing in database
-	foreach ( $course_ids as $cid ) {
-		if ( isset( $user_course_info[$user_id], $user_course_info[$user_id][$cid] ) ) {
-			continue;
+	} else {
+		// Set default data if a course is not existing in database
+		$user_course_info[$user_id] = array();
+		foreach ( $course_ids as $cid ) {
+			$user_course_info[$user_id][$cid] = array(
+				'history_id' => 0,
+				'start'      => null,
+				'end'        => null,
+				'status'     => null
+			);
 		}
-		$user_course_info[$user_id][$cid] = array(
-			'history_id' => 0,
-			'start'      => null,
-			'end'        => null,
-			'status'     => null
-		);
 	}
 	LP_Cache::set_course_info( $user_course_info );
 	return $user_course_info[$user_id];
 }
 
-add_action( 'init', 'learn_press_set_user_cookie_for_guest' );
 function learn_press_set_user_cookie_for_guest() {
-	if ( is_user_logged_in() ) {
-		setcookie( 'wordpress_logged_in_' . md5( 'guest' ), md5( time() ), - 10000 );
-		return;
+	if ( learn_press_is_course() ) {
+		$guest_key = 'wordpress_logged_in_' . md5( 'guest' );
+		if ( is_user_logged_in() ) {
+			if ( !empty( $_COOKIE[$guest_key] ) ) {
+				setcookie( 'wordpress_logged_in_' . md5( 'guest' ), md5( time() ), - 10000 );
+			}
+		} else {
+			if ( empty( $_COOKIE[$guest_key] ) ) {
+				setcookie( 'wordpress_logged_in_' . md5( 'guest' ), md5( time() ), time() + 3600 );
+			}
+		}
 	}
-	setcookie( 'wordpress_logged_in_' . md5( 'guest' ), md5( time() ), time() + 3600 );
 }
+
+add_action( 'wp', 'learn_press_set_user_cookie_for_guest' );

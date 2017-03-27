@@ -4,7 +4,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 1.0
+ * @version 2.1.5
  */
 
 if ( !defined( 'ABSPATH' ) ) {
@@ -39,6 +39,10 @@ $course_finished = $user->has_finished_course( $course->id );
 				}
 				if ( !$answer_correct ) {
 					$answer_class[] = 'user-answer-false';
+				}else {
+					if ( $answer['is_true'] == 'yes' ) {
+						$answer_class[] = 'answer-true';
+					}
 				}
 				$disabled = ' disabled="disabled"';
 			}
@@ -48,7 +52,7 @@ $course_finished = $user->has_finished_course( $course->id );
 				<?php do_action( 'learn_press_before_question_answer_text', $answer, $this ); ?>
 				<label>
 					<input type="radio" name="learn-press-question-<?php echo $this->id; ?>" <?php checked( $this->is_selected_option( $answer, $answered ) ); ?> value="<?php echo $answer['value']; ?>" <?php echo $disabled; ?>>
-					<p class="auto-check-lines"><?php echo apply_filters( 'learn_press_question_answer_text', $answer['text'], $answer, $this ); ?></p>
+					<p class="auto-check-lines option-title"><?php echo apply_filters( 'learn_press_question_answer_text', $answer['text'], $answer, $this ); ?></p>
 				</label>
 
 				<?php do_action( 'learn_press_after_question_answer_text', $answer, $this ); ?>

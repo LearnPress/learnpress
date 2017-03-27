@@ -39,7 +39,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			add_action( 'init', array( $this, 'register_taxonomy' ) );
 			add_filter( 'get_edit_post_link', array( $this, 'add_course_tab_arg' ) );
 			add_filter( "rwmb__lpr_course_price_html", array( $this, 'currency_symbol' ), 5, 3 );
-
+			add_filter( 'learn_press_loop_section_buttons', array( __CLASS__, 'add_section_buttons' ) );
 			if ( self::$_enable_review ) {
 				add_action( 'post_submitbox_start', array( $this, 'post_review_message_box' ) );
 			}
@@ -49,6 +49,25 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 				add_action( 'admin_print_scripts', array( $this, 'course_editor' ) );
 			}
 
+		}
+
+		public static function add_section_buttons( $buttons ) {
+			$buttons = array_merge(
+				$buttons,
+				array(
+					array(
+						'id'   => 'add-lesson',
+						'text' => __( 'Add Lesson', 'learnpress' ),
+						'attr' => 'data-action="add-lesson" data-type="lp_lesson"'
+					),
+					array(
+						'id'   => 'add-quiz',
+						'text' => __( 'Add Quiz', 'learnpress' ),
+						'attr' => 'data-action="add-quiz" data-type="lp_quiz"'
+					)
+				)
+			);
+			return $buttons;
 		}
 
 		public function add_course_tab_arg( $m ) {
@@ -336,7 +355,6 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 					'user_warning_can_not_submit_course'     => __( 'Your course is pending for reviewing', 'learnpress' )
 				), null, 'learn-press-mb-course'
 			);
-
 			if ( get_post_type() == LP_COURSE_CPT && self::$_enable_review && !$this->_is_archive() ) {
 				LP_Assets::add_param( 'required_review', LP()->settings->get( 'required_review' ) == 'yes', 'learn-press-mb-course', 'LP_Settings' );
 				LP_Assets::add_param( 'enable_edit_published', LP()->settings->get( 'enable_edit_published' ) == 'yes', 'learn-press-mb-course', 'LP_Settings' );
@@ -1196,8 +1214,8 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		private function _update_price() {
 			global $wpdb, $post;
 			$request          = $_POST;
-			$payment          = $request['_lp_payment'] == 1;
-			$price            = absint( $request['_lp_price'] );
+			$payment          = learn_press_get_request('_lp_payment') == 1;
+			$price            = floatval( $request['_lp_price'] );
 			$sale_price       = $request['_lp_sale_price'];
 			$sale_price_start = $request['_lp_sale_start'];
 			$sale_price_end   = $request['_lp_sale_end'];
@@ -1273,6 +1291,15 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			}
 
 			$columns['taxonomy-course_category'] = __( 'Categories', 'learnpress' );
+
+			global $wp_query;
+			if ( $wp_query->is_main_query() ) {
+				if ( LP_COURSE_CPT == $wp_query->query['post_type'] && $wp_query->posts ) {
+					$post_ids = wp_list_pluck( $wp_query->posts, 'ID' );
+					_learn_press_get_courses_curriculum( $post_ids, false, false );
+					_learn_press_count_users_enrolled_courses( $post_ids );
+				}
+			}
 
 			return $columns;
 		}
@@ -1361,8 +1388,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			learn_press_admin_view( 'meta-boxes/course/review-log' );
 		}
 
-		public
-		function posts_fields(
+		public function posts_fields(
 			$fields
 		) {
 			if ( !$this->_is_archive() ) {
@@ -1382,8 +1408,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 *
 		 * @return string
 		 */
-		public
-		function posts_join_paged(
+		public function posts_join_paged(
 			$join
 		) {
 			if ( !$this->_is_archive() ) {
@@ -1400,8 +1425,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 *
 		 * @return mixed|string
 		 */
-		public
-		function posts_where_paged(
+		public function posts_where_paged(
 			$where
 		) {
 			if ( !$this->_is_archive() ) {
@@ -1424,8 +1448,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 *
 		 * @return string
 		 */
-		public
-		function posts_orderby(
+		public function posts_orderby(
 			$order_by_statement
 		) {
 			if ( !$this->_is_archive() ) {
@@ -1444,8 +1467,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 *
 		 * @return mixed
 		 */
-		public
-		function sortable_columns(
+		public function sortable_columns(
 			$columns
 		) {
 			$columns['author'] = 'author';
@@ -1454,8 +1476,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			return $columns;
 		}
 
-		private
-		function _is_archive() {
+		private function _is_archive() {
 			global $pagenow, $post_type;
 			if ( !is_admin() || ( $pagenow != 'edit.php' ) || ( LP_COURSE_CPT != $post_type ) ) {
 				return false;
@@ -1464,13 +1485,11 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			return true;
 		}
 
-		private
-		function _get_orderby() {
+		private function _get_orderby() {
 			return isset( $_REQUEST['orderby'] ) ? $_REQUEST['orderby'] : '';
 		}
 
-		private
-		function _get_search() {
+		private function _get_search() {
 			return isset( $_REQUEST['s'] ) ? $_REQUEST['s'] : false;
 		}
 
@@ -1478,8 +1497,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 * Course video
 		 * @return mixed|null|void
 		 */
-		public
-		static function video_meta_box() {
+		public static function video_meta_box() {
 			$prefix   = '_lp_';
 			$meta_box = array(
 				'id'       => 'course_video',
@@ -1526,8 +1544,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		}
 
 
-		public
-		static function instance() {
+		public static function instance() {
 			if ( !self::$_instance ) {
 				self::$_instance = new self( LP_COURSE_CPT );
 			}

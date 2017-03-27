@@ -1510,7 +1510,8 @@ body.post-type-lp_question #question_answer_ .inside {
 }
 .post-type-lp_order #submitpost .misc-pub-section label {
   display: block;
-  font-weight: bold;
+  font-weight: 600;
+  margin-bottom: 8px;
 }
 #learn-press-order {
   margin: 15px;
@@ -1911,6 +1912,19 @@ input.regular-text[id^="learn-press-emails"] {
   clear: both;
   content: '';
   display: block;
+}
+/* Metabox Widget */
+#widgets-right .widgets-holder-wrap .rwmb-label {
+  margin-bottom: 5px;
+}
+#widgets-right .widgets-holder-wrap .rwmb-input input[type="text"] {
+  width: 100%;
+}
+#widgets-right .widgets-holder-wrap .description {
+  padding: 0;
+  margin-top: 5px;
+  font-size: small;
+  font-style: italic;
 }
 @keyframes learn-press-meta-box-tabs-initialize-animation {
   0% {

@@ -89,7 +89,7 @@ class LP_Page_Controller {
 
 				if ( !empty( $wp_query->query['paged'] ) ) {
 					if ( $wp_rewrite->using_permalinks() ) {
-						$redirect = $redirect . 'page/' . $wp_query->query['paged'];
+						$redirect = $redirect . 'page/' . $wp_query->query['paged'] . '/';
 					} else {
 						$redirect = add_query_arg( 'paged', $wp_query->query['paged'], $redirect );
 					}
@@ -206,17 +206,6 @@ class LP_Page_Controller {
 
 			global $wp_query, $post, $wp;
 
-			if ( !empty( $wp_query->posts ) ) {
-				$ids = array();
-				foreach ( $wp_query->posts as $_post ) {
-					$ids[] = $_post->ID;
-					$_post = sanitize_post( $_post, 'raw' );
-					wp_cache_add( $_post->ID, $_post, 'posts' );
-				}
-				_learn_press_get_courses_curriculum( $ids );
-				_learn_press_get_users_enrolled_courses( $ids );
-				update_meta_cache( 'post', $ids );
-			}
 			LP()->wp_query = clone( $wp_query );
 
 
@@ -336,7 +325,6 @@ class LP_Page_Controller {
 
 		global $course;
 
-		LP_Debug::instance()->add( $q, 'wp_query' );
 
 		// We only want to affect the main query and not in admin
 		if ( !$q->is_main_query() || is_admin() ) {
