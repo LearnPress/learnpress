@@ -12,17 +12,15 @@ if ( !class_exists( 'LP_Statistic_Status' ) ) :
 		 * @since 2.0
 		 */
 		public static function render() {
-			$order_statuses    = learn_press_get_register_order_statuses();
+			$order_statuses    = learn_press_get_order_statuses(true, true);
 			$eduma_data        = self::get_eduma_info( 14058034 );
-			$xx                = array_keys( $order_statuses );
 			$specific_statuses = array( 'lp-completed', 'lp-failed', 'lp-on-hold' );
-			foreach ( $xx as $status ) {
+			foreach ( $order_statuses as $status ) {
 				if ( !in_array( $status, $specific_statuses ) ) {
 					$specific_statuses[] = $status;
 				}
 			}
 			$counts = learn_press_count_orders( array( 'status' => $specific_statuses ) );
-			setup_postdata()
 			?>
 			<ul class="learnpress-statistic-status">
 				<li class="full-width">
