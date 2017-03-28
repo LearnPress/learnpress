@@ -1448,11 +1448,12 @@ class LP_Abstract_User {
 	 * @return bool
 	 */
 	public function has_enrolled_course( $course_id, $force = false ) {
-
+		_learn_press_parse_user_item_statuses( $this->id, $course_id, $force );
 		if ( $enrolled = $this->has_purchased_course( $course_id ) ) {
 			$item_statuses = LP_Cache::get_item_statuses( false, array() );
 			$key           = sprintf( '%d-%d-%d', $this->id, $course_id, $course_id );
 			$enrolled      = false;
+
 			if ( !array_key_exists( $key, $item_statuses ) ) {
 				$enrolled = $item_statuses[$key] = $this->_has_enrolled_course( $course_id );
 			} elseif ( !empty( $item_statuses[$key] ) && $item_statuses[$key] != '' ) {

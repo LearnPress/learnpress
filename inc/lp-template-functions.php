@@ -1287,7 +1287,7 @@ if ( !function_exists( 'learn_press_404_page' ) ) {
 
 if ( !function_exists( 'learn_press_course_curriculum_popup' ) ) {
 	function learn_press_course_curriculum_popup() {
-		learn_press_get_template( 'single-course/popup.php' );
+		learn_press_get_template( 'global/js-template.php' );
 	}
 }
 

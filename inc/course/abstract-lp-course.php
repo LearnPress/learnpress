@@ -1166,17 +1166,88 @@ abstract class LP_Abstract_Course {
 
 		$quizzes = $this->get_quizzes();
 
-		if ( ( $this->course_result == 'evaluate_lesson' ) || !$quizzes ) {
+		if ( ( 'evaluate_lesson' === $this->course_result  ) || !$quizzes ) {
 			//$results = $this->_evaluate_course_by_items( $user_id, $force );
 			$results = $this->_evaluate_course_by_lesson( $user_id, $force );
-		} else {
-			if ( $this->course_result == 'evaluate_final_quiz' ) {
-				$results = $this->_evaluate_course_by_quiz( $user_id, $force );
-			} else {
-				$results = $this->_evaluate_course_by_quizzes( $user_id, $force );
-			}
+		} elseif ( 'evaluate_final_quiz' === $this->course_result ) {
+			$results = $this->_evaluate_course_by_quiz( $user_id, $force );
+		} elseif ( 'evaluate_quiz' === $this->course_result ) {
+			$results = $this->_evaluate_course_by_quizzes( $user_id, $force );
+		} elseif ( 'evaluate_quizzes' === $this->course_result ) {
+			$results = $this->_evaluate_course_by_quizzes_results( $user_id, $force );
+		} elseif ( 'evaluate_passed_quizzes' === $this->course_result ) {
+			$results = $this->_evaluate_course_by_passed_quizzes_results( $user_id, $force );
 		}
 		return apply_filters( 'learn_press_evaluation_course_results', $results );
+	}
+	
+	public function _evaluate_course_by_quizzes_results( $user_id, $force = false ) {
+		$quizzes = $this->get_quizzes();
+		$user = learn_press_get_user( $user_id );
+		$results = array();
+		$achieved_point = 0;
+//		$total_point = 0;
+		$quizzes_ids = array();
+		foreach ( $quizzes as $quiz ) {
+			$quizzes_ids[]=$quiz->ID;
+//			$total_point += $quiz->get_mark(true);
+			$results[$quiz->ID] = $user->get_quiz_results( $quiz->ID, $this->id, true );
+			$achieved_point += is_object( $results[$quiz->ID] ) ? $results[$quiz->ID]->mark : 0;
+		}
+		$total_point = $this->_get_total_question( $quizzes_ids );
+		$result = ($achieved_point / $total_point) * 100;
+		return 	apply_filters( 'learn_press_evaluate_course_by_quizzes_results', $result, $this->id, $user_id );
+	}
+	
+	public function _evaluate_course_by_passed_quizzes_results( $user_id, $force = false ) {
+//		return;
+		$quizzes = $this->get_quizzes();
+		$user = learn_press_get_user( $user_id );
+		$results = array();
+		$achieved_point = 0;
+//		$total_point = 0;
+		$quizzes_ids = array();
+		foreach ( $quizzes as $quiz ) {
+			$quizzes_ids[]=$quiz->ID;
+			$passing_grade = get_post_meta($quiz->ID,'_lp_passing_grade', true );
+			$results[$quiz->ID] = $user->get_quiz_results( $quiz->ID, $this->id, true );
+			$quiz_passed = false;
+			$passing_grade_type = get_post_meta($quiz->ID, '_lp_passing_grade_type', true);
+			$passing_grade = get_post_meta($quiz->ID, '_lp_passing_grade', true);
+			if ( $passing_grade_type = 'percentage' ) {
+				$quiz_passed = ($results[$quiz->ID]->correct_percent >= intval( $passing_grade ));
+			} elseif ( $passing_grade_type = 'point' ) {
+				$quiz_passed = ($results[$quiz->ID]->mark >= intval( $passing_grade ));
+			} else {
+				$quiz_passed = true;
+			}
+			if( $quiz_passed ){
+				$achieved_point += is_object( $results[$quiz->ID] ) ? $results[$quiz->ID]->mark : 0;
+			}
+		}
+
+		$total_point = $this->_get_total_question( $quizzes_ids );
+		$result = ($achieved_point / $total_point) * 100;
+		return 	apply_filters( 'learn_press_evaluate_course_by_passed_quizzes_results', $result, $this->id, $user_id );
+	}
+	
+	public function _get_total_question( $quizzes_ids=array() ){
+		global $wpdb;
+		if(!empty($quizzes_ids)){
+			$ids = implode(',', $quizzes_ids);
+			$sql = 'SELECT 
+						count(*)
+					FROM
+						'.$wpdb->prefix.'learnpress_quiz_questions lqq
+							INNER JOIN
+						'.$wpdb->prefix.'posts p ON lqq.question_id = p.ID
+					WHERE
+						quiz_id IN ('.$ids.')
+							AND p.post_status = "publish"
+							AND p.post_type = "lp_question" ';
+			return $wpdb->get_var($sql);
+		}
+		return 0;
 	}
 
 	public function is_evaluation( $thing ) {

@@ -18,6 +18,7 @@ if ( !$quiz ) {
 }
 
 if ( $user->has( 'finished-course', $course->id ) ) {
+	learn_press_display_message( __( 'You have already finished course but have not started this quiz.', 'learnpress' ) );
 	return;
 }
 
