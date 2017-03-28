@@ -11,10 +11,6 @@
 defined( 'ABSPATH' ) || exit();
 
 class LP_Abstract_User {
-	/**
-	 * @var array
-	 */
-	static protected $_users = array();
 
 	/**
 	 * @var int
@@ -61,6 +57,8 @@ class LP_Abstract_User {
 	 */
 	protected $_course_items = array();
 
+	protected static $_users = array();
+
 	/**
 	 * Constructor
 	 *
@@ -69,12 +67,20 @@ class LP_Abstract_User {
 	 * @throws Exception
 	 */
 	public function __construct( $the_user = 0 ) {
-		if ( $user = get_user_by( 'id', $the_user ) ) {
-			$this->user = $user;
-			$this->id   = $user->ID;
-		} else {
-			//throw new Exception( sprintf( __( 'The user with ID = %d is not exists', 'learnpress' ), $the_user ) );
+		$deleted = in_array( $the_user, LP_User_Factory::$_deleted_users );
+		$user    = !$deleted ? get_user_by( 'id', $the_user ) : false;
+
+		if ( !$user ) {
+			$user = (object) array(
+				'ID' => 0
+			);
+			if ( !$deleted ) {
+				LP_User_Factory::$_deleted_users[] = $the_user;
+			}
 		}
+
+		$this->user = $user;
+		$this->id   = $user->ID;
 		if ( empty( self::$_lessons[$this->id] ) ) {
 			self::$_lessons[$this->id] = array();
 		}
@@ -286,7 +292,7 @@ class LP_Abstract_User {
 	public function start_quiz( $quiz_id, $course_id = 0 ) {
 		$course_id = $this->_get_course_id( $course_id );
 		if ( !apply_filters( 'learn_press_before_user_start_quiz', true, $quiz_id, $course_id, $this->id ) ) {
-			//return false;
+			return false;
 		}
 		$history = $this->get_quiz_history( $quiz_id, $course_id, null, true );
 		if ( !$history ) {
@@ -459,6 +465,9 @@ class LP_Abstract_User {
 	 * @return mixed
 	 */
 	public function finish_quiz( $quiz_id, $course_id, $args = '' ) {
+		if ( !apply_filters( 'learn_press_before_user_finish_quiz', true, $quiz_id, $course_id, $this->id ) ) {
+			return false;
+		}
 		$course_id = $this->_get_course_id( $course_id );
 
 		$quiz = LP_Quiz::get_quiz( $quiz_id );
@@ -511,6 +520,9 @@ class LP_Abstract_User {
 	 * @throws Exception
 	 */
 	public function retake_quiz( $quiz_id, $course_id ) {
+		if ( !apply_filters( 'learn_press_before_user_retake_quiz', true, $quiz_id, $course_id, $this->id ) ) {
+			return false;
+		}
 		$course_id = $this->_get_course_id( $course_id );
 		$response  = false;
 		$return    = learn_press_update_user_item_field(
@@ -1448,11 +1460,12 @@ class LP_Abstract_User {
 	 * @return bool
 	 */
 	public function has_enrolled_course( $course_id, $force = false ) {
-
+		_learn_press_parse_user_item_statuses( $this->id, $course_id, $force );
 		if ( $enrolled = $this->has_purchased_course( $course_id ) ) {
 			$item_statuses = LP_Cache::get_item_statuses( false, array() );
 			$key           = sprintf( '%d-%d-%d', $this->id, $course_id, $course_id );
 			$enrolled      = false;
+
 			if ( !array_key_exists( $key, $item_statuses ) ) {
 				$enrolled = $item_statuses[$key] = $this->_has_enrolled_course( $course_id );
 			} elseif ( !empty( $item_statuses[$key] ) && $item_statuses[$key] != '' ) {
@@ -2175,6 +2188,9 @@ class LP_Abstract_User {
 	 */
 	private function _parse_item_order_of_course( $course_id ) {
 		static $courses_parsed = array();
+		if ( !$this->id ) {
+			return;
+		}
 		if ( !empty( $courses_parsed[$this->id . '-' . $course_id] ) ) {
 			return true;
 		}
@@ -2393,6 +2409,8 @@ class LP_Abstract_User {
 				$course_ids = array_keys( $data['rows'] );
 				learn_press_setup_user_course_data( $this->id, $course_ids );
 				learn_press_get_user_courses_info( $this->id, $course_ids );
+				_learn_press_count_users_enrolled_courses( $course_ids );
+
 			}
 			$courses[$key] = $data;
 		}

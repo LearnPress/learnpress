@@ -40,6 +40,12 @@ class LP_Settings {
 				wp_cache_add( $option->option_name, $this->_options[$option->option_name], 'options' );
 			}
 		}
+		foreach ( array( 'learn_press_permalink_structure', 'learn_press_install' ) as $option ) {
+			if ( empty( $this->_options[$option] ) ) {
+				$this->_options[$option] = '';
+				wp_cache_add( $option, '', 'options' );
+			}
+		}
 	}
 
 	/**
@@ -90,7 +96,7 @@ class LP_Settings {
 		if ( strpos( $var, 'learn_press_' ) === false ) {
 			$var = 'learn_press_' . $var;
 		}
-		$segs = explode( '.', $var );
+		$segs   = explode( '.', $var );
 		$return = $this->_get_option( $this->_options, $var, $default );
 		if ( $return == '' || is_null( $return ) ) {
 			$return = $default;

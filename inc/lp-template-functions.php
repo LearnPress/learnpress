@@ -1585,3 +1585,14 @@ function learn_press_fontend_js_template() {
 }
 
 add_action( 'wp_footer', 'learn_press_fontend_js_template' );
+
+add_action( 'wp_head', 'learn_press_js_template' );
+function learn_press_js_template() {
+	?>
+	<script type="text/template" id="learn-press-template-block-content">
+		<div id="learn-press-block-content" class="popup-block-content">
+			<span></span>
+		</div>
+	</script>
+	<?php
+}

@@ -67,7 +67,6 @@ $can_view_item = $user->can( 'view-item', $item->id, $course->id );
 		</form>
 	<?php } ?>
 
-	<?php learn_press_lesson_comment_form( $item->id ); ?>
 </div>
 <?php LP_Assets::enqueue_script( 'learn-press-course-lesson' ); ?>
 

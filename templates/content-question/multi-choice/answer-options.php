@@ -4,7 +4,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 1.0
+ * @version 2.1.5
  */
 
 if ( !defined( 'ABSPATH' ) ) {
@@ -31,7 +31,7 @@ if ( $show_result && $completed ) {
 			$answer_class = !$completed ? array( 'answer-option' ) : array( 'answer-option-result' );
 
 			$disabled = '';
-			if ( $completed && $show_result || $checked || $course_finished) {
+			if ( $completed && $show_result || $checked || $course_finished ) {
 				$answer_correct = true;
 				if ( $checked && $answer['is_true'] == 'yes' ) {
 					$answer_class[] = 'answer-true';
@@ -44,8 +44,13 @@ if ( $show_result && $completed ) {
 				}
 				if ( !$answer_correct ) {
 					$answer_class[] = 'user-answer-false';
+				} else {
+					if ( $answer['is_true'] == 'yes' ) {
+						$answer_class[] = 'answer-true';
+					}
 				}
-				$disabled = ' disabled="disabled"';
+				$answer_class = array_filter( $answer_class );
+				$disabled     = ' disabled="disabled"';
 			}
 			?>
 			<li<?php echo $answer_class ? ' class="' . join( ' ', $answer_class ) . '"' : ''; ?>>
@@ -54,7 +59,7 @@ if ( $show_result && $completed ) {
 
 				<label>
 					<input type="checkbox" name="learn-press-question-<?php echo $this->id; ?>[]" <?php checked( $this->is_selected_option( $answer, $answered ) ); ?> value="<?php echo $answer['value']; ?>" <?php echo $disabled; ?> />
-					<p class="auto-check-lines"><?php echo apply_filters( 'learn_press_question_answer_text', $answer['text'], $answer, $this ); ?></p>
+					<p class="auto-check-lines option-title"><?php echo apply_filters( 'learn_press_question_answer_text', $answer['text'], $answer, $this ); ?></p>
 				</label>
 
 				<?php do_action( 'learn_press_after_question_answer_text', $answer, $this ); ?>

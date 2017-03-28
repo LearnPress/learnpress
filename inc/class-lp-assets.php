@@ -203,37 +203,38 @@ class LP_Assets {
 		$default_path = plugins_url( 'learnpress/assets/' );
 		$suffix       = '';
 		$deps         = array( 'jquery', 'backbone', 'utils' );
+		$ver          = LEARNPRESS_VERSION;
 
 		// global
-		$scripts->add( 'learn-press-global', $default_path . 'js/global' . $suffix . '.js', $deps, false, 1 );
-		$scripts->add( 'learn-press-jalerts', $default_path . 'js/jquery.alert' . $suffix . '.js', $deps, false, 1 );
+		$scripts->add( 'learn-press-global', $default_path . 'js/global' . $suffix . '.js', $deps, $ver, 1 );
+		$scripts->add( 'learn-press-jalerts', $default_path . 'js/jquery.alert' . $suffix . '.js', $deps, $ver, 1 );
 
 		// frontend
-		$scripts->add( 'learn-press-js', $default_path . 'js/frontend/learnpress' . $suffix . '.js', $deps, false, 1 );
-		$scripts->add( 'learn-press-single-course', $default_path . 'js/frontend/single-course' . $suffix . '.js', $deps, false, 1 );
-		$scripts->add( 'learn-press-course-quiz', $default_path . 'js/frontend/quiz' . $suffix . '.js', $deps, false, 1 );
-		$scripts->add( 'learn-press-course-lesson', $default_path . 'js/frontend/lesson' . $suffix . '.js', $deps, false, 1 );
-		$scripts->add( 'learn-press-enroll', $default_path . 'js/frontend/enroll' . $suffix . '.js', $deps, false, 1 );
-		$scripts->add( 'learn-press-timer', $default_path . 'js/jquery.timer' . $suffix . '.js', $deps, false, 1 );
-		$scripts->add( 'learn-press-checkout', $default_path . 'js/frontend/checkout' . $suffix . '.js', $deps, false, 1 );
-		$scripts->add( 'learn-press-become-teacher', $default_path . 'js/frontend/become-teacher' . $suffix . '.js', $deps, false, 1 );
-		$scripts->add( 'learn-press-profile', $default_path . 'js/frontend/profile' . $suffix . '.js', array( 'jquery', 'backbone', 'utils', 'plupload', 'jquery-ui-slider', 'jquery-ui-draggable' ), false, 1 );
+		$scripts->add( 'learn-press-js', $default_path . 'js/frontend/learnpress' . $suffix . '.js', $deps, $ver, 1 );
+		$scripts->add( 'learn-press-single-course', $default_path . 'js/frontend/single-course' . $suffix . '.js', $deps, $ver, 1 );
+		$scripts->add( 'learn-press-course-quiz', $default_path . 'js/frontend/quiz' . $suffix . '.js', $deps, $ver, 1 );
+		$scripts->add( 'learn-press-course-lesson', $default_path . 'js/frontend/lesson' . $suffix . '.js', $deps, $ver, 1 );
+		$scripts->add( 'learn-press-enroll', $default_path . 'js/frontend/enroll' . $suffix . '.js', $deps, $ver, 1 );
+		$scripts->add( 'learn-press-timer', $default_path . 'js/jquery.timer' . $suffix . '.js', $deps, $ver, 1 );
+		$scripts->add( 'learn-press-checkout', $default_path . 'js/frontend/checkout' . $suffix . '.js', $deps, $ver, 1 );
+		$scripts->add( 'learn-press-become-teacher', $default_path . 'js/frontend/become-teacher' . $suffix . '.js', $deps, $ver, 1 );
+		$scripts->add( 'learn-press-profile', $default_path . 'js/frontend/profile' . $suffix . '.js', array( 'jquery', 'backbone', 'utils', 'plupload', 'jquery-ui-slider', 'jquery-ui-draggable' ), $ver, 1 );
 
 		// admin
-		$scripts->add( 'learn-press-admin', $default_path . 'js/admin/admin' . $suffix . '.js', $deps, false, 1 );
-		$scripts->add( 'learn-press-admin-settings', $default_path . 'js/admin/settings' . $suffix . '.js', $deps, false, 1 );
-		$scripts->add( 'learn-press-mb-question', $default_path . 'js/admin/meta-box-question' . $suffix . '.js', $deps, false, 1 );
-		$scripts->add( 'learn-press-mb-course', $default_path . 'js/admin/meta-box-course' . $suffix . '.js', $deps, false, 1 );
-		$scripts->add( 'learn-press-mb-quiz', $default_path . 'js/admin/meta-box-quiz' . $suffix . '.js', $deps, false, 1 );
-		$scripts->add( 'learn-press-mb-order', $default_path . 'js/admin/meta-box-order' . $suffix . '.js', $deps, false, 1 );
-		$scripts->add( 'learn-press-modal-search-items', $default_path . 'js/admin/modal-search-items' . $suffix . '.js', array( 'learn-press-global' ), false, 1 );
-		$scripts->add( 'learn-press-order', $default_path . 'js/admin/meta-box-order' . $suffix . '.js', $deps, false, 1 );
+		$scripts->add( 'learn-press-admin', $default_path . 'js/admin/admin' . $suffix . '.js', $deps, $ver, 1 );
+		$scripts->add( 'learn-press-admin-settings', $default_path . 'js/admin/settings' . $suffix . '.js', $deps, $ver, 1 );
+		$scripts->add( 'learn-press-mb-question', $default_path . 'js/admin/meta-box-question' . $suffix . '.js', $deps, $ver, 1 );
+		$scripts->add( 'learn-press-mb-course', $default_path . 'js/admin/meta-box-course' . $suffix . '.js', $deps, $ver, 1 );
+		$scripts->add( 'learn-press-mb-quiz', $default_path . 'js/admin/meta-box-quiz' . $suffix . '.js', $deps, $ver, 1 );
+		$scripts->add( 'learn-press-mb-order', $default_path . 'js/admin/meta-box-order' . $suffix . '.js', $deps, $ver, 1 );
+		$scripts->add( 'learn-press-modal-search-items', $default_path . 'js/admin/modal-search-items' . $suffix . '.js', array( 'learn-press-global' ), $ver, 1 );
+		$scripts->add( 'learn-press-order', $default_path . 'js/admin/meta-box-order' . $suffix . '.js', $deps, $ver, 1 );
 		//$scripts->add( 'learn-press-statistics-select2', '/' . LP_WP_CONTENT . '/plugins/learnpress/inc/libraries/meta-box/js/select2/select2.min.js', $deps, false, 1 );
 
-		$scripts->add( 'learn-press-select2', '/' . LP_WP_CONTENT . '/plugins/learnpress/inc/libraries/meta-box/js/select2/select2.min.js', $deps, false, 1 );
+		$scripts->add( 'learn-press-select2', '/' . LP_WP_CONTENT . '/plugins/learnpress/inc/libraries/meta-box/js/select2/select2.min.js', $deps, $ver, 1 );
 
 		// upgrade
-		$scripts->add( 'learn-press-upgrade', '/' . LP_WP_CONTENT . '/plugins/learnpress/inc/updates/09/script' . $suffix . '.js', $deps, false, 1 );
+		$scripts->add( 'learn-press-upgrade', '/' . LP_WP_CONTENT . '/plugins/learnpress/inc/updates/09/script' . $suffix . '.js', $deps, $ver, 1 );
 
 		do_action_ref_array( 'learn_press_add_default_scripts', array( $scripts, $default_path, $suffix, $deps ) );
 	}
@@ -273,25 +274,26 @@ class LP_Assets {
 		$default_path = plugins_url( 'learnpress/assets/' );
 		$suffix       = '';
 		$deps         = array( 'dashicons' );
+		$ver          = LEARNPRESS_VERSION;
 		// global
-		$styles->add( 'learn-press-global', $default_path . 'css/global' . $suffix . '.css', $deps );
+		$styles->add( 'learn-press-global', $default_path . 'css/global' . $suffix . '.css', $deps, $ver );
 
 		// admin
-		$styles->add( 'learn-press-admin', $default_path . 'css/admin/admin' . $suffix . '.css' );
-		$styles->add( 'learn-press-jquery.ui.datepicker', $default_path . 'css/admin/jquery.ui.datepicker' . $suffix . '.css' );
-		$styles->add( 'learn-press-jquery.ui.theme', $default_path . 'css/admin/jquery.ui.theme' . $suffix . '.css' );
-		$styles->add( 'learn-press-jquery.ui.core', $default_path . 'css/admin/jquery.ui.core' . $suffix . '.css' );
-		$styles->add( 'learn-press-jquery.ui.slider', $default_path . 'css/admin/jquery.ui.slider' . $suffix . '.css' );
-		$styles->add( 'learn-press-mb-course', $default_path . 'css/admin/meta-box-course' . $suffix . '.css' );
-		$styles->add( 'learn-press-mb-question', $default_path . 'css/admin/meta-box-question' . $suffix . '.css' );
-		$styles->add( 'learn-press-mb-order', $default_path . 'css/admin/meta-box-order' . $suffix . '.css' );
-		$styles->add( 'learn-press-jalerts', $default_path . 'css/jalert' . $suffix . '.css' );
+		$styles->add( 'learn-press-admin', $default_path . 'css/admin/admin' . $suffix . '.css', null, $ver );
+		$styles->add( 'learn-press-jquery.ui.datepicker', $default_path . 'css/admin/jquery.ui.datepicker' . $suffix . '.css', null, $ver );
+		$styles->add( 'learn-press-jquery.ui.theme', $default_path . 'css/admin/jquery.ui.theme' . $suffix . '.css', null, $ver );
+		$styles->add( 'learn-press-jquery.ui.core', $default_path . 'css/admin/jquery.ui.core' . $suffix . '.css', null, $ver );
+		$styles->add( 'learn-press-jquery.ui.slider', $default_path . 'css/admin/jquery.ui.slider' . $suffix . '.css', null, $ver );
+		$styles->add( 'learn-press-mb-course', $default_path . 'css/admin/meta-box-course' . $suffix . '.css', null, $ver );
+		$styles->add( 'learn-press-mb-question', $default_path . 'css/admin/meta-box-question' . $suffix . '.css', null, $ver );
+		$styles->add( 'learn-press-mb-order', $default_path . 'css/admin/meta-box-order' . $suffix . '.css', null, $ver );
+		$styles->add( 'learn-press-jalerts', $default_path . 'css/jalert' . $suffix . '.css', null, $ver );
 		//$styles->add( 'learn-press-statistics-select2', '/' . LP_WP_CONTENT . '/plugins/learnpress/inc/libraries/meta-box/css/select2/select2.css' );
 		$styles->add( 'learn-press-select2', '/' . LP_WP_CONTENT . '/plugins/learnpress/inc/libraries/meta-box/css/select2/select2.css' );
 
 
 		// frontend
-		$styles->add( 'learn-press-style', $default_path . 'css/learnpress.css', $deps );
+		$styles->add( 'learn-press-style', $default_path . 'css/learnpress.css', $deps, $ver );
 		do_action_ref_array( 'learn_press_add_default_styles', array( $styles, $default_path, $suffix ) );
 
 	}
@@ -804,6 +806,10 @@ class LP_Assets {
 			self::enqueue_script( 'learn-press-profile' );
 		}
 		do_action( 'learn_press_load_scripts' );
+	}
+
+	public static function url( $file = '' ) {
+		return LP_PLUGIN_URL . "assets/{$file}";
 	}
 }
 

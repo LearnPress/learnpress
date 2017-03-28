@@ -327,7 +327,7 @@ if (typeof LearnPress === 'undefined') {
 			$itemProgress.eq(0).html(data.completed_items_text.replace('%d', itemsCompleted).replace('%d', itemsCount));
 			var passingCondition = parseInt(this.$('.course-progress .lp-course-progress').data('passing-condition'));
 			this.$('.button-finish-course').toggleClass('hide-if-js', !(data.results >= passingCondition));
-			
+
 			if (data.setUrl) {
 				LP.setUrl(data.setUrl);
 			}
@@ -377,11 +377,19 @@ if (typeof LearnPress === 'undefined') {
 				that.$('.course-item.item-current .button-load-item').trigger('click', {force: true});
 			}, 500);
 		},
+		_getItemId         : function (el) {
+			var id = el.hasClass('button-load-item') ? el.data('id') : el.find('.button-load-item').data('id');
+			if (!id) {
+				id = el.hasClass('lp-label-preview') ? el.closest('.course-item').find('.button-load-item').data('id') : 0;
+			}
+			return id;
+		},
 		_loadItem          : function (e, f) {
 			e.preventDefault();
 			var that = this,
 				$target = $(e.target),
-				id = $target.hasClass('button-load-item') ? $target.data('id') : $target.find('.button-load-item').data('id');
+				id = this._getItemId($target);
+			console.log(id)
 			f = f || {force: false};
 			if (!id || this.itemLoading) {
 				return;
@@ -687,13 +695,13 @@ if (typeof LearnPress === 'undefined') {
 			this.remove();
 
 			/*var $root = $(this).removeClass('block-content'),
-				overflow = $root.attr('overflow');
-			$root.css('overflow', overflow).removeAttr('overflow');*/
+			 overflow = $root.attr('overflow');
+			 $root.css('overflow', overflow).removeAttr('overflow');*/
 			LP.unblockContent();
 			$('html, body').css('overflow', '');
 			$(document).off('focusin').trigger('learn_press_popup_course_remove').unbind('learn_press_unblock_content', this.hideScrollBar);
 		},
-		hideScrollBar                 : function () {
+		hideScrollBar       : function () {
 			$('html, body').each(function () {
 				var $root = $(this).css('overflow', 'hidden');
 			})

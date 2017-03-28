@@ -142,8 +142,8 @@ if (typeof window.LP == 'undefined') {
 		return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 	};
 	String.prototype.addQueryVar = function (name, value) {
-		var url = this,
-			m = url.split('#');
+		var url = this;
+		var m = url.split('#');
 		url = m[0];
 		if (name.match(/\[/)) {
 			url += url.match(/\?/) ? '&' : '?';
@@ -156,11 +156,11 @@ if (typeof window.LP == 'undefined') {
 				url += name + '=' + value;
 			}
 		}
-		return url + ( m[1] ? '#' + m[1] : '');
+		return url + (m[1] ? '#' + m[1] : '');
 	};
 	String.prototype.removeQueryVar = function (name) {
-		var url = this,
-			m = url.split('#');
+		var url = this;
+		var m = url.split('#');
 		url = m[0];
 		name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
 		var regex = new RegExp("[\\?&]" + name + "([\[][^=]*)?=([^&#]*)", 'g');
@@ -933,12 +933,6 @@ if (typeof window.LP == 'undefined') {
 		});
 	};
 
-	$.fn.placeholderEffective = function () {
-		return $.each(this, function () {
-
-		})
-	}
-
 	function __initSubtabs() {
 		$('.learn-press-subtabs').each(function () {
 			var $tabContainer = $(this),
@@ -976,22 +970,6 @@ if (typeof window.LP == 'undefined') {
 			});
 		$('.learn-press-nav-tabs li.active a').trigger('click');
 
-		/*$(document).on('focus', 'input', function () {
-			var $el = $(this),
-				placeholder = $el.attr('placeholder');
-			if (!placeholder) {
-				return;
-			}
-			$el.data('placeholder', placeholder);
-			$el.removeAttr('placeholder');
-		}).on('blur', 'input', function () {
-			var $el = $(this),
-				placeholder = $el.data('placeholder');
-			if (!placeholder) {
-				return;
-			}
-			$el.prop('placeholder', placeholder);
-		});*/
 		///
 		(function () {
 			var timer = null,
