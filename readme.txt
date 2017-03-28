@@ -193,6 +193,11 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.  
 
 == Changelog ==
+= 2.1.6 =
++ Add more options for course results
++ Fixed wrong user profile url
++ Remove related data after removing posts
+
 = 2.1.5.3 =
 + Fixed a bug when using template_include filter
 
