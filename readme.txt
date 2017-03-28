@@ -198,6 +198,9 @@ https://www.transifex.com/projects/p/learnpress/
 + Fixed wrong user profile url
 + Remove related data after removing posts
 
+= 2.1.5.4 =
++ Fixed code with old version of PHP
+
 = 2.1.5.3 =
 + Fixed a bug when using template_include filter
 
