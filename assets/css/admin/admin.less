@@ -26,11 +26,14 @@ input:focus:-moz-placeholder {
         .rwmb-label {
             margin-top: 0;
         }
-        .option-desc {
-            font-weight: normal;
-            padding-left: 24px;
-            font-style: italic;
-            margin-top: 3px;
+        .description {
+            margin-top: 5px;
+            &.option-desc {
+                font-weight: normal;
+                margin: 8px 0 10px 24px;
+                font-size: smaller;
+                font-style: italic;
+            }
         }
     }
 }
@@ -313,10 +316,6 @@ input:focus:-moz-placeholder {
 .meta_box_course_lesson_quiz li input,
 .meta_box_course_lesson_quiz li select {
     min-width: 250px;
-}
-
-.description {
-    margin-top: 5px;
 }
 
 .dashed-placeholder {

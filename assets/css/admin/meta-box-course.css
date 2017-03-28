@@ -3,6 +3,13 @@
 .rwmb-duration-wrapper select {
   vertical-align: baseline;
 }
+#learn-press-toggle-course-results {
+  display: block;
+  margin-bottom: 10px;
+}
+#learn-press-toggle-course-results a {
+  box-shadow: none;
+}
 .post-type-lp_course #postdivric,
 .post-type-lp_course #submitpost {
   visibility: hidden;

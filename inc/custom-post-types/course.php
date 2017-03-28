@@ -575,8 +575,14 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		static function assessment_meta_box() {
 			$post_id            = learn_press_get_request( 'post' );
 			$prefix             = '_lp_';
-			$course_result_desc = __( 'The method to assess the result of a student for a course.', 'learnpress' );
-			if ( $post_id && get_post_meta( $post_id, '_lp_course_result', true ) == 'evaluate_final_quiz' && !get_post_meta( $post_id, '_lp_final_quiz', true ) ) {
+			$course_results     = get_post_meta( $post_id, '_lp_course_result', true );
+			$course_result_desc = '';
+			if ( in_array( $course_results, array( '', 'evaluate_lesson', 'evaluate_final_quiz' ) ) ) {
+				$course_result_desc .= sprintf( '<a href="" data-advanced="%2$s" data-basic="%1$s" data-click="basic">%2$s</a>',__( 'Basic Options', 'learnpress' ), __( 'Advanced Options', 'learnpress' ) );
+			}
+			$course_result_desc = "<span id=\"learn-press-toggle-course-results\">{$course_result_desc}</span>";
+			$course_result_desc .= __( 'The method to assess the result of a student for a course.', 'learnpress' );
+			if ( $course_results == 'evaluate_final_quiz' && !get_post_meta( $post_id, '_lp_final_quiz', true ) ) {
 				$course_result_desc .= __( '<br /><strong>Note! </strong>No final quiz in course, please add a final quiz', 'learnpress' );
 			}
 			$meta_box = array(
@@ -591,9 +597,12 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						'type'    => 'radio',
 						'desc'    => $course_result_desc,
 						'options' => array(
-							'evaluate_lesson'     => __( 'Evaluate lessons', 'learnpress' ),
-							'evaluate_quizzes'    => __( 'Evaluate result of quizzes', 'learnpress' ),
-							'evaluate_final_quiz' => __( 'Evaluate the result of the final quiz', 'learnpress' )
+							'evaluate_lesson'         => __( 'Evaluate lessons', 'learnpress' ) . sprintf( '<p class="description option-desc">%s</p>', __( 'Evaluate by lessons user has completed per total lessons in course.', 'learnpress' ) ),
+							'evaluate_final_quiz'     => __( 'Evaluate results of the final quiz', 'learnpress' ) . sprintf( '<p class="description option-desc">%s</p>', __( 'Evaluate by results of final quiz in course.', 'learnpress' ) ),
+							// new options
+							'evaluate_quizzes'        => __( 'Evaluate results of quizzes', 'learnpress' ) . sprintf( '<p class="description option-desc">%s</p>', __( 'Evaluate by achieved points per total point of all quizzes.', 'learnpress' ) ),
+							'evaluate_passed_quizzes' => __( 'Evaluate results of quizzes passed', 'learnpress' ) . sprintf( '<p class="description option-desc">%s</p>', __( 'Evaluate by achieved points of passed course per total point of all quizzes.', 'learnpress' ) ),
+							'evaluate_quiz'           => __( 'Evaluate quizzes', 'learnpress' ) . sprintf( '<p class="description option-desc">%s</p>', __( 'Evaluate by quizzes user has completed per total quizzes.', 'learnpress' ) ),
 						),
 						'std'     => 'evaluate_lesson',
 					),
@@ -956,6 +965,9 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			if ( 'dopreview' == $preview && 'draft' == $post->post_status ) {
 				learn_press_add_message( __( 'Course Curriculum only appear if course is saved', 'learnpress' ), 'error' );
 			}
+
+			$this->_reset_sections();
+
 			if ( !empty( $_REQUEST['_lp_curriculum'] ) && 'dopreview' !== $preview ) {
 				$section_order = 0;
 				$query_update  = array();
