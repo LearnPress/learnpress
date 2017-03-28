@@ -107,7 +107,7 @@ function learn_press_setup_course_data( $the_course ) {
 	return $post->ID;
 }
 
-function _learn_press_get_users_enrolled_courses( $course_ids ) {
+function _learn_press_count_users_enrolled_courses( $course_ids ) {
 	global $wpdb;
 	$counts = LP_Cache::get_enrolled_courses( false, array() );
 	if ( $counts ) {
