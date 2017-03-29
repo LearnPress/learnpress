@@ -198,6 +198,10 @@ https://www.transifex.com/projects/p/learnpress/
 + Fixed wrong user profile url
 + Remove related data after removing posts
 
+= 2.1.5.5 =
++ Fixed issue with slug of course page is the same with slug of course tab in profile
++ Fixed issue with metabox show/hide field
+
 = 2.1.5.4 =
 + Fixed code with old version of PHP
 
