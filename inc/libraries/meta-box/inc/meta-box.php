@@ -4,6 +4,7 @@ defined( 'ABSPATH' ) || exit;
 
 // Meta Box Class
 if ( !class_exists( 'RW_Meta_Box' ) ) {
+
 	/**
 	 * A class to rapid develop meta boxes for custom & built in content types
 	 * Piggybacks on WordPress
@@ -91,7 +92,6 @@ if ( !class_exists( 'RW_Meta_Box' ) ) {
 			// @see wp_update_post(), wp_insert_attachment()
 			add_action( 'edit_attachment', array( $this, 'save_post' ) );
 			add_action( 'add_attachment', array( $this, 'save_post' ) );
-
 		}
 
 		/**

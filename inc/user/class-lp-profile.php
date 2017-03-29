@@ -91,7 +91,7 @@ if ( !class_exists( 'LP_Profile' ) ) {
 					continue;
 				}
 				LP()->query_vars[$slug] = $slug;
-				add_rewrite_endpoint( $slug, EP_ROOT | EP_PAGES );
+				add_rewrite_endpoint( $slug, EP_PAGES );
 			}
 
 			return $tabs;

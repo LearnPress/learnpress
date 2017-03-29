@@ -1824,13 +1824,15 @@ function learn_press_add_endpoints() {
 	if ( $endpoints = LP()->settings->get( 'profile_endpoints' ) ) foreach ( $endpoints as $endpoint => $value ) {
 		$endpoint                   = preg_replace( '!_!', '-', $endpoint );
 		LP()->query_vars[$endpoint] = $value;
-		add_rewrite_endpoint( $value, EP_ROOT | EP_PAGES );
+		add_rewrite_endpoint( $value,/* EP_ROOT |*/
+			EP_PAGES );
 	}
 
 	if ( $endpoints = LP()->settings->get( 'quiz_endpoints' ) ) foreach ( $endpoints as $endpoint => $value ) {
 		$endpoint                   = preg_replace( '!_!', '-', $endpoint );
 		LP()->query_vars[$endpoint] = $value;
-		add_rewrite_endpoint( $value, EP_ROOT | EP_PAGES );
+		add_rewrite_endpoint( $value, /*EP_ROOT | */
+			EP_PAGES );
 	}
 }
 
