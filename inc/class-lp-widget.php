@@ -108,7 +108,7 @@ if ( !class_exists( 'LP_Widget' ) ) {
 				}
 			}
 			if ( !has_filter( 'rwmb_checkbox_begin_html' ) ) {
-				add_filter( 'rwmb_checkbox_begin_html', array( $this, 'before_checkbox_html' ), 10, 3 );
+				//add_filter( 'rwmb_checkbox_begin_html', array( $this, 'before_checkbox_html' ), 10, 3 );
 			}
 			parent::__construct( $id_base, $this->_name_prefix . $name, $widget_options, $control_options );
 		}
