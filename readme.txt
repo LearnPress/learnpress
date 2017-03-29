@@ -193,6 +193,10 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.  
 
 == Changelog ==
+= 2.1.5.5 =
++ Fixed issue with slug of course page is the same with slug of course tab in profile
++ Fixed issue with metabox show/hide field
+
 = 2.1.5.4 =
 + Fixed code with old version of PHP
 
