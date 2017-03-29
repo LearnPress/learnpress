@@ -161,6 +161,13 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 								'std'     => 'hide'
 							),
 							array(
+								'name' => __( 'Show correct answer', 'learnpress' ),
+								'id'   => "{$prefix}show_result",
+								'type' => 'yes_no',
+								'desc' => __( 'Show the correct answer in result of the quiz.', 'learnpress' ),
+								'std'  => 'no'
+							),
+							array(
 								'name'         => __( 'Duration', 'learnpress' ),
 								'desc'         => __( 'Duration of the quiz. Set 0 to disable.', 'learnpress' ),
 								'id'           => "{$prefix}duration",
@@ -197,13 +204,6 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 								'desc' => __( 'How many times the user can re-take this quiz. Set to 0 to disable', 'learnpress' ),
 								'min'  => 0,
 								'std'  => 0
-							),
-							array(
-								'name' => __( 'Show correct answer', 'learnpress' ),
-								'id'   => "{$prefix}show_result",
-								'type' => 'yes_no',
-								'desc' => __( 'Show the correct answer in result of the quiz.', 'learnpress' ),
-								'std'  => 'no'
 							),
 							array(
 								'name' => __( 'Show check answer', 'learnpress' ),

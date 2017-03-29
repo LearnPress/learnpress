@@ -283,6 +283,18 @@
 			}
 			$el.find('span').html(t);
 		}).filter(':checked').trigger('change');
+
+		$('input[name="_lp_show_hide_question"]').change(function () {
+			var t = $('input[name="_lp_show_hide_question"]:checked').val(),
+				$el = $('label[for="_lp_show_result"]'),
+				passing_grade = $('input[name="_lp_show_result"]');
+			if( t === 'show' ){
+				$el.closest('.rwmb-field').show();
+			} else {
+				$el.closest('.rwmb-field').hide();
+			}
+			$el.find('span').html(t);
+		}).filter(':checked').trigger('change');
 	});
 
 	return;
