@@ -96,6 +96,7 @@ $external_link_buy_course = apply_filters( 'learn_press_external_link_buy_course
 				</button>
 				<?php do_action( 'learn_press_after_purchase_button' ); ?>
 				<input type="hidden" name="purchase-course" value="<?php echo $course->id; ?>" />
+				<input type="hidden" value="user can purchase course" />
 			</form>
 		<?php else : ?>
 			<?php do_action( 'learn_press_before_external_link_buy_course' ); ?>
@@ -122,6 +123,8 @@ $external_link_buy_course = apply_filters( 'learn_press_external_link_buy_course
 					</button>
 					<?php do_action( 'learn_press_after_purchase_button' ); ?>
 					<input type="hidden" name="purchase-course" value="<?php echo $course->id; ?>" />
+					<input type="hidden" value="user order cancelled" />
+
 				</form>
 			<?php else : ?>
 				<?php do_action( 'learn_press_before_external_link_buy_course' ); ?>

@@ -10,7 +10,7 @@
 if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
-global $post, $wp_query;
+global $post, $wp_query, $lp_tax_query;
 ?>
 <?php do_action( 'learn_press_before_main_content' ); ?>
 

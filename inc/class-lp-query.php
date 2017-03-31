@@ -91,75 +91,6 @@ class LP_Query {
 		}
 		$this->query_vars['course_id'] = $course_id;
 		do_action_ref_array( 'learn_press_parse_query', array( &$this ) );
-
-		return $q;
-		/************************/
-		$slug = preg_replace( '!^/!', '', $post_types[$course_type]->rewrite['slug'] );
-
-		$match = '^' . $slug . '/([^/]*)/(' . $post_types['lp_quiz']->rewrite['slug'] . ')?/([^/]*)?/?([^/]*)?';
-
-		$request_match = $request;
-		$course_id     = 0;
-		if ( !empty( $q->query_vars['post_type'] ) && $q->query_vars['post_type'] == LP_COURSE_CPT ) {
-			if ( !empty( $q->query_vars[LP_COURSE_CPT] ) ) {
-				$this->query_vars['course'] = $q->query_vars[LP_COURSE_CPT];
-				$course_id                  = learn_press_setup_course_data( $this->query_vars['course'] );
-			}
-			if ( !empty( $q->query_vars['quiz'] ) ) {
-				$this->query_vars['quiz']      = $q->query_vars['quiz'];
-				$this->query_vars['item_type'] = LP_QUIZ_CPT;
-			} elseif ( !empty( $q->query_vars['lesson'] ) ) {
-				$this->query_vars['lesson']    = $q->query_vars['lesson'];
-				$this->query_vars['item_type'] = LP_LESSON_CPT;
-			}
-		}
-
-		/**
-		 * Match request URI with quiz permalink
-		 */
-		if ( preg_match( "#^$match#", $request_match, $matches ) || preg_match( "#^$match#", urldecode( $request_match ), $matches ) ) {
-
-			// If request URI is a quiz permalink
-			if ( !empty( $matches[3] ) ) {
-				if ( !$post = learn_press_get_post_by_name( $matches[3], 'lp_quiz', true ) ) {
-					return $q;
-				}
-				// If request URI does not contains a question
-				// Try to get current question of current user and put it into URI
-				if ( empty( $matches[4] ) ) {
-					if ( $user->has_quiz_status( 'started', $post->ID, $course_id ) && $question_id = $user->get_current_quiz_question( $post->ID, $course_id ) ) {
-						$this->query_vars['question'] = $q->query_vars['question'] = get_post_field( 'post_name', $question_id );
-					}
-				} else {
-					// If user is viewing a question then update current question for user
-					$question = learn_press_get_post_by_name( $matches[4], 'lp_question' );
-					/**
-					 * If user has completed a quiz but they are accessing to a question inside quiz,
-					 * redirect them back to quiz to show results of that quiz instead
-					 */
-					if ( $user->has_quiz_status( 'completed', $post->ID, $course_id ) ) {
-						//remove question name from uri
-						$redirect = get_site_url() . '/' . dirname( $request_match );
-						wp_redirect( $redirect );
-						exit();
-					}
-					if ( $question ) {
-						global $wpdb;
-						$query = $wpdb->prepare( "
-							SELECT MAX(user_item_id)
-							FROM {$wpdb->prefix}learnpress_user_items
-							WHERE user_id = %d AND item_id = %d AND item_type = %s and status <> %s
-						", learn_press_get_current_user_id(), $post->ID, 'lp_quiz', 'completed' );
-						if ( $history_id = $wpdb->get_var( $query ) ) {
-							learn_press_update_user_item_meta( $history_id, 'current_question', $question->ID );
-						}
-					}
-				}
-			}
-		}
-		$this->query_vars['course_id'] = $course_id;
-		do_action_ref_array( 'learn_press_parse_query', array( &$this ) );
-		return $q;
 	}
 
 	/**
@@ -235,9 +166,22 @@ class LP_Query {
 			$slug         = preg_replace( '!(%?course_category%?)!', '(.+?)/([^/]+)', $slug );
 			$has_category = true;
 		}
-		$current_url  = learn_press_get_current_url();
-		$query_string = str_replace( trailingslashit( get_site_url() ), '', $current_url );
+		$current_url        = learn_press_get_current_url();
+		$query_string       = str_replace( trailingslashit( get_site_url() ), '', $current_url );
+		$custom_slug_lesson = sanitize_title_with_dashes( LP()->settings->get( 'lesson_slug' ) );
+		$custom_slug_quiz   = sanitize_title_with_dashes( LP()->settings->get( 'quiz_slug' ) );
 
+		/**
+		 * Use urldecode to convert an encoded string to normal.
+		 * This fixed the issue with custom slug of lesson/quiz in some languages
+		 * Eg: урока
+		 */
+		if ( !empty( $custom_slug_lesson ) ) {
+			$post_types['lp_lesson']->rewrite['slug'] = urldecode( $custom_slug_lesson );
+		}
+		if ( !empty( $custom_slug_quiz ) ) {
+			$post_types['lp_quiz']->rewrite['slug'] = urldecode( $custom_slug_quiz );
+		}
 		if ( $has_category ) {
 			add_rewrite_rule(
 				'^' . $slug . '(?:/' . $post_types['lp_lesson']->rewrite['slug'] . '/([^/]+))/?$',
@@ -250,16 +194,6 @@ class LP_Query {
 				'top'
 			);
 		} else {
-
-			$custom_slug_lesson = sanitize_title_with_dashes( LP()->settings->get( 'lesson_slug' ) );
-			$custom_slug_quiz   = sanitize_title_with_dashes( LP()->settings->get( 'quiz_slug' ) );
-
-			if ( !empty( $custom_slug_lesson ) ) {
-				$post_types['lp_lesson']->rewrite['slug'] = $custom_slug_lesson;
-			}
-			if ( !empty( $custom_slug_quiz ) ) {
-				$post_types['lp_quiz']->rewrite['slug'] = $custom_slug_quiz;
-			}
 
 			add_rewrite_rule(
 				'^' . $slug . '/([^/]+)(?:/' . $post_types['lp_lesson']->rewrite['slug'] . '/([^/]+))/?$',
@@ -287,51 +221,8 @@ class LP_Query {
 				'index.php?pagename=' . get_post_field( 'post_name', $course_page_id ) . '&page=$matches[1]',
 				'top'
 			);
-			/**
-			 * add_rewrite_rule(
-			 * '^' . $rewrite_prefix . get_post_field( 'post_name', $course_page_id ) . '/page/([0-9]{1,})/?$',
-			 * 'index.php?page_id=' . $course_page_id . '&paged=$matches[1]',
-			 * 'top'
-			 * );*/
 		}
 		do_action( 'learn_press_add_rewrite_rules' );
-		return;
-
-		/**
-		 * Lesson permalink without category
-		 */
-		/*add_rewrite_rule(
-			'^' . $slug . '/([^/]*)/(' . $post_types['lp_lesson']->rewrite['slug'] . ')/([^/]+)/?$',
-			'index.php?' . $course_type . '=$matches[1]&lesson=$matches[3]',
-			'top'
-		);*/
-
-		/**
-		 * Quiz permalink with category inside
-		 */
-		add_rewrite_rule(
-			'^course/(.+?)/([^/]+)(?:/' . $post_types['lp_quiz']->rewrite['slug'] . '/([^/]+))/?$',
-			'index.php?' . $course_type . '=$matches[2]&course_category=$matches[1]&quiz=$matches[3]',
-			'top'
-		);
-
-		/**
-		 * Lesson permalink without category
-		 */
-		add_rewrite_rule(
-			'^' . $slug . '/([^/]*)/(' . $post_types['lp_quiz']->rewrite['slug'] . ')/([^/]+)/?$',
-			'index.php?' . $course_type . '=$matches[1]&quiz=$matches[3]',
-			'top'
-		);
-
-
-		/*add_rewrite_rule(
-			'^' . $slug . '/([^/]*)/(' . $post_types['lp_quiz']->rewrite['slug'] . ')?/([^/]*)?/?([^/]*)?',
-			'index.php?' . $course_type . '=$matches[1]&quiz=$matches[3]&question=$matches[4]',
-			'top'
-		);*/
-
-
 	}
 
 	/**

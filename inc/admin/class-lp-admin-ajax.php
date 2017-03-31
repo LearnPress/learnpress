@@ -1156,4 +1156,3 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 	}
 }
 LP_Admin_Ajax::init();
-

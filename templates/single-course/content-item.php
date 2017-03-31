@@ -29,10 +29,8 @@ $item_id = isset( $item->id ) ? $item->id : ( isset( $item->ID ) ? $item->ID : 0
 
 	<?php if ( $user->can_edit_item( $item_id, $course->id ) ): ?>
 		<p class="edit-course-item-link">
-			<a class="" href="<?php echo get_edit_post_link( $item_id ); ?>"><?php _e( 'Edit this item', 'learnpress' ); ?></a>
+			<a href="<?php echo get_edit_post_link( $item_id ); ?>"><?php _e( 'Edit this item', 'learnpress' ); ?></a>
 		</p>
 	<?php endif; ?>
-<?php 
-	learn_press_get_nav_course_item($course->id, $item_id, true);
-?>
+	<?php do_action( 'learn_press_after_content_item', $item_id, $course->id, true ); ?>
 </div>

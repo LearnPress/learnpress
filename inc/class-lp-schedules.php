@@ -11,12 +11,27 @@ class LP_Schedules {
 	 */
 	public function __construct() {
 		if ( learn_press_get_request( 'action' ) == 'heartbeat' || !is_admin() ) {
-			$this->_update_user_course_expired();
+			//$this->_update_user_course_expired();
 		}
+		add_filter( 'cron_schedules', array( $this, 'add_custom_cron_intervals' ), 10, 1 );
+
+		if ( !wp_next_scheduled( 'learn_press_schedule_update_user_items' ) ) {
+			wp_schedule_event( time(), 'ten_minutes', 'learn_press_schedule_update_user_items' );
+		}
+		add_action( 'learn_press_schedule_update_user_items', array( $this, 'schedule_update_user_items' ) );
+
 		if ( !wp_next_scheduled( 'learn_press_delete_user_guest_transient' ) ) {
 			wp_schedule_event( time(), 'daily', 'learn_press_delete_user_guest_transient' );
 		}
 		add_action( 'learn_press_delete_user_guest_transient', array( $this, 'delete_user_guest_transient' ) );
+	}
+
+	function add_custom_cron_intervals( $schedules ) {
+		$schedules['ten_minutes'] = array(
+			'interval' => 600,
+			'display'  => 'Once Every 10 Minutes'
+		);
+		return (array) $schedules;
 	}
 
 	public function delete_user_guest_transient() {
@@ -57,6 +72,11 @@ class LP_Schedules {
 		learn_press_reset_auto_increment($wpdb->options);
 	}
 
+	public function schedule_update_user_items() {
+		$this->_update_user_course_expired();
+		LP_Debug::instance()->add( __FUNCTION__ );
+	}
+
 	/**
 	 * Auto finished course when time is expired for users
 	 */
@@ -68,20 +88,43 @@ class LP_Schedules {
 		if ( empty( $wpdb->learnpress_user_items ) ) {
 			return;
 		}
+		/* $query = $wpdb->prepare( "
+			SELECT *
+			FROM {$wpdb->prefix}learnpress_user_items
+			WHERE user_item_id IN(
+				SELECT user_item_id FROM(
+					SELECT user_item_id
+					FROM {$wpdb->prefix}learnpress_user_items
+					WHERE end_time = %s
+					AND item_type = %s
+					GROUP BY item_id
+					ORDER BY user_item_id DESC
+				) AS X
+			)
+			LIMIT 0, 10
+		", '0000-00-00 00:00:00', 'lp_course' );*/
+
 		$query = $wpdb->prepare( "
 			SELECT *
 			FROM {$wpdb->prefix}learnpress_user_items
-			WHERE end_time = %s
-			AND item_type = %s
+			WHERE user_item_id IN(
+				SELECT max(user_item_id)
+				FROM {$wpdb->prefix}learnpress_user_items
+				WHERE end_time = %s
+				AND item_type = %s
+				AND status <> %s
+				GROUP BY item_id, user_id
+			  )
 			LIMIT 0, 10
-		", '0000-00-00 00:00:00', 'lp_course' );
+		", '0000-00-00 00:00:00', 'lp_course', 'finished' );
+
 		if ( $results = $wpdb->get_results( $query ) ) {
 			$ids = array();
 			foreach ( $results as $row ) {
 				$ids[] = $row->item_id;
 			}
 			_learn_press_get_courses_curriculum( $ids );
-			_learn_press_get_users_enrolled_courses( $ids );
+			_learn_press_count_users_enrolled_courses( $ids );
 			foreach ( $results as $row ) {
 				$course = learn_press_get_course( $row->item_id );
 				if ( !$course ) continue;

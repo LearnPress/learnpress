@@ -28,7 +28,16 @@ $status      = $user->get_course_status( $course->id );
 			</span>
 		<?php } ?>
 		<?php if ( $item_status == 'completed' ) { ?>
-			<span class="lp-icon item-status" title="<?php esc_attr_e( 'Completed', 'learnpress' ); ?>"></span>
+			<?php
+			$grade = $user->get_quiz_graduation( $course_item->id, $course->id );
+			if ( $grade === 'passed' ) {
+				?>
+				<span class="lp-icon item-status item-status-passed" title="<?php esc_attr_e( 'Completed', 'learnpress' ); ?>"></span>
+				<?php
+			} else {
+				?>
+				<span class="lp-icon item-status item-status-failed" title="<?php esc_attr_e( 'Failed', 'learnpress' ); ?>"></span>
+			<?php } ?>
 		<?php } elseif ( $item_status == 'started' ) { ?>
 			<span class="lp-icon item-status button-complete-item button-complete-lesson" data-security="<?php echo esc_attr( $security ); ?>" title="<?php esc_attr_e( 'Not Completed', 'learnpress' ); ?>"></span>
 		<?php } else { ?>

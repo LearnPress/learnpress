@@ -4,7 +4,7 @@
  */
 $upload_dir = wp_upload_dir();
 // version
-define( 'LEARNPRESS_VERSION', '2.1.4.1' );
+define( 'LEARNPRESS_VERSION', '2.1.5.5' );
 
 define( 'LP_WP_CONTENT', basename( WP_CONTENT_DIR ) );
 
@@ -39,3 +39,8 @@ define( 'LP_TEACHER_ROLE', 'lp_teacher' );
 
 // Turn debug mode on/off
 define( 'LP_DEBUG', true );
+
+// Options
+define( 'LP_USE_ATTRIBUTES', false );
+define( 'LP_WIDGET_PATH', LP_PLUGIN_PATH . 'inc/widgets' );
+define( 'LP_WIDGET_URL', LP_PLUGIN_URL . 'inc/widgets' );

@@ -156,16 +156,16 @@ if (typeof window.LP == 'undefined') {
 				url += name + '=' + value;
 			}
 		}
-		return url + ( m[1] ? '#' + m[1] : '');
+		return url + (m[1] ? '#' + m[1] : '');
 	};
 	String.prototype.removeQueryVar = function (name) {
-		var url = this,
-			m = url.split('#');
+		var url = this;
+		var m = url.split('#');
 		url = m[0];
 		name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
 		var regex = new RegExp("[\\?&]" + name + "([\[][^=]*)?=([^&#]*)", 'g');
 		url = url.replace(regex, '');
-		return url + ( m[1] ? '#' + m[1] : '');
+		return url + (m[1] ? '#' + m[1] : '');
 	};
 
 	if ($.isEmptyObject("") == false) {

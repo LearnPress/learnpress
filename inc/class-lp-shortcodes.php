@@ -23,6 +23,9 @@ class LP_Shortcodes {
 			'learn_press_become_teacher_form' => __CLASS__ . '::become_teacher_form',
 			'learn_press_login_form'          => __CLASS__ . '::login_form',
 			'learn_press_checkout'            => __CLASS__ . '::checkout',
+			'learn_press_recent_courses'      => __CLASS__ . '::recent_courses',
+			'learn_press_featured_courses'    => __CLASS__ . '::featured_courses',
+			'learn_press_popular_courses'    => __CLASS__ . '::popular_courses'
 		);
 
 		foreach ( $shortcodes as $shortcode => $function ) {
@@ -30,6 +33,7 @@ class LP_Shortcodes {
 		}
 
 		add_action( 'template_redirect', array( __CLASS__, 'auto_shortcode' ) );
+
 	}
 
 	public static function auto_shortcode( $template ) {
@@ -147,7 +151,198 @@ class LP_Shortcodes {
 		return self::wrapper_shortcode( ob_get_clean() );
 	}
 
-	private static function order_received( $order_id = 0 ) {
+	public static function recent_courses ( $atts ) {
+
+		$limit = $order_by = $order = '';
+
+		$atts = shortcode_atts( array(
+			'limit'    => 10,
+			'order_by' => 'date', // select one of [date, title, status, comment_count]
+			'order'    => 'DESC' // select on of [DESC, ASC]
+		), $atts );
+
+		extract( $atts );
+
+		// Validation date
+		$arr_orders_by = array('post_date', 'post_title', 'post_status', 'comment_count');
+		$arr_orders = array('DESC', 'ASC');
+		$order = strtoupper($order);
+
+		if ( !in_array($order_by, $arr_orders_by) || !in_array('post_'.$order_by, $arr_orders_by)) {
+			$order_by = 'post_date';
+		}
+		else {
+			if ($order_by !== 'comment_count') {
+				$order_by = 'post_' .$order_by;
+			}
+		}
+
+		if (!in_array($order, $arr_orders)) {
+			$order = 'DESC';
+		}
+		if (!absint($limit)) {
+			$limit = 10;
+		}
+
+		global $wpdb;
+
+		$posts   = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT DISTINCT p.*
+						FROM $wpdb->posts AS p
+						WHERE p.post_type = %s
+						AND p.post_status = %s
+						ORDER BY p.{$order_by} {$order}
+						LIMIT %d
+					",
+				LP_COURSE_CPT,
+				'publish',
+				(int) absint( $limit )
+			)
+		);
+
+		ob_start();
+
+		self::render_shortcode_archive( $posts );
+
+		return self::wrapper_shortcode( ob_get_clean() );
+
+	}
+
+	public static function featured_courses ( $atts ) {
+
+		$limit = $order_by = $order = '';
+
+		$atts = shortcode_atts( array(
+			'limit'    => 10,
+			'order_by' => 'date', // select one of [date, title, status, comment_count]
+			'order'    => 'DESC' // select on of [DESC, ASC]
+		), $atts );
+
+		extract( $atts );
+
+		// Validation date
+		$arr_orders_by = array('post_date', 'post_title', 'post_status', 'comment_count');
+		$arr_orders = array('DESC', 'ASC');
+		$order = strtoupper($order);
+
+		if ( !in_array($order_by, $arr_orders_by) || !in_array('post_'.$order_by, $arr_orders_by)) {
+			$order_by = 'post_date';
+		}
+		else {
+			if ($order_by !== 'comment_count') {
+				$order_by = 'post_' .$order_by;
+			}
+		}
+
+		if (!in_array($order, $arr_orders)) {
+			$order = 'DESC';
+		}
+		if (!absint($limit)) {
+			$limit = 10;
+		}
+
+		global $wpdb;
+
+		$posts   = $wpdb->get_results(
+			$wpdb->prepare( "
+				SELECT DISTINCT *
+                    FROM {$wpdb->posts} p
+                    LEFT JOIN {$wpdb->postmeta} as pmeta ON p.ID=pmeta.post_id AND pmeta.meta_key = %s
+                    WHERE p.post_type = %s
+						AND p.post_status = %s
+						AND meta_value = %s
+                    ORDER BY p.{$order_by} {$order}
+                    LIMIT %d
+                ", '_lp_featured', LP_COURSE_CPT, 'publish', 'yes', absint($limit)
+			)
+		);
+
+		ob_start();
+
+		self::render_shortcode_archive( $posts );
+
+		return self::wrapper_shortcode( ob_get_clean() );
+
+	}
+
+	public static function popular_courses ( $atts ) {
+
+		$limit = $order_by = $order = '';
+
+		$atts = shortcode_atts( array(
+			'limit'    => 10,
+			'order'    => 'DESC' // select on of [DESC, ASC]
+		), $atts );
+
+		extract( $atts );
+
+		// Validation date
+		$arr_orders = array('DESC', 'ASC');
+		$order = strtoupper($order);
+
+		if (!in_array($order, $arr_orders)) {
+			$order = 'DESC';
+		}
+		if (!absint($limit)) {
+			$limit = 10;
+		}
+
+		global $wpdb;
+
+		$query = $wpdb->prepare(
+			"SELECT po.*, count(*) as number_enrolled
+					FROM {$wpdb->prefix}learnpress_user_items ui
+					INNER JOIN {$wpdb->posts} po ON po.ID = ui.item_id
+					WHERE ui.item_type = %s
+						AND ( ui.status = %s OR ui.status = %s )
+						AND po.post_status = %s
+					GROUP BY ui.item_id
+					ORDER BY ui.item_id {$order}
+					LIMIT %d
+				",
+			LP_COURSE_CPT,
+			'enrolled',
+			'finished',
+			'publish',
+			absint($limit)
+		);
+
+		$posts = $wpdb->get_results(
+			$query
+		);
+
+		ob_start();
+
+		self::render_shortcode_archive( $posts );
+
+		return self::wrapper_shortcode( ob_get_clean() );
+
+	}
+
+	public static function render_shortcode_archive ( $lp_posts = array() ) {
+		global $post;
+		if ( !empty( $lp_posts ) ) {
+			do_action( 'learn_press_before_courses_loop' );
+
+			learn_press_begin_courses_loop();
+
+			foreach ( $lp_posts as $post ) {
+				setup_postdata($post);
+				learn_press_get_template_part( 'content', 'course' );
+			}
+
+			learn_press_end_courses_loop();
+		}
+		else {
+			learn_press_display_message( __( 'No course found.', 'learnpress' ), 'error' );
+
+		}
+
+		wp_reset_postdata();
+	}
+
+	private static function order_received ( $order_id = 0 ) {
 
 		learn_press_print_notices();
 
