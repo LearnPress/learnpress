@@ -13,7 +13,10 @@ $submit_button_process_text = __( 'Submitting...', 'learnpress' );
 $submit_button_text         = __( 'Submit', 'learnpress' );
 ?>
 <div id="learn-press-become-teacher-form" class="learn-press-become-teacher-form">
-	<?php learn_press_display_message( $message ); ?>
+	<?php 	if( $message ) {
+				learn_press_display_message( $message );
+			} 
+	?>
 	<?php if ( !learn_press_become_teacher_sent() ): ?>
 		<form id="<?php echo $form_id; ?>" name="become-teacher-form" method="<?php echo $method; ?>" enctype="multipart/form-data" action="<?php echo $action; ?>">
 			<?php if ( $fields ): ?>
