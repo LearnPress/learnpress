@@ -344,7 +344,7 @@ function _learn_press_get_course_terms_parent_usort_callback( $a, $b ) {
  */
 function learn_press_get_post_by_name( $name, $type, $single = true ) {
 	// Ensure that post name has to be sanitized. Fixed in 2.1.6
-	$name       = sanitize_title( $name );
+	$name = sanitize_title( $name );
 
 	$post_names = LP_Cache::get_post_names( false, array() );
 	$post       = false;
@@ -1865,69 +1865,9 @@ function _is_false_value( $value ) {
 	return !!$value;
 }
 
-function learn_press_do_parse_request( $parse, $q, $vars ) {
-	// lesson
-	$course_type = 'lp_course';
-	$post_types  = get_post_types( '', 'objects' );
 
-	$slug = preg_replace( '!^/!', '', $post_types[$course_type]->rewrite['slug'] );
-
-	$current_url  = learn_press_get_current_url();
-	$query_string = str_replace( trailingslashit( get_site_url() ), '', $current_url );
-	if ( preg_match( '!^' . $slug . '/([^/]*)/?(.*)?!', $query_string, $matches ) ) {
-		if ( !empty( $matches[2] ) ) {
-
-		}
-	}
-	return true;
-}
-
-//add_filter('parse_request', 'learn_press_do_parse_request', 100, 3);
 function learn_press_parse_request() {
-	global $wp, $wp_rewrite;
-
-	if ( !empty( $wp->query_vars['lp_course'] ) && strpos( $wp->query_vars['lp_course'], '/' ) !== false ) {
-		flush_rewrite_rules();
-	}
-
-	if ( !empty( $wp->query_vars['course-query-string'] ) ) {
-		$segments = explode( '/', $wp->query_vars['course-query-string'] );
-		$segments = array_filter( $segments );
-		if ( $segments ) {
-			$ids   = array();
-			$names = array();
-			foreach ( $segments as $segment ) {
-				if ( preg_match( '/^([0-9]+)/', $segment ) ) {
-					$post_args = explode( '-', $segment, 2 );
-					$ids[]     = absint( $post_args[0] );
-					$names[]   = $post_args[1];
-				}
-			}
-
-			if ( sizeof( $ids ) ) {
-				global $wpdb;
-				$ids_format   = array_fill( 0, sizeof( $ids ), '%d' );
-				$names_format = array_fill( 0, sizeof( $names ), '%s' );
-
-				$query = $wpdb->prepare( "
-					SELECT ID, post_name, post_type
-					FROM {$wpdb->posts}
-					WHERE ID IN(" . join( ',', $ids_format ) . ")
-						AND post_name IN(" . join( ',', $names_format ) . ")
-					ORDER BY FIELD(ID, " . join( ',', $ids_format ) . ")
-				", array_merge( $ids, $names, $ids ) );
-				if ( $items = $wpdb->get_results( $query ) ) {
-					$support_types = learn_press_course_get_support_item_types();
-					foreach ( $items as $item ) {
-						if ( in_array( $item->post_type, $support_types ) ) {
-							$wp->query_vars[$item->post_type] = $item->ID;
-						}
-					}
-				}
-			}
-		}
-	}
-
+	global $wp;
 	// Map query vars to their keys, or get them if endpoints are not supported
 	foreach ( LP()->query_vars as $key => $var ) {
 		if ( isset( $_GET[$var] ) ) {
@@ -1937,9 +1877,13 @@ function learn_press_parse_request() {
 		}
 	}
 }
-
 add_action( 'parse_request', 'learn_press_parse_request' );
 
+/**
+ * Reset AUTO_INC of a table
+ *
+ * @param $table
+ */
 function learn_press_reset_auto_increment( $table ) {
 	global $wpdb;
 	$wpdb->query( $wpdb->prepare( "ALTER TABLE {$wpdb->prefix}$table AUTO_INCREMENT = %d", 1 ) );
@@ -1979,7 +1923,6 @@ function learn_press_front_scripts() {
 			'button_no'     => __( 'No', 'learnpress' )
 		)
 	);
-	//LP_Assets::add_var( 'LP_Settings', wp_json_encode( $js ), array( 'learn-press-single-course', 'learn-press-global' ) );
 	foreach ( $js as $k => $v ) {
 		LP_Assets::add_param( $k, $v, array( 'learn-press-single-course', 'learn-press-global' ), 'LP_Settings' );
 	}
@@ -2030,114 +1973,6 @@ function learn_press_add_user_item_if_needed( $located, $template_name, $templat
 function learn_press_set_user_timezone() {
 	?>
 	<script type="text/javascript">
-		(function (factory) {
-			if (typeof define === 'function' && define.amd) {
-				// AMD (Register as an anonymous module)
-				define(['jquery'], factory);
-			} else if (typeof exports === 'object') {
-				// Node/CommonJS
-				module.exports = factory(require('jquery'));
-			} else {
-				// Browser globals
-				factory(jQuery);
-			}
-		}(function ($) {
-
-			var pluses = /\+/g;
-
-			function encode(s) {
-				return config.raw ? s : encodeURIComponent(s);
-			}
-
-			function decode(s) {
-				return config.raw ? s : decodeURIComponent(s);
-			}
-
-			function stringifyCookieValue(value) {
-				return encode(config.json ? JSON.stringify(value) : String(value));
-			}
-
-			function parseCookieValue(s) {
-				if (s.indexOf('"') === 0) {
-					// This is a quoted cookie as according to RFC2068, unescape...
-					s = s.slice(1, -1).replace(/\\"/g, '"').replace(/\\\\/g, '\\');
-				}
-
-				try {
-					// Replace server-side written pluses with spaces.
-					// If we can't decode the cookie, ignore it, it's unusable.
-					// If we can't parse the cookie, ignore it, it's unusable.
-					s = decodeURIComponent(s.replace(pluses, ' '));
-					return config.json ? JSON.parse(s) : s;
-				} catch (e) {
-				}
-			}
-
-			function read(s, converter) {
-				var value = config.raw ? s : parseCookieValue(s);
-				return $.isFunction(converter) ? converter(value) : value;
-			}
-
-			var config = $.cookie = function (key, value, options) {
-
-				// Write
-
-				if (arguments.length > 1 && !$.isFunction(value)) {
-					options = $.extend({}, config.defaults, options);
-
-					if (typeof options.expires === 'number') {
-						var days = options.expires, t = options.expires = new Date();
-						t.setMilliseconds(t.getMilliseconds() + days * 864e+5);
-					}
-
-					return (document.cookie = [
-						encode(key), '=', stringifyCookieValue(value),
-						options.expires ? '; expires=' + options.expires.toUTCString() : '', // use expires attribute, max-age is not supported by IE
-						options.path ? '; path=' + options.path : '',
-						options.domain ? '; domain=' + options.domain : '',
-						options.secure ? '; secure' : ''
-					].join(''));
-				}
-
-				// Read
-
-				var result = key ? undefined : {},
-				// To prevent the for loop in the first place assign an empty array
-				// in case there are no cookies at all. Also prevents odd result when
-				// calling $.cookie().
-					cookies = document.cookie ? document.cookie.split('; ') : [],
-					i = 0,
-					l = cookies.length;
-
-				for (; i < l; i++) {
-					var parts = cookies[i].split('='),
-						name = decode(parts.shift()),
-						cookie = parts.join('=');
-
-					if (key === name) {
-						// If second argument (value) is a function it's a converter...
-						result = read(cookie, value);
-						break;
-					}
-
-					// Prevent storing a cookie that we couldn't decode.
-					if (!key && (cookie = read(cookie)) !== undefined) {
-						result[name] = cookie;
-					}
-				}
-
-				return result;
-			};
-
-			config.defaults = {};
-
-			$.removeCookie = function (key, options) {
-				// Must not alter options, thus extending a fresh object...
-				$.cookie(key, '', $.extend({}, options, {expires: -1}));
-				return !$.cookie(key);
-			};
-
-		}));
 		jQuery.cookie('timezone', new Date().getTimezoneOffset());
 	</script>
 	<?php
