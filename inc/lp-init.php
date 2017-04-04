@@ -482,22 +482,26 @@ function _learn_press_parse_user_item_statuses( $user_id, $course_id, $force = f
 	if ( $item_ids ) {
 		$in    = implode( ', ', $item_ids );
 		$query = $wpdb->prepare( "
-			SELECT * FROM {$wpdb->prefix}learnpress_user_items t1
-			WHERE user_id = %d
-			AND item_id = %d
-			UNION
-			(
-				SELECT * FROM {$wpdb->prefix}learnpress_user_items t2
-				WHERE user_id = %d AND ref_id = %d
-				AND user_item_id = (
-					SELECT MAX(user_item_id) FROM {$wpdb->prefix}learnpress_user_items
-					WHERE user_id = %d and ref_id = %d
-					AND item_id = t2.item_id
+			SELECT X.*, ui.meta_value AS grade
+			FROM (
+				SELECT * FROM {$wpdb->prefix}learnpress_user_items t1
+				WHERE user_id = %d
+				AND item_id = %d
+				UNION
+				(
+					SELECT * FROM {$wpdb->prefix}learnpress_user_items t2
+					WHERE user_id = %d AND ref_id = %d
+					AND user_item_id = (
+						SELECT MAX(user_item_id) FROM {$wpdb->prefix}learnpress_user_items
+						WHERE user_id = %d and ref_id = %d
+						AND item_id = t2.item_id
+					)
+					AND item_id IN({$in})
 				)
-				AND item_id IN({$in})
-			)
+			) AS X
+			LEFT JOIN {$wpdb->prefix}learnpress_user_itemmeta ui ON ui.learnpress_user_item_id = X.user_item_id AND ui.meta_key = %s
 			ORDER BY user_item_id ASC
-		", $user_id, $course_id, $user_id, $course_id, $user_id, $course_id );
+		", $user_id, $course_id, $user_id, $course_id, $user_id, $course_id, '_quiz_grade' );
 	} else {
 		$query = $wpdb->prepare( "
 			SELECT * FROM {$wpdb->prefix}learnpress_user_items t1
@@ -508,17 +512,26 @@ function _learn_press_parse_user_item_statuses( $user_id, $course_id, $force = f
 	$items = $wpdb->get_results( $query );
 
 	$item_statuses = LP_Cache::get_item_statuses( false, array() );
+	$quiz_grades   = LP_Cache::get_quiz_grade( false, array() );
 	foreach ( $item_ids as $id ) {
 		if ( !array_key_exists( $id, $item_statuses ) || $force ) {
 			$item_statuses[$user_id . '-' . $course_id . '-' . $id] = '';
+		}
+
+		if ( !array_key_exists( $id, $item_statuses ) || $force ) {
+			$quiz_grades[$user_id . '-' . $course_id . '-' . $id] = '';
 		}
 	}
 	if ( $items ) {
 		foreach ( $items as $item ) {
 			$item_statuses[$user_id . '-' . $course_id . '-' . $item->item_id] = learn_press_validate_item_status( $item );
+			if ( $item->grade ) {
+				$quiz_grades[$user_id . '-' . $course_id . '-' . $item->item_id] = $item->grade;
+			}
 		}
 	}
 	LP_Cache::set_item_statuses( $item_statuses );
+	LP_Cache::set_quiz_grade( $quiz_grades );
 
 	do_action( "learn_press_parse_user_item_statuses", $user_id, $course_id );
 	do_action( "learn_press_parse_user_item_statuses_{$user_id}_{$course_id}" );
@@ -527,6 +540,12 @@ function _learn_press_parse_user_item_statuses( $user_id, $course_id, $force = f
 function learn_press_validate_item_status( $item ) {
 	$end_time = $item->end_time !== '0000-00-00 00:00:00';
 	$status   = $end_time > 0 ? ( $item->item_type != LP_COURSE_CPT ? 'completed' : 'finished' ) : $item->status;
+	if ( $item->item_type == LP_QUIZ_CPT && $item->status == 'completed' && is_null( $item->grade ) ) {
+		$user  = learn_press_get_user( $item->user_id );
+		$grade = $user->get_quiz_graduation( $item->item_id, $item->ref_id );
+		LP_Cache::set_quiz_grade( sprintf( '%d-%d-%d', $item->user_id, $item->ref_id, $item->item_id ), $grade );
+		learn_press_update_user_item_meta( $item->user_item_id, '_quiz_grade', $grade );
+	}
 	if ( $end_time && !in_array( $item->status, array( 'completed', 'finished' ) ) ) {
 		global $wpdb;
 		$data           = (array) $item;

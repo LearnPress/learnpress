@@ -45,6 +45,13 @@ if (typeof LearnPress === 'undefined') {
 			_changeCurrent : function (m) {
 
 			},
+			get            : function () {
+				var val = Course_Item.__super__.get.apply(this, arguments);
+				if (arguments[0] == 'url') {
+					val = LP_Course_Params.root_url + val;
+				}
+				return val;
+			},
 			request        : function (args) {
 				var that = this;
 				if (!this.get('url')) {
@@ -297,21 +304,35 @@ if (typeof LearnPress === 'undefined') {
 			$progress.eq(0).html(parseInt(data.results));
 			this.$('.course-progress .lp-progress-value').width(parseInt(data.results) + '%');
 			data.items && data.items.forEach(function (item) {
-				var $item = this.$('.course-item.course-item-' + item.id);
+				var $item = this.$('.course-item.course-item-' + item.id),
+					$status = $item.find('.item-status'),
+					statusClass = ($status[0].className + '').replace(/(item-status-[^\s]*)/g, '').trim();
 				if (!sections[item.section_id]) {
 					sections[item.section_id] = [0, 0];
+				}
+				if (item.status) {
+					statusClass += ' item-status-' + item.status;
 				}
 				if (item.status === 'completed') {
 					itemsCompleted++;
 					$item.addClass('item-has-status item-completed');
-					sections[item.section_id][1]++;
 				} else if (item.status) {
 					$item.addClass('item-has-status').removeClass('item-completed');
 				} else {
 					$item.removeClass('item-has-status').removeClass('item-completed');
 				}
+
 				if (item.type === 'lp_quiz') {
 					$item.find('.item-result').html(LP.Hook.applyFilters('item_result_text', item.results + '%'));
+				}
+				$status[0].className = statusClass;
+				if ($.inArray(item.status, ['completed', 'failed', 'passed']) != -1) {
+					sections[item.section_id][1]++;
+				}
+				if (item.status && item.status != 'viewed') {
+					$item.addClass('item-has-result');
+				} else {
+					$item.removeClass('item-has-result');
 				}
 				sections[item.section_id][0]++;
 			}, this);
@@ -389,7 +410,6 @@ if (typeof LearnPress === 'undefined') {
 			var that = this,
 				$target = $(e.target),
 				id = this._getItemId($target);
-			console.log(id)
 			f = f || {force: false};
 			if (!id || this.itemLoading) {
 				return;

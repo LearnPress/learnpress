@@ -2726,22 +2726,24 @@ class LP_Abstract_User {
 	 * @return mixed|void
 	 */
 	public function get_quiz_graduation( $quiz_id, $course_id = 0, $check_completed = true ) {
-		$course_id = $this->_get_course_id( $course_id );
 
-		$result = $this->get_quiz_results( $quiz_id, $course_id );
-		$grade  = '';
-		if ( $result && ( ( $check_completed == false ) || $check_completed && $result->status == 'completed' ) ) {
-			$quiz          = LP_Quiz::get_quiz( $quiz_id );
-			$grade_type    = $quiz->passing_grade_type;
-			$passing_grade = $quiz->passing_grade;
-			if ( $grade_type == 'point' ) {
-				$grade = $passing_grade <= $result->mark;
-			} elseif ( $grade_type == 'percentage' ) {
-				$grade = $passing_grade <= $result->mark_percent;
-			} else {
-				$grade = true;
+		if ( !$grade = LP_Cache::get_quiz_grade( sprintf( '%d-%d-%d', $this->id, $course_id, $quiz_id ) ) ) {
+			$course_id = $this->_get_course_id( $course_id );
+			$result    = $this->get_quiz_results( $quiz_id, $course_id );
+			$grade     = '';
+			if ( $result && ( ( $check_completed == false ) || $check_completed && $result->status == 'completed' ) ) {
+				$quiz          = LP_Quiz::get_quiz( $quiz_id );
+				$grade_type    = $quiz->passing_grade_type;
+				$passing_grade = $quiz->passing_grade;
+				if ( $grade_type == 'point' ) {
+					$grade = $passing_grade <= $result->mark;
+				} elseif ( $grade_type == 'percentage' ) {
+					$grade = $passing_grade <= $result->mark_percent;
+				} else {
+					$grade = true;
+				}
+				$grade = $grade ? 'passed' : 'failed';
 			}
-			$grade = $grade ? 'passed' : 'failed';
 		}
 		return apply_filters( 'learn_press_user_quiz_graduation', $grade, $quiz_id, $course_id );
 	}

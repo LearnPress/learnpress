@@ -821,7 +821,7 @@ abstract class LP_Abstract_Course {
 		}
 		sort( $statuses );
 		$key = md5( serialize( $statuses ) );
-		if ( !array_key_exists($key, $data ) ) {
+		if ( !array_key_exists( $key, $data ) ) {
 			$in_clause  = join( ',', array_fill( 0, sizeof( $statuses ), '%s' ) );
 			$query      = $wpdb->prepare( "
 				SELECT count(oim.meta_id)
@@ -1093,7 +1093,7 @@ abstract class LP_Abstract_Course {
 
 		$quizzes = $this->get_quizzes();
 
-		if ( ( 'evaluate_lesson' === $this->course_result  ) || !$quizzes ) {
+		if ( ( 'evaluate_lesson' === $this->course_result ) || !$quizzes ) {
 			//$results = $this->_evaluate_course_by_items( $user_id, $force );
 			$results = $this->_evaluate_course_by_lesson( $user_id, $force );
 		} elseif ( 'evaluate_final_quiz' === $this->course_result ) {
@@ -1107,72 +1107,72 @@ abstract class LP_Abstract_Course {
 		}
 		return apply_filters( 'learn_press_evaluation_course_results', $results );
 	}
-	
+
 	public function _evaluate_course_by_quizzes_results( $user_id, $force = false ) {
-		$quizzes = $this->get_quizzes();
-		$user = learn_press_get_user( $user_id );
-		$results = array();
+		$quizzes        = $this->get_quizzes();
+		$user           = learn_press_get_user( $user_id );
+		$results        = array();
 		$achieved_point = 0;
 //		$total_point = 0;
 		$quizzes_ids = array();
 		foreach ( $quizzes as $quiz ) {
-			$quizzes_ids[]=$quiz->ID;
+			$quizzes_ids[] = $quiz->ID;
 //			$total_point += $quiz->get_mark(true);
 			$results[$quiz->ID] = $user->get_quiz_results( $quiz->ID, $this->id, true );
 			$achieved_point += is_object( $results[$quiz->ID] ) ? $results[$quiz->ID]->mark : 0;
 		}
 		$total_point = $this->_get_total_question( $quizzes_ids );
-		$result = ($achieved_point / $total_point) * 100;
-		return 	apply_filters( 'learn_press_evaluate_course_by_quizzes_results', $result, $this->id, $user_id );
+		$result      = ( $achieved_point / $total_point ) * 100;
+		return apply_filters( 'learn_press_evaluate_course_by_quizzes_results', $result, $this->id, $user_id );
 	}
-	
+
 	public function _evaluate_course_by_passed_quizzes_results( $user_id, $force = false ) {
 //		return;
-		$quizzes = $this->get_quizzes();
-		$user = learn_press_get_user( $user_id );
-		$results = array();
+		$quizzes        = $this->get_quizzes();
+		$user           = learn_press_get_user( $user_id );
+		$results        = array();
 		$achieved_point = 0;
 //		$total_point = 0;
 		$quizzes_ids = array();
 		foreach ( $quizzes as $quiz ) {
-			$quizzes_ids[]=$quiz->ID;
-			$passing_grade = get_post_meta($quiz->ID,'_lp_passing_grade', true );
+			$quizzes_ids[]      = $quiz->ID;
+			$passing_grade      = get_post_meta( $quiz->ID, '_lp_passing_grade', true );
 			$results[$quiz->ID] = $user->get_quiz_results( $quiz->ID, $this->id, true );
-			$quiz_passed = false;
-			$passing_grade_type = get_post_meta($quiz->ID, '_lp_passing_grade_type', true);
-			$passing_grade = get_post_meta($quiz->ID, '_lp_passing_grade', true);
+			$quiz_passed        = false;
+			$passing_grade_type = get_post_meta( $quiz->ID, '_lp_passing_grade_type', true );
+			$passing_grade      = get_post_meta( $quiz->ID, '_lp_passing_grade', true );
 			if ( $passing_grade_type = 'percentage' ) {
-				$quiz_passed = ($results[$quiz->ID]->correct_percent >= intval( $passing_grade ));
+				$quiz_passed = ( $results[$quiz->ID]->correct_percent >= intval( $passing_grade ) );
 			} elseif ( $passing_grade_type = 'point' ) {
-				$quiz_passed = ($results[$quiz->ID]->mark >= intval( $passing_grade ));
+				$quiz_passed = ( $results[$quiz->ID]->mark >= intval( $passing_grade ) );
 			} else {
 				$quiz_passed = true;
 			}
-			if( $quiz_passed ){
+			if ( $quiz_passed ) {
 				$achieved_point += is_object( $results[$quiz->ID] ) ? $results[$quiz->ID]->mark : 0;
 			}
 		}
 
 		$total_point = $this->_get_total_question( $quizzes_ids );
-		$result = ($achieved_point / $total_point) * 100;
-		return 	apply_filters( 'learn_press_evaluate_course_by_passed_quizzes_results', $result, $this->id, $user_id );
+		$result      = ( $achieved_point / $total_point ) * 100;
+		return apply_filters( 'learn_press_evaluate_course_by_passed_quizzes_results', $result, $this->id, $user_id );
 	}
-	
-	public function _get_total_question( $quizzes_ids=array() ){
+
+	public function _get_total_question( $quizzes_ids = array() ) {
 		global $wpdb;
-		if(!empty($quizzes_ids)){
-			$ids = implode(',', $quizzes_ids);
+		if ( !empty( $quizzes_ids ) ) {
+			$ids = implode( ',', $quizzes_ids );
 			$sql = 'SELECT 
 						count(*)
 					FROM
-						'.$wpdb->prefix.'learnpress_quiz_questions lqq
+						' . $wpdb->prefix . 'learnpress_quiz_questions lqq
 							INNER JOIN
-						'.$wpdb->prefix.'posts p ON lqq.question_id = p.ID
+						' . $wpdb->prefix . 'posts p ON lqq.question_id = p.ID
 					WHERE
-						quiz_id IN ('.$ids.')
+						quiz_id IN (' . $ids . ')
 							AND p.post_status = "publish"
 							AND p.post_type = "lp_question" ';
-			return $wpdb->get_var($sql);
+			return $wpdb->get_var( $sql );
 		}
 		return 0;
 	}
@@ -1451,15 +1451,17 @@ abstract class LP_Abstract_Course {
 	 * @return mixed
 	 */
 	public function output_args( $args = null ) {
-
-		$args = wp_parse_args( $args, array( 'echo' => true, 'user_id' => get_current_user_id() ) );
-
-		$user = learn_press_get_user( $args['user_id'] );
-
+		$args        = wp_parse_args( $args, array( 'echo' => true, 'user_id' => get_current_user_id() ) );
+		$user        = learn_press_get_user( $args['user_id'] );
+		$course_info = $user->get_course_info( $this->id );
+		if ( array_key_exists( 'items', $course_info ) ) {
+			unset( $course_info['items'] );
+		}
 		$output = array(
+			'root_url'     => trailingslashit( get_site_url() ),
 			'id'           => $this->id,
 			'url'          => $this->get_permalink(),
-			'results'      => $user->get_course_info( $this->id ),// $this->get_course_info( $args['user_id'] ),
+			'results'      => $course_info,// $this->get_course_info( $args['user_id'] ),
 			'current_item' => $this->is_viewing_item(),
 			'items'        => $this->get_items_params()
 		);
@@ -1475,18 +1477,20 @@ abstract class LP_Abstract_Course {
 	 */
 	public function get_items_params( $user_id = null ) {
 		global $wpdb;
-		$user  = learn_press_get_current_user( $user_id );
-		$items = $this->get_curriculum_items(
+		$user     = learn_press_get_current_user( $user_id );
+		$items    = $this->get_curriculum_items(
 			array(
 				'field'        => array( 'item_id', 'item_type', 'post_title', 'section_id' ),
 				'field_map'    => array( 'id', 'type', 'title' ),
 				'field_format' => array( '%d', '%s', '%s', '%d' )
 			)
 		);
+		$root_url = trailingslashit( get_site_url() );
 		if ( $items ) foreach ( $items as $k => $item ) {
 			if ( ( $view = $user->can( 'view-item', $item['id'], $this->id ) ) !== false ) {
-				$items[$k]['url']    = $this->get_item_link( $item['id'] );
-				$items[$k]['status'] = $user->get_item_status( $item['id'], $this->id );
+				$status              = $user->get_item_status( $item['id'], $this->id );
+				$items[$k]['url']    = str_replace( $root_url, '', $this->get_item_link( $item['id'] ) );
+				$items[$k]['status'] = ( $status == 'completed' && $item['type'] == LP_QUIZ_CPT ) ? $user->get_quiz_graduation( $item['id'], $this->id ) : $status;
 				if ( $view == 'preview' ) {
 
 				}
