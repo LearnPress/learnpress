@@ -695,8 +695,12 @@ class LP_Cache {
 	}
 
 	public static function init() {
-		add_action( 'init', array( __CLASS__, 'redirect' ) );
+		try {
+			self::flush();
+		} catch ( Exception $ex ) {
 
+		}
+		add_action( 'init', array( __CLASS__, 'redirect' ) );
 	}
 
 	public static function redirect() {

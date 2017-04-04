@@ -195,6 +195,8 @@ https://www.transifex.com/projects/p/learnpress/
 == Changelog ==
 = 2.1.6 =
 + Add more options for course results
++ Made 'Show correct answer' option depending on 'Show/Hide questions'
++ Fixed process fields are added by filter for become a teacher form
 + Fixed wrong user profile url
 + Remove related data after removing posts
 

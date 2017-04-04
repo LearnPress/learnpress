@@ -70,7 +70,6 @@ class LP_Shortcodes {
 					parse_str( $wp->matched_query, $query );
 					if ( empty( $query['view'] ) ) {
 						$redirect = learn_press_user_profile_link( $wp->query_vars['user'] );
-
 						if ( ! empty( $redirect ) ) {
 							wp_redirect( $redirect );
 							die();
