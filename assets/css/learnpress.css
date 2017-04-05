@@ -502,6 +502,20 @@
 .single-lp_course .learn-press-course-results-progress .percentage-sign {
   margin-left: 5px;
 }
+.single-lp_course .learn-press-course-results-progress .grade {
+  font-size: 12px;
+  font-weight: bold;
+  background: #F5F5F5;
+  padding: 2px 7px;
+}
+.single-lp_course .learn-press-course-results-progress .grade.passed {
+  color: #ffffff;
+  background: #95e6f9;
+}
+.single-lp_course .learn-press-course-results-progress .grade.failed {
+  color: #ffffff;
+  background: #ff5425;
+}
 .single-lp_course .learn-press-course-results-progress:after {
   display: block;
   content: '';

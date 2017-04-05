@@ -2,7 +2,7 @@
 /**
  * @author        ThimPress
  * @package       LearnPress/Templates
- * @version       2.0.4
+ * @version       2.1.6
  */
 
 defined( 'ABSPATH' ) || exit();
@@ -56,10 +56,15 @@ $course_results    = $course->evaluate_course_results();
 			?>
 			<span class="learn-press-tooltip" data-content="<?php echo esc_html( $tooltip ); ?>"></span>
 		</h4>
-		<div>
-			<span class="number"><?php echo $current ?></span><span class="percentage-sign">%</span>
+		<div class="lp-course-status">
+			<span class="number"><?php echo $current ?><span class="percentage-sign">%</span></span>
+			<?php if ( $grade = $user->get_course_grade( $course->id ) ) { ?>
+				<span class="grade <?php echo esc_attr( $grade ); ?>">
+				<?php learn_press_course_grade_html($grade); ?>
+				</span>
+			<?php } ?>
 		</div>
-		<div class="lp-course-progress<?php echo $passed ? ' passed' : ''; ?>" data-value="<?php echo $current; ?>"
+		<div class="lp-course-progress <?php echo $passed ? ' passed' : ''; ?>" data-value="<?php echo $current; ?>"
 			 data-passing-condition="<?php echo $passing_condition; ?>">
 			<div class="lp-progress-bar">
 				<div class="lp-progress-value" style="width: <?php echo $current; ?>%;">
@@ -71,7 +76,4 @@ $course_results    = $course->evaluate_course_results();
 			</div>
 		</div>
 	</div>
-	<?php /*if ($user->has_enrolled_course($course->id)): ?>
-        <?php learn_press_get_template('single-course/buttons.php'); ?>
-    <?php endif;*/ ?>
 </div>

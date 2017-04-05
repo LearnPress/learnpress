@@ -1451,9 +1451,10 @@ abstract class LP_Abstract_Course {
 	 * @return mixed
 	 */
 	public function output_args( $args = null ) {
-		$args        = wp_parse_args( $args, array( 'echo' => true, 'user_id' => get_current_user_id() ) );
-		$user        = learn_press_get_user( $args['user_id'] );
-		$course_info = $user->get_course_info( $this->id );
+		$args         = wp_parse_args( $args, array( 'echo' => true, 'user_id' => get_current_user_id() ) );
+		$user         = learn_press_get_user( $args['user_id'] );
+		$course_info  = $user->get_course_info( $this->id );
+		$course_grade = $user->get_course_grade( $this->id );
 		if ( array_key_exists( 'items', $course_info ) ) {
 			unset( $course_info['items'] );
 		}
@@ -1461,7 +1462,9 @@ abstract class LP_Abstract_Course {
 			'root_url'     => trailingslashit( get_site_url() ),
 			'id'           => $this->id,
 			'url'          => $this->get_permalink(),
-			'results'      => $course_info,// $this->get_course_info( $args['user_id'] ),
+			'results'      => $this->evaluate_course_results( $user->id ),// $this->get_course_info( $args['user_id'] ),
+			'grade'        => $course_grade,
+			'grade_html'   => learn_press_course_grade_html( $course_grade ),
 			'current_item' => $this->is_viewing_item(),
 			'items'        => $this->get_items_params()
 		);

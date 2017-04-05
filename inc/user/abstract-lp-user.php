@@ -2486,10 +2486,12 @@ class LP_Abstract_User {
 			foreach ( $course_info['items'] as $k => $item ) {
 				if ( $item['type'] == 'lp_quiz' ) {
 					$result                   = $this->get_quiz_results( $item['id'], $course_id );
+					$passing_grade_type       = get_post_meta( $item['id'], '_lp_passing_grade_type', true );
 					$course_info['items'][$k] = array_merge(
 						$course_info['items'][$k],
 						array(
-							'results' => $result ? $result->mark_percent : 0
+							'results'            => $result ? ( $passing_grade_type == 'point' ? sprintf( '%d/%d', $result->mark, $result->quiz_mark ) : $result->mark_percent . '%' ) : '',
+							'passing_grade_type' => $passing_grade_type
 						)
 					);
 				}
@@ -2871,6 +2873,39 @@ class LP_Abstract_User {
 			$can = !$this->has( 'started-quiz', $quiz_id, $course_id );
 		}
 		return apply_filters( 'learn_press_user_can_do_quiz', $can, $quiz_id, $this->id, $course_id );
+	}
+
+	/**
+	 * Get user course's grade.
+	 * Possible values:
+	 * 		+ passed 		User has finished and passed course
+	 * 		+ failed 		User has finished but failed
+	 * 		+ in-progress 	User still is learning course
+	 * 		+ false			All other cases, e.g: not enrolled
+	 *
+	 * @param $course_id
+	 *
+	 * @return mixed|void
+	 * @throws Exception
+	 */
+	public function get_course_grade( $course_id ) {
+		$course = LP_Course::get_course( $course_id );
+		$status = $this->get( 'course-status', $course_id );
+		$grade  = false;
+		if ( $status == 'finished' ) {
+			$result            = $course->evaluate_course_results( $this->id );
+			$current           = absint( $result );
+			$passing_condition = absint( $course->passing_condition );
+			$passed            = $current >= $passing_condition;
+			if ( $passed ) {
+				$grade = 'passed';
+			} else {
+				$grade = 'failed';
+			}
+		} else if ( $status && $status != 'finished' ) {
+			$grade = 'in-progress';
+		}
+		return apply_filters( 'learn_press_user_course_grade', $grade, $this->id, $course_id );
 	}
 
 	public static function get_user() {

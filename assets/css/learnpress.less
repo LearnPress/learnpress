@@ -635,6 +635,23 @@
         .percentage-sign {
             margin-left: 5px;
         }
+        .grade{
+            font-size: 12px;
+            font-weight: bold;
+            background: #F5F5F5;
+            padding: 2px 7px;
+            &.in-progress{
+
+            }
+            &.passed{
+                color: #ffffff;
+                background: #95e6f9;
+            }
+            &.failed{
+                color: #ffffff;
+                background: #ff5425;
+            }
+        }
         &:after {
             display: block;
             content: '';

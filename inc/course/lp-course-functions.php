@@ -773,3 +773,21 @@ function learn_press_prepare_archive_courses( $template ) {
 	}
 	return $template;
 }
+
+function learn_press_course_grade_html( $grade, $echo = true ) {
+	$html = '';
+	switch ( $grade ) {
+		case 'passed':
+			$html = __( 'Passed', 'learnpress' );
+			break;
+		case 'failed':
+			$html = __( 'Failed', 'learnpress' );
+			break;
+		case 'in-progress':
+			$html = __( 'In Progress', 'learnpress' );
+			break;
+	}
+	$html = apply_filters( 'learn_press_course_grade_html', $html, $grade );
+	if ( $echo ) echo $html;
+	return $html;
+}
