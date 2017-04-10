@@ -1527,6 +1527,14 @@ abstract class LP_Abstract_Course {
 		return $items;
 	}
 
+	/**
+	 * Get external link of "Buy this course" button
+	 *
+	 * @return mixed|void
+	 */
+	public function get_external_link() {
+		return apply_filters( 'learn_press_external_link_buy_course', $this->external_link_buy_course, $this->id );
+	}
 
 	public function get_video_embed() {
 		$video_id   = $this->video_id;
