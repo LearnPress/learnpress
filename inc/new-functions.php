@@ -40,6 +40,7 @@ function learn_press_get_course_curriculumx( $course_id, $force = false ) {
 	static $cached = false;
 	$force      = !$cached || $force;
 	$curriculum = LP_Cache::get_course_curriculum( $course_id );
+	die();
 	if ( $force || $curriculum === false ) {
 		global $wpdb;
 		/*echo $query = $wpdb->prepare( "

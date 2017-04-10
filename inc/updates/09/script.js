@@ -65,7 +65,6 @@
 			try {
 				json = JSON.parse(matches[1]);
 			} catch (e) {
-				LP.log(e);
 			}
 		}
 		return json;

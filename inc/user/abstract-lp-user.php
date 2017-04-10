@@ -2735,6 +2735,7 @@ class LP_Abstract_User {
 			$grade     = '';
 			if ( $result && ( ( $check_completed == false ) || $check_completed && $result->status == 'completed' ) ) {
 				$quiz          = LP_Quiz::get_quiz( $quiz_id );
+
 				$grade_type    = $quiz->passing_grade_type;
 				$passing_grade = $quiz->passing_grade;
 				if ( $grade_type == 'point' ) {
@@ -2747,6 +2748,7 @@ class LP_Abstract_User {
 				$grade = $grade ? 'passed' : 'failed';
 			}
 		}
+		//echo $quiz_id, ',',LP_Cache::get_quiz_grade( sprintf( '%d-%d-%d', $this->id, $course_id, $quiz_id ));
 		return apply_filters( 'learn_press_user_quiz_graduation', $grade, $quiz_id, $course_id );
 	}
 

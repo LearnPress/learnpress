@@ -45,22 +45,15 @@ $course_results    = $course->evaluate_course_results();
 	<div class="course-progress">
 		<h4 class="lp-course-progress-heading">
 			<?php esc_html_e( 'Course results', 'learnpress' ); ?>
-			<?php
-			if ( $course->is_evaluation( 'evaluate_final_quiz' ) ) {
-				$tooltip = __( "Evaluated by results of final quiz", 'learnpress' );
-			} elseif ( $course->is_evaluation( 'evaluate_quizzes' ) ) {
-				$tooltip = __( "Evaluated by average results of quizzes", 'learnpress' );
-			} else {
-				$tooltip = __( "Evaluated by items completed", 'learnpress' );
-			}
-			?>
-			<span class="learn-press-tooltip" data-content="<?php echo esc_html( $tooltip ); ?>"></span>
+			<?php if ( $tooltip = learn_press_get_course_results_tooltip( $course->id ) ) { ?>
+				<span class="learn-press-tooltip" data-content="<?php echo esc_html( $tooltip ); ?>"></span>
+			<?php } ?>
 		</h4>
 		<div class="lp-course-status">
-			<span class="number"><?php echo $current ?><span class="percentage-sign">%</span></span>
+			<span class="number"><?php echo $current; ?><span class="percentage-sign">%</span></span>
 			<?php if ( $grade = $user->get_course_grade( $course->id ) ) { ?>
 				<span class="grade <?php echo esc_attr( $grade ); ?>">
-				<?php learn_press_course_grade_html($grade); ?>
+				<?php learn_press_course_grade_html( $grade ); ?>
 				</span>
 			<?php } ?>
 		</div>

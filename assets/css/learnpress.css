@@ -381,6 +381,20 @@
   float: right;
   margin-top: 5px;
 }
+#learn-press-course-curriculum .course-item-meta .item-loop-meta-text {
+  font-size: small;
+}
+#learn-press-course-curriculum .course-item-meta .item-loop-meta-text.item-final {
+  color: #ffffff;
+  background: #cc540d;
+  padding: 3px 8px;
+  -webkit-border-radius: 3px;
+  -khtml-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -o-border-radius: 3px;
+  border-radius: 3px;
+}
 .lp-icon {
   display: inline-block;
   font-family: 'lp-icons';
@@ -507,6 +521,12 @@
   font-weight: bold;
   background: #F5F5F5;
   padding: 2px 7px;
+  -webkit-border-radius: 3px;
+  -khtml-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -o-border-radius: 3px;
+  border-radius: 3px;
 }
 .single-lp_course .learn-press-course-results-progress .grade.passed {
   color: #ffffff;
@@ -881,7 +901,7 @@ body.course-has-popup {
   height: 43px;
   line-height: 43px;
   background: #F5F5F5;
-  margin: 0 10px;
+  margin-left: 10px;
   border: 1px solid #DDD;
   outline: none;
 }

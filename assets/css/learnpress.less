@@ -470,7 +470,7 @@
                 }
             }
         }
-        .item-result{
+        .item-result {
             display: none;
         }
         &.item-has-status {
@@ -478,8 +478,8 @@
                 display: inline-block;
             }
         }
-        &.item-has-result{
-            .item-result{
+        &.item-has-result {
+            .item-result {
                 display: inline-block;
             }
         }
@@ -538,6 +538,15 @@
         right: 15px;
         float: right;
         margin-top: 5px;
+        .item-loop-meta-text {
+            font-size: small;
+            &.item-final {
+                color: #ffffff;
+                background: #cc540d;
+                padding: 3px 8px;
+                .border-radius(3px);
+            }
+        }
     }
 }
 
@@ -635,19 +644,20 @@
         .percentage-sign {
             margin-left: 5px;
         }
-        .grade{
+        .grade {
             font-size: 12px;
             font-weight: bold;
             background: #F5F5F5;
             padding: 2px 7px;
-            &.in-progress{
+            .border-radius(3px);
+            &.in-progress {
 
             }
-            &.passed{
+            &.passed {
                 color: #ffffff;
                 background: #95e6f9;
             }
-            &.failed{
+            &.failed {
                 color: #ffffff;
                 background: #ff5425;
             }
@@ -1049,7 +1059,7 @@ body.course-has-popup {
         height: 43px;
         line-height: 43px;
         background: #F5F5F5;
-        margin: 0 10px;
+        margin-left: 10px;
         border: 1px solid #DDD;
         outline: none;
     }

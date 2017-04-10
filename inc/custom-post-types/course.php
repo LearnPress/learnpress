@@ -571,8 +571,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 *
 		 * @return mixed|null|void
 		 */
-		public
-		static function assessment_meta_box() {
+		public static function assessment_meta_box() {
 			$post_id            = learn_press_get_request( 'post' );
 			$prefix             = '_lp_';
 			$course_results     = get_post_meta( $post_id, '_lp_course_result', true );

@@ -29,6 +29,19 @@ if ( $has_result ) {
 
 <li <?php learn_press_course_item_class( $item->ID, $course->id, $class ); ?> data-type="<?php echo $item->post_type; ?>">
 	<?php do_action( 'learn_press_before_section_item_title', $item, $section, $course ); ?>
-	<<?php echo $tag; ?> class="course-item-title button-load-item" target="<?php echo $target; ?>" <?php echo $item_link; ?> data-id="<?php echo $item->ID; ?>"><?php echo $item_title ?></<?php echo $tag; ?>>
-<?php do_action( 'learn_press_after_section_item_title', $item, $section, $course ); ?>
+
+	<?php
+	printf(
+		'<%s class="%s" target="%s" data-id="%d" %s>%s</%s>',
+		$tag,
+		'course-item-title button-load-item',
+		$target,
+		$item->ID,
+		$item_link,
+		$item_title,
+		$tag
+	);
+	?>
+	<!--<<?php echo $tag; ?> class="course-item-title button-load-item" target="<?php echo $target; ?>" <?php echo $item_link; ?> data-id="<?php echo $item->ID; ?>"><?php echo $item_title ?></<?php echo $tag; ?>>-->
+	<?php do_action( 'learn_press_after_section_item_title', $item, $section, $course ); ?>
 </li>

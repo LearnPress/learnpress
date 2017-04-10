@@ -903,9 +903,19 @@ function learn_press_user_profile_picture_upload_dir( $width_user = true ) {
 		if ( $width_user ) {
 			$subdir .= '/' . get_current_user_id();
 		}
-		$subdir               = '/' . $subdir;
-		$upload_dir['path']   = str_replace( $upload_dir['subdir'], $subdir, $upload_dir['path'] );
-		$upload_dir['url']    = str_replace( $upload_dir['subdir'], $subdir, $upload_dir['url'] );
+		$subdir = '/' . $subdir;
+
+		if ( !empty( $upload_dir['subdir'] ) ) {
+			$u_subdir = str_replace( '\\', '/', $upload_dir['subdir'] );
+			$u_path   = str_replace( '\\', '/', $upload_dir['path'] );
+
+			$upload_dir['path'] = str_replace( $u_subdir, $subdir, $u_path );
+			$upload_dir['url']  = str_replace( $u_subdir, $subdir, $upload_dir['url'] );
+		} else {
+			$upload_dir['path'] = $upload_dir['path'] . $subdir;
+			$upload_dir['url']  = $upload_dir['url'] . $subdir;
+		}
+
 		$upload_dir['subdir'] = $subdir;
 
 		// Point path/url to main site if we are in multisite

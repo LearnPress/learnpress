@@ -27,6 +27,10 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 		public function __construct( $post_type, $args = '' ) {
 			add_action( 'admin_head', array( $this, 'enqueue_script' ) );
 			$this->add_map_method( 'before_delete', 'delete_quiz_questions' );
+
+			$this
+				->add_map_method( 'save', 'update_quiz', false );
+
 			add_action( 'init', array( $this, 'init_quiz' ) );
 
 			/**
@@ -40,6 +44,9 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 			add_action( 'admin_footer', array( $this, 'hide_view_quiz_link_if_not_assigned' ) );
 
 			parent::__construct( $post_type, $args );
+		}
+
+		public function update_quiz( $post_id ) {
 		}
 
 		public function init_quiz() {
@@ -155,8 +162,8 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 								'options' => array(
 									// Removed from 2.1.4
 									//'global' => __( wp_kses( 'Global Setting <a target="_blank" href="' . admin_url( 'admin.php?page=learn-press-settings&tab=courses' ) . '">Go to the setting</a>', array( 'a' => array( 'href' => array(), 'target' => array() ) ) ), 'learnpress' ),
-									'show'   => __( 'Show', 'learnpress' ),
-									'hide'   => __( 'Hide', 'learnpress' )
+									'show' => __( 'Show', 'learnpress' ),
+									'hide' => __( 'Hide', 'learnpress' )
 								),
 								'std'     => 'hide'
 							),
@@ -247,7 +254,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 			if ( LP_QUIZ_CPT != get_post_type() ) return;
 			ob_start();
 			?>
-            <script>
+			<script>
 				var form = $('#post');
 
 				form.submit(function (evt) {
@@ -260,7 +267,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 						is_error = true;
 					}
 
-                    /* hook */
+					/* hook */
 					is_error = form.triggerHandler('learn_press_question_before_update') === false;
 
 					if (window.learn_press_before_update_quiz_message.length /*true == is_error*/) {
@@ -271,7 +278,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 						return false;
 					}
 				});
-            </script>
+			</script>
 			<?php
 			$script = ob_get_clean();
 			$script = preg_replace( '!</?script>!', '', $script );
@@ -279,21 +286,21 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 
 			ob_start();
 			?>
-            <script type="text/html" id="tmpl-form-quick-add-question">
-                <div id="lpr-form-quick-add-question" class="lpr-quick-add-form">
-                    <input type="text">
-                    <select class="lpr-question-types lpr-select2" name="lpr_question[type]" id="lpr-quiz-question-type">
+			<script type="text/html" id="tmpl-form-quick-add-question">
+				<div id="lpr-form-quick-add-question" class="lpr-quick-add-form">
+					<input type="text">
+					<select class="lpr-question-types lpr-select2" name="lpr_question[type]" id="lpr-quiz-question-type">
 						<?php if ( $questions = learn_press_question_types() ): ?>
 							<?php foreach ( $questions as $type => $name ): ?>
-                                <option value="<?php echo $type; ?>"><?php echo $name; ?></option>
+								<option value="<?php echo $type; ?>"><?php echo $name; ?></option>
 							<?php endforeach; ?>
 						<?php endif; ?>
-                    </select>
-                    <button class="button" data-action="add" type="button"><?php _e( 'Add [Enter]', 'learnpress' ); ?></button>
-                    <button data-action="cancel" class="button" type="button"><?php _e( 'Cancel [ESC]', 'learnpress' ); ?></button>
-                    <span class="lpr-ajaxload">...</span>
-                </div>
-            </script>
+					</select>
+					<button class="button" data-action="add" type="button"><?php _e( 'Add [Enter]', 'learnpress' ); ?></button>
+					<button data-action="cancel" class="button" type="button"><?php _e( 'Cancel [ESC]', 'learnpress' ); ?></button>
+					<span class="lpr-ajaxload">...</span>
+				</div>
+			</script>
 			<?php
 			$js_template = ob_get_clean();
 			learn_press_enqueue_script( $js_template, true );
@@ -534,29 +541,31 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 			}
 			if ( $current_screen->id === LP_QUIZ_CPT && !learn_press_get_item_course_id( $post->ID, $post->post_type ) ) {
 				?>
-                <style type="text/css">
-                    #wp-admin-bar-view {
-                        display: none;
-                    }
-                    #sample-permalink a {
-                        pointer-events: none;
-                        cursor: default;
-                        text-decoration: none;
-                        color: #666;
-                    }
-                    #preview-action {
-                        display: none;
-                    }
-                </style>
+				<style type="text/css">
+					#wp-admin-bar-view {
+						display: none;
+					}
+
+					#sample-permalink a {
+						pointer-events: none;
+						cursor: default;
+						text-decoration: none;
+						color: #666;
+					}
+
+					#preview-action {
+						display: none;
+					}
+				</style>
 				<?php
 			}
 		}
 
-		public  function get_sample_permalink_html( $return, $post_id , $new_title, $new_slug, $post ) {
+		public function get_sample_permalink_html( $return, $post_id, $new_title, $new_slug, $post ) {
 
-		    return $return;
+			return $return;
 
-        }
+		}
 
 		public static function instance() {
 			if ( !self::$_instance ) {

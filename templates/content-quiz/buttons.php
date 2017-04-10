@@ -22,6 +22,10 @@ if ( $user->has( 'finished-course', $course->id ) ) {
 	return;
 }
 
+if ( !$quiz->has( 'questions' ) ) {
+	return;
+}
+
 $status   = $user->get_quiz_status( $quiz->id, $course->id );
 $question = $quiz->get_current_question();
 

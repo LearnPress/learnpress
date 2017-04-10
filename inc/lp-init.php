@@ -240,7 +240,6 @@ function _learn_press_get_courses_curriculum( $course_ids, $force = false, $pars
 						$item->{$prop} = $row->{$prop};
 					}
 				}
-				$_curriculum[$section_id]->items[] = $item;
 				$item_ids[]                        = $item->ID;
 				if ( $item->post_type == LP_QUIZ_CPT ) {
 					if ( false == wp_cache_get( $item->ID, 'posts' ) ) {
@@ -263,6 +262,7 @@ function _learn_press_get_courses_curriculum( $course_ids, $force = false, $pars
 						}
 					}
 				}
+				$_curriculum[$section_id]->items[] = $item;
 				wp_cache_delete( $item->ID, 'posts' );
 				wp_cache_add( $item->ID, $item, 'posts' );
 			}

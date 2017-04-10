@@ -1105,38 +1105,50 @@ abstract class LP_Abstract_Course {
 		} elseif ( 'evaluate_passed_quizzes' === $this->course_result ) {
 			$results = $this->_evaluate_course_by_passed_quizzes_results( $user_id, $force );
 		}
+
 		return apply_filters( 'learn_press_evaluation_course_results', $results );
 	}
 
+	/**
+	 * Get achieved point of all quizzes per total points of all quizzes
+	 *
+	 * @param      $user_id
+	 * @param bool $force
+	 *
+	 * @return mixed|void
+	 */
 	public function _evaluate_course_by_quizzes_results( $user_id, $force = false ) {
 		$quizzes        = $this->get_quizzes();
 		$user           = learn_press_get_user( $user_id );
 		$results        = array();
 		$achieved_point = 0;
-//		$total_point = 0;
-		$quizzes_ids = array();
+		$total_point    = 0;
+		$quizzes_ids    = array();
 		foreach ( $quizzes as $quiz ) {
-			$quizzes_ids[] = $quiz->ID;
-//			$total_point += $quiz->get_mark(true);
+			$quizzes_ids[]      = $quiz->ID;
 			$results[$quiz->ID] = $user->get_quiz_results( $quiz->ID, $this->id, true );
+			if ( $quiz = wp_cache_get( $quiz->ID, 'posts' ) ) {
+				$total_point += isset( $quiz->mark ) ? absint( $quiz->mark ) : 0;
+			}
 			$achieved_point += is_object( $results[$quiz->ID] ) ? $results[$quiz->ID]->mark : 0;
 		}
-		$total_point = $this->_get_total_question( $quizzes_ids );
-		$result      = ( $achieved_point / $total_point ) * 100;
+		$result = ( $achieved_point / $total_point ) * 100;
 		return apply_filters( 'learn_press_evaluate_course_by_quizzes_results', $result, $this->id, $user_id );
 	}
 
 	public function _evaluate_course_by_passed_quizzes_results( $user_id, $force = false ) {
-//		return;
 		$quizzes        = $this->get_quizzes();
 		$user           = learn_press_get_user( $user_id );
 		$results        = array();
 		$achieved_point = 0;
-//		$total_point = 0;
-		$quizzes_ids = array();
-		foreach ( $quizzes as $quiz ) {
-			$quizzes_ids[]      = $quiz->ID;
-			$passing_grade      = get_post_meta( $quiz->ID, '_lp_passing_grade', true );
+		$total_point    = 0;
+		foreach ( $quizzes as $_quiz ) {
+			$quiz = LP_Quiz::get_quiz( $_quiz->ID );
+			if ( $_quiz = wp_cache_get( $quiz->id, 'posts' ) ) {
+				$total_point += isset( $_quiz->mark ) ? absint( $_quiz->mark ) : 0;
+			}
+			$grade = $user->get_quiz_graduation( $quiz->id, $this->id );
+			/*$passing_grade      = get_post_meta( $quiz->ID, '_lp_passing_grade', true );
 			$results[$quiz->ID] = $user->get_quiz_results( $quiz->ID, $this->id, true );
 			$quiz_passed        = false;
 			$passing_grade_type = get_post_meta( $quiz->ID, '_lp_passing_grade_type', true );
@@ -1147,31 +1159,31 @@ abstract class LP_Abstract_Course {
 				$quiz_passed = ( $results[$quiz->ID]->mark >= intval( $passing_grade ) );
 			} else {
 				$quiz_passed = true;
-			}
-			if ( $quiz_passed ) {
-				$achieved_point += is_object( $results[$quiz->ID] ) ? $results[$quiz->ID]->mark : 0;
+			}*/
+			if ( $grade == 'passed' ) {
+				$quiz_results = $user->get_quiz_results( $quiz->ID, $this->id, true );
+				$achieved_point += is_object( $quiz_results ) ? $quiz_results->mark : 0;
 			}
 		}
-
-		$total_point = $this->_get_total_question( $quizzes_ids );
-		$result      = ( $achieved_point / $total_point ) * 100;
+		$result = ( $achieved_point / $total_point ) * 100;
 		return apply_filters( 'learn_press_evaluate_course_by_passed_quizzes_results', $result, $this->id, $user_id );
 	}
 
 	public function _get_total_question( $quizzes_ids = array() ) {
 		global $wpdb;
 		if ( !empty( $quizzes_ids ) ) {
-			$ids = implode( ',', $quizzes_ids );
-			$sql = 'SELECT 
-						count(*)
-					FROM
-						' . $wpdb->prefix . 'learnpress_quiz_questions lqq
-							INNER JOIN
-						' . $wpdb->prefix . 'posts p ON lqq.question_id = p.ID
-					WHERE
-						quiz_id IN (' . $ids . ')
-							AND p.post_status = "publish"
-							AND p.post_type = "lp_question" ';
+			$format = array_fill( 0, sizeof( $quizzes_ids ), '%d' );
+			$args   = array_merge( $quizzes_ids, array( 'publish', LP_QUESTION_CPT ) );
+			echo $sql = $wpdb->prepare( "
+				SELECT COUNT(*)
+				FROM {$wpdb->prefix}learnpress_quiz_questions lqq
+				INNER JOIN {$wpdb->posts} p ON lqq.question_id = p.ID
+				WHERE
+					quiz_id IN (" . join( ',', $format ) . ")
+					AND p.post_status = %s
+					AND p.post_type = %s",
+				$args
+			);
 			return $wpdb->get_var( $sql );
 		}
 		return 0;
@@ -1243,14 +1255,13 @@ abstract class LP_Abstract_Course {
 	/**
 	 * Get number of lessons user has completed
 	 *
-	 * @param       $user_id
-	 * @param array $items
-	 * @param bool  $force
+	 * @param        $user_id
+	 * @param bool   $force
+	 * @param string $type
 	 *
 	 * @return int|mixed|null|void
 	 */
 	public function get_completed_items( $user_id = 0, $force = false, $type = '' ) {
-//	public function get_completed_items( $user_id = 0, $items = array(), $force = false, $type='' ) {
 		if ( !$user_id ) {
 			$user_id = get_current_user_id();
 		}
@@ -1290,6 +1301,17 @@ abstract class LP_Abstract_Course {
 	}
 
 	/**
+	 * Check a quiz is a final quiz in this course
+	 *
+	 * @param $quiz_id
+	 *
+	 * @return mixed|void
+	 */
+	public function is_final_quiz( $quiz_id ) {
+		return apply_filters( 'learn_press_is_final_quiz', $this->final_quiz == $quiz_id, $quiz_id, $this->id );
+	}
+
+	/**
 	 * Calculate results of course by final quiz
 	 *
 	 * @param int     $user_id
@@ -1305,7 +1327,6 @@ abstract class LP_Abstract_Course {
 
 	public function evaluate_quiz( $quiz_id, $user_id, $force = false ) {
 		$user    = learn_press_get_user( $user_id );
-		$quiz    = LP_Quiz::get_quiz( $quiz_id );
 		$results = $user->get_quiz_results( $quiz_id, $this->id );
 		if ( !$results ) {
 			$result = 0;
@@ -1464,7 +1485,7 @@ abstract class LP_Abstract_Course {
 			'url'          => $this->get_permalink(),
 			'results'      => $this->evaluate_course_results( $user->id ),// $this->get_course_info( $args['user_id'] ),
 			'grade'        => $course_grade,
-			'grade_html'   => learn_press_course_grade_html( $course_grade ),
+			'grade_html'   => learn_press_course_grade_html( $course_grade, false ),
 			'current_item' => $this->is_viewing_item(),
 			'items'        => $this->get_items_params()
 		);

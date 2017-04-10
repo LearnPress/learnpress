@@ -30,6 +30,7 @@ if ( in_array( $item_status, array( 'completed', 'started' ) ) ) {
 	<?php
 	if ( $user->can_view_item( $item->ID, $course->id ) !== false ) {
 		if ( $item->post_type == 'lp_quiz' ) {
+
 			$passing_grade_type = get_post_meta( $item->ID, '_lp_passing_grade_type', true );
 			if ( $result ) {
 				$result_text = $passing_grade_type == 'point' ? sprintf( '%d/%d', $result->mark, $result->quiz_mark ) : $result->mark_percent . '%';
@@ -38,7 +39,11 @@ if ( in_array( $item_status, array( 'completed', 'started' ) ) ) {
 			}
 			?>
 			<span class="item-loop-meta-text item-result"><?php echo $result_text; ?></span>
+
 			<?php
+			if ( $course->is( 'final-quiz', $item->ID ) ) {
+				?><span class="item-loop-meta-text item-final"><?php _e( 'Final Quiz', 'learnpress' ); ?></span><?php
+			}
 			if ( $item_status == 'completed' ) {
 				$grade = $user->get_quiz_graduation( $course_item->id, $course->id );
 				if ( $grade === 'passed' ) {
