@@ -22,7 +22,19 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 			add_action( 'admin_head', array( $this, 'init' ) );
 			add_action( 'init', array( $this, 'init_question' ) );
 			parent::__construct( $post_type, $args );
+			$this->add_map_method( 'before_delete', 'remove_data' );
+		}
 
+		public function remove_data( $post_id ) {
+			global $wpdb;
+
+			// delete question answers
+			$query = $wpdb->prepare( "
+				DELETE FROM {$wpdb->prefix}learnpress_question_answers
+				WHERE question_id = %d
+			", $post_id );
+			$wpdb->query( $query );
+			learn_press_reset_auto_increment( 'learnpress_question_answers' );
 		}
 
 		public function init_question() {
@@ -240,7 +252,7 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 		public function columns_head( $columns ) {
 			$pos         = array_search( 'title', array_keys( $columns ) );
 			$new_columns = array(
-				'author' => __( 'Author', 'learnpress' ),
+				'author'    => __( 'Author', 'learnpress' ),
 				LP_QUIZ_CPT => __( 'Quiz', 'learnpress' ),
 				'type'      => __( 'Type', 'learnpress' )
 			);
@@ -367,7 +379,7 @@ if ( !class_exists( 'LP_Question_Post_Type' ) ) {
 		 * @return mixed
 		 */
 		public function sortable_columns( $columns ) {
-			$columns['author'] = 'author';
+			$columns['author']    = 'author';
 			$columns[LP_QUIZ_CPT] = 'quiz-name';
 			return $columns;
 		}

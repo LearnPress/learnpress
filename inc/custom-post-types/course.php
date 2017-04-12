@@ -32,7 +32,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			$this
 				->add_map_method( 'save', 'update_course', false )
 				->add_map_method( 'save', 'before_save_curriculum', false )
-				->add_map_method( 'before_delete', 'delete_course_sections' );
+				->add_map_method( 'before_delete', 'remove_course_data' );
 
 			add_action( 'edit_form_after_editor', array( $this, 'curriculum_editor' ), 0 );
 			add_action( 'load-post.php', array( $this, 'post_actions' ) );
@@ -223,27 +223,111 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		}
 
 		/**
-		 * Delete all questions assign to quiz being deleted
+		 * Delete course data
 		 *
 		 * @param $post_id
 		 */
-		public function delete_course_sections( $post_id ) {
+		public function remove_course_data( $post_id ) {
 			global $wpdb;
-			// delete all items in section first
+			// remove all items in section first
 			$section_ids = $wpdb->get_col( $wpdb->prepare( "SELECT section_id FROM {$wpdb->prefix}learnpress_sections WHERE section_course_id = %d", $post_id ) );
-			if ( $section_ids ) {
-				$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_section_items WHERE %d AND section_id IN(" . join( ',', $section_ids ) . ")", 1 ) );
-				learn_press_reset_auto_increment( 'learnpress_section_items' );
-
+			if ( !$section_ids ) {
+				return;
 			}
+			// remove section items
+			$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_section_items WHERE %d AND section_id IN(" . join( ',', $section_ids ) . ")", 1 ) );
+			learn_press_reset_auto_increment( 'learnpress_section_items' );
 
-			// delete all sections
+			// remove all sections
 			$query = $wpdb->prepare( "
-					DELETE FROM {$wpdb->prefix}learnpress_sections
-					WHERE section_course_id = %d
-					", $post_id );
+				DELETE FROM {$wpdb->prefix}learnpress_sections
+				WHERE section_course_id = %d
+			", $post_id );
 			$wpdb->query( $query );
 			learn_press_reset_auto_increment( 'learnpress_sections' );
+
+			// remove all courses from user items
+			$query = $wpdb->prepare( "
+				SELECT DISTINCT item_id
+				FROM {$wpdb->prefix}learnpress_user_items
+				WHERE ref_id = %d AND ref_type = %s
+			", $post_id, LP_COURSE_CPT );
+			if ( $item_ids = $wpdb->get_col( $query ) ) {
+				$item_id_format = array_fill( 0, sizeof( $item_ids ), '%d' );
+				$args           = array( $post_id, LP_COURSE_CPT );
+				$args           = array_merge( $args, $item_ids, $args );
+
+				// Get the user_item_id for deleting the meta
+				$query         = $wpdb->prepare( "
+					SELECT DISTINCT user_item_id
+					FROM {$wpdb->prefix}learnpress_user_items
+					WHERE (item_id = %d AND item_type = %s)
+						OR (
+							item_id IN (" . join( ',', $item_id_format ) . ")
+							AND ref_id = %d
+							AND ref_type = %s
+						)
+				", $args );
+				$user_item_ids = $wpdb->get_col( $query );
+
+				// Delete records from user_items
+				$query = $wpdb->prepare( "
+					DELETE
+					FROM {$wpdb->prefix}learnpress_user_items
+					WHERE (item_id = %d AND item_type = %s)
+						OR (
+							item_id IN (" . join( ',', $item_id_format ) . ")
+							AND ref_id = %d
+							AND ref_type = %s
+						)
+				", $args );
+				$wpdb->query( $query );
+
+				// Delete user_items meta
+				$format = array_fill( 0, sizeof( $user_item_ids ), '%d' );
+				$query  = $wpdb->prepare( "
+					DELETE
+					FROM {$wpdb->prefix}learnpress_user_itemmeta
+					WHERE learnpress_user_item_id IN(" . join( ',', $format ) . ")
+				", $user_item_ids );
+				$wpdb->query( $query );
+			}
+			// Should we remove order data?
+			$query = $wpdb->prepare( "
+				SELECT oi.order_item_id
+				FROM {$wpdb->prefix}learnpress_order_items oi
+				INNER JOIN {$wpdb->prefix}learnpress_order_itemmeta oim ON oi.order_item_id = oim.learnpress_order_item_id AND oim.meta_key = %s AND oim.meta_value = %d
+			", '_course_id', $post_id );
+			if ( $order_item_ids = $wpdb->get_col( $query ) ) {
+				$format = array_fill( 0, sizeof( $order_item_ids ), '%d' );
+				$query  = $wpdb->prepare( "
+					DELETE FROM oi, oim
+					USING {$wpdb->prefix}learnpress_order_items AS oi
+					LEFT JOIN {$wpdb->prefix}learnpress_order_itemmeta AS oim ON ui.order_item_id = uim.learnpress_order_item_id
+					WHERE order_item_id IN(" . join( ',', $format ) . ")
+				", $order_item_ids );
+				$wpdb->query( $query );
+				// Get orders which has no items
+				$query = $wpdb->prepare( "
+					SELECT ID
+					FROM(
+						SELECT o.ID, oi.order_item_id
+						FROM wp_posts o
+						LEFT JOIN wp_learnpress_order_items oi ON o.ID = oi.order_id
+						WHERE o.post_type = %s
+						HAVING order_item_id IS NULL
+					) AS X
+				", 'lp_order' );
+				if ( $order_ids = $wpdb->get_col( $query ) ) {
+					$format = array_fill( 0, sizeof( $order_ids ), '%d' );
+					$query  = $wpdb->prepare( "
+						DELETE
+						FROM {$wpdb->posts}
+						WHERE ID IN(" . join( ',', $format ) . ")
+					", $order_ids );
+					$wpdb->query( $query );
+				}
+			}
 		}
 
 
@@ -577,7 +661,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			$course_results     = get_post_meta( $post_id, '_lp_course_result', true );
 			$course_result_desc = '';
 			if ( in_array( $course_results, array( '', 'evaluate_lesson', 'evaluate_final_quiz' ) ) ) {
-				$course_result_desc .= sprintf( '<a href="" data-advanced="%2$s" data-basic="%1$s" data-click="basic">%2$s</a>',__( 'Basic Options', 'learnpress' ), __( 'Advanced Options', 'learnpress' ) );
+				$course_result_desc .= sprintf( '<a href="" data-advanced="%2$s" data-basic="%1$s" data-click="basic">%2$s</a>', __( 'Basic Options', 'learnpress' ), __( 'Advanced Options', 'learnpress' ) );
 			}
 			$course_result_desc = "<span id=\"learn-press-toggle-course-results\">{$course_result_desc}</span>";
 			$course_result_desc .= __( 'The method to assess the result of a student for a course.', 'learnpress' );
@@ -1113,8 +1197,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 					$submit_for_review = false;
 				}
 				if ( ( $submit_for_review || ( $old_status != $new_status ) ) && $post->post_status != 'auto-draft' ) {
-					if( isset( $_POST['learn-press-submit-for-review'] ) && $_POST['learn-press-submit-for-review'] === 'yes' ) 
-					{
+					if ( isset( $_POST['learn-press-submit-for-review'] ) && $_POST['learn-press-submit-for-review'] === 'yes' ) {
 						$action = 'for_reviewer';
 						update_post_meta( $post->ID, '_lp_submit_for_reviewer', 'yes' );
 					}
@@ -1180,9 +1263,9 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			remove_action( 'save_post', array( $this, 'before_save_curriculum' ), 1 );
 			//remove_action( 'rwmb_course_curriculum_before_save_post', array( $this, 'before_save_curriculum' ) );
 
-			$user					= LP()->user;
-			$required_review		= LP()->settings->get( 'required_review' ) == 'yes';
-			$enable_edit_published 	= LP()->settings->get( 'enable_edit_published' ) == 'yes';
+			$user                  = LP()->user;
+			$required_review       = LP()->settings->get( 'required_review' ) == 'yes';
+			$enable_edit_published = LP()->settings->get( 'enable_edit_published' ) == 'yes';
 
 			if ( $user->is_instructor() && $required_review && !$enable_edit_published ) {
 				wp_update_post(
@@ -1228,7 +1311,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		private function _update_price() {
 			global $wpdb, $post;
 			$request          = $_POST;
-			$payment          = learn_press_get_request('_lp_payment') == 1;
+			$payment          = learn_press_get_request( '_lp_payment' ) == 1;
 			$price            = floatval( $request['_lp_price'] );
 			$sale_price       = $request['_lp_sale_price'];
 			$sale_price_start = $request['_lp_sale_start'];

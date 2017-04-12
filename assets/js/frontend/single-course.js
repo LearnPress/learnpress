@@ -301,6 +301,10 @@ if (typeof LearnPress === 'undefined') {
 				sections = {},
 				$progress = this.$('.course-progress').find('.number, .percentage-sign'),
 				$itemProgress = this.$('.items-progress').find('.number, .percentage-sign');
+
+			if ($progress.length == 0 || $itemProgress.length == 0) {
+				return;
+			}
 			$progress[0].childNodes[0].nodeValue = parseInt(data.results);
 
 			this.$('.course-progress .lp-progress-value').width(parseInt(data.results) + '%');

@@ -1019,6 +1019,11 @@ body.block-content #learn-press-block-content {
   margin-bottom: 20px;
   clear: both;
 }
+.quiz-buttons:after {
+  clear: both;
+  display: block;
+  content: '';
+}
 .quiz-intro {
   list-style: none;
   padding: 0;

@@ -63,6 +63,13 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 			", $post_id );
 			$wpdb->query( $query );
 			learn_press_reset_auto_increment( 'learnpress_section_items' );
+
+			// delete lesson from user items
+			$query = $wpdb->prepare( "
+				DELETE FROM {$wpdb->prefix}learnpress_user_items
+				WHERE item_id = %d
+			", $post_id );
+			$wpdb->query( $query );
 		}
 
 		public function admin_scripts() {
