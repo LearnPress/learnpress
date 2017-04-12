@@ -2734,7 +2734,7 @@ class LP_Abstract_User {
 			$result    = $this->get_quiz_results( $quiz_id, $course_id );
 			$grade     = '';
 			if ( $result && ( ( $check_completed == false ) || $check_completed && $result->status == 'completed' ) ) {
-				$quiz          = LP_Quiz::get_quiz( $quiz_id );
+				$quiz = LP_Quiz::get_quiz( $quiz_id );
 
 				$grade_type    = $quiz->passing_grade_type;
 				$passing_grade = $quiz->passing_grade;
@@ -2762,7 +2762,7 @@ class LP_Abstract_User {
 	 * @return bool
 	 */
 	public function is_exists() {
-		return $this->user->ID > 0;
+		return ( $this->user->ID > 0 ) && ( false !== get_userdata( $this->user->ID ) );
 	}
 
 	/**
@@ -2880,10 +2880,10 @@ class LP_Abstract_User {
 	/**
 	 * Get user course's grade.
 	 * Possible values:
-	 * 		+ passed 		User has finished and passed course
-	 * 		+ failed 		User has finished but failed
-	 * 		+ in-progress 	User still is learning course
-	 * 		+ false			All other cases, e.g: not enrolled
+	 *        + passed        User has finished and passed course
+	 *        + failed        User has finished but failed
+	 *        + in-progress    User still is learning course
+	 *        + false            All other cases, e.g: not enrolled
 	 *
 	 * @param $course_id
 	 *

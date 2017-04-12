@@ -322,8 +322,6 @@ function _learn_press_get_course_curriculum( $course_id, $force = false ) {
 	return $curriculum;
 }
 
-include_once "new-functions.php";
-
 /**
  * @param $quiz_ids
  *

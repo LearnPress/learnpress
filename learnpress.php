@@ -675,3 +675,19 @@ function load_learn_press() {
  * Create new instance of LearnPress and put it to global
  */
 $GLOBALS['LearnPress'] = LP();
+add_action('admin_head', function(){
+	// Get wc order
+	$wc_order = wc_get_order( 73 );
+	if ( !$wc_order ) {
+		return;
+	}
+
+	// Get wc order items
+	$wc_items = $wc_order->get_items();
+	echo '<div style="display:none;">';
+	learn_press_debug($wc_items);
+	echo '</div>';
+	if ( !$wc_items ) {
+		return;
+	}
+});
