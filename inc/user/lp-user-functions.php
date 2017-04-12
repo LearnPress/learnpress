@@ -45,8 +45,9 @@ function learn_press_get_user_item_id( $user_id, $item_id ) {
  * @return int
  */
 function learn_press_get_current_user_id() {
-	$user = learn_press_get_current_user();
-	return $user->id;
+	return get_current_user_id();
+	/*$user = learn_press_get_current_user();
+	return $user->id;*/
 }
 
 /**
@@ -59,7 +60,7 @@ function learn_press_get_current_user_id() {
  * @return LP_User
  */
 function learn_press_get_current_user( $user_id = 0 ) {
-	return LP_User_Factory::get_user( $user_id );
+	return LP_User_Factory::get_user( $user_id ? $user_id : get_current_user_id() );
 }
 
 /**
