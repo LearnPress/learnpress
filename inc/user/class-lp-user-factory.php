@@ -224,8 +224,12 @@ class LP_User_Factory {
 		if ( get_user_by( 'id', $user_id ) ) {
 			return;
 		}
-		learn_press_add_user_item_meta( $item->user_item_id, 'temp_user_id', 'yes' );
-		learn_press_add_user_item_meta( $item->user_item_id, 'temp_user_time', date( 'Y-m-d H:i:s', time() ) );
+		if ( !$item ) {
+			return;
+		}
+		$item_id = !empty( $item->user_item_id ) ? $item->user_item_id : $item->history_id;
+		learn_press_add_user_item_meta( $item_id, 'temp_user_id', 'yes' );
+		learn_press_add_user_item_meta( $item_id, 'temp_user_time', date( 'Y-m-d H:i:s', time() ) );
 	}
 }
 

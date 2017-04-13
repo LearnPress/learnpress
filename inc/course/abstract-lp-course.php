@@ -1125,6 +1125,9 @@ abstract class LP_Abstract_Course {
 		$total_point    = 0;
 		$quizzes_ids    = array();
 		foreach ( $quizzes as $quiz ) {
+			if ( !apply_filters( 'learn_press_enable_evaluate_quiz_results', true, $quiz->ID, $user_id, $this->id ) ) {
+				continue;
+			}
 			$quizzes_ids[]      = $quiz->ID;
 			$results[$quiz->ID] = $user->get_quiz_results( $quiz->ID, $this->id, true );
 			if ( $quiz = wp_cache_get( $quiz->ID, 'posts' ) ) {
@@ -1143,6 +1146,9 @@ abstract class LP_Abstract_Course {
 		$achieved_point = 0;
 		$total_point    = 0;
 		foreach ( $quizzes as $_quiz ) {
+			if ( !apply_filters( 'learn_press_enable_evaluate_quiz_results', true, $_quiz->ID, $user_id, $this->id ) ) {
+				continue;
+			}
 			$quiz = LP_Quiz::get_quiz( $_quiz->ID );
 			if ( $_quiz = wp_cache_get( $quiz->id, 'posts' ) ) {
 				$total_point += isset( $_quiz->mark ) ? absint( $_quiz->mark ) : 0;
@@ -1353,10 +1359,17 @@ abstract class LP_Abstract_Course {
 		$quizzes = $this->get_quizzes();
 		$result  = 0;
 		if ( $quizzes ) {
+			$count = 0;
 			foreach ( $quizzes as $quiz ) {
+				if ( !apply_filters( 'learn_press_enable_evaluate_quiz_results', true, $quiz->ID, $user_id, $this->id ) ) {
+					continue;
+				}
 				$result += $this->evaluate_quiz( $quiz->ID, $user_id, $force );
+				$count ++;
 			}
-			$result = round( $result / sizeof( $quizzes ) );
+			if ( $count ) {
+				$result = round( $result / $count );
+			}
 		}
 		return apply_filters( 'learn_press_evaluation_course_quizzes', $result, $this->id, $user_id );
 	}

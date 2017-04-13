@@ -45,9 +45,8 @@ function learn_press_get_user_item_id( $user_id, $item_id ) {
  * @return int
  */
 function learn_press_get_current_user_id() {
-	return get_current_user_id();
-	/*$user = learn_press_get_current_user();
-	return $user->id;*/
+	$user = learn_press_get_current_user();
+	return $user->id;
 }
 
 /**
