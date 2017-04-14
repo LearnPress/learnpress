@@ -45,6 +45,13 @@ if (typeof LearnPress === 'undefined') {
 			_changeCurrent : function (m) {
 
 			},
+			get            : function () {
+				var val = Course_Item.__super__.get.apply(this, arguments);
+				if (arguments[0] == 'url') {
+					val = LP_Course_Params.root_url + val;
+				}
+				return val;
+			},
 			request        : function (args) {
 				var that = this;
 				if (!this.get('url')) {
@@ -294,24 +301,38 @@ if (typeof LearnPress === 'undefined') {
 				sections = {},
 				$progress = this.$('.course-progress').find('.number, .percentage-sign'),
 				$itemProgress = this.$('.items-progress').find('.number, .percentage-sign');
-			$progress.eq(0).html(parseInt(data.results));
+			$progress[0].childNodes[0].nodeValue = parseInt(data.results);
+
 			this.$('.course-progress .lp-progress-value').width(parseInt(data.results) + '%');
 			data.items && data.items.forEach(function (item) {
-				var $item = this.$('.course-item.course-item-' + item.id);
+				var $item = this.$('.course-item.course-item-' + item.id),
+					$status = $item.find('.item-status'),
+					statusClass = ($status[0].className + '').replace(/(item-status-[^\s]*)/g, '').trim();
 				if (!sections[item.section_id]) {
 					sections[item.section_id] = [0, 0];
 				}
+				if (item.status) {
+					statusClass += ' item-status-' + item.status;
+				}
 				if (item.status === 'completed') {
-					itemsCompleted++;
 					$item.addClass('item-has-status item-completed');
-					sections[item.section_id][1]++;
 				} else if (item.status) {
 					$item.addClass('item-has-status').removeClass('item-completed');
 				} else {
 					$item.removeClass('item-has-status').removeClass('item-completed');
 				}
+
 				if (item.type === 'lp_quiz') {
-					$item.find('.item-result').html(LP.Hook.applyFilters('item_result_text', item.results + '%'));
+					$item.find('.item-result').html(LP.Hook.applyFilters('item_result_text', item.results));
+				}
+				$status[0].className = statusClass;
+				if ($.inArray(item.status, ['completed', 'failed', 'passed']) != -1) {
+					sections[item.section_id][1]++;
+				}
+				if (item.status && item.status != 'viewed') {
+					$item.addClass('item-has-result');
+				} else {
+					$item.removeClass('item-has-result');
 				}
 				sections[item.section_id][0]++;
 			}, this);
@@ -322,10 +343,16 @@ if (typeof LearnPress === 'undefined') {
 				if (!data) {
 					return;
 				}
+				itemsCompleted += data[1];
 				$section.find('.section-header span.step').html(LP.Hook.applyFilters('section_header_span_text', data[1] + '/' + data[0]));
 			});
 			$itemProgress.eq(0).html(data.completed_items_text.replace('%d', itemsCompleted).replace('%d', itemsCount));
 			var passingCondition = parseInt(this.$('.course-progress .lp-course-progress').data('passing-condition'));
+			if (data.grade) {
+				var $grade = this.$('.grade').html(data.grade_html),
+					gradeClass = $grade[0].className.replace(/passed|failed|in-progress/, '') + ' ' + data.grade;
+				$grade[0].className = gradeClass;
+			}
 			this.$('.button-finish-course').toggleClass('hide-if-js', !(data.results >= passingCondition));
 
 			if (data.setUrl) {
@@ -389,7 +416,6 @@ if (typeof LearnPress === 'undefined') {
 			var that = this,
 				$target = $(e.target),
 				id = this._getItemId($target);
-			console.log(id)
 			f = f || {force: false};
 			if (!id || this.itemLoading) {
 				return;
@@ -721,12 +747,12 @@ if (typeof LearnPress === 'undefined') {
 		_loadItem           : function (e) {
 			var $iframe = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen />').src($(e.target).attr('href') + '?content-item-only=yes');
 			this.$('#popup-content-inner').html($iframe);
-			return '';
+			/*return '';
 			e.preventDefault();
 			$.ajax({
 				url    : $(e.target).attr('href'),
 				success: this._ajaxLoadItemSuccess
-			});
+			});*/
 		},
 		_ajaxLoadItemSuccess: function (response) {
 			this.$('#popup-content-inner').html($(response).contents().find('.lp_course'));

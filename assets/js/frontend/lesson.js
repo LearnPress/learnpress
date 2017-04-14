@@ -42,7 +42,7 @@
 				security = $button.data('security'),
 				$item = $button.closest('.course-item');
 			windowTarget.LP.blockContent();
-			return;
+			/*return;
 			this.complete({
 				security  : security,
 				course_id : this.model.get('courseId'),
@@ -55,10 +55,7 @@
 							item.$el.removeClass('focus off');
 						}, 3000, item);
 
-						/*that.$('.learn-press-course-results-progress').replaceWith($(response.html.progress));
-						$section.find('.section-header').replaceWith($(response.html.section_header));
-						that.$('.learn-press-course-buttons').replaceWith($(response.html.buttons));
-						that.currentItem.set('content', $(response.html.content))*/
+
 						windowTarget.LP.setUrl(that.model.get('permalink'));
 						var data = response.course_result;
 						data.messageType = 'update-course';
@@ -66,7 +63,7 @@
 					}
 					windowTarget.LP.unblockContent();
 				}
-			});
+			});*/
 		},
 		complete       : function (args) {
 			var that = this;

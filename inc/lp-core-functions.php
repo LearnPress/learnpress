@@ -1361,6 +1361,31 @@ function learn_press_user_maybe_is_a_teacher( $user = null ) {
 	return apply_filters( 'learn_press_user_maybe_is_a_teacher', $role, $user->id );
 }
 
+function learn_press_get_become_a_teacher_form_fields(){
+	$user   = learn_press_get_current_user();
+	$fields = array(
+		'bat_name'  => array(
+			'title'       => __( 'Name', 'learnpress' ),
+			'type'        => 'text',
+			'placeholder' => __( 'Your name', 'learnpress' ),
+			'def'         => $user->display_name
+		),
+		'bat_email' => array(
+			'title'       => __( 'Email', 'learnpress' ),
+			'type'        => 'email',
+			'placeholder' => __( 'Your email address', 'learnpress' ),
+			'def'         => $user->user_email
+		),
+		'bat_phone' => array(
+			'title'       => __( 'Phone', 'learnpress' ),
+			'type'        => 'text',
+			'placeholder' => __( 'Your phone number', 'learnpress' )
+		)
+	);
+	$fields = apply_filters( 'learn_press_become_teacher_form_fields', $fields );
+	return $fields;
+}
+
 function learn_press_process_become_a_teacher_form( $args = null ) {
 	$user   = learn_press_get_current_user();
 	$error  = false;
@@ -1391,16 +1416,33 @@ function learn_press_process_become_a_teacher_form( $args = null ) {
 			$error               = true;
 		}
 	}
+
 	if ( !$error ) {
 		$to_email        = array( get_option( 'admin_email' ) );
 		$message_headers = '';
 		$subject         = __( 'Please moderate', 'learnpress' );
-		$notify_message  = sprintf( __( 'The user <a href="%s">%s</a> wants to be a teacher.', 'learnpress' ) . "\r\n", admin_url( 'user-edit.php?user_id=' . $user->id ), $user->user_login ) . "\r\n";
+		
+		$fields = learn_press_get_become_a_teacher_form_fields();
+		$default_fields = array('bat_name' , 'bat_email', 'bat_phone' );
+		foreach( $fields as $key => $field ){
+			if( isset($_POST[$key]) ) {
+				$fields[$key]['value'] = $_POST[$key];
+			}
+		}
+		$notify_message = apply_filters('learn_press_filter_become_a_teacher_notify_message','', $args, $fields, $user);
+		if( !$notify_message ) {
+			$notify_message  = sprintf( __( 'The user <a href="%s">%s</a> wants to be a teacher.', 'learnpress' ) . "\r\n", admin_url( 'user-edit.php?user_id=' . $user->id ), $user->user_login ) . "\r\n";
+			$notify_message .= sprintf( __( 'Name: %s', 'learnpress' ), $args['name'] ) . "\r\n";
+			$notify_message .= sprintf( __( 'Email: %s', 'learnpress' ), $args['email'] ) . "\r\n";
+			$notify_message .= sprintf( __( 'Phone: %s', 'learnpress' ), $args['phone'] ) . "\r\n";
+			foreach( $fields as $key => $field ) {
+				if( !in_array( $key, $default_fields ) ) {
+					$notify_message .= $field['title'].': ' . ( isset($field['value']) ? $field['value'] : '' ) . "\r\n";
+				}
+			}
+			$notify_message .= wp_specialchars_decode( sprintf( __( 'Accept: %s', 'learnpress' ), wp_nonce_url( admin_url( 'user-edit.php?user_id=' . $user->id ) . '&action=accept-to-be-teacher', 'accept-to-be-teacher' ) ) ) . "\r\n";
+		}
 
-		$notify_message .= sprintf( __( 'Name: %s', 'learnpress' ), $args['name'] ) . "\r\n";
-		$notify_message .= sprintf( __( 'Email: %s', 'learnpress' ), $args['email'] ) . "\r\n";
-		$notify_message .= sprintf( __( 'Phone: %s', 'learnpress' ), $args['phone'] ) . "\r\n";
-		$notify_message .= wp_specialchars_decode( sprintf( __( 'Accept: %s', 'learnpress' ), wp_nonce_url( admin_url( 'user-edit.php?user_id=' . $user->id ) . '&action=accept-to-be-teacher', 'accept-to-be-teacher' ) ) ) . "\r\n";
 		$args = array(
 			$to_email,
 			( $subject ),
@@ -1413,6 +1455,7 @@ function learn_press_process_become_a_teacher_form( $args = null ) {
 
 		set_transient( 'learn_press_become_teacher_sent_' . $user->id, 'yes', HOUR_IN_SECONDS * 2 );
 	}
+
 	$return['result'] = $error ? 'error' : 'success';
 	return $return;
 }
@@ -2203,7 +2246,7 @@ function learn_press_user_profile_link( $user_id = 0, $tab = null ) {
 		if ( is_numeric( $user_id ) ) {
 			$user = get_user_by( 'id', $user_id );
 		} else {
-			$user = get_user_by( 'login', $user_id );
+			$user = get_user_by( 'login', urldecode($user_id) );
 		}
 	} else {
 		return '';

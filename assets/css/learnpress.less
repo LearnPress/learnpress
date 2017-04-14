@@ -430,6 +430,59 @@
         .lp-icon {
             display: none;
         }
+        .item-status {
+            display: none;
+            font-family: dashicons;
+            .border-radius(4px);
+            background: #DDD;
+            color: #22b4ff;
+            font-size: 18px;
+            &:before {
+                content: "\f177";
+            }
+            &.item-status-viewed {
+
+            }
+            &.item-status-started {
+                &:before {
+                    content: "\f469";
+                }
+            }
+            &.item-status-completed {
+                background: #22b4ff;
+                color: #FFF;
+                &:before {
+                    content: "\f147";
+                }
+            }
+            &.item-status-passed {
+                background: #22b4ff;
+                color: #FFF;
+                &:before {
+                    content: "\f147";
+                }
+            }
+            &.item-status-failed {
+                background: #cc540d;
+                color: #FFF;
+                &:before {
+                    content: "\f335";
+                }
+            }
+        }
+        .item-result {
+            display: none;
+        }
+        &.item-has-status {
+            .item-status {
+                display: inline-block;
+            }
+        }
+        &.item-has-result {
+            .item-result {
+                display: inline-block;
+            }
+        }
         &.viewable {
             cursor: pointer;
             &:hover {
@@ -464,29 +517,7 @@
                 content: '';
             }
         }
-        &.item-has-status .item-status {
-            display: inline-block;
-            background: #d6d6d6;
-            margin-left: 5px;
-            &:before {
-                content: '\ea10';
-                color: #FFF;
-            }
-        }
-        &.item-has-status.item-completed {
-            .item-status-completed,
-            .item-status-passed {
-                background: #95e6f9;
-            }
-            .item-status-failed {
-                background: #ff5425;
-                &:before {
-                    content: '\f335';
-                    font-family: Dashicons;
-                    font-size: 24px;
-                }
-            }
-        }
+
         &.focus {
             background: #ffb710;
             &.off {
@@ -507,6 +538,15 @@
         right: 15px;
         float: right;
         margin-top: 5px;
+        .item-loop-meta-text {
+            font-size: small;
+            &.item-final {
+                color: #ffffff;
+                background: #cc540d;
+                padding: 3px 8px;
+                .border-radius(3px);
+            }
+        }
     }
 }
 
@@ -603,6 +643,24 @@
         }
         .percentage-sign {
             margin-left: 5px;
+        }
+        .grade {
+            font-size: 12px;
+            font-weight: bold;
+            background: #F5F5F5;
+            padding: 2px 7px;
+            .border-radius(3px);
+            &.in-progress {
+
+            }
+            &.passed {
+                color: #ffffff;
+                background: #95e6f9;
+            }
+            &.failed {
+                color: #ffffff;
+                background: #ff5425;
+            }
         }
         &:after {
             display: block;
@@ -1001,7 +1059,7 @@ body.course-has-popup {
         height: 43px;
         line-height: 43px;
         background: #F5F5F5;
-        margin: 0 10px;
+        margin-left: 10px;
         border: 1px solid #DDD;
         outline: none;
     }
@@ -1096,6 +1154,9 @@ body.block-content {
     list-style: none;
     padding: 0;
     margin-left: 0;
+    li label {
+        display: inline-block;
+    }
 }
 
 .quiz-questions-list {
@@ -2151,12 +2212,12 @@ body.content-item-only {
     }
 }
 
-.edit-course-item-link{
-    a{
+.edit-course-item-link {
+    a {
         font-size: 14px;
         position: relative;
         padding-left: 25px;
-        &:after{
+        &:after {
             content: "\f464";
             font-family: Dashicons;
             font-size: 26px;
@@ -2168,34 +2229,34 @@ body.content-item-only {
     }
 }
 
-.course-item-navigation{
+.course-item-navigation {
     border-top: 4px solid #333;
     padding-top: 10px;
     margin-bottom: 20px;
-    .nav-links{
-        .nav-link{
+    .nav-links {
+        .nav-link {
             opacity: 1;
-            a{
+            a {
                 opacity: 1;
-                .meta-nav{
+                .meta-nav {
                     display: block;
                     text-transform: uppercase;
                     font-size: small;
                     color: #b9b9b9;
                 }
-                .post-title{
+                .post-title {
                     opacity: 1;
                 }
             }
-            &.nav-previous{
+            &.nav-previous {
                 float: left;
             }
-            &.nav-next{
+            &.nav-next {
                 float: right;
                 text-align: right;
             }
         }
-        &:after{
+        &:after {
             clear: both;
             display: block;
             content: '';

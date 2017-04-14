@@ -70,7 +70,6 @@ class LP_Shortcodes {
 					parse_str( $wp->matched_query, $query );
 					if ( empty( $query['view'] ) ) {
 						$redirect = learn_press_user_profile_link( $wp->query_vars['user'] );
-
 						if ( ! empty( $redirect ) ) {
 							wp_redirect( $redirect );
 							die();
@@ -440,26 +439,7 @@ class LP_Shortcodes {
 			),
 			$atts
 		);
-		$fields = array(
-			'bat_name'  => array(
-				'title'       => __( 'Name', 'learnpress' ),
-				'type'        => 'text',
-				'placeholder' => __( 'Your name', 'learnpress' ),
-				'def'         => $user->display_name
-			),
-			'bat_email' => array(
-				'title'       => __( 'Email', 'learnpress' ),
-				'type'        => 'email',
-				'placeholder' => __( 'Your email address', 'learnpress' ),
-				'def'         => $user->user_email
-			),
-			'bat_phone' => array(
-				'title'       => __( 'Phone', 'learnpress' ),
-				'type'        => 'text',
-				'placeholder' => __( 'Your phone number', 'learnpress' )
-			)
-		);
-		$fields = apply_filters( 'learn_press_become_teacher_form_fields', $fields );
+		$fields = learn_press_get_become_a_teacher_form_fields();
 		ob_start();
 		$args = array_merge(
 			array(
@@ -469,6 +449,7 @@ class LP_Shortcodes {
 			),
 			$atts
 		);
+		
 		learn_press_get_template( 'global/become-teacher-form.php', $args );
 
 		$html = ob_get_clean();

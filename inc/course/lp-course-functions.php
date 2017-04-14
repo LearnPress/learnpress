@@ -773,3 +773,34 @@ function learn_press_prepare_archive_courses( $template ) {
 	}
 	return $template;
 }
+
+function learn_press_course_grade_html( $grade, $echo = true ) {
+	$html = '';
+	switch ( $grade ) {
+		case 'passed':
+			$html = __( 'Passed', 'learnpress' );
+			break;
+		case 'failed':
+			$html = __( 'Failed', 'learnpress' );
+			break;
+		case 'in-progress':
+			$html = __( 'In Progress', 'learnpress' );
+			break;
+	}
+	$html = apply_filters( 'learn_press_course_grade_html', $html, $grade );
+	if ( $echo ) echo $html;
+	return $html;
+}
+
+function learn_press_get_course_results_tooltip( $course_id ) {
+	$metabox = LP_Course_Post_Type::assessment_meta_box();
+	$options = $metabox['fields'][0]['options'];
+	$cr      = get_post_meta( $course_id, '_lp_course_result', true );
+	$tooltip = !empty( $options[$cr] ) ? $options[$cr] : false;
+	if ( $tooltip ) {
+		if ( preg_match_all( '~<p.*>(.*)<\/p>~im', $tooltip, $matches ) ) {
+			$tooltip = $matches[1][0];
+		}
+	}
+	return $tooltip;
+}

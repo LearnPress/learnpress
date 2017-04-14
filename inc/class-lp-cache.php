@@ -119,6 +119,11 @@ class LP_Cache {
 	protected static $_quiz_history = 'user-quiz-history';
 
 	/**
+	 * @var string
+	 */
+	protected static $_quiz_grade = 'quiz-grade';
+
+	/**
 	 * Set data to cache
 	 *
 	 * @param int|string $key
@@ -620,6 +625,30 @@ class LP_Cache {
 	}
 
 	/**
+	 * @param bool $key
+	 * @param bool $def
+	 *
+	 * @return array|bool|mixed
+	 */
+	public static function get_quiz_grade( $key = false, $def = false ) {
+		return self::_get_cache( self::$_quiz_grade, $key, $def );
+	}
+
+	/**
+	 * @param      $key_or_value
+	 * @param bool $value
+	 *
+	 * @return array|bool|mixed
+	 */
+	public static function set_quiz_grade( $key_or_value, $value = false ) {
+		if ( func_num_args() == 1 ) {
+			wp_cache_set( self::$_quiz_grade, $key_or_value, self::$_group );
+			return $key_or_value;
+		}
+		return self::_set_cache( self::$_quiz_grade, $key_or_value, $value );
+	}
+
+	/**
 	 * Flush cache by sections or LP group
 	 *
 	 * @param string|array $section
@@ -695,8 +724,12 @@ class LP_Cache {
 	}
 
 	public static function init() {
-		add_action( 'init', array( __CLASS__, 'redirect' ) );
+		try {
+			self::flush();
+		} catch ( Exception $ex ) {
 
+		}
+		add_action( 'init', array( __CLASS__, 'redirect' ) );
 	}
 
 	public static function redirect() {

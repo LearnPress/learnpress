@@ -4,7 +4,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 2.1.1
+ * @version 2.1.6
  */
 if ( !defined( 'ABSPATH' ) ) {
 	exit;
@@ -49,8 +49,16 @@ $first_tab = 'basic-information';
 				<?php endforeach; ?>
 			</ul>
 			<div class="learn-press-subtab-content user-profile-section-content">
-				<?php include learn_press_locate_template( 'profile/tabs/edit/' . $section . '.php' ); ?>
-				<input type="hidden" name="lp-profile-section" value="<?php echo $section; ?>" />
+				<?php
+				$section_template = learn_press_locate_template( 'profile/tabs/edit/' . $section . '.php' );
+				if ( $section && file_exists( $section_template ) ) {
+					?>
+					<?php include $section_template; ?>
+					<input type="hidden" name="lp-profile-section" value="<?php echo $section; ?>" />
+				<?php } else {
+					?>
+					<?php learn_press_display_message( __( 'The section you are trying to access does not exists.', 'learnpress' ) ); ?>
+				<?php } ?>
 			</div>
 
 			<input type="hidden" name="user_id" id="user_id" value="<?php echo esc_attr( $user->id ); ?>" />

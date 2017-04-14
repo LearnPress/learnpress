@@ -277,6 +277,55 @@
 #learn-press-course-curriculum .course-item .lp-icon {
   display: none;
 }
+#learn-press-course-curriculum .course-item .item-status {
+  display: none;
+  font-family: dashicons;
+  -webkit-border-radius: 4px;
+  -khtml-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
+  border-radius: 4px;
+  background: #DDD;
+  color: #22b4ff;
+  font-size: 18px;
+}
+#learn-press-course-curriculum .course-item .item-status:before {
+  content: "\f177";
+}
+#learn-press-course-curriculum .course-item .item-status.item-status-started:before {
+  content: "\f469";
+}
+#learn-press-course-curriculum .course-item .item-status.item-status-completed {
+  background: #22b4ff;
+  color: #FFF;
+}
+#learn-press-course-curriculum .course-item .item-status.item-status-completed:before {
+  content: "\f147";
+}
+#learn-press-course-curriculum .course-item .item-status.item-status-passed {
+  background: #22b4ff;
+  color: #FFF;
+}
+#learn-press-course-curriculum .course-item .item-status.item-status-passed:before {
+  content: "\f147";
+}
+#learn-press-course-curriculum .course-item .item-status.item-status-failed {
+  background: #cc540d;
+  color: #FFF;
+}
+#learn-press-course-curriculum .course-item .item-status.item-status-failed:before {
+  content: "\f335";
+}
+#learn-press-course-curriculum .course-item .item-result {
+  display: none;
+}
+#learn-press-course-curriculum .course-item.item-has-status .item-status {
+  display: inline-block;
+}
+#learn-press-course-curriculum .course-item.item-has-result .item-result {
+  display: inline-block;
+}
 #learn-press-course-curriculum .course-item.viewable {
   cursor: pointer;
 }
@@ -308,27 +357,6 @@
   height: 100%;
   content: '';
 }
-#learn-press-course-curriculum .course-item.item-has-status .item-status {
-  display: inline-block;
-  background: #d6d6d6;
-  margin-left: 5px;
-}
-#learn-press-course-curriculum .course-item.item-has-status .item-status:before {
-  content: '\ea10';
-  color: #FFF;
-}
-#learn-press-course-curriculum .course-item.item-has-status.item-completed .item-status-completed,
-#learn-press-course-curriculum .course-item.item-has-status.item-completed .item-status-passed {
-  background: #95e6f9;
-}
-#learn-press-course-curriculum .course-item.item-has-status.item-completed .item-status-failed {
-  background: #ff5425;
-}
-#learn-press-course-curriculum .course-item.item-has-status.item-completed .item-status-failed:before {
-  content: '\f335';
-  font-family: Dashicons;
-  font-size: 24px;
-}
 #learn-press-course-curriculum .course-item.focus {
   background: #ffb710;
 }
@@ -352,6 +380,20 @@
   right: 15px;
   float: right;
   margin-top: 5px;
+}
+#learn-press-course-curriculum .course-item-meta .item-loop-meta-text {
+  font-size: small;
+}
+#learn-press-course-curriculum .course-item-meta .item-loop-meta-text.item-final {
+  color: #ffffff;
+  background: #cc540d;
+  padding: 3px 8px;
+  -webkit-border-radius: 3px;
+  -khtml-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -o-border-radius: 3px;
+  border-radius: 3px;
 }
 .lp-icon {
   display: inline-block;
@@ -473,6 +515,26 @@
 }
 .single-lp_course .learn-press-course-results-progress .percentage-sign {
   margin-left: 5px;
+}
+.single-lp_course .learn-press-course-results-progress .grade {
+  font-size: 12px;
+  font-weight: bold;
+  background: #F5F5F5;
+  padding: 2px 7px;
+  -webkit-border-radius: 3px;
+  -khtml-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -o-border-radius: 3px;
+  border-radius: 3px;
+}
+.single-lp_course .learn-press-course-results-progress .grade.passed {
+  color: #ffffff;
+  background: #95e6f9;
+}
+.single-lp_course .learn-press-course-results-progress .grade.failed {
+  color: #ffffff;
+  background: #ff5425;
 }
 .single-lp_course .learn-press-course-results-progress:after {
   display: block;
@@ -839,7 +901,7 @@ body.course-has-popup {
   height: 43px;
   line-height: 43px;
   background: #F5F5F5;
-  margin: 0 10px;
+  margin-left: 10px;
   border: 1px solid #DDD;
   outline: none;
 }
@@ -961,6 +1023,9 @@ body.block-content #learn-press-block-content {
   list-style: none;
   padding: 0;
   margin-left: 0;
+}
+.quiz-intro li label {
+  display: inline-block;
 }
 .quiz-questions-list {
   margin: 0 0 20px 0;

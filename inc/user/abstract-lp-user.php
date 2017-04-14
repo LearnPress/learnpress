@@ -2486,10 +2486,12 @@ class LP_Abstract_User {
 			foreach ( $course_info['items'] as $k => $item ) {
 				if ( $item['type'] == 'lp_quiz' ) {
 					$result                   = $this->get_quiz_results( $item['id'], $course_id );
+					$passing_grade_type       = get_post_meta( $item['id'], '_lp_passing_grade_type', true );
 					$course_info['items'][$k] = array_merge(
 						$course_info['items'][$k],
 						array(
-							'results' => $result ? $result->mark_percent : 0
+							'results'            => $result ? ( $passing_grade_type == 'point' ? sprintf( '%d/%d', $result->mark, $result->quiz_mark ) : $result->mark_percent . '%' ) : '',
+							'passing_grade_type' => $passing_grade_type
 						)
 					);
 				}
@@ -2726,23 +2728,27 @@ class LP_Abstract_User {
 	 * @return mixed|void
 	 */
 	public function get_quiz_graduation( $quiz_id, $course_id = 0, $check_completed = true ) {
-		$course_id = $this->_get_course_id( $course_id );
 
-		$result = $this->get_quiz_results( $quiz_id, $course_id );
-		$grade  = '';
-		if ( $result && ( ( $check_completed == false ) || $check_completed && $result->status == 'completed' ) ) {
-			$quiz          = LP_Quiz::get_quiz( $quiz_id );
-			$grade_type    = $quiz->passing_grade_type;
-			$passing_grade = $quiz->passing_grade;
-			if ( $grade_type == 'point' ) {
-				$grade = $passing_grade <= $result->mark;
-			} elseif ( $grade_type == 'percentage' ) {
-				$grade = $passing_grade <= $result->mark_percent;
-			} else {
-				$grade = true;
+		if ( !$grade = LP_Cache::get_quiz_grade( sprintf( '%d-%d-%d', $this->id, $course_id, $quiz_id ) ) ) {
+			$course_id = $this->_get_course_id( $course_id );
+			$result    = $this->get_quiz_results( $quiz_id, $course_id );
+			$grade     = '';
+			if ( $result && ( ( $check_completed == false ) || $check_completed && $result->status == 'completed' ) ) {
+				$quiz = LP_Quiz::get_quiz( $quiz_id );
+
+				$grade_type    = $quiz->passing_grade_type;
+				$passing_grade = $quiz->passing_grade;
+				if ( $grade_type == 'point' ) {
+					$grade = $passing_grade <= $result->mark;
+				} elseif ( $grade_type == 'percentage' ) {
+					$grade = $passing_grade <= $result->mark_percent;
+				} else {
+					$grade = true;
+				}
+				$grade = $grade ? 'passed' : 'failed';
 			}
-			$grade = $grade ? 'passed' : 'failed';
 		}
+		//echo $quiz_id, ',',LP_Cache::get_quiz_grade( sprintf( '%d-%d-%d', $this->id, $course_id, $quiz_id ));
 		return apply_filters( 'learn_press_user_quiz_graduation', $grade, $quiz_id, $course_id );
 	}
 
@@ -2756,7 +2762,7 @@ class LP_Abstract_User {
 	 * @return bool
 	 */
 	public function is_exists() {
-		return $this->user->ID > 0;
+		return ( $this->user->ID > 0 ) && ( false !== get_userdata( $this->user->ID ) );
 	}
 
 	/**
@@ -2869,6 +2875,39 @@ class LP_Abstract_User {
 			$can = !$this->has( 'started-quiz', $quiz_id, $course_id );
 		}
 		return apply_filters( 'learn_press_user_can_do_quiz', $can, $quiz_id, $this->id, $course_id );
+	}
+
+	/**
+	 * Get user course's grade.
+	 * Possible values:
+	 *        + passed        User has finished and passed course
+	 *        + failed        User has finished but failed
+	 *        + in-progress    User still is learning course
+	 *        + false            All other cases, e.g: not enrolled
+	 *
+	 * @param $course_id
+	 *
+	 * @return mixed|void
+	 * @throws Exception
+	 */
+	public function get_course_grade( $course_id ) {
+		$course = LP_Course::get_course( $course_id );
+		$status = $this->get( 'course-status', $course_id );
+		$grade  = false;
+		if ( $status == 'finished' ) {
+			$result            = $course->evaluate_course_results( $this->id );
+			$current           = absint( $result );
+			$passing_condition = absint( $course->passing_condition );
+			$passed            = $current >= $passing_condition;
+			if ( $passed ) {
+				$grade = 'passed';
+			} else {
+				$grade = 'failed';
+			}
+		} else if ( $status && $status != 'finished' ) {
+			$grade = 'in-progress';
+		}
+		return apply_filters( 'learn_press_user_course_grade', $grade, $this->id, $course_id );
 	}
 
 	public static function get_user() {
