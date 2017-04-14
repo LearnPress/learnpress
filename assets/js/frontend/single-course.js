@@ -747,12 +747,12 @@ if (typeof LearnPress === 'undefined') {
 		_loadItem           : function (e) {
 			var $iframe = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen />').src($(e.target).attr('href') + '?content-item-only=yes');
 			this.$('#popup-content-inner').html($iframe);
-			return '';
+			/*return '';
 			e.preventDefault();
 			$.ajax({
 				url    : $(e.target).attr('href'),
 				success: this._ajaxLoadItemSuccess
-			});
+			});*/
 		},
 		_ajaxLoadItemSuccess: function (response) {
 			this.$('#popup-content-inner').html($(response).contents().find('.lp_course'));

@@ -577,7 +577,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			$course_results     = get_post_meta( $post_id, '_lp_course_result', true );
 			$course_result_desc = '';
 			if ( in_array( $course_results, array( '', 'evaluate_lesson', 'evaluate_final_quiz' ) ) ) {
-				$course_result_desc .= sprintf( '<a href="" data-advanced="%2$s" data-basic="%1$s" data-click="basic">%2$s</a>',__( 'Basic Options', 'learnpress' ), __( 'Advanced Options', 'learnpress' ) );
+				$course_result_desc .= sprintf( '<a href="" data-advanced="%2$s" data-basic="%1$s" data-click="basic">%2$s</a>', __( 'Basic Options', 'learnpress' ), __( 'Advanced Options', 'learnpress' ) );
 			}
 			$course_result_desc = "<span id=\"learn-press-toggle-course-results\">{$course_result_desc}</span>";
 			$course_result_desc .= __( 'The method to assess the result of a student for a course.', 'learnpress' );
@@ -762,8 +762,8 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		public static function author_meta_box() {
 
 			$course_id = !empty( $_GET['post'] ) ? $_GET['post'] : 0;
-
-			$author = get_post( $course_id ) ? get_post( $course_id )->post_author : '';
+			$post      = get_post( $course_id );
+			$author    = $post ? $post->post_author : get_current_user_id();
 
 			$prefix = '_lp_';
 
@@ -1113,8 +1113,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 					$submit_for_review = false;
 				}
 				if ( ( $submit_for_review || ( $old_status != $new_status ) ) && $post->post_status != 'auto-draft' ) {
-					if( isset( $_POST['learn-press-submit-for-review'] ) && $_POST['learn-press-submit-for-review'] === 'yes' ) 
-					{
+					if ( isset( $_POST['learn-press-submit-for-review'] ) && $_POST['learn-press-submit-for-review'] === 'yes' ) {
 						$action = 'for_reviewer';
 						update_post_meta( $post->ID, '_lp_submit_for_reviewer', 'yes' );
 					}
@@ -1180,9 +1179,9 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			remove_action( 'save_post', array( $this, 'before_save_curriculum' ), 1 );
 			//remove_action( 'rwmb_course_curriculum_before_save_post', array( $this, 'before_save_curriculum' ) );
 
-			$user					= LP()->user;
-			$required_review		= LP()->settings->get( 'required_review' ) == 'yes';
-			$enable_edit_published 	= LP()->settings->get( 'enable_edit_published' ) == 'yes';
+			$user                  = LP()->user;
+			$required_review       = LP()->settings->get( 'required_review' ) == 'yes';
+			$enable_edit_published = LP()->settings->get( 'enable_edit_published' ) == 'yes';
 
 			if ( $user->is_instructor() && $required_review && !$enable_edit_published ) {
 				wp_update_post(
@@ -1228,7 +1227,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		private function _update_price() {
 			global $wpdb, $post;
 			$request          = $_POST;
-			$payment          = learn_press_get_request('_lp_payment') == 1;
+			$payment          = learn_press_get_request( '_lp_payment' ) == 1;
 			$price            = floatval( $request['_lp_price'] );
 			$sale_price       = $request['_lp_sale_price'];
 			$sale_price_start = $request['_lp_sale_start'];
