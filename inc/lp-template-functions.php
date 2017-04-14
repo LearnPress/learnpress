@@ -1514,7 +1514,18 @@ if ( !function_exists( 'learn_press_get_profile_display_name' ) ) {
 		if ( empty( $user ) ) {
 			return '';
 		}
-		$info = get_userdata( $user->ID );
+		$id = '';
+		if ( $user instanceof LP_Abstract_User ) {
+			$id = $user->id;
+		} elseif ( $user instanceof WP_User ) {
+			$id = $user->ID;
+		} elseif ( is_numeric( $user ) ) {
+			$id = $user;
+		}
+		if ( !isset( $id ) ) {
+			return '';
+		}
+		$info = get_userdata( $id );
 		return $info ? $info->display_name : '';
 	}
 }

@@ -648,6 +648,24 @@ if ( !function_exists( 'learn_press_course_nav_items' ) ) {
 		learn_press_get_template( 'single-course/nav-items.php', array( 'course_id' => $course_id, 'item_id' => $item_id, 'content_only' => $content_only ) );
 	}
 }
+
+if ( !function_exists( 'learn_press_edit_item_link' ) ) {
+	/**
+	 * Displaying course items navigation
+	 *
+	 * @param null $item_id
+	 * @param null $course_id
+	 * @param bool $content_only
+	 */
+	function learn_press_edit_item_link( $item_id = null, $course_id = null, $content_only = false ) {
+		$user = learn_press_get_current_user();
+		if ( $user->can_edit_item( $item_id, $course_id ) ): ?>
+			<p class="edit-course-item-link">
+				<a href="<?php echo get_edit_post_link( $item_id ); ?>"><?php _e( 'Edit this item', 'learnpress' ); ?></a>
+			</p>
+		<?php endif;
+	}
+}
 /**
  * Update url lesson & quiz in admin page
  */

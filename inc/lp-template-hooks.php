@@ -122,7 +122,7 @@ add_action( 'learn_press_after_quiz_question_title', 'learn_press_single_quiz_qu
 add_action( 'learn_press_order_received', 'learn_press_order_details_table', 5 );
 add_action( 'learn_press_before_template_part', 'learn_press_generate_template_information', 999, 4 );
 
-
+add_action('learn_press_after_content_item', 'learn_press_edit_item_link', 10, 3);
 add_action('learn_press_after_content_item', 'learn_press_course_nav_items', 10, 3);
 add_action('learn_press_after_content_item', 'learn_press_lesson_comment_form', 10, 3);
 
