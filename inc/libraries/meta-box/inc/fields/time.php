@@ -2,7 +2,7 @@
 // Prevent loading this file directly
 defined( 'ABSPATH' ) || exit;
 
-if ( ! class_exists( 'RWMB_Time_Field' ) ) {
+if ( !class_exists( 'RWMB_Time_Field' ) ) {
 	class RWMB_Time_Field extends RWMB_Field {
 		/**
 		 * Enqueue scripts and styles
@@ -11,7 +11,7 @@ if ( ! class_exists( 'RWMB_Time_Field' ) ) {
 		 */
 		static function admin_enqueue_scripts() {
 			$url = RWMB_CSS_URL . 'jqueryui';
-			wp_enqueue_style( 'jquery-ui-timepicker', "{$url}/jquery-ui-timepicker-addon.css", array( 'jquery-ui-datepicker', 'jquery-ui-slider' ), '0.9.7' );
+			wp_enqueue_style( 'jquery-ui-timepicker', "{$url}/jquery-ui-timepicker-addon.css", array( /*'jquery-ui-datepicker', 'jquery-ui-slider'*/ ), '0.9.7' );
 
 			$url = RWMB_JS_URL . 'jqueryui';
 			wp_register_script( 'jquery-ui-timepicker', "{$url}/jquery-ui-timepicker-addon.js", array( 'jquery-ui-datepicker', 'jquery-ui-slider' ), '0.9.7', true );

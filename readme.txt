@@ -198,6 +198,7 @@ https://www.transifex.com/projects/p/learnpress/
 + Made 'Show correct answer' option depending on 'Show/Hide questions'
 + Fixed process fields are added by filter for become a teacher form
 + Fixed wrong user profile url
++ Fixed user avatar can not save in profile
 + Remove related data after removing posts
 
 = 2.1.5.5 =

@@ -30,7 +30,6 @@
 					data = $.parseJSON(data);
 				}
 			} catch (e) {
-				LP.log(e);
 				data = {};
 			}
 			return data;

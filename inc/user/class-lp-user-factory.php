@@ -113,16 +113,17 @@ class LP_User_Factory {
 	 * @return LP_Abstract_User
 	 */
 	public static function get_user( $the_user, $force = false ) {
+		$the_id = 0;
 		if ( is_numeric( $the_user ) ) {
 			$the_id = $the_user;
 		} elseif ( $the_user instanceof LP_Abstract_User ) {
 			$the_id = $the_user->id;
 		} elseif ( isset( $the_user->ID ) ) {
 			$the_id = $the_user->ID;
-		}
-		if ( empty( $the_id ) ) {
+		} elseif ( null === $the_user ) {
 			$the_id = get_current_user_id();
 		}
+
 		$user_class = self::get_user_class( $the_id );
 		if ( empty( self::$_users[$the_id] ) || $force ) {
 			self::$_users[$the_id] = new $user_class( $the_id );
@@ -149,7 +150,7 @@ class LP_User_Factory {
 				/**
 				 * Prevent loading user does not exists in database
 				 */
-				$user                   = new LP_User_Guest( $the_id );
+				$user = new LP_User_Guest( $the_id );
 				wp_cache_add( $the_id, $user, 'users' );
 				wp_cache_add( '', $the_id, 'userlogins' );
 				wp_cache_add( '', $the_id, 'useremail' );
@@ -223,8 +224,12 @@ class LP_User_Factory {
 		if ( get_user_by( 'id', $user_id ) ) {
 			return;
 		}
-		learn_press_add_user_item_meta( $item->user_item_id, 'temp_user_id', 'yes' );
-		learn_press_add_user_item_meta( $item->user_item_id, 'temp_user_time', date( 'Y-m-d H:i:s', time() ) );
+		if ( !$item ) {
+			return;
+		}
+		$item_id = !empty( $item->user_item_id ) ? $item->user_item_id : $item->history_id;
+		learn_press_add_user_item_meta( $item_id, 'temp_user_id', 'yes' );
+		learn_press_add_user_item_meta( $item_id, 'temp_user_time', date( 'Y-m-d H:i:s', time() ) );
 	}
 }
 

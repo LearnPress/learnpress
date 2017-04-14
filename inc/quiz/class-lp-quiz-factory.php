@@ -217,7 +217,7 @@ class LP_Quiz_Factory {
 			$result = $user->finish_quiz( $quiz_id, $course_id, $args );
 			if ( $result ) {
 				if ( !empty( $args['auto_finish'] ) ) {
-					learn_press_add_message( __( 'You quiz has finished automatically', 'learnpress' ) );
+					learn_press_add_message( __( 'Your quiz has finished automatically', 'learnpress' ) );
 				} else {
 					learn_press_add_message( __( 'You have finished quiz', 'learnpress' ) );
 				}

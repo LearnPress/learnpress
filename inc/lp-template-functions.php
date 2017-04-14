@@ -672,7 +672,7 @@ if ( !function_exists( 'learn_press_user_profile_tabs' ) ) {
 		if ( !$user ) {
 			$user = learn_press_get_current_user();
 		}
-		return LP_Profile::instance($user->id)->get_tabs();
+		return LP_Profile::instance( $user->id )->get_tabs();
 	}
 }
 
@@ -682,7 +682,7 @@ if ( !function_exists( 'learn_press_output_user_profile_info' ) ) {
 	 *
 	 * @param $user
 	 */
-	function learn_press_output_user_profile_info ( $user, $current, $tabs ) {
+	function learn_press_output_user_profile_info( $user, $current, $tabs ) {
 		learn_press_get_template( 'profile/info.php', array(
 			'user'    => $user,
 			'tabs'    => $tabs,
@@ -702,8 +702,8 @@ if ( !function_exists( 'learn_press_single_quiz_title' ) ) {
 }
 
 
-if ( ! function_exists( 'learn_press_after_quiz_question_title' ) ) {
-	function learn_press_single_quiz_question_answer ( $question_id = null, $quiz_id = null ) {
+if ( !function_exists( 'learn_press_after_quiz_question_title' ) ) {
+	function learn_press_single_quiz_question_answer( $question_id = null, $quiz_id = null ) {
 		learn_press_get_template( 'content-quiz/question-answer.php', array(
 			'question_id' => $question_id,
 			'quiz_id'     => $quiz_id
@@ -825,6 +825,10 @@ if ( !function_exists( 'learn_press_course_quiz_class' ) ) {
 
 		if ( $user->can( 'view-item', $quiz_id, $course_id ) ) {
 			$classes[] = 'viewable';
+		}
+
+		if ( $course->is_final_quiz( $quiz_id ) ) {
+			$classes[] = 'final-quiz';
 		}
 
 		$classes = array_unique( array_merge( $classes, $class ) );
@@ -1506,7 +1510,7 @@ if ( !function_exists( 'learn_press_get_profile_display_name' ) ) {
 	 *
 	 * @return string
 	 */
-	function learn_press_get_profile_display_name ( $user ) {
+	function learn_press_get_profile_display_name( $user ) {
 		if ( empty( $user ) ) {
 			return '';
 		}

@@ -29,7 +29,7 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 			add_action( 'add_meta_boxes', array( $this, 'post_new' ) );
 
 			$this
-				->add_map_method( 'before_delete', 'delete_order_items' )
+				->add_map_method( 'before_delete', 'delete_order_data' )
 				->add_map_method( 'save', 'save_order' );
 
 			parent::__construct( $post_type );
@@ -54,7 +54,7 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 		 *
 		 * @param $post_id
 		 */
-		public function delete_order_items( $post_id ) {
+		public function delete_order_data( $post_id ) {
 			global $wpdb, $post;
 			if ( get_post_type( $post_id ) != 'lp_order' ) {
 				return;
@@ -82,6 +82,36 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 					WHERE order_id = %d
 				", $post_id );
 				$wpdb->query( $query );
+
+				$query = $wpdb->prepare( "
+					SELECT item_id
+					FROM {$wpdb->prefix}learnpress_user_items
+					WHERE ref_id = %d AND user_id = %d AND ref_type = %s
+				", $post_id, $user_id, LP_ORDER_CPT );
+				if ( $course_ids = $wpdb->get_col( $query ) ) {
+					// Delete user course items
+					$query = $wpdb->prepare( "
+						DELETE
+						FROM ui, uim
+						USING {$wpdb->prefix}learnpress_user_items AS ui
+						LEFT JOIN {$wpdb->prefix}learnpress_user_itemmeta AS uim ON ui.user_item_id = uim.learnpress_user_item_id
+						WHERE ref_id = %d AND user_id = %d AND ref_type = %s
+					", $post_id, $user_id, LP_ORDER_CPT );
+					$wpdb->query( $query );
+
+					// Delete other items
+					$format = array_fill( 0, sizeof( $course_ids ), '%d' );
+					$args   = array_merge( $course_ids, array( $user_id ) );
+					$query  = $wpdb->prepare( "
+						DELETE
+						FROM ui, uim
+						USING {$wpdb->prefix}learnpress_user_items AS ui
+						LEFT JOIN {$wpdb->prefix}learnpress_user_itemmeta AS uim ON ui.user_item_id = uim.learnpress_user_item_id
+						WHERE ref_id IN(" . join( ',', $format ) . ") AND user_id = %d
+					", $args );
+					$wpdb->query( $query );
+
+				}
 
 				// delete all data related user order
 				if ( $user_id ) {

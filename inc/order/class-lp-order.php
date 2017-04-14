@@ -266,8 +266,7 @@ class LP_Order {
 
 	public function customer_exists() {
 		$user_id = $this->user_id;
-		$user    = learn_press_get_user( $user_id );
-		return $user->is_exists();
+		return false !== get_userdata( $user_id );
 	}
 
 	/**
@@ -388,7 +387,7 @@ class LP_Order {
 
 	public function __get( $key ) {
 		$value = null;
-		if ( !isset( $this->{$key} ) ) {
+		if ( !property_exists( $this, $key ) ) {
 			$value = get_post_meta( $this->id, '_' . $key, true );
 		}
 		return $value;
