@@ -28,7 +28,7 @@ class LP_Request_Handler {
 	 * Constructor
 	 */
 	public static function init() {
-		if(strtolower($_SERVER['REQUEST_METHOD']) == 'post'){
+		if ( strtolower( $_SERVER['REQUEST_METHOD'] ) == 'post' ) {
 			LP_Cache::flush();
 			//wp_cache_delete( 'course-curriculum', 'learnpress');
 		}
@@ -74,7 +74,7 @@ class LP_Request_Handler {
 				if ( !$item['action'] || !$item['callback'] ) {
 					continue;
 				}
-				list( $action, $callback, $priority ) = array_values($item);
+				list( $action, $callback, $priority ) = array_values( $item );
 				add_action( 'learn_press_request_handler_' . $action, $callback, $priority );
 			}
 		} else {

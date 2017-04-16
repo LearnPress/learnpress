@@ -1125,7 +1125,7 @@ abstract class LP_Abstract_Course {
 		$total_point    = 0;
 		$quizzes_ids    = array();
 		foreach ( $quizzes as $quiz ) {
-			if ( !apply_filters( 'learn_press_enable_evaluate_quiz_results', true, $quiz->ID, $user_id, $this->id ) ) {
+			if ( !$this->enable_evaluate_item( $quiz->ID, $user_id ) ) {
 				continue;
 			}
 			$quizzes_ids[]      = $quiz->ID;
@@ -1139,6 +1139,13 @@ abstract class LP_Abstract_Course {
 		return apply_filters( 'learn_press_evaluate_course_by_quizzes_results', $result, $this->id, $user_id );
 	}
 
+	public function enable_evaluate_item( $item_id, $user_id = 0 ) {
+		if ( !$user_id ) {
+			$user_id = get_current_user_id();
+		}
+		return apply_filters( 'learn_press_enable_evaluate_course_item', true, $item_id, $user_id, $this->id );
+	}
+
 	public function _evaluate_course_by_passed_quizzes_results( $user_id, $force = false ) {
 		$quizzes        = $this->get_quizzes();
 		$user           = learn_press_get_user( $user_id );
@@ -1146,7 +1153,7 @@ abstract class LP_Abstract_Course {
 		$achieved_point = 0;
 		$total_point    = 0;
 		foreach ( $quizzes as $_quiz ) {
-			if ( !apply_filters( 'learn_press_enable_evaluate_quiz_results', true, $_quiz->ID, $user_id, $this->id ) ) {
+			if ( !$this->enable_evaluate_item( $_quiz->ID, $user_id ) ) {
 				continue;
 			}
 			$quiz = LP_Quiz::get_quiz( $_quiz->ID );
@@ -1283,7 +1290,9 @@ abstract class LP_Abstract_Course {
 					}
 					$k = sprintf( '%d-%d-%d', $user_id, $this->id, $item_id );
 					if ( !empty( $item_statuses[$k] ) && $item_statuses[$k] == 'completed' ) {
-						$completed_items[] = $item_id;
+						if ( $this->enable_evaluate_item( $item_id, $user_id ) ) {
+							$completed_items[] = $item_id;
+						}
 					}
 				}
 			}
@@ -1361,7 +1370,7 @@ abstract class LP_Abstract_Course {
 		if ( $quizzes ) {
 			$count = 0;
 			foreach ( $quizzes as $quiz ) {
-				if ( !apply_filters( 'learn_press_enable_evaluate_quiz_results', true, $quiz->ID, $user_id, $this->id ) ) {
+				if ( !$this->enable_evaluate_item( $quiz->ID, $user_id ) ) {
 					continue;
 				}
 				$result += $this->evaluate_quiz( $quiz->ID, $user_id, $force );

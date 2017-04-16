@@ -301,6 +301,11 @@ if (typeof LearnPress === 'undefined') {
 				sections = {},
 				$progress = this.$('.course-progress').find('.number, .percentage-sign'),
 				$itemProgress = this.$('.items-progress').find('.number, .percentage-sign');
+
+			if ($progress.length == 0) {
+				return;
+			}
+
 			$progress[0].childNodes[0].nodeValue = parseInt(data.results);
 
 			this.$('.course-progress .lp-progress-value').width(parseInt(data.results) + '%');
@@ -748,11 +753,11 @@ if (typeof LearnPress === 'undefined') {
 			var $iframe = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen />').src($(e.target).attr('href') + '?content-item-only=yes');
 			this.$('#popup-content-inner').html($iframe);
 			/*return '';
-			e.preventDefault();
-			$.ajax({
-				url    : $(e.target).attr('href'),
-				success: this._ajaxLoadItemSuccess
-			});*/
+			 e.preventDefault();
+			 $.ajax({
+			 url    : $(e.target).attr('href'),
+			 success: this._ajaxLoadItemSuccess
+			 });*/
 		},
 		_ajaxLoadItemSuccess: function (response) {
 			this.$('#popup-content-inner').html($(response).contents().find('.lp_course'));

@@ -2619,7 +2619,7 @@ body.content-item-only #learn-press-content-item.expand {
 .course-item-navigation {
   border-top: 4px solid #333;
   padding-top: 10px;
-  margin-bottom: 20px;
+  margin-top: 20px;
 }
 .course-item-navigation .nav-links .nav-link {
   opacity: 1;
