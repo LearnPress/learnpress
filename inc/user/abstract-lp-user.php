@@ -2685,7 +2685,9 @@ class LP_Abstract_User {
 		if ( $curriculum && $curriculum->items ) {
 			foreach ( $curriculum->items as $item ) {
 				if ( $this->has_completed_item( $item->ID, $course_id, $force ) ) {
-					$completed ++;
+					if ( $course->enable_evaluate_item( $item->ID, $this->id ) ) {
+						$completed ++;
+					}
 				}
 			}
 		}
