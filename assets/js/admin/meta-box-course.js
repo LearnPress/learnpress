@@ -46,7 +46,7 @@
 				'change .lp-item-name '                         : '_updateItem',
 				'focus .lp-item-name'                           : '_focusItem',
 				'blur .lp-item-name'                            : '_blurItem',
-				'click #learn-press-toggle-course-results':' _toggleCourseResults'
+				'click #learn-press-toggle-course-results'      : '_toggleCourseResults'
 			},
 			removeSectionIds        : [],
 			removeItemIds           : [],
@@ -67,7 +67,7 @@
 				$('#course_curriculum.postbox').removeClass('closed');
 
 			},
-			_toggleCourseResults:function(e){
+			_toggleCourseResults    : function (e) {
 				e.preventDefault();
 				var $a = $(e.target),
 					click = $a.data('click');
@@ -1441,23 +1441,23 @@
 				checked && $review.focus();
 			});
 		});
-		
-	function _toggleCourseResults(click){
-	
-	}
-	$(document).on('click.learn-press-toggle-course-results', '#learn-press-toggle-course-results a', function(e){
-		e.preventDefault();
-		var $a = $(this),
-			click = $a.data('click');
+
+		function _toggleCourseResults(click) {
+
+		}
+
+		$(document).on('click.learn-press-toggle-course-results', '#learn-press-toggle-course-results a', function (e) {
+			e.preventDefault();
+			var $a = $(this),
+				click = $a.data('click');
 			$a.html($a.data(click));
-		$a.data('click', click == 'advanced' ? 'basic' : 'advanced');
-		$a.closest('.rwmb-input').children('label:gt(1)').toggle(click!='advanced');
-		$a.parent().remove();
-	});
-	console.log($('input[name="_lp_course_result"]').val());
-	if($.inArray( $('input[name="_lp_course_result"]:checked').val(),['', 'evaluate_lesson', 'evaluate_final_quiz']) != -1){
-	$('#learn-press-toggle-course-results').closest('.rwmb-input').children('label:gt(1)').hide( );
-}
+			$a.data('click', click == 'advanced' ? 'basic' : 'advanced');
+			$a.closest('.rwmb-input').children('label:gt(1)').toggle(click != 'advanced');
+			$a.parent().remove();
+		});
+		if ($.inArray($('input[name="_lp_course_result"]:checked').val(), ['', 'evaluate_lesson', 'evaluate_final_quiz']) != -1) {
+			$('#learn-press-toggle-course-results').closest('.rwmb-input').children('label:gt(1)').hide();
+		}
 
 		function canSubmit() {
 			if ((opts.current_user_type == 'admin') || !opts.required_review || (opts.course_status == 'publish' && opts.enable_edit_published)) {
