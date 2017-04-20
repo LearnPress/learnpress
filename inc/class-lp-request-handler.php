@@ -48,7 +48,7 @@ class LP_Request_Handler {
 		}
 	}
 
-	public function redirect( $url ) {
+	public static function redirect( $url ) {
 		remove_filter( 'wp_redirect', array( __CLASS__, 'redirect' ) );
 		return add_query_arg( 'lp-reload', 'yes', $url );
 	}
