@@ -197,6 +197,7 @@ https://www.transifex.com/projects/p/learnpress/
 + Removed cache-flush param
 + Added some filters for evaluating course results
 + Fixed js unreachable code
++ Fixed warning message on update post
 
 = 2.1.6 =
 + Add more options for course results
