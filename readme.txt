@@ -193,6 +193,11 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.  
 
 == Changelog ==
+= 2.1.6.1 =
++ Removed cache-flush param
++ Added some filters for evaluating course results
++ Fixed js unreachable code
+
 = 2.1.6 =
 + Add more options for course results
 + Made 'Show correct answer' option depending on 'Show/Hide questions'
