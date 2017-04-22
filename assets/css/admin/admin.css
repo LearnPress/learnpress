@@ -278,6 +278,33 @@ input:focus:-moz-placeholder {
 }
 .learn-press-message {
   position: relative;
+  background: #F5F5F5;
+  border-left: 5px solid #00A0D2;
+  padding: 10px 10px 0px 10px;
+  margin-bottom: 20px;
+  overflow: hidden;
+  color: #777;
+}
+.learn-press-message button {
+  float: right;
+}
+.learn-press-message p {
+  margin: 0 0 10px;
+}
+.learn-press-message:after {
+  clear: both;
+  content: '';
+  display: block;
+}
+.learn-press-message.notice {
+  border-left-color: #b3d20a;
+}
+.learn-press-message.lp-error,
+.learn-press-message.error {
+  border-left-color: #b81c23;
+}
+.learn-press-message ul {
+  list-style-type: none;
 }
 .learn-press-message .learn-press-admin-notice-dismiss {
   position: absolute;
@@ -321,58 +348,70 @@ li.quick_quiz {
 .column-taxonomy-course_category {
   width: 15%;
 }
-/**/
+.tools-button {
+  text-align: right;
+}
+/*
 #lpr-block {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #000;
-  display: none;
-  z-index: 200;
-  opacity: 0.2;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #000;
+    display: none;
+    z-index: 200;
+    opacity: 0.2;
 }
+
 .lpr-quick-add-form {
-  background-color: #FFF;
-  padding: 5px;
-  position: absolute;
-  z-index: 210;
-  border: 1px solid #DDD;
+    background-color: #FFF;
+    padding: 5px;
+    position: absolute;
+    z-index: 210;
+    border: 1px solid #DDD;
 }
+
 .lpr-quick-add-form input {
-  font-size: 15px;
-  border-radius: 3px;
-  border: 1px solid #DDD;
-  width: 350px;
+    font-size: 15px;
+    border-radius: 3px;
+    border: 1px solid #DDD;
+    width: 350px;
 }
+
 .lpr-quick-add-form input,
 .lpr-quick-add-form select {
-  vertical-align: top;
+    vertical-align: top;
 }
+
 .lpr-quick-add-form .lpr-ajaxload {
-  display: none;
-  background: url(../../images/spinner.gif) no-repeat center;
-  width: 30px;
-  color: #FFF;
-  margin-top: 6px;
+    display: none;
+    background: url(../../images/spinner.gif) no-repeat center;
+    width: 30px;
+    color: #FFF;
+    margin-top: 6px;
 }
+
 .lpr-quick-add-form.working .lpr-ajaxload {
-  display: inline-block;
+    display: inline-block;
 }
+
 .lpr-quick-add-form.working button {
-  display: none;
+    display: none;
 }
+
 .post-type-lpr_question .lpr-question-option-label {
-  display: none;
+    display: none;
 }
+
 #lpr-question-options-wrap {
-  margin-top: 8px;
+    margin-top: 8px;
 }
+
 .lpr-question tr.lpr-disabled .dashicons-trash,
 .lpr-question tr.lpr-disabled .dashicons-sort {
-  display: none;
-}
+    display: none;
+}*/
 /*
 * Add on page
 */
