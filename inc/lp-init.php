@@ -240,7 +240,7 @@ function _learn_press_get_courses_curriculum( $course_ids, $force = false, $pars
 						$item->{$prop} = $row->{$prop};
 					}
 				}
-				$item_ids[]                        = $item->ID;
+				$item_ids[] = $item->ID;
 				if ( $item->post_type == LP_QUIZ_CPT ) {
 					if ( false == wp_cache_get( $item->ID, 'posts' ) ) {
 						$quiz_ids[] = $item->ID;
@@ -502,10 +502,11 @@ function _learn_press_parse_user_item_statuses( $user_id, $course_id, $force = f
 		", $user_id, $course_id, $user_id, $course_id, $user_id, $course_id, '_quiz_grade' );
 	} else {
 		$query = $wpdb->prepare( "
-			SELECT * FROM {$wpdb->prefix}learnpress_user_items t1
+			SELECT ui.*, uim.meta_value as grade FROM {$wpdb->prefix}learnpress_user_items ui
+			LEFT JOIN {$wpdb->prefix}learnpress_user_itemmeta uim ON uim.learnpress_user_item_id = ui.user_item_id AND uim.meta_key = %s
 			WHERE user_id = %d
 			AND item_id = %d
-		", $user_id, $course_id );
+		", '_quiz_grade', $user_id, $course_id );
 	}
 	$items = $wpdb->get_results( $query );
 
@@ -523,8 +524,10 @@ function _learn_press_parse_user_item_statuses( $user_id, $course_id, $force = f
 	if ( $items ) {
 		foreach ( $items as $item ) {
 			$item_statuses[$user_id . '-' . $course_id . '-' . $item->item_id] = learn_press_validate_item_status( $item );
-			if ( $item->grade ) {
+			if ( !empty($item->grade) ) {
 				$quiz_grades[$user_id . '-' . $course_id . '-' . $item->item_id] = $item->grade;
+			}else{
+				$quiz_grades[$user_id . '-' . $course_id . '-' . $item->item_id] = '';
 			}
 		}
 	}
