@@ -205,6 +205,8 @@ class LP_Assets {
 		$deps         = array( 'jquery', 'backbone', 'utils' );
 		$ver          = LEARNPRESS_VERSION;
 
+		$scripts->add( 'angularjs', 'https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js' ,null, $ver, 1 );
+
 		// global
 		$scripts->add( 'learn-press-global', $default_path . 'js/global' . $suffix . '.js', $deps, $ver, 1 );
 		$scripts->add( 'learn-press-jalerts', $default_path . 'js/jquery.alert' . $suffix . '.js', $deps, $ver, 1 );

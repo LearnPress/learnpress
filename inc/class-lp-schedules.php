@@ -69,6 +69,7 @@ class LP_Schedules {
 				)
 			);
 		}
+		learn_press_reset_auto_increment($wpdb->options);
 	}
 
 	public function schedule_update_user_items() {
