@@ -77,14 +77,14 @@ class LP_Shortcodes {
 
 					}
 					if ( $query ) {
-						$profile_endpoints = (array) LP()->settings->get( 'profile_endpoints' );
-						$endpoints         = array_keys( $profile_endpoints );
+
+						$endpoints = learn_press_get_profile_endpoints();
 						foreach ( $query as $k => $v ) {
 							if ( ( $k == 'view' ) ) {
 								if ( !$v ) {
-									$v = reset( $profile_endpoints );
+									$v = reset( $endpoints );
 								}
-								if ( !in_array( $v, apply_filters( 'learn_press_profile_tab_endpoints', $profile_endpoints ) ) ) {
+								if ( !in_array( $v, $endpoints ) ) {
 									learn_press_is_404();
 								}
 							}
@@ -107,7 +107,6 @@ class LP_Shortcodes {
 
 			do_action( 'learn_press_auto_shortcode', $post, $template );
 		}
-
 		return $template;
 	}
 
@@ -121,7 +120,6 @@ class LP_Shortcodes {
 		ob_start();
 		learn_press_print_messages();
 		$html = ob_get_clean();
-
 		return '<div class="learnpress">' . $html . $content . '</div>';
 	}
 
@@ -149,7 +147,6 @@ class LP_Shortcodes {
 				learn_press_get_template( 'checkout/form.php', array( 'checkout' => LP()->checkout() ) );
 			}
 		}
-
 		return self::wrapper_shortcode( ob_get_clean() );
 	}
 
@@ -357,7 +354,6 @@ class LP_Shortcodes {
 			}
 		} else {
 			learn_press_display_message( __( 'Invalid order!', 'learnpress' ), 'error' );
-
 			return;
 		}
 
@@ -533,14 +529,10 @@ class LP_Shortcodes {
 			$atts
 		);
 		add_filter( 'login_form_bottom', array( __CLASS__, 'login_form_bottom' ), 10, 2 );
-
 		return self::wrapper_shortcode( learn_press_get_template_content( 'profile/login-form.php', $atts ) );
 	}
 
-	public
-	static function login_form_bottom(
-		$html, $args
-	) {
+	public static function login_form_bottom( $html, $args ) {
 		ob_start();
 		?>
 		<p>
@@ -549,7 +541,6 @@ class LP_Shortcodes {
 			<a href="<?php echo wp_registration_url(); ?>"><?php _e( 'Create new account', 'learnpress' ); ?></a>
 		</p>
 		<?php $html .= ob_get_clean();
-
 		return $html;
 	}
 }

@@ -2750,7 +2750,6 @@ class LP_Abstract_User {
 				$grade = $grade ? 'passed' : 'failed';
 			}
 		}
-		//echo $quiz_id, ',',LP_Cache::get_quiz_grade( sprintf( '%d-%d-%d', $this->id, $course_id, $quiz_id ));
 		return apply_filters( 'learn_press_user_quiz_graduation', $grade, $quiz_id, $course_id );
 	}
 
@@ -2910,6 +2909,10 @@ class LP_Abstract_User {
 			$grade = 'in-progress';
 		}
 		return apply_filters( 'learn_press_user_course_grade', $grade, $this->id, $course_id );
+	}
+
+	public function get_role() {
+		return $this->is_admin() ? 'admin' : ( $this->is_instructor() ? 'instructor' : 'user' );
 	}
 
 	public static function get_user() {

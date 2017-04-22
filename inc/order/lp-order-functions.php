@@ -568,11 +568,30 @@ function learn_press_get_order_items( $order_id ) {
 	return get_post_meta( $order_id, '_learn_press_order_items', true );
 }
 
-function learn_press_format_price( $price, $with_currency = false ) {
+function learn_press_format_price( $price, $args = array() ) {
+	if ( is_bool( $args ) ) {
+		$with_currency = $args;
+	} else {
+		$with_currency = false;
+	}
 	if ( !is_numeric( $price ) )
 		$price = 0;
-	$settings = LP()->settings;
-	$before   = $after = '';
+	$settings            = LP()->settings;
+	$before              = $after = '';
+	$args                = wp_parse_args(
+		$args,
+		array(
+			'with_currency'       => $with_currency,
+			'decimals_separator'  => false,
+			'number_of_decimals'  => false,
+			'thousands_separator' => false
+		)
+	);
+	$with_currency       = $args['with_currency'];
+	$thousands_separator = $args['thousands_separator'] === false ? $settings->get( 'thousands_separator', ',' ) : $args['thousands_separator'];
+	$number_of_decimals  = $args['number_of_decimals'] === false ? $settings->get( 'number_of_decimals', 2 ) : $args['number_of_decimals'];
+	$decimals_separator  = $args['decimals_separator'] === false ? $settings->get( 'decimals_separator', '.' ) : $args['decimals_separator'];
+
 	if ( $with_currency ) {
 		if ( gettype( $with_currency ) != 'string' ) {
 			$currency = learn_press_get_currency_symbol();
@@ -599,9 +618,9 @@ function learn_press_format_price( $price, $with_currency = false ) {
 		$before
 		. number_format(
 			$price,
-			$settings->get( 'number_of_decimals', 2 ),
-			$settings->get( 'decimals_separator', '.' ),
-			$settings->get( 'thousands_separator', ',' )
+			$number_of_decimals,
+			$decimals_separator,
+			$thousands_separator
 		) . $after;
 
 	return $price;
