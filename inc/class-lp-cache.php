@@ -679,7 +679,6 @@ class LP_Cache {
 					}
 					wp_cache_delete( $value, self::$_group );
 				}
-				add_filter( 'wp_redirect', array( __CLASS__, 'cache_flush' ) );
 			} catch ( Exception $ex ) {
 			}
 		}

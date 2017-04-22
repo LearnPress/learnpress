@@ -1558,10 +1558,10 @@ add_filter( 'pre_get_posts', 'learn_press_filter_search', 99 );
  * @param $data
  */
 function learn_press_send_json( $data ) {
-	echo '<!-- LP_AJAX_START -->';
+	echo '<-- LP_AJAX_START -->';
 	@header( 'Content-Type: application/json; charset=' . get_option( 'blog_charset' ) );
 	echo wp_json_encode( $data );
-	echo '<!-- LP_AJAX_END -->';
+	echo '<-- LP_AJAX_END -->';
 	die;
 }
 
