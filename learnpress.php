@@ -4,7 +4,7 @@ Plugin Name: LearnPress
 Plugin URI: http://thimpress.com/learnpress
 Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
 Author: ThimPress
-Version: 2.1.6.1
+Version: 2.1.6.2
 Author URI: http://thimpress.com
 Requires at least: 3.8
 Tested up to: 4.7
@@ -234,6 +234,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 			add_action( 'activate_' . $plugin_basename, array( 'LP_Install', 'install' ) );
 
 			add_action( 'init', array( $this, 'init' ), 15 );
+			add_action( 'wp_loaded', array( $this, 'wp_loaded' ), 20 );
 
 			///add_action( 'widgets_init', array( $this, 'widgets_init' ) );
 
@@ -242,6 +243,12 @@ if ( !class_exists( 'LearnPress' ) ) {
 			add_action( 'load-post.php', array( $this, 'load_meta_box' ), - 10 );
 			add_action( 'load-post-new.php', array( $this, 'load_meta_box' ), - 10 );
 			add_action( 'plugins_loaded', array( $this, 'loaded' ), 0 );
+		}
+
+		function wp_loaded() {
+			if ( $this->is_request( 'frontend' ) ) {
+				$this->gateways = LP_Gateways::instance()->get_available_payment_gateways();
+			}
 		}
 
 		public function loaded() {
@@ -294,7 +301,6 @@ if ( !class_exists( 'LearnPress' ) ) {
 			if ( $this->is_request( 'frontend' ) ) {
 				$this->get_session();
 				$this->get_cart();
-				$this->gateways = LP_Gateways::instance()->get_available_payment_gateways();
 			}
 
 			$this->get_user();
