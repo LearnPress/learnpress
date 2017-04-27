@@ -2021,3 +2021,7 @@ input.regular-text[id^="learn-press-emails"] {
     opacity: 0;
   }
 }
+
+li .rwmb-input-list {
+  margin-left: 0 !important;
+}

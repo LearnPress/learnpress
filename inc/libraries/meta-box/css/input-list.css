@@ -3,7 +3,7 @@
 	line-height: 1.8;
 }
 li .rwmb-input-list {
-	margin-left: 20px;
+	margin-left: 0 !important;
 }
 .rwmb-input-list li {
 	margin-bottom: 0;
