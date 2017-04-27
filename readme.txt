@@ -190,9 +190,12 @@ https://www.transifex.com/projects/p/learnpress/
 5. Quiz settings.
 6. Email settings.
 7. Demo course page.
-8. Add-ons of LearnPress.  
+8. Add-ons of LearnPress.
 
 == Changelog ==
+= 2.1.6.2 =
++ Fixed issue with WC addon "Woo Mercado Pago Module"
+
 = 2.1.6.1 =
 + Removed cache-flush param
 + Added some filters for evaluating course results
