@@ -294,10 +294,10 @@ if ( !class_exists( 'LearnPress' ) ) {
 			if ( $this->is_request( 'frontend' ) ) {
 				$this->get_session();
 				$this->get_cart();
+				$this->gateways = LP_Gateways::instance()->get_available_payment_gateways();
 			}
 
 			$this->get_user();
-			$this->gateways = LP_Gateways::instance()->get_available_payment_gateways();
 			$this->schedule = require_once( LP_PLUGIN_PATH . "/inc/class-lp-schedules.php" );
 
 			LP_Emails::instance();
