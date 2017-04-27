@@ -61,27 +61,27 @@ if ( !class_exists( 'LP_Profile' ) ) {
 			}
 
 			$defaults = array(
+
 				$course_endpoint => array(
 					'title'    => __( 'Courses', 'learnpress' ),
+					'base'     => 'courses',
 					'callback' => 'learn_press_profile_tab_courses_content'
-				),
-				/*$quiz_endpoint   => array(
-					'title'    => __( 'Quiz Results', 'learnpress' ),
-					'callback' => 'learn_press_profile_tab_quizzes_content'
-				)*/
+				)
 			);
 
 			if ( $this->_user->id == get_current_user_id() ) {
 				$defaults[$order_endpoint] = array(
 					'title'    => __( 'Orders', 'learnpress' ),
+					'base'     => 'orders',
 					'callback' => 'learn_press_profile_tab_orders_content'
 				);
 			}
 
 			$tabs = apply_filters( 'learn_press_user_profile_tabs', $defaults, $this->_user );
 			if ( $this->_user->id == get_current_user_id() ) {
-				$tabs['edit'] = array(
-					'title'    => apply_filters( 'learn_press_user_profile_tab_edit_title', __( 'Edit', 'learnpress' ) ),
+				$tabs['settings'] = array(
+					'title'    => apply_filters( 'learn_press_user_profile_tab_edit_title', __( 'Settings', 'learnpress' ) ),
+					'base'     => 'settings',
 					'callback' => 'learn_press_profile_tab_edit_content'
 				);
 			}
@@ -104,7 +104,10 @@ if ( !class_exists( 'LP_Profile' ) ) {
 		 *
 		 * @return LP_Profile mixed
 		 */
-		public static function instance( $user_id ) {
+		public static function instance( $user_id = 0 ) {
+			if ( !$user_id ) {
+				$user_id = get_current_user_id();
+			}
 			if ( empty( self::$_instances[$user_id] ) ) {
 				self::$_instances[$user_id] = new self( $user_id );
 			}

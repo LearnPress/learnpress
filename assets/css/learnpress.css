@@ -2086,6 +2086,20 @@ body.block-content #learn-press-block-content {
 .lp-form-field-wrap .lp-form-field .lp-field-error-message {
   color: #FF0000;
 }
+.learn-press-user-profile #learn-press-user-info {
+  overflow: hidden;
+}
+.learn-press-user-profile #learn-press-user-info .user-avatar {
+  width: 150px;
+  float: left;
+}
+.learn-press-user-profile #learn-press-user-info .user-avatar .avatar {
+  border-radius: 0;
+  width: 100%;
+}
+.learn-press-user-profile #learn-press-user-info .user-basic-info {
+  margin-left: 170px;
+}
 .learn-press-user-profile .lp-edit-profile:after {
   display: block;
   content: '';

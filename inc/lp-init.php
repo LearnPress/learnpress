@@ -3,7 +3,6 @@
  * Functions that are used to init a course to reduce SQL queries
  */
 
-
 if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
@@ -14,7 +13,6 @@ add_action( 'init', '_learn_press_upgrade_table' );
  * TODO: remove in next version
  */
 function _learn_press_upgrade_table() {
-
 	if ( version_compare( LEARNPRESS_VERSION, '2.1.0', '<' ) ) {
 		global $wpdb;
 		if ( $wpdb->get_var( "SHOW TABLES LIKE '{$wpdb->prefix}learnpress_user_items'" ) != $wpdb->prefix . "learnpress_user_items" ) {
@@ -271,10 +269,26 @@ function _learn_press_get_courses_curriculum( $course_ids, $force = false, $pars
 			$course                   = get_post( $course_id );
 			$course->curriculum_items = is_admin() ? maybe_serialize( $item_ids ) : $item_ids;
 			wp_cache_replace( $course_id, $course, 'posts' );
-			if ( $quiz_ids && $parse_items ) {
-				$question_ids = _learn_press_get_quiz_questions( $quiz_ids );
-				if ( $question_ids ) {
-					$meta_cache_ids = array_merge( $meta_cache_ids, $question_ids );
+			if ( $quiz_ids ) {
+				$fetched_posts = array();
+				foreach ( $quiz_ids as $quiz_id ) {
+					if ( wp_cache_get( $quiz_id, 'posts' ) ) {
+						$fetched_posts[] = $quiz_id;
+					}
+				}
+				foreach ( $quiz_ids as $quiz_id ) {
+					//print_r(wp_cache_get($quiz_id, 'posts'));
+				}
+
+				if ( $fetched_posts ) {
+					$quiz_ids = array_diff( $quiz_ids, $fetched_posts );
+
+					if ( $quiz_ids ) {
+						$question_ids = _learn_press_get_quiz_questions( $quiz_ids );
+						if ( $question_ids ) {
+							$meta_cache_ids = array_merge( $meta_cache_ids, $question_ids );
+						}
+					}
 				}
 			}
 			$curriculum[$course_id] = $_curriculum;
@@ -356,14 +370,14 @@ function _learn_press_get_quiz_questions( $quiz_ids ) {
 		$format_ids   = array_fill( 0, sizeof( $question_ids ), '%d' );
 		$prepare_args = array_merge( array( '_lp_type', 'lp_question' ), $question_ids );
 		$query        = $wpdb->prepare( "
-			SELECT qa.question_answer_id, ID as id, pm.meta_value as type, qa.answer_data as answer_data, answer_order
-			FROM {$wpdb->posts} p
-			INNER JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID AND pm.meta_key = %s
-			INNER JOIN {$wpdb->prefix}learnpress_quiz_questions qq ON qq.question_id = p.ID
-			RIGHT JOIN {$wpdb->prefix}learnpress_question_answers qa ON qa.question_id = p.ID
-			WHERE qq.quiz_id IN (" . join( ',', $quiz_ids ) . ")
-			ORDER BY id, qq.question_order, answer_order ASC
-		", $prepare_args );
+					SELECT qa.question_answer_id, ID as id, pm.meta_value as type, qa.answer_data as answer_data, answer_order
+					FROM {$wpdb->posts} p
+					INNER JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID AND pm.meta_key = %s
+					INNER JOIN {$wpdb->prefix}learnpress_quiz_questions qq ON qq.question_id = p.ID
+					RIGHT JOIN {$wpdb->prefix}learnpress_question_answers qa ON qa.question_id = p.ID
+					WHERE qq.quiz_id IN (" . join( ',', $quiz_ids ) . ")
+					ORDER BY id, qq.question_order, answer_order ASC
+				", $prepare_args );
 		if ( $answers = $wpdb->get_results( $query ) ) {
 			$question_id = 0;
 			foreach ( $answers as $row ) {
@@ -658,6 +672,8 @@ function _learn_press_get_user_profile_orders( $user_id = 0, $paged = 1, $limit 
 	} else {
 		$results = $data[$user_id];
 	}
+
+
 	return $results;
 }
 
@@ -716,4 +732,3 @@ learn_press_setup_pages();
 //function learn_press_remove_course_comment() {
 //	remove_post_type_support( 'lp_course', 'comments' );
 //}
-
