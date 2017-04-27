@@ -4,7 +4,7 @@ $attribute_taxonomy = get_term_by( 'slug', $attribute['name'], LP_COURSE_ATTRIBU
 <li data-taxonomy="<?php echo $attribute_taxonomy->slug; ?>" class="learn-press-attribute learn-press-toggle-box <?php echo $attribute_taxonomy->slug; ?>">
 	<h4 class="learn-press-toggle-box-header">
 		<span><?php echo $attribute_taxonomy->name; ?></span>
-		<a href=""><?php _e( 'Remove', 'learnpress' ); ?></a>
+		<a href="" class="learn-press-remove-attribute"><?php _e( 'Remove', 'learnpress' ); ?></a>
 	</h4>
 	<div class="learn-press-toggle-box-content learn-press-attribute-data">
 		<label><?php _e( 'Values', 'learnpress' ); ?></label>

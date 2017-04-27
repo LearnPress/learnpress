@@ -60,9 +60,26 @@ if ( !class_exists( 'LP_Course_Attributes' ) ) {
 					array(
 						'action'   => 'save-attributes',
 						'callback' => array( $this, 'save_attributes' )
+					),
+					array(
+						'action' => 'remove-attributes',
+						'callback' => array( $this, 'remove_attributes' )
 					)
 				)
 			);
+		}
+
+		public function remove_attributes ( $course_id ) {
+			$taxonomy = learn_press_get_request( 'taxonomy' );
+			$new_attrs = [];
+
+			$lp_post_meta = get_post_meta($course_id, '_lp_attributes');
+
+			unset( $lp_post_meta[0][$taxonomy] );
+
+			update_post_meta( $course_id, '_lp_attributes', $lp_post_meta[0] ) ? $response['success'] = true : $response['success'] = false;
+
+			learn_press_send_json( $response );die;
 		}
 
 		public function save_attributes( $course_id ) {

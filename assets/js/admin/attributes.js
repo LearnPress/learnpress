@@ -75,12 +75,38 @@
 		});
 	}
 
+	function removeAttributesEvent (e, this_btn) {
+		e.preventDefault();
+
+		var btn_add_attr = $('.course-attribute-taxonomy li[data-taxonomy="' + this_btn.closest('li.learn-press-attribute').data('taxonomy') + '"]');
+
+		// Enable btn
+		btn_add_attr.removeClass('disabled');
+		// Remove attribute in client
+		this_btn.closest('li.learn-press-attribute').remove();
+
+		$.post({
+			url    : window.location.href.addQueryVar('remove-attributes', getPostId()),
+			data   : $().extend({}, $(btn_add_attr).data()),
+			success: function (response) {
+				// var $html = $('.course-attributes'),
+				// 	$newHtml = $(response);
+				// $newHtml.appendTo($html);
+				// $newHtml.find('.course-attribute-values').select2(select2Options)
+			}
+		})
+
+	}
+
 	$(document).ready(function () {
 		$(document)
 			.on('click', '.add-attribute:not(.disabled)', function () {
 				addAttributeToCourse(this);
 			})
 			.on('click', '#save-attributes', saveAttributesEvent)
+			.on('click', '.learn-press-remove-attribute', function(e){
+				removeAttributesEvent(e, $(this))
+			})
 			.on('keyup.addNewAttributeValueEvent', '.select2-input', addNewAttributeValueEvent);
 
 		var $courseAttributes = $('.course-attribute-values');
@@ -88,6 +114,7 @@
 		if ($courseAttributes.length) {
 			$courseAttributes.select2(select2Options);
 		}
+
 
 	});
 })(jQuery);
