@@ -122,9 +122,18 @@ add_action( 'learn_press_after_quiz_question_title', 'learn_press_single_quiz_qu
 add_action( 'learn_press_order_received', 'learn_press_order_details_table', 5 );
 add_action( 'learn_press_before_template_part', 'learn_press_generate_template_information', 999, 4 );
 
+add_action( 'learn_press/after_course_item_content', 'learn_press_course_item_edit_link', 10, 2 );
+function learn_press_course_item_edit_link( $item_id, $course_id ) {
+	$user = learn_press_get_current_user();
+	if ( $user->can_edit_item( $item_id, $course_id ) ): ?>
+        <p class="edit-course-item-link">
+            <a href="<?php echo get_edit_post_link( $item_id ); ?>"><?php _e( 'Edit this item', 'learnpress' ); ?></a>
+        </p>
+	<?php endif;
+}
 
-add_action('learn_press_after_content_item', 'learn_press_course_nav_items', 10, 3);
-add_action('learn_press_after_content_item', 'learn_press_lesson_comment_form', 10, 3);
+add_action( 'learn_press/after_course_item_content', 'learn_press_course_nav_items', 10, 2 );
+add_action( 'learn_press/after_course_item_content', 'learn_press_lesson_comment_form', 10, 2 );
 
 /*
 add_action( 'learn_press_single_quiz_summary', 'learn_press_single_quiz_preview_mode', 5 );
@@ -175,29 +184,32 @@ function learn_press_comments_template_query_args( $comment_args ) {
 	if ( $post_type == 'lp_course' ) {
 		$comment_args['type__not_in'] = 'review';
 	}
+
 	return $comment_args;
 }
 
 add_filter( 'comments_template_query_args', 'learn_press_comments_template_query_args' );
 
-if( !function_exists( 'learn_press_filter_get_comments_number' )){
-	function learn_press_filter_get_comments_number( $count, $post_id=0 ) {
+if ( ! function_exists( 'learn_press_filter_get_comments_number' ) ) {
+	function learn_press_filter_get_comments_number( $count, $post_id = 0 ) {
 		global $wpdb;
-		if( !$post_id ){
+		if ( ! $post_id ) {
 			$post_id = learn_press_get_course_id();
 		}
-		if(!$post_id){
+		if ( ! $post_id ) {
 			return $count;
 		}
-		if( get_post_type( $post_id ) == 'lp_course' ) {
-			$sql = " SELECT count(*) "
-				. " FROM {$wpdb->comments} "
-				. " WHERE comment_post_ID=%d "
-					. " and comment_approved=1 "
-					. " and comment_type != 'review' ";
-			$count =  $wpdb->get_var( $wpdb->prepare( $sql, $post_id) );
-			return apply_filters('learn_press_get_comments_number',$count, $post_id );
+		if ( get_post_type( $post_id ) == 'lp_course' ) {
+			$sql   = " SELECT count(*) "
+			         . " FROM {$wpdb->comments} "
+			         . " WHERE comment_post_ID=%d "
+			         . " and comment_approved=1 "
+			         . " and comment_type != 'review' ";
+			$count = $wpdb->get_var( $wpdb->prepare( $sql, $post_id ) );
+
+			return apply_filters( 'learn_press_get_comments_number', $count, $post_id );
 		}
+
 		return $count;
 	}
 }
