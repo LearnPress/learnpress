@@ -83,9 +83,11 @@ if ( !class_exists( 'LP_Course_Attributes' ) ) {
 		}
 
 		public function save_attributes( $course_id ) {
-			$data       = learn_press_get_request( 'data' );
+			$data_order = learn_press_get_request( 'data_order' );
+            $data_attr = learn_press_get_request( 'data_attr' );
+
 			$attributes = array();
-			parse_str( $data, $attributes );
+			parse_str( $data_attr, $attributes );
 			if ( $attributes ) {
 				$attributes = $attributes['course-attribute-values'];
 				foreach ( $attributes as $taxonomy_id => $values ) {
@@ -96,6 +98,9 @@ if ( !class_exists( 'LP_Course_Attributes' ) ) {
 					wp_set_object_terms( $course_id, $values, LP_COURSE_ATTRIBUTE . '-' . $taxonomy->slug );
 				}
 			}
+
+            update_post_meta( $course_id, 'lp_course_attributes_order', $data_order ) ? $response['success'] = true : $response['success'] = false;
+            learn_press_send_json( $response );
 			die();
 		}
 

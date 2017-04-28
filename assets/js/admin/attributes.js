@@ -18,6 +18,7 @@
 	}
 
 	function addAttributeToCourse(button) {
+        $('.course-attributes').sortable();
 		$(button).addClass('disabled');
 		$.post({
 			url    : window.location.href.addQueryVar('add-attribute-to-course', getPostId()),
@@ -64,13 +65,23 @@
 	}
 
 	function saveAttributesEvent(e) {
+		var attr_order = [];
+
+        $.each($('.course-attributes').find('li.learn-press-attribute'), function(){
+        	attr_order.push($(this).data('taxonomy'));
+		})
+
+		// console.log(attr_order)
+
+
 		$.post({
 			url    : window.location.href.addQueryVar('save-attributes', getPostId()),
 			data   : {
-				data: $('.course-attributes').find('input, select, textarea').serialize(),
+				data_order: attr_order,
+				data_attr: $('.course-attributes').find('input, select, textarea').serialize(),
 			},
-			success: function () {
-
+			success: function (response) {
+				console.log()
 			}
 		});
 	}
@@ -102,6 +113,7 @@
 	}
 
 	$(document).ready(function () {
+        $('.course-attributes').sortable();
 		$(document)
 			.on('click', '.add-attribute:not(.disabled)', function () {
 				addAttributeToCourse(this);

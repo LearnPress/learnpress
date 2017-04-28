@@ -7,6 +7,17 @@ $postId = $post ? $post->ID : 0;
 	<?php
 	$attributes        = learn_press_get_attributes();
 	$course_attributes = learn_press_get_course_attributes( $postId );
+	$course_attributes_order = get_post_meta( $postId, 'lp_course_attributes_order' );
+
+	if ($course_attributes_order) {
+	    foreach ($course_attributes_order[0] as $item) {
+            $course_attributes_ordered[$item] = $course_attributes[$item];
+//            var_dump($item);
+        }
+    }
+
+//    var_dump($course_attributes_ordered);
+
 	if ( $attributes ) {
 		?>
 		<ul class="course-attribute-taxonomy">
@@ -25,6 +36,8 @@ $postId = $post ? $post->ID : 0;
 		<ul class="course-attributes">
 			<?php
 			if ( $course_attributes ):
+                if(isset($course_attributes_ordered))  $course_attributes = $course_attributes_ordered;
+
 				foreach ( $course_attributes as $attribute ) {
 					include learn_press_get_admin_view( 'meta-boxes/course/html-course-attribute' );
 				}
