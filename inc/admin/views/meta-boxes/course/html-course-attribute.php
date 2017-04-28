@@ -6,7 +6,7 @@ $attribute_taxonomy = get_term_by( 'slug', $attribute['name'], LP_COURSE_ATTRIBU
 		<span><?php echo $attribute_taxonomy->name; ?></span>
 		<div class="learn-press-toggle-box-tools lp-section-actions lp-button-actions">
             <a href="" data-action="remove" class="dashicons dashicons-trash learn-press-remove-attribute" data-confirm-remove="<?php _e( 'Are you sure you want to remove this section?', 'learnpress' ); ?>"></a>
-            <a href="" class="move ui-sortable-handle"></a>
+            <a href="" class="move ui-sortable-handle dashicons dashicons-menu"></a>
         </div>
 	</h4>
 	<div class="learn-press-toggle-box-content learn-press-attribute-data">
