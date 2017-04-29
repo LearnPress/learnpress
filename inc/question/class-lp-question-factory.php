@@ -238,6 +238,7 @@ class LP_Question_Factory {
 
 
 	public static function sanitize_answers( $answers, $posted, $q ) {
+		print_r(func_get_args());die();
 		$func = "_sanitize_{$q->type}_answers";
 		if ( is_callable( array( __CLASS__, $func ) ) ) {
 			return call_user_func_array( array( __CLASS__, $func ), array( $answers, $q ) );
