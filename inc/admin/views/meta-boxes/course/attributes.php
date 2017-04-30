@@ -44,6 +44,7 @@ $postId = $post ? $post->ID : 0;
 			endif;
 			?>
 		</ul>
+		<div class='cloned-slides' id='cloned-slides'></div>
 
 		<button class="button button-primary" type="button" id="save-attributes"><?php _e( 'Save attributes', 'learnpres' ); ?></button>
 		<?php

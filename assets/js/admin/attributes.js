@@ -18,12 +18,6 @@
 	}
 
 	function addAttributeToCourse(button) {
-        $('.course-attributes').sortable({
-            axis: "y",
-            cursor: "move",
-            handle: "a.move.dashicons.dashicons-menu",
-            connectWith: '.course-attributes'
-		});
 		$(button).addClass('disabled');
 		$.post({
 			url    : window.location.href.addQueryVar('add-attribute-to-course', getPostId()),
@@ -35,6 +29,7 @@
 				$newHtml.find('.course-attribute-values').select2(select2Options)
 
                 saveAttributesEvent();
+                attr_sortable();
 			}
 		})
 	}
@@ -121,13 +116,82 @@
 
 	}
 
-	$(document).ready(function () {
-        $('.course-attributes').sortable({
+	function attr_sortable() {
+		$(".learn-press-attribute").each(function(i) {
+		  var item = $(this);
+		  var item_clone = item.clone();
+		  item.data("clone", item_clone);
+		  var position = item.position();
+		  item_clone
+		  .css({
+		    left: position.left,
+		    top: position.top,
+		    visibility: "hidden"
+		  })
+		    .attr("data-pos", i+1);
+		  
+		  $("#cloned-slides").append(item_clone);
+		});
+
+		$('.course-attributes').sortable({
             axis: "y",
             cursor: "move",
             handle: "a.move.dashicons.dashicons-menu",
-            connectWith: '.course-attributes'
+            connectWith: '.course-attributes',
+            item: '.learn-press-attribute',
+			revert: true,
+			scroll: false,
+			placeholder: "sortable-placeholder",
+
+			start: function(e, ui) {
+			    ui.helper.addClass("exclude-me");
+			    $(".course-attributes .learn-press-attribute:not(.exclude-me)")
+			      .css("visibility", "hidden");
+			    ui.helper.data("clone").hide();
+			    $(".course-attributes .learn-press-attribute").css("visibility", "visible");
+			  },
+
+			  stop: function(e, ui) {
+			    $(".course-attributes .learn-press-attribute").each(function() {
+			      var item = $(this);
+			      var clone = item.data("clone");
+			      var position = item.position();
+
+			      clone.css("left", position.left);
+			      clone.css("top", position.top);
+			      clone.show();
+
+			      item.removeClass("exclude-me");
+			    });
+			    
+			    $(".course-attributes .learn-press-attribute").each(function() {
+			      var item = $(this);
+			      var clone = item.data("clone");
+			      
+			      clone.attr("data-pos", item.index());
+			    });
+
+			    $(".course-attributes .learn-press-attribute").css("visibility", "visible");
+			    $(".cloned-slides .learn-press-attribute").css("visibility", "hidden");
+			  },
+
+			  change: function(e, ui) {
+			    $(".course-attributes .learn-press-attribute:not(.exclude-me)").each(function() {
+			      var item = $(this);
+			      var clone = item.data("clone");
+			      clone.stop(true, false);
+			      var position = item.position();
+			      clone.animate({
+			        left: position.left,
+			        top: position.top
+			      }, 200);
+			    });
+			  }
 		});
+	}
+
+	$(document).ready(function () {
+		attr_sortable();
 		$(document)
 			.on('click', '.add-attribute:not(.disabled)', function () {
 				addAttributeToCourse(this);

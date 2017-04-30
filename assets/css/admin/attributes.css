@@ -18,3 +18,23 @@
 .course-attributes .learn-press-toggle-box-content {
   background: #fff;
 }
+
+/* Update with LESS later */
+
+.cloned-slides .learn-press-attribute {
+  position: absolute;
+  z-index: 1;
+}
+.cloned-slides .learn-press-attribute:before {
+  content: attr(data-pos);
+}
+
+.sortable-placeholder {
+  height: 118px;
+  width: 100%;
+  border-left: 2px solid #4999DA;
+  position: relative;
+  z-index: 6;
+  background-image: url("../../images/stripe.png");
+}
+
