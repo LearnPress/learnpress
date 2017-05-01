@@ -1,0 +1,265 @@
+#learn-press-course-editor {
+    margin-bottom: 20px;
+    background: #FFF;
+    padding: 20px;
+    box-shadow: 0 0 10px #DDD;
+    &:after {
+        display: block;
+        clear: both;
+        content: '';
+    }
+    #course-curriculum, #course-item-editor {
+
+    }
+    #course-curriculum {
+        width: 38%;
+        border: 1px solid #DDD;
+        margin-bottom: 20px;
+        .course-section {
+            background: #FFF;
+            position: relative;
+            border-bottom: 3px solid #B7B7B7;
+            .section-head {
+                border-bottom: 1px solid #DDD;
+                background: #F9F9F9;
+                position: relative;
+                input[type="text"] {
+                    display: block;
+                    width: 100%;
+                    margin: 0;
+                    border: none;
+                    height: 50px;
+                    font-weight: bold;
+                    font-size: 20px;
+                    padding: 10px 15px;
+                    color: #777;
+                    background: transparent;
+                }
+                &:hover {
+                    .section-move, .course-row-actions {
+                        display: inline-block;
+                    }
+                    &:after {
+                        content: '';
+                        display: block;
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        background: #0085ba;
+                        opacity: 0.1;
+                        pointer-events: none;
+                    }
+                }
+            }
+            .section-add-content {
+                margin: 10px 10px;
+                > ul {
+                    margin-bottom: 10px;
+                    display: none;
+                    > li {
+                        display: inline-block;
+                        width: 70px;
+                        border: 1px solid #DDD;
+                        font-size: 48px;
+                        height: 60px;
+                        line-height: 60px;
+                        border-radius: 3px;
+                        margin-right: 6px;
+                        background: #FFF;
+                        &:before {
+                            color: #DDD;
+                        }
+                        &:hover {
+                            cursor: move;
+                            &:before {
+                                color: #00A0D2;
+                            }
+                        }
+                    }
+                }
+            }
+            .section-items {
+                margin: 0;
+                min-height: 40px;
+                &.section-empty {
+                    &:after {
+                        content: 'Add item here';
+                        display: block;
+                        height: 50px;
+                        font-size: 18px;
+                        text-align: center;
+                        line-height: 50px;
+                    }
+                }
+                li {
+                    margin: 0;
+                    border-bottom: 1px solid #DDD;
+                    position: relative;
+                    background: #FFF;
+                    input[type="text"] {
+                        width: 100%;
+                        box-sizing: border-box;
+                        margin: 0;
+                        border: none;
+                        padding: 10px 15px;
+                        background: transparent;
+                        color: #777;
+
+                    }
+
+                    &:hover {
+                        .section-item-move,
+                        .course-row-actions {
+                            display: inline-block;
+                        }
+                        &:after {
+                            content: '';
+                            display: block;
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            width: 100%;
+                            height: 100%;
+                            background: #0085ba;
+                            opacity: 0.1;
+                            pointer-events: none;
+                        }
+                    }
+                    &.ui-sortable-placeholder {
+                        visibility: visible !important;
+                        background: #FFF;
+                        box-shadow: 0 0 20px #DDD inset;
+                        &:after {
+                            content: 'Drop item here!';
+                            position: absolute;
+                            width: 100%;
+                            height: 40px;
+                            line-height: 40px;
+                            text-align: center;
+                            font-size: 20px;
+                            color: #777;
+                        }
+                    }
+                }
+            }
+            .section-move, .section-item-move {
+                display: none;
+                width: 15px;
+                height: 30px;
+                background: url("../../images/grippy_large.png") 4px center no-repeat;
+                position: absolute;
+                top: 50%;
+                margin-top: -15px;
+                cursor: url("../../../assets/images/openhand.cur") 7 5, default;
+            }
+            &.ui-sortable-placeholder {
+                visibility: visible !important;
+                background: #FFF;
+                box-shadow: 0 0 20px #DDD inset;
+                &:after {
+                    content: 'Drop section here!';
+                    position: absolute;
+                    width: 100%;
+                    height: 40px;
+                    line-height: 40px;
+                    text-align: center;
+                    font-size: 20px;
+                    color: #777;
+                    top: 50%;
+                    margin-top: -20px;
+                }
+            }
+            &.active {
+
+            }
+            .course-row-actions {
+                position: absolute;
+                right: 4px;
+                height: 24px;
+                top: 50%;
+                margin-top: -13px;
+                line-height: 24px;
+                background: #F5F5F5;
+                padding: 0 8px;
+                font-size: 11px;
+                border-radius: 3px;
+                border: 1px solid #efefef;
+                display: none;
+                a, > div {
+                    text-decoration: none;
+                    color: #9c9c9c;
+                    text-shadow: 1px 1px #fff;
+                    &:hover {
+                        color: #39afff;
+                    }
+                }
+                a.remove {
+                    margin-right: 3px;
+                    &:hover {
+                        color: #FF0000;
+                    }
+                }
+                .toggle{
+                    display: inline-block;
+                    width: 24px;
+                    margin-right: -8px;
+                    text-align: center;
+                    font-size: 20px;
+                    vertical-align: middle;
+                    line-height: 23px;
+                    border-left: 1px solid #efefef;
+                    height: 24px;
+                    background: #efefef;
+                    margin-top: -2px;
+                }
+                div.add {
+                    margin-left: 3px;
+                    display: inline-block;
+                    > div {
+                        display: none;
+                        position: absolute;
+                        min-width: 303px;
+                        right: 0;
+                        top: 100%;
+                        background: #F5F5F5;
+                        border: 1px solid #DDD;
+                        z-index: 999;
+                        text-align: right;
+                        padding: 10px 10px 3px 10px;
+                        ul {
+                            margin-bottom: 10px;
+                            li {
+                                width: 65px;
+                                height: 48px;
+                                font-size: 48px;
+                                border: 1px solid #DDD;
+                                border-radius: 3px;
+                                margin-left: 5px;
+                            }
+
+                        }
+                        a {
+                            text-align: right;
+                            margin-left: 8px;
+                        }
+                    }
+                    &:hover {
+                        > div {
+                            display: block;
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+    #course-item-editor {
+        width: 60%;
+        float: right;
+        border: 1px solid #DDD;
+        padding: 0 20px;
+        box-sizing: border-box;
+    }
+}
