@@ -35,6 +35,17 @@ function clean_dist() {
         .pipe(clean());
 }
 
+// SVN
+var svnPath = '/Users/tu/Documents/foobla/svn/learnpress';
+gulp.task('svn', function(){
+    gulp.src(svnPath, {read: false, force: true}).pipe(clean());
+    gulp.src([
+        'assets/**/*',
+        '!node_modules/**/*'
+    ]).pipe(gulpCopy(svnPath));
+    //console.log(gulp.dest('/Users/tu/Documents/foobla/svn'));
+});
+
 gulp.task('build', ['zip'], clean_dist);
 
 gulp.task('clean', clean_dist);

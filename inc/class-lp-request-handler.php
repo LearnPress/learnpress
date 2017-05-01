@@ -65,6 +65,7 @@ class LP_Request_Handler {
 			wp_redirect( remove_query_arg( 'lp-reload' ) );
 			exit();
 		}
+		//print_r($_SERVER['REQUEST_METHOD']);die();
 		if ( !empty( $_REQUEST ) ) foreach ( $_REQUEST as $key => $value ) {
 			do_action( 'learn_press_request_handler_' . $key, $value, $_REQUEST );
 		}
