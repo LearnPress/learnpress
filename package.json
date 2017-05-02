@@ -17,12 +17,18 @@
   },
   "homepage": "https://github.com/LearnPress/LearnPress#readme",
   "devDependencies": {
+    "fs": "0.0.1-security",
     "gulp": "^3.9.1",
     "gulp-clean": "^0.3.2",
     "gulp-copy": "^1.0.0",
     "gulp-less": "^3.3.0",
     "gulp-livereload": "^3.8.1",
+    "gulp-replace": "^0.5.4",
     "gulp-sourcemaps": "^2.6.0",
-    "gulp-zip": "^4.0.0"
+    "gulp-zip": "^4.0.0",
+    "mkdirp": "^0.5.1",
+    "read-file": "^0.2.0",
+    "replace": "^0.3.0",
+    "yargs": "^7.1.0"
   }
 }

@@ -1,78 +1,115 @@
 // npm i -g gulp
 'use strict';
-
-var gulp = require('gulp');
 const zip = require('gulp-zip');
-var gulpCopy = require('gulp-copy');
-var clean = require('gulp-clean');
 
-var less = require('gulp-less');
-
-var live_reload = require('gulp-livereload');
-var sourcemaps = require('gulp-sourcemaps');
+var gulp = require('gulp'),
+    gulpCopy = require('gulp-copy'),
+    clean = require('gulp-clean'),
+    less = require('gulp-less'),
+    liveReload = require('gulp-livereload'),
+    sourceMaps = require('gulp-sourcemaps'),
+    readFile = require('read-file'),
+    replace = require('gulp-replace'),
+    mkdirp = require("mkdirp");
 
 gulp.task('less', function () {
     return gulp.src(['assets/less/**/*.less'])
-        .pipe(sourcemaps.init())
+        .pipe(sourceMaps.init())
         .pipe(less())
-        .pipe(sourcemaps.write())
+        .pipe(sourceMaps.write())
         .pipe(gulp.dest('assets/css'))
-        .pipe(live_reload());
+        .pipe(liveReload());
 });
 
 gulp.task('watch', function () {
-    live_reload.listen();
+    liveReload.listen();
     gulp.watch(['assets/less/**/*.less'], ['less']);
 });
 
 gulp.task('default', ['less', 'watch']);
 
-/**
- * Build zip
+/*
+ * SVN: Copy working directory to SVN and prepare something before submitting.
  */
-function clean_dist() {
-    return gulp.src('dist', {read: false})
-        .pipe(clean());
-}
-
-// SVN
-var svnPath = '/Users/tu/Documents/foobla/svn/learnpress';
-gulp.task('svn', function(){
-    gulp.src(svnPath, {read: false, force: true}).pipe(clean());
-    gulp.src([
+var rootPath = '/Users/tu/Documents/foobla',
+    svnPath = rootPath + '/svn/learnpress',
+    releasePath = rootPath + '/releases/learnpress',
+    svnTrunkPath = svnPath + '/trunk',
+    svnTagsPath = svnPath + '/tags',
+    currentVer = null,
+    copySvnFiles = [
         'assets/**/*',
-        '!node_modules/**/*'
-    ]).pipe(gulpCopy(svnPath));
-    //console.log(gulp.dest('/Users/tu/Documents/foobla/svn'));
+        'dummy-data/**/*',
+        'inc/**/*',
+        'languages/**/*',
+        'templates/**/*',
+        'index.php',
+        'learnpress.php'
+    ],
+    getCurrentVer = function (force) {
+        if (currentVer === null || force === true) {
+            currentVer = readFile.sync('learnpress.php', {encoding: 'utf8'}).match(/Version:\s*(.*)/);
+            currentVer = currentVer ? currentVer[1] : null;
+        }
+        return currentVer;
+    },
+    updateReadme = function (version, callback) {
+        return gulp.src(['readme.txt'])
+            .pipe(replace(/Stable tag: (.*)/g, 'Stable tag: ' + version))
+            .pipe(gulp.dest(svnTrunkPath, {overwrite: true}))
+            .on('end', function () {
+                callback ? callback() : 'do nothing';
+            });
+    };
+// Clear trunk/tag path
+gulp.task('clr-tag', function () {
+    return gulp.src(svnTagsPath + '/' + getCurrentVer() + '/', {read: false}).pipe(clean({force: true}));
+});
+gulp.task('clr-trunk', function () {
+    return gulp.src(svnTrunkPath + '/', {read: false}).pipe(clean({force: true}));
 });
 
-gulp.task('build', ['zip'], clean_dist);
-
-gulp.task('clean', clean_dist);
-
-gulp.task('copy', ['clean'], function () {
-    return gulp
-        .src([
-            'admin/**/*',
-            'assets/**/*',
-            'inc/**/*',
-            'providers/**/*',
-            'helpers/**/*',
-            '!inc/includes/kirki/node_modules/**/*',
-            'languages/**/*',
-            'thim-core.php',
-            'readme.txt',
-            'index.php',
-            '!**/*.scss',
-            '!**/*.log',
-            '!**/Gruntfile.js',
-            '!**/package.json'
-        ])
-        .pipe(gulpCopy('dist/thim-core', {}))
+// Copy working dir to trunk
+gulp.task('copy-trunk', ['clr-trunk'], function () {
+    mkdirp(svnTrunkPath);
+    return gulp.src(copySvnFiles).pipe(gulpCopy(svnTrunkPath));
 });
 
-gulp.task('zip', ['copy'], function () {
-    return gulp.src('dist/**/*')
-        .pipe(zip('thim-core.zip'))
-        .pipe(gulp.dest(''));
+// Copy trunk to current tag
+gulp.task('copy-tag', ['clr-tag'], function () {
+    var tagPath = svnTagsPath + '/' + getCurrentVer();
+    mkdirp(tagPath);
+    process.chdir(svnTrunkPath);
+    var copyFiles = copySvnFiles;
+    copyFiles.push('readme.txt');
+    return gulp.src(copyFiles).pipe(gulpCopy(tagPath));
 });
+
+gulp.task('clr-release', function () {
+    return gulp.src(releasePath + '/', {read: false}).pipe(clean({force: true}));
+});
+
+gulp.task('copy-release', ['clr-release'], function () {
+    mkdirp(releasePath);
+    process.chdir(svnTrunkPath);
+    var copyFiles = copySvnFiles;
+    copyFiles.push('readme.txt');
+    return gulp.src(copyFiles).pipe(gulpCopy(releasePath));
+});
+
+gulp.task('release', ['copy-release'], function () {
+    process.chdir(releasePath);
+    var zipPath = releasePath.replace(/learnpress/, '');
+    return gulp.src(zipPath + '/**/learnpress/*')
+        .pipe(zip('learnpress.' + getCurrentVer(true) + '.zip'))
+        .pipe(gulp.dest(zipPath));
+});
+
+// main task
+gulp.task('svn', ['less', 'copy-trunk'], function () {
+    updateReadme(getCurrentVer(true), function () {
+        return gulp.start('release', ['copy-tag']);
+    })
+});
+
+// end of the world!
