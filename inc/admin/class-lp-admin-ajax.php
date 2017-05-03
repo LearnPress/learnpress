@@ -302,7 +302,6 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
                         WHERE meta_key = '_course_id' 
                         AND learnpress_order_item_id = $item";
 			    $id = $wpdb->get_results( $sql, OBJECT );
-//			    learn_press_send_json($id[0]->meta_value);die;
 			    array_push($current_items, $id[0]->meta_value);
             }
 
@@ -369,7 +368,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
                 }
 			}
 
-            
+
 
 			ob_start();
 			if ( $found_items ) {
