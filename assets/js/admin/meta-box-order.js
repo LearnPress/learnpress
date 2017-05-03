@@ -26,6 +26,8 @@
 			$add_h2
 				.insertAfter($add_new_h2);
 
+			$('.wp-list-table #order_status').css('width', '135px');
+
 			$('select[name="order-status"]').on('change', function () {
 				var $sel = $(this),
 					$sec = $('.order-action-section'),
