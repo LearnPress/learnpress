@@ -192,6 +192,7 @@
 
 	$(document).ready(function () {
 		attr_sortable();
+
 		$(document)
 			.on('click', '.add-attribute:not(.disabled)', function () {
 				addAttributeToCourse(this);
@@ -207,6 +208,13 @@
 		if ($courseAttributes.length) {
 			$courseAttributes.select2(select2Options);
 		}
+
+        $('.learn-press-toggle-box-tools').hide();
+		$('li.learn-press-attribute').hover(function () {
+			$(this).find('.learn-press-toggle-box-tools').show();
+        }, function () {
+            $(this).find('.learn-press-toggle-box-tools').hide();
+        })
 
 
 	});
