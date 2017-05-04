@@ -44,6 +44,7 @@ $checkout_url = apply_filters( 'learn_press_get_checkout_url', LP()->cart->get_c
 
 					<td class="course-thumbnail">
 						<?php
+
 						$thumbnail = apply_filters( 'learn_press_cart_item_thumbnail', $_course->get_image(), $cart_item );
 
 						if ( ! $_course->is_visible() ) {

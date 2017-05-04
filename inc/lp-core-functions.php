@@ -2015,9 +2015,7 @@ function learn_press_add_user_item_if_needed( $located, $template_name, $templat
 
 function learn_press_set_user_timezone() {
 	?>
-	<script type="text/javascript">
-		jQuery.cookie('timezone', new Date().getTimezoneOffset());
-	</script>
+
 	<?php
 }
 

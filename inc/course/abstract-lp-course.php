@@ -1135,7 +1135,11 @@ abstract class LP_Abstract_Course {
 			}
 			$achieved_point += is_object( $results[$quiz->ID] ) ? $results[$quiz->ID]->mark : 0;
 		}
-		$result = ( $achieved_point / $total_point ) * 100;
+		if ( $total_point > 0 ) {
+			$result = ( $achieved_point / $total_point ) * 100;
+		} else {
+			$result = 0;
+		}
 		return apply_filters( 'learn_press_evaluate_course_by_quizzes_results', $result, $this->id, $user_id );
 	}
 
@@ -1178,7 +1182,11 @@ abstract class LP_Abstract_Course {
 				$achieved_point += is_object( $quiz_results ) ? $quiz_results->mark : 0;
 			}
 		}
-		$result = ( $achieved_point / $total_point ) * 100;
+		if ( $total_point > 0 ) {
+			$result = ( $achieved_point / $total_point ) * 100;
+		} else {
+			$result = 0;
+		}
 		return apply_filters( 'learn_press_evaluate_course_by_passed_quizzes_results', $result, $this->id, $user_id );
 	}
 
@@ -1257,9 +1265,13 @@ abstract class LP_Abstract_Course {
 		$evaluate_course_by_lesson = LP_Cache::get_evaluate_course_by_lesson( false, array() );
 		$key                       = $user_id . '-' . $this->id;
 		if ( !array_key_exists( $key, $evaluate_course_by_lesson ) || $force ) {
-			$course_lessons                  = $this->get_lessons( array( 'field' => 'ID' ) );
-			$completed_lessons               = $this->get_completed_lessons( $user_id );
-			$evaluate_course_by_lesson[$key] = min( $completed_lessons / sizeof( $course_lessons ), 1 ) * 100;
+			$course_lessons    = $this->get_lessons( array( 'field' => 'ID' ) );
+			$completed_lessons = $this->get_completed_lessons( $user_id );
+			if ( $size = sizeof( $course_lessons ) ) {
+				$evaluate_course_by_lesson[$key] = min( $completed_lessons / sizeof( $course_lessons ), 1 ) * 100;
+			} else {
+				$evaluate_course_by_lesson[$key] = 0;
+			}
 			LP_Cache::set_evaluate_course_by_lesson( $key, $evaluate_course_by_lesson[$key] );
 		}
 		return apply_filters( 'learn_press_evaluation_course_lesson', $evaluate_course_by_lesson[$key], $this->id, $user_id );
