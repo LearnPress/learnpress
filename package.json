@@ -1,0 +1,34 @@
+{
+  "name": "learnpress",
+  "version": "1.0.0",
+  "description": "[![Stories in Ready](https://badge.waffle.io/LearnPress/LearnPress.svg?label=ready&title=Ready)](http://waffle.io/LearnPress/LearnPress)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LearnPress/LearnPress.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LearnPress/LearnPress/issues"
+  },
+  "homepage": "https://github.com/LearnPress/LearnPress#readme",
+  "devDependencies": {
+    "fs": "0.0.1-security",
+    "gulp": "^3.9.1",
+    "gulp-clean": "^0.3.2",
+    "gulp-copy": "^1.0.0",
+    "gulp-less": "^3.3.0",
+    "gulp-livereload": "^3.8.1",
+    "gulp-replace": "^0.5.4",
+    "gulp-sourcemaps": "^2.6.0",
+    "gulp-zip": "^4.0.0",
+    "mkdirp": "^0.5.1",
+    "read-file": "^0.2.0",
+    "replace": "^0.3.0",
+    "yargs": "^7.1.0"
+  }
+}
