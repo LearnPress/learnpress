@@ -10,6 +10,7 @@
 defined( 'ABSPATH' ) || exit;
 
 $nav = learn_press_get_nav_course_item_url( $course_id, $item_id, $content_only );
+
 ?>
 <nav id="lp-navigation" class="navigation course-item-navigation" role="navigation">
 	<div class="nav-links">

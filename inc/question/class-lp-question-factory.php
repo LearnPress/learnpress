@@ -314,7 +314,7 @@ class LP_Question_Factory {
 	}
 
 	public static function admin_assets() {
-		LP_Assets::enqueue_style( 'learn-press-meta-box-question' );
+		//LP_Assets::enqueue_style( 'learn-press-meta-box-question' );
 		//LP_Assets::enqueue_script( 'learn-press-meta-box-question', false, array( 'learn-press-admin' ) );
 	}
 

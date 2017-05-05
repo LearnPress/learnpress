@@ -22,7 +22,7 @@ class LP_User_Factory {
 	 *
 	 */
 	public static function init() {
-		self::$_guest_transient = 2 * HOUR_IN_SECONDS;
+		self::$_guest_transient = WEEK_IN_SECONDS;
 		add_action( 'wp_login', array( __CLASS__, 'clear_temp_user_data' ) );
 		add_action( 'learn_press_user_start_quiz', array( __CLASS__, 'start_quiz' ), 10, 4 );
 		add_action( 'learn_press_user_retake_quiz', array( __CLASS__, 'retake_quiz' ), 10, 4 );

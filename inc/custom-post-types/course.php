@@ -604,6 +604,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 							'evaluate_quiz'           => __( 'Evaluate quizzes', 'learnpress' ) . sprintf( '<p class="description option-desc">%s</p>', __( 'Evaluate by quizzes user has completed per total quizzes.', 'learnpress' ) ),
 						),
 						'std'     => 'evaluate_lesson',
+						'inline'  => false
 					),
 					array(
 						'name' => __( 'Passing condition value', 'learnpress' ),

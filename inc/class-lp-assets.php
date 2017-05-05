@@ -205,6 +205,8 @@ class LP_Assets {
 		$deps         = array( 'jquery', 'backbone', 'utils' );
 		$ver          = LEARNPRESS_VERSION;
 
+		$scripts->add( 'angularjs', 'https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js' ,null, $ver, 1 );
+
 		// global
 		$scripts->add( 'learn-press-global', $default_path . 'js/global' . $suffix . '.js', $deps, $ver, 1 );
 		$scripts->add( 'learn-press-jalerts', $default_path . 'js/jquery.alert' . $suffix . '.js', $deps, $ver, 1 );
@@ -285,7 +287,7 @@ class LP_Assets {
 		$styles->add( 'learn-press-jquery.ui.core', $default_path . 'css/admin/jquery.ui.core' . $suffix . '.css', null, $ver );
 		$styles->add( 'learn-press-jquery.ui.slider', $default_path . 'css/admin/jquery.ui.slider' . $suffix . '.css', null, $ver );
 		$styles->add( 'learn-press-mb-course', $default_path . 'css/admin/meta-box-course' . $suffix . '.css', null, $ver );
-		$styles->add( 'learn-press-mb-question', $default_path . 'css/admin/meta-box-question' . $suffix . '.css', null, $ver );
+		//$styles->add( 'learn-press-mb-question', $default_path . 'css/admin/meta-box-question' . $suffix . '.css', null, $ver );
 		$styles->add( 'learn-press-mb-order', $default_path . 'css/admin/meta-box-order' . $suffix . '.css', null, $ver );
 		$styles->add( 'learn-press-jalerts', $default_path . 'css/jalert' . $suffix . '.css', null, $ver );
 		//$styles->add( 'learn-press-statistics-select2', '/' . LP_WP_CONTENT . '/plugins/learnpress/inc/libraries/meta-box/css/select2/select2.css' );

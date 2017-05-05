@@ -555,7 +555,7 @@ if ( !function_exists( 'learn_press_profile_tab_courses_all' ) ) {
 		$num_pages         = learn_press_get_num_pages( $user->_get_found_rows(), $limit );
 		$args['courses']   = $courses;
 		$args['num_pages'] = $num_pages;
-		learn_press_get_template( 'profile/tabs/courses/all.php', $args );
+		learn_press_get_template( 'profile/tabs/courses.php', $args );
 	}
 }
 

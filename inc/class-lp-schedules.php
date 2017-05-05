@@ -13,6 +13,7 @@ class LP_Schedules {
 		if ( learn_press_get_request( 'action' ) == 'heartbeat' || !is_admin() ) {
 			//$this->_update_user_course_expired();
 		}
+		add_filter( 'template_include', array( $this, 'auto_complete_course' ), 10 );
 		add_filter( 'cron_schedules', array( $this, 'add_custom_cron_intervals' ), 10, 1 );
 
 		if ( !wp_next_scheduled( 'learn_press_schedule_update_user_items' ) ) {
@@ -24,6 +25,18 @@ class LP_Schedules {
 			wp_schedule_event( time(), 'daily', 'learn_press_delete_user_guest_transient' );
 		}
 		add_action( 'learn_press_delete_user_guest_transient', array( $this, 'delete_user_guest_transient' ) );
+	}
+
+	public function auto_complete_course($template){
+		if( learn_press_is_course() && is_user_logged_in() ) {
+			$course = learn_press_get_course();
+			$user = learn_press_get_current_user();
+			if( $user->has_enrolled_course($course->id) && !$user->has_finished_course($course->id) && $course->is_expired( $user->id ) <= 0 ) {
+				$this->schedule_update_user_items();
+				wp_redirect(get_permalink($course->id));
+			}
+		}
+		return $template;
 	}
 
 	function add_custom_cron_intervals( $schedules ) {
@@ -69,6 +82,7 @@ class LP_Schedules {
 				)
 			);
 		}
+		learn_press_reset_auto_increment($wpdb->options);
 	}
 
 	public function schedule_update_user_items() {

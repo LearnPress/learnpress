@@ -22,6 +22,7 @@ global $post, $wp_query, $lp_tax_query;
 
 	<?php learn_press_begin_courses_loop(); ?>
 
+
 	<?php while ( LP()->wp_query->have_posts() ) : LP()->wp_query->the_post(); ?>
 
 		<?php learn_press_get_template_part( 'content', 'course' ); ?>

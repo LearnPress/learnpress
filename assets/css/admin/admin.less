@@ -325,6 +325,33 @@ input:focus:-moz-placeholder {
 
 .learn-press-message {
     position: relative;
+    background: #F5F5F5;
+    border-left: 5px solid #00A0D2;
+    padding: 10px 10px 0px 10px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    color: #777;
+    button {
+        float: right;
+    }
+    p {
+        margin: 0 0 10px;
+    }
+    &:after {
+        clear: both;
+        content: '';
+        display: block;
+    }
+    &.notice {
+        border-left-color: #b3d20a;
+    }
+    &.lp-error,
+    &.error {
+        border-left-color: #b81c23;
+    }
+    ul {
+        list-style-type: none;
+    }
     .learn-press-admin-notice-dismiss {
         position: absolute;
         display: inline-block;
@@ -369,7 +396,11 @@ li.quiz, li.lesson, li.quick_lesson, li.quick_quiz {
     width: 15%;
 }
 
-/**/
+.tools-button {
+    text-align: right;
+}
+
+/*
 #lpr-block {
     position: fixed;
     top: 0;
@@ -429,7 +460,7 @@ li.quiz, li.lesson, li.quick_lesson, li.quick_quiz {
 .lpr-question tr.lpr-disabled .dashicons-trash,
 .lpr-question tr.lpr-disabled .dashicons-sort {
     display: none;
-}
+}*/
 
 /*
 * Add on page
@@ -2276,8 +2307,8 @@ input.regular-text[id^="learn-press-emails"] {
     .rwmb-label {
         margin-bottom: 5px;
     }
-    .rwmb-input{
-        input[type="text"]{
+    .rwmb-input {
+        input[type="text"] {
             width: 100%;
         }
     }

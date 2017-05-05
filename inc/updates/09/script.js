@@ -58,7 +58,7 @@
 	var $doc = $(document);
 
 	function parseJSON(response) {
-		var matches = response.match(/<!-- LP_AJAX_START -->(.*)<!-- LP_AJAX_END -->/),
+		var matches = response.match(/<-- LP_AJAX_START -->(.*)<-- LP_AJAX_END -->/),
 			json = {};
 
 		if (matches && matches[1]) {

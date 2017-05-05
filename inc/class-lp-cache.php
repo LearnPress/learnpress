@@ -492,7 +492,6 @@ class LP_Cache {
 		return self::_set_cache( self::$_quiz_results, $key_or_value, $value );
 	}
 
-
 	/**
 	 * @param bool $key
 	 * @param bool $def
@@ -574,7 +573,6 @@ class LP_Cache {
 	public static function get_user_course_order( $key = false, $def = false ) {
 		return self::_get_cache( self::$_user_course_order, $key, $def );
 	}
-
 
 	/**
 	 * @param      $key_or_value
@@ -679,7 +677,6 @@ class LP_Cache {
 					}
 					wp_cache_delete( $value, self::$_group );
 				}
-				add_filter( 'wp_redirect', array( __CLASS__, 'cache_flush' ) );
 			} catch ( Exception $ex ) {
 			}
 		}
@@ -724,12 +721,12 @@ class LP_Cache {
 	}
 
 	public static function init() {
-		try {
+		/*try {
 			self::flush();
 		} catch ( Exception $ex ) {
 
 		}
-		add_action( 'init', array( __CLASS__, 'redirect' ) );
+		add_action( 'init', array( __CLASS__, 'redirect' ) );*/
 	}
 
 	public static function redirect() {
