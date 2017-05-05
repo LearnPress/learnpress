@@ -1904,6 +1904,7 @@ input.regular-text[id^="learn-press-emails"] {
 }
 .learn-press-tabs .learn-press-tab-content {
   margin: 0;
+  padding-top: 20px;
 }
 .learn-press-tabs .learn-press-tab-content > li {
   padding: 0 20px 10px 20px;
@@ -2019,4 +2020,8 @@ input.regular-text[id^="learn-press-emails"] {
   100% {
     opacity: 0;
   }
+}
+
+li .rwmb-input-list {
+  margin-left: 0 !important;
 }

@@ -1,36 +1,49 @@
 <?php
-// Prevent loading this file directly
-defined( 'ABSPATH' ) || exit;
+/**
+ * The button field. Simply displays a HTML button which might be used for JavaScript actions.
+ *
+ * @package Meta Box
+ */
 
-if ( ! class_exists( 'RWMB_Button_Field' ) ) {
-	class RWMB_Button_Field extends RWMB_Field {
-		/**
-		 * Get field HTML
-		 *
-		 * @param mixed $meta
-		 * @param array $field
-		 *
-		 * @return string
-		 */
-		static function html( $meta, $field ) {
-			return sprintf(
-				'<a href="#" id="%s" class="button hide-if-no-js">%s</a>',
-				$field['id'],
-				$field['std']
-			);
-		}
+/**
+ * Button field class.
+ */
+class RWMB_Button_Field extends RWMB_Field {
+	/**
+	 * Get field HTML.
+	 *
+	 * @param mixed $meta  Meta value.
+	 * @param array $field The field parameters.
+	 * @return string
+	 */
+	public static function html( $meta, $field ) {
+		$attributes = self::get_attributes( $field );
+		return sprintf( '<a href="#" %s>%s</a>', self::render_attributes( $attributes ), $field['std'] );
+	}
 
-		/**
-		 * Normalize parameters for field
-		 *
-		 * @param array $field
-		 *
-		 * @return array
-		 */
-		static function normalize_field( $field ) {
-			$field['std'] = $field['std'] ? $field['std'] : __( 'Click me', 'learnpress'/*'meta-box'*/ );
+	/**
+	 * Normalize parameters for field.
+	 *
+	 * @param array $field The field parameters.
+	 * @return array
+	 */
+	public static function normalize( $field ) {
+		$field        = parent::normalize( $field );
+		$field['std'] = $field['std'] ? $field['std'] : __( 'Click me', 'meta-box' );
+		return $field;
+	}
 
-			return $field;
-		}
+	/**
+	 * Get the attributes for a field.
+	 *
+	 * @param array $field The field parameters.
+	 * @param mixed $value The attribute value.
+	 * @return array
+	 */
+	public static function get_attributes( $field, $value = null ) {
+		$attributes = parent::get_attributes( $field, $value );
+		$attributes['class'] .= ' button hide-if-no-js';
+
+		return $attributes;
 	}
 }

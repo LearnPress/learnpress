@@ -1,244 +1,162 @@
 <?php
-// Prevent loading this file directly
-defined( 'ABSPATH' ) || exit;
-require_once RWMB_FIELDS_DIR . 'select-advanced.php';
-require_once RWMB_FIELDS_DIR . 'checkbox-list.php';
+/**
+ * The taxonomy field which aims to replace the built-in WordPress taxonomy UI with more options.
+ *
+ * @package Meta Box
+ */
 
-if ( ! class_exists( 'RWMB_Taxonomy_Field' ) ) {
-	class RWMB_Taxonomy_Field extends RWMB_Field {
-		/**
-		 * Enqueue scripts and styles
-		 *
-		 * @return void
-		 */
-		static function admin_enqueue_scripts() {
-			RWMB_Select_Advanced_Field::admin_enqueue_scripts();
-			wp_enqueue_style( 'rwmb-taxonomy', RWMB_CSS_URL . 'taxonomy.css', array(), RWMB_VER );
-			wp_enqueue_script( 'rwmb-taxonomy', RWMB_JS_URL . 'taxonomy.js', array( 'jquery', 'rwmb-select-advanced', 'wp-ajax-response' ), RWMB_VER, true );
+/**
+ * Taxonomy field class which set post terms when saving.
+ */
+class RWMB_Taxonomy_Field extends RWMB_Object_Choice_Field {
+	/**
+	 * Add default value for 'taxonomy' field.
+	 *
+	 * @param array $field Field parameters.
+	 * @return array
+	 */
+	public static function normalize( $field ) {
+		// Backwards compatibility with field args.
+		if ( isset( $field['options']['args'] ) ) {
+			$field['query_args'] = $field['options']['args'];
+		}
+		if ( isset( $field['options']['taxonomy'] ) ) {
+			$field['taxonomy'] = $field['options']['taxonomy'];
+		}
+		if ( isset( $field['options']['type'] ) ) {
+			$field['field_type'] = $field['options']['type'];
 		}
 
-		/**
-		 * Add default value for 'taxonomy' field
-		 *
-		 * @param $field
-		 *
-		 * @return array
+		// Set default field args.
+		$field = parent::normalize( $field );
+		$field = wp_parse_args( $field, array(
+			'taxonomy'   => 'category',
+		) );
+
+		// Set default query args.
+		$field['query_args'] = wp_parse_args( $field['query_args'], array(
+			'hide_empty' => false,
+		) );
+
+		/*
+		 * Set default placeholder:
+		 * - If multiple taxonomies: show 'Select a term'.
+		 * - If single taxonomy: show 'Select a %taxonomy_name%'.
 		 */
-		static function normalize_field( $field ) {
-			$default_args = array(
-				'hide_empty' => false,
-			);
+		if ( empty( $field['placeholder'] ) ) {
+			$field['placeholder'] = __( 'Select a term', 'meta-box' );
+			if ( is_string( $field['taxonomy'] ) && taxonomy_exists( $field['taxonomy'] ) ) {
+				$taxonomy_object = get_taxonomy( $field['taxonomy'] );
 
-			// Set default args
-			$field['options']['args'] = ! isset( $field['options']['args'] ) ? $default_args : wp_parse_args( $field['options']['args'], $default_args );
-
-			$tax                  = get_taxonomy( $field['options']['taxonomy'] );
-			$field['placeholder'] = empty( $field['placeholder'] ) ? sprintf( __( 'Select a %s', 'learnpress'/*'meta-box'*/ ), $tax->labels->singular_name ) : $field['placeholder'];
-
-			switch ( $field['options']['type'] ) {
-				case 'select_advanced':
-					$field = RWMB_Select_Advanced_Field::normalize_field( $field );
-					break;
-				case 'checkbox_list':
-				case 'checkbox_tree':
-					$field = RWMB_Checkbox_List_Field::normalize_field( $field );
-					break;
-				case 'select':
-				case 'select_tree':
-					$field = RWMB_Select_Field::normalize_field( $field );
-					break;
-				default:
-					$field['options']['type'] = 'select';
-					$field                    = RWMB_Select_Field::normalize_field( $field );
+				// Translators: %s is the taxonomy singular label.
+				$field['placeholder'] = sprintf( __( 'Select a %s', 'meta-box' ), $taxonomy_object->labels->singular_name );
 			}
-
-			if ( in_array( $field['options']['type'], array( 'checkbox_tree', 'select_tree' ) ) ) {
-				if ( isset( $field['options']['args']['parent'] ) ) {
-					$field['options']['parent'] = $field['options']['args']['parent'];
-					unset( $field['options']['args']['parent'] );
-				} else {
-					$field['options']['parent'] = 0;
-				}
-			}
-
-			$field['field_name'] = "{$field['id']}[]";
-
-			return $field;
 		}
 
-		/**
-		 * Get field HTML
-		 *
-		 * @param $field
-		 * @param $meta
-		 *
-		 * @return string
-		 */
-		static function html( $meta, $field ) {
-			$options = $field['options'];
-			$terms   = get_terms( $options['taxonomy'], $options['args'] );
+		// Prevent cloning for taxonomy field.
+		$field['clone'] = false;
 
-			$field['options'] = self::get_options( $terms );
+		return $field;
+	}
 
-			$html = '';
+	/**
+	 * Get field names of object to be used by walker.
+	 *
+	 * @return array
+	 */
+	public static function get_db_fields() {
+		return array(
+			'parent' => 'parent',
+			'id'     => 'term_id',
+			'label'  => 'name',
+		);
+	}
 
-			switch ( $options['type'] ) {
-				case 'checkbox_list':
-					$html = RWMB_Checkbox_List_Field::html( $meta, $field );
-					break;
-				case 'checkbox_tree':
-					$elements = self::process_terms( $terms );
-					$html .= self::walk_checkbox_tree( $meta, $field, $elements, $options['parent'], true );
-					break;
-				case 'select_tree':
-					$elements = self::process_terms( $terms );
-					$html .= self::walk_select_tree( $meta, $field, $elements, $options['parent'], true );
-					break;
-				case 'select_advanced':
-					$html = RWMB_Select_Advanced_Field::html( $meta, $field );
-					break;
-				case 'select':
-				default:
-					$html = RWMB_Select_Field::html( $meta, $field );
-			}
+	/**
+	 * Get options for selects, checkbox list, etc via the terms.
+	 *
+	 * @param array $field Field parameters.
+	 *
+	 * @return array
+	 */
+	public static function get_options( $field ) {
+		$options = get_terms( $field['taxonomy'], $field['query_args'] );
+		return $options;
+	}
 
-			return $html;
+	/**
+	 * Save meta value.
+	 *
+	 * @param mixed $new     The submitted meta value.
+	 * @param mixed $old     The existing meta value.
+	 * @param int   $post_id The post ID.
+	 * @param array $field   The field parameters.
+	 */
+	public static function save( $new, $old, $post_id, $field ) {
+		$new = array_unique( array_map( 'intval', (array) $new ) );
+		$new = empty( $new ) ? null : $new;
+		wp_set_object_terms( $post_id, $new, $field['taxonomy'] );
+	}
+
+	/**
+	 * Get raw meta value.
+	 *
+	 * @param int   $post_id The post ID.
+	 * @param array $field   The field parameters.
+	 *
+	 * @return mixed
+	 */
+	public static function raw_meta( $post_id, $field ) {
+		if ( empty( $field['id'] ) ) {
+			return '';
 		}
 
-		/**
-		 * Walker for displaying checkboxes in tree format
-		 *
-		 * @param      $meta
-		 * @param      $field
-		 * @param      $elements
-		 * @param int  $parent
-		 * @param bool $active
-		 *
-		 * @return string
-		 */
-		static function walk_checkbox_tree( $meta, $field, $elements, $parent = 0, $active = false ) {
-			if ( ! isset( $elements[$parent] ) ) {
-				return;
-			}
-			$terms            = $elements[$parent];
-			$field['options'] = self::get_options( $terms );
-			$hidden           = $active ? '' : 'hidden';
+		$meta = get_the_terms( $post_id, $field['taxonomy'] );
 
-			$html = "<ul class = 'rw-taxonomy-tree {$hidden}'>";
-			$li   = '<li><label><input type="checkbox" name="%s" value="%s"%s> %s</label>';
-			foreach ( $terms as $term ) {
-				$html .= sprintf(
-					$li,
-					$field['field_name'],
-					$term->term_id,
-					checked( in_array( $term->term_id, $meta ), true, false ),
-					$term->name
-				);
-				$html .= self::walk_checkbox_tree( $meta, $field, $elements, $term->term_id, $active && in_array( $term->term_id, $meta ) ) . '</li>';
-			}
-			$html .= '</ul>';
-
-			return $html;
+		if ( ! is_array( $meta ) || empty( $meta ) ) {
+			return $field['multiple'] ? array() : '';
 		}
 
-		/**
-		 * Walker for displaying select in tree format
-		 *
-		 * @param        $meta
-		 * @param        $field
-		 * @param        $elements
-		 * @param int    $parent
-		 * @param bool   $active
-		 *
-		 * @return string
-		 */
-		static function walk_select_tree( $meta, $field, $elements, $parent = 0, $active = false ) {
-			if ( ! isset( $elements[$parent] ) ) {
-				return;
-			}
-			$terms            = $elements[$parent];
-			$field['options'] = self::get_options( $terms );
+		$meta = wp_list_pluck( $meta, 'term_id' );
 
-			$classes   = array( 'rw-taxonomy-tree' );
-			$classes[] = $active ? 'active' : 'disabled';
-			$classes[] = "rwmb-taxonomy-{$parent}";
+		return $field['multiple'] ? $meta : reset( $meta );
+	}
 
-			$html = '<div class="' . implode( ' ', $classes ) . '">';
-			$html .= RWMB_Select_Field::html( $meta, $field );
-			foreach ( $terms as $term ) {
-				$html .= self::walk_select_tree( $meta, $field, $elements, $term->term_id, $active && in_array( $term->term_id, $meta ) );
-			}
-			$html .= '</div>';
+	/**
+	 * Get the field value.
+	 * Return list of post term objects.
+	 *
+	 * @param  array    $field   Field parameters.
+	 * @param  array    $args    Additional arguments.
+	 * @param  int|null $post_id Post ID. null for current post. Optional.
+	 *
+	 * @return array List of post term objects.
+	 */
+	public static function get_value( $field, $args = array(), $post_id = null ) {
+		$value = get_the_terms( $post_id, $field['taxonomy'] );
 
-			return $html;
+		// Get single value if necessary.
+		if ( ! $field['clone'] && ! $field['multiple'] && is_array( $value ) ) {
+			$value = reset( $value );
 		}
+		return $value;
+	}
 
-		/**
-		 * Processes terms into indexed array for walker functions
-		 *
-		 * @param $terms
-		 *
-		 * @internal param $field
-		 * @return array
-		 */
-		static function process_terms( $terms ) {
-			$elements = array();
-			foreach ( $terms as $term ) {
-				$elements[$term->parent][] = $term;
-			}
-
-			return $elements;
-		}
-
-		/**
-		 * Get options for selects, checkbox list, etc via the terms
-		 *
-		 * @param array $terms Array of term objects
-		 *
-		 * @return array
-		 */
-		static function get_options( $terms = array() ) {
-			$options = array();
-			foreach ( $terms as $term ) {
-				$options[$term->term_id] = $term->name;
-			}
-
-			return $options;
-		}
-
-		/**
-		 * Save meta value
-		 *
-		 * @param mixed $new
-		 * @param mixed $old
-		 * @param int   $post_id
-		 * @param array $field
-		 *
-		 * @return string
-		 */
-		static function save( $new, $old, $post_id, $field ) {
-			$new = array_unique( array_map( 'intval', (array) $new ) );
-			$new = empty( $new ) ? null : $new;
-			wp_set_object_terms( $post_id, $new, $field['options']['taxonomy'] );
-		}
-
-		/**
-		 * Standard meta retrieval
-		 *
-		 * @param int   $post_id
-		 * @param bool  $saved
-		 * @param array $field
-		 *
-		 * @return array
-		 */
-		static function meta( $post_id, $saved, $field ) {
-			$options = $field['options'];
-
-			$meta = wp_get_post_terms( $post_id, $options['taxonomy'] );
-			$meta = is_array( $meta ) ? $meta : (array) $meta;
-			$meta = wp_list_pluck( $meta, 'term_id' );
-
-			return $meta;
-		}
+	/**
+	 * Get option label.
+	 *
+	 * @param array  $field Field parameters.
+	 * @param object $value The term object.
+	 *
+	 * @return string
+	 */
+	public static function get_option_label( $field, $value ) {
+		return sprintf(
+			'<a href="%s" title="%s">%s</a>',
+			// @codingStandardsIgnoreLine
+			esc_url( get_term_link( $value ) ),
+			esc_attr( $value->name ),
+			$value->name
+		);
 	}
 }
