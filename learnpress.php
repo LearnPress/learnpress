@@ -4,7 +4,7 @@ Plugin Name: LearnPress
 Plugin URI: http://thimpress.com/learnpress
 Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
 Author: ThimPress
-Version: 2.1.6.1
+Version: 2.1.7
 Author URI: http://thimpress.com
 Requires at least: 3.8
 Tested up to: 4.7
@@ -234,6 +234,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 			add_action( 'activate_' . $plugin_basename, array( 'LP_Install', 'install' ) );
 
 			add_action( 'init', array( $this, 'init' ), 15 );
+			add_action( 'wp_loaded', array( $this, 'wp_loaded' ), 20 );
 
 			///add_action( 'widgets_init', array( $this, 'widgets_init' ) );
 
@@ -244,8 +245,13 @@ if ( !class_exists( 'LearnPress' ) ) {
 			add_action( 'plugins_loaded', array( $this, 'loaded' ), 0 );
 		}
 
+		function wp_loaded() {
+			if ( $this->is_request( 'frontend' ) ) {
+				$this->gateways = LP_Gateways::instance()->get_available_payment_gateways();
+			}
+		}
+
 		public function loaded() {
-			//$this->gateways = LP_Gateways::instance()->get_available_payment_gateways();
 			// let third parties know that we're ready
 			do_action( 'learn_press_ready' );
 			do_action( 'learn_press_loaded', $this );
@@ -280,6 +286,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 		 * Init LearnPress when WP initialises
 		 */
 		public function init() {
+
 			if ( !empty( $_REQUEST['view-log'] ) ) {
 				$log = $_REQUEST['view-log'];
 				echo '<pre>';
@@ -297,7 +304,6 @@ if ( !class_exists( 'LearnPress' ) ) {
 			}
 
 			$this->get_user();
-			//$this->gateways = LP_Gateways::instance()->get_gateways();//$this->gateways = LP_Gateways::instance()->get_gateways();// get_available_payment_gateways();
 			$this->schedule = require_once( LP_PLUGIN_PATH . "/inc/class-lp-schedules.php" );
 
 			LP_Emails::instance();

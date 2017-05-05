@@ -1454,7 +1454,7 @@
 			$a.data('click', click == 'advanced' ? 'basic' : 'advanced');
 			$a.closest('.rwmb-input').find('li:gt(1)').toggle(click != 'advanced');
 			$a.parent().remove();
-		});
+        });
 		if ($.inArray($('input[name="_lp_course_result"]:checked').val(), ['', 'evaluate_lesson', 'evaluate_final_quiz']) != -1) {
 			$('#learn-press-toggle-course-results').closest('.rwmb-input').find('li:gt(1)').hide();
 		}

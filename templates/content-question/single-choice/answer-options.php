@@ -48,7 +48,6 @@ $course_finished = $user->has_finished_course( $course->id );
 			}
 			?>
 			<li<?php echo $answer_class ? ' class="' . join( ' ', $answer_class ) . '"' : ''; ?> >
-
 				<?php do_action( 'learn_press_before_question_answer_text', $answer, $this ); ?>
 				<label>
 					<input type="radio" name="learn-press-question-<?php echo $this->id; ?>" <?php checked( $this->is_selected_option( $answer, $answered ) ); ?> value="<?php echo $answer['value']; ?>" <?php echo $disabled; ?>>
