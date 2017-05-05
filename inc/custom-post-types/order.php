@@ -475,7 +475,15 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 					}
 					break;
 				case 'order_status' :
-					echo learn_press_get_order_status_label( $post->ID );
+//					echo learn_press_get_order_status_label( $post->ID );
+                    echo '<select name="order-status" data-status="lp-' . $the_order->get_status() .'">';
+
+                        $statuses = learn_press_get_order_statuses();
+                        foreach ( $statuses as $status => $status_name ) {
+                            echo '<option data-desc="' . esc_attr( _learn_press_get_order_status_description( $status ) ) . '" value="' .  esc_attr( $status ) . '" ' . selected( $status, 'lp-' . $the_order->get_status(), false ) . '>' . esc_html( $status_name ) . '</option>';
+                        }
+
+                    echo '</select>';
 					break;
 				case 'order_date' :
 
@@ -497,7 +505,7 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 					$links = array();
 					foreach ( $the_order->get_items() as $item ) {
 						if ( empty( $item['course_id'] ) || get_post_type( $item['course_id'] ) !== LP_COURSE_CPT ) {
-							$links[] = __( 'Course does not exist', 'learnpress' );
+							$links[] = __( 'Course does not exist', 'learnpress' ); 
 						} else {
 							$links[] = '<a href="' . get_the_permalink( $item['course_id'] ) . '">' . get_the_title( $item['course_id'] ) . '</a>';
 						}

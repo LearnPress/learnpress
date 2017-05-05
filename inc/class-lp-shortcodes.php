@@ -84,7 +84,7 @@ class LP_Shortcodes {
 								if ( !$v ) {
 									$v = reset( $endpoints );
 								}
-								if ( !in_array( $v, $endpoints ) ) {
+								if ( !in_array( $v, $endpoints) ) {
 									learn_press_is_404();
 								}
 							}
@@ -127,6 +127,10 @@ class LP_Shortcodes {
 	 * Checkout form
 	 *
 	 * @param array
+	 *
+	 *
+	 *
+	 *
 	 *
 	 * @return string
 	 */
@@ -288,13 +292,13 @@ class LP_Shortcodes {
 		global $wpdb;
 
 		$query = $wpdb->prepare(
-			"SELECT po.*, count(*) as number_enrolled 
+			"SELECT po.*, count(*) as number_enrolled
 					FROM {$wpdb->prefix}learnpress_user_items ui
 					INNER JOIN {$wpdb->posts} po ON po.ID = ui.item_id
 					WHERE ui.item_type = %s
 						AND ( ui.status = %s OR ui.status = %s )
 						AND po.post_status = %s
-					GROUP BY ui.item_id 
+					GROUP BY ui.item_id
 					ORDER BY ui.item_id {$order}
 					LIMIT %d
 				",
@@ -349,9 +353,8 @@ class LP_Shortcodes {
 		$order_key = !empty( $_GET['key'] ) ? $_GET['key'] : '';
 
 		if ( $order_id > 0 && ( $order = learn_press_get_order( $order_id ) ) && $order->post->post_status != 'trash' ) {
-			if ( $order->order_key != $order_key ) {
+			if ( $order->order_key != $order_key )
 				unset( $order );
-			}
 		} else {
 			learn_press_display_message( __( 'Invalid order!', 'learnpress' ), 'error' );
 			return;
@@ -532,7 +535,7 @@ class LP_Shortcodes {
 		return self::wrapper_shortcode( learn_press_get_template_content( 'profile/login-form.php', $atts ) );
 	}
 
-	public static function login_form_bottom( $html, $args ) {
+	public static function login_form_bottom ($html, $args) {
 		ob_start();
 		?>
 		<p>

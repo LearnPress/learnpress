@@ -2878,6 +2878,10 @@ class LP_Abstract_User {
 		return apply_filters( 'learn_press_user_can_do_quiz', $can, $quiz_id, $this->id, $course_id );
 	}
 
+	public function get_role() {
+		return $this->is_admin() ? 'admin' : ( $this->is_instructor() ? 'instructor' : 'user' );
+	}
+
 	/**
 	 * Get user course's grade.
 	 * Possible values:
@@ -2909,10 +2913,6 @@ class LP_Abstract_User {
 			$grade = 'in-progress';
 		}
 		return apply_filters( 'learn_press_user_course_grade', $grade, $this->id, $course_id );
-	}
-
-	public function get_role() {
-		return $this->is_admin() ? 'admin' : ( $this->is_instructor() ? 'instructor' : 'user' );
 	}
 
 	public static function get_user() {

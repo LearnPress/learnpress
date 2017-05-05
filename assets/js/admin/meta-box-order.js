@@ -26,11 +26,42 @@
 			$add_h2
 				.insertAfter($add_new_h2);
 
-			$('select[name="order-status"]').on('init change', function () {
+			$('.wp-list-table #order_status').css('width', '135px');
+
+			$('select[name="order-status"]').on('change', function () {
 				var $sel = $(this),
 					$sec = $('.order-action-section'),
-					status = $sel.data('status');
-				console.log(status, $sel.val())
+					status = $sel.data('status'),
+					order_id = +$sel.closest('tr.type-lp_order').find('td.column-title strong a.row-title').text().replace('#', '');
+
+                    // console.log(order_id);
+                    // console.log($sel.val());
+
+                $.ajax({
+                    url     : LP_Settings.ajax,
+                    data    : {
+                        action  : 'learnpress_update_order_status',
+                        order_id: order_id,
+                        value: $sel.val(),
+                    },
+                    dataType: 'text',
+                    type    : 'post',
+                    success : function (response) {
+                        LP.log(response);
+                        response = LP.parseJSON(response);
+                        if (response.result === 'success') {
+                            var $order_table = that.$('.order-items'),
+                                $no_item = $order_table.find('.no-order-items');
+                            $(response.item_html).insertBefore($no_item);
+                            $order_table.find('.order-subtotal').html(response.order_data.subtotal_html);
+                            $order_table.find('.order-total').html(response.order_data.total_html);
+
+                            $item.remove();
+                            $no_item.addClass('hide-if-js');
+                        }
+                    }
+                });
+
 				$sec.toggleClass('hide-if-js', status != $sel.val());
 			}).trigger('init');
 

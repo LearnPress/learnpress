@@ -54,7 +54,9 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 				'duplicate_course'                => false,
 				'duplicate_question'              => false,
 				// Remove Notice
-				'remove_notice_popup'             => false
+				'remove_notice_popup'             => false,
+                // Update order status
+                'update_order_status'             => false,
 			);
 			foreach ( $ajaxEvents as $ajaxEvent => $nopriv ) {
 				add_action( 'wp_ajax_learnpress_' . $ajaxEvent, array( __CLASS__, $ajaxEvent ) );
@@ -1152,6 +1154,23 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			wp_die();
 
 		}
+
+		public static function update_order_status () {
+            global $wpdb;
+            $order_id = learn_press_get_request( 'order_id' );
+            $value     = learn_press_get_request( 'value' );
+
+            $order = array(
+                'ID'           => $order_id,
+                'post_status'   => $value,
+            );
+
+            wp_update_post( $order ) ? $response['success'] = true : $response['success'] = false;
+
+            learn_press_send_json( $response );
+
+            die();
+        }
 
 	}
 }

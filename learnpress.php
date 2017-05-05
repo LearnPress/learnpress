@@ -245,6 +245,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 		}
 
 		public function loaded() {
+			//$this->gateways = LP_Gateways::instance()->get_available_payment_gateways();
 			// let third parties know that we're ready
 			do_action( 'learn_press_ready' );
 			do_action( 'learn_press_loaded', $this );
@@ -279,7 +280,6 @@ if ( !class_exists( 'LearnPress' ) ) {
 		 * Init LearnPress when WP initialises
 		 */
 		public function init() {
-
 			if ( !empty( $_REQUEST['view-log'] ) ) {
 				$log = $_REQUEST['view-log'];
 				echo '<pre>';
@@ -297,7 +297,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 			}
 
 			$this->get_user();
-			$this->gateways = LP_Gateways::instance()->get_gateways();//$this->gateways = LP_Gateways::instance()->get_available_payment_gateways();
+			//$this->gateways = LP_Gateways::instance()->get_gateways();//$this->gateways = LP_Gateways::instance()->get_gateways();// get_available_payment_gateways();
 			$this->schedule = require_once( LP_PLUGIN_PATH . "/inc/class-lp-schedules.php" );
 
 			LP_Emails::instance();
