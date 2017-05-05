@@ -95,15 +95,26 @@
 				term   : '',
 				exclude: ''
 			}, args || {});
+
+			var current_items = [],
+				items = $('.order-items tr[data-item_id]');
+
+			items.each(function () {
+				current_items.push($(this).data('item_id'));
+            });
+
+			console.log(current_items);
+
 			$.ajax({
 				url     : LP_Settings.ajax,
 				data    : {
-					action    : 'learnpress_modal_search_items',
-					type      : this.options.type,
-					term      : args.term,
-					exclude   : args.exclude,
-					context   : this.options.context,
-					context_id: this.options.context_id
+					action    		: 'learnpress_modal_search_items',
+					type      		: this.options.type,
+					term      		: args.term,
+					exclude   		: args.exclude,
+					context   		: this.options.context,
+					context_id		: this.options.context_id,
+					current_items	: current_items,
 				},
 				type    : 'get',
 				dataType: 'text',
