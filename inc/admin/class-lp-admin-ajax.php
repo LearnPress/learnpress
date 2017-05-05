@@ -333,7 +333,12 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 					 */
 					case 'course-items':
 						if ( get_post_type( $context_id ) == 'lp_course' ) {
-							$args['author'] = get_post_field( 'post_author', $context_id );
+							$post_author = get_post_field( 'post_author', $context_id );
+							$authors = array($post_author);
+							if($post_author != $user->id ){
+								$authors[] =$user->id;
+							}
+							$args['author'] = $authors;
 						}
 						break;
 					/**
@@ -341,7 +346,13 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 					 */
 					case 'quiz-items':
 						if ( get_post_type( $context_id ) == 'lp_quiz' ) {
-							$args['author'] = get_post_field( 'post_author', $context_id );
+							$post_author = get_post_field( 'post_author', $context_id );
+							$authors = array($post_author);
+							if($post_author != $user->id ){
+								$authors[] =$user->id;
+							}
+							$args['author'] = $authors;
+							//$args['author'] = get_post_field( 'post_author', $context_id );
 						}
 						break;
 				}
@@ -349,7 +360,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			if ( $term ) {
 				$args['s'] = $term;
 			}
-
+			$args = apply_filters('learn_press_filter_admin_ajax_modal_search_items_args', $args, $context, $context_id  );
 			$posts       = get_posts( $args );
 			$found_items = array();
 
