@@ -30,6 +30,7 @@ class LP_Admin_Submenu_Statistic {
 	 * LP_Admin_Submenu_Statistic constructor.
 	 */
 	public function __construct() {
+		add_action( 'learn_press_get_stats_general', array( $this, 'get_stats_general' ) );
 		add_action( 'learn_press_get_stats_users', array( $this, 'get_stats_users' ) );
 		add_action( 'learn_press_get_stats_courses', array( $this, 'get_stats_courses' ) );
 		add_action( 'learn_press_get_stats_orders', array( $this, 'get_stats_orders' ) );
@@ -41,7 +42,7 @@ class LP_Admin_Submenu_Statistic {
 	 * Statistic page
 	 */
 	public function display() {
-		$this->tab     = isset( $_GET['tab'] ) ? $_GET['tab'] : 'users';
+		$this->tab     = isset( $_GET['tab'] ) ? $_GET['tab'] : 'general';
 		$this->section = isset( $_GET['section'] ) ? $_GET['section'] : '';
 		$tabs = array();
 		if( current_user_can(LP_TEACHER_ROLE) ) {
@@ -52,6 +53,7 @@ class LP_Admin_Submenu_Statistic {
 			) );
 		} else {
 			$tabs          = apply_filters( 'learn_press_statistics_tabs', array(
+				'general'   => __( 'General', 'learnpress' ),
 				'users'   => __( 'Users', 'learnpress' ),
 				'courses' => __( 'Courses', 'learnpress' ),
 				'orders'  => __( 'Orders', 'learnpress' ),
@@ -66,6 +68,13 @@ class LP_Admin_Submenu_Statistic {
 		echo '</h2>';
 		do_action( 'learn_press_get_stats_' . $this->tab . '' );
 		echo '</div>';
+	}
+
+	public function get_stats_general() {
+		if( current_user_can(LP_TEACHER_ROLE) ) {
+			return;
+		}
+		require_once learn_press_get_admin_view( 'statistics/general.php' );
 	}
 
 	/**
