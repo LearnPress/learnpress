@@ -1,4 +1,4 @@
-jQuery(function ($) {
+jQuery( function ( $ ) {
 	'use strict';
 
 	/**
@@ -8,12 +8,14 @@ jQuery(function ($) {
 	 * @return void
 	 */
 	function update() {
-		var $this = $(this),
-			options = $this.data('options');
-		$this.siblings('.select2-container').remove();
-		$this.show().select2(options);
+		var $this = $( this ),
+			options = $this.data( 'options' );
+		$this.siblings( '.select2-container' ).remove();
+		$this.show().select2( options );
+
+		rwmbSelect.bindEvents( $this );
 	}
 
-	$(':input.rwmb-select-advanced').each(update);
-	$('.rwmb-input').on('clone', ':input.rwmb-select-advanced', update);
-});
+	$( ':input.rwmb-select_advanced' ).each( update );
+	$( '.rwmb-input' ).on( 'clone', ':input.rwmb-select_advanced', update );
+} );

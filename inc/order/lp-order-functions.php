@@ -7,22 +7,20 @@
  * @version 1.0
  */
 
-if ( !defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-function learn_press_method_title_for_free( $title, $name ) {
-	if ( empty( $title ) && empty( $name ) ) {
-		$title = __( 'Free Payment', 'learnpress' );
-	}
-	return $title;
-}
-
-//add_filter( 'learn_press_display_payment_method_title', 'learn_press_method_title_for_free', 10, 2 );
 /**
- * Create new order
+ * Create or update an order.
+ * If an 'ID' is passed throught $order_data, then update the existing order
  *
- * @param array
+ * @param array $order_data {
+ *                          Array of options to add or update an order
+ *
+ * @type int ID The order ID
+ * @type
+ * }
  *
  * @return LP_Order instance
  */
@@ -40,13 +38,13 @@ function learn_press_create_order( $order_data ) {
 	$order_data          = wp_parse_args( $order_data, $order_data_defaults );
 
 	if ( $order_data['status'] ) {
-		if ( !in_array( 'lp-' . $order_data['status'], array_keys( learn_press_get_order_statuses() ) ) ) {
+		if ( ! in_array( 'lp-' . $order_data['status'], array_keys( learn_press_get_order_statuses() ) ) ) {
 			return new WP_Error( 'learn_press_invalid_order_status', __( 'Invalid order status', 'learnpress' ) );
 		}
 		$order_data['post_status'] = 'lp-' . $order_data['status'];
 	}
 
-	if ( !is_null( $order_data['user_note'] ) ) {
+	if ( ! is_null( $order_data['user_note'] ) ) {
 		$order_data['post_excerpt'] = $order_data['user_note'];
 	}
 
@@ -73,7 +71,7 @@ function learn_press_create_order( $order_data ) {
 		update_post_meta( $order_id, '_payment_method', '' );
 		update_post_meta( $order_id, '_payment_method_title', '' );
 		update_post_meta( $order_id, '_order_version', '1.0' );
-		update_post_meta( $order_id, '_created_via', !empty( $order_data['created_via'] ) ? $order_data['created_via'] : 'checkout' );
+		update_post_meta( $order_id, '_created_via', ! empty( $order_data['created_via'] ) ? $order_data['created_via'] : 'checkout' );
 	}
 
 	return LP_Order::instance( $order_id, true );
@@ -129,8 +127,9 @@ function learn_press_add_order_item( $order_id, $item ) {
 
 	$order_id = absint( $order_id );
 
-	if ( !$order_id )
+	if ( ! $order_id ) {
 		return false;
+	}
 
 	$defaults = array(
 		'order_item_name' => '',
@@ -149,7 +148,8 @@ function learn_press_add_order_item( $order_id, $item ) {
 			'order_id'        => $item['order_id']
 		),
 		array(
-			'%s', '%d'
+			'%s',
+			'%d'
 		)
 	);
 
@@ -165,8 +165,9 @@ function learn_press_remove_order_item( $item_id ) {
 
 	$item_id = absint( $item_id );
 
-	if ( !$item_id )
+	if ( ! $item_id ) {
 		return false;
+	}
 
 	do_action( 'learn_press_before_delete_order_item', $item_id );
 
@@ -205,6 +206,7 @@ function learn_press_get_order_by_item_id( $item_id ) {
 	if ( $order_id && $order = learn_press_get_order( $order_id ) ) {
 		return $order;
 	}
+
 	return false;
 }
 
@@ -234,44 +236,50 @@ function learn_press_get_order_item_meta( $item_id, $meta_key, $single = true ) 
  * @return bool
  */
 function learn_press_user_can_view_order( $order_id, $user_id = null ) {
-	if ( !intval( $order_id ) ) return false;
-	if ( !$user_id && !( $user_id = get_current_user_id() ) ) return false;
-	if ( !get_post( $order_id ) ) return false;
+	if ( ! intval( $order_id ) ) {
+		return false;
+	}
+	if ( ! $user_id && ! ( $user_id = get_current_user_id() ) ) {
+		return false;
+	}
+	if ( ! get_post( $order_id ) ) {
+		return false;
+	}
 
 	$orders = get_user_meta( $user_id, '_lpr_order_id' );
 
-	if ( !in_array( $order_id, $orders ) ) return false;
+	if ( ! in_array( $order_id, $orders ) ) {
+		return false;
+	}
 
 	return true;
 }
 
 /**
- * Function get order information
+ * Get order
  *
- * @param int $order_id
+ * @param mixed $the_order
  *
  * @return LP_Order object instance
  */
-function learn_press_get_order( $the_order, $force = false ) {
-	if ( !$the_order ) {
-		return false;
-	}
-
+function learn_press_get_order( $the_order = false ) {
 	global $post;
-
-	if ( false === $the_order ) {
-		$the_order = $post;
+	$the_id = 0;
+	if ( false === $the_order && is_a( $post, 'WP_Post' ) && LP_ORDER_CPT === get_post_type( $post ) ) {
+		$the_id = $post->ID;
 	} elseif ( is_numeric( $the_order ) ) {
-		$the_order = get_post( $the_order );
+		$the_id = $the_order;
 	} elseif ( $the_order instanceof LP_Order ) {
-		$the_order = get_post( $the_order->id );
+		$the_id = $the_order->get_id();
+	} elseif ( ! empty( $the_order->ID ) ) {
+		$the_id = $the_order->ID;
 	}
 
-	if ( !$the_order || !is_object( $the_order ) ) {
+	if ( LP_ORDER_CPT != get_post_type( $the_id ) ) {
 		return false;
 	}
 
-	return LP_Order::instance( $the_order, $force );
+	return new LP_Order( $the_id );
 }
 
 /**
@@ -291,13 +299,14 @@ function learn_press_get_order_confirm_url( $order_id = 0 ) {
 		}
 	} else {
 		$order = new LP_Order( $order_id );
-		if ( ( $items = $order->get_items() ) && !empty( $items->products ) ) {
+		if ( ( $items = $order->get_items() ) && ! empty( $items->products ) ) {
 			$course = reset( $items->products );
 			$url    = get_permalink( $course['id'] );
 		} else {
 			$url = get_site_url();
 		}
 	}
+
 	return $url;
 }
 
@@ -309,7 +318,10 @@ function learn_press_do_transaction( $method, $transaction = false ) {
 }
 
 function learn_press_set_transient_transaction( $method, $temp_id, $user_id, $transaction ) {
-	set_transient( $method . '-' . $temp_id, array( 'user_id' => $user_id, 'transaction_object' => $transaction ), 60 * 60 * 24 );
+	set_transient( $method . '-' . $temp_id, array(
+		'user_id'            => $user_id,
+		'transaction_object' => $transaction
+	), 60 * 60 * 24 );
 }
 
 function learn_press_get_transient_transaction( $method, $temp_id ) {
@@ -359,14 +371,18 @@ function learn_press_add_order( $args = null ) {
 	} else {
 		$updating                  = false;
 		$order_data['post_type']   = LP_ORDER_CPT;
-		$order_data['post_status'] = !empty( $args['status'] ) ? 'publish' : 'lpr-draft';
+		$order_data['post_status'] = ! empty( $args['status'] ) ? 'publish' : 'lpr-draft';
 		$order_data['ping_status'] = 'closed';
 		$order_data['post_author'] = ( $order_owner_id = learn_press_cart_order_instructor() ) ? $order_owner_id : 1; // always is administrator
 		$order_data['post_parent'] = absint( $args['parent'] );
 	}
 	$order_title = array();
-	if ( $args['method'] ) $order_title[] = $args['method'];
-	if ( $args['method_id'] ) $order_title[] = $args['method_id'];
+	if ( $args['method'] ) {
+		$order_title[] = $args['method'];
+	}
+	if ( $args['method_id'] ) {
+		$order_title[] = $args['method_id'];
+	}
 	$order_title[]            = date_i18n( 'Y-m-d-H:i:s' );
 	$order_data['post_title'] = join( '-', $order_title );
 
@@ -375,9 +391,11 @@ function learn_press_add_order( $args = null ) {
 		$args['user_id'] = $user->ID;
 	}
 
-	if ( !$args['transaction_object'] ) $args['transaction_object'] = learn_press_generate_transaction_object();
+	if ( ! $args['transaction_object'] ) {
+		$args['transaction_object'] = learn_press_generate_transaction_object();
+	}
 
-	if ( !$updating ) {
+	if ( ! $updating ) {
 		if ( $transaction_id = wp_insert_post( $order_data ) ) {
 			update_post_meta( $transaction_id, '_learn_press_transaction_method', $args['method'] );
 
@@ -395,7 +413,7 @@ function learn_press_add_order( $args = null ) {
 	}
 
 	if ( $transaction_id ) {
-		if ( !empty( $args['status'] ) ) {
+		if ( ! empty( $args['status'] ) ) {
 			learn_press_update_order_status( $transaction_id, $args['status'] );
 		}
 		update_post_meta( $transaction_id, '_learn_press_transaction_method_id', $args['method_id'] );
@@ -404,14 +422,17 @@ function learn_press_add_order( $args = null ) {
 			update_post_meta( $transaction_id, '_learn_press_order_items', $args['transaction_object'] );
 		}
 
-		if ( !empty( $args['status'] ) ) {
+		if ( ! empty( $args['status'] ) ) {
 			if ( $updating ) {
 				return apply_filters( 'learn_press_update_transaction_success', $transaction_id, $args );
-			} else
+			} else {
 				return apply_filters( 'learn_press_add_transaction_success', $transaction_id, $args );
+			}
 		}
+
 		return $transaction_id;
 	}
+
 	return false;
 
 	//do_action( 'learn_press_add_transaction_fail', $args );// $method, $method_id, $status, $customer_id, $transaction_object, $args );
@@ -419,6 +440,7 @@ function learn_press_add_order( $args = null ) {
 
 function learn_press_payment_method_from_slug( $order_id ) {
 	$slug = get_post_meta( $order_id, '_learn_press_transaction_method', true );
+
 	return apply_filters( 'learn_press_payment_method_from_slug_' . $slug, $slug );
 }
 
@@ -428,10 +450,10 @@ function learn_press_generate_transaction_object() {
 
 	if ( $products = $cart->get_items() ) {
 		foreach ( $products as $key => $product ) {
-			$products[$key]['product_base_price'] = floatval( learn_press_get_course_price( $product['id'] ) );
-			$products[$key]['product_subtotal']   = floatval( learn_press_get_course_price( $product['id'] ) * $product['quantity'] );
-			$products[$key]['product_name']       = get_the_title( $product['id'] );
-			$products                             = apply_filters( 'learn_press_generate_transaction_object_products', $products, $key, $product );
+			$products[ $key ]['product_base_price'] = floatval( learn_press_get_course_price( $product['id'] ) );
+			$products[ $key ]['product_subtotal']   = floatval( learn_press_get_course_price( $product['id'] ) * $product['quantity'] );
+			$products[ $key ]['product_name']       = get_the_title( $product['id'] );
+			$products                               = apply_filters( 'learn_press_generate_transaction_object_products', $products, $key, $product );
 		}
 	}
 
@@ -463,11 +485,12 @@ function learn_press_cart_order_instructor() {
 	if ( $products = $cart->get_items() ) {
 		foreach ( $products as $key => $product ) {
 			$post = get_post( $product['id'] );
-			if ( $post && !empty( $post->ID ) ) {
+			if ( $post && ! empty( $post->ID ) ) {
 				return $post->post_author;
 			}
 		}
 	}
+
 	return 0;
 }
 
@@ -475,7 +498,7 @@ function learn_press_handle_purchase_request() {
 	LP_Gateways::instance()->get_available_payment_gateways();
 	$method_var = 'learn-press-transaction-method';
 
-	$requested_transaction_method = empty( $_REQUEST[$method_var] ) ? false : $_REQUEST[$method_var];
+	$requested_transaction_method = empty( $_REQUEST[ $method_var ] ) ? false : $_REQUEST[ $method_var ];
 	learn_press_do_transaction( $requested_transaction_method );
 
 }
@@ -489,7 +512,7 @@ function learn_press_get_orders( $args = array() ) {
 
 	$args['meta_query'] = empty( $args['meta_query'] ) ? array() : $args['meta_query'];
 
-	if ( !empty( $args['transaction_method'] ) ) {
+	if ( ! empty( $args['transaction_method'] ) ) {
 		$meta_query           = array(
 			'key'   => '_learn_press_transaction_method',
 			'value' => $args['transaction_method'],
@@ -526,14 +549,14 @@ function learn_press_count_orders( $args = array() ) {
 	}
 	global $wpdb;
 	$statuses = $args['status'];
-	if ( !$statuses ) {
+	if ( ! $statuses ) {
 		$statuses = learn_press_get_register_order_statuses();
 		$statuses = array_keys( $statuses );
 	}
 	settype( $statuses, 'array' );
 	$size_of_status = sizeof( $statuses );
 	foreach ( $statuses as $k => $status ) {
-		$statuses[$k] = !preg_match( '~^lp-~', $status ) ? 'lp-' . $status : $status;
+		$statuses[ $k ] = ! preg_match( '~^lp-~', $status ) ? 'lp-' . $status : $status;
 	}
 	$format     = array_fill( 0, $size_of_status, '%s' );
 	$counts     = array_fill_keys( $statuses, 0 );
@@ -548,17 +571,19 @@ function learn_press_count_orders( $args = array() ) {
 	if ( $results = $wpdb->get_results( $query ) ) {
 		foreach ( $results as $result ) {
 			if ( array_key_exists( $result->status, $counts ) ) {
-				$counts[$result->status] = absint( $result->count );
+				$counts[ $result->status ] = absint( $result->count );
 			}
 		}
 	}
+
 	return $size_of_status > 1 ? $counts : reset( $counts );
 }
 
 function learn_press_get_course_price_text( $price, $course_id ) {
-	if ( !$price && LP_COURSE_CPT == get_post_type( $course_id ) ) {
+	if ( ! $price && LP_COURSE_CPT == get_post_type( $course_id ) ) {
 		$price = __( 'Free', 'learnpress' );
 	}
+
 	return $price;
 }
 
@@ -569,13 +594,14 @@ function learn_press_get_order_items( $order_id ) {
 }
 
 function learn_press_format_price( $price, $args = array() ) {
-	if ( is_bool( $args ) ) {
+	if ( is_bool( $args ) || is_string( $args ) ) {
 		$with_currency = $args;
 	} else {
 		$with_currency = false;
 	}
-	if ( !is_numeric( $price ) )
+	if ( ! is_numeric( $price ) ) {
 		$price = 0;
+	}
 	$settings            = LP()->settings;
 	$before              = $after = '';
 	$args                = wp_parse_args(
@@ -627,7 +653,7 @@ function learn_press_format_price( $price, $args = array() ) {
 }
 
 function learn_press_update_order_items( $order_id ) {
-	if ( !$order = learn_press_get_order( $order_id ) ) {
+	if ( ! $order = learn_press_get_order( $order_id ) ) {
 		return;
 	}
 	$subtotal = 0;
@@ -644,7 +670,7 @@ function learn_press_update_order_items( $order_id ) {
 
 		foreach ( $items as $item ) {
 			$subtotal += $item['subtotal'];
-			$total += $item['total'];
+			$total    += $item['total'];
 		}
 	}
 
@@ -674,11 +700,12 @@ function learn_press_transaction_order_number( $order_number ) {
 
 function learn_press_transaction_order_date( $date, $format = null ) {
 	$format = empty( $format ) ? get_option( 'date_format' ) : $format;
+
 	return date( $format, strtotime( $date ) );
 }
 
 function learn_press_get_course_order( $course_id, $user_id = null ) {
-	if ( !$user_id ) {
+	if ( ! $user_id ) {
 		$user_id = get_current_user_id();
 	}
 
@@ -694,8 +721,8 @@ function learn_press_get_course_order( $course_id, $user_id = null ) {
 		foreach ( $orders as $order_data ) {
 			$order_id   = $order_data->ID;
 			$order_data = maybe_unserialize( $order_data->meta_value );
-			if ( $order_data && !empty( $order_data->products ) ) {
-				if ( isset( $order_data->products[$course_id] ) ) {
+			if ( $order_data && ! empty( $order_data->products ) ) {
+				if ( isset( $order_data->products[ $course_id ] ) ) {
 					$order = $order_id;
 					// a user only can take a course one time
 					// so it should be existing in one and only one order
@@ -704,6 +731,7 @@ function learn_press_get_course_order( $course_id, $user_id = null ) {
 			}
 		}
 	}
+
 	return $order;
 }
 
@@ -714,16 +742,17 @@ function learn_press_get_order_status_label( $order_id = 0 ) {
 	} else {
 		$status = $order_id;
 	}
-	return !empty( $statuses[$status] ) ? $statuses[$status] : __( 'Pending', 'learnpress' );
+
+	return ! empty( $statuses[ $status ] ) ? $statuses[ $status ] : __( 'Pending', 'learnpress' );
 }
 
 function learn_press_get_order_statuses( $prefix = true, $status_only = false ) {
 	$register_statues = learn_press_get_register_order_statuses();
-	if ( !$prefix ) {
+	if ( ! $prefix ) {
 		$order_statuses = array();
 		foreach ( $register_statues as $k => $v ) {
-			$k                  = preg_replace( '~^lp-~', '', $k );
-			$order_statuses[$k] = $v;
+			$k                    = preg_replace( '~^lp-~', '', $k );
+			$order_statuses[ $k ] = $v;
 		}
 	} else {
 		$order_statuses = $register_statues;
@@ -818,7 +847,8 @@ function _learn_press_get_order_status_description( $status ) {
 //		'lp-failed'     => __( 'Payment failed or was declined (unpaid).', 'learnpress' ),
 //		'lp-refunded'   => __( 'Refunded is to indicate that the refund to the customer has been sent.', 'learnpress' )
 	);
-	return apply_filters( 'learn_press_order_status_description', !empty( $descriptions[$status] ) ? $descriptions[$status] : '' );
+
+	return apply_filters( 'learn_press_order_status_description', ! empty( $descriptions[ $status ] ) ? $descriptions[ $status ] : '' );
 }
 
 function learn_press_get_order_status( $order_id ) {
@@ -826,6 +856,7 @@ function learn_press_get_order_status( $order_id ) {
 	if ( $order ) {
 		return $order->get_status();
 	}
+
 	return false;
 }
 
@@ -849,7 +880,7 @@ function _learn_press_checkout_auto_enroll_free_course( $result, $order_id ) {
 					$enrolled = $item['course_id'];
 				}
 			}
-			if ( !$enrolled ) {
+			if ( ! $enrolled ) {
 				$item     = reset( $order_items );
 				$enrolled = $item['course_id'];
 			}
@@ -860,10 +891,11 @@ function _learn_press_checkout_auto_enroll_free_course( $result, $order_id ) {
 		$result['redirect'] = get_the_permalink( $enrolled );
 		LP()->cart->empty_cart();
 	}
+
 	return $result;
 }
 
-if ( !function_exists( '_learn_press_total_raised' ) ) {
+if ( ! function_exists( '_learn_press_total_raised' ) ) {
 	function _learn_press_total_raised() {
 		$orders = learn_press_get_orders( array( 'post_status' => 'lp-completed' ) );
 		$total  = 0;

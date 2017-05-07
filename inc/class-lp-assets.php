@@ -670,7 +670,7 @@ class LP_Assets {
 	 * include_stylesheet_file
 	 */
 	public function include_stylesheet_file() {
-
+return;
 		if ( did_action( 'learn_press_included_style_file' ) ) {
 			return;
 		}
@@ -715,7 +715,7 @@ class LP_Assets {
 			$screen    = get_current_screen();
 			$screen_id = $screen->id;
 			$page_id   = !empty( $_REQUEST['page'] ) ? $_REQUEST['page'] : '';
-			self::enqueue_style( 'learn-press-admin' );
+			return;
 			if ( in_array( $screen_id, learn_press_get_screens() ) || in_array( $page_id, learn_press_get_admin_pages() ) ) {
 				self::enqueue_style( 'learn-press-global' );
 				self::enqueue_style( 'learn-press-jquery.ui.datepicker' );
@@ -726,7 +726,7 @@ class LP_Assets {
 				self::enqueue_script( 'learn-press-global' );
 				self::enqueue_script( 'learn-press-admin' );
 			}
-
+			global $wp_styles;
 			foreach ( array( 'lp_course', 'lp_order', 'lp_quiz', 'lp_lesson', 'lp_question' ) as $post_type ) {
 				if ( learn_press_is_post_type_screen( $post_type ) ) {
 					$type = str_replace( 'lp_', '', $post_type );
@@ -814,6 +814,11 @@ class LP_Assets {
 		return LP_PLUGIN_URL . "assets/{$file}";
 	}
 }
+
+add_action('admin_enqueue_scripts', function(){
+	wp_enqueue_style( 'vfgdfgdfgfdgdfgdfgdfgdfg', LP_Assets::url('css/admin/admin.css') );
+
+});
 
 // Call class
 return new LP_Assets();

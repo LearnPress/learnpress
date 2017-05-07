@@ -294,6 +294,19 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			$type       = (string) ( stripslashes( learn_press_get_request( 'type' ) ) );
 			$context    = (string) ( stripslashes( learn_press_get_request( 'context' ) ) );
 			$context_id = (string) ( stripslashes( learn_press_get_request( 'context_id' ) ) );
+			$current_items_in_order =  learn_press_get_request( 'current_items' );
+			$current_items = array();
+
+
+			foreach ($current_items_in_order as $item) {
+			    $sql = "SELECT meta_value
+                        FROM {$wpdb->prefix}learnpress_order_itemmeta 
+                        WHERE meta_key = '_course_id' 
+                        AND learnpress_order_item_id = $item";
+			    $id = $wpdb->get_results( $sql, OBJECT );
+			    array_push($current_items, $id[0]->meta_value);
+            }
+
 			$exclude    = array();
 
 			if ( !empty( $_GET['exclude'] ) ) {
@@ -320,7 +333,12 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 					 */
 					case 'course-items':
 						if ( get_post_type( $context_id ) == 'lp_course' ) {
-							$args['author'] = get_post_field( 'post_author', $context_id );
+							$post_author = get_post_field( 'post_author', $context_id );
+							$authors = array($post_author);
+							if($post_author != $user->id ){
+								$authors[] =$user->id;
+							}
+							$args['author'] = $authors;
 						}
 						break;
 					/**
@@ -328,7 +346,13 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 					 */
 					case 'quiz-items':
 						if ( get_post_type( $context_id ) == 'lp_quiz' ) {
-							$args['author'] = get_post_field( 'post_author', $context_id );
+							$post_author = get_post_field( 'post_author', $context_id );
+							$authors = array($post_author);
+							if($post_author != $user->id ){
+								$authors[] =$user->id;
+							}
+							$args['author'] = $authors;
+							//$args['author'] = get_post_field( 'post_author', $context_id );
 						}
 						break;
 				}
@@ -336,22 +360,34 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			if ( $term ) {
 				$args['s'] = $term;
 			}
-
+			$args = apply_filters('learn_press_filter_admin_ajax_modal_search_items_args', $args, $context, $context_id  );
 			$posts       = get_posts( $args );
 			$found_items = array();
 
 			if ( !empty( $posts ) ) {
-				foreach ( $posts as $post ) {
-					$found_items[$post->ID]             = $post;
-					$found_items[$post->ID]->post_title = !empty( $post->post_title ) ? $post->post_title : sprintf( '(%s)', __( 'Untitled', 'learnpress' ) );
-				}
+				if ($current_items_in_order) {
+                    foreach ( $posts as $post ) {
+                        if (in_array($post->ID, $current_items)) {
+                            continue;
+                        }
+                        $found_items[$post->ID]             = $post;
+                        $found_items[$post->ID]->post_title = !empty( $post->post_title ) ? $post->post_title : sprintf( '(%s)', __( 'Untitled', 'learnpress' ) );
+                    }
+                } else {
+                    foreach ( $posts as $post ) {
+                        $found_items[$post->ID]             = $post;
+                        $found_items[$post->ID]->post_title = !empty( $post->post_title ) ? $post->post_title : sprintf( '(%s)', __( 'Untitled', 'learnpress' ) );
+                    }
+                }
 			}
+
+
 
 			ob_start();
 			if ( $found_items ) {
 				foreach ( $found_items as $id => $item ) {
 					printf( '
-						<li class="" data-id="%1$d" data-type="%3$s" data-text="%2$s">
+                            <li class="" data-id="%1$d" data-type="%3$s" data-text="%2$s">
 						<label>
 							<input type="checkbox" value="%1$d">
 							<span class="lp-item-text">%2$s</span>

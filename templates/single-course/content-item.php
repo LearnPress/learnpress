@@ -14,8 +14,7 @@ if ( !$item ) {
 $item_id = isset( $item->id ) ? $item->id : ( isset( $item->ID ) ? $item->ID : 0 );
 ?>
 <div id="learn-press-content-item">
-	<?php do_action( 'learn_press_before_content_item', $item_id, $course->id, true ); ?>
-
+	<?php do_action( 'learn_press/before_course_item_content', $item_id, $course->id ); ?>
 	<?php if ( $item ) { ?>
 		<?php if ( $user->can( 'view-item', $item->id, $course->id ) ) { ?>
 
@@ -28,6 +27,8 @@ $item_id = isset( $item->id ) ? $item->id : ( isset( $item->ID ) ? $item->ID : 0
 		<?php } ?>
 
 	<?php } ?>
+	<?php //do_action( 'learn_press_after_content_item', $item_id, $course->id, true ); ?>
+	<?php do_action( 'learn_press/after_course_item_content', $item_id, $course->id ); ?>
 
 	<?php do_action( 'learn_press_after_content_item', $item_id, $course->id, true ); ?>
 </div>

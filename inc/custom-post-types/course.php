@@ -74,7 +74,6 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			if ( array_key_exists( '_lp_curriculum', $_POST ) && !empty( $_POST['course-tab'] ) ) {
 				$m = add_query_arg( 'tab', $_POST['course-tab'], $m );
 			}
-
 			return $m;
 		}
 

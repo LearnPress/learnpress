@@ -5,17 +5,18 @@
  *
  * Set this to error_reporting( -1 ) for debugging
  */
-error_reporting( 0 );
+error_reporting( -1 );
 
 /** Set ABSPATH for execution */
 if ( !defined( 'ABSPATH' ) ) {
-	define( 'ABSPATH', str_replace( LP_WP_CONTENT . '/plugins/learnpress/assets/load-styles.php', '', $_SERVER['SCRIPT_FILENAME'] ) );
+	define( 'ABSPATH', LP_WP_CONTENT . '/plugins/learnpress/assets' );
 }
 define( 'WPINC', 'wp-includes' );
 define( 'LP_PATH', '/' . LP_WP_CONTENT . '/plugins/learnpress/' );
 require( ABSPATH . 'wp-admin/includes/noop.php' );
 require( ABSPATH . WPINC . '/script-loader.php' );
 require( ABSPATH . WPINC . '/version.php' );
+
 require( ABSPATH . LP_PATH . 'inc/class-lp-assets.php' );
 $load = $_GET['load'];
 if ( is_array( $load ) ) {
@@ -36,7 +37,6 @@ $out            = '';
 $wp_styles = new WP_Styles();
 
 wp_default_styles( $wp_styles );
-
 // Tell LP load default styles
 LP_Assets::default_styles( $wp_styles );
 

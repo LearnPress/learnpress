@@ -1,47 +1,48 @@
 <?php
-// Prevent loading this file directly
-defined('ABSPATH') || exit;
+/**
+ * The number field which uses HTML <input type="number">.
+ *
+ * @package Meta Box
+ */
 
-if (!class_exists('RWMB_Number_Field')) {
-    class RWMB_Number_Field extends RWMB_Field
-    {
-        /**
-         * Get field HTML
-         *
-         * @param mixed $meta
-         * @param array $field
-         *
-         * @return string
-         */
-        static function html($meta, $field)
-        {
-            return sprintf(
-                '<input type="number" class="rwmb-number" name="%s" id="%s" value="%s" step="%s" min="%s" max="%s" placeholder="%s"/>',
-                $field['field_name'],
-                empty($field['clone']) ? $field['id'] : '',
-                $meta,
-                $field['step'],
-                $field['min'],
-                !empty($field['max']) ? $field['max'] : '',
-                $field['placeholder']
-            );
-        }
+/**
+ * Number field class.
+ */
+class RWMB_Number_Field extends RWMB_Input_Field {
+	/**
+	 * Normalize parameters for field.
+	 *
+	 * @param array $field Field parameters.
+	 *
+	 * @return array
+	 */
+	public static function normalize( $field ) {
+		$field = parent::normalize( $field );
 
-        /**
-         * Normalize parameters for field
-         *
-         * @param array $field
-         *
-         * @return array
-         */
-        static function normalize_field($field)
-        {
-            $field = wp_parse_args($field, array(
-                'step' => 1,
-                'min' => 0,
-            ));
+		$field = wp_parse_args( $field, array(
+			'step' => 1,
+			'min'  => 0,
+			'max'  => false,
+		) );
 
-            return $field;
-        }
-    }
+		return $field;
+	}
+
+	/**
+	 * Get the attributes for a field.
+	 *
+	 * @param array $field Field parameters.
+	 * @param mixed $value Meta value.
+	 *
+	 * @return array
+	 */
+	public static function get_attributes( $field, $value = null ) {
+		$attributes = parent::get_attributes( $field, $value );
+		$attributes = wp_parse_args( $attributes, array(
+			'step' => $field['step'],
+			'max'  => $field['max'],
+			'min'  => $field['min'],
+		) );
+		return $attributes;
+	}
 }

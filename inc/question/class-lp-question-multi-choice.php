@@ -41,7 +41,6 @@ class LP_Question_Multi_Choice extends LP_Abstract_Question {
 				<td class="lpr-is-true-answer">
 					<input type="hidden" name="lpr_question[{{data.question_id}}][answer][is_true][__INDEX__]" value="0" />
 					<input type="checkbox" name="lpr_question[{{data.question_id}}][answer][is_true][__INDEX__]" value="1" />
-
 				</td>
 				<td>
 					<input class="lpr-answer-text" type="text" name="lpr_question[{{data.question_id}}][answer][text][__INDEX__]" value="" />
