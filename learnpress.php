@@ -576,7 +576,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 			}
 			add_post_type_support( 'lp_course', 'thumbnail' );
 
-			// if enabled generate course thumnail on General Settings add new image sizes
+			// if enabled generate course thumbnail on General Settings add new image sizes
 			$enabled_course_thum = LP()->settings->get( 'generate_course_thumbnail', 'yes' );
 			if ( $enabled_course_thum !== 'yes' ) {
 				return;
