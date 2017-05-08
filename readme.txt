@@ -193,6 +193,12 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.  
 
 == Changelog ==
+= 2.1.7 =
++ Added link to navigate to course in checkout page
++ Prevent adding duplication course in one order
++ Fixed some issue with WC 3.x
++ Fixed some other issues
+
 = 2.1.6.2 =
 + Fixed course does not finish automatically
 + Fixed issue with WC 3.x
