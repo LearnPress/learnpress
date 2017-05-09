@@ -246,6 +246,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 		}
 
 		function wp_loaded() {
+			learn_press_get_current_user();
 			if ( $this->is_request( 'frontend' ) ) {
 				$this->gateways = LP_Gateways::instance()->get_available_payment_gateways();
 			}
@@ -578,7 +579,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 			}
 			add_post_type_support( 'lp_course', 'thumbnail' );
 
-			// if enabled generate course thumnail on General Settings add new image sizes
+			// if enabled generate course thumbnail on General Settings add new image sizes
 			$enabled_course_thum = LP()->settings->get( 'generate_course_thumbnail', 'yes' );
 			if ( $enabled_course_thum !== 'yes' ) {
 				return;

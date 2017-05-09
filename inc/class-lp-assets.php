@@ -723,7 +723,6 @@ class LP_Assets {
 	 * Load assets
 	 */
 	public function load_scripts() {
-		$user = learn_press_get_course_user();
 		if ( is_admin() ) {
 			global $pagenow;
 			$screen    = get_current_screen();
@@ -787,6 +786,7 @@ class LP_Assets {
 
 			return;
 		}
+		$user = learn_press_get_current_user();
 
 		// global
 		self::enqueue_style( 'learn-press-icon' );

@@ -1347,7 +1347,7 @@ function learn_press_get_user_courses_info( $user_id, $course_ids ) {
 }
 
 function learn_press_set_user_cookie_for_guest() {
-	if ( learn_press_is_course() ) {
+	if ( learn_press_is_course() && !is_admin() ) {
 		$guest_key = 'wordpress_logged_in_' . md5( 'guest' );
 		if ( is_user_logged_in() ) {
 			if ( !empty( $_COOKIE[$guest_key] ) ) {
