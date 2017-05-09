@@ -4,37 +4,12 @@
  *
  * Set this to error_reporting( -1 ) for debugging.
  */
-error_reporting( 0 );
+include "header.php";
 
-/** Set ABSPATH for execution */
-define( 'ABSPATH', str_replace( LP_WP_CONTENT . '/plugins/learnpress/assets/load-scripts.php', '', $_SERVER['SCRIPT_FILENAME'] ) );
-define( 'WPINC', 'wp-includes' );
-define( 'LP_PATH', '/' . LP_WP_CONTENT . '/plugins/learnpress/' );
-$load = $_GET['load'];
-if ( is_array( $load ) )
-	$load = implode( '', $load );
-
-$load = preg_replace( '/[^a-z0-9,_-]+/i', '', $load );
-$load = array_unique( explode( ',', $load ) );
-
-if ( empty( $load ) )
-	exit;
-
-require( ABSPATH . 'wp-admin/includes/noop.php' );
-require( ABSPATH . WPINC . '/script-loader.php' );
-require( ABSPATH . WPINC . '/version.php' );
-require( ABSPATH . LP_PATH . 'inc/class-lp-assets.php' );
-
-
-$compress       = ( isset( $_GET['c'] ) && $_GET['c'] );
-$force_gzip     = ( $compress && 'gzip' == $_GET['c'] );
-$expires_offset = 31536000; // 1 year
-$out            = '';
 $wp_scripts     = new WP_Scripts();
 
 // Tell WP Core load their default scripts
 wp_default_scripts( $wp_scripts );
-
 // Tell LP load default scripts
 LP_Assets::default_scripts( $wp_scripts );
 

@@ -1,4 +1,10 @@
-@import "settings";
+/*@import "settings";
 @import "post-types";
 @import "course-editor";
-@import "quiz-editor";
+@import "quiz-editor";*/
+@import "../general";
+@import "admin-tabs";
+p{
+    margin: 0;
+}
+

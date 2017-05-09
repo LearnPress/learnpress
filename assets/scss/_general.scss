@@ -1,0 +1,11 @@
+@mixin clear-fix(){
+    clear: both;
+    display: block;
+    content: '';
+}
+
+@mixin box-sizing($args...){
+    -webkit-box-sizing: $args;
+    -moz-box-sizing: $args;
+    box-sizing: $args;
+}

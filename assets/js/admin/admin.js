@@ -1,4 +1,5 @@
 ;(function ($) {
+
 	var LP_Admin = window.LP_Admin = {
 		init          : function () {
 			var $doc = $(document);
@@ -1138,9 +1139,12 @@ jQuery(document).ready(function ($) {
 		if ($('.learnpress-advertis-admin').length) {
 			$('.learnpress-advertis-admin').learnpressSlider();
 		}
-		$('.learn-press-tabs').metaBoxTabs();
+		//$('.learn-press-tabs').metaBoxTabs();
 		//
 
+		$('.learn-press-tabs').lpAdminTab();
 	});
+
+
 
 })(jQuery);
