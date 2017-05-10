@@ -184,12 +184,14 @@ if ( !class_exists( 'LP_Widget' ) ) {
 			if ( !$this->options ) {
 				return;
 			}
+//			var_dump($this->options);
 			global $post;
 			add_filter( 'get_post_metadata', array( $this, 'field_data' ), 10, 4 );
 			add_filter( 'rwmb_checkbox_begin_html', array( $this, 'before_checkbox_html' ), 10, 3 );
 			//
 
 			$post = (object) array( 'ID' => 1, 'post_type' => 'lp-post-widget' );
+
 			setup_postdata( $post );
 			if ( !class_exists( 'RW_Meta_Box' ) ) {
 				require_once LP_PLUGIN_PATH . 'inc/libraries/meta-box/meta-box.php';
@@ -203,8 +205,7 @@ if ( !class_exists( 'LP_Widget' ) ) {
 				$origin_id           = $field['id'];
 				$field['field_name'] = $this->get_field_name( $field['id'] );
 				$field['id']         = $this->get_field_id( $field['id'] );
-				$field['value']      = md5( $field['std'] );
-				//learn_press_debug( $field );
+				//$field['value']      = md5( $field['std'] );
 				$this->map_fields[$field['id']] = $origin_id;
 				$this->_show_field( $field );
 			}
@@ -220,16 +221,19 @@ if ( !class_exists( 'LP_Widget' ) ) {
 		 */
 		private function _show_field( $field ) {
 			$callable = array( 'RW_Meta_Box', 'get_class_name' );
+
 			if ( !is_callable( $callable ) ) {
 				$callable = array( 'RWMB_Field', 'get_class_name' );
 			}
+
 			if ( is_callable( $callable ) ) {
 				$field_class = call_user_func( $callable, $field );
 			} else {
 				$field_class = false;
 			}
+
 			if ( $field_class ) {
-				call_user_func( array( $field_class, 'show' ), $field, true );
+				call_user_func( array( $field_class, 'show' ), $field, false );
 			}
 		}
 
