@@ -302,24 +302,30 @@ if ( !class_exists( 'LP_Widget' ) ) {
 		/**
 		 * Tell WP register our widgets
 		 */
-		public static function do_register() {
-			if ( !self::$_widgets ) {
-				return;
-			}
-			foreach ( self::$_widgets as $type => $args ) {
-				$widget_file = LP_PLUGIN_PATH . "inc/widgets/{$type}/{$type}.php";
-				if ( !file_exists( $widget_file ) ) {
-					continue;
-				}
-				include_once $widget_file;
-				$widget_class = self::get_widget_class( $type );
-				if ( class_exists( $widget_class ) ) {
-					$widget       = new $widget_class();
-					$widget->file = $widget_file;
-					register_widget( $widget );
-				}
-			}
-		}
+        public static function do_register() {
+            if ( ! self::$_widgets ) {
+                return;
+            }
+            global $wp_widget_factory;
+            foreach ( self::$_widgets as $type => $args ) {
+                $widget_file = LP_PLUGIN_PATH . "inc/widgets/{$type}/{$type}.php";
+                if ( ! file_exists( $widget_file ) ) {
+                    continue;
+                }
+                include_once $widget_file;
+                $widget_class = self::get_widget_class( $type );
+                if ( class_exists( $widget_class ) ) {
+                    //$widget       = new $widget_class();
+                    //$widget->file = $widget_file;
+                    register_widget( $widget_class );
+                    if ( ! empty( $wp_widget_factory->widgets[ $widget_class ] ) ) {
+                        $wp_widget_factory->widgets[ $widget_class ]->file = $widget_file;
+                    }
+                }
+            }
+
+            return;
+        }
 
 		/**
 		 * Get class name of widget without LP_Widget prefix
