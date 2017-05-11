@@ -246,6 +246,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 		}
 
 		function wp_loaded() {
+			learn_press_get_current_user();
 			if ( $this->is_request( 'frontend' ) ) {
 				$this->gateways = LP_Gateways::instance()->get_available_payment_gateways();
 			}
