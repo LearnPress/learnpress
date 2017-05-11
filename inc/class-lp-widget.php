@@ -197,14 +197,19 @@ if ( !class_exists( 'LP_Widget' ) ) {
 				require_once LP_PLUGIN_PATH . 'inc/libraries/meta-box/meta-box.php';
 			}
 
+//            var_dump($this->instance);
 			$this->options = RW_Meta_Box::normalize_fields( $this->options );
 
 			$this->options = $this->normalize_options();
 
-			foreach ( $this->options as $field ) {
+			foreach ( $this->options as $key => $field ) {
 				$origin_id           = $field['id'];
 				$field['field_name'] = $this->get_field_name( $field['id'] );
 				$field['id']         = $this->get_field_id( $field['id'] );
+
+                # If there is old value, bind it to field as init value
+				if ($this->instance[$key]) {$field['std'] = $this->instance[$key];}
+
 				//$field['value']      = md5( $field['std'] );
 				$this->map_fields[$field['id']] = $origin_id;
 				$this->_show_field( $field );
