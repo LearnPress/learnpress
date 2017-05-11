@@ -443,7 +443,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 			}
 			$this->settings = LP_Settings::instance();
 			require_once 'inc/class-lp-assets.php';
-			require_once 'inc/question/abstract-lp-question.php';
+			require_once 'inc/question/class-lp-question.php';
 			require_once 'inc/question/class-lp-question-factory.php';
 			$this->include_post_types();
 

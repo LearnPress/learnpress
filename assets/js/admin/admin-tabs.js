@@ -11,6 +11,7 @@
         function selectTab($tab) {
             var index = $tabs.index($tab),
                 $tabsWrap = $tabs.parent(),
+                url = $tab.find('a').attr('href'),
                 done = function () {
                     $currentContent.addClass('active').siblings('li.active').removeClass('active');
                 };
@@ -39,6 +40,7 @@
                 done();
             }
 
+            LP.setUrl(url);
         }
 
         function selectDefaultTab() {

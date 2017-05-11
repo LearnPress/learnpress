@@ -18,6 +18,9 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 */
 		protected static $_instance = null;
 
+		/**
+		 * @var bool
+		 */
 		protected static $_enable_review = true;
 
 		/**
@@ -40,6 +43,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			add_filter( 'get_edit_post_link', array( $this, 'add_course_tab_arg' ) );
 			add_filter( "rwmb__lpr_course_price_html", array( $this, 'currency_symbol' ), 5, 3 );
 			add_filter( 'learn_press_loop_section_buttons', array( __CLASS__, 'add_section_buttons' ) );
+
 			if ( self::$_enable_review ) {
 				add_action( 'post_submitbox_start', array( $this, 'post_review_message_box' ) );
 			}
@@ -276,9 +280,10 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					if ( $wpdb->get_var( "SHOW TABLES LIKE '{$table}'" ) === $table ) {
 						$wpdb->query(
 							$wpdb->prepare( "
-					DELETE FROM {$table}
-					WHERE review_log_id = %d
-					", $delete_log )
+                                DELETE FROM {$table}
+                                WHERE review_log_id = %d
+                                ", $delete_log
+							)
 						);
 					}
 					wp_redirect( admin_url( 'post.php?post=' . learn_press_get_request( 'post' ) . '&action=edit' ) );
@@ -383,9 +388,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			learn_press_admin_view( 'meta-boxes/course/js-template.php' );
 		}
 
-		public function currency_symbol(
-			$input_html, $field, $sub_meta
-		) {
+		public function currency_symbol( $input_html, $field, $sub_meta ) {
 			return $input_html . '<span class="lpr-course-price-symbol">' . learn_press_get_currency_symbol() . '</span>';
 		}
 
@@ -452,7 +455,8 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			if ( self::$_enable_review ) {
 				$default_tabs['review_logs'] = array(
 					'callback' => array( $this, 'review_logs_meta_box' ),
-					'meta_box' => 'review_logs'
+					'meta_box' => 'review_logs',
+					'icon'     => 'dashicons-format-chat'
 				);
 			}
 			if ( is_super_admin() ) {
@@ -466,50 +470,13 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				)
 			);
 
-			//new RW_Meta_Box( self::curriculum_meta_box() );
-			/*new RW_Meta_Box( self::settings_meta_box() );
-			new RW_Meta_Box( self::assessment_meta_box() );
-			new RW_Meta_Box( self::payment_meta_box() );
-			if ( self::$_enable_review ) {
-				$this->review_logs_meta_box();
-			}
-			//new RW_Meta_Box( self::video_meta_box() );
-			if ( is_super_admin() ) {
-				new RW_Meta_Box( self::author_meta_box() );
-			}*/
 			parent::add_meta_boxes();
 		}
 
 		/**
-		 * Course curriculum
+		 * Fields of general settings displays in course metabox
 		 *
-		 * @return mixed|null|void
-		 */
-		public static function curriculum_meta_box() {
-			$prefix = '_lp_';
-
-			$meta_box = array(
-				'id'       => 'course_curriculum',
-				'title'    => __( 'Curriculum', 'learnpress' ),
-				'priority' => 'high',
-				'pages'    => array( LP_COURSE_CPT ),
-				'fields'   => array(
-					array(
-						'name' => __( 'Course Curriculum', 'learnpress' ),
-						'id'   => "{$prefix}curriculum",
-						'type' => 'curriculum',
-						'desc' => '',
-					),
-				)
-			);
-
-			return apply_filters( 'learn_press_course_curriculum_meta_box_args', $meta_box );
-		}
-
-		/**
-		 * Course settings
-		 *
-		 * @return mixed|null|void
+		 * @return mixed
 		 */
 
 		public static function settings_meta_box() {
@@ -520,6 +487,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				'title'    => __( 'General', 'learnpress' ),
 				'pages'    => array( LP_COURSE_CPT ),
 				'priority' => 'high',
+				'icon'     => 'dashicons-admin-tools',
 				'fields'   => array(
 					array(
 						'name' => __( 'Duration', 'learnpress' ),
@@ -591,6 +559,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				'id'       => 'course_assessment',
 				'title'    => __( 'Assessment', 'learnpress' ),
 				'priority' => 'high',
+				'icon'     => 'dashicons-awards',
 				'pages'    => array( LP_COURSE_CPT ),
 				'fields'   => array(
 					array(
@@ -639,6 +608,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				'title'    => __( 'Payment', 'learnpress' ),
 				'priority' => 'high',
 				'pages'    => array( LP_COURSE_CPT ),
+				'icon'     => 'dashicons-clipboard',
 				'fields'   => array(
 					array(
 						'name'  => __( 'Course payment', 'learnpress' ),
@@ -789,6 +759,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				'id'       => 'course_authors',
 				'title'    => __( 'Author', 'learnpress' ),
 				'pages'    => array( LP_COURSE_CPT ),
+				'icon'     => 'dashicons-businessman',
 				'priority' => 'default',
 				'fields'   => array(
 					array(

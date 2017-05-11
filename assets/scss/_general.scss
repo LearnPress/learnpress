@@ -1,11 +1,112 @@
-@mixin clear-fix(){
+$primary-color: #00a0d2;
+$remove-icon-color: #d05d5d;
+
+@mixin clear-fix() {
     clear: both;
     display: block;
     content: '';
 }
 
-@mixin box-sizing($args...){
+@mixin box-sizing($args...) {
     -webkit-box-sizing: $args;
     -moz-box-sizing: $args;
     box-sizing: $args;
+}
+
+/**
+ * Styles for displaying list of table
+ */
+.learn-press-box-data {
+    border: 1px solid #DDD;
+    margin: 20px 0 0 0;
+    .lp-box-data-head {
+        padding: 10px 15px;
+        background: #FFF;
+    }
+    .lp-box-data-content {
+        padding: 15px;
+        border-top: 1px solid #DDD;
+        background: #FFF;
+    }
+    .lp-box-data-foot {
+        padding: 15px;
+    }
+}
+
+.lp-list-options {
+    width: 100%;
+    border-collapse: collapse;
+    th, td {
+        padding: 10px 15px;
+        background: #F5F5F5;
+        border-bottom: 1px solid #DDD;
+    }
+    thead {
+        tr {
+
+        }
+        th {
+            text-align: left;
+        }
+    }
+    tbody {
+        tr {
+            td {
+                background: #f4fcff;
+            }
+            &:nth-child(odd) {
+                td {
+                    background: #FFF;
+                }
+            }
+            &:hover {
+                .lp-remove-list-option,
+                .lp-move-list-option {
+                    a {
+                        visibility: visible;
+                    }
+                }
+            }
+        }
+        td {
+            text-align: left;
+            input[type="text"] {
+                width: 100%;
+                &[value=""] {
+                    font-style: italic;
+                }
+            }
+            &.column-content-answer_correct {
+                width: 125px;
+            }
+            &.lp-remove-list-option,
+            &.lp-move-list-option {
+                width: 20px;
+                padding: 0;
+                text-align: center;
+                a {
+                    visibility: hidden;
+                    color: #999;
+                }
+                &:hover{
+                    background: #dbf5ff;
+                }
+            }
+            &.lp-move-list-option {
+                cursor: ns-resize;
+                a {
+                    cursor: ns-resize;
+                }
+                &:hover a{
+                    color: $primary-color;
+                }
+            }
+            &.lp-remove-list-option {
+                cursor: pointer;
+                &:hover a{
+                    color: $remove-icon-color;
+                }
+            }
+        }
+    }
 }

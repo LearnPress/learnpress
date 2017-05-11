@@ -14,26 +14,26 @@
  */
 
 if ( defined( 'ABSPATH' ) && ! defined( 'RWMB_VER' ) ) {
-  if ( !defined( 'LP_METABOX_INC' ) ) {
-    define( 'LP_METABOX_INC', LP_PLUGIN_PATH . 'inc/libraries/meta-box/inc/' );
-  }
-  if ( !class_exists( 'RWMB_Field' ) ) {
-    require_once LP_METABOX_INC . 'field.php';
-  }
+	if ( ! defined( 'LP_METABOX_INC' ) ) {
+		define( 'LP_METABOX_INC', LP_PLUGIN_PATH . 'inc/libraries/meta-box/inc/' );
+	}
+	if ( ! class_exists( 'RWMB_Field' ) ) {
+		require_once LP_METABOX_INC . 'field.php';
+	}
 
-  if ( defined( 'RWMB_FIELDS_DIR' ) ) {
-    // Field classes
-    foreach ( glob( RWMB_FIELDS_DIR . '*.php' ) as $file ) {
-      require_once $file;
-    }
-  }
+	if ( defined( 'RWMB_FIELDS_DIR' ) ) {
+		// Field classes
+		foreach ( glob( RWMB_FIELDS_DIR . '*.php' ) as $file ) {
+			require_once $file;
+		}
+	}
 
-  // Field classes
-  foreach ( glob( LP_PLUGIN_PATH . 'inc/admin/meta-boxes/*.php' ) as $file ) {
-    require_once $file;
-  }
 	require_once dirname( __FILE__ ) . '/inc/loader.php';
 
 	$loader = new RWMB_Loader;
 	$loader->init();
+}
+// Field classes
+foreach ( glob( LP_PLUGIN_PATH . 'inc/admin/meta-boxes/*.php' ) as $file ) {
+	require_once $file;
 }

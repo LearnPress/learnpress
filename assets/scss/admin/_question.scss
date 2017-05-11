@@ -1,0 +1,29 @@
+.learn-press-question {
+    .question-bottom-actions {
+        span {
+            font-weight: bold;
+        }
+    }
+    .lp-box-data-content {
+        padding: 0;
+        .column-content-answer_text {
+            input {
+                width: 100%;
+                border-color: transparent;
+                box-shadow: none;
+                background: transparent;
+                color: #666;
+                padding-left: 0;
+                padding-right: 0;
+                &:focus {
+                    border-bottom: 1px solid #00a0d2;
+                }
+            }
+        }
+        .lp-list-option-empty{
+            input{
+                font-style: italic;
+            }
+        }
+    }
+}

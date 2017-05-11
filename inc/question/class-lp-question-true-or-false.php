@@ -11,7 +11,7 @@
 
 defined( 'ABSPATH' ) || exit();
 
-class LP_Question_True_Or_False extends LP_Abstract_Question {
+class LP_Question_True_Or_False extends LP_Question {
 	/**
 	 * Constructor
 	 *
@@ -24,9 +24,10 @@ class LP_Question_True_Or_False extends LP_Abstract_Question {
 	}
 
 	public function limit_answers( $answers = array(), $question ) {
-		if( $question->type == $this->type ){
+		if ( $question->type == $this->type ) {
 			$answers = array_splice( $answers, 0, 2 );
 		}
+
 		return $answers;
 	}
 
@@ -36,25 +37,27 @@ class LP_Question_True_Or_False extends LP_Abstract_Question {
 
 	public function submit_answer( $quiz_id, $answer ) {
 		$questions = learn_press_get_question_answers( null, $quiz_id );
-		if ( !is_array( $questions ) ) $questions = array();
-		$questions[$quiz_id][$this->get( 'ID' )] = is_array( $answer ) ? reset( $answer ) : $answer;
+		if ( ! is_array( $questions ) ) {
+			$questions = array();
+		}
+		$questions[ $quiz_id ][ $this->get( 'ID' ) ] = is_array( $answer ) ? reset( $answer ) : $answer;
 		learn_press_save_question_answer( null, $quiz_id, $this->get( 'ID' ), is_array( $answer ) ? reset( $answer ) : $answer );
 	}
 
 	public function get_default_answers( $answers = false ) {
-		if ( !$answers ) {
-			if( $this->id && $this->post->post_status !=='auto-draft' ){
+		if ( ! $answers ) {
+			if ( $this->id && $this->post->post_status !== 'auto-draft' ) {
 				global $wpdb;
-				$sql = $wpdb->prepare( "SELECT * FROM $wpdb->learnpress_question_answers "
-						. " WHERE question_id = %d"
-						. " ORDER BY `answer_order`", $this->id );
+				$sql              = $wpdb->prepare( "SELECT * FROM $wpdb->learnpress_question_answers "
+				                                    . " WHERE question_id = %d"
+				                                    . " ORDER BY `answer_order`", $this->id );
 				$question_answers = $wpdb->get_results( $sql );
-				$answers = array();
-				foreach ( $question_answers as $qa ){
-					$answers[]=unserialize( $qa->answer_data );
+				$answers          = array();
+				foreach ( $question_answers as $qa ) {
+					$answers[] = unserialize( $qa->answer_data );
 				}
 			}
-			if( !empty( $answers ) ) {
+			if ( ! empty( $answers ) ) {
 				return $answers;
 			}
 			$answers = array(
@@ -70,6 +73,7 @@ class LP_Question_True_Or_False extends LP_Abstract_Question {
 				)
 			);
 		}
+
 		return $answers;
 	}
 
@@ -79,9 +83,10 @@ class LP_Question_True_Or_False extends LP_Abstract_Question {
 		include $view;
 		$output = ob_get_clean();
 
-		if ( !isset( $args['echo'] ) || ( isset( $args['echo'] ) && $args['echo'] === true ) ) {
+		if ( ! isset( $args['echo'] ) || ( isset( $args['echo'] ) && $args['echo'] === true ) ) {
 			echo $output;
 		}
+
 		return $output;
 	}
 
@@ -95,21 +100,21 @@ class LP_Question_True_Or_False extends LP_Abstract_Question {
 				'course_id'  => 0
 			)
 		);
-		$answered = !empty( $args['answered'] ) ? $args['answered'] : null;
+		$answered = ! empty( $args['answered'] ) ? $args['answered'] : null;
 		if ( null === $answered ) {
 			$answered = $this->get_user_answered( $args );
 		}
-		$view     = learn_press_locate_template( 'content-question/single-choice/answer-options.php' );
+		$view = learn_press_locate_template( 'content-question/single-choice/answer-options.php' );
 		include $view;
 	}
 
 	public function save_post_action() {
 
 		if ( $post_id = $this->get( 'ID' ) ) {
-			$post_data    = isset( $_POST[LP_QUESTION_CPT] ) ? $_POST[LP_QUESTION_CPT] : array();
+			$post_data    = isset( $_POST[ LP_QUESTION_CPT ] ) ? $_POST[ LP_QUESTION_CPT ] : array();
 			$post_answers = array();
-			$post_explain = $post_data[$post_id]['explaination'];
-			if ( isset( $post_data[$post_id] ) && $post_data = $post_data[$post_id] ) {
+			$post_explain = $post_data[ $post_id ]['explaination'];
+			if ( isset( $post_data[ $post_id ] ) && $post_data = $post_data[ $post_id ] ) {
 
 				//if( LP_QUESTION_CPT != get_post_type( $post_id ) ){
 				try {
@@ -120,7 +125,8 @@ class LP_Question_True_Or_False extends LP_Abstract_Question {
 							'post_type'  => LP_QUESTION_CPT
 						)
 					);
-				} catch ( Exception $ex ) {
+				}
+				catch ( Exception $ex ) {
 					echo "ex:";
 					print_r( $ex );
 				}
@@ -132,9 +138,9 @@ class LP_Question_True_Or_False extends LP_Abstract_Question {
 				$index = 0;
 
 				foreach ( $post_data['answer']['text'] as $k => $txt ) {
-					$post_answers[$index ++] = array(
+					$post_answers[ $index ++ ] = array(
 						'text'    => $txt,
-						'is_true' => $post_data['answer']['is_true'][$k]
+						'is_true' => $post_data['answer']['is_true'][ $k ]
 					);
 				}
 
@@ -145,6 +151,7 @@ class LP_Question_True_Or_False extends LP_Abstract_Question {
 			update_post_meta( $post_id, '_lpr_question', $post_data );
 			//print_r($post_data);
 		}
+
 		return $post_id;
 		// die();
 	}
@@ -156,32 +163,50 @@ class LP_Question_True_Or_False extends LP_Abstract_Question {
 		);
 		if ( $answers = $this->answers ) {
 			foreach ( $answers as $k => $answer ) {
-				if( ( $answer['is_true'] == 'yes' ) && ( $answer['value'] == $user_answer ) ){
+				if ( ( $answer['is_true'] == 'yes' ) && ( $answer['value'] == $user_answer ) ) {
 					$return['correct'] = true;
-					$return['mark'] = floatval( $this->mark );
+					$return['mark']    = floatval( $this->mark );
 					break;
 				}
 			}
 		}
+
 		return $return;
 	}
 
-	public function admin_js_template() {
+	/**
+	 * @param string $args
+	 *
+	 * @return mixed
+	 */
+	public static function admin_js_template( $args = '' ) {
+		$args = wp_parse_args( $args, array( 'echo' => true ) );
 		ob_start();
 		?>
-		<tr class="lp-list-option lp-list-option-new lp-list-option-empty <# if(data.id){ #>lp-list-option-{{data.id}}<# } #>" data-id="{{data.id}}">
-			<td>
-				<input class="lp-answer-text no-submit key-nav" type="text" name="learn_press_question[{{data.question_id}}][answer][text][]" value="{{data.text}}" />
-			</td>
-			<th class="lp-answer-check">
-				<input type="hidden" name="learn_press_question[{{data.question_id}}][answer][value][]" value="{{data.value}}" />
-				<input type="radio" name="learn_press_question[{{data.question_id}}][checked][]" {{data.checked}} value="{{data.value}}" />
-			</th>
-			<td class="lp-list-option-actions lp-move-list-option open-hand">
-				<i class="dashicons dashicons-sort"></i>
-			</td>
-		</tr>
+        <script type="text/html" id="tmpl-question-true-or-false-option">
+            <tr class="lp-list-option lp-list-option-new lp-list-option-empty <# if(data.id){ #>lp-list-option-{{data.id}}<# } #>"
+                data-id="{{data.id}}">
+                <td>
+                    <input class="lp-answer-text no-submit key-nav" type="text"
+                           name="learn_press_question[{{data.question_id}}][answer][text][]" value="{{data.text}}"/>
+                </td>
+                <th class="lp-answer-check">
+                    <input type="hidden" name="learn_press_question[{{data.question_id}}][answer][value][]"
+                           value="{{data.value}}"/>
+                    <input type="radio" name="learn_press_question[{{data.question_id}}][checked][]" {{data.checked}}
+                           value="{{data.value}}"/>
+                </th>
+                <td class="lp-list-option-actions lp-move-list-option open-hand">
+                    <i class="dashicons dashicons-sort"></i>
+                </td>
+            </tr>
+        </script>
 		<?php
-		return apply_filters( 'learn_press_question_true_or_false_answer_option_template', ob_get_clean(), __CLASS__ );
+		$template = apply_filters( 'learn_press_question_true_or_false_answer_option_template', ob_get_clean(), __CLASS__ );
+		if ( $args['echo'] ) {
+			echo $template;
+		}
+
+		return $template;
 	}
 }

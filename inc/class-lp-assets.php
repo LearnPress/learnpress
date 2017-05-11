@@ -204,7 +204,7 @@ class LP_Assets {
 	}
 
 	public static function add_default_scripts( &$scripts ) {
-		$default_path = LP_PATH . '/assets/';
+		$default_path = LP_CONTENT_PATH . '/assets/';
 		$suffix       = '';
 		$deps         = array( 'jquery', 'backbone', 'utils' );
 		$ver          = LEARNPRESS_VERSION;
@@ -214,6 +214,7 @@ class LP_Assets {
 		// global
 		$scripts->add( 'learn-press-global', $default_path . 'js/global' . $suffix . '.js', $deps, $ver, 1 );
 		$scripts->add( 'learn-press-jalerts', $default_path . 'js/jquery.alert' . $suffix . '.js', $deps, $ver, 1 );
+
 		// frontend
 		$scripts->add( 'learn-press-js', $default_path . 'js/frontend/learnpress' . $suffix . '.js', $deps, $ver, 1 );
 		$scripts->add( 'learn-press-single-course', $default_path . 'js/frontend/single-course' . $suffix . '.js', $deps, $ver, 1 );
@@ -232,7 +233,13 @@ class LP_Assets {
 			'jquery-ui-draggable'
 		), $ver, 1 );
 
+		$no_cache = '?r=' . microtime();
 		// admin
+		$scripts->add( 'xxxsdfdsfdsfdsfsdfdsfdsfs', get_site_url() . $default_path . '/js/admin/question.js' . $no_cache, array(
+			'jquery',
+			'utils',
+			'angularjs'
+		) );
 		$scripts->add( 'learn-press-admin', $default_path . 'js/admin/admin' . $suffix . '.js', $deps, $ver, 1 );
 		$scripts->add( 'learn-press-admin-settings', $default_path . 'js/admin/settings' . $suffix . '.js', $deps, $ver, 1 );
 		$scripts->add( 'learn-press-mb-question', $default_path . 'js/admin/meta-box-question' . $suffix . '.js', $deps, $ver, 1 );
@@ -244,7 +251,7 @@ class LP_Assets {
 		$scripts->add( 'learn-press-admin-tabs', $default_path . 'js/admin/admin-tabs' . $suffix . '.js', $deps, $ver, 1 );
 
 		$scripts->add( 'learn-press-select2', '/' . LP_WP_CONTENT . '/plugins/learnpress/inc/libraries/meta-box/js/select2/select2.min.js', $deps, $ver, 1 );
-
+		$scripts->add( 'learn-press-tipsy', $default_path . 'js/vendor/jquery-tipsy/jquery.tipsy.js' );
 		// upgrade
 		$scripts->add( 'learn-press-upgrade', '/' . LP_WP_CONTENT . '/plugins/learnpress/inc/updates/09/script' . $suffix . '.js', $deps, $ver, 1 );
 
@@ -282,7 +289,7 @@ class LP_Assets {
 	 * @param WP_Styles $styles
 	 */
 	public static function add_default_styles( &$styles ) {
-		$default_path = LP_PATH . '/assets/';
+		$default_path = LP_CONTENT_PATH . '/assets/';
 		$suffix       = '';
 		$deps         = array( 'dashicons' );
 		$ver          = LEARNPRESS_VERSION;
@@ -302,7 +309,7 @@ class LP_Assets {
 		//$styles->add( 'learn-press-statistics-select2', '/' . LP_WP_CONTENT . '/plugins/learnpress/inc/libraries/meta-box/css/select2/select2.css' );
 		$styles->add( 'learn-press-select2', '/' . LP_WP_CONTENT . '/plugins/learnpress/inc/libraries/meta-box/css/select2/select2.css' );
 
-
+		$styles->add( 'learn-press-tipsy', $default_path . 'js/vendor/jquery-tipsy/jquery.tipsy.css' );
 		// frontend
 		$styles->add( 'learn-press-style', $default_path . 'css/learnpress.css', $deps, $ver );
 		do_action_ref_array( 'learn_press_add_default_styles', array( $styles, $default_path, $suffix ) );
@@ -671,7 +678,7 @@ class LP_Assets {
 			$concat = str_split( $concat, 128 );
 			$concat = 'load%5B%5D=' . implode( '&load%5B%5D=', $concat );
 
-			$src = get_site_url() . "/" . LP_WP_CONTENT . "/plugins/learnpress/assets/load-scripts.php?" . $concat . "&c={$zip}&ver=" . $wp_scripts->default_version.'&r='.microtime();
+			$src = get_site_url() . "/" . LP_WP_CONTENT . "/plugins/learnpress/assets/load-scripts.php?" . $concat . "&c={$zip}&ver=" . $wp_scripts->default_version . '&r=' . microtime();
 			echo "<script type='text/javascript' src='" . esc_attr( $src ) . "'></script>\n";
 		}
 
@@ -730,6 +737,10 @@ class LP_Assets {
 			$page_id   = ! empty( $_REQUEST['page'] ) ? $_REQUEST['page'] : '';
 			self::enqueue_style( 'learn-press-admin' );
 
+			// tipsy tooltip
+			self::enqueue_style( 'learn-press-tipsy' );
+			self::enqueue_script( 'learn-press-tipsy' );
+
 			if ( in_array( $screen_id, learn_press_get_screens() ) || in_array( $page_id, learn_press_get_admin_pages() ) ) {
 				self::enqueue_style( 'learn-press-global' );
 				self::enqueue_style( 'learn-press-jquery.ui.datepicker' );
@@ -740,6 +751,8 @@ class LP_Assets {
 				self::enqueue_script( 'learn-press-global' );
 				self::enqueue_script( 'learn-press-admin' );
 			}
+			self::enqueue_script( 'xxxsdfdsfdsfdsfsdfdsfdsfs' );
+
 			self::enqueue_script( 'learn-press-admin-tabs' );
 			global $wp_styles;
 			foreach ( array( 'lp_course', 'lp_order', 'lp_quiz', 'lp_lesson', 'lp_question' ) as $post_type ) {

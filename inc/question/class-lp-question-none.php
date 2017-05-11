@@ -6,7 +6,7 @@
  * @author  ThimPress
  * @package LearnPress/Classes
  * @version 1.0
- * @extend  LP_Abstract_Question
+ * @extend  LP_Question
  */
 
 defined( 'ABSPATH' ) || exit();

@@ -22,7 +22,8 @@ $current_tab = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : '';
 							'title'    => '',
 							'id'       => '',
 							'callback' => '',
-							'meta_box' => ''
+							'meta_box' => '',
+							'icon'     => ''
 						)
 					);
 					if ( $tab['meta_box'] ) {
@@ -43,6 +44,7 @@ $current_tab = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : '';
 											$tab['content'] = ob_get_clean();
 											$tab['title']   = $box['title'];
 											$tab['id']      = $box['id'];
+											//$tab['icon']    = ! empty( $box['icon'] ) ? $box['icon'] : '';
 											unset( $wp_meta_boxes[ $page ][ $context ][ $priority ] );
 											break 3;
 										}
@@ -56,6 +58,7 @@ $current_tab = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : '';
 					$tab                 = array(
 						'title'    => $metabox->meta_box['title'],
 						'id'       => $metabox->meta_box['id'],
+						'icon'     => ! empty( $metabox->meta_box['icon'] ) ? $metabox->meta_box['icon'] : '',
 						'callback' => array( $tab, 'show' )
 					);
 					$remove_meta_boxes[] = $metabox;
@@ -69,17 +72,18 @@ $current_tab = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : '';
 				if ( empty( $current_tab ) || ( $current_tab == $tab['id'] ) ) {
 					$current_tab = $tab;
 				}
-				$classes = array($tab['id']);
+				$classes = array( $tab['id'] );
 				if ( is_array( $current_tab ) && $current_tab['id'] == $tab['id'] ) {
 					$classes[] = 'active';
 				}
 				if ( ! empty( $tab['icon'] ) ) {
-					$classes[] = 'icon ' . $tab['icon'];
+					$classes[] = 'icon';
 				}
 				$classes = apply_filters( 'learn-press/admin/tab-class', $classes, $tab );
 				echo sprintf( '<li class="%s">', join( ' ', $classes ) );
 				?>
-                <a href="<?php echo add_query_arg( 'tab', $tab['id'], learn_press_get_current_url() ); ?>"><?php echo esc_html( $tab['title'] ); ?></a>
+                <a <?php echo ! empty( $tab['icon'] ) ? 'class="' . $tab['icon'] . '"' : ''; ?>
+                        href="<?php echo add_query_arg( 'tab', $tab['id'], learn_press_get_current_url() ); ?>"><?php echo esc_html( $tab['title'] ); ?></a>
 				<?php
 				echo '</li>';
 				$tabs[ $k ] = $tab;

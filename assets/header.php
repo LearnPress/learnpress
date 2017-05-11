@@ -11,11 +11,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	define( 'ABSPATH', get_root_path() );
 }
 define( 'WPINC', 'wp-includes' );
-define( 'LP_PATH', '/wp-content/plugins/learnpress/' );
+define( 'LP_CONTENT_PATH', '/wp-content/plugins/learnpress/' );
 require( ABSPATH . 'wp-admin/includes/noop.php' );
 require( ABSPATH . WPINC . '/script-loader.php' );
 require( ABSPATH . WPINC . '/version.php' );
-require( ABSPATH . LP_PATH . 'inc/class-lp-assets.php' );
+require( ABSPATH . LP_CONTENT_PATH . 'inc/class-lp-assets.php' );
 
 $load = $_GET['load'];
 if ( is_array( $load ) ) {

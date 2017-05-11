@@ -2775,3 +2775,37 @@ function learn_press_deprecated_function( $function, $version, $replacement = nu
 		_deprecated_function( $function, $version, $replacement );
 	}
 }
+
+
+/**
+ * Sanitize content of tooltip
+ *
+ * @param string $tooltip
+ * @param bool   $html
+ *
+ * @return string
+ */
+function learn_press_sanitize_tooltip( $tooltip, $html = false ) {
+	if ( $html ) {
+		$tooltip = htmlspecialchars( wp_kses( html_entity_decode( $tooltip ), array(
+			'br'     => array(),
+			'em'     => array(),
+			'strong' => array(),
+			'small'  => array(),
+			'span'   => array(),
+			'ul'     => array(),
+			'li'     => array(),
+			'ol'     => array(),
+			'p'      => array(),
+		) ) );
+	} else {
+		$tooltip = esc_attr( $tooltip );
+	}
+
+	return $tooltip;
+}
+
+function learn_press_tooltip( $tooltip, $html = false ) {
+	$tooltip = learn_press_sanitize_tooltip( $tooltip, $html );
+	echo '<span class="learn-press-tooltip" data-tooltip="' . $tooltip . '"></span>';
+}
