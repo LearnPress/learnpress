@@ -1,16 +1,17 @@
 <?php
 defined( 'ABSPATH' ) or exit();
 $question        = isset( $question ) ? $question : exit();
+$question_id     = $question->get_id();
 $option_headings = $question->get_admin_option_headings();
 $questionOptions = array();
 ?>
 
 
-<div class="learn-press-box-data learn-press-question" id="learn-press-question-<?php echo $question->id; ?>"
-     data-type="multi-choice" data-id="<?php echo $question->id; ?>"
+<div class="learn-press-box-data learn-press-question" id="learn-press-question-<?php echo $question_id; ?>"
+     data-type="multi-choice" data-id="<?php echo $question_id; ?>"
      ng-app="questionApp" ng-controller="questionCtrl"
 >
-    <?php do_action('learn-press/question/multi-choices/admin-js-template');?>
+	<?php do_action( 'learn-press/question/multi-choices/admin-js-template' ); ?>
     <div class="lp-box-data-head">
         <p class="question-bottom-actions">
             <span><?php _e( 'Question data', 'learnpress' ); ?> &mdash;</span>
@@ -20,18 +21,18 @@ $questionOptions = array();
 				array(
 					'change_type' => learn_press_dropdown_question_types( array(
 						'echo'     => false,
-						'id'       => 'learn-press-dropdown-question-types-' . $question->id,
+						'id'       => 'learn-press-dropdown-question-types-' . $question_id,
 						'selected' => $question->type
 					) )
 				),
-				$this
+				$question_id
 			);
 			echo join( "\n", $top_buttons );
 			?>
         </p>
     </div>
     <div class="lp-box-data-content">
-        <table class="lp-sortable lp-list-options" id="learn-press-list-options-<?php echo $question->id; ?>">
+        <table class="lp-sortable lp-list-options" id="learn-press-list-options-<?php echo $question_id; ?>">
             <thead>
             <tr>
 				<?php foreach ( $option_headings as $key => $text ) { ?>
@@ -42,9 +43,9 @@ $questionOptions = array();
 					) );
 					?>
                     <th class="<?php echo join( ' ', $classes ); ?>">
-						<?php do_action( 'learn-press/question/multi-choices/admin-option-column-heading-before-title', $key, $question->id ); ?>
+						<?php do_action( 'learn-press/question/multi-choices/admin-option-column-heading-before-title', $key, $question_id ); ?>
 						<?php echo apply_filters( 'learn-press/question/multi-choices/admin-option-column-heading-title', $text ); ?>
-						<?php do_action( 'learn-press/question/multi-choices/admin-option-column-heading-after-title', $key, $question->id ); ?>
+						<?php do_action( 'learn-press/question/multi-choices/admin-option-column-heading-after-title', $key, $question_id ); ?>
                     </th>
 				<?php } ?>
             </tr>
@@ -59,7 +60,7 @@ $questionOptions = array();
 						'question' => $question,
 						'answer'   => $answer
 					) );
-                    $questionOption = ob_get_clean();
+					echo $questionOption = ob_get_clean();
 					$key    = $question->get_option_value( $answer['value'] );
 					$option = array( 'html' => $questionOption, 'attr' => array() );
 					if ( preg_match_all( '~<tr(.*)>~iSU', $questionOption, $matches ) ) {
@@ -73,9 +74,10 @@ $questionOptions = array();
 				endforeach;
 			endif;
 			?>
+            <!--
             <tr ng-repeat="option in questionOptions track by $index" content-rendered="updateOption">
                 <div ng-include="tmpl-question-multi-choice-option"></div>
-            </tr>
+            </tr>-->
 
             </tbody>
         </table>
@@ -85,12 +87,12 @@ $questionOptions = array();
 				'learn_press_question_bottom_buttons',
 				array(
 					'add_option' => sprintf(
-						__( '<button class="button add-question-option-button add-question-option-button-%1$d" data-id="%1$d" type="button">%2$s</button>', 'learnpress' ),
-						$question->id,
+						__( '<button class="button add-question-option-button add-question-option-button-%1$d" data-id="%1$d" type="button" ng-click="addOp">%2$s</button>', 'learnpress' ),
+						$question_id,
 						__( 'Add Option', 'learnpress' )
 					)
 				),
-				$this
+				$question_id
 			);
 			echo join( "\n", $bottom_buttons );
 			?>
@@ -100,7 +102,7 @@ $questionOptions = array();
     {{xxxx()}}
 </div>
 <div>
-    <table class="lp-sortable lp-list-options" id="learn-press-list-options-<?php echo $question->id; ?>">
+    <table class="lp-sortable lp-list-options" id="learn-press-list-options-<?php echo $question_id; ?>">
         <tbody>
         </tbody>
     </table>
@@ -112,6 +114,6 @@ $questionOptions = array();
     var questionOptions = <?php echo wp_json_encode( $questionOptions );?>
 
         jQuery(function ($) {
-            //LP.sortableQuestionAnswers($('#learn-press-question-<?php echo $question->id;?>'));
+            //LP.sortableQuestionAnswers($('#learn-press-question-<?php echo $question_id;?>'));
         });
 </script>

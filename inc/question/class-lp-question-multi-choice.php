@@ -283,8 +283,12 @@ class LP_Question_Multi_Choice extends LP_Question {
 			learn_press_admin_view(
 				'meta-boxes/question/multi-choice-option',
 				array(
-					'question'      => new $fake_class(),
-					'template_data' => array()
+					'question' => new $fake_class(),
+					'answer'   => array(
+						'value'   => '',
+						'is_true' => '',
+						'text'    => ''
+					)
 				)
 			);
 			remove_filter( 'learn-press/question/multi-choices/admin-option-template-args', array(

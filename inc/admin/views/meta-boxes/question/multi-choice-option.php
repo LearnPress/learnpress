@@ -5,12 +5,12 @@
  * @package LearnPress/Templates/Admin
  */
 defined( 'ABSPATH' ) or exit();
-
 $question        = isset( $question ) ? $question : exit();
 $option_headings = $question->get_admin_option_headings();
 $value           = $question->get_option_value( $answer['value'] );
+$id              = $question->get_id();
 
-do_action( 'learn_press_before_question_answer_option', $this );
+do_action( 'learn_press_before_question_answer_option', $id );
 
 $template_data = array_merge(
 	array(
@@ -71,12 +71,12 @@ $template_data = array_merge(
 			if ( $tooltip ) {
 				$classes[] = 'learn-press-tooltip';
 			}
-			$classes = apply_filters( 'learn-press/question/multi-choices/admin-option-column-class', $classes, $heading, $answer, $template_data, $question->id );
+			$classes = apply_filters( 'learn-press/question/multi-choices/admin-option-column-class', $classes, $heading, $answer, $template_data, $id );
 			$classes = array_filter( $classes );
 			$classes = array_unique( $classes );
 			?>
-			<?php do_action( 'learn-press/question/multi-choices/admin-option-column-' . $heading . '-content', $answer, $template_data, $question->id ); ?>
-			<?php do_action( 'learn-press/question/multi-choices/admin-option-columns-content', $heading, $answer, $template_data, $question->id ); ?>
+			<?php do_action( 'learn-press/question/multi-choices/admin-option-column-' . $heading . '-content', $answer, $template_data, $id ); ?>
+			<?php do_action( 'learn-press/question/multi-choices/admin-option-columns-content', $heading, $answer, $template_data, $id ); ?>
 			<?php $html = ob_get_clean(); ?>
             <td class="<?php echo join( ' ', $classes ); ?>"<?php if ( $tooltip ) {
 				echo ' data-tooltip="' . $tooltip . '"';
@@ -85,4 +85,4 @@ $template_data = array_merge(
             </td>
 		<?php } ?>
     </tr>
-<?php do_action( 'learn_press_after_question_answer_option', $this ); ?>
+<?php do_action( 'learn_press_after_question_answer_option', $id ); ?>
