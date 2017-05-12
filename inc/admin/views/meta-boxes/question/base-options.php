@@ -2,19 +2,16 @@
 defined( 'ABSPATH' ) or exit();
 $question        = isset( $question ) ? $question : exit();
 $question_id     = $question->get_id();
+$type            = $question->get_type();
 $option_headings = $question->get_admin_option_headings();
 $questionOptions = array();
 ?>
-
-
-<div class="learn-press-box-data learn-press-question" id="learn-press-question-<?php echo $question_id; ?>"
-     data-type="multi-choice" data-id="<?php echo $question_id; ?>"
-     ng-controller="question"
->
-	<?php do_action( 'learn-press/question/multi-choices/admin-js-template' ); ?>
-    <div class="lp-box-data-head">
-        <p class="question-bottom-actions">
-            <span><?php _e( 'Question data', 'learnpress' ); ?> &mdash;</span>
+<div class="learn-press-box-data learn-press-question lp-question-<?php echo $type; ?>"
+     id="learn-press-question-<?php echo $question_id; ?>"
+     data-type="<?php echo $type; ?>" data-id="<?php echo $question_id; ?>"
+     ng-controller="question">
+    <div class="lp-box-data-head lp-row">
+        <p class="lp-box-data-actions lp-toolbar-buttons">
 			<?php
 			$top_buttons = apply_filters(
 				'learn_press_question_top_buttons',
@@ -23,11 +20,14 @@ $questionOptions = array();
 						'echo'     => false,
 						'id'       => 'learn-press-dropdown-question-types-' . $question_id,
 						'selected' => $question->type
-					) )
+					) ),
+					'remove'      => '<span class="lp-toolbar-btn"><a href="" class="lp-btn-icon dashicons dashicons-trash"></a></span>',
+					'toggle'      => '<span class="lp-toolbar-btn"><a href="" class="lp-btn-icon dashicons dashicons-trash"></a></span>',
+					'move'        => '<span class="lp-toolbar-btn"><a href="" class="lp-btn-icon dashicons dashicons-sort"></a></span>'
 				),
 				$question_id
 			);
-			echo join( "\n", $top_buttons );
+			echo join( "<!--\n-->", $top_buttons );
 			?>
         </p>
 		<?php if ( LP_QUESTION_CPT !== get_post_type() ) { ?>
@@ -40,15 +40,15 @@ $questionOptions = array();
             <tr>
 				<?php foreach ( $option_headings as $key => $text ) { ?>
 					<?php
-					$classes = apply_filters( 'learn-press/question/multi-choices/admin-option-column-heading-class', array(
+					$classes = apply_filters( "learn-press/question/{$type}/admin-option-column-heading-class", array(
 						'column-heading',
 						'column-heading-' . $key
 					) );
 					?>
                     <th class="<?php echo join( ' ', $classes ); ?>">
-						<?php do_action( 'learn-press/question/multi-choices/admin-option-column-heading-before-title', $key, $question_id ); ?>
-						<?php echo apply_filters( 'learn-press/question/multi-choices/admin-option-column-heading-title', $text ); ?>
-						<?php do_action( 'learn-press/question/multi-choices/admin-option-column-heading-after-title', $key, $question_id ); ?>
+						<?php do_action( "learn-press/question/{$type}/admin-option-column-heading-before-title", $key, $question_id ); ?>
+						<?php echo apply_filters( "learn-press/question/{$type}/admin-option-column-heading-title", $text ); ?>
+						<?php do_action( "learn-press/question/{$type}/admin-option-column-heading-after-title", $key, $question_id ); ?>
                     </th>
 				<?php } ?>
             </tr>
@@ -59,7 +59,7 @@ $questionOptions = array();
 			if ( $answers ):
 				foreach ( $answers as $answer ):
 					ob_start();
-					learn_press_admin_view( 'meta-boxes/question/single-choice-option', array(
+					learn_press_admin_view( 'meta-boxes/question/base-option', array(
 						'question' => $question,
 						'answer'   => $answer
 					) );
@@ -78,9 +78,9 @@ $questionOptions = array();
 			endif;
 			?>
             <!--
-            <tr ng-repeat="option in questionOptions track by $index" content-rendered="updateOption">
-                <div ng-include="tmpl-question-multi-choice-option"></div>
-            </tr>-->
+			<tr ng-repeat="option in questionOptions track by $index" content-rendered="updateOption">
+				<div ng-include="tmpl-question-multi-choice-option"></div>
+			</tr>-->
 
             </tbody>
         </table>

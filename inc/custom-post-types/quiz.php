@@ -43,7 +43,18 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 			 */
 			add_action( 'admin_footer', array( $this, 'hide_view_quiz_link_if_not_assigned' ) );
 
+			add_action( 'edit_form_after_editor', array( $this, 'quiz_editor' ), 0 );
+
+
 			parent::__construct( $post_type, $args );
+		}
+
+            public function quiz_editor() {
+			global $post;
+			if ( LP_QUIZ_CPT !== get_post_type() ) {
+				return;
+			}
+			learn_press_admin_view( 'meta-boxes/html-admin-quiz' );
 		}
 
 		public function update_quiz( $post_id ) {

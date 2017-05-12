@@ -1,11 +1,50 @@
 .learn-press-question {
-    .question-bottom-actions {
-        span {
-            font-weight: bold;
+    .lp-box-data-head{
+        padding: 0;
+        .lp-toolbar-btn{
+            height: 50px;
+        }
+        .question-bottom-actions {
+            float: right;
+            position: relative;
+            z-index: 10;
+            span {
+                font-weight: bold;
+                vertical-align: middle;
+            }
+        }
+        .lp-row-action{
+            height: 50px;
+            width: 30px;
+        }
+        &:hover{
+            .lp-toolbar-btn{
+                visibility: visible;
+            }
+        }
+    }
+    .lp-question-heading-title{
+        border: none;
+        vertical-align: middle;
+        height: 46px;
+        position: absolute;
+        top: 1px;
+        background: transparent;
+        width: 100%;
+        left: 0;
+        padding-left: 15px;
+        box-sizing: border-box;
+        box-shadow: none;
+        font-weight: bold;
+        &:focus{
+            border-color: transparent;
+            box-shadow: none;
+            outline: none;
         }
     }
     .lp-box-data-content {
         padding: 0;
+
         .column-content-answer_text {
             input {
                 width: 100%;

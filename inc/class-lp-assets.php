@@ -204,10 +204,11 @@ class LP_Assets {
 	}
 
 	public static function add_default_scripts( &$scripts ) {
-		$default_path = LP_CONTENT_PATH . '/assets/';
+		$default_path = LP_CONTENT_PATH . 'assets/';
 		$suffix       = '';
 		$deps         = array( 'jquery', 'backbone', 'utils' );
 		$ver          = LEARNPRESS_VERSION;
+		$no_cache     = ( defined( 'LP_CACHE_RESOURCE' ) && false === LP_CACHE_RESOURCE ) ? '?no-cache=' . preg_replace( '~(\.[0-9]+)~', '', microtime( true ) ) : '';
 
 		$scripts->add( 'angularjs', 'https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js', null, $ver, 1 );
 
@@ -232,14 +233,34 @@ class LP_Assets {
 			'jquery-ui-slider',
 			'jquery-ui-draggable'
 		), $ver, 1 );
-
-		$no_cache = '?r=' . microtime();
-		// admin
-		$scripts->add( 'xxxsdfdsfdsfdsfsdfdsfdsfs', get_site_url() . $default_path . '/js/admin/question.js' . $no_cache, array(
+		$scripts->add( 'base-controller', get_site_url() . $default_path . 'js/admin/controllers/base.js' . $no_cache, array(
 			'jquery',
 			'utils',
 			'angularjs'
 		) );
+		$scripts->add( 'base-app', get_site_url() . $default_path . 'js/admin/base.js' . $no_cache, array(
+			'jquery',
+			'utils',
+			'angularjs'
+		) );
+		$scripts->add( 'question-controller', get_site_url() . $default_path . 'js/admin/controllers/question.js' . $no_cache, array( 'base-controller' ) );
+		$scripts->add( 'quiz-controller', get_site_url() . $default_path . 'js/admin/controllers/quiz.js' . $no_cache, array( 'base-controller' ) );
+		$scripts->add( 'course-controller', get_site_url() . $default_path . 'js/admin/controllers/course.js' . $no_cache, array( 'base-controller' ) );
+		// admin
+		$scripts->add( 'question-app', get_site_url() . $default_path . 'js/admin/question.js' . $no_cache, array(
+			'question-controller',
+			'base-app'
+		) );
+		$scripts->add( 'quiz-app', get_site_url() . $default_path . 'js/admin/quiz.js' . $no_cache, array(
+			'question-controller',
+			'quiz-controller',
+			'question-app'
+		) );
+		$scripts->add( 'course-app', get_site_url() . $default_path . 'js/admin/course.js' . $no_cache, array(
+			'quiz-app'
+		) );
+
+
 		$scripts->add( 'learn-press-admin', $default_path . 'js/admin/admin' . $suffix . '.js', $deps, $ver, 1 );
 		$scripts->add( 'learn-press-admin-settings', $default_path . 'js/admin/settings' . $suffix . '.js', $deps, $ver, 1 );
 		$scripts->add( 'learn-press-mb-question', $default_path . 'js/admin/meta-box-question' . $suffix . '.js', $deps, $ver, 1 );
@@ -751,7 +772,16 @@ class LP_Assets {
 				self::enqueue_script( 'learn-press-global' );
 				self::enqueue_script( 'learn-press-admin' );
 			}
-			self::enqueue_script( 'xxxsdfdsfdsfdsfsdfdsfdsfs' );
+			switch(get_post_type()){
+				case LP_QUESTION_CPT:
+					self::enqueue_script( 'question-app' );
+					break;
+				case LP_QUIZ_CPT:
+					self::enqueue_script( 'quiz-app' );
+					break;
+				case LP_COURSE_CPT:
+
+			}
 
 			self::enqueue_script( 'learn-press-admin-tabs' );
 			global $wp_styles;

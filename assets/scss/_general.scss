@@ -16,12 +16,98 @@ $remove-icon-color: #d05d5d;
 /**
  * Styles for displaying list of table
  */
+.lp-toolbar-buttons {
+    position: relative;
+    z-index: 10;
+    .lp-toolbar-btn {
+        width: 30px;
+        height: 30px;
+        padding: 0;
+        text-align: center;
+        display: inline-block;
+        visibility: hidden;
+        position: relative;
+        vertical-align: middle;
+        a, span {
+            color: #999;
+        }
+        .lp-btn-icon {
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            position: absolute;
+            top: 50%;
+            margin-top: -15px;
+            left: 50%;
+            margin-left: -15px;
+            line-height: 30px;
+        }
+        &:hover {
+            background: #dbf5ff;
+        }
+        &.lp-btn-move {
+            cursor: ns-resize;
+            a, span {
+                cursor: ns-resize;
+            }
+            &:hover a, span {
+                color: $primary-color;
+            }
+        }
+        &.lp-btn-remove {
+            cursor: pointer;
+            &:hover {
+                a, span {
+                    color: $remove-icon-color;
+                }
+            }
+        }
+    }
+}
+
+.column-content-actions {
+    &.lp-toolbar-buttons {
+        white-space: nowrap;
+        width: 30px;
+        padding: 0;
+    }
+}
+
 .learn-press-box-data {
     border: 1px solid #DDD;
     margin: 20px 0 0 0;
+    position: relative;
     .lp-box-data-head {
         padding: 10px 15px;
         background: #FFF;
+        .lp-box-data-actions {
+            float: right;
+            position: relative;
+            z-index: 10;
+            .lp-btn {
+                display: inline-block;
+                width: 30px;
+                text-align: center;
+                height: 50px;
+                line-height: 46px;
+                vertical-align: middle;
+                &.lp-box-data-remove {
+
+                }
+                &.lp-box-data-move {
+
+                }
+                &.lp-box-data-toggle {
+
+                }
+            }
+            &:after {
+                @include clear-fix();
+            }
+        }
+        &:after {
+            @include clear-fix();
+        }
     }
     .lp-box-data-content {
         padding: 15px;
@@ -53,6 +139,20 @@ $remove-icon-color: #d05d5d;
         tr {
             td {
                 background: #f4fcff;
+                padding: 0 15px;
+                &.lp-toolbar-buttons {
+                    width: 30px;
+                    white-space: nowrap;
+                    position: relative;
+                    height: 42px;
+                    overflow: hidden;
+                    .lp-toolbar-btn {
+                        height: 43px;
+                        position: relative;
+                        margin-bottom: -4px;
+                        margin-top: -4px;
+                    }
+                }
             }
             &:nth-child(odd) {
                 td {
@@ -60,11 +160,8 @@ $remove-icon-color: #d05d5d;
                 }
             }
             &:hover {
-                .lp-remove-list-option,
-                .lp-move-list-option {
-                    a {
-                        visibility: visible;
-                    }
+                .lp-toolbar-btn {
+                    visibility: visible;
                 }
             }
         }
@@ -88,7 +185,7 @@ $remove-icon-color: #d05d5d;
                     visibility: hidden;
                     color: #999;
                 }
-                &:hover{
+                &:hover {
                     background: #dbf5ff;
                 }
             }
@@ -97,13 +194,13 @@ $remove-icon-color: #d05d5d;
                 a {
                     cursor: ns-resize;
                 }
-                &:hover a{
+                &:hover a {
                     color: $primary-color;
                 }
             }
             &.lp-remove-list-option {
                 cursor: pointer;
-                &:hover a{
+                &:hover a {
                     color: $remove-icon-color;
                 }
             }

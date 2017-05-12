@@ -1,40 +1,16 @@
 ;(function ($) {
-    var questionApp = angular.module('questionApp', []);
-    questionApp.controller('questionCtrl', function ($scope) {
-        $.extend($scope, {
-            questionOptions: questionOptions,
-            updateOption:function(el, option){
-                $(el).html($(option.html).html())
-                _.forEach(option.attr, function(value, attr){
-                    if(attr === 'class'){
-                        var classes = value.split(/\s+/);
-                        for(var i=0;i<classes.length; i++){
-                            $(el).addClass(classes[i]);
-                        }
-                    }else{
-                        $(el).attr(attr, value);
-                    }
-                });
-            },
-            remove: function(){
-                $scope.questionOptions = [];
-            },
-            xxxx: function(){
-                console.log('xxxx');
-            }
-        });
-    })
-    questionApp.directive('contentRendered', function ($timeout) {
+    window.courseEditor.controller('question', ['$scope', '$compile', '$element', window['learn-press.question.controller']]);
+
+    /*courseEditor.directive('contentRendered', function ($timeout) {
         return {
             restrict: 'A',
-            //scope: {option: '=option'},
             link    : function (scope, element, attrs) {
                 setTimeout(scope.$eval(attrs.contentRendered), 0, element, scope.option);  //Calling a scoped method
             }
         };
     });
 
-    questionApp.filter("trust", ['$sce', function ($sce) {
+    courseEditor.filter("trust", ['$sce', function ($sce) {
         return function (htmlCode) {
             return $sce.trustAsHtml(htmlCode);
         }
@@ -54,4 +30,5 @@
             }
         }
     });*/
+
 })(jQuery);

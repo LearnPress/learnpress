@@ -152,7 +152,7 @@ class LP_Question_Factory {
 			add_action( 'save_post', array( __CLASS__, 'save' ) );
 
 			//add_action( 'admin_print_scripts', array( __CLASS__, 'admin_template' ) );
-			add_action( 'learn-press/question/multi-choices/admin-js-template', array( __CLASS__, 'admin_template' ) );
+			add_action( 'edit_form_after_editor', array( __CLASS__, 'admin_template' ), -990 );
 
 			add_action( 'learn_press_convert_question_type', array( __CLASS__, 'convert_question' ), 5, 4 );
 			add_filter( 'learn_press_question_answers_data', array( __CLASS__, 'sanitize_answers' ), 10, 3 );

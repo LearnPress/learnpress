@@ -45,7 +45,7 @@ $template_data = array_merge(
                     <input type="hidden"
                            name="learn_press_question[<?php echo $template_data['id']; ?>][answer][value][]"
                            value="<?php echo $template_data['answer_value']; ?>"/>
-                    <input type="checkbox"
+                    <input type="radio"
                            name="learn_press_question[<?php echo $template_data['id']; ?>][checked][]" <?php checked( $answer['is_true'] == 'yes', true ); ?>
                            value="<?php echo $template_data['answer_value']; ?>"
                            ng-model="questionOptions[0].is_true"

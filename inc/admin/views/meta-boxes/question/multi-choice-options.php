@@ -5,12 +5,9 @@ $question_id     = $question->get_id();
 $option_headings = $question->get_admin_option_headings();
 $questionOptions = array();
 ?>
-
-
 <div class="learn-press-box-data learn-press-question" id="learn-press-question-<?php echo $question_id; ?>"
      data-type="multi-choice" data-id="<?php echo $question_id; ?>"
-     ng-app="questionApp" ng-controller="questionCtrl"
->
+     ng-controller="question">
 	<?php do_action( 'learn-press/question/multi-choices/admin-js-template' ); ?>
     <div class="lp-box-data-head">
         <p class="question-bottom-actions">
@@ -30,6 +27,9 @@ $questionOptions = array();
 			echo join( "\n", $top_buttons );
 			?>
         </p>
+	    <?php if ( LP_QUESTION_CPT !== get_post_type() ) { ?>
+            <input type="text" class="lp-question-heading-title" value="<?php echo $question->get_title(); ?>">
+	    <?php } ?>
     </div>
     <div class="lp-box-data-content">
         <table class="lp-sortable lp-list-options" id="learn-press-list-options-<?php echo $question_id; ?>">
@@ -87,7 +87,7 @@ $questionOptions = array();
 				'learn_press_question_bottom_buttons',
 				array(
 					'add_option' => sprintf(
-						__( '<button class="button add-question-option-button add-question-option-button-%1$d" data-id="%1$d" type="button" ng-click="addOp">%2$s</button>', 'learnpress' ),
+						__( '<button class="button add-question-option-button add-question-option-button-%1$d" data-id="%1$d" type="button" ng-click="addOption()">%2$s</button>', 'learnpress' ),
 						$question_id,
 						__( 'Add Option', 'learnpress' )
 					)
@@ -98,22 +98,4 @@ $questionOptions = array();
 			?>
         </p>
     </div>
-
-    {{xxxx()}}
 </div>
-<div>
-    <table class="lp-sortable lp-list-options" id="learn-press-list-options-<?php echo $question_id; ?>">
-        <tbody>
-        </tbody>
-    </table>
-    <!--
-    <section-control options="questionOptions"></section-control>-->
-    <button type="button" class="button" ng-click="remove();">Remove</button>
-</div>
-<script type="text/javascript">
-    var questionOptions = <?php echo wp_json_encode( $questionOptions );?>
-
-        jQuery(function ($) {
-            //LP.sortableQuestionAnswers($('#learn-press-question-<?php echo $question_id;?>'));
-        });
-</script>

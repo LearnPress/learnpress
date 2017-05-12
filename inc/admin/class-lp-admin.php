@@ -4,11 +4,11 @@
  * @package LearnPress/Admin/Classes
  * @version 1.0
  */
-if ( !defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-if ( !class_exists( 'LP_Admin' ) ) {
+if ( ! class_exists( 'LP_Admin' ) ) {
 	/**
 	 * Class LP_Admin
 	 */
@@ -28,14 +28,27 @@ if ( !class_exists( 'LP_Admin' ) ) {
 			add_action( 'admin_notices', array( $this, 'notice_outdated_templates' ) );
 			add_action( 'admin_notices', array( $this, 'notice_setup_page' ) );
 			add_action( 'admin_notices', array( $this, 'notice_required_permalink' ) );
+			add_action( 'edit_form_after_editor', array( $this, 'wrapper_start' ), - 1000 );
+			add_action( 'edit_form_after_editor', array( $this, 'wrapper_end' ), 1000 );
 
+
+		}
+
+		public function wrapper_start() {
+			echo '<!-- BEGIN courseEditor app -->' . "\n";
+			echo '<div class="" ng-app="courseEditor" ng-controller="courseEditor">' . "\n";
+		}
+
+		public function wrapper_end() {
+			echo '</div>' . "\n";
+			echo '<!-- END courseEditor app -->' . "\n";
 		}
 
 		public function notice_required_permalink() {
 
 			if ( current_user_can( 'manage_options' ) ) {
 
-				if ( !get_option( 'permalink_structure' ) ) {
+				if ( ! get_option( 'permalink_structure' ) ) {
 					learn_press_add_notice( sprintf( __( 'LearnPress requires permalink option <strong>Post name</strong> is enabled. Please enable it <a href="%s">here</a> to ensure that all functions work properly.', 'learnpress' ), admin_url( 'options-permalink.php' ) ), 'error' );
 				}
 			}
@@ -91,6 +104,7 @@ if ( !class_exists( 'LP_Admin' ) ) {
 
 				return $count ? learn_press_add_notice( $notice, 'error' ) : '';
 			}
+
 			return '';
 
 		}
@@ -99,11 +113,11 @@ if ( !class_exists( 'LP_Admin' ) ) {
 			if ( current_user_can( 'manage_options' ) ) {
 				$page = '';
 				$tab  = '';
-				if ( !empty( $_REQUEST['page'] ) ) {
+				if ( ! empty( $_REQUEST['page'] ) ) {
 					$page = $_REQUEST['page'];
 				}
 
-				if ( !empty( $_REQUEST['tab'] ) ) {
+				if ( ! empty( $_REQUEST['tab'] ) ) {
 					$tab = $_REQUEST['tab'];
 				}
 
@@ -126,21 +140,21 @@ if ( !class_exists( 'LP_Admin' ) ) {
 			$current_screen = get_current_screen();
 			$pages          = learn_press_get_screens();
 			if ( isset( $current_screen->id ) && apply_filters( 'learn_press_display_admin_footer_text', in_array( $current_screen->id, $pages ) ) ) {
-				if ( !get_option( 'learn_press_message_user_rated' ) ) {
+				if ( ! get_option( 'learn_press_message_user_rated' ) ) {
 					$footer_text = sprintf( __( 'If you like <strong>LearnPress</strong> please leave us a %s&#9733;&#9733;&#9733;&#9733;&#9733;%s rating. A huge thanks in advance!', 'learnpress' ), '<a href="https://wordpress.org/support/plugin/learnpress/reviews/?filter=5#postform" target="_blank" class="lp-rating-link" data-rated="' . esc_attr__( 'Thanks :)', 'learnpress' ) . '">', '</a>' );
 					ob_start(); ?>
                     <script type="text/javascript">
-						var $ratingLink = $('a.lp-rating-link').click(function (e) {
-							$.ajax({
-								url    : '<?php echo admin_url( 'admin-ajax.php' );?>',
-								data   : {
-									action: 'learn_press_rated'
-								},
-								success: function () {
-									$ratingLink.parent().html($ratingLink.data('rated'));
-								}
-							});
-						});
+                        var $ratingLink = $('a.lp-rating-link').click(function (e) {
+                            $.ajax({
+                                url: '<?php echo admin_url( 'admin-ajax.php' );?>',
+                                data: {
+                                    action: 'learn_press_rated'
+                                },
+                                success: function () {
+                                    $ratingLink.parent().html($ratingLink.data('rated'));
+                                }
+                            });
+                        });
                     </script>
 					<?php
 					$code = ob_get_clean();
@@ -148,6 +162,7 @@ if ( !class_exists( 'LP_Admin' ) ) {
 				} else {
 				}
 			}
+
 			return $footer_text;
 		}
 
@@ -171,7 +186,9 @@ if ( !class_exists( 'LP_Admin' ) ) {
 		 */
 		public function plugin_js_settings() {
 			static $did = false;
-			if ( $did || !is_admin() ) return;
+			if ( $did || ! is_admin() ) {
+				return;
+			}
 			$js = array(
 				'ajax'       => admin_url( 'admin-ajax.php' ),
 				'plugin_url' => learn_press_plugin_url(),
@@ -199,7 +216,7 @@ if ( !class_exists( 'LP_Admin' ) ) {
 				$current_tab = isset( $_GET['tab'] ) ? $_GET['tab'] : '';
 				$tabs        = learn_press_settings_tabs_array();
 
-				if ( !$current_tab || ( $tabs && empty( $tabs[$current_tab] ) ) ) {
+				if ( ! $current_tab || ( $tabs && empty( $tabs[ $current_tab ] ) ) ) {
 					if ( $tabs ) {
 						$tab_keys    = array_keys( $tabs );
 						$current_tab = reset( $tab_keys );

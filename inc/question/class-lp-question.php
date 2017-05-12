@@ -61,7 +61,7 @@ class LP_Question extends LP_Abstract_Object {
 			$this->id   = absint( $the_question->ID );
 			$this->post = $the_question;
 		}
-		$this->_id = absint($this->id);
+		$this->_id = absint( $this->id );
 
 
 		$this->_options = $args;
@@ -87,12 +87,12 @@ class LP_Question extends LP_Abstract_Object {
 		return $this->{$key};
 	}
 
-	protected function _init() {
-		add_filter( 'learn_press_question_answers', array( $this, '_get_default_answers' ), 10, 2 );
+	public function get_title() {
+		return get_the_title( $this->get_id() );
 	}
 
-	public function get_title() {
-		return get_the_title( $this->id );
+	protected function _init() {
+		add_filter( 'learn_press_question_answers', array( $this, '_get_default_answers' ), 10, 2 );
 	}
 
 	public function get_content() {
@@ -549,8 +549,7 @@ class LP_Question extends LP_Abstract_Object {
 		$option_headings = array(
 			'answer_text'    => __( 'Answer Text', 'learnpress' ),
 			'answer_correct' => __( 'Is Correct?', 'learnpress' ),
-			'actions'        => '',
-			'sort'           => ''
+			'actions'        => ''
 		);
 
 		return apply_filters( 'learn-press/question/multi-choices/admin-option-headings', $option_headings, $this->id );
@@ -561,7 +560,7 @@ class LP_Question extends LP_Abstract_Object {
 	 *
 	 * @return array
 	 */
-	public function get_option_template_data(){
+	public function get_option_template_data() {
 		return array();
 	}
 }

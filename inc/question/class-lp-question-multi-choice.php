@@ -105,7 +105,7 @@ class LP_Question_Multi_Choice extends LP_Question {
 	 */
 	public function admin_interface( $args = array() ) {
 		ob_start();
-		learn_press_admin_view( 'meta-boxes/question/multi-choice-options.php', array( 'question' => $this ) );
+		learn_press_admin_view( 'meta-boxes/question/base-options.php', array( 'question' => $this ) );
 		$output = ob_get_clean();
 
 		if ( ! isset( $args['echo'] ) || ( isset( $args['echo'] ) && $args['echo'] === true ) ) {
