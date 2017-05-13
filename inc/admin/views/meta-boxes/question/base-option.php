@@ -4,15 +4,18 @@
  *
  * @package LearnPress/Templates/Admin
  */
-defined( 'ABSPATH' ) or exit();
-$question        = isset( $question ) ? $question : exit();
+///defined( 'ABSPATH' ) or exit();
+$question        = isset( $question ) ? $question : false;
+
+if(!$question){
+}
+
 $type            = $question->get_type();
 $option_headings = $question->get_admin_option_headings();
 $value           = $question->get_option_value( $answer['value'] );
 $id              = $question->get_id();
 $input_type      = $type == 'multi_choice' ? 'checkbox' : 'radio';
 do_action( 'learn_press_before_question_answer_option', $id );
-
 $template_data = array_merge(
 	array(
 		'id'           => $question->get_id(),
@@ -47,7 +50,8 @@ $template_data = array_merge(
                            name="learn_press_question[<?php echo $template_data['id']; ?>][answer][value][]"
                            value="<?php echo $template_data['answer_value']; ?>"/>
                     <input type="<?php echo $input_type; ?>"
-                           name="learn_press_question[<?php echo $template_data['id']; ?>][checked][]" <?php checked( $answer['is_true'] == 'yes', true ); ?>
+                           name="learn_press_question[<?php echo $template_data['id']; ?>][checked][]"
+                            <?php checked( $answer['is_true'] == 'yes', true ); ?>
                            value="<?php echo $template_data['answer_value']; ?>"
                            ng-model="questionOptions[0].is_true"
                     />
@@ -56,26 +60,17 @@ $template_data = array_merge(
 				case 'actions':
 					$classes[] = 'lp-toolbar-buttons';
 					?>
-                    <span class="learn-press-tooltip lp-toolbar-btn"
+                    <span class="learn-press-tooltip lp-toolbar-btn lp-btn-remove"
                           data-tooltip="<?php esc_attr_e( 'Remove this option', 'learnpress' ); ?>">
                         <a class="lp-btn-icon dashicons dashicons-trash"></a>
                     </span><!--
-                    --><span class="learn-press-tooltip lp-toolbar-btn"
+                    --><span class="learn-press-tooltip lp-toolbar-btn lp-btn-move"
                           data-tooltip="<?php esc_attr_e( 'Drag and drop to change answer\'s position', 'learnpress' ); ?>">
                         <a class="lp-btn-icon dashicons dashicons-sort"></a>
                     </span>
 
 					<?php
 					break;
-				/*
-			case 'sort':
-				$classes[] = 'lp-list-option-actions lp-move-list-option lp-row-action lp-row-move';
-				$tooltip = learn_press_sanitize_tooltip( __( 'Drag and drop to change answer\'s position', 'learnpress' ) );
-				?>
-				<a class="dashicons dashicons-sort"></a>
-				<?php
-				break;*/
-
 			}
 			if ( $tooltip ) {
 				$classes[] = 'learn-press-tooltip';

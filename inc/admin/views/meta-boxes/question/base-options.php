@@ -1,35 +1,41 @@
 <?php
-defined( 'ABSPATH' ) or exit();
-$question        = isset( $question ) ? $question : exit();
+//defined( 'ABSPATH' ) or exit();
+$question = isset( $question ) ? $question : false;
+if ( ! $question ) {
+}
 $question_id     = $question->get_id();
 $type            = $question->get_type();
 $option_headings = $question->get_admin_option_headings();
 $questionOptions = array();
+$types           = LP_Question_Factory::get_types();
+$dropdown        = array();
+foreach ( $types as $slug => $type_name ) {
+	$dropdown[] = sprintf( '<li data-type="%s" class="%s"><a href="">%s</a></li>', $slug, $slug == $type ? 'active' : '', $type_name );
+}
+$dropdown = sprintf( '<ul>%s</ul>', join( "\n", $dropdown ) );
 ?>
 <div class="learn-press-box-data learn-press-question lp-question-<?php echo $type; ?>"
      id="learn-press-question-<?php echo $question_id; ?>"
      data-type="<?php echo $type; ?>" data-id="<?php echo $question_id; ?>"
      ng-controller="question">
     <div class="lp-box-data-head lp-row">
-        <p class="lp-box-data-actions lp-toolbar-buttons">
+        <div class="lp-box-data-actions lp-toolbar-buttons">
 			<?php
 			$top_buttons = apply_filters(
 				'learn_press_question_top_buttons',
 				array(
-					'change_type' => learn_press_dropdown_question_types( array(
-						'echo'     => false,
-						'id'       => 'learn-press-dropdown-question-types-' . $question_id,
-						'selected' => $question->type
-					) ),
-					'remove'      => '<span class="lp-toolbar-btn"><a href="" class="lp-btn-icon dashicons dashicons-trash"></a></span>',
-					'toggle'      => '<span class="lp-toolbar-btn"><a href="" class="lp-btn-icon dashicons dashicons-trash"></a></span>',
-					'move'        => '<span class="lp-toolbar-btn"><a href="" class="lp-btn-icon dashicons dashicons-sort"></a></span>'
+					'type'   => sprintf( '<div class="lp-toolbar-btn lp-toolbar-btn-dropdown"><a href="" class="lp-btn-icon dashicons dashicons-editor-help"></a>%s</div>', $dropdown ),
+					'edit'   => LP_QUESTION_CPT == get_post_type() ? '' : '<div class="lp-toolbar-btn lp-btn-disabled"><a href="" class="lp-btn-icon dashicons dashicons-admin-links"></a></div>',
+					'remove' => '<span class="lp-toolbar-btn lp-btn-toggle"><a href="" class="lp-btn-icon dashicons dashicons-arrow-up"></a><a href="" class="lp-btn-icon dashicons dashicons-arrow-down"></a></span>',
+					'toggle' => '<span class="lp-toolbar-btn lp-btn-remove "><a href="" class="lp-btn-icon dashicons dashicons-trash"></a></span>',
+					'move'   => '<span class="lp-toolbar-btn lp-btn-move"><a href="" class="lp-btn-icon dashicons dashicons-sort"></a></span>'
 				),
 				$question_id
 			);
+			$top_buttons = array_filter( $top_buttons );
 			echo join( "<!--\n-->", $top_buttons );
 			?>
-        </p>
+        </div>
 		<?php if ( LP_QUESTION_CPT !== get_post_type() ) { ?>
             <input type="text" class="lp-question-heading-title" value="<?php echo $question->get_title(); ?>">
 		<?php } ?>
@@ -64,18 +70,9 @@ $questionOptions = array();
 						'answer'   => $answer
 					) );
 					echo $questionOption = ob_get_clean();
-					$key    = $question->get_option_value( $answer['value'] );
-					$option = array( 'html' => $questionOption, 'attr' => array() );
-					if ( preg_match_all( '~<tr(.*)>~iSU', $questionOption, $matches ) ) {
-						if ( preg_match_all( '~(.*)="(.*)"~iSU', $matches[1][0], $attrs ) ) {
-							foreach ( $attrs[1] as $k => $v ) {
-								$option['attr'][ trim( $v ) ] = $attrs[2][ $k ];
-							}
-						}
-					}
-					$questionOptions[ $key ] = $option;
 				endforeach;
 			endif;
+
 			?>
             <!--
 			<tr ng-repeat="option in questionOptions track by $index" content-rendered="updateOption">

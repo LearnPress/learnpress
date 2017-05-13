@@ -39,4 +39,16 @@ class LP_Abstract_Object {
 	public function get_data( $name = false ) {
 		return false !== $name && array_key_exists( $name, $this->_data ) ? $this->_data[ $name ] : false;
 	}
+
+	public function set_data( $data ) {
+		if ( is_array( $data ) ) {
+			foreach ( $data as $key => $value ) {
+				$this->set_data( $key, $value );
+			}
+		} else {
+			$key                 = func_get_arg( 0 );
+			$value               = func_get_arg( 1 );
+			$this->_data[ $key ] = $value;
+		}
+	}
 }

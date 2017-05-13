@@ -13,6 +13,7 @@ defined( 'ABSPATH' ) || exit();
 
 class LP_Question_Multi_Choice extends LP_Question {
 
+    protected $_type = 'multi_choice';
 	/**
 	 * Construct
 	 *
@@ -270,60 +271,8 @@ class LP_Question_Multi_Choice extends LP_Question {
 	 * @return mixed
 	 */
 	public static function admin_js_template( $args = '' ) {
-		$args       = wp_parse_args( $args, array( 'echo' => true ) );
-		$fake_class = __CLASS__;
-		ob_start();
-		?>
-        <script type="text/ng-template" id="tmpl-question-multi-choice-option">
-			<?php
-			add_filter( 'learn-press/question/multi-choices/admin-option-template-args', array(
-				__CLASS__,
-				'get_option_template_data_for_js'
-			) );
-			learn_press_admin_view(
-				'meta-boxes/question/multi-choice-option',
-				array(
-					'question' => new $fake_class(),
-					'answer'   => array(
-						'value'   => '',
-						'is_true' => '',
-						'text'    => ''
-					)
-				)
-			);
-			remove_filter( 'learn-press/question/multi-choices/admin-option-template-args', array(
-				__CLASS__,
-				'get_option_template_data_for_js'
-			) );
-			?>
-			<?php /*<tr class="lp-list-option lp-list-option-empty <# if(data.id){ #>lp-list-option-{{data.id}}<# } #>"
-            data-id="{{data.id}}">
-
-            <td>
-                <input class="lp-answer-text no-submit key-nav" type="text"
-                       name="learn_press_question[{{data.question_id}}][answer][text][]" value="{{data.text}}"/>
-            </td>
-            <th class="lp-answer-check">
-                <input type="hidden" name="learn_press_question[{{data.question_id}}][answer][value][]"
-                       value="{{data.value}}"/>
-                <input type="checkbox" name="learn_press_question[{{data.question_id}}][checked][]" {{data.checked}}
-                       value="{{data.value}}"/>
-            </th>
-            <td class="lp-list-option-actions lp-remove-list-option">
-                <i class="dashicons dashicons-trash"></i>
-            </td>
-            <td class="lp-list-option-actions lp-move-list-option">
-                <i class="dashicons dashicons-sort open-hand"></i>
-            </td>
-        </tr>*/ ?>
-        </script>
-		<?php
-		$template = apply_filters( 'learn_press_question_multi_choice_answer_option_template', ob_get_clean(), __CLASS__ );
-		if ( $args['echo'] ) {
-			echo $template;
-		}
-
-		return $template;
+		$args = wp_parse_args( $args, array( 'echo' => true, 'type' => 'multi_choice' ) );
+		parent::admin_js_template( $args );
 	}
 
 	public function get_option_template_data() {

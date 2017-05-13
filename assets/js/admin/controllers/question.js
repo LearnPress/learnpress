@@ -16,29 +16,9 @@
         //angular.extend(this, $controller('courseEditor', {$scope: $scope}));
 
         angular.extend($scope, {
-            questionOptions: [
-                {
-                    title: 'Question 1',
-                    value: '1',
-                    is_true: false
-                }, {
-                    title: 'Question 2',
-                    value: '2',
-                    is_true: false
-                }, {
-                    title: 'Question 3',
-                    value: '3',
-                    is_true: true
-                }, {
-                    title: 'Question 4',
-                    value: '4',
-                    is_true: false
-                }, {
-                    title: 'Question 5',
-                    value: '5',
-                    is_true: false
-                }
-            ],
+            init: function(){
+                console.log('Question init')
+            },
             getOptionPosition:function () {
                 return this.questionOptions[1]
             },
@@ -75,5 +55,6 @@
                 $scope.questionOptions = [];
             }
         });
+        $scope.init();
     }
 })(jQuery);

@@ -1011,6 +1011,7 @@ if (typeof window.LP == 'undefined') {
 
 		//$(window).on("message onmessage", LP.receiveMessage, false);
 		window.addEventListener("message", LP.receiveMessage, false);
+
 	});
 	LearnPress = LP;
 })(jQuery);

@@ -13,11 +13,15 @@
      * @param $scope
      */
     window['learn-press.quiz.controller'] = function ($scope) {
-        $.extend($scope, {
+        angular.extend($scope, {
             questions: quizQuestions,
+            init: function(){
+                console.log('Quiz init');
+            },
             addQuestion: function(){
                 console.log('add question')
             }
         });
+        $scope.init();
     }
 })(jQuery);

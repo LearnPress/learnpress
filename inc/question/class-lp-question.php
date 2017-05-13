@@ -42,30 +42,97 @@ class LP_Question extends LP_Abstract_Object {
 	 */
 	protected static $_instance = false;
 
+	protected $_type = 'single_choice';
+
 	/**
 	 * Construct
 	 *
 	 * @param mixed
 	 * @param array
+	 *
+	 * @throws Exception
 	 */
 	public function __construct( $the_question = null, $args = null ) {
 
 		parent::__construct( $args );
-		if ( is_numeric( $the_question ) ) {
-			$this->id   = absint( $the_question );
-			$this->post = get_post( $this->id );
-		} elseif ( $the_question instanceof LP_Question ) {
-			$this->id   = absint( $the_question->id );
-			$this->post = $the_question->post;
-		} elseif ( isset( $the_question->ID ) ) {
-			$this->id   = absint( $the_question->ID );
-			$this->post = $the_question;
-		}
-		$this->_id = absint( $this->id );
 
+		if ( is_numeric( $the_question ) && $the_question > 0 ) {
+			$this->set_id( $the_question );
+		} elseif ( $the_question instanceof self ) {
+			$this->set_id( absint( $the_question->get_id() ) );
+		} elseif ( ! empty( $the_question->ID ) ) {
+			$this->set_id( absint( $the_question->ID ) );
+		}
+
+		if ( $this->get_id() > 0 ) {
+			$this->load();
+		}
 
 		$this->_options = $args;
 		$this->_init();
+	}
+
+	public function load() {
+		$the_id = $this->get_id();
+		if ( ! $the_id || LP_QUESTION_CPT !== get_post_type( $the_id ) ) {
+			throw new Exception( __( 'Invalid question.', 'learnpress' ) );
+		}
+		$this->_load_answer_options();
+	}
+
+	protected function _load_answer_options() {
+		$id             = $this->get_id();
+		$answer_options = wp_cache_get( 'answer-options-' . $id, 'lp-questions' );
+		if ( false === $answer_options ) {
+			global $wpdb;
+			$query = $wpdb->prepare( "
+				SELECT *
+				FROM {$wpdb->prefix}learnpress_question_answers
+				WHERE question_id = %d
+			", $id );
+			if ( $answer_options = $wpdb->get_results( $query, OBJECT_K ) ) {
+				foreach ( $answer_options as $k => $v ) {
+					if ( $answer_data = maybe_unserialize( $v->answer_data ) ) {
+						foreach ( $answer_data as $data_key => $data_value ) {
+							$answer_options[ $k ]->$data_key = $data_value;
+						}
+					}
+					unset( $answer_options[ $k ]->answer_data );
+				}
+				$this->_load_answer_option_meta( $answer_options );
+			}
+			wp_cache_set( 'answer-options-' . $id, $answer_options, 'lp-questions' );
+		}
+		$this->set_data( 'answer_options', $answer_options );
+	}
+
+	/**
+	 * Load meta data for answer options
+	 *
+	 * @param array $answer_options
+	 */
+	protected function _load_answer_option_meta( &$answer_options ) {
+		global $wpdb;
+		$answer_option_ids = wp_list_pluck( $answer_options, 'question_answer_id' );
+		$format            = array_fill( 0, sizeof( $answer_option_ids ), '%d' );
+		$query             = $wpdb->prepare( "
+			SELECT *
+			FROM {$wpdb->prefix}learnpress_question_answermeta
+			WHERE learnpress_question_answer_id IN(" . join( ', ', $format ) . ")
+		", $answer_option_ids );
+		if ( $metas = $wpdb->get_results( $query ) ) {
+			foreach ( $metas as $meta ) {
+				$key        = $meta->meta_key;
+				$option_key = $meta->learnpress_question_answer_id;
+				if ( ! empty( $answer_options[ $option_key ] ) ) {
+					$answer_options[ $option_key ]->$key = $meta->meta_value;
+				}
+			}
+		}
+	}
+
+	public function get_answer_options() {
+		return $this->get_data( 'answer_options' );
 	}
 
 	public function __get( $key ) {
@@ -269,7 +336,7 @@ class LP_Question extends LP_Abstract_Object {
 	}
 
 	public function get_type() {
-		return $this->type;
+		return $this->_type;
 	}
 
 	/**
@@ -499,6 +566,11 @@ class LP_Question extends LP_Abstract_Object {
 		return $return;
 	}
 
+	public function get_limit_options() {
+		return - 1;
+	}
+
+
 	public function get_user_answered( $args ) {
 		$args     = wp_parse_args(
 			$args,
@@ -535,9 +607,46 @@ class LP_Question extends LP_Abstract_Object {
 	 * Print html js template for question in admin
 	 *
 	 * @param mixed $args
+	 *
+	 * @return mixed
 	 */
 	public static function admin_js_template( $args = '' ) {
-		// This function should overwritten in child class
+		$args       = wp_parse_args( $args, array( 'echo' => true ) );
+		$type       = ! empty( $args['type'] ) ? $args['type'] : 'single_choice';
+		$fake_class = LP_Question_Factory::get_class_name_from_question_type( $type );
+
+		ob_start();
+		?>
+        <script type="text/ng-template" id="tmpl-question-<?php echo $type; ?>-option">
+			<?php
+			add_filter( 'learn-press/question/' . $type . '/admin-option-template-args', array(
+				__CLASS__,
+				'get_option_template_data_for_js'
+			) );
+			learn_press_admin_view(
+				'meta-boxes/question/base-option',
+				array(
+					'question' => new $fake_class(),
+					'answer'   => array(
+						'value'   => '',
+						'is_true' => '',
+						'text'    => ''
+					)
+				)
+			);
+			remove_filter( 'learn-press/question/' . $type . '/admin-option-template-args', array(
+				__CLASS__,
+				'get_option_template_data_for_js'
+			) );
+			?>
+        </script>
+		<?php
+		$template = apply_filters( 'learn_press_question_multi_choice_answer_option_template', ob_get_clean(), __CLASS__ );
+		if ( $args['echo'] ) {
+			echo $template;
+		}
+
+		return $template;
 	}
 
 	/**

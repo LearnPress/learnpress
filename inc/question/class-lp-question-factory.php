@@ -67,7 +67,8 @@ class LP_Question_Factory {
 	 * @return string|false
 	 */
 	public static function get_class_name_from_question_type( $type ) {
-		return $type ? 'LP_Question_' . implode( '_', array_map( 'ucfirst', preg_split( '/-|_/', $type ) ) ) : false;
+		$class = $type ? 'LP_Question_' . implode( '_', array_map( 'ucfirst', preg_split( '/-|_/', $type ) ) ) : false;
+		return apply_filters('learn-press/question-class', $class, $type);
 	}
 
 	/**

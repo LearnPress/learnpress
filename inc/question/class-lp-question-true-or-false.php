@@ -79,8 +79,7 @@ class LP_Question_True_Or_False extends LP_Question {
 
 	public function admin_interface( $args = array() ) {
 		ob_start();
-		$view = learn_press_get_admin_view( 'meta-boxes/question/single-choice-options.php' );
-		include $view;
+		learn_press_admin_view( 'meta-boxes/question/base-options.php', array( 'question' => $this ) );
 		$output = ob_get_clean();
 
 		if ( ! isset( $args['echo'] ) || ( isset( $args['echo'] ) && $args['echo'] === true ) ) {
@@ -175,38 +174,14 @@ class LP_Question_True_Or_False extends LP_Question {
 	}
 
 	/**
+	 * Print js template
+	 *
 	 * @param string $args
 	 *
 	 * @return mixed
 	 */
 	public static function admin_js_template( $args = '' ) {
-		$args = wp_parse_args( $args, array( 'echo' => true ) );
-		ob_start();
-		?>
-        <script type="text/html" id="tmpl-question-true-or-false-option">
-            <tr class="lp-list-option lp-list-option-new lp-list-option-empty <# if(data.id){ #>lp-list-option-{{data.id}}<# } #>"
-                data-id="{{data.id}}">
-                <td>
-                    <input class="lp-answer-text no-submit key-nav" type="text"
-                           name="learn_press_question[{{data.question_id}}][answer][text][]" value="{{data.text}}"/>
-                </td>
-                <th class="lp-answer-check">
-                    <input type="hidden" name="learn_press_question[{{data.question_id}}][answer][value][]"
-                           value="{{data.value}}"/>
-                    <input type="radio" name="learn_press_question[{{data.question_id}}][checked][]" {{data.checked}}
-                           value="{{data.value}}"/>
-                </th>
-                <td class="lp-list-option-actions lp-move-list-option open-hand">
-                    <i class="dashicons dashicons-sort"></i>
-                </td>
-            </tr>
-        </script>
-		<?php
-		$template = apply_filters( 'learn_press_question_true_or_false_answer_option_template', ob_get_clean(), __CLASS__ );
-		if ( $args['echo'] ) {
-			echo $template;
-		}
-
-		return $template;
+		$args = wp_parse_args( $args, array( 'echo' => true, 'type' => 'true_or_false' ) );
+		parent::admin_js_template( $args );
 	}
 }

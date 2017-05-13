@@ -28,8 +28,11 @@ $remove-icon-color: #d05d5d;
         visibility: hidden;
         position: relative;
         vertical-align: middle;
+        cursor: pointer;
         a, span {
             color: #999;
+            box-shadow: none;
+            outline: none;
         }
         .lp-btn-icon {
             width: 30px;
@@ -41,9 +44,6 @@ $remove-icon-color: #d05d5d;
             left: 50%;
             margin-left: -15px;
             line-height: 30px;
-        }
-        &:hover {
-            background: #dbf5ff;
         }
         &.lp-btn-move {
             cursor: ns-resize;
@@ -62,8 +62,64 @@ $remove-icon-color: #d05d5d;
                 }
             }
         }
+        &.lp-btn-toggle {
+            .dashicons-arrow-down {
+                display: none;
+            }
+        }
+        &.lp-toolbar-btn-dropdown {
+            color: #000;
+            ul {
+                position: absolute;
+                top: 100%;
+                right: 0;
+                background: #fdfeff;
+                margin: 0px 0;
+                border: 1px solid #DDD;
+                display: none;
+                li {
+                    list-style: none;
+                    margin: 0;
+                    a {
+                        display: block;
+                        white-space: nowrap;
+                        text-decoration: none;
+                        padding: 3px 8px;
+                        font-size: 12px;
+                        text-align: right;
+                        padding-left: 20px;
+                        color: #0073aa;
+                        &:hover {
+                            background: #dbf5ff;
+                        }
+                    }
+                    &.active{
+                        a{
+                            background: #dbf5ff;
+                        }
+                    }
+                }
+            }
+        }
+        &.lp-btn-disabled,
+        &.lp-btn-disabled:hover{
+            background: #F5F5F5;
+            .lp-btn-icon{
+                color: #DDD;
+            }
+        }
+        &:hover {
+            background: #dbf5ff;
+            .lp-btn-icon {
+                color: #00a0d2;
+            }
+            ul {
+                display: block;
+            }
+        }
     }
 }
+
 
 .column-content-actions {
     &.lp-toolbar-buttons {
@@ -116,6 +172,19 @@ $remove-icon-color: #d05d5d;
     }
     .lp-box-data-foot {
         padding: 15px;
+    }
+    &.closed {
+        .lp-btn-toggle{
+            .dashicons-arrow-up{
+                display: none;
+            }
+            .dashicons-arrow-down{
+                display: inline-block;
+            }
+        }
+        .lp-box-data-content{
+            display: none;
+        }
     }
 }
 

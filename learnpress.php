@@ -684,3 +684,15 @@ function load_learn_press() {
  * Create new instance of LearnPress and put it to global
  */
 $GLOBALS['LearnPress'] = LP();
+
+add_action('woocommerce_init', function(){
+	wc_get_product(145);
+	wc_get_product(145);
+	wc_get_product(145);
+	wc_get_product(145);
+	wc_get_product(145);
+	wc_get_product(145);
+	wc_get_product(145);
+	wc_get_product(145);
+
+});
