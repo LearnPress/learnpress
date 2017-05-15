@@ -24,7 +24,7 @@ if ( ! class_exists( 'LP_Widget_Popular_Courses' ) ) {
 					'name' => __( 'Title', 'learnpress' ),
 					'id'   => "{$prefix}title",
 					'type' => 'text',
-					'std'  => __( 'Popular Courses', 'learnpress' )
+					'std'  => __( '', 'learnpress' )
 				),
 				'show_teacher' => array(
 					'name' => __( 'Show teacher', 'learpnress' ),
