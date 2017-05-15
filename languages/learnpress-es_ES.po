@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-01-08 10:37+0100\n"
-"PO-Revision-Date: 2017-01-16 10:16+0100\n"
+"PO-Revision-Date: 2017-05-11 11:35+0700\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.9\n"
+"X-Generator: Poedit 1.8.5\n"
 "Last-Translator: \n"
 "Language: es\n"
 
@@ -1057,7 +1057,7 @@ msgstr "Sistema de Administración de Aprendizaje"
 
 #: inc/admin/class-lp-admin-menu.php:51 inc/admin/lp-admin-functions.php:1513
 msgid "LearnPress"
-msgstr "LearnPress adsdasd"
+msgstr "LearnPress"
 
 #: inc/admin/class-lp-admin-menu.php:62 inc/admin/class-lp-admin-menu.php:63
 msgid "Statistics"
