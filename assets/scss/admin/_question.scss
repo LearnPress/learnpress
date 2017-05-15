@@ -67,6 +67,12 @@
         }
         &:hover{
             opacity: 1;
+
+        }
+    }
+    &.focused{
+        .lp-box-data-content {
+            opacity: 1;
         }
     }
 }

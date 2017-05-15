@@ -92,12 +92,13 @@ class LP_Question extends LP_Abstract_Object {
 			", $id );
 			if ( $answer_options = $wpdb->get_results( $query, OBJECT_K ) ) {
 				foreach ( $answer_options as $k => $v ) {
+					$answer_options[ $k ] = (array) $answer_options[ $k ];
 					if ( $answer_data = maybe_unserialize( $v->answer_data ) ) {
 						foreach ( $answer_data as $data_key => $data_value ) {
-							$answer_options[ $k ]->$data_key = $data_value;
+							$answer_options[ $k ][ $data_key ] = $data_value;
 						}
 					}
-					unset( $answer_options[ $k ]->answer_data );
+					unset( $answer_options[ $k ]['answer_data'] );
 				}
 				$this->_load_answer_option_meta( $answer_options );
 			}
@@ -125,7 +126,7 @@ class LP_Question extends LP_Abstract_Object {
 				$key        = $meta->meta_key;
 				$option_key = $meta->learnpress_question_answer_id;
 				if ( ! empty( $answer_options[ $option_key ] ) ) {
-					$answer_options[ $option_key ]->$key = $meta->meta_value;
+					$answer_options[ $option_key ][ $key ] = $meta->meta_value;
 				}
 			}
 		}
@@ -671,5 +672,22 @@ class LP_Question extends LP_Abstract_Object {
 	 */
 	public function get_option_template_data() {
 		return array();
+	}
+
+	public function to_element_data( $echo = true ) {
+		$data = apply_filters( '', array(
+				'type'            => $this->get_type(),
+				'title'           => $this->get_title(),
+				'id'              => $this->get_id(),
+				'option_answers'  => $this->get_answer_options(),
+				'option_template' => $this->get_option_template_data()
+			)
+		);
+		$data = wp_json_encode( $data, JSON_PRETTY_PRINT );
+		if ( $echo ) {
+			echo $data;
+		}
+
+		return $data;
 	}
 }

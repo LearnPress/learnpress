@@ -61,7 +61,7 @@ $dropdown = sprintf( '<ul>%s</ul>', join( "\n", $dropdown ) );
             </thead>
             <tbody>
 			<?php
-			$answers = $question->answers;
+			$answers = $question->get_answer_options();
 			if ( $answers ):
 				foreach ( $answers as $answer ):
 					ob_start();
@@ -98,4 +98,8 @@ $dropdown = sprintf( '<ul>%s</ul>', join( "\n", $dropdown ) );
 			?>
         </p>
     </div>
+    {{questionData}}
+    <script type="text/html" class="element-data">
+        <?php $question->to_element_data();?>
+    </script>
 </div>

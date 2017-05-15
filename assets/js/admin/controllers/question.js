@@ -14,12 +14,38 @@
      */
     window['learn-press.question.controller'] = function ($scope, $compile, $element) {
         //angular.extend(this, $controller('courseEditor', {$scope: $scope}));
-
+        $element = $($element);
         angular.extend($scope, {
-            init: function(){
-                console.log('Question init')
+            questionData: {
+                title: 'Nodem is pul donor shit met',
+                id: 10,
+                options: [
+                    {name: 'Option 1', value: 'option-1', is_true: false},
+                    {name: 'Option 2', value: 'option-2', is_true: true},
+                    {name: 'Option 3', value: 'option-3', is_true: false}
+                ]
             },
-            getOptionPosition:function () {
+            init: function () {
+                this.initData();
+                this.bindEvents();
+            },
+            initData: function () {
+                try {
+                    this.questionData = JSON.parse($($element).find('.element-data').html());
+                } catch (ex) {
+                    console.log(ex)
+                }
+            },
+            bindEvents: function(){
+                $element.on('focus', 'input', function(){
+                    $element.addClass('focused');
+                }).on('blur', 'input', function(){
+                    $element.removeClass('focused');
+                });
+
+                $element.on('')
+            },
+            getOptionPosition: function () {
                 return this.questionOptions[1]
             },
             updateOption: function (el, option) {
@@ -36,20 +62,11 @@
                 });
             },
             addOption: function () {
-                var element = angular.element($('#tmpl-question-multi-choice-option').html());
-
-                $compile(element)($scope, function(clonedElement, scope) {
-                    $($element).find('.lp-list-options tbody').append(clonedElement)
+                var element = angular.element($('#tmpl-question-' + this.questionData.type + '-option').html());
+                $compile(element)($scope, function (clonedElement, scope) {
+                    $($element).find('.lp-list-options tbody').append(clonedElement);
+                    clonedElement.find('.lp-answer-text').focus();
                 });
-
-                console.log('addOption');
-                var i = this.questionOptions.length+1;
-                this.questionOptions.push({
-                    title: 'Question '+i,
-                    value: i,
-                    is_true: false
-                })
-                this.test();
             },
             remove: function () {
                 $scope.questionOptions = [];
