@@ -10,7 +10,7 @@
 
 defined( 'ABSPATH' ) || exit();
 
-class LP_Question extends LP_Abstract_Object {
+class LP_Question extends LP_Abstract_Course_Item {
 
 	/**
 	 * @var null
@@ -623,7 +623,7 @@ class LP_Question extends LP_Abstract_Object {
 			add_filter( 'learn-press/question/' . $type . '/admin-option-template-args', array(
 				__CLASS__,
 				'get_option_template_data_for_js'
-			) );
+			), 10, 2 );
 			learn_press_admin_view(
 				'meta-boxes/question/base-option',
 				array(
@@ -638,7 +638,7 @@ class LP_Question extends LP_Abstract_Object {
 			remove_filter( 'learn-press/question/' . $type . '/admin-option-template-args', array(
 				__CLASS__,
 				'get_option_template_data_for_js'
-			) );
+			), 10, 2 );
 			?>
         </script>
 		<?php
@@ -671,7 +671,7 @@ class LP_Question extends LP_Abstract_Object {
 	 * @return array
 	 */
 	public function get_option_template_data() {
-		return array();
+		return apply_filters( 'learn-press/question/' . $this->get_type() . '/admin-option-template-args', array(), $this->get_type() );
 	}
 
 	public function to_element_data( $echo = true ) {
@@ -679,8 +679,7 @@ class LP_Question extends LP_Abstract_Object {
 				'type'            => $this->get_type(),
 				'title'           => $this->get_title(),
 				'id'              => $this->get_id(),
-				'option_answers'  => $this->get_answer_options(),
-				'option_template' => $this->get_option_template_data()
+				'answer_options'  => $this->get_answer_options()
 			)
 		);
 		$data = wp_json_encode( $data, JSON_PRETTY_PRINT );
@@ -689,5 +688,15 @@ class LP_Question extends LP_Abstract_Object {
 		}
 
 		return $data;
+	}
+
+	public static function get_option_template_data_for_js( $args, $type ) {
+		$args = array(
+			'id'           => '{{questionData.id}}',
+			'answer_value' => '{{data.answer_value}}',
+			'answer_text'  => '{{data.answer_text}}'
+		);
+
+		return apply_filters( 'learn-press/question/' . $type . '/admin-option-template-js-args', $args, $type );
 	}
 }

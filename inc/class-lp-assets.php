@@ -156,10 +156,10 @@ class LP_Assets {
 		}
 
 		//if ( !defined( 'LP_DEBUG' ) || ( false == LP_DEBUG ) ) {
-		add_filter( 'script_loader_tag', array( self::$_instance, 'unload_script_tag' ), $priory, 3 );
+		//add_filter( 'script_loader_tag', array( self::$_instance, 'unload_script_tag' ), $priory, 3 );
 		add_filter( 'style_loader_tag', array( self::$_instance, 'unload_script_tag' ), $priory, 3 );
-		add_action( 'wp_print_footer_scripts', array( self::$_instance, 'include_script_file' ), $priory );
-		add_action( 'admin_print_footer_scripts', array( self::$_instance, 'include_script_file' ), $priory );
+		//add_action( 'wp_print_footer_scripts', array( self::$_instance, 'include_script_file' ), $priory );
+		//add_action( 'admin_print_footer_scripts', array( self::$_instance, 'include_script_file' ), $priory );
 		add_action( 'wp_print_scripts', array( self::$_instance, 'include_stylesheet_file' ), $priory );
 		add_action( 'admin_print_scripts', array( self::$_instance, 'include_stylesheet_file' ), $priory );
 		//}
@@ -213,8 +213,8 @@ class LP_Assets {
 		$scripts->add( 'angularjs', 'https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js', null, $ver, 1 );
 
 		// global
-		$scripts->add( 'learn-press-global', $default_path . 'js/global' . $suffix . '.js', $deps, $ver, 1 );
-		$scripts->add( 'learn-press-jalerts', $default_path . 'js/jquery.alert' . $suffix . '.js', $deps, $ver, 1 );
+		$scripts->add( 'learn-press-global', $default_path . 'js/global' . $suffix . '.js'. $no_cache, $deps, $ver, 1 );
+		$scripts->add( 'learn-press-jalerts', $default_path . 'js/vendor/jquery.alert' . $suffix . '.js', $deps, $ver, 1 );
 
 		// frontend
 		$scripts->add( 'learn-press-js', $default_path . 'js/frontend/learnpress' . $suffix . '.js', $deps, $ver, 1 );
@@ -233,30 +233,30 @@ class LP_Assets {
 			'jquery-ui-slider',
 			'jquery-ui-draggable'
 		), $ver, 1 );
-		$scripts->add( 'base-controller', get_site_url() . $default_path . 'js/admin/controllers/base.js' . $no_cache, array(
+		$scripts->add( 'base-controller', $default_path . 'js/admin/controllers/base.js' . $no_cache, array(
 			'jquery',
 			'utils',
 			'angularjs'
 		) );
-		$scripts->add( 'base-app', get_site_url() . $default_path . 'js/admin/base.js' . $no_cache, array(
+		$scripts->add( 'base-app', $default_path . 'js/admin/base.js' . $no_cache, array(
 			'jquery',
 			'utils',
 			'angularjs'
 		) );
-		$scripts->add( 'question-controller', get_site_url() . $default_path . 'js/admin/controllers/question.js' . $no_cache, array( 'base-controller' ) );
-		$scripts->add( 'quiz-controller', get_site_url() . $default_path . 'js/admin/controllers/quiz.js' . $no_cache, array( 'base-controller' ) );
-		$scripts->add( 'course-controller', get_site_url() . $default_path . 'js/admin/controllers/course.js' . $no_cache, array( 'base-controller' ) );
+		$scripts->add( 'question-controller', $default_path . 'js/admin/controllers/question.js' . $no_cache, array( 'base-controller' ) );
+		$scripts->add( 'quiz-controller', $default_path . 'js/admin/controllers/quiz.js' . $no_cache, array( 'base-controller' ) );
+		$scripts->add( 'course-controller', $default_path . 'js/admin/controllers/course.js' . $no_cache, array( 'base-controller' ) );
 		// admin
-		$scripts->add( 'question-app', get_site_url() . $default_path . 'js/admin/question.js' . $no_cache, array(
+		$scripts->add( 'question-app', $default_path . 'js/admin/question.js' . $no_cache, array(
 			'question-controller',
 			'base-app'
 		) );
-		$scripts->add( 'quiz-app', get_site_url() . $default_path . 'js/admin/quiz.js' . $no_cache, array(
+		$scripts->add( 'quiz-app', $default_path . 'js/admin/quiz.js' . $no_cache, array(
 			'question-controller',
 			'quiz-controller',
 			'question-app'
 		) );
-		$scripts->add( 'course-app', get_site_url() . $default_path . 'js/admin/course.js' . $no_cache, array(
+		$scripts->add( 'course-app', $default_path . 'js/admin/course.js' . $no_cache, array(
 			'quiz-app'
 		) );
 
@@ -788,14 +788,14 @@ class LP_Assets {
 			foreach ( array( 'lp_course', 'lp_order', 'lp_quiz', 'lp_lesson', 'lp_question' ) as $post_type ) {
 				if ( learn_press_is_post_type_screen( $post_type ) ) {
 					$type = str_replace( 'lp_', '', $post_type );
-					self::enqueue_style( "learn-press-mb-{$type}" );
-					self::enqueue_script( "learn-press-mb-{$type}" );
+					//self::enqueue_style( "learn-press-mb-{$type}" );
+					//self::enqueue_script( "learn-press-mb-{$type}" );
 				}
 			}
 
 			if ( learn_press_is_post_type_screen( array( 'lp_quiz' ) ) ) {
-				self::enqueue_style( 'learn-press-mb-question' );
-				self::enqueue_script( 'learn-press-mb-question' );
+				//self::enqueue_style( 'learn-press-mb-question' );
+				//self::enqueue_script( 'learn-press-mb-question' );
 			}
 
 			if ( learn_press_is_post_type_screen( array( 'lp_course', 'lp_quiz', 'lp_order' ) ) ) {

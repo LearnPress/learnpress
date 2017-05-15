@@ -6,7 +6,7 @@ if (typeof window.LP == 'undefined') {
 }
 
 (function ($) {
-	$.fn.serializeJSON = function () {
+	$.fn.serializeJSON = function (path) {
 		var unIndexed = $(this).serializeArray(),
 			indexed = {},
 			validate = /(\[([a-zA-Z0-9_-]+)?\]?)/g,
@@ -71,6 +71,9 @@ if (typeof window.LP == 'undefined') {
 				indexed[match[0]] = this.value;
 			}
 		});
+		if(path){
+            eval( 'indexed = indexed.'+path);
+        }
 		return indexed;
 	};
 	$.fn.tooltip = function (options) {

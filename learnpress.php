@@ -414,6 +414,8 @@ if ( !class_exists( 'LearnPress' ) ) {
 		public function includes() {
 
 			require_once 'inc/abstract-object.php';
+			require_once 'inc/course/abstract-course-item.php';
+
 
 			require_once 'inc/lp-deprecated.php';
 			require_once 'inc/class-lp-cache.php';
@@ -454,7 +456,6 @@ if ( !class_exists( 'LearnPress' ) ) {
 			// course
 			require_once 'inc/course/lp-course-functions.php';
 			require_once 'inc/course/abstract-lp-course.php';
-			require_once 'inc/course/abstract-lp-course-item.php';
 			require_once 'inc/course/class-lp-course.php';
 
 			// quiz

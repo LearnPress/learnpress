@@ -68,7 +68,8 @@ class LP_Question_Factory {
 	 */
 	public static function get_class_name_from_question_type( $type ) {
 		$class = $type ? 'LP_Question_' . implode( '_', array_map( 'ucfirst', preg_split( '/-|_/', $type ) ) ) : false;
-		return apply_filters('learn-press/question-class', $class, $type);
+
+		return apply_filters( 'learn-press/question-class', $class, $type );
 	}
 
 	/**
@@ -153,7 +154,7 @@ class LP_Question_Factory {
 			add_action( 'save_post', array( __CLASS__, 'save' ) );
 
 			//add_action( 'admin_print_scripts', array( __CLASS__, 'admin_template' ) );
-			add_action( 'edit_form_after_editor', array( __CLASS__, 'admin_template' ), -990 );
+			add_action( 'edit_form_after_editor', array( __CLASS__, 'admin_template' ), - 990 );
 
 			add_action( 'learn_press_convert_question_type', array( __CLASS__, 'convert_question' ), 5, 4 );
 			add_filter( 'learn_press_question_answers_data', array( __CLASS__, 'sanitize_answers' ), 10, 3 );
@@ -327,7 +328,6 @@ class LP_Question_Factory {
 		///wp_enqueue_script('xxxsdfdsfdsfdsfsdfdsfdsfs');
 
 
-
 		//LP_Assets::enqueue_style( 'learn-press-meta-box-question' );
 		//LP_Assets::enqueue_script( 'learn-press-meta-box-question', false, array( 'learn-press-admin' ) );
 	}
@@ -358,7 +358,7 @@ class LP_Question_Factory {
 			}
 			do_action( 'learn-press/admin-before-question-js-template', $type );
 			echo sprintf( '<!-- BEGIN %s JS Template -->', $class ) . "\n";
-			call_user_func_array( array( $class, 'admin_js_template' ), array( 'echo' => true ) );
+			call_user_func_array( array( $class, 'admin_js_template' ), array( array( 'echo' => true ) ) );
 			echo sprintf( '<!-- END %s JS Template -->', $class ) . "\n";
 			do_action( 'learn-press/admin-after-question-js-template', $type );
 		}

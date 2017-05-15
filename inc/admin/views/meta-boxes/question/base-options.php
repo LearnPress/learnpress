@@ -12,11 +12,24 @@ $dropdown        = array();
 foreach ( $types as $slug => $type_name ) {
 	$dropdown[] = sprintf( '<li data-type="%s" class="%s"><a href="">%s</a></li>', $slug, $slug == $type ? 'active' : '', $type_name );
 }
-$dropdown = sprintf( '<ul>%s</ul>', join( "\n", $dropdown ) );
+$dropdown      = sprintf( '<ul>%s</ul>', join( "\n", $dropdown ) );
+$template_data = array_merge(
+	array(
+		'id'             => $question_id,
+		'type'           => $type,
+		'title'          => $question->get_title(),
+		'answer_options' => array(
+			'value'   => $value,
+			'text'    => $answer['text'],
+			'is_true' => $answer['is_true']
+		)
+	),
+	$question->get_option_template_data()
+);
 ?>
-<div class="learn-press-box-data learn-press-question lp-question-<?php echo $type; ?>"
-     id="learn-press-question-<?php echo $question_id; ?>"
-     data-type="<?php echo $type; ?>" data-id="<?php echo $question_id; ?>"
+<div class="learn-press-box-data learn-press-question lp-question-<?php echo $template_data['type']; ?>"
+     id="learn-press-question-<?php echo $template_data['id']; ?>"
+     data-type="<?php echo $type; ?>" data-id="<?php echo $template_data['id']; ?>"
      ng-controller="question">
     <div class="lp-box-data-head lp-row">
         <div class="lp-box-data-actions lp-toolbar-buttons">
@@ -25,7 +38,7 @@ $dropdown = sprintf( '<ul>%s</ul>', join( "\n", $dropdown ) );
 				'learn_press_question_top_buttons',
 				array(
 					'type'   => sprintf( '<div class="lp-toolbar-btn lp-toolbar-btn-dropdown"><a href="" class="lp-btn-icon dashicons dashicons-editor-help"></a>%s</div>', $dropdown ),
-					'edit'   => LP_QUESTION_CPT == get_post_type() ? '' : '<div class="lp-toolbar-btn lp-btn-disabled"><a href="" class="lp-btn-icon dashicons dashicons-admin-links"></a></div>',
+					'edit'   => LP_QUESTION_CPT == get_post_type() ? '' : '<div class="lp-toolbar-btn" ng-class="{\'lp-btn-disabled\': !questionData.id}"><a target="_blank" href="post.php?post={{questionData.id}}&action=edit" class="lp-btn-icon dashicons dashicons-admin-links"></a></div>',
 					'remove' => '<span class="lp-toolbar-btn lp-btn-toggle"><a href="" class="lp-btn-icon dashicons dashicons-arrow-up"></a><a href="" class="lp-btn-icon dashicons dashicons-arrow-down"></a></span>',
 					'toggle' => '<span class="lp-toolbar-btn lp-btn-remove "><a href="" class="lp-btn-icon dashicons dashicons-trash"></a></span>',
 					'move'   => '<span class="lp-toolbar-btn lp-btn-move"><a href="" class="lp-btn-icon dashicons dashicons-sort"></a></span>'
@@ -37,11 +50,11 @@ $dropdown = sprintf( '<ul>%s</ul>', join( "\n", $dropdown ) );
 			?>
         </div>
 		<?php if ( LP_QUESTION_CPT !== get_post_type() ) { ?>
-            <input type="text" class="lp-question-heading-title" value="<?php echo $question->get_title(); ?>">
+            <input type="text" class="lp-question-heading-title" value="<?php echo $template_data['title']; ?>">
 		<?php } ?>
     </div>
     <div class="lp-box-data-content">
-        <table class="lp-sortable lp-list-options" id="learn-press-list-options-<?php echo $question_id; ?>">
+        <table class="lp-sortable lp-list-options" id="learn-press-list-options-<?php echo $template_data['id']; ?>">
             <thead>
             <tr>
 				<?php foreach ( $option_headings as $key => $text ) { ?>
@@ -52,9 +65,9 @@ $dropdown = sprintf( '<ul>%s</ul>', join( "\n", $dropdown ) );
 					) );
 					?>
                     <th class="<?php echo join( ' ', $classes ); ?>">
-						<?php do_action( "learn-press/question/{$type}/admin-option-column-heading-before-title", $key, $question_id ); ?>
+						<?php do_action( "learn-press/question/{$type}/admin-option-column-heading-before-title", $key, $template_data['id'] ); ?>
 						<?php echo apply_filters( "learn-press/question/{$type}/admin-option-column-heading-title", $text ); ?>
-						<?php do_action( "learn-press/question/{$type}/admin-option-column-heading-after-title", $key, $question_id ); ?>
+						<?php do_action( "learn-press/question/{$type}/admin-option-column-heading-after-title", $key, $template_data['id'] ); ?>
                     </th>
 				<?php } ?>
             </tr>
@@ -88,18 +101,17 @@ $dropdown = sprintf( '<ul>%s</ul>', join( "\n", $dropdown ) );
 				array(
 					'add_option' => sprintf(
 						__( '<button class="button add-question-option-button add-question-option-button-%1$d" data-id="%1$d" type="button" ng-click="addOption()">%2$s</button>', 'learnpress' ),
-						$question_id,
+						$template_data['id'],
 						__( 'Add Option', 'learnpress' )
 					)
 				),
-				$question_id
+				$template_data['id']
 			);
 			echo join( "\n", $bottom_buttons );
 			?>
         </p>
     </div>
-    {{questionData}}
     <script type="text/html" class="element-data">
-        <?php $question->to_element_data();?>
+		<?php $question->to_element_data(); ?>
     </script>
 </div>

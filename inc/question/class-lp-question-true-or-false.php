@@ -12,6 +12,7 @@
 defined( 'ABSPATH' ) || exit();
 
 class LP_Question_True_Or_False extends LP_Question {
+	protected $_type = 'true_or_false';
 	/**
 	 * Constructor
 	 *

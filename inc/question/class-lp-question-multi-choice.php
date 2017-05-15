@@ -253,15 +253,7 @@ class LP_Question_Multi_Choice extends LP_Question {
 		return $return;
 	}
 
-	public static function get_option_template_data_for_js( $args ) {
-		$args = array(
-			'id'           => '{{data.question_id}}',
-			'answer_value' => '{{data.answer_value}}',
-			'answer_text'  => '{{data.answer_text}}'
-		);
 
-		return $args;
-	}
 
 	/**
 	 * Print js template
@@ -275,11 +267,4 @@ class LP_Question_Multi_Choice extends LP_Question {
 		parent::admin_js_template( $args );
 	}
 
-	public function get_option_template_data() {
-		$template_data = apply_filters(
-			'learn-press/question/multi-choices/admin-option-template-args', array()
-		);
-
-		return $template_data;
-	}
 }

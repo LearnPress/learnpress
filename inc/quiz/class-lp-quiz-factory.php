@@ -31,13 +31,39 @@ class LP_Quiz_Factory {
 		}
 		add_action( 'learn_press_after_single_quiz_summary', array( __CLASS__, 'output_quiz_params' ) );
 		add_action( 'delete_post', array( __CLASS__, 'delete_quiz' ), 10, 2 );
+		add_action( 'edit_form_after_editor', array( __CLASS__, 'admin_template' ), - 990 );
+
 	}
 
-	public static function delete_quiz( $post_id, $force=false ) {
+	public function admin_template() {
+		add_filter( 'learn-press/question/none/admin-option-template-args', array(__CLASS__, 'question_template_js'), 10, 2);
+	    echo '<script type="text/ng-template" id="tmpl-quiz-question">';
+		learn_press_admin_view( 'meta-boxes/question/base-options', array(
+			'question' => new LP_Question_None()
+		) );
+		echo '</script>';
+		remove_filter( 'learn-press/question/none/admin-option-template-args', array(__CLASS__, 'question_template_js'), 10, 2);
+	}
+
+	public function question_template_js($args, $type){
+		$args = array(
+			'id'             => '{{questionData.id}}',
+			'type'           => '{{questionData.type}}',
+			'title'          => '{{questionData.title}}',
+			'answer_options' => array(
+				'value'   => '',
+				'text'    => '',
+				'is_true' => ''
+			)
+		);
+	    return $args;
+    }
+
+	public static function delete_quiz( $post_id, $force = false ) {
 		global $wpdb;
-		if('lp_quiz' === get_post_type($post_id) ){
-			$sql = 'DELETE FROM `'.$wpdb->prefix.'learnpress_quiz_questions` WHERE `quiz_id` = '.$post_id;
-			$wpdb->query($sql);
+		if ( 'lp_quiz' === get_post_type( $post_id ) ) {
+			$sql = 'DELETE FROM `' . $wpdb->prefix . 'learnpress_quiz_questions` WHERE `quiz_id` = ' . $post_id;
+			$wpdb->query( $sql );
 		}
 	}
 
@@ -51,12 +77,12 @@ class LP_Quiz_Factory {
 		);
 		$json = apply_filters( 'learn_press_single_quiz_params', $json );
 		?>
-		<script type="text/javascript">
-			var LP_Quiz_Params = <?php echo wp_json_encode( $json ); ?>;
-			jQuery(function () {
-				LP._initQuiz(LP_Quiz_Params);
-			});
-		</script>
+        <script type="text/javascript">
+            var LP_Quiz_Params = <?php echo wp_json_encode( $json ); ?>;
+            jQuery(function () {
+                LP._initQuiz(LP_Quiz_Params);
+            });
+        </script>
 		<?php ;
 	}
 
@@ -94,6 +120,7 @@ class LP_Quiz_Factory {
 					update_user_meta( $user_id, '_lp_anonymous_user_expire', $expire );
 				}
 			}
+
 			return $start;
 		}
 		$new_user_id = wp_create_user( uniqid( 'user_' . time() ), '12345' );
@@ -103,6 +130,7 @@ class LP_Quiz_Factory {
 				update_user_meta( $user_id, '_lp_anonymous_user_expire', $expire );
 			}
 		}
+
 		return $start;
 	}
 
@@ -124,7 +152,10 @@ class LP_Quiz_Factory {
 			learn_press_send_json(
 				array(
 					'result'  => 'error',
-					'message' => array( 'title' => __( 'Error', 'learnpress' ), 'message' => __( 'You need to login to take this quiz.', 'learnpress' ) )
+					'message' => array(
+						'title'   => __( 'Error', 'learnpress' ),
+						'message' => __( 'You need to login to take this quiz.', 'learnpress' )
+					)
 				)
 			);
 		}
@@ -133,7 +164,10 @@ class LP_Quiz_Factory {
 			learn_press_send_json(
 				array(
 					'result'  => 'error',
-					'message' => array( 'title' => __( 'Error', 'learnpress' ), 'message' => __( 'You can not start a quiz in preview mode.', 'learnpress' ) )
+					'message' => array(
+						'title'   => __( 'Error', 'learnpress' ),
+						'message' => __( 'You can not start a quiz in preview mode.', 'learnpress' )
+					)
 				)
 			);
 		}
@@ -168,7 +202,10 @@ class LP_Quiz_Factory {
 			learn_press_send_json(
 				array(
 					'result'   => 'error',
-					'message'  => array( 'title' => __( 'Error', 'learnpress' ), 'message' => __( 'You have already completed quiz', 'learnpress' ) ),
+					'message'  => array(
+						'title'   => __( 'Error', 'learnpress' ),
+						'message' => __( 'You have already completed quiz', 'learnpress' )
+					),
 					'redirect' => $quiz->permalink
 				)
 			);
@@ -176,11 +213,14 @@ class LP_Quiz_Factory {
 			$answers = learn_press_get_request( 'answers' );
 			//if ( $answers ) {
 			$history = $user->get_quiz_results( $quiz_id, $course_id, true );
-			if ( !$history ) {
+			if ( ! $history ) {
 				learn_press_send_json(
 					array(
 						'result'  => 'error',
-						'message' => array( 'title' => __( 'Error', 'learnpress' ), 'message' => __( 'Error while finish quiz', 'learnpress' ) )
+						'message' => array(
+							'title'   => __( 'Error', 'learnpress' ),
+							'message' => __( 'Error while finish quiz', 'learnpress' )
+						)
 					)
 				);
 			}
@@ -188,12 +228,12 @@ class LP_Quiz_Factory {
 			$keys           = array_keys( $_POST );
 			$update         = false;
 			foreach ( $keys as $key ) {
-				if ( !preg_match( '!^learn-press-question-([0-9]+)$!', $key, $matches ) ) {
+				if ( ! preg_match( '!^learn-press-question-([0-9]+)$!', $key, $matches ) ) {
 					continue;
 				}
-				$question_id                  = absint( $matches[1] );
-				$update_answers[$question_id] = $_POST[$key];
-				$update                       = true;
+				$question_id                    = absint( $matches[1] );
+				$update_answers[ $question_id ] = $_POST[ $key ];
+				$update                         = true;
 			}
 			if ( $update ) {
 				learn_press_update_user_item_meta( $history->history_id, 'question_answers', $update_answers );
@@ -216,7 +256,7 @@ class LP_Quiz_Factory {
 
 			$result = $user->finish_quiz( $quiz_id, $course_id, $args );
 			if ( $result ) {
-				if ( !empty( $args['auto_finish'] ) ) {
+				if ( ! empty( $args['auto_finish'] ) ) {
 					learn_press_add_message( __( 'Your quiz has finished automatically', 'learnpress' ) );
 				} else {
 					learn_press_add_message( __( 'You have finished quiz', 'learnpress' ) );
@@ -225,7 +265,10 @@ class LP_Quiz_Factory {
 				learn_press_add_message( __( 'Finish quiz failed', 'learnpress' ) );
 			}
 		}
-		wp_redirect( add_query_arg( array( 'content-item-only' => 'yes', 'done-action' => 'finish-quiz' ), $course->get_item_link( $quiz_id ) ) );
+		wp_redirect( add_query_arg( array(
+			'content-item-only' => 'yes',
+			'done-action'       => 'finish-quiz'
+		), $course->get_item_link( $quiz_id ) ) );
 		exit();
 	}
 
@@ -239,7 +282,7 @@ class LP_Quiz_Factory {
 
 		$is_completed = $user->has_quiz_status( array( 'completed' ), $quiz_id, $course_id );
 		$can_finish   = $user->can_retake_quiz( $quiz_id, $course_id );
-		if ( !$is_completed || !$can_finish ) {
+		if ( ! $is_completed || ! $can_finish ) {
 			learn_press_add_message( __( 'Sorry! You can\'t retake quiz', 'learnpress' ) );
 		} else {
 			$result = $user->retake_quiz( $quiz_id, $course_id );
@@ -277,7 +320,7 @@ class LP_Quiz_Factory {
 		$user        = learn_press_get_current_user( $user_id );
 		$quiz        = LP_Quiz::get_quiz( $quiz_id );
 		LP()->set_object( 'quiz', $quiz, true );
-		if ( !$user->has_checked_answer( $question_id, $quiz_id, $course_id ) ) {
+		if ( ! $user->has_checked_answer( $question_id, $quiz_id, $course_id ) ) {
 			$answer      = learn_press_get_request( 'question_answer' );
 			$user_answer = false;
 			$history     = $user->get_quiz_results( $quiz_id, $course_id, true );
@@ -286,23 +329,23 @@ class LP_Quiz_Factory {
 			}
 			if ( $answer && $history ) {
 				if ( array_key_exists( 'learn-press-question-' . $question_id, $answer ) ) {
-					$user_answer = $answer['learn-press-question-' . $question_id];
+					$user_answer = $answer[ 'learn-press-question-' . $question_id ];
 				}
 
 				if ( $user_answer ) {
-					$update_answers               = (array) $history->question_answers;
-					$update_answers[$question_id] = $user_answer;
+					$update_answers                 = (array) $history->question_answers;
+					$update_answers[ $question_id ] = $user_answer;
 					learn_press_update_user_item_meta( $history->history_id, 'question_answers', $update_answers );
 				}
 			}
 			if ( $history ) {
 				$checked = learn_press_get_user_item_meta( $history->history_id, 'question_checked', true );
-				if ( !$checked ) {
+				if ( ! $checked ) {
 					$checked = array();
 				} else {
 					$checked = (array) $checked;
 				}
-				if ( !in_array( $question_id, $checked ) ) {
+				if ( ! in_array( $question_id, $checked ) ) {
 					$checked[] = $question_id;
 					learn_press_update_user_item_meta( $history->history_id, 'question_checked', $checked );
 				}
@@ -323,17 +366,17 @@ class LP_Quiz_Factory {
 		$user    = learn_press_get_current_user();
 		$history = $user->get_quiz_results( $quiz_id, $course_id, true );
 
-		if ( !empty( $_REQUEST['lp-ajax'] ) && $_REQUEST['lp-ajax'] == 'fetch-question' ) {
-			$question_id = !empty( $_REQUEST['id'] ) ? $_REQUEST['id'] : $question_id;
+		if ( ! empty( $_REQUEST['lp-ajax'] ) && $_REQUEST['lp-ajax'] == 'fetch-question' ) {
+			$question_id = ! empty( $_REQUEST['id'] ) ? $_REQUEST['id'] : $question_id;
 			learn_press_update_user_item_meta( $history->history_id, 'lp_current_question_after_close', $question_id );
 		}
 
-		if ( !empty( $_REQUEST['lp-update-current-question'] ) ) {
+		if ( ! empty( $_REQUEST['lp-update-current-question'] ) ) {
 			$current_id = absint( $_REQUEST['id'] );
 			learn_press_update_user_item_meta( $history->history_id, 'lp_current_question_after_close', $current_id );
 		}
 
-		if ( !empty( $_REQUEST['lp-current-question'] ) ) {
+		if ( ! empty( $_REQUEST['lp-current-question'] ) ) {
 			$current_id = absint( $_REQUEST['lp-current-question'] );
 			learn_press_update_user_item_meta( $history->history_id, 'lp_current_question_after_close', $current_id );
 		}
@@ -356,6 +399,7 @@ class LP_Quiz_Factory {
 
 	public static function get_course_info( $user_id, $course_id ) {
 		$user = learn_press_get_current_user( $user_id );
+
 		return $user->get_course_info2( $course_id );
 	}
 
@@ -376,9 +420,12 @@ class LP_Quiz_Factory {
 		$user_id   = learn_press_get_current_user_id();
 
 		$quiz = LP_Quiz::get_quiz( $quiz_id );
-		if ( !$quiz->id || !wp_verify_nonce( $security, "{$action}-{$user_id}-{$course_id}-{$quiz_id}" ) ) {
+		if ( ! $quiz->id || ! wp_verify_nonce( $security, "{$action}-{$user_id}-{$course_id}-{$quiz_id}" ) ) {
 			if ( $error_message === false ) {
-				$error_message = array( 'title' => __( 'Error', 'learnpress' ), 'message' => sprintf( __( 'Action %s failed! Please contact site\'s administrator for more information.', 'learnpress' ), $action ) );
+				$error_message = array(
+					'title'   => __( 'Error', 'learnpress' ),
+					'message' => sprintf( __( 'Action %s failed! Please contact site\'s administrator for more information.', 'learnpress' ), $action )
+				);
 			}
 			if ( learn_press_is_ajax() ) {
 				learn_press_send_json(
@@ -393,6 +440,7 @@ class LP_Quiz_Factory {
 				exit();
 			}
 		}
+
 		return array(
 			'course_id' => $course_id,
 			'quiz_id'   => $quiz_id,

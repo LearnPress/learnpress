@@ -5,9 +5,9 @@
  * @package LearnPress/Templates/Admin
  */
 ///defined( 'ABSPATH' ) or exit();
-$question        = isset( $question ) ? $question : false;
+$question = isset( $question ) ? $question : false;
 
-if(!$question){
+if ( ! $question ) {
 }
 
 $type            = $question->get_type();
@@ -18,9 +18,12 @@ $input_type      = $type == 'multi_choice' ? 'checkbox' : 'radio';
 do_action( 'learn_press_before_question_answer_option', $id );
 $template_data = array_merge(
 	array(
-		'id'           => $question->get_id(),
-		'answer_value' => $value,
-		'answer_text'  => $answer['text']
+		'id'             => $question->get_id(),
+		'answer_options' => array(
+			'value'   => $value,
+			'text'    => $answer['text'],
+			'is_true' => $answer['is_true']
+		)
 	),
 	$question->get_option_template_data()
 );
@@ -37,9 +40,10 @@ $template_data = array_merge(
 				case 'answer_text':
 					?>
                     <input class="lp-answer-text no-submit key-nav" type="text"
-                           name="learn_press_question[<?php echo $template_data['id']; ?>][answer][text][]"
-                           value="<?php echo esc_attr( $template_data['answer_text'] ); ?>"
+                           name="learn_press_question[<?php echo $template_data['id']; ?>][answer_options][text][]"
+                           value="<?php echo esc_attr( $template_data['answer_options']['text'] ); ?>"
                            placeholder="<?php esc_attr_e( 'Type name of option', 'learnpress' ); ?>"
+                           autocomplete="off"
                            ng-keypress="onOptionKeyEvent($event)"
                            ng-keyup="onOptionKeyEvent($event)"
                            ng-keydown="onOptionKeyEvent($event)"
@@ -50,13 +54,12 @@ $template_data = array_merge(
 					$classes[] = 'lp-answer-check';
 					?>
                     <input type="hidden"
-                           name="learn_press_question[<?php echo $template_data['id']; ?>][answer][value][]"
-                           value="<?php echo $template_data['answer_value']; ?>"/>
+                           name="learn_press_question[<?php echo $template_data['id']; ?>][answer_options][value][]"
+                           value="<?php echo $template_data['answer_options']['value']; ?>"/>
                     <input type="<?php echo $input_type; ?>"
-                           name="learn_press_question[<?php echo $template_data['id']; ?>][checked][]"
-                            <?php checked( $answer['is_true'] == 'yes', true ); ?>
-                           value="<?php echo $template_data['answer_value']; ?>"
-                           ng-model="questionOptions[0].is_true"
+                           name="learn_press_question[<?php echo $template_data['id']; ?>][answer_options][checked][]"
+						<?php checked( $template_data['answer_options']['is_true'] == 'yes', true ); ?>
+                           value="<?php echo $template_data['answer_options']['value']; ?>"
                     />
 					<?php
 					break;
@@ -64,11 +67,12 @@ $template_data = array_merge(
 					$classes[] = 'lp-toolbar-buttons';
 					?>
                     <span class="learn-press-tooltip lp-toolbar-btn lp-btn-remove"
-                          data-tooltip="<?php esc_attr_e( 'Remove this option', 'learnpress' ); ?>">
+                          data-tooltip="<?php esc_attr_e( 'Remove this option', 'learnpress' ); ?>"
+                          ng-click="removeOption($event)">
                         <a class="lp-btn-icon dashicons dashicons-trash"></a>
                     </span><!--
                     --><span class="learn-press-tooltip lp-toolbar-btn lp-btn-move"
-                          data-tooltip="<?php esc_attr_e( 'Drag and drop to change answer\'s position', 'learnpress' ); ?>">
+                             data-tooltip="<?php esc_attr_e( 'Drag and drop to change answer\'s position', 'learnpress' ); ?>">
                         <a class="lp-btn-icon dashicons dashicons-sort"></a>
                     </span>
 
