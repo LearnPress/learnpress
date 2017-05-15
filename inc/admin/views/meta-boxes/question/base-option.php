@@ -40,7 +40,9 @@ $template_data = array_merge(
                            name="learn_press_question[<?php echo $template_data['id']; ?>][answer][text][]"
                            value="<?php echo esc_attr( $template_data['answer_text'] ); ?>"
                            placeholder="<?php esc_attr_e( 'Type name of option', 'learnpress' ); ?>"
-                           ng-keypress=""
+                           ng-keypress="onOptionKeyEvent($event)"
+                           ng-keyup="onOptionKeyEvent($event)"
+                           ng-keydown="onOptionKeyEvent($event)"
                     />
 					<?php
 					break;

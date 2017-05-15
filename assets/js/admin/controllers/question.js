@@ -36,14 +36,31 @@
                     console.log(ex)
                 }
             },
-            bindEvents: function(){
-                $element.on('focus', 'input', function(){
+            bindEvents: function () {
+                $element.on('focus', 'input', function () {
                     $element.addClass('focused');
-                }).on('blur', 'input', function(){
+                }).on('blur', 'input', function () {
                     $element.removeClass('focused');
                 });
 
-                $element.on('')
+                // $element.on('')
+            },
+            onOptionKeyEvent: function (event) {
+                var eventType = event.type,
+                    command = '';
+                switch (event.keyCode) {
+                    case 13:
+                        if(eventType === 'keypress'){
+                            command = 'addOption';
+                        }
+
+                }
+                if(this[command]){
+                    this[command]();
+                }
+                if (eventType === 'keypress' && event.keyCode === 13) {
+                    event.preventDefault();
+                }
             },
             getOptionPosition: function () {
                 return this.questionOptions[1]
