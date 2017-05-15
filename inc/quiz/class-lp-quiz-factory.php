@@ -47,7 +47,7 @@ class LP_Quiz_Factory {
 
 	public function question_template_js($args, $type){
 		$args = array(
-			'id'             => '{{questionData.id}}',
+			'id'             => '0',
 			'type'           => '{{questionData.type}}',
 			'title'          => '{{questionData.title}}',
 			'answer_options' => array(

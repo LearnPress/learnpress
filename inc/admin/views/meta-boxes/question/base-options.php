@@ -7,12 +7,8 @@ $question_id     = $question->get_id();
 $type            = $question->get_type();
 $option_headings = $question->get_admin_option_headings();
 $questionOptions = array();
-$types           = LP_Question_Factory::get_types();
-$dropdown        = array();
-foreach ( $types as $slug => $type_name ) {
-	$dropdown[] = sprintf( '<li data-type="%s" class="%s"><a href="">%s</a></li>', $slug, $slug == $type ? 'active' : '', $type_name );
-}
-$dropdown      = sprintf( '<ul>%s</ul>', join( "\n", $dropdown ) );
+
+$dropdown      = LP_Question_Factory::list_question_types( array( 'selected' => $type, 'echo' => false, 'li_attr' => 'ng-class="{active: questionData.type==\'{{type}}\'}"' ) );
 $template_data = array_merge(
 	array(
 		'id'             => $question_id,
@@ -37,10 +33,10 @@ $template_data = array_merge(
 			$top_buttons = apply_filters(
 				'learn_press_question_top_buttons',
 				array(
-					'type'   => sprintf( '<div class="lp-toolbar-btn lp-toolbar-btn-dropdown"><a href="" class="lp-btn-icon dashicons dashicons-editor-help"></a>%s</div>', $dropdown ),
+					'type'   => sprintf( '<div class="lp-toolbar-btn lp-toolbar-btn-dropdown lp-btn-change-type"><a href="" class="lp-btn-icon dashicons dashicons-editor-help"></a>%s</div>', $dropdown ),
 					'edit'   => LP_QUESTION_CPT == get_post_type() ? '' : '<div class="lp-toolbar-btn" ng-class="{\'lp-btn-disabled\': !questionData.id}"><a target="_blank" href="post.php?post={{questionData.id}}&action=edit" class="lp-btn-icon dashicons dashicons-admin-links"></a></div>',
-					'remove' => '<span class="lp-toolbar-btn lp-btn-toggle"><a href="" class="lp-btn-icon dashicons dashicons-arrow-up"></a><a href="" class="lp-btn-icon dashicons dashicons-arrow-down"></a></span>',
-					'toggle' => '<span class="lp-toolbar-btn lp-btn-remove "><a href="" class="lp-btn-icon dashicons dashicons-trash"></a></span>',
+					'remove' => '<span class="lp-toolbar-btn lp-btn-toggle" ng-click="toggleContent($event)" ><a class="lp-btn-icon dashicons dashicons-arrow-up"></a><a href="" class="lp-btn-icon dashicons dashicons-arrow-down"></a></span>',
+					'toggle' => '<span class="lp-toolbar-btn lp-btn-remove "><a class="lp-btn-icon dashicons dashicons-trash"></a></span>',
 					'move'   => '<span class="lp-toolbar-btn lp-btn-move"><a href="" class="lp-btn-icon dashicons dashicons-sort"></a></span>'
 				),
 				$question_id
@@ -111,7 +107,10 @@ $template_data = array_merge(
 			?>
         </p>
     </div>
-    <script type="text/html" class="element-data">
+    <input type="hidden" class="question-id" value="<?php echo $template_data['id']; ?>">
+    <input type="hidden" class="question-type" value="<?php echo $template_data['type']; ?>">
+
+    <div class="hide-if-js element-data">
 		<?php $question->to_element_data(); ?>
-    </script>
+    </div>
 </div>

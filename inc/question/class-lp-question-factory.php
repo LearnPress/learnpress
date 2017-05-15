@@ -419,6 +419,31 @@ class LP_Question_Factory {
 
 		update_post_meta( $question->id, '_lp_type', $to );
 	}
+
+	public static function list_question_types( $args = array() ) {
+		$args     = wp_parse_args(
+			$args,
+			array(
+				'selected' => '',
+				'tag_list' => 'ul',
+				'echo'     => true,
+				'li_attr'  => ''
+			)
+		);
+		$types    = LP_Question_Factory::get_types();
+		$dropdown = array();
+		foreach ( $types as $slug => $type_name ) {
+			$li_attr    = ! empty( $args['li_attr'] ) ? $args['li_attr'] : '';
+			$li_attr    = str_replace( '{{type}}', $slug, $li_attr );
+			$dropdown[] = sprintf( '<li data-type="%s" class="%s" %s><a href="">%s</a></li>', $slug, $slug == $args['selected'] ? 'active' : '', $li_attr, $type_name );
+		}
+		$list = sprintf( '<ul>%s</ul>', join( "\n", $dropdown ) );
+		if ( $args['echo'] ) {
+			echo $list;
+		}
+
+		return $list;
+	}
 }
 
 LP_Question_Factory::init();

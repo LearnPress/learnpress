@@ -36,7 +36,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 
 		public function wrapper_start() {
 			echo '<!-- BEGIN courseEditor app -->' . "\n";
-			echo '<div class="" ng-app="courseEditor" ng-controller="courseEditor">' . "\n";
+			echo '<div id="course-editor" class="" ng-app="courseEditor" ng-controller="courseEditor">' . "\n";
 		}
 
 		public function wrapper_end() {

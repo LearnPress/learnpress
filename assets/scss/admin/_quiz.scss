@@ -1,0 +1,23 @@
+#learn-press-quiz-questions {
+    margin: 20px 0;
+}
+.lp-group-button{
+    .button{
+        border: none;
+        box-shadow: none;
+        line-height: 26px;
+        height: 26px;
+        padding-left: 0;
+        padding-right: 0;
+    }
+}
+#learn-press-button-add-question {
+    width: auto;
+    height: auto;
+    visibility: visible !important;
+}
+.learn-press-box-data{
+    &.learn-press-question{
+        margin-top: -1px;
+    }
+}

@@ -16,22 +16,28 @@
         //angular.extend(this, $controller('courseEditor', {$scope: $scope}));
         $element = $($element);
         angular.extend($scope, {
+            $element: $element,
             questionData: {
                 title: 'Nodem is pul donor shit met',
                 id: 10,
-                options: [
-                    {name: 'Option 1', value: 'option-1', is_true: false},
-                    {name: 'Option 2', value: 'option-2', is_true: true},
-                    {name: 'Option 3', value: 'option-3', is_true: false}
-                ]
+                type: ''
             },
             init: function () {
                 this.initData();
                 this.bindEvents();
+                this.addQuestionData();
+                this.addOption();
+                $element.find('.lp-list-options tbody').sortable({
+                    handle: '.lp-btn-move',
+                    axis: 'y'
+                });
+
             },
             initData: function () {
                 try {
                     this.questionData = JSON.parse($($element).find('.element-data').html());
+                    var types = $element.find('.lp-btn-change-type ul').children().removeClass('active');
+                    types.filter('[data-type="'+this.questionData.type+'"]').addClass('active');
                 } catch (ex) {
                     console.log(ex)
                 }
@@ -145,6 +151,7 @@
                             $list.append(clonedElement);
                         }
                     }
+                    console.log($list, clonedElement)
                     clonedElement.find('.lp-answer-text').focus();
                     return clonedElement;
                 });
@@ -172,10 +179,10 @@
                     var $option = $(el),
                         option = {};
                     var json = $option.find('input, textarea, select').serializeJSON('learn_press_question[' + $scope.questionData.id + '].answer_options');
-                    for(var j in json){
-                        if(j == 'checked') {
+                    for (var j in json) {
+                        if (j == 'checked') {
                             option['is_true'] = 'yes';
-                        }else{
+                        } else {
                             option[j] = json[j][0];
                         }
                     }
@@ -184,10 +191,35 @@
                 });
                 this.questionData.answer_options = options;
             },
-            openLink: function(event, type){
-                switch (type){
+            openLink: function (event, type) {
+                switch (type) {
                     case 'edit':
                 }
+            },
+            addQuestionData: function () {
+                var id = $element.find('.question-id').val();
+                if (parseInt(id) > 0) {
+                    return;
+                }
+                $.ajax({
+                    url: '',
+                    data: {
+                        'lp-ajax': 'add_temp_question',
+                        'type': $element.find('.question-type').val()
+                    },
+                    success: function (response) {
+                        $scope.$apply(function () {
+                            $.extend($scope.questionData, LP.parseJSON(response));
+                            $element.attr('id', 'learn-press-question-' + $scope.questionData.id)
+                        });
+                    }
+                })
+            },
+            getElement: function () {
+                return $element;
+            },
+            toggleContent: function(event){
+                $(event.target).closest('.learn-press-box-data').toggleClass('closed');
             }
         });
         $scope.init();

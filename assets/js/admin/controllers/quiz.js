@@ -13,32 +13,38 @@
      * @param $scope
      */
     window['learn-press.quiz.controller'] = function ($scope, $compile, $element, $timeout) {
+        $element = $($element);
         angular.extend($scope, {
             quizData: null,
-            init: function(){
+            init: function () {
                 console.log('Quiz init');
                 this.initData();
             },
-            addQuestion: function(event){
-                var questionTemplate = angular.element($('#tmpl-quiz-question').html()),
-                    $newQuestion = false;
+            addQuestion: function (event, args) {
+                var
+                    $list = $element.find('#learn-press-quiz-questions'),
+                    $newQuestion = $($('#tmpl-quiz-question').html()),
+                    id = $newQuestion.attr('id');
                 args = $.extend({
-                    position: -1
+                    position: -1,
+                    type: ''
                 }, args || {});
-                $newQuestion = $compile(questionTemplate)($scope, function (clonedElement, scope) {
-                    if (args.position === -1) {
-                        $list.append(clonedElement);
+                if (args.position === -1) {
+                    $list.append($newQuestion);
+                } else {
+                    var $el = $list.children().eq(args.position);
+                    if ($el.length) {
+                        $newQuestion.insertBefore($el);
                     } else {
-                        var $el = $list.children().eq(args.position);
-                        if ($el.length) {
-                            clonedElement.insertBefore($el);
-                        } else {
-                            $list.append(clonedElement);
-                        }
+                        $list.append($newQuestion);
                     }
-                    clonedElement.find('.lp-answer-text').focus();
-                    return clonedElement;
-                });
+                }
+                var type = !args['type'] ? $(event.target).siblings('.lp-toolbar-btn-dropdown').find('ul li:first').data('type') : args['type']
+                $newQuestion.find('.question-id').val(LP.uniqueId('fake-'));
+                $newQuestion.find('.question-type').val(type);
+
+                $compile($newQuestion)($scope);
+
             },
             initData: function () {
                 try {
