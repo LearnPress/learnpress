@@ -195,9 +195,10 @@ https://www.transifex.com/projects/p/learnpress/
 == Changelog ==
 = 2.1.7 =
 + Added link to navigate to course in checkout page
-+ Prevent adding duplication course in one order
++ Updated meta-box lib to latest version
++ Fixed prevent adding duplication course in one order
 + Fixed LP widgets does not work with SO
-+ Update meta-box lib to latest version
++ Fixed settings page is blank in some languages
 + Fixed some issue with WC 3.x
 + Fixed some other issues
 
