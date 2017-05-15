@@ -1,122 +1,95 @@
 <?php
-// Prevent loading this file directly
-defined( 'ABSPATH' ) || exit;
+/**
+ * The advanced image upload field which uses WordPress media popup to upload and select images.
+ *
+ * @package Meta Box
+ */
 
-require_once RWMB_FIELDS_DIR . 'image.php';
-if ( ! class_exists( 'RWMB_Image_Advanced_Field' ) ) {
-	class RWMB_Image_Advanced_Field extends RWMB_Image_Field {
-		/**
-		 * Enqueue scripts and styles
-		 *
-		 * @return void
-		 */
-		static function admin_enqueue_scripts() {
-			parent::admin_enqueue_scripts();
+/**
+ * Image advanced field class.
+ */
+class RWMB_Image_Advanced_Field extends RWMB_Media_Field {
+	/**
+	 * Enqueue scripts and styles.
+	 */
+	public static function admin_enqueue_scripts() {
+		parent::admin_enqueue_scripts();
+		wp_enqueue_style( 'rwmb-image-advanced', RWMB_CSS_URL . 'image-advanced.css', array( 'rwmb-media' ), RWMB_VER );
+		wp_enqueue_script( 'rwmb-image-advanced', RWMB_JS_URL . 'image-advanced.js', array( 'rwmb-media' ), RWMB_VER, true );
+	}
 
-			// Make sure scripts for new media uploader in WordPress 3.5 is enqueued
-			wp_enqueue_media();
-			wp_enqueue_script( 'rwmb-image-advanced', RWMB_JS_URL . 'image-advanced.js', array( 'jquery', 'underscore' ), RWMB_VER, true );
-			wp_localize_script( 'rwmb-image-advanced', 'rwmbImageAdvanced', array(
-				'frameTitle' => __( 'Select Images', 'learnpress'/*'meta-box'*/ ),
-			) );
-		}
+	/**
+	 * Normalize parameters for field.
+	 *
+	 * @param array $field Field parameters.
+	 *
+	 * @return array
+	 */
+	public static function normalize( $field ) {
+		$field['mime_type'] = 'image';
+		$field              = wp_parse_args( $field, array(
+			'image_size' => 'thumbnail',
+		) );
 
-		/**
-		 * Add actions
-		 *
-		 * @return void
-		 */
-		static function add_actions() {
-			// Do same actions as file field
-			parent::add_actions();
+		$field = parent::normalize( $field );
 
-			// Attach images via Ajax
-			add_action( 'wp_ajax_rwmb_attach_media', array( __CLASS__, 'wp_ajax_attach_media' ) );
-			add_action( 'print_media_templates', array( __CLASS__, 'print_templates' ) );
-		}
+		$field['js_options'] = wp_parse_args( $field['js_options'], array(
+			'imageSize' => $field['image_size'],
+		) );
 
-		/**
-		 * Ajax callback for attaching media to field
-		 *
-		 * @return void
-		 */
-		static function wp_ajax_attach_media() {
-			$post_id        = isset( $_REQUEST['post_id'] ) ? intval( $_REQUEST['post_id'] ) : 0;
-			$field_id       = isset( $_POST['field_id'] ) ? $_POST['field_id'] : 0;
-			$attachment_ids = isset( $_POST['attachment_ids'] ) ? (array) $_POST['attachment_ids'] : array();
+		return $field;
+	}
 
-			check_ajax_referer( "rwmb-attach-media_{$field_id}" );
-			foreach ( $attachment_ids as $attachment_id ) {
-				add_post_meta( $post_id, $field_id, $attachment_id, false );
-			}
-			wp_send_json_success();
-		}
+	/**
+	 * Get the field value.
+	 *
+	 * @param array $field   Field parameters.
+	 * @param array $args    Additional arguments.
+	 * @param null  $post_id Post ID.
+	 * @return mixed
+	 */
+	public static function get_value( $field, $args = array(), $post_id = null ) {
+		return RWMB_Image_Field::get_value( $field, $args, $post_id );
+	}
 
-		/**
-		 * Get field HTML
-		 *
-		 * @param mixed $meta
-		 * @param array $field
-		 *
-		 * @return string
-		 */
-		static function html( $meta, $field ) {
-			$i18n_title   = apply_filters( 'rwmb_image_advanced_select_string', _x( 'Select or Upload Images', 'image upload', 'learnpress'/*'meta-box'*/ ), $field );
-			$attach_nonce = wp_create_nonce( "rwmb-attach-media_{$field['id']}" );
+	/**
+	 * Get uploaded file information.
+	 *
+	 * @param int   $file Attachment image ID (post ID). Required.
+	 * @param array $args Array of arguments (for size).
+	 * @return array|bool False if file not found. Array of image info on success.
+	 */
+	public static function file_info( $file, $args = array() ) {
+		return RWMB_Image_Field::file_info( $file, $args );
+	}
 
-			// Uploaded images
-			$html = self::get_uploaded_images( $meta, $field );
+	/**
+	 * Format value for the helper functions.
+	 *
+	 * @param array        $field Field parameters.
+	 * @param string|array $value The field meta value.
+	 * @return string
+	 */
+	public static function format_value( $field, $value ) {
+		return RWMB_Image_Field::format_value( $field, $value );
+	}
 
-			// Show form upload
-			$classes = array( 'button', 'rwmb-image-advanced-upload', 'hide-if-no-js', 'new-files' );
-			if ( ! empty( $field['max_file_uploads'] ) && count( $meta ) >= (int) $field['max_file_uploads'] ) {
-				$classes[] = 'hidden';
-			}
+	/**
+	 * Format a single value for the helper functions.
+	 *
+	 * @param array $field Field parameters.
+	 * @param array $value The value.
+	 * @return string
+	 */
+	public static function format_single_value( $field, $value ) {
+		return RWMB_Image_Field::format_single_value( $field, $value );
+	}
 
-			$classes = implode( ' ', $classes );
-			$html .= "<a href='#' class='{$classes}' data-attach_media_nonce={$attach_nonce}>{$i18n_title}</a>";
-
-			return $html;
-		}
-
-		/**
-		 * Get field value
-		 * It's the combination of new (uploaded) images and saved images
-		 *
-		 * @param array $new
-		 * @param array $old
-		 * @param int   $post_id
-		 * @param array $field
-		 *
-		 * @return array|mixed
-		 */
-		static function value( $new, $old, $post_id, $field ) {
-			$new = (array) $new;
-
-			return array_unique( array_merge( $old, $new ) );
-		}
-
-		static function print_templates() {
-			$i18n_delete = apply_filters( 'rwmb_image_delete_string', _x( 'Delete', 'image upload', 'learnpress'/*'meta-box'*/ ) );
-			$i18n_edit   = apply_filters( 'rwmb_image_edit_string', _x( 'Edit', 'image upload', 'learnpress'/*'meta-box'*/ ) );
-			?>
-			<script id="tmpl-rwmb-image-advanced" type="text/html">
-				<# _.each( attachments, function( attachment ) { #>
-					<li id="item_{{{ attachment.id }}}">
-						<# if ( attachment.sizes.hasOwnProperty( 'thumbnail' ) ) { #>
-							<img src="{{{ attachment.sizes.thumbnail.url }}}">
-							<# } else { #>
-								<img src="{{{ attachment.sizes.full.url }}}">
-								<# } #>
-									<div class="rwmb-image-bar">
-										<a title="<?php echo esc_attr( $i18n_edit ); ?>" class="rwmb-edit-file" href="{{{ attachment.editLink }}}" target="_blank"><?php echo esc_html( $i18n_edit ); ?></a> |
-										<a title="<?php echo esc_attr( $i18n_delete ); ?>" class="rwmb-delete-file" href="#" data-attachment_id="{{{ attachment.id }}}">&times;</a>
-									</div>
-					</li>
-					<# } ); #>
-			</script>
-		<?php
-		}
-
+	/**
+	 * Template for media item.
+	 */
+	public static function print_templates() {
+		parent::print_templates();
+		require_once RWMB_INC_DIR . 'templates/image-advanced.php';
 	}
 }

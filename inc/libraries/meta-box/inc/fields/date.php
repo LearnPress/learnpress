@@ -1,77 +1,32 @@
 <?php
-// Prevent loading this file directly
-defined( 'ABSPATH' ) || exit;
+/**
+ * The date picker field, which uses built-in jQueryUI date picker widget.
+ *
+ * @package Meta Box
+ */
 
-if ( ! class_exists( 'RWMB_Date_Field' ) ) {
-	class RWMB_Date_Field extends RWMB_Field {
-		/**
-		 * Enqueue scripts and styles
-		 *
-		 * @return void
-		 */
-		static function admin_enqueue_scripts() {
-			$url = RWMB_CSS_URL . 'jqueryui';
+/**
+ * Date field class.
+ */
+class RWMB_Date_Field extends RWMB_Datetime_Field {
+	/**
+	 * Enqueue scripts and styles.
+	 */
+	public static function admin_enqueue_scripts() {
+		parent::admin_register_scripts();
+		wp_enqueue_style( 'rwmb-date' );
+		wp_enqueue_script( 'rwmb-date' );
+	}
 
-			// Load localized scripts
-			$locale     = str_replace( '_', '-', get_locale() );
-			$file_paths = array( 'jqueryui/datepicker-i18n/jquery.ui.datepicker-' . $locale . '.js' );
-			// Also check alternate i18n filename (e.g. jquery.ui.datepicker-de.js instead of jquery.ui.datepicker-de-DE.js)
-			if ( strlen( $locale ) > 2 ) {
-				$file_paths[] = 'jqueryui/datepicker-i18n/jquery.ui.datepicker-' . substr( $locale, 0, 2 ) . '.js';
-			}
-			$deps = array( 'jquery-ui-datepicker' );
-			foreach ( $file_paths as $file_path ) {
-				if ( file_exists( RWMB_DIR . 'js/' . $file_path ) ) {
-					wp_register_script( 'jquery-ui-datepicker-i18n', RWMB_JS_URL . $file_path, $deps, '1.8.17', true );
-					$deps[] = 'jquery-ui-datepicker-i18n';
-					break;
-				}
-			}
-
-			wp_enqueue_script( 'rwmb-date', RWMB_JS_URL . 'date.js', $deps, RWMB_VER, true );
-			wp_localize_script( 'rwmb-date', 'RWMB_Datepicker', array( 'lang' => $locale ) );
-		}
-
-		/**
-		 * Get field HTML
-		 *
-		 * @param mixed $meta
-		 * @param array $field
-		 *
-		 * @return string
-		 */
-		static function html( $meta, $field ) {
-			return sprintf(
-				'<input type="text" class="rwmb-date" name="%s" value="%s" id="%s" size="%s" data-options="%s" />',
-				$field['field_name'],
-				$meta,
-				isset( $field['clone'] ) && $field['clone'] ? '' : $field['id'],
-				$field['size'],
-				esc_attr( json_encode( $field['js_options'] ) )
-			);
-		}
-
-		/**
-		 * Normalize parameters for field
-		 *
-		 * @param array $field
-		 *
-		 * @return array
-		 */
-		static function normalize_field( $field ) {
-			$field = wp_parse_args( $field, array(
-				'size'       => 30,
-				'js_options' => array(),
-			) );
-
-			// Deprecate 'format', but keep it for backward compatible
-			// Use 'js_options' instead
-			$field['js_options'] = wp_parse_args( $field['js_options'], array(
-				'dateFormat'      => empty( $field['format'] ) ? 'yy-mm-dd' : $field['format'],
-				'showButtonPanel' => true,
-			) );
-
-			return $field;
-		}
+	/**
+	 * Returns a date() compatible format string from the JavaScript format.
+	 *
+	 * @link http://www.php.net/manual/en/function.date.php
+	 * @param array $field Field parameters.
+	 *
+	 * @return string
+	 */
+	public static function translate_format( $field ) {
+		return strtr( $field['js_options']['dateFormat'], self::$date_formats );
 	}
 }

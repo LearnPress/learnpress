@@ -54,7 +54,9 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 				'duplicate_course'                => false,
 				'duplicate_question'              => false,
 				// Remove Notice
-				'remove_notice_popup'             => false
+				'remove_notice_popup'             => false,
+                // Update order status
+                'update_order_status'             => false,
 			);
 			foreach ( $ajaxEvents as $ajaxEvent => $nopriv ) {
 				add_action( 'wp_ajax_learnpress_' . $ajaxEvent, array( __CLASS__, $ajaxEvent ) );
@@ -331,7 +333,12 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 					 */
 					case 'course-items':
 						if ( get_post_type( $context_id ) == 'lp_course' ) {
-							$args['author'] = get_post_field( 'post_author', $context_id );
+							$post_author = get_post_field( 'post_author', $context_id );
+							$authors = array($post_author);
+							if($post_author != $user->id ){
+								$authors[] =$user->id;
+							}
+							$args['author'] = $authors;
 						}
 						break;
 					/**
@@ -339,7 +346,13 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 					 */
 					case 'quiz-items':
 						if ( get_post_type( $context_id ) == 'lp_quiz' ) {
-							$args['author'] = get_post_field( 'post_author', $context_id );
+							$post_author = get_post_field( 'post_author', $context_id );
+							$authors = array($post_author);
+							if($post_author != $user->id ){
+								$authors[] =$user->id;
+							}
+							$args['author'] = $authors;
+							//$args['author'] = get_post_field( 'post_author', $context_id );
 						}
 						break;
 				}
@@ -347,7 +360,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			if ( $term ) {
 				$args['s'] = $term;
 			}
-
+			$args = apply_filters('learn_press_filter_admin_ajax_modal_search_items_args', $args, $context, $context_id  );
 			$posts       = get_posts( $args );
 			$found_items = array();
 
@@ -1177,6 +1190,23 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			wp_die();
 
 		}
+
+		public static function update_order_status () {
+            global $wpdb;
+            $order_id = learn_press_get_request( 'order_id' );
+            $value     = learn_press_get_request( 'value' );
+
+            $order = array(
+                'ID'           => $order_id,
+                'post_status'   => $value,
+            );
+
+            wp_update_post( $order ) ? $response['success'] = true : $response['success'] = false;
+
+            learn_press_send_json( $response );
+
+            die();
+        }
 
 	}
 }

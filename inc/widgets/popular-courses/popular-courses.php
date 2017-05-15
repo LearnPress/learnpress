@@ -30,19 +30,19 @@ if ( ! class_exists( 'LP_Widget_Popular_Courses' ) ) {
 					'name' => __( 'Show teacher', 'learpnress' ),
 					'id'   => "{$prefix}show_teacher",
 					'type' => 'checkbox',
-					'std'  => 1
+					'std'  => 0
 				),
 				'show_lesson' => array(
 					'name' => __( 'Show lesson', 'learpnress' ),
 					'id'   => "{$prefix}show_lesson",
 					'type' => 'checkbox',
-					'std'  => 1
+					'std'  => 0
 				),
 				'show_thumbnail' => array(
 					'name' => __( 'Show Thumbnail', 'learpnress' ),
 					'id'   => "{$prefix}show_thumbnail",
 					'type' => 'checkbox',
-					'std'  => 1
+					'std'  => 0
 				),
 				'limit' => array(
 					'name' => __( 'Limit', 'learpnress' ),
@@ -68,7 +68,7 @@ if ( ! class_exists( 'LP_Widget_Popular_Courses' ) ) {
 					'name' => __( 'Show Price', 'learpnress' ),
 					'id'   => "{$prefix}show_price",
 					'type' => 'checkbox',
-					'std'  => 1
+					'std'  => 0
 				),
 				'css_class' => array(
 					'name' => __( 'CSS Class', 'learpnress' ),

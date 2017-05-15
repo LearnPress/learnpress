@@ -184,27 +184,33 @@ if ( !class_exists( 'LP_Widget' ) ) {
 			if ( !$this->options ) {
 				return;
 			}
+//			var_dump($this->options);
 			global $post;
 			add_filter( 'get_post_metadata', array( $this, 'field_data' ), 10, 4 );
 			add_filter( 'rwmb_checkbox_begin_html', array( $this, 'before_checkbox_html' ), 10, 3 );
 			//
 
 			$post = (object) array( 'ID' => 1, 'post_type' => 'lp-post-widget' );
+
 			setup_postdata( $post );
 			if ( !class_exists( 'RW_Meta_Box' ) ) {
 				require_once LP_PLUGIN_PATH . 'inc/libraries/meta-box/meta-box.php';
 			}
 
+//            var_dump($this->instance);
 			$this->options = RW_Meta_Box::normalize_fields( $this->options );
 
 			$this->options = $this->normalize_options();
 
-			foreach ( $this->options as $field ) {
+			foreach ( $this->options as $key => $field ) {
 				$origin_id           = $field['id'];
 				$field['field_name'] = $this->get_field_name( $field['id'] );
 				$field['id']         = $this->get_field_id( $field['id'] );
-				$field['value']      = md5( $field['std'] );
-				//learn_press_debug( $field );
+
+                # If there is old value, bind it to field as init value
+				if ($this->instance[$key]) {$field['std'] = $this->instance[$key];}
+
+				//$field['value']      = md5( $field['std'] );
 				$this->map_fields[$field['id']] = $origin_id;
 				$this->_show_field( $field );
 			}
@@ -220,16 +226,19 @@ if ( !class_exists( 'LP_Widget' ) ) {
 		 */
 		private function _show_field( $field ) {
 			$callable = array( 'RW_Meta_Box', 'get_class_name' );
+
 			if ( !is_callable( $callable ) ) {
 				$callable = array( 'RWMB_Field', 'get_class_name' );
 			}
+
 			if ( is_callable( $callable ) ) {
 				$field_class = call_user_func( $callable, $field );
 			} else {
 				$field_class = false;
 			}
+
 			if ( $field_class ) {
-				call_user_func( array( $field_class, 'show' ), $field, true );
+				call_user_func( array( $field_class, 'show' ), $field, false );
 			}
 		}
 
@@ -298,24 +307,30 @@ if ( !class_exists( 'LP_Widget' ) ) {
 		/**
 		 * Tell WP register our widgets
 		 */
-		public static function do_register() {
-			if ( !self::$_widgets ) {
-				return;
-			}
-			foreach ( self::$_widgets as $type => $args ) {
-				$widget_file = LP_PLUGIN_PATH . "inc/widgets/{$type}/{$type}.php";
-				if ( !file_exists( $widget_file ) ) {
-					continue;
-				}
-				include_once $widget_file;
-				$widget_class = self::get_widget_class( $type );
-				if ( class_exists( $widget_class ) ) {
-					$widget       = new $widget_class();
-					$widget->file = $widget_file;
-					register_widget( $widget );
-				}
-			}
-		}
+        public static function do_register() {
+            if ( ! self::$_widgets ) {
+                return;
+            }
+            global $wp_widget_factory;
+            foreach ( self::$_widgets as $type => $args ) {
+                $widget_file = LP_PLUGIN_PATH . "inc/widgets/{$type}/{$type}.php";
+                if ( ! file_exists( $widget_file ) ) {
+                    continue;
+                }
+                include_once $widget_file;
+                $widget_class = self::get_widget_class( $type );
+                if ( class_exists( $widget_class ) ) {
+                    //$widget       = new $widget_class();
+                    //$widget->file = $widget_file;
+                    register_widget( $widget_class );
+                    if ( ! empty( $wp_widget_factory->widgets[ $widget_class ] ) ) {
+                        $wp_widget_factory->widgets[ $widget_class ]->file = $widget_file;
+                    }
+                }
+            }
+
+            return;
+        }
 
 		/**
 		 * Get class name of widget without LP_Widget prefix

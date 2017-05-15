@@ -1,459 +1,389 @@
 <?php
-// Prevent loading this file directly
-defined( 'ABSPATH' ) || exit;
+/**
+ * A class to rapid develop meta boxes for custom & built in content types
+ * Piggybacks on WordPress
+ *
+ * @author  Tran Ngoc Tuan Anh <rilwis@gmail.com>
+ * @license GNU GPL2+
+ * @package Meta Box
+ */
 
-// Meta Box Class
-if ( !class_exists( 'RW_Meta_Box' ) ) {
+/**
+ * The main meta box class.
+ *
+ * @package Meta Box
+ */
+class RW_Meta_Box {
+	/**
+	 * Meta box parameters.
+	 *
+	 * @var array
+	 */
+	public $meta_box;
 
 	/**
-	 * A class to rapid develop meta boxes for custom & built in content types
-	 * Piggybacks on WordPress
+	 * Detect whether the meta box is saved at least once.
+	 * Used to prevent duplicated calls like revisions, manual hook to wp_insert_post, etc.
 	 *
-	 * @author  Rilwis
-	 * @author  Co-Authors @see https://github.com/rilwis/meta-box
-	 * @license GNU GPL2+
-	 * @package RW Meta Box
+	 * @var bool
 	 */
-	class RW_Meta_Box {
-		/**
-		 * @var array Meta box information
-		 */
-		public $meta_box;
+	public $saved = false;
 
-		/**
-		 * @var array Fields information
-		 */
-		public $fields;
+	/**
+	 * The object ID.
+	 *
+	 * @var int
+	 */
+	private $object_id = null;
 
-		/**
-		 * @var array Contains all field types of current meta box
-		 */
-		public $types;
+	/**
+	 * Create meta box based on given data.
+	 *
+	 * @param array $meta_box Meta box definition.
+	 */
+	public function __construct( $meta_box ) {
+		$meta_box           = self::normalize( $meta_box );
+		$meta_box['fields'] = self::normalize_fields( $meta_box['fields'] );
 
-		/**
-		 * @var array Validation information
-		 */
-		public $validation;
+		$this->meta_box = $meta_box;
 
-		/**
-		 * @var bool Used to prevent duplicated calls like revisions, manual hook to wp_insert_post, etc.
-		 */
-		public $saved = false;
+		if ( $this->is_shown() ) {
+			$this->global_hooks();
+			$this->object_hooks();
+		}
+	}
 
-		/**
-		 * Create meta box based on given data
-		 *
-		 * @see demo/demo.php file for details
-		 *
-		 * @param array $meta_box Meta box definition
-		 *
-		 * @return RW_Meta_Box
-		 */
-		function __construct( $meta_box ) {
-			// Run script only in admin area
-			if ( !is_admin() ) {
-				return;
+	/**
+	 * Conditional check for whether initializing meta box.
+	 *
+	 * - 1st filter applies to all meta boxes.
+	 * - 2nd filter applies to only current meta box.
+	 *
+	 * @return bool
+	 */
+	protected function is_shown() {
+		$show = apply_filters( 'rwmb_show', true, $this->meta_box );
+
+		return apply_filters( "rwmb_show_{$this->id}", $show, $this->meta_box );
+	}
+
+	/**
+	 * Add global hooks.
+	 */
+	protected function global_hooks() {
+		// Enqueue common styles and scripts.
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue' ) );
+
+		// Add additional actions for fields.
+		foreach ( $this->fields as $field ) {
+			RWMB_Field::call( $field, 'add_actions' );
+		}
+	}
+
+	/**
+	 * Specific hooks for meta box object. Default is 'post'.
+	 * This should be extended in sub-classes to support meta fields for terms, user, settings pages, etc.
+	 */
+	protected function object_hooks() {
+		// Add meta box.
+		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
+
+		// Hide meta box if it's set 'default_hidden'.
+		add_filter( 'default_hidden_meta_boxes', array( $this, 'hide' ), 10, 2 );
+
+		// Save post meta.
+		foreach ( $this->post_types as $post_type ) {
+			if ( 'attachment' === $post_type ) {
+				// Attachment uses other hooks.
+				// @see wp_update_post(), wp_insert_attachment().
+				add_action( 'edit_attachment', array( $this, 'save_post' ) );
+				add_action( 'add_attachment', array( $this, 'save_post' ) );
+			} else {
+				add_action( "save_post_{$post_type}", array( $this, 'save_post' ) );
 			}
+		}
+	}
 
-			// Assign meta box values to local variables and add it's missed values
-			$this->meta_box   = self::normalize( $meta_box );
-			$this->fields     = &$this->meta_box['fields'];
-			$this->validation = &$this->meta_box['validation'];
-
-			// Allow users to show/hide meta box
-			// 1st action applies to all meta boxes
-			// 2nd action applies to only current meta box
-			$show = true;
-			$show = apply_filters( 'rwmb_show', $show, $this->meta_box );
-			$show = apply_filters( "rwmb_show_{$this->meta_box['id']}", $show, $this->meta_box );
-			if ( !$show ) {
-				return;
-			}
-
-			// Enqueue common styles and scripts
-			add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
-
-			// Add additional actions for fields
-			$fields = self::get_fields( $this->fields );
-			foreach ( $fields as $field ) {
-				call_user_func( array( self::get_class_name( $field ), 'add_actions' ) );
-			}
-
-			// Add meta box
-			add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
-
-			// Hide meta box if it's set 'default_hidden'
-			add_filter( 'default_hidden_meta_boxes', array( $this, 'hide' ), 10, 2 );
-
-			// Save post meta
-			add_action( 'save_post', array( $this, 'save_post' ) );
-
-			// Attachment uses other hooks
-			// @see wp_update_post(), wp_insert_attachment()
-			add_action( 'edit_attachment', array( $this, 'save_post' ) );
-			add_action( 'add_attachment', array( $this, 'save_post' ) );
+	/**
+	 * Enqueue common scripts and styles.
+	 */
+	public function enqueue() {
+		if ( is_admin() && ! $this->is_edit_screen() ) {
+			return;
 		}
 
-		/**
-		 * Enqueue common styles
-		 *
-		 * @return void
-		 */
-		function admin_enqueue_scripts() {
-			$screen = get_current_screen();
+		wp_enqueue_style( 'rwmb', RWMB_CSS_URL . 'style.css', array(), RWMB_VER );
+		if ( is_rtl() ) {
+			wp_enqueue_style( 'rwmb-rtl', RWMB_CSS_URL . 'style-rtl.css', array(), RWMB_VER );
+		}
 
-			// Enqueue scripts and styles for registered pages (post types) only
-			if ( 'post' != $screen->base || !in_array( $screen->post_type, $this->meta_box['post_types'] ) ) {
-				return;
-			}
-
-			wp_enqueue_style( 'rwmb', RWMB_CSS_URL . 'style.css', array(), RWMB_VER );
-			// Load clone script conditionally
-			$has_clone = false;
-			$fields    = self::get_fields( $this->fields );
-			foreach ( $fields as $field ) {
-				if ( $field['clone'] ) {
-					$has_clone = true;
-				}
-
-				// Enqueue scripts and styles for fields
-				call_user_func( array( self::get_class_name( $field ), 'admin_enqueue_scripts' ) );
-			}
-
-			if ( $has_clone ) {
-				wp_enqueue_script( 'rwmb-clone', RWMB_JS_URL . 'clone.js', array( 'jquery' ), RWMB_VER, true );
-			}
-
-			if ( $this->validation ) {
-				wp_enqueue_script( 'jquery-validate', RWMB_JS_URL . 'jquery.validate.min.js', array( 'jquery' ), RWMB_VER, true );
-				wp_enqueue_script( 'rwmb-validate', RWMB_JS_URL . 'validate.js', array( 'jquery-validate' ), RWMB_VER, true );
-			}
-
-			// Auto save
-			if ( $this->meta_box['autosave'] ) {
-				wp_enqueue_script( 'rwmb-autosave', RWMB_JS_URL . 'autosave.js', array( 'jquery' ), RWMB_VER, true );
+		// Load clone script conditionally.
+		foreach ( $this->fields as $field ) {
+			if ( $field['clone'] ) {
+				wp_enqueue_script( 'rwmb-clone', RWMB_JS_URL . 'clone.js', array( 'jquery-ui-sortable' ), RWMB_VER, true );
+				break;
 			}
 		}
 
-		/**
-		 * Get all fields of a meta box, recursively
-		 *
-		 * @param array $fields
-		 *
-		 * @return array
-		 */
-		static function get_fields( $fields ) {
-			$all_fields = array();
-			foreach ( $fields as $field ) {
-				$all_fields[] = $field;
-				if ( isset( $field['fields'] ) ) {
-					$all_fields = array_merge( $all_fields, self::get_fields( $field['fields'] ) );
-				}
-			}
-
-			return $all_fields;
+		// Enqueue scripts and styles for fields.
+		foreach ( $this->fields as $field ) {
+			RWMB_Field::call( $field, 'admin_enqueue_scripts' );
 		}
 
-		/**************************************************
-		 * SHOW META BOX
-		 **************************************************/
-
-		/**
-		 * Add meta box for multiple post types
-		 *
-		 * @return void
-		 */
-		function add_meta_boxes() {
-			foreach ( $this->meta_box['post_types'] as $post_type ) {
-				add_meta_box(
-					$this->meta_box['id'],
-					$this->meta_box['title'],
-					array( $this, 'show' ),
-					$post_type,
-					$this->meta_box['context'],
-					$this->meta_box['priority']
-				);
-			}
+		// Auto save.
+		if ( $this->autosave ) {
+			wp_enqueue_script( 'rwmb-autosave', RWMB_JS_URL . 'autosave.js', array( 'jquery' ), RWMB_VER, true );
 		}
 
 		/**
-		 * Hide meta box if it's set 'default_hidden'
+		 * Allow developers to enqueue more scripts and styles
 		 *
-		 * @param array  $hidden Array of default hidden meta boxes
-		 * @param object $screen Current screen information
-		 *
-		 * @return array
+		 * @param RW_Meta_Box $object Meta Box object
 		 */
-		function hide( $hidden, $screen ) {
-			if (
-				'post' === $screen->base
-				&& in_array( $screen->post_type, $this->meta_box['post_types'] )
-				&& $this->meta_box['default_hidden']
-			) {
-				$hidden[] = $this->meta_box['id'];
-			}
+		do_action( 'rwmb_enqueue_scripts', $this );
+	}
 
-			return $hidden;
-		}
-
-		/**
-		 * Callback function to show fields in meta box
-		 *
-		 * @return void
-		 */
-		function show() {
-			global $post;
-
-			$saved = self::has_been_saved( $post->ID, $this->fields );
-
-			// Container
-			printf(
-				'<div class="rwmb-meta-box" data-autosave="%s">',
-				$this->meta_box['autosave'] ? 'true' : 'false'
+	/**
+	 * Add meta box for multiple post types
+	 */
+	public function add_meta_boxes() {
+		foreach ( $this->post_types as $post_type ) {
+			add_meta_box(
+				$this->id,
+				$this->title,
+				array( $this, 'show' ),
+				$post_type,
+				$this->context,
+				$this->priority
 			);
+		}
+	}
 
-			wp_nonce_field( "rwmb-save-{$this->meta_box['id']}", "nonce_{$this->meta_box['id']}" );
-
-			// Allow users to add custom code before meta box content
-			// 1st action applies to all meta boxes
-			// 2nd action applies to only current meta box
-			//echo "1";
-			do_action( 'rwmb_before', $this );
-			do_action( "rwmb_before_{$this->meta_box['id']}", $this );
-			//echo "2";
-			foreach ( $this->fields as $field ) {
-				call_user_func( array( self::get_class_name( $field ), 'show' ), $field, $saved );
-			}
-			//echo "3";
-
-			// Include validation settings for this meta-box
-			if ( isset( $this->validation ) && $this->validation ) {
-				echo '
-					<script>
-					if ( typeof rwmb == "undefined" )
-					{
-						var rwmb = {
-							validationOptions : jQuery.parseJSON( \'' . json_encode( $this->validation ) . '\' ),
-							summaryMessage : "' . esc_js( __( 'Please correct the errors highlighted below and try again.', 'learnpress'/*'meta-box'*/ ) ) . '"
-						};
-					}
-					else
-					{
-						var tempOptions = jQuery.parseJSON( \'' . json_encode( $this->validation ) . '\' );
-						jQuery.extend( true, rwmb.validationOptions, tempOptions );
-					}
-					</script>
-				';
-			}
-
-			// Allow users to add custom code after meta box content
-			// 1st action applies to all meta boxes
-			// 2nd action applies to only current meta box
-			do_action( 'rwmb_after', $this );
-			do_action( "rwmb_after_{$this->meta_box['id']}", $this );
-
-			// End container
-			echo '</div>';
+	/**
+	 * Hide meta box if it's set 'default_hidden'
+	 *
+	 * @param array  $hidden Array of default hidden meta boxes.
+	 * @param object $screen Current screen information.
+	 *
+	 * @return array
+	 */
+	public function hide( $hidden, $screen ) {
+		if ( $this->is_edit_screen( $screen ) && $this->default_hidden ) {
+			$hidden[] = $this->id;
 		}
 
-		/**************************************************
-		 * SAVE META BOX
-		 **************************************************/
+		return $hidden;
+	}
 
-		/**
-		 * Save data from meta box
-		 *
-		 * @param int $post_id Post ID
-		 *
-		 * @return void
-		 */
-		function save_post( $post_id ) {
+	/**
+	 * Callback function to show fields in meta box
+	 */
+	public function show() {
+		$this->set_object_id();
+		$saved = $this->is_saved();
 
-			// Check if this function is called to prevent duplicated calls like revisions, manual hook to wp_insert_post, etc.
-			if ( true === $this->saved ) {
-				return;
-			}
-			$this->saved = true;
+		// Container.
+		printf(
+			'<div class="rwmb-meta-box" data-autosave="%s">',
+			$this->autosave ? 'true' : 'false'
+		);
 
-			// Check whether form is submitted properly
-			$id    = $this->meta_box['id'];
-			$nonce = isset( $_POST["nonce_{$id}"] ) ? sanitize_key( $_POST["nonce_{$id}"] ) : '';
+		wp_nonce_field( "rwmb-save-{$this->id}", "nonce_{$this->id}" );
 
+		// Allow users to add custom code before meta box content.
+		// 1st action applies to all meta boxes.
+		// 2nd action applies to only current meta box.
+		do_action( 'rwmb_before', $this );
+		do_action( "rwmb_before_{$this->id}", $this );
 
-			if ( empty( $_POST["nonce_{$id}"] ) || !wp_verify_nonce( $nonce, "rwmb-save-{$id}" ) ) {
-				return;
-			}
-
-			// Autosave
-			if ( defined( 'DOING_AUTOSAVE' ) && !$this->meta_box['autosave'] ) {
-				return;
-			}
-
-			// Added from 2.1.4
-			remove_action('save_post', array($this, 'save_post'));
-
-			// Make sure meta is added to the post, not a revision
-			if ( $the_post = wp_is_post_revision( $post_id ) ) {
-				$post_id = $the_post;
-			}
-
-			// Before save action
-			do_action( 'rwmb_before_save_post', $post_id );
-			do_action( "rwmb_{$this->meta_box['id']}_before_save_post", $post_id );
-
-			foreach ( $this->fields as $field ) {
-				$name = $field['id'];
-				$old  = get_post_meta( $post_id, $name, !$field['multiple'] );
-				$new  = isset( $_POST[$name] ) ? $_POST[$name] : ( $field['multiple'] ? array() : '' );
-
-				// Allow field class change the value
-				$new = call_user_func( array( self::get_class_name( $field ), 'value' ), $new, $old, $post_id, $field );
-
-				// Use filter to change field value
-				// 1st filter applies to all fields with the same type
-				// 2nd filter applies to current field only
-				$new = apply_filters( "rwmb_{$field['type']}_value", $new, $field, $old );
-				$new = apply_filters( "rwmb_{$name}_value", $new, $field, $old );
-
-
-				// Call defined method to save meta value, if there's no methods, call common one
-				//echo "[", self::get_class_name( $field ),$post_id, $name, $new, "]";
-				call_user_func( array( self::get_class_name( $field ), 'save' ), $new, $old, $post_id, $field );
-
-			}
-			// After save action
-			do_action( 'rwmb_after_save_post', $post_id );
-			do_action( "rwmb_{$this->meta_box['id']}_after_save_post", $post_id );
+		foreach ( $this->fields as $field ) {
+			RWMB_Field::call( 'show', $field, $saved, $this->object_id );
 		}
 
-		/**************************************************
-		 * HELPER FUNCTIONS
-		 **************************************************/
+		// Allow users to add custom code after meta box content.
+		// 1st action applies to all meta boxes.
+		// 2nd action applies to only current meta box.
+		do_action( 'rwmb_after', $this );
+		do_action( "rwmb_after_{$this->id}", $this );
 
-		/**
-		 * Normalize parameters for meta box
-		 *
-		 * @param array $meta_box Meta box definition
-		 *
-		 * @return array $meta_box Normalized meta box
-		 */
-		static function normalize( $meta_box ) {
-			// Set default values for meta box
-			$meta_box = wp_parse_args( $meta_box, array(
-				'id'             => sanitize_title( $meta_box['title'] ),
-				'context'        => 'normal',
-				'priority'       => 'high',
-				'post_types'     => 'post',
-				'autosave'       => false,
-				'default_hidden' => false,
-			) );
+		// End container.
+		echo '</div>';
+	}
 
-			/**
-			 * Use 'post_types' for better understanding and fallback to 'pages' for previous versions
-			 *
-			 * @since 4.4.1
-			 */
-			if ( !empty( $meta_box['pages'] ) ) {
-				$meta_box['post_types'] = $meta_box['pages'];
-			}
+	/**
+	 * Save data from meta box
+	 *
+	 * @param int $post_id Post ID.
+	 */
+	public function save_post( $post_id ) {
+		if ( ! $this->validate() ) {
+			return;
+		}
+		$this->saved = true;
 
-			// Allow to set 'post_types' param by string
-			if ( is_string( $meta_box['post_types'] ) ) {
-				$meta_box['post_types'] = array( $meta_box['post_types'] );
-			}
-
-			// Set default values for fields
-			$meta_box['fields'] = self::normalize_fields( $meta_box['fields'] );
-
-			// Allow to add default values for meta box
-			$meta_box = apply_filters( 'rwmb_normalize_meta_box', $meta_box );
-			$meta_box = apply_filters( "rwmb_normalize_{$meta_box['id']}_meta_box", $meta_box );
-
-			return $meta_box;
+		// Make sure meta is added to the post, not a revision.
+		$the_post = wp_is_post_revision( $post_id );
+		if ( $the_post ) {
+			$post_id = $the_post;
 		}
 
-		/**
-		 * Normalize an array of fields
-		 *
-		 * @param array $fields Array of fields
-		 *
-		 * @return array $fields Normalized fields
-		 */
-		static function normalize_fields( $fields ) {
-			foreach ( $fields as &$field ) {
-				$field = wp_parse_args( $field, array(
-					'id'          => '',
-					'multiple'    => false,
-					'clone'       => false,
-					'std'         => '',
-					'desc'        => '',
-					'format'      => '',
-					'before'      => '',
-					'after'       => '',
-					'field_name'  => isset( $field['id'] ) ? $field['id'] : '',
-					'required'    => false,
-					'placeholder' => '',
-				) );
+		// Before save action.
+		do_action( 'rwmb_before_save_post', $post_id );
+		do_action( "rwmb_{$this->id}_before_save_post", $post_id );
 
+		foreach ( $this->fields as $field ) {
+			$single = $field['clone'] || ! $field['multiple'];
+			$old    = RWMB_Field::call( $field, 'raw_meta', $post_id );
+			// @codingStandardsIgnoreLine
+			$new    = isset( $_POST[ $field['id'] ] ) ? $_POST[ $field['id'] ] : ( $single ? '' : array() );
 
-				// Allow field class add/change default field values
-				$field = call_user_func( array( self::get_class_name( $field ), 'normalize_field' ), $field );
-
-				if ( isset( $field['fields'] ) ) {
-					$field['fields'] = self::normalize_fields( $field['fields'] );
-				}
-
-				// Allow to add default values for fields
-				$field = apply_filters( 'rwmb_normalize_field', $field );
-				$field = apply_filters( "rwmb_normalize_{$field['type']}_field", $field );
-				$field = apply_filters( "rwmb_normalize_{$field['id']}_field", $field );
+			// Allow field class change the value.
+			if ( $field['clone'] ) {
+				$new = RWMB_Clone::value( $new, $old, $post_id, $field );
+			} else {
+				$new = RWMB_Field::call( $field, 'value', $new, $old, $post_id );
+				$new = RWMB_Field::filter( 'sanitize', $new, $field );
 			}
+			$new = RWMB_Field::filter( 'value', $new, $field, $old );
 
-			return $fields;
+			// Call defined method to save meta value, if there's no methods, call common one.
+			RWMB_Field::call( $field, 'save', $new, $old, $post_id );
 		}
 
+		// After save action.
+		do_action( 'rwmb_after_save_post', $post_id );
+		do_action( "rwmb_{$this->id}_after_save_post", $post_id );
+	}
+
+	/**
+	 * Validate form when submit. Check:
+	 * - If this function is called to prevent duplicated calls like revisions, manual hook to wp_insert_post, etc.
+	 * - Autosave
+	 * - If form is submitted properly
+	 *
+	 * @return bool
+	 */
+	public function validate() {
+		$nonce = filter_input( INPUT_POST, "nonce_{$this->id}", FILTER_SANITIZE_STRING );
+
+		return
+			! $this->saved
+			&& ( ! defined( 'DOING_AUTOSAVE' ) || $this->autosave )
+			&& wp_verify_nonce( $nonce, "rwmb-save-{$this->id}" );
+	}
+
+	/**
+	 * Normalize parameters for meta box
+	 *
+	 * @param array $meta_box Meta box definition.
+	 *
+	 * @return array $meta_box Normalized meta box.
+	 */
+	public static function normalize( $meta_box ) {
+		// Set default values for meta box.
+		$meta_box = wp_parse_args( $meta_box, array(
+			'id'             => sanitize_title( $meta_box['title'] ),
+			'context'        => 'normal',
+			'priority'       => 'high',
+			'post_types'     => 'post',
+			'autosave'       => false,
+			'default_hidden' => false,
+		) );
+
 		/**
-		 * Get field class name
+		 * Use 'post_types' for better understanding and fallback to 'pages' for previous versions.
 		 *
-		 * @param array $field Field array
-		 *
-		 * @return bool|string Field class name OR false on failure
+		 * @since 4.4.1
 		 */
-		static function get_class_name( $field ) {
-			// Convert underscores to whitespace so ucwords works as expected. Otherwise: plupload_image -> Plupload_image instead of Plupload_Image
-			$type = str_replace( '_', ' ', $field['type'] );
-
-			// Uppercase first words
-			$class = 'RWMB_' . ucwords( $type ) . '_Field';
-
-			// Relace whitespace with underscores
-			$class = str_replace( ' ', '_', $class );
-
-			//echo $class . '-' . ( class_exists( $class ) ? 1 : 0 ) . "<br />\n";
-			return class_exists( $class ) ? $class : false;
+		if ( ! empty( $meta_box['pages'] ) ) {
+			$meta_box['post_types'] = $meta_box['pages'];
 		}
 
-		/**
-		 * Check if meta box has been saved
-		 * This helps saving empty value in meta fields (for text box, check box, etc.)
-		 *
-		 * @param int   $post_id
-		 * @param array $fields
-		 *
-		 * @return bool
-		 */
-		static function has_been_saved( $post_id, $fields ) {
-			foreach ( $fields as $field ) {
-				$value = get_post_meta( $post_id, $field['id'], !$field['multiple'] );
-				if (
-					( !$field['multiple'] && '' !== $value )
-					|| ( $field['multiple'] && array() !== $value )
-				) {
-					return true;
-				}
-			}
+		// Make sure the post type is an array.
+		$meta_box['post_types'] = (array) $meta_box['post_types'];
 
-			return false;
+		return $meta_box;
+	}
+
+	/**
+	 * Normalize an array of fields
+	 *
+	 * @param array $fields Array of fields.
+	 *
+	 * @return array $fields Normalized fields.
+	 */
+	public static function normalize_fields( $fields ) {
+		foreach ( $fields as $k => $field ) {
+			$field = RWMB_Field::call( 'normalize', $field );
+
+			// Allow to add default values for fields.
+			$field = apply_filters( 'rwmb_normalize_field', $field );
+			$field = apply_filters( "rwmb_normalize_{$field['type']}_field", $field );
+			$field = apply_filters( "rwmb_normalize_{$field['id']}_field", $field );
+
+			$fields[ $k ] = $field;
+		}
+
+		return $fields;
+	}
+
+	/**
+	 * Check if meta box is saved before.
+	 * This helps saving empty value in meta fields (text, check box, etc.) and set the correct default values.
+	 *
+	 * @return bool
+	 */
+	public function is_saved() {
+		foreach ( $this->fields as $field ) {
+			if ( empty( $field['id'] ) ) {
+				continue;
+			}
+			$value = RWMB_Field::call( $field, 'raw_meta', $this->object_id );
+			if (
+				( ! $field['multiple'] && '' !== $value )
+				|| ( $field['multiple'] && array() !== $value )
+			) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Check if we're on the right edit screen.
+	 *
+	 * @param WP_Screen $screen Screen object. Optional. Use current screen object by default.
+	 *
+	 * @return bool
+	 */
+	public function is_edit_screen( $screen = null ) {
+		if ( ! ( $screen instanceof WP_Screen ) ) {
+			$screen = get_current_screen();
+		}
+
+		return 'post' === $screen->base && in_array( $screen->post_type, $this->post_types, true );
+	}
+
+	/**
+	 * Magic function to get meta box property.
+	 *
+	 * @param string $key Meta box property name.
+	 *
+	 * @return mixed
+	 */
+	public function __get( $key ) {
+		return isset( $this->meta_box[ $key ] ) ? $this->meta_box[ $key ] : false;
+	}
+
+	/**
+	 * Set the object ID.
+	 *
+	 * @param null|int $id Object ID. null means the current object ID.
+	 */
+	public function set_object_id( $id = null ) {
+		if ( null === $this->object_id ) {
+			$this->object_id = null === $id ? get_the_ID() : $id;
 		}
 	}
 }

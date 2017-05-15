@@ -1,103 +1,79 @@
 <?php
-// Prevent loading this file directly
-defined( 'ABSPATH' ) || exit;
+/**
+ * The text list field which allows users to enter multiple texts.
+ *
+ * @package Meta Box
+ */
 
-if ( ! class_exists( 'RWMB_Text_List_Field' ) ) {
-	class RWMB_Text_List_Field extends RWMB_Field {
-		/**
-		 * Get field HTML
-		 *
-		 * @param mixed $meta
-		 * @param array $field
-		 *
-		 * @return string
-		 */
-		static function html( $meta, $field ) {
-			$html  = '';
-			$input = '<label><input type="text" class="rwmb-text-list" name="%s" id="%s" value="%s" placeholder="%s" /> %s</label>';
+/**
+ * Text list field class.
+ */
+class RWMB_Text_List_Field extends RWMB_Multiple_Values_Field {
+	/**
+	 * Get field HTML.
+	 *
+	 * @param mixed $meta  Meta value.
+	 * @param array $field Field parameters.
+	 *
+	 * @return string
+	 */
+	public static function html( $meta, $field ) {
+		$html  = array();
+		$input = '<label><input type="text" class="rwmb-text-list" name="%s" value="%s" placeholder="%s"> %s</label>';
 
-			$i = 0;
-			foreach ( $field['options'] as $value => $label ) {
-				$html .= sprintf(
-					$input,
-					$field['field_name'],
-					$field['id'],
-					$meta[$i],
-					$value,
-					$label
-				);
-				$i ++;
-			}
-
-			return $html;
+		$count = 0;
+		foreach ( $field['options'] as $placeholder => $label ) {
+			$html[] = sprintf(
+				$input,
+				$field['field_name'],
+				isset( $meta[ $count ] ) ? esc_attr( $meta[ $count ] ) : '',
+				$placeholder,
+				$label
+			);
+			$count ++;
 		}
 
-		/**
-		 * Get meta value
-		 * If field is cloneable, value is saved as a single entry in DB
-		 * Otherwise value is saved as multiple entries (for backward compatibility)
-		 *
-		 * @see "save" method for better understanding
-		 *
-		 * TODO: A good way to ALWAYS save values in single entry in DB, while maintaining backward compatibility
-		 *
-		 * @param $post_id
-		 * @param $saved
-		 * @param $field
-		 *
-		 * @return array
-		 */
-		static function meta( $post_id, $saved, $field ) {
-			$single = $field['clone'] || ! $field['multiple'];
-			$meta   = get_post_meta( $post_id, $field['id'], $single );
-			$meta   = ( ! $saved && '' === $meta || array() === $meta ) ? $field['std'] : $meta;
+		return implode( ' ', $html );
+	}
 
-			$meta = array_map( 'esc_attr', (array) $meta );
-
-			return $meta;
+	/**
+	 * Format value for the helper functions.
+	 *
+	 * @param array        $field Field parameters.
+	 * @param string|array $value The field meta value.
+	 * @return string
+	 */
+	public static function format_value( $field, $value ) {
+		$output = '<table><thead><tr>';
+		foreach ( $field['options'] as $label ) {
+			$output .= "<th>$label</th>";
 		}
+		$output .= '<tr>';
 
-		/**
-		 * Save meta value
-		 * If field is cloneable, value is saved as a single entry in DB
-		 * Otherwise value is saved as multiple entries (for backward compatibility)
-		 *
-		 * TODO: A good way to ALWAYS save values in single entry in DB, while maintaining backward compatibility
-		 *
-		 * @param $new
-		 * @param $old
-		 * @param $post_id
-		 * @param $field
-		 */
-		static function save( $new, $old, $post_id, $field ) {
-			if ( ! $field['clone'] ) {
-				parent::save( $new, $old, $post_id, $field );
-
-				return;
-			}
-
-			if ( empty( $new ) ) {
-				delete_post_meta( $post_id, $field['id'] );
-			} else {
-				update_post_meta( $post_id, $field['id'], $new );
+		if ( ! $field['clone'] ) {
+			$output .= self::format_single_value( $field, $value );
+		} else {
+			foreach ( $value as $subvalue ) {
+				$output .= self::format_single_value( $field, $subvalue );
 			}
 		}
+		$output .= '</tbody></table>';
+		return $output;
+	}
 
-		/**
-		 * Normalize parameters for field
-		 *
-		 * @param array $field
-		 *
-		 * @return array
-		 */
-		static function normalize_field( $field ) {
-			$field['multiple']   = true;
-			$field['field_name'] = $field['id'];
-			if ( ! $field['clone'] ) {
-				$field['field_name'] .= '[]';
-			}
-
-			return $field;
+	/**
+	 * Format a single value for the helper functions.
+	 *
+	 * @param array $field Field parameters.
+	 * @param array $value The value.
+	 * @return string
+	 */
+	public static function format_single_value( $field, $value ) {
+		$output = '<tr>';
+		foreach ( $value as $subvalue ) {
+			$output .= "<td>$subvalue</td>";
 		}
+		$output .= '</tr>';
+		return $output;
 	}
 }

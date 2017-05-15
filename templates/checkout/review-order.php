@@ -39,7 +39,7 @@ $cart                 = learn_press_get_checkout_cart();
 			<tr class="<?php echo esc_attr( apply_filters( 'learn_press_cart_item_class', 'cart-item', $cart_item ) ); ?>">
 				<?php do_action( 'learn_press_review_order_before_cart_item', $cart_item ); ?>
 				<td class="course-name">
-					<?php echo apply_filters( 'learn_press_cart_item_name', $_course->get_title(), $cart_item ) . '&nbsp;'; ?>
+                    <a href="<?php the_permalink($item_id) ?>" style="box-shadow: none"><?php echo apply_filters( 'learn_press_cart_item_name', $_course->get_title(), $cart_item ) . '&nbsp;'; ?></a>
 					<?php echo apply_filters( 'learn_press_cart_item_quantity', ' <strong class="course-quantity">' . sprintf( '&times; %s', $cart_item['quantity'] ) . '</strong>', $cart_item ); ?>
 				</td>
 				<td class="course-total">

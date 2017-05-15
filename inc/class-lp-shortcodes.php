@@ -5,7 +5,7 @@
  * @version 1.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
+if ( !defined( 'ABSPATH' ) ) {
 	exit;
 }
 
@@ -16,7 +16,7 @@ class LP_Shortcodes {
 	/**
 	 * Init shortcodes
 	 */
-	public static function init () {
+	public static function init() {
 		$shortcodes = array(
 			'learn_press_confirm_order'       => __CLASS__ . '::confirm_order',
 			'learn_press_profile'             => __CLASS__ . '::profile',
@@ -25,7 +25,7 @@ class LP_Shortcodes {
 			'learn_press_checkout'            => __CLASS__ . '::checkout',
 			'learn_press_recent_courses'      => __CLASS__ . '::recent_courses',
 			'learn_press_featured_courses'    => __CLASS__ . '::featured_courses',
-			'learn_press_popular_courses'    => __CLASS__ . '::popular_courses'
+			'learn_press_popular_courses'     => __CLASS__ . '::popular_courses'
 		);
 
 		foreach ( $shortcodes as $shortcode => $function ) {
@@ -36,28 +36,28 @@ class LP_Shortcodes {
 
 	}
 
-	public static function auto_shortcode ( $template ) {
+	public static function auto_shortcode( $template ) {
 		if ( is_page() ) {
 			global $post, $wp_query, $wp;
-			$page_id = ! empty( $wp_query->queried_object_id ) ?
+			$page_id = !empty( $wp_query->queried_object_id ) ?
 				$wp_query->queried_object_id :
-				( ! empty( $wp_query->query_vars['page_id'] ) ? $wp_query->query_vars['page_id'] : - 1 );
+				( !empty( $wp_query->query_vars['page_id'] ) ? $wp_query->query_vars['page_id'] : - 1 );
 			if ( $page_id == learn_press_get_page_id( 'checkout' ) ) {
-				if ( ! preg_match( '/\[learn_press_checkout\s?(.*)\]/', $post->post_content ) ) {
+				if ( !preg_match( '/\[learn_press_checkout\s?(.*)\]/', $post->post_content ) ) {
 					$post->post_content .= '[learn_press_checkout]';
 				}
 			} elseif ( $page_id == learn_press_get_page_id( 'profile' ) ) {
 				if ( empty( $wp->query_vars['user'] ) ) {
 					$current_user = wp_get_current_user();
-					if ( ! empty( $current_user->user_login ) ) {
+					if ( !empty( $current_user->user_login ) ) {
 						$redirect = learn_press_get_endpoint_url( '', $current_user->user_login, learn_press_get_page_link( 'profile' ) );
-						if ( $redirect && ! learn_press_is_current_url( $redirect ) ) {
+						if ( $redirect && !learn_press_is_current_url( $redirect ) ) {
 							wp_redirect( $redirect );
 							die();
 						}
 					} else {
-						if ( ! preg_match( '/\[learn_press_login_form\s?(.*)\]/', $post->post_content ) ) {
-							if ( ! empty( $_REQUEST['redirect_to'] ) ) {
+						if ( !preg_match( '/\[learn_press_login_form\s?(.*)\]/', $post->post_content ) ) {
+							if ( !empty( $_REQUEST['redirect_to'] ) ) {
 								$redirect = $_REQUEST['redirect_to'];
 							} else {
 								$redirect = '';
@@ -88,40 +88,38 @@ class LP_Shortcodes {
 									learn_press_is_404();
 								}
 							}
-							if ( ! empty( $v ) ) {
-								$wp->query_vars[ $k ] = $v;
+							if ( !empty( $v ) ) {
+								$wp->query_vars[$k] = $v;
 							}
 						}
 					}
-					if ( ! preg_match( '/\[learn_press_profile\s?(.*)\]/', $post->post_content ) ) {
+					if ( !preg_match( '/\[learn_press_profile\s?(.*)\]/', $post->post_content ) ) {
 						$post->post_content .= '[learn_press_profile]';
 					}
 
 				}
 
 			} elseif ( $page_id == learn_press_get_page_id( 'become_a_teacher' ) ) {
-				if ( ! preg_match( '/\[learn_press_become_teacher_form\s?(.*)\]/', $post->post_content ) ) {
+				if ( !preg_match( '/\[learn_press_become_teacher_form\s?(.*)\]/', $post->post_content ) ) {
 					$post->post_content .= '[learn_press_become_teacher_form]';
 				}
 			}
 
 			do_action( 'learn_press_auto_shortcode', $post, $template );
 		}
-
 		return $template;
 	}
 
-	public static function _login_form_bottom ( $content, $args ) {
-		if ( ! ( ! empty( $args['context'] ) && $args['context'] == 'learn-press-login' ) ) {
+	public static function _login_form_bottom( $content, $args ) {
+		if ( !( !empty( $args['context'] ) && $args['context'] == 'learn-press-login' ) ) {
 			return;
 		}
 	}
 
-	public static function wrapper_shortcode ( $content ) {
+	public static function wrapper_shortcode( $content ) {
 		ob_start();
 		learn_press_print_messages();
 		$html = ob_get_clean();
-
 		return '<div class="learnpress">' . $html . $content . '</div>';
 	}
 
@@ -130,9 +128,13 @@ class LP_Shortcodes {
 	 *
 	 * @param array
 	 *
+	 *
+	 *
+	 *
+	 *
 	 * @return string
 	 */
-	public static function checkout ( $atts ) {
+	public static function checkout( $atts ) {
 		global $wp;
 		ob_start();
 
@@ -152,7 +154,7 @@ class LP_Shortcodes {
 		return self::wrapper_shortcode( ob_get_clean() );
 	}
 
-	public static function recent_courses ( $atts ) {
+	public static function recent_courses( $atts ) {
 
 		$limit = $order_by = $order = '';
 
@@ -165,11 +167,11 @@ class LP_Shortcodes {
 		extract( $atts );
 
 		// Validation date
-		$arr_orders_by = array('post_date', 'post_title', 'post_status', 'comment_count');
-		$arr_orders = array('DESC', 'ASC');
-		$order = strtoupper($order);
+		$arr_orders_by = array( 'post_date', 'post_title', 'post_status', 'comment_count' );
+		$arr_orders    = array( 'DESC', 'ASC' );
+		$order         = strtoupper( $order );
 
-		if ( !in_array($order_by, $arr_orders_by) || !in_array('post_'.$order_by, $arr_orders_by)) {
+		if ( !in_array( $order_by, $arr_orders_by ) || !in_array( 'post_' . $order_by, $arr_orders_by ) ) {
 			$order_by = 'post_date';
 		} else {
 			if ( $order_by !== 'comment_count' ) {
@@ -177,7 +179,7 @@ class LP_Shortcodes {
 			}
 		}
 
-		if (!in_array($order, $arr_orders)) {
+		if ( !in_array( $order, $arr_orders ) ) {
 			$order = 'DESC';
 		}
 		if ( !absint( $limit ) ) {
@@ -186,7 +188,7 @@ class LP_Shortcodes {
 
 		global $wpdb;
 
-		$posts   = $wpdb->get_results(
+		$posts = $wpdb->get_results(
 			$wpdb->prepare(
 				"SELECT DISTINCT p.*
 						FROM $wpdb->posts AS p
@@ -209,7 +211,7 @@ class LP_Shortcodes {
 
 	}
 
-	public static function featured_courses ( $atts ) {
+	public static function featured_courses( $atts ) {
 
 		$limit = $order_by = $order = '';
 
@@ -226,7 +228,7 @@ class LP_Shortcodes {
 		$arr_orders    = array( 'DESC', 'ASC' );
 		$order         = strtoupper( $order );
 
-		if ( !in_array($order_by, $arr_orders_by) || !in_array('post_'.$order_by, $arr_orders_by)) {
+		if ( !in_array( $order_by, $arr_orders_by ) || !in_array( 'post_' . $order_by, $arr_orders_by ) ) {
 			$order_by = 'post_date';
 		} else {
 			if ( $order_by !== 'comment_count' ) {
@@ -253,7 +255,7 @@ class LP_Shortcodes {
 						AND meta_value = %s
                     ORDER BY p.{$order_by} {$order}
                     LIMIT %d
-                ", '_lp_featured', LP_COURSE_CPT, 'publish', 'yes', absint($limit)
+                ", '_lp_featured', LP_COURSE_CPT, 'publish', 'yes', absint( $limit )
 			)
 		);
 
@@ -265,13 +267,13 @@ class LP_Shortcodes {
 
 	}
 
-	public static function popular_courses ( $atts ) {
+	public static function popular_courses( $atts ) {
 
 		$limit = $order_by = $order = '';
 
 		$atts = shortcode_atts( array(
-			'limit'    => 10,
-			'order'    => 'DESC' // select on of [DESC, ASC]
+			'limit' => 10,
+			'order' => 'DESC' // select on of [DESC, ASC]
 		), $atts );
 
 		extract( $atts );
@@ -290,13 +292,13 @@ class LP_Shortcodes {
 		global $wpdb;
 
 		$query = $wpdb->prepare(
-			"SELECT po.*, count(*) as number_enrolled 
+			"SELECT po.*, count(*) as number_enrolled
 					FROM {$wpdb->prefix}learnpress_user_items ui
 					INNER JOIN {$wpdb->posts} po ON po.ID = ui.item_id
 					WHERE ui.item_type = %s
 						AND ( ui.status = %s OR ui.status = %s )
 						AND po.post_status = %s
-					GROUP BY ui.item_id 
+					GROUP BY ui.item_id
 					ORDER BY ui.item_id {$order}
 					LIMIT %d
 				",
@@ -319,7 +321,7 @@ class LP_Shortcodes {
 
 	}
 
-	public static function render_shortcode_archive ( $lp_posts = array() ) {
+	public static function render_shortcode_archive( $lp_posts = array() ) {
 		global $post;
 		if ( !empty( $lp_posts ) ) {
 			do_action( 'learn_press_before_courses_loop' );
@@ -327,7 +329,7 @@ class LP_Shortcodes {
 			learn_press_begin_courses_loop();
 
 			foreach ( $lp_posts as $post ) {
-				setup_postdata($post);
+				setup_postdata( $post );
 				learn_press_get_template_part( 'content', 'course' );
 			}
 
@@ -340,7 +342,7 @@ class LP_Shortcodes {
 		wp_reset_postdata();
 	}
 
-	private static function order_received ( $order_id = 0 ) {
+	private static function order_received( $order_id = 0 ) {
 
 		learn_press_print_notices();
 
@@ -351,9 +353,8 @@ class LP_Shortcodes {
 		$order_key = !empty( $_GET['key'] ) ? $_GET['key'] : '';
 
 		if ( $order_id > 0 && ( $order = learn_press_get_order( $order_id ) ) && $order->post->post_status != 'trash' ) {
-			if ( $order->order_key != $order_key ) {
+			if ( $order->order_key != $order_key )
 				unset( $order );
-			}
 		} else {
 			learn_press_display_message( __( 'Invalid order!', 'learnpress' ), 'error' );
 			return;
@@ -400,12 +401,12 @@ class LP_Shortcodes {
 	 *
 	 * @return string
 	 */
-	public static function become_teacher_form ( $atts ) {
+	public static function become_teacher_form( $atts ) {
 		$user    = learn_press_get_current_user();
 		$message = '';
 		$code    = 0;
 
-		if ( ! is_user_logged_in() ) {
+		if ( !is_user_logged_in() ) {
 			$message = __( "Please login to fill in this form.", 'learnpress' );
 			$code    = 1;
 		} elseif ( in_array( LP_TEACHER_ROLE, $user->user->roles ) ) {
@@ -419,7 +420,7 @@ class LP_Shortcodes {
 			$code    = 4;
 		}
 
-		if ( ! apply_filters( 'learn_press_become_a_teacher_display_form', true, $code, $message ) ) {
+		if ( !apply_filters( 'learn_press_become_a_teacher_display_form', true, $code, $message ) ) {
 			return;
 		}
 
@@ -444,6 +445,7 @@ class LP_Shortcodes {
 			),
 			$atts
 		);
+
 		learn_press_get_template( 'global/become-teacher-form.php', $args );
 
 		$html = ob_get_clean();
@@ -453,17 +455,17 @@ class LP_Shortcodes {
 		return self::wrapper_shortcode( $html );
 	}
 
-	public static function profile () {
+	public static function profile() {
 		global $wp_query, $wp;
 		if ( isset( $wp_query->query['user'] ) ) {
-			$user = get_user_by( 'login', urldecode( $wp_query->query['user'] ) );
+			$user = get_user_by( apply_filters( 'learn_press_get_user_requested_by', 'login' ), urldecode( $wp_query->query['user'] ) );
 		} else {
 			$user = get_user_by( 'id', get_current_user_id() );
 		}
 		$output = '';
 
 		ob_start();
-		if ( ! $user ) {
+		if ( !$user ) {
 			if ( empty( $wp_query->query['user'] ) ) {
 
 			} else {
@@ -473,22 +475,22 @@ class LP_Shortcodes {
 		} else {
 			$user = LP_User_Factory::get_user( $user->ID );
 			$tabs = learn_press_user_profile_tabs( $user );
-			if ( ! empty( $wp->query_vars['view'] ) ) {
+			if ( !empty( $wp->query_vars['view'] ) ) {
 				$current = $wp->query_vars['view'];
 			} else {
 				$current = '';
 			}
-			if ( empty( $tabs[ $current ] ) && empty( $wp->query_vars['view'] ) ) {
+			if ( empty( $tabs[$current] ) && empty( $wp->query_vars['view'] ) ) {
 				$tab_keys = array_keys( $tabs );
 				$current  = reset( $tab_keys );
 			}
 			$_REQUEST['tab'] = $current;
 			$_POST['tab']    = $current;
 			$_GET['tab']     = $current;
-			if ( ! learn_press_current_user_can_view_profile_section( $current, $user ) ) {
+			if ( !learn_press_current_user_can_view_profile_section( $current, $user ) ) {
 				learn_press_get_template( 'profile/private-area.php' );
 			} else {
-				if ( ! empty( $tabs ) && ! empty( $tabs[ $current ] ) ) :
+				if ( !empty( $tabs ) && !empty( $tabs[$current] ) ) :
 					learn_press_get_template( 'profile/index.php',
 						array(
 							'user'    => $user,
@@ -499,11 +501,11 @@ class LP_Shortcodes {
 				else:
 					if ( $wp->query_vars['view'] == LP()->settings->get( 'profile_endpoints.profile-order-details' ) ) {
 						$order_id = 0;
-						if ( ! empty( $wp->query_vars['id'] ) ) {
+						if ( !empty( $wp->query_vars['id'] ) ) {
 							$order_id = $wp->query_vars['id'];
 						}
 						$order = learn_press_get_order( $order_id );
-						if ( ! $order ) {
+						if ( !$order ) {
 							learn_press_display_message( __( 'Invalid order!', 'learnpress' ), 'error' );
 						} else {
 							learn_press_get_template( 'profile/order-details.php',
@@ -522,7 +524,7 @@ class LP_Shortcodes {
 		return self::wrapper_shortcode( $output );
 	}
 
-	static function login_form ( $atts, $content = '' ) {
+	static function login_form( $atts, $content = '' ) {
 		$atts = shortcode_atts(
 			array(
 				'redirect' => ''
