@@ -19,7 +19,7 @@ if ( ! class_exists( 'LP_Widget_Featured_Courses' ) ) {
 					'name' => __( 'Title', 'learnpress' ),
 					'id'   => "{$prefix}title",
 					'type' => 'text',
-					'std'  => __( 'Featured Courses', 'learnpress' )
+					'std'  => __( '', 'learnpress' )
 				),
 				'show_teacher' => array(
 					'name' => __( 'Show teacher', 'learpnress' ),
