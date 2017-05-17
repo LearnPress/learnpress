@@ -72,7 +72,7 @@ class LP_Admin_Menu {
 		$capacity = 'edit_' . LP_COURSE_CPT . 's';
 		add_menu_page(
 			__( 'Learning Management System', 'learnpress' ),
-			__( 'LearnPress', 'learnpress' ),
+			'LearnPress',
 			$capacity,
 			'learn_press',
 			'',
