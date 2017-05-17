@@ -74,6 +74,9 @@
 
         }
     }
+    .lp-toolbar-btn {
+        visibility: hidden;
+    }
     &.focused{
         .lp-box-data-content {
             opacity: 1;

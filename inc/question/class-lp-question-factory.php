@@ -1,67 +1,42 @@
 <?php
+defined( 'ABSPATH' ) || exit();
 
 /**
  * Class LP_Question_Factory
+ *
+ * Helper class for creating a question.
  *
  * @author  ThimPress
  * @package LearnPress/Classes
  * @version 1.0
  */
-
-defined( 'ABSPATH' ) || exit();
-
 class LP_Question_Factory {
-
 	/**
-	 * Hold the javascript template
+	 * Get the class instance for question.
 	 *
-	 * @var array
-	 */
-	protected static $_templates = array();
-
-	/**
-	 * Hold the list of question instances we have got
-	 *
-	 * @var array
-	 */
-	protected static $_instances = array();
-
-	/**
-	 * Get the class instance for question
-	 *
-	 * @param bool  $the_question
-	 * @param array $args
+	 * @param mixed $the_question ID, WP_Post object, array or anything else (default: false)
+	 * @param array $args         Addition options (default: null)
 	 *
 	 * @return LP_Question|bool
 	 */
 	public static function get_question( $the_question = false, $args = array() ) {
 
-		$the_question = self::get_question_object( $the_question );
+		$the_question = self::get_question_id( $the_question );
 
 		if ( ! $the_question ) {
 			return false;
 		}
 		$classname = self::get_question_class( $the_question, $args );
 		if ( ! class_exists( $classname ) ) {
-			$classname = 'LP_Question_None';
-		}
-		if ( is_array( $args ) ) {
-			ksort( $args );
-			$args_str = serialize( $args );
-		} else {
-			$args_str = $args;
+			$classname = apply_filters( 'learn-press/question-class-not-exists', 'LP_Question_None', $the_question );
 		}
 
-		$the_id = md5( $classname . $the_question->ID . '_' . $args_str );
-		if ( empty( self::$_instances[ $the_id ] ) ) {
-			self::$_instances[ $the_id ] = new $classname( $the_question, $args );
-		}
-
-		return self::$_instances[ $the_id ];
+		return new $classname( $the_question, $args );
 	}
 
-
 	/**
+	 * Get class of a question from a type.
+	 *
 	 * @param  string
 	 *
 	 * @return string|false
@@ -69,82 +44,51 @@ class LP_Question_Factory {
 	public static function get_class_name_from_question_type( $type ) {
 		$class = $type ? 'LP_Question_' . implode( '_', array_map( 'ucfirst', preg_split( '/-|_/', $type ) ) ) : false;
 
-		return apply_filters( 'learn-press/question-class', $class, $type );
+		return apply_filters( 'learn-press/question-type-class', $class, $type );
 	}
 
 	/**
-	 * Get the class for a question from question object
+	 * Get the class for a question from question object.
 	 *
-	 * @param       $the_question
+	 * @param mixed $the_question
 	 * @param array $args
 	 *
 	 * @return mixed
 	 */
 	public static function get_question_class( $the_question, $args = array() ) {
-		$question_id = absint( $the_question->ID );
-
-		if ( ! empty( $args['type'] ) ) {
+		$question_type = false;
+		if ( $the_id = self::get_question_id( $the_question ) ) {
+			$question_type = get_post_meta( $the_id, '_lp_type', true );
+		} else if ( ! empty( $args['type'] ) ) {
 			$question_type = $args['type'];
-		} else {
-			$question_type = self::get_question_type( $question_id, $args );
 		}
 		$classname = self::get_class_name_from_question_type( $question_type );
 
-		return apply_filters( 'learn_press_question_class', $classname, $question_type, $question_id );
+		return apply_filters( 'learn-press/question-class', $classname, $the_question, $args );
 	}
 
 	/**
-	 * Get the question object
+	 * Get the ID of a question.
 	 *
 	 * @param  mixed $the_question
 	 *
-	 * @uses   WP_Post
-	 * @return WP_Post|bool false on failure
+	 * @return bool|int
 	 */
-	public static function get_question_object( $the_question ) {
-		if ( false === $the_question && ! empty( $GLOBALS['post'] ) ) {
-			$the_question = $GLOBALS['post'];
+	public static function get_question_id( $the_question ) {
+		global $post;
+		$the_id = false;
+
+		if ( false === $the_question && is_a( $post, 'WP_Post' ) && LP_ORDER_CPT === get_post_type( $post ) ) {
+			$the_id = $post->ID;
 		} elseif ( is_numeric( $the_question ) ) {
-			$the_question = get_post( $the_question );
+			$the_id = $the_question;
 		} elseif ( $the_question instanceof LP_Question ) {
-			$the_question = get_post( $the_question->id );
-		} elseif ( isset( $the_question->ID ) ) {
-			$the_question = get_post( $the_question->ID );
-		} elseif ( ! ( $the_question instanceof WP_Post ) ) {
-			$the_question = false;
+			$the_id = $the_question->get_id();
+		} elseif ( ! empty( $the_question->ID ) ) {
+			$the_id = $the_question->ID;
 		}
 
-		return apply_filters( 'learn_press_question_object', $the_question );
-	}
-
-	public static function get_question_type( $the_question, $args = array() ) {
-		$type   = '';
-		$the_id = 0;
-		if ( ! empty( $args['type'] ) ) {
-			$type = $args['type'];
-		} else {
-			if ( is_numeric( $the_question ) ) {
-				$type   = get_post_meta( $the_question, '_lp_type', true );
-				$the_id = $the_question;
-			} else if ( $the_question instanceof LP_Question ) {
-				$type   = get_post_meta( $the_question->id, '_lp_type', true );
-				$the_id = $the_question->id;
-			} else if ( isset( $the_question->ID ) ) {
-				$type   = get_post_meta( $the_question->ID, '_lp_type', true );
-				$the_id = $the_question->ID;
-			} else {
-				$options = (array) $the_question;
-				if ( isset( $options['type'] ) ) {
-					$type = $options['type'];
-				}
-			}
-		}
-		if ( ! $type && $the_id ) {
-			$type = 'true_or_false';
-			update_post_meta( $the_id, '_lp_type', $type );
-		}
-
-		return $type;
+		return $the_id;
 	}
 
 	public static function init() {
@@ -152,16 +96,9 @@ class LP_Question_Factory {
 		if ( is_admin() ) {
 			add_action( 'admin_enqueue_scripts', array( __CLASS__, 'admin_assets' ) );
 			add_action( 'save_post', array( __CLASS__, 'save' ) );
-
-			//add_action( 'admin_print_scripts', array( __CLASS__, 'admin_template' ) );
 			add_action( 'edit_form_after_editor', array( __CLASS__, 'admin_template' ), - 990 );
-
 			add_action( 'learn_press_convert_question_type', array( __CLASS__, 'convert_question' ), 5, 4 );
 			add_filter( 'learn_press_question_answers_data', array( __CLASS__, 'sanitize_answers' ), 10, 3 );
-
-
-		} else {
-
 		}
 		add_action( 'learn_press_load_quiz_question', array( __CLASS__, 'save_question_if_needed' ), 100, 3 );
 		add_action( 'learn_press_user_finish_quiz', array( __CLASS__, 'save_question' ), 100, 2 );
@@ -171,9 +108,6 @@ class LP_Question_Factory {
 		add_action( 'delete_post', array( __CLASS__, 'delete_question' ), 10, 2 );
 
 		self::init_hooks();
-
-		//LP_Question_Factory::add_template( 'multi-choice-option', LP_Question_Multi_Choice::admin_js_template() );
-		//LP_Question_Factory::add_template( 'single-choice-option', LP_Question_Single_Choice::admin_js_template() );
 
 		do_action( 'learn_press_question_factory_init', __CLASS__ );
 	}
@@ -392,10 +326,6 @@ class LP_Question_Factory {
 		add_action( 'save_post', array( __CLASS__, 'save' ) );
 	}
 
-	public static function add_template( $id, $content ) {
-		self::$_templates[ $id ] = $content;
-	}
-
 	public static function fetch_question_content( $the_question, $args = false ) {
 		$question = self::get_question( $the_question );
 		$content  = '';
@@ -455,7 +385,8 @@ class LP_Question_Factory {
 	}
 
 	/**
-	 * Add new question
+	 * Add new question to questions bank.
+	 * Also add to quiz if the id of quiz is passed.
 	 *
 	 * @param array $args
 	 *
@@ -479,7 +410,11 @@ class LP_Question_Factory {
 			)
 		);
 		if ( $question_id ) {
-			if ( $args['quiz_id'] ) {
+
+			/**
+			 * If quiz id is passed and valid
+			 */
+			if ( $args['quiz_id'] && LP_QUIZ_CPT == get_post_type( $args['quiz_id'] ) ) {
 				if ( $args['order'] >= 0 ) {
 					$query = $wpdb->prepare( "
 						UPDATE {$wpdb->prefix}learnpress_quiz_questions

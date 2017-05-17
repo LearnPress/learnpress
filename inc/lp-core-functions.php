@@ -1627,6 +1627,17 @@ function learn_press_get_request( $key, $default = null, $hash = null ) {
 }
 
 
+function learn_press_get_request_args($args = array()){
+    $request = array();
+    if($args){
+        foreach($args as $key){
+            $request[] = array_key_exists($key, $_REQUEST) ? $_REQUEST[$key] : false;
+        }
+    }
+    return $request;
+}
+
+
 /**
  * @return mixed|void
  */

@@ -46,7 +46,17 @@ $top_buttons['remove'] = sprintf( '
 	esc_attr__( 'Toggle question content', 'learnpress' )
 );
 
-$top_buttons['toggle'] = sprintf( '<span class="lp-toolbar-btn lp-btn-remove"><a data-tooltip="%s" class="lp-btn-icon dashicons dashicons-trash learn-press-tooltip"></a></span>', esc_attr__( 'Remove this question', 'learnpress' ) );
+$top_buttons['toggle'] = sprintf( '
+    <div class="lp-toolbar-btn lp-btn-remove lp-toolbar-btn-dropdown">
+        <a data-tooltip="%s" class="lp-btn-icon dashicons dashicons-trash learn-press-tooltip" ng-click="removeQuestion($event)"></a>
+        <ul>
+            <li><a class="learn-press-tooltip" data-tooltip="%s" ng-click="removeQuestion($event)" data-delete-permanently="yes">%s</a></li>
+        </ul>
+    </div>',
+	esc_attr__( 'Remove this question', 'learnpress' ),
+	esc_attr__( 'Delete permanently this question from Questions Bank', 'learnpress' ),
+	esc_attr__( 'Delete permanently', 'learnpress' )
+);
 $top_buttons['move']   = sprintf( '<span class="lp-toolbar-btn lp-btn-move"><a data-tooltip="%s" class="lp-btn-icon dashicons dashicons-sort learn-press-tooltip"></a></span>', esc_attr__( 'Drag & drop to sort question', 'learnpress' ) );
 
 $top_buttons = apply_filters( 'learn_press_question_top_buttons', $top_buttons, $question_id );
@@ -55,7 +65,8 @@ $top_buttons = array_filter( $top_buttons );
 <div class="learn-press-box-data learn-press-question closed lp-question-<?php echo $template_data['type']; ?>"
      id="learn-press-question-<?php echo $template_data['id']; ?>"
      data-type="<?php echo $type; ?>" data-id="<?php echo $template_data['id']; ?>"
-     ng-controller="question">
+     ng-controller="question"
+     ng-click="elementClick($event)">
     <div class="lp-box-data-head lp-row">
         <div class="lp-box-data-actions lp-toolbar-buttons">
 			<?php
@@ -73,7 +84,6 @@ $top_buttons = array_filter( $top_buttons );
 		<?php } ?>
     </div>
     <div class="lp-box-data-content">
-        {{questionData.title}}
         <table class="lp-sortable lp-list-options" id="learn-press-list-options-<?php echo $template_data['id']; ?>">
             <thead>
             <tr>

@@ -25,6 +25,7 @@
                     console.log(position)
                 });
                 this.initData();
+                $element.find('.lp-count-questions').removeClass('hide-if-js');
             },
             addQuestion: function (event, args) {
                 var
@@ -61,8 +62,18 @@
             },
             getListContainer: function () {
                 return $element.find('#learn-press-questions');
+            },
+            countQuestion: function (single, plural) {
+                var count = $element.find('.learn-press-question').length;
+                if (arguments.length === 2) {
+                    if (count <= 1) {
+                        return single.replace(/%d/, count);
+                    } else {
+                        return plural.replace(/%d/, count);
+                    }
+                }
+                return count;
             }
-
         });
         $scope.init();
     }

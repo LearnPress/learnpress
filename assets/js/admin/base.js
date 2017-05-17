@@ -7,4 +7,8 @@
                 return $sce.trustAsHtml(input)
         };
     });
+
+    $(document).on('click', '.learn-press-tooltip', function(){
+        $('.tipsy').remove();
+    })
 })(jQuery);

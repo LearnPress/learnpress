@@ -25,7 +25,6 @@ $remove-icon-color: #d05d5d;
         height: 30px;
         padding: 0;
         text-align: center;
-        visibility: hidden;
         position: relative;
         vertical-align: middle;
         cursor: pointer;
@@ -222,6 +221,7 @@ $remove-icon-color: #d05d5d;
                         position: relative;
                         margin-bottom: -4px;
                         margin-top: -4px;
+                        visibility: hidden;
                     }
                 }
             }

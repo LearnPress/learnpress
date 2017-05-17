@@ -75,7 +75,9 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			), 10, 2 );
 			add_action( 'admin_init', array( __CLASS__, 'do_ajax' ), - 1000 );
 			do_action( 'learn_press_admin_ajax_load', __CLASS__ );
-			add_action( 'learn-press/ajax/ajax_add_question', array( __CLASS__, 'ajax_add_question' ) );
+
+			add_action( 'learn-press/ajax/ajax_add_question', array( __CLASS__, 'add_question' ) );
+			add_action( 'learn-press/ajax/ajax_delete_quiz_question', array( __CLASS__, 'delete_quiz_question' ) );
 		}
 
 		public static function do_ajax() {
@@ -85,7 +87,10 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			do_action( 'learn-press/ajax/' . $_REQUEST['lp-ajax'] );
 		}
 
-		public static function ajax_add_question() {
+		/**
+		 * Ajax callback to add new question into quiz
+		 */
+		public static function add_question() {
 			$type        = learn_press_get_request( 'type' );
 			$order       = learn_press_get_request( 'order' );
 			$quiz_id     = learn_press_get_request( 'quiz_id' );
@@ -106,6 +111,19 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				$response['message'] = __( 'Insert question failed!', 'learnpress' );
 			}
 			learn_press_send_json( $response );
+		}
+
+		public static function delete_quiz_question() {
+			list( $quiz_id, $id, $delete_permanently, $ahihi ) = learn_press_get_request_args( array(
+				'quiz_id',
+				'id',
+				'permanently',
+				'ahihi'
+			) );
+			print_r( $quiz_id );
+			print_r( $id );
+			print_r( $delete_permanently );
+			print_r( $ahihi );
 		}
 
 		public static function load_chart() {

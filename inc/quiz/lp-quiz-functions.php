@@ -3,19 +3,30 @@
  * Common functions to manipulate with the quiz
  */
 
-if ( !defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
 /**
- * Get quiz
+ * Get quiz from anything is passed
  *
- * @param $the_quiz
+ * @param mixed $the_quiz
  *
- * @return LP_Quiz
+ * @return bool|LP_Quiz
  */
 function learn_press_get_quiz( $the_quiz ) {
 	return LP_Quiz_Factory::get_quiz( $the_quiz );
+}
+
+/**
+ * Get question from anything is passed
+ *
+ * @param mixed $the_question
+ *
+ * @return bool|LP_Question
+ */
+function learn_press_get_question( $the_question ) {
+	return LP_Question_Factory::get_question( $the_question );
 }
 
 /**
@@ -29,9 +40,10 @@ function learn_press_get_quiz( $the_quiz ) {
  * @return  array|null
  */
 function learn_press_get_quiz_questions( $quiz_id = null, $only_ids = true ) {
-	if ( !$quiz_id ) {
+	if ( ! $quiz_id ) {
 		$quiz_id = get_the_ID();
 	}
+
 	return ( $quiz = LP_Quiz::get_quiz( $quiz_id ) ) ? $quiz->get_questions() : false;
 }
 
@@ -41,7 +53,7 @@ function learn_press_question_class( $question = null, $args = array() /*, $clas
 		$args,
 		array(
 			'user'    => LP()->user,
-			'quiz'    => !empty( LP()->global['course-item'] ) ? LP()->global['course-item'] : false,
+			'quiz'    => ! empty( LP()->global['course-item'] ) ? LP()->global['course-item'] : false,
 			'classes' => ''
 		)
 	);
@@ -50,7 +62,7 @@ function learn_press_question_class( $question = null, $args = array() /*, $clas
 	$classes = $args['classes'];
 
 
-	if ( !$question ) {
+	if ( ! $question ) {
 		$question = LP_Question_Factory::get_question( get_the_ID() );
 	} elseif ( is_numeric( $question ) ) {
 		$question = LP_Question_Factory::get_question( $question );
@@ -60,7 +72,11 @@ function learn_press_question_class( $question = null, $args = array() /*, $clas
 			$classes = explode( ' ', $classes );
 		}
 		settype( $classes, 'array' );
-		$classes = array_merge( $classes, array( "learn-press-question-wrap", "question-type-{$question->type}", "question-{$question->id}" ) );
+		$classes = array_merge( $classes, array(
+			"learn-press-question-wrap",
+			"question-type-{$question->type}",
+			"question-{$question->id}"
+		) );
 		if ( $quiz ) {
 			$status = $user->get_quiz_status( $quiz->id );
 		} else {
@@ -93,6 +109,7 @@ function learn_press_question_class( $question = null, $args = array() /*, $clas
 
 function learn_press_get_user_quiz_meta( $quiz_user_id, $meta_key, $single = true ) {
 	return get_metadata( 'learnpress_user_item', $quiz_user_id, $meta_key, $single );
+
 	return get_metadata( 'learnpress_user_quiz', $quiz_user_id, $meta_key, $single );
 }
 
@@ -117,6 +134,7 @@ function learn_press_get_current_question( $quiz_id = null, $user_id = 0 ) {
 	} else {
 		$user = LP()->user;
 	}
+
 	return $user->get_current_question( $quiz_id );
 }
 
@@ -129,10 +147,11 @@ function learn_press_get_current_question( $quiz_id = null, $user_id = 0 ) {
  * @return mixed
  */
 function learn_press_get_quiz_id( $id ) {
-	if ( !$id ) {
+	if ( ! $id ) {
 		global $quiz;
 		$id = $quiz->id;
 	}
+
 	return $id;
 }
 
@@ -152,6 +171,7 @@ function learn_press_user_has_completed_quiz( $user_id = null, $quiz_id = null )
 	if ( $user = learn_press_get_user( $user_id ) ) {
 		return $user->has_completed_quiz( $quiz_id );
 	}
+
 	return false;
 }
 
@@ -165,18 +185,22 @@ function learn_press_user_has_completed_quiz( $user_id = null, $quiz_id = null )
  */
 function learn_press_get_quiz_time_remaining( $user_id = null, $quiz_id = null ) {
 	global $quiz;
-	if ( !$user_id ) $user_id = get_current_user_id();
+	if ( ! $user_id ) {
+		$user_id = get_current_user_id();
+	}
 	$quiz_id = $quiz_id ? $quiz_id : ( $quiz ? $quiz->id : 0 );
-	if ( !$quiz_id ) return 0;
+	if ( ! $quiz_id ) {
+		return 0;
+	}
 	$meta            = get_user_meta( $user_id, '_lpr_quiz_start_time', true );
 	$quiz_duration   = get_post_meta( $quiz_id, '_lpr_duration', true );
 	$time_remaining  = $quiz_duration * 60;
-	$quiz_start_time = !empty( $meta[$quiz_id] ) ? $meta[$quiz_id] : 0;
+	$quiz_start_time = ! empty( $meta[ $quiz_id ] ) ? $meta[ $quiz_id ] : 0;
 	$quiz_start_time = apply_filters( 'learn_press_user_quiz_start_time', $quiz_start_time, $quiz_id, $user_id );
 
 	if ( $quiz_duration && learn_press_user_has_started_quiz( $user_id, $quiz_id ) ) {
 		$quiz_duration *= 60;
-		$now = current_time( 'timestamp' );
+		$now           = current_time( 'timestamp' );
 
 		if ( $now < $quiz_start_time + $quiz_duration ) {
 			$time_remaining = $quiz_start_time + $quiz_duration - $now;
@@ -185,6 +209,7 @@ function learn_press_get_quiz_time_remaining( $user_id = null, $quiz_id = null )
 		}
 
 	}
+
 	return apply_filters( 'learn_press_get_quiz_time_remaining', $time_remaining, $user_id, $quiz_id );
 }
 
@@ -198,7 +223,7 @@ function learn_press_get_quiz_time_remaining( $user_id = null, $quiz_id = null )
  * @return string
  */
 function learn_press_get_user_question_url( $quiz_id, $current_question_id = 0, $user_id = 0 ) {
-	if ( !$current_question_id ) {
+	if ( ! $current_question_id ) {
 		$current_question_id = learn_press_get_current_question( $quiz_id, $user_id );
 	}
 	$permalink = get_the_permalink( $quiz_id );
@@ -211,6 +236,7 @@ function learn_press_get_user_question_url( $quiz_id, $current_question_id = 0, 
 		}
 	}
 	$permalink = trailingslashit( $permalink );
+
 	return apply_filters( 'learn_press_quiz_question_url', $permalink, $quiz_id, $current_question_id, $user_id );
 }
 
@@ -224,6 +250,7 @@ function learn_press_get_user_question_url( $quiz_id, $current_question_id = 0, 
  */
 function learn_press_user_has_started_quiz( $user_id = null, $quiz_id = null ) {
 	$user = $user_id ? learn_press_get_user( $user_id ) : LP()->user;
+
 	return $user ? $user->has( 'started-quiz', $quiz_id ) : false;
 }
 
@@ -241,6 +268,7 @@ function learn_press_user_has_started_quiz( $user_id = null, $quiz_id = null ) {
  */
 function learn_press_get_user_quiz_status( $quiz_id, $user_id = false ) {
 	$user = $user_id ? learn_press_get_user( $user_id ) : LP()->user;
+
 	return $user ? $user->get_quiz_status( $quiz_id ) : '';
 }
 
@@ -272,11 +300,12 @@ function learn_press_redirect_to_question( $template ) {
 		} elseif ( $quiz_status == 'completed' && learn_press_get_request( 'question' ) ) {
 			$redirect = get_the_permalink( $quiz_id );
 		}
-		if ( $redirect && !learn_press_is_current_url( $redirect ) ) {
+		if ( $redirect && ! learn_press_is_current_url( $redirect ) ) {
 			wp_redirect( $redirect );
 			exit();
 		}
 	}
+
 	return $template;
 }
 
@@ -284,13 +313,14 @@ function learn_press_redirect_to_question( $template ) {
 
 
 function learn_press_get_quizzes( $user_id = 0, &$args = array() ) {
-	if ( !$user_id ) {
+	if ( ! $user_id ) {
 		$user_id = learn_press_get_current_user_id();
 	}
-	if ( !$user_id ) {
+	if ( ! $user_id ) {
 		return;
 	}
 	$user = learn_press_get_user( $user_id );
+
 	return $user->get_quizzes( $args );
 }
 
@@ -311,24 +341,29 @@ function learn_press_add_question_type_support( $types, $supports ) {
 	$types    = array_filter( $types );
 	$supports = array_filter( $supports );
 
-	if ( $types ) foreach ( $types as $type ) {
-		if ( !$type ) {
-			continue;
+	if ( $types ) {
+		foreach ( $types as $type ) {
+			if ( ! $type ) {
+				continue;
+			}
+			if ( empty( $_supports[ $type ] ) ) {
+				$_supports[ $type ] = array();
+			}
+			if ( $supports ) {
+				foreach ( $supports as $s ) {
+					$_supports[ $type ][] = $s;
+				}
+			}
+			$_supports[ $type ] = array_filter( $_supports[ $type ] );
 		}
-		if ( empty( $_supports[$type] ) ) {
-			$_supports[$type] = array();
-		}
-		if ( $supports ) foreach ( $supports as $s ) {
-			$_supports[$type][] = $s;
-		}
-		$_supports[$type] = array_filter( $_supports[$type] );
 	}
 	$GLOBALS['learn_press_question_type_support'] = $_supports;
 }
 
 function learn_press_get_question_type_support( $type = '' ) {
-	$supports = !empty( $GLOBALS['learn_press_question_type_support'] ) ? $GLOBALS['learn_press_question_type_support'] : array();
-	return $type && !empty( $supports[$type] ) ? $supports[$type] : $supports;
+	$supports = ! empty( $GLOBALS['learn_press_question_type_support'] ) ? $GLOBALS['learn_press_question_type_support'] : array();
+
+	return $type && ! empty( $supports[ $type ] ) ? $supports[ $type ] : $supports;
 }
 
 function learn_press_question_type_support( $type, $features ) {
@@ -341,6 +376,7 @@ function learn_press_question_type_support( $type, $features ) {
 			$has_support = $has_support && in_array( $feature, $supports );
 		}
 	}
+
 	return $has_support;
 }
 
@@ -357,9 +393,11 @@ function _learn_press_add_question_type_support() {
 
 add_action( 'plugins_loaded', '_learn_press_add_question_type_support' );
 
-if ( !function_exists( 'learn_press_quiz_is_hide_question' ) ) {
+if ( ! function_exists( 'learn_press_quiz_is_hide_question' ) ) {
 	function learn_press_quiz_is_hide_question( $quiz_id = null ) {
-		if ( !$quiz_id ) return false;
+		if ( ! $quiz_id ) {
+			return false;
+		}
 		$meta = get_post_meta( $quiz_id, '_lp_show_hide_question', true );
 		if ( $meta === 'hide' || $meta == '' || is_null( $meta )
 			// Removed from 2.1.4

@@ -1,7 +1,26 @@
 #learn-press-quiz-questions {
     margin-top: 20px;
+    >.lp-box-data-head{
+        padding: 0;
+        .lp-toolbar-btn{
+            height:50px;
+        }
+    }
+    >.lp-box-data-content{
+        padding: 0 15px;
+    }
+    .lp-count-questions{
+        font-size: 18px;
+        display: inline-block;
+        padding-left: 15px;
+        line-height: 50px;
+    }
+    .lp-quiz-no-question-msg{
+        margin-bottom: 15px;
+        color: #FF0000;
+    }
     #learn-press-questions {
-        margin: 20px 0;
+        margin: 0 -16px 20px -16px;
     }
 }
 .lp-group-button{

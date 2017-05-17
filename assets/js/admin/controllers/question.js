@@ -271,7 +271,7 @@
             isEmptyQuestion: function ($question) {
                 return !$question.find('.lp-question-heading-title').val();
             },
-            moveNextQuestion: function($question, dir){
+            moveNextQuestion: function ($question, dir) {
                 var $next = false;
                 if ('next' === dir) {
                     $next = $question.next();
@@ -285,12 +285,32 @@
                     $next.find('.lp-question-heading-title').focus();
                 }
             },
-            update: function(event){
+            update: function (event) {
                 var data = $element.find('input, select, textarea').serializeJSON();
                 console.log(this.questionData.title);
             },
-            removeQuestion: function () {
-
+            removeQuestion: function (event) {
+                var deletePermanently = $(event.target).data('delete-permanently') ? 'yes' : 'no';
+                $.ajax({
+                    url: '',
+                    data: {
+                        'lp-ajax': 'ajax_delete_quiz_question',
+                        quiz_id: this.getScreenQuizId(),
+                        id: this.questionData.id,
+                        permanently: deletePermanently
+                    },
+                    success: function (response) {
+                        console.log(response)
+                    }
+                });
+                $element.remove();
+            },
+            deletePermanently: function () {
+                this.removeQuestion({});
+            },
+            elementClick: function () {
+                $('.tipsy').remove();
+                console.log()
             }
         });
         $scope.init();
