@@ -1,6 +1,7 @@
 .learn-press-question {
     .lp-box-data-head{
         padding: 0;
+        position: relative;
         .lp-toolbar-btn,
         .lp-btn-icon{
             height: 50px;
@@ -20,6 +21,7 @@
             width: 30px;
         }
         &:hover{
+            z-index: 1000;
             .lp-toolbar-btn{
                 visibility: visible;
             }

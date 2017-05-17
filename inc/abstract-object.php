@@ -16,6 +16,12 @@ class LP_Abstract_Object {
 	protected $_data = array();
 
 	/**
+	 *
+	 * @var bool
+	 */
+	protected $_no_cache = false;
+
+	/**
 	 * LP_Abstract_Object constructor.
 	 *
 	 * @param null $data
@@ -50,5 +56,13 @@ class LP_Abstract_Object {
 			$value               = func_get_arg( 1 );
 			$this->_data[ $key ] = $value;
 		}
+	}
+
+	public function set_no_cache( $value ) {
+		$this->_no_cache = $value;
+	}
+
+	public function get_no_cache(){
+		return $this->_no_cache;
 	}
 }

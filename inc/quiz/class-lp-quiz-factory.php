@@ -35,7 +35,7 @@ class LP_Quiz_Factory {
 
 	}
 
-	public function admin_template() {
+	public static function admin_template() {
 		add_filter( 'learn-press/question/none/admin-option-template-args', array(__CLASS__, 'question_template_js'), 10, 2);
 	    echo '<script type="text/ng-template" id="tmpl-quiz-question">';
 		learn_press_admin_view( 'meta-boxes/question/base-options', array(
@@ -45,7 +45,7 @@ class LP_Quiz_Factory {
 		remove_filter( 'learn-press/question/none/admin-option-template-args', array(__CLASS__, 'question_template_js'), 10, 2);
 	}
 
-	public function question_template_js($args, $type){
+	public static function question_template_js($args, $type){
 		$args = array(
 			'id'             => '0',
 			'type'           => '{{questionData.type}}',
@@ -448,6 +448,10 @@ class LP_Quiz_Factory {
 			'security'  => $security,
 		);
 	}
+
+	public static function get_quiz($the_quiz){
+	    return new LP_Quiz($the_quiz);
+    }
 }
 
 LP_Quiz_Factory::init();

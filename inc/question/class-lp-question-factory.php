@@ -159,6 +159,7 @@ class LP_Question_Factory {
 			add_action( 'learn_press_convert_question_type', array( __CLASS__, 'convert_question' ), 5, 4 );
 			add_filter( 'learn_press_question_answers_data', array( __CLASS__, 'sanitize_answers' ), 10, 3 );
 
+
 		} else {
 
 		}
@@ -168,6 +169,8 @@ class LP_Question_Factory {
 		add_action( 'learn_press_after_question_wrap', array( __CLASS__, 'show_hint' ), 100, 2 );
 		add_action( 'learn_press_after_question_wrap', array( __CLASS__, 'show_explanation' ), 110, 2 );
 		add_action( 'delete_post', array( __CLASS__, 'delete_question' ), 10, 2 );
+
+		self::init_hooks();
 
 		//LP_Question_Factory::add_template( 'multi-choice-option', LP_Question_Multi_Choice::admin_js_template() );
 		//LP_Question_Factory::add_template( 'single-choice-option', LP_Question_Single_Choice::admin_js_template() );
@@ -443,6 +446,69 @@ class LP_Question_Factory {
 		}
 
 		return $list;
+	}
+
+	/**
+	 * Init hooks
+	 */
+	public static function init_hooks() {
+	}
+
+	/**
+	 * Add new question
+	 *
+	 * @param array $args
+	 *
+	 * @return mixed|int
+	 */
+	public static function add_question( $args = array() ) {
+		global $wpdb;
+		$args        = wp_parse_args(
+			$args,
+			array(
+				'quiz_id' => 0,
+				'order'   => - 1,
+				'status'  => 'publish',
+				'type'    => ''
+			)
+		);
+		$question_id = wp_insert_post(
+			array(
+				'post_type'   => LP_QUESTION_CPT,
+				'post_status' => $args['status']
+			)
+		);
+		if ( $question_id ) {
+			if ( $args['quiz_id'] ) {
+				if ( $args['order'] >= 0 ) {
+					$query = $wpdb->prepare( "
+						UPDATE {$wpdb->prefix}learnpress_quiz_questions
+						SET question_order = question_order + 1
+						WHERE quiz_id = %d AND question_order >= %d
+					", $args['quiz_id'], $args['order'] );
+					$wpdb->get_results( $query );
+				} else {
+					$query         = $wpdb->prepare( "
+						SELECT max(question_order) + 1 as ordering
+						FROM {$wpdb->prefix}learnpress_quiz_questions
+						WHERE quiz_id = %d
+					", $args['quiz_id'] );
+					$args['order'] = $wpdb->get_var( $query );
+				}
+				$wpdb->insert(
+					$wpdb->prefix . 'learnpress_quiz_questions',
+					array(
+						'quiz_id'        => $args['quiz_id'],
+						'question_id'    => $question_id,
+						'question_order' => $args['order']
+					),
+					array( '%d', '%d', '%d' )
+				);
+			}
+			update_post_meta( $question_id, '_lp_type', $args['type'] );
+		}
+
+		return $question_id;
 	}
 }
 

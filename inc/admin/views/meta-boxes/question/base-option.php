@@ -9,7 +9,7 @@ $question = isset( $question ) ? $question : false;
 
 if ( ! $question ) {
 }
-
+$answer          = isset( $answer ) ? $answer : array( 'value' => '', 'text' => '', 'is_true' => false );
 $type            = $question->get_type();
 $option_headings = $question->get_admin_option_headings();
 $value           = $question->get_option_value( $answer['value'] );
@@ -19,7 +19,7 @@ do_action( 'learn_press_before_question_answer_option', $id );
 $template_data = array_merge(
 	array(
 		'id'             => $question->get_id(),
-		'answer_options' => array(
+		'answer_option' => array(
 			'value'   => $value,
 			'text'    => $answer['text'],
 			'is_true' => $answer['is_true']
@@ -29,8 +29,8 @@ $template_data = array_merge(
 );
 ?>
 
-    <tr class="lp-list-option lp-row lp-list-option-<?php echo $template_data['answer_value']; ?>"
-        data-id="<?php echo $template_data['answer_value']; ?>">
+    <tr class="lp-list-option lp-row lp-list-option-<?php echo $template_data['answer_option']['value']; ?>"
+        data-id="<?php echo $template_data['answer_option']['value']; ?>">
 		<?php foreach ( $option_headings as $heading => $title ) { ?>
 			<?php
 			$classes = array( 'column-content', 'column-content-' . $heading );
@@ -41,7 +41,7 @@ $template_data = array_merge(
 					?>
                     <input class="lp-answer-text no-submit key-nav" type="text"
                            name="learn_press_question[<?php echo $template_data['id']; ?>][answer_options][text][]"
-                           value="<?php echo esc_attr( $template_data['answer_options']['text'] ); ?>"
+                           value="<?php echo esc_attr( $template_data['answer_option']['text'] ); ?>"
                            placeholder="<?php esc_attr_e( 'Type name of option', 'learnpress' ); ?>"
                            autocomplete="off"
                            ng-keypress="onOptionKeyEvent($event)"
@@ -55,11 +55,11 @@ $template_data = array_merge(
 					?>
                     <input type="hidden"
                            name="learn_press_question[<?php echo $template_data['id']; ?>][answer_options][value][]"
-                           value="<?php echo $template_data['answer_options']['value']; ?>"/>
+                           value="<?php echo $template_data['answer_option']['value']; ?>"/>
                     <input type="<?php echo $input_type; ?>"
                            name="learn_press_question[<?php echo $template_data['id']; ?>][answer_options][checked][]"
-						<?php checked( $template_data['answer_options']['is_true'] == 'yes', true ); ?>
-                           value="<?php echo $template_data['answer_options']['value']; ?>"
+						<?php checked( $template_data['answer_option']['is_true'] == 'yes', true ); ?>
+                           value="<?php echo $template_data['answer_option']['value']; ?>"
                     />
 					<?php
 					break;

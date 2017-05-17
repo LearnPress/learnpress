@@ -16,6 +16,15 @@
         angular.extend($scope, {
             test: function () {
                 console.log('Test function from Base Controller');
+            },
+            tooltip: function ($el) {
+                var args = {title: 'data-tooltip'};
+                $el.each(function(){
+                    if($el.hasClass('.learn-press-tooltip')){
+                        $el.tipsy(args);
+                    }
+                    $el.find('.learn-press-tooltip').tipsy(args);
+                })
             }
         });
     }

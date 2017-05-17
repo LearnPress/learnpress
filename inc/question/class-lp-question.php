@@ -10,6 +10,11 @@
 
 defined( 'ABSPATH' ) || exit();
 
+/**
+ * Class LP_Question
+ *
+ * @extend LP_Abstract_Course_Item
+ */
 class LP_Question extends LP_Abstract_Course_Item {
 
 	/**
@@ -35,13 +40,11 @@ class LP_Question extends LP_Abstract_Course_Item {
 	/**
 	 * @var string
 	 */
-	public $content = '';
+	protected $_content = '';
 
 	/**
-	 * @var bool
+	 * @var string
 	 */
-	protected static $_instance = false;
-
 	protected $_type = 'single_choice';
 
 	/**
@@ -54,7 +57,7 @@ class LP_Question extends LP_Abstract_Course_Item {
 	 */
 	public function __construct( $the_question = null, $args = null ) {
 
-		parent::__construct( $args );
+		parent::__construct( $the_question, $args );
 
 		if ( is_numeric( $the_question ) && $the_question > 0 ) {
 			$this->set_id( $the_question );
@@ -72,6 +75,11 @@ class LP_Question extends LP_Abstract_Course_Item {
 		$this->_init();
 	}
 
+	/**
+     * Load data for question
+     *
+	 * @throws Exception
+	 */
 	public function load() {
 		$the_id = $this->get_id();
 		if ( ! $the_id || LP_QUESTION_CPT !== get_post_type( $the_id ) ) {
@@ -80,6 +88,11 @@ class LP_Question extends LP_Abstract_Course_Item {
 		$this->_load_answer_options();
 	}
 
+	/**
+	 * Load answer options for the question from database.
+     * Load from cache if data is already loaded into cache.
+     * Otherwise, load from database and put to cache.
+	 */
 	protected function _load_answer_options() {
 		$id             = $this->get_id();
 		$answer_options = wp_cache_get( 'answer-options-' . $id, 'lp-questions' );
@@ -132,8 +145,13 @@ class LP_Question extends LP_Abstract_Course_Item {
 		}
 	}
 
+	/**
+	 * Get answer options of the question
+     *
+     * @return mixed
+	 */
 	public function get_answer_options() {
-		return $this->get_data( 'answer_options' );
+		return apply_filters('learn-press/question/answer-options', $this->get_data( 'answer_options' ), $this->get_id());
 	}
 
 	public function __get( $key ) {
@@ -155,19 +173,24 @@ class LP_Question extends LP_Abstract_Course_Item {
 		return $this->{$key};
 	}
 
+	/**
+     * Get question title
+     *
+	 * @return string
+	 */
 	public function get_title() {
 		return get_the_title( $this->get_id() );
 	}
 
-	protected function _init() {
-		add_filter( 'learn_press_question_answers', array( $this, '_get_default_answers' ), 10, 2 );
-	}
-
+	/**
+     * Get question content
+     *
+	 * @return string
+	 */
 	public function get_content() {
 		if ( ! did_action( 'learn_press_get_content_' . $this->id ) ) {
 			global $post, $wp_query;
 			$post = get_post( $this->id );
-			//$posts = apply_filters( 'the_posts', array( $post ), $wp_query );
 			$posts = apply_filters_ref_array( 'the_posts', array( array( $post ), &$wp_query ) );
 
 			if ( $posts ) {
@@ -176,13 +199,19 @@ class LP_Question extends LP_Abstract_Course_Item {
 			setup_postdata( $post );
 			ob_start();
 			the_content();
-			$this->content = ob_get_clean();
+			$this->_content = ob_get_clean();
 			wp_reset_postdata();
 			do_action( 'learn_press_get_content_' . $this->id );
 		}
 
-		return $this->content;
+		return $this->_content;
 	}
+
+	protected function _init() {
+		add_filter( 'learn_press_question_answers', array( $this, '_get_default_answers' ), 10, 2 );
+	}
+
+
 
 	/**
 	 * Remove all answers to prepare for inserting new
@@ -290,7 +319,6 @@ class LP_Question extends LP_Abstract_Course_Item {
 		if ( ! $value ) {
 			$value = uniqid();
 		}
-
 		return $value;
 	}
 
@@ -676,10 +704,10 @@ class LP_Question extends LP_Abstract_Course_Item {
 
 	public function to_element_data( $echo = true ) {
 		$data = apply_filters( '', array(
-				'type'            => $this->get_type(),
-				'title'           => $this->get_title(),
-				'id'              => $this->get_id(),
-				'answer_options'  => $this->get_answer_options()
+				'type'           => $this->get_type(),
+				'title'          => $this->get_title(),
+				'id'             => $this->get_id(),
+				'answer_options' => $this->get_answer_options()
 			)
 		);
 		$data = wp_json_encode( $data, JSON_PRETTY_PRINT );

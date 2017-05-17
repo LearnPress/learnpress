@@ -689,13 +689,4 @@ function load_learn_press() {
 $GLOBALS['LearnPress'] = LP();
 
 add_action('woocommerce_init', function(){
-	wc_get_product(145);
-	wc_get_product(145);
-	wc_get_product(145);
-	wc_get_product(145);
-	wc_get_product(145);
-	wc_get_product(145);
-	wc_get_product(145);
-	wc_get_product(145);
-
 });

@@ -13,10 +13,8 @@
      * @param $scope
      */
     window['learn-press.question.controller'] = function ($scope, $compile, $element, $timeout) {
-        //angular.extend(this, $controller('courseEditor', {$scope: $scope}));
         $element = $($element);
         angular.extend($scope, {
-            $element: $element,
             questionData: {
                 title: 'Nodem is pul donor shit met',
                 id: 10,
@@ -27,17 +25,17 @@
                 this.bindEvents();
                 this.addQuestionData();
                 this.addOption();
-                $element.find('.lp-list-options tbody').sortable({
+                this.getListContainer().sortable({
                     handle: '.lp-btn-move',
                     axis: 'y'
                 });
-
+                this.tooltip($element);
             },
             initData: function () {
                 try {
                     this.questionData = JSON.parse($($element).find('.element-data').html());
                     var types = $element.find('.lp-btn-change-type ul').children().removeClass('active');
-                    types.filter('[data-type="'+this.questionData.type+'"]').addClass('active');
+                    types.filter('[data-type="' + this.questionData.type + '"]').addClass('active');
                 } catch (ex) {
                     console.log(ex)
                 }
@@ -51,6 +49,7 @@
 
                 // $element.on('')
             },
+
             onOptionKeyEvent: function (event) {
                 var eventType = event.type,
                     val = event.target.value,
@@ -63,7 +62,6 @@
                                 var $e = this.addOption(event, {
                                     position: position
                                 });
-                                console.log(2222, $e.html())
                             }
                         }
                         break;
@@ -151,7 +149,7 @@
                             $list.append(clonedElement);
                         }
                     }
-                    console.log($list, clonedElement)
+                    scope.tooltip(clonedElement)
                     clonedElement.find('.lp-answer-text').focus();
                     return clonedElement;
                 });
@@ -196,17 +194,25 @@
                     case 'edit':
                 }
             },
+            getListContainer: function () {
+                return $element.closest('#learn-press-questions');
+            },
             addQuestionData: function () {
                 var id = $element.find('.question-id').val();
                 if (parseInt(id) > 0) {
                     return;
                 }
+                var order = this.getListContainer().children('.learn-press-box-data').index($element);
                 $.ajax({
                     url: '',
                     data: {
-                        'lp-ajax': 'add_temp_question',
-                        'type': $element.find('.question-type').val()
+                        'lp-ajax': 'ajax_add_question',
+                        type: $element.find('.question-type').val(),
+                        order: order > 0 ? order + 1 : order,
+                        quiz_id: this.getScreenQuizId(),
+                        context: 'quiz'
                     },
+                    type: 'post',
                     success: function (response) {
                         $scope.$apply(function () {
                             $.extend($scope.questionData, LP.parseJSON(response));
@@ -218,8 +224,73 @@
             getElement: function () {
                 return $element;
             },
-            toggleContent: function(event){
+            toggleContent: function (event) {
                 $(event.target).closest('.learn-press-box-data').toggleClass('closed');
+            },
+            getScreenQuizId: function () {
+                return 'lp_quiz' === $('#post_type').val() ? parseInt($('#post_ID').val()) : 0;
+            },
+            onQuestionKeyEvent: function (event) {
+                var eventType = event.type,
+                    val = event.target.value,
+                    $option = this.getQuestionTarget(event.target);
+                switch (event.keyCode) {
+                    case 13:
+                        if ('keypress' === eventType || 'keydown' === eventType) {
+                            if (!this.isEmptyQuestion($option)) {
+                                $(document).triggerHandler('learn-press/add-new-question', $scope, $option);
+                            }
+                        }
+                        break;
+                    case 38:
+                    case 40:
+                        if ('keydown' === eventType) {
+                            this.moveNextQuestion(this.getQuestionTarget(event.target), event.keyCode === 38 ? 'prev' : 'next')
+                        }
+                        break;
+                    case 8:
+                        if ('keyup' === eventType) {
+                            if (val.length === 0) {
+                                if ($option.hasClass('lp-question-empty')) {
+                                    this.removeQuestion(event);
+                                } else {
+                                    $option.addClass('lp-question-empty');
+                                }
+                            }
+                        }
+
+                }
+
+                if (('keypress' === eventType || 'keydown' === eventType ) && event.keyCode === 13) {
+                    event.preventDefault();
+                }
+            },
+            getQuestionTarget: function (target) {
+                return $(target).closest('.learn-press-question');
+            },
+            isEmptyQuestion: function ($question) {
+                return !$question.find('.lp-question-heading-title').val();
+            },
+            moveNextQuestion: function($question, dir){
+                var $next = false;
+                if ('next' === dir) {
+                    $next = $question.next();
+                    if ($next.length === 0 && $question.find('.lp-question-heading-title').val().length) {
+                        $next = this.addQuestion();
+                    }
+                } else {
+                    $next = $question.prev();
+                }
+                if ($next) {
+                    $next.find('.lp-question-heading-title').focus();
+                }
+            },
+            update: function(event){
+                var data = $element.find('input, select, textarea').serializeJSON();
+                console.log(this.questionData.title);
+            },
+            removeQuestion: function () {
+
             }
         });
         $scope.init();

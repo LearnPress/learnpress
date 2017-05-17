@@ -1,16 +1,25 @@
 <?php
 global $post;
+$quiz = learn_press_get_quiz( $post );
 ?>
-<div ng-controller="quiz">
-    <div id="learn-press-quiz-questions">
+<div id="learn-press-quiz-questions" ng-controller="quiz">
+    <div class="lp-box-data-head lp-row">
+        <div class="lp-box-data-actions lp-toolbar-buttons">
+            <span class="lp-toolbar-btn lp-btn-toggle learn-press-tooltip" data-tooltip="%s"
+                  ng-click="toggleContent($event)">
+                <a class="lp-btn-icon dashicons dashicons-arrow-up"></a>
+                <a class="lp-btn-icon dashicons dashicons-arrow-down"></a>
+            </span>
+        </div>
+    </div>
+    <div id="learn-press-questions">
 		<?php
-		$questions = array( 5072, 5162 );
+		$questions = $quiz->get_questions();
 		foreach ( $questions as $question_id ) {
 			$question = LP_Question_Factory::get_question( $question_id );
 			$question->admin_interface();
 		}
 		?>
-        <dynamic-page name='vaibhav'></dynamic-page>
     </div>
     <div class="lp-toolbar-buttons">
         <div class="button lp-group-button">

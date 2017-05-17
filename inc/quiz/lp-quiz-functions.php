@@ -8,6 +8,17 @@ if ( !defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Get quiz
+ *
+ * @param $the_quiz
+ *
+ * @return LP_Quiz
+ */
+function learn_press_get_quiz( $the_quiz ) {
+	return LP_Quiz_Factory::get_quiz( $the_quiz );
+}
+
+/**
  * Get all questions of a quiz
  *
  * @author  TuNN

@@ -19,16 +19,18 @@ $remove-icon-color: #d05d5d;
 .lp-toolbar-buttons {
     position: relative;
     z-index: 10;
+    height:50px;
     .lp-toolbar-btn {
         width: 30px;
         height: 30px;
         padding: 0;
         text-align: center;
-        display: inline-block;
         visibility: hidden;
         position: relative;
         vertical-align: middle;
         cursor: pointer;
+        background: #FFF;
+        display: inline-block;
         a, span {
             color: #999;
             box-shadow: none;
@@ -110,6 +112,7 @@ $remove-icon-color: #d05d5d;
         }
         &:hover {
             background: #dbf5ff;
+            display: inline-block;
             .lp-btn-icon {
                 color: #00a0d2;
             }
@@ -119,7 +122,6 @@ $remove-icon-color: #d05d5d;
         }
     }
 }
-
 
 .column-content-actions {
     &.lp-toolbar-buttons {

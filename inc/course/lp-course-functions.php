@@ -20,9 +20,6 @@ function learn_press_get_course( $the_course = false ) {
 	return $the_course ? LP_Course::get_course( $the_course ) : LP()->global['course'];
 }
 
-function learn_press_get_quiz( $the_quiz ) {
-	return LP_Quiz::get_quiz( $the_quiz );
-}
 
 /**
  * print out class for quiz body

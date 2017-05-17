@@ -75,8 +75,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			), 10, 2 );
 			add_action( 'admin_init', array( __CLASS__, 'do_ajax' ), - 1000 );
 			do_action( 'learn_press_admin_ajax_load', __CLASS__ );
-
-			add_action( 'learn-press/ajax/add_temp_question', array( __CLASS__, 'add_temp_question' ) );
+			add_action( 'learn-press/ajax/ajax_add_question', array( __CLASS__, 'ajax_add_question' ) );
 		}
 
 		public static function do_ajax() {
@@ -86,20 +85,27 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			do_action( 'learn-press/ajax/' . $_REQUEST['lp-ajax'] );
 		}
 
-		public function add_temp_question() {
-			$post_type = learn_press_get_request( 'type' );
-			$id        = wp_insert_post(
+		public static function ajax_add_question() {
+			$type        = learn_press_get_request( 'type' );
+			$order       = learn_press_get_request( 'order' );
+			$quiz_id     = learn_press_get_request( 'quiz_id' );
+			$question_id = LP_Question_Factory::add_question(
 				array(
-					'post_type'   => LP_QUESTION_CPT,
-					'post_status' => 'publish'
+					'type'    => $type,
+					'quiz_id' => $quiz_id,
+					'order'   => $order
 				)
 			);
-			learn_press_send_json(
-				array(
-					'id'   => $id,
-					'type' => learn_press_get_request( 'type' )
-				)
-			);
+			$response    = array();
+			if ( $question_id ) {
+				$response['result'] = 'success';
+				$response['id']     = $question_id;
+				$response['type']   = $type;
+			} else {
+				$response['result']  = 'error';
+				$response['message'] = __( 'Insert question failed!', 'learnpress' );
+			}
+			learn_press_send_json( $response );
 		}
 
 		public static function load_chart() {
