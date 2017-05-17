@@ -80,9 +80,10 @@ $top_buttons = array_filter( $top_buttons );
                    ng-keypress="onQuestionKeyEvent($event)"
                    ng-keyup="onQuestionKeyEvent($event)"
                    ng-keydown="onQuestionKeyEvent($event)"
-                   ng-change="update($event)" ng-model="questionData.title">
+                   ng-change="update($event)" ng-bind="questionData.title" ng-model="questionData.title | trustAsHtml">
 		<?php } ?>
     </div>
+    {{questionData.title | trustAsHtml}}
     <div class="lp-box-data-content">
         <table class="lp-sortable lp-list-options" id="learn-press-list-options-<?php echo $template_data['id']; ?>">
             <thead>
