@@ -9,7 +9,12 @@ $question = isset( $question ) ? $question : false;
 
 if ( ! $question ) {
 }
-$answer          = isset( $answer ) ? $answer : array( 'value' => '', 'text' => '', 'is_true' => false );
+$default_answer = array( 'value' => '', 'text' => '', 'is_true' => false );
+if ( isset( $answer ) ) {
+	$answer = wp_parse_args( $answer, $default_answer );
+} else {
+	$answer = $default_answer;
+}
 $type            = $question->get_type();
 $option_headings = $question->get_admin_option_headings();
 $value           = $question->get_option_value( $answer['value'] );
@@ -18,7 +23,7 @@ $input_type      = $type == 'multi_choice' ? 'checkbox' : 'radio';
 do_action( 'learn_press_before_question_answer_option', $id );
 $template_data = array_merge(
 	array(
-		'id'             => $question->get_id(),
+		'id'            => $question->get_id(),
 		'answer_option' => array(
 			'value'   => $value,
 			'text'    => $answer['text'],
@@ -56,10 +61,17 @@ $template_data = array_merge(
                     <input type="hidden"
                            name="learn_press_question[<?php echo $template_data['id']; ?>][answer_options][value][]"
                            value="<?php echo $template_data['answer_option']['value']; ?>"/>
+                    <input type="hidden"
+                           name="learn_press_question[<?php echo $template_data['id']; ?>][answer_options][checked][]"
+                           value=""
+                           class="<?php echo $template_data['answer_option']['is_true'] == 'yes' ? 'abc-xyz' : ''; ?>"
+                    />
                     <input type="<?php echo $input_type; ?>"
                            name="learn_press_question[<?php echo $template_data['id']; ?>][answer_options][checked][]"
 						<?php checked( $template_data['answer_option']['is_true'] == 'yes', true ); ?>
                            value="<?php echo $template_data['answer_option']['value']; ?>"
+                           onchange=""
+                           class="def-123 <?php echo $template_data['answer_option']['is_true'] == 'yes' ? '' : 'abc-xyz'; ?>"
                     />
 					<?php
 					break;

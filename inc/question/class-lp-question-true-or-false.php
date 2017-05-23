@@ -79,15 +79,7 @@ class LP_Question_True_Or_False extends LP_Question {
 	}
 
 	public function admin_interface( $args = array() ) {
-		ob_start();
-		learn_press_admin_view( 'meta-boxes/question/base-options.php', array( 'question' => $this ) );
-		$output = ob_get_clean();
-
-		if ( ! isset( $args['echo'] ) || ( isset( $args['echo'] ) && $args['echo'] === true ) ) {
-			echo $output;
-		}
-
-		return $output;
+		return parent::admin_interface($args);
 	}
 
 	public function render( $args = array() ) {

@@ -1,6 +1,9 @@
 $primary-color: #00a0d2;
 $remove-icon-color: #d05d5d;
 
+/**
+ * Mixin
+ */
 @mixin clear-fix() {
     clear: both;
     display: block;
@@ -13,13 +16,25 @@ $remove-icon-color: #d05d5d;
     box-sizing: $args;
 }
 
+@mixin border-radius($args...) {
+    -webkit-border-radius: $args;
+    -moz-border-radius: $args;
+    border-radius: $args;
+}
+
+@mixin animation($args...) {
+    -webkit-animation: $args;
+    -moz-animation: $args;
+    animation: $args;
+}
+
 /**
  * Styles for displaying list of table
  */
 .lp-toolbar-buttons {
     position: relative;
     z-index: 10;
-    height:50px;
+    height: 50px;
     .lp-toolbar-btn {
         width: 30px;
         height: 30px;
@@ -64,8 +79,19 @@ $remove-icon-color: #d05d5d;
             }
         }
         &.lp-btn-toggle {
-            .dashicons-arrow-down {
+            .dashicons-arrow-down,
+            .dashicons-arrow-down-alt2{
                 display: none;
+            }
+            &.closed {
+                .dashicons-arrow-up,
+                .dashicons-arrow-up-alt2{
+                    display: none;
+                }
+                .dashicons-arrow-down,
+                .dashicons-arrow-down-alt2{
+                    display: inline-block;
+                }
             }
         }
         &.lp-toolbar-btn-dropdown {
@@ -94,8 +120,8 @@ $remove-icon-color: #d05d5d;
                             background: #dbf5ff;
                         }
                     }
-                    &.active{
-                        a{
+                    &.active {
+                        a {
                             background: #dbf5ff;
                         }
                     }
@@ -103,9 +129,9 @@ $remove-icon-color: #d05d5d;
             }
         }
         &.lp-btn-disabled,
-        &.lp-btn-disabled:hover{
+        &.lp-btn-disabled:hover {
             background: #F5F5F5;
-            .lp-btn-icon{
+            .lp-btn-icon {
                 color: #DDD;
             }
         }
@@ -175,15 +201,17 @@ $remove-icon-color: #d05d5d;
         padding: 15px;
     }
     &.closed {
-        .lp-btn-toggle{
-            .dashicons-arrow-up{
+        .lp-btn-toggle {
+            .dashicons-arrow-up,
+            .dashicons-arrow-up-alt2{
                 display: none;
             }
-            .dashicons-arrow-down{
+            .dashicons-arrow-down,
+            .dashicons-arrow-down-alt2{
                 display: inline-block;
             }
         }
-        .lp-box-data-content{
+        .lp-box-data-content {
             display: none;
         }
     }
@@ -276,5 +304,28 @@ $remove-icon-color: #d05d5d;
                 }
             }
         }
+    }
+}
+
+.lp-animation{
+    @include animation(spin 4s linear infinite);
+}
+
+@-moz-keyframes spin {
+    100% {
+        -moz-transform: rotate(360deg);
+    }
+}
+
+@-webkit-keyframes spin {
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@keyframes spin {
+    100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
     }
 }

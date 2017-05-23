@@ -7,10 +7,13 @@ $quiz = learn_press_get_quiz( $post );
             <span class="lp-count-questions hide-if-js">{{countQuestion('<?php esc_attr_e( '%d question', 'learnpress' ); ?>
                 ', '<?php esc_attr_e( '%d questions', 'learnpress' ); ?>')}}</span>
         <div class="lp-box-data-actions lp-toolbar-buttons">
-            <span class="lp-toolbar-btn lp-btn-toggle learn-press-tooltip" data-tooltip="%s"
+            <span class="lp-toolbar-btn" ng-click="saveAllQuestions($event)">
+                <a class="lp-btn-icon dashicons dashicons-location"></a>
+            </span><!--
+            --><span class="lp-toolbar-btn lp-btn-toggle learn-press-tooltip closed" data-tooltip="<?php esc_attr_e('Save all', 'learnpress');?>"
                   ng-click="toggleContent($event)">
-                <a class="lp-btn-icon dashicons dashicons-arrow-up"></a>
-                <a class="lp-btn-icon dashicons dashicons-arrow-down"></a>
+                <a class="lp-btn-icon dashicons dashicons-arrow-up-alt2"></a>
+                <a class="lp-btn-icon dashicons dashicons-arrow-down-alt2"></a>
             </span>
         </div>
     </div>

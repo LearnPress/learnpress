@@ -12,7 +12,7 @@
      *
      * @param $scope
      */
-    window['learn-press.quiz.controller'] = function ($scope, $compile, $element, $timeout) {
+    window['learn-press.quiz.controller'] = function ($scope, $compile, $element, $timeout, $http) {
         $element = $($element);
         angular.extend($scope, {
             quizData: null,
@@ -73,6 +73,36 @@
                     }
                 }
                 return count;
+            },
+            saveAllQuestions: function () {
+                var $els = this.getElement('#learn-press-questions').children('.learn-press-question'),
+                    postData = {
+                        id: this.getScreenPostId('lp_quiz'),
+                        questions: {}
+                    };
+                _.forEach($els, function (el, i) {
+                    var ctrl = angular.element(el).scope(),
+                        data = ctrl.getFormData();
+                    postData.questions[ctrl.getId()] = data;
+                });
+                $http({
+                    method: 'post',
+                    url: this.getAjaxUrl('lp-ajax=ajax_update_quiz'),
+                    data: postData
+                }).then(function (response) {
+                });
+            },
+            cloneQuestion:function (event) {
+                var $question = $(event.target).closest('.learn-press-question'),
+                    $newQuestion = $question.clone();
+                $newQuestion.insertAfter($question);
+            },
+            toggleContent: function (event) {
+                var $btn = $(event.target).closest('.lp-btn-toggle').toggleClass('closed');
+
+                $btn.closest('.learn-press-box-data')
+                    .find('.learn-press-question')
+                    .toggleClass('closed', $btn.hasClass('closed'));
             }
         });
         $scope.init();

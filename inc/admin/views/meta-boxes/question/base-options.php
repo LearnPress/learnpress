@@ -22,8 +22,7 @@ $template_data       = array_merge(
 	$question->get_option_template_data()
 );
 $top_buttons         = array();
-$top_buttons['type'] = sprintf( '
-    <div class="lp-toolbar-btn lp-toolbar-btn-dropdown lp-btn-change-type">
+$top_buttons['type'] = sprintf( '<div class="lp-toolbar-btn lp-toolbar-btn-dropdown lp-btn-change-type">
         <a data-tooltip="%s" class="lp-btn-icon dashicons dashicons-editor-help"></a>
         %s
      </div>',
@@ -31,23 +30,27 @@ $top_buttons['type'] = sprintf( '
 	$dropdown
 );
 if ( LP_QUESTION_CPT != get_post_type() ) {
-	$top_buttons['edit'] = sprintf( '
-        <div class="lp-toolbar-btn" ng-class="{\'lp-btn-disabled\': !questionData.id}">
+	$top_buttons['edit'] = sprintf( '<div class="lp-toolbar-btn" ng-class="{\'lp-btn-disabled\': !questionData.id}">
             <a target="_blank" data-tooltip="%s" href="post.php?post={{questionData.id}}&action=edit" class="lp-btn-icon dashicons dashicons-admin-links learn-press-tooltip"></a>
         </div>',
 		esc_attr__( 'Edit question in new window', 'learnpress' )
 	);
+
+	$top_buttons['clone'] = sprintf( '<div class="lp-toolbar-btn" ng-class="{\'lp-btn-disabled\': !questionData.id}">
+            <a target="_blank" data-tooltip="%s" ng-click="cloneQuestion($event)" class="lp-btn-icon dashicons dashicons-admin-page learn-press-tooltip"></a>
+        </div>',
+		esc_attr__( 'Clone this question', 'learnpress' )
+	);
 }
-$top_buttons['remove'] = sprintf( '
-    <span class="lp-toolbar-btn lp-btn-toggle learn-press-tooltip" data-tooltip="%s" ng-click="toggleContent($event)" >
-        <a class="lp-btn-icon dashicons dashicons-arrow-up"></a>
-        <a class="lp-btn-icon dashicons dashicons-arrow-down"></a>
+
+$top_buttons['remove'] = sprintf( '<span class="lp-toolbar-btn lp-btn-toggle learn-press-tooltip" data-tooltip="%s" ng-click="toggleContent($event)" >
+        <a class="lp-btn-icon dashicons dashicons-arrow-up-alt2"></a>
+        <a class="lp-btn-icon dashicons dashicons-arrow-down-alt2"></a>
     </span>',
 	esc_attr__( 'Toggle question content', 'learnpress' )
 );
 
-$top_buttons['toggle'] = sprintf( '
-    <div class="lp-toolbar-btn lp-btn-remove lp-toolbar-btn-dropdown">
+$top_buttons['toggle'] = sprintf( '<div class="lp-toolbar-btn lp-btn-remove lp-toolbar-btn-dropdown">
         <a data-tooltip="%s" class="lp-btn-icon dashicons dashicons-trash learn-press-tooltip" ng-click="removeQuestion($event)"></a>
         <ul>
             <li><a class="learn-press-tooltip" data-tooltip="%s" ng-click="removeQuestion($event)" data-delete-permanently="yes">%s</a></li>
@@ -76,14 +79,14 @@ $top_buttons = array_filter( $top_buttons );
 		<?php if ( LP_QUESTION_CPT !== get_post_type() ) { ?>
             <input type="text" class="lp-question-heading-title"
                    value="<?php echo esc_attr( $template_data['title'] ); ?>"
+                   name="learn_press_question[<?php echo $template_data['id'];?>][title]"
                    autocomplete="off"
                    ng-keypress="onQuestionKeyEvent($event)"
                    ng-keyup="onQuestionKeyEvent($event)"
                    ng-keydown="onQuestionKeyEvent($event)"
-                   ng-change="update($event)" ng-bind="questionData.title" ng-model="questionData.title | trustAsHtml">
+                   ng-blur="onQuestionKeyEvent($event)">
 		<?php } ?>
     </div>
-    {{questionData.title | trustAsHtml}}
     <div class="lp-box-data-content">
         <table class="lp-sortable lp-list-options" id="learn-press-list-options-<?php echo $template_data['id']; ?>">
             <thead>
@@ -144,6 +147,7 @@ $top_buttons = array_filter( $top_buttons );
     </div>
     <input type="hidden" class="question-id" value="<?php echo $template_data['id']; ?>">
     <input type="hidden" class="question-type" value="<?php echo $template_data['type']; ?>">
+    <input type="hidden" name="question-nonce" value="<?php echo wp_create_nonce( 'question-nonce' ); ?>">
 
     <div class="hide-if-js element-data">
 		<?php $question->to_element_data(); ?>

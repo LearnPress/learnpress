@@ -192,6 +192,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 				'order_itemmeta',
 				'quiz_questions',
 				'question_answers',
+				'question_answermeta',
 				'review_logs'
 			);
 			foreach ( $tables as $short_name ) {

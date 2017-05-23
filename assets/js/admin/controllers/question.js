@@ -12,24 +12,31 @@
      *
      * @param $scope
      */
-    window['learn-press.question.controller'] = function ($scope, $compile, $element, $timeout) {
+    window['learn-press.question.controller'] = function ($scope, $compile, $element, $timeout, $http) {
         $element = $($element);
         angular.extend($scope, {
+            $element: $element,
+            noncePrefix: 'question-',
             questionData: {
                 title: 'Nodem is pul donor shit met',
                 id: 10,
                 type: ''
             },
             init: function () {
-                this.initData();
-                this.bindEvents();
-                this.addQuestionData();
-                this.addOption();
-                this.getListContainer().sortable({
-                    handle: '.lp-btn-move',
-                    axis: 'y'
+                $timeout(function () {
+                    $scope.initData();
+                    $scope.bindEvents();
+                    $scope.addQuestionData();
+                    //$scope.addOption();
+                    $scope.getListContainer().sortable({
+                        handle: '.lp-btn-move',
+                        axis: 'y'
+                    });
+                    $scope.tooltip($element);
                 });
-                this.tooltip($element);
+            },
+            getTitle: function () {
+                return $('<textarea />').html(this.questionData.title).text();
             },
             initData: function () {
                 try {
@@ -47,7 +54,11 @@
                     $element.removeClass('focused');
                 });
 
-                // $element.on('')
+                this.$doc.on('change update-me', '.abc-xyz', function (e) {
+                    $scope.getElement('.def-123').each(function () {
+                        $(this).toggleClass('abc-xyz', !this.checked).prev().toggleClass('abc-xyz', this.checked);
+                    })
+                });
             },
 
             onOptionKeyEvent: function (event) {
@@ -133,7 +144,7 @@
                     $option.find('.lp-answer-text').focus();
                     return;
                 }
-                var optionTemplate = angular.element($('#tmpl-question-' + this.questionData.type + '-option').html()),
+                var optionTemplate = angular.element($('#tmpl-question-' + $scope.questionData.type + '-option').html()),
                     $newOption = false;
                 args = $.extend({
                     position: -1
@@ -151,6 +162,8 @@
                     }
                     scope.tooltip(clonedElement)
                     clonedElement.find('.lp-answer-text').focus();
+                    console.log(clonedElement)
+
                     return clonedElement;
                 });
                 $timeout(function () {
@@ -176,7 +189,7 @@
                 _.forEach($options, function (el, i) {
                     var $option = $(el),
                         option = {};
-                    var json = $option.find('input, textarea, select').serializeJSON('learn_press_question[' + $scope.questionData.id + '].answer_options');
+                    var json = $option.find('input, textarea, select').serializeJSON(this.getFormInputPath() + '.answer_options');
                     for (var j in json) {
                         if (j == 'checked') {
                             option['is_true'] = 'yes';
@@ -186,7 +199,7 @@
                     }
                     option['answer_order'] = i;
                     options.push(option);
-                });
+                }, this);
                 this.questionData.answer_options = options;
             },
             openLink: function (event, type) {
@@ -208,9 +221,12 @@
                     data: {
                         'lp-ajax': 'ajax_add_question',
                         type: $element.find('.question-type').val(),
+                        title: $element.find('.lp-question-heading-title').val(),
                         order: order > 0 ? order + 1 : order,
                         quiz_id: this.getScreenQuizId(),
-                        context: 'quiz'
+                        context: 'quiz',
+                        nonce: this.getNonce(),
+                        extra_data: this.getFormData()
                     },
                     type: 'post',
                     success: function (response) {
@@ -221,11 +237,16 @@
                     }
                 })
             },
-            getElement: function () {
-                return $element;
-            },
             toggleContent: function (event) {
-                $(event.target).closest('.learn-press-box-data').toggleClass('closed');
+                var hidden = $(event.target).closest('.learn-press-box-data').toggleClass('closed').hasClass('closed');
+                $http({
+                    method: 'post',
+                    url: this.getAjaxUrl('lp-ajax=ajax_closed_question_box'),
+                    data:{
+                        hidden: hidden ? 'yes' : 'no',
+                        id: this.getId()
+                    }
+                }).then();
             },
             getScreenQuizId: function () {
                 return 'lp_quiz' === $('#post_type').val() ? parseInt($('#post_ID').val()) : 0;
@@ -260,7 +281,10 @@
                         }
 
                 }
-
+                if (eventType === 'blur') {
+                    this.questionData.title = event.target.value;
+                    this.update(event);
+                }
                 if (('keypress' === eventType || 'keydown' === eventType ) && event.keyCode === 13) {
                     event.preventDefault();
                 }
@@ -286,24 +310,34 @@
                 }
             },
             update: function (event) {
-                var data = $element.find('input, select, textarea').serializeJSON();
-                console.log(this.questionData.title);
+                var data = $element.find('input, select, textarea').serializeJSON(this.getFormInputPath() + '.answer_options');
+                console.log(data, this.questionData)
             },
             removeQuestion: function (event) {
-                var deletePermanently = $(event.target).data('delete-permanently') ? 'yes' : 'no';
+                var deletePermanently = $(event.target).data('delete-permanently') === 'yes';
+                $element.addClass('being-deleted');
                 $.ajax({
                     url: '',
+                    type: 'post',
                     data: {
                         'lp-ajax': 'ajax_delete_quiz_question',
                         quiz_id: this.getScreenQuizId(),
                         id: this.questionData.id,
-                        permanently: deletePermanently
+                        nonce: this.getNonce(),
+                        extra_data: $.extend(this.getFormData() || {}, {delete_permanently: deletePermanently})
                     },
                     success: function (response) {
-                        console.log(response)
+                        response = LP.parseJSON(response);
+                        if (response.result === 'success') {
+                            $element.remove();
+                        } else {
+                            $element.removeClass('being-deleted');
+                        }
+                        $scope.$apply();
+                        console.log('xxx')
                     }
                 });
-                $element.remove();
+                //
             },
             deletePermanently: function () {
                 this.removeQuestion({});
@@ -311,6 +345,25 @@
             elementClick: function () {
                 $('.tipsy').remove();
                 console.log()
+            },
+            getFormData: function () {
+                var formData = this.getElement('input, select, textarea').filter(':not(.abc-xyz)').serializeJSON(this.getFormInputPath()) || {},
+                    answerOptions = [];
+                formData.answer_options && _.forEach(formData.answer_options.text, function (text, i) {
+                    answerOptions.push({
+                        text: text,
+                        value: formData.answer_options.value[i],
+                        is_true: formData.answer_options.checked[i] ? 'yes' : 'no'
+                    });
+                }, this);
+                formData.answer_options = answerOptions;
+                return this.applyFilters('learn-press/question-form-data', formData);
+            },
+            getFormInputPath: function () {
+                return 'learn_press_question[' + this.questionData.id + ']';
+            },
+            isOptionChecked: function (event) {
+                console.log(event)
             }
         });
         $scope.init();

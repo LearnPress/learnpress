@@ -129,11 +129,13 @@ class LP_Quiz extends LP_Abstract_Course_Item {
 			", $id );
 			if ( $results = $wpdb->get_results( $query, OBJECT_K ) ) {
 				foreach ( $results as $k => $v ) {
-					wp_cache_set( $v->ID, $v );
+					wp_cache_set( $v->ID, $v, 'posts' );
 					$questions[ $v->ID ] = $v->ID;
 				}
 			}
 			wp_cache_set( 'questions-' . $id, $questions, 'lp-quizzes' );
+
+			//$this->_load_question_answers();
 		}
 	}
 
@@ -148,6 +150,108 @@ class LP_Quiz extends LP_Abstract_Course_Item {
 			$meta_ids[] = $this->get_id();
 		}
 		update_meta_cache( 'post', $meta_ids );
+	}
+
+	/**
+	 *
+	 */
+	protected function _load_question_answers() {
+		global $wpdb;
+
+		$questions = $this->get_questions();
+		$format    = array_fill( 0, sizeof( $questions ), '%d' );
+		$query     = $wpdb->prepare( "
+			SELECT *
+			FROM {$wpdb->prefix}learnpress_question_answers
+			WHERE question_id IN(" . join( ',', $format ) . ")
+			ORDER BY question_id, answer_order ASC
+		", $questions );
+		if ( $results = $wpdb->get_results( $query, OBJECT_K ) ) {
+			$answer_options = array();
+			$meta_ids       = array();
+			$group          = 0;
+			foreach ( $results as $k => $v ) {
+				if ( empty( $answer_options[ $v->question_id ] ) ) {
+					$answer_options[ $v->question_id ] = array();
+				}
+				$answer_options[ $v->question_id ][] = (array) $v;
+				$kk                                  = sizeof( $answer_options[ $v->question_id ] );
+
+				if ( $answer_data = maybe_unserialize( $v->answer_data ) ) {
+					foreach ( $answer_data as $data_key => $data_value ) {
+						$answer_options[ $v->question_id ][ $kk ][ $data_key ] = $data_value;
+					}
+				}
+				unset( $answer_options[ $v->question_id ][ $kk ]['answer_data'] );
+				if ( empty( $meta_ids[ $group ] ) ) {
+					$meta_ids[ $group ] = array();
+				}
+				$meta_ids[ $group ][] = $v->question_answer_id;
+				$group                = ceil( sizeof( $answer_options ) / 5 ) - 1;
+			}
+			foreach ( $answer_options as $question_id => $options ) {
+				wp_cache_set( 'answer-options-' . $question_id, $options, 'lp-questions' );
+			}
+
+			foreach ( $meta_ids as $meta_id ) {
+				$this->_load_question_answer_meta( $meta_id );
+			}
+
+			$this->_load_answer_option_meta( $answer_options );
+		}
+		//
+
+	}
+
+	protected function _load_question_answer_meta( $meta_ids ) {
+		global $wpdb;
+		$format = array_fill( 0, sizeof( $meta_ids ), '%d' );
+		$query  = $wpdb->prepare( "
+			SELECT *
+			FROM {$wpdb->learnpress_question_answermeta}
+			WHERE learnpress_question_answer_id IN(" . join( ',', $format ) . ")
+		", $meta_ids );
+		if($metas = $wpdb->get_results($query)) {
+			foreach ( $metas as $meta ) {
+				$key        = $meta->meta_key;
+				$option_key = $meta->learnpress_question_answer_id;
+				if ( ! empty( $answer_options[ $option_key ] ) ) {
+					if ( $key == 'checked' ) {
+						$key = 'is_true';
+					}
+					$answer_options[ $option_key ][ $key ] = $meta->meta_value;
+				}
+			}
+		}
+	}
+
+	/**
+	 * Reorder question by indexed number
+	 */
+	public function sanitize_question_orders() {
+		global $wpdb;
+		$query = $wpdb->prepare( "
+			SELECT quiz_question_id as id
+			FROM {$wpdb->prefix}learnpress_quiz_questions
+			WHERE quiz_id = %d
+			ORDER BY question_order ASC
+		", $this->get_id() );
+		if ( $rows = $wpdb->get_results( $query ) ) {
+			$update = array();
+			$ids    = wp_list_pluck( $rows, 'id' );
+			$format = array_fill( 0, sizeof( $ids ), '%d' );
+			foreach ( $rows as $order => $row ) {
+				$update[] = $wpdb->prepare( "WHEN quiz_question_id = %d THEN %d", $row->id, $order + 1 );
+			}
+			$query = $wpdb->prepare( "
+				UPDATE {$wpdb->prefix}learnpress_quiz_questions
+				SET question_order = CASE
+				" . join( "\n", $update ) . "
+				ELSE question_order END
+				WHERE quiz_question_id IN(" . join( ',', $format ) . ")
+			", $ids );
+			$wpdb->query( $query );
+		}
 	}
 
 	/**
@@ -170,6 +274,103 @@ class LP_Quiz extends LP_Abstract_Course_Item {
 
 		return $questions;
 	}
+
+	/**
+	 * Add existing question into quiz.
+	 *
+	 * @param       $question_id
+	 * @param array $args
+	 *
+	 * @return int|bool false on failed
+	 */
+	public function add_question( $question_id, $args = array() ) {
+		global $wpdb;
+		$id   = $this->get_id();
+		$args = wp_parse_args( $args, array( 'order' => - 1 ) );
+		$this->sanitize_question_orders();
+		if ( $args['order'] >= 0 ) {
+			$query = $wpdb->prepare( "
+				UPDATE {$wpdb->prefix}learnpress_quiz_questions
+				SET question_order = question_order + 1
+				WHERE quiz_id = %d AND question_order >= %d
+			", $id, $args['order'] );
+			$wpdb->get_results( $query );
+		} else {
+			$query = $wpdb->prepare( "
+				SELECT max(question_order) + 1 as ordering
+				FROM {$wpdb->prefix}learnpress_quiz_questions
+				WHERE quiz_id = %d
+			", $id );
+
+			$args['order'] = $wpdb->get_var( $query );
+		}
+		$inserted = $wpdb->insert(
+			$wpdb->prefix . 'learnpress_quiz_questions',
+			array(
+				'quiz_id'        => $this->get_id(),
+				'question_id'    => $question_id,
+				'question_order' => $args['order']
+			),
+			array( '%d', '%d', '%d' )
+		);
+
+		return $inserted ? $wpdb->insert_id : $inserted;
+	}
+
+	/**
+	 * Remove a question from list of questions
+	 *
+	 * @param int   $question_id ID of the question to remove
+	 * @param mixed $args        Extra options
+	 *
+	 * @return int|bool         false on failed
+	 */
+	public function remove_question( $question_id, $args = array() ) {
+		global $wpdb;
+		$id   = $this->get_id();
+		$args = wp_parse_args( $args, array( 'delete_permanently' => false ) );
+		do_action( 'learn-press/delete-quiz-question', $question_id, $id );
+		$deleted = $wpdb->delete(
+			$wpdb->prefix . 'learnpress_quiz_questions',
+			array(
+				'quiz_id'     => $id,
+				'question_id' => $question_id
+			),
+			array( '%d', '%d' )
+		);
+		$this->sanitize_question_orders();
+		do_action( 'learn-press/deleted-quiz-question', $question_id, $id, $deleted );
+
+		if ( $deleted && $args['delete_permanently'] ) {
+			LP_Question_Factory::delete_question( $question_id );
+		}
+
+		return $deleted;
+	}
+
+	/**
+	 * Update quiz questions.
+	 *
+	 * @param array $questions An array of questions need to update
+	 *
+	 * @return mixed
+	 */
+	public function update_questions( $questions ) {
+		if ( ! $questions ) {
+			return false;
+		}
+		foreach ( $questions as $question_id => $data ) {
+			$question = learn_press_get_question( $question_id );
+			if ( $question ) {
+				$question->set_data( $data );
+				$question->store();
+			}
+		}
+
+		return true;
+	}
+
+	/******/
 
 
 	protected function _init() {

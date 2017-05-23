@@ -76,8 +76,49 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			add_action( 'admin_init', array( __CLASS__, 'do_ajax' ), - 1000 );
 			do_action( 'learn_press_admin_ajax_load', __CLASS__ );
 
-			add_action( 'learn-press/ajax/ajax_add_question', array( __CLASS__, 'add_question' ) );
-			add_action( 'learn-press/ajax/ajax_delete_quiz_question', array( __CLASS__, 'delete_quiz_question' ) );
+			$ajax_events = array(
+				'add_question',
+				'delete_quiz_question',
+				'update_quiz',
+				'closed_question_box'
+			);
+			foreach ( $ajax_events as $ajax_event ) {
+				add_action( "learn-press/ajax/ajax_{$ajax_event}", array( __CLASS__, $ajax_event ) );
+				//add_action( 'learn-press/ajax/ajax_delete_quiz_question', array( __CLASS__, 'delete_quiz_question' ) );
+				//add_action( 'learn-press/ajax/ajax_update_quiz', array( __CLASS__, 'update_quiz' ) );
+			}
+
+		}
+
+		/**
+		 * Get content send via payload and parse to json.
+		 *
+		 * @param mixed $params (Optional) List of keys want to get from payload.
+		 *
+		 * @return array|bool|mixed|object
+		 */
+		public static function getPhpInput( $params = '' ) {
+			static $data = false;
+			if ( false === $data ) {
+				try {
+					$data = json_decode( file_get_contents( 'php://input' ), true );
+				}
+				catch ( Exception $exception ) {
+				}
+			}
+			if ( $data && func_num_args() > 0 ) {
+				$params = is_array( func_get_arg( 0 ) ) ? func_get_arg( 0 ) : func_get_args();
+				if ( $params ) {
+					$request = array();
+					foreach ( $params as $key ) {
+						$request[] = array_key_exists( $key, $data ) ? $data[ $key ] : false;
+					}
+
+					return $request;
+				}
+			}
+
+			return $data;
 		}
 
 		public static function do_ajax() {
@@ -85,18 +126,23 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				return;
 			}
 			do_action( 'learn-press/ajax/' . $_REQUEST['lp-ajax'] );
+			die();
 		}
 
 		/**
 		 * Ajax callback to add new question into quiz
 		 */
 		public static function add_question() {
-			$type        = learn_press_get_request( 'type' );
-			$order       = learn_press_get_request( 'order' );
-			$quiz_id     = learn_press_get_request( 'quiz_id' );
+			list( $type, $title, $order, $quiz_id ) = learn_press_get_request_args( array(
+				'type',
+				'title',
+				'order',
+				'quiz_id'
+			) );
 			$question_id = LP_Question_Factory::add_question(
 				array(
 					'type'    => $type,
+					'title'   => $title,
 					'quiz_id' => $quiz_id,
 					'order'   => $order
 				)
@@ -113,18 +159,75 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			learn_press_send_json( $response );
 		}
 
+		/**
+		 * Delete a question from quiz
+		 */
 		public static function delete_quiz_question() {
-			list( $quiz_id, $id, $delete_permanently, $ahihi ) = learn_press_get_request_args( array(
-				'quiz_id',
-				'id',
-				'permanently',
-				'ahihi'
-			) );
-			print_r( $quiz_id );
-			print_r( $id );
-			print_r( $delete_permanently );
-			print_r( $ahihi );
+			list( $quiz_id, $id, $nonce, $extra_data ) = learn_press_get_request_args(
+				array(
+					'quiz_id',
+					'id',
+					'nonce',
+					'extra_data'
+				)
+			);
+			global $wpdb;
+			$response = array( 'result' => 'success' );
+			if ( ! ( LP_QUIZ_CPT == get_post_type( $quiz_id ) && LP_QUESTION_CPT == get_post_type( $id ) ) || ! wp_verify_nonce( $nonce, 'question-nonce' ) ) {
+				$response['result']  = 'error';
+				$response['message'] = __( 'Bad request.', 'learnpress' );
+			} else {
+				$quiz = learn_press_get_quiz( $quiz_id );
+				if ( $quiz->remove_question( $id, $extra_data ) ) {
+					$response['message'] = __( 'Question deleted!', 'learnpress' );
+				} else {
+					$response['message'] = __( 'Delete question failed.', 'learnpress' );
+				}
+			}
+			learn_press_send_json( $response );
 		}
+
+		public static function update_quiz() {
+			global $wpdb;
+			$wpdb->queries = array();
+			learn_press_execute_time();
+			list( $id, $questions ) = self::getPhpInput( 'id', 'questions' );
+			$response = array( 'result' => 'success' );
+			if ( ! $quiz = learn_press_get_quiz( $id ) ) {
+				$response['result']  = 'error';
+				$response['message'] = __( 'Invalid quiz.', 'learnpress' );
+			} else {
+				$response['data'] = $quiz->update_questions( $questions );
+			}
+			$response['q'] = sizeof( $wpdb->queries );
+			learn_press_execute_time();
+			learn_press_send_json( $response );
+		}
+
+		public static function closed_question_box() {
+			list( $id, $hidden ) = self::getPhpInput( 'id', 'hidden' );
+			if ( LP_QUESTION_CPT !== get_post_type( $id ) ) {
+				return;
+			}
+			$data = learn_press_get_user_option( 'post-closed-box' );
+			if ( ! $data ) {
+				$data = array();
+			}
+			$index = array_search( $id, $data );
+			print_r($hidden);
+			if ( $hidden == 'yes' ) {
+				if ( false === $index ) {
+					$data[] = $id;
+				}
+			} else {
+				if ( false !== $index ) {
+					array_splice( $data, $index, 1 );
+				}
+			}
+			learn_press_update_user_option( 'post-closed-box', $data );
+		}
+
+		/*************/
 
 		public static function load_chart() {
 			if ( ! class_exists( '' ) ) {

@@ -12,6 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
+
 function learn_press_get_post() {
 	global $post;
 	$post_id = ! empty( $post ) ? $post->ID : 0;
@@ -1627,14 +1628,15 @@ function learn_press_get_request( $key, $default = null, $hash = null ) {
 }
 
 
-function learn_press_get_request_args($args = array()){
-    $request = array();
-    if($args){
-        foreach($args as $key){
-            $request[] = array_key_exists($key, $_REQUEST) ? $_REQUEST[$key] : false;
-        }
-    }
-    return $request;
+function learn_press_get_request_args( $args = array() ) {
+	$request = array();
+	if ( $args ) {
+		foreach ( $args as $key ) {
+			$request[] = array_key_exists( $key, $_REQUEST ) ? $_REQUEST[ $key ] : false;
+		}
+	}
+
+	return $request;
 }
 
 
@@ -2729,7 +2731,9 @@ function learn_press_debug_hidden() {
 }
 
 function learn_press_is_negative_value( $value ) {
-	return in_array( $value, array( 'no', 'off', 'false', '0', 0, ) ) || $value || $value == '';
+	$return = in_array( $value, array( 'no', 'off', 'false', '0' ) ) || ! $value || $value == '' || $value == null;
+
+	return $return;
 }
 
 # -------------------------------

@@ -1,6 +1,6 @@
 ;(function ($) {
     window.courseEditor = angular.module('courseEditor', []);
-    courseEditor.controller('courseEditor', ['$scope', '$controller', window['learn-press.base.controller']]);
+    courseEditor.controller('courseEditor', ['$scope', '$compile', '$element', '$timeout', window['learn-press.base.controller']]);
     courseEditor.filter('htmlentities_decode', function($sce){
         return function(input){
             if(input)

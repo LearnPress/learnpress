@@ -72,7 +72,7 @@ if (typeof window.LP == 'undefined') {
 			}
 		});
 		if(path){
-            eval( 'indexed = indexed.'+path);
+            eval( 'try{indexed = indexed.'+path+'}catch(ex){}');
         }
 		return indexed;
 	};

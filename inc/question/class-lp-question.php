@@ -48,6 +48,11 @@ class LP_Question extends LP_Abstract_Course_Item {
 	protected $_type = 'single_choice';
 
 	/**
+	 * @var array
+	 */
+	protected $_supports = array();
+
+	/**
 	 * Construct
 	 *
 	 * @param mixed
@@ -67,6 +72,9 @@ class LP_Question extends LP_Abstract_Course_Item {
 			$this->set_id( absint( $the_question->ID ) );
 		}
 
+		if ( in_array( $this->get_type(), learn_press_get_build_in_question_types() ) ) {
+			$this->add_support( 'answer_options' );
+		}
 		if ( $this->get_id() > 0 ) {
 			$this->load();
 		}
@@ -76,8 +84,8 @@ class LP_Question extends LP_Abstract_Course_Item {
 	}
 
 	/**
-     * Load data for question
-     *
+	 * Load data for question
+	 *
 	 * @throws Exception
 	 */
 	public function load() {
@@ -90,8 +98,8 @@ class LP_Question extends LP_Abstract_Course_Item {
 
 	/**
 	 * Load answer options for the question from database.
-     * Load from cache if data is already loaded into cache.
-     * Otherwise, load from database and put to cache.
+	 * Load from cache if data is already loaded into cache.
+	 * Otherwise, load from database and put to cache.
 	 */
 	protected function _load_answer_options() {
 		$id             = $this->get_id();
@@ -102,6 +110,7 @@ class LP_Question extends LP_Abstract_Course_Item {
 				SELECT *
 				FROM {$wpdb->prefix}learnpress_question_answers
 				WHERE question_id = %d
+				ORDER BY answer_order ASC
 			", $id );
 			if ( $answer_options = $wpdb->get_results( $query, OBJECT_K ) ) {
 				foreach ( $answer_options as $k => $v ) {
@@ -139,6 +148,9 @@ class LP_Question extends LP_Abstract_Course_Item {
 				$key        = $meta->meta_key;
 				$option_key = $meta->learnpress_question_answer_id;
 				if ( ! empty( $answer_options[ $option_key ] ) ) {
+					if ( $key == 'checked' ) {
+						$key = 'is_true';
+					}
 					$answer_options[ $option_key ][ $key ] = $meta->meta_value;
 				}
 			}
@@ -147,12 +159,156 @@ class LP_Question extends LP_Abstract_Course_Item {
 
 	/**
 	 * Get answer options of the question
-     *
-     * @return mixed
+	 *
+	 * @return mixed
 	 */
 	public function get_answer_options() {
-		return apply_filters('learn-press/question/answer-options', $this->get_data( 'answer_options' ), $this->get_id());
+		return apply_filters( 'learn-press/question/answer-options', $this->get_data( 'answer_options' ), $this->get_id() );
 	}
+
+	/**
+	 * Check if question is support feature.
+	 *
+	 * @param string $feature
+	 * @param string $type
+	 *
+	 * @return bool
+	 */
+	public function is_support( $feature, $type = '' ) {
+		$is_support = array_key_exists( $feature, $this->_supports ) ? true : false;
+		if ( $type && $is_support ) {
+			return $this->_supports[ $feature ] === $type;
+		}
+
+		return $is_support;
+	}
+
+	/**
+	 * Add a feature that question is supported
+	 *
+	 * @param        $feature
+	 * @param string $type
+	 */
+	public function add_support( $feature, $type = 'yes' ) {
+		$this->_supports[ $feature ] = $type === null ? 'yes' : $type;
+	}
+
+	/**
+	 * Store question and it's related data into database.
+	 *
+	 * @return mixed
+	 */
+	public function store() {
+		global $wpdb;
+		$id        = absint( $this->get_id() );
+		$is_update = $id > 0;
+		$post_data = array(
+			'post_title' => $this->get_data( 'title' ),
+			'post_type'  => LP_QUESTION_CPT,
+			'ID'         => $id
+		);
+		if ( $is_update ) {
+			$updated = wp_update_post( $post_data, true );
+		} else {
+			$updated = wp_insert_post( $post_data, true );
+		}
+		if ( is_numeric( $updated ) && $this->is_support( 'answer_options' ) ) {
+			$this->empty_answers();
+			if ( $answer_options = $this->get_data( 'answer_options' ) ) {
+				$question_order = 1;
+				$query          = "INSERT INTO {$wpdb->prefix}learnpress_question_answers(`question_id`, `answer_order`) VALUES";
+				foreach ( $answer_options as $answer_option ) {
+					if ( empty( $answer_option['text'] ) ) {
+						if ( apply_filters( 'learn-press/question/ignore-insert-empty-answer-option', true, $answer_option, $id ) ) {
+							continue;
+						}
+					}
+					$qry = $query . $wpdb->prepare( "(%d, %d)", $id, $question_order ++ );
+					do_action( 'learn-press/question/insert-answer-option', $id, $answer_option );
+					if ( $wpdb->query( $qry ) ) {
+						$inserted_id = $wpdb->insert_id;
+						learn_press_update_question_answer_meta( $inserted_id, 'text', $answer_option['text'] );
+						learn_press_update_question_answer_meta( $inserted_id, 'value', $answer_option['value'] );
+						if ( ! empty( $answer_option['is_true'] ) && ! learn_press_is_negative_value( $answer_option['is_true'] ) ) {
+							learn_press_update_question_answer_meta( $inserted_id, 'checked', 'yes' );
+						}
+						do_action( 'learn-press/question/inserted-answer-option', $inserted_id, $id, $answer_option );
+					}
+				}
+			}
+		}
+
+		return $updated;
+	}
+
+	/**
+	 * Remove all answers to prepare for inserting new
+	 */
+	public function empty_answers() {
+		global $wpdb;
+		$id         = absint( $this->get_id() );
+		$table_meta = $wpdb->learnpress_question_answermeta;
+		$table_main = $wpdb->learnpress_question_answers;
+		$query      = $wpdb->prepare( "
+			DELETE FROM t1, t2
+			USING {$table_main} AS t1 INNER JOIN {$table_meta} AS t2 ON t1.question_answer_id = t2.learnpress_question_answer_id
+			WHERE t1.question_id = %d
+		", $id );
+
+		// deprecated
+		do_action( 'learn_press_before_delete_question_answers', $id );
+
+		do_action( 'learn-press/question/delete-answers', $id );
+		if ( $wpdb->query( $query ) ) {
+			do_action( 'learn-press/question/deleted-answers', $id );
+		}
+		// deprecated
+		do_action( 'learn_press_delete_question_answers', $id );
+	}
+
+	/**
+	 * Prints the content of a question in admin mode
+	 * This function should be overridden from extends class
+	 *
+	 * @param array $args
+	 *
+	 * @return string
+	 */
+	public function admin_interface( $args = array() ) {
+		$question = $this;
+		ob_start();
+
+		//do_action( 'learn-press/admin-question/before-interface', $args, $this->get_id() );
+
+		if ( $header_view = apply_filters( 'learn-press/admin-question/header-interface-html', learn_press_get_admin_view( 'meta-boxes/question/header' ), $args, $this->get_id() ) ) {
+			include "{$header_view}";
+		}
+
+		if ( in_array( $this->get_type(), array( 'none', '' ) ) ) {
+			printf( '<p class="lp-question-unknown-type-msg">%s</p>', __( 'Question type is unknown. Please specific a type.', 'learnpress' ) );
+		} else {
+			if ( $this->is_support( 'answer_options' ) && $question_view = apply_filters( 'learn-press/admin-question/interface-html', learn_press_get_admin_view( 'meta-boxes/question/answer-options' ), $args, $this->get_id() ) ) {
+				include "{$question_view}";
+			}
+		}
+
+		if ( $footer_view = apply_filters( 'learn-press/admin-question/footer-interface-html', learn_press_get_admin_view( 'meta-boxes/question/footer' ), $args, $this->get_id() ) ) {
+			include "{$footer_view}";
+		}
+		//do_action( 'learn-press/admin-question/after-interface', $args, $this->get_id() );
+
+		$output = ob_get_clean();
+
+		if ( ! isset( $args['echo'] ) || ( isset( $args['echo'] ) && $args['echo'] === true ) ) {
+			echo $output;
+		}
+
+		return $output;
+	}
+
+
+
+	//////////////////////////////
 
 	public function __get( $key ) {
 		if ( ! isset( $this->{$key} ) ) {
@@ -174,8 +330,8 @@ class LP_Question extends LP_Abstract_Course_Item {
 	}
 
 	/**
-     * Get question title
-     *
+	 * Get question title
+	 *
 	 * @return string
 	 */
 	public function get_title() {
@@ -183,14 +339,14 @@ class LP_Question extends LP_Abstract_Course_Item {
 	}
 
 	/**
-     * Get question content
-     *
+	 * Get question content
+	 *
 	 * @return string
 	 */
 	public function get_content() {
 		if ( ! did_action( 'learn_press_get_content_' . $this->id ) ) {
 			global $post, $wp_query;
-			$post = get_post( $this->id );
+			$post  = get_post( $this->id );
 			$posts = apply_filters_ref_array( 'the_posts', array( array( $post ), &$wp_query ) );
 
 			if ( $posts ) {
@@ -211,23 +367,6 @@ class LP_Question extends LP_Abstract_Course_Item {
 		add_filter( 'learn_press_question_answers', array( $this, '_get_default_answers' ), 10, 2 );
 	}
 
-
-
-	/**
-	 * Remove all answers to prepare for inserting new
-	 */
-	public function empty_answers() {
-		global $wpdb;
-		$query = $wpdb->prepare( "
-			DELETE FROM {$wpdb->learnpress_question_answers}
-			WHERE question_id = %d
-		", $this->id );
-		do_action( 'learn_press_before_delete_question_answers', $this->id );
-		$wpdb->query( $query );
-		do_action( 'learn_press_delete_question_answers', $this->id );
-
-		learn_press_reset_auto_increment( 'learnpress_question_answers' );
-	}
 
 	public function _get_default_answers( $answers = false, $q = null ) {
 		if ( ! $answers && ( $q && $q->id == $this->id ) ) {
@@ -319,6 +458,7 @@ class LP_Question extends LP_Abstract_Course_Item {
 		if ( ! $value ) {
 			$value = uniqid();
 		}
+
 		return $value;
 	}
 
@@ -368,43 +508,6 @@ class LP_Question extends LP_Abstract_Course_Item {
 		return $this->_type;
 	}
 
-	/**
-	 * Prints the header of a question in admin mode
-	 * should call this function before in the top of admin_interface in extends class
-	 *
-	 * @param array $args
-	 *
-	 * @reutrn void
-	 */
-	public function admin_interface_head( $args = array() ) {
-		$view = learn_press_get_admin_view( 'meta-boxes/question/header.php' );
-		include $view;
-	}
-
-	/**
-	 * Prints the header of a question in admin mode
-	 * should call this function before in the bottom of admin_interface in extends class
-	 *
-	 * @param array $args
-	 *
-	 * @return void
-	 */
-	public function admin_interface_foot( $args = array() ) {
-		$view = learn_press_get_admin_view( 'meta-boxes/question/footer.php' );
-		include $view;
-	}
-
-	/**
-	 * Prints the content of a question in admin mode
-	 * This function should be overridden from extends class
-	 *
-	 * @param array $args
-	 *
-	 * @return void
-	 */
-	public function admin_interface( $args = array() ) {
-		printf( __( 'Function %s should override from its child', 'learnpress' ), __FUNCTION__ );
-	}
 
 	/**
 	 * Prints the question in frontend user
@@ -493,52 +596,6 @@ class LP_Question extends LP_Abstract_Course_Item {
 	 * Save question data on POST action
 	 */
 	public function save_post_action() {
-	}
-
-	/**
-	 * Store question data
-	 */
-	public function store() {
-		$post_id = $this->id;
-		$is_new  = false;
-		if ( $post_id ) {
-			$post_id = wp_update_post(
-				array(
-					'ID'          => $post_id,
-					'post_title'  => $this->get( 'post_title' ),
-					'post_type'   => LP_QUESTION_CPT,
-					'post_status' => 'publish'
-
-				)
-			);
-		} else {
-			$post_id = wp_insert_post(
-				array(
-					'post_title'  => $this->get( 'post_title' ),
-					'post_type'   => LP_QUESTION_CPT,
-					'post_status' => 'publish'
-				)
-			);
-			$is_new  = true;
-		}
-		learn_press_debug( $_POST );
-		if ( $post_id ) {
-			$options         = $this->get( 'options' );
-			$options['type'] = $this->get_type();
-
-			$this->set( 'options', $options );
-
-			update_post_meta( $post_id, '_lpr_question', $this->get( 'options' ) );
-
-			// update default mark
-			if ( $is_new ) {
-				update_post_meta( $post_id, '_lpr_question_mark', 1 );
-			}
-
-			$this->ID = $post_id;
-		}
-
-		return $post_id;
 	}
 
 	public function get_icon() {

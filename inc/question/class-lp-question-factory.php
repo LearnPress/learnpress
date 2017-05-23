@@ -91,6 +91,31 @@ class LP_Question_Factory {
 		return $the_id;
 	}
 
+	/**
+	 * Delete a question from database and it's related data.
+	 *
+	 * @param int $question_id
+	 *
+	 * @return int|bool false on failed
+	 */
+	public static function delete_question( $question_id ) {
+		global $wpdb;
+		if ( LP_QUESTION_CPT === get_post_type( $question_id ) ) {
+			// remove question answers
+			if ( $wpdb->delete( $wpdb->prefix . 'learnpress_question_answers', array( 'question_id' => $question_id ), array( '%d' ) ) ) {
+				if ( $wpdb->delete( $wpdb->prefix . 'learnpress_quiz_questions', array( 'question_id' => $question_id ), array( '%d' ) ) ) {
+					$deleted = wp_delete_post( $question_id );
+
+					return $deleted;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	////////////////////////////
+
 	public static function init() {
 
 		if ( is_admin() ) {
@@ -112,18 +137,6 @@ class LP_Question_Factory {
 		do_action( 'learn_press_question_factory_init', __CLASS__ );
 	}
 
-
-	public static function delete_question( $post_id, $force = false ) {
-		global $wpdb;
-		if ( 'lp_question' === get_post_type( $post_id ) ) {
-			// remove question answears
-			$sql = 'DELETE FROM `' . $wpdb->prefix . 'learnpress_question_answers` WHERE `question_id` = ' . $post_id;
-			$wpdb->query( $sql );
-			// remove question in quiz
-			$sql = 'DELETE FROM `' . $wpdb->prefix . 'learnpress_quiz_questions` WHERE `question_id` = ' . $post_id;
-			$wpdb->query( $sql );
-		}
-	}
 
 	public static function show_answer( $id, $quiz_id ) {
 
@@ -400,45 +413,21 @@ class LP_Question_Factory {
 				'quiz_id' => 0,
 				'order'   => - 1,
 				'status'  => 'publish',
-				'type'    => ''
+				'type'    => '',
+				'title'   => __( 'Untitled question', 'learnpress' )
 			)
 		);
 		$question_id = wp_insert_post(
 			array(
 				'post_type'   => LP_QUESTION_CPT,
-				'post_status' => $args['status']
+				'post_status' => $args['status'],
+				'post_title'  => $args['title']
 			)
 		);
 		if ( $question_id ) {
-
-			/**
-			 * If quiz id is passed and valid
-			 */
-			if ( $args['quiz_id'] && LP_QUIZ_CPT == get_post_type( $args['quiz_id'] ) ) {
-				if ( $args['order'] >= 0 ) {
-					$query = $wpdb->prepare( "
-						UPDATE {$wpdb->prefix}learnpress_quiz_questions
-						SET question_order = question_order + 1
-						WHERE quiz_id = %d AND question_order >= %d
-					", $args['quiz_id'], $args['order'] );
-					$wpdb->get_results( $query );
-				} else {
-					$query         = $wpdb->prepare( "
-						SELECT max(question_order) + 1 as ordering
-						FROM {$wpdb->prefix}learnpress_quiz_questions
-						WHERE quiz_id = %d
-					", $args['quiz_id'] );
-					$args['order'] = $wpdb->get_var( $query );
-				}
-				$wpdb->insert(
-					$wpdb->prefix . 'learnpress_quiz_questions',
-					array(
-						'quiz_id'        => $args['quiz_id'],
-						'question_id'    => $question_id,
-						'question_order' => $args['order']
-					),
-					array( '%d', '%d', '%d' )
-				);
+			if ( ! empty( $args['quiz_id'] ) ) {
+				$quiz = learn_press_get_quiz( $args['quiz_id'] );
+				$quiz->add_question( $question_id, $args );
 			}
 			update_post_meta( $question_id, '_lp_type', $args['type'] );
 		}

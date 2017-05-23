@@ -29,6 +29,27 @@ function learn_press_get_question( $the_question ) {
 	return LP_Question_Factory::get_question( $the_question );
 }
 
+function learn_press_get_build_in_question_types() {
+	return array( 'true_or_false', 'single_choice', 'multi_choice' );
+}
+
+function learn_press_add_question_answer_meta( $item_id, $meta_key, $meta_value, $prev_value = '' ) {
+	return add_metadata( 'learnpress_question_answer', $item_id, $meta_key, $meta_value, $prev_value );
+}
+
+function learn_press_update_question_answer_meta( $item_id, $meta_key, $meta_value, $prev_value = '' ) {
+	return update_metadata( 'learnpress_question_answer', $item_id, $meta_key, $meta_value, $prev_value );
+}
+
+function learn_press_delete_question_answer_meta( $item_id, $meta_key, $meta_value, $delete_all = false ) {
+	return delete_metadata( 'learnpress_question_answer', $item_id, $meta_key, $meta_value, $delete_all );
+}
+
+function learn_press_get_question_answer_meta( $item_id, $meta_key, $single = true ) {
+	return get_metadata( 'learnpress_question_answer', $item_id, $meta_key, $single );
+}
+
+
 /**
  * Get all questions of a quiz
  *

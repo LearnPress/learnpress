@@ -147,27 +147,7 @@ class LP_Question_Single_Choice extends LP_Question {
 	}
 
 	public function admin_interface( $args = array() ) {
-
-		ob_start();
-		learn_press_admin_view( 'meta-boxes/question/base-options.php', array( 'question' => $this ) );
-		$output = ob_get_clean();
-
-		if ( ! isset( $args['echo'] ) || ( isset( $args['echo'] ) && $args['echo'] === true ) ) {
-			echo $output;
-		}
-
-		return $output;
-
-		ob_start();
-		$view = learn_press_get_admin_view( 'meta-boxes/question/single-choice-options.php' );
-		include $view;
-		$output = ob_get_clean();
-
-		if ( ! isset( $args['echo'] ) || ( isset( $args['echo'] ) && $args['echo'] === true ) ) {
-			echo $output;
-		}
-
-		return $output;
+		return parent::admin_interface($args);
 	}
 
 	public function save_post_action() {

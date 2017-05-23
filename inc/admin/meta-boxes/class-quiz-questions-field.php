@@ -10,6 +10,8 @@ defined( 'ABSPATH' ) || exit;
  * @version 1.0
  * @extend  RWMB_Field
  */
+
+return;
 if ( !class_exists( 'RWMB_Quiz_Questions_Field' ) ) {
 
 	class RWMB_Quiz_Questions_Field extends RWMB_Field {
