@@ -28,6 +28,14 @@ $remove-icon-color: #d05d5d;
     animation: $args;
 }
 
+@mixin transform($args...) {
+    -webkit-transform: $args;
+    -moz-transform: $args;
+    -ms-transform: $args;
+    -o-transform: $args;
+    transform: $args;
+}
+
 /**
  * Styles for displaying list of table
  */
@@ -80,16 +88,16 @@ $remove-icon-color: #d05d5d;
         }
         &.lp-btn-toggle {
             .dashicons-arrow-down,
-            .dashicons-arrow-down-alt2{
+            .dashicons-arrow-down-alt2 {
                 display: none;
             }
             &.closed {
                 .dashicons-arrow-up,
-                .dashicons-arrow-up-alt2{
+                .dashicons-arrow-up-alt2 {
                     display: none;
                 }
                 .dashicons-arrow-down,
-                .dashicons-arrow-down-alt2{
+                .dashicons-arrow-down-alt2 {
                     display: inline-block;
                 }
             }
@@ -203,11 +211,11 @@ $remove-icon-color: #d05d5d;
     &.closed {
         .lp-btn-toggle {
             .dashicons-arrow-up,
-            .dashicons-arrow-up-alt2{
+            .dashicons-arrow-up-alt2 {
                 display: none;
             }
             .dashicons-arrow-down,
-            .dashicons-arrow-down-alt2{
+            .dashicons-arrow-down-alt2 {
                 display: inline-block;
             }
         }
@@ -259,8 +267,12 @@ $remove-icon-color: #d05d5d;
                 }
             }
             &:hover {
-                .lp-toolbar-btn {
-                    visibility: visible;
+                td {
+                    &.lp-toolbar-buttons {
+                        .lp-toolbar-btn {
+                            visibility: visible;
+                        }
+                    }
                 }
             }
         }
@@ -307,7 +319,7 @@ $remove-icon-color: #d05d5d;
     }
 }
 
-.lp-animation{
+.lp-animation {
     @include animation(spin 4s linear infinite);
 }
 

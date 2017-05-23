@@ -91,7 +91,11 @@ class LP_Question extends LP_Abstract_Course_Item {
 	public function load() {
 		$the_id = $this->get_id();
 		if ( ! $the_id || LP_QUESTION_CPT !== get_post_type( $the_id ) ) {
-			throw new Exception( __( 'Invalid question.', 'learnpress' ) );
+			if ( learn_press_is_debug() ) {
+				throw new Exception( sprintf( __( 'Invalid question with ID "%d".', 'learnpress' ), $the_id ) );
+			}
+
+			return;
 		}
 		$this->_load_answer_options();
 	}
@@ -285,7 +289,7 @@ class LP_Question extends LP_Abstract_Course_Item {
 		}
 
 		if ( in_array( $this->get_type(), array( 'none', '' ) ) ) {
-			printf( '<p class="lp-question-unknown-type-msg">%s</p>', __( 'Question type is unknown. Please specific a type.', 'learnpress' ) );
+			printf( '<p class="lp-question-unknown-type-msg" ng-show="$.inArray(questionData.type, [\'none\', \'\']) > -1">%s</p>', __( 'Question type is unknown. Please specific a type.', 'learnpress' ) );
 		} else {
 			if ( $this->is_support( 'answer_options' ) && $question_view = apply_filters( 'learn-press/admin-question/interface-html', learn_press_get_admin_view( 'meta-boxes/question/answer-options' ), $args, $this->get_id() ) ) {
 				include "{$question_view}";
@@ -306,6 +310,43 @@ class LP_Question extends LP_Abstract_Course_Item {
 		return $output;
 	}
 
+	/**
+	 * Update ordering of question answers
+	 *
+	 * @param array $orders List of answers
+	 */
+	public function update_answer_orders( $orders ) {
+		global $wpdb;
+		$query = $wpdb->prepare( "
+		    SELECT qa.question_answer_id, qam2.meta_value as `name`, qam.meta_value as `value`
+            FROM wp_learnpress_question_answers qa
+            INNER JOIN wp_learnpress_question_answermeta qam ON qa.question_answer_id = qam.learnpress_question_answer_id AND qam.meta_key = %s
+            INNER JOIN wp_learnpress_question_answermeta qam2 ON qa.question_answer_id = qam2.learnpress_question_answer_id AND qam2.meta_key = %s
+            WHERE qa.question_id = %d
+            ORDER BY answer_order
+		", 'value', 'text', $this->get_id() );
+		if ( $answers = $wpdb->get_results( $query ) ) {
+			$query = "
+                UPDATE {$wpdb->learnpress_question_answers} 
+                SET answer_order = CASE
+            ";
+			for ( $order = 0, $n = sizeof( $orders ); $order < $n; $order ++ ) {
+				$found_answer = false;
+				foreach ( $answers as $answer ) {
+					if ( $answer->value == $orders[ $order ]['value'] && $answer->name == $orders[ $order ]['text'] ) {
+						$found_answer = $answer;
+						break;
+					}
+				}
+				if ( $found_answer === false ) {
+					continue;
+				}
+				$query .= $wpdb->prepare( "WHEN question_answer_id = %d THEN %d", $found_answer->question_answer_id, $order + 1 ) . "\n";
+			}
+			$query .= sprintf( "ELSE answer_order END WHERE question_id = %d", $this->get_id() );
+			$wpdb->query( $query );
+		}
+	}
 
 
 	//////////////////////////////

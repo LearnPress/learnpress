@@ -15,17 +15,38 @@
     window['learn-press.quiz.controller'] = function ($scope, $compile, $element, $timeout, $http) {
         $element = $($element);
         angular.extend($scope, {
-            quizData: null,
+            data: null,
             init: function () {
-                console.log('Quiz init');
+                if ($element.attr('ng-controller') !== 'quiz') {
+                    return;
+                }
                 $(document).on('learn-press/add-new-question', function (event, $questionScope) {
                     var $question = $questionScope.getElement(),
                         position = $scope.getListContainer().children().index($question) + 1;
                     $scope.addQuestion(event, {position: position});
-                    console.log(position)
                 });
                 this.initData();
                 $element.find('.lp-count-questions').removeClass('hide-if-js');
+                $scope.getListContainer().sortable({
+                    handle: '.lp-btn-move',
+                    axis: 'y',
+                    update: function () {
+                        $scope.updateQuestionOrders.apply($scope);
+                    }
+                });
+            },
+            updateQuestionOrders: function(){
+                var postData = {id: $scope.getScreenPostId(), questions: []};
+                $element.find('.learn-press-question').each(function (i, el) {
+                    var ctrl = angular.element(el).scope();
+                    postData.questions.push(ctrl.getId());
+                });
+                $http({
+                    method: 'post',
+                    url: $scope.getAjaxUrl('lp-ajax=ajax_update_quiz_question_orders'),
+                    data: postData
+                }).then(function (response) {
+                });
             },
             addQuestion: function (event, args) {
                 var
@@ -50,12 +71,13 @@
                 $newQuestion.find('.question-id').val(LP.uniqueId('fake-'));
                 $newQuestion.find('.question-type').val(type);
                 $compile($newQuestion)($scope);
+                $newQuestion.toggleClass('closed', this.data.closed)
                 $newQuestion.find('.lp-question-heading-title').focus();
 
             },
             initData: function () {
                 try {
-                    this.quizData = JSON.parse($($element).find('.quiz-element-data').html());
+                    this.data = JSON.parse($($element).find('.quiz-element-data').html());
                 } catch (ex) {
                     console.log(ex)
                 }
@@ -82,7 +104,7 @@
                     };
                 _.forEach($els, function (el, i) {
                     var ctrl = angular.element(el).scope(),
-                        data = ctrl.getFormData();
+                        data = ctrl.getFormData({order: i + 1});
                     postData.questions[ctrl.getId()] = data;
                 });
                 $http({
@@ -92,17 +114,29 @@
                 }).then(function (response) {
                 });
             },
-            cloneQuestion:function (event) {
+            cloneQuestion: function (event) {
                 var $question = $(event.target).closest('.learn-press-question'),
                     $newQuestion = $question.clone();
                 $newQuestion.insertAfter($question);
             },
             toggleContent: function (event) {
-                var $btn = $(event.target).closest('.lp-btn-toggle').toggleClass('closed');
+                var $btn = $(event.target).closest('.lp-btn-toggle').toggleClass('closed'),
+                    closed = $btn.hasClass('closed'),
+                    postData = {hidden: {}};
 
                 $btn.closest('.learn-press-box-data')
                     .find('.learn-press-question')
-                    .toggleClass('closed', $btn.hasClass('closed'));
+                    .toggleClass('closed', closed)
+                    .map(function () {
+                        postData.hidden[$(this).data('id')] = closed ? 'yes' : 'no'
+                    });
+                postData.hidden[this.getScreenPostId()] = closed ? 'yes' : 'no';
+                $http({
+                    method: 'post',
+                    url: this.getAjaxUrl('lp-ajax=ajax_closed_question_box'),
+                    data: postData
+                }).then(/* Todo: anything here after ajax is completed */function (response) {
+                });
             }
         });
         $scope.init();

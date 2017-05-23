@@ -1,8 +1,9 @@
 <?php
 global $post;
-$quiz = learn_press_get_quiz( $post );
+$quiz        = learn_press_get_quiz( $post );
+$box_classes = array( 'learn-press-box-data' );
 ?>
-<div id="learn-press-quiz-questions" class="learn-press-box-data" ng-controller="quiz">
+<div id="learn-press-quiz-questions" class="<?php echo join( ' ', $box_classes ); ?>" ng-controller="quiz">
     <div class="lp-box-data-head">
             <span class="lp-count-questions hide-if-js">{{countQuestion('<?php esc_attr_e( '%d question', 'learnpress' ); ?>
                 ', '<?php esc_attr_e( '%d questions', 'learnpress' ); ?>')}}</span>
@@ -10,8 +11,9 @@ $quiz = learn_press_get_quiz( $post );
             <span class="lp-toolbar-btn" ng-click="saveAllQuestions($event)">
                 <a class="lp-btn-icon dashicons dashicons-location"></a>
             </span><!--
-            --><span class="lp-toolbar-btn lp-btn-toggle learn-press-tooltip closed" data-tooltip="<?php esc_attr_e('Save all', 'learnpress');?>"
-                  ng-click="toggleContent($event)">
+            --><span class="lp-toolbar-btn lp-btn-toggle learn-press-tooltip<?php echo learn_press_is_hidden_post_box( $quiz->get_id() ) ? ' closed' : '';?>"
+                     data-tooltip="<?php esc_attr_e( 'Save all', 'learnpress' ); ?>"
+                     ng-click="toggleContent($event)">
                 <a class="lp-btn-icon dashicons dashicons-arrow-up-alt2"></a>
                 <a class="lp-btn-icon dashicons dashicons-arrow-down-alt2"></a>
             </span>
@@ -47,9 +49,6 @@ $quiz = learn_press_get_quiz( $post );
         </div>
     </div>
     <script type="text/html" class="quiz-element-data">
-		<?php echo json_encode( array( 'id' => $post->ID ) ); ?>
+		<?php echo json_encode( $quiz->get_admin_config() ); ?>
     </script>
 </div>
-<script type="text/javascript">
-    var quizQuestions = <?php echo json_encode( $questions );?>;
-</script>

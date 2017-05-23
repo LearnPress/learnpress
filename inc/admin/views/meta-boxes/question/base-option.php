@@ -60,7 +60,8 @@ $template_data = array_merge(
 					?>
                     <input type="hidden"
                            name="learn_press_question[<?php echo $template_data['id']; ?>][answer_options][value][]"
-                           value="<?php echo $template_data['answer_option']['value']; ?>"/>
+                           value="<?php echo $template_data['answer_option']['value']; ?>"
+                           class="lp-answer-value"/>
                     <input type="hidden"
                            name="learn_press_question[<?php echo $template_data['id']; ?>][answer_options][checked][]"
                            value=""

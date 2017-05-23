@@ -90,7 +90,7 @@ class LP_Abstract_Object {
 	/**
 	 * @return bool
 	 */
-	public function get_no_cache(){
+	public function get_no_cache() {
 		return $this->_no_cache;
 	}
 }

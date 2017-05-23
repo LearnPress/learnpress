@@ -12,6 +12,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
+/**
+ * Return TRUE if defined WP_DEBUG and is true or 1.
+ *
+ * @return bool
+ */
+function learn_press_is_debug(){
+    return defined('WP_DEBUG') && WP_DEBUG;
+}
 
 function learn_press_get_post() {
 	global $post;

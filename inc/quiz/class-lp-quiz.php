@@ -153,6 +153,48 @@ class LP_Quiz extends LP_Abstract_Course_Item {
 	}
 
 	/**
+	 * Sort questions by order.
+	 * Check in an array of questions if there is a key 'order'.
+	 *
+	 * @param $questions
+	 *
+	 * @return mixed
+	 */
+	protected function _maybe_sort_questions( &$questions ) {
+		if ( ! $questions ) {
+			return $questions;
+		}
+		$first = reset( $questions );
+		if ( empty( $first['order'] ) ) {
+			return $questions;
+		}
+
+		uasort( $questions, array( $this, 'callback_sort_questions' ) );
+
+		return $questions;
+	}
+
+	public function callback_sort_questions( $a, $b ) {
+		return $a['order'] > $b['order'];
+	}
+
+	/**
+	 * Get admin configuration.
+	 *
+	 * @return array
+	 */
+	public function get_admin_config() {
+		$id     = $this->get_id();
+		$config = array(
+			'id'        => $id,
+			'questions' => $this->get_questions(),
+			'closed'    => learn_press_is_hidden_post_box( $id )
+		);
+
+		return apply_filters( 'learn-press/quiz/admin-config', $config, $id );
+	}
+
+	/**
 	 *
 	 */
 	protected function _load_question_answers() {
@@ -211,7 +253,7 @@ class LP_Quiz extends LP_Abstract_Course_Item {
 			FROM {$wpdb->learnpress_question_answermeta}
 			WHERE learnpress_question_answer_id IN(" . join( ',', $format ) . ")
 		", $meta_ids );
-		if($metas = $wpdb->get_results($query)) {
+		if ( $metas = $wpdb->get_results( $query ) ) {
 			foreach ( $metas as $meta ) {
 				$key        = $meta->meta_key;
 				$option_key = $meta->learnpress_question_answer_id;
@@ -351,7 +393,7 @@ class LP_Quiz extends LP_Abstract_Course_Item {
 	/**
 	 * Update quiz questions.
 	 *
-	 * @param array $questions An array of questions need to update
+	 * @param array $questions An array of questions need to update.
 	 *
 	 * @return mixed
 	 */
@@ -359,15 +401,39 @@ class LP_Quiz extends LP_Abstract_Course_Item {
 		if ( ! $questions ) {
 			return false;
 		}
+		$this->_maybe_sort_questions( $questions );
+		$orders = array();
 		foreach ( $questions as $question_id => $data ) {
 			$question = learn_press_get_question( $question_id );
 			if ( $question ) {
 				$question->set_data( $data );
-				$question->store();
+				if ( $question_id = $question->store() ) {
+					$orders[] = $question_id;
+				}
 			}
 		}
 
+		$this->update_questions_orders( $orders );
+
 		return true;
+	}
+
+	/**
+	 * Reorder questions ordering.
+	 *
+	 * @param array $ids The array of question ids
+	 */
+	public function update_questions_orders( $ids ) {
+		global $wpdb;
+		$query = "
+			UPDATE {$wpdb->learnpress_quiz_questions} 
+			SET question_order = CASE
+		";
+		for ( $order = 0, $n = sizeof( $ids ); $order < $n; $order ++ ) {
+			$query .= $wpdb->prepare( "WHEN question_id = %d THEN %d", $ids   [ $order ], $order + 1 ) . "\n";
+		}
+		$query .= sprintf( "ELSE question_order END WHERE quiz_id = %d", $this->get_id() );
+		$wpdb->query( $query );
 	}
 
 	/******/

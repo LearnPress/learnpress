@@ -23,7 +23,7 @@ $template_data       = array_merge(
 	$question->get_option_template_data()
 );
 $top_buttons         = array();
-$top_buttons['type'] = sprintf( '<div class="lp-toolbar-btn lp-toolbar-btn-dropdown lp-btn-change-type">
+$top_buttons['type'] = sprintf( '<div class="lp-toolbar-btn lp-toolbar-btn-dropdown lp-btn-change-type" ng-click="changeQuestionType($event)">
         <a data-tooltip="%s" class="lp-btn-icon dashicons dashicons-editor-help"></a>
         %s
      </div>',
@@ -31,7 +31,7 @@ $top_buttons['type'] = sprintf( '<div class="lp-toolbar-btn lp-toolbar-btn-dropd
 	$dropdown
 );
 if ( LP_QUESTION_CPT != get_post_type() ) {
-	$top_buttons['edit'] = sprintf( '<div class="lp-toolbar-btn" ng-class="{\'lp-btn-disabled\': !questionData.id}">
+	$top_buttons['edit'] = sprintf( '<div class="lp-toolbar-btn" ng-class="{\'lp-btn-disabled\': !parseInt(questionData.id)}">
             <a target="_blank" data-tooltip="%s" href="post.php?post={{questionData.id}}&action=edit" class="lp-btn-icon dashicons dashicons-admin-links learn-press-tooltip"></a>
         </div>',
 		esc_attr__( 'Edit question in new window', 'learnpress' )

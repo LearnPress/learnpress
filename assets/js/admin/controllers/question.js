@@ -14,6 +14,9 @@
      */
     window['learn-press.question.controller'] = function ($scope, $compile, $element, $timeout, $http) {
         $element = $($element);
+        $scope.xxx = function () {
+
+        }
         angular.extend($scope, {
             $element: $element,
             noncePrefix: 'question-',
@@ -26,13 +29,31 @@
                 $timeout(function () {
                     $scope.initData();
                     $scope.bindEvents();
-                    $scope.addQuestionData();
+                    //$scope.addQuestionData();
                     //$scope.addOption();
                     $scope.getListContainer().sortable({
                         handle: '.lp-btn-move',
-                        axis: 'y'
+                        axis: 'y',
+                        update: function () {
+                            $scope.updateAnswerOrders.apply($scope);
+                        }
                     });
                     $scope.tooltip($element);
+                });
+            },
+            updateAnswerOrders: function () {
+                var postData = {id: $scope.getId(), answers: []};
+                this.getListContainer().find('tr.lp-list-option').each(function (i, el) {
+                    postData.answers.push({
+                        value: $(el).find('.lp-answer-value ').val(),
+                        text: $(el).find('.lp-answer-text ').val()
+                    });
+                });
+                $http({
+                    method: 'post',
+                    url: $scope.getAjaxUrl('lp-ajax=ajax_update_question_answer_orders'),
+                    data: postData
+                }).then(function (response) {
                 });
             },
             getTitle: function () {
@@ -40,9 +61,7 @@
             },
             initData: function () {
                 try {
-                    this.questionData = JSON.parse($($element).find('.element-data').html());
-                    var types = $element.find('.lp-btn-change-type ul').children().removeClass('active');
-                    types.filter('[data-type="' + this.questionData.type + '"]').addClass('active');
+                    this.questionData = this.getElement().find('[name^="lp-question-data"]').serializeJSON("['lp-question-data']");
                 } catch (ex) {
                     console.log(ex)
                 }
@@ -189,7 +208,7 @@
                 _.forEach($options, function (el, i) {
                     var $option = $(el),
                         option = {};
-                    var json = $option.find('input, textarea, select').serializeJSON(this.getFormInputPath() + '.answer_options');
+                    var json = $option.find('input, textarea, select').serializeJSON(this.getFormInputPath() + "['answer_options']");
                     for (var j in json) {
                         if (j == 'checked') {
                             option['is_true'] = 'yes';
@@ -208,7 +227,7 @@
                 }
             },
             getListContainer: function () {
-                return $element.closest('#learn-press-questions');
+                return $element.find('.lp-list-options tbody');
             },
             addQuestionData: function () {
                 var id = $element.find('.question-id').val();
@@ -238,15 +257,15 @@
                 })
             },
             toggleContent: function (event) {
-                var hidden = $(event.target).closest('.learn-press-box-data').toggleClass('closed').hasClass('closed');
+                var hidden = $(event.target).closest('.learn-press-box-data').toggleClass('closed').hasClass('closed'),
+                    postData = {hidden: {}};
+                postData.hidden[this.getId()] = hidden ? 'yes' : 'no';
                 $http({
                     method: 'post',
                     url: this.getAjaxUrl('lp-ajax=ajax_closed_question_box'),
-                    data:{
-                        hidden: hidden ? 'yes' : 'no',
-                        id: this.getId()
-                    }
-                }).then();
+                    data: postData
+                }).then(/* Todo: anything here after ajax is completed */function (response) {
+                });
             },
             getScreenQuizId: function () {
                 return 'lp_quiz' === $('#post_type').val() ? parseInt($('#post_ID').val()) : 0;
@@ -310,7 +329,7 @@
                 }
             },
             update: function (event) {
-                var data = $element.find('input, select, textarea').serializeJSON(this.getFormInputPath() + '.answer_options');
+                var data = $element.find('input, select, textarea').serializeJSON(this.getFormInputPath() + "['answer_options']");
                 console.log(data, this.questionData)
             },
             removeQuestion: function (event) {
@@ -346,7 +365,7 @@
                 $('.tipsy').remove();
                 console.log()
             },
-            getFormData: function () {
+            getFormData: function (extra) {
                 var formData = this.getElement('input, select, textarea').filter(':not(.abc-xyz)').serializeJSON(this.getFormInputPath()) || {},
                     answerOptions = [];
                 formData.answer_options && _.forEach(formData.answer_options.text, function (text, i) {
@@ -357,13 +376,17 @@
                     });
                 }, this);
                 formData.answer_options = answerOptions;
-                return this.applyFilters('learn-press/question-form-data', formData);
+                return this.applyFilters('learn-press/question-form-data', $.extend(formData, extra || {}), extra);
             },
             getFormInputPath: function () {
-                return 'learn_press_question[' + this.questionData.id + ']';
+                return "['learn_press_question']['" + this.questionData.id + "']";
             },
             isOptionChecked: function (event) {
                 console.log(event)
+            },
+            changeQuestionType: function (event) {
+                var type = $(event.target).closest('li').data('type');
+                this.questionData.type = type;
             }
         });
         $scope.init();

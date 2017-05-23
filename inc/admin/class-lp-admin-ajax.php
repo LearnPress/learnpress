@@ -80,6 +80,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'add_question',
 				'delete_quiz_question',
 				'update_quiz',
+				'update_quiz_question_orders',
+				'update_question_answer_orders',
 				'closed_question_box'
 			);
 			foreach ( $ajax_events as $ajax_event ) {
@@ -187,6 +189,9 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			learn_press_send_json( $response );
 		}
 
+		/**
+		 * Update quiz content and it's questions
+		 */
 		public static function update_quiz() {
 			global $wpdb;
 			$wpdb->queries = array();
@@ -204,27 +209,49 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			learn_press_send_json( $response );
 		}
 
+		/**
+		 * Update state of box questions
+		 */
 		public static function closed_question_box() {
-			list( $id, $hidden ) = self::getPhpInput( 'id', 'hidden' );
-			if ( LP_QUESTION_CPT !== get_post_type( $id ) ) {
-				return;
-			}
+
+			list( $hidden ) = self::getPhpInput( 'hidden' );
 			$data = learn_press_get_user_option( 'post-closed-box' );
 			if ( ! $data ) {
 				$data = array();
 			}
-			$index = array_search( $id, $data );
-			print_r($hidden);
-			if ( $hidden == 'yes' ) {
-				if ( false === $index ) {
-					$data[] = $id;
-				}
-			} else {
-				if ( false !== $index ) {
-					array_splice( $data, $index, 1 );
+			foreach ( $hidden as $id => $value ) {
+				$index = array_search( $id, $data );
+				if ( $value == 'yes' ) {
+					if ( false === $index ) {
+						$data[] = $id;
+					}
+				} else {
+					if ( false !== $index ) {
+						array_splice( $data, $index, 1 );
+					}
 				}
 			}
 			learn_press_update_user_option( 'post-closed-box', $data );
+		}
+
+		/**
+		 * Reorder question orders
+		 */
+		public function update_quiz_question_orders() {
+			list( $id, $questions ) = self::getPhpInput( 'id', 'questions' );
+			if ( $quiz = learn_press_get_quiz( $id ) ) {
+				$quiz->update_questions_orders( $questions );
+			}
+		}
+
+		/**
+		 * Reorder question answer orders.
+		 */
+		public function update_question_answer_orders() {
+			list( $id, $answers ) = self::getPhpInput( 'id', 'answers' );
+			if ( $question = learn_press_get_question( $id ) ) {
+				$question->update_answer_orders( $answers );
+			}
 		}
 
 		/*************/

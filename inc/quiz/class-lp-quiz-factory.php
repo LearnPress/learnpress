@@ -38,9 +38,14 @@ class LP_Quiz_Factory {
 	public static function admin_template() {
 		add_filter( 'learn-press/question/none/admin-option-template-args', array(__CLASS__, 'question_template_js'), 10, 2);
 	    echo '<script type="text/ng-template" id="tmpl-quiz-question">';
+
+	    $none = new LP_Question_None();
+
+	    $none->admin_interface();
+	    /*
 		learn_press_admin_view( 'meta-boxes/question/base-options', array(
 			'question' => new LP_Question_None()
-		) );
+		) );*/
 		echo '</script>';
 		remove_filter( 'learn-press/question/none/admin-option-template-args', array(__CLASS__, 'question_template_js'), 10, 2);
 	}

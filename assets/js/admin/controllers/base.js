@@ -51,7 +51,8 @@
                 return filteredData !== undefined ? filteredData : rawData;
             },
             getScreenPostId: function (type) {
-                return (type && type === $('#post_type').val()) ? parseInt($('#post_ID').val()) : false;
+                var postId = parseInt($('#post_ID').val());
+                return (type !== undefined && type === $('#post_type').val()) || type === undefined ? postId : false;
             },
             getAjaxUrl: function (param) {
                 var url = window.location.href;
@@ -68,6 +69,12 @@
             },
             setId: function (id) {
                 this.objectId = id;
+            },
+            getHttpJson: function (response) {
+                if (response && response.data) {
+                    return LP.parseJSON(response.data);
+                }
+                return false;
             }
         });
     }
