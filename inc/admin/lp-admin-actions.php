@@ -94,7 +94,7 @@ function learn_press_update_permalink_structure() {
 	if ( strtolower( $_SERVER['REQUEST_METHOD'] ) != 'post' ) {
 		return;
 	}
-	$rewrite_prefix      = '';
+	$rewrite_prefix = array();
 	$permalink_structure = !empty( $_REQUEST['permalink_structure'] ) ? $_REQUEST['permalink_structure'] : '';
 	if ( $permalink_structure ) {
 		$segs = explode( '/', $permalink_structure );
