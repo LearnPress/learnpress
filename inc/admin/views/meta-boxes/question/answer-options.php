@@ -9,7 +9,7 @@
  */
 
 defined( 'ABSPATH' ) || exit();
-$option_headings     = $question->get_admin_option_headings();
+$option_headings = $question->get_admin_option_headings();
 
 ?>
     <table class="lp-sortable lp-list-options" id="learn-press-list-options-<?php echo $template_data['id']; ?>">
@@ -46,19 +46,21 @@ $option_headings     = $question->get_admin_option_headings();
 		?>
         </tbody>
     </table>
-    <p class="lp-box-data-foot question-bottom-actions">
-        <?php
-        $bottom_buttons = apply_filters(
-            'learn_press_question_bottom_buttons',
-            array(
-                'add_option' => sprintf(
-                    __( '<button class="button add-question-option-button add-question-option-button-%1$d" data-id="%1$d" type="button" ng-click="addOption()">%2$s</button>', 'learnpress' ),
-                    $template_data['id'],
-                    __( 'Add Option', 'learnpress' )
-                )
-            ),
-            $template_data['id']
-        );
-        echo join( "\n", $bottom_buttons );
-        ?>
-    </p>
+<?php
+$bottom_buttons = array();
+if ( $question->is_support( 'add-answer-option' ) ) {
+	$bottom_buttons['add_option'] = sprintf(
+		__( '<button class="button add-question-option-button add-question-option-button-%1$d" data-id="%1$d" type="button" ng-click="addOption()">%2$s</button>', 'learnpress' ),
+		$template_data['id'],
+		__( 'Add Option', 'learnpress' )
+	);
+}
+$bottom_buttons = apply_filters(
+	'learn_press_question_bottom_buttons',
+	$bottom_buttons,
+	$template_data['id']
+);
+if ( $bottom_buttons ) {
+	printf( '<p class="lp-box-data-foot question-bottom-actions">%s</p>', join( "\n", $bottom_buttons ) );
+}
+?>

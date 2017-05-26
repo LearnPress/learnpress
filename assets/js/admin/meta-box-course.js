@@ -1,5 +1,5 @@
 ;
-(function ($) {
+(1==0)&&(function ($) {
 	if (typeof LP == 'undefined') {
 		LP = {};
 	}

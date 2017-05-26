@@ -74,7 +74,12 @@ class LP_Question extends LP_Abstract_Course_Item {
 
 		if ( in_array( $this->get_type(), learn_press_get_build_in_question_types() ) ) {
 			$this->add_support( 'answer_options' );
+
+			if ( $this->get_type() !== 'true_or_false' ) {
+				$this->add_support( 'add_answer_option' );
+			}
 		}
+
 		if ( $this->get_id() > 0 ) {
 			$this->load();
 		}
@@ -126,20 +131,26 @@ class LP_Question extends LP_Abstract_Course_Item {
 					}
 					unset( $answer_options[ $k ]['answer_data'] );
 				}
-				$this->_load_answer_option_meta( $answer_options );
 			}
+			$answer_options = apply_filters( 'learn-press/question/load-answer-options', $answer_options, $id );
+			$this->_load_answer_option_meta( $answer_options );
 			wp_cache_set( 'answer-options-' . $id, $answer_options, 'lp-questions' );
 		}
 		$this->set_data( 'answer_options', $answer_options );
 	}
 
 	/**
-	 * Load meta data for answer options
+	 * Load meta data for answer options.
 	 *
 	 * @param array $answer_options
+	 *
+	 * @return mixed;
 	 */
 	protected function _load_answer_option_meta( &$answer_options ) {
 		global $wpdb;
+		if ( ! $answer_options ) {
+			return false;
+		}
 		$answer_option_ids = wp_list_pluck( $answer_options, 'question_answer_id' );
 		$format            = array_fill( 0, sizeof( $answer_option_ids ), '%d' );
 		$query             = $wpdb->prepare( "
@@ -159,6 +170,8 @@ class LP_Question extends LP_Abstract_Course_Item {
 				}
 			}
 		}
+
+		return true;
 	}
 
 	/**
@@ -179,6 +192,7 @@ class LP_Question extends LP_Abstract_Course_Item {
 	 * @return bool
 	 */
 	public function is_support( $feature, $type = '' ) {
+		$feature    = $this->_sanitize_feature_key( $feature );
 		$is_support = array_key_exists( $feature, $this->_supports ) ? true : false;
 		if ( $type && $is_support ) {
 			return $this->_supports[ $feature ] === $type;
@@ -194,8 +208,27 @@ class LP_Question extends LP_Abstract_Course_Item {
 	 * @param string $type
 	 */
 	public function add_support( $feature, $type = 'yes' ) {
+		$feature                     = $this->_sanitize_feature_key( $feature );
 		$this->_supports[ $feature ] = $type === null ? 'yes' : $type;
 	}
+
+	/**
+	 * @param $feature
+	 *
+	 * @return mixed
+	 */
+	protected function _sanitize_feature_key( $feature ) {
+		return preg_replace( '~[_]+~', '-', $feature );
+	}
+
+	/**
+     * Get all features are supported by question.
+     *
+	 * @return array
+	 */
+	public function get_supports(){
+	    return $this->_supports;
+    }
 
 	/**
 	 * Store question and it's related data into database.
@@ -216,27 +249,29 @@ class LP_Question extends LP_Abstract_Course_Item {
 		} else {
 			$updated = wp_insert_post( $post_data, true );
 		}
-		if ( is_numeric( $updated ) && $this->is_support( 'answer_options' ) ) {
-			$this->empty_answers();
-			if ( $answer_options = $this->get_data( 'answer_options' ) ) {
-				$question_order = 1;
-				$query          = "INSERT INTO {$wpdb->prefix}learnpress_question_answers(`question_id`, `answer_order`) VALUES";
-				foreach ( $answer_options as $answer_option ) {
-					if ( empty( $answer_option['text'] ) ) {
-						if ( apply_filters( 'learn-press/question/ignore-insert-empty-answer-option', true, $answer_option, $id ) ) {
-							continue;
+		if ( is_numeric( $updated ) ) {
+			if ( $this->is_support( 'answer_options' ) ) {
+				$this->empty_answers();
+				if ( $answer_options = $this->get_data( 'answer_options' ) ) {
+					$question_order = 1;
+					$query          = "INSERT INTO {$wpdb->prefix}learnpress_question_answers(`question_id`, `answer_order`) VALUES";
+					foreach ( $answer_options as $answer_option ) {
+						if ( empty( $answer_option['text'] ) ) {
+							if ( apply_filters( 'learn-press/question/ignore-insert-empty-answer-option', true, $answer_option, $id ) ) {
+								continue;
+							}
 						}
-					}
-					$qry = $query . $wpdb->prepare( "(%d, %d)", $id, $question_order ++ );
-					do_action( 'learn-press/question/insert-answer-option', $id, $answer_option );
-					if ( $wpdb->query( $qry ) ) {
-						$inserted_id = $wpdb->insert_id;
-						learn_press_update_question_answer_meta( $inserted_id, 'text', $answer_option['text'] );
-						learn_press_update_question_answer_meta( $inserted_id, 'value', $answer_option['value'] );
-						if ( ! empty( $answer_option['is_true'] ) && ! learn_press_is_negative_value( $answer_option['is_true'] ) ) {
-							learn_press_update_question_answer_meta( $inserted_id, 'checked', 'yes' );
+						$qry = $query . $wpdb->prepare( "(%d, %d)", $id, $question_order ++ );
+						do_action( 'learn-press/question/insert-answer-option', $id, $answer_option );
+						if ( $wpdb->query( $qry ) ) {
+							$inserted_id = $wpdb->insert_id;
+							learn_press_update_question_answer_meta( $inserted_id, 'text', $answer_option['text'] );
+							learn_press_update_question_answer_meta( $inserted_id, 'value', $answer_option['value'] );
+							if ( ! empty( $answer_option['is_true'] ) && ! learn_press_is_negative_value( $answer_option['is_true'] ) ) {
+								learn_press_update_question_answer_meta( $inserted_id, 'checked', 'yes' );
+							}
+							do_action( 'learn-press/question/inserted-answer-option', $inserted_id, $id, $answer_option );
 						}
-						do_action( 'learn-press/question/inserted-answer-option', $inserted_id, $id, $answer_option );
 					}
 				}
 			}
@@ -253,7 +288,7 @@ class LP_Question extends LP_Abstract_Course_Item {
 		$id         = absint( $this->get_id() );
 		$table_meta = $wpdb->learnpress_question_answermeta;
 		$table_main = $wpdb->learnpress_question_answers;
-		$query      = $wpdb->prepare( "
+		echo $query      = $wpdb->prepare( "
 			DELETE FROM t1, t2
 			USING {$table_main} AS t1 INNER JOIN {$table_meta} AS t2 ON t1.question_answer_id = t2.learnpress_question_answer_id
 			WHERE t1.question_id = %d
@@ -289,7 +324,7 @@ class LP_Question extends LP_Abstract_Course_Item {
 		}
 
 		if ( in_array( $this->get_type(), array( 'none', '' ) ) ) {
-			printf( '<p class="lp-question-unknown-type-msg" ng-show="$.inArray(questionData.type, [\'none\', \'\']) > -1">%s</p>', __( 'Question type is unknown. Please specific a type.', 'learnpress' ) );
+			printf( '<p class="lp-question-unknown-type-msg" ng-show="!isValidQuestionType()">%s</p>', __( 'Question type is unknown. Please specific a type.', 'learnpress' ) );
 		} else {
 			if ( $this->is_support( 'answer_options' ) && $question_view = apply_filters( 'learn-press/admin-question/interface-html', learn_press_get_admin_view( 'meta-boxes/question/answer-options' ), $args, $this->get_id() ) ) {
 				include "{$question_view}";
@@ -738,10 +773,13 @@ class LP_Question extends LP_Abstract_Course_Item {
 	 * @return mixed
 	 */
 	public static function admin_js_template( $args = '' ) {
-		$args       = wp_parse_args( $args, array( 'echo' => true ) );
-		$type       = ! empty( $args['type'] ) ? $args['type'] : 'single_choice';
-		$fake_class = LP_Question_Factory::get_class_name_from_question_type( $type );
-
+		$args          = wp_parse_args( $args, array( 'echo' => true ) );
+		$type          = ! empty( $args['type'] ) ? $args['type'] : 'single_choice';
+		$fake_class    = LP_Question_Factory::get_class_name_from_question_type( $type );
+		$fake_question = new $fake_class();
+		if ( ! $fake_question->is_support( 'add-answer-option' ) ) {
+			return '';
+		}
 		ob_start();
 		?>
         <script type="text/ng-template" id="tmpl-question-<?php echo $type; ?>-option">
@@ -753,7 +791,7 @@ class LP_Question extends LP_Abstract_Course_Item {
 			learn_press_admin_view(
 				'meta-boxes/question/base-option',
 				array(
-					'question' => new $fake_class(),
+					'question' => $fake_question,
 					'answer'   => array(
 						'value'   => '',
 						'is_true' => '',
@@ -818,9 +856,11 @@ class LP_Question extends LP_Abstract_Course_Item {
 
 	public static function get_option_template_data_for_js( $args, $type ) {
 		$args = array(
-			'id'           => '{{questionData.id}}',
-			'answer_value' => '{{data.answer_value}}',
-			'answer_text'  => '{{data.answer_text}}'
+			'id'            => '{{questionData.id}}',
+			'answer_option' => array(
+				'value' => 'OPTION_VALUE_PLACEHOLDER',
+				'text'  => ''
+			)
 		);
 
 		return apply_filters( 'learn-press/question/' . $type . '/admin-option-template-js-args', $args, $type );

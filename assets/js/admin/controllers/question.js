@@ -14,16 +14,21 @@
      */
     window['learn-press.question.controller'] = function ($scope, $compile, $element, $timeout, $http) {
         $element = $($element);
-        $scope.xxx = function () {
-
-        }
         angular.extend($scope, {
             $element: $element,
             noncePrefix: 'question-',
             questionData: {
-                title: 'Nodem is pul donor shit met',
-                id: 10,
+                title: '',
+                id: LP.uniqueId(),
                 type: ''
+            },
+            answer_option: {
+                value: '',
+                text: '',
+                is_true: false
+            },
+            xxxxx: function () {
+                $scope.questionData.id = (isNaN(this.questionData.id) ? 0 : parseInt(this.questionData.id)) + 1;
             },
             init: function () {
                 $timeout(function () {
@@ -61,7 +66,7 @@
             },
             initData: function () {
                 try {
-                    this.questionData = this.getElement().find('[name^="lp-question-data"]').serializeJSON("['lp-question-data']");
+                    this.questionData = $.extend(this.questionData, this.getFormData());// getElement().find('[name^="lp-question-data"]').serializeJSON("lp-question-data");
                 } catch (ex) {
                     console.log(ex)
                 }
@@ -84,9 +89,10 @@
                 var eventType = event.type,
                     val = event.target.value,
                     $option = this.getOptionTarget(event.target);
+
                 switch (event.keyCode) {
                     case 13:
-                        if ('keypress' === eventType || 'keydown' === eventType) {
+                        if (this.isSupport('add-answer-option') && ('keypress' === eventType || 'keydown' === eventType)) {
                             if (!this.isEmptyOption($option)) {
                                 var position = this.getOptionPosition(event.target) + 1;
                                 var $e = this.addOption(event, {
@@ -102,7 +108,7 @@
                         }
                         break;
                     case 8:
-                        if ('keyup' === eventType) {
+                        if (this.isSupport('add-answer-option') && 'keyup' === eventType) {
                             if (val.length === 0) {
                                 if ($option.hasClass('lp-option-empty')) {
                                     this.removeOption(event);
@@ -163,8 +169,11 @@
                     $option.find('.lp-answer-text').focus();
                     return;
                 }
-                var optionTemplate = angular.element($('#tmpl-question-' + $scope.questionData.type + '-option').html()),
+                this.answer_option.value = LP.uniqueId();
+                var strHTML = $('#tmpl-question-' + $scope.questionData.type + '-option')[0].innerHTML,
                     $newOption = false;
+                strHTML = strHTML.replace(/OPTION_VALUE_PLACEHOLDER/g, LP.uniqueId());
+                var optionTemplate = angular.element($(strHTML));
                 args = $.extend({
                     position: -1
                 }, args || {});
@@ -181,10 +190,9 @@
                     }
                     scope.tooltip(clonedElement)
                     clonedElement.find('.lp-answer-text').focus();
-                    console.log(clonedElement)
-
                     return clonedElement;
                 });
+
                 $timeout(function () {
                     $scope.refreshData();
                 })
@@ -208,7 +216,7 @@
                 _.forEach($options, function (el, i) {
                     var $option = $(el),
                         option = {};
-                    var json = $option.find('input, textarea, select').serializeJSON(this.getFormInputPath() + "['answer_options']");
+                    var json = $option.find('input, textarea, select').serializeJSON(this.getFormInputPath() + "answer_options");
                     for (var j in json) {
                         if (j == 'checked') {
                             option['is_true'] = 'yes';
@@ -300,6 +308,7 @@
                         }
 
                 }
+
                 if (eventType === 'blur') {
                     this.questionData.title = event.target.value;
                     this.update(event);
@@ -329,11 +338,11 @@
                 }
             },
             update: function (event) {
-                var data = $element.find('input, select, textarea').serializeJSON(this.getFormInputPath() + "['answer_options']");
+                var data = $element.find('input, select, textarea').serializeJSON(this.getFormInputPath() + "answer_options");
                 console.log(data, this.questionData)
             },
             removeQuestion: function (event) {
-                var deletePermanently = $(event.target).data('delete-permanently') === 'yes';
+                var deletePermanently = $(event.target).data('delete-permanently') === 'yes' ? 1 : 0;
                 $element.addClass('being-deleted');
                 $.ajax({
                     url: '',
@@ -366,8 +375,12 @@
                 console.log()
             },
             getFormData: function (extra) {
-                var formData = this.getElement('input, select, textarea').filter(':not(.abc-xyz)').serializeJSON(this.getFormInputPath()) || {},
+                var formData = this.getElement('input, select, textarea').filter(':not(.abc-xyz)').serializeJSON(this.getFormInputPath()),
                     answerOptions = [];
+                if (formData) {
+                    var values = _.values(formData);
+                    formData = values[0];
+                }
                 formData.answer_options && _.forEach(formData.answer_options.text, function (text, i) {
                     answerOptions.push({
                         text: text,
@@ -379,14 +392,65 @@
                 return this.applyFilters('learn-press/question-form-data', $.extend(formData, extra || {}), extra);
             },
             getFormInputPath: function () {
-                return "['learn_press_question']['" + this.questionData.id + "']";
+                return "learn_press_question";
+            },
+            getId: function () {
+                console.log(this.getElement())
+                return this.getElement().attr('dbid');
             },
             isOptionChecked: function (event) {
                 console.log(event)
             },
             changeQuestionType: function (event) {
-                var type = $(event.target).closest('li').data('type');
+                var $li = $(event.target).closest('li'),
+                    $ul = $li.closest('ul'),
+                    type = $li.data('type'),
+                    oldType = this.questionData.type;
                 this.questionData.type = type;
+                $http({
+                    url: this.getAjaxUrl('lp-ajax=ajax_change_question_type'),
+                    method: 'post',
+                    data: {
+                        id: this.getId(),
+                        from: oldType,
+                        to: this.questionData.type
+                    }
+                }).then(function (response) {
+                    var optionTemplate = angular.element($(response.data)),
+                        $newOption = $compile(optionTemplate)($scope, function (clonedElement, scope) {
+                            scope.tooltip(clonedElement)
+                            scope.getElement().replaceWith(clonedElement)
+                            return clonedElement;
+                        });
+
+                    $timeout(function () {
+                        $scope.refreshData();
+                    })
+                });
+                // Force to close dropdown
+                $ul.addClass('ng-hide');
+                $timeout(function () {
+                    $ul.removeClass('ng-hide')
+                }, 300);
+
+            },
+            isSaved: function () {
+                return parseInt(this.questionData.id);
+            },
+            isValidQuestionType: function () {
+                return $.inArray(this.questionData.type, ['none', '']) === -1;
+            },
+            getPosition: function () {
+                var $child = this.getElement().parent().children();
+                return $child.index(this.getElement()) + 1;
+            },
+            isSupport: function (feature, type) {
+                var is_support = this.questionData.supports[feature] !== undefined;
+                if (type && is_support) {
+                    return this.questionData.supports[feature] === type;
+                }
+
+                return is_support;
             }
         });
         $scope.init();

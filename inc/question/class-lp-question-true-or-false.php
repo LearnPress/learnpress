@@ -13,6 +13,7 @@ defined( 'ABSPATH' ) || exit();
 
 class LP_Question_True_Or_False extends LP_Question {
 	protected $_type = 'true_or_false';
+
 	/**
 	 * Constructor
 	 *
@@ -20,8 +21,63 @@ class LP_Question_True_Or_False extends LP_Question {
 	 * @param null $args
 	 */
 	public function __construct( $the_question = null, $args = null ) {
+		//add_filter( 'learn_press_question_answers', array( $this, 'limit_answers' ), 10, 2 );
+		if ( ! has_filter( 'learn-press/question/load-answer-options' ) ) {
+			add_filter( 'learn-press/question/load-answer-options', array( $this, 'validate_answer_options' ), 10, 2 );
+		}
 		parent::__construct( $the_question, $args );
-		add_filter( 'learn_press_question_answers', array( $this, 'limit_answers' ), 10, 2 );
+	}
+
+	/**
+	 * Validate answer options for this question type.
+	 * This question should have 2 options in any case.
+	 *
+	 * @param array $answer_options
+	 * @param int   $id
+	 *
+	 * @return array
+	 */
+	public function validate_answer_options( $answer_options, $id ) {
+
+		remove_filter( 'learn-press/question/load-answer-options', array(
+			$this,
+			'validate_answer_options'
+		), 10, 2 );
+		if ( get_post_meta( $id, '_lp_type', true ) == $this->get_type() ) {
+			$size_of_options = $answer_options ? sizeof( $answer_options ) : 0;
+			switch ( $size_of_options ) {
+				case 0:
+				case 1:
+					settype( $answer_options, 'array' );
+					$answer_options = array_filter( $answer_options );
+					for ( $n = 2 - $size_of_options, $i = 0; $i < $n; $i ++ ) {
+						$answer_options[] = apply_filters(
+							'learn-press/question/default-answer-option-data',
+							array(
+								'text'         => '',
+								'value'        => learn_press_uniqid(),
+								'answer_order' => $i + 1
+							),
+							$id
+						);
+					}
+					break;
+				case 2:
+					// Great! Do nothing here
+					break;
+				default:
+					$temp           = $answer_options;
+					$answer_options = array();
+					foreach ( $temp as $k => $v ) {
+						$answer_options[ $k ] = $v;
+						if ( sizeof( $answer_options ) == 2 ) {
+							break;
+						}
+					}
+			}
+		}
+
+		return $answer_options;
 	}
 
 	public function limit_answers( $answers = array(), $question ) {
@@ -79,7 +135,7 @@ class LP_Question_True_Or_False extends LP_Question {
 	}
 
 	public function admin_interface( $args = array() ) {
-		return parent::admin_interface($args);
+		return parent::admin_interface( $args );
 	}
 
 	public function render( $args = array() ) {

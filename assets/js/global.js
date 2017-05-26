@@ -72,12 +72,9 @@ if (typeof window.LP == 'undefined') {
             }
         });
         if (path) {
+            path = "['" + path.replace('.', "']['") + "']";
             var c = 'try{indexed = indexed' + path + '}catch(ex){console.log(c, ex);}';
             eval(c);
-        }
-        function validatePath(){
-            var p = path.split(/\]\[|\./);
-            console.log(path, p);
         }
         return indexed;
     };

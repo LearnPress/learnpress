@@ -35,7 +35,7 @@
                     }
                 });
             },
-            updateQuestionOrders: function(){
+            updateQuestionOrders: function () {
                 var postData = {id: $scope.getScreenPostId(), questions: []};
                 $element.find('.learn-press-question').each(function (i, el) {
                     var ctrl = angular.element(el).scope();
@@ -55,6 +55,7 @@
                     id = $newQuestion.attr('id');
                 args = $.extend({
                     position: -1,
+                    id: 0,
                     type: ''
                 }, args || {});
                 if (args.position === -1) {
@@ -67,13 +68,38 @@
                         $list.append($newQuestion);
                     }
                 }
-                var type = !args['type'] ? $(event.target).siblings('.lp-toolbar-btn-dropdown').find('ul li:first').data('type') : args['type']
+                var type = !args['type'] ? $(event.target).siblings('.lp-toolbar-btn-dropdown').find('ul li:first').data('type') : args['type'];
                 $newQuestion.find('.question-id').val(LP.uniqueId('fake-'));
                 $newQuestion.find('.question-type').val(type);
                 $compile($newQuestion)($scope);
                 $newQuestion.toggleClass('closed', this.data.closed)
                 $newQuestion.find('.lp-question-heading-title').focus();
+            },
+            addExistsQuestions: function (ids) {
+                var $list = $element.find('#learn-press-questions'),
+                    $tmpl = $('#tmpl-quiz-question').html();
 
+                $http({
+                    url: this.getAjaxUrl('lp-ajax=ajax_add_quiz_questions'),
+                    data: {
+                        id: this.getScreenPostId(),
+                        questions: ids
+                    },
+                    method: 'post'
+                }).then(function (r) {
+                    var response = $scope.getHttpJson(r);
+                    if (response.questions) {
+                        _.forEach(response.questions, function (html, id) {
+                            var $newQuestion = $(html);
+                            $newQuestion.find('.question-id').val(id);
+                            $compile($newQuestion)($scope);
+                            $newQuestion.toggleClass('closed', this.data.closed)
+                            $newQuestion.find('.lp-question-heading-title').focus();
+                            $list.append($newQuestion);
+                            $scope.$doc.triggerHandler('learn-press/added-quiz-question', id);
+                        }, $scope)
+                    }
+                });
             },
             initData: function () {
                 try {
@@ -105,7 +131,7 @@
                 _.forEach($els, function (el, i) {
                     var ctrl = angular.element(el).scope(),
                         data = ctrl.getFormData({order: i + 1});
-                    postData.questions[ctrl.getId()] = data;
+                    postData.questions[data.id] = data;
                 });
                 $http({
                     method: 'post',
@@ -128,7 +154,7 @@
                     .find('.learn-press-question')
                     .toggleClass('closed', closed)
                     .map(function () {
-                        postData.hidden[$(this).data('id')] = closed ? 'yes' : 'no'
+                        postData.hidden[$(this).data('dbid')] = closed ? 'yes' : 'no'
                     });
                 postData.hidden[this.getScreenPostId()] = closed ? 'yes' : 'no';
                 $http({
@@ -137,6 +163,9 @@
                     data: postData
                 }).then(/* Todo: anything here after ajax is completed */function (response) {
                 });
+            },
+            showModalSearchItems: function () {
+
             }
         });
         $scope.init();

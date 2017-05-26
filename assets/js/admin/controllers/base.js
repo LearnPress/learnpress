@@ -52,7 +52,10 @@
             },
             getScreenPostId: function (type) {
                 var postId = parseInt($('#post_ID').val());
-                return (type !== undefined && type === $('#post_type').val()) || type === undefined ? postId : false;
+                return (type !== undefined && type === this.getScreenPostType()) || type === undefined ? postId : false;
+            },
+            getScreenPostType: function () {
+                return $('#post_type').val();
             },
             getAjaxUrl: function (param) {
                 var url = window.location.href;
@@ -64,8 +67,9 @@
                 }
                 return url + param + (p[1] ? '#' + p[1] : '');
             },
-            getId: function () {
-                return this.objectId ? this.objectId : parseInt(this.getElement().data('id'));
+            getId: function (sanitize) {
+                var id = this.objectId ? this.objectId : this.getElement().data('dbid');
+                return sanitize === false ? id : parseInt(id);
             },
             setId: function (id) {
                 this.objectId = id;
@@ -75,6 +79,9 @@
                     return LP.parseJSON(response.data);
                 }
                 return false;
+            },
+            getController: function(){
+                return this.getElement().attr('ng-controller');
             }
         });
     }

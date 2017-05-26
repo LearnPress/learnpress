@@ -327,7 +327,16 @@ class LP_Quiz extends LP_Abstract_Course_Item {
 	 */
 	public function add_question( $question_id, $args = array() ) {
 		global $wpdb;
-		$id   = $this->get_id();
+		$id = $this->get_id();
+
+		if ( ! $question = learn_press_get_question( $question_id ) ) {
+			return false;
+		}
+
+		if ( $this->is_exists_question( $question_id ) ) {
+			return false;
+		}
+
 		$args = wp_parse_args( $args, array( 'order' => - 1 ) );
 		$this->sanitize_question_orders();
 		if ( $args['order'] >= 0 ) {
@@ -343,20 +352,49 @@ class LP_Quiz extends LP_Abstract_Course_Item {
 				FROM {$wpdb->prefix}learnpress_quiz_questions
 				WHERE quiz_id = %d
 			", $id );
-
-			$args['order'] = $wpdb->get_var( $query );
+			if ( ! $order = $wpdb->get_var( $query ) ) {
+				$order = 1;
+			}
+			$args['order'] = $order;
 		}
 		$inserted = $wpdb->insert(
 			$wpdb->prefix . 'learnpress_quiz_questions',
 			array(
-				'quiz_id'        => $this->get_id(),
+				'quiz_id'        => $id,
 				'question_id'    => $question_id,
 				'question_order' => $args['order']
 			),
 			array( '%d', '%d', '%d' )
 		);
+		print_r( $wpdb );
 
 		return $inserted ? $wpdb->insert_id : $inserted;
+	}
+
+	/**
+	 * Check if a question (or batch of questions) is already added to quiz.
+	 *
+	 * @param int|array $ids
+	 *
+	 * @return array|bool|null|object
+	 */
+	public function is_exists_question( $ids ) {
+		global $wpdb;
+		settype( $ids, 'array' );
+		$format = array_fill( 0, sizeof( $ids ), '%d' );
+		$args   = $ids;
+		$args[] = $this->get_id();
+		$query  = $wpdb->prepare( "
+			SELECT quiz_question_id 
+			FROM {$wpdb->learnpress_quiz_questions} 
+			WHERE question_id IN( " . join( ',', $format ) . " )
+				AND quiz_id = %d
+		", $args );
+		if ( $results = $wpdb->get_results( $query ) ) {
+			return $results;
+		}
+
+		return false;
 	}
 
 	/**
@@ -382,9 +420,8 @@ class LP_Quiz extends LP_Abstract_Course_Item {
 		);
 		$this->sanitize_question_orders();
 		do_action( 'learn-press/deleted-quiz-question', $question_id, $id, $deleted );
-
 		if ( $deleted && $args['delete_permanently'] ) {
-			LP_Question_Factory::delete_question( $question_id );
+			LP_Question_Factory::delete_question( $question_id, $id );
 		}
 
 		return $deleted;
@@ -404,18 +441,34 @@ class LP_Quiz extends LP_Abstract_Course_Item {
 		$this->_maybe_sort_questions( $questions );
 		$orders = array();
 		foreach ( $questions as $question_id => $data ) {
-			$question = learn_press_get_question( $question_id );
-			if ( $question ) {
-				$question->set_data( $data );
-				if ( $question_id = $question->store() ) {
-					$orders[] = $question_id;
+			// If the ID is not a numeric, then add new question
+			$is_new = false;
+			if ( ! is_numeric( $question_id ) ) {
+				if ( $new_question_id = LP_Question_Factory::add_question( $data ) ) {
+					$question = learn_press_get_question( $new_question_id );
+					$this->add_question( $new_question_id, $data );
+				}
+				$is_new = true;
+			} else {
+				$question = learn_press_get_question( $question_id );
+			}
+
+			if ( isset( $question ) && $question instanceof LP_Question ) {
+				// Do not need to update a new question.
+				if ( $is_new ) {
+					$orders[ $question_id ] = $question->get_id();
+				} else {
+					$question->set_data( $data );
+					if ( $question_id = $question->store() ) {
+						$orders[ $question_id ] = $question_id;
+					}
 				}
 			}
 		}
 
 		$this->update_questions_orders( $orders );
 
-		return true;
+		return $orders;
 	}
 
 	/**

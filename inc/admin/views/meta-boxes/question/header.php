@@ -31,7 +31,7 @@ $top_buttons['type'] = sprintf( '<div class="lp-toolbar-btn lp-toolbar-btn-dropd
 	$dropdown
 );
 if ( LP_QUESTION_CPT != get_post_type() ) {
-	$top_buttons['edit'] = sprintf( '<div class="lp-toolbar-btn" ng-class="{\'lp-btn-disabled\': !parseInt(questionData.id)}">
+	$top_buttons['edit'] = sprintf( '<div class="lp-toolbar-btn" ng-show="isSaved()">
             <a target="_blank" data-tooltip="%s" href="post.php?post={{questionData.id}}&action=edit" class="lp-btn-icon dashicons dashicons-admin-links learn-press-tooltip"></a>
         </div>',
 		esc_attr__( 'Edit question in new window', 'learnpress' )
@@ -72,10 +72,14 @@ if ( learn_press_is_hidden_post_box( $question_id ) ) {
 ?>
 <div class="<?php echo join( ' ', $box_classes ); ?>"
      id="learn-press-question-<?php echo $template_data['id']; ?>"
-     data-type="<?php echo $type; ?>" data-id="<?php echo $template_data['id']; ?>"
+     data-type="<?php echo $type; ?>"
+     data-dbid="<?php echo $template_data['id']; ?>"
      ng-controller="question"
-     ng-click="elementClick($event)">
+     ng-click="elementClick($event)"
+     ng-class="{'invalid-type': !isValidQuestionType()}">
     <div class="lp-box-data-head lp-row">
+        <span class="lp-item-counter" data-count="{{getPosition()}}"></span>
+        <span class="lp-item-icon-type dashicons"></span>
         <div class="lp-box-data-actions lp-toolbar-buttons">
 			<?php
 			echo join( "<!--\n-->", $top_buttons );

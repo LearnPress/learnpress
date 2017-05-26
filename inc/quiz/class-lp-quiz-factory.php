@@ -48,11 +48,13 @@ class LP_Quiz_Factory {
 		) );*/
 		echo '</script>';
 		remove_filter( 'learn-press/question/none/admin-option-template-args', array(__CLASS__, 'question_template_js'), 10, 2);
+
+		learn_press_admin_view('meta-boxes/html-search-items');
 	}
 
 	public static function question_template_js($args, $type){
 		$args = array(
-			'id'             => '0',
+			'id'             => '{{questionData.id}}',
 			'type'           => '{{questionData.type}}',
 			'title'          => '{{questionData.title}}',
 			'answer_options' => array(

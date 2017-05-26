@@ -2,7 +2,7 @@
  * Created by Tu on 30/03/2015.
  */
 ;
-(function ($) {
+(1==0)&&(function ($) {
 
 	$(document).ready(function () {
 		if (typeof Backbone == 'undefined') return;

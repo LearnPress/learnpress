@@ -95,23 +95,65 @@ class LP_Question_Factory {
 	 * Delete a question from database and it's related data.
 	 *
 	 * @param int $question_id
+	 * @param int $quiz_id
 	 *
 	 * @return int|bool false on failed
 	 */
-	public static function delete_question( $question_id ) {
+	public static function delete_question( $question_id, $quiz_id = 0 ) {
 		global $wpdb;
+		$deleted = false;
 		if ( LP_QUESTION_CPT === get_post_type( $question_id ) ) {
 			// remove question answers
-			if ( $wpdb->delete( $wpdb->prefix . 'learnpress_question_answers', array( 'question_id' => $question_id ), array( '%d' ) ) ) {
-				if ( $wpdb->delete( $wpdb->prefix . 'learnpress_quiz_questions', array( 'question_id' => $question_id ), array( '%d' ) ) ) {
-					$deleted = wp_delete_post( $question_id );
+			$wpdb->delete( $wpdb->prefix . 'learnpress_question_answers', array( 'question_id' => $question_id ), array( '%d' ) );
 
-					return $deleted;
-				}
+			// remove from quiz
+			$args = array( 'question_id' => $question_id );
+			if ( $quiz_id ) {
+				$args['quiz_id'] = $quiz_id;
+			}
+			$wpdb->delete( $wpdb->prefix . 'learnpress_quiz_questions', $args, array_fill( 0, sizeof( $args ), '%d' ) );
+
+			// remove permanently question
+			$deleted = wp_delete_post( $question_id );
+		}
+
+		return $deleted;
+	}
+
+	/**
+	 * Convert a question from a type to a new type.
+	 *
+	 * @param int    $id
+	 * @param string $from
+	 * @param string $to
+	 * @param array  $data
+	 *
+	 * @return LP_Question
+	 */
+	public static function convert_question( $id, $from, $to, $data = array() ) {
+		/*if ( ! empty( $data['learn_press_question'] ) && ! empty( $data['learn_press_question'][ $id ] ) ) {
+			$post_data = $data['learn_press_question'][ $id ];
+		} else {
+			$post_data = array();
+		}
+		if ( $question = self::get_question( $id ) ) {
+			update_post_meta( $question->id, '_lp_type', $to );
+			$question->type = $to;
+			$question->save( $post_data );
+		}
+
+		update_post_meta( $question->id, '_lp_type', $to );*/
+
+		if ( $from != $to ) {
+			if ( $question = learn_press_get_question( $id ) ) {
+				$old_data = $question->get_data();
+				update_post_meta( $id, '_lp_type', $to );
+				wp_cache_delete( 'answer-options-' . $id, 'lp-questions' );
+				$new_question = learn_press_get_question( $id );
 			}
 		}
 
-		return false;
+		return learn_press_get_question( $id );
 	}
 
 	////////////////////////////
@@ -130,7 +172,7 @@ class LP_Question_Factory {
 		add_action( 'learn_press_after_quiz_question_title', array( __CLASS__, 'show_answer' ), 100, 2 );
 		add_action( 'learn_press_after_question_wrap', array( __CLASS__, 'show_hint' ), 100, 2 );
 		add_action( 'learn_press_after_question_wrap', array( __CLASS__, 'show_explanation' ), 110, 2 );
-		add_action( 'delete_post', array( __CLASS__, 'delete_question' ), 10, 2 );
+		//add_action( 'delete_post', array( __CLASS__, 'delete_question' ), 10, 2 );
 
 		self::init_hooks();
 
@@ -351,20 +393,6 @@ class LP_Question_Factory {
 		return $content;
 	}
 
-	public static function convert_question( $id, $from, $to, $data ) {
-		if ( ! empty( $data['learn_press_question'] ) && ! empty( $data['learn_press_question'][ $id ] ) ) {
-			$post_data = $data['learn_press_question'][ $id ];
-		} else {
-			$post_data = array();
-		}
-		if ( $question = self::get_question( $id ) ) {
-			update_post_meta( $question->id, '_lp_type', $to );
-			$question->type = $to;
-			$question->save( $post_data );
-		}
-
-		update_post_meta( $question->id, '_lp_type', $to );
-	}
 
 	public static function list_question_types( $args = array() ) {
 		$args     = wp_parse_args(
@@ -407,8 +435,9 @@ class LP_Question_Factory {
 	 */
 	public static function add_question( $args = array() ) {
 		global $wpdb;
+		print_r( $args );
 		$args        = wp_parse_args(
-			$args,
+			(array) $args,
 			array(
 				'quiz_id' => 0,
 				'order'   => - 1,
@@ -429,6 +458,7 @@ class LP_Question_Factory {
 				$quiz = learn_press_get_quiz( $args['quiz_id'] );
 				$quiz->add_question( $question_id, $args );
 			}
+			print_r( $args );
 			update_post_meta( $question_id, '_lp_type', $args['type'] );
 		}
 

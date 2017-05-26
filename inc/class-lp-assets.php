@@ -243,8 +243,13 @@ class LP_Assets {
 			'utils',
 			'angularjs'
 		) );
+		$scripts->add( 'search-questions', $default_path . 'js/admin/controllers/search-questions.js' . $no_cache, array(
+			'jquery',
+			'utils',
+			'angularjs'
+		) );
 		$scripts->add( 'question-controller', $default_path . 'js/admin/controllers/question.js' . $no_cache, array( 'base-controller' ) );
-		$scripts->add( 'quiz-controller', $default_path . 'js/admin/controllers/quiz.js' . $no_cache, array( 'base-controller' ) );
+		$scripts->add( 'quiz-controller', $default_path . 'js/admin/controllers/quiz.js' . $no_cache, array( 'base-controller', 'search-questions' ) );
 		$scripts->add( 'course-controller', $default_path . 'js/admin/controllers/course.js' . $no_cache, array( 'base-controller' ) );
 		// admin
 		$scripts->add( 'question-app', $default_path . 'js/admin/question.js' . $no_cache, array(

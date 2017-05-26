@@ -36,7 +36,7 @@
         background: transparent;
         width: 100%;
         left: 0;
-        padding-left: 15px;
+        padding-left: 45px;
         box-sizing: border-box;
         box-shadow: none;
         font-weight: bold;
@@ -73,16 +73,14 @@
                 font-style: italic;
             }
         }
-        &:hover {
-            opacity: 1;
 
-        }
+    ;
     }
     .lp-toolbar-btn {
         visibility: hidden;
     }
     &.being-deleted {
-        .lp-toolbar-buttons{
+        .lp-toolbar-buttons {
             visibility: hidden;
             opacity: 0;
         }
@@ -116,17 +114,70 @@
             color: #FFF;
         }
     }
-    &.focused {
+    &.focused,
+    &:hover {
         .lp-box-data-content {
             opacity: 1;
         }
     }
+    &.invalid-type {
+        .lp-btn-change-type {
+            .lp-btn-icon:before {
+                color: #FF0000;
+            }
+        }
+    }
+    .lp-item-counter {
+        position: absolute;
+        width: 40px;
+        left: -20px;
+        top: 50%;
+        margin-top: -10px;
+        text-align: center;
+        display: block;
+        &:after {
+            content: attr(data-count);
+            height: 18px;
+            display: inline-block;
+            background: #ffffff;
+            color: #0073aa;
+            padding: 0 7px;
+            border-radius: 10px;
+            /* position: absolute; */
+            font-size: 10px;
+            line-height: 18px;
+            border: 1px solid #DDD;
+        }
+    }
+    .lp-item-icon-type{
+        position: absolute;
+        top: 50%;
+        margin-top: -10px;
+        left: 17px;
+        color: #0073aa;
+    }
+    &.lp-question-true_or_false{
+        .lp-item-icon-type:before{
+            content: "\f127";
+        }
+    }
+    &.lp-question-single_choice{
+        .lp-item-icon-type:before{
+            content: "\f126";
+        }
+    }
+    &.lp-question-multi_choice{
+        .lp-item-icon-type:before{
+            content: "\f210";
+        }
+    }
 }
-.lp-question-unknown-type-msg{
+
+.lp-question-unknown-type-msg {
     padding: 0 15px;
     color: #FF0000;
     font-style: italic;
-    &:before{
+    &:before {
         content: "\f534";
         font-family: dashicons;
         font-style: initial;
