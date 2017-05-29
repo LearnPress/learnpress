@@ -1,5 +1,5 @@
 === LearnPress - WordPress LMS Plugin ===  
-Contributors: thimpress, tunnhn, phonglq.foobla, chinhtm, thongta, kendy73, leehld
+Contributors: thimpress, tunnhn, phonglq.foobla, thongta, kendy73, leehld
 Donate link:  
 Tags: WordPress LMS, LMS, eLearning, e-Learning, Learning Management System, LMS WordPress, Course, Courses, Quiz, Quizzes, Training, Guru, Sell Courses  
 Requires at least: 3.8
@@ -193,6 +193,15 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.  
 
 == Changelog ==
+= 2.1.7 =
++ Added link to navigate to course in checkout page
++ Updated meta-box lib to latest version
++ Fixed prevent adding duplication course in one order
++ Fixed LP widgets does not work with SO
++ Fixed settings page is blank in some languages
++ Fixed some issue with WC 3.x
++ Fixed some other issues
+
 = 2.1.6.2 =
 + Fixed course does not finish automatically
 + Fixed issue with WC 3.x

@@ -80,7 +80,7 @@ if ( ! class_exists( 'LP_Widget_Recent_Courses' ) ) {
 				)
 			);
 			parent::__construct();
-			add_filter( 'learn_press_widget_display_content-' . $this->id_base, 'learn_press_is_course' );
+			//add_filter( 'learn_press_widget_display_content-' . $this->id_base, 'learn_press_is_course' );
 		}
 
 		/**
