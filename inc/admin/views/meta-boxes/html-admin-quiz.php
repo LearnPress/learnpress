@@ -36,17 +36,16 @@ $box_classes = array( 'learn-press-box-data' );
         <div class="lp-quiz-no-question-msg"
              ng-show="countQuestion() < 1"><?php esc_html_e( 'No question.', 'learnpress' ); ?></div>
         <div class="lp-toolbar-buttons">
-            <div class="lp-ajax-search" ng-controller="modalSearchQuestion">
+            <div class="lp-ajax-search" ng-controller="modalSearchQuestion" ng-keydown="onKeyEvent($event)">
                 <input class="lp-search-term" type="text" ng-keyup="startSearch($event)"/>
-                <div class="lp-search-results ng-hide" ng-show="hasResults()">
+                <div class="lp-search-results ng-hide" ng-show="needShowResults()">
                     <ul class="lp-search-items">
-                        <li ng-repeat="(key, item) in items track by $index">{{item}}</li>
                     </ul>
                     <p class="lp-search-actions">
                         <button class="button" type="button"
                                 ng-disabled="!hasSelectedItems()"
                                 ng-click="addBulkItems($event)"><?php _e( 'Bulk Add', 'learnpress' ); ?></button>
-                        <span><?php esc_html_e( 'Selected {{selectedItems.length}} item{{selectedItems.length > 1 ? "s" : ""}}.', 'learnpress' ); ?></span>
+                        <span><?php esc_html_e( 'Selected {{selectedItems.length}} of {{$resultItems.length}} item{{$resultItems.length > 1 ? "s" : ""}}.', 'learnpress' ); ?></span>
                     </p>
                 </div>
             </div>

@@ -1,4 +1,10 @@
-// npm i -g gulp
+/**
+ * Gulp tasks
+ *
+ * 1/ Run "npm install gulp -g" if you did not run it any time in the past.
+ * 2/ Run "npm install gulp --save-dev" to install gulp in your project directory.
+ * 3/ Run "npm install package-name[ package-name...] --save-dev
+ */
 'use strict';
 const zip = require('gulp-zip');
 

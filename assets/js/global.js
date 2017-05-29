@@ -669,13 +669,38 @@ if (typeof window.LP == 'undefined') {
                 delay: 300,
                 duration: 'slow',
                 offset: 50,
-                callback: null
+                container: null,
+                callback: null,
+                invisible: false
             }, args || {});
-            $('body, html')
-                .fadeIn(10)
+            var $container = $(args.container),
+                rootTop = 0;
+            if ($container.length == 0) {
+                $container = $('body, html');
+            }
+            rootTop = $container.offset().top;
+            var to = ($(element).offset().top + $container.scrollTop()) - rootTop - args.offset;
+
+            function isElementInView(element, fullyInView) {
+                var pageTop = $container.scrollTop();
+                var pageBottom = pageTop + $container.height();
+                var elementTop = $(element).offset().top - $container.offset().top;
+                var elementBottom = elementTop + $(element).height();
+
+                if (fullyInView === true) {
+                    return ((pageTop < elementTop) && (pageBottom > elementBottom));
+                } else {
+                    return ((elementTop <= pageBottom) && (elementBottom >= pageTop));
+                }
+            }
+
+            if (args.invisible && isElementInView(element, true)) {
+                return;
+            }
+            $container.fadeIn(10)
                 .delay(args.delay)
                 .animate({
-                    scrollTop: $(element).offset().top - args.offset
+                    scrollTop: to
                 }, args.duration, args.callback);
         },
         uniqueId: function (prefix, more_entropy) {

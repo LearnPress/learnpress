@@ -378,7 +378,8 @@ $remove-icon-color: #d05d5d;
                         }
                     }
                 }
-                &:hover {
+                &:hover,
+                &.active{
                     background: #dbf5ff;
                     a.lp-add-item {
                         visibility: visible;
