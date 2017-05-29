@@ -343,7 +343,7 @@ class LP_Quiz extends LP_Abstract_Course_Item {
 	}
 
 	public function get_content() {
-		if ( !did_action( 'learn_press_get_content_' . $this->id ) ) {
+		//if ( !did_action( 'learn_press_get_content_' . $this->id ) ) {
 			global $post, $wp_query;
 			$post  = get_post( $this->id );
 			//$posts = apply_filters( 'the_posts', array( $post ), $wp_query );
@@ -358,7 +358,7 @@ class LP_Quiz extends LP_Abstract_Course_Item {
 			$this->content = ob_get_clean();
 			wp_reset_postdata();
 			do_action( 'learn_press_get_content_' . $this->id );
-		}
+		//}
 		return $this->content;
 	}
 

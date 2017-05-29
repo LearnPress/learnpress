@@ -11,10 +11,10 @@
 function _learn_press_set_user_items( $query ) {
 	global $post_type, $pagenow, $wpdb;
 
-	if ( current_user_can( 'manage_options' ) || !current_user_can( LP_TEACHER_ROLE ) || !is_admin() || ( $pagenow != 'edit.php' ) ) {
+	if ( current_user_can( 'manage_options' ) || ! current_user_can( LP_TEACHER_ROLE ) || ! is_admin() || ( $pagenow != 'edit.php' ) ) {
 		return $query;
 	}
-	if ( !in_array( $post_type, array( 'lp_course', LP_LESSON_CPT, LP_QUIZ_CPT, LP_QUESTION_CPT ) ) ) {
+	if ( ! in_array( $post_type, array( 'lp_course', LP_LESSON_CPT, LP_QUIZ_CPT, LP_QUESTION_CPT ) ) ) {
 		return;
 	}
 	$items = $wpdb->get_col(
@@ -69,17 +69,18 @@ function _learn_press_restrict_view_items( $views ) {
 		}
 		$result = new WP_Query( $query );
 		if ( $result->found_posts > 0 ) {
-			$views[$view] = sprintf(
+			$views[ $view ] = sprintf(
 				'<a href="%s"' . $class . '>' . __( $name, 'learnpress' ) . ' <span class="count">(%d)</span></a>',
 				esc_url( add_query_arg( $query, $url ) ),
 				$result->found_posts
 			);
 		} else {
-			unset( $views[$view] );
+			unset( $views[ $view ] );
 		}
 	}
 	// remove view 'mine'
 	unset( $views['mine'] );
+
 	return $views;
 }
 
@@ -95,9 +96,10 @@ function learn_press_update_permalink_structure() {
 		return;
 	}
 	$rewrite_prefix      = '';
-	$permalink_structure = !empty( $_REQUEST['permalink_structure'] ) ? $_REQUEST['permalink_structure'] : '';
+	$permalink_structure = ! empty( $_REQUEST['permalink_structure'] ) ? $_REQUEST['permalink_structure'] : '';
 	if ( $permalink_structure ) {
-		$segs = explode( '/', $permalink_structure );
+		$rewrite_prefix = array();
+		$segs           = explode( '/', $permalink_structure );
 		if ( sizeof( $segs ) ) {
 			foreach ( $segs as $seg ) {
 				if ( strpos( $seg, '%' ) !== false || $seg == 'archives' ) {
@@ -120,16 +122,22 @@ add_action( 'init', 'learn_press_update_permalink_structure' );
 
 add_action( 'wp_dashboard_setup', 'learnpress_dashboard_widgets' );
 
-if ( !function_exists( 'learnpress_dashboard_widgets' ) ) {
-    /**
-     * Register dashboard widgets
-     * 
-     * LearnPress statistic
-     * Eduma statistic
-     * @since 2.0
-     */
-    function learnpress_dashboard_widgets() {
-        wp_add_dashboard_widget( 'learn_press_dashboard_widget', __( 'LearnPress Plugin', 'learnpress' ), array( 'LP_Statistic_Plugin', 'render' ) );
-        wp_add_dashboard_widget( 'learn_press_dashboard_widget_status', __( 'LearnPress Status', 'learnpress' ), array( 'LP_Statistic_Status', 'render' ) );
-    }
+if ( ! function_exists( 'learnpress_dashboard_widgets' ) ) {
+	/**
+	 * Register dashboard widgets
+	 *
+	 * LearnPress statistic
+	 * Eduma statistic
+	 * @since 2.0
+	 */
+	function learnpress_dashboard_widgets() {
+		wp_add_dashboard_widget( 'learn_press_dashboard_widget', __( 'LearnPress Plugin', 'learnpress' ), array(
+			'LP_Statistic_Plugin',
+			'render'
+		) );
+		wp_add_dashboard_widget( 'learn_press_dashboard_widget_status', __( 'LearnPress Status', 'learnpress' ), array(
+			'LP_Statistic_Status',
+			'render'
+		) );
+	}
 }

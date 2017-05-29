@@ -44,6 +44,7 @@ class LP_User_Factory {
 			'interval' => self::$_guest_transient,
 			'display'  => __( 'Every 3 Minutes', 'learnpress' )
 		);
+
 		return $schedules;
 	}
 
@@ -51,7 +52,7 @@ class LP_User_Factory {
 	 * Register schedule event to cleanup data of temp users who have took quiz
 	 */
 	public static function register_event() {
-		if ( !wp_next_scheduled( 'learn_press_schedule_cleanup_temp_users' ) ) {
+		if ( ! wp_next_scheduled( 'learn_press_schedule_cleanup_temp_users' ) ) {
 			wp_schedule_event( time(), 'every_three_minutes', 'learn_press_schedule_cleanup_temp_users' );
 		}
 	}
@@ -94,11 +95,14 @@ class LP_User_Factory {
 	 */
 	public static function generate_guest_id() {
 		$id = self::get_guest_id();
-		if ( !$id ) {
+		if ( ! $id ) {
 			$id = time();
-			learn_press_setcookie( 'learn_press_user_guest_id', $id, time() + self::$_guest_transient );
-			set_transient( 'learn_press_user_guest_' . $id, $id, self::$_guest_transient );
+			if ( ! is_user_logged_in() ) {
+				learn_press_setcookie( 'learn_press_user_guest_id', $id, time() + self::$_guest_transient );
+				set_transient( 'learn_press_user_guest_' . $id, $id, self::$_guest_transient );
+			}
 		}
+
 		return $id;
 	}
 
@@ -125,11 +129,14 @@ class LP_User_Factory {
 		}
 
 		$user_class = self::get_user_class( $the_id );
-		if ( empty( self::$_users[$the_id] ) || $force ) {
-			self::$_users[$the_id] = new $user_class( $the_id );
+		if ( $user_class instanceof LP_User_Guest ) {
+			$the_id = self::get_guest_id();
+		}
+		if ( empty( self::$_users[ $the_id ] ) || $force ) {
+			self::$_users[ $the_id ] = new $user_class( $the_id );
 		}
 
-		return self::$_users[$the_id];
+		return self::$_users[ $the_id ];
 	}
 
 	/**
@@ -141,11 +148,11 @@ class LP_User_Factory {
 	 */
 	public static function get_user_class( $the_id = 0 ) {
 		$deleted     = in_array( $the_id, self::$_deleted_users );
-		$exists_user = !$deleted ? get_userdata( $the_id ) : false;
+		$exists_user = ! $deleted ? get_userdata( $the_id ) : false;
 		if ( $exists_user ) {
 			$class = 'LP_User';
 		} else {
-			if ( !$deleted ) {
+			if ( ! $deleted ) {
 				self::$_deleted_users[] = $the_id;
 				/**
 				 * Prevent loading user does not exists in database
@@ -159,6 +166,7 @@ class LP_User_Factory {
 			$is_logged_in = function_exists( 'is_user_logged_in' ) && is_user_logged_in();
 			$class        = $is_logged_in ? 'LP_User' : 'LP_User_Guest';
 		}
+
 		return apply_filters( 'learn_press_user_class', $class );
 	}
 
@@ -224,10 +232,10 @@ class LP_User_Factory {
 		if ( get_user_by( 'id', $user_id ) ) {
 			return;
 		}
-		if ( !$item ) {
+		if ( ! $item ) {
 			return;
 		}
-		$item_id = !empty( $item->user_item_id ) ? $item->user_item_id : $item->history_id;
+		$item_id = ! empty( $item->user_item_id ) ? $item->user_item_id : $item->history_id;
 		learn_press_add_user_item_meta( $item_id, 'temp_user_id', 'yes' );
 		learn_press_add_user_item_meta( $item_id, 'temp_user_time', date( 'Y-m-d H:i:s', time() ) );
 	}

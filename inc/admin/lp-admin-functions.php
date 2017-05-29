@@ -1550,7 +1550,7 @@ function learn_press_output_screen_id () {
 //add_action( 'admin_head', 'learn_press_output_screen_id' );
 
 function learn_press_get_screens () {
-	$screen_id = sanitize_title( __( 'LearnPress', 'learnpress' ) );
+	$screen_id = sanitize_title( 'LearnPress' );
 	$screens   = array(
 		'toplevel_page_' . $screen_id,
 		$screen_id . '_page_learn-press-statistics',
