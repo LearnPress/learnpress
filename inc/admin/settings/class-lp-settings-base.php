@@ -183,7 +183,6 @@ class LP_Settings_Base {
 	 * admin settings page
 	 */
 	public function output_settings() {
-
 		$settings = new LP_Settings_Base();
 		if ( $fields = $this->get_settings() )
 			foreach ( $fields as $field ) {

@@ -10,6 +10,32 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+
+/**
+ * Default admin settings pages
+ *
+ * @return mixed
+ */
+function learn_press_settings_tabs_array() {
+	$default_tabs = array(
+		'general'  => __( 'General', 'learnpress' ),
+		'courses'  => __( 'Courses', 'learnpress' ),
+		'profile'  => __( 'Profile', 'learnpress' ),
+		'payments' => __( 'Payments', 'learnpress' ),
+		'pages'    => __( 'Pages', 'learnpress' ),
+		'emails'   => __( 'Emails', 'learnpress' ),
+		'assets'   => __( 'Assets', 'learnpress' )
+	);
+
+	// Deprecated
+	$tabs = apply_filters( 'learn_press_settings_tabs_array', $default_tabs );
+
+	return apply_filters( 'learn-press/admin/settings-tabs-array', $tabs );
+}
+
+
+/*******************************/
+
 function learn_press_is_hidden_post_box( $id, $user_id = 0 ) {
 	if ( ! $user_id ) {
 		$user_id = get_current_user_id();
@@ -312,24 +338,6 @@ function learn_press_admin_localize_script() {
 
 add_action( 'init', 'learn_press_admin_localize_script' );
 
-/**
- * Default admin settings pages
- *
- * @return mixed
- */
-function learn_press_settings_tabs_array() {
-	$tabs = array(
-		'general'  => __( 'General', 'learnpress' ),
-		'courses'  => __( 'Courses', 'learnpress' ),
-		'pages'    => __( 'Pages', 'learnpress' ),
-		'payments' => __( 'Payments', 'learnpress' ),
-		'checkout' => __( 'Checkout', 'learnpress' ),
-		//'profile'  => __( 'Profile', 'learnpress' ),
-		'emails'   => __( 'Emails', 'learnpress' )
-	);
-
-	return apply_filters( 'learn_press_settings_tabs_array', $tabs );
-}
 
 /**
  * Count number of orders between to dates

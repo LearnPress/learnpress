@@ -238,6 +238,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			include_once( 'lp-admin-actions.php' );
 			//Ajax Class
 			include_once( 'class-lp-admin-ajax.php' );
+
 			// Admin menu
 			include_once( 'class-lp-admin-menu.php' );
 

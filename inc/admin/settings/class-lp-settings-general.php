@@ -14,8 +14,6 @@ class LP_Settings_General extends LP_Settings_Base {
 	public function __construct() {
 		$this->id   = 'general';
 		$this->text = __( 'General', 'learnpress' );
-		//add_action( 'learn_press_settings_general', array( $this, 'output' ) );
-		//add_action( 'learn_press_settings_save_general', array( $this, 'save' ) );
 		parent::__construct();
 	}
 
@@ -101,10 +99,11 @@ class LP_Settings_General extends LP_Settings_Base {
 	private function _get_currency_options() {
 		$currencies = array();
 
-		if ( $payment_currencies = learn_press_get_payment_currencies() )
+		if ( $payment_currencies = learn_press_get_payment_currencies() ) {
 			foreach ( $payment_currencies as $code => $symbol ) {
-				$currencies[$code] = $symbol;
+				$currencies[ $code ] = $symbol;
 			}
+		}
 
 		return $currencies;
 	}
@@ -126,8 +125,9 @@ class LP_Settings_General extends LP_Settings_Base {
 					$text = sprintf( '%s ( %s %s )', $text, '69.99', learn_press_get_currency_symbol() );
 					break;
 			}
-			$positions[$pos] = $text;
+			$positions[ $pos ] = $text;
 		}
+
 		return $positions;
 	}
 }
