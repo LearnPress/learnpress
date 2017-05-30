@@ -400,31 +400,39 @@ class LP_Quiz extends LP_Abstract_Course_Item {
 	/**
 	 * Remove a question from list of questions
 	 *
-	 * @param int   $question_id ID of the question to remove
-	 * @param mixed $args        Extra options
+	 * @param int|array $question_id ID of the question to remove
+	 * @param mixed     $args        Extra options
 	 *
-	 * @return int|bool         false on failed
+	 * @return mixed         false on failed
 	 */
 	public function remove_question( $question_id, $args = array() ) {
 		global $wpdb;
-		$id   = $this->get_id();
-		$args = wp_parse_args( $args, array( 'delete_permanently' => false ) );
-		do_action( 'learn-press/delete-quiz-question', $question_id, $id );
-		$deleted = $wpdb->delete(
-			$wpdb->prefix . 'learnpress_quiz_questions',
-			array(
-				'quiz_id'     => $id,
-				'question_id' => $question_id
-			),
-			array( '%d', '%d' )
-		);
-		$this->sanitize_question_orders();
-		do_action( 'learn-press/deleted-quiz-question', $question_id, $id, $deleted );
-		if ( $deleted && $args['delete_permanently'] ) {
-			LP_Question_Factory::delete_question( $question_id, $id );
+		$id       = $this->get_id();
+		$args     = wp_parse_args( $args, array( 'delete_permanently' => false ) );
+		$is_multi = is_array( $question_id );
+
+		$ids = $question_id;
+		settype( $ids, 'array' );
+		$results = array();
+		foreach ( $ids as $question_id ) {
+			do_action( 'learn-press/delete-quiz-question', $question_id, $id );
+			$deleted = $wpdb->delete(
+				$wpdb->prefix . 'learnpress_quiz_questions',
+				array(
+					'quiz_id'     => $id,
+					'question_id' => $question_id
+				),
+				array( '%d', '%d' )
+			);
+			$this->sanitize_question_orders();
+			do_action( 'learn-press/deleted-quiz-question', $question_id, $id, $deleted );
+			if ( $deleted && $args['delete_permanently'] ) {
+				LP_Question_Factory::delete_question( $question_id, $id );
+			}
+			$results[ $question_id ] = $deleted;
 		}
 
-		return $deleted;
+		return $is_multi ? $results : $deleted;
 	}
 
 	/**

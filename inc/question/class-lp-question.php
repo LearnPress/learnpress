@@ -74,7 +74,7 @@ class LP_Question extends LP_Abstract_Course_Item {
 
 		if ( in_array( $this->get_type(), learn_press_get_build_in_question_types() ) ) {
 			$this->add_support( 'answer_options' );
-
+			$this->add_support( 'auto_calculate_point' );
 			if ( $this->get_type() !== 'true_or_false' ) {
 				$this->add_support( 'add_answer_option' );
 			}
@@ -222,13 +222,13 @@ class LP_Question extends LP_Abstract_Course_Item {
 	}
 
 	/**
-     * Get all features are supported by question.
-     *
+	 * Get all features are supported by question.
+	 *
 	 * @return array
 	 */
-	public function get_supports(){
-	    return $this->_supports;
-    }
+	public function get_supports() {
+		return $this->_supports;
+	}
 
 	/**
 	 * Store question and it's related data into database.
@@ -288,7 +288,7 @@ class LP_Question extends LP_Abstract_Course_Item {
 		$id         = absint( $this->get_id() );
 		$table_meta = $wpdb->learnpress_question_answermeta;
 		$table_main = $wpdb->learnpress_question_answers;
-		echo $query      = $wpdb->prepare( "
+		echo $query = $wpdb->prepare( "
 			DELETE FROM t1, t2
 			USING {$table_main} AS t1 INNER JOIN {$table_meta} AS t2 ON t1.question_answer_id = t2.learnpress_question_answer_id
 			WHERE t1.question_id = %d
@@ -858,8 +858,9 @@ class LP_Question extends LP_Abstract_Course_Item {
 		$args = array(
 			'id'            => '{{questionData.id}}',
 			'answer_option' => array(
-				'value' => 'OPTION_VALUE_PLACEHOLDER',
-				'text'  => ''
+				'value'   => 'OPTION_VALUE_PLACEHOLDER',
+				'text'    => '',
+				'is_true' => false
 			)
 		);
 

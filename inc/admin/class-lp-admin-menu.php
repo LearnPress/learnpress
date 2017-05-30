@@ -121,31 +121,6 @@ class LP_Admin_Menu {
 		if ( $menu_items ) foreach ( $menu_items as $item ) {
 			call_user_func_array( 'add_submenu_page', $item );
 		}
-
-		add_menu_page(
-			__( 'Learning Management System', 'learnpress' ),
-			__( 'LearnPress', 'learnpress' ),
-			'manage_options',
-			'xxxxx',
-			'',
-			'dashicons-welcome-learn-more',
-			'3.14'
-		);
-
-		$menu_items = array(
-			'yyyy' => array(
-				'xxxx',
-				__( 'Statistics', 'learnpress' ),
-				__( 'Statistics', 'learnpress' ),
-				'manage_options',
-				'yyyyy',
-				array( $this, 'menu_page' )
-			)
-		);
-		if ( $menu_items ) foreach ( $menu_items as $item ) {
-			call_user_func_array( 'add_submenu_page', $item );
-		}
-
 	}
 
 	/*

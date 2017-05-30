@@ -85,6 +85,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'change_question_type',
 				'closed_question_box',
 				'add_quiz_questions',
+				'clear_quiz_question',
 				'search_items' => 'modal_search_items'
 			);
 			foreach ( $ajax_events as $ajax_event => $callback ) {
@@ -199,15 +200,51 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				$response['result']  = 'error';
 				$response['message'] = __( 'Bad request.', 'learnpress' );
 			} else {
-			    try {
-				    $quiz = learn_press_get_quiz( $quiz_id );
-				    if ( $quiz->remove_question( $id, $extra_data ) ) {
-					    $response['message'] = __( 'Question deleted!', 'learnpress' );
-				    } else {
-					    $response['message'] = __( 'Delete question failed.', 'learnpress' );
-				    }
-			    }catch (Exception $exception ){
-                }
+				try {
+					$quiz = learn_press_get_quiz( $quiz_id );
+					if ( $results = $quiz->remove_question( $id, $extra_data ) ) {
+						$response['message'] = __( 'Question deleted!', 'learnpress' );
+						$response['ids']     = $results;
+					} else {
+						$response['message'] = __( 'Delete question failed.', 'learnpress' );
+					}
+				}
+				catch ( Exception $exception ) {
+				}
+			}
+			learn_press_send_json( $response );
+		}
+
+		/**
+		 * Delete a question from quiz
+		 */
+		public static function clear_quiz_question() {
+			list( $quiz_id, $ids, $nonce, $extra_data ) = learn_press_get_request_args(
+				array(
+					'quiz_id',
+					'ids',
+					'nonce',
+					'extra_data'
+				)
+			);
+			global $wpdb;
+			echo sprintf( 'quiz-nonce-%d', get_current_user_id() );
+			$response = array( 'result' => 'success' );
+			if ( ! ( LP_QUIZ_CPT == get_post_type( $quiz_id ) ) || ! wp_verify_nonce( $nonce, sprintf( 'quiz-nonce-%d', get_current_user_id() ) ) ) {
+				$response['result']  = 'error';
+				$response['message'] = __( 'Bad request.', 'learnpress' );
+			} else {
+				try {
+					$quiz = learn_press_get_quiz( $quiz_id );
+					if ( $results = $quiz->remove_question( $ids, $extra_data ) ) {
+						$response['message'] = __( 'Question deleted!', 'learnpress' );
+						$response['ids']     = $results;
+					} else {
+						$response['message'] = __( 'Delete question failed.', 'learnpress' );
+					}
+				}
+				catch ( Exception $exception ) {
+				}
 			}
 			learn_press_send_json( $response );
 		}

@@ -32,8 +32,8 @@ $template_data = array_merge(
 	),
 	$question->get_option_template_data()
 );
-?>
 
+?>
     <tr class="lp-list-option lp-row lp-list-option-<?php echo $template_data['answer_option']['value']; ?>"
         data-id="<?php echo $template_data['answer_option']['value']; ?>">
 		<?php foreach ( $option_headings as $heading => $title ) { ?>
@@ -87,9 +87,7 @@ $template_data = array_merge(
                     --><span class="learn-press-tooltip lp-toolbar-btn lp-btn-move"
                              data-tooltip="<?php esc_attr_e( 'Drag and drop to change answer\'s position', 'learnpress' ); ?>">
                         <a class="lp-btn-icon dashicons dashicons-sort"></a>
-                    </span>
-
-					<?php
+                    </span><?php
 					break;
 			}
 			if ( $tooltip ) {

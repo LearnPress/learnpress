@@ -337,6 +337,7 @@ $remove-icon-color: #d05d5d;
 .lp-ajax-search {
     position: relative;
     display: inline-block;
+    z-index: 999999;
     .lp-search-term {
         height: 28px;
         min-width: 300px;
@@ -346,6 +347,7 @@ $remove-icon-color: #d05d5d;
             @include no-outline();
         }
     }
+
     .lp-search-results {
         position: absolute;
         background: #FFF;
@@ -378,9 +380,13 @@ $remove-icon-color: #d05d5d;
                         }
                     }
                 }
-                &:hover,
                 &.active{
                     background: #dbf5ff;
+
+                }
+                &:hover{
+                    background: #0085ba;
+                    color: #FFF;
                     a.lp-add-item {
                         visibility: visible;
                     }

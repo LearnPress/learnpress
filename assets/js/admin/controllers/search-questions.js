@@ -16,6 +16,7 @@
             $resultsContainer: null,
             $overlay: '',
             $resultItems: '',
+            $input: null,
             init: function () {
                 $('#course-editor').on('click', '#learn-press-ajax-search-overlay', function () {
                     //$('#course-editor').removeClass('ajax-search');
@@ -25,20 +26,40 @@
                     $scope.$apply();
                 });
                 this.$doc.on('learn-press/added-quiz-question', function (e, id) {
-                    $scope.$resultsContainer.find('.lp-result-item[data-id="' + id + '"]').remove();
+                    $scope.onAddedQuizQuestion(e, id);
                 });
                 this.$overlay = $('<div id="learn-press-ajax-search-overlay"></div>');
                 this.$resultsContainer = this.getElement('.lp-search-items');
                 this.searchData.context = this.getScreenPostType();
                 this.searchData.context_id = this.getScreenPostId();
-console.log(this.getElement(), this.$overlay)
-                this.getElement().prepend(this.$overlay);
+                this.$overlay.insertAfter(this.getElement());//
+                this.$input = this.getElement('.lp-search-term');
             },
 
+            onAddedQuizQuestion: function (e, id) {
+                var $item = this.$resultsContainer.find('.lp-result-item[data-id="' + id + '"]'),
+                    $next = $item.next(),
+                    $prev = $item.prev();
+                $item.remove();
+                if (!$next.length) {
+                    if ($prev.length) {
+                        this.itemPosition--;
+                    } else {
+                        this.itemPosition = -1;
+                    }
+                }
+                if (this.itemPosition == -1) {
+                    this.isShowingResults = false;
+                } else {
+                    this.$resultItems = this.$resultsContainer.children('.lp-result-item');
+                    this._setItemSelected();
+                }
+            },
             startSearch: function (event) {
                 if (event.type !== 'keyup') {
                     return;
                 }
+
                 var newTerm = event.target.value;
                 if (!newTerm) {
                     this.isShowingResults = false;
@@ -68,14 +89,14 @@ console.log(this.getElement(), this.$overlay)
                                 $item.find('.lp-item-text').append('<a class="lp-add-item" href="" ng-click="addItem($event, ' + parseInt($chk.val()) + ')" href="">add</a>');
                                 $scope._addItemToResults(this);
                             }).length > 0;
-                        $scope.$resultItems = $scope.$resultsContainer.children();
+                        $scope.$resultItems = $scope.$resultsContainer.children('.lp-result-item');
                         $scope.$resultItems.eq(0).addClass('active');
 
                     });
                 }, 300);
             },
             onKeyEvent: function (event) {
-                if (event.type !== 'keydown' || !this.isShowingResults) {
+                if ((event.type !== 'keydown' || !this.isShowingResults) && event.keyCode !== 13) {
                     return;
                 }
                 var itemPosition = this.itemPosition;
@@ -85,6 +106,16 @@ console.log(this.getElement(), this.$overlay)
                         break;
                     case 40: //down
                         this.itemPosition = this.itemPosition < this.$resultItems.length - 1 ? this.itemPosition + 1 : this.itemPosition;
+                        break;
+                    case 13:
+                        event.preventDefault();
+                        if (this.$resultItems) {
+                            this.addItem(event, this.$resultItems.eq(this.itemPosition));
+                        }
+                        break;
+                    case 27:
+                        this.isShowingResults = false;
+                        this.$input.focus();
                 }
                 if (itemPosition !== this.itemPosition) {
                     this._setItemSelected();
@@ -146,7 +177,10 @@ console.log(this.getElement(), this.$overlay)
                 return items;
             },
             addItem: function (event, item) {
-                event.preventDefault();
+                event && event.preventDefault();
+                if (typeof item === 'object') {
+                    item = $(item).data('id');
+                }
                 var position = $.inArray(item, this.selectedItems);
                 if (position !== -1) {
                     this.selectedItems.splice(position, 1);
@@ -156,10 +190,17 @@ console.log(this.getElement(), this.$overlay)
             },
             addBulkItems: function () {
                 var ctrl = angular.element($('#learn-press-quiz-questions')[0]).scope();
-                ctrl.addExistsQuestions(this.selectedItems)
+                ctrl.addExistsQuestions(this.selectedItems);
+                this.selectedItems = [];
             },
             getElement: function (selector) {
-                return selector ? $element.find(selector) : $element;
+                var $el = null;
+                try {
+                    $el = selector ? $element.find(selector) : $element;
+                } catch (e) {
+                    console.log(e)
+                }
+                return $el;
             },
             hideSearchResults: function () {
 

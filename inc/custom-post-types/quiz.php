@@ -4,11 +4,11 @@
  * @package LearnPress/Classes
  * @version 1.0
  */
-if ( !defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
+if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 
 	// class LP_Quiz_Post_Type
 	final class LP_Quiz_Post_Type extends LP_Abstract_Post_Type {
@@ -46,10 +46,12 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 			add_action( 'edit_form_after_editor', array( $this, 'quiz_editor' ), 0 );
 
 
+
+
 			parent::__construct( $post_type, $args );
 		}
 
-            public function quiz_editor() {
+		public function quiz_editor() {
 			global $post;
 			if ( LP_QUIZ_CPT !== get_post_type() ) {
 				return;
@@ -61,7 +63,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 		}
 
 		public function init_quiz() {
-			if ( !empty( $_REQUEST['post'] ) && get_post_type( $_REQUEST['post'] ) == LP_QUIZ_CPT ) {
+			if ( ! empty( $_REQUEST['post'] ) && get_post_type( $_REQUEST['post'] ) == LP_QUIZ_CPT ) {
 				$q = _learn_press_get_quiz_questions( array( $_REQUEST['post'] ) );
 			}
 		}
@@ -132,7 +134,10 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 							'revisions',
 						),
 						'hierarchical'       => true,
-						'rewrite'            => array( 'slug' => 'quizzes', 'hierarchical' => true, 'with_front' => false )
+						'rewrite'            => array( 'slug'         => 'quizzes',
+						                               'hierarchical' => true,
+						                               'with_front'   => false
+						)
 					)
 				)
 			);
@@ -262,34 +267,36 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 		}
 
 		public function enqueue_script() {
-			if ( LP_QUIZ_CPT != get_post_type() ) return;
+			if ( LP_QUIZ_CPT != get_post_type() ) {
+				return;
+			}
 			ob_start();
 			?>
-			<script>
-				var form = $('#post');
+            <script>
+                var form = $('#post');
 
-				form.submit(function (evt) {
-					var $title = $('#title'),
-						is_error = false;
-					window.learn_press_before_update_quiz_message = [];
-					if (0 == $title.val().length) {
-						window.learn_press_before_update_quiz_message.push('<?php _e( 'Please enter the title of the quiz', 'learnpress' );?>');
-						$title.focus();
-						is_error = true;
-					}
+                form.submit(function (evt) {
+                    var $title = $('#title'),
+                        is_error = false;
+                    window.learn_press_before_update_quiz_message = [];
+                    if (0 == $title.val().length) {
+                        window.learn_press_before_update_quiz_message.push('<?php _e( 'Please enter the title of the quiz', 'learnpress' );?>');
+                        $title.focus();
+                        is_error = true;
+                    }
 
-					/* hook */
-					is_error = form.triggerHandler('learn_press_question_before_update') === false;
+                    /* hook */
+                    is_error = form.triggerHandler('learn_press_question_before_update') === false;
 
-					if (window.learn_press_before_update_quiz_message.length /*true == is_error*/) {
-						if (window.learn_press_before_update_quiz_message.length) {
-							alert("Error: \n" + window.learn_press_before_update_quiz_message.join("\n\n"))
-						}
-						evt.preventDefault();
-						return false;
-					}
-				});
-			</script>
+                    if (window.learn_press_before_update_quiz_message.length /*true == is_error*/) {
+                        if (window.learn_press_before_update_quiz_message.length) {
+                            alert("Error: \n" + window.learn_press_before_update_quiz_message.join("\n\n"))
+                        }
+                        evt.preventDefault();
+                        return false;
+                    }
+                });
+            </script>
 			<?php
 			$script = ob_get_clean();
 			$script = preg_replace( '!</?script>!', '', $script );
@@ -297,21 +304,24 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 
 			ob_start();
 			?>
-			<script type="text/html" id="tmpl-form-quick-add-question">
-				<div id="lpr-form-quick-add-question" class="lpr-quick-add-form">
-					<input type="text">
-					<select class="lpr-question-types lpr-select2" name="lpr_question[type]" id="lpr-quiz-question-type">
+            <script type="text/html" id="tmpl-form-quick-add-question">
+                <div id="lpr-form-quick-add-question" class="lpr-quick-add-form">
+                    <input type="text">
+                    <select class="lpr-question-types lpr-select2" name="lpr_question[type]"
+                            id="lpr-quiz-question-type">
 						<?php if ( $questions = learn_press_question_types() ): ?>
 							<?php foreach ( $questions as $type => $name ): ?>
-								<option value="<?php echo $type; ?>"><?php echo $name; ?></option>
+                                <option value="<?php echo $type; ?>"><?php echo $name; ?></option>
 							<?php endforeach; ?>
 						<?php endif; ?>
-					</select>
-					<button class="button" data-action="add" type="button"><?php _e( 'Add [Enter]', 'learnpress' ); ?></button>
-					<button data-action="cancel" class="button" type="button"><?php _e( 'Cancel [ESC]', 'learnpress' ); ?></button>
-					<span class="lpr-ajaxload">...</span>
-				</div>
-			</script>
+                    </select>
+                    <button class="button" data-action="add"
+                            type="button"><?php _e( 'Add [Enter]', 'learnpress' ); ?></button>
+                    <button data-action="cancel" class="button"
+                            type="button"><?php _e( 'Cancel [ESC]', 'learnpress' ); ?></button>
+                    <span class="lpr-ajaxload">...</span>
+                </div>
+            </script>
 			<?php
 			$js_template = ob_get_clean();
 			learn_press_enqueue_script( $js_template, true );
@@ -328,7 +338,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 
 			// append new column after title column
 			$pos = array_search( 'title', array_keys( $columns ) );
-			if ( false !== $pos && !array_key_exists( LP_COURSE_CPT, $columns ) ) {
+			if ( false !== $pos && ! array_key_exists( LP_COURSE_CPT, $columns ) ) {
 				$columns = array_merge(
 					array_slice( $columns, 0, $pos + 1 ),
 					array(
@@ -415,13 +425,14 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 */
 		public function posts_fields( $fields ) {
 			global $wpdb;
-			if ( !$this->_is_archive() ) {
+			if ( ! $this->_is_archive() ) {
 				return $fields;
 			}
 			$fields = " DISTINCT " . $fields;
 			if ( $this->_get_orderby() == 'question-count' ) {
 				$fields .= ", (SELECT count(*) FROM {$wpdb->prefix}learnpress_quiz_questions qq WHERE {$wpdb->posts}.ID = qq.quiz_id ) as question_count";
 			}
+
 			return $fields;
 		}
 
@@ -431,7 +442,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 * @return string
 		 */
 		public function posts_join_paged( $join ) {
-			if ( !$this->_is_archive() ) {
+			if ( ! $this->_is_archive() ) {
 				return $join;
 			}
 			global $wpdb;
@@ -440,6 +451,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 				$join .= " LEFT JOIN {$wpdb->prefix}learnpress_sections s ON s.section_id = si.section_id";
 				$join .= " LEFT JOIN {$wpdb->posts} c ON c.ID = s.section_course_id";
 			}
+
 			return $join;
 		}
 
@@ -450,7 +462,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 */
 		public function posts_where_paged( $where ) {
 
-			if ( !$this->_is_archive() ) {
+			if ( ! $this->_is_archive() ) {
 				return $where;
 			}
 
@@ -475,7 +487,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 * @return string
 		 */
 		public function posts_orderby( $order_by_statement ) {
-			if ( !$this->_is_archive() ) {
+			if ( ! $this->_is_archive() ) {
 				return $order_by_statement;
 			}
 			global $wpdb;
@@ -491,6 +503,7 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 						$order_by_statement = "{$wpdb->posts}.post_title {$_GET['order']}";
 				}
 			}
+
 			return $order_by_statement;
 		}
 
@@ -501,21 +514,23 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 */
 		public function sortable_columns( $columns ) {
 			$columns['author']          = 'author';
-			$columns[LP_COURSE_CPT]     = 'course-name';
+			$columns[ LP_COURSE_CPT ]   = 'course-name';
 			$columns['num_of_question'] = 'question-count';
+
 			return $columns;
 		}
 
 		private function _is_archive() {
 			global $pagenow, $post_type;
-			if ( !is_admin() || ( $pagenow != 'edit.php' ) || ( LP_QUIZ_CPT != $post_type ) ) {
+			if ( ! is_admin() || ( $pagenow != 'edit.php' ) || ( LP_QUIZ_CPT != $post_type ) ) {
 				return false;
 			}
+
 			return true;
 		}
 
 		private function _filter_course() {
-			return !empty( $_REQUEST['filter_course'] ) ? absint( $_REQUEST['filter_course'] ) : false;
+			return ! empty( $_REQUEST['filter_course'] ) ? absint( $_REQUEST['filter_course'] ) : false;
 		}
 
 		private function _get_orderby() {
@@ -535,9 +550,10 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 		 */
 		public function remove_view_link( $actions, $post ) {
 			$post_id = $post->ID;
-			if ( $post->post_type === LP_QUIZ_CPT && !learn_press_get_item_course_id( $post->ID, $post->post_type ) ) {
+			if ( $post->post_type === LP_QUIZ_CPT && ! learn_press_get_item_course_id( $post->ID, $post->post_type ) ) {
 				unset( $actions['view'] );
 			}
+
 			return $actions;
 		}
 
@@ -547,27 +563,27 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 		public function hide_view_quiz_link_if_not_assigned() {
 			$current_screen = get_current_screen();
 			global $post;
-			if ( !$post ) {
+			if ( ! $post ) {
 				return;
 			}
-			if ( $current_screen->id === LP_QUIZ_CPT && !learn_press_get_item_course_id( $post->ID, $post->post_type ) ) {
+			if ( $current_screen->id === LP_QUIZ_CPT && ! learn_press_get_item_course_id( $post->ID, $post->post_type ) ) {
 				?>
-				<style type="text/css">
-					#wp-admin-bar-view {
-						display: none;
-					}
+                <style type="text/css">
+                    #wp-admin-bar-view {
+                        display: none;
+                    }
 
-					#sample-permalink a {
-						pointer-events: none;
-						cursor: default;
-						text-decoration: none;
-						color: #666;
-					}
+                    #sample-permalink a {
+                        pointer-events: none;
+                        cursor: default;
+                        text-decoration: none;
+                        color: #666;
+                    }
 
-					#preview-action {
-						display: none;
-					}
-				</style>
+                    #preview-action {
+                        display: none;
+                    }
+                </style>
 				<?php
 			}
 		}
@@ -579,9 +595,10 @@ if ( !class_exists( 'LP_Quiz_Post_Type' ) ) {
 		}
 
 		public static function instance() {
-			if ( !self::$_instance ) {
+			if ( ! self::$_instance ) {
 				self::$_instance = new self( LP_QUIZ_CPT, '' );
 			}
+
 			return self::$_instance;
 		}
 

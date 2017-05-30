@@ -5,11 +5,16 @@ $box_classes = array( 'learn-press-box-data' );
 ?>
 <div id="learn-press-quiz-questions" class="<?php echo join( ' ', $box_classes ); ?>" ng-controller="quiz">
     <div class="lp-box-data-head">
-            <span class="lp-count-questions hide-if-js">{{countQuestion('<?php esc_attr_e( '%d question', 'learnpress' ); ?>
-                ', '<?php esc_attr_e( '%d questions', 'learnpress' ); ?>')}}</span>
+        <span class="lp-count-questions hide-if-js">{{countQuestion('<?php esc_attr_e( '%d question', 'learnpress' ); ?>
+            ', '<?php esc_attr_e( '%d questions', 'learnpress' ); ?>')}}</span>
         <div class="lp-box-data-actions lp-toolbar-buttons">
             <span class="lp-toolbar-btn" ng-click="saveAllQuestions($event)">
                 <a class="lp-btn-icon dashicons dashicons-location"></a>
+            </span><!--
+            --><span class="lp-toolbar-btn learn-press-tooltip"
+                     data-tooltip="<?php esc_attr_e( 'Remove all questions', 'learnpress' ); ?>"
+                     ng-click="removeAllQuestions($event)">
+                <a class="lp-btn-icon dashicons dashicons-trash"></a>
             </span><!--
             --><span
                     class="lp-toolbar-btn lp-btn-toggle learn-press-tooltip<?php echo learn_press_is_hidden_post_box( $quiz->get_id() ) ? ' closed' : ''; ?>"
@@ -33,7 +38,7 @@ $box_classes = array( 'learn-press-box-data' );
 			}
 			?>
         </div>
-        <div class="lp-quiz-no-question-msg"
+        <div class="lp-quiz-no-question-msg ng-hide"
              ng-show="countQuestion() < 1"><?php esc_html_e( 'No question.', 'learnpress' ); ?></div>
         <div class="lp-toolbar-buttons">
             <div class="lp-ajax-search" ng-controller="modalSearchQuestion" ng-keydown="onKeyEvent($event)">
@@ -65,6 +70,8 @@ $box_classes = array( 'learn-press-box-data' );
                     class="button button-primary"
                     ng-click="showModalSearchItems()"><?php _e( 'Select questions', 'learnpress' ); ?></button>
         </div>
+        <input type="hidden" name="quiz-nonce"
+               value="<?php echo wp_create_nonce( sprintf( 'quiz-nonce-%d', get_current_user_id() ) ); ?>">
     </div>
     <script type="text/html" class="quiz-element-data">
 		<?php echo json_encode( $quiz->get_admin_config() ); ?>

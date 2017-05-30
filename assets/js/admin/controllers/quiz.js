@@ -16,6 +16,7 @@
         $element = $($element);
         angular.extend($scope, {
             data: null,
+            noncePrefix: 'quiz-',
             init: function () {
                 if ($element.attr('ng-controller') !== 'quiz') {
                     return;
@@ -39,7 +40,7 @@
                 var postData = {id: $scope.getScreenPostId(), questions: []};
                 $element.find('.learn-press-question').each(function (i, el) {
                     var ctrl = angular.element(el).scope();
-                    postData.questions.push(ctrl.getId());
+                    postData.questions.push($(el).data('dbid'));
                 });
                 $http({
                     method: 'post',
@@ -138,6 +139,40 @@
                     url: this.getAjaxUrl('lp-ajax=ajax_update_quiz'),
                     data: postData
                 }).then(function (response) {
+                });
+            },
+            removeAllQuestions: function (event) {
+                var $questions = this.getElement('.learn-press-question');
+                $questions.addClass('being-deleted');
+                $.ajax({
+                    url: '',
+                    type: 'post',
+                    data: {
+                        'lp-ajax': 'ajax_clear_quiz_question',
+                        quiz_id: this.getScreenPostId(),
+                        nonce: this.getNonce(),
+                        ids: $questions.map(function () {
+                            return $(this).data('dbid')
+                        }).get()
+                        //extra_data: $.extend(this.getFormData() || {}, {delete_permanently: deletePermanently})
+                    },
+                    success: function (response) {
+                        response = LP.parseJSON(response);
+                        if (response.result === 'success') {
+                            _.forEach($questions, function (question) {
+                                var $question = $(question),
+                                    id = $question.data('dbid');
+                                if (response.ids && response.ids[id]) {
+                                    $question.remove();
+                                } else {
+                                    $question.removeClass('being-deleted');
+                                }
+                            });
+                        }else{
+                            $questions.removeClass('being-deleted');
+                        }
+                        $scope.$apply();
+                    }
                 });
             },
             cloneQuestion: function (event) {

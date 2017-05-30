@@ -54,9 +54,10 @@ class LP_Question_True_Or_False extends LP_Question {
 						$answer_options[] = apply_filters(
 							'learn-press/question/default-answer-option-data',
 							array(
-								'text'         => '',
-								'value'        => learn_press_uniqid(),
-								'answer_order' => $i + 1
+								'text'               => '',
+								'value'              => learn_press_uniqid(),
+								'answer_order'       => $i + 1,
+								'question_answer_id' => - 1 //fake id
 							),
 							$id
 						);

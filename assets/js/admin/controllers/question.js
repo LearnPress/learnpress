@@ -362,7 +362,6 @@
                             $element.removeClass('being-deleted');
                         }
                         $scope.$apply();
-                        console.log('xxx')
                     }
                 });
                 //

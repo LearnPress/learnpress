@@ -55,7 +55,7 @@ class LP_Install {
 	}
 
 	public static function include_update() {
-		if ( !self::$_update_files ) {
+		if ( ! self::$_update_files ) {
 			return;
 		}
 		$versions       = array_keys( self::$_update_files );
@@ -63,7 +63,7 @@ class LP_Install {
 		// Update LearnPress from 0.9.x to 1.0
 		if ( version_compare( learn_press_get_current_version(), $latest_version, '=' ) ) {
 			add_action( 'admin_notices', array( __CLASS__, 'hide_other_notices' ), - 100 );
-			learn_press_include( 'updates/' . self::$_update_files[$latest_version] );
+			learn_press_include( 'updates/' . self::$_update_files[ $latest_version ] );
 		}
 	}
 
@@ -73,10 +73,10 @@ class LP_Install {
 
 	public static function update_from_09() {
 
-		if ( !self::_has_new_table() || version_compare( LEARNPRESS_VERSION, get_option( 'learnpress_db_version' ), '>' ) ) {
+		if ( ! self::_has_new_table() || version_compare( LEARNPRESS_VERSION, get_option( 'learnpress_db_version' ), '>' ) ) {
 			self::install();
 		}
-		if ( !get_option( 'learnpress_version' ) || !get_option( 'learn_press_currency' ) ) {
+		if ( ! get_option( 'learnpress_version' ) || ! get_option( 'learn_press_currency' ) ) {
 			self::_create_options();
 		}
 		$ask = get_transient( 'learn_press_upgrade_courses_ask_again' );
@@ -87,8 +87,8 @@ class LP_Install {
 				LP_Assets::enqueue_script( 'learn-press-upgrade', LP()->plugin_url( 'inc/updates/09/script.js' ) );
 				$upgrade_url = wp_nonce_url( admin_url( 'options-general.php?page=learn_press_upgrade_from_09' ), 'learn-press-upgrade-09' );
 				$message     = sprintf( '<p>%s</p>', __( 'It seems like you have updated LearnPress from an older version and there are some outdated courses or data that need to be upgraded.', 'learnpress' ) );
-				$message .= sprintf( '<div id="learn-press-confirm-abort-upgrade-course"><p><label><input type="checkbox" id="learn-press-ask-again-abort-upgrade" /> %s</label></p><p><button href="" class="button disabled" data-action="yes">%s</button> <button href="" class="button" data-action="no">%s</button> </p></div>', __( 'Do not ask again.', 'learnpress' ), __( 'Ok', 'learnpress' ), __( 'Cancel', 'learnpress' ) );
-				$message .= sprintf( '<p id="learn-press-upgrade-course-actions"><a href="%s" class="button" data-action="upgrade">%s</a>&nbsp;<button class="button disabled" data-action="abort">%s</button></p>', $upgrade_url, __( 'Upgrade now', 'learnpress' ), __( 'No, thank!', 'learnpress' ) );
+				$message     .= sprintf( '<div id="learn-press-confirm-abort-upgrade-course"><p><label><input type="checkbox" id="learn-press-ask-again-abort-upgrade" /> %s</label></p><p><button href="" class="button disabled" data-action="yes">%s</button> <button href="" class="button" data-action="no">%s</button> </p></div>', __( 'Do not ask again.', 'learnpress' ), __( 'Ok', 'learnpress' ), __( 'Cancel', 'learnpress' ) );
+				$message     .= sprintf( '<p id="learn-press-upgrade-course-actions"><a href="%s" class="button" data-action="upgrade">%s</a>&nbsp;<button class="button disabled" data-action="abort">%s</button></p>', $upgrade_url, __( 'Upgrade now', 'learnpress' ), __( 'No, thank!', 'learnpress' ) );
 
 				LP_Admin_Notice::add( $message, 'error' );
 			}
@@ -111,7 +111,9 @@ class LP_Install {
 			$expiration = 0;
 		}
 		set_transient( 'learn_press_upgrade_courses_ask_again', $ask_again, $expiration );
-		learn_press_send_json( array( 'result' => 'success', 'message' => sprintf( '<p>%s</p>', __( 'Thank you for using LearnPress', 'learnpress' ) ) ) );
+		learn_press_send_json( array( 'result'  => 'success',
+		                              'message' => sprintf( '<p>%s</p>', __( 'Thank you for using LearnPress', 'learnpress' ) )
+		) );
 	}
 
 	public static function upgrade_wizard() {
@@ -123,7 +125,7 @@ class LP_Install {
 	 */
 	public static function get_update_versions() {
 
-		if ( !$patches = get_transient( 'learnpress_update_patches' ) ) {
+		if ( ! $patches = get_transient( 'learnpress_update_patches' ) ) {
 			$patches = array();
 			require_once ABSPATH . 'wp-admin/includes/file.php';
 			if ( WP_Filesystem() ) {
@@ -132,7 +134,7 @@ class LP_Install {
 				$list = $wp_filesystem->dirlist( LP_PLUGIN_PATH . '/inc/updates' );
 				foreach ( $list as $file ) {
 					if ( preg_match( '!learnpress-update-([0-9.]+).php!', $file['name'], $matches ) ) {
-						$patches[$matches[1]] = $file['name'];
+						$patches[ $matches[1] ] = $file['name'];
 					}
 				}
 			}
@@ -149,7 +151,7 @@ class LP_Install {
 	 * Check version
 	 */
 	public static function check_version() {
-		if ( !defined( 'IFRAME_REQUEST' ) && ( get_option( 'learnpress_version' ) != LP()->version ) ) {
+		if ( ! defined( 'IFRAME_REQUEST' ) && ( get_option( 'learnpress_version' ) != LP()->version ) ) {
 			self::install();
 		}
 	}
@@ -158,7 +160,7 @@ class LP_Install {
 	 * Install update actions when user click update button
 	 */
 	public static function update_actions() {
-		if ( !empty( $_GET['upgrade_learnpress'] ) ) {
+		if ( ! empty( $_GET['upgrade_learnpress'] ) ) {
 			self::update();
 		}
 	}
@@ -187,7 +189,7 @@ class LP_Install {
 		$wpdb->query( $wpdb->prepare( $sql, $wpdb->esc_like( '_transient_' ) . '%', $wpdb->esc_like( '_transient_timeout_' ) . '%', time() ) );
 
 		learn_press_delete_user_option( 'hide-notice-template-files' );
-		
+
 		// Fix for WP 4.7
 		if ( did_action( 'admin_init' ) ) {
 			self::_auto_update();
@@ -208,7 +210,7 @@ class LP_Install {
 
 	public static function _search_page( $type, $types ) {
 		static $pages = array();
-		if ( empty( $pages[$type] ) ) {
+		if ( empty( $pages[ $type ] ) ) {
 			global $wpdb;
 			$in_types = array_fill( 0, sizeof( $types ), '%s' );
 			$args     = array( '_learn_press_page' );
@@ -222,12 +224,12 @@ class LP_Install {
 			", $args );
 			if ( $rows = $wpdb->get_results( $query ) ) {
 				foreach ( $rows as $row ) {
-					$pages[$row->type] = $row->ID;
+					$pages[ $row->type ] = $row->ID;
 				}
 			}
 		}
 
-		$page_id = !empty( $pages[$type] ) ? $pages[$type] : 0;
+		$page_id = ! empty( $pages[ $type ] ) ? $pages[ $type ] : 0;
 
 		return $page_id;
 	}
@@ -240,8 +242,8 @@ class LP_Install {
 	public static function _remove_pages() {
 		global $wpdb;
 		$sql       = 'SELECT * '
-			. ' FROM ' . $wpdb->posts . ' p INNER JOIN  ' . $wpdb->postmeta . ' pm '
-			. ' ON p.ID=pm.post_id AND pm.meta_key="_learn_press_page" AND p.post_type="page";';
+		             . ' FROM ' . $wpdb->posts . ' p INNER JOIN  ' . $wpdb->postmeta . ' pm '
+		             . ' ON p.ID=pm.post_id AND pm.meta_key="_learn_press_page" AND p.post_type="page";';
 		$ids       = $wpdb->get_col( $sql );
 		$count_ids = count( $ids );
 		if ( $count_ids < 10 ) {
@@ -260,6 +262,7 @@ class LP_Install {
 			delete_option( "learn_press_{$page}_page_id" );
 		}
 		sleep( 5 );
+
 		return array();
 
 	}
@@ -268,7 +271,7 @@ class LP_Install {
 		global $wpdb;
 		$created_page = self::_remove_pages();
 
-		if ( !empty( $created_page ) ) {
+		if ( ! empty( $created_page ) ) {
 			return;
 		}
 
@@ -279,21 +282,21 @@ class LP_Install {
 				continue;
 			}
 			$page_id = self::_search_page( $page, $pages );
-			if ( !$page_id ) {
+			if ( ! $page_id ) {
 				// Check if page has already existed
 				switch ( $page ) {
 					case 'courses':
 						$_lpr_settings_pages = (array) get_option( '_lpr_settings_pages' );
 
-						if ( !empty( $_lpr_settings_pages['general'] ) ) {
-							if ( !empty( $_lpr_settings_pages['general']['courses_page_id'] ) ) {
+						if ( ! empty( $_lpr_settings_pages['general'] ) ) {
+							if ( ! empty( $_lpr_settings_pages['general']['courses_page_id'] ) ) {
 								$page_id = $_lpr_settings_pages['general']['courses_page_id'];
 							}
 						}
 						break;
 					case 'profile':
 						$_lpr_settings_general = (array) get_option( '_lpr_settings_general' );
-						if ( !empty( $_lpr_settings_general['set_page'] ) && $_lpr_settings_general['set_page'] == 'lpr_profile' ) {
+						if ( ! empty( $_lpr_settings_general['set_page'] ) && $_lpr_settings_general['set_page'] == 'lpr_profile' ) {
 							$page_id = $wpdb->get_var(
 								$wpdb->prepare( "
 									SELECT ID
@@ -305,7 +308,7 @@ class LP_Install {
 						break;
 				}
 
-				if ( !$page_id ) {
+				if ( ! $page_id ) {
 					$inserted = wp_insert_post(
 						array(
 							'post_title'     => 'LP ' . ucwords( str_replace( '_', ' ', $page ) ),
@@ -343,7 +346,7 @@ class LP_Install {
 		);
 
 		foreach ( $files as $file ) {
-			if ( wp_mkdir_p( $file['base'] ) && !file_exists( trailingslashit( $file['base'] ) . $file['file'] ) ) {
+			if ( wp_mkdir_p( $file['base'] ) && ! file_exists( trailingslashit( $file['base'] ) . $file['file'] ) ) {
 				if ( $file_handle = @fopen( trailingslashit( $file['base'] ) . $file['file'], 'w' ) ) {
 					fwrite( $file_handle, $file['content'] );
 					fclose( $file_handle );
@@ -357,14 +360,14 @@ class LP_Install {
 			$is_old_version = get_transient( 'learn_press_is_old_version' );
 
 			if ( empty( $is_old_version ) ) {
-				if ( !get_option( 'learnpress_db_version' ) ||
-					get_posts(
-						array(
-							'post_type'      => 'lpr_course',
-							'post_status'    => 'any',
-							'posts_per_page' => 1
-						)
-					)
+				if ( ! get_option( 'learnpress_db_version' ) ||
+				     get_posts(
+					     array(
+						     'post_type'      => 'lpr_course',
+						     'post_status'    => 'any',
+						     'posts_per_page' => 1
+					     )
+				     )
 				) {
 					$is_old_version = 'yes';
 				}
@@ -375,6 +378,7 @@ class LP_Install {
 			}
 			self::$_is_old_version = $is_old_version == 'yes';
 		}
+
 		return self::$_is_old_version;
 	}
 
@@ -394,6 +398,7 @@ class LP_Install {
 			HAVING upgraded IS NULL
 			LIMIT 0, 1
 		", '_learn_press_upgraded', 'lpr_course' );
+
 		return $wpdb->get_row( $query );
 	}
 
@@ -405,6 +410,7 @@ class LP_Install {
 			WHERE table_schema = %s
 			AND table_name LIKE %s
 		", DB_NAME, '%learnpress_sections%' );
+
 		return $wpdb->get_var( $query ) ? true : false;
 	}
 
@@ -421,6 +427,7 @@ class LP_Install {
 			WHERE um.meta_value LIKE %s
 			LIMIT 0, 1
 		", 'wp_capabilities', '%"lpr_teacher"%' );
+
 		return $wpdb->get_results( $query );
 	}
 
@@ -432,6 +439,7 @@ class LP_Install {
 				'posts_per_page' => 1
 			)
 		);
+
 		return sizeof( $new_post ) > 0;
 	}
 
@@ -471,7 +479,7 @@ class LP_Install {
 			'LP_Settings_Emails'   => include_once LP_PLUGIN_PATH . '/inc/admin/settings/class-lp-settings-emails.php'
 		);
 		foreach ( $settings_classes as $c => $class ) {
-			if ( !is_object( $class ) ) {
+			if ( ! is_object( $class ) ) {
 				$class = @new $c();
 			}
 			if ( is_callable( array( $class, 'get_settings' ) ) ) {
@@ -493,11 +501,11 @@ class LP_Install {
 			'learn_press_checkout_endpoints' => 'a:1:{s:17:"lp_order_received";s:17:"lp-order-received";}'
 		);
 		foreach ( $custom_options as $option_name => $option_value ) {
-			if ( !get_option( $option_name ) ) {
+			if ( ! get_option( $option_name ) ) {
 				update_option( $option_name, maybe_unserialize( $option_value ), 'yes' );
 			}
 		}
-		update_option( 'learn_press_install', 'yes');
+		update_option( 'learn_press_install', 'yes' );
 	}
 
 	private static function _create_tables() {
@@ -519,10 +527,10 @@ class LP_Install {
 		$collate = '';
 
 		if ( $wpdb->has_cap( 'collation' ) ) {
-			if ( !empty( $wpdb->charset ) ) {
+			if ( ! empty( $wpdb->charset ) ) {
 				$collate .= "DEFAULT CHARACTER SET $wpdb->charset";
 			}
-			if ( !empty( $wpdb->collate ) ) {
+			if ( ! empty( $wpdb->collate ) ) {
 				$collate .= " COLLATE $wpdb->collate";
 			}
 		}
@@ -639,18 +647,20 @@ class LP_Install {
 					PRIMARY KEY  (user_item_id)
 				) $collate;";
 		}
-		$table = $wpdb->prefix . 'learnpress_user_itemmeta';
+
+		$table = $wpdb->prefix . 'learnpress_question_answermeta';
 		if ( $wpdb->get_var( "SHOW TABLES LIKE '{$table}'" ) !== $table ) {
 			$query .= "
-				CREATE TABLE {$wpdb->prefix}learnpress_user_itemmeta (
+				CREATE TABLE {$table} (
 					meta_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-					learnpress_user_item_id bigint(20) unsigned NOT NULL,
+					learnpress_question_answer_id bigint(20) unsigned NOT NULL,
 					meta_key varchar(45) NOT NULL DEFAULT '',
 					meta_value text NOT NULL,
 					PRIMARY KEY  (meta_id)
 				) $collate;
 				";
 		}
+
 		return $query;
 	}
 }
