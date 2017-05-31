@@ -18,7 +18,7 @@ class LP_Submenu_Addons extends LP_Abstract_Submenu {
 	/**
 	 * Display content
 	 */
-	public function display() {
+	public function admin_content() {
 		echo 'xxxxx';
 	}
 }

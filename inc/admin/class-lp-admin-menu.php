@@ -37,8 +37,7 @@ class LP_Admin_Menu {
 		// admin menu
 		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 		add_action( 'admin_menu', array( $this, 'notify_new_course' ) );
-		add_action( 'init', array( $this, 'menu_content' ) );
-		add_action( 'init', 'learn_press_admin_update_settings', 1000 );
+		//add_action( 'init', 'learn_press_admin_update_settings', 1000 );
 		if ( apply_filters( 'learn_press_show_admin_bar_courses_page', true ) ) {
 			add_action( 'admin_bar_menu', array( $this, 'admin_bar_menus' ), 50 );
 		}
@@ -59,7 +58,7 @@ class LP_Admin_Menu {
 		 * @since 3.x
 		 */
 		$this->capability = 'edit_' . LP_COURSE_CPT . 's';
-		include_once 'sub-menus/class-lp-abstract-submenu.php';
+		include_once 'sub-menus/abstract-submenu.php';
 	}
 
 	public function admin_bar_menus( $wp_admin_bar ) {

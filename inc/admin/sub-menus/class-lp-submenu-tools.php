@@ -9,8 +9,8 @@ class LP_Submenu_Tools extends LP_Abstract_Submenu {
 		$this->priority   = 40;
 	}
 
-	public function display() {
-		echo 'xxxxx';
+	public function page_content() {
+		echo get_class($this);
 	}
 }
 return new LP_Submenu_Tools();

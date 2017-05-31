@@ -15,7 +15,7 @@ class LP_Submenu_Statistics extends LP_Abstract_Submenu {
 		$this->priority   = 10;
 	}
 
-	public function display() {
+	public function admin_content() {
 		echo 'xxxxx';
 	}
 }

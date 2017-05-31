@@ -1,6 +1,6 @@
 <?php
 
-if ( !defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
@@ -25,15 +25,15 @@ if ( $template_dir === $stylesheet_dir ) {
 }
 $theme_name = implode( ' & ', $theme_name );
 
-
+$readmore = 'https://thimpress.com/knowledge-base/outdated-template-fix/';
 ?>
 <div id="message" class="learn-press-message notice notice-warning">
-	<p>
-		<?php printf( __( 'Your theme <strong>(%s)</strong> contains outdated copies of some LearnPress template files.', 'learnpress' ), esc_html( $theme_name ) ); ?></p>
-	<p>
-		<?php _e( 'These files may need updating to ensure they are compatible with the current version of LearnPress. You can see which files are affected from the system status page. If in doubt, check with the author of the theme.', 'learnpress' ); ?></p>
-	<p>
-		<a class="button" href="<?php echo esc_url( admin_url( 'admin.php?page=learn-press-tools&tab=templates' ) ); ?>"><?php _e( 'View list of outdated templates', 'learnpress' ); ?></a>
-	</p>
-	<a href="<?php echo esc_url( add_query_arg( 'lp-hide-notice', 'template-files', learn_press_get_current_url() ) ); ?>" class="learn-press-admin-notice-dismiss"></a>
+    <p><?php echo printf( __( 'There is a new update of LearnPress. You may need to update your theme <strong>(%s)</strong> to avoid outdated template files.', 'learnpress' ), $theme_name ); ?></p>
+    <p class="outdated-readmore-link"><?php echo sprintf( __( 'This is not a bug, don\'t worry. Read more about Outdated template files notice <a href="%s" target="_blank">here</a>.', 'learnpress' ), esc_url( $readmore ) ); ?>  </p>
+    <p>
+        <a class="button"
+           href="http://localhost/foobla/learnpress/dev/wp-admin/admin.php?page=learn-press-tools&amp;tab=templates"><?php esc_attr_e( 'View list of outdated templates', 'learnpress' ); ?></a>
+    </p>
+    <a href="http://localhost/foobla/learnpress/dev/wp-admin/themes.php/?lp-hide-notice=template-files"
+       class="learn-press-admin-notice-dismiss"></a>
 </div>

@@ -442,7 +442,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 				//require_once 'inc/admin/class-lp-admin-settings.php';
 
 				//require_once( 'inc/admin/class-lp-admin-assets.php' );
-				require_once( 'inc/admin/settings/class-lp-settings-base.php' );
+				require_once( 'inc/admin/settings/abstract-settings.php' );
 			}
 			$this->settings = LP_Settings::instance();
 			require_once 'inc/class-lp-assets.php';

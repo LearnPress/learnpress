@@ -6,7 +6,7 @@ defined( 'ABSPATH' ) || exit();
  *
  * @since 3.0.0
  */
-class LP_Abstract_Submenu {
+abstract class LP_Abstract_Submenu {
 	/**
 	 * Menu slug
 	 *
@@ -56,6 +56,11 @@ class LP_Abstract_Submenu {
 	 */
 	protected $callback = false;
 
+	/**
+	 * Heading tabs
+	 *
+	 * @var array
+	 */
 	protected $tabs = array();
 
 	/**
@@ -148,10 +153,20 @@ class LP_Abstract_Submenu {
 		$this->icon = $icon;
 	}
 
+	/**
+	 * Get heading tabs.
+	 *
+	 * @return mixed|array
+	 */
 	public function get_tabs() {
 		return apply_filters( 'learn-press/submenu-' . $this->get_id() . '-heading-tabs', $this->tabs );
 	}
 
+	/**
+	 * Get active tab by checking ?tab=tab-name
+	 *
+	 * @return bool|mixed
+	 */
 	public function get_active_tab() {
 		$tabs = $this->get_tabs();
 		if ( ! $tabs ) {
@@ -164,6 +179,10 @@ class LP_Abstract_Submenu {
 		}
 
 		return $tab;
+	}
+
+	public function has_tabs() {
+		return $this->get_tabs();
 	}
 
 	/**
@@ -193,7 +212,26 @@ class LP_Abstract_Submenu {
 			<?php } else { ?>
                 <h1 class="wp-heading-inline"><?php echo $this->get_menu_title(); ?></h1>
 			<?php } ?>
+			<?php $this->page_content(); ?>
         </div>
 		<?php
+	}
+
+	/**
+	 * This function for displaying content of active tab only.
+	 * For displaying content of main page without tab,
+	 * overwrite this function in sub class.
+	 */
+	public function page_content() {
+		if ( $this->has_tabs() ) {
+		    // If I have a function named 'page_content_TAB_SLUG' then call it.
+			$callback = array( $this, sprintf( 'page_content_%s', $this->get_active_tab() ) );
+			if ( is_callable( $callback ) ) {
+				call_user_func_array( $callback, array() );
+			} else {
+			    // Otherwise, do a action.
+				do_action( 'learn-press/admin/page-content-' . $this->get_active_tab() );
+			}
+		}
 	}
 }
