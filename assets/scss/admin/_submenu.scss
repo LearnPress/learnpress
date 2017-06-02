@@ -1,0 +1,42 @@
+.lp-admin-tabs {
+    background: #FFF;
+    position: relative;
+    .lp-admin-tab-navs {
+        margin: 0;
+        width: 250px;
+        float: left;
+        padding: 10px 10px;
+        @include box-sizing(border-box);
+        .nav-section {
+            margin: 0;
+            a, span {
+                display: block;
+                padding: 8px 16px;
+                outline: none;
+                box-shadow: none;
+                text-decoration: none;
+                text-transform: capitalize;
+            }
+        }
+    }
+    .lp-admin-tab-content {
+        background: #FFF;
+        padding: 18px;
+    }
+    &.has-sections {
+        .lp-admin-tab-content {
+            margin-left: 250px;
+        }
+        &:before {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 250px;
+            border-left: 1px solid #DDD;
+            content: '';
+        }
+    }
+    &:after {
+        @include clear-fix();
+    }
+}

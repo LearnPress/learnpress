@@ -3,7 +3,7 @@
 /**
  * Class LP_Settings_Courses
  */
-class LP_Settings_Courses extends LP_Settings_Base {
+class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 	public function __construct() {
 		$this->id   = 'courses';
 		$this->text = __( 'Courses', 'learnpress' );

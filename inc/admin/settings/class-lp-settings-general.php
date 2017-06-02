@@ -7,7 +7,7 @@
  * @package LearnPress/Admin/Settings/Classes
  * @version 1.0
  */
-class LP_Settings_General extends LP_Settings_Base {
+class LP_Settings_General extends LP_Abstract_Settings_Page {
 	/**
 	 * Construct
 	 */

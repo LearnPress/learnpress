@@ -7,7 +7,7 @@
  * @version 1.0
  */
 
-if ( !defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
@@ -143,16 +143,16 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 		if ( is_admin() ) {
 			ob_start();
 			?>
-			<script>
-				$('#learn_press_paypal_enable').change(function () {
-					var $rows = $(this).closest('tr').siblings('tr');
-					if (this.checked) {
-						$rows.css("display", "");
-					} else {
-						$rows.css("display", "none");
-					}
-				}).trigger('change');
-			</script>
+            <script>
+                $('#learn_press_paypal_enable').change(function () {
+                    var $rows = $(this).closest('tr').siblings('tr');
+                    if (this.checked) {
+                        $rows.css("display", "");
+                    } else {
+                        $rows.css("display", "none");
+                    }
+                }).trigger('change');
+            </script>
 			<?php
 			$script = ob_get_clean();
 			$script = preg_replace( '!</?script>!', '', $script );
@@ -179,19 +179,20 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 		);
 
 		// Post back to get a response
-		$response = wp_safe_remote_post( !empty( $_REQUEST['test_ipn'] ) ? $this->paypal_payment_sandbox_url : $this->paypal_payment_live_url, $params );
-		if ( !is_wp_error( $response ) && $response['response']['code'] >= 200 && $response['response']['code'] < 300 ) {
+		$response = wp_safe_remote_post( ! empty( $_REQUEST['test_ipn'] ) ? $this->paypal_payment_sandbox_url : $this->paypal_payment_live_url, $params );
+		if ( ! is_wp_error( $response ) && $response['response']['code'] >= 200 && $response['response']['code'] < 300 ) {
 			$body = wp_remote_retrieve_body( $response );
 			if ( 'VERIFIED' === $body ) {
 				return true;
 			}
 		}
+
 		return false;
 	}
 
 	public function web_hook_process_paypal( $request ) {
 		if ( $this->validate_ipn() ) {
-			if ( !empty( $request['custom'] ) && ( $order = $this->get_order( $request['custom'] ) ) ) {
+			if ( ! empty( $request['custom'] ) && ( $order = $this->get_order( $request['custom'] ) ) ) {
 				$request['payment_status'] = strtolower( $request['payment_status'] );
 
 				if ( isset( $request['test_ipn'] ) && 1 == $request['test_ipn'] && 'pending' == $request['payment_status'] ) {
@@ -222,25 +223,28 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 			$order_key = $custom->order_key;
 
 			// Fallback to serialized data if safe. This is @deprecated in 2.3.11
-		} elseif ( preg_match( '/^a:2:{/', $raw_custom ) && !preg_match( '/[CO]:\+?[0-9]+:"/', $raw_custom ) && ( $custom = maybe_unserialize( $raw_custom ) ) ) {
+		} elseif ( preg_match( '/^a:2:{/', $raw_custom ) && ! preg_match( '/[CO]:\+?[0-9]+:"/', $raw_custom ) && ( $custom = maybe_unserialize( $raw_custom ) ) ) {
 			$order_id  = $custom[0];
 			$order_key = $custom[1];
 
 			// Nothing was found
 		} else {
 			_e( 'Error: order ID and key were not found in "custom".' );
+
 			return false;
 		}
 
-		if ( !$order = LP_Order::instance( $order_id ) ) {
+		if ( ! $order = LP_Order::instance( $order_id ) ) {
 			//$order_id = hb_get_order_id_by_key( $order_key );
 			//$order    = LP_Order::instance( $order_id );
 		}
 
-		if ( !$order || $order->order_key !== $order_key ) {
+		if ( ! $order || $order->order_key !== $order_key ) {
 			printf( __( 'Error: Order Keys do not match %s and %s.' ), $order->order_key, $order_key );
+
 			return false;
 		}
+
 		return $order;
 	}
 
@@ -261,14 +265,17 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 
 		$orders = learn_press_get_orders( $args );
 		print_r( $orders );
-		if ( $orders ) foreach ( $orders as $order ) {
-			return $order->ID;
+		if ( $orders ) {
+			foreach ( $orders as $order ) {
+				return $order->ID;
+			}
 		}
+
 		return 0;
 	}
 
 	public function parse_ipn() {
-		if ( !isset( $_REQUEST['ipn'] ) ) {
+		if ( ! isset( $_REQUEST['ipn'] ) ) {
 			return;
 		}
 		require_once( 'paypal-ipn/ipn.php' );
@@ -276,7 +283,7 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 
 	public function get_payment_form() {
 		$output = $this->get_description();;
-		$error  = false;
+		$error = false;
 		if ( $this->settings->get( 'paypal_sandbox' ) == 'yes' ) {
 			if ( false == is_email( $this->settings->get( 'paypal_sandbox_email' ) ) ) {
 				$error = true;
@@ -290,38 +297,46 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 			$output .= learn_press_get_message( __( 'Paypal settings is not setup', 'learnpress' ), 'error' );
 			$output .= '<input type="hidden" name="payment_method_paypal-error" value="yes" />';
 		}
+
 		return $output;
 	}
 
 	public function process_order_paypal_standard() {
 
-		if ( !empty( $_REQUEST['learn-press-transaction-method'] ) && ( 'paypal-standard' == $_REQUEST['learn-press-transaction-method'] ) ) {
+		if ( ! empty( $_REQUEST['learn-press-transaction-method'] ) && ( 'paypal-standard' == $_REQUEST['learn-press-transaction-method'] ) ) {
 			// if we have a paypal-nonce in $_REQUEST that meaning user has clicked go back to our site after finished the transaction
 			// so, create a new order
-			if ( !empty( $_REQUEST['paypal-nonce'] ) && wp_verify_nonce( $_REQUEST['paypal-nonce'], 'learn-press-paypal-nonce' ) ) {
-				if ( !empty( $_REQUEST['tx'] ) ) //if PDT is enabled
+			if ( ! empty( $_REQUEST['paypal-nonce'] ) && wp_verify_nonce( $_REQUEST['paypal-nonce'], 'learn-press-paypal-nonce' ) ) {
+				if ( ! empty( $_REQUEST['tx'] ) ) //if PDT is enabled
+				{
 					$transaction_id = $_REQUEST['tx'];
-				else if ( !empty( $_REQUEST['txn_id'] ) ) //if PDT is not enabled
+				} else if ( ! empty( $_REQUEST['txn_id'] ) ) //if PDT is not enabled
+				{
 					$transaction_id = $_REQUEST['txn_id'];
-				else
-					$transaction_id = NULL;
+				} else {
+					$transaction_id = null;
+				}
 
-				if ( !empty( $_REQUEST['cm'] ) )
+				if ( ! empty( $_REQUEST['cm'] ) ) {
 					$transient_transaction_id = $_REQUEST['cm'];
-				else if ( !empty( $_REQUEST['custom'] ) )
+				} else if ( ! empty( $_REQUEST['custom'] ) ) {
 					$transient_transaction_id = $_REQUEST['custom'];
-				else
-					$transient_transaction_id = NULL;
+				} else {
+					$transient_transaction_id = null;
+				}
 
-				if ( !empty( $_REQUEST['st'] ) ) //if PDT is enabled
+				if ( ! empty( $_REQUEST['st'] ) ) //if PDT is enabled
+				{
 					$transaction_status = $_REQUEST['st'];
-				else if ( !empty( $_REQUEST['payment_status'] ) ) //if PDT is not enabled
+				} else if ( ! empty( $_REQUEST['payment_status'] ) ) //if PDT is not enabled
+				{
 					$transaction_status = $_REQUEST['payment_status'];
-				else
-					$transaction_status = NULL;
+				} else {
+					$transaction_status = null;
+				}
 
 
-				if ( !empty( $transaction_id ) && !empty( $transient_transaction_id ) && !empty( $transaction_status ) ) {
+				if ( ! empty( $transaction_id ) && ! empty( $transient_transaction_id ) && ! empty( $transaction_status ) ) {
 					$user = learn_press_get_current_user();
 
 
@@ -346,7 +361,8 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 							die();
 						}
 
-					} catch ( Exception $e ) {
+					}
+					catch ( Exception $e ) {
 						return false;
 
 					}
@@ -374,9 +390,9 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 		}
 
 		if ( 'completed' === $request['payment_status'] ) {
-			$this->payment_complete( $order, ( !empty( $request['txn_id'] ) ? $request['txn_id'] : '' ), __( 'IPN payment completed', 'learnpress' ) );
+			$this->payment_complete( $order, ( ! empty( $request['txn_id'] ) ? $request['txn_id'] : '' ), __( 'IPN payment completed', 'learnpress' ) );
 			// save paypal fee
-			if ( !empty( $request['mc_fee'] ) ) {
+			if ( ! empty( $request['mc_fee'] ) ) {
 				update_post_meta( $order->post->ID, '_transaction_fee', $request['mc_fee'] );
 			}
 		} else {
@@ -430,10 +446,10 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 			return false;
 		}
 
-		$this->line_items['item_name_' . $index]   = html_entity_decode( $item_name ? $item_name : __( 'Item', 'learnpress' ), ENT_NOQUOTES, 'UTF-8' );
-		$this->line_items['quantity_' . $index]    = $quantity;
-		$this->line_items['amount_' . $index]      = $amount;
-		$this->line_items['item_number_' . $index] = $item_number;
+		$this->line_items[ 'item_name_' . $index ]   = html_entity_decode( $item_name ? $item_name : __( 'Item', 'learnpress' ), ENT_NOQUOTES, 'UTF-8' );
+		$this->line_items[ 'quantity_' . $index ]    = $quantity;
+		$this->line_items[ 'amount_' . $index ]      = $amount;
+		$this->line_items[ 'item_number_' . $index ] = $item_number;
 
 		return true;
 	}
@@ -477,11 +493,17 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 			),
 			$this->get_item_lines()
 		);
+
 		//print_r($args);die();
 		return apply_filters( 'learn_press_paypal_args', $args );
 	}
 
-	public function __toString() {
-		return 'Paypal';
+	public function get_settings() {
+		return apply_filters(
+			'learn-press/gateway-payment/paypal/settings',
+			array(
+				array()
+			)
+		);
 	}
 }

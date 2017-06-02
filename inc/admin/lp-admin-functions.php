@@ -21,7 +21,7 @@ function learn_press_settings_tabs_array() {
 		'general'  => __( 'General', 'learnpress' ),
 		'courses'  => __( 'Courses', 'learnpress' ),
 		'profile'  => __( 'Profile', 'learnpress' ),
-		'payments' => __( 'Payments', 'learnpress' ),
+		'payments' => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-payments.php",
 		'pages'    => __( 'Pages', 'learnpress' ),
 		'emails'   => __( 'Emails', 'learnpress' ),
 		'assets'   => __( 'Assets', 'learnpress' )

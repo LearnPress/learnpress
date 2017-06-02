@@ -7,11 +7,6 @@ defined( 'ABSPATH' ) || exit();
 class LP_Submenu_Settings extends LP_Abstract_Submenu {
 
 	/**
-	 * @var array
-	 */
-	protected $subtabs = array();
-
-	/**
 	 * LP_Submenu_Settings constructor.
 	 */
 	public function __construct() {
@@ -23,21 +18,28 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 		// Heading tabs
 		$this->tabs = learn_press_settings_tabs_array();
 		$this->init_tab();
+
+		add_action( 'learn-press/admin/page-' . $this->_get_page() . '/section-content', array(
+			$this,
+			'section_content'
+		) );
+		parent::__construct();
 	}
 
 	protected function init_tab() {
 		if ( $active_tab = $this->get_active_tab() ) {
 			switch ( $active_tab ) {
 				case 'payments':
-					$this->subtabs['general'] = __( 'General', 'learnpress' );
-					if ( $gateways = LP_Gateways::instance()->get_gateways() ) {
-						$this->subtabs = array_merge( $this->subtabs, $gateways );
-					}
+					$this->sections = '';
 					break;
 				case 'emails':
+					$sections       = array(
+						'new_course' => __( 'New course' )
+					);
+					$this->sections = apply_filters( 'learn-press/admin/page-settings/emails/sections', $sections );
 					break;
 				default:
-					do_action( 'learn-press/admin/settings-tab-init', $active_tab, $this );
+					do_action( 'learn-press/admin/page-settings/init', $active_tab, $this );
 			}
 		}
 	}
@@ -50,7 +52,7 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 	}
 
 	public function page_content_general() {
-		echo 'General';
+		echo 'Generaldfgdfgd';
 	}
 
 	public function page_content_courses() {
@@ -58,11 +60,36 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 	}
 
 	public function page_content_payments() {
-		learn_press_debug($this->subtabs);
+
+		$this->tabs['payments']->admin_page( $this->get_active_section(), $this->get_sections() );
+
+		return;
+		$active_section = $this->get_active_section();
+		$sectionClass   = '';
+		if ( ! empty( $this->sections[ $active_section ] ) ) {
+			$sectionClass = $this->sections[ $active_section ];
+			if ( is_string( $sectionClass ) && class_exists( $sectionClass ) ) {
+				$sectionClass = new $sectionClass();
+			}
+		}
+		$callback = array( $sectionClass, 'admin_page' );
+		if ( is_callable( $callback ) ) {
+			call_user_func_array( $callback, array() );
+		} else {
+			$this->display_section();
+		}
 	}
 
-	public function xxxx() {
-		echo 'Custom hook';
+	public function section_content_paypaldd() {
+	}
+
+	public function page_content_emails() {
+		learn_press_debug( $this->get_sections() );
+
+	}
+
+	public function section_content( $section ) {
+		echo $section;
 	}
 }
 

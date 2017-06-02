@@ -1,6 +1,6 @@
 <?php
 /**
- * Class LP_Settings_Base
+ * Class LP_Abstract_Settings_Page
  *
  * @author  ThimPress
  * @package LearnPress/Classes
@@ -10,7 +10,7 @@ if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-class LP_Abstract_Settings {
+class LP_Abstract_Settings_Page {
 
 	/**
 	 * Tab's ID
@@ -34,21 +34,15 @@ class LP_Abstract_Settings {
 	public $section = false;
 
 	/**
-	 * @var array|bool
+	 * @var array
 	 */
-	public $tab = false;
-
-	/**
-	 * Current tab
-	 *
-	 * @var string
-	 */
-	static $current_tab = '';
+	protected $sections = array();
 
 	/**
 	 * Constructor
 	 */
 	public function __construct() {
+	    return;
 		if ( strtolower( current_filter() ) == 'activate_learnpress/learnpress.php' ) {
 			return;
 		}
@@ -183,7 +177,7 @@ class LP_Abstract_Settings {
 	 * admin settings page
 	 */
 	public function output_settings() {
-		$settings = new LP_Settings_Base();
+		$settings = new LP_Abstract_Settings_Page();
 		if ( $fields = $this->get_settings() )
 			foreach ( $fields as $field ) {
 				$settings->output_field( $field );
@@ -273,4 +267,4 @@ class LP_Abstract_Settings {
 
 }
 
-return new LP_Abstract_Settings();
+//return new LP_Abstract_Settings();

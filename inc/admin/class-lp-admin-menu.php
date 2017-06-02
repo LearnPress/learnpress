@@ -44,7 +44,7 @@ class LP_Admin_Menu {
 
 		// auto include file for admin page
 		// example: slug = learn_press_settings -> file = inc/admin/sub-menus/settings.php
-		$page = ! empty ( $_REQUEST['page'] ) ? $_REQUEST['page'] : null;
+		/*$page = ! empty ( $_REQUEST['page'] ) ? $_REQUEST['page'] : null;
 		if ( $page ) {
 			if ( strpos( $page, 'learn-press-' ) !== false ) {
 				$file = preg_replace( '!^learn-press-!', '', $page );
@@ -53,7 +53,7 @@ class LP_Admin_Menu {
 					$this->_submenu = require_once $file;
 				}
 			}
-		}
+		}*/
 		/**
 		 * @since 3.x
 		 */

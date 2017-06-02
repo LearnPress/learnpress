@@ -12,11 +12,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class LP_Gateway_Abstract {
+class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	/**
 	 * @var mixed|null
 	 */
-	public $method_title = null;
+	public $method_title = '';
 
 	/**
 	 * @var null
@@ -27,6 +27,7 @@ class LP_Gateway_Abstract {
 	 * @var null
 	 */
 	public $id = null;
+
 
 	/**
 	 * @var string
@@ -48,10 +49,10 @@ class LP_Gateway_Abstract {
 	 */
 	public function __construct() {
 
-		if ( !$this->method_title ) {
+		if ( ! $this->method_title ) {
 			$this->method_title = preg_replace( '!LP_Gateway_!', '', get_class( $this ) );
 		}
-		if ( !$this->id ) {
+		if ( ! $this->id ) {
 			$this->id = sanitize_title( $this->title );
 		}
 	}
@@ -70,7 +71,7 @@ class LP_Gateway_Abstract {
 
 	public function get_icon() {
 
-		$icon = $this->icon ? '<img src="' .  $this->icon  . '" alt="' . esc_attr( $this->get_title() ) . '" />' : '';
+		$icon = $this->icon ? '<img src="' . $this->icon . '" alt="' . esc_attr( $this->get_title() ) . '" />' : '';
 
 		return apply_filters( 'learn_press_gateway_icon', $icon, $this->id );
 	}
@@ -93,5 +94,12 @@ class LP_Gateway_Abstract {
 		}
 
 		return apply_filters( 'learn_press_get_return_url', $return_url, $order );
+	}
+
+	/**
+	 * @return string
+	 */
+	public function __toString() {
+		return $this->method_title;
 	}
 }

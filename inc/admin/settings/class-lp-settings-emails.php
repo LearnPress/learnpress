@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-class LP_Settings_Emails extends LP_Settings_Base {
+class LP_Settings_Emails extends LP_Abstract_Settings_Page {
 	/**
 	 * @var null
 	 */
