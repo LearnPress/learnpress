@@ -502,7 +502,30 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 		return apply_filters(
 			'learn-press/gateway-payment/paypal/settings',
 			array(
-				array()
+				array(
+					'title'   => __( 'Enable', 'learnpress' ),
+					'id'      => $this->id . '[enable]',
+					'default' => 'no',
+					'type'    => 'checkbox'
+				),
+				array(
+					'title'   => __( 'Paypal Email', 'learnpress' ),
+					'id'      => $this->id . '[paypal_email]',
+					'type'    => 'text',
+					'class'   => 'regular-text'
+				),
+				array(
+					'title'   => __( 'Sandbox Mode', 'learnpress' ),
+					'id'      => $this->id . '[paypal_sandbox]',
+					'default' => 'no',
+					'type'    => 'checkbox'
+				),
+				array(
+					'title'   => __( 'Sandbox Email Address', 'learnpress' ),
+					'id'      => $this->id . '[paypal_sandbox_email]',
+					'type'    => 'text',
+					'class'   => 'regular-text'
+				)
 			)
 		);
 	}

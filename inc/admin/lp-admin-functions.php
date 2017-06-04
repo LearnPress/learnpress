@@ -18,13 +18,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 function learn_press_settings_tabs_array() {
 	$default_tabs = array(
-		'general'  => __( 'General', 'learnpress' ),
-		'courses'  => __( 'Courses', 'learnpress' ),
-		'profile'  => __( 'Profile', 'learnpress' ),
+		'general'  => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-general.php",
+		'courses'  => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-courses.php",
+		'profile'  => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-profile.php",
 		'payments' => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-payments.php",
-		'pages'    => __( 'Pages', 'learnpress' ),
-		'emails'   => __( 'Emails', 'learnpress' ),
-		'assets'   => __( 'Assets', 'learnpress' )
+		'pages'    => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-pages.php",
+		'emails'   => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-emails.php",
+		'assets'   => include_once LP_PLUGIN_PATH . "inc/admin/settings/class-lp-settings-assets.php",
 	);
 
 	// Deprecated

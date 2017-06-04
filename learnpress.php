@@ -444,6 +444,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			if ( is_admin() ) {
 
+				require_once 'inc/admin/class-lp-meta-box-helper.php';
 				require_once 'inc/admin/class-lp-admin-notice.php';
 
 				/*if ( !defined( 'RWMB_VER' ) ) {

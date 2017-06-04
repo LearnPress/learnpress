@@ -8,7 +8,7 @@ class LP_Abstract_Settings {
 	public function __construct() {
 	}
 
-	public function get_settings(){
+	public function get_settings() {
 		return false;
 	}
 
@@ -16,10 +16,7 @@ class LP_Abstract_Settings {
 	 * Print admin fields options.
 	 */
 	public function admin_options() {
-		if(!$settings = $this->get_settings()){
-			printf('There is no options.');
-			return;
-		}
-		print_r($settings);
+		$settings = $this->get_settings();
+		LP_Meta_Box_Helper::render_fields( $settings );
 	}
 }

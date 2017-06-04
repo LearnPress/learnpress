@@ -23,7 +23,6 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 		$this->id   = 'payments';
 		$this->text = __( 'Payments', 'learnpress' );
 
-		//add_action('learn-press/admin/setting-payments/admin-options-general', array($this,))
 		parent::__construct();
 	}
 
@@ -44,16 +43,45 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 		return $sections;
 	}
 
-	public function admin_page( $section, $sections ) {
+	public function get_settings( $section = '', $tab = '' ) {
+		if ( is_callable( array( $this, 'get_settings_' . $section ) ) ) {
+			return call_user_func( array( $this, 'get_settings_' . $section ) );
+		}
+
+		return false;
+	}
+
+	public function get_settings_general() {
+		return array( 'asdasd' );
+	}
+
+	public function admin_page( $section = null, $tab = null ) {
+		$sections = array();
+		$items    = LP_Admin_Menu::instance()->get_menu_items();
+		if ( ! empty( $items['settings'] ) ) {
+			$tab      = $items['settings']->get_active_tab();
+			$section  = $items['settings']->get_active_section();
+			$sections = $items['settings']->get_sections();
+		}
 		$section_data = ! empty( $sections[ $section ] ) ? $sections[ $section ] : false;
 		if ( $section_data instanceof LP_Abstract_Settings ) {
 			$section_data->admin_options();
 		} else if ( is_array( $section_data ) ) {
-
+			print_r( $section_data );
 		} else {
-			do_action( 'learn-press/admin/setting-payments/admin-options-' . $section );
+			if ( is_callable( array( $this, 'admin_options_' . $section ) ) ) {
+				call_user_func_array( array( $this, 'admin_options_' . $section ), array(
+					$section,
+					$tab
+				) );
+			} else {
+				do_action( 'learn-press/admin/setting-payments/admin-options-' . $section, $tab );
+			}
 		}
+	}
 
+	public function admin_options_general( $section, $tab ) {
+		parent::admin_page( $section, $tab );
 	}
 
 	public function output() {

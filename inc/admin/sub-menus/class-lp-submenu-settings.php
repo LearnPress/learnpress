@@ -19,6 +19,11 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 		$this->tabs = learn_press_settings_tabs_array();
 		$this->init_tab();
 
+		add_action( 'learn-press/admin/page-content-settings', array(
+			$this,
+			'page_contents'
+		) );
+
 		add_action( 'learn-press/admin/page-' . $this->_get_page() . '/section-content', array(
 			$this,
 			'section_content'
@@ -49,17 +54,41 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 	 */
 	public function page_content() {
 		parent::page_content();
+
+		/*$section_data = ! empty( $sections[ $section ] ) ? $sections[ $section ] : false;
+		if ( $section_data instanceof LP_Abstract_Settings ) {
+			$section_data->admin_options();
+		} else if ( is_array( $section_data ) ) {
+
+		} else {
+			do_action( 'learn-press/admin/setting-payments/admin-options-' . $section );
+		}*/
 	}
 
-	public function page_content_general() {
-		echo 'Generaldfgdfgd';
+	public function page_contents() {
+		$active_tab = $this->get_active_tab();
+		$this->tabs[ $active_tab ]->admin_page( $this->get_active_section(), $this->get_sections() );
+
+		?>
+        <p>
+            <button class="button button-primary">Save settings</button>
+            <a class="button"
+               href="/foobla/learnpress/wporg/wp-admin/admin.php?page=learn-press-settings&amp;tab=payments&amp;reset=yes&amp;_wpnonce=e0a7fed10d"
+               id="learn-press-reset-settings" data-text="Do you want to restore all settings to default?">Reset</a>
+        </p>
+		<?php
+
 	}
 
-	public function page_content_courses() {
+	public function page_content_generalxx() {
+
+	}
+
+	public function page_content_coursesxx() {
 		echo 'Courses';
 	}
 
-	public function page_content_payments() {
+	public function page_content_paymentsxx() {
 
 		$this->tabs['payments']->admin_page( $this->get_active_section(), $this->get_sections() );
 

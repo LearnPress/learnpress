@@ -6,7 +6,7 @@
  * @package LearnPress/Classes
  * @version 1.0
  */
-if ( !defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
@@ -42,24 +42,24 @@ class LP_Abstract_Settings_Page {
 	 * Constructor
 	 */
 	public function __construct() {
-	    return;
+		return;
 		if ( strtolower( current_filter() ) == 'activate_learnpress/learnpress.php' ) {
 			return;
 		}
 		$current_tab = isset( $_GET['tab'] ) ? $_GET['tab'] : '';
 		$tabs        = learn_press_settings_tabs_array();
-		if ( !$current_tab && $tabs ) {
+		if ( ! $current_tab && $tabs ) {
 			$tab_keys    = array_keys( $tabs );
 			$current_tab = reset( $tab_keys );
 			$this->tab   = array(
 				'id'   => $current_tab,
-				'text' => $tabs[$current_tab]
+				'text' => $tabs[ $current_tab ]
 			);
 		} else {
 			$this->tab = array( 'id' => null, 'text' => null );
 		}
 
-		$current_section = !empty( $_REQUEST['section'] ) ? $_REQUEST['section'] : '';
+		$current_section = ! empty( $_REQUEST['section'] ) ? $_REQUEST['section'] : '';
 		$sections        = $this->get_sections();
 
 		/**
@@ -67,10 +67,11 @@ class LP_Abstract_Settings_Page {
 		 */
 		if ( $sections ) {
 			$array_keys = array_keys( $sections );
-			if ( !$current_section )
+			if ( ! $current_section ) {
 				$current_section = reset( $array_keys );
-			if ( !empty( $sections[$current_section] ) ) {
-				$this->section = $sections[$current_section];
+			}
+			if ( ! empty( $sections[ $current_section ] ) ) {
+				$this->section = $sections[ $current_section ];
 			} else {
 				$this->section = array( 'id' => null, 'title' => '' );
 			}
@@ -78,19 +79,28 @@ class LP_Abstract_Settings_Page {
 			$this->section = array( 'id' => null, 'title' => '' );
 		}
 
-		if ( $sections = $this->get_sections() )
+		if ( $sections = $this->get_sections() ) {
 			foreach ( $sections as $id => $text ) {
-				$callback = apply_filters( 'learn_press_section_callback_' . $this->id . '_' . $id, array( $this, 'output_section_' . $id ) );
+				$callback = apply_filters( 'learn_press_section_callback_' . $this->id . '_' . $id, array(
+					$this,
+					'output_section_' . $id
+				) );
 				if ( is_callable( $callback ) ) {
 					add_action( 'learn_press_section_' . $this->id . '_' . $id, $callback );
 				}
 			}
+		}
 		self::$current_tab = $current_tab;
 		// hooks
 		add_action( 'learn_press_sections_' . $this->id, array( $this, 'output_sections' ) );
 		add_action( 'learn_press_settings_' . $this->id, array( $this, 'output' ) );
 		add_action( 'learn_press_settings_save_' . $this->id, array( $this, 'save' ) );
 
+	}
+
+	public function admin_page( $section = null, $tab = '' ) {
+		$settings = $this->get_settings( $section, $tab );
+		LP_Meta_Box_Helper::render_fields($settings);
 	}
 
 	/**
@@ -105,17 +115,18 @@ class LP_Abstract_Settings_Page {
 			echo '<ul class="subsubsub">';
 			foreach ( $sections as $name => $section ) {
 				?>
-				<li>
-					<a href="<?php echo '?page=learn-press-settings&tab=' . $this->id . '&section=' . sanitize_title( $name ); ?>" class="<?php echo $current_section == $name ? 'current' : ''; ?>">
+                <li>
+                    <a href="<?php echo '?page=learn-press-settings&tab=' . $this->id . '&section=' . sanitize_title( $name ); ?>"
+                       class="<?php echo $current_section == $name ? 'current' : ''; ?>">
 						<?php echo $section['title']; ?>
-					</a>
+                    </a>
 					<?php //echo( end( $array_keys ) == $name ? '' : '|' ); ?>
-				</li>
+                </li>
 				<?php
 			}
 			echo '</ul>';
 			//echo '<div class="clear"></div>';
-		}else{
+		} else {
 		}
 	}
 
@@ -131,8 +142,9 @@ class LP_Abstract_Settings_Page {
 	 */
 	public function save() {
 		foreach ( $_POST as $k => $v ) {
-			if ( ( strpos( $k, 'learn_press_' ) === false ) || ( !apply_filters( 'learn_press_abort_update_option', true, $k ) ) )
+			if ( ( strpos( $k, 'learn_press_' ) === false ) || ( ! apply_filters( 'learn_press_abort_update_option', true, $k ) ) ) {
 				continue;
+			}
 			update_option( $k, apply_filters( 'learn_press_update_option_value', ( $v ), $k ) );
 		}
 	}
@@ -155,6 +167,7 @@ class LP_Abstract_Settings_Page {
 	 */
 	public function get_field_name( $name ) {
 		$field_name = apply_filters( 'learn_press_settings_field_name_' . $name, "learn_press_{$name}" );
+
 		return $field_name;
 	}
 
@@ -169,7 +182,7 @@ class LP_Abstract_Settings_Page {
 		return preg_replace( array( '!\[|(\]\[)!', '!\]!' ), array( '_', '' ), $this->get_field_name( $name ) );
 	}
 
-	public function get_settings() {
+	public function get_settings( $section = null, $tab = null ) {
 		return array();
 	}
 
@@ -178,50 +191,51 @@ class LP_Abstract_Settings_Page {
 	 */
 	public function output_settings() {
 		$settings = new LP_Abstract_Settings_Page();
-		if ( $fields = $this->get_settings() )
+		if ( $fields = $this->get_settings() ) {
 			foreach ( $fields as $field ) {
 				$settings->output_field( $field );
 			}
+		}
 	}
 
 	public function output_field( $options ) {
-		if ( !isset( $options['type'] ) ) {
+		if ( ! isset( $options['type'] ) ) {
 			return;
 		}
-		if ( !isset( $options['id'] ) ) {
+		if ( ! isset( $options['id'] ) ) {
 			$options['id'] = '';
 		}
-		if ( !isset( $options['title'] ) ) {
+		if ( ! isset( $options['title'] ) ) {
 			$options['title'] = isset( $options['name'] ) ? $options['name'] : '';
 		}
-		if ( !isset( $options['class'] ) ) {
+		if ( ! isset( $options['class'] ) ) {
 			$options['class'] = '';
 		}
-		if ( !isset( $options['css'] ) ) {
+		if ( ! isset( $options['css'] ) ) {
 			$options['css'] = '';
 		}
-		if ( !isset( $options['default'] ) ) {
+		if ( ! isset( $options['default'] ) ) {
 			$options['default'] = '';
 		}
-		if ( !isset( $options['desc'] ) ) {
+		if ( ! isset( $options['desc'] ) ) {
 			$options['desc'] = '';
 		}
-		if ( !isset( $options['desc_tip'] ) ) {
+		if ( ! isset( $options['desc_tip'] ) ) {
 			$options['desc_tip'] = false;
 		}
-		if ( !isset( $options['placeholder'] ) ) {
+		if ( ! isset( $options['placeholder'] ) ) {
 			$options['placeholder'] = '';
 		}
 
 		$custom_attributes = array();
 
-		if ( !empty( $options['custom_attributes'] ) && is_array( $options['custom_attributes'] ) ) {
+		if ( ! empty( $options['custom_attributes'] ) && is_array( $options['custom_attributes'] ) ) {
 			foreach ( $options['custom_attributes'] as $attribute => $attribute_value ) {
 				$custom_attributes[] = esc_attr( $attribute ) . '="' . esc_attr( $attribute_value ) . '"';
 			}
 		}
 
-		if ( !empty( $options['desc'] ) ) {
+		if ( ! empty( $options['desc'] ) ) {
 			$description = sprintf( '<p class="description">%s</p>', $options['desc'] );
 		} else {
 			$description = '';
@@ -243,10 +257,10 @@ class LP_Abstract_Settings_Page {
 			// Get value
 			$option_values = get_option( $option_name, '' );
 
-			$key = key( $option_array[$option_name] );
+			$key = key( $option_array[ $option_name ] );
 
-			if ( isset( $option_values[$key] ) ) {
-				$option_value = $option_values[$key];
+			if ( isset( $option_values[ $key ] ) ) {
+				$option_value = $option_values[ $key ];
 			} else {
 				$option_value = null;
 			}
@@ -258,7 +272,7 @@ class LP_Abstract_Settings_Page {
 
 		if ( is_array( $option_value ) ) {
 			$option_value = array_map( 'stripslashes', $option_value );
-		} elseif ( !is_null( $option_value ) ) {
+		} elseif ( ! is_null( $option_value ) ) {
 			$option_value = stripslashes( $option_value );
 		}
 

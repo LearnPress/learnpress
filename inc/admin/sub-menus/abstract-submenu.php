@@ -318,13 +318,16 @@ abstract class LP_Abstract_Submenu {
 
 		echo '<div class="lp-admin-tab-content">';
 		if ( $this->has_tabs() ) {
+			$page = $this->_get_page();
+			$tab  = $this->get_active_tab();
 			// If I have a function named 'page_content_TAB_SLUG' then call it.
-			$callback = array( $this, sprintf( 'page_content_%s', $this->get_active_tab() ) );
+			$callback = array( $this, sprintf( 'page_content_%s', $tab ) );
 			if ( is_callable( $callback ) ) {
 				call_user_func_array( $callback, array() );
 			} else {
-				// Otherwise, do a action.
-				do_action( 'learn-press/admin/page-content-' . $this->get_active_tab() );
+				// Otherwise, do a actions.
+				do_action( 'learn-press/admin/page-content-' . $page, $tab );
+				do_action( 'learn-press/admin/page-content-' . $page . '/' . $tab );
 			}
 		}
 		echo '</div>';
@@ -351,7 +354,7 @@ abstract class LP_Abstract_Submenu {
 				?>
                 <li class="nav-section<?php echo $active_class; ?>">
 					<?php if ( $active_class ) { ?>
-                        <span><?php echo $slug; ?></span>
+                        <span><?php echo $section_title; ?></span>
 					<?php } else { ?>
                         <a href="<?php echo esc_url( add_query_arg( 'section', $slug ) ); ?>"><?php echo $section_title; ?></a>
 					<?php } ?>

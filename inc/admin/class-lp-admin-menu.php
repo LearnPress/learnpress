@@ -87,7 +87,7 @@ class LP_Admin_Menu {
 	 *
 	 * @return string
 	 */
-	public function get_capability(){
+	public function get_capability() {
 		return $this->capability;
 	}
 
@@ -107,11 +107,11 @@ class LP_Admin_Menu {
 		);
 
 		// Default submenu items
-		$menu_items   = array();
-		$menu_items[] = include_once "sub-menus/class-lp-submenu-statistics.php";
-		$menu_items[] = include_once "sub-menus/class-lp-submenu-addons.php";
-		$menu_items[] = include_once "sub-menus/class-lp-submenu-settings.php";
-		$menu_items[] = include_once "sub-menus/class-lp-submenu-tools.php";
+		$menu_items              = array();
+		$menu_items['statistic'] = include_once "sub-menus/class-lp-submenu-statistics.php";
+		$menu_items['addons']    = include_once "sub-menus/class-lp-submenu-addons.php";
+		$menu_items['settings']  = include_once "sub-menus/class-lp-submenu-settings.php";
+		$menu_items['tools']     = include_once "sub-menus/class-lp-submenu-tools.php";
 
 		// Deprecated hooks
 		$menu_items = apply_filters( 'learn_press_menu_items', $menu_items );
@@ -119,7 +119,7 @@ class LP_Admin_Menu {
 		$menu_items = apply_filters( 'learn-press/admin/menu-items', $menu_items );
 
 		// Sort menu items by it's priority
-		usort( $menu_items, array( $this, 'sort_menu_items' ) );
+		uasort( $menu_items, array( $this, 'sort_menu_items' ) );
 
 		if ( $menu_items ) {
 			foreach ( $menu_items as $item ) {
@@ -141,6 +141,7 @@ class LP_Admin_Menu {
 					$item->get_icon()
 				);
 			}
+			$this->menu_items = $menu_items;
 		}
 	}
 
@@ -156,6 +157,10 @@ class LP_Admin_Menu {
 		return $a->get_priority() > $b->get_priority();
 	}
 
+	public function get_menu_items() {
+		return $this->menu_items;
+	}
+
 	/*
 	 * Notify an administrator with pending courses
 	 */
@@ -169,6 +174,15 @@ class LP_Admin_Menu {
 		$awaiting_mod    = $count_courses->pending;
 		$menu['3.14'][0] .= " <span class='awaiting-mod count-$awaiting_mod'><span class='pending-count'>" . number_format_i18n( $awaiting_mod ) . "</span></span>";
 	}
+
+	public static function instance() {
+		static $instance = false;
+		if ( ! $instance ) {
+			$instance = new self();
+		}
+
+		return $instance;
+	}
 }
 
-return new LP_Admin_Menu();
+return LP_Admin_Menu::instance();
