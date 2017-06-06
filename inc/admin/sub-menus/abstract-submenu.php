@@ -82,6 +82,7 @@ abstract class LP_Abstract_Submenu {
 	 */
 	public function __construct() {
 		add_action( 'learn-press/admin/page-content-sections', array( $this, 'output_section_nav' ) );
+		add_filter( 'admin_body_class', array( $this, 'body_class' ) );
 	}
 
 	/**
@@ -233,12 +234,12 @@ abstract class LP_Abstract_Submenu {
 		return apply_filters( 'learn-press/submenu-sections', $this->sections );
 	}
 
-	public function get_active_page() {
+	public function get_active_page( $prefix = true ) {
 		if ( false === $this->page ) {
 			$this->page = ! empty ( $_REQUEST['page'] ) ? $_REQUEST['page'] : null;
 		}
 
-		return $this->page;
+		return $prefix ? $this->page : str_replace( 'learn-press-', '', $this->page );
 	}
 
 	/**
@@ -389,5 +390,20 @@ abstract class LP_Abstract_Submenu {
 
 	protected function _get_page() {
 		return str_replace( 'learn-press-', '', $this->get_id() );
+	}
+
+	public function body_class( $classes ) {
+		if ( $page = $this->get_active_page(false) ) {
+			if ( $classes ) {
+				$classes = explode( ' ', $classes );
+			}
+			$classes[] = 'learnpress';
+			$classes[] = 'lp-submenu-' . $page;
+			$classes   = array_filter( $classes );
+			$classes   = array_unique( $classes );
+			$classes   = join( ' ', $classes );
+		}
+
+		return $classes;
 	}
 }

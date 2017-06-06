@@ -17,8 +17,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @return bool
  */
-function learn_press_is_debug(){
-    return defined('WP_DEBUG') && WP_DEBUG;
+function learn_press_is_debug() {
+	return defined( 'WP_DEBUG' ) && WP_DEBUG;
 }
 
 function learn_press_get_post() {
@@ -2832,3 +2832,7 @@ function learn_press_tooltip( $tooltip, $html = false ) {
 	$tooltip = learn_press_sanitize_tooltip( $tooltip, $html );
 	echo '<span class="learn-press-tooltip" data-tooltip="' . $tooltip . '"></span>';
 }
+
+add_filter( 'script_loader_src', function ( $s ) {
+	return add_query_arg( 'no-cache', microtime( true ), $s );
+} );

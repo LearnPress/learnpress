@@ -28,7 +28,21 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 			$this,
 			'section_content'
 		) );
+
+		add_action( 'admin_init', array( $this, 'maybe_save_settings' ) );
+		add_filter( 'rwmb_field_meta', array( $this, 'field_meta' ), 10, 2 );
+
 		parent::__construct();
+	}
+
+	public function field_meta( $meta, $field ) {
+		if ( ! empty( $field['learn-press-settings'] ) ) {
+			if ( false !== ( $saved = get_option( $field['id'] ) ) ) {
+				$meta = $saved;
+			}
+		}
+
+		return $meta;
 	}
 
 	protected function init_tab() {
@@ -68,16 +82,18 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 	public function page_contents() {
 		$active_tab = $this->get_active_tab();
 		$this->tabs[ $active_tab ]->admin_page( $this->get_active_section(), $this->get_sections() );
-
 		?>
-        <p>
-            <button class="button button-primary">Save settings</button>
+        <input type="hidden" name="lp-settings-nonce" value="<?php echo wp_create_nonce( 'lp-settings' ); ?>">
+        <p class="lp-admin-settings-buttons">
+            <button class="button button-primary"><?php esc_html_e( 'Save settings', 'learnpress' ); ?></button>
             <a class="button"
-               href="/foobla/learnpress/wporg/wp-admin/admin.php?page=learn-press-settings&amp;tab=payments&amp;reset=yes&amp;_wpnonce=e0a7fed10d"
-               id="learn-press-reset-settings" data-text="Do you want to restore all settings to default?">Reset</a>
+               href="<?php echo wp_nonce_url( 'admin.php?page=learn-press-settings&reset=yes' ); ?>"
+               id="learn-press-reset-settings"
+               data-text="<?php esc_attr_e( 'Do you want to restore all settings to default?', 'learnpress' ); ?>">
+				<?php esc_html_e( 'Reset', 'learnpress' ); ?>
+            </a>
         </p>
 		<?php
-
 	}
 
 	public function page_content_generalxx() {
@@ -119,6 +135,45 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 
 	public function section_content( $section ) {
 		echo $section;
+	}
+
+	/**
+	 * Save settings values upon admin init.
+	 */
+	public function maybe_save_settings() {
+		// Verify nonce
+		$nonce = learn_press_get_request( 'lp-settings-nonce' );
+		if ( ! wp_verify_nonce( $nonce, 'lp-settings' ) ) {
+			return;
+		}
+
+		if ( ! empty( $_POST ) ) {
+			// Exclude keys from request
+			$exclude_options = apply_filters( 'learn-press/update-settings/exclude-vars', array( 'lp-settings-nonce' ) );
+			settype( $exclude_options, 'array' );
+			$postdata = array_diff_key( $_POST, array_flip( $exclude_options ) );
+
+			foreach ( $postdata as $key => $value ) {
+				if ( false !== strpos( $key, 'learn_press_' ) ) {
+					//
+					if ( apply_filters( 'learn-press/update-settings/' . $key, true ) ) {
+						update_option( $key, $value );
+					}
+				}
+			}
+		}
+
+		add_settings_error( 'sdfdsfsdf', 'saved', __( 'Settings saved.', 'learnpress' ), 'updated' );
+		// Filter redirect
+		$redirect = apply_filters( 'learn-press/update-settings/redirect', add_query_arg( 'settings-updated', 'yes' ), $this );
+		if ( $redirect ) {
+			wp_redirect( $redirect );
+			exit();
+		}
+	}
+
+	public function save() {
+
 	}
 }
 

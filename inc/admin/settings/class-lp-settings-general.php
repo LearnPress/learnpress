@@ -17,22 +17,22 @@ class LP_Settings_General extends LP_Abstract_Settings_Page {
 		parent::__construct();
 	}
 
-	public function output() {
-		$view = learn_press_get_admin_view( 'settings/general.php' );
-		include_once $view;
-	}
-
+	/**
+	 * Return fields for settings page.
+	 *
+	 * @return array
+	 */
 	public function get_settings() {
-		return apply_filters(
-			'learn_press_general_settings',
+		$settings = apply_filters(
+			'learn-press/general-settings-fields',
 			array(
-				array(
+				/*array(
 					'title'   => __( 'Instructors registration', 'learnpress' ),
 					'desc'    => __( 'Create option for instructors registration.', 'learnpress' ),
 					'id'      => $this->get_field_name( 'instructor_registration' ),
 					'default' => 'no',
 					'type'    => 'checkbox'
-				),
+				),*/
 				array(
 					'title'   => __( 'Currency', 'learnpress' ),
 					'id'      => $this->get_field_name( 'currency' ),
@@ -51,23 +51,20 @@ class LP_Settings_General extends LP_Abstract_Settings_Page {
 					'title'   => __( 'Thousands Separator', 'learnpress' ),
 					'id'      => $this->get_field_name( 'thousands_separator' ),
 					'default' => ',',
-					'type'    => 'text',
-					'options' => $this->_get_currency_positions()
+					'type'    => 'text'
 				),
 				array(
 					'title'   => __( 'Decimals Separator', 'learnpress' ),
 					'id'      => $this->get_field_name( 'decimals_separator' ),
 					'default' => '.',
-					'type'    => 'text',
-					'options' => $this->_get_currency_positions()
+					'type'    => 'text'
 				),
 				array(
 					'title'   => __( 'Number of Decimals', 'learnpress' ),
 					'id'      => $this->get_field_name( 'number_of_decimals' ),
 					'default' => '2',
-					'type'    => 'number',
-					'options' => $this->_get_currency_positions()
-				),
+					'type'    => 'number'
+				)/*,
 				array(
 					'title'   => __( 'Load css', 'learnpress' ),
 					'id'      => $this->get_field_name( 'load_css' ),
@@ -91,9 +88,13 @@ class LP_Settings_General extends LP_Abstract_Settings_Page {
 					'id'      => $this->get_field_name( 'logout_redirect_page_id' ),
 					'default' => '',
 					'type'    => 'pages-dropdown'
-				),
+				),*/
 			)
 		);
+		// Deprecated
+		$settings = apply_filters( 'learn_press_general_settings', $settings );
+
+		return $settings;
 	}
 
 	private function _get_currency_options() {

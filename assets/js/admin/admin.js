@@ -1,5 +1,5 @@
 ;(function ($) {
-
+    return;
     var LP_Admin = window.LP_Admin = {
         init: function () {
             var $doc = $(document);

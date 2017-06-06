@@ -18,7 +18,7 @@ class RWMB_Loader {
 	 */
 	protected function constants() {
 		// Script version, used to add version for scripts and styles.
-		define( 'RWMB_VER', '4.11' );
+		define( 'RWMB_VER', '4.11.3' );
 
 		list( $path, $url ) = self::get_path( dirname( dirname( __FILE__ ) ) );
 
@@ -77,22 +77,22 @@ class RWMB_Loader {
 		$autoloader->add( RWMB_INC_DIR, 'RWMB_' );
 		$autoloader->add( RWMB_INC_DIR . 'fields', 'RWMB_', '_Field' );
 		$autoloader->add( RWMB_INC_DIR . 'walkers', 'RWMB_Walker_' );
+		$autoloader->add( RWMB_INC_DIR . 'interfaces', 'RWMB_', '_Interface' );
+		$autoloader->add( RWMB_INC_DIR . 'storages', 'RWMB_', '_Storage' );
 		$autoloader->register();
 
 		// Plugin core.
 		$core = new RWMB_Core;
 		$core->init();
 
-		if ( is_admin() ) {
-			// Validation module.
-			new RWMB_Validation;
+		// Validation module.
+		new RWMB_Validation;
 
-			$sanitize = new RWMB_Sanitizer;
-			$sanitize->init();
+		$sanitize = new RWMB_Sanitizer;
+		$sanitize->init();
 
-			$media_modal = new RWMB_Media_Modal;
-			$media_modal->init();
-		}
+		$media_modal = new RWMB_Media_Modal;
+		$media_modal->init();
 
 		// WPML Compatibility.
 		$wpml = new RWMB_WPML;
@@ -100,7 +100,5 @@ class RWMB_Loader {
 
 		// Public functions.
 		require_once RWMB_INC_DIR . 'functions.php';
-
-		do_action( 'learn_press_meta_box_loaded' );
 	}
 }

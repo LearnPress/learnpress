@@ -29,9 +29,10 @@ class RWMB_Input_List_Field extends RWMB_Choice_Field {
 	 */
 	public static function walk( $field, $options, $db_fields, $meta ) {
 		$walker = new RWMB_Walker_Input_List( $db_fields, $field, $meta );
-		$output = sprintf( '<ul class="rwmb-input-list %s %s">',
+		$output = self::get_select_all_html( $field );
+		$output .= sprintf( '<ul class="rwmb-input-list %s %s">',
 			$field['collapse'] ? 'collapse' : '',
-		 	$field['inline']   ? 'inline'   : ''
+			$field['inline']   ? 'inline'   : ''
 		);
 		$output .= $walker->walk( $options, $field['flatten'] ? - 1 : 0 );
 		$output .= '</ul>';
@@ -50,8 +51,9 @@ class RWMB_Input_List_Field extends RWMB_Choice_Field {
 		$field = RWMB_Input_Field::normalize( $field );
 		$field = parent::normalize( $field );
 		$field = wp_parse_args( $field, array(
-			'collapse' => true,
-			'inline'   => null,
+			'collapse'        => true,
+			'inline'          => null,
+			'select_all_none' => false,
 		) );
 
 		$field['flatten'] = $field['multiple'] ? $field['flatten'] : true;
@@ -75,5 +77,18 @@ class RWMB_Input_List_Field extends RWMB_Choice_Field {
 		$attributes['value']  = $value;
 
 		return $attributes;
+	}
+
+	/**
+	 * Get html for select all|none for multiple checkbox.
+	 *
+	 * @param array $field Field parameters.
+	 * @return string
+	 */
+	public static function get_select_all_html( $field ) {
+		if ( $field['multiple'] && $field['select_all_none'] ) {
+			return sprintf( '<p><button class="rwmb-input-list-select-all-none" data-name="%s">%s</button></p>', $field['id'], __( 'Select All / None','meta-box' ) );
+		}
+		return '';
 	}
 }

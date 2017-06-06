@@ -1,0 +1,42 @@
+.learnpress {
+    .rwmb-field {
+        margin-bottom: 20px;
+        position: relative;
+        .rwmb-label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+            float: left;
+            width: 250px;
+        }
+        .rwmb-input {
+            color: #000;
+            margin-left: 270px;
+        }
+        &.rwmb-heading-wrapper {
+            h4 {
+                font-size: 18px;
+                margin: 0;
+                padding: 0 0 10px;
+                border-bottom: 3px solid #563d7c;
+                display: inline-block;
+            }
+        }
+        &.disabled:after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+            z-index: 10;
+            background: #FFF;
+            opacity: 0.6;
+        }
+    }
+    &.lp-submenu-settings {
+        .lp-admin-settings-buttons {
+            margin-left: 270px;
+        }
+    }
+}
