@@ -35,7 +35,7 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 						array(
 							'title' => __( 'General', 'learnpress' ),
 							'type'  => 'heading',
-							'desc'=>__('General settings', 'learnpress')
+							'desc'  => __( 'General settings', 'learnpress' )
 						),
 						array(
 							'title'   => __( 'Profile page', 'learnpress' ),
@@ -55,10 +55,10 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							'default'     => '',
 							'type'        => 'text',
 							'placeholder' => __( 'Default: View Course Profile', 'learnpress' ),
-							'visibility' => array(
-								'state'       => 'show',
+							'visibility'  => array(
+								'state'          => 'show',
 								'state_callback' => 'conditional_logic_gray_state',
-								'conditional' => array(
+								'conditional'    => array(
 									array(
 										'field'   => $this->get_field_name( 'admin_bar_link' ),
 										'compare' => '=',
@@ -68,18 +68,18 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							)
 						),
 						array(
-							'title'   => __( 'Target link', 'learnpress' ),
-							'id'      => $this->get_field_name( 'admin_bar_link_target' ),
-							'default' => 'yes',
-							'type'    => 'select',
-							'options' => array(
+							'title'      => __( 'Target link', 'learnpress' ),
+							'id'         => $this->get_field_name( 'admin_bar_link_target' ),
+							'default'    => 'yes',
+							'type'       => 'select',
+							'options'    => array(
 								'_self'  => __( 'Self', 'learnpress' ),
 								'_blank' => __( 'New window', 'learnpress' )
 							),
 							'visibility' => array(
-								'state'       => 'show',
+								'state'          => 'show',
 								'state_callback' => 'conditional_logic_gray_state',
-								'conditional' => array(
+								'conditional'    => array(
 									array(
 										'field'   => $this->get_field_name( 'admin_bar_link' ),
 										'compare' => '=',
@@ -105,15 +105,41 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 				),
 				apply_filters( 'learn-press/profile-settings-fields/sub-tabs', array(
 						array(
-							'title' => __( 'Sub Tabs', 'learnpress' ),
+							'title' => __( 'Sub tab slugs', 'learnpress' ),
 							'type'  => 'heading',
-							'desc'=>__('Profile sub-tabs', 'learnpress')
+							'desc'  => __( 'The slugs of tabs display in profile page. Each tab should be unique.', 'learnpress' )
 						),
 						array(
-							'title'   => __( 'Profile page', 'learnpress' ),
-							'id'      => $this->get_field_name( 'profile_page_id' ),
+							'title'   => __( 'Courses', 'learnpress' ),
+							'id'      => 'learn_press_profile_endpoints[profile-courses]',
 							'default' => '',
-							'type'    => 'pages-dropdown',
+							'type'    => 'text',
+							'std'     => 'courses',
+							'desc'    => sprintf( __( 'Example link is %s', 'learnpress' ), '<code>[profile/admin/courses]</code>' )
+						),
+						array(
+							'title'   => __( 'Quizzes', 'learnpress' ),
+							'id'      => 'learn_press_profile_endpoints[profile-quizzes]',
+							'default' => '',
+							'type'    => 'text',
+							'std'     => 'quizzes',
+							'desc'    => sprintf( __( 'Example link is %s', 'learnpress' ), '<code>[profile/admin/quizzes]</code>' )
+						),
+						array(
+							'title'   => __( 'Orders', 'learnpress' ),
+							'id'      => 'learn_press_profile_endpoints[profile-orders]',
+							'default' => '',
+							'type'    => 'text',
+							'std'     => 'orders',
+							'desc'    => sprintf( __( 'Example link is %s', 'learnpress' ), '<code>[profile/admin/orders]</code>' )
+						),
+						array(
+							'title'   => __( 'Order details', 'learnpress' ),
+							'id'      => 'learn_press_profile_endpoints[profile-order-details]',
+							'default' => '',
+							'type'    => 'text',
+							'std'     => 'order-details',
+							'desc'    => sprintf( __( 'Example link is %s', 'learnpress' ), '<code>[profile/admin/order-details/123]</code>' )
 						)
 					)
 				),
@@ -121,13 +147,30 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 						array(
 							'title' => __( 'Avatar', 'learnpress' ),
 							'type'  => 'heading',
-							'desc'=>__('User avatar settings', 'learnpress')
+							'desc'  => __( 'User avatar settings', 'learnpress' )
 						),
 						array(
-							'title'   => __( 'Profile page', 'learnpress' ),
-							'id'      => $this->get_field_name( 'profile_page_id' ),
+							'title'   => __( 'Enable custom avatar', 'learnpress' ),
+							'id'      => $this->get_field_name( 'profile_avatar' ),
+							'default' => 'yes',
+							'type'    => 'yes-no'
+						),
+						array(
+							'title'   => __( 'Size', 'learnpress' ),
+							'id'      => $this->get_field_name( 'profile_picture_thumbnail_size' ),
 							'default' => '',
-							'type'    => 'pages-dropdown'
+							'type'    => 'image-dimensions',
+							'visibility' => array(
+								'state'          => 'show',
+								'state_callback' => 'conditional_logic_gray_state',
+								'conditional'    => array(
+									array(
+										'field'   => $this->get_field_name( 'profile_avatar' ),
+										'compare' => '=',
+										'value'   => 'yes'
+									)
+								)
+							)
 						)
 					)
 				)

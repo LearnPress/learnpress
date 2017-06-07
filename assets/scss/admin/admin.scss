@@ -10,6 +10,64 @@
 
 
 @import "admin-tabs";
-p{
+.learn-press-dropdown-pages{
+    input[type="text"]{
+        min-width: 300px;
+        height: 29px;
+        vertical-align: top;
+        margin: 0;
+    }
+    .select2-selection__rendered{
+        line-height: 26px !important;
+    }
+    .quick-add-page-inline{
+        margin-top: 0;
+    }
+}
+.learn-press-payments{
+    border-collapse: collapse;
+    border:1px solid #DDD;
+    width: 100%;
+    th,td{
+        padding: 8px 10px;
+    }
+    .order{
+        width: 30px;
+        text-align: center;
+        padding-right: 0;
+    }
+    .name{
+        font-weight: bold;
+    }
+    .status{
+        width: 100px;
+        text-align: center;
+        .dashicons{
+            background: #DDD;
+            border-radius: 50%;
+            color: #FFF;
+        }
+        &.enabled{
+            .dashicons{
+                background: #0085ba;
+            }
+        }
+    }
+    thead{
+        th{
+            text-align: left;
+            border-bottom: 1px solid #DDD;
+        }
+    }
+    tbody{
+        td{
+
+        }
+    }
+}
+.description{
+    code{
+        font-size: smaller;
+    }
 }
 

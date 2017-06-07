@@ -1,8 +1,8 @@
 <?php
 /**
- * @author  leehld
+ * @author  ThimPress
  * @package LearnPress/Classes
- * @version 2.0.8
+ * @version 3.0.0
  */
 
 // Prevent loading this file directly

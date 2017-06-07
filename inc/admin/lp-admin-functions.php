@@ -141,7 +141,7 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 	$output  = wp_dropdown_pages( $args );
 	$replace = "";
 
-	$class .= 'learn-press-dropdown-pages';
+	$class .= 'list-pages';
 
 	if ( $class ) {
 		$replace .= ' class="' . $class . '"';
@@ -152,7 +152,7 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 
 	$replace .= ' data-selected="' . $selected . '"';
 	$replace .= " data-placeholder='" . __( 'Select a page&hellip;', 'learnpress' ) . "' id=";
-	$output  = str_replace( ' id=', $replace, $output );
+	$output  = '<div class="list-pages-wrapper">' . str_replace( ' id=', $replace, $output );
 	if ( $before ) {
 		$before_output = array();
 		foreach ( $before as $v => $l ) {
@@ -165,19 +165,23 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 		ob_start(); ?>
         <button class="button button-quick-add-page" data-id="<?php echo $id; ?>"
                 type="button"><?php _e( 'Create', 'learnpress' ); ?></button>
-        <p class="learn-press-quick-add-page-inline <?php echo $id; ?> hide-if-js">
+		<?php echo '</div>'; ?>
+        <p class="quick-add-page-inline <?php echo $id; ?> hide-if-js">
             <input type="text" placeholder="<?php esc_attr_e( 'New page title', 'learnpress' ); ?>"/>
             <button class="button" type="button"><?php esc_html_e( 'Ok [Enter]', 'learnpress' ); ?></button>
             <a href=""><?php _e( 'Cancel [ESC]', 'learnpress' ); ?></a>
         </p>
-        <p class="learn-press-quick-add-page-actions <?php echo $id; ?><?php echo $selected ? '' : ' hide-if-js'; ?>">
+        <p class="quick-add-page-actions <?php echo $id; ?><?php echo $selected ? '' : ' hide-if-js'; ?>">
             <a class="edit-page" href="<?php echo get_edit_post_link( $selected ); ?>"
                target="_blank"><?php _e( 'Edit Page', 'learnpress' ); ?></a>
             <a class="view-page" href="<?php echo get_permalink( $selected ); ?>"
                target="_blank"><?php _e( 'View Page', 'learnpress' ); ?></a>
         </p>
 		<?php $output .= ob_get_clean();
+	} else {
+		$output .= '</div>';
 	}
+	$output = sprintf( '<div class="learn-press-dropdown-pages">%s</div>', $output );
 	if ( $echo ) {
 		echo $output;
 	}

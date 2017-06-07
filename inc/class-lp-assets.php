@@ -265,8 +265,10 @@ class LP_Assets {
 			'quiz-app'
 		) );
 
-
 		$scripts->add( 'learn-press-admin', $default_path . 'js/admin/admin' . $suffix . '.js', $deps, $ver, 1 );
+		$scripts->add( 'learn-press-utils', $default_path . 'js/admin/utils' . $suffix . '.js', $deps, $ver, 1 );
+
+
 		$scripts->add( 'learn-press-admin-settings', $default_path . 'js/admin/settings' . $suffix . '.js', $deps, $ver, 1 );
 		$scripts->add( 'learn-press-mb-question', $default_path . 'js/admin/meta-box-question' . $suffix . '.js', $deps, $ver, 1 );
 		$scripts->add( 'learn-press-mb-course', $default_path . 'js/admin/meta-box-course' . $suffix . '.js', $deps, $ver, 1 );
@@ -766,6 +768,9 @@ class LP_Assets {
 			// tipsy tooltip
 			self::enqueue_style( 'learn-press-tipsy' );
 			self::enqueue_script( 'learn-press-tipsy' );
+
+			self::enqueue_script( 'learn-press-utils' );
+
 
 			if ( in_array( $screen_id, learn_press_get_screens() ) || in_array( $page_id, learn_press_get_admin_pages() ) ) {
 				self::enqueue_style( 'learn-press-global' );

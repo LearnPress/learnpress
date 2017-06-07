@@ -40,6 +40,7 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 			}
 		}
 
+		//$sections['payment_order'] = __('Payment order', 'learnpress');
 		return $sections;
 	}
 
@@ -51,8 +52,78 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 		return false;
 	}
 
+	public function get_settings_payment_order( $section = '', $tab = '' ) {
+		return array(
+			array(
+				'title'   => __( 'Checkout page', 'learnpress' ),
+				'id'      => $this->get_field_name( 'checkout_page_id' ),
+				'default' => '',
+				'type'    => 'pages-dropdown'
+			)
+        );
+	}
+
 	public function get_settings_general() {
-		return array( 'asdasd' );
+		return apply_filters(
+		    'learn-press/payment-settings',
+			array_merge(
+			    // General
+				apply_filters(
+					'learn-press/payment-settings/general',
+					array(
+						array(
+							'title'   => __( 'Checkout page', 'learnpress' ),
+							'id'      => $this->get_field_name( 'checkout_page_id' ),
+							'default' => '',
+							'type'    => 'pages-dropdown'
+						),
+						array(
+							'title'   => __( 'Auto enroll', 'learnpress' ),
+							'id'      => $this->get_field_name( 'auto_enroll' ),
+							'default' => 'yes',
+							'type'    => 'yes-no',
+							'desc'    => __( 'Auto enroll a user after they buying a course.', 'learnpress' )
+						),
+						array(
+							'title'   => __( 'Enable guest checkout', 'learnpress' ),
+							'id'      => $this->get_field_name( 'guest_checkout' ),
+							'default' => 'yes',
+							'type'    => 'yes-no',
+							'desc'    => __( 'Auto enroll a user after they buying a course.', 'learnpress' )
+						)
+					)
+				),
+				// Endpoint
+				apply_filters(
+					'learn-press/payment-settings/checkout-endpoints',
+					array(
+						array(
+							'title'   => __( 'Endpoints', 'learnpress' ),
+							'type' => 'heading',
+						),
+						array(
+							'title'   => __( 'Order received', 'learnpress' ),
+							'id'      => $this->get_field_name( 'checkout_endpoints[order_received]' ),
+							'default' => '',
+							'type'    => 'text'
+						)
+					)
+				),
+				array(
+					array(
+						'title'   => __( 'Payments', 'learnpress' ),
+						'type' => 'heading',
+                        'desc'=>__('All available payments are listed here. Drag and drop the payments to re-order.', 'learnpress')
+					),
+					array(
+						'title'   => __( 'Payment order', 'learnpress' ),
+						'id'      => $this->get_field_name( 'payment_order' ),
+						'default' => '',
+						'type'    => 'payment-order'
+					)
+				)
+			)
+		);
 	}
 
 	public function admin_page( $section = null, $tab = null ) {

@@ -1,4 +1,8 @@
 ;(function ($) {
+    $(document).ready(function(){
+        $('.learn-press-dropdown-pages').dropdownPages();
+    })
+
     return;
     var LP_Admin = window.LP_Admin = {
         init: function () {

@@ -34,6 +34,11 @@ class LP_Settings_General extends LP_Abstract_Settings_Page {
 					'type'    => 'checkbox'
 				),*/
 				array(
+					'title' => __( 'Currency', 'learnpress' ),
+					'type'  => 'heading',
+					'desc'  => __( 'Setting up your currency unit and its formatting.', 'learnpress' )
+				),
+				array(
 					'title'   => __( 'Currency', 'learnpress' ),
 					'id'      => $this->get_field_name( 'currency' ),
 					'default' => 'USD',

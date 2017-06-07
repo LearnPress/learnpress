@@ -16,7 +16,8 @@ var gulp = require('gulp'),
     sourceMaps = require('gulp-sourcemaps'),
     readFile = require('read-file'),
     replace = require('gulp-replace'),
-    mkdirp = require("mkdirp");
+    mkdirp = require("mkdirp"),
+    concat = require('gulp-concat');
 
 gulp.task('scss', function () {
     return gulp.src(['assets/scss/**/*.scss'])
@@ -30,10 +31,21 @@ gulp.task('scss', function () {
 gulp.task('watch', function () {
     liveReload.listen();
     gulp.watch(['assets/scss/**/*.scss'], ['scss']);
+    gulp.watch(['assets/js/admin/utils/*.js'], ['compress-js']);
 });
 
-gulp.task('default', ['scss', 'watch']);
+gulp.task('default', ['scss', 'watch', 'compress-js']);
 
+
+var uglify = require('gulp-uglify');
+var pump = require('pump');
+
+gulp.task('compress-js', function (cb) {
+    return gulp.src('assets/js/admin/utils/*.js')
+        .pipe(concat('utils.js'))
+        .pipe(uglify())
+        .pipe(gulp.dest('assets/js/admin'))
+});
 /*
  * SVN: Copy working directory to SVN and prepare something before submitting.
  */
