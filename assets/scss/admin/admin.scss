@@ -7,66 +7,94 @@
 @import "quiz";
 @import "submenu";
 @import "meta-box";
-
-
 @import "admin-tabs";
-.learn-press-dropdown-pages{
-    input[type="text"]{
+
+.learn-press-dropdown-pages {
+    input[type="text"] {
         min-width: 300px;
         height: 29px;
         vertical-align: top;
         margin: 0;
     }
-    .select2-selection__rendered{
+    .select2-selection__rendered {
         line-height: 26px !important;
     }
-    .quick-add-page-inline{
+    .quick-add-page-inline {
         margin-top: 0;
     }
 }
-.learn-press-payments{
+
+.rwmb-payment-order-wrapper{
+    .rwmb-label{
+        margin-bottom: 20px!important;
+    }
+    .rwmb-input{
+        margin-left: 0!important;
+    }
+}
+
+.learn-press-payments {
     border-collapse: collapse;
-    border:1px solid #DDD;
+    border: 1px solid #DDD;
     width: 100%;
-    th,td{
+    font-size: 14px;
+    th, td {
         padding: 8px 10px;
     }
-    .order{
+    .order {
         width: 30px;
         text-align: center;
         padding-right: 0;
+        cursor: ns-resize;
     }
-    .name{
+    .name {
         font-weight: bold;
+        a{
+            text-decoration: none;
+        }
     }
-    .status{
+    .status {
         width: 100px;
         text-align: center;
-        .dashicons{
+        .dashicons {
             background: #DDD;
             border-radius: 50%;
             color: #FFF;
         }
-        &.enabled{
-            .dashicons{
+        &.enabled {
+            .dashicons {
                 background: #0085ba;
             }
         }
     }
-    thead{
-        th{
+    thead {
+        th {
             text-align: left;
             border-bottom: 1px solid #DDD;
         }
     }
-    tbody{
-        td{
-
+    tbody {
+        td {
+            background: #FFF;
+        }
+        .ui-sortable-helper {
+            border: 1px solid #DDD;
+            margin-left: -1px;
+        }
+        .ui-sortable-placeholder {
+            visibility: visible !important;
+            border: 1px solid #DDD;
+            td {
+                background: #F7F7F7;
+                height: 35px;
+                padding: 0;
+            }
         }
     }
 }
-.description{
-    code{
+
+.description {
+    code {
         font-size: smaller;
     }
 }

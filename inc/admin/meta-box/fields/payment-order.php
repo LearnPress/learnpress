@@ -18,8 +18,8 @@ if ( ! class_exists( 'RWMB_Payment_Order_Field' ) ) {
 		 *
 		 * @return string
 		 */
-		static function html( $meta, $field = '' ) {
-			$gateways = LP_Gateways::instance()->get_gateways();
+		public static function html( $meta, $field = '' ) {
+			$gateways = LP_Gateways::instance()->get_gateways( true );
 			ob_start();
 			?>
             <table class="learn-press-payments">
@@ -28,17 +28,22 @@ if ( ! class_exists( 'RWMB_Payment_Order_Field' ) ) {
                     <th></th>
                     <th><?php _e( 'Payment', 'learnpress' ); ?></th>
                     <th><?php _e( 'ID', 'learnpress' ); ?></th>
+                    <th><?php _e( 'Description', 'learnpress' ); ?></th>
                     <th class="status"><?php _e( 'Status', 'learnpress' ); ?></th>
                 </tr>
                 </thead>
                 <tbody>
 				<?php foreach ( $gateways as $gateway ) { ?>
                     <tr>
-                        <td class="order"><span class="dashicons dashicons-menu"></span> </td>
-                        <td class="name"><?php echo $gateway->method_title; ?></td>
-                        <td class="description"><?php echo $gateway->method_description; ?></td>
-                        <td class="status<?php echo $gateway->enabled ? ' enabled' : ' enabled';?>">
+                        <td class="order"><span class="dashicons dashicons-menu"></span></td>
+                        <td class="name">
+                            <a href="<?php echo esc_url( admin_url( 'admin.php?page=learn-press-settings&tab=payments&section=' . $gateway->get_id() ) ); ?>"><?php echo $gateway->get_method_title(); ?></a>
+                        </td>
+                        <td class="id"><?php echo $gateway->get_id(); ?></td>
+                        <td class="description"><?php echo $gateway->get_method_description(); ?></td>
+                        <td class="status<?php echo $gateway->is_enabled() ? ' enabled' : ''; ?>">
                             <span class="dashicons dashicons-yes"></span>
+                            <input type="hidden" name="payment-order" value="<?php echo $gateway->get_id(); ?>"/>
                         </td>
                     </tr>
 				<?php } ?>

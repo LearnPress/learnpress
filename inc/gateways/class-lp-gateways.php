@@ -8,7 +8,7 @@
  * @version 1.0
  */
 
-if ( !defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
@@ -38,7 +38,7 @@ class LP_Gateways {
 	 *
 	 */
 	public function init() {
-		if ( !$this->payment_gateways ) {
+		if ( ! $this->payment_gateways ) {
 			$gateways = array(
 				'paypal' => 'LP_Gateway_Paypal'
 			);
@@ -49,27 +49,56 @@ class LP_Gateways {
 					if ( is_string( $gateway ) && class_exists( $gateway ) ) {
 						$gateway = new $gateway();
 					}
-					$this->payment_gateways[$k] = apply_filters( 'learn_press_payment_method_init', $gateway );
+					$this->payment_gateways[ $k ] = apply_filters( 'learn_press_payment_method_init', $gateway );
 				}
 			}
 		}
 	}
 
 	/**
+	 * Get all registered payments.
+	 *
+	 * @param boolean $with_order If true sort payments with the order saved in admin
+	 *
 	 * @return array
 	 */
-	public function get_gateways() {
+	public function get_gateways( $with_order = false ) {
 		$gateways = array();
-		if ( count( $this->payment_gateways ) ) foreach ( $this->payment_gateways as $gateway ) {
-			if ( is_string( $gateway ) && class_exists( $gateway ) ) {
-				$gateway = new $gateway();
+		if ( count( $this->payment_gateways ) ) {
+			foreach ( $this->payment_gateways as $gateway ) {
+				if ( is_string( $gateway ) && class_exists( $gateway ) ) {
+					$gateway = new $gateway();
+				}
+				if ( ! is_object( $gateway ) ) {
+					continue;
+				}
+				$gateways[ $gateway->id ] = $gateway;
 			}
-			if ( !is_object( $gateway ) ) {
-				continue;
-			}
-			$gateways[$gateway->id] = $gateway;
 		}
+
+		if ( $with_order && $ordered = get_option( 'learn_press_payment_order' ) ) {
+			// Sort gateways by the keys stored.
+			usort( $gateways, array( $this, '_sort_gateways_callback' ) );
+		}
+
 		return $gateways;
+	}
+
+
+	/**
+	 * Callback function for sorting payment gateways.
+	 *
+	 * @param $a
+	 * @param $b
+	 *
+	 * @return bool|int
+	 */
+	public function _sort_gateways_callback( $a, $b ) {
+		if ( $ordered = get_option( 'learn_press_payment_order' ) ) {
+			return array_search( $a->id, $ordered ) > array_search( $b->id, $ordered );
+		}
+
+		return 0;
 	}
 
 	/**
@@ -81,7 +110,7 @@ class LP_Gateways {
 		foreach ( $this->payment_gateways as $slug => $gateway ) {
 			// let custom addon can define how is enable/disable
 			if ( apply_filters( 'learn_press_payment_gateway_available_' . $slug, false, $gateway ) ) {
-				$_available_gateways[$slug] = $gateway;
+				$_available_gateways[ $slug ] = $gateway;
 			};
 		}
 
@@ -103,6 +132,7 @@ class LP_Gateways {
 		if ( is_null( self::$_instance ) ) {
 			self::$_instance = new self();
 		}
+
 		return self::$_instance;
 	}
 }

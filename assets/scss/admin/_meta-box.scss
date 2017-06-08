@@ -36,7 +36,12 @@
     }
     &.lp-submenu-settings {
         .lp-admin-settings-buttons {
-            margin-left: 270px;
+            border-top: 1px solid #DDD;
+            padding-top: 20px;
+            margin-bottom: 0;
+            #learn-press-reset-settings{
+                float: right;
+            }
         }
     }
 }

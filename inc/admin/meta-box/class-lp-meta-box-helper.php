@@ -18,26 +18,12 @@ class LP_Meta_Box_Helper {
 	 * @param $fields
 	 */
 	public static function render_fields( $fields ) {
-		$post = (object) array( 'ID' => 1, 'post_type' => 'fake-post-type' );
-		setup_postdata( $post );
-		if ( ! class_exists( 'RW_Meta_Box' ) ) {
-			require_once LP_PLUGIN_PATH . 'inc/libraries/meta-box/meta-box.php';
-		}
-		$fields = RW_Meta_Box::normalize_fields( $fields );
-		foreach ( $fields as $field ) {
-			$origin_id           = $field['id'];
-			$field['name']       = apply_filters( 'learn-press/meta-box/field-name', $field['title'] );
-			$field['field_name'] = apply_filters( 'learn-press/meta-box/field-field_name', $field['id'] );
-			$field['id']         = apply_filters( 'learn-press/meta-box/field-id', $field['id'] );
-			$field['value']      = md5( $field['std'] );
 
-			// Try to include extended fields if they are not loaded before redering.
-			if ( self::include_field( $field ) ) {
-				// Render field
-				LP_Meta_Box_Helper::show_field( $field );
-			}
+		foreach ( $fields as $field ) {
+			$origin_id = $field['id'];
+
+			LP_Meta_Box_Helper::show_field( $field );
 		}
-		wp_reset_postdata();
 	}
 
 	/**
@@ -46,8 +32,20 @@ class LP_Meta_Box_Helper {
 	 * @param $field
 	 */
 	public static function show_field( $field ) {
-		self::parse_conditional_logic( $field );
-		RWMB_Field::call( 'show', $field, true, 0 );
+		if ( ! class_exists( 'RW_Meta_Box' ) ) {
+			require_once LP_PLUGIN_PATH . 'inc/libraries/meta-box/meta-box.php';
+		}
+		$fields = RW_Meta_Box::normalize_fields( array($field) );
+		$field = $fields[0];
+		if ( self::include_field( $field ) ) {
+			self::parse_conditional_logic( $field );
+			$field['name']       = apply_filters( 'learn-press/meta-box/field-name', $field['title'], $field );
+			$field['field_name'] = apply_filters( 'learn-press/meta-box/field-field_name', $field['id'], $field );
+			$field['id']         = apply_filters( 'learn-press/meta-box/field-id', $field['id'], $field );
+			//$field['value']      = md5( $field['std'] );
+			// Try to include extended fields if they are not loaded before rendering.
+			RWMB_Field::call( 'show', $field, true, 0 );
+		}
 	}
 
 	protected static function sanitize_name( $name ) {
@@ -73,7 +71,7 @@ class LP_Meta_Box_Helper {
 		if ( empty( self::$conditional_logic[ $id ] ) ) {
 			self::$conditional_logic[ $id ] = array(
 				'state'          => ! empty( $conditional['state'] ) ? $conditional['state'] : 'show',
-				'state_callback' => ! empty( $conditional['state_callback'] ) ? $conditional['state_callback'] : '',
+				'state_callback' => ! empty( $conditional['state_callback'] ) ? $conditional['state_callback'] : 'conditional_logic_gray_state',
 				'conditional'    => array()
 			);
 		}

@@ -86,17 +86,28 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'closed_question_box',
 				'add_quiz_questions',
 				'clear_quiz_question',
-				'search_items' => 'modal_search_items'
+				'search_items' => 'modal_search_items',
+				'update-payment-order'
 			);
 			foreach ( $ajax_events as $ajax_event => $callback ) {
 				if ( ! is_string( $ajax_event ) ) {
 					$ajax_event = $callback;
 				}
+				$callback = preg_replace( '~[-]+~', '_', $callback );
 				add_action( "learn-press/ajax/ajax_{$ajax_event}", array( __CLASS__, $callback ) );
+				add_action( "learn-press/ajax/ajax-{$ajax_event}", array( __CLASS__, $callback ) );
 				//add_action( 'learn-press/ajax/ajax_delete_quiz_question', array( __CLASS__, 'delete_quiz_question' ) );
 				//add_action( 'learn-press/ajax/ajax_update_quiz', array( __CLASS__, 'update_quiz' ) );
 			}
 
+		}
+
+		/**
+		 * Update ordering of payments when user changing.
+		 */
+		public static function update_payment_order() {
+			$payment_order = learn_press_get_request( 'order' );
+			update_option( 'learn_press_payment_order', $payment_order );
 		}
 
 		/**

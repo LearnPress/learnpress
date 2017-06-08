@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-class LP_Abstract_Settings_Page {
+class LP_Abstract_Settings_Page extends LP_Abstract_Settings {
 
 	/**
 	 * Tab's ID
@@ -41,17 +41,7 @@ class LP_Abstract_Settings_Page {
 	 */
 	public function admin_page( $section = null, $tab = '' ) {
 		$settings = $this->get_settings( $section, $tab );
-		if ( $settings ) {
-			foreach ( $settings as $k => $field ) {
-				if ( false === ( $std = get_option( $field['id'] ) ) ) {
-					$field['std'] = array_key_exists( 'default', $field ) ? $field['default'] : '';
-				} else {
-					$field['std'] = $std;
-				}
-				$field['learn-press-settings'] = 'yes';
-				$settings[ $k ]                = $field;
-			}
-		}
+		$settings = $this->sanitize_settings( $settings );
 		do_action( 'learn-press/settings-render' );
 		LP_Meta_Box_Helper::render_fields( $settings );
 	}

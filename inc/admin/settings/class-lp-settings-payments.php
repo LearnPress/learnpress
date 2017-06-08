@@ -135,10 +135,10 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 			$sections = $items['settings']->get_sections();
 		}
 		$section_data = ! empty( $sections[ $section ] ) ? $sections[ $section ] : false;
+
 		if ( $section_data instanceof LP_Abstract_Settings ) {
 			$section_data->admin_options();
 		} else if ( is_array( $section_data ) ) {
-			print_r( $section_data );
 		} else {
 			if ( is_callable( array( $this, 'admin_options_' . $section ) ) ) {
 				call_user_func_array( array( $this, 'admin_options_' . $section ), array(

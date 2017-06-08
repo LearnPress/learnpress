@@ -57,7 +57,6 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							'placeholder' => __( 'Default: View Course Profile', 'learnpress' ),
 							'visibility'  => array(
 								'state'          => 'show',
-								'state_callback' => 'conditional_logic_gray_state',
 								'conditional'    => array(
 									array(
 										'field'   => $this->get_field_name( 'admin_bar_link' ),
@@ -78,7 +77,6 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							),
 							'visibility' => array(
 								'state'          => 'show',
-								'state_callback' => 'conditional_logic_gray_state',
 								'conditional'    => array(
 									array(
 										'field'   => $this->get_field_name( 'admin_bar_link' ),
@@ -162,7 +160,6 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							'type'    => 'image-dimensions',
 							'visibility' => array(
 								'state'          => 'show',
-								'state_callback' => 'conditional_logic_gray_state',
 								'conditional'    => array(
 									array(
 										'field'   => $this->get_field_name( 'profile_avatar' ),

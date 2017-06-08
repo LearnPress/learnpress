@@ -1,5 +1,37 @@
 ;(function ($) {
-    $(document).ready(function(){
+    // Make payments sortable
+    $('.learn-press-payments tbody').sortable({
+        handle: '.dashicons-menu',
+        helper: function (e, ui) {
+            ui.children().each(function () {
+                $(this).width($(this).width());
+            });
+            return ui;
+        },
+        axis: 'y',
+        start: function (event, ui) {
+
+        },
+        stop: function (event, ui) {
+
+        },
+        update: function (event, ui) {
+            var order = $(this).children().map(function () {
+                return $(this).find('input[name="payment-order"]').val()
+            }).get();
+            $.post({
+                url: '',
+                data: {
+                    'lp-ajax': 'ajax-update-payment-order',
+                    order: order
+                },
+                success: function (response) {
+                    console.log(response)
+                }
+            });
+        }
+    });
+    $(document).ready(function () {
         $('.learn-press-dropdown-pages').dropdownPages();
     })
 

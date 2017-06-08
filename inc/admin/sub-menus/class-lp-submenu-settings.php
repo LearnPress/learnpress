@@ -37,9 +37,10 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 
 	public function field_meta( $meta, $field ) {
 		if ( ! empty( $field['learn-press-settings'] ) ) {
-			if ( false !== ( $saved = get_option( $field['id'] ) ) ) {
+		    $meta = $field['std'];
+			/*if ( false !== ( $saved = get_option( $field['id'] ) ) ) {
 				$meta = $saved;
-			}
+			}*/
 		}
 
 		return $meta;

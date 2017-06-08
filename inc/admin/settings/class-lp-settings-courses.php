@@ -80,7 +80,6 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 							'type'       => 'yes-no',
 							'visibility' => array(
 								'state'          => 'show',
-								'state_callback' => 'conditional_logic_gray_state',
 								'conditional'    => array(
 									'field'   => $this->get_field_name( 'required_review' ),
 									'compare' => '=',
@@ -176,7 +175,7 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 							'type'       => 'image-dimensions',
 							'visibility' => array(
 								'state'       => 'show',
-								'state_callback' => 'conditional_logic_gray_state',
+
 								'conditional' => array(
 									'field'   => $this->get_field_name( 'generate_course_thumbnail' ),
 									'compare' => '=',
@@ -198,7 +197,7 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 							'type'       => 'image-dimensions',
 							'visibility' => array(
 								'state'       => 'show',
-								'state_callback' => 'conditional_logic_gray_state',
+
 								'conditional' => array(
 									array(
 										'field'   => $this->get_field_name( 'archive_course_thumbnail' ),

@@ -504,20 +504,19 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 			array(
 				array(
 					'title'   => __( 'Enable', 'learnpress' ),
-					'id'      => $this->id . '[enable]',
+					'id'      => '[enable]',
 					'default' => 'no',
 					'type'    => 'yes-no'
 				),
 				array(
-					'title'   => __( 'Paypal Email', 'learnpress' ),
-					'id'      => $this->id . '[paypal_email]',
-					'type'    => 'text',
+					'title'      => __( 'Paypal Email', 'learnpress' ),
+					'id'         => '[paypal_email]',
+					'type'       => 'text',
 					'visibility' => array(
-						'state'       => 'show',
-						'state_callback' => 'conditional_logic_gray_state',
-						'conditional' => array(
+						'state'          => 'show',
+						'conditional'    => array(
 							array(
-								'field'   => $this->id . '[enable]',
+								'field'   => '[enable]',
 								'compare' => '=',
 								'value'   => 'yes'
 							)
@@ -525,16 +524,15 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 					)
 				),
 				array(
-					'title'   => __( 'Sandbox Mode', 'learnpress' ),
-					'id'      => $this->id . '[paypal_sandbox]',
-					'default' => 'no',
-					'type'    => 'yes-no',
+					'title'      => __( 'Sandbox Mode', 'learnpress' ),
+					'id'         => '[paypal_sandbox]',
+					'default'    => 'no',
+					'type'       => 'yes-no',
 					'visibility' => array(
-						'state'       => 'show',
-						'state_callback' => 'conditional_logic_gray_state',
-						'conditional' => array(
+						'state'          => 'show',
+						'conditional'    => array(
 							array(
-								'field'   => $this->id . '[enable]',
+								'field'   => '[enable]',
 								'compare' => '=',
 								'value'   => 'yes'
 							)
@@ -542,20 +540,19 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 					)
 				),
 				array(
-					'title'   => __( 'Sandbox Email Address', 'learnpress' ),
-					'id'      => $this->id . '[paypal_sandbox_email]',
-					'type'    => 'text',
+					'title'      => __( 'Sandbox Email Address', 'learnpress' ),
+					'id'         => $this->id . '[paypal_sandbox_email]',
+					'type'       => 'text',
 					'visibility' => array(
-						'state'       => 'show',
-						'state_callback' => 'conditional_logic_gray_state',
-						'conditional' => array(
+						'state'          => 'show',
+						'conditional'    => array(
 							array(
-								'field'   => $this->id . '[enable]',
+								'field'   => '[enable]',
 								'compare' => '=',
 								'value'   => 'yes'
 							),
 							array(
-								'field'   => $this->id . '[paypal_sandbox]',
+								'field'   => '[paypal_sandbox]',
 								'compare' => '=',
 								'value'   => 'yes'
 							)
