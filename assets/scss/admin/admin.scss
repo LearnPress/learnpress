@@ -32,7 +32,21 @@
         margin-left: 0!important;
     }
 }
-
+.learn-press-tooltip{
+    display: inline-block;
+    font-size: 17px;
+    vertical-align: middle;
+    margin: 0 5px;
+    color: #999;
+    &:after{
+        font-family: Dashicons;
+        content: "\f223";
+    }
+    &:hover{
+        color: #0073aa;
+        opacity: 1;
+    }
+}
 .learn-press-payments {
     border-collapse: collapse;
     border: 1px solid #DDD;

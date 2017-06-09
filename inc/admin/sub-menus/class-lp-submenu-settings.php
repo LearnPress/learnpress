@@ -37,7 +37,7 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 
 	public function field_meta( $meta, $field ) {
 		if ( ! empty( $field['learn-press-settings'] ) ) {
-		    $meta = $field['std'];
+			$meta = $field['std'];
 			/*if ( false !== ( $saved = get_option( $field['id'] ) ) ) {
 				$meta = $saved;
 			}*/
@@ -97,45 +97,7 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 		<?php
 	}
 
-	public function page_content_generalxx() {
-
-	}
-
-	public function page_content_coursesxx() {
-		echo 'Courses';
-	}
-
-	public function page_content_paymentsxx() {
-
-		$this->tabs['payments']->admin_page( $this->get_active_section(), $this->get_sections() );
-
-		return;
-		$active_section = $this->get_active_section();
-		$sectionClass   = '';
-		if ( ! empty( $this->sections[ $active_section ] ) ) {
-			$sectionClass = $this->sections[ $active_section ];
-			if ( is_string( $sectionClass ) && class_exists( $sectionClass ) ) {
-				$sectionClass = new $sectionClass();
-			}
-		}
-		$callback = array( $sectionClass, 'admin_page' );
-		if ( is_callable( $callback ) ) {
-			call_user_func_array( $callback, array() );
-		} else {
-			$this->display_section();
-		}
-	}
-
-	public function section_content_paypaldd() {
-	}
-
-	public function page_content_emails() {
-		learn_press_debug( $this->get_sections() );
-
-	}
-
 	public function section_content( $section ) {
-		echo $section;
 	}
 
 	/**
@@ -158,12 +120,13 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 				if ( false !== strpos( $key, 'learn_press_' ) ) {
 					//
 					if ( apply_filters( 'learn-press/update-settings/' . $key, true ) ) {
+						$value = apply_filters( 'learn-press/update-settings/settings-value', $value, $key, $postdata );
 						update_option( $key, $value );
 					}
 				}
 			}
 		}
-
+        do_action('learn-press/update-settings/updated', $this);
 		add_settings_error( 'sdfdsfsdf', 'saved', __( 'Settings saved.', 'learnpress' ), 'updated' );
 		// Filter redirect
 		$redirect = apply_filters( 'learn-press/update-settings/redirect', add_query_arg( 'settings-updated', 'yes' ), $this );

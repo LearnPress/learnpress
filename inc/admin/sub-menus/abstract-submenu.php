@@ -178,10 +178,18 @@ abstract class LP_Abstract_Submenu {
 		return apply_filters( 'learn-press/submenu-' . $this->get_id() . '-heading-tabs', $this->sanitize_tabs( $this->tabs ) );
 	}
 
+	/**
+     * Sanitize the tabs.
+     *
+	 * @param $tabs
+	 *
+	 * @return array
+	 */
 	public function sanitize_tabs( $tabs ) {
 		$sanitized_tabs = array();
 		if ( $tabs ) {
 			foreach ( $tabs as $tab => $name ) {
+			    // Maybe a tab is name of a class? Try to locate it.
 				if ( is_string( $name ) && class_exists( $name ) ) {
 					$objSettings                        = new $name();
 					$sanitized_tabs[ $objSettings->id ] = $objSettings;
@@ -234,6 +242,13 @@ abstract class LP_Abstract_Submenu {
 		return apply_filters( 'learn-press/submenu-sections', $this->sections );
 	}
 
+	/**
+     * Get current page is displaying.
+     *
+	 * @param bool $prefix
+	 *
+	 * @return bool|mixed|null
+	 */
 	public function get_active_page( $prefix = true ) {
 		if ( false === $this->page ) {
 			$this->page = ! empty ( $_REQUEST['page'] ) ? $_REQUEST['page'] : null;
@@ -388,10 +403,22 @@ abstract class LP_Abstract_Submenu {
 		return true;
 	}
 
+	/**
+     * Get this page id without prefix.
+     *
+	 * @return mixed
+	 */
 	protected function _get_page() {
 		return str_replace( 'learn-press-', '', $this->get_id() );
 	}
 
+	/**
+     * Append new class to body tag to control our page.
+     *
+	 * @param $classes
+	 *
+	 * @return array|string
+	 */
 	public function body_class( $classes ) {
 		if ( $page = $this->get_active_page(false) ) {
 			if ( $classes ) {

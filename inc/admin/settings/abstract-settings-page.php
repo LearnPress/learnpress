@@ -43,7 +43,11 @@ class LP_Abstract_Settings_Page extends LP_Abstract_Settings {
 		$settings = $this->get_settings( $section, $tab );
 		$settings = $this->sanitize_settings( $settings );
 		do_action( 'learn-press/settings-render' );
-		LP_Meta_Box_Helper::render_fields( $settings );
+		if ( $settings ) {
+			LP_Meta_Box_Helper::render_fields( $settings );
+		} else {
+			echo __( 'There is no settings.', 'learnpress' );
+		}
 	}
 
 
@@ -82,37 +86,4 @@ class LP_Abstract_Settings_Page extends LP_Abstract_Settings {
 	public function get_settings( $section = null, $tab = null ) {
 		return array();
 	}
-
-	public function get_option( $option_name, $default = null ) {
-		if ( strstr( $option_name, '[' ) ) {
-			parse_str( $option_name, $option_array );
-
-			// Option name is first key
-			$option_name = current( array_keys( $option_array ) );
-
-			// Get value
-			$option_values = get_option( $option_name, '' );
-
-			$key = key( $option_array[ $option_name ] );
-
-			if ( isset( $option_values[ $key ] ) ) {
-				$option_value = $option_values[ $key ];
-			} else {
-				$option_value = null;
-			}
-
-			// Single value
-		} else {
-			$option_value = LP()->settings->get( preg_replace( '!^learn_press_!', '', $option_name ), null );
-		}
-
-		if ( is_array( $option_value ) ) {
-			$option_value = array_map( 'stripslashes', $option_value );
-		} elseif ( ! is_null( $option_value ) ) {
-			$option_value = stripslashes( $option_value );
-		}
-
-		return $option_value === null ? $default : $option_value;
-	}
-
 }

@@ -33,6 +33,7 @@
     });
     $(document).ready(function () {
         $('.learn-press-dropdown-pages').dropdownPages();
+
     })
 
     return;

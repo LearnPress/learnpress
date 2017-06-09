@@ -20,10 +20,32 @@ class LP_Settings_Emails extends LP_Abstract_Settings_Page {
 	/**
 	 * Constructor
 	 */
-	public function __construct () {
+	public function __construct() {
 		$this->id   = 'emails';
 		$this->text = __( 'Emails', 'learnpress' );
 		parent::__construct();
+
+		add_filter( 'learn-press/admin/submenu-section-title', array( $this, 'custom_section_title' ), 10, 2 );
+		add_action( 'learn-press/update-settings/settings-value', array( $this, 'sanitize_value' ), 10, 3 );
+		add_action( 'learn-press/update-settings/updated', function () {
+			die();
+		} );
+	}
+
+	public function sanitize_value( $value, $key, $postdata ) {
+		if(!empty($value['email_content']))
+		echo "[$key]<pre>";print_r($value);echo '</pre>';
+
+		return $value;
+	}
+
+	public function custom_section_title( $title, $slug ) {
+		$sections = $this->get_sections();
+		if ( ! empty( $sections[ $slug ] ) && $sections[ $slug ] instanceof LP_Email ) {
+			$title = $title . sprintf( '<span class="learn-press-tooltip" title="%s"></span>', esc_attr( $sections[ $slug ]->title ) );
+		}
+
+		return $title;
 	}
 
 	/**
@@ -31,159 +53,59 @@ class LP_Settings_Emails extends LP_Abstract_Settings_Page {
 	 *
 	 * @return mixed
 	 */
-	public function get_sections () {
+	public function get_sections() {
 
 		$emails = LP_Emails::instance()->emails;
 
 		$sections = array(
-			'general' => array( 'id' => 'general', 'title' => __( 'General options', 'learnpress' ) )
+			'general' => __( 'General options', 'learnpress' )
 		);
 
 		if ( $emails ) {
 			foreach ( $emails as $email ) {
-				$sections[ $email->id ] = array(
-					'id'    => $email->id,
-					'title' => $email->title
-				);
+				$sections[ $email->id ] = $email;
 			}
 		}
-
-		/* $sections = array(
-		  'general'          => __( 'General options', 'learnpress' ),
-		  'new_course'       => __( 'New course', 'learnpress' ),
-		  'published_course' => __( 'Published course', 'learnpress' ),
-		  'new_order'        => __( 'New order', 'learnpress' ),
-		  'enrolled_course'  => __( 'Enrolled course', 'learnpress' ),
-		  'passed_course'    => __( 'Passed course', 'learnpress' ),
-		  ); */
 
 		return $sections = apply_filters( 'learn_press_settings_sections_' . $this->id, $sections );
 	}
 
 	/**
-	 * @param $default_message
+	 * Display admin page for payments settings tab.
+	 *
+	 * @param string $section
+	 * @param string $tab
 	 */
-	public function message_editor ( $default_message ) {
-		$settings  = LP()->settings;
-		$content   = stripslashes( $settings->get( $this->section['id'] . '.message', $default_message ) );
-		$editor_id = 'email_message';
-		wp_editor(
-			stripslashes( $content ), $editor_id, array(
-				'textarea_rows' => 10,
-				'wpautop'       => false,
-				'textarea_name' => "lpr_settings[$this->id][message]",
-			)
-		);
-	}
+	public function admin_page( $section = null, $tab = null ) {
+		$sections = array();
+		$items    = LP_Admin_Menu::instance()->get_menu_items();
+		if ( ! empty( $items['settings'] ) ) {
+			$tab      = $items['settings']->get_active_tab();
+			$section  = $items['settings']->get_active_section();
+			$sections = $items['settings']->get_sections();
+		}
+		$section_data = ! empty( $sections[ $section ] ) ? $sections[ $section ] : false;
 
-	public function get_email_class ( $id ) {
-		$emails = LP_Emails::instance()->emails;
-		if ( $emails ) {
-			foreach ( $emails as $email ) {
-				if ( $email->id == $id ) {
-					return $email;
-				}
+		// If current section is an instance of Settings just call to admin_options.
+		if ( $section_data instanceof LP_Email ) {
+			$section_data->admin_options();
+		} else if ( is_array( $section_data ) ) {
+		} else {
+			// If I have a function point to current section with prefix 'admin_options_'.
+			// Then call to it.
+			if ( is_callable( array( $this, 'admin_options_' . $section ) ) ) {
+				call_user_func_array( array( $this, 'admin_options_' . $section ), array(
+					$section,
+					$tab
+				) );
+			} else {
+				// leave of all, do an action.
+				do_action( 'learn-press/admin/setting-payments/admin-options-' . $section, $tab );
 			}
 		}
-
-		return false;
 	}
 
-	/**
-	 *
-	 */
-	public function output_section_general () {
-		$view = learn_press_get_admin_view( 'settings/emails/general.php' );
-		include_once $view;
-	}
-
-	public function output_section_new_course () {
-		if ( $email = $this->get_email_class( 'new_course' ) ) {
-			$email->admin_options( $this );
-		}
-	}
-
-	public function output_section_user_order_completed () {
-		if ( $email = $this->get_email_class( 'user_order_completed' ) ) {
-			$email->admin_options( $this );
-		}
-	}
-
-	public function output_section_user_order_changed_status () {
-		if ( $email = $this->get_email_class( 'user_order_changed_status' ) ) {
-			$email->admin_options( $this );
-		}
-	}
-
-	public function output_section_rejected_course () {
-		if ( $email = $this->get_email_class( 'rejected_course' ) ) {
-			$email->admin_options( $this );
-		}
-	}
-
-	public function output_section_new_order () {
-		if ( $email = $this->get_email_class( 'new_order' ) ) {
-			$email->admin_options( $this );
-		}
-	}
-
-	public function output_section_new_order_customer () {
-		if ( $email = $this->get_email_class( 'new_order_customer' ) ) {
-			$email->admin_options( $this );
-		}
-	}
-
-	public function output_section_published_course () {
-		if ( $email = $this->get_email_class( 'published_course' ) ) {
-			$email->admin_options( $this );
-		}
-	}
-
-	public function output_section_enrolled_course () {
-		if ( $email = $this->get_email_class( 'enrolled_course' ) ) {
-			$email->admin_options( $this );
-		}
-	}
-
-	public function output_section_enrolled_course_admin () {
-		if ( $email = $this->get_email_class( 'enrolled_course_admin' ) ) {
-			$email->admin_options( $this );
-		}
-	}
-
-	public function output_section_finished_course () {
-		if ( $email = $this->get_email_class( 'finished_course' ) ) {
-			$email->admin_options( $this );
-		}
-	}
-
-	public function output_section_update_course () {
-		if ( $email = $this->get_email_class( 'update_course' ) ) {
-			$email->admin_options( $this );
-		}
-	}
-
-	public function output_section_become_an_instructor () {
-		if ( $email = $this->get_email_class( 'become_an_instructor' ) ) {
-			$email->admin_options( $this );
-		}
-	}
-
-	public function get_settings () {
-		return apply_filters(
-			'learn_press_email_settings', array(
-				array(
-					'title'   => __( 'Profile page', 'learnpress' ),
-					'id'      => $this->get_field_name( 'profile_page_id' ),
-					'id'      => $this->get_field_name( 'profile_page_id' ),
-					'default' => '',
-					'type'    => 'pages-dropdown'
-				)
-			)
-		);
-	}
-
-	public static function instance () {
+	public static function instance() {
 		if ( ! self::$_instance ) {
 			self::$_instance = new self();
 		}

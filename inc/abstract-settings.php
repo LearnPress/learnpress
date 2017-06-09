@@ -9,6 +9,7 @@ abstract class LP_Abstract_Settings {
 	 * LP_Abstract_Settings constructor.
 	 */
 	public function __construct() {
+		// TODO: init anything here
 	}
 
 	/**
@@ -26,6 +27,9 @@ abstract class LP_Abstract_Settings {
 	 * @return mixed
 	 */
 	public function get_admin_field_name( $name ) {
+		if ( empty( $name ) ) {
+			$name = md5( microtime( true ) );
+		}
 		$field_name = apply_filters( 'learn_press_settings_field_name_' . $name, "learn_press_{$name}" );
 
 		return $field_name;
@@ -48,13 +52,28 @@ abstract class LP_Abstract_Settings {
 	public function admin_options() {
 		$settings = $this->get_settings();
 		$settings = $this->sanitize_settings( $settings );
-		LP_Meta_Box_Helper::render_fields( $settings );
+		do_action( 'learn-press/settings-render' );
+		if ( $settings ) {
+			LP_Meta_Box_Helper::render_fields( $settings );
+		} else {
+			echo __( 'There is no settings.', 'learnpress' );
+		}
 	}
 
+	/**
+	 * Sanitize settings before rendering.
+	 * Fill std from database, reformat conditional fields...
+	 *
+	 * @param $settings
+	 *
+	 * @return mixed
+	 */
 	public function sanitize_settings( $settings ) {
 		if ( $settings ) {
 			foreach ( $settings as $k => $field ) {
 				$field['id'] = $this->get_admin_field_name( $field['id'] );
+
+				// A field is an array of values, find the real name.
 				if ( strpos( $field['id'], '[' ) !== false ) {
 					parse_str( $field['id'], $group );
 					$keys        = array_keys( $group );
@@ -63,11 +82,13 @@ abstract class LP_Abstract_Settings {
 					$option_name = $field['id'];
 				}
 
+				// Get value from option
 				if ( false === ( $std = get_option( $option_name ) ) ) {
 					$std = array_key_exists( 'default', $field ) ? $field['default'] : '';
 				}
-				if ( isset( $group ) && is_array( $std ) ) {
 
+				// If the field is an array
+				if ( isset( $group ) && is_array( $std ) ) {
 					$loop = 0;
 					while ( is_array( $group ) && $loop ++ < 10 ) {
 						$option_keys = array_keys( $group[ $option_name ] );
@@ -79,18 +100,7 @@ abstract class LP_Abstract_Settings {
 				$field['std']                  = apply_filters( 'learn-press/settings/default-field-value', $std, $field );
 				$field['learn-press-settings'] = 'yes';
 
-				//
-//				$id = preg_replace( '~[-]+~', '_', $field['id'] );
-//				if ( $this->stored ) {
-//					$getter = array( $this, "get_{$id}" );
-//					if ( is_callable( $getter ) ) {
-//						$field['std'] = call_user_func( $getter );
-//					} elseif ( property_exists( $this, $id ) ) {
-//						$field['std'] = $this->{$id};
-//					}
-//				}
-
-
+				// Re-format conditional logic fields
 				if ( ! empty( $field['visibility'] ) ) {
 					$conditional = $field['visibility'];
 
@@ -105,13 +115,48 @@ abstract class LP_Abstract_Settings {
 
 					$field['visibility'] = $conditional;
 				}
-
-				///$settings[ $k ] = $field;
-
-				$settings[ $k ]                = $field;
+				$settings[ $k ] = $field;
 			}
 		}
 
 		return $settings;
+	}
+
+	/**
+	 * @param      $option_name
+	 * @param null $default
+	 *
+	 * @return array|null|string
+	 */
+	public function get_option( $option_name, $default = null ) {
+		if ( strstr( $option_name, '[' ) ) {
+			parse_str( $option_name, $option_array );
+
+			// Option name is first key
+			$option_name = current( array_keys( $option_array ) );
+
+			// Get value
+			$option_values = get_option( $option_name, '' );
+
+			$key = key( $option_array[ $option_name ] );
+
+			if ( isset( $option_values[ $key ] ) ) {
+				$option_value = $option_values[ $key ];
+			} else {
+				$option_value = null;
+			}
+
+			// Single value
+		} else {
+			$option_value = LP()->settings->get( preg_replace( '!^learn_press_!', '', $option_name ), null );
+		}
+
+		if ( is_array( $option_value ) ) {
+			$option_value = array_map( 'stripslashes', $option_value );
+		} elseif ( ! is_null( $option_value ) ) {
+			$option_value = stripslashes( $option_value );
+		}
+
+		return $option_value === null ? $default : $option_value;
 	}
 }

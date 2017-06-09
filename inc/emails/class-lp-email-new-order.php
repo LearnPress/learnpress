@@ -9,7 +9,7 @@
  */
 
 defined( 'ABSPATH' ) || exit();
-if ( !class_exists( 'LP_Email_New_Order' ) ) {
+if ( ! class_exists( 'LP_Email_New_Order' ) ) {
 	class LP_Email_New_Order extends LP_Email {
 		/**
 		 * LP_Email_New_Order constructor.
@@ -57,14 +57,14 @@ if ( !class_exists( 'LP_Email_New_Order' ) ) {
 			parent::__construct();
 		}
 
-		public function admin_options( $settings_class ) {
+		/*public function admin_options( $settings_class ) {
 			$view = learn_press_get_admin_view( 'settings/emails/new-order.php' );
 			include_once $view;
-		}
+		}*/
 
 		public function trigger( $order_id ) {
 
-			if ( !$this->enable ) {
+			if ( ! $this->enable ) {
 				return;
 			}
 
@@ -145,6 +145,99 @@ if ( !class_exists( 'LP_Email_New_Order' ) ) {
 		 */
 		public function get_template_data( $format = 'plain' ) {
 			return $this->object;
+		}
+
+		public function get_settings() {
+			return apply_filters(
+				'learn-press/email-settings/new-order/settings',
+				array(
+					array(
+						'type'  => 'heading',
+						'title' => __( 'New order', 'learnpress' ),
+						'desc'  => __( 'Send email to a specific address when a new order is placed.', 'learnpress' )
+					),
+					array(
+						'title'   => __( 'Enabled', 'learnpress' ),
+						'type'    => 'yes-no',
+						'default' => 'no',
+						'id'      => 'emails_new_order[enable]'
+					),
+					array(
+						'title'      => __( 'Recipient(s)', 'learnpress' ),
+						'type'       => 'text',
+						'default'    => get_option( 'admin_email' ),
+						'id'         => 'emails_new_order[recipients]',
+						'desc'       => sprintf( __( 'Email recipient(s) (separated by comma), default: <code>%s</code>', 'learnpress' ), get_option( 'admin_email' ) ),
+						'visibility' => array(
+							'state'       => 'show',
+							'conditional' => array(
+								array(
+									'field'   => 'emails_new_order[enable]',
+									'compare' => '=',
+									'value'   => 'yes'
+								)
+							)
+						)
+					),
+					array(
+						'title'      => __( 'Subject', 'learnpress' ),
+						'type'       => 'text',
+						'default'    => $this->default_subject,
+						'id'         => 'emails_new_order[subject]',
+						'desc'       => sprintf( __( 'Email subject, default: <code>%s</code>', 'learnpress' ), $this->default_subject ),
+						'visibility' => array(
+							'state'       => 'show',
+							'conditional' => array(
+								array(
+									'field'   => 'emails_new_order[enable]',
+									'compare' => '=',
+									'value'   => 'yes'
+								)
+							)
+						)
+					),
+					array(
+						'title'      => __( 'Heading', 'learnpress' ),
+						'type'       => 'text',
+						'default'    => $this->default_heading,
+						'id'         => 'emails_new_order[heading]',
+						'desc'       => sprintf( __( 'Email heading, default: <code>%s</code>', 'learnpress' ), $this->default_heading ),
+						'visibility' => array(
+							'state'       => 'show',
+							'conditional' => array(
+								array(
+									'field'   => 'emails_new_order[enable]',
+									'compare' => '=',
+									'value'   => 'yes'
+								)
+							)
+						)
+					),
+					array(
+						'title'      => __( 'Email content', 'learnpress' ),
+						'type'       => 'email-content',
+						'default'    => '',
+						'id'         => 'emails_new_order[email_content]',
+						'extra'      => array(
+							'email_format'  => '',
+							'template'      => '',
+							'local_file'    => '',
+							'template_file' => '',
+							'template_dir'  => ''
+						),
+						'visibility' => array(
+							'state'       => 'show',
+							'conditional' => array(
+								array(
+									'field'   => 'emails_new_order[enable]',
+									'compare' => '=',
+									'value'   => 'yes'
+								)
+							)
+						)
+					),
+				)
+			);
 		}
 	}
 }

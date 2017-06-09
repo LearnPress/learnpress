@@ -259,6 +259,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			// let third parties know that we're ready
 			do_action( 'learn_press_ready' );
 			do_action( 'learn_press_loaded', $this );
+			do_action( 'learn-press/ready' );
 		}
 
 		/**

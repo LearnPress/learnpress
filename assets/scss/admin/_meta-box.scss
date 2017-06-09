@@ -3,11 +3,11 @@
         margin-bottom: 20px;
         position: relative;
         .rwmb-label {
-            font-weight: bold;
             display: block;
             margin-bottom: 5px;
             float: left;
             width: 250px;
+            font-size:14px;
         }
         .rwmb-input {
             color: #000;
@@ -15,10 +15,10 @@
         }
         &.rwmb-heading-wrapper {
             h4 {
-                font-size: 18px;
+                font-size: 15px;
                 margin: 0;
-                padding: 0 0 10px;
-                border-bottom: 3px solid #563d7c;
+                padding: 0 0 5px;
+                border-bottom: 2px solid #563d7c;
                 display: inline-block;
             }
         }

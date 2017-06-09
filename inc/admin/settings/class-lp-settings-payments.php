@@ -14,6 +14,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /**
  * Class LP_Settings_Payments
+ *
+ * Manage all payments are registered and settings to control order process.
+ *
+ * @extend LP_Abstract_Settings_Page
  */
 class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 	/**
@@ -24,26 +28,48 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 		$this->text = __( 'Payments', 'learnpress' );
 
 		parent::__construct();
+
+		add_filter( 'learn-press/admin/submenu-section-title', array( $this, 'custom_section_title' ), 10, 2 );
+	}
+
+	public function custom_section_title( $title, $slug ) {
+		$sections = $this->get_sections();
+		if ( ! empty( $sections[ $slug ] ) && $sections[ $slug ] instanceof LP_Gateway_Abstract ) {
+			$title = $title . sprintf( '<span class="learn-press-tooltip" title="%s"></span>', esc_attr( $sections[ $slug ]->get_method_description() ) );
+		}
+
+		return $title;
 	}
 
 	/**
+	 * Get sections.
+	 * Add a general section and each registered payment is a section.
+	 *
 	 * @return mixed
 	 */
 	public function get_sections() {
-		$gateways = LP_Gateways::instance()->get_gateways();
-		$sections = array(
-			'general' => __( 'General', 'learnpress' )
-		);
-		if ( $gateways ) {
-			foreach ( $gateways as $id => $gateway ) {
-				$sections[ $id ] = $gateway;
+		static $sections;
+		if ( ! $sections ) {
+			$gateways = LP_Gateways::instance()->get_gateways();
+			$sections = array(
+				'general' => __( 'General', 'learnpress' )
+			);
+			if ( $gateways ) {
+				foreach ( $gateways as $id => $gateway ) {
+					$sections[ $id ] = $gateway;
+				}
 			}
 		}
 
-		//$sections['payment_order'] = __('Payment order', 'learnpress');
 		return $sections;
 	}
 
+	/**
+	 * @param string $section
+	 * @param string $tab
+	 *
+	 * @return bool|mixed
+	 */
 	public function get_settings( $section = '', $tab = '' ) {
 		if ( is_callable( array( $this, 'get_settings_' . $section ) ) ) {
 			return call_user_func( array( $this, 'get_settings_' . $section ) );
@@ -52,22 +78,16 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 		return false;
 	}
 
-	public function get_settings_payment_order( $section = '', $tab = '' ) {
-		return array(
-			array(
-				'title'   => __( 'Checkout page', 'learnpress' ),
-				'id'      => $this->get_field_name( 'checkout_page_id' ),
-				'default' => '',
-				'type'    => 'pages-dropdown'
-			)
-        );
-	}
-
+	/**
+	 * Settings fields of general section.
+	 *
+	 * @return mixed
+	 */
 	public function get_settings_general() {
 		return apply_filters(
-		    'learn-press/payment-settings',
+			'learn-press/payment-settings',
 			array_merge(
-			    // General
+			// General
 				apply_filters(
 					'learn-press/payment-settings/general',
 					array(
@@ -98,8 +118,8 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 					'learn-press/payment-settings/checkout-endpoints',
 					array(
 						array(
-							'title'   => __( 'Endpoints', 'learnpress' ),
-							'type' => 'heading',
+							'title' => __( 'Endpoints', 'learnpress' ),
+							'type'  => 'heading',
 						),
 						array(
 							'title'   => __( 'Order received', 'learnpress' ),
@@ -109,11 +129,12 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 						)
 					)
 				),
+				// Payment order
 				array(
 					array(
-						'title'   => __( 'Payments', 'learnpress' ),
-						'type' => 'heading',
-                        'desc'=>__('All available payments are listed here. Drag and drop the payments to re-order.', 'learnpress')
+						'title' => __( 'Payments', 'learnpress' ),
+						'type'  => 'heading',
+						'desc'  => __( 'All available payments are listed here. Drag and drop the payments to re-order.', 'learnpress' )
 					),
 					array(
 						'title'   => __( 'Payment order', 'learnpress' ),
@@ -126,6 +147,12 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 		);
 	}
 
+	/**
+	 * Display admin page for payments settings tab.
+	 *
+	 * @param string $section
+	 * @param string $tab
+	 */
 	public function admin_page( $section = null, $tab = null ) {
 		$sections = array();
 		$items    = LP_Admin_Menu::instance()->get_menu_items();
@@ -136,81 +163,33 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 		}
 		$section_data = ! empty( $sections[ $section ] ) ? $sections[ $section ] : false;
 
+		// If current section is an instance of Settings just call to admin_options.
 		if ( $section_data instanceof LP_Abstract_Settings ) {
 			$section_data->admin_options();
 		} else if ( is_array( $section_data ) ) {
 		} else {
+			// If I have a function point to current section with prefix 'admin_options_'.
+			// Then call to it.
 			if ( is_callable( array( $this, 'admin_options_' . $section ) ) ) {
 				call_user_func_array( array( $this, 'admin_options_' . $section ), array(
 					$section,
 					$tab
 				) );
 			} else {
+				// leave of all, do an action.
 				do_action( 'learn-press/admin/setting-payments/admin-options-' . $section, $tab );
 			}
 		}
 	}
 
+	/**
+	 * Output admin option of general page.
+	 *
+	 * @param string $section
+	 * @param string $tab
+	 */
 	public function admin_options_general( $section, $tab ) {
 		parent::admin_page( $section, $tab );
-	}
-
-	public function output() {
-		$section = $this->section;
-		?>
-        <h3 class="learn-press-settings-title"><?php echo $this->section['title']; ?></h3>
-		<?php if ( ! empty( $this->section['description'] ) ) : ?>
-            <p class="description">
-				<?php echo $this->section['description']; ?>
-            </p>
-		<?php endif; ?>
-        <table class="form-table">
-            <tbody>
-			<?php
-			if ( 'paypal' == $section['id'] ) {
-				$this->output_section_paypal();
-			} else {
-				do_action( 'learn_press_section_' . $this->id . '_' . $section['id'] );
-			}
-			?>
-            </tbody>
-        </table>
-        <script type="text/javascript">
-            jQuery(function ($) {
-                var $sandbox_mode = $('#learn_press_paypal_sandbox_mode'),
-                    $paypal_type = $('#learn_press_paypal_type');
-                $paypal_type.change(function () {
-                    $('.learn_press_paypal_type_security').toggleClass('hide-if-js', 'security' != this.value);
-                });
-                $sandbox_mode.change(function () {
-                    this.checked ? $('.sandbox input').removeAttr('readonly') : $('.sandbox input').attr('readonly', true);
-                });
-            })
-        </script>
-		<?php
-	}
-
-	/**
-	 * Print admin options for paypal section
-	 */
-	public function output_section_paypal() {
-		$view = learn_press_get_admin_view( 'settings/payments.php' );
-		include_once $view;
-	}
-
-	public function saves() {
-
-		$settings = LP_Admin_Settings::instance( 'payment' );
-		$section  = $this->section['id'];
-		if ( 'paypal' == $section ) {
-			$post_data = $_POST['lpr_settings'][ $this->id ];
-
-			$settings->set( 'paypal', $post_data );
-		} else {
-			do_action( 'learn_press_save_' . $this->id . '_' . $section );
-		}
-		$settings->update();
-
 	}
 }
 

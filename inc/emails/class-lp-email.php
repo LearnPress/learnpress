@@ -10,7 +10,7 @@
 
 defined( 'ABSPATH' ) || exit();
 
-class LP_Email {
+class LP_Email extends LP_Abstract_Settings {
 	/**
 	 * Email method ID.
 	 *
@@ -560,10 +560,6 @@ class LP_Email {
 		return trailingslashit( get_stylesheet_directory() ) . trailingslashit( apply_filters( 'learn_press_template_directory', $template_path ? $template_path : learn_press_template_path(), $template ) ) . $template;
 	}
 
-	public function admin_options( $obj ) {
-
-	}
-
 	public function send( $to, $subject, $message, $headers, $attachments ) {
 		LP_Debug::instance()->add( $to );
 		LP_Debug::instance()->add( func_get_args() );
@@ -650,5 +646,9 @@ class LP_Email {
 			}
 		}
 		return $variables;
+	}
+
+	public function __toString() {
+		return $this->title;
 	}
 }

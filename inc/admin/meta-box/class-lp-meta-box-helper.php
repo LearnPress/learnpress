@@ -35,13 +35,13 @@ class LP_Meta_Box_Helper {
 		if ( ! class_exists( 'RW_Meta_Box' ) ) {
 			require_once LP_PLUGIN_PATH . 'inc/libraries/meta-box/meta-box.php';
 		}
-		$fields = RW_Meta_Box::normalize_fields( array($field) );
-		$field = $fields[0];
+		$fields = RW_Meta_Box::normalize_fields( array( $field ) );
+		$field  = $fields[0];
 		if ( self::include_field( $field ) ) {
 			self::parse_conditional_logic( $field );
 			$field['name']       = apply_filters( 'learn-press/meta-box/field-name', $field['title'], $field );
 			$field['field_name'] = apply_filters( 'learn-press/meta-box/field-field_name', $field['id'], $field );
-			$field['id']         = apply_filters( 'learn-press/meta-box/field-id', $field['id'], $field );
+			$field['id'] = apply_filters( 'learn-press/meta-box/field-id', $field['id'], $field );
 			//$field['value']      = md5( $field['std'] );
 			// Try to include extended fields if they are not loaded before rendering.
 			RWMB_Field::call( 'show', $field, true, 0 );
