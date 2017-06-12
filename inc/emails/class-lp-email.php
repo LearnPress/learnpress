@@ -238,26 +238,37 @@ class LP_Email extends LP_Abstract_Settings {
 	 */
 	public function __construct() {
 		$this->id = str_replace( '-', '_', $this->id );
+
+		// Set template base path to LP templates path if it is not set.
 		if ( is_null( $this->template_base ) ) {
 			$this->template_base = LP()->plugin_path( 'templates/' );
 		}
-		if ( $this->is_current() ) {
-			$this->template_actions();
-			$this->template_actions();
-		}
 
+		/**
+		 * Set template folder if it is not set.
+		 * Default is 'learnpress'
+		 */
 		if ( empty( $this->template_path ) ) {
 			$this->template_path = learn_press_template_path();
 		}
 
-		if ( !$this->object ) {
+		if ( ! $this->object ) {
 			$this->object = array();
 		}
 
+		/**
+		 * Init general options
+		 */
 		$this->heading      = LP()->settings->get( 'emails_' . $this->id . '.heading', $this->default_heading );
 		$this->subject      = LP()->settings->get( 'emails_' . $this->id . '.subject', $this->default_subject );
 		$this->email_format = LP()->settings->get( 'emails_' . $this->id . '.email_format' );
 		$this->enable       = LP()->settings->get( 'emails_' . $this->id . '.enable' ) == 'yes';
+
+		// Process request actions for current email type
+		if ( $this->is_current() ) {
+			$this->template_actions();
+			$this->template_actions();
+		}
 	}
 
 	public function get_variables_support() {
@@ -265,7 +276,7 @@ class LP_Email extends LP_Abstract_Settings {
 	}
 
 	public function __get( $key ) {
-		if ( !empty( $this->{$key} ) ) {
+		if ( ! empty( $this->{$key} ) ) {
 			return $this->{$key};
 		} else {
 			return LP()->settings->get( 'emails_' . $this->id . '.' . $key );
@@ -274,12 +285,12 @@ class LP_Email extends LP_Abstract_Settings {
 
 	private function is_current() {
 
-		return !empty( $_REQUEST['section'] ) && $_REQUEST['section'] == $this->id;
+		return ! empty( $_REQUEST['section'] ) && $_REQUEST['section'] == $this->id;
 	}
 
 	public function _remove_email_content_from_option( $options, $key ) {
 
-		if ( !$this->is_current() ) {
+		if ( ! $this->is_current() ) {
 			return;
 		}
 
@@ -295,28 +306,29 @@ class LP_Email extends LP_Abstract_Settings {
 				unset( $options['email_content_plain'] );
 			}
 		}
+
 		return $options;
 	}
 
 	protected function template_actions() {
 		if (
-			( !empty( $this->template_html ) || !empty( $this->template_plain ) )
-			&& ( !empty( $_GET['move_template'] ) || !empty( $_GET['delete_template'] ) )
+			( ! empty( $this->template_html ) || ! empty( $this->template_plain ) )
+			&& ( ! empty( $_GET['move_template'] ) || ! empty( $_GET['delete_template'] ) )
 			&& 'GET' == $_SERVER['REQUEST_METHOD']
 		) {
-			if ( empty( $_GET['_learn_press_email_nonce'] ) || !wp_verify_nonce( $_GET['_learn_press_email_nonce'], 'learn_press_email_template_nonce' ) ) {
+			if ( empty( $_GET['_learn_press_email_nonce'] ) || ! wp_verify_nonce( $_GET['_learn_press_email_nonce'], 'learn_press_email_template_nonce' ) ) {
 				return;
 			}
 
-			if ( !current_user_can( 'edit_themes' ) ) {
+			if ( ! current_user_can( 'edit_themes' ) ) {
 				return;
 			}
 
-			if ( !empty( $_GET['move_template'] ) ) {
+			if ( ! empty( $_GET['move_template'] ) ) {
 				$this->move_template( $_GET['move_template'] );
 			}
 
-			if ( !empty( $_GET['delete_template'] ) ) {
+			if ( ! empty( $_GET['delete_template'] ) ) {
 				$this->delete_template( $_GET['delete_template'] );
 			}
 		}
@@ -324,9 +336,9 @@ class LP_Email extends LP_Abstract_Settings {
 
 	protected function move_template( $type ) {
 		if ( $template = $this->get_template( 'template_' . $type ) ) {
-			if ( !empty( $template ) ) {
+			if ( ! empty( $template ) ) {
 				$theme_file = $this->get_theme_template_file( $template );
-				if ( wp_mkdir_p( dirname( $theme_file ) ) && !file_exists( $theme_file ) ) {
+				if ( wp_mkdir_p( dirname( $theme_file ) ) && ! file_exists( $theme_file ) ) {
 					$template_file = $this->template_base . $template;
 					// Copy template file
 					copy( $template_file, $theme_file );
@@ -339,7 +351,7 @@ class LP_Email extends LP_Abstract_Settings {
 	protected function delete_template( $type ) {
 		if ( $template = $this->get_template( 'template_' . $type ) ) {
 
-			if ( !empty( $template ) ) {
+			if ( ! empty( $template ) ) {
 
 				$theme_file = $this->get_theme_template_file( $template );
 
@@ -359,6 +371,7 @@ class LP_Email extends LP_Abstract_Settings {
 		}
 		$search  = apply_filters( 'learn_press_email_format_string_find', $search, $this );
 		$replace = apply_filters( 'learn_press_email_format_string_replace', $replace, $this );
+
 		return str_replace( $search, $replace, $string );
 	}
 
@@ -416,6 +429,7 @@ class LP_Email extends LP_Abstract_Settings {
 			$content       = LP()->settings->get( 'emails_' . $this->id . '.email_content_html', file_get_contents( $template_file ) );
 			$content       = stripslashes( $content );
 		}
+
 		return $content;
 	}
 
@@ -433,6 +447,7 @@ class LP_Email extends LP_Abstract_Settings {
 			$content       = LP()->settings->get( 'emails_' . $this->id . '.email_content_plain', file_get_contents( $template_file ) );
 			$content       = stripslashes( $content );
 		}
+
 		return $content;
 	}
 
@@ -453,9 +468,10 @@ class LP_Email extends LP_Abstract_Settings {
 
 	public function get_from_address() {
 		$email = sanitize_email( LP()->settings->get( 'emails_general.from_email' ) );
-		if ( !is_email( $email ) ) {
+		if ( ! is_email( $email ) ) {
 			$email = get_option( 'admin_email' );
 		}
+
 		return $email;
 	}
 
@@ -464,6 +480,7 @@ class LP_Email extends LP_Abstract_Settings {
 		if ( empty( $name ) ) {
 			$name = get_option( 'blogname' );
 		}
+
 		return $name;
 	}
 
@@ -496,7 +513,11 @@ class LP_Email extends LP_Abstract_Settings {
 	 * @return string
 	 */
 	public function apply_style_inline( $content ) {
-		if ( in_array( $this->get_content_format(), array( 'text/html', 'multipart/alternative' ) ) && class_exists( 'DOMDocument' ) ) {
+		if ( in_array( $this->get_content_format(), array(
+				'text/html',
+				'multipart/alternative'
+			) ) && class_exists( 'DOMDocument' )
+		) {
 
 			// get CSS styles
 			ob_start();
@@ -504,14 +525,15 @@ class LP_Email extends LP_Abstract_Settings {
 			$css = apply_filters( 'learn_press_email_styles', ob_get_clean(), $this->id, $this );
 
 			try {
-				if ( !class_exists( 'Emogrifier' ) ) {
+				if ( ! class_exists( 'Emogrifier' ) ) {
 					LP()->_include( 'libraries/class-emogrifier.php' );
 				}
 				// apply CSS styles inline for picky email clients
 				$emogrifier = new Emogrifier( $content, $css );
 				$content    = $emogrifier->emogrify();
 
-			} catch ( Exception $e ) {
+			}
+			catch ( Exception $e ) {
 
 			}
 		}
@@ -533,7 +555,7 @@ class LP_Email extends LP_Abstract_Settings {
 
 	protected function save_template( $code, $path ) {
 		return;
-		if ( current_user_can( 'edit_themes' ) && !empty( $code ) && !empty( $path ) ) {
+		if ( current_user_can( 'edit_themes' ) && ! empty( $code ) && ! empty( $path ) ) {
 			$saved = false;
 			$file  = trailingslashit( get_stylesheet_directory() ) . trailingslashit( learn_press_template_path() ) . $path;
 			$code  = stripslashes( $code );
@@ -548,7 +570,7 @@ class LP_Email extends LP_Abstract_Settings {
 				}
 			}
 
-			if ( !$saved ) {
+			if ( ! $saved ) {
 				$redirect = add_query_arg( 'learn_press_error', urlencode( __( 'Could not write to template file.', 'learnpress' ) ) );
 				wp_redirect( $redirect );
 				exit;
@@ -569,11 +591,11 @@ class LP_Email extends LP_Abstract_Settings {
 		add_filter( 'wp_mail_content_type', array( $this, 'get_content_format' ) );
 		$return  = false;
 		$message = apply_filters( 'learn_press_mail_content', $this->apply_style_inline( $message ), $this );
-		if ( !is_array( $to ) ) {
+		if ( ! is_array( $to ) ) {
 			$to = preg_split( '~\s?,\s?~', $to );
 		}
 		$separated = apply_filters( 'learn_press_email_to_separated', false, $to, $this );
-		if ( !$separated ) {
+		if ( ! $separated ) {
 			$return = wp_mail( $to, $subject, $message, $headers, $attachments );
 		} else {
 			if ( is_array( $to ) ) {
@@ -585,6 +607,7 @@ class LP_Email extends LP_Abstract_Settings {
 		remove_filter( 'wp_mail_from', array( $this, 'get_from_address' ) );
 		remove_filter( 'wp_mail_from_name', array( $this, 'get_from_name' ) );
 		remove_filter( 'wp_mail_content_type', array( $this, 'get_content_format' ) );
+
 		return $return;
 	}
 
@@ -632,19 +655,21 @@ class LP_Email extends LP_Abstract_Settings {
 				}
 			}
 		}
+
 		return $common;
 	}
 
 	public function data_to_variables( $data = null ) {
-		if ( !$data ) {
+		if ( ! $data ) {
 			$data = $this->get_common_template_data();
 		}
 		$variables = array();
 		if ( is_array( $data ) ) {
 			foreach ( $data as $k => $v ) {
-				$variables["{{" . $k . "}}"] = $v;
+				$variables[ "{{" . $k . "}}" ] = $v;
 			}
 		}
+
 		return $variables;
 	}
 

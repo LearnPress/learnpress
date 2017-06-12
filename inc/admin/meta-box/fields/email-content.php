@@ -23,7 +23,6 @@ if ( ! class_exists( 'RWMB_Email_Content_Field' ) ) {
 			learn_press_email_formats_dropdown(
 				array(
 					'name'     => $field['field_name'] . '[format]',
-					'id'       => 'learn_press_email_formats',
 					'selected' => ''
 				)
 			);

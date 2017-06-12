@@ -26,17 +26,6 @@ class LP_Settings_Emails extends LP_Abstract_Settings_Page {
 		parent::__construct();
 
 		add_filter( 'learn-press/admin/submenu-section-title', array( $this, 'custom_section_title' ), 10, 2 );
-		add_action( 'learn-press/update-settings/settings-value', array( $this, 'sanitize_value' ), 10, 3 );
-		add_action( 'learn-press/update-settings/updated', function () {
-			die();
-		} );
-	}
-
-	public function sanitize_value( $value, $key, $postdata ) {
-		if(!empty($value['email_content']))
-		echo "[$key]<pre>";print_r($value);echo '</pre>';
-
-		return $value;
 	}
 
 	public function custom_section_title( $title, $slug ) {
@@ -68,6 +57,68 @@ class LP_Settings_Emails extends LP_Abstract_Settings_Page {
 		}
 
 		return $sections = apply_filters( 'learn_press_settings_sections_' . $this->id, $sections );
+	}
+
+	/**
+	 * @param string $section
+	 * @param string $tab
+	 *
+	 * @return bool|mixed
+	 */
+	public function get_settings( $section = '', $tab = '' ) {
+		if ( is_callable( array( $this, 'get_settings_' . $section ) ) ) {
+			return call_user_func( array( $this, 'get_settings_' . $section ) );
+		}
+
+		return false;
+	}
+
+	/**
+	 * Settings fields of general section.
+	 *
+	 * @return mixed
+	 */
+	public function get_settings_general() {
+		return apply_filters(
+			'learn-press/emails-settings/general',
+			array(
+				array(
+					'title' => __( 'Email options', 'learnpress' ),
+					'type'  => 'heading',
+					'desc'  => __( 'The following options affect the sender (email address and name) used in LearnPress emails.', 'learnpress' )
+				),
+				array(
+					'title'   => __( 'From name', 'learnpress' ),
+					'id'      => 'emails_general[from_name]',
+					'default' => get_option( 'blogname' ),
+					'type'    => 'text'
+				),
+				array(
+					'title'   => __( 'From email', 'learnpress' ),
+					'id'      => 'emails_general[from_email]',
+					'default' => get_option( 'admin_email' ),
+					'type'    => 'text'
+				),
+				array(
+					'title' => __( 'Email template', 'learnpress' ),
+					'type'  => 'heading'
+				),
+				array(
+					'title'   => __( 'Header image', 'learnpress' ),
+					'id'      => 'emails_general[header_image]',
+					'default' => '',
+					'type'    => 'text',
+					'desc'    => __( 'The image will be displayed in the top of the email.', 'learnpress' )
+				),
+				array(
+					'title'   => __( 'Footer text', 'learnpress' ),
+					'id'      => 'emails_general[footer_text]',
+					'default' => '',
+					'type'    => 'textarea',
+					'desc'    => __( 'The text display in the bottom of email.', 'learnpress' )
+				),
+			)
+		);
 	}
 
 	/**
@@ -103,6 +154,16 @@ class LP_Settings_Emails extends LP_Abstract_Settings_Page {
 				do_action( 'learn-press/admin/setting-payments/admin-options-' . $section, $tab );
 			}
 		}
+	}
+
+	/**
+	 * Output admin option of general page.
+	 *
+	 * @param string $section
+	 * @param string $tab
+	 */
+	public function admin_options_general( $section, $tab ) {
+		parent::admin_page( $section, $tab );
 	}
 
 	public static function instance() {
