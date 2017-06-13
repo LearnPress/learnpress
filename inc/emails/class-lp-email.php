@@ -265,10 +265,10 @@ class LP_Email extends LP_Abstract_Settings {
 		$this->enable       = LP()->settings->get( 'emails_' . $this->id . '.enable' ) == 'yes';
 
 		// Process request actions for current email type
-		if ( $this->is_current() ) {
+		/*if ( $this->is_current() ) {
 			$this->template_actions();
 			$this->template_actions();
-		}
+		}*/
 	}
 
 	public function get_variables_support() {
@@ -310,7 +310,7 @@ class LP_Email extends LP_Abstract_Settings {
 		return $options;
 	}
 
-	protected function template_actions() {
+	/*protected function template_actions() {
 		if (
 			( ! empty( $this->template_html ) || ! empty( $this->template_plain ) )
 			&& ( ! empty( $_GET['move_template'] ) || ! empty( $_GET['delete_template'] ) )
@@ -362,7 +362,7 @@ class LP_Email extends LP_Abstract_Settings {
 			}
 		}
 	}
-
+*/
 	public function format_string( $string ) {
 		$search = $replace = array();
 		if ( is_array( $this->variables ) ) {

@@ -35,7 +35,7 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 	public function custom_section_title( $title, $slug ) {
 		$sections = $this->get_sections();
 		if ( ! empty( $sections[ $slug ] ) && $sections[ $slug ] instanceof LP_Gateway_Abstract ) {
-			$title = $title . sprintf( '<span class="learn-press-tooltip" title="%s"></span>', esc_attr( $sections[ $slug ]->get_method_description() ) );
+			$title = $title . sprintf( '<span class="learn-press-tooltip" data-tooltip="%s"></span>', esc_attr( $sections[ $slug ]->get_method_description() ) );
 		}
 
 		return $title;

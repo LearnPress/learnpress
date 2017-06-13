@@ -41,9 +41,9 @@ class LP_Meta_Box_Helper {
 			self::parse_conditional_logic( $field );
 			$field['name']       = apply_filters( 'learn-press/meta-box/field-name', $field['title'], $field );
 			$field['field_name'] = apply_filters( 'learn-press/meta-box/field-field_name', $field['id'], $field );
-			$field['id'] = apply_filters( 'learn-press/meta-box/field-id', $field['id'], $field );
+			$field['id']         = apply_filters( 'learn-press/meta-box/field-id', $field['id'], $field );
 			//$field['value']      = md5( $field['std'] );
-			// Try to include extended fields if they are not loaded before rendering.
+			RWMB_Field::call( 'admin_enqueue_scripts', $field );
 			RWMB_Field::call( 'show', $field, true, 0 );
 		}
 	}

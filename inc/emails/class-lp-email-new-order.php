@@ -15,8 +15,9 @@ if ( ! class_exists( 'LP_Email_New_Order' ) ) {
 		 * LP_Email_New_Order constructor.
 		 */
 		public function __construct() {
-			$this->id    = 'new_order';
-			$this->title = __( 'New order', 'learnpress' );
+			$this->id          = 'new_order';
+			$this->title       = __( 'New order', 'learnpress' );
+			$this->description = __( 'Send email to admin when new order is placed', 'learnpress' );
 
 			$this->template_html  = 'emails/new-order.php';
 			$this->template_plain = 'emails/plain/new-order.php';
@@ -153,8 +154,8 @@ if ( ! class_exists( 'LP_Email_New_Order' ) ) {
 				array(
 					array(
 						'type'  => 'heading',
-						'title' => __( 'New order', 'learnpress' ),
-						'desc'  => __( 'Send email to a specific address when a new order is placed.', 'learnpress' )
+						'title' => $this->title,
+						'desc'  => $this->description
 					),
 					array(
 						'title'   => __( 'Enabled', 'learnpress' ),
@@ -214,18 +215,18 @@ if ( ! class_exists( 'LP_Email_New_Order' ) ) {
 						)
 					),
 					array(
-						'title'      => __( 'Email content', 'learnpress' ),
-						'type'       => 'email-content',
-						'default'    => '',
-						'id'         => 'emails_new_order[email_content]',
-						'extra'      => array(
-							'email_format'  => '',
-							'template'      => '',
-							'local_file'    => '',
-							'template_file' => '',
-							'template_dir'  => ''
-						),
-						'visibility' => array(
+						'title'                => __( 'Email content', 'learnpress' ),
+						'type'                 => 'email-content',
+						'default'              => '',
+						'id'                   => 'emails_new_order[email_content]',
+						'template_base'        => $this->template_base,
+						'template_path'        => $this->template_path,//default learnpress
+						'template_html'        => $this->template_html,
+						'template_plain'       => $this->template_plain,
+						'template_html_local'  => $this->get_theme_template_file( 'html', $this->template_path ),
+						'template_plain_local' => $this->get_theme_template_file( 'plain', $this->template_path ),
+						'support_variables'    => $this->get_variables_support(),
+						'visibility'           => array(
 							'state'       => 'show',
 							'conditional' => array(
 								array(
@@ -236,6 +237,29 @@ if ( ! class_exists( 'LP_Email_New_Order' ) ) {
 							)
 						)
 					),
+					array(
+						'title'                => __( 'Email content 2', 'learnpress' ),
+						'type'                 => 'email-content',
+						'default'              => '',
+						'id'                   => 'emails_new_order[email_content_2]',
+						'template_base'        => $this->template_base,
+						'template_path'        => $this->template_path,//default learnpress
+						'template_html'        => $this->template_html,
+						'template_plain'       => $this->template_plain,
+						'template_html_local'  => $this->get_theme_template_file( 'html', $this->template_path ),
+						'template_plain_local' => $this->get_theme_template_file( 'plain', $this->template_path ),
+						'support_variables'    => $this->get_variables_support(),
+						'visibility'           => array(
+							'state'       => 'show',
+							'conditional' => array(
+								array(
+									'field'   => 'emails_new_order[enable]',
+									'compare' => '=',
+									'value'   => 'yes'
+								)
+							)
+						)
+					)
 				)
 			);
 		}

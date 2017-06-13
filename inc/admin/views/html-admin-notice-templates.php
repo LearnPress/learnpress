@@ -28,7 +28,7 @@ $theme_name = implode( ' & ', $theme_name );
 $readmore = 'https://thimpress.com/knowledge-base/outdated-template-fix/';
 ?>
 <div id="message" class="learn-press-message notice notice-warning">
-    <p><?php echo printf( __( 'There is a new update of LearnPress. You may need to update your theme <strong>(%s)</strong> to avoid outdated template files.', 'learnpress' ), $theme_name ); ?></p>
+    <p><?php printf( __( 'There is a new update of LearnPress. You may need to update your theme <strong>(%s)</strong> to avoid outdated template files.', 'learnpress' ), $theme_name ); ?></p>
     <p class="outdated-readmore-link"><?php echo sprintf( __( 'This is not a bug, don\'t worry. Read more about Outdated template files notice <a href="%s" target="_blank">here</a>.', 'learnpress' ), esc_url( $readmore ) ); ?>  </p>
     <p>
         <a class="button"

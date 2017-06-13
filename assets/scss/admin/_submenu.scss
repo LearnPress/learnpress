@@ -1,11 +1,14 @@
 .lp-admin-tabs {
     background: #FFF;
     position: relative;
+    margin-top: 20px;
     .lp-admin-tab-navs {
-        margin: 0;
+        margin: 0 -250px 0 0;
         width: 250px;
         float: left;
         padding: 10px 10px;
+        position: relative;
+        z-index: 5;
         @include box-sizing(border-box);
         .nav-section {
             margin: 0;
@@ -29,7 +32,12 @@
     }
     &.has-sections {
         .lp-admin-tab-content {
-            margin-left: 250px;
+            padding-left: 271px;
+            float: left;
+            width: 100%;
+            z-index: 0;
+            position: relative;
+            @include box-sizing(border-box);
         }
         &:before {
             position: absolute;
@@ -38,9 +46,11 @@
             left: 250px;
             border-left: 1px solid #DDD;
             content: '';
+            z-index: 10;
         }
     }
     &:after {
         @include clear-fix();
+        z-index: 10;
     }
 }

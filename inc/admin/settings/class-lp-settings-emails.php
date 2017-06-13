@@ -31,7 +31,7 @@ class LP_Settings_Emails extends LP_Abstract_Settings_Page {
 	public function custom_section_title( $title, $slug ) {
 		$sections = $this->get_sections();
 		if ( ! empty( $sections[ $slug ] ) && $sections[ $slug ] instanceof LP_Email ) {
-			$title = $title . sprintf( '<span class="learn-press-tooltip" title="%s"></span>', esc_attr( $sections[ $slug ]->title ) );
+			$title = $title . sprintf( '<span class="learn-press-tooltip" data-tooltip="%s"></span>', esc_attr( $sections[ $slug ]->description ) );
 		}
 
 		return $title;

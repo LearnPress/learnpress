@@ -292,12 +292,13 @@ function learn_press_email_formats_dropdown( $args = array() ) {
 		)
 	);
 	$formats = array(
-		//'text_message' => __( 'Text message', 'learnpress' ),
 		'plain_text' => __( 'Plain text', 'learnpress' ),
 		'html'       => __( 'HTML', 'learnpress' ),
-		//'multipart'    => __( 'Multipart', 'learnpress' )
 	);
-	$output  = sprintf( '<select name="%s" id="%s" class="%s" %s>', $args['name'], $args['id'], $args['class'], '' );
+	if ( empty( $args['id'] ) ) {
+		$args['id'] = sanitize_file_name( $args['name'] );
+	}
+	$output = sprintf( '<select name="%s" id="%s" class="%s" %s>', $args['name'], $args['id'], $args['class'], '' );
 	foreach ( $formats as $name => $text ) {
 		$output .= sprintf( '<option value="%s" %s>%s</option>', $name, selected( $args['selected'] == $name, true, false ), $text ) . "\n";
 	}
@@ -308,6 +309,15 @@ function learn_press_email_formats_dropdown( $args = array() ) {
 	}
 
 	return $output;
+}
+
+function learn_press_email_formats() {
+	$formats = array(
+		'plain' => __( 'Plain text', 'learnpress' ),
+		'html'  => __( 'HTML', 'learnpress' ),
+	);
+
+	return apply_filters( 'learn-press/email-formats', $formats );
 }
 
 /**************************************************/

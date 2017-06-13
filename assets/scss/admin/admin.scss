@@ -9,6 +9,18 @@
 @import "meta-box";
 @import "admin-tabs";
 
+.lp-email-templates{
+    overflow: hidden;
+}
+.learn-press-email-variables{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    li {
+        display: inline-block;
+        cursor: pointer;
+    }
+}
 .learn-press-dropdown-pages {
     input[type="text"] {
         min-width: 300px;
