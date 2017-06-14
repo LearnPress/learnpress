@@ -553,6 +553,13 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						'std'  => 'no',
 					),
 					array(
+						'name' => __( 'Block Lessons Content', 'learnpress' ),
+						'id'   => "{$prefix}block_lesson_content",
+						'type' => 'yes_no',
+						'desc' => __( 'Block lessons content when course is expired.', 'learnpress' ),
+						'std'  => 'no',
+					),
+					array(
 						'name' => __( 'External link buy course', 'learnpress' ),
 						'id'   => "{$prefix}external_link_buy_course",
 						'type' => 'url',
