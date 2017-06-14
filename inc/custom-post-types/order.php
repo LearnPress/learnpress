@@ -247,11 +247,11 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 				return;
 			}
 			?>
-			<script type="text/javascript">
-				jQuery(function ($) {
-					$('#post-search-input').prop('placeholder', '<?php esc_attr_e( 'Order number, user name, user email, course name etc...', 'learnpress' ); ?>').css('width', 400)
-				});
-			</script>
+            <script type="text/javascript">
+                jQuery(function ($) {
+                    $('#post-search-input').prop('placeholder', '<?php esc_attr_e( 'Order number, user name, user email, course name etc...', 'learnpress' ); ?>').css('width', 400)
+                });
+            </script>
 			<?php
 		}
 
@@ -320,33 +320,33 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 				return;
 			ob_start();
 			?>
-			<script>
-				$('#update-order-status').click(function () {
-					var $button = $(this).attr('disabled', 'disabled').html('<?php _e( 'Processing...', 'learnpress' ); ?>');
-					$.ajax({
-						url     : ajaxurl,
-						type    : 'POST',
-						dataType: 'json',
-						data    : {
-							action  : 'update_order_status',
-							order_id: '<?php echo $post->ID; ?>',
-							status  : $('select[name="learn_press_order_status"]').val()
-						},
-						success : function (res) {
-							if (res.status) {
-								$('.order-data-status')
-									.removeClass('pending completed')
-									.html(res.status)
-									.addClass(res.class);
-							}
-							$button.removeAttr('disabled').html('<?php _e( 'Apply', 'learnpress' ); ?>');
-						},
-						error   : function () {
-							$button.removeAttr('disabled').html('<?php _e( 'Apply', 'learnpress' ); ?>');
-						}
-					});
-				})
-			</script>
+            <script>
+                $('#update-order-status').click(function () {
+                    var $button = $(this).attr('disabled', 'disabled').html('<?php _e( 'Processing...', 'learnpress' ); ?>');
+                    $.ajax({
+                        url     : ajaxurl,
+                        type    : 'POST',
+                        dataType: 'json',
+                        data    : {
+                            action  : 'update_order_status',
+                            order_id: '<?php echo $post->ID; ?>',
+                            status  : $('select[name="learn_press_order_status"]').val()
+                        },
+                        success : function (res) {
+                            if (res.status) {
+                                $('.order-data-status')
+                                    .removeClass('pending completed')
+                                    .html(res.status)
+                                    .addClass(res.class);
+                            }
+                            $button.removeAttr('disabled').html('<?php _e( 'Apply', 'learnpress' ); ?>');
+                        },
+                        error   : function () {
+                            $button.removeAttr('disabled').html('<?php _e( 'Apply', 'learnpress' ); ?>');
+                        }
+                    });
+                })
+            </script>
 			<?php
 			$js = preg_replace( '!</?script>!', '', ob_get_clean() );
 			learn_press_enqueue_script( $js );
@@ -435,7 +435,7 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 			$columns['order_items']   = __( 'Purchased', 'learnpress' );
 			$columns['order_date']    = __( 'Date', 'learnpress' );
 			$columns['order_total']   = __( 'Total', 'learnpress' );
-			$columns['order_status']  = '<span class="status_head tips" data-tip="' . esc_attr__( 'Status', 'learnpress' ) . '">' . esc_attr__( 'Status', 'learnpress' ) . '</span>';
+//			$columns['order_status']  = '<span class="status_head tips" data-tip="' . esc_attr__( 'Status', 'learnpress' ) . '">' . esc_attr__( 'Status', 'learnpress' ) . '</span>';
 
 			$columns = array_merge( $columns, $existing );
 
@@ -474,17 +474,17 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 						}
 					}
 					break;
-				case 'order_status' :
+//				case 'order_status' :
 //					echo learn_press_get_order_status_label( $post->ID );
-                    echo '<select name="order-status" data-status="lp-' . $the_order->get_status() .'">';
-
-                        $statuses = learn_press_get_order_statuses();
-                        foreach ( $statuses as $status => $status_name ) {
-                            echo '<option data-desc="' . esc_attr( _learn_press_get_order_status_description( $status ) ) . '" value="' .  esc_attr( $status ) . '" ' . selected( $status, 'lp-' . $the_order->get_status(), false ) . '>' . esc_html( $status_name ) . '</option>';
-                        }
-
-                    echo '</select>';
-					break;
+//                    echo '<select name="order-status" data-status="lp-' . $the_order->get_status() .'">';
+//
+//                        $statuses = learn_press_get_order_statuses();
+//                        foreach ( $statuses as $status => $status_name ) {
+//                            echo '<option data-desc="' . esc_attr( _learn_press_get_order_status_description( $status ) ) . '" value="' .  esc_attr( $status ) . '" ' . selected( $status, 'lp-' . $the_order->get_status(), false ) . '>' . esc_html( $status_name ) . '</option>';
+//                        }
+//
+//                    echo '</select>';
+//					break;
 				case 'order_date' :
 
 					$t_time = get_the_time( 'Y/m/d g:i:s a' );
@@ -505,7 +505,7 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 					$links = array();
 					foreach ( $the_order->get_items() as $item ) {
 						if ( empty( $item['course_id'] ) || get_post_type( $item['course_id'] ) !== LP_COURSE_CPT ) {
-							$links[] = __( 'Course does not exist', 'learnpress' ); 
+							$links[] = __( 'Course does not exist', 'learnpress' );
 						} else {
 							$links[] = '<a href="' . get_the_permalink( $item['course_id'] ) . '">' . get_the_title( $item['course_id'] ) . '</a>';
 						}
@@ -516,18 +516,18 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 					echo learn_press_format_price( $the_order->order_total, learn_press_get_currency_symbol( $the_order->order_currency ) );
 					if ( $title = $the_order->get_payment_method_title() ) {
 						?>
-						<div class="payment-method-title">
+                        <div class="payment-method-title">
 							<?php echo $the_order->order_total == 0 ? $title : sprintf( __( 'Pay via <strong>%s</strong>', 'learnpress' ), $title ); ?>
-						</div>
+                        </div>
 						<?php
 					}
 					break;
 				case 'order_titlexx' :
 					$order_number = sprintf( "%'.010d", $the_order->ID );
 					?>
-					<div class="tips">
-						<a href="post.php?post=<?php echo $the_order->ID ?>&action=edit"><strong><?php echo learn_press_transaction_order_number( $order_number ); ?></strong></a>
-					</div>
+                    <div class="tips">
+                        <a href="post.php?post=<?php echo $the_order->ID ?>&action=edit"><strong><?php echo learn_press_transaction_order_number( $order_number ); ?></strong></a>
+                    </div>
 					<?php
 					break;
 			}
