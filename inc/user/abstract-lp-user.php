@@ -1499,12 +1499,17 @@ class LP_Abstract_User {
 	public function has_finished_course( $course_id, $force = false ) {
 		$item_statuses = LP_Cache::get_item_statuses( false, array() );
 		$key           = sprintf( '%d-%d-%d', $this->id, $course_id, $course_id );
-		$enrolled      = false;
-		if ( !empty( $item_statuses[$key] ) ) {
-			$enrolled = $item_statuses[$key];
+		$finished      = 'no';
+		if ( !empty( $item_statuses ) && array_key_exists( $key, $item_statuses ) && !$force ) {
+			$finished = $item_statuses[$key];
+		} else {
+			global $wpdb;
+			$query = $wpdb->prepare( "SELECT status FROM {$wpdb->prefix}learnpress_user_items where user_id=%d and item_id=%d", $this->id, $course_id );
+			$finished = $wpdb->get_var( $query ) == 'finished' ? 'yes' : 'no';
+			$item_statuses[$key] = $finished;
+			LP_Cache::set_item_statuses( $key, $finished );
 		}
-		return apply_filters( 'learn_press_user_has_finished_course', $enrolled == 'finished', $this, $course_id );
-
+		return apply_filters( 'learn_press_user_has_finished_course', $finished == 'yes', $this, $course_id );
 
 		//static $courses = array();
 		$finished_courses = LP_Cache::get_finished_courses( false, array() );
