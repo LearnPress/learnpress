@@ -179,8 +179,8 @@ abstract class LP_Abstract_Submenu {
 	}
 
 	/**
-     * Sanitize the tabs.
-     *
+	 * Sanitize the tabs.
+	 *
 	 * @param $tabs
 	 *
 	 * @return array
@@ -189,7 +189,7 @@ abstract class LP_Abstract_Submenu {
 		$sanitized_tabs = array();
 		if ( $tabs ) {
 			foreach ( $tabs as $tab => $name ) {
-			    // Maybe a tab is name of a class? Try to locate it.
+				// Maybe a tab is name of a class? Try to locate it.
 				if ( is_string( $name ) && class_exists( $name ) ) {
 					$objSettings                        = new $name();
 					$sanitized_tabs[ $objSettings->id ] = $objSettings;
@@ -243,8 +243,8 @@ abstract class LP_Abstract_Submenu {
 	}
 
 	/**
-     * Get current page is displaying.
-     *
+	 * Get current page is displaying.
+	 *
 	 * @param bool $prefix
 	 *
 	 * @return bool|mixed|null
@@ -404,8 +404,8 @@ abstract class LP_Abstract_Submenu {
 	}
 
 	/**
-     * Get this page id without prefix.
-     *
+	 * Get this page id without prefix.
+	 *
 	 * @return mixed
 	 */
 	protected function _get_page() {
@@ -413,16 +413,18 @@ abstract class LP_Abstract_Submenu {
 	}
 
 	/**
-     * Append new class to body tag to control our page.
-     *
+	 * Append new class to body tag to control our page.
+	 *
 	 * @param $classes
 	 *
 	 * @return array|string
 	 */
 	public function body_class( $classes ) {
-		if ( $page = $this->get_active_page(false) ) {
+		if ( $page = $this->get_active_page( false ) ) {
 			if ( $classes ) {
 				$classes = explode( ' ', $classes );
+			} else {
+				$classes = array();
 			}
 			$classes[] = 'learnpress';
 			$classes[] = 'lp-submenu-' . $page;

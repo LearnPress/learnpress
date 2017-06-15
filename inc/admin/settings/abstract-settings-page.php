@@ -76,14 +76,16 @@ class LP_Abstract_Settings_Page extends LP_Abstract_Settings {
 	}
 
 	/**
-	 * Get settings fields
+	 * @param string $section
+	 * @param string $tab
 	 *
-	 * @param null $section
-	 * @param null $tab
-	 *
-	 * @return array
+	 * @return bool|mixed
 	 */
-	public function get_settings( $section = null, $tab = null ) {
-		return array();
+	public function get_settings( $section = '', $tab = '' ) {
+		if ( is_callable( array( $this, 'get_settings_' . $section ) ) ) {
+			return call_user_func( array( $this, 'get_settings_' . $section ) );
+		}
+
+		return false;
 	}
 }

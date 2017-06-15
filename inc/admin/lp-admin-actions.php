@@ -3,6 +3,10 @@
  * Defines the functions which called by hooks
  */
 
+add_action( 'admin_footer', 'learn_press_footer_advertisement', - 10 );
+
+/***************************************/
+
 /**
  * Filter post types the user can access in admin
  *

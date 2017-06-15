@@ -28,10 +28,20 @@ class LP_Settings_Emails extends LP_Abstract_Settings_Page {
 		add_filter( 'learn-press/admin/submenu-section-title', array( $this, 'custom_section_title' ), 10, 2 );
 	}
 
+	/**
+	 * Add tooltip to section title
+	 *
+	 * @param string $title
+	 * @param string $slug
+	 *
+	 * @return string
+	 */
 	public function custom_section_title( $title, $slug ) {
 		$sections = $this->get_sections();
 		if ( ! empty( $sections[ $slug ] ) && $sections[ $slug ] instanceof LP_Email ) {
-			$title = $title . sprintf( '<span class="learn-press-tooltip" data-tooltip="%s"></span>', esc_attr( $sections[ $slug ]->description ) );
+			if ( $tooltip = $sections[ $slug ]->description ) {
+				$title = $title . sprintf( '<span class="learn-press-tooltip" data-tooltip="%s"></span>', esc_attr( $tooltip ) );
+			}
 		}
 
 		return $title;
@@ -57,20 +67,6 @@ class LP_Settings_Emails extends LP_Abstract_Settings_Page {
 		}
 
 		return $sections = apply_filters( 'learn_press_settings_sections_' . $this->id, $sections );
-	}
-
-	/**
-	 * @param string $section
-	 * @param string $tab
-	 *
-	 * @return bool|mixed
-	 */
-	public function get_settings( $section = '', $tab = '' ) {
-		if ( is_callable( array( $this, 'get_settings_' . $section ) ) ) {
-			return call_user_func( array( $this, 'get_settings_' . $section ) );
-		}
-
-		return false;
 	}
 
 	/**

@@ -1,6 +1,6 @@
 ;(function ($) {
     // Make payments sortable
-    $('.learn-press-payments tbody').sortable({
+    $('.learn-press-payments.sortable tbody').sortable({
         handle: '.dashicons-menu',
         helper: function (e, ui) {
             ui.children().each(function () {
@@ -1173,8 +1173,8 @@ jQuery(document).ready(function ($) {
 
     $(window).load(function () {
         /* Slider Advertise Themes */
-        if ($('.learnpress-advertis-admin').length) {
-            $('.learnpress-advertis-admin').learnpressSlider();
+        if ($('.lp-advertisement-admin').length) {
+            $('.lp-advertisement-admin').learnpressSlider();
         }
         //$('.learn-press-tabs').metaBoxTabs();
         //

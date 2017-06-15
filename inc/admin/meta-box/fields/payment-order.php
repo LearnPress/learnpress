@@ -22,7 +22,7 @@ if ( ! class_exists( 'RWMB_Payment_Order_Field' ) ) {
 			$gateways = LP_Gateways::instance()->get_gateways( true );
 			ob_start();
 			?>
-            <table class="learn-press-payments">
+            <table class="learn-press-payments<?php echo sizeof($gateways) > 1 ? ' sortable' : '';?>">
                 <thead>
                 <tr>
                     <th></th>

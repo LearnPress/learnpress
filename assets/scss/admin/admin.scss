@@ -3,16 +3,18 @@
 @import "course-editor";
 @import "quiz-editor";*/
 @import "../general";
+@import "advertisment";
 @import "question";
 @import "quiz";
 @import "submenu";
 @import "meta-box";
 @import "admin-tabs";
 
-.lp-email-templates{
+.lp-email-templates {
     overflow: hidden;
 }
-.learn-press-email-variables{
+
+.learn-press-email-variables {
     list-style: none;
     padding: 0;
     margin: 0;
@@ -21,6 +23,7 @@
         cursor: pointer;
     }
 }
+
 .learn-press-dropdown-pages {
     input[type="text"] {
         min-width: 300px;
@@ -36,29 +39,31 @@
     }
 }
 
-.rwmb-payment-order-wrapper{
-    .rwmb-label{
-        margin-bottom: 20px!important;
+.rwmb-payment-order-wrapper {
+    .rwmb-label {
+        margin-bottom: 20px !important;
     }
-    .rwmb-input{
-        margin-left: 0!important;
+    .rwmb-input {
+        margin-left: 0 !important;
     }
 }
-.learn-press-tooltip{
+
+.learn-press-tooltip {
     display: inline-block;
     font-size: 17px;
     vertical-align: middle;
     margin: 0 5px;
     color: #999;
-    &:after{
+    &:after {
         font-family: Dashicons;
         content: "\f223";
     }
-    &:hover{
+    &:hover {
         color: #0073aa;
         opacity: 1;
     }
 }
+
 .learn-press-payments {
     border-collapse: collapse;
     border: 1px solid #DDD;
@@ -71,11 +76,12 @@
         width: 30px;
         text-align: center;
         padding-right: 0;
-        cursor: ns-resize;
+        cursor: not-allowed;
+        color: #DDD;
     }
     .name {
         font-weight: bold;
-        a{
+        a {
             text-decoration: none;
         }
     }
@@ -115,6 +121,12 @@
                 height: 35px;
                 padding: 0;
             }
+        }
+    }
+    &.sortable {
+        .order:hover {
+            cursor: ns-resize;
+            color: #0073aa;
         }
     }
 }

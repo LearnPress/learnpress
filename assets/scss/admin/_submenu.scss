@@ -9,6 +9,7 @@
         padding: 10px 10px;
         position: relative;
         z-index: 5;
+        display: none;
         @include box-sizing(border-box);
         .nav-section {
             margin: 0;
@@ -31,6 +32,9 @@
         padding: 18px;
     }
     &.has-sections {
+        .lp-admin-tab-navs{
+            display: block;
+        }
         .lp-admin-tab-content {
             padding-left: 271px;
             float: left;

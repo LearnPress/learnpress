@@ -56,8 +56,8 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							'type'        => 'text',
 							'placeholder' => __( 'Default: View Course Profile', 'learnpress' ),
 							'visibility'  => array(
-								'state'          => 'show',
-								'conditional'    => array(
+								'state'       => 'show',
+								'conditional' => array(
 									array(
 										'field'   => $this->get_field_name( 'admin_bar_link' ),
 										'compare' => '=',
@@ -76,8 +76,8 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 								'_blank' => __( 'New window', 'learnpress' )
 							),
 							'visibility' => array(
-								'state'          => 'show',
-								'conditional'    => array(
+								'state'       => 'show',
+								'conditional' => array(
 									array(
 										'field'   => $this->get_field_name( 'admin_bar_link' ),
 										'compare' => '=',
@@ -94,10 +94,11 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							'min'     => 1
 						),
 						array(
-							'title'   => __( 'Redirect to page', 'learnpress' ),
+							'title'   => __( 'Logout redirect', 'learnpress' ),
 							'id'      => $this->get_field_name( 'logout_redirect_page_id' ),
 							'default' => '',
-							'type'    => 'pages-dropdown'
+							'type'    => 'pages-dropdown',
+							'desc'    => __( 'The page where user will be redirected to after logging out.', 'learnpress' )
 						)
 					)
 				),
@@ -154,13 +155,13 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							'type'    => 'yes-no'
 						),
 						array(
-							'title'   => __( 'Size', 'learnpress' ),
-							'id'      => $this->get_field_name( 'profile_picture_thumbnail_size' ),
-							'default' => '',
-							'type'    => 'image-dimensions',
+							'title'      => __( 'Size', 'learnpress' ),
+							'id'         => $this->get_field_name( 'profile_picture_thumbnail_size' ),
+							'default'    => '',
+							'type'       => 'image-dimensions',
 							'visibility' => array(
-								'state'          => 'show',
-								'conditional'    => array(
+								'state'       => 'show',
+								'conditional' => array(
 									array(
 										'field'   => $this->get_field_name( 'profile_avatar' ),
 										'compare' => '=',
