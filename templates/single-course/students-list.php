@@ -7,7 +7,7 @@
  * @version 1.0
  */
 
-if ( !defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
@@ -62,17 +62,19 @@ $students_list_avatar_size = apply_filters( 'learn_press_students_list_avatar_si
 						<?php if ( $show_avatar ): ?>
 							<?php echo get_avatar( $student->ID, $students_list_avatar_size, '', $student->display_name, array( 'class' => 'students_list_avatar' ) ); ?>
 						<?php endif; ?>
-                        <a class="name" href="<?php echo learn_press_user_profile_link( $student->ID ) ?>" title="<?php echo $student->display_name . ' profile' ?>">
+                        <a class="name" href="<?php echo learn_press_user_profile_link( $student->ID ) ?>"
+                           title="<?php echo $student->display_name . ' profile' ?>">
 							<?php echo $student->display_name ?>
                         </a>
                     </div>
 					<?php if ( $result ): ?>
                         <div class="learn-press-course-results-progress">
                             <div class="course-progress">
-                                <span class="course-result"><?php echo $result['results'] . '%'; ?></span>
+                                <span class="course-result"><?php echo round( $result['results'] ) . '%'; ?></span>
                                 <div class="lp-course-progress">
                                     <div class="lp-progress-bar">
-                                        <div class="lp-progress-value" style="width: <?php echo $result['results']; ?>%;">
+                                        <div class="lp-progress-value"
+                                             style="width: <?php echo $result['results']; ?>%;">
                                         </div>
                                     </div>
                                     <div class="lp-passing-conditional"
