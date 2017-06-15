@@ -590,7 +590,8 @@ function learn_press_related_themes( $args = '' ) {
 	$args        = wp_parse_args(
 		$args,
 		array(
-			'exclude' => ''
+			'exclude' => '',
+			'include' => '',
 		)
 	);
 	$list_themes = get_transient( 'lp_addon_related_themes' );
@@ -618,9 +619,15 @@ function learn_press_related_themes( $args = '' ) {
 
 	}
 
-	if($list_themes && $args['exclude']){
-
-    }
+	if ( $list_themes && $args['include'] ) {
+		$search_results = array();
+		foreach ( $list_themes as $theme ) {
+			if ( in_array( $theme['id'], $args['include'] ) ) {
+				$search_results[] = $theme;
+			}
+		}
+		$list_themes = $search_results;
+	}
 
 	return $list_themes;
 }

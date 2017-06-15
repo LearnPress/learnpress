@@ -325,6 +325,23 @@ function learn_press_email_formats() {
 	return apply_filters( 'learn-press/email-formats', $formats );
 }
 
+function learn_press_trim_content( $content, $count = 0 ) {
+	$content = preg_replace( '/(?<=\S,)(?=\S)/', ' ', $content );
+	$content = str_replace( "\n", ' ', $content );
+	$content = explode( " ", $content );
+
+	$count = $count > 0 ? $count : sizeof( $content ) - 1;
+	$full  = $count >= sizeof( $content ) - 1;
+
+	$content = array_slice( $content, 0, $count );
+	$content = implode( " ", $content );
+	if ( ! $full ) {
+		$content .= '...';
+	}
+
+	return $content;
+}
+
 /**
  * Display advertisement about related themes at the bottom of admin pages.
  *
@@ -352,15 +369,27 @@ function learn_press_footer_advertisement() {
 		return;
 	}
 
-	$themes_id = array(
-		'14058034' => 'eduma',
-		'17097658' => 'coach',
-		'11797847' => 'lms'
+	// New theme can be added here
+	$theme_ids     = apply_filters(
+		'learn-press/advertisement-themes',
+		array(
+			'14058034' => 'eduma',
+			'17097658' => 'coach',
+			'11797847' => 'lms'
+		)
 	);
+	$current_theme = wp_get_theme();
+
+	$include = array_keys( $theme_ids );
+
+	if ( false !== ( $key = array_search( $current_theme->name, $theme_ids, true ) ) ) {
+		unset( $theme_ids[ $key ] );
+	}
+
 	// Get items education
 	$list_themes = (array) learn_press_related_themes(
 		array(
-			'exclude' => array_keys( $themes_id )
+			'include' => $include
 		)
 	);
 
@@ -368,53 +397,42 @@ function learn_press_footer_advertisement() {
 		return;
 	}
 
-
-	$current_theme = wp_get_theme();
-
-	foreach ( $list_themes as $key => $theme ) {
-		if ( ! array_key_exists( $theme['id'], $themes_id ) || $themes_id[ $theme['id'] ] === $current_theme->name ) {
-			unset( $list_themes[ $key ] );
-		}
-	}
-	if ( empty ( $list_themes ) ) {
-		return;
-	}
 	shuffle( $list_themes );
+
+	$query_arg = array(
+		'ref'        => 'ThimPress',
+		'utm_source' => 'lp-backend',
+		'utm_medium' => 'lp-addondashboard'
+	);
+
 	?>
-    <div id="learn-press-advertisement" class="lp-advertisement-admin">
+    <div id="learn-press-advertisement" class="learn-press-advertisement-slider">
 		<?php
 		foreach ( $list_themes as $theme ) {
-			$theme['url'] = add_query_arg( array(
-				'ref'        => 'ThimPress',
-				'utm_source' => 'lp-backend',
-				'utm_medium' => 'lp-addondashboard'
-			), $theme['url'] );
-			$url_demo     = add_query_arg( array(
-				'ref'        => 'ThimPress',
-				'utm_source' => 'lp-backend',
-				'utm_medium' => 'lp-addondashboard'
-			), $theme['attributes'][4]['value'] );
+			$theme['url'] = add_query_arg( $query_arg, $theme['url'] );
+			//$theme['description'] = learn_press_trim_content( $theme['description'], 10 );
+			$full_description  = learn_press_trim_content( $theme['description'] );
+			$short_description = learn_press_trim_content( $theme['description'], 75 );
 
-			$theme['description'] = preg_replace( '/(?<=\S,)(?=\S)/', ' ', $theme['description'] );
-			$theme['description'] = str_replace( "\n", ' ', $theme['description'] );
-			$theme['description'] = explode( " ", $theme['description'] );
-			$theme['description'] = array_splice( $theme['description'], 0, sizeof( $theme['description'] ) - 1 );
-			$theme['description'] = implode( " ", $theme['description'] ) . " ...";
+			$url_demo = add_query_arg( $query_arg, $theme['attributes'][4]['value'] );
+
 			?>
-
-            <div id="thimpress-<?php echo esc_attr( $theme['id'] ); ?>" class="item">
-                <div class="theme-thumbnail">
+            <div id="thimpress-<?php echo esc_attr( $theme['id'] ); ?>" class="slide-item">
+                <div class="slide-thumbnail">
                     <a href="<?php echo esc_url( $theme['url'] ); ?>">
                         <img src="<?php echo esc_url( $theme['previews']['landscape_preview']['landscape_url'] ) ?>"/>
                     </a>
                 </div>
 
-                <div class="theme-detail">
+                <div class="slide-detail">
                     <h2><a href="<?php echo esc_url( $theme['url'] ); ?>"><?php echo $theme['name']; ?></a></h2>
-                    <p class="learpress-description">
-						<?php echo wp_kses_post( $theme['description'] ); ?>
+                    <p class="slide-description description-full">
+						<?php echo wp_kses_post( $full_description ); ?>
                     </p>
-                    <p class="theme-controls">
+                    <p class="slide-description description-short">
+						<?php echo wp_kses_post( $short_description ); ?>
+                    </p>
+                    <p class="slide-controls">
                         <a href="<?php echo esc_url( $theme['url'] ); ?>" class="button button-primary"
                            target="_blank"><?php _e( 'Get it now', 'learnpress' ); ?></a>
                         <a href="<?php echo esc_url( $url_demo ); ?>" class="button"
