@@ -457,12 +457,14 @@ class LP_Page_Controller {
 
 		}
 
-		if ( ( learn_press_is_courses() || learn_press_is_course_category() ) && $limit = absint( LP()->settings->get( 'archive_course_limit' ) ) ) {
-			$q->set( 'posts_per_page', $limit );
-		}
+		if ( ( learn_press_is_courses() || learn_press_is_course_category() ) ) {
+			if ( $limit = absint( LP()->settings->get( 'archive_course_limit' ) ) ) {
+				$q->set( 'posts_per_page', $limit );
+			}
 
-		if ( isset( $q->query['page'] ) ) {
-			$q->set( 'paged', $q->query['page'] );
+			if ( isset( $q->query['page'] ) ) {
+				$q->set( 'paged', $q->query['page'] );
+			}
 		}
 
 		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ), 10 );
