@@ -17,9 +17,11 @@ if ( ! class_exists( 'LP_Email_Enrolled_Course_Admin' ) ) {
 		/**
 		 * LP_Email_Enrolled_Course_Admin constructor.
 		 */
-		public function __construct () {
-			$this->id    = 'enrolled_course_admin';
-			$this->title = __( 'Enrolled course admin', 'learnpress' );
+		public function __construct() {
+
+			$this->id          = 'enrolled_course_admin';
+			$this->title       = __( 'Enrolled course admin', 'learnpress' );
+			$this->description = __( 'Send this email to admins & instructor when the course is enrolled', 'learnpress' );
 
 			$this->template_html  = 'emails/enrolled-course-admin.php';
 			$this->template_plain = 'emails/plain/enrolled-course-admin.php';
@@ -57,12 +59,15 @@ if ( ! class_exists( 'LP_Email_Enrolled_Course_Admin' ) ) {
 			parent::__construct();
 		}
 
-		public function admin_options ( $settings_class ) {
-			$view = learn_press_get_admin_view( 'settings/emails/enrolled-course-admin.php' );
-			include_once $view;
-		}
 
-		public function get_users_to_send ( $course_id, $user_id, $user_course_id ) {
+		/**
+		 * Get users to send.
+		 *
+		 * @param $course_id
+		 * @param $user_id
+		 * @param $user_course_id
+		 */
+		public function get_users_to_send( $course_id, $user_id, $user_course_id ) {
 
 			if ( empty( $course_id ) || empty( $user_id ) || empty( $user_course_id ) ) {
 				return;
@@ -93,7 +98,16 @@ if ( ! class_exists( 'LP_Email_Enrolled_Course_Admin' ) ) {
 
 		}
 
-		public function trigger ( $course_id, $user_id, $user_course_id ) {
+		/**
+		 * Trigger email.
+		 *
+		 * @param $course_id
+		 * @param $user_id
+		 * @param $user_course_id
+		 *
+		 * @return bool|void
+		 */
+		public function trigger( $course_id, $user_id, $user_course_id ) {
 
 			if ( ! $this->enable ) {
 				return;
@@ -161,8 +175,101 @@ if ( ! class_exists( 'LP_Email_Enrolled_Course_Admin' ) ) {
 
 		}
 
-		public function get_template_data ( $format = 'plain' ) {
+		/**
+		 * Get email template.
+		 *
+		 * @param string $format
+		 *
+		 * @return array|object
+		 */
+		public function get_template_data( $format = 'plain' ) {
 			return $this->object;
+		}
+
+
+		/**
+		 * Admin settings.
+		 */
+		public function get_settings() {
+			return apply_filters(
+				'learn-press/email-settings/enrolled-course-admin/settings',
+				array(
+					array(
+						'type'  => 'heading',
+						'title' => $this->title,
+						'desc'  => $this->description
+					),
+					array(
+						'title'   => __( 'Enabled', 'learnpress' ),
+						'type'    => 'yes-no',
+						'default' => 'no',
+						'id'      => 'emails_enrolled_course_admin[enable]'
+					),
+					array(
+						'title'   => __( 'Send Admins', 'learnpress' ),
+						'type'    => 'yes-no',
+						'default' => 'no',
+						'id'      => 'emails_enrolled_course_admin[send_admins]'
+					),
+					array(
+						'title'      => __( 'Subject', 'learnpress' ),
+						'type'       => 'text',
+						'default'    => $this->default_subject,
+						'id'         => 'emails_enrolled_course_admin[subject]',
+						'desc'       => sprintf( __( 'Email subject, default: <code>%s</code>', 'learnpress' ), $this->default_subject ),
+						'visibility' => array(
+							'state'       => 'show',
+							'conditional' => array(
+								array(
+									'field'   => 'emails_enrolled_course_admin[enable]',
+									'compare' => '=',
+									'value'   => 'yes'
+								)
+							)
+						)
+					),
+					array(
+						'title'      => __( 'Heading', 'learnpress' ),
+						'type'       => 'text',
+						'default'    => $this->default_heading,
+						'id'         => 'emails_enrolled_course_admin[heading]',
+						'desc'       => sprintf( __( 'Email heading, default: <code>%s</code>', 'learnpress' ), $this->default_heading ),
+						'visibility' => array(
+							'state'       => 'show',
+							'conditional' => array(
+								array(
+									'field'   => 'emails_enrolled_course_admin[enable]',
+									'compare' => '=',
+									'value'   => 'yes'
+								)
+							)
+						)
+					),
+					array(
+						'title'                => __( 'Email content', 'learnpress' ),
+						'type'                 => 'email-content',
+						'default'              => '',
+						'id'                   => 'emails_enrolled_course_admin[email_content]',
+						'template_base'        => $this->template_base,
+						'template_path'        => $this->template_path,//default learnpress
+						'template_html'        => $this->template_html,
+						'template_plain'       => $this->template_plain,
+						'template_html_local'  => $this->get_theme_template_file( 'html', $this->template_path ),
+						'template_plain_local' => $this->get_theme_template_file( 'plain', $this->template_path ),
+						'support_variables'    => $this->get_variables_support(),
+						'visibility'           => array(
+							'state'       => 'show',
+							'conditional' => array(
+								array(
+									'field'   => 'emails_enrolled_course_admin[enable]',
+									'compare' => '=',
+									'value'   => 'yes'
+								)
+							)
+						)
+					),
+				)
+			);
 		}
 
 

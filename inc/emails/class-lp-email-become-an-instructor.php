@@ -11,14 +11,17 @@
 defined( 'ABSPATH' ) || exit();
 
 class LP_Email_Become_An_Instructor extends LP_Email {
+
 	public function __construct() {
-		$this->id    = 'become_an_instructor';
-		$this->title = __( 'Become an instructor', 'learnpress' );
+
+		$this->id          = 'become_an_instructor';
+		$this->title       = __( 'Become an instructor', 'learnpress' );
+		$this->description = __( 'Become an instructor email', 'learnpress' );
 
 		$this->template_html  = 'emails/enrolled-course.php';
 		$this->template_plain = 'emails/plain/enrolled-course.php';
 
-		$this->default_subject = __( '[{site_title}] You have enrolled course ({course_name})', 'learnpress' );
+		$this->default_subject = __( 'Become an teacher', 'learnpress' );
 		$this->default_heading = __( 'Become an instructor', 'learnpress' );
 
 		$this->email_text_message_description = sprintf( '%s [course_id], [course_title], [course_url], [user_email], [user_name], [user_profile_url]', __( 'Shortcodes', 'learnpress' ) );
@@ -34,13 +37,15 @@ class LP_Email_Become_An_Instructor extends LP_Email {
 		parent::__construct();
 	}
 
-	public function admin_options( $settings_class ) {
-		$view = learn_press_get_admin_view( 'settings/emails/become-a-teacher.php' );
-		include_once $view;
-	}
-
+	/**
+	 * Trigger email.
+	 *
+	 * @param $user
+	 *
+	 * @return bool|void
+	 */
 	public function trigger( $user ) {
-		if ( !$this->enable ) {
+		if ( ! $this->enable ) {
 			return;
 		}
 
@@ -64,57 +69,102 @@ class LP_Email_Become_An_Instructor extends LP_Email {
 		$this->variables = $this->data_to_variables( $this->object );
 
 		$return = $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
+
 		return $return;
 	}
 
-	/*public function get_content_html() {
-		ob_start();
-		learn_press_get_template( $this->template_html, array(
-			'email_heading' => $this->get_heading(),
-			'footer_text'   => $this->get_footer_text(),
-			'site_title'    => $this->get_blogname(),
-			'course_id'     => $this->object['course'],
-			'login_url'     => learn_press_get_login_url(),
-			'plain_text'    => false
-		) );
-		return ob_get_clean();
+	/**
+	 * Get email template.
+	 *
+	 * @param string $format
+	 *
+	 * @return mixed
+	 */
+	public function get_template_data( $format = 'plain' ) {
+		return $this->object;
 	}
 
-	public function get_content_plain() {
-		ob_start();
-		learn_press_get_template( $this->template_plain, array(
-			'email_heading' => $this->get_heading(),
-			'footer_text'   => $this->get_footer_text(),
-			'site_title'    => $this->get_blogname(),
-			'course_id'     => $this->object['course'],
-			'login_url'     => learn_press_get_login_url(),
-			'plain_text'    => true
-		) );
-		return ob_get_clean();
+	/**
+	 * Admin settings.
+	 */
+	public function get_settings() {
+		return apply_filters(
+			'learn-press/email-settings/become-an-instructor/settings',
+			array(
+				array(
+					'type'  => 'heading',
+					'title' => $this->title,
+					'desc'  => $this->description
+				),
+				array(
+					'title'   => __( 'Enabled', 'learnpress' ),
+					'type'    => 'yes-no',
+					'default' => 'no',
+					'id'      => 'emails_become_an_instructor[enable]',
+					'desc'    => __( 'Send notification to user when accept', 'learnpress' )
+				),
+				array(
+					'title'      => __( 'Subject', 'learnpress' ),
+					'type'       => 'text',
+					'default'    => $this->default_subject,
+					'id'         => 'emails_become_an_instructor[subject]',
+					'desc'       => sprintf( __( 'Email subject, default: <code>%s</code>', 'learnpress' ), $this->default_subject ),
+					'visibility' => array(
+						'state'       => 'show',
+						'conditional' => array(
+							array(
+								'field'   => 'emails_become_an_instructor[enable]',
+								'compare' => '=',
+								'value'   => 'yes'
+							)
+						)
+					)
+				),
+				array(
+					'title'      => __( 'Heading', 'learnpress' ),
+					'type'       => 'text',
+					'default'    => $this->default_heading,
+					'id'         => 'emails_become_an_instructor[heading]',
+					'desc'       => sprintf( __( 'Email heading, default: <code>%s</code>', 'learnpress' ), $this->default_heading ),
+					'visibility' => array(
+						'state'       => 'show',
+						'conditional' => array(
+							array(
+								'field'   => 'emails_become_an_instructor[enable]',
+								'compare' => '=',
+								'value'   => 'yes'
+							)
+						)
+					)
+				),
+				array(
+					'title'                => __( 'Email content', 'learnpress' ),
+					'type'                 => 'email-content',
+					'default'              => '',
+					'id'                   => 'emails_become_an_instructor[email_content]',
+					'template_base'        => $this->template_base,
+					'template_path'        => $this->template_path,//default learnpress
+					'template_html'        => $this->template_html,
+					'template_plain'       => $this->template_plain,
+					'template_html_local'  => $this->get_theme_template_file( 'html', $this->template_path ),
+					'template_plain_local' => $this->get_theme_template_file( 'plain', $this->template_path ),
+					'support_variables'    => $this->get_variables_support(),
+					'visibility'           => array(
+						'state'       => 'show',
+						'conditional' => array(
+							array(
+								'field'   => 'emails_become_an_instructor[enable]',
+								'compare' => '=',
+								'value'   => 'yes'
+							)
+						)
+					)
+				),
+			)
+		);
 	}
 
-        public function _prepare_content_text_message() {
-            $course = isset( $this->object['course'] ) ? $this->object['course'] : null;
-            $user = isset( $this->object['user'] ) ? $this->object['user'] : null;
-            if ( $course && $user ) {
-                $this->text_search = array(
-                    "/\{\{course\_id\}\}/",
-                    "/\{\{course\_title\}\}/",
-                    "/\{\{course\_url\}\}/",
-                    "/\{\{user\_email\}\}/",
-                    "/\{\{user\_name\}\}/",
-                    "/\{\{user\_profile\_url\}\}/",
-                );
-                $this->text_replace = array(
-                    $course->id,
-                    get_the_title( $course->id ),
-                    get_the_permalink( $course->id ),
-                    $user->user_email,
-                    $user->user_nicename,
-                    learn_press_user_profile_link( $user->id )
-                );
-            }
-        }*/
+
 }
 
 return new LP_Email_Become_An_Instructor();
