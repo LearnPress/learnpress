@@ -71,51 +71,57 @@ abstract class LP_Abstract_Settings {
 	public function sanitize_settings( $settings ) {
 		if ( $settings ) {
 			foreach ( $settings as $k => $field ) {
-				$field['id'] = $this->get_admin_field_name( $field['id'] );
 
-				// A field is an array of values, find the real name.
-				if ( strpos( $field['id'], '[' ) !== false ) {
-					parse_str( $field['id'], $group );
-					$keys        = array_keys( $group );
-					$option_name = reset( $keys );
-				} else {
-					$option_name = $field['id'];
-				}
+				// except heading options.
+				if ( isset( $field['id'] ) ) {
 
-				// Get value from option
-				if ( false === ( $std = get_option( $option_name ) ) ) {
-					$std = array_key_exists( 'default', $field ) ? $field['default'] : '';
-				}
+					$field['id'] = $this->get_admin_field_name( $field['id'] );
 
-				// If the field is an array
-				if ( isset( $group ) && is_array( $std ) ) {
-					$loop = 0;
-					while ( is_array( $group ) && $loop ++ < 10 ) {
-						$option_keys = array_keys( $group[ $option_name ] );
-						$option_name = reset( $option_keys );
-						$group       = $group[ $option_name ];
-						$std         = $std[ $option_name ];
-					}
-				}
-				$field['std']                  = apply_filters( 'learn-press/settings/default-field-value', $std, $field );
-				$field['learn-press-settings'] = 'yes';
-
-				// Re-format conditional logic fields
-				if ( ! empty( $field['visibility'] ) ) {
-					$conditional = $field['visibility'];
-
-					if ( ! array_key_exists( 0, $conditional['conditional'] ) ) {
-						$conditional['conditional'] = array(
-							$conditional['conditional']
-						);
-					}
-					foreach ( $conditional['conditional'] as $kk => $conditional_field ) {
-						$conditional['conditional'][ $kk ]['field'] = $this->get_admin_field_name( $conditional_field['field'] );
+					// A field is an array of values, find the real name.
+					if ( strpos( $field['id'], '[' ) !== false ) {
+						parse_str( $field['id'], $group );
+						$keys        = array_keys( $group );
+						$option_name = reset( $keys );
+					} else {
+						$option_name = $field['id'];
 					}
 
-					$field['visibility'] = $conditional;
+					// Get value from option
+					if ( false === ( $std = get_option( $option_name ) ) ) {
+						$std = array_key_exists( 'default', $field ) ? $field['default'] : '';
+					}
+
+					// If the field is an array
+					if ( isset( $group ) && is_array( $std ) ) {
+						$loop = 0;
+						while ( is_array( $group ) && $loop ++ < 10 ) {
+							$option_keys = array_keys( $group[ $option_name ] );
+							$option_name = reset( $option_keys );
+							$group       = $group[ $option_name ];
+							$std         = $std[ $option_name ];
+						}
+					}
+					$field['std']                  = apply_filters( 'learn-press/settings/default-field-value', $std, $field );
+					$field['learn-press-settings'] = 'yes';
+
+					// Re-format conditional logic fields
+					if ( ! empty( $field['visibility'] ) ) {
+						$conditional = $field['visibility'];
+
+						if ( ! array_key_exists( 0, $conditional['conditional'] ) ) {
+							$conditional['conditional'] = array(
+								$conditional['conditional']
+							);
+						}
+						foreach ( $conditional['conditional'] as $kk => $conditional_field ) {
+							$conditional['conditional'][ $kk ]['field'] = $this->get_admin_field_name( $conditional_field['field'] );
+						}
+
+						$field['visibility'] = $conditional;
+					}
+					$settings[ $k ] = $field;
 				}
-				$settings[ $k ] = $field;
+
 			}
 		}
 
