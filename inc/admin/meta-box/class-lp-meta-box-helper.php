@@ -20,7 +20,10 @@ class LP_Meta_Box_Helper {
 	public static function render_fields( $fields ) {
 
 		foreach ( $fields as $field ) {
-			$origin_id = $field['id'];
+			// except heading options
+			if ( isset( $field['id'] ) ) {
+				$origin_id = $field['id'];
+			}
 
 			LP_Meta_Box_Helper::show_field( $field );
 		}

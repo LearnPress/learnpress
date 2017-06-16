@@ -15,10 +15,11 @@ if ( ! class_exists( 'LP_Email_Update_Course' ) ) {
 
 		public $object;
 
-		public function __construct () {
+		public function __construct() {
 
-			$this->id    = 'update_course';
-			$this->title = __( 'Update course', 'learnpress' );
+			$this->id          = 'update_course';
+			$this->title       = __( 'Update course', 'learnpress' );
+			$this->description = __( 'Send this email to users have purchased when the course is updated', 'learnpress' );
 
 			$this->template_html  = 'emails/update-course.php';
 			$this->template_plain = 'emails/plain/update-course.php';
@@ -51,12 +52,13 @@ if ( ! class_exists( 'LP_Email_Update_Course' ) ) {
 
 		}
 
-		public function admin_options ( $settings_class ) {
-			$view = learn_press_get_admin_view( 'settings/emails/update-course.php' );
-			include_once $view;
-		}
-
-		public function update_course ( $post_id, $post ) {
+		/**
+		 * Update course.
+		 *
+		 * @param $post_id
+		 * @param $post
+		 */
+		public function update_course( $post_id, $post ) {
 
 			if ( empty( $post_id ) || empty( $post ) ) {
 				return;
@@ -80,15 +82,24 @@ if ( ! class_exists( 'LP_Email_Update_Course' ) ) {
 			$users_enrolled = $wpdb->get_results( $query );
 			foreach ( $users_enrolled as $user ) {
 
-				if ( ! empty( $user ) && !empty($user->meta_value) ) {
+				if ( ! empty( $user ) && ! empty( $user->meta_value ) ) {
 					$this->trigger( $post_id, $user->meta_value );
 				}
 			}
 		}
 
-		public function trigger ( $course_id, $user_id ) {
 
-			if (empty($course_id) || empty($user_id)) {
+		/**
+		 * Trigger email.
+		 *
+		 * @param $course_id
+		 * @param $user_id
+		 *
+		 * @return bool|void
+		 */
+		public function trigger( $course_id, $user_id ) {
+
+			if ( empty( $course_id ) || empty( $user_id ) ) {
 				return;
 			}
 			$format       = $this->email_format == 'plain_text' ? 'plain' : 'html';
@@ -96,7 +107,7 @@ if ( ! class_exists( 'LP_Email_Update_Course' ) ) {
 			$user         = learn_press_get_user( $user_id );
 			$is_send_mail = apply_filters( 'learn_press_has_send_mail_update_course', $course->send_mail_update_course, $course, $user );
 
-			if (empty($is_send_mail) || $is_send_mail !== 'yes') {
+			if ( empty( $is_send_mail ) || $is_send_mail !== 'yes' ) {
 				return;
 			}
 			$this->object = $this->get_common_template_data(
@@ -116,13 +127,100 @@ if ( ! class_exists( 'LP_Email_Update_Course' ) ) {
 			$this->object['course'] = $course;
 			$this->object['user']   = $user;
 			$this->recipient        = $user->user_email;
-			$return = $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
+			$return                 = $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
 
 			return $return;
 		}
 
-		public function get_template_data ( $format = 'plain' ) {
+
+		/**
+		 * Get email template.
+		 *
+		 * @param string $format
+		 *
+		 * @return mixed
+		 */
+		public function get_template_data( $format = 'plain' ) {
 			return $this->object;
+		}
+
+		/**
+		 * Admin settings.
+		 */
+		public function get_settings() {
+			return apply_filters(
+				'learn-press/email-settings/update-course/settings',
+				array(
+					array(
+						'type'  => 'heading',
+						'title' => $this->title,
+						'desc'  => $this->description
+					),
+					array(
+						'title'   => __( 'Enabled', 'learnpress' ),
+						'type'    => 'yes-no',
+						'default' => 'no',
+						'id'      => 'emails_update_course[enable]'
+					),
+					array(
+						'title'      => __( 'Subject', 'learnpress' ),
+						'type'       => 'text',
+						'default'    => $this->default_subject,
+						'id'         => 'emails_update_course[subject]',
+						'desc'       => sprintf( __( 'Email subject, default: <code>%s</code>', 'learnpress' ), $this->default_subject ),
+						'visibility' => array(
+							'state'       => 'show',
+							'conditional' => array(
+								array(
+									'field'   => 'emails_update_course[enable]',
+									'compare' => '=',
+									'value'   => 'yes'
+								)
+							)
+						)
+					),
+					array(
+						'title'      => __( 'Heading', 'learnpress' ),
+						'type'       => 'text',
+						'default'    => $this->default_heading,
+						'id'         => 'emails_update_course[heading]',
+						'desc'       => sprintf( __( 'Email heading, default: <code>%s</code>', 'learnpress' ), $this->default_heading ),
+						'visibility' => array(
+							'state'       => 'show',
+							'conditional' => array(
+								array(
+									'field'   => 'emails_update_course[enable]',
+									'compare' => '=',
+									'value'   => 'yes'
+								)
+							)
+						)
+					),
+					array(
+						'title'                => __( 'Email content', 'learnpress' ),
+						'type'                 => 'email-content',
+						'default'              => '',
+						'id'                   => 'emails_update_course[email_content]',
+						'template_base'        => $this->template_base,
+						'template_path'        => $this->template_path,//default learnpress
+						'template_html'        => $this->template_html,
+						'template_plain'       => $this->template_plain,
+						'template_html_local'  => $this->get_theme_template_file( 'html', $this->template_path ),
+						'template_plain_local' => $this->get_theme_template_file( 'plain', $this->template_path ),
+						'support_variables'    => $this->get_variables_support(),
+						'visibility'           => array(
+							'state'       => 'show',
+							'conditional' => array(
+								array(
+									'field'   => 'emails_update_course[enable]',
+									'compare' => '=',
+									'value'   => 'yes'
+								)
+							)
+						)
+					),
+				)
+			);
 		}
 	}
 }

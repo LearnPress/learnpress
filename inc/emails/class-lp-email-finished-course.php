@@ -9,14 +9,17 @@
  */
 
 defined( 'ABSPATH' ) || exit();
-if ( !class_exists( 'LP_Email_Finished_Course' ) ) {
+
+if ( ! class_exists( 'LP_Email_Finished_Course' ) ) {
+
 	class LP_Email_Finished_Course extends LP_Email {
 		/**
 		 * LP_Email_Finished_Course constructor.
 		 */
 		public function __construct() {
-			$this->id    = 'finished_course';
-			$this->title = __( 'Finished course', 'learnpress' );
+			$this->id          = 'finished_course';
+			$this->title       = __( 'Finished course', 'learnpress' );
+			$this->description = __( 'Send this email to user when a user finished a course', 'learnpress' );
 
 			$this->template_html  = 'emails/finished-course.php';
 			$this->template_plain = 'emails/plain/finished-course.php';
@@ -48,14 +51,18 @@ if ( !class_exists( 'LP_Email_Finished_Course' ) ) {
 			parent::__construct();
 		}
 
-		public function admin_options( $settings_class ) {
-			$view = learn_press_get_admin_view( 'settings/emails/finished-course.php' );
-			include_once $view;
-		}
-
+		/**
+		 * Trigger email.
+		 *
+		 * @param $course_id
+		 * @param $user_id
+		 * @param $result
+		 *
+		 * @return bool|void
+		 */
 		public function trigger( $course_id, $user_id, $result ) {
 
-			if ( !$this->enable || !( $user = learn_press_get_user( $user_id ) ) ) {
+			if ( ! $this->enable || ! ( $user = learn_press_get_user( $user_id ) ) ) {
 				return;
 			}
 
@@ -86,61 +93,111 @@ if ( !class_exists( 'LP_Email_Finished_Course' ) ) {
 			$this->recipient = $user->user_email;
 
 			$return = $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
+
 			return $return;
 		}
 
+
+		/**
+		 * Get recipient.
+		 *
+		 * @return mixed|void
+		 */
 		public function get_recipient() {
-			if ( !empty( $this->object['user'] ) ) {
+			if ( ! empty( $this->object['user'] ) ) {
 				$this->recipient = $this->object['user']->user_email;
 			}
+
 			return parent::get_recipient();
 		}
 
-		/*
-				public function get_content_html() {
-					ob_start();
-					learn_press_get_template( $this->template_html, $this->get_template_data( 'html' ) );
-					return ob_get_clean();
-				}
-
-				public function get_content_plain() {
-					ob_start();
-					learn_press_get_template( $this->template_plain, $this->get_template_data( 'plain' ) );
-					return ob_get_clean();
-				}
-
-				public function _prepare_content_text_message() {
-					$course = isset( $this->object['course'] ) ? $this->object['course'] : null;
-					$user   = isset( $this->object['user'] ) ? $this->object['user'] : null;
-					if ( $course && $user ) {
-						$this->text_search  = array(
-							"/\{\{course\_id\}\}/",
-							"/\{\{course\_title\}\}/",
-							"/\{\{course\_url\}\}/",
-							"/\{\{user\_email\}\}/",
-							"/\{\{user\_name\}\}/",
-							"/\{\{user\_profile\_url\}\}/",
-						);
-						$this->text_replace = array(
-							$course->id,
-							get_the_title( $course->id ),
-							get_the_permalink( $course->id ),
-							$user->user_email,
-							$user->user_nicename,
-							learn_press_user_profile_link( $user->id )
-						);
-					}
-				}
-		*/
+		/**
+		 * Get email template.
+		 *
+		 * @param string $content_type
+		 *
+		 * @return array|object
+		 */
 		public function get_template_data( $content_type = 'plain' ) {
 			return $this->object;
-			return array(
-				'email_heading' => $this->get_heading(),
-				'footer_text'   => $this->get_footer_text(),
-				'site_title'    => $this->get_blogname(),
-				'course_id'     => $this->object['course']->id,
-				'profile_url'   => learn_press_user_profile_link( $this->object['user']->id ),
-				'plain_text'    => $content_type == 'plain'
+		}
+
+		/**
+		 * Admin settings.
+		 */
+		public function get_settings() {
+			return apply_filters(
+				'learn-press/email-settings/finished-course/settings',
+				array(
+					array(
+						'type'  => 'heading',
+						'title' => $this->title,
+						'desc'  => $this->description
+					),
+					array(
+						'title'   => __( 'Enabled', 'learnpress' ),
+						'type'    => 'yes-no',
+						'default' => 'no',
+						'id'      => 'emails_finished_course[enable]'
+					),
+					array(
+						'title'      => __( 'Subject', 'learnpress' ),
+						'type'       => 'text',
+						'default'    => $this->default_subject,
+						'id'         => 'emails_finished_course[subject]',
+						'desc'       => sprintf( __( 'Email subject, default: <code>%s</code>', 'learnpress' ), $this->default_subject ),
+						'visibility' => array(
+							'state'       => 'show',
+							'conditional' => array(
+								array(
+									'field'   => 'emails_finished_course[enable]',
+									'compare' => '=',
+									'value'   => 'yes'
+								)
+							)
+						)
+					),
+					array(
+						'title'      => __( 'Heading', 'learnpress' ),
+						'type'       => 'text',
+						'default'    => $this->default_heading,
+						'id'         => 'emails_finished_course[heading]',
+						'desc'       => sprintf( __( 'Email heading, default: <code>%s</code>', 'learnpress' ), $this->default_heading ),
+						'visibility' => array(
+							'state'       => 'show',
+							'conditional' => array(
+								array(
+									'field'   => 'emails_finished_course[enable]',
+									'compare' => '=',
+									'value'   => 'yes'
+								)
+							)
+						)
+					),
+					array(
+						'title'                => __( 'Email content', 'learnpress' ),
+						'type'                 => 'email-content',
+						'default'              => '',
+						'id'                   => 'emails_finished_course[email_content]',
+						'template_base'        => $this->template_base,
+						'template_path'        => $this->template_path,//default learnpress
+						'template_html'        => $this->template_html,
+						'template_plain'       => $this->template_plain,
+						'template_html_local'  => $this->get_theme_template_file( 'html', $this->template_path ),
+						'template_plain_local' => $this->get_theme_template_file( 'plain', $this->template_path ),
+						'support_variables'    => $this->get_variables_support(),
+						'visibility'           => array(
+							'state'       => 'show',
+							'conditional' => array(
+								array(
+									'field'   => 'emails_finished_course[enable]',
+									'compare' => '=',
+									'value'   => 'yes'
+								)
+							)
+						)
+					),
+				)
 			);
 		}
 	}

@@ -29,16 +29,23 @@ class LP_Settings_Assets extends LP_Abstract_Settings_Page {
 		include_once $view;
 	}
 
-	public function get_settings() {
+	/**
+	 * Return fields for asset settings.
+	 *
+	 * @param string $section
+	 * @param string $tab
+	 *
+	 * @return mixed
+	 */
+	public function get_settings( $section = '', $tab = '' ) {
 		return apply_filters(
 			'learn_press_profile_settings',
 			array(
 				array(
 					'title'   => __( 'Profile page', 'learnpress' ),
-					'id'       => $this->get_field_name( 'profile_page_id' ),
-					'id'       => $this->get_field_name( 'profile_page_id' ),
-					'default'  => '',
-					'type'     => 'pages-dropdown'
+					'id'      => $this->get_field_name( 'profile_page_id' ),
+					'default' => '',
+					'type'    => 'pages-dropdown'
 				)
 			)
 		);

@@ -58,23 +58,18 @@ if ( ! class_exists( 'LP_Email_New_Order' ) ) {
 			parent::__construct();
 		}
 
-		/*public function admin_options( $settings_class ) {
-			$view = learn_press_get_admin_view( 'settings/emails/new-order.php' );
-			include_once $view;
-		}*/
-
+		/**
+		 * Trigger email
+		 *
+		 * @param $order_id
+		 *
+		 * @return bool|void
+		 */
 		public function trigger( $order_id ) {
 
 			if ( ! $this->enable ) {
 				return;
 			}
-
-			/*$this->find['site_title']    = '{site_title}';
-			$this->replace['site_title'] = $this->get_blogname();
-
-			$this->object = array(
-				'order' => learn_press_get_order( $order_id )
-			);*/
 
 			$format = $this->email_format == 'plain_text' ? 'plain' : 'html';
 			$order  = learn_press_get_order( $order_id );
@@ -102,52 +97,23 @@ if ( ! class_exists( 'LP_Email_New_Order' ) ) {
 
 			return $return;
 		}
-		/*
-			public function get_content_html() {
-				ob_start();
-				learn_press_get_template( $this->template_html, $this->get_template_data( 'html' ) );
-				return ob_get_clean();
-			}
 
-			public function get_content_plain() {
-				ob_start();
-				learn_press_get_template( $this->template_plain, $this->get_template_data( 'plain' ) );
-				return ob_get_clean();
-			}
 
-				public function _prepare_content_text_message() {
-					$order = isset( $this->object['order'] ) ? $this->object['order'] : null;
-					if ( $order ) {
-						$this->text_search = array(
-							"/\{\{order\_number\}\}/",
-							"/\{\{order\_view\_url\}\}/",
-							"/\{\{order\_total\}\}/",
-							"/\{\{order\_items\_table\}\}/",
-							"/\{\{user\_email\}\}/",
-							"/\{\{user\_name\}\}/",
-							"/\{\{user\_profile\_url\}\}/",
-						);
-						$this->text_replace = array(
-							$order->get_order_number(),
-							$order->get_view_order_url(),
-							$order->get_formatted_order_total(),
-							learn_press_get_template_content( 'emails/order-items-table.php', array( 'order' => $order ) ),
-							$order->get_user( 'user_email' ),
-							$order->get_customer_name(),
-							learn_press_user_profile_link( $order->user_id )
-						);
-					}
-				}
-		*/
 		/**
+		 * Get email plain template.
+		 *
 		 * @param string $format
 		 *
-		 * @return array|void
+		 * @return array|object
 		 */
 		public function get_template_data( $format = 'plain' ) {
 			return $this->object;
 		}
 
+
+		/**
+		 * Admin settings.
+		 */
 		public function get_settings() {
 			return apply_filters(
 				'learn-press/email-settings/new-order/settings',
@@ -219,29 +185,6 @@ if ( ! class_exists( 'LP_Email_New_Order' ) ) {
 						'type'                 => 'email-content',
 						'default'              => '',
 						'id'                   => 'emails_new_order[email_content]',
-						'template_base'        => $this->template_base,
-						'template_path'        => $this->template_path,//default learnpress
-						'template_html'        => $this->template_html,
-						'template_plain'       => $this->template_plain,
-						'template_html_local'  => $this->get_theme_template_file( 'html', $this->template_path ),
-						'template_plain_local' => $this->get_theme_template_file( 'plain', $this->template_path ),
-						'support_variables'    => $this->get_variables_support(),
-						'visibility'           => array(
-							'state'       => 'show',
-							'conditional' => array(
-								array(
-									'field'   => 'emails_new_order[enable]',
-									'compare' => '=',
-									'value'   => 'yes'
-								)
-							)
-						)
-					),
-					array(
-						'title'                => __( 'Email content 2', 'learnpress' ),
-						'type'                 => 'email-content',
-						'default'              => '',
-						'id'                   => 'emails_new_order[email_content_2]',
 						'template_base'        => $this->template_base,
 						'template_path'        => $this->template_path,//default learnpress
 						'template_html'        => $this->template_html,

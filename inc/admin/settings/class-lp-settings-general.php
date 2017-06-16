@@ -20,9 +20,12 @@ class LP_Settings_General extends LP_Abstract_Settings_Page {
 	/**
 	 * Return fields for settings page.
 	 *
-	 * @return array
+	 * @param string $section
+	 * @param string $tab
+	 *
+	 * @return mixed
 	 */
-	public function get_settings() {
+	public function get_settings( $section = '', $tab = '' ) {
 		$settings = apply_filters(
 			'learn-press/general-settings-fields',
 			array(

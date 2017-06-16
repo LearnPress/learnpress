@@ -14,14 +14,18 @@ if ( ! class_exists( 'LP_Email_User_Order_Changed_Status' ) ) {
 		/**
 		 * LP_Email_User_Order_Changed_Status constructor.
 		 */
-		public function __construct () {
+		public function __construct() {
 
-			$this->id                = 'user_order_changed_status';
-			$this->title             = __( 'User order changed status', 'learnpress' );
-			$this->template_html     = 'emails/user-order-changed-status.php';
-			$this->template_plain    = 'emails/plain/user-order-changed-status.php';
-			$this->default_subject   = __( 'Your order {{order_date}} has just been changed status', 'learnpress' );
-			$this->default_heading   = __( 'Your order {{order_number}} has just been changed status', 'learnpress' );
+			$this->id          = 'user_order_changed_status';
+			$this->title       = __( 'User order changed status', 'learnpress' );
+			$this->description = __( 'Send email to user when the order is changed status', 'learnpress' );
+
+			$this->template_html  = 'emails/user-order-changed-status.php';
+			$this->template_plain = 'emails/plain/user-order-changed-status.php';
+
+			$this->default_subject = __( 'Your order {{order_date}} has just been changed status', 'learnpress' );
+			$this->default_heading = __( 'Your order {{order_number}} has just been changed status', 'learnpress' );
+
 			$this->support_variables = array(
 				'{{site_url}}',
 				'{{site_title}}',
@@ -45,12 +49,7 @@ if ( ! class_exists( 'LP_Email_User_Order_Changed_Status' ) ) {
 			parent::__construct();
 		}
 
-		public function admin_options ( $settings_class ) {
-			$view = learn_press_get_admin_view( 'settings/emails/user-order-changed-status.php' );
-			include_once $view;
-		}
-
-		public function update_order_status ( $new_status, $order_id ) {
+		public function update_order_status( $new_status, $order_id ) {
 
 			if ( empty( $new_status ) || $new_status == 'completed' || empty( $order_id ) ) {
 				return;
@@ -59,7 +58,15 @@ if ( ! class_exists( 'LP_Email_User_Order_Changed_Status' ) ) {
 			$this->trigger( $new_status, $order_id );
 		}
 
-		public function trigger ( $new_status, $order_id ) {
+		/**
+		 * Trigger email
+		 *
+		 * @param $new_status
+		 * @param $order_id
+		 *
+		 * @return bool|void|mixed
+		 */
+		public function trigger( $new_status, $order_id ) {
 
 			if ( ! $this->enable ) {
 				return;
@@ -80,7 +87,7 @@ if ( ! class_exists( 'LP_Email_User_Order_Changed_Status' ) ) {
 					'order_subtotal'    => $order->get_formatted_order_subtotal(),
 					'order_total'       => $order->get_formatted_order_total(),
 					'order_date'        => date_i18n( get_option( 'date_format' ), strtotime( $order->order_date ) ),
-					'order_status' => $new_status
+					'order_status'      => $new_status
 				)
 			);
 
@@ -93,15 +100,107 @@ if ( ! class_exists( 'LP_Email_User_Order_Changed_Status' ) ) {
 			return $return;
 		}
 
-		public function get_recipient () {
+		/**
+		 * Get recipient.
+		 *
+		 * @return mixed|void
+		 */
+		public function get_recipient() {
 			$user            = learn_press_get_user( $this->object['order']->user_id );
 			$this->recipient = $user->user_email;
 
 			return parent::get_recipient();
 		}
 
-		public function get_template_data ( $format = 'plain' ) {
+		/**
+		 * Get email plain template.
+		 *
+		 * @param string $format
+		 *
+		 * @return array|object
+		 */
+		public function get_template_data( $format = 'plain' ) {
 			return $this->object;
+		}
+
+
+		/**
+		 * Admin settings.
+		 */
+		public function get_settings() {
+			return apply_filters(
+				'learn-press/email-settings/user-order-changed-status/settings',
+				array(
+					array(
+						'type'  => 'heading',
+						'title' => $this->title,
+						'desc'  => $this->description
+					),
+					array(
+						'title'   => __( 'Enabled', 'learnpress' ),
+						'type'    => 'yes-no',
+						'default' => 'no',
+						'id'      => 'emails_user_order_changed_status[enable]'
+					),
+					array(
+						'title'      => __( 'Subject', 'learnpress' ),
+						'type'       => 'text',
+						'default'    => $this->default_subject,
+						'id'         => 'emails_user_order_changed_status[subject]',
+						'desc'       => sprintf( __( 'Email subject, default: <code>%s</code>', 'learnpress' ), $this->default_subject ),
+						'visibility' => array(
+							'state'       => 'show',
+							'conditional' => array(
+								array(
+									'field'   => 'emails_user_order_changed_status[enable]',
+									'compare' => '=',
+									'value'   => 'yes'
+								)
+							)
+						)
+					),
+					array(
+						'title'      => __( 'Heading', 'learnpress' ),
+						'type'       => 'text',
+						'default'    => $this->default_heading,
+						'id'         => 'emails_user_order_changed_status[heading]',
+						'desc'       => sprintf( __( 'Email heading, default: <code>%s</code>', 'learnpress' ), $this->default_heading ),
+						'visibility' => array(
+							'state'       => 'show',
+							'conditional' => array(
+								array(
+									'field'   => 'emails_user_order_changed_status[enable]',
+									'compare' => '=',
+									'value'   => 'yes'
+								)
+							)
+						)
+					),
+					array(
+						'title'                => __( 'Email content', 'learnpress' ),
+						'type'                 => 'email-content',
+						'default'              => '',
+						'id'                   => 'emails_user_order_changed_status[email_content]',
+						'template_base'        => $this->template_base,
+						'template_path'        => $this->template_path,//default learnpress
+						'template_html'        => $this->template_html,
+						'template_plain'       => $this->template_plain,
+						'template_html_local'  => $this->get_theme_template_file( 'html', $this->template_path ),
+						'template_plain_local' => $this->get_theme_template_file( 'plain', $this->template_path ),
+						'support_variables'    => $this->get_variables_support(),
+						'visibility'           => array(
+							'state'       => 'show',
+							'conditional' => array(
+								array(
+									'field'   => 'emails_user_order_changed_status[enable]',
+									'compare' => '=',
+									'value'   => 'yes'
+								)
+							)
+						)
+					),
+				)
+			);
 		}
 	}
 }
