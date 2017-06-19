@@ -29,7 +29,7 @@ if ( !function_exists( 'learn_press_get_only_content_permalink' ) ) {
 	}
 }
 
-function learn_press_lesson_comment_form( $lesson_id, $course_id ) {
+function learn_press_lesson_comment_form( $lesson_id, $course_id, $deprecated = null ) {
 	global $post;
 	if ( get_post_type( $lesson_id ) != LP_LESSON_CPT ) {
 		return;
