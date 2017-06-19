@@ -1,6 +1,8 @@
 <?php
 /**
  * Template for displaying the content of a course
+ *
+ * @version 3.0
  */
 
 if ( !defined( 'ABSPATH' ) ) {

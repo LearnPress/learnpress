@@ -30,8 +30,29 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			add_action( 'admin_notices', array( $this, 'notice_required_permalink' ) );
 			add_action( 'edit_form_after_editor', array( $this, 'wrapper_start' ), - 1000 );
 			add_action( 'edit_form_after_editor', array( $this, 'wrapper_end' ), 1000 );
+			add_action( 'admin_head', array( $this, 'admin_colors' ) );
 
+		}
 
+		public function admin_colors() {
+			global $_wp_admin_css_colors;
+			$schema = get_user_option( 'admin_color' );
+			if ( empty( $_wp_admin_css_colors[ $schema ] ) ) {
+				return;
+			}
+
+			$colors = $_wp_admin_css_colors[ $schema ]->colors;
+			?>
+            <style type="text/css">
+                .admin-color {
+                    color: <?php echo $colors[0];?>
+                }
+
+                .admin-background {
+                    color: <?php echo $colors[0];?>
+                }
+            </style>
+			<?php
 		}
 
 		public function wrapper_start() {
@@ -125,7 +146,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 					return;
 				}
 
-				if ( learn_press_detect_outdated_template() ) {
+				if ( LP_Outdated_Template_Helper::detect_outdated_template() ) {
 					learn_press_admin_view( 'html-admin-notice-templates' );
 				}
 			}
@@ -234,18 +255,16 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			//crazy tu
 			// Common function used in admin
 			include_once( 'lp-admin-functions.php' );
-			// Admin actions
 			include_once( 'lp-admin-actions.php' );
-			//Ajax Class
+
+			include_once( 'class-lp-admin-tools.php' );
 			include_once( 'class-lp-admin-ajax.php' );
-
-			// Admin menu
 			include_once( 'class-lp-admin-menu.php' );
-
 			include_once( 'class-lp-meta-box-tabs.php' );
-
+			include_once( 'helpers/class-lp-outdated-template-helper.php' );
+			include_once( 'helpers/class-lp-plugins-helper.php' );
 		}
 	}
 
-	new LP_Admin();
+	return new LP_Admin();
 }

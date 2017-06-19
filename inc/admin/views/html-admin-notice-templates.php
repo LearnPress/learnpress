@@ -9,7 +9,7 @@ if ( learn_press_get_user_option( 'hide-notice-template-files' ) == 'yes' ) {
 }
 $template_dir   = get_template_directory();
 $stylesheet_dir = get_stylesheet_directory();
-$cradle         = learn_press_detect_outdated_template();
+$cradle         = LP_Outdated_Template_Helper::detect_outdated_template();
 $theme          = wp_get_theme();
 $theme_name     = array();
 

@@ -13,6 +13,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Short function to get name of a theme
+ *
+ * @param string $folder
+ *
+ * @return mixed|string
+ */
+function learn_press_get_theme_name( $folder ) {
+	$theme = wp_get_theme( $folder );
+
+	return ! empty( $theme['Name'] ) ? $theme['Name'] : '';
+}
+
+
+/**
  * Return TRUE if defined WP_DEBUG and is true or 1.
  *
  * @return bool
@@ -21,6 +35,11 @@ function learn_press_is_debug() {
 	return defined( 'WP_DEBUG' ) && WP_DEBUG;
 }
 
+/**
+ * Get current post ID.
+ *
+ * @return int
+ */
 function learn_press_get_post() {
 	global $post;
 	$post_id = ! empty( $post ) ? $post->ID : 0;
@@ -445,7 +464,6 @@ function learn_press_print_script() {
 
 add_action( 'wp_footer', 'learn_press_print_script' );
 add_action( 'admin_footer', 'learn_press_print_script' );
-
 
 
 /**

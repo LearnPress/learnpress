@@ -11,8 +11,10 @@
 @import "meta-box";
 @import "admin-tabs";
 
+/* Metabox email template field */
 .lp-email-templates {
     overflow: hidden;
+    margin-top: 5px;
 }
 
 .learn-press-email-variables {
@@ -25,6 +27,7 @@
     }
 }
 
+/* Metabox dropdown pages field */
 .learn-press-dropdown-pages {
     input[type="text"] {
         min-width: 300px;
@@ -40,15 +43,7 @@
     }
 }
 
-.rwmb-payment-order-wrapper {
-    .rwmb-label {
-        margin-bottom: 20px !important;
-    }
-    .rwmb-input {
-        margin-left: 0 !important;
-    }
-}
-
+/* Tooltip */
 .learn-press-tooltip {
     display: inline-block;
     font-size: 17px;
@@ -62,6 +57,16 @@
     &:hover {
         color: #0073aa;
         opacity: 1;
+    }
+}
+
+/* Metabox payment order field */
+.rwmb-payment-order-wrapper {
+    .rwmb-label {
+        margin-bottom: 20px !important;
+    }
+    .rwmb-input {
+        margin-left: 0 !important;
     }
 }
 
@@ -132,6 +137,76 @@
     }
 }
 
+/* Submenu tools/templates */
+.lp-template-overrides {
+    margin-top: 20px;
+    thead th h4 {
+        margin: 0;
+    }
+    tbody th {
+        font-weight: bold;
+        p {
+            margin: 0 0 0 10px;
+            display: inline-block;
+            a {
+                font-weight: normal;
+                outline: none;
+                border: none;
+                box-shadow: none;
+                margin: 0;
+                padding: 2px 8px;
+                border-radius: 3px;
+                &.current {
+                    background: #00aadc;
+                    color: #FFF
+                }
+            }
+        }
+
+    }
+    .template-row {
+        &.outdated, &.up-to-date{
+            code:before{
+                font-family: Dashicons;
+                vertical-align: middle;
+                margin-top: -2px;
+                display: inline-block;
+                margin-right: 3px;
+            }
+        }
+        &.outdated {
+            .template-version {
+                color: #FF0000;
+            }
+            .template-file{
+                code:before{
+                    content: "\f534";
+                    color: #FF0000;
+                }
+            }
+        }
+        &.up-to-date {
+            .template-version {
+                color: #1859ff;
+            }
+            .template-file{
+                code:before{
+                    content: "\f147";
+                    color: #0085ba;
+                }
+            }
+        }
+    }
+
+    .template-version, .core-version {
+        width: 100px;
+    }
+    #learn-press-no-templates td p {
+        color: #0073aa;
+    }
+}
+
+/* General */
 .description {
     code {
         font-size: smaller;

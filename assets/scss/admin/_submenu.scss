@@ -1,12 +1,11 @@
 .lp-admin-tabs {
-    background: #FFF;
     position: relative;
     margin-top: 20px;
     .lp-admin-tab-navs {
         margin: 0 -250px 0 0;
         width: 250px;
         float: left;
-        padding: 10px 10px;
+        padding: 10px 0px;
         position: relative;
         z-index: 5;
         display: none;
@@ -15,24 +14,29 @@
             margin: 0;
             > a, > span {
                 display: block;
-                padding: 8px 10px;
+                padding: 8px 20px;
                 outline: none;
                 box-shadow: none;
                 text-decoration: none;
                 text-transform: capitalize;
             }
-            .learn-press-tooltip{
+            .learn-press-tooltip {
                 float: right;
                 margin-right: 0;
             }
+            &.nav-section-active,
+            &:hover {
+                border-left: 2px solid #563d7c;
+                color: #563d7c;
+                > a, > span {
+                    padding-left: 18px;
+                }
+            }
         }
     }
-    .lp-admin-tab-content {
-        background: #FFF;
-        padding: 18px;
-    }
+
     &.has-sections {
-        .lp-admin-tab-navs{
+        .lp-admin-tab-navs {
             display: block;
         }
         .lp-admin-tab-content {
@@ -56,5 +60,14 @@
     &:after {
         @include clear-fix();
         z-index: 10;
+    }
+}
+
+.wrap {
+    &.learn-press-settings {
+        .lp-admin-tab-content {
+            background: #FFF;
+            padding: 18px;
+        }
     }
 }

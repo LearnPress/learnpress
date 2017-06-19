@@ -287,6 +287,7 @@ abstract class LP_Abstract_Submenu {
 		?>
         <div class="<?php echo join( ' ', $classes ); ?>">
             <div id="icon-themes" class="icon32"><br></div>
+            <h1 class="wp-heading-inline"><?php echo $this->get_menu_title(); ?></h1>
 			<?php if ( $tabs ) { ?>
                 <h2 class="nav-tab-wrapper">
 					<?php foreach ( $tabs as $tab => $name ) { ?>
@@ -304,12 +305,10 @@ abstract class LP_Abstract_Submenu {
                             <span class="nav-tab<?php echo esc_attr( $active_class ); ?>"><?php echo $tab_title; ?></span>
 						<?php } else { ?>
                             <a class="nav-tab"
-                               href="?page=learn-press-settings&tab=<?php echo $tab; ?>"><?php echo $tab_title; ?></a>
+                               href="?page=<?php echo $this->id;?>&tab=<?php echo $tab; ?>"><?php echo $tab_title; ?></a>
 						<?php } ?>
 					<?php } ?>
                 </h2>
-			<?php } else { ?>
-                <h1 class="wp-heading-inline"><?php echo $this->get_menu_title(); ?></h1>
 			<?php } ?>
 			<?php
 			$classes = array( 'lp-admin-tabs' );
