@@ -1,0 +1,57 @@
+
+.learn-press-addons {
+    .lp-search-addon {
+        margin: 0;
+        width: 280px;
+        font-size: 16px;
+        font-weight: 300;
+        line-height: 1.5;
+        padding: 3px 5px;
+        height: 32px;
+    }
+    .addons-browse {
+        margin: 20px 0 0;
+        .lp-addon-hidden {
+            display: none !important;
+        }
+        .lp-active:nth-of-type(2n+1) {
+            clear: none;
+            margin-right: 0;
+            margin-left: 8px;
+        }
+        .lp-active:nth-of-type(2n) {
+            clear: both;
+            margin-right: 8px;
+            margin-left: 0;
+        }
+        .plugin-icon{
+            img{
+                max-width: 100%;
+            }
+        }
+        .plugin-card h3{
+            min-height: 70px;
+        }
+        .plugin-card .desc{
+            min-height: 130px;
+        }
+        &.premium {
+            .column-description {
+                p {
+                    margin: 0;
+                    line-height: inherit;
+                }
+                overflow: hidden;
+                text-overflow: ellipsis;
+                display: -webkit-box;
+                -webkit-box-orient: vertical;
+                -webkit-line-clamp: 4;
+                line-height: 1.6em;
+                max-height: 6.4em;
+            }
+        }
+        &:after {
+            @include clear-fix();
+        }
+    }
+}

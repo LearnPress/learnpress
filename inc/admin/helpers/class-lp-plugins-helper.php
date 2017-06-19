@@ -6,18 +6,25 @@ class LP_Plugins_Helper {
 	 */
 	public static $transient_timeout = HOUR_IN_SECONDS;
 
-	public static $plugins = array();
+	/**
+	 * @var array
+	 */
+	public static $plugins = array(
+		'installed' => false,
+		'free'      => false,
+		'premium'   => false
+	);
 
 	/**
 	 * Get all add-ons for LearnPress has installed.
 	 * Identify a plugin is an add-on if it is already existing a tag 'learnpress' inside
 	 *
-	 * @param array $options
+	 * @param string $type
 	 *
 	 * @return mixed
 	 */
-	public static function get_plugins( $options = array() ) {
-	    self::require_plugins_api();
+	public static function get_plugins( $type = '' ) {
+		self::require_plugins_api();
 		$plugins = array();
 		if ( ! function_exists( 'get_plugins' ) ) {
 			require_once( ABSPATH . '/wp-admin/includes/plugin.php' );
@@ -29,10 +36,12 @@ class LP_Plugins_Helper {
 
 		// If there is no plugin on our site.
 		if ( ! $all_plugins ) {
-			return self::$plugins;
+			return array_key_exists( $type, self::$plugins ) ? self::$plugins[ $type ] : self::$plugins;
 		}
-		$wp_plugins      = self::get_plugins_from_wp();
-		$premium_plugins = self::get_premium_plugins();
+		$wp_plugins        = self::get_plugins_from_wp();
+		$premium_plugins   = self::get_premium_plugins();
+		$wp_installed      = array();
+		$premium_installed = array();
 
 		//learn_press_debug( wp_list_pluck( $wp_plugins, 'name' ) );
 		foreach ( $all_plugins as $plugin_file => $plugin_data ) {
@@ -52,9 +61,12 @@ class LP_Plugins_Helper {
 			if ( isset( $wp_plugins[ $plugin_file ] ) ) {
 				$plugins[ $plugin_file ]           = (array) $wp_plugins[ $plugin_file ];
 				$plugins[ $plugin_file ]['source'] = 'wp';
+
+				$wp_installed[ $plugin_file ] = true;
 			} else if ( isset( $premium_plugins[ $plugin_file ] ) ) {
 				$plugins[ $plugin_file ]           = (array) $premium_plugins[ $plugin_file ];
 				$plugins[ $plugin_file ]['source'] = 'tp';
+				$premium_installed[ $plugin_file ] = true;
 			} else {
 				$plugin_data             = _get_plugin_data_markup_translate( $plugin_file, $plugin_data, false, true );
 				$plugins[ $plugin_file ] = array(
@@ -80,9 +92,13 @@ class LP_Plugins_Helper {
 			}
 		}
 
-		self::$plugins = $plugins;
+		self::$plugins['installed'] = $plugins;
+		self::$plugins['free']      = array_diff_key( $wp_plugins, $wp_installed );
+		self::$plugins['premium']   = array_diff_key( $premium_plugins, $premium_installed );
 
-		return self::$plugins;
+		self::_sort_plugins();
+
+		return array_key_exists( $type, self::$plugins ) ? self::$plugins[ $type ] : self::$plugins;
 	}
 
 	/**
@@ -109,10 +125,10 @@ class LP_Plugins_Helper {
 				'active_installs' => true
 			),
 			'locale'            => get_locale(),
-			//'installed_plugins' => learn_press_get_installed_plugin_slugs(),
+			'installed_plugins' => learn_press_get_installed_plugin_slugs(),
 			'author'            => 'thimpress'
 		);
-		$transient_key = "wp_plugins_";
+		$transient_key = "lp_plugins_wp";
 		if ( ! ( $plugins = get_transient( $transient_key ) ) ) {
 			self::require_plugins_api();
 
@@ -152,7 +168,51 @@ class LP_Plugins_Helper {
 	}
 
 	public static function get_premium_plugins() {
-		return array();
+		$transient_key = "lp_plugins_tp";
+		if ( ! ( $plugins = get_transient( $transient_key ) ) ) {
+			$plugins  = array();
+			$url      = 'https://thimpress.com/?thimpress_get_addons=premium';
+			$response = wp_remote_get( esc_url_raw( $url ), array( 'decompress' => false ) );
+
+			if ( ! is_wp_error( $response ) ) {
+
+				$response = wp_remote_retrieve_body( $response );
+				$response = json_decode( $response, true );
+
+				if ( ! empty( $response ) ) {
+
+					$maps = array(
+						'authorize-net-add-on-learnpress'      => 'learnpress-authorizenet-payment',
+						'2checkout-add-learnpress'             => 'learnpress-2checkout-payment',
+						'commission-add-on-for-learnpress'     => 'learnpress-commission',
+						'paid-memberships-pro-add-learnpress'  => 'learnpress-paid-membership-pro',
+						'gradebook-add-on-for-learnpress'      => 'learnpress-gradebook',
+						'sorting-choice-add-on-for-learnpress' => 'learnpress-sorting-choice',
+						'content-drip-add-on-for-learnpress'   => 'learnpress-content-drip',
+						'mycred-add-on-for-learnpress'         => 'learnpress-mycred',
+						'random-quiz-add-on-for-learnpress'    => 'learnpress-random-quiz',
+						'co-instructors-add-on-for-learnpress' => 'learnpress-co-instructor',
+						'collections-add-on-for-learnpress'    => 'learnpress-collections',
+						'woocommerce-add-on-for-learnpress'    => 'learnpress-woo-payment',
+						'stripe-add-on-for-learnpress'         => 'learnpress-stripe',
+						'certificates-add-on-for-learnpress'   => 'learnpress-certificates'
+					);
+
+					foreach ( $response as $key => $item ) {
+						$slug = $item['slug'];
+						if ( ! empty( $maps[ $slug ] ) ) {
+							$plugin_file             = sprintf( '%1$s/%1$s.php', $maps[ $slug ] );
+							$plugins[ $plugin_file ] = $item;
+						}
+					}
+
+					set_transient( $transient_key, $plugins, self::$transient_timeout );
+
+				}
+			}
+		}
+
+		return $plugins;
 	}
 
 	/**
@@ -262,6 +322,25 @@ class LP_Plugins_Helper {
 	}
 
 	/**
+	 * Count plugins.
+	 *
+	 * @param string $type
+	 *
+	 * @return int
+	 */
+	public static function count_plugins( $type = '' ) {
+		$plugins = self::get_plugins();
+		if ( $type === 'installed' ) {
+			return ! empty( $plugins['installed'] ) ? sizeof( $plugins['installed'] ) : 0;
+		} else {
+			$wp_plugins = ! empty( $plugins['free'] ) ? sizeof( $plugins['free'] ) : 0;
+			$tp_plugins = ! empty( $plugins['premium'] ) ? sizeof( $plugins['premium'] ) : 0;
+
+			return $wp_plugins + $tp_plugins;
+		}
+	}
+
+	/**
 	 * Filter plugin if it slug is starts with 'learnpress'
 	 *
 	 * @param object $plugin
@@ -269,7 +348,19 @@ class LP_Plugins_Helper {
 	 * @return bool
 	 */
 	public function _filter_plugin( $plugin ) {
-		return $plugin && preg_match( '!^learnpress.*!', $plugin->slug );
+		return $plugin && preg_match( '!^learnpress-.*!', $plugin->slug );
+	}
+
+	/**
+	 * Sort plugins.
+	 */
+	public static function _sort_plugins() {
+		foreach ( self::$plugins as $k => $plugin ) {
+			if ( is_array( $plugin ) ) {
+				ksort( $plugin );
+				self::$plugins[ $k ] = $plugin;
+			}
+		}
 	}
 
 	////////
