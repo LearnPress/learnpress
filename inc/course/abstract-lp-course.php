@@ -1214,7 +1214,7 @@ abstract class LP_Abstract_Course {
 		if ( !empty( $quizzes_ids ) ) {
 			$format = array_fill( 0, sizeof( $quizzes_ids ), '%d' );
 			$args   = array_merge( $quizzes_ids, array( 'publish', LP_QUESTION_CPT ) );
-			echo $sql = $wpdb->prepare( "
+			$sql = $wpdb->prepare( "
 				SELECT COUNT(*)
 				FROM {$wpdb->prefix}learnpress_quiz_questions lqq
 				INNER JOIN {$wpdb->posts} p ON lqq.question_id = p.ID
