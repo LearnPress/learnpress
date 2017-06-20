@@ -111,7 +111,7 @@ $course = LP()->global['course'];
 
 					</form>
 				<?php } elseif ( in_array( $order_status, array( 'lp-processing', 'lp-on-hold' ) ) ) { ?>
-					<?php learn_press_display_message( '<p>' . apply_filters( 'learn_press_user_course_pending_message', __( 'You have purchased this course. Please wait for approval.', 'learnpress' ), $course, $user ) . '</p>' ); ?>
+					<?php learn_press_display_message( '<p>' . apply_filters( 'learn_press_user_course_pending_message', __( 'Your order is processing. Please wait for approval.', 'learnpress' ), $course, $user ) . '</p>' ); ?>
 				<?php } elseif ( $order_status && $order_status != 'lp-completed' ) { ?>
 					<?php learn_press_display_message( '<p>' . apply_filters( 'learn_press_user_can_not_purchase_course_message', __( 'Sorry, you can not purchase this course', 'learnpress' ), $course, $user ) . '</p>' ); ?>
 				<?php } ?>
