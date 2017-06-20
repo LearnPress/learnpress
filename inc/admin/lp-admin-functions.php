@@ -343,6 +343,31 @@ function learn_press_trim_content( $content, $count = 0 ) {
 }
 
 /**
+ * Get list of themes that support LearnPress.
+ *
+ * @return mixed
+ */
+function learn_press_get_education_themes() {
+	// New theme can be added here
+	return apply_filters(
+		'learn-press/education-themes',
+		array(
+			'14058034' => 'eduma',
+			'17097658' => 'coach',
+			'11797847' => 'lms'
+		)
+	);
+}
+
+function learn_press_get_item_ref() {
+	return array(
+		'ref'        => 'ThimPress',
+		'utm_source' => 'lp-backend',
+		'utm_medium' => 'lp-addondashboard'
+	);
+}
+
+/**
  * Display advertisement about related themes at the bottom of admin pages.
  *
  * @return bool|void
@@ -369,15 +394,7 @@ function learn_press_footer_advertisement() {
 		return;
 	}
 
-	// New theme can be added here
-	$theme_ids     = apply_filters(
-		'learn-press/advertisement-themes',
-		array(
-			'14058034' => 'eduma',
-			'17097658' => 'coach',
-			'11797847' => 'lms'
-		)
-	);
+	$theme_ids     = learn_press_get_education_themes();
 	$current_theme = wp_get_theme();
 
 	$include = array_keys( $theme_ids );
@@ -399,11 +416,7 @@ function learn_press_footer_advertisement() {
 
 	shuffle( $list_themes );
 
-	$query_arg = array(
-		'ref'        => 'ThimPress',
-		'utm_source' => 'lp-backend',
-		'utm_medium' => 'lp-addondashboard'
-	);
+	$query_arg = learn_press_get_item_ref();
 
 	?>
     <div id="learn-press-advertisement" class="learn-press-advertisement-slider">
@@ -2126,11 +2139,6 @@ if ( ! function_exists( 'learn_press_duplicate_quiz' ) ) {
 	}
 
 }
-
-
-
-
-
 
 
 if ( ! function_exists( 'learn_press_duplicate_lesson' ) ) {

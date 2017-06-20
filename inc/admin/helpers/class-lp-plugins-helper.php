@@ -16,6 +16,14 @@ class LP_Plugins_Helper {
 	);
 
 	/**
+	 * @var array
+	 */
+	public static $themes = array(
+		'education' => false,
+		'other'     => false
+	);
+
+	/**
 	 * Get all add-ons for LearnPress has installed.
 	 * Identify a plugin is an add-on if it is already existing a tag 'learnpress' inside
 	 *
@@ -213,6 +221,74 @@ class LP_Plugins_Helper {
 		}
 
 		return $plugins;
+	}
+
+	/**
+	 * Get our related themes.
+	 *
+	 * @param string $type
+	 *
+	 * @return array|mixed
+	 */
+	public static function get_related_themes( $type = '' ) {
+
+		self::$themes = get_transient( 'lp_related_themes' );
+
+		if ( isset( $_GET['check'] ) && wp_verify_nonce( $_GET['check'], 'lp_check_related_themes' ) || ! self::$themes ) {
+
+			$url      = 'https://api.envato.com/v1/discovery/search/search/item?site=themeforest.net&username=thimpress';
+			$args     = array(
+				'headers' => array(
+					"Authorization" => "Bearer BmYcBsYXlSoVe0FekueDxqNGz2o3JRaP"
+				)
+			);
+			$response = wp_remote_request( $url, $args );
+
+			if ( ! is_wp_error( $response ) ) {
+				$response = wp_remote_retrieve_body( $response );
+				$response = json_decode( $response, true );
+				if ( ! empty( $response ) && ! empty( $response['matches'] ) ) {
+					$themes = array();
+					foreach ( $response['matches'] as $theme ) {
+						$themes[ $theme['id'] ] = $theme;
+					}
+					if ( $education_themes = learn_press_get_education_themes() ) {
+						self::$themes['other']     = array_diff_key( $themes, $education_themes );
+						self::$themes['education'] = array_diff_key( $themes, self::$themes['other'] );
+					} else {
+						self::$themes['other'] = $themes;
+					}
+					delete_transient( 'lp_related_themes' );
+					set_transient( 'lp_related_themes', self::$themes, self::$transient_timeout );
+				}
+			}
+		}
+
+		return array_key_exists( $type, self::$themes ) ? self::$themes[ $type ] : self::$themes;
+
+	}
+
+
+	/**
+	 * Count themes.
+	 *
+	 * @param string $type
+	 *
+	 * @return int
+	 */
+	public static function count_themes( $type = '' ) {
+		$themes = self::get_related_themes();
+		$count  = 0;
+
+		if ( array_key_exists( $type, $themes ) ) {
+			$count = ! empty( $themes[ $type ] ) ? sizeof( $themes[ $type ] ) : 0;
+		} else {
+			foreach ( $themes as $k => $v ) {
+				$count += ! empty( $v ) ? sizeof( $v ) : 0;
+			}
+		}
+
+		return $count;
 	}
 
 	/**
@@ -731,58 +807,6 @@ class LP_Plugins_Helper {
 		learn_press_output_related_themes_list( $related_themes, $current );
 	}
 
-	/**
-	 * Get our related themes.
-	 *
-	 * @param string $args
-	 *
-	 * @return array|mixed
-	 */
-	function learn_press_related_themes( $args = '' ) {
-		$args        = wp_parse_args(
-			$args,
-			array(
-				'exclude' => '',
-				'include' => '',
-			)
-		);
-		$list_themes = get_transient( 'lp_addon_related_themes' );
-
-		if ( isset( $_GET['check'] ) && wp_verify_nonce( $_GET['check'], 'lp_check_related_themes' ) || ! $list_themes ) {
-
-			$url      = 'https://api.envato.com/v1/discovery/search/search/item?site=themeforest.net&username=thimpress';
-			$args     = array(
-				'headers' => array(
-					"Authorization" => "Bearer BmYcBsYXlSoVe0FekueDxqNGz2o3JRaP"
-				)
-			);
-			$response = wp_remote_request( $url, $args );
-
-			if ( ! is_wp_error( $response ) ) {
-				$response = wp_remote_retrieve_body( $response );
-				$response = json_decode( $response, true );
-				if ( ! empty( $response ) && ! empty( $response['matches'] ) ) {
-					delete_transient( 'lp_addon_related_themes' );
-
-					$list_themes = $response['matches'];
-					set_transient( 'lp_addon_related_themes', $list_themes, 24 * LP_ADD_ON_TRANSIENT_TIME );
-				}
-			}
-
-		}
-
-		if ( $list_themes && $args['include'] ) {
-			$search_results = array();
-			foreach ( $list_themes as $theme ) {
-				if ( in_array( $theme['id'], $args['include'] ) ) {
-					$search_results[] = $theme;
-				}
-			}
-			$list_themes = $search_results;
-		}
-
-		return $list_themes;
-	}
 
 	function learn_press_get_add_ons_themes() {
 		global $learnpress_list_themes;

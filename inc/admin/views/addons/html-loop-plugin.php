@@ -18,7 +18,7 @@ $action_links = learn_press_get_add_on_action_link( $add_on, $file );
 		                src="<?php echo LP_Plugins_Helper::get_add_on_icon( $add_on['icons'] ); ?>"></span>
 
 		<div class="name column-name">
-			<h3><?php echo $add_on['name']; ?></h3>
+			<h3 class="item-title"><?php echo $add_on['name']; ?></h3>
 		</div>
 		<div class="action-links">
 			<?php
