@@ -40,7 +40,6 @@ $course = LP()->global['course'];
 			$retake_button_text    = apply_filters( 'learn_press_retake_button_text', __( 'Retake', 'learnpress' ) );
 			$notice_enough_student = apply_filters( 'learn_press_course enough students_notice', __( 'The class is full so the enrollment is close. Please contact the site admin.', 'learnpress' ) );
 
-			echo "[", $user->has( 'finished-course', $course->id ), "]";
 			# -------------------------------
 			# Finished Course
 			# -------------------------------
