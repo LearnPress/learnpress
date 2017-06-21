@@ -463,8 +463,8 @@ if ( ! function_exists( 'learn_press_advertise_in_admin' ) ) {
 
 		$screen = get_current_screen();
 
-		if ( ( in_array( $screen->post_type, $admin_post_type ) && $screen->base === 'edit' )
-		     || ( in_array( $screen->id, $pages ) )
+		if ( $screen && ( ( in_array( $screen->post_type, $admin_post_type ) && $screen->base === 'edit' )
+		                  || in_array( $screen->id, $pages ) )
 		) {
 
 			$current_theme = wp_get_theme();
