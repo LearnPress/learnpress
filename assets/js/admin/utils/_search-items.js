@@ -1,30 +1,37 @@
 ;(function ($) {
     var timer = null,
-        $items = null,
+        $wraps = null,
+        $cloneWraps = null,
         onSearch = function (keyword) {
+            if (!$cloneWraps) {
+                $cloneWraps = $wraps.clone();
+            }
             keywords = keyword.toLowerCase().split(/\s+/).filter(function (a, b) {
                 return a.length >= 3;
             });
-            var $found = $items.each(function () {
-                var $item = $(this),
-                    itemText = $item.find('.item-title').text().toLowerCase(),
-                    itemDesc = $item.find('.column-description').text();
-                var found = function () {
-                    var reg = new RegExp(keywords.join('|'), 'ig');
+            var foundItems = function ($w1, $w2) {
+                return $w1.find('.plugin-card').each(function () {
+                    var $item = $(this),
+                        itemText = $item.find('.item-title').text().toLowerCase(),
+                        itemDesc = $item.find('.column-description').text();
+                    var found = function () {
+                        var reg = new RegExp(keywords.join('|'), 'ig');
+                        return itemText.match(reg) || itemDesc.match(reg)
+                    }
+                    if (keywords.length) {
+                        if (found()) {
+                            $w2.append($item.clone());
+                        }
+                    }else{
+                        $w2.append($item.clone());
+                    }
+                });
+            }
 
-                    return itemText.match(reg) || itemDesc.match(reg)
-                }
-                if (keywords.length) {
-                    $item.toggleClass('hide-if-js', !found());
-                } else {
-                    $item.removeClass('hide-if-js')
-                }
-            }).filter(':visible').get();
-
-            $('.addons-browse').each(function () {
-                var $this = $(this),
-                    $el = $this.find('.plugin-card'),
-                    count = $el.filter('.plugin-card:not(.hide-if-js)').length;
+            $wraps.each(function (i) {
+                var $this = $(this).html(''),
+                    $items = foundItems($cloneWraps.eq(i), $this),
+                    count = $this.children().length;
 
                 $this.prev('h2').find('span').html(count)
             })
@@ -33,6 +40,6 @@
         timer && clearTimeout(timer);
         timer = setTimeout(onSearch, 300, e.target.value);
     }).ready(function () {
-        $items = $('.plugin-card');
+        $wraps = $('.addons-browse');
     })
 })(jQuery);

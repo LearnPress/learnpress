@@ -77,9 +77,13 @@
                 animation: lp-spinner 2s infinite linear;
                 margin-right: 0;
             }
-
             .button-working span {
                 display: none;
+            }
+            .column-description{
+                p:not(.authors){
+                    @include text-overflow();
+                }
             }
         }
         &.premium {
@@ -88,13 +92,6 @@
                     margin: 0;
                     line-height: inherit;
                 }
-                overflow: hidden;
-                text-overflow: ellipsis;
-                display: -webkit-box;
-                -webkit-box-orient: vertical;
-                -webkit-line-clamp: 4;
-                line-height: 1.6em;
-                max-height: 6.4em;
             }
         }
         &:after {
@@ -115,25 +112,15 @@
     }
     .theme-description {
         margin: 0 0 25px 0;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 6;
-        line-height: 1.6em;
-        max-height: 9.6em;
-
     }
     .theme-title {
         margin-right: 100px;
-        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-        font-size: 22px;
-        line-height: 1.6em;
+        font-size: 1.2em;
+        line-height: 1.3em;
         margin-bottom: 0;
         min-height: 3.2em;
     }
     .theme-title a {
-
         color: #545454;
     }
     .theme-rating {
@@ -151,7 +138,7 @@
     .theme-detail {
         position: absolute;
         right: 3px;
-        top: 0;
+        top: -3px;
         text-align: right;
         line-height: 1.6em;
 
@@ -166,11 +153,9 @@
             font-size: 24px;
             color: #545454;
             font-weight: 700;
-            line-height: 1.6em;
+            line-height: 1.3em;
         }
-
     }
-
     .theme-footer {
         clear: both;
         margin-left: -20px;
@@ -179,5 +164,14 @@
         background-color: #fafafa;
         border-top: 1px solid #ddd;
         overflow: hidden;
+    }
+}
+
+@media screen and (min-width: 1600px) {
+    .plugin-card:not(.hide-if-js):nth-child(even) {
+        margin-right: 8px;
+    }
+    .plugin-card:not(.hide-if-js):nth-child(3n) {
+        margin-right: 0;
     }
 }

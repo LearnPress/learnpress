@@ -46,3 +46,13 @@ $remove-icon-color: #d05d5d;
     @include box-shadow(none);
     outline: none;
 }
+
+@mixin text-overflow($base: 1.6em, $line: 5) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: $line;
+    line-height: $base;
+    max-height: $base * $line;
+}
