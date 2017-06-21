@@ -18,10 +18,10 @@ if ( ! class_exists( 'LP_Admin_Tools' ) ) {
 			if ( current_user_can( 'manage_options' ) ) {
 				switch ( $action ) {
 					case 'learn-press-remove-data':
-						learn_press_remove_data();
+						self::remove_data();
 						break;
 					case 'learn-press-remove-old-data':
-						learn_press_remove_old_data();
+						self::remove_old_data();
 						break;
 					default:
 						break;
@@ -192,8 +192,7 @@ if ( ! class_exists( 'LP_Admin_Tools' ) ) {
 			);
 
 			LP_Admin_Notice::add( __( 'Outdated data from version less than 1.0 have been removed', 'learnpress' ), 'updated', '', true );
-			//flush_rewrite_rules();
-//            header('Location: '.admin_url( 'admin.php?page=learn-press-tools' ));
+
 			wp_redirect( admin_url( 'admin.php?page=learn-press-tools' ) );
 			exit();
 		}

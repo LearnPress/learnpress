@@ -102,7 +102,8 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 						)
 					)
 				),
-				apply_filters( 'learn-press/profile-settings-fields/sub-tabs', array(
+				apply_filters( 'learn-press/profile-settings-fields/sub-tabs',
+					array(
 						array(
 							'title' => __( 'Sub tab slugs', 'learnpress' ),
 							'type'  => 'heading',
@@ -110,7 +111,7 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 						),
 						array(
 							'title'   => __( 'Courses', 'learnpress' ),
-							'id'      => 'learn_press_profile_endpoints[profile-courses]',
+							'id'      => 'profile_endpoints[profile-courses]',
 							'default' => '',
 							'type'    => 'text',
 							'std'     => 'courses',
@@ -118,7 +119,7 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 						),
 						array(
 							'title'   => __( 'Quizzes', 'learnpress' ),
-							'id'      => 'learn_press_profile_endpoints[profile-quizzes]',
+							'id'      => 'profile_endpoints[profile-quizzes]',
 							'default' => '',
 							'type'    => 'text',
 							'std'     => 'quizzes',
@@ -126,7 +127,7 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 						),
 						array(
 							'title'   => __( 'Orders', 'learnpress' ),
-							'id'      => 'learn_press_profile_endpoints[profile-orders]',
+							'id'      => 'profile_endpoints[profile-orders]',
 							'default' => '',
 							'type'    => 'text',
 							'std'     => 'orders',
@@ -134,13 +135,14 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 						),
 						array(
 							'title'   => __( 'Order details', 'learnpress' ),
-							'id'      => 'learn_press_profile_endpoints[profile-order-details]',
+							'id'      => 'profile_endpoints[profile-order-details]',
 							'default' => '',
 							'type'    => 'text',
 							'std'     => 'order-details',
 							'desc'    => sprintf( __( 'Example link is %s', 'learnpress' ), '<code>[profile/admin/order-details/123]</code>' )
 						)
-					)
+					),
+					$this
 				),
 				apply_filters( 'learn-press/profile-settings-fields/avatar', array(
 						array(

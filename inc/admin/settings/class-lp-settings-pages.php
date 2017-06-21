@@ -16,20 +16,21 @@ class LP_Settings_Pages extends LP_Abstract_Settings_Page {
 			'become_a_teacher' => __( 'Become a teacher', 'learnpress' )
 		);
 
-		return $sections = apply_filters( 'learn_press_settings_sections_' . $this->id, $sections );
+		return apply_filters( 'learn-press/admin/settings-pages/sections', $sections, $this );
 	}
 
 	public function get_settings_become_a_teacher() {
 		return apply_filters(
-			'learn_press_page_settings',
+			'learn-press/admin/settings-pages/become-a-teacher',
 			array(
 				array(
 					'title'   => __( 'Become a teacher page', 'learnpress' ),
-					'id'      => $this->get_field_name( 'become_a_teacher_page_id' ),
+					'id'      => 'become_a_teacher_page_id',
 					'default' => '',
 					'type'    => 'pages-dropdown'
 				),
-			)
+			),
+			$this
 		);
 	}
 

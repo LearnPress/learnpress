@@ -13,16 +13,17 @@
                 return $w1.find('.plugin-card').each(function () {
                     var $item = $(this),
                         itemText = $item.find('.item-title').text().toLowerCase(),
-                        itemDesc = $item.find('.column-description').text();
+                        itemDesc = $item.find('.column-description, .theme-description').text();
                     var found = function () {
                         var reg = new RegExp(keywords.join('|'), 'ig');
                         return itemText.match(reg) || itemDesc.match(reg)
                     }
                     if (keywords.length) {
                         if (found()) {
-                            $w2.append($item.clone());
+                            var $clone = $item.clone();
+                            $w2.append($clone);
                         }
-                    }else{
+                    } else {
                         $w2.append($item.clone());
                     }
                 });

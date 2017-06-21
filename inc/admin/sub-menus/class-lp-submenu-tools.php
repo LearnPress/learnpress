@@ -14,18 +14,19 @@ class LP_Submenu_Tools extends LP_Abstract_Submenu {
 		$this->page_title = __( 'LearnPress Tools', 'learnpress' );
 		$this->priority   = 40;
 
-		$this->tabs = array(
-			'database' => __( 'Database', 'learnpress' ),
-			'template' => __( 'Template', 'learnpress' )
+		$this->tabs = apply_filters( 'learn-press/admin/tools-tabs', array(
+				'database' => __( 'Database', 'learnpress' ),
+				'template' => __( 'Template', 'learnpress' )
+			)
 		);
 	}
 
-	public function page_content_database(){
-		learn_press_admin_view('tools/html-database');
+	public function page_content_database() {
+		learn_press_admin_view( 'tools/html-database' );
 	}
 
-	public function page_content_template(){
-		learn_press_admin_view('tools/html-template');
+	public function page_content_template() {
+		learn_press_admin_view( 'tools/html-template' );
 	}
 
 	/**

@@ -40,7 +40,8 @@
         }
         &.rwmb-text-wrapper{
             .rwmb-text{
-                width: 80%;
+                width: 50%;
+                min-width: 200px;
             }
         }
     }

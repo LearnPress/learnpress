@@ -24,8 +24,9 @@
 
 			<div class="theme-description">
 				<?php
-				$description = $theme['description'];
-				$description = preg_replace( "/<(.*?)>/", '', $description );
+				$description = preg_replace('~[\r\n]+~', '',  $theme['description']);
+				$description = preg_replace('~\s+~', ' ',  $description);
+				//$description = preg_replace( "/<(.*?)>/", '', $description );
 				echo wp_kses_post( $description );
 
 				?>

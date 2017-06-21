@@ -1,3 +1,4 @@
+
 <?php
 /**
  * @author  ThimPress
@@ -19,7 +20,13 @@ if ( ! class_exists( 'RWMB_Pages_Dropdown_Field' ) ) {
 		 * @return string
 		 */
 		static function html( $meta, $field = '' ) {
-			return learn_press_pages_dropdown( '', '', array( 'echo' => false ) );
+			$args = array(
+				'echo'     => false,
+				'name'     => $field['id'],
+				'selected' => $field['default']
+			);
+
+			return learn_press_pages_dropdown( $args );
 		}
 	}
 }

@@ -52,6 +52,7 @@ if ( $tp_plugins ) {
                         <ul class="plugin-action-buttons">
                             <li>
                                 <a class="button"
+                                   target="_blank"
                                    href="<?php echo esc_url( $add_on['permarklink'] ); ?>"><?php echo __( 'Buy Now', 'learnpress' ) ?></a>
                             </li>
                             <li>
@@ -78,7 +79,7 @@ if ( $tp_plugins ) {
                         </ul>
                     </div>
                     <div class="desc column-description">
-                        <p><?php echo $add_on['short_description']; ?></p>
+                        <p><?php echo strip_tags( $add_on['short_description'] ); ?></p>
 
                         <p class="authors"><?php printf( __( '<cite>By %s</cite>', 'learnpress' ), $add_on['author'] ); ?></p>
                     </div>

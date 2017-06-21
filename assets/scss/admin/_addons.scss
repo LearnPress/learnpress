@@ -30,10 +30,12 @@
             }
         }
         .plugin-card h3 {
-            min-height: 70px;
+            @include text-overflow(1.6em, 3);
+            height: 4.8em;
         }
         .plugin-card .desc {
-            min-height: 130px;
+            min-height: 90px;
+            margin-right: 0;
         }
         .plugin-card {
             .install-now:before,
@@ -80,15 +82,19 @@
             .button-working span {
                 display: none;
             }
-            .column-description{
-                p:not(.authors){
+            .column-description {
+                p:not(.authors) {
                     @include text-overflow();
+                    color: #777;
                 }
+            }
+            .search-highlight{
+                text-decoration: underline;
             }
         }
         &.premium {
             .column-description {
-                p {
+                p:not(.authors) {
                     margin: 0;
                     line-height: inherit;
                 }
@@ -112,6 +118,8 @@
     }
     .theme-description {
         margin: 0 0 25px 0;
+        @include text-overflow(1.6em, 5);
+        color: #777;
     }
     .theme-title {
         margin-right: 100px;

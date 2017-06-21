@@ -122,6 +122,11 @@ function learn_press_pages_dropdown( $name, $selected = false, $args = array() )
 	$after        = null;
 	$echo         = true;
 	$allow_create = true;
+
+	if ( func_num_args() == 1 && is_array( $name ) ) {
+		$args = $name;
+	}
+
 	is_array( $args ) && extract( $args );
 
 	if ( empty( $id ) ) {
@@ -383,13 +388,15 @@ function learn_press_footer_advertisement() {
 	);
 
 	// And our admin pages
-	$pages  = array(
+	$pages = array(
 		'learnpress_page_learn-press-statistics',
 		'learnpress_page_learn-press-settings',
 		'learnpress_page_learn-press-tools'
 
 	);
-	$screen = get_current_screen();
+	if ( ! $screen = get_current_screen() ) {
+		return;
+	}
 	if ( ! ( ( in_array( $screen->post_type, $admin_post_type ) && $screen->base === 'edit' ) || ( in_array( $screen->id, $pages ) ) ) ) {
 		return;
 	}
