@@ -151,7 +151,7 @@ class LP_Meta_Box_Helper {
 	}
 
 	public static function wrapper_html( $begin, $field, $meta ) {
-		return $begin . '<input type="hidden" class="rwmb-field-name" value="' . self::sanitize_name( $field['id'] ) . '" />';
+		return $begin . '<input type="hidden" class="rwmb-field-name" value="' . self::sanitize_name( $field['id'] ) . '" /><div class="field-overlay"></div>';
 	}
 
 	public static function output_data() {

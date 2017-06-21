@@ -725,6 +725,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				);
 
 			}
+			$conditional['conditional'][0]['compare'] = '!=';
 			$meta_box['fields'] = array_merge(
 				$meta_box['fields'],
 				array(
@@ -734,7 +735,8 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'type'  => 'yes_no',
 						'desc'  => __( 'Require users logged in to study or public to all.', 'learnpress' ),
 						'std'   => 'yes',
-						'class' => 'lp-course-required-enroll' . ( ( $payment == 'yes' ) ? ' hide-if-js' : '' )
+						'class' => 'lp-course-required-enroll' . ( ( $payment == 'yes' ) ? ' hide-if-js' : '' ),
+						'visibility' => $conditional
 					)
 				)
 			);
