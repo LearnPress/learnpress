@@ -31,7 +31,24 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			add_action( 'edit_form_after_editor', array( $this, 'wrapper_start' ), - 1000 );
 			add_action( 'edit_form_after_editor', array( $this, 'wrapper_end' ), 1000 );
 			add_action( 'admin_head', array( $this, 'admin_colors' ) );
+			add_filter( 'admin_body_class', array( $this, 'body_class' ) );
+		}
 
+		public function body_class( $classes ) {
+			$post_type = get_post_type();
+			if ( preg_match( '~^lp_~', $post_type ) ) {
+				if ( $classes ) {
+					$classes = explode( ' ', $classes );
+				} else {
+					$classes = array();
+				}
+				$classes[] = 'learnpress';
+				$classes   = array_filter( $classes );
+				$classes   = array_unique( $classes );
+				$classes   = join( ' ', $classes );
+			}
+
+			return $classes;
 		}
 
 		public function admin_colors() {

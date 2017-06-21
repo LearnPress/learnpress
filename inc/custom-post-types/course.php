@@ -613,7 +613,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					array(
 						'name'  => __( 'Course payment', 'learnpress' ),
 						'id'    => "{$prefix}payment",
-						'type'  => 'yes_no',
+						'type'  => 'yes-no',
 						'desc'  => __( '', 'learnpress' ),
 						'std'   => 'no',
 						'class' => 'lp-course-payment-field'
@@ -652,6 +652,16 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						$message = __( 'This course is free.', 'learnpress' );
 					};
 				}
+				$conditional = array(
+					'state'       => 'show',
+					'conditional' => array(
+						array(
+							'field'   => "{$prefix}payment",
+							'compare' => '=',
+							'value'   => 'yes'
+						)
+					)
+				);
 				array_push(
 					$meta_box['fields'],
 					array(
@@ -662,24 +672,27 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'step'  => 0.01,
 						'desc'  => $message,
 						'std'   => $price,
-						'class' => 'lp-course-price-field' . ( $payment != 'yes' ? ' hide-if-js' : '' )
+						'visibility' => $conditional
+						//'class' => 'lp-course-price-field' . ( $payment != 'yes' ? ' hide-if-js' : '' )
 					),
 					array(
-						'name'  => __( 'Sale Price', 'learnpress' ),
-						'id'    => "{$prefix}sale_price",
-						'type'  => 'number',
-						'min'   => 0,
-						'step'  => 0.01,
-						'desc'  => sprintf( '<p class="description">%s</p>', __( 'Leave blank to remove sale price.', 'learnpress' ) ) . '<a href="#" id="' . $prefix . 'sale_price_schedule">' . __( 'Schedule', 'learnpress' ) . '</a>',
-						'std'   => $sale_price,
-						'class' => 'lp-course-price-field lp-course-sale_price-field' . ( $payment != 'yes' ? ' hide-if-js' : '' )
+						'name'       => __( 'Sale Price', 'learnpress' ),
+						'id'         => "{$prefix}sale_price",
+						'type'       => 'number',
+						'min'        => 0,
+						'step'       => 0.01,
+						'desc'       => sprintf( '<p class="description">%s</p>', __( 'Leave blank to remove sale price.', 'learnpress' ) ) . '<a href="#" id="' . $prefix . 'sale_price_schedule">' . __( 'Schedule', 'learnpress' ) . '</a>',
+						'std'        => $sale_price,
+						//'class'      => 'lp-course-price-field lp-course-sale_price-field' . ( $payment != 'yes' ? ' hide-if-js' : '' ),
+						'visibility' => $conditional
 					),
 					array(
 						'name'  => __( 'Sale start date', 'learnpress' ),
 						'id'    => "{$prefix}sale_start",
 						'type'  => 'datetime',
 						'std'   => $start_date,
-						'class' => 'lp-course-sale_start-field hide'
+						'class' => 'lp-course-sale_start-field hide',
+						'visibility' => $conditional
 					),
 					array(
 						'name'  => __( 'Sale end date', 'learnpress' ),
@@ -687,7 +700,8 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'type'  => 'datetime',
 						'desc'  => '<a href="#" id="' . $prefix . 'sale_price_schedule_cancel">' . __( 'Cancel', 'learnpress' ) . '</a>',
 						'std'   => $end_date,
-						'class' => 'lp-course-sale_end-field hide'
+						'class' => 'lp-course-sale_end-field hide',
+						'visibility' => $conditional
 					)
 				);
 			} else {

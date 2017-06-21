@@ -136,9 +136,18 @@ class LP_Meta_Box_Helper {
 
 	public static function init() {
 		//add_action( 'admin_enqueue_scripts', array( __CLASS__, 'enqueue_assets' ) );
+		add_action( 'rwmb_before', array( __CLASS__, 'prepare_fields' ) );
 		add_filter( 'rwmb_wrapper_html', array( __CLASS__, 'wrapper_html' ), 10, 3 );
 
 		add_action( 'admin_footer', array( __CLASS__, 'output_data' ) );
+	}
+
+	public static function prepare_fields( $box ) {
+		if ( $fields = $box->fields ) {
+			foreach ( $fields as $field ) {
+				self::parse_conditional_logic( $field );
+			}
+		}
 	}
 
 	public static function wrapper_html( $begin, $field, $meta ) {
