@@ -32,7 +32,7 @@ class LP_Settings_General extends LP_Abstract_Settings_Page {
 				/*array(
 					'title'   => __( 'Instructors registration', 'learnpress' ),
 					'desc'    => __( 'Create option for instructors registration.', 'learnpress' ),
-					'id'      => $this->get_field_name( 'instructor_registration' ),
+					'id' => 'instructor_registration',
 					'default' => 'no',
 					'type'    => 'checkbox'
 				),*/
@@ -43,33 +43,33 @@ class LP_Settings_General extends LP_Abstract_Settings_Page {
 				),
 				array(
 					'title'   => __( 'Currency', 'learnpress' ),
-					'id'      => $this->get_field_name( 'currency' ),
+					'id' => 'currency',
 					'default' => 'USD',
 					'type'    => 'select',
 					'options' => $this->_get_currency_options()
 				),
 				array(
 					'title'   => __( 'Currency position', 'learnpress' ),
-					'id'      => $this->get_field_name( 'currency_pos' ),
+					'id' => 'currency_pos',
 					'default' => 'left',
 					'type'    => 'select',
 					'options' => $this->_get_currency_positions()
 				),
 				array(
 					'title'   => __( 'Thousands Separator', 'learnpress' ),
-					'id'      => $this->get_field_name( 'thousands_separator' ),
+					'id' => 'thousands_separator',
 					'default' => ',',
 					'type'    => 'text'
 				),
 				array(
 					'title'   => __( 'Decimals Separator', 'learnpress' ),
-					'id'      => $this->get_field_name( 'decimals_separator' ),
+					'id' => 'decimals_separator',
 					'default' => '.',
 					'type'    => 'text'
 				),
 				array(
 					'title'   => __( 'Number of Decimals', 'learnpress' ),
-					'id'      => $this->get_field_name( 'number_of_decimals' ),
+					'id' => 'number_of_decimals',
 					'default' => '2',
 					'type'    => 'number'
 				)/*,
@@ -79,7 +79,7 @@ class LP_Settings_General extends LP_Abstract_Settings_Page {
 				),
 				array(
 					'title'   => __( 'Redirect to page', 'learnpress' ),
-					'id'      => $this->get_field_name( 'logout_redirect_page_id' ),
+					'id' => 'logout_redirect_page_id',
 					'default' => '',
 					'type'    => 'pages-dropdown'
 				),*/

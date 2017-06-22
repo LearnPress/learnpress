@@ -1,9 +1,13 @@
+#wpfooter{
+    z-index: 20;
+}
 .learn-press-advertisement-slider {
     margin: 0px 20px 0px 180px;
     position: relative;
     overflow: hidden;
     box-sizing: border-box;
     padding-bottom: 50px;
+    z-index: 10;
     .slider-items {
         &:after {
             @include clear-fix();

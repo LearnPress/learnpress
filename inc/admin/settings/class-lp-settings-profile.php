@@ -39,19 +39,19 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 						),
 						array(
 							'title'   => __( 'Profile page', 'learnpress' ),
-							'id'      => $this->get_field_name( 'profile_page_id' ),
+							'id'      => 'profile_page_id',
 							'default' => '',
 							'type'    => 'pages-dropdown'
 						),
 						array(
 							'title'   => __( 'Add link to admin bar', 'learnpress' ),
-							'id'      => $this->get_field_name( 'admin_bar_link' ),
+							'id'      => 'admin_bar_link',
 							'default' => 'yes',
 							'type'    => 'yes-no'
 						),
 						array(
 							'title'       => __( 'Text link', 'learnpress' ),
-							'id'          => $this->get_field_name( 'admin_bar_link_text' ),
+							'id'          => 'admin_bar_link_text',
 							'default'     => '',
 							'type'        => 'text',
 							'placeholder' => __( 'Default: View Course Profile', 'learnpress' ),
@@ -59,7 +59,7 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 								'state'       => 'show',
 								'conditional' => array(
 									array(
-										'field'   => $this->get_field_name( 'admin_bar_link' ),
+										'field'   => 'admin_bar_link',
 										'compare' => '=',
 										'value'   => 'yes'
 									)
@@ -68,7 +68,7 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 						),
 						array(
 							'title'      => __( 'Target link', 'learnpress' ),
-							'id'         => $this->get_field_name( 'admin_bar_link_target' ),
+							'id'         => 'admin_bar_link_target',
 							'default'    => 'yes',
 							'type'       => 'select',
 							'options'    => array(
@@ -79,7 +79,7 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 								'state'       => 'show',
 								'conditional' => array(
 									array(
-										'field'   => $this->get_field_name( 'admin_bar_link' ),
+										'field'   => 'admin_bar_link',
 										'compare' => '=',
 										'value'   => 'yes'
 									)
@@ -88,14 +88,14 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 						),
 						array(
 							'title'   => __( 'Courses limit', 'learnpress' ),
-							'id'      => $this->get_field_name( 'profile_courses_limit' ),
+							'id'      => 'profile_courses_limit',
 							'default' => '10',
 							'type'    => 'number',
 							'min'     => 1
 						),
 						array(
 							'title'   => __( 'Logout redirect', 'learnpress' ),
-							'id'      => $this->get_field_name( 'logout_redirect_page_id' ),
+							'id'      => 'logout_redirect_page_id',
 							'default' => '',
 							'type'    => 'pages-dropdown',
 							'desc'    => __( 'The page where user will be redirected to after logging out.', 'learnpress' )
@@ -152,20 +152,20 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 						),
 						array(
 							'title'   => __( 'Enable custom avatar', 'learnpress' ),
-							'id'      => $this->get_field_name( 'profile_avatar' ),
+							'id'      => 'profile_avatar',
 							'default' => 'yes',
 							'type'    => 'yes-no'
 						),
 						array(
 							'title'      => __( 'Size', 'learnpress' ),
-							'id'         => $this->get_field_name( 'profile_picture_thumbnail_size' ),
+							'id'         => 'profile_picture_thumbnail_size',
 							'default'    => '',
 							'type'       => 'image-dimensions',
 							'visibility' => array(
 								'state'       => 'show',
 								'conditional' => array(
 									array(
-										'field'   => $this->get_field_name( 'profile_avatar' ),
+										'field'   => 'profile_avatar',
 										'compare' => '=',
 										'value'   => 'yes'
 									)

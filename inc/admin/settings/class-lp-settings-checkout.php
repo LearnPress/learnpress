@@ -51,13 +51,13 @@ class LP_Settings_Checkout extends LP_Abstract_Settings_Page {
 				array(
 					'title'   => __( 'Auto enroll', 'learnpress' ),
 					'desc'    => __( 'Auto enroll a user after they buy a course.', 'learnpress' ),
-					'id'      => $this->get_field_name( 'auto_enroll' ),
+					'id' => 'auto_enroll',
 					'default' => 'yes',
 					'type'    => 'checkbox'
 				),
 				array(
 					'title'   => __( 'Checkout page', 'learnpress' ),
-					'id'      => $this->get_field_name( 'checkout_page_id' ),
+					'id' => 'checkout_page_id',
 					'default' => '',
 					'type'    => 'pages-dropdown'
 				),
@@ -67,7 +67,7 @@ class LP_Settings_Checkout extends LP_Abstract_Settings_Page {
 				),
 				array(
 					'title'   => __( 'Order received', 'learnpress' ),
-					'id'      => $this->get_field_name( 'checkout_endpoints[lp_order_received]' ),
+					'id' => 'checkout_endpoints[lp_order_received]',
 					'default' => 'lp-order-received',
 					'type'    => 'text'
 				),

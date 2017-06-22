@@ -43,20 +43,20 @@ class LP_Settings_Assets extends LP_Abstract_Settings_Page {
 			array(
 				array(
 					'title'   => __( 'Profile page', 'learnpress' ),
-					'id'      => $this->get_field_name( 'profile_page_id' ),
+					'id' => 'profile_page_id',
 					'default' => '',
 					'type'    => 'pages-dropdown'
 				),
 				array(
 					'title'   => __( 'Load css', 'learnpress' ),
-					'id'      => $this->get_field_name( 'load_css' ),
+					'id' => 'load_css',
 					'default' => 'yes',
 					'type'    => 'checkbox',
 					'desc'    => __( 'Load default stylesheet for LearnPress', 'learnpress' )
 				),
 				array(
 					'title'   => __( 'Debug mode', 'learnpress' ),
-					'id'      => $this->get_field_name( 'debug' ),
+					'id' => 'debug',
 					'default' => 'yes',
 					'type'    => 'checkbox',
 					'desc'    => __( 'Turn on/off debug mode for developer', 'learnpress' )

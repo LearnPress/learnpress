@@ -93,20 +93,20 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 					array(
 						array(
 							'title'   => __( 'Checkout page', 'learnpress' ),
-							'id'      => $this->get_field_name( 'checkout_page_id' ),
+							'id' => 'checkout_page_id',
 							'default' => '',
 							'type'    => 'pages-dropdown'
 						),
 						array(
 							'title'   => __( 'Auto enroll', 'learnpress' ),
-							'id'      => $this->get_field_name( 'auto_enroll' ),
+							'id' => 'auto_enroll',
 							'default' => 'yes',
 							'type'    => 'yes-no',
 							'desc'    => __( 'Auto enroll a user after they buying a course.', 'learnpress' )
 						),
 						array(
 							'title'   => __( 'Enable guest checkout', 'learnpress' ),
-							'id'      => $this->get_field_name( 'guest_checkout' ),
+							'id' => 'guest_checkout',
 							'default' => 'yes',
 							'type'    => 'yes-no',
 							'desc'    => __( 'Auto enroll a user after they buying a course.', 'learnpress' )
@@ -123,7 +123,7 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 						),
 						array(
 							'title'   => __( 'Order received', 'learnpress' ),
-							'id'      => $this->get_field_name( 'checkout_endpoints[order_received]' ),
+							'id' => 'checkout_endpoints[order_received]',
 							'default' => '',
 							'type'    => 'text'
 						)
@@ -138,7 +138,7 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 					),
 					array(
 						'title'   => __( 'Payment order', 'learnpress' ),
-						'id'      => $this->get_field_name( 'payment_order' ),
+						'id' => 'payment_order',
 						'default' => '',
 						'type'    => 'payment-order'
 					)

@@ -68,20 +68,20 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 						array(
 							'title'   => __( 'Review course before publish', 'learnpress' ),
 							'desc'    => __( 'The course needs to be reviewed by admin before it can be published.', 'learnpress' ),
-							'id'      => $this->get_field_name( 'required_review' ),
+							'id' => 'required_review',
 							'default' => 'yes',
 							'type'    => 'yes-no'
 						),
 						array(
 							'title'      => __( 'Enable edit published course', 'learnpress' ),
 							'desc'       => __( 'Allow instructors to edit the course that are published without review.<br /> If this option is disabled, the course status will be changed to Pending Review when the instructor update course.', 'learnpress' ),
-							'id'         => $this->get_field_name( 'enable_edit_published' ),
+							'id' => 'enable_edit_published',
 							'default'    => 'yes',
 							'type'       => 'yes-no',
 							'visibility' => array(
 								'state'          => 'show',
 								'conditional'    => array(
-									'field'   => $this->get_field_name( 'required_review' ),
+									'field' => 'required_review',
 									'compare' => '=',
 									'value'   => 'yes'
 								)
@@ -98,14 +98,14 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 						),
 						array(
 							'title'   => __( 'Courses Page', 'learnpress' ),
-							'id'      => $this->get_field_name( 'courses_page_id' ),
+							'id' => 'courses_page_id',
 							'default' => '',
 							'type'    => 'pages-dropdown'
 						),
 						array(
 							'title'             => __( 'Courses limit', 'learnpress' ),
 							'desc'              => __( 'Number of courses displayed per page.', 'learnpress' ),
-							'id'                => $this->get_field_name( 'archive_course_limit' ),
+							'id' => 'archive_course_limit',
 							'default'           => '10',
 							'type'              => 'number',
 							'custom_attributes' => array(
@@ -128,27 +128,27 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 						),
 						array(
 							'title'   => __( 'Course category base', 'learnpress' ),
-							'id'      => $this->get_field_name( 'course_category_base' ),
+							'id' => 'course_category_base',
 							'default' => 'course-category',
 							'type'    => 'text'
 						),
 						array(
 							'title'   => __( 'Course tag base', 'learnpress' ),
-							'id'      => $this->get_field_name( 'course_tag_base' ),
+							'id' => 'course_tag_base',
 							'default' => 'course-tag',
 							'type'    => 'text'
 						),
 						array(
 							'title'   => __( 'Lesson', 'learnpress' ),
 							'type'    => 'text',
-							'id'      => $this->get_field_name( 'lesson_slug' ),
+							'id' => 'lesson_slug',
 							'desc'    => __( sprintf( '%s/course/sample-course/<code>lessons</code>/sample-lesson/', home_url() ), 'learnpress' ),
 							'default' => 'lessons'
 						),
 						array(
 							'title'   => __( 'Quiz', 'learnpress' ),
 							'type'    => 'text',
-							'id'      => $this->get_field_name( 'quiz_slug' ),
+							'id' => 'quiz_slug',
 							'desc'    => __( sprintf( '%s/course/sample-course/<code>quizzes</code>/sample-lesson/', home_url() ), 'learnpress' ),
 							'default' => 'quizzes'
 						)
@@ -163,21 +163,21 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 						),
 						array(
 							'title'   => __( 'Single course', 'learnpress' ),
-							'id'      => $this->get_field_name( 'generate_course_thumbnail' ),
+							'id' => 'generate_course_thumbnail',
 							'default' => 'yes',
 							'type'    => 'yes-no',
 							'desc'    => __( 'Turn on/off courses extra thumbnail', 'learnpress' ),
 						),
 						array(
 							'title'      => __( 'Thumbnail dimensions', 'learnpress' ),
-							'id'         => $this->get_field_name( 'single_course_image_size' ),
+							'id' => 'single_course_image_size',
 							'default'    => array( 800, 450, 'yes' ),
 							'type'       => 'image-dimensions',
 							'visibility' => array(
 								'state'       => 'show',
 
 								'conditional' => array(
-									'field'   => $this->get_field_name( 'generate_course_thumbnail' ),
+									'field' => 'generate_course_thumbnail',
 									'compare' => '=',
 									'value'   => 'yes'
 								)
@@ -185,14 +185,14 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 						),
 						array(
 							'title'   => __( 'Archive course', 'learnpress' ),
-							'id'      => $this->get_field_name( 'archive_course_thumbnail' ),
+							'id' => 'archive_course_thumbnail',
 							'default' => 'yes',
 							'type'    => 'yes-no',
 							'desc'    => __( 'Turn on/off courses extra thumbnail', 'learnpress' ),
 						),
 						array(
 							'title'      => __( 'Thumbnail dimensions', 'learnpress' ),
-							'id'         => $this->get_field_name( 'course_thumbnail_image_size' ),
+							'id' => 'course_thumbnail_image_size',
 							'default'    => array( 400, 250, 'yes' ),
 							'type'       => 'image-dimensions',
 							'visibility' => array(
@@ -200,7 +200,7 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 
 								'conditional' => array(
 									array(
-										'field'   => $this->get_field_name( 'archive_course_thumbnail' ),
+										'field' => 'archive_course_thumbnail',
 										'compare' => '=',
 										'value'   => 'yes'
 									)
@@ -217,7 +217,7 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 		/*array(
 			'title'   => __( 'Show list of question in quiz', 'learnpress' ),
 			'desc'    => __( 'Show/Hide list questions in quiz.', 'learnpress' ),
-			'id'      => $this->get_field_name( 'disable_question_in_quiz' ),
+			'id' => 'disable_question_in_quiz',
 			'default' => 'yes',
 			'type'    => 'checkbox'
 		),*/
@@ -226,14 +226,14 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 		array(
 			'title'   => __( 'Auto redirect next lesson', 'learnpress' ),
 			'desc'    => __( 'Redirect to the next lesson after completed the lesson', 'learnpress' ),
-			'id'      => $this->get_field_name( 'auto_redirect_next_lesson' ),
+			'id' => 'auto_redirect_next_lesson',
 			'default' => 'no',
 			'type'    => 'checkbox'
 		),
 		array(
 			'title'             => __( 'Time delay redirect', 'learnpress' ),
 			'desc'              => __( 'The item will be redirected after certain amount of time, unit: seconds (s)', 'learnpress' ),
-			'id'                => $this->get_field_name( 'auto_redirect_time' ),
+			'id' => 'auto_redirect_time',
 			'default'           => '3',
 			'type'              => 'number',
 			'custom_attributes' => array(
@@ -243,7 +243,7 @@ class LP_Settings_Courses extends LP_Abstract_Settings_Page {
 		array(
 			'title'   => __( 'Auto redirect message ', 'learnpress' ),
 			'desc'    => '',
-			'id'      => $this->get_field_name( 'auto_redirect_message' ),
+			'id' => 'auto_redirect_message',
 			'default' => 'Redirecting to the next item ... ',
 			'type'    => 'text'
 		),*/

@@ -1,4 +1,3 @@
-
 <?php
 /**
  * @author  ThimPress
@@ -23,9 +22,8 @@ if ( ! class_exists( 'RWMB_Pages_Dropdown_Field' ) ) {
 			$args = array(
 				'echo'     => false,
 				'name'     => $field['id'],
-				'selected' => $field['default']
+				'selected' => $field['std']
 			);
-
 			return learn_press_pages_dropdown( $args );
 		}
 	}

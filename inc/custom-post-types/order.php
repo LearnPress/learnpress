@@ -475,15 +475,15 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 					}
 					break;
 				case 'order_status' :
-//					echo learn_press_get_order_status_label( $post->ID );
-                    echo '<select name="order-status" data-status="lp-' . $the_order->get_status() .'">';
-
+                    /*echo '<select name="order-status" data-status="lp-' . $the_order->get_status() .'">';
                         $statuses = learn_press_get_order_statuses();
                         foreach ( $statuses as $status => $status_name ) {
                             echo '<option data-desc="' . esc_attr( _learn_press_get_order_status_description( $status ) ) . '" value="' .  esc_attr( $status ) . '" ' . selected( $status, 'lp-' . $the_order->get_status(), false ) . '>' . esc_html( $status_name ) . '</option>';
                         }
 
-                    echo '</select>';
+                    echo '</select>';*/
+
+                        echo sprintf( '<span class="%s">%s</span>', $the_order->get_status(), '' );
 					break;
 				case 'order_date' :
 
@@ -521,14 +521,6 @@ if ( !class_exists( 'LP_Order_Post_Type' ) ) {
 						</div>
 						<?php
 					}
-					break;
-				case 'order_titlexx' :
-					$order_number = sprintf( "%'.010d", $the_order->ID );
-					?>
-					<div class="tips">
-						<a href="post.php?post=<?php echo $the_order->ID ?>&action=edit"><strong><?php echo learn_press_transaction_order_number( $order_number ); ?></strong></a>
-					</div>
-					<?php
 					break;
 			}
 		}
