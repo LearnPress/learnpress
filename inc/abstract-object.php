@@ -16,6 +16,11 @@ class LP_Abstract_Object {
 	protected $_data = array();
 
 	/**
+	 * @var array
+	 */
+	protected $_extra_data = array();
+
+	/**
 	 *
 	 * @var bool
 	 */

@@ -1,0 +1,57 @@
+/**
+ * Order
+ */
+.post-type-lp_order {
+    .wp-list-table {
+        .column-order_status {
+            width: 100px;
+        }
+        .order_status {
+            span {
+                display: inline-block;
+                width: 18px;
+                height: 18px;
+                &:after {
+                    font-family: dashicons;
+                    display: inline-block;
+                    font-size: 20px;
+                    border-radius: 50%;
+                    color: #FFF;
+                    text-align: center;
+                    line-height: 20px;
+                    width: 18px;
+                    height: 18px;
+                }
+                &.completed:after {
+                    content: "\f147";
+                    background: $primary-color;
+                    font-size: 18px;
+                }
+                &.processing:after {
+                    content: "\f321";
+                    color: #563F7A;
+                    background: transparent;
+                }
+                &.pending:after {
+                    content: "\f534";
+                    color: #AAA;
+                    background: transparent;
+                }
+                &.cancelled:after {
+                    content: "\f153";
+                    color: #FF0000;
+                }
+                &.draft:after {
+                    content: "\f223";
+                    color: #69b391;
+                    background: transparent;
+                }
+            }
+        }
+        .column-title,
+        .column-order_total,
+        .column-order_date {
+            width: 150px;
+        }
+    }
+}

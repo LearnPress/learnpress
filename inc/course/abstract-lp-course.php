@@ -53,30 +53,21 @@ abstract class LP_Abstract_Course {
 	/**
 	 * Constructor gets the post object and sets the ID for the loaded course.
 	 *
-	 * @param int|LP_Course|object $course Course ID, post object, or course object
-	 * @param int                  $user
+	 * @param mixed $the_course Course ID, post object, or course object
+	 * @param mixed $deprecated Deprecated
 	 */
-	public function __construct( $course, $user = 0 ) {
-		if ( is_numeric( $course ) ) {
-			$this->id   = absint( $course );
-			$this->post = get_post( $this->id );
-		} elseif ( $course instanceof LP_Course ) {
-			$this->id   = absint( $course->id );
-			$this->post = $course->post;
-		} elseif ( isset( $course->ID ) ) {
-			$this->id   = absint( $course->ID );
-			$this->post = get_post( $course->ID );
+	public function __construct( $the_course, $deprecated = '' ) {
+		if ( is_numeric( $the_course ) && $the_course > 0 ) {
+			$this->set_id( $the_course );
+		} elseif ( $the_course instanceof self ) {
+			$this->set_id( absint( $the_course->get_id() ) );
+		} elseif ( ! empty( $the_course->ID ) ) {
+			$this->set_id( absint( $the_course->ID ) );
 		}
-		if ( empty( self::$_lessons[ $this->id ] ) ) {
-			self::$_lessons[ $this->id ] = array();
-		}
-		if ( $user ) {
-			$this->init_for_user( $user );
-		}
-	}
 
-	public function init_for_user() {
-
+		if ( $this->get_id() > 0 ) {
+			$this->load();
+		}
 	}
 
 	/**
@@ -1052,8 +1043,9 @@ abstract class LP_Abstract_Course {
 		);
 		if ( $next_item = $this->get_next_item( $args ) ) {
 			ob_start();
-			learn_press_get_template( 'content-lesson/next-button.php', array( 'item'   => $next_item,
-			                                                                   'course' => $this
+			learn_press_get_template( 'content-lesson/next-button.php', array(
+				'item'   => $next_item,
+				'course' => $this
 			) );
 
 			return ob_get_clean();
@@ -1073,8 +1065,9 @@ abstract class LP_Abstract_Course {
 		);
 		if ( $next_item = $this->get_next_item( $args ) ) {
 			ob_start();
-			learn_press_get_template( 'content-lesson/prev-button.php', array( 'item'   => $next_item,
-			                                                                   'course' => $this
+			learn_press_get_template( 'content-lesson/prev-button.php', array(
+				'item'   => $next_item,
+				'course' => $this
 			) );
 
 			return ob_get_clean();

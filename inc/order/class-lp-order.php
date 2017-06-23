@@ -12,27 +12,70 @@ defined( 'ABSPATH' ) || exit();
 
 class LP_Order extends LP_Abstract_Object {
 
-	/**
-	 * Store post object
-	 *
-	 * @var null|WP_Post object
-	 */
-	public $post = null;
-
+	protected $_data = array(
+		'order_date'       => '',
+		'modified_date'    => '',
+		'customer_message' => '',
+		'customer_note'    => '',
+		'status'           => ''
+	);
 
 	/**
 	 * @param mixed $order_id
 	 */
 	public function __construct( $order_id = false ) {
 		parent::__construct();
-		$this->init( $order_id );
+		if ( is_numeric( $order_id ) && $order_id > 0 ) {
+			$this->set_id( $order_id );
+		} elseif ( $order_id instanceof self ) {
+			$this->set_id( absint( $order_id->get_id() ) );
+		} elseif ( ! empty( $order_id->ID ) ) {
+			$this->set_id( absint( $order_id->ID ) );
+		}
+
+		if ( $this->get_id() > 0 ) {
+			$this->load();
+		}
 	}
 
+	/**
+	 * Load the order data.
+	 * Check if the id is not zero but it's post type does not exists.
+	 *
+	 * @throws Exception
+	 */
+	public function load() {
+		$the_id = $this->get_id();
+		if ( ! $the_id || LP_ORDER_CPT !== get_post_type( $the_id ) ) {
+			if ( learn_press_is_debug() ) {
+				throw new Exception( sprintf( __( 'Invalid order with ID "%d".', 'learnpress' ), $the_id ) );
+			}
+		}
+		if ( $post = get_post( $the_id ) ) {
+			$this->set_data(
+				array(
+					'order_date'       => $post->post_date,
+					'modified_date'    => $post->post_modified,
+					'customer_message' => $post->post_excerpt,
+					'customer_note'    => $post->post_excerpt,
+					'post_status'      => $post->post_status
+				)
+			);
+		}
+	}
+
+	/**
+	 * Magic function for getting object property dynamic.
+	 *
+	 * @param string $prop
+	 *
+	 * @return int|mixed|null
+	 * @deprecated
+	 */
 	public function __get( $prop ) {
 		if ( $prop == 'post' ) {
 			die( '$post is deprecated' );
 		} elseif ( $prop == 'id' ) {
-			//_deprecated_argument( __CLASS__, '3.0', 'get_id()' );
 			return $this->get_id();
 		}
 		$value = null;
@@ -44,61 +87,33 @@ class LP_Order extends LP_Abstract_Object {
 	}
 
 	/**
-	 * Init/load the order object. Called from the constructor.
-	 *
-	 * @param  int|object|LP_Order $order Order to init
-	 */
-	protected function init( $order ) {
-
-	}
-
-	/**
-	 * Get order by it's ID
-	 *
-	 * @param $id
-	 *
-	 * @return bool
-	 */
-	public function get_order( $id ) {
-		if ( ! $id ) {
-			return false;
-		}
-
-		if ( $result = get_post( $id ) ) {
-
-			$this->id               = $result->ID;
-			$this->order_date       = $result->post_date;
-			$this->modified_date    = $result->post_modified;
-			$this->customer_message = $result->post_excerpt;
-			$this->customer_note    = $result->post_excerpt;
-			$this->post_status      = $result->post_status;
-
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
 	 * Get current status of order
 	 *
 	 * @return mixed
 	 */
 	public function get_status() {
-		$status = get_post_status( $this->get_id() );
-		return apply_filters( 'learn_press_order_status', 'lp-' === substr( $status, 0, 3 ) ? substr( $status, 3 ) : $status, $this );
-		//return apply_filters( 'lp_order_get_status', 'lp-' === substr( $status, 0, 3 ) ? substr( $status, 3 ) : $status, $this );
+		$the_id      = $this->get_id();
+		$post_status = get_post_status( $the_id );
+		$status      = preg_replace( '~^lp-~', '', $post_status );
+
+		// Deprecated filter
+		$status = apply_filters( 'learn_press_order_status', $status, $this );
+
+		return apply_filters( 'learn-press/order-status', $status, $the_id );
 	}
 
 	/**
-	 * Checks to see if current order has status as passed
+	 * Checks to see if current order has status as passed.
 	 *
-	 * @param $status
+	 * @param string|array $status String or an array of statuses
 	 *
 	 * @return mixed
 	 */
 	public function has_status( $status ) {
-		return apply_filters( 'lp_order_has_status', ( is_array( $status ) && in_array( $this->get_status(), $status ) ) || $this->get_status() === $status ? true : false, $this, $status );
+		settype( $status, 'array' );
+		$has = in_array( $this->get_status(), $status );
+
+		return apply_filters( 'learn-press/has-order-status', $has, $status, $this->get_id() );
 	}
 
 	/**
@@ -111,44 +126,53 @@ class LP_Order extends LP_Abstract_Object {
 	 * @throws Exception
 	 */
 	public function update_status( $new_status = 'pending', $force = false ) {
-		global $post;
-		$new_status = 'lp-' === substr( $new_status, 0, 3 ) ? substr( $new_status, 3 ) : $new_status;
+		$new_status = preg_replace( '~^lp-~', '', $new_status );
 		$old_status = $this->get_status();
-
+		$the_id     = $this->get_id();
 		if ( ( ( $new_status !== $old_status ) || $force ) && in_array( $new_status, array_keys( learn_press_get_order_statuses( false ) ) ) ) {
-			// Update the order
+			// Update post's status using wpdb to preventing loop
 			global $wpdb;
 			$updated = $wpdb->update( $wpdb->posts, array( 'post_status' => 'lp-' . $new_status ), array( 'ID' => $this->id ), array( '%s' ) );
-
 			if ( $updated === false ) {
-				throw new Exception( __( 'Error! Update order failed', 'learnpress' ) );
+				if ( learn_press_is_debug() ) {
+					throw new Exception( __( 'Error! Update order status failed.', 'learnpress' ) );
+				}
 
 				return false;
 			}
-			$this->post_status       = 'lp-' . $new_status;
-			$this->post->post_status = 'lp-' . $new_status;
-			// update post cache
+
+			// Update post cache
+			$the_post              = get_post( $the_id );
+			$the_post->post_status = 'lp-' . $new_status;
 			wp_cache_set( $this->id, $this->post, 'posts' );
-			// Status was changed
-			do_action( 'learn_press_order_status_' . $new_status, $this->id );
-			do_action( 'learn_press_order_status_' . $old_status . '_to_' . $new_status, $this->id );
-			do_action( 'learn_press_order_status_changed', $this->id, $old_status, $new_status );
 
-			switch ( $new_status ) {
+			// Update order data
+			$this->set_data( 'status', 'lp-' . $new_status );
 
-				case 'completed' :
-
-					break;
-
-				case 'processing' :
-
-					break;
-			}
+			// Trigger actions after status was changed
+			do_action( 'learn_press_order_status_' . $new_status, $the_id );
+			do_action( 'learn_press_order_status_' . $old_status . '_to_' . $new_status, $the_id );
+			do_action( 'learn_press_order_status_changed', $the_id, $old_status, $new_status );
 			// backward compatible
-			do_action( 'learn_press_update_order_status', $new_status, $this->id );
+			do_action( 'learn_press_update_order_status', $new_status, $the_id );
+
+			// Trigger actions after status was changed
+			do_action( 'learn-press/order-status-' . $new_status, $the_id );
+			do_action( 'learn-press/order-status-' . $old_status . '-to-' . $new_status, $the_id );
+			do_action( 'learn-press/order-status-changed', $the_id, $old_status, $new_status );
+			// backward compatible
+			do_action( 'learn_press/update-order-status', $new_status, $the_id );
+
+			return true;
 		}
+
+		return false;
 	}
 
+	/**
+	 * 
+	 * @param $payment_method
+	 */
 	public function set_payment_method( $payment_method ) {
 		if ( is_object( $payment_method ) ) {
 			update_post_meta( $this->id, '_payment_method', $payment_method->id );
