@@ -117,7 +117,7 @@ class LP_Plugins_Helper {
 	 *
 	 * @return mixed
 	 */
-	function get_plugins_from_wp( $args = null ) {
+	public static function get_plugins_from_wp( $args = null ) {
 		// the number of plugins on each page queried,
 		// when we can reach to this figure?
 		$per_page = 20;
@@ -357,7 +357,7 @@ class LP_Plugins_Helper {
 	 *
 	 * @return string
 	 */
-	function get_add_on_icon( $icons ) {
+	public static function get_add_on_icon( $icons ) {
 		$icon = '';
 		if ( ! empty( $icons['2x'] ) ) {
 			$icon = $icons['2x'];
@@ -378,7 +378,7 @@ class LP_Plugins_Helper {
 	 *
 	 * @return array
 	 */
-	function get_add_on_icons( $plugin_data, $plugin_file ) {
+	public static function get_add_on_icons( $plugin_data, $plugin_file ) {
 		$plugin_path = ABSPATH . LP_WP_CONTENT . '/plugins/' . $plugin_file;
 		$icon_path   = dirname( $plugin_path ) . '/assets/images';
 		$icons       = array(
@@ -729,7 +729,7 @@ class LP_Plugins_Helper {
 	}
 
 
-	function require_plugins_api() {
+	public static function require_plugins_api() {
 		if ( ! function_exists( 'plugins_api' ) ) {
 			include_once( ABSPATH . 'wp-admin/includes/plugin-install.php' );
 		}

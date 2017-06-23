@@ -520,14 +520,24 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					break;
 				case 'order_items' :
 					$links = array();
-					foreach ( $the_order->get_items() as $item ) {
+					$items = $the_order->get_items();
+					$count = sizeof( $items );
+					foreach ( $items as $item ) {
 						if ( empty( $item['course_id'] ) || get_post_type( $item['course_id'] ) !== LP_COURSE_CPT ) {
 							$links[] = __( 'Course does not exist', 'learnpress' );
 						} else {
-							$links[] = '<a href="' . get_the_permalink( $item['course_id'] ) . '">' . get_the_title( $item['course_id'] ) . '</a>';
+							$link = '<a href="' . get_the_permalink( $item['course_id'] ) . '">' . get_the_title( $item['course_id'] ) . '</a>';
+							if ( $count > 1 ) {
+								$link = sprintf( '<li>%s</li>', $link );
+							}
+							$links[] = $link;
 						}
 					}
-					echo join( "<br />", $links );
+					if ( $count > 1 ) {
+						echo sprintf( '<ol>%s</ol>', join( "", $links ) );
+					} else {
+						echo join( "", $links );
+					}
 					break;
 				case 'order_total' :
 					echo learn_press_format_price( $the_order->order_total, learn_press_get_currency_symbol( $the_order->order_currency ) );
@@ -594,18 +604,29 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			);
 		}
 
+		/**
+		 * Remove some unwanted metaboxes
+		 */
 		public static function register_metabox() {
-
 			// Remove Publish metabox
 			remove_meta_box( 'submitdiv', LP_ORDER_CPT, 'side' );
-
 			remove_meta_box( 'commentstatusdiv', LP_ORDER_CPT, 'normal' );
 		}
 
+		/**
+		 * Order details view.
+		 *
+		 * @param WP_Post $post
+		 */
 		public static function order_details( $post ) {
 			learn_press_admin_view( 'meta-boxes/order/details.php', array( 'order' => LP_Order::instance( $post ) ) );
 		}
 
+		/**
+		 * Order actions view.
+		 *
+		 * @param WP_Post $post
+		 */
 		public static function order_actions( $post ) {
 			learn_press_admin_view( 'meta-boxes/order/actions.php', array( 'order' => LP_Order::instance( $post ) ) );
 		}
@@ -617,19 +638,6 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		}
 
 		/**
-		 * Enqueue scripts
-		 *
-		 * @static
-		 */
-		public function admin_scripts() {
-
-		}
-
-		public function remove_edit_post_link() {
-			return '';
-		}
-
-		/**
 		 * Register new post status for order
 		 */
 		public function register_post_statues() {
@@ -637,10 +645,6 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			foreach ( $statuses as $status => $args ) {
 				register_post_status( $status, $args );
 			}
-		}
-
-		public function submitdiv() {
-
 		}
 
 		public static function instance() {
@@ -660,3 +664,6 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		->add_meta_box( 'order_details', __( 'Order Details', 'learnpress' ), 'order_details', 'normal', 'high' )
 		->add_meta_box( 'submitdiv', __( 'Order Actions', 'learnpress' ), 'order_actions', 'side', 'high' );
 }
+
+error_reporting(E_ALL);
+ini_set('display_errors', '1');

@@ -757,15 +757,7 @@ function learn_press_get_order_statuses( $prefix = true, $status_only = false ) 
 	} else {
 		$order_statuses = $register_statues;
 	}
-	/*$order_statuses = array(
-		$prefix . 'pending'    => _x( 'Pending', 'Order status', 'learnpress' ),
-		$prefix . 'processing' => _x( 'Processing', 'Order status', 'learnpress' ),
-		$prefix . 'completed'  => _x( 'Completed', 'Order status', 'learnpress' ),
-		$prefix . 'cancelled'  => _x( 'Cancelled', 'Order status', 'learnpress' )
-//		$prefix . 'refunded'   => _x( 'Refunded', 'Order status', 'learnpress' ),
-//		$prefix . 'failed'     => _x( 'Failed', 'Order status', 'learnpress' ),
-//		$prefix . 'on-hold'    => _x( 'On Hold', 'Order status', 'learnpress' ),
-	);*/
+
 	$order_statuses = wp_list_pluck( $order_statuses, 'label' );
 
 	if ( $status_only ) {

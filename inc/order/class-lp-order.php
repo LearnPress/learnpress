@@ -170,12 +170,15 @@ class LP_Order extends LP_Abstract_Object {
 	}
 
 	/**
-	 * 
-	 * @param $payment_method
+	 * Set payment method for this order.
+	 * If payment method is an instance of LP_Gateway_Abstract then
+	 * update it to database.
+	 *
+	 * @param LP_Gateway_Abstract $payment_method
 	 */
 	public function set_payment_method( $payment_method ) {
 		if ( is_object( $payment_method ) ) {
-			update_post_meta( $this->id, '_payment_method', $payment_method->id );
+			update_post_meta( $this->id, '_payment_method', $payment_method->get_id() );
 			update_post_meta( $this->id, '_payment_method_title', $payment_method->get_title() );
 		}
 		$this->payment_method = $payment_method;
@@ -187,21 +190,22 @@ class LP_Order extends LP_Abstract_Object {
 	 * @return string
 	 */
 	public function get_order_number() {
-		return apply_filters( 'learn_press_get_order_number', '#' . sprintf( "%'.010d", $this->id ), $this );
+		$order_number = apply_filters( 'learn_press_get_order_number', '#' . sprintf( "%'.010d", $this->id ), $this );
+
+		return apply_filters( 'learn-press/order-number', $order_number, $this->get_id() );
 	}
 
 	/**
 	 * Get status of the order
 	 *
-	 * @return mixed|void
+	 * @return mixed
 	 */
 	public function get_order_status() {
-		$statuses = learn_press_get_order_statuses();
-		$status   = '';
-		if ( ! empty( $statuses[ $this->post_status ] ) ) {
-			$status = str_replace( 'lp-', '', $this->post_status );
-		} else {
-			$status = $this->post_status;
+		$statuses    = learn_press_get_order_statuses();
+		$the_id      = $this->get_id();
+		$post_status = get_post_status( $the_id );
+		if ( ! empty( $statuses[ $post_status ] ) ) {
+			$status = str_replace( 'lp-', '', $post_status );
 		}
 
 		return apply_filters( 'learn_press_get_order_status', $status, $this );

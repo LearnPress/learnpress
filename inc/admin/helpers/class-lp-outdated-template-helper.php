@@ -205,7 +205,7 @@ class LP_Outdated_Template_Helper {
 	 *
 	 * @return string
 	 */
-	function get_file_version( $file ) {
+	public static function get_file_version( $file ) {
 		if ( ! file_exists( $file ) ) {
 			return '';
 		}

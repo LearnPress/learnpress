@@ -53,5 +53,12 @@
         .column-order_date {
             width: 150px;
         }
+        .column-order_items {
+            ol {
+                margin: 0;
+                padding: 0;
+                list-style-position: inside;
+            }
+        }
     }
 }
