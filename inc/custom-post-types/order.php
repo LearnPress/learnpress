@@ -459,6 +459,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		}
 
 		public function order_title( $title, $post_id ) {
+			_deprecated_function( __FUNCTION__, '3.x.x' );
 			if ( LP_ORDER_CPT == get_post_type( $post_id ) ) {
 				$title = learn_press_transaction_order_number( $post_id );
 			}
@@ -491,13 +492,6 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					}
 					break;
 				case 'order_status' :
-					/*echo '<select name="order-status" data-status="lp-' . $the_order->get_status() .'">';
-						$statuses = learn_press_get_order_statuses();
-						foreach ( $statuses as $status => $status_name ) {
-							echo '<option data-desc="' . esc_attr( _learn_press_get_order_status_description( $status ) ) . '" value="' .  esc_attr( $status ) . '" ' . selected( $status, 'lp-' . $the_order->get_status(), false ) . '>' . esc_html( $status_name ) . '</option>';
-						}
-
-					echo '</select>';*/
 
 					echo sprintf( '<span class="learn-press-tooltip %s" data-tooltip="%s">%s</span>', $the_order->get_status(), learn_press_get_order_status_label( $the_order->get_id() ), '' );
 					break;
@@ -590,9 +584,6 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				'show_in_admin_bar'  => false,
 				'publicly_queryable' => false,
 				'show_in_menu'       => 'learn_press',
-				/* 'capabilities'       => array(
-				  'create_posts' => 'do_not_allow'
-				  ), */
 				'map_meta_cap'       => true,
 				'capability_type'    => LP_ORDER_CPT,
 				'hierarchical'       => true,
@@ -665,5 +656,5 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		->add_meta_box( 'submitdiv', __( 'Order Actions', 'learnpress' ), 'order_actions', 'side', 'high' );
 }
 
-error_reporting(E_ALL);
-ini_set('display_errors', '1');
+error_reporting( E_ALL );
+ini_set( 'display_errors', '1' );

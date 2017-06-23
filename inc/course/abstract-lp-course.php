@@ -5,7 +5,7 @@ defined( 'ABSPATH' ) || exit();
 /**
  * Class LP_Abstract_Course
  */
-abstract class LP_Abstract_Course {
+abstract class LP_Abstract_Course extends LP_Abstract_Object {
 	/**
 	 * The course (post) ID.
 	 *
@@ -68,6 +68,9 @@ abstract class LP_Abstract_Course {
 		if ( $this->get_id() > 0 ) {
 			$this->load();
 		}
+	}
+
+	public function load() {
 	}
 
 	/**
@@ -345,7 +348,7 @@ abstract class LP_Abstract_Course {
 	 * @return int
 	 */
 	public function get_users_enrolled( $force = false ) {
-		$this->_count_users = LP_Cache::get_enrolled_courses( $this->id );
+		$this->_count_users = LP_Cache::get_enrolled_courses( $this->get_id() );
 
 		return $this->_count_users;
 		/*

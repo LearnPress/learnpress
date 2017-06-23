@@ -67,34 +67,6 @@ class LP_Quiz extends LP_Abstract_Course_Item {
 		if ( $this->get_id() > 0 ) {
 			$this->load();
 		}
-
-		return;
-		if ( empty( $GLOBALS['learnpress_question_answers'] ) ) {
-			$GLOBALS['learnpress_question_answers'] = array();
-		}
-		if ( is_numeric( $quiz ) ) {
-			$this->id = absint( $quiz );
-		} elseif ( $quiz instanceof LP_Quiz ) {
-			$this->id = absint( $quiz->id );
-			//$this->post =  $quiz->post;
-		} elseif ( isset( $quiz->ID ) ) {
-			$this->id = absint( $quiz->ID );
-			//$this->post = $quiz;
-		}
-
-		_learn_press_get_quiz_questions( $this->id );
-		$this->post = get_post( $this->id );
-
-		if ( empty( self::$_meta[ $this->id ] ) ) {
-			self::$_meta[ $this->id ] = array();
-		}
-		if ( ! empty( $this->post->mark ) ) {
-			$this->_mark = $this->post->mark;
-		}
-
-		parent::__construct( $this->post );
-		//$this->course = LP_Course::get_course( $this->_lpr_course );
-		$this->_init();
 	}
 
 	/**
