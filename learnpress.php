@@ -426,6 +426,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		public function includes() {
 
 			require_once 'inc/abstract-object.php';
+			require_once 'inc/class-lp-debug.php';
+
 			require_once 'inc/course/abstract-course-item.php';
 
 

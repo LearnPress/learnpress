@@ -23,31 +23,25 @@ class LP_Question extends LP_Abstract_Course_Item {
 	protected $_options = null;
 
 	/**
-	 * @var null
-	 */
-	public $post = null;
-
-	/**
-	 * @var null
-	 */
-	public $id = null;
-
-	/**
-	 * @var null
-	 */
-	public $question_type = null;
-
-	/**
 	 * @var string
 	 */
 	protected $_content = '';
 
 	/**
+	 * Type of this question.
+	 *
 	 * @var string
 	 */
-	protected $_type = 'single_choice';
+	protected $_question_type = 'single_choice';
 
 	/**
+	 * @var string
+	 */
+	protected $_item_type = 'question';
+
+	/**
+	 * Any features this question support.
+	 *
 	 * @var array
 	 */
 	protected $_supports = array();
@@ -96,11 +90,7 @@ class LP_Question extends LP_Abstract_Course_Item {
 	public function load() {
 		$the_id = $this->get_id();
 		if ( ! $the_id || LP_QUESTION_CPT !== get_post_type( $the_id ) ) {
-			if ( learn_press_is_debug() ) {
-				throw new Exception( sprintf( __( 'Invalid question with ID "%d".', 'learnpress' ), $the_id ) );
-			}
-
-			return;
+			LP_Debug::throw_exception( sprintf( __( 'Invalid question with ID "%d".', 'learnpress' ), $the_id ) );
 		}
 		$this->_load_answer_options();
 	}
@@ -181,53 +171,6 @@ class LP_Question extends LP_Abstract_Course_Item {
 	 */
 	public function get_answer_options() {
 		return apply_filters( 'learn-press/question/answer-options', $this->get_data( 'answer_options' ), $this->get_id() );
-	}
-
-	/**
-	 * Check if question is support feature.
-	 *
-	 * @param string $feature
-	 * @param string $type
-	 *
-	 * @return bool
-	 */
-	public function is_support( $feature, $type = '' ) {
-		$feature    = $this->_sanitize_feature_key( $feature );
-		$is_support = array_key_exists( $feature, $this->_supports ) ? true : false;
-		if ( $type && $is_support ) {
-			return $this->_supports[ $feature ] === $type;
-		}
-
-		return $is_support;
-	}
-
-	/**
-	 * Add a feature that question is supported
-	 *
-	 * @param        $feature
-	 * @param string $type
-	 */
-	public function add_support( $feature, $type = 'yes' ) {
-		$feature                     = $this->_sanitize_feature_key( $feature );
-		$this->_supports[ $feature ] = $type === null ? 'yes' : $type;
-	}
-
-	/**
-	 * @param $feature
-	 *
-	 * @return mixed
-	 */
-	protected function _sanitize_feature_key( $feature ) {
-		return preg_replace( '~[_]+~', '-', $feature );
-	}
-
-	/**
-	 * Get all features are supported by question.
-	 *
-	 * @return array
-	 */
-	public function get_supports() {
-		return $this->_supports;
 	}
 
 	/**
@@ -319,19 +262,19 @@ class LP_Question extends LP_Abstract_Course_Item {
 
 		//do_action( 'learn-press/admin-question/before-interface', $args, $this->get_id() );
 
-		if ( $header_view = apply_filters( 'learn-press/admin-question/header-interface-html', learn_press_get_admin_view( 'meta-boxes/question/header' ), $args, $this->get_id() ) ) {
+		if ( $header_view = $this->get_header_view( $args ) ) {
 			include "{$header_view}";
 		}
 
 		if ( in_array( $this->get_type(), array( 'none', '' ) ) ) {
 			printf( '<p class="lp-question-unknown-type-msg" ng-show="!isValidQuestionType()">%s</p>', __( 'Question type is unknown. Please specific a type.', 'learnpress' ) );
 		} else {
-			if ( $this->is_support( 'answer_options' ) && $question_view = apply_filters( 'learn-press/admin-question/interface-html', learn_press_get_admin_view( 'meta-boxes/question/answer-options' ), $args, $this->get_id() ) ) {
+			if ( $question_view = $this->get_view( $args ) ) {
 				include "{$question_view}";
 			}
 		}
 
-		if ( $footer_view = apply_filters( 'learn-press/admin-question/footer-interface-html', learn_press_get_admin_view( 'meta-boxes/question/footer' ), $args, $this->get_id() ) ) {
+		if ( $footer_view = $this->get_footer_view( $args ) ) {
 			include "{$footer_view}";
 		}
 		//do_action( 'learn-press/admin-question/after-interface', $args, $this->get_id() );
@@ -343,6 +286,77 @@ class LP_Question extends LP_Abstract_Course_Item {
 		}
 
 		return $output;
+	}
+
+	public function get_view( $args = '' ) {
+		if ( $this->is_support( 'answer_options' ) ) {
+			$view = learn_press_get_admin_view( 'question/answer-options' );
+		} else {
+			$view = false;
+		}
+
+		return apply_filters( 'learn-press/admin-question/interface-html', $view, $args, $this->get_id() );
+	}
+
+	public function get_header_view( $args = '' ) {
+		return apply_filters( 'learn-press/admin-question/header-interface-html', learn_press_get_admin_view( 'question/header' ), $args, $this->get_id() );
+	}
+
+	public function get_footer_view( $args = '' ) {
+		return apply_filters( 'learn-press/admin-question/header-interface-html', learn_press_get_admin_view( 'question/footer' ), $args, $this->get_id() );
+	}
+
+	/**
+	 * Output the meta boxes of question.
+     * Do some dirty-works to show the meta box.
+	 */
+	public function output_meta_box_settings() {
+		global $wp_meta_boxes, $post;
+
+		// There is no meta boxes
+		if ( empty( $wp_meta_boxes[ LP_QUESTION_CPT ] ) ) {
+			return;
+		}
+
+		// Fake screen
+		$screen     = new stdClass();
+		$screen->id = LP_QUESTION_CPT;
+
+		// Fake global $post
+		$origin_post = $post;
+		$post        = get_post( $this->get_id() );
+		setup_postdata( $post );
+
+		// Track the origin meta-boxes
+		$origin_meta_boxes = $wp_meta_boxes[ LP_QUESTION_CPT ];
+
+		// Unset origin meta box so new meta box with the same id is effected.
+		unset( $wp_meta_boxes[ LP_QUESTION_CPT ] );
+
+		// Create new meta box
+		$box = new RW_Meta_Box( LP_Question_Post_Type::settings_meta_box() );
+
+		// Add this manually because the hook is already done!!!
+		add_meta_box(
+			$box->id,
+			$box->title,
+			array( $box, 'show' ),
+			LP_QUESTION_CPT,
+			$box->context,
+			$box->priority
+		);
+
+		// Show meta box
+		do_meta_boxes( $screen, 'normal', '' );
+
+		// ==> Okay, restore all data
+
+		// Restore origin $post
+		$post = $origin_post;
+		setup_postdata( $post );
+
+		// Restore origin meta boxes
+        $wp_meta_boxes[LP_QUESTION_CPT] = $origin_meta_boxes;
 	}
 
 	/**
@@ -383,28 +397,6 @@ class LP_Question extends LP_Abstract_Course_Item {
 		}
 	}
 
-
-	//////////////////////////////
-
-	public function __get( $key ) {
-		if ( ! isset( $this->{$key} ) ) {
-			$return = null;
-			switch ( $key ) {
-				case 'answers':
-					$return = $this->get_answers();
-					break;
-				default:
-					$return = get_post_meta( $this->id, '_lp_' . $key, true );
-					if ( $key == 'mark' && $return <= 0 ) {
-						$return = 1;
-					}
-			}
-			$this->{$key} = $return;
-		}
-
-		return $this->{$key};
-	}
-
 	/**
 	 * Get question title
 	 *
@@ -437,6 +429,14 @@ class LP_Question extends LP_Abstract_Course_Item {
 		}
 
 		return $this->_content;
+	}
+
+	public function get_type() {
+		return $this->_question_type;
+	}
+
+	public function get_type_label() {
+		return ucwords( str_replace( '_', ' ', $this->get_type() ) );
 	}
 
 	protected function _init() {
@@ -578,10 +578,6 @@ class LP_Question extends LP_Abstract_Course_Item {
 
 	public function submit_answer( $quiz_id, $answer ) {
 		return false;
-	}
-
-	public function get_type() {
-		return $this->_type;
 	}
 
 
@@ -826,7 +822,7 @@ class LP_Question extends LP_Abstract_Course_Item {
 			'actions'        => ''
 		);
 
-		return apply_filters( 'learn-press/question/multi-choices/admin-option-headings', $option_headings, $this->id );
+		return apply_filters( 'learn-press/question/multi-choices/admin-option-headings', $option_headings, $this->get_id() );
 	}
 
 	/**
@@ -835,7 +831,10 @@ class LP_Question extends LP_Abstract_Course_Item {
 	 * @return array
 	 */
 	public function get_option_template_data() {
-		return apply_filters( 'learn-press/question/' . $this->get_type() . '/admin-option-template-args', array(), $this->get_type() );
+		$data = apply_filters( 'learn-press/question/admin-option-template-args', array(), $this->get_type() );
+		$data = apply_filters( 'learn-press/question/' . $this->get_type() . '/admin-option-template-args', $data, $this->get_type() );
+
+		return $data;
 	}
 
 	public function to_element_data( $echo = true ) {

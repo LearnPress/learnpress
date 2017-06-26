@@ -8,6 +8,20 @@ defined( 'ABSPATH' ) || exit();
 abstract class LP_Abstract_Course_Item extends LP_Abstract_Object {
 
 	/**
+	 * The icon maybe used somewhere.
+	 *
+	 * @var string
+	 */
+	protected $_icon_class = '';
+
+	/**
+	 * The type of item.
+	 *
+	 * @var string
+	 */
+	protected $_item_type = '';
+
+	/**
 	 * LP_Abstract_Course_Item constructor.
 	 *
 	 * @param $item mixed
@@ -15,6 +29,20 @@ abstract class LP_Abstract_Course_Item extends LP_Abstract_Object {
 	 */
 	public function __construct( $item, $args ) {
 		parent::__construct( $args );
+	}
+
+	/**
+	 * @return string
+	 */
+	public function get_item_type(){
+		return $this->_item_type;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function get_icon_class(){
+		return $this->_icon_class;
 	}
 
 	/**

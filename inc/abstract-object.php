@@ -27,6 +27,11 @@ class LP_Abstract_Object {
 	protected $_no_cache = false;
 
 	/**
+	 * @var array
+	 */
+	protected $_supports = array();
+
+	/**
 	 * LP_Abstract_Object constructor.
 	 *
 	 * @param null $data
@@ -83,6 +88,53 @@ class LP_Abstract_Object {
 			$value               = func_get_arg( 1 );
 			$this->_data[ $key ] = $value;
 		}
+	}
+
+	/**
+	 * Check if question is support feature.
+	 *
+	 * @param string $feature
+	 * @param string $type
+	 *
+	 * @return bool
+	 */
+	public function is_support( $feature, $type = '' ) {
+		$feature    = $this->_sanitize_feature_key( $feature );
+		$is_support = array_key_exists( $feature, $this->_supports ) ? true : false;
+		if ( $type && $is_support ) {
+			return $this->_supports[ $feature ] === $type;
+		}
+
+		return $is_support;
+	}
+
+	/**
+	 * Add a feature that question is supported
+	 *
+	 * @param        $feature
+	 * @param string $type
+	 */
+	public function add_support( $feature, $type = 'yes' ) {
+		$feature                     = $this->_sanitize_feature_key( $feature );
+		$this->_supports[ $feature ] = $type === null ? 'yes' : $type;
+	}
+
+	/**
+	 * @param $feature
+	 *
+	 * @return mixed
+	 */
+	protected function _sanitize_feature_key( $feature ) {
+		return preg_replace( '~[_]+~', '-', $feature );
+	}
+
+	/**
+	 * Get all features are supported by question.
+	 *
+	 * @return array
+	 */
+	public function get_supports() {
+		return $this->_supports;
 	}
 
 	/**

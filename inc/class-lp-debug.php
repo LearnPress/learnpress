@@ -3,7 +3,7 @@
  * Class LP_Debug
  */
 
-if ( !defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
@@ -32,7 +32,6 @@ class LP_Debug {
 		$this->_handles = array();
 	}
 
-
 	/**
 	 * Destructor.
 	 */
@@ -53,7 +52,7 @@ class LP_Debug {
 	 * @return bool success
 	 */
 	private function open( $handle ) {
-		if ( isset( $this->_handles[$handle] ) ) {
+		if ( isset( $this->_handles[ $handle ] ) ) {
 			return true;
 		}
 
@@ -61,7 +60,7 @@ class LP_Debug {
 		$f    = @fopen( $path, 'a' );
 
 		// if path is not exists, creates path and try again!
-		if ( !$f ) {
+		if ( ! $f ) {
 			LP_Install::create_files();
 			$f = @fopen( $path, 'a' );
 		}
@@ -70,9 +69,11 @@ class LP_Debug {
 			if ( filesize( $path ) >= 1024 * 1024 * 1 ) {
 				ftruncate( $f, 0 );
 			}
-			$this->_handles[$handle] = $f;
+			$this->_handles[ $handle ] = $f;
+
 			return true;
 		}
+
 		return false;
 	}
 
@@ -85,20 +86,20 @@ class LP_Debug {
 	 * @param bool   $clear
 	 */
 	public function add( $message, $handle = 'log', $clear = false ) {
-		if ( !$handle ) {
+		if ( ! $handle ) {
 			$handle = 'log';
 		}
-		if ( LP()->settings->get( 'debug' ) == 'yes' && $this->open( $handle ) && is_resource( $this->_handles[$handle] ) ) {
+		if ( LP()->settings->get( 'debug' ) == 'yes' && $this->open( $handle ) && is_resource( $this->_handles[ $handle ] ) ) {
 			if ( $clear ) {
 				$this->clear( $handle );
 			}
 			$time = date_i18n( 'm-d-Y @ H:i:s -' );
-			if ( !is_string( $message ) ) {
+			if ( ! is_string( $message ) ) {
 				ob_start();
 				print_r( $message );
 				$message = ob_get_clean();
 			}
-			fwrite( $this->_handles[$handle], "-----" . $time . "-----\n" . $message . "\n" );
+			fwrite( $this->_handles[ $handle ], "-----" . $time . "-----\n" . $message . "\n" );
 		}
 		do_action( 'learn_press_log_add', $handle, $message );
 	}
@@ -110,8 +111,8 @@ class LP_Debug {
 	 * @param mixed $handle
 	 */
 	public function clear( $handle ) {
-		if ( $this->open( $handle ) && is_resource( $this->_handles[$handle] ) ) {
-			@ftruncate( $this->_handles[$handle], 0 );
+		if ( $this->open( $handle ) && is_resource( $this->_handles[ $handle ] ) ) {
+			@ftruncate( $this->_handles[ $handle ], 0 );
 		}
 
 		do_action( 'learn_press_log_clear', $handle );
@@ -121,9 +122,10 @@ class LP_Debug {
 	 * @return LP_Debug|null
 	 */
 	public static function instance() {
-		if ( !self::$_instance ) {
+		if ( ! self::$_instance ) {
 			self::$_instance = new self();
 		}
+
 		return self::$_instance;
 	}
 
@@ -146,12 +148,30 @@ class LP_Debug {
 	}
 
 	public static function timeStart( $name ) {
-		self::$_time[$name] = microtime();
+		self::$_time[ $name ] = microtime();
 	}
 
 	public static function timeEnd( $name ) {
-		$time = microtime() - self::$_time[$name];
+		$time = microtime() - self::$_time[ $name ];
 		echo "{$name} execution time = " . $time;
-		unset( self::$_time[$name] );
+		unset( self::$_time[ $name ] );
+	}
+
+	/**
+	 * Throw an exception.
+	 *
+	 * @param string    $message
+	 * @param int       $code
+	 * @param Throwable $prev
+	 * @param string    $type A class of an exception, default Exception.
+	 *
+	 * @throws Exception.
+	 */
+	public static function throw_exception( $message, $code = null, $prev = null, $type = '' ) {
+		if ( learn_press_is_debug() ) {
+			$exception = class_exists( $type ) ? $type : 'Exception';
+			$exception = new $exception( $message, $code, $prev );
+			throw $exception;
+		}
 	}
 }

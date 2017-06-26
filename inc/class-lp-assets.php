@@ -323,6 +323,7 @@ class LP_Assets {
 		$ver          = LEARNPRESS_VERSION;
 		// global
 		$styles->add( 'learn-press-global', $default_path . 'css/global' . $suffix . '.css', $deps, $ver );
+		$styles->add( 'font-awesome', $default_path . 'css/font-awesome.min' . $suffix . '.css', $deps, $ver );
 
 		// admin
 		$styles->add( 'learn-press-admin', $default_path . 'css/admin/admin' . $suffix . '.css', null, $ver );
@@ -758,6 +759,8 @@ class LP_Assets {
 	 * Load assets
 	 */
 	public function load_scripts() {
+		self::enqueue_style( 'font-awesome' );
+
 		if ( is_admin() ) {
 			global $pagenow;
 			$screen    = get_current_screen();

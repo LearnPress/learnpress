@@ -423,7 +423,7 @@ class LP_Plugins_Helper {
 	 *
 	 * @return bool
 	 */
-	public function _filter_plugin( $plugin ) {
+	public static function _filter_plugin( $plugin ) {
 		return $plugin && preg_match( '!^learnpress-.*!', $plugin->slug );
 	}
 
@@ -1280,18 +1280,3 @@ class LP_Plugins_Helper {
 	}
 
 }
-
-/**
- * Common functions use for add-ons manager page
- *
- * @author  ThimPress
- * @package LearnPress/Functions
- * @version 1.0
- */
-
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
-
-define( 'LP_ADD_ON_TRANSIENT_TIME', 60 * 60 );
-

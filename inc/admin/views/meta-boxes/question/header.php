@@ -18,7 +18,8 @@ $template_data       = array_merge(
 		'id'             => $question_id,
 		'type'           => $type,
 		'title'          => $question->get_title(),
-		'answer_options' => array()
+		'answer_options' => array(),
+		'icon-class'     => ''
 	),
 	$question->get_option_template_data()
 );
@@ -79,7 +80,7 @@ if ( learn_press_is_hidden_post_box( $question_id ) ) {
      ng-class="{'invalid-type': !isValidQuestionType()}">
     <div class="lp-box-data-head lp-row">
         <span class="lp-item-counter" data-count="{{getPosition()}}"></span>
-        <span class="lp-item-icon-type dashicons"></span>
+        <span class="lp-item-icon-type <?php echo $template_data['icon-class']; ?>"></span>
         <div class="lp-box-data-actions lp-toolbar-buttons">
 			<?php
 			echo join( "<!--\n-->", $top_buttons );

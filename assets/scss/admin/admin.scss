@@ -52,7 +52,7 @@
     vertical-align: middle;
     margin: 0 5px;
     color: #999;
-    &:after {
+    &.icon:after {
         font-family: Dashicons;
         content: "\f223";
     }

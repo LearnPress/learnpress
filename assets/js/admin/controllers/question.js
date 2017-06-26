@@ -265,7 +265,7 @@
                 })
             },
             toggleContent: function (event) {
-                var hidden = $(event.target).closest('.learn-press-box-data').toggleClass('closed').hasClass('closed'),
+                var hidden = $(event.target).closest('tbody').find('.edit-inline').toggleClass('hide-if-js').hasClass('hide-if-js'),
                     postData = {hidden: {}};
                 postData.hidden[this.getId()] = hidden ? 'yes' : 'no';
                 $http({

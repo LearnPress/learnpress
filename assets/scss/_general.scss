@@ -14,8 +14,9 @@
         position: relative;
         vertical-align: middle;
         cursor: pointer;
-        background: #FFF;
+        _background: #FFF;
         display: inline-block;
+        margin: 0;
         a, span {
             color: #999;
             box-shadow: none;
@@ -85,8 +86,8 @@
                         padding: 3px 8px;
                         font-size: 12px;
                         text-align: right;
-                        padding-left: 20px;
                         color: #0073aa;
+                        margin: 0;
                         &:hover {
                             background: #dbf5ff;
                         }
@@ -101,7 +102,7 @@
         }
         &.lp-btn-disabled,
         &.lp-btn-disabled:hover {
-            background: #F5F5F5;
+            _background: #F5F5F5;
             .lp-btn-icon {
                 color: #DDD;
             }
@@ -134,6 +135,12 @@
     .lp-box-data-head {
         padding: 10px 15px;
         background: #FFF;
+        h3{
+            font-size: 18px;
+            padding: 15px;
+            margin: 0;
+
+        }
         .lp-box-data-actions {
             float: right;
             position: relative;

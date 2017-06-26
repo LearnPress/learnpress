@@ -32,8 +32,24 @@ class LP_Quiz_Factory {
 		add_action( 'learn_press_after_single_quiz_summary', array( __CLASS__, 'output_quiz_params' ) );
 		add_action( 'delete_post', array( __CLASS__, 'delete_quiz' ), 10, 2 );
 		add_action( 'edit_form_after_editor', array( __CLASS__, 'admin_template' ), - 990 );
+		add_filter( 'learn-press/question/admin-option-template-args', array(__CLASS__, 'question_icon_class'), 10, 2);
 
 	}
+
+	public static function question_icon_class($data, $type){
+	    switch ($type){
+            case 'true_or_false':
+                $data['icon-class'] = 'xxxx';
+                break;
+            case 'single_choice':
+	            $data['icon-class'] = 'fa fa-dot-circle-o';
+	            break;
+		    case 'multiple_choice':
+			    $data['icon-class'] = 'fa fa-check-circle';
+			    break;
+        }
+        return $data;
+    }
 
 	public static function admin_template() {
 		add_filter( 'learn-press/question/none/admin-option-template-args', array(__CLASS__, 'question_template_js'), 10, 2);

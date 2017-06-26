@@ -56,6 +56,8 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 			if ( LP_QUIZ_CPT !== get_post_type() ) {
 				return;
 			}
+			//learn_press_admin_view( 'meta-boxes/html-admin-quiz' );
+			learn_press_admin_view( 'quiz/html-list-questions' );
 			learn_press_admin_view( 'meta-boxes/html-admin-quiz' );
 		}
 

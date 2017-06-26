@@ -1,3 +1,5 @@
+
+
 .learn-press-question {
     .lp-box-data-head {
         padding: 0;
@@ -71,7 +73,7 @@
         .column-heading-answer_correct {
             width: 150px;
         }
-        .column-heading-actions{
+        .column-heading-actions {
             width: 50px;
         }
         .lp-list-option-empty {
@@ -161,20 +163,21 @@
         margin-top: -10px;
         left: 17px;
         color: #0073aa;
+        font-size: 21px;
     }
     &.lp-question-true_or_false {
         .lp-item-icon-type:before {
-            content: "\f127";
+            //content: "\f127";
         }
     }
     &.lp-question-single_choice {
         .lp-item-icon-type:before {
-            content: "\f126";
+            //content: "\f126";
         }
     }
     &.lp-question-multi_choice {
         .lp-item-icon-type:before {
-            content: "\f210";
+            //content: "\f210";
         }
     }
 }

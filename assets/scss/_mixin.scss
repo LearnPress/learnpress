@@ -1,4 +1,4 @@
-$primary-color: #00a0d2;
+$primary-color: #0085ba;
 $remove-icon-color: #d05d5d;
 
 /**
@@ -10,7 +10,7 @@ $remove-icon-color: #d05d5d;
     content: '';
 }
 
-@mixin box-sizing($args...) {
+@mixin box-sizing($args:border-box) {
     -webkit-box-sizing: $args;
     -moz-box-sizing: $args;
     box-sizing: $args;

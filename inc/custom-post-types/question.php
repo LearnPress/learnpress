@@ -12,6 +12,8 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		 */
 		protected static $_instance = null;
 
+		public static $metaboxes = array();
+
 		/**
 		 * LP_Question_Post_Type constructor.
 		 *
@@ -131,7 +133,7 @@ if ( ! class_exists( 'LP_Question_Post_Type' ) ) {
 		}
 
 		public function add_meta_boxes() {
-			new RW_Meta_Box( self::settings_meta_box() );
+			self::$metaboxes['general_settings'] = new RW_Meta_Box( self::settings_meta_box() );
 			parent::add_meta_boxes();
 		}
 
