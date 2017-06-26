@@ -190,3 +190,21 @@
         margin: 15px;
     }
 }
+
+@media only screen and (max-width: 1280px) {
+    .lp-list-questions {
+        .edit-inline {
+            .quiz-question-data,
+            .quiz-question-options {
+                width: 100%;
+                float: none;
+            }
+            .quiz-question-data {
+                padding-right: 0px;
+            }
+            .quiz-question-options {
+                padding-left: 0px;
+            }
+        }
+    }
+}
