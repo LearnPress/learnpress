@@ -87,7 +87,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'add_quiz_questions',
 				'clear_quiz_question',
 				'search_items' => 'modal_search_items',
-				'update-payment-order'
+				'update-payment-order',
+				'bundle_update_quiz_questions'
 			);
 			foreach ( $ajax_events as $ajax_event => $callback ) {
 				if ( ! is_string( $ajax_event ) ) {
@@ -109,6 +110,11 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			$payment_order = learn_press_get_request( 'order' );
 			update_option( 'learn_press_payment_order', $payment_order );
 		}
+
+		public static function bundle_update_quiz_questions(){
+		    self::parsePhpInput($_REQUEST);
+		    learn_press_debug($_REQUEST);
+        }
 
 		/**
 		 * Get content send via payload and parse to json.

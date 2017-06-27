@@ -47,7 +47,8 @@
                         $scope.$apply(function () {
                             $scope.doSubmit({
                                 done: function () {
-                                    alert('done')
+                                    alert('done');
+                                    $('#post').submit();
                                 }
                             });
                         });
@@ -65,18 +66,27 @@
                 if ($questions.length && paged < 1000) {
                     var postData = {
                         questions: {}
-                    }, i=0;
+                    }, i = 0;
                     _.forEach($questions, function (el) {
                         var ctrl = angular.element(el).scope(),
+                            id = $(el).data('dbid'),
                             data = ctrl.getFormData({order: i + 1});
-                        postData.questions[data.id] = data;
+                        postData.questions[id] = data;
                     });
-                    console.log(postData)
-                    $timeout(function () {
+                    $http({
+                        method: 'post',
+                        url: $scope.getAjaxUrl('lp-ajax=ajax_bundle_update_quiz_questions&paged=' + paged),
+                        data: postData
+                    }).then(function (response) {
                         options.paged = paged + 1;
                         $scope.doSubmit(options);
-                    }, 3000)
-
+                    });
+                    return;
+                }
+                this.isSubmitting = false;
+                this.isSaved = true;
+                if (options.done) {
+                    //options.done.call($scope);
                 }
             },
             getQuestions: function (options) {

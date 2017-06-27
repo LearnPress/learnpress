@@ -46,6 +46,10 @@ class LP_Question extends LP_Abstract_Course_Item {
 	 */
 	protected $_supports = array();
 
+	protected $_data = array(
+
+    );
+
 	/**
 	 * Construct
 	 *
@@ -192,30 +196,36 @@ class LP_Question extends LP_Abstract_Course_Item {
 		} else {
 			$updated = wp_insert_post( $post_data, true );
 		}
-		if ( is_numeric( $updated ) ) {
-			if ( $this->is_support( 'answer_options' ) ) {
-				$this->empty_answers();
-				if ( $answer_options = $this->get_data( 'answer_options' ) ) {
-					$question_order = 1;
-					$query          = "INSERT INTO {$wpdb->prefix}learnpress_question_answers(`question_id`, `answer_order`) VALUES";
-					foreach ( $answer_options as $answer_option ) {
-						if ( empty( $answer_option['text'] ) ) {
-							if ( apply_filters( 'learn-press/question/ignore-insert-empty-answer-option', true, $answer_option, $id ) ) {
-								continue;
-							}
-						}
-						$qry = $query . $wpdb->prepare( "(%d, %d)", $id, $question_order ++ );
-						do_action( 'learn-press/question/insert-answer-option', $id, $answer_option );
-						if ( $wpdb->query( $qry ) ) {
-							$inserted_id = $wpdb->insert_id;
-							learn_press_update_question_answer_meta( $inserted_id, 'text', $answer_option['text'] );
-							learn_press_update_question_answer_meta( $inserted_id, 'value', $answer_option['value'] );
-							if ( ! empty( $answer_option['is_true'] ) && ! learn_press_is_negative_value( $answer_option['is_true'] ) ) {
-								learn_press_update_question_answer_meta( $inserted_id, 'checked', 'yes' );
-							}
-							do_action( 'learn-press/question/inserted-answer-option', $inserted_id, $id, $answer_option );
-						}
+
+		if ( !is_numeric( $updated ) ) {
+			return false;
+		}
+
+		// Does this question support answer options?
+		if ( !$this->is_support( 'answer_options' ) ) {
+			return $updated;
+		}
+
+		$this->empty_answers();
+		if ( $answer_options = $this->get_data( 'answer_options' ) ) {
+			$question_order = 1;
+			$query          = "INSERT INTO {$wpdb->prefix}learnpress_question_answers(`question_id`, `answer_order`) VALUES";
+			foreach ( $answer_options as $answer_option ) {
+				if ( empty( $answer_option['text'] ) ) {
+					if ( apply_filters( 'learn-press/question/ignore-insert-empty-answer-option', true, $answer_option, $id ) ) {
+						continue;
 					}
+				}
+				$qry = $query . $wpdb->prepare( "(%d, %d)", $id, $question_order ++ );
+				do_action( 'learn-press/question/insert-answer-option', $id, $answer_option );
+				if ( $wpdb->query( $qry ) ) {
+					$inserted_id = $wpdb->insert_id;
+					learn_press_update_question_answer_meta( $inserted_id, 'text', $answer_option['text'] );
+					learn_press_update_question_answer_meta( $inserted_id, 'value', $answer_option['value'] );
+					if ( ! empty( $answer_option['is_true'] ) && ! learn_press_is_negative_value( $answer_option['is_true'] ) ) {
+						learn_press_update_question_answer_meta( $inserted_id, 'checked', 'yes' );
+					}
+					do_action( 'learn-press/question/inserted-answer-option', $inserted_id, $id, $answer_option );
 				}
 			}
 		}
@@ -336,13 +346,17 @@ class LP_Question extends LP_Abstract_Course_Item {
 		add_filter( 'rwmb_field_meta', array( $this, '_filter_meta_box_meta' ), 10, 10 );
 		$meta_box_settings = LP_Question_Post_Type::settings_meta_box();
 		array_unshift( $meta_box_settings['fields'], array(
-				'id'      => uniqid( 'question-content-' ),
+				'id'      => 'question-content',
 				'type'    => 'textarea', //'wysiwyg',
 				'name'    => __( 'Question Content', 'learnpress' ),
 				'default' => '',
 				'context' => 'quiz-list-questions'
 			)
 		);
+
+		foreach ( $meta_box_settings['fields'] as $k => $field ) {
+			$meta_box_settings['fields'][ $k ]['id'] = sprintf( 'learn_press_question[%d][%s]', $this->get_id(), $field['id'] );
+		}
 
 		// Create new meta box
 		$box = new RW_Meta_Box( $meta_box_settings );
@@ -371,7 +385,7 @@ class LP_Question extends LP_Abstract_Course_Item {
 	}
 
 	public function _filter_meta_box_meta( $meta, $field, $is_saved ) {
-		if ( preg_match( '~^question-content-~', $field['id'] ) && $field['context'] == 'quiz-list-questions' ) {
+		if ( preg_match( '~\[question-content\]~', $field['id'] ) && $field['context'] == 'quiz-list-questions' ) {
 			$post = get_post( $this->get_id() );
 			$meta = $post->post_content;
 		}
