@@ -88,7 +88,12 @@ $quiz = learn_press_get_quiz( $post );
 						$box_classes[] = 'closed';
 					}
 					?>
-                    <tbody ng-controller="question">
+                    <tbody ng-controller="question"
+                           id="learn-press-question-<?php echo $template_data['id']; ?>"
+                           data-type="<?php echo $type; ?>"
+                           data-dbid="<?php echo $template_data['id']; ?>"
+                           ng-click="elementClick($event)"
+                           ng-class="{'invalid-type': !isValidQuestionType()}">
                     <tr>
                         <td class="column-sort"><i class="fa fa-bars"></i></td>
                         <td class="column-order"><?php echo ++ $index; ?></td>
@@ -128,6 +133,18 @@ $quiz = learn_press_get_quiz( $post );
                     </tbody>
 				<?php } ?>
 			<?php } ?>
+            <tfoot>
+            <tr>
+                <th class="column-sort">
+                    <i class="fa fa-bars"></i>
+                </th>
+                <th class="column-order"></th>
+                <th class="column-name column-quick-add" colspan="3">
+                    <input type="text">
+                    <button type="button" class="button"><?php _e( 'Add', 'learnpress' ); ?></button>
+                </th>
+            </tr>
+            </tfoot>
         </table>
     </div>
 </div>

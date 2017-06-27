@@ -58,7 +58,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 			}
 			//learn_press_admin_view( 'meta-boxes/html-admin-quiz' );
 			learn_press_admin_view( 'quiz/html-list-questions' );
-			learn_press_admin_view( 'meta-boxes/html-admin-quiz' );
+			//learn_press_admin_view( 'meta-boxes/html-admin-quiz' );
 		}
 
 		public function update_quiz( $post_id ) {
@@ -147,7 +147,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 
 		public function add_meta_boxes() {
 			$prefix                                        = '_lp_';
-			$meta_box                                      = apply_filters(
+			/*$meta_box                                      = apply_filters(
 				'learn_press_quiz_question_meta_box_args',
 				array(
 					'title'      => __( 'Questions', 'learnpress' ),
@@ -162,7 +162,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 					)
 				)
 			);
-			$GLOBALS['learn_press_quiz_question_meta_box'] = new RW_Meta_Box( $meta_box );
+			$GLOBALS['learn_press_quiz_question_meta_box'] = new RW_Meta_Box( $meta_box );*/
 			$post_id                                       = learn_press_get_request( 'post' );
 			$duration_type                                 = get_post_meta( $post_id, "{$prefix}duration_type", true );
 			new RW_Meta_Box(

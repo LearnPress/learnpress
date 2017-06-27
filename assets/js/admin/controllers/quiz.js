@@ -17,6 +17,7 @@
         angular.extend($scope, {
             data: null,
             noncePrefix: 'quiz-',
+            isSaved: false,
             init: function () {
                 if ($element.attr('ng-controller') !== 'quiz') {
                     return;
@@ -35,6 +36,24 @@
                         $scope.updateQuestionOrders.apply($scope);
                     }
                 });
+                $(document).on('click', '#publish', function (e) {
+
+                })
+                $('#post').on('submit', function (e) {
+                    if (!$scope.isSaved) {
+                        alert();
+                        $scope.isSaved = true;
+                        e.preventDefault();
+                        setTimeout(function () {
+                            $('#post').submit();
+
+                        }, 3000)
+                    }
+                })
+                console.log($('#publish').length)
+            },
+            doSubmit: function () {
+
             },
             updateQuestionOrders: function () {
                 var postData = {id: $scope.getScreenPostId(), questions: []};
@@ -168,7 +187,7 @@
                                     $question.removeClass('being-deleted');
                                 }
                             });
-                        }else{
+                        } else {
                             $questions.removeClass('being-deleted');
                         }
                         $scope.$apply();

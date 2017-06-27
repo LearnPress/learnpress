@@ -38,6 +38,8 @@
          return angular.isObject(data) && String(data) !== '[object File]' ? param(data) : data;
          }];
          });*/
+
+
     });
     courseEditor.controller('courseEditor', ['$scope', '$compile', '$element', '$timeout', window['learn-press.base.controller']]);
     courseEditor.controller('modalSearchQuestion', ['$scope', '$compile', '$element', '$timeout', '$http', window['learn-press.controllers.question.search']]);

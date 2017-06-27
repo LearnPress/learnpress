@@ -18,7 +18,7 @@
             background: #FFF;
         }
         &:nth-child(even) {
-            background: #ebf9ff;
+            background: #f4fcff;
         }
         .edit-inline {
             background: #FFF;
@@ -58,6 +58,7 @@
                 box-shadow: none;
                 font-weight: normal;
                 color: #777;
+                padding:0;
             }
         }
     }
@@ -77,7 +78,7 @@
         text-align: right;
     }
     .column-name {
-
+        padding-left: 0;
     }
     .column-type {
         width: 150px;
@@ -115,6 +116,21 @@
                 width: 100%;
             }
         }
+        .inside {
+            padding: 0;
+            margin: 0 !important;
+        }
+        .rwmb-field {
+            border-bottom: 1px dashed #DDD;
+            padding: 20px;
+            margin: 0;
+            &:nth-child(even) {
+                background: #FFF;
+            }
+            &:nth-child(odd) {
+                background: #f4fcff;
+            }
+        }
     }
     .lp-list-options {
         border: 1px solid #DDD;
@@ -123,6 +139,10 @@
                 font-size: 12px;
             }
         }
+    }
+    .column-quick-add{
+        text-align: left;
+        padding: 5px 0;
     }
 }
 
