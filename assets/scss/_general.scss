@@ -1,4 +1,3 @@
-
 /**
  * Styles for displaying list of table
  */
@@ -135,7 +134,7 @@
     .lp-box-data-head {
         padding: 10px 15px;
         background: #FFF;
-        h3{
+        h3 {
             font-size: 18px;
             padding: 15px;
             margin: 0;
@@ -339,11 +338,11 @@
                         }
                     }
                 }
-                &.active{
+                &.active {
                     background: #dbf5ff;
 
                 }
-                &:hover{
+                &:hover {
                     background: #0085ba;
                     color: #FFF;
                     a.lp-add-item {
@@ -369,6 +368,16 @@
     opacity: 0;
     z-index: 99999;
     display: none;
+}
+
+.update-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 99999;
+    background: #000000;
 }
 
 #course-editor {

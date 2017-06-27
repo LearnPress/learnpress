@@ -18,6 +18,8 @@
             data: null,
             noncePrefix: 'quiz-',
             isSaved: false,
+            isSubmitting: false,
+            itemsPerRequest: 2,
             init: function () {
                 if ($element.attr('ng-controller') !== 'quiz') {
                     return;
@@ -41,18 +43,61 @@
                 })
                 $('#post').on('submit', function (e) {
                     if (!$scope.isSaved) {
-                        alert();
-                        $scope.isSaved = true;
                         e.preventDefault();
-                        setTimeout(function () {
-                            $('#post').submit();
-
-                        }, 3000)
+                        $scope.$apply(function () {
+                            $scope.doSubmit({
+                                done: function () {
+                                    alert('done')
+                                }
+                            });
+                        });
                     }
                 })
-                console.log($('#publish').length)
             },
-            doSubmit: function () {
+            doSubmit: function (options) {
+                this.isSubmitting = true;
+                var paged = options.paged ? options.paged : 1,
+                    loop = 0,
+                    $questions = this.getQuestions({
+                        paged: paged,
+                        limit: this.itemsPerRequest
+                    });
+                if ($questions.length && paged < 1000) {
+                    var postData = {
+                        questions: {}
+                    }, i=0;
+                    _.forEach($questions, function (el) {
+                        var ctrl = angular.element(el).scope(),
+                            data = ctrl.getFormData({order: i + 1});
+                        postData.questions[data.id] = data;
+                    });
+                    console.log(postData)
+                    $timeout(function () {
+                        options.paged = paged + 1;
+                        $scope.doSubmit(options);
+                    }, 3000)
+
+                }
+            },
+            getQuestions: function (options) {
+                options = $.extend({
+                    paged: 1,
+                    limit: -1
+                }, options);
+                var $questions = false,
+                    start = 0,
+                    end = 1000,
+                    selector = '';
+                if (options.limit > 0 && options.paged) {
+                    start = (options.paged - 1) * options.limit;
+                    end = start + options.limit;
+                }
+                selector = '[ng-controller="question"]:lt(' + end + ')';
+                if (start > 0) {
+                    selector += ':gt(' + (start - 1) + ')';
+                }
+                $questions = this.getElement(selector);
+                return $questions;
 
             },
             updateQuestionOrders: function () {

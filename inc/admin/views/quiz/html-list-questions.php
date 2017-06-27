@@ -147,4 +147,7 @@ $quiz = learn_press_get_quiz( $post );
             </tfoot>
         </table>
     </div>
+    <div class="update-overlay ng-hide" ng-show="isSubmitting">
+
+    </div>
 </div>
