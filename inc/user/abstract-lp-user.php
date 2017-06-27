@@ -480,6 +480,7 @@ class LP_Abstract_User {
 		if ( ! apply_filters( 'learn_press_before_user_finish_quiz', true, $quiz_id, $course_id, $this->id ) ) {
 			return false;
 		}
+
 		$course_id = $this->_get_course_id( $course_id );
 
 		$quiz = LP_Quiz::get_quiz( $quiz_id );
@@ -518,7 +519,7 @@ class LP_Abstract_User {
 			}
 		}
 
-		do_action( 'learn_press_user_finish_quiz', $quiz_id, $this->id );
+		do_action( 'learn_press_user_finish_quiz', $quiz_id, $course_id, $this->id );
 
 		return $return;
 	}
