@@ -32,6 +32,8 @@ class LP_Debug {
 		$this->_handles = array();
 	}
 
+	protected static $_current_name = '';
+
 	/**
 	 * Destructor.
 	 */
@@ -147,13 +149,20 @@ class LP_Debug {
 		throw new Exception( $message );
 	}
 
-	public static function timeStart( $name ) {
+	public static function timeStart( $name = '' ) {
+		if ( ! $name ) {
+			self::$_current_name = md5( uniqid() );
+			$name                = self::$_current_name;
+		}
 		self::$_time[ $name ] = microtime();
 	}
 
-	public static function timeEnd( $name ) {
+	public static function timeEnd( $name = '' ) {
+		if ( ! $name ) {
+			$name = self::$_current_name;
+		}
 		$time = microtime() - self::$_time[ $name ];
-		echo "{$name} execution time = " . $time;
+		echo "{$name} execution time = " . $time . "\n";
 		unset( self::$_time[ $name ] );
 	}
 

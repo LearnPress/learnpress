@@ -10,6 +10,7 @@
             border-bottom: 1px solid #DDD;
             &.column-actions {
                 padding: 0;
+                min-width: 100px;
             }
         }
     }

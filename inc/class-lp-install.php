@@ -469,6 +469,7 @@ class LP_Install {
 	}
 
 	private static function _create_options() {
+		/*
 		include_once LP_PLUGIN_PATH . '/inc/admin/settings/class-lp-settings-base.php';
 		$settings_classes = array(
 			'LP_Settings_General'  => include_once LP_PLUGIN_PATH . '/inc/admin/settings/class-lp-settings-general.php',
@@ -504,7 +505,7 @@ class LP_Install {
 			if ( ! get_option( $option_name ) ) {
 				update_option( $option_name, maybe_unserialize( $option_value ), 'yes' );
 			}
-		}
+		}*/
 		update_option( 'learn_press_install', 'yes' );
 	}
 

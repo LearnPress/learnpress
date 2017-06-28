@@ -46,8 +46,6 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 			add_action( 'edit_form_after_editor', array( $this, 'quiz_editor' ), 0 );
 
 
-
-
 			parent::__construct( $post_type, $args );
 		}
 
@@ -136,9 +134,10 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 							'revisions',
 						),
 						'hierarchical'       => true,
-						'rewrite'            => array( 'slug'         => 'quizzes',
-						                               'hierarchical' => true,
-						                               'with_front'   => false
+						'rewrite'            => array(
+							'slug'         => 'quizzes',
+							'hierarchical' => true,
+							'with_front'   => false
 						)
 					)
 				)
@@ -146,25 +145,9 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		}
 
 		public function add_meta_boxes() {
-			$prefix                                        = '_lp_';
-			/*$meta_box                                      = apply_filters(
-				'learn_press_quiz_question_meta_box_args',
-				array(
-					'title'      => __( 'Questions', 'learnpress' ),
-					'post_types' => LP_QUIZ_CPT,
-					'id'         => 'questions',
-					'fields'     => array(
-						array(
-							'name' => '',
-							'id'   => "{$prefix}questions",
-							'type' => 'quiz_questions'
-						)
-					)
-				)
-			);
-			$GLOBALS['learn_press_quiz_question_meta_box'] = new RW_Meta_Box( $meta_box );*/
-			$post_id                                       = learn_press_get_request( 'post' );
-			$duration_type                                 = get_post_meta( $post_id, "{$prefix}duration_type", true );
+			$prefix = '_lp_';
+			$post_id       = learn_press_get_request( 'post' );
+			$duration_type = get_post_meta( $post_id, "{$prefix}duration_type", true );
 			new RW_Meta_Box(
 				apply_filters( 'learn_press_quiz_general_meta_box', array(
 						'title'      => __( 'General Settings', 'learnpress' ),
@@ -178,8 +161,6 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 								'id'      => "{$prefix}show_hide_question",
 								'type'    => 'radio',
 								'options' => array(
-									// Removed from 2.1.4
-									//'global' => __( wp_kses( 'Global Setting <a target="_blank" href="' . admin_url( 'admin.php?page=learn-press-settings&tab=courses' ) . '">Go to the setting</a>', array( 'a' => array( 'href' => array(), 'target' => array() ) ) ), 'learnpress' ),
 									'show' => __( 'Show', 'learnpress' ),
 									'hide' => __( 'Hide', 'learnpress' )
 								),
@@ -248,19 +229,6 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 								),
 								'std'     => 'no'
 							)
-							// Removed from 2.1.4,
-							/*
-							array(
-								'name'    => __( 'Show explanation', 'learnpress' ),
-								'id'      => "{$prefix}show_explanation",
-								'type'    => 'yes_no',
-								'desc'    => __( 'Show explanation of question after user checking answer.', 'learnpress' ),
-								'options' => array(
-									'no'  => __( 'No', 'learnpress' ),
-									'yes' => __( 'Yes', 'learnpress' )
-								),
-								'std'     => 'no'
-							)*/
 						)
 					)
 				)

@@ -5,7 +5,7 @@ defined( 'ABSPATH' ) || exit();
 /**
  * Class LP_Abstract_Course_Item
  */
-abstract class LP_Abstract_Course_Item extends LP_Abstract_Object {
+abstract class LP_Abstract_Course_Item extends LP_Abstract_Object_Data {
 
 	/**
 	 * The icon maybe used somewhere.

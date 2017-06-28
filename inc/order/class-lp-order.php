@@ -10,7 +10,7 @@
 
 defined( 'ABSPATH' ) || exit();
 
-class LP_Order extends LP_Abstract_Object {
+class LP_Order extends LP_Abstract_Object_Data {
 
 	protected $_data = array(
 		'order_date'       => '',

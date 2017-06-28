@@ -5,7 +5,7 @@ defined( 'ABSPATH' ) || exit();
 /**
  * Class LP_Abstract_Course
  */
-abstract class LP_Abstract_Course extends LP_Abstract_Object {
+abstract class LP_Abstract_Course extends LP_Abstract_Object_Data {
 	/**
 	 * The course (post) ID.
 	 *

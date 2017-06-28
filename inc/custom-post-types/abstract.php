@@ -10,7 +10,7 @@
 
 defined( 'ABSPATH' ) || exit();
 
-abstract class LP_Abstract_Post_Type {
+abstract class LP_Abstract_Post_Type extends LP_Abstract_Object_Data {
 	/**
 	 * Type of post
 	 *

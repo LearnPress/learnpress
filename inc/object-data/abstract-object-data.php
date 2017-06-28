@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Class LP_Abstract_Object
+ * Class LP_Abstract_Object_Data
  */
-class LP_Abstract_Object {
+class LP_Abstract_Object_Data {
 
 	/**
 	 * @var int
@@ -32,7 +32,7 @@ class LP_Abstract_Object {
 	protected $_supports = array();
 
 	/**
-	 * LP_Abstract_Object constructor.
+	 * LP_Abstract_Object_Data constructor.
 	 *
 	 * @param null $data
 	 */
