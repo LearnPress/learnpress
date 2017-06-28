@@ -21,7 +21,6 @@ class LP_Abstract_Object_Data {
 	protected $_extra_data = array();
 
 	/**
-	 *
 	 * @var bool
 	 */
 	protected $_no_cache = false;
