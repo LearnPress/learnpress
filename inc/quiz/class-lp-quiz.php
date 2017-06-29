@@ -41,6 +41,12 @@ class LP_Quiz extends LP_Abstract_Course_Item {
 
 	public $content = '';
 
+	/**
+	 * LP_Quiz_CURD
+	 *
+	 * @var string
+	 */
+	protected $_curd = 'LP_Quiz_CURD';
 
 	/**
 	 * @var array
@@ -71,16 +77,9 @@ class LP_Quiz extends LP_Abstract_Course_Item {
 
 	/**
 	 * Load quiz data
-	 *
-	 * @throws Exception
 	 */
 	public function load() {
-		$the_id = $this->get_id();
-		if ( ! $the_id || LP_QUIZ_CPT !== get_post_type( $the_id ) ) {
-			throw new Exception( __( 'Invalid quiz.', 'learnpress' ) );
-		}
-		$this->_load_questions();
-		$this->_update_meta_cache();
+		$this->_curd->load( $this );
 	}
 
 	/**

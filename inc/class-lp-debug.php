@@ -154,14 +154,14 @@ class LP_Debug {
 			self::$_current_name = md5( uniqid() );
 			$name                = self::$_current_name;
 		}
-		self::$_time[ $name ] = microtime();
+		self::$_time[ $name ] = microtime(true);
 	}
 
 	public static function timeEnd( $name = '' ) {
 		if ( ! $name ) {
 			$name = self::$_current_name;
 		}
-		$time = microtime() - self::$_time[ $name ];
+		$time = microtime(true) - self::$_time[ $name ];
 		echo "{$name} execution time = " . $time . "\n";
 		unset( self::$_time[ $name ] );
 	}

@@ -3,7 +3,7 @@
 /**
  * Class LP_Abstract_Object_Data
  */
-class LP_Abstract_Object_Data {
+abstract class LP_Abstract_Object_Data {
 
 	/**
 	 * @var int
@@ -31,6 +31,13 @@ class LP_Abstract_Object_Data {
 	protected $_supports = array();
 
 	/**
+	 * CURD class to manipulation with database.
+	 *
+	 * @var null
+	 */
+	protected $_curd = null;
+
+	/**
 	 * LP_Abstract_Object_Data constructor.
 	 *
 	 * @param null $data
@@ -40,6 +47,13 @@ class LP_Abstract_Object_Data {
 		if ( array_key_exists( 'id', $this->_data ) ) {
 			$this->set_id( absint( $this->_data['id'] ) );
 			unset( $this->_data['id'] );
+		}
+		$this->load_curd();
+	}
+
+	protected function load_curd() {
+		if ( is_string( $this->_curd ) && $this->_curd ) {
+			$this->_curd = new $this->_curd();
 		}
 	}
 

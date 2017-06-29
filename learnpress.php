@@ -424,8 +424,12 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * Includes needed files
 		 */
 		public function includes() {
+			require_once 'inc/interfaces/interface-curd.php';
+			require_once 'inc/abstracts/abstract-object-data.php';
 
-			require_once 'inc/object-data/abstract-object-data.php';
+			require_once 'inc/curds/class-lp-course-curd.php';
+			require_once 'inc/curds/class-lp-quiz-curd.php';
+
 			require_once 'inc/class-lp-debug.php';
 
 			require_once 'inc/course/abstract-course-item.php';
