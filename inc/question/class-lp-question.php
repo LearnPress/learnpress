@@ -46,9 +46,7 @@ class LP_Question extends LP_Abstract_Course_Item {
 	 */
 	protected $_supports = array();
 
-	protected $_data = array(
-
-    );
+	protected $_data = array();
 
 	/**
 	 * Construct
@@ -62,6 +60,7 @@ class LP_Question extends LP_Abstract_Course_Item {
 
 		parent::__construct( $the_question, $args );
 
+		$this->_curl = new LP_Question_CURD();
 		if ( is_numeric( $the_question ) && $the_question > 0 ) {
 			$this->set_id( $the_question );
 		} elseif ( $the_question instanceof self ) {
@@ -92,81 +91,9 @@ class LP_Question extends LP_Abstract_Course_Item {
 	 * @throws Exception
 	 */
 	public function load() {
-		$the_id = $this->get_id();
-		if ( ! $the_id || LP_QUESTION_CPT !== get_post_type( $the_id ) ) {
-			LP_Debug::throw_exception( sprintf( __( 'Invalid question with ID "%d".', 'learnpress' ), $the_id ) );
-		}
-		$this->_load_answer_options();
+		$this->_curl->load( $this );
 	}
 
-	/**
-	 * Load answer options for the question from database.
-	 * Load from cache if data is already loaded into cache.
-	 * Otherwise, load from database and put to cache.
-	 */
-	protected function _load_answer_options() {
-		$id             = $this->get_id();
-		$answer_options = wp_cache_get( 'answer-options-' . $id, 'lp-questions' );
-		if ( false === $answer_options ) {
-			global $wpdb;
-			$query = $wpdb->prepare( "
-				SELECT *
-				FROM {$wpdb->prefix}learnpress_question_answers
-				WHERE question_id = %d
-				ORDER BY answer_order ASC
-			", $id );
-			if ( $answer_options = $wpdb->get_results( $query, OBJECT_K ) ) {
-				foreach ( $answer_options as $k => $v ) {
-					$answer_options[ $k ] = (array) $answer_options[ $k ];
-					if ( $answer_data = maybe_unserialize( $v->answer_data ) ) {
-						foreach ( $answer_data as $data_key => $data_value ) {
-							$answer_options[ $k ][ $data_key ] = $data_value;
-						}
-					}
-					unset( $answer_options[ $k ]['answer_data'] );
-				}
-			}
-			$answer_options = apply_filters( 'learn-press/question/load-answer-options', $answer_options, $id );
-			$this->_load_answer_option_meta( $answer_options );
-			wp_cache_set( 'answer-options-' . $id, $answer_options, 'lp-questions' );
-		}
-		$this->set_data( 'answer_options', $answer_options );
-	}
-
-	/**
-	 * Load meta data for answer options.
-	 *
-	 * @param array $answer_options
-	 *
-	 * @return mixed;
-	 */
-	protected function _load_answer_option_meta( &$answer_options ) {
-		global $wpdb;
-		if ( ! $answer_options ) {
-			return false;
-		}
-		$answer_option_ids = wp_list_pluck( $answer_options, 'question_answer_id' );
-		$format            = array_fill( 0, sizeof( $answer_option_ids ), '%d' );
-		$query             = $wpdb->prepare( "
-			SELECT *
-			FROM {$wpdb->prefix}learnpress_question_answermeta
-			WHERE learnpress_question_answer_id IN(" . join( ', ', $format ) . ")
-		", $answer_option_ids );
-		if ( $metas = $wpdb->get_results( $query ) ) {
-			foreach ( $metas as $meta ) {
-				$key        = $meta->meta_key;
-				$option_key = $meta->learnpress_question_answer_id;
-				if ( ! empty( $answer_options[ $option_key ] ) ) {
-					if ( $key == 'checked' ) {
-						$key = 'is_true';
-					}
-					$answer_options[ $option_key ][ $key ] = $meta->meta_value;
-				}
-			}
-		}
-
-		return true;
-	}
 
 	/**
 	 * Get answer options of the question
@@ -197,12 +124,12 @@ class LP_Question extends LP_Abstract_Course_Item {
 			$updated = wp_insert_post( $post_data, true );
 		}
 
-		if ( !is_numeric( $updated ) ) {
+		if ( ! is_numeric( $updated ) ) {
 			return false;
 		}
 
 		// Does this question support answer options?
-		if ( !$this->is_support( 'answer_options' ) ) {
+		if ( ! $this->is_support( 'answer_options' ) ) {
 			return $updated;
 		}
 
@@ -329,8 +256,10 @@ class LP_Question extends LP_Abstract_Course_Item {
 		}
 
 		// Fake screen
-		$screen     = new stdClass();
-		$screen->id = LP_QUESTION_CPT;
+		$screen            = new stdClass();
+		$screen->id        = LP_QUESTION_CPT;
+		$screen->base      = '';
+		$screen->post_type = LP_QUESTION_CPT;
 
 		// Fake global $post
 		$origin_post = $post;

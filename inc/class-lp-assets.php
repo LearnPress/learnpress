@@ -233,6 +233,17 @@ class LP_Assets {
 			'jquery-ui-slider',
 			'jquery-ui-draggable'
 		), $ver, 1 );
+
+		$scripts->add('modal-search', $default_path . 'js/admin/controllers/modal-search.js' . $no_cache, array(
+			'jquery',
+			'utils',
+			'angularjs'
+		) );
+
+		$scripts->add( 'modal-search-questions', $default_path . 'js/admin/controllers/modal-search-questions.js' . $no_cache, array(
+			'modal-search'
+		) );
+
 		$scripts->add( 'base-controller', $default_path . 'js/admin/controllers/base.js' . $no_cache, array(
 			'jquery',
 			'utils',
@@ -243,13 +254,9 @@ class LP_Assets {
 			'utils',
 			'angularjs'
 		) );
-		$scripts->add( 'search-questions', $default_path . 'js/admin/controllers/search-questions.js' . $no_cache, array(
-			'jquery',
-			'utils',
-			'angularjs'
-		) );
+
 		$scripts->add( 'question-controller', $default_path . 'js/admin/controllers/question.js' . $no_cache, array( 'base-controller' ) );
-		$scripts->add( 'quiz-controller', $default_path . 'js/admin/controllers/quiz.js' . $no_cache, array( 'base-controller', 'search-questions' ) );
+		$scripts->add( 'quiz-controller', $default_path . 'js/admin/controllers/quiz.js' . $no_cache, array( 'base-controller', 'modal-search-questions' ) );
 		$scripts->add( 'course-controller', $default_path . 'js/admin/controllers/course.js' . $no_cache, array( 'base-controller' ) );
 		// admin
 		$scripts->add( 'question-app', $default_path . 'js/admin/question.js' . $no_cache, array(

@@ -31,8 +31,11 @@
                 }
             }
         }
-
-        > tr > td {
+    }
+    tbody,
+    tfoot {
+        > tr > td,
+        > tr > th{
             padding: 8px 10px;
             border: none;
             text-align: left;
@@ -59,7 +62,7 @@
                 box-shadow: none;
                 font-weight: normal;
                 color: #777;
-                padding:0;
+                padding: 0;
             }
         }
     }
@@ -141,9 +144,26 @@
             }
         }
     }
-    .column-quick-add{
+    tfoot {
+        th {
+            padding: 8px 10px;
+            font-weight: normal;
+            &.column-sort{
+                .fa{
+                    display: none;
+                }
+            }
+        }
+    }
+    .column-quick-add {
         text-align: left;
         padding: 5px 0;
+        input[type="text"], button{
+            vertical-align: middle;
+        }
+        input[type="text"]{
+            width: 50%;
+        }
     }
 }
 

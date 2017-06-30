@@ -42,7 +42,7 @@
 
     });
     courseEditor.controller('courseEditor', ['$scope', '$compile', '$element', '$timeout', window['learn-press.base.controller']]);
-    courseEditor.controller('modalSearchQuestion', ['$scope', '$compile', '$element', '$timeout', '$http', window['learn-press.controllers.question.search']]);
+
     $(document).on('click', '.learn-press-tooltip', function () {
         $('.tipsy').remove();
     });

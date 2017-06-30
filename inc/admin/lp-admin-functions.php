@@ -69,6 +69,10 @@ function learn_press_get_admin_view( $name, $plugin_file = null ) {
 	return apply_filters( 'learn_press_admin_view', $view, $name );
 }
 
+function learn_press_admin_view_content( $name, $args = array() ) {
+	return learn_press_admin_view( $name, $args, false, true );
+}
+
 /**
  * Find a full path of a view and display the content in admin
  *

@@ -429,6 +429,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			require_once 'inc/curds/class-lp-course-curd.php';
 			require_once 'inc/curds/class-lp-quiz-curd.php';
+			require_once 'inc/curds/class-lp-question-curd.php';
 
 			require_once 'inc/class-lp-debug.php';
 

@@ -254,6 +254,9 @@
                     $newQuestion = $question.clone();
                 $newQuestion.insertAfter($question);
             },
+            newQuestionIndex: function () {
+                return this.getElement('#lp-list-questions').children('tbody').length + 1;
+            },
             toggleContent: function (event) {
                 var $btn = $(event.target).closest('.lp-btn-toggle').toggleClass('closed'),
                     closed = $btn.hasClass('closed'),
@@ -275,6 +278,27 @@
             },
             showModalSearchItems: function () {
 
+            },
+            onQuickAddInputKeyEvent: function(event){
+                var eventType = event.type,
+                    val = event.target.value;
+
+                switch (event.keyCode) {
+                    case 13:
+
+                        break;
+                    case 38:
+                    case 40:
+
+                        break;
+                    case 8:
+
+
+                }
+
+                if (('keypress' === eventType || 'keydown' === eventType ) && event.keyCode === 13) {
+                    event.preventDefault();
+                }
             }
         });
         $scope.init();
