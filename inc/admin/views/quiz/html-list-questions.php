@@ -32,17 +32,9 @@ $quiz = learn_press_get_quiz( $post );
                 </th>
                 <th class="column-order">{{newQuestionIndex()}}</th>
                 <th class="column-name column-quick-add" colspan="3">
-                    <div ng-controller="modalSearch" class="modal-search">
-                        <div ng-controller="modalSearchQuestion" class="modal-search-questions">
-                            <input type="text"
-                                   ng-keypress="onQuickAddInputKeyEvent($event)"
-                                   ng-keyup="onQuickAddInputKeyEvent($event)"
-                                   ng-keydown="onQuickAddInputKeyEvent($event)"
-                                   ng-blur="onQuickAddInputKeyEvent($event)"
-                                   id="quick-add-input">
-                            <button type="button" class="button"><?php _e( 'Add', 'learnpress' ); ?></button>
-                        </div>
-                    </div>
+                    <?php learn_press_admin_view('quiz/html-search-questions');?>
+                    <button type="button" class="button" ng-click="addNewQuestion($event)"><?php _e('Add as New', 'learnpress');?></button>
+                    <button type="button" class="button"><?php _e('Select', 'learnpress');?></button>
                 </th>
             </tr>
             </tfoot>

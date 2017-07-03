@@ -12,6 +12,7 @@
 @import "admin-tabs";
 @import "addons";
 @import "post-type";
+@import "modal-search";
 
 /* Metabox email template field */
 .lp-email-templates {
@@ -167,8 +168,8 @@
 
     }
     .template-row {
-        &.outdated, &.up-to-date{
-            code:before{
+        &.outdated, &.up-to-date {
+            code:before {
                 font-family: Dashicons;
                 vertical-align: middle;
                 margin-top: -2px;
@@ -180,8 +181,8 @@
             .template-version {
                 color: #FF0000;
             }
-            .template-file{
-                code:before{
+            .template-file {
+                code:before {
                     content: "\f534";
                     color: #FF0000;
                 }
@@ -191,8 +192,8 @@
             .template-version {
                 color: #1859ff;
             }
-            .template-file{
-                code:before{
+            .template-file {
+                code:before {
                     content: "\f147";
                     color: #0085ba;
                 }

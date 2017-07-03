@@ -88,20 +88,97 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'clear_quiz_question',
 				'search_items' => 'modal_search_items',
 				'update-payment-order',
-				'bundle_update_quiz_questions'
+				'bundle_update_quiz_questions',
+				'modal-search-questions'
 			);
 			foreach ( $ajax_events as $ajax_event => $callback ) {
 				if ( ! is_string( $ajax_event ) ) {
 					$ajax_event = $callback;
 				}
-				$callback = preg_replace( '~[-]+~', '_', $callback );
-				add_action( "learn-press/ajax/ajax_{$ajax_event}", array( __CLASS__, $callback ) );
-				add_action( "learn-press/ajax/ajax-{$ajax_event}", array( __CLASS__, $callback ) );
+				$ajax_event = preg_replace( '~[-]+~', '_', $ajax_event );
+				$callback   = preg_replace( '~[-]+~', '_', $callback );
+				add_action( "learn-press/ajax/{$ajax_event}", array( __CLASS__, $callback ) );
 				//add_action( 'learn-press/ajax/ajax_delete_quiz_question', array( __CLASS__, 'delete_quiz_question' ) );
 				//add_action( 'learn-press/ajax/ajax_update_quiz', array( __CLASS__, 'update_quiz' ) );
 			}
 
 		}
+
+		public static function modal_search_questions() {
+			self::parsePhpInput( $_REQUEST );
+			$paged   = learn_press_get_request( 'paged' );
+			$args    = array(
+				'term'       => learn_press_get_request( 'term' ),
+				'context'    => 'lp_quiz',
+				'type'       => 'lp_question',
+				'context_id' => learn_press_get_request( 'id' ),
+				'exclude'    => learn_press_get_request( 'exclude' ),
+				'limit'      => learn_press_get_request( 'limit' ),
+				'paged'      => $paged
+			);
+			$results = LP_Query_Search::search_items( $args );
+			$nav     = '';
+			if ( $results['items'] ) {
+				foreach ( $results['items'] as $k => $item ) {
+					$results['items'][ $k ] = array(
+						'id'   => $item->ID,
+						'text' => get_the_title( $item->ID )
+					);
+				}
+				if ( $paged && $results['pages'] > 1 ) {
+					$pagenum_link = html_entity_decode( get_pagenum_link() );
+
+					$query_args = array();
+					$url_parts  = explode( '?', $pagenum_link );
+
+					if ( isset( $url_parts[1] ) ) {
+						wp_parse_str( $url_parts[1], $query_args );
+					}
+
+					$pagenum_link = remove_query_arg( array_keys( $query_args ), $pagenum_link );
+					$pagenum_link = trailingslashit( $pagenum_link ) . '%_%';
+					$nav          = paginate_links( array(
+						'base'      => $pagenum_link,
+						//'format'    => $format,
+						'total'     => $results['pages'],
+						'current'   => max( 1, $paged ),
+						'mid_size'  => 1,
+						'add_args'  => array_map( 'urlencode', $query_args ),
+						'prev_text' => __( '<', 'learnpress' ),
+						'next_text' => __( '>', 'learnpress' ),
+						'type'      => ''
+					) );
+				}
+			}
+
+
+			learn_press_send_json( array( 'total'     => $results['total'],
+			                              'items'     => $results['items'],
+			                              'navigator' => $nav
+			) );
+			$output = '';
+			if ( ! empty( $items ) ) {
+				global $post;
+				$origin_post = $post;
+				foreach ( $items as $post ) {
+					setup_postdata( $post );
+					$output .= sprintf( '
+                    <li class="%s" data-id="%2$d" data-type="%4$s" data-text="%3$s">
+                        <label>
+                            <input type="checkbox" value="%2$d" name="selectedItems[]">
+                            <span class="lp-item-text">%3$s</span>
+                        </label>
+                    </li>
+                    ', 'lp-result-item', get_the_ID(), esc_attr( get_the_title() ), $post->post_type );
+				}
+				$post = $origin_post;
+				setup_postdata( $post );
+			} else {
+				$output .= '<li>' . apply_filters( 'learn-press/modal-search-questions/item-not-found', __( 'No question found', 'learnpress' ), 'lp_quiz' ) . '</li>';
+			}
+			echo $output;
+		}
+
 
 		/**
 		 * Update ordering of payments when user changing.
@@ -111,10 +188,10 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			update_option( 'learn_press_payment_order', $payment_order );
 		}
 
-		public static function bundle_update_quiz_questions(){
-		    self::parsePhpInput($_REQUEST);
-		    learn_press_debug($_REQUEST);
-        }
+		public static function bundle_update_quiz_questions() {
+			self::parsePhpInput( $_REQUEST );
+			learn_press_debug( $_REQUEST );
+		}
 
 		/**
 		 * Get content send via payload and parse to json.
@@ -165,7 +242,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			if ( empty( $_REQUEST['lp-ajax'] ) ) {
 				return;
 			}
-			do_action( 'learn-press/ajax/' . $_REQUEST['lp-ajax'] );
+			$action = preg_replace( '~[-]~', '_', $_REQUEST['lp-ajax'] );
+			do_action( "learn-press/ajax/{$action}" );
 			die();
 		}
 

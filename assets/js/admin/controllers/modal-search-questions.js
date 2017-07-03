@@ -16,8 +16,16 @@
         $element = $($element);
         angular.extend($scope, {
             init: function(){
-                console.log($element);
-                this.abc();
+                this.config = $element.data();
+                this.config =_.omit(this.config, ['$ngControllerController', '$scope'])
+            },
+            getExcludeItems: function(){
+                var $els = $('#lp-list-questions').children('tbody'),
+                    items = [];
+                _.forEach($els, function (el, i) {
+                    items.push($(el).data('dbid'));
+                });
+                return items;
             }
         });
         $scope.init();

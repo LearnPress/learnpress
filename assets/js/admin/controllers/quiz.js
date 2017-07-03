@@ -20,6 +20,7 @@
             isSaved: false,
             isSubmitting: false,
             itemsPerRequest: 2,
+            $searchCtrl: null,
             init: function () {
                 if ($element.attr('ng-controller') !== 'quiz') {
                     return;
@@ -38,9 +39,29 @@
                         $scope.updateQuestionOrders.apply($scope);
                     }
                 });
-                $(document).on('click', '#publish', function (e) {
+                $(document).on('learn-press/modal-search/select-items', function (e, s) {
+                    var $ctrl = angular.element($('.modal-search-questions').get(0)).scope(),
+                        $list = $('#lp-list-questions'),
+                        $tbody = $('#lp-list-questions > tbody:last'),
+                        templateHTML = $tbody.get(0).outerHTML;
+                    console.log(s)
+                    _.forEach(s, function (data) {
+                        var $newQuestion = $compile(templateHTML)($scope, function (clonedElement, scope) {
+                            $(clonedElement)
+                                .attr('data-dbid', data.id)
+                                .find('.lp-question-heading-title')
+                                .val(data.text)
+                                .end()
+                                .insertAfter($tbody)
 
-                })
+                            return clonedElement;
+                        });
+                    });
+                    var $search = $ctrl.getSearchCtrl()
+                    $search.setRequestData({paged: 1});
+                    $search.request();
+
+                });
                 $('#post').on('submit', function (e) {
                     if (!$scope.isSaved) {
                         e.preventDefault();
@@ -279,26 +300,19 @@
             showModalSearchItems: function () {
 
             },
-            onQuickAddInputKeyEvent: function(event){
-                var eventType = event.type,
-                    val = event.target.value;
+            onQuickAddInputKeyEvent: function (event) {
 
-                switch (event.keyCode) {
-                    case 13:
+            },
+            addNewQuestion: function () {
+                var $ctrl = this.getSearchCtrl(),
+                    title = $ctrl.searchTerm;
 
-                        break;
-                    case 38:
-                    case 40:
-
-                        break;
-                    case 8:
-
-
+            },
+            getSearchCtrl: function () {
+                if (!this.$searchCtrl) {
+                    this.$searchCtrl = angular.element($('.modal-search-questions').get(0)).scope();
                 }
-
-                if (('keypress' === eventType || 'keydown' === eventType ) && event.keyCode === 13) {
-                    event.preventDefault();
-                }
+                return this.$searchCtrl;
             }
         });
         $scope.init();

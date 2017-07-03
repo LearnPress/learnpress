@@ -54,7 +54,7 @@
                     }
                 }
             }
-            input[type="text"] {
+            input.lp-question-heading-title {
                 width: 100%;
                 font-size: 14px;
                 border: none;
@@ -161,9 +161,7 @@
         input[type="text"], button{
             vertical-align: middle;
         }
-        input[type="text"]{
-            width: 50%;
-        }
+
     }
 }
 

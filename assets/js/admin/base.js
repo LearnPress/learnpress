@@ -41,6 +41,7 @@
 
 
     });
+
     courseEditor.controller('courseEditor', ['$scope', '$compile', '$element', '$timeout', window['learn-press.base.controller']]);
 
     $(document).on('click', '.learn-press-tooltip', function () {

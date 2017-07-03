@@ -40,6 +40,11 @@ $remove-icon-color: #d05d5d;
     -webkit-box-shadow: $args;
     -moz-box-shadow: $args;
     box-shadow: $args;
+    &:focus{
+        -webkit-box-shadow: $args;
+        -moz-box-shadow: $args;
+        box-shadow: $args;
+    }
 }
 
 @mixin no-outline() {
