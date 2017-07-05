@@ -28,6 +28,12 @@ $remove-icon-color: #d05d5d;
     animation: $args;
 }
 
+@mixin transition($args...) {
+    -webkit-transition: $args;
+    -moz-transition: $args;
+    transition: $args;
+}
+
 @mixin transform($args...) {
     -webkit-transform: $args;
     -moz-transform: $args;
@@ -40,7 +46,7 @@ $remove-icon-color: #d05d5d;
     -webkit-box-shadow: $args;
     -moz-box-shadow: $args;
     box-shadow: $args;
-    &:focus{
+    &:focus {
         -webkit-box-shadow: $args;
         -moz-box-shadow: $args;
         box-shadow: $args;

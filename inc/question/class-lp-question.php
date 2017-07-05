@@ -250,10 +250,6 @@ class LP_Question extends LP_Abstract_Course_Item {
 	public function output_meta_box_settings() {
 		global $wp_meta_boxes, $post;
 
-		// There is no meta boxes
-		if ( empty( $wp_meta_boxes[ LP_QUESTION_CPT ] ) ) {
-			return;
-		}
 
 		// Fake screen
 		$screen            = new stdClass();
@@ -265,12 +261,16 @@ class LP_Question extends LP_Abstract_Course_Item {
 		$origin_post = $post;
 		$post        = get_post( $this->get_id() );
 		setup_postdata( $post );
+		$origin_meta_boxes = null;
+		// There is no meta boxes
+		if ( !empty( $wp_meta_boxes[ LP_QUESTION_CPT ] ) ) {
 
-		// Track the origin meta-boxes
-		$origin_meta_boxes = $wp_meta_boxes[ LP_QUESTION_CPT ];
+			// Track the origin meta-boxes
+			$origin_meta_boxes = $wp_meta_boxes[ LP_QUESTION_CPT ];
 
-		// Unset origin meta box so new meta box with the same id is effected.
-		unset( $wp_meta_boxes[ LP_QUESTION_CPT ] );
+			// Unset origin meta box so new meta box with the same id is effected.
+			unset( $wp_meta_boxes[ LP_QUESTION_CPT ] );
+		}
 
 		add_filter( 'rwmb_field_meta', array( $this, '_filter_meta_box_meta' ), 10, 10 );
 		$meta_box_settings = LP_Question_Post_Type::settings_meta_box();
@@ -309,8 +309,10 @@ class LP_Question extends LP_Abstract_Course_Item {
 		$post = $origin_post;
 		setup_postdata( $post );
 
-		// Restore origin meta boxes
-		$wp_meta_boxes[ LP_QUESTION_CPT ] = $origin_meta_boxes;
+		if($origin_meta_boxes) {
+			// Restore origin meta boxes
+			$wp_meta_boxes[ LP_QUESTION_CPT ] = $origin_meta_boxes;
+		}
 	}
 
 	public function _filter_meta_box_meta( $meta, $field, $is_saved ) {

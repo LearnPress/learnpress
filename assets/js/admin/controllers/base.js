@@ -14,6 +14,7 @@
      */
     window['learn-press.base.controller'] = function ($scope, $compile, $element, $timeout) {
         $element = $($element);
+        var DEBUG = true;
         angular.extend($scope, {
             $element: $element,
             $doc: $(document),

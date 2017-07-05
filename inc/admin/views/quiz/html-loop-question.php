@@ -31,15 +31,17 @@ if ( learn_press_is_hidden_post_box( $question_id ) ) {
 	$box_classes[] = 'closed';
 }
 ?>
-<tbody ng-controller="question"
+<tbody
        id="learn-press-question-<?php echo $template_data['id']; ?>"
+       class="learn-press-question"
        data-type="<?php echo $type; ?>"
        data-dbid="<?php echo $template_data['id']; ?>"
+       ng-controller="question"
        ng-click="elementClick($event)"
        ng-class="{'invalid-type': !isValidQuestionType()}">
 <tr>
     <td class="column-sort"><i class="fa fa-bars"></i></td>
-    <td class="column-order"><?php echo ++ $index; ?></td>
+    <td class="column-order">{{getQuestionIndex(this)}}</td>
     <td class="column-name">
         <input type="text" class="lp-question-heading-title"
                value="<?php echo esc_attr( $template_data['title'] ); ?>"

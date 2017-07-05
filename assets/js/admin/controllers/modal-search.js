@@ -70,7 +70,15 @@
              */
             checkedItems: [],
 
+            /**
+             * Items checked data
+             */
             checkedItemData: [],
+
+            /**
+             * Document
+             */
+            $doc: $(document),
 
             /**
              * Init, main entry point.
@@ -220,6 +228,7 @@
 
                 if (('keypress' === eventType || 'keydown' === eventType ) && event.keyCode === 13) {
                     event.preventDefault();
+
                 }
             },
 
@@ -271,6 +280,14 @@
                     }
                 }
                 searchItems.search(data);
+            },
+
+            close: function(){
+                this.searchTerm = '';
+                this.searchData.paged = 1;
+                this.hasItems = false;
+                this.getElement().removeClass('has-items');
+                console.log(this.getElement())
             },
 
             /**

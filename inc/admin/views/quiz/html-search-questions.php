@@ -4,7 +4,7 @@
          class="modal-search-questions"
          data-type="questions"
          data-context="lp_quiz"
-         data-limit="2"
+         data-limit="5"
          data-paged="1">
         <input type="text"
                ng-keypress="onSearchInputKeyEvent($event)"
@@ -31,7 +31,6 @@
 					<?php esc_html_e( 'No item', 'learnpress' ); ?>
                 </li>
             </ul>
-            {{this.checkedItems}}
             <div class="search-results-footer">
                 <div class="checked-items">
                     {{htmlCountSelectedItems('<?php esc_attr_e( '%d/%d selected', 'learnpress' ); ?>')}}
@@ -43,6 +42,9 @@
                             class="add-items button"
                             ng-click="selectItems($event)"
                             ng-class="{disabled: !checkedItems.length}"><?php _e( 'Add', 'learnpress' ); ?></button>
+                    <button type="button"
+                            class="close-search button"
+                            ng-click="close($event)"><?php _e( 'Close', 'learnpress' ); ?></button>
                 </div>
                 <div class="search-navigator" ng-show="showNavigator"></div>
             </div>

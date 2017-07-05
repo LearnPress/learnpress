@@ -74,6 +74,9 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'_modal_search_items_not_found'
 			), 10, 2 );
 			add_action( 'admin_init', array( __CLASS__, 'do_ajax' ), - 1000 );
+			//add_action( 'load-post-new.php', array( __CLASS__, 'do_ajax' )  );
+			//add_action( 'load-post.php', array( __CLASS__, 'do_ajax' )  );
+
 			do_action( 'learn_press_admin_ajax_load', __CLASS__ );
 
 			$ajax_events = array(
@@ -89,7 +92,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'search_items' => 'modal_search_items',
 				'update-payment-order',
 				'bundle_update_quiz_questions',
-				'modal-search-questions'
+				'modal-search-questions',
+				'get-question-data'
 			);
 			foreach ( $ajax_events as $ajax_event => $callback ) {
 				if ( ! is_string( $ajax_event ) ) {
@@ -101,7 +105,23 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				//add_action( 'learn-press/ajax/ajax_delete_quiz_question', array( __CLASS__, 'delete_quiz_question' ) );
 				//add_action( 'learn-press/ajax/ajax_update_quiz', array( __CLASS__, 'update_quiz' ) );
 			}
+		}
 
+		public static function get_question_data() {
+			self::parsePhpInput( $_REQUEST );
+
+			$question_id = learn_press_get_request( 'id' );
+
+			if ( $question = learn_press_get_question( $question_id ) ) {
+				global $post;
+				$post = get_post( $question_id );
+				setup_postdata( $post );
+				do_action( 'add_meta_boxes', LP_LESSON_CPT, $post );
+				LP()->load_meta_box();
+
+				$view = learn_press_get_admin_view( "quiz/html-loop-question" );
+				include $view;
+			}
 		}
 
 		public static function modal_search_questions() {
@@ -152,9 +172,10 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			}
 
 
-			learn_press_send_json( array( 'total'     => $results['total'],
-			                              'items'     => $results['items'],
-			                              'navigator' => $nav
+			learn_press_send_json( array(
+				'total'     => $results['total'],
+				'items'     => $results['items'],
+				'navigator' => $nav
 			) );
 			$output = '';
 			if ( ! empty( $items ) ) {

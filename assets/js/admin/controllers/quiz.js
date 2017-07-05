@@ -19,67 +19,150 @@
             noncePrefix: 'quiz-',
             isSaved: false,
             isSubmitting: false,
-            itemsPerRequest: 2,
+            itemsPerRequest: 1,
+            totalQuestions: 0,
+            updatedQuestions: 0,
             $searchCtrl: null,
             init: function () {
                 if ($element.attr('ng-controller') !== 'quiz') {
                     return;
                 }
-                $(document).on('learn-press/add-new-question', function (event, $questionScope) {
-                    var $question = $questionScope.getElement(),
-                        position = $scope.getListContainer().children().index($question) + 1;
-                    $scope.addQuestion(event, {position: position});
-                });
+                $(document)
+                    .on('learn-press/add-new-question', this.cbAddNewQuestion)
+                    .on('learn-press/modal-search/select-items', this.addItemsFromSearch)
+                    .on('submit', '#post', this.cbBeforeSubmitForm);
+
                 this.initData();
                 $element.find('.lp-count-questions').removeClass('hide-if-js');
-                $scope.getListContainer().sortable({
-                    handle: '.lp-btn-move',
-                    axis: 'y',
+
+                this.initSortableQuestions();
+            },
+            getUpdatedQuestionsPercent: function () {
+                return parseInt(this.updatedQuestions / this.totalQuestions * 100);
+            },
+            updatedQuestionsPercent: function () {
+                var p = this.getUpdatedQuestionsPercent();
+                this.getElement('.progress').find('.progress-bar.current').css({
+                    width: p + '%'
+                }).end().find('.progress-percent').html(p + '%');
+            },
+            /**
+             * Make the list of questions is sortable.
+             */
+            initSortableQuestions: function () {
+                var that = this;
+                this.getElement('#lp-list-questions').sortable({
+                    items: '> tbody',
+                    handle: '.column-sort',
+                    axis: 'y', // vertical only
                     update: function () {
-                        $scope.updateQuestionOrders.apply($scope);
+                        // do stuff?
+                        // $scope.updateQuestionOrders.apply($scope);
+
                     }
                 });
-                $(document).on('learn-press/modal-search/select-items', function (e, s) {
-                    var $ctrl = angular.element($('.modal-search-questions').get(0)).scope(),
-                        $list = $('#lp-list-questions'),
-                        $tbody = $('#lp-list-questions > tbody:last'),
-                        templateHTML = $tbody.get(0).outerHTML;
-                    console.log(s)
-                    _.forEach(s, function (data) {
-                        var $newQuestion = $compile(templateHTML)($scope, function (clonedElement, scope) {
-                            $(clonedElement)
-                                .attr('data-dbid', data.id)
-                                .find('.lp-question-heading-title')
-                                .val(data.text)
-                                .end()
-                                .insertAfter($tbody)
+            },
 
-                            return clonedElement;
+            /**
+             * Callback function before submitting form.
+             *
+             * @param event
+             */
+            cbBeforeSubmitForm: function (event) {
+                if (!$scope.isSaved) {
+                    event.preventDefault();
+                    $scope.$apply(function () {
+                        $scope.totalQuestions = $scope.countQuestions();
+                        $scope.updatedQuestions = 0;
+                        $scope.doSubmit({
+                            done: function () {
+                                ///alert('done');
+                                //$('#post').submit();
+                                $('#publishing-action').find('.spinner').removeClass('is-active').end().find('#publish').removeClass('disabled');
+                            }
                         });
                     });
-                    var $search = $ctrl.getSearchCtrl()
-                    $search.setRequestData({paged: 1});
-                    $search.request();
-
-                });
-                $('#post').on('submit', function (e) {
-                    if (!$scope.isSaved) {
-                        e.preventDefault();
-                        $scope.$apply(function () {
-                            $scope.doSubmit({
-                                done: function () {
-                                    alert('done');
-                                    $('#post').submit();
-                                }
-                            });
-                        });
-                    }
-                })
+                }
             },
+
+            /**
+             * Callback function on add new.
+             *
+             * @param event
+             * @param $questionScope
+             */
+            cbAddNewQuestion: function (event, $questionScope) {
+                var $question = $questionScope.getElement(),
+                    position = $scope.getListContainer().children().index($question) + 1;
+                $scope.addQuestion(event, {position: position});
+            },
+
+            /**
+             * Add items from search (questions bank) to quiz.
+             * This is callback function for a jQuery event so
+             * do not use this to access to $scope.
+             *
+             * @param event jQuery event
+             * @param items array of items to add [{id: '', text: ''}, {...}]
+             */
+            addItemsFromSearch: function (event, items) {
+                var $ctrl = angular.element($('.modal-search-questions').get(0)).scope(),
+                    $list = $('#lp-list-questions'),
+                    templateHTML = $('#learn-press-empty-question-template').html();
+
+                _.forEach(items, function (data) {
+                    // Compile temporary element
+                    var $q = $scope.compileQuestion(templateHTML, data).appendTo($list);
+                    (function ($quizCtrl, $questionCtrl, $q, data) {
+                        $http({
+                            url: window.location.href.addQueryVar('lp-ajax', 'get-question-data'),
+                            method: 'post',
+                            data: {
+                                id: data.id
+                            }
+                        }).then(function (response) {
+                            if (response && response.data) {
+                                var $l = $quizCtrl.compileQuestion(response.data, data);
+                                $q.replaceWith($l);
+                            }
+                        });
+                    })($scope, this, $q, data);
+                }, $ctrl);
+                $scope.updateQuestionOrders()
+                // Refresh search results
+                var $search = $ctrl.getSearchCtrl();
+                $search.setRequestData({paged: 1});
+                $search.request();
+            },
+
+            /**
+             * Compile question element from a html string with data to bind to.
+             *
+             * @param html {string}
+             * @param data {object}
+             * @returns {*}
+             */
+            compileQuestion: function (html, data) {
+                var $question = $compile(html)($scope, function (el, scope) {
+                    var $el = $(el)
+                        .attr('data-dbid', data.id)
+                        .find('.lp-question-heading-title')
+                        .val(data.text);
+                    return $el;
+                });
+                return $question;
+            },
+
+            /**
+             * Split questions into a list of chunks and save them separated.
+             * This function is called when the post form being submitted.
+             * Stop submitting form until all the chunks are submitted.
+             *
+             * @param options
+             */
             doSubmit: function (options) {
                 this.isSubmitting = true;
                 var paged = options.paged ? options.paged : 1,
-                    loop = 0,
                     $questions = this.getQuestions({
                         paged: paged,
                         limit: this.itemsPerRequest
@@ -87,11 +170,11 @@
                 if ($questions.length && paged < 1000) {
                     var postData = {
                         questions: {}
-                    }, i = 0;
+                    }, i = (paged - 1) * this.itemsPerRequest;
                     _.forEach($questions, function (el) {
                         var ctrl = angular.element(el).scope(),
                             id = $(el).data('dbid'),
-                            data = ctrl.getFormData({order: i + 1});
+                            data = ctrl.getFormData({order: ++i});
                         postData.questions[id] = data;
                     });
                     $http({
@@ -99,17 +182,31 @@
                         url: $scope.getAjaxUrl('lp-ajax=ajax_bundle_update_quiz_questions&paged=' + paged),
                         data: postData
                     }).then(function (response) {
+                        $scope.updatedQuestions += $questions.length;
+                        $scope.updatedQuestionsPercent();
+                        // Next chunk?
                         options.paged = paged + 1;
                         $scope.doSubmit(options);
                     });
                     return;
                 }
-                this.isSubmitting = false;
-                this.isSaved = true;
-                if (options.done) {
-                    //options.done.call($scope);
-                }
+                this.updatedQuestionsPercent();
+                $timeout(function () {
+                    this.isSubmitting = false;
+                    this.isSaved = true;
+                    if (options.done) {
+                        options.done.call(this);
+                    }
+                }.bind(this), 1000)
+
             },
+
+            /**
+             * Get list of questions in a range (like pagination).
+             *
+             * @param options
+             * @returns {boolean}
+             */
             getQuestions: function (options) {
                 options = $.extend({
                     paged: 1,
@@ -131,6 +228,10 @@
                 return $questions;
 
             },
+
+            /**
+             * Update question order
+             */
             updateQuestionOrders: function () {
                 var postData = {id: $scope.getScreenPostId(), questions: []};
                 $element.find('.learn-press-question').each(function (i, el) {
@@ -144,6 +245,8 @@
                 }).then(function (response) {
                 });
             },
+
+
             addQuestion: function (event, args) {
                 var
                     $list = $element.find('#learn-press-questions'),
@@ -313,6 +416,17 @@
                     this.$searchCtrl = angular.element($('.modal-search-questions').get(0)).scope();
                 }
                 return this.$searchCtrl;
+            },
+            getQuestionIndex: function ($ctrl) {
+                var index = $ctrl.getElement().index();
+                return index;
+            },
+            countQuestions: function () {
+                return this.getElement('.learn-press-question').length;
+            },
+            htmlCountQuestions: function (singular, plural) {
+                var count = this.countQuestions();
+                return (count > 1 ? plural : singular).replace('%d', count);
             }
         });
         $scope.init();
