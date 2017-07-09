@@ -38,7 +38,7 @@ $course = LP()->global['course'];
 			$purchase_button_text  = apply_filters( 'learn_press_purchase_button_text', __( 'Buy this course', 'learnpress' ) );
 			$enroll_button_text    = apply_filters( 'learn_press_enroll_button_text', __( 'Enroll', 'learnpress' ) );
 			$retake_button_text    = apply_filters( 'learn_press_retake_button_text', __( 'Retake', 'learnpress' ) );
-			$notice_enough_student = apply_filters( 'learn_press_course enough students_notice', __( 'The class is full so the enrollment is close. Please contact the site admin.', 'learnpress' ) );
+			$notice_enough_student = apply_filters( 'learn_press_course enough students_notice', __( 'The class is full so enrollment is closed. Please contact the site admin.', 'learnpress' ) );
 
 			# -------------------------------
 			# Finished Course
