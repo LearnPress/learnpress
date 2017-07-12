@@ -95,10 +95,12 @@ abstract class LP_Abstract_Settings {
 					if ( isset( $group ) && is_array( $std ) ) {
 						$loop = 0;
 						while ( is_array( $group ) && $loop ++ < 10 ) {
-							$option_keys = array_keys( $group[ $option_name ] );
-							$option_name = reset( $option_keys );
-							$group       = $group[ $option_name ];
-							$std         = $std[ $option_name ];
+							if ( ! empty( $group[ $option_name ] ) ) {
+								$option_keys = array_keys( $group[ $option_name ] );
+								$option_name = reset( $option_keys );
+								$group       = ! empty( $group[ $option_name ] ) ? $group[ $option_name ] : false;
+								$std         = ! empty( $std[ $option_name ] ) ? $std[ $option_name ] : false;
+							}
 						}
 					}
 					$field['std']                  = apply_filters( 'learn-press/settings/default-field-value', $std, $field );

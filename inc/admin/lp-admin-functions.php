@@ -415,7 +415,8 @@ function learn_press_footer_advertisement() {
 	}
 
 	// Get items education
-	$list_themes = (array) learn_press_related_themes(
+	$list_themes = (array) LP_Plugins_Helper::get_related_themes(
+		'education',
 		array(
 			'include' => $include
 		)

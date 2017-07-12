@@ -271,15 +271,16 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		public function includes() {
 			//crazy tu
 			// Common function used in admin
-			include_once( 'lp-admin-functions.php' );
-			include_once( 'lp-admin-actions.php' );
+			include_once 'lp-admin-functions.php';
+			include_once 'lp-admin-actions.php';
 
-			include_once( 'class-lp-admin-tools.php' );
-			include_once( 'class-lp-admin-ajax.php' );
-			include_once( 'class-lp-admin-menu.php' );
-			include_once( 'class-lp-meta-box-tabs.php' );
-			include_once( 'helpers/class-lp-outdated-template-helper.php' );
-			include_once( 'helpers/class-lp-plugins-helper.php' );
+			include_once 'class-lp-admin-dashboard.php';
+			include_once 'class-lp-admin-tools.php';
+			include_once 'class-lp-admin-ajax.php';
+			include_once 'class-lp-admin-menu.php';
+			include_once 'class-lp-meta-box-tabs.php';
+			include_once 'helpers/class-lp-outdated-template-helper.php';
+			include_once 'helpers/class-lp-plugins-helper.php';
 		}
 	}
 

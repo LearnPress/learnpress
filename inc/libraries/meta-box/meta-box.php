@@ -37,3 +37,5 @@ if ( defined( 'ABSPATH' ) && ! defined( 'RWMB_VER' ) ) {
 foreach ( glob( LP_PLUGIN_PATH . 'inc/admin/meta-boxes/*.php' ) as $file ) {
 	require_once $file;
 }
+
+do_action('learn-press/meta-box-loaded');

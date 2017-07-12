@@ -228,6 +228,12 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 									'yes' => __( 'Yes', 'learnpress' )
 								),
 								'std'     => 'no'
+							),
+							array(
+								'name'    => __( 'Show hint X', 'learnpress' ),
+								'id'      => "{$prefix}XXXX",
+								'type'    => 'select_advanced',
+								'desc'    => __( 'Show button to hint answer while doing quiz.', 'learnpress' ),
 							)
 						)
 					)

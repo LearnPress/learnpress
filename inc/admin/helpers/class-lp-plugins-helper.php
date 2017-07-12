@@ -59,6 +59,7 @@ class LP_Plugins_Helper {
 				continue;
 			}
 
+
 			// If there is a tag named 'learnpress'
 			$tags = ( preg_split( '/\s*,\s*/', $plugin_data['Tags'] ) );
 			if ( ! in_array( 'learnpress', $tags ) ) {
@@ -104,6 +105,7 @@ class LP_Plugins_Helper {
 		self::$plugins['free']      = array_diff_key( $wp_plugins, $wp_installed );
 		self::$plugins['premium']   = array_diff_key( $premium_plugins, $premium_installed );
 
+		// Sort plugins
 		self::_sort_plugins();
 
 		return array_key_exists( $type, self::$plugins ) ? self::$plugins[ $type ] : self::$plugins;
@@ -133,7 +135,7 @@ class LP_Plugins_Helper {
 				'active_installs' => true
 			),
 			'locale'            => get_locale(),
-			'installed_plugins' => learn_press_get_installed_plugin_slugs(),
+			'installed_plugins' => self::get_installed_plugin_slugs(),
 			'author'            => 'thimpress'
 		);
 		$transient_key = "lp_plugins_wp";
@@ -227,22 +229,24 @@ class LP_Plugins_Helper {
 	 * Get our related themes.
 	 *
 	 * @param string $type
+	 * @param array  $args
 	 *
 	 * @return array|mixed
 	 */
-	public static function get_related_themes( $type = '' ) {
+	public static function get_related_themes( $type = '', $args = array() ) {
 
 		self::$themes = get_transient( 'lp_related_themes' );
 
 		if ( isset( $_GET['check'] ) && wp_verify_nonce( $_GET['check'], 'lp_check_related_themes' ) || ! self::$themes ) {
 
-			$url      = 'https://api.envato.com/v1/discovery/search/search/item?site=themeforest.net&username=thimpress';
-			$args     = array(
+			self::$themes = array();
+			$url          = 'https://api.envato.com/v1/discovery/search/search/item?site=themeforest.net&username=thimpress';
+			$args         = array(
 				'headers' => array(
 					"Authorization" => "Bearer BmYcBsYXlSoVe0FekueDxqNGz2o3JRaP"
 				)
 			);
-			$response = wp_remote_request( $url, $args );
+			$response     = wp_remote_request( $url, $args );
 
 			if ( ! is_wp_error( $response ) ) {
 				$response = wp_remote_retrieve_body( $response );
@@ -264,8 +268,23 @@ class LP_Plugins_Helper {
 			}
 		}
 
-		return array_key_exists( $type, self::$themes ) ? self::$themes[ $type ] : self::$themes;
+		if ( $type && array_key_exists( $type, self::$themes ) ) {
+			$themes = self::$themes[ $type ];
+			$args   = wp_parse_args( $args, array( 'include' => '' ) );
+			if ( $themes && $args['include'] ) {
+				$search_results = array();
+				foreach ( $themes as $theme ) {
+					if ( in_array( $theme['id'], $args['include'] ) ) {
+						$search_results[] = $theme;
+					}
+				}
+				$themes = $search_results;
+			}
+		} else {
+			$themes = self::$themes;
+		}
 
+		return $themes;
 	}
 
 
@@ -439,7 +458,87 @@ class LP_Plugins_Helper {
 		}
 	}
 
-	////////
+	/**
+	 * Get all slugs of plugins have installed on site
+	 *
+	 * @return array
+	 */
+	public static function get_installed_plugin_slugs() {
+		$slugs = array();
+
+		$plugin_info = get_site_transient( 'update_plugins' );
+		if ( isset( $plugin_info->no_update ) ) {
+			foreach ( $plugin_info->no_update as $plugin ) {
+				$slugs[] = $plugin->slug;
+			}
+		}
+
+		if ( isset( $plugin_info->response ) ) {
+			foreach ( $plugin_info->response as $plugin ) {
+				$slugs[] = $plugin->slug;
+			}
+		}
+
+		return $slugs;
+	}
+
+	/**
+	 * Get all free and premium plugins.
+	 *
+	 * @return array
+	 */
+	public static function get_all_plugins() {
+
+		if ( isset( $_GET['check'] ) && wp_verify_nonce( $_GET['check'], 'lp_check_all_plugins' ) ) {
+
+			// Remove transient
+			delete_transient( 'lp_more_add_ons' );
+			delete_transient( 'lp_plugins_premium' );
+		}
+
+		$plugins = array();
+
+		$plugins['free']    = learn_press_get_all_add_ons();
+		$plugins['premium'] = learn_press_get_add_ons_premium();
+
+		return $plugins;
+	}
+
+	/**
+	 * Register extra headers for our plugins.
+	 *
+	 * @param $headers
+	 *
+	 * @return mixed
+	 */
+	public static function add_on_header( $headers ) {
+		$headers['Tags']              = 'Tags';
+		$headers['Requires at least'] = 'Requires at least';
+		$headers['Tested up to']      = 'Tested up to';
+		$headers['Last updated']      = 'Last updated';
+
+		return $headers;
+	}
+
+	/**
+	 * Initialize
+	 */
+	public static function init() {
+		require_once( LP_PLUGIN_PATH . '/inc/admin/class-lp-upgrader.php' );
+		add_filter( 'extra_plugin_headers', array(__CLASS__, 'add_on_header') );
+		/*add_filter( 'upgrader_post_install', 'learn_press_upgrader_post_install', 10, 3 );
+
+		add_action( 'admin_enqueue_scripts', 'learn_press_add_on_admin_script' );
+		add_action( 'learn_press_add_ons_content_tab_all_plugins', 'learn_press_add_ons_content_tab_all_plugins' );
+		add_action( 'learn_press_add_ons_content_tab_related_themes', 'learn_press_add_ons_content_tab_related_themes' );
+		add_action( 'learn_press_add_ons_content_tab_installed', 'learn_press_add_ons_content_tab_installed' );*/
+	}
+
+	/******************************************************************
+	 * The functions below maybe not used, but need to check if it is *
+	 * still using for new version then remove prefix learn_press_    *
+	 * and define it with keyword 'public static'                     *
+	 ******************************************************************/
 
 	function learn_press_count_add_ons() {
 		$count_fields = apply_filters(
@@ -455,7 +554,7 @@ class LP_Plugins_Helper {
 					break;
 
 				case 'all_plugins':
-					$plugins = learnpress_get_all_plugins();
+					$plugins = self::get_all_plugins();
 					$count   = 0;
 					foreach ( $plugins as $type_plugins ) {
 						$count += sizeof( $type_plugins );
@@ -486,22 +585,7 @@ class LP_Plugins_Helper {
 		return apply_filters( 'learn_press_all_add_ons', $addons );
 	}
 
-	function learnpress_get_all_plugins() {
 
-		if ( isset( $_GET['check'] ) && wp_verify_nonce( $_GET['check'], 'lp_check_all_plugins' ) ) {
-
-			// Remove transient
-			delete_transient( 'lp_more_add_ons' );
-			delete_transient( 'lp_plugins_premium' );
-		}
-
-		$plugins = array();
-
-		$plugins['free']    = learn_press_get_all_add_ons();
-		$plugins['premium'] = learn_press_get_add_ons_premium();
-
-		return $plugins;
-	}
 
 	function learn_press_get_more_add_ons() {
 		$defaults = array();
@@ -512,7 +596,7 @@ class LP_Plugins_Helper {
 	 *
 	 * @return array
 	 */
-	function learn_press_get_add_on_tabs() {
+	function learn_press_get_add_on_tabs_XXXX() {
 		$counts   = learn_press_count_add_ons();
 		$defaults = array(
 			'installed'      => array(
@@ -535,54 +619,6 @@ class LP_Plugins_Helper {
 		return apply_filters( 'learn_press_add_on_tabs', $defaults );
 	}
 
-	/**
-	 * Print all tab
-	 *
-	 * @param $current
-	 */
-	function learn_press_print_add_on_tab( $current ) {
-		$active = ( empty( $current ) || 'installed' == $current ) ? 'nav-tab-active' : '';
-		?>
-        <h2 class="nav-tab-wrapper">
-            <a class="nav-tab <?php echo $active; ?>"
-               href="<?php echo admin_url( 'admin.php?page=learn-press-addons' ); ?>"><?php _e( 'All', 'learnpress' ); ?></a>
-			<?php do_action( 'learn_press_print_add_on_page_tab', $current ) ?>
-        </h2>
-		<?php
-	}
-
-	/**
-	 * Print get more tab
-	 *
-	 * @param $current
-	 */
-	function learn_press_print_get_more_tab( $current ) {
-		$active = ( empty( $current ) || 'get_more' == $current ) ? 'nav-tab-active' : '';
-		?>
-        <a class="nav-tab <?php echo $active; ?>"
-           href="<?php echo admin_url( 'admin.php?page=learn-press-addons&tab=get_more' ); ?>"><?php _e( 'Get More', 'learnpress' ); ?></a>
-		<?php
-	}
-
-
-	function learn_press_get_installed_plugin_slugs() {
-		$slugs = array();
-
-		$plugin_info = get_site_transient( 'update_plugins' );
-		if ( isset( $plugin_info->no_update ) ) {
-			foreach ( $plugin_info->no_update as $plugin ) {
-				$slugs[] = $plugin->slug;
-			}
-		}
-
-		if ( isset( $plugin_info->response ) ) {
-			foreach ( $plugin_info->response as $plugin ) {
-				$slugs[] = $plugin->slug;
-			}
-		}
-
-		return $slugs;
-	}
 
 	/**
 	 * @param $slug
@@ -599,14 +635,6 @@ class LP_Plugins_Helper {
 		return apply_filters( 'learn_press_get_addon', false, $slug, $add_ons );
 	}
 
-	function learn_press_add_on_header( $headers ) {
-		$headers['Tags']              = 'Tags';
-		$headers['Requires at least'] = 'Requires at least';
-		$headers['Tested up to']      = 'Tested up to';
-		$headers['Last updated']      = 'Last updated';
-
-		return $headers;
-	}
 
 	function learn_press_get_plugin_data( $plugins ) {
 		global $wp_version;
@@ -1267,16 +1295,7 @@ class LP_Plugins_Helper {
 		return $addons;
 	}
 
-	public
-	static function init() {
-		require_once( LP_PLUGIN_PATH . '/inc/admin/class-lp-upgrader.php' );
-		add_filter( 'extra_plugin_headers', 'learn_press_add_on_header' );
-		add_filter( 'upgrader_post_install', 'learn_press_upgrader_post_install', 10, 3 );
-
-		add_action( 'admin_enqueue_scripts', 'learn_press_add_on_admin_script' );
-		add_action( 'learn_press_add_ons_content_tab_all_plugins', 'learn_press_add_ons_content_tab_all_plugins' );
-		add_action( 'learn_press_add_ons_content_tab_related_themes', 'learn_press_add_ons_content_tab_related_themes' );
-		add_action( 'learn_press_add_ons_content_tab_installed', 'learn_press_add_ons_content_tab_installed' );
-	}
 
 }
+// Init hooks, etc...
+LP_Plugins_Helper::init();

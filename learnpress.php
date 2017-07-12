@@ -441,7 +441,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			// include core functions
 			require_once 'inc/lp-core-functions.php';
-			require_once 'inc/lp-add-on-functions.php';
 			// auto include file for class if class doesn't exists
 			require_once 'inc/class-lp-autoloader.php';
 			require_once 'inc/class-lp-install.php';

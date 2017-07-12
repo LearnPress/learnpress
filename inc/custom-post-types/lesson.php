@@ -148,7 +148,14 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 						array(
 							'name'    => __( 'Preview Lesson', 'learnpress' ),
 							'id'      => "{$prefix}preview",
-							'type'    => 'yes_no',
+							'type'    => 'image-advanced',
+							'desc'    => __( 'If this is a preview lesson, then student can view this lesson content without taking the course', 'learnpress' ),
+							'std' => 'no'
+						),
+						array(
+							'name'    => __( 'Preview Lesson', 'learnpress' ),
+							'id'      => "{$prefix}preview",
+							'type'    => 'image_advanced',
 							'desc'    => __( 'If this is a preview lesson, then student can view this lesson content without taking the course', 'learnpress' ),
 							'std' => 'no'
 						)

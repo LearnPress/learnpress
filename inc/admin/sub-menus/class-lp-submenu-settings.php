@@ -15,8 +15,14 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 		$this->page_title = __( 'LearnPress Settings', 'learnpress' );
 		$this->priority   = 30;
 
-		// Heading tabs
+		/**
+		 * Admin settings tabs.
+		 *
+		 * Defaults: General, Courses, Profile, Payments, Pages, Emails, Assets.
+		 * To add new tab use hook learn-press/admin/settings-tabs-array
+		 */
 		$this->tabs = learn_press_settings_tabs_array();
+
 		$this->init_tab();
 
 		add_action( 'learn-press/admin/page-content-settings', array(
@@ -126,7 +132,7 @@ class LP_Submenu_Settings extends LP_Abstract_Submenu {
 				}
 			}
 		}
-        do_action('learn-press/update-settings/updated', $this);
+		do_action( 'learn-press/update-settings/updated', $this );
 		add_settings_error( 'sdfdsfsdf', 'saved', __( 'Settings saved.', 'learnpress' ), 'updated' );
 		// Filter redirect
 		$redirect = apply_filters( 'learn-press/update-settings/redirect', add_query_arg( 'settings-updated', 'yes' ), $this );

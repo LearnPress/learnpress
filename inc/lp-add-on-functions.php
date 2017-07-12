@@ -10,7 +10,7 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
-
+return;
 define( 'LP_ADD_ON_TRANSIENT_TIME', 60 * 60 );
 
 function learn_press_count_add_ons() {

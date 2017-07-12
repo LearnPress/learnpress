@@ -122,7 +122,7 @@ function learn_press_update_permalink_structure() {
 
 add_action( 'init', 'learn_press_update_permalink_structure' );
 
-add_action( 'wp_dashboard_setup', 'learnpress_dashboard_widgets' );
+//add_action( 'wp_dashboard_setup', 'learnpress_dashboard_widgets' );
 
 if ( !function_exists( 'learnpress_dashboard_widgets' ) ) {
     /**

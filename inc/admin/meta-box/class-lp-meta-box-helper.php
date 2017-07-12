@@ -14,6 +14,8 @@ class LP_Meta_Box_Helper {
 	 */
 	protected static $conditional_logic = array();
 
+	protected static $_screen = null;
+
 	/**
 	 * @param $fields
 	 */
@@ -35,9 +37,7 @@ class LP_Meta_Box_Helper {
 	 * @param $field
 	 */
 	public static function show_field( $field ) {
-		if ( ! class_exists( 'RW_Meta_Box' ) ) {
-			require_once LP_PLUGIN_PATH . 'inc/libraries/meta-box/meta-box.php';
-		}
+
 		$fields = RW_Meta_Box::normalize_fields( array( $field ) );
 		$field  = $fields[0];
 		if ( self::include_field( $field ) ) {
@@ -48,6 +48,7 @@ class LP_Meta_Box_Helper {
 			//$field['value']      = md5( $field['std'] );
 			RWMB_Field::call( 'admin_enqueue_scripts', $field );
 			RWMB_Field::call( 'show', $field, true, 0 );
+			RWMB_Field::call( $field, 'add_actions' );
 		}
 	}
 
@@ -135,11 +136,42 @@ class LP_Meta_Box_Helper {
 	}
 
 	public static function init() {
-		//add_action( 'admin_enqueue_scripts', array( __CLASS__, 'enqueue_assets' ) );
-		add_action( 'rwmb_before', array( __CLASS__, 'prepare_fields' ) );
-		add_filter( 'rwmb_wrapper_html', array( __CLASS__, 'wrapper_html' ), 10, 3 );
 
+		add_action( 'rwmb_before', array( __CLASS__, 'prepare_fields' ) );
 		add_action( 'admin_footer', array( __CLASS__, 'output_data' ) );
+		add_filter( 'rwmb_wrapper_html', array( __CLASS__, 'wrapper_html' ), 10, 3 );
+		add_action( 'learn-press/meta-box-loaded', array( __CLASS__, 'load' ) );
+		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'modify_screen' ), '9.99' );
+		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'modify_screen' ), '10.01' );
+
+		if ( ! class_exists( 'RW_Meta_Box' ) ) {
+			require_once LP_PLUGIN_PATH . 'inc/libraries/meta-box/meta-box.php';
+		}
+	}
+
+	public static function modify_screen() {
+		return;
+		global $current_screen;
+		if ( self::$_screen ) {
+			$current_screen = self::$_screen;
+			self::$_screen  = null;
+		} else {
+			self::$_screen        = $current_screen;
+			$current_screen->base = 'post';
+		}
+	}
+
+	public static function load() {
+		include_once 'class-fake-meta-box.php';
+		new RW_Meta_Box(
+			array(
+				'id'       => 'fake_metabox',
+				'title'    => __( 'Course Video', 'learnpress' ),
+				'pages'    => array( '' ),
+				'priority' => 'high',
+				'fields'   => array()
+			)
+		);
 	}
 
 	public static function prepare_fields( $box ) {

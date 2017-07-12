@@ -26,4 +26,5 @@ interface LP_Interface_CURD{
 	 * @return mixed
 	 */
 	public function delete();
+
 }

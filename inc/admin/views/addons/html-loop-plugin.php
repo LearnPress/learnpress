@@ -9,7 +9,7 @@
 
 defined( 'ABSPATH' ) or exit();
 
-$action_links = learn_press_get_add_on_action_link( $add_on, $file );
+$action_links = LP_Plugins_Helper::get_add_on_action_link( $add_on, $file );
 
 ?>
 <li class="plugin-card" id="learn-press-plugin-<?php echo $add_on['slug']; ?>">

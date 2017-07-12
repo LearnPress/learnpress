@@ -73,7 +73,6 @@ class RW_Meta_Box {
 	protected function global_hooks() {
 		// Enqueue common styles and scripts.
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue' ) );
-
 		// Add additional actions for fields.
 		foreach ( $this->fields as $field ) {
 			RWMB_Field::call( $field, 'add_actions' );
@@ -111,7 +110,6 @@ class RW_Meta_Box {
 		if ( is_admin() && ! $this->is_edit_screen() ) {
 			return;
 		}
-
 		wp_enqueue_style( 'rwmb', RWMB_CSS_URL . 'style.css', array(), RWMB_VER );
 		if ( is_rtl() ) {
 			wp_enqueue_style( 'rwmb-rtl', RWMB_CSS_URL . 'style-rtl.css', array(), RWMB_VER );
