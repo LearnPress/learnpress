@@ -9,6 +9,16 @@ php:
   - hhvm
   - nightly
 
+env:
+  - WP_VERSION=master WP_MULTISITE=0
+  - WP_VERSION=4.7.5 WP_MULTISITE=0
+  - WP_VERSION=4.6.6 WP_MULTISITE=0
+  - WP_VERSION=4.5.9 WP_MULTISITE=0
+  - WP_VERSION=master WP_MULTISITE=1
+  - WP_VERSION=4.7.5 WP_MULTISITE=1
+  - WP_VERSION=4.6.6 WP_MULTISITE=1
+  - WP_VERSION=4.5.9 WP_MULTISITE=1
+
 matrix:
   fast_finish: true
   allow_failures:
@@ -17,8 +27,8 @@ matrix:
 sudo: false
 
 before_script:
+  - source tests/bin/setup.sh
   - composer require phpunit/phpunit
-  - npm install -g gulp-cli
   - npm install
 
 script:
