@@ -1,3 +1,6 @@
+<?php
+
+?>
 == {{email_heading}} ==
 
 New order placed by {{order_user_name}}

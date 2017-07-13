@@ -10,4 +10,6 @@
     <file>./inc/</file>
     <file>./templates/</file>
     <file>learnpress.php</file>
+
+    <exclude-pattern>*/inc/libraries/*</exclude-pattern>
 </ruleset>

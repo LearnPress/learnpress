@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Tu
- * Date: 11/16/2015
- * Time: 2:03 PM
- */
+
 ?>
 						</td>
 					</tr>

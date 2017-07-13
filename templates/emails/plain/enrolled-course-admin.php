@@ -1,3 +1,6 @@
+<?php
+
+?>
 == {{email_heading}} ==
 
 Course Name: {{course_name}}

@@ -1,3 +1,6 @@
+<?php
+
+?>
 == {{email_heading}} ==
 
 Dear {{user_name}}

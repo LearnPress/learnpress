@@ -1,3 +1,6 @@
+<?php
+
+?>
 == {{email_heading}} ==
 
 Hi {{order_user_name}},

@@ -1,3 +1,7 @@
+<?php
+
+?>
+
 {{header}}
 
 Hi <strong>{{order_user_name}}</strong>,
