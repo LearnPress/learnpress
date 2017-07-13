@@ -20,6 +20,6 @@ I was expecting...
 
 ## Isolating the problem
 
-- [ ] This bug happens with only WooCommerce plugin active
+- [ ] This bug happens with only LearnPress plugin active
 - [ ] This bug happens with a default theme, e.g. [Twenty Sixteen](https://wordpress.org/themes/twentysixteen/).
 - [ ] I can reproduce this bug consistently.
