@@ -1,0 +1,26 @@
+language: php
+
+php:
+  - 7.1
+  - 7.0
+  - 5.6
+  - 5.5
+  - 5.4
+  - hhvm
+  - nightly
+
+matrix:
+  fast_finish: true
+  allow_failures:
+    - php: nightly
+
+sudo: false
+
+before_script:
+  - composer require phpunit/phpunit
+  - npm install -g gulp-cli
+  - npm install
+
+script:
+
+dist: trusty
