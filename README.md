@@ -1,4 +1,4 @@
-[![Stories in Ready](https://badge.waffle.io/LearnPress/LearnPress.svg?label=ready&title=Ready)](http://waffle.io/LearnPress/LearnPress)
+# LearnPress [![Travis](https://img.shields.io/travis/LearnPress/LearnPress.svg)](https://github.com/LearnPress/LearnPress) [![GitHub issues](https://img.shields.io/github/issues/LearnPress/LearnPress.svg)](https://github.com/LearnPress/LearnPress/issues) [![GitHub forks](https://img.shields.io/github/forks/LearnPress/LearnPress.svg)](https://github.com/LearnPress/LearnPress/network) [![GitHub stars](https://img.shields.io/github/stars/LearnPress/LearnPress.svg)](https://github.com/LearnPress/LearnPress/stargazers)
 
 <a href="http://thimpress.com/learnpress" target="_blank">LearnPress</a> is a comprehensive WordPress LMS Plugin for WordPress. This WordPress LMS Plugin can be used to easily create & sell courses online. Each course curriculum can be made with lessons & quizzes which can be managed with easy-to-use user interface, we really made it for lazy people.  
 
