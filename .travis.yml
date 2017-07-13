@@ -28,10 +28,7 @@ sudo: false
 
 before_script:
   - source tests/bin/setup.sh
-  - composer require phpunit/phpunit
-  - npm install
 
-script:
-  - npm test
+script: phpunit
 
 dist: trusty

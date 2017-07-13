@@ -19,9 +19,6 @@ tar --strip-components=1 -zxmf /tmp/wordpress.tar.gz -C $WP_CORE_DIR
 cd ..
 mv $plugin_slug $plugin_dir
 
-# Grab Travis-CI specific config file
-wget -nv -O $plugin_dir/tests/wp-tests-config.php https://raw.github.com/benbalter/wordpress-plugin-tests/setup/wp-tests-config.php
-
 # Make sure wp-tests-lib is available
 if [ ! -d $plugin_dir/tests/lib ]
 then
