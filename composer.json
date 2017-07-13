@@ -1,0 +1,8 @@
+{
+    "name": "learnpress/learnpress",
+    "type": "wwordpress lms, plugin",
+    "license": "MIT",
+    "require": {
+        "phpunit/phpunit": "^6.2"
+    }
+}

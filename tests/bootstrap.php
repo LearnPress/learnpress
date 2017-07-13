@@ -10,6 +10,9 @@
  * Note: Do note change the name of this file. PHPUnit will automatically fire this file when run.
  *
  */
+
+require dirname( __FILE__ ) . '../vendor/autoload.php';
+
 $GLOBALS['wp_tests_options'] = array(
 	'active_plugins' => array( 'your-plugin/your-plugin.php' ),
 );

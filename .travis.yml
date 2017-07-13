@@ -27,6 +27,7 @@ matrix:
 sudo: false
 
 before_script:
+  - composer require phpunit/phpunit
   - source tests/bin/setup.sh
   - ls -lah
 

@@ -20,3 +20,5 @@ node_modules/
 test list.txt
 
 package-lock.json
+/vendor/
+composer.lock
