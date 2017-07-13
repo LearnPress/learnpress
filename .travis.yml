@@ -22,5 +22,6 @@ before_script:
   - npm install
 
 script:
+  - npm test
 
 dist: trusty
