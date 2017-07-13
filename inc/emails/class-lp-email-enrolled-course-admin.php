@@ -80,12 +80,13 @@ if ( ! class_exists( 'LP_Email_Enrolled_Course_Admin' ) ) {
 				foreach ( $admins as $admin ) {
 					$all_users_id[] = $admin->ID;
 				}
+				$course = learn_press_get_course($course_id);
+				$course_author = intval( $course->post->post_author );
+				if(!in_array($course_author, $all_users_id)){
+					$all_users_id[] = $course_author;
+				}
 			}
-
-			if ( ! in_array( $user_id, $all_users_id ) ) {
-				$all_users_id[] = $user_id;
-			}
-
+			
 			$all_users_id = apply_filters( 'learn_press_user_admin_send_mail_enrolled_course', $all_users_id, $course_id, $user_id, $user_course_id );
 			foreach ( $all_users_id as $user ) {
 				$this->trigger( $course_id, $user, $user_course_id );
