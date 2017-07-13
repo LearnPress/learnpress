@@ -387,6 +387,25 @@ function learn_press_get_question_type_support( $type = '' ) {
 	return $type && ! empty( $supports[ $type ] ) ? $supports[ $type ] : $supports;
 }
 
+/**
+ * Check if a type question is supported.
+ *
+ * @param string $type
+ *
+ * @return bool
+ */
+function learn_press_is_support_question_type( $type ) {
+
+	$supports = learn_press_get_question_type_support();
+
+	// New type is supported?
+	if ( $supports && ! array_key_exists($type, $supports ) ) {
+		return false;
+	}
+
+	return true;
+}
+
 function learn_press_question_type_support( $type, $features ) {
 	settype( $features, 'array' );
 	$features    = array_filter( $features );

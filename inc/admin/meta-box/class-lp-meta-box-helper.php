@@ -135,45 +135,43 @@ class LP_Meta_Box_Helper {
 		return class_exists( $class );
 	}
 
+	/**
+	 * Init hooks
+	 */
 	public static function init() {
 
 		add_action( 'rwmb_before', array( __CLASS__, 'prepare_fields' ) );
 		add_action( 'admin_footer', array( __CLASS__, 'output_data' ) );
 		add_filter( 'rwmb_wrapper_html', array( __CLASS__, 'wrapper_html' ), 10, 3 );
 		add_action( 'learn-press/meta-box-loaded', array( __CLASS__, 'load' ) );
-		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'modify_screen' ), '9.99' );
-		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'modify_screen' ), '10.01' );
 
 		if ( ! class_exists( 'RW_Meta_Box' ) ) {
 			require_once LP_PLUGIN_PATH . 'inc/libraries/meta-box/meta-box.php';
 		}
 	}
 
-	public static function modify_screen() {
-		return;
-		global $current_screen;
-		if ( self::$_screen ) {
-			$current_screen = self::$_screen;
-			self::$_screen  = null;
-		} else {
-			self::$_screen        = $current_screen;
-			$current_screen->base = 'post';
-		}
-	}
-
+	/**
+	 * Load a fake meta box instance
+	 */
 	public static function load() {
-		include_once 'class-fake-meta-box.php';
-		new RW_Meta_Box(
+		include_once 'class-lp-meta-box.php';
+
+		new LP_Meta_Box(
 			array(
-				'id'       => 'fake_metabox',
-				'title'    => __( 'Course Video', 'learnpress' ),
-				'pages'    => array( '' ),
-				'priority' => 'high',
-				'fields'   => array()
+				'id'     => 'fake_metabox',
+				'title'  => '',
+				'fields' => array()
 			)
 		);
 	}
 
+	/**
+	 * Prepare conditional logic fields.
+	 *
+	 * @hook rwmb_before
+	 *
+	 * @param RW_Meta_Box $box
+	 */
 	public static function prepare_fields( $box ) {
 		if ( $fields = $box->fields ) {
 			foreach ( $fields as $field ) {
@@ -182,22 +180,42 @@ class LP_Meta_Box_Helper {
 		}
 	}
 
+	/**
+	 * Output ID of the field into a hidden field for js.
+	 *
+	 * @hook rwmb_wrapper_html
+	 *
+	 * @param $begin
+	 * @param $field
+	 * @param $meta
+	 *
+	 * @return string
+	 */
 	public static function wrapper_html( $begin, $field, $meta ) {
 		return $begin . '<input type="hidden" class="rwmb-field-name" value="' . self::sanitize_name( $field['id'] ) . '" /><div class="field-overlay"></div>';
 	}
 
+	/**
+	 * Output conditional logic fields for js.
+	 *
+	 * @hook admin_footer
+	 */
 	public static function output_data() {
 		if ( ! self::$conditional_logic ) {
 			return;
 		}
+
 		foreach ( self::$conditional_logic as $id => $conditional ) {
 			foreach ( $conditional['conditional'] as $k => $field ) {
 				self::$conditional_logic[ $id ]['conditional'][ $k ]['field'] = self::sanitize_name( $field['field'] );
 			}
 		}
+
+		// Enqueue js and localize settings.
 		wp_enqueue_script( 'lp-conditional-logic', LP()->plugin_url( 'assets/js/admin/conditional-logic.js' ) );
 		wp_localize_script( 'lp-conditional-logic', 'lp_conditional_logic', self::$conditional_logic );
 	}
 }
 
+// Init
 LP_Meta_Box_Helper::init();

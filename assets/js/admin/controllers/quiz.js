@@ -128,7 +128,7 @@
                         });
                     })($scope, this, $q, data);
                 }, $ctrl);
-                $scope.updateQuestionOrders()
+                $scope.updateQuestionOrders();
                 // Refresh search results
                 var $search = $ctrl.getSearchCtrl();
                 $search.setRequestData({paged: 1});
@@ -143,6 +143,7 @@
              * @returns {*}
              */
             compileQuestion: function (html, data) {
+                console.log($scope.$$childHead);
                 var $question = $compile(html)($scope, function (el, scope) {
                     var $el = $(el)
                         .attr('data-dbid', data.id)

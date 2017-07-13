@@ -359,7 +359,6 @@ class RW_Meta_Box {
 		if ( ! ( $screen instanceof WP_Screen ) ) {
 			$screen = get_current_screen();
 		}
-
 		return 'post' === $screen->base && in_array( $screen->post_type, $this->post_types, true );
 	}
 

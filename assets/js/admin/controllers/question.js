@@ -44,6 +44,8 @@
                         }
                     });
                     $scope.tooltip($element);
+                    console.log('Question Init', $scope.questionData)
+
                 });
             },
             updateAnswerOrders: function () {
@@ -67,6 +69,10 @@
             initData: function () {
                 try {
                     this.questionData = $.extend(this.questionData, this.getFormData());// getElement().find('[name^="lp-question-data"]').serializeJSON("lp-question-data");
+                    var id = parseInt(this.getElement().attr('data-dbid'));
+                    if(id){
+                        this.questionData.id = id;
+                    }
                 } catch (ex) {
                     console.log(ex)
                 }
@@ -379,6 +385,8 @@
                 if (formData) {
                     var values = _.values(formData);
                     formData = values[0];
+                }else{
+                    formData = {};
                 }
                 formData.answer_options && _.forEach(formData.answer_options.text, function (text, i) {
                     answerOptions.push({

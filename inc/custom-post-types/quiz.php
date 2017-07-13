@@ -145,7 +145,7 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 		}
 
 		public function add_meta_boxes() {
-			$prefix = '_lp_';
+			$prefix        = '_lp_';
 			$post_id       = learn_press_get_request( 'post' );
 			$duration_type = get_post_meta( $post_id, "{$prefix}duration_type", true );
 			new RW_Meta_Box(
@@ -156,8 +156,8 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 						'priority'   => 'high',
 						'fields'     => array(
 							array(
-								'name'    => __( 'Show/Hide Question', 'learnpress' ),
-								'desc'    => __( 'Show/Hide list questions on this quiz.', 'learnpress' ),
+								'name'    => __( 'Show questions', 'learnpress' ),
+								'desc'    => __( 'Show list of questions while doing quiz as ordered numbers (1, 2, 3, etc).', 'learnpress' ),
 								'id'      => "{$prefix}show_hide_question",
 								'type'    => 'radio',
 								'options' => array(
@@ -167,11 +167,28 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 								'std'     => 'hide'
 							),
 							array(
-								'name' => __( 'Show correct answer', 'learnpress' ),
-								'id'   => "{$prefix}show_result",
-								'type' => 'yes_no',
-								'desc' => __( 'Show the correct answer in result of the quiz.', 'learnpress' ),
+								'name' => __( 'Review questions', 'learnpress' ),
+								'id'   => "{$prefix}review_questions",
+								'type' => 'yes-no',
+								'desc' => __( 'Allow re-viewing questions after completing quiz.', 'learnpress' ),
 								'std'  => 'no'
+							),
+							array(
+								'name'       => __( 'Show correct answer', 'learnpress' ),
+								'id'         => "{$prefix}show_result",
+								'type'       => 'yes_no',
+								'desc'       => __( 'Show correct answer when reviewing questions.', 'learnpress' ),
+								'std'        => 'no',
+								'visibility' => array(
+									'state'       => 'show',
+									'conditional' => array(
+										array(
+											'field'   => "{$prefix}review_questions",
+											'compare' => '=',
+											'value'   => 'yes'
+										)
+									)
+								)
 							),
 							array(
 								'name'         => __( 'Duration', 'learnpress' ),
@@ -230,10 +247,10 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 								'std'     => 'no'
 							),
 							array(
-								'name'    => __( 'Show hint X', 'learnpress' ),
-								'id'      => "{$prefix}XXXX",
-								'type'    => 'select_advanced',
-								'desc'    => __( 'Show button to hint answer while doing quiz.', 'learnpress' ),
+								'name' => __( 'Show hint X', 'learnpress' ),
+								'id'   => "{$prefix}XXXX",
+								'type' => 'select_advanced',
+								'desc' => __( 'Show button to hint answer while doing quiz.', 'learnpress' ),
 							)
 						)
 					)

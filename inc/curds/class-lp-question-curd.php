@@ -15,7 +15,23 @@ class LP_Question_CURD implements LP_Interface_CURD {
 		if ( ! $the_id || LP_QUESTION_CPT !== get_post_type( $the_id ) ) {
 			LP_Debug::throw_exception( sprintf( __( 'Invalid question with ID "%d".', 'learnpress' ), $the_id ) );
 		}
-		$this->_load_answer_options($question);
+		$this->_load_answer_options( $question );
+		$this->_load_meta( $question );
+
+		return true;
+	}
+
+	/**
+	 * Load question meta data.
+	 *
+	 * @param LP_Question $question
+	 */
+	protected function _load_meta( $question ) {
+		$type = get_post_meta( $question->get_id(), '_lp_type', true );
+		if ( ! learn_press_is_support_question_type( $type ) ) {
+			$type = 'true_or_false';
+		}
+		$question->set_type( $type );
 	}
 
 	public function update() {

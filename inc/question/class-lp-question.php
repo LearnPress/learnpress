@@ -46,6 +46,9 @@ class LP_Question extends LP_Abstract_Course_Item {
 	 */
 	protected $_supports = array();
 
+	/**
+	 * @var array
+	 */
 	protected $_data = array();
 
 	/**
@@ -227,7 +230,7 @@ class LP_Question extends LP_Abstract_Course_Item {
 
 	public function get_view( $args = '' ) {
 		if ( $this->is_support( 'answer_options' ) ) {
-			$view = learn_press_get_admin_view( 'question/answer-options' );
+			$view = learn_press_get_admin_view( 'question/html-answer-options' );
 		} else {
 			$view = false;
 		}
@@ -236,11 +239,11 @@ class LP_Question extends LP_Abstract_Course_Item {
 	}
 
 	public function get_header_view( $args = '' ) {
-		return apply_filters( 'learn-press/admin-question/header-interface-html', learn_press_get_admin_view( 'question/header' ), $args, $this->get_id() );
+		return apply_filters( 'learn-press/admin-question/header-interface-html', learn_press_get_admin_view( 'question/html-header' ), $args, $this->get_id() );
 	}
 
 	public function get_footer_view( $args = '' ) {
-		return apply_filters( 'learn-press/admin-question/header-interface-html', learn_press_get_admin_view( 'question/footer' ), $args, $this->get_id() );
+		return apply_filters( 'learn-press/admin-question/header-interface-html', learn_press_get_admin_view( 'question/html-footer' ), $args, $this->get_id() );
 	}
 
 	/**
@@ -250,12 +253,12 @@ class LP_Question extends LP_Abstract_Course_Item {
 	public function output_meta_box_settings() {
 		global $wp_meta_boxes, $post;
 
+		if ( ! class_exists( 'LP_Quiz_Question_Meta_Box' ) ) {
+			include_once LP_PLUGIN_PATH . 'inc/admin/meta-box/class-lp-quiz-question-meta-box.php';
+		}
 
-		// Fake screen
-		$screen            = new stdClass();
-		$screen->id        = LP_QUESTION_CPT;
-		$screen->base      = '';
-		$screen->post_type = LP_QUESTION_CPT;
+		// Fake screen for question meta box
+		$screen = WP_Screen::get( LP_QUESTION_CPT );
 
 		// Fake global $post
 		$origin_post = $post;
@@ -263,7 +266,7 @@ class LP_Question extends LP_Abstract_Course_Item {
 		setup_postdata( $post );
 		$origin_meta_boxes = null;
 		// There is no meta boxes
-		if ( !empty( $wp_meta_boxes[ LP_QUESTION_CPT ] ) ) {
+		if ( ! empty( $wp_meta_boxes[ LP_QUESTION_CPT ] ) ) {
 
 			// Track the origin meta-boxes
 			$origin_meta_boxes = $wp_meta_boxes[ LP_QUESTION_CPT ];
@@ -272,8 +275,12 @@ class LP_Question extends LP_Abstract_Course_Item {
 			unset( $wp_meta_boxes[ LP_QUESTION_CPT ] );
 		}
 
-		add_filter( 'rwmb_field_meta', array( $this, '_filter_meta_box_meta' ), 10, 10 );
-		$meta_box_settings = LP_Question_Post_Type::settings_meta_box();
+		add_filter( 'rwmb_field_meta', array( $this, '_filter_meta_box_meta' ), 10.01, 10 );
+
+		$meta_box_settings            = LP_Question_Post_Type::settings_meta_box();
+		$meta_box_settings['post_id'] = $this->get_id();// Store the ID of current question for some purpose.
+
+		// Add new field to beginning of list for displaying content
 		array_unshift( $meta_box_settings['fields'], array(
 				'id'      => 'question-content',
 				'type'    => 'textarea', //'wysiwyg',
@@ -283,12 +290,8 @@ class LP_Question extends LP_Abstract_Course_Item {
 			)
 		);
 
-		foreach ( $meta_box_settings['fields'] as $k => $field ) {
-			$meta_box_settings['fields'][ $k ]['id'] = sprintf( 'learn_press_question[%d][%s]', $this->get_id(), $field['id'] );
-		}
-
 		// Create new meta box
-		$box = new RW_Meta_Box( $meta_box_settings );
+		$box = new LP_Quiz_Question_Meta_Box( $meta_box_settings );
 
 		// Add this manually because the hook is already done!!!
 		add_meta_box(
@@ -300,8 +303,9 @@ class LP_Question extends LP_Abstract_Course_Item {
 			$box->priority
 		);
 
+		//remove_filter( 'default_hidden_meta_boxes', '');
 		// Show meta box
-		do_meta_boxes( $screen, 'normal', '' );
+		do_meta_boxes( $screen, 'normal', $post );
 
 		// ==> Okay, restore all data
 
@@ -309,7 +313,7 @@ class LP_Question extends LP_Abstract_Course_Item {
 		$post = $origin_post;
 		setup_postdata( $post );
 
-		if($origin_meta_boxes) {
+		if ( $origin_meta_boxes ) {
 			// Restore origin meta boxes
 			$wp_meta_boxes[ LP_QUESTION_CPT ] = $origin_meta_boxes;
 		}
@@ -322,6 +326,31 @@ class LP_Question extends LP_Abstract_Course_Item {
 		}
 
 		return $meta;
+	}
+
+	/**
+	 * Set new type of question.
+	 * Update _lp_type meta to new type.
+	 *
+	 * @param string $type
+	 *
+	 * @return bool
+	 */
+	public function set_type( $type = '' ) {
+
+		if ( ! $type ) {
+			return false;
+		}
+
+		if ( ! learn_press_is_support_question_type( $type ) ) {
+			return false;
+		}
+
+		// Change to new type and update meta value
+		$this->_question_type = $type;
+		update_post_meta( $this->get_id(), '_lp_type', $type );
+
+		return true;
 	}
 
 	/**
@@ -376,38 +405,46 @@ class LP_Question extends LP_Abstract_Course_Item {
 	}
 
 	/**
-	 * Get question content
+	 * Get question content.
 	 *
 	 * @return string
 	 */
-	public
-	function get_content() {
-		if ( ! did_action( 'learn_press_get_content_' . $this->id ) ) {
+	public function get_content() {
+		if ( '' === $this->_content ) {
 			global $post, $wp_query;
-			$post  = get_post( $this->id );
+
+			$post  = get_post( $this->get_id() );
 			$posts = apply_filters_ref_array( 'the_posts', array( array( $post ), &$wp_query ) );
 
 			if ( $posts ) {
 				$post = $posts[0];
 			}
+
 			setup_postdata( $post );
 			ob_start();
 			the_content();
 			$this->_content = ob_get_clean();
 			wp_reset_postdata();
-			do_action( 'learn_press_get_content_' . $this->id );
 		}
 
 		return $this->_content;
 	}
 
-	public
-	function get_type() {
+	/**
+	 * Return type of question.
+	 *
+	 * @return string
+	 */
+	public function get_type() {
 		return $this->_question_type;
 	}
 
-	public
-	function get_type_label() {
+	/**
+	 * Return type of question in 'readable text'.
+	 *
+	 * @return string
+	 */
+	public function get_type_label() {
 		return ucwords( str_replace( '_', ' ', $this->get_type() ) );
 	}
 
@@ -837,9 +874,10 @@ class LP_Question extends LP_Abstract_Course_Item {
 	 *
 	 * @return mixed
 	 */
-	public
-	function get_admin_option_headings() {
+	public function get_admin_option_headings() {
 		$option_headings = array(
+			'sort'           => '',
+			'index'          => '',
 			'answer_text'    => __( 'Answer Text', 'learnpress' ),
 			'answer_correct' => __( 'Is Correct?', 'learnpress' ),
 			'actions'        => ''

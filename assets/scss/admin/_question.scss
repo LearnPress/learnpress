@@ -1,3 +1,29 @@
+.learn-press-box-data{
+    &.learn-press-question{
+        .lp-box-data-head{
+            padding: 0;
+            > h3{
+                float: left;
+            }
+        }
+        .lp-box-data-actions{
+            z-index: 100;
+        }
+        .lp-toolbar-btn{
+            height:50px;
+        }
+        .lp-list-options{
+            border: 1px solid #DDD;
+            input[type="text"]{
+                @include no-outline();
+                border: none;
+                padding-left: 0;
+                padding-right: 0;
+                background: transparent;
+            }
+        }
+    }
+}
 /*
 
 .learn-press-question {

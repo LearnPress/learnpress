@@ -140,6 +140,13 @@
     .lp-list-options {
         border: 1px solid #DDD;
         td {
+            input[type="text"] {
+                @include no-outline();
+                border: none;
+                padding-left: 0;
+                padding-right: 0;
+                background: transparent;
+            }
             .lp-answer-text {
                 font-size: 12px;
             }
@@ -209,7 +216,7 @@
                 @include transition(width linear 0.25s);
             }
         }
-        .progress-percent{
+        .progress-percent {
             text-align: center;
             font-size: 12px;
             font-weight: bold;
@@ -248,12 +255,6 @@
         button {
             background: #dbf5ff;
         }
-    }
-}
-
-.learn-press-box-data {
-    &.learn-press-question {
-        margin: 15px;
     }
 }
 

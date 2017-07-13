@@ -34,6 +34,7 @@ class LP_Plugins_Helper {
 	public static function get_plugins( $type = '' ) {
 		self::require_plugins_api();
 		$plugins = array();
+
 		if ( ! function_exists( 'get_plugins' ) ) {
 			require_once( ABSPATH . '/wp-admin/includes/plugin.php' );
 		}
@@ -525,7 +526,7 @@ class LP_Plugins_Helper {
 	 */
 	public static function init() {
 		require_once( LP_PLUGIN_PATH . '/inc/admin/class-lp-upgrader.php' );
-		add_filter( 'extra_plugin_headers', array(__CLASS__, 'add_on_header') );
+		add_filter( 'extra_plugin_headers', array( __CLASS__, 'add_on_header' ) );
 		/*add_filter( 'upgrader_post_install', 'learn_press_upgrader_post_install', 10, 3 );
 
 		add_action( 'admin_enqueue_scripts', 'learn_press_add_on_admin_script' );
@@ -584,7 +585,6 @@ class LP_Plugins_Helper {
 
 		return apply_filters( 'learn_press_all_add_ons', $addons );
 	}
-
 
 
 	function learn_press_get_more_add_ons() {
@@ -1297,5 +1297,6 @@ class LP_Plugins_Helper {
 
 
 }
+
 // Init hooks, etc...
 LP_Plugins_Helper::init();

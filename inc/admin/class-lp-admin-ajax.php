@@ -107,7 +107,14 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			}
 		}
 
+		/**
+		 * Get question data
+		 */
 		public static function get_question_data() {
+			global $current_screen;
+			// Force to init quiz screen to make some hooks work correct.
+			$current_screen = WP_Screen::get( LP_QUIZ_CPT );
+
 			self::parsePhpInput( $_REQUEST );
 
 			$question_id = learn_press_get_request( 'id' );
@@ -116,7 +123,6 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				global $post;
 				$post = get_post( $question_id );
 				setup_postdata( $post );
-				do_action( 'add_meta_boxes', LP_LESSON_CPT, $post );
 				LP()->load_meta_box();
 
 				$view = learn_press_get_admin_view( "quiz/html-loop-question" );
