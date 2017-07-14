@@ -165,7 +165,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * Main plugin Instance
 		 *
 		 * @static
-		 * @return object Main instance
+		 * @return LearnPress
 		 *
 		 * @since  1.0
 		 * @author
