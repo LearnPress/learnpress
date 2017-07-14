@@ -15,14 +15,15 @@ if ( ! isset( $question ) ) {
 $option_headings = $question->get_admin_option_headings();
 
 ?>
+<div class="lp-list-questions">
     <table class="lp-sortable lp-list-options" id="learn-press-list-options-<?php echo $template_data['id']; ?>">
         <thead>
         <tr>
 			<?php foreach ( $option_headings as $key => $text ) { ?>
 				<?php
 				$classes = apply_filters( "learn-press/question/{$type}/admin-option-column-heading-class", array(
-					'column-heading',
-					'column-heading-' . $key
+					'lp-column-heading',
+					'lp-column-heading-' . $key
 				) );
 				?>
                 <th class="<?php echo join( ' ', $classes ); ?>">
@@ -39,7 +40,7 @@ $option_headings = $question->get_admin_option_headings();
 		if ( $answers ):
 			foreach ( $answers as $answer ):
 				ob_start();
-				learn_press_admin_view( 'meta-boxes/question/base-option', array(
+				learn_press_admin_view( 'question/html-base-option', array(
 					'question' => $question,
 					'answer'   => $answer
 				) );
@@ -49,6 +50,8 @@ $option_headings = $question->get_admin_option_headings();
 		?>
         </tbody>
     </table>
+    <input type="hidden" name="learn_press_question[<?php echo $template_data['id']; ?>][type]" value="<?php echo $type;?>" />
+</div>
 <?php
 $bottom_buttons = array();
 if ( $question->is_support( 'add-answer-option' ) ) {

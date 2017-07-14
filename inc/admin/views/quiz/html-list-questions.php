@@ -11,11 +11,11 @@ $quiz = learn_press_get_quiz( $post );
         <table id="lp-list-questions" class="lp-list-questions">
             <thead>
             <tr>
-                <th class="column-sort"></th>
-                <th class="column-order">#</th>
-                <th class="column-name"><?php _e( 'Name', 'learnpress' ); ?></th>
-                <th class="column-type"><?php _e( 'Type', 'learnpress' ); ?></th>
-                <th class="column-actions"><?php _e( 'Actions', 'learnpress' ); ?></th>
+                <th class="lp-column-sort"></th>
+                <th class="lp-column-order">#</th>
+                <th class="lp-column-name"><?php _e( 'Name', 'learnpress' ); ?></th>
+                <th class="lp-column-type"><?php _e( 'Type', 'learnpress' ); ?></th>
+                <th class="lp-column-actions"><?php _e( 'Actions', 'learnpress' ); ?></th>
             </tr>
             </thead>
 			<?php
@@ -28,11 +28,11 @@ $quiz = learn_press_get_quiz( $post );
 			} ?>
             <tfoot>
             <tr>
-                <th class="column-sort">
+                <th class="lp-column-sort">
                     <i class="fa fa-bars"></i>
                 </th>
-                <th class="column-order">{{newQuestionIndex()}}</th>
-                <th class="column-name column-quick-add" colspan="3">
+                <th class="lp-column-order">{{newQuestionIndex()}}</th>
+                <th class="lp-column-name lp-column-quick-add" colspan="3">
 					<?php learn_press_admin_view( 'quiz/html-search-questions' ); ?>
                     <button type="button" class="button"
                             ng-click="addNewQuestion($event)"><?php _e( 'Add as New', 'learnpress' ); ?></button>
@@ -59,15 +59,15 @@ $quiz = learn_press_get_quiz( $post );
            ng-click="elementClick($event)"
            ng-class="{'invalid-type': !isValidQuestionType()}">
     <tr>
-        <td class="column-sort"><i class="fa fa-bars"></i></td>
-        <td class="column-order">{{getQuestionIndex(this)}}</td>
-        <td class="column-name">
+        <td class="lp-column-sort"><i class="fa fa-bars"></i></td>
+        <td class="lp-column-order">{{getQuestionIndex(this)}}</td>
+        <td class="lp-column-name">
             <input type="text" class="lp-question-heading-title"
                    value=""
                    autocomplete="off">
         </td>
-        <td class="column-type">...</td>
-        <td class="column-actions">
+        <td class="lp-column-type">...</td>
+        <td class="lp-column-actions">
             <div class="lp-box-data-actions lp-toolbar-buttons">
 				<?php
 				//echo join( "<!--\n-->", $top_buttons );

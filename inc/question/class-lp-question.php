@@ -824,14 +824,11 @@ class LP_Question extends LP_Abstract_Course_Item {
 	 *
 	 * @return mixed
 	 */
-	public
-	static function admin_js_template(
-		$args = ''
-	) {
+	public static function admin_js_template( $args = '' ) {
 		$args          = wp_parse_args( $args, array( 'echo' => true ) );
 		$type          = ! empty( $args['type'] ) ? $args['type'] : 'single_choice';
 		$fake_class    = LP_Question_Factory::get_class_name_from_question_type( $type );
-		$fake_question = new $fake_class();
+		$fake_question = new $fake_class(0, $type);
 		if ( ! $fake_question->is_support( 'add-answer-option' ) ) {
 			return '';
 		}
@@ -844,7 +841,7 @@ class LP_Question extends LP_Abstract_Course_Item {
 				'get_option_template_data_for_js'
 			), 10, 2 );
 			learn_press_admin_view(
-				'meta-boxes/question/base-option',
+				'question/html-base-option',
 				array(
 					'question' => $fake_question,
 					'answer'   => array(
@@ -861,7 +858,7 @@ class LP_Question extends LP_Abstract_Course_Item {
 			?>
         </script>
 		<?php
-		$template = apply_filters( 'learn_press_question_multi_choice_answer_option_template', ob_get_clean(), __CLASS__ );
+		$template = apply_filters( 'learn-press/question/' . $type . 'answer-option-template', ob_get_clean(), __CLASS__ );
 		if ( $args['echo'] ) {
 			echo $template;
 		}
@@ -877,7 +874,7 @@ class LP_Question extends LP_Abstract_Course_Item {
 	public function get_admin_option_headings() {
 		$option_headings = array(
 			'sort'           => '',
-			'index'          => '',
+			'order'          => '',
 			'answer_text'    => __( 'Answer Text', 'learnpress' ),
 			'answer_correct' => __( 'Is Correct?', 'learnpress' ),
 			'actions'        => ''

@@ -16,7 +16,8 @@ Domain Path: /languages/
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit;
-
+error_reporting( E_ALL );
+ini_set( 'display_errors', 1 );
 if ( ! defined( 'LP_PLUGIN_FILE' ) ) {
 	define( 'LP_PLUGIN_FILE', __FILE__ );
 	require_once dirname( __FILE__ ) . '/inc/lp-constants.php';
@@ -426,6 +427,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		public function includes() {
 			require_once 'inc/interfaces/interface-curd.php';
 			require_once 'inc/abstracts/abstract-object-data.php';
+			require_once 'inc/abstracts/abstract-assets.php';
 
 			require_once 'inc/curds/class-lp-course-curd.php';
 			require_once 'inc/curds/class-lp-quiz-curd.php';

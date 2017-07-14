@@ -14,6 +14,7 @@
      */
     window['learn-press.question.controller'] = function ($scope, $compile, $element, $timeout, $http) {
         $element = $($element);
+
         angular.extend($scope, {
             $element: $element,
             noncePrefix: 'question-',
@@ -30,6 +31,9 @@
             xxxxx: function () {
                 $scope.questionData.id = (isNaN(this.questionData.id) ? 0 : parseInt(this.questionData.id)) + 1;
             },
+            getXXX: function () {
+                return Math.random()
+            },
             init: function () {
                 $timeout(function () {
                     $scope.initData();
@@ -37,17 +41,19 @@
                     //$scope.addQuestionData();
                     //$scope.addOption();
                     $scope.getListContainer().sortable({
-                        handle: '.lp-btn-move',
+                        handle: '.lp-column-sort',
                         axis: 'y',
                         update: function () {
                             $scope.updateAnswerOrders.apply($scope);
                         }
                     });
                     $scope.tooltip($element);
-                    console.log('Question Init', $scope.questionData)
-
                 });
             },
+
+            /**
+             * Update answer ordering
+             */
             updateAnswerOrders: function () {
                 var postData = {id: $scope.getId(), answers: []};
                 this.getListContainer().find('tr.lp-list-option').each(function (i, el) {
@@ -55,6 +61,7 @@
                         value: $(el).find('.lp-answer-value ').val(),
                         text: $(el).find('.lp-answer-text ').val()
                     });
+                    $(el).find('[answer-option-order]').html(i + 1);
                 });
                 $http({
                     method: 'post',
@@ -70,7 +77,7 @@
                 try {
                     this.questionData = $.extend(this.questionData, this.getFormData());// getElement().find('[name^="lp-question-data"]').serializeJSON("lp-question-data");
                     var id = parseInt(this.getElement().attr('data-dbid'));
-                    if(id){
+                    if (id) {
                         this.questionData.id = id;
                     }
                 } catch (ex) {
@@ -168,22 +175,41 @@
                     }
                 });
             },
+
+            /**
+             * Callback function to add new option into question when
+             * clicking on button.
+             *
+             * @param event
+             * @param args
+             * @returns {boolean}
+             */
             addOption: function (event, args) {
+console.log(this.questionData)
                 var $list = $element.find('.lp-list-options tbody'),
                     $option = $list.find('tr:last');
+
+                // If there is an empty option
                 if ($option.length && this.isEmptyOption($option)) {
                     $option.find('.lp-answer-text').focus();
-                    return;
+                    return false;
                 }
+
                 this.answer_option.value = LP.uniqueId();
                 var strHTML = $('#tmpl-question-' + $scope.questionData.type + '-option')[0].innerHTML,
-                    $newOption = false;
+                    $newOption;
+
                 strHTML = strHTML.replace(/OPTION_VALUE_PLACEHOLDER/g, LP.uniqueId());
                 var optionTemplate = angular.element($(strHTML));
+
                 args = $.extend({
                     position: -1
                 }, args || {});
+
+                // Compile element
                 $newOption = $compile(optionTemplate)($scope, function (clonedElement, scope) {
+
+                    // Find position to insert new option
                     if (args.position === -1) {
                         $list.append(clonedElement);
                     } else {
@@ -194,28 +220,50 @@
                             $list.append(clonedElement);
                         }
                     }
-                    scope.tooltip(clonedElement)
+
+                    // Build tooltip and focus into text field
+                    scope.tooltip(clonedElement);
                     clonedElement.find('.lp-answer-text').focus();
+
                     return clonedElement;
                 });
 
+                // Refresh data
                 $timeout(function () {
                     $scope.refreshData();
-                })
+                });
+
                 return $newOption;
             },
+
+            /**
+             * Callback function to remove an option when clicking on button.
+             *
+             * @param event
+             */
             removeOption: function (event) {
                 var $option = this.getOptionTarget(event.target),
-                    $prev = $option.next();
-                if ($prev.length === 0) {
-                    $prev = $option.prev();
+                    $next = $option.next();
+
+                // If there is no option after the $option is being removed then
+                // move to option in previous.
+                if ($next.length === 0) {
+                    $next = $option.prev();
                 }
+
+                // Focus into text field
+                if ($next) {
+                    $next.find('.lp-answer-text').focus();
+                }
+
+                // Remove the $option
                 $option.remove();
-                if ($prev) {
-                    $prev.find('.lp-answer-text').focus();
-                }
+
+                // Remove tooltip and update new order
                 $(".tipsy").remove();
+                $scope.updateAnswerOrders();
             },
+
             refreshData: function () {
                 var $options = $element.find('.lp-list-options tbody').children(),
                     options = [];
@@ -240,6 +288,10 @@
                     case 'edit':
                 }
             },
+
+            /**
+             * Get container of list options
+             */
             getListContainer: function () {
                 return $element.find('.lp-list-options tbody');
             },
@@ -270,6 +322,11 @@
                     }
                 })
             },
+
+            /**
+             *
+             * @param event
+             */
             toggleContent: function (event) {
                 var hidden = $(event.target).closest('tbody').find('.edit-inline').toggleClass('hide-if-js').hasClass('hide-if-js'),
                     postData = {hidden: {}};
@@ -284,10 +341,17 @@
             getScreenQuizId: function () {
                 return 'lp_quiz' === $('#post_type').val() ? parseInt($('#post_ID').val()) : 0;
             },
+
+            /**
+             * Callback function when user type anything into the text field
+             *
+             * @param event
+             */
             onQuestionKeyEvent: function (event) {
                 var eventType = event.type,
                     val = event.target.value,
                     $option = this.getQuestionTarget(event.target);
+
                 switch (event.keyCode) {
                     case 13:
                         if ('keypress' === eventType || 'keydown' === eventType) {
@@ -319,16 +383,39 @@
                     this.questionData.title = event.target.value;
                     this.update(event);
                 }
+
+                // Prevent submitting form if enter key is pressed
                 if (('keypress' === eventType || 'keydown' === eventType ) && event.keyCode === 13) {
                     event.preventDefault();
                 }
             },
+
+            /**
+             * Get question container from a target element (user event)
+             *
+             * @param target
+             * @returns {*}
+             */
             getQuestionTarget: function (target) {
                 return $(target).closest('.learn-press-question');
             },
+
+            /**
+             * Check if an option is empty
+             *
+             * @param $question
+             * @returns {boolean}
+             */
             isEmptyQuestion: function ($question) {
                 return !$question.find('.lp-question-heading-title').val();
             },
+
+            /**
+             * Move (focus) to next question (up or down) from a specific question.
+             *
+             * @param $question
+             * @param dir
+             */
             moveNextQuestion: function ($question, dir) {
                 var $next = false;
                 if ('next' === dir) {
@@ -339,6 +426,7 @@
                 } else {
                     $next = $question.prev();
                 }
+
                 if ($next) {
                     $next.find('.lp-question-heading-title').focus();
                 }
@@ -377,7 +465,6 @@
             },
             elementClick: function () {
                 $('.tipsy').remove();
-                console.log()
             },
             getFormData: function (extra) {
                 var formData = this.getElement('input, select, textarea').filter(':not(.abc-xyz)').serializeJSON(this.getFormInputPath()),
@@ -385,7 +472,7 @@
                 if (formData) {
                     var values = _.values(formData);
                     formData = values[0];
-                }else{
+                } else {
                     formData = {};
                 }
                 formData.answer_options && _.forEach(formData.answer_options.text, function (text, i) {
@@ -402,11 +489,9 @@
                 return "learn_press_question";
             },
             getId: function () {
-                console.log(this.getElement())
                 return this.getElement().attr('dbid');
             },
             isOptionChecked: function (event) {
-                console.log(event)
             },
             changeQuestionType: function (event) {
                 var $li = $(event.target).closest('li'),

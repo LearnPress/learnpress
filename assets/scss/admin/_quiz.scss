@@ -4,11 +4,11 @@
     color: #777;
     thead {
         > tr > th {
-            padding: 12px 8px;
+            padding: 12px 8px 12px 0;
             border: none;
             text-align: left;
             border-bottom: 1px solid #DDD;
-            &.column-actions {
+            &.lp-column-actions {
                 padding: 0;
                 min-width: 100px;
             }
@@ -40,7 +40,7 @@
             border: none;
             text-align: left;
             border-bottom: 1px solid #ECECEC;
-            &.column-actions {
+            &.lp-column-actions {
                 padding: 0;
                 text-align: right;
                 .lp-toolbar-buttons {
@@ -68,7 +68,7 @@
         }
     }
 
-    .column-sort {
+    .lp-column-sort {
         width: 15px;
         text-align: center;
         font-size: 18px;
@@ -78,24 +78,28 @@
             color: $primary-color;
         }
     }
-    .column-order {
+    .lp-column-order {
         width: 25px;
         text-align: right;
     }
-    .column-name {
+    .lp-column-name {
         padding-left: 0;
     }
-    .column-type {
+    .lp-column-type {
         width: 150px;
         text-align: center;
     }
-    .column-actions {
+    .lp-column-actions {
         width: 50px;
     }
+    .lp-column-answer_text{
+        padding-left: 0;
+    }
+
     tbody {
         &:hover {
             > tr > td {
-                &.column-actions {
+                &.lp-column-actions {
                     .lp-toolbar-buttons {
                         visibility: visible;
                     }
@@ -156,14 +160,14 @@
         th {
             padding: 8px 10px;
             font-weight: normal;
-            &.column-sort {
+            &.lp-column-sort {
                 .fa {
                     display: none;
                 }
             }
         }
     }
-    .column-quick-add {
+    .lp-column-quick-add {
         text-align: left;
         padding: 5px 0;
         input[type="text"], button {

@@ -6,6 +6,10 @@
  */
 
 defined( 'ABSPATH' ) || exit();
+
+if(!isset($order)){
+    $order = learn_press_get_order();
+}
 ?>
 <?php if ( $order ) : ?>
 
@@ -59,8 +63,8 @@ defined( 'ABSPATH' ) || exit();
 
 	<?php endif; ?>
 
-	<?php do_action( 'learn_press_confirm_order' . $order->transaction_method, $order->id ); ?>
-	<?php do_action( 'learn_press_confirm_order', $order->id ); ?>
+	<?php do_action( 'learn_press_confirm_order' . $order->transaction_method, $order->get_id() ); ?>
+	<?php do_action( 'learn_press_confirm_order', $order->get_id() ); ?>
 
 <?php else : ?>
 
