@@ -193,6 +193,9 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.  
 
 == Changelog ==
+= 2.1.7.2 =
+~ Fixed can add a question to multiple quizzes
+
 = 2.1.7 =
 + Added link to navigate to course in checkout page
 + Updated meta-box lib to latest version

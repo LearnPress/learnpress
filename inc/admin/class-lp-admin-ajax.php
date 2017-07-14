@@ -253,7 +253,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 				case 'lp_question':
 					$query      = $wpdb->prepare( "
 						SELECT question_id
-						FROM {$wpdb->prefix}learnpress_quiz_questions
+						FROM {$wpdb->prefix}learnpress_quiz_questions qq
 						INNER JOIN {$wpdb->posts} q ON q.ID = qq.quiz_id
 						WHERE %d
 						AND q.post_type = %s
