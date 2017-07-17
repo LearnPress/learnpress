@@ -5661,7 +5661,7 @@ msgstr ""
 
 #: LearnPress/templates/single-course/buttons.php:27
 msgid ""
-"The class is full so the enrollment is close. Please contact the site admin."
+"The class is full so enrollment is closed. Please contact the site admin."
 msgstr ""
 
 #: LearnPress/templates/single-course/buttons.php:45
