@@ -1,4 +1,3 @@
-
 .learn-press-addons {
     .lp-search-addon {
         margin: 0;
@@ -29,67 +28,49 @@
                 max-width: 100%;
             }
         }
-        .plugin-card h3 {
-            @include text-overflow(1.6em, 3);
-            height: 4.8em;
-        }
-        .plugin-card .desc {
-            min-height: 90px;
-            margin-right: 0;
-        }
         .plugin-card {
-            .install-now:before,
-            .disable-now:before,
-            .enable-now:before {
-                margin: 3px 5px 0 -2px;
-                display: inline-block;
-                font: 400 20px/1 dashicons;
-                -webkit-font-smoothing: antialiased;
-                -moz-osx-font-smoothing: grayscale;
-                vertical-align: top;
-            }
-
-            .install-now:before {
-                content: '\f106';
-                color: #0073aa;
-            }
-
-            .disable-now:before {
-                content: '\f147';
-                color: #0073aa;
-            }
-
-            .enable-now:before {
-                content: '\f335';
-                color: #d54e21;
-            }
-
-            .disable-now:hover:before {
-                content: '\f335';
-                color: #d54e21;
-            }
-
-            .enable-now:hover:before {
-                content: '\f147';
-                color: #0073aa;
-            }
-            .button-working:before {
-                content: '\f463' !important;
-                -webkit-animation: lp-spinner 2s infinite linear;
-                animation: lp-spinner 2s infinite linear;
-                margin-right: 0;
-            }
-            .button-working span {
-                display: none;
-            }
             .column-description {
                 p:not(.authors) {
                     @include text-overflow();
                     color: #777;
                 }
             }
-            .search-highlight{
+            .search-highlight {
                 text-decoration: underline;
+            }
+        }
+        .plugin-card-top {
+            h3 {
+                @include text-overflow(1.3em, 3);
+            }
+            .desc {
+                min-height: 90px;
+                margin-right: 0;
+            }
+            .button {
+                &.activate-plugin, &.install-now, &.enable-now {
+                    background: #0085ba;
+                    border-color: #0073aa #006799 #006799;
+                    -webkit-box-shadow: 0 1px 0 #006799;
+                    box-shadow: 0 1px 0 #006799;
+                    color: #fff;
+                    text-decoration: none;
+                    text-shadow: 0 -1px 1px #006799, 1px 0 1px #006799, 0 1px 1px #006799, -1px 0 1px #006799;
+                }
+                &.button-working {
+                    padding-right: 4px;
+                    span {
+                        display: none;
+                    }
+                }
+            }
+        }
+        .plugin-card-bottom {
+            .plugin-version {
+                display: inline-block;
+            }
+            .column-compatibility {
+
             }
         }
         &.premium {

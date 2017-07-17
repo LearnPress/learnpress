@@ -230,7 +230,7 @@ class LP_Plugins_Helper {
 	 * Get our related themes.
 	 *
 	 * @param string $type
-	 * @param array  $args
+	 * @param array $args
 	 *
 	 * @return array|mixed
 	 */
@@ -342,7 +342,10 @@ class LP_Plugins_Helper {
 						break;
 					case 'latest_installed':
 					case 'newer_installed':
-						$action_links[] = '<span class="button button-disabled" title="' . esc_attr__( 'This plugin is already installed and is up to date' ) . ' ">' . _x( 'Installed', 'plugin' ) . '</span>';
+						if ( 'more' == $_REQUEST['tab'] ) {
+							$action_links[] = '<span class="button button-disabled" title="' . esc_attr__( 'This plugin is already installed and is up to date' ) . ' ">' . _x( 'Installed', 'plugin' ) . '</span>';
+						}
+
 						break;
 				}
 				if ( learn_press_is_plugin_install( $file ) ) {
@@ -361,12 +364,11 @@ class LP_Plugins_Helper {
 						$action_links[] = '<a class="button enable-now" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url( wp_nonce_url( 'plugins.php?action=activate&plugin=' . $file, 'activate-plugin_' . $file ) ) . '" aria-label="' . esc_attr( sprintf( __( 'Enable %s now' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '"><span>' . __( 'Enable Now', 'learnpress' ) . '</span></a>';
 					}
 				} else {
-					if ( $plugin['url'] ) {
+					if ( isset( $plugin['url'] ) ) {
 						$action_links[] = '<a class="buy-now button" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url( $plugin['url'] ) . '" aria-label="' . esc_attr( sprintf( __( 'Buy %s now' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '">' . __( 'Buy Now' ) . '</a>';
 					}
 				}
 			}
-			$action_links[] = '<p class="plugin-version">' . sprintf( __( 'Version: %s', 'learnpress' ), $plugin['version'] ) . '</p>';
 		}
 
 		return $action_links;

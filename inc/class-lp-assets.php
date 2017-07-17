@@ -213,7 +213,7 @@ class LP_Assets {
 		$scripts->add( 'angularjs', 'https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js', null, $ver, 1 );
 
 		// global
-		$scripts->add( 'learn-press-global', $default_path . 'js/global' . $suffix . '.js'. $no_cache, $deps, $ver, 1 );
+		$scripts->add( 'learn-press-global', $default_path . 'js/global' . $suffix . '.js' . $no_cache, $deps, $ver, 1 );
 		$scripts->add( 'learn-press-jalerts', $default_path . 'js/vendor/jquery.alert' . $suffix . '.js', $deps, $ver, 1 );
 
 		// frontend
@@ -234,7 +234,7 @@ class LP_Assets {
 			'jquery-ui-draggable'
 		), $ver, 1 );
 
-		$scripts->add('modal-search', $default_path . 'js/admin/controllers/modal-search.js' . $no_cache, array(
+		$scripts->add( 'modal-search', $default_path . 'js/admin/controllers/modal-search.js' . $no_cache, array(
 			'jquery',
 			'utils',
 			'angularjs'
@@ -256,7 +256,10 @@ class LP_Assets {
 		) );
 
 		$scripts->add( 'question-controller', $default_path . 'js/admin/controllers/question.js' . $no_cache, array( 'base-controller' ) );
-		$scripts->add( 'quiz-controller', $default_path . 'js/admin/controllers/quiz.js' . $no_cache, array( 'base-controller', 'modal-search-questions' ) );
+		$scripts->add( 'quiz-controller', $default_path . 'js/admin/controllers/quiz.js' . $no_cache, array(
+			'base-controller',
+			'modal-search-questions'
+		) );
 		$scripts->add( 'course-controller', $default_path . 'js/admin/controllers/course.js' . $no_cache, array( 'base-controller' ) );
 		// admin
 		$scripts->add( 'question-app', $default_path . 'js/admin/question.js' . $no_cache, array(
@@ -272,7 +275,7 @@ class LP_Assets {
 			'quiz-app'
 		) );
 
-		$scripts->add( 'learn-press-admin', $default_path . 'js/admin/admin' . $suffix . '.js', $deps, $ver, 1 );
+		$scripts->add( 'learn-press-admin', $default_path . 'js/admin/admin' . $suffix . '.js', array_merge( $deps, array( 'jquery-ui-sortable' ) ), $ver, 1 );
 		$scripts->add( 'learn-press-utils', $default_path . 'js/admin/utils' . $suffix . '.js', $deps, $ver, 1 );
 
 
@@ -355,10 +358,10 @@ class LP_Assets {
 	/**
 	 * register script
 	 *
-	 * @param string  $handle
-	 * @param string  $src
-	 * @param array   $deps
-	 * @param string  $version
+	 * @param string $handle
+	 * @param string $src
+	 * @param array $deps
+	 * @param string $version
 	 * @param boolean $in_footer
 	 */
 	public static function add_script( $handle, $src, $deps = array( 'jquery' ), $version = LEARNPRESS_VERSION, $in_footer = true ) {
@@ -371,7 +374,7 @@ class LP_Assets {
 	 *
 	 * @param string $handle
 	 * @param string $src
-	 * @param array  $deps
+	 * @param array $deps
 	 * @param string $version
 	 * @param string $media
 	 */
@@ -383,10 +386,10 @@ class LP_Assets {
 	/**
 	 * enqueue script
 	 *
-	 * @param string  $handle
-	 * @param string  $src
-	 * @param array   $deps
-	 * @param string  $version
+	 * @param string $handle
+	 * @param string $src
+	 * @param array $deps
+	 * @param string $version
 	 * @param boolean $in_footer
 	 */
 	public static function enqueue_script( $handle, $src = '', $deps = array( 'jquery' ), $version = LEARNPRESS_VERSION, $in_footer = true ) {
@@ -453,7 +456,7 @@ class LP_Assets {
 	 *
 	 * @param string $handle
 	 * @param string $src
-	 * @param array  $deps
+	 * @param array $deps
 	 * @param string $version
 	 * @param string $media
 	 */
@@ -792,7 +795,7 @@ class LP_Assets {
 				self::enqueue_script( 'learn-press-global' );
 				self::enqueue_script( 'learn-press-admin' );
 			}
-			switch(get_post_type()){
+			switch ( get_post_type() ) {
 				case LP_QUESTION_CPT:
 					self::enqueue_script( 'question-app' );
 					break;
