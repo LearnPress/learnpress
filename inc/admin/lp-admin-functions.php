@@ -77,7 +77,7 @@ function learn_press_admin_view_content( $name, $args = array() ) {
  * Find a full path of a view and display the content in admin
  *
  * @param            $name
- * @param array      $args
+ * @param array $args
  * @param bool|false $include_once
  * @param            bool
  *
@@ -112,7 +112,7 @@ function learn_press_admin_view( $name, $args = array(), $include_once = false, 
  *
  * @param            $name
  * @param bool|false $selected
- * @param array      $args
+ * @param array $args
  *
  * @return mixed|string
  */
@@ -368,12 +368,19 @@ function learn_press_get_education_themes() {
 	);
 }
 
-function learn_press_get_item_ref() {
-	return array(
-		'ref'        => 'ThimPress',
-		'utm_source' => 'lp-backend',
-		'utm_medium' => 'lp-addondashboard'
-	);
+if ( ! function_exists( 'learn_press_get_item_referral' ) ) {
+	/**
+     * Set item link referral.
+     *
+	 * @return array
+	 */
+	function learn_press_get_item_referral() {
+		return array(
+			'ref'        => 'ThimPress',
+			'utm_source' => 'lp-backend',
+			'utm_medium' => 'lp-addondashboard'
+		);
+	}
 }
 
 /**
@@ -428,7 +435,7 @@ function learn_press_footer_advertisement() {
 
 	shuffle( $list_themes );
 
-	$query_arg = learn_press_get_item_ref();
+	$query_arg = learn_press_get_item_referral();
 
 	?>
     <div id="learn-press-advertisement" class="learn-press-advertisement-slider">

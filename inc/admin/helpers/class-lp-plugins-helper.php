@@ -60,7 +60,6 @@ class LP_Plugins_Helper {
 				continue;
 			}
 
-
 			// If there is a tag named 'learnpress'
 			$tags = ( preg_split( '/\s*,\s*/', $plugin_data['Tags'] ) );
 			if ( ! in_array( 'learnpress', $tags ) ) {
@@ -68,6 +67,7 @@ class LP_Plugins_Helper {
 			}
 
 			$plugin_slug = dirname( $plugin_file );
+
 			if ( isset( $wp_plugins[ $plugin_file ] ) ) {
 				$plugins[ $plugin_file ]           = (array) $wp_plugins[ $plugin_file ];
 				$plugins[ $plugin_file ]['source'] = 'wp';
@@ -101,7 +101,6 @@ class LP_Plugins_Helper {
 				}
 			}
 		}
-
 		self::$plugins['installed'] = $plugins;
 		self::$plugins['free']      = array_diff_key( $wp_plugins, $wp_installed );
 		self::$plugins['premium']   = array_diff_key( $premium_plugins, $premium_installed );
@@ -312,7 +311,7 @@ class LP_Plugins_Helper {
 	}
 
 	/**
-	 * Get action link of a plugin.
+	 * Get action links of a plugin.
 	 *
 	 * @param object $plugin
 	 * @param string $file
@@ -323,13 +322,14 @@ class LP_Plugins_Helper {
 		$action_links = array();
 		if ( ( current_user_can( 'install_plugins' ) || current_user_can( 'update_plugins' ) ) ) {
 			$name = '';
+			// action links for publish add-ons
 			if ( ! empty( $plugin['source'] ) && $plugin['source'] == 'wp' ) {
 				$status = install_plugin_install_status( $plugin );
 				switch ( $status['status'] ) {
 					case 'install':
 						if ( $status['url'] ) {
 							/* translators: 1: Plugin name and version. */
-							$action_links[] = '<a class="install-now button" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url( $status['url'] ) . '" aria-label="' . esc_attr( sprintf( __( 'Install %s now' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '"><span>' . __( 'Install Now' ) . '</span></a>';
+							$action_links[] = '<a class="install-now button" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url( $status['url'] ) . '" aria-label="' . esc_attr( sprintf( __( 'Install %s now' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '" data-success="Installed"><span>' . __( 'Install Now' ) . '</span></a>';
 						}
 
 						break;
@@ -357,6 +357,7 @@ class LP_Plugins_Helper {
 				}
 
 			} else {
+				// action links for premium add-ons installed
 				if ( learn_press_is_plugin_install( $file ) ) {
 					if ( is_plugin_active( $file ) ) {
 						$action_links[] = '<a class="button disable-now" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url( wp_nonce_url( 'plugins.php?action=deactivate&plugin=' . $file, 'deactivate-plugin_' . $file ) ) . '" aria-label="' . esc_attr( sprintf( __( 'Disable %s now' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '"><span>' . __( 'Disable Now', 'learnpress' ) . '</span></a>';
@@ -364,8 +365,9 @@ class LP_Plugins_Helper {
 						$action_links[] = '<a class="button enable-now" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url( wp_nonce_url( 'plugins.php?action=activate&plugin=' . $file, 'activate-plugin_' . $file ) ) . '" aria-label="' . esc_attr( sprintf( __( 'Enable %s now' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '"><span>' . __( 'Enable Now', 'learnpress' ) . '</span></a>';
 					}
 				} else {
-					if ( isset( $plugin['url'] ) ) {
-						$action_links[] = '<a class="buy-now button" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url( $plugin['url'] ) . '" aria-label="' . esc_attr( sprintf( __( 'Buy %s now' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '">' . __( 'Buy Now' ) . '</a>';
+					// buy now button for premium add-ons
+					if ( isset( $plugin['permarklink'] ) ) {
+						$action_links[] = '<a class="buy-now button" data-slug="' . esc_attr( $plugin['slug'] ) . '" href="' . esc_url( $plugin['permarklink'] ) . '" aria-label="' . esc_attr( sprintf( __( 'Buy %s now' ), $name ) ) . '" data-name="' . esc_attr( $name ) . '">' . __( 'Buy Now' ) . '</a>';
 					}
 				}
 			}
@@ -592,35 +594,6 @@ class LP_Plugins_Helper {
 	function learn_press_get_more_add_ons() {
 		$defaults = array();
 	}
-
-	/**
-	 * Default tabs for add ons page
-	 *
-	 * @return array
-	 */
-	function learn_press_get_add_on_tabs_XXXX() {
-		$counts   = learn_press_count_add_ons();
-		$defaults = array(
-			'installed'      => array(
-				'text'  => sprintf( __( 'Installed <span class="count">(%s)</span>', 'learnpress' ), $counts['installed'] ),
-				'class' => '',
-				'url'   => ''
-			),
-			'all_plugins'    => array(
-				'text'  => sprintf( __( 'Add-ons <span class="count">(%s)</span>', 'learnpress' ), $counts['all_plugins'] ),
-				'class' => '',
-				'url'   => ''
-			),
-			'related_themes' => array(
-				'text'  => sprintf( __( 'Related Themes <span class="count">(%s)</span>', 'learnpress' ), $counts['related_themes'] ),
-				'class' => '',
-				'url'   => ''
-			)
-		);
-
-		return apply_filters( 'learn_press_add_on_tabs', $defaults );
-	}
-
 
 	/**
 	 * @param $slug
