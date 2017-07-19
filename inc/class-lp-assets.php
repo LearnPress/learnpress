@@ -106,23 +106,21 @@ class LP_Assets extends LP_Abstract_Assets {
 	 */
 	public static function init() {
 		$priory = 900;
-
-		// Frontend assets
 		if ( ! is_admin() ) {
 			add_action( 'wp_enqueue_scripts', array( self::$_instance, 'load_scripts' ), $priory );
+			add_action( 'wp_enqueue_scripts', array( self::$_instance, 'wp_assets' ), $priory );
 			add_action( 'wp_print_footer_scripts', array( __CLASS__, 'localize_printed_scripts' ), $priory + 10 );
-			///add_action( 'wp_enqueue_scripts', array( __CLASS__, '_enqueue_scripts' ), $priory + 10 );
+			add_action( 'wp_enqueue_scripts', array( __CLASS__, '_enqueue_scripts' ), $priory + 10 );
 
 		} else {
-			add_action( 'admin_enqueue_scripts', array( self::$_instance, 'admin_scripts' ), $priory );
+			add_action( 'admin_enqueue_scripts', array( self::$_instance, 'load_scripts' ), $priory );
+			add_action( 'admin_enqueue_scripts', array( self::$_instance, 'wp_assets' ), $priory );
 			add_action( 'admin_print_footer_scripts', array(
 				self::$_instance,
 				'localize_printed_scripts'
 			), $priory + 10 );
-			//add_action( 'admin_enqueue_scripts', array( __CLASS__, '_enqueue_scripts' ), $priory + 10 );
+			add_action( 'admin_enqueue_scripts', array( __CLASS__, '_enqueue_scripts' ), $priory + 10 );
 		}
-
-		return;
 		add_filter( 'script_loader_src', array( __CLASS__, 'script_localized' ), $priory + 5, 2 );
 
 		/**
@@ -166,185 +164,6 @@ class LP_Assets extends LP_Abstract_Assets {
 		add_action( 'admin_print_scripts', array( self::$_instance, 'include_stylesheet_file' ), $priory );
 		//}
 	}
-
-	/**
-	 * Get default scripts in admin.
-	 *
-	 * @return mixed
-	 */
-	protected static function _get_admin_scripts() {
-		return apply_filters(
-			'learn-press/admin-default-scripts',
-			array(
-				'learn-press-global'     => array(
-					'url'  => self::url( 'js/global.js' ),
-					'deps' => array( 'jquery' )
-				),
-				'angularjs'              => self::url( 'js/vendor/angular.1.6.4.js' ),
-				'tipsy'                  => array(
-					'url'  => self::url( 'js/vendor/jquery-tipsy/jquery.tipsy.js' ),
-					'deps' => array( 'jquery' )
-				),
-				'modal-search'           => array(
-					'url'  => self::url( 'js/admin/controllers/modal-search.js' ),
-					'deps' => array( 'jquery', 'utils', 'angularjs' )
-				),
-				'modal-search-questions' => array(
-					'url'  => self::url( 'js/admin/controllers/modal-search-questions.js' ),
-					'deps' => array( 'modal-search' )
-				),
-				'base-controller'        => array(
-					'url'  => self::url( 'js/admin/controllers/base.js' ),
-					'deps' => array( 'jquery', 'utils', 'angularjs' )
-				),
-				'base-app'               => array(
-					'url'  => self::url( 'js/admin/base.js' ),
-					'deps' => array( 'jquery', 'utils', 'angularjs' )
-				),
-				'question-controller'    => array(
-					'url'  => self::url( 'js/admin/controllers/question.js' ),
-					'deps' => array( 'base-controller' )
-				),
-				'quiz-controller'        => array(
-					'url'  => self::url( 'js/admin/controllers/quiz.js' ),
-					'deps' => array( 'base-controller', 'modal-search-questions' )
-				),
-				'course-controller'      => array(
-					'url'  => self::url( 'js/admin/controllers/course.js' ),
-					'deps' => array( 'base-controller' )
-				),
-				'question-app'           => array(
-					'url'  => self::url( 'js/admin/question.js' ),
-					'deps' => array( 'question-controller', 'base-app' )
-				),
-				'quiz-app'               => array(
-					'url'  => self::url( 'js/admin/quiz.js' ),
-					'deps' => array( 'question-controller', 'quiz-controller', 'question-app' )
-				),
-				'course-app'             => array(
-					'url'  => self::url( 'js/admin/course.js' ),
-					'deps' => array(
-						'quiz-app'
-					)
-				)
-			)
-		);
-	}
-
-	/**
-	 * Get default styles in admin.
-	 *
-	 * @return mixed
-	 */
-	protected static function _get_admin_styles() {
-		return apply_filters(
-			'learn-press/admin-default-styles',
-			array(
-				'font-awesome'      => self::url( 'css/font-awesome.min.css' ),
-				'learn-press-admin' => self::url( 'css/admin/admin.css' )
-			)
-		);
-	}
-
-	/**
-	 * Register scripts and styles for admin.
-	 */
-	public static function register_admin_scripts() {
-		global $wp_scripts, $wp_styles;
-
-		// No use cache if debug mode is turn on
-		$no_cache = '';
-		if ( learn_press_is_debug() ) {
-			$no_cache = microtime( true );
-		}
-
-		$default_scripts = self::_get_admin_scripts();
-
-		foreach ( $default_scripts as $handle => $data ) {
-			if ( is_string( $data ) ) {
-				$data = array( 'url' => $data );
-			}
-
-			$data = wp_parse_args(
-				$data,
-				array(
-					'deps' => null,
-					'ver'  => LEARNPRESS_VERSION
-				)
-			);
-			$wp_scripts->add( $handle, add_query_arg( 'nocache', $no_cache, $data['url'] ), $data['deps'], $data['ver'] );
-		}
-
-		$default_styles = self::_get_admin_styles();
-
-		foreach ( $default_styles as $handle => $data ) {
-			if ( is_string( $data ) ) {
-				$data = array( 'url' => $data );
-			}
-
-			$data = wp_parse_args(
-				$data,
-				array(
-					'deps' => null,
-					'ver'  => LEARNPRESS_VERSION
-				)
-			);
-			$wp_styles->add( $handle, add_query_arg( 'nocache', $no_cache, $data['url'] ), $data['deps'], $data['ver'] );
-		}
-		// admin
-
-		//$scripts->add( 'learn-press-admin', $default_path . 'js/admin/admin' . $suffix . '.js', $deps, $ver, 1 );
-		//$scripts->add( 'learn-press-utils', $default_path . 'js/admin/utils' . $suffix . '.js', $deps, $ver, 1 );
-
-		/*
-		$scripts->add( 'learn-press-admin-settings', $default_path . 'js/admin/settings' . $suffix . '.js', $deps, $ver, 1 );
-		$scripts->add( 'learn-press-mb-question', $default_path . 'js/admin/meta-box-question' . $suffix . '.js', $deps, $ver, 1 );
-		$scripts->add( 'learn-press-mb-course', $default_path . 'js/admin/meta-box-course' . $suffix . '.js', $deps, $ver, 1 );
-		$scripts->add( 'learn-press-mb-quiz', $default_path . 'js/admin/meta-box-quiz' . $suffix . '.js', $deps, $ver, 1 );
-		$scripts->add( 'learn-press-mb-order', $default_path . 'js/admin/meta-box-order' . $suffix . '.js', $deps, $ver, 1 );
-		$scripts->add( 'learn-press-modal-search-items', $default_path . 'js/admin/modal-search-items' . $suffix . '.js', array( 'learn-press-global' ), $ver, 1 );
-		$scripts->add( 'learn-press-order', $default_path . 'js/admin/meta-box-order' . $suffix . '.js', $deps, $ver, 1 );
-		$scripts->add( 'learn-press-admin-tabs', $default_path . 'js/admin/admin-tabs' . $suffix . '.js', $deps, $ver, 1 );*/
-
-		//$scripts->add( 'learn-press-select2', '/' . LP_WP_CONTENT . '/plugins/learnpress/inc/libraries/meta-box/js/select2/select2.min.js', $deps, $ver, 1 );
-		//$scripts->add( 'learn-press-tipsy', $default_path . 'js/vendor/jquery-tipsy/jquery.tipsy.js' );
-	}
-
-	/**
-	 * Register and enqueue needed scripts and styles
-	 */
-	public static function admin_scripts() {
-		// Register
-		self::register_admin_scripts();
-
-		/**
-		 * Enqueue scripts
-		 *
-		 * TODO: check to show only scripts needed in specific pages
-		 */
-		if ( $scripts = self::_get_admin_scripts() ) {
-			foreach ( $scripts as $handle => $data ) {
-				wp_enqueue_script( $handle );
-			}
-		}
-
-		/**
-		 * Enqueue scripts
-		 *
-		 * TODO: check to show only styles needed in specific pages
-		 */
-		if ( $styles = self::_get_admin_styles() ) {
-			foreach ( self::_get_admin_styles() as $handle => $data ) {
-				wp_enqueue_style( $handle );
-			}
-		}
-	}
-
-	public static function localize_printed_scripts() {
-		//wp_localize_script()
-	}
-
-	/*****************/
 
 	public static function script_localized( $source, $handle ) {
 		//if ( !empty( self::$wp_localize_scripts[$handle] ) ) {
@@ -391,14 +210,14 @@ class LP_Assets extends LP_Abstract_Assets {
 		$ver          = LEARNPRESS_VERSION;
 		$no_cache     = ( defined( 'LP_CACHE_RESOURCE' ) && false === LP_CACHE_RESOURCE ) ? '?no-cache=' . preg_replace( '~(\.[0-9]+)~', '', microtime( true ) ) : '';
 
-		$scripts->add( 'angularjs', $default_path . 'js/vendor/angular.1.6.4.js', null, $ver, 1 );
+		$scripts->add( 'angularjs', 'https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js', null, $ver, 1 );
 
 		// global
 		$scripts->add( 'learn-press-global', $default_path . 'js/global' . $suffix . '.js' . $no_cache, $deps, $ver, 1 );
 		//$scripts->add( 'learn-press-jalerts', $default_path . 'js/vendor/jquery.alert' . $suffix . '.js', $deps, $ver, 1 );
 
 		// frontend
-		/*$scripts->add( 'learn-press-js', $default_path . 'js/frontend/learnpress' . $suffix . '.js', $deps, $ver, 1 );
+		$scripts->add( 'learn-press-js', $default_path . 'js/frontend/learnpress' . $suffix . '.js', $deps, $ver, 1 );
 		$scripts->add( 'learn-press-single-course', $default_path . 'js/frontend/single-course' . $suffix . '.js', $deps, $ver, 1 );
 		$scripts->add( 'learn-press-course-quiz', $default_path . 'js/frontend/quiz' . $suffix . '.js', $deps, $ver, 1 );
 		$scripts->add( 'learn-press-course-lesson', $default_path . 'js/frontend/lesson' . $suffix . '.js', $deps, $ver, 1 );
@@ -413,7 +232,7 @@ class LP_Assets extends LP_Abstract_Assets {
 			'plupload',
 			'jquery-ui-slider',
 			'jquery-ui-draggable'
-		), $ver, 1 );*/
+		), $ver, 1 );
 
 		// Admin
 		$scripts->add( 'modal-search', $default_path . 'js/admin/controllers/modal-search.js' . $no_cache, array(
@@ -509,7 +328,7 @@ class LP_Assets extends LP_Abstract_Assets {
 	 * @param WP_Styles $styles
 	 */
 	public static function add_default_styles( &$styles ) {
-		$default_path = LP_CONTENT_PATH . 'assets/';
+		$default_path = LP_CONTENT_PATH . '/assets/';
 		$suffix       = '';
 		$deps         = array( 'dashicons' );
 		$ver          = LEARNPRESS_VERSION;
@@ -743,11 +562,17 @@ class LP_Assets extends LP_Abstract_Assets {
 		self::$wp_script_codes[ $handle ] .= preg_replace( '!</?script(.*)>!', '', $code );
 	}
 
+	/**
+	 * wp_assets
+	 */
+	public static function wp_assets() {
+		do_action( 'learn_press_print_assets', is_admin() );
+	}
 
 	/**
 	 * localize_printed_scripts
 	 */
-	public static function _localize_printed_scripts() {
+	public static function localize_printed_scripts() {
 		$has_localized = ! empty( self::$localized );
 		$has_params    = ! empty( self::$param_printed );
 		$has_vars      = ! empty( self::$js_vars );
@@ -945,32 +770,33 @@ class LP_Assets extends LP_Abstract_Assets {
 	 * Load assets
 	 */
 	public function load_scripts() {
+		self::enqueue_style( 'font-awesome' );
 
 		if ( is_admin() ) {
 			global $pagenow;
 			$screen    = get_current_screen();
 			$screen_id = $screen->id;
 			$page_id   = ! empty( $_REQUEST['page'] ) ? $_REQUEST['page'] : '';
-
-			self::enqueue_style( 'font-awesome' );
 			self::enqueue_style( 'learn-press-admin' );
+
 			// tipsy tooltip
 			self::enqueue_style( 'learn-press-tipsy' );
 			self::enqueue_script( 'learn-press-tipsy' );
+
 			self::enqueue_script( 'learn-press-utils' );
 
 
 			if ( in_array( $screen_id, learn_press_get_screens() ) || in_array( $page_id, learn_press_get_admin_pages() ) ) {
-				/*self::enqueue_style( 'learn-press-global' );
+				self::enqueue_style( 'learn-press-global' );
 				self::enqueue_style( 'learn-press-jquery.ui.datepicker' );
 				self::enqueue_style( 'learn-press-jquery.ui.theme' );
 				self::enqueue_style( 'learn-press-jquery.ui.core' );
 				self::enqueue_style( 'learn-press-jquery.ui.slider' );
 				self::enqueue_style( 'learn-press-icons' );
 				self::enqueue_script( 'learn-press-global' );
-				self::enqueue_script( 'learn-press-admin' );*/
+				self::enqueue_script( 'learn-press-admin' );
 			}
-			switch ( get_post_type() ) {
+			switch(get_post_type()){
 				case LP_QUESTION_CPT:
 					self::enqueue_script( 'question-app' );
 					break;
@@ -997,7 +823,9 @@ class LP_Assets extends LP_Abstract_Assets {
 			}
 
 			if ( learn_press_is_post_type_screen( array( 'lp_course', 'lp_quiz', 'lp_order' ) ) ) {
+				//self::enqueue_style( 'learn-press-modal-search-items' );
 				self::enqueue_script( 'learn-press-global' );
+				//self::enqueue_script( 'learn-press-modal-search-items' );
 			}
 
 			if ( $screen_id === 'learnpress_page_learn-press-settings' || $screen_id === 'dashboard' ) {
@@ -1067,5 +895,15 @@ class LP_Assets extends LP_Abstract_Assets {
 		do_action( 'learn_press_load_scripts' );
 	}
 
-
+	public static function url( $file = '' ) {
+		return LP_PLUGIN_URL . "assets/{$file}";
+	}
 }
+
+add_action( 'admin_enqueue_scripts', function () {
+	//wp_enqueue_style( 'learn-press-admin', LP_Assets::url('css/admin/admin.css') );
+
+} );
+
+// Call class
+return new LP_Assets();

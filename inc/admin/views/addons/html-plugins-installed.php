@@ -1,6 +1,6 @@
 <?php
 /**
- * Template for displaying all LearnPress's add-ons have installed.
+ * Admin View: Displaying all LearnPress's add-ons have installed.
  *
  * @author  ThimPress
  * @package LearnPress/Views
@@ -8,15 +8,22 @@
  */
 
 defined( 'ABSPATH' ) or exit();
+?>
 
+<?php
+// get all plugins installed
 $add_ons = LP_Plugins_Helper::get_plugins( 'installed' );
+
 if ( ! $add_ons ) {
-	_e( 'There is no addon has installed.', 'learnpress' );
+	_e( 'There is no add-on has installed.', 'learnpress' );
 
 	return;
 }
 ?>
-<h2><?php printf( __( 'Installed add-ons (<span>%d</span>)', 'learnpress' ), sizeof( $add_ons ) ); ?></h2>
+
+<h2>
+	<?php echo __( 'Installed add-ons', 'learnpress' ) . ' (<span>' . sizeof( $add_ons ) . '</span>)'; ?>
+</h2>
 <ul class="addons-browse widefat">
 	<?php
 	foreach ( $add_ons as $file => $add_on ) {

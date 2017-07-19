@@ -133,4 +133,4 @@ Yes, you can and we appreciate it. Join in our <a href="https://github.com/Learn
 https://www.transifex.com/projects/p/learnpress/  
 
 **Other note**  
-<a href="http://docs.thimpress.com/learnpress" target="_blank">Documentation</a> is available in ThimPress site.  
+<a href="http://docspress.thimpress.com/learnpress" target="_blank">Documentation</a> is available in ThimPress site.  

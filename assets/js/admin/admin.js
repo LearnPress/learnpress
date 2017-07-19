@@ -41,9 +41,8 @@
                 args = $.extend({title: 'data-tooltip', offset: 10, gravity: 's'}, $el.data());
             $el.tipsy(args);
         });
-    })
+    });
 
-    return;
     var LP_Admin = window.LP_Admin = {
         init: function () {
             var $doc = $(document);
@@ -122,7 +121,7 @@
                 }
             })
         }
-    }
+    };
     var $doc = $(document);
 
     function _ready() {
@@ -135,10 +134,10 @@
 
             e.preventDefault();
             var $plugin = $(this).closest('.plugin-card');
-            if ($(this).hasClass('button-working')) {
+            if ($(this).hasClass('updating-message')) {
                 return;
             }
-            $(this).addClass('button-working disabled');
+            $(this).addClass('updating-message button-working disabled');
             $.ajax({
                 url: $(this).attr('href'),
                 data: {},
@@ -149,6 +148,10 @@
                             var $p = $(r).find('#' + $plugin.attr('id'));
                             if ($p.length) {
                                 $plugin.replaceWith($p)
+                            } else {
+                                $plugin.find('.plugin-action-buttons a')
+                                    .removeClass('updating-message button-working')
+                                    .html(learn_press_admin_localize .plugin_installed);
                             }
                         }
                     })
