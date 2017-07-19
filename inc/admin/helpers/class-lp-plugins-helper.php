@@ -342,7 +342,7 @@ class LP_Plugins_Helper {
 						break;
 					case 'latest_installed':
 					case 'newer_installed':
-						if ( 'more' == $_REQUEST['tab'] ) {
+						if ( isset( $_REQUEST['tab'] ) && 'more' == $_REQUEST['tab'] ) {
 							$action_links[] = '<span class="button button-disabled" title="' . esc_attr__( 'This plugin is already installed and is up to date' ) . ' ">' . _x( 'Installed', 'plugin' ) . '</span>';
 						}
 
