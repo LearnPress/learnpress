@@ -346,7 +346,7 @@ class LP_Assets extends LP_Abstract_Assets {
 	/**
 	 * Load default scripts
 	 *
-	 * @param $scripts
+	 * @param WP_Scripts $scripts
 	 */
 	public static function default_scripts( &$scripts ) {
 		if ( ! defined( 'LEARNPRESS_VERSION' ) ) {
@@ -370,6 +370,9 @@ class LP_Assets extends LP_Abstract_Assets {
 		self::add_default_scripts( $scripts );
 	}
 
+	/**
+	 * @param WP_Scripts $scripts
+	 */
 	public static function add_default_scripts( &$scripts ) {
 		$default_path = LP_CONTENT_PATH . 'assets/';
 		$suffix       = '';
