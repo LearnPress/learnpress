@@ -179,7 +179,7 @@ class LP_Assets {
 	/**
 	 * Load default scripts
 	 *
-	 * @param $scripts
+	 * @param WP_Scripts $scripts
 	 */
 	public static function default_scripts( &$scripts ) {
 		if ( ! defined( 'LEARNPRESS_VERSION' ) ) {
@@ -203,6 +203,13 @@ class LP_Assets {
 		self::add_default_scripts( $scripts );
 	}
 
+	/**
+	 * Add default scripts.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param WP_Scripts $scripts
+	 */
 	public static function add_default_scripts( &$scripts ) {
 		$default_path = LP_CONTENT_PATH . 'assets/';
 		$suffix       = '';
@@ -213,7 +220,7 @@ class LP_Assets {
 		$scripts->add( 'angularjs', 'https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js', null, $ver, 1 );
 
 		// global
-		$scripts->add( 'learn-press-global', $default_path . 'js/global' . $suffix . '.js'. $no_cache, $deps, $ver, 1 );
+		$scripts->add( 'learn-press-global', $default_path . 'js/global' . $suffix . '.js' . $no_cache, $deps, $ver, 1 );
 		$scripts->add( 'learn-press-jalerts', $default_path . 'js/vendor/jquery.alert' . $suffix . '.js', $deps, $ver, 1 );
 
 		// frontend
@@ -234,7 +241,7 @@ class LP_Assets {
 			'jquery-ui-draggable'
 		), $ver, 1 );
 
-		$scripts->add('modal-search', $default_path . 'js/admin/controllers/modal-search.js' . $no_cache, array(
+		$scripts->add( 'modal-search', $default_path . 'js/admin/controllers/modal-search.js' . $no_cache, array(
 			'jquery',
 			'utils',
 			'angularjs'
@@ -355,10 +362,10 @@ class LP_Assets {
 	/**
 	 * register script
 	 *
-	 * @param string  $handle
-	 * @param string  $src
-	 * @param array   $deps
-	 * @param string  $version
+	 * @param string $handle
+	 * @param string $src
+	 * @param array $deps
+	 * @param string $version
 	 * @param boolean $in_footer
 	 */
 	public static function add_script( $handle, $src, $deps = array( 'jquery' ), $version = LEARNPRESS_VERSION, $in_footer = true ) {
@@ -371,7 +378,7 @@ class LP_Assets {
 	 *
 	 * @param string $handle
 	 * @param string $src
-	 * @param array  $deps
+	 * @param array $deps
 	 * @param string $version
 	 * @param string $media
 	 */
@@ -383,10 +390,10 @@ class LP_Assets {
 	/**
 	 * enqueue script
 	 *
-	 * @param string  $handle
-	 * @param string  $src
-	 * @param array   $deps
-	 * @param string  $version
+	 * @param string $handle
+	 * @param string $src
+	 * @param array $deps
+	 * @param string $version
 	 * @param boolean $in_footer
 	 */
 	public static function enqueue_script( $handle, $src = '', $deps = array( 'jquery' ), $version = LEARNPRESS_VERSION, $in_footer = true ) {
@@ -453,7 +460,7 @@ class LP_Assets {
 	 *
 	 * @param string $handle
 	 * @param string $src
-	 * @param array  $deps
+	 * @param array $deps
 	 * @param string $version
 	 * @param string $media
 	 */
@@ -792,7 +799,7 @@ class LP_Assets {
 				self::enqueue_script( 'learn-press-global' );
 				self::enqueue_script( 'learn-press-admin' );
 			}
-			switch(get_post_type()){
+			switch ( get_post_type() ) {
 				case LP_QUESTION_CPT:
 					self::enqueue_script( 'question-app' );
 					break;
