@@ -95,7 +95,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				return;
 			}
 			$course = LP_Course::get_course( $post );
-			$view   = learn_press_get_admin_view( 'meta-boxes/course/curriculum.php' );
+			$view   = learn_press_get_admin_view( 'course/curriculum.php' );
 			include $view;
 		}
 
@@ -336,6 +336,8 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			global $post;
 
 			$user = learn_press_get_current_user();
+
+			return;
 			LP_Assets::enqueue_script( 'learn-press-global' );
 
 			LP_Assets::enqueue_script( 'learn-press-modal-search-items' );

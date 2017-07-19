@@ -14,7 +14,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 		parent::__construct();
 		$priory = 900;
 		add_action( 'admin_enqueue_scripts', array( $this, 'load_scripts' ), $priory );
-		add_action( 'admin_print_footer_scripts', array( $this, 'localize_printed_scripts' ), $priory + 10 );
+		//add_action( 'admin_print_footer_scripts', array( $this, 'localize_printed_scripts' ), $priory + 10 );
 		//add_action( 'admin_enqueue_scripts', array( __CLASS__, '_enqueue_scripts' ), $priory + 10 );
 	}
 

@@ -9,7 +9,7 @@ global $lp_query, $wp_query;
 $user          = learn_press_get_current_user();
 $course        = LP()->global['course'];
 $item          = LP()->global['course-item'];
-$security      = wp_create_nonce( sprintf( 'complete-item-%d-%d-%d', $user->id, $course->id, $item->ID ) );
+$security      = wp_create_nonce( sprintf( 'complete-item-%d-%d-%d', $user->get_id(), $course->id, $item->ID ) );
 $can_view_item = $user->can( 'view-item', $item->id, $course->id );
 ?>
 <h2 class="learn-press-content-item-title">
@@ -70,4 +70,4 @@ $can_view_item = $user->can( 'view-item', $item->id, $course->id );
 </div>
 <?php LP_Assets::enqueue_script( 'learn-press-course-lesson' ); ?>
 
-<?php LP_Assets::add_var( 'LP_Lesson_Params', wp_json_encode( $item->get_settings( $user->id, $course->id ) ), '__all' ); ?>
+<?php LP_Assets::add_var( 'LP_Lesson_Params', wp_json_encode( $item->get_settings( $user->get_id(), $course->id ) ), '__all' ); ?>

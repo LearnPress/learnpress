@@ -74,13 +74,14 @@ class LP_Order extends LP_Abstract_Object_Data {
 	 */
 	public function __get( $prop ) {
 		if ( $prop == 'post' ) {
+			print_r(debug_backtrace());
 			die( '$post is deprecated' );
 		} elseif ( $prop == 'id' ) {
 			return $this->get_id();
 		}
 		$value = null;
 		if ( ! property_exists( $this, $prop ) ) {
-			$value = get_post_meta( $this->id, '_' . $prop, true );
+			$value = get_post_meta( $this->get_id(), '_' . $prop, true );
 		}
 
 		return $value;
@@ -132,7 +133,7 @@ class LP_Order extends LP_Abstract_Object_Data {
 		if ( ( ( $new_status !== $old_status ) || $force ) && in_array( $new_status, array_keys( learn_press_get_order_statuses( false ) ) ) ) {
 			// Update post's status using wpdb to preventing loop
 			global $wpdb;
-			$updated = $wpdb->update( $wpdb->posts, array( 'post_status' => 'lp-' . $new_status ), array( 'ID' => $this->id ), array( '%s' ) );
+			$updated = $wpdb->update( $wpdb->posts, array( 'post_status' => 'lp-' . $new_status ), array( 'ID' => $this->get_id() ), array( '%s' ) );
 			if ( $updated === false ) {
 				if ( learn_press_is_debug() ) {
 					throw new Exception( __( 'Error! Update order status failed.', 'learnpress' ) );
@@ -144,7 +145,7 @@ class LP_Order extends LP_Abstract_Object_Data {
 			// Update post cache
 			$the_post              = get_post( $the_id );
 			$the_post->post_status = 'lp-' . $new_status;
-			wp_cache_set( $this->id, $this->post, 'posts' );
+			wp_cache_set( $this->get_id(), $this->post, 'posts' );
 
 			// Update order data
 			$this->set_data( 'status', 'lp-' . $new_status );
@@ -178,8 +179,8 @@ class LP_Order extends LP_Abstract_Object_Data {
 	 */
 	public function set_payment_method( $payment_method ) {
 		if ( is_object( $payment_method ) ) {
-			update_post_meta( $this->id, '_payment_method', $payment_method->get_id() );
-			update_post_meta( $this->id, '_payment_method_title', $payment_method->get_title() );
+			update_post_meta( $this->get_id(), '_payment_method', $payment_method->get_id() );
+			update_post_meta( $this->get_id(), '_payment_method_title', $payment_method->get_title() );
 		}
 		$this->payment_method = $payment_method;
 	}
@@ -190,7 +191,7 @@ class LP_Order extends LP_Abstract_Object_Data {
 	 * @return string
 	 */
 	public function get_order_number() {
-		$order_number = apply_filters( 'learn_press_get_order_number', '#' . sprintf( "%'.010d", $this->id ), $this );
+		$order_number = apply_filters( 'learn_press_get_order_number', '#' . sprintf( "%'.010d", $this->get_id() ), $this );
 
 		return apply_filters( 'learn-press/order-number', $order_number, $this->get_id() );
 	}
@@ -235,7 +236,7 @@ class LP_Order extends LP_Abstract_Object_Data {
 	 * @return bool
 	 */
 	public function payment_complete( $transaction_id = '' ) {
-		do_action( 'learn_press_pre_payment_complete', $this->id );
+		do_action( 'learn_press_pre_payment_complete', $this->get_id() );
 
 		LP()->session->order_awaiting_payment = null;
 
@@ -245,17 +246,17 @@ class LP_Order extends LP_Abstract_Object_Data {
 			'on-hold'
 		), $this );
 
-		if ( $this->id && $this->has_status( $valid_order_statuses ) ) {
+		if ( $this->get_id() && $this->has_status( $valid_order_statuses ) ) {
 
 			$this->update_status( 'completed' );
 
 			if ( ! empty( $transaction_id ) ) {
-				add_post_meta( $this->id, '_transaction_id', $transaction_id, true );
+				add_post_meta( $this->get_id(), '_transaction_id', $transaction_id, true );
 			}
 
-			do_action( 'learn_press_payment_complete', $this->id );
+			do_action( 'learn_press_payment_complete', $this->get_id() );
 		} else {
-			do_action( 'learn_press_payment_complete_order_status_' . $this->get_status(), $this->id );
+			do_action( 'learn_press_payment_complete_order_status_' . $this->get_status(), $this->get_id() );
 		}
 
 		return true;
@@ -267,7 +268,7 @@ class LP_Order extends LP_Abstract_Object_Data {
 	 * @return mixed
 	 */
 	public function get_checkout_order_received_url() {
-		$received_url = learn_press_get_endpoint_url( 'lp-order-received', $this->id, learn_press_get_page_link( 'checkout' ) );
+		$received_url = learn_press_get_endpoint_url( 'lp-order-received', $this->get_id(), learn_press_get_page_link( 'checkout' ) );
 
 		$received_url = add_query_arg( 'key', $this->order_key, $received_url );
 
@@ -286,12 +287,12 @@ class LP_Order extends LP_Abstract_Object_Data {
 		if ( ! $user->is_exists() ) {
 			$customer_name = apply_filters( 'learn_press_order_customer_name', __( '[Guest]', 'learnpress' ) );
 		} else {
-			if ( $user->user->data->display_name ) {
-				$customer_name = $user->user->data->display_name;
-			} elseif ( $user->user->data->user_nicename ) {
-				$customer_name = $user->user->data->user_nicename;
-			} elseif ( $user->user->data->user_login ) {
-				$customer_name = $user->user->data->user_login;
+			if ( $user->get_data( 'display_name' ) ) {
+				$customer_name = $user->get_data( 'display_name' );
+			} elseif ( $user->get_data( 'user_nicename' ) ) {
+				$customer_name = $user->get_data( 'user_nicename' );
+			} elseif ( $user->get_data( 'user_login' ) ) {
+				$customer_name = $user->get_data( 'user_login' );
 			}
 		}
 
@@ -315,7 +316,7 @@ class LP_Order extends LP_Abstract_Object_Data {
 		$query = $wpdb->prepare( "
 			SELECT order_item_id, order_item_name
 			FROM {$wpdb->learnpress_order_items}
-			WHERE order_id = %d ", $this->id );
+			WHERE order_id = %d ", $this->get_id() );
 
 		$_items = $wpdb->get_results( $query );
 		$items  = array();
@@ -354,14 +355,14 @@ class LP_Order extends LP_Abstract_Object_Data {
 				INNER JOIN {$wpdb->learnpress_order_items} items
 				WHERE itemmeta.learnpress_order_item_id = items.order_item_id
 				AND items.order_id = %d",
-				$this->id
+				$this->get_id()
 			)
 		);
 		$wpdb->query(
 			$wpdb->prepare( "
 				DELETE FROM {$wpdb->learnpress_order_items}
 				WHERE order_id = %d",
-				$this->id
+				$this->get_id()
 			)
 		);
 		$wpdb->query( $wpdb->prepare( "ALTER TABLE {$wpdb->learnpress_order_itemmeta} AUTO_INCREMENT = %d", 1 ) );
@@ -379,7 +380,7 @@ class LP_Order extends LP_Abstract_Object_Data {
 	 */
 	public function add_item( $item, $quantity = 1, $meta = array() ) {
 
-		$item_id = learn_press_add_order_item( $this->id, $item );
+		$item_id = learn_press_add_order_item( $this->get_id(), $item );
 		if ( ! $item_id ) {
 			return false;
 		}
@@ -404,7 +405,7 @@ class LP_Order extends LP_Abstract_Object_Data {
 	public function get_users() {
 		$users = false;
 		if ( $this->is_multi_users() ) {
-			$users = get_post_meta( $this->id, '_user_id' );
+			$users = get_post_meta( $this->get_id(), '_user_id' );
 		}
 
 		return $users;
@@ -455,7 +456,7 @@ class LP_Order extends LP_Abstract_Object_Data {
 
 	public function get_view_order_url() {
 		global $wp_query;
-		$view_order_url = learn_press_get_endpoint_url( 'view-order', $this->id, learn_press_get_page_link( 'profile' ) );
+		$view_order_url = learn_press_get_endpoint_url( 'view-order', $this->get_id(), learn_press_get_page_link( 'profile' ) );
 		//
 		$user                = learn_press_get_current_user();
 		$view_order_endpoint = LP()->settings->get( 'profile_endpoints.profile-order-details' );
@@ -465,14 +466,14 @@ class LP_Order extends LP_Abstract_Object_Data {
 
 		$view_order_endpoint = urlencode( $view_order_endpoint );
 		if ( get_option( 'permalink_structure' ) ) {
-			$view_order_url = learn_press_get_page_link( 'profile' ) . $user->user_login . '/' . $view_order_endpoint . '/' . $this->id . '/';
+			$view_order_url = learn_press_get_page_link( 'profile' ) . $user->user_login . '/' . $view_order_endpoint . '/' . $this->get_id() . '/';
 		} else {
 			$args         = array(
 				'user' => $user->user_login
 			);
 			$args['view'] = $view_order_endpoint;
 			if ( $view_order_endpoint ) {
-				$args['id'] = $this->id;
+				$args['id'] = $this->get_id();
 			}
 			$view_order_url = add_query_arg(
 				$args,
@@ -485,11 +486,11 @@ class LP_Order extends LP_Abstract_Object_Data {
 
 	public function get_cancel_order_url( $force = false ) {
 		$user = learn_press_get_current_user();
-		$url  = learn_press_user_profile_link( $user->id, LP()->settings->get( 'profile_endpoints.profile-orders' ) );
+		$url  = learn_press_user_profile_link( $user->get_id(), LP()->settings->get( 'profile_endpoints.profile-orders' ) );
 		if ( ! $force ) {
-			$url = add_query_arg( 'cancel-order', $this->id, $url );
+			$url = add_query_arg( 'cancel-order', $this->get_id(), $url );
 		} else {
-			$url = add_query_arg( 'cancelled-order', $this->id, $url );
+			$url = add_query_arg( 'cancelled-order', $this->get_id(), $url );
 		}
 
 		return apply_filters( 'learn_press_cancel_order_url', wp_nonce_url( $url, 'cancel-order', 'lp-nonce' ) );
@@ -500,7 +501,7 @@ class LP_Order extends LP_Abstract_Object_Data {
 			$user                 = get_user_by( 'id', get_current_user_id() );
 			$comment_author       = $user->display_name;
 			$comment_author_email = $user->user_email;
-			$comment_post_ID      = $this->id;
+			$comment_post_ID      = $this->get_id();
 			$comment_author_url   = '';
 			$comment_content      = $note;
 			$comment_agent        = 'LearnPress';
@@ -511,7 +512,7 @@ class LP_Order extends LP_Abstract_Object_Data {
 			$commentdata = apply_filters(
 				'learn_press_new_order_note_data',
 				compact( 'comment_post_ID', 'comment_author', 'comment_author_email', 'comment_author_url', 'comment_content', 'comment_agent', 'comment_type', 'comment_parent', 'comment_approved' ),
-				$this->id
+				$this->get_id()
 			);
 
 			$comment_id = wp_insert_comment( $commentdata );
@@ -535,7 +536,7 @@ class LP_Order extends LP_Abstract_Object_Data {
 	 */
 	public function is_multi_users() {
 		$multiple = $this->get_status() == 'auto-draft' && 'yes' == learn_press_get_request( 'multi-users' );
-		$multiple = $multiple || ( 'yes' == get_post_meta( $this->id, '_lp_multi_users', true ) );
+		$multiple = $multiple || ( 'yes' == get_post_meta( $this->get_id(), '_lp_multi_users', true ) );
 
 		return $multiple;
 	}
@@ -547,7 +548,7 @@ class LP_Order extends LP_Abstract_Object_Data {
 	 * @since 2.1.5
 	 */
 	public function print_users() {
-		if ( $user_ids = get_post_meta( $this->id, '_user_id' ) ) {
+		if ( $user_ids = get_post_meta( $this->get_id(), '_user_id' ) ) {
 			global $wpdb;
 			$format_ids = array_fill( 0, sizeof( $user_ids ), '%d' );
 			$users      = $wpdb->get_results( $wpdb->prepare( "SELECT user_login, user_email FROM {$wpdb->users} WHERE ID IN(" . join( ',', $format_ids ) . ")", $user_ids ) );
@@ -573,7 +574,7 @@ class LP_Order extends LP_Abstract_Object_Data {
 	 */
 	public function get_user_data() {
 		$data = false;
-		if ( $user_ids = get_post_meta( $this->id, '_user_id' ) ) {
+		if ( $user_ids = get_post_meta( $this->get_id(), '_user_id' ) ) {
 			global $wpdb;
 			$format = array_fill( 0, sizeof( $user_ids ), '%d' );
 			$sql    = "

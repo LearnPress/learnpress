@@ -132,6 +132,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			if ( ! $course_id ) {
 				throw new Exception( __( 'Invalid course', 'learnpress' ) );
 			}
+
 			$insert_id = LP()->user->enroll( $course_id );
 
 			$response = array(

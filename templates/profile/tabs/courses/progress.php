@@ -14,7 +14,7 @@ defined( 'ABSPATH' ) || exit;
 
 $course = learn_press_get_course( $course_id );
 
-learn_press_setup_user_course_data( $user->id, $course_id );
+learn_press_setup_user_course_data( $user->get_id(), $course_id );
 
 // Check if this page is LP Profile
 global $wp_query;

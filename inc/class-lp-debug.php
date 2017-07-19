@@ -61,12 +61,6 @@ class LP_Debug {
 		$path = learn_press_get_log_file_path( $handle );
 		$f    = @fopen( $path, 'a' );
 
-		// if path is not exists, creates path and try again!
-		if ( ! $f ) {
-			LP_Install::create_files();
-			$f = @fopen( $path, 'a' );
-		}
-
 		if ( $f ) {
 			if ( filesize( $path ) >= 1024 * 1024 * 1 ) {
 				ftruncate( $f, 0 );

@@ -20,6 +20,37 @@ function learn_press_get_course( $the_course = false ) {
 	return $the_course ? LP_Course::get_course( $the_course ) : LP()->global['course'];
 }
 
+/**
+ * Create nonce for course action.
+ * Return nonce created with format 'learn-press-$action-$course_id-course-$user_id'
+ *
+ * @param string $action [retake, purchase, enroll]
+ * @param int    $course_id
+ * @param int    $user_id
+ *
+ * @since 3.x.x
+ *
+ * @return string
+ */
+function learn_press_create_course_action_nonce( $action, $course_id = 0, $user_id = 0 ) {
+	return LP_Nonce_Helper::create_course( $action, $course_id, $user_id );
+}
+
+/**
+ * Verify nonce for course action.
+ *
+ * @param string $nonce
+ * @param string $action
+ * @param int    $course_id
+ * @param int    $user_id
+ *
+ * @since 3.x.x
+ *
+ * @return bool
+ */
+function learn_press_verify_course_action_nonce( $nonce, $action, $course_id = 0, $user_id = 0 ) {
+	return LP_Nonce_Helper::verify_course( $nonce, $action, $course_id, $user_id );
+}
 
 /**
  * print out class for quiz body
@@ -763,7 +794,7 @@ function learn_press_item_sample_permalink_html( $return, $post_id, $new_title, 
 		//$return = str_replace( $m[0], $m[0] . '<span class="learn-press-tooltip dashicons dashicons-editor-help" data-tooltip="asdasdasd"></span>', $return );
 	}
 
-	$return.='<span class="learn-press-tooltip dashicons dashicons-editor-help" data-tooltip="asdasdasd"></span>';
+	$return .= '<span class="learn-press-tooltip dashicons dashicons-editor-help" data-tooltip="asdasdasd"></span>';
 
 	return $return;
 }

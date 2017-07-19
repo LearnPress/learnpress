@@ -5,6 +5,23 @@
 
 defined( 'ABSPATH' ) || exit();
 
+/**
+ * New functions since 3.x.x
+ */
+
+/**
+ * Course buttons
+ *
+ * @see learn_press_purchase_course_button()
+ * @see learn_press_enroll_course_button()
+ * @see learn_press_retake_course_button()
+ */
+add_action( 'learn-press/course-buttons', 'learn_press_purchase_course_button' );
+add_action( 'learn-press/course-buttons', 'learn_press_enroll_course_button' );
+add_action( 'learn-press/course-buttons', 'learn_press_retake_course_button' );
+
+/***************/
+
 add_filter( 'learn_press_course_tabs', '_learn_press_default_course_tabs', 5 );
 
 add_filter( 'body_class', 'learn_press_body_class' );
@@ -193,23 +210,24 @@ function learn_press_comments_template_query_args( $comment_args ) {
 
 add_filter( 'comments_template_query_args', 'learn_press_comments_template_query_args' );
 
-if( !function_exists( 'learn_press_filter_get_comments_number' )){
-	function learn_press_filter_get_comments_number( $count, $post_id=0 ) {
+if ( ! function_exists( 'learn_press_filter_get_comments_number' ) ) {
+	function learn_press_filter_get_comments_number( $count, $post_id = 0 ) {
 		global $wpdb;
-		if( !$post_id ){
+		if ( ! $post_id ) {
 			$post_id = learn_press_get_course_id();
 		}
-		if(!$post_id){
+		if ( ! $post_id ) {
 			return $count;
 		}
-		if( get_post_type( $post_id ) == 'lp_course' ) {
-			$sql = " SELECT count(*) "
-				. " FROM {$wpdb->comments} "
-				. " WHERE comment_post_ID=%d "
-					. " and comment_approved=1 "
-					. " and comment_type != 'review' ";
-			$count =  $wpdb->get_var( $wpdb->prepare( $sql, $post_id) );
-			return apply_filters('learn_press_get_comments_number',$count, $post_id );
+		if ( get_post_type( $post_id ) == 'lp_course' ) {
+			$sql   = " SELECT count(*) "
+			         . " FROM {$wpdb->comments} "
+			         . " WHERE comment_post_ID=%d "
+			         . " and comment_approved=1 "
+			         . " and comment_type != 'review' ";
+			$count = $wpdb->get_var( $wpdb->prepare( $sql, $post_id ) );
+
+			return apply_filters( 'learn_press_get_comments_number', $count, $post_id );
 		}
 
 		return $count;

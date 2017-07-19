@@ -511,7 +511,7 @@ function learn_press_admin_localize_script() {
 		),
 		'plugin_installed'         => __( 'Installed', 'learnpress' )
 	);
-	LP_Assets::add_localize( $translate );
+	//LP_Assets::add_localize( $translate );
 }
 
 add_action( 'init', 'learn_press_admin_localize_script' );

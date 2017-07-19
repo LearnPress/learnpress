@@ -28,6 +28,10 @@ abstract class LP_Abstract_Assets {
 
 	abstract function load_scripts();
 
+	public function do_register() {
+
+	}
+
 	/**
 	 * Default scripts
 	 *
@@ -116,7 +120,7 @@ abstract class LP_Abstract_Assets {
 	 */
 	public function register_script( $handle, $src, $deps = array(), $ver = false, $in_footer = false ) {
 		if ( ! isset( $this->_scripts[ $handle ] ) ) {
-			$this->_styles[ $handle ] = array( $handle, $src, $deps, $ver, $in_footer );
+			$this->_scripts[ $handle ] = array( $handle, $src, $deps, $ver, $in_footer );
 		}
 	}
 

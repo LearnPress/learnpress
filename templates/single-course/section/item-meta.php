@@ -14,7 +14,7 @@ $course_item = $course->get_item( $item->ID );
 $status      = $user->get_course_status( $course->id );
 $item_status = $user->get_item_status( $item->ID );
 
-$security = wp_create_nonce( sprintf( 'complete-item-%d-%d-%d', $user->id, $course->id, $item->ID ) );
+$security = wp_create_nonce( sprintf( 'complete-item-%d-%d-%d', $user->get_id(), $course->id, $item->ID ) );
 
 $result     = $user->get_quiz_results( $item->ID );
 $has_result = false;
