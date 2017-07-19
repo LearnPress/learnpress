@@ -193,13 +193,4 @@ class LP_Settings_Payments extends LP_Abstract_Settings_Page {
 	}
 }
 
-/**
- * Backward compatibility
- *
- * Class LP_Settings_Base
- */
-class LP_Settings_Base extends LP_Abstract_Settings_Page {
-
-}
-
 return new LP_Settings_Payments();

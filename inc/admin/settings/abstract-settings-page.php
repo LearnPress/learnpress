@@ -89,3 +89,13 @@ class LP_Abstract_Settings_Page extends LP_Abstract_Settings {
 		return false;
 	}
 }
+
+
+/**
+ * Backward compatibility
+ *
+ * Class LP_Settings_Base
+ */
+class LP_Settings_Base extends LP_Abstract_Settings_Page {
+
+}
