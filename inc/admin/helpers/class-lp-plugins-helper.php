@@ -343,7 +343,7 @@ class LP_Plugins_Helper {
 					case 'latest_installed':
 					case 'newer_installed':
 						if ( isset( $_REQUEST['tab'] ) && 'more' == $_REQUEST['tab'] ) {
-							$action_links[] = '<span class="button button-disabled" title="' . esc_attr__( 'This plugin is already installed and is up to date' ) . ' ">' . _x( 'Installed', 'plugin' ) . '</span>';
+							$action_links[] = '<span class="button button-disabled" title="' . esc_attr__( 'This plugin is already installed and is up to date' ) . ' ">' . _x( 'Installed', 'plugin', 'learnpress' ) . '</span>';
 						}
 
 						break;
@@ -982,7 +982,7 @@ class LP_Plugins_Helper {
                         <div class="column-downloaded">
 							<?php
 							if ( $add_on['active_installs'] >= 1000000 ) {
-								$active_installs_text = _x( '1+ Million', 'Active plugin installs' );
+								$active_installs_text = _x( '1+ Million', 'Active plugin installs', 'learnpress' );
 							} else {
 								$active_installs_text = number_format_i18n( $add_on['active_installs'] ) . '+';
 							}

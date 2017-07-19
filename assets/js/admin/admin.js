@@ -148,6 +148,10 @@
                             var $p = $(r).find('#' + $plugin.attr('id'));
                             if ($p.length) {
                                 $plugin.replaceWith($p)
+                            } else {
+                                $plugin.find('.plugin-action-buttons a')
+                                    .removeClass('updating-message button-working')
+                                    .html(learn_press_admin_localize .plugin_installed);
                             }
                         }
                     })

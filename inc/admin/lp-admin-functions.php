@@ -370,8 +370,8 @@ function learn_press_get_education_themes() {
 
 if ( ! function_exists( 'learn_press_get_item_referral' ) ) {
 	/**
-     * Set item link referral.
-     *
+	 * Set item link referral.
+	 *
 	 * @return array
 	 */
 	function learn_press_get_item_referral() {
@@ -508,7 +508,8 @@ function learn_press_admin_localize_script() {
 		'remove_question'          => __( 'Do you want to remove this question from quiz?', 'learnpress' ),
 		'nonces'                   => array(
 			'duplicate_question' => wp_create_nonce( 'duplicate-question' )
-		)
+		),
+		'plugin_installed'         => __( 'Installed', 'learnpress' )
 	);
 	LP_Assets::add_localize( $translate );
 }
