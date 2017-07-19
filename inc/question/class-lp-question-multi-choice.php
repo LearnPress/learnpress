@@ -13,7 +13,13 @@ defined( 'ABSPATH' ) || exit();
 
 class LP_Question_Multi_Choice extends LP_Question {
 
-    protected $_type = 'multi_choice';
+	/**
+	 * Type of this question.
+	 *
+	 * @var string
+	 */
+	protected $_question_type = 'multi_choice';
+
 	/**
 	 * Construct
 	 *

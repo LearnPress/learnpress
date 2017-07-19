@@ -128,6 +128,9 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 
 		}
 
+		/**
+		 * Meta boxes
+		 */
 		public function add_meta_boxes() {
 			$prefix     = '_lp_';
 			$meta_boxes = apply_filters( 'learn_press_lesson_meta_box_args',
@@ -148,14 +151,7 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 						array(
 							'name'    => __( 'Preview Lesson', 'learnpress' ),
 							'id'      => "{$prefix}preview",
-							'type'    => 'image-advanced',
-							'desc'    => __( 'If this is a preview lesson, then student can view this lesson content without taking the course', 'learnpress' ),
-							'std' => 'no'
-						),
-						array(
-							'name'    => __( 'Preview Lesson', 'learnpress' ),
-							'id'      => "{$prefix}preview",
-							'type'    => 'image_advanced',
+							'type'    => 'yes-no',
 							'desc'    => __( 'If this is a preview lesson, then student can view this lesson content without taking the course', 'learnpress' ),
 							'std' => 'no'
 						)

@@ -68,9 +68,9 @@ if ( learn_press_is_hidden_post_box( $question_id ) ) {
         ng-click="elementClick($event)"
         ng-class="{'invalid-type': !isValidQuestionType()}">
 <tr>
-    <td class="column-sort"><i class="fa fa-bars"></i></td>
-    <td class="column-order">{{getQuestionIndex(this)}}</td>
-    <td class="column-name">
+    <td class="lp-column-sort"><i class="fa fa-bars"></i></td>
+    <td class="lp-column-order">{{getQuestionIndex(this)}}</td>
+    <td class="lp-column-name">
         <input type="text" class="lp-question-heading-title"
                value="<?php echo esc_attr( $template_data['title'] ); ?>"
                name="learn_press_question[<?php echo $template_data['id']; ?>][title]"
@@ -80,8 +80,8 @@ if ( learn_press_is_hidden_post_box( $question_id ) ) {
                ng-keydown="onQuestionKeyEvent($event)"
                ng-blur="onQuestionKeyEvent($event)">
     </td>
-    <td class="column-type"><?php echo $question->get_type_label(); ?></td>
-    <td class="column-actions">
+    <td class="lp-column-type"><?php echo $question->get_type_label(); ?></td>
+    <td class="lp-column-actions">
         <div class="lp-box-data-actions lp-toolbar-buttons">
 			<?php
 			echo join( "<!--\n-->", $top_buttons );

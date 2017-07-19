@@ -274,6 +274,7 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 			include_once 'lp-admin-functions.php';
 			include_once 'lp-admin-actions.php';
 
+			include_once 'class-lp-admin-assets.php';
 			include_once 'class-lp-admin-dashboard.php';
 			include_once 'class-lp-admin-tools.php';
 			include_once 'class-lp-admin-ajax.php';

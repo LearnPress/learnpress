@@ -459,7 +459,6 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		}
 
 		public function order_title( $title, $post_id ) {
-			_deprecated_function( __FUNCTION__, '3.x.x' );
 			if ( LP_ORDER_CPT == get_post_type( $post_id ) ) {
 				$title = learn_press_transaction_order_number( $post_id );
 			}

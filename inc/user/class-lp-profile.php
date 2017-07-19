@@ -69,7 +69,7 @@ if ( !class_exists( 'LP_Profile' ) ) {
 				)
 			);
 
-			if ( $this->_user->id == get_current_user_id() ) {
+			if ( $this->_user->get_id() == get_current_user_id() ) {
 				$defaults[$order_endpoint] = array(
 					'title'    => __( 'Orders', 'learnpress' ),
 					'base'     => 'orders',
@@ -78,7 +78,7 @@ if ( !class_exists( 'LP_Profile' ) ) {
 			}
 
 			$tabs = apply_filters( 'learn_press_user_profile_tabs', $defaults, $this->_user );
-			if ( $this->_user->id == get_current_user_id() ) {
+			if ( $this->_user->get_id() == get_current_user_id() ) {
 				$tabs['settings'] = array(
 					'title'    => apply_filters( 'learn_press_user_profile_tab_edit_title', __( 'Settings', 'learnpress' ) ),
 					'base'     => 'settings',

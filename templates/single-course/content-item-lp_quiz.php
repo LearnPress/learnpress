@@ -55,6 +55,6 @@ $can_view_item  = $user->can( 'view-item', $quiz->id, $course->id );
 		<?php learn_press_display_message( __( 'No questions', 'learnpress' ) ); ?>
 	<?php } ?>
 
-	<?php LP_Assets::add_var( 'LP_Quiz_Params', wp_json_encode( $quiz->get_settings( $user->id, $course->id ) ), '__all' ); ?>
+	<?php LP_Assets::add_var( 'LP_Quiz_Params', wp_json_encode( $quiz->get_settings( $user->get_id(), $course->get_id() ) ), '__all' ); ?>
 
 </div>

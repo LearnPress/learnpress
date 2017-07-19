@@ -16,7 +16,8 @@ Domain Path: /languages/
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit;
-
+error_reporting( E_ALL );
+ini_set( 'display_errors', 1 );
 if ( ! defined( 'LP_PLUGIN_FILE' ) ) {
 	define( 'LP_PLUGIN_FILE', __FILE__ );
 	require_once dirname( __FILE__ ) . '/inc/lp-constants.php';
@@ -47,26 +48,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		/**
 		 * Store the session class
 		 *
-		 * @var array
+		 * @var LP_Session_Handler
 		 */
 		public $session = null;
-
-		/**
-		 * Store singular LP_Course object
-		 *
-		 * @var null
-		 */
-		private $_course = null;
-
-		/**
-		 * @var null
-		 */
-		private $_quiz = null;
-
-		/**
-		 * @var null
-		 */
-		public $lesson = null;
 
 		/**
 		 * @var LP_Cart object
@@ -274,7 +258,10 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * @hook learn_press_activate
 		 */
 		public function on_activate() {
+			// Deprecated
 			do_action( 'learn_press_activate', $this );
+
+			do_action( 'learn-press/activate', $this );
 		}
 
 		/**
@@ -426,8 +413,10 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		public function includes() {
 			require_once 'inc/interfaces/interface-curd.php';
 			require_once 'inc/abstracts/abstract-object-data.php';
+			require_once 'inc/abstracts/abstract-assets.php';
 
 			require_once 'inc/curds/class-lp-course-curd.php';
+			require_once 'inc/curds/class-lp-user-curd.php';
 			require_once 'inc/curds/class-lp-quiz-curd.php';
 			require_once 'inc/curds/class-lp-question-curd.php';
 
@@ -464,7 +453,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				require_once( 'inc/admin/settings/abstract-settings-page.php' );
 			}
 			$this->settings = LP_Settings::instance();
-			require_once 'inc/class-lp-assets.php';
+			if ( ! is_admin() ) {
+				require_once 'inc/class-lp-assets.php';
+			}
 			require_once 'inc/question/class-lp-question.php';
 			require_once 'inc/question/class-lp-question-factory.php';
 			$this->include_post_types();
@@ -475,7 +466,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			// course
 			require_once 'inc/course/lp-course-functions.php';
-			require_once 'inc/course/abstract-lp-course.php';
+			require_once 'inc/course/abstract-course.php';
 			require_once 'inc/course/class-lp-course.php';
 
 			// quiz
@@ -522,6 +513,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			//require_once 'inc/class-lp-settings.php';
 			// simple cart
 			require_once 'inc/cart/class-lp-cart.php';
+			require_once 'inc/cart/lp-cart-functions.php';
 			// payment gateways
 			require_once 'inc/gateways/class-lp-gateway-abstract.php';
 			require_once 'inc/gateways/class-lp-gateways.php';
@@ -712,3 +704,38 @@ function load_learn_press() {
  * Create new instance of LearnPress and put it to global
  */
 $GLOBALS['LearnPress'] = LP();
+
+
+add_action( 'init', function () {
+return;
+	$a = array(
+		1 => array(3,5,1,8,4),
+		2=>array(6,7,2,3,4,1)
+	);
+	print_r($a);
+	foreach($a as $k => $v){
+		rsort($a[$k]);
+	}
+
+	print_r($a);
+	global $wpdb;
+
+	LP_Debug::timeStart( 'abc' );
+	for ( $i = 0; $i < 100; $i ++ ) {
+		echo $query = $wpdb->prepare( "
+			SELECT o.ID, oim.meta_value as course_id
+			FROM {$wpdb->prefix}learnpress_order_items oi
+			INNER JOIN {$wpdb->prefix}learnpress_order_itemmeta oim ON oim.learnpress_order_item_id = oi.order_item_id AND meta_key = %s
+			INNER JOIN {$wpdb->prefix}postmeta om ON om.post_id = oi.order_id AND om.meta_key = %s AND om.meta_value = %d
+			INNER JOIN {$wpdb->posts} o ON o.ID = om.post_id AND o.post_status <> %s
+			WHERE o.post_type = %s ORDER BY ID ASC
+		", '_course_id', '_user_id', $i, 'trash', LP_ORDER_CPT );
+
+		$wpdb->get_results( $query );
+	}
+
+	LP_Debug::timeEnd( 'abc' );die();
+
+
+	//die();
+} );

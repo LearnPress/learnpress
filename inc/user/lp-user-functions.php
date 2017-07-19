@@ -48,7 +48,7 @@ function learn_press_get_user_item_id( $user_id, $item_id ) {
 function learn_press_get_current_user_id() {
 	$user = learn_press_get_current_user();
 
-	return $user->id;
+	return $user->get_id();
 }
 
 /**
@@ -61,19 +61,28 @@ function learn_press_get_current_user_id() {
  * @return LP_User
  */
 function learn_press_get_current_user( $user_id = 0 ) {
-	return LP_User_Factory::get_user( $user_id ? $user_id : get_current_user_id() );
+	if ( $user_id ) {
+		_deprecated_argument( '$user_id', '3.x.x' );
+	}
+
+	return new LP_User( get_current_user_id() ); // LP_User_Factory::get_user( $user_id ? $user_id : get_current_user_id() );
 }
 
 /**
- * Get user by ID, if the ID is NULL then return a GUEST user
+ * Get user by ID. Return false if the user does not exists.
  *
- * @param int  $user_id
- * @param bool $force
+ * @param int $user_id
  *
- * @return LP_User_Guest|mixed
+ * @return LP_User|mixed
  */
-function learn_press_get_user( $user_id, $force = false ) {
-	return LP_User_Factory::get_user( $user_id, $force );
+function learn_press_get_user( $user_id ) {
+
+	// Check if user is existing
+	if ( ! get_user_by( 'id', $user_id ) ) {
+		return false;
+	}
+
+	return new LP_User( $user_id );
 }
 
 /**
@@ -155,7 +164,6 @@ function learn_press_add_user_roles() {
 }
 
 add_action( 'learn_press_ready', 'learn_press_add_user_roles' );
-
 function learn_press_get_user_questions( $user_id = null, $args = array() ) {
 	if ( ! $user_id ) {
 		$user_id = get_current_user_id();
@@ -289,37 +297,6 @@ function learn_press_get_profile_user() {
 	return $user;
 }
 
-//function learn_press_update_user_lesson_start_time() {
-//	global $wpdb;
-//	$course = LP()->global['course'];
-//
-//	if ( !$course->id || !( $lesson = $course->current_lesson ) ) {
-//		return;
-//	}
-//        $table = $wpdb->prefix . 'learnpress_user_lessons';
-//        if ( $wpdb->get_var("SHOW TABLES LIKE '{$table}'") !== $table ) {
-//            return;
-//        }
-//	$query = $wpdb->prepare( "
-//		SELECT user_lesson_id FROM {$wpdb->prefix}learnpress_user_lessons WHERE user_id = %d AND lesson_id = %d AND course_id = %d
-//	", get_current_user_id(), $lesson->id, $course->id );
-//	if ( $wpdb->get_row( $query ) ) {
-//		return;
-//	}
-//	$wpdb->insert(
-//		$wpdb->prefix . 'learnpress_user_lessons',
-//		array(
-//			'user_id'    => get_current_user_id(),
-//			'lesson_id'  => $lesson->id,
-//			'start_time' => current_time( 'mysql' ),
-//			'status'     => 'stared',
-//			'course_id'  => $course->id
-//		),
-//		array( '%d', '%d', '%s', '%s', '%d' )
-//	);
-//}
-//
-//add_action( 'learn_press_course_content_lesson', 'learn_press_update_user_lesson_start_time' );
 
 /**
  * Add instructor registration button to register page and admin bar
@@ -778,7 +755,7 @@ function learn_press_user_update_user_info() {
 									} else {
 										// save thumbnail profile picture to user option
 										$avatar_thumbnail_filename = pathinfo( $dest_file, PATHINFO_BASENAME );
-										update_user_option( $user->id, '_lp_profile_picture_thumbnail_url', $lp_profile_url . $avatar_thumbnail_filename, true );
+										update_user_option( $user->get_id(), '_lp_profile_picture_thumbnail_url', $lp_profile_url . $avatar_thumbnail_filename, true );
 									}
 								}
 							}
@@ -787,9 +764,9 @@ function learn_press_user_update_user_info() {
 					#
 					# Create Thumbnai for Profile Picture
 					# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-					update_user_option( $user->id, '_lp_profile_picture_type', 'picture', true );
-					update_user_option( $user->id, '_lp_profile_picture', $avatar_filename, true );
-					update_user_option( $user->id, '_lp_profile_picture_url', $lp_profile_url . $avatar_filename, true );
+					update_user_option( $user->get_id(), '_lp_profile_picture_type', 'picture', true );
+					update_user_option( $user->get_id(), '_lp_profile_picture', $avatar_filename, true );
+					update_user_option( $user->get_id(), '_lp_profile_picture_url', $lp_profile_url . $avatar_filename, true );
 
 					$_message               = __( 'Profile picture is changed', 'learnpress' );
 					$message                = sprintf( $message_template, 'success', $_message );
@@ -865,7 +842,7 @@ function learn_press_user_update_user_info() {
 		}
 
 		$profile_picture_type = filter_input( INPUT_POST, 'profile_picture_type', FILTER_SANITIZE_STRING );
-		update_user_option( $user->id, '_lp_profile_picture_type', $profile_picture_type, true );
+		update_user_option( $user->get_id(), '_lp_profile_picture_type', $profile_picture_type, true );
 		$res = wp_update_user( $update_data );
 		if ( $res ) {
 			$_message               = __( 'Your change is saved', 'learnpress' );

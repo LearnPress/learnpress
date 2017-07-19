@@ -37,6 +37,9 @@ class LP_Request_Handler {
 		add_action( 'get_header', array( __CLASS__, 'clean_cache' ), 1000000 );
 		add_action( 'save_post', array( __CLASS__, 'clean_cache' ), 1000000 );
 
+		/**
+		 * @see learn_press_purchase_course_handler()
+		 */
 		LP_Request_Handler::register( 'purchase-course', 'learn_press_purchase_course_handler', 20 );
 		LP_Request_Handler::register( 'enroll-course', 'learn_press_purchase_course_handler', 20 );
 	}

@@ -196,7 +196,7 @@ class LP_Checkout {
 	/**
 	 * Process checkout
 	 *
-	 * @return array|mixed|void
+	 * @return array|mixed
 	 * @throws Exception
 	 */
 	public function process_checkout() {
