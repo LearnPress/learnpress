@@ -8,7 +8,7 @@
  * @version 1.0
  */
 
-if ( !defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
@@ -24,8 +24,8 @@ class LP_Autoloader {
 	 * The Constructor
 	 */
 	public function __construct() {
-		if ( function_exists( "__autoload" ) ) {
-			spl_autoload_register( "__autoload" );
+		if ( function_exists( '__autoload' ) ) {
+			spl_autoload_register( '__autoload' );
 		}
 
 		spl_autoload_register( array( $this, 'autoload' ) );
@@ -54,8 +54,10 @@ class LP_Autoloader {
 	private function load_file( $path ) {
 		if ( $path && is_readable( $path ) ) {
 			include_once( $path );
+
 			return true;
 		}
+
 		return false;
 	}
 
@@ -85,9 +87,9 @@ class LP_Autoloader {
 				$path .= 'user/';
 			}
 
-			if ( !file_exists( $path . $file ) ) {
+			if ( ! file_exists( $path . $file ) ) {
 				$segs = explode( '_', $class );
-				if ( !empty( $segs[1] ) ) {
+				if ( ! empty( $segs[1] ) ) {
 					$path .= $segs[1] . '/';
 				}
 			}
