@@ -44,6 +44,33 @@ if ( ! function_exists( 'learn_press_retake_course_button' ) ) {
 	}
 
 }
+
+if ( ! function_exists( 'learn_press_curriculum_section_title' ) ) {
+
+	/**
+	 * Section title
+	 *
+	 * @param LP_Course_Section $section
+	 */
+	function learn_press_curriculum_section_title( $section ) {
+		learn_press_get_template( 'single-course/section/title.php', array( 'section' => $section ) );
+	}
+
+}
+
+if ( ! function_exists( 'learn_press_curriculum_section_content' ) ) {
+
+	/**
+	 * Section content
+	 *
+	 * @param LP_Course_Section $section
+	 */
+	function learn_press_curriculum_section_content( $section ) {
+		learn_press_get_template( 'single-course/section/content.php', array( 'section' => $section ) );
+	}
+
+}
+
 /**********************************************/
 
 if ( ! function_exists( 'learn_press_wrapper_start' ) ) {
@@ -427,24 +454,6 @@ if ( ! function_exists( 'learn_press_course_students_list' ) ) {
 	}
 }
 
-
-if ( ! function_exists( 'learn_press_curriculum_section_title' ) ) {
-	/**
-	 * @param object
-	 */
-	function learn_press_curriculum_section_title( $section ) {
-		learn_press_get_template( 'single-course/section/title.php', array( 'section' => $section ) );
-	}
-}
-
-if ( ! function_exists( 'learn_press_curriculum_section_content' ) ) {
-	/**
-	 * @param object
-	 */
-	function learn_press_curriculum_section_content( $section ) {
-		learn_press_get_template( 'single-course/section/content.php', array( 'section' => $section ) );
-	}
-}
 
 if ( ! function_exists( 'learn_press_section_item_meta' ) ) {
 	/**
@@ -976,6 +985,7 @@ function learn_press_setup_object_data( $post ) {
 		$object                = learn_press_get_course( $post );
 		LP()->global['course'] = $GLOBALS['course'] = $object;
 	}
+
 	return $object;
 }
 

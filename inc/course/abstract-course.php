@@ -46,6 +46,11 @@ abstract class LP_Abstract_Course extends LP_Abstract_Object_Data {
 	public static $course_users = array();
 
 	/**
+	 * @var LP_Course_CURD|null
+	 */
+	protected $_curd = null;
+
+	/**
 	 * @var array
 	 */
 	protected static $_lessons = array();
@@ -57,6 +62,9 @@ abstract class LP_Abstract_Course extends LP_Abstract_Object_Data {
 	 * @param mixed $deprecated Deprecated
 	 */
 	public function __construct( $the_course, $deprecated = '' ) {
+
+		$this->_curd = new LP_Course_CURD();
+
 		if ( is_numeric( $the_course ) && $the_course > 0 ) {
 			$this->set_id( $the_course );
 		} elseif ( $the_course instanceof self ) {
@@ -71,6 +79,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Object_Data {
 	}
 
 	public function load() {
+		$this->_curd->load( $this );
 	}
 
 	/**
@@ -325,8 +334,14 @@ abstract class LP_Abstract_Course extends LP_Abstract_Object_Data {
 		if ( ! $this->get_id() ) {
 			return false;
 		}
-		$curriculum = _learn_press_get_course_curriculum( $this->get_id(), $force );
-		$return     = false;
+		$curriculum = array();
+		if ( $sections = wp_cache_get( 'course-' . $this->get_id(), 'lp-course-sections' ) ) {
+			foreach ( $sections as $k => $section ) {
+				$curriculum[ $section->section_id ] = new LP_Course_Section( $section );
+			}
+		}
+		//_learn_press_get_course_curriculum( $this->get_id(), $force );
+		$return = false;
 		if ( $section_id ) {
 			if ( ! empty( $curriculum[ $section_id ] ) ) {
 				$return = $curriculum[ $section_id ];
@@ -1610,7 +1625,8 @@ abstract class LP_Abstract_Course extends LP_Abstract_Object_Data {
 			'root_url'     => trailingslashit( get_site_url() ),
 			'id'           => $this->get_id(),
 			'url'          => $this->get_permalink(),
-			'results'      => $this->evaluate_course_results( $user->get_id() ),// $this->get_course_info( $args['user_id'] ),
+			'results'      => $this->evaluate_course_results( $user->get_id() ),
+			// $this->get_course_info( $args['user_id'] ),
 			'grade'        => $course_grade,
 			'grade_html'   => learn_press_course_grade_html( $course_grade, false ),
 			'current_item' => $this->is_viewing_item(),

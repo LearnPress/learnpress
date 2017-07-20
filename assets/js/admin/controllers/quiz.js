@@ -23,6 +23,11 @@
             totalQuestions: 0,
             updatedQuestions: 0,
             $searchCtrl: null,
+            testArray: ['a', 'b'],
+            updateTestArray: function () {
+                this.testArray[0] = Math.random();
+                console.log(this.testArray);
+            },
             init: function () {
                 if ($element.attr('ng-controller') !== 'quiz') {
                     return;

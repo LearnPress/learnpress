@@ -99,4 +99,108 @@ class LP_User_CURL implements LP_Interface_CURD {
 
 		return $orders;
 	}
+
+	/**
+	 * Read course data for an user.
+	 *
+	 * @param int       $user_id
+	 * @param int|array $course_id
+	 *
+	 * @return bool
+	 */
+	public function read_user_course( $user_id, $course_id ) {
+		// If user does not exists
+		if ( ! learn_press_get_course( $course_id ) ) {
+			return false;
+		}
+
+		if ( is_numeric( $course_id ) ) {
+			settype( $course_id, 'array' );
+		}
+
+		$fetch_ids = array();
+
+		/**
+		 * Get course's data from cache and if it is already existed
+		 * then ignore that course.
+		 */
+		foreach ( $course_id as $id ) {
+			if ( false === wp_cache_get( 'course-' . $id, 'lp-user-courses' ) ) {
+				$fetch_ids[] = $id;
+				wp_cache_set( 'course-' . $user_id . '-' . $id, array( 'items' => array() ), 'lp-user-courses' );
+			}
+		}
+
+		// There is no course ids to read
+		if ( ! $fetch_ids ) {
+			return false;
+		}
+
+		global $wpdb;
+
+		$format = array_fill( 0, sizeof( $fetch_ids ), '%d' );
+		$args   = $fetch_ids;
+		array_unshift( $args, LP_COURSE_CPT );
+
+		echo $query = $wpdb->prepare( "
+			SELECT *
+			FROM {$wpdb->learnpress_user_items}
+			WHERE item_type = %s
+			AND item_id IN(" . join( ',', $format ) . ")
+			ORDER BY user_item_id DESC LIMIT 1
+		", $args );
+
+		if ( $results = $wpdb->get_results( $query, ARRAY_A ) ) {
+			foreach ( $results as $result ) {
+				$result['items'] = array();
+				$this->_read_user_course_items( $result );
+				wp_cache_replace( 'course-' . $user_id . '-' . $result['item_id'], $result, 'lp-user-courses' );
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Load user items by item_id of course item
+	 *
+	 * @param object $parent_item
+	 *
+	 * @return bool
+	 */
+	protected function _read_user_course_items( &$parent_item ) {
+		global $wpdb;
+
+		$item_types = learn_press_get_course_item_types();
+		$args       = array_merge( $item_types, array( $parent_item['user_item_id'] ) );
+		$format     = array_fill( 0, sizeof( $item_types ), '%s' );
+
+		$query = $wpdb->prepare( "
+			SELECT *
+			FROM {$wpdb->learnpress_user_items}
+			WHERE item_type IN(" . join( ',', $format ) . ")
+			AND parent_id = %d
+			ORDER BY item_id, user_item_id DESC
+		", $args );
+
+		if ( $results = $wpdb->get_results( $query, ARRAY_A ) ) {
+			$items = array();
+			foreach ( $results as $result ) {
+				$user_item_id = $result['item_id'];
+				if ( empty( $items[ $user_item_id ] ) ) {
+					$items[ $user_item_id ] = array();
+					$parent_item['items'][] = $user_item_id;
+				}
+
+				$items[ $user_item_id ][ $result['item_id'] ][ $result['user_item_id'] ] = $result;
+			}
+
+			foreach ( $items as $user_item_id => $_items ) {
+				wp_cache_set( 'course-item-' . $user_item_id, $_items, 'lp-user-course-items' );
+			}
+		}
+
+		return true;
+	}
+
 }

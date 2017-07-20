@@ -65,6 +65,41 @@ class LP_Order extends LP_Abstract_Object_Data {
 	}
 
 	/**
+	 * Get confirm received text
+	 *
+	 * @since 3.x.x
+	 *
+	 * @return string
+	 */
+	public function get_confirm_order_received_text() {
+		$text = apply_filters( 'learn-press/confirm-order-received-text', __( 'Thank you. Your order has been received.', 'learnpress' ), $this->get_id() );
+
+		// deprecated
+		$text = apply_filters( 'learn_press_confirm_order_received_text', $text, $this->get_id() );
+
+		return $text;
+	}
+
+	/**
+	 * Get thank you message after the order is placed.
+	 *
+	 * @since 3.x.x
+	 *
+	 * @return mixed
+	 */
+	public function get_thankyou_message() {
+		/**
+		 * @since 3.x.x
+		 */
+		$message = apply_filters( 'learn-press/', __( 'Thank you. Your order has been received.', 'learnpress' ), $this->get_id() );
+
+		// @deprecated
+		$message = apply_filters( 'learn_press_confirm_order_received_text', $message, $this->get_id() );
+
+		return $message;
+	}
+
+	/**
 	 * Magic function for getting object property dynamic.
 	 *
 	 * @param string $prop
@@ -74,7 +109,7 @@ class LP_Order extends LP_Abstract_Object_Data {
 	 */
 	public function __get( $prop ) {
 		if ( $prop == 'post' ) {
-			print_r(debug_backtrace());
+			print_r( debug_backtrace() );
 			die( '$post is deprecated' );
 		} elseif ( $prop == 'id' ) {
 			return $this->get_id();

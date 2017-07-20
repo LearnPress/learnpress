@@ -112,6 +112,20 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 		$this->_curd->load( $this );
 	}
 
+	public function get_course_data( $course_id ) {
+		$this->_curd->read_user_course( $this->get_id(), $course_id );
+
+		if ( false !== ( $course_item = wp_cache_get( 'course-' . $this->get_id() . '-' . $course_id, 'lp-user-courses' ) ) ) {
+			learn_press_debug( $course_item );
+			if ( $items = $course_item['items'] ) {
+				foreach ( $items as $item_id ) {
+					learn_press_debug( wp_cache_get( 'course-item-' . $item_id, 'lp-user-course-items' ) );
+				}
+			}
+		}
+	}
+
+	/*******/
 	public function get_course_items( $type = '', $field = null, $course_id = 0 ) {
 		if ( $course_id ) {
 			$this->set_course( $course_id );
@@ -2227,6 +2241,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 			}
 		}
 		$courses_parsed[ $this->get_id() . '-' . $course_id ] = true;
+
 		return true;
 	}
 
@@ -2696,6 +2711,9 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	 * @return int
 	 */
 	function get_completed_items_in_section( $course_id, $section_id, $force = false ) {
+
+		return rand( 1, 3 );
+
 		$course     = learn_press_get_course( $course_id );
 		$curriculum = $course->get_curriculum( $section_id );
 		$completed  = 0;

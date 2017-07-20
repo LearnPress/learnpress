@@ -2,12 +2,28 @@
 /**
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 2.1.6
+ * @version 3.x.x
  */
 
-if ( !defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
+
+if ( ! isset( $item ) ) {
+	return;
+}
+?>
+<li>
+	<?php
+
+	print_r( $item->get_title() );
+
+	?>
+</li>
+<?php
+return;
+
+
 $user        = learn_press_get_current_user();
 $course      = LP()->global['course'];
 $viewable    = learn_press_user_can_view_quiz( $item->ID, $course->id );//learn_press_is_enrolled_course();
@@ -27,7 +43,8 @@ if ( $has_result ) {
 }
 ?>
 
-<li <?php learn_press_course_item_class( $item->ID, $course->id, $class ); ?> data-type="<?php echo $item->post_type; ?>">
+<li <?php learn_press_course_item_class( $item->ID, $course->id, $class ); ?>
+        data-type="<?php echo $item->post_type; ?>">
 	<?php do_action( 'learn_press_before_section_item_title', $item, $section, $course ); ?>
 
 	<?php
@@ -42,6 +59,6 @@ if ( $has_result ) {
 		$tag
 	);
 	?>
-	<!--<<?php echo $tag; ?> class="course-item-title button-load-item" target="<?php echo $target; ?>" <?php echo $item_link; ?> data-id="<?php echo $item->ID; ?>"><?php echo $item_title ?></<?php echo $tag; ?>>-->
+    <!--<<?php echo $tag; ?> class="course-item-title button-load-item" target="<?php echo $target; ?>" <?php echo $item_link; ?> data-id="<?php echo $item->ID; ?>"><?php echo $item_title ?></<?php echo $tag; ?>>-->
 	<?php do_action( 'learn_press_after_section_item_title', $item, $section, $course ); ?>
 </li>

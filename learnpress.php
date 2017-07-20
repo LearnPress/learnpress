@@ -423,6 +423,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/class-lp-debug.php';
 
 			require_once 'inc/course/abstract-course-item.php';
+			require_once 'inc/course/class-lp-course-section.php';
 
 
 			require_once 'inc/lp-deprecated.php';
@@ -707,35 +708,14 @@ $GLOBALS['LearnPress'] = LP();
 
 
 add_action( 'init', function () {
-return;
-	$a = array(
-		1 => array(3,5,1,8,4),
-		2=>array(6,7,2,3,4,1)
-	);
-	print_r($a);
-	foreach($a as $k => $v){
-		rsort($a[$k]);
-	}
+	LP_Debug::timeStart( '123' );
+	$curd = new LP_Course_CURD();
+	$curd->read_course_curriculum( array( 17, 71, 127 ) );
+	//for ( $i = 1; $i < 100; $i ++ ) {
+	learn_press_get_course( 17 );
+	learn_press_get_course( 71 );
+	learn_press_get_course( 127 );
+	//}
+	LP_Debug::timeEnd( '123' );
 
-	print_r($a);
-	global $wpdb;
-
-	LP_Debug::timeStart( 'abc' );
-	for ( $i = 0; $i < 100; $i ++ ) {
-		echo $query = $wpdb->prepare( "
-			SELECT o.ID, oim.meta_value as course_id
-			FROM {$wpdb->prefix}learnpress_order_items oi
-			INNER JOIN {$wpdb->prefix}learnpress_order_itemmeta oim ON oim.learnpress_order_item_id = oi.order_item_id AND meta_key = %s
-			INNER JOIN {$wpdb->prefix}postmeta om ON om.post_id = oi.order_id AND om.meta_key = %s AND om.meta_value = %d
-			INNER JOIN {$wpdb->posts} o ON o.ID = om.post_id AND o.post_status <> %s
-			WHERE o.post_type = %s ORDER BY ID ASC
-		", '_course_id', '_user_id', $i, 'trash', LP_ORDER_CPT );
-
-		$wpdb->get_results( $query );
-	}
-
-	LP_Debug::timeEnd( 'abc' );die();
-
-
-	//die();
 } );

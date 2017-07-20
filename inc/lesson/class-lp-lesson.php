@@ -41,7 +41,10 @@ class LP_Lesson extends LP_Abstract_Course_Item {
 	 *
 	 * @param $lesson
 	 */
-	public function __construct( $lesson ) {
+	public function __construct( $lesson, $args = '' ) {
+		$args = wp_parse_args( $args, array( 'id' => $lesson ) );
+		parent::__construct( $args );
+
 		if ( is_numeric( $lesson ) ) {
 			$this->id   = absint( $lesson );
 			$this->post = get_post( $this->id );
@@ -52,7 +55,6 @@ class LP_Lesson extends LP_Abstract_Course_Item {
 			$this->id   = absint( $lesson->ID );
 			$this->post = $lesson;
 		}
-		parent::__construct( $this->post );
 	}
 
 	/**
@@ -79,10 +81,11 @@ class LP_Lesson extends LP_Abstract_Course_Item {
 				break;*/
 			default:
 				$value = get_post_meta( $this->id, '_lp_' . $key, true );
-				if ( !empty( $value ) ) {
+				if ( ! empty( $value ) ) {
 					$this->$key = $value;
 				}
 		}
+
 		return $value;
 	}
 
@@ -91,9 +94,9 @@ class LP_Lesson extends LP_Abstract_Course_Item {
 	}
 
 	public function get_content() {
-		if ( !did_action( 'learn_press_get_content_' . $this->id ) ) {
+		if ( ! did_action( 'learn_press_get_content_' . $this->id ) ) {
 			global $post, $wp_query;
-			$post  = get_post( $this->id );
+			$post = get_post( $this->id );
 			//$posts = apply_filters( 'the_posts', array( $post ), $wp_query );
 			$posts = apply_filters_ref_array( 'the_posts', array( array( $post ), &$wp_query ) );
 
@@ -107,6 +110,7 @@ class LP_Lesson extends LP_Abstract_Course_Item {
 			wp_reset_postdata();
 			do_action( 'learn_press_get_content_' . $this->id );
 		}
+
 		return $this->content;
 	}
 
@@ -123,16 +127,17 @@ class LP_Lesson extends LP_Abstract_Course_Item {
 	}
 
 	public function is_previewable() {
-		return apply_filters( 'learn_press_lesson_preview', ($this->preview == 1||$this->preview === 'yes'), $this );
+		return apply_filters( 'learn_press_lesson_preview', ( $this->preview == 1 || $this->preview === 'yes' ), $this );
 	}
 
 	public function get_settings( $user_id, $course_id ) {
 		$item_statuses = LP_Cache::get_item_statuses( false, array() );
+
 		return array(
 			'userId'   => $user_id,
 			'courseId' => $course_id,
 			'id'       => $this->id,
-			'status'   => !empty( $item_statuses[$this->id] ) ? $item_statuses[$this->id] : '',
+			'status'   => ! empty( $item_statuses[ $this->id ] ) ? $item_statuses[ $this->id ] : '',
 			'type'     => LP_LESSON_CPT
 		);
 	}
@@ -145,21 +150,22 @@ class LP_Lesson extends LP_Abstract_Course_Item {
 	 */
 	public static function get_lesson( $the_lesson = false, $args = array() ) {
 		$the_lesson = self::get_lesson_object( $the_lesson );
-		if ( !$the_lesson ) {
+		if ( ! $the_lesson ) {
 			return false;
 		}
 
 		static $lessons = array();
 
-		if ( empty( $lessons[$the_lesson->ID] ) || ( !empty( $args['force'] ) && $args['force'] ) ) {
+		if ( empty( $lessons[ $the_lesson->ID ] ) || ( ! empty( $args['force'] ) && $args['force'] ) ) {
 			$class_name = self::get_lesson_class( $the_lesson, $args );
-			if ( !class_exists( $class_name ) ) {
+			if ( ! class_exists( $class_name ) ) {
 				$class_name = 'LP_Lesson';
 			}
 
-			$lessons[$the_lesson->ID] = new $class_name( $the_lesson, $args );
+			$lessons[ $the_lesson->ID ] = new $class_name( $the_lesson, $args );
 		}
-		return $lessons[$the_lesson->ID];
+
+		return $lessons[ $the_lesson->ID ];
 	}
 
 	/**
@@ -208,9 +214,9 @@ class LP_Lesson extends LP_Abstract_Course_Item {
 			$the_lesson = get_post( $the_lesson );
 		} elseif ( $the_lesson instanceof LP_Lesson ) {
 			$the_lesson = get_post( $the_lesson->id );
-		} elseif ( !empty( $the_lesson->ID ) ) {
+		} elseif ( ! empty( $the_lesson->ID ) ) {
 			$the_lesson = get_post( $the_lesson->id );
-		} elseif ( !( $the_lesson instanceof WP_Post ) ) {
+		} elseif ( ! ( $the_lesson instanceof WP_Post ) ) {
 			$the_lesson = false;
 		}
 

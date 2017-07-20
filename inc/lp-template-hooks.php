@@ -20,6 +20,15 @@ add_action( 'learn-press/course-buttons', 'learn_press_purchase_course_button' )
 add_action( 'learn-press/course-buttons', 'learn_press_enroll_course_button' );
 add_action( 'learn-press/course-buttons', 'learn_press_retake_course_button' );
 
+/**
+ * Course curriculum.
+ *
+ * @see learn_press_curriculum_section_title()
+ * @see learn_press_curriculum_section_content()
+ */
+add_action( 'learn-press/section-summary', 'learn_press_curriculum_section_title', 5 );
+add_action( 'learn-press/section-summary', 'learn_press_curriculum_section_content', 10 );
+
 /***************/
 
 add_filter( 'learn_press_course_tabs', '_learn_press_default_course_tabs', 5 );
@@ -103,8 +112,8 @@ add_action( 'learn_press_after_enroll_button', 'learn_press_enroll_script' );
 /**
  * curriculum
  */
-add_action( 'learn_press_curriculum_section_summary', 'learn_press_curriculum_section_title', 5 );
-add_action( 'learn_press_curriculum_section_summary', 'learn_press_curriculum_section_content', 10 );
+//add_action( 'learn_press_curriculum_section_summary', 'learn_press_curriculum_section_title', 5 );
+//add_action( 'learn_press_curriculum_section_summary', 'learn_press_curriculum_section_content', 10 );
 
 //add_action( 'learn_press_before_course_content_lesson_nav', 'learn_press_before_course_content_lesson_nav', 5 );
 //add_action( 'learn_press_after_the_title', 'learn_press_course_thumbnail', 10 );

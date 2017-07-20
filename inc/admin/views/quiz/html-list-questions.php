@@ -7,7 +7,9 @@ $quiz = learn_press_get_quiz( $post );
         <h3>{{htmlCountQuestions('<?php _e( '%d question', 'learnpress' ); ?>',
             '<?php _e( '%d questions', 'learnpress' ); ?>')}}</h3>
     </div>
+    {{testArray}}
     <div class="lp-box-data-content">
+        <button type="button" ng-click="updateTestArray();">Click Me</button>
         <table id="lp-list-questions" class="lp-list-questions">
             <thead>
             <tr>

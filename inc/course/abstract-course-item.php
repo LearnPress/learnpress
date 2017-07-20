@@ -27,21 +27,21 @@ abstract class LP_Abstract_Course_Item extends LP_Abstract_Object_Data {
 	 * @param $item mixed
 	 * @param $args array
 	 */
-	public function __construct( $item, $args ) {
-		parent::__construct( $args );
+	public function __construct( $item, $args = null ) {
+		parent::__construct( $item, $args );
 	}
 
 	/**
 	 * @return string
 	 */
-	public function get_item_type(){
+	public function get_item_type() {
 		return $this->_item_type;
 	}
 
 	/**
 	 * @return string
 	 */
-	public function get_icon_class(){
+	public function get_icon_class() {
 		return $this->_icon_class;
 	}
 
@@ -50,5 +50,34 @@ abstract class LP_Abstract_Course_Item extends LP_Abstract_Object_Data {
 	 */
 	public function is_preview() {
 		return get_post_meta( $this->get_id(), '_lp_preview', true ) == 'yes';
+	}
+
+	/**
+	 * Get the title of item.
+	 *
+	 * @return string
+	 */
+	public function get_title() {
+		return get_the_title( $this->get_id() );
+	}
+
+	/**
+	 * Get the content of item.
+	 *
+	 * @return string
+	 */
+	public function get_content() {
+
+		global $post;
+		$post = get_post( $this->get_id() );
+		setup_postdata( $post );
+
+		ob_start();
+		the_content();
+		$content = ob_get_clean();
+
+		wp_reset_postdata();
+
+		return $content;
 	}
 }

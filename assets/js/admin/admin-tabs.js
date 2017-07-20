@@ -75,5 +75,7 @@
     };
 
     var $doc = $(document);
-    $doc.ready($.fn.lpAdminTab);
+    $doc.ready(function () {
+        $('.learn-press-tabs').lpAdminTab();
+    });
 })(jQuery);
