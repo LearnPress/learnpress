@@ -706,16 +706,3 @@ function load_learn_press() {
  */
 $GLOBALS['LearnPress'] = LP();
 
-
-add_action( 'init', function () {
-	LP_Debug::timeStart( '123' );
-	$curd = new LP_Course_CURD();
-	$curd->read_course_curriculum( array( 17, 71, 127 ) );
-	//for ( $i = 1; $i < 100; $i ++ ) {
-	learn_press_get_course( 17 );
-	learn_press_get_course( 71 );
-	learn_press_get_course( 127 );
-	//}
-	LP_Debug::timeEnd( '123' );
-
-} );
