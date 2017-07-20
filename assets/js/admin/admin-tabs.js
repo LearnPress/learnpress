@@ -11,13 +11,11 @@
         function selectTab($tab) {
             var index = $tabs.index($tab),
                 $tabsWrap = $tabs.parent(),
-                url = $tab.find('a').attr('href'),
-                done = function () {
-                    $currentContent.addClass('active').siblings('li.active').removeClass('active');
-                };
+                url = $tab.find('a').attr('href');
 
             $currentContent = $contents.eq(index);
-            $tab.addClass('active').siblings('li').removeClass('active');
+
+            $tab.addClass('active').siblings('li.active').removeClass('active');
             $currentContent.show().css({visibility: 'hidden'});
 
             var contentHeight = $currentContent.height(),
@@ -31,14 +29,10 @@
 
             $currentContent.css('visibility', '').css({height: contentHeight}).hide();
 
-            if (options.jsAnimation) {
-                $currentContent.fadeIn();
-                $currentContent.siblings('li.active').fadeOut(function () {
-                    done();
-                });
-            } else {
-                done();
-            }
+            $currentContent.show();
+            $currentContent.siblings('li.active').fadeOut(0, function () {
+                $currentContent.addClass('active').siblings('li.active').removeClass('active');
+            });
 
             LP.setUrl(url);
         }
@@ -67,9 +61,7 @@
         init();
     };
     $.fn.lpAdminTab = function (options) {
-        options = $.extend({
-            jsAnimation: true
-        }, options || {});
+        options = $.extend({}, options || {});
         return $.each(this, function () {
             var $el = $(this),
                 tabs = $el.data('learn-press/tabs');
