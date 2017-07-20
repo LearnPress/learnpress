@@ -66,7 +66,7 @@ if ( !class_exists( 'LP_Lesson_Post_Type' ) ) {
 		}
 
 		public function admin_scripts() {
-			if ( in_array( get_post_type(), array( LP_COURSE_CPT, LP_LESSON_CPT ) ) ) {
+			if ( in_array( get_post_type(), array(  LP_LESSON_CPT ) ) ) {
 				wp_enqueue_script( 'jquery-caret', LP()->plugin_url( 'assets/js/jquery.caret.js', 'jquery' ) );
 			}
 		}

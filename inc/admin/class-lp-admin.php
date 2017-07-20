@@ -73,6 +73,8 @@ if ( ! class_exists( 'LP_Admin' ) ) {
 		}
 
 		public function wrapper_start() {
+			echo '<div id="course-editor-v2"></div>';
+
 			echo '<!-- BEGIN courseEditor app -->' . "\n";
 			echo '<div id="course-editor" class="" ng-app="courseEditor" ng-controller="courseEditor">' . "\n";
 		}

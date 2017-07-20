@@ -375,7 +375,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 
 			}
 			if ( in_array( get_post_type(), array( LP_COURSE_CPT, LP_LESSON_CPT ) ) ) {
-				wp_enqueue_script( 'jquery-caret', LP()->plugin_url( 'assets/js/jquery.caret.js', 'jquery' ) );
+				//wp_enqueue_script( 'jquery-caret', LP()->plugin_url( 'assets/js/jquery.caret.js', 'jquery' ) );
 				wp_localize_script( 'lp-meta-boxes', 'lp_course_params', self::admin_params() );
 			}
 		}

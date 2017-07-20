@@ -35,6 +35,10 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 		return apply_filters(
 			'learn-press/admin-default-scripts',
 			array(
+				'lp-vuejs'               => array(
+					'url' => self::url( 'js/vendor/vue.js' ),
+					'ver' => '2.4.0'
+				),
 				'learn-press-global'     => array(
 					'url'  => $this->url( 'js/global.js' ),
 					'deps' => array( 'jquery', 'underscore', 'utils', 'jquery-ui-sortable' )
@@ -92,10 +96,16 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'url'  => $this->url( 'js/admin/quiz.js' ),
 					'deps' => array( 'question-controller', 'quiz-controller', 'question-app' )
 				),
-				'course-app'             => array(
-					'url'  => $this->url( 'js/admin/course.js' ),
+//				'course-app'             => array(
+//					'url'  => $this->url( 'js/admin/course.js' ),
+//					'deps' => array(
+//						'quiz-app'
+//					)
+//				),
+				'course-editor-v2'       => array(
+					'url'  => $this->url( 'js/admin/course-editor-v2.js' ),
 					'deps' => array(
-						'quiz-app'
+						'lp-vuejs'
 					)
 				)
 			)
