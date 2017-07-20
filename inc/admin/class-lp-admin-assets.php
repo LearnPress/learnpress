@@ -39,13 +39,17 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'url'  => $this->url( 'js/global.js' ),
 					'deps' => array( 'jquery', 'underscore', 'utils', 'jquery-ui-sortable' )
 				),
-				'learn-press-utils'                  => array(
+				'learn-press-utils'      => array(
 					'url'  => $this->url( 'js/admin/utils.js' ),
 					'deps' => array( 'jquery' )
 				),
 				'admin'                  => array(
 					'url'  => $this->url( 'js/admin/admin.js' ),
 					'deps' => array( 'learn-press-global', 'learn-press-utils' )
+				),
+				'admin-tabs'             => array(
+					'url'  => $this->url( 'js/admin/admin-tabs.js' ),
+					'deps' => array( 'jquery' )
 				),
 				'angularjs'              => $this->url( 'js/vendor/angular.1.6.4.js' ),
 				'tipsy'                  => array(

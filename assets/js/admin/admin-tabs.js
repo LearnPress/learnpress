@@ -65,7 +65,7 @@
         }
 
         init();
-    }
+    };
     $.fn.lpAdminTab = function (options) {
         options = $.extend({
             jsAnimation: true
@@ -80,5 +80,8 @@
             }
             return $el;
         })
-    }
+    };
+
+    var $doc = $(document);
+    $doc.ready($.fn.lpAdminTab);
 })(jQuery);
