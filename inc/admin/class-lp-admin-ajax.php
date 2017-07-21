@@ -289,98 +289,67 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 		public static function modal_search_items() {
 			global $wpdb;
 
-			$user       = learn_press_get_current_user();
-			$term       = (string) ( stripslashes( learn_press_get_request( 'term' ) ) );
-			$type       = (string) ( stripslashes( learn_press_get_request( 'type' ) ) );
-			$context    = (string) ( stripslashes( learn_press_get_request( 'context' ) ) );
-			$context_id = (string) ( stripslashes( learn_press_get_request( 'context_id' ) ) );
-			$current_items_in_order =  learn_press_get_request( 'current_items' );
-			$current_items = array();
+			$user                   = learn_press_get_current_user();
+			$term                   = (string) ( stripslashes( learn_press_get_request( 'term' ) ) );
+			$type                   = (string) ( stripslashes( learn_press_get_request( 'type' ) ) );
+			$context                = (string) ( stripslashes( learn_press_get_request( 'context' ) ) );
+			$context_id             = (string) ( stripslashes( learn_press_get_request( 'context_id' ) ) );
+			$current_items_in_order = learn_press_get_request( 'current_items' );
+			$current_items          = array();
 
-
-			foreach ($current_items_in_order as $item) {
-			    $sql = "SELECT meta_value
+			foreach ( $current_items_in_order as $item ) {
+				$sql = "SELECT meta_value
                         FROM {$wpdb->prefix}learnpress_order_itemmeta 
                         WHERE meta_key = '_course_id' 
                         AND learnpress_order_item_id = $item";
-			    $id = $wpdb->get_results( $sql, OBJECT );
-			    array_push($current_items, $id[0]->meta_value);
-            }
+				$id  = $wpdb->get_results( $sql, OBJECT );
+				array_push( $current_items, $id[0]->meta_value );
+			}
 
-			$exclude    = array();
+			$exclude = array();
 
-			if ( !empty( $_GET['exclude'] ) ) {
+			if ( ! empty( $_GET['exclude'] ) ) {
 				$exclude = array_map( 'intval', $_GET['exclude'] );
 			}
+
+			$author_id = get_post_field( 'post_author', $context_id );
+
 			$exclude = array_unique( (array) apply_filters( 'learn_press_modal_search_items_exclude', $exclude, $type, $context, $context_id ) );
 			$exclude = array_map( 'intval', $exclude );
-			$args    = array(
+
+			$args = array(
 				'post_type'      => array( $type ),
 				'posts_per_page' => - 1,
 				'post_status'    => 'publish',
 				'order'          => 'ASC',
 				'orderby'        => 'parent title',
+				'author'         => $author_id,
 				'exclude'        => $exclude
 			);
-			if ( !$user->is_admin() ) {
-				$args['author'] = $user->id;
-			}
 
-			if ( $context && $context_id ) {
-				switch ( $context ) {
-					/**
-					 * If is search lesson/quiz for course only search the items of course's author
-					 */
-					case 'course-items':
-						if ( get_post_type( $context_id ) == 'lp_course' ) {
-							$post_author = get_post_field( 'post_author', $context_id );
-							$authors = array($post_author);
-							if($post_author != $user->id ){
-								$authors[] =$user->id;
-							}
-							$args['author'] = $authors;
-						}
-						break;
-					/**
-					 * If is search question for quiz only search the items of course's author
-					 */
-					case 'quiz-items':
-						if ( get_post_type( $context_id ) == 'lp_quiz' ) {
-							$post_author = get_post_field( 'post_author', $context_id );
-							$authors = array($post_author);
-							if($post_author != $user->id ){
-								$authors[] =$user->id;
-							}
-							$args['author'] = $authors;
-							//$args['author'] = get_post_field( 'post_author', $context_id );
-						}
-						break;
-				}
-			}
 			if ( $term ) {
 				$args['s'] = $term;
 			}
-			$args = apply_filters('learn_press_filter_admin_ajax_modal_search_items_args', $args, $context, $context_id  );
+			$args        = apply_filters( 'learn_press_filter_admin_ajax_modal_search_items_args', $args, $context, $context_id );
 			$posts       = get_posts( $args );
 			$found_items = array();
 
-			if ( !empty( $posts ) ) {
-				if ($current_items_in_order) {
-                    foreach ( $posts as $post ) {
-                        if (in_array($post->ID, $current_items)) {
-                            continue;
-                        }
-                        $found_items[$post->ID]             = $post;
-                        $found_items[$post->ID]->post_title = !empty( $post->post_title ) ? $post->post_title : sprintf( '(%s)', __( 'Untitled', 'learnpress' ) );
-                    }
-                } else {
-                    foreach ( $posts as $post ) {
-                        $found_items[$post->ID]             = $post;
-                        $found_items[$post->ID]->post_title = !empty( $post->post_title ) ? $post->post_title : sprintf( '(%s)', __( 'Untitled', 'learnpress' ) );
-                    }
-                }
+			if ( ! empty( $posts ) ) {
+				if ( $current_items_in_order ) {
+					foreach ( $posts as $post ) {
+						if ( in_array( $post->ID, $current_items ) ) {
+							continue;
+						}
+						$found_items[ $post->ID ]             = $post;
+						$found_items[ $post->ID ]->post_title = ! empty( $post->post_title ) ? $post->post_title : sprintf( '(%s)', __( 'Untitled', 'learnpress' ) );
+					}
+				} else {
+					foreach ( $posts as $post ) {
+						$found_items[ $post->ID ]             = $post;
+						$found_items[ $post->ID ]->post_title = ! empty( $post->post_title ) ? $post->post_title : sprintf( '(%s)', __( 'Untitled', 'learnpress' ) );
+					}
+				}
 			}
-
 
 
 			ob_start();
