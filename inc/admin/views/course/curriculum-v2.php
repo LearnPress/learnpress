@@ -4,8 +4,9 @@
  *
  * @since 3.0.0
  */
-?>
 
+learn_press_admin_view( 'course/sections' );
+?>
 <script type="text/x-template" id="tmpl-lp-course-curriculum">
     <div id="lp-course-curriculum" class="lp-course-curriculum">
         <div class="heading">
