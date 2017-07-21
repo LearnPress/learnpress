@@ -12,6 +12,9 @@ $curd = new LP_User_CURD();
 $curd->read_course($user->get_id(), array( 71, 17, 127 ) );
 learn_press_debug( $user->get_course_data( 17 ) );
 
+$course = learn_press_get_course();
+learn_press_debug($course->get_curriculum());
+
 ?>
 
 <?php do_action( 'learn_press_before_content_landing' ); ?>
