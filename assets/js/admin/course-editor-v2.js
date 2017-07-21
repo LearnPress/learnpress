@@ -7,6 +7,10 @@
         template: '#tmpl-lp-course-editor'
     });
 
+    Vue.component('lp-list-sections', {
+        template: '#tmpl-lp-list-sections'
+    });
+
     $(document).ready(function () {
         var Root = new Vue({
             el: '#course-editor-v2',

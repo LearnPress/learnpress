@@ -13,7 +13,6 @@
             <p class="description"><?php _e( 'Outline your course and add content with sections, lessons and quizzes.', 'learnpress' ); ?></p>
         </div>
 
-        <div class="curriculum-sections">
-        </div>
+        <lp-list-sections></lp-list-sections>
     </div>
 </script>

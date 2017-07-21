@@ -82,6 +82,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			}
 			learn_press_admin_view( 'course/editor' );
 			learn_press_admin_view( 'course/curriculum-v2' );
+			learn_press_admin_view( 'course/sections' );
 		}
 
 		public static function add_section_buttons( $buttons ) {
