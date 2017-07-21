@@ -448,7 +448,8 @@ if (typeof LearnPress === 'undefined') {
 			if (isNew) {
 				$content.attr('src', LP.addQueryVar('content-item-only', 'yes', this.currentItem.get('url')));
 			}
-			$content.unbind('load').load(function () {
+			$content.unbind('load').load( function() {
+				$target.parent().addClass('item-has-status item-viewed');
 				that.itemLoading = 0;
 			});
 		},
