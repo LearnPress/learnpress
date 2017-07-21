@@ -31,8 +31,10 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			// Map origin methods to another method
 			$this
 				->add_map_method( 'save', 'update_course', false )
-				->add_map_method( 'save', 'before_save_curriculum', false )
+//				->add_map_method( 'save', 'before_save_curriculum', false )
 				->add_map_method( 'before_delete', 'delete_course_sections' );
+
+			add_action( 'save_post', array( $this, 'before_save_curriculum' ), 20 );
 
 			add_action( 'edit_form_after_editor', array( $this, 'curriculum_editor' ), 0 );
 			add_action( 'load-post.php', array( $this, 'post_actions' ) );
@@ -1183,7 +1185,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 				return;
 			}
 
-			remove_action( 'save_post', array( $this, 'before_save_curriculum' ), 1 );
+			remove_action( 'save_post', array( $this, 'before_save_curriculum' ), 20 );
 			//remove_action( 'rwmb_course_curriculum_before_save_post', array( $this, 'before_save_curriculum' ) );
 
 			$user                  = LP()->user;
