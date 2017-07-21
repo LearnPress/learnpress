@@ -37,7 +37,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				->add_map_method( 'save', 'before_save_curriculum', false )
 				->add_map_method( 'before_delete', 'delete_course_sections' );
 
-			add_action( 'edit_form_after_editor', array( $this, 'curriculum_editor' ), 0 );
+//			add_action( 'edit_form_after_editor', array( $this, 'curriculum_editor' ), 0 );
 			add_action( 'load-post.php', array( $this, 'post_actions' ) );
 			add_action( 'init', array( $this, 'register_taxonomy' ) );
 			add_filter( 'get_edit_post_link', array( $this, 'add_course_tab_arg' ) );
@@ -53,6 +53,20 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				add_action( 'admin_print_scripts', array( $this, 'course_editor' ) );
 			}
 
+			add_action( 'edit_form_after_editor', array( $this, 'template_course_editor' ) );
+		}
+
+		/**
+		 * Template course editor v2.
+		 *
+		 * @since 3.0.0
+		 */
+		public function template_course_editor() {
+			if ( LP_COURSE_CPT !== get_post_type() ) {
+				return;
+			}
+			learn_press_admin_view( 'course/editor' );
+			learn_press_admin_view( 'course/curriculum-v2' );
 		}
 
 		public static function add_section_buttons( $buttons ) {
@@ -667,13 +681,13 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				array_push(
 					$meta_box['fields'],
 					array(
-						'name'  => __( 'Price', 'learnpress' ),
-						'id'    => "{$prefix}price",
-						'type'  => 'number',
-						'min'   => 0.01,
-						'step'  => 0.01,
-						'desc'  => $message,
-						'std'   => $price,
+						'name'       => __( 'Price', 'learnpress' ),
+						'id'         => "{$prefix}price",
+						'type'       => 'number',
+						'min'        => 0.01,
+						'step'       => 0.01,
+						'desc'       => $message,
+						'std'        => $price,
 						'visibility' => $conditional
 						//'class' => 'lp-course-price-field' . ( $payment != 'yes' ? ' hide-if-js' : '' )
 					),
@@ -689,20 +703,20 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'visibility' => $conditional
 					),
 					array(
-						'name'  => __( 'Sale start date', 'learnpress' ),
-						'id'    => "{$prefix}sale_start",
-						'type'  => 'datetime',
-						'std'   => $start_date,
-						'class' => 'lp-course-sale_start-field hide',
+						'name'       => __( 'Sale start date', 'learnpress' ),
+						'id'         => "{$prefix}sale_start",
+						'type'       => 'datetime',
+						'std'        => $start_date,
+						'class'      => 'lp-course-sale_start-field hide',
 						'visibility' => $conditional
 					),
 					array(
-						'name'  => __( 'Sale end date', 'learnpress' ),
-						'id'    => "{$prefix}sale_end",
-						'type'  => 'datetime',
-						'desc'  => '<a href="#" id="' . $prefix . 'sale_price_schedule_cancel">' . __( 'Cancel', 'learnpress' ) . '</a>',
-						'std'   => $end_date,
-						'class' => 'lp-course-sale_end-field hide',
+						'name'       => __( 'Sale end date', 'learnpress' ),
+						'id'         => "{$prefix}sale_end",
+						'type'       => 'datetime',
+						'desc'       => '<a href="#" id="' . $prefix . 'sale_price_schedule_cancel">' . __( 'Cancel', 'learnpress' ) . '</a>',
+						'std'        => $end_date,
+						'class'      => 'lp-course-sale_end-field hide',
 						'visibility' => $conditional
 					)
 				);
@@ -728,16 +742,16 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 
 			}
 			$conditional['conditional'][0]['compare'] = '!=';
-			$meta_box['fields'] = array_merge(
+			$meta_box['fields']                       = array_merge(
 				$meta_box['fields'],
 				array(
 					array(
-						'name'  => __( 'Requires enroll', 'learnpress' ),
-						'id'    => "{$prefix}required_enroll",
-						'type'  => 'yes_no',
-						'desc'  => __( 'Require users logged in to study or public to all.', 'learnpress' ),
-						'std'   => 'yes',
-						'class' => 'lp-course-required-enroll' . ( ( $payment == 'yes' ) ? ' hide-if-js' : '' ),
+						'name'       => __( 'Requires enroll', 'learnpress' ),
+						'id'         => "{$prefix}required_enroll",
+						'type'       => 'yes_no',
+						'desc'       => __( 'Require users logged in to study or public to all.', 'learnpress' ),
+						'std'        => 'yes',
+						'class'      => 'lp-course-required-enroll' . ( ( $payment == 'yes' ) ? ' hide-if-js' : '' ),
 						'visibility' => $conditional
 					)
 				)
