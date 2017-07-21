@@ -22,7 +22,8 @@
     });
 
     Vue.component('lp-section-item', {
-        template: '#tmpl-lp-section-item'
+        template: '#tmpl-lp-section-item',
+        props: ['item']
     });
 
     $(document).ready(function () {

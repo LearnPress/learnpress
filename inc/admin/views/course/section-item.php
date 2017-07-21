@@ -6,7 +6,6 @@
  */
 ?>
 <script type="text/x-template" id="tmpl-lp-section-item">
-    <div class="section-item">
-
+    <div class="section-item" :data-item-id="item.id">
     </div>
 </script>
