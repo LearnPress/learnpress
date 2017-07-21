@@ -33,7 +33,11 @@ class LP_Schedules {
 			$duration = $course->get_duration();
 			$user     = learn_press_get_current_user();
 			if ( $duration && $user->has_enrolled_course( $course->id ) && ! $user->has_finished_course( $course->id ) && $course->is_expired( $user->id ) <= 0 ) {
-				$this->schedule_update_user_items();
+				$this->schedule_update_user_items( $course->id );
+				/**
+				 * Bug: Currently the feature auto enroll does not work correctly.
+				 * So, it always run to here and make infinite loop.
+				 */
 				wp_redirect( get_permalink( $course->id ) );
 			}
 		}
@@ -88,15 +92,15 @@ class LP_Schedules {
 		learn_press_reset_auto_increment( $wpdb->options );
 	}
 
-	public function schedule_update_user_items() {
-		$this->_update_user_course_expired();
+	public function schedule_update_user_items( $course_id ) {
+		$this->_update_user_course_expired( $course_id );
 		LP_Debug::instance()->add( __FUNCTION__ );
 	}
 
 	/**
 	 * Auto finished course when time is expired for users
 	 */
-	private function _update_user_course_expired() {
+	private function _update_user_course_expired( $course_id ) {
 		global $wpdb;
 		/**
 		 * Find all courses that user did not finish yet

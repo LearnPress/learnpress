@@ -1526,16 +1526,20 @@ function learn_press_is_content_item_only() {
  * Load course item content only
  */
 function learn_press_load_content_item_only( $name ) {
+
 	if ( learn_press_is_content_item_only() ) {
 		if ( LP()->global['course-item'] ) {
-			remove_action( 'get_header', 'learn_press_load_content_item_only' );
-			learn_press_get_template( 'single-course/content-item-only.php' );
+			learn_press_get_template( 'single-course/content-item-only.php', array('wp_header'=>$name) );
 			die();
 		}
 	}
-}
 
-add_action( 'get_header', 'learn_press_load_content_item_only' );
+	return $name;
+}
+if ( learn_press_is_content_item_only() ) {
+	//add_action( 'get_header', 'learn_press_load_content_item_only', 999999 );
+	add_action( 'template_include', 'learn_press_load_content_item_only', 999999 );
+}
 
 
 // Fix issue with course content is duplicated if theme use the_content instead of $course->get_description()
