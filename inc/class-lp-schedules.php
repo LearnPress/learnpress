@@ -33,11 +33,7 @@ class LP_Schedules {
 			$duration = $course->get_duration();
 			$user     = learn_press_get_current_user();
 			if ( $duration && $user->has_enrolled_course( $course->id ) && ! $user->has_finished_course( $course->id ) && $course->is_expired( $user->id ) <= 0 ) {
-				$this->schedule_update_user_items( $course->id );
-				/**
-				 * Bug: Currently the feature auto enroll does not work correctly.
-				 * So, it always run to here and make infinite loop.
-				 */
+				$this->_update_user_course_expired( $course->id, $user->id );
 				wp_redirect( get_permalink( $course->id ) );
 			}
 		}
@@ -92,15 +88,18 @@ class LP_Schedules {
 		learn_press_reset_auto_increment( $wpdb->options );
 	}
 
-	public function schedule_update_user_items( $course_id ) {
-		$this->_update_user_course_expired( $course_id );
+	public function schedule_update_user_items() {
+		$this->_update_user_course_expired();
 		LP_Debug::instance()->add( __FUNCTION__ );
 	}
 
 	/**
 	 * Auto finished course when time is expired for users
+	 *
+	 * @param int|array $course_id
+	 * @param int|array $user_id
 	 */
-	private function _update_user_course_expired( $course_id ) {
+	private function _update_user_course_expired( $course_id = 0, $user_id = 0 ) {
 		global $wpdb;
 		/**
 		 * Find all courses that user did not finish yet
@@ -123,6 +122,19 @@ class LP_Schedules {
 			)
 			LIMIT 0, 10
 		", '0000-00-00 00:00:00', 'lp_course' );*/
+		$where = '';
+		if ( $user_id ) {
+			$where .= $wpdb->prepare( "AND user_id = %d", $user_id );
+		}
+
+		if ( $course_id ) {
+			$where .= $wpdb->prepare( " AND item_id = %d", $course_id );
+		}
+
+		$groupby = '';
+		if ( ! $user_id && ! $course_id ) {
+			$groupby = 'GROUP BY item_id, user_id';
+		}
 
 		$query = $wpdb->prepare( "
 			SELECT *
@@ -133,7 +145,8 @@ class LP_Schedules {
 				WHERE end_time = %s
 				AND item_type = %s
 				AND status <> %s
-				GROUP BY item_id, user_id
+			  	{$where}
+				{$groupby}
 			  )
 			LIMIT 0, 10
 		", '0000-00-00 00:00:00', 'lp_course', 'finished' );
@@ -143,6 +156,7 @@ class LP_Schedules {
 			foreach ( $results as $row ) {
 				$ids[] = $row->item_id;
 			}
+
 			_learn_press_get_courses_curriculum( $ids );
 			_learn_press_count_users_enrolled_courses( $ids );
 			foreach ( $results as $row ) {
@@ -151,14 +165,14 @@ class LP_Schedules {
 					continue;
 				}
 				$check_args = array(
-					'start_time' => strtotime( $row->start_time )
+					'start_time' => strtotime( $row->start_time ) + get_option( 'gmt_offset' ) * HOUR_IN_SECONDS // time
 				);
 				$expired    = $course->is_expired( $row->user_id, $check_args );
 				if ( 0 >= $expired ) {
 
 					$user = learn_press_get_user( $row->user_id );
 					if ( ! $user ) {
-						return;
+						continue;
 					}
 					$this->_update_user_course_items_expired( $course, $user );
 					$item_meta_id = $user->finish_course( $course->id );
@@ -168,6 +182,10 @@ class LP_Schedules {
 					}
 				}
 			}
+		}
+
+		if ( ! empty( $_REQUEST['x'] ) ) {
+			include_once LP_PLUGIN_PATH . '/inc/debug.php';
 		}
 		do_action( 'learn_press_update_user_course_expired' );
 
