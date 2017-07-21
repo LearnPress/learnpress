@@ -67,10 +67,16 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				return;
 			}
 			global $post;
-			$course = learn_press_get_course( $post->ID );
+			$course   = learn_press_get_course( $post->ID );
+			$sections = $course->get_curriculum();
+
+			$sections_data = array();
+			foreach ( $sections as $section ) {
+				$sections_data[] = $section->to_array();
+			}
 
 			wp_localize_script( 'course-editor-v2', 'lq_course_editor', array(
-				'curriculum' => $course->get_curriculum()
+				'sections' => $sections_data,
 			) );
 		}
 

@@ -15,6 +15,10 @@
         template: '#tmpl-lp-section'
     });
 
+    Vue.component('lp-section-item', {
+        template: '#tmpl-lp-section-item'
+    });
+
     $(document).ready(function () {
         var Root = new Vue({
             el: '#course-editor-v2',
