@@ -63,6 +63,9 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 * @since 3.0.0
 		 */
 		public function data_course_editor() {
+			if ( LP_COURSE_CPT !== get_post_type() ) {
+				return;
+			}
 			global $post;
 			$course = learn_press_get_course( $post->ID );
 
