@@ -139,7 +139,10 @@ class LP_Page_Controller {
 			}
 			$post->post_content = '[learn_press_confirm_order]';
 		} elseif ( ( $page_id = learn_press_get_page_id( 'become_a_teacher' ) ) && is_page( $page_id ) && $page_id == $queried_object_id ) {
-			$post->post_content = '[learn_press_become_teacher_form]';
+			preg_match( '#\[learn_press_become_teacher_form\]#i' , $post->post_content, $m);
+			if(empty($m)){
+				$post->post_content .= '[learn_press_become_teacher_form]';
+			}
 		} else {
 			if ( learn_press_is_courses() || learn_press_is_course_tag() || learn_press_is_course_category() || learn_press_is_search() ) {
 				$file   = 'archive-course.php';
