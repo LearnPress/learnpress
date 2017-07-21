@@ -54,6 +54,21 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			}
 
 			add_action( 'edit_form_after_editor', array( $this, 'template_course_editor' ) );
+			add_action( 'learn-press/admin/after-enqueue-scripts', array( $this, 'data_course_editor' ) );
+		}
+
+		/**
+		 * Load data for course editor.
+		 *
+		 * @since 3.0.0
+		 */
+		public function data_course_editor() {
+			global $post;
+			$course = learn_press_get_course( $post->ID );
+
+			wp_localize_script( 'course-editor-v2', 'lq_course_editor', array(
+				'curriculum' => $course->get_curriculum()
+			) );
 		}
 
 		/**

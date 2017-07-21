@@ -1,12 +1,16 @@
-(function ($, Vue) {
-    $(document).ready(function () {
-        Vue.component('lp-curriculum', {
-            template: '#tmpl-lp-course-curriculum'
-        });
+(function ($, Vue, data) {
+    Vue.component('lp-curriculum', {
+        template: '#tmpl-lp-course-curriculum'
+    });
 
-        var CourseEditor = new Vue({
+    Vue.component('lp-course-editor', {
+        template: '#tmpl-lp-course-editor'
+    });
+
+    $(document).ready(function () {
+        var Root = new Vue({
             el: '#course-editor-v2',
-            template: '#tmpl-lp-course-editor'
+            template: '<lp-course-editor></lp-course-editor>'
         });
     });
-})(jQuery, window.Vue);
+})(jQuery, window.Vue, lq_course_editor);

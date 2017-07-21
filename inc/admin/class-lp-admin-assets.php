@@ -156,7 +156,7 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 			}
 		}
 
-		do_action( 'learnpress/admin/after-enqueue-scripts' );
+		do_action( 'learn-press/admin/after-enqueue-scripts' );
 	}
 }
 
