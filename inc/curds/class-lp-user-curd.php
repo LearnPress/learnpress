@@ -1,6 +1,6 @@
 <?php
 
-class LP_User_CURL implements LP_Interface_CURD {
+class LP_User_CURD implements LP_Interface_CURD {
 	public function update() {
 		// TODO: Implement update() method.
 	}
@@ -108,10 +108,13 @@ class LP_User_CURL implements LP_Interface_CURD {
 	 *
 	 * @return bool
 	 */
-	public function read_user_course( $user_id, $course_id ) {
-		// If user does not exists
-		if ( ! learn_press_get_course( $course_id ) ) {
-			return false;
+	public function read_course( $user_id = null, $course_id = null ) {
+		if ( is_null( $user_id ) ) {
+			$user_id = get_current_user_id();
+		}
+
+		if ( is_null( $course_id ) ) {
+			$course_id = get_the_ID();
 		}
 
 		if ( is_numeric( $course_id ) ) {
@@ -125,9 +128,9 @@ class LP_User_CURL implements LP_Interface_CURD {
 		 * then ignore that course.
 		 */
 		foreach ( $course_id as $id ) {
-			if ( false === wp_cache_get( 'course-' . $id, 'lp-user-courses' ) ) {
+			if ( false === wp_cache_get( 'course-' . $user_id . '-' . $id, 'lp-user-courses' ) ) {
 				$fetch_ids[] = $id;
-				wp_cache_set( 'course-' . $user_id . '-' . $id, array( 'items' => array() ), 'lp-user-courses' );
+				//wp_cache_set( 'course-' . $user_id . '-' . $id, array( 'items' => array() ), 'lp-user-courses' );
 			}
 		}
 
@@ -141,20 +144,29 @@ class LP_User_CURL implements LP_Interface_CURD {
 		$format = array_fill( 0, sizeof( $fetch_ids ), '%d' );
 		$args   = $fetch_ids;
 		array_unshift( $args, LP_COURSE_CPT );
-
+		$args[] = $user_id;
 		echo $query = $wpdb->prepare( "
 			SELECT *
 			FROM {$wpdb->learnpress_user_items}
 			WHERE item_type = %s
 			AND item_id IN(" . join( ',', $format ) . ")
-			ORDER BY user_item_id DESC LIMIT 1
+			AND user_id = %d
+			ORDER BY item_id, user_item_id DESC
 		", $args );
 
 		if ( $results = $wpdb->get_results( $query, ARRAY_A ) ) {
 			foreach ( $results as $result ) {
+				/**
+				 * Ignore row if it is already added. We sort the rows by newest user_item_id
+				 * therefore the first row in a group of item_id is row we need.
+				 */
+				if ( false !== wp_cache_get( 'course-' . $user_id . '-' . $result['item_id'], 'lp-user-courses' ) ) {
+					echo 'xxxxx';
+					continue;
+				}
 				$result['items'] = array();
-				$this->_read_user_course_items( $result );
-				wp_cache_replace( 'course-' . $user_id . '-' . $result['item_id'], $result, 'lp-user-courses' );
+				$this->_read_course_items( $result );
+				wp_cache_set( 'course-' . $user_id . '-' . $result['item_id'], $result, 'lp-user-courses' );
 			}
 		}
 
@@ -168,7 +180,7 @@ class LP_User_CURL implements LP_Interface_CURD {
 	 *
 	 * @return bool
 	 */
-	protected function _read_user_course_items( &$parent_item ) {
+	protected function _read_course_items( &$parent_item ) {
 		global $wpdb;
 
 		$item_types = learn_press_get_course_item_types();

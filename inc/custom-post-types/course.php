@@ -96,7 +96,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			}
 			$course = LP_Course::get_course( $post );
 			$view   = learn_press_get_admin_view( 'course/curriculum.php' );
-			include $view;
+			//include $view;
 		}
 
 		public function register_taxonomy() {

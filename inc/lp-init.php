@@ -588,8 +588,8 @@ function learn_press_validate_item_status( $item ) {
  * @return array
  */
 function _learn_press_get_user_course_orders( $user_id = 0, $force = false ) {
-	_deprecated_function( __FUNCTION__, '3.x.x', 'LP_User_CURL::get_orders' );
-	$read = new LP_User_CURL();
+	_deprecated_function( __FUNCTION__, '3.x.x', 'LP_User_CURD::get_orders' );
+	$read = new LP_User_CURD();
 
 	return $read->get_orders( $user_id );
 }

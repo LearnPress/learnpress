@@ -68,7 +68,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	 */
 	public function __construct( $the_user = 0, $args = array() ) {
 
-		$this->_curd = new LP_User_CURL();
+		$this->_curd = new LP_User_CURD();
 
 		parent::__construct( $the_user, $args );
 
@@ -113,7 +113,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	}
 
 	public function get_course_data( $course_id ) {
-		$this->_curd->read_user_course( $this->get_id(), $course_id );
+		$this->_curd->read_course( $this->get_id(), $course_id );
 
 		if ( false !== ( $course_item = wp_cache_get( 'course-' . $this->get_id() . '-' . $course_id, 'lp-user-courses' ) ) ) {
 			learn_press_debug( $course_item );

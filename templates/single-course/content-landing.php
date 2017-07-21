@@ -8,9 +8,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 $user = learn_press_get_current_user();
 //learn_press_debug($user->get_course_info2(get_the_ID()));
+$curd = new LP_User_CURD();
+$curd->read_course($user->get_id(), array( 71, 17, 127 ) );
 learn_press_debug( $user->get_course_data( 17 ) );
-learn_press_debug( $user->get_course_data( 72 ) );
-learn_press_debug( $user->get_course_data( 127 ) );
 
 ?>
 
