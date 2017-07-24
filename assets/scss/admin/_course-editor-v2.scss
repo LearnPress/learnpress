@@ -60,6 +60,12 @@
 		}
 
 		.description {
+			border-bottom: 1px solid #eee;
+			padding-bottom: 20px;
+			margin-bottom: 20px;
+		}
+
+		.description-input {
 			border: none;
 			width: 100%;
 			color: #999;
@@ -67,6 +73,55 @@
 
 			&:focus {
 				color: #444;
+			}
+		}
+	}
+
+	.section-list-items {
+		width: 100%;
+		border-collapse: collapse;
+
+		tr {
+			border: 1px dashed #ddd;
+			padding: 8px 0;
+
+			&:nth-child(2n+1) {
+				background-color: #f5f5f5;
+			}
+		}
+
+		.section-item {
+
+			&.quiz {
+				.icon:before {
+					content: '\f469';
+				}
+			}
+
+			&.lesson {
+				.icon:before {
+					content: '\f330';
+				}
+			}
+
+			.icon {
+				width: 32px;
+				font-size: 20px;
+				color: #0085ba;
+				position: relative;
+				top: 2px;
+				text-align: center;
+
+				&:before {
+					font-family: Dashicons;
+				}
+			}
+
+			input {
+				font-size: 16px;
+				border: none;
+				width: 100%;
+				padding: 10px;
 			}
 		}
 	}

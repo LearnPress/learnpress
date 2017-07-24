@@ -89,12 +89,13 @@ abstract class LP_Abstract_Course_Item extends LP_Abstract_Post_Data {
 	 * @return array
 	 */
 	public function to_array() {
-		$post = get_post( $this->get_id(), ARRAY_A );
+		$post = get_post( $this->get_id() );
 
 		return array(
-			'id'   => $this->get_id(),
-			'type' => $this->get_item_type(),
-			'post' => $post,
+			'id'      => $this->get_id(),
+			'type'    => $this->get_item_type(),
+			'title'   => $post->post_title,
+			'content' => $post->post_content,
 		);
 	}
 }

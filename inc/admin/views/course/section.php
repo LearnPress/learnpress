@@ -20,12 +20,14 @@ learn_press_admin_view( 'course/section-item' );
 
         <div class="section-content">
             <div class="description">
-                <input v-model="section.description" type="text" class="description" title="description" placeholder="<?php echo esc_attr( 'Describe about this section', 'learnpress' ); ?>">
+                <input v-model="section.description" type="text" class="description-input" title="description" placeholder="<?php echo esc_attr( 'Describe about this section', 'learnpress' ); ?>">
             </div>
 
-            <div class="section-list-items">
+            <table class="section-list-items">
+                <tbody>
                 <lp-section-item v-for="item in section.items" :item="item" :key="item.id"></lp-section-item>
-            </div>
+                </tbody>
+            </table>
         </div>
     </div>
 </script>
