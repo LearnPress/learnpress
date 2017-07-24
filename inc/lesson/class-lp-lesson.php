@@ -44,11 +44,11 @@ class LP_Lesson extends LP_Abstract_Course_Item {
 	/**
 	 * LP_Lesson constructor.
 	 *
-	 * @param $lesson
+	 * @param int          $lesson
+	 * @param array|string $args
 	 */
 	public function __construct( $lesson, $args = '' ) {
-		$args = wp_parse_args( $args, array( 'id' => $lesson ) );
-		parent::__construct( $args );
+		parent::__construct( $lesson, $args );
 
 		if ( is_numeric( $lesson ) ) {
 			$this->id   = absint( $lesson );
@@ -177,7 +177,7 @@ class LP_Lesson extends LP_Abstract_Course_Item {
 	 * Get the lesson class name
 	 *
 	 * @param  WP_Post $the_lesson
-	 * @param  array $args (default: array())
+	 * @param  array   $args (default: array())
 	 *
 	 * @return string
 	 */
