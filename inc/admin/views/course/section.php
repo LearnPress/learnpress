@@ -24,7 +24,7 @@ learn_press_admin_view( 'course/section-item' );
             </div>
 
             <div class="section-list-items">
-                <lp-section-item v-for="item in section.items" :item="item"></lp-section-item>
+                <lp-section-item v-for="item in section.items" :item="item" :key="item.id"></lp-section-item>
             </div>
         </div>
     </div>
