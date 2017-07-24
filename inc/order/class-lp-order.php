@@ -10,7 +10,7 @@
 
 defined( 'ABSPATH' ) || exit();
 
-class LP_Order extends LP_Abstract_Object_Data {
+class LP_Order extends LP_Abstract_Post_Data {
 
 	protected $_data = array(
 		'order_date'       => '',
@@ -37,6 +37,8 @@ class LP_Order extends LP_Abstract_Object_Data {
 			$this->load();
 		}
 	}
+
+
 
 	/**
 	 * Load the order data.

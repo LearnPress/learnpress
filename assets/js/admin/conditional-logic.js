@@ -69,7 +69,7 @@
                             value = $chk.is(':checked') ? $chk.val() : '';
                             break;
                         default:
-                            value = control.find('input[type="checkbox"], input[type="text"], select').val();
+                            value = control.find('input, select').val();
 
                     }
 
@@ -77,7 +77,7 @@
             }
         },
 
-        compare: function (value1, value2, operator) {
+        compare: function (value2, value1, operator) {
             var show = undefined;
             switch (operator) {
                 case '===':
@@ -136,8 +136,8 @@
                     break;
                 default:
                     show = ( value1 == value2 );
-
             }
+            console.log(value1, value2)
             if (show != undefined) {
                 return show;
             }
@@ -200,7 +200,7 @@
                 if (-1 === _.indexOf(this.supportFields, type)) {
                     return;
                 }
-                $field.find('input').on('change', function () {
+                $field.find('input, select, textarea').on('change', function () {
                     that.update($(this).closest('.rwmb-field'), $fields);
                 }).trigger('change');
             }, this);

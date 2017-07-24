@@ -130,12 +130,9 @@ function learn_press_question_class( $question = null, $args = array() /*, $clas
 
 function learn_press_get_user_quiz_meta( $quiz_user_id, $meta_key, $single = true ) {
 	return get_metadata( 'learnpress_user_item', $quiz_user_id, $meta_key, $single );
-
-	return get_metadata( 'learnpress_user_quiz', $quiz_user_id, $meta_key, $single );
 }
 
 function learn_press_add_user_quiz_meta( $quiz_user_id, $meta_key, $meta_value, $prev_value = '' ) {
-
 	return add_metadata( 'learnpress_user_quiz', $quiz_user_id, $meta_key, $meta_value, $prev_value );
 }
 
@@ -399,7 +396,7 @@ function learn_press_is_support_question_type( $type ) {
 	$supports = learn_press_get_question_type_support();
 
 	// New type is supported?
-	if ( $supports && ! array_key_exists($type, $supports ) ) {
+	if ( $supports && ! array_key_exists( $type, $supports ) ) {
 		return false;
 	}
 

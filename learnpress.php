@@ -413,6 +413,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		public function includes() {
 			require_once 'inc/interfaces/interface-curd.php';
 			require_once 'inc/abstracts/abstract-object-data.php';
+			require_once 'inc/abstracts/abstract-post-data.php';
 			require_once 'inc/abstracts/abstract-assets.php';
 
 			require_once 'inc/curds/class-lp-course-curd.php';
@@ -706,7 +707,7 @@ function load_learn_press() {
  */
 $GLOBALS['LearnPress'] = LP();
 
-
+return;
 add_action( 'init', function () {
 	LP_Debug::timeStart( '123' );
 	$curd = new LP_Course_CURD();

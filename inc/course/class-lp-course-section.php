@@ -68,7 +68,7 @@ class LP_Course_Section {
 
 			// Create item
 			if ( $item_class = $this->_get_item( $item ) ) {
-				$this->data['items'][ $item->item_id ] = $item_class;
+				$this->data['items'][ $item->item_id ]          = $item_class;
 			}
 		}
 
@@ -80,12 +80,11 @@ class LP_Course_Section {
 	 *
 	 * @param array $item
 	 *
-	 * @return bool
+	 * @return bool|LP_Abstract_Course_Item
 	 */
 	protected function _get_item( $item ) {
 		$type  = str_replace( 'lp_', '', $item->item_type );
 		$class = apply_filters( 'learn-press/course-item-class', 'LP_' . ucfirst( $type ), $item, $this );
-
 		if ( class_exists( $class ) ) {
 			return new $class( $item->item_id, $item );
 		}
@@ -189,5 +188,22 @@ class LP_Course_Section {
 		$items = $this->get_items();
 
 		return is_array( $items ) ? sizeof( $this->get_items() ) : 0;
+	}
+
+	/**
+	 * Check if a section contains an item.
+	 *
+	 * @param $item_id
+	 *
+	 * @return bool
+	 */
+	public function has_item( $item_id ) {
+		$found = false;
+
+		if ( $items = $this->get_items() ) {
+			$found = ! empty( $items[ $item_id ] );
+		}
+
+		return apply_filters( 'learn-press/section-has-item', $found, $item_id, $this->get_id(), $this->get_course_id() );
 	}
 }

@@ -82,6 +82,14 @@ abstract class LP_Abstract_Course extends LP_Abstract_Object_Data {
 		$this->_curd->load( $this );
 	}
 
+	public function get_meta( $key, $single = true ) {
+		return get_post_meta( $this->get_id(), $key, $single );
+	}
+
+	public function update_meta( $key, $value, $prev = '' ) {
+		return update_post_meta( $this->get_id(), $key, $value, $prev );
+	}
+
 	/**
 	 * __isset function.
 	 *
@@ -910,13 +918,30 @@ abstract class LP_Abstract_Course extends LP_Abstract_Object_Data {
 		return $this->payment == 'yes';
 	}
 
+	/**
+	 * Check if course contain an item in curriculum.
+	 * Actually, find the item in each section inside curriculum.
+	 *
+	 * @param $item_id
+	 *
+	 * @return bool
+	 */
 	public function has_item( $item_id ) {
-		static $items = array();
-		if ( empty( $items[ $this->get_id() ] ) ) {
-			$items[ $this->get_id() ] = $this->get_curriculum_items( array( 'field' => 'ID'/*, 'force' => true */ ) );
+		$found = false;
+
+		if ( $curriculum = $this->get_curriculum() ) {
+
+			// Loop through all sections until find out the item in any section
+			foreach ( $curriculum as $section ) {
+				$found = $section->has_item( $item_id );
+
+				if ( $found ) {
+					break;
+				}
+			}
 		}
 
-		return in_array( $item_id, (array) $items[ $this->get_id() ] );
+		return apply_filters( 'learn-press/course-has-item', $found, $item_id, $this->get_id() );
 	}
 
 	public function can_view_item( $item_id ) {

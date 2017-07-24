@@ -6,14 +6,15 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
+
+
 $user = learn_press_get_current_user();
 //learn_press_debug($user->get_course_info2(get_the_ID()));
 $curd = new LP_User_CURD();
-$curd->read_course($user->get_id(), array( 71, 17, 127 ) );
+$curd->read_course( $user->get_id(), array( 71, 17, 127 ) );
 learn_press_debug( $user->get_course_data( 17 ) );
 
-$course = learn_press_get_course();
-learn_press_debug($course->get_curriculum());
+print_r( $user->start_quiz(290, 17, true));
 
 ?>
 

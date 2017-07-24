@@ -229,6 +229,23 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 								'std'  => 0
 							),
 							array(
+								'name'       => __( 'Archive history', 'learnpress' ),
+								'id'         => "{$prefix}archive_history",
+								'type'       => 'yes_no',
+								'desc'       => __( 'Archive quiz results for each time.', 'learnpress' ),
+								'std'        => 'no',
+								'visibility' => array(
+									'state'       => 'show',
+									'conditional' => array(
+										array(
+											'field'   => "{$prefix}retake_count",
+											'compare' => '>',
+											'value'   => '1'
+										)
+									)
+								)
+							),
+							array(
 								'name' => __( 'Show check answer', 'learnpress' ),
 								'id'   => "{$prefix}show_check_answer",
 								'type' => 'yes_no',
@@ -245,12 +262,6 @@ if ( ! class_exists( 'LP_Quiz_Post_Type' ) ) {
 									'yes' => __( 'Yes', 'learnpress' )
 								),
 								'std'     => 'no'
-							),
-							array(
-								'name' => __( 'Show hint X', 'learnpress' ),
-								'id'   => "{$prefix}XXXX",
-								'type' => 'select_advanced',
-								'desc' => __( 'Show button to hint answer while doing quiz.', 'learnpress' ),
 							)
 						)
 					)

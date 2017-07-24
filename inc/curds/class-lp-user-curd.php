@@ -145,7 +145,7 @@ class LP_User_CURD implements LP_Interface_CURD {
 		$args   = $fetch_ids;
 		array_unshift( $args, LP_COURSE_CPT );
 		$args[] = $user_id;
-		echo $query = $wpdb->prepare( "
+		$query  = $wpdb->prepare( "
 			SELECT *
 			FROM {$wpdb->learnpress_user_items}
 			WHERE item_type = %s
@@ -161,12 +161,21 @@ class LP_User_CURD implements LP_Interface_CURD {
 				 * therefore the first row in a group of item_id is row we need.
 				 */
 				if ( false !== wp_cache_get( 'course-' . $user_id . '-' . $result['item_id'], 'lp-user-courses' ) ) {
-					echo 'xxxxx';
 					continue;
 				}
 				$result['items'] = array();
 				$this->_read_course_items( $result );
 				wp_cache_set( 'course-' . $user_id . '-' . $result['item_id'], $result, 'lp-user-courses' );
+
+				// Remove the course has already read!
+				$fetch_ids = array_diff( $fetch_ids, array( $result['item_id'] ) );
+			}
+		}
+
+		// Cache the courses is not read
+		if ( $fetch_ids ) {
+			foreach ( $fetch_ids as $fetch_id ) {
+				//wp_cache_set( 'course-' . $user_id . '-' . $fetch_id, array( 'items' => array() ), 'lp-user-courses' );
 			}
 		}
 
@@ -203,16 +212,39 @@ class LP_User_CURD implements LP_Interface_CURD {
 					$items[ $user_item_id ] = array();
 					$parent_item['items'][] = $user_item_id;
 				}
+				//$this->_read_item_meta( $result );
+				// Update user item meta to cache
+				update_meta_cache( 'learnpress_user_item', $result['user_item_id'] );
 
-				$items[ $user_item_id ][ $result['item_id'] ][ $result['user_item_id'] ] = $result;
+				$items[ $user_item_id ][ $result['user_item_id'] ] = $result;
 			}
 
 			foreach ( $items as $user_item_id => $_items ) {
-				wp_cache_set( 'course-item-' . $user_item_id, $_items, 'lp-user-course-items' );
+				wp_cache_set( 'course-item-' . $parent_item['user_id'] . '-' . $parent_item['item_id'] . '-' . $user_item_id, $_items, 'lp-user-course-items' );
 			}
 		}
 
 		return true;
 	}
 
+	protected function _read_item_meta( &$item ) {
+		global $wpdb;
+		$query = $wpdb->prepare( "
+			SELECT *
+			FROM {$wpdb->learnpress_user_itemmeta}
+			WHERE learnpress_user_item_id = %d
+		", $item['user_item_id'] );
+		update_meta_cache( 'learnpress_user_item', $item['user_item_id'] );
+		echo "[";
+		echo learn_press_get_user_item_meta( $item['user_item_id'], 'quiz_grade' );
+		echo "]";
+		//learn_press_debug($wpdb);die();
+		if ( $meta = $wpdb->get_results( $query, ARRAY_A ) ) {
+			$item['meta'] = array();
+			foreach ( $meta as $k => $v ) {
+				$v['meta_value']               = maybe_unserialize( $v['meta_value'] );
+				$item['meta'][ $v['meta_id'] ] = $v;
+			}
+		}
+	}
 }

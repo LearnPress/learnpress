@@ -22,6 +22,8 @@ class LP_Quiz extends LP_Abstract_Course_Item {
 	 * $post Stores post data
 	 *
 	 * @var $post WP_Post
+	 *
+	 * @deprecated
 	 */
 	public $post = null;
 
@@ -29,6 +31,8 @@ class LP_Quiz extends LP_Abstract_Course_Item {
 	 * WP_Course object
 	 *
 	 * @var null
+	 *
+	 * @deprecated
 	 */
 	public $course = null;
 
@@ -50,6 +54,8 @@ class LP_Quiz extends LP_Abstract_Course_Item {
 
 	/**
 	 * @var array
+	 *
+	 * @deprecated
 	 */
 	static protected $_meta = array();
 
@@ -84,6 +90,7 @@ class LP_Quiz extends LP_Abstract_Course_Item {
 	public function load() {
 		$this->_curd->load( $this );
 	}
+
 
 	/**
 	 * Get quiz questions.
