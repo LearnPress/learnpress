@@ -37,6 +37,11 @@ class LP_Lesson extends LP_Abstract_Course_Item {
 	public $lesson_type = null;
 
 	/**
+	 * @var string
+	 */
+	protected $_item_type = 'lesson';
+
+	/**
 	 * LP_Lesson constructor.
 	 *
 	 * @param $lesson
@@ -172,7 +177,7 @@ class LP_Lesson extends LP_Abstract_Course_Item {
 	 * Get the lesson class name
 	 *
 	 * @param  WP_Post $the_lesson
-	 * @param  array   $args (default: array())
+	 * @param  array $args (default: array())
 	 *
 	 * @return string
 	 */

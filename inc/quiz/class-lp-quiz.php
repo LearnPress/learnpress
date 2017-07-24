@@ -60,6 +60,11 @@ class LP_Quiz extends LP_Abstract_Course_Item {
 	static protected $_meta = array();
 
 	/**
+	 * @var string
+	 */
+	protected $_item_type = 'quiz';
+
+	/**
 	 * Constructor gets the post object and sets the ID for the loaded course.
 	 *
 	 * @param mixed $the_quiz

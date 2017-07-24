@@ -68,7 +68,7 @@ class LP_Course_Section {
 
 			// Create item
 			if ( $item_class = $this->_get_item( $item ) ) {
-				$this->data['items'][ $item->item_id ]          = $item_class;
+				$this->data['items'][ $item->item_id ] = $item_class;
 			}
 		}
 
@@ -105,7 +105,7 @@ class LP_Course_Section {
 			'title'       => $this->get_title(),
 			'course_id'   => $this->get_course_id(),
 			'description' => $this->get_description(),
-			'items'       => $this->get_items(),
+			'items'       => $this->get_items_array(),
 		);
 
 		return $data;
@@ -159,10 +159,28 @@ class LP_Course_Section {
 	/**
 	 * Get items in this section.
 	 *
-	 * @return mixed|array
+	 * @return object[]
 	 */
 	public function get_items() {
 		return apply_filters( 'learn-press/section-items', $this->data['items'], $this );
+	}
+
+	/**
+	 * Get items in this section to array.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return array
+	 */
+	public function get_items_array() {
+		$items = $this->get_items();
+
+		$data = array();
+		foreach ( $items as $item ) {
+			$data[] = $item->to_array();
+		}
+
+		return $data;
 	}
 
 	/**
