@@ -94,6 +94,25 @@ class LP_Course_Section {
 	}
 
 	/**
+	 * Get data to array.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return array
+	 */
+	public function to_array() {
+		$data = array(
+			'id'          => $this->get_id(),
+			'title'       => $this->get_title(),
+			'course_id'   => $this->get_course_id(),
+			'description' => $this->get_description(),
+			'items'       => $this->get_items(),
+		);
+
+		return $data;
+	}
+
+	/**
 	 * Return section id
 	 *
 	 * @return mixed

@@ -1,0 +1,73 @@
+//@todo remove it.
+.post-php.post-type-lp_course #wp-content-editor-container {
+	display: none;
+}
+
+#course-editor-v2 {
+	background-color: #fff;
+	border: 1px solid #ddd;
+	margin: 20px 0;
+}
+
+#lp-course-curriculum {
+	.heading {
+		padding: 15px;
+
+		h3 {
+			font-size: 1.2em;
+			margin: 10px 0;
+		}
+	}
+
+	.curriculum-sections {
+		margin: 0;
+		border-top: 1px solid #ddd;
+		border-bottom: 1px solid #ddd;
+	}
+
+	.section {
+		border-bottom: 1px solid #ddd;
+
+		input {
+			background-color: transparent;
+			box-shadow: none;
+
+			&:focus {
+				box-shadow: none;
+			}
+		}
+
+		.section-head {
+			background-color: #f9f9f9;
+			padding: 3px 20px;
+		}
+
+		.name {
+			font-size: 24px;
+			width: 100%;
+			border: none;
+			color: #777;
+			font-weight: 600;
+			line-height: 50px;
+
+			&:focus {
+				color: #444;
+			}
+		}
+
+		.section-content {
+			padding: 20px;
+		}
+
+		.description {
+			border: none;
+			width: 100%;
+			color: #999;
+			font-style: italic;
+
+			&:focus {
+				color: #444;
+			}
+		}
+	}
+}
