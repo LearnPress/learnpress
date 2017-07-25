@@ -18,7 +18,18 @@
 
     Vue.component('lp-section', {
         template: '#tmpl-lp-section',
-        props: ['section']
+        props: ['section'],
+        data: function () {
+            return {
+                isOpen: false
+            };
+        },
+        methods: {
+            toggle: function (e) {
+                e.preventDefault();
+                this.isOpen = !this.isOpen;
+            }
+        }
     });
 
     Vue.component('lp-section-item', {

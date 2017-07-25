@@ -28,6 +28,18 @@
 	.section {
 		border-bottom: 1px solid #ddd;
 
+		&.open {
+
+		}
+
+		&.close {
+			.section-content {
+				height: 0;
+				padding-top: 0;
+				padding-bottom: 0;
+			}
+		}
+
 		input {
 			background-color: transparent;
 			box-shadow: none;
@@ -40,6 +52,47 @@
 		.section-head {
 			background-color: #f9f9f9;
 			padding: 3px 20px;
+			position: relative;
+
+			.actions {
+				position: absolute;
+				top: 0;
+				right: 0;
+				color: #444;
+				height: 100%;
+
+				.collapse {
+					cursor: pointer;
+					display: inline-block;
+					text-align: center;
+					height: 100%;
+
+					&:hover {
+						color: #0085ba;
+					}
+
+					&:before {
+						display: inline-block;
+						width: 40px;
+						font-size: 30px;
+						font-family: Dashicons;
+						position: relative;
+						top: 5px;
+					}
+
+					&.open {
+						&:before {
+							content: '\f142';
+						}
+					}
+
+					&.close {
+						&:before {
+							content: '\f140';
+						}
+					}
+				}
+			}
 		}
 
 		.name {
@@ -57,6 +110,8 @@
 
 		.section-content {
 			padding: 20px;
+			height: 100%;
+			transition: height 0.3s;
 		}
 
 		.description {
