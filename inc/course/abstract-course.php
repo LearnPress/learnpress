@@ -5,7 +5,7 @@ defined( 'ABSPATH' ) || exit();
 /**
  * Class LP_Abstract_Course
  */
-abstract class LP_Abstract_Course extends LP_Abstract_Object_Data {
+abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	/**
 	 * The course (post) ID.
 	 *
@@ -55,6 +55,21 @@ abstract class LP_Abstract_Course extends LP_Abstract_Object_Data {
 	 */
 	protected static $_lessons = array();
 
+	protected $_data = array(
+		'status'               => '',
+		'require_enrollment'   => false,
+		'price'                => 0,
+		'duration'             => 0,
+		'max_students'         => 0,
+		'students'             => 0,
+		'retake_count'         => 0,
+		'featured'             => false,
+		'block_lesson_content' => false,
+		'course_result'        => '',
+		'passing_conditional'  => '',
+		'payment'              => ''
+	);
+
 	/**
 	 * Constructor gets the post object and sets the ID for the loaded course.
 	 *
@@ -78,16 +93,12 @@ abstract class LP_Abstract_Course extends LP_Abstract_Object_Data {
 		}
 	}
 
+	/**
+	 * Read course data.
+	 * - Curriculum: sections, items, etc...
+	 */
 	public function load() {
 		$this->_curd->load( $this );
-	}
-
-	public function get_meta( $key, $single = true ) {
-		return get_post_meta( $this->get_id(), $key, $single );
-	}
-
-	public function update_meta( $key, $value, $prev = '' ) {
-		return update_post_meta( $this->get_id(), $key, $value, $prev );
 	}
 
 	/**
@@ -171,7 +182,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Object_Data {
 	 * Get course thumbnail, return placeholder if it does not exists
 	 *
 	 * @param string $size
-	 * @param array $attr
+	 * @param array  $attr
 	 *
 	 * @return mixed|null|void
 	 */
@@ -251,13 +262,14 @@ abstract class LP_Abstract_Course extends LP_Abstract_Object_Data {
 		return apply_filters( 'learn_press_is_enrollable', $enrollable, $this );
 	}
 
+
 	/**
 	 * Course is exists if the post is not empty
 	 *
 	 * @return bool
 	 */
 	public function exists() {
-		return empty( $this->post ) ? false : true;
+		return LP_COURSE_CPT === get_post_type( $this->get_id() );
 	}
 
 	/**
@@ -278,26 +290,11 @@ abstract class LP_Abstract_Course extends LP_Abstract_Object_Data {
 	 */
 	public function is_required_enroll() {
 
-		if ( func_get_args() ) {
-			$required = $this->required_enroll == func_get_arg( 0 );
-		} else {
-			$required = $this->required_enroll !== 'no';
-		}
-		$required = $required || ( $this->payment == 'yes' );
+		$this->get_price();
+
+		return $this->get_data('require_enrollment') == 'yes';
 
 		return apply_filters( 'learn_press_course_required_enroll', $required, $this );
-	}
-
-	private function _get_posts_by_id( $ids ) {
-		global $wpdb;
-		settype( $ids, 'array' );
-		$posts = $wpdb->get_results( "
-			SELECT *
-			FROM {$wpdb->posts}
-			WHERE ID IN(" . join( ',', $ids ) . ")
-		" );
-
-		return $posts;
 	}
 
 	public function get_title() {
@@ -333,7 +330,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Object_Data {
 	/**
 	 * Get all curriculum of this course
 	 *
-	 * @param int $section_id
+	 * @param int  $section_id
 	 * @param bool $force
 	 *
 	 * @return bool|LP_Course_Section[]
@@ -528,8 +525,10 @@ abstract class LP_Abstract_Course extends LP_Abstract_Object_Data {
 	 * @return mixed
 	 */
 	public function get_price() {
-		$price = $this->price;
-		if ( ! $price || 'yes' != $this->payment ) {
+		$price = $this->get_data('price');
+
+		// Price is not set
+		if ( ! $price || 'yes' != $this->get_data('payment') ) {
 			$price = 0;
 		} else {
 			$price      = floatval( $price );
@@ -867,7 +866,10 @@ abstract class LP_Abstract_Course extends LP_Abstract_Object_Data {
 	}
 
 	/**
-	 * Return true if this course can be purchaseable
+	 * Return true if this course can be purchasable.
+	 * - Required enroll
+	 * - Status is publish
+	 *
 	 *
 	 * @return mixed
 	 */
@@ -1145,7 +1147,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Object_Data {
 	}
 
 	/**
-	 * @param int $user_id
+	 * @param int  $user_id
 	 * @param bool $force
 	 *
 	 * @return mixed|null|void
@@ -1199,7 +1201,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Object_Data {
 	/**
 	 * Calculate course results for user by course results settings
 	 *
-	 * @param int $user_id
+	 * @param int     $user_id
 	 * @param boolean $force
 	 *
 	 * @return mixed|null|void
@@ -1378,7 +1380,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Object_Data {
 	/**
 	 * Calculate results of course by lesson user completed
 	 *
-	 * @param int $user_id
+	 * @param int     $user_id
 	 * @param boolean $force
 	 *
 	 * @return int|mixed|null|void
@@ -1405,7 +1407,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Object_Data {
 	 * Get number of lessons user has completed
 	 *
 	 * @param        $user_id
-	 * @param bool $force
+	 * @param bool   $force
 	 * @param string $type
 	 *
 	 * @return int|mixed|null
@@ -1438,7 +1440,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Object_Data {
 	}
 
 	/**
-	 * @param int $user_id
+	 * @param int  $user_id
 	 * @param bool $force
 	 *
 	 * @return mixed
@@ -1467,7 +1469,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Object_Data {
 	/**
 	 * Calculate results of course by final quiz
 	 *
-	 * @param int $user_id
+	 * @param int     $user_id
 	 * @param boolean $force
 	 *
 	 * @return mixed|null
@@ -1499,7 +1501,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Object_Data {
 	/**
 	 * Calculate results of course by avg of all quizzes
 	 *
-	 * @param int $user_id
+	 * @param int     $user_id
 	 * @param boolean $force
 	 *
 	 * @return mixed

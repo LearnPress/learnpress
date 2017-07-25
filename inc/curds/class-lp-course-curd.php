@@ -18,6 +18,7 @@ class LP_Course_CURD implements LP_Interface_CURD {
 	 */
 	public function load( &$course ) {
 		$this->load_curriculum( $course );
+		$this->load_data( $course );
 
 		return $course;
 	}
@@ -38,6 +39,30 @@ class LP_Course_CURD implements LP_Interface_CURD {
 	protected function load_curriculum( &$course ) {
 		$course_id = $course->get_id();
 		$this->read_course_curriculum( $course_id );
+	}
+
+	/**
+	 * @param LP_Course $course
+	 */
+	public function load_data( &$course ) {
+		$id          = $course->get_id();
+		$post_object = get_post( $id );
+		$course->set_data(
+			array(
+				'status'               => $post_object->post_status,
+				'require_enrollment'   => get_post_meta( $id, '_lp_required_enroll', true ),
+				'price'                => get_post_meta( $id, '_lp_price', true ),
+				'duration'             => get_post_meta( $id, '_lp_duration', true ),
+				'max_students'         => get_post_meta( $id, '_lp_max_students', true ),
+				'students'             => get_post_meta( $id, '_lp_students', true ),
+				'retake_count'         => get_post_meta( $id, '_lp_retake_count', true ),
+				'featured'             => get_post_meta( $id, '_lp_featured', true ),
+				'block_lesson_content' => get_post_meta( $id, '_lp_block_lesson_content', true ),
+				'course_result'        => get_post_meta( $id, '_lp_course_result', true ),
+				'passing_condition'    => get_post_meta( $id, '_lp_passing_condition', true ),
+				'payment'              => get_post_meta( $id, '_lp_payment', true )
+			)
+		);
 	}
 
 	/**

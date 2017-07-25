@@ -78,12 +78,18 @@ abstract class LP_Abstract_Object_Data {
 	/**
 	 * Get object data
 	 *
-	 * @param bool $name
+	 * @param string $name - Optional. Name of data want to get, true if return all.
 	 *
 	 * @return array|mixed
 	 */
-	public function get_data( $name = false ) {
-		return false !== $name && array_key_exists( $name, $this->_data ) ? $this->_data[ $name ] : $this->_data;
+	public function get_data( $name = '' ) {
+		if ( is_string( $name ) ) {
+			return array_key_exists( $name, $this->_data ) ? $this->_data[ $name ] : false;
+		} elseif ( true === $name ) {
+			return $this->_data;
+		}
+
+		return false;
 	}
 
 	/**

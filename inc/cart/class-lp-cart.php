@@ -141,55 +141,62 @@ class LP_Cart {
 	}
 
 	/**
-	 * Add course to cart
+	 * Add course to cart.
 	 *
-	 * @param int $course_id
-	 * @param int $quantity
-	 * @param     array
+	 * @param int   $course_id
+	 * @param int   $quantity
+	 * @param array $item_data
+	 *
+	 * @return mixed
 	 */
 	public function add_to_cart( $course_id, $quantity = 1, $item_data = array() ) {
+		try {
+			$course = learn_press_get_course( $course_id );
 
-		$course = learn_press_get_course( $course_id );
-		// course is not purchasable
-		if ( ! $course->is_purchasable() ) {
-			learn_press_display_message( __( 'Sorry! This course is not purchasable.', 'learnpress' ) );
-			if ( $redirect = apply_filters( 'learn_press_course_is_not_purchasable_redirect', get_the_permalink( $course_id ), $course_id ) ) {
-				wp_redirect( $redirect );
-				exit();
+			// Check if course can be purchased
+			if ( ! $course->is_purchasable() ) {
+				throw new Exception( __( 'Sorry! This course is not purchasable.', 'learnpress' ) );
 			}
 
-			return;
+			/**
+			 * Generate course information and stores into session
+			 * for redirection if needed then we can remove it immediately
+			 */
+			$quantity = apply_filters( 'learn_press_purchase_course_quantity', $quantity, $course_id );
+			$price    = $course->is_free() ? 0 : $course->get_price();
+			/*$course_info = apply_filters( 'learn_press_purchase_course_info', array(
+					'item_id'  => $course_id,
+					'quantity' => $quantity,
+					'subtotal' => $price * $quantity,
+					'total'    => $price * $quantity,
+					'data'     => apply_filters( 'learn_press_purchase_course_info_data', $_REQUEST )
+				)
+			);*/
+
+			$this->_cart_content['items'][ $course_id ] = apply_filters( 'learn_press_add_cart_item', array(
+					'item_id'  => $course_id,
+					'quantity' => $quantity,
+					'subtotal' => $price * $quantity,
+					'total'    => $price * $quantity,
+					'data'     => $item_data
+				)
+			);
+
+			if ( did_action( 'wp' ) ) {
+				$this->set_cart_cookies( true );
+			}
+
+			do_action( 'learn_press_add_to_cart', $course_id, $quantity, $item_data, $this );
+
+			return true;
 		}
+		catch ( Exception $e ) {
+			if ( $message = $e->getMessage() ) {
+				learn_press_add_message( $e->getMessage(), 'error' );
+			}
 
-		/**
-		 * Generate course information and stores into session
-		 * for redirection if needed then we can remove it immediately
-		 */
-		$quantity = apply_filters( 'learn_press_purchase_course_quantity', $quantity, $course_id );
-		$price    = $course->is_free() ? 0 : $course->get_price();
-		/*$course_info = apply_filters( 'learn_press_purchase_course_info', array(
-				'item_id'  => $course_id,
-				'quantity' => $quantity,
-				'subtotal' => $price * $quantity,
-				'total'    => $price * $quantity,
-				'data'     => apply_filters( 'learn_press_purchase_course_info_data', $_REQUEST )
-			)
-		);*/
-
-		$this->_cart_content['items'][ $course_id ] = apply_filters( 'learn_press_add_cart_item', array(
-				'item_id'  => $course_id,
-				'quantity' => $quantity,
-				'subtotal' => $price * $quantity,
-				'total'    => $price * $quantity,
-				'data'     => $item_data
-			)
-		);
-
-		if ( did_action( 'wp' ) ) {
-			$this->set_cart_cookies( true );
+			return false;
 		}
-
-		do_action( 'learn_press_add_to_cart', $course_id, $quantity, $item_data, $this );
 	}
 
 	/**

@@ -13,6 +13,30 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Get instance of a CURD class by type
+ *
+ * @param string $type
+ *
+ * @return bool|LP_Course_CURD|LP_User_CURD|LP_Quiz_CURD|LP_Question_CURD
+ */
+function learn_press_get_curd( $type ) {
+	$curds = array(
+		'user'     => 'LP_User_CURD',
+		'course'   => 'LP_Course_CURD',
+		'quiz'     => 'LP_Quiz_CURD',
+		'question' => 'LP_Question_CURD'
+	);
+
+	$curd = false;
+
+	if ( ! empty( $curds[ $type ] ) && class_exists( $curds[ $type ] ) ) {
+		$curd = new $curds[ $type ]();
+	}
+
+	return apply_filters( 'learn-press/curd', $curd, $type, $curds );
+}
+
+/**
  * Short function to get name of a theme
  *
  * @param string $folder
@@ -2261,15 +2285,6 @@ function learn_press_get_checkout_course_( $field = null ) {
 	}
 
 	return $purchase_course;
-}
-
-/**
- * Request handler for purchase course action
- *
- * @param $course_id
- */
-function learn_press_purchase_course_handler( $course_id ) {
-	return LP()->cart->purchase_course_handler( $course_id );
 }
 
 /**

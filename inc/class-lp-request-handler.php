@@ -10,7 +10,7 @@
  * @version 1.0
  */
 
-if ( !defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
@@ -38,10 +38,39 @@ class LP_Request_Handler {
 		add_action( 'save_post', array( __CLASS__, 'clean_cache' ), 1000000 );
 
 		/**
-		 * @see learn_press_purchase_course_handler()
+		 * @see LP_Request_Handler::purchase_course()
 		 */
-		LP_Request_Handler::register( 'purchase-course', 'learn_press_purchase_course_handler', 20 );
-		LP_Request_Handler::register( 'enroll-course', 'learn_press_purchase_course_handler', 20 );
+		LP_Request_Handler::register( 'purchase-course', array( __CLASS__, 'purchase_course' ), 20 );
+		LP_Request_Handler::register( 'enroll-course', array( __CLASS__, 'purchase_course' ), 20 );
+	}
+
+	/**
+	 * Purchase course action.
+	 * Perform this action when user clicking on "Buy this course" or "Enroll" button.
+	 *
+	 * @param int $course_id
+	 *
+	 * @return bool
+	 */
+	public static function purchase_course( $course_id ) {
+
+		$course_id = apply_filters( 'learn-press/purchase-course-id', $course_id );
+		$course    = learn_press_get_course( $course_id );
+
+		if ( ! $course ) {
+			return false;
+		}
+
+		print_r( $course->get_data( 'require_enrollment' ) );
+
+
+		//LP()->cart->purchase_course_handler( $course_id );
+		$cart = LP()->cart;
+		$cart->add_to_cart( $course_id, 1, $_POST );
+
+		print_r( $cart );
+		learn_press_print_messages();
+		die();
 	}
 
 	public static function clean_cache() {
@@ -53,6 +82,7 @@ class LP_Request_Handler {
 
 	public static function redirect( $url ) {
 		remove_filter( 'wp_redirect', array( __CLASS__, 'redirect' ) );
+
 		return add_query_arg( 'lp-reload', 'yes', $url );
 	}
 
@@ -64,13 +94,15 @@ class LP_Request_Handler {
 	 * Process actions
 	 */
 	public static function process_request() {
-		if ( !empty( $_REQUEST['lp-reload'] ) ) {
+		if ( ! empty( $_REQUEST['lp-reload'] ) ) {
 			wp_redirect( remove_query_arg( 'lp-reload' ) );
 			exit();
 		}
 		//print_r($_SERVER['REQUEST_METHOD']);die();
-		if ( !empty( $_REQUEST ) ) foreach ( $_REQUEST as $key => $value ) {
-			do_action( 'learn_press_request_handler_' . $key, $value, $_REQUEST );
+		if ( ! empty( $_REQUEST ) ) {
+			foreach ( $_REQUEST as $key => $value ) {
+				do_action( 'learn_press_request_handler_' . $key, $value, $_REQUEST );
+			}
 		}
 	}
 
@@ -85,7 +117,7 @@ class LP_Request_Handler {
 		if ( is_array( $action ) ) {
 			foreach ( $action as $item ) {
 				$item = wp_parse_args( $item, array( 'action' => '', 'callback' => '', 'priority' => 5 ) );
-				if ( !$item['action'] || !$item['callback'] ) {
+				if ( ! $item['action'] || ! $item['callback'] ) {
 					continue;
 				}
 				list( $action, $callback, $priority ) = array_values( $item );
