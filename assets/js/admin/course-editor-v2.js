@@ -13,7 +13,12 @@
 
     Vue.component('lp-list-sections', {
         template: '#tmpl-lp-list-sections',
-        props: ['sections']
+        props: ['sections'],
+        methods: {
+            clickNewSection: function () {
+                console.log('add new');
+            }
+        }
     });
 
     Vue.component('lp-section', {
@@ -21,7 +26,7 @@
         props: ['section'],
         data: function () {
             return {
-                isOpen: false
+                isOpen: true
             };
         },
         methods: {

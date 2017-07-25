@@ -21,12 +21,32 @@
 
 	.curriculum-sections {
 		margin: 0;
+		padding: 10px;
 		border-top: 1px solid #ddd;
 		border-bottom: 1px solid #ddd;
+
+		.add-new-section {
+			button {
+				&:before {
+					content: '\f132';
+					font-family: Dashicons;
+					position: relative;
+					top: 2px;
+					padding-right: 4px;
+				}
+			}
+		}
 	}
 
 	.section {
-		border-bottom: 1px solid #ddd;
+		border: 1px solid #e5e5e5;
+		margin-bottom: 10px;
+
+		.section-title {
+			font-weight: 600;
+			line-height: 2;
+			font-size: 18px;
+		}
 
 		&.open {
 
@@ -53,6 +73,7 @@
 			background-color: #f9f9f9;
 			padding: 3px 20px;
 			position: relative;
+			border-bottom: 1px solid #e5e5e5;
 
 			.actions {
 				position: absolute;
@@ -76,8 +97,7 @@
 						width: 40px;
 						font-size: 30px;
 						font-family: Dashicons;
-						position: relative;
-						top: 5px;
+						line-height: 42px;
 					}
 
 					&.open {

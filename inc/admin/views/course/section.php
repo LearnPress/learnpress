@@ -11,7 +11,7 @@ learn_press_admin_view( 'course/section-item' );
 <script type="text/x-template" id="tmpl-lp-section">
     <div class="section" :class="isOpen ? 'open' : 'close'">
         <div class="section-head">
-            <input type="text" v-model="section.title" class="name" title="name" placeholder="<?php echo esc_attr( 'Enter section name and hit enter', 'learnpress' ); ?>">
+            <div class="section-title">{{section.title}}</div>
 
             <div class="actions">
                 <span class="collapse" :class="isOpen ? 'open' : 'close'" @click="toggle"></span>
