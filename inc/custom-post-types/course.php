@@ -442,9 +442,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 * Add meta boxes to course post type page
 		 */
 		public function add_meta_boxes() {
-			if ( LP_COURSE_CPT != learn_press_get_requested_post_type() ) {
-				return;
-			}
 			$default_tabs = array(
 				'settings'   => new RW_Meta_Box( self::settings_meta_box() ),
 				'assessment' => new RW_Meta_Box( self::assessment_meta_box() ),
