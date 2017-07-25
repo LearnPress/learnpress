@@ -76,7 +76,8 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			}
 
 			wp_localize_script( 'course-editor-v2', 'lq_course_editor', array(
-				'sections' => $sections_data,
+				'course_id' => $post->ID,
+				'sections'  => $sections_data,
 			) );
 		}
 

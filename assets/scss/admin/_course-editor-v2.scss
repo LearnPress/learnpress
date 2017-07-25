@@ -26,6 +26,8 @@
 		border-bottom: 1px solid #ddd;
 
 		.add-new-section {
+			text-align: center;
+
 			button {
 				&:before {
 					content: '\f132';
@@ -46,6 +48,12 @@
 			font-weight: 600;
 			line-height: 2;
 			font-size: 18px;
+
+			&:empty {
+				&:before {
+					content: attr(data-empty);
+				}
+			}
 		}
 
 		&.open {
@@ -134,10 +142,17 @@
 			transition: height 0.3s;
 		}
 
-		.description {
+		.details {
 			border-bottom: 1px solid #eee;
 			padding-bottom: 20px;
 			margin-bottom: 20px;
+		}
+
+		.title-input {
+			width: 100%;
+			font-size: 18px;
+			font-weight: 600;
+			border: none;
 		}
 
 		.description-input {

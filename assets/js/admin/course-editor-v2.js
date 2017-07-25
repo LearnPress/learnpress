@@ -16,7 +16,13 @@
         props: ['sections'],
         methods: {
             clickNewSection: function () {
-                console.log('add new');
+                this.sections.push({
+                    course_id: data.course_id,
+                    title: '',
+                    description: '',
+                    items: [],
+                    id: -1
+                });
             }
         }
     });

@@ -11,7 +11,7 @@ learn_press_admin_view( 'course/section-item' );
 <script type="text/x-template" id="tmpl-lp-section">
     <div class="section" :class="isOpen ? 'open' : 'close'">
         <div class="section-head">
-            <div class="section-title">{{section.title}}</div>
+            <div class="section-title" data-empty="<?php esc_attr_e( 'Enter the name section', 'learnpress' ); ?>">{{section.title}}</div>
 
             <div class="actions">
                 <span class="collapse" :class="isOpen ? 'open' : 'close'" @click="toggle"></span>
@@ -19,7 +19,9 @@ learn_press_admin_view( 'course/section-item' );
         </div>
 
         <div class="section-content">
-            <div class="description">
+            <div class="details">
+                <input v-model="section.title" type="text" title="title" class="title-input" placeholder="<?php esc_attr_e( 'Enter the name section', 'learnpress' ); ?>">
+
                 <input v-model="section.description" type="text" class="description-input" title="description" placeholder="<?php echo esc_attr( 'Describe about this section', 'learnpress' ); ?>">
             </div>
 
