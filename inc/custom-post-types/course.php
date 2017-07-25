@@ -994,9 +994,23 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 
 			if ( 'dopreview' == $preview && 'draft' == $post->post_status ) {
 				learn_press_add_message( __( 'Course Curriculum only appear if course is saved', 'learnpress' ), 'error' );
+
+				return;
 			}
 
-			$this->_reset_sections();
+			$sections = isset( $_REQUEST['_lp_curriculum_sections'] ) ? $_REQUEST['_lp_curriculum_sections'] : false;
+			if ( $sections === false ) {
+				return;
+			}
+
+			$sections_data = array();
+			foreach ( $sections as $section ) {
+				$unslash         = wp_unslash( $section );
+				$sections_data[] = json_decode( $unslash, true );
+			}
+
+			//@todo update sections data
+			return;
 
 			if ( ! empty( $_REQUEST['_lp_curriculum'] ) && 'dopreview' !== $preview ) {
 				$section_order = 0;
@@ -1227,9 +1241,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 
 			$new_status = get_post_status( $post->ID );
 			$old_status = get_post_meta( $post->ID, '_lp_course_status', true );
-
-			// Reset course sections before updating new
-			$this->_reset_sections();
 
 			// Update curriculum
 			$this->_update_course_curriculum();

@@ -10,6 +10,8 @@ learn_press_admin_view( 'course/section-item' );
 ?>
 <script type="text/x-template" id="tmpl-lp-section">
     <div class="section" :class="isOpen ? 'open' : 'close'">
+        <input type="hidden" :value="encode" name="_lp_curriculum_sections[]">
+
         <div class="section-head">
             <div class="section-title" data-empty="<?php esc_attr_e( 'Empty name section', 'learnpress' ); ?>">{{section.title}}</div>
 
