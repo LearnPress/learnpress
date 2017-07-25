@@ -57,14 +57,17 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 
 	protected $_data = array(
 		'status'               => '',
-		'require_enrollment'   => false,
-		'price'                => 0,
+		'require_enrollment'   => '',
+		'price'                => '',
+		'sale_price'           => '',
+		'sale_start'           => '',
+		'sale_end'             => '',
 		'duration'             => 0,
 		'max_students'         => 0,
 		'students'             => 0,
 		'retake_count'         => 0,
-		'featured'             => false,
-		'block_lesson_content' => false,
+		'featured'             => '',
+		'block_lesson_content' => '',
 		'course_result'        => '',
 		'passing_conditional'  => '',
 		'payment'              => ''
@@ -245,25 +248,6 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	}
 
 	/**
-	 *
-	 * @return mixed
-	 */
-	public function is_enrollable() {
-		$enrollable = true;
-
-		// Products must exist of course
-		if ( ! $this->exists() ) {
-			$enrollable = false;
-			// Check the product is published
-		} elseif ( $this->post->post_status !== 'publish' && ! current_user_can( 'edit_post', $this->get_id() ) ) {
-			$enrollable = false;
-		}
-
-		return apply_filters( 'learn_press_is_enrollable', $enrollable, $this );
-	}
-
-
-	/**
 	 * Course is exists if the post is not empty
 	 *
 	 * @return bool
@@ -289,12 +273,11 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	 * @return bool
 	 */
 	public function is_required_enroll() {
+		$return = $this->get_data( 'require_enrollment' ) == 'yes';
+		// @deprecated
+		$return = apply_filters( 'learn_press_course_required_enroll', $return, $this );
 
-		$this->get_price();
-
-		return $this->get_data('require_enrollment') == 'yes';
-
-		return apply_filters( 'learn_press_course_required_enroll', $required, $this );
+		return apply_filters( 'learn-press/course-require-enrollment', $return, $this->get_id() );
 	}
 
 	public function get_title() {
@@ -473,9 +456,11 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	 * @return bool
 	 */
 	public function is_free() {
-		$is_free = ( 'no' == $this->payment || ( 0 >= $this->get_price() ) );
 
-		return apply_filters( 'learn_press_is_free_course', $is_free, $this );
+		// @deprecated
+		$is_free = apply_filters( 'learn_press_is_free_course', $this->get_price() == 0, $this );
+
+		return apply_filters( 'learn-press/course-is-free', $is_free, $this->get_id() );
 	}
 
 	/**
@@ -494,51 +479,76 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	}
 
 	/**
-	 * Get the sale price of course
+	 * Get the sale price of course. Check if sale price is set
+	 * and the dates are valid.
+	 *
 	 * @return mixed
 	 */
 	public function get_sale_price() {
-		$res        = '';
-		$sale_price = get_post_meta( $this->get_id(), '_lp_sale_price', true );
-		if ( 'yes' == $this->payment && is_numeric( $sale_price ) ) {
-			$sale_price = floatval( $sale_price );
-			$start_date = get_post_meta( $this->get_id(), '_lp_sale_start', true );
-			$end_date   = get_post_meta( $this->get_id(), '_lp_sale_end', true );
-			$now        = current_time( 'timestamp' );
-			$end        = strtotime( $end_date );
-			$start      = strtotime( $start_date );
-			if ( ( $now >= $start || ! $start_date ) && ( $now <= $end || ! $end_date ) ) {
-				$res = $sale_price;
-			}
-		}
-
-		return $res;
-	}
-
-	public function has_sale_price() {
-
+		return $this->has_sale_price() ? floatval( $this->get_data( 'sale_price' ) ) : false;
 	}
 
 	/**
-	 * Get the price of course
+	 * Check if course has 'sale price'
+	 *
+	 * @return mixed
+	 */
+	public function has_sale_price() {
+		// Check has post meta
+		$has_sale_price = metadata_exists( 'post', $this->get_id(), '_lp_sale_price' );
+		$sale_price     = $this->get_data( 'sale_price' );
+
+		// Ensure sale price is a number
+		if ( $has_sale_price ) {
+			$has_sale_price = is_numeric( $sale_price );
+		}
+
+		// Ensure sale price is greater than 0
+		if ( $has_sale_price ) {
+			$has_sale_price = ( $sale_price = floatval( $sale_price ) ) >= 0;
+		}
+
+		// Ensure the dates are valid
+		if ( $has_sale_price ) {
+			$start_date = $this->get_data( 'sale_start' );
+			$end_date   = $this->get_data( 'sale_end' );
+			$now        = current_time( 'timestamp' );
+			$end        = strtotime( $end_date );
+			$start      = strtotime( $start_date );
+
+			$has_sale_price = ( ( $now >= $start || ! $start_date ) && ( $now <= $end || ! $end_date ) );
+		}
+
+		// Ensure sale price is less than origin price
+		if ( $has_sale_price ) {
+			$has_sale_price = is_numeric( $this->get_data( 'price' ) ) && $sale_price < $this->get_data( 'price' );
+		}
+
+		return apply_filters( 'learn-press/course-has-sale-price', $has_sale_price, $this->get_id() );
+	}
+
+	/**
+	 * Get the price of course. If sale price is set and the dates is valid then
+	 * return the sale price.
 	 *
 	 * @return mixed
 	 */
 	public function get_price() {
-		$price = $this->get_data('price');
+		$price = floatval( $this->get_data( 'price' ) );
 
 		// Price is not set
-		if ( ! $price || 'yes' != $this->get_data('payment') ) {
+		if ( ! $price /* || 'yes' != $this->get_data('payment') */ ) {
 			$price = 0;
 		} else {
-			$price      = floatval( $price );
-			$sale_price = $this->get_sale_price();
-			if ( is_numeric( $sale_price ) ) {
+			if ( false !== ( $sale_price = $this->get_sale_price() ) ) {
 				$price = $sale_price;
 			}
 		}
 
-		return apply_filters( 'learn_press_course_price', $price, $this );
+		// @deprecated
+		$price = apply_filters( 'learn_press_course_price', $price, $this );
+
+		return apply_filters( 'learn-press/course-price', $price, $this->get_id() );
 	}
 
 	/**
@@ -874,17 +884,43 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	 * @return mixed
 	 */
 	public function is_purchasable() {
-		// TODO: needs to check more criteria, currently only check if this course is required enrollment
-		$is_purchasable = $this->is_required_enroll() && get_post_status( $this->get_id() ) == 'publish';
-		if ( $is_purchasable ) {
-			$max_allowed = $this->max_students;
-			if ( $max_allowed > 0 ) {
-				$count_in_order = $this->count_in_order( array( 'completed', 'processing' ) );
-				$is_purchasable = $is_purchasable && ( $count_in_order < $max_allowed );
-			}
+		$is_purchasable = $this->exists() && $this->is_require_enrollment() && get_post_status( $this->get_id() ) == 'publish';
+
+		// @deprecated
+		$is_purchasable = apply_filters( 'learn_press_item_is_purchasable', $is_purchasable, $this->get_id() );
+
+		return apply_filters( 'learn-press/is-purchasable', $is_purchasable, $this->get_id() );
+	}
+
+	/**
+	 * Check if students have enrolled course is reached.
+	 *
+	 * @return mixed
+	 */
+	public function is_in_stock() {
+		$in_stock = true;
+		if ( $max_allowed = $this->get_max_students() ) {
+			$in_stock = $max_allowed > $this->count_students();
 		}
 
-		return apply_filters( 'learn_press_item_is_purchasable', $is_purchasable, $this->get_id() );
+		return apply_filters( 'learn-press/is-in-stock', $in_stock, $this->get_id() );
+	}
+
+	/**
+	 * Get max students can enroll to course.
+	 *
+	 * @return int
+	 *
+	 * @since 3.x.x
+	 */
+	public function get_max_students() {
+		return apply_filters( 'learn-press/max-students', absint( $this->get_data( 'max_students' ) ), $this->get_id() );
+	}
+
+	public function count_students() {
+		$count_in_order = $this->count_in_order( array( 'completed', 'processing' ) );
+
+		return $count_in_order;
 	}
 
 	public function count_in_order( $statuses = 'completed' ) {

@@ -48,12 +48,12 @@ class LP_Request_Handler {
 	 * Purchase course action.
 	 * Perform this action when user clicking on "Buy this course" or "Enroll" button.
 	 *
-	 * @param int $course_id
+	 * @param int    $course_id
+	 * @param string $action
 	 *
 	 * @return bool
 	 */
-	public static function purchase_course( $course_id ) {
-
+	public static function purchase_course( $course_id, $action ) {
 		$course_id = apply_filters( 'learn-press/purchase-course-id', $course_id );
 		$course    = learn_press_get_course( $course_id );
 
@@ -61,16 +61,19 @@ class LP_Request_Handler {
 			return false;
 		}
 
-		print_r( $course->get_data( 'require_enrollment' ) );
-
-
-		//LP()->cart->purchase_course_handler( $course_id );
 		$cart = LP()->cart;
-		$cart->add_to_cart( $course_id, 1, $_POST );
 
-		print_r( $cart );
-		learn_press_print_messages();
-		die();
+		// If cart is disabled then clean the cart
+		if ( ! learn_press_enable_cart() ) {
+			$cart->empty_cart();
+		}
+
+		if ( $cart_id = $cart->add_to_cart( $course_id, 1, array() ) ) {
+
+
+		}
+
+		return true;
 	}
 
 	public static function clean_cache() {
@@ -101,7 +104,7 @@ class LP_Request_Handler {
 		//print_r($_SERVER['REQUEST_METHOD']);die();
 		if ( ! empty( $_REQUEST ) ) {
 			foreach ( $_REQUEST as $key => $value ) {
-				do_action( 'learn_press_request_handler_' . $key, $value, $_REQUEST );
+				do_action( 'learn_press_request_handler_' . $key, $value, $key );
 			}
 		}
 	}
@@ -121,10 +124,10 @@ class LP_Request_Handler {
 					continue;
 				}
 				list( $action, $callback, $priority ) = array_values( $item );
-				add_action( 'learn_press_request_handler_' . $action, $callback, $priority );
+				add_action( 'learn_press_request_handler_' . $action, $callback, $priority, 2 );
 			}
 		} else {
-			add_action( 'learn_press_request_handler_' . $action, $function, $priority );
+			add_action( 'learn_press_request_handler_' . $action, $function, $priority, 2 );
 		}
 	}
 
