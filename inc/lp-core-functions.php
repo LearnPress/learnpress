@@ -2629,6 +2629,7 @@ function learn_press_is_added_to_cart( $course_id ) {
 	return $cart->has_item( $course_id );
 }
 
+// useless
 function learn_press_get_requested_post_type() {
 	global $pagenow;
 	if ( $pagenow == 'post-new.php' && ! empty( $_GET['post_type'] ) ) {
