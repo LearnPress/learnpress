@@ -12,7 +12,7 @@ learn_press_admin_view( 'course/section' );
         <lp-section v-for="section in sections" :section="section" :key="section.id"></lp-section>
 
         <li class="add-new-section">
-            <button class="button button-primary" @click.prevent="clickNewSection"><?php esc_html_e( 'Add new section', 'learnpress' ); ?></button>
+            <button type="button" class="button button-primary" @click.prevent="clickNewSection"><?php esc_html_e( 'Add new section', 'learnpress' ); ?></button>
         </li>
     </ul>
 </script>

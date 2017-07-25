@@ -8,7 +8,12 @@
 
     Vue.component('lp-curriculum', {
         template: '#tmpl-lp-course-curriculum',
-        props: ['sections']
+        props: ['sections'],
+        computed: {
+            dataSections: function () {
+                return JSON.stringify(this.sections || []);
+            }
+        }
     });
 
     Vue.component('lp-list-sections', {
@@ -36,8 +41,7 @@
             };
         },
         methods: {
-            toggle: function (e) {
-                e.preventDefault();
+            toggle: function () {
                 this.isOpen = !this.isOpen;
             }
         }

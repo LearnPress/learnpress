@@ -11,10 +11,10 @@ learn_press_admin_view( 'course/section-item' );
 <script type="text/x-template" id="tmpl-lp-section">
     <div class="section" :class="isOpen ? 'open' : 'close'">
         <div class="section-head">
-            <div class="section-title" data-empty="<?php esc_attr_e( 'Enter the name section', 'learnpress' ); ?>">{{section.title}}</div>
+            <div class="section-title" data-empty="<?php esc_attr_e( 'Empty name section', 'learnpress' ); ?>">{{section.title}}</div>
 
             <div class="actions">
-                <span class="collapse" :class="isOpen ? 'open' : 'close'" @click="toggle"></span>
+                <span class="collapse" :class="isOpen ? 'open' : 'close'" @click.prevent="toggle"></span>
             </div>
         </div>
 

@@ -15,5 +15,6 @@ learn_press_admin_view( 'course/sections' );
         </div>
 
         <lp-list-sections :sections="sections"></lp-list-sections>
+        <input type="hidden" :value="dataSections" name="lp_curriculum_sections">
     </div>
 </script>
