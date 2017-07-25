@@ -37,22 +37,27 @@ defined( 'ABSPATH' ) or exit();
             <p class="authors"><?php printf( __( '<cite>By %s</cite>', 'learnpress' ), $add_on['author'] ); ?></p>
         </div>
     </div>
-	<?php if ( isset( $add_on['version'] ) ) { ?>
-        <div class="plugin-card-bottom">
-            <div class="plugin-version">
-				<?php echo sprintf( __( 'Version: %s', 'learnpress' ), $add_on['version'] ) ?>
-            </div>
-            <div class="column-compatibility">
-				<?php
-				if ( ! empty( $add_on['tested'] ) && version_compare( substr( $GLOBALS['wp_version'], 0, strlen( $add_on['tested'] ) ), $add_on['tested'], '>' ) ) {
-					echo '<span class="compatibility-untested">' . __( 'Untested with your version of WordPress', 'learnpress' ) . '</span>';
-				} elseif ( ! empty( $plugin['requires'] ) && version_compare( substr( $GLOBALS['wp_version'], 0, strlen( $add_on['requires'] ) ), $add_on['requires'], '<' ) ) {
-					echo '<span class="compatibility-incompatible">' . wp_kses( __( '<strong>Incompatible</strong> with your version of WordPress', 'learnpress' ), array( 'strong' => array() ) ) . '</span>';
-				} else {
-					echo '<span class="compatibility-compatible">' . wp_kses( __( '<strong>Compatible</strong> with your version of WordPress', 'learnpress' ), array( 'strong' => array() ) ) . '</span>';
-				}
-				?>
-            </div>
+
+    <div class="plugin-card-bottom">
+        <div class="plugin-version">
+			<?php echo __( 'Version: ', 'learnpress' );
+			if ( isset( $add_on['version'] ) ) {
+				echo $add_on['version'];
+			} else {
+				echo '2.0';
+			}
+			?>
         </div>
-	<?php } ?>
+        <div class="column-compatibility">
+			<?php
+			if ( ! empty( $add_on['tested'] ) && version_compare( substr( $GLOBALS['wp_version'], 0, strlen( $add_on['tested'] ) ), $add_on['tested'], '>' ) ) {
+				echo '<span class="compatibility-untested">' . __( 'Untested with your version of WordPress', 'learnpress' ) . '</span>';
+			} elseif ( ! empty( $plugin['requires'] ) && version_compare( substr( $GLOBALS['wp_version'], 0, strlen( $add_on['requires'] ) ), $add_on['requires'], '<' ) ) {
+				echo '<span class="compatibility-incompatible">' . wp_kses( __( '<strong>Incompatible</strong> with your version of WordPress', 'learnpress' ), array( 'strong' => array() ) ) . '</span>';
+			} else {
+				echo '<span class="compatibility-compatible">' . wp_kses( __( '<strong>Compatible</strong> with your version of WordPress', 'learnpress' ), array( 'strong' => array() ) ) . '</span>';
+			}
+			?>
+        </div>
+    </div>
 </li>
