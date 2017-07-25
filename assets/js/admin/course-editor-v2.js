@@ -13,7 +13,18 @@
 
     Vue.component('lp-list-sections', {
         template: '#tmpl-lp-list-sections',
-        props: ['sections']
+        props: ['sections'],
+        methods: {
+            clickNewSection: function () {
+                this.sections.push({
+                    course_id: data.course_id,
+                    title: '',
+                    description: '',
+                    items: [],
+                    id: -1
+                });
+            }
+        }
     });
 
     Vue.component('lp-section', {
@@ -21,13 +32,17 @@
         props: ['section'],
         data: function () {
             return {
-                isOpen: false
+                isOpen: true
             };
         },
         methods: {
-            toggle: function (e) {
-                e.preventDefault();
+            toggle: function () {
                 this.isOpen = !this.isOpen;
+            }
+        },
+        computed: {
+            encode: function () {
+                return JSON.stringify(this.section || {});
             }
         }
     });

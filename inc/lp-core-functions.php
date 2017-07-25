@@ -1589,7 +1589,7 @@ function learn_press_get_request_args( $args = array() ) {
 
 
 /**
- * @return mixed|void
+ * @return mixed
  */
 function is_learnpress() {
 	return apply_filters( 'is_learnpress', ( learn_press_is_course_archive() || learn_press_is_course_taxonomy() || learn_press_is_course() || learn_press_is_quiz() || learn_press_is_search() ) ? true : false );
