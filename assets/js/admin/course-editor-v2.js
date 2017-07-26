@@ -29,7 +29,7 @@
 
     Vue.component('lp-section', {
         template: '#tmpl-lp-section',
-        props: ['section'],
+        props: ['section', 'order'],
         data: function () {
             return {
                 isOpen: true
@@ -42,7 +42,10 @@
         },
         computed: {
             encode: function () {
-                return JSON.stringify(this.section || {});
+                var data = this.section || {};
+                data.order = this.order;
+
+                return JSON.stringify(data);
             }
         }
     });
