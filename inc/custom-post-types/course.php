@@ -1008,7 +1008,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				$unslash         = wp_unslash( $section );
 				$sections_data[] = json_decode( $unslash, true );
 			}
-
+print_r($sections_data);die();
 			//@todo update sections data
 			return;
 
