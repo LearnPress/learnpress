@@ -18,7 +18,7 @@ if ( ! isset( $user ) ) {
 }
 
 // Course is not require enrolling
-if ( ! $course->is_required_enroll() ) {
+if ( ! $course->is_required_enroll() || $course->get_price() ) {
 	return;
 }
 

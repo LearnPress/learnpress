@@ -105,10 +105,11 @@ class LP_User_CURD implements LP_Interface_CURD {
 	 *
 	 * @param int       $user_id
 	 * @param int|array $course_id
+	 * @param bool      $force - Optional. Force to read new data from DB (ignore caching).
 	 *
 	 * @return bool
 	 */
-	public function read_course( $user_id = null, $course_id = null ) {
+	public function read_course( $user_id = null, $course_id = null, $force = false ) {
 		if ( is_null( $user_id ) ) {
 			$user_id = get_current_user_id();
 		}
@@ -128,6 +129,12 @@ class LP_User_CURD implements LP_Interface_CURD {
 		 * then ignore that course.
 		 */
 		foreach ( $course_id as $id ) {
+
+			// Refresh
+			if ( $force ) {
+				wp_cache_delete( 'course-' . $user_id . '-' . $id, 'lp-user-courses' );
+			}
+
 			if ( false === wp_cache_get( 'course-' . $user_id . '-' . $id, 'lp-user-courses' ) ) {
 				$fetch_ids[] = $id;
 				//wp_cache_set( 'course-' . $user_id . '-' . $id, array( 'items' => array() ), 'lp-user-courses' );
@@ -156,6 +163,11 @@ class LP_User_CURD implements LP_Interface_CURD {
 
 		if ( $results = $wpdb->get_results( $query, ARRAY_A ) ) {
 			foreach ( $results as $result ) {
+				// Refresh
+				if ( $force ) {
+					wp_cache_delete( 'course-' . $user_id . '-' . $result['item_id'], 'lp-user-courses' );
+				}
+
 				/**
 				 * Ignore row if it is already added. We sort the rows by newest user_item_id
 				 * therefore the first row in a group of item_id is row we need.
@@ -164,7 +176,7 @@ class LP_User_CURD implements LP_Interface_CURD {
 					continue;
 				}
 				$result['items'] = array();
-				$this->_read_course_items( $result );
+				$this->_read_course_items( $result, $force );
 				wp_cache_set( 'course-' . $user_id . '-' . $result['item_id'], $result, 'lp-user-courses' );
 
 				// Remove the course has already read!
@@ -186,10 +198,11 @@ class LP_User_CURD implements LP_Interface_CURD {
 	 * Load user items by item_id of course item
 	 *
 	 * @param object $parent_item
+	 * @param bool   $force - Optional. Force to read new data from DB (ignore caching).
 	 *
 	 * @return bool
 	 */
-	protected function _read_course_items( &$parent_item ) {
+	protected function _read_course_items( &$parent_item, $force = false ) {
 		global $wpdb;
 
 		$item_types = learn_press_get_course_item_types();
@@ -205,7 +218,8 @@ class LP_User_CURD implements LP_Interface_CURD {
 		", $args );
 
 		if ( $results = $wpdb->get_results( $query, ARRAY_A ) ) {
-			$items = array();
+			$items    = array();
+			$meta_ids = array();
 			foreach ( $results as $result ) {
 				$user_item_id = $result['item_id'];
 				if ( empty( $items[ $user_item_id ] ) ) {
@@ -213,14 +227,23 @@ class LP_User_CURD implements LP_Interface_CURD {
 					$parent_item['items'][] = $user_item_id;
 				}
 				//$this->_read_item_meta( $result );
-				// Update user item meta to cache
-				update_meta_cache( 'learnpress_user_item', $result['user_item_id'] );
+				$meta_ids[] = $result['user_item_id'];
 
 				$items[ $user_item_id ][ $result['user_item_id'] ] = $result;
 			}
 
+			// Batch updating user item meta
+			update_meta_cache( 'learnpress_user_item', $meta_ids );
+
 			foreach ( $items as $user_item_id => $_items ) {
-				wp_cache_set( 'course-item-' . $parent_item['user_id'] . '-' . $parent_item['item_id'] . '-' . $user_item_id, $_items, 'lp-user-course-items' );
+				$cache_name = sprintf( 'course-item-%d-%d-%d', $parent_item['user_id'], $parent_item['item_id'], $user_item_id );
+
+				// Refresh caching
+				if ( $force ) {
+					wp_cache_delete( $cache_name, 'lp-user-course-items' );
+				}
+
+				wp_cache_set( $cache_name, $_items, 'lp-user-course-items' );
 			}
 		}
 

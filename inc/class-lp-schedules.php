@@ -10,6 +10,7 @@ class LP_Schedules {
 	 * LP_Schedules constructor.
 	 */
 	public function __construct() {
+		return;
 		if ( learn_press_get_request( 'action' ) == 'heartbeat' || !is_admin() ) {
 			//$this->_update_user_course_expired();
 		}

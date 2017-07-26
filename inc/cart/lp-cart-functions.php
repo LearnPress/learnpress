@@ -10,6 +10,10 @@ function learn_press_get_cart() {
 	return LP()->cart;
 }
 
+function learn_press_enable_cart(){
+	return apply_filters('learn-press/enable-cart', false);
+}
+
 /**
  * Get description for cart by join all item titles into one
  *

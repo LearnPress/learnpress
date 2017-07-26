@@ -17,6 +17,15 @@ class LP_Abstract_Post_Data extends LP_Abstract_Object_Data {
 	}
 
 	/**
+	 * Get status of post.
+	 *
+	 * @return array|mixed
+	 */
+	public function get_status() {
+		return $this->get_data( 'status' );
+	}
+
+	/**
 	 * Get post meta.
 	 *
 	 * @param string $key

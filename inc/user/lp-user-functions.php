@@ -10,8 +10,8 @@
 /**
  * Delete user data by user ID
  *
- * @param $user_id
- * @param $course_id
+ * @param int $user_id
+ * @param int $course_id
  */
 function learn_press_delete_user_data( $user_id, $course_id = 0 ) {
 	global $wpdb;
@@ -23,26 +23,48 @@ function learn_press_delete_user_data( $user_id, $course_id = 0 ) {
 	}
 	// delete all courses user has enrolled
 	$query = $wpdb->prepare( "
-				DELETE FROM {$wpdb->prefix}learnpress_user_items
-				WHERE user_id = %d
-				" . ( $course_id ? " AND item_id = %d" : "" ) . "
-			", $query_args );
+        DELETE FROM {$wpdb->prefix}learnpress_user_items
+        WHERE user_id = %d
+        " . ( $course_id ? " AND item_id = %d" : "" ) . "
+    ", $query_args );
 	@$wpdb->query( $query );
 }
 
-function learn_press_get_user_item_id( $user_id, $item_id ) {
-	$user_item_ids = LP_Cache::get_user_item_id( false, array() );
-	if ( empty( $user_item_ids[ $user_id . '-' . $item_id ] ) ) {
-		global $wpdb;
-		$query                                      = $wpdb->prepare( "SELECT user_item_id FROM {$wpdb->prefix}learnpress_user_items WHERE user_id = %d AND item_id = %d ORDER BY user_item_id DESC LIMIT 0,1", $user_id, $item_id );
-		$user_item_ids[ $user_id . '-' . $item_id ] = $wpdb->get_var( $query );
-	}
-	LP_Cache::set_user_item_id( $user_item_ids );
+/**
+ * Get user_item_id field in table learnpress_user_items
+ * with the user_id, item_id. If $course_id is not passed
+ * then item_id is ID of a course. Otherwise, item_id is
+ * ID of an item (like quiz/lesson).
+ *
+ * @param int $user_id
+ * @param int $item_id
+ * @param int $course_id
+ *
+ * @return bool
+ */
+function learn_press_get_user_item_id( $user_id, $item_id, $course_id = 0 /* added 3.x.x */ ) {
 
-	return $user_item_ids[ $user_id . '-' . $item_id ];
+	// If $course_id is not passed consider $item_id is ID of a course
+	if ( ! $course_id ) {
+		if ( $item = wp_cache_get( 'course-' . $user_id . '-' . $item_id, 'lp-user-courses' ) ) {
+			return $item['user_item_id'];
+		}
+	} else {
+
+		// Otherwise, get item of the course
+		if ( $items = wp_cache_get( 'course-item-' . $user_id . '-' . $course_id . '-' . $item_id, 'lp-user-course-items' ) ) {
+			$item = reset( $items );
+
+			return $item['user_item_id'];
+		}
+	}
+
+	return false;
 }
 
 /**
+ * Get current user ID
+ *
  * @return int
  */
 function learn_press_get_current_user_id() {
@@ -53,7 +75,6 @@ function learn_press_get_current_user_id() {
 
 /**
  * Get the user by $user_id passed. If $user_id is NULL, get current user.
- *
  * If current user is not logged in, return a GUEST user
  *
  * @param int $user_id
@@ -337,12 +358,21 @@ add_action( 'user_register', 'learn_press_update_user_teacher_role', 10, 1 );
 
 
 /**
- * @param array $fields
- * @param mixed $where
+ * Update data into table learnpress_user_items.
+ *
+ * @param array $fields             - Fields and values to be updated.
+ *                                  Format: array(
+ *                                  field_name_1 => value 1,
+ *                                  field_name_2 => value 2,
+ *                                  ....
+ *                                  field_name_n => value n
+ *                                  )
+ * @param mixed $where              - Optional. Fields with values for conditional update with the same format of $fields.
+ * @param bool  $update_cache       - Optional. Should be update to cache or not (since 3.x.x).
  *
  * @return mixed
  */
-function learn_press_update_user_item_field( $fields, $where = false ) {
+function learn_press_update_user_item_field( $fields, $where = false, $update_cache = true ) {
 	global $wpdb;
 
 	// Table fields
@@ -357,6 +387,22 @@ function learn_press_update_user_item_field( $fields, $where = false ) {
 		'ref_type'   => '%s',
 		'parent_id'  => '%d'
 	);
+
+	/**
+	 * Validate item status
+	 */
+	if ( ! empty( $fields['item_id'] ) && ! empty( $fields['status'] ) ) {
+		$item_type = get_post_type( $fields['item_id'] );
+		if ( LP_COURSE_CPT === $item_type ) {
+			if ( 'completed' === $fields['status'] ) {
+				$fields['status'] = 'finished';
+			}
+		} else {
+			if ( 'finished' === $fields['status'] ) {
+				$fields['status'] = 'completed';
+			}
+		}
+	}
 
 	// Data and format
 	$data        = array();
@@ -374,7 +420,9 @@ function learn_press_update_user_item_field( $fields, $where = false ) {
 	if ( $where && empty( $where['user_id'] ) ) {
 		$where['user_id'] = learn_press_get_current_user_id();
 	}
+
 	$where_format = array();
+
 	/// Build where and where format
 	if ( $where ) {
 		foreach ( $where as $field => $value ) {
@@ -383,54 +431,111 @@ function learn_press_update_user_item_field( $fields, $where = false ) {
 			}
 		}
 	}
-	$return = false;
-	if ( $data ) {
-		if ( $where ) {
-			$return = $wpdb->update(
-				$wpdb->prefix . 'learnpress_user_items',
-				$data,
-				$where,
-				$data_format,
-				$where_format
-			);
-		} else {
-			if ( $wpdb->insert(
-				$wpdb->prefix . 'learnpress_user_items',
-				$data,
-				$data_format
-			)
-			) {
-				$return = $wpdb->insert_id;
+
+	if ( ! $data ) {
+		return false;
+	}
+
+	$inserted = false;
+	$updated  = false;
+
+	// If $where is not empty consider we are updating
+	if ( $where ) {
+		$updated = $wpdb->update(
+			$wpdb->learnpress_user_items,
+			$data,
+			$where,
+			$data_format,
+			$where_format
+		);
+	} else {
+
+		// Otherwise, insert a new one
+		if ( $wpdb->insert(
+			$wpdb->learnpress_user_items,
+			$data,
+			$data_format
+		)
+		) {
+			$inserted = $wpdb->insert_id;
+		}
+	}
+
+	if ( $updated && ! empty( $where['user_item_id'] ) ) {
+		$inserted = $where['user_item_id'];
+	}
+
+	$updated_item = false;
+
+	// Get the item we just have updated or inserted.
+	if ( $inserted ) {
+		$updated_item = learn_press_get_user_item( $inserted );
+	} else if ( $updated ) {
+		$updated_item = learn_press_get_user_item( $where );
+	}
+
+	/**
+	 * If there is some fields does not contain in the main table
+	 * then consider update them as meta data.
+	 */
+	if ( $updated_item ) {
+		$extra_fields = array_diff_key( $fields, $table_fields );
+		if ( $extra_fields ) {
+			foreach ( $extra_fields as $meta_key => $meta_value ) {
+				learn_press_update_user_item_meta( $updated_item->user_item_id, $meta_key, $meta_value );
 			}
 		}
 	}
 
-	return $return;
+	// Refresh cache
+	if ( $update_cache && $updated_item ) {
+
+		// Get course id
+		if ( LP_COURSE_CPT === get_post_type( $updated_item->item_id ) ) {
+			$course_id = $updated_item->item_id;
+		} else {
+			$course_id = $updated_item->ref_id;
+		}
+
+		// Read new data from DB.
+		$curd = learn_press_get_curd( 'user' );
+		$curd->read_course( $updated_item->user_id, $course_id, true );
+	}
+
+	do_action( 'learn-press/updated-user-item-meta', $updated_item );
+
+	return $updated_item;
 }
 
 /**
  * Get user item row(s) from user items table by multiple WHERE conditional
  *
- * @param      $where
- * @param bool $single
+ * @param array|int $where
+ * @param bool      $single
  *
- * @return array|bool|null|object|void
+ * @return array
  */
 function learn_press_get_user_item( $where, $single = true ) {
 	global $wpdb;
 
 	// Table fields
 	$table_fields = array(
-		'user_id'    => '%d',
-		'item_id'    => '%d',
-		'ref_id'     => '%d',
-		'start_time' => '%s',
-		'end_time'   => '%s',
-		'item_type'  => '%s',
-		'status'     => '%s',
-		'ref_type'   => '%s',
-		'parent_id'  => '%d'
+		'user_item_id' => '%d',
+		'user_id'      => '%d',
+		'item_id'      => '%d',
+		'ref_id'       => '%d',
+		'start_time'   => '%s',
+		'end_time'     => '%s',
+		'item_type'    => '%s',
+		'status'       => '%s',
+		'ref_type'     => '%s',
+		'parent_id'    => '%d'
 	);
+
+	// If $where is a number consider we are searching the record with unique user_item_id
+	if ( is_numeric( $where ) ) {
+		$where = array( 'user_item_id' => $where );
+	}
 
 	$where_str = array();
 	foreach ( $where as $field => $value ) {
@@ -439,13 +544,14 @@ function learn_press_get_user_item( $where, $single = true ) {
 		}
 	}
 	$item = false;
+
 	if ( $where_str ) {
 		$query = $wpdb->prepare( "
 			SELECT *
 			FROM {$wpdb->prefix}learnpress_user_items
 			WHERE " . join( ' AND ', $where_str ) . "
 		", $where );
-		if ( $single ) {
+		if ( $single || ! empty( $where['user_item_id'] ) ) {
 			$item = $wpdb->get_row( $query );
 		} else {
 			$item = $wpdb->get_results( $query );
@@ -458,22 +564,27 @@ function learn_press_get_user_item( $where, $single = true ) {
 /**
  * Get user item meta from user_itemmeta table
  *
- * @param      $user_item_id
- * @param      $meta_key
- * @param bool $single
+ * @param int    $user_item_id
+ * @param string $meta_key
+ * @param bool   $single
  *
  * @return mixed
  */
 function learn_press_get_user_item_meta( $user_item_id, $meta_key, $single = true ) {
-	return get_metadata( 'learnpress_user_item', $user_item_id, $meta_key, $single );
+	$meta = false;
+	if ( metadata_exists( 'learnpress_user_item', $user_item_id, $meta_key ) ) {
+		$meta = get_metadata( 'learnpress_user_item', $user_item_id, $meta_key, $single );
+	}
+
+	return $meta;
 }
 
 /**
  * Add user item meta into table user_itemmeta
  *
- * @param        $user_item_id
- * @param        $meta_key
- * @param        $meta_value
+ * @param int    $user_item_id
+ * @param string $meta_key
+ * @param mixed  $meta_value
  * @param string $prev_value
  *
  * @return false|int
@@ -485,9 +596,9 @@ function learn_press_add_user_item_meta( $user_item_id, $meta_key, $meta_value, 
 /**
  * Update user item meta to table user_itemmeta
  *
- * @param        $user_item_id
- * @param        $meta_key
- * @param        $meta_value
+ * @param int    $user_item_id
+ * @param string $meta_key
+ * @param mixed  $meta_value
  * @param string $prev_value
  *
  * @return bool|int
@@ -1410,3 +1521,45 @@ function learn_press_get_user_avatar( $user_id = 0, $size = '' ) {
 
 	return $user->get_profile_picture( '', $size );
 }
+
+///////////////////
+/**
+ * Remove items from learnpress_user_items.
+ *
+ * @param int  $user_id
+ * @param int  $item_id
+ * @param int  $course_id
+ * @param bool $include_course - Optional. If TRUE then remove course and it's items
+ */
+function learn_press_remove_user_items( $user_id, $item_id, $course_id, $include_course = false ) {
+	global $wpdb;
+
+	settype( $item_id, 'array' );
+
+	$format = array_fill( 0, sizeof( $item_id ), '%d' );
+	$where  = '';
+
+	$args = array( $user_id );
+	$args = array_merge( $args, $item_id );
+
+	if ( $course_id ) {
+		$args[] = $course_id;
+		$where  = "AND ref_id = %d";
+	}
+
+	if ( $include_course ) {
+		$where  .= " OR ( item_id = %d AND item_type = %s )";
+		$args[] = $course_id;
+		$args[] = LP_COURSE_CPT;
+	}
+
+	$query = $wpdb->prepare( "
+        DELETE
+        FROM {$wpdb->learnpress_user_items}
+        WHERE user_id = %d 
+        AND ( item_id IN(" . join( ',', $format ) . ")
+        $where )
+    ", $args );
+}
+
+include_once "lp-user-hooks.php";
