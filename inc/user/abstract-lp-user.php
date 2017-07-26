@@ -84,26 +84,6 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 		if ( $this->get_id() > 0 ) {
 			$this->load();
 		}
-
-		return;
-
-		$deleted = in_array( $the_user, LP_User_Factory::$_deleted_users );
-		$user    = ! $deleted ? get_user_by( 'id', $the_user ) : false;
-
-		if ( ! $user ) {
-			$user = (object) array(
-				'ID' => 0
-			);
-			if ( ! $deleted ) {
-				LP_User_Factory::$_deleted_users[] = $the_user;
-			}
-		}
-
-		$this->user = $user;
-		//$this->get_id() = $user->ID;
-		if ( empty( self::$_lessons[ $this->get_id() ] ) ) {
-			self::$_lessons[ $this->get_id() ] = array();
-		}
 	}
 
 	/**
@@ -220,10 +200,12 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 
 	/**
 	 *
-	 * @param     $item_id
+	 * @param int $item_id
 	 * @param int $course_id
 	 *
 	 * @return bool
+	 *
+	 * @since 3.x.x
 	 */
 	protected function _verify_course_item( $item_id, $course_id = 0 ) {
 		if ( false !== ( $course = $this->_get_course( $course_id, 'object' ) ) ) {
@@ -249,85 +231,6 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 		$status = $this->get_item_status( $item_id, $course_id );
 
 		return apply_filters( 'learn-press/user-has-item-status', in_array( $status, $statuses ), $statuses, $item_id, $course_id, $this->get_id() );
-	}
-
-	private function _create_quiz_history( $quiz_id, $course_id = 0/* added 1.0.4 */ ) {
-		if ( ! $course_id ) {
-			$quiz = LP_Quiz::get_quiz( $quiz_id );
-			if ( $quiz && $quiz->get_id() ) {
-				$course_id = $quiz->get_course( array( 'field' => 'id' ) );
-			}
-		}
-		if ( ! $course_id ) {
-			throw new Exception( __( 'Create quiz history need pass course ID', 'learnpress' ) );
-		}
-		if ( empty( $this->_quiz_history_id ) ) {
-			global $wpdb;
-
-			$timestamp = current_time( 'timestamp' );
-
-			$wpdb->insert(
-				$wpdb->prefix . 'learnpress_user_items',
-				apply_filters( 'learn_press_user_quiz_history_data', array(
-					'user_id'    => $this->get_id(),
-					'item_id'    => $quiz_id,
-					'item_type'  => 'lp_quiz',
-					'ref_id'     => $course_id,
-					'ref_type'   => get_post_type( $course_id ),
-					'start_time' => current_time( 'mysql' ),
-					'status'     => ''
-				), $this->get_id(), $quiz_id, $course_id ),
-				array( '%d', '%d', '%s', '%d', '%s', '%s', '%s' )
-			);
-
-			$user_quiz_id = $wpdb->insert_id;
-
-			/**
-			 * Added 1.0.4
-			 */
-			@$wpdb->update(
-				$wpdb->prefix . 'learnpress_user_items', //quizzes,
-				array(
-					'ref_id' => $course_id
-				),
-				array( 'user_quiz_id' => $user_quiz_id ),
-				array( '%d' ),
-				array( '%d' )
-			);
-			//
-
-			$quiz              = new LP_Quiz( $quiz_id );
-			$quiz_questions    = $quiz->get_questions();
-			$quiz_question_ids = $quiz_questions ? array_keys( $quiz_questions ) : array();
-			$quiz_question_ids = array_filter( $quiz_question_ids );
-			$user_quiz_data    = apply_filters(
-				'learn_press_user_quiz_data',
-				array(
-					'history_id'       => $user_quiz_id,
-					'start'            => $timestamp,
-					'end'              => '',
-					'status'           => 'started',
-					'results'          => '',
-					'current_question' => ! empty( $quiz_question_ids[0] ) ? $quiz_question_ids[0] : null,
-					'question_answers' => '',
-					'questions'        => $quiz_question_ids
-				),
-				$quiz_id, $this->get_id()
-			);
-
-			foreach ( $user_quiz_data as $key => $value ) {
-				if ( $key == 'history_id' ) {
-					continue;
-				}
-				learn_press_add_user_quiz_meta( $user_quiz_id, $key, $value );
-			}
-
-			do_action( 'learn_press_add_user_quiz_meta', $user_quiz_id, $this );
-		} else {
-			//$user_quiz_data = $this->get_quiz_history( $quiz_id, $this->_quiz_history_id );
-		}
-
-		return $user_quiz_data;
 	}
 
 	/**

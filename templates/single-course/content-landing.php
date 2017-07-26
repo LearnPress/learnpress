@@ -6,14 +6,9 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
+$user = learn_press_get_current_user();
 learn_press_debug( LP()->cart->total, LP()->cart->get_cart());
-$start = 1000000000;
-$rate = 0.3;
-for($i = 1; $i <=10;$i++){
-    $start=$start+$start * $rate / 100;
-}
-
-echo $start;
+learn_press_debug($user);
 ?>
 
 <?php do_action( 'learn_press_before_content_landing' ); ?>

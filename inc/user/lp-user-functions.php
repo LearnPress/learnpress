@@ -77,17 +77,18 @@ function learn_press_get_current_user_id() {
  * Get the user by $user_id passed. If $user_id is NULL, get current user.
  * If current user is not logged in, return a GUEST user
  *
- * @param int $user_id
+ * @param bool $create_temp - Optional. Create temp user if user is not logged in.
  *
- * @return LP_User
+ * @return bool|LP_User
  */
-function learn_press_get_current_user( $user_id = 0 ) {
-	if ( $user_id ) {
-		_deprecated_argument( '$user_id', '3.x.x' );
+function learn_press_get_current_user( $create_temp = true ) {
+	if ( $id = get_current_user_id() ) {
+		return new LP_User( $id );
 	}
 
-	return new LP_User( get_current_user_id() ); // LP_User_Factory::get_user( $user_id ? $user_id : get_current_user_id() );
+	return $create_temp ? LP_User_Factory::get_temp_user() : false;
 }
+
 
 /**
  * Get user by ID. Return false if the user does not exists.

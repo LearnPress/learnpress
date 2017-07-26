@@ -104,8 +104,6 @@ class LP_Cart {
 			}
 		}
 
-		$cart_session['fuck_you'] = rand( 10000, 100000 );
-
 		return $cart_session;
 	}
 
