@@ -1,6 +1,10 @@
 <?php
 
 class LP_User_CURD implements LP_Interface_CURD {
+	public function create( $args ) {
+
+	}
+
 	public function update() {
 		// TODO: Implement update() method.
 	}
@@ -103,9 +107,9 @@ class LP_User_CURD implements LP_Interface_CURD {
 	/**
 	 * Read course data for an user.
 	 *
-	 * @param int       $user_id
+	 * @param int $user_id
 	 * @param int|array $course_id
-	 * @param bool      $force - Optional. Force to read new data from DB (ignore caching).
+	 * @param bool $force - Optional. Force to read new data from DB (ignore caching).
 	 *
 	 * @return bool
 	 */
@@ -198,7 +202,7 @@ class LP_User_CURD implements LP_Interface_CURD {
 	 * Load user items by item_id of course item
 	 *
 	 * @param object $parent_item
-	 * @param bool   $force - Optional. Force to read new data from DB (ignore caching).
+	 * @param bool $force - Optional. Force to read new data from DB (ignore caching).
 	 *
 	 * @return bool
 	 */

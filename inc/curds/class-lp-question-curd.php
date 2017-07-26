@@ -5,6 +5,10 @@ class LP_Question_CURD implements LP_Interface_CURD {
 		// TODO: Implement delete() method.
 	}
 
+	public function create( $args ) {
+
+	}
+
 	/**
 	 * @param LP_Question $question
 	 *
