@@ -8,6 +8,9 @@
  * @since   3.x.x
  */
 class LP_Course_CURD implements LP_Interface_CURD {
+	public function create( $args ) {
+
+	}
 
 	/**
 	 * Load course data
