@@ -1276,7 +1276,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			$end              = strtotime( $sale_price_end );
 			$start            = strtotime( $sale_price_start );
 
-			return ( ( $now >= $start || !$sale_price_start ) && ( $now <= $end || !$sale_price_end ) || ( !$sale_price_start && !$sale_price_end ) );
+			return ( ( $now <= $end || !$sale_price_end ) || ( !$sale_price_start && !$sale_price_end ) );
 		}
 
 		/**
