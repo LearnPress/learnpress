@@ -40,10 +40,10 @@ class LP_Quiz_CURD implements LP_Interface_CURD {
 	}
 
 	public function create( $args ) {
-		
+
 	}
 
-	public function update() {
+	public function update( $args = array() ) {
 		// TODO: Implement update() method.
 	}
 

@@ -26,7 +26,7 @@ class LP_Course_CURD implements LP_Interface_CURD {
 		return $course;
 	}
 
-	public function update() {
+	public function update( $args = array() ) {
 		// TODO: Implement update() method.
 	}
 

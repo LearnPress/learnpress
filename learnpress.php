@@ -417,6 +417,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/abstracts/abstract-assets.php';
 
 			require_once 'inc/curds/class-lp-course-curd.php';
+			require_once 'inc/curds/class-lp-section-curd.php';
 			require_once 'inc/curds/class-lp-user-curd.php';
 			require_once 'inc/curds/class-lp-quiz-curd.php';
 			require_once 'inc/curds/class-lp-question-curd.php';
@@ -561,7 +562,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * Include a file from plugin path
 		 *
 		 * @param           $file
-		 * @param string    $folder
+		 * @param string $folder
 		 * @param bool|true $include_once
 		 *
 		 * @return bool

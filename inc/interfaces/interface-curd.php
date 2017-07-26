@@ -9,7 +9,7 @@ interface LP_Interface_CURD {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param $args
+	 * @param $args array
 	 *
 	 * @return mixed
 	 */
@@ -31,9 +31,11 @@ interface LP_Interface_CURD {
 	 *
 	 * @since 3.0.0
 	 *
+	 * @param $args array
+	 *
 	 * @return mixed
 	 */
-	public function update();
+	public function update( $args = array() );
 
 	/**
 	 * Delete data from database.

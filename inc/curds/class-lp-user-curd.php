@@ -5,7 +5,7 @@ class LP_User_CURD implements LP_Interface_CURD {
 
 	}
 
-	public function update() {
+	public function update( $args = array() ) {
 		// TODO: Implement update() method.
 	}
 

@@ -1009,6 +1009,20 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				$sections_data[] = json_decode( $unslash, true );
 			}
 
+			foreach ( $sections_data as $section_data ) {
+				$section_id = isset( $section_data['id'] ) ? $section_data['id'] : - 1;
+				if ( $section_id < 0 ) {
+					$curd = new LP_Section_CURD();
+
+					$result = $curd->create( array(
+						'section_name'        => $section_data['title'],
+						'section_description' => $section_data['description'],
+						'section_course_id'   => $section_data['course_id'],
+						'section_order'       => $section_data['order']
+					) );
+				}
+			}
+
 			//@todo update sections data
 			return;
 
