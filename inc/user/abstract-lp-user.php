@@ -1549,13 +1549,15 @@ class LP_Abstract_User {
 			$finished = ( $item_statuses[ $key ] == 'finished' ) ? 'yes' : 'no';
 		} else {
 			global $wpdb;
-			$query                 = $wpdb->prepare( "SELECT status FROM {$wpdb->prefix}learnpress_user_items where user_id=%d and item_id=%d", $this->id, $course_id );
-			$finished              = $wpdb->get_var( $query ) == 'finished' ? 'yes' : 'no';
-			$item_statuses[ $key ] = $finished;
-			LP_Cache::set_item_statuses( $key, $finished );
+			$query                 = $wpdb->prepare( "SELECT status FROM {$wpdb->prefix}learnpress_user_items where user_id=%d and item_id=%d AND item_type = %s ORDER BY user_item_id DESC", $this->id, $course_id, LP_COURSE_CPT );
+			$item_statuses[ $key ] = $wpdb->get_var( $query );
+			$finished              =  $item_statuses[ $key ] == 'finished' ? 'yes' : 'no';
+
+			LP_Cache::set_item_statuses( $key, $item_statuses );
 		}
 
 		return apply_filters( 'learn_press_user_has_finished_course', $finished == 'yes', $this, $course_id );
+
 
 		//static $courses = array();
 		$finished_courses = LP_Cache::get_finished_courses( false, array() );
