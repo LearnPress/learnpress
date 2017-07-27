@@ -42,8 +42,10 @@ interface LP_Interface_CURD {
 	 *
 	 * @since 3.0.0
 	 *
+	 * @param $id
+	 *
 	 * @return mixed
 	 */
-	public function delete();
+	public function delete( $id );
 
 }

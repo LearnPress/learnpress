@@ -30,7 +30,7 @@ class LP_Course_CURD implements LP_Interface_CURD {
 		// TODO: Implement update() method.
 	}
 
-	public function delete() {
+	public function delete( $id ) {
 		// TODO: Implement delete() method.
 	}
 

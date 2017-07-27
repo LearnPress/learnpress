@@ -1,6 +1,29 @@
 <?php
 
+/**
+ * Class LP_Section_CURD
+ *
+ * @since 3.0.0
+ */
 class LP_Section_CURD implements LP_Interface_CURD {
+
+	/**
+	 * Parse input data.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param $args
+	 *
+	 * @return array
+	 */
+	private function parse( $args ) {
+		return wp_parse_args( $args, array(
+			'section_name',
+			'section_course_id'   => 0,
+			'section_order'       => 0,
+			'section_description' => ''
+		) );
+	}
 
 	/**
 	 * Create item and insert to database.
@@ -14,13 +37,7 @@ class LP_Section_CURD implements LP_Interface_CURD {
 	public function create( $args ) {
 		global $wpdb;
 
-		$section = wp_parse_args( $args, array(
-			'section_name',
-			'section_course_id'   => 0,
-			'section_order'       => 0,
-			'section_description' => ''
-		) );
-
+		$section     = $this->parse( $args );
 		$section     = stripslashes_deep( $section );
 		$insert_data = array(
 			'section_name'        => $section['section_name'],
@@ -62,7 +79,30 @@ class LP_Section_CURD implements LP_Interface_CURD {
 	 * @return mixed
 	 */
 	public function update( $args = array() ) {
-		// TODO: Implement update() method.
+		$section = $this->parse( $args );
+
+		if ( empty( $section['section_id'] ) ) {
+			return $this->create( $args );
+		}
+
+		$section_id  = $section['section_id'];
+		$update_data = array(
+			'section_name'        => $section['section_name'],
+			'section_course_id'   => $section['section_course_id'],
+			'section_order'       => $section['section_order'],
+			'section_description' => $section['section_description'],
+		);
+
+		global $wpdb;
+
+		$wpdb->update(
+			$wpdb->learnpress_sections,
+			$update_data,
+			array( 'section_id' => $section_id )
+		);
+		$section['section_id'] = $section_id;
+
+		return $section;
 	}
 
 	/**
@@ -72,7 +112,7 @@ class LP_Section_CURD implements LP_Interface_CURD {
 	 *
 	 * @return mixed
 	 */
-	public function delete() {
+	public function delete($id) {
 		// TODO: Implement delete() method.
 	}
 }

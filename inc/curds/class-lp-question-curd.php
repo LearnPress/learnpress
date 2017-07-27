@@ -1,7 +1,7 @@
 <?php
 
 class LP_Question_CURD implements LP_Interface_CURD {
-	public function delete() {
+	public function delete( $id ) {
 		// TODO: Implement delete() method.
 	}
 
@@ -46,6 +46,8 @@ class LP_Question_CURD implements LP_Interface_CURD {
 	 * Load answer options for the question from database.
 	 * Load from cache if data is already loaded into cache.
 	 * Otherwise, load from database and put to cache.
+	 *
+	 * @param $question LP_Question
 	 */
 	protected function _load_answer_options( &$question ) {
 		$id             = $question->get_id();
