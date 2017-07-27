@@ -32,6 +32,53 @@ class LP_User_Factory {
 		add_filter( 'cron_schedules', array( __CLASS__, 'cron_schedules' ) );
 	}
 
+	public static function get_temp_user() {
+		global $wpdb;
+		$id = LP()->session->get( 'temp_user' );
+		if ( ! $id || ! get_user_by( 'id', $id ) ) {
+			LP()->session->set_customer_session_cookie( true );
+			$query = $wpdb->prepare( "
+				SELECT ID
+				FROM {$wpdb->users} u 
+				INNER JOIN {$wpdb->usermeta} um ON u.ID = um.user_id AND um.meta_key = %s AND um.meta_value = %s
+				LEFT JOIN {$wpdb->usermeta} um2 ON u.ID = um2.user_id AND um2.meta_key = %s
+				WHERE um2.meta_value IS NULL
+				LIMIT 0, 1
+			", '_lp_temp_user', 'yes', '_lp_expiration' );
+
+			$id = $wpdb->get_var( $query );
+			if ( ! $id ) {
+				$username = 'user_' . date( 'YmdHis' );
+				$email    = sprintf( '%s@%s', $username, $_SERVER['HTTP_HOST'] );
+				if ( ! preg_match( '~\.([a-zA-Z])$~', $email ) ) {
+					$email .= '.com';
+				}
+				$thing = wp_create_user( $username, 'test', $email );
+				if ( ! is_wp_error( $thing ) ) {
+					$id = $thing;
+					update_user_meta( $id, '_lp_temp_user', 'yes' );
+				} else {
+				}
+			}
+
+			// Set session and temp user expiration time
+			if ( $id ) {
+				update_user_meta( $id, '_lp_expiration', time() + DAY_IN_SECONDS * 2 );
+				LP()->session->set( 'temp_user', $id );
+			}
+		}
+
+		if ( $id ) {
+			$expiring = get_user_meta( $id, '_lp_expiration', true );
+			// Update new expiration time if time is going to reach
+			if ( time() > $expiring - HOUR_IN_SECONDS ) {
+				update_user_meta( $id, '_lp_expiration', time() + DAY_IN_SECONDS * 2 );
+			}
+		}
+
+		return new LP_User( $id );
+	}
+
 	/**
 	 * Register new schedules
 	 *

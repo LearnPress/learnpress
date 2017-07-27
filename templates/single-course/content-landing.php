@@ -6,7 +6,9 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
+$user = learn_press_get_current_user();
 learn_press_debug( LP()->cart->total, LP()->cart->get_cart());
+learn_press_debug($user);
 ?>
 
 <?php do_action( 'learn_press_before_content_landing' ); ?>

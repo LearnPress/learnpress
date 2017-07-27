@@ -61,6 +61,7 @@ class LP_Request_Handler {
 			return false;
 		}
 
+
 		$cart = LP()->cart;
 
 		// If cart is disabled then clean the cart
