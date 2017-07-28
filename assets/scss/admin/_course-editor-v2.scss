@@ -153,8 +153,6 @@
 		}
 
 		.details {
-			border-bottom: 1px solid #eee;
-			padding-bottom: 20px;
 			margin-bottom: 20px;
 		}
 
@@ -184,9 +182,18 @@
 		tr {
 			border: 1px dashed #ddd;
 			padding: 8px 0;
+			transition: all 2000ms ease;
 
 			&:nth-child(2n+1) {
+				background-color: #fbfbfb;
+			}
+
+			&:hover {
 				background-color: #f5f5f5;
+			}
+
+			&.sortable-ghost {
+				opacity: 0.5;
 			}
 		}
 
