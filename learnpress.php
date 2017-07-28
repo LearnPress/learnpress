@@ -107,6 +107,9 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		public function __get( $key ) {
 			$return = false;
 			switch ( $key ) {
+				case 'user':
+					$return = learn_press_get_current_user();
+					break;
 				case 'email':
 					$return = LP_Email::instance();
 					break;
@@ -232,7 +235,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		}
 
 		function wp_loaded() {
-			learn_press_get_current_user();
 			if ( $this->is_request( 'frontend' ) ) {
 				$this->gateways = LP_Gateways::instance()->get_available_payment_gateways();
 			}
@@ -294,7 +296,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				$this->get_cart();
 			}
 
-			$this->get_user();
 			$this->schedule = require_once( LP_PLUGIN_PATH . "/inc/class-lp-schedules.php" );
 
 			LP_Emails::instance();
@@ -349,28 +350,6 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 		public function get_checkout_cart() {
 			return learn_press_get_checkout_cart();
-		}
-
-		public function get_user( $user_id = 0 ) {
-			static $users = array();
-			$user = false;
-			if ( ! $this->user ) {
-				$this->user = learn_press_get_current_user();
-			}
-			if ( $user_id ) {
-				if ( $user_id == $this->user->id ) {
-					$user = $this->user;
-				} else {
-					if ( empty( $users[ $user_id ] ) ) {
-						$users[ $user_id ] = learn_press_get_user( $user_id );
-						$user              = $users[ $user_id ];
-					}
-				}
-			} else {
-				$user = $this->user;
-			}
-
-			return $user;
 		}
 
 		/**

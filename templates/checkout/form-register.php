@@ -1,13 +1,13 @@
 <?php
 /**
- * Output register form
+ * Output register form.
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 1.0
+ * @version 3.x.x
  */
 
-if ( !defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
@@ -26,20 +26,27 @@ $content              = apply_filters( 'learn_press_checkout_register_content', 
 
 <div id="learn-press-checkout-user-register" class="learn-press-user-form">
 
-	<?php do_action( 'learn_press_checkout_before_user_register_form' ); ?>
+	<?php
+	/**
+	 * @deprecated
+	 */
+    do_action( 'learn_press_checkout_before_user_register_form' );
+
+    do_action('learn-press/')
+    ?>
 
 	<?php if ( $heading ) { ?>
-		<h3 class="form-heading"><?php echo $heading; ?></h3>
+        <h3 class="form-heading"><?php echo $heading; ?></h3>
 	<?php } ?>
 
 	<?php if ( $subheading ) { ?>
-		<p class="form-subheading"><?php echo $subheading; ?></p>
+        <p class="form-subheading"><?php echo $subheading; ?></p>
 	<?php } ?>
 
 	<?php if ( $content ) { ?>
-		<div class="form-content">
+        <div class="form-content">
 			<?php echo $content; ?>
-		</div>
+        </div>
 	<?php } ?>
 
 	<?php do_action( 'learn_press_checkout_after_user_register_form' ); ?>
