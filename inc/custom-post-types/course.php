@@ -987,6 +987,11 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			" );
 		}
 
+		/**
+		 * Update course curriculum.
+		 *
+		 * @since 3.0.0
+		 */
 		private function _update_course_curriculum() {
 			global $wpdb, $post;
 
@@ -1011,111 +1016,22 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 
 			foreach ( $sections_data as $section_data ) {
 				$section_id = isset( $section_data['id'] ) ? $section_data['id'] : - 1;
+				$curd       = new LP_Section_CURD();
+
+				$args = array(
+					'section_name'        => $section_data['title'],
+					'section_description' => $section_data['description'],
+					'section_course_id'   => $section_data['course_id'],
+					'section_order'       => $section_data['order']
+				);
+
 				if ( $section_id < 0 ) {
-					$curd = new LP_Section_CURD();
-
-					$result = $curd->create( array(
-						'section_name'        => $section_data['title'],
-						'section_description' => $section_data['description'],
-						'section_course_id'   => $section_data['course_id'],
-						'section_order'       => $section_data['order']
-					) );
+					$result = $curd->create( $args );
+				} else {
+					$args['section_id'] = $section_id;
+					$result             = $curd->update( $args );
 				}
 			}
-
-			//@todo update sections data
-			return;
-
-			if ( ! empty( $_REQUEST['_lp_curriculum'] ) && 'dopreview' !== $preview ) {
-				$section_order = 0;
-				$query_update  = array();
-				$update_ids    = array();
-				$query_insert  = array();
-				foreach ( $_REQUEST['_lp_curriculum'] as $section_id => $_section ) {
-					$section_id = 0;
-					// section items
-					$items             = $_section['items'];
-					$item_order        = 0;
-					$insert            = false;
-					$sql_section_items = array();
-					if ( ! empty( $items ) ) {
-						foreach ( $items as $section_item_id => $_item ) {
-
-							// abort the item has not got a name
-							if ( ! $_item['name'] ) {
-								continue;
-							}
-							$insert = true;
-
-							$item_id = $_item['item_id'];
-
-							// if item has not got the ID then insert a new one
-							if ( ! $item_id ) {
-								$item    = $this->_insert_item(
-									array(
-										'post_title' => $_item['name'],
-										'post_type'  => $_item['post_type'],
-									)
-								);
-								$item_id = $item['ID'];
-							} else { // Otherwise, update existing
-								if ( strcmp( $_item['name'], $_item['old_name'] ) !== 0 ) {
-									$query_update[] = 'WHEN ' . $_item['item_id'] . ' THEN \'' . $_item['name'] . '\'';
-									$update_ids[]   = $_item['item_id'];
-									$update_data    = array(
-										'ID'         => $_item['item_id'],
-										'post_title' => $_item['name']
-									);
-									$update_data    = apply_filters( 'learnpress_course_update_data_item_args', $update_data );
-									// prevent update the meta of course for the items when update items
-									$_post = $this->_cleanPostData();
-									wp_update_post( $update_data );
-									$this->_resetPostData( $_post );
-								}
-								$item_id = $_item['item_id'];
-							}
-							$sql_section_items[] = $wpdb->prepare( "(%d, %d, %d, %s)", - 9999999, $item_id, ++ $item_order, $_item['post_type'] );
-						}
-					}
-
-					if ( $insert || ( ! $insert && ( ! empty( $_section['name'] ) || empty( $items ) ) ) ) {
-						$section = array(
-							'section_name'        => ! empty( $_section['name'] ) ? $_section['name'] : '',
-							'section_course_id'   => $post->ID,
-							'section_order'       => ++ $section_order,
-							'section_description' => $_section['description'],
-							'items'               => array()
-						);
-
-						if ( ! $section_id ) {
-							$section    = $this->_insert_section( $section );
-							$section_id = $section['section_id'];
-						}
-						$sections[ $section_id ] = $section;
-						foreach ( $sql_section_items as $section_item ) {
-							$query_insert[] = str_replace( - 9999999, $section_id, $section_item );
-						}
-					}
-				}
-				if ( $query_insert ) {
-					$query_insert = "
-						INSERT INTO {$wpdb->learnpress_section_items}(`section_id`, `item_id`, `item_order`, `item_type`)
-						VALUES " . join( ', ', $query_insert ) . "
-                    ";
-					$wpdb->query( $query_insert );
-				}
-				if ( $query_update ) {
-					$query_update = "
-						UPDATE {$wpdb->posts}
-						SET `post_title` = CASE `ID` " . join( ' ', $query_update ) . " END
-						WHERE
-						ID IN (" . join( ',', $update_ids ) . ")
-                     ";
-					$wpdb->query( $query_update );
-				}
-			}
-			unset( $_REQUEST['_lp_curriculum'] );
-			unset( $_POST['_lp_curriculum'] );
 		}
 
 
