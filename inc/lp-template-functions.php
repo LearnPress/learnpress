@@ -71,6 +71,28 @@ if ( ! function_exists( 'learn_press_curriculum_section_content' ) ) {
 
 }
 
+if ( ! function_exists( 'learn_press_checkout_form_login' ) ) {
+
+	/**
+	 * Output login form before checkout form if user is not logged in
+	 */
+	function learn_press_checkout_form_login() {
+		learn_press_get_template( 'checkout/form-login.php' );
+	}
+
+}
+
+if ( ! function_exists( 'learn_press_checkout_form_register' ) ) {
+
+	/**
+	 * Output register form before checkout form if user is not logged in
+	 */
+	function learn_press_checkout_form_register() {
+		learn_press_get_template( 'checkout/form-register.php' );
+	}
+
+}
+
 /**********************************************/
 
 if ( ! function_exists( 'learn_press_wrapper_start' ) ) {

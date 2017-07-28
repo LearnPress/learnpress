@@ -171,7 +171,7 @@ class LP_Cart {
 			/**
 			 * @see LP_Cart::calculate_totals()
 			 */
-			do_action( 'learn-press/add-to-cart', $course_id, $quantity, $item_data );
+			do_action( 'learn-press/add-to-cart', $course_id, $quantity, $item_data, $cart_id );
 
 			return $cart_id;
 		}

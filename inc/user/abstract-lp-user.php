@@ -2992,4 +2992,13 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 
 		return call_user_func_array( array( 'LP_User_Factory', 'get_user' ), $func_args );
 	}
+
+	/**
+	 * Check if user is a GUEST by checking the meta _lp_temp_user is exists.
+	 *
+	 * @return bool
+	 */
+	public function is_guest(){
+		return metadata_exists('user', $this->get_id(), '_lp_temp_user');
+	}
 }

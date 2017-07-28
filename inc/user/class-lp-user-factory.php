@@ -30,13 +30,65 @@ class LP_User_Factory {
 		add_action( 'learn_press_deactivate', array( __CLASS__, 'deregister_event' ), 15 );
 		add_action( 'learn_press_schedule_cleanup_temp_users', array( __CLASS__, 'schedule_cleanup_temp_users' ) );
 		add_filter( 'cron_schedules', array( __CLASS__, 'cron_schedules' ) );
+
+		/**
+		 * Filters into wp users manager
+		 */
+		add_filter( 'users_list_table_query_args', array( __CLASS__, 'exclude_temp_users' ) );
 	}
 
+	/**
+	 * Hook into wp users list to exclude our temp users.
+	 *
+	 * @param array $args
+	 *
+	 * @return mixed
+	 */
+	public static function exclude_temp_users( $args ) {
+		$args['exclude'] = self::_get_temp_user_ids();
+
+		return $args;
+	}
+
+	/**
+	 * Query all ids of temp users has created.
+	 *
+	 * @return array
+	 */
+	protected static function _get_temp_user_ids() {
+		global $wpdb;
+		$query = $wpdb->prepare( "
+			SELECT ID
+			FROM {$wpdb->users} u 
+			INNER JOIN {$wpdb->usermeta} um ON u.ID = um.user_id AND um.meta_key = %s AND um.meta_value = %s
+			LEFT JOIN {$wpdb->usermeta} um2 ON u.ID = um2.user_id AND um2.meta_key = %s
+		", '_lp_temp_user', 'yes', '_lp_expiration' );
+
+		return $wpdb->get_col( $query );
+	}
+
+	/**
+	 * Get temp user for some purpose.
+	 * This function will create a temp user in users table.
+	 * This user is not a REAL user but have all functions
+	 * as a real user should have.
+	 * Usually, use this user in case real user is not logged
+	 * in and we need an user for some purpose such as:
+	 * do a quiz , etc...
+	 *
+	 * @return LP_User
+	 */
 	public static function get_temp_user() {
 		global $wpdb;
 		$id = LP()->session->get( 'temp_user' );
+
+		// If temp user is not set or is not exists
 		if ( ! $id || ! get_user_by( 'id', $id ) ) {
+
+			// Force to enable cookie
 			LP()->session->set_customer_session_cookie( true );
+
+			// Find temp user is not used
 			$query = $wpdb->prepare( "
 				SELECT ID
 				FROM {$wpdb->users} u 
@@ -47,6 +99,8 @@ class LP_User_Factory {
 			", '_lp_temp_user', 'yes', '_lp_expiration' );
 
 			$id = $wpdb->get_var( $query );
+
+			// If there is no user, create one
 			if ( ! $id ) {
 				$username = 'user_' . date( 'YmdHis' );
 				$email    = sprintf( '%s@%s', $username, $_SERVER['HTTP_HOST'] );
@@ -61,9 +115,15 @@ class LP_User_Factory {
 				}
 			}
 
-			// Set session and temp user expiration time
 			if ( $id ) {
+
+				// Set session and temp user expiration time
 				update_user_meta( $id, '_lp_expiration', time() + DAY_IN_SECONDS * 2 );
+
+				//
+				delete_user_meta( $id, 'wp_capabilities' );
+
+				// Set session
 				LP()->session->set( 'temp_user', $id );
 			}
 		}
@@ -76,7 +136,7 @@ class LP_User_Factory {
 			}
 		}
 
-		return new LP_User( $id );
+		return new LP_User_Guest( $id );
 	}
 
 	/**
