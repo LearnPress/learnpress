@@ -4,7 +4,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 1.0
+ * @version 3.x.x
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -15,12 +15,9 @@ if ( is_user_logged_in() ) {
 	return;
 }
 
-$heading    = apply_filters( 'learn_press_checkout_login_heading', __( 'Returning customer', 'learnpress' ) );
-$subheading = apply_filters( 'learn_press_checkout_login_subheading', __( 'I am a returning customer', 'learnpress' ) );
-
 ?>
 
-<form id="learn-press-checkout-user-login" class="learn-press-form login">
+<form id="learn-press-checkout-login" class="learn-press-form login">
 
 	<?php
 	/**
@@ -28,40 +25,81 @@ $subheading = apply_filters( 'learn_press_checkout_login_subheading', __( 'I am 
 	 */
 	do_action( 'learn_press_checkout_before_user_login_form' );
 
+	?>
+
+    <h4><?php _e( 'Returning customer', 'learnpress' ) ?></h4>
+    <p><?php _e( 'I am a returning customer.', 'learnpress' ) ?></p>
+
+	<?php
 	/**
 	 * @since 3.x.x
 	 */
-	do_action( 'learn_press_checkout_before_user_login_form' );
+	do_action( 'learn-press/before-checkout-login-form-fields' );
+
 	?>
-
-	<?php if ( $heading ) { ?>
-        <h3 class="form-heading"><?php echo $heading; ?></h3>
-	<?php } ?>
-
-	<?php if ( $subheading ) { ?>
-        <p class="form-subheading"><?php echo $subheading; ?></p>
-	<?php } ?>
-
     <ul class="form-fields">
 
-		<?php do_action( 'learn_press_checkout_user_login_before_form_fields' ); ?>
+		<?php
+		/**
+		 * @deprecated
+		 */
+		do_action( 'learn_press_checkout_user_login_before_form_fields' );
 
-        <li>
-            <label><?php _e( 'Username' ); ?></label>
-            <input type="text" name="user_login"/>
+		/**
+		 * @since 3.x.x
+		 */
+		do_action( 'learn-press/begin-checkout-login-form-fields' );
+
+		?>
+
+        <li class="form-field">
+            <label for="user_login">
+                <span class="field-label"><?php _e( 'Username' ); ?></span>
+                <span class="required">*</span>
+            </label>
+            <input class="field-input" type="text" id="user_login" name="user_login"/>
         </li>
-        <li>
-            <label><?php _e( 'Password' ); ?></label>
-            <input type="password" name="user_password"/>
-        </li>
-        <li>
-            <button type="button" id="learn-press-checkout-login-button"><?php _e( 'Login', 'learnpress' ); ?></button>
+        <li class="form-field">
+            <label for="user_password">
+                <span class="field-label"><?php _e( 'Password' ); ?></span>
+                <span class="required">*</span>
+            </label>
+            <input class="field-input" type="password" id="user_password" name="user_password"/>
         </li>
 
-		<?php do_action( 'learn_press_checkout_user_login_after_form_fields' ); ?>
+		<?php
+		/**
+		 * @since 3.x.x
+		 */
+		do_action( 'learn-press/end-checkout-login-form-fields' );
+
+		/**
+		 * @deprecated
+		 */
+		do_action( 'learn_press_checkout_user_login_after_form_fields' );
+		?>
 
     </ul>
 
-	<?php do_action( 'learn_press_checkout_after_user_login_form' ); ?>
+	<?php
+	/**
+	 * @since 3.x.x
+	 */
+	do_action( 'learn-press/before-checkout-login-form-button' );
+	?>
+
+    <button type="button" id="learn-press-checkout-login-button"><?php _e( 'Login', 'learnpress' ); ?></button>
+
+	<?php
+	/**
+	 * @since 3.x.x
+	 */
+	do_action( 'learn-press/after-checkout-login-form-fields' );
+
+	/**
+	 * @deprecated
+	 */
+	do_action( 'learn_press_checkout_after_user_login_form' );
+	?>
 
 </form>

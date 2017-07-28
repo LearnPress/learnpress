@@ -19,7 +19,7 @@ class LP_Cart {
 	 *
 	 * @var LP_Cart object
 	 */
-	private static $instance = false;
+	private static $instances = array();
 
 	/**
 	 * Hold the content of the cart
@@ -473,10 +473,25 @@ class LP_Cart {
 	 * @return LP_Cart|mixed
 	 */
 	public static function instance() {
-		if ( ! self::$instance ) {
-			self::$instance = new self();
+		$class = __CLASS__;
+		if ( function_exists( 'get_called_class' ) ) {
+			$class = get_called_class();
 		}
 
-		return self::$instance;
+		$backtrace = debug_backtrace();
+
+		if ( isset( $backtrace[2]['function'] ) ) {
+			if ( 'call_user_func' === $backtrace[2]['function'] ) {
+				$class = $backtrace[2]['args'][0][0];
+			}
+		} elseif ( isset( $backtrace[2]['class'] ) ) {
+			$class = $backtrace[2]['class'];
+		}
+
+		if ( empty( self::$instances[ $class ] ) ) {
+			self::$instances[$class] = new $class();
+		}
+
+		return self::$instances[ $class ];
 	}
 }

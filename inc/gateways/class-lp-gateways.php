@@ -102,16 +102,34 @@ class LP_Gateways {
 	}
 
 	/**
-	 * @return mixed|void
+	 * Get payment gateways are available for use.
+	 *
+	 * @return mixed
 	 */
 	public function get_available_payment_gateways() {
 		$this->init();
 		$_available_gateways = array();
+		$is_selected         = false;
+
 		foreach ( $this->payment_gateways as $slug => $gateway ) {
-			// let custom addon can define how is enable/disable
-			if ( apply_filters( 'learn_press_payment_gateway_available_' . $slug, false, $gateway ) ) {
+
+			// Let custom addon can define how is enable/disable
+			if ( apply_filters( 'learn_press_payment_gateway_available_' . $slug, true, $gateway ) ) {
+
+				// If gateway has already selected before
+				if ( LP()->session->get( 'chosen_payment_method' ) == $gateway->id ) {
+					$gateway->is_selected = true;
+					$is_selected          = $gateway;
+				}
 				$_available_gateways[ $slug ] = $gateway;
 			};
+
+		}
+
+		// Set default payment if there is no payment is selected
+		if ( $_available_gateways && ! $is_selected ) {
+			$gateway              = reset( $_available_gateways );
+			$gateway->is_selected = true;
 		}
 
 		return apply_filters( 'learn_press_available_payment_gateways', $_available_gateways );

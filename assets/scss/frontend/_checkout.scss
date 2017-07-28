@@ -1,0 +1,21 @@
+.learn-press-checkout {
+    &.guest-checkout {
+        display: none;
+    }
+}
+
+#learn-press-payment {
+    .payment-methods {
+        list-style: none;
+        .lp-payment-method{
+            margin-bottom: 20px;
+        }
+        .payment-method-form {
+            display: none;
+        }
+        .selected {
+            .payment-method-form {
+            }
+        }
+    }
+}

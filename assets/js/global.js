@@ -7,7 +7,8 @@ if (typeof window.LP == 'undefined') {
 
 (function ($) {
     $.fn.serializeJSON = function (path) {
-        var unIndexed = $(this).serializeArray(),
+        var isInput = $(this).is('input') || $(this).is('select') | $(this).is('textarea');
+        var unIndexed = isInput ? $(this).serializeArray() : $(this).find('input, select, textarea').serializeArray(),
             indexed = {},
             validate = /(\[([a-zA-Z0-9_-]+)?\]?)/g,
             arrayKeys = {},

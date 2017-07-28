@@ -1,7 +1,10 @@
 @import "mixin.scss";
+@import "frontend/checkout";
+@import "frontend/form";
 
 .retake-course,
 .enroll-course,
 .purchase-course{
     display: inline-block;
 }
+

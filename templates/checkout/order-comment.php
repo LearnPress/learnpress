@@ -5,21 +5,16 @@
  * @version 1.0
  */
 
-if ( !defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-
-$comment_heading = apply_filters( 'learn_press_order_comment_heading', __( 'Additional Information', 'learnpress' ) );
 
 ?>
 
 <div class="learn-press-checkout-comment">
 
-	<?php if ( $comment_heading ) { ?>
+    <h4><?php _e( 'Additional Information', 'learnpress' ); ?></h4>
 
-		<h3 class="learn-press-order-comment-heading"><?php echo $comment_heading; ?></h3>
-
-	<?php } ?>
-	<textarea name="order_comments"></textarea>
+    <textarea name="order_comments"></textarea>
 
 </div>

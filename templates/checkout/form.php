@@ -33,8 +33,9 @@ if ( ! $checkout->is_enable_guest_checkout() && ! is_user_logged_in() ) {
 	echo apply_filters( 'learn-press/checkout-require-login-message', __( 'Please login to checkout.', 'learnpress' ) );
 } else {
 	?>
-    <p><label><input type="checkbox" ><?php _e('Continue checkout as Guest?', 'learnpress');?></label></p>
-    <form method="post" id="learn-press-checkout" name="learn-press-checkout" class="learn-press-checkout checkout"
+
+    <form method="post" id="learn-press-checkout" name="learn-press-checkout"
+          class="learn-press-checkout checkout<?php echo ! is_user_logged_in() ? " guest-checkout" : ""; ?>"
           action="<?php echo esc_url( learn_press_get_checkout_url() ); ?>" enctype="multipart/form-data">
 
 		<?php
@@ -57,7 +58,13 @@ if ( ! $checkout->is_enable_guest_checkout() && ! is_user_logged_in() ) {
 			 */
 			do_action( 'learn_press_checkout_order_review' );
 
-			// @since 3.x.x
+			/**
+			 * @since 3.x.x
+             *
+             * @see learn_press_order_review()
+             * @see learn_press_order_comment()
+             * @see learn_press_order_payment()
+             */
 			do_action( 'learn-press/checkout-order-review' );
 			?>
 
@@ -75,6 +82,12 @@ if ( ! $checkout->is_enable_guest_checkout() && ! is_user_logged_in() ) {
 
     </form>
 
+	<?php if ( ! is_user_logged_in() ) { ?>
+        <p>
+            <button type="button" class="lp-button lp-button-guest-checkout" id="learn-press-button-guest-checkout"><?php _e( 'Continue checkout as Guest?', 'learnpress' ); ?></label></button>
+        </p>
+	<?php } ?>
+
 	<?php
 }
 // @since 3.x.x
@@ -84,4 +97,3 @@ do_action( 'learn-press/after-checkout-form' );
  * @deprecated
  */
 do_action( 'learn_press_after_checkout_form', $checkout );
-?>

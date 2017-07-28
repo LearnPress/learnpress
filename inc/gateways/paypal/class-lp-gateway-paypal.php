@@ -85,6 +85,7 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 
 		$this->method_title       = 'Paypal';
 		$this->method_description = 'Make payment via Paypal';
+		$this->icon = 'http://localhost/learnpress/dev/wp-content/plugins/woocommerce/includes/gateways/paypal/assets/images/paypal.png';
 
 		$this->title       = 'Paypal';
 		$this->description = __( 'Pay with Paypal', 'learnpress' );
@@ -513,8 +514,8 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 					'id'         => '[paypal_email]',
 					'type'       => 'text',
 					'visibility' => array(
-						'state'          => 'show',
-						'conditional'    => array(
+						'state'       => 'show',
+						'conditional' => array(
 							array(
 								'field'   => '[enable]',
 								'compare' => '=',
@@ -529,8 +530,8 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 					'default'    => 'no',
 					'type'       => 'yes-no',
 					'visibility' => array(
-						'state'          => 'show',
-						'conditional'    => array(
+						'state'       => 'show',
+						'conditional' => array(
 							array(
 								'field'   => '[enable]',
 								'compare' => '=',
@@ -544,8 +545,8 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 					'id'         => $this->id . '[paypal_sandbox_email]',
 					'type'       => 'text',
 					'visibility' => array(
-						'state'          => 'show',
-						'conditional'    => array(
+						'state'       => 'show',
+						'conditional' => array(
 							array(
 								'field'   => '[enable]',
 								'compare' => '=',

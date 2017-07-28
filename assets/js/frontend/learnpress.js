@@ -1,67 +1,82 @@
-/**
- * @author ThimPress
- * @package LearnPress/Javascript
- * @version 1.0
- */
-;if (typeof window.LP == 'undefined') {
-	window.LP = {};
-}
 ;(function ($) {
-	"use strict";
-	LP = $.extend({
-		setUrlx   : function (url, title) {
+    if (window.LP === undefined) {
+        window.LP = {};
+    }
 
-			if (url) {
-				history.pushState({}, title, url);
-			}
-		},
-		reload    : function (url) {
-			if (!url) {
-				url = window.location.href;
-			}
-			window.location.href = url;
-		},
-		parseJSON : function (data) {
-			var m = data.match(/<-- LP_AJAX_START -->(.*)<-- LP_AJAX_END -->/);
-			try {
-				if (m) {
-					data = $.parseJSON(m[1]);
-				} else {
-					data = $.parseJSON(data);
-				}
-			} catch (e) {
-				data = {};
-			}
-			return data;
-		},
-		toElement : function (element, args) {
-			args = $.extend({
-				delay   : 300,
-				duration: 'slow',
-				offset  : 50,
-				callback: null
-			}, args || {});
-			$('body, html')
-				.fadeIn(10)
-				.delay(args.delay)
-				.animate({
-					scrollTop: $(element).offset().top - args.offset
-				}, args.duration, args.callback);
-		},
-		showMessages: function (messages, target, code) {
-			$(target).find('.learn-press-error, .learn-press-notice, .learn-press-message').fadeOut();
-			if ($.isArray(messages)) {
-				for (var i = messages.length - 1; i >= 0; i--) {
-					var $message = $(messages[i]).hide();
-					$(target).prepend($message.fadeIn());
-				}
-			} else {
-				var $message = $(messages).hide();
-				$(target).prepend($message.fadeIn());
-			}
-			LP.Hook.doAction('learnpress_show_message', messages, target, code);
-		}
-	}, LP);
+    /**
+     * Checkout
+     *
+     * @type {LP.Checkout}
+     */
+    var Checkout = LP.Checkout = function () {
+        var
+            /**
+             * Checkout form
+             *
+             * @type {form}
+             */
+            $formCheckout = $('#learn-press-checkout'),
 
+            /**
+             * Register form
+             *
+             * @type {form}
+             */
+            $formLogin = $('#learn-press-checkout-register'),
+
+            /**
+             * Login form
+             *
+             * @type {form}
+             */
+            $formRegister = $('#learn-press-checkout-login'),
+
+            /**
+             * Payment method wrap
+             *
+             * @type {*}
+             */
+            $payments = $('.payment-methods'),
+
+            $buttonCheckout = $('#learn-press-checkout-place-order');
+
+        /**
+         * Button to switch between mode login/register or place order
+         * in case user is not logged in and guest checkout is enabled.
+         */
+        $('.lp-button-guest-checkout').on('click', function () {
+            var showOrHide = $formCheckout.toggle().is(':visible');
+            $formLogin.toggle(!showOrHide);
+            $formRegister.toggle(!showOrHide);
+            $('#learn-press-button-guest-checkout').toggle(!showOrHide);
+        });
+
+        /**
+         * Place order action
+         */
+        $buttonCheckout.on('click', function(e){
+            e.preventDefault();
+            var data = $payments.children('.selected').find('.payment-method-form').serializeJSON();
+            console.log(data);
+        });
+
+        /**
+         * Show payment form on select
+         */
+        $payments.on('change select', 'input[name="payment_method"]', function () {
+            var id = $(this).val(),
+                $selected = $payments.children().filter('.selected').removeClass('selected');
+
+            $selected.find('.payment-method-form').slideUp();
+            $selected.end().filter('#learn-press-payment-method-' + id).addClass('selected').find('.payment-method-form').hide().slideDown();
+        });
+
+        $payments.children('.selected').find('input[name="payment_method"]').trigger('select');
+    }
+
+    $(document).ready(function () {
+        new Checkout();
+
+    })
 
 })(jQuery);

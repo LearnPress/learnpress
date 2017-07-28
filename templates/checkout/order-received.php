@@ -1,6 +1,6 @@
 <?php
 /**
- * Thankyou page
+ * Template for displaying order details
  *
  * @author        ThimPress
  * @package       LearnPress/Templates

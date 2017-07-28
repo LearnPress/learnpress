@@ -70,27 +70,35 @@ class LP_Autoloader {
 		$file  = $this->get_file_name_from_class( $class );
 		$path  = '';
 
-		// payment gateways
-		if ( strpos( $class, 'lp_gateway_' ) === 0 ) {
-			$path = $this->include_path . 'gateways/' . substr( str_replace( '_', '-', $class ), 11 ) . '/';
-		} elseif ( preg_match( '!lp_meta_box_|rwmb_!', $class, $matches ) ) { // meta box fields
-
-			$file = 'class-' . substr( str_replace( '_', '-', $class ), 5 ) . '.php';
-			$path = $this->include_path . 'admin/meta-boxes/';
-
-		} elseif ( strpos( $class, 'lp_statistic_' ) === 0 ) {
-			$path = $this->include_path . 'admin/dashboard-statistics/';
+		if ( preg_match( '~^lp_abstract_shortcode(.*)$~', $class, $m ) ) {
+			$file = 'abstract-shortcode' . str_replace( '_', '-', $m[1] ) . '.php';
+			$path = $this->include_path . 'abstracts/';
+		} elseif ( preg_match( '~^lp_shortcode_(.*)$~', $class, $m ) ) {
+			$path = $this->include_path . 'shortcodes/';
 		} else {
-			$file = 'class-' . str_replace( '_', '-', $class ) . '.php';
-			$path = dirname( __FILE__ ) . '/';
-			if ( strpos( $class, 'lp_user' ) !== false || $class == 'lp_abstract_user' ) {
-				$path .= 'user/';
-			}
 
-			if ( ! file_exists( $path . $file ) ) {
-				$segs = explode( '_', $class );
-				if ( ! empty( $segs[1] ) ) {
-					$path .= $segs[1] . '/';
+			// payment gateways
+			if ( strpos( $class, 'lp_gateway_' ) === 0 ) {
+				$path = $this->include_path . 'gateways/' . substr( str_replace( '_', '-', $class ), 11 ) . '/';
+			} elseif ( preg_match( '!lp_meta_box_|rwmb_!', $class, $matches ) ) { // meta box fields
+
+				$file = 'class-' . substr( str_replace( '_', '-', $class ), 5 ) . '.php';
+				$path = $this->include_path . 'admin/meta-boxes/';
+
+			} elseif ( strpos( $class, 'lp_statistic_' ) === 0 ) {
+				$path = $this->include_path . 'admin/dashboard-statistics/';
+			} else {
+				$file = 'class-' . str_replace( '_', '-', $class ) . '.php';
+				$path = dirname( __FILE__ ) . '/';
+				if ( strpos( $class, 'lp_user' ) !== false || $class == 'lp_abstract_user' ) {
+					$path .= 'user/';
+				}
+
+				if ( ! file_exists( $path . $file ) ) {
+					$segs = explode( '_', $class );
+					if ( ! empty( $segs[1] ) ) {
+						$path .= $segs[1] . '/';
+					}
 				}
 			}
 		}

@@ -930,6 +930,22 @@ class LP_Assets extends LP_Abstract_Assets {
 		do_action( 'learn_press_included_style_file' );
 	}
 
+	public function _get_scripts() {
+		return apply_filters(
+			'learn-press/frontend-default-scripts',
+			array(
+				'global'     => array(
+					'url'  => self::url( 'js/global.js' ),
+					'deps' => array( 'jquery', 'underscore', 'utils' )
+				),
+				'learnpress' => array(
+					'url'  => self::url( 'js/frontend/learnpress.js' ),
+					'deps' => array( 'global' )
+				)
+			)
+		);
+	}
+
 	/**
 	 * Load assets
 	 */

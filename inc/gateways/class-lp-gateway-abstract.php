@@ -171,7 +171,13 @@ class LP_Gateway_Abstract extends LP_Abstract_Settings {
 	 */
 	public function get_icon() {
 
-		$icon = $this->icon ? '<img src="' . $this->icon . '" alt="' . esc_attr( $this->get_title() ) . '" />' : '';
+		if ( $size = apply_filters( 'learn-press/default-payment-gateway-icon-sizes', array( 51, 32 ) ) ) {
+			$icon_size = sprintf( 'width: %dpx; height: %dpx', $size[0], $size[1] );
+		} else {
+			$icon_size = '';
+		}
+
+		$icon = $this->icon ? '<img src="' . $this->icon . '" alt="' . esc_attr( $this->get_title() ) . '" style="' . $icon_size . '" />' : '';
 
 		return apply_filters( 'learn_press_gateway_icon', $icon, $this->id );
 	}

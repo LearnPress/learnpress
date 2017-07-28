@@ -394,6 +394,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/abstracts/abstract-object-data.php';
 			require_once 'inc/abstracts/abstract-post-data.php';
 			require_once 'inc/abstracts/abstract-assets.php';
+			require_once 'inc/class-lp-query-course.php';
 
 			require_once 'inc/curds/class-lp-course-curd.php';
 			require_once 'inc/curds/class-lp-section-curd.php';
@@ -541,7 +542,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		 * Include a file from plugin path
 		 *
 		 * @param           $file
-		 * @param string $folder
+		 * @param string    $folder
 		 * @param bool|true $include_once
 		 *
 		 * @return bool
@@ -687,6 +688,13 @@ function load_learn_press() {
  */
 $GLOBALS['LearnPress'] = LP();
 
+class LP_Extended_Cart extends LP_Cart {
+
+}
+
+add_filter( 'learn_press_cart_class', function () {
+	return 'LP_Extended_Cart';
+} );
 return;
 add_action( 'init', function () {
 	LP_Debug::timeStart( '123' );

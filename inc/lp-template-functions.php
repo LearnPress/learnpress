@@ -51,6 +51,8 @@ if ( ! function_exists( 'learn_press_curriculum_section_title' ) ) {
 	 * Section title
 	 *
 	 * @param LP_Course_Section $section
+	 *
+	 * @hooked learn-press/section-summary
 	 */
 	function learn_press_curriculum_section_title( $section ) {
 		learn_press_get_template( 'single-course/section/title.php', array( 'section' => $section ) );
@@ -64,6 +66,8 @@ if ( ! function_exists( 'learn_press_curriculum_section_content' ) ) {
 	 * Section content
 	 *
 	 * @param LP_Course_Section $section
+	 *
+	 * @hooked learn-press/section-summary
 	 */
 	function learn_press_curriculum_section_content( $section ) {
 		learn_press_get_template( 'single-course/section/content.php', array( 'section' => $section ) );
@@ -75,6 +79,8 @@ if ( ! function_exists( 'learn_press_checkout_form_login' ) ) {
 
 	/**
 	 * Output login form before checkout form if user is not logged in
+	 *
+	 * @hooked learn-press/before-checkout-form
 	 */
 	function learn_press_checkout_form_login() {
 		learn_press_get_template( 'checkout/form-login.php' );
@@ -85,12 +91,49 @@ if ( ! function_exists( 'learn_press_checkout_form_login' ) ) {
 if ( ! function_exists( 'learn_press_checkout_form_register' ) ) {
 
 	/**
-	 * Output register form before checkout form if user is not logged in
+	 * Output register form before checkout form if user is not logged in.
+	 *
+	 * @hooked learn-press/before-checkout-form
 	 */
 	function learn_press_checkout_form_register() {
 		learn_press_get_template( 'checkout/form-register.php' );
 	}
 
+}
+
+if ( ! function_exists( 'learn_press_order_review' ) ) {
+	/**
+	 * Output order details
+	 *
+	 * @hooked learn-press/checkout-order-review
+	 */
+	function learn_press_order_review() {
+		learn_press_get_template( 'checkout/review-order.php' );
+	}
+}
+
+if ( ! function_exists( 'learn_press_order_payment' ) ) {
+	/**
+	 * Output payment methods
+	 *
+	 * @hooked learn-press/checkout-order-review
+	 */
+	function learn_press_order_payment() {
+		$available_gateways = LP_Gateways::instance()->get_available_payment_gateways();
+
+		learn_press_get_template( 'checkout/payment.php', array( 'available_gateways' => $available_gateways ) );
+	}
+}
+
+if ( ! function_exists( 'learn_press_order_comment' ) ) {
+	/**
+	 * Output order comment input
+	 *
+	 * @hooked learn-press/checkout-order-review
+	 */
+	function learn_press_order_comment() {
+		learn_press_get_template( 'checkout/order-comment.php' );
+	}
 }
 
 /**********************************************/
@@ -491,28 +534,6 @@ if ( ! function_exists( 'learn_press_section_item_meta' ) ) {
 	}
 }
 
-if ( ! function_exists( 'learn_press_order_review' ) ) {
-	/**
-	 * Output order details
-	 *
-	 * @param LP_Checkout object
-	 */
-	function learn_press_order_review( $checkout ) {
-		learn_press_get_template( 'checkout/review-order.php', array( 'checkout' => $checkout ) );
-	}
-}
-
-if ( ! function_exists( 'learn_press_order_payment' ) ) {
-	/**
-	 * Output payment methods
-	 *
-	 * @param LP_Checkout object
-	 */
-	function learn_press_order_payment( $checkout ) {
-		$available_gateways = LP_Gateways::instance()->get_available_payment_gateways();
-		learn_press_get_template( 'checkout/payment.php', array( 'available_gateways' => $available_gateways ) );
-	}
-}
 
 if ( ! function_exists( 'learn_press_order_details_table' ) ) {
 
@@ -533,16 +554,6 @@ if ( ! function_exists( 'learn_press_order_details_table' ) ) {
 	}
 }
 
-if ( ! function_exists( 'learn_press_order_comment' ) ) {
-	/**
-	 * Output order comment input
-	 *
-	 * @param LP_Checkout object
-	 */
-	function learn_press_order_comment( $checkout ) {
-		learn_press_get_template( 'checkout/order-comment.php' );
-	}
-}
 
 if ( ! function_exists( 'learn_press_checkout_user_form' ) ) {
 	/**
