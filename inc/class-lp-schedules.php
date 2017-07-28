@@ -63,7 +63,7 @@ class LP_Schedules {
 				$sql,
 				$wpdb->esc_like( '_transient_' ) . '%',
 				$wpdb->esc_like( '_transient_timeout_' ) . '%',
-				$wpdb->esc_like( '_transient_learn_press_user_guest_' . '%' ),
+				$wpdb->esc_like( '_transient_learn_press_user_guest_' ) . '%',
 				$time
 			)
 		);
@@ -80,10 +80,11 @@ class LP_Schedules {
 					$sql,
 					$wpdb->esc_like( '_site_transient_' ) . '%',
 					$wpdb->esc_like( '_site_transient_timeout_' ) . '%',
-					$wpdb->esc_like( '_site_transient_learn_press_user_guest_' . '%' ),
+					$wpdb->esc_like( '_site_transient_learn_press_user_guest_' ) . '%',
 					$time
 				)
 			);
+
 		}
 		learn_press_reset_auto_increment( $wpdb->options );
 	}
