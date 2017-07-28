@@ -52,7 +52,7 @@
 
     Vue.component('lp-section-item', {
         template: '#tmpl-lp-section-item',
-        props: ['item']
+        props: ['item', 'order']
     });
 
     $(document).ready(function () {

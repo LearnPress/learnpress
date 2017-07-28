@@ -43,6 +43,7 @@
 	.section {
 		border: 1px solid #e5e5e5;
 		margin-bottom: 10px;
+		opacity: 1;
 
 		&.sortable-ghost {
 			opacity: 0.5;
@@ -69,6 +70,7 @@
 				height: 0;
 				padding-top: 0;
 				padding-bottom: 0;
+				opacity: 0;
 			}
 		}
 
@@ -147,7 +149,7 @@
 		.section-content {
 			padding: 20px;
 			height: 100%;
-			transition: height 0.3s;
+			transition: all 0.3s;
 		}
 
 		.details {

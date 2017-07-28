@@ -28,9 +28,9 @@ learn_press_admin_view( 'course/section-item' );
             </div>
 
             <table class="section-list-items">
-                <tbody>
-                <lp-section-item v-for="item in section.items" :item="item" :key="item.id"></lp-section-item>
-                </tbody>
+                <draggable :list="section.items" :element="'tbody'">
+                    <lp-section-item v-for="(item, index) in section.items" :item="item" :key="item.id" :order="index+1"></lp-section-item>
+                </draggable>
             </table>
         </div>
     </div>
