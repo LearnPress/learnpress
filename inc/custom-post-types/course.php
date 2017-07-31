@@ -1,9 +1,9 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) {
+if ( !defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
-if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
+if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 	// class LP_Course_Post_Type
 	final class LP_Course_Post_Type extends LP_Abstract_Post_Type {
 		/**
@@ -69,15 +69,13 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					)
 				)
 			);
-
 			return $buttons;
 		}
 
 		public function add_course_tab_arg( $m ) {
-			if ( array_key_exists( '_lp_curriculum', $_POST ) && ! empty( $_POST['course-tab'] ) ) {
+			if ( array_key_exists( '_lp_curriculum', $_POST ) && !empty( $_POST['course-tab'] ) ) {
 				$m = add_query_arg( 'tab', $_POST['course-tab'], $m );
 			}
-
 			return $m;
 		}
 
@@ -191,7 +189,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			$ids = array_merge( (array) $course_id, $item_ids, $question_ids );
 
 			// update post author
-			if ( ! empty( $_POST['_lp_course_author'] ) ) {
+			if ( !empty( $_POST['_lp_course_author'] ) ) {
 				foreach ( $ids as $id ) {
 					$wpdb->update(
 						$wpdb->posts,
@@ -262,7 +260,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				return;
 			}
 			if ( self::$_enable_review ) {
-				if ( ! empty( $_POST ) && learn_press_get_current_user()->is_instructor() && 'yes' == get_post_meta( $post_id, '_lp_submit_for_reviewer', true ) ) {
+				if ( !empty( $_POST ) && learn_press_get_current_user()->is_instructor() && 'yes' == get_post_meta( $post_id, '_lp_submit_for_reviewer', true ) ) {
 					LP_Admin_Notice::add_redirect( __( 'Sorry! You can not update a course while it is viewing!', 'learnpress' ), 'error' );
 					wp_redirect( admin_url( 'post.php?post=' . $post_id . '&action=edit' ) );
 					exit();
@@ -297,9 +295,9 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		public function toggle_editor_button( $post ) {
 			if ( $post->post_type == LP_COURSE_CPT ) {
 				?>
-                <button class="button button-primary"
-                        data-hidden="<?php echo get_post_meta( $post->ID, '_lp_editor_hidden', true ); ?>" type="button"
-                        id="learn-press-button-toggle-editor"><?php _e( 'Toggle Course Content', 'learnpress' ); ?></button>
+				<button class="button button-primary"
+						data-hidden="<?php echo get_post_meta( $post->ID, '_lp_editor_hidden', true ); ?>" type="button"
+						id="learn-press-button-toggle-editor"><?php _e( 'Toggle Course Content', 'learnpress' ); ?></button>
 				<?php
 			}
 		}
@@ -358,7 +356,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					'user_warning_can_not_submit_course'     => __( 'Your course is pending for reviewing', 'learnpress' )
 				), null, 'learn-press-mb-course'
 			);
-			if ( get_post_type() == LP_COURSE_CPT && self::$_enable_review && ! $this->_is_archive() ) {
+			if ( get_post_type() == LP_COURSE_CPT && self::$_enable_review && !$this->_is_archive() ) {
 				LP_Assets::add_param( 'required_review', LP()->settings->get( 'required_review' ) == 'yes', 'learn-press-mb-course', 'LP_Settings' );
 				LP_Assets::add_param( 'enable_edit_published', LP()->settings->get( 'enable_edit_published' ) == 'yes', 'learn-press-mb-course', 'LP_Settings' );
 				LP_Assets::add_param( 'course_status', get_post_status(), 'learn-press-mb-course', 'LP_Settings' );
@@ -769,7 +767,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 */
 		public static function author_meta_box() {
 
-			$course_id = ! empty( $_GET['post'] ) ? $_GET['post'] : 0;
+			$course_id = !empty( $_GET['post'] ) ? $_GET['post'] : 0;
 			$post      = get_post( $course_id );
 			$author    = $post ? $post->post_author : get_current_user_id();
 
@@ -784,7 +782,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				$users_by_role = get_users( array( 'role' => $_role ) );
 				if ( $users_by_role ) {
 					foreach ( $users_by_role as $user ) {
-						$include[ $user->ID ] = $user->user_login;
+						$include[$user->ID] = $user->user_login;
 					}
 				}
 			}
@@ -842,7 +840,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
                                     FROM {$wpdb->learnpress_review_logs}
                                     WHERE course_id = %d
                                     ORDER BY `date` DESC"
-				                                 . ( $view_all ? "" : " LIMIT 0, 10" ) . "
+					. ( $view_all ? "" : " LIMIT 0, 10" ) . "
                             ", $post->ID );
 				$reviews       = $wpdb->get_results( $query );
 				$total_reviews = $wpdb->get_var( "SELECT FOUND_ROWS()" );
@@ -917,7 +915,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			$_post = $_POST;
 			if ( $_POST ) {
 				foreach ( $_POST as $k => $v ) {
-					unset( $_POST[ $k ] );
+					unset( $_POST[$k] );
 				}
 			}
 
@@ -927,7 +925,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		private function _resetPostData( $_post ) {
 			if ( $_post ) {
 				foreach ( $_post as $k => $v ) {
-					$_POST[ $k ] = $v;
+					$_POST[$k] = $v;
 				}
 			}
 
@@ -975,7 +973,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 
 			$this->_reset_sections();
 
-			if ( ! empty( $_REQUEST['_lp_curriculum'] ) && 'dopreview' !== $preview ) {
+			if ( !empty( $_REQUEST['_lp_curriculum'] ) && 'dopreview' !== $preview ) {
 				$section_order = 0;
 				$query_update  = array();
 				$update_ids    = array();
@@ -987,11 +985,11 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					$item_order        = 0;
 					$insert            = false;
 					$sql_section_items = array();
-					if ( ! empty( $items ) ) {
+					if ( !empty( $items ) ) {
 						foreach ( $items as $section_item_id => $_item ) {
 
 							// abort the item has not got a name
-							if ( ! $_item['name'] ) {
+							if ( !$_item['name'] ) {
 								continue;
 							}
 							$insert = true;
@@ -999,7 +997,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 							$item_id = $_item['item_id'];
 
 							// if item has not got the ID then insert a new one
-							if ( ! $item_id ) {
+							if ( !$item_id ) {
 								$item    = $this->_insert_item(
 									array(
 										'post_title' => $_item['name'],
@@ -1027,20 +1025,20 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						}
 					}
 
-					if ( $insert || ( ! $insert && ( ! empty( $_section['name'] ) || empty( $items ) ) ) ) {
+					if ( $insert || ( !$insert && ( !empty( $_section['name'] ) || empty( $items ) ) ) ) {
 						$section = array(
-							'section_name'        => ! empty( $_section['name'] ) ? $_section['name'] : '',
+							'section_name'        => !empty( $_section['name'] ) ? $_section['name'] : '',
 							'section_course_id'   => $post->ID,
 							'section_order'       => ++ $section_order,
 							'section_description' => $_section['description'],
 							'items'               => array()
 						);
 
-						if ( ! $section_id ) {
+						if ( !$section_id ) {
 							$section    = $this->_insert_section( $section );
 							$section_id = $section['section_id'];
 						}
-						$sections[ $section_id ] = $section;
+						$sections[$section_id] = $section;
 						foreach ( $sql_section_items as $section_item ) {
 							$query_insert[] = str_replace( - 9999999, $section_id, $section_item );
 						}
@@ -1087,7 +1085,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		}
 
 		private function _send_mail() {
-			if ( ! LP()->user->is_instructor() ) {
+			if ( !LP()->user->is_instructor() ) {
 				return;
 			}
 			$mail = LP()->mail;
@@ -1128,28 +1126,28 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				}
 			}
 			$message = learn_press_get_request( 'review-message' );
-			if ( ! $action && ! $message ) {
+			if ( !$action && !$message ) {
 				return;
 			}
 
 			switch ( $action ) {
 				case 'approved':
-					if ( ! $message ) {
+					if ( !$message ) {
 						$message = __( 'Course has approved by Reviewer', 'learnpress' );
 					}
 					break;
 				case 'rejected':
-					if ( ! $message ) {
+					if ( !$message ) {
 						$message = __( 'Course has rejected by Reviewer', 'learnpress' );
 					}
 					break;
 				case 'for_reviewer':
-					if ( ! $message ) {
+					if ( !$message ) {
 						$message = sprintf( __( 'Course has submitted by %s', 'learnpress' ), learn_press_get_profile_display_name( $user ) );
 					}
 					break;
 				default:
-					if ( ! $message ) {
+					if ( !$message ) {
 						$message = __( 'Course has updated by Reviewer', 'learnpress' );
 					}
 			}
@@ -1184,14 +1182,14 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				return;
 			}
 
-			remove_action( 'save_post', array( $this, 'before_save_curriculum' ), 20 );
+			remove_action( 'save_post', array( $this, 'before_save_curriculum' ), 1 );
 			//remove_action( 'rwmb_course_curriculum_before_save_post', array( $this, 'before_save_curriculum' ) );
 
 			$user                  = LP()->user;
 			$required_review       = LP()->settings->get( 'required_review' ) == 'yes';
 			$enable_edit_published = LP()->settings->get( 'enable_edit_published' ) == 'yes';
 
-			if ( $user->is_instructor() && $required_review && ! $enable_edit_published ) {
+			if ( $user->is_instructor() && $required_review && !$enable_edit_published ) {
 				wp_update_post(
 					array(
 						'ID'          => $post->ID,
@@ -1242,9 +1240,9 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			$sale_price_end   = learn_press_get_request( '_lp_sale_end' );
 			$keys             = array();
 			// Delete all meta no need anymore
-			if ( ! $payment || $price <= 0 ) {
+			if ( !$payment || $price <= 0 ) {
 				$keys = array( '_lp_payment', '_lp_price', '_lp_sale_price', '_lp_sale_start', '_lp_sale_end' );
-			} else if ( ( $sale_price == '' ) || ( $sale_price < 0 ) || ( absint( $sale_price ) >= $price ) || ! $this->_validate_sale_price_date() ) {
+			} else if ( ( $sale_price == '' ) || ( $sale_price < 0 ) || ( absint( $sale_price ) >= $price ) || !$this->_validate_sale_price_date() ) {
 				$keys = array( '_lp_sale_price', '_lp_sale_start', '_lp_sale_end' );
 			}
 			if ( $keys ) {
@@ -1258,11 +1256,10 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				$keys[] = $post->ID;
 				$wpdb->query( $wpdb->prepare( $sql, $keys ) );
 				foreach ( $keys as $key ) {
-					unset( $_REQUEST[ $key ] );
-					unset( $_POST[ $key ] );
+					unset( $_REQUEST[$key] );
+					unset( $_POST[$key] );
 				}
 			}
-
 			return true;
 		}
 
@@ -1278,7 +1275,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			$end              = strtotime( $sale_price_end );
 			$start            = strtotime( $sale_price_start );
 
-			return ( ( $now >= $start || ! $sale_price_start ) && ( $now <= $end || ! $sale_price_end ) || ( ! $sale_price_start && ! $sale_price_end ) );
+			return ( ( $now <= $end || !$sale_price_end ) || ( !$sale_price_start && !$sale_price_end ) );
 		}
 
 		/**
@@ -1345,7 +1342,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						$count_lessons  = sizeof( $items['lessons'] );
 						$count_quizzes  = sizeof( $items['quizzes'] );
 						$output         = sprintf( _nx( '%d section', '%d sections', $count_sections, 'learnpress' ), $count_sections );
-						$output         .= ' (';
+						$output .= ' (';
 						if ( $count_lessons ) {
 							$output .= sprintf( _nx( '%d lesson', '%d lessons', $count_lessons, 'learnpress' ), $count_lessons );
 						} else {
@@ -1399,7 +1396,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			//$enable_edit_published = LP()->settings->get( 'enable_edit_published' ) == 'yes';
 			//$is_publish            = get_post_status( $post->ID ) == 'publish';
 
-			if ( ! $required_review ) {
+			if ( !$required_review ) {
 				return;
 			}
 			/*if( $enable_edit_published ){
@@ -1413,7 +1410,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		public function posts_fields(
 			$fields
 		) {
-			if ( ! $this->_is_archive() ) {
+			if ( !$this->_is_archive() ) {
 				return $fields;
 			}
 
@@ -1433,7 +1430,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		public function posts_join_paged(
 			$join
 		) {
-			if ( ! $this->_is_archive() ) {
+			if ( !$this->_is_archive() ) {
 				return $join;
 			}
 			global $wpdb;
@@ -1450,7 +1447,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		public function posts_where_paged(
 			$where
 		) {
-			if ( ! $this->_is_archive() ) {
+			if ( !$this->_is_archive() ) {
 				return $where;
 			}
 			global $wpdb;
@@ -1473,7 +1470,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		public function posts_orderby(
 			$order_by_statement
 		) {
-			if ( ! $this->_is_archive() ) {
+			if ( !$this->_is_archive() ) {
 				return $order_by_statement;
 			}
 			switch ( $this->_get_orderby() ) {
@@ -1500,7 +1497,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 
 		private function _is_archive() {
 			global $pagenow, $post_type;
-			if ( ! is_admin() || ( $pagenow != 'edit.php' ) || ( LP_COURSE_CPT != $post_type ) ) {
+			if ( !is_admin() || ( $pagenow != 'edit.php' ) || ( LP_COURSE_CPT != $post_type ) ) {
 				return false;
 			}
 
@@ -1567,7 +1564,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 
 
 		public static function instance() {
-			if ( ! self::$_instance ) {
+			if ( !self::$_instance ) {
 				self::$_instance = new self( LP_COURSE_CPT );
 			}
 
