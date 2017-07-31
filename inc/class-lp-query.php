@@ -149,7 +149,7 @@ class LP_Query {
 		add_rewrite_tag( '%quiz%', '([^&]+)' );
 		add_rewrite_tag( '%question%', '([^&]+)' );
 		add_rewrite_tag( '%user%', '([^/]*)' );
-		add_rewrite_tag( '%course-query-string%', '(.*)' );
+		add_rewrite_tag( '%lp-paged%', '(.*)' );
 		do_action( 'learn_press_add_rewrite_tags' );
 	}
 
@@ -214,7 +214,7 @@ class LP_Query {
 		if ( $profile_id = learn_press_get_page_id( 'profile' ) ) {
 			add_rewrite_rule(
 				'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?([^/]*)/?([0-9]*)/?$',
-				'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&xxxx=$matches[3]',
+				'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&lp-paged=$matches[3]',
 				'top'
 			);
 		}
