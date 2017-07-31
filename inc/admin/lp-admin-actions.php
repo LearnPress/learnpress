@@ -101,6 +101,7 @@ function learn_press_update_permalink_structure() {
 	$rewrite_prefix      = '';
 	$permalink_structure = !empty( $_REQUEST['permalink_structure'] ) ? $_REQUEST['permalink_structure'] : '';
 	if ( $permalink_structure ) {
+		$rewrite_prefix = array();
 		$segs = explode( '/', $permalink_structure );
 		if ( sizeof( $segs ) ) {
 			foreach ( $segs as $seg ) {

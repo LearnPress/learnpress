@@ -688,8 +688,3 @@ function load_learn_press() {
  */
 $GLOBALS['LearnPress'] = LP();
 
-
-add_action( 'wp_redirecxt', function ($url) {
-	learn_press_debug(debug_backtrace());
-	die();
-} );

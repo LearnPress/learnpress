@@ -2489,7 +2489,7 @@ function learn_press_debug() {
 	}
 	echo '</pre>';
 	if ( $arg === true ) {
-		die();
+		die( __FUNCTION__ );
 	}
 }
 

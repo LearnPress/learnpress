@@ -38,34 +38,34 @@ class LP_Query {
 		}
 		$user    = learn_press_get_current_user();
 		$request = $this->get_request();
-		if ( !$request || is_admin() ) {
+		if ( ! $request || is_admin() ) {
 			return $q;
 		}
 		remove_filter( 'do_parse_request', array( $this, 'get_current_quiz_question' ), 1010, 3 );
 		$course_type = 'lp_course';
 		$post_types  = get_post_types( '', 'objects' );
 
-		if ( empty( $post_types[$course_type] ) ) {
+		if ( empty( $post_types[ $course_type ] ) ) {
 			return;
 		}
 		/********************/
-		if ( empty( $q->query_vars[LP_COURSE_CPT] ) ) {
+		if ( empty( $q->query_vars[ LP_COURSE_CPT ] ) ) {
 			return;
 		}
-		$this->query_vars['course'] = $q->query_vars[LP_COURSE_CPT];
+		$this->query_vars['course'] = $q->query_vars[ LP_COURSE_CPT ];
 		$course_id                  = learn_press_setup_course_data( $this->query_vars['course'] );
 		$quiz_name                  = '';
 		$question_name              = '';
 		$lesson_name                = '';
-		if ( !empty( $q->query_vars['quiz'] ) ) {
-			$quiz_name = $this->query_vars['quiz'] = $q->query_vars['quiz'];
-			$this->query_vars['item_type']         = LP_QUIZ_CPT;
-			if ( !empty( $q->query_vars['question'] ) ) {
+		if ( ! empty( $q->query_vars['quiz'] ) ) {
+			$quiz_name                     = $this->query_vars['quiz'] = $q->query_vars['quiz'];
+			$this->query_vars['item_type'] = LP_QUIZ_CPT;
+			if ( ! empty( $q->query_vars['question'] ) ) {
 				$question_name = $this->query_vars['question'] = $q->query_vars['question'];
 			}
-		} elseif ( !empty( $q->query_vars['lesson'] ) ) {
-			$lesson_name = $this->query_vars['lesson'] = $q->query_vars['lesson'];
-			$this->query_vars['item_type']             = LP_LESSON_CPT;
+		} elseif ( ! empty( $q->query_vars['lesson'] ) ) {
+			$lesson_name                   = $this->query_vars['lesson'] = $q->query_vars['lesson'];
+			$this->query_vars['item_type'] = LP_LESSON_CPT;
 		}
 		if ( $quiz_name && $question_name ) {
 			if ( $quiz = learn_press_get_post_by_name( $quiz_name, LP_QUIZ_CPT ) ) {
@@ -128,14 +128,16 @@ class LP_Query {
 
 		// The requested permalink is in $pathinfo for path info requests and
 		//  $req_uri for other requests.
-		if ( !empty( $pathinfo ) && !preg_match( '|^.*' . $wp_rewrite->index . '$|', $pathinfo ) ) {
+		if ( ! empty( $pathinfo ) && ! preg_match( '|^.*' . $wp_rewrite->index . '$|', $pathinfo ) ) {
 			$request = $pathinfo;
 		} else {
 			// If the request uri is the index, blank it out so that we don't try to match it against a rule.
-			if ( $req_uri == $wp_rewrite->index )
+			if ( $req_uri == $wp_rewrite->index ) {
 				$req_uri = '';
+			}
 			$request = $req_uri;
 		}
+
 		return $request;
 	}
 
@@ -156,11 +158,12 @@ class LP_Query {
 	 */
 	function add_rewrite_rules() {
 
+		flush_rewrite_rules();
 		$rewrite_prefix = get_option( 'learn_press_permalink_structure' );
 		// lesson
 		$course_type  = 'lp_course';
 		$post_types   = get_post_types( '', 'objects' );
-		$slug         = preg_replace( '!^/!', '', $post_types[$course_type]->rewrite['slug'] );
+		$slug         = preg_replace( '!^/!', '', $post_types[ $course_type ]->rewrite['slug'] );
 		$has_category = false;
 		if ( preg_match( '!(%?course_category%?)!', $slug ) ) {
 			$slug         = preg_replace( '!(%?course_category%?)!', '(.+?)/([^/]+)', $slug );
@@ -176,10 +179,10 @@ class LP_Query {
 		 * This fixed the issue with custom slug of lesson/quiz in some languages
 		 * Eg: урока
 		 */
-		if ( !empty( $custom_slug_lesson ) ) {
+		if ( ! empty( $custom_slug_lesson ) ) {
 			$post_types['lp_lesson']->rewrite['slug'] = urldecode( $custom_slug_lesson );
 		}
-		if ( !empty( $custom_slug_quiz ) ) {
+		if ( ! empty( $custom_slug_quiz ) ) {
 			$post_types['lp_quiz']->rewrite['slug'] = urldecode( $custom_slug_quiz );
 		}
 		if ( $has_category ) {
@@ -210,8 +213,8 @@ class LP_Query {
 		// Profile
 		if ( $profile_id = learn_press_get_page_id( 'profile' ) ) {
 			add_rewrite_rule(
-				'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?([^/]*)/?([^/]*)/?([^/]*)/?([^/]*)/?',
-				'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&id=$matches[3]&paged=$matches[4]',
+				'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?([^/]*)/?([0-9]*)/?$',
+				'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&xxxx=$matches[3]',
 				'top'
 			);
 		}
@@ -226,7 +229,6 @@ class LP_Query {
 		}
 		do_action( 'learn_press_add_rewrite_rules' );
 	}
-
 
 
 	/**
@@ -244,6 +246,7 @@ class LP_Query {
 		if ( $course && $return == 'object' ) {
 			$course = learn_press_get_course( $course );
 		}
+
 		return $course;
 	}
 
@@ -254,13 +257,14 @@ class LP_Query {
 		if ( $item && $return == 'object' ) {
 			$item = LP_Course::get_item( $item );
 		}
+
 		return $item;
 	}
 
 
 	public function query_taxonomy( $q ) {
 		// We only want to affect the main query
-		if ( !$q->is_main_query() ) {
+		if ( ! $q->is_main_query() ) {
 			return;
 		}
 		if ( is_search() ) {
@@ -273,8 +277,8 @@ class LP_Query {
 	public function join_term( $join ) {
 		global $wp_query, $wpdb;
 
-		if ( !empty( $wp_query->query_vars['s'] ) && !is_admin() ) {
-			if ( !preg_match( '/' . $wpdb->term_relationships . '/', $join ) ) {
+		if ( ! empty( $wp_query->query_vars['s'] ) && ! is_admin() ) {
+			if ( ! preg_match( '/' . $wpdb->term_relationships . '/', $join ) ) {
 				$join .= "LEFT JOIN $wpdb->term_relationships ON $wpdb->posts.ID = $wpdb->term_relationships.object_id ";
 			}
 			$join .= "LEFT JOIN $wpdb->term_taxonomy ON $wpdb->term_relationships.term_taxonomy_id = $wpdb->term_taxonomy.term_taxonomy_id ";
@@ -287,9 +291,9 @@ class LP_Query {
 	public function add_tax_search( $where ) {
 		global $wp_query, $wpdb;
 
-		if ( !empty( $wp_query->query_vars['s'] ) && !is_admin() ) {
+		if ( ! empty( $wp_query->query_vars['s'] ) && ! is_admin() ) {
 			$escaped_s = esc_sql( $wp_query->query_vars['s'] );
-			$where .= "OR $wpdb->terms.name LIKE '%{$escaped_s}%'";
+			$where     .= "OR $wpdb->terms.name LIKE '%{$escaped_s}%'";
 		}
 
 		return $where;
