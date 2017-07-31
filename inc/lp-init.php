@@ -413,6 +413,7 @@ function _learn_press_get_quiz_questions( $quiz_ids ) {
 			$marks[ $question->quiz_id ]            += $question->mark;
 			$quiz_questions[ $question->quiz_id ][] = $question->ID;
 
+			// Issue with FIB
 			if ( false !== wp_cache_get( $question->ID, 'posts' ) ) {
 				wp_cache_replace( $question->ID, $question, 'posts' );
 			} else {
