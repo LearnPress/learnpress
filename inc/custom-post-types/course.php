@@ -648,7 +648,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						'name'  => __( 'Course payment', 'learnpress' ),
 						'id'    => "{$prefix}payment",
 						'type'  => 'yes_no',
-						'desc'  => __( '', 'learnpress' ),
+						'desc'  => '',
 						'std'   => 'no',
 						'class' => 'lp-course-payment-field'
 					)
