@@ -2056,7 +2056,7 @@ function learn_press_get_current_profile_tab( $default = true ) {
 	} else if ( ! empty( $wp->query_vars['view'] ) ) {
 		$current = $wp->query_vars['view'];
 	} else {
-		if ( $default && $tabs = learn_press_user_profile_tabs() ) {
+		if ( $default && $tabs = learn_press_get_user_profile_tabs() ) {
 			$tab_keys = array_keys( $tabs );
 			$current  = reset( $tab_keys );
 		}
@@ -2066,7 +2066,7 @@ function learn_press_get_current_profile_tab( $default = true ) {
 }
 
 function learn_press_profile_tab_exists( $tab ) {
-	if ( $tabs = learn_press_user_profile_tabs() ) {
+	if ( $tabs = learn_press_get_user_profile_tabs() ) {
 		return ! empty( $tabs[ $tab ] ) ? true : false;
 	}
 

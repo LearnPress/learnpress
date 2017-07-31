@@ -12,7 +12,7 @@ if ( !defined( 'ABSPATH' ) ) {
 }
 global $wp_query;
 
-$tabs         = learn_press_user_profile_tabs( $user );
+$tabs         = learn_press_get_user_profile_tabs( $user );
 $current      = learn_press_get_current_profile_tab();
 $profile_link = learn_press_get_page_link( 'profile' );
 $cuser        = learn_press_get_current_user();

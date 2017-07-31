@@ -35,8 +35,8 @@ add_action( 'learn-press/section-summary', 'learn_press_curriculum_section_conte
  * @see learn_press_checkout_form_login()
  * @see learn_press_checkout_form_register();
  */
-add_action('learn-press/before-checkout-form', 'learn_press_checkout_form_login', 5);
-add_action('learn-press/before-checkout-form', 'learn_press_checkout_form_register', 10);
+add_action( 'learn-press/before-checkout-form', 'learn_press_checkout_form_login', 5 );
+add_action( 'learn-press/before-checkout-form', 'learn_press_checkout_form_register', 10 );
 
 /**
  * @see learn_press_order_review()
@@ -46,6 +46,27 @@ add_action('learn-press/before-checkout-form', 'learn_press_checkout_form_regist
 add_action( 'learn-press/checkout-order-review', 'learn_press_order_review', 5 );
 add_action( 'learn-press/checkout-order-review', 'learn_press_order_comment', 10 );
 add_action( 'learn-press/checkout-order-review', 'learn_press_order_payment', 15 );
+
+/****************************/
+/*          Profile         */
+/****************************/
+
+/**
+ * @see learn_press_user_profile_header();
+ */
+add_action( 'learn-press/before-user-profile', 'learn_press_user_profile_header' );
+
+/**
+ * @see learn_press_user_profile_content();
+ * @see learn_press_user_profile_tabs();
+ */
+add_action( 'learn-press/user-profile', 'learn_press_user_profile_tabs' );
+add_action( 'learn-press/user-profile', 'learn_press_user_profile_content' );
+
+/**
+ * @see learn_press_user_profile_footer();
+ */
+add_action( 'learn-press/after-user-profile', 'learn_press_user_profile_footer' );
 
 /***************/
 
@@ -142,15 +163,15 @@ add_action( 'learn_press_after_section_item_title', 'learn_press_section_item_me
 add_action( 'learn_press_checkout_before_order_review', 'learn_press_checkout_user_form', 5 );
 add_action( 'learn_press_checkout_before_order_review', 'learn_press_checkout_user_logged_in', 10 );
 /**
-add_action( 'learn_press_checkout_user_form', 'learn_press_checkout_user_form_login', 5 );
-add_action( 'learn_press_checkout_user_form', 'learn_press_checkout_user_form_register', 10 );
-*/
+ * add_action( 'learn_press_checkout_user_form', 'learn_press_checkout_user_form_login', 5 );
+ * add_action( 'learn_press_checkout_user_form', 'learn_press_checkout_user_form_register', 10 );
+ */
 
 /**
-add_action( 'learn_press_checkout_order_review', 'learn_press_order_review', 5 );
-add_action( 'learn_press_checkout_order_review', 'learn_press_order_comment', 10 );
-add_action( 'learn_press_checkout_order_review', 'learn_press_order_payment', 15 );
-*/
+ * add_action( 'learn_press_checkout_order_review', 'learn_press_order_review', 5 );
+ * add_action( 'learn_press_checkout_order_review', 'learn_press_order_comment', 10 );
+ * add_action( 'learn_press_checkout_order_review', 'learn_press_order_payment', 15 );
+ */
 /* Profile */
 add_action( 'learn_press_user_profile_summary', 'learn_press_output_user_profile_info', 5, 3 );
 add_action( 'learn_press_user_profile_summary', 'learn_press_output_user_profile_tabs', 10, 3 );

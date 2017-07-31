@@ -7,6 +7,10 @@
  * @version 1.0
  */
 
+function learn_press_get_user_profile_tabs(){
+	return LP_Profile::instance( get_current_user_id() )->get_tabs();
+}
+
 /**
  * Delete user data by user ID
  *
@@ -248,7 +252,7 @@ function learn_press_user_has_roles( $roles, $user_id = null ) {
 function learn_press_edit_admin_bar() {
 	global $wp_admin_bar;
 	if ( ( $profile = learn_press_get_page_id( 'profile' ) ) && get_post_type( $profile ) == 'page' && get_post_status( $profile ) != 'trash' && ( LP()->settings->get( 'admin_bar_link' ) == 'yes' ) ) {
-		if ( $tabs = learn_press_user_profile_tabs() ) {
+		if ( $tabs = learn_press_get_user_profile_tabs() ) {
 			$keys      = array_keys( $tabs );
 			$first_tab = reset( $keys );
 		} else {

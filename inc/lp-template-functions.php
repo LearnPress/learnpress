@@ -136,6 +136,52 @@ if ( ! function_exists( 'learn_press_order_comment' ) ) {
 	}
 }
 
+if ( ! function_exists( 'learn_press_user_profile_header' ) ) {
+	/**
+	 * Output order comment input
+	 *
+	 * @hooked learn-press/before-user-profile
+	 */
+	function learn_press_user_profile_header( $user ) {
+		learn_press_get_template( 'profile/header.php', array( 'user' => $user ) );
+	}
+}
+
+if ( ! function_exists( 'learn_press_user_profile_content' ) ) {
+	/**
+	 * Output order comment input
+	 *
+	 * @hooked learn-press/user-profile
+	 */
+	function learn_press_user_profile_content( $user ) {
+		learn_press_get_template( 'profile/content.php', array( 'user' => $user ) );
+	}
+}
+
+if ( ! function_exists( 'learn_press_user_profile_footer' ) ) {
+	/**
+	 * Output order comment input
+	 *
+	 * @hooked learn-press/after-user-profile
+	 */
+	function learn_press_user_profile_footer( $user ) {
+		learn_press_get_template( 'profile/footer.php', array( 'user' => $user ) );
+	}
+}
+
+if ( ! function_exists( 'learn_press_user_profile_tabs' ) ) {
+	/**
+	 * Get tabs for user profile
+	 *
+	 * @param $user
+	 *
+	 * @return mixed
+	 */
+	function learn_press_user_profile_tabs( $user = null ) {
+		learn_press_get_template( 'profile/tabs.php', array( 'user' => $user ) );
+	}
+}
+
 /**********************************************/
 
 if ( ! function_exists( 'learn_press_wrapper_start' ) ) {
@@ -747,22 +793,6 @@ if ( ! function_exists( 'learn_press_after_profile_tab_loop_course' ) ) {
 	}
 }
 
-if ( ! function_exists( 'learn_press_user_profile_tabs' ) ) {
-	/**
-	 * Get tabs for user profile
-	 *
-	 * @param $user
-	 *
-	 * @return mixed
-	 */
-	function learn_press_user_profile_tabs( $user = null ) {
-		if ( ! $user ) {
-			$user = learn_press_get_current_user();
-		}
-
-		return LP_Profile::instance( $user->get_id() )->get_tabs();
-	}
-}
 
 if ( ! function_exists( 'learn_press_output_user_profile_info' ) ) {
 	/**

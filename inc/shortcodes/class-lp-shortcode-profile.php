@@ -32,7 +32,7 @@ class LP_Shortcode_Profile extends LP_Abstract_Shortcode {
 
 		} else {
 			$user = LP_User_Factory::get_user( $user->ID );
-			$tabs = learn_press_user_profile_tabs( $user );
+			$tabs = learn_press_get_user_profile_tabs( $user );
 			if ( ! empty( $wp->query_vars['view'] ) ) {
 				$current = $wp->query_vars['view'];
 			} else {
@@ -49,7 +49,7 @@ class LP_Shortcode_Profile extends LP_Abstract_Shortcode {
 				learn_press_get_template( 'profile/private-area.php' );
 			} else {
 				if ( ! empty( $tabs ) && ! empty( $tabs[ $current ] ) ) :
-					learn_press_get_template( 'profile/index.php',
+					learn_press_get_template( 'profile/profile.php',
 						array(
 							'user'    => $user,
 							'tabs'    => $tabs,

@@ -1,6 +1,6 @@
 <?php
 
-class LP_Shortcode_Popular_Courses extends LP_Abstract_Shortcode {
+class LP_Shortcode_Popular_Courses extends LP_Abstract_Shortcode_Courses {
 	/**
 	 * LP_Popular_Courses_Shortcode constructor.
 	 *
@@ -15,28 +15,14 @@ class LP_Shortcode_Popular_Courses extends LP_Abstract_Shortcode {
 	 *
 	 * @return string
 	 */
-	public function output() {
-		ob_start();
+	public function query_courses() {
 
 		$limit = $order_by = $order = '';
 
-		$atts = shortcode_atts( array(
-			'limit' => 10,
-			'order' => 'DESC' // select on of [DESC, ASC]
-		), $atts );
+		$atts = $this->get_atts();
 
 		extract( $atts );
 
-		// Validation date
-		$arr_orders = array( 'DESC', 'ASC' );
-		$order      = strtoupper( $order );
-
-		if ( ! in_array( $order, $arr_orders ) ) {
-			$order = 'DESC';
-		}
-		if ( ! absint( $limit ) ) {
-			$limit = 10;
-		}
 
 		global $wpdb;
 
@@ -58,32 +44,8 @@ class LP_Shortcode_Popular_Courses extends LP_Abstract_Shortcode {
 			absint( $limit )
 		);
 
-		$posts = $wpdb->get_results(
-			$query
-		);
+		$post_ids = $wpdb->get_col( $query );
 
-
-		global $post;
-		if ( ! empty( $posts ) ) {
-			do_action( 'learn_press_before_courses_loop' );
-
-			learn_press_begin_courses_loop();
-
-			foreach ( $posts as $post ) {
-				setup_postdata( $post );
-				learn_press_get_template_part( 'content', 'course' );
-			}
-
-			learn_press_end_courses_loop();
-		} else {
-			learn_press_display_message( __( 'No course found.', 'learnpress' ), 'error' );
-
-		}
-
-		wp_reset_postdata();
-
-		$output = ob_get_clean();
-
-		return $output;
+		$this->_query = new LP_Query_Course( array( 'post__in' => $post_ids ) );
 	}
 }
