@@ -122,15 +122,9 @@ class LP_Page_Controller {
 		}
 
 		if ( learn_press_is_profile() ) {
-			$current_tab = learn_press_get_current_profile_tab( false );
-			if ( $current_tab && !learn_press_profile_tab_exists( $current_tab ) ) {
-				global $wp;
-				if ( empty( $wp->query_vars['view'] ) ) {
-					wp_redirect( learn_press_get_page_link( 'profile' ) );
-					exit();
-				}
-			}
+			$this->_profile();
 		}
+
 		$queried_object_id = !empty( $wp_query->queried_object_id ) ? $wp_query->queried_object_id : 0;
 		if ( ( $page_id = learn_press_get_page_id( 'taken_course_confirm' ) ) && is_page( $page_id ) && $page_id == $queried_object_id ) {
 			if ( !learn_press_user_can_view_order( !empty( $_REQUEST['order_id'] ) ? $_REQUEST['order_id'] : 0 ) ) {
@@ -177,6 +171,73 @@ class LP_Page_Controller {
 		return $template;
 	}
 
+	protected function _profile(){
+
+		global $wp;
+
+
+		learn_press_debug($wp);die();
+		$current_tab = learn_press_get_current_profile_tab( false );
+		if ( $current_tab && !learn_press_profile_tab_exists( $current_tab ) ) {
+			if ( empty( $wp->query_vars['view'] ) ) {
+				//wp_redirect( learn_press_get_page_link( 'profile' ) );
+				exit();
+			}
+		}
+		if ( empty( $wp->query_vars['user'] ) ) {
+			$current_user = wp_get_current_user();
+			if ( ! empty( $current_user->user_login ) ) {
+				$redirect = learn_press_get_endpoint_url( '', $current_user->user_login, learn_press_get_page_link( 'profile' ) );
+				if ( $redirect && ! learn_press_is_current_url( $redirect ) ) {
+					wp_redirect( $redirect );
+					die();
+				}
+			} else {
+				if ( ! preg_match( '/\[learn_press_login_form\s?(.*)\]/', $post->post_content ) ) {
+					if ( ! empty( $_REQUEST['redirect_to'] ) ) {
+						$redirect = $_REQUEST['redirect_to'];
+					} else {
+						$redirect = '';
+					}
+					$post->post_content .= '[learn_press_login_form redirect="' . esc_attr( $redirect ) . '"]';
+				}
+			}
+		} else {
+			$query = array();
+			parse_str( $wp->matched_query, $query );
+
+
+			if ( empty( $query['view'] ) ) {
+				$redirect = learn_press_user_profile_link( $wp->query_vars['user'] );
+				if ( ! empty( $redirect ) ) {
+					//wp_redirect( $redirect );
+					die();
+				}
+
+			}
+			if ( $query ) {
+
+				$endpoints = learn_press_get_profile_endpoints();
+				foreach ( $query as $k => $v ) {
+					if ( ( $k == 'view' ) ) {
+						if ( ! $v ) {
+							$v = reset( $endpoints );
+						}
+						if ( ! in_array( $v, $endpoints ) ) {
+							learn_press_is_404();
+						}
+					}
+					if ( ! empty( $v ) ) {
+						$wp->query_vars[ $k ] = $v;
+					}
+				}
+			}
+			if ( ! preg_match( '/\[learn_press_profile\s?(.*)\]/', $post->post_content ) ) {
+				$post->post_content .= '[learn_press_profile]';
+			}
+
+		}
+	}
 	public function archive_content() {
 		ob_start();
 		learn_press_get_template( 'content-archive-course.php' );

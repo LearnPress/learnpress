@@ -35,11 +35,30 @@ class LP_Shortcodes {
 			add_shortcode( apply_filters( "{$shortcode}_shortcode_tag", $shortcode ), $function );
 		}
 
-		add_action( 'template_redirect', array( __CLASS__, 'auto_shortcode' ) );
+		add_action( 'the_post', array( __CLASS__, 'auto_shortcode' ) );
 
 	}
 
-	public static function auto_shortcode( $template ) {
+	public static function auto_shortcode( $post ) {
+		if ( ! is_page() ) {
+			return $post;
+		}
+
+		if ( $post->ID == learn_press_get_page_id( 'profile' ) ) {
+			if ( ! preg_match( '/\[learn_press_profile\s?(.*)\]/', $post->post_content ) ) {
+				$post->post_content .= '[learn_press_profile]';
+			}
+		} elseif ( $post->ID == learn_press_get_page_id( 'checkout' ) ) {
+			if ( ! preg_match( '/\[learn_press_checkout\s?(.*)\]/', $post->post_content ) ) {
+				$post->post_content .= '[learn_press_checkout]';
+			}
+		} elseif ( $post->ID == learn_press_get_page_id( 'become_a_teacher' ) ) {
+			if ( ! preg_match( '/\[learn_press_become_teacher_form\s?(.*)\]/', $post->post_content ) ) {
+				$post->post_content .= '[learn_press_become_teacher_form]';
+			}
+		}
+
+		return $post;
 		if ( is_page() ) {
 			global $post, $wp_query, $wp;
 			$page_id = ! empty( $wp_query->queried_object_id ) ?
@@ -50,57 +69,8 @@ class LP_Shortcodes {
 					$post->post_content .= '[learn_press_checkout]';
 				}
 			} elseif ( $page_id == learn_press_get_page_id( 'profile' ) ) {
-				if ( empty( $wp->query_vars['user'] ) ) {
-					$current_user = wp_get_current_user();
-					if ( ! empty( $current_user->user_login ) ) {
-						$redirect = learn_press_get_endpoint_url( '', $current_user->user_login, learn_press_get_page_link( 'profile' ) );
-						if ( $redirect && ! learn_press_is_current_url( $redirect ) ) {
-							wp_redirect( $redirect );
-							die();
-						}
-					} else {
-						if ( ! preg_match( '/\[learn_press_login_form\s?(.*)\]/', $post->post_content ) ) {
-							if ( ! empty( $_REQUEST['redirect_to'] ) ) {
-								$redirect = $_REQUEST['redirect_to'];
-							} else {
-								$redirect = '';
-							}
-							$post->post_content .= '[learn_press_login_form redirect="' . esc_attr( $redirect ) . '"]';
-						}
-					}
-				} else {
-					$query = array();
-					parse_str( $wp->matched_query, $query );
-					if ( empty( $query['view'] ) ) {
-						$redirect = learn_press_user_profile_link( $wp->query_vars['user'] );
-						if ( ! empty( $redirect ) ) {
-							wp_redirect( $redirect );
-							die();
-						}
+				learn_press_debug( $wp );
 
-					}
-					if ( $query ) {
-
-						$endpoints = learn_press_get_profile_endpoints();
-						foreach ( $query as $k => $v ) {
-							if ( ( $k == 'view' ) ) {
-								if ( ! $v ) {
-									$v = reset( $endpoints );
-								}
-								if ( ! in_array( $v, $endpoints ) ) {
-									learn_press_is_404();
-								}
-							}
-							if ( ! empty( $v ) ) {
-								$wp->query_vars[ $k ] = $v;
-							}
-						}
-					}
-					if ( ! preg_match( '/\[learn_press_profile\s?(.*)\]/', $post->post_content ) ) {
-						$post->post_content .= '[learn_press_profile]';
-					}
-
-				}
 
 			} elseif ( $page_id == learn_press_get_page_id( 'become_a_teacher' ) ) {
 				if ( ! preg_match( '/\[learn_press_become_teacher_form\s?(.*)\]/', $post->post_content ) ) {
@@ -158,8 +128,8 @@ class LP_Shortcodes {
 	}
 
 	/**
-     * Shortcode for displaying recently courses added.
-     *
+	 * Shortcode for displaying recently courses added.
+	 *
 	 * @param mixed $atts
 	 *
 	 * @return string
@@ -169,8 +139,8 @@ class LP_Shortcodes {
 	}
 
 	/**
-     * Shortcode for displaying courses are set as featured.
-     *
+	 * Shortcode for displaying courses are set as featured.
+	 *
 	 * @param array $atts
 	 *
 	 * @return string
@@ -180,8 +150,8 @@ class LP_Shortcodes {
 	}
 
 	/**
-     * Shortcode for displaying popular courses
-     *
+	 * Shortcode for displaying popular courses
+	 *
 	 * @param array $atts
 	 *
 	 * @return string

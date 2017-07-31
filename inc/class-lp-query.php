@@ -207,6 +207,7 @@ class LP_Query {
 			);
 		}
 
+		// Profile
 		if ( $profile_id = learn_press_get_page_id( 'profile' ) ) {
 			add_rewrite_rule(
 				'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?([^/]*)/?([^/]*)/?([^/]*)/?([^/]*)/?',
@@ -215,6 +216,7 @@ class LP_Query {
 			);
 		}
 
+		// Archive course
 		if ( $course_page_id = learn_press_get_page_id( 'courses' ) ) {
 			add_rewrite_rule(
 				'^' . get_post_field( 'post_name', $course_page_id ) . '/page/([0-9]{1,})/?$',
@@ -225,95 +227,7 @@ class LP_Query {
 		do_action( 'learn_press_add_rewrite_rules' );
 	}
 
-	/**
-	 * @param $query
-	 *
-	 * @return array
-	 */
-	function parse_course_request( $query ) {
-		$return = array();
-		if ( !empty( $query ) ) {
-			$segments = explode( '/', $query );
-			$segments = array_filter( $segments );
-			if ( $segments ) {
-				$ids   = array();
-				$names = array();
-				foreach ( $segments as $segment ) {
-					if ( preg_match( '/^([0-9]+)/', $segment ) ) {
-						$post_args = explode( '-', $segment, 2 );
-						$ids[]     = absint( $post_args[0] );
-						$names[]   = $post_args[1];
-					}
-				}
 
-				if ( sizeof( $ids ) ) {
-					global $wpdb;
-					$ids_format   = array_fill( 0, sizeof( $ids ), '%d' );
-					$names_format = array_fill( 0, sizeof( $names ), '%s' );
-
-					$query = $wpdb->prepare( "
-					SELECT ID, post_name, post_type
-					FROM {$wpdb->posts}
-					WHERE ID IN(" . join( ',', $ids_format ) . ")
-						AND post_name IN(" . join( ',', $names_format ) . ")
-					ORDER BY FIELD(ID, " . join( ',', $ids_format ) . ")
-				", array_merge( $ids, $names, $ids ) );
-					if ( $items = $wpdb->get_results( $query ) ) {
-						$support_types = learn_press_course_get_support_item_types();
-						foreach ( $items as $item ) {
-							if ( array_key_exists( $item->post_type, $support_types ) ) {
-								$return[] = $item;
-							}
-						}
-					}
-				}
-			}
-		}
-		return $return;
-	}
-
-	/**
-	 * This function parse query vars and put into request
-	 */
-	function parse_query_vars_to_request() {
-		global $wp_query, $wp;
-		if ( isset( $wp_query->query['user'] ) ) {
-			/*if ( !get_option( 'permalink_structure' ) ) {
-				$wp_query->query_vars['user']     = !empty( $_REQUEST['user'] ) ? $_REQUEST['user'] : null;
-				$wp_query->query_vars['tab']      = !empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : null;
-				$wp_query->query_vars['order_id'] = !empty( $_REQUEST['order_id'] ) ? $_REQUEST['order_id'] : null;
-				$wp_query->query['user']          = !empty( $_REQUEST['user'] ) ? $_REQUEST['user'] : null;
-				$wp_query->query['tab']           = !empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : null;
-				$wp_query->query['order_id']      = !empty( $_REQUEST['order_id'] ) ? $_REQUEST['order_id'] : null;
-			} else {
-				list( $username, $tab, $id ) = explode( '/', $wp_query->query['user'] );
-				$wp_query->query_vars['user']     = $username;
-				$wp_query->query_vars['tab']      = $tab;
-				$wp_query->query_vars['order_id'] = $id;
-				$wp_query->query['user']          = $username;
-				$wp_query->query['tab']           = $tab;
-				$wp_query->query['order_id']      = $id;
-			}*/
-		}
-		global $wpdb;
-		// if lesson name is passed, find it's ID and put into request
-		/*if ( !empty( $wp_query->query_vars['lesson'] ) ) {
-			if ( $lesson_id = $wpdb->get_var( $wpdb->prepare( "SELECT ID FROM {$wpdb->posts} WHERE post_name = %s AND post_type = %s", $wp_query->query_vars['lesson'], LP_LESSON_CPT ) ) ) {
-				$_REQUEST['lesson'] = $lesson_id;
-				$_GET['lesson']     = $lesson_id;
-				$_POST['lesson']    = $lesson_id;
-			}
-		}*/
-		// if question name is passed, find it's ID and put into request
-		/*if ( !empty( $wp_query->query_vars['question'] ) ) {
-			if ( $question_id = $wpdb->get_var( $wpdb->prepare( "SELECT ID FROM {$wpdb->posts} WHERE post_name = %s AND post_type = %s", $wp_query->query_vars['question'], LP_QUESTION_CPT ) ) ) {
-				$_REQUEST['question'] = $question_id;
-				$_GET['question']     = $question_id;
-				$_POST['question']    = $question_id;
-			}
-		}*/
-
-	}
 
 	/**
 	 * Get current course user accessing

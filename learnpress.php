@@ -688,23 +688,8 @@ function load_learn_press() {
  */
 $GLOBALS['LearnPress'] = LP();
 
-class LP_Extended_Cart extends LP_Cart {
 
-}
-
-add_filter( 'learn_press_cart_class', function () {
-	return 'LP_Extended_Cart';
-} );
-return;
-add_action( 'init', function () {
-	LP_Debug::timeStart( '123' );
-	$curd = new LP_Course_CURD();
-	$curd->read_course_curriculum( array( 17, 71, 127 ) );
-	//for ( $i = 1; $i < 100; $i ++ ) {
-	learn_press_get_course( 17 );
-	learn_press_get_course( 71 );
-	learn_press_get_course( 127 );
-	//}
-	LP_Debug::timeEnd( '123' );
-
+add_action( 'wp_redirecxt', function ($url) {
+	learn_press_debug(debug_backtrace());
+	die();
 } );
