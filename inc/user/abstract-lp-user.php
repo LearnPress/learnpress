@@ -2460,17 +2460,20 @@ class LP_Abstract_User {
 					UNION
 					SELECT c.*, uc.status as course_status
 					FROM {$wpdb->posts} c
-					INNER JOIN {$wpdb->prefix}learnpress_user_items uc ON c.ID = uc.item_id
+						INNER JOIN {$wpdb->prefix}learnpress_user_items uc ON c.ID = uc.item_id
+						INNER JOIN {$wpdb->prefix}posts AS `lp_order` ON lp_order.ID = uc.ref_id
+										AND uc.ref_type = 'lp_order'
+										AND lp_order.post_type = 'lp_order'
 					WHERE uc.user_id = %d
 						AND c.post_type = %s
 						AND c.post_status = %s
+						AND lp_order.post_status = 'lp-completed'
 				) a GROUP BY a.ID
 			", $args['user_id'],
 				LP_COURSE_CPT, 'publish', 'draft', $this->id,
 				$args['user_id'], LP_COURSE_CPT, 'publish'
 			);
 			$query .= $where . $order . $limit;
-
 			$data          = array(
 				'rows' => $wpdb->get_results( $query, OBJECT_K )
 			);
