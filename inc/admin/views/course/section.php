@@ -10,12 +10,11 @@ learn_press_admin_view( 'course/section-item' );
 ?>
 <script type="text/x-template" id="tmpl-lp-section">
     <div class="section" :class="isOpen ? 'open' : 'close'">
-        <input type="hidden" :value="encode" name="_lp_curriculum_sections[]">
-
         <div class="section-head">
             <div class="section-title" data-empty="<?php esc_attr_e( 'Empty name section', 'learnpress' ); ?>">{{section.title}}</div>
 
             <div class="actions">
+                <span class="remove" @click="remove"><span class="dashicons dashicons-trash"></span></span>
                 <span class="collapse" :class="isOpen ? 'open' : 'close'" @click.prevent="toggle"></span>
             </div>
         </div>
@@ -34,4 +33,28 @@ learn_press_admin_view( 'course/section-item' );
             </table>
         </div>
     </div>
+</script>
+
+<script>
+    (function (Vue, $store) {
+
+        Vue.component('lp-section', {
+            template: '#tmpl-lp-section',
+            props: ['section', 'order', 'index'],
+            data: function () {
+                return {
+                    isOpen: true
+                };
+            },
+            methods: {
+                toggle: function () {
+                    this.isOpen = !this.isOpen;
+                },
+                remove: function () {
+                    $store.dispatch('removeSection', this.index);
+                }
+            }
+        });
+
+    })(Vue, LP_Curriculum_Store);
 </script>

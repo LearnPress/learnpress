@@ -16,3 +16,14 @@
         </td>
     </tr>
 </script>
+
+<script>
+    (function (Vue, $store) {
+
+        Vue.component('lp-section-item', {
+            template: '#tmpl-lp-section-item',
+            props: ['item', 'order']
+        });
+
+    })(Vue, LP_Curriculum_Store);
+</script>
