@@ -100,12 +100,14 @@
 				color: #444;
 				height: 100%;
 
-				.collapse {
+				> * {
 					cursor: pointer;
 					display: inline-block;
 					text-align: center;
 					height: 100%;
+				}
 
+				.collapse {
 					&:hover {
 						color: #0085ba;
 					}

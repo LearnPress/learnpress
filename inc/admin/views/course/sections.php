@@ -23,3 +23,23 @@ learn_press_admin_view( 'course/section' );
     </div>
 
 </script>
+
+<script>
+    (function (Vue, $store) {
+
+        Vue.component('lp-list-sections', {
+            template: '#tmpl-lp-list-sections',
+            methods: {
+                clickNewSection: function () {
+                    $store.dispatch('addNewSection');
+                }
+            },
+            computed: {
+                sections: function () {
+                    return $store.getters.sections;
+                }
+            }
+        });
+
+    })(Vue, LP_Curriculum_Store);
+</script>

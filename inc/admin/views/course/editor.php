@@ -10,6 +10,16 @@ learn_press_admin_view( 'course/curriculum-v2' );
 ?>
 <script type="text/x-template" id="tmpl-lp-course-editor">
     <div id="course-editor-v2">
-        <lp-curriculum :sections="sections"></lp-curriculum>
+        <lp-curriculum></lp-curriculum>
     </div>
+</script>
+
+<script>
+    (function (Vue, $store) {
+
+        Vue.component('lp-course-editor', {
+            template: '#tmpl-lp-course-editor'
+        });
+
+    })(Vue, LP_Curriculum_Store);
 </script>
