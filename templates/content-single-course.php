@@ -17,7 +17,7 @@ if ( post_password_required() ) {
 	echo get_the_password_form();
 	return;
 }
-
+learn_press_debug(LP_Cache::get_item_statuses( false, array() ));
 ?>
 <?php do_action( 'learn_press_before_main_content' ); ?>
 

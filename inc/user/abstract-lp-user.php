@@ -575,8 +575,8 @@ class LP_Abstract_User {
 	/**
 	 * Get quiz status for the user
 	 *
-	 * @param int $quiz_id
-	 * @param int $course_id
+	 * @param int     $quiz_id
+	 * @param int     $course_id
 	 * @param boolean $force
 	 *
 	 * @return mixed
@@ -630,8 +630,8 @@ class LP_Abstract_User {
 	/**
 	 * Get quiz status for the user
 	 *
-	 * @param int $lesson_id
-	 * @param int $course_id
+	 * @param int     $lesson_id
+	 * @param int     $course_id
 	 * @param boolean $force
 	 *
 	 * @return mixed
@@ -737,9 +737,9 @@ class LP_Abstract_User {
 	 * Checks if has status of a quiz for user
 	 *
 	 * @param string|array $statuses
-	 * @param int $quiz_id
-	 * @param int $course_id
-	 * @param boolean $force
+	 * @param int          $quiz_id
+	 * @param int          $course_id
+	 * @param boolean      $force
 	 *
 	 * @return bool
 	 */
@@ -799,9 +799,9 @@ class LP_Abstract_User {
 	/**
 	 * Get history of a quiz for an user
 	 *
-	 * @param int $quiz_id
-	 * @param int $course_id
-	 * @param int $history_id
+	 * @param int  $quiz_id
+	 * @param int  $course_id
+	 * @param int  $history_id
 	 * @param bool $force
 	 *
 	 * @return mixed|null|void
@@ -1302,7 +1302,7 @@ class LP_Abstract_User {
 	 * - INT (number of remain) if user CAN retake quiz
 	 *
 	 * @param         $quiz_id
-	 * @param int $course_id
+	 * @param int     $course_id
 	 * @param boolean $force
 	 *
 	 * @return mixed|null|void
@@ -1497,7 +1497,7 @@ class LP_Abstract_User {
 	/**
 	 * Return true if user has already enrolled course
 	 *
-	 * @param int $course_id
+	 * @param int  $course_id
 	 * @param bool $force
 	 *
 	 * @return bool
@@ -1551,9 +1551,9 @@ class LP_Abstract_User {
 			global $wpdb;
 			$query                 = $wpdb->prepare( "SELECT status FROM {$wpdb->prefix}learnpress_user_items where user_id=%d and item_id=%d AND item_type = %s ORDER BY user_item_id DESC", $this->id, $course_id, LP_COURSE_CPT );
 			$item_statuses[ $key ] = $wpdb->get_var( $query );
-			$finished              =  $item_statuses[ $key ] == 'finished' ? 'yes' : 'no';
+			$finished              = $item_statuses[ $key ] == 'finished' ? 'yes' : 'no';
 
-			LP_Cache::set_item_statuses( $key, $item_statuses );
+			LP_Cache::set_item_statuses( $item_statuses );
 		}
 
 		return apply_filters( 'learn_press_user_has_finished_course', $finished == 'yes', $this, $course_id );
@@ -1632,8 +1632,8 @@ class LP_Abstract_User {
 	}
 
 	/**
-	 * @param int $quiz_id
-	 * @param int $course_id
+	 * @param int  $quiz_id
+	 * @param int  $course_id
 	 * @param bool $force
 	 *
 	 * @return mixed
@@ -1666,8 +1666,8 @@ class LP_Abstract_User {
 	/**
 	 * Count number of time user has retaken a quiz
 	 *
-	 * @param int $quiz_id
-	 * @param int $course_id
+	 * @param int  $quiz_id
+	 * @param int  $course_id
 	 * @param bool $force
 	 *
 	 * @return int
@@ -1721,7 +1721,7 @@ class LP_Abstract_User {
 	/**
 	 * Count number of time user has retaken a quiz
 	 *
-	 * @param int $course_id
+	 * @param int  $course_id
 	 * @param bool $force
 	 *
 	 * @return int
@@ -2010,8 +2010,8 @@ class LP_Abstract_User {
 	/**
 	 * Get current results of a quiz
 	 *
-	 * @param int $quiz_id
-	 * @param int $course_id
+	 * @param int  $quiz_id
+	 * @param int  $course_id
 	 * @param bool $force
 	 *
 	 * @return mixed
@@ -2152,7 +2152,7 @@ class LP_Abstract_User {
 
 	/**
 	 * @param      $item
-	 * @param int $course_id
+	 * @param int  $course_id
 	 * @param bool $force
 	 *
 	 * @return mixed|void
@@ -2806,7 +2806,7 @@ class LP_Abstract_User {
 	 * Get user's quiz's graduation
 	 *
 	 * @param      $quiz_id
-	 * @param int $course_id
+	 * @param int  $course_id
 	 * @param bool $check_completed
 	 *
 	 * @return mixed|void
@@ -2880,7 +2880,7 @@ class LP_Abstract_User {
 
 	/**
 	 * @param string $type
-	 * @param int $size
+	 * @param int    $size
 	 *
 	 * @return false|string
 	 */
