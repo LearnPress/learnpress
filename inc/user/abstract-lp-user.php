@@ -2836,24 +2836,28 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	 * @return string
 	 */
 	public function get_upload_profile_src( $size = '' ) {
-		if ( empty( $this->uploaded_profile_src ) ) {
-			if ( $profile_picture = $this->profile_picture ) {
+		$uploaded_profile_src = $this->get_data( 'uploaded_profile_src' );
+		if ( empty( $uploaded_profile_src ) ) {
+			if ( $profile_picture = $this->get_data( 'profile_picture' ) ) {
 				$upload    = learn_press_user_profile_picture_upload_dir();
 				$file_path = $upload['basedir'] . DIRECTORY_SEPARATOR . $profile_picture;
 				if ( file_exists( $file_path ) ) {
-					$this->uploaded_profile_src = $upload['baseurl'] . '/' . $profile_picture;
+					$uploaded_profile_src = $upload['baseurl'] . '/' . $profile_picture;
 					// no cache for first time after avatar changed
-					if ( $this->profile_picture_changed == 'yes' ) {
-						$this->uploaded_profile_src = add_query_arg( 'r', md5( rand( 0, 10 ) / rand( 1, 1000000 ) ), $this->uploaded_profile_src );
+					if ( $this->get_data( 'profile_picture_changed' ) == 'yes' ) {
+						$uploaded_profile_src = add_query_arg( 'r', md5( rand( 0, 10 ) / rand( 1, 1000000 ) ), $this->get_data( 'uploaded_profile_src' ) );
 						delete_user_meta( $this->get_id(), '_lp_profile_picture_changed' );
 					}
 				} else {
-					$this->uploaded_profile_src = false;
+					$uploaded_profile_src = false;
 				}
+
+				$this->set_data( 'uploaded_profile_src', $uploaded_profile_src );
+
 			}
 		}
 
-		return $this->uploaded_profile_src;
+		return $uploaded_profile_src;
 	}
 
 	/**
@@ -2903,10 +2907,10 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	 */
 	public function get_avatar_url( $url, $id_or_email, $args ) {
 		if ( is_numeric( $id_or_email ) && $id_or_email == $this->get_id() ) {
-			$url = $this->profile_picture_src;
+			$url = $this->get_data( 'profile_picture_src' );
 		}
-		if ( $id_or_email == $this->user_login ) {
-			$url = $this->profile_picture_src;
+		if ( $id_or_email == $this->get_data( 'username' ) ) {
+			$url = $this->get_data( 'profile_picture_src' );
 		}
 
 		return $url;
@@ -2998,7 +3002,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	 *
 	 * @return bool
 	 */
-	public function is_guest(){
-		return metadata_exists('user', $this->get_id(), '_lp_temp_user');
+	public function is_guest() {
+		return metadata_exists( 'user', $this->get_id(), '_lp_temp_user' );
 	}
 }

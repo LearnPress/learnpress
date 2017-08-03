@@ -7,7 +7,7 @@
  * @version 1.0
  */
 
-function learn_press_get_user_profile_tabs(){
+function learn_press_get_user_profile_tabs() {
 	return LP_Profile::instance( get_current_user_id() )->get_tabs();
 }
 
@@ -281,7 +281,7 @@ add_action( 'admin_bar_menu', 'learn_press_edit_admin_bar' );
 function learn_press_current_user_can_view_profile_section( $section, $user ) {
 	$current_user = wp_get_current_user();
 	$view         = true;
-	if ( $user->user_login != $current_user->user_login && $section == LP()->settings->get( 'profile_endpoints.profile-orders', 'profile-orders' ) ) {
+	if ( $user->get_data( 'user_login' ) != $current_user->user_login && $section == LP()->settings->get( 'profile_endpoints.profile-orders', 'profile-orders' ) ) {
 		$view = false;
 	}
 
@@ -1565,6 +1565,68 @@ function learn_press_remove_user_items( $user_id, $item_id, $course_id, $include
         AND ( item_id IN(" . join( ',', $format ) . ")
         $where )
     ", $args );
+}
+
+/**
+ * Get user profile link
+ *
+ * @param int  $user_id
+ * @param null $tab
+ *
+ * @return mixed|string
+ */
+function learn_press_user_profile_link( $user_id = 0, $tab = null ) {
+	if ( ! $user_id ) {
+		$user_id = get_current_user_id();
+	}
+	$user    = false;
+	$deleted = in_array( $user_id, LP_User_Factory::$_deleted_users );
+	if ( ! $deleted ) {
+		if ( is_numeric( $user_id ) ) {
+			$user = get_user_by( 'id', $user_id );
+		} else {
+			$user = get_user_by( 'login', urldecode( $user_id ) );
+		}
+	} else {
+		return '';
+	}
+	if ( ! $deleted && ! $user ) {
+		LP_User_Factory::$_deleted_users[] = $user_id;
+	}
+
+	$user = learn_press_get_current_user( false );
+
+	if ( ! $user ) {
+		return '';
+	}
+	global $wp_query;
+	$args = array(
+		'user' => $user->get_data( 'username' )
+	);
+	if ( isset( $args['user'] ) ) {
+		if ( '' === $tab ) {
+			$tab = learn_press_get_current_profile_tab();
+		}
+		if ( $tab ) {
+			$args['tab'] = $tab;
+		} else {
+			unset( $args['user'] );
+		}
+	}
+	$args         = array_map( '_learn_press_urlencode', $args );
+	$profile_link = trailingslashit( learn_press_get_page_link( 'profile' ) );
+	if ( $profile_link ) {
+		if ( get_option( 'permalink_structure' ) /*&& learn_press_get_page_id( 'profile' )*/ ) {
+			$url = trailingslashit( $profile_link . join( "/", array_values( $args ) ) );
+		} else {
+			$url = add_query_arg( $args, $profile_link );
+		}
+	} else {
+		$url = get_author_posts_url( $user_id );
+	}
+
+
+	return apply_filters( 'learn_press_user_profile_link', $url, $user_id, $tab );
 }
 
 include_once "lp-user-hooks.php";

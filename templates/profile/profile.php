@@ -1,6 +1,7 @@
 <?php
 /**
  * Template for displaying user profile.
+ * Main page which wrap all content in user profile.
  *
  * @author  ThimPress
  * @package LearnPress/Templates
@@ -17,21 +18,21 @@ if ( ! isset( $user ) ) {
 ?>
 <div id="learn-press-user-profile" class="lp-user-profile">
 
-    <?php
-    /**
-     * @since 3.x.x
-     */
-    do_action('learn-press/before-user-profile', $user);
+	<?php
+	/**
+	 * @since 3.x.x
+	 */
+	do_action( 'learn-press/before-user-profile', $user );
 
-    /**
-     * @since 3.x.x
-     */
-    do_action('learn-press/user-profile', $user);
+	/**
+	 * @since 3.x.x
+	 */
+	do_action( 'learn-press/user-profile', $user );
 
-    /**
-     * @since 3.x.x
-     */
-    do_action('learn-press/after-user-profile', $user);
-    ?>
+	/**
+	 * @since 3.x.x
+	 */
+	do_action( 'learn-press/after-user-profile', $user );
+	?>
 
 </div>

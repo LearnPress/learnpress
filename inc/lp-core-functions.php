@@ -725,8 +725,8 @@ function learn_press_get_current_profile_link() {
 	if ( empty( $wp_rewrite->permalink_structure ) ) {
 		return;
 	}
-	$current_user = wp_get_current_user();
-	$link         = home_url( "/profile/$current_user->user_login" );
+	$current_user = learn_press_get_current_user();
+	$link         = home_url( "/profile/" . $current_user->get_data( 'username' ) );
 
 	return $link;
 }
@@ -2073,59 +2073,7 @@ function learn_press_profile_tab_exists( $tab ) {
 	return false;
 }
 
-/**
- * Get user profile link
- *
- * @param int  $user_id
- * @param null $tab
- *
- * @return mixed|string|void
- */
-function learn_press_user_profile_link( $user_id = 0, $tab = null ) {
-	if ( ! $user_id ) {
-		$user_id = get_current_user_id();
-	}
-	$user    = false;
-	$deleted = in_array( $user_id, LP_User_Factory::$_deleted_users );
-	if ( ! $deleted ) {
-		if ( is_numeric( $user_id ) ) {
-			$user = get_user_by( 'id', $user_id );
-		} else {
-			$user = get_user_by( 'login', urldecode( $user_id ) );
-		}
-	} else {
-		return '';
-	}
-	if ( ! $deleted && ! $user ) {
-		LP_User_Factory::$_deleted_users[] = $user_id;
-	}
 
-	if ( ! $user ) {
-		return '';
-	}
-	global $wp_query;
-	$args = array(
-		'user' => $user->user_login
-	);
-	if ( $tab ) {
-		$args['tab'] = $tab;
-	} else {
-		$args['tab'] = learn_press_get_current_profile_tab();
-	}
-	$args         = array_map( '_learn_press_urlencode', $args );
-	$profile_link = trailingslashit( learn_press_get_page_link( 'profile' ) );
-	if ( $profile_link ) {
-		if ( get_option( 'permalink_structure' ) /*&& learn_press_get_page_id( 'profile' )*/ ) {
-			$url = $profile_link . join( "/", array_values( $args ) ) . '/';
-		} else {
-			$url = add_query_arg( $args, $profile_link );
-		}
-	} else {
-		$url = get_author_posts_url( $user_id );
-	}
-
-	return apply_filters( 'learn_press_user_profile_link', $url, $user_id, $tab );
-}
 
 function _learn_press_urlencode( $string ) {
 	return preg_replace( '/\s/', '+', $string );

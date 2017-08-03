@@ -35,6 +35,14 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			if ( ! $role ) {
 				$this->_role = $this->get_role();
 			}
+
+			add_action( 'learn-press/profile-tab-callback', array( $this, 'output' ), 10, 3 );
+		}
+
+		public function output( $tab, $args, $user ) {
+			if ( ( $location = learn_press_locate_template( 'profile/tabs/' . $tab . '.php' ) ) && file_exists( $location ) ) {
+				include $location;
+			}
 		}
 
 		protected function get_role() {
@@ -65,31 +73,41 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			return $this->_user;
 		}
 
+		public function tab_dashboard() {
+			learn_press_get_template( 'profile/dashboard.php', array( 'user' => $this->_user ) );
+		}
+
 		public function get_tabs() {
 
 			$defaults = array(
-				''=> array(
-					'title'=>__('Dashboard', 'learnpress'),
-					'callback'=>array($this, 'tab_dashboard')
+				''              => array(
+					'title'    => __( 'Dashboard', 'learnpress' ),
+					'callback' => array( $this, 'tab_dashboard' )
 				),
-				'courses'=> array(
-					'title'=>__('Courses', 'learnpress'),
-					'callback'=>array($this, 'tab_courses')
+				'courses'       => array(
+					'title'    => __( 'Courses', 'learnpress' ),
+					'callback' => array( $this, 'tab_courses' )
 				),
-				'quizzes'=> array(
-					'title'=>__('Quizzes', 'learnpress'),
-					'callback'=>array($this, 'tab_quizzes')
+				'quizzes'       => array(
+					'title'    => __( 'Quizzes', 'learnpress' ),
+					'callback' => array( $this, 'tab_quizzes' )
 				),
-				'orders'=> array(
-					'title'=>__('Orders', 'learnpress'),
-					'callback'=>array($this, 'tab_orders')
+				'orders'        => array(
+					'title'    => __( 'Orders', 'learnpress' ),
+					'callback' => array( $this, 'tab_orders' )
 				),
-				'order-details'=> array(
-					'title'=>__('Order details', 'learnpress'),
-					'callback'=>array($this, 'tab_order_details')
+				'order-details' => array(
+					'title'    => __( 'Order details', 'learnpress' ),
+					'hidden'   => true,
+					'callback' => array( $this, 'tab_order_details' )
 				),
+				'settings'      => array(
+					'title'    => __( 'Settings', 'learnpress' ),
+					'callback' => array( $this, 'tab_settings' )
+				)
 			);
 
+			return apply_filters( 'learn-press/profile-tabs', $defaults );
 			$course_endpoint = LP()->settings->get( 'profile_endpoints.profile-courses' );
 			if ( ! $course_endpoint ) {
 				$course_endpoint = 'profile-courses';

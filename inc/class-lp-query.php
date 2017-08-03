@@ -149,7 +149,9 @@ class LP_Query {
 		add_rewrite_tag( '%quiz%', '([^&]+)' );
 		add_rewrite_tag( '%question%', '([^&]+)' );
 		add_rewrite_tag( '%user%', '([^/]*)' );
-		add_rewrite_tag( '%lp-paged%', '(.*)' );
+
+		add_rewrite_tag( '%view%', '([^/]*)' );
+		add_rewrite_tag( '%view_id%', '(.*)' );
 		do_action( 'learn_press_add_rewrite_tags' );
 	}
 
@@ -216,7 +218,7 @@ class LP_Query {
 				foreach ( $tabs as $slug => $args ) {
 					add_rewrite_rule(
 						'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?(' . $slug . ')/?([0-9]*)/?$',
-						'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&lp-paged=$matches[3]',
+						'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&view_id=$matches[3]',
 						'top'
 					);
 				}
@@ -226,6 +228,12 @@ class LP_Query {
 //					'top'
 //				);
 			}
+
+			add_rewrite_rule(
+				'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?(' . $slug . ')/?([0-9]*)/?$',
+				'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&view_id=$matches[3]',
+				'top'
+			);
 
 		}
 

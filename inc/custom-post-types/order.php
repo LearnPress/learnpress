@@ -482,7 +482,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					} else {
 						if ( $the_order->customer_exists() ) {
 							$user = learn_press_get_user( $the_order->user_id );
-							printf( '<a href="user-edit.php?user_id=%d">%s (%s)</a>', $the_order->user_id, $user->user_login, $user->display_name );
+							printf( '<a href="user-edit.php?user_id=%d">%s (%s)</a>', $the_order->user_id, $user->get_data('user_login'), $user->get_data('display_name') );
 							?><?php
 							printf( '<br /><span>%s</span>', $user->user_email );
 						} else {

@@ -24,7 +24,7 @@ class LP_Order extends LP_Abstract_Post_Data {
 	 * @param mixed $order_id
 	 */
 	public function __construct( $order_id = false ) {
-		parent::__construct();
+		parent::__construct($order_id);
 		if ( is_numeric( $order_id ) && $order_id > 0 ) {
 			$this->set_id( $order_id );
 		} elseif ( $order_id instanceof self ) {
@@ -328,8 +328,8 @@ class LP_Order extends LP_Abstract_Post_Data {
 				$customer_name = $user->get_data( 'display_name' );
 			} elseif ( $user->get_data( 'user_nicename' ) ) {
 				$customer_name = $user->get_data( 'user_nicename' );
-			} elseif ( $user->get_data( 'user_login' ) ) {
-				$customer_name = $user->get_data( 'user_login' );
+			} elseif ( $user->get_data( 'username' ) ) {
+				$customer_name = $user->get_data( 'username' );
 			}
 		}
 

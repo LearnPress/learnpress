@@ -21,10 +21,10 @@ if ( !empty( $tabs ) && !empty( $tabs[$current] ) ) : ?>
 		<span class="user-avatar"><?php echo $user->get_profile_picture(); ?></span>
 		<div class="user-basic-info">
 			<strong class="user-nicename"><?php echo learn_press_get_profile_display_name( $user ); ?></strong>
-			<?php if ( $description = get_user_meta( $user->id, 'description', true ) ): ?>
-				<p class="user-bio"><?php echo get_user_meta( $user->id, 'description', true ); ?></p>
+			<?php if ( $description = get_user_meta( $user->ID, 'description', true ) ): ?>
+				<p class="user-bio"><?php echo get_user_meta( $user->ID, 'description', true ); ?></p>
 			<?php endif; ?>
-			<?php if ( $cuser->id == $user->ID ): ?>
+			<?php if ( $cuser->get_id() == $user->ID ): ?>
 				<p>
 					<a href="<?php echo esc_url( wp_logout_url() ); ?>"><?php _e( 'Logout', 'learnpress' ) ?></a>
 				</p>

@@ -11,42 +11,38 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! $user ) {
+if ( ! isset( $user ) ) {
 	$user = learn_press_get_current_user();
 }
 
 $profile = LP_Profile::instance( $user->get_id() );
 $tabs    = $profile->get_tabs();
-
-$current = '';
+$current = learn_press_get_current_profile_tab();
 ?>
-sdfsdfdsfdsf
-<ul class="tabs learn-press-tabs clearfix">
-	<?php foreach ( $tabs as $key => $tab ) : ?>
-		<?php
-		if ( ! learn_press_current_user_can_view_profile_section( $key, $user ) ) {
-			continue;
-		}
-		?>
-        <li class="<?php echo esc_attr( $key ); ?>_tab<?php echo $current == $key ? ' current' : ''; ?>">
+<div id="learn-press-profile-nav">
+
+    <?php do_action('learn-press/before-profile-nav', $user);?>
+
+    <ul class="learn-press-tabs tabs">
+		<?php foreach ( $tabs as $key => $tab ) : ?>
 			<?php
-			$link = learn_press_user_profile_link( $user->id, $key );
+//		if ( ! current_user_can('lp-view-profile-' . $slug, $user ) ) {
+//			continue;
+//		}
+			if ( array_key_exists( 'hidden', $tab ) && $tab['hidden'] ) {
+				continue;
+			}
 			?>
-            <a href="<?php echo esc_url( $link ); ?>"
-               data-slug="<?php echo esc_attr( $link ); ?>"><?php echo apply_filters( 'learn_press_profile_' . $key . '_tab_title', esc_html( $tab['title'] ), $key ); ?></a>
-        </li>
-	<?php endforeach; ?>
-</ul>
-<div class="user-profile-tabs learn-press-tabs-wrapper-x">
-	<?php foreach ( $tabs as $key => $tab ) : ?>
-		<?php if ( $current == $key && learn_press_current_user_can_view_profile_section( $key, $user ) ) { ?>
-            <div class="learn-press-tab" id="tab-<?php echo esc_attr( $key ); ?>">
-                <div class="entry-tab-inner">
-					<?php if ( is_callable( $tab['callback'] ) ): ?>
-						<?php echo call_user_func_array( $tab['callback'], array( $key, $tab, $user ) ); ?>
-					<?php endif; ?>
-                </div>
-            </div>
-		<?php } ?>
-	<?php endforeach; ?>
+            <li class="<?php echo esc_attr( $key ); ?>_tab<?php echo $current == $key ? ' active' : ''; ?>">
+				<?php
+				$link = learn_press_user_profile_link( $user->get_id(), $key === '' ? false : $key );
+				?>
+                <a href="<?php echo esc_url( $link ); ?>"
+                   data-slug="<?php echo esc_attr( $link ); ?>"><?php echo apply_filters( 'learn_press_profile_' . $key . '_tab_title', esc_html( $tab['title'] ), $key ); ?></a>
+            </li>
+		<?php endforeach; ?>
+    </ul>
+
+	<?php do_action('learn-press/after-profile-nav', $user);?>
+
 </div>
