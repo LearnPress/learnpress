@@ -212,11 +212,21 @@ class LP_Query {
 
 		// Profile
 		if ( $profile_id = learn_press_get_page_id( 'profile' ) ) {
-			add_rewrite_rule(
-				'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?([^/]*)/?([0-9]*)/?$',
-				'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&lp-paged=$matches[3]',
-				'top'
-			);
+			if ( $tabs = learn_press_get_user_profile_tabs() ) {
+				foreach ( $tabs as $slug => $args ) {
+					add_rewrite_rule(
+						'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?(' . $slug . ')/?([0-9]*)/?$',
+						'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&lp-paged=$matches[3]',
+						'top'
+					);
+				}
+//				add_rewrite_rule(
+//					'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?([^/]*)/?([0-9]*)/?$',
+//					'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&lp-paged=$matches[3]',
+//					'top'
+//				);
+			}
+
 		}
 
 		// Archive course

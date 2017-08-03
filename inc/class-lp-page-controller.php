@@ -210,7 +210,7 @@ class LP_Page_Controller {
 			return false;
 		}
 
-		learn_press_debug($wp);
+		//learn_press_debug($wp);
 
 		return true;
 		$current_tab = learn_press_get_current_profile_tab( false );
