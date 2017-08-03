@@ -67,7 +67,28 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 
 		public function get_tabs() {
 
-			$defaults = array();
+			$defaults = array(
+				''=> array(
+					'title'=>__('Dashboard', 'learnpress'),
+					'callback'=>array($this, 'tab_dashboard')
+				),
+				'courses'=> array(
+					'title'=>__('Courses', 'learnpress'),
+					'callback'=>array($this, 'tab_courses')
+				),
+				'quizzes'=> array(
+					'title'=>__('Quizzes', 'learnpress'),
+					'callback'=>array($this, 'tab_quizzes')
+				),
+				'orders'=> array(
+					'title'=>__('Orders', 'learnpress'),
+					'callback'=>array($this, 'tab_orders')
+				),
+				'order-details'=> array(
+					'title'=>__('Order details', 'learnpress'),
+					'callback'=>array($this, 'tab_order_details')
+				),
+			);
 
 			$course_endpoint = LP()->settings->get( 'profile_endpoints.profile-courses' );
 			if ( ! $course_endpoint ) {
