@@ -14,12 +14,8 @@
         'ADD_NEW_SECTION': function (state, section) {
             state.sections.push(section);
         },
-        'REMOVE_SECTION': function (state, sectionId) {
-            state.sections.forEach(function (section, index) {
-                if (section.id === sectionId) {
-                    state.sections.splice(index, 1);
-                }
-            });
+        'REMOVE_SECTION': function (state, index) {
+            state.sections.splice(index, 1);
         }
     };
 
@@ -33,8 +29,8 @@
                 id: -1
             });
         },
-        removeSection: function (context, sectionId) {
-            context.commit('REMOVE_SECTION', sectionId);
+        removeSection: function (context, index) {
+            context.commit('REMOVE_SECTION', index);
         }
     };
 

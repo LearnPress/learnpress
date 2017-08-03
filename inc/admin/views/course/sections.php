@@ -14,11 +14,11 @@ learn_press_admin_view( 'course/section' );
 <script type="text/x-template" id="tmpl-lp-list-sections">
     <div class="curriculum-sections">
         <draggable :list="sections">
-            <lp-section v-for="(section, index) in sections" :section="section" :key="section.id" :order="index+1"></lp-section>
+            <lp-section v-for="(section, index) in sections" :section="section" :index="index" :key="index" :order="index+1"></lp-section>
         </draggable>
 
         <div class="add-new-section">
-            <button type="button" class="button button-primary" @click.prevent="clickNewSection"><?php esc_html_e( 'Add new section', 'learnpress' ); ?></button>
+            <button type="button" class="button button-primary" @click.prevent="addSection"><?php esc_html_e( 'Add new section', 'learnpress' ); ?></button>
         </div>
     </div>
 
@@ -30,7 +30,7 @@ learn_press_admin_view( 'course/section' );
         Vue.component('lp-list-sections', {
             template: '#tmpl-lp-list-sections',
             methods: {
-                clickNewSection: function () {
+                addSection: function () {
                     $store.dispatch('addNewSection');
                 }
             },

@@ -107,6 +107,11 @@
 					height: 100%;
 				}
 
+				.remove {
+					line-height: 5;
+					vertical-align: middle;
+				}
+
 				.collapse {
 					&:hover {
 						color: #0085ba;
