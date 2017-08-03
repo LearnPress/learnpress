@@ -1,4 +1,28 @@
-;(function ($, Vue, data) {
+;(function (exports, Vue, Vuex, data) {
+    var state = data;
+
+    var getters = {
+        sections: function (state) {
+            return state.sections || [];
+        },
+        id: function (state) {
+            return state.course_id;
+        }
+    };
+
+    var mutations = {};
+
+    var actions = {};
+
+    exports.LP_Curriculum_Store = new Vuex.Store({
+        state: state,
+        getters: getters,
+        mutations: mutations,
+        actions: actions
+    });
+})(window, Vue, Vuex, lq_course_editor);
+
+(function ($, Vue, data) {
     Vue.component('lp-course-editor', {
         template: '#tmpl-lp-course-editor',
         data: function () {

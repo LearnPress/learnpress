@@ -35,9 +35,13 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 		return apply_filters(
 			'learn-press/admin-default-scripts',
 			array(
-				'lp-vuejs'               => array(
+				'lp-vue'                 => array(
 					'url' => self::url( 'js/vendor/vue.js' ),
 					'ver' => '2.4.0'
+				),
+				'lp-vuex'                => array(
+					'url' => self::url( 'js/vendor/vuex.2.3.1.js' ),
+					'ver' => '2.3.1'
 				),
 				'learn-press-global'     => array(
 					'url'  => $this->url( 'js/global.js' ),
@@ -105,7 +109,8 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				'course-editor-v2'       => array(
 					'url'  => $this->url( 'js/admin/course-editor-v2.js' ),
 					'deps' => array(
-						'lp-vuejs'
+						'lp-vue',
+						'lp-vuex'
 					)
 				)
 			)
