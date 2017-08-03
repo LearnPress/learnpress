@@ -152,6 +152,7 @@ class LP_Query {
 
 		add_rewrite_tag( '%view%', '([^/]*)' );
 		add_rewrite_tag( '%view_id%', '(.*)' );
+		add_rewrite_tag( '%section%', '(.*)' );
 		do_action( 'learn_press_add_rewrite_tags' );
 	}
 
@@ -214,6 +215,8 @@ class LP_Query {
 
 		// Profile
 		if ( $profile_id = learn_press_get_page_id( 'profile' ) ) {
+			$top_rules    = array();
+			$bottom_rules = array();
 			if ( $tabs = learn_press_get_user_profile_tabs() ) {
 				foreach ( $tabs as $slug => $args ) {
 					add_rewrite_rule(
@@ -221,6 +224,14 @@ class LP_Query {
 						'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&view_id=$matches[3]',
 						'top'
 					);
+
+					if ( ! empty( $args['sections'] ) ) {
+						add_rewrite_rule(
+							'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?(' . $slug . ')/?([^/]*)/?$',
+							'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&section=$matches[3]',
+							'top'
+						);
+					}
 				}
 //				add_rewrite_rule(
 //					'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?([^/]*)/?([0-9]*)/?$',
@@ -229,11 +240,6 @@ class LP_Query {
 //				);
 			}
 
-			add_rewrite_rule(
-				'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?(' . $slug . ')/?([0-9]*)/?$',
-				'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&view_id=$matches[3]',
-				'top'
-			);
 
 		}
 

@@ -36,13 +36,32 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				$this->_role = $this->get_role();
 			}
 
-			add_action( 'learn-press/profile-tab-callback', array( $this, 'output' ), 10, 3 );
+			add_action( 'learn-press/profile-content', array( $this, 'output' ), 10, 3 );
+			add_action( 'learn-press/before-profile-content', array( $this, 'output_section' ), 10, 3 );
+			add_action( 'learn-press/profile-section-content', array( $this, 'output_section_content' ), 10, 3 );
 		}
 
 		public function output( $tab, $args, $user ) {
 			if ( ( $location = learn_press_locate_template( 'profile/tabs/' . $tab . '.php' ) ) && file_exists( $location ) ) {
 				include $location;
 			}
+		}
+
+		public function output_section( $tab, $args, $user ) {
+			learn_press_get_template( 'profile/tabs/sections.php', compact( 'tab', 'args', 'user' ) );
+		}
+
+		public function output_section_content( $section, $args, $user ) {
+			global $wp;
+			$current = ! empty( $wp->query_vars['section'] ) ? $wp->query_vars['section'] : false;
+			if ( $current === $section ) {
+				if ( ( $location = learn_press_locate_template( 'profile/tabs/edit/' . $section . '.php' ) ) && file_exists( $location ) ) {
+					include $location;
+				} else {
+					echo $location;
+				}
+			}
+
 		}
 
 		protected function get_role() {
@@ -79,7 +98,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 
 		public function get_tabs() {
 
-			$defaults = array(
+			$defaults                                               = array(
 				''              => array(
 					'title'    => __( 'Dashboard', 'learnpress' ),
 					'callback' => array( $this, 'tab_dashboard' )
@@ -101,12 +120,30 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 					'hidden'   => true,
 					'callback' => array( $this, 'tab_order_details' )
 				),
+				'xcertificatessdfsdfsdfsdfsdf'  => array(
+					'title'    => __( 'Certificates', 'learnpress' ),
+					'callback' => array( 'asdasd', 'tab_orders' )
+				),
 				'settings'      => array(
 					'title'    => __( 'Settings', 'learnpress' ),
-					'callback' => array( $this, 'tab_settings' )
+					'callback' => array( $this, 'tab_settings' ),
+					'sections' => array(
+						'basic-information' => array(
+							'title'    => __( 'General', 'learnpress' ),
+							'callback' => array( $this, 'tab_order_details' )
+						),
+						'avatar'            => array(
+							'title'    => __( 'Avatar', 'learnpress' ),
+							'callback' => array( $this, 'tab_order_details' )
+						),
+						'change-password'   => array(
+							'title'    => __( 'Password', 'learnpress' ),
+							'hidden'   => true,
+							'callback' => array( $this, 'tab_order_details' )
+						)
+					)
 				)
 			);
-
 			return apply_filters( 'learn-press/profile-tabs', $defaults );
 			$course_endpoint = LP()->settings->get( 'profile_endpoints.profile-courses' );
 			if ( ! $course_endpoint ) {

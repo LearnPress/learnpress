@@ -15,6 +15,7 @@ defined( 'ABSPATH' ) or exit;
 if ( ! isset( $user ) ) {
 	$user = learn_press_get_current_user();
 }
+global $wp;
 ?>
 <div id="learn-press-user-profile" class="lp-user-profile">
 

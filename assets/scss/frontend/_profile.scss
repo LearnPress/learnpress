@@ -1,6 +1,7 @@
-#learn-press-user-profile{
+#learn-press-user-profile {
     overflow: hidden;
 }
+
 #learn-press-profile-header {
     height: 100px;
     background: #f0defb;
@@ -15,30 +16,40 @@
     }
 }
 
-#learn-press-profile-nav{
+#learn-press-profile-nav {
     float: left;
     min-width: 200px;
     padding-top: 40px;
     background: #f5f5f5;
-    margin-bottom: -200%;
-    padding-bottom: 200%;
-    .tabs{
+    margin-bottom: -20000px;
+    padding-bottom: 20000px;
+    .tabs {
         list-style: none;
-        li{
+        li {
             margin-bottom: 0;
-            a{
+            ul{
+                list-style: none;
+                margin: 0;
+                background: #F9F9F9;
+                li{
+                    a{
+                        padding-left: 20px;
+                    }
+                }
+            }
+            a {
                 display: block;
                 text-decoration: none;
                 padding: 5px 10px;
                 border: none;
                 box-shadow: none;
                 outline: none;
-                &:hover{
+                &:hover {
                     background: #FFF;
                 }
             }
-            &.active{
-                a{
+            &.active {
+                a {
                     background: #FFF;
                 }
             }
@@ -46,12 +57,32 @@
     }
 }
 
-#learn-press-profile-content{
-    margin-left: 220px;
+#learn-press-profile-content {
+    margin-left: 230px;
     padding-top: 40px;
+    padding-right: 30px;
+    .lp-sections {
+        list-style: none;
+        overflow: hidden;
+        li {
+            float: left;
+            a {
+                text-decoration: none;
+                display: block;
+                padding: 3px 5px;
+                border: none;
+                box-shadow: none;
+            }
+            &.active {
+                a {
+                    border-bottom: 2px solid #DDD;
+                }
+            }
+        }
+    }
 }
 
-#learn-press-profile-footer{
+#learn-press-profile-footer {
     clear: both;
     background: #FFF;
     z-index: 10;

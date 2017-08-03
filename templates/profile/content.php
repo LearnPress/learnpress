@@ -7,7 +7,7 @@
  * @version 3.x.x
  */
 
-defined('ABSPATH') or exit;
+defined( 'ABSPATH' ) or exit;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -29,15 +29,23 @@ $current = learn_press_get_current_profile_tab();
 			<?php if ( $current == $key && learn_press_current_user_can_view_profile_section( $key, $user ) ) { ?>
                 <div class="learn-press-tab" id="tab-<?php echo esc_attr( $key ); ?>">
                     <div class="entry-tab-inner">
-						<?php if ( is_callable( $tab['callback'] ) ): print_r( $tab ); ?>
 
-							<?php echo call_user_func_array( $tab['callback'], array( $key, $tab, $user ) ); ?>
+						<?php do_action( 'learn-press/before-profile-content', $key, $tab, $user ); ?>
 
-						<?php else: ?>
-                            xx
-							<?php do_action( 'learn-press/profile-tab-callback', $key, $tab, $user ); ?>
-                            yy
-						<?php endif; ?>
+						<?php if (  empty( $tab['sections'] ) ) { ?>
+							<?php if ( is_callable( $tab['callback'] ) ): print_r( $tab ); ?>
+
+								<?php echo call_user_func_array( $tab['callback'], array( $key, $tab, $user ) ); ?>
+
+							<?php else: ?>
+
+								<?php do_action( 'learn-press/profile-content', $key, $tab, $user ); ?>
+
+							<?php endif; ?>
+
+						<?php } ?>
+
+						<?php do_action( 'learn-press/after-profile-content' ); ?>
                     </div>
                 </div>
 			<?php } ?>

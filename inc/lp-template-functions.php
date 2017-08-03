@@ -1408,6 +1408,8 @@ if ( ! function_exists( 'learn_press_is_404' ) ) {
 		}
 		$wp_query->set_404();
 		status_header( 404 );
+
+		die();
 	}
 }
 
