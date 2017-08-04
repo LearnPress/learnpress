@@ -108,13 +108,28 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			}
 		}
 
+		/**
+		 * Handle ajax update curriculum.
+		 *
+		 * @since 3.0.0
+		 */
 		public static function update_curriculum() {
-			$data = learn_press_get_request_args( array(
-				'course_id',
-				'sections',
+			$args = wp_parse_args( $_POST, array(
+				'course_id' => false,
+				'sections'  => [],
 			) );
 
-			wp_send_json_success( $data );
+			//@todo update sections
+
+			$course   = learn_press_get_course( $args['course_id'] );
+			$sections = $course->get_curriculum();
+
+			$sections_data = array();
+			foreach ( $sections as $section ) {
+				$sections_data[] = $section->to_array();
+			}
+
+			wp_send_json_success( $sections_data );
 		}
 
 		/**
