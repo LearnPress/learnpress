@@ -53,6 +53,11 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		public $session = null;
 
 		/**
+		 * @var LP_Profile
+		 */
+		public $profile = null;
+
+		/**
 		 * @var LP_Cart object
 		 */
 		public $cart = false;
@@ -687,28 +692,3 @@ function load_learn_press() {
  * Create new instance of LearnPress and put it to global
  */
 $GLOBALS['LearnPress'] = LP();
-
-add_filter( 'learn-press/profile-tabs', function ( $tabs ) {
-
-	$tabs['courses']['sections'] = array(
-		'tab-1' => array(
-			'title'    => __( 'Tab 1', 'learnpress' ),
-			'callback' => array( 'sdfsdfsdfsdf', 'tab_order_details' )
-		),
-		'tab-2' => array(
-			'title'    => __( 'Tab 2', 'learnpress' ),
-			'callback' => array( 'sdfsdfsdfsdf', 'tab_order_details' )
-		)
-	);
-	$tabs['grade']               = array(
-		'title'    => __( 'Grade', 'learnpress' ),
-		'callback' => array( 'asdasd', 'tab_orders' )
-	);
-
-	$tabs['certificates'] = array(
-		'title'    => __( 'Certificates', 'learnpress' ),
-		'callback' => array( 'asdasd', 'tab_orders' )
-	);
-
-	return $tabs;
-} );

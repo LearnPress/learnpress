@@ -2074,7 +2074,6 @@ function learn_press_profile_tab_exists( $tab ) {
 }
 
 
-
 function _learn_press_urlencode( $string ) {
 	return preg_replace( '/\s/', '+', $string );
 }
@@ -2218,21 +2217,6 @@ function learn_press_auto_enroll_user_to_courses( $order_id ) {
 function learn_press_is_enable_cart() {
 	return defined( 'LP_ENABLE_CART' ) && LP_ENABLE_CART == true;//
 	// apply_filters( 'learn_press_enable_cart', LP()->settings->get( 'enable_cart' ) == 'yes' );
-}
-
-function learn_press_get_checkout_course_( $field = null ) {
-
-	$purchase_course = LP()->session->get( 'purchase-course' );
-	$purchase_course = apply_filters( 'learn_press_get_checkout_course', $purchase_course );
-
-	if ( $purchase_course && array_key_exists( $field, $purchase_course ) ) {
-		$return = apply_filters( 'learn_press_get_checkout_course_field', $purchase_course[ $field ], $field, $purchase_course );
-		$return = apply_filters( 'learn_press_get_checkout_course_field_' . $field, $purchase_course[ $field ], $purchase_course );
-
-		return $return;
-	}
-
-	return $purchase_course;
 }
 
 /**

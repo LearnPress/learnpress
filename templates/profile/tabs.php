@@ -1,77 +1,81 @@
 <?php
 /**
- * User Profile tabs
+ * Display tabs navigation.
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 1.0
+ * @version 3.x.x
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-global $wp;
-if ( ! isset( $user ) ) {
-	$user = learn_press_get_current_user();
-}
+global $wp, $wp_query, $profile;
 
-$profile = LP_Profile::instance( $user->get_id() );
-$tabs    = $profile->get_tabs();
-$current = learn_press_get_current_profile_tab();
+
+
 ?>
 <div id="learn-press-profile-nav">
 
-	<?php do_action( 'learn-press/before-profile-nav', $user ); ?>
+	<?php
+	/**
+	 * @since 3.x.x
+	 */
+	do_action( 'learn-press/before-profile-nav', $profile );
+	?>
 
     <ul class="learn-press-tabs tabs">
-		<?php foreach ( $tabs as $key => $tab ) : ?>
+
+		<?php foreach ( $profile->get_tabs() as $tab_key => $tab_data ) : ?>
 			<?php
-//		if ( ! current_user_can('lp-view-profile-' . $slug, $user ) ) {
-//			continue;
-//		}
-			if ( array_key_exists( 'hidden', $tab ) && $tab['hidden'] ) {
+			// If current user does not have permission and/or tab is invisible
+			if ( ! $profile->current_user_can( "view-tab-{$tab_key}" ) || $profile->is_hidden( $tab_data ) ) {
 				continue;
 			}
 
-			$link = learn_press_user_profile_link( $user->get_id(), $key === '' ? false : $key );
-			if ( empty( $tab['sections'] ) ) {
-				$js        = '';
-				$main_link = $link;
-			} else {
-				$js        = 'onmouseover="jQuery(this).find(\'ul\').show(); return false;" onmouseleave="jQuery(this).find(\'ul\').toggle(jQuery(this).hasClass(\'active\'))"';
-				$main_link = 'javascript:void(0)';
+			$slug        = $profile->get_slug( $tab_data, $tab_key );
+			$link        = $profile->get_tab_link( $tab_key, true );
+			$tab_classes = array( esc_attr( $tab_key ) );
+
+			if ( $profile->is_current_tab( $tab_key ) ) {
+				$tab_classes[] = 'active';
 			}
 
 			?>
-            <li class="<?php echo esc_attr( $key ); ?>_tab<?php echo $current == $key ? ' active' : ''; ?>" <?php echo $js; ?>>
-				<?php
+            <li class="<?php echo join( ' ', $tab_classes ) ?>">
 
-				?>
-                <a href="<?php echo esc_url( $main_link ); ?>"
-                   data-slug="<?php echo esc_attr( $main_link ); ?>" ><?php echo apply_filters( 'learn_press_profile_' . $key . '_tab_title', esc_html( $tab['title'] ), $key ); ?></a>
+                <a href="<?php echo esc_url( $link ); ?>"
+                   data-slug="<?php echo esc_attr( $link ); ?>"><?php echo apply_filters( 'learn_press_profile_' . $tab_key . '_tab_title', esc_html( $tab_data['title'] ), $tab_key ); ?></a>
 
-				<?php if ( ! empty( $tab['sections'] ) ) {
+				<?php if ( ! empty( $tab_data['sections'] ) ) { ?>
 
-					$sections  = array();
-					$is_active = false;
-					foreach ( $tab['sections'] as $section => $section_data ) {
+                    <ul class="">
 
-						$class = ! empty( $wp->query_vars['section'] ) && $wp->query_vars['section'] == $section ? 'active' : '';
-						if ( $class && ! $is_active ) {
-							$is_active = true;
-						}
-						$sections[] = '<li class="' . $class . '"><a href="' . $link . $section . '/">' . $section_data['title'] . '</a></li>';
-					}
-					echo '<ul' . ( ! $is_active ? ' style="display: none;"' : '' ) . '>';
-					echo join( "\n", $sections );
+						<?php
+						foreach ( $tab_data['sections'] as $section_key => $section_data ) {
+							$classes = array( esc_attr( $section_key ) );
+							if ( $profile->is_current_section( $section_key, $section_key ) ) {
+								$classes[] = 'active';
+							}
 
-					echo '</ul>';
+							$section_slug = $profile->get_slug( $section_data, $section_key );
+							$section_link = $profile->get_tab_link( $tab_key, $section_slug );
 
-				} ?>
+							?>
+                            <li class="<?php echo join( ' ', $classes ); ?>">
+                                <a href="<?php echo $section_link; ?>"><?php echo $section_data['title']; ?></a>
+                            </li>
+
+						<?php } ?>
+
+                    </ul>
+
+				<?php } ?>
             </li>
 		<?php endforeach; ?>
+
     </ul>
 
-	<?php do_action( 'learn-press/after-profile-nav', $user ); ?>
+	<?php do_action( 'learn-press/after-profile-nav', $profile ); ?>
 
 </div>

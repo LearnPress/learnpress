@@ -143,7 +143,7 @@ if ( ! function_exists( 'learn_press_user_profile_header' ) ) {
 	 * @hooked learn-press/before-user-profile
 	 */
 	function learn_press_user_profile_header( $user ) {
-		learn_press_get_template( 'profile/header.php', array( 'user' => $user ) );
+		learn_press_get_template( 'profile/profile-cover.php', array( 'user' => $user ) );
 	}
 }
 
@@ -165,7 +165,7 @@ if ( ! function_exists( 'learn_press_user_profile_footer' ) ) {
 	 * @hooked learn-press/after-user-profile
 	 */
 	function learn_press_user_profile_footer( $user ) {
-		learn_press_get_template( 'profile/footer.php', array( 'user' => $user ) );
+		//learn_press_get_template( 'profile/footer.php', array( 'user' => $user ) );
 	}
 }
 

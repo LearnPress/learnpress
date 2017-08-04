@@ -12,10 +12,10 @@ defined( 'ABSPATH' ) or exit;
 /**
  * If $user is not set then get the current user.
  */
-if ( ! isset( $user ) ) {
-	$user = learn_press_get_current_user();
+
+if ( ! isset( $profile ) ) {
+	$profile = learn_press_get_profile();
 }
-global $wp;
 ?>
 <div id="learn-press-user-profile" class="lp-user-profile">
 
@@ -23,17 +23,17 @@ global $wp;
 	/**
 	 * @since 3.x.x
 	 */
-	do_action( 'learn-press/before-user-profile', $user );
+	do_action( 'learn-press/before-user-profile', $profile );
 
 	/**
 	 * @since 3.x.x
 	 */
-	do_action( 'learn-press/user-profile', $user );
+	do_action( 'learn-press/user-profile', $profile );
 
 	/**
 	 * @since 3.x.x
 	 */
-	do_action( 'learn-press/after-user-profile', $user );
+	do_action( 'learn-press/after-user-profile', $profile );
 	?>
 
 </div>

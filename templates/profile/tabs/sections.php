@@ -1,29 +1,55 @@
 <?php
-if ( empty( $args['sections'] ) ) {
+/**
+ * Template for displaying sections in the top inside a tab content.
+ *
+ * @author  ThimPress
+ * @package LearnPress/Templates
+ * @version 3.x.x
+ */
+
+defined( 'ABSPATH' ) or die();
+
+global $profile;
+
+if ( ! isset( $tab_key, $tab_data ) ) {
 	return;
 }
-global $wp;
-if ( ! empty( $args['sections'] ) ) {
 
-	echo '<ul class="lp-sections">';
-	foreach ( $args['sections'] as $section => $section_data ) {
-		$link = learn_press_user_profile_link( $user->get_id(), $tab === '' ? false : $tab );
+if ( empty( $tab_data['sections'] ) ) {
+	return;
+}
 
-		$class = ! empty( $wp->query_vars['section'] ) && $wp->query_vars['section'] == $section ? 'active' : '';
-		echo '<li class="' . $class . '"><a href="' . $link . $section . '/">' . $section_data['title'] . '</a></li>';
-	}
 
-	echo '</ul>';
+$link = $profile->get_tab_link( $tab_key );
 
-	foreach ( $args['sections'] as $section => $section_data ) {
-		if ( is_callable( $section_data['callback'] ) ): print_r( $section_data );
+?>
+    <ul class="lp-tab-sections">
 
-			echo call_user_func_array( $section_data['callback'], array( $section, $section_data, $user ) );
+		<?php
+		foreach ( $tab_data['sections'] as $section_key => $section_data ) {
+			$classes = array( esc_attr( $section_key ) );
+			if ( $profile->is_current_section( $section_key, $section_key ) ) {
+				$classes[] = 'active';
+			}
 
-		else:
+			$section_slug = $profile->get_slug( $section_data, $section_key );
+			$section_link = $profile->get_tab_link( $tab_key, $section_slug );
 
-			do_action( 'learn-press/profile-section-content', $section, $section_data, $user );
+			?>
+            <li class="<?php echo join( ' ', $classes ); ?>">
+                <a href="<?php echo $section_link; ?>"><?php echo $section_data['title']; ?></a>
+            </li>
 
-		endif;
-	}
+		<?php } ?>
+
+    </ul>
+
+<?php
+
+foreach ( $tab_data['sections'] as $section => $section_data ) {
+	if ( is_callable( $section_data['callback'] ) ):
+		echo call_user_func_array( $section_data['callback'], array( $section, $section_data, $profile ) );
+	else:
+		do_action( 'learn-press/profile-section-content', $section, $section_data, $profile );
+	endif;
 }

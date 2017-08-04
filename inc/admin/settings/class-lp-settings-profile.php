@@ -110,9 +110,15 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 							'desc'  => __( 'The slugs of tabs display in profile page. Each tab should be unique.', 'learnpress' )
 						),
 						array(
+							'title'   => __( 'Dashboard', 'learnpress' ),
+							'id'      => 'profile_endpoints[profile-dashboard]',
+							'type'    => 'text',
+							'std'     => '',
+							'desc'    => sprintf( __( 'Example link is %s', 'learnpress' ), '<code>[profile/]</code>' )
+						),
+						array(
 							'title'   => __( 'Courses', 'learnpress' ),
 							'id'      => 'profile_endpoints[profile-courses]',
-							'default' => '',
 							'type'    => 'text',
 							'std'     => 'courses',
 							'desc'    => sprintf( __( 'Example link is %s', 'learnpress' ), '<code>[profile/admin/courses]</code>' )
@@ -120,7 +126,6 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 						array(
 							'title'   => __( 'Quizzes', 'learnpress' ),
 							'id'      => 'profile_endpoints[profile-quizzes]',
-							'default' => '',
 							'type'    => 'text',
 							'std'     => 'quizzes',
 							'desc'    => sprintf( __( 'Example link is %s', 'learnpress' ), '<code>[profile/admin/quizzes]</code>' )
@@ -128,7 +133,6 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 						array(
 							'title'   => __( 'Orders', 'learnpress' ),
 							'id'      => 'profile_endpoints[profile-orders]',
-							'default' => '',
 							'type'    => 'text',
 							'std'     => 'orders',
 							'desc'    => sprintf( __( 'Example link is %s', 'learnpress' ), '<code>[profile/admin/orders]</code>' )
@@ -136,10 +140,42 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 						array(
 							'title'   => __( 'Order details', 'learnpress' ),
 							'id'      => 'profile_endpoints[profile-order-details]',
-							'default' => '',
 							'type'    => 'text',
 							'std'     => 'order-details',
 							'desc'    => sprintf( __( 'Example link is %s', 'learnpress' ), '<code>[profile/admin/order-details/123]</code>' )
+						),
+						array(
+							'title' => __( 'Settings Tab', 'learnpress' ),
+							'type'  => 'heading',
+							'desc'  => __( 'The slugs of sections in settings tab. Each slugs should be unique.', 'learnpress' )
+						),
+						array(
+							'title'   => __( 'Slug', 'learnpress' ),
+							'id'      => 'profile_endpoints[profile-settings]',
+							'type'    => 'text',
+							'std'     => 'settings',
+							'desc'    => sprintf( __( 'Example link is %s', 'learnpress' ), '<code>[profile/admin/order-details/123]</code>' )
+						),
+						array(
+							'title'   => __( 'Basic Information', 'learnpress' ),
+							'id'      => 'profile_endpoints[settings-basic-information]',
+							'type'    => 'text',
+							'default'     => 'basic-information',
+							'desc'    => sprintf( __( 'Example link is %s', 'learnpress' ), '<code>[profile/admin/settings/basic-information]</code>' )
+						),
+						array(
+							'title'   => __( 'Avatar', 'learnpress' ),
+							'id'      => 'profile_endpoints[settings-avatar]',
+							'type'    => 'text',
+							'default'     => 'avatar',
+							'desc'    => sprintf( __( 'Example link is %s', 'learnpress' ), '<code>[profile/admin/settings/basic-information]</code>' )
+						),
+						array(
+							'title'   => __( 'Change Password', 'learnpress' ),
+							'id'      => 'profile_endpoints[settings-change-password]',
+							'type'    => 'text',
+							'default'     => 'change-password',
+							'desc'    => sprintf( __( 'Example link is %s', 'learnpress' ), '<code>[profile/admin/settings/basic-information]</code>' )
 						)
 					),
 					$this
@@ -171,6 +207,26 @@ class LP_Settings_Profile extends LP_Abstract_Settings_Page {
 									)
 								)
 							)
+						)
+					)
+				),
+				apply_filters( 'learn-press/profile-settings-fields/publicity', array(
+						array(
+							'title' => __( 'Publicity', 'learnpress' ),
+							'type'  => 'heading',
+							'desc'  => __( 'Publicity and sharing your profile content.', 'learnpress' )
+						),
+						array(
+							'title'   => __( 'Basic Information', 'learnpress' ),
+							'id'      => 'profile_publicity[basic-information]',
+							'default' => 'no',
+							'type'    => 'yes-no'
+						),
+						array(
+							'title'   => __( 'Courses', 'learnpress' ),
+							'id'      => 'profile_publicity[courses]',
+							'default' => 'no',
+							'type'    => 'yes-no'
 						)
 					)
 				)

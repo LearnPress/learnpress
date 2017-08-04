@@ -188,16 +188,15 @@ class LP_Page_Controller {
 		} else {
 			if ( $wp_user = get_user_by( 'login', $wp->query_vars['user'] ) ) {
 				$viewing_user = learn_press_get_user( $wp_user->ID );
+				if ( $viewing_user->is_guest() ) {
+					$viewing_user = false;
+				}
 			}
 		}
 
 		try {
 			if ( ! $viewing_user ) {
 				throw new Exception( sprintf( __( 'The user %s is not available!', 'learnpress' ), $wp->query_vars['user'] ) );
-			}
-
-			if ( $current_user->is_guest() ) {
-
 			}
 		}
 		catch ( Exception $ex ) {

@@ -17,39 +17,37 @@ if ( ! isset( $user ) ) {
 	$user = learn_press_get_current_user();
 }
 
-$profile = LP_Profile::instance( $user->get_id() );
+$profile = learn_press_get_profile();
 $tabs    = $profile->get_tabs();
-
-$current = learn_press_get_current_profile_tab();
+$current = $profile->get_current_tab();
 
 ?>
 <div id="learn-press-profile-content" class="lp-profile-content">
-    <div class="user-profile-tabs learn-press-tabs-wrapper-x">
-		<?php foreach ( $tabs as $key => $tab ) : ?>
-			<?php if ( $current == $key && learn_press_current_user_can_view_profile_section( $key, $user ) ) { ?>
-                <div class="learn-press-tab" id="tab-<?php echo esc_attr( $key ); ?>">
-                    <div class="entry-tab-inner">
 
-						<?php do_action( 'learn-press/before-profile-content', $key, $tab, $user ); ?>
+	<?php
+	foreach ( $tabs as $tab_key => $tab_data ) :
+		if ( ! $profile->is_current_tab( $tab_key ) || ! $profile->current_user_can( "view-tab-{$tab_key}" ) ) {
+			continue;
+		}
+		?>
+        <div id="profile-content-<?php echo esc_attr( $tab_key ); ?>">
+			<?php
 
-						<?php if (  empty( $tab['sections'] ) ) { ?>
-							<?php if ( is_callable( $tab['callback'] ) ): print_r( $tab ); ?>
+			do_action( 'learn-press/before-profile-content', $tab_key, $tab_data, $user );
 
-								<?php echo call_user_func_array( $tab['callback'], array( $key, $tab, $user ) ); ?>
+			if ( empty( $tab_data['sections'] ) ) {
+				if ( is_callable( $tab_data['callback'] ) ): print_r( $tab_data );
+					echo call_user_func_array( $tab_data['callback'], array( $tab_key, $tab_data, $user ) );
+				else:
+					do_action( 'learn-press/profile-content', $tab_key, $tab_data, $user );
+				endif;
+			}
 
-							<?php else: ?>
+			do_action( 'learn-press/after-profile-content' );
 
-								<?php do_action( 'learn-press/profile-content', $key, $tab, $user ); ?>
+			?>
+        </div>
 
-							<?php endif; ?>
-
-						<?php } ?>
-
-						<?php do_action( 'learn-press/after-profile-content' ); ?>
-                    </div>
-                </div>
-			<?php } ?>
-		<?php endforeach; ?>
-    </div>
+	<?php endforeach; ?>
 
 </div>

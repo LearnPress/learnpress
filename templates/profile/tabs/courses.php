@@ -7,7 +7,7 @@
  * @version 2.0
  */
 
-if ( !defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
@@ -39,41 +39,45 @@ $sublink = learn_press_user_profile_link( $user->id, $current );
 
 
 */
-global $post;
+global $post, $profile;
+$user = $profile->get_user();
+$args = array(
+	'user' => $user
+);
 
-$args              = array(
-                        'user'   => $user
-                    );
-$limit             = LP()->settings->get( 'profile_courses_limit', 10 );
-$limit             = apply_filters( 'learn_press_profile_tab_courses_all_limit', $limit );
-$courses           = $user->get( 'courses', array( 'limit' => $limit ) );
+$limit   = LP()->settings->get( 'profile_courses_limit', 10 );
+$limit   = apply_filters( 'learn_press_profile_tab_courses_all_limit', $limit );
+$courses = $user->get( 'courses', array( 'limit' => $limit ) );
 
 $num_pages         = learn_press_get_num_pages( $user->_get_found_rows(), $limit );
 $args['courses']   = $courses;
 $args['num_pages'] = $num_pages;
 
+
 if ( $courses ) {
-    ?>
+	?>
     <div class="learn-press-subtab-content" style="display: block">
         <ul class="learn-press-courses profile-courses courses-list">
-            <?php foreach ( $courses as $post ) {
-                setup_postdata( $post );
-                ?>
+			<?php foreach ( $courses as $post ) {
+				setup_postdata( $post );
+				?>
 
-                <?php
-                learn_press_get_template( 'profile/tabs/courses/loop.php', array( 'user' => $user, 'course_id' => $post->ID ) );
-                wp_reset_postdata();
-                ?>
+				<?php
+				learn_press_get_template( 'profile/tabs/courses/loop.php', array(
+					'user'      => $user,
+					'course_id' => $post->ID
+				) );
+				wp_reset_postdata();
+				?>
 
-            <?php } ?>
+			<?php } ?>
         </ul>
 
-        <?php learn_press_paging_nav( array( 'num_pages' => $num_pages ) ); ?>
+		<?php learn_press_paging_nav( array( 'num_pages' => $num_pages ) ); ?>
 
     </div>
-    <?php
-}
-else {
-    learn_press_display_message( __( 'You haven\'t got any courses yet!', 'learnpress' ) );
+	<?php
+} else {
+	learn_press_display_message( __( 'You haven\'t got any courses yet!', 'learnpress' ) );
 }
 ?>

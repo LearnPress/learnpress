@@ -22,15 +22,24 @@ class LP_Shortcode_Profile extends LP_Abstract_Shortcode {
 		} else {
 			$user = get_user_by( 'id', get_current_user_id() );
 		}
+
+		if ( $user ) {
+			$user = learn_press_get_user( $user->ID );
+		}
+
 		ob_start();
-		if ( ! $user ) {
+		if ( ! $user || $user->is_guest() ) {
 			if ( empty( $wp_query->query['user'] ) ) {
-
-			} else {
-				learn_press_display_message( sprintf( __( 'The user %s is not available!', 'learnpress' ), $wp_query->query['user'] ), 'error' );
+				if ( ! is_user_logged_in() ) {
+					if ( ! LP()->settings->get( 'enable_login_profile' ) ) {
+						echo do_shortcode( '[learn_press_login_form]' );
+					} else {
+						learn_press_display_message( __( 'Please login to see your profile content!', 'learnpress' ), 'error' );
+					}
+				}
 			}
-
 		} else {
+			/*
 			$user = LP_User_Factory::get_user( $user->ID );
 			$tabs = learn_press_get_user_profile_tabs( $user );
 			if ( ! empty( $wp->query_vars['view'] ) ) {
@@ -75,7 +84,10 @@ class LP_Shortcode_Profile extends LP_Abstract_Shortcode {
 						}
 					}
 				endif;
-			}
+			}*/
+			global $profile;
+			$profile = LP_Profile::instance( $user->get_id() );
+			learn_press_get_template( 'profile/profile.php', array( 'profile' => $profile ) );
 		}
 		$output = ob_get_clean();
 

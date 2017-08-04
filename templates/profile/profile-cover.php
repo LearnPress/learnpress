@@ -9,9 +9,10 @@
 
 defined( 'ABSPATH' ) or exit;
 
-if ( ! isset( $user ) ) {
-	$user = learn_press_get_current_user();
-}
+global $profile;
+
+$user = $profile->get_user();
+
 ?>
 <div id="learn-press-profile-header" class="lp-profile-header">
     <div class="lp-profile-cover">

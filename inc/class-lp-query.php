@@ -215,19 +215,26 @@ class LP_Query {
 
 		// Profile
 		if ( $profile_id = learn_press_get_page_id( 'profile' ) ) {
-			$top_rules    = array();
-			$bottom_rules = array();
-			if ( $tabs = learn_press_get_user_profile_tabs() ) {
+
+			add_rewrite_rule(
+				'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?$',
+				'index.php?page_id=' . $profile_id . '&user=$matches[1]',
+				'top'
+			);
+
+			$profile = learn_press_get_profile();
+			if ( $tabs = $profile->get_tabs() ) {
 				foreach ( $tabs as $slug => $args ) {
+					$tab_slug = $profile->get_slug( $args, $slug );
 					add_rewrite_rule(
-						'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?(' . $slug . ')/?([0-9]*)/?$',
+						'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?(' . $tab_slug . ')/?([0-9]*)/?$',
 						'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&view_id=$matches[3]',
 						'top'
 					);
 
 					if ( ! empty( $args['sections'] ) ) {
 						add_rewrite_rule(
-							'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?(' . $slug . ')/?([^/]*)/?$',
+							'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?(' . $tab_slug . ')/?([^/]*)/?$',
 							'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&section=$matches[3]',
 							'top'
 						);
