@@ -1,4 +1,16 @@
-;(function (exports, Vue, Vuex, data) {
+;(function (exports, Vue, data) {
+    Vue.http.options.root = data.ajax;
+
+    Vue.http.interceptors.push(function (request, next) {
+        request.method = 'POST';
+        request.params['lp-ajax'] = data.action;
+
+        next();
+    });
+
+})(window, Vue, lq_course_editor);
+
+(function (exports, Vue, Vuex, data) {
     var state = data;
 
     var getters = {
