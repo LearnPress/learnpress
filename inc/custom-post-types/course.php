@@ -79,7 +79,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				'course_id' => $post->ID,
 				'sections'  => $sections_data,
 				'ajax'      => admin_url( '' ),
-				'action'    => 'learnpress_update_curriculum',
+				'action'    => 'update_curriculum',
 				'nonce'     => wp_create_nonce( 'learnpress_update_curriculum' ),
 			) );
 		}
