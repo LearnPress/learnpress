@@ -114,6 +114,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 * @since 3.0.0
 		 */
 		public static function update_curriculum() {
+			check_ajax_referer( 'learnpress_update_curriculum', 'nonce' );
+
 			$args = wp_parse_args( $_POST, array(
 				'course_id' => false,
 				'sections'  => [],
