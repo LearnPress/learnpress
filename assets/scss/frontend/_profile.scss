@@ -8,8 +8,8 @@
     position: relative;
     .lp-profile-avatar {
         position: absolute;
-        bottom: -20px;
-        left: 20px;
+        bottom: -10px;
+        left: 10px;
         img {
             border-radius: 0;
         }
@@ -25,15 +25,28 @@
     padding-bottom: 20000px;
     .tabs {
         list-style: none;
-        li {
+        > li {
             margin-bottom: 0;
-            ul{
+            ul {
                 list-style: none;
                 margin: 0;
-                background: #F9F9F9;
-                li{
-                    a{
+                padding: 8px 0;
+                display: none;
+                li {
+                    a {
                         padding-left: 20px;
+
+                    }
+                    &.active{
+                        a{
+                            color: #FFF;
+                        }
+                    }
+                    &:hover{
+                        a{
+                            background: transparent;
+                            color: #FFF;
+                        }
                     }
                 }
             }
@@ -49,11 +62,26 @@
                 }
             }
             &.active {
-                a {
-                    background: #FFF;
+                ul{
+                    background: #EAEAEA;
+                    display: block;
+                }
+                > a {
+                    background: #D9D9D9;
+                }
+            }
+            &:hover:not(.active){
+                > a {
+                    background: #D0D0D0;
+                    color: #FFF;
+                }
+                ul{
+                    background: #EAEAEA;
+                    display: block;
                 }
             }
         }
+
     }
 }
 
@@ -87,4 +115,14 @@
     background: #FFF;
     z-index: 10;
     position: relative;
+}
+
+.lp-user-profile {
+    .profile-name {
+        display: block;
+        position: absolute;
+        width: 100%;
+        text-align: center;
+        font-size: 13px;
+    }
 }
