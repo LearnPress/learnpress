@@ -93,7 +93,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'update-payment-order',
 				'bundle_update_quiz_questions',
 				'modal-search-questions',
-				'get-question-data'
+				'get-question-data',
+				'update_curriculum',
 			);
 			foreach ( $ajax_events as $ajax_event => $callback ) {
 				if ( ! is_string( $ajax_event ) ) {
@@ -105,6 +106,32 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				//add_action( 'learn-press/ajax/ajax_delete_quiz_question', array( __CLASS__, 'delete_quiz_question' ) );
 				//add_action( 'learn-press/ajax/ajax_update_quiz', array( __CLASS__, 'update_quiz' ) );
 			}
+		}
+
+		/**
+		 * Handle ajax update curriculum.
+		 *
+		 * @since 3.0.0
+		 */
+		public static function update_curriculum() {
+			check_ajax_referer( 'learnpress_update_curriculum', 'nonce' );
+
+			$args = wp_parse_args( $_POST, array(
+				'course_id' => false,
+				'sections'  => [],
+			) );
+
+			//@todo update sections
+
+			$course   = learn_press_get_course( $args['course_id'] );
+			$sections = $course->get_curriculum();
+
+			$sections_data = array();
+			foreach ( $sections as $section ) {
+				$sections_data[] = $section->to_array();
+			}
+
+			wp_send_json_success( $sections_data );
 		}
 
 		/**
@@ -232,8 +259,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			if ( false === $data ) {
 				try {
 					$data = json_decode( file_get_contents( 'php://input' ), true );
-				}
-				catch ( Exception $exception ) {
+				} catch ( Exception $exception ) {
 				}
 			}
 			if ( $data && func_num_args() > 0 ) {
@@ -330,8 +356,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					} else {
 						$response['message'] = __( 'Delete question failed.', 'learnpress' );
 					}
-				}
-				catch ( Exception $exception ) {
+				} catch ( Exception $exception ) {
 				}
 			}
 			learn_press_send_json( $response );
@@ -364,8 +389,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					} else {
 						$response['message'] = __( 'Delete question failed.', 'learnpress' );
 					}
-				}
-				catch ( Exception $exception ) {
+				} catch ( Exception $exception ) {
 				}
 			}
 			learn_press_send_json( $response );
@@ -745,7 +769,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 * @param        $exclude
 		 * @param        $type
 		 * @param string $context
-		 * @param null   $context_id
+		 * @param null $context_id
 		 *
 		 * @return array
 		 */

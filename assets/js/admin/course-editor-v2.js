@@ -1,4 +1,17 @@
-;(function (exports, Vue, Vuex, data) {
+;(function (exports, Vue, data) {
+    Vue.http.options.root = data.ajax;
+    Vue.http.options.emulateJSON = true;
+
+    Vue.http.interceptors.push(function (request, next) {
+        request.params['lp-ajax'] = data.action;
+        request.params['nonce'] = data.nonce;
+
+        next();
+    });
+
+})(window, Vue, lq_course_editor);
+
+(function (exports, Vue, Vuex, data) {
     var state = data;
 
     var getters = {
@@ -11,6 +24,9 @@
     };
 
     var mutations = {
+        'SET_SECTIONS': function (state, sections) {
+            state.sections = sections;
+        },
         'ADD_NEW_SECTION': function (state, section) {
             state.sections.push(section);
         },
@@ -31,6 +47,19 @@
         },
         removeSection: function (context, index) {
             context.commit('REMOVE_SECTION', index);
+        },
+        updateSections: function (context, sections) {
+            Vue.http.post('', {sections: sections, course_id: context.getters.id})
+                .then(
+                    function (response) {
+                        var result = response.body;
+
+                        context.commit('SET_SECTIONS', result.data);
+                    },
+                    function (error) {
+                        console.error(error);
+                    }
+                );
         }
     };
 

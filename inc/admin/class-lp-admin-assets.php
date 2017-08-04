@@ -43,6 +43,10 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'url' => self::url( 'js/vendor/vuex.2.3.1.js' ),
 					'ver' => '2.3.1'
 				),
+				'lp-vue-resource'        => array(
+					'url' => self::url( 'js/vendor/vue-resource.1.3.4.js' ),
+					'ver' => '1.3.4'
+				),
 				'learn-press-global'     => array(
 					'url'  => $this->url( 'js/global.js' ),
 					'deps' => array( 'jquery', 'underscore', 'utils', 'jquery-ui-sortable' )
@@ -110,7 +114,8 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'url'  => $this->url( 'js/admin/course-editor-v2.js' ),
 					'deps' => array(
 						'lp-vue',
-						'lp-vuex'
+						'lp-vuex',
+						'lp-vue-resource'
 					)
 				)
 			)
