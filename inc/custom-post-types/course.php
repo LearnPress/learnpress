@@ -1182,7 +1182,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 				return;
 			}
 
-			remove_action( 'save_post', array( $this, 'before_save_curriculum' ), 1 );
+			remove_action( 'save_post', array( $this, 'before_save_curriculum' ), 20 );
 			//remove_action( 'rwmb_course_curriculum_before_save_post', array( $this, 'before_save_curriculum' ) );
 
 			$user                  = LP()->user;
