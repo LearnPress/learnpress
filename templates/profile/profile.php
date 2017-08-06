@@ -12,7 +12,7 @@ defined( 'ABSPATH' ) or exit;
 /**
  * If $user is not set then get the current user.
  */
-
+global $wp, $wp_rewrite;
 if ( ! isset( $profile ) ) {
 	$profile = learn_press_get_profile();
 }

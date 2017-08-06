@@ -13,7 +13,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 global $wp, $wp_query, $profile;
 
 
-
 ?>
 <div id="learn-press-profile-nav">
 

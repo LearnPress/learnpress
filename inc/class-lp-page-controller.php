@@ -182,6 +182,8 @@ class LP_Page_Controller {
 		$current_user = learn_press_get_current_user();
 		$viewing_user = false;
 
+		$profile = learn_press_get_profile();
+
 		// If empty query user consider you are viewing of yours.
 		if ( empty( $wp->query_vars['user'] ) ) {
 			$viewing_user = $current_user;

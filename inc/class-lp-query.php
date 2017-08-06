@@ -233,11 +233,19 @@ class LP_Query {
 					);
 
 					if ( ! empty( $args['sections'] ) ) {
-						add_rewrite_rule(
-							'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?(' . $tab_slug . ')/?([^/]*)/?$',
-							'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&section=$matches[3]',
-							'top'
-						);
+						foreach ( $args['sections'] as $section_slug => $section ) {
+							$section_slug = $profile->get_slug( $section, $section_slug );
+							add_rewrite_rule(
+								'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?(' . $tab_slug . ')/(' . $section_slug . ')/?$',
+								'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&section=$matches[3]',
+								'top'
+							);
+						}
+//						add_rewrite_rule(
+//							'^' . get_post_field( 'post_name', $profile_id ) . '/([^/]*)/?(' . $tab_slug . ')/([^/]*)/?$',
+//							'index.php?page_id=' . $profile_id . '&user=$matches[1]&view=$matches[2]&section=$matches[3]',
+//							'top'
+//						);
 					}
 				}
 //				add_rewrite_rule(
