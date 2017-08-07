@@ -1,18 +1,12 @@
-;(function (exports, Vue, data) {
-    Vue.http.options.root = data.ajax;
-    Vue.http.options.emulateJSON = true;
+;
 
-    Vue.http.interceptors.push(function (request, next) {
-        request.params['lp-ajax'] = data.action;
-        request.params['nonce'] = data.nonce;
-
-        next();
-    });
-
-})(window, Vue, lq_course_editor);
-
+/**
+ * Store
+ */
 (function (exports, Vue, Vuex, data) {
     var state = data;
+
+    state.status = 'saved';
 
     var getters = {
         sections: function (state) {
@@ -20,10 +14,17 @@
         },
         id: function (state) {
             return state.course_id;
+        },
+        status: function () {
+            return state.status || 'error';
         }
     };
 
     var mutations = {
+        'SET_STATUS': function (state, status) {
+            state.status = status;
+        },
+
         'SET_SECTIONS': function (state, sections) {
             state.sections = sections;
         },
@@ -36,6 +37,10 @@
     };
 
     var actions = {
+        updateStatus: function (context, status) {
+            context.commit('SET_STATUS', status);
+        },
+
         addNewSection: function (context) {
             context.commit('ADD_NEW_SECTION', {
                 course_id: context.getters.id,
@@ -77,6 +82,37 @@
 
 })(window, Vue, Vuex, lq_course_editor);
 
+
+/**
+ * HTTP
+ */
+(function (exports, Vue, $store) {
+    Vue.http.options.root = $store.state.ajax;
+    Vue.http.options.emulateJSON = true;
+
+    Vue.http.interceptors.push(function (request, next) {
+        request.params['lp-ajax'] = $store.state.action;
+        request.params['nonce'] = $store.state.nonce;
+
+        $store.dispatch('updateStatus', 'loading');
+
+        next(function (response) {
+            var body = response.body;
+            var result = body.success || false;
+
+            if (result) {
+                $store.dispatch('updateStatus', 'saved');
+            } else {
+                $store.dispatch('updateStatus', 'error');
+            }
+        });
+    });
+
+})(window, Vue, LP_Curriculum_Store);
+
+/**
+ * Init app.
+ */
 (function ($, Vue) {
     $(document).ready(function () {
         window.LP_Course_Editor = new Vue({
