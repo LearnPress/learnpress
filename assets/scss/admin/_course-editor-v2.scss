@@ -3,6 +3,25 @@
 	display: none;
 }
 
+@-moz-keyframes lp-spinner {
+	100% {
+		-moz-transform: rotate(360deg);
+	}
+}
+
+@-webkit-keyframes lp-spinner {
+	100% {
+		-webkit-transform: rotate(360deg);
+	}
+}
+
+@keyframes lp-spinner {
+	100% {
+		-webkit-transform: rotate(360deg);
+		transform: rotate(360deg);
+	}
+}
+
 #course-editor-v2 {
 	background-color: #fff;
 	border: 1px solid #ddd;
@@ -13,9 +32,41 @@
 	.heading {
 		padding: 15px;
 
-		h3 {
-			font-size: 1.2em;
-			margin: 10px 0;
+		h4 {
+			margin: 0;
+		}
+
+		.status {
+			font-family: Dashicons;
+			font-size: 20px;
+			position: relative;
+			top: 4px;
+
+			&.success {
+				color: #4caf50;
+
+				&:before {
+					content: "\f147";
+				}
+			}
+
+			&.loading {
+				color: #cddc39;
+				animation: rotation 2s infinite linear;
+				display: inline-block;
+
+				&:before {
+					content: "\f463";
+				}
+			}
+
+			&.failed {
+				color: #ff9800;
+
+				&:before {
+					content: "\f534";
+				}
+			}
 		}
 	}
 
@@ -49,18 +100,6 @@
 			opacity: 0.5;
 		}
 
-		.section-title {
-			font-weight: 600;
-			line-height: 2;
-			font-size: 18px;
-
-			&:empty {
-				&:before {
-					content: attr(data-empty);
-				}
-			}
-		}
-
 		&.open {
 
 		}
@@ -85,9 +124,17 @@
 
 		.section-head {
 			background-color: #f9f9f9;
-			padding: 3px 20px;
+			padding: 3px;
 			position: relative;
 			border-bottom: 1px solid #e5e5e5;
+
+			&:hover {
+				.actions {
+					.remove {
+						display: inline-block;
+					}
+				}
+			}
 
 			&:hover {
 				cursor: move;
@@ -110,6 +157,7 @@
 				.remove {
 					line-height: 5;
 					vertical-align: middle;
+					display: none;
 				}
 
 				.collapse {
@@ -164,10 +212,11 @@
 		}
 
 		.title-input {
-			width: 100%;
-			font-size: 18px;
-			font-weight: 600;
+			font-size: 1.2em;
 			border: none;
+			line-height: 30px;
+			width: calc(100% - 100px);
+			padding-left: 20px;
 		}
 
 		.description-input {
@@ -232,7 +281,7 @@
 			}
 
 			input {
-				font-size: 16px;
+				font-size: 1em;
 				border: none;
 				width: 100%;
 				padding: 10px;

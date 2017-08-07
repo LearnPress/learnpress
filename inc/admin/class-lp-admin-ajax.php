@@ -116,14 +116,49 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		public static function update_curriculum() {
 			check_ajax_referer( 'learnpress_update_curriculum', 'nonce' );
 
-			$args = wp_parse_args( $_POST, array(
-				'course_id' => false,
-				'sections'  => [],
+			$args = wp_parse_args( $_REQUEST, array(
+				'course-id' => false,
+				'type'      => ''
 			) );
+
+			$course_id = $args['course-id'];
+			$course    = learn_press_get_course( $args['course-id'] );
+			if ( ! $course ) {
+				wp_send_json_error();
+			}
+
+			$data = true;
+			switch ( $args['type'] ) {
+				case 'new-section':
+					$data = array(
+						'course_id'   => $course_id,
+						'description' => '',
+						'title'       => '',
+						'id'          => '',
+						'items'       => [],
+					);
+					break;
+
+
+				case 'remove-section':
+					$section_id = ! empty( $args['section-id'] ) ? $args['section-id'] : false;
+
+					$data = $section_id;
+					break;
+
+				case 'sort-sections':
+					$sections = ! empty( $args['sections'] ) ? $args['sections'] : false;
+					if ( $sections ) {
+						$data = $sections;
+					}
+					break;
+			}
+
+			wp_send_json_success( $data );
 
 			//@todo update sections
 
-			$course   = learn_press_get_course( $args['course_id'] );
+
 			$sections = $course->get_curriculum();
 
 			$sections_data = array();

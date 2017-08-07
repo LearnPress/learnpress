@@ -1,29 +1,42 @@
-;(function (exports, Vue, data) {
-    Vue.http.options.root = data.ajax;
-    Vue.http.options.emulateJSON = true;
+;
 
-    Vue.http.interceptors.push(function (request, next) {
-        request.params['lp-ajax'] = data.action;
-        request.params['nonce'] = data.nonce;
-
-        next();
-    });
-
-})(window, Vue, lq_course_editor);
-
+/**
+ * Store
+ */
 (function (exports, Vue, Vuex, data) {
     var state = data;
 
+    state.status = 'success';
+    state.countCurrentRequest = 0;
+
     var getters = {
+        action: function (state) {
+            return state.action;
+        },
         sections: function (state) {
             return state.sections || [];
         },
         id: function (state) {
             return state.course_id;
+        },
+        status: function (state) {
+            return state.status || 'error';
+        },
+        currentRequest: function (state) {
+            return state.countCurrentRequest || 0;
         }
     };
 
     var mutations = {
+        'UPDATE_STATUS': function (state, status) {
+            state.status = status;
+        },
+        'INCREASE_NUMBER_REQUEST': function (state) {
+            state.countCurrentRequest++;
+        },
+        'DECREASE_NUMBER_REQUEST': function (state) {
+            state.countCurrentRequest--;
+        },
         'SET_SECTIONS': function (state, sections) {
             state.sections = sections;
         },
@@ -36,20 +49,53 @@
     };
 
     var actions = {
+        newRequest: function (context) {
+            context.commit('INCREASE_NUMBER_REQUEST');
+            context.commit('UPDATE_STATUS', 'loading');
+        },
+
+        requestComplete: function (context, status) {
+            context.commit('DECREASE_NUMBER_REQUEST');
+
+            if (context.getters.currentRequest === 0) {
+                context.commit('UPDATE_STATUS', status);
+            }
+        },
+
         addNewSection: function (context) {
-            context.commit('ADD_NEW_SECTION', {
-                course_id: context.getters.id,
-                title: '',
-                description: '',
-                items: [],
-                id: -1
-            });
+            Vue.http.LPRequest({type: 'new-section'})
+                .then(
+                    function (response) {
+                        var result = response.body;
+
+                        if (result.success) {
+                            context.commit('ADD_NEW_SECTION', result.data);
+                        }
+                    },
+                    function (error) {
+                        console.error(error);
+                    }
+                );
         },
-        removeSection: function (context, index) {
-            context.commit('REMOVE_SECTION', index);
+
+        removeSection: function (context, payload) {
+            context.commit('REMOVE_SECTION', payload.index);
+
+            Vue.http.LPRequest({
+                type: 'remove-section',
+                'section-id': payload.section.id
+            }).then(
+                function (response) {
+                    var result = response.body;
+                },
+                function (error) {
+                    console.error(error);
+                }
+            );
         },
+
         updateSections: function (context, sections) {
-            Vue.http.post('', {sections: sections, course_id: context.getters.id})
+            Vue.http.LPRequest({sections: sections})
                 .then(
                     function (response) {
                         var result = response.body;
@@ -77,6 +123,50 @@
 
 })(window, Vue, Vuex, lq_course_editor);
 
+/**
+ * HTTP
+ */
+(function (exports, Vue, $store) {
+    Vue.http.LPRequest = function (payload) {
+        return Vue.http.post($store.state.ajax,
+            {
+                nonce: $store.state.nonce,
+                'lp-ajax': $store.state.action,
+                'course-id': $store.getters.id
+            },
+            {
+                emulateJSON: true,
+                body: payload,
+                params: {
+                    namespace: 'LPCurriculumRequest'
+                }
+            });
+    };
+
+    Vue.http.interceptors.push(function (request, next) {
+        if (request.params['namespace'] !== 'LPCurriculumRequest') {
+            next();
+            return;
+        }
+
+        $store.dispatch('newRequest');
+
+        next(function (response) {
+            var body = response.body;
+            var result = body.success || false;
+
+            if (result) {
+                $store.dispatch('requestComplete', 'success');
+            } else {
+                $store.dispatch('requestComplete', 'failed');
+            }
+        });
+    });
+})(window, Vue, LP_Curriculum_Store);
+
+/**
+ * Init app.
+ */
 (function ($, Vue) {
     $(document).ready(function () {
         window.LP_Course_Editor = new Vue({
