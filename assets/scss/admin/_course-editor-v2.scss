@@ -49,18 +49,6 @@
 			opacity: 0.5;
 		}
 
-		.section-title {
-			font-weight: 600;
-			line-height: 2;
-			font-size: 18px;
-
-			&:empty {
-				&:before {
-					content: attr(data-empty);
-				}
-			}
-		}
-
 		&.open {
 
 		}
@@ -85,7 +73,7 @@
 
 		.section-head {
 			background-color: #f9f9f9;
-			padding: 3px 20px;
+			padding: 3px;
 			position: relative;
 			border-bottom: 1px solid #e5e5e5;
 
@@ -164,10 +152,12 @@
 		}
 
 		.title-input {
-			width: 100%;
 			font-size: 18px;
 			font-weight: 600;
 			border: none;
+			line-height: 30px;
+			width: calc(100% - 100px);
+			padding-left: 20px;
 		}
 
 		.description-input {

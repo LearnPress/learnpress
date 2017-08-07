@@ -11,7 +11,7 @@ learn_press_admin_view( 'course/section-item' );
 <script type="text/x-template" id="tmpl-lp-section">
     <div class="section" :class="isOpen ? 'open' : 'close'">
         <div class="section-head">
-            <div class="section-title" data-empty="<?php esc_attr_e( 'Empty name section', 'learnpress' ); ?>">{{section.title}}</div>
+            <input v-model="section.title" type="text" title="title" class="title-input" placeholder="<?php esc_attr_e( 'Enter the name section', 'learnpress' ); ?>">
 
             <div class="actions">
                 <span class="remove" @click="remove"><span class="dashicons dashicons-trash"></span></span>
@@ -21,7 +21,6 @@ learn_press_admin_view( 'course/section-item' );
 
         <div class="section-content">
             <div class="details">
-                <input v-model="section.title" type="text" title="title" class="title-input" placeholder="<?php esc_attr_e( 'Enter the name section', 'learnpress' ); ?>">
 
                 <input v-model="section.description" type="text" class="description-input" title="description" placeholder="<?php echo esc_attr( 'Describe about this section', 'learnpress' ); ?>">
             </div>
