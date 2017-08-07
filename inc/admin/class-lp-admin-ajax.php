@@ -116,14 +116,13 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		public static function update_curriculum() {
 			check_ajax_referer( 'learnpress_update_curriculum', 'nonce' );
 
-			$args = wp_parse_args( $_POST, array(
-				'course_id' => false,
-				'sections'  => [],
+			$args = wp_parse_args( $_REQUEST, array(
+				'course-id' => false,
 			) );
 
 			//@todo update sections
 
-			$course = learn_press_get_course( $args['course_id'] );
+			$course = learn_press_get_course( $args['course-id'] );
 			if ( ! $course ) {
 				wp_send_json_error();
 			}

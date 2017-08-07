@@ -50,7 +50,10 @@ learn_press_admin_view( 'course/section-item' );
                     this.isOpen = !this.isOpen;
                 },
                 remove: function () {
-                    $store.dispatch('removeSection', this.index);
+                    $store.dispatch('removeSection', {
+                        index: this.index,
+                        section: this.section
+                    });
                 }
             }
         });

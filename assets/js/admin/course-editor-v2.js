@@ -72,8 +72,20 @@
             });
         },
 
-        removeSection: function (context, index) {
-            context.commit('REMOVE_SECTION', index);
+        removeSection: function (context, payload) {
+            Vue.http.post('', {type: 'remove-section', 'section-id': payload.section.id})
+                .then(
+                    function (response) {
+                        var result = response.body;
+
+                        if (result.success) {
+                            context.commit('REMOVE_SECTION', payload.index);
+                        }
+                    },
+                    function (error) {
+                        console.error(error);
+                    }
+                );
         },
 
         updateSections: function (context, sections) {
@@ -116,6 +128,7 @@
     Vue.http.interceptors.push(function (request, next) {
         request.params['lp-ajax'] = $store.state.action;
         request.params['nonce'] = $store.state.nonce;
+        request.params['course-id'] = $store.getters.id;
 
         $store.dispatch('newRequest');
 
