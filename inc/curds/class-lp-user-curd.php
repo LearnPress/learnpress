@@ -23,10 +23,15 @@ class LP_User_CURD implements LP_Interface_CURD {
 	public function load( &$user ) {
 		$user_id = $user->get_id();
 		if ( false !== ( $user_object = get_user_by( 'id', $user_id ) ) ) {
+			new WP_User();
 			$user->set_data(
 				array(
 					'email'         => $user_object->user_email,
-					'username'      => $user_object->user_login,
+					'user_login'    => $user_object->user_login,
+					'description'   => $user_object->description,
+					'first_name'    => isset( $user_object->first_name ) ? $user_object->first_name : '',
+					'last_name'     => isset( $user_object->last_name ) ? $user_object->last_name : '',
+					'nickname'      => isset( $user_object->nickname ) ? $user_object->nickname : '',
 					'display_name'  => $user_object->display_name,
 					'date_created'  => $user_object->user_registered,
 					'date_modified' => get_user_meta( $user_id, 'last_update', true ),
@@ -107,9 +112,9 @@ class LP_User_CURD implements LP_Interface_CURD {
 	/**
 	 * Read course data for an user.
 	 *
-	 * @param int $user_id
+	 * @param int       $user_id
 	 * @param int|array $course_id
-	 * @param bool $force - Optional. Force to read new data from DB (ignore caching).
+	 * @param bool      $force - Optional. Force to read new data from DB (ignore caching).
 	 *
 	 * @return bool
 	 */
@@ -202,7 +207,7 @@ class LP_User_CURD implements LP_Interface_CURD {
 	 * Load user items by item_id of course item
 	 *
 	 * @param object $parent_item
-	 * @param bool $force - Optional. Force to read new data from DB (ignore caching).
+	 * @param bool   $force - Optional. Force to read new data from DB (ignore caching).
 	 *
 	 * @return bool
 	 */

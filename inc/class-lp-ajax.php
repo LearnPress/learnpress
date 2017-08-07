@@ -228,10 +228,10 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			if ( $error ) {
 				$return['message'] = learn_press_get_message( $user->get_error_message() ? $user->get_error_message() : __( 'Please enter your username and/or password', 'learnpress' ) );
 			} else {
-				wp_set_current_user( $user->ID );
+				wp_set_current_user( $user->get_id() );
 				$next = learn_press_get_request( 'next' );
 				if ( $next == 'enroll-course' ) {
-					$user     = new LP_User( $user->ID );
+					$user     = new LP_User( $user->get_id() );
 					$checkout = false;
 					if ( $cart_items = LP()->cart->get_items() ) {
 						foreach ( $cart_items as $item ) {

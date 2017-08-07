@@ -217,6 +217,7 @@ class LP_Checkout {
 	 * @throws Exception
 	 */
 	public function process_checkout() {
+		$has_error = false;
 		try {
 			// Prevent timeout
 			@set_time_limit( 0 );
@@ -235,7 +236,7 @@ class LP_Checkout {
 
 			if ( LP()->cart->needs_payment() && empty( $this->payment_method ) ) {
 				$success = 5;
-				learn_press_add_message( __( 'Please select a payment method', 'learnpress' ), 'error' );
+				throw new Exception( __( 'Please select a payment method', 'learnpress' ) );
 			} else {
 				//$this->payment_method = !empty( $_REQUEST['payment_method'] ) ? $_REQUEST['payment_method'] : '';
 				if ( $this->checkout_fields ) {
@@ -256,7 +257,7 @@ class LP_Checkout {
 					$creds['remember']      = true;
 					$user                   = wp_signon( $creds, is_ssl() );
 					if ( is_wp_error( $user ) ) {
-						learn_press_add_message( $user->get_error_message(), 'error' );
+						throw new Exception( $user->get_error_message() );
 						$success = 15;
 					}
 				}
@@ -267,9 +268,9 @@ class LP_Checkout {
 				$item = LP_Course::get_course( $item['item_id'] );
 				if ( ! $item ) {
 					$success = 20;
-					learn_press_add_message( __( 'Item %s does not exists.', 'learnpress' ), 'error' );
+					throw new Exception( __( 'Item %s does not exists.', 'learnpress' ) );
 				} elseif ( ! $item->is_purchasable() ) {
-					learn_press_add_message( sprintf( __( 'Item "%s" is not purchasable.', 'learnpress' ), get_the_title( $item->id ) ), 'error' );
+					throw new Exception( sprintf( __( 'Item "%s" is not purchasable.', 'learnpress' ), get_the_title( $item->id ) ) );
 					$success = 25;
 				}
 			}
@@ -280,7 +281,7 @@ class LP_Checkout {
 					$available_gateways = LP_Gateways::instance()->get_available_payment_gateways();
 					if ( ! isset( $available_gateways[ $this->payment_method ] ) ) {
 						$this->payment_method = '';
-						learn_press_add_message( __( 'Invalid payment method.', 'learnpress' ), 'error' );
+						learn_press_add_message( __( 'Invalid payment method.', 'learnpress' ) );
 					} else {
 						$this->payment_method = $available_gateways[ $this->payment_method ];
 					}
@@ -327,28 +328,29 @@ class LP_Checkout {
 		}
 		catch ( Exception $e ) {
 			$has_error = $e->getMessage();
-			if ( ! empty( $has_error ) ) {
-				learn_press_add_message( $has_error, 'error' );
-			}
+			learn_press_add_message( $has_error );
 			$success = 40;
 		}
+		if ( learn_press_is_ajax() ) {
+			// Get all messages
+			$error_messages = '';
+			if ( $success !== true ) {
+				ob_start();
+				learn_press_print_messages();
+				$error_messages = ob_get_clean();
+			}
 
-		// Get all messages
-		$error_messages = '';
-		if ( $success !== true ) {
-			ob_start();
-			learn_press_print_notices();
-			$error_messages = ob_get_clean();
+			$result = array(
+				'result'   => $success === true ? 'success' : 'fail',
+				'code'     => $success,
+				'messages' => $error_messages,
+				'redirect' => ''
+			);
+
+			learn_press_send_json( $result );
 		}
 
-		$result = array(
-			'result'   => $success === true ? 'success' : 'fail',
-			'code'     => $success,
-			'messages' => $error_messages,
-			'redirect' => ''
-		);
-
-		return $result;
+		return $success;
 	}
 
 	/**

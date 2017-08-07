@@ -12,6 +12,9 @@ defined( 'ABSPATH' ) || exit();
 
 class LP_Order extends LP_Abstract_Post_Data {
 
+	/**
+	 * @var array
+	 */
 	protected $_data = array(
 		'order_date'       => '',
 		'modified_date'    => '',
@@ -24,7 +27,6 @@ class LP_Order extends LP_Abstract_Post_Data {
 	 * @param mixed $order_id
 	 */
 	public function __construct( $order_id = false ) {
-		parent::__construct($order_id);
 		if ( is_numeric( $order_id ) && $order_id > 0 ) {
 			$this->set_id( $order_id );
 		} elseif ( $order_id instanceof self ) {
@@ -32,6 +34,8 @@ class LP_Order extends LP_Abstract_Post_Data {
 		} elseif ( ! empty( $order_id->ID ) ) {
 			$this->set_id( absint( $order_id->ID ) );
 		}
+
+		//parent::__construct($order_id);
 
 		if ( $this->get_id() > 0 ) {
 			$this->load();
@@ -111,8 +115,8 @@ class LP_Order extends LP_Abstract_Post_Data {
 	 */
 	public function __get( $prop ) {
 		if ( $prop == 'post' ) {
-			print_r( debug_backtrace() );
-			die( '$post is deprecated' );
+			//print_r( debug_backtrace() );
+			//die( '$post is deprecated' );
 		} elseif ( $prop == 'id' ) {
 			return $this->get_id();
 		}
@@ -328,8 +332,8 @@ class LP_Order extends LP_Abstract_Post_Data {
 				$customer_name = $user->get_data( 'display_name' );
 			} elseif ( $user->get_data( 'user_nicename' ) ) {
 				$customer_name = $user->get_data( 'user_nicename' );
-			} elseif ( $user->get_data( 'username' ) ) {
-				$customer_name = $user->get_data( 'username' );
+			} elseif ( $user->get_data( 'user_login' ) ) {
+				$customer_name = $user->get_data( 'user_login' );
 			}
 		}
 
@@ -453,13 +457,13 @@ class LP_Order extends LP_Abstract_Post_Data {
 		$users       = get_users( array() );
 		echo '<select name="order-customer[]" id="order-customer" multiple="multiple">';
 		foreach ( (array) $users as $user ) {
-			$user->ID = (int) $user->ID;
-			if ( in_array( $user->ID, $order_users ) ) {
+			//$user->get_id() = (int) $user->get_id();
+			if ( in_array( $user->get_id(), $order_users ) ) {
 				$found_selected = true;
 			} else {
 				$found_selected = false;
 			}
-			echo sprintf( '<option value="%d"%s>%s</option>', $user->ID, selected( $found_selected, true, false ), $user->user_login );
+			echo sprintf( '<option value="%d"%s>%s</option>', $user->get_id(), selected( $found_selected, true, false ), $user->user_login );
 		}
 		echo '</select>';
 	}
@@ -643,7 +647,7 @@ class LP_Order extends LP_Abstract_Post_Data {
 	 * @return LP_Order
 	 */
 	public static function instance( $order, $force = true ) {
-		learn_press_deprecated_function( 'LP_Order::instance', '3.0', 'learn_press_get_order' );
+		learn_press_deprecated_function( 'new LP_Order', '3.0', 'learn_press_get_order' );
 
 		return learn_press_get_order( $order );
 	}

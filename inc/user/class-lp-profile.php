@@ -22,11 +22,25 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 */
 		protected $_user = false;
 
+		/**
+		 * @var string
+		 */
 		protected $_role = '';
 
+		/**
+		 * @var bool
+		 */
 		protected static $_hook_added = false;
 
+		/**
+		 * @var array
+		 */
 		protected $_publicity = array();
+
+		/**
+		 * @var array
+		 */
+		protected $_default_actions = array();
 
 		/**
 		 *  Constructor
@@ -40,11 +54,32 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				$this->_role = $this->get_role();
 			}
 
+			$this->_default_actions = apply_filters(
+				'learn-press/profile-default-actions',
+				array(
+					'basic-information' => __( 'Account information updated successfully.', 'learnpress' ),
+					'avatar'            => __( 'Account avatar updated successfully.', 'learnpress' ),
+					'password'          => __( 'Password updated successfully.', 'learnpress' )
+				)
+			);
+
 			if ( ! self::$_hook_added ) {
 				self::$_hook_added = true;
 				add_action( 'learn-press/profile-content', array( $this, 'output' ), 10, 3 );
 				add_action( 'learn-press/before-profile-content', array( $this, 'output_section' ), 10, 3 );
 				add_action( 'learn-press/profile-section-content', array( $this, 'output_section_content' ), 10, 3 );
+
+
+				/*
+				 * Register actions with request handler class to process
+				 * requesting from user profile.
+				 */
+				foreach ( $this->_default_actions as $action => $message ) {
+					/**
+					 * @see LP_Profile::save()
+					 */
+					LP_Request_Handler::register( 'save-profile-' . $action, array( $this, 'save' ) );
+				}
 			}
 		}
 
@@ -71,6 +106,11 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 
 		}
 
+		/**
+		 * Get role of current user.
+		 *
+		 * @return string
+		 */
 		protected function get_role() {
 			if ( $user = learn_press_get_current_user( false ) ) {
 				if ( ! $user->is_guest() ) {
@@ -89,6 +129,11 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			return '';
 		}
 
+		/**
+		 * Get the user of a profile instance.
+		 *
+		 * @return bool|LP_User|mixed
+		 */
 		public function get_user() {
 			if ( is_numeric( $this->_user ) ) {
 				$this->_user = learn_press_get_user( $this->_user );
@@ -109,6 +154,11 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			learn_press_get_template( 'profile/dashboard.php', array( 'user' => $this->_user ) );
 		}
 
+		/**
+		 * Get default tabs for profile.
+		 *
+		 * @return mixed
+		 */
 		public function get_tabs() {
 			$settings = LP()->settings;
 			$defaults = array(
@@ -271,6 +321,15 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			return $current;
 		}
 
+		/**
+		 * Get current section in query string.
+		 *
+		 * @param string $default
+		 * @param bool   $key
+		 * @param string $tab
+		 *
+		 * @return bool|int|mixed|string
+		 */
 		public function get_current_section( $default = '', $key = true, $tab = '' ) {
 			global $wp;
 			$current = $default;
@@ -297,6 +356,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				}
 			}
 
+			// If find the key instead of value from settings
 			if ( $key ) {
 				$current_display = $current;
 				$current         = false;
@@ -340,6 +400,14 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			return false;
 		}
 
+		/**
+		 * Get permalink of a tab and section if passed.
+		 *
+		 * @param bool $tab
+		 * @param bool $with_section
+		 *
+		 * @return mixed|string
+		 */
 		public function get_tab_link( $tab = false, $with_section = false ) {
 
 			$user = $this->get_user();
@@ -348,7 +416,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				return '';
 			}
 			$args = array(
-				'user' => $user->get_data( 'username' )
+				'user' => $user->get_data( 'user_login' )
 			);
 			if ( isset( $args['user'] ) ) {
 				if ( false === $tab ) {
@@ -439,6 +507,13 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			return array_key_exists( 'slug', $tab_or_section ) ? $tab_or_section['slug'] : $default;
 		}
 
+		/**
+		 * Check if user can with a capability.
+		 *
+		 * @param string $capability
+		 *
+		 * @return mixed
+		 */
 		public function current_user_can( $capability ) {
 			$can = false;
 			if ( get_current_user_id() === $this->_user->get_id() ) {
@@ -448,6 +523,66 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			}
 
 			return apply_filters( 'learn-press/profile-current-user-can', $can, $capability );
+		}
+
+		/**
+		 * Save profile.
+		 *
+		 * @param string $nonce . Value of nonce depending on the action requested from profile tab.
+		 *
+		 * @return mixed
+		 */
+		public function save( $nonce ) {
+
+			$action  = '';
+			$message = '';
+
+			// Find the action by checking the nonce
+			foreach ( $this->_default_actions as $_action => $message ) {
+				if ( wp_verify_nonce( $nonce, 'learn-press-save-profile-' . $_action ) ) {
+					$action = $_action;
+					break;
+				}
+			}
+
+			// If none of actions found.
+			if ( ! $action ) {
+				return false;
+			}
+			$return = false;
+			switch ( $action ) {
+				case 'basic-information':
+					$return = learn_press_update_user_profile_basic_information( true );
+					break;
+				case 'avatar':
+					$return = learn_press_update_user_profile_avatar( true );
+					break;
+				case 'password':
+					$return = learn_press_update_user_profile_change_password( true );
+					break;
+			}
+			if ( is_wp_error( $return ) ) {
+				learn_press_add_message( $return->get_error_message() );
+			} else {
+				if ( $return ) {
+					learn_press_add_message( $message );
+				}
+			}
+
+			if ( ! empty( $_REQUEST['redirect'] ) ) {
+				$redirect = $_REQUEST['redirect'];
+			} else {
+				$redirect = learn_press_get_current_url();
+			}
+
+			$redirect = apply_filters( 'learn-press/profile-updated-redirect', $redirect, $action );
+
+			if ( $redirect ) {
+				wp_redirect( $redirect );
+				exit;
+			}
+
+			return true;
 		}
 
 		/**

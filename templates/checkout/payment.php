@@ -94,11 +94,40 @@ $count_gateways               = ! empty( $available_gateways ) ? sizeof( $availa
 
         <div class="place-order-action">
 
-			<?php do_action( 'learn_press_order_before_submit' ); ?>
+			<?php
+			// @deprecated
+			do_action( 'learn_press_order_before_submit' );
 
-			<?php echo apply_filters( 'learn_press_order_button_html', '<input type="submit" class="button alt" name="learn_press_checkout_place_order" id="learn-press-checkout-place-order" data-processing-text="' . esc_attr( $order_button_text_processing ) . '" value="' . esc_attr( $order_button_text ) . '" data-value="' . esc_attr( $order_button_text ) . '" />' ); ?>
+			/**
+			 * @since 3.x.x
+			 */
+			do_action( 'learn-press/before-checkout-submit-button' );
+			?>
 
-			<?php do_action( 'learn_press_order_after_submit' ); ?>
+			<?php
+
+			echo apply_filters(
+				'learn_press_order_button_html',
+				sprintf(
+					'<button type="submit" class="button alt" name="learn_press_checkout_place_order" id="learn-press-checkout-place-order" data-processing-text="%s" data-value="%s">%s</button>',
+					esc_attr( $order_button_text_processing ),
+					esc_attr( $order_button_text ),
+					esc_attr( $order_button_text )
+				)
+			);
+
+			?>
+
+			<?php
+
+			/**
+			 * @since 3.x.x
+			 */
+			do_action( 'learn-press/after-checkout-submit-button' );
+
+			// @deprecated
+			do_action( 'learn_press_order_after_submit' );
+			?>
 
 			<?php if ( ! is_user_logged_in() ) { ?>
                 <button type="button" class="lp-button lp-button-guest-checkout"

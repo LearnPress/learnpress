@@ -1654,7 +1654,7 @@ if ( ! function_exists( 'learn_press_get_profile_display_name' ) ) {
 		if ( $user instanceof LP_Abstract_User ) {
 			$id = $user->id;
 		} elseif ( $user instanceof WP_User ) {
-			$id = $user->ID;
+			$id = $user->get_id();
 		} elseif ( is_numeric( $user ) ) {
 			$id = $user;
 		}

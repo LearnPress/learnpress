@@ -143,7 +143,7 @@ function learn_press_header_item_only_view_first() {
 		 * if ( $result === 0 ) {
 		 * $query = $wpdb->prepare( "
 		 * INSERT INTO {$wpdb->learnpress_user_items} (`user_id`, `item_id`, `start_time`, `end_time`, `item_type`, `status`, `ref_id`, `ref_type`, `parent_id`)
-		 * VALUES ( $user->ID, $item->ID, %s, %s, %s, %s, $course->ID, %s, $user->ID )
+		 * VALUES ( $user->get_id(), $item->ID, %s, %s, %s, %s, $course->ID, %s, $user->get_id() )
 		 * ", current_time( 'mysql' ), current_time( 'mysql' ), $item->_item->item_type, 'view', $course->post->post_type );
 		 * $wpdb->query( $query );
 		 * }

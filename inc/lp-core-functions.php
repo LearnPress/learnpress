@@ -726,7 +726,7 @@ function learn_press_get_current_profile_link() {
 		return;
 	}
 	$current_user = learn_press_get_current_user();
-	$link         = home_url( "/profile/" . $current_user->get_data( 'username' ) );
+	$link         = home_url( "/profile/" . $current_user->get_data( 'user_login' ) );
 
 	return $link;
 }
@@ -1636,6 +1636,15 @@ if ( ! function_exists( 'learn_press_is_course_archive' ) ) {
 	}
 }
 
+if ( ! function_exists( 'learn_press_is_course_tax' ) ) {
+	/**
+	 * @return bool
+	 */
+	function learn_press_is_course_tax() {
+		return is_tax( get_object_taxonomies( LP_COURSE_CPT ) );
+	}
+}
+
 if ( ! function_exists( 'learn_press_is_course_taxonomy' ) ) {
 
 	/**
@@ -1715,6 +1724,7 @@ if ( ! function_exists( 'learn_press_is_profile' ) ) {
 		return is_page( $profile ) || apply_filters( 'learn_press_is_profile', false ) ? true : false;
 	}
 }
+
 
 /**
  * Return true if user is in checking out page
@@ -2191,7 +2201,7 @@ function learn_press_auto_enroll_user_to_courses( $order_id ) {
 			// error. this scripts will create new order each course item
 			// $return = $user->enroll( $course->id, $order_id );
 			$return = learn_press_update_user_item_field( array(
-				'user_id'    => $user->ID,
+				'user_id'    => $user->get_id(),
 				'item_id'    => $course->id,
 				'start_time' => current_time( 'mysql' ),
 				'status'     => 'enrolled',
