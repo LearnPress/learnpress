@@ -123,7 +123,11 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 			//@todo update sections
 
-			$course   = learn_press_get_course( $args['course_id'] );
+			$course = learn_press_get_course( $args['course_id'] );
+			if ( ! $course ) {
+				wp_send_json_error();
+			}
+
 			$sections = $course->get_curriculum();
 
 			$sections_data = array();

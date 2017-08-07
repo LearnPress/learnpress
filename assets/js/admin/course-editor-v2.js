@@ -50,9 +50,11 @@
                 id: -1
             });
         },
+
         removeSection: function (context, index) {
             context.commit('REMOVE_SECTION', index);
         },
+
         updateSections: function (context, sections) {
             Vue.http.post('', {sections: sections, course_id: context.getters.id})
                 .then(

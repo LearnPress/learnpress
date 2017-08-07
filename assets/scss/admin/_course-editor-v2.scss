@@ -114,6 +114,14 @@
 			border-bottom: 1px solid #e5e5e5;
 
 			&:hover {
+				.actions {
+					.remove {
+						display: inline-block;
+					}
+				}
+			}
+
+			&:hover {
 				cursor: move;
 			}
 
@@ -134,6 +142,7 @@
 				.remove {
 					line-height: 5;
 					vertical-align: middle;
+					display: none;
 				}
 
 				.collapse {
