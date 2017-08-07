@@ -128,15 +128,14 @@
  */
 (function (exports, Vue, $store) {
     Vue.http.LPRequest = function (payload) {
+        payload['nonce'] = $store.state.nonce;
+        payload['lp-ajax'] = $store.state.action;
+        payload['course-id'] = $store.getters.id;
+
         return Vue.http.post($store.state.ajax,
-            {
-                nonce: $store.state.nonce,
-                'lp-ajax': $store.state.action,
-                'course-id': $store.getters.id
-            },
+            payload,
             {
                 emulateJSON: true,
-                body: payload,
                 params: {
                     namespace: 'LPCurriculumRequest'
                 }

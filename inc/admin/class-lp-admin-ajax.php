@@ -139,6 +139,12 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					);
 					break;
 
+				case 'sort-sections':
+					$sections = ! empty( $args['sections'] ) ? $args['sections'] : false;
+					if ( $sections ) {
+						$data = $sections;
+					}
+					break;
 
 				case 'remove-section':
 					$section_id = ! empty( $args['section-id'] ) ? $args['section-id'] : false;
@@ -146,27 +152,13 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					$data = $section_id;
 					break;
 
-				case 'sort-sections':
-					$sections = ! empty( $args['sections'] ) ? $args['sections'] : false;
-					if ( $sections ) {
-						$data = $sections;
-					}
+				case 'update-section':
+					$section_id = ! empty( $args['section-id'] ) ? $args['section-id'] : false;
+
 					break;
 			}
 
 			wp_send_json_success( $data );
-
-			//@todo update sections
-
-
-			$sections = $course->get_curriculum();
-
-			$sections_data = array();
-			foreach ( $sections as $section ) {
-				$sections_data[] = $section->to_array();
-			}
-
-			wp_send_json_success( $sections_data );
 		}
 
 		/**

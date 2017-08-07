@@ -78,16 +78,6 @@
 
 		.add-new-section {
 			text-align: center;
-
-			button {
-				&:before {
-					content: '\f132';
-					font-family: Dashicons;
-					position: relative;
-					top: 2px;
-					padding-right: 4px;
-				}
-			}
 		}
 	}
 
