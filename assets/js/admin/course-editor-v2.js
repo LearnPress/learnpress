@@ -6,7 +6,8 @@
 (function (exports, Vue, Vuex, data) {
     var state = data;
 
-    state.status = 'saved';
+    state.status = 'success';
+    state.countCurrentRequest = 0;
 
     var getters = {
         sections: function (state) {
@@ -15,16 +16,24 @@
         id: function (state) {
             return state.course_id;
         },
-        status: function () {
+        status: function (state) {
             return state.status || 'error';
+        },
+        currentRequest: function (state) {
+            return state.countCurrentRequest || 0;
         }
     };
 
     var mutations = {
-        'SET_STATUS': function (state, status) {
+        'UPDATE_STATUS': function (state, status) {
             state.status = status;
         },
-
+        'INCREASE_NUMBER_REQUEST': function (state) {
+            state.countCurrentRequest++;
+        },
+        'DECREASE_NUMBER_REQUEST': function (state) {
+            state.countCurrentRequest--;
+        },
         'SET_SECTIONS': function (state, sections) {
             state.sections = sections;
         },
@@ -37,8 +46,20 @@
     };
 
     var actions = {
+        newRequest: function (context) {
+            context.commit('INCREASE_NUMBER_REQUEST');
+            context.commit('UPDATE_STATUS', 'loading');
+        },
+
+        requestComplete: function (context, status) {
+            context.commit('DECREASE_NUMBER_REQUEST');
+            if (context.getters.currentRequest === 0) {
+                context.commit('UPDATE_STATUS', status);
+            }
+        },
+
         updateStatus: function (context, status) {
-            context.commit('SET_STATUS', status);
+            context.commit('UPDATE_STATUS', status);
         },
 
         addNewSection: function (context) {
@@ -96,16 +117,16 @@
         request.params['lp-ajax'] = $store.state.action;
         request.params['nonce'] = $store.state.nonce;
 
-        $store.dispatch('updateStatus', 'loading');
+        $store.dispatch('newRequest');
 
         next(function (response) {
             var body = response.body;
             var result = body.success || false;
 
             if (result) {
-                $store.dispatch('updateStatus', 'saved');
+                $store.dispatch('requestComplete', 'success');
             } else {
-                $store.dispatch('updateStatus', 'error');
+                $store.dispatch('requestComplete', 'failed');
             }
         });
     });

@@ -3,9 +3,24 @@
 	display: none;
 }
 
-@-moz-keyframes lp-spinner { 100% { -moz-transform: rotate(360deg); } }
-@-webkit-keyframes lp-spinner { 100% { -webkit-transform: rotate(360deg); } }
-@keyframes lp-spinner { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
+@-moz-keyframes lp-spinner {
+	100% {
+		-moz-transform: rotate(360deg);
+	}
+}
+
+@-webkit-keyframes lp-spinner {
+	100% {
+		-webkit-transform: rotate(360deg);
+	}
+}
+
+@keyframes lp-spinner {
+	100% {
+		-webkit-transform: rotate(360deg);
+		transform: rotate(360deg);
+	}
+}
 
 #course-editor-v2 {
 	background-color: #fff;
@@ -27,7 +42,7 @@
 			position: relative;
 			top: 4px;
 
-			&.saved {
+			&.success {
 				color: #4caf50;
 
 				&:before {
@@ -45,7 +60,7 @@
 				}
 			}
 
-			&.error {
+			&.failed {
 				color: #ff9800;
 
 				&:before {
