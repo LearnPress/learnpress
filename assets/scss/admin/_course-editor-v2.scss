@@ -13,9 +13,8 @@
 	.heading {
 		padding: 15px;
 
-		h3 {
-			font-size: 1.2em;
-			margin: 10px 0;
+		h4 {
+			margin: 0;
 		}
 	}
 
@@ -152,8 +151,7 @@
 		}
 
 		.title-input {
-			font-size: 18px;
-			font-weight: 600;
+			font-size: 1.2em;
 			border: none;
 			line-height: 30px;
 			width: calc(100% - 100px);
@@ -222,7 +220,7 @@
 			}
 
 			input {
-				font-size: 16px;
+				font-size: 1em;
 				border: none;
 				width: 100%;
 				padding: 10px;
