@@ -235,9 +235,9 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 			return false;
 		}
 
-		if ( ! $order = LP_Order::instance( $order_id ) ) {
+		if ( ! $order = new LP_Order( $order_id ) ) {
 			//$order_id = hb_get_order_id_by_key( $order_key );
-			//$order    = LP_Order::instance( $order_id );
+			//$order    = new LP_Order( $order_id );
 		}
 
 		if ( ! $order || $order->order_key !== $order_key ) {
@@ -353,7 +353,7 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 									'method'             => 'paypal-standard',
 									'method_id'          => $transaction_id,
 									'status'             => $transaction_status,
-									'user_id'            => $user->ID,
+									'user_id'            => $user->get_id(),
 									'transaction_object' => $transaction_object['transaction_object']
 								)
 							);
@@ -461,7 +461,7 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 
 	public function get_request_url( $order_id ) {
 
-		$order = LP_Order::instance( $order_id );
+		$order = new LP_Order( $order_id );
 		$query = $this->get_paypal_args( $order );
 
 		$paypal_payment_url = $this->paypal_url . '?' . http_build_query( $query );

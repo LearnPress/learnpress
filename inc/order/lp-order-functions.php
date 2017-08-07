@@ -58,7 +58,7 @@ function learn_press_create_order( $order_data ) {
 	}
 
 	if ( $order_id ) {
-		$order = LP_Order::instance( $order_id );
+		$order = new LP_Order( $order_id );
 
 		update_post_meta( $order_id, '_order_currency', learn_press_get_currency() );
 		update_post_meta( $order_id, '_prices_include_tax', 'no' );
@@ -74,7 +74,7 @@ function learn_press_create_order( $order_data ) {
 		update_post_meta( $order_id, '_created_via', ! empty( $order_data['created_via'] ) ? $order_data['created_via'] : 'checkout' );
 	}
 
-	return LP_Order::instance( $order_id, true );
+	return new LP_Order( $order_id, true );
 }
 
 /**
@@ -116,7 +116,7 @@ function learn_press_get_booking_id_by_key( $order_key ) {
  * @return bool
  */
 function learn_press_update_order_status( $order_id, $status = '' ) {
-	$order = LP_Order::instance( $order_id );
+	$order = new LP_Order( $order_id );
 	if ( $order ) {
 		$order->update_status( $status );
 	}
@@ -388,7 +388,7 @@ function learn_press_add_order( $args = null ) {
 
 	if ( empty( $args['user_id'] ) ) {
 		$user            = learn_press_get_current_user();
-		$args['user_id'] = $user->ID;
+		$args['user_id'] = $user->get_id();
 	}
 
 	if ( ! $args['transaction_object'] ) {

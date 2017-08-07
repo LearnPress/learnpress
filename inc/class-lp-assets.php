@@ -83,7 +83,8 @@ class LP_Assets extends LP_Abstract_Assets {
 	 */
 	public function __construct() {
 		add_action( 'wp_enqueue_scripts', array( $this, 'load_scripts' ), 10 );
-
+		add_action( 'wp_print_scripts', array( $this, 'localize_printed_scripts' ), 5 );
+		add_action( 'wp_print_footer_scripts', array( $this, 'localize_printed_scripts' ) );
 		parent::__construct();
 	}
 
@@ -95,8 +96,7 @@ class LP_Assets extends LP_Abstract_Assets {
 
 		// Frontend assets
 		if ( ! is_admin() ) {
-			add_action( 'wp_enqueue_scripts', array( self::$_instance, 'load_scripts' ), $priory );
-			add_action( 'wp_print_footer_scripts', array( __CLASS__, 'localize_printed_scripts' ), $priory + 10 );
+
 			///add_action( 'wp_enqueue_scripts', array( __CLASS__, '_enqueue_scripts' ), $priory + 10 );
 
 		} else {
@@ -310,7 +310,7 @@ class LP_Assets extends LP_Abstract_Assets {
 		 */
 		if ( $scripts = self::_get_admin_scripts() ) {
 			foreach ( $scripts as $handle => $data ) {
-				wp_enqueue_script( $handle );
+				//wp_enqueue_script( $handle );
 			}
 		}
 
@@ -326,9 +326,6 @@ class LP_Assets extends LP_Abstract_Assets {
 		}
 	}
 
-	public static function localize_printed_scripts() {
-		//wp_localize_script()
-	}
 
 	/*****************/
 
@@ -930,20 +927,70 @@ class LP_Assets extends LP_Abstract_Assets {
 		do_action( 'learn_press_included_style_file' );
 	}
 
+	public function _get_script_data() {
+		return array(
+			'checkout'     => array(
+				'ajaxurl'            => site_url(),
+				'i18n_processing'    => __( 'Processing', 'learnpress' ),
+				'i18n_redirecting'   => __( 'Redirecting', 'learnpress' ),
+				'i18n_invalid_field' => __( 'Invalid field', 'learnpress' ),
+				'i18n_unknown_error' => __( 'Unknow error', 'learnpress' ),
+				'i18n_place_order'   => __( 'Place order', 'learnpress' )
+			),
+			'profile-user' => array(
+				'processing'  => __( 'Processing', 'learnpress' ),
+				'redirecting' => __( 'Redirecting', 'learnpress' )
+			)
+		);
+	}
+
 	public function _get_scripts() {
 		return apply_filters(
 			'learn-press/frontend-default-scripts',
 			array(
-				'global'     => array(
+				'global'       => array(
 					'url'  => self::url( 'js/global.js' ),
-					'deps' => array( 'jquery', 'underscore', 'utils' )
+					'deps' => array( 'jquery', 'underscore', 'utils', 'backbone' )
 				),
-				'learnpress' => array(
+				'learnpress'   => array(
 					'url'  => self::url( 'js/frontend/learnpress.js' ),
 					'deps' => array( 'global' )
+				),
+				'checkout'     => array(
+					'url'  => self::url( 'js/frontend/checkout.js' ),
+					'deps' => array( 'global' )
+				),
+				'profile-user' => array(
+					'url'  => self::url( 'js/frontend/profile.js' ),
+					'deps' => array(
+						'global',
+						'plupload',
+						'jquery-ui-slider',
+						'jquery-ui-draggable'
+					)
 				)
 			)
 		);
+	}
+
+	public function localize_printed_scripts() {
+		foreach ( $this->_get_script_data() as $handle => $data ) {
+			wp_localize_script( $handle, $this->get_script_var_name( $handle ), $data );
+		}
+
+		return;
+		global $wp_scripts;
+		$scripts = array();
+		//learn_press_debug($wp_scripts->registered);
+
+		foreach ( $this->_get_script_data() as $handle => $data ) {
+			if ( ! empty( $wp_scripts->registered[ $handle ]->extra['data'] ) ) {
+				$scripts[] = $wp_scripts->registered[ $handle ]->extra['data'];
+			}
+		}
+		echo '<script type="text/javascript">' . "\n";
+		echo join( "\n", $scripts ) . "\n";
+		echo '</script>' . "\n";
 	}
 
 	/**

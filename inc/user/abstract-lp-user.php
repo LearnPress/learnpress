@@ -77,8 +77,8 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 			$this->set_id( $the_user );
 		} elseif ( $the_user instanceof self ) {
 			$this->set_id( absint( $the_user->get_id() ) );
-		} elseif ( ! empty( $the_user->ID ) ) {
-			$this->set_id( absint( $the_user->ID ) );
+		} elseif ( ! empty( $the_user->get_id() ) ) {
+			$this->set_id( absint( $the_user->get_id() ) );
 		}
 
 		if ( $this->get_id() > 0 ) {
@@ -1191,7 +1191,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 		} elseif ( $course->is_free() && $this->is_exists() ) {
 			$enrollable = true;
 		} elseif ( $course->is_purchasable() && ( $this->has_purchased_course( $course_id ) ) ) {
-			$order      = LP_Order::instance( $this->get_course_order( $course_id ), OBJECT_K );
+			$order      = new LP_Order( $this->get_course_order( $course_id ), OBJECT_K );
 			$enrollable = ! $this->has_enrolled_course( $course_id ) && ( $order && $order->has_status( 'completed' ) );
 		}
 		$enrollable = apply_filters( 'learn_press_user_can_enroll_course', $enrollable, $this->get_id(), $course_id );
@@ -2909,7 +2909,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 		if ( is_numeric( $id_or_email ) && $id_or_email == $this->get_id() ) {
 			$url = $this->get_data( 'profile_picture_src' );
 		}
-		if ( $id_or_email == $this->get_data( 'username' ) ) {
+		if ( $id_or_email == $this->get_data( 'user_login' ) ) {
 			$url = $this->get_data( 'profile_picture_src' );
 		}
 

@@ -18,7 +18,7 @@ learn_press_get_course();
     <div class="lp-profile-cover">
         <div class="lp-profile-avatar">
 			<?php echo $user->get_profile_picture(); ?>
-            <span class="profile-name"><?php echo $user->get_data( 'username' ); ?></span>
+            <span class="profile-name"><?php echo $user->get_data( 'user_login' ); ?></span>
         </div>
     </div>
 </div>

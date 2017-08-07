@@ -43,11 +43,18 @@ class LP_Request_Handler {
 		LP_Request_Handler::register( 'purchase-course', array( __CLASS__, 'purchase_course' ), 20 );
 		LP_Request_Handler::register( 'enroll-course', array( __CLASS__, 'purchase_course' ), 20 );
 
+		/**
+		 * @see LP_Request_Handler::do_checkout()
+		 */
 		add_action( 'learn-press/purchase-course-handler', array( __CLASS__, 'do_checkout' ), 10, 3 );
 		add_action( 'learn-press/enroll-course-handler', array( __CLASS__, 'do_checkout' ), 10, 3 );
 
+		/**
+		 * @see LP_Request_Handler::do_enroll()
+		 */
 		add_action( 'learn-press/purchase-course-handler/enroll', array( __CLASS__, 'do_enroll' ), 10, 3 );
 		add_action( 'learn-press/enroll-course-handler/enroll', array( __CLASS__, 'do_enroll' ), 10, 3 );
+
 		add_action( 'learn-press/add-to-cart-redirect', array( __CLASS__, 'check_checkout_page' ) );
 	}
 
@@ -185,6 +192,9 @@ class LP_Request_Handler {
 			if ( $e->getMessage() ) {
 				learn_press_add_message( $e->getMessage(), 'error' );
 			}
+
+			// TODO: anything here?
+
 			print_r( $e->getMessage() );
 			die();
 

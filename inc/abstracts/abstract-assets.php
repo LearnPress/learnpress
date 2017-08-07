@@ -228,6 +228,12 @@ abstract class LP_Abstract_Assets {
 		//$scripts->add( 'learn-press-tipsy', $default_path . 'js/vendor/jquery-tipsy/jquery.tipsy.js' );
 	}
 
+	public function get_script_var_name($handle){
+		$handle = str_replace(array('_', '-'), ' ', $handle);
+		$handle = ucwords($handle);
+		return 'lp' . str_replace(' ', '', $handle) . 'Settings';
+	}
+
 	/**
 	 * Shortcut to plugin file url.
 	 *

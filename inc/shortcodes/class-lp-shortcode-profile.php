@@ -24,7 +24,7 @@ class LP_Shortcode_Profile extends LP_Abstract_Shortcode {
 		}
 
 		if ( $user ) {
-			$user = learn_press_get_user( $user->ID );
+			$user = learn_press_get_user( $user->get_id() );
 		}
 
 		ob_start();
@@ -40,7 +40,7 @@ class LP_Shortcode_Profile extends LP_Abstract_Shortcode {
 			}
 		} else {
 			/*
-			$user = LP_User_Factory::get_user( $user->ID );
+			$user = LP_User_Factory::get_user( $user->get_id() );
 			$tabs = learn_press_get_user_profile_tabs( $user );
 			if ( ! empty( $wp->query_vars['view'] ) ) {
 				$current = $wp->query_vars['view'];

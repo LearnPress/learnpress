@@ -3,36 +3,81 @@
  * Form for displaying change password form in profile page
  *
  * @author  ThimPress
- * @version 2.1.1
+ * @version 3.x.x
  * @package LearnPress/Templates
  */
 
 defined( 'ABSPATH' ) || exit;
+
+global $profile;
+
+if ( ! isset( $section ) ) {
+	$section = 'change-password';
+}
+
 ?>
+<form method="post" name="profile-change-password" enctype="multipart/form-data">
+	<?php
 
-<div id="lp-profile-edit-password-form">
-	<ul class="lp-form-field-wrap">
-		<?php do_action( 'learn_press_before_' . $section . '_edit_fields' ); ?>
-		<li class="lp-form-field">
-			<label class="lp-form-field-label"><?php _e( 'Old password', 'learnpress' ); ?></label>
-			<div class="lp-form-field-input">
-				<input type="password" id="pass0" name="pass0" autocomplete="off" class="regular-text" />
+	/**
+	 * @since 3.x.x
+	 */
+	do_action( 'learn-press/before-profile-change-password-fields', $profile );
+	?>
+    <ul class="lp-form-fields">
+		<?php
 
-			</div>
-		</li>
-		<li class="lp-form-field">
-			<label class="lp-form-field-label"><?php _e( 'New password', 'learnpress' ); ?></label>
-			<div class="lp-form-field-input">
-				<input type="password" name="pass1" id="pass1" class="regular-text" value="" />
-			</div>
-		</li>
-		<li class="lp-form-field">
-			<label class="lp-form-field-label"><?php _e( 'Confirmation password', 'learnpress' ); ?></label>
-			<div class="lp-form-field-input">
-				<input name="pass2" type="password" id="pass2" class="regular-text" value="" />
-				<p id="lp-password-not-match" class="description lp-field-error-message hide-if-js"><?php _e( 'New password does not match!', 'learnpress' ); ?></p>
-			</div>
-		</li>
-		<?php do_action( 'learn_press_after_' . $section . '_edit_fields' ); ?>
-	</ul>
-</div>
+		// @deprecated
+		do_action( 'learn_press_before_' . $section . '_edit_fields' );
+
+		/**
+		 * @since 3.x.x
+		 */
+		do_action( 'learn-press/begin-profile-change-password-fields', $profile );
+		?>
+        <li class="lp-form-field">
+            <label for="pass0"><?php _e( 'Old password', 'learnpress' ); ?></label>
+            <div class="lp-form-field-input">
+                <input type="password" id="pass0" name="pass0" autocomplete="off" class="regular-text"/>
+            </div>
+        </li>
+        <li class="lp-form-field">
+            <label for="pass1"><?php _e( 'New password', 'learnpress' ); ?></label>
+            <div class="lp-form-field-input">
+                <input type="password" name="pass1" id="pass1" class="regular-text" value=""/>
+            </div>
+        </li>
+        <li class="lp-form-field">
+            <label for="pass2"><?php _e( 'Confirmation password', 'learnpress' ); ?></label>
+            <div class="lp-form-field-input">
+                <input name="pass2" type="password" id="pass2" class="regular-text" value=""/>
+                <p id="lp-password-not-match"
+                   class="description lp-field-error-message hide-if-js"><?php _e( 'New password does not match!', 'learnpress' ); ?></p>
+            </div>
+        </li>
+		<?php
+
+		/**
+		 * @since 3.x.x
+		 */
+		do_action( 'learn-press/end-profile-change-password-fields', $profile );
+
+		// @deprecated
+		do_action( 'learn_press_after_' . $section . '_edit_fields' );
+		?>
+    </ul>
+
+	<?php
+	/**
+	 * @since 3.x.x
+	 */
+	do_action( 'learn-press/after-profile-change-password-fields', $profile );
+	?>
+    <p>
+        <input type="hidden" name="save-profile-password"
+               value="<?php echo wp_create_nonce( 'learn-press-save-profile-password' ); ?>">
+    </p>
+
+    <button type="submit" name="submit" id="submit"><?php _e( 'Save changes', 'learnpress' ); ?></button>
+
+</form>
