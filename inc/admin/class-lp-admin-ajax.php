@@ -158,14 +158,17 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 				case 'remove-section':
 					$section_id = ! empty( $args['section-id'] ) ? $args['section-id'] : false;
-
-					$data = $section_id;
+					$curd->delete( $section_id );
 					break;
 
 				case 'update-section':
 					$section_id = ! empty( $args['section-id'] ) ? $args['section-id'] : false;
 
 					break;
+			}
+
+			if ( is_wp_error( $data ) ) {
+				wp_send_json_error( $data->get_error_message() );
 			}
 
 			wp_send_json_success( $data );
