@@ -127,15 +127,25 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				wp_send_json_error();
 			}
 
+			$curd = new LP_Section_CURD();
+
 			$data = true;
 			switch ( $args['type'] ) {
 				case 'new-section':
-					$data = array(
-						'course_id'   => $course_id,
-						'description' => '',
-						'title'       => '',
-						'id'          => '',
-						'items'       => [],
+					$args = array(
+						'section_course_id'   => $course_id,
+						'section_description' => '',
+						'section_name'        => '',
+						'items'               => [],
+					);
+
+					$result = $curd->create( $args );
+					$data   = array(
+						'items'       => $result['items'],
+						'title'       => $result['section_name'],
+						'description' => $result['section_description'],
+						'course_id'   => $result['section_course_id'],
+						'order'       => $result['section_order'],
 					);
 					break;
 
