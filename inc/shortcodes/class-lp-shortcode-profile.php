@@ -24,7 +24,7 @@ class LP_Shortcode_Profile extends LP_Abstract_Shortcode {
 		}
 
 		if ( $user ) {
-			$user = learn_press_get_user( $user->get_id() );
+			$user = learn_press_get_user( $user->ID );
 		}
 
 		ob_start();

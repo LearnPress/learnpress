@@ -79,7 +79,7 @@ if ( 0 != $post->ID ) {
 								'show_option_none' => __( '[Guest]', 'learnpress' ),
 								'name'             => 'order-customer',
 								'id'               => null,
-								'selected'         => $order->get_user( 'ID' )
+								'selected'         => $order->get_user( 'id' )
 							)
 						);
 					}
