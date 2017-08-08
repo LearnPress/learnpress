@@ -62,7 +62,7 @@ $notice_enough_student = apply_filters( 'learn_press_course enough students_noti
 			<?php
 		}
 	} elseif( $can_enroll ) {
-		echo "show can enroll button";
+		#echo "show can enroll button";
 	}
 
 // 	if($lp_user->get_course_status($course->id));
