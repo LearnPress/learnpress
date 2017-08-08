@@ -94,6 +94,20 @@
             );
         },
 
+        updateSection: function (context, section) {
+            Vue.http.LPRequest({
+                type: 'update-section',
+                section: section
+            }).then(
+                function (response) {
+                    var result = response.body;
+                },
+                function (error) {
+                    console.error(error);
+                }
+            );
+        },
+
         updateSections: function (context, sections) {
             Vue.http.LPRequest({sections: sections})
                 .then(

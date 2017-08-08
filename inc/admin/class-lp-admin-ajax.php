@@ -141,6 +141,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 					$result = $curd->create( $args );
 					$data   = array(
+						'id'          => $result['section_id'],
 						'items'       => $result['items'],
 						'title'       => $result['section_name'],
 						'description' => $result['section_description'],
@@ -162,7 +163,21 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					break;
 
 				case 'update-section':
-					$section_id = ! empty( $args['section-id'] ) ? $args['section-id'] : false;
+					$section = ! empty( $args['section'] ) ? $args['section'] : false;
+					$section = wp_unslash( $section );
+					$section = json_decode( $section, true );
+
+					if ( ! is_array( $section ) || empty( $section ) ) {
+						break;
+					}
+
+					$data = $curd->update( array(
+						'section_id'          => $section['id'],
+						'section_name'        => $section['title'],
+						'section_description' => $section['description'],
+						'section_order'       => $section['order'],
+						'section_course_id'   => $section['course_id'],
+					) );
 
 					break;
 			}

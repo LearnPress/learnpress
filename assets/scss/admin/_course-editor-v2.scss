@@ -118,6 +118,16 @@
 			position: relative;
 			border-bottom: 1px solid #e5e5e5;
 
+			.movable {
+				display: inline-block;
+				font-family: Dashicons;
+				padding: 5px 10px;
+
+				&:before {
+					content: "\f333";
+				}
+			}
+
 			&:hover {
 				.actions {
 					.remove {
@@ -206,7 +216,6 @@
 			border: none;
 			line-height: 30px;
 			width: calc(100% - 100px);
-			padding-left: 20px;
 		}
 
 		.description-input {

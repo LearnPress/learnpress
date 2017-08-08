@@ -13,7 +13,7 @@ learn_press_admin_view( 'course/section' );
 
 <script type="text/x-template" id="tmpl-lp-list-sections">
     <div class="curriculum-sections">
-        <draggable :list="sections">
+        <draggable :list="sections" :options="{handle: '.movable'}">
             <lp-section v-for="(section, index) in sections" :section="section" :index="index" :key="index" :order="index+1"></lp-section>
         </draggable>
 

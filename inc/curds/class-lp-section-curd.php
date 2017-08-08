@@ -18,10 +18,11 @@ class LP_Section_CURD implements LP_Interface_CURD {
 	 */
 	private function parse( $args ) {
 		$data = wp_parse_args( $args, array(
-			'section_name',
+			'section_name'        => '',
+			'section_description' => '',
 			'section_course_id'   => 0,
 			'section_order'       => 1,
-			'section_description' => ''
+			'items'               => array(),
 		) );
 
 		if ( $data['section_course_id'] > 0 ) {
