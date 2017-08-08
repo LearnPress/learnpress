@@ -887,38 +887,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		}
 
 		/**
-		 * Insert new section into database
-		 *
-		 * @param array $section
-		 *
-		 * @return array|mixed|string
-		 */
-		private function _insert_section( $section = array() ) {
-			global $wpdb;
-			$section = wp_parse_args(
-				$section,
-				array(
-					'section_name'        => '',
-					'section_course_id'   => 0,
-					'section_order'       => 0,
-					'section_description' => ''
-				)
-			);
-			$section = stripslashes_deep( $section );
-			extract( $section );
-
-			$insert_data = compact( 'section_name', 'section_course_id', 'section_order', 'section_description' );
-			$wpdb->insert(
-				$wpdb->learnpress_sections,
-				$insert_data,
-				array( '%s', '%d', '%d' )
-			);
-			$section['section_id'] = $wpdb->insert_id;
-
-			return $section;
-		}
-
-		/**
 		 * @param array $item
 		 *
 		 * @return array
