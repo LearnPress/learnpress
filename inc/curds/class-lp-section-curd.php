@@ -117,6 +117,14 @@ class LP_Section_CURD implements LP_Interface_CURD {
 	public function delete( $id ) {
 		global $wpdb;
 
+		/**
+		 * Remove section items.
+		 */
+		$wpdb->delete(
+			$wpdb->learnpress_section_items,
+			array( 'section_id' => $id )
+		);
+
 		$result = $wpdb->delete(
 			$wpdb->learnpress_sections,
 			array( 'section_id' => $id )
