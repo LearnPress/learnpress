@@ -13,12 +13,12 @@ learn_press_admin_view( 'course/section' );
 
 <script type="text/x-template" id="tmpl-lp-list-sections">
     <div class="curriculum-sections">
-        <draggable :list="sections">
+        <draggable :list="sections" :options="{handle: '.movable'}">
             <lp-section v-for="(section, index) in sections" :section="section" :index="index" :key="index" :order="index+1"></lp-section>
         </draggable>
 
         <div class="add-new-section">
-            <button type="button" class="button button-primary" @click.prevent="addSection"><?php esc_html_e( 'Add new section', 'learnpress' ); ?></button>
+            <button type="button" :class="loading ? 'updating-message' : ''" class="button button-primary" @click.prevent="addSection"><?php esc_html_e( 'Add new section', 'learnpress' ); ?></button>
         </div>
     </div>
 
@@ -29,8 +29,25 @@ learn_press_admin_view( 'course/section' );
 
         Vue.component('lp-list-sections', {
             template: '#tmpl-lp-list-sections',
+            data: function () {
+                return {
+                    loading: false
+                };
+            },
+            created: function () {
+                var vm = this;
+
+                $store.subscribe(function (mutation, state) {
+                    if (mutation.type !== 'ADD_NEW_SECTION') {
+                        return;
+                    }
+
+                    vm.loading = false;
+                });
+            },
             methods: {
                 addSection: function () {
+                    this.loading = true;
                     $store.dispatch('addNewSection');
                 }
             },
@@ -40,6 +57,5 @@ learn_press_admin_view( 'course/section' );
                 }
             }
         });
-
     })(Vue, LP_Curriculum_Store);
 </script>

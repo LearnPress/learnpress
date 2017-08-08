@@ -887,38 +887,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		}
 
 		/**
-		 * Insert new section into database
-		 *
-		 * @param array $section
-		 *
-		 * @return array|mixed|string
-		 */
-		private function _insert_section( $section = array() ) {
-			global $wpdb;
-			$section = wp_parse_args(
-				$section,
-				array(
-					'section_name'        => '',
-					'section_course_id'   => 0,
-					'section_order'       => 0,
-					'section_description' => ''
-				)
-			);
-			$section = stripslashes_deep( $section );
-			extract( $section );
-
-			$insert_data = compact( 'section_name', 'section_course_id', 'section_order', 'section_description' );
-			$wpdb->insert(
-				$wpdb->learnpress_sections,
-				$insert_data,
-				array( '%s', '%d', '%d' )
-			);
-			$section['section_id'] = $wpdb->insert_id;
-
-			return $section;
-		}
-
-		/**
 		 * @param array $item
 		 *
 		 * @return array
@@ -989,54 +957,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				ALTER TABLE {$wpdb->learnpress_sections} AUTO_INCREMENT = 1
 			" );
 		}
-
-		/**
-		 * Update course curriculum.
-		 *
-		 * @since 3.0.0
-		 */
-		private function _update_course_curriculum() {
-			global $wpdb, $post;
-
-			$preview = filter_input( INPUT_POST, 'wp-preview', FILTER_SANITIZE_STRING );
-
-			if ( 'dopreview' == $preview && 'draft' == $post->post_status ) {
-				learn_press_add_message( __( 'Course Curriculum only appear if course is saved', 'learnpress' ), 'error' );
-
-				return;
-			}
-
-			$sections = isset( $_REQUEST['_lp_curriculum_sections'] ) ? $_REQUEST['_lp_curriculum_sections'] : false;
-			if ( $sections === false ) {
-				return;
-			}
-
-			$sections_data = array();
-			foreach ( $sections as $section ) {
-				$unslash         = wp_unslash( $section );
-				$sections_data[] = json_decode( $unslash, true );
-			}
-
-			foreach ( $sections_data as $section_data ) {
-				$section_id = isset( $section_data['id'] ) ? $section_data['id'] : - 1;
-				$curd       = new LP_Section_CURD();
-
-				$args = array(
-					'section_name'        => $section_data['title'],
-					'section_description' => $section_data['description'],
-					'section_course_id'   => $section_data['course_id'],
-					'section_order'       => $section_data['order']
-				);
-
-				if ( $section_id < 0 ) {
-					$result = $curd->create( $args );
-				} else {
-					$args['section_id'] = $section_id;
-					$result             = $curd->update( $args );
-				}
-			}
-		}
-
 
 		private function _update_final_quiz() {
 			global $post;
@@ -1174,9 +1094,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 
 			$new_status = get_post_status( $post->ID );
 			$old_status = get_post_meta( $post->ID, '_lp_course_status', true );
-
-			// Update curriculum
-			$this->_update_course_curriculum();
 
 			// Final quiz
 			$this->_update_final_quiz();

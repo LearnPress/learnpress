@@ -11,7 +11,14 @@ learn_press_admin_view( 'course/section-item' );
 <script type="text/x-template" id="tmpl-lp-section">
     <div class="section" :class="isOpen ? 'open' : 'close'">
         <div class="section-head">
-            <input v-model="section.title" type="text" title="title" class="title-input" placeholder="<?php esc_attr_e( 'Enter the name section', 'learnpress' ); ?>">
+            <span class="movable"></span>
+            <input v-model="section.title"
+                   type="text"
+                   title="title"
+                   class="title-input"
+                   @blur="update"
+                   @keyup.enter="update"
+                   placeholder="<?php esc_attr_e( 'Enter the name section', 'learnpress' ); ?>">
 
             <div class="actions">
                 <span class="remove" @click="remove"><span class="dashicons dashicons-trash"></span></span>
@@ -22,7 +29,13 @@ learn_press_admin_view( 'course/section-item' );
         <div class="section-content">
             <div class="details">
 
-                <input v-model="section.description" type="text" class="description-input" title="description" placeholder="<?php echo esc_attr( 'Describe about this section', 'learnpress' ); ?>">
+                <input v-model="section.description"
+                       type="text"
+                       class="description-input"
+                       title="description"
+                       @blur="update"
+                       @keyup.enter="update"
+                       placeholder="<?php echo esc_attr( 'Describe about this section', 'learnpress' ); ?>">
             </div>
 
             <table class="section-list-items">
@@ -54,6 +67,9 @@ learn_press_admin_view( 'course/section-item' );
                         index: this.index,
                         section: this.section
                     });
+                },
+                update: function () {
+                    $store.dispatch('updateSection', JSON.stringify(this.section));
                 }
             }
         });

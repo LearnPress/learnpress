@@ -106,6 +106,7 @@ class LP_Course_Section {
 			'course_id'   => $this->get_course_id(),
 			'description' => $this->get_description(),
 			'items'       => $this->get_items_array(),
+			'order'       => $this->get_order(),
 		);
 
 		return $data;

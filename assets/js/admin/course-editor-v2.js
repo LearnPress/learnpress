@@ -94,6 +94,20 @@
             );
         },
 
+        updateSection: function (context, section) {
+            Vue.http.LPRequest({
+                type: 'update-section',
+                section: section
+            }).then(
+                function (response) {
+                    var result = response.body;
+                },
+                function (error) {
+                    console.error(error);
+                }
+            );
+        },
+
         updateSections: function (context, sections) {
             Vue.http.LPRequest({sections: sections})
                 .then(
@@ -128,15 +142,14 @@
  */
 (function (exports, Vue, $store) {
     Vue.http.LPRequest = function (payload) {
+        payload['nonce'] = $store.state.nonce;
+        payload['lp-ajax'] = $store.state.action;
+        payload['course-id'] = $store.getters.id;
+
         return Vue.http.post($store.state.ajax,
-            {
-                nonce: $store.state.nonce,
-                'lp-ajax': $store.state.action,
-                'course-id': $store.getters.id
-            },
+            payload,
             {
                 emulateJSON: true,
-                body: payload,
                 params: {
                     namespace: 'LPCurriculumRequest'
                 }

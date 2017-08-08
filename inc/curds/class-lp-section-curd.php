@@ -17,12 +17,34 @@ class LP_Section_CURD implements LP_Interface_CURD {
 	 * @return array
 	 */
 	private function parse( $args ) {
-		return wp_parse_args( $args, array(
-			'section_name',
+		$data = wp_parse_args( $args, array(
+			'section_name'        => '',
+			'section_description' => '',
 			'section_course_id'   => 0,
-			'section_order'       => 0,
-			'section_description' => ''
+			'section_order'       => 1,
+			'items'               => array(),
 		) );
+
+		if ( $data['section_course_id'] > 0 ) {
+			$last                  = $this->get_last_number_order( $data['section_course_id'] );
+			$data['section_order'] = $last + 1;
+		}
+
+		return $data;
+	}
+
+	/**
+	 * @param $course_id
+	 *
+	 * @return int
+	 */
+	private function get_last_number_order( $course_id ) {
+		global $wpdb;
+
+		$query  = $wpdb->prepare( "SELECT MAX(s.section_order) FROM {$wpdb->prefix}learnpress_sections AS s WHERE s.section_course_id = %d", $course_id );
+		$result = intval( $wpdb->get_var( $query ) );
+
+		return ( $result > 0 ) ? $result : 1;
 	}
 
 	/**
@@ -110,9 +132,26 @@ class LP_Section_CURD implements LP_Interface_CURD {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @return mixed
+	 * @param $id
+	 *
+	 * @return bool
 	 */
-	public function delete($id) {
-		// TODO: Implement delete() method.
+	public function delete( $id ) {
+		global $wpdb;
+
+		/**
+		 * Remove section items.
+		 */
+		$wpdb->delete(
+			$wpdb->learnpress_section_items,
+			array( 'section_id' => $id )
+		);
+
+		$result = $wpdb->delete(
+			$wpdb->learnpress_sections,
+			array( 'section_id' => $id )
+		);
+
+		return ! ! $result;
 	}
 }

@@ -127,23 +127,27 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				wp_send_json_error();
 			}
 
+			$curd = new LP_Section_CURD();
+
 			$data = true;
 			switch ( $args['type'] ) {
 				case 'new-section':
-					$data = array(
-						'course_id'   => $course_id,
-						'description' => '',
-						'title'       => '',
-						'id'          => '',
-						'items'       => [],
+					$args = array(
+						'section_course_id'   => $course_id,
+						'section_description' => '',
+						'section_name'        => '',
+						'items'               => [],
 					);
-					break;
 
-
-				case 'remove-section':
-					$section_id = ! empty( $args['section-id'] ) ? $args['section-id'] : false;
-
-					$data = $section_id;
+					$result = $curd->create( $args );
+					$data   = array(
+						'id'          => $result['section_id'],
+						'items'       => $result['items'],
+						'title'       => $result['section_name'],
+						'description' => $result['section_description'],
+						'course_id'   => $result['section_course_id'],
+						'order'       => $result['section_order'],
+					);
 					break;
 
 				case 'sort-sections':
@@ -152,21 +156,37 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 						$data = $sections;
 					}
 					break;
+
+				case 'remove-section':
+					$section_id = ! empty( $args['section-id'] ) ? $args['section-id'] : false;
+					$curd->delete( $section_id );
+					break;
+
+				case 'update-section':
+					$section = ! empty( $args['section'] ) ? $args['section'] : false;
+					$section = wp_unslash( $section );
+					$section = json_decode( $section, true );
+
+					if ( ! is_array( $section ) || empty( $section ) ) {
+						break;
+					}
+
+					$data = $curd->update( array(
+						'section_id'          => $section['id'],
+						'section_name'        => $section['title'],
+						'section_description' => $section['description'],
+						'section_order'       => $section['order'],
+						'section_course_id'   => $section['course_id'],
+					) );
+
+					break;
+			}
+
+			if ( is_wp_error( $data ) ) {
+				wp_send_json_error( $data->get_error_message() );
 			}
 
 			wp_send_json_success( $data );
-
-			//@todo update sections
-
-
-			$sections = $course->get_curriculum();
-
-			$sections_data = array();
-			foreach ( $sections as $section ) {
-				$sections_data[] = $section->to_array();
-			}
-
-			wp_send_json_success( $sections_data );
 		}
 
 		/**
