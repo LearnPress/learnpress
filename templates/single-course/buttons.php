@@ -12,10 +12,60 @@ if ( !defined( 'ABSPATH' ) ) {
 }
 
 $course = LP()->global['course'];
+$lp_user = learn_press_get_current_user();
+
+$user          = learn_press_get_current_user();
+$in_cart       = learn_press_is_added_to_cart( $course->id );
+// only show enroll button if user had not enrolled
+$purchase_button_text  = apply_filters( 'learn_press_purchase_button_text', __( 'Buy this course', 'learnpress' ) );
+$enroll_button_text    = apply_filters( 'learn_press_enroll_button_text', __( 'Enroll', 'learnpress' ) );
+$retake_button_text    = apply_filters( 'learn_press_retake_button_text', __( 'Retake', 'learnpress' ) );
+$notice_enough_student = apply_filters( 'learn_press_course enough students_notice', __( 'The class is full so enrollment is closed. Please contact the site admin.', 'learnpress' ) );
 ?>
 <div class="learn-press-course-buttons">
 	<?php do_action( 'learn_press_before_course_buttons', $course->id ); ?>
 	<?php
+
+	$course_status = $lp_user->get_course_status( $course->id );
+// 	var_dump( $course_status );
+	$can_purchase = $lp_user->can_purchase_course( $course->id );
+// 	var_dump( $can_purchase );
+// 	var_dump( $user->can( 'purchase-course', $course->id ) );
+	$can_enroll = $lp_user->can( 'enroll-course', $course->id);
+// 	var_dump( $can_enroll );
+// 	var_dump( $lp_user->has_enrolled_course( $course->id, true) );
+	$can_retake = $lp_user->can_retake_course( $course->id, true );
+// 	var_dump( $can_retake );
+	if( $can_purchase ){
+		# todo dispay purchase button
+		if ($external_link = $course->get_external_link()) {
+			$external_button_text = apply_filters( 'learn_press_course_external_link_button_text', __( 'Buy this course', 'learnpress' ) );
+			do_action( 'learn_press_before_external_link_buy_course' );
+			?>
+			<div class="purchase-course">
+				<a href="<?php echo esc_url( $external_link ); ?>" class="purchase-button">
+					<?php echo $external_button_text; ?>
+				</a>
+			</div>
+			<?php
+		} else {
+			?>
+			<form name="purchase-course" class="purchase-course" method="post" enctype="multipart/form-data">
+				<?php do_action( 'learn_press_before_purchase_button' ); ?>
+				<button class="button purchase-button" data-block-content="yes">
+					<?php echo $course->is_free() ? $enroll_button_text : $purchase_button_text; ?>
+				</button>
+				<?php do_action( 'learn_press_after_purchase_button' ); ?>
+				<input type="hidden" name="purchase-course" value="<?php echo $course->id; ?>" />
+				<input type="hidden" value="user can purchase course" />
+			</form>
+			<?php
+		}
+	} elseif( $can_enroll ) {
+		echo "show can enroll button";
+	}
+
+// 	if($lp_user->get_course_status($course->id));
 	if ( $external_link = $course->get_external_link() ):
 		$external_button_text = apply_filters( 'learn_press_course_external_link_button_text', __( 'Buy this course', 'learnpress' ) );
 		?>
@@ -83,8 +133,7 @@ $course = LP()->global['course'];
 
 					<?php do_action( 'learn_press_after_enroll_button' ); ?>
 				</form>
-			<?php elseif ( $user->can( 'purchase-course', $course->id ) ) : ?>
-
+			<?php elseif ( $user->can( 'purchase-course', $course->id ) && !$can_purchase ) : ?>
 				<form name="purchase-course" class="purchase-course" method="post" enctype="multipart/form-data">
 					<?php do_action( 'learn_press_before_purchase_button' ); ?>
 					<button class="button purchase-button" data-block-content="yes">

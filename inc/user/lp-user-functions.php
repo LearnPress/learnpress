@@ -1008,16 +1008,18 @@ function _learn_press_before_purchase_course_handler( $course_id, $cart ) {
 	} else {
 		$user     = learn_press_get_current_user();
 		$redirect = false;
-		if ( $user->has_finished_course( $course_id ) ) {
-			learn_press_add_message( __( 'You have already finished course', 'learnpress' ) );
-			$redirect = true;
-		} elseif ( $user->has_purchased_course( $course_id ) ) {
-			learn_press_add_message( __( 'You have already enrolled in this course', 'learnpress' ) );
-			$redirect = true;
-		}
-		if ( $redirect ) {
-			wp_redirect( get_the_permalink( $course_id ) );
-			exit();
+		if( !$user->can_purchase_course($course_id) ) {
+			if ( $user->has_finished_course( $course_id ) ) {
+				learn_press_add_message( __( 'You have already finished course', 'learnpress' ) );
+				$redirect = true;
+			} elseif ( $user->has_purchased_course( $course_id ) ) {
+				learn_press_add_message( __( 'You have already enrolled in this course', 'learnpress' ) );
+				$redirect = true;
+			}
+			if ( $redirect ) {
+				wp_redirect( get_the_permalink( $course_id ) );
+				exit();
+			}
 		}
 	}
 }

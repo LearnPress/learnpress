@@ -1159,8 +1159,8 @@ class LP_Abstract_User {
 	 */
 	public function can_purchase_course( $course_id ) {
 		$course      = learn_press_get_course( $course_id );
-		$purchasable = $course->is_purchasable() && ! $this->has_ordered_course( $course_id );
-
+		$course_status = $this->get_course_status($course_id);
+		$purchasable = !$course->is_free() && (! $this->has_ordered_course( $course_id ) || ($this->has_ordered_course( $course_id )&& $course_status=='finished'));
 		return apply_filters( 'learn_press_user_can_purchase_course', $purchasable, $this, $course_id );
 	}
 
@@ -1502,15 +1502,14 @@ class LP_Abstract_User {
 	 *
 	 * @return bool
 	 */
-	public function has_enrolled_course( $course_id, $force = false ) {
+	public function has_enrolled_course( $course_id, $force = false, $order_id = 0 ) {
 		_learn_press_parse_user_item_statuses( $this->id, $course_id, $force );
-		if ( $enrolled = $this->has_purchased_course( $course_id ) ) {
+		$enrolled = false;
+		if ( $this->has_purchased_course( $course_id ) ) {
 			$item_statuses = LP_Cache::get_item_statuses( false, array() );
-			$key           = sprintf( '%d-%d-%d', $this->id, $course_id, $course_id );
-			$enrolled      = false;
-
+			$key           = sprintf( '%d-%d-%d', $this->id, $course_id, $order_id);
 			if ( ! array_key_exists( $key, $item_statuses ) ) {
-				$enrolled = $item_statuses[ $key ] = $this->_has_enrolled_course( $course_id );
+				$enrolled = $item_statuses[ $key ] = $this->_has_enrolled_course( $course_id, $order_id);
 			} elseif ( ! empty( $item_statuses[ $key ] ) && $item_statuses[ $key ] != '' ) {
 				$enrolled = true;
 			}
@@ -1519,17 +1518,29 @@ class LP_Abstract_User {
 		return apply_filters( 'learn_press_user_has_enrolled_course', $enrolled, $this, $course_id );
 	}
 
-	private function _has_enrolled_course( $course_id ) {
+	private function _has_enrolled_course( $course_id, $order_id = null ) {
 		global $wpdb;
-		$query = $wpdb->prepare( "
-				SELECT status
+		$sql = "SELECT status
 				FROM {$wpdb->prefix}learnpress_user_items
 				WHERE user_id = %d
-				AND item_id = %d
-				AND status <> %s
-				LIMIT 0, 1
-			", $this->id, $course_id, '' );
+					AND item_id = %d
+					AND status <> %s 
+				";
 
+		$vars = array( $this->id, $course_id );
+		if( $order_id ) {
+			$sql .= "
+					AND ref_id = %d
+					AND ref_type = 'lp_order'
+				";
+			$vars[] = $order_id;
+		}
+
+		$sql .= "
+					LIMIT 0, 1
+				";
+
+		$query = $wpdb->prepare($sql, $vars);
 		return $wpdb->get_var( $query ) ? true : false;
 	}
 
@@ -2004,7 +2015,7 @@ class LP_Abstract_User {
 	 * @return mixed|void
 	 */
 	public function get_course_status( $course_id ) {
-		return apply_filters( 'learn_press_user_course_status', $this->get_course_info( $course_id, 'status' ), $this->id );
+		return apply_filters( 'learn_press_user_course_status', $this->get_course_info( $course_id, 'status', true ), $this->id );
 	}
 
 	/**
@@ -2125,8 +2136,8 @@ class LP_Abstract_User {
 	 * @return bool
 	 */
 	public function has_purchased_course( $course_id ) {
-
-		return apply_filters( 'learn_press_user_has_purchased_course', $this->get_order_status( $course_id ) == 'lp-completed', $course_id, $this->id );
+		$purchased_course = $this->get_order_status( $course_id ) == 'lp-completed';
+		return apply_filters( 'learn_press_user_has_purchased_course', $purchased_course, $course_id, $this->id );
 	}
 
 	/**
