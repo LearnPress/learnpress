@@ -27,6 +27,9 @@
         },
         chooseItems: function (state) {
             return state.chooseItems;
+        },
+        urlEdit: function (state) {
+            return state.urlEdit;
         }
     };
 

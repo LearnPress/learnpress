@@ -81,6 +81,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				'ajax'        => admin_url( '' ),
 				'action'      => 'update_curriculum',
 				'nonce'       => wp_create_nonce( 'learnpress_update_curriculum' ),
+				'urlEdit'     => admin_url( 'post.php?action=edit&post=' ),
 				'chooseItems' => array(
 					'types'      => apply_filters( 'learn-press/course/item-section-types', array(
 						'lesson' => __( 'Lesson', 'learnpress' ),

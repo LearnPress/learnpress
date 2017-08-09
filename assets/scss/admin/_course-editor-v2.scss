@@ -244,6 +244,34 @@
 		}
 
 		.section-item {
+			.item-actions {
+				text-align: right;
+			}
+
+			.actions {
+				visibility: hidden;
+
+				> * {
+					margin-right: 10px;
+				}
+
+				.edit {
+					text-decoration: none;
+				}
+
+				.remove {
+					color: #a00;
+				}
+			}
+
+			&:hover {
+				.item-actions {
+					.actions {
+						visibility: visible;
+						cursor: pointer;
+					}
+				}
+			}
 
 			&.quiz {
 				.icon:before {
@@ -264,6 +292,7 @@
 				position: relative;
 				top: 2px;
 				text-align: center;
+				cursor: move;
 
 				&:before {
 					font-family: Dashicons;

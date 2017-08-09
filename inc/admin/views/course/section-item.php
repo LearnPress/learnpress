@@ -13,6 +13,14 @@
         </td>
 
         <td class="item-actions">
+            <div class="actions">
+                <a class="edit" :href="urlEdit" target="_blank">
+                    <span class="dashicons dashicons-edit"></span>
+                </a>
+                <a class="remove">
+                    <span class="dashicons dashicons-trash"></span>
+                </a>
+            </div>
         </td>
     </tr>
 </script>
@@ -22,7 +30,12 @@
 
         Vue.component('lp-section-item', {
             template: '#tmpl-lp-section-item',
-            props: ['item', 'order']
+            props: ['item', 'order'],
+            computed: {
+                urlEdit: function () {
+                    return $store.getters.urlEdit + this.item.id;
+                }
+            }
         });
 
     })(Vue, LP_Curriculum_Store);

@@ -40,7 +40,7 @@ learn_press_admin_view( 'course/section-item' );
             </div>
 
             <table class="section-list-items">
-                <draggable :list="section.items" :element="'tbody'">
+                <draggable :list="section.items" :element="'tbody'" :options="{handle: '.icon'}">
                     <lp-section-item v-for="(item, index) in section.items" :item="item" :key="item.id" :order="index+1"></lp-section-item>
                 </draggable>
             </table>
