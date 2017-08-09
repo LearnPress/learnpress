@@ -108,13 +108,27 @@
             );
         },
 
+        updateSortSections: function (context, orders) {
+            Vue.http
+                .LPRequest({
+                    type: 'sort-sections',
+                    orders: JSON.stringify(orders)
+                })
+                .then(
+                    function (response) {
+                        var result = response.body;
+                    },
+                    function (error) {
+                        console.error(error);
+                    }
+                );
+        },
+
         updateSections: function (context, sections) {
             Vue.http.LPRequest({sections: sections})
                 .then(
                     function (response) {
                         var result = response.body;
-
-                        context.commit('SET_SECTIONS', result.data);
                     },
                     function (error) {
                         console.error(error);

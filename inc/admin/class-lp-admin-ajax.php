@@ -129,7 +129,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 			$curd = new LP_Section_CURD();
 
-			$data = true;
+			$data = $args['type'];
 			switch ( $args['type'] ) {
 				case 'new-section':
 					$args = array(
@@ -151,10 +151,15 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					break;
 
 				case 'sort-sections':
-					$sections = ! empty( $args['sections'] ) ? $args['sections'] : false;
-					if ( $sections ) {
-						$data = $sections;
+					$orders = ! empty( $args['orders'] ) ? $args['orders'] : false;
+					$data   = $orders;
+					if ( ! $orders ) {
+						break;
 					}
+
+					$orders = json_decode( $orders, true );
+					$data   = $orders;
+
 					break;
 
 				case 'remove-section':
