@@ -134,8 +134,13 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 			$curd = new LP_Section_CURD();
 
-			$data = true;
+			$result = $args['type'];
 			switch ( $args['type'] ) {
+				case 'sync-sections':
+					$result = $course->get_curriculum_raw();
+
+					break;
+
 				case 'new-section':
 					$args = array(
 						'section_course_id'   => $course_id,
@@ -144,22 +149,27 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 						'items'               => [],
 					);
 
-					$result = $curd->create( $args );
-					$data   = array(
-						'id'          => $result['section_id'],
-						'items'       => $result['items'],
-						'title'       => $result['section_name'],
-						'description' => $result['section_description'],
-						'course_id'   => $result['section_course_id'],
-						'order'       => $result['section_order'],
+					$section = $curd->create( $args );
+					$result  = array(
+						'id'          => $section['section_id'],
+						'items'       => $section['items'],
+						'title'       => $section['section_name'],
+						'description' => $section['section_description'],
+						'course_id'   => $section['section_course_id'],
+						'order'       => $section['section_order'],
 					);
 					break;
 
 				case 'sort-sections':
-					$sections = ! empty( $args['sections'] ) ? $args['sections'] : false;
-					if ( $sections ) {
-						$data = $sections;
+					$orders = ! empty( $args['orders'] ) ? $args['orders'] : false;
+					if ( ! $orders ) {
+						break;
 					}
+
+					$orders = wp_unslash( $orders );
+					$orders = json_decode( $orders, true );
+					$result = $curd->sort_sections( $orders );
+
 					break;
 
 				case 'remove-section':
@@ -176,7 +186,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 						break;
 					}
 
-					$data = $curd->update( array(
+					$result = $curd->update( array(
 						'section_id'          => $section['id'],
 						'section_name'        => $section['title'],
 						'section_description' => $section['description'],
@@ -185,13 +195,20 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					) );
 
 					break;
+
+				case 'search-items':
+					//@todo search items.
+
+					$result = array();
+
+					break;
 			}
 
-			if ( is_wp_error( $data ) ) {
-				wp_send_json_error( $data->get_error_message() );
+			if ( is_wp_error( $result ) ) {
+				wp_send_json_error( $result->get_error_message() );
 			}
 
-			wp_send_json_success( $data );
+			wp_send_json_success( $result );
 		}
 
 		/**

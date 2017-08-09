@@ -185,7 +185,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	 * Get course thumbnail, return placeholder if it does not exists
 	 *
 	 * @param string $size
-	 * @param array  $attr
+	 * @param array $attr
 	 *
 	 * @return mixed|null|void
 	 */
@@ -313,7 +313,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	/**
 	 * Get all curriculum of this course
 	 *
-	 * @param int  $section_id
+	 * @param int $section_id
 	 * @param bool $force
 	 *
 	 * @return bool|LP_Course_Section[]
@@ -339,6 +339,24 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 		}
 
 		return apply_filters( 'learn_press_course_curriculum', $return, $this->get_id(), $section_id );
+	}
+
+	/**
+	 * Get raw data curriculum.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return array
+	 */
+	public function get_curriculum_raw() {
+		$sections = $this->get_curriculum();
+
+		$sections_data = array();
+		foreach ( $sections as $section ) {
+			$sections_data[] = $section->to_array();
+		}
+
+		return $sections_data;
 	}
 
 	/**
@@ -1183,7 +1201,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	}
 
 	/**
-	 * @param int  $user_id
+	 * @param int $user_id
 	 * @param bool $force
 	 *
 	 * @return mixed|null|void
@@ -1237,7 +1255,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	/**
 	 * Calculate course results for user by course results settings
 	 *
-	 * @param int     $user_id
+	 * @param int $user_id
 	 * @param boolean $force
 	 *
 	 * @return mixed|null|void
@@ -1416,7 +1434,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	/**
 	 * Calculate results of course by lesson user completed
 	 *
-	 * @param int     $user_id
+	 * @param int $user_id
 	 * @param boolean $force
 	 *
 	 * @return int|mixed|null|void
@@ -1443,7 +1461,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	 * Get number of lessons user has completed
 	 *
 	 * @param        $user_id
-	 * @param bool   $force
+	 * @param bool $force
 	 * @param string $type
 	 *
 	 * @return int|mixed|null
@@ -1476,7 +1494,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	}
 
 	/**
-	 * @param int  $user_id
+	 * @param int $user_id
 	 * @param bool $force
 	 *
 	 * @return mixed
@@ -1505,7 +1523,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	/**
 	 * Calculate results of course by final quiz
 	 *
-	 * @param int     $user_id
+	 * @param int $user_id
 	 * @param boolean $force
 	 *
 	 * @return mixed|null
@@ -1537,7 +1555,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	/**
 	 * Calculate results of course by avg of all quizzes
 	 *
-	 * @param int     $user_id
+	 * @param int $user_id
 	 * @param boolean $force
 	 *
 	 * @return mixed

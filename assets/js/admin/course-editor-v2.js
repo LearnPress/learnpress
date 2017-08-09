@@ -24,6 +24,12 @@
         },
         currentRequest: function (state) {
             return state.countCurrentRequest || 0;
+        },
+        chooseItems: function (state) {
+            return state.chooseItems;
+        },
+        urlEdit: function (state) {
+            return state.urlEdit;
         }
     };
 
@@ -37,6 +43,13 @@
         'DECREASE_NUMBER_REQUEST': function (state) {
             state.countCurrentRequest--;
         },
+        'SORT_SECTION': function (state, orders) {
+            state.sections = state.sections.map(function (section) {
+                section.order = orders[section.id];
+
+                return section;
+            });
+        },
         'SET_SECTIONS': function (state, sections) {
             state.sections = sections;
         },
@@ -45,6 +58,12 @@
         },
         'REMOVE_SECTION': function (state, index) {
             state.sections.splice(index, 1);
+        },
+        'TOGGLE_CHOOSE_ITEMS': function (state) {
+            state.chooseItems.open = !state.chooseItems.open;
+        },
+        'SET_LIST_ITEMS': function (state, items) {
+            state.chooseItems.items = items;
         }
     };
 
@@ -60,6 +79,33 @@
             if (context.getters.currentRequest === 0) {
                 context.commit('UPDATE_STATUS', status);
             }
+        },
+
+        toggleChooseItems: function (context) {
+            context.commit('TOGGLE_CHOOSE_ITEMS');
+        },
+
+        searchItems: function (context, payload) {
+            Vue.http.LPRequest({
+                type: 'search-items',
+                query: payload.query,
+                'item-type': payload.type,
+                page: payload.page
+            }).then(
+                function (response) {
+                    var result = response.body;
+
+                    if (!result.success) {
+                        return;
+                    }
+
+                    var items = result.data;
+                    context.commit('SET_LIST_ITEMS', items);
+                },
+                function (error) {
+                    console.error(error);
+                }
+            );
         },
 
         addNewSection: function (context) {
@@ -108,13 +154,33 @@
             );
         },
 
-        updateSections: function (context, sections) {
-            Vue.http.LPRequest({sections: sections})
+        updateSortSections: function (context, orders) {
+            Vue.http
+                .LPRequest({
+                    type: 'sort-sections',
+                    orders: JSON.stringify(orders)
+                })
+                .then(
+                    function (response) {
+                        var result = response.body;
+                        var order_sections = result.data;
+                        context.commit('SORT_SECTION', order_sections);
+                    },
+                    function (error) {
+                        console.error(error);
+                    }
+                );
+        },
+
+        syncSections: function (context) {
+            Vue.http.LPRequest({type: 'sync-sections'})
                 .then(
                     function (response) {
                         var result = response.body;
 
-                        context.commit('SET_SECTIONS', result.data);
+                        if (result.success && result.data) {
+                            context.commit('SET_SECTIONS', result.data);
+                        }
                     },
                     function (error) {
                         console.error(error);

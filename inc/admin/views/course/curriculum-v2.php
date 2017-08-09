@@ -26,6 +26,11 @@ learn_press_admin_view( 'course/sections' );
                 status: function () {
                     return $store.getters.status;
                 }
+            },
+            created: function () {
+                setInterval(function () {
+                    $store.dispatch('syncSections');
+                }, 30 * 1000);
             }
         });
 

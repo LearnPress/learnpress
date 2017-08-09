@@ -13,15 +13,14 @@ learn_press_admin_view( 'course/section' );
 
 <script type="text/x-template" id="tmpl-lp-list-sections">
     <div class="curriculum-sections">
-        <draggable :list="sections" :options="{handle: '.movable'}">
-            <lp-section v-for="(section, index) in sections" :section="section" :index="index" :key="index" :order="index+1"></lp-section>
+        <draggable :list="sections" :options="{handle: '.movable'}" @end="updateSortSections">
+            <lp-section v-for="(section, index) in sections" :section="section" :index="index" :key="index"></lp-section>
         </draggable>
 
         <div class="add-new-section">
             <button type="button" :class="loading ? 'updating-message' : ''" class="button button-primary" @click.prevent="addSection"><?php esc_html_e( 'Add new section', 'learnpress' ); ?></button>
         </div>
     </div>
-
 </script>
 
 <script>
@@ -49,6 +48,14 @@ learn_press_admin_view( 'course/section' );
                 addSection: function () {
                     this.loading = true;
                     $store.dispatch('addNewSection');
+                },
+                updateSortSections: function () {
+                    var orders = [];
+                    this.sections.forEach(function (section, index) {
+                        orders.push(parseInt(section.id));
+                    });
+
+                    $store.dispatch('updateSortSections', orders);
                 }
             },
             computed: {
