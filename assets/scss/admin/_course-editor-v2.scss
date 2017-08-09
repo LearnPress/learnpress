@@ -86,6 +86,14 @@
 		margin-bottom: 10px;
 		opacity: 1;
 
+		&:hover {
+			.section-actions {
+				.remove {
+					display: inline-block;
+				}
+			}
+		}
+
 		&.sortable-ghost {
 			opacity: 0.5;
 		}
@@ -128,18 +136,6 @@
 				}
 			}
 
-			&:hover {
-				.actions {
-					.remove {
-						display: inline-block;
-					}
-				}
-			}
-
-			&:hover {
-				cursor: move;
-			}
-
 			.actions {
 				position: absolute;
 				top: 0;
@@ -152,12 +148,6 @@
 					display: inline-block;
 					text-align: center;
 					height: 100%;
-				}
-
-				.remove {
-					line-height: 5;
-					vertical-align: middle;
-					display: none;
 				}
 
 				.collapse {
@@ -202,7 +192,7 @@
 		}
 
 		.section-content {
-			padding: 20px;
+			padding: 20px 20px 0;
 			height: 100%;
 			transition: all 0.3s;
 		}
@@ -215,7 +205,7 @@
 			font-size: 1.2em;
 			border: none;
 			line-height: 30px;
-			width: calc(100% - 100px);
+			width: calc(100% - 80px);
 		}
 
 		.description-input {
@@ -285,6 +275,17 @@
 				width: 100%;
 				padding: 10px;
 			}
+		}
+	}
+
+	.section-actions {
+		padding: 20px;
+
+		.remove {
+			float: right;
+			color: #a00;
+			cursor: pointer;
+			display: none;
 		}
 	}
 }

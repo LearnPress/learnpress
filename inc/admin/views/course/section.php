@@ -21,7 +21,6 @@ learn_press_admin_view( 'course/section-item' );
                    placeholder="<?php esc_attr_e( 'Enter the name section', 'learnpress' ); ?>">
 
             <div class="actions">
-                <span class="remove" @click="remove"><span class="dashicons dashicons-trash"></span></span>
                 <span class="collapse" :class="isOpen ? 'open' : 'close'" @click.prevent="toggle"></span>
             </div>
         </div>
@@ -44,6 +43,14 @@ learn_press_admin_view( 'course/section-item' );
                 </draggable>
             </table>
         </div>
+
+        <div class="section-actions">
+            <button type="button" class="button button-secondary"><?php esc_html_e( 'Add items', 'learnpress' ); ?></button>
+
+            <div class="remove" @click="remove">
+                <span class="dashicons dashicons-trash"></span>
+            </div>
+        </div>
     </div>
 </script>
 
@@ -63,6 +70,12 @@ learn_press_admin_view( 'course/section-item' );
                     this.isOpen = !this.isOpen;
                 },
                 remove: function () {
+                    var r = window.confirm('Are you sure remove this section?');
+
+                    if (!r) {
+                        return;
+                    }
+
                     $store.dispatch('removeSection', {
                         index: this.index,
                         section: this.section
