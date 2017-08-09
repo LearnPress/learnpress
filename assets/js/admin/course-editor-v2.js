@@ -51,6 +51,9 @@
         },
         'TOGGLE_CHOOSE_ITEMS': function (state) {
             state.chooseItems.open = !state.chooseItems.open;
+        },
+        'SET_LIST_ITEMS': function (state, items) {
+            state.chooseItems.items = items;
         }
     };
 
@@ -70,6 +73,29 @@
 
         toggleChooseItems: function (context) {
             context.commit('TOGGLE_CHOOSE_ITEMS');
+        },
+
+        searchItems: function (context, payload) {
+            Vue.http.LPRequest({
+                type: 'search-items',
+                query: payload.query,
+                'item-type': payload.type,
+                page: payload.page
+            }).then(
+                function (response) {
+                    var result = response.body;
+
+                    if (!result.success) {
+                        return;
+                    }
+
+                    var items = result.data;
+                    context.commit('SET_LIST_ITEMS', items);
+                },
+                function (error) {
+                    console.error(error);
+                }
+            );
         },
 
         addNewSection: function (context) {

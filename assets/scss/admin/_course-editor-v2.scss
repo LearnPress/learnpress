@@ -383,11 +383,17 @@
 			padding: 20px;
 
 			.search {
+				margin-bottom: 20px;
+
 				input {
 					width: 100%;
 					font-size: 1.2em;
-					line-height: 2;
+					line-height: 1.5;
 				}
+			}
+
+			.list-items {
+				min-height: 200px;
 			}
 		}
 

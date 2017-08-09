@@ -21,7 +21,7 @@ $item_types = apply_filters( 'learn-press/course/item-section-types', array(
                         <li :data-type="key"
                             class="tab"
                             @click.prevent="changeTab(key)"
-                            :class="key === tabActive ? 'active': 'inactive'">
+                            :class="key === tab ? 'active': 'inactive'">
                             <a href="#" @click.prevent="">{{type}}</a>
                         </li>
                     </template>
@@ -33,7 +33,11 @@ $item_types = apply_filters( 'learn-press/course/item-section-types', array(
             </div>
             <div class="main">
                 <form class="search" @submit.prevent="">
-                    <input placeholder="Type here to search item" type="text" title="search" v-model="query">
+                    <input placeholder="Type here to search item"
+                           type="text"
+                           title="search"
+                           @input="makeSearch"
+                           v-model="query">
                 </form>
 
                 <div class="list-items">
@@ -56,7 +60,9 @@ $item_types = apply_filters( 'learn-press/course/item-section-types', array(
             data: function () {
                 return {
                     query: '',
-                    tabActive: 'lesson'
+                    page: 1,
+                    tab: 'lesson',
+                    delayTimeout: null
                 };
             },
             methods: {
@@ -64,7 +70,22 @@ $item_types = apply_filters( 'learn-press/course/item-section-types', array(
                     $store.dispatch('toggleChooseItems');
                 },
                 changeTab: function (key) {
-                    this.tabActive = key;
+                    this.tab = key;
+                },
+                makeSearch: function (e) {
+                    var vm = this;
+
+                    if (this.delayTimeout) {
+                        clearTimeout(this.delayTimeout);
+                    }
+
+                    this.delayTimeout = setTimeout(function () {
+                        $store.dispatch('searchItems', {
+                            query: vm.query,
+                            page: vm.page,
+                            type: vm.tab
+                        });
+                    }, 1000);
                 }
             },
             computed: {

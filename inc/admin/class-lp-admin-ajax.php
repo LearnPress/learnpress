@@ -151,14 +151,17 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					break;
 
 				case 'sort-sections':
+
 					$orders = ! empty( $args['orders'] ) ? $args['orders'] : false;
-					$data   = $orders;
 					if ( ! $orders ) {
 						break;
 					}
 
+					$orders = wp_unslash( $orders );
 					$orders = json_decode( $orders, true );
 					$data   = $orders;
+
+					//@todo sort section.
 
 					break;
 
@@ -183,6 +186,13 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 						'section_order'       => $section['order'],
 						'section_course_id'   => $section['course_id'],
 					) );
+
+					break;
+
+				case 'search-items':
+					//@todo search items.
+
+					$data = array();
 
 					break;
 			}
