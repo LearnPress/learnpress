@@ -59,7 +59,7 @@ learn_press_admin_view( 'course/section-item' );
 
         Vue.component('lp-section', {
             template: '#tmpl-lp-section',
-            props: ['section', 'order', 'index'],
+            props: ['section', 'index'],
             data: function () {
                 return {
                     isOpen: true

@@ -151,7 +151,6 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					break;
 
 				case 'sort-sections':
-
 					$orders = ! empty( $args['orders'] ) ? $args['orders'] : false;
 					if ( ! $orders ) {
 						break;
@@ -159,9 +158,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 					$orders = wp_unslash( $orders );
 					$orders = json_decode( $orders, true );
-					$data   = $orders;
-
-					//@todo sort section.
+					$data   = $curd->sort_sections( $orders );
 
 					break;
 

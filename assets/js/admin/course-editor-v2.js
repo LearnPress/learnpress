@@ -40,6 +40,13 @@
         'DECREASE_NUMBER_REQUEST': function (state) {
             state.countCurrentRequest--;
         },
+        'SORT_SECTION': function (state, orders) {
+            state.sections = state.sections.map(function (section) {
+                section.order = orders[section.id];
+
+                return section;
+            });
+        },
         'SET_SECTIONS': function (state, sections) {
             state.sections = sections;
         },
@@ -153,6 +160,8 @@
                 .then(
                     function (response) {
                         var result = response.body;
+                        var order_sections = result.data;
+                        context.commit('SORT_SECTION', order_sections);
                     },
                     function (error) {
                         console.error(error);

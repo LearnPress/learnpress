@@ -48,6 +48,35 @@ class LP_Section_CURD implements LP_Interface_CURD {
 	}
 
 	/**
+	 * Update sort sections.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param $sections string[]
+	 *
+	 * @return array
+	 */
+	public function sort_sections( $sections ) {
+		global $wpdb;
+
+		$orders = array();
+
+		foreach ( $sections as $index => $section_id ) {
+			$order = $index + 1;
+
+			$orders[ $section_id ] = $order;
+
+			$wpdb->update(
+				$wpdb->learnpress_sections,
+				array( 'section_order' => $order ),
+				array( 'section_id' => $section_id )
+			);
+		}
+
+		return $orders;
+	}
+
+	/**
 	 * Create item and insert to database.
 	 *
 	 * @since 3.0.0
