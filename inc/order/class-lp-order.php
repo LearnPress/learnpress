@@ -21,7 +21,8 @@ class LP_Order extends LP_Abstract_Post_Data {
 		'modified_date'    => '',
 		'customer_message' => '',
 		'customer_note'    => '',
-		'status'           => ''
+		'status'           => '',
+		'user_ip'          => ''
 	);
 
 	/**
@@ -65,10 +66,38 @@ class LP_Order extends LP_Abstract_Post_Data {
 					'modified_date'    => $post->post_modified,
 					'customer_message' => $post->post_excerpt,
 					'customer_note'    => $post->post_excerpt,
-					'post_status'      => $post->post_status
+					'post_status'      => $post->post_status,
+					'user_ip'          => get_post_meta( $this->get_id(), '_user_ip_address', true )
 				)
 			);
 		}
+	}
+
+	/**
+	 * Get date of this order.
+	 *
+	 * @param string $format
+	 *
+	 * @return string
+	 */
+	public function get_date( $format = '' ) {
+		$date = $this->get_data( 'order_date' );
+
+		switch ( $format ) {
+			case 'd':
+				$return = date( 'Y-m-d', strtotime( $date ) );
+				break;
+			case 'h':
+				$return = date( 'H', strtotime( $date ) );
+				break;
+			case 'm':
+				$return = date( 'i', strtotime( $date ) );
+				break;
+			default:
+				return $date;
+		}
+
+		return $return;
 	}
 
 	/**

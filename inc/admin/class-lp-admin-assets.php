@@ -12,16 +12,27 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 	 */
 	public function __construct() {
 		parent::__construct();
-		$priory = 900;
-		add_action( 'admin_enqueue_scripts', array( $this, 'load_scripts' ), $priory );
-		//add_action( 'admin_print_footer_scripts', array( $this, 'localize_printed_scripts' ), $priory + 10 );
-		//add_action( 'admin_enqueue_scripts', array( __CLASS__, '_enqueue_scripts' ), $priory + 10 );
+		add_action( 'learn-press/enqueue-script/learn-press-modal-search-items', array(
+			$this,
+			'init_modal_search_items'
+		) );
+
+	}
+
+	public function init_modal_search_items() {
+		new LP_Modal_Search_Items();
 	}
 
 	protected function _get_script_data() {
 		return array(
-			'learn-press-global' => array(
+			'learn-press-global'         => array(
 				'i18n' => 'This is global script for both admin and site'
+			),
+			'learn-press-meta-box-order' => apply_filters(
+				'learn-press/meta-box-order/script-data',
+				array(
+					'i18n_error' => __( 'Ooops! Error.', 'learnpress' )
+				)
 			)
 		);
 	}
@@ -104,19 +115,23 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'url'  => $this->url( 'js/admin/quiz.js' ),
 					'deps' => array( 'question-controller', 'quiz-controller', 'question-app' )
 				),
-//				'course-app'             => array(
-//					'url'  => $this->url( 'js/admin/course.js' ),
-//					'deps' => array(
-//						'quiz-app'
-//					)
-//				),
-				'course-editor-v2'       => array(
-					'url'  => $this->url( 'js/admin/course-editor-v2.js' ),
-					'deps' => array(
+
+				'course-editor-v2'               => array(
+					'url'     => $this->url( 'js/admin/course-editor-v2.js' ),
+					'deps'    => array(
 						'lp-vue',
 						'lp-vuex',
 						'lp-vue-resource'
-					)
+					),
+					'screens' => array( LP_COURSE_CPT )
+				),
+				'learn-press-modal-search-items' => array(
+					'url' => $this->url( 'js/admin/modal-search-items.js' )
+				),
+				'learn-press-meta-box-order'     => array(
+					'url'     => $this->url( 'js/admin/meta-box-order.js' ),
+					'deps'    => array( 'learn-press-global', 'learn-press-modal-search-items' ),
+					'screens' => array( LP_ORDER_CPT )
 				)
 			)
 		);
@@ -144,6 +159,9 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 		// Register
 		$this->_register_scripts();
 
+		global $current_screen;
+		$screen_id = $current_screen ? $current_screen->id : false;
+
 		/**
 		 * Enqueue scripts
 		 *
@@ -151,9 +169,14 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 		 */
 		if ( $scripts = $this->_get_scripts() ) {
 			foreach ( $scripts as $handle => $data ) {
-				wp_enqueue_script( $handle );
+				do_action( 'learn-press/enqueue-script/' . $handle );
+				if ( empty( $data['screens'] ) || ! empty( $data['screens'] ) && in_array( $screen_id, $data['screens'] ) ) {
+					wp_enqueue_script( $handle );
+				}
 			}
 		}
+
+		$this->localize_printed_scripts();
 
 		/**
 		 * Enqueue scripts

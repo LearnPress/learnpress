@@ -12,16 +12,70 @@ if ( isset( $order_items ) ) {
 	$currency_symbol = learn_press_get_currency_symbol();
 }
 global $post;
+
+$method_title = $order->get_payment_method_title();
+
 ?>
 <div id="learn-press-order" class="order-details">
     <div class="order-data">
         <h3 class="order-data-number"><?php echo sprintf( __( 'Order %s', 'learnpress' ), $order->get_order_number() ); ?></h3>
-        <div class="order-data-date"><?php echo sprintf( __( 'Date %s', 'learnpress' ), $order->order_date ); ?></div>
-        <div class="order-data-status <?php echo sanitize_title( $order->post_status ); ?>"><?php echo sprintf( __( 'Status %s', 'learnpress' ), $order->get_order_status() ); ?></div>
-        <div class="order-data-payment-method"><?php echo learn_press_payment_method_from_slug( $post->ID ); ?></div>
+        <div class="order-data-field payment-method-title">
+			<?php
+			if ( $order->order_total == 0 ) {
+				printf( '<strong>%s</strong> at <strong>%s</strong>', $method_title, $order->get_data( 'user_ip' ) );
+			} else {
+				printf( 'Pay via <strong>%s</strong> at <strong>%s</strong>', $method_title, $order->get_data( 'user_ip' ) );
+			} ?>
+        </div>
+        <h3 class="order-data-heading"><?php _e( 'Order details', 'learnpress' ); ?></h3>
+        <div class="order-data-field order-data-date">
+            <label><?php _e( 'Date', 'learnpress' ); ?></label>
+            <input type="text" class="order-date date-picker" name="order-date"
+                   value="<?php echo esc_attr( $order->get_date( 'd' ) ); ?>">
+            @
+            <input type="number" class="order-hour" name="order-hour"
+                   value="<?php echo esc_attr( $order->get_date( 'h' ) ); ?>">
+            :
+            <input type="number" class="order-minute" name="order-minute"
+                   value="<?php echo esc_attr( $order->get_date( 'm' ) ); ?>">
+        </div>
+
+        <div class="order-data-field order-data-status <?php echo sanitize_title( $order->post_status ); ?>">
+            <label><?php _e( 'Status', 'learnpress' ); ?></label>
+            <select name="order-status" data-status="<?php echo 'lp-' . $order->get_status(); ?>">
+				<?php
+				$statuses = learn_press_get_order_statuses();
+				foreach ( $statuses as $status => $status_name ) {
+					echo '<option data-desc="' . esc_attr( _learn_press_get_order_status_description( $status ) ) . '" value="' . esc_attr( $status ) . '" ' . selected( $status, 'lp-' . $order->get_status(), false ) . '>' . esc_html( $status_name ) . '</option>';
+				}
+				?>
+            </select>
+
+        </div>
+
+        <div class="order-data-field order-data-user">
+			<?php if ( $order->is_multi_users() ) { ?>
+                <label><?php _e( 'Customers', 'learnpress' ); ?></label>
+                <div class="order-users">
+                    <p><?php $order->print_users(); ?></p>
+                </div>
+			<?php } else { ?>
+                <label><?php _e( 'Customer', 'learnpress' ); ?></label>
+                <div class="order-users">
+					<?php
+					if ( $user_email = $order->get_user( 'email' ) ) {
+						printf( '%s (%s)', $order->get_customer_name(), $order->get_user( 'email' ) );
+					} else {
+						echo $order->get_customer_name();
+					}
+					?>
+                </div>
+                <a href=""><?php _e('Change', 'learnpress');?></a>
+			<?php } ?>
+        </div>
     </div>
     <div class="order-user-data clearfix">
-        <div class="order-user-avatar">
+        <!--<div class="order-user-avatar">
 			<?php if ( $order->is_multi_users() ) { ?>
                 <div class="avatar-multiple-users">
                     <span></span>
@@ -42,22 +96,14 @@ global $post;
                 </div>
                 <div class="user-email">
 					<?php $user_email = $order->get_user( 'user_email' );
-					echo empty( $user_email ) ? '' : $user_email; ?>
+			echo empty( $user_email ) ? '' : $user_email; ?>
                 </div>
-                <div class="user-ip-address">
-					<?php echo $order->user_ip_address; ?>
-                </div>
-			<?php } ?>
-			<?php if ( $title = $order->get_payment_method_title() ) { ?>
-                <div class="payment-method-title">
-					<?php echo $order->order_total == 0 ? $title : sprintf( __( 'Pay via <strong>%s</strong>', 'learnpress' ), $title ); ?>
-                </div>
-			<?php } ?>
-        </div>
-    </div>
-    <br/>
 
-    <h3><?php _e( 'Order Items', 'learnpress' ); ?></h3>
+			<?php } ?>
+
+        </div>-->
+    </div>
+    <h3 class="order-data-heading"><?php _e( 'Order Items', 'learnpress' ); ?></h3>
     <div class="order-items">
         <table class="list-order-items">
             <thead>

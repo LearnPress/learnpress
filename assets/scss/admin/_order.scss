@@ -1,64 +1,98 @@
-.post-type-lp_order{
-    #post-body-content{
+.post-type-lp_order {
+    #post-body-content {
         display: none;
     }
 
-    #order_details{
-        .hndle, .handlediv{
+    #order_details {
+        .hndle, .handlediv {
             display: none;
         }
 
-        .inside{
+        .inside {
             padding: 30px 30px;
             margin: 0;
         }
 
-        .order-data-number{
-            margin: 0;
+        .order-data-field {
+            margin-bottom: 10px;
+            label {
+                display: block;
+                margin-bottom: 5px;
+            }
+        }
+
+        .order-data-number {
+            margin: 0 0 10px;
             font-size: 24px;
             font-weight: lighter;
         }
-        .order-items{
+
+        .order-data-heading{
+            margin-top: 40px;
+        }
+
+        .order-users{
+            font-weight: bold;
+        }
+
+        .order-data-date {
+            .order-date {
+                width: 100px;
+            }
+            .order-hour, .order-minute {
+                width: 50px;
+            }
+        }
+
+        .order-items {
             margin: 0 -30px;
             border-top: 2px solid #DDD;
             padding: 0 30px;
-            table{
+            table {
                 border-collapse: collapse;
                 width: 100%;
-                thead{
-                    th{
+                thead {
+                    th {
                         border-bottom: 1px solid #DDD;
                         text-align: left;
-                        padding: 12px 0px 12px 0px;
-                        font-weight: normal;
+                        padding: 12px 10px;
                         font-size: 16px;
+                        font-weight: lighter;
                     }
                 }
 
-                tbody, tfoot{
-                    td{
+                tbody, tfoot {
+                    td {
                         border-bottom: 1px solid #DDD;
                         text-align: left;
-                        padding: 10px 0;
+                        padding: 10px;
                     }
                 }
 
-                tfoot{
-                    td{
+                tbody {
+                    tr:nth-child(odd) {
+                        td {
+                            background: #F5F5F5;
+                        }
+                    }
+                }
+
+                tfoot {
+                    td {
                         border: none;
                         padding-bottom: 0;
                         text-align: right;
-                        font-size: 15px;
+                        font-size: 14px;
                     }
                 }
                 .column-price,
                 .column-total,
-                .column-quantity{
+                .column-quantity {
                     text-align: right;
                     width: 150px;
                 }
-                .row-subtotal{
-                    td{
+                .row-subtotal {
+                    td {
                         padding-top: 20px;
                     }
                 }

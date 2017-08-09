@@ -22,8 +22,17 @@ abstract class LP_Abstract_Assets {
 	 */
 	public function __construct() {
 		$this->_cache = learn_press_is_debug() ? microtime( true ) : '';
-		add_action( 'wp_enqueue_scripts', array( $this, 'do_register' ) );
-		add_action( 'admin_enqueue_scripts', array( $this, 'do_register' ) );
+
+		$priory = 1000;
+		if ( is_admin() ) {
+			add_action( 'admin_enqueue_scripts', array( $this, 'do_register' ) );
+			add_action( 'admin_enqueue_scripts', array( $this, 'load_scripts' ), $priory );
+		} else {
+			add_action( 'wp_enqueue_scripts', array( $this, 'do_register' ) );
+			add_action( 'wp_enqueue_scripts', array( $this, 'load_scripts' ), $priory );
+			add_action( 'wp_print_scripts', array( $this, 'localize_printed_scripts' ), $priory + 10 );
+			add_action( 'wp_print_footer_scripts', array( $this, 'localize_printed_scripts' ), $priory + 10 );
+		}
 	}
 
 	abstract function load_scripts();
@@ -228,10 +237,24 @@ abstract class LP_Abstract_Assets {
 		//$scripts->add( 'learn-press-tipsy', $default_path . 'js/vendor/jquery-tipsy/jquery.tipsy.js' );
 	}
 
-	public function get_script_var_name($handle){
-		$handle = str_replace(array('_', '-'), ' ', $handle);
-		$handle = ucwords($handle);
-		return 'lp' . str_replace(' ', '', $handle) . 'Settings';
+	public function get_script_var_name( $handle ) {
+		$handle = str_replace( array( '_', '-' ), ' ', $handle );
+		$handle = ucwords( $handle );
+
+		return 'lp' . str_replace( ' ', '', $handle ) . 'Settings';
+	}
+
+	public function localize_printed_scripts() {
+		if ( ! ( $scripts_data = $this->_get_script_data() ) ) {
+			return;
+		}
+		foreach ( $scripts_data as $handle => $data ) {
+			wp_localize_script( $handle, $this->get_script_var_name( $handle ), $data );
+		}
+	}
+
+	protected function _get_script_data() {
+		return array();
 	}
 
 	/**
