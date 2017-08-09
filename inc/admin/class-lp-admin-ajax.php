@@ -132,14 +132,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			$result = $args['type'];
 			switch ( $args['type'] ) {
 				case 'sync-sections':
-					$sections = $course->get_curriculum();
-
-					$sections_data = array();
-					foreach ( $sections as $section ) {
-						$sections_data[] = $section->to_array();
-					}
-
-					$result = $sections_data;
+					$result = $course->get_curriculum_raw();
 
 					break;
 
@@ -152,7 +145,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					);
 
 					$section = $curd->create( $args );
-					$result   = array(
+					$result  = array(
 						'id'          => $section['section_id'],
 						'items'       => $section['items'],
 						'title'       => $section['section_name'],
@@ -170,7 +163,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 					$orders = wp_unslash( $orders );
 					$orders = json_decode( $orders, true );
-					$result   = $curd->sort_sections( $orders );
+					$result = $curd->sort_sections( $orders );
 
 					break;
 

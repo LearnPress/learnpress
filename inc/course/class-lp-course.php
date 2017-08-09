@@ -162,4 +162,7 @@ class LP_Course extends LP_Abstract_Course {
 		return apply_filters( 'learn_press_course_object', $the_course );
 	}
 
+	public function to_array() {
+
+	}
 }

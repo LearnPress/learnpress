@@ -30,7 +30,7 @@ learn_press_admin_view( 'course/sections' );
             created: function () {
                 setInterval(function () {
                     $store.dispatch('syncSections');
-                }, 60 * 1000);
+                }, 30 * 1000);
             }
         });
 
