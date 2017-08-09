@@ -1199,7 +1199,6 @@ class LP_Abstract_User {
 	public function can_view_item( $item_id, $course_id = 0 ) {
 		$return    = false;
 		$course_id = $this->_get_course_id( $course_id );
-
 		switch ( get_post_type( $item_id ) ) {
 			case LP_QUIZ_CPT:
 				$return = $this->can( 'view-quiz', $item_id, $course_id );
@@ -1208,7 +1207,6 @@ class LP_Abstract_User {
 				$return = $this->can( 'view-lesson', $item_id, $course_id );
 				break;
 		}
-
 		return apply_filters( 'learn_press_user_can_view_item', $return, $item_id, $course_id, $this->id );
 	}
 
@@ -1237,12 +1235,17 @@ class LP_Abstract_User {
 	 */
 	public function can_view_lesson( $lesson_id, $course_id = 0 ) {
 		$view = false;
+
 		// else, find the course of this lesson
 		$course_id = $this->_get_course_id( $course_id );
 
 		$lesson = LP_Lesson::get_lesson( $lesson_id );
-		if ( $course = LP_Course::get_course( $course_id ) ) {
-			if ( $this->has( 'enrolled-course', $course_id ) || $this->has( 'finished-course', $course_id ) ) {
+		$course = LP_Course::get_course( $course_id ); 
+		$order_id = $this->get_course_order($course_id);
+		$lp_order = learn_press_get_order($order_id);
+
+		if ( $course = LP_Course::get_course( $course_id ) && $order_id && $lp_order->post_status == 'lp_completed' ) {
+			if ( $this->has( 'enrolled-course', $course_id, true ) || $this->has( 'finished-course', $course_id, true ) ) {
 				// or user has enrolled course
 				$view = 'enrolled';
 			} elseif ( $lesson->is( 'previewable' ) || $this->is_admin() || ( $this->is_instructor() && $course->post->post_author == $this->user->ID ) ) {
@@ -1489,7 +1492,6 @@ class LP_Abstract_User {
 		} else {
 			$last_orders = $my_orders;
 		}
-
 		return $last_orders;
 	}
 
