@@ -61,6 +61,7 @@ class LP_Shortcodes {
 			}
 		}
 
+
         return $template;
 	}
 

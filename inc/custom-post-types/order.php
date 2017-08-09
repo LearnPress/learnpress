@@ -32,7 +32,102 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				->add_map_method( 'before_delete', 'delete_order_data' )
 				->add_map_method( 'save', 'save_order' );
 
+			add_filter( 'wp_count_posts', array( $this, 'filter_count_posts' ), 100, 3 );
+			add_filter( 'views_edit-lp_order', array( $this, 'filter_views' ) );
+			add_filter( 'posts_where_paged', array( $this, 'filter_orders' ) );
+
 			parent::__construct( $post_type );
+		}
+
+		/**
+		 * Filter the counts of posts when wp counting orders by statuses.
+		 * Maybe there are some orders are created for multiple users,
+		 * and each user in main order will be assigned to a separated
+		 * order with post_parent is ID of main order. And, we do not
+		 * want to show these orders in the list.
+		 *
+		 * @param array  $counts
+		 * @param string $type
+		 * @param string $perm
+		 *
+		 * @return array|object
+		 */
+		public function filter_count_posts( $counts, $type, $perm ) {
+
+			if ( LP_ORDER_CPT === $type ) {
+				$cache_key = 'lp-' . _count_posts_cache_key( $type, $perm );
+
+				$counts = wp_cache_get( $cache_key, 'counts' );
+
+				if ( false !== $counts ) {
+					return $counts;
+				}
+
+				global $wpdb;
+				$query = "
+				        SELECT post_status, COUNT( * ) AS num_posts 
+                        FROM wp_posts 
+                        WHERE post_type = %s
+                        AND post_parent = %d
+				    ";
+
+				if ( 'readable' == $perm && is_user_logged_in() ) {
+					$post_type_object = get_post_type_object( $type );
+					if ( ! current_user_can( $post_type_object->cap->read_private_posts ) ) {
+						$query .= $wpdb->prepare( " AND (post_status != 'private' OR ( post_author = %d AND post_status = 'private' ))",
+							get_current_user_id()
+						);
+					}
+				}
+				$query .= ' GROUP BY post_status';
+
+				$results = (array) $wpdb->get_results( $wpdb->prepare( $query, $type, 0 ), ARRAY_A );
+				$counts  = array_fill_keys( get_post_stati(), 0 );
+
+				foreach ( $results as $row ) {
+					$counts[ $row['post_status'] ] = $row['num_posts'];
+				}
+
+				$counts = (object) $counts;
+				wp_cache_set( $cache_key, $counts, 'counts' );
+			}
+
+			return $counts;
+		}
+
+		/**
+		 * Unset value in 'mine' key in views of LP Orders.
+		 * The 'mine' is present in some case when 'user_posts_count'
+		 * is not the same with total posts then wp add it to the views
+		 * of WP Posts List table.
+		 *
+		 * @param array $views
+		 *
+		 * @return mixed
+		 */
+		public function filter_views( $views ) {
+			if ( isset( $views['mine'] ) ) {
+				unset( $views['mine'] );
+			}
+
+			return $views;
+		}
+
+		/**
+		 * Filter to hide orders are created by one order for multiple users.
+		 *
+		 * @param string $where
+		 *
+		 * @return string
+		 */
+		public function filter_orders( $where ) {
+			if ( ! $this->_is_archive() ) {
+				return $where;
+			}
+
+			$where .= " AND post_parent = 0 ";
+
+			return $where;
 		}
 
 		public function post_new() {
@@ -238,8 +333,11 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			}
 		}
 
+		/**
+		 * Remove unused boxes
+		 */
 		public function remove_box() {
-			//remove_post_type_support( LP_ORDER_CPT, 'title' );
+			remove_post_type_support( LP_ORDER_CPT, 'title' );
 			remove_post_type_support( LP_ORDER_CPT, 'editor' );
 		}
 
@@ -482,9 +580,9 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					} else {
 						if ( $the_order->customer_exists() ) {
 							$user = learn_press_get_user( $the_order->user_id );
-							printf( '<a href="user-edit.php?user_id=%d">%s (%s)</a>', $the_order->user_id, $user->get_data('user_login'), $user->get_data('display_name') );
+							printf( '<a href="user-edit.php?user_id=%d">%s (%s)</a>', $the_order->user_id, $user->get_data( 'user_login' ), $user->get_data( 'display_name' ) );
 							?><?php
-							printf( '<br /><span>%s</span>', $user->user_email );
+							printf( '<br /><span>%s</span>', $user->get_data( 'user_email' ) );
 						} else {
 							echo $the_order->get_customer_name();
 						}

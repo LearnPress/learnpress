@@ -16,6 +16,7 @@ class LP_Order extends LP_Abstract_Post_Data {
 	 * @var array
 	 */
 	protected $_data = array(
+		'user_id'          => '',
 		'order_date'       => '',
 		'modified_date'    => '',
 		'customer_message' => '',
@@ -43,7 +44,6 @@ class LP_Order extends LP_Abstract_Post_Data {
 	}
 
 
-
 	/**
 	 * Load the order data.
 	 * Check if the id is not zero but it's post type does not exists.
@@ -60,6 +60,7 @@ class LP_Order extends LP_Abstract_Post_Data {
 		if ( $post = get_post( $the_id ) ) {
 			$this->set_data(
 				array(
+					'user_id'          => get_post_meta( $this->get_id(), '_user_id', true ),
 					'order_date'       => $post->post_date,
 					'modified_date'    => $post->post_modified,
 					'customer_message' => $post->post_excerpt,
@@ -322,18 +323,18 @@ class LP_Order extends LP_Abstract_Post_Data {
 	 * Get customer name of the order
 	 */
 	public function get_customer_name() {
-		$user_id       = $this->user_id;
-		$user          = learn_press_get_user( $user_id );
 		$customer_name = '';
-		if ( ! $user->is_exists() ) {
-			$customer_name = apply_filters( 'learn_press_order_customer_name', __( '[Guest]', 'learnpress' ) );
-		} else {
-			if ( $user->get_data( 'display_name' ) ) {
-				$customer_name = $user->get_data( 'display_name' );
-			} elseif ( $user->get_data( 'user_nicename' ) ) {
-				$customer_name = $user->get_data( 'user_nicename' );
-			} elseif ( $user->get_data( 'user_login' ) ) {
-				$customer_name = $user->get_data( 'user_login' );
+		if ( $user = learn_press_get_user( $this->get_data( 'user_id' ) ) ) {
+			if ( ! $user->is_exists() ) {
+				$customer_name = apply_filters( 'learn_press_order_customer_name', __( '[Guest]', 'learnpress' ) );
+			} else {
+				if ( $user->get_data( 'display_name' ) ) {
+					$customer_name = $user->get_data( 'display_name' );
+				} elseif ( $user->get_data( 'user_nicename' ) ) {
+					$customer_name = $user->get_data( 'user_nicename' );
+				} elseif ( $user->get_data( 'user_login' ) ) {
+					$customer_name = $user->get_data( 'user_login' );
+				}
 			}
 		}
 
@@ -341,9 +342,8 @@ class LP_Order extends LP_Abstract_Post_Data {
 	}
 
 	public function customer_exists() {
-		$user_id = $this->user_id;
 
-		return false !== get_userdata( $user_id );
+		return false !== get_userdata( $this->get_data( 'user_id' ) );
 	}
 
 	/**
@@ -435,9 +435,12 @@ class LP_Order extends LP_Abstract_Post_Data {
 	}
 
 	public function get_user( $field = '' ) {
+		if ( strtolower( $field ) == 'id' ) {
+			return $this->user_id;
+		}
 		$user = learn_press_get_user( $this->user_id );
 		if ( $field ) {
-			return $user->{$field};
+			return $user->get_data( $field );
 		}
 
 		return $user;
@@ -631,8 +634,8 @@ class LP_Order extends LP_Abstract_Post_Data {
 
 	public function get_user_email() {
 		$email = false;
-		if ( $user = learn_press_get_user( $this->user_id ) ) {
-			$email = $user->user_email;
+		if ( $user = learn_press_get_user( $this->get_data( 'user_id' ) ) ) {
+			$email = $user->get_data( 'user_email' );
 		}
 
 		return $email;
