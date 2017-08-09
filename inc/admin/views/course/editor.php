@@ -6,6 +6,8 @@
  */
 
 learn_press_admin_view( 'course/curriculum-v2' );
+learn_press_admin_view( 'course/choose-items' );
+
 
 ?>
 <script type="text/x-template" id="tmpl-lp-course-editor">
@@ -13,6 +15,8 @@ learn_press_admin_view( 'course/curriculum-v2' );
         <form>
             <lp-curriculum></lp-curriculum>
         </form>
+
+        <lp-curriculum-choose-items></lp-curriculum-choose-items>
     </div>
 </script>
 

@@ -45,7 +45,7 @@ learn_press_admin_view( 'course/section-item' );
         </div>
 
         <div class="section-actions">
-            <button type="button" class="button button-secondary"><?php esc_html_e( 'Add items', 'learnpress' ); ?></button>
+            <button type="button" class="button button-secondary" @click="openChooseItems"><?php esc_html_e( 'Add items', 'learnpress' ); ?></button>
 
             <div class="remove" @click="remove">
                 <span class="dashicons dashicons-trash"></span>
@@ -83,6 +83,9 @@ learn_press_admin_view( 'course/section-item' );
                 },
                 update: function () {
                     $store.dispatch('updateSection', JSON.stringify(this.section));
+                },
+                openChooseItems: function () {
+                    $store.dispatch('toggleChooseItems');
                 }
             }
         });

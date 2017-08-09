@@ -76,11 +76,19 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			}
 
 			wp_localize_script( 'course-editor-v2', 'lq_course_editor', array(
-				'course_id' => $post->ID,
-				'sections'  => $sections_data,
-				'ajax'      => admin_url( '' ),
-				'action'    => 'update_curriculum',
-				'nonce'     => wp_create_nonce( 'learnpress_update_curriculum' ),
+				'course_id'   => $post->ID,
+				'sections'    => $sections_data,
+				'ajax'        => admin_url( '' ),
+				'action'      => 'update_curriculum',
+				'nonce'       => wp_create_nonce( 'learnpress_update_curriculum' ),
+				'chooseItems' => array(
+					'types'      => apply_filters( 'learn-press/course/item-section-types', array(
+						'lesson' => __( 'Lesson', 'learnpress' ),
+						'quiz'   => __( 'Quiz', 'learnpress' ),
+					) ),
+					'open'       => false,
+					'addedItems' => array()
+				)
 			) );
 		}
 

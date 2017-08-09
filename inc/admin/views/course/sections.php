@@ -21,7 +21,6 @@ learn_press_admin_view( 'course/section' );
             <button type="button" :class="loading ? 'updating-message' : ''" class="button button-primary" @click.prevent="addSection"><?php esc_html_e( 'Add new section', 'learnpress' ); ?></button>
         </div>
     </div>
-
 </script>
 
 <script>

@@ -24,6 +24,9 @@
         },
         currentRequest: function (state) {
             return state.countCurrentRequest || 0;
+        },
+        chooseItems: function (state) {
+            return state.chooseItems;
         }
     };
 
@@ -45,6 +48,9 @@
         },
         'REMOVE_SECTION': function (state, index) {
             state.sections.splice(index, 1);
+        },
+        'TOGGLE_CHOOSE_ITEMS': function (state) {
+            state.chooseItems.open = !state.chooseItems.open;
         }
     };
 
@@ -60,6 +66,10 @@
             if (context.getters.currentRequest === 0) {
                 context.commit('UPDATE_STATUS', status);
             }
+        },
+
+        toggleChooseItems: function (context) {
+            context.commit('TOGGLE_CHOOSE_ITEMS');
         },
 
         addNewSection: function (context) {
