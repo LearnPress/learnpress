@@ -16,7 +16,8 @@ learn_press_admin_view( 'course/section-item' );
                    type="text"
                    title="title"
                    class="title-input"
-                   @blur="update"
+                   @blur="maybeUpdate"
+                   @change="shouldBeStore"
                    @keyup.enter="update"
                    placeholder="<?php esc_attr_e( 'Enter the name section', 'learnpress' ); ?>">
 
@@ -32,7 +33,8 @@ learn_press_admin_view( 'course/section-item' );
                        type="text"
                        class="description-input"
                        title="description"
-                       @blur="update"
+                       @blur="maybeUpdate"
+                       @change="shouldBeStore"
                        @keyup.enter="update"
                        placeholder="<?php echo esc_attr( 'Describe about this section', 'learnpress' ); ?>">
             </div>
@@ -62,7 +64,8 @@ learn_press_admin_view( 'course/section-item' );
             props: ['section', 'index'],
             data: function () {
                 return {
-                    isOpen: true
+                    isOpen: true,
+                    unsaved: false
                 };
             },
             methods: {
@@ -81,7 +84,16 @@ learn_press_admin_view( 'course/section-item' );
                         section: this.section
                     });
                 },
+                shouldBeStore: function () {
+                    this.unsaved = true;
+                },
+                maybeUpdate: function () {
+                    if (this.unsaved) {
+                        this.update();
+                    }
+                },
                 update: function () {
+                    this.unsaved = false;
                     $store.dispatch('updateSection', JSON.stringify(this.section));
                 },
                 openChooseItems: function () {
