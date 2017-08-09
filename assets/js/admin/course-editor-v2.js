@@ -172,11 +172,15 @@
                 );
         },
 
-        updateSections: function (context, sections) {
-            Vue.http.LPRequest({sections: sections})
+        syncSections: function (context) {
+            Vue.http.LPRequest({type: 'sync-sections'})
                 .then(
                     function (response) {
                         var result = response.body;
+
+                        if (result.success && result.data) {
+                            context.commit('SET_SECTIONS', result.data);
+                        }
                     },
                     function (error) {
                         console.error(error);
