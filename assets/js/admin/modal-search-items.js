@@ -9,7 +9,8 @@
                 return {
                     paged: 1,
                     term: '',
-                    hasItems: true
+                    hasItems: true,
+                    selected: []
                 }
             },
             watch: {
@@ -19,14 +20,9 @@
                     }
                 }
             },
-            props: ['postType', 'context', 'contextId', 'show'],
+            props: ['postType', 'context', 'contextId', 'show', 'callbacks'],
             created: function () {
             },
-            // computed: {
-            //     search: function () {
-            //         return 'asdsdasdad';
-            //     }
-            // },
             methods: {
                 doSearch: function (e) {
                     this.term = e.target.value;
@@ -40,21 +36,24 @@
                             type: this.postType,
                             context: this.context,
                             context_id: this.contextId,
-                            term: term||this.term,
+                            term: term || this.term,
                             paged: this.paged,
                             'lp-ajax': 'modal-search-items'
                         }, {
                             emulateJSON: true,
-                            params: {
-
-                            }
+                            params: {}
                         }
                     ).then(function (response) {
-                        var result = LP.parseJSON(response.body),
-                            $nav = $(result.nav);
+                        var result = LP.parseJSON(response.body);
                         that.hasItems = !!_.size(result.data);
-                        $(that.$el).find('.search-results').html(result.html);
-                        _.debounce(function(){
+
+                        $(that.$el).find('.search-results').html(result.html).find('input[type="checkbox"]').each(function () {
+                            var id = parseInt($(this).val());
+                            if (_.indexOf(that.selected, id) >= 0) {
+                                this.checked = true;
+                            }
+                        });
+                        _.debounce(function () {
                             $(that.$el).find('.search-nav').html(result.nav).find('a, span').addClass('button').filter('span').addClass('disabled');
                         }, 10)();
                     });
@@ -62,14 +61,43 @@
                 loadPage: function (e) {
                     e.preventDefault();
                     var $button = $(e.target);
-                    if($button.is('span')){
+                    if ($button.is('span')) {
                         return;
                     }
-                    var paged = $button.html();
-                    this.paged = parseInt(paged);
+                    if ($button.hasClass('next')) {
+                        this.paged++;
+                    } else if ($button.hasClass('prev')) {
+                        this.paged--;
+                    } else {
+                        var paged = $button.html();
+                        this.paged = parseInt(paged);
+                    }
                     this.search();
                 },
-                close: function(){
+                selectItem: function (e) {
+                    var $select = $(e.target).closest('li'),
+                        $chk = $select.find('input[type="checkbox"]'),
+                        id = parseInt($chk.val()),
+                        pos = _.indexOf(this.selected, id);
+
+                    if ($chk.is(':checked')) {
+                        if (pos === -1) {
+                            this.selected.push(id);
+                        }
+                    } else {
+                        if (pos >= 0) {
+                            this.selected.splice(pos, 1);
+                        }
+                    }
+                },
+                addItems:function(){
+                    var close = true;
+                    if(this.callbacks && this.callbacks.addItems){
+                        this.callbacks.addItems.call(this);
+                    }
+                    $(document).triggerHandler('learn-press/add-order-items', this.selected);
+                },
+                close: function () {
                     this.$emit('close');
                 }
             }
@@ -80,15 +108,18 @@
             data: {
                 show: false,
                 term: '',
-                postType: ''
+                postType: '',
+                callbacks: {}
             },
             methods: {
                 open: function (options) {
                     _.each(options.data, function (v, k) {
                         this[k] = v;
                     }, this);
+
+                    this.callbacks = options.callbacks;
                 },
-                close: function(){
+                close: function () {
                     this.show = false;
                 }
             }

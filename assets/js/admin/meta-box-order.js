@@ -2,13 +2,63 @@
 (function ($) {
 
     $(document).ready(function () {
+
+        var $listItems = $('.list-order-items').find('tbody');
+
+        $listItems.on('click', '.remove-order-item', function(e){
+            e.preventDefault();
+            var $item = $(this).closest('tr'),
+                item_id = $item.data('item_id');
+
+            $item.remove();
+            if($listItems.children(':not(.no-order-items)').length === 0){
+                $listItems.find('.no-order-items').show();
+            }
+
+            Vue.http.post(
+                window.location.href, {
+                    order_id: $('#post_ID').val(),
+                    items: [item_id],
+                    'lp-ajax': 'remove-items-from-order'
+                }, {
+                    emulateJSON: true,
+                    params: {}
+                }
+            ).then(function (response) {
+                var result = LP.parseJSON(response.body);
+                $('.order-subtotal').html(result.order_data.subtotal_html);
+                $('.order-total').html(result.order_data.total_html);
+            });
+        });
         $('#learn-press-add-order-item').on('click', function () {
             LP.$modalSearchItems.open({
                 data: {
                     postType: 'lp_course',
                     context: 'order-items',
-                    contextId: $('#post').val(),
+                    contextId: $('#post_ID').val(),
                     show: true
+                },
+                callbacks: {
+                    addItems: function(){
+                        var that = this;
+                        Vue.http.post(
+                            window.location.href, {
+                                order_id: this.contextId,
+                                items: this.selected,
+                                'lp-ajax': 'add-items-to-order'
+                            }, {
+                                emulateJSON: true,
+                                params: {}
+                            }
+                        ).then(function (response) {
+                            var result = LP.parseJSON(response.body),
+                                $noItem = $listItems.find('.no-order-items').hide();
+                            $(result.item_html).insertBefore($noItem);
+                            $('.order-subtotal').html(result.order_data.subtotal_html);
+                            $('.order-total').html(result.order_data.total_html);
+                        });
+                        this.close();
+                    }
                 }
             });
         });

@@ -97,7 +97,9 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'modal-search-questions',
 				'get-question-data',
 				'update_curriculum',
-				'modal-search-items'
+				'modal-search-items',
+                'add-items-to-order',
+                'remove-items-from-order'
 			);
 			foreach ( $ajax_events as $ajax_event => $callback ) {
 				if ( ! is_string( $ajax_event ) ) {
@@ -110,8 +112,6 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				//add_action( 'learn-press/ajax/ajax_update_quiz', array( __CLASS__, 'update_quiz' ) );
 			}
 		}
-
-
 
 		/**
 		 * Handle ajax update curriculum.
@@ -904,7 +904,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		/**
 		 * Remove an item from order
 		 */
-		public static function remove_order_item() {
+		public static function remove_items_from_order() {
 			// ensure that user has permission
 			if ( ! current_user_can( 'edit_lp_orders' ) ) {
 				die( __( 'Permission denied', 'learnpress' ) );
@@ -913,7 +913,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			// verify nonce
 			$nonce = learn_press_get_request( 'remove_nonce' );
 			if ( ! wp_verify_nonce( $nonce, 'remove_order_item' ) ) {
-				die( __( 'Check nonce failed', 'learnpress' ) );
+				//die( __( 'Check nonce failed', 'learnpress' ) );
 			}
 
 			// validate order
@@ -923,14 +923,16 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			}
 
 			// validate item
-			$item_id = learn_press_get_request( 'item_id' );
-			$post    = get_post( learn_press_get_order_item_meta( $item_id, '_course_id' ) );
-			if ( ! $post || ( 'lp_course' !== $post->post_type ) ) {
-				die( __( 'Course invalid', 'learnpress' ) );
+			$items = learn_press_get_request( 'items' );
+
+			foreach($items as $item_id) {
+				$post = get_post( learn_press_get_order_item_meta( $item_id, '_course_id' ) );
+				if ( ! $post || ( 'lp_course' !== $post->post_type ) ) {
+					continue;
+				}
+
+				learn_press_remove_order_item( $item_id );
 			}
-
-			learn_press_remove_order_item( $item_id );
-
 			$order_data                  = learn_press_update_order_items( $order_id );
 			$currency_symbol             = learn_press_get_currency_symbol( $order_data['currency'] );
 			$order_data['subtotal_html'] = learn_press_format_price( $order_data['subtotal'], $currency_symbol );
@@ -948,7 +950,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		/**
 		 * Add new course to order
 		 */
-		public static function add_item_to_order() {
+		public static function add_items_to_order() {
 
 			// ensure that user has permission
 			if ( ! current_user_can( 'edit_lp_orders' ) ) {
@@ -968,7 +970,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			}
 
 			// validate item
-			$item_ids   = learn_press_get_request( 'item_id' );
+			$item_ids   = learn_press_get_request( 'items' );
 			$item_html  = '';
 			$order_data = array();
 //			$order  = learn_press_get_order( $order_id );

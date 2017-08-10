@@ -530,7 +530,7 @@ function learn_press_get_course_user( $course_id = null ) {
 /**
  * Get item types support in course curriculum
  *
- * @return mixed|null|void
+ * @return mixed|null
  */
 function learn_press_course_get_support_item_types() {
 	$types = array();
@@ -538,7 +538,7 @@ function learn_press_course_get_support_item_types() {
 		$types = $GLOBALS['learn_press_course_support_item_types'];
 	}
 
-	return $types;
+	return apply_filters('learn-press/course-support-items', $types);
 }
 
 function learn_press_course_add_support_item_type() {

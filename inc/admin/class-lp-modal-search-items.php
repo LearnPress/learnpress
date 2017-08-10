@@ -16,7 +16,7 @@ class LP_Modal_Search_Items {
 				'add_button'   => __( 'Add', 'learnpress' ),
 				'close_button' => __( 'Close', 'learnpress' ),
 				'title'        => __( 'Search items', 'learnpress' ),
-				'limit'        => 1,
+				'limit'        => 10,
 				'paged'        => 1
 			)
 		);
@@ -123,6 +123,10 @@ class LP_Modal_Search_Items {
 			}
 		}
 
+		return $found_items;
+	}
+
+	function xxx(){
 		$nav = '';
 
 		ob_start();
@@ -154,7 +158,6 @@ class LP_Modal_Search_Items {
 				$pagenum_link = trailingslashit( $pagenum_link ) . '%_%';
 				$nav          = paginate_links( array(
 					'base'      => $pagenum_link,
-					//'format'    => $format,
 					'total'     => $q->max_num_pages,
 					'current'   => max( 1, $this->_options['paged'] ),
 					'mid_size'  => 1,
@@ -178,7 +181,7 @@ class LP_Modal_Search_Items {
 		print_r($response);
 
 		return $response;
-	}
+    }
 
 	public function js_template() {
 		?>
@@ -192,12 +195,13 @@ class LP_Modal_Search_Items {
                         <header><?php echo $this->_options['title']; ?></header>
                         <article>
                             <input type="text" name="search" @keyup="doSearch" ref="term" value="search here"/>
-                            <ul class="search-results"></ul>
+                            <ul class="search-results" @click="selectItem"></ul>
                         </article>
                         <footer v-if="hasItems">
                             <div class="search-nav" @click="loadPage">
                             </div>
-                            <button class="button"><?php echo $this->_options['add_button']; ?></button>
+                            <button class="button"
+                                    @click="addItems"><?php echo $this->_options['add_button']; ?></button>
                             <button class="button"
                                     @click="close"><?php echo $this->_options['close_button']; ?></button>
                         </footer>
@@ -206,9 +210,8 @@ class LP_Modal_Search_Items {
             </div>
         </script>
         <div id="vue-modal-search-items" style="position: relative;z-index: 10000;">
-            <button id="show-modal" @click="show = true">Show Modal</button>
             <learn-press-modal-search-items v-if="show" :post-type="postType" :term="term" :contex="context"
-                                            :context-id="contextId" :show="show" v-on:close="close">
+                                            :context-id="contextId" :show="show" :callbacks="callbacks" v-on:close="close">
             </learn-press-modal-search-items>
         </div>
 		<?php

@@ -51,7 +51,9 @@
                 font-weight: lighter;
             }
             .search-results{
-
+                li > label{
+                    display: block;
+                }
             }
         }
         footer{

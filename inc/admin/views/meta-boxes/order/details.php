@@ -74,35 +74,6 @@ $method_title = $order->get_payment_method_title();
 			<?php } ?>
         </div>
     </div>
-    <div class="order-user-data clearfix">
-        <!--<div class="order-user-avatar">
-			<?php if ( $order->is_multi_users() ) { ?>
-                <div class="avatar-multiple-users">
-                    <span></span>
-                </div>
-			<?php } else { ?>
-				<?php echo get_avatar( $order->get_user( 'id' ), 120 ); ?>
-			<?php } ?>
-        </div>
-        <div class="order-user-meta">
-			<?php if ( $order->is_multi_users() ) { ?>
-                <div class="order-users">
-                    <strong><?php _e( 'Customers', 'learnpress' ); ?></strong>
-                    <p><?php $order->print_users(); ?></p>
-                </div>
-			<?php } else { ?>
-                <div class="user-display-name">
-					<?php echo $order->get_customer_name(); ?>
-                </div>
-                <div class="user-email">
-					<?php $user_email = $order->get_user( 'user_email' );
-			echo empty( $user_email ) ? '' : $user_email; ?>
-                </div>
-
-			<?php } ?>
-
-        </div>-->
-    </div>
     <h3 class="order-data-heading"><?php _e( 'Order Items', 'learnpress' ); ?></h3>
     <div class="order-items">
         <table class="list-order-items">

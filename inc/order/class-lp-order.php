@@ -467,8 +467,10 @@ class LP_Order extends LP_Abstract_Post_Data {
 		if ( strtolower( $field ) == 'id' ) {
 			return $this->user_id;
 		}
-		$user = learn_press_get_user( $this->user_id );
-		if ( $field ) {
+		if(false === ($user = learn_press_get_user( $this->get_data('user_id') ))){
+			$user = learn_press_get_current_user();
+		}
+		if ( $field && $user) {
 			return $user->get_data( $field );
 		}
 
