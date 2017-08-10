@@ -13,12 +13,16 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 * Add action ajax
 		 */
 		public static function init() {
+
+			if ( ! is_user_logged_in() ) {
+				return;
+			}
+
 			$ajaxEvents = array(
 				'create_page'                     => false,
 				'add_quiz_question'               => false,
 				'convert_question_type'           => false,
 				'update_quiz_question_state'      => false,
-				'update_editor_hidden'            => false,
 				'update_curriculum_section_state' => false,
 				'quick_add_item'                  => false,
 				'add_new_item'                    => false,
@@ -98,8 +102,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'get-question-data',
 				'update_curriculum',
 				'modal-search-items',
-                'add-items-to-order',
-                'remove-items-from-order'
+				'add-items-to-order',
+				'remove-items-from-order'
 			);
 			foreach ( $ajax_events as $ajax_event => $callback ) {
 				if ( ! is_string( $ajax_event ) ) {
@@ -108,8 +112,6 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				$ajax_event = preg_replace( '~[-]+~', '_', $ajax_event );
 				$callback   = preg_replace( '~[-]+~', '_', $callback );
 				add_action( "learn-press/ajax/{$ajax_event}", array( __CLASS__, $callback ) );
-				//add_action( 'learn-press/ajax/ajax_delete_quiz_question', array( __CLASS__, 'delete_quiz_question' ) );
-				//add_action( 'learn-press/ajax/ajax_update_quiz', array( __CLASS__, 'update_quiz' ) );
 			}
 		}
 
@@ -567,14 +569,18 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 */
 		public static function modal_search_items() {
 			self::parsePhpInput( $_REQUEST );
-			$term                   = (string) ( stripslashes( learn_press_get_request( 'term' ) ) );
-			$type                   = (string) ( stripslashes( learn_press_get_request( 'type' ) ) );
-			$context                = (string) ( stripslashes( learn_press_get_request( 'context' ) ) );
-			$context_id             = (string) ( stripslashes( learn_press_get_request( 'context_id' ) ) );
-			$paged             = (string) ( stripslashes( learn_press_get_request( 'paged' ) ) );
+			$term       = (string) ( stripslashes( learn_press_get_request( 'term' ) ) );
+			$type       = (string) ( stripslashes( learn_press_get_request( 'type' ) ) );
+			$context    = (string) ( stripslashes( learn_press_get_request( 'context' ) ) );
+			$context_id = (string) ( stripslashes( learn_press_get_request( 'context_id' ) ) );
+			$paged      = (string) ( stripslashes( learn_press_get_request( 'paged' ) ) );
 
-		    $search = new LP_Modal_Search_Items(compact('term' ,'type', 'context', 'context_id', 'paged'));
-		    learn_press_send_json($search->get_data());
+			$search = new LP_Modal_Search_Items( compact( 'term', 'type', 'context', 'context_id', 'paged' ) );
+
+			learn_press_send_json( array(
+				'html' => $search->get_html_items(),
+				'nav'  => $search->get_pagination()
+			) );
 		}
 
 		/*************/
@@ -925,7 +931,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			// validate item
 			$items = learn_press_get_request( 'items' );
 
-			foreach($items as $item_id) {
+			foreach ( $items as $item_id ) {
 				$post = get_post( learn_press_get_order_item_meta( $item_id, '_course_id' ) );
 				if ( ! $post || ( 'lp_course' !== $post->post_type ) ) {
 					continue;
@@ -1131,17 +1137,6 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				}
 			}
 			learn_press_send_json( $response );
-		}
-
-		public static function update_editor_hidden() {
-			if ( $id = learn_press_get_request( 'course_id' ) ) {
-				if ( learn_press_get_request( 'is_hidden' ) ) {
-					update_post_meta( $id, '_lp_editor_hidden', 'yes' );
-				} else {
-					delete_post_meta( $id, '_lp_editor_hidden' );
-				}
-			}
-			learn_press_send_json( $_POST );
 		}
 
 		public static function update_quiz_question_state() {
@@ -1589,4 +1584,5 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 	}
 }
-LP_Admin_Ajax::init();
+
+add_action( 'init', array( 'LP_Admin_Ajax', 'init' ) );

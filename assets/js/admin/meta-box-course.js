@@ -1299,33 +1299,7 @@
 		}
 	}
 
-	function _toggleEditorHandler(e) {
-		if (e.type == '_click') {
-			if ($(this).data('hidden') == 'yes') {
-				$('#postdivrich').addClass('hide-if-js');
-			}
-			$('#postdivrich').css('visibility', 'visible');
-		} else {
-			var is_hidden = 'yes';
-			if (!$('#postdivrich').toggleClass('hide-if-js').hasClass('hide-if-js')) {
-				$(window).trigger('scroll');
-				is_hidden = '';
-			}
-			;
-			$.ajax({
-				url    : LP_Settings.ajax,
-				type   : 'post',
-				data   : {
-					action   : 'learnpress_update_editor_hidden',
-					course_id: $('#post_ID').val(),
-					is_hidden: is_hidden
-				},
-				success: function () {
 
-				}
-			});
-		}
-	}
 
 	function _makeListSortable() {
 		$('.curriculum-sections')
@@ -1384,7 +1358,6 @@
 	}
 
 	function _ready() {
-		$('#learn-press-button-toggle-editor').on('click _click', _toggleEditorHandler).trigger('_click');
 
 		_makeListSortable();
 

@@ -1,8 +1,35 @@
 <?php
 
+/**
+ * Class LP_Modal_Search_Items
+ */
 class LP_Modal_Search_Items {
+
+	/**
+	 * @var array
+	 */
 	protected $_options = array();
 
+	/**
+	 * @var array
+	 */
+	protected $_query_args = array();
+
+	/**
+	 * @var array
+	 */
+	protected $_items = array();
+
+	/**
+	 * @var bool
+	 */
+	protected $_changed = true;
+
+	/**
+	 * LP_Modal_Search_Items constructor.
+	 *
+	 * @param string $options
+	 */
 	public function __construct( $options = '' ) {
 		add_action( 'admin_print_footer_scripts', array( $this, 'js_template' ) );
 		$this->_options = wp_parse_args(
@@ -22,7 +49,7 @@ class LP_Modal_Search_Items {
 		);
 	}
 
-	public function get_data() {
+	protected function _get_items() {
 		global $wpdb;
 
 		$current_items          = array();
@@ -100,49 +127,37 @@ class LP_Modal_Search_Items {
 		if ( $term ) {
 			$args['s'] = $term;
 		}
-		$args = apply_filters( 'learn_press_filter_admin_ajax_modal_search_items_args', $args, $context, $context_id );
+		$this->_query_args = apply_filters( 'learn_press_filter_admin_ajax_modal_search_items_args', $args, $context, $context_id );
 
-		print_r( $args );
-		$posts       = get_posts( $args );
-		$found_items = array();
+		$posts        = get_posts( $this->_query_args );
+		$this->_items = array();
 
 		if ( ! empty( $posts ) ) {
-			if ( $current_items_in_order ) {
-				foreach ( $posts as $post ) {
-					if ( in_array( $post->ID, $current_items ) ) {
-						continue;
-					}
-					$found_items[ $post->ID ]             = $post;
-					$found_items[ $post->ID ]->post_title = ! empty( $post->post_title ) ? $post->post_title : sprintf( '(%s)', __( 'Untitled', 'learnpress' ) );
+			foreach ( $posts as $post ) {
+				if ( in_array( $post->ID, $current_items ) ) {
+					continue;
 				}
-			} else {
-				foreach ( $posts as $post ) {
-					$found_items[ $post->ID ]             = $post;
-					$found_items[ $post->ID ]->post_title = ! empty( $post->post_title ) ? $post->post_title : sprintf( '(%s)', __( 'Untitled', 'learnpress' ) );
-				}
+				$this->_items[ $post->ID ] = $post->ID;
 			}
+
 		}
 
-		return $found_items;
+		return $this->_items;
 	}
 
-	function xxx(){
-		$nav = '';
+	public function get_items() {
+		if ( $this->_changed ) {
+			$this->_get_items();
+		}
 
-		ob_start();
-		if ( $found_items ) {
-			foreach ( $found_items as $id => $item ) {
-				printf( '
-                        <li class="%s" data-id="%2$d" data-type="%4$s" data-text="%3$s">
-                            <label>
-                                <input type="checkbox" value="%2$d" name="selectedItems[]">
-                                <span class="lp-item-text">%3$s</span>
-                            </label>
-                        </li>
-					    ', 'lp-result-item', $id, esc_attr( $item->post_title ), $item->post_type );
-			}
+		return $this->_items;
+	}
 
-			$q = new WP_Query( $args );
+	function get_pagination() {
+
+		$pagination = '';
+		if ( $items = $this->get_items() ) {
+			$q = new WP_Query( $this->_query_args );
 
 			if ( $this->_options['paged'] && $q->max_num_pages > 1 ) {
 				$pagenum_link = html_entity_decode( get_pagenum_link() );
@@ -156,7 +171,7 @@ class LP_Modal_Search_Items {
 
 				$pagenum_link = remove_query_arg( array_keys( $query_args ), $pagenum_link );
 				$pagenum_link = trailingslashit( $pagenum_link ) . '%_%';
-				$nav          = paginate_links( array(
+				$pagination   = paginate_links( array(
 					'base'      => $pagenum_link,
 					'total'     => $q->max_num_pages,
 					'current'   => max( 1, $this->_options['paged'] ),
@@ -167,21 +182,30 @@ class LP_Modal_Search_Items {
 					'type'      => ''
 				) );
 			}
-		} else {
-			echo '<li>' . apply_filters( 'learn_press_modal_search_items_not_found', __( 'No item found', 'learnpress' ), $type ) . '</li>';
 		}
 
+		return $pagination;
+	}
 
-		$response = array(
-			'html' => ob_get_clean(),
-			'nav'  => $nav,
-			'data' => $found_items
-		);
+	public function get_html_items() {
+		ob_start();
+		if ( $items =$this->get_items() ) {
+			foreach ( $items as $id => $item ) {
+				printf( '
+                    <li class="%s" data-id="%2$d" data-type="%4$s" data-text="%3$s">
+                        <label>
+                            <input type="checkbox" value="%2$d" name="selectedItems[]">
+                            <span class="lp-item-text">%3$s</span>
+                        </label>
+                    </li>
+                    ', 'lp-result-item', $id, esc_attr( get_the_title( $item ) ), get_the_title( $item ) );
+			}
+		} else {
+			echo '<li>' . apply_filters( 'learn_press_modal_search_items_not_found', __( 'No item found', 'learnpress' ), $this->_options['type'] ) . '</li>';
+		}
 
-		print_r($response);
-
-		return $response;
-    }
+		return ob_get_clean();
+	}
 
 	public function js_template() {
 		?>
@@ -211,7 +235,8 @@ class LP_Modal_Search_Items {
         </script>
         <div id="vue-modal-search-items" style="position: relative;z-index: 10000;">
             <learn-press-modal-search-items v-if="show" :post-type="postType" :term="term" :contex="context"
-                                            :context-id="contextId" :show="show" :callbacks="callbacks" v-on:close="close">
+                                            :context-id="contextId" :show="show" :callbacks="callbacks"
+                                            v-on:close="close">
             </learn-press-modal-search-items>
         </div>
 		<?php
