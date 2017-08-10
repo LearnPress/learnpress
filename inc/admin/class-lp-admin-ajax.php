@@ -13,12 +13,16 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 * Add action ajax
 		 */
 		public static function init() {
+
+			if ( ! is_user_logged_in() ) {
+				return;
+			}
+
 			$ajaxEvents = array(
 				'create_page'                     => false,
 				'add_quiz_question'               => false,
 				'convert_question_type'           => false,
 				'update_quiz_question_state'      => false,
-				'update_editor_hidden'            => false,
 				'update_curriculum_section_state' => false,
 				'quick_add_item'                  => false,
 				'add_new_item'                    => false,
@@ -57,6 +61,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'remove_notice_popup'             => false,
 				// Update order status
 				'update_order_status'             => false,
+
+
 			);
 			foreach ( $ajaxEvents as $ajaxEvent => $nopriv ) {
 				add_action( 'wp_ajax_learnpress_' . $ajaxEvent, array( __CLASS__, $ajaxEvent ) );
@@ -95,6 +101,9 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'modal-search-questions',
 				'get-question-data',
 				'update_curriculum',
+				'modal-search-items',
+				'add-items-to-order',
+				'remove-items-from-order'
 			);
 			foreach ( $ajax_events as $ajax_event => $callback ) {
 				if ( ! is_string( $ajax_event ) ) {
@@ -103,8 +112,6 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				$ajax_event = preg_replace( '~[-]+~', '_', $ajax_event );
 				$callback   = preg_replace( '~[-]+~', '_', $callback );
 				add_action( "learn-press/ajax/{$ajax_event}", array( __CLASS__, $callback ) );
-				//add_action( 'learn-press/ajax/ajax_delete_quiz_question', array( __CLASS__, 'delete_quiz_question' ) );
-				//add_action( 'learn-press/ajax/ajax_update_quiz', array( __CLASS__, 'update_quiz' ) );
 			}
 		}
 
@@ -331,7 +338,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			if ( false === $data ) {
 				try {
 					$data = json_decode( file_get_contents( 'php://input' ), true );
-				} catch ( Exception $exception ) {
+				}
+				catch ( Exception $exception ) {
 				}
 			}
 			if ( $data && func_num_args() > 0 ) {
@@ -428,7 +436,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					} else {
 						$response['message'] = __( 'Delete question failed.', 'learnpress' );
 					}
-				} catch ( Exception $exception ) {
+				}
+				catch ( Exception $exception ) {
 				}
 			}
 			learn_press_send_json( $response );
@@ -461,7 +470,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					} else {
 						$response['message'] = __( 'Delete question failed.', 'learnpress' );
 					}
-				} catch ( Exception $exception ) {
+				}
+				catch ( Exception $exception ) {
 				}
 			}
 			learn_press_send_json( $response );
@@ -558,131 +568,19 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 * Search items by requesting params.
 		 */
 		public static function modal_search_items() {
-			global $wpdb;
 			self::parsePhpInput( $_REQUEST );
-			$user                   = learn_press_get_current_user();
-			$term                   = (string) ( stripslashes( learn_press_get_request( 'term' ) ) );
-			$type                   = (string) ( stripslashes( learn_press_get_request( 'type' ) ) );
-			$context                = (string) ( stripslashes( learn_press_get_request( 'context' ) ) );
-			$context_id             = (string) ( stripslashes( learn_press_get_request( 'context_id' ) ) );
-			$current_items_in_order = learn_press_get_request( 'current_items' );
-			$current_items          = array();
+			$term       = (string) ( stripslashes( learn_press_get_request( 'term' ) ) );
+			$type       = (string) ( stripslashes( learn_press_get_request( 'type' ) ) );
+			$context    = (string) ( stripslashes( learn_press_get_request( 'context' ) ) );
+			$context_id = (string) ( stripslashes( learn_press_get_request( 'context_id' ) ) );
+			$paged      = (string) ( stripslashes( learn_press_get_request( 'paged' ) ) );
 
-			foreach ( $current_items_in_order as $item ) {
-				$sql = "SELECT meta_value
-                        FROM {$wpdb->prefix}learnpress_order_itemmeta 
-                        WHERE meta_key = '_course_id' 
-                        AND learnpress_order_item_id = $item";
-				$id  = $wpdb->get_results( $sql, OBJECT );
-				array_push( $current_items, $id[0]->meta_value );
-			}
+			$search = new LP_Modal_Search_Items( compact( 'term', 'type', 'context', 'context_id', 'paged' ) );
 
-			$exclude = array();
-
-			if ( ! empty( $_REQUEST['exclude'] ) ) {
-				$exclude = array_map( 'intval', $_REQUEST['exclude'] );
-			}
-			$exclude = array_unique( (array) apply_filters( 'learn_press_modal_search_items_exclude', $exclude, $type, $context, $context_id ) );
-			$exclude = array_map( 'intval', $exclude );
-			$args    = array(
-				'post_type'      => array( $type ),
-				'posts_per_page' => - 1,
-				'post_status'    => 'publish',
-				'order'          => 'ASC',
-				'orderby'        => 'parent title',
-				'exclude'        => $exclude
-			);
-			print_r( $args );
-			if ( ! $user->is_admin() ) {
-				$args['author'] = $user->id;
-			}
-
-			if ( $context && $context_id ) {
-				switch ( $context ) {
-					/**
-					 * If is search lesson/quiz for course only search the items of course's author
-					 */
-					case 'course-items':
-						if ( get_post_type( $context_id ) == 'lp_course' ) {
-							$post_author = get_post_field( 'post_author', $context_id );
-							$authors     = array( $post_author );
-							if ( $post_author != $user->id ) {
-								$authors[] = $user->id;
-							}
-							$args['author'] = $authors;
-						}
-						break;
-					/**
-					 * If is search question for quiz only search the items of course's author
-					 */
-					case 'quiz-items':
-						if ( get_post_type( $context_id ) == 'lp_quiz' ) {
-							$post_author = get_post_field( 'post_author', $context_id );
-							$authors     = array( $post_author );
-							if ( $post_author != $user->id ) {
-								$authors[] = $user->id;
-							}
-							$args['author'] = $authors;
-							//$args['author'] = get_post_field( 'post_author', $context_id );
-						}
-						break;
-				}
-			}
-			if ( $term ) {
-				$args['s'] = $term;
-			}
-			$args        = apply_filters( 'learn_press_filter_admin_ajax_modal_search_items_args', $args, $context, $context_id );
-			$posts       = get_posts( $args );
-			$found_items = array();
-
-			if ( ! empty( $posts ) ) {
-				if ( $current_items_in_order ) {
-					foreach ( $posts as $post ) {
-						if ( in_array( $post->ID, $current_items ) ) {
-							continue;
-						}
-						$found_items[ $post->ID ]             = $post;
-						$found_items[ $post->ID ]->post_title = ! empty( $post->post_title ) ? $post->post_title : sprintf( '(%s)', __( 'Untitled', 'learnpress' ) );
-					}
-				} else {
-					foreach ( $posts as $post ) {
-						$found_items[ $post->ID ]             = $post;
-						$found_items[ $post->ID ]->post_title = ! empty( $post->post_title ) ? $post->post_title : sprintf( '(%s)', __( 'Untitled', 'learnpress' ) );
-					}
-				}
-			}
-
-
-			ob_start();
-			if ( $found_items ) {
-				foreach ( $found_items as $id => $item ) {
-					printf( '
-                        <li class="%s" data-id="%2$d" data-type="%4$s" data-text="%3$s">
-                            <label>
-                                <input type="checkbox" value="%2$d" name="selectedItems[]">
-                                <span class="lp-item-text">%3$s</span>
-                            </label>
-                        </li>
-					    ', 'lp-result-item', $id, esc_attr( $item->post_title ), $item->post_type );
-				}
-			} else {
-				echo '<li>' . apply_filters( 'learn_press_modal_search_items_not_found', __( 'No item found', 'learnpress' ), $type ) . '</li>';
-			}
-
-			$item_object    = $type ? get_post_type_object( $type ) : '';
-			$post_type      = $context_id ? get_post_type_object( get_post_type( $context_id ) ) : '';
-			$response       = array(
-				'html'    => ob_get_clean(),
-				'data'    => $found_items,
-				'notices' => '<div class="learnpress-search-notices notice notice-warning" data-post-type="' . esc_attr( $item_object->name ) . '" data-user="' . esc_attr( $user->id ) . '">' . sprintf( '<p>' . __( 'A ', 'learnpress' ) . '<span style="text-transform: lowercase;">%s</span>' . __( ' is just used for only one ', 'learnpress' ) . '<span style="text-transform: lowercase;">%s</span></p>', $item_object->labels->singular_name, $post_type->labels->singular_name ) . '<a class="learnpress-dismiss-notice"></a></div>'
-			);
-			$dismiss_notice = 'learnpress_notice_' . $item_object->name . '_' . $user->id;
-			$dismiss_notice = get_transient( $dismiss_notice );
-			if ( $dismiss_notice || $item_object->name === 'lp_course' ) { // Check lp_course to hidden notice in order post
-				unset( $response['notices'] );
-			}
-
-			learn_press_send_json( $response );
+			learn_press_send_json( array(
+				'html' => $search->get_html_items(),
+				'nav'  => $search->get_pagination()
+			) );
 		}
 
 		/*************/
@@ -841,7 +739,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 * @param        $exclude
 		 * @param        $type
 		 * @param string $context
-		 * @param null $context_id
+		 * @param null   $context_id
 		 *
 		 * @return array
 		 */
@@ -1012,7 +910,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		/**
 		 * Remove an item from order
 		 */
-		public static function remove_order_item() {
+		public static function remove_items_from_order() {
 			// ensure that user has permission
 			if ( ! current_user_can( 'edit_lp_orders' ) ) {
 				die( __( 'Permission denied', 'learnpress' ) );
@@ -1021,7 +919,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			// verify nonce
 			$nonce = learn_press_get_request( 'remove_nonce' );
 			if ( ! wp_verify_nonce( $nonce, 'remove_order_item' ) ) {
-				die( __( 'Check nonce failed', 'learnpress' ) );
+				//die( __( 'Check nonce failed', 'learnpress' ) );
 			}
 
 			// validate order
@@ -1031,14 +929,16 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			}
 
 			// validate item
-			$item_id = learn_press_get_request( 'item_id' );
-			$post    = get_post( learn_press_get_order_item_meta( $item_id, '_course_id' ) );
-			if ( ! $post || ( 'lp_course' !== $post->post_type ) ) {
-				die( __( 'Course invalid', 'learnpress' ) );
+			$items = learn_press_get_request( 'items' );
+
+			foreach ( $items as $item_id ) {
+				$post = get_post( learn_press_get_order_item_meta( $item_id, '_course_id' ) );
+				if ( ! $post || ( 'lp_course' !== $post->post_type ) ) {
+					continue;
+				}
+
+				learn_press_remove_order_item( $item_id );
 			}
-
-			learn_press_remove_order_item( $item_id );
-
 			$order_data                  = learn_press_update_order_items( $order_id );
 			$currency_symbol             = learn_press_get_currency_symbol( $order_data['currency'] );
 			$order_data['subtotal_html'] = learn_press_format_price( $order_data['subtotal'], $currency_symbol );
@@ -1056,7 +956,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		/**
 		 * Add new course to order
 		 */
-		public static function add_item_to_order() {
+		public static function add_items_to_order() {
 
 			// ensure that user has permission
 			if ( ! current_user_can( 'edit_lp_orders' ) ) {
@@ -1076,7 +976,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			}
 
 			// validate item
-			$item_ids   = learn_press_get_request( 'item_id' );
+			$item_ids   = learn_press_get_request( 'items' );
 			$item_html  = '';
 			$order_data = array();
 //			$order  = learn_press_get_order( $order_id );
@@ -1237,17 +1137,6 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				}
 			}
 			learn_press_send_json( $response );
-		}
-
-		public static function update_editor_hidden() {
-			if ( $id = learn_press_get_request( 'course_id' ) ) {
-				if ( learn_press_get_request( 'is_hidden' ) ) {
-					update_post_meta( $id, '_lp_editor_hidden', 'yes' );
-				} else {
-					delete_post_meta( $id, '_lp_editor_hidden' );
-				}
-			}
-			learn_press_send_json( $_POST );
 		}
 
 		public static function update_quiz_question_state() {
@@ -1695,4 +1584,5 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 	}
 }
-LP_Admin_Ajax::init();
+
+add_action( 'init', array( 'LP_Admin_Ajax', 'init' ) );

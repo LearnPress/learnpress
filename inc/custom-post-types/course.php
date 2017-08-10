@@ -336,21 +336,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		}
 
 		/**
-		 * Toggle course description editor
-		 *
-		 * @param $post
-		 */
-		public function toggle_editor_button( $post ) {
-			if ( $post->post_type == LP_COURSE_CPT ) {
-				?>
-                <button class="button button-primary"
-                        data-hidden="<?php echo get_post_meta( $post->ID, '_lp_editor_hidden', true ); ?>" type="button"
-                        id="learn-press-button-toggle-editor"><?php _e( 'Toggle Course Content', 'learnpress' ); ?></button>
-				<?php
-			}
-		}
-
-		/**
 		 * Generate params for course used in admin
 		 *
 		 * @static

@@ -1,6 +1,6 @@
 <?php
 /**
- *
+ * Display single row of order items.
  */
 ?>
 <tr data-item_id="<?php echo $item['id']; ?>" data-remove_nonce="<?php echo wp_create_nonce( 'remove_order_item' ); ?>">
