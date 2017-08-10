@@ -199,9 +199,31 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					break;
 
 				case 'search-items':
-					//@todo search items.
+					$term = isset( $_REQUEST['query'] ) ? $_REQUEST['query'] : '';
+					$page = ! empty( $_REQUEST['page'] ) ? intval( $_REQUEST['page'] ) : 1;
+					$type = ! empty( $_REQUEST['item-type'] ) ? $_REQUEST['item-type'] : '';
 
+					$search = new LP_Modal_Search_Items(
+						array(
+							'type'       => $type,
+							'context'    => 'course-items',
+							'context_id' => $course_id,
+							'term'       => $term,
+							'limit'      => 10,
+							'paged'      => $page
+						)
+					);
+
+					$items  = $search->get_items();
 					$result = array();
+
+					foreach ( $items as $id ) {
+						$result[] = array(
+							'ID'    => $id,
+							'title' => get_the_title( $id ),
+							'type'  => get_post_type( $id )
+						);
+					}
 
 					break;
 			}
@@ -338,8 +360,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			if ( false === $data ) {
 				try {
 					$data = json_decode( file_get_contents( 'php://input' ), true );
-				}
-				catch ( Exception $exception ) {
+				} catch ( Exception $exception ) {
 				}
 			}
 			if ( $data && func_num_args() > 0 ) {
@@ -436,8 +457,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					} else {
 						$response['message'] = __( 'Delete question failed.', 'learnpress' );
 					}
-				}
-				catch ( Exception $exception ) {
+				} catch ( Exception $exception ) {
 				}
 			}
 			learn_press_send_json( $response );
@@ -470,8 +490,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					} else {
 						$response['message'] = __( 'Delete question failed.', 'learnpress' );
 					}
-				}
-				catch ( Exception $exception ) {
+				} catch ( Exception $exception ) {
 				}
 			}
 			learn_press_send_json( $response );
@@ -739,7 +758,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 * @param        $exclude
 		 * @param        $type
 		 * @param string $context
-		 * @param null   $context_id
+		 * @param null $context_id
 		 *
 		 * @return array
 		 */
