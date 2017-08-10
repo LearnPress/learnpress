@@ -28,9 +28,7 @@ learn_press_admin_view( 'course/sections' );
                 }
             },
             created: function () {
-                setInterval(function () {
-                    $store.dispatch('syncSections');
-                }, 30 * 1000);
+                
             }
         });
 

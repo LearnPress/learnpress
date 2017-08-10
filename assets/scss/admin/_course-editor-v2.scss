@@ -98,16 +98,9 @@
 			opacity: 0.5;
 		}
 
-		&.open {
-
-		}
-
 		&.close {
-			.section-content {
+			.section-collapse {
 				height: 0;
-				padding-top: 0;
-				padding-bottom: 0;
-				opacity: 0;
 			}
 		}
 
@@ -179,6 +172,10 @@
 			}
 		}
 
+		.section-content {
+			padding: 20px;
+		}
+
 		.name {
 			font-size: 24px;
 			width: 100%;
@@ -192,10 +189,9 @@
 			}
 		}
 
-		.section-content {
-			padding: 20px 20px 0;
-			height: 100%;
-			transition: all 0.3s;
+		.section-collapse {
+			transition: height 0.5s;
+			overflow: hidden;
 		}
 
 		.details {
@@ -309,7 +305,7 @@
 	}
 
 	.section-actions {
-		padding: 20px;
+		padding-top: 20px;
 
 		.remove {
 			float: right;

@@ -64,5 +64,6 @@ learn_press_admin_view( 'course/section' );
                 }
             }
         });
+
     })(Vue, LP_Curriculum_Store);
 </script>
