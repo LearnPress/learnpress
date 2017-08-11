@@ -32,21 +32,39 @@ $item_types = apply_filters( 'learn-press/course/item-section-types', array(
                 </div>
             </div>
             <div class="main">
-                <form class="search" @submit.prevent="">
-                    <input placeholder="Type here to search item"
-                           type="text"
-                           title="search"
-                           @input="makeSearch"
-                           v-model="query">
-                </form>
+                <div class="row">
+                    <div class="col-6">
+                        <form class="search" @submit.prevent="">
+                            <input placeholder="Type here to search item"
+                                   type="text"
+                                   title="search"
+                                   @input="makeSearch"
+                                   v-model="query">
+                        </form>
 
-                <div class="list-items">
+                        <ul class="list-items">
+                            <template v-for="item in items">
+                                <li class="item-section" @click="addItem(item)" :data-id="item.id">
+                                    <span class="btn-add"></span>
+                                    <span class="name">{{item.title}}</span>
+                                </li>
+                            </template>
+                        </ul>
+                    </div>
+                    <div class="col-6 added-items">
+                        <h4>Added items ({{addedItems.length}})</h4>
 
+                        <ul class="list-added-items">
+                            <template v-for="(item, index) in addedItems">
+                                <li class="item-section" :class="'type-' + item.type" :key="index">
+                                    <span class="icon"></span>
+                                    <span class="name">{{item.title}}</span>
+                                    <span class="remove" @click="removeItem(index)"></span>
+                                </li>
+                            </template>
+                        </ul>
+                    </div>
                 </div>
-            </div>
-            <div class="footer">
-                <button type="button" class="button button-primary">Add</button>
-                <button type="button" class="button button-secondary">Add & Close</button>
             </div>
         </div>
     </div>
@@ -61,18 +79,42 @@ $item_types = apply_filters( 'learn-press/course/item-section-types', array(
                 return {
                     query: '',
                     page: 1,
-                    tab: 'lesson',
+                    tab: 'lp_lesson',
                     delayTimeout: null
                 };
             },
+            created: function () {
+                var vm = this;
+
+                $store.subscribe(function (mutation) {
+                    if (mutation.type !== 'TOGGLE_CHOOSE_ITEMS') {
+                        return;
+                    }
+
+                    if (vm.show) {
+                        vm.init();
+                        vm.makeSearch();
+                    }
+                });
+            },
             methods: {
+                init: function () {
+                    $store.dispatch('resetAddedItemsCI');
+                },
                 close: function () {
                     $store.dispatch('toggleChooseItems');
                 },
                 changeTab: function (key) {
                     this.tab = key;
+                    this.makeSearch();
                 },
-                makeSearch: function (e) {
+                addItem: function (item) {
+                    $store.dispatch('addItemCI', item);
+                },
+                removeItem: function (index) {
+                    $store.dispatch('removeItemCI', index);
+                },
+                makeSearch: function () {
                     var vm = this;
 
                     if (this.delayTimeout) {
@@ -89,6 +131,9 @@ $item_types = apply_filters( 'learn-press/course/item-section-types', array(
                 }
             },
             computed: {
+                addedItems: function () {
+                    return $store.getters.chooseItems.addedItems;
+                },
                 items: function () {
                     return $store.getters.chooseItems.items;
                 },

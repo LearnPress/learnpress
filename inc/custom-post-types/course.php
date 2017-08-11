@@ -81,6 +81,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				'chooseItems' => array(
 					'types'      => learn_press_course_get_support_item_types(),
 					'open'       => false,
+					'items'      => array(),
 					'addedItems' => array()
 				)
 			) );

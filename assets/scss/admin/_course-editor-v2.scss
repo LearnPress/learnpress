@@ -332,7 +332,7 @@
 
 	.lp-choose-items {
 		background-color: #fff;
-		max-width: 800px;
+		max-width: 1024px;
 		margin: 50px auto;
 		border: 1px solid #ddd;
 		box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
@@ -407,6 +407,27 @@
 
 		.main {
 			padding: 20px;
+			margin: 0 -20px;
+			max-height: 100%;
+			min-height: 331px;
+
+			.row {
+				display: flex;
+
+				.col-6 {
+					width: 50%;
+					padding: 0 20px;
+				}
+			}
+
+			.added-items {
+				h4 {
+					margin: 0 0 20px 0;
+					line-height: 31px;
+					text-align: center;
+					font-size: 1.2em;
+				}
+			}
 
 			.search {
 				margin-bottom: 20px;
@@ -419,12 +440,91 @@
 			}
 
 			.list-items {
-				min-height: 200px;
-			}
-		}
+				margin: 0;
 
-		.footer {
-			padding: 20px;
+				li {
+					overflow-x: hidden;
+					cursor: pointer;
+
+					.btn-add {
+						font-family: Dashicons, serif;
+						position: relative;
+						top: 2px;
+
+						&:before {
+							content: "\f132";
+						}
+					}
+				}
+			}
+
+			.item-section {
+				margin: 0;
+				padding: 10px;
+				background-color: #fff;
+				border: 1px solid #ddd;
+				border-bottom-width: 0;
+				white-space: nowrap;
+				overflow: hidden;
+
+				&:last-child {
+					border-bottom-width: 1px;
+				}
+
+				&:nth-child(2n+1) {
+					background-color: #fbfbfb;
+				}
+
+				&:hover {
+					background-color: #f1f1f1;
+				}
+			}
+
+			.list-added-items {
+				margin: 0;
+				max-height: 401px;
+				overflow-y: auto;
+
+				.icon {
+					font-family: Dashicons, serif;
+				}
+
+				li {
+					&:hover {
+
+						.remove {
+							display: inline-block;
+						}
+					}
+				}
+
+				.remove {
+					cursor: pointer;
+					float: right;
+					display: none;
+					font-family: Dashicons, serif;
+
+					&:hover {
+						color: #a00;
+					}
+
+					&:before {
+						content: '\f335';
+					}
+				}
+
+				.type-lp_lesson {
+					.icon:before {
+						content: '\f330';
+					}
+				}
+
+				.type-lp_quiz {
+					.icon:before {
+						content: '\f469';
+					}
+				}
+			}
 		}
 	}
 }
