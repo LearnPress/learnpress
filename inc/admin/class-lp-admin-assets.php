@@ -12,16 +12,10 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 	 */
 	public function __construct() {
 		parent::__construct();
-		add_action( 'learn-press/enqueue-script/learn-press-modal-search-items', array(
-			$this,
-			'init_modal_search_items'
-		) );
-
+		add_action( 'learn-press/enqueue-script/learn-press-modal-search-items', array('LP_Modal_Search_Items', 'instance') );
+		add_action( 'learn-press/enqueue-script/learn-press-modal-search-users', array('LP_Modal_Search_Users', 'instance'));
 	}
 
-	public function init_modal_search_items() {
-		new LP_Modal_Search_Items();
-	}
 
 	protected function _get_script_data() {
 		return array(
@@ -128,9 +122,12 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				'learn-press-modal-search-items' => array(
 					'url' => $this->url( 'js/admin/modal-search-items.js' )
 				),
+				'learn-press-modal-search-users' => array(
+					'url' => $this->url( 'js/admin/modal-search-users.js' )
+				),
 				'learn-press-meta-box-order'     => array(
 					'url'     => $this->url( 'js/admin/meta-box-order.js' ),
-					'deps'    => array( 'learn-press-global', 'learn-press-modal-search-items' ),
+					'deps'    => array( 'learn-press-global', 'learn-press-modal-search-items','learn-press-modal-search-users' ),
 					'screens' => array( LP_ORDER_CPT )
 				)
 			)

@@ -613,6 +613,38 @@ function learn_press_update_user_item_meta( $user_item_id, $meta_key, $meta_valu
 }
 
 /**
+ * Exclude the temp users from query.
+ *
+ * @param WP_User_Query $q
+ */
+function learn_press_filter_temp_users( $q ) {
+	if ( $temp_users = learn_press_get_temp_users() ) {
+		$exclude = (array) $q->get( 'exclude' );
+		$exclude = array_merge( $exclude, $temp_users );
+		$q->set( 'exclude', $exclude );
+	}
+}
+
+add_action( 'pre_get_users', 'learn_press_filter_temp_users' );
+
+/**
+ * Get temp users.
+ *
+ * @return array
+ */
+function learn_press_get_temp_users() {
+	global $wpdb;
+	$query = $wpdb->prepare( "
+			SELECT ID
+			FROM {$wpdb->users} u 
+			INNER JOIN {$wpdb->usermeta} um ON u.ID = um.user_id AND um.meta_key = %s AND um.meta_value = %s
+			LEFT JOIN {$wpdb->usermeta} um2 ON u.ID = um2.user_id AND um2.meta_key = %s
+		", '_lp_temp_user', 'yes', '_lp_expiration' );
+
+	return $wpdb->get_col( $query );
+}
+
+/**
  * Update field created_time after added user item meta
  *
  * @use updated_{meta_type}_meta hook

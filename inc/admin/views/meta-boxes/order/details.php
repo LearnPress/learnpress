@@ -54,10 +54,23 @@ $method_title = $order->get_payment_method_title();
         </div>
 
         <div class="order-data-field order-data-user">
-			<?php if ( $order->is_multi_users() ) { ?>
+			<?php if ( !$order->is_multi_users() ) { ?>
                 <label><?php _e( 'Customers', 'learnpress' ); ?></label>
                 <div class="order-users">
-                    <p><?php $order->print_users(); ?></p>
+                    <ul id="list-users" class="advanced-list">
+                        <li data-id="0"><span class="remove-item"></span><span>admin1@gmail.com</span> </li>
+                        <li data-id="0"><span class="remove-item"></span><span>admin2@gmail.com</span> </li>
+                        <li data-id="0"><span class="remove-item"></span><span>admin3@gmail.com</span> </li>
+                        <li data-id="0"><span class="remove-item"></span><span>admin4@gmail.com</span> </li>
+                        <li data-id="0"><span class="remove-item"></span><span>admin5@gmail.com</span> </li>
+                        <li data-id="0"><span class="remove-item"></span><span>admin6@gmail.com</span> </li>
+                        <li data-id="0"><span class="remove-item"></span><span>admin7@gmail.com</span> </li>
+                        <li data-id="0"><span class="remove-item"></span><span>admin8@gmail.com</span> </li>
+                        <li data-id="0"><span class="remove-item"></span><span>admin8@gmail.com</span> </li>
+                        <li data-id="0"><span class="remove-item"></span><span>admin8@gmail.com</span> </li>
+                        <li data-id="0"><span class="remove-item"></span><span>admin8@gmail.com</span> </li>
+                        <li data-id="0"><span class="remove-item"></span><span>admin8@gmail.com</span> </li>
+                    </ul>
                 </div>
 			<?php } else { ?>
                 <label><?php _e( 'Customer', 'learnpress' ); ?></label>
@@ -69,8 +82,13 @@ $method_title = $order->get_payment_method_title();
 						echo $order->get_customer_name();
 					}
 					?>
+                    <input type="hidden" name="order-customer" id="order-customer" value="<?php echo $order->get_user('id');?>" />
                 </div>
-                <a href=""><?php _e('Change', 'learnpress');?></a>
+                <a href="" class="change-user"><?php _e( 'Change', 'learnpress' ); ?></a>
+			<?php } ?>
+			<?php if ( $order->get_status() == 'auto-draft' ) { ?>
+				<?php _e( '- Or -', 'learnpress' ); ?>
+                <a href="" class="change-user" data-multiple="yes"><?php _e( 'Add multi users', 'learnpress' ); ?></a>
 			<?php } ?>
         </div>
     </div>

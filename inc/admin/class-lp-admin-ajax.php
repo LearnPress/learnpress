@@ -102,6 +102,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'get-question-data',
 				'update_curriculum',
 				'modal-search-items',
+				'modal-search-users',
 				'add-items-to-order',
 				'remove-items-from-order'
 			);
@@ -581,6 +582,28 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'html'  => $search->get_html_items(),
 				'nav'   => $search->get_pagination(),
 				'items' => $search->get_items()
+			) );
+
+		}
+
+		/**
+		 * Search items by requesting params.
+		 */
+		public static function modal_search_users() {
+			self::parsePhpInput( $_REQUEST );
+			$term       = (string) ( stripslashes( learn_press_get_request( 'term' ) ) );
+			$type       = (string) ( stripslashes( learn_press_get_request( 'type' ) ) );
+			$context    = (string) ( stripslashes( learn_press_get_request( 'context' ) ) );
+			$context_id = (string) ( stripslashes( learn_press_get_request( 'context_id' ) ) );
+			$paged      = (string) ( stripslashes( learn_press_get_request( 'paged' ) ) );
+			$multiple      = (string) ( stripslashes( learn_press_get_request( 'multiple' ) ) )=='yes';
+
+			$search = new LP_Modal_Search_Users( compact( 'term', 'type', 'context', 'context_id', 'paged', 'multiple' ) );
+
+			learn_press_send_json( array(
+				'html'  => $search->get_html_items(),
+				'nav'   => $search->get_pagination(),
+				'users' => $search->get_items()
 			) );
 
 		}

@@ -9,7 +9,7 @@
                 return {
                     paged: 1,
                     term: '',
-                    hasItems: true,
+                    hasItems: false,
                     selected: []
                 }
             },

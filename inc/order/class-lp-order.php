@@ -353,16 +353,21 @@ class LP_Order extends LP_Abstract_Post_Data {
 	 */
 	public function get_customer_name() {
 		$customer_name = '';
-		if ( $user = learn_press_get_user( $this->get_data( 'user_id' ) ) ) {
-			if ( ! $user->is_exists() ) {
+		if ( 'auto-draft' === get_post_status( $this->get_id() ) ) {
+			$customer = learn_press_get_current_user( false );
+		}else{
+			$customer = learn_press_get_user( $this->get_data( 'user_id' ) );
+		}
+		if ( $customer ) {
+			if ( ! $customer->is_exists() ) {
 				$customer_name = apply_filters( 'learn_press_order_customer_name', __( '[Guest]', 'learnpress' ) );
 			} else {
-				if ( $user->get_data( 'display_name' ) ) {
-					$customer_name = $user->get_data( 'display_name' );
-				} elseif ( $user->get_data( 'user_nicename' ) ) {
-					$customer_name = $user->get_data( 'user_nicename' );
-				} elseif ( $user->get_data( 'user_login' ) ) {
-					$customer_name = $user->get_data( 'user_login' );
+				if ( $customer->get_data( 'display_name' ) ) {
+					$customer_name = $customer->get_data( 'display_name' );
+				} elseif ( $customer->get_data( 'user_nicename' ) ) {
+					$customer_name = $customer->get_data( 'user_nicename' );
+				} elseif ( $customer->get_data( 'user_login' ) ) {
+					$customer_name = $customer->get_data( 'user_login' );
 				}
 			}
 		}
@@ -581,12 +586,15 @@ class LP_Order extends LP_Abstract_Post_Data {
 	}
 
 	public function get_user( $field = '' ) {
-		if ( strtolower( $field ) == 'id' ) {
-			return $this->user_id;
-		}
+
 		if ( false === ( $user = learn_press_get_user( $this->get_data( 'user_id' ) ) ) ) {
 			$user = learn_press_get_current_user();
 		}
+
+		if ( strtolower( $field ) == 'id' ) {
+			return $user->get_id();
+		}
+
 		if ( $field && $user ) {
 			return $user->get_data( $field );
 		}

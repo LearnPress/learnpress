@@ -391,6 +391,31 @@
     }
 }
 
+.advanced-list{
+    list-style: none;
+    li{
+        display: inline-block;
+        background: #EEE;
+        padding: 3px 8px;
+        @include border-radius(2px);
+        .remove-item{
+            display: inline-block;
+            text-decoration: none;
+            line-height: 1;
+            vertical-align: middle;
+            margin-right: 5px;
+            &:before{
+                font-family: dashicons;
+                content: "\f335";
+                text-decoration: none;
+            }
+        }
+        span{
+            display: inline-block;
+        }
+    }
+}
+
 @-moz-keyframes spin {
     100% {
         -moz-transform: rotate(360deg);

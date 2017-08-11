@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Class LP_Modal_Search_Items
+ * Class LP_Modal_Search_Users
  */
-class LP_Modal_Search_Items {
+class LP_Modal_Search_Users {
 
 	/**
 	 * @var array
@@ -16,6 +16,11 @@ class LP_Modal_Search_Items {
 	protected $_query_args = array();
 
 	/**
+	 * @var WP_User_Query
+	 */
+	protected $_query = null;
+
+	/**
 	 * @var array
 	 */
 	protected $_items = array();
@@ -26,7 +31,7 @@ class LP_Modal_Search_Items {
 	protected $_changed = true;
 
 	/**
-	 * LP_Modal_Search_Items constructor.
+	 * LP_Modal_Search_Users constructor.
 	 *
 	 * @param string $options
 	 */
@@ -42,8 +47,8 @@ class LP_Modal_Search_Items {
 				'term'         => '',
 				'add_button'   => __( 'Add', 'learnpress' ),
 				'close_button' => __( 'Close', 'learnpress' ),
-				'title'        => __( 'Search items', 'learnpress' ),
-				'limit'        => 10,
+				'title'        => __( 'Search user', 'learnpress' ),
+				'number'       => 2,
 				'paged'        => 1
 			)
 		);
@@ -61,16 +66,6 @@ class LP_Modal_Search_Items {
 		$context    = $this->_options['context'];
 		$context_id = $this->_options['context_id'];
 
-		if ( $current_items_in_order ) {
-			foreach ( $current_items_in_order as $item ) {
-				$sql = "SELECT meta_value
-                        FROM {$wpdb->prefix}learnpress_order_itemmeta 
-                        WHERE meta_key = '_course_id' 
-                        AND learnpress_order_item_id = $item";
-				$id  = $wpdb->get_results( $sql, OBJECT );
-				array_push( $current_items, $id[0]->meta_value );
-			}
-		}
 
 		$exclude = array();
 
@@ -80,33 +75,24 @@ class LP_Modal_Search_Items {
 		$exclude = array_unique( (array) apply_filters( 'learn_press_modal_search_items_exclude', $exclude, $type, $context, $context_id ) );
 		$exclude = array_map( 'intval', $exclude );
 		$args    = array(
-			'post_type'      => array( $type ),
-			'post_status'    => 'publish',
-			'order'          => 'ASC',
-			'orderby'        => 'parent title',
-			'exclude'        => $exclude,
-			'posts_per_page' => $this->_options['limit'],
-			'offset'         => ( $this->_options['paged'] - 1 ) * $this->_options['limit']
+			'number' => $this->_options['number'],
+			'offset' => ( $this->_options['paged'] - 1 ) * $this->_options['number']
 		);
-
-		$args['author'] = get_post_field( 'post_author', $context_id );
-
 		if ( $term ) {
-			$args['s'] = $term;
+			$args['search']         = sprintf( '*%s*', esc_attr( $term ) );
+			$args['search_columns'] = array( 'user_login', 'user_email' );
 		}
 		$this->_query_args = apply_filters( 'learn_press_filter_admin_ajax_modal_search_items_args', $args, $context, $context_id );
 
-		$posts        = get_posts( $this->_query_args );
+		// The Query
+		$this->_query = new WP_User_Query( $args );
+
 		$this->_items = array();
 
-		if ( ! empty( $posts ) ) {
-			foreach ( $posts as $post ) {
-				if ( in_array( $post->ID, $current_items ) ) {
-					continue;
-				}
-				$this->_items[] = $post->ID;
+		if ( $results = $this->_query->get_results() ) {
+			foreach ( $results as $user ) {
+				$this->_items[$user->ID] =  $user->user_login;
 			}
-
 		}
 
 		return $this->_items;
@@ -123,10 +109,16 @@ class LP_Modal_Search_Items {
 	function get_pagination() {
 
 		$pagination = '';
-		if ( $items = $this->get_items() ) {
-			$q = new WP_Query( $this->_query_args );
+		if ( $items = $this->get_items() && $this->_options['number'] > 0 ) {
 
-			if ( $this->_options['paged'] && $q->max_num_pages > 1 ) {
+			$number        = $this->_options['number'];
+			$total         = $this->_query->get_total();
+			$max_num_pages = intval( $total / $number );
+			if ( $total % $number ) {
+				$max_num_pages ++;
+			}
+
+			if ( $this->_options['paged'] && $max_num_pages > 1 ) {
 				$pagenum_link = html_entity_decode( get_pagenum_link() );
 
 				$query_args = array();
@@ -140,7 +132,7 @@ class LP_Modal_Search_Items {
 				$pagenum_link = trailingslashit( $pagenum_link ) . '%_%';
 				$pagination   = paginate_links( array(
 					'base'      => $pagenum_link,
-					'total'     => $q->max_num_pages,
+					'total'     => $max_num_pages,
 					'current'   => max( 1, $this->_options['paged'] ),
 					'mid_size'  => 1,
 					'add_args'  => array_map( 'urlencode', $query_args ),
@@ -158,14 +150,25 @@ class LP_Modal_Search_Items {
 		ob_start();
 		if ( $items = $this->get_items() ) {
 			foreach ( $items as $id => $item ) {
-				printf( '
-                    <li class="%s" data-id="%2$d" data-type="%4$s" data-text="%3$s">
+				$the_user = get_user_by('ID', $id);
+				if($this->_options['multiple']) {
+					printf( '
+                    <li class="%s" data-id="%2$d" data-text="%3$s">
                         <label>
                             <input type="checkbox" value="%2$d" name="selectedItems[]">
                             <span class="lp-item-text">%3$s</span>
                         </label>
                     </li>
-                    ', 'lp-result-item', $id, esc_attr( get_the_title( $item ) ), get_the_title( $item ) );
+                    ', 'lp-result-item', $id, esc_attr( $the_user->user_login ) );
+				}else{
+					printf( '
+                    <li class="%s" data-id="%2$d" data-text="%3$s">
+                        <label>
+                            <a href=""><span class="lp-item-text">%3$s</span></a>
+                        </label>
+                    </li>
+                    ', 'lp-result-item', $id, esc_attr( $the_user->user_login ) );
+				}
 			}
 		} else {
 			echo '<li>' . apply_filters( 'learn_press_modal_search_items_not_found', __( 'No item found', 'learnpress' ), $this->_options['type'] ) . '</li>';
@@ -175,7 +178,7 @@ class LP_Modal_Search_Items {
 	}
 
 	public function js_template() {
-		$view = learn_press_get_admin_view('modal-search-items');
+		$view = learn_press_get_admin_view( 'modal-search-users' );
 		include $view;
 	}
 

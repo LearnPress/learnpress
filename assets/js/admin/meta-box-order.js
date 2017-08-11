@@ -30,6 +30,13 @@
                 $('.order-total').html(result.order_data.total_html);
             });
         });
+
+        var $a = $('#list-users').advancedList();
+        console.log($a.advancedList('remove', 2));
+        $a.advancedList('add', ['how to create a course', 199], 1);
+        $a.advancedList('add', {id: 200, text: 'me'}, 2);
+        $a.advancedList('add', "asdasdasd");
+
         $('#learn-press-add-order-item').on('click', function () {
             LP.$modalSearchItems.open({
                 data: {
@@ -57,6 +64,25 @@
                             $('.order-subtotal').html(result.order_data.subtotal_html);
                             $('.order-total').html(result.order_data.total_html);
                         });
+                        this.close();
+                    }
+                }
+            });
+        });
+
+        $('.change-user').on('click', function (e) {
+            e.preventDefault();
+            LP.$modalSearchUsers.open({
+                data: {
+                    postType: 'lp_course',
+                    context: 'order-items',
+                    contextId: $('#post_ID').val(),
+                    show: true,
+                    multiple: $(this).data('multiple') === 'yes'
+                },
+                callbacks: {
+                    addUsers: function(){
+                        console.log(this.selected)
                         this.close();
                     }
                 }
