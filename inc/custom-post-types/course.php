@@ -69,8 +69,6 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			global $post;
 			$course = learn_press_get_course( $post->ID );
 
-			learn_press_course_get_support_item_types();
-
 			wp_localize_script( 'course-editor-v2', 'lq_course_editor', array(
 				'course_id'   => $course->get_id(),
 				'sections'    => $course->get_curriculum_raw(),
@@ -79,9 +77,11 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				'nonce'       => wp_create_nonce( 'learnpress_update_curriculum' ),
 				'urlEdit'     => admin_url( 'post.php?action=edit&post=' ),
 				'chooseItems' => array(
-					'types'      => learn_press_course_get_support_item_types(),
+					'types'      => apply_filters( 'learn-press/course/item-section-types', array(
+						'lesson' => __( 'Lesson', 'learnpress' ),
+						'quiz'   => __( 'Quiz', 'learnpress' ),
+					) ),
 					'open'       => false,
-					'items'      => array(),
 					'addedItems' => array()
 				)
 			) );

@@ -88,9 +88,42 @@ class LP_Modal_Search_Items {
 			'posts_per_page' => $this->_options['limit'],
 			'offset'         => ( $this->_options['paged'] - 1 ) * $this->_options['limit']
 		);
+		if ( ! $user->is_admin() ) {
+			$args['author'] = $user->get_id();
+		}
 
-		$args['author'] = get_post_field( 'post_author', $context_id );
+		if ( $context && $context_id ) {
+			switch ( $context ) {
+				/**
+				 * If is search lesson/quiz for course only search the items of course's author
+				 */
+				case 'course-items':
+					if ( get_post_type( $context_id ) == LP_COURSE_CPT ) {
+						$post_author = get_post_field( 'post_author', $context_id );
+						$authors     = array( $post_author );
+						if ( $post_author != $user->get_id() ) {
+							$authors[] = $user->get_id();
+						}
+						$args['author'] = $authors;
+					}
+					break;
+				/**
+				 * If is search question for quiz only search the items of course's author
+				 */
+				case 'quiz-items':
+					if ( get_post_type( $context_id ) == LP_QUIZ_CPT ) {
+						$post_author = get_post_field( 'post_author', $context_id );
+						$authors     = array( $post_author );
+						if ( $post_author != $user->get_id() ) {
+							$authors[] = $user->get_id();
+						}
+						$args['author'] = $authors;
+					}
+					break;
+				case 'order-items':
 
+			}
+		}
 		if ( $term ) {
 			$args['s'] = $term;
 		}
@@ -104,7 +137,7 @@ class LP_Modal_Search_Items {
 				if ( in_array( $post->ID, $current_items ) ) {
 					continue;
 				}
-				$this->_items[] = $post->ID;
+				$this->_items[ $post->ID ] = $post->ID;
 			}
 
 		}
@@ -112,13 +145,6 @@ class LP_Modal_Search_Items {
 		return $this->_items;
 	}
 
-	/**
-	 * Get items.
-	 *
-	 * @since 3.0.0
-	 *
-	 * @return array Array post id
-	 */
 	public function get_items() {
 		if ( $this->_changed ) {
 			$this->_get_items();
@@ -163,7 +189,7 @@ class LP_Modal_Search_Items {
 
 	public function get_html_items() {
 		ob_start();
-		if ( $items = $this->get_items() ) {
+		if ( $items =$this->get_items() ) {
 			foreach ( $items as $id => $item ) {
 				printf( '
                     <li class="%s" data-id="%2$d" data-type="%4$s" data-text="%3$s">

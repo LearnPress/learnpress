@@ -45,7 +45,7 @@
                         }
                     ).then(function (response) {
                         var result = LP.parseJSON(response.body);
-                        that.hasItems = !!_.size(result.data);
+                        that.hasItems = !!_.size(result.items);
 
                         $(that.$el).find('.search-results').html(result.html).find('input[type="checkbox"]').each(function () {
                             var id = parseInt($(this).val());

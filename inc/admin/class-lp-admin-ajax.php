@@ -199,31 +199,9 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					break;
 
 				case 'search-items':
-					$term = isset( $_REQUEST['query'] ) ? $_REQUEST['query'] : '';
-					$page = ! empty( $_REQUEST['page'] ) ? intval( $_REQUEST['page'] ) : 1;
-					$type = ! empty( $_REQUEST['item-type'] ) ? $_REQUEST['item-type'] : '';
+					//@todo search items.
 
-					$search = new LP_Modal_Search_Items(
-						array(
-							'type'       => $type,
-							'context'    => 'course-items',
-							'context_id' => $course_id,
-							'term'       => $term,
-							'limit'      => 10,
-							'paged'      => $page
-						)
-					);
-
-					$items  = $search->get_items();
 					$result = array();
-
-					foreach ( $items as $id ) {
-						$result[] = array(
-							'ID'    => $id,
-							'title' => get_the_title( $id ),
-							'type'  => get_post_type( $id )
-						);
-					}
 
 					break;
 			}
@@ -360,7 +338,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			if ( false === $data ) {
 				try {
 					$data = json_decode( file_get_contents( 'php://input' ), true );
-				} catch ( Exception $exception ) {
+				}
+				catch ( Exception $exception ) {
 				}
 			}
 			if ( $data && func_num_args() > 0 ) {
@@ -457,7 +436,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					} else {
 						$response['message'] = __( 'Delete question failed.', 'learnpress' );
 					}
-				} catch ( Exception $exception ) {
+				}
+				catch ( Exception $exception ) {
 				}
 			}
 			learn_press_send_json( $response );
@@ -490,7 +470,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					} else {
 						$response['message'] = __( 'Delete question failed.', 'learnpress' );
 					}
-				} catch ( Exception $exception ) {
+				}
+				catch ( Exception $exception ) {
 				}
 			}
 			learn_press_send_json( $response );
@@ -597,9 +578,11 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			$search = new LP_Modal_Search_Items( compact( 'term', 'type', 'context', 'context_id', 'paged' ) );
 
 			learn_press_send_json( array(
-				'html' => $search->get_html_items(),
-				'nav'  => $search->get_pagination()
+				'html'  => $search->get_html_items(),
+				'nav'   => $search->get_pagination(),
+				'items' => $search->get_items()
 			) );
+
 		}
 
 		/*************/
@@ -758,7 +741,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 * @param        $exclude
 		 * @param        $type
 		 * @param string $context
-		 * @param null $context_id
+		 * @param null   $context_id
 		 *
 		 * @return array
 		 */
@@ -950,14 +933,12 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			// validate item
 			$items = learn_press_get_request( 'items' );
 
-			foreach ( $items as $item_id ) {
-				$post = get_post( learn_press_get_order_item_meta( $item_id, '_course_id' ) );
-				if ( ! $post || ( 'lp_course' !== $post->post_type ) ) {
-					continue;
-				}
+			$order = learn_press_get_order( $order_id );
 
-				learn_press_remove_order_item( $item_id );
+			foreach ( $items as $item_id ) {
+				$order->remove_item( $item_id );
 			}
+
 			$order_data                  = learn_press_update_order_items( $order_id );
 			$currency_symbol             = learn_press_get_currency_symbol( $order_data['currency'] );
 			$order_data['subtotal_html'] = learn_press_format_price( $order_data['subtotal'], $currency_symbol );
@@ -995,63 +976,39 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			}
 
 			// validate item
-			$item_ids   = learn_press_get_request( 'items' );
-			$item_html  = '';
-			$order_data = array();
-//			$order  = learn_press_get_order( $order_id );
-
-//			echo '<pre>'.print_r($item_ids, true).'</pre>';
-//			exit(''.__LINE__);
-			foreach ( $item_ids as $item_id ):
-				$post = get_post( $item_id );
-				if ( ! $post || ( 'lp_course' !== $post->post_type ) ) {
-					continue;
-//					die( __( 'Course invalid', 'learnpress' ) );
-				}
-				$course = learn_press_get_course( $post->ID );
-				$item   = array(
-					'course_id' => $course->id,
-					'name'      => $course->get_title(),
-					'quantity'  => 1,
-					'subtotal'  => $course->get_price(),
-					'total'     => $course->get_price()
-				);
-
-				// Add item
-				$item_id = learn_press_add_order_item( $order_id, array(
-					'order_item_name' => $item['name']
-				) );
-
-				$item['id'] = $item_id;
-
-				// Add item meta
-				if ( $item_id ) {
-					$item = apply_filters( 'learn_press_ajax_order_item', $item );
-
-					learn_press_add_order_item_meta( $item_id, '_course_id', $item['course_id'] );
-					learn_press_add_order_item_meta( $item_id, '_quantity', $item['quantity'] );
-					learn_press_add_order_item_meta( $item_id, '_subtotal', $item['subtotal'] );
-					learn_press_add_order_item_meta( $item_id, '_total', $item['total'] );
-
-					do_action( 'learn_press_ajax_add_order_item_meta', $item );
-				}
+			$item_ids = learn_press_get_request( 'items' );
+			$order    = learn_press_get_order( $order_id );
+			if ( $order_item_ids = $order->add_items( $item_ids ) ) {
+				$html        = '';
+				$order_items = $order->get_items();
 
 				$order_data                  = learn_press_update_order_items( $order_id );
 				$currency_symbol             = learn_press_get_currency_symbol( $order_data['currency'] );
 				$order_data['subtotal_html'] = learn_press_format_price( $order_data['subtotal'], $currency_symbol );
 				$order_data['total_html']    = learn_press_format_price( $order_data['total'], $currency_symbol );
 
-				ob_start();
-				include learn_press_get_admin_view( 'meta-boxes/order/order-item.php' );
-				$item_html .= ob_get_clean();
-			endforeach;
+				foreach ( $order_items as $item ) {
+
+					if ( ! in_array( $item['id'], $order_item_ids ) ) {
+						continue;
+					}
+					ob_start();
+					include learn_press_get_admin_view( 'meta-boxes/order/order-item.php' );
+					$html .= ob_get_clean();
+				}
 
 
+				learn_press_send_json(
+					array(
+						'result'     => 'success',
+						'item_html'  => $html,
+						'order_data' => $order_data
+					)
+				);
+			}
 			learn_press_send_json(
 				array(
-					'result'     => 'success',
-					'item_html'  => $item_html,
-					'order_data' => $order_data
+					'result' => 'error'
 				)
 			);
 		}

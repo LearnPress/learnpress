@@ -123,6 +123,10 @@ class LP_Assets extends LP_Abstract_Assets {
 	public static function add_script_tag(){
 
 	}
+
+	public static function add_localize(){
+
+	}
 }
 
 /**

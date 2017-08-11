@@ -26,33 +26,31 @@ learn_press_admin_view( 'course/section-item' );
             </div>
         </div>
 
-        <div class="section-collapse" ref="collapse">
-            <div class="section-content">
-                <div class="details">
+        <div class="section-content">
+            <div class="details">
 
-                    <input v-model="section.description"
-                           type="text"
-                           class="description-input"
-                           title="description"
-                           @blur="maybeUpdate"
-                           @change="shouldBeStore"
-                           @keyup.enter="update"
-                           placeholder="<?php echo esc_attr( 'Describe about this section', 'learnpress' ); ?>">
-                </div>
+                <input v-model="section.description"
+                       type="text"
+                       class="description-input"
+                       title="description"
+                       @blur="maybeUpdate"
+                       @change="shouldBeStore"
+                       @keyup.enter="update"
+                       placeholder="<?php echo esc_attr( 'Describe about this section', 'learnpress' ); ?>">
+            </div>
 
-                <table class="section-list-items">
-                    <draggable :list="section.items" :element="'tbody'" :options="{handle: '.icon'}">
-                        <lp-section-item v-for="(item, index) in section.items" :item="item" :key="item.id" :order="index+1"></lp-section-item>
-                    </draggable>
-                </table>
+            <table class="section-list-items">
+                <draggable :list="section.items" :element="'tbody'" :options="{handle: '.icon'}">
+                    <lp-section-item v-for="(item, index) in section.items" :item="item" :key="item.id" :order="index+1"></lp-section-item>
+                </draggable>
+            </table>
+        </div>
 
-                <div class="section-actions">
-                    <button type="button" class="button button-secondary" @click="openChooseItems"><?php esc_html_e( 'Add items', 'learnpress' ); ?></button>
+        <div class="section-actions">
+            <button type="button" class="button button-secondary" @click="openChooseItems"><?php esc_html_e( 'Add items', 'learnpress' ); ?></button>
 
-                    <div class="remove" @click="remove">
-                        <span class="dashicons dashicons-trash"></span>
-                    </div>
-                </div>
+            <div class="remove" @click="remove">
+                <span class="dashicons dashicons-trash"></span>
             </div>
         </div>
     </div>
@@ -73,26 +71,6 @@ learn_press_admin_view( 'course/section-item' );
             methods: {
                 toggle: function () {
                     this.isOpen = !this.isOpen;
-                    var vm = this;
-
-
-                    if (!this.isOpen) {
-                        this.$refs.collapse._height_saved = this.$refs.collapse.offsetHeight;
-                    }
-
-                    var height = this.$refs.collapse._height_saved;
-
-                    var from = height + 'px';
-                    var to = '0px';
-                    if (!this.isOpen) {
-                        from = '0px';
-                        to = height + 'px';
-                    }
-
-                    vm.$refs.collapse.style.height = to;
-                    setTimeout(function () {
-                        vm.$refs.collapse.style.height = from;
-                    }, 0);
                 },
                 remove: function () {
                     var r = window.confirm('Are you sure remove this section?');

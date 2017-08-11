@@ -118,65 +118,43 @@ function learn_press_get_booking_id_by_key( $order_key ) {
 function learn_press_update_order_status( $order_id, $status = '' ) {
 	$order = new LP_Order( $order_id );
 	if ( $order ) {
-		$order->update_status( $status );
+		return $order->update_status( $status );
 	}
+
+	return false;
 }
 
+/**
+ * Add an order item into order.
+ *
+ * @param int   $order_id
+ * @param mixed $item - Array of item data or ID
+ *
+ * @return bool
+ */
 function learn_press_add_order_item( $order_id, $item ) {
-	global $wpdb;
-
-	$order_id = absint( $order_id );
-
-	if ( ! $order_id ) {
-		return false;
+	$item_id = false;
+	if ( $order = learn_press_get_order( $order_id ) ) {
+		$item_id = $order->add_item( $item );
 	}
-
-	$defaults = array(
-		'order_item_name' => '',
-		'order_id'        => $order_id
-	);
-
-	$item = wp_parse_args( $item, $defaults );
-	if ( array_key_exists( 'data', $item ) ) {
-		$item['data'] = maybe_serialize( $item['data'] );
-	}
-	//$course = LP_Course::get_course( $item['item_id'] );
-	$wpdb->insert(
-		$wpdb->learnpress_order_items,
-		array(
-			'order_item_name' => $item['order_item_name'],
-			'order_id'        => $item['order_id']
-		),
-		array(
-			'%s',
-			'%d'
-		)
-	);
-
-	$item_id = absint( $wpdb->insert_id );
-
-	do_action( 'learn_press_new_order_item', $item_id, $item, $order_id );
 
 	return $item_id;
 }
 
-function learn_press_remove_order_item( $item_id ) {
-	global $wpdb;
-
-	$item_id = absint( $item_id );
-
-	if ( ! $item_id ) {
-		return false;
+/**
+ * Remove an order item by order_item_id.
+ *
+ * @param int $order_id
+ * @param int $item_id
+ *
+ * @return bool
+ */
+function learn_press_remove_order_item( $order_id, $item_id ) {
+	if ( $order = learn_press_get_order( $order_id ) ) {
+		return $order->remove_item( $item_id );
 	}
 
-	do_action( 'learn_press_before_delete_order_item', $item_id );
-
-	$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_order_items WHERE order_item_id = %d", $item_id ) );
-	$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_order_itemmeta WHERE learnpress_order_item_id = %d", $item_id ) );
-
-	do_action( 'learn_press_delete_order_item', $item_id );
-
-	return true;
+	return false;
 }
 
 function _learn_press_before_delete_order_item( $item_id ) {

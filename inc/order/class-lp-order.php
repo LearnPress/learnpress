@@ -440,37 +440,154 @@ class LP_Order extends LP_Abstract_Post_Data {
 	}
 
 	/**
-	 * Add a new item to order
+	 * Add a new item to order.
 	 *
-	 * @param       $item
+	 * @param mixed $item
 	 * @param int   $quantity
 	 * @param array $meta
 	 *
 	 * @return bool
 	 */
 	public function add_item( $item, $quantity = 1, $meta = array() ) {
+		global $wpdb;
 
-		$item_id = learn_press_add_order_item( $this->get_id(), $item );
-		if ( ! $item_id ) {
+		if ( func_num_args() > 1 ) {
+			_deprecated_argument( 'quantity and meta', '3.x.x' );
+		}
+
+		if ( is_numeric( $item ) ) {
+			$item = array(
+				'item_id'         => absint( $item ),
+				'order_item_name' => get_the_title( $item )
+			);
+		}
+		if ( ! $course = learn_press_get_course( $item['item_id'] ) ) {
 			return false;
 		}
+		$item = wp_parse_args(
+			$item,
+			array(
+				'order_item_name' => '',
+				'quantity'        => $quantity ? $quantity : 1,
+				'meta'            => $meta
+			)
+		);
+
+		if ( ! array_key_exists( 'subtotal', $item ) ) {
+			$item['subtotal'] = $course->get_price() * $item['quantity'];
+		}
+
+		if ( ! array_key_exists( 'total', $item ) ) {
+			$item['total'] = $course->get_price() * $item['quantity'];
+		}
+
+		$item = apply_filters( 'learn-press/order-item-data', $item, $this->get_id() );
+
+		if ( ! $item ) {
+			return false;
+		}
+
+		$wpdb->insert(
+			$wpdb->learnpress_order_items,
+			array(
+				'order_item_name' => $item['order_item_name'],
+				'order_id'        => $this->get_id()
+			),
+			array(
+				'%s',
+				'%d'
+			)
+		);
+
+		$item_id = absint( $wpdb->insert_id );
+
+		/**
+		 * @deprecated
+		 */
+		do_action( 'learn_press_new_order_item', $item_id, $item, $this->get_id() );
+
+		/**
+		 * @since 3.x.x
+		 */
+		do_action( 'learn-press/added-order-item', $item_id, $item, $this->get_id() );
+
 		learn_press_add_order_item_meta( $item_id, '_course_id', $item['item_id'] );
 		learn_press_add_order_item_meta( $item_id, '_quantity', $item['quantity'] );
 		learn_press_add_order_item_meta( $item_id, '_subtotal', $item['subtotal'] );
 		learn_press_add_order_item_meta( $item_id, '_total', $item['total'] );
-		learn_press_add_order_item_meta( $item_id, '_data', $item['data'] );
+
+		if ( is_array( $item['meta'] ) ) {
+			foreach ( $item['meta'] as $k => $v ) {
+				learn_press_add_order_item_meta( $item_id, $k, $v );
+			}
+		}
+
+		do_action( 'learn-press/added-order-item-data', $item_id, $item, $this->get_id() );
 
 		return $item_id;
+	}
+
+	/**
+	 * Remove an item from database and it's data.
+	 *
+	 * @param int $item_id
+	 *
+	 * @return bool
+	 */
+	public function remove_item( $item_id ) {
+		global $wpdb;
+
+		$item_id = absint( $item_id );
+
+		if ( ! $item_id ) {
+			return false;
+		}
+
+		do_action( 'learn_press_before_delete_order_item', $item_id );
+
+		/**
+		 * @since 3.x.x
+		 */
+		do_action( 'learn-press/before-delete-order-item', $item_id );
+
+		$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_order_items WHERE order_item_id = %d", $item_id ) );
+		$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_order_itemmeta WHERE learnpress_order_item_id = %d", $item_id ) );
+
+		/**
+		 * @since 3.x.x
+		 */
+		do_action( 'learn-press/deleted-order-item', $item_id );
+
+		do_action( 'learn_press_delete_order_item', $item_id );
+
+		return true;
+	}
+
+	/**
+	 * @param array $items
+	 *
+	 * @return array
+	 */
+	public function add_items( $items ) {
+		settype( $items, 'array' );
+		$item_ids = array();
+		foreach ( $items as $item ) {
+			if ( $item_id = $this->add_item( $item ) ) {
+				$item_ids[] = $item_id;
+			}
+		}
+
+		return $item_ids;
 	}
 
 	public function get_user( $field = '' ) {
 		if ( strtolower( $field ) == 'id' ) {
 			return $this->user_id;
 		}
-		if(false === ($user = learn_press_get_user( $this->get_data('user_id') ))){
+		if ( false === ( $user = learn_press_get_user( $this->get_data( 'user_id' ) ) ) ) {
 			$user = learn_press_get_current_user();
 		}
-		if ( $field && $user) {
+		if ( $field && $user ) {
 			return $user->get_data( $field );
 		}
 

@@ -98,9 +98,16 @@
                 }
                 .remove-order-item{
                     text-decoration: none;
-                    font-size: 24px;
                     outline: none;
                     color: #FF0000;
+                    display: none;
+                    margin-left: 10px;
+                }
+
+                .order-item-row:hover{
+                    .remove-order-item{
+                        display: inline-block;
+                    }
                 }
             }
         }

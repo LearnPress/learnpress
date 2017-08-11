@@ -25,11 +25,11 @@
         currentRequest: function (state) {
             return state.countCurrentRequest || 0;
         },
-        urlEdit: function (state) {
-            return state.urlEdit;
-        },
         chooseItems: function (state) {
             return state.chooseItems;
+        },
+        urlEdit: function (state) {
+            return state.urlEdit;
         }
     };
 
@@ -62,17 +62,8 @@
         'TOGGLE_CHOOSE_ITEMS': function (state) {
             state.chooseItems.open = !state.chooseItems.open;
         },
-        'CI_SET_LIST_ITEMS': function (state, items) {
+        'SET_LIST_ITEMS': function (state, items) {
             state.chooseItems.items = items;
-        },
-        'CI_ADD_ITEM': function (state, item) {
-            state.chooseItems.addedItems.push(item);
-        },
-        'CI_REMOVE_ITEM_ADDED': function (state, index) {
-            state.chooseItems.addedItems.splice(index, 1);
-        },
-        'CI_RESET_ADDED_ITEMS': function (state, item) {
-            state.chooseItems.addedItems = [];
         }
     };
 
@@ -88,18 +79,6 @@
             if (context.getters.currentRequest === 0) {
                 context.commit('UPDATE_STATUS', status);
             }
-        },
-
-        addItemCI: function (context, item) {
-            context.commit('CI_ADD_ITEM', item);
-        },
-
-        removeItemCI: function (context, index) {
-            context.commit('CI_REMOVE_ITEM_ADDED', index);
-        },
-
-        resetAddedItemsCI: function (context) {
-            context.commit('CI_RESET_ADDED_ITEMS');
         },
 
         toggleChooseItems: function (context) {
@@ -121,7 +100,7 @@
                     }
 
                     var items = result.data;
-                    context.commit('CI_SET_LIST_ITEMS', items);
+                    context.commit('SET_LIST_ITEMS', items);
                 },
                 function (error) {
                     console.error(error);
