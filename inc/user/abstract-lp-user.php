@@ -1091,7 +1091,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 				$start = ( $args['paged'] - 1 ) * $args['limit'];
 				$limit .= "LIMIT " . $start . ',' . $args['limit'];
 			}
-			echo $query = $wpdb->prepare( "
+			$query = $wpdb->prepare( "
 				SELECT SQL_CALC_FOUND_ROWS DISTINCT q.*
 				FROM {$wpdb->posts} q
 				INNER JOIN {$wpdb->prefix}learnpress_user_items uq ON uq.item_id = q.ID

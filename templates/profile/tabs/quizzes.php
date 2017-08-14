@@ -8,9 +8,11 @@
  */
 
 defined( 'ABSPATH' ) || exit();
+
+$user = $user->get_user();
 global $post;
 $args = array();
-$quizzes = learn_press_get_quizzes( $user->id, $args );
+$quizzes = learn_press_get_quizzes( $user->get_id(), $args );
 ?>
 
 <?php if ( $quizzes ) : ?>
