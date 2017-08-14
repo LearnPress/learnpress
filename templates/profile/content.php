@@ -36,7 +36,8 @@ $current = $profile->get_current_tab();
 			do_action( 'learn-press/before-profile-content', $tab_key, $tab_data, $user );
 
 			if ( empty( $tab_data['sections'] ) ) {
-				if ( is_callable( $tab_data['callback'] ) ): print_r( $tab_data );
+				if ( is_callable( $tab_data['callback'] ) ):
+                    print_r( $tab_data );
 					echo call_user_func_array( $tab_data['callback'], array( $tab_key, $tab_data, $user ) );
 				else:
 					do_action( 'learn-press/profile-content', $tab_key, $tab_data, $user );

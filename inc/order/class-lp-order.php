@@ -175,7 +175,7 @@ class LP_Order extends LP_Abstract_Post_Data {
 	 * Updates order to new status if needed
 	 *
 	 * @param mixed $new_status
-	 * @param bool  $force Force to update/trigger action even the status is not changed
+	 * @param bool $force Force to update/trigger action even the status is not changed
 	 *
 	 * @return bool
 	 * @throws Exception
@@ -267,14 +267,15 @@ class LP_Order extends LP_Abstract_Post_Data {
 	}
 
 	public function get_order_status_html() {
-		$statuses = learn_press_get_order_statuses();
-		$status   = '';
-		if ( ! empty( $statuses[ $this->post_status ] ) ) {
-			$status = $statuses[ $this->post_status ];
-		} elseif ( $this->post_status == 'trash' ) {
+		$statuses     = learn_press_get_order_statuses();
+		$order_status = $this->get_data( 'post_status' );
+
+		if ( ! empty( $statuses[ $order_status ] ) ) {
+			$status = $statuses[ $order_status ];
+		} elseif ( $order_status == 'trash' ) {
 			$status = __( 'Removed', 'learnpress' );
 		} else {
-			$status = ucfirst( $this->post_status );
+			$status = ucfirst( $order_status );
 		}
 		$class = 'order-status order-status-' . sanitize_title( $status );
 		$html  = sprintf( '<span class="%s">%s</span>', apply_filters( 'learn_press_order_status_class', $class, $status, $this ), $status, $this );
@@ -410,7 +411,7 @@ class LP_Order extends LP_Abstract_Post_Data {
 	 * Add a new item to order.
 	 *
 	 * @param mixed $item
-	 * @param int   $quantity
+	 * @param int $quantity
 	 * @param array $meta
 	 *
 	 * @return bool
@@ -640,10 +641,10 @@ class LP_Order extends LP_Abstract_Post_Data {
 
 		$view_order_endpoint = urlencode( $view_order_endpoint );
 		if ( get_option( 'permalink_structure' ) ) {
-			$view_order_url = learn_press_get_page_link( 'profile' ) . $user->user_login . '/' . $view_order_endpoint . '/' . $this->get_id() . '/';
+			$view_order_url = learn_press_get_page_link( 'profile' ) . $user->get_data( 'user_login' ) . '/' . $view_order_endpoint . '/' . $this->get_id() . '/';
 		} else {
 			$args         = array(
-				'user' => $user->user_login
+				'user' => $user->get_data( 'user_login' )
 			);
 			$args['view'] = $view_order_endpoint;
 			if ( $view_order_endpoint ) {

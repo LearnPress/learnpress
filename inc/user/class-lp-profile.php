@@ -69,7 +69,6 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				add_action( 'learn-press/before-profile-content', array( $this, 'output_section' ), 10, 3 );
 				add_action( 'learn-press/profile-section-content', array( $this, 'output_section_content' ), 10, 3 );
 
-
 				/*
 				 * Register actions with request handler class to process
 				 * requesting from user profile.
@@ -230,68 +229,13 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			}
 
 			return $tabs;
-			$course_endpoint = LP()->settings->get( 'profile_endpoints.profile-courses' );
-			if ( ! $course_endpoint ) {
-				$course_endpoint = 'profile-courses';
-			}
-
-			$quiz_endpoint = LP()->settings->get( 'profile_endpoints.profile-quizzes' );
-			if ( ! $quiz_endpoint ) {
-				$quiz_endpoint = 'profile-quizzes';
-			}
-
-			$order_endpoint = LP()->settings->get( 'profile_endpoints.profile-orders' );
-			if ( ! $order_endpoint ) {
-				$order_endpoint = 'profile-orders';
-			}
-
-			$view_order_endpoint = LP()->settings->get( 'profile_endpoints' );
-			if ( ! $view_order_endpoint ) {
-				$view_order_endpoint = 'order';
-			}
-
-			$defaults = array(
-
-				$course_endpoint => array(
-					'title'    => __( 'Courses', 'learnpress' ),
-					'base'     => 'courses',
-					'callback' => 'learn_press_profile_tab_courses_content'
-				)
-			);
-
-			if ( $this->_user->get_id() == get_current_user_id() ) {
-				$defaults[ $order_endpoint ] = array(
-					'title'    => __( 'Orders', 'learnpress' ),
-					'base'     => 'orders',
-					'callback' => 'learn_press_profile_tab_orders_content'
-				);
-			}
-
-			$tabs = apply_filters( 'learn_press_get_user_profile_tabs', $defaults, $this->_user );
-			if ( $this->_user->get_id() == get_current_user_id() ) {
-				$tabs['settings'] = array(
-					'title'    => apply_filters( 'learn_press_user_profile_tab_edit_title', __( 'Settings', 'learnpress' ) ),
-					'base'     => 'settings',
-					'callback' => 'learn_press_profile_tab_edit_content'
-				);
-			}
-
-			foreach ( $tabs as $slug => $opt ) {
-				if ( ! empty( $defaults[ $slug ] ) ) {
-					continue;
-				}
-				LP()->query_vars[ $slug ] = $slug;
-				add_rewrite_endpoint( $slug, EP_PAGES );
-			}
-
-			return $tabs;
 		}
 
 		/**
 		 * Get current tab slug in query string.
 		 *
 		 * @param string $default Optional.
-		 * @param bool   $key     Optional. True if return the key instead of value.
+		 * @param bool $key Optional. True if return the key instead of value.
 		 *
 		 * @return string
 		 */
@@ -325,7 +269,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * Get current section in query string.
 		 *
 		 * @param string $default
-		 * @param bool   $key
+		 * @param bool $key
 		 * @param string $tab
 		 *
 		 * @return bool|int|mixed|string
@@ -498,7 +442,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		/**
 		 * Get the slug of tab or section if defined.
 		 *
-		 * @param array  $tab_or_section
+		 * @param array $tab_or_section
 		 * @param string $default
 		 *
 		 * @return string
@@ -515,11 +459,19 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @return mixed
 		 */
 		public function current_user_can( $capability ) {
-			$can = false;
-			if ( get_current_user_id() === $this->_user->get_id() ) {
+
+			$tab         = substr( $capability, strlen( 'view-tab-' ) );
+			$public_tabs = array( 'courses', 'quizzes' );
+
+			// public profile courses and quizzes tab
+			if ( in_array( $tab, $public_tabs ) ) {
 				$can = true;
 			} else {
-				$can = ! empty( $this->_publicity[ $capability ] ) && $this->_publicity[ $capability ] == true;
+				if ( get_current_user_id() === $this->_user->get_id() ) {
+					$can = true;
+				} else {
+					$can = ! empty( $this->_publicity[ $capability ] ) && $this->_publicity[ $capability ] == true;
+				}
 			}
 
 			return apply_filters( 'learn-press/profile-current-user-can', $can, $capability );
