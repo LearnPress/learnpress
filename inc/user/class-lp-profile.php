@@ -1,7 +1,20 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
-}
+
+/**
+ * Learnpress profile class.
+ *
+ * @class       LP_Profile
+ * @version     3.x.x
+ * @package     Learnpress/Classes
+ * @category    Class
+ * @author      Thimpress
+ */
+
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit;
+
 
 if ( ! class_exists( 'LP_Profile' ) ) {
 	/**
@@ -43,7 +56,10 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		protected $_default_actions = array();
 
 		/**
-		 *  Constructor
+		 * LP_Profile constructor.
+		 *
+		 * @param $user
+		 * @param string $role
 		 */
 		protected function __construct( $user, $role = '' ) {
 
@@ -65,9 +81,10 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 
 			if ( ! self::$_hook_added ) {
 				self::$_hook_added = true;
-				add_action( 'learn-press/profile-content', array( $this, 'output' ), 10, 3 );
-				add_action( 'learn-press/before-profile-content', array( $this, 'output_section' ), 10, 3 );
-				add_action( 'learn-press/profile-section-content', array( $this, 'output_section_content' ), 10, 3 );
+				// show sections
+				add_action( 'learn-press/before-profile-content', array( $this, 'section_tabs' ), 10, 3 );
+				// show sections content
+				add_action( 'learn-press/profile-section-content', array( $this, 'section_content' ), 10, 3 );
 
 				/*
 				 * Register actions with request handler class to process
@@ -82,21 +99,29 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			}
 		}
 
-		public function output( $tab, $args, $user ) {
-			if ( ( $location = learn_press_locate_template( 'profile/tabs/' . $tab . '.php' ) ) && file_exists( $location ) ) {
-				include $location;
-			}
-		}
-
-		public function output_section( $tab_key, $tab_data, $user ) {
+		/**
+		 * Show profile sections tabs.
+		 *
+		 * @param $tab_key
+		 * @param $tab_data
+		 * @param $user
+		 */
+		public function section_tabs( $tab_key, $tab_data, $user ) {
 			learn_press_get_template( 'profile/tabs/sections.php', compact( 'tab_key', 'tab_data', 'user' ) );
 		}
 
-		public function output_section_content( $section, $args, $user ) {
-			global $wp;
+		/**
+		 * Show profile sections content.
+		 *
+		 * @param $section
+		 * @param $args
+		 * @param $user
+		 */
+		public function section_content( $section, $args, $user ) {
 			$current = $this->get_current_section();// ! empty( $wp->query_vars['section'] ) ? $wp->query_vars['section'] : false;
 			if ( $current === $section ) {
-				if ( ( $location = learn_press_locate_template( 'profile/tabs/edit/' . $section . '.php' ) ) && file_exists( $location ) ) {
+				$location = learn_press_locate_template( 'profile/tabs/edit/' . $section . '.php' );
+				if ( $location && file_exists( $location ) ) {
 					include $location;
 				} else {
 					echo $location;
@@ -460,18 +485,10 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 */
 		public function current_user_can( $capability ) {
 
-			$tab         = substr( $capability, strlen( 'view-tab-' ) );
-			$public_tabs = array( 'courses', 'quizzes' );
-
-			// public profile courses and quizzes tab
-			if ( in_array( $tab, $public_tabs ) ) {
+			if ( get_current_user_id() === $this->_user->get_id() ) {
 				$can = true;
 			} else {
-				if ( get_current_user_id() === $this->_user->get_id() ) {
-					$can = true;
-				} else {
-					$can = ! empty( $this->_publicity[ $capability ] ) && $this->_publicity[ $capability ] == true;
-				}
+				$can = ! empty( $this->_publicity[ $capability ] ) && $this->_publicity[ $capability ] == true;
 			}
 
 			return apply_filters( 'learn-press/profile-current-user-can', $can, $capability );

@@ -138,7 +138,9 @@ if ( ! function_exists( 'learn_press_order_comment' ) ) {
 
 if ( ! function_exists( 'learn_press_user_profile_header' ) ) {
 	/**
-	 * Output order comment input
+	 * Display user profile cover image.
+	 *
+	 * @param $user
 	 *
 	 * @hooked learn-press/before-user-profile
 	 */
@@ -147,20 +149,11 @@ if ( ! function_exists( 'learn_press_user_profile_header' ) ) {
 	}
 }
 
-if ( ! function_exists( 'learn_press_user_profile_content' ) ) {
-	/**
-	 * Output order comment input
-	 *
-	 * @hooked learn-press/user-profile
-	 */
-	function learn_press_user_profile_content( $user ) {
-		learn_press_get_template( 'profile/content.php', array( 'user' => $user ) );
-	}
-}
-
 if ( ! function_exists( 'learn_press_user_profile_footer' ) ) {
 	/**
-	 * Output order comment input
+	 * Display user profile footer.
+	 *
+	 * @param $user
 	 *
 	 * @hooked learn-press/after-user-profile
 	 */
@@ -171,14 +164,27 @@ if ( ! function_exists( 'learn_press_user_profile_footer' ) ) {
 
 if ( ! function_exists( 'learn_press_user_profile_tabs' ) ) {
 	/**
-	 * Get tabs for user profile
+	 * Display user profile tabs.
 	 *
-	 * @param $user
+	 * @param null $user
 	 *
-	 * @return mixed
+	 * @hooked learn-press/user-profile
 	 */
 	function learn_press_user_profile_tabs( $user = null ) {
 		learn_press_get_template( 'profile/tabs.php', array( 'user' => $user ) );
+	}
+}
+
+if ( ! function_exists( 'learn_press_user_profile_content' ) ) {
+	/**
+	 * Display user profile content.
+	 *
+	 * @param $user
+	 *
+	 * @hooked learn-press/user-profile
+	 */
+	function learn_press_user_profile_content( $user ) {
+		learn_press_get_template( 'profile/content.php', array( 'user' => $user ) );
 	}
 }
 

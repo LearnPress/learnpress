@@ -8,11 +8,18 @@
  * @version 3.x.x
  */
 
-defined( 'ABSPATH' ) or exit;
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit;
+?>
+
+<?php
 /**
  * If $user is not set then get the current user.
  */
 global $wp, $wp_rewrite;
+
 if ( ! isset( $profile ) ) {
 	$profile = learn_press_get_profile();
 }
