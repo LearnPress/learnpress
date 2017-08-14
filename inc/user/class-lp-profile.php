@@ -69,7 +69,6 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 				add_action( 'learn-press/before-profile-content', array( $this, 'output_section' ), 10, 3 );
 				add_action( 'learn-press/profile-section-content', array( $this, 'output_section_content' ), 10, 3 );
 
-
 				/*
 				 * Register actions with request handler class to process
 				 * requesting from user profile.
@@ -236,7 +235,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * Get current tab slug in query string.
 		 *
 		 * @param string $default Optional.
-		 * @param bool   $key     Optional. True if return the key instead of value.
+		 * @param bool $key Optional. True if return the key instead of value.
 		 *
 		 * @return string
 		 */
@@ -270,7 +269,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * Get current section in query string.
 		 *
 		 * @param string $default
-		 * @param bool   $key
+		 * @param bool $key
 		 * @param string $tab
 		 *
 		 * @return bool|int|mixed|string
@@ -443,7 +442,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		/**
 		 * Get the slug of tab or section if defined.
 		 *
-		 * @param array  $tab_or_section
+		 * @param array $tab_or_section
 		 * @param string $default
 		 *
 		 * @return string
@@ -460,11 +459,19 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @return mixed
 		 */
 		public function current_user_can( $capability ) {
-			$can = false;
-			if ( get_current_user_id() === $this->_user->get_id() ) {
+
+			$tab         = substr( $capability, strlen( 'view-tab-' ) );
+			$public_tabs = array( 'courses', 'quizzes' );
+
+			// public profile courses and quizzes tab
+			if ( in_array( $tab, $public_tabs ) ) {
 				$can = true;
 			} else {
-				$can = ! empty( $this->_publicity[ $capability ] ) && $this->_publicity[ $capability ] == true;
+				if ( get_current_user_id() === $this->_user->get_id() ) {
+					$can = true;
+				} else {
+					$can = ! empty( $this->_publicity[ $capability ] ) && $this->_publicity[ $capability ] == true;
+				}
 			}
 
 			return apply_filters( 'learn-press/profile-current-user-can', $can, $capability );

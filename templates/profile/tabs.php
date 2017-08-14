@@ -12,7 +12,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 global $wp, $wp_query, $profile;
 
-
 ?>
 <div id="learn-press-profile-nav">
 
@@ -27,7 +26,7 @@ global $wp, $wp_query, $profile;
 
 		<?php foreach ( $profile->get_tabs() as $tab_key => $tab_data ) : ?>
 			<?php
-			// If current user does not have permission and/or tab is invisible
+			// If current user do not have permission and/or tab is invisible
 			if ( ! $profile->current_user_can( "view-tab-{$tab_key}" ) || $profile->is_hidden( $tab_data ) ) {
 				continue;
 			}
