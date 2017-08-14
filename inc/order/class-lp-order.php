@@ -29,6 +29,7 @@ class LP_Order extends LP_Abstract_Post_Data {
 	 * @param mixed $order_id
 	 */
 	public function __construct( $order_id = false ) {
+		$this->_curd = new LP_Order_CURD();
 		if ( is_numeric( $order_id ) && $order_id > 0 ) {
 			$this->set_id( $order_id );
 		} elseif ( $order_id instanceof self ) {
@@ -52,25 +53,7 @@ class LP_Order extends LP_Abstract_Post_Data {
 	 * @throws Exception
 	 */
 	public function load() {
-		$the_id = $this->get_id();
-		if ( ! $the_id || LP_ORDER_CPT !== get_post_type( $the_id ) ) {
-			if ( learn_press_is_debug() ) {
-				throw new Exception( sprintf( __( 'Invalid order with ID "%d".', 'learnpress' ), $the_id ) );
-			}
-		}
-		if ( $post = get_post( $the_id ) ) {
-			$this->set_data(
-				array(
-					'user_id'          => get_post_meta( $this->get_id(), '_user_id', true ),
-					'order_date'       => $post->post_date,
-					'modified_date'    => $post->post_modified,
-					'customer_message' => $post->post_excerpt,
-					'customer_note'    => $post->post_excerpt,
-					'post_status'      => $post->post_status,
-					'user_ip'          => get_post_meta( $this->get_id(), '_user_ip_address', true )
-				)
-			);
-		}
+		$this->_curd->load( $this );
 	}
 
 	/**
@@ -355,7 +338,7 @@ class LP_Order extends LP_Abstract_Post_Data {
 		$customer_name = '';
 		if ( 'auto-draft' === get_post_status( $this->get_id() ) ) {
 			$customer = learn_press_get_current_user( false );
-		}else{
+		} else {
 			$customer = learn_press_get_user( $this->get_data( 'user_id' ) );
 		}
 		if ( $customer ) {
@@ -383,31 +366,10 @@ class LP_Order extends LP_Abstract_Post_Data {
 	/**
 	 * Get items of the order
 	 *
-	 * @return mixed|void
+	 * @return mixed
 	 */
 	public function get_items() {
-		global $wpdb;
-
-		$query = $wpdb->prepare( "
-			SELECT order_item_id, order_item_name
-			FROM {$wpdb->learnpress_order_items}
-			WHERE order_id = %d ", $this->get_id() );
-
-		$_items = $wpdb->get_results( $query );
-		$items  = array();
-		// Loop items
-		if ( $_items ) {
-			foreach ( $_items as $item ) {
-				$items[ $item->order_item_id ]['name'] = $item->order_item_name;
-				$items[ $item->order_item_id ]['id']   = $item->order_item_id;
-
-				$this->get_item_meta( $items[ $item->order_item_id ] );
-				//$items[$item->order_item_id]['item_meta_array'] = $this->get_item_meta_array( $item->order_item_id );
-				//$items[$item->order_item_id]                    = $this->expand_item_meta( $items[$item->order_item_id] );
-			}
-		}
-
-		return apply_filters( 'learn_press_order_get_items', $items, $this );
+		return apply_filters( 'learn-press/order-items', wp_cache_get( 'order-' . $this->get_id(), 'lp-order-items' ) );
 	}
 
 	public function get_item_meta( &$item ) {
@@ -527,9 +489,21 @@ class LP_Order extends LP_Abstract_Post_Data {
 			}
 		}
 
+		// Refresh cache
+		wp_cache_delete( 'order-' . $this->get_id(), 'lp-order-items' );
+		$this->_curd->read_items( $this );
+
 		do_action( 'learn-press/added-order-item-data', $item_id, $item, $this->get_id() );
 
 		return $item_id;
+	}
+
+	public function cln() {
+		return $this->_curd->cln( $this );
+	}
+
+	public function cln_items( $to ) {
+		return $this->_curd->cln_items( $this->get_id(), $to );
 	}
 
 	/**
@@ -735,10 +709,7 @@ class LP_Order extends LP_Abstract_Post_Data {
 	 * @return bool
 	 */
 	public function is_multi_users() {
-		$multiple = $this->get_status() == 'auto-draft' && 'yes' == learn_press_get_request( 'multi-users' );
-		$multiple = $multiple || ( 'yes' == get_post_meta( $this->get_id(), '_lp_multi_users', true ) );
-
-		return $multiple;
+		return is_array( $this->get_data( 'user_id' ) );
 	}
 
 	/**
@@ -773,16 +744,33 @@ class LP_Order extends LP_Abstract_Post_Data {
 	 * @return mixed|array
 	 */
 	public function get_user_data() {
-		$data = false;
-		if ( $user_ids = get_post_meta( $this->get_id(), '_user_id' ) ) {
-			global $wpdb;
-			$format = array_fill( 0, sizeof( $user_ids ), '%d' );
-			$sql    = "
-				SELECT ID, user_email as email, display_name as name
-				FROM {$wpdb->users} u
-				WHERE ID IN(" . join( ', ', $format ) . ")
-			";
-			$data   = $wpdb->get_results( $wpdb->prepare( $sql, $user_ids ), OBJECT_K );
+		$data = array();
+		if ( $user_ids = $this->get_data( 'user_id' ) ) {
+			if ( is_array( $user_ids ) ) {
+				foreach ( $user_ids as $user_id ) {
+					$user             = learn_press_get_user( $user_id );
+					$data[ $user_id ] = $user->get_data(
+						array(
+							'id',
+							'email',
+							'user_login',
+							'description',
+							'first_name',
+							'last_name',
+							'nickname',
+							'display_name'
+						)
+					);
+				}
+			}
+//			global $wpdb;
+//			$format = array_fill( 0, sizeof( $user_ids ), '%d' );
+//			$sql    = "
+//				SELECT ID, user_email as email, display_name as name
+//				FROM {$wpdb->users} u
+//				WHERE ID IN(" . join( ', ', $format ) . ")
+//			";
+//			$data   = $wpdb->get_results( $wpdb->prepare( $sql, $user_ids ), OBJECT_K );
 		}
 
 		return $data;
@@ -795,6 +783,26 @@ class LP_Order extends LP_Abstract_Post_Data {
 		}
 
 		return $email;
+	}
+
+	public function get_child_orders() {
+		return apply_filters( 'learn-press/child-orders', $this->_curd->get_child_orders( $this->get_id() ), $this->get_id() );
+	}
+
+	public function get_title() {
+		return $this->get_data( 'order_title', __( 'Order on', 'learnpress' ) . ' ' . current_time( "l jS F Y h:i:s A" ) );
+	}
+
+	public function get_parent() {
+		return $this->get_data( 'parent', 0 );
+	}
+
+	public function save() {
+		if ( $this->get_id() ) {
+			$this->_curd->update( $this );
+		} else {
+			$this->_curd->create( $this );
+		}
 	}
 
 	/**

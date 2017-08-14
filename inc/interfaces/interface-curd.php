@@ -9,11 +9,11 @@ interface LP_Interface_CURD {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param $args array
+	 * @param object $object
 	 *
 	 * @return mixed
 	 */
-	public function create( $args );
+	public function create( &$object );
 
 	/**
 	 * Load data from database.
@@ -31,21 +31,21 @@ interface LP_Interface_CURD {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param $args array
+	 * @param object $object
 	 *
 	 * @return mixed
 	 */
-	public function update( $args = array() );
+	public function update( &$object);
 
 	/**
 	 * Delete data from database.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param $id
+	 * @param object $object
 	 *
 	 * @return mixed
 	 */
-	public function delete( $id );
+	public function delete( &$object );
 
 }

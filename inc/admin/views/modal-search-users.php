@@ -7,7 +7,7 @@
 			<div class="modal-container">
 				<header><?php echo $this->_options['title']; ?></header>
 				<article>
-					<input type="text" name="search" @keyup="doSearch" ref="term" value="search here" autocomplete="off"/>
+					<input type="text" name="search" @keyup="doSearch" ref="term" placeholder="Type here for searching" autocomplete="off"/>
 					<ul class="search-results" @click="selectItem"></ul>
 				</article>
 				<footer>
@@ -27,6 +27,7 @@
 <div id="vue-modal-search-users" style="position: relative;z-index: 10000;">
 	<learn-press-modal-search-users v-if="show" :multiple="multiple" :term="term" :contex="context"
 	                                :context-id="contextId" :show="show" :callbacks="callbacks"
+                                    :text-format="textFormat"
 	                                v-on:close="close">
 	</learn-press-modal-search-users>
 </div>

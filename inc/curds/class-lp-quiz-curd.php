@@ -39,15 +39,15 @@ class LP_Quiz_CURD implements LP_Interface_CURD {
 		return $quiz;
 	}
 
-	public function create( $args ) {
+	public function create( &$quiz ) {
 
 	}
 
-	public function update( $args = array() ) {
+	public function update( &$quiz ) {
 		// TODO: Implement update() method.
 	}
 
-	public function delete( $id ) {
+	public function delete( &$quiz ) {
 		// TODO: Implement delete() method.
 	}
 

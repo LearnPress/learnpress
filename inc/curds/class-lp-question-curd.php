@@ -1,11 +1,11 @@
 <?php
 
 class LP_Question_CURD implements LP_Interface_CURD {
-	public function delete( $id ) {
+	public function delete( &$question ) {
 		// TODO: Implement delete() method.
 	}
 
-	public function create( $args ) {
+	public function create( &$question ) {
 
 	}
 
@@ -38,7 +38,7 @@ class LP_Question_CURD implements LP_Interface_CURD {
 		$question->set_type( $type );
 	}
 
-	public function update( $args = array() ) {
+	public function update( &$args) {
 		// TODO: Implement update() method.
 	}
 

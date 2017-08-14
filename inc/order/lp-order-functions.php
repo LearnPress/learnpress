@@ -11,6 +11,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
+function learn_press_generate_order_key(){
+	return apply_filters( 'learn_press_generate_order_key', uniqid( 'order' ) );
+}
+
 /**
  * Create or update an order.
  * If an 'ID' is passed throught $order_data, then update the existing order
@@ -37,14 +41,14 @@ function learn_press_create_order( $order_data ) {
 	$order_data_defaults = apply_filters( 'learn_press_defaults_order_data', $order_data_defaults );
 	$order_data          = wp_parse_args( $order_data, $order_data_defaults );
 
-	if ( $order_data['status'] ) {
+	if ( isset( $order_data['status'] ) ) {
 		if ( ! in_array( 'lp-' . $order_data['status'], array_keys( learn_press_get_order_statuses() ) ) ) {
 			return new WP_Error( 'learn_press_invalid_order_status', __( 'Invalid order status', 'learnpress' ) );
 		}
 		$order_data['post_status'] = 'lp-' . $order_data['status'];
 	}
 
-	if ( ! is_null( $order_data['user_note'] ) ) {
+	if ( isset( $order_data['user_note'] ) ) {
 		$order_data['post_excerpt'] = $order_data['user_note'];
 	}
 
@@ -58,20 +62,50 @@ function learn_press_create_order( $order_data ) {
 	}
 
 	if ( $order_id ) {
-		$order = new LP_Order( $order_id );
 
-		update_post_meta( $order_id, '_order_currency', learn_press_get_currency() );
-		update_post_meta( $order_id, '_prices_include_tax', 'no' );
-		update_post_meta( $order_id, '_user_ip_address', learn_press_get_ip() );
-		update_post_meta( $order_id, '_user_agent', isset( $_SERVER['HTTP_USER_AGENT'] ) ? $_SERVER['HTTP_USER_AGENT'] : '' );
-		update_post_meta( $order_id, '_user_id', get_current_user_id() );
-		update_post_meta( $order_id, '_order_subtotal', LP()->cart->subtotal );
-		update_post_meta( $order_id, '_order_total', LP()->cart->total );
-		update_post_meta( $order_id, '_order_key', apply_filters( 'learn_press_generate_order_key', uniqid( 'order' ) ) );
-		update_post_meta( $order_id, '_payment_method', '' );
-		update_post_meta( $order_id, '_payment_method_title', '' );
-		update_post_meta( $order_id, '_order_version', '1.0' );
-		update_post_meta( $order_id, '_created_via', ! empty( $order_data['created_via'] ) ? $order_data['created_via'] : 'checkout' );
+		$cart = LP()->cart ? LP()->cart : false;
+
+		$meta_default = array(
+			'_order_currency'       => learn_press_get_currency(),
+			'_prices_include_tax'   => 'no',
+			'_user_ip_address'      => learn_press_get_ip(),
+			'_user_agent'           => isset( $_SERVER['HTTP_USER_AGENT'] ) ? $_SERVER['HTTP_USER_AGENT'] : '',
+			'_user_id'              => get_current_user_id(),
+			'_order_subtotal'       => $cart ? $cart->subtotal : 0,
+			'_order_total'          => $cart ? $cart->total : 0,
+			'_order_key'            => learn_press_generate_order_key(),
+			'_payment_method'       => '',
+			'_payment_method_title' => '',
+			'_order_version'        => '1.0',
+			'_created_via'          => 'checkout'
+		);
+		$order_meta   = array();
+		foreach ( $meta_default as $k => $v ) {
+			if ( array_key_exists( $k, $order_data ) ) {
+				$order_meta[ $k ] = $order_data[$k];
+			}
+		}
+		$order_meta = wp_parse_args(
+			$order_meta,
+			$meta_default
+		);
+		if ( $order_meta = apply_filters( 'learn-press/new-order-meta', $order_meta ) ) {
+			foreach ( $order_meta as $k => $v ) {
+				update_post_meta( $order_id, $k, $v );
+			}
+//			update_post_meta( $order_id, '_order_currency', learn_press_get_currency() );
+//			update_post_meta( $order_id, '_prices_include_tax', 'no' );
+//			update_post_meta( $order_id, '_user_ip_address', learn_press_get_ip() );
+//			update_post_meta( $order_id, '_user_agent', isset( $_SERVER['HTTP_USER_AGENT'] ) ? $_SERVER['HTTP_USER_AGENT'] : '' );
+//			update_post_meta( $order_id, '_user_id', isset( $order_data['user_id'] ) ? $order_data['user_id'] : get_current_user_id() );
+//			update_post_meta( $order_id, '_order_subtotal', LP()->cart->subtotal );
+//			update_post_meta( $order_id, '_order_total', LP()->cart->total );
+//			update_post_meta( $order_id, '_order_key', apply_filters( 'learn_press_generate_order_key', uniqid( 'order' ) ) );
+//			update_post_meta( $order_id, '_payment_method', '' );
+//			update_post_meta( $order_id, '_payment_method_title', '' );
+//			update_post_meta( $order_id, '_order_version', '1.0' );
+//			update_post_meta( $order_id, '_created_via', ! empty( $order_data['created_via'] ) ? $order_data['created_via'] : 'checkout' );
+		}
 	}
 
 	return new LP_Order( $order_id, true );

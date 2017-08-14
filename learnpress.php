@@ -407,6 +407,7 @@ if ( ! class_exists( 'LearnPress' ) ) {
 			require_once 'inc/curds/class-lp-user-curd.php';
 			require_once 'inc/curds/class-lp-quiz-curd.php';
 			require_once 'inc/curds/class-lp-question-curd.php';
+			require_once 'inc/curds/class-lp-order-curd.php';
 
 			require_once 'inc/class-lp-debug.php';
 
@@ -693,3 +694,15 @@ function load_learn_press() {
  * Create new instance of LearnPress and put it to global
  */
 $GLOBALS['LearnPress'] = LP();
+
+add_action('admin_head', function(){
+	return;
+	$pro = new WC_Product_Simple();
+	$pro->set_name('How to create a prodic');
+	$pro->save();
+	learn_press_debug($pro);
+
+	$pro->set_id(0);
+	$pro->save();
+	learn_press_debug($pro);
+});

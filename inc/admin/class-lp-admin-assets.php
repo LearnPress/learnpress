@@ -173,8 +173,6 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 			}
 		}
 
-		$this->localize_printed_scripts();
-
 		/**
 		 * Enqueue scripts
 		 *

@@ -1,17 +1,51 @@
 ;
 (function ($) {
-
+    "use strict";
     $(document).ready(function () {
 
-        var $listItems = $('.list-order-items').find('tbody');
+        var $listItems = $('.list-order-items').find('tbody'),
+            $listUsers = $('#list-users'),
+            template = function (templateHTML, data) {
+                return _.template(templateHTML, {
+                    evaluate: /<#([\s\S]+?)#>/g,
+                    interpolate: /\{\{\{([\s\S]+?)\}\}\}/g,
+                    escape: /\{\{([^\}]+?)\}\}(?!\})/g
+                })(data);
+            },
+            advancedListOptions = {
+                template: '#tmpl-order-advanced-list-item',
+                onRemove: function () {
+                    if (this.$el.children().length === 0) {
+                        this.$el.append('<li class="user-guest">Guest</li>')
+                    }
+                    console.log(this.$el)
+                },
+                onAdd: function () {
+                    this.$el.find('.user-guest').remove();
+                }
+            },
+            orderOptions = lpLearnPressMetaBoxOrderSettings;
 
-        $listItems.on('click', '.remove-order-item', function(e){
+        if ($listUsers.length) {
+            $listUsers.advancedList(advancedListOptions);
+            if (orderOptions.users) {
+                _.forEach(orderOptions.users, function (userData, userId) {
+                    console.log(template(orderOptions.userTextFormat, userData));
+                    $listUsers.advancedList('add', [
+                        template(orderOptions.userTextFormat, userData),
+                        userId
+                    ]);
+                })
+            }
+        }
+
+        $listItems.on('click', '.remove-order-item', function (e) {
             e.preventDefault();
             var $item = $(this).closest('tr'),
                 item_id = $item.data('item_id');
 
             $item.remove();
-            if($listItems.children(':not(.no-order-items)').length === 0){
+            if ($listItems.children(':not(.no-order-items)').length === 0) {
                 $listItems.find('.no-order-items').show();
             }
 
@@ -31,11 +65,6 @@
             });
         });
 
-        var $a = $('#list-users').advancedList();
-        console.log($a.advancedList('remove', 2));
-        $a.advancedList('add', ['how to create a course', 199], 1);
-        $a.advancedList('add', {id: 200, text: 'me'}, 2);
-        $a.advancedList('add', "asdasdasd");
 
         $('#learn-press-add-order-item').on('click', function () {
             LP.$modalSearchItems.open({
@@ -46,7 +75,7 @@
                     show: true
                 },
                 callbacks: {
-                    addItems: function(){
+                    addItems: function () {
                         var that = this;
                         Vue.http.post(
                             window.location.href, {
@@ -70,19 +99,37 @@
             });
         });
 
-        $('.change-user').on('click', function (e) {
+        $(document).on('click', '.change-user', function (e) {
             e.preventDefault();
             LP.$modalSearchUsers.open({
                 data: {
-                    postType: 'lp_course',
                     context: 'order-items',
                     contextId: $('#post_ID').val(),
                     show: true,
-                    multiple: $(this).data('multiple') === 'yes'
+                    multiple: $(this).data('multiple') === 'yes',
+                    textFormat: orderOptions.userTextFormat
                 },
                 callbacks: {
-                    addUsers: function(){
-                        console.log(this.selected)
+                    addUsers: function (data) {
+                        if (this.multiple) {
+                            if (!$listUsers.length) {
+                                $listUsers = $(LP.template('tmpl-order-data-user')({multiple: true}));
+                                $listUsers.advancedList(advancedListOptions);
+
+                                $('.order-data-user').replaceWith($listUsers);
+                            }
+                            for (var i = 0; i < this.selected.length; i++) {
+                                $listUsers.advancedList('add', [template(this.textFormat, this.selected[i]), this.selected[i].id]);
+                            }
+                        } else {
+                            var $html = LP.template('tmpl-order-data-user')({
+                                name: template(this.textFormat, this.selected[0]),
+                                id: this.selected[0].id
+                            });
+
+                            $('.order-data-user').replaceWith($html);
+                        }
+
                         this.close();
                     }
                 }

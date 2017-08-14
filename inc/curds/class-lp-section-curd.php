@@ -85,7 +85,7 @@ class LP_Section_CURD implements LP_Interface_CURD {
 	 *
 	 * @return mixed
 	 */
-	public function create( $args ) {
+	public function create( &$args ) {
 		global $wpdb;
 
 		$section     = $this->parse( $args );
@@ -129,7 +129,7 @@ class LP_Section_CURD implements LP_Interface_CURD {
 	 *
 	 * @return mixed
 	 */
-	public function update( $args = array() ) {
+	public function update( &$args = array() ) {
 		$section = $this->parse( $args );
 
 		if ( empty( $section['section_id'] ) ) {
@@ -165,7 +165,7 @@ class LP_Section_CURD implements LP_Interface_CURD {
 	 *
 	 * @return bool
 	 */
-	public function delete( $id ) {
+	public function delete( &$id ) {
 		global $wpdb;
 
 		/**

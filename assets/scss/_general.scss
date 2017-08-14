@@ -404,6 +404,10 @@
             line-height: 1;
             vertical-align: middle;
             margin-right: 5px;
+            cursor: pointer;
+            &:hover{
+                color: #0085ba;
+            }
             &:before{
                 font-family: dashicons;
                 content: "\f335";

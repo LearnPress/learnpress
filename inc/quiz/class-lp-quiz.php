@@ -328,8 +328,8 @@ class LP_Quiz extends LP_Abstract_Course_Item {
 	public function frontend_assets() {
 		if ( learn_press_is_course() && ( $quiz = LP()->global['course-item'] ) && $quiz->id == $this->id ) {
 			$translate = $this->get_localize();
-			LP_Assets::add_localize( $translate, false, 'learn-press-single-quiz' );
-			LP_Assets::add_param( $this->get_settings(), false, 'learn-press-single-quiz' );
+			//LP_Assets::add_localize( $translate, false, 'learn-press-single-quiz' );
+			//LP_Assets::add_param( $this->get_settings(), false, 'learn-press-single-quiz' );
 		}
 	}
 
