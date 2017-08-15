@@ -65,14 +65,28 @@ $item_types = apply_filters( 'learn-press/course/item-section-types', array(
                     delayTimeout: null
                 };
             },
+            created: function() {
+                var vm = this;
+
+                $store.subscribe(function(mutation) {
+                   if (!mutation || mutation.type !== 'TOGGLE_CHOOSE_ITEMS') {
+                       return;
+                   }
+
+                   if (vm.show) {
+                       vm.requestSearch();
+                   }
+                });
+            },
             methods: {
                 close: function () {
                     $store.dispatch('toggleChooseItems');
                 },
                 changeTab: function (key) {
                     this.tab = key;
+                    this.requestSearch();
                 },
-                makeSearch: function (e) {
+                makeSearch: function () {
                     var vm = this;
 
                     if (this.delayTimeout) {
@@ -80,12 +94,15 @@ $item_types = apply_filters( 'learn-press/course/item-section-types', array(
                     }
 
                     this.delayTimeout = setTimeout(function () {
-                        $store.dispatch('searchItems', {
-                            query: vm.query,
-                            page: vm.page,
-                            type: vm.tab
-                        });
+                        vm.requestSearch();
                     }, 1000);
+                },
+                requestSearch: function() {
+                    $store.dispatch('searchItems', {
+                        query: this.query,
+                        page: this.page,
+                        type: this.tab
+                    });
                 }
             },
             computed: {
