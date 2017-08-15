@@ -45,6 +45,7 @@ class LP_Modal_Search_Users {
 				'context_id'   => '',
 				'exclude'      => '',
 				'term'         => '',
+				'text_format'  => '{{display_name}} ({{email}})',
 				'add_button'   => __( 'Add', 'learnpress' ),
 				'close_button' => __( 'Close', 'learnpress' ),
 				'title'        => __( 'Search user', 'learnpress' ),
@@ -91,7 +92,7 @@ class LP_Modal_Search_Users {
 
 		if ( $results = $this->_query->get_results() ) {
 			foreach ( $results as $user ) {
-				$this->_items[$user->ID] =  $user->user_login;
+				$this->_items[ $user->ID ] = $user->user_login;
 			}
 		}
 
@@ -147,28 +148,42 @@ class LP_Modal_Search_Users {
 	}
 
 	public function get_html_items() {
+
+		$variables = array(
+			'id',
+			'email',
+			'user_login',
+			'description',
+			'first_name',
+			'last_name',
+			'nickname',
+			'display_name',
+		);
+
 		ob_start();
 		if ( $items = $this->get_items() ) {
 			foreach ( $items as $id => $item ) {
-				$the_user = get_user_by('ID', $id);
-				if($this->_options['multiple']) {
-					printf( '
-                    <li class="%s" data-id="%2$d" data-text="%3$s">
-                        <label>
-                            <input type="checkbox" value="%2$d" name="selectedItems[]">
-                            <span class="lp-item-text">%3$s</span>
-                        </label>
-                    </li>
-                    ', 'lp-result-item', $id, esc_attr( $the_user->user_login ) );
-				}else{
-					printf( '
-                    <li class="%s" data-id="%2$d" data-text="%3$s">
-                        <label>
-                            <a href=""><span class="lp-item-text">%3$s</span></a>
-                        </label>
-                    </li>
-                    ', 'lp-result-item', $id, esc_attr( $the_user->user_login ) );
+				$the_user = learn_press_get_user( $id );
+				$text     = str_replace( '{{id}}', $the_user->get_id(), $this->_options['text_format'] );
+				$data     = array();
+				foreach ( $variables as $variable ) {
+					$text              = str_replace( '{{' . $variable . '}}', $the_user->get_data( $variable ), $text );
+					$data[ $variable ] = $the_user->get_data( $variable );
 				}
+				$data['id'] = $id;
+				printf( '<li class="%s" data-id="%d" data-data="%s"><label>', 'lp-result-item user-' . $id, $id, esc_attr( wp_json_encode( $data ) ) );
+				if ( $this->_options['multiple'] ) {
+					printf( '
+                   		<input type="checkbox" value="%d" name="selectedItems[]">
+                        <span class="lp-item-text">%s</span>
+                    ', $id, esc_attr( $text ) );
+				} else {
+					printf( '
+                        <a href=""><span class="lp-item-text">%s</span></a>
+                    ', esc_attr( $text ) );
+				}
+
+				echo '</li>';
 			}
 		} else {
 			echo '<li>' . apply_filters( 'learn_press_modal_search_items_not_found', __( 'No item found', 'learnpress' ), $this->_options['type'] ) . '</li>';

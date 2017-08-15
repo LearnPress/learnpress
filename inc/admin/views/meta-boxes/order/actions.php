@@ -29,6 +29,7 @@ if ( 0 != $post->ID ) {
 	<div id="minor-publishing">
 		<div id="misc-publishing-actions">
 			<?php if ( $can_publish ) : // Contributors don't get to choose the date of publish ?>
+				<?php if(0==1){?>
 
 				<div class="misc-pub-section">
 					<label>
@@ -57,14 +58,10 @@ if ( 0 != $post->ID ) {
 					</label>
 					<p class="description"><?php esc_attr_e( 'Check this option to force an action to be triggered. Normally, an action only is triggered after changing to an another action.', 'learnpress' ); ?></p>
 				</div>
-
 				<div class="misc-pub-section">
 					<label>
 						<?php _e( 'Customer', 'learnpress' ); ?>
 					</label>
-					<!--
-					<input name="order-customer" type="text" class="wp-suggest-user ui-autocomplete-input" id="admin-email" data-autocomplete-type="search" data-autocomplete-field="user_email" autocomplete="off">
-					-->
 					<?php
 					if ( $order->is_multi_users() ) {
 						$order->dropdown_users();
@@ -94,7 +91,7 @@ if ( 0 != $post->ID ) {
 					//					}
 					?>
 				</div>
-
+<?php }?>
 				<div class="misc-pub-section curtime misc-pub-curtime">
 				<span id="timestamp"><?php printf( $stamp, $date ); ?></span>
 				<a href="#edit_timestamp" class="edit-timestamp hide-if-no-js"><span aria-hidden="true"><?php _e( 'Edit' ); ?></span>

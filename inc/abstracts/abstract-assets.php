@@ -17,6 +17,8 @@ abstract class LP_Abstract_Assets {
 
 	protected $_enqueue_styles = array();
 
+	protected $_script_data = array();
+
 	/**
 	 * LP_Abstract_Assets constructor.
 	 */
@@ -27,10 +29,12 @@ abstract class LP_Abstract_Assets {
 		if ( is_admin() ) {
 			add_action( 'admin_enqueue_scripts', array( $this, 'do_register' ) );
 			add_action( 'admin_enqueue_scripts', array( $this, 'load_scripts' ), $priory );
+			add_action( 'admin_print_footer_scripts', array( $this, 'localize_printed_scripts' ), $priory + 10 );
+
 		} else {
 			add_action( 'wp_enqueue_scripts', array( $this, 'do_register' ) );
 			add_action( 'wp_enqueue_scripts', array( $this, 'load_scripts' ), $priory );
-			add_action( 'wp_print_scripts', array( $this, 'localize_printed_scripts' ), $priory + 10 );
+			//add_action( 'wp_print_scripts', array( $this, 'localize_printed_scripts' ), $priory + 10 );
 			add_action( 'wp_print_footer_scripts', array( $this, 'localize_printed_scripts' ), $priory + 10 );
 		}
 	}
@@ -248,13 +252,30 @@ abstract class LP_Abstract_Assets {
 		if ( ! ( $scripts_data = $this->_get_script_data() ) ) {
 			return;
 		}
+		global $wp_scripts;
 		foreach ( $scripts_data as $handle => $data ) {
+			if ( ! empty( $this->_script_data[ $handle ] ) ) {
+				$data = array_merge( $data, $this->_script_data[ $handle ] );
+			}
 			wp_localize_script( $handle, $this->get_script_var_name( $handle ), $data );
+			$wp_scripts->print_extra_script( $handle );
 		}
+
 	}
 
 	protected function _get_script_data() {
 		return array();
+	}
+
+	public function add_localize( $handle, $key_or_array, $value = '' ) {
+		if ( empty( $this->_script_data[ $handle ] ) ) {
+			$this->_script_data[ $handle ] = array();
+		}
+		if ( is_array( $key_or_array ) ) {
+			$this->_script_data[ $handle ] = array_merge( $this->_script_data[ $handle ], $key_or_array );
+		} else {
+			$this->_script_data[ $handle ][ $key_or_array ] = $value;
+		}
 	}
 
 	/**

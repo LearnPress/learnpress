@@ -591,14 +591,15 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 */
 		public static function modal_search_users() {
 			self::parsePhpInput( $_REQUEST );
-			$term       = (string) ( stripslashes( learn_press_get_request( 'term' ) ) );
-			$type       = (string) ( stripslashes( learn_press_get_request( 'type' ) ) );
-			$context    = (string) ( stripslashes( learn_press_get_request( 'context' ) ) );
-			$context_id = (string) ( stripslashes( learn_press_get_request( 'context_id' ) ) );
-			$paged      = (string) ( stripslashes( learn_press_get_request( 'paged' ) ) );
-			$multiple      = (string) ( stripslashes( learn_press_get_request( 'multiple' ) ) )=='yes';
+			$term        = (string) ( stripslashes( learn_press_get_request( 'term' ) ) );
+			$type        = (string) ( stripslashes( learn_press_get_request( 'type' ) ) );
+			$context     = (string) ( stripslashes( learn_press_get_request( 'context' ) ) );
+			$context_id  = (string) ( stripslashes( learn_press_get_request( 'context_id' ) ) );
+			$paged       = (string) ( stripslashes( learn_press_get_request( 'paged' ) ) );
+			$multiple    = (string) ( stripslashes( learn_press_get_request( 'multiple' ) ) ) == 'yes';
+			$text_format = (string) ( stripslashes( learn_press_get_request( 'text_format' ) ) );
 
-			$search = new LP_Modal_Search_Users( compact( 'term', 'type', 'context', 'context_id', 'paged', 'multiple' ) );
+			$search = new LP_Modal_Search_Users( compact( 'term', 'type', 'context', 'context_id', 'paged', 'multiple', 'text_format' ) );
 
 			learn_press_send_json( array(
 				'html'  => $search->get_html_items(),
@@ -1010,14 +1011,16 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				$order_data['subtotal_html'] = learn_press_format_price( $order_data['subtotal'], $currency_symbol );
 				$order_data['total_html']    = learn_press_format_price( $order_data['total'], $currency_symbol );
 
-				foreach ( $order_items as $item ) {
+				if ( $order_items ) {
+					foreach ( $order_items as $item ) {
 
-					if ( ! in_array( $item['id'], $order_item_ids ) ) {
-						continue;
+						if ( ! in_array( $item['id'], $order_item_ids ) ) {
+							continue;
+						}
+						ob_start();
+						include learn_press_get_admin_view( 'meta-boxes/order/order-item.php' );
+						$html .= ob_get_clean();
 					}
-					ob_start();
-					include learn_press_get_admin_view( 'meta-boxes/order/order-item.php' );
-					$html .= ob_get_clean();
 				}
 
 

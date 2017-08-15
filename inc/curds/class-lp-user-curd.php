@@ -1,15 +1,15 @@
 <?php
 
 class LP_User_CURD implements LP_Interface_CURD {
-	public function create( $args ) {
+	public function create( &$user ) {
 
 	}
 
-	public function update( $args = array() ) {
+	public function update( &$user ) {
 		// TODO: Implement update() method.
 	}
 
-	public function delete( $id ) {
+	public function delete( &$user ) {
 		// TODO: Implement delete() method.
 	}
 

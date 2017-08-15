@@ -18,10 +18,13 @@
                     if (value) {
                         $(this.$refs.search).focus();
                     }
+                    console.log('dsfsdf')
+
                 }
             },
-            props: ['multiple', 'context', 'contextId', 'show', 'callbacks'],
+            props: ['multiple', 'context', 'contextId', 'show', 'callbacks', 'textFormat'],
             created: function () {
+
             },
             methods: {
                 doSearch: function (e) {
@@ -39,6 +42,7 @@
                             term: term || this.term,
                             paged: this.paged,
                             multiple: this.multiple ? 'yes': 'no',
+                            text_format: this.textFormat,
                             'lp-ajax': 'modal-search-users'
                         }, {
                             emulateJSON: true,
@@ -79,11 +83,12 @@
                     var $select = $(e.target).closest('li'),
                         $chk = $select.find('input[type="checkbox"]'),
                         id = parseInt($chk.val()),
-                        pos = _.indexOf(this.selected, id);
+                        //pos = _.indexOf(this.selected, id),
+                        pos = _.findLastIndex(this.selected, {id: id});
                     if(this.multiple) {
                         if ($chk.is(':checked')) {
                             if (pos === -1) {
-                                this.selected.push(id);
+                                this.selected.push($select.closest('li').data('data'));
                             }
                         } else {
                             if (pos >= 0) {
@@ -92,13 +97,14 @@
                         }
                     }else{
                         e.preventDefault();
-                        this.selected = [parseInt($select.data('id'))];
+                        this.selected = [$select.closest('li').data('data')];
                         this.addUsers();
                     }
                 },
                 addUsers:function(){
+                    var $els = $(this.$el).find('.lp-result-item');
                     if(this.callbacks && this.callbacks.addUsers){
-                        this.callbacks.addUsers.call(this);
+                        this.callbacks.addUsers.call(this, this.selected);
                     }
                     $(document).triggerHandler('learn-press/modal-add-users', this.selected);
                 },
@@ -114,19 +120,23 @@
                 show: false,
                 term: '',
                 multiple: false,
-                callbacks: {}
+                callbacks: {},
+                textFormat: '{{display_name}} ({{email}})'
             },
             methods: {
                 open: function (options) {
                     _.each(options.data, function (v, k) {
                         this[k] = v;
                     }, this);
-
                     this.callbacks = options.callbacks;
+                    this.focusSearch();
                 },
                 close: function () {
                     this.show = false;
-                }
+                },
+                focusSearch: _.debounce(function(){
+                    $('input[name="search"]', this.$el).focus();
+                }, 200)
             }
         });
     });

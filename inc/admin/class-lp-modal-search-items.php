@@ -165,7 +165,7 @@ class LP_Modal_Search_Items {
                             <span class="lp-item-text">%3$s</span>
                         </label>
                     </li>
-                    ', 'lp-result-item', $id, esc_attr( get_the_title( $item ) ), get_the_title( $item ) );
+                    ', 'lp-result-item', $item, esc_attr( get_the_title( $item ) ), get_post_type( $item ) );
 			}
 		} else {
 			echo '<li>' . apply_filters( 'learn_press_modal_search_items_not_found', __( 'No item found', 'learnpress' ), $this->_options['type'] ) . '</li>';

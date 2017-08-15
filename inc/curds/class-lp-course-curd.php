@@ -8,7 +8,7 @@
  * @since   3.x.x
  */
 class LP_Course_CURD implements LP_Interface_CURD {
-	public function create( $args ) {
+	public function create( &$course ) {
 
 	}
 
@@ -26,11 +26,11 @@ class LP_Course_CURD implements LP_Interface_CURD {
 		return $course;
 	}
 
-	public function update( $args = array() ) {
+	public function update( &$course ) {
 		// TODO: Implement update() method.
 	}
 
-	public function delete( $id ) {
+	public function delete( &$course ) {
 		// TODO: Implement delete() method.
 	}
 
@@ -227,5 +227,9 @@ class LP_Course_CURD implements LP_Interface_CURD {
 		}
 
 		return true;
+	}
+
+	public function duplicate($order_id){
+		$order = learn_press_get_order($order_id);
 	}
 }

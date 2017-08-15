@@ -2447,7 +2447,7 @@ if ( ! function_exists( 'learn_press_profile_localize_script' ) ) {
 				'title'   => __( 'Cancel Order', 'learnpress' )
 			)
 		);
-		LP_Assets::add_localize( $translate );
+		//LP_Assets::add_localize( $translate );
 	}
 
 }
@@ -2463,7 +2463,7 @@ if ( ! function_exists( 'learn_press_checkout_localize_script' ) ) {
 			'unknown_error' => __( 'Unknown error!', 'learnpress' ),
 			'invalid_field' => __( 'Invalid field!', 'learnpress' ),
 		);
-		LP_Assets::add_localize( $translate );
+		//LP_Assets::add_localize( $translate );
 	}
 }
 add_action( 'learn_press_enqueue_scripts', 'learn_press_checkout_localize_script' );

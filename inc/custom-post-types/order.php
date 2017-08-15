@@ -224,6 +224,11 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		private function _save_order_multi_users( $post_id, $user_id ) {
 			global $wpdb;
 			settype( $user_id, 'array' );
+
+			update_post_meta( $post_id, '_user_id', $user_id );
+
+			return;
+
 			$sql = "
 				SELECT meta_id, meta_value
 				FROM {$wpdb->postmeta}
@@ -294,7 +299,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		}
 
 		public function save_order( $post_id ) {
-			global $action;
+			global $action, $wpdb;
 			if ( wp_is_post_revision( $post_id ) ) {
 				return;
 			}
@@ -303,11 +308,40 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				$user_id = learn_press_get_request( 'order-customer' );
 				$order   = learn_press_get_order( $post_id );
 
-				if ( $order->is_multi_users() ) {
-					$this->_save_order_multi_users( $post_id, $user_id );
+				if ( is_array( $user_id ) ) {
+					$new_orders = array();
+					if ( $child_orders = $order->get_child_orders() ) {
+						foreach ( $child_orders as $child_id ) {
+							$child_order         = learn_press_get_order( $child_id );
+							$child_order_user_id = $child_order->get_user( 'id' );
+
+
+							if ( ! in_array( $child_order_user_id, $user_id ) ) {
+								wp_delete_post( $child_order_user_id );
+								continue;
+							}
+							$order->cln_items($child_order->get_id());
+							$new_orders[ $child_order_user_id ] = $child_order;
+						}
+					}
+					foreach ( $user_id as $uid ) {
+						if ( ! empty( $new_orders[ $uid ] ) ) {
+							continue;
+						}
+						$new_order          = $order->cln();
+
+						$new_order->set_id(0);
+						$new_order->save();
+						$new_orders[ $uid ] = $new_order;
+						$wpdb->update( $wpdb->posts, array( 'post_parent' => $post_id ), array( 'ID' => $new_order->get_id() ), array( '%d' ), array( '%d' ) );
+						update_post_meta($new_order->get_id(), '_order_key', learn_press_generate_order_key());
+						update_post_meta($new_order->get_id(), '_user_id', $uid);
+
+					}
+					update_post_meta( $post_id, '_user_id', $user_id );
+
 				} else {
 					update_post_meta( $post_id, '_user_id', $user_id > 0 ? $user_id : 0 );
-					delete_post_meta( $post_id, '_lp_multi_users' );
 				}
 
 				$order_statuses = learn_press_get_order_statuses();

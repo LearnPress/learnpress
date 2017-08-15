@@ -54,23 +54,13 @@ $method_title = $order->get_payment_method_title();
         </div>
 
         <div class="order-data-field order-data-user">
-			<?php if ( !$order->is_multi_users() ) { ?>
+			<?php if ( $order->is_multi_users() ) { ?>
                 <label><?php _e( 'Customers', 'learnpress' ); ?></label>
                 <div class="order-users">
                     <ul id="list-users" class="advanced-list">
-                        <li data-id="0"><span class="remove-item"></span><span>admin1@gmail.com</span> </li>
-                        <li data-id="0"><span class="remove-item"></span><span>admin2@gmail.com</span> </li>
-                        <li data-id="0"><span class="remove-item"></span><span>admin3@gmail.com</span> </li>
-                        <li data-id="0"><span class="remove-item"></span><span>admin4@gmail.com</span> </li>
-                        <li data-id="0"><span class="remove-item"></span><span>admin5@gmail.com</span> </li>
-                        <li data-id="0"><span class="remove-item"></span><span>admin6@gmail.com</span> </li>
-                        <li data-id="0"><span class="remove-item"></span><span>admin7@gmail.com</span> </li>
-                        <li data-id="0"><span class="remove-item"></span><span>admin8@gmail.com</span> </li>
-                        <li data-id="0"><span class="remove-item"></span><span>admin8@gmail.com</span> </li>
-                        <li data-id="0"><span class="remove-item"></span><span>admin8@gmail.com</span> </li>
-                        <li data-id="0"><span class="remove-item"></span><span>admin8@gmail.com</span> </li>
-                        <li data-id="0"><span class="remove-item"></span><span>admin8@gmail.com</span> </li>
                     </ul>
+                    <a href="" class="change-user"
+                       data-multiple="yes"><?php _e( 'Add multi users', 'learnpress' ); ?></a>
                 </div>
 			<?php } else { ?>
                 <label><?php _e( 'Customer', 'learnpress' ); ?></label>
@@ -82,7 +72,8 @@ $method_title = $order->get_payment_method_title();
 						echo $order->get_customer_name();
 					}
 					?>
-                    <input type="hidden" name="order-customer" id="order-customer" value="<?php echo $order->get_user('id');?>" />
+                    <input type="hidden" name="order-customer" id="order-customer"
+                           value="<?php echo $order->get_user( 'id' ); ?>"/>
                 </div>
                 <a href="" class="change-user"><?php _e( 'Change', 'learnpress' ); ?></a>
 			<?php } ?>
@@ -146,6 +137,43 @@ $method_title = $order->get_payment_method_title();
         <p class="order-note description"><?php echo $note; ?></p>
 	<?php } ?>
 </div>
+<script type="text/html" id="tmpl-order-data-user">
+    <# if(!data.multiple){ #>
+        <div class="order-data-field order-data-user">
+            <label><?php _e( 'Customer', 'learnpress' ); ?></label>
+            <div class="order-users">
+                {{data.name}}
+                <input type="hidden" name="order-customer" id="order-customer" value="{{data.id}}">
+            </div>
+            <a href="" class="change-user"><?php _e( 'Change', 'learnpress' ); ?></a>
+        </div>
+        <# }else{ #>
+            <div class="order-data-field order-data-user">
+                <label><?php _e( 'Customer', 'learnpress' ); ?></label>
+                <div class="order-users">
+                    <ul id="list-users" class="advanced-list">
+                    </ul>
+                </div>
+                <a href="" class="change-user" data-multiple="yes"><?php _e( 'Add multi users', 'learnpress' ); ?></a>
+            </div>
+            <# } #>
+</script>
+<script type="text/html" id="tmpl-order-advanced-list-item">
+    <li data-id="{{id}}">
+        <span class="remove-item"></span><span>{{text}}</span>
+        <input type="hidden" name="order-customer[]" value="{{id}}">
+    </li>
+</script>
+
+<?php
+$assets = learn_press_admin_assets();
+
+$assets->add_localize( 'learn-press-meta-box-order', 'users', $order->get_user_data() );
+$assets->add_localize( 'learn-press-meta-box-order', 'userTextFormat', '{{display_name}} ({{email}})' );
+
+learn_press_debug($order->get_child_orders());
+?>
+
 <script type="text/html" id="tmpl-learn-press-modal-add-order-courses">
     <div id="learn-press-modal-add-order-courses" class="lp-modal-search"
          data-nonce="<?php echo wp_create_nonce( 'add_item_to_order' ); ?>">
