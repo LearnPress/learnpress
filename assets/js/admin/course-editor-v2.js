@@ -1,5 +1,80 @@
 ;
 
+var LP_Choose_Items_Modal_Store = (function (exports, Vue) {
+    var state = {
+        items: [],
+        addedItems: [],
+        open: false,
+        types: {}
+    };
+
+    var getters = {
+        items: function (state) {
+            return state.items;
+        },
+        addedItems: function (state) {
+            return state.addedItems;
+        },
+        isOpen: function (state) {
+            return state.open;
+        },
+        types: function (state) {
+            return state.types;
+        }
+    };
+
+    var mutations = {
+        'TOGGLE': function (state) {
+            state.open = !state.open;
+        },
+        'SET_LIST_ITEMS': function (state, items) {
+            state.items = items;
+        },
+        'ADD_ITEM': function (item) {
+            state.addedItems.push(item);
+        }
+    };
+
+    var actions = {
+        toggle: function (context) {
+            context.commit('TOGGLE');
+        },
+        addItem: function(context, item) {
+            context.commit('ADD_ITEM', item);
+        },
+        searchItems: function (context, payload) {
+            Vue.http.LPRequest({
+                type: 'search-items',
+                query: payload.query,
+                'item-type': payload.type,
+                page: payload.page
+            }).then(
+                function (response) {
+                    var result = response.body;
+
+                    if (!result.success) {
+                        return;
+                    }
+
+                    var items = result.data;
+                    context.commit('SET_LIST_ITEMS', items);
+                },
+                function (error) {
+                    console.error(error);
+                }
+            );
+        }
+    };
+
+    return {
+        namespaced: true,
+        state: state,
+        getters: getters,
+        mutations: mutations,
+        actions: actions
+    }
+})(window, Vue);
+
 /**
  * Store
  */
@@ -58,12 +133,6 @@
         },
         'REMOVE_SECTION': function (state, index) {
             state.sections.splice(index, 1);
-        },
-        'TOGGLE_CHOOSE_ITEMS': function (state) {
-            state.chooseItems.open = !state.chooseItems.open;
-        },
-        'SET_LIST_ITEMS': function (state, items) {
-            state.chooseItems.items = items;
         }
     };
 
@@ -79,33 +148,6 @@
             if (context.getters.currentRequest === 0) {
                 context.commit('UPDATE_STATUS', status);
             }
-        },
-
-        toggleChooseItems: function (context) {
-            context.commit('TOGGLE_CHOOSE_ITEMS');
-        },
-
-        searchItems: function (context, payload) {
-            Vue.http.LPRequest({
-                type: 'search-items',
-                query: payload.query,
-                'item-type': payload.type,
-                page: payload.page
-            }).then(
-                function (response) {
-                    var result = response.body;
-
-                    if (!result.success) {
-                        return;
-                    }
-
-                    var items = result.data;
-                    context.commit('SET_LIST_ITEMS', items);
-                },
-                function (error) {
-                    console.error(error);
-                }
-            );
         },
 
         addNewSection: function (context) {
@@ -198,7 +240,10 @@
         state: state,
         getters: getters,
         mutations: mutations,
-        actions: actions
+        actions: actions,
+        modules: {
+            ci: LP_Choose_Items_Modal_Store
+        }
     });
 
 })(window, Vue, Vuex, lq_course_editor);

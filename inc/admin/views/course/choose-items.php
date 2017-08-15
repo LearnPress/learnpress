@@ -76,11 +76,11 @@ $item_types = apply_filters( 'learn-press/course/item-section-types', array(
                 });
             },
             methods: {
-                addItem: function(item) {
-                    console.log(item);
+                addItem: function (item) {
+                    $store.dispatch('ci/addItem', item);
                 },
                 close: function () {
-                    $store.dispatch('toggleChooseItems');
+                    $store.dispatch('ci/toggle');
                 },
                 changeTab: function (key) {
                     if (key === this.tab) {
@@ -102,7 +102,7 @@ $item_types = apply_filters( 'learn-press/course/item-section-types', array(
                     }, 1000);
                 },
                 requestSearch: function () {
-                    $store.dispatch('searchItems', {
+                    $store.dispatch('ci/searchItems', {
                         query: this.query,
                         page: this.page,
                         type: this.tab
@@ -110,14 +110,17 @@ $item_types = apply_filters( 'learn-press/course/item-section-types', array(
                 }
             },
             computed: {
+                addedItems: function () {
+                    return $store.getters['ci/addedItems'];
+                },
                 items: function () {
-                    return $store.getters.chooseItems.items;
+                    return $store.getters['ci/items'];
                 },
                 show: function () {
-                    return $store.getters.chooseItems.open;
+                    return $store.getters['ci/isOpen'];
                 },
                 types: function () {
-                    return $store.getters.chooseItems.types;
+                    return $store.getters['ci/types'];
                 }
             }
         });
