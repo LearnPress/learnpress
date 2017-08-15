@@ -1509,7 +1509,7 @@ class LP_Abstract_User {
 		$enrolled = false;
 		if ( $this->has_purchased_course( $course_id ) ) {
 			$item_statuses = LP_Cache::get_item_statuses( false, array() );
-			$key           = sprintf( '%d-%d-%d', $this->id, $course_id, $order_id);
+			$key           = sprintf( '%d-%d-%d', $this->id, $course_id, $order_id );
 			if ( ! array_key_exists( $key, $item_statuses ) ) {
 				$enrolled = $item_statuses[ $key ] = $this->_has_enrolled_course( $course_id, $order_id);
 			} elseif ( ! empty( $item_statuses[ $key ] ) && $item_statuses[ $key ] != '' ) {
@@ -1528,8 +1528,7 @@ class LP_Abstract_User {
 					AND item_id = %d
 					AND status <> %s 
 				";
-
-		$vars = array( $this->id, $course_id );
+		$vars = array($this->id, $course_id, '');
 		if( $order_id ) {
 			$sql .= "
 					AND ref_id = %d
@@ -1541,9 +1540,10 @@ class LP_Abstract_User {
 		$sql .= "
 					LIMIT 0, 1
 				";
-
+		
 		$query = $wpdb->prepare($sql, $vars);
-		return $wpdb->get_var( $query ) ? true : false;
+		$res = $wpdb->get_var( $query);
+		return $res ? true : false;
 	}
 
 	/**
