@@ -1,5 +1,10 @@
 ;
 
+/**
+ * Helpers
+ *
+ * @since 3.0.0
+ */
 (function (exports) {
     function cloneObject(object) {
         return JSON.parse(JSON.stringify(object));
@@ -10,6 +15,13 @@
     };
 })(window);
 
+/**
+ * Choose Item Modal Store
+ *
+ * @since 3.0.0
+ *
+ * @type {{namespaced, state, getters, mutations, actions}}
+ */
 var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
     var state = helpers.cloneObject(data.chooseItems);
 
@@ -81,7 +93,9 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
 })(window, Vue, LP_Helpers, lq_course_editor);
 
 /**
- * Store
+ * Root Store
+ *
+ * @since 3.0.0
  */
 (function (exports, Vue, Vuex, helpers, data) {
     var state = helpers.cloneObject(data.root);
@@ -236,11 +250,6 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
         }
     };
 
-    /**
-     * Vuex Store
-     *
-     * @type {Store}
-     */
     exports.LP_Curriculum_Store = new Vuex.Store({
         state: state,
         getters: getters,
@@ -255,6 +264,8 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
 
 /**
  * HTTP
+ *
+ * @since 3.0.0
  */
 (function (exports, Vue, $store) {
     Vue.http.LPRequest = function (payload) {
@@ -295,6 +306,8 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
 
 /**
  * Init app.
+ *
+ * @since 3.0.0
  */
 (function ($, Vue) {
     $(document).ready(function () {
