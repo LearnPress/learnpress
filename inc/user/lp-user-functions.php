@@ -1058,7 +1058,7 @@ function _learn_press_redirect_logout_redirect() {
 	$pos         = strpos( $redirect_to, $admin_url );
 	if ( $pos === false ) {
 		$page_id  = LP()->settings->get( 'logout_redirect_page_id' );
-		$page_url = get_page_link( $page_id );
+		$page_url = $page_id ? get_page_link( $page_id ) : '';
 		if ( $page_id && $page_url ) {
 			wp_redirect( $page_url );
 			exit();
