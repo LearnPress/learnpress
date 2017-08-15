@@ -189,20 +189,33 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 						break;
 					}
 
-					$result = $curd->update( array(
+					$update = array(
 						'section_id'          => $section['id'],
 						'section_name'        => $section['title'],
 						'section_description' => $section['description'],
 						'section_order'       => $section['order'],
 						'section_course_id'   => $section['course_id'],
-					) );
+					);
+
+					$result = $curd->update( $update );
 
 					break;
 
 				case 'search-items':
-					//@todo search items.
+					$query = isset( $_POST['query'] ) ? $_POST['query'] : '';
+					$type  = isset( $_POST['item-type'] ) ? $_POST['item-type'] : '';
+					$page  = ! empty( $_POST['page'] ) ? intval( $_POST['page'] ) : 1;
 
-					$result = array();
+					$search = new LP_Modal_Search_Items(array(
+						'type'         => $type,
+						'context'      => 'course',
+						'context_id'   => $course_id,
+						'term'         => $query,
+						'limit'        => 10,
+						'paged'        => $page
+					));
+
+					$result = $search->get_items();
 
 					break;
 			}
@@ -339,8 +352,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			if ( false === $data ) {
 				try {
 					$data = json_decode( file_get_contents( 'php://input' ), true );
-				}
-				catch ( Exception $exception ) {
+				} catch ( Exception $exception ) {
 				}
 			}
 			if ( $data && func_num_args() > 0 ) {
@@ -437,8 +449,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					} else {
 						$response['message'] = __( 'Delete question failed.', 'learnpress' );
 					}
-				}
-				catch ( Exception $exception ) {
+				} catch ( Exception $exception ) {
 				}
 			}
 			learn_press_send_json( $response );
@@ -471,8 +482,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					} else {
 						$response['message'] = __( 'Delete question failed.', 'learnpress' );
 					}
-				}
-				catch ( Exception $exception ) {
+				} catch ( Exception $exception ) {
 				}
 			}
 			learn_press_send_json( $response );
@@ -765,7 +775,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 * @param        $exclude
 		 * @param        $type
 		 * @param string $context
-		 * @param null   $context_id
+		 * @param null $context_id
 		 *
 		 * @return array
 		 */

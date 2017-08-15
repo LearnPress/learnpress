@@ -77,10 +77,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				'nonce'       => wp_create_nonce( 'learnpress_update_curriculum' ),
 				'urlEdit'     => admin_url( 'post.php?action=edit&post=' ),
 				'chooseItems' => array(
-					'types'      => apply_filters( 'learn-press/course/item-section-types', array(
-						'lesson' => __( 'Lesson', 'learnpress' ),
-						'quiz'   => __( 'Quiz', 'learnpress' ),
-					) ),
+					'types'      => learn_press_course_get_support_item_types(),
 					'open'       => false,
 					'addedItems' => array()
 				)

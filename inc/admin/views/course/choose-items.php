@@ -61,7 +61,7 @@ $item_types = apply_filters( 'learn-press/course/item-section-types', array(
                 return {
                     query: '',
                     page: 1,
-                    tab: 'lesson',
+                    tab: 'lp_lesson',
                     delayTimeout: null
                 };
             },
