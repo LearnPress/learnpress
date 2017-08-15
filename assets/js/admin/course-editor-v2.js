@@ -1,12 +1,17 @@
 ;
 
-var LP_Choose_Items_Modal_Store = (function (exports, Vue) {
-    var state = {
-        items: [],
-        addedItems: [],
-        open: false,
-        types: {}
+(function (exports) {
+    function cloneObject(object) {
+        return JSON.parse(JSON.stringify(object));
+    }
+
+    exports.LP_Helpers = {
+        cloneObject: cloneObject
     };
+})(window);
+
+var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
+    var state = helpers.cloneObject(data.chooseItems);
 
     var getters = {
         items: function (state) {
@@ -39,7 +44,7 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue) {
         toggle: function (context) {
             context.commit('TOGGLE');
         },
-        addItem: function(context, item) {
+        addItem: function (context, item) {
             context.commit('ADD_ITEM', item);
         },
         searchItems: function (context, payload) {
@@ -73,13 +78,13 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue) {
         mutations: mutations,
         actions: actions
     }
-})(window, Vue);
+})(window, Vue, LP_Helpers, lq_course_editor);
 
 /**
  * Store
  */
-(function (exports, Vue, Vuex, data) {
-    var state = data;
+(function (exports, Vue, Vuex, helpers, data) {
+    var state = helpers.cloneObject(data.root);
 
     state.status = 'success';
     state.countCurrentRequest = 0;
@@ -246,7 +251,7 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue) {
         }
     });
 
-})(window, Vue, Vuex, lq_course_editor);
+})(window, Vue, Vuex, LP_Helpers, lq_course_editor);
 
 /**
  * HTTP

@@ -70,12 +70,14 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			$course = learn_press_get_course( $post->ID );
 
 			wp_localize_script( 'course-editor-v2', 'lq_course_editor', array(
-				'course_id'   => $course->get_id(),
-				'sections'    => $course->get_curriculum_raw(),
-				'ajax'        => admin_url( '' ),
-				'action'      => 'update_curriculum',
-				'nonce'       => wp_create_nonce( 'learnpress_update_curriculum' ),
-				'urlEdit'     => admin_url( 'post.php?action=edit&post=' ),
+				'root' => array(
+					'course_id'   => $course->get_id(),
+					'sections'    => $course->get_curriculum_raw(),
+					'ajax'        => admin_url( '' ),
+					'action'      => 'update_curriculum',
+					'nonce'       => wp_create_nonce( 'learnpress_update_curriculum' ),
+					'urlEdit'     => admin_url( 'post.php?action=edit&post=' ),
+				),
 				'chooseItems' => array(
 					'types'      => learn_press_course_get_support_item_types(),
 					'open'       => false,
