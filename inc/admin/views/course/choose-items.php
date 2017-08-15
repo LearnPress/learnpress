@@ -39,9 +39,11 @@ $item_types = apply_filters( 'learn-press/course/item-section-types', array(
                            v-model="query">
                 </form>
 
-                <div class="list-items">
-
-                </div>
+                <ul class="list-items">
+                    <template v-for="item in items">
+                        <li @click="addItem(item)"><span class="dashicons dashicons-plus"></span>{{item.title}}</li>
+                    </template>
+                </ul>
             </div>
         </div>
     </div>
@@ -60,24 +62,31 @@ $item_types = apply_filters( 'learn-press/course/item-section-types', array(
                     delayTimeout: null
                 };
             },
-            created: function() {
+            created: function () {
                 var vm = this;
 
-                $store.subscribe(function(mutation) {
-                   if (!mutation || mutation.type !== 'TOGGLE_CHOOSE_ITEMS') {
-                       return;
-                   }
+                $store.subscribe(function (mutation) {
+                    if (!mutation || mutation.type !== 'TOGGLE_CHOOSE_ITEMS') {
+                        return;
+                    }
 
-                   if (vm.show) {
-                       vm.requestSearch();
-                   }
+                    if (vm.show) {
+                        vm.requestSearch();
+                    }
                 });
             },
             methods: {
+                addItem: function(item) {
+                    console.log(item);
+                },
                 close: function () {
                     $store.dispatch('toggleChooseItems');
                 },
                 changeTab: function (key) {
+                    if (key === this.tab) {
+                        return;
+                    }
+
                     this.tab = key;
                     this.requestSearch();
                 },
@@ -92,7 +101,7 @@ $item_types = apply_filters( 'learn-press/course/item-section-types', array(
                         vm.requestSearch();
                     }, 1000);
                 },
-                requestSearch: function() {
+                requestSearch: function () {
                     $store.dispatch('searchItems', {
                         query: this.query,
                         page: this.page,

@@ -1,53 +1,38 @@
 <?php
-global $post;
+/**
+ * Template curriculum course.
+ *
+ * @since 3.0.0
+ */
 
-if ( ! isset( $course ) ) {
-	$course = learn_press_get_course();
-}
-$course_sections = $course->get_curriculum();
-$hidden_sections = (array) get_post_meta( $post->ID, '_admin_hidden_sections', true );
+learn_press_admin_view( 'course/sections' );
 ?>
-<div id="lp-course-curriculum" class="lp-course-curriculum">
-    <h3 class="curriculum-heading">
-		<?php _e( 'Curriculum', 'learnpress' ); ?>
-        <span class="description"><?php _e( 'Outline your course and add content with sections, lessons and quizzes.', 'learnpress' ); ?></span>
+<script type="text/x-template" id="tmpl-lp-course-curriculum">
+    <div id="lp-course-curriculum" class="lp-course-curriculum">
+        <div class="heading">
+            <h4><?php _e( 'Curriculum', 'learnpress' ); ?> <span class="status" :class="status"></span></h4>
+        </div>
 
-        <p align="right" class="items-toggle">
-            <a href="" data-action="expand"
-               class="dashicons dashicons-arrow-down<?php echo ! sizeof( $hidden_sections ) ? ' hide-if-js' : ''; ?>"
-               title="<?php _e( 'Expand All', 'learnpress' ); ?>"></a>
-            <a href="" data-action="collapse"
-               class="dashicons dashicons-arrow-up<?php echo sizeof( $hidden_sections ) ? ' hide-if-js' : ''; ?>"
-               title="<?php _e( 'Collapse All', 'learnpress' ); ?>"></a>
-        </p>
-    </h3>
-    <!---->
-    <ul class="curriculum-sections">
-		<?php
-		if ( $course_sections ):
-			foreach ( $course_sections as $k => $section ):
+        <lp-list-sections></lp-list-sections>
+    </div>
+</script>
 
-				$content_items = '';
+<script>
+    (function (Vue, $store) {
 
-				if ( $section->items ):
-					foreach ( $section->items as $item ):
-						$loop_item_view = learn_press_get_admin_view( 'meta-boxes/course/loop-item.php' );
-						ob_start();
-						include $loop_item_view;
-						$content_items .= "\n" . ob_get_clean();
-					endforeach;
-				endif;
+        Vue.component('lp-curriculum', {
+            template: '#tmpl-lp-course-curriculum',
+            computed: {
+                status: function () {
+                    return $store.getters.status;
+                }
+            },
+            created: function () {
+                setInterval(function () {
+                    $store.dispatch('syncSections');
+                }, 60 * 1000);
+            }
+        });
 
-				include learn_press_get_admin_view( 'meta-boxes/course/loop-section.php' );
-			endforeach;
-			unset( $content_items );
-		endif;
-		if ( ! empty( $section ) ) {
-			foreach ( get_object_vars( $section ) as $k => $v ) {
-				$section->{$k} = null;
-			}
-		}
-		include learn_press_get_admin_view( 'meta-boxes/course/loop-section.php' );
-		?>
-    </ul>
-</div>
+    })(Vue, LP_Curriculum_Store);
+</script>
