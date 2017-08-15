@@ -34,7 +34,6 @@ $item_types = apply_filters( 'learn-press/course/item-section-types', array(
             <div class="main">
                 <form class="search" @submit.prevent="">
                     <input placeholder="Type here to search item"
-                           type="text"
                            title="search"
                            @input="makeSearch"
                            v-model="query">
@@ -43,10 +42,6 @@ $item_types = apply_filters( 'learn-press/course/item-section-types', array(
                 <div class="list-items">
 
                 </div>
-            </div>
-            <div class="footer">
-                <button type="button" class="button button-primary">Add</button>
-                <button type="button" class="button button-secondary">Add & Close</button>
             </div>
         </div>
     </div>

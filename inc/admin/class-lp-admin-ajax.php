@@ -206,16 +206,29 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					$type  = isset( $_POST['item-type'] ) ? $_POST['item-type'] : '';
 					$page  = ! empty( $_POST['page'] ) ? intval( $_POST['page'] ) : 1;
 
-					$search = new LP_Modal_Search_Items(array(
-						'type'         => $type,
-						'context'      => 'course',
-						'context_id'   => $course_id,
-						'term'         => $query,
-						'limit'        => 10,
-						'paged'        => $page
-					));
+					$search = new LP_Modal_Search_Items( array(
+						'type'       => $type,
+						'context'    => 'course',
+						'context_id' => $course_id,
+						'term'       => $query,
+						'limit'      => 10,
+						'paged'      => $page
+					) );
 
-					$result = $search->get_items();
+					$id_items = $search->get_items();
+					$items    = get_posts( array(
+						'post_type' => $type,
+						'post__in'  => $id_items
+					) );
+
+					$result = array();
+					foreach ( $items as $item ) {
+						$result[] = array(
+							'id'    => $item->ID,
+							'title' => $item->post_title,
+							'type'  => $item->post_type
+						);
+					}
 
 					break;
 			}
