@@ -39,7 +39,7 @@ class LP_Lesson extends LP_Abstract_Course_Item {
 	/**
 	 * @var string
 	 */
-	protected $_item_type = 'lesson';
+	protected $_item_type = 'lp_lesson';
 
 	/**
 	 * LP_Lesson constructor.

@@ -65,6 +65,20 @@
             });
         });
 
+        $('.order-date.date-picker').on('change', function () {
+            var m = this.value.split('-');
+            ['aa', 'mm', 'jj'].forEach(function (v, k) {
+                $('input[name="' + v + '"]').val(m[k]);
+            });
+        }).datepicker({
+            dateFormat: 'yy-mm-dd',
+            numberOfMonths: 1,
+            showButtonPanel: true,
+            select: function () {
+                console.log(arguments)
+            }
+        });
+
 
         $('#learn-press-add-order-item').on('click', function () {
             LP.$modalSearchItems.open({

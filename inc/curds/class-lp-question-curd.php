@@ -112,4 +112,20 @@ class LP_Question_CURD implements LP_Interface_CURD {
 
 		return true;
 	}
+
+	public function add_meta( &$object, $meta ) {
+		// TODO: Implement add_meta() method.
+	}
+
+	public function delete_meta( &$object, $meta ) {
+		// TODO: Implement delete_meta() method.
+	}
+
+	public function read_meta( &$object ) {
+		// TODO: Implement read_meta() method.
+	}
+
+	public function update_meta( &$object, $meta ) {
+		// TODO: Implement update_meta() method.
+	}
 }

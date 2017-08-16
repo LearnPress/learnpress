@@ -1,10 +1,149 @@
 ;
 
 /**
- * Store
+ * Helpers
+ *
+ * @since 3.0.0
  */
-(function (exports, Vue, Vuex, data) {
-    var state = data;
+(function (exports) {
+    function cloneObject(object) {
+        return JSON.parse(JSON.stringify(object));
+    }
+
+    exports.LP_Helpers = {
+        cloneObject: cloneObject
+    };
+})(window);
+
+/**
+ * Choose Item Modal Store
+ *
+ * @since 3.0.0
+ *
+ * @type {{namespaced, state, getters, mutations, actions}}
+ */
+var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
+    var state = helpers.cloneObject(data.chooseItems);
+    state.sectionId = false;
+
+    var getters = {
+        items: function (state, _getters) {
+            return state.items.filter(function (item) {
+                var find = _getters.addedItems.find(function (_item) {
+                    return item.id === _item.id;
+                });
+
+                return !find;
+            });
+        },
+        addedItems: function (state) {
+            return state.addedItems;
+        },
+        isOpen: function (state) {
+            return state.open;
+        },
+        types: function (state) {
+            return state.types;
+        },
+        section: function () {
+            return state.sectionId;
+        }
+    };
+
+    var mutations = {
+        'TOGGLE': function (state) {
+            state.open = !state.open;
+        },
+        'SET_SECTION': function (state, sectionId) {
+            state.sectionId = sectionId;
+        },
+        'SET_LIST_ITEMS': function (state, items) {
+            state.items = items;
+        },
+        'ADD_ITEM': function (state, item) {
+            state.addedItems.push(item);
+        },
+        'REMOVE_ADDED_ITEM': function (state, index) {
+            state.addedItems.splice(index, 1);
+        },
+        'RESET': function (state) {
+            state.addedItems = [];
+        }
+    };
+
+    var actions = {
+        toggle: function (context) {
+            context.commit('TOGGLE');
+        },
+        open: function (context, sectionId) {
+            context.commit('SET_SECTION', sectionId);
+            context.commit('RESET');
+            context.commit('TOGGLE');
+        },
+        addItem: function (context, item) {
+            context.commit('ADD_ITEM', item);
+        },
+        removeItem: function (context, index) {
+            context.commit('REMOVE_ADDED_ITEM', index);
+        },
+        searchItems: function (context, payload) {
+            Vue.http.LPRequest({
+                type: 'search-items',
+                query: payload.query,
+                'item-type': payload.type,
+                page: payload.page
+            }).then(
+                function (response) {
+                    var result = response.body;
+
+                    if (!result.success) {
+                        return;
+                    }
+
+                    var items = result.data;
+                    context.commit('SET_LIST_ITEMS', items);
+                },
+                function (error) {
+                    console.error(error);
+                }
+            );
+        },
+        addItemsToSection: function (context) {
+            var items = context.getters.addedItems;
+
+            if (items.length > 0) {
+                Vue.http.LPRequest({
+                    type: 'add-items-to-section',
+                    'section-id': context.getters.section,
+                    items: JSON.stringify(items)
+                }).then(
+                    function (response) {
+                        console.log(response);
+                    },
+                    function (error) {
+                        console.error(error);
+                    }
+                );
+            }
+        }
+    };
+
+    return {
+        namespaced: true,
+        state: state,
+        getters: getters,
+        mutations: mutations,
+        actions: actions
+    }
+})(window, Vue, LP_Helpers, lq_course_editor);
+
+/**
+ * Root Store
+ *
+ * @since 3.0.0
+ */
+(function (exports, Vue, Vuex, helpers, data) {
+    var state = helpers.cloneObject(data.root);
 
     state.status = 'success';
     state.countCurrentRequest = 0;
@@ -58,12 +197,6 @@
         },
         'REMOVE_SECTION': function (state, index) {
             state.sections.splice(index, 1);
-        },
-        'TOGGLE_CHOOSE_ITEMS': function (state) {
-            state.chooseItems.open = !state.chooseItems.open;
-        },
-        'SET_LIST_ITEMS': function (state, items) {
-            state.chooseItems.items = items;
         }
     };
 
@@ -79,33 +212,6 @@
             if (context.getters.currentRequest === 0) {
                 context.commit('UPDATE_STATUS', status);
             }
-        },
-
-        toggleChooseItems: function (context) {
-            context.commit('TOGGLE_CHOOSE_ITEMS');
-        },
-
-        searchItems: function (context, payload) {
-            Vue.http.LPRequest({
-                type: 'search-items',
-                query: payload.query,
-                'item-type': payload.type,
-                page: payload.page
-            }).then(
-                function (response) {
-                    var result = response.body;
-
-                    if (!result.success) {
-                        return;
-                    }
-
-                    var items = result.data;
-                    context.commit('SET_LIST_ITEMS', items);
-                },
-                function (error) {
-                    console.error(error);
-                }
-            );
         },
 
         addNewSection: function (context) {
@@ -189,22 +295,22 @@
         }
     };
 
-    /**
-     * Vuex Store
-     *
-     * @type {Store}
-     */
     exports.LP_Curriculum_Store = new Vuex.Store({
         state: state,
         getters: getters,
         mutations: mutations,
-        actions: actions
+        actions: actions,
+        modules: {
+            ci: LP_Choose_Items_Modal_Store
+        }
     });
 
-})(window, Vue, Vuex, lq_course_editor);
+})(window, Vue, Vuex, LP_Helpers, lq_course_editor);
 
 /**
  * HTTP
+ *
+ * @since 3.0.0
  */
 (function (exports, Vue, $store) {
     Vue.http.LPRequest = function (payload) {
@@ -245,6 +351,8 @@
 
 /**
  * Init app.
+ *
+ * @since 3.0.0
  */
 (function ($, Vue) {
     $(document).ready(function () {

@@ -91,7 +91,7 @@ if ( 0 != $post->ID ) {
 					//					}
 					?>
 				</div>
-<?php }?>
+
 				<div class="misc-pub-section curtime misc-pub-curtime">
 				<span id="timestamp"><?php printf( $stamp, $date ); ?></span>
 				<a href="#edit_timestamp" class="edit-timestamp hide-if-no-js"><span aria-hidden="true"><?php _e( 'Edit' ); ?></span>
@@ -100,7 +100,7 @@ if ( 0 != $post->ID ) {
 					<legend class="screen-reader-text"><?php _e( 'Date and time' ); ?></legend>
 					<?php touch_time( ( $action === 'edit' ), 1 ); ?>
 				</fieldset>
-				</div><?php // /misc-pub-section ?>
+				</div><?php // /misc-pub-section ?><?php }?>
 			<?php endif; ?>
 		</div>
 		<div id="major-publishing-actions">

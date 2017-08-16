@@ -10,7 +10,7 @@
 
 defined( 'ABSPATH' ) || exit();
 
-class LP_Order extends LP_Abstract_Post_Data {
+class LP_Order extends LP_Abstract_Object_Data {
 
 	/**
 	 * @var array
@@ -18,11 +18,26 @@ class LP_Order extends LP_Abstract_Post_Data {
 	protected $_data = array(
 		'user_id'          => '',
 		'order_date'       => '',
-		'modified_date'    => '',
+		'date_modified'    => '',
 		'customer_message' => '',
 		'customer_note'    => '',
-		'status'           => '',
+		'order_status'     => '',
 		'user_ip'          => ''
+	);
+
+	protected $_meta_keys = array(
+		'_user_id'              => 'user',
+		'_order_currency'       => 'currency',
+		'_order_subtotal'       => 'subtotal',
+		'_order_total'          => 'total',
+		'_payment_method'       => 'payment_method',
+		'_payment_method_title' => 'payment_method_title',
+		'_order_version'        => 'order_version',
+		'_edit_last'            => '',
+		'_edit_lock'            => '',
+		'_prices_include_tax'   => '',
+		'_order_key'            => '',
+		'_user_ip'              => ''
 	);
 
 	/**
@@ -61,26 +76,42 @@ class LP_Order extends LP_Abstract_Post_Data {
 	 *
 	 * @param string $format
 	 *
-	 * @return string
+	 * @return string|LP_Datetime
 	 */
-	public function get_date( $format = '' ) {
-		$date = $this->get_data( 'order_date' );
+	public function get_order_date( $format = '' ) {
+		$date    = $this->get_data( 'order_date' );
+		$strtime = strtotime( $date );
 
 		switch ( $format ) {
 			case 'd':
-				$return = date( 'Y-m-d', strtotime( $date ) );
+				$return = date( 'Y-m-d', $strtime );
 				break;
 			case 'h':
-				$return = date( 'H', strtotime( $date ) );
+				$return = date( 'H', $strtime );
 				break;
 			case 'm':
-				$return = date( 'i', strtotime( $date ) );
+				$return = date( 'i', $strtime );
+				break;
+			case 'timestamp':
+				$return = $strtime;
 				break;
 			default:
-				return $date;
+				$return = $format ? date( $format, $strtime ) : $date;
 		}
 
 		return $return;
+	}
+
+	/**
+	 * Set order date.
+	 *
+	 * @param int|string $date
+	 */
+	public function set_order_date( $date ) {
+		if ( is_numeric( $date ) ) {
+			$date = date( 'Y-m-d H:i:s', $date );
+		}
+		$this->_set_data( 'order_date', $date );
 	}
 
 	/**
@@ -175,7 +206,7 @@ class LP_Order extends LP_Abstract_Post_Data {
 	 * Updates order to new status if needed
 	 *
 	 * @param mixed $new_status
-	 * @param bool $force Force to update/trigger action even the status is not changed
+	 * @param bool  $force Force to update/trigger action even the status is not changed
 	 *
 	 * @return bool
 	 * @throws Exception
@@ -202,7 +233,7 @@ class LP_Order extends LP_Abstract_Post_Data {
 			wp_cache_set( $this->get_id(), $this->post, 'posts' );
 
 			// Update order data
-			$this->set_data( 'status', 'lp-' . $new_status );
+			$this->_set_data( 'status', 'lp-' . $new_status );
 
 			// Trigger actions after status was changed
 			do_action( 'learn_press_order_status_' . $new_status, $the_id );
@@ -411,7 +442,7 @@ class LP_Order extends LP_Abstract_Post_Data {
 	 * Add a new item to order.
 	 *
 	 * @param mixed $item
-	 * @param int $quantity
+	 * @param int   $quantity
 	 * @param array $meta
 	 *
 	 * @return bool
@@ -794,8 +825,28 @@ class LP_Order extends LP_Abstract_Post_Data {
 		return $this->get_data( 'order_title', __( 'Order on', 'learnpress' ) . ' ' . current_time( "l jS F Y h:i:s A" ) );
 	}
 
-	public function get_parent() {
-		return $this->get_data( 'parent', 0 );
+	public function get_parent_id() {
+		return $this->get_data( 'parent_id', 0 );
+	}
+
+	public function set_parent_id( $parent_id ) {
+		$this->_set_data( 'parent_id', $parent_id );
+	}
+
+	public function set_user_id( $user_id ) {
+		$this->_set_data( 'user_id', $user_id );
+	}
+
+	public function get_user_id(){
+		return $this->get_data('user_id');
+	}
+
+	public function get_date_modified() {
+		return $this->get_data( 'date_modified' );
+	}
+
+	public function set_date_modified( $date ) {
+		$this->_set_data( 'date_modified', $date );
 	}
 
 	public function save() {
@@ -818,5 +869,19 @@ class LP_Order extends LP_Abstract_Post_Data {
 		learn_press_deprecated_function( 'new LP_Order', '3.0', 'learn_press_get_order' );
 
 		return learn_press_get_order( $order );
+	}
+
+	/** Getter/Setter  **/
+
+	public function set_customer_message( $message ) {
+		$this->_set_data( 'customer_message', $message );
+	}
+
+	public function set_customer_note( $note ) {
+		$this->_set_data( 'customer_note', $note );
+	}
+
+	public function set_status(){
+
 	}
 }
