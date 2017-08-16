@@ -24,11 +24,12 @@
  */
 var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
     var state = helpers.cloneObject(data.chooseItems);
+    state.sectionId = false;
 
     var getters = {
         items: function (state, _getters) {
-            return state.items.filter(function(item) {
-                var find = _getters.addedItems.find(function(_item) {
+            return state.items.filter(function (item) {
+                var find = _getters.addedItems.find(function (_item) {
                     return item.id === _item.id;
                 });
 
@@ -43,12 +44,18 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
         },
         types: function (state) {
             return state.types;
+        },
+        section: function () {
+            return state.sectionId;
         }
     };
 
     var mutations = {
         'TOGGLE': function (state) {
             state.open = !state.open;
+        },
+        'SET_SECTION': function (state, sectionId) {
+            state.sectionId = sectionId;
         },
         'SET_LIST_ITEMS': function (state, items) {
             state.items = items;
@@ -59,21 +66,19 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
         'REMOVE_ADDED_ITEM': function (state, index) {
             state.addedItems.splice(index, 1);
         },
-        'RESET': function(state) {
+        'RESET': function (state) {
             state.addedItems = [];
         }
     };
 
     var actions = {
-        init: function(context) {
-            context.commit('RESET');
-        },
         toggle: function (context) {
             context.commit('TOGGLE');
-
-            if (context.getters.isOpen) {
-                context.dispatch('init');
-            }
+        },
+        open: function (context, sectionId) {
+            context.commit('SET_SECTION', sectionId);
+            context.commit('RESET');
+            context.commit('TOGGLE');
         },
         addItem: function (context, item) {
             context.commit('ADD_ITEM', item);
@@ -102,6 +107,24 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
                     console.error(error);
                 }
             );
+        },
+        addItemsToSection: function (context) {
+            var items = context.getters.addedItems;
+
+            if (items.length > 0) {
+                Vue.http.LPRequest({
+                    type: 'add-items-to-section',
+                    'section-id': context.getters.section,
+                    items: JSON.stringify(items)
+                }).then(
+                    function (response) {
+                        console.log(response);
+                    },
+                    function (error) {
+                        console.error(error);
+                    }
+                );
+            }
         }
     };
 

@@ -97,7 +97,7 @@ learn_press_admin_view( 'course/section-item' );
                     $store.dispatch('updateSection', JSON.stringify(this.section));
                 },
                 openChooseItems: function () {
-                    $store.dispatch('ci/toggle');
+                    $store.dispatch('ci/open', parseInt(this.section.id));
                 }
             }
         });

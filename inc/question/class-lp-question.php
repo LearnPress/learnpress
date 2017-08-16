@@ -37,7 +37,7 @@ class LP_Question extends LP_Abstract_Course_Item {
 	/**
 	 * @var string
 	 */
-	protected $_item_type = 'question';
+	protected $_item_type = 'lp_question';
 
 	/**
 	 * Any features this question support.

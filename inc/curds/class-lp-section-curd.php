@@ -6,6 +6,18 @@
  * @since 3.0.0
  */
 class LP_Section_CURD implements LP_Interface_CURD {
+	private $course_id = false;
+
+	/**
+	 * LP_Section_CURD constructor.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param $course_id
+	 */
+	public function __construct( $course_id ) {
+		$this->course_id = $course_id;
+	}
 
 	/**
 	 * Parse input data.
@@ -81,7 +93,7 @@ class LP_Section_CURD implements LP_Interface_CURD {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param $args
+	 * @param $args array
 	 *
 	 * @return mixed
 	 */
@@ -161,7 +173,7 @@ class LP_Section_CURD implements LP_Interface_CURD {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param $id
+	 * @param $id string
 	 *
 	 * @return bool
 	 */
@@ -182,5 +194,79 @@ class LP_Section_CURD implements LP_Interface_CURD {
 		);
 
 		return ! ! $result;
+	}
+
+	/**
+	 * @param $items array
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param $section_id string
+	 * @param $items array
+	 *
+	 * @return array
+	 */
+	public function add_items_section( $section_id, $items = array() ) {
+		$course = learn_press_get_course( $this->course_id );
+
+		$order         = 1;
+		$current_items = array();
+		$sections      = $course->get_curriculum_raw();
+		if ( empty( $sections ) ) {
+			return array();
+		}
+		foreach ( $sections as $section ) {
+			if ( $section['id'] == $section_id ) {
+				$current_items = $section['items'];
+				break;
+			}
+		}
+
+		global $wpdb;
+
+		$all_items = array_merge( $current_items, $items );
+
+		foreach ( $all_items as $item ) {
+			$exist = $this->item_section_exist( $section_id, $item['id'] );
+
+			if ( $exist ) {
+				$wpdb->update(
+					$wpdb->learnpress_section_items,
+					array(
+						'item_order' => $order
+					),
+					array(
+						'section_id' => $section_id,
+						'item_id'    => $item['id']
+					)
+				);
+			} else {
+				$wpdb->insert(
+					$wpdb->learnpress_section_items,
+					array(
+						'section_id' => $section_id,
+						'item_id'    => $item['id'],
+						'item_order' => $order,
+						'item_type'  => $item['type'],
+					)
+				);
+			}
+
+			$order ++;
+		}
+
+		return $course->get_curriculum_raw();
+	}
+
+	private function item_section_exist( $section_id, $item_id ) {
+		global $wpdb;
+
+		$section_id = intval( $section_id );
+		$item_id    = intval( $item_id );
+
+		$query = $wpdb->prepare( "SELECT * FROM {$wpdb->learnpress_section_items} WHERE section_id = %d AND item_id = %d", $section_id, $item_id );
+		$item  = $wpdb->get_row( $query, ARRAY_A );
+
+		return ! ! $item;
 	}
 }

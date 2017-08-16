@@ -84,6 +84,7 @@ learn_press_admin_view( 'course/added-items-preview' );
                 },
                 close: function () {
                     $store.dispatch('ci/toggle');
+                    $store.dispatch('ci/addItemsToSection');
                 },
                 changeTab: function (key) {
                     if (key === this.tab) {

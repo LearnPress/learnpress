@@ -135,12 +135,28 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				wp_send_json_error();
 			}
 
-			$curd = new LP_Section_CURD();
+			$curd = new LP_Section_CURD( $course_id );
 
 			$result = $args['type'];
 			switch ( $args['type'] ) {
 				case 'sync-sections':
 					$result = $course->get_curriculum_raw();
+
+					break;
+
+				case 'add-items-to-section':
+					$items      = isset( $_POST['items'] ) ? $_POST['items'] : false;
+					$section_id = isset( $_POST['section-id'] ) ? $_POST['section-id'] : false;
+
+					$items = wp_unslash( $items );
+					$items = json_decode( $items, true );
+
+					if ( ! $items || ! $section_id ) {
+						$result = new WP_Error();
+						break;
+					}
+
+					$result = $curd->add_items_section( $section_id, $items );
 
 					break;
 
