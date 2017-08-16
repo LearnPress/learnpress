@@ -5,10 +5,7 @@
  * @since 3.0.0
  */
 
-$item_types = apply_filters( 'learn-press/course/item-section-types', array(
-	'lesson' => __( 'Lesson', 'learnpress' ),
-	'quiz'   => __( 'Quiz', 'learnpress' ),
-) );
+learn_press_admin_view( 'course/added-items-preview' );
 
 ?>
 
@@ -44,6 +41,8 @@ $item_types = apply_filters( 'learn-press/course/item-section-types', array(
                         <li @click="addItem(item)"><span class="dashicons dashicons-plus"></span>{{item.title}}</li>
                     </template>
                 </ul>
+
+                <lp-added-items-preview></lp-added-items-preview>
             </div>
         </div>
     </div>
@@ -66,7 +65,7 @@ $item_types = apply_filters( 'learn-press/course/item-section-types', array(
                 var vm = this;
 
                 $store.subscribe(function (mutation) {
-                    if (!mutation || mutation.type !== 'TOGGLE_CHOOSE_ITEMS') {
+                    if (!mutation || mutation.type !== 'ci/TOGGLE') {
                         return;
                     }
 
@@ -110,9 +109,6 @@ $item_types = apply_filters( 'learn-press/course/item-section-types', array(
                 }
             },
             computed: {
-                addedItems: function () {
-                    return $store.getters['ci/addedItems'];
-                },
                 items: function () {
                     return $store.getters['ci/items'];
                 },

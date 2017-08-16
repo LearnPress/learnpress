@@ -47,8 +47,11 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
         'SET_LIST_ITEMS': function (state, items) {
             state.items = items;
         },
-        'ADD_ITEM': function (item) {
+        'ADD_ITEM': function (state, item) {
             state.addedItems.push(item);
+        },
+        'REMOVE_ADDED_ITEM': function (state, index) {
+            state.addedItems.splice(index, 1);
         }
     };
 
@@ -58,6 +61,9 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
         },
         addItem: function (context, item) {
             context.commit('ADD_ITEM', item);
+        },
+        removeItem: function (context, index) {
+            context.commit('REMOVE_ADDED_ITEM', index);
         },
         searchItems: function (context, payload) {
             Vue.http.LPRequest({
