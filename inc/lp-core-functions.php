@@ -2706,6 +2706,74 @@ function learn_press_tooltip( $tooltip, $html = false ) {
 	echo '<span class="learn-press-tooltip" data-tooltip="' . $tooltip . '"></span>';
 }
 
+function learn_press_timezone_offset() {
+	if ( $tz = get_option( 'timezone_string' ) ) {
+		$timezone = new DateTimeZone( $tz );
+		return $timezone->getOffset( new DateTime( 'now' ) );
+	} else {
+		return floatval( get_option( 'gmt_offset', 0 ) ) * HOUR_IN_SECONDS;
+	}
+}
+
 add_filter( 'script_loader_src', function ( $s ) {
 	return add_query_arg( 'no-cache', microtime( true ), $s );
 } );
+
+function learn_press_touch_time( $edit = 1, $for_post = 1, $tab_index = 0, $multi = 0 ) {
+	global $wp_locale;
+	$post = get_post();
+
+	if ( $for_post )
+		$edit = ! ( in_array($post->post_status, array('draft', 'pending') ) && (!$post->post_date_gmt || '0000-00-00 00:00:00' == $post->post_date_gmt ) );
+
+	$tab_index_attribute = '';
+	if ( (int) $tab_index > 0 )
+		$tab_index_attribute = " tabindex=\"$tab_index\"";
+
+	$time_adj = current_time('timestamp');
+	$post_date = ($for_post) ? $post->post_date : get_comment()->comment_date;
+	$jj = ($edit) ? mysql2date( 'd', $post_date, false ) : gmdate( 'd', $time_adj );
+	$mm = ($edit) ? mysql2date( 'm', $post_date, false ) : gmdate( 'm', $time_adj );
+	$aa = ($edit) ? mysql2date( 'Y', $post_date, false ) : gmdate( 'Y', $time_adj );
+	$hh = ($edit) ? mysql2date( 'H', $post_date, false ) : gmdate( 'H', $time_adj );
+	$mn = ($edit) ? mysql2date( 'i', $post_date, false ) : gmdate( 'i', $time_adj );
+	$ss = ($edit) ? mysql2date( 's', $post_date, false ) : gmdate( 's', $time_adj );
+
+	$cur_jj = gmdate( 'd', $time_adj );
+	$cur_mm = gmdate( 'm', $time_adj );
+	$cur_aa = gmdate( 'Y', $time_adj );
+	$cur_hh = gmdate( 'H', $time_adj );
+	$cur_mn = gmdate( 'i', $time_adj );
+
+//	$month = '<select name="mm">';
+//	for ( $i = 1; $i < 13; $i = $i +1 ) {
+//		$monthnum = zeroise($i, 2);
+//		$monthtext = $wp_locale->get_month_abbrev( $wp_locale->get_month( $i ) );
+//		$month .= "\t\t\t" . '<option value="' . $monthnum . '" data-text="' . $monthtext . '" ' . selected( $monthnum, $mm, false ) . '>';
+//		/* translators: 1: month number (01, 02, etc.), 2: month abbreviation */
+//		$month .= sprintf( __( '%1$s-%2$s' ), $monthnum, $monthtext ) . "</option>\n";
+//	}
+//	$month .= '</select>';
+//
+//	$day = '<input type="number" ' . ( $multi ? '' : 'id="jj" ' ) . 'name="jj" value="' . $jj . '" size="2" maxlength="2"' . $tab_index_attribute . ' autocomplete="off" min="0" max="31" />';
+//	$year = '<input type="text" ' . ( $multi ? '' : 'id="aa" ' ) . 'name="aa" value="' . $aa . '" size="4" maxlength="4"' . $tab_index_attribute . ' autocomplete="off" />';
+//	$hour = '<input type="text" ' . ( $multi ? '' : 'id="hh" ' ) . 'name="hh" value="' . $hh . '" size="2" maxlength="2"' . $tab_index_attribute . ' autocomplete="off" />';
+//	$minute = '<input type="text" ' . ( $multi ? '' : 'id="mn" ' ) . 'name="mn" value="' . $mn . '" size="2" maxlength="2"' . $tab_index_attribute . ' autocomplete="off" />';
+//	/* translators: 1: month, 2: day, 3: year, 4: hour, 5: minute */
+//	printf( __( '%1$s %2$s, %3$s @ %4$s:%5$s' ), $month, $day, $year, $hour, $minute );
+
+	$map = array(
+		'mm' => array( $mm, $cur_mm ),
+		'jj' => array( $jj, $cur_jj ),
+		'aa' => array( $aa, $cur_aa ),
+		'hh' => array( $hh, $cur_hh ),
+		'mn' => array( $mn, $cur_mn ),
+	);
+	foreach ( $map as $timeunit => $value ) {
+		list( $unit, $curr ) = $value;
+
+		echo '<input type="hidden" id="hidden_' . $timeunit . '" name="hidden_' . $timeunit . '" value="' . $unit . '" />' . "\n";
+		$cur_timeunit = 'cur_' . $timeunit;
+		echo '<input type="hidden" id="' . $cur_timeunit . '" name="' . $cur_timeunit . '" value="' . $curr . '" />' . "\n";
+	}
+}

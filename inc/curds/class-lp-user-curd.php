@@ -23,7 +23,6 @@ class LP_User_CURD implements LP_Interface_CURD {
 	public function load( &$user ) {
 		$user_id = $user->get_id();
 		if ( false !== ( $user_object = get_user_by( 'id', $user_id ) ) ) {
-			new WP_User();
 			$user->set_data(
 				array(
 					'email'         => $user_object->user_email,
@@ -36,7 +35,7 @@ class LP_User_CURD implements LP_Interface_CURD {
 					'date_created'  => $user_object->user_registered,
 					'date_modified' => get_user_meta( $user_id, 'last_update', true ),
 					'role'          => ! empty( $user_object->roles[0] ) ? $user_object->roles[0] : 'student',
-				)
+				), null, true
 			);
 		}
 
@@ -278,5 +277,21 @@ class LP_User_CURD implements LP_Interface_CURD {
 				$item['meta'][ $v['meta_id'] ] = $v;
 			}
 		}
+	}
+
+	public function add_meta( &$object, $meta ) {
+		// TODO: Implement add_meta() method.
+	}
+
+	public function delete_meta( &$object, $meta ) {
+		// TODO: Implement delete_meta() method.
+	}
+
+	public function read_meta( &$object ) {
+		// TODO: Implement read_meta() method.
+	}
+
+	public function update_meta( &$object, $meta ) {
+		// TODO: Implement update_meta() method.
 	}
 }

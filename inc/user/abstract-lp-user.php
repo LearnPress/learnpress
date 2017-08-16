@@ -54,6 +54,19 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 
 	protected static $_users = array();
 
+	protected $_data = array(
+		'email'         => '',
+		'user_login'    => '',
+		'description'   => '',
+		'first_name'    => '',
+		'last_name'     => '',
+		'nickname'      => '',
+		'display_name'  => '',
+		'date_created'  => '',
+		'date_modified' => '',
+		'role'
+	);
+
 	/**
 	 * @var LP_User_CURL|null
 	 */
@@ -2852,7 +2865,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 					$uploaded_profile_src = false;
 				}
 
-				$this->set_data( 'uploaded_profile_src', $uploaded_profile_src );
+				$this->_set_data( 'uploaded_profile_src', $uploaded_profile_src );
 
 			}
 		}
@@ -3005,4 +3018,6 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	public function is_guest() {
 		return metadata_exists( 'user', $this->get_id(), '_lp_temp_user' );
 	}
+
+	/** Getter/Setter functions */
 }
