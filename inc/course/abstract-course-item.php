@@ -95,7 +95,6 @@ abstract class LP_Abstract_Course_Item extends LP_Abstract_Post_Data {
 			'id'      => $this->get_id(),
 			'type'    => $this->get_item_type(),
 			'title'   => $post->post_title,
-			'content' => $post->post_content,
 		);
 	}
 }

@@ -5,7 +5,7 @@
  * @since 3.0.0
  */
 
-learn_press_admin_view( 'course/curriculum-v2' );
+learn_press_admin_view( 'course/curriculum' );
 learn_press_admin_view( 'course/choose-items' );
 
 
