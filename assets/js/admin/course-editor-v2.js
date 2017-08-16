@@ -26,8 +26,14 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
     var state = helpers.cloneObject(data.chooseItems);
 
     var getters = {
-        items: function (state) {
-            return state.items;
+        items: function (state, _getters) {
+            return state.items.filter(function(item) {
+                var find = _getters.addedItems.find(function(_item) {
+                    return item.id === _item.id;
+                });
+
+                return !find;
+            });
         },
         addedItems: function (state) {
             return state.addedItems;
@@ -52,12 +58,22 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
         },
         'REMOVE_ADDED_ITEM': function (state, index) {
             state.addedItems.splice(index, 1);
+        },
+        'RESET': function(state) {
+            state.addedItems = [];
         }
     };
 
     var actions = {
+        init: function(context) {
+            context.commit('RESET');
+        },
         toggle: function (context) {
             context.commit('TOGGLE');
+
+            if (context.getters.isOpen) {
+                context.dispatch('init');
+            }
         },
         addItem: function (context, item) {
             context.commit('ADD_ITEM', item);

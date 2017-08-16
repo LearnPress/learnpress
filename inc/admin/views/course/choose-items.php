@@ -70,11 +70,15 @@ learn_press_admin_view( 'course/added-items-preview' );
                     }
 
                     if (vm.show) {
-                        vm.requestSearch();
+                       vm.init();
                     }
                 });
             },
             methods: {
+                init: function() {
+                    this.requestSearch();
+                },
+
                 addItem: function (item) {
                     $store.dispatch('ci/addItem', item);
                 },
