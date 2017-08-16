@@ -11,8 +11,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-function learn_press_generate_order_key(){
-	return apply_filters( 'learn_press_generate_order_key', uniqid( 'order' ) );
+/**
+ * Generate unique key for an order.
+ *
+ * @return mixed
+ */
+function learn_press_generate_order_key() {
+	return apply_filters( 'learn-press/order-key', uniqid( 'order' ) );
 }
 
 /**
@@ -82,7 +87,7 @@ function learn_press_create_order( $order_data ) {
 		$order_meta   = array();
 		foreach ( $meta_default as $k => $v ) {
 			if ( array_key_exists( $k, $order_data ) ) {
-				$order_meta[ $k ] = $order_data[$k];
+				$order_meta[ $k ] = $order_data[ $k ];
 			}
 		}
 		$order_meta = wp_parse_args(
@@ -121,23 +126,6 @@ function learn_press_create_order( $order_data ) {
 
 function learn_press_update_order( $order_data ) {
 	return learn_press_create_order( $order_data );
-}
-
-function learn_press_get_booking_id_by_key( $order_key ) {
-	global $wpdb;
-
-	$order_id = $wpdb->get_var(
-		$wpdb->prepare( "
-			SELECT post_id
-			FROM {$wpdb->prefix}postmeta pm
-			INNER JOIN {$wpdb->prefix}posts p ON p.ID = pm.post_id
-			WHERE meta_key = '_hb_booking_key'
-			AND meta_value = %s
-			AND p.post_type = %s
-		", $order_key, LP_ORDER_CPT )
-	);
-
-	return $order_id;
 }
 
 /**************************/
@@ -222,18 +210,57 @@ function learn_press_get_order_by_item_id( $item_id ) {
 	return false;
 }
 
+/**
+ * Add order item meta data.
+ *
+ * @param int    $item_id
+ * @param string $meta_key
+ * @param mixed  $meta_value
+ * @param string $prev_value
+ *
+ * @return false|int
+ */
 function learn_press_add_order_item_meta( $item_id, $meta_key, $meta_value, $prev_value = '' ) {
 	return add_metadata( 'learnpress_order_item', $item_id, $meta_key, $meta_value, $prev_value );
 }
 
+/**
+ * Update order item meta data.
+ *
+ * @param int    $item_id
+ * @param string $meta_key
+ * @param mixed  $meta_value
+ * @param string $prev_value
+ *
+ * @return bool|int
+ */
 function learn_press_update_order_item_meta( $item_id, $meta_key, $meta_value, $prev_value = '' ) {
 	return update_metadata( 'learnpress_order_item', $item_id, $meta_key, $meta_value, $prev_value );
 }
 
+/**
+ * Delete order item meta data.
+ *
+ * @param int    $item_id
+ * @param string $meta_key
+ * @param mixed  $meta_value
+ * @param bool   $delete_all
+ *
+ * @return bool
+ */
 function learn_press_delete_order_item_meta( $item_id, $meta_key, $meta_value, $delete_all = false ) {
 	return delete_metadata( 'learnpress_order_item', $item_id, $meta_key, $meta_value, $delete_all );
 }
 
+/**
+ * Get order item meta data.
+ *
+ * @param int    $item_id
+ * @param string $meta_key
+ * @param bool   $single
+ *
+ * @return mixed
+ */
 function learn_press_get_order_item_meta( $item_id, $meta_key, $single = true ) {
 	return get_metadata( 'learnpress_order_item', $item_id, $meta_key, $single );
 }
@@ -272,7 +299,7 @@ function learn_press_user_can_view_order( $order_id, $user_id = null ) {
  *
  * @param mixed $the_order
  *
- * @return LP_Order object instance
+ * @return LP_Order|bool object instance
  */
 function learn_press_get_order( $the_order = false ) {
 	global $post;
@@ -516,27 +543,9 @@ function learn_press_handle_purchase_request() {
 }
 
 function learn_press_get_orders( $args = array() ) {
-	$defaults = array(
-		'post_type' => LP_ORDER_CPT,
-	);
+	_deprecated_function( __FUNCTION__, '3.x.x', 'get_posts' );
 
-	$args = wp_parse_args( $args, $defaults );
-
-	$args['meta_query'] = empty( $args['meta_query'] ) ? array() : $args['meta_query'];
-
-	if ( ! empty( $args['transaction_method'] ) ) {
-		$meta_query           = array(
-			'key'   => '_learn_press_transaction_method',
-			'value' => $args['transaction_method'],
-		);
-		$args['meta_query'][] = $meta_query;
-	}
-
-	$args   = apply_filters( 'learn_press_get_orders_get_posts_args', $args );
 	$orders = get_posts( $args );
-	if ( $orders ) {
-		// do somethings
-	}
 
 	return apply_filters( 'learn_press_get_orders', $orders, $args );
 }
@@ -561,15 +570,19 @@ function learn_press_count_orders( $args = array() ) {
 	}
 	global $wpdb;
 	$statuses = $args['status'];
+
 	if ( ! $statuses ) {
 		$statuses = learn_press_get_register_order_statuses();
 		$statuses = array_keys( $statuses );
 	}
+
 	settype( $statuses, 'array' );
 	$size_of_status = sizeof( $statuses );
+
 	foreach ( $statuses as $k => $status ) {
 		$statuses[ $k ] = ! preg_match( '~^lp-~', $status ) ? 'lp-' . $status : $status;
 	}
+
 	$format     = array_fill( 0, $size_of_status, '%s' );
 	$counts     = array_fill_keys( $statuses, 0 );
 	$statuses[] = LP_ORDER_CPT;
@@ -580,6 +593,7 @@ function learn_press_count_orders( $args = array() ) {
 		AND post_type = %s
 		GROUP BY o.post_status
 	", $statuses );
+
 	if ( $results = $wpdb->get_results( $query ) ) {
 		foreach ( $results as $result ) {
 			if ( array_key_exists( $result->status, $counts ) ) {
@@ -591,20 +605,14 @@ function learn_press_count_orders( $args = array() ) {
 	return $size_of_status > 1 ? $counts : reset( $counts );
 }
 
-function learn_press_get_course_price_text( $price, $course_id ) {
-	if ( ! $price && LP_COURSE_CPT == get_post_type( $course_id ) ) {
-		$price = __( 'Free', 'learnpress' );
-	}
-
-	return $price;
-}
-
-add_filter( 'learn_press_get_course_price', 'learn_press_get_course_price_text', 5, 2 );
-
-function learn_press_get_order_items( $order_id ) {
-	return get_post_meta( $order_id, '_learn_press_order_items', true );
-}
-
+/**
+ * Format price with currency and other settings.
+ *
+ * @param float $price
+ * @param array $args
+ *
+ * @return int|string
+ */
 function learn_press_format_price( $price, $args = array() ) {
 	if ( is_bool( $args ) || is_string( $args ) ) {
 		$with_currency = $args;
@@ -664,9 +672,16 @@ function learn_press_format_price( $price, $args = array() ) {
 	return $price;
 }
 
+/**
+ * Update
+ *
+ * @param $order_id
+ *
+ * @return array|bool
+ */
 function learn_press_update_order_items( $order_id ) {
 	if ( ! $order = learn_press_get_order( $order_id ) ) {
-		return;
+		return false;
 	}
 	$subtotal = 0;
 	$total    = 0;
@@ -689,12 +704,9 @@ function learn_press_update_order_items( $order_id ) {
 
 	update_post_meta( $order_id, '_order_currency', learn_press_get_currency() );
 	update_post_meta( $order_id, '_prices_include_tax', 'no' );
-	//update_post_meta( $order_id, '_user_ip_address', learn_press_get_ip() );
-	//update_post_meta( $order_id, '_user_agent', isset( $_SERVER['HTTP_USER_AGENT'] ) ? $_SERVER['HTTP_USER_AGENT'] : '' );
-	//update_post_meta( $order_id, '_user_id', learn_press_get_current_user_id() );
 	update_post_meta( $order_id, '_order_subtotal', $subtotal );
 	update_post_meta( $order_id, '_order_total', $total );
-	update_post_meta( $order_id, '_order_key', apply_filters( 'learn_press_generate_order_key', uniqid( 'order' ) ) );
+	update_post_meta( $order_id, '_order_key', learn_press_generate_order_key() );
 	update_post_meta( $order_id, '_payment_method', '' );
 	update_post_meta( $order_id, '_payment_method_title', '' );
 	update_post_meta( $order_id, '_order_version', '1.0' );
@@ -706,47 +718,26 @@ function learn_press_update_order_items( $order_id ) {
 	);
 }
 
+/**
+ * Format order's ID in ten numbers. Eg: 0000000XXX.
+ *
+ * @param int $order_number
+ *
+ * @since 2.0.0
+ *
+ * @return string
+ */
 function learn_press_transaction_order_number( $order_number ) {
 	return '#' . sprintf( "%'.010d", $order_number );
 }
 
-function learn_press_transaction_order_date( $date, $format = null ) {
-	$format = empty( $format ) ? get_option( 'date_format' ) : $format;
-
-	return date( $format, strtotime( $date ) );
-}
-
-function learn_press_get_course_order( $course_id, $user_id = null ) {
-	if ( ! $user_id ) {
-		$user_id = get_current_user_id();
-	}
-
-	global $wpdb;
-	$order = false;
-	$query = $wpdb->prepare( "
-        SELECT ID, pm2.meta_value
-        FROM {$wpdb->posts} p INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
-        INNER JOIN {$wpdb->postmeta} pm2 ON p.ID = pm2.post_id AND pm2.meta_key = %s
-        WHERE p.post_type = %s AND pm.meta_key = %s AND pm.meta_value = %d
-    ", '_learn_press_order_items', LP_ORDER_CPT, '_learn_press_customer_id', $user_id );
-	if ( $orders = $wpdb->get_results( $query ) ) {
-		foreach ( $orders as $order_data ) {
-			$order_id   = $order_data->ID;
-			$order_data = maybe_unserialize( $order_data->meta_value );
-			if ( $order_data && ! empty( $order_data->products ) ) {
-				if ( isset( $order_data->products[ $course_id ] ) ) {
-					$order = $order_id;
-					// a user only can take a course one time
-					// so it should be existing in one and only one order
-					break;
-				}
-			}
-		}
-	}
-
-	return $order;
-}
-
+/**
+ * Get label of an order's statues.
+ *
+ * @param int|string $order_id - Optional. ID of an order or status.
+ *
+ * @return string|bool
+ */
 function learn_press_get_order_status_label( $order_id = 0 ) {
 	$statuses = learn_press_get_order_statuses();
 	if ( is_numeric( $order_id ) ) {
@@ -755,9 +746,19 @@ function learn_press_get_order_status_label( $order_id = 0 ) {
 		$status = $order_id;
 	}
 
-	return ! empty( $statuses[ $status ] ) ? $statuses[ $status ] : __( 'Pending', 'learnpress' );
+	return ! empty( $statuses[ $status ] ) ? $statuses[ $status ] : false;
 }
 
+/**
+ * Get list of registered order's statuses and/or labels.
+ *
+ * @param bool $prefix
+ * @param bool $status_only
+ *
+ * @since 2.1.7
+ *
+ * @return array
+ */
 function learn_press_get_order_statuses( $prefix = true, $status_only = false ) {
 	$register_statues = learn_press_get_register_order_statuses();
 	if ( ! $prefix ) {
@@ -776,18 +777,30 @@ function learn_press_get_order_statuses( $prefix = true, $status_only = false ) 
 		$order_statuses = array_keys( $order_statuses );
 	}
 
-	return apply_filters( 'learn_press_order_statuses', $order_statuses );
+	// @deprecated
+	$order_statuses = apply_filters( 'learn_press_order_statuses', $order_statuses );
+
+	// @since 3.x.x
+	return apply_filters( 'learn-press/order-statues', $order_statuses );
 }
 
+/**
+ * Get list of registered order's statues for registering with wp post's status.
+ *
+ * @since 2.0.0
+ *
+ * @return array
+ */
 function learn_press_get_register_order_statuses() {
-	$order_statues                  = array();
-	$order_statues['lp-completed']  = array(
-		'label'                     => _x( 'Completed', 'Order status', 'learnpress' ),
+	$order_statues = array();
+
+	$order_statues['lp-pending']    = array(
+		'label'                     => _x( 'Pending Payment', 'Order status', 'learnpress' ),
 		'public'                    => false,
 		'exclude_from_search'       => false,
 		'show_in_admin_all_list'    => true,
 		'show_in_admin_status_list' => true,
-		'label_count'               => _n_noop( 'Completed <span class="count">(%s)</span>', 'Completed <span class="count">(%s)</span>', 'learnpress' )
+		'label_count'               => _n_noop( 'Pending Payment <span class="count">(%s)</span>', 'Pending Payment <span class="count">(%s)</span>', 'learnpress' )
 	);
 	$order_statues['lp-processing'] = array(
 		'label'                     => _x( 'Processing', 'Order status', 'learnpress' ),
@@ -797,13 +810,13 @@ function learn_press_get_register_order_statuses() {
 		'show_in_admin_status_list' => true,
 		'label_count'               => _n_noop( 'Processing <span class="count">(%s)</span>', 'Processing <span class="count">(%s)</span>', 'learnpress' )
 	);
-	$order_statues['lp-pending']    = array(
-		'label'                     => _x( 'Pending Payment', 'Order status', 'learnpress' ),
+	$order_statues['lp-completed']  = array(
+		'label'                     => _x( 'Completed', 'Order status', 'learnpress' ),
 		'public'                    => false,
 		'exclude_from_search'       => false,
 		'show_in_admin_all_list'    => true,
 		'show_in_admin_status_list' => true,
-		'label_count'               => _n_noop( 'Pending Payment <span class="count">(%s)</span>', 'Pending Payment <span class="count">(%s)</span>', 'learnpress' )
+		'label_count'               => _n_noop( 'Completed <span class="count">(%s)</span>', 'Completed <span class="count">(%s)</span>', 'learnpress' )
 	);
 	$order_statues['lp-cancelled']  = array(
 		'label'                     => _x( 'Cancelled', 'Order status', 'learnpress' ),

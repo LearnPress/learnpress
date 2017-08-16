@@ -1031,13 +1031,13 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 						$message = __( 'Course has updated by Reviewer', 'learnpress' );
 					}
 			}
-			if ( apply_filters( 'learn_press_review_log_message', $message, $post->ID, $user->id ) ) {
+			if ( apply_filters( 'learn_press_review_log_message', $message, $post->ID, $user->get_id() ) ) {
 				$table = $wpdb->prefix . 'learnpress_review_logs';
 				$wpdb->insert(
 					$table,
 					array(
 						'course_id' => $post->ID,
-						'user_id'   => $user->id,
+						'user_id'   => $user->get_id(),
 						'message'   => $message,
 						'date'      => current_time( 'mysql' ),
 						'status'    => $new_status,
@@ -1045,7 +1045,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					),
 					array( '%d', '%d', '%s', '%s', '%s', '%s' )
 				);
-				do_action( 'learn_press_update_review_log', $wpdb->insert_id, $post->ID, $user->id );
+				do_action( 'learn_press_update_review_log', $wpdb->insert_id, $post->ID, $user->get_id() );
 			}
 			if ( $action ) {
 				do_action( "learn_press_course_submit_{$action}", $post->ID, $user );

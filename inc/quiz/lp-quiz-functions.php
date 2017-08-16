@@ -117,7 +117,7 @@ function learn_press_question_class( $question = null, $args = array() /*, $clas
 			} else {
 				$classes[] = 'skipped';
 			}
-		} else if ( $status == 'started' && $question->id == $user->get_current_quiz_question( $quiz->id, $course->id ) ) {
+		} else if ( $status == 'started' && $question->id == $user->get_current_quiz_question( $quiz->id, $course->get_id() ) ) {
 			$classes[] = 'current';
 		}
 
@@ -303,7 +303,7 @@ function learn_press_redirect_to_question( $template ) {
 		$user        = learn_press_get_current_user();
 		$quiz_id     = get_the_ID();
 		$quiz_status = $user->get_quiz_status( $quiz_id );
-		if ( $quiz_status == 'started' && learn_press_get_quiz_time_remaining( $user->id, $quiz_id ) == 0 && get_post_meta( $quiz_id, '_lpr_duration', true ) ) {
+		if ( $quiz_status == 'started' && learn_press_get_quiz_time_remaining( $user->get_id(), $quiz_id ) == 0 && get_post_meta( $quiz_id, '_lpr_duration', true ) ) {
 			$user->finish_quiz( $quiz_id );
 			$quiz_status = 'completed';
 		}

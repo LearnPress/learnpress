@@ -27,7 +27,7 @@ if ( post_password_required() ) {
 
 <div class="course-summary">
 
-	<?php if ( $user->has_course_status( $course->id, array( 'enrolled', 'finished' ) ) || !$course->is_require_enrollment() ) { ?>
+	<?php if ( $user->has_course_status( $course->get_id(), array( 'enrolled', 'finished' ) ) || !$course->is_require_enrollment() ) { ?>
 		<?php learn_press_get_template( 'single-course/content-learning.php' ); ?>
 	<?php } else { ?>
 		<?php learn_press_get_template( 'single-course/content-landing.php' ); ?>

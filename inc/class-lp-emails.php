@@ -144,7 +144,7 @@ class LP_Emails {
 			return;
 		}
 		$mail = $this->emails['LP_Email_Finished_Course'];
-		$mail->trigger( $course_id, $user->id, $result );
+		$mail->trigger( $course_id, $user->get_id(), $result );
 	}
 
 	/**

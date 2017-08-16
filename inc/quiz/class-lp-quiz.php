@@ -204,7 +204,7 @@ class LP_Quiz extends LP_Abstract_Course_Item {
 				$questions = array_keys( $questions );
 			}
 
-			$current_question_id = $user->get_current_quiz_question( $this->id, $course->id );
+			$current_question_id = $user->get_current_quiz_question( $this->id, $course->get_id() );
 			$question            = LP_Question_Factory::get_question( $current_question_id );
 			$duration            = $this->duration;
 			$remaining           = $user->get_quiz_time_remaining( $this->id, $course_id );

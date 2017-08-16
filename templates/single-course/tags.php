@@ -13,7 +13,7 @@ if ( !defined( 'ABSPATH' ) ) {
 
 $course = LP()->global['course'];
 
-$tags = apply_filters( 'learn_press_course_tags', get_the_term_list( $course->id, 'course_tag', __( 'Tags: ', 'learnpress' ), ', ', '' ) );
+$tags = apply_filters( 'learn_press_course_tags', get_the_term_list( $course->get_id(), 'course_tag', __( 'Tags: ', 'learnpress' ), ', ', '' ) );
 if ( !$tags ) {
 	return;
 }

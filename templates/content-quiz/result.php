@@ -46,7 +46,7 @@ $history = $user->get_quiz_results( $quiz->id );
 			<?php echo sprintf( __( 'Your time: %s', 'learnpress' ), learn_press_seconds_to_time( $history->time ) ); ?>
 		</p>
 	<?php endif; ?>
-	<?php if ( $grade = $user->get_quiz_graduation( $quiz->id, $course->id ) ): ?>
+	<?php if ( $grade = $user->get_quiz_graduation( $quiz->id, $course->get_id() ) ): ?>
 		<?php $grade_text = learn_press_get_graduation_text($grade);?>
 		<div class="quiz-grade">
 			<p><?php echo sprintf( __( 'Your quiz grade <span class="%s">%s</span>', 'learnpress' ), $grade, $grade_text ); ?></p>

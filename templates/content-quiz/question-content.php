@@ -16,7 +16,7 @@ $quiz   = isset( $item ) ? $item : LP()->global['course-item'];
 if ( !$quiz ) {
 	return;
 }
-$question_id = $user->get_current_quiz_question( $quiz->id, $course->id );//$quiz->get_current_question();
+$question_id = $user->get_current_quiz_question( $quiz->id, $course->get_id() );//$quiz->get_current_question();
 
 if ( !$question_id ) {
 	return;
@@ -34,7 +34,7 @@ $question = LP_Question_Factory::get_question( $question_id );
 			</div>
 		<?php endif; ?>
 		<?php
-		$question->render( array( 'quiz_id' => $quiz->id, 'course_id' => $course->id ) );
+		$question->render( array( 'quiz_id' => $quiz->id, 'course_id' => $course->get_id() ) );
 		?>
 		<?php learn_press_get_template( 'content-question/hint.php', array( 'quiz' => $quiz ) ); ?>
 	</div>

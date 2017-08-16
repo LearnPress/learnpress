@@ -11,10 +11,10 @@ $user        = learn_press_get_current_user();
 $course      = LP()->global['course'];
 $course_item = $course->get_item( $item->ID );
 
-$status      = $user->get_course_status( $course->id );
+$status      = $user->get_course_status( $course->get_id() );
 $item_status = $user->get_item_status( $item->ID );
 
-$security = wp_create_nonce( sprintf( 'complete-item-%d-%d-%d', $user->get_id(), $course->id, $item->ID ) );
+$security = wp_create_nonce( sprintf( 'complete-item-%d-%d-%d', $user->get_id(), $course->get_id(), $item->ID ) );
 
 $result     = $user->get_quiz_results( $item->ID );
 $has_result = false;
@@ -28,7 +28,7 @@ if ( in_array( $item_status, array( 'completed', 'started' ) ) ) {
 		<span class="lp-label lp-label-preview"><?php _e( 'Preview', 'learnpress' ); ?></span>
 	<?php endif; ?>
 	<?php
-	if ( $user->can_view_item( $item->ID, $course->id ) !== false ) {
+	if ( $user->can_view_item( $item->ID, $course->get_id() ) !== false ) {
 		if ( $item->post_type == 'lp_quiz' ) {
 
 			$passing_grade_type = get_post_meta( $item->ID, '_lp_passing_grade_type', true );
@@ -45,7 +45,7 @@ if ( in_array( $item_status, array( 'completed', 'started' ) ) ) {
 				?><span class="item-loop-meta-text item-final"><?php _e( 'Final Quiz', 'learnpress' ); ?></span><?php
 			}
 			if ( $item_status == 'completed' ) {
-				$grade = $user->get_quiz_graduation( $course_item->id, $course->id );
+				$grade = $user->get_quiz_graduation( $course_item->id, $course->get_id() );
 				if ( $grade === 'passed' ) {
 					?>
 				<span class="lp-icon item-status item-status-passed" title="<?php esc_attr_e( 'Passed', 'learnpress' ); ?>"></span><?php

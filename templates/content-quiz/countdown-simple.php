@@ -21,7 +21,7 @@ $duration = $quiz->get_duration_html();
 if ( strpos( $duration, ':' ) === false ) {
 	return;
 }
-if ( $user->has_completed_quiz( $quiz->id, $course->id ) || $user->has_finished_course( $course->id ) ) {
+if ( $user->has_completed_quiz( $quiz->id, $course->get_id() ) || $user->has_finished_course( $course->get_id() ) ) {
 	return;
 }
 ?>

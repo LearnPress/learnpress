@@ -31,9 +31,9 @@ class LP_Schedules {
 		if ( learn_press_is_course() && is_user_logged_in() ) {
 			$course = learn_press_get_course();
 			$user   = learn_press_get_current_user();
-			if ( $user->has_enrolled_course( $course->id ) && ! $user->has_finished_course( $course->id ) && $course->is_expired( $user->id ) <= 0 ) {
+			if ( $user->has_enrolled_course( $course->get_id() ) && ! $user->has_finished_course( $course->get_id() ) && $course->is_expired( $user->get_id() ) <= 0 ) {
 				$this->schedule_update_user_items();
-				wp_redirect( get_permalink( $course->id ) );
+				wp_redirect( get_permalink( $course->get_id() ) );
 			}
 		}
 
@@ -157,10 +157,10 @@ class LP_Schedules {
 						return;
 					}
 					$this->_update_user_course_items_expired( $course, $user );
-					$item_meta_id = $user->finish_course( $course->id );
+					$item_meta_id = $user->finish_course( $course->get_id() );
 					if ( $item_meta_id ) {
 						learn_press_update_user_item_meta( $item_meta_id, '_finish_type', 'automation' );
-						do_action( 'learn_press_user_finish_course_automation', $course->id, $item_meta_id, $user->id );
+						do_action( 'learn_press_user_finish_course_automation', $course->get_id(), $item_meta_id, $user->get_id() );
 					}
 				}
 			}
@@ -182,7 +182,7 @@ class LP_Schedules {
 			AND start_time <> %s
 			AND item_type <> %s
 			AND ref_id = %d
-		", '0000-00-00 00:00:00', '0000-00-00 00:00:00', 'lp_course', $course->id );
+		", '0000-00-00 00:00:00', '0000-00-00 00:00:00', 'lp_course', $course->get_id() );
 		if ( $results = $wpdb->get_results( $query ) ) {
 			foreach ( $results as $row ) {
 				switch ( $row->item_type ) {
@@ -193,15 +193,15 @@ class LP_Schedules {
 							continue;
 						}
 						if ( $row->item_type == LP_QUIZ_CPT ) {
-							$results = $user->finish_quiz( $row->item_id, $course->id );
+							$results = $user->finish_quiz( $row->item_id, $course->get_id() );
 							if ( $results && $results->history_id ) {
 								learn_press_update_user_item_meta( $results->history_id, '_completed_type', 'automation' );
-								do_action( 'learn_press_user_complete_quiz_automation', $row->item_id, $results, $user->id );
+								do_action( 'learn_press_user_complete_quiz_automation', $row->item_id, $results, $user->get_id() );
 							}
 						}
 						break;
 					default:
-						do_action( 'learn_press_user_complete_item_automation', $row->item_id, $course->id, $user->id );
+						do_action( 'learn_press_user_complete_item_automation', $row->item_id, $course->get_id(), $user->get_id() );
 				}
 			}
 		}

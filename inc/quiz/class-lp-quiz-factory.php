@@ -123,10 +123,10 @@ class LP_Quiz_Factory {
 	public static function yyy() {
 		$user = learn_press_get_current_user();
 		if ( $user instanceof LP_User_Guest ) {
-			$expire  = get_user_meta( $user->id, '_lp_anonymous_user_expire', true );
+			$expire  = get_user_meta( $user->get_id(), '_lp_anonymous_user_expire', true );
 			$current = time();
 			if ( ( $current - ( $expire - 60 ) ) < 10 ) {
-				update_user_meta( $user->id, '_lp_anonymous_user_expire', $current + 60 );
+				update_user_meta( $user->get_id(), '_lp_anonymous_user_expire', $current + 60 );
 			}
 		}
 	}
@@ -211,10 +211,10 @@ class LP_Quiz_Factory {
 		} else {
 			$result = $user->start_quiz( $quiz_id, $course_id );
 			if ( $result ) {
-				learn_press_setup_user_course_data( $user->id, $course_id );
+				learn_press_setup_user_course_data( $user->get_id(), $course_id );
 				$response['status']        = $result->status;
 				$response['html']          = file_get_contents( learn_press_get_current_url() );// learn_press_get_template_content( 'single-course/content-item-lp_quiz.php' );
-				$response['course_result'] = self::get_course_info( $user->id, $course_id );
+				$response['course_result'] = self::get_course_info( $user->get_id(), $course_id );
 			} else {
 				$response['result'] = 'error';
 			}

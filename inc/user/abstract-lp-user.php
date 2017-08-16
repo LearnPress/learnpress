@@ -129,31 +129,6 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	}
 
 	/**
-	 * Short function to get user meta.
-	 *
-	 * @param string $key
-	 * @param bool   $single
-	 *
-	 * @return mixed
-	 */
-	public function get_meta( $key, $single = true ) {
-		return get_user_meta( $this->get_id(), $key, $single );
-	}
-
-	/**
-	 * Short function to update user meta.
-	 *
-	 * @param string $key
-	 * @param mixed  $value
-	 * @param mixed  $prev
-	 *
-	 * @return bool|int
-	 */
-	public function update_meta( $key, $value, $prev = '' ) {
-		return update_user_meta( $this->get_id(), $key, $value, $prev );
-	}
-
-	/**
 	 * Magic function to get user data
 	 *
 	 * @param $key

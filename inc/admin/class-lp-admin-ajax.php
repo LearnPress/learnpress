@@ -925,7 +925,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				'exclude'        => $exclude
 			);
 			if ( ! $user->is_admin() ) {
-				$args['author'] = $user->id;
+				$args['author'] = $user->get_id();
 			}
 			if ( $term ) {
 				$args['s'] = $term;

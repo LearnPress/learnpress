@@ -12,8 +12,8 @@ $user   = learn_press_get_current_user();
 if ( !$course ) {
 	return;
 }
-$status = $user->get( 'course-status', $course->id );
-if ( !$status || !$user->has_purchased_course( $course->id ) ) {
+$status = $user->get( 'course-status', $course->get_id() );
+if ( !$status || !$user->has_purchased_course( $course->get_id() ) ) {
 	return;
 }
 $force             = isset( $force ) ? $force : false;
@@ -45,13 +45,13 @@ $course_results    = $course->evaluate_course_results();
 	<div class="course-progress">
 		<h4 class="lp-course-progress-heading">
 			<?php esc_html_e( 'Course results', 'learnpress' ); ?>
-			<?php if ( $tooltip = learn_press_get_course_results_tooltip( $course->id ) ) { ?>
+			<?php if ( $tooltip = learn_press_get_course_results_tooltip( $course->get_id() ) ) { ?>
 				<span class="learn-press-tooltip" data-content="<?php echo esc_html( $tooltip ); ?>"></span>
 			<?php } ?>
 		</h4>
 		<div class="lp-course-status">
 			<span class="number"><?php echo $current; ?><span class="percentage-sign">%</span></span>
-			<?php if ( $grade = $user->get_course_grade( $course->id ) ) { ?>
+			<?php if ( $grade = $user->get_course_grade( $course->get_id() ) ) { ?>
 				<span class="grade <?php echo esc_attr( $grade ); ?>">
 				<?php learn_press_course_grade_html( $grade ); ?>
 				</span>

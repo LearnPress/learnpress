@@ -104,26 +104,26 @@ function learn_press_header_item_only_view_first() {
 	$user   = learn_press_get_current_user();
 	$course = learn_press_get_the_course();
 	$item   = LP()->global['course-item'];
-	$status = $user->get_course_status( $course->id );
+	$status = $user->get_course_status( $course->get_id() );
 	// may be need add condition is not is_admin()
 	if ( $status === 'enrolled' && $item ) {
 
 		// If status is not null that means user has viewed this item
-		$item_status = $user->get_item_status( $item->ID, $course->id );
+		$item_status = $user->get_item_status( $item->ID, $course->get_id() );
 		if ( !( '' == $item_status || false == $item_status ) ) {
 			return;
 		}
 		$item_status = 'viewed';
-		if ( $parent_id = learn_press_get_user_item_id( $user->id, $course->id ) ) {
+		if ( $parent_id = learn_press_get_user_item_id( $user->get_id(), $course->get_id() ) ) {
 			learn_press_update_user_item_field(
 				array(
-					'user_id'    => $user->id,
+					'user_id'    => $user->get_id(),
 					'item_id'    => $item->ID,
 					'start_time' => current_time( 'mysql' ),
 					'end_time'   => '0000-00-00 00:00:00',
 					'item_type'  => $item->post->item_type,
 					'status'     => $item_status,
-					'ref_id'     => $course->id,
+					'ref_id'     => $course->get_id(),
 					'ref_type'   => $course->post->post_type,
 					'parent_id'  => $parent_id
 				)
@@ -131,7 +131,7 @@ function learn_press_header_item_only_view_first() {
 		}
 		// Update cache
 		$item_statuses                                                  = LP_Cache::get_item_statuses( false, array() );
-		$item_statuses[$user->id . '-' . $course->id . '-' . $item->ID] = $item_status;
+		$item_statuses[$user->get_id() . '-' . $course->get_id() . '-' . $item->ID] = $item_status;
 		LP_Cache::set_item_statuses( $item_statuses );
 
 
