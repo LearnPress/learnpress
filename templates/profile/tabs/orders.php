@@ -4,10 +4,16 @@
  *
  * @author  ThimPress
  * @package LearnPress/Template
- * @version x.x
+ * @version 3.x.x
  */
-defined( 'ABSPATH' ) || exit();
 
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit;
+?>
+
+<?php
 $user_id = learn_press_get_current_user_id();
 $page    = get_query_var( 'paged', 1 );
 $limit   = 10;

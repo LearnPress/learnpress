@@ -1,15 +1,19 @@
 <?php
 /**
- * User Courses enrolled
+ * Template for displaying course loop in profile page.
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 2.1.4.2
+ * @version 3.x.x
  */
 
-if ( !defined( 'ABSPATH' ) ) {
-	exit;
-}
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit;
+?>
+
+<?php
 $course_id = absint( $course_id );
 /* Check status course */
 $all_status = learn_press_get_subtabs_course();

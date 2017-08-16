@@ -81,10 +81,12 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 
 			if ( ! self::$_hook_added ) {
 				self::$_hook_added = true;
+				// show profile tab content (for tab without section)
+				add_action( 'learn-press/profile-content', array( $this, 'profile_content' ), 10, 3 );
 				// show sections
 				add_action( 'learn-press/before-profile-content', array( $this, 'section_tabs' ), 10, 3 );
 				// show sections content
-				add_action( 'learn-press/profile-section-content', array( $this, 'section_content' ), 10, 3 );
+				add_action( 'learn-press/profile-section-content', array( $this, 'section_content' ) );
 
 				/*
 				 * Register actions with request handler class to process
@@ -96,6 +98,19 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 					 */
 					LP_Request_Handler::register( 'save-profile-' . $action, array( $this, 'save' ) );
 				}
+			}
+		}
+
+		/**
+		 * Show content of profile tab has not section.
+		 *
+		 * @param $tab
+		 * @param $args
+		 * @param $user
+		 */
+		public function profile_content( $tab, $args, $user ) {
+			if ( ( $location = learn_press_locate_template( 'profile/tabs/' . $tab . '.php' ) ) && file_exists( $location ) ) {
+				include $location;
 			}
 		}
 
@@ -114,13 +129,11 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * Show profile sections content.
 		 *
 		 * @param $section
-		 * @param $args
-		 * @param $user
 		 */
-		public function section_content( $section, $args, $user ) {
+		public function section_content( $section ) {
 			$current = $this->get_current_section();// ! empty( $wp->query_vars['section'] ) ? $wp->query_vars['section'] : false;
 			if ( $current === $section ) {
-				$location = learn_press_locate_template( 'profile/tabs/edit/' . $section . '.php' );
+				$location = learn_press_locate_template( 'profile/tabs/settings/' . $section . '.php' );
 				if ( $location && file_exists( $location ) ) {
 					include $location;
 				} else {

@@ -1,13 +1,16 @@
 <?php
 /**
- * Template for displaying sections in the top inside a tab content.
+ * Template for displaying sections in the top of profile tab content.
  *
  * @author  ThimPress
  * @package LearnPress/Templates
  * @version 3.x.x
  */
 
-defined( 'ABSPATH' ) or die();
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit;
 ?>
 
 <?php

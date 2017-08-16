@@ -2,8 +2,9 @@
 /**
  * @author        ThimPress
  * @package       LearnPress/Templates
- * @version       1.0
+ * @version       3.x.x
  */
+
 
 defined( 'ABSPATH' ) || exit();
 global $wp_query, $wp;

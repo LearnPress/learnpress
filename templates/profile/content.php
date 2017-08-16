@@ -34,18 +34,16 @@ $current = $profile->get_current_tab();
 			// show profile sections
 			do_action( 'learn-press/before-profile-content', $tab_key, $tab_data, $user ); ?>
 
-			<?php if ( isset( $tab_data['sections'] ) ) { ?>
-				<?php foreach ( $tab_data['sections'] as $section => $section_data ) {
 
-					if ( is_callable( $section_data['callback'] ) ) {
-						echo call_user_func_array( $section_data['callback'], array(
-							$section,
-							$section_data,
-							$profile
-						) );
-					} else {
-						do_action( 'learn-press/profile-section-content', $section, $section_data, $profile );
-					}
+			<?php if ( empty( $tab_data['sections'] ) ) {
+				if ( is_callable( $tab_data['callback'] ) ) {
+					echo call_user_func_array( $tab_data['callback'], array( $tab_key, $tab_data, $user ) );
+				} else {
+					do_action( 'learn-press/profile-content', $tab_key, $tab_data, $user );
+				}
+			} else {
+				foreach ( $tab_data['sections'] as $key => $section ) {
+					do_action( 'learn-press/profile-section-content', $key );
 				}
 			} ?>
 
