@@ -13,10 +13,10 @@ if ( !defined( 'ABSPATH' ) ) {
 $course          = LP()->global['course'];
 $quiz            = LP()->global['course-item'];
 $user            = learn_press_get_current_user();
-$completed       = $user->get_quiz_status( $quiz->id, $course->id ) == 'completed';
-$checked         = $user->has_checked_answer( $this->id, $quiz->id, $course->id );
+$completed       = $user->get_quiz_status( $quiz->id, $course->get_id() ) == 'completed';
+$checked         = $user->has_checked_answer( $this->id, $quiz->id, $course->get_id() );
 $show_result     = !$completed ? $checked : $quiz->show_result == 'yes';
-$course_finished = $user->has_finished_course( $course->id );
+$course_finished = $user->has_finished_course( $course->get_id() );
 
 ?>
 <?php if ( $answers = $this->answers ) : ?>

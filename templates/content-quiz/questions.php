@@ -16,9 +16,9 @@ $user   = LP()->user;
 if ( !$quiz || learn_press_quiz_is_hide_question( $quiz->id ) ) {
 	return;
 }
-$status       = $user->get_quiz_status( $quiz->id, $course->id );
+$status       = $user->get_quiz_status( $quiz->id, $course->get_id() );
 $heading      = apply_filters( 'learn_press_list_questions_heading', __( 'List of questions', 'learnpress' ) );
-$no_permalink = $user->has_quiz_status( array( '', 'completed', 'viewed' ), $quiz->id, $course->id );
+$no_permalink = $user->has_quiz_status( array( '', 'completed', 'viewed' ), $quiz->id, $course->get_id() );
 ?>
 
 <?php if ( $heading ) { ?>

@@ -21,7 +21,7 @@ if ( !empty( $_REQUEST['done-action'] ) ) {
 	}
 	$data['setUrl'] = $url;
 } else {
-	if ( $user->has_quiz_status( 'started', $item->id, $course->id ) ) {
+	if ( $user->has_quiz_status( 'started', $item->id, $course->get_id() ) ) {
 		if ( !empty( $lp_query->query_vars['question'] ) ) {
 			$url = trailingslashit( $course->get_item_link( $item->id ) ) . $lp_query->query_vars['question'] . '/';
 		}

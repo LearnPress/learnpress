@@ -15,10 +15,10 @@ $course = LP()->global['course'];
 
 $user = learn_press_get_current_user();
 
-if ( !$user->has( 'purchased-course', $course->id ) ) {
+if ( !$user->has( 'purchased-course', $course->get_id() ) ) {
 	return;
 }
 
-$status = $user->get_course_status( $course->id );
+$status = $user->get_course_status( $course->get_id() );
 ?>
 <span class="learn-press-course-status <?php echo sanitize_title( $status ); ?>"><?php echo ucfirst( $status ); ?></span>

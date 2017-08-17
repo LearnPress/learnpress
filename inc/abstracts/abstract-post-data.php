@@ -24,29 +24,4 @@ class LP_Abstract_Post_Data extends LP_Abstract_Object_Data {
 	public function get_status() {
 		return $this->get_data( 'status' );
 	}
-
-	/**
-	 * Get post meta.
-	 *
-	 * @param string $key
-	 * @param bool   $single
-	 *
-	 * @return mixed
-	 */
-	public function get_meta( $key, $single = true ) {
-		return get_post_meta( $this->get_id(), $key, $single );
-	}
-
-	/**
-	 * Update post meta.
-	 *
-	 * @param string $key
-	 * @param mixed  $value
-	 * @param mixed  $prev
-	 *
-	 * @return bool|int
-	 */
-	public function update_meta( $key, $value, $prev = '' ) {
-		return update_post_meta( $this->get_id(), $key, $value, $prev );
-	}
 }

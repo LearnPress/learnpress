@@ -54,6 +54,19 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 
 	protected static $_users = array();
 
+	protected $_data = array(
+		'email'         => '',
+		'user_login'    => '',
+		'description'   => '',
+		'first_name'    => '',
+		'last_name'     => '',
+		'nickname'      => '',
+		'display_name'  => '',
+		'date_created'  => '',
+		'date_modified' => '',
+		'role'
+	);
+
 	/**
 	 * @var LP_User_CURL|null
 	 */
@@ -113,31 +126,6 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 		}
 
 		return $course_item;
-	}
-
-	/**
-	 * Short function to get user meta.
-	 *
-	 * @param string $key
-	 * @param bool   $single
-	 *
-	 * @return mixed
-	 */
-	public function get_meta( $key, $single = true ) {
-		return get_user_meta( $this->get_id(), $key, $single );
-	}
-
-	/**
-	 * Short function to update user meta.
-	 *
-	 * @param string $key
-	 * @param mixed  $value
-	 * @param mixed  $prev
-	 *
-	 * @return bool|int
-	 */
-	public function update_meta( $key, $value, $prev = '' ) {
-		return update_user_meta( $this->get_id(), $key, $value, $prev );
 	}
 
 	/**
@@ -2852,7 +2840,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 					$uploaded_profile_src = false;
 				}
 
-				$this->set_data( 'uploaded_profile_src', $uploaded_profile_src );
+				$this->_set_data( 'uploaded_profile_src', $uploaded_profile_src );
 
 			}
 		}
@@ -3005,4 +2993,6 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	public function is_guest() {
 		return metadata_exists( 'user', $this->get_id(), '_lp_temp_user' );
 	}
+
+	/** Getter/Setter functions */
 }

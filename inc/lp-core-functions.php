@@ -1337,7 +1337,7 @@ function learn_press_user_maybe_is_a_teacher( $user = null ) {
 		$role = in_array( 'lp_teacher', $user->user->roles ) ? 'lp_teacher' : false;
 	}
 
-	return apply_filters( 'learn_press_user_maybe_is_a_teacher', $role, $user->id );
+	return apply_filters( 'learn_press_user_maybe_is_a_teacher', $role, $user->get_id() );
 }
 
 function learn_press_get_become_a_teacher_form_fields() {
@@ -1411,7 +1411,7 @@ function learn_press_process_become_a_teacher_form( $args = null ) {
 		}
 		$notify_message = apply_filters( 'learn_press_filter_become_a_teacher_notify_message', '', $args, $fields, $user );
 		if ( ! $notify_message ) {
-			$notify_message = sprintf( __( 'The user <a href="%s">%s</a> wants to be a teacher.', 'learnpress' ) . "\r\n", admin_url( 'user-edit.php?user_id=' . $user->id ), $user->user_login ) . "\r\n";
+			$notify_message = sprintf( __( 'The user <a href="%s">%s</a> wants to be a teacher.', 'learnpress' ) . "\r\n", admin_url( 'user-edit.php?user_id=' . $user->get_id() ), $user->user_login ) . "\r\n";
 			$notify_message .= sprintf( __( 'Name: %s', 'learnpress' ), $args['name'] ) . "\r\n";
 			$notify_message .= sprintf( __( 'Email: %s', 'learnpress' ), $args['email'] ) . "\r\n";
 			$notify_message .= sprintf( __( 'Phone: %s', 'learnpress' ), $args['phone'] ) . "\r\n";
@@ -1420,7 +1420,7 @@ function learn_press_process_become_a_teacher_form( $args = null ) {
 					$notify_message .= $field['title'] . ': ' . ( isset( $field['value'] ) ? $field['value'] : '' ) . "\r\n";
 				}
 			}
-			$notify_message .= wp_specialchars_decode( sprintf( __( 'Accept: %s', 'learnpress' ), wp_nonce_url( admin_url( 'user-edit.php?user_id=' . $user->id ) . '&action=accept-to-be-teacher', 'accept-to-be-teacher' ) ) ) . "\r\n";
+			$notify_message .= wp_specialchars_decode( sprintf( __( 'Accept: %s', 'learnpress' ), wp_nonce_url( admin_url( 'user-edit.php?user_id=' . $user->get_id() ) . '&action=accept-to-be-teacher', 'accept-to-be-teacher' ) ) ) . "\r\n";
 		}
 
 		$args = array(
@@ -1433,7 +1433,7 @@ function learn_press_process_become_a_teacher_form( $args = null ) {
 		@call_user_func_array( 'wp_mail', $args );
 		$return['message'][] = learn_press_get_message( __( 'Your request has been sent! We will get in touch with you soon!', 'learnpress' ) );
 
-		set_transient( 'learn_press_become_teacher_sent_' . $user->id, 'yes', HOUR_IN_SECONDS * 2 );
+		set_transient( 'learn_press_become_teacher_sent_' . $user->get_id(), 'yes', HOUR_IN_SECONDS * 2 );
 	}
 
 	$return['result'] = $error ? 'error' : 'success';
@@ -2195,21 +2195,21 @@ function learn_press_auto_enroll_user_to_courses( $order_id ) {
 			if ( ! $user->is_exists() ) {
 				continue;
 			}
-			if ( $user->has( 'enrolled-course', $course->id ) ) {
+			if ( $user->has( 'enrolled-course', $course->get_id() ) ) {
 				continue;
 			}
 			// error. this scripts will create new order each course item
-			// $return = $user->enroll( $course->id, $order_id );
+			// $return = $user->enroll( $course->get_id(), $order_id );
 			$return = learn_press_update_user_item_field( array(
 				'user_id'    => $user->get_id(),
-				'item_id'    => $course->id,
+				'item_id'    => $course->get_id(),
 				'start_time' => current_time( 'mysql' ),
 				'status'     => 'enrolled',
 				'end_time'   => '0000-00-00 00:00:00',
-				'ref_id'     => $order->id, //$course->id,
+				'ref_id'     => $order->id, //$course->get_id(),
 				'item_type'  => 'lp_course',
 				'ref_type'   => 'lp_order',
-				'parent_id'  => $user->get_course_history_id( $course->id )
+				'parent_id'  => $user->get_course_history_id( $course->get_id() )
 			) );
 			///learn_press_update_user_item_meta( $return, '_lp_order', $order->id );
 			//learn_press_update_user_item_meta( $return, '_lp_active', 'yes' );
@@ -2479,7 +2479,7 @@ if ( ! function_exists( 'learn_press_cancel_order_process' ) ) {
 		$order    = learn_press_get_order( $order_id );
 		$user     = learn_press_get_current_user();
 
-		$url = learn_press_user_profile_link( $user->id, LP()->settings->get( 'profile_endpoints.profile-orders' ) );
+		$url = learn_press_user_profile_link( $user->get_id(), LP()->settings->get( 'profile_endpoints.profile-orders' ) );
 		if ( ! $order ) {
 			learn_press_add_message( sprintf( __( 'Order number <strong>%s</strong> not found', 'learnpress' ), $order_id ), 'error' );
 		} else if ( $order->has_status( 'pending' ) ) {
@@ -2706,6 +2706,74 @@ function learn_press_tooltip( $tooltip, $html = false ) {
 	echo '<span class="learn-press-tooltip" data-tooltip="' . $tooltip . '"></span>';
 }
 
+function learn_press_timezone_offset() {
+	if ( $tz = get_option( 'timezone_string' ) ) {
+		$timezone = new DateTimeZone( $tz );
+		return $timezone->getOffset( new DateTime( 'now' ) );
+	} else {
+		return floatval( get_option( 'gmt_offset', 0 ) ) * HOUR_IN_SECONDS;
+	}
+}
+
 add_filter( 'script_loader_src', function ( $s ) {
 	return add_query_arg( 'no-cache', microtime( true ), $s );
 } );
+
+function learn_press_touch_time( $edit = 1, $for_post = 1, $tab_index = 0, $multi = 0 ) {
+	global $wp_locale;
+	$post = get_post();
+
+	if ( $for_post )
+		$edit = ! ( in_array($post->post_status, array('draft', 'pending') ) && (!$post->post_date_gmt || '0000-00-00 00:00:00' == $post->post_date_gmt ) );
+
+	$tab_index_attribute = '';
+	if ( (int) $tab_index > 0 )
+		$tab_index_attribute = " tabindex=\"$tab_index\"";
+
+	$time_adj = current_time('timestamp');
+	$post_date = ($for_post) ? $post->post_date : get_comment()->comment_date;
+	$jj = ($edit) ? mysql2date( 'd', $post_date, false ) : gmdate( 'd', $time_adj );
+	$mm = ($edit) ? mysql2date( 'm', $post_date, false ) : gmdate( 'm', $time_adj );
+	$aa = ($edit) ? mysql2date( 'Y', $post_date, false ) : gmdate( 'Y', $time_adj );
+	$hh = ($edit) ? mysql2date( 'H', $post_date, false ) : gmdate( 'H', $time_adj );
+	$mn = ($edit) ? mysql2date( 'i', $post_date, false ) : gmdate( 'i', $time_adj );
+	$ss = ($edit) ? mysql2date( 's', $post_date, false ) : gmdate( 's', $time_adj );
+
+	$cur_jj = gmdate( 'd', $time_adj );
+	$cur_mm = gmdate( 'm', $time_adj );
+	$cur_aa = gmdate( 'Y', $time_adj );
+	$cur_hh = gmdate( 'H', $time_adj );
+	$cur_mn = gmdate( 'i', $time_adj );
+
+//	$month = '<select name="mm">';
+//	for ( $i = 1; $i < 13; $i = $i +1 ) {
+//		$monthnum = zeroise($i, 2);
+//		$monthtext = $wp_locale->get_month_abbrev( $wp_locale->get_month( $i ) );
+//		$month .= "\t\t\t" . '<option value="' . $monthnum . '" data-text="' . $monthtext . '" ' . selected( $monthnum, $mm, false ) . '>';
+//		/* translators: 1: month number (01, 02, etc.), 2: month abbreviation */
+//		$month .= sprintf( __( '%1$s-%2$s' ), $monthnum, $monthtext ) . "</option>\n";
+//	}
+//	$month .= '</select>';
+//
+//	$day = '<input type="number" ' . ( $multi ? '' : 'id="jj" ' ) . 'name="jj" value="' . $jj . '" size="2" maxlength="2"' . $tab_index_attribute . ' autocomplete="off" min="0" max="31" />';
+//	$year = '<input type="text" ' . ( $multi ? '' : 'id="aa" ' ) . 'name="aa" value="' . $aa . '" size="4" maxlength="4"' . $tab_index_attribute . ' autocomplete="off" />';
+//	$hour = '<input type="text" ' . ( $multi ? '' : 'id="hh" ' ) . 'name="hh" value="' . $hh . '" size="2" maxlength="2"' . $tab_index_attribute . ' autocomplete="off" />';
+//	$minute = '<input type="text" ' . ( $multi ? '' : 'id="mn" ' ) . 'name="mn" value="' . $mn . '" size="2" maxlength="2"' . $tab_index_attribute . ' autocomplete="off" />';
+//	/* translators: 1: month, 2: day, 3: year, 4: hour, 5: minute */
+//	printf( __( '%1$s %2$s, %3$s @ %4$s:%5$s' ), $month, $day, $year, $hour, $minute );
+
+	$map = array(
+		'mm' => array( $mm, $cur_mm ),
+		'jj' => array( $jj, $cur_jj ),
+		'aa' => array( $aa, $cur_aa ),
+		'hh' => array( $hh, $cur_hh ),
+		'mn' => array( $mn, $cur_mn ),
+	);
+	foreach ( $map as $timeunit => $value ) {
+		list( $unit, $curr ) = $value;
+
+		echo '<input type="hidden" id="hidden_' . $timeunit . '" name="hidden_' . $timeunit . '" value="' . $unit . '" />' . "\n";
+		$cur_timeunit = 'cur_' . $timeunit;
+		echo '<input type="hidden" id="' . $cur_timeunit . '" name="' . $cur_timeunit . '" value="' . $curr . '" />' . "\n";
+	}
+}

@@ -7,7 +7,7 @@
  * @package LearnPress/Classes/CURD
  * @since   3.x.x
  */
-class LP_Course_CURD implements LP_Interface_CURD {
+class LP_Course_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	public function create( &$course ) {
 
 	}
@@ -67,7 +67,7 @@ class LP_Course_CURD implements LP_Interface_CURD {
 				'course_result'        => get_post_meta( $id, '_lp_course_result', true ),
 				'passing_condition'    => get_post_meta( $id, '_lp_passing_condition', true ),
 				'payment'              => get_post_meta( $id, '_lp_payment', true )
-			)
+			), null, true
 		);
 	}
 
@@ -229,7 +229,5 @@ class LP_Course_CURD implements LP_Interface_CURD {
 		return true;
 	}
 
-	public function duplicate($order_id){
-		$order = learn_press_get_order($order_id);
-	}
+
 }

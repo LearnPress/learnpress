@@ -5,7 +5,7 @@
  *
  * @since 3.0.0
  */
-class LP_Section_CURD implements LP_Interface_CURD {
+class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	private $course_id = false;
 
 	/**

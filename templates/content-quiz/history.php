@@ -14,12 +14,12 @@ $user   = learn_press_get_current_user();
 $course = learn_press_get_the_course();
 $quiz   = LP()->global['course-item'];
 
-if ( !$quiz->retake_count || !$user->has( 'completed-quiz', $quiz->id, $course->id ) ) {
+if ( !$quiz->retake_count || !$user->has( 'completed-quiz', $quiz->id, $course->get_id() ) ) {
 	return;
 }
 
 $limit   = 10;
-$history = $user->get_quiz_history( $quiz->id, $course->id );
+$history = $user->get_quiz_history( $quiz->id, $course->get_id() );
 reset( $history );
 $history_count = sizeof( $history );
 $view_id       = !empty( $_REQUEST['history_id'] ) ? $_REQUEST['history_id'] : key( $history );

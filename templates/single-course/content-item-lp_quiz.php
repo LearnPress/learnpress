@@ -12,7 +12,7 @@ if ( !$quiz ) {
 }
 
 $have_questions = $quiz->get_questions();
-$can_view_item  = $user->can( 'view-item', $quiz->id, $course->id );
+$can_view_item  = $user->can( 'view-item', $quiz->id, $course->get_id() );
 
 ?>
 <div class="content-item-quiz">
@@ -26,12 +26,12 @@ $can_view_item  = $user->can( 'view-item', $quiz->id, $course->id );
 		</div>
 
 		<div id="quiz-<?php echo $quiz->id; ?>" class="learn-press-content-item-summary">
-			<?php if ( $user->has_quiz_status( array( 'completed' ), $quiz->id, $course->id ) ): ?>
+			<?php if ( $user->has_quiz_status( array( 'completed' ), $quiz->id, $course->get_id() ) ): ?>
 				<?php learn_press_get_template( 'content-quiz/description.php' ); ?>
 				<?php learn_press_get_template( 'content-quiz/intro.php' ); ?>
 				<?php learn_press_get_template( 'content-quiz/result.php' ); ?>
 
-			<?php elseif ( $user->has( 'quiz-status', 'started', $quiz->id, $course->id ) ): ?>
+			<?php elseif ( $user->has( 'quiz-status', 'started', $quiz->id, $course->get_id() ) ): ?>
 				<?php if ( $have_questions ): ?>
 					<?php learn_press_get_template( 'content-quiz/question-content.php' ); ?>
 				<?php endif; ?>

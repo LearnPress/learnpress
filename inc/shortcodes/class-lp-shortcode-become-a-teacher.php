@@ -40,7 +40,7 @@ class LP_Shortcode_Become_A_Teacher extends LP_Abstract_Shortcode {
 		} elseif ( in_array( LP_TEACHER_ROLE, $user->user->roles ) ) {
 			$message = __( "You are a teacher now.", 'learnpress' );
 			$code    = 2;
-		} elseif ( get_transient( 'learn_press_become_teacher_sent_' . $user->id ) == 'yes' ) {
+		} elseif ( get_transient( 'learn_press_become_teacher_sent_' . $user->get_id() ) == 'yes' ) {
 			$message = __( 'Your request has been sent! We will get in touch with you soon!', 'learnpress' );
 			$code    = 3;
 		} elseif ( learn_press_user_maybe_is_a_teacher() ) {
