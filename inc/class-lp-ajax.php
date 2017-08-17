@@ -291,8 +291,8 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 
 			$course = LP_Course::get_course( $course_id );
 
-			$nonce_action = sprintf( 'learn-press-finish-course-%d-%d', $course_id, $user->id );
-			if ( ! $user->id || ! $course || ! wp_verify_nonce( $nonce, $nonce_action ) ) {
+			$nonce_action = sprintf( 'learn-press-finish-course-%d-%d', $course_id, $user->get_id() );
+			if ( ! $user->get_id() || ! $course || ! wp_verify_nonce( $nonce, $nonce_action ) ) {
 				wp_die( __( 'Access denied!', 'learnpress' ) );
 			}
 
@@ -323,7 +323,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			$type      = learn_press_get_request( 'type' );
 			$security  = learn_press_get_request( 'security' );
 			$response  = array();
-			if ( ! wp_verify_nonce( $security, sprintf( 'complete-item-%d-%d-%d', $user->id, $course_id, $id ) ) ) {
+			if ( ! wp_verify_nonce( $security, sprintf( 'complete-item-%d-%d-%d', $user->get_id(), $course_id, $id ) ) ) {
 				$response['result']  = 'fail';
 				$response['message'] = __( 'Bad request!', 'learnpress' );
 			} else {
@@ -493,7 +493,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			LP()->quiz = $quiz;
 			do_action( 'learn_press_load_quiz_question', $question_id, $quiz_id, $user_id );
 			$user = learn_press_get_current_user();
-			if ( $user->id != $user_id ) {
+			if ( $user->get_id() != $user_id ) {
 				learn_press_send_json(
 					array(
 						'result'  => 'error',
@@ -600,7 +600,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			$response     = array(
 				'result' => 'success'
 			);
-			$nonce_action = sprintf( 'learn-press-complete-%s-%d-%d-%d', $post->post_type, $post->ID, $course->id, $user->id );
+			$nonce_action = sprintf( 'learn-press-complete-%s-%d-%d-%d', $post->post_type, $post->ID, $course->get_id(), $user->get_id() );
 			// security check
 			if ( ! $post || ( $post && ! wp_verify_nonce( $nonce, $nonce_action ) ) ) {
 				$response['result']  = 'error';
@@ -644,7 +644,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 			$response        = array(
 				'result' => 'error'
 			);
-			$security_action = sprintf( 'learn-press-retake-course-%d-%d', $course->id, $user->id );
+			$security_action = sprintf( 'learn-press-retake-course-%d-%d', $course->get_id(), $user->get_id() );
 			// security check
 			if ( ! wp_verify_nonce( $security, $security_action ) ) {
 				$response['message'] = __( 'Error! Invalid lesson or security checked failure', 'learnpress' );

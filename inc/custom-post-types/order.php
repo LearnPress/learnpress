@@ -334,7 +334,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 
 					foreach ( $user_id as $uid ) {
 						if ( empty( $new_orders[ $uid ] ) ) {
-							$new_order = $order->cln();
+							$new_order          = $order->cln();
 							$new_orders[ $uid ] = $new_order;
 						} else {
 							$new_order = $new_orders[ $uid ];
@@ -353,10 +353,11 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 
 					}
 
-					update_post_meta( $post_id, '_user_id', $user_id );
+					$order->set_user_id( $user_id );
 
 				} else {
-					update_post_meta( $post_id, '_user_id', $user_id > 0 ? $user_id : 0 );
+					$order->set_user_id( absint( $user_id ) );
+
 				}
 				$order->save();
 

@@ -16,7 +16,7 @@ $user   = learn_press_get_current_user();
 if ( !$quiz ) {
 	return;
 }
-if ( $user->has( 'quiz-status', array( 'started', 'completed' ), $quiz->id, $course->id ) ) {
+if ( $user->has( 'quiz-status', array( 'started', 'completed' ), $quiz->id, $course->get_id() ) ) {
 	return;
 }
 ?>

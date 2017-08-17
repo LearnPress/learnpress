@@ -11,14 +11,14 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	 *
 	 * @var int
 	 */
-	public $id = 0;
+	public $idx = 0;
 
 	/**
 	 * $post Stores post data
 	 *
 	 * @var $post WP_Post
 	 */
-	public $post = null;
+	public $postx = null;
 
 	/**
 	 *
@@ -26,12 +26,6 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	 */
 	public $course_type = null;
 
-	/**
-	 * Course curriculum
-	 *
-	 * @var array
-	 */
-	protected static $_curriculum = array();
 
 	/**
 	 * @var null
@@ -42,8 +36,6 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	 * @var null
 	 */
 	protected $_students_list = null;
-
-	public static $course_users = array();
 
 	/**
 	 * @var LP_Course_CURD|null
@@ -439,7 +431,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	}
 
 	public function get_instructor() {
-		$user_data   = get_userdata( $this->post->post_author );
+		$user_data   = get_userdata( get_post_field('post_author', $this->get_id()) );
 		$author_name = '';
 		if ( $user_data ) {
 			$author_name = $user_data->display_name;
@@ -452,11 +444,11 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 		$instructor = $this->get_instructor();
 		$html       = sprintf(
 			'<a href="%s">%s</a>',
-			learn_press_user_profile_link( $this->post->post_author ),
+			learn_press_user_profile_link( get_post_field('post_author', $this->get_id()) ),
 			$instructor
 		);
 
-		return apply_filters( 'learn_press_course_instructor_html', $html, $this->post->post_author, $this->get_id() );
+		return apply_filters( 'learn_press_course_instructor_html', $html, get_post_field('post_author', $this->get_id()), $this->get_id() );
 	}
 
 	public function get_course_info( $user_id = null ) {

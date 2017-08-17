@@ -9,8 +9,8 @@ global $lp_query, $wp_query;
 $user          = learn_press_get_current_user();
 $course        = LP()->global['course'];
 $item          = LP()->global['course-item'];
-$security      = wp_create_nonce( sprintf( 'complete-item-%d-%d-%d', $user->get_id(), $course->id, $item->ID ) );
-$can_view_item = $user->can( 'view-item', $item->id, $course->id );
+$security      = wp_create_nonce( sprintf( 'complete-item-%d-%d-%d', $user->get_id(), $course->get_id(), $item->ID ) );
+$can_view_item = $user->can( 'view-item', $item->id, $course->get_id() );
 ?>
 <h2 class="learn-press-content-item-title">
 	<a href="" class="lp-expand dashicons-editor-expand dashicons"></a>
@@ -20,7 +20,7 @@ $can_view_item = $user->can( 'view-item', $item->id, $course->id );
 
 	<?php learn_press_get_template( 'content-lesson/description.php' ); ?>
 
-	<?php if ( $user->has_completed_lesson( $item->ID, $course->id ) ) { ?>
+	<?php if ( $user->has_completed_lesson( $item->ID, $course->get_id() ) ) { ?>
 		<button class="" disabled="disabled"> <?php _e( 'Completed', 'learnpress' ); ?></button>
 		<?php
 		// Auto redirect the next item (lesson or quiz) after completed current lesson
@@ -50,7 +50,7 @@ $can_view_item = $user->can( 'view-item', $item->id, $course->id );
 			<?php
 		}
 		?>
-	<?php } else if ( ! $user->has( 'finished-course', $course->id ) && ! in_array( $can_view_item, array(
+	<?php } else if ( ! $user->has( 'finished-course', $course->get_id() ) && ! in_array( $can_view_item, array(
 			'preview',
 			'no-required-enroll'
 		) )
@@ -58,7 +58,7 @@ $can_view_item = $user->can( 'view-item', $item->id, $course->id );
 
 		<form method="post" name="learn-press-form-complete-lesson" class="learn-press-form">
 			<input type="hidden" name="id" value="<?php echo $item->id; ?>" />
-			<input type="hidden" name="course_id" value="<?php echo $course->id; ?>" />
+			<input type="hidden" name="course_id" value="<?php echo $course->get_id(); ?>" />
 			<input type="hidden" name="security" value="<?php echo esc_attr( $security ); ?>" />
 			<input type="hidden" name="type" value="lp_lesson" />
 			<input type="hidden" name="lp-ajax" value="complete-item" />
@@ -70,4 +70,4 @@ $can_view_item = $user->can( 'view-item', $item->id, $course->id );
 </div>
 <?php LP_Assets::enqueue_script( 'learn-press-course-lesson' ); ?>
 
-<?php LP_Assets::add_var( 'LP_Lesson_Params', wp_json_encode( $item->get_settings( $user->get_id(), $course->id ) ), '__all' ); ?>
+<?php LP_Assets::add_var( 'LP_Lesson_Params', wp_json_encode( $item->get_settings( $user->get_id(), $course->get_id() ) ), '__all' ); ?>

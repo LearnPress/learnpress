@@ -7,13 +7,13 @@ $instance = $this->instance;
 			<div class="course-entry">
 				<?php if ( ! empty( $instance['show_thumbnail'] ) ): ?>
 					<div class="course-cover">
-						<a href="<?php echo get_the_permalink( $course->id ); ?>">
-							<?php echo get_the_post_thumbnail( $course->id, 'medium' ); ?>
+						<a href="<?php echo get_the_permalink( $course->get_id() ); ?>">
+							<?php echo get_the_post_thumbnail( $course->get_id(), 'medium' ); ?>
 						</a>
 					</div>
 				<?php endif; ?>
 				<div class="course-detail">
-					<a href="<?php echo get_the_permalink( $course->id ) ?>">
+					<a href="<?php echo get_the_permalink( $course->get_id() ) ?>">
 						<h3 class="course-title">
 							<?php echo $course->get_course_data()->post_title; ?>
 						</h3>

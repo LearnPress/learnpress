@@ -31,7 +31,7 @@ return;
 
 $user        = learn_press_get_current_user();
 $course      = LP()->global['course'];
-$viewable    = learn_press_user_can_view_quiz( $item->ID, $course->id );//learn_press_is_enrolled_course();
+$viewable    = learn_press_user_can_view_quiz( $item->ID, $course->get_id() );//learn_press_is_enrolled_course();
 $tag         = $viewable ? 'a' : 'span';
 $target      = apply_filters( 'learn_press_section_item_link_target', '_blank', $item );
 $item_title  = apply_filters( 'learn_press_section_item_title', get_the_title( $item->ID ), $item );
@@ -48,7 +48,7 @@ if ( $has_result ) {
 }
 ?>
 
-<li <?php learn_press_course_item_class( $item->ID, $course->id, $class ); ?>
+<li <?php learn_press_course_item_class( $item->ID, $course->get_id(), $class ); ?>
         data-type="<?php echo $item->post_type; ?>">
 	<?php do_action( 'learn_press_before_section_item_title', $item, $section, $course ); ?>
 

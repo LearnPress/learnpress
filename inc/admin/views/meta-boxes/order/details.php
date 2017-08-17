@@ -202,12 +202,12 @@ $assets->add_localize( 'learn-press-meta-box-order', 'userTextFormat', '{{displa
  RWMB_Datetime_Field::admin_enqueue_scripts();
 wp_enqueue_script('jquery-ui-datepicker');
 wp_enqueue_style('jquery-ui-datepicker');
-learn_press_debug($order->get_child_orders());
-$order->set_data('wtf', 'asdasdasdas');
-$order->add_meta('wth', 'mu');
-$order->update_meta();
-print_r( $order->get_extra_data(true));
-learn_press_debug($order);
+//learn_press_debug($order->get_child_orders());
+//$order->set_data('wtf', 'asdasdasdas');
+//$order->add_meta('wth', 'mu');
+//$order->update_meta();
+//print_r( $order->get_extra_data(true));
+//learn_press_debug($order);
 ?>
 
 <script type="text/html" id="tmpl-learn-press-modal-add-order-courses">

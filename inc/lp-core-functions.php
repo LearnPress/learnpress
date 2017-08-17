@@ -1337,7 +1337,7 @@ function learn_press_user_maybe_is_a_teacher( $user = null ) {
 		$role = in_array( 'lp_teacher', $user->user->roles ) ? 'lp_teacher' : false;
 	}
 
-	return apply_filters( 'learn_press_user_maybe_is_a_teacher', $role, $user->id );
+	return apply_filters( 'learn_press_user_maybe_is_a_teacher', $role, $user->get_id() );
 }
 
 function learn_press_get_become_a_teacher_form_fields() {
@@ -1411,7 +1411,7 @@ function learn_press_process_become_a_teacher_form( $args = null ) {
 		}
 		$notify_message = apply_filters( 'learn_press_filter_become_a_teacher_notify_message', '', $args, $fields, $user );
 		if ( ! $notify_message ) {
-			$notify_message = sprintf( __( 'The user <a href="%s">%s</a> wants to be a teacher.', 'learnpress' ) . "\r\n", admin_url( 'user-edit.php?user_id=' . $user->id ), $user->user_login ) . "\r\n";
+			$notify_message = sprintf( __( 'The user <a href="%s">%s</a> wants to be a teacher.', 'learnpress' ) . "\r\n", admin_url( 'user-edit.php?user_id=' . $user->get_id() ), $user->user_login ) . "\r\n";
 			$notify_message .= sprintf( __( 'Name: %s', 'learnpress' ), $args['name'] ) . "\r\n";
 			$notify_message .= sprintf( __( 'Email: %s', 'learnpress' ), $args['email'] ) . "\r\n";
 			$notify_message .= sprintf( __( 'Phone: %s', 'learnpress' ), $args['phone'] ) . "\r\n";
@@ -1420,7 +1420,7 @@ function learn_press_process_become_a_teacher_form( $args = null ) {
 					$notify_message .= $field['title'] . ': ' . ( isset( $field['value'] ) ? $field['value'] : '' ) . "\r\n";
 				}
 			}
-			$notify_message .= wp_specialchars_decode( sprintf( __( 'Accept: %s', 'learnpress' ), wp_nonce_url( admin_url( 'user-edit.php?user_id=' . $user->id ) . '&action=accept-to-be-teacher', 'accept-to-be-teacher' ) ) ) . "\r\n";
+			$notify_message .= wp_specialchars_decode( sprintf( __( 'Accept: %s', 'learnpress' ), wp_nonce_url( admin_url( 'user-edit.php?user_id=' . $user->get_id() ) . '&action=accept-to-be-teacher', 'accept-to-be-teacher' ) ) ) . "\r\n";
 		}
 
 		$args = array(
@@ -1433,7 +1433,7 @@ function learn_press_process_become_a_teacher_form( $args = null ) {
 		@call_user_func_array( 'wp_mail', $args );
 		$return['message'][] = learn_press_get_message( __( 'Your request has been sent! We will get in touch with you soon!', 'learnpress' ) );
 
-		set_transient( 'learn_press_become_teacher_sent_' . $user->id, 'yes', HOUR_IN_SECONDS * 2 );
+		set_transient( 'learn_press_become_teacher_sent_' . $user->get_id(), 'yes', HOUR_IN_SECONDS * 2 );
 	}
 
 	$return['result'] = $error ? 'error' : 'success';
@@ -2195,21 +2195,21 @@ function learn_press_auto_enroll_user_to_courses( $order_id ) {
 			if ( ! $user->is_exists() ) {
 				continue;
 			}
-			if ( $user->has( 'enrolled-course', $course->id ) ) {
+			if ( $user->has( 'enrolled-course', $course->get_id() ) ) {
 				continue;
 			}
 			// error. this scripts will create new order each course item
-			// $return = $user->enroll( $course->id, $order_id );
+			// $return = $user->enroll( $course->get_id(), $order_id );
 			$return = learn_press_update_user_item_field( array(
 				'user_id'    => $user->get_id(),
-				'item_id'    => $course->id,
+				'item_id'    => $course->get_id(),
 				'start_time' => current_time( 'mysql' ),
 				'status'     => 'enrolled',
 				'end_time'   => '0000-00-00 00:00:00',
-				'ref_id'     => $order->id, //$course->id,
+				'ref_id'     => $order->id, //$course->get_id(),
 				'item_type'  => 'lp_course',
 				'ref_type'   => 'lp_order',
-				'parent_id'  => $user->get_course_history_id( $course->id )
+				'parent_id'  => $user->get_course_history_id( $course->get_id() )
 			) );
 			///learn_press_update_user_item_meta( $return, '_lp_order', $order->id );
 			//learn_press_update_user_item_meta( $return, '_lp_active', 'yes' );
@@ -2479,7 +2479,7 @@ if ( ! function_exists( 'learn_press_cancel_order_process' ) ) {
 		$order    = learn_press_get_order( $order_id );
 		$user     = learn_press_get_current_user();
 
-		$url = learn_press_user_profile_link( $user->id, LP()->settings->get( 'profile_endpoints.profile-orders' ) );
+		$url = learn_press_user_profile_link( $user->get_id(), LP()->settings->get( 'profile_endpoints.profile-orders' ) );
 		if ( ! $order ) {
 			learn_press_add_message( sprintf( __( 'Order number <strong>%s</strong> not found', 'learnpress' ), $order_id ), 'error' );
 		} else if ( $order->has_status( 'pending' ) ) {

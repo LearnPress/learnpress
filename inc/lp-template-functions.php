@@ -211,7 +211,7 @@ if ( ! function_exists( 'learn_press_wrapper_end' ) ) {
 if ( ! function_exists( 'learn_press_single_course_args' ) ) {
 	function learn_press_single_course_args() {
 		$course = LP()->global['course'];
-		if ( $course && $course->id ) {
+		if ( $course && $course->get_id() ) {
 			$course->output_args();
 		}
 	}
@@ -1173,12 +1173,12 @@ if ( ! function_exists( 'learn_press_page_controller' ) ) {
 						$redirect = get_the_permalink( $quiz->id );
 					}
 					$item_id  = $quiz->id;
-					$redirect = apply_filters( 'learn_press_quiz_access_denied_redirect_permalink', $redirect, $quiz_status, $quiz->id, $user->id );
+					$redirect = apply_filters( 'learn_press_quiz_access_denied_redirect_permalink', $redirect, $quiz_status, $quiz->id, $user->get_id() );
 					break;
 				case LP_COURSE_CPT:
 					if ( ( $course = learn_press_get_course() ) && $item_id = $course->is( 'viewing-item' ) ) {
 						if ( ! LP()->user->can( 'view-item', $item_id ) ) {
-							$redirect = apply_filters( 'learn_press_lesson_access_denied_redirect_permalink', $course->permalink, $item_id, $user->id );
+							$redirect = apply_filters( 'learn_press_lesson_access_denied_redirect_permalink', $course->permalink, $item_id, $user->get_id() );
 						}
 					}
 			}
@@ -1449,7 +1449,7 @@ if ( ! function_exists( 'learn_press_course_remaining_time' ) ) {
 	 */
 	function learn_press_course_remaining_time() {
 		$user = learn_press_get_current_user();
-		if ( ! $user->has_finished_course( get_the_ID() ) && $text = learn_press_get_course( get_the_ID() )->get_user_duration_html( $user->id ) ) {
+		if ( ! $user->has_finished_course( get_the_ID() ) && $text = learn_press_get_course( get_the_ID() )->get_user_duration_html( $user->get_id() ) ) {
 			learn_press_display_message( $text );
 		}
 	}
@@ -1533,7 +1533,7 @@ function learn_press_single_course_js() {
 				'url'       => $course->get_item_link( $item->ID ),
 				'current'   => $course->is_viewing_item( $item->ID ),
 				'completed' => false,
-				'viewable'  => $item->post_type == 'lp_quiz' ? ( $user->can_view_quiz( $item->ID, $course->id ) !== false ) : ( $user->can_view_lesson( $item->ID, $course->id ) !== false )
+				'viewable'  => $item->post_type == 'lp_quiz' ? ( $user->can_view_quiz( $item->ID, $course->get_id() ) !== false ) : ( $user->can_view_lesson( $item->ID, $course->get_id() ) !== false )
 			);
 			$js['items'][] = $item;
 		}
@@ -1658,9 +1658,9 @@ if ( ! function_exists( 'learn_press_get_profile_display_name' ) ) {
 		}
 		$id = '';
 		if ( $user instanceof LP_Abstract_User ) {
-			$id = $user->id;
-		} elseif ( $user instanceof WP_User ) {
 			$id = $user->get_id();
+		} elseif ( $user instanceof WP_User ) {
+			$id = $user->ID;
 		} elseif ( is_numeric( $user ) ) {
 			$id = $user;
 		}
@@ -1722,7 +1722,7 @@ function learn_press_check_access_lesson() {
 		}
 		$post     = get_post();
 		$user     = learn_press_get_current_user();
-		$can_view = $user->can_view_item( $post->ID, $course->id );
+		$can_view = $user->can_view_item( $post->ID, $course->get_id() );
 		if ( ! $can_view ) {
 			learn_press_is_404();
 
@@ -1733,7 +1733,7 @@ function learn_press_check_access_lesson() {
 		$item   = LP()->global['course-item'];
 		if ( is_object( $item ) && isset( $item->post->post_type ) && 'lp_lesson' === $item->post->post_type ) {
 			$user     = learn_press_get_current_user();
-			$can_view = $user->can_view_item( $item->id, $course->id );
+			$can_view = $user->can_view_item( $item->id, $course->get_id() );
 			if ( ! $can_view ) {
 				learn_press_404_page();
 

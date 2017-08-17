@@ -54,7 +54,7 @@ class LP_Email_Become_An_Instructor extends LP_Email {
 		$this->object    = $this->get_common_template_data(
 			$this->email_format == 'plain_text' ? 'plain' : 'html',
 			array(
-				'site_url'      => $user->id,
+				'site_url'      => $user->ID,
 				'site_title'    => learn_press_get_profile_display_name( get_user_by( 'id', $user ) ),
 				'login_url'     => wp_login_url(),
 				'user_nicename' => $user->user_nincename,

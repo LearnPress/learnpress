@@ -26,7 +26,7 @@ if ( ! isset( $item ) ) {
 return;
 
 $course     = LP()->global['course'];
-$viewable   = learn_press_user_can_view_lesson( $item->ID, $course->id );//learn_press_is_enrolled_course();
+$viewable   = learn_press_user_can_view_lesson( $item->ID, $course->get_id() );//learn_press_is_enrolled_course();
 $tag        = $viewable ? 'a' : 'span';
 $target     = apply_filters( 'learn_press_section_item_link_target', '_blank', $item );
 $item_title = apply_filters( 'learn_press_section_item_title', get_the_title( $item->ID ), $item );

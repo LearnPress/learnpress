@@ -72,7 +72,7 @@ if ( ! class_exists( 'LP_Email_Rejected_Course' ) ) {
 				array(
 					'course_id'         => $course_id,
 					'course_name'       => $course->get_title(),
-					'course_user_id'    => $user->id,
+					'course_user_id'    => $user->get_id(),
 					'course_edit_url'   => admin_url( 'post.php?post=' . $course_id . '&action=edit' ),
 					'course_user_name'  => learn_press_get_profile_display_name( $user ),
 					'course_user_email' => $user->user_email
