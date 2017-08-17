@@ -231,7 +231,7 @@ abstract class LP_Abstract_Post_Type {
 
 	public function _check_post() {
 		global $pagenow, $post_type;
-		if ( !is_admin() || ( $pagenow != 'edit.php' ) || ( $this->_post_type != $post_type ) ) {
+		if ( !is_admin() || ( $this->_post_type != $post_type ) ) {
 			return false;
 		}
 		return true;

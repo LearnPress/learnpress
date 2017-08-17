@@ -115,7 +115,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 
 				// delete all data related user order
 				if ( $user_id ) {
-					learn_press_delete_user_data( $user_id );
+// 					learn_press_delete_user_data( $user_id );
 				}
 			}
 		}

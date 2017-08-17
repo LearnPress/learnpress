@@ -2277,7 +2277,7 @@ function learn_press_auto_enroll_user_to_courses( $order_id ) {
 			if ( ! $user->is_exists() ) {
 				continue;
 			}
-			if ( $user->has( 'enrolled-course', $course->id ) ) {
+			if ( $user->has( 'enrolled-course', $course->id, true, $order_id ) ) {
 				continue;
 			}
 			// error. this scripts will create new order each course item
