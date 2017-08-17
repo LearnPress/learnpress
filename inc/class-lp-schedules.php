@@ -10,34 +10,35 @@ class LP_Schedules {
 	 * LP_Schedules constructor.
 	 */
 	public function __construct() {
-		if ( learn_press_get_request( 'action' ) == 'heartbeat' || !is_admin() ) {
+		if ( learn_press_get_request( 'action' ) == 'heartbeat' || ! is_admin() ) {
 			//$this->_update_user_course_expired();
 		}
 		add_filter( 'template_include', array( $this, 'auto_complete_course' ), 10 );
 		add_filter( 'cron_schedules', array( $this, 'add_custom_cron_intervals' ), 10, 1 );
 
-		if ( !wp_next_scheduled( 'learn_press_schedule_update_user_items' ) ) {
+		if ( ! wp_next_scheduled( 'learn_press_schedule_update_user_items' ) ) {
 			wp_schedule_event( time(), 'ten_minutes', 'learn_press_schedule_update_user_items' );
 		}
 		add_action( 'learn_press_schedule_update_user_items', array( $this, 'schedule_update_user_items' ) );
 
-		if ( !wp_next_scheduled( 'learn_press_delete_user_guest_transient' ) ) {
+		if ( ! wp_next_scheduled( 'learn_press_delete_user_guest_transient' ) ) {
 			wp_schedule_event( time(), 'daily', 'learn_press_delete_user_guest_transient' );
 		}
 		add_action( 'learn_press_delete_user_guest_transient', array( $this, 'delete_user_guest_transient' ) );
 	}
 
-	public function auto_complete_course($template){
-		if( learn_press_is_course() && is_user_logged_in() ) {
-			$course = learn_press_get_course();
-			$user = learn_press_get_current_user();
+	public function auto_complete_course( $template ) {
+		if ( learn_press_is_course() && is_user_logged_in() ) {
+			$course   = learn_press_get_course();
+			$user     = learn_press_get_current_user();
 			$duration = $course->get_duration();
-			if( $duration && $user->has_enrolled_course($course->id) && !$user->has_finished_course($course->id, true) && $course->is_expired( $user->id ) <= 0 ) {
-				$user->finish_course($course->id);
+			if ( $duration && $user->has_enrolled_course( $course->id ) && ! $user->has_finished_course( $course->id, true ) && $course->is_expired( $user->id ) <= 0 ) {
+				$user->finish_course( $course->id );
 				$this->schedule_update_user_items();
-				wp_redirect(get_permalink($course->id));
+				wp_redirect( get_permalink( $course->id ) );
 			}
 		}
+
 		return $template;
 	}
 
@@ -46,6 +47,7 @@ class LP_Schedules {
 			'interval' => 600,
 			'display'  => 'Once Every 10 Minutes'
 		);
+
 		return (array) $schedules;
 	}
 
@@ -84,7 +86,7 @@ class LP_Schedules {
 				)
 			);
 		}
-		learn_press_reset_auto_increment($wpdb->options);
+		learn_press_reset_auto_increment( 'options' );
 	}
 
 	public function schedule_update_user_items() {
