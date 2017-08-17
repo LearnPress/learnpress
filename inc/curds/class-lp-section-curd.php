@@ -253,10 +253,11 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				);
 			}
 
+			$post     = get_post( $item['id'] );
 			$result[] = array(
-				'id'    => $item['id'],
-				'title' => get_the_title( $item['id'] ),
-				'type'  => $item['type']
+				'id'    => $post->ID,
+				'title' => $post->post_title,
+				'type'  => $post->post_type,
 			);
 
 			$order ++;
@@ -265,6 +266,16 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		return $result;
 	}
 
+	/**
+	 * Check item was been added to any section.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param $section_id
+	 * @param $item_id
+	 *
+	 * @return bool
+	 */
 	private function item_section_exist( $section_id, $item_id ) {
 		global $wpdb;
 

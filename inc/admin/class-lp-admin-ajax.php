@@ -248,10 +248,12 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 					$result = array();
 					foreach ( $id_items as $id ) {
+						$post = get_post( $id );
+
 						$result[] = array(
-							'id'    => $id,
-							'title' => get_the_title( $id ),
-							'type'  => get_post_type( $id ),
+							'id'    => $post->ID,
+							'title' => $post->post_title,
+							'type'  => $post->post_type,
 						);
 					}
 

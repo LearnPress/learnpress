@@ -32,12 +32,16 @@ learn_press_admin_view( 'course/added-items-preview' );
                 <form class="search" @submit.prevent="">
                     <input placeholder="Type here to search item"
                            title="search"
-                           @input="makeSearch"
+                           @input="onChangeQuery"
                            v-model="query">
                 </form>
 
                 <ul class="list-items">
-                    <template v-for="item in items">
+                    <template v-if="!items.length">
+                        <div>No any item.</div>
+                    </template>
+
+                    <template v-else v-for="item in items">
                         <li @click="addItem(item)"><span class="dashicons dashicons-plus"></span><span
                                     v-html="item.title"></span></li>
                     </template>
@@ -79,7 +83,9 @@ learn_press_admin_view( 'course/added-items-preview' );
             },
             methods: {
                 init: function () {
-                    this.requestSearch();
+                    this.query = '';
+                    this.page = 1;
+                    this.makeSearch();
                 },
 
                 checkout: function () {
@@ -100,10 +106,10 @@ learn_press_admin_view( 'course/added-items-preview' );
                     }
 
                     this.tab = key;
-                    this.requestSearch();
+                    this.makeSearch();
                 },
 
-                makeSearch: function () {
+                onChangeQuery: function () {
                     var vm = this;
 
                     if (this.delayTimeout) {
@@ -111,11 +117,11 @@ learn_press_admin_view( 'course/added-items-preview' );
                     }
 
                     this.delayTimeout = setTimeout(function () {
-                        vm.requestSearch();
+                        vm.makeSearch();
                     }, 1000);
                 },
 
-                requestSearch: function () {
+                makeSearch: function () {
                     $store.dispatch('ci/searchItems', {
                         query: this.query,
                         page: this.page,

@@ -166,16 +166,6 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
         sections: function (state) {
             return state.sections || [];
         },
-        sectionItems: function (state, getters) {
-            var allItems = [];
-            getters.sections.forEach(function (section) {
-                if (section.items && section.items.length) {
-                    allItems = allItems.concat(section.items);
-                }
-            });
-
-            return allItems;
-        },
         id: function (state) {
             return state.course_id;
         },
