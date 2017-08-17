@@ -91,8 +91,7 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
                 type: 'search-items',
                 query: payload.query,
                 'item-type': payload.type,
-                page: payload.page,
-                exclude: payload.exclude
+                page: payload.page
             }).then(
                 function (response) {
                     var result = response.body;
