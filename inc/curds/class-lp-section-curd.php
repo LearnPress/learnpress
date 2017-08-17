@@ -225,6 +225,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		global $wpdb;
 
 		$all_items = array_merge( $current_items, $items );
+		$result    = array();
 
 		foreach ( $all_items as $item ) {
 			$exist = $this->item_section_exist( $section_id, $item['id'] );
@@ -252,10 +253,16 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				);
 			}
 
+			$result[] = array(
+				'id'    => $item['id'],
+				'title' => get_the_title( $item['id'] ),
+				'type'  => $item['type']
+			);
+
 			$order ++;
 		}
 
-		return $course->get_curriculum_raw();
+		return $result;
 	}
 
 	private function item_section_exist( $section_id, $item_id ) {

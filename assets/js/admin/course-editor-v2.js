@@ -119,7 +119,17 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
                     items: JSON.stringify(items)
                 }).then(
                     function (response) {
-                        console.log(response);
+                        var result = response.body;
+
+                        if (result.success) {
+                            context.commit('TOGGLE');
+
+                            var items = result.data;
+                            context.commit('UPDATE_SECTION_ITEMS', {
+                                sectionId: context.getters.section,
+                                items: items
+                            }, {root: true});
+                        }
                     },
                     function (error) {
                         console.error(error);
@@ -175,9 +185,6 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
         currentRequest: function (state) {
             return state.countCurrentRequest || 0;
         },
-        chooseItems: function (state) {
-            return state.chooseItems;
-        },
         urlEdit: function (state) {
             return state.urlEdit;
         }
@@ -225,6 +232,16 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
             if (index !== -1) {
                 items.splice(index, 1);
             }
+        },
+        'UPDATE_SECTION_ITEMS': function (state, payload) {
+            var section = state.sections.find(function (section) {
+                return parseInt(section.id) === payload.sectionId;
+            });
+
+            if (!section) {
+                return;
+            }
+            section.items = payload.items;
         }
     };
 

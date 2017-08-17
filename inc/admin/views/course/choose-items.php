@@ -38,11 +38,14 @@ learn_press_admin_view( 'course/added-items-preview' );
 
                 <ul class="list-items">
                     <template v-for="item in items">
-                        <li @click="addItem(item)"><span class="dashicons dashicons-plus"></span><span  v-html="item.title"></span></li>
+                        <li @click="addItem(item)"><span class="dashicons dashicons-plus"></span><span
+                                    v-html="item.title"></span></li>
                     </template>
                 </ul>
 
                 <lp-added-items-preview></lp-added-items-preview>
+
+                <button type="button" class="button" @click="checkout">Add</button>
             </div>
         </div>
     </div>
@@ -79,13 +82,18 @@ learn_press_admin_view( 'course/added-items-preview' );
                     this.requestSearch();
                 },
 
+                checkout: function () {
+                    $store.dispatch('ci/addItemsToSection');
+                },
+
                 addItem: function (item) {
                     $store.dispatch('ci/addItem', item);
                 },
+
                 close: function () {
                     $store.dispatch('ci/toggle');
-                    $store.dispatch('ci/addItemsToSection');
                 },
+
                 changeTab: function (key) {
                     if (key === this.tab) {
                         return;
@@ -94,6 +102,7 @@ learn_press_admin_view( 'course/added-items-preview' );
                     this.tab = key;
                     this.requestSearch();
                 },
+
                 makeSearch: function () {
                     var vm = this;
 
@@ -105,6 +114,7 @@ learn_press_admin_view( 'course/added-items-preview' );
                         vm.requestSearch();
                     }, 1000);
                 },
+
                 requestSearch: function () {
                     $store.dispatch('ci/searchItems', {
                         query: this.query,
