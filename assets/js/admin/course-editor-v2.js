@@ -87,13 +87,12 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
             context.commit('REMOVE_ADDED_ITEM', index);
         },
         searchItems: function (context, payload) {
-            console.log(context);
-
             Vue.http.LPRequest({
                 type: 'search-items',
                 query: payload.query,
                 'item-type': payload.type,
-                page: payload.page
+                page: payload.page,
+                exclude: payload.exclude
             }).then(
                 function (response) {
                     var result = response.body;
@@ -160,11 +159,8 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
         sectionItems: function (state, getters) {
             var allItems = [];
             getters.sections.forEach(function (section) {
-                console.log(section.items);
-                console.log(section.items.length);
-
                 if (section.items && section.items.length) {
-                    console.log(allItems.concat(section.items));
+                    allItems = allItems.concat(section.items);
                 }
             });
 

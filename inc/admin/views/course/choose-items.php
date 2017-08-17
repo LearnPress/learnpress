@@ -70,12 +70,12 @@ learn_press_admin_view( 'course/added-items-preview' );
                     }
 
                     if (vm.show) {
-                       vm.init();
+                        vm.init();
                     }
                 });
             },
             methods: {
-                init: function() {
+                init: function () {
                     this.requestSearch();
                 },
 
@@ -106,10 +106,15 @@ learn_press_admin_view( 'course/added-items-preview' );
                     }, 1000);
                 },
                 requestSearch: function () {
+                    var exclude = $store.getters.sectionItems.map(function (item) {
+                        return parseInt(item.id);
+                    });
+
                     $store.dispatch('ci/searchItems', {
                         query: this.query,
                         page: this.page,
-                        type: this.tab
+                        type: this.tab,
+                        exclude: JSON.stringify(exclude)
                     });
                 }
             },
