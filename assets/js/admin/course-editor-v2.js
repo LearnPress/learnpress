@@ -302,6 +302,23 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
                         console.error(error);
                     }
                 );
+        },
+
+        removeSectionItem: function (context, payload) {
+            Vue.http
+                .LPRequest({
+                    type: 'remove-section-item',
+                    'item-id': payload.itemId,
+                    'section-id': payload.sectionId
+                })
+                .then(
+                    function (response) {
+
+                    },
+                    function (error) {
+                        console.error(error);
+                    }
+                );
         }
     };
 

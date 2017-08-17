@@ -17,7 +17,7 @@
                 <a class="edit" :href="urlEdit" target="_blank">
                     <span class="dashicons dashicons-edit"></span>
                 </a>
-                <a class="remove">
+                <a class="remove" @click.prevent="remove">
                     <span class="dashicons dashicons-trash"></span>
                 </a>
             </div>
@@ -34,6 +34,11 @@
             computed: {
                 urlEdit: function () {
                     return $store.getters.urlEdit + this.item.id;
+                }
+            },
+            methods: {
+                remove: function () {
+                    this.$emit('remove', this.item);
                 }
             }
         });

@@ -144,6 +144,13 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 					break;
 
+				case 'remove-section-item':
+					$item_id    = isset( $_POST['item-id'] ) ? intval( $_POST['item-id'] ) : false;
+					$section_id = isset( $_POST['section-id'] ) ? intval( $_POST['section-id'] ) : false;
+
+					$result = $curd->remove_section_item( $section_id, $item_id );
+					break;
+
 				case 'add-items-to-section':
 					$items      = isset( $_POST['items'] ) ? $_POST['items'] : false;
 					$section_id = isset( $_POST['section-id'] ) ? $_POST['section-id'] : false;

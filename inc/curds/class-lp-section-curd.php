@@ -269,4 +269,36 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 		return ! ! $item;
 	}
+
+	public function sort_section_items( $orders ) {
+
+	}
+
+	/**
+	 * Remove section item.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param $section_id
+	 * @param $item_id
+	 *
+	 * @return bool
+	 */
+	public function remove_section_item( $section_id, $item_id ) {
+		global $wpdb;
+
+		$result = $wpdb->delete(
+			$wpdb->learnpress_section_items,
+			array(
+				'section_id' => $section_id,
+				'item_id'    => $item_id
+			),
+			array(
+				'%d',
+				'%d'
+			)
+		);
+
+		return ! ! $result;
+	}
 }

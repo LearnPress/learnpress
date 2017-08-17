@@ -41,13 +41,15 @@ learn_press_admin_view( 'course/section-item' );
 
             <table class="section-list-items">
                 <draggable :list="section.items" :element="'tbody'" :options="{handle: '.icon'}">
-                    <lp-section-item v-for="(item, index) in section.items" :item="item" :key="item.id" :order="index+1"></lp-section-item>
+                    <lp-section-item @remove="removeItem" v-for="(item, index) in section.items" :item="item"
+                                     :key="item.id" :order="index+1"></lp-section-item>
                 </draggable>
             </table>
         </div>
 
         <div class="section-actions">
-            <button type="button" class="button button-secondary" @click="openChooseItems"><?php esc_html_e( 'Add items', 'learnpress' ); ?></button>
+            <button type="button" class="button button-secondary"
+                    @click="openChooseItems"><?php esc_html_e( 'Add items', 'learnpress' ); ?></button>
 
             <div class="remove" @click="remove">
                 <span class="dashicons dashicons-trash"></span>
@@ -71,6 +73,12 @@ learn_press_admin_view( 'course/section-item' );
             methods: {
                 toggle: function () {
                     this.isOpen = !this.isOpen;
+                },
+                removeItem: function (item) {
+                    $store.dispatch('removeSectionItem', {
+                        sectionId: this.section.id,
+                        itemId: item.id
+                    });
                 },
                 remove: function () {
                     var r = window.confirm('Are you sure remove this section?');
