@@ -43,9 +43,19 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		protected $_default_actions = array();
 
 		/**
+		 * @var LP_User_CURD
+		 */
+		protected $_curd = null;
+
+		/**
 		 *  Constructor
+		 *
+		 * @param        $user
+		 * @param string $role
 		 */
 		protected function __construct( $user, $role = '' ) {
+
+			$this->_curd = new LP_User_CURD();
 
 			$this->_user = $user;
 			$this->get_user();
@@ -134,19 +144,32 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @return bool|LP_User|mixed
 		 */
 		public function get_user() {
-			if ( is_numeric( $this->_user ) ) {
-				$this->_user = learn_press_get_user( $this->_user );
-			} elseif ( empty( $this->_user ) ) {
-				$this->_user = learn_press_get_current_user( true );
+			if ( ! $this->_user instanceof LP_Abstract_User ) {
+				if ( is_numeric( $this->_user ) ) {
+					$this->_user = learn_press_get_user( $this->_user );
+				} elseif ( empty( $this->_user ) ) {
+					$this->_user = learn_press_get_current_user( true );
+				}
+
+				$settings         = LP()->settings;
+				$this->_publicity = array(
+					'view-tab-courses'           => $settings->get( 'profile_publicity.courses' ) === 'yes',
+					'view-tab-basic-information' => $settings->get( 'profile_publicity.basic-information' ) === 'yes',
+				);
 			}
 
-			$settings         = LP()->settings;
-			$this->_publicity = array(
-				'view-tab-courses'           => $settings->get( 'profile_publicity.courses' ) === 'yes',
-				'view-tab-basic-information' => $settings->get( 'profile_publicity.basic-information' ) === 'yes',
-			);
-
 			return $this->_user;
+		}
+
+		/**
+		 * Wrap function for $user->get_data()
+		 *
+		 * @param string $field
+		 *
+		 * @return mixed
+		 */
+		public function get_user_data( $field ) {
+			return 'id' === strtolower( $field ) ? $this->_user->get_id() : $this->_user->get_data( $field );
 		}
 
 		public function tab_dashboard() {
@@ -235,7 +258,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * Get current tab slug in query string.
 		 *
 		 * @param string $default Optional.
-		 * @param bool $key Optional. True if return the key instead of value.
+		 * @param bool   $key     Optional. True if return the key instead of value.
 		 *
 		 * @return string
 		 */
@@ -269,7 +292,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * Get current section in query string.
 		 *
 		 * @param string $default
-		 * @param bool $key
+		 * @param bool   $key
 		 * @param string $tab
 		 *
 		 * @return bool|int|mixed|string
@@ -442,7 +465,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		/**
 		 * Get the slug of tab or section if defined.
 		 *
-		 * @param array $tab_or_section
+		 * @param array  $tab_or_section
 		 * @param string $default
 		 *
 		 * @return string
@@ -535,6 +558,19 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			}
 
 			return true;
+		}
+
+		/**
+		 * Get all orders of profile's user.
+		 *
+		 * @param bool $group_by_order
+		 *
+		 * @since 3.x.x
+		 *
+		 * @return array
+		 */
+		public function get_user_orders( $group_by_order = false ) {
+			return $this->_curd->get_orders( $this->get_user_data( 'id' ), $group_by_order );
 		}
 
 		/**

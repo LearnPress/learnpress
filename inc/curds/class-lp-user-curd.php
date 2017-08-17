@@ -1,14 +1,29 @@
 <?php
 
-class LP_User_CURD implements LP_Interface_CURD {
+class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
+
+	/**
+	 * @var string
+	 */
+	protected $_meta_type = 'user';
+
+	/**
+	 * @param LP_User $user
+	 */
 	public function create( &$user ) {
 
 	}
 
+	/**
+	 * @param LP_User $user
+	 */
 	public function update( &$user ) {
 		// TODO: Implement update() method.
 	}
 
+	/**
+	 * @param LP_User $user
+	 */
 	public function delete( &$user ) {
 		// TODO: Implement delete() method.
 	}
@@ -56,11 +71,12 @@ class LP_User_CURD implements LP_Interface_CURD {
 	 *      ...
 	 *  )
 	 *
-	 * @param int $user_id
+	 * @param int  $user_id
+	 * @param bool $group_by_order - Optional. Group by order id instead of by course id
 	 *
 	 * @return array|mixed
 	 */
-	public function get_orders( $user_id ) {
+	public function get_orders( $user_id, $group_by_order = false ) {
 
 		// If user does not exists
 		if ( ! learn_press_get_user( $user_id ) ) {
@@ -75,36 +91,98 @@ class LP_User_CURD implements LP_Interface_CURD {
 		$orders = wp_cache_get( 'user-' . $user_id, 'lp-user-orders' );
 
 		if ( false === $orders ) {
-			$orders = array();
-			$query  = $wpdb->prepare( "
-				SELECT o.ID, oim.meta_value as course_id
-				FROM {$wpdb->learnpress_order_items} oi
-				INNER JOIN {$wpdb->learnpress_order_itemmeta} oim ON oim.learnpress_order_item_id = oi.order_item_id AND meta_key = %s
-				INNER JOIN {$wpdb->postmeta} om ON om.post_id = oi.order_id AND om.meta_key = %s AND om.meta_value = %d
-				INNER JOIN {$wpdb->posts} o ON o.ID = om.post_id AND o.post_status <> %s
-				WHERE o.post_type = %s ORDER BY ID ASC
-			", '_course_id', '_user_id', $user_id, 'trash', LP_ORDER_CPT );
+			$orders                = array();
+			$post_status_in        = learn_press_get_order_statuses( true, true );
+			$post_status_in_format = array_fill( 0, sizeof( $post_status_in ), '%s' );
 
-			if ( $rows = $wpdb->get_results( $query ) ) {
-				foreach ( $rows as $row ) {
-					if ( empty( $orders[ $row->course_id ] ) ) {
-						$orders[ $row->course_id ] = array();
-					}
-					$orders[ $row->course_id ][] = $row->ID;
+			$query = $wpdb->prepare( "
+				SELECT * 
+				FROM {$wpdb->posts} p
+				INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND meta_key = %s
+				WHERE p.post_type = %s
+				AND meta_value = %d
+				AND p.post_status IN(" . join( ',', $post_status_in_format ) . ")
+				ORDER BY ID DESC
+			", array_merge( array( '_user_id', LP_ORDER_CPT, $user_id ), $post_status_in ) );
+
+			if ( $order_posts = $wpdb->get_results( $query ) ) {
+				$order_ids = array();
+				foreach ( $order_posts as $order_post ) {
+
+					// Put post into cache to user later ... maybe.
+					$_post = sanitize_post( $order_post, 'raw' );
+					wp_cache_add( $_post->ID, $_post, 'posts' );
+
+					$order_ids[] = $_post->ID;
 				}
 
-				// Sort the order ids from highest to lowest
-				foreach ( $orders as $course_id => $order_ids ) {
-					if ( $order_ids ) {
-						rsort( $orders[ $course_id ] );
+				$order_ids_format = array_fill( 0, sizeof( $order_ids ), '%d' );
+				$query            = $wpdb->prepare( "
+					SELECT meta_value as course_id, order_id
+					FROM {$wpdb->learnpress_order_items} oi 
+					INNER JOIN {$wpdb->learnpress_order_itemmeta} oim ON oi.order_item_id = oim.learnpress_order_item_id AND oim.meta_key = %s
+					WHERE oi.order_id IN (" . join( ',', $order_ids_format ) . ")
+					ORDER BY FIELD(order_id, " . join( ',', $order_ids_format ) . ")
+				", array_merge( array( '_course_id' ), $order_ids, $order_ids ) );
+
+				if ( $results = $wpdb->get_results( $query ) ) {
+					foreach ( $results as $result ) {
+						if ( empty( $orders[ $result->course_id ] ) ) {
+							$orders[ $result->course_id ] = array();
+						}
+						$orders[ $result->course_id ][] = $result->order_id;
 					}
 				}
 			}
+//
+//			echo $query = $wpdb->prepare( "
+//				SELECT o.ID, oim.meta_value as course_id
+//				FROM {$wpdb->learnpress_order_items} oi
+//				INNER JOIN {$wpdb->learnpress_order_itemmeta} oim ON oim.learnpress_order_item_id = oi.order_item_id AND meta_key = %s
+//				INNER JOIN {$wpdb->postmeta} om ON om.post_id = oi.order_id AND om.meta_key = %s AND om.meta_value = %d
+//				INNER JOIN {$wpdb->posts} o ON o.ID = om.post_id AND o.post_status <> %s
+//				WHERE o.post_type = %s ORDER BY ID ASC
+//			", '_course_id', '_user_id', $user_id, 'trash', LP_ORDER_CPT );
+//
+//			if ( $rows = $wpdb->get_results( $query ) ) {
+//				foreach ( $rows as $row ) {
+//					if ( empty( $orders[ $row->course_id ] ) ) {
+//						$orders[ $row->course_id ] = array();
+//					}
+//					$orders[ $row->course_id ][] = $row->ID;
+//				}
+//
+//				// Sort the order ids from highest to lowest
+//				foreach ( $orders as $course_id => $order_ids ) {
+//					if ( $order_ids ) {
+//						rsort( $orders[ $course_id ] );
+//					}
+//				}
+//			}
 
 			// Store to cache
 			wp_cache_set( 'user-' . $user_id, $orders, 'lp-user-orders' );
 		}
 
+		if ( $orders && $group_by_order ) {
+			$this->_group_orders( $orders );
+		}
+
+		return $orders;
+	}
+
+	protected function _group_orders( &$orders ) {
+		$groups = array();
+		foreach ( $orders as $course_id => $order_ids ) {
+			foreach ( $order_ids as $order_id ) {
+				if ( empty( $groups[ $order_id ] ) ) {
+					$groups[ $order_id ] = array();
+				}
+				$groups[ $order_id ][] = $course_id;
+			}
+		}
+		$orders = $groups;
+		krsort($orders);
 		return $orders;
 	}
 
@@ -266,9 +344,7 @@ class LP_User_CURD implements LP_Interface_CURD {
 			WHERE learnpress_user_item_id = %d
 		", $item['user_item_id'] );
 		update_meta_cache( 'learnpress_user_item', $item['user_item_id'] );
-		echo "[";
-		echo learn_press_get_user_item_meta( $item['user_item_id'], 'quiz_grade' );
-		echo "]";
+
 		//learn_press_debug($wpdb);die();
 		if ( $meta = $wpdb->get_results( $query, ARRAY_A ) ) {
 			$item['meta'] = array();
@@ -277,21 +353,5 @@ class LP_User_CURD implements LP_Interface_CURD {
 				$item['meta'][ $v['meta_id'] ] = $v;
 			}
 		}
-	}
-
-	public function add_meta( &$object, $meta ) {
-		// TODO: Implement add_meta() method.
-	}
-
-	public function delete_meta( &$object, $meta ) {
-		// TODO: Implement delete_meta() method.
-	}
-
-	public function read_meta( &$object ) {
-		// TODO: Implement read_meta() method.
-	}
-
-	public function update_meta( &$object, $meta ) {
-		// TODO: Implement update_meta() method.
 	}
 }

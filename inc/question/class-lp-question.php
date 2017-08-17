@@ -624,7 +624,14 @@ class LP_Question extends LP_Abstract_Course_Item {
 	public
 	function get_name() {
 		return
-			isset( $this->options['name'] ) ? $this->options['name'] : ucfirst( preg_replace_callback( '!_([a-z])!', create_function( '$matches', 'return " " . strtoupper($matches[1]);' ), $this->get_type() ) );
+			isset( $this->options['name'] ) ? $this->options['name'] : ucfirst( preg_replace_callback( '!_([a-z])!', array(
+				$this,
+				'sanitize_name_callback'
+			), $this->get_type() ) );
+	}
+
+	public function sanitize_name_callback( $matches ) {
+		return strtoupper( $matches[1] );
 	}
 
 	/**
@@ -828,7 +835,7 @@ class LP_Question extends LP_Abstract_Course_Item {
 		$args          = wp_parse_args( $args, array( 'echo' => true ) );
 		$type          = ! empty( $args['type'] ) ? $args['type'] : 'single_choice';
 		$fake_class    = LP_Question_Factory::get_class_name_from_question_type( $type );
-		$fake_question = new $fake_class(0, $type);
+		$fake_question = new $fake_class( 0, $type );
 		if ( ! $fake_question->is_support( 'add-answer-option' ) ) {
 			return '';
 		}

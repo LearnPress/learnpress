@@ -728,7 +728,9 @@ function learn_press_update_order_items( $order_id ) {
  * @return string
  */
 function learn_press_transaction_order_number( $order_number ) {
-	return '#' . sprintf( "%'.010d", $order_number );
+	$formatted_number = apply_filters( 'learn_press_get_order_number', '#' . sprintf( "%'.010d", $order_number ), $order_number );
+
+	return apply_filters( 'learn-press/order-number-formatted', $formatted_number, $order_number );
 }
 
 /**

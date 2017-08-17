@@ -47,7 +47,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	 */
 	protected static $_lessons = array();
 
-	protected $_data = array(
+	/*protected $_data = array(
 		'status'               => '',
 		'require_enrollment'   => '',
 		'price'                => '',
@@ -63,7 +63,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 		'course_result'        => '',
 		'passing_conditional'  => '',
 		'payment'              => ''
-	);
+	);*/
 
 	/**
 	 * Constructor gets the post object and sets the ID for the loaded course.

@@ -346,13 +346,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 
 						$new_order->save();
 						$new_order->update_status( $order->get_status() );
-
-						//$wpdb->update( $wpdb->posts, array( 'post_parent' => $post_id ), array( 'ID' => $new_order->get_id() ), array( '%d' ), array( '%d' ) );
-						//update_post_meta( $new_order->get_id(), '_order_key', learn_press_generate_order_key() );
-						//update_post_meta( $new_order->get_id(), '_user_id', $uid );
-
 					}
-
 					$order->set_user_id( $user_id );
 
 				} else {
@@ -608,8 +602,8 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		}
 
 		public function order_title( $title, $post_id ) {
-			if ( LP_ORDER_CPT == get_post_type( $post_id ) ) {
-				$title = learn_press_transaction_order_number( $post_id );
+			if ( $order = learn_press_get_order( $post_id ) ) {
+				$title = $order->get_order_number();
 			}
 
 			return $title;
@@ -626,20 +620,28 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			$the_order = learn_press_get_order( $post->ID );
 			switch ( $column ) {
 				case 'order_student':
-					if ( $the_order->is_multi_users() ) {
-						$the_order->print_users();
-					} else {
-						if ( $the_order->customer_exists() ) {
-							$user = learn_press_get_user( $the_order->user_id );
-							printf( '<a href="user-edit.php?user_id=%d">%s (%s)</a>', $the_order->user_id, $user->get_data( 'user_login' ), $user->get_data( 'display_name' ) );
-							?><?php
-							printf( '<br /><span>%s</span>', $user->get_data( 'user_email' ) );
-						} else {
-							echo $the_order->get_customer_name();
+					if ( $user_ids = $the_order->get_data( 'user_id' ) ) {
+						settype( $user_ids, 'array' );
+						$outputs = array();
+						foreach ( $user_ids as $user_id ) {
+							if ( get_user_by( 'id', $user_id ) ) {
+								$user      = learn_press_get_user( $user_id );
+								$outputs[] = sprintf(
+									'<a href="user-edit.php?user_id=%d">%s (%s)</a><span>%s</span>',
+									$user_id,
+									$user->get_data( 'user_login' ),
+									$user->get_data( 'display_name' ),
+									$user->get_data( 'user_email' )
+								);
+							} else {
+								$outputs[] = $the_order->get_customer_name();
+							}
 						}
+						echo join( ', ', $outputs );
 					}
 					break;
-				case 'order_status' :
+				case
+				'order_status' :
 
 					echo sprintf( '<span class="learn-press-tooltip %s" data-tooltip="%s">%s</span>', $the_order->get_status(), learn_press_get_order_status_label( $the_order->get_id() ), '' );
 					break;

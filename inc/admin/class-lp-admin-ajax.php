@@ -1049,7 +1049,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 				$currency_symbol             = learn_press_get_currency_symbol( $order_data['currency'] );
 				$order_data['subtotal_html'] = learn_press_format_price( $order_data['subtotal'], $currency_symbol );
 				$order_data['total_html']    = learn_press_format_price( $order_data['total'], $currency_symbol );
-
+print_r($order_items);print_r($order_item_ids);
 				if ( $order_items ) {
 					foreach ( $order_items as $item ) {
 

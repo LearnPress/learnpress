@@ -5,7 +5,14 @@
 
 .retake-course,
 .enroll-course,
-.purchase-course{
+.purchase-course {
     display: inline-block;
 }
 
+/* */
+.table-orders {
+    font-size: 16px;
+    th, td {
+        padding: 5px 10px;
+    }
+}
