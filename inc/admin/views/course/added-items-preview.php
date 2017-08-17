@@ -11,7 +11,7 @@
     <div class="lp-added-items-preview">
         <ul class="list-added-items">
             <template v-for="(item, index) in addedItems">
-                <li @click="removeItem(index)">{{item.title}}</li>
+                <li @click="removeItem(index)"><span  v-html="item.title"></span></li>
             </template>
         </ul>
 

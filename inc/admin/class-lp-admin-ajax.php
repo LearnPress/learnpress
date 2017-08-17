@@ -218,9 +218,14 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					break;
 
 				case 'search-items':
-					$query = isset( $_POST['query'] ) ? $_POST['query'] : '';
-					$type  = isset( $_POST['item-type'] ) ? $_POST['item-type'] : '';
-					$page  = ! empty( $_POST['page'] ) ? intval( $_POST['page'] ) : 1;
+					$query   = isset( $_POST['query'] ) ? $_POST['query'] : '';
+					$type    = isset( $_POST['item-type'] ) ? $_POST['item-type'] : '';
+					$page    = ! empty( $_POST['page'] ) ? intval( $_POST['page'] ) : 1;
+					$exclude = ! empty( $_POST['exclude'] ) ? wp_unslash( $_POST['exclude'] ) : '';
+
+					if ( $exclude ) {
+						$exclude = json_decode( $exclude, true );
+					}
 
 					$search = new LP_Modal_Search_Items( array(
 						'type'       => $type,
@@ -228,21 +233,18 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 						'context_id' => $course_id,
 						'term'       => $query,
 						'limit'      => 10,
-						'paged'      => $page
+						'paged'      => $page,
+						'exclude'    => $exclude,
 					) );
 
 					$id_items = $search->get_items();
-					$items    = get_posts( array(
-						'post_type' => $type,
-						'post__in'  => $id_items
-					) );
 
 					$result = array();
-					foreach ( $items as $item ) {
+					foreach ( $id_items as $id ) {
 						$result[] = array(
-							'id'    => $item->ID,
-							'title' => $item->post_title,
-							'type'  => $item->post_type
+							'id'    => $id,
+							'title' => get_the_title( $id ),
+							'type'  => get_post_type( $id ),
 						);
 					}
 

@@ -38,7 +38,7 @@ learn_press_admin_view( 'course/added-items-preview' );
 
                 <ul class="list-items">
                     <template v-for="item in items">
-                        <li @click="addItem(item)"><span class="dashicons dashicons-plus"></span>{{item.title}}</li>
+                        <li @click="addItem(item)"><span class="dashicons dashicons-plus"></span><span  v-html="item.title"></span></li>
                     </template>
                 </ul>
 
@@ -70,12 +70,12 @@ learn_press_admin_view( 'course/added-items-preview' );
                     }
 
                     if (vm.show) {
-                       vm.init();
+                        vm.init();
                     }
                 });
             },
             methods: {
-                init: function() {
+                init: function () {
                     this.requestSearch();
                 },
 
