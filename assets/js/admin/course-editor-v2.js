@@ -68,6 +68,7 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
         },
         'RESET': function (state) {
             state.addedItems = [];
+            state.items = [];
         }
     };
 
@@ -207,6 +208,23 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
         },
         'REMOVE_SECTION': function (state, index) {
             state.sections.splice(index, 1);
+        },
+        'REMOVE_SECTION_ITEM': function (state, payload) {
+            var section = state.sections.find(function (section) {
+                return (section.id === payload.sectionId);
+            });
+
+            var items = section.items || [];
+            var index = -1;
+            items.forEach(function (item, i) {
+                if (item.id === payload.itemId) {
+                    index = i;
+                }
+            });
+
+            if (index !== -1) {
+                items.splice(index, 1);
+            }
         }
     };
 
@@ -313,7 +331,11 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
                 })
                 .then(
                     function (response) {
+                        var result = response.body;
 
+                        if (result.success) {
+                            context.commit('REMOVE_SECTION_ITEM', payload);
+                        }
                     },
                     function (error) {
                         console.error(error);
