@@ -2460,51 +2460,27 @@ class LP_Abstract_User {
 				$limit .= "LIMIT " . $start . ',' . $args['limit'];
 			}
 			$order = "\nORDER BY " . ( $args['orderby'] ? $args['orderby'] : 'post_title' ) . ' ' . $args['order'];
-			$query = $wpdb->prepare( "
+			$query = $wpdb->prepare ( "
 					SELECT SQL_CALC_FOUND_ROWS * FROM(
-					SELECT
-					c.*,
-					`uc`.`status` AS `course_status`
-					FROM
-					{$wpdb->prefix}posts c
-					INNER JOIN {$wpdb->prefix}learnpress_order_itemmeta AS oim ON meta_key = '_course_id'
-					AND c.post_type = %s
-					AND c.ID = oim.meta_value
-					INNER JOIN {$wpdb->prefix}learnpress_order_items AS oi ON oi.order_item_id = oim.learnpress_order_item_id
-					INNER JOIN {$wpdb->prefix}posts o ON oi.order_id = o.ID AND o.post_status = 'lp-completed'
-					INNER JOIN {$wpdb->prefix}postmeta om ON o.ID = om.post_id
-					AND om.meta_key = '_user_id'
-					LEFT JOIN {$wpdb->prefix}learnpress_user_items uc ON  uc.item_id=c.ID
-					AND uc.user_id=om.meta_value AND uc.item_type=%s
-					WHERE om.meta_value=%d
-					AND c.post_status = 'publish'
-					
-					UNION
-					
-					SELECT
-					c.*, uc.`status`
-					FROM
-					wp_posts c
-					INNER JOIN {$wpdb->prefix}learnpress_user_items uc ON uc.item_id = c.ID
-					AND uc.item_type = 'lp_course'
-					AND uc.user_id = %d
-					LEFT JOIN {$wpdb->prefix}learnpress_order_itemmeta AS oim ON meta_key = '_course_id'
-					AND c.post_type = %s
-					AND c.ID = oim.meta_value
-					LEFT JOIN {$wpdb->prefix}learnpress_order_items AS oi ON oi.order_item_id = oim.learnpress_order_item_id
-					LEFT JOIN {$wpdb->prefix}posts o ON oi.order_id = o.ID AND o.post_status = 'lp-completed'
-					LEFT JOIN {$wpdb->prefix}postmeta om ON o.ID = om.post_id
-					AND om.meta_key = '_user_id'
-					WHERE c.post_status = 'publish'
+						SELECT
+							c.*,
+							`uc`.`status` AS `course_status`
+						FROM
+							{$wpdb->prefix}posts c
+							INNER JOIN {$wpdb->prefix}learnpress_order_itemmeta AS oim ON meta_key = '_course_id'
+							AND c.post_type = %s
+							AND c.ID = oim.meta_value
+							INNER JOIN {$wpdb->prefix}learnpress_order_items AS oi ON oi.order_item_id = oim.learnpress_order_item_id
+							INNER JOIN {$wpdb->prefix}posts o ON oi.order_id = o.ID AND o.post_status = 'lp-completed'
+							INNER JOIN {$wpdb->prefix}postmeta om ON o.ID = om.post_id
+							AND om.meta_key = '_user_id'
+							LEFT JOIN {$wpdb->prefix}learnpress_user_items uc ON  uc.item_id=c.ID
+							AND uc.user_id=om.meta_value AND uc.item_type=%s
+						WHERE om.meta_value=%d
+							AND c.post_status = 'publish'
 					
 					) AS a WHERE 1=1
-					",
-					LP_COURSE_CPT,
-					LP_COURSE_CPT,
-					$args['user_id'],
-					LP_COURSE_CPT,
-					$args['user_id']
-					);
+					", LP_COURSE_CPT, LP_COURSE_CPT, $args ['user_id'] );
 			$query .= $where . $order . $limit;
 			$data          = array(
 				'rows' => $wpdb->get_results( $query, OBJECT_K )
