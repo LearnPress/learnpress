@@ -563,14 +563,89 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		/**
 		 * Get all orders of profile's user.
 		 *
-		 * @param bool $group_by_order
 		 *
 		 * @since 3.x.x
 		 *
 		 * @return array
 		 */
-		public function get_user_orders( $group_by_order = false ) {
-			return $this->_curd->get_orders( $this->get_user_data( 'id' ), $group_by_order );
+		public function get_user_orders() {
+
+			return $this->_curd->get_orders( $this->get_user_data( 'id' ), true );
+		}
+
+		/**
+		 * Query order of user is viewing profile.
+		 *
+		 * @param string $args
+		 *
+		 * @return array
+		 */
+		public function query_orders( $args = '' ) {
+			global $wp_query;
+			$query = array(
+				'orders'     => array(),
+				'total'      => 0,
+				'num_pages'  => 0,
+				'pagination' => ''
+			);
+			if ( $order_ids = $this->get_user_orders() ) {
+				$default_args = array(
+					'paged' => 1,
+					'limit' => 10
+				);
+
+				// Page
+				if ( $this->get_current_tab() === 'orders' && isset( $wp_query->query_vars['view_id'] ) ) {
+					$default_args['paged'] = $wp_query->query_vars['view_id'];
+				}
+
+				$args   = wp_parse_args( $args, $default_args );
+				$offset = isset( $args['limit'] ) && $args['limit'] > 0 && $args['paged'] ? ( $args['paged'] - 1 ) * $args['limit'] : 0;
+
+				$query_order = new WP_Query(
+					array(
+						'post_type'      => LP_ORDER_CPT,
+						'posts_per_page' => $args['limit'],
+						'offset'         => $offset,
+						'post_status'    => 'any',
+						'post__in'       => array_keys( $order_ids ),
+						'orderby'        => 'post__in',
+						'fields'         => 'ids'
+					)
+				);
+
+				if ( $query_order->have_posts() ) {
+
+					$orders = ( isset( $args['fields'] ) && 'ids' === $args['fields'] ) ? $query_order->posts : array_filter( array_map( 'learn_press_get_order', $query_order->posts ) );
+
+					$query['orders']     = $orders;
+					$query['total']      = $query_order->found_posts;
+					$query['num_pages']  = $query_order->max_num_pages;
+					$query['pagination'] = learn_press_paging_nav( array(
+						'num_pages' => $query['num_pages'],
+						'base'      => learn_press_user_profile_link( $this->get_user_data( 'id' ), LP()->settings->get( 'profile_endpoints.profile-orders' ) ),
+						'format'    => $GLOBALS['wp_rewrite']->using_permalinks() ? user_trailingslashit( '%#%', '' ) : '?paged=%#%',
+						'echo'      => false,
+						'paged'     => $args['paged']
+					) );
+				}
+
+			}
+
+			return $query;
+		}
+
+		/**
+		 * Get the order is viewing details.
+		 */
+		public function get_view_order() {
+			global $wp_query;
+			$order = false;
+			if ( isset( $wp_query->query_vars['view_id'] ) ) {
+				$order = learn_press_get_order( $wp_query->query_vars['view_id'] );
+			}
+
+			return $order;
 		}
 
 		/**

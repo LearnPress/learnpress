@@ -16,3 +16,24 @@
         padding: 5px 10px;
     }
 }
+
+.learn-press-pagination {
+    text-align: center;
+    .page-numbers {
+        display: inline-block;
+        list-style: none;
+        > li {
+            display: inline-block;
+            a, span {
+                display: block;
+                padding: 5px 10px;
+                border: 1px solid #DDD;
+                box-shadow: none;
+                line-height: 1;
+            }
+            span{
+                background: #F5F5F5;
+            }
+        }
+    }
+}

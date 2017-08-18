@@ -79,8 +79,9 @@ class LP_Order extends LP_Abstract_Object_Data {
 	 * @return string|LP_Datetime
 	 */
 	public function get_order_date( $format = '' ) {
-		$date    = $this->get_data( 'order_date' );
-		$strtime = strtotime( $date );
+		$date = $this->get_data( 'order_date' );
+
+		$strtime = strtotime( $date->toSql() );
 
 		switch ( $format ) {
 			case 'd':
@@ -170,22 +171,6 @@ class LP_Order extends LP_Abstract_Object_Data {
 		}
 
 		return $value;
-	}
-
-	/**
-	 * Get current status of order
-	 *
-	 * @return mixed
-	 */
-	public function get_status() {
-		$the_id      = $this->get_id();
-		$post_status = get_post_status( $the_id );
-		$status      = preg_replace( '~^lp-~', '', $post_status );
-
-		// Deprecated filter
-		$status = apply_filters( 'learn_press_order_status', $status, $this );
-
-		return apply_filters( 'learn-press/order-status', $status, $the_id );
 	}
 
 	/**
@@ -285,19 +270,28 @@ class LP_Order extends LP_Abstract_Object_Data {
 	 * @return mixed
 	 */
 	public function get_order_status() {
-		$statuses    = learn_press_get_order_statuses();
 		$the_id      = $this->get_id();
 		$post_status = get_post_status( $the_id );
-		if ( ! empty( $statuses[ $post_status ] ) ) {
-			$status = str_replace( 'lp-', '', $post_status );
-		}
+		$status      = preg_replace( '~^lp-~', '', $post_status );
 
-		return apply_filters( 'learn_press_get_order_status', $status, $this );
+		// Deprecated filter
+		$status = apply_filters( 'learn_press_order_status', $status, $this );
+
+		return apply_filters( 'learn-press/order-status', $status, $the_id );
+	}
+
+	/**
+	 * Get current status of order
+	 *
+	 * @return mixed
+	 */
+	public function get_status() {
+		return $this->get_order_status();
 	}
 
 	public function get_order_status_html() {
 		$statuses     = learn_press_get_order_statuses();
-		$order_status = $this->get_data( 'post_status' );
+		$order_status = $this->get_status();
 
 		if ( ! empty( $statuses[ $order_status ] ) ) {
 			$status = $statuses[ $order_status ];
@@ -689,6 +683,13 @@ class LP_Order extends LP_Abstract_Object_Data {
 		return apply_filters( 'learn_press_view_order_url', $view_order_url, $this );
 	}
 
+	/**
+	 * Get cancel url if it's status is pending.
+	 *
+	 * @param bool $force
+	 *
+	 * @return mixed
+	 */
 	public function get_cancel_order_url( $force = false ) {
 
 		$url = false;
@@ -704,7 +705,31 @@ class LP_Order extends LP_Abstract_Object_Data {
 			$url = wp_nonce_url( $url, 'cancel-order', 'lp-nonce' );
 		}
 
-		return apply_filters( 'learn_press_cancel_order_url', $url, $this->get_id() );
+		return apply_filters( 'learn-press/order-cancel-url', $url, $this->get_id() );
+	}
+
+	/**
+	 * Get profile order's actions.
+	 *
+	 * @return array|mixed
+	 */
+	public function get_profile_order_actions() {
+		$actions = array(
+			'view' => array(
+				'url'  => $this->get_view_order_url(),
+				'text' => __( 'View', 'learnpress' )
+			)
+		);
+
+		if ( $cancel_url = $this->get_cancel_order_url() ) {
+			$actions['cancel'] = array(
+				'url'  => $this->get_cancel_order_url(),
+				'text' => __( 'Cancel', 'learnpress' )
+			);
+		}
+		$actions = apply_filters( 'learn-press/profile-order-actions', $actions, $this->get_id() );
+
+		return $actions;
 	}
 
 	public function add_note( $note = null ) {
