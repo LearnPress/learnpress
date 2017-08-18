@@ -151,6 +151,16 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					$result = $curd->remove_section_item( $section_id, $item_id );
 					break;
 
+				case 'update-section-items':
+					$items      = isset( $_POST['items'] ) ? $_POST['items'] : false;
+					$section_id = isset( $_POST['section-id'] ) ? $_POST['section-id'] : false;
+
+					$items = wp_unslash( $items );
+					$items = json_decode( $items, true );
+
+					$result = $curd->update_section_items( $section_id, $items );
+					break;
+
 				case 'add-items-to-section':
 					$items      = isset( $_POST['items'] ) ? $_POST['items'] : false;
 					$section_id = isset( $_POST['section-id'] ) ? $_POST['section-id'] : false;

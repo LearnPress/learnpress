@@ -82,6 +82,11 @@ learn_press_admin_view( 'course/new-section-item' );
                     },
                     set: function (items) {
                         this.section.items = items;
+
+                        $store.dispatch('updateSectionItems', {
+                            sectionId: this.section.id,
+                            items: items
+                        });
                     }
                 },
 

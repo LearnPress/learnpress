@@ -76,17 +76,21 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
         toggle: function (context) {
             context.commit('TOGGLE');
         },
+
         open: function (context, sectionId) {
             context.commit('SET_SECTION', sectionId);
             context.commit('RESET');
             context.commit('TOGGLE');
         },
+
         addItem: function (context, item) {
             context.commit('ADD_ITEM', item);
         },
+
         removeItem: function (context, index) {
             context.commit('REMOVE_ADDED_ITEM', index);
         },
+
         searchItems: function (context, payload) {
             Vue.http.LPRequest({
                 type: 'search-items',
@@ -109,6 +113,7 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
                 }
             );
         },
+
         addItemsToSection: function (context) {
             var items = context.getters.addedItems;
 
@@ -342,6 +347,27 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
 
                         if (result.success) {
                             context.commit('REMOVE_SECTION_ITEM', payload);
+                        }
+                    },
+                    function (error) {
+                        console.error(error);
+                    }
+                );
+        },
+
+        updateSectionItems: function (context, payload) {
+            Vue.http
+                .LPRequest({
+                    type: 'update-section-items',
+                    'items': JSON.stringify(payload.items),
+                    'section-id': payload.sectionId
+                })
+                .then(
+                    function (response) {
+                        var result = response.body;
+
+                        if (result.success) {
+                            console.log(result);
                         }
                     },
                     function (error) {
