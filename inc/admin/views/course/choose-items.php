@@ -85,6 +85,7 @@ learn_press_admin_view( 'course/added-items-preview' );
                 init: function () {
                     this.query = '';
                     this.page = 1;
+                    this.tab = this.firstType;
                     this.makeSearch();
                 },
 
@@ -138,6 +139,13 @@ learn_press_admin_view( 'course/added-items-preview' );
                 },
                 types: function () {
                     return $store.getters['ci/types'];
+                },
+                firstType: function() {
+                    for (var type in $store.getters['ci/types']) {
+                        return type;
+                    }
+
+                    return false;
                 }
             }
         });
