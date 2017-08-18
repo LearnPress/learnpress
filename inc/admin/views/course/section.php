@@ -41,14 +41,14 @@ learn_press_admin_view( 'course/new-section-item' );
                            placeholder="<?php echo esc_attr( 'Describe about this section', 'learnpress' ); ?>">
                 </div>
 
-                <table class="section-list-items" :class="{'no-item': !section.items.length}">
-                    <draggable :list="section.items" :element="'tbody'" :options="optionDraggable">
+                <div class="section-list-items" :class="{'no-item': !section.items.length}">
+                    <draggable v-model="items" :element="'ul'" :options="optionDraggable">
                         <lp-section-item @remove="removeItem" v-for="(item, index) in section.items" :item="item"
                                          :key="item.id" :order="index+1"></lp-section-item>
-
-                        <lp-new-section-item slot="footer" :empty="!section.items.length"></lp-new-section-item>
                     </draggable>
-                </table>
+
+                    <lp-new-section-item :empty="!section.items.length"></lp-new-section-item>
+                </div>
             </div>
 
             <div class="section-actions">
@@ -76,6 +76,15 @@ learn_press_admin_view( 'course/new-section-item' );
                 };
             },
             computed: {
+                items: {
+                    get: function () {
+                        return this.section.items;
+                    },
+                    set: function (items) {
+                        this.section.items = items;
+                    }
+                },
+
                 optionDraggable: function () {
                     return {
                         handle: '.icon',

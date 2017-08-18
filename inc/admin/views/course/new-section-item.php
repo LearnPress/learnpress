@@ -9,13 +9,12 @@
 ?>
 
 <script type="text/x-template" id="tmpl-lp-new-section-item">
-    <tr class="empty-section-item" :class="className">
-        <td></td>
-        <td>
+    <div class="empty-section-item section-item">
+       <div class="choose-type"></div>
+        <div class="title">
             <input type="text" placeholder="Type the title">
-        </td>
-        <td></td>
-    </tr>
+        </div>
+    </div>
 </script>
 
 <script>
@@ -28,13 +27,6 @@
                 return {};
             },
             computed: {
-                className: function () {
-                    if (this.empty) {
-                        return 'section-item';
-                    }
-
-                    return 'section-item-ghost';
-                }
             }
         });
 

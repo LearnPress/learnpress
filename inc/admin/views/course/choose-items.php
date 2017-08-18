@@ -54,7 +54,7 @@ learn_press_admin_view( 'course/added-items-preview' );
 </script>
 
 <script>
-    (function (Vue, $store) {
+    (function (Vue, $store, $) {
 
         Vue.component('lp-curriculum-choose-items', {
             template: '#tmpl-lp-course-choose-items',
@@ -76,6 +76,10 @@ learn_press_admin_view( 'course/added-items-preview' );
 
                     if (vm.show) {
                         vm.init();
+
+                        $('body').addClass('lp-modal-choose-items-open');
+                    } else {
+                        $('body').removeClass('lp-modal-choose-items-open');
                     }
                 });
             },
@@ -144,5 +148,5 @@ learn_press_admin_view( 'course/added-items-preview' );
             }
         });
 
-    })(Vue, LP_Curriculum_Store);
+    })(Vue, LP_Curriculum_Store, jQuery);
 </script>
