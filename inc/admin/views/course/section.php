@@ -27,35 +27,37 @@ learn_press_admin_view( 'course/new-section-item' );
             </div>
         </div>
 
-        <div class="section-content">
-            <div class="details">
+        <div class="section-collapse">
+            <div class="section-content">
+                <div class="details">
 
-                <input v-model="section.description"
-                       type="text"
-                       class="description-input"
-                       title="description"
-                       @blur="maybeUpdate"
-                       @change="shouldBeStore"
-                       @keyup.enter="update"
-                       placeholder="<?php echo esc_attr( 'Describe about this section', 'learnpress' ); ?>">
+                    <input v-model="section.description"
+                           type="text"
+                           class="description-input"
+                           title="description"
+                           @blur="maybeUpdate"
+                           @change="shouldBeStore"
+                           @keyup.enter="update"
+                           placeholder="<?php echo esc_attr( 'Describe about this section', 'learnpress' ); ?>">
+                </div>
+
+                <table class="section-list-items" :class="{'no-item': !section.items.length}">
+                    <draggable :list="section.items" :element="'tbody'" :options="optionDraggable">
+                        <lp-section-item @remove="removeItem" v-for="(item, index) in section.items" :item="item"
+                                         :key="item.id" :order="index+1"></lp-section-item>
+
+                        <lp-new-section-item slot="footer" :empty="!section.items.length"></lp-new-section-item>
+                    </draggable>
+                </table>
             </div>
 
-            <table class="section-list-items" :class="{'no-item': !section.items.length}">
-                <draggable :list="section.items" :element="'tbody'" :options="optionDraggable">
-                    <lp-section-item @remove="removeItem" v-for="(item, index) in section.items" :item="item"
-                                     :key="item.id" :order="index+1"></lp-section-item>
+            <div class="section-actions">
+                <button type="button" class="button button-secondary"
+                        @click="openChooseItems"><?php esc_html_e( 'Add items', 'learnpress' ); ?></button>
 
-                    <lp-new-section-item slot="footer" :empty="!section.items.length"></lp-new-section-item>
-                </draggable>
-            </table>
-        </div>
-
-        <div class="section-actions">
-            <button type="button" class="button button-secondary"
-                    @click="openChooseItems"><?php esc_html_e( 'Add items', 'learnpress' ); ?></button>
-
-            <div class="remove" @click="remove">
-                <span class="dashicons dashicons-trash"></span>
+                <div class="remove" @click="remove">
+                    <span class="dashicons dashicons-trash"></span>
+                </div>
             </div>
         </div>
     </div>

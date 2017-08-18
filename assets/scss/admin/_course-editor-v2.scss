@@ -103,11 +103,8 @@
         }
 
         &.close {
-            .section-content {
+            .section-collapse {
                 height: 0;
-                padding-top: 0;
-                padding-bottom: 0;
-                opacity: 0;
             }
         }
 
@@ -192,10 +189,13 @@
             }
         }
 
+        .section-collapse {
+            height: 100%;
+            overflow: hidden;
+        }
+
         .section-content {
             padding: 20px 20px 0;
-            height: 100%;
-            transition: all 0.3s;
         }
 
         .details {
