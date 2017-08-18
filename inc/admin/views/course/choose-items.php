@@ -48,8 +48,6 @@ learn_press_admin_view( 'course/added-items-preview' );
                 </ul>
 
                 <lp-added-items-preview></lp-added-items-preview>
-
-                <button type="button" class="button" @click="checkout">Add</button>
             </div>
         </div>
     </div>
@@ -87,10 +85,6 @@ learn_press_admin_view( 'course/added-items-preview' );
                     this.page = 1;
                     this.tab = this.firstType;
                     this.makeSearch();
-                },
-
-                checkout: function () {
-                    $store.dispatch('ci/addItemsToSection');
                 },
 
                 addItem: function (item) {
