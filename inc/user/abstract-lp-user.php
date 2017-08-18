@@ -1243,8 +1243,7 @@ class LP_Abstract_User {
 		$course = LP_Course::get_course( $course_id ); 
 		$order_id = $this->get_course_order($course_id);
 		$lp_order = learn_press_get_order($order_id);
-
-		if ( $course = LP_Course::get_course( $course_id ) && $order_id && $lp_order->post_status == 'lp-completed' ) {
+		if ( is_object($course) && $order_id && $lp_order->post_status == 'lp-completed' ) {
 			if ( $this->has( 'enrolled-course', $course_id, true ) || $this->has( 'finished-course', $course_id, true ) ) {
 				// or user has enrolled course
 				$view = 'enrolled';
@@ -1516,7 +1515,6 @@ class LP_Abstract_User {
 				$enrolled = true;
 			}
 		}
-
 		return apply_filters( 'learn_press_user_has_enrolled_course', $enrolled, $this, $course_id );
 	}
 
