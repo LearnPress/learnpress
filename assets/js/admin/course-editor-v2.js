@@ -25,8 +25,12 @@
 var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
     var state = helpers.cloneObject(data.chooseItems);
     state.sectionId = false;
+    state.pagination = '';
 
     var getters = {
+        pagination: function (state) {
+            return state.pagination;
+        },
         items: function (state, _getters) {
             return state.items.filter(function (item) {
                 var find = _getters.addedItems.find(function (_item) {
@@ -69,6 +73,9 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
         'RESET': function (state) {
             state.addedItems = [];
             state.items = [];
+        },
+        'UPDATE_PAGINATION': function (state, pagination) {
+            state.pagination = pagination;
         }
     };
 
@@ -96,7 +103,8 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
                 type: 'search-items',
                 query: payload.query,
                 'item-type': payload.type,
-                page: payload.page
+                page: payload.page,
+                exclude: JSON.stringify(context.getters.addedItems)
             }).then(
                 function (response) {
                     var result = response.body;
@@ -105,8 +113,10 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
                         return;
                     }
 
-                    var items = result.data;
-                    context.commit('SET_LIST_ITEMS', items);
+                    var data = result.data;
+
+                    context.commit('SET_LIST_ITEMS', data.items);
+                    context.commit('UPDATE_PAGINATION', data.pagination);
                 },
                 function (error) {
                     console.error(error);

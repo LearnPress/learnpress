@@ -468,6 +468,19 @@
                     cursor: pointer;
                 }
             }
+
+            .pagination {
+                .number {
+                    cursor: pointer;
+                    border: 1px solid #eee;
+                    padding: 10px;
+                    background-color: green;
+
+                    &.current {
+                        background-color: transparent;
+                    }
+                }
+            }
         }
     }
 }

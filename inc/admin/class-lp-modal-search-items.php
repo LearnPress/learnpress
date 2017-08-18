@@ -120,7 +120,7 @@ class LP_Modal_Search_Items {
 		return $this->_items;
 	}
 
-	function get_pagination() {
+	function get_pagination( $html = true ) {
 
 		$pagination = '';
 		if ( $items = $this->get_items() ) {
@@ -138,7 +138,8 @@ class LP_Modal_Search_Items {
 
 				$pagenum_link = remove_query_arg( array_keys( $query_args ), $pagenum_link );
 				$pagenum_link = trailingslashit( $pagenum_link ) . '%_%';
-				$pagination   = paginate_links( array(
+
+				$pagination = array(
 					'base'      => $pagenum_link,
 					'total'     => $q->max_num_pages,
 					'current'   => max( 1, $this->_options['paged'] ),
@@ -147,7 +148,11 @@ class LP_Modal_Search_Items {
 					'prev_text' => __( '<', 'learnpress' ),
 					'next_text' => __( '>', 'learnpress' ),
 					'type'      => ''
-				) );
+				);
+
+				if ( $html ) {
+					$pagination = paginate_links( $pagination );
+				}
 			}
 		}
 
@@ -175,7 +180,7 @@ class LP_Modal_Search_Items {
 	}
 
 	public function js_template() {
-		$view = learn_press_get_admin_view('modal-search-items');
+		$view = learn_press_get_admin_view( 'modal-search-items' );
 		include $view;
 	}
 

@@ -244,6 +244,13 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 						$exclude = json_decode( $exclude, true );
 					}
 
+					$ids_exclude = array();
+					if ( is_array( $ids_exclude ) ) {
+						foreach ( $exclude as $item ) {
+							$ids_exclude[] = $item['id'];
+						}
+					}
+
 					$search = new LP_Modal_Search_Items( array(
 						'type'       => $type,
 						'context'    => 'course',
@@ -251,21 +258,26 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 						'term'       => $query,
 						'limit'      => 10,
 						'paged'      => $page,
-						'exclude'    => $exclude,
+						'exclude'    => $ids_exclude,
 					) );
 
 					$id_items = $search->get_items();
 
-					$result = array();
+					$items = array();
 					foreach ( $id_items as $id ) {
 						$post = get_post( $id );
 
-						$result[] = array(
+						$items[] = array(
 							'id'    => $post->ID,
 							'title' => $post->post_title,
 							'type'  => $post->post_type,
 						);
 					}
+
+					$result = array(
+						'items'      => $items,
+						'pagination' => $search->get_pagination( false )
+					);
 
 					break;
 			}

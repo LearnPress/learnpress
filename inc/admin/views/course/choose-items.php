@@ -47,6 +47,14 @@ learn_press_admin_view( 'course/added-items-preview' );
                     </template>
                 </ul>
 
+                <div class="pagination" v-if="totalPage > 1">
+                    <template v-for="number in totalPage">
+                        <span
+                                @click="changePage(number)"
+                                class="number" :class="number == page ? 'current' : ''">{{number}}</span>
+                    </template>
+                </div>
+
                 <lp-added-items-preview></lp-added-items-preview>
             </div>
         </div>
@@ -91,6 +99,11 @@ learn_press_admin_view( 'course/added-items-preview' );
                     this.makeSearch();
                 },
 
+                changePage: function (page) {
+                    this.page = page;
+                    this.makeSearch();
+                },
+
                 addItem: function (item) {
                     $store.dispatch('ci/addItem', item);
                 },
@@ -126,9 +139,21 @@ learn_press_admin_view( 'course/added-items-preview' );
                         page: this.page,
                         type: this.tab
                     });
+
+                    this.page = 1;
                 }
             },
             computed: {
+                pagination: function () {
+                    return $store.getters['ci/pagination'];
+                },
+                totalPage: function () {
+                    if (this.pagination) {
+                        return this.pagination.total || 1;
+                    }
+
+                    return 1;
+                },
                 items: function () {
                     return $store.getters['ci/items'];
                 },
@@ -138,7 +163,7 @@ learn_press_admin_view( 'course/added-items-preview' );
                 types: function () {
                     return $store.getters['ci/types'];
                 },
-                firstType: function() {
+                firstType: function () {
                     for (var type in $store.getters['ci/types']) {
                         return type;
                     }
