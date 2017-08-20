@@ -32,15 +32,28 @@ learn_press_admin_view( 'course/added-items-preview' );
                 <form class="search" @submit.prevent="">
                     <input placeholder="Type here to search item"
                            title="search"
-                           @input="makeSearch"
+                           @input="onChangeQuery"
                            v-model="query">
                 </form>
 
                 <ul class="list-items">
-                    <template v-for="item in items">
-                        <li @click="addItem(item)"><span class="dashicons dashicons-plus"></span>{{item.title}}</li>
+                    <template v-if="!items.length">
+                        <div>No any item.</div>
+                    </template>
+
+                    <template v-else v-for="item in items">
+                        <li @click="addItem(item)"><span class="dashicons dashicons-plus"></span><span
+                                    v-html="item.title"></span></li>
                     </template>
                 </ul>
+
+                <div class="pagination" v-if="totalPage > 1">
+                    <template v-for="number in totalPage">
+                        <span
+                                @click="changePage(number)"
+                                class="number" :class="number == page ? 'current' : ''">{{number}}</span>
+                    </template>
+                </div>
 
                 <lp-added-items-preview></lp-added-items-preview>
             </div>
@@ -49,7 +62,7 @@ learn_press_admin_view( 'course/added-items-preview' );
 </script>
 
 <script>
-    (function (Vue, $store) {
+    (function (Vue, $store, $) {
 
         Vue.component('lp-curriculum-choose-items', {
             template: '#tmpl-lp-course-choose-items',
@@ -70,31 +83,45 @@ learn_press_admin_view( 'course/added-items-preview' );
                     }
 
                     if (vm.show) {
-                       vm.init();
+                        vm.init();
+
+                        $('body').addClass('lp-modal-choose-items-open');
+                    } else {
+                        $('body').removeClass('lp-modal-choose-items-open');
                     }
                 });
             },
             methods: {
-                init: function() {
-                    this.requestSearch();
+                init: function () {
+                    this.query = '';
+                    this.page = 1;
+                    this.tab = this.firstType;
+                    this.makeSearch();
+                },
+
+                changePage: function (page) {
+                    this.page = page;
+                    this.makeSearch();
                 },
 
                 addItem: function (item) {
                     $store.dispatch('ci/addItem', item);
                 },
+
                 close: function () {
                     $store.dispatch('ci/toggle');
-                    $store.dispatch('ci/addItemsToSection');
                 },
+
                 changeTab: function (key) {
                     if (key === this.tab) {
                         return;
                     }
 
                     this.tab = key;
-                    this.requestSearch();
+                    this.makeSearch();
                 },
-                makeSearch: function () {
+
+                onChangeQuery: function () {
                     var vm = this;
 
                     if (this.delayTimeout) {
@@ -102,18 +129,31 @@ learn_press_admin_view( 'course/added-items-preview' );
                     }
 
                     this.delayTimeout = setTimeout(function () {
-                        vm.requestSearch();
+                        vm.makeSearch();
                     }, 1000);
                 },
-                requestSearch: function () {
+
+                makeSearch: function () {
                     $store.dispatch('ci/searchItems', {
                         query: this.query,
                         page: this.page,
                         type: this.tab
                     });
+
+                    this.page = 1;
                 }
             },
             computed: {
+                pagination: function () {
+                    return $store.getters['ci/pagination'];
+                },
+                totalPage: function () {
+                    if (this.pagination) {
+                        return this.pagination.total || 1;
+                    }
+
+                    return 1;
+                },
                 items: function () {
                     return $store.getters['ci/items'];
                 },
@@ -122,9 +162,16 @@ learn_press_admin_view( 'course/added-items-preview' );
                 },
                 types: function () {
                     return $store.getters['ci/types'];
+                },
+                firstType: function () {
+                    for (var type in $store.getters['ci/types']) {
+                        return type;
+                    }
+
+                    return false;
                 }
             }
         });
 
-    })(Vue, LP_Curriculum_Store);
+    })(Vue, LP_Curriculum_Store, jQuery);
 </script>

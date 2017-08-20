@@ -144,6 +144,23 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 					break;
 
+				case 'remove-section-item':
+					$item_id    = isset( $_POST['item-id'] ) ? intval( $_POST['item-id'] ) : false;
+					$section_id = isset( $_POST['section-id'] ) ? intval( $_POST['section-id'] ) : false;
+
+					$result = $curd->remove_section_item( $section_id, $item_id );
+					break;
+
+				case 'update-section-items':
+					$items      = isset( $_POST['items'] ) ? $_POST['items'] : false;
+					$section_id = isset( $_POST['section-id'] ) ? $_POST['section-id'] : false;
+
+					$items = wp_unslash( $items );
+					$items = json_decode( $items, true );
+
+					$result = $curd->update_section_items( $section_id, $items );
+					break;
+
 				case 'add-items-to-section':
 					$items      = isset( $_POST['items'] ) ? $_POST['items'] : false;
 					$section_id = isset( $_POST['section-id'] ) ? $_POST['section-id'] : false;
@@ -218,9 +235,21 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					break;
 
 				case 'search-items':
-					$query = isset( $_POST['query'] ) ? $_POST['query'] : '';
-					$type  = isset( $_POST['item-type'] ) ? $_POST['item-type'] : '';
-					$page  = ! empty( $_POST['page'] ) ? intval( $_POST['page'] ) : 1;
+					$query   = isset( $_POST['query'] ) ? $_POST['query'] : '';
+					$type    = isset( $_POST['item-type'] ) ? $_POST['item-type'] : '';
+					$page    = ! empty( $_POST['page'] ) ? intval( $_POST['page'] ) : 1;
+					$exclude = ! empty( $_POST['exclude'] ) ? wp_unslash( $_POST['exclude'] ) : '';
+
+					if ( $exclude ) {
+						$exclude = json_decode( $exclude, true );
+					}
+
+					$ids_exclude = array();
+					if ( is_array( $ids_exclude ) ) {
+						foreach ( $exclude as $item ) {
+							$ids_exclude[] = $item['id'];
+						}
+					}
 
 					$search = new LP_Modal_Search_Items( array(
 						'type'       => $type,
@@ -228,23 +257,27 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 						'context_id' => $course_id,
 						'term'       => $query,
 						'limit'      => 10,
-						'paged'      => $page
+						'paged'      => $page,
+						'exclude'    => $ids_exclude,
 					) );
 
 					$id_items = $search->get_items();
-					$items    = get_posts( array(
-						'post_type' => $type,
-						'post__in'  => $id_items
-					) );
 
-					$result = array();
-					foreach ( $items as $item ) {
-						$result[] = array(
-							'id'    => $item->ID,
-							'title' => $item->post_title,
-							'type'  => $item->post_type
+					$items = array();
+					foreach ( $id_items as $id ) {
+						$post = get_post( $id );
+
+						$items[] = array(
+							'id'    => $post->ID,
+							'title' => $post->post_title,
+							'type'  => $post->post_type,
 						);
 					}
+
+					$result = array(
+						'items'      => $items,
+						'pagination' => $search->get_pagination( false )
+					);
 
 					break;
 			}
