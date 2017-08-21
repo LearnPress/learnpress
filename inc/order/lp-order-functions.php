@@ -543,8 +543,8 @@ function learn_press_handle_purchase_request() {
 }
 
 function learn_press_get_orders( $args = array() ) {
-	_deprecated_function( __FUNCTION__, '3.x.x', 'get_posts' );
-
+	//_deprecated_function( __FUNCTION__, '3.x.x', 'get_posts' );
+	$args['post_type'] = LP_ORDER_CPT;
 	$orders = get_posts( $args );
 
 	return apply_filters( 'learn_press_get_orders', $orders, $args );

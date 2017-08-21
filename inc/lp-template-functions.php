@@ -174,11 +174,28 @@ if ( ! function_exists( 'learn_press_user_profile_tabs' ) ) {
 	 * Get tabs for user profile
 	 *
 	 * @param $user
-	 *
-	 * @return mixed
 	 */
 	function learn_press_user_profile_tabs( $user = null ) {
 		learn_press_get_template( 'profile/tabs.php', array( 'user' => $user ) );
+	}
+}
+
+if ( ! function_exists( 'learn_press_single_course_summary' ) ) {
+	/**
+	 * Display content of single course summary
+	 */
+	function learn_press_single_course_summary() {
+		global $course;
+		$user = learn_press_get_current_user();
+		if ( $user->has_course_status( $course->get_id(), array(
+				'enrolled',
+				'finished'
+			) ) || ! $course->is_require_enrollment()
+		) {
+			learn_press_get_template( 'single-course/content-learning.php' );
+		} else {
+			learn_press_get_template( 'single-course/content-landing.php' );
+		}
 	}
 }
 
@@ -847,10 +864,10 @@ if ( ! function_exists( 'learn_press_course_lesson_class' ) ) {
 	/**
 	 * The class of lesson in course curriculum
 	 *
-	 * @param int $lesson_id
-	 * @param int $course_id
+	 * @param int          $lesson_id
+	 * @param int          $course_id
 	 * @param array|string $class
-	 * @param boolean $echo
+	 * @param boolean      $echo
 	 *
 	 * @return mixed
 	 */
@@ -907,10 +924,10 @@ if ( ! function_exists( 'learn_press_course_quiz_class' ) ) {
 	/**
 	 * The class of lesson in course curriculum
 	 *
-	 * @param int $quiz_id
-	 * @param int $course_id
+	 * @param int          $quiz_id
+	 * @param int          $course_id
 	 * @param string|array $class
-	 * @param boolean $echo
+	 * @param boolean      $echo
 	 *
 	 * @return mixed
 	 */
@@ -1046,13 +1063,19 @@ function learn_press_setup_object_data( $post ) {
 			unset( $GLOBALS['course'] );
 		}
 		$object                = learn_press_get_course( $post );
-		LP()->global['course'] = $GLOBALS['course'] = $object;
+		LP()->global['course'] = $GLOBALS['course'] = $GLOBALS['lp_course'] = $object;
 	}
 
 	return $object;
 }
 
 add_action( 'the_post', 'learn_press_setup_object_data' );
+
+function learn_press_setup_user() {
+	$GLOBALS['lp_user'] = learn_press_get_current_user();
+}
+
+add_action( 'init', 'learn_press_setup_user' );
 
 
 /**
@@ -1291,9 +1314,9 @@ function learn_press_get_template_part( $slug, $name = '' ) {
  * Get other templates passing attributes and including the file.
  *
  * @param string $template_name
- * @param array $args (default: array())
+ * @param array  $args          (default: array())
  * @param string $template_path (default: '')
- * @param string $default_path (default: '')
+ * @param string $default_path  (default: '')
  *
  * @return void
  */
@@ -1329,7 +1352,7 @@ function learn_press_get_template( $template_name, $args = array(), $template_pa
  * @uses learn_press_get_template();
  *
  * @param        $template_name
- * @param array $args
+ * @param array  $args
  * @param string $template_path
  * @param string $default_path
  *
@@ -1355,7 +1378,7 @@ function learn_press_get_template_content( $template_name, $args = array(), $tem
  *
  * @param string $template_name
  * @param string $template_path (default: '')
- * @param string $default_path (default: '')
+ * @param string $default_path  (default: '')
  *
  * @return string
  */

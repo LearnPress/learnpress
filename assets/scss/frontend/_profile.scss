@@ -84,11 +84,12 @@
 
     }
 }
-
 #learn-press-profile-content {
-    margin-left: 230px;
-    padding-top: 40px;
     padding-right: 30px;
+    float: right;
+    width: calc(100% - 230px);
+    margin-top: 30px;
+    overflow: hidden;
     .lp-sections {
         list-style: none;
         overflow: hidden;

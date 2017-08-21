@@ -33,7 +33,7 @@ add_action( 'learn-press/section-summary', 'learn_press_curriculum_section_conte
  * Checkout
  *
  * @see learn_press_checkout_form_login()
- * @see learn_press_checkout_form_register();
+ * @see learn_press_checkout_form_register()
  */
 add_action( 'learn-press/before-checkout-form', 'learn_press_checkout_form_login', 5 );
 add_action( 'learn-press/before-checkout-form', 'learn_press_checkout_form_register', 10 );
@@ -52,21 +52,31 @@ add_action( 'learn-press/checkout-order-review', 'learn_press_order_payment', 15
 /****************************/
 
 /**
- * @see learn_press_user_profile_header();
+ * @see learn_press_user_profile_header()
  */
-add_action( 'learn-press/before-user-profile', 'learn_press_user_profile_header' );
+add_action( 'learn-press/before-user-profile', 'learn_press_user_profile_header', 5 );
 
 /**
- * @see learn_press_user_profile_content();
- * @see learn_press_user_profile_tabs();
+ * @see learn_press_user_profile_content()
+ * @see learn_press_user_profile_tabs()
  */
-add_action( 'learn-press/user-profile', 'learn_press_user_profile_tabs' );
-add_action( 'learn-press/user-profile', 'learn_press_user_profile_content' );
+add_action( 'learn-press/user-profile', 'learn_press_user_profile_tabs', 5 );
+add_action( 'learn-press/user-profile', 'learn_press_user_profile_content', 10 );
 
 /**
- * @see learn_press_user_profile_footer();
+ * @see learn_press_user_profile_footer()
  */
-add_action( 'learn-press/after-user-profile', 'learn_press_user_profile_footer' );
+add_action( 'learn-press/after-user-profile', 'learn_press_user_profile_footer', 5 );
+
+/****************************/
+/*       Single course      */
+/****************************/
+
+/**
+ * @see learn_press_single_course_summary()
+ */
+add_action('learn-press/single-course-summary', 'learn_press_single_course_summary', 5);
+
 
 /***************/
 

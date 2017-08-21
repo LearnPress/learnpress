@@ -26,7 +26,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			add_action( 'admin_init', array( $this, 'remove_box' ) );
 			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 			add_filter( 'admin_footer', array( $this, 'admin_footer' ) );
-			add_action( 'add_meta_boxes', array( $this, 'post_new' ) );
+			//add_action( 'add_meta_boxes', array( $this, 'post_new' ) );
 
 			$this
 				->add_map_method( 'before_delete', 'delete_order_data' )
@@ -125,17 +125,21 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				return $where;
 			}
 
-			$where .= " AND post_parent = 0 ";
+			if ( isset( $_REQUEST['parent'] ) ) {
+				$where .= sprintf( " AND post_parent = %d ", absint( $_REQUEST['parent'] ) );
+			} else {
+				$where .= " AND post_parent = 0 ";
+			}
 
 			return $where;
 		}
 
-		public function post_new() {
-			global $post;
-			if ( $post && $post->post_type == 'lp_order' && $post->post_status == 'auto-draft' && learn_press_get_request( 'multi-users' ) == 'yes' ) {
-				update_post_meta( $post->ID, '_lp_multi_users', 'yes' );
-			}
-		}
+//		public function post_new() {
+//			global $post;
+//			if ( $post && $post->post_type == 'lp_order' && $post->post_status == 'auto-draft' && learn_press_get_request( 'multi-users' ) == 'yes' ) {
+//				update_post_meta( $post->ID, '_lp_multi_users', 'yes' );
+//			}
+//		}
 
 		public function enqueue_scripts() {
 			if ( get_post_type() != 'lp_order' ) {
@@ -399,8 +403,16 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			<?php
 		}
 
+		/**
+		 * Hook to filter LP orders by some conditions.
+		 *
+		 * @param string $where
+		 *
+		 * @return mixed
+		 */
 		public function posts_where_paged( $where ) {
 			global $wpdb, $wp_query;
+
 			if ( ! $this->_is_archive() || ! $this->_is_search() ) {
 				return $where;
 			}
@@ -514,12 +526,30 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 			);
 		}
 
+		/**
+		 * Custom row's actions.
+		 *
+		 * @param array   $actions
+		 * @param WP_Post $post
+		 *
+		 * @since 2.1.7
+		 *
+		 * @return mixed
+		 */
 		public function row_actions( $actions, $post ) {
 			if ( ! empty( $actions['inline hide-if-no-js'] ) ) {
 				unset( $actions['inline hide-if-no-js'] );
 			}
 			if ( ! empty( $actions['edit'] ) ) {
 				$actions['edit'] = preg_replace( '/>(.*?)<\/a>/', ">" . __( 'View Order', 'learnpress' ) . "</a>", $actions['edit'] );
+			}
+
+			$order = learn_press_get_order( $post->ID );
+			if ( $order->is_multi_users() ) {
+				$actions['child-orders'] = sprintf( '<a href="%s">%s</a>', add_query_arg( array(
+					'post_type' => LP_ORDER_CPT,
+					'parent'    => $post->ID
+				), admin_url( 'edit.php' ) ), __( 'View child orders', 'learnpress' ) );
 			}
 
 			return $actions;
@@ -805,6 +835,3 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		->add_meta_box( 'order_details', __( 'Order Details', 'learnpress' ), 'order_details', 'normal', 'high' )
 		->add_meta_box( 'submitdiv', __( 'Order Actions', 'learnpress' ), 'order_actions', 'side', 'high' );
 }
-
-error_reporting( E_ALL );
-ini_set( 'display_errors', '1' );

@@ -47,7 +47,7 @@ if ( ! isset( $order ) ) {
 						<?php
 						if ( $price = $course->get_price_html() ) {
 							$origin_price = $course->get_origin_price_html();
-							if ( $course->get_sale_price() !== ''/* $price != $origin_price */ ) {
+							if ( $course->has_sale_price()) {
 								echo '<span class="course-origin-price">' . $origin_price . '</span>';
 							}
 							echo '<span class="course-price">' . $price . '</span>';
