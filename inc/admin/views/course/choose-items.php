@@ -55,7 +55,25 @@ learn_press_admin_view( 'course/added-items-preview' );
                     </template>
                 </div>
 
-                <lp-added-items-preview></lp-added-items-preview>
+                <lp-added-items-preview :show="showPreview"></lp-added-items-preview>
+            </div>
+
+            <div class="footer">
+                <div class="cart">
+                    <button type="button"
+                            @click.prevent="showPreview = !showPreview"
+                            class="button button-secondary edit-selected">
+                        {{textButtonEdit}}
+                    </button>
+
+                    <button
+                            @click="checkout"
+                            :disabled="!addedItems.length"
+                            type="button"
+                            class="button button-primary checkout">
+                        <span>Add ({{addedItems.length}})</span>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -71,7 +89,8 @@ learn_press_admin_view( 'course/added-items-preview' );
                     query: '',
                     page: 1,
                     tab: 'lp_lesson',
-                    delayTimeout: null
+                    delayTimeout: null,
+                    showPreview: false
                 };
             },
             created: function () {
@@ -96,7 +115,12 @@ learn_press_admin_view( 'course/added-items-preview' );
                     this.query = '';
                     this.page = 1;
                     this.tab = this.firstType;
+                    this.showPreview = false;
                     this.makeSearch();
+                },
+
+                checkout: function () {
+                    $store.dispatch('ci/addItemsToSection');
                 },
 
                 changePage: function (page) {
@@ -144,6 +168,16 @@ learn_press_admin_view( 'course/added-items-preview' );
                 }
             },
             computed: {
+                textButtonEdit: function () {
+                    if (this.showPreview) {
+                        return 'Back';
+                    }
+
+                    return 'Selected items';
+                },
+                addedItems: function () {
+                    return $store.getters['ci/addedItems'];
+                },
                 pagination: function () {
                     return $store.getters['ci/pagination'];
                 },
