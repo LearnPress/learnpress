@@ -380,8 +380,35 @@
         border: 1px solid #ddd;
         box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
 
+        &.show-preview {
+            .header {
+                .preview-title {
+                    display: flex;
+                    align-items: center;
+                }
+            }
+        }
+
         .header {
             position: relative;
+
+            .preview-title {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                z-index: 10;
+                padding-left: 20px;
+                background-color: #fff;
+                border-bottom: 1px solid #ddd;
+                display: none;
+                font-weight: 600;
+
+                h3 {
+                    margin: 0;
+                }
+            }
 
             .tabs {
                 margin: 0;
@@ -394,7 +421,7 @@
 
                     &:not(:last-child):before {
                         content: '';
-                        border-right: 1px solid #DDD;
+                        border-right: 1px solid #ddd;
                         position: absolute;
                         right: 0;
                         height: 20px;
@@ -404,7 +431,7 @@
 
                     &.active {
                         &:after {
-                            border: 1px solid #DDD;
+                            border: 1px solid #ddd;
                             transform: rotate(45deg);
                             display: inline-block;
                             width: 10px;
@@ -453,6 +480,14 @@
             position: relative;
             overflow: hidden;
 
+            .section-item {
+                cursor: pointer;
+
+                .icon {
+                    font-family: Dashicons;
+                }
+            }
+
             .search {
                 margin-bottom: 20px;
 
@@ -475,8 +510,9 @@
                 .number {
                     cursor: pointer;
                     border: 1px solid #eee;
-                    padding: 10px;
-                    background-color: green;
+                    padding: 5px 10px;
+                    background-color: #aaa;
+                    margin-right: 5px;
 
                     &.current {
                         background-color: transparent;
@@ -494,8 +530,10 @@
             background-color: #fff;
             z-index: 2;
             padding: 20px;
-            transform: translate(100%, 0);
+            transform: translate(-100%, 0);
             transition: transform 200ms ease-out;
+            max-height: 320px;
+            overflow: auto;
 
             &.show {
                 transform: translate(0, 0);
