@@ -1243,8 +1243,7 @@ class LP_Abstract_User {
 		$course = LP_Course::get_course( $course_id ); 
 		$order_id = $this->get_course_order($course_id);
 		$lp_order = learn_press_get_order($order_id);
-
-		if ( $course = LP_Course::get_course( $course_id ) && $order_id && $lp_order->post_status == 'lp-completed' ) {
+		if ( is_object($course) && $order_id && $lp_order->post_status == 'lp-completed' ) {
 			if ( $this->has( 'enrolled-course', $course_id, true ) || $this->has( 'finished-course', $course_id, true ) ) {
 				// or user has enrolled course
 				$view = 'enrolled';
@@ -1516,7 +1515,6 @@ class LP_Abstract_User {
 				$enrolled = true;
 			}
 		}
-
 		return apply_filters( 'learn_press_user_has_enrolled_course', $enrolled, $this, $course_id );
 	}
 
@@ -2452,7 +2450,7 @@ class LP_Abstract_User {
 		ksort( $args );
 		$key = md5( serialize( $args ) );
 		if ( empty( $courses[ $key ] ) ) {
-			$where = $args['status'] ? $wpdb->prepare( "AND uc.status = %s", $args['status'] ) : '';
+			$where = $args['status'] ? $wpdb->prepare( "AND a.course_status = %s", $args['status'] ) : '';
 			$limit = "\n";
 			if ( $args['limit'] > 0 ) {
 				if ( ! $args['paged'] ) {
@@ -2462,30 +2460,27 @@ class LP_Abstract_User {
 				$limit .= "LIMIT " . $start . ',' . $args['limit'];
 			}
 			$order = "\nORDER BY " . ( $args['orderby'] ? $args['orderby'] : 'post_title' ) . ' ' . $args['order'];
-			$query = $wpdb->prepare( "
-				SELECT SQL_CALC_FOUND_ROWS * FROM(
-					SELECT c.*, uc.status as course_status
-					FROM {$wpdb->posts} c
-					LEFT JOIN {$wpdb->prefix}learnpress_user_items uc ON c.ID = uc.item_id AND uc.user_id = %d
-					WHERE post_type = %s
-						AND ( c.post_status = %s OR c.post_status = %s)
-						AND post_author = %d
-					UNION
-					SELECT c.*, uc.status as course_status
-					FROM {$wpdb->posts} c
-						INNER JOIN {$wpdb->prefix}learnpress_user_items uc ON c.ID = uc.item_id
-						INNER JOIN {$wpdb->prefix}posts AS `lp_order` ON lp_order.ID = uc.ref_id
-										AND uc.ref_type = 'lp_order'
-										AND lp_order.post_type = 'lp_order'
-					WHERE uc.user_id = %d
-						AND c.post_type = %s
-						AND c.post_status = %s
-						AND lp_order.post_status = 'lp-completed'
-				) a GROUP BY a.ID
-			", $args['user_id'],
-				LP_COURSE_CPT, 'publish', 'draft', $this->id,
-				$args['user_id'], LP_COURSE_CPT, 'publish'
-			);
+			$query = $wpdb->prepare ( "
+					SELECT SQL_CALC_FOUND_ROWS * FROM(
+						SELECT
+							c.*,
+							`uc`.`status` AS `course_status`
+						FROM
+							{$wpdb->prefix}posts c
+							INNER JOIN {$wpdb->prefix}learnpress_order_itemmeta AS oim ON meta_key = '_course_id'
+							AND c.post_type = %s
+							AND c.ID = oim.meta_value
+							INNER JOIN {$wpdb->prefix}learnpress_order_items AS oi ON oi.order_item_id = oim.learnpress_order_item_id
+							INNER JOIN {$wpdb->prefix}posts o ON oi.order_id = o.ID AND o.post_status = 'lp-completed'
+							INNER JOIN {$wpdb->prefix}postmeta om ON o.ID = om.post_id
+							AND om.meta_key = '_user_id'
+							LEFT JOIN {$wpdb->prefix}learnpress_user_items uc ON  uc.item_id=c.ID
+							AND uc.user_id=om.meta_value AND uc.item_type=%s
+						WHERE om.meta_value=%d
+							AND c.post_status = 'publish'
+					
+					) AS a WHERE 1=1
+					", LP_COURSE_CPT, LP_COURSE_CPT, $args ['user_id'] );
 			$query .= $where . $order . $limit;
 			$data          = array(
 				'rows' => $wpdb->get_results( $query, OBJECT_K )
