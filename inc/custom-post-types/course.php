@@ -1242,7 +1242,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			// Delete all meta no need anymore
 			if ( !$payment || $price <= 0 ) {
 				$keys = array( '_lp_payment', '_lp_price', '_lp_sale_price', '_lp_sale_start', '_lp_sale_end' );
-			} else if ( ( $sale_price == '' ) || ( $sale_price < 0 ) || ( absint( $sale_price ) >= $price ) || !$this->_validate_sale_price_date() ) {
+			} else if ( ( $sale_price === '' ) || ( $sale_price < 0 ) || ( absint( $sale_price ) >= $price ) || !$this->_validate_sale_price_date() ) {
 				$keys = array( '_lp_sale_price', '_lp_sale_start', '_lp_sale_end' );
 			}
 			if ( $keys ) {
