@@ -197,6 +197,33 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	}
 
 	/**
+	 * Get list items of section.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param $section_id
+	 *
+	 * @return array
+	 */
+	private function get_section_items( $section_id ) {
+		$course = learn_press_get_course( $this->course_id );
+
+		$sections = $course->get_curriculum_raw();
+		if ( empty( $sections ) ) {
+			return array();
+		}
+		foreach ( $sections as $section ) {
+			if ( $section['id'] == $section_id ) {
+				if ( isset( $section['items'] ) && is_array( $section['items'] ) ) {
+					return $section['items'];
+				}
+			}
+		}
+
+		return array();
+	}
+
+	/**
 	 * @param $items array
 	 *
 	 * @since 3.0.0
@@ -207,24 +234,13 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @return array
 	 */
 	public function add_items_section( $section_id, $items = array() ) {
-		$course = learn_press_get_course( $this->course_id );
-
 		$order         = 1;
-		$current_items = array();
-		$sections      = $course->get_curriculum_raw();
-		if ( empty( $sections ) ) {
-			return array();
-		}
-		foreach ( $sections as $section ) {
-			if ( $section['id'] == $section_id ) {
-				$current_items = $section['items'];
-				break;
-			}
-		}
+		$current_items = $this->get_section_items( $section_id );
 
 		global $wpdb;
 
 		$all_items = array_merge( $current_items, $items );
+		$result    = array();
 
 		foreach ( $all_items as $item ) {
 			$exist = $this->item_section_exist( $section_id, $item['id'] );
@@ -252,12 +268,29 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				);
 			}
 
+			$post     = get_post( $item['id'] );
+			$result[] = array(
+				'id'    => $post->ID,
+				'title' => $post->post_title,
+				'type'  => $post->post_type,
+			);
+
 			$order ++;
 		}
 
-		return $course->get_curriculum_raw();
+		return $result;
 	}
 
+	/**
+	 * Check item was been added to any section.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param $section_id
+	 * @param $item_id
+	 *
+	 * @return bool
+	 */
 	private function item_section_exist( $section_id, $item_id ) {
 		global $wpdb;
 
@@ -268,5 +301,119 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		$item  = $wpdb->get_row( $query, ARRAY_A );
 
 		return ! ! $item;
+	}
+
+	public function sort_section_items( $orders ) {
+
+	}
+
+	/**
+	 * Remove section item.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param $section_id
+	 * @param $item_id
+	 *
+	 * @return bool
+	 */
+	public function remove_section_item( $section_id, $item_id ) {
+		global $wpdb;
+
+		$result = $wpdb->delete(
+			$wpdb->learnpress_section_items,
+			array(
+				'section_id' => $section_id,
+				'item_id'    => $item_id
+			),
+			array(
+				'%d',
+				'%d'
+			)
+		);
+
+		return ! ! $result;
+	}
+
+	/**
+	 * Update section items.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param $section_id
+	 * @param $items array
+	 *
+	 * @return array
+	 */
+	public function update_section_items( $section_id, $items ) {
+		$current_items = $this->get_section_items( $section_id );
+
+		global $wpdb;
+		foreach ( $items as $index => $item ) {
+			$order = $index + 1;
+			$exist = $this->item_section_exist( $section_id, $item['id'] );
+
+			if ( $exist ) {
+				$wpdb->update(
+					$wpdb->learnpress_section_items,
+					array(
+						'item_order' => $order
+					),
+					array(
+						'section_id' => $section_id,
+						'item_id'    => $item['id']
+					)
+				);
+			} else {
+				$wpdb->insert(
+					$wpdb->learnpress_section_items,
+					array(
+						'section_id' => $section_id,
+						'item_id'    => $item['id'],
+						'item_order' => $order,
+						'item_type'  => $item['type'],
+					)
+				);
+			}
+		}
+
+		/**
+		 * Remove non-existent items.
+		 */
+		foreach ( $current_items as $item ) {
+			$find = $this->check_item_exist( $items, $item['id'] );
+
+			if ( ! $find ) {
+				$wpdb->delete(
+					$wpdb->learnpress_section_items,
+					array(
+						'section_id' => $section_id,
+						'item_id'    => $item['id'],
+					)
+				);
+			}
+		}
+
+		return $items;
+	}
+
+	/**
+	 * Check item exist.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param $items array
+	 * @param $item_id string
+	 *
+	 * @return bool
+	 */
+	private function check_item_exist( $items, $item_id ) {
+		foreach ( $items as $item ) {
+			if ( $item['id'] == $item_id ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }

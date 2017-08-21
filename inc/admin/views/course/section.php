@@ -6,6 +6,7 @@
  */
 
 learn_press_admin_view( 'course/section-item' );
+learn_press_admin_view( 'course/new-section-item' );
 
 ?>
 <script type="text/x-template" id="tmpl-lp-section">
@@ -26,31 +27,37 @@ learn_press_admin_view( 'course/section-item' );
             </div>
         </div>
 
-        <div class="section-content">
-            <div class="details">
+        <div class="section-collapse">
+            <div class="section-content">
+                <div class="details">
 
-                <input v-model="section.description"
-                       type="text"
-                       class="description-input"
-                       title="description"
-                       @blur="maybeUpdate"
-                       @change="shouldBeStore"
-                       @keyup.enter="update"
-                       placeholder="<?php echo esc_attr( 'Describe about this section', 'learnpress' ); ?>">
+                    <input v-model="section.description"
+                           type="text"
+                           class="description-input"
+                           title="description"
+                           @blur="maybeUpdate"
+                           @change="shouldBeStore"
+                           @keyup.enter="update"
+                           placeholder="<?php echo esc_attr( 'Describe about this section', 'learnpress' ); ?>">
+                </div>
+
+                <div class="section-list-items" :class="{'no-item': !section.items.length}">
+                    <draggable v-model="items" :element="'ul'" :options="optionDraggable">
+                        <lp-section-item @remove="removeItem" v-for="(item, index) in section.items" :item="item"
+                                         :key="item.id" :order="index+1"></lp-section-item>
+                    </draggable>
+
+                    <lp-new-section-item :empty="!section.items.length"></lp-new-section-item>
+                </div>
             </div>
 
-            <table class="section-list-items">
-                <draggable :list="section.items" :element="'tbody'" :options="{handle: '.icon'}">
-                    <lp-section-item v-for="(item, index) in section.items" :item="item" :key="item.id" :order="index+1"></lp-section-item>
-                </draggable>
-            </table>
-        </div>
+            <div class="section-actions">
+                <button type="button" class="button button-secondary"
+                        @click="openChooseItems"><?php esc_html_e( 'Add items', 'learnpress' ); ?></button>
 
-        <div class="section-actions">
-            <button type="button" class="button button-secondary" @click="openChooseItems"><?php esc_html_e( 'Add items', 'learnpress' ); ?></button>
-
-            <div class="remove" @click="remove">
-                <span class="dashicons dashicons-trash"></span>
+                <div class="remove" @click="remove">
+                    <span class="dashicons dashicons-trash"></span>
+                </div>
             </div>
         </div>
     </div>
@@ -68,9 +75,42 @@ learn_press_admin_view( 'course/section-item' );
                     unsaved: false
                 };
             },
+            computed: {
+                items: {
+                    get: function () {
+                        return this.section.items;
+                    },
+                    set: function (items) {
+                        this.section.items = items;
+
+                        $store.dispatch('updateSectionItems', {
+                            sectionId: this.section.id,
+                            items: items
+                        });
+                    }
+                },
+
+                optionDraggable: function () {
+                    return {
+                        handle: '.icon',
+                        draggable: '.section-item',
+                        group: {
+                            name: 'lp-section-items',
+                            put: true,
+                            pull: true
+                        }
+                    };
+                }
+            },
             methods: {
                 toggle: function () {
                     this.isOpen = !this.isOpen;
+                },
+                removeItem: function (item) {
+                    $store.dispatch('removeSectionItem', {
+                        sectionId: this.section.id,
+                        itemId: item.id
+                    });
                 },
                 remove: function () {
                     var r = window.confirm('Are you sure remove this section?');

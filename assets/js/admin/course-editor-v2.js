@@ -25,8 +25,12 @@
 var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
     var state = helpers.cloneObject(data.chooseItems);
     state.sectionId = false;
+    state.pagination = '';
 
     var getters = {
+        pagination: function (state) {
+            return state.pagination;
+        },
         items: function (state, _getters) {
             return state.items.filter(function (item) {
                 var find = _getters.addedItems.find(function (_item) {
@@ -68,6 +72,10 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
         },
         'RESET': function (state) {
             state.addedItems = [];
+            state.items = [];
+        },
+        'UPDATE_PAGINATION': function (state, pagination) {
+            state.pagination = pagination;
         }
     };
 
@@ -75,23 +83,28 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
         toggle: function (context) {
             context.commit('TOGGLE');
         },
+
         open: function (context, sectionId) {
             context.commit('SET_SECTION', sectionId);
             context.commit('RESET');
             context.commit('TOGGLE');
         },
+
         addItem: function (context, item) {
             context.commit('ADD_ITEM', item);
         },
+
         removeItem: function (context, index) {
             context.commit('REMOVE_ADDED_ITEM', index);
         },
+
         searchItems: function (context, payload) {
             Vue.http.LPRequest({
                 type: 'search-items',
                 query: payload.query,
                 'item-type': payload.type,
-                page: payload.page
+                page: payload.page,
+                exclude: JSON.stringify(context.getters.addedItems)
             }).then(
                 function (response) {
                     var result = response.body;
@@ -100,14 +113,17 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
                         return;
                     }
 
-                    var items = result.data;
-                    context.commit('SET_LIST_ITEMS', items);
+                    var data = result.data;
+
+                    context.commit('SET_LIST_ITEMS', data.items);
+                    context.commit('UPDATE_PAGINATION', data.pagination);
                 },
                 function (error) {
                     console.error(error);
                 }
             );
         },
+
         addItemsToSection: function (context) {
             var items = context.getters.addedItems;
 
@@ -118,7 +134,17 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
                     items: JSON.stringify(items)
                 }).then(
                     function (response) {
-                        console.log(response);
+                        var result = response.body;
+
+                        if (result.success) {
+                            context.commit('TOGGLE');
+
+                            var items = result.data;
+                            context.commit('UPDATE_SECTION_ITEMS', {
+                                sectionId: context.getters.section,
+                                items: items
+                            }, {root: true});
+                        }
                     },
                     function (error) {
                         console.error(error);
@@ -155,16 +181,6 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
         sections: function (state) {
             return state.sections || [];
         },
-        sectionItems: function (state, getters) {
-            var allItems = [];
-            getters.sections.forEach(function (section) {
-                if (section.items && section.items.length) {
-                    allItems = allItems.concat(section.items);
-                }
-            });
-
-            return allItems;
-        },
         id: function (state) {
             return state.course_id;
         },
@@ -173,9 +189,6 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
         },
         currentRequest: function (state) {
             return state.countCurrentRequest || 0;
-        },
-        chooseItems: function (state) {
-            return state.chooseItems;
         },
         urlEdit: function (state) {
             return state.urlEdit;
@@ -207,6 +220,33 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
         },
         'REMOVE_SECTION': function (state, index) {
             state.sections.splice(index, 1);
+        },
+        'REMOVE_SECTION_ITEM': function (state, payload) {
+            var section = state.sections.find(function (section) {
+                return (section.id === payload.sectionId);
+            });
+
+            var items = section.items || [];
+            var index = -1;
+            items.forEach(function (item, i) {
+                if (item.id === payload.itemId) {
+                    index = i;
+                }
+            });
+
+            if (index !== -1) {
+                items.splice(index, 1);
+            }
+        },
+        'UPDATE_SECTION_ITEMS': function (state, payload) {
+            var section = state.sections.find(function (section) {
+                return parseInt(section.id) === payload.sectionId;
+            });
+
+            if (!section) {
+                return;
+            }
+            section.items = payload.items;
         }
     };
 
@@ -296,6 +336,48 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
 
                         if (result.success && result.data) {
                             context.commit('SET_SECTIONS', result.data);
+                        }
+                    },
+                    function (error) {
+                        console.error(error);
+                    }
+                );
+        },
+
+        removeSectionItem: function (context, payload) {
+            Vue.http
+                .LPRequest({
+                    type: 'remove-section-item',
+                    'item-id': payload.itemId,
+                    'section-id': payload.sectionId
+                })
+                .then(
+                    function (response) {
+                        var result = response.body;
+
+                        if (result.success) {
+                            context.commit('REMOVE_SECTION_ITEM', payload);
+                        }
+                    },
+                    function (error) {
+                        console.error(error);
+                    }
+                );
+        },
+
+        updateSectionItems: function (context, payload) {
+            Vue.http
+                .LPRequest({
+                    type: 'update-section-items',
+                    'items': JSON.stringify(payload.items),
+                    'section-id': payload.sectionId
+                })
+                .then(
+                    function (response) {
+                        var result = response.body;
+
+                        if (result.success) {
+                            console.log(result);
                         }
                     },
                     function (error) {

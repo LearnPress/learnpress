@@ -19,6 +19,8 @@
             <span class="total">{{addedItems.length}}</span>
             <span class="close"></span>
         </div>
+
+        <button :disabled="!addedItems.length" type="button" class="button" @click="checkout">Add</button>
     </div>
 </script>
 
@@ -32,6 +34,9 @@
             methods: {
                 removeItem: function (index) {
                     $store.dispatch('ci/removeItem', index);
+                },
+                checkout: function () {
+                    $store.dispatch('ci/addItemsToSection');
                 }
             },
             computed: {

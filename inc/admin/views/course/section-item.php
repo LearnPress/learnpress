@@ -6,23 +6,23 @@
  */
 ?>
 <script type="text/x-template" id="tmpl-lp-section-item">
-    <tr class="section-item" :data-item-id="item.id" :class="item.type">
-        <td class="icon"></td>
-        <td>
+    <li class="section-item" :data-item-id="item.id" :class="item.type">
+        <div class="icon"></div>
+        <div class="title">
             <input type="text" title="title" v-model="item.title">
-        </td>
+        </div>
 
-        <td class="item-actions">
+        <div class="item-actions">
             <div class="actions">
                 <a class="edit" :href="urlEdit" target="_blank">
                     <span class="dashicons dashicons-edit"></span>
                 </a>
-                <a class="remove">
+                <a class="remove" @click.prevent="remove">
                     <span class="dashicons dashicons-trash"></span>
                 </a>
             </div>
-        </td>
-    </tr>
+        </div>
+    </li>
 </script>
 
 <script>
@@ -34,6 +34,11 @@
             computed: {
                 urlEdit: function () {
                     return $store.getters.urlEdit + this.item.id;
+                }
+            },
+            methods: {
+                remove: function () {
+                    this.$emit('remove', this.item);
                 }
             }
         });

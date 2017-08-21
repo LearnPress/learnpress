@@ -144,6 +144,23 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 					break;
 
+				case 'remove-section-item':
+					$item_id    = isset( $_POST['item-id'] ) ? intval( $_POST['item-id'] ) : false;
+					$section_id = isset( $_POST['section-id'] ) ? intval( $_POST['section-id'] ) : false;
+
+					$result = $curd->remove_section_item( $section_id, $item_id );
+					break;
+
+				case 'update-section-items':
+					$items      = isset( $_POST['items'] ) ? $_POST['items'] : false;
+					$section_id = isset( $_POST['section-id'] ) ? $_POST['section-id'] : false;
+
+					$items = wp_unslash( $items );
+					$items = json_decode( $items, true );
+
+					$result = $curd->update_section_items( $section_id, $items );
+					break;
+
 				case 'add-items-to-section':
 					$items      = isset( $_POST['items'] ) ? $_POST['items'] : false;
 					$section_id = isset( $_POST['section-id'] ) ? $_POST['section-id'] : false;
@@ -227,6 +244,13 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 						$exclude = json_decode( $exclude, true );
 					}
 
+					$ids_exclude = array();
+					if ( is_array( $ids_exclude ) ) {
+						foreach ( $exclude as $item ) {
+							$ids_exclude[] = $item['id'];
+						}
+					}
+
 					$search = new LP_Modal_Search_Items( array(
 						'type'       => $type,
 						'context'    => 'course',
@@ -234,19 +258,26 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 						'term'       => $query,
 						'limit'      => 10,
 						'paged'      => $page,
-						'exclude'    => $exclude,
+						'exclude'    => $ids_exclude,
 					) );
 
 					$id_items = $search->get_items();
 
-					$result = array();
+					$items = array();
 					foreach ( $id_items as $id ) {
-						$result[] = array(
-							'id'    => $id,
-							'title' => get_the_title( $id ),
-							'type'  => get_post_type( $id ),
+						$post = get_post( $id );
+
+						$items[] = array(
+							'id'    => $post->ID,
+							'title' => $post->post_title,
+							'type'  => $post->post_type,
 						);
 					}
+
+					$result = array(
+						'items'      => $items,
+						'pagination' => $search->get_pagination( false )
+					);
 
 					break;
 			}
