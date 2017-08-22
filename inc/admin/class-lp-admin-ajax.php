@@ -178,10 +178,13 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					break;
 
 				case 'new-section':
+				    $post_section = isset($_POST['section']) ? $_POST['section'] : array();
+				    $section_name = isset($post_section['title']) ? $post_section['title'] : '';
+
 					$args = array(
 						'section_course_id'   => $course_id,
 						'section_description' => '',
-						'section_name'        => '',
+						'section_name'        => $section_name,
 						'items'               => [],
 					);
 

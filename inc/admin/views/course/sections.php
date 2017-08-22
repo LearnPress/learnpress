@@ -19,13 +19,8 @@ learn_press_admin_view( 'course/section' );
                         :key="index"></lp-section>
         </draggable>
 
-        <div class="new">
-            <lp-new-section></lp-new-section>
-        </div>
-
         <div class="add-new-section">
-            <button type="button" :class="loading ? 'updating-message' : ''" class="button button-primary"
-                    @click.prevent="addSection"><?php esc_html_e( 'Add new section', 'learnpress' ); ?></button>
+            <lp-new-section></lp-new-section>
         </div>
     </div>
 </script>
@@ -52,10 +47,6 @@ learn_press_admin_view( 'course/section' );
                 });
             },
             methods: {
-                addSection: function () {
-                    this.loading = true;
-                    $store.dispatch('addNewSection');
-                },
                 updateSortSections: function () {
                     var orders = [];
                     this.sections.forEach(function (section, index) {

@@ -264,8 +264,12 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
             }
         },
 
-        addNewSection: function (context) {
-            Vue.http.LPRequest({type: 'new-section'})
+        addNewSection: function (context, section) {
+            Vue.http
+                .LPRequest({
+                    type: 'new-section',
+                    section: section
+                })
                 .then(
                     function (response) {
                         var result = response.body;
