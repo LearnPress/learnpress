@@ -75,16 +75,27 @@
         padding: 10px;
         border-top: 1px solid #ddd;
         border-bottom: 1px solid #ddd;
-
-        .add-new-section {
-            text-align: center;
-        }
     }
 
     .section {
         border: 1px solid #e5e5e5;
         margin-bottom: 10px;
         opacity: 1;
+
+        &.new-section {
+            .section-head {
+                background-color: #fff;
+
+                .creatable {
+                    position: relative;
+                    top: 1px;
+
+                    &:before {
+                        content: "\f132";
+                    }
+                }
+            }
+        }
 
         &:hover {
             .section-actions {
@@ -123,10 +134,13 @@
             position: relative;
             border-bottom: 1px solid #e5e5e5;
 
-            .movable {
+            .movable, .creatable {
                 display: inline-block;
                 font-family: Dashicons;
                 padding: 5px 10px;
+            }
+
+            .movable {
                 cursor: move;
 
                 &:before {
@@ -239,6 +253,7 @@
             position: relative;
             margin: 0;
             border-bottom-width: 0;
+            transition: background 200ms ease-out;
 
             &:nth-child(2n+1) {
                 background-color: #fbfbfb;
@@ -250,6 +265,24 @@
 
             &.sortable-ghost {
                 opacity: 0.5;
+            }
+
+            &.updating {
+                background-color: #e6f2d0;
+
+                &:before {
+                    position: absolute;
+                    content: '';
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    z-index: 2;
+                }
+            }
+
+            &.removing {
+                background-color: #ffeded;
             }
 
             .icon {
@@ -264,6 +297,11 @@
 
             .title {
                 margin-left: 25px;
+                margin-right: 80px;
+
+                input {
+                    color: inherit;
+                }
             }
 
             .item-actions {
@@ -380,8 +418,35 @@
         border: 1px solid #ddd;
         box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
 
+        &.show-preview {
+            .header {
+                .preview-title {
+                    display: flex;
+                    align-items: center;
+                }
+            }
+        }
+
         .header {
             position: relative;
+
+            .preview-title {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                z-index: 10;
+                padding-left: 20px;
+                background-color: #fff;
+                border-bottom: 1px solid #ddd;
+                display: none;
+                font-weight: 600;
+
+                h3 {
+                    margin: 0;
+                }
+            }
 
             .tabs {
                 margin: 0;
@@ -394,7 +459,7 @@
 
                     &:not(:last-child):before {
                         content: '';
-                        border-right: 1px solid #DDD;
+                        border-right: 1px solid #ddd;
                         position: absolute;
                         right: 0;
                         height: 20px;
@@ -404,7 +469,7 @@
 
                     &.active {
                         &:after {
-                            border: 1px solid #DDD;
+                            border: 1px solid #ddd;
                             transform: rotate(45deg);
                             display: inline-block;
                             width: 10px;
@@ -450,6 +515,16 @@
 
         .main {
             padding: 20px;
+            position: relative;
+            overflow: hidden;
+
+            .section-item {
+                cursor: pointer;
+
+                .icon {
+                    font-family: Dashicons;
+                }
+            }
 
             .search {
                 margin-bottom: 20px;
@@ -473,14 +548,38 @@
                 .number {
                     cursor: pointer;
                     border: 1px solid #eee;
-                    padding: 10px;
-                    background-color: green;
+                    padding: 5px 10px;
+                    background-color: #aaa;
+                    margin-right: 5px;
 
                     &.current {
                         background-color: transparent;
                     }
                 }
             }
+        }
+
+        .lp-added-items-preview {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #fff;
+            z-index: 2;
+            padding: 20px;
+            transform: translate(-100%, 0);
+            transition: transform 200ms ease-out;
+            max-height: 320px;
+            overflow: auto;
+
+            &.show {
+                transform: translate(0, 0);
+            }
+        }
+
+        .footer {
+            padding: 20px;
         }
     }
 }

@@ -240,13 +240,16 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
         },
         'UPDATE_SECTION_ITEMS': function (state, payload) {
             var section = state.sections.find(function (section) {
-                return parseInt(section.id) === payload.sectionId;
+                return parseInt(section.id) === parseInt(payload.sectionId);
             });
 
             if (!section) {
                 return;
             }
             section.items = payload.items;
+        },
+        'UPDATE_SECTION_ITEM': function(state, payload) {
+
         }
     };
 
@@ -264,8 +267,12 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
             }
         },
 
-        addNewSection: function (context) {
-            Vue.http.LPRequest({type: 'new-section'})
+        addNewSection: function (context, section) {
+            Vue.http
+                .LPRequest({
+                    type: 'new-section',
+                    section: section
+                })
                 .then(
                     function (response) {
                         var result = response.body;
@@ -378,6 +385,32 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
 
                         if (result.success) {
                             console.log(result);
+                        }
+                    },
+                    function (error) {
+                        console.error(error);
+                    }
+                );
+        },
+
+        updateSectionItem: function(context, payload) {
+            Vue.http
+                .LPRequest({
+                    type: 'update-section-item',
+                    'item': payload.item,
+                    'section-id': payload.sectionId
+                })
+                .then(
+                    function (response) {
+                        var result = response.body;
+
+                        if (result.success) {
+                            var item = result.data;
+
+                            context.commit('UPDATE_SECTION_ITEM', {
+                                sectionId: payload.sectionId,
+                                item: item
+                            });
                         }
                     },
                     function (error) {
