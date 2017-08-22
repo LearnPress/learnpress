@@ -253,6 +253,7 @@
             position: relative;
             margin: 0;
             border-bottom-width: 0;
+            transition: background 200ms ease-out;
 
             &:nth-child(2n+1) {
                 background-color: #fbfbfb;
@@ -264,6 +265,24 @@
 
             &.sortable-ghost {
                 opacity: 0.5;
+            }
+
+            &.updating {
+                background-color: #e6f2d0;
+
+                &:before {
+                    position: absolute;
+                    content: '';
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    z-index: 2;
+                }
+            }
+
+            &.removing {
+                background-color: #ffeded;
             }
 
             .icon {
@@ -278,6 +297,10 @@
 
             .title {
                 margin-left: 25px;
+
+                input {
+                    color: inherit;
+                }
             }
 
             .item-actions {

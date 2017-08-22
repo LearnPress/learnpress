@@ -6,11 +6,15 @@
  */
 ?>
 <script type="text/x-template" id="tmpl-lp-section-item">
-    <li class="section-item" :data-item-id="item.id" :class="item.type">
+    <li :data-item-id="item.id"
+            :class="[item.type, {updating: updating, removing: removing}]"
+            class="section-item">
+
         <div class="icon"></div>
         <div class="title">
             <input type="text" title="title"
                    @blur="updateTitle"
+                   @keyup.enter="updateTitle"
                    @input="onChangeTitle"
                    v-model="item.title">
         </div>
@@ -25,6 +29,7 @@
                 </a>
             </div>
         </div>
+
     </li>
 </script>
 
@@ -37,24 +42,47 @@
             computed: {
                 urlEdit: function () {
                     return $store.getters.urlEdit + this.item.id;
+                },
+                updating: function () {
+                    return this.removing || this.saving;
                 }
+            },
+            created: function() {
+                var vm = this;
+
+                $store.subscribe(function(mutation) {
+                    if (mutation.type !== 'UPDATE_SECTION_ITEM' ) {
+                        return;
+                    }
+
+                    vm.saving = false;
+                });
             },
             data: function () {
                 return {
-                    unsaved: false
+                    unsaved: false,
+                    removing: false,
+                    saving: false
                 };
             },
             methods: {
-                onChangeTitle: function() {
+                onChangeTitle: function () {
                     this.unsaved = true;
                 },
                 remove: function () {
+                    this.removing = true;
                     this.$emit('remove', this.item);
                 },
                 updateTitle: function () {
                     this.update();
                 },
                 update: function () {
+                    if (!this.unsaved) {
+                        return;
+                    }
+
+                    this.unsaved = false;
+                    this.saving = true;
                     this.$emit('update', this.item);
                 }
             }

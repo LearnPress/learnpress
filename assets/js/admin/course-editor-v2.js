@@ -240,13 +240,16 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
         },
         'UPDATE_SECTION_ITEMS': function (state, payload) {
             var section = state.sections.find(function (section) {
-                return parseInt(section.id) === payload.sectionId;
+                return parseInt(section.id) === parseInt(payload.sectionId);
             });
 
             if (!section) {
                 return;
             }
             section.items = payload.items;
+        },
+        'UPDATE_SECTION_ITEM': function(state, payload) {
+
         }
     };
 
@@ -402,7 +405,12 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
                         var result = response.body;
 
                         if (result.success) {
-                            console.log(result);
+                            var item = result.data;
+
+                            context.commit('UPDATE_SECTION_ITEM', {
+                                sectionId: payload.sectionId,
+                                item: item
+                            });
                         }
                     },
                     function (error) {
