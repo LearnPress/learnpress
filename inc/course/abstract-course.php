@@ -177,7 +177,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	 * Get course thumbnail, return placeholder if it does not exists
 	 *
 	 * @param string $size
-	 * @param array $attr
+	 * @param array  $attr
 	 *
 	 * @return mixed|null|void
 	 */
@@ -305,7 +305,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	/**
 	 * Get all curriculum of this course
 	 *
-	 * @param int $section_id
+	 * @param int  $section_id
 	 * @param bool $force
 	 *
 	 * @return bool|LP_Course_Section[]
@@ -431,7 +431,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	}
 
 	public function get_instructor() {
-		$user_data   = get_userdata( get_post_field('post_author', $this->get_id()) );
+		$user_data   = get_userdata( get_post_field( 'post_author', $this->get_id() ) );
 		$author_name = '';
 		if ( $user_data ) {
 			$author_name = $user_data->display_name;
@@ -444,11 +444,11 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 		$instructor = $this->get_instructor();
 		$html       = sprintf(
 			'<a href="%s">%s</a>',
-			learn_press_user_profile_link( get_post_field('post_author', $this->get_id()) ),
+			learn_press_user_profile_link( get_post_field( 'post_author', $this->get_id() ) ),
 			$instructor
 		);
 
-		return apply_filters( 'learn_press_course_instructor_html', $html, get_post_field('post_author', $this->get_id()), $this->get_id() );
+		return apply_filters( 'learn_press_course_instructor_html', $html, get_post_field( 'post_author', $this->get_id() ), $this->get_id() );
 	}
 
 	public function get_course_info( $user_id = null ) {
@@ -457,7 +457,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 		}
 		$user = learn_press_get_user( $user_id );
 
-		return $user->get_course_info( $this->get_id() );
+		return $user ? $user->get_course_info( $this->get_id() ) : false;
 	}
 
 	/**
@@ -1193,7 +1193,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	}
 
 	/**
-	 * @param int $user_id
+	 * @param int  $user_id
 	 * @param bool $force
 	 *
 	 * @return mixed|null|void
@@ -1247,7 +1247,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	/**
 	 * Calculate course results for user by course results settings
 	 *
-	 * @param int $user_id
+	 * @param int     $user_id
 	 * @param boolean $force
 	 *
 	 * @return mixed|null|void
@@ -1426,7 +1426,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	/**
 	 * Calculate results of course by lesson user completed
 	 *
-	 * @param int $user_id
+	 * @param int     $user_id
 	 * @param boolean $force
 	 *
 	 * @return int|mixed|null|void
@@ -1453,7 +1453,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	 * Get number of lessons user has completed
 	 *
 	 * @param        $user_id
-	 * @param bool $force
+	 * @param bool   $force
 	 * @param string $type
 	 *
 	 * @return int|mixed|null
@@ -1486,7 +1486,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	}
 
 	/**
-	 * @param int $user_id
+	 * @param int  $user_id
 	 * @param bool $force
 	 *
 	 * @return mixed
@@ -1515,7 +1515,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	/**
 	 * Calculate results of course by final quiz
 	 *
-	 * @param int $user_id
+	 * @param int     $user_id
 	 * @param boolean $force
 	 *
 	 * @return mixed|null
@@ -1547,7 +1547,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	/**
 	 * Calculate results of course by avg of all quizzes
 	 *
-	 * @param int $user_id
+	 * @param int     $user_id
 	 * @param boolean $force
 	 *
 	 * @return mixed
@@ -1687,27 +1687,29 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	 * @return mixed
 	 */
 	public function output_args( $args = null ) {
-		$args         = wp_parse_args( $args, array( 'echo' => true, 'user_id' => get_current_user_id() ) );
-		$user         = learn_press_get_user( $args['user_id'] );
-		$course_info  = $user->get_course_info( $this->get_id() );
-		$course_grade = $user->get_course_grade( $this->get_id() );
-		if ( array_key_exists( 'items', $course_info ) ) {
-			unset( $course_info['items'] );
-		}
-		$output = array(
-			'root_url'     => trailingslashit( get_site_url() ),
-			'id'           => $this->get_id(),
-			'url'          => $this->get_permalink(),
-			'results'      => $this->evaluate_course_results( $user->get_id() ),
-			// $this->get_course_info( $args['user_id'] ),
-			'grade'        => $course_grade,
-			'grade_html'   => learn_press_course_grade_html( $course_grade, false ),
-			'current_item' => $this->is_viewing_item(),
-			'items'        => $this->get_items_params()
-		);
+		$args   = wp_parse_args( $args, array( 'echo' => true, 'user_id' => get_current_user_id() ) );
+		$output = false;
+		if ( $user = learn_press_get_user( $args['user_id'] ) ) {
+			$course_info  = $user->get_course_info( $this->get_id() );
+			$course_grade = $user->get_course_grade( $this->get_id() );
+			if ( array_key_exists( 'items', $course_info ) ) {
+				unset( $course_info['items'] );
+			}
+			$output = array(
+				'root_url'     => trailingslashit( get_site_url() ),
+				'id'           => $this->get_id(),
+				'url'          => $this->get_permalink(),
+				'results'      => $this->evaluate_course_results( $user->get_id() ),
+				// $this->get_course_info( $args['user_id'] ),
+				'grade'        => $course_grade,
+				'grade_html'   => learn_press_course_grade_html( $course_grade, false ),
+				'current_item' => $this->is_viewing_item(),
+				'items'        => $this->get_items_params()
+			);
 
-		$output = apply_filters( 'learn_press_single_course_params', $output, $this->get_id() );
-		LP_Assets::add_var( 'LP_Course_Params', wp_json_encode( $output ), 'learn-press-single-course' );
+			$output = apply_filters( 'learn_press_single_course_params', $output, $this->get_id() );
+			LP_Assets::add_var( 'LP_Course_Params', wp_json_encode( $output ), 'learn-press-single-course' );
+		}
 
 		return $output;
 	}

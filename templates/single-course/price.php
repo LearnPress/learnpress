@@ -4,7 +4,7 @@
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 2.1.4.2
+ * @version 3.x.x
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -17,7 +17,7 @@ if ( $lp_user->has_enrolled_course( $lp_course->get_id() ) ) {
 	return;
 }
 
-if ( $price = $lp_course->get_price_html() ) {
+if ( ! $price = $lp_course->get_price_html() ) {
 	return;
 }
 

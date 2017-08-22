@@ -1544,7 +1544,6 @@ function learn_press_filter_search( $q ) {
 }
 
 add_filter( 'pre_get_posts', 'learn_press_filter_search', 99 );
-wc_add_to_cart_message()
 /**
  * Convert an object|array to json format and send it to the browser
  *
