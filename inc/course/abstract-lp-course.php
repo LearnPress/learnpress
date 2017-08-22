@@ -237,6 +237,10 @@ abstract class LP_Abstract_Course {
 		return apply_filters( 'learn_press_is_enrollable', $enrollable, $this );
 	}
 
+	public function is_published() {
+		return $this->exists() && $this->post->post_status === 'publish';
+	}
+
 	/**
 	 * Course is exists if the post is not empty
 	 *
@@ -825,22 +829,27 @@ abstract class LP_Abstract_Course {
 	}
 
 	/**
-	 * Return true if this course can be purchaseable
+	 * Return true if this course can be purchasable
 	 *
 	 * @return mixed
 	 */
 	public function is_purchasable() {
 		// TODO: needs to check more criteria, currently only check if this course is required enrollment
-		$is_purchasable = $this->is_required_enroll() && $this->post->post_status == 'publish';
-		if ( $is_purchasable ) {
-			$max_allowed = $this->max_students;
-			if ( $max_allowed > 0 ) {
-				$count_in_order = $this->count_in_order( array( 'completed', 'processing' ) );
-				$is_purchasable = $is_purchasable && ( $count_in_order < $max_allowed );
-			}
-		}
+		$is_purchasable = $this->is_published() && $this->is_required_enroll() && ! $this->is_reached_limit();
 
 		return apply_filters( 'learn_press_item_is_purchasable', $is_purchasable, $this->id );
+	}
+
+	public function is_reached_limit() {
+		$max_allowed = $this->max_students;
+		$reached     = false;
+		if ( $max_allowed > 0 ) {
+			$count_in_order = $this->count_in_order( array( 'completed', 'processing' ) );
+			$reached        = $count_in_order >= $max_allowed;
+		}
+
+
+		return $reached;
 	}
 
 	public function count_in_order( $statuses = 'completed' ) {

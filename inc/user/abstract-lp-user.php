@@ -1158,9 +1158,10 @@ class LP_Abstract_User {
 	 * @return bool
 	 */
 	public function can_purchase_course( $course_id ) {
-		$course      = learn_press_get_course( $course_id );
-		$course_status = $this->get_course_status($course_id);
-		$purchasable = !$course->is_free() && (! $this->has_ordered_course( $course_id ) || ($this->has_ordered_course( $course_id )&& $course_status=='finished'));
+		$course        = learn_press_get_course( $course_id );
+		$course_status = $this->get_course_status( $course_id );
+		$purchasable   = ! $course->is_free() && ! $course->is_reached_limit() && ( ! $this->has_ordered_course( $course_id ) || ( $this->has_ordered_course( $course_id ) && $course_status == 'finished' ) );
+
 		return apply_filters( 'learn_press_user_can_purchase_course', $purchasable, $this, $course_id );
 	}
 
@@ -1175,6 +1176,25 @@ class LP_Abstract_User {
 		# condition
 		$course = LP_Course::get_course( $course_id );
 
+		// Course is published and not limited
+		$can = $course->is_published() && ! $course->is_reached_limit();
+
+		if ( $can ) {
+			$course_status = $this->get_course_status( $course_id );
+			// If user has not bought course
+			if ( ( ! $course_status ) ) {
+				$can = $course->is_free() && $course->is_require_enrollment();
+			} else {
+				$can = $course_status === 'purchased';
+			}
+		}
+
+		if ( ! $can && $course->is_reached_limit() ) {
+			//$can = 'enough';
+		}
+
+		return apply_filters( 'learn_press_user_can_enroll_course', $can, $this, $course_id );
+
 		// check if course is purchasable
 		$enrollable = false;
 		if ( ! $course ) {
@@ -1185,7 +1205,7 @@ class LP_Abstract_User {
 			$enrollable = false;
 		} elseif ( ! $course->is_purchasable() ) {
 			$enrollable = 'enough';
-		} elseif ( $course->is_free() && $this->is_exists() ) {
+		} elseif ( $course->is_free() && $course->is_exists() ) {
 			$enrollable = true;
 		} elseif ( $course->is_purchasable() && ( $this->has_purchased_course( $course_id ) ) ) {
 			$order      = LP_Order::instance( $this->get_course_order( $course_id ), true );
@@ -1194,6 +1214,11 @@ class LP_Abstract_User {
 		$enrollable = apply_filters( 'learn_press_user_can_enroll_course', $enrollable, $this, $course_id );
 
 		return $enrollable;
+	}
+
+
+	public function current_course_status() {
+
 	}
 
 	public function can_view_item( $item_id, $course_id = 0 ) {
@@ -1207,6 +1232,7 @@ class LP_Abstract_User {
 				$return = $this->can( 'view-lesson', $item_id, $course_id );
 				break;
 		}
+
 		return apply_filters( 'learn_press_user_can_view_item', $return, $item_id, $course_id, $this->id );
 	}
 
@@ -1239,11 +1265,12 @@ class LP_Abstract_User {
 		// else, find the course of this lesson
 		$course_id = $this->_get_course_id( $course_id );
 
-		$lesson = LP_Lesson::get_lesson( $lesson_id );
-		$course = LP_Course::get_course( $course_id ); 
-		$order_id = $this->get_course_order($course_id);
-		$lp_order = learn_press_get_order($order_id);
-		if ( is_object($course) && $order_id && $lp_order->post_status == 'lp-completed' ) {
+		$lesson   = LP_Lesson::get_lesson( $lesson_id );
+		$course   = LP_Course::get_course( $course_id );
+		$order_id = $this->get_course_order( $course_id );
+		$lp_order = learn_press_get_order( $order_id );
+
+		if ( is_object( $course )/* && $order_id && $lp_order->post_status == 'lp-completed'*/ ) {
 			if ( $this->has( 'enrolled-course', $course_id, true ) || $this->has( 'finished-course', $course_id, true ) ) {
 				// or user has enrolled course
 				$view = 'enrolled';
@@ -1491,6 +1518,7 @@ class LP_Abstract_User {
 		} else {
 			$last_orders = $my_orders;
 		}
+
 		return $last_orders;
 	}
 
@@ -1510,25 +1538,26 @@ class LP_Abstract_User {
 			$item_statuses = LP_Cache::get_item_statuses( false, array() );
 			$key           = sprintf( '%d-%d-%d', $this->id, $course_id, $order_id );
 			if ( ! array_key_exists( $key, $item_statuses ) ) {
-				$enrolled = $item_statuses[ $key ] = $this->_has_enrolled_course( $course_id, $order_id);
+				$enrolled = $item_statuses[ $key ] = $this->_has_enrolled_course( $course_id, $order_id );
 			} elseif ( ! empty( $item_statuses[ $key ] ) && $item_statuses[ $key ] != '' ) {
 				$enrolled = true;
 			}
 		}
+
 		return apply_filters( 'learn_press_user_has_enrolled_course', $enrolled, $this, $course_id );
 	}
 
 	private function _has_enrolled_course( $course_id, $order_id = null ) {
 		global $wpdb;
-		$sql = "SELECT status
+		$sql  = "SELECT status
 				FROM {$wpdb->prefix}learnpress_user_items
 				WHERE user_id = %d
 					AND item_id = %d
 					AND status <> %s 
 				";
-		$vars = array($this->id, $course_id, '');
-		if( $order_id ) {
-			$sql .= "
+		$vars = array( $this->id, $course_id, '' );
+		if ( $order_id ) {
+			$sql    .= "
 					AND ref_id = %d
 					AND ref_type = 'lp_order'
 				";
@@ -1538,9 +1567,10 @@ class LP_Abstract_User {
 		$sql .= "
 					LIMIT 0, 1
 				";
-		
-		$query = $wpdb->prepare($sql, $vars);
-		$res = $wpdb->get_var( $query);
+
+		$query = $wpdb->prepare( $sql, $vars );
+		$res   = $wpdb->get_var( $query );
+
 		return $res ? true : false;
 	}
 
@@ -2012,10 +2042,15 @@ class LP_Abstract_User {
 	/**
 	 * @param $course_id
 	 *
-	 * @return mixed|void
+	 * @return mixed
 	 */
 	public function get_course_status( $course_id ) {
-		return apply_filters( 'learn_press_user_course_status', $this->get_course_info( $course_id, 'status', true ), $this->id );
+		$status = $this->get_course_info( $course_id, 'status', true );
+		if ( ! $status && $this->has_purchased_course( $course_id ) ) {
+			$status = 'purchased';
+		}
+
+		return apply_filters( 'learn_press_user_course_status', $status, $this->id );
 	}
 
 	/**
@@ -2137,6 +2172,7 @@ class LP_Abstract_User {
 	 */
 	public function has_purchased_course( $course_id ) {
 		$purchased_course = $this->get_order_status( $course_id ) == 'lp-completed';
+
 		return apply_filters( 'learn_press_user_has_purchased_course', $purchased_course, $course_id, $this->id );
 	}
 
@@ -2459,8 +2495,8 @@ class LP_Abstract_User {
 				$start = ( $args['paged'] - 1 ) * $args['limit'];
 				$limit .= "LIMIT " . $start . ',' . $args['limit'];
 			}
-			$order = "\nORDER BY " . ( $args['orderby'] ? $args['orderby'] : 'post_title' ) . ' ' . $args['order'];
-			$query = $wpdb->prepare ( "
+			$order         = "\nORDER BY " . ( $args['orderby'] ? $args['orderby'] : 'post_title' ) . ' ' . $args['order'];
+			$query         = $wpdb->prepare( "
 					SELECT SQL_CALC_FOUND_ROWS * FROM(
 						SELECT
 							c.*,
@@ -2481,7 +2517,7 @@ class LP_Abstract_User {
 					
 					) AS a WHERE 1=1
 					", LP_COURSE_CPT, LP_COURSE_CPT, $args ['user_id'] );
-			$query .= $where . $order . $limit;
+			$query         .= $where . $order . $limit;
 			$data          = array(
 				'rows' => $wpdb->get_results( $query, OBJECT_K )
 			);
