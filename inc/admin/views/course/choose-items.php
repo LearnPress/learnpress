@@ -17,7 +17,7 @@ learn_press_admin_view( 'course/added-items-preview' );
 </script>
 
 <script>
-    (function () {
+    (function (Vue, $store) {
 
         Vue.component('lp-course-choose-item', {
             template: '#tmpl-lp-course-choose-item',

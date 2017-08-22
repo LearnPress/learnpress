@@ -100,6 +100,10 @@ learn_press_admin_view( 'course/new-section-item' );
                             pull: true
                         }
                     };
+                },
+
+                isEmpty: function () {
+                    return false;
                 }
             },
             methods: {

@@ -5,6 +5,7 @@
  * @since 3.0.0
  */
 
+learn_press_admin_view( 'course/new-section' );
 learn_press_admin_view( 'course/section' );
 
 ?>
@@ -14,11 +15,17 @@ learn_press_admin_view( 'course/section' );
 <script type="text/x-template" id="tmpl-lp-list-sections">
     <div class="curriculum-sections">
         <draggable :list="sections" :options="{handle: '.movable'}" @end="updateSortSections">
-            <lp-section v-for="(section, index) in sections" :section="section" :index="index" :key="index"></lp-section>
+            <lp-section v-for="(section, index) in sections" :section="section" :index="index"
+                        :key="index"></lp-section>
         </draggable>
 
+        <div class="new">
+            <lp-new-section></lp-new-section>
+        </div>
+
         <div class="add-new-section">
-            <button type="button" :class="loading ? 'updating-message' : ''" class="button button-primary" @click.prevent="addSection"><?php esc_html_e( 'Add new section', 'learnpress' ); ?></button>
+            <button type="button" :class="loading ? 'updating-message' : ''" class="button button-primary"
+                    @click.prevent="addSection"><?php esc_html_e( 'Add new section', 'learnpress' ); ?></button>
         </div>
     </div>
 </script>
