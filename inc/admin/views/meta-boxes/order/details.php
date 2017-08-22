@@ -27,7 +27,7 @@ $method_title = $order->get_payment_method_title();
 //echo gmdate('Y-m-d H:i:s', $wc->get_date_created()->getOffsetTimestamp()), "<br />";
 //echo gmdate('Y-m-d H:i:s', $wc->get_date_created()->getTimestamp());
 //
-learn_press_debug($order);
+//learn_press_debug($order);
 //learn_press_debug($wc->get_date_created()->getOffsetTimestamp());
 //
 //$a = new LP_Datetime();

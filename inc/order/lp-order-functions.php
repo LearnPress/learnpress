@@ -179,7 +179,7 @@ function learn_press_remove_order_item( $order_id, $item_id ) {
 	return false;
 }
 
-function _learn_press_before_delete_order_item( $item_id ) {
+function _learn_press_before_delete_order_item( $item_id, $order_id ) {
 	global $wpdb;
 	if ( $order = learn_press_get_order_by_item_id( $item_id ) ) {
 		$course_id = learn_press_get_order_item_meta( $item_id, '_course_id' );
@@ -187,7 +187,7 @@ function _learn_press_before_delete_order_item( $item_id ) {
 	}
 }
 
-add_action( 'learn_press_before_delete_order_item', '_learn_press_before_delete_order_item' );
+//add_action( 'learn-press/before-delete-order-item', '_learn_press_before_delete_order_item', 10, 2 );
 
 function _learn_press_ajax_add_order_item_meta( $item ) {
 	$item_id = $item['id'];

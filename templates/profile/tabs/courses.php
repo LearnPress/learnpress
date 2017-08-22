@@ -12,6 +12,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 global $post, $profile;
+
+$profile->query_courses();
+
 $user = $profile->get_user();
 $args = array( 'user' => $user );
 

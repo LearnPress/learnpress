@@ -266,7 +266,6 @@ if ( ! function_exists( 'learn_press_single_course_args' ) ) {
 }
 
 
-
 if ( ! function_exists( 'learn_press_courses_loop_item_thumbnail' ) ) {
 	/**
 	 * Output the thumbnail of the course within loop
@@ -477,8 +476,6 @@ if ( ! function_exists( 'learn_press_course_curriculum' ) ) {
 }
 
 
-
-
 if ( ! function_exists( 'learn_press_course_categories' ) ) {
 	/**
 	 * Display course categories
@@ -496,7 +493,6 @@ if ( ! function_exists( 'learn_press_course_tags' ) ) {
 		learn_press_get_template( 'single-course/tags.php' );
 	}
 }
-
 
 
 if ( ! function_exists( 'learn_press_course_instructor' ) ) {
@@ -1073,8 +1069,9 @@ function learn_press_setup_user() {
 	$GLOBALS['lp_user'] = learn_press_get_current_user();
 }
 
-add_action( 'init', 'learn_press_setup_user', 1000 );
-
+if ( ! is_admin() ) {
+	add_action( 'init', 'learn_press_setup_user', 1000 );
+}
 
 /**
  * Display a message immediately with out push into queue

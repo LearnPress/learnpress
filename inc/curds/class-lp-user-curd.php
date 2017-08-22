@@ -182,7 +182,8 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			}
 		}
 		$orders = $groups;
-		krsort($orders);
+		krsort( $orders );
+
 		return $orders;
 	}
 
@@ -336,6 +337,11 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		return true;
 	}
 
+	/**
+	 * Read meta data of an user item.
+	 *
+	 * @param $item
+	 */
 	protected function _read_item_meta( &$item ) {
 		global $wpdb;
 		$query = $wpdb->prepare( "
@@ -353,5 +359,342 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 				$item['meta'][ $v['meta_id'] ] = $v;
 			}
 		}
+	}
+
+	/**
+	 * @param int   $user_id
+	 * @param int   $item_id
+	 * @param array $item_data
+	 * @param int   $course_id
+	 *
+	 * @return mixed
+	 */
+	public function update_user_item( $user_id, $item_id, $item_data = array(), $course_id = 0 ) {
+		global $wpdb;
+		if ( ! $course_id ) {
+			$this->read_course( $user_id, $item_id );
+		} else {
+			$this->read_course( $user_id, $course_id );
+		}
+
+		$item = $this->get_user_item( $user_id, $item_id, $course_id );
+
+		// Table fields
+		$table_fields = array(
+			'user_id'    => '%d',
+			'item_id'    => '%d',
+			'ref_id'     => '%d',
+			'start_time' => '%s',
+			'end_time'   => '%s',
+			'item_type'  => '%s',
+			'status'     => '%s',
+			'ref_type'   => '%s',
+			'parent_id'  => '%d'
+		);
+
+		// Data and format
+		$data        = array();
+		$data_format = array();
+
+		// Update it later...
+		$new_status = false;
+		if ( array_key_exists( 'status', $item_data ) && $item_data['status'] != $item['status'] ) {
+			$new_status = $item_data['status'];
+			unset( $item_data['status'] );
+		}
+
+		// Build data and data format
+		foreach ( $item_data as $field => $value ) {
+			if ( ! empty( $table_fields[ $field ] ) ) {
+				$data[ $field ]        = $value;
+				$data_format[ $field ] = $table_fields[ $field ];
+			}
+		}
+
+		$data['user_id'] = $user_id;
+		$data['item_id'] = $item_id;
+
+		if ( $course_id ) {
+			$data['ref_id']   = $course_id;
+			$data['ref_type'] = LP_COURSE_CPT;
+		} else {
+			$data['item_type'] = LP_COURSE_CPT;
+		}
+
+		foreach ( $data as $k => $v ) {
+			$data_format[ $k ] = $table_fields[ $k ];
+		}
+
+		$data_format = array_values( $data_format );
+		if ( ! $item ) {
+			$wpdb->insert(
+				$wpdb->learnpress_user_items,
+				$data,
+				$data_format
+			);
+			$user_item_id = $wpdb->insert_id;
+			$item         = $this->get_user_item_by_id( $user_item_id );
+		} else {
+			$user_item_id = $item['user_item_id'];
+			$wpdb->update(
+				$wpdb->learnpress_user_items,
+				$data,
+				$data_format
+			);
+			$item = array_merge( $item, $data );
+		}
+
+		if ( $user_item_id ) {
+			// Track last status if it is updated new status.
+			if ( $new_status !== false ) {
+				$this->update_user_item_status( $user_item_id, $new_status );
+			}
+		}
+
+		return $user_item_id;
+	}
+
+	/**
+	 * Get user item from user_items tables.
+	 * If course_id is not passed then return course,
+	 * otherwise return item in that course.
+	 *
+	 * @param int $user_id
+	 * @param int $item_id
+	 * @param int $course_id - Optional. If passed then $item_id should be id of a course's item (such as lesson, quiz, etc...)
+	 *
+	 * @return bool|mixed
+	 */
+	public function get_user_item( $user_id, $item_id, $course_id = 0 ) {
+		$this->read_course( $user_id, $item_id );
+		$item = wp_cache_get( 'course-' . $user_id . '-' . $item_id, 'lp-user-courses' );
+
+		if ( ! $course_id ) {
+			return $item;
+		} elseif ( $item ) {
+			$cache_name = sprintf( 'course-item-%d-%d-%d', $user_id, $course_id, $item['item_id'] );
+			$item       = wp_cache_get( $cache_name, 'lp-user-course-items' );
+		}
+
+		return $item;
+	}
+
+	public function get_user_item_by_id( $user_item_id ) {
+		global $wpdb;
+
+		return $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->learnpress_user_items} WHERE user_item_id = %d", $user_item_id ), ARRAY_A );
+	}
+
+	public function get_user_item_meta( $user_item_id, $meta_key, $single = true ) {
+		return learn_press_get_user_item_meta( $user_item_id, $meta_key, $single );
+	}
+
+	public function update_user_item_meta( $user_item_id, $meta_key, $meta_value, $prev = '' ) {
+		return learn_press_update_user_item_meta( $user_item_id, $meta_key, $meta_value, $prev );
+	}
+
+	/**
+	 * Update user item data by id.
+	 *
+	 * @param int   $user_item_id
+	 * @param array $item_data
+	 *
+	 * @return bool
+	 */
+	public function update_user_item_by_id( $user_item_id, $item_data = array() ) {
+		global $wpdb;
+
+		$item = $this->get_user_item_by_id( $user_item_id );
+
+		if ( ! $item ) {
+			return false;
+		}
+
+		// Table fields
+		$table_fields = array(
+			'user_item_id' => '%d',
+			'user_id'      => '%d',
+			'item_id'      => '%d',
+			'ref_id'       => '%d',
+			'start_time'   => '%s',
+			'end_time'     => '%s',
+			'item_type'    => '%s',
+			'status'       => '%s',
+			'ref_type'     => '%s',
+			'parent_id'    => '%d'
+		);
+
+		// Data and format
+		$data        = array();
+		$data_format = array();
+
+		// Update it later...
+		$new_status = false;
+		if ( array_key_exists( 'status', $item_data ) && $item_data['status'] != $item['status'] ) {
+			$new_status = $item_data['status'];
+			unset( $item_data['status'] );
+		}
+
+		// Build data and data format
+		foreach ( $item_data as $field => $value ) {
+			if ( ! empty( $table_fields[ $field ] ) ) {
+				$data[ $field ]        = $value;
+				$data_format[ $field ] = $table_fields[ $field ];
+			}
+		}
+
+		$updated = $wpdb->update(
+			$wpdb->learnpress_user_items,
+			$data,
+			array( 'user_item_id' => $user_item_id ),
+			$data_format,
+			array( '%d' )
+		);
+
+		// Track last status if it is updated new status.
+		if ( $new_status !== false ) {
+			$this->update_user_item_status( $user_item_id, $new_status );
+		}
+
+		return $updated;
+	}
+
+	/**
+	 * Update status of an user item by id.
+	 *
+	 * @param int    $user_item_id
+	 * @param string $new_status
+	 *
+	 * @return mixed
+	 */
+	public function update_user_item_status( $user_item_id, $new_status ) {
+		global $wpdb;
+		$item = $this->get_user_item_by_id( $user_item_id );
+
+		if ( ! $item ) {
+			return false;
+		}
+
+		// No need to update if it is not change
+		if ( $item['status'] === $new_status ) {
+			return false;
+		}
+
+		$updated = $wpdb->update( $wpdb->learnpress_user_items, array( 'status' => $new_status ), array( 'user_item_id' => $user_item_id ), array( '%s' ), array( '%d' ) );
+
+		if ( $updated ) {
+			$this->update_user_item_meta( $user_item_id, '_last_status', $item['status'] );
+			$this->update_user_item_meta( $user_item_id, '_current_status', $new_status );
+		}
+
+		return $updated;
+	}
+
+	/**
+	 * Delete user item by fields.
+	 *
+	 * @param string $args
+	 *
+	 * @return bool
+	 */
+	public function delete_user_item( $args = '' ) {
+		global $wpdb;
+		$args  = wp_parse_args(
+			$args,
+			array(
+				'user_id'   => 0,
+				'item_id'   => 0,
+				'ref_id'    => 0,
+				'parent_id' => 0
+			)
+		);
+		$where = array();
+		foreach ( $args as $k => $v ) {
+			if ( $v ) {
+				$where[ $k ] = $v;
+			}
+		}
+
+		if ( ! $where ) {
+			return false;
+		}
+		$query_where = array();
+		foreach ( $where as $k => $v ) {
+			$query_where[] = "{$k} = %d";
+		}
+
+		$query         = $wpdb->prepare( "SELECT user_item_id FROM {$wpdb->learnpress_user_items} WHERE " . join( ' AND ', $query_where ), array_values( $where ) );
+		$user_item_ids = $wpdb->get_col( $query );
+		$wpdb->delete(
+			$wpdb->learnpress_user_items,
+			$where,
+			array_fill( 0, sizeof( $where ), '%d' )
+		);
+
+		foreach ( $user_item_ids as $user_item_id ) {
+			$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->learnpress_user_itemmeta} WHERE learnpress_user_item_id = %d", $user_item_id ) );
+			do_action( 'learn-press/deleted-user-item', $user_item_id );
+		}
+
+		return true;
+	}
+
+	public function query_courses( $user_id, $args = '' ) {
+		global $wpdb;
+
+		$args = wp_parse_args(
+			$args, array(
+				'paged' => 1,
+				'limit' => 10,
+			)
+		);
+
+		$cache_key = sprintf( 'courses-%d-%s', $user_id, md5( build_query( $args ) ) );
+
+		if ( false === ( $courses = wp_cache_get( $cache_key, 'lp-user-courses' ) ) ) {
+
+			$orders = $this->get_orders( $user_id );
+			$query  = array( 'total' => 0, 'pages' => 0, 'items' => false );
+			if ( ! $orders ) {
+				return $query;
+			}
+
+			$course_ids = array_keys( $orders );
+			$format     = array_fill( 0, sizeof( $course_ids ), '%d' );
+
+			$sql = $wpdb->prepare( "
+				SELECT *
+				FROM {$wpdb->learnpress_user_items}
+				WHERE item_id IN(" . join( ',', $format ) . ")
+				ORDER BY user_item_id DESC
+			", $course_ids );
+
+			$items = $wpdb->get_results( $sql, ARRAY_A );
+			if ( $items ) {
+				$courses = array();
+				foreach ( $items as $item ) {
+					$courses[] = $this->read_course_info( $item );
+				}
+			}
+		}
+		learn_press_debug( $courses );
+	}
+
+	public function read_course_info( $course ) {
+		$data = $course;
+		global $wpdb;
+		$query = $wpdb->prepare( "
+			SELECT *
+			FROM {$wpdb->learnpress_user_itemmeta}
+			WHERE learnpress_user_item_id = %d
+		", $course['user_item_id'] );
+
+		if ( $itemmeta = $wpdb->get_results( $query, ARRAY_A ) ) {
+			foreach ( $itemmeta as $item ) {
+				$data[ $item['meta_key'] ] = $item['meta_value'];
+			}
+		}
+
+		return $data;
 	}
 }

@@ -278,9 +278,20 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			}
 		}
 		if ( $post = get_post( $the_id ) ) {
+			$_users = get_post_meta( $order->get_id(), '_user_id' );
+
+			if ( sizeof( $_users ) > 1 ) {
+				$users = array();
+
+				foreach ( $_users as $user ) {
+					$users[] = $user[0];
+				}
+			} else {
+				$users = $_users[0];
+			}
 			$order->set_data_via_methods(
 				array(
-					'user_id'       => get_post_meta( $order->get_id(), '_user_id', true ),
+					'user_id'       => $users,//get_post_meta( $order->get_id(), '_user_id', true ),
 					'order_date'    => new LP_Datetime( $post->post_date ),
 					'date_modified' => new LP_Datetime( $post->post_modified ),
 					'status'        => str_replace( 'lp-', '', $post->post_status ),

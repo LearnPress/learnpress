@@ -635,6 +635,10 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			return $query;
 		}
 
+		public function query_courses() {
+			return $this->_curd->query_courses( $this->get_user_data( 'id' ) );
+		}
+
 		/**
 		 * Get the order is viewing details.
 		 */
