@@ -187,10 +187,10 @@ if ( ! function_exists( 'learn_press_single_course_summary' ) ) {
 	function learn_press_single_course_summary() {
 		global $course;
 		$user = learn_press_get_current_user();
-		if ( $user->has_course_status( $course->get_id(), array(
+		if ( ! $course->is_require_enrollment() || $user->has_course_status( $course->get_id(), array(
 				'enrolled',
 				'finished'
-			) ) || ! $course->is_require_enrollment()
+			) )
 		) {
 			learn_press_get_template( 'single-course/content-learning.php' );
 		} else {

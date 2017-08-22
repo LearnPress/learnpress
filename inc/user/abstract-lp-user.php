@@ -1353,14 +1353,18 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	 */
 	public function has_course_status( $course_id, $statuses ) {
 		if ( $this->has_purchased_course( $course_id ) ) {
+
 			$status = $this->get_course_status( $course_id );
+
+			echo 'xxxxxx', $status;
+
 			if ( is_array( $statuses ) ) {
 				return in_array( $status, $statuses );
 			} elseif ( is_string( $statuses ) ) {
 				return $statuses == $status;
 			}
-		}
 
+		}
 		return false;
 	}
 
@@ -1949,7 +1953,9 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	}
 
 	/**
-	 * @param $course_id
+	 * Get current status of a course for user.
+	 *
+	 * @param int $course_id
 	 *
 	 * @return mixed
 	 */

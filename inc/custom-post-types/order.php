@@ -357,28 +357,29 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					$order->set_user_id( absint( $user_id ) );
 
 				}
+				$order->set_status( learn_press_get_request( 'order-status' ) );
 				$order->save();
 
-				$order_statuses = learn_press_get_order_statuses();
-				$order_statuses = array_keys( $order_statuses );
-				$status         = learn_press_get_request( 'order-status' );
-
-				if ( ! in_array( $status, $order_statuses ) ) {
-					$status = reset( $order_statuses );
-				}
-
-				global $post;
-				if ( empty( $post->post_title ) ) {
-					wp_update_post(
-						array(
-							'ID'         => $post_id,
-							'post_title' => __( 'Order on', 'learnpress' ) . ' ' . current_time( "l jS F Y h:i:s A" )
-						)
-					);
-				}
-
-				$force = learn_press_get_request( 'trigger-order-action' ) == 'yes';
-				$order->update_status( $status, $force );
+//				$order_statuses = learn_press_get_order_statuses();
+//				$order_statuses = array_keys( $order_statuses );
+//				$status         = learn_press_get_request( 'order-status' );
+//
+//				if ( ! in_array( $status, $order_statuses ) ) {
+//					$status = reset( $order_statuses );
+//				}
+//
+//				global $post;
+//				if ( empty( $post->post_title ) ) {
+//					wp_update_post(
+//						array(
+//							'ID'         => $post_id,
+//							'post_title' => __( 'Order on', 'learnpress' ) . ' ' . current_time( "l jS F Y h:i:s A" )
+//						)
+//					);
+//				}
+//
+//				$force = learn_press_get_request( 'trigger-order-action' ) == 'yes';
+//				$order->update_status( $status, $force );
 			}
 		}
 

@@ -283,7 +283,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					'user_id'       => get_post_meta( $order->get_id(), '_user_id', true ),
 					'order_date'    => new LP_Datetime( $post->post_date ),
 					'date_modified' => new LP_Datetime( $post->post_modified ),
-					'status'        => $post->post_status,
+					'status'        => str_replace( 'lp-', '', $post->post_status ),
 					'parent_id'     => $post->post_parent
 				)
 			);
