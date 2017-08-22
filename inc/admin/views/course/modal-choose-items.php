@@ -27,6 +27,7 @@ learn_press_admin_view( 'course/added-items-preview' );
     })(Vue, LP_Curriculum_Store);
 </script>
 
+
 <script type="text/x-template" id="tmpl-lp-course-choose-items">
     <div id="lp-modal-choose-items" :class="{show:show}">
         <div class="lp-choose-items" :class="{'show-preview': showPreview}">
@@ -163,6 +164,7 @@ learn_press_admin_view( 'course/added-items-preview' );
                     }
 
                     this.tab = key;
+                    this.page = 1;
                     this.makeSearch();
                 },
 
@@ -175,7 +177,7 @@ learn_press_admin_view( 'course/added-items-preview' );
 
                     this.delayTimeout = setTimeout(function () {
                         vm.makeSearch();
-                    }, 1000);
+                    }, 500);
                 },
 
                 makeSearch: function () {
@@ -184,8 +186,6 @@ learn_press_admin_view( 'course/added-items-preview' );
                         page: this.page,
                         type: this.tab
                     });
-
-                    this.page = 1;
                 }
             },
             computed: {

@@ -11,7 +11,7 @@
 <script type="text/x-template" id="tmpl-lp-new-section">
     <div class="section new-section">
         <div class="section-head">
-            <span class="movable"></span>
+            <span class="creatable"></span>
             <input
                     v-model="title"
                     type="text"

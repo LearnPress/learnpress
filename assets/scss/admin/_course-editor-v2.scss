@@ -82,6 +82,21 @@
         margin-bottom: 10px;
         opacity: 1;
 
+        &.new-section {
+            .section-head {
+                background-color: #fff;
+
+                .creatable {
+                    position: relative;
+                    top: 1px;
+
+                    &:before {
+                        content: "\f132";
+                    }
+                }
+            }
+        }
+
         &:hover {
             .section-actions {
                 .remove {
@@ -119,10 +134,13 @@
             position: relative;
             border-bottom: 1px solid #e5e5e5;
 
-            .movable {
+            .movable, .creatable {
                 display: inline-block;
                 font-family: Dashicons;
                 padding: 5px 10px;
+            }
+
+            .movable {
                 cursor: move;
 
                 &:before {
