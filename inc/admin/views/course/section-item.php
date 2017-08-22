@@ -9,7 +9,10 @@
     <li class="section-item" :data-item-id="item.id" :class="item.type">
         <div class="icon"></div>
         <div class="title">
-            <input type="text" title="title" v-model="item.title">
+            <input type="text" title="title"
+                   @blur="updateTitle"
+                   @input="onChangeTitle"
+                   v-model="item.title">
         </div>
 
         <div class="item-actions">
@@ -36,9 +39,23 @@
                     return $store.getters.urlEdit + this.item.id;
                 }
             },
+            data: function () {
+                return {
+                    unsaved: false
+                };
+            },
             methods: {
+                onChangeTitle: function() {
+                    this.unsaved = true;
+                },
                 remove: function () {
                     this.$emit('remove', this.item);
+                },
+                updateTitle: function () {
+                    this.update();
+                },
+                update: function () {
+                    this.$emit('update', this.item);
                 }
             }
         });

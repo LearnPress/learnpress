@@ -43,7 +43,9 @@ learn_press_admin_view( 'course/new-section-item' );
 
                 <div class="section-list-items" :class="{'no-item': !section.items.length}">
                     <draggable v-model="items" :element="'ul'" :options="optionDraggable">
-                        <lp-section-item @remove="removeItem" v-for="(item, index) in section.items" :item="item"
+                        <lp-section-item
+                                @update="updateItem"
+                                @remove="removeItem" v-for="(item, index) in section.items" :item="item"
                                          :key="item.id" :order="index+1"></lp-section-item>
                     </draggable>
 
@@ -114,6 +116,12 @@ learn_press_admin_view( 'course/new-section-item' );
                     $store.dispatch('removeSectionItem', {
                         sectionId: this.section.id,
                         itemId: item.id
+                    });
+                },
+                updateItem: function(item) {
+                    $store.dispatch('updateSectionItem', {
+                        sectionId: this.section.id,
+                        item: item
                     });
                 },
                 remove: function () {

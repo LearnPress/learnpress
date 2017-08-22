@@ -388,6 +388,27 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
                         console.error(error);
                     }
                 );
+        },
+
+        updateSectionItem: function(context, payload) {
+            Vue.http
+                .LPRequest({
+                    type: 'update-section-item',
+                    'item': payload.item,
+                    'section-id': payload.sectionId
+                })
+                .then(
+                    function (response) {
+                        var result = response.body;
+
+                        if (result.success) {
+                            console.log(result);
+                        }
+                    },
+                    function (error) {
+                        console.error(error);
+                    }
+                );
         }
     };
 
