@@ -9,17 +9,24 @@
 ?>
 
 <script type="text/x-template" id="tmpl-lp-new-section-item">
-    <div class="empty-section-item section-item">
-        <div class="types">
+    <div class="new-section-item section-item"
+         @keyup.up="up"
+         @keyup.down="down"
+         :class="{choosing: choosingType}">
+        <div class="types"
+             @mouseleave="mouseLeave"
+             @mouseover="mouseOver">
             <template v-for="(_type, key) in types">
-                <label class="type" :class="type==key ? 'current' : ''">
-                    {{_type}}
-                    <input v-model="type" type="radio" name="lp-section-item-type" :title="_type" :value="key">
+                <label class="type"
+                       :title="_type"
+                       :class="[key, {current: (type==key)}]">
+                    <input v-model="type"
+                           type="radio" name="lp-section-item-type" :value="key">
                 </label>
             </template>
         </div>
         <div class="title">
-            <input type="text" placeholder="Type the title" @keyup.enter="createItem" v-model="title">
+            <input type="text" :placeholder="placeholderInput" @keyup.enter="createItem" v-model="title">
         </div>
     </div>
 </script>
@@ -33,13 +40,26 @@
             data: function () {
                 return {
                     type: '',
-                    title: ''
+                    title: '',
+                    choosingType: false
                 };
             },
             created: function () {
                 this.type = this.firstType;
             },
             methods: {
+                up: function (e) {
+                    this.changeType(true);
+                },
+                down: function (e) {
+                    this.changeType(false);
+                },
+                mouseOver: function () {
+                    this.choosingType = true;
+                },
+                mouseLeave: function () {
+                    this.choosingType = false;
+                },
                 createItem: function () {
                     this.$emit('create', {
                         type: this.type,
@@ -47,9 +67,41 @@
                     });
 
                     this.title = '';
+                },
+                changeType: function (next) {
+                    var types = this.types;
+                    var current = this.type;
+                    var currentIndex = false;
+
+                    var keys = [];
+                    var i = 0;
+                    for (var type in types) {
+                        if (type === current) {
+                            currentIndex = i;
+                        }
+                        keys.push(type);
+                        i++;
+                    }
+
+                    var nextType = keys[currentIndex + 1] || keys[0];
+                    var previousType = keys[currentIndex - 1] || keys[keys.length - 1];
+
+                    if (next) {
+                        this.type = nextType;
+                    } else {
+                        this.type = previousType;
+                    }
                 }
             },
             computed: {
+                placeholderInput: function () {
+                    var types = this.types;
+                    var type = this.types[this.type];
+                    var string = 'Create a new ' + type;
+
+                    return string;
+                },
+
                 types: function () {
                     return $store.getters['ci/types'];
                 },

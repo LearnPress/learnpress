@@ -199,7 +199,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 						'section_course_id'   => $course_id,
 						'section_description' => '',
 						'section_name'        => $section_name,
-						'items'               => [],
+						'items'               => array(),
 					);
 
                     $section = $curd->create( $args );
