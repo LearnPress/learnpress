@@ -414,7 +414,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			if ( false === $data ) {
 				try {
 					$data = json_decode( file_get_contents( 'php://input' ), true );
-				} catch ( Exception $exception ) {
+				}
+				catch ( Exception $exception ) {
 				}
 			}
 			if ( $data && func_num_args() > 0 ) {
@@ -511,7 +512,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					} else {
 						$response['message'] = __( 'Delete question failed.', 'learnpress' );
 					}
-				} catch ( Exception $exception ) {
+				}
+				catch ( Exception $exception ) {
 				}
 			}
 			learn_press_send_json( $response );
@@ -544,7 +546,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					} else {
 						$response['message'] = __( 'Delete question failed.', 'learnpress' );
 					}
-				} catch ( Exception $exception ) {
+				}
+				catch ( Exception $exception ) {
 				}
 			}
 			learn_press_send_json( $response );
@@ -837,7 +840,7 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 		 * @param        $exclude
 		 * @param        $type
 		 * @param string $context
-		 * @param null $context_id
+		 * @param null   $context_id
 		 *
 		 * @return array
 		 */
@@ -1031,6 +1034,8 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 			$order = learn_press_get_order( $order_id );
 
+			global $wpdb;
+
 			foreach ( $items as $item_id ) {
 				$order->remove_item( $item_id );
 			}
@@ -1039,7 +1044,6 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			$currency_symbol             = learn_press_get_currency_symbol( $order_data['currency'] );
 			$order_data['subtotal_html'] = learn_press_format_price( $order_data['subtotal'], $currency_symbol );
 			$order_data['total_html']    = learn_press_format_price( $order_data['total'], $currency_symbol );
-
 
 			learn_press_send_json(
 				array(
@@ -1074,41 +1078,41 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			// validate item
 			$item_ids = learn_press_get_request( 'items' );
 			$order    = learn_press_get_order( $order_id );
+
+			global $wpdb;
+			$response = array(
+				'result' => 'error'
+			);
 			if ( $order_item_ids = $order->add_items( $item_ids ) ) {
 				$html        = '';
 				$order_items = $order->get_items();
 
-                $order_data                  = learn_press_update_order_items( $order_id );
-                $currency_symbol             = learn_press_get_currency_symbol( $order_data['currency'] );
-                $order_data['subtotal_html'] = learn_press_format_price( $order_data['subtotal'], $currency_symbol );
-                $order_data['total_html']    = learn_press_format_price( $order_data['total'], $currency_symbol );
+				$order_data                  = learn_press_update_order_items( $order_id );
+				$currency_symbol             = learn_press_get_currency_symbol( $order_data['currency'] );
+				$order_data['subtotal_html'] = learn_press_format_price( $order_data['subtotal'], $currency_symbol );
+				$order_data['total_html']    = learn_press_format_price( $order_data['total'], $currency_symbol );
 
-                if ( $order_items ) {
-                    foreach ( $order_items as $item ) {
+				if ( $order_items ) {
+					foreach ( $order_items as $item ) {
 
-                        if ( ! in_array( $item['id'], $order_item_ids ) ) {
-                            continue;
-                        }
-                        ob_start();
-                        include learn_press_get_admin_view( 'meta-boxes/order/order-item.php' );
-                        $html .= ob_get_clean();
-                    }
-                }
+						if ( ! in_array( $item['id'], $order_item_ids ) ) {
+							continue;
+						}
+						ob_start();
+						include learn_press_get_admin_view( 'meta-boxes/order/order-item.php' );
+						$html .= ob_get_clean();
+					}
+				}
 
 
-				learn_press_send_json(
-					array(
-						'result'     => 'success',
-						'item_html'  => $html,
-						'order_data' => $order_data
-					)
+				$response = array(
+					'result'     => 'success',
+					'item_html'  => $html,
+					'order_data' => $order_data
 				);
 			}
-			learn_press_send_json(
-				array(
-					'result' => 'error'
-				)
-			);
+
+			learn_press_send_json( $response );
 		}
 
 		public static function search_courses() {

@@ -560,6 +560,8 @@ class LP_Order extends LP_Abstract_Object_Data {
 		$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_order_items WHERE order_item_id = %d", $item_id ) );
 		$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_order_itemmeta WHERE learnpress_order_item_id = %d", $item_id ) );
 
+		wp_cache_delete( 'order-' . $this->get_id(), 'lp-order-items' );
+
 		/**
 		 * @since 3.x.x
 		 */
