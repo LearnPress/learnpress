@@ -31,9 +31,9 @@ if ( 0 != $post->ID ) {
             <div class="misc-pub-section">
                 <select>
                     <option value=""><?php _e( 'Actions', 'learnpress' ); ?></option>
-                    <option value=""><?php _e( 'Resend email', 'learnpress' ); ?></option>
-                    <option value=""><?php _e( 'Resend email', 'learnpress' ); ?></option>
-                    <option value=""><?php _e( 'Resend email', 'learnpress' ); ?></option>
+                    <option value=""><?php _e( 'Resend new order email', 'learnpress' ); ?></option>
+                    <option value=""><?php _e( 'Resend completed order email', 'learnpress' ); ?></option>
+                    <option value=""><?php _e( 'Resend cancelled order email', 'learnpress' ); ?></option>
                 </select>
             </div>
 			<?php if ( $can_publish ) : // Contributors don't get to choose the date of publish ?>

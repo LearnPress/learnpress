@@ -604,6 +604,8 @@ if ( ! function_exists( 'learn_press_paging_nav' ) ) :
 	 * Display navigation to next/previous set of posts when applicable.
 	 *
 	 * @param array
+	 *
+	 * @return mixed
 	 */
 	function learn_press_paging_nav( $args = array() ) {
 
@@ -613,11 +615,13 @@ if ( ! function_exists( 'learn_press_paging_nav' ) ) :
 				'num_pages'     => 0,
 				'paged'         => get_query_var( 'paged' ) ? get_query_var( 'paged' ) : 1,
 				'wrapper_class' => 'learn-press-pagination',
-				'base'          => false
+				'base'          => false,
+				'format'        => '',
+				'echo'          => true
 			)
 		);
 		if ( $args['num_pages'] < 2 ) {
-			return;
+			return false;
 		}
 		$paged        = $args['paged'];
 		$pagenum_link = html_entity_decode( $args['base'] === false ? get_pagenum_link() : $args['base'] );
@@ -633,10 +637,9 @@ if ( ! function_exists( 'learn_press_paging_nav' ) ) :
 		$pagenum_link = trailingslashit( $pagenum_link ) . '%_%';
 
 		$format = $GLOBALS['wp_rewrite']->using_index_permalinks() && ! strpos( $pagenum_link, 'index.php' ) ? 'index.php/' : '';
-		$format .= $GLOBALS['wp_rewrite']->using_permalinks() ? user_trailingslashit( 'page/%#%', 'paged' ) : '?paged=%#%';
+		$format .= $args['format'] ? $args['format'] : ( $GLOBALS['wp_rewrite']->using_permalinks() ? user_trailingslashit( 'page/%#%', 'paged' ) : '?paged=%#%' );
 
-		// Set up paginated links.
-		$links = paginate_links( array(
+		$link_args = array(
 			'base'      => $pagenum_link,
 			'format'    => $format,
 			'total'     => $args['num_pages'],
@@ -646,8 +649,10 @@ if ( ! function_exists( 'learn_press_paging_nav' ) ) :
 			'prev_text' => __( '<', 'learnpress' ),
 			'next_text' => __( '>', 'learnpress' ),
 			'type'      => 'list'
-		) );
-
+		);
+		// Set up paginated links.
+		$links = paginate_links( $link_args );
+		ob_start();
 		if ( $links ) :
 			?>
             <div class="<?php echo $args['wrapper_class']; ?>">
@@ -656,6 +661,12 @@ if ( ! function_exists( 'learn_press_paging_nav' ) ) :
             <!-- .pagination -->
 			<?php
 		endif;
+		$output = ob_get_clean();
+		if ( $args['echo'] ) {
+			echo $output;
+		}
+
+		return $output;
 	}
 
 endif;
@@ -1533,7 +1544,6 @@ function learn_press_filter_search( $q ) {
 }
 
 add_filter( 'pre_get_posts', 'learn_press_filter_search', 99 );
-
 /**
  * Convert an object|array to json format and send it to the browser
  *
@@ -2709,6 +2719,7 @@ function learn_press_tooltip( $tooltip, $html = false ) {
 function learn_press_timezone_offset() {
 	if ( $tz = get_option( 'timezone_string' ) ) {
 		$timezone = new DateTimeZone( $tz );
+
 		return $timezone->getOffset( new DateTime( 'now' ) );
 	} else {
 		return floatval( get_option( 'gmt_offset', 0 ) ) * HOUR_IN_SECONDS;
@@ -2723,21 +2734,26 @@ function learn_press_touch_time( $edit = 1, $for_post = 1, $tab_index = 0, $mult
 	global $wp_locale;
 	$post = get_post();
 
-	if ( $for_post )
-		$edit = ! ( in_array($post->post_status, array('draft', 'pending') ) && (!$post->post_date_gmt || '0000-00-00 00:00:00' == $post->post_date_gmt ) );
+	if ( $for_post ) {
+		$edit = ! ( in_array( $post->post_status, array(
+				'draft',
+				'pending'
+			) ) && ( ! $post->post_date_gmt || '0000-00-00 00:00:00' == $post->post_date_gmt ) );
+	}
 
 	$tab_index_attribute = '';
-	if ( (int) $tab_index > 0 )
+	if ( (int) $tab_index > 0 ) {
 		$tab_index_attribute = " tabindex=\"$tab_index\"";
+	}
 
-	$time_adj = current_time('timestamp');
-	$post_date = ($for_post) ? $post->post_date : get_comment()->comment_date;
-	$jj = ($edit) ? mysql2date( 'd', $post_date, false ) : gmdate( 'd', $time_adj );
-	$mm = ($edit) ? mysql2date( 'm', $post_date, false ) : gmdate( 'm', $time_adj );
-	$aa = ($edit) ? mysql2date( 'Y', $post_date, false ) : gmdate( 'Y', $time_adj );
-	$hh = ($edit) ? mysql2date( 'H', $post_date, false ) : gmdate( 'H', $time_adj );
-	$mn = ($edit) ? mysql2date( 'i', $post_date, false ) : gmdate( 'i', $time_adj );
-	$ss = ($edit) ? mysql2date( 's', $post_date, false ) : gmdate( 's', $time_adj );
+	$time_adj  = current_time( 'timestamp' );
+	$post_date = ( $for_post ) ? $post->post_date : get_comment()->comment_date;
+	$jj        = ( $edit ) ? mysql2date( 'd', $post_date, false ) : gmdate( 'd', $time_adj );
+	$mm        = ( $edit ) ? mysql2date( 'm', $post_date, false ) : gmdate( 'm', $time_adj );
+	$aa        = ( $edit ) ? mysql2date( 'Y', $post_date, false ) : gmdate( 'Y', $time_adj );
+	$hh        = ( $edit ) ? mysql2date( 'H', $post_date, false ) : gmdate( 'H', $time_adj );
+	$mn        = ( $edit ) ? mysql2date( 'i', $post_date, false ) : gmdate( 'i', $time_adj );
+	$ss        = ( $edit ) ? mysql2date( 's', $post_date, false ) : gmdate( 's', $time_adj );
 
 	$cur_jj = gmdate( 'd', $time_adj );
 	$cur_mm = gmdate( 'm', $time_adj );

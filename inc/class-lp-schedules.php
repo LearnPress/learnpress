@@ -36,7 +36,6 @@ class LP_Schedules {
 				wp_redirect( get_permalink( $course->get_id() ) );
 			}
 		}
-
 		return $template;
 	}
 

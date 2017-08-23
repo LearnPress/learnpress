@@ -1,20 +1,45 @@
 <?php
 /**
- * Template for displaying content of learning course
+ * Template for displaying content of learning course.
+ *
+ * @author  ThimPress
+ * @package LearnPress/Templates
+ * @version 3.x.x
  */
 
-if ( !defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 ?>
 
-<?php do_action( 'learn_press_before_content_learning' ); ?>
+<?php
+/**
+ * @deprecated
+ */
+do_action( 'learn_press_before_content_learning' );
+?>
+XXXX
+<div class="course-learning-summary">
 
-	<div class="course-learning-summary">
+	<?php
+	/**
+	 * @deprecated
+	 */
+	do_action( 'learn_press_content_learning_summary' );
 
-		<?php do_action( 'learn_press_content_learning_summary' ); ?>
+	/**
+	 * @since 3.x.x
+	 */
+	do_action( 'learn-press/content-learning-summary' );
 
-	</div>
+	?>
 
-<?php do_action( 'learn_press_after_content_learning' ); ?>
+</div>
+
+<?php
+/**
+ * @deprecated
+ */
+do_action( 'learn_press_after_content_learning' );
+?>
 

@@ -4,20 +4,25 @@
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 2.1.4
+ * @version 3.x.x
  */
 
-if ( !defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
-$course = LP()->global['course'];
+$course = learn_press_get_course();
 
 // Do not show if course is no require enrollment
-if ( !$course || !$course->is_require_enrollment() ) {
-	return;
+if ( ! $course || ! $course->is_require_enrollment() ) {
+	//return;
 }
 ?>
-
-<p class="course-students">
-	<?php echo $course->get_students_html(); ?>
-</p>
+<span class="course-students" title="<?php echo esc_html( $course->get_students_html() ); ?>">
+	<?php
+	$count = $course->count_users_enrolled( 'append' );
+	echo $count > 1 ? sprintf(
+		_n( '%d student', '%d students', $count, 'learnpress' ),
+		$count
+	) : sprintf( __( '%d student', 'learnpress' ), $count );
+	?>
+</span>

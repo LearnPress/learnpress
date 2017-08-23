@@ -615,7 +615,7 @@ function _learn_press_get_user_profile_orders( $user_id = 0, $paged = 1, $limit 
 		$status_format = array_fill( 0, sizeof( $statuses ), '%s' );
 		$args          = array( '_user_id', $user_id, LP_ORDER_CPT, $user_id, $offset, $limit );
 		array_splice( $args, 3, 0, $statuses );
-		$query = $wpdb->prepare( "
+		echo $query = $wpdb->prepare( "
 			SELECT DISTINCT po.*, oi.order_id, pm.meta_value as user_id
 			FROM {$wpdb->prefix}learnpress_order_items oi
 			INNER JOIN {$wpdb->prefix}postmeta pm ON  pm.post_id = oi.order_id AND pm.meta_key = %s AND pm.meta_value = %d

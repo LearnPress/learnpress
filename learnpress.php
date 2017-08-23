@@ -297,8 +297,10 @@ if ( ! class_exists( 'LearnPress' ) ) {
 				echo '<pre>';
 				die();
 			}
+
+			$this->get_session();
+
 			if ( $this->is_request( 'frontend' ) ) {
-				$this->get_session();
 				$this->get_cart();
 			}
 
