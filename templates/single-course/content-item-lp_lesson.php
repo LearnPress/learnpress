@@ -12,10 +12,16 @@ $item          = LP()->global['course-item'];
 $security      = wp_create_nonce( sprintf( 'complete-item-%d-%d-%d', $user->id, $course->id, $item->ID ) );
 $can_view_item = $user->can( 'view-item', $item->id, $course->id );
 
+$user_data = get_userdata( $user->ID );
+$admin     = false;
+if ( $user_data && in_array( 'administrator', $user_data->roles ) ) {
+	$admin = true;
+}
+
 $block_option = get_post_meta( $course->id, '_lp_block_lesson_content', true );
 $duration     = $course->get_user_duration_html( $user->id, true );
 
-if ( ! $duration && ( isset( $block_option ) && $block_option == 'yes' ) ) {
+if ( ! $admin && ! $duration && ( isset( $block_option ) && $block_option == 'yes' ) ) {
 	learn_press_get_template( 'content-lesson/block-content.php' );
 } else {
 	?>
