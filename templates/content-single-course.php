@@ -7,36 +7,54 @@
  * @version 1.0
  */
 
-if ( !defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-$course = learn_press_get_the_course();
-$user   = learn_press_get_current_user();
 if ( post_password_required() ) {
 	echo get_the_password_form();
+
 	return;
 }
 
+/**
+ * @deprecated
+ */
+do_action( 'learn_press_before_main_content' );
+do_action( 'learn_press_before_single_course' );
+do_action( 'learn_press_before_single_course_summary' );
+
+/**
+ * @since 3.x.x
+ */
+do_action( 'learn-press/before-main-content' );
+
+do_action( 'learn-press/before-single-course' );
+
 ?>
-<?php do_action( 'learn_press_before_main_content' ); ?>
-
-<?php do_action( 'learn_press_before_single_course' ); ?>
-
-<?php do_action( 'learn_press_before_single_course_summary' ); ?>
-
 <div class="course-summary">
-
-	<?php if ( $user->has_course_status( $course->get_id(), array( 'enrolled', 'finished' ) ) || !$course->is_require_enrollment() ) { ?>
-		<?php learn_press_get_template( 'single-course/content-learning.php' ); ?>
-	<?php } else { ?>
-		<?php learn_press_get_template( 'single-course/content-landing.php' ); ?>
-	<?php } ?>
-
+	<?php
+	/**
+	 * @since 3.x.x
+     *
+     * @see learn_press_single_course_summary()
+	 */
+	do_action( 'learn-press/single-course-summary' );
+	?>
 </div>
+<?php
 
-<?php do_action( 'learn_press_after_single_course_summary' ); ?>
+/**
+ * @since 3.x.x
+ */
+do_action( 'learn-press/after-main-content' );
 
-<?php do_action( 'learn_press_after_single_course' ); ?>
+do_action( 'learn-press/after-single-course' );
 
-<?php do_action( 'learn_press_after_main_content' ); ?>
+/**
+ * @deprecated
+ */
+do_action( 'learn_press_after_single_course_summary' );
+do_action( 'learn_press_after_single_course' );
+do_action( 'learn_press_after_main_content' );
+?>

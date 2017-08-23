@@ -21,8 +21,7 @@ class LP_Order extends LP_Abstract_Object_Data {
 		'date_modified'    => '',
 		'customer_message' => '',
 		'customer_note'    => '',
-		'order_status'     => '',
-		'user_ip'          => ''
+		'status'           => '',
 	);
 
 	protected $_meta_keys = array(
@@ -39,6 +38,13 @@ class LP_Order extends LP_Abstract_Object_Data {
 		'_order_key'            => '',
 		'_user_ip'              => ''
 	);
+
+	/**
+	 * Store order status in transactions.
+	 *
+	 * @var array
+	 */
+	protected $_status = array();
 
 	/**
 	 * @param mixed $order_id
@@ -79,8 +85,9 @@ class LP_Order extends LP_Abstract_Object_Data {
 	 * @return string|LP_Datetime
 	 */
 	public function get_order_date( $format = '' ) {
-		$date    = $this->get_data( 'order_date' );
-		$strtime = strtotime( $date );
+		$date = $this->get_data( 'order_date' );
+
+		$strtime = strtotime( $date->toSql() );
 
 		switch ( $format ) {
 			case 'd':
@@ -173,22 +180,6 @@ class LP_Order extends LP_Abstract_Object_Data {
 	}
 
 	/**
-	 * Get current status of order
-	 *
-	 * @return mixed
-	 */
-	public function get_status() {
-		$the_id      = $this->get_id();
-		$post_status = get_post_status( $the_id );
-		$status      = preg_replace( '~^lp-~', '', $post_status );
-
-		// Deprecated filter
-		$status = apply_filters( 'learn_press_order_status', $status, $this );
-
-		return apply_filters( 'learn-press/order-status', $status, $the_id );
-	}
-
-	/**
 	 * Checks to see if current order has status as passed.
 	 *
 	 * @param string|array $status String or an array of statuses
@@ -202,6 +193,7 @@ class LP_Order extends LP_Abstract_Object_Data {
 		return apply_filters( 'learn-press/has-order-status', $has, $status, $this->get_id() );
 	}
 
+
 	/**
 	 * Updates order to new status if needed
 	 *
@@ -212,45 +204,8 @@ class LP_Order extends LP_Abstract_Object_Data {
 	 * @throws Exception
 	 */
 	public function update_status( $new_status = 'pending', $force = false ) {
-		$new_status = preg_replace( '~^lp-~', '', $new_status );
-		$old_status = $this->get_status();
-		$the_id     = $this->get_id();
-		if ( ( ( $new_status !== $old_status ) || $force ) && in_array( $new_status, array_keys( learn_press_get_order_statuses( false ) ) ) ) {
-			// Update post's status using wpdb to preventing loop
-			global $wpdb;
-			$updated = $wpdb->update( $wpdb->posts, array( 'post_status' => 'lp-' . $new_status ), array( 'ID' => $this->get_id() ), array( '%s' ) );
-			if ( $updated === false ) {
-				if ( learn_press_is_debug() ) {
-					throw new Exception( __( 'Error! Update order status failed.', 'learnpress' ) );
-				}
-
-				return false;
-			}
-
-			// Update post cache
-			$the_post              = get_post( $the_id );
-			$the_post->post_status = 'lp-' . $new_status;
-			wp_cache_set( $this->get_id(), $this->post, 'posts' );
-
-			// Update order data
-			$this->_set_data( 'status', 'lp-' . $new_status );
-
-			// Trigger actions after status was changed
-			do_action( 'learn_press_order_status_' . $new_status, $the_id );
-			do_action( 'learn_press_order_status_' . $old_status . '_to_' . $new_status, $the_id );
-			do_action( 'learn_press_order_status_changed', $the_id, $old_status, $new_status );
-			// backward compatible
-			do_action( 'learn_press_update_order_status', $new_status, $the_id );
-
-			// Trigger actions after status was changed
-			do_action( 'learn-press/order-status-' . $new_status, $the_id );
-			do_action( 'learn-press/order-status-' . $old_status . '-to-' . $new_status, $the_id );
-			do_action( 'learn-press/order-status-changed', $the_id, $old_status, $new_status );
-			// backward compatible
-			do_action( 'learn_press/update-order-status', $new_status, $the_id );
-
-			return true;
-		}
+		$this->set_status( $new_status );
+		$this->save();
 
 		return false;
 	}
@@ -276,9 +231,7 @@ class LP_Order extends LP_Abstract_Object_Data {
 	 * @return string
 	 */
 	public function get_order_number() {
-		$order_number = apply_filters( 'learn_press_get_order_number', '#' . sprintf( "%'.010d", $this->get_id() ), $this );
-
-		return apply_filters( 'learn-press/order-number', $order_number, $this->get_id() );
+		return learn_press_transaction_order_number( $this->get_id() );
 	}
 
 	/**
@@ -287,19 +240,62 @@ class LP_Order extends LP_Abstract_Object_Data {
 	 * @return mixed
 	 */
 	public function get_order_status() {
-		$statuses    = learn_press_get_order_statuses();
-		$the_id      = $this->get_id();
-		$post_status = get_post_status( $the_id );
-		if ( ! empty( $statuses[ $post_status ] ) ) {
-			$status = str_replace( 'lp-', '', $post_status );
+//		$the_id      = $this->get_id();
+//		$post_status = get_post_status( $the_id );
+//		$status      = preg_replace( '~^lp-~', '', $post_status );
+		// Deprecated filter
+//		$status = apply_filters( 'learn_press_order_status', $status, $this );
+//
+//		return apply_filters( 'learn-press/order-status', $status, $the_id );
+
+		return $this->get_status();
+	}
+
+	/**
+	 * Get current status of order
+	 *
+	 * @return mixed
+	 */
+	public function get_status() {
+
+		$status = $this->get_data( 'status' );
+
+		$status = apply_filters( 'learn_press_order_status', $status, $this );
+
+		return apply_filters( 'learn-press/order-status', $status, $this->get_id() );
+	}
+
+	/**
+	 * Set order status.
+	 *
+	 * @param string $new_status
+	 * @param string $note - Optional. Note for changing status.
+	 */
+	public function set_status( $new_status, $note = '' ) {
+		$old_status = $this->get_status();
+		$new_status = 'lp-' === substr( $new_status, 0, 3 ) ? substr( $new_status, 3 ) : $new_status;
+
+		$valid_statuses = learn_press_get_order_statuses( false, true );
+		if ( ! in_array( $new_status, $valid_statuses ) && 'trash' !== $new_status ) {
+			$new_status = 'pending';
 		}
 
-		return apply_filters( 'learn_press_get_order_status', $status, $this );
+		if ( $old_status && ! in_array( $old_status, $valid_statuses ) && 'trash' !== $old_status ) {
+			$old_status = 'pending';
+		}
+
+		$this->_set_data( 'status', $new_status );
+
+		$this->_status = array(
+			'from' => $old_status,
+			'to'   => $new_status,
+			'note' => $note
+		);
 	}
 
 	public function get_order_status_html() {
 		$statuses     = learn_press_get_order_statuses();
-		$order_status = $this->get_data( 'post_status' );
+		$order_status = $this->get_status();
 
 		if ( ! empty( $statuses[ $order_status ] ) ) {
 			$status = $statuses[ $order_status ];
@@ -559,7 +555,7 @@ class LP_Order extends LP_Abstract_Object_Data {
 		/**
 		 * @since 3.x.x
 		 */
-		do_action( 'learn-press/before-delete-order-item', $item_id );
+		do_action( 'learn-press/before-delete-order-item', $item_id, $this->get_id() );
 
 		$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_order_items WHERE order_item_id = %d", $item_id ) );
 		$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}learnpress_order_itemmeta WHERE learnpress_order_item_id = %d", $item_id ) );
@@ -567,7 +563,7 @@ class LP_Order extends LP_Abstract_Object_Data {
 		/**
 		 * @since 3.x.x
 		 */
-		do_action( 'learn-press/deleted-order-item', $item_id );
+		do_action( 'learn-press/deleted-order-item', $item_id, $this->get_id() );
 
 		do_action( 'learn_press_delete_order_item', $item_id );
 
@@ -608,11 +604,13 @@ class LP_Order extends LP_Abstract_Object_Data {
 		return $user;
 	}
 
+	/**
+	 * Get user id in array.
+	 *
+	 * @return array
+	 */
 	public function get_users() {
-		$users = false;
-		if ( $this->is_multi_users() ) {
-			$users = get_post_meta( $this->get_id(), '_user_id' );
-		}
+		$users = (array) $this->get_data( 'user_id' );
 
 		return $users;
 	}
@@ -690,16 +688,53 @@ class LP_Order extends LP_Abstract_Object_Data {
 		return apply_filters( 'learn_press_view_order_url', $view_order_url, $this );
 	}
 
+	/**
+	 * Get cancel url if it's status is pending.
+	 *
+	 * @param bool $force
+	 *
+	 * @return mixed
+	 */
 	public function get_cancel_order_url( $force = false ) {
-		$user = learn_press_get_current_user();
-		$url  = learn_press_user_profile_link( $user->get_id(), LP()->settings->get( 'profile_endpoints.profile-orders' ) );
-		if ( ! $force ) {
-			$url = add_query_arg( 'cancel-order', $this->get_id(), $url );
-		} else {
-			$url = add_query_arg( 'cancelled-order', $this->get_id(), $url );
+
+		$url = false;
+		if ( $this->has_status( 'pending' ) ) {
+			$user = learn_press_get_current_user();
+			$url  = learn_press_user_profile_link( $user->get_id(), LP()->settings->get( 'profile_endpoints.profile-orders' ) );
+			if ( ! $force ) {
+				$url = add_query_arg( 'cancel-order', $this->get_id(), $url );
+			} else {
+				$url = add_query_arg( 'cancelled-order', $this->get_id(), $url );
+			}
+
+			$url = wp_nonce_url( $url, 'cancel-order', 'lp-nonce' );
 		}
 
-		return apply_filters( 'learn_press_cancel_order_url', wp_nonce_url( $url, 'cancel-order', 'lp-nonce' ) );
+		return apply_filters( 'learn-press/order-cancel-url', $url, $this->get_id() );
+	}
+
+	/**
+	 * Get profile order's actions.
+	 *
+	 * @return array|mixed
+	 */
+	public function get_profile_order_actions() {
+		$actions = array(
+			'view' => array(
+				'url'  => $this->get_view_order_url(),
+				'text' => __( 'View', 'learnpress' )
+			)
+		);
+
+		if ( $cancel_url = $this->get_cancel_order_url() ) {
+			$actions['cancel'] = array(
+				'url'  => $this->get_cancel_order_url(),
+				'text' => __( 'Cancel', 'learnpress' )
+			);
+		}
+		$actions = apply_filters( 'learn-press/profile-order-actions', $actions, $this->get_id() );
+
+		return $actions;
 	}
 
 	public function add_note( $note = null ) {
@@ -751,11 +786,19 @@ class LP_Order extends LP_Abstract_Object_Data {
 	 * @since 2.1.5
 	 */
 	public function print_users() {
+		/**
+		 * Get meta as multiple keys for backward compatibility with older version
+		 */
 		if ( $user_ids = get_post_meta( $this->get_id(), '_user_id' ) ) {
 			global $wpdb;
+			if ( is_array( $user_ids[0] ) ) {
+				$user_ids = reset( $user_ids );
+			}
 			$format_ids = array_fill( 0, sizeof( $user_ids ), '%d' );
-			$users      = $wpdb->get_results( $wpdb->prepare( "SELECT user_login, user_email FROM {$wpdb->users} WHERE ID IN(" . join( ',', $format_ids ) . ")", $user_ids ) );
+			$sql        = $wpdb->prepare( "SELECT user_login, user_email FROM {$wpdb->users} WHERE ID IN(" . join( ',', $format_ids ) . ")", $user_ids );
+			$users      = $wpdb->get_results( $sql );
 			$size       = sizeof( $users );
+
 			foreach ( $users as $i => $user ) {
 				printf( '<strong>%s</strong> ( %s )', $user->user_login, $user->user_email );
 				if ( $i < $size - 1 ) {
@@ -837,8 +880,8 @@ class LP_Order extends LP_Abstract_Object_Data {
 		$this->_set_data( 'user_id', $user_id );
 	}
 
-	public function get_user_id(){
-		return $this->get_data('user_id');
+	public function get_user_id() {
+		return $this->get_data( 'user_id' );
 	}
 
 	public function get_date_modified() {
@@ -849,12 +892,75 @@ class LP_Order extends LP_Abstract_Object_Data {
 		$this->_set_data( 'date_modified', $date );
 	}
 
+	/**
+	 * Update order status if changed and trigger actions.
+	 *
+	 * @return bool
+	 * @throws Exception
+	 */
+	public function _save_status() {
+
+		// Nothing changed
+		if ( ! $this->_status ) {
+			return false;
+		}
+
+		$the_id     = $this->get_id();
+		$old_status = ! empty( $this->_status['from'] ) ? $this->_status['from'] : '';
+		$new_status = ! empty( $this->_status['to'] ) ? $this->_status['to'] : '';
+
+		// Only update if new status is difference with old status.
+		if ( $new_status !== $old_status ) {
+
+			if ( doing_action( 'save_post' ) ) {
+				// Update post's status using wpdb to preventing loop
+				global $wpdb;
+				$updated = $wpdb->update( $wpdb->posts, array( 'post_status' => 'lp-' . $new_status ), array( 'ID' => $the_id ), array( '%s' ) );
+			} else {
+				$updated = wp_update_post( array( 'post_status' => 'lp-' . $new_status, 'ID' => $the_id ) );
+			}
+
+			// Clear cache
+			wp_cache_delete( $the_id, 'posts' );
+
+			/**
+			 * Trigger actions after status was changed
+			 *
+			 * @deprecated
+			 */
+			do_action( 'learn_press_order_status_' . $new_status, $the_id );
+			do_action( 'learn_press_order_status_' . $old_status . '_to_' . $new_status, $the_id );
+			do_action( 'learn_press_order_status_changed', $the_id, $old_status, $new_status );
+			// backward compatible
+			do_action( 'learn_press_update_order_status', $new_status, $the_id );
+
+			/**
+			 * @since 3.x.x
+			 */
+			do_action( 'learn-press/order-status-' . $new_status, $the_id );
+			do_action( 'learn-press/order-status-' . $old_status . '-to-' . $new_status, $the_id );
+			do_action( 'learn-press/order-status-changed', $the_id, $old_status, $new_status );
+
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Save order data.
+	 *
+	 * @return bool|void
+	 * @throws Exception
+	 */
 	public function save() {
 		if ( $this->get_id() ) {
 			$this->_curd->update( $this );
 		} else {
 			$this->_curd->create( $this );
 		}
+
+		$this->_save_status();
 	}
 
 	/**
@@ -881,7 +987,5 @@ class LP_Order extends LP_Abstract_Object_Data {
 		$this->_set_data( 'customer_note', $note );
 	}
 
-	public function set_status(){
 
-	}
 }

@@ -9,11 +9,12 @@
 
 <script type="text/x-template" id="tmpl-lp-added-items-preview">
     <div class="lp-added-items-preview" :class="{show:show}">
-        <h3>List selected items ({{addedItems.length}})</h3>
-
         <ul class="list-added-items">
             <template v-for="(item, index) in addedItems">
-                <li @click="removeItem(index)"><span v-html="item.title"></span></li>
+                <li @click="removeItem(index)" class="section-item" :class="item.type">
+                    <span class="icon"></span>
+                    <span class="title">{{item.title}}</span>
+                </li>
             </template>
         </ul>
     </div>

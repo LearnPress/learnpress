@@ -9,10 +9,33 @@ learn_press_admin_view( 'course/added-items-preview' );
 
 ?>
 
+<script type="text/x-template" id="tmpl-lp-course-choose-item">
+    <li class="section-item" :class="item.type" @click="$emit('add', item)">
+        <span class="icon"></span>
+        <span class="title">{{item.title}}</span>
+    </li>
+</script>
+
+<script>
+    (function (Vue, $store) {
+
+        Vue.component('lp-course-choose-item', {
+            template: '#tmpl-lp-course-choose-item',
+            props: ['item']
+        });
+
+    })(Vue, LP_Curriculum_Store);
+</script>
+
+
 <script type="text/x-template" id="tmpl-lp-course-choose-items">
     <div id="lp-modal-choose-items" :class="{show:show}">
-        <div class="lp-choose-items">
+        <div class="lp-choose-items" :class="{'show-preview': showPreview}">
             <div class="header">
+                <div class="preview-title">
+                    <span>Selected items ({{addedItems.length}})</span>
+                </div>
+
                 <ul class="tabs">
                     <template v-for="(type, key) in types">
                         <li :data-type="key"
@@ -42,8 +65,7 @@ learn_press_admin_view( 'course/added-items-preview' );
                     </template>
 
                     <template v-else v-for="item in items">
-                        <li @click="addItem(item)"><span class="dashicons dashicons-plus"></span><span
-                                    v-html="item.title"></span></li>
+                        <lp-course-choose-item @add="addItem(item)" :item="item"></lp-course-choose-item>
                     </template>
                 </ul>
 
@@ -60,18 +82,18 @@ learn_press_admin_view( 'course/added-items-preview' );
 
             <div class="footer">
                 <div class="cart">
-                    <button type="button"
-                            @click.prevent="showPreview = !showPreview"
-                            class="button button-secondary edit-selected">
-                        {{textButtonEdit}}
-                    </button>
-
                     <button
                             @click="checkout"
                             :disabled="!addedItems.length"
                             type="button"
                             class="button button-primary checkout">
                         <span>Add ({{addedItems.length}})</span>
+                    </button>
+
+                    <button type="button"
+                            @click.prevent="showPreview = !showPreview"
+                            class="button button-secondary edit-selected">
+                        {{textButtonEdit}}
                     </button>
                 </div>
             </div>
@@ -142,6 +164,7 @@ learn_press_admin_view( 'course/added-items-preview' );
                     }
 
                     this.tab = key;
+                    this.page = 1;
                     this.makeSearch();
                 },
 
@@ -154,7 +177,7 @@ learn_press_admin_view( 'course/added-items-preview' );
 
                     this.delayTimeout = setTimeout(function () {
                         vm.makeSearch();
-                    }, 1000);
+                    }, 500);
                 },
 
                 makeSearch: function () {
@@ -163,8 +186,6 @@ learn_press_admin_view( 'course/added-items-preview' );
                         page: this.page,
                         type: this.tab
                     });
-
-                    this.page = 1;
                 }
             },
             computed: {

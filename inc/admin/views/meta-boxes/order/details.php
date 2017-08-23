@@ -202,7 +202,7 @@ $assets->add_localize( 'learn-press-meta-box-order', 'userTextFormat', '{{displa
  RWMB_Datetime_Field::admin_enqueue_scripts();
 wp_enqueue_script('jquery-ui-datepicker');
 wp_enqueue_style('jquery-ui-datepicker');
-//learn_press_debug($order->get_child_orders());
+learn_press_debug($order->get_child_orders());
 //$order->set_data('wtf', 'asdasdasdas');
 //$order->add_meta('wth', 'mu');
 //$order->update_meta();

@@ -6,8 +6,7 @@
  */
 
 learn_press_admin_view( 'course/curriculum' );
-learn_press_admin_view( 'course/choose-items' );
-
+learn_press_admin_view( 'course/modal-choose-items' );
 
 ?>
 <script type="text/x-template" id="tmpl-lp-course-editor">

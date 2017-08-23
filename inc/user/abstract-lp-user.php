@@ -1336,16 +1336,35 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 		return apply_filters( 'learn_press_user_can_finish_course', $return, $course_id, $this->get_id() );
 	}
 
+	/**
+	 * Check if course has any passed status for an user.
+	 * Statuses: depending on value of column `status` in user_items.
+	 *      - purchased: bought and order is completed, `start_date` and `end_date` is null
+	 *      - enrolled: value of column `status` in user_items is enrolled
+	 *      - started: value of column `status` in user_items is started
+	 *      - enrolled: value of column `status` in user_items is enrolled
+	 *
+	 * @param int          $course_id
+	 * @param string|array $statuses
+	 *
+	 * @since 2.0
+	 *
+	 * @return bool
+	 */
 	public function has_course_status( $course_id, $statuses ) {
 		if ( $this->has_purchased_course( $course_id ) ) {
+
 			$status = $this->get_course_status( $course_id );
+
+			echo 'xxxxxx', $status;
+
 			if ( is_array( $statuses ) ) {
 				return in_array( $status, $statuses );
 			} elseif ( is_string( $statuses ) ) {
 				return $statuses == $status;
 			}
-		}
 
+		}
 		return false;
 	}
 
@@ -1934,7 +1953,9 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	}
 
 	/**
-	 * @param $course_id
+	 * Get current status of a course for user.
+	 *
+	 * @param int $course_id
 	 *
 	 * @return mixed
 	 */
@@ -2062,8 +2083,9 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 
 	/**
 	 * Return true if user has already purchased course
+	 * and the order is completed.
 	 *
-	 * @param $course_id
+	 * @param int $course_id
 	 *
 	 * @return bool
 	 */

@@ -39,7 +39,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 		if ( $id && ! is_wp_error( $id ) ) {
 			$order->set_id( $id );
-			$this->_updates($order);
+			$this->_updates( $order );
 		}
 
 		/*array(
@@ -63,8 +63,8 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	/**
 	 * @param LP_Order $order
 	 */
-	public function _updates(&$order){
-		update_post_meta($order->get_id(), '_user_id', $order->get_user_id());
+	public function _updates( &$order ) {
+		update_post_meta( $order->get_id(), '_user_id', $order->get_user_id() );
 		$order->update_meta();
 	}
 
@@ -82,8 +82,8 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			global $wpdb;
 
 			$query = $wpdb->prepare( "
-				SELECT order_item_id, order_item_name
-				FROM {$wpdb->learnpress_order_items}
+				SELECT order_item_id as id, order_item_name as name
+				FROM {$wpdb->learnpress_order_items} oi 
 				WHERE order_id = %d 
 			", $order->get_id() );
 
@@ -92,12 +92,17 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			// Loop items
 			if ( $_items ) {
 				foreach ( $_items as $item ) {
-					$items[ $item->order_item_id ]['name'] = $item->order_item_name;
-					$items[ $item->order_item_id ]['id']   = $item->order_item_id;
+					$item = (array) $item;
+					$this->get_item_meta( $item );
+					if ( ! empty( $item['course_id'] ) ) {
+						//$items[ $item['id'] ]['name'] = $item['name'];
+						//$items[ $item['id'] ]['id']   = $item['id'];
 
-					$this->get_item_meta( $items[ $item->order_item_id ] );
+						$items[ $item['id'] ] = $item;
+					}
 				}
 			}
+
 			wp_cache_set( 'order-' . $order->get_id(), $items, 'lp-order-items' );
 		}
 
@@ -122,7 +127,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		$post_data = array(
 			'post_date'     => $order->get_order_date()->toSql( true ),
 			'post_date_gmt' => $order->get_order_date()->toSql(),
-			'post_status'   => 'wc-' . ( $order->get_status( 'edit' ) ? $order->get_status( 'edit' ) : apply_filters( 'woocommerce_default_order_status', 'pending' ) ),
+			'post_status'   => 'lp-' . ( $order->get_status() ? $order->get_status() : apply_filters( 'learn-press/default-order-status', 'pending' ) ),
 			'post_parent'   => $order->get_parent_id(),
 			//'post_excerpt'      => $this->get_post_excerpt( $order ),
 			//'post_modified'     => $order->get_date_modified( ),
@@ -144,7 +149,7 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		} else {
 			wp_update_post( array_merge( array( 'ID' => $order->get_id() ), $post_data ) );
 		}
-		$this->_updates($order);
+		$this->_updates( $order );
 
 		//$order->read_meta_data( true ); // Refresh internal meta data, in case things were hooked into `save_post` or another WP hook.
 	}
@@ -185,7 +190,6 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		}
 
 
-
 //die();
 		$this->cln_items( $order->get_id(), $cloned->get_id() );
 
@@ -204,30 +208,46 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 		$query = $wpdb->prepare( "
 			SELECT *
-			FROM {$wpdb->learnpress_order_items}
+			FROM {$wpdb->learnpress_order_items} oi 
+			INNER JOIN {$wpdb->learnpress_order_itemmeta} oim ON oi.order_item_id = oim.learnpress_order_item_id
 			WHERE order_id = %d 
 		", $from );
-		if ( $items = $wpdb->get_results( $query ) ) {
+		if ( $items = $order->get_items() ) {
+//
+//
+//			$sql = $wpdb->prepare( "
+//				SELECT order_item_id, oim.meta_value AS course_id
+//				FROM {$wpdb->learnpress_order_itemmeta} oim
+//				INNER JOIN {$wpdb->learnpress_order_items} oi ON oi.order_item_id = oim.learnpress_order_item_id AND oim.meta_key = %s
+//			", '_course_id' );
+
+			if ( ! $to_order = learn_press_get_order( $to ) ) {
+				return false;
+			}
+			$to_order->remove_order_items();
+
 			foreach ( $items as $item ) {
 				$wpdb->insert(
 					$wpdb->learnpress_order_items,
 					array(
-						'order_item_name' => $item->order_item_name,
+						'order_item_name' => $item['name'],
 						'order_id'        => $to
 					)
 				);
+				$learnpress_order_item_id = $wpdb->insert_id;
+
 				$query = $wpdb->prepare( "
 					SELECT *
 					FROM {$wpdb->learnpress_order_itemmeta}
 					WHERE learnpress_order_item_id = %d
-				", $item->order_item_id );
+				", $item['id'] );
 
 				if ( $metas = $wpdb->get_results( $query ) ) {
 					foreach ( $metas as $meta ) {
 						$wpdb->insert(
 							$wpdb->learnpress_order_itemmeta,
 							array(
-								'learnpress_order_item_id' => $wpdb->insert_id,
+								'learnpress_order_item_id' => $learnpress_order_item_id,
 								'meta_key'                 => $meta->meta_key,
 								'meta_value'               => $meta->meta_value
 							)
@@ -237,6 +257,8 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			}
 		}
 		$this->read_items( $order );
+
+		return true;
 	}
 
 	/**
@@ -256,12 +278,23 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			}
 		}
 		if ( $post = get_post( $the_id ) ) {
+			$_users = get_post_meta( $order->get_id(), '_user_id' );
+
+			if ( sizeof( $_users ) > 1 ) {
+				$users = array();
+
+				foreach ( $_users as $user ) {
+					$users[] = $user[0];
+				}
+			} else {
+				$users = $_users[0];
+			}
 			$order->set_data_via_methods(
 				array(
-					'user_id'       => get_post_meta( $order->get_id(), '_user_id', true ),
+					'user_id'       => $users,//get_post_meta( $order->get_id(), '_user_id', true ),
 					'order_date'    => new LP_Datetime( $post->post_date ),
 					'date_modified' => new LP_Datetime( $post->post_modified ),
-					'status'        => $post->post_status,
+					'status'        => str_replace( 'lp-', '', $post->post_status ),
 					'parent_id'     => $post->post_parent
 				)
 			);

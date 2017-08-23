@@ -1,20 +1,7 @@
 <?php
-
-/**
- * Learnpress profile class.
- *
- * @class       LP_Profile
- * @version     3.x.x
- * @package     Learnpress/Classes
- * @category    Class
- * @author      Thimpress
- */
-
-/**
- * Prevent loading this file directly
- */
-defined( 'ABSPATH' ) || exit;
-
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
 
 if ( ! class_exists( 'LP_Profile' ) ) {
 	/**
@@ -56,12 +43,19 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		protected $_default_actions = array();
 
 		/**
-		 * LP_Profile constructor.
+		 * @var LP_User_CURD
+		 */
+		protected $_curd = null;
+
+		/**
+		 *  Constructor
 		 *
-		 * @param $user
+		 * @param        $user
 		 * @param string $role
 		 */
 		protected function __construct( $user, $role = '' ) {
+
+			$this->_curd = new LP_User_CURD();
 
 			$this->_user = $user;
 			$this->get_user();
@@ -81,12 +75,9 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 
 			if ( ! self::$_hook_added ) {
 				self::$_hook_added = true;
-				// show profile tab content (for tab without section)
-				add_action( 'learn-press/profile-content', array( $this, 'profile_content' ), 10, 3 );
-				// show sections
-				add_action( 'learn-press/before-profile-content', array( $this, 'section_tabs' ), 10, 3 );
-				// show sections content
-				add_action( 'learn-press/profile-section-content', array( $this, 'section_content' ) );
+				add_action( 'learn-press/profile-content', array( $this, 'output' ), 10, 3 );
+				add_action( 'learn-press/before-profile-content', array( $this, 'output_section' ), 10, 3 );
+				add_action( 'learn-press/profile-section-content', array( $this, 'output_section_content' ), 10, 3 );
 
 				/*
 				 * Register actions with request handler class to process
@@ -101,40 +92,21 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			}
 		}
 
-		/**
-		 * Show content of profile tab has not section.
-		 *
-		 * @param $tab
-		 * @param $args
-		 * @param $user
-		 */
-		public function profile_content( $tab, $args, $user ) {
+		public function output( $tab, $args, $user ) {
 			if ( ( $location = learn_press_locate_template( 'profile/tabs/' . $tab . '.php' ) ) && file_exists( $location ) ) {
 				include $location;
 			}
 		}
 
-		/**
-		 * Show profile sections tabs.
-		 *
-		 * @param $tab_key
-		 * @param $tab_data
-		 * @param $user
-		 */
-		public function section_tabs( $tab_key, $tab_data, $user ) {
+		public function output_section( $tab_key, $tab_data, $user ) {
 			learn_press_get_template( 'profile/tabs/sections.php', compact( 'tab_key', 'tab_data', 'user' ) );
 		}
 
-		/**
-		 * Show profile sections content.
-		 *
-		 * @param $section
-		 */
-		public function section_content( $section ) {
+		public function output_section_content( $section, $args, $user ) {
+			global $wp;
 			$current = $this->get_current_section();// ! empty( $wp->query_vars['section'] ) ? $wp->query_vars['section'] : false;
 			if ( $current === $section ) {
-				$location = learn_press_locate_template( 'profile/tabs/settings/' . $section . '.php' );
-				if ( $location && file_exists( $location ) ) {
+				if ( ( $location = learn_press_locate_template( 'profile/tabs/edit/' . $section . '.php' ) ) && file_exists( $location ) ) {
 					include $location;
 				} else {
 					echo $location;
@@ -172,19 +144,32 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * @return bool|LP_User|mixed
 		 */
 		public function get_user() {
-			if ( is_numeric( $this->_user ) ) {
-				$this->_user = learn_press_get_user( $this->_user );
-			} elseif ( empty( $this->_user ) ) {
-				$this->_user = learn_press_get_current_user( true );
+			if ( ! $this->_user instanceof LP_Abstract_User ) {
+				if ( is_numeric( $this->_user ) ) {
+					$this->_user = learn_press_get_user( $this->_user );
+				} elseif ( empty( $this->_user ) ) {
+					$this->_user = learn_press_get_current_user( true );
+				}
+
+				$settings         = LP()->settings;
+				$this->_publicity = array(
+					'view-tab-courses'           => $settings->get( 'profile_publicity.courses' ) === 'yes',
+					'view-tab-basic-information' => $settings->get( 'profile_publicity.basic-information' ) === 'yes',
+				);
 			}
 
-			$settings         = LP()->settings;
-			$this->_publicity = array(
-				'view-tab-courses'           => $settings->get( 'profile_publicity.courses' ) === 'yes',
-				'view-tab-basic-information' => $settings->get( 'profile_publicity.basic-information' ) === 'yes',
-			);
-
 			return $this->_user;
+		}
+
+		/**
+		 * Wrap function for $user->get_data()
+		 *
+		 * @param string $field
+		 *
+		 * @return mixed
+		 */
+		public function get_user_data( $field ) {
+			return 'id' === strtolower( $field ) ? $this->_user->get_id() : $this->_user->get_data( $field );
 		}
 
 		public function tab_dashboard() {
@@ -273,7 +258,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * Get current tab slug in query string.
 		 *
 		 * @param string $default Optional.
-		 * @param bool $key Optional. True if return the key instead of value.
+		 * @param bool   $key     Optional. True if return the key instead of value.
 		 *
 		 * @return string
 		 */
@@ -307,7 +292,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 * Get current section in query string.
 		 *
 		 * @param string $default
-		 * @param bool $key
+		 * @param bool   $key
 		 * @param string $tab
 		 *
 		 * @return bool|int|mixed|string
@@ -480,7 +465,7 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		/**
 		 * Get the slug of tab or section if defined.
 		 *
-		 * @param array $tab_or_section
+		 * @param array  $tab_or_section
 		 * @param string $default
 		 *
 		 * @return string
@@ -498,10 +483,18 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 		 */
 		public function current_user_can( $capability ) {
 
-			if ( get_current_user_id() === $this->_user->get_id() ) {
+			$tab         = substr( $capability, strlen( 'view-tab-' ) );
+			$public_tabs = array( 'courses', 'quizzes' );
+
+			// public profile courses and quizzes tab
+			if ( in_array( $tab, $public_tabs ) ) {
 				$can = true;
 			} else {
-				$can = ! empty( $this->_publicity[ $capability ] ) && $this->_publicity[ $capability ] == true;
+				if ( get_current_user_id() === $this->_user->get_id() ) {
+					$can = true;
+				} else {
+					$can = ! empty( $this->_publicity[ $capability ] ) && $this->_publicity[ $capability ] == true;
+				}
 			}
 
 			return apply_filters( 'learn-press/profile-current-user-can', $can, $capability );
@@ -565,6 +558,98 @@ if ( ! class_exists( 'LP_Profile' ) ) {
 			}
 
 			return true;
+		}
+
+		/**
+		 * Get all orders of profile's user.
+		 *
+		 *
+		 * @since 3.x.x
+		 *
+		 * @return array
+		 */
+		public function get_user_orders() {
+
+			return $this->_curd->get_orders( $this->get_user_data( 'id' ), true );
+		}
+
+		/**
+		 * Query order of user is viewing profile.
+		 *
+		 * @param string $args
+		 *
+		 * @return array
+		 */
+		public function query_orders( $args = '' ) {
+			global $wp_query;
+			$query = array(
+				'orders'     => array(),
+				'total'      => 0,
+				'num_pages'  => 0,
+				'pagination' => ''
+			);
+			if ( $order_ids = $this->get_user_orders() ) {
+				$default_args = array(
+					'paged' => 1,
+					'limit' => 10
+				);
+
+				// Page
+				if ( $this->get_current_tab() === 'orders' && isset( $wp_query->query_vars['view_id'] ) ) {
+					$default_args['paged'] = $wp_query->query_vars['view_id'];
+				}
+
+				$args   = wp_parse_args( $args, $default_args );
+				$offset = isset( $args['limit'] ) && $args['limit'] > 0 && $args['paged'] ? ( $args['paged'] - 1 ) * $args['limit'] : 0;
+
+				$query_order = new WP_Query(
+					array(
+						'post_type'      => LP_ORDER_CPT,
+						'posts_per_page' => $args['limit'],
+						'offset'         => $offset,
+						'post_status'    => 'any',
+						'post__in'       => array_keys( $order_ids ),
+						'orderby'        => 'post__in',
+						'fields'         => 'ids'
+					)
+				);
+
+				if ( $query_order->have_posts() ) {
+
+					$orders = ( isset( $args['fields'] ) && 'ids' === $args['fields'] ) ? $query_order->posts : array_filter( array_map( 'learn_press_get_order', $query_order->posts ) );
+
+					$query['orders']     = $orders;
+					$query['total']      = $query_order->found_posts;
+					$query['num_pages']  = $query_order->max_num_pages;
+					$query['pagination'] = learn_press_paging_nav( array(
+						'num_pages' => $query['num_pages'],
+						'base'      => learn_press_user_profile_link( $this->get_user_data( 'id' ), LP()->settings->get( 'profile_endpoints.profile-orders' ) ),
+						'format'    => $GLOBALS['wp_rewrite']->using_permalinks() ? user_trailingslashit( '%#%', '' ) : '?paged=%#%',
+						'echo'      => false,
+						'paged'     => $args['paged']
+					) );
+				}
+
+			}
+
+			return $query;
+		}
+
+		public function query_courses() {
+			return $this->_curd->query_courses( $this->get_user_data( 'id' ) );
+		}
+
+		/**
+		 * Get the order is viewing details.
+		 */
+		public function get_view_order() {
+			global $wp_query;
+			$order = false;
+			if ( isset( $wp_query->query_vars['view_id'] ) ) {
+				$order = learn_press_get_order( $wp_query->query_vars['view_id'] );
+			}
+
+			return $order;
 		}
 
 		/**

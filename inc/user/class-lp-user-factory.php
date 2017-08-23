@@ -35,6 +35,93 @@ class LP_User_Factory {
 		 * Filters into wp users manager
 		 */
 		add_filter( 'users_list_table_query_args', array( __CLASS__, 'exclude_temp_users' ) );
+
+		add_action( 'learn-press/order-status-changed', array( __CLASS__, 'update_user_items' ), 10, 3 );
+		add_action( 'learn-press/deleted-order-item', array( __CLASS__, 'delete_user_item' ), 10, 2 );
+	}
+
+	/**
+	 * Delete user course from user_items table after an order item is deleted.
+	 *
+	 * @param int $item_id
+	 * @param int $order_id
+	 */
+	public static function delete_user_item( $item_id, $order_id ) {
+		$curd = new LP_User_CURD();
+
+		$order = learn_press_get_order( $order_id );
+		if ( $order ) {
+			$course_id = learn_press_get_order_item_meta( $item_id, '_course_id' );
+			$users     = $order->get_users();
+
+			if ( $users ) {
+				foreach ( $users as $user_id ) {
+					$curd->delete_user_item( array(
+						'item_id' => $course_id,
+						'ref_id'  => $order_id,
+						'user_id' => $user_id
+					) );
+				}
+			}
+		}
+
+		die();
+	}
+
+	public static function update_user_items( $the_id, $old_status, $new_status ) {
+		if ( ! $order = learn_press_get_order( $the_id ) ) {
+			return;
+		}
+		remove_action( 'learn-press/order-status-changed', array( __CLASS__, 'update_user_items' ), 10, 3 );
+		global $wpdb;
+		$curd  = new LP_User_CURD();
+		$items = $order->get_items();
+		switch ( $new_status ) {
+			case 'pending':
+			case 'processing':
+			case 'cancelled':
+				if ( ! $items ) {
+					break;
+				}
+				foreach ( $order->get_users() as $user_id ) {
+					foreach ( $items as $item ) {
+						$item = $curd->get_user_item(
+							$user_id,
+							$item['course_id']
+						);
+						if ( $item ) {
+							$curd->update_user_item_status( $item['user_item_id'], 'pending' );
+						}
+					}
+				}
+				break;
+			case'completed':
+				if ( ! $items ) {
+					break;
+				}
+				foreach ( $order->get_users() as $user_id ) {
+					foreach ( $items as $item ) {
+						$user_item_id = $curd->update_user_item(
+							$user_id,
+							$item['course_id'],
+							array(
+								'ref_id'    => $the_id,
+								'ref_type'  => LP_ORDER_CPT,
+								'parent_id' => 0
+							)
+						);
+						if ( $user_item_id ) {
+							$item        = $curd->get_user_item_by_id( $user_item_id );
+							$last_status = $curd->get_user_item_meta( $user_item_id, '_last_status' );
+							if ( ! $last_status ) {
+								$curd->update_user_item_by_id( $user_item_id, array( 'status' => 'purchased' ) );
+							} else {
+								$curd->update_user_item_by_id( $user_item_id, array( 'status' => $last_status ) );
+							}
+						}
+					}
+				}
+		}
 	}
 
 	/**
@@ -80,6 +167,7 @@ class LP_User_Factory {
 	 */
 	public static function get_temp_user() {
 		global $wpdb;
+
 		$id = LP()->session->get( 'temp_user' );
 
 		// If temp user is not set or is not exists
