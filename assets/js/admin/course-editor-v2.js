@@ -248,7 +248,7 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
             }
             section.items = payload.items;
         },
-        'UPDATE_SECTION_ITEM': function(state, payload) {
+        'UPDATE_SECTION_ITEM': function (state, payload) {
 
         }
     };
@@ -352,24 +352,16 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
         },
 
         removeSectionItem: function (context, payload) {
+            setTimeout(function () {
+                context.commit('REMOVE_SECTION_ITEM', payload);
+            }, 200);
+
             Vue.http
                 .LPRequest({
                     type: 'remove-section-item',
                     'item-id': payload.itemId,
                     'section-id': payload.sectionId
-                })
-                .then(
-                    function (response) {
-                        var result = response.body;
-
-                        if (result.success) {
-                            context.commit('REMOVE_SECTION_ITEM', payload);
-                        }
-                    },
-                    function (error) {
-                        console.error(error);
-                    }
-                );
+                });
         },
 
         updateSectionItems: function (context, payload) {
@@ -393,7 +385,7 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
                 );
         },
 
-        updateSectionItem: function(context, payload) {
+        updateSectionItem: function (context, payload) {
             Vue.http
                 .LPRequest({
                     type: 'update-section-item',
@@ -410,6 +402,30 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
                             context.commit('UPDATE_SECTION_ITEM', {
                                 sectionId: payload.sectionId,
                                 item: item
+                            });
+                        }
+                    },
+                    function (error) {
+                        console.error(error);
+                    }
+                );
+        },
+
+        newSectionItem: function (context, payload) {
+            Vue.http
+                .LPRequest({
+                    type: 'new-section-item',
+                    'item': payload.item,
+                    'section-id': payload.sectionId
+                })
+                .then(
+                    function (response) {
+                        var result = response.body;
+
+                        if (result.success) {
+                            context.commit('UPDATE_SECTION_ITEMS', {
+                                sectionId: payload.sectionId,
+                                items: result.data
                             });
                         }
                     },
