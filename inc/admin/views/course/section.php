@@ -11,7 +11,7 @@ learn_press_admin_view( 'course/new-section-item' );
 ?>
 <script type="text/x-template" id="tmpl-lp-section">
     <div class="section" :class="isOpen ? 'open' : 'close'">
-        <div class="section-head">
+        <div class="section-head" @dblclick="toggle">
             <span class="movable"></span>
             <input v-model="section.title"
                    type="text"
@@ -46,10 +46,10 @@ learn_press_admin_view( 'course/new-section-item' );
                         <lp-section-item
                                 @update="updateItem"
                                 @remove="removeItem" v-for="(item, index) in section.items" :item="item"
-                                         :key="item.id" :order="index+1"></lp-section-item>
+                                :key="item.id" :order="index+1"></lp-section-item>
                     </draggable>
 
-                    <lp-new-section-item :empty="!section.items.length"></lp-new-section-item>
+                    <lp-new-section-item @create="newSectionItem"></lp-new-section-item>
                 </div>
             </div>
 
@@ -102,15 +102,17 @@ learn_press_admin_view( 'course/new-section-item' );
                             pull: true
                         }
                     };
-                },
-
-                isEmpty: function () {
-                    return false;
                 }
             },
             methods: {
                 toggle: function () {
                     this.isOpen = !this.isOpen;
+                },
+                newSectionItem: function (item) {
+                    $store.dispatch('newSectionItem', {
+                        sectionId: this.section.id,
+                        item: item
+                    });
                 },
                 removeItem: function (item) {
                     $store.dispatch('removeSectionItem', {
@@ -118,7 +120,7 @@ learn_press_admin_view( 'course/new-section-item' );
                         itemId: item.id
                     });
                 },
-                updateItem: function(item) {
+                updateItem: function (item) {
                     $store.dispatch('updateSectionItem', {
                         sectionId: this.section.id,
                         item: item
