@@ -69,6 +69,10 @@
                     this.title = '';
                 },
                 changeType: function (next) {
+                    if (this.title) {
+                        return;
+                    }
+
                     var types = this.types;
                     var current = this.type;
                     var currentIndex = false;
