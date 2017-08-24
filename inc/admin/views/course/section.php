@@ -127,7 +127,7 @@ learn_press_admin_view( 'course/new-section-item' );
                     });
                 },
                 remove: function () {
-                    var r = window.confirm('Are you sure remove this section?');
+                    var r = window.confirm($store.getters['i18n/all'].remove_section);
 
                     if (!r) {
                         return;

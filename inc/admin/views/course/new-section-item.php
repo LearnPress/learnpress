@@ -99,11 +99,9 @@
             },
             computed: {
                 placeholderInput: function () {
-                    var types = this.types;
-                    var type = this.types[this.type];
-                    var string = 'Create a new ' + type;
-
-                    return string;
+                    var i18n = $store.getters['i18n/all'];
+                    var type = this.types[this.type] || '';
+                    return i18n.new_section_item + ' ' + type.toLowerCase();
                 },
 
                 types: function () {

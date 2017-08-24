@@ -15,6 +15,31 @@
     };
 })(window);
 
+
+/**
+ * I18n Store
+ *
+ * @since 3.0.0
+ */
+
+var LP_Curriculum_i18n_Store = (function (Vue, helpers, data) {
+    var state = helpers.cloneObject(data.i18n);
+
+    var getters = {
+        all: function (state) {
+            return state;
+        }
+    };
+
+    return {
+        namespaced: true,
+        state: state,
+        getters: getters
+    };
+
+})(Vue, LP_Helpers, lq_course_editor);
+
+
 /**
  * Choose Item Modal Store
  *
@@ -442,7 +467,8 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
         mutations: mutations,
         actions: actions,
         modules: {
-            ci: LP_Choose_Items_Modal_Store
+            ci: LP_Choose_Items_Modal_Store,
+            i18n: LP_Curriculum_i18n_Store
         }
     });
 

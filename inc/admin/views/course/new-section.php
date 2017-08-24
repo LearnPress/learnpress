@@ -10,16 +10,18 @@
 
 <script type="text/x-template" id="tmpl-lp-new-section">
     <div class="section new-section">
-        <div class="section-head">
-            <span class="creatable"></span>
-            <input
-                    v-model="title"
-                    type="text"
-                    title="title"
-                    class="title-input"
-                    @keyup.enter.prevent="addNewSection"
-                    placeholder="<?php esc_attr_e( 'Add a new section', 'learnpress' ); ?>">
-        </div>
+        <form @submit.prevent="">
+            <div class="section-head">
+                <span class="creatable"></span>
+                <input
+                        v-model="title"
+                        type="text"
+                        title="title"
+                        class="title-input"
+                        @keyup.enter.prevent="addNewSection"
+                        placeholder="<?php esc_attr_e( 'Create a new section', 'learnpress' ); ?>">
+            </div>
+        </form>
     </div>
 </script>
 
