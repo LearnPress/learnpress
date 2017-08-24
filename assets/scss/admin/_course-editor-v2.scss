@@ -83,6 +83,8 @@
         opacity: 1;
 
         &.new-section {
+            border-color: #999;
+
             .section-head {
                 background-color: #fff;
 
@@ -356,7 +358,6 @@
                     }
                 }
 
-
                 .type {
                     display: none;
                     padding: 8px 9px;
@@ -576,15 +577,53 @@
             overflow: hidden;
 
             .section-item {
-                color: #aaa;
+                cursor: pointer;
+                transition: color 200ms ease-out;
+                max-width: 100%;
+                display: block;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
 
                 &.addable {
-                    cursor: pointer;
                     color: #333;
+
+                    &:hover {
+                        color: #4caf50;
+                    }
+
+                    &:before {
+                        content: "\f132";
+                    }
                 }
 
-                .icon {
+                &.added {
+                    color: #aaa;
+
+                    &:hover {
+                        color: #666;
+                    }
+
+                    &:before {
+                        color: #4caf50;
+                        content: "\f147";
+                    }
+                }
+
+                &.removable {
+                    &:hover {
+                        color: #a00;
+                    }
+
+                    &:before {
+                        content: "\f335";
+                    }
+                }
+
+                &:before {
                     font-family: Dashicons;
+                    position: relative;
+                    top: 3px;
                 }
             }
 
@@ -599,12 +638,16 @@
             }
 
             .list-items {
-                min-height: 200px;
+                min-height: 260px;
+                margin: 0;
             }
 
             .pagination {
                 .number {
-                    cursor: pointer;
+                    &:not(.current) {
+                        cursor: pointer;
+                    }
+
                     border: 1px solid #eee;
                     padding: 5px 10px;
                     background-color: #aaa;
@@ -628,11 +671,15 @@
             padding: 20px;
             transform: translate(-100%, 0);
             transition: transform 200ms ease-out;
-            max-height: 320px;
+            max-height: 330px;
             overflow: auto;
 
             &.show {
                 transform: translate(0, 0);
+            }
+
+            .list-added-items {
+                margin: 0;
             }
         }
 

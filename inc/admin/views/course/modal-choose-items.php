@@ -21,15 +21,22 @@ learn_press_admin_view( 'course/added-items-preview' );
 
         Vue.component('lp-course-choose-item', {
             template: '#tmpl-lp-course-choose-item',
-            props: ['item'],
+            props: ['item', 'added'],
+            watch: {
+                added: function () {
+                    this.$forceUpdate();
+                }
+            },
             methods: {
                 add: function () {
                     if (this.item.added) {
-                        return;
+                        return this.remove();
                     }
 
                     this.$emit('add', this.item);
-                    this.$forceUpdate();
+                },
+                remove: function () {
+                    this.$emit('remove', this.item);
                 }
             }
         });
@@ -77,6 +84,8 @@ learn_press_admin_view( 'course/added-items-preview' );
                     <template v-for="item in items">
                         <lp-course-choose-item
                                 @add="addItem"
+                                @remove="removeItem"
+                                :added="item.added"
                                 :item="item"></lp-course-choose-item>
                     </template>
                 </ul>
@@ -168,6 +177,10 @@ learn_press_admin_view( 'course/added-items-preview' );
 
                 addItem: function (item) {
                     $store.dispatch('ci/addItem', item);
+                },
+
+                removeItem: function(item) {
+                    $store.dispatch('ci/removeItem', item);
                 },
 
                 close: function () {

@@ -94,8 +94,12 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
         'ADD_ITEM': function (state, item) {
             state.addedItems.push(item);
         },
-        'REMOVE_ADDED_ITEM': function (state, index) {
-            state.addedItems.splice(index, 1);
+        'REMOVE_ADDED_ITEM': function (state, item) {
+            state.addedItems.forEach(function (_item, index) {
+                if (_item.id === item.id) {
+                    state.addedItems.splice(index, 1);
+                }
+            });
         },
         'RESET': function (state) {
             state.addedItems = [];
@@ -379,9 +383,7 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
         },
 
         removeSectionItem: function (context, payload) {
-            setTimeout(function () {
-                context.commit('REMOVE_SECTION_ITEM', payload);
-            }, 200);
+            context.commit('REMOVE_SECTION_ITEM', payload);
 
             Vue.http
                 .LPRequest({
