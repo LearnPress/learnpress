@@ -330,6 +330,12 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 			if ( $term ) {
 				$args['s'] = $term;
 			}
+			
+			// allow super admin can search course of other user 
+			if( is_super_admin() && $context == 'course-items' && $type=='lp_course' ) {
+			    unset( $args['author'] );
+			}
+			
 			$args        = apply_filters( 'learn_press_filter_admin_ajax_modal_search_items_args', $args, $context, $context_id );
 			$posts       = get_posts( $args );
 			$found_items = array();
