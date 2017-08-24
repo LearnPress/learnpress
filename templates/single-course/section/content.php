@@ -14,33 +14,36 @@ if ( ! defined( 'ABSPATH' ) ) {
 if ( ! isset( $section ) ) {
 	return;
 }
-/* section item display inside a section */
-$allow_items = learn_press_get_course_item_types();
+
 ?>
 
 <ul class="section-content">
 
 	<?php if ( $items = $section->get_items() ) { ?>
 
-		<?php
-		foreach ( $items as $item ) {
-			$item_type = get_post_type( $item->get_id() );
+		<?php foreach ( $items as $item ) { ?>
+            <li class="<?php echo join( ' ', $item->get_class() ); ?>">
+                <a href="<?php echo $item->get_permalink(); ?>">
+					<?php
 
-			// If item type does not allow
-			if ( ! in_array( $item_type, $allow_items ) ) {
-				continue;
-			}
+					if ( ! $item->is_visible() ) {
+						continue;
+					}
 
-			$args = array(
-				'item'    => $item,
-				'section' => $section
-			);
+					$args = array(
+						'item'    => $item,
+						'section' => $section
+					);
 
-			$template_type = apply_filters( 'learn-press/section-item-template', 'item-' . str_replace( 'lp_', '', $item_type ), $item_type );
+					$item_type = $item->get_item_type();
 
-			learn_press_get_template( "single-course/section/{$template_type}.php", $args );
-		}
-		?>
+					$template_type = apply_filters( 'learn-press/section-item-template', 'item-' . str_replace( 'lp_', '', $item_type ), $item_type );
+					learn_press_get_template( "single-course/section/{$template_type}.php", $args );
+					?>
+                    <i class="item-icon icon-lock dashicons dashicons-lock"></i>
+                </a>
+            </li>
+		<?php } ?>
 
 	<?php } else { ?>
 

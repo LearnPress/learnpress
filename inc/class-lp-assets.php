@@ -96,7 +96,18 @@ class LP_Assets extends LP_Abstract_Assets {
 		 */
 		if ( $scripts = $this->_get_scripts() ) {
 			foreach ( $scripts as $handle => $data ) {
-				wp_enqueue_script( $handle );
+				$enqueue = true;
+				switch ( $handle ) {
+					case 'checkout':
+						$enqueue = false;
+						if ( learn_press_is_course() ) {
+							$enqueue = true;
+						}
+
+				}
+				if ( $enqueue ) {
+					wp_enqueue_script( $handle );
+				}
 			}
 		}
 
@@ -112,15 +123,15 @@ class LP_Assets extends LP_Abstract_Assets {
 		}
 	}
 
-	public static function add_param(){
+	public static function add_param() {
 
 	}
 
-	public static function add_var(){
+	public static function add_var() {
 
 	}
 
-	public static function add_script_tag(){
+	public static function add_script_tag() {
 
 	}
 }

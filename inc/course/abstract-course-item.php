@@ -22,6 +22,11 @@ abstract class LP_Abstract_Course_Item extends LP_Abstract_Post_Data {
 	protected $_item_type = '';
 
 	/**
+	 * @var LP_Course
+	 */
+	protected $_course = null;
+
+	/**
 	 * LP_Abstract_Course_Item constructor.
 	 *
 	 * @param $item mixed
@@ -82,6 +87,85 @@ abstract class LP_Abstract_Course_Item extends LP_Abstract_Post_Data {
 	}
 
 	/**
+	 * Return true if item can be shown in course curriculum.
+	 *
+	 * @return mixed
+	 */
+	public function is_visible() {
+		/* section item display inside a section */
+		$allow_items = learn_press_get_course_item_types();
+
+		$item_type = get_post_type( $this->get_id() );
+
+		// If item type does not allow
+		$show = in_array( $item_type, $allow_items );
+
+		return apply_filters( 'learn-press/course-item-visible', $show, $this->get_item_type(), $this->get_id() );
+	}
+
+	/**
+	 * Get class of item.
+	 *
+	 * @param string $more
+	 *
+	 * @return array
+	 */
+	public function get_class( $more = '' ) {
+		$defaults = array( 'course-item course-item-' . $this->get_item_type() );
+
+		if ( is_array( $more ) ) {
+			$defaults = array_merge( $defaults, $more );
+		} else {
+			$defaults[] = $more;
+		}
+
+		$classes = apply_filters( 'learn-press/course-item-class', $defaults, $this->get_item_type(), $this->get_id() );
+
+		// Filter unwanted values
+		$classes = is_array( $classes ) ? $classes : explode( ' ', $classes );
+		$classes = array_filter( $classes );
+		$classes = array_unique( $classes );
+
+		return $classes;
+	}
+
+	/**
+	 * Get permalink of item inside course.
+	 *
+	 * @return string
+	 */
+	public function get_permalink() {
+		$link = false;
+		if ( $this->_course ) {
+			$link = $this->_course->get_item_link( $this->get_id() );
+		}
+
+		return apply_filters( 'learn-press/course-item-link', $link, $this );
+	}
+
+	/**
+	 * Set course parent of this item.
+	 *
+	 * @param LP_Course|int $course
+	 */
+	public function set_course( $course ) {
+		if ( is_numeric( $course ) ) {
+			$this->_course = learn_press_get_course( $course );
+		} else {
+			$this->_course = $course;
+		}
+	}
+
+	/**
+	 * Return course.
+	 *
+	 * @return LP_Course
+	 */
+	public function get_course() {
+		return $this->_course;
+	}
+
+	/**
 	 * To array.
 	 *
 	 * @since 3.0.0
@@ -92,9 +176,9 @@ abstract class LP_Abstract_Course_Item extends LP_Abstract_Post_Data {
 		$post = get_post( $this->get_id() );
 
 		return array(
-			'id'      => $this->get_id(),
-			'type'    => $this->get_item_type(),
-			'title'   => $post->post_title,
+			'id'    => $this->get_id(),
+			'type'  => $this->get_item_type(),
+			'title' => $post->post_title,
 		);
 	}
 }

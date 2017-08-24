@@ -13,18 +13,11 @@ if ( ! isset( $item ) ) {
 	return;
 }
 ?>
-<li>
+<span class="item-name">
 	<?php
-	$user = learn_press_get_current_user();
 	printf( '%s (%d)', $item->get_title(), $item->get_id() );
-	$status = '';
-	//for ( $i = 0; $i < 10000; $i ++ ) {
-	$status = $user->get_item_status( $item->get_id(), get_the_ID() );
-	//}
-	//print_r( $status );
-	echo $user->get_course_status( get_the_ID() );
 	?>
-</li>
+</span>
 <?php
 return;
 

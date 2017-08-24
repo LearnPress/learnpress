@@ -348,8 +348,8 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 						$new_order->set_parent_id( $order->get_id() );
 						$new_order->set_user_id( $uid );
 
+						$new_order->set_status(learn_press_get_request( 'order-status' ) );
 						$new_order->save();
-						$new_order->update_status( $order->get_status() );
 					}
 					$order->set_user_id( $user_id );
 

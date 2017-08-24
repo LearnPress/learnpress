@@ -16,7 +16,7 @@ if ( ! isset( $section ) ) {
 }
 ?>
 
-<li class="section" id="section-<?php echo $section->get_id(); ?>" data-id="<?php echo $section->get_id(); ?>">
+<li class="section" id="section-<?php echo $section->get_slug(); ?>" data-id="<?php echo $section->get_slug(); ?>">
 
 	<?php
 
@@ -28,8 +28,8 @@ if ( ! isset( $section ) ) {
 	/**
 	 * @since  3.x.x
 	 *
-	 * @hooked learn_press_curriculum_section_title - 5
-	 * @hooked learn_press_curriculum_section_content - 10
+	 * @see learn_press_curriculum_section_title - 5
+	 * @see learn_press_curriculum_section_content - 10
 	 */
 	do_action( 'learn-press/section-summary', $section );
 	?>

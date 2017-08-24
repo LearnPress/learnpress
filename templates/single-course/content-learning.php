@@ -18,7 +18,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 do_action( 'learn_press_before_content_learning' );
 ?>
-XXXX
 <div class="course-learning-summary">
 
 	<?php

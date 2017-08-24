@@ -997,6 +997,7 @@ if (typeof window.LP == 'undefined') {
                 var $tab = $(this);
                 $tab.closest('li').addClass('active').siblings().removeClass('active');
                 $($tab.attr('data-tab')).addClass('active').siblings().removeClass('active');
+                LP.setUrl($tab.attr('href'))
             });
         $('.learn-press-nav-tabs li.active a').trigger('click');
 

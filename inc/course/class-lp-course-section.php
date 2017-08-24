@@ -68,6 +68,7 @@ class LP_Course_Section {
 
 			// Create item
 			if ( $item_class = $this->_get_item( $item ) ) {
+				$item_class->set_course( $this->get_course_id() );
 				$this->data['items'][ $item->item_id ] = $item_class;
 			}
 		}
@@ -85,6 +86,7 @@ class LP_Course_Section {
 	protected function _get_item( $item ) {
 		$type  = str_replace( 'lp_', '', $item->item_type );
 		$class = apply_filters( 'learn-press/course-item-class', 'LP_' . ucfirst( $type ), $item, $this );
+
 		if ( class_exists( $class ) ) {
 			return new $class( $item->item_id, $item );
 		}
@@ -224,5 +226,9 @@ class LP_Course_Section {
 		}
 
 		return apply_filters( 'learn-press/section-has-item', $found, $item_id, $this->get_id(), $this->get_course_id() );
+	}
+
+	public function get_slug() {
+		return $this->get_title() ? sanitize_title( $this->get_title() ) . '-' . $this->get_id() : $this->get_id();
 	}
 }

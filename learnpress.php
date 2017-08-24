@@ -698,14 +698,6 @@ function load_learn_press() {
  */
 $GLOBALS['LearnPress'] = LP();
 
-add_action( 'admin_head', function () {
-	return;
-	$pro = new WC_Product_Simple();
-	$pro->set_name( 'How to create a prodic' );
-	$pro->save();
-	learn_press_debug( $pro );
-
-	$pro->set_id( 0 );
-	$pro->save();
-	learn_press_debug( $pro );
-} );
+add_action( 'learn-press/order-status-changed', function ( $the_id, $new_status, $old_status ) {
+	LP_Debug::instance()->add( func_get_args() );
+}, 10, 3 );

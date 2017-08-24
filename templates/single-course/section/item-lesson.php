@@ -15,14 +15,13 @@ if ( ! isset( $item ) ) {
 	return;
 }
 ?>
-<li>
-	<?php
 
-	print_r( $item->get_title() );
+<span href="" class="item-name">
+    <?php echo $item->get_title();?>
+</span>
 
-	?>
-</li>
 <?php
+
 return;
 
 $course     = LP()->global['course'];

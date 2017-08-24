@@ -4,21 +4,20 @@
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 1.0
+ * @version 3.x.x
  */
 
-if ( !defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-$course = LP()->global['course'];
+$course = learn_press_get_course();
+$user   = learn_press_get_current_user();
 
-$user = learn_press_get_current_user();
-
-if ( !$user->has( 'purchased-course', $course->get_id() ) ) {
+if ( ! $user->has( 'purchased-course', $course->get_id() ) ) {
 	return;
 }
 
 $status = $user->get_course_status( $course->get_id() );
 ?>
-<span class="learn-press-course-status <?php echo sanitize_title( $status ); ?>"><?php echo ucfirst( $status ); ?></span>
+<span class="course-status <?php echo sanitize_title( $status ); ?>"><?php echo ucfirst( $status ); ?></span>

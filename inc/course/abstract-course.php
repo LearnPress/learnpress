@@ -1459,9 +1459,15 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	 * @return int|mixed|null
 	 */
 	public function get_completed_items( $user_id = 0, $force = false, $type = '' ) {
+
+
 		if ( ! $user_id ) {
 			$user_id = get_current_user_id();
 		}
+
+		return learn_press_get_user( $user_id )->get_completed_items( $this->get_id() );
+
+
 		_learn_press_parse_user_item_statuses( $user_id, $this->get_id() );
 		$item_statuses   = LP_Cache::get_item_statuses( false, array() );
 		$completed_items = array();

@@ -1352,20 +1352,18 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	 * @return bool
 	 */
 	public function has_course_status( $course_id, $statuses ) {
-		if ( $this->has_purchased_course( $course_id ) ) {
-
-			$status = $this->get_course_status( $course_id );
-
-			echo 'xxxxxx', $status;
-
-			if ( is_array( $statuses ) ) {
-				return in_array( $status, $statuses );
-			} elseif ( is_string( $statuses ) ) {
-				return $statuses == $status;
-			}
-
+		$status = $this->get_course_status( $course_id );
+		if ( is_array( $statuses ) ) {
+			return in_array( $status, $statuses );
+		} elseif ( is_string( $statuses ) ) {
+			return $statuses == $status;
 		}
+
 		return false;
+	}
+
+	public function get_completed_items($course_id){
+		$this->_curd->get_user_items($this->get_id(), $course_id);
 	}
 
 	/**
@@ -3016,5 +3014,8 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 		return metadata_exists( 'user', $this->get_id(), '_lp_temp_user' );
 	}
 
+	public function read_course( $the_course ) {
+		$this->_curd->read_course( $this->get_id(), $the_course );
+	}
 	/** Getter/Setter functions */
 }

@@ -97,14 +97,19 @@ function learn_press_get_current_user( $create_temp = true ) {
 /**
  * Get user by ID. Return false if the user does not exists.
  *
- * @param int $user_id
+ * @param int  $user_id
+ * @param bool $current
  *
  * @return LP_User|mixed
  */
-function learn_press_get_user( $user_id ) {
+function learn_press_get_user( $user_id, $current = false ) {
 
 	// Check if user is existing
-	if ( ! get_user_by( 'id', $user_id ) ) {
+	if ( ! get_user_by( 'id', $user_id ) && $current ) {
+		$user_id = get_current_user_id();
+	}
+
+	if ( ! $user_id ) {
 		return false;
 	}
 

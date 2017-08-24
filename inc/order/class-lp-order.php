@@ -939,7 +939,7 @@ class LP_Order extends LP_Abstract_Object_Data {
 			/**
 			 * @since 3.x.x
 			 */
-			do_action( 'learn-press/order-status-' . $new_status, $the_id );
+			do_action( 'learn-press/order-status-' . $new_status, $the_id, $old_status );
 			do_action( 'learn-press/order-status-' . $old_status . '-to-' . $new_status, $the_id );
 			do_action( 'learn-press/order-status-changed', $the_id, $old_status, $new_status );
 
