@@ -10,7 +10,7 @@ learn_press_admin_view( 'course/added-items-preview' );
 ?>
 
 <script type="text/x-template" id="tmpl-lp-course-choose-item">
-    <li class="section-item" :class="item.type" @click="$emit('add', item)">
+    <li class="section-item" :class="[item.type, item.added ? 'added' : 'addable']" @click="add">
         <span class="icon"></span>
         <span class="title">{{item.title}}</span>
     </li>
@@ -21,7 +21,17 @@ learn_press_admin_view( 'course/added-items-preview' );
 
         Vue.component('lp-course-choose-item', {
             template: '#tmpl-lp-course-choose-item',
-            props: ['item']
+            props: ['item'],
+            methods: {
+                add: function () {
+                    if (this.item.added) {
+                        return;
+                    }
+
+                    this.$emit('add', this.item);
+                    this.$forceUpdate();
+                }
+            }
         });
 
     })(Vue, LP_Curriculum_Store);
@@ -64,8 +74,10 @@ learn_press_admin_view( 'course/added-items-preview' );
                         <div><?php esc_html_e( 'No any item.', 'learnpress' ); ?></div>
                     </template>
 
-                    <template v-else v-for="item in items">
-                        <lp-course-choose-item @add="addItem(item)" :item="item"></lp-course-choose-item>
+                    <template v-for="item in items">
+                        <lp-course-choose-item
+                                @add="addItem"
+                                :item="item"></lp-course-choose-item>
                     </template>
                 </ul>
 
@@ -146,6 +158,10 @@ learn_press_admin_view( 'course/added-items-preview' );
                 },
 
                 changePage: function (page) {
+                    if (page === this.page) {
+                        return;
+                    }
+
                     this.page = page;
                     this.makeSearch();
                 },

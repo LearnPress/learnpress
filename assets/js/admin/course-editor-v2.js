@@ -57,12 +57,14 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
             return state.pagination;
         },
         items: function (state, _getters) {
-            return state.items.filter(function (item) {
+            return state.items.map(function (item) {
                 var find = _getters.addedItems.find(function (_item) {
                     return item.id === _item.id;
                 });
 
-                return !find;
+                item.added = !!find;
+
+                return item;
             });
         },
         addedItems: function (state) {
@@ -129,7 +131,7 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
                 query: payload.query,
                 'item-type': payload.type,
                 page: payload.page,
-                exclude: JSON.stringify(context.getters.addedItems)
+                exclude: JSON.stringify([])
             }).then(
                 function (response) {
                     var result = response.body;
