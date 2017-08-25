@@ -227,6 +227,9 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
         },
         urlEdit: function (state) {
             return state.urlEdit;
+        },
+        hiddenSections: function (state) {
+            return state.hidden_sections;
         }
     };
 
@@ -289,6 +292,24 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
         },
         'UPDATE_SECTION_ITEM': function (state, payload) {
 
+        },
+
+        'ADD_HIDDEN_SECTION': function (state, section) {
+            var find = state.hidden_sections.find(function (sectionId) {
+                return (parseInt(sectionId) === parseInt(section.id));
+            });
+
+            if (!find) {
+                state.hidden_sections.push(section.id);
+            }
+        },
+
+        'REMOVE_HIDDEN_SECTION': function (state, section) {
+            state.hidden_sections.forEach(function (sectionId, index) {
+                if (parseInt(sectionId) === parseInt(section.id)) {
+                    state.hidden_sections.splice(index, 1);
+                }
+            });
         }
     };
 
@@ -465,6 +486,28 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
                                 items: result.data
                             });
                         }
+                    },
+                    function (error) {
+                        console.error(error);
+                    }
+                );
+        },
+
+        toggleSection: function (context, payload) {
+            if (payload.open) {
+                context.commit('REMOVE_HIDDEN_SECTION', payload.section);
+            } else {
+                context.commit('ADD_HIDDEN_SECTION', payload.section);
+            }
+
+            Vue.http
+                .LPRequest({
+                    type: 'hidden-sections',
+                    hidden: context.getters['hiddenSections']
+                })
+                .then(
+                    function (response) {
+                        var result = response.body;
                     },
                     function (error) {
                         console.error(error);

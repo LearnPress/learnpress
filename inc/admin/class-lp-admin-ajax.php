@@ -143,9 +143,13 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					$result = true;
 					break;
 
+				case 'hidden-sections':
+					$hidden = learn_press_get_request( 'hidden' );
+					update_post_meta( $course_id, '_admin_hidden_sections', $hidden );
+					break;
+
 				case 'sync-sections':
 					$result = $course->get_curriculum_raw();
-
 					break;
 
 				case 'new-section-item':

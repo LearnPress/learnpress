@@ -68,32 +68,16 @@
             font-family: Dashicons;
             font-size: 20px;
             position: relative;
-            top: 4px;
+            top: 5px;
+            margin-left: 10px;
 
-            &.success {
-                color: #4caf50;
-
-                &:before {
-                    content: "\f147";
-                }
+            &:before {
+                content: "\f463";
             }
 
             &.loading {
-                color: #cddc39;
                 animation: rotation 2s infinite linear;
                 display: inline-block;
-
-                &:before {
-                    content: "\f463";
-                }
-            }
-
-            &.failed {
-                color: #ff9800;
-
-                &:before {
-                    content: "\f534";
-                }
             }
         }
     }

@@ -73,11 +73,25 @@ learn_press_admin_view( 'course/new-section-item' );
             props: ['section', 'index'],
             data: function () {
                 return {
-                    isOpen: true,
+                    open: true,
                     unsaved: false
                 };
             },
             computed: {
+                isOpen: function () {
+                    var section = this.section;
+                    var hiddenSections = $store.getters['hiddenSections'];
+                    var find = hiddenSections.find(function (sectionId) {
+                        return parseInt(section.id) === parseInt(sectionId);
+                    });
+
+                    if (find) {
+                        this.open = false;
+                    }
+
+                    return this.open;
+                },
+
                 items: {
                     get: function () {
                         return this.section.items;
@@ -106,7 +120,11 @@ learn_press_admin_view( 'course/new-section-item' );
             },
             methods: {
                 toggle: function () {
-                    this.isOpen = !this.isOpen;
+                    this.open = !this.open;
+                    $store.dispatch('toggleSection', {
+                        open: this.open,
+                        section: this.section
+                    });
                 },
                 newSectionItem: function (item) {
                     $store.dispatch('newSectionItem', {
