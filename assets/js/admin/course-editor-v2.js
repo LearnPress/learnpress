@@ -230,6 +230,12 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
         },
         hiddenSections: function (state) {
             return state.hidden_sections;
+        },
+        isHiddenAllSections: function (state, getters) {
+            var hiddenSections = getters['hiddenSections'];
+            var sections = getters['sections'];
+
+            return hiddenSections.length === sections.length;
         }
     };
 
@@ -310,6 +316,14 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
                     state.hidden_sections.splice(index, 1);
                 }
             });
+        },
+
+        'EMPTY_HIDDEN_SECTIONS': function (state) {
+            state.hidden_sections = [];
+        },
+
+        'UPDATE_HIDDEN_SECTIONS': function (state, sections) {
+            state.hidden_sections = sections;
         }
     };
 
@@ -504,15 +518,25 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
                 .LPRequest({
                     type: 'hidden-sections',
                     hidden: context.getters['hiddenSections']
-                })
-                .then(
-                    function (response) {
-                        var result = response.body;
-                    },
-                    function (error) {
-                        console.error(error);
-                    }
-                );
+                });
+        },
+        toggleAllSections: function (context) {
+            var hidden = context.getters['isHiddenAllSections'];
+
+            if (hidden) {
+                context.commit('EMPTY_HIDDEN_SECTIONS');
+            } else {
+                var sections = context.getters['sections'].map(function (section) {
+                    return section.id;
+                });
+                context.commit('UPDATE_HIDDEN_SECTIONS', sections);
+            }
+
+            Vue.http
+                .LPRequest({
+                    type: 'hidden-sections',
+                    hidden: context.getters['hiddenSections']
+                });
         }
     };
 

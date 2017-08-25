@@ -11,6 +11,10 @@ learn_press_admin_view( 'course/sections' );
     <div id="lp-course-curriculum" class="lp-course-curriculum">
         <div class="heading">
             <h4><?php _e( 'Curriculum', 'learnpress' ); ?> <span class="status" :class="status"></span></h4>
+
+            <span class="collapse-sections"
+                  @click="toggle"
+                  :class="isOpen ? 'open' : 'close'"></span>
         </div>
 
         <lp-list-sections></lp-list-sections>
@@ -25,9 +29,15 @@ learn_press_admin_view( 'course/sections' );
             computed: {
                 status: function () {
                     return $store.getters.status;
+                },
+                isOpen: function () {
+                    return !$store.getters['isHiddenAllSections'];
                 }
             },
-            created: function () {
+            methods: {
+                toggle: function () {
+                    $store.dispatch('toggleAllSections');
+                }
             }
         });
 

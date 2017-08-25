@@ -77,6 +77,17 @@ learn_press_admin_view( 'course/new-section-item' );
                     unsaved: false
                 };
             },
+            created: function () {
+                var vm = this;
+
+                $store.subscribe(function (mutation) {
+                    if (mutation.type !== 'EMPTY_HIDDEN_SECTIONS') {
+                        return;
+                    }
+
+                    vm.open = true;
+                });
+            },
             computed: {
                 isOpen: function () {
                     var section = this.section;
