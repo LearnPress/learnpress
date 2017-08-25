@@ -14,7 +14,6 @@ $tabs = learn_press_get_course_tabs();
 if ( empty( $tabs ) ) {
 	return;
 }
-learn_press_debug( $tabs );
 ?>
 <div id="learn-press-course-tabs" class="course-tabs">
     <ul class="learn-press-nav-tabs course-nav-tabs">
@@ -22,7 +21,7 @@ learn_press_debug( $tabs );
 			<?php
 			$classes = array( 'course-nav course-nav-tab-' . esc_attr( $key ) );
 			if ( ! empty( $tab['active'] ) && $tab['active'] ) {
-				$classes[] = 'active';
+				$classes[] = 'active default';
 			}
 			?>
             <li class="<?php echo join( ' ', $classes ); ?>">

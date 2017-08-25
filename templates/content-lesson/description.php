@@ -5,12 +5,14 @@
  * @version 1.0
  */
 
-$course = LP()->global['course'];
-if ( !defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
-$item = LP()->global['course-item'];
-if ( !$item ) {
+
+global $lp_course, $lp_course_item;
+$item = $lp_course_item;
+
+if ( ! $item ) {
 	return;
 }
 ?>

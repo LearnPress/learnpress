@@ -580,7 +580,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	 */
 	public function get_quiz_status( $quiz_id, $course_id = 0, $force = false ) {
 
-		return $this->get_item_status( $quiz_id, $course_id, $force );
+		return $this->get_item_status( $quiz_id, $course_id );
 		global $wpdb;
 		if ( ! $course_id ) {
 			$course_id = get_the_ID();
@@ -634,7 +634,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	 * @return mixed
 	 */
 	public function get_lesson_status( $lesson_id, $course_id = 0, $force = false ) {
-		return $this->get_item_status( $lesson_id, $course_id, $force );
+		return $this->get_item_status( $lesson_id, $course_id );
 	}
 
 	/**
@@ -1899,7 +1899,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	 * @return mixed|null
 	 */
 	public function has_completed_lesson( $lesson_id, $course_id = null, $force = false ) {
-		$completed = $this->get_item_status( $lesson_id, $course_id, $force ) == 'completed';
+		$completed = $this->get_item_status( $lesson_id, $course_id ) == 'completed';
 
 		return apply_filters( 'learn-press/user-has-completed-lesson', $completed, $lesson_id, $course_id, $this->get_id() );
 	}

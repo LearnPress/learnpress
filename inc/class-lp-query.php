@@ -145,8 +145,9 @@ class LP_Query {
 	 * Add custom rewrite tags
 	 */
 	function add_rewrite_tags() {
-		add_rewrite_tag( '%lesson%', '([^&]+)' );
-		add_rewrite_tag( '%quiz%', '([^&]+)' );
+		add_rewrite_tag( '%course-item%', '([^&]+)' );
+		add_rewrite_tag( '%item-type%', '([^&]+)' );
+		//add_rewrite_tag( '%quiz%', '([^&]+)' );
 		add_rewrite_tag( '%question%', '([^&]+)' );
 		add_rewrite_tag( '%user%', '([^/]*)' );
 
@@ -191,24 +192,24 @@ class LP_Query {
 		if ( $has_category ) {
 			add_rewrite_rule(
 				'^' . $slug . '(?:/' . $post_types['lp_lesson']->rewrite['slug'] . '/([^/]+))/?$',
-				'index.php?' . $course_type . '=$matches[2]&course_category=$matches[1]&lesson=$matches[3]',
+				'index.php?' . $course_type . '=$matches[2]&course_category=$matches[1]&course-item=$matches[3]&item-type=lp_lesson',
 				'top'
 			);
 			add_rewrite_rule(
 				'^' . $slug . '(?:/' . $post_types['lp_quiz']->rewrite['slug'] . '/([^/]+)/?([^/]+)?)/?$',
-				'index.php?' . $course_type . '=$matches[2]&course_category=$matches[1]&quiz=$matches[3]&question=$matches[4]',
+				'index.php?' . $course_type . '=$matches[2]&course_category=$matches[1]&course-item=$matches[3]&question=$matches[4]&item-type=lp_quiz',
 				'top'
 			);
 		} else {
 
 			add_rewrite_rule(
 				'^' . $slug . '/([^/]+)(?:/' . $post_types['lp_lesson']->rewrite['slug'] . '/([^/]+))/?$',
-				'index.php?' . $course_type . '=$matches[1]&lesson=$matches[2]',
+				'index.php?' . $course_type . '=$matches[1]&course-item=$matches[2]&item-type=lp_lesson',
 				'top'
 			);
 			add_rewrite_rule(
 				'^' . $slug . '/([^/]+)(?:/' . $post_types['lp_quiz']->rewrite['slug'] . '/([^/]+)/?([^/]+)?)/?$',
-				'index.php?' . $course_type . '=$matches[1]&quiz=$matches[2]&question=$matches[3]',
+				'index.php?' . $course_type . '=$matches[1]&course-item=$matches[2]&question=$matches[3]&item-type=lp_quiz',
 				'top'
 			);
 		}

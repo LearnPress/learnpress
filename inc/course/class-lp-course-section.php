@@ -81,17 +81,18 @@ class LP_Course_Section {
 	 *
 	 * @param array $item
 	 *
-	 * @return bool|LP_Abstract_Course_Item
+	 * @return bool|LP_Course_Item
 	 */
 	protected function _get_item( $item ) {
-		$type  = str_replace( 'lp_', '', $item->item_type );
-		$class = apply_filters( 'learn-press/course-item-class', 'LP_' . ucfirst( $type ), $item, $this );
-
-		if ( class_exists( $class ) ) {
-			return new $class( $item->item_id, $item );
-		}
-
-		return false;
+		return LP_Course_Item::get_item($item->item_id);
+//		$type  = str_replace( 'lp_', '', $item->item_type );
+//		$class = apply_filters( 'learn-press/course-item-class', 'LP_' . ucfirst( $type ), $item, $this );
+//
+//		if ( class_exists( $class ) ) {
+//			return new $class( $item->item_id, $item );
+//		}
+//
+//		return false;
 	}
 
 	/**

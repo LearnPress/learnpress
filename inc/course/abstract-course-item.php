@@ -3,9 +3,9 @@
 defined( 'ABSPATH' ) || exit();
 
 /**
- * Class LP_Abstract_Course_Item
+ * Class LP_Course_Item
  */
-abstract class LP_Abstract_Course_Item extends LP_Abstract_Post_Data {
+abstract class LP_Course_Item extends LP_Abstract_Post_Data {
 
 	/**
 	 * The icon maybe used somewhere.
@@ -27,7 +27,7 @@ abstract class LP_Abstract_Course_Item extends LP_Abstract_Post_Data {
 	protected $_course = null;
 
 	/**
-	 * LP_Abstract_Course_Item constructor.
+	 * LP_Course_Item constructor.
 	 *
 	 * @param $item mixed
 	 * @param $args array
@@ -111,7 +111,13 @@ abstract class LP_Abstract_Course_Item extends LP_Abstract_Post_Data {
 	 * @return array
 	 */
 	public function get_class( $more = '' ) {
+		global $lp_course_item;
+
 		$defaults = array( 'course-item course-item-' . $this->get_item_type() );
+
+		if($lp_course_item && $lp_course_item->get_id() == $this->get_id()){
+			$defaults[] = 'current';
+		}
 
 		if ( is_array( $more ) ) {
 			$defaults = array_merge( $defaults, $more );
@@ -163,6 +169,34 @@ abstract class LP_Abstract_Course_Item extends LP_Abstract_Post_Data {
 	 */
 	public function get_course() {
 		return $this->_course;
+	}
+
+	public static function get_item( $post ) {
+		$item      = false;
+		$item_type = '';
+		$item_id   = 0;
+
+		if ( is_numeric( $post ) ) {
+			$post = get_post( $post );
+		}
+
+		if ( isset( $post->ID ) ) {
+			$item_type = $post->post_type;
+			$item_id   = $post->ID;
+		}
+
+		if ( $item_type ) {
+			if ( learn_press_is_support_course_item_type( $item_type ) ) {
+				$type  = str_replace( 'lp_', '', $item_type );
+				$class = apply_filters( 'learn-press/course-item-class', 'LP_' . ucfirst( $type ), $item_type, $item_id );
+
+				if ( class_exists( $class ) ) {
+					$item = new $class( $post->ID, $post );
+				}
+			}
+		}
+
+		return apply_filters( 'learn-press/get-course-item', $item, $item_type, $item_id );
 	}
 
 	/**

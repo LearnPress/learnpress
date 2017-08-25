@@ -10,7 +10,7 @@
 
 defined( 'ABSPATH' ) || exit();
 
-class LP_Quiz extends LP_Abstract_Course_Item {
+class LP_Quiz extends LP_Course_Item {
 	/**
 	 * The quiz (post) ID.
 	 *

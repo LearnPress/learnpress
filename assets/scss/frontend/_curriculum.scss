@@ -48,16 +48,17 @@
             .section-left {
                 /*flex: 9;*/
                 display: table-cell;
+                vertical-align: top;
             }
             .section-title,
             .section-desc {
                 margin: 0 0 10px 0;
             }
             .section-title {
-
+                font-weight: normal;
             }
             .section-desc {
-                font-size: smaller;
+                font-size: 14px;
                 font-style: italic;
             }
             .section-meta {
@@ -67,6 +68,29 @@
                 white-space: nowrap;
                 padding-left: 20px;
                 text-align: right;
+                font-size: 14px;
+
+                .section-progress {
+                    display: inline-block;
+                    margin-right: 5px;
+                    .progress-bg {
+                        background: #DDD;
+                        height: 10px;
+                        width: 100px;
+                        position: relative;
+                        overflow: hidden;
+                        @include border-radius(5px);
+                        .progress-active {
+                            height: 10px;
+                            width: 100%;
+                            background: #00adff;
+                            position: absolute;
+                            right: 50%;
+
+                            @include border-radius(5px);
+                        }
+                    }
+                }
             }
         }
         .section-content {
@@ -74,9 +98,12 @@
             margin: 0 0 15px 0;
             .course-item {
                 position: relative;
+                font-size: 14px;
+                border-bottom: 1px solid #EEE;
+                transition: padding-left linear 0.15s;
+                background: #FFF;
                 > a {
-                    background: #FFF;
-                    border-bottom: 1px solid #EEE;
+                    border-bottom: none;
                     display: block;
                     box-shadow: none;
                     outline: none;
@@ -90,9 +117,9 @@
                         height: 50px;
                         line-height: 50px;
                         left: 0;
+                        transition: left linear 0.15s;
                     }
                     &:hover {
-                        background: #F9F9F9;
                     }
                 }
                 .item-icon,
@@ -105,7 +132,7 @@
                     }
                     &.icon-lock {
                         float: right;
-                        margin-top: 10px;
+                        margin-top: 15px;
                     }
                 }
 
@@ -119,7 +146,75 @@
                         content: "\f126";
                     }
                 }
+
+                &:before {
+                    background: #00adff;
+                    height: 0;
+                    left: 0;
+                    top: 50%;
+                    position: absolute;
+                    content: '';
+                    width: 3px;
+                    transition: height linear 0.15s, top linear 0.15s;
+                }
+
+                &.current,
+                &:hover {
+                    padding-left: 10px;
+                    background: #F9F9F9;
+                    a {
+                        &:before {
+                            left: 10px;
+                        }
+                    }
+                    &:before {
+                        top: 0;
+                        height: 100%;
+                    }
+                }
             }
+        }
+    }
+}
+
+body {
+    &.course-item-popup {
+        overflow: hidden;
+        #learn-press-course-curriculum {
+            position: fixed;
+            top: 32px;
+            bottom: 0;
+            left: 0;
+            width: 400px;
+            background: #FFF;
+            border-right: 1px solid #DDD;
+            overflow: auto;
+            z-index: 99999;
+            .section-header {
+                padding: 15px;
+                .section-desc{
+                    display: none;
+                }
+            }
+            .course-item {
+                padding-left: 15px;
+                padding-right: 15px;
+                a {
+                    &:before {
+                        left: 15px;
+                    }
+                }
+            }
+        }
+        #learn-press-content-item {
+            position: fixed;
+            z-index: 99999;
+            background: #FFF;
+            top: 32px;
+            left: 400px;
+            right: 0;
+            bottom: 0;
+            overflow: auto;
         }
     }
 }

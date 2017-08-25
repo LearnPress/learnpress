@@ -79,6 +79,9 @@ function learn_press_setup_pages() {
  * @return bool|int
  */
 function learn_press_setup_course_data( $the_course ) {
+
+	return 'xxxxxxx';
+
 	global $wp_query;
 	$course = false;
 	$post   = false;
@@ -109,6 +112,10 @@ function learn_press_setup_course_data( $the_course ) {
 }
 
 function _learn_press_count_users_enrolled_courses( $course_ids ) {
+
+	return 'xxxxxxx';
+
+
 	global $wpdb;
 	$counts = LP_Cache::get_enrolled_courses( false, array() );
 	if ( $counts ) {
@@ -150,6 +157,8 @@ function _learn_press_count_users_enrolled_courses( $course_ids ) {
 }
 
 function _learn_press_get_courses_curriculum( $course_ids, $force = false, $parse_items = true ) {
+	return 'xxxxxxx';
+
 	global $wpdb;
 	$curriculum = LP_Cache::get_course_curriculum( false, array() );
 	$post_names = LP_Cache::get_post_names( false, array() );
@@ -327,6 +336,8 @@ function _learn_press_get_courses_curriculum( $course_ids, $force = false, $pars
  * @return array
  */
 function _learn_press_get_course_curriculum( $course_id, $force = false ) {
+	return 'xxxxxxx';
+
 	//return learn_press_get_course_curriculumx( $course_id, $force );
 	$curriculum = LP_Cache::get_course_curriculum( $course_id );
 	if ( ( $curriculum == false ) || $force ) {
@@ -346,6 +357,10 @@ function _learn_press_get_course_curriculum( $course_id, $force = false ) {
  * @return array
  */
 function _learn_press_get_quiz_questions( $quiz_ids ) {
+
+	return 'xxxxxxx';
+
+
 	global $wpdb;
 	settype( $quiz_ids, 'array' );
 	for ( $n = sizeof( $quiz_ids ), $i = $n - 1; $i >= 0; $i -- ) {
@@ -445,6 +460,10 @@ function _learn_press_get_quiz_questions( $quiz_ids ) {
  * @param $course_id
  */
 function learn_press_setup_user_course_data( $user_id, $course_id, $force = false ) {
+
+	return 'xxxxxxx';
+
+
 	if ( is_array( $course_id ) ) {
 		_learn_press_get_courses_curriculum( $course_id );
 		foreach ( $course_id as $cid ) {
@@ -486,6 +505,10 @@ function learn_press_setup_user_course_data( $user_id, $course_id, $force = fals
 }
 
 function _learn_press_parse_user_item_statuses( $user_id, $course_id, $force = false ) {
+
+	return 'xxxxxxx';
+
+
 	if ( did_action( "learn_press_parse_user_item_statuses_{$user_id}_{$course_id}" ) && ! $force ) {
 		return;
 	}
@@ -558,6 +581,10 @@ function _learn_press_parse_user_item_statuses( $user_id, $course_id, $force = f
 }
 
 function learn_press_validate_item_status( $item ) {
+
+	return 'xxxxxxx';
+
+
 	$end_time = $item->end_time !== '0000-00-00 00:00:00';
 	$status   = $end_time > 0 ? ( $item->item_type != LP_COURSE_CPT ? 'completed' : 'finished' ) : $item->status;
 	if ( $item->item_type == LP_QUIZ_CPT && $item->status == 'completed' && is_null( $item->grade ) ) {
@@ -697,6 +724,7 @@ function _learn_press_setup_question( $id ) {
 }
 
 learn_press_setup_pages();
+
 
 #
 # stop support comment for 

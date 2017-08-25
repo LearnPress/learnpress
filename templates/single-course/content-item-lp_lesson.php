@@ -5,11 +5,11 @@
  * @author  ThimPress
  * @version 2.0.7
  */
-global $lp_query, $wp_query;
+global $lp_query, $wp_query, $lp_course_item;
 $user          = learn_press_get_current_user();
-$course        = LP()->global['course'];
-$item          = LP()->global['course-item'];
-$security      = wp_create_nonce( sprintf( 'complete-item-%d-%d-%d', $user->get_id(), $course->get_id(), $item->ID ) );
+$course        = learn_press_get_course(); //LP()->global['course'];
+$item          = $lp_course_item;// LP()->global['course-item'];
+$security      = wp_create_nonce( sprintf( 'complete-item-%d-%d-%d', $user->get_id(), $course->get_id(), $item->get_id() ) );
 $can_view_item = $user->can( 'view-item', $item->id, $course->get_id() );
 ?>
 <h2 class="learn-press-content-item-title">
@@ -20,7 +20,7 @@ $can_view_item = $user->can( 'view-item', $item->id, $course->get_id() );
 
 	<?php learn_press_get_template( 'content-lesson/description.php' ); ?>
 
-	<?php if ( $user->has_completed_lesson( $item->ID, $course->get_id() ) ) { ?>
+	<?php if ( $user->has_completed_lesson( $item->get_id(), $course->get_id() ) ) { ?>
 		<button class="" disabled="disabled"> <?php _e( 'Completed', 'learnpress' ); ?></button>
 		<?php
 		// Auto redirect the next item (lesson or quiz) after completed current lesson
@@ -68,6 +68,6 @@ $can_view_item = $user->can( 'view-item', $item->id, $course->get_id() );
 	<?php } ?>
 
 </div>
-<?php LP_Assets::enqueue_script( 'learn-press-course-lesson' ); ?>
+<?php //LP_Assets::enqueue_script( 'learn-press-course-lesson' ); ?>
 
-<?php LP_Assets::add_var( 'LP_Lesson_Params', wp_json_encode( $item->get_settings( $user->get_id(), $course->get_id() ) ), '__all' ); ?>
+<?php //LP_Assets::add_var( 'LP_Lesson_Params', wp_json_encode( $item->get_settings( $user->get_id(), $course->get_id() ) ), '__all' ); ?>

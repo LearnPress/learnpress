@@ -1,34 +1,56 @@
 <?php
 /**
- * Display content item
+ * Display content of item is viewing inside course.
  *
  * @author  ThimPress
- * @version 2.1.7
+ * @package LearnPress/Templates
+ * @version 3.x.x
  */
-$course = learn_press_get_the_course();
-$item   = LP()->global['course-item'];
-$user   = learn_press_get_current_user();
-if ( !$item ) {
-	return;
-}
-$item_id = isset( $item->id ) ? $item->id : ( isset( $item->ID ) ? $item->ID : 0 );
+
+defined( 'ABSPATH' ) || exit;
+
+global $lp_course, $lp_course_item;
+$user = learn_press_get_current_user();
+
 ?>
 <div id="learn-press-content-item">
-	<?php do_action( 'learn_press/before_course_item_content', $item_id, $course->get_id() ); ?>
-	<?php if ( $item ) { ?>
-		<?php if ( $user->can( 'view-item', $item->id, $course->get_id() ) ) { ?>
 
-			<?php do_action( 'learn_press_course_item_content', $item ); ?>
+	<?php
+	/**
+	 * @deprecated
+	 */
+	do_action( 'learn_press/before_course_item_content', $lp_course_item->get_id(), $lp_course->get_id() );
 
-		<?php } else { ?>
+	/**
+	 * @since 3.x.x
+	 *
+	 */
+	do_action( 'learn-press/before-course-item-content', $lp_course_item->get_id(), $lp_course->get_id() );
 
-			<?php learn_press_get_template( 'single-course/content-protected.php', array( 'item' => $item ) ); ?>
+	if ( $user->can_view_item( $lp_course_item->get_id(), $lp_course->get_id() ) ) {
+		/**
+		 * @deprecated
+		 */
+		do_action( 'learn_press_course_item_content', $lp_course_item );
 
-		<?php } ?>
+		/**
+		 * @since 3.x.x
+		 */
+		do_action( 'learn-press/course-item-content', $lp_course_item->get_id(), $lp_course->get_id() );
 
-	<?php } ?>
-	<?php //do_action( 'learn_press_after_content_item', $item_id, $course->get_id(), true ); ?>
-	<?php do_action( 'learn_press/after_course_item_content', $item_id, $course->get_id() ); ?>
+	} else {
+		learn_press_get_template( 'single-course/content-protected.php', array( 'item' => $lp_course_item ) );
+	}
 
-	<?php do_action( 'learn_press_after_content_item', $item_id, $course->get_id(), true ); ?>
+	/**
+	 * @since 3.x.x
+	 */
+	do_action( 'learn_press/after-course-item-content', $lp_course_item->get_id(), $lp_course->get_id() );
+
+	/**
+	 * @deprecated
+	 */
+	do_action( 'learn_press_after_content_item', $lp_course_item->get_id(), $lp_course->get_id() );
+	?>
+
 </div>

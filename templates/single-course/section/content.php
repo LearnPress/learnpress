@@ -14,14 +14,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 if ( ! isset( $section ) ) {
 	return;
 }
-
 ?>
 
 <ul class="section-content">
 
 	<?php if ( $items = $section->get_items() ) { ?>
 
-		<?php foreach ( $items as $item ) { ?>
+		<?php foreach ( $items as $item ) {?>
             <li class="<?php echo join( ' ', $item->get_class() ); ?>">
                 <a href="<?php echo $item->get_permalink(); ?>">
 					<?php
