@@ -203,9 +203,13 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
     var state = helpers.cloneObject(data.root);
 
     state.status = 'success';
+    state.heartbeat = true;
     state.countCurrentRequest = 0;
 
     var getters = {
+        heartbeat: function (state) {
+            return state.heartbeat;
+        },
         action: function (state) {
             return state.action;
         },
@@ -227,6 +231,10 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
     };
 
     var mutations = {
+        'UPDATE_HEART_BEAT': function (state, status) {
+            state.heartbeat = !!status;
+        },
+
         'UPDATE_STATUS': function (state, status) {
             state.status = status;
         },
@@ -285,6 +293,22 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
     };
 
     var actions = {
+        heartbeat: function (context) {
+            Vue.http
+                .LPRequest({
+                    type: 'heartbeat'
+                })
+                .then(
+                    function (response) {
+                        var result = response.body;
+                        context.commit('UPDATE_HEART_BEAT', !!result.success);
+                    },
+                    function (error) {
+                        context.commit('UPDATE_HEART_BEAT', false);
+                    }
+                );
+        },
+
         newRequest: function (context) {
             context.commit('INCREASE_NUMBER_REQUEST');
             context.commit('UPDATE_STATUS', 'loading');
@@ -359,22 +383,6 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
                         var result = response.body;
                         var order_sections = result.data;
                         context.commit('SORT_SECTION', order_sections);
-                    },
-                    function (error) {
-                        console.error(error);
-                    }
-                );
-        },
-
-        syncSections: function (context) {
-            Vue.http.LPRequest({type: 'sync-sections'})
-                .then(
-                    function (response) {
-                        var result = response.body;
-
-                        if (result.success && result.data) {
-                            context.commit('SET_SECTIONS', result.data);
-                        }
                     },
                     function (error) {
                         console.error(error);
@@ -525,11 +533,11 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
  *
  * @since 3.0.0
  */
-(function ($, Vue) {
+(function ($, Vue, $store) {
     $(document).ready(function () {
         window.LP_Course_Editor = new Vue({
             el: '#course-editor-v2',
             template: '<lp-course-editor></lp-course-editor>'
         });
     });
-})(jQuery, window.Vue);
+})(jQuery, Vue, LP_Curriculum_Store);

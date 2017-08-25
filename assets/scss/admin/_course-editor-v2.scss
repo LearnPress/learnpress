@@ -26,6 +26,34 @@
     background-color: #fff;
     border: 1px solid #ddd;
     margin: 20px 0;
+    position: relative;
+
+    .notify-reload {
+        display: none;
+    }
+
+    &.need-reload {
+        position: relative;
+
+        .notify-reload {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.4);
+            z-index: 2;
+            color: #ffb900;
+            display: block;
+
+            .inner {
+                text-align: center;
+                line-height: 2;
+                padding: 50px 20px;
+                font-size: 2em;
+            }
+        }
+    }
 }
 
 #lp-course-curriculum {
