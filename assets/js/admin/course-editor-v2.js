@@ -15,6 +15,31 @@
     };
 })(window);
 
+
+/**
+ * I18n Store
+ *
+ * @since 3.0.0
+ */
+
+var LP_Curriculum_i18n_Store = (function (Vue, helpers, data) {
+    var state = helpers.cloneObject(data.i18n);
+
+    var getters = {
+        all: function (state) {
+            return state;
+        }
+    };
+
+    return {
+        namespaced: true,
+        state: state,
+        getters: getters
+    };
+
+})(Vue, LP_Helpers, lq_course_editor);
+
+
 /**
  * Choose Item Modal Store
  *
@@ -32,12 +57,14 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
             return state.pagination;
         },
         items: function (state, _getters) {
-            return state.items.filter(function (item) {
+            return state.items.map(function (item) {
                 var find = _getters.addedItems.find(function (_item) {
                     return item.id === _item.id;
                 });
 
-                return !find;
+                item.added = !!find;
+
+                return item;
             });
         },
         addedItems: function (state) {
@@ -67,8 +94,12 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
         'ADD_ITEM': function (state, item) {
             state.addedItems.push(item);
         },
-        'REMOVE_ADDED_ITEM': function (state, index) {
-            state.addedItems.splice(index, 1);
+        'REMOVE_ADDED_ITEM': function (state, item) {
+            state.addedItems.forEach(function (_item, index) {
+                if (_item.id === item.id) {
+                    state.addedItems.splice(index, 1);
+                }
+            });
         },
         'RESET': function (state) {
             state.addedItems = [];
@@ -104,7 +135,7 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
                 query: payload.query,
                 'item-type': payload.type,
                 page: payload.page,
-                exclude: JSON.stringify(context.getters.addedItems)
+                exclude: JSON.stringify([])
             }).then(
                 function (response) {
                     var result = response.body;
@@ -172,9 +203,13 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
     var state = helpers.cloneObject(data.root);
 
     state.status = 'success';
+    state.heartbeat = true;
     state.countCurrentRequest = 0;
 
     var getters = {
+        heartbeat: function (state) {
+            return state.heartbeat;
+        },
         action: function (state) {
             return state.action;
         },
@@ -192,10 +227,23 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
         },
         urlEdit: function (state) {
             return state.urlEdit;
+        },
+        hiddenSections: function (state) {
+            return state.hidden_sections;
+        },
+        isHiddenAllSections: function (state, getters) {
+            var hiddenSections = getters['hiddenSections'];
+            var sections = getters['sections'];
+
+            return hiddenSections.length === sections.length;
         }
     };
 
     var mutations = {
+        'UPDATE_HEART_BEAT': function (state, status) {
+            state.heartbeat = !!status;
+        },
+
         'UPDATE_STATUS': function (state, status) {
             state.status = status;
         },
@@ -248,12 +296,54 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
             }
             section.items = payload.items;
         },
-        'UPDATE_SECTION_ITEM': function(state, payload) {
+        'UPDATE_SECTION_ITEM': function (state, payload) {
 
+        },
+
+        'ADD_HIDDEN_SECTION': function (state, section) {
+            var find = state.hidden_sections.find(function (sectionId) {
+                return (parseInt(sectionId) === parseInt(section.id));
+            });
+
+            if (!find) {
+                state.hidden_sections.push(section.id);
+            }
+        },
+
+        'REMOVE_HIDDEN_SECTION': function (state, section) {
+            state.hidden_sections.forEach(function (sectionId, index) {
+                if (parseInt(sectionId) === parseInt(section.id)) {
+                    state.hidden_sections.splice(index, 1);
+                }
+            });
+        },
+
+        'EMPTY_HIDDEN_SECTIONS': function (state) {
+            state.hidden_sections = [];
+        },
+
+        'UPDATE_HIDDEN_SECTIONS': function (state, sections) {
+            state.hidden_sections = sections;
         }
     };
 
     var actions = {
+        heartbeat: function (context) {
+            Vue.http
+                .LPRequest({
+                    type: 'heartbeat'
+                })
+                .then(
+                    function (response) {
+                        var result = response.body;
+                        context.commit('UPDATE_HEART_BEAT', !!result.success);
+                    },
+                    function (error) {
+                        context.commit('UPDATE_HEART_BEAT', false);
+                    }
+                );
+        },
+
         newRequest: function (context) {
             context.commit('INCREASE_NUMBER_REQUEST');
             context.commit('UPDATE_STATUS', 'loading');
@@ -335,41 +425,15 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
                 );
         },
 
-        syncSections: function (context) {
-            Vue.http.LPRequest({type: 'sync-sections'})
-                .then(
-                    function (response) {
-                        var result = response.body;
-
-                        if (result.success && result.data) {
-                            context.commit('SET_SECTIONS', result.data);
-                        }
-                    },
-                    function (error) {
-                        console.error(error);
-                    }
-                );
-        },
-
         removeSectionItem: function (context, payload) {
+            context.commit('REMOVE_SECTION_ITEM', payload);
+
             Vue.http
                 .LPRequest({
                     type: 'remove-section-item',
                     'item-id': payload.itemId,
                     'section-id': payload.sectionId
-                })
-                .then(
-                    function (response) {
-                        var result = response.body;
-
-                        if (result.success) {
-                            context.commit('REMOVE_SECTION_ITEM', payload);
-                        }
-                    },
-                    function (error) {
-                        console.error(error);
-                    }
-                );
+                });
         },
 
         updateSectionItems: function (context, payload) {
@@ -393,7 +457,7 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
                 );
         },
 
-        updateSectionItem: function(context, payload) {
+        updateSectionItem: function (context, payload) {
             Vue.http
                 .LPRequest({
                     type: 'update-section-item',
@@ -417,6 +481,62 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
                         console.error(error);
                     }
                 );
+        },
+
+        newSectionItem: function (context, payload) {
+            Vue.http
+                .LPRequest({
+                    type: 'new-section-item',
+                    'item': payload.item,
+                    'section-id': payload.sectionId
+                })
+                .then(
+                    function (response) {
+                        var result = response.body;
+
+                        if (result.success) {
+                            context.commit('UPDATE_SECTION_ITEMS', {
+                                sectionId: payload.sectionId,
+                                items: result.data
+                            });
+                        }
+                    },
+                    function (error) {
+                        console.error(error);
+                    }
+                );
+        },
+
+        toggleSection: function (context, payload) {
+            if (payload.open) {
+                context.commit('REMOVE_HIDDEN_SECTION', payload.section);
+            } else {
+                context.commit('ADD_HIDDEN_SECTION', payload.section);
+            }
+
+            Vue.http
+                .LPRequest({
+                    type: 'hidden-sections',
+                    hidden: context.getters['hiddenSections']
+                });
+        },
+        toggleAllSections: function (context) {
+            var hidden = context.getters['isHiddenAllSections'];
+
+            if (hidden) {
+                context.commit('EMPTY_HIDDEN_SECTIONS');
+            } else {
+                var sections = context.getters['sections'].map(function (section) {
+                    return section.id;
+                });
+                context.commit('UPDATE_HIDDEN_SECTIONS', sections);
+            }
+
+            Vue.http
+                .LPRequest({
+                    type: 'hidden-sections',
+                    hidden: context.getters['hiddenSections']
+                });
         }
     };
 
@@ -426,7 +546,8 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
         mutations: mutations,
         actions: actions,
         modules: {
-            ci: LP_Choose_Items_Modal_Store
+            ci: LP_Choose_Items_Modal_Store,
+            i18n: LP_Curriculum_i18n_Store
         }
     });
 
@@ -479,11 +600,11 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
  *
  * @since 3.0.0
  */
-(function ($, Vue) {
+(function ($, Vue, $store) {
     $(document).ready(function () {
         window.LP_Course_Editor = new Vue({
             el: '#course-editor-v2',
             template: '<lp-course-editor></lp-course-editor>'
         });
     });
-})(jQuery, window.Vue);
+})(jQuery, Vue, LP_Curriculum_Store);

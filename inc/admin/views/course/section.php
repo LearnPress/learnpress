@@ -11,7 +11,7 @@ learn_press_admin_view( 'course/new-section-item' );
 ?>
 <script type="text/x-template" id="tmpl-lp-section">
     <div class="section" :class="isOpen ? 'open' : 'close'">
-        <div class="section-head">
+        <div class="section-head" @dblclick="toggle">
             <span class="movable"></span>
             <input v-model="section.title"
                    type="text"
@@ -46,10 +46,10 @@ learn_press_admin_view( 'course/new-section-item' );
                         <lp-section-item
                                 @update="updateItem"
                                 @remove="removeItem" v-for="(item, index) in section.items" :item="item"
-                                         :key="item.id" :order="index+1"></lp-section-item>
+                                :key="item.id" :order="index+1"></lp-section-item>
                     </draggable>
 
-                    <lp-new-section-item :empty="!section.items.length"></lp-new-section-item>
+                    <lp-new-section-item @create="newSectionItem"></lp-new-section-item>
                 </div>
             </div>
 
@@ -73,11 +73,36 @@ learn_press_admin_view( 'course/new-section-item' );
             props: ['section', 'index'],
             data: function () {
                 return {
-                    isOpen: true,
+                    open: true,
                     unsaved: false
                 };
             },
+            created: function () {
+                var vm = this;
+
+                $store.subscribe(function (mutation) {
+                    if (mutation.type !== 'EMPTY_HIDDEN_SECTIONS') {
+                        return;
+                    }
+
+                    vm.open = true;
+                });
+            },
             computed: {
+                isOpen: function () {
+                    var section = this.section;
+                    var hiddenSections = $store.getters['hiddenSections'];
+                    var find = hiddenSections.find(function (sectionId) {
+                        return parseInt(section.id) === parseInt(sectionId);
+                    });
+
+                    if (find) {
+                        this.open = false;
+                    }
+
+                    return this.open;
+                },
+
                 items: {
                     get: function () {
                         return this.section.items;
@@ -102,15 +127,21 @@ learn_press_admin_view( 'course/new-section-item' );
                             pull: true
                         }
                     };
-                },
-
-                isEmpty: function () {
-                    return false;
                 }
             },
             methods: {
                 toggle: function () {
-                    this.isOpen = !this.isOpen;
+                    this.open = !this.open;
+                    $store.dispatch('toggleSection', {
+                        open: this.open,
+                        section: this.section
+                    });
+                },
+                newSectionItem: function (item) {
+                    $store.dispatch('newSectionItem', {
+                        sectionId: this.section.id,
+                        item: item
+                    });
                 },
                 removeItem: function (item) {
                     $store.dispatch('removeSectionItem', {
@@ -118,14 +149,14 @@ learn_press_admin_view( 'course/new-section-item' );
                         itemId: item.id
                     });
                 },
-                updateItem: function(item) {
+                updateItem: function (item) {
                     $store.dispatch('updateSectionItem', {
                         sectionId: this.section.id,
                         item: item
                     });
                 },
                 remove: function () {
-                    var r = window.confirm('Are you sure remove this section?');
+                    var r = window.confirm($store.getters['i18n/all'].remove_section);
 
                     if (!r) {
                         return;

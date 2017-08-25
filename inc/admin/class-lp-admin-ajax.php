@@ -139,9 +139,31 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 			$result = $args['type'];
 			switch ( $args['type'] ) {
+				case 'heartbeat':
+					$result = true;
+					break;
+
+				case 'hidden-sections':
+					$hidden = learn_press_get_request( 'hidden' );
+					update_post_meta( $course_id, '_admin_hidden_sections', $hidden );
+					break;
+
 				case 'sync-sections':
 					$result = $course->get_curriculum_raw();
+					break;
 
+				case 'new-section-item':
+					$item       = isset( $_POST['item'] ) ? $_POST['item'] : array();
+					$section_id = isset( $_POST['section-id'] ) ? intval( $_POST['section-id'] ) : false;
+
+					$result = $curd->create_section_item( $section_id, $item );
+					break;
+
+				case 'update-section-item':
+					$item       = isset( $_POST['item'] ) ? $_POST['item'] : array();
+					$section_id = isset( $_POST['section-id'] ) ? intval( $_POST['section-id'] ) : false;
+
+					$result = $curd->update_section_item( $section_id, $item );
 					break;
 
 				case 'remove-section-item':
@@ -178,11 +200,14 @@ if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 					break;
 
 				case 'new-section':
+					$post_section = isset( $_POST['section'] ) ? $_POST['section'] : array();
+					$section_name = isset( $post_section['title'] ) ? $post_section['title'] : '';
+
 					$args = array(
 						'section_course_id'   => $course_id,
 						'section_description' => '',
-						'section_name'        => '',
-						'items'               => [],
+						'section_name'        => $section_name,
+						'items'               => array(),
 					);
 
 					$section = $curd->create( $args );
