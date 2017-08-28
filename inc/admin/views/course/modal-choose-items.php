@@ -91,11 +91,20 @@ learn_press_admin_view( 'course/added-items-preview' );
                 </ul>
 
                 <div class="pagination" v-if="totalPage > 1">
-                    <template v-for="number in totalPage">
-                        <span
-                                @click="changePage(number)"
-                                class="number" :class="number == page ? 'current' : ''">{{number}}</span>
-                    </template>
+                    <span class="number first" :class="{current: (page == 1)}"
+                          v-if="totalPage > 2"
+                          @click="previousFirstPage">«</span>
+
+                    <span class="number previous"
+                          :class="{current: (page == 1)}"
+                          @click="previousPage"><?php esc_html_e( 'Previous', 'learnpress' ); ?></span>
+                    <span class="number next"
+                          :class="{current: (page == totalPage)}"
+                          @click="nextPage"><?php esc_html_e( 'Next', 'learnpress' ); ?></span>
+
+                    <span class="number last" v-if="totalPage > 2"
+                          :class="{current: (page == totalPage)}"
+                          @click="nextLastPage">»</span>
                 </div>
 
                 <lp-added-items-preview :show="showPreview"></lp-added-items-preview>
@@ -180,11 +189,39 @@ learn_press_admin_view( 'course/added-items-preview' );
                     this.makeSearch();
                 },
 
+                nextPage: function () {
+                    if (this.page < this.totalPage) {
+                        this.page++;
+                        this.makeSearch();
+                    }
+                },
+
+                nextLastPage: function () {
+                    if (this.page < this.totalPage) {
+                        this.page = this.totalPage;
+                        this.makeSearch();
+                    }
+                },
+
+                previousPage: function () {
+                    if (this.page > 1) {
+                        this.page--;
+                        this.makeSearch();
+                    }
+                },
+
+                previousFirstPage: function () {
+                    if (this.page > 1) {
+                        this.page = 1;
+                        this.makeSearch();
+                    }
+                },
+
                 addItem: function (item) {
                     $store.dispatch('ci/addItem', item);
                 },
 
-                removeItem: function(item) {
+                removeItem: function (item) {
                     $store.dispatch('ci/removeItem', item);
                 },
 
@@ -210,6 +247,7 @@ learn_press_admin_view( 'course/added-items-preview' );
                     }
 
                     this.delayTimeout = setTimeout(function () {
+                        vm.page = 1;
                         vm.makeSearch();
                     }, 500);
                 },
@@ -239,7 +277,7 @@ learn_press_admin_view( 'course/added-items-preview' );
                 },
                 totalPage: function () {
                     if (this.pagination) {
-                        return this.pagination.total || 1;
+                        return parseInt(this.pagination.total) - 1 || 1;
                     }
 
                     return 1;
