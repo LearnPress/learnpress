@@ -5,7 +5,7 @@ defined( 'ABSPATH' ) || exit();
 /**
  * Class LP_Course_Item
  */
-abstract class LP_Course_Item extends LP_Abstract_Post_Data {
+class LP_Course_Item extends LP_Abstract_Post_Data implements ArrayAccess {
 
 	/**
 	 * The icon maybe used somewhere.
@@ -25,6 +25,13 @@ abstract class LP_Course_Item extends LP_Abstract_Post_Data {
 	 * @var LP_Course
 	 */
 	protected $_course = null;
+
+	/**
+	 * @var LP_Course_Section
+	 */
+	protected $_section = null;
+
+	protected $_nonces = array();
 
 	/**
 	 * LP_Course_Item constructor.
@@ -115,7 +122,7 @@ abstract class LP_Course_Item extends LP_Abstract_Post_Data {
 
 		$defaults = array( 'course-item course-item-' . $this->get_item_type() );
 
-		if($lp_course_item && $lp_course_item->get_id() == $this->get_id()){
+		if ( $lp_course_item && $lp_course_item->get_id() == $this->get_id() ) {
 			$defaults[] = 'current';
 		}
 
@@ -171,6 +178,27 @@ abstract class LP_Course_Item extends LP_Abstract_Post_Data {
 		return $this->_course;
 	}
 
+	/**
+	 * @param LP_Course_Section $section
+	 */
+	public function set_section( $section ) {
+		$this->_section = $section;
+	}
+
+	/**
+	 * @return LP_Course_Section
+	 */
+	public function get_section() {
+		return $this->_section;
+	}
+
+	/**
+	 * Get instance of an item from post
+	 *
+	 * @param WP_Post $post
+	 *
+	 * @return LP_Course_Item
+	 */
 	public static function get_item( $post ) {
 		$item      = false;
 		$item_type = '';
@@ -199,6 +227,25 @@ abstract class LP_Course_Item extends LP_Abstract_Post_Data {
 		return apply_filters( 'learn-press/get-course-item', $item, $item_type, $item_id );
 	}
 
+	public function get_user_status( $user ) {
+		if ( $course = $this->get_course() ) {
+			return $course->get_id();
+		}
+
+		return $course;
+	}
+
+	/**
+	 * Get template name of item.
+	 *
+	 * @return string
+	 */
+	public function get_template() {
+		$item_type = $this->get_item_type();
+
+		return apply_filters( 'learn-press/section-item-template', 'item-' . str_replace( 'lp_', '', $item_type ), $item_type );
+	}
+
 	/**
 	 * To array.
 	 *
@@ -214,5 +261,67 @@ abstract class LP_Course_Item extends LP_Abstract_Post_Data {
 			'type'  => $this->get_item_type(),
 			'title' => $post->post_title,
 		);
+	}
+
+	/**
+	 * Create nonce for checking actions on an item.
+	 *
+	 * @param string $action
+	 * @param int    $course_id
+	 * @param int    $user_id
+	 *
+	 * @return string
+	 */
+	public function create_nonce( $action = '', $course_id = 0, $user_id = 0 ) {
+		if ( ! $course_id ) {
+			$course_id = $this->get_course()->get_id();
+		}
+
+		if ( ! $user_id ) {
+			$user_id = get_current_user_id();
+		}
+
+		$action = sprintf( '%s-item-%d-%d-%d', $action, $user_id, $course_id, $this->get_id() );
+
+		return wp_create_nonce( $action );
+	}
+
+	/**
+	 * Verify nonce for an action on item.
+	 *
+	 * @param string $nonce
+	 * @param string $action
+	 * @param int    $course_id
+	 * @param int    $user_id
+	 *
+	 * @return false|int
+	 */
+	public function verify_nonce( $nonce, $action = '', $course_id = 0, $user_id = 0 ) {
+		if ( ! $course_id ) {
+			$course_id = $this->get_course()->get_id();
+		}
+
+		if ( ! $user_id ) {
+			$user_id = get_current_user_id();
+		}
+
+		$action = sprintf( '%s-item-%d-%d-%d', $action, $user_id, $course_id, $this->get_id() );
+
+		return wp_verify_nonce( $nonce, $action );
+	}
+
+	public function offsetExists( $offset ) {
+
+	}
+
+	public function offsetGet( $offset ) {
+
+	}
+
+	public function offsetSet( $offset, $value ) {
+
+	}
+
+	public function offsetUnset( $offset ) {
 	}
 }

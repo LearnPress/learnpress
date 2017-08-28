@@ -69,6 +69,7 @@ class LP_Course_Section {
 			// Create item
 			if ( $item_class = $this->_get_item( $item ) ) {
 				$item_class->set_course( $this->get_course_id() );
+				$item_class->set_section( $this );
 				$this->data['items'][ $item->item_id ] = $item_class;
 			}
 		}
@@ -84,7 +85,7 @@ class LP_Course_Section {
 	 * @return bool|LP_Course_Item
 	 */
 	protected function _get_item( $item ) {
-		return LP_Course_Item::get_item($item->item_id);
+		return LP_Course_Item::get_item( $item->item_id );
 //		$type  = str_replace( 'lp_', '', $item->item_type );
 //		$class = apply_filters( 'learn-press/course-item-class', 'LP_' . ucfirst( $type ), $item, $this );
 //

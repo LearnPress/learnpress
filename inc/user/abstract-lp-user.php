@@ -117,10 +117,10 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 		$this->_curd->read_course( $this->get_id(), $course_id );
 
 		if ( false !== ( $course_item = wp_cache_get( 'course-' . $this->get_id() . '-' . $course_id, 'lp-user-courses' ) ) ) {
-			learn_press_debug( $course_item );
+			//learn_press_debug( $course_item );
 			if ( $items = $course_item['items'] ) {
 				foreach ( $items as $item_id ) {
-					learn_press_debug( wp_cache_get( 'course-item-' . $item_id, 'lp-user-course-items' ) );
+					//learn_press_debug( wp_cache_get( 'course-item-' . $item_id, 'lp-user-course-items' ) );
 				}
 			}
 		}
@@ -638,6 +638,57 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	}
 
 	/**
+	 * @param int  $item_id
+	 * @param int  $course_id
+	 * @param bool $last
+	 *
+	 * @since 3.x.x
+	 *
+	 * @return mixed
+	 */
+	public function get_item( $item_id, $course_id = 0, $last = false ) {
+		if ( ! $course_id ) {
+			$course_id = get_the_ID();
+		}
+		$item = false;
+		if ( false !== ( $items = wp_cache_get( 'course-item-' . $this->get_id() . '-' . $course_id . '-' . $item_id, 'lp-user-course-items' ) ) ) {
+			// Only get status of a newest record.
+			if ( $last ) {
+				$item = reset( $items );
+			} else {
+				$item = $items;
+			}
+		}
+
+		return $item;
+	}
+
+	/**
+	 * @param int $item_id
+	 * @param int $course_id
+	 *
+	 * @since 3.x.x
+	 *
+	 * @return mixed
+	 */
+	public function get_item_grade( $item_id, $course_id = 0 ) {
+		if ( ! $course_id ) {
+			$course_id = get_the_ID();
+		}
+
+		$grade = false;
+
+		if ( false !== ( $item = $this->get_item( $item_id, $course_id, true ) ) ) {
+			$status = $item['status'];
+			if ( $status === 'completed' ) {
+				$grade = learn_press_get_user_item_meta( $item['user_item_id'], '_grade', true );
+			}
+		}
+
+		return apply_filters( 'learn-press/user-item-grade', $grade, $item_id, $this->get_id(), $course_id );
+	}
+
+	/**
 	 * Get current status of an item for user.
 	 *
 	 * @param int  $item_id
@@ -653,12 +704,17 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 			_deprecated_argument( __FUNCTION__ . ' {$force}', '3.x.x' );
 		}
 
+		if ( ! $course_id ) {
+			$course_id = get_the_ID();
+		}
+
 		$status = false;
 
-		if ( false !== ( $user_items = wp_cache_get( 'course-item-' . $this->get_id() . '-' . $course_id . '-' . $item_id, 'lp-user-course-items' ) ) ) {
-			// Only get status of a newest record.
-			$newest = reset( $user_items );
-			$status = $newest['status'];
+		if ( false !== ( $item = $this->get_item( $item_id, $course_id, true ) ) ) {
+			$status = $item['status'];
+//			if ( $status === 'completed' ) {
+//				$status = learn_press_get_user_item_meta( $newest['user_item_id'], '_grade', true );
+//			}
 		}
 
 
@@ -723,6 +779,45 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 		}
 
 		return apply_filters( 'learn_press_user_course_item_status', $item_statuses[ $key ], $item_id, $course_id, $this->get_id() );
+	}
+
+	public function maybe_update_item( $item_id, $course_id ) {
+		if ( $course = learn_press_get_course( $course_id ) ) {
+			if ( $course_data = $this->get_course_data( $course_id ) ) {
+				$user_item = $this->get_item( $item_id, $course_id );
+				if ( ! $user_item ) {
+					global $wpdb;
+					$item = LP_Course_Item::get_item( $item_id );
+					$wpdb->insert(
+						$wpdb->learnpress_user_items,
+						array(
+							'user_id'   => $this->get_id(),
+							'item_id'   => $item_id,
+							'item_type' => $item->get_item_type(),
+							'status'    => 'started',
+							'ref_id'    => $course_id,
+							'ref_type'  => LP_COURSE_CPT,
+							'parent_id' => $course_data['user_item_id']
+						)
+					);
+
+					$items = array(
+						$wpdb->insert_id => $this->_curd->get_user_item_by_id( $wpdb->insert_id )
+					);
+
+					$cache_name = sprintf( 'course-item-%d-%d-%d', $this->get_id(), $course_id, $item_id );
+
+					if ( wp_cache_get( $cache_name, 'lp-user-course-items' ) === false ) {
+						wp_cache_set( $cache_name, $items, 'lp-user-course-items' );
+
+					} else {
+						wp_cache_replace( $cache_name, $items, 'lp-user-course-items' );
+
+					}
+
+				}
+			}
+		}
 	}
 
 	/**
@@ -1362,8 +1457,8 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 		return false;
 	}
 
-	public function get_completed_items($course_id){
-		$this->_curd->get_user_items($this->get_id(), $course_id);
+	public function get_completed_items( $course_id ) {
+		$this->_curd->get_user_items( $this->get_id(), $course_id );
 	}
 
 	/**

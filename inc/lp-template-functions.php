@@ -268,9 +268,10 @@ if ( ! function_exists( '' ) ) {
 	 * @param LP_Course_Item $item
 	 */
 	function learn_press_course_item_content( $item ) {
-	    global $lp_course, $lp_course_item;
-	    $item = $lp_course_item;
+		global $lp_course, $lp_course_item;
+		$item               = $lp_course_item;
 		$item_template_name = learn_press_locate_template( 'single-course/content-item-' . $item->get_item_type() . '.php' );
+
 		if ( file_exists( $item_template_name ) ) {
 			learn_press_get_template( 'single-course/content-item-' . $item->get_item_type() . '.php' );
 		}
@@ -683,7 +684,7 @@ if ( ! function_exists( 'learn_press_section_item_meta' ) ) {
 	 * @param array
 	 * @param LP_Course
 	 */
-	function learn_press_section_item_meta( $item, $section, $course ) {
+	function learn_press_section_item_meta( $item, $section ) {
 		learn_press_get_template( 'single-course/section/item-meta.php', array(
 			'item'    => $item,
 			'section' => $section

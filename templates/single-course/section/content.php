@@ -14,14 +14,24 @@ if ( ! defined( 'ABSPATH' ) ) {
 if ( ! isset( $section ) ) {
 	return;
 }
+
+global $lp_user;
 ?>
 
 <ul class="section-content">
 
 	<?php if ( $items = $section->get_items() ) { ?>
 
-		<?php foreach ( $items as $item ) {?>
+		<?php foreach ( $items as $item ) { ?>
             <li class="<?php echo join( ' ', $item->get_class() ); ?>">
+
+				<?php
+				/**
+				 * @since 3.x.x
+				 */
+				do_action( 'learn-press/begin-section-loop-item', $item );
+				?>
+
                 <a href="<?php echo $item->get_permalink(); ?>">
 					<?php
 
@@ -34,13 +44,30 @@ if ( ! isset( $section ) ) {
 						'section' => $section
 					);
 
-					$item_type = $item->get_item_type();
+					/**
+					 * @since 3.x.x
+					 */
+					do_action( 'learn-press/before-section-loop-item', $item );
 
-					$template_type = apply_filters( 'learn-press/section-item-template', 'item-' . str_replace( 'lp_', '', $item_type ), $item_type );
-					learn_press_get_template( "single-course/section/{$template_type}.php", $args );
+					learn_press_get_template( "single-course/section/" . $item->get_template(), $args );
+
+					/**
+					 * @since 3.x.x
+                     *
+                     * @see learn_press_section_item_meta()
+					 */
+					do_action( 'learn-press/after-section-loop-item', $item, $section );
+
 					?>
-                    <i class="item-icon icon-lock dashicons dashicons-lock"></i>
                 </a>
+
+				<?php
+				/**
+				 * @since 3.x.x
+				 */
+				do_action( 'learn-press/end-section-loop-item', $item );
+				?>
+
             </li>
 		<?php } ?>
 

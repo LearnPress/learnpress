@@ -355,7 +355,12 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	 * @param LP_Course_Item $item
 	 */
 	public function set_viewing_item( $item ) {
+
+		$user = learn_press_get_current_user();
+		$user->maybe_update_item( $item->get_id(), $this->get_id() );
+
 		$this->_viewing_item = $item;
+		$item->set_course( $this );
 	}
 
 	/**
