@@ -107,6 +107,9 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
         },
         'UPDATE_PAGINATION': function (state, pagination) {
             state.pagination = pagination;
+        },
+        'SEARCH_ITEMS_DONE': function (state) {
+
         }
     };
 
@@ -148,8 +151,10 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
 
                     context.commit('SET_LIST_ITEMS', data.items);
                     context.commit('UPDATE_PAGINATION', data.pagination);
+                    context.commit('SEARCH_ITEMS_DONE');
                 },
                 function (error) {
+                    context.commit('SEARCH_ITEMS_DONE');
                     console.error(error);
                 }
             );

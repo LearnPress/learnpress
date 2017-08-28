@@ -46,7 +46,7 @@ learn_press_admin_view( 'course/added-items-preview' );
 
 
 <script type="text/x-template" id="tmpl-lp-course-choose-items">
-    <div id="lp-modal-choose-items" :class="{show:show}">
+    <div id="lp-modal-choose-items" :class="{show:show, loading: loading}">
         <div class="lp-choose-items" :class="{'show-preview': showPreview}">
             <div class="header">
                 <div class="preview-title">
@@ -133,13 +133,18 @@ learn_press_admin_view( 'course/added-items-preview' );
                     page: 1,
                     tab: 'lp_lesson',
                     delayTimeout: null,
-                    showPreview: false
+                    showPreview: false,
+                    loading: false
                 };
             },
             created: function () {
                 var vm = this;
 
                 $store.subscribe(function (mutation) {
+                    if (mutation.type === 'ci/SEARCH_ITEMS_DONE') {
+                        vm.loading = false;
+                    }
+
                     if (!mutation || mutation.type !== 'ci/TOGGLE') {
                         return;
                     }
@@ -210,6 +215,7 @@ learn_press_admin_view( 'course/added-items-preview' );
                 },
 
                 makeSearch: function () {
+                    this.loading = true;
                     $store.dispatch('ci/searchItems', {
                         query: this.query,
                         page: this.page,
