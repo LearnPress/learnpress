@@ -135,11 +135,35 @@ add_action( 'learn-press/content-learning-summary', 'learn_press_course_tabs', 5
 /**
  * Course item content
  */
+
+/**
+ * @see learn_press_course_item_content()
+ */
 add_action( 'learn-press/course-item-content', 'learn_press_course_item_content', 5 );
 
+add_action( 'learn-press/before-content-item-summary/lp_lesson', function () {
+	$item = LP_Global::course_item();
+	//if($item->is_show_complete
+	learn_press_get_template( 'content-lesson/title.php' );
+} );
+
+add_action( 'learn-press/content-item-summary/lp_lesson', function () {
+	$item = LP_Global::course_item();
+	//if($item->is_show_complete
+	learn_press_get_template( 'content-lesson/description.php' );
+} );
+
+add_action( 'learn-press/after-content-item-summary/lp_lesson', function () {
+	$item = LP_Global::course_item();
+	//if($item->is_show_complete
+	learn_press_get_template( 'content-lesson/button-complete.php' );
+} );
+
+
+add_action( 'learn-press/after-section-loop-item', 'learn_press_section_item_meta', 10, 2 );
 
 /*********************************************************************************************************/
-/* @see _learn_press_default_course_tabs()*/
+/* @see _learn_press_default_course_tabs() */
 //add_filter( 'learn_press_course_tabs', '_learn_press_default_course_tabs', 5 );
 
 add_filter( 'body_class', 'learn_press_body_class' );

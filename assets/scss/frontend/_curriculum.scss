@@ -136,6 +136,37 @@
                     }
                 }
 
+                .course-item-meta {
+                    float: right;
+                    .course-item-status {
+                        width: 20px;
+                        height: 20px;
+                        display: inline-block;
+                        border: 2px solid transparent;
+                        text-align: center;
+                        color: #DDD;
+                        @include border-radius(50%);
+                        &.has-status {
+                            border-color: #DDD;
+                            padding-top: 1px;
+                            &.status-started {
+
+                            }
+                            &.status-completed {
+
+                            }
+                            &.passed {
+                                border-color: #00adff;
+                                color: #00adff;
+                            }
+                            &.failed {
+                                border-color: #FF0000;
+                                color: #FF0000;
+                            }
+                        }
+                    }
+                }
+
                 &.course-item-lp_quiz {
                     & > a:before {
                         content: "\f469";
@@ -192,7 +223,7 @@ body {
             z-index: 99999;
             .section-header {
                 padding: 15px;
-                .section-desc{
+                .section-desc {
                     display: none;
                 }
             }
@@ -215,6 +246,15 @@ body {
             right: 0;
             bottom: 0;
             overflow: auto;
+            .content-item-wrap {
+                margin: 20px auto;
+                max-width: 900px;
+            }
         }
     }
+}
+
+#wpadminbar #wp-admin-bar-edit-course-item > .ab-item:before {
+    content: "\f464";
+    top: 2px;
 }

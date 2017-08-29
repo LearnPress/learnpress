@@ -15,6 +15,8 @@ $user = learn_press_get_current_user();
 ?>
 <div id="learn-press-content-item">
 
+    <div class="content-item-wrap">
+
 	<?php
 	/**
 	 * @deprecated
@@ -52,5 +54,7 @@ $user = learn_press_get_current_user();
 	 */
 	do_action( 'learn_press_after_content_item', $lp_course_item->get_id(), $lp_course->get_id() );
 	?>
+
+    </div>
 
 </div>

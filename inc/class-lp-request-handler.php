@@ -31,7 +31,8 @@ class LP_Request_Handler {
 		if ( is_admin() ) {
 			add_action( 'init', array( __CLASS__, 'process_request' ), 50 );
 		} else {
-			add_action( 'wp', array( __CLASS__, 'process_request' ), 50 );
+			//add_action( 'wp', array( __CLASS__, 'process_request' ), 50 );
+			add_action( 'template_include', array( __CLASS__, 'process_request' ), 50 );
 		}
 
 		add_action( 'get_header', array( __CLASS__, 'clean_cache' ), 1000000 );
@@ -236,10 +237,11 @@ class LP_Request_Handler {
 			}
 		} else {
 			/// Need?
-			do_action('learn-press/add-to-cart-order-total-empty');
+			do_action( 'learn-press/add-to-cart-order-total-empty' );
 			$checkout = LP()->checkout();
 			$checkout->process_checkout();
 		}
+
 		return true;
 	}
 
@@ -292,8 +294,12 @@ class LP_Request_Handler {
 
 	/**
 	 * Process actions
+	 *
+	 * @param string $template
+	 *
+	 * @return string
 	 */
-	public static function process_request() {
+	public static function process_request( $template ) {
 		if ( ! empty( $_REQUEST['lp-reload'] ) ) {
 			wp_redirect( remove_query_arg( 'lp-reload' ) );
 			exit();
@@ -304,6 +310,8 @@ class LP_Request_Handler {
 				do_action( 'learn_press_request_handler_' . $key, $value, $key );
 			}
 		}
+
+		return $template;
 	}
 
 	/**

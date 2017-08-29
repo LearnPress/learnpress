@@ -84,6 +84,31 @@ class LP_Page_Controller {
 
 				return $classes;
 			} );
+
+
+			add_filter( 'admin_bar_menu', function () {
+				if ( ! ( ! is_admin() && is_user_logged_in() ) ) {
+					return;
+				}
+
+				if ( ! is_user_member_of_blog() && ! is_super_admin() ) {
+					//return;
+				}
+
+				global $wp_admin_bar, $lp_course_item;
+
+				if ( ( $post_type_object = get_post_type_object( $lp_course_item->get_item_type() ) )
+				     && current_user_can( 'edit_post', $lp_course_item->get_id() )
+				     && $post_type_object->show_in_admin_bar
+				     && $edit_post_link = get_edit_post_link( $lp_course_item->get_id() )
+				) {
+					$wp_admin_bar->add_menu( array(
+						'id'    => 'edit-course-item',
+						'title' => $post_type_object->labels->edit_item,
+						'href'  => $edit_post_link
+					) );
+				}
+			}, 90 );
 		}
 
 		return $template;
