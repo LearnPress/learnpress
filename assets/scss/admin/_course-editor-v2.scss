@@ -478,6 +478,24 @@
             color: #a00;
             cursor: pointer;
             display: none;
+
+            .icon {
+                display: inline-block;
+            }
+
+            .sure {
+                display: none;
+            }
+
+            &.confirm {
+                .sure {
+                    display: inline-block;
+                }
+
+                .icon {
+                    display: none;
+                }
+            }
         }
     }
 }

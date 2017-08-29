@@ -57,8 +57,9 @@ learn_press_admin_view( 'course/new-section-item' );
                 <button type="button" class="button button-secondary"
                         @click="openChooseItems"><?php esc_html_e( 'Add items', 'learnpress' ); ?></button>
 
-                <div class="remove" @click="remove">
-                    <span class="dashicons dashicons-trash"></span>
+                <div class="remove" :class="{confirm: confirmRemove}">
+                    <span class="icon" @click="removeSection"><span class="dashicons dashicons-trash"></span></span>
+                    <div class="sure" @click="remove"><?php esc_html_e( 'Are you sure?', 'learnpress' ); ?></div>
                 </div>
             </div>
         </div>
@@ -74,7 +75,8 @@ learn_press_admin_view( 'course/new-section-item' );
             data: function () {
                 return {
                     open: true,
-                    unsaved: false
+                    unsaved: false,
+                    confirmRemove: false
                 };
             },
             created: function () {
@@ -155,13 +157,20 @@ learn_press_admin_view( 'course/new-section-item' );
                         item: item
                     });
                 },
-                remove: function () {
-                    var r = window.confirm($store.getters['i18n/all'].remove_section);
+                removeSection: function () {
+                    this.confirmRemove = true;
+                    var vm = this;
 
-                    if (!r) {
+                    setTimeout(function () {
+                        vm.confirmRemove = false;
+                    }, 3000);
+                },
+                remove: function () {
+                    if (!this.confirmRemove) {
                         return;
                     }
 
+                    this.confirmRemove = false;
                     $store.dispatch('removeSection', {
                         index: this.index,
                         section: this.section
