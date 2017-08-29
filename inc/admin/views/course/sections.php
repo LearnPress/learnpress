@@ -39,7 +39,7 @@ learn_press_admin_view( 'course/section' );
                 var vm = this;
 
                 $store.subscribe(function (mutation, state) {
-                    if (mutation.type !== 'ADD_NEW_SECTION') {
+                    if (mutation.type !== 'ss/ADD_NEW_SECTION') {
                         return;
                     }
 
@@ -53,12 +53,12 @@ learn_press_admin_view( 'course/section' );
                         orders.push(parseInt(section.id));
                     });
 
-                    $store.dispatch('updateSortSections', orders);
+                    $store.dispatch('ss/updateSortSections', orders);
                 }
             },
             computed: {
                 sections: function () {
-                    return $store.getters.sections;
+                    return $store.getters['ss/sections'];
                 }
             }
         });

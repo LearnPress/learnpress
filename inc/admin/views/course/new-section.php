@@ -37,7 +37,7 @@
             },
             methods: {
                 addNewSection: function () {
-                    $store.dispatch('addNewSection', {
+                    $store.dispatch('ss/addNewSection', {
                         title: this.title
                     });
 
