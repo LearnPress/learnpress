@@ -99,13 +99,15 @@ learn_press_admin_view( 'course/pagination' );
                 <div class="cart">
                     <button
                             @click="checkout"
-                            :disabled="!addedItems.length"
+                            :disabled="!addedItems.length || adding"
                             type="button"
                             class="button button-primary checkout">
-                        <span><?php esc_html_e( 'Add', 'learnpress' ); ?></span>
+                        <span v-if="!adding"><?php esc_html_e( 'Add', 'learnpress' ); ?></span>
+                        <span v-if="adding"><?php esc_html_e( 'Adding', 'learnpress' ); ?></span>
                     </button>
 
                     <button type="button"
+                            :disabled="!addedItems.length || adding"
                             @click.prevent="showPreview = !showPreview"
                             class="button button-secondary edit-selected">
                         {{textButtonEdit}}
@@ -128,7 +130,8 @@ learn_press_admin_view( 'course/pagination' );
                     tab: 'lp_lesson',
                     delayTimeout: null,
                     showPreview: false,
-                    loading: false
+                    loading: false,
+                    adding: false
                 };
             },
             created: function () {
@@ -158,10 +161,12 @@ learn_press_admin_view( 'course/pagination' );
                     this.page = 1;
                     this.tab = this.firstType;
                     this.showPreview = false;
+                    this.adding = false;
                     this.makeSearch();
                 },
 
                 checkout: function () {
+                    this.adding = true;
                     $store.dispatch('ci/addItemsToSection');
                 },
 
