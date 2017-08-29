@@ -54,13 +54,14 @@ $method_title = $order->get_payment_method_title();
         <h3 class="order-data-heading"><?php _e( 'Order details', 'learnpress' ); ?></h3>
         <div class="order-data-field order-data-date">
             <label><?php _e( 'Date', 'learnpress' ); ?></label>
-	        <?php learn_press_touch_time( true, 1 ); ?>
-            <input type="hidden" name="aa" value="<?php echo date('Y', $order->get_order_date('timestamp'));?>">
-            <input type="hidden" name="mm" value="<?php echo date('m', $order->get_order_date('timestamp'));?>">
-            <input type="hidden" name="jj" value="<?php echo date('d', $order->get_order_date('timestamp'));?>">
-            <input type="hidden" name="ss" value="<?php echo date('s', $order->get_order_date('timestamp'));?>">
+			<?php learn_press_touch_time( true, 1 ); ?>
+            <input type="hidden" name="aa" value="<?php echo date( 'Y', $order->get_order_date( 'timestamp' ) ); ?>">
+            <input type="hidden" name="mm" value="<?php echo date( 'm', $order->get_order_date( 'timestamp' ) ); ?>">
+            <input type="hidden" name="jj" value="<?php echo date( 'd', $order->get_order_date( 'timestamp' ) ); ?>">
+            <input type="hidden" name="ss" value="<?php echo date( 's', $order->get_order_date( 'timestamp' ) ); ?>">
 
-            <input type="text" class="order-date date-picker" name="order-date" pattern="[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])"
+            <input type="text" class="order-date date-picker" name="order-date"
+                   pattern="[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])"
                    value="<?php echo esc_attr( $order->get_order_date( 'd' ) ); ?>">
             @
             <input type="number" class="order-hour" name="hh" min="0" max="23"
@@ -80,7 +81,7 @@ $method_title = $order->get_payment_method_title();
 				}
 				?>
             </select>
-
+            <label><input type="checkbox"><?php _e( 'Force to trigger order action', 'learnpress' ); ?></label>
         </div>
 
         <div class="order-data-field order-data-user">
@@ -199,15 +200,9 @@ $method_title = $order->get_payment_method_title();
 $assets = learn_press_admin_assets();
 $assets->add_localize( 'learn-press-meta-box-order', 'users', $order->get_user_data() );
 $assets->add_localize( 'learn-press-meta-box-order', 'userTextFormat', '{{display_name}} ({{email}})' );
- RWMB_Datetime_Field::admin_enqueue_scripts();
-wp_enqueue_script('jquery-ui-datepicker');
-wp_enqueue_style('jquery-ui-datepicker');
-learn_press_debug($order->get_child_orders());
-//$order->set_data('wtf', 'asdasdasdas');
-//$order->add_meta('wth', 'mu');
-//$order->update_meta();
-//print_r( $order->get_extra_data(true));
-//learn_press_debug($order);
+RWMB_Datetime_Field::admin_enqueue_scripts();
+wp_enqueue_script( 'jquery-ui-datepicker' );
+wp_enqueue_style( 'jquery-ui-datepicker' );
 ?>
 
 <script type="text/html" id="tmpl-learn-press-modal-add-order-courses">

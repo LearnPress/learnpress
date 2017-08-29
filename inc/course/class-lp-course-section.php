@@ -68,6 +68,8 @@ class LP_Course_Section {
 
 			// Create item
 			if ( $item_class = $this->_get_item( $item ) ) {
+				$item_class->set_course( $this->get_course_id() );
+				$item_class->set_section( $this );
 				$this->data['items'][ $item->item_id ] = $item_class;
 			}
 		}
@@ -80,16 +82,18 @@ class LP_Course_Section {
 	 *
 	 * @param array $item
 	 *
-	 * @return bool|LP_Abstract_Course_Item
+	 * @return bool|LP_Course_Item
 	 */
 	protected function _get_item( $item ) {
-		$type  = str_replace( 'lp_', '', $item->item_type );
-		$class = apply_filters( 'learn-press/course-item-class', 'LP_' . ucfirst( $type ), $item, $this );
-		if ( class_exists( $class ) ) {
-			return new $class( $item->item_id, $item );
-		}
-
-		return false;
+		return LP_Course_Item::get_item( $item->item_id );
+//		$type  = str_replace( 'lp_', '', $item->item_type );
+//		$class = apply_filters( 'learn-press/course-item-class', 'LP_' . ucfirst( $type ), $item, $this );
+//
+//		if ( class_exists( $class ) ) {
+//			return new $class( $item->item_id, $item );
+//		}
+//
+//		return false;
 	}
 
 	/**
@@ -224,5 +228,9 @@ class LP_Course_Section {
 		}
 
 		return apply_filters( 'learn-press/section-has-item', $found, $item_id, $this->get_id(), $this->get_course_id() );
+	}
+
+	public function get_slug() {
+		return $this->get_title() ? sanitize_title( $this->get_title() ) . '-' . $this->get_id() : $this->get_id();
 	}
 }

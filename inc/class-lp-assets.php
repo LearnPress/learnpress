@@ -57,6 +57,18 @@ class LP_Assets extends LP_Abstract_Assets {
 		return apply_filters(
 			'learn-press/frontend-default-scripts',
 			array(
+				'lp-vue'                 => array(
+					'url' => self::url( 'js/vendor/vue.js' ),
+					'ver' => '2.4.0'
+				),
+				'lp-vuex'                => array(
+					'url' => self::url( 'js/vendor/vuex.2.3.1.js' ),
+					'ver' => '2.3.1'
+				),
+				'lp-vue-resource'        => array(
+					'url' => self::url( 'js/vendor/vue-resource.1.3.4.js' ),
+					'ver' => '1.3.4'
+				),
 				'global'       => array(
 					'url'  => self::url( 'js/global.js' ),
 					'deps' => array( 'jquery', 'underscore', 'utils', 'backbone' )
@@ -68,6 +80,10 @@ class LP_Assets extends LP_Abstract_Assets {
 				'checkout'     => array(
 					'url'  => self::url( 'js/frontend/checkout.js' ),
 					'deps' => array( 'global' )
+				),
+				'course'     => array(
+					'url'  => self::url( 'js/frontend/course.js' ),
+					'deps' => array( 'global', 'lp-vue' )
 				),
 				'profile-user' => array(
 					'url'  => self::url( 'js/frontend/profile.js' ),
@@ -96,7 +112,18 @@ class LP_Assets extends LP_Abstract_Assets {
 		 */
 		if ( $scripts = $this->_get_scripts() ) {
 			foreach ( $scripts as $handle => $data ) {
-				wp_enqueue_script( $handle );
+				$enqueue = true;
+				switch ( $handle ) {
+					case 'checkout':
+						$enqueue = false;
+						if ( learn_press_is_course() ) {
+							$enqueue = true;
+						}
+
+				}
+				if ($handle=='font-awesome' || $enqueue ) {
+					wp_enqueue_script( $handle );
+				}
 			}
 		}
 
@@ -112,15 +139,15 @@ class LP_Assets extends LP_Abstract_Assets {
 		}
 	}
 
-	public static function add_param(){
+	public static function add_param() {
 
 	}
 
-	public static function add_var(){
+	public static function add_var() {
 
 	}
 
-	public static function add_script_tag(){
+	public static function add_script_tag() {
 
 	}
 }

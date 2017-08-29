@@ -73,11 +73,36 @@ learn_press_admin_view( 'course/new-section-item' );
             props: ['section', 'index'],
             data: function () {
                 return {
-                    isOpen: true,
+                    open: true,
                     unsaved: false
                 };
             },
+            created: function () {
+                var vm = this;
+
+                $store.subscribe(function (mutation) {
+                    if (mutation.type !== 'EMPTY_HIDDEN_SECTIONS') {
+                        return;
+                    }
+
+                    vm.open = true;
+                });
+            },
             computed: {
+                isOpen: function () {
+                    var section = this.section;
+                    var hiddenSections = $store.getters['hiddenSections'];
+                    var find = hiddenSections.find(function (sectionId) {
+                        return parseInt(section.id) === parseInt(sectionId);
+                    });
+
+                    if (find) {
+                        this.open = false;
+                    }
+
+                    return this.open;
+                },
+
                 items: {
                     get: function () {
                         return this.section.items;
@@ -106,7 +131,11 @@ learn_press_admin_view( 'course/new-section-item' );
             },
             methods: {
                 toggle: function () {
-                    this.isOpen = !this.isOpen;
+                    this.open = !this.open;
+                    $store.dispatch('toggleSection', {
+                        open: this.open,
+                        section: this.section
+                    });
                 },
                 newSectionItem: function (item) {
                     $store.dispatch('newSectionItem', {
@@ -127,7 +156,7 @@ learn_press_admin_view( 'course/new-section-item' );
                     });
                 },
                 remove: function () {
-                    var r = window.confirm('Are you sure remove this section?');
+                    var r = window.confirm($store.getters['i18n/all'].remove_section);
 
                     if (!r) {
                         return;

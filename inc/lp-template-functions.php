@@ -235,6 +235,123 @@ if ( ! function_exists( 'learn_press_course_students' ) ) {
 	}
 }
 
+if ( ! function_exists( 'learn_press_course_status' ) ) {
+	/**
+	 * Display the title for single course
+	 */
+	function learn_press_course_status() {
+		learn_press_get_template( 'single-course/status.php' );
+	}
+}
+
+if ( ! function_exists( 'learn_press_courses_loop_item_instructor' ) ) {
+	/**
+	 * Output the instructor of the course within loop
+	 */
+	function learn_press_courses_loop_item_instructor() {
+		learn_press_get_template( 'loop/course/instructor.php' );
+	}
+}
+
+if ( ! function_exists( 'learn_press_course_tabs' ) ) {
+	/*
+	 * Output course tabs
+	 */
+
+	function learn_press_course_tabs() {
+		learn_press_get_template( 'single-course/tabs/tabs.php' );
+	}
+}
+
+if ( ! function_exists( '' ) ) {
+	/**
+	 * @param LP_Course_Item $item
+	 */
+	function learn_press_course_item_content( $item ) {
+		global $lp_course, $lp_course_item;
+		$item               = $lp_course_item;
+		$item_template_name = learn_press_locate_template( 'single-course/content-item-' . $item->get_item_type() . '.php' );
+
+		if ( file_exists( $item_template_name ) ) {
+			learn_press_get_template( 'single-course/content-item-' . $item->get_item_type() . '.php' );
+		}
+	}
+}
+
+if ( ! function_exists( 'learn_press_get_course_tabs' ) ) {
+	/**
+	 * Return an array of tabs display in single course page.
+	 *
+	 * @return array
+	 */
+	function learn_press_get_course_tabs() {
+
+		$course = learn_press_get_course();
+		$user   = learn_press_get_current_user();
+
+		$defaults = array();
+
+		// Description tab - shows product content
+		if ( $course->get_content() ) {
+			$defaults['overview'] = array(
+				'title'    => __( 'Overview', 'learnpress' ),
+				'priority' => 10,
+				'callback' => 'learn_press_course_overview_tab'
+			);
+		}
+
+		// Curriculum
+		$defaults['curriculum'] = array(
+			'title'    => __( 'Curriculum', 'learnpress' ),
+			'priority' => 30,
+			'callback' => 'learn_press_course_curriculum_tab'
+		);
+
+
+		// Filter
+		if ( $tabs = apply_filters( 'learn-press/course-tabs', $defaults ) ) {
+			// Sort tabs by priority
+			uasort( $tabs, '_learn_press_callback_sort_course_tabs' );
+			$request_tab = ! empty( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : '';
+			$has_active  = false;
+			foreach ( $tabs as $k => $v ) {
+				$v['id'] = ! empty( $v['id'] ) ? $v['id'] : 'tab-' . $k;
+
+				if ( $request_tab === $v['id'] ) {
+					$v['active'] = true;
+					$has_active  = $k;
+				}
+				$tabs[ $k ] = $v;
+			}
+
+			if ( ! $has_active ) {
+				/**
+				 * Active Curriculum tab if user has enrolled course
+				 */
+				if ( $user->has_course_status( $course->get_id(), array(
+						'enrolled',
+						'finished'
+					) ) && ! empty( $tabs['curriculum'] )
+				) {
+					$tabs['curriculum']['active'] = true;
+				} elseif ( ! empty( $tabs['overview'] ) ) {
+					$tabs['overview']['active'] = true;
+				} else {
+					$keys                         = array_keys( $tabs );
+					$first_key                    = reset( $keys );
+					$tabs[ $first_key ]['active'] = true;
+				}
+			}
+		}
+
+		return $tabs;
+	}
+
+	function _learn_press_callback_sort_course_tabs( $a, $b ) {
+		return $a['priority'] > $b['priority'];
+	}
+}
+
 /**********************************************/
 /**********************************************/
 /**********************************************/
@@ -347,14 +464,6 @@ if ( ! function_exists( 'learn_press_courses_loop_item_students' ) ) {
 	}
 }
 
-if ( ! function_exists( 'learn_press_courses_loop_item_instructor' ) ) {
-	/**
-	 * Output the instructor of the course within loop
-	 */
-	function learn_press_courses_loop_item_instructor() {
-		learn_press_get_template( 'loop/course/instructor.php' );
-	}
-}
 
 if ( ! function_exists( 'learn_press_courses_pagination' ) ) {
 	/**
@@ -540,14 +649,6 @@ if ( ! function_exists( 'learn_press_course_thumbnail' ) ) {
 	}
 }
 
-if ( ! function_exists( 'learn_press_course_status' ) ) {
-	/**
-	 * Display the title for single course
-	 */
-	function learn_press_course_status() {
-		learn_press_get_template( 'single-course/status.php' );
-	}
-}
 
 if ( ! function_exists( 'learn_press_single_course_description' ) ) {
 	/**
@@ -583,7 +684,7 @@ if ( ! function_exists( 'learn_press_section_item_meta' ) ) {
 	 * @param array
 	 * @param LP_Course
 	 */
-	function learn_press_section_item_meta( $item, $section, $course ) {
+	function learn_press_section_item_meta( $item, $section ) {
 		learn_press_get_template( 'single-course/section/item-meta.php', array(
 			'item'    => $item,
 			'section' => $section
@@ -1489,15 +1590,6 @@ function learn_press_permission_view_quiz( $template ) {
 	return $template;
 }
 
-function learn_press_course_item_content( $item ) {
-	if ( $item ) {
-		$item_template_name = learn_press_locate_template( 'single-course/content-item-' . $item->post->post_type . '.php' );
-		if ( file_exists( $item_template_name ) ) {
-			require $item_template_name;
-		}
-	}
-}
-
 
 if ( ! function_exists( 'learn_press_item_meta_type' ) ) {
 	function learn_press_item_meta_type( $course, $item ) { ?>
@@ -1561,59 +1653,6 @@ function learn_press_single_course_js() {
  *
  */
 
-if ( ! function_exists( 'learn_press_course_tabs' ) ) {
-	/*
-	 * Output course tabs
-	 */
-
-	function learn_press_course_tabs() {
-		learn_press_get_template( 'single-course/tabs/tabs.php' );
-	}
-}
-
-if ( ! function_exists( '_learn_press_default_course_tabs' ) ) {
-
-	/**
-	 * Add default tabs to course
-	 *
-	 * @param array $tabs
-	 *
-	 * @return array
-	 */
-	function _learn_press_default_course_tabs( $tabs = array() ) {
-		$course = learn_press_get_course();// LP()->global['course'];
-		$user   = learn_press_get_current_user();
-
-		$defaults = array();
-
-		// Description tab - shows product content
-		if ( $course->get_content() ) {
-			$defaults['overview'] = array(
-				'title'    => __( 'Overview', 'learnpress' ),
-				'priority' => 10,
-				'callback' => 'learn_press_course_overview_tab'
-			);
-		}
-
-		// Curriculum
-		$defaults['curriculum'] = array(
-			'title'    => __( 'Curriculum', 'learnpress' ),
-			'priority' => 30,
-			'callback' => 'learn_press_course_curriculum_tab'
-		);
-
-		/**
-		 * Active Curriculum tab if user has enrolled course
-		 */
-		if ( $user->has_course_status( $course->get_id(), array( 'enrolled' ) ) ) {
-			$defaults['curriculum']['active'] = true;
-		}
-
-		$tabs = array_merge( $tabs, $defaults );
-
-		return $tabs;
-	}
-}
 
 if ( ! function_exists( 'learn_press_course_overview_tab' ) ) {
 	/**

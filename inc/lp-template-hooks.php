@@ -80,6 +80,7 @@ add_action( 'learn-press/single-course-summary', 'learn_press_single_course_summ
 /**
  * @see learn_press_course_meta_start_wrapper()
  * @see learn_press_course_price()
+ * @see learn_press_course_instructor()
  * @see learn_press_course_students()
  * @see learn_press_course_meta_end_wrapper()
  * @see learn_press_single_course_content_lesson()
@@ -91,34 +92,79 @@ add_action( 'learn-press/single-course-summary', 'learn_press_single_course_summ
  */
 add_action( 'learn-press/content-landing-summary', 'learn_press_course_meta_start_wrapper', 15 );
 add_action( 'learn-press/content-landing-summary', 'learn_press_course_price', 25 );
+add_action( 'learn-press/content-landing-summary', 'learn_press_course_instructor', 20 );
 add_action( 'learn-press/content-landing-summary', 'learn_press_course_students', 30 );
 add_action( 'learn-press/content-landing-summary', 'learn_press_course_meta_end_wrapper', 35 );
-/*add_action( 'learn-press/content-landing-summary', 'learn_press_single_course_content_lesson', 40 );
-add_action( 'learn-press/content-landing-summary', 'learn_press_single_course_content_item', 40 );
+//add_action( 'learn-press/content-landing-summary', 'learn_press_single_course_content_lesson', 40 );
+//add_action( 'learn-press/content-landing-summary', 'learn_press_single_course_content_item', 40 );
 add_action( 'learn-press/content-landing-summary', 'learn_press_course_progress', 60 );
 add_action( 'learn-press/content-landing-summary', 'learn_press_course_tabs', 50 );
-add_action( 'learn-press/content-landing-summary', 'learn_press_course_curriculum_popup', 65 );
-add_action( 'learn-press/content-landing-summary', 'learn_press_course_buttons', 70 );*/
+//add_action( 'learn-press/content-landing-summary', 'learn_press_course_curriculum_popup', 65 );
+//add_action( 'learn-press/content-landing-summary', 'learn_press_course_buttons', 70 );
 
-//
-//add_action( 'learn_press_content_learning_summary', 'learn_press_course_meta_start_wrapper', 10 );
-//add_action( 'learn_press_content_learning_summary', 'learn_press_course_status', 15 );
-//add_action( 'learn_press_content_learning_summary', 'learn_press_course_instructor', 20 );
-//add_action( 'learn_press_content_learning_summary', 'learn_press_course_students', 25 );
-//add_action( 'learn_press_content_learning_summary', 'learn_press_course_meta_end_wrapper', 30 );
+/**
+ * Content learning course
+ * @see learn_press_course_meta_start_wrapper()
+ * @see learn_press_course_status()
+ * @see learn_press_course_instructor()
+ * @see learn_press_course_students()
+ * @see learn_press_course_meta_end_wrapper()
+ * @see learn_press_single_course_content_lesson()
+ * @see learn_press_single_course_content_item()
+ * @see learn_press_course_progress()
+ * @see learn_press_course_tabs()
+ * @see learn_press_course_curriculum_popup()
+ * @see learn_press_course_buttons()
+ */
+add_action( 'learn-press/content-learning-summary', 'learn_press_course_meta_start_wrapper', 10 );
+add_action( 'learn-press/content-learning-summary', 'learn_press_course_status', 15 );
+add_action( 'learn-press/content-learning-summary', 'learn_press_course_instructor', 20 );
+add_action( 'learn-press/content-learning-summary', 'learn_press_course_students', 25 );
+add_action( 'learn-press/content-learning-summary', 'learn_press_course_meta_end_wrapper', 30 );
 //add_action( 'learn_press_content_learning_summary', 'learn_press_single_course_content_lesson', 35 );
 //add_action( 'learn_press_content_learning_summary', 'learn_press_single_course_content_item', 40 );
-//add_action( 'learn_press_content_learning_summary', 'learn_press_course_progress', 45 );
-//add_action( 'learn_press_content_learning_summary', 'learn_press_course_tabs', 50 );
+add_action( 'learn-press/content-learning-summary', 'learn_press_course_progress', 45 );
+add_action( 'learn-press/content-learning-summary', 'learn_press_course_tabs', 50 );
 //add_action( 'learn_press_content_learning_summary', 'learn_press_course_remaining_time', 55 );
 //add_action( 'learn_press_content_learning_summary', 'learn_press_course_curriculum_popup', 60 );
 //add_action( 'learn_press_content_learning_summary', 'learn_press_course_buttons', 65 );
 
+///add_action( 'learn-press/content-learning-summary', 'learn_press_course_content_item', 50 );
 
+
+/**
+ * Course item content
+ */
+
+/**
+ * @see learn_press_course_item_content()
+ */
+add_action( 'learn-press/course-item-content', 'learn_press_course_item_content', 5 );
+
+add_action( 'learn-press/before-content-item-summary/lp_lesson', function () {
+	$item = LP_Global::course_item();
+	//if($item->is_show_complete
+	learn_press_get_template( 'content-lesson/title.php' );
+} );
+
+add_action( 'learn-press/content-item-summary/lp_lesson', function () {
+	$item = LP_Global::course_item();
+	//if($item->is_show_complete
+	learn_press_get_template( 'content-lesson/description.php' );
+} );
+
+add_action( 'learn-press/after-content-item-summary/lp_lesson', function () {
+	$item = LP_Global::course_item();
+	//if($item->is_show_complete
+	learn_press_get_template( 'content-lesson/button-complete.php' );
+} );
+
+
+add_action( 'learn-press/after-section-loop-item', 'learn_press_section_item_meta', 10, 2 );
 
 /*********************************************************************************************************/
-
-add_filter( 'learn_press_course_tabs', '_learn_press_default_course_tabs', 5 );
+/* @see _learn_press_default_course_tabs() */
+//add_filter( 'learn_press_course_tabs', '_learn_press_default_course_tabs', 5 );
 
 add_filter( 'body_class', 'learn_press_body_class' );
 add_filter( 'post_class', 'learn_press_course_class', 15, 3 );
@@ -150,14 +196,13 @@ add_action( 'learn_press_single_course_learning_summary', 'learn_press_output_si
 add_action( 'learn_press_single_course_landing_summary', 'learn_press_output_single_course_landing_summary', 5 );
 
 /* actions to display course content for landing page */
-add_action( 'learn_press_course_item_content', 'learn_press_course_item_content', 5 );
 
 //add_action( 'learn_press_content_landing_summary', 'learn_press_course_thumbnail', 5 );
 
 //add_action( 'learn_press_content_landing_summary', 'learn_press_course_students_list', 75 );
 
 /* actions to display course content for learning page */
-add_action( 'learn_press_course_item_content', 'learn_press_course_item_content', 5 );
+//add_action( 'learn_press_course_item_content', 'learn_press_course_item_content', 5 );
 
 //add_action( 'learn_press_content_learning_summary', 'learn_press_course_thumbnail', 5 );
 

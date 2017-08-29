@@ -994,12 +994,20 @@ if (typeof window.LP == 'undefined') {
         $('body')
             .on('click', '.learn-press-nav-tabs li a', function (e) {
                 e.preventDefault();
-                var $tab = $(this);
+                var $tab = $(this), url = '';
                 $tab.closest('li').addClass('active').siblings().removeClass('active');
                 $($tab.attr('data-tab')).addClass('active').siblings().removeClass('active');
+                //if (!$tab.closest('li').hasClass('default')) {
+                    url = $tab.attr('href');
+                //} else {
+                //    url = window.location.href.removeQueryVar('tab');
+                //}
+                LP.setUrl(url);
+
             });
         $('.learn-press-nav-tabs li.active a').trigger('click');
 
+        $('body.course-item-popup').parent().css('overflow', 'hidden');
         ///
         (function () {
             var timer = null,

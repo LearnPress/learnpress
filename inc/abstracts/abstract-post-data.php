@@ -7,12 +7,21 @@ class LP_Abstract_Post_Data extends LP_Abstract_Object_Data {
 	/**
 	 * LP_Abstract_Post_Data constructor.
 	 *
-	 * @param mixed $post_id
+	 * @param mixed $post
 	 * @param array $args
 	 */
-	public function __construct( $post_id, $args = null ) {
+	public function __construct( $post, $args = null ) {
+		$id = 0;
+		if ( is_numeric( $post ) ) {
+			$id = absint( $post );
+		} elseif ( $post instanceof LP_Abstract_Post_Data ) {
+			$id = absint( $post->get_id() );
+		} elseif ( isset( $post->ID ) ) {
+			$id = absint( $post->ID );
+		}
+
 		settype( $args, 'array' );
-		$args['id'] = $post_id;
+		$args['id'] = $id;
 		parent::__construct( $args );
 	}
 

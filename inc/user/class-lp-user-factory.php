@@ -65,7 +65,6 @@ class LP_User_Factory {
 			}
 		}
 
-		die();
 	}
 
 	public static function update_user_items( $the_id, $old_status, $new_status ) {

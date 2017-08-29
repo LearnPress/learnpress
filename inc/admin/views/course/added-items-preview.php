@@ -11,7 +11,7 @@
     <div class="lp-added-items-preview" :class="{show:show}">
         <ul class="list-added-items">
             <template v-for="(item, index) in addedItems">
-                <li @click="removeItem(index)" class="section-item" :class="item.type">
+                <li @click="removeItem(item)" class="section-item removable" :class="item.type">
                     <span class="icon"></span>
                     <span class="title">{{item.title}}</span>
                 </li>
@@ -31,8 +31,8 @@
                 }
             },
             methods: {
-                removeItem: function (index) {
-                    $store.dispatch('ci/removeItem', index);
+                removeItem: function (item) {
+                    $store.dispatch('ci/removeItem', item);
                 }
             },
             computed: {

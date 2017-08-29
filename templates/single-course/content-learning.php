@@ -10,6 +10,8 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
+global $lp_course, $lp_course_item;
+
 ?>
 
 <?php
@@ -18,7 +20,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 do_action( 'learn_press_before_content_learning' );
 ?>
-XXXX
 <div class="course-learning-summary">
 
 	<?php
@@ -29,6 +30,8 @@ XXXX
 
 	/**
 	 * @since 3.x.x
+	 *
+	 * @see   learn_press_course_meta_start_wrapper()
 	 */
 	do_action( 'learn-press/content-learning-summary' );
 

@@ -1,8 +1,3 @@
-//@todo remove it.
-.post-php.post-type-lp_course #wp-content-editor-container {
-    display: none;
-}
-
 @-moz-keyframes lp-spinner {
     100% {
         -moz-transform: rotate(360deg);
@@ -26,46 +21,81 @@
     background-color: #fff;
     border: 1px solid #ddd;
     margin: 20px 0;
+    position: relative;
+
+    .notify-reload {
+        display: none;
+    }
+
+    &.need-reload {
+        position: relative;
+
+        .notify-reload {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.4);
+            z-index: 2;
+            color: #ffb900;
+            display: block;
+
+            .inner {
+                text-align: center;
+                line-height: 2;
+                padding: 50px 20px;
+                font-size: 2em;
+            }
+        }
+    }
 }
 
 #lp-course-curriculum {
     .heading {
         padding: 15px;
+        position: relative;
 
         h4 {
             margin: 0;
+        }
+
+        .collapse-sections {
+            font-family: Dashicons;
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            font-size: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            width: 40px;
+
+            &.close:before {
+                content: '\f140';
+            }
+
+            &.open:before {
+                content: '\f142';
+            }
         }
 
         .status {
             font-family: Dashicons;
             font-size: 20px;
             position: relative;
-            top: 4px;
+            top: 5px;
+            margin-left: 10px;
 
-            &.success {
-                color: #4caf50;
-
-                &:before {
-                    content: "\f147";
-                }
+            &:before {
+                content: "\f463";
             }
 
             &.loading {
-                color: #cddc39;
                 animation: rotation 2s infinite linear;
                 display: inline-block;
-
-                &:before {
-                    content: "\f463";
-                }
-            }
-
-            &.failed {
-                color: #ff9800;
-
-                &:before {
-                    content: "\f534";
-                }
             }
         }
     }
@@ -83,6 +113,8 @@
         opacity: 1;
 
         &.new-section {
+            border-color: #999;
+
             .section-head {
                 background-color: #fff;
 
@@ -296,7 +328,7 @@
             }
 
             .title {
-                margin-left: 25px;
+                margin-left: 38px;
                 margin-right: 80px;
 
                 input {
@@ -331,8 +363,64 @@
             }
         }
 
-        .empty-section-item {
+        .new-section-item {
             border-bottom-width: 1px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            transition: all 200ms ease-out;
+
+            .title {
+                display: inline-block;
+                margin: 0;
+                flex: 1;
+            }
+
+            .types {
+                display: inline-block;
+
+                &:hover, &:focus {
+                    background-color: #fff;
+                    margin-right: 10px;
+
+                    .type {
+                        display: inline-block;
+                    }
+                }
+
+                .type {
+                    display: none;
+                    padding: 8px 9px;
+
+                    input {
+                        display: none;
+                    }
+
+                    &.current {
+                        color: #0085ba;
+                        display: inline-block;;
+                    }
+
+                    &:before {
+                        font-family: Dashicons;
+                        font-size: 20px;
+                        position: relative;
+                        top: 2px;
+                    }
+
+                    &.lp_quiz {
+                        &:before {
+                            content: '\f469';
+                        }
+                    }
+
+                    &.lp_lesson {
+                        &:before {
+                            content: '\f330';
+                        }
+                    }
+                }
+            }
         }
 
         .section-item {
@@ -362,7 +450,7 @@
             }
 
             .icon {
-                width: 32px;
+                width: 38px;
                 font-size: 20px;
                 color: #0085ba;
                 text-align: center;
@@ -377,7 +465,7 @@
                 font-size: 1em;
                 border: none;
                 width: 100%;
-                padding: 10px;
+                padding: 10px 10px 10px 0;
             }
         }
     }
@@ -411,12 +499,31 @@
         z-index: 99999;
     }
 
+    &.loading {
+        .lp-choose-items {
+
+            &:before {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                display: block;
+                content: '';
+                z-index: 9;
+                background: url('../../images/spinner.gif') no-repeat center center;
+            }
+        }
+    }
+
     .lp-choose-items {
         background-color: #fff;
         max-width: 800px;
         margin: 50px auto;
         border: 1px solid #ddd;
         box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+        position: relative;
+        transition: all 200ms ease-out;
 
         &.show-preview {
             .header {
@@ -520,9 +627,52 @@
 
             .section-item {
                 cursor: pointer;
+                transition: color 200ms ease-out;
+                max-width: 100%;
+                display: block;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
 
-                .icon {
+                &.addable {
+                    color: #333;
+
+                    &:hover {
+                        color: #4caf50;
+                    }
+
+                    &:before {
+                        content: "\f132";
+                    }
+                }
+
+                &.added {
+                    color: #aaa;
+
+                    &:hover {
+                        color: #a00;
+                    }
+
+                    &:before {
+                        color: #4caf50;
+                        content: "\f147";
+                    }
+                }
+
+                &.removable {
+                    &:hover {
+                        color: #a00;
+                    }
+
+                    &:before {
+                        content: "\f335";
+                    }
+                }
+
+                &:before {
                     font-family: Dashicons;
+                    position: relative;
+                    top: 3px;
                 }
             }
 
@@ -537,16 +687,16 @@
             }
 
             .list-items {
-                min-height: 200px;
-
-                li {
-                    cursor: pointer;
-                }
+                min-height: 260px;
+                margin: 0;
             }
 
             .pagination {
                 .number {
-                    cursor: pointer;
+                    &:not(.current) {
+                        cursor: pointer;
+                    }
+
                     border: 1px solid #eee;
                     padding: 5px 10px;
                     background-color: #aaa;
@@ -570,11 +720,15 @@
             padding: 20px;
             transform: translate(-100%, 0);
             transition: transform 200ms ease-out;
-            max-height: 320px;
+            max-height: 330px;
             overflow: auto;
 
             &.show {
                 transform: translate(0, 0);
+            }
+
+            .list-added-items {
+                margin: 0;
             }
         }
 

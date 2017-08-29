@@ -118,21 +118,27 @@ class LP_Course_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		}
 
 		if ( $all_section_ids ) {
-			$format = array_fill( 0, sizeof( $all_section_ids ), '%d' );
-			$query  = $wpdb->prepare( "
-				SELECT s.*, si.*
+			$format        = array_fill( 0, sizeof( $all_section_ids ), '%d' );
+			$post_statuses = array( 'publish' );
+			$query_args    = array_merge( $all_section_ids, $post_statuses );
+
+			$query = $wpdb->prepare( "
+				SELECT s.*, si.*, p.*
 				FROM {$wpdb->posts} p
 				INNER JOIN {$wpdb->learnpress_section_items} si ON si.item_id = p.ID
 				INNER JOIN {$wpdb->learnpress_sections} s ON s.section_id = si.section_id
 				WHERE s.section_id IN(" . join( ',', $format ) . ")
+				AND p.post_status IN(%s)
 				ORDER BY s.section_course_id, s.section_order, si.item_order ASC
-			", $all_section_ids );
+			", $query_args );
+
+			$item_ids = array();
 
 			if ( $results = $wpdb->get_results( $query ) ) {
 				$curriculum = array();
 				$cur_id     = 0;
+				$post_cache = (array) get_post( 1 );
 				foreach ( $results as $row ) {
-
 					// Switch to other course
 					if ( $row->section_course_id !== $cur_id ) {
 
@@ -147,8 +153,23 @@ class LP_Course_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					}
 
 					$curriculum[] = $row;
+					if ( empty( $item_ids[ $row->section_course_id ] ) ) {
+						$item_ids[ $row->section_course_id ] = array( $row->ID );
+					} else {
+						$item_ids[ $row->section_course_id ][] = $row->ID;
+					}
+					// Cache post for using get_post() later.
+					$_post = array_intersect_key( (array) $row, $post_cache );
+					$_post = sanitize_post( $_post, 'raw' );
+					$_post = (object) $_post;
+					wp_cache_add( $_post->ID, $_post, 'posts' );
 				}
 				wp_cache_replace( 'course-' . $cur_id, $curriculum, 'lp-course-curriculum' );
+
+				// Cache items ids for using in some cases
+				foreach ( $item_ids as $cid => $ids ) {
+					wp_cache_add( 'course-' . $cid, $ids, 'lp-course-items' );
+				}
 				unset( $curriculum );
 			}
 		}

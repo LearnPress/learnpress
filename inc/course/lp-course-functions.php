@@ -538,10 +538,16 @@ function learn_press_course_get_support_item_types() {
 		$types = $GLOBALS['learn_press_course_support_item_types'];
 	}
 
-	return apply_filters('learn-press/course-support-items', $types);
+	return apply_filters( 'learn-press/course-support-items', $types );
 }
 
-function learn_press_course_add_support_item_type() {
+/**
+ * Register new type of course item
+ *
+ * @param string $post_type - Usually is post type
+ * @param string $label     - Name show for user
+ */
+function learn_press_course_add_support_item_type( $post_type, $label = '' ) {
 	if ( empty( $GLOBALS['learn_press_course_support_item_types'] ) ) {
 		$GLOBALS['learn_press_course_support_item_types'] = array();
 	}
@@ -552,6 +558,19 @@ function learn_press_course_add_support_item_type() {
 	} else if ( func_num_args() == 2 ) {
 		$GLOBALS['learn_press_course_support_item_types'][ func_get_arg( 0 ) ] = func_get_arg( 1 );
 	}
+}
+
+/**
+ * Check if course is support an item's type.
+ *
+ * @param string $type
+ *
+ * @return bool
+ */
+function learn_press_is_support_course_item_type( $type ) {
+	$types = learn_press_course_get_support_item_types();
+
+	return $type && ! empty( $types[ $type ] );
 }
 
 learn_press_course_add_support_item_type(
@@ -677,8 +696,9 @@ if ( ! function_exists( 'learn_press_get_sample_link_course_item_url' ) ) {
 
 if ( ! function_exists( 'learn_press_get_nav_course_item_url' ) ) {
 	function learn_press_get_nav_course_item_url( $course_id = null, $item_id = null, $content_only = false ) {
+
 		$course           = learn_press_get_course( $course_id );
-		$curriculum_items = maybe_unserialize( $course->post->curriculum_items );
+		$curriculum_items = $course->get_items();// maybe_unserialize( $course->post->curriculum_items );
 		$index            = array_search( $item_id, $curriculum_items );
 		$return           = array( 'back' => '', 'next' => '' );
 		if ( is_array( $curriculum_items ) ) {

@@ -14,33 +14,62 @@ if ( ! defined( 'ABSPATH' ) ) {
 if ( ! isset( $section ) ) {
 	return;
 }
-/* section item display inside a section */
-$allow_items = learn_press_get_course_item_types();
+
+global $lp_user;
 ?>
 
 <ul class="section-content">
 
 	<?php if ( $items = $section->get_items() ) { ?>
 
-		<?php
-		foreach ( $items as $item ) {
-			$item_type = get_post_type( $item->get_id() );
+		<?php foreach ( $items as $item ) { ?>
+            <li class="<?php echo join( ' ', $item->get_class() ); ?>">
 
-			// If item type does not allow
-			if ( ! in_array( $item_type, $allow_items ) ) {
-				continue;
-			}
+				<?php
+				/**
+				 * @since 3.x.x
+				 */
+				do_action( 'learn-press/begin-section-loop-item', $item );
+				?>
 
-			$args = array(
-				'item'    => $item,
-				'section' => $section
-			);
+                <a href="<?php echo $item->get_permalink(); ?>">
+					<?php
 
-			$template_type = apply_filters( 'learn-press/section-item-template', 'item-' . str_replace( 'lp_', '', $item_type ), $item_type );
+					if ( ! $item->is_visible() ) {
+						continue;
+					}
 
-			learn_press_get_template( "single-course/section/{$template_type}.php", $args );
-		}
-		?>
+					$args = array(
+						'item'    => $item,
+						'section' => $section
+					);
+
+					/**
+					 * @since 3.x.x
+					 */
+					do_action( 'learn-press/before-section-loop-item', $item );
+
+					learn_press_get_template( "single-course/section/" . $item->get_template(), $args );
+
+					/**
+					 * @since 3.x.x
+                     *
+                     * @see learn_press_section_item_meta()
+					 */
+					do_action( 'learn-press/after-section-loop-item', $item, $section );
+
+					?>
+                </a>
+
+				<?php
+				/**
+				 * @since 3.x.x
+				 */
+				do_action( 'learn-press/end-section-loop-item', $item );
+				?>
+
+            </li>
+		<?php } ?>
 
 	<?php } else { ?>
 

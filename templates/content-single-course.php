@@ -32,7 +32,7 @@ do_action( 'learn-press/before-main-content' );
 do_action( 'learn-press/before-single-course' );
 
 ?>
-<div class="course-summary">
+<div id="learn-press-course" class="course-summary">
 	<?php
 	/**
 	 * @since 3.x.x

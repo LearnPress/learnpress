@@ -10,7 +10,7 @@ learn_press_admin_view( 'course/added-items-preview' );
 ?>
 
 <script type="text/x-template" id="tmpl-lp-course-choose-item">
-    <li class="section-item" :class="item.type" @click="$emit('add', item)">
+    <li class="section-item" :class="[item.type, item.added ? 'added' : 'addable']" @click="add">
         <span class="icon"></span>
         <span class="title">{{item.title}}</span>
     </li>
@@ -21,7 +21,24 @@ learn_press_admin_view( 'course/added-items-preview' );
 
         Vue.component('lp-course-choose-item', {
             template: '#tmpl-lp-course-choose-item',
-            props: ['item']
+            props: ['item', 'added'],
+            watch: {
+                added: function () {
+                    this.$forceUpdate();
+                }
+            },
+            methods: {
+                add: function () {
+                    if (this.item.added) {
+                        return this.remove();
+                    }
+
+                    this.$emit('add', this.item);
+                },
+                remove: function () {
+                    this.$emit('remove', this.item);
+                }
+            }
         });
 
     })(Vue, LP_Curriculum_Store);
@@ -29,11 +46,11 @@ learn_press_admin_view( 'course/added-items-preview' );
 
 
 <script type="text/x-template" id="tmpl-lp-course-choose-items">
-    <div id="lp-modal-choose-items" :class="{show:show}">
+    <div id="lp-modal-choose-items" :class="{show:show, loading: loading}">
         <div class="lp-choose-items" :class="{'show-preview': showPreview}">
             <div class="header">
                 <div class="preview-title">
-                    <span>Selected items ({{addedItems.length}})</span>
+                    <span><?php esc_html_e( 'Selected items', 'learnpress' ); ?> ({{addedItems.length}})</span>
                 </div>
 
                 <ul class="tabs">
@@ -53,7 +70,7 @@ learn_press_admin_view( 'course/added-items-preview' );
             </div>
             <div class="main">
                 <form class="search" @submit.prevent="">
-                    <input placeholder="Type here to search item"
+                    <input placeholder="<?php esc_attr_e( 'Type here to search item', 'learnpress' ); ?>"
                            title="search"
                            @input="onChangeQuery"
                            v-model="query">
@@ -61,20 +78,33 @@ learn_press_admin_view( 'course/added-items-preview' );
 
                 <ul class="list-items">
                     <template v-if="!items.length">
-                        <div>No any item.</div>
+                        <div><?php esc_html_e( 'No any item.', 'learnpress' ); ?></div>
                     </template>
 
-                    <template v-else v-for="item in items">
-                        <lp-course-choose-item @add="addItem(item)" :item="item"></lp-course-choose-item>
+                    <template v-for="item in items">
+                        <lp-course-choose-item
+                                @add="addItem"
+                                @remove="removeItem"
+                                :added="item.added"
+                                :item="item"></lp-course-choose-item>
                     </template>
                 </ul>
 
                 <div class="pagination" v-if="totalPage > 1">
-                    <template v-for="number in totalPage">
-                        <span
-                                @click="changePage(number)"
-                                class="number" :class="number == page ? 'current' : ''">{{number}}</span>
-                    </template>
+                    <span class="number first" :class="{current: (page == 1)}"
+                          v-if="totalPage > 2"
+                          @click="previousFirstPage">«</span>
+
+                    <span class="number previous"
+                          :class="{current: (page == 1)}"
+                          @click="previousPage"><?php esc_html_e( 'Previous', 'learnpress' ); ?></span>
+                    <span class="number next"
+                          :class="{current: (page == totalPage)}"
+                          @click="nextPage"><?php esc_html_e( 'Next', 'learnpress' ); ?></span>
+
+                    <span class="number last" v-if="totalPage > 2"
+                          :class="{current: (page == totalPage)}"
+                          @click="nextLastPage">»</span>
                 </div>
 
                 <lp-added-items-preview :show="showPreview"></lp-added-items-preview>
@@ -87,7 +117,7 @@ learn_press_admin_view( 'course/added-items-preview' );
                             :disabled="!addedItems.length"
                             type="button"
                             class="button button-primary checkout">
-                        <span>Add ({{addedItems.length}})</span>
+                        <span><?php esc_html_e( 'Add', 'learnpress' ); ?> ({{addedItems.length}})</span>
                     </button>
 
                     <button type="button"
@@ -112,13 +142,18 @@ learn_press_admin_view( 'course/added-items-preview' );
                     page: 1,
                     tab: 'lp_lesson',
                     delayTimeout: null,
-                    showPreview: false
+                    showPreview: false,
+                    loading: false
                 };
             },
             created: function () {
                 var vm = this;
 
                 $store.subscribe(function (mutation) {
+                    if (mutation.type === 'ci/SEARCH_ITEMS_DONE') {
+                        vm.loading = false;
+                    }
+
                     if (!mutation || mutation.type !== 'ci/TOGGLE') {
                         return;
                     }
@@ -146,12 +181,48 @@ learn_press_admin_view( 'course/added-items-preview' );
                 },
 
                 changePage: function (page) {
+                    if (page === this.page) {
+                        return;
+                    }
+
                     this.page = page;
                     this.makeSearch();
                 },
 
+                nextPage: function () {
+                    if (this.page < this.totalPage) {
+                        this.page++;
+                        this.makeSearch();
+                    }
+                },
+
+                nextLastPage: function () {
+                    if (this.page < this.totalPage) {
+                        this.page = this.totalPage;
+                        this.makeSearch();
+                    }
+                },
+
+                previousPage: function () {
+                    if (this.page > 1) {
+                        this.page--;
+                        this.makeSearch();
+                    }
+                },
+
+                previousFirstPage: function () {
+                    if (this.page > 1) {
+                        this.page = 1;
+                        this.makeSearch();
+                    }
+                },
+
                 addItem: function (item) {
                     $store.dispatch('ci/addItem', item);
+                },
+
+                removeItem: function (item) {
+                    $store.dispatch('ci/removeItem', item);
                 },
 
                 close: function () {
@@ -176,11 +247,13 @@ learn_press_admin_view( 'course/added-items-preview' );
                     }
 
                     this.delayTimeout = setTimeout(function () {
+                        vm.page = 1;
                         vm.makeSearch();
                     }, 500);
                 },
 
                 makeSearch: function () {
+                    this.loading = true;
                     $store.dispatch('ci/searchItems', {
                         query: this.query,
                         page: this.page,
@@ -191,10 +264,10 @@ learn_press_admin_view( 'course/added-items-preview' );
             computed: {
                 textButtonEdit: function () {
                     if (this.showPreview) {
-                        return 'Back';
+                        return $store.getters['i18n/all'].back;
                     }
 
-                    return 'Selected items';
+                    return $store.getters['i18n/all'].selected_items;
                 },
                 addedItems: function () {
                     return $store.getters['ci/addedItems'];
@@ -204,7 +277,7 @@ learn_press_admin_view( 'course/added-items-preview' );
                 },
                 totalPage: function () {
                     if (this.pagination) {
-                        return this.pagination.total || 1;
+                        return parseInt(this.pagination.total) - 1 || 1;
                     }
 
                     return 1;

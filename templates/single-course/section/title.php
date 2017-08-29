@@ -12,8 +12,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 $user   = learn_press_get_current_user();
 $course = learn_press_get_the_course();
-//$section_name = apply_filters( 'learn_press_curriculum_section_name', $section->section_name, $section );
-$force = isset( $force ) ? $force : false;
 
 if ( ! isset( $section ) ) {
 	return;
@@ -21,22 +19,30 @@ if ( ! isset( $section ) ) {
 
 $title = $section->get_title();
 
-if ( ! $title ) {
-	return;
-}
 ?>
 
-<h4 class="section-header">
+<div class="section-header">
 
-	<?php echo $title; ?>&nbsp;
+    <div class="section-left">
+		<?php if ( $title ) { ?>
+            <h5 class="section-title"><?php echo $title; ?></h5>
+		<?php } ?>
 
-	<?php if ( $description = $section->get_description() ) { ?><?php //apply_filters( 'learn_press_curriculum_section_description', $section->section_description, $section ) ) { ?>
-        <p><?php echo $description; ?></p>
-	<?php } ?>
+		<?php if ( $description = $section->get_description() ) { ?>
+            <p class="section-desc"><?php echo $description; ?></p>
+		<?php } ?>
+    </div>
 
-    <span class="meta">
+    <div class="section-meta">
+        <div class="section-progress">
+            <div class="progress-bg">
+                <div class="progress-active">
+
+                </div>
+            </div>
+        </div>
         <span class="step"><?php printf( __( '%d/%d', 'learnpress' ), $section->get_completed_items( $user->get_id() ), $section->count_items() ); ?></span>
         <span class="collapse"></span>
-    </span>
+    </div>
 
-</h4>
+</div>

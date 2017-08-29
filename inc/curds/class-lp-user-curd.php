@@ -7,6 +7,22 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 */
 	protected $_meta_type = 'user';
 
+	public function __construct( $the_user = 0, $the_course = 0 ) {
+		if ( $the_user || $the_course ) {
+			if ( ! $the_course ) {
+				$the_course = get_the_ID();
+			}
+
+			if ( ! $the_user ) {
+				$the_user = get_current_user_id();
+			}
+		}
+		if ( $user = learn_press_get_user( $the_user ) ) {
+			$this->load( $user );
+			$this->read_course( $user->get_id(), $the_course );
+		}
+	}
+
 	/**
 	 * @param LP_User $user
 	 */
@@ -335,6 +351,31 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Get all items user has already started/completed.
+	 *
+	 * @param int $user_id
+	 * @param int $course_id
+	 *
+	 * @return mixed
+	 */
+	public function get_user_items( $user_id, $course_id ) {
+		if ( false === ( $course_data = wp_cache_get( 'course-' . $user_id . '-' . $course_id, 'lp-user-courses' ) ) ) {
+			return false;
+		}
+
+		return $course_data['items'];
+	}
+
+	public function get_user_completed_items( $user_id, $course_id ) {
+		if ( ! $items = $this->get_user_items( $user_id, $course_id ) ) {
+			return false;
+		}
+		foreach ( $items as $item ) {
+
+		}
 	}
 
 	/**

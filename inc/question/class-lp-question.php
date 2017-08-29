@@ -13,9 +13,9 @@ defined( 'ABSPATH' ) || exit();
 /**
  * Class LP_Question
  *
- * @extend LP_Abstract_Course_Item
+ * @extend LP_Course_Item
  */
-class LP_Question extends LP_Abstract_Course_Item {
+class LP_Question extends LP_Course_Item {
 
 	/**
 	 * @var null

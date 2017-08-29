@@ -13,7 +13,7 @@ class LP_Course extends LP_Abstract_Course {
 	public function __construct( $course ) {
 		parent::__construct( $course );
 
-		add_action( 'wp_head', array( $this, 'frontend_assets' ) );
+		//add_action( 'wp_head', array( $this, 'frontend_assets' ) );
 	}
 
 	public function frontend_assets() {

@@ -38,6 +38,13 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	protected $_students_list = null;
 
 	/**
+	 * Course item is viewing in single course.
+	 *
+	 * @var LP_Course_Item
+	 */
+	protected $_viewing_item = null;
+
+	/**
 	 * @var LP_Course_CURD|null
 	 */
 	protected $_curd = null;
@@ -179,7 +186,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	 * @param string $size
 	 * @param array  $attr
 	 *
-	 * @return mixed|null|void
+	 * @return string
 	 */
 	public function get_image( $size = 'course_thumbnail', $attr = array() ) {
 		$attr  = wp_parse_args(
@@ -331,6 +338,38 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 		}
 
 		return apply_filters( 'learn_press_course_curriculum', $return, $this->get_id(), $section_id );
+	}
+
+	/**
+	 * Return list of item's ids in course's curriculum.
+	 *
+	 * @return array
+	 */
+	public function get_items() {
+		return apply_filters( 'learn-press/course-items', wp_cache_get( 'course-' . $this->get_id(), 'lp-course-items' ) );
+	}
+
+	/**
+	 * Set item is viewing in single course.
+	 *
+	 * @param LP_Course_Item $item
+	 */
+	public function set_viewing_item( $item ) {
+
+		$user = learn_press_get_current_user();
+		$user->maybe_update_item( $item->get_id(), $this->get_id() );
+
+		$this->_viewing_item = $item;
+		$item->set_course( $this );
+	}
+
+	/**
+	 * Get item is viewing in single course.
+	 *
+	 * @return LP_Course_Item
+	 */
+	public function get_viewing_item() {
+		return apply_filters( 'learn-press/single-course-viewing-item', $this->_viewing_item, $this->get_id() );
 	}
 
 	/**
@@ -977,16 +1016,8 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	public function has_item( $item_id ) {
 		$found = false;
 
-		if ( $curriculum = $this->get_curriculum() ) {
-
-			// Loop through all sections until find out the item in any section
-			foreach ( $curriculum as $section ) {
-				$found = $section->has_item( $item_id );
-
-				if ( $found ) {
-					break;
-				}
-			}
+		if ( $items = $this->get_items() ) {
+			$found = in_array( $item_id, $items );
 		}
 
 		return apply_filters( 'learn-press/course-has-item', $found, $item_id, $this->get_id() );
@@ -998,44 +1029,15 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 		}
 	}
 
-	public function get_item( $thing = '' ) {
-		$return     = false;
-		$curriculum = $this->get_curriculum_items();
-		if ( ! $curriculum ) {
-			return $return;
-		}
-		if ( ! $thing ) {
-			return $return;
-		}
-		if ( $thing ) {
-			if ( is_numeric( $thing ) ) {
-				foreach ( $curriculum as $item ) {
-					if ( $item->ID == $thing ) {
-						switch ( $item->post_type ) {
-							case LP_QUIZ_CPT:
-								$return = new LP_Quiz( $item );
-								break;
-							case LP_LESSON_CPT:
-								$return = new LP_Lesson( $item );
-								break;
-						}
-						break;
-					}
-				}
-			}
-		}
-
-		return apply_filters( 'learn_press_course_item', $return, $item, $this->get_id() );
-	}
-
 	public function get_item_link( $item_id ) {
+
 		static $item_links = array();
 		$key = $this->get_id() . '-' . $item_id;
 		if ( empty( $item_links[ $key ] ) ) {
-			if ( ! $this->has( 'item', $item_id ) ) {
+			if ( ! $this->has_item( $item_id ) ) {
 				return false;
 			}
-			$permalink  = get_the_permalink( $item_id );
+			$permalink  = '';//get_the_permalink( $item_id );
 			$post_types = get_post_types( null, 'objects' );
 			$item_type  = get_post_type( $item_id );
 			switch ( $item_type ) {
@@ -1459,9 +1461,15 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	 * @return int|mixed|null
 	 */
 	public function get_completed_items( $user_id = 0, $force = false, $type = '' ) {
+
+
 		if ( ! $user_id ) {
 			$user_id = get_current_user_id();
 		}
+
+		return learn_press_get_user( $user_id )->get_completed_items( $this->get_id() );
+
+
 		_learn_press_parse_user_item_statuses( $user_id, $this->get_id() );
 		$item_statuses   = LP_Cache::get_item_statuses( false, array() );
 		$completed_items = array();
