@@ -51,7 +51,7 @@
                 var vm = this;
 
                 $store.subscribe(function(mutation) {
-                    if (mutation.type !== 'UPDATE_SECTION_ITEM' ) {
+                    if (mutation.type !== 'ss/UPDATE_SECTION_ITEM' ) {
                         return;
                     }
 

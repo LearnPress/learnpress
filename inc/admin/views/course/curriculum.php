@@ -31,12 +31,12 @@ learn_press_admin_view( 'course/sections' );
                     return $store.getters.status;
                 },
                 isOpen: function () {
-                    return !$store.getters['isHiddenAllSections'];
+                    return !$store.getters['ss/isHiddenAllSections'];
                 }
             },
             methods: {
                 toggle: function () {
-                    $store.dispatch('toggleAllSections');
+                    $store.dispatch('ss/toggleAllSections');
                 }
             }
         });

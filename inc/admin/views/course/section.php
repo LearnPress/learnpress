@@ -83,7 +83,7 @@ learn_press_admin_view( 'course/new-section-item' );
                 var vm = this;
 
                 $store.subscribe(function (mutation) {
-                    if (mutation.type !== 'EMPTY_HIDDEN_SECTIONS') {
+                    if (mutation.type !== 'ss/EMPTY_HIDDEN_SECTIONS') {
                         return;
                     }
 
@@ -93,7 +93,7 @@ learn_press_admin_view( 'course/new-section-item' );
             computed: {
                 isOpen: function () {
                     var section = this.section;
-                    var hiddenSections = $store.getters['hiddenSections'];
+                    var hiddenSections = $store.getters['ss/hiddenSections'];
                     var find = hiddenSections.find(function (sectionId) {
                         return parseInt(section.id) === parseInt(sectionId);
                     });
@@ -112,7 +112,7 @@ learn_press_admin_view( 'course/new-section-item' );
                     set: function (items) {
                         this.section.items = items;
 
-                        $store.dispatch('updateSectionItems', {
+                        $store.dispatch('ss/updateSectionItems', {
                             sectionId: this.section.id,
                             items: items
                         });
@@ -134,25 +134,25 @@ learn_press_admin_view( 'course/new-section-item' );
             methods: {
                 toggle: function () {
                     this.open = !this.open;
-                    $store.dispatch('toggleSection', {
+                    $store.dispatch('ss/toggleSection', {
                         open: this.open,
                         section: this.section
                     });
                 },
                 newSectionItem: function (item) {
-                    $store.dispatch('newSectionItem', {
+                    $store.dispatch('ss/newSectionItem', {
                         sectionId: this.section.id,
                         item: item
                     });
                 },
                 removeItem: function (item) {
-                    $store.dispatch('removeSectionItem', {
+                    $store.dispatch('ss/removeSectionItem', {
                         sectionId: this.section.id,
                         itemId: item.id
                     });
                 },
                 updateItem: function (item) {
-                    $store.dispatch('updateSectionItem', {
+                    $store.dispatch('ss/updateSectionItem', {
                         sectionId: this.section.id,
                         item: item
                     });
@@ -171,7 +171,7 @@ learn_press_admin_view( 'course/new-section-item' );
                     }
 
                     this.confirmRemove = false;
-                    $store.dispatch('removeSection', {
+                    $store.dispatch('ss/removeSection', {
                         index: this.index,
                         section: this.section
                     });
@@ -186,7 +186,7 @@ learn_press_admin_view( 'course/new-section-item' );
                 },
                 update: function () {
                     this.unsaved = false;
-                    $store.dispatch('updateSection', JSON.stringify(this.section));
+                    $store.dispatch('ss/updateSection', JSON.stringify(this.section));
                 },
                 openChooseItems: function () {
                     $store.dispatch('ci/open', parseInt(this.section.id));
