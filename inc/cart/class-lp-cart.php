@@ -253,12 +253,14 @@ class LP_Cart {
 	}
 
 	/**
-	 * Get all items from cart
+	 * Get all items from cart.
 	 *
-	 * @return mixed
+	 * @return array
 	 */
 	public function get_items() {
-		return $this->get_cart();
+		$items = $this->get_cart();
+
+		return $items;
 	}
 
 	/**
@@ -489,7 +491,7 @@ class LP_Cart {
 		}
 
 		if ( empty( self::$instances[ $class ] ) ) {
-			self::$instances[$class] = new $class();
+			self::$instances[ $class ] = new $class();
 		}
 
 		return self::$instances[ $class ];

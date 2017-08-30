@@ -16,11 +16,10 @@ if ( ! isset( $section ) ) {
 }
 
 global $lp_user;
-?>
 
-<ul class="section-content">
+if ( $items = $section->get_items() ) { ?>
 
-	<?php if ( $items = $section->get_items() ) { ?>
+    <ul class="section-content">
 
 		<?php foreach ( $items as $item ) { ?>
             <li class="<?php echo join( ' ', $item->get_class() ); ?>">
@@ -53,8 +52,8 @@ global $lp_user;
 
 					/**
 					 * @since 3.x.x
-                     *
-                     * @see learn_press_section_item_meta()
+					 *
+					 * @see   learn_press_section_item_meta()
 					 */
 					do_action( 'learn-press/after-section-loop-item', $item, $section );
 
@@ -70,10 +69,9 @@ global $lp_user;
 
             </li>
 		<?php } ?>
+    </ul>
+<?php } else { ?>
 
-	<?php } else { ?>
+    <?php learn_press_display_message( __( 'No items in this section', 'learnpress' ) ); ?>
 
-        <li class="course-item section-empty"><?php learn_press_display_message( __( 'No items in this section', 'learnpress' ) ); ?></li>
-
-	<?php } ?>
-</ul>
+<?php } ?>

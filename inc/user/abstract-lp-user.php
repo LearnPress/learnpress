@@ -1251,9 +1251,9 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	}
 
 	/**
-	 * Return true if user can enroll a course
+	 * Return true if user can enroll a course.
 	 *
-	 * @param $course_id
+	 * @param int $course_id
 	 *
 	 * @return bool|string
 	 */
@@ -1261,6 +1261,17 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 		# condition
 		$course = learn_press_get_course( $course_id );
 
+		$can_enroll = ! ! $course && $course->is_publish();
+
+		if ( $can_enroll && $course->is_free() && ! $course->is_require_enrollment() && ! $course->is_in_stock() ) {
+			$can_enroll = false;
+		}
+
+		if ( $can_enroll && ! $course->is_free() && ! $this->has_purchased_course( $course_id ) ) {
+			$can_enroll = false;
+		}
+
+		return apply_filters( 'learn-press/can-enroll-course', $can_enroll, $course_id, $this->get_id() );
 		// check if course is purchasable
 		$enrollable = false;
 		if ( ! $course ) {
@@ -1615,8 +1626,8 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 
 			if ( ! array_key_exists( $key, $item_statuses ) ) {
 				$enrolled = $item_statuses[ $key ] = $this->_has_enrolled_course( $course_id );
-			} elseif ( ! empty( $item_statuses[ $key ] ) && $item_statuses[ $key ] != '' ) {
-				$enrolled = true;
+			} elseif ( ! empty( $item_statuses[ $key ] ) && in_array( $item_statuses[ $key ], array('enrolled', 'finished')) ) {
+				//$enrolled = true;
 			}
 		}
 
@@ -2183,7 +2194,6 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	 * @return bool
 	 */
 	public function has_purchased_course( $course_id ) {
-
 		return apply_filters( 'learn_press_user_has_purchased_course', $this->get_order_status( $course_id ) == 'lp-completed', $course_id, $this->get_id() );
 	}
 
@@ -2211,7 +2221,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	 * @return mixed
 	 */
 	public function get_order_status( $course_id ) {
-		$order_id = $this->get_course_order( $course_id );
+		$order_id = $this->get_course_order( $course_id, false );
 
 		$return = apply_filters( 'learn-press/course-order-status', $order_id ? get_post_status( $order_id ) : false, $course_id, $this->get_id() );
 
@@ -2293,11 +2303,11 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	 *
 	 * @return int|LP_Order|mixed
 	 */
-	public function get_course_order( $course_id, $return = '' ) {
+	public function get_course_order( $course_id, $return = 'object' ) {
 		$orders   = $this->get_orders();
 		$order_id = ! empty( $orders[ $course_id ] ) ? $orders[ $course_id ] : false;
 
-		return $order_id ? ( $return === OBJECT_K ? learn_press_get_order( $order_id ) : $order_id ) : false;
+		return $order_id ? ( $return === 'object' ? learn_press_get_order( $order_id ) : $order_id ) : false;
 	}
 
 	/**
@@ -3111,6 +3121,47 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 
 	public function read_course( $the_course ) {
 		$this->_curd->read_course( $this->get_id(), $the_course );
+	}
+
+	/**
+	 *
+	 * 'email'         => '',
+	 * 'user_login'    => '',
+	 * 'description'   => '',
+	 * 'first_name'    => '',
+	 * 'last_name'     => '',
+	 * 'nickname'      => '',
+	 * 'display_name'  => '',
+	 * 'date_created'  => '',
+	 * 'date_modified' => '',
+	 * @return array|mixed
+	 */
+	public function get_email() {
+		return $this->get_data( 'email' );
+	}
+
+	public function get_username() {
+		return $this->get_data( 'user_login' );
+	}
+
+	public function get_description() {
+		return $this->get_data( 'description' );
+	}
+
+	public function get_first_name() {
+		return $this->get_data( 'first_name' );
+	}
+
+	public function get_last_name() {
+		return $this->get_data( 'last_name' );
+	}
+
+	public function get_nickname() {
+		return $this->get_data( 'nickname' );
+	}
+
+	public function get_display_name() {
+		return $this->get_data( 'display_name' );
 	}
 	/** Getter/Setter functions */
 }

@@ -336,11 +336,11 @@ if ( ! class_exists( 'LearnPress' ) ) {
 		/**
 		 * Get cart object instance for online learning market
 		 *
-		 * @return mixed
+		 * @return LP_Cart
 		 */
 		public function get_cart() {
 			if ( ! $this->cart ) {
-				$cart_class = apply_filters( 'learn_press_cart_class', 'LP_Cart' );
+				$cart_class = apply_filters( 'learn-press/cart-class', 'LP_Cart' );
 				if ( is_object( $cart_class ) ) {
 					$this->cart = $cart_class;
 				} else {
@@ -728,7 +728,3 @@ class LP_Global {
 	}
 }
 
-add_action('wp_redirectx', function($u){
-	learn_press_debug(debug_backtrace());
-	echo $u;die();
-});
