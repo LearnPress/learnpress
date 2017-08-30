@@ -41,7 +41,7 @@
             props: ['item', 'order'],
             computed: {
                 urlEdit: function () {
-                    return $store.getters.urlEdit + this.item.id;
+                    return $store.getters['ss/urlEdit'] + this.item.id;
                 },
                 updating: function () {
                     return this.removing || this.saving;
