@@ -151,6 +151,12 @@
             }
         }
 
+        &.updating {
+            .section-head {
+                background-color: #e6f2d0;
+            }
+        }
+
         input {
             background-color: transparent;
             box-shadow: none;
@@ -165,6 +171,7 @@
             padding: 3px;
             position: relative;
             border-bottom: 1px solid #e5e5e5;
+            transition: background 500ms ease-out;
 
             .movable, .creatable {
                 display: inline-block;
