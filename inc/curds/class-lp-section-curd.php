@@ -113,7 +113,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		$wpdb->insert(
 			$wpdb->learnpress_sections,
 			$insert_data,
-			array( '%s', '%d', '%d', '%s' )
+			array( '%d', '%s', '%d', '%s' )
 		);
 		$section['section_id'] = $wpdb->insert_id;
 
