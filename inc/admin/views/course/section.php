@@ -10,7 +10,7 @@ learn_press_admin_view( 'course/new-section-item' );
 
 ?>
 <script type="text/x-template" id="tmpl-lp-section">
-    <div class="section" :class="isOpen ? 'open' : 'close'">
+    <div class="section" :class="[isOpen ? 'open' : 'close', status]">
         <div class="section-head" @dblclick="toggle">
             <span class="movable"></span>
             <input v-model="section.title"
@@ -57,8 +57,9 @@ learn_press_admin_view( 'course/new-section-item' );
                 <button type="button" class="button button-secondary"
                         @click="openChooseItems"><?php esc_html_e( 'Add items', 'learnpress' ); ?></button>
 
-                <div class="remove" @click="remove">
-                    <span class="dashicons dashicons-trash"></span>
+                <div class="remove" :class="{confirm: confirmRemove}">
+                    <span class="icon" @click="removeSection"><span class="dashicons dashicons-trash"></span></span>
+                    <div class="sure" @click="remove"><?php esc_html_e( 'Are you sure?', 'learnpress' ); ?></div>
                 </div>
             </div>
         </div>
@@ -74,14 +75,15 @@ learn_press_admin_view( 'course/new-section-item' );
             data: function () {
                 return {
                     open: true,
-                    unsaved: false
+                    unsaved: false,
+                    confirmRemove: false
                 };
             },
             created: function () {
                 var vm = this;
 
                 $store.subscribe(function (mutation) {
-                    if (mutation.type !== 'EMPTY_HIDDEN_SECTIONS') {
+                    if (mutation.type !== 'ss/EMPTY_HIDDEN_SECTIONS') {
                         return;
                     }
 
@@ -89,9 +91,12 @@ learn_press_admin_view( 'course/new-section-item' );
                 });
             },
             computed: {
+                status: function () {
+                    return $store.getters['ss/statusUpdateSection'][this.section.id] || '';
+                },
                 isOpen: function () {
                     var section = this.section;
-                    var hiddenSections = $store.getters['hiddenSections'];
+                    var hiddenSections = $store.getters['ss/hiddenSections'];
                     var find = hiddenSections.find(function (sectionId) {
                         return parseInt(section.id) === parseInt(sectionId);
                     });
@@ -110,7 +115,7 @@ learn_press_admin_view( 'course/new-section-item' );
                     set: function (items) {
                         this.section.items = items;
 
-                        $store.dispatch('updateSectionItems', {
+                        $store.dispatch('ss/updateSectionItems', {
                             sectionId: this.section.id,
                             items: items
                         });
@@ -132,37 +137,44 @@ learn_press_admin_view( 'course/new-section-item' );
             methods: {
                 toggle: function () {
                     this.open = !this.open;
-                    $store.dispatch('toggleSection', {
+                    $store.dispatch('ss/toggleSection', {
                         open: this.open,
                         section: this.section
                     });
                 },
                 newSectionItem: function (item) {
-                    $store.dispatch('newSectionItem', {
+                    $store.dispatch('ss/newSectionItem', {
                         sectionId: this.section.id,
                         item: item
                     });
                 },
                 removeItem: function (item) {
-                    $store.dispatch('removeSectionItem', {
+                    $store.dispatch('ss/removeSectionItem', {
                         sectionId: this.section.id,
                         itemId: item.id
                     });
                 },
                 updateItem: function (item) {
-                    $store.dispatch('updateSectionItem', {
+                    $store.dispatch('ss/updateSectionItem', {
                         sectionId: this.section.id,
                         item: item
                     });
                 },
-                remove: function () {
-                    var r = window.confirm($store.getters['i18n/all'].remove_section);
+                removeSection: function () {
+                    this.confirmRemove = true;
+                    var vm = this;
 
-                    if (!r) {
+                    setTimeout(function () {
+                        vm.confirmRemove = false;
+                    }, 3000);
+                },
+                remove: function () {
+                    if (!this.confirmRemove) {
                         return;
                     }
 
-                    $store.dispatch('removeSection', {
+                    this.confirmRemove = false;
+                    $store.dispatch('ss/removeSection', {
                         index: this.index,
                         section: this.section
                     });
@@ -177,7 +189,7 @@ learn_press_admin_view( 'course/new-section-item' );
                 },
                 update: function () {
                     this.unsaved = false;
-                    $store.dispatch('updateSection', JSON.stringify(this.section));
+                    $store.dispatch('ss/updateSection', this.section);
                 },
                 openChooseItems: function () {
                     $store.dispatch('ci/open', parseInt(this.section.id));

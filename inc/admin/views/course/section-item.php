@@ -41,7 +41,7 @@
             props: ['item', 'order'],
             computed: {
                 urlEdit: function () {
-                    return $store.getters.urlEdit + this.item.id;
+                    return $store.getters['ss/urlEdit'] + this.item.id;
                 },
                 updating: function () {
                     return this.removing || this.saving;
@@ -51,7 +51,7 @@
                 var vm = this;
 
                 $store.subscribe(function(mutation) {
-                    if (mutation.type !== 'UPDATE_SECTION_ITEM' ) {
+                    if (mutation.type !== 'ss/UPDATE_SECTION_ITEM' ) {
                         return;
                     }
 

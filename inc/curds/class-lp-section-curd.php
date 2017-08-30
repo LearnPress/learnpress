@@ -6,7 +6,12 @@
  * @since 3.0.0
  */
 class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
-	private $course_id = false;
+	/**
+	 * @var int
+	 *
+	 * @since 3.0.0
+	 */
+	private $course_id = null;
 
 	/**
 	 * LP_Section_CURD constructor.
@@ -33,14 +38,9 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			'section_name'        => '',
 			'section_description' => '',
 			'section_course_id'   => 0,
-			'section_order'       => 1,
+			'section_order'       => 0,
 			'items'               => array(),
 		) );
-
-		if ( $data['section_course_id'] > 0 ) {
-			$last                  = $this->get_last_number_order( $data['section_course_id'] );
-			$data['section_order'] = $last + 1;
-		}
 
 		return $data;
 	}
@@ -100,11 +100,12 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	public function create( &$args ) {
 		global $wpdb;
 
-		$section     = $this->parse( $args );
-		$section     = stripslashes_deep( $section );
-		$insert_data = array(
+		$section                  = $this->parse( $args );
+		$section                  = stripslashes_deep( $section );
+		$section['section_order'] = $this->get_last_number_order( $section['section_course_id'] ) + 1;
+		$insert_data              = array(
+			'section_course_id'   => $this->course_id,
 			'section_name'        => $section['section_name'],
-			'section_course_id'   => $section['section_course_id'],
 			'section_order'       => $section['section_order'],
 			'section_description' => $section['section_description'],
 		);
@@ -112,7 +113,7 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		$wpdb->insert(
 			$wpdb->learnpress_sections,
 			$insert_data,
-			array( '%s', '%d', '%d', '%s' )
+			array( '%d', '%s', '%d', '%s' )
 		);
 		$section['section_id'] = $wpdb->insert_id;
 
@@ -459,12 +460,13 @@ class LP_Section_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		) );
 
 		$post_id = wp_insert_post( array(
-			'post_title' => $item['title'],
-			'post_type'  => $item['type'],
+			'post_title'  => $item['title'],
+			'post_type'   => $item['type'],
 			'post_status' => 'publish'
 		) );
 
 		$item['id'] = $post_id;
+
 		return $this->add_items_section( $section_id, array( $item ) );
 	}
 }

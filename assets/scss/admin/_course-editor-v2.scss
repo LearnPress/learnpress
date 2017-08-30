@@ -113,7 +113,7 @@
         opacity: 1;
 
         &.new-section {
-            border-color: #999;
+            box-shadow: 0 0 30px #ddd;
 
             .section-head {
                 background-color: #fff;
@@ -151,6 +151,12 @@
             }
         }
 
+        &.updating {
+            .section-head {
+                background-color: #e6f2d0;
+            }
+        }
+
         input {
             background-color: transparent;
             box-shadow: none;
@@ -165,6 +171,7 @@
             padding: 3px;
             position: relative;
             border-bottom: 1px solid #e5e5e5;
+            transition: background 500ms ease-out;
 
             .movable, .creatable {
                 display: inline-block;
@@ -478,6 +485,24 @@
             color: #a00;
             cursor: pointer;
             display: none;
+
+            .icon {
+                display: inline-block;
+            }
+
+            .sure {
+                display: none;
+            }
+
+            &.confirm {
+                .sure {
+                    display: inline-block;
+                }
+
+                .icon {
+                    display: none;
+                }
+            }
         }
     }
 }

@@ -72,13 +72,10 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			$hidden_sections = get_post_meta( $post->ID, '_admin_hidden_sections', true );
 			wp_localize_script( 'course-editor-v2', 'lq_course_editor', array(
 				'root'        => array(
-					'course_id'       => $course->get_id(),
-					'sections'        => $course->get_curriculum_raw(),
-					'hidden_sections' => ! empty( $hidden_sections ) ? $hidden_sections : array(),
-					'ajax'            => admin_url( '' ),
-					'action'          => 'update_curriculum',
-					'nonce'           => wp_create_nonce( 'learnpress_update_curriculum' ),
-					'urlEdit'         => admin_url( 'post.php?action=edit&post=' ),
+					'course_id' => $course->get_id(),
+					'ajax'      => admin_url( '' ),
+					'action'    => 'update_curriculum',
+					'nonce'     => wp_create_nonce( 'learnpress_update_curriculum' ),
 				),
 				'chooseItems' => array(
 					'types'      => learn_press_course_get_support_item_types(),
@@ -87,12 +84,16 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					'items'      => array(),
 				),
 				'i18n'        => array(
-					'remove_section'   => __( 'Are you sure remove this section?', 'learnpress' ),
 					'item'             => __( 'item', 'learnpress' ),
 					'new_section_item' => __( 'Create a new', 'learnpress' ),
 					'back'             => __( 'Back', 'learnpress' ),
 					'selected_items'   => __( 'Selected items', 'learnpress' ),
 				),
+				'sections'    => array(
+					'sections'        => $course->get_curriculum_raw(),
+					'hidden_sections' => ! empty( $hidden_sections ) ? $hidden_sections : array(),
+					'urlEdit'         => admin_url( 'post.php?action=edit&post=' ),
+				)
 			) );
 		}
 

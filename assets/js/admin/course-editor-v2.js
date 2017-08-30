@@ -39,6 +39,319 @@ var LP_Curriculum_i18n_Store = (function (Vue, helpers, data) {
 
 })(Vue, LP_Helpers, lq_course_editor);
 
+/**
+ * Sections Store.
+ *
+ * @since 3.0.0
+ */
+var LP_Curriculum_Sections_Store = (function (Vue, helpers, data) {
+    var state = helpers.cloneObject(data.sections);
+
+    state.statusUpdateSection = {};
+
+    var getters = {
+        sections: function (state) {
+            return state.sections || [];
+        },
+        urlEdit: function (state) {
+            return state.urlEdit;
+        },
+        hiddenSections: function (state) {
+            return state.hidden_sections;
+        },
+        isHiddenAllSections: function (state, getters) {
+            var hiddenSections = getters['hiddenSections'];
+            var sections = getters['sections'];
+
+            return hiddenSections.length === sections.length;
+        },
+        statusUpdateSection: function (state) {
+            return state.statusUpdateSection;
+        }
+    };
+
+    var mutations = {
+        'SORT_SECTION': function (state, orders) {
+            state.sections = state.sections.map(function (section) {
+                section.order = orders[section.id];
+
+                return section;
+            });
+        },
+        'SET_SECTIONS': function (state, sections) {
+            state.sections = sections;
+        },
+        'ADD_NEW_SECTION': function (state, section) {
+            state.sections.push(section);
+        },
+        'REMOVE_SECTION': function (state, index) {
+            state.sections.splice(index, 1);
+        },
+        'REMOVE_SECTION_ITEM': function (state, payload) {
+            var section = state.sections.find(function (section) {
+                return (section.id === payload.sectionId);
+            });
+
+            var items = section.items || [];
+            var index = -1;
+            items.forEach(function (item, i) {
+                if (item.id === payload.itemId) {
+                    index = i;
+                }
+            });
+
+            if (index !== -1) {
+                items.splice(index, 1);
+            }
+        },
+        'UPDATE_SECTION_ITEMS': function (state, payload) {
+            var section = state.sections.find(function (section) {
+                return parseInt(section.id) === parseInt(payload.sectionId);
+            });
+
+            if (!section) {
+                return;
+            }
+            section.items = payload.items;
+        },
+        'UPDATE_SECTION_ITEM': function (state, payload) {
+
+        },
+
+        'ADD_HIDDEN_SECTION': function (state, section) {
+            var find = state.hidden_sections.find(function (sectionId) {
+                return (parseInt(sectionId) === parseInt(section.id));
+            });
+
+            if (!find) {
+                state.hidden_sections.push(section.id);
+            }
+        },
+
+        'REMOVE_HIDDEN_SECTION': function (state, section) {
+            state.hidden_sections.forEach(function (sectionId, index) {
+                if (parseInt(sectionId) === parseInt(section.id)) {
+                    state.hidden_sections.splice(index, 1);
+                }
+            });
+        },
+
+        'EMPTY_HIDDEN_SECTIONS': function (state) {
+            state.hidden_sections = [];
+        },
+
+        'UPDATE_HIDDEN_SECTIONS': function (state, sections) {
+            state.hidden_sections = sections;
+        },
+
+        'UPDATE_SECTION_REQUEST': function (state, sectionId) {
+            Vue.set(state.statusUpdateSection, sectionId, 'updating');
+        },
+
+        'UPDATE_SECTION_SUCCESS': function (state, sectionId) {
+            Vue.set(state.statusUpdateSection, sectionId, 'successful');
+        },
+
+        'UPDATE_SECTION_FAILURE': function (state, sectionId) {
+            Vue.set(state.statusUpdateSection, sectionId, 'failed');
+        }
+    };
+
+    var actions = {
+        addNewSection: function (context, section) {
+            Vue.http
+                .LPRequest({
+                    type: 'new-section',
+                    section: section
+                })
+                .then(
+                    function (response) {
+                        var result = response.body;
+
+                        if (result.success) {
+                            context.commit('ADD_NEW_SECTION', result.data);
+                        }
+                    },
+                    function (error) {
+                        console.error(error);
+                    }
+                );
+        },
+
+        removeSection: function (context, payload) {
+            context.commit('REMOVE_SECTION', payload.index);
+
+            Vue.http.LPRequest({
+                type: 'remove-section',
+                'section-id': payload.section.id
+            }).then(
+                function (response) {
+                    var result = response.body;
+                },
+                function (error) {
+                    console.error(error);
+                }
+            );
+        },
+
+        updateSection: function (context, section) {
+            context.commit('UPDATE_SECTION_REQUEST', section.id);
+
+            Vue.http
+                .LPRequest({
+                    type: 'update-section',
+                    section: JSON.stringify(section)
+                })
+                .then(function () {
+                    context.commit('UPDATE_SECTION_SUCCESS', section.id);
+                })
+                .catch(function () {
+                    context.commit('UPDATE_SECTION_FAILURE', section.id);
+                })
+        },
+
+        updateSortSections: function (context, orders) {
+            Vue.http
+                .LPRequest({
+                    type: 'sort-sections',
+                    orders: JSON.stringify(orders)
+                })
+                .then(
+                    function (response) {
+                        var result = response.body;
+                        var order_sections = result.data;
+                        context.commit('SORT_SECTION', order_sections);
+                    },
+                    function (error) {
+                        console.error(error);
+                    }
+                );
+        },
+
+        removeSectionItem: function (context, payload) {
+            context.commit('REMOVE_SECTION_ITEM', payload);
+
+            Vue.http
+                .LPRequest({
+                    type: 'remove-section-item',
+                    'item-id': payload.itemId,
+                    'section-id': payload.sectionId
+                });
+        },
+
+        updateSectionItems: function (context, payload) {
+            Vue.http
+                .LPRequest({
+                    type: 'update-section-items',
+                    'items': JSON.stringify(payload.items),
+                    'section-id': payload.sectionId
+                })
+                .then(
+                    function (response) {
+                        var result = response.body;
+
+                        if (result.success) {
+                            console.log(result);
+                        }
+                    },
+                    function (error) {
+                        console.error(error);
+                    }
+                );
+        },
+
+        updateSectionItem: function (context, payload) {
+            Vue.http
+                .LPRequest({
+                    type: 'update-section-item',
+                    'item': payload.item,
+                    'section-id': payload.sectionId
+                })
+                .then(
+                    function (response) {
+                        var result = response.body;
+
+                        if (result.success) {
+                            var item = result.data;
+
+                            context.commit('UPDATE_SECTION_ITEM', {
+                                sectionId: payload.sectionId,
+                                item: item
+                            });
+                        }
+                    },
+                    function (error) {
+                        console.error(error);
+                    }
+                );
+        },
+
+        newSectionItem: function (context, payload) {
+            Vue.http
+                .LPRequest({
+                    type: 'new-section-item',
+                    'item': payload.item,
+                    'section-id': payload.sectionId
+                })
+                .then(
+                    function (response) {
+                        var result = response.body;
+
+                        if (result.success) {
+                            context.commit('UPDATE_SECTION_ITEMS', {
+                                sectionId: payload.sectionId,
+                                items: result.data
+                            });
+                        }
+                    },
+                    function (error) {
+                        console.error(error);
+                    }
+                );
+        },
+
+        toggleSection: function (context, payload) {
+            if (payload.open) {
+                context.commit('REMOVE_HIDDEN_SECTION', payload.section);
+            } else {
+                context.commit('ADD_HIDDEN_SECTION', payload.section);
+            }
+
+            Vue.http
+                .LPRequest({
+                    type: 'hidden-sections',
+                    hidden: context.getters['hiddenSections']
+                });
+        },
+        toggleAllSections: function (context) {
+            var hidden = context.getters['isHiddenAllSections'];
+
+            if (hidden) {
+                context.commit('EMPTY_HIDDEN_SECTIONS');
+            } else {
+                var sections = context.getters['sections'].map(function (section) {
+                    return section.id;
+                });
+                context.commit('UPDATE_HIDDEN_SECTIONS', sections);
+            }
+
+            Vue.http
+                .LPRequest({
+                    type: 'hidden-sections',
+                    hidden: context.getters['hiddenSections']
+                });
+        }
+    };
+
+    return {
+        namespaced: true,
+        state: state,
+        getters: getters,
+        mutations: mutations,
+        actions: actions
+    };
+})(Vue, LP_Helpers, lq_course_editor);
+
 
 /**
  * Choose Item Modal Store
@@ -176,7 +489,7 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
                             context.commit('TOGGLE');
 
                             var items = result.data;
-                            context.commit('UPDATE_SECTION_ITEMS', {
+                            context.commit('ss/UPDATE_SECTION_ITEMS', {
                                 sectionId: context.getters.section,
                                 items: items
                             }, {root: true});
@@ -218,9 +531,6 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
         action: function (state) {
             return state.action;
         },
-        sections: function (state) {
-            return state.sections || [];
-        },
         id: function (state) {
             return state.course_id;
         },
@@ -230,17 +540,11 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
         currentRequest: function (state) {
             return state.countCurrentRequest || 0;
         },
-        urlEdit: function (state) {
-            return state.urlEdit;
+        urlAjax: function (state) {
+            return state.ajax;
         },
-        hiddenSections: function (state) {
-            return state.hidden_sections;
-        },
-        isHiddenAllSections: function (state, getters) {
-            var hiddenSections = getters['hiddenSections'];
-            var sections = getters['sections'];
-
-            return hiddenSections.length === sections.length;
+        nonce: function (state) {
+            return state.nonce;
         }
     };
 
@@ -257,78 +561,6 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
         },
         'DECREASE_NUMBER_REQUEST': function (state) {
             state.countCurrentRequest--;
-        },
-        'SORT_SECTION': function (state, orders) {
-            state.sections = state.sections.map(function (section) {
-                section.order = orders[section.id];
-
-                return section;
-            });
-        },
-        'SET_SECTIONS': function (state, sections) {
-            state.sections = sections;
-        },
-        'ADD_NEW_SECTION': function (state, section) {
-            state.sections.push(section);
-        },
-        'REMOVE_SECTION': function (state, index) {
-            state.sections.splice(index, 1);
-        },
-        'REMOVE_SECTION_ITEM': function (state, payload) {
-            var section = state.sections.find(function (section) {
-                return (section.id === payload.sectionId);
-            });
-
-            var items = section.items || [];
-            var index = -1;
-            items.forEach(function (item, i) {
-                if (item.id === payload.itemId) {
-                    index = i;
-                }
-            });
-
-            if (index !== -1) {
-                items.splice(index, 1);
-            }
-        },
-        'UPDATE_SECTION_ITEMS': function (state, payload) {
-            var section = state.sections.find(function (section) {
-                return parseInt(section.id) === parseInt(payload.sectionId);
-            });
-
-            if (!section) {
-                return;
-            }
-            section.items = payload.items;
-        },
-        'UPDATE_SECTION_ITEM': function (state, payload) {
-
-        },
-
-        'ADD_HIDDEN_SECTION': function (state, section) {
-            var find = state.hidden_sections.find(function (sectionId) {
-                return (parseInt(sectionId) === parseInt(section.id));
-            });
-
-            if (!find) {
-                state.hidden_sections.push(section.id);
-            }
-        },
-
-        'REMOVE_HIDDEN_SECTION': function (state, section) {
-            state.hidden_sections.forEach(function (sectionId, index) {
-                if (parseInt(sectionId) === parseInt(section.id)) {
-                    state.hidden_sections.splice(index, 1);
-                }
-            });
-        },
-
-        'EMPTY_HIDDEN_SECTIONS': function (state) {
-            state.hidden_sections = [];
-        },
-
-        'UPDATE_HIDDEN_SECTIONS': function (state, sections) {
-            state.hidden_sections = sections;
         }
     };
 
@@ -352,6 +584,10 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
         newRequest: function (context) {
             context.commit('INCREASE_NUMBER_REQUEST');
             context.commit('UPDATE_STATUS', 'loading');
+
+            window.onbeforeunload = function () {
+                return '';
+            }
         },
 
         requestComplete: function (context, status) {
@@ -359,189 +595,8 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
 
             if (context.getters.currentRequest === 0) {
                 context.commit('UPDATE_STATUS', status);
+                window.onbeforeunload = null;
             }
-        },
-
-        addNewSection: function (context, section) {
-            Vue.http
-                .LPRequest({
-                    type: 'new-section',
-                    section: section
-                })
-                .then(
-                    function (response) {
-                        var result = response.body;
-
-                        if (result.success) {
-                            context.commit('ADD_NEW_SECTION', result.data);
-                        }
-                    },
-                    function (error) {
-                        console.error(error);
-                    }
-                );
-        },
-
-        removeSection: function (context, payload) {
-            context.commit('REMOVE_SECTION', payload.index);
-
-            Vue.http.LPRequest({
-                type: 'remove-section',
-                'section-id': payload.section.id
-            }).then(
-                function (response) {
-                    var result = response.body;
-                },
-                function (error) {
-                    console.error(error);
-                }
-            );
-        },
-
-        updateSection: function (context, section) {
-            Vue.http.LPRequest({
-                type: 'update-section',
-                section: section
-            }).then(
-                function (response) {
-                    var result = response.body;
-                },
-                function (error) {
-                    console.error(error);
-                }
-            );
-        },
-
-        updateSortSections: function (context, orders) {
-            Vue.http
-                .LPRequest({
-                    type: 'sort-sections',
-                    orders: JSON.stringify(orders)
-                })
-                .then(
-                    function (response) {
-                        var result = response.body;
-                        var order_sections = result.data;
-                        context.commit('SORT_SECTION', order_sections);
-                    },
-                    function (error) {
-                        console.error(error);
-                    }
-                );
-        },
-
-        removeSectionItem: function (context, payload) {
-            context.commit('REMOVE_SECTION_ITEM', payload);
-
-            Vue.http
-                .LPRequest({
-                    type: 'remove-section-item',
-                    'item-id': payload.itemId,
-                    'section-id': payload.sectionId
-                });
-        },
-
-        updateSectionItems: function (context, payload) {
-            Vue.http
-                .LPRequest({
-                    type: 'update-section-items',
-                    'items': JSON.stringify(payload.items),
-                    'section-id': payload.sectionId
-                })
-                .then(
-                    function (response) {
-                        var result = response.body;
-
-                        if (result.success) {
-                            console.log(result);
-                        }
-                    },
-                    function (error) {
-                        console.error(error);
-                    }
-                );
-        },
-
-        updateSectionItem: function (context, payload) {
-            Vue.http
-                .LPRequest({
-                    type: 'update-section-item',
-                    'item': payload.item,
-                    'section-id': payload.sectionId
-                })
-                .then(
-                    function (response) {
-                        var result = response.body;
-
-                        if (result.success) {
-                            var item = result.data;
-
-                            context.commit('UPDATE_SECTION_ITEM', {
-                                sectionId: payload.sectionId,
-                                item: item
-                            });
-                        }
-                    },
-                    function (error) {
-                        console.error(error);
-                    }
-                );
-        },
-
-        newSectionItem: function (context, payload) {
-            Vue.http
-                .LPRequest({
-                    type: 'new-section-item',
-                    'item': payload.item,
-                    'section-id': payload.sectionId
-                })
-                .then(
-                    function (response) {
-                        var result = response.body;
-
-                        if (result.success) {
-                            context.commit('UPDATE_SECTION_ITEMS', {
-                                sectionId: payload.sectionId,
-                                items: result.data
-                            });
-                        }
-                    },
-                    function (error) {
-                        console.error(error);
-                    }
-                );
-        },
-
-        toggleSection: function (context, payload) {
-            if (payload.open) {
-                context.commit('REMOVE_HIDDEN_SECTION', payload.section);
-            } else {
-                context.commit('ADD_HIDDEN_SECTION', payload.section);
-            }
-
-            Vue.http
-                .LPRequest({
-                    type: 'hidden-sections',
-                    hidden: context.getters['hiddenSections']
-                });
-        },
-        toggleAllSections: function (context) {
-            var hidden = context.getters['isHiddenAllSections'];
-
-            if (hidden) {
-                context.commit('EMPTY_HIDDEN_SECTIONS');
-            } else {
-                var sections = context.getters['sections'].map(function (section) {
-                    return section.id;
-                });
-                context.commit('UPDATE_HIDDEN_SECTIONS', sections);
-            }
-
-            Vue.http
-                .LPRequest({
-                    type: 'hidden-sections',
-                    hidden: context.getters['hiddenSections']
-                });
         }
     };
 
@@ -552,7 +607,8 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
         actions: actions,
         modules: {
             ci: LP_Choose_Items_Modal_Store,
-            i18n: LP_Curriculum_i18n_Store
+            i18n: LP_Curriculum_i18n_Store,
+            ss: LP_Curriculum_Sections_Store
         }
     });
 
@@ -565,11 +621,11 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
  */
 (function (exports, Vue, $store) {
     Vue.http.LPRequest = function (payload) {
-        payload['nonce'] = $store.state.nonce;
-        payload['lp-ajax'] = $store.state.action;
+        payload['nonce'] = $store.getters.nonce;
+        payload['lp-ajax'] = $store.getters.action;
         payload['course-id'] = $store.getters.id;
 
-        return Vue.http.post($store.state.ajax,
+        return Vue.http.post($store.getters.urlAjax,
             payload,
             {
                 emulateJSON: true,
