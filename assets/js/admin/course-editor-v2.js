@@ -584,6 +584,10 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
         newRequest: function (context) {
             context.commit('INCREASE_NUMBER_REQUEST');
             context.commit('UPDATE_STATUS', 'loading');
+
+            window.onbeforeunload = function () {
+                return '';
+            }
         },
 
         requestComplete: function (context, status) {
@@ -591,6 +595,7 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
 
             if (context.getters.currentRequest === 0) {
                 context.commit('UPDATE_STATUS', status);
+                window.onbeforeunload = null;
             }
         }
     };
