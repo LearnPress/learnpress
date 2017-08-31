@@ -130,7 +130,6 @@ learn_press_admin_view( 'course/pagination' );
                     tab: 'lp_lesson',
                     delayTimeout: null,
                     showPreview: false,
-                    loading: false,
                     adding: false
                 };
             },
@@ -138,10 +137,6 @@ learn_press_admin_view( 'course/pagination' );
                 var vm = this;
 
                 $store.subscribe(function (mutation) {
-                    if (mutation.type === 'ci/SEARCH_ITEMS_DONE') {
-                        vm.loading = false;
-                    }
-
                     if (!mutation || mutation.type !== 'ci/TOGGLE') {
                         return;
                     }
@@ -215,7 +210,6 @@ learn_press_admin_view( 'course/pagination' );
                 },
 
                 makeSearch: function () {
-                    this.loading = true;
                     $store.dispatch('ci/searchItems', {
                         query: this.query,
                         page: this.page,
@@ -224,6 +218,12 @@ learn_press_admin_view( 'course/pagination' );
                 }
             },
             computed: {
+                status: function () {
+                    return $store.getters['ci/status'];
+                },
+                loading: function () {
+                    return this.status === 'loading';
+                },
                 textButtonEdit: function () {
                     if (this.showPreview) {
                         return $store.getters['i18n/all'].back;

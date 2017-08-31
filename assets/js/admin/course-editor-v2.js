@@ -406,8 +406,12 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
     var state = helpers.cloneObject(data.chooseItems);
     state.sectionId = false;
     state.pagination = '';
+    state.status = '';
 
     var getters = {
+        status: function (state) {
+            return state.status;
+        },
         pagination: function (state) {
             return state.pagination;
         },
@@ -463,8 +467,14 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
         'UPDATE_PAGINATION': function (state, pagination) {
             state.pagination = pagination;
         },
-        'SEARCH_ITEMS_DONE': function (state) {
-
+        'SEARCH_ITEMS_REQUEST': function (state) {
+            state.status = 'loading';
+        },
+        'SEARCH_ITEMS_SUCCESS': function (state) {
+            state.status = 'successful';
+        },
+        'SEARCH_ITEMS_FAILURE': function (state) {
+            state.status = 'failed';
         }
     };
 
@@ -488,6 +498,8 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
         },
 
         searchItems: function (context, payload) {
+            context.commit('SEARCH_ITEMS_REQUEST');
+
             Vue.http.LPRequest({
                 type: 'search-items',
                 query: payload.query,
@@ -506,10 +518,11 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
 
                     context.commit('SET_LIST_ITEMS', data.items);
                     context.commit('UPDATE_PAGINATION', data.pagination);
-                    context.commit('SEARCH_ITEMS_DONE');
+                    context.commit('SEARCH_ITEMS_SUCCESS');
                 },
                 function (error) {
-                    context.commit('SEARCH_ITEMS_DONE');
+                    context.commit('SEARCH_ITEMS_FAILURE');
+
                     console.error(error);
                 }
             );
