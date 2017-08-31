@@ -325,7 +325,7 @@ input:focus:-moz-placeholder {
 
 .learn-press-message {
     position: relative;
-    background: #F5F5F5;
+    background: #FFF;
     border-left: 5px solid #00A0D2;
     padding: 10px 10px 0px 10px;
     margin-bottom: 20px;
@@ -1808,13 +1808,15 @@ body.post-type-lp_question #question_answer_ .inside {
     min-width: 250px;
 }
 
-.rwmb-meta-box label {
-    color: #222;
-    font-weight: bold;
-    display: block;
-    margin: 0 0 16px 0;
+.rwmb-meta-box {
+    margin-top: 20px;
+    label {
+        color: #222;
+        font-weight: bold;
+        display: block;
+        margin: 0 0 16px 0;
+    }
 }
-
 .description {
     margin-top: 5px;
 }
@@ -2302,6 +2304,7 @@ input.regular-text[id^="learn-press-emails"] {
     }
 }
 
+
 /* Metabox Widget */
 #widgets-right .widgets-holder-wrap {
     .rwmb-label {
@@ -2318,6 +2321,14 @@ input.regular-text[id^="learn-press-emails"] {
         font-size: small;
         font-style: italic;
     }
+}
+
+.outdated-readmore-link{
+    font-style: italic;
+}
+
+.learn-press-message.notice-warning {
+    border-left-color: #ffb900;
 }
 
 @keyframes learn-press-meta-box-tabs-initialize-animation {

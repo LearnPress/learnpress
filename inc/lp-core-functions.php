@@ -463,8 +463,8 @@ if ( ! function_exists( 'learn_press_advertise_in_admin' ) ) {
 
 		$screen = get_current_screen();
 
-		if ( ( in_array( $screen->post_type, $admin_post_type ) && $screen->base === 'edit' )
-		     || ( in_array( $screen->id, $pages ) )
+		if ( $screen && ( ( in_array( $screen->post_type, $admin_post_type ) && $screen->base === 'edit' )
+		                  || in_array( $screen->id, $pages ) )
 		) {
 
 			$current_theme = wp_get_theme();
@@ -2277,7 +2277,7 @@ function learn_press_auto_enroll_user_to_courses( $order_id ) {
 			if ( ! $user->is_exists() ) {
 				continue;
 			}
-			if ( $user->has( 'enrolled-course', $course->id ) ) {
+			if ( $user->has( 'enrolled-course', $course->id, true, $order_id ) ) {
 				continue;
 			}
 			// error. this scripts will create new order each course item
@@ -2629,6 +2629,7 @@ function learn_press_is_added_to_cart( $course_id ) {
 	return $cart->has_item( $course_id );
 }
 
+// useless
 function learn_press_get_requested_post_type() {
 	global $pagenow;
 	if ( $pagenow == 'post-new.php' && ! empty( $_GET['post_type'] ) ) {

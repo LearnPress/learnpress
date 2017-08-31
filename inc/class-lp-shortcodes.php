@@ -5,7 +5,7 @@
  * @version 1.0
  */
 
-if ( !defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
@@ -39,25 +39,25 @@ class LP_Shortcodes {
 	public static function auto_shortcode( $template ) {
 		if ( is_page() ) {
 			global $post, $wp_query, $wp;
-			$page_id = !empty( $wp_query->queried_object_id ) ?
+			$page_id = ! empty( $wp_query->queried_object_id ) ?
 				$wp_query->queried_object_id :
-				( !empty( $wp_query->query_vars['page_id'] ) ? $wp_query->query_vars['page_id'] : - 1 );
+				( ! empty( $wp_query->query_vars['page_id'] ) ? $wp_query->query_vars['page_id'] : - 1 );
 			if ( $page_id == learn_press_get_page_id( 'checkout' ) ) {
-				if ( !preg_match( '/\[learn_press_checkout\s?(.*)\]/', $post->post_content ) ) {
+				if ( ! preg_match( '/\[learn_press_checkout\s?(.*)\]/', $post->post_content ) ) {
 					$post->post_content .= '[learn_press_checkout]';
 				}
 			} elseif ( $page_id == learn_press_get_page_id( 'profile' ) ) {
 				if ( empty( $wp->query_vars['user'] ) ) {
 					$current_user = wp_get_current_user();
-					if ( !empty( $current_user->user_login ) ) {
+					if ( ! empty( $current_user->user_login ) ) {
 						$redirect = learn_press_get_endpoint_url( '', $current_user->user_login, learn_press_get_page_link( 'profile' ) );
-						if ( $redirect && !learn_press_is_current_url( $redirect ) ) {
+						if ( $redirect && ! learn_press_is_current_url( $redirect ) ) {
 							wp_redirect( $redirect );
 							die();
 						}
 					} else {
-						if ( !preg_match( '/\[learn_press_login_form\s?(.*)\]/', $post->post_content ) ) {
-							if ( !empty( $_REQUEST['redirect_to'] ) ) {
+						if ( ! preg_match( '/\[learn_press_login_form\s?(.*)\]/', $post->post_content ) ) {
+							if ( ! empty( $_REQUEST['redirect_to'] ) ) {
 								$redirect = $_REQUEST['redirect_to'];
 							} else {
 								$redirect = '';
@@ -70,7 +70,7 @@ class LP_Shortcodes {
 					parse_str( $wp->matched_query, $query );
 					if ( empty( $query['view'] ) ) {
 						$redirect = learn_press_user_profile_link( $wp->query_vars['user'] );
-						if ( !empty( $redirect ) ) {
+						if ( ! empty( $redirect ) ) {
 							wp_redirect( $redirect );
 							die();
 						}
@@ -81,37 +81,38 @@ class LP_Shortcodes {
 						$endpoints = learn_press_get_profile_endpoints();
 						foreach ( $query as $k => $v ) {
 							if ( ( $k == 'view' ) ) {
-								if ( !$v ) {
+								if ( ! $v ) {
 									$v = reset( $endpoints );
 								}
-								if ( !in_array( $v, $endpoints) ) {
+								if ( ! in_array( $v, $endpoints ) ) {
 									learn_press_is_404();
 								}
 							}
-							if ( !empty( $v ) ) {
-								$wp->query_vars[$k] = $v;
+							if ( ! empty( $v ) ) {
+								$wp->query_vars[ $k ] = $v;
 							}
 						}
 					}
-					if ( !preg_match( '/\[learn_press_profile\s?(.*)\]/', $post->post_content ) ) {
+					if ( ! preg_match( '/\[learn_press_profile\s?(.*)\]/', $post->post_content ) ) {
 						$post->post_content .= '[learn_press_profile]';
 					}
 
 				}
 
 			} elseif ( $page_id == learn_press_get_page_id( 'become_a_teacher' ) ) {
-				if ( !preg_match( '/\[learn_press_become_teacher_form\s?(.*)\]/', $post->post_content ) ) {
+				if ( ! preg_match( '/\[learn_press_become_teacher_form\s?(.*)\]/', $post->post_content ) ) {
 					$post->post_content .= '[learn_press_become_teacher_form]';
 				}
 			}
 
 			do_action( 'learn_press_auto_shortcode', $post, $template );
 		}
+
 		return $template;
 	}
 
 	public static function _login_form_bottom( $content, $args ) {
-		if ( !( !empty( $args['context'] ) && $args['context'] == 'learn-press-login' ) ) {
+		if ( ! ( ! empty( $args['context'] ) && $args['context'] == 'learn-press-login' ) ) {
 			return;
 		}
 	}
@@ -120,6 +121,7 @@ class LP_Shortcodes {
 		ob_start();
 		learn_press_print_messages();
 		$html = ob_get_clean();
+
 		return '<div class="learnpress">' . $html . $content . '</div>';
 	}
 
@@ -151,6 +153,7 @@ class LP_Shortcodes {
 				learn_press_get_template( 'checkout/form.php', array( 'checkout' => LP()->checkout() ) );
 			}
 		}
+
 		return self::wrapper_shortcode( ob_get_clean() );
 	}
 
@@ -171,7 +174,7 @@ class LP_Shortcodes {
 		$arr_orders    = array( 'DESC', 'ASC' );
 		$order         = strtoupper( $order );
 
-		if ( !in_array( $order_by, $arr_orders_by ) || !in_array( 'post_' . $order_by, $arr_orders_by ) ) {
+		if ( ! in_array( $order_by, $arr_orders_by ) || ! in_array( 'post_' . $order_by, $arr_orders_by ) ) {
 			$order_by = 'post_date';
 		} else {
 			if ( $order_by !== 'comment_count' ) {
@@ -179,10 +182,10 @@ class LP_Shortcodes {
 			}
 		}
 
-		if ( !in_array( $order, $arr_orders ) ) {
+		if ( ! in_array( $order, $arr_orders ) ) {
 			$order = 'DESC';
 		}
-		if ( !absint( $limit ) ) {
+		if ( ! absint( $limit ) ) {
 			$limit = 10;
 		}
 
@@ -228,7 +231,7 @@ class LP_Shortcodes {
 		$arr_orders    = array( 'DESC', 'ASC' );
 		$order         = strtoupper( $order );
 
-		if ( !in_array( $order_by, $arr_orders_by ) || !in_array( 'post_' . $order_by, $arr_orders_by ) ) {
+		if ( ! in_array( $order_by, $arr_orders_by ) || ! in_array( 'post_' . $order_by, $arr_orders_by ) ) {
 			$order_by = 'post_date';
 		} else {
 			if ( $order_by !== 'comment_count' ) {
@@ -236,10 +239,10 @@ class LP_Shortcodes {
 			}
 		}
 
-		if ( !in_array( $order, $arr_orders ) ) {
+		if ( ! in_array( $order, $arr_orders ) ) {
 			$order = 'DESC';
 		}
-		if ( !absint( $limit ) ) {
+		if ( ! absint( $limit ) ) {
 			$limit = 10;
 		}
 
@@ -282,10 +285,10 @@ class LP_Shortcodes {
 		$arr_orders = array( 'DESC', 'ASC' );
 		$order      = strtoupper( $order );
 
-		if ( !in_array( $order, $arr_orders ) ) {
+		if ( ! in_array( $order, $arr_orders ) ) {
 			$order = 'DESC';
 		}
-		if ( !absint( $limit ) ) {
+		if ( ! absint( $limit ) ) {
 			$limit = 10;
 		}
 
@@ -323,7 +326,7 @@ class LP_Shortcodes {
 
 	public static function render_shortcode_archive( $lp_posts = array() ) {
 		global $post;
-		if ( !empty( $lp_posts ) ) {
+		if ( ! empty( $lp_posts ) ) {
 			do_action( 'learn_press_before_courses_loop' );
 
 			learn_press_begin_courses_loop();
@@ -350,13 +353,15 @@ class LP_Shortcodes {
 
 		// Get the order
 		$order_id  = absint( $order_id );
-		$order_key = !empty( $_GET['key'] ) ? $_GET['key'] : '';
+		$order_key = ! empty( $_GET['key'] ) ? $_GET['key'] : '';
 
 		if ( $order_id > 0 && ( $order = learn_press_get_order( $order_id ) ) && $order->post->post_status != 'trash' ) {
-			if ( $order->order_key != $order_key )
+			if ( $order->order_key != $order_key ) {
 				unset( $order );
+			}
 		} else {
 			learn_press_display_message( __( 'Invalid order!', 'learnpress' ), 'error' );
+
 			return;
 		}
 
@@ -375,7 +380,7 @@ class LP_Shortcodes {
 	public static function confirm_order( $atts = null ) {
 		$atts = shortcode_atts(
 			array(
-				'order_id' => !empty( $_REQUEST['order_id'] ) ? intval( $_REQUEST['order_id'] ) : 0
+				'order_id' => ! empty( $_REQUEST['order_id'] ) ? intval( $_REQUEST['order_id'] ) : 0
 			),
 			$atts
 		);
@@ -406,7 +411,7 @@ class LP_Shortcodes {
 		$message = '';
 		$code    = 0;
 
-		if ( !is_user_logged_in() ) {
+		if ( ! is_user_logged_in() ) {
 			$message = __( "Please login to fill in this form.", 'learnpress' );
 			$code    = 1;
 		} elseif ( in_array( LP_TEACHER_ROLE, $user->user->roles ) ) {
@@ -420,7 +425,7 @@ class LP_Shortcodes {
 			$code    = 4;
 		}
 
-		if ( !apply_filters( 'learn_press_become_a_teacher_display_form', true, $code, $message ) ) {
+		if ( ! apply_filters( 'learn_press_become_a_teacher_display_form', true, $code, $message ) ) {
 			return;
 		}
 
@@ -465,7 +470,7 @@ class LP_Shortcodes {
 		$output = '';
 
 		ob_start();
-		if ( !$user ) {
+		if ( ! $user ) {
 			if ( empty( $wp_query->query['user'] ) ) {
 
 			} else {
@@ -475,22 +480,22 @@ class LP_Shortcodes {
 		} else {
 			$user = LP_User_Factory::get_user( $user->ID );
 			$tabs = learn_press_user_profile_tabs( $user );
-			if ( !empty( $wp->query_vars['view'] ) ) {
+			if ( ! empty( $wp->query_vars['view'] ) ) {
 				$current = $wp->query_vars['view'];
 			} else {
 				$current = '';
 			}
-			if ( empty( $tabs[$current] ) && empty( $wp->query_vars['view'] ) ) {
+			if ( empty( $tabs[ $current ] ) && empty( $wp->query_vars['view'] ) ) {
 				$tab_keys = array_keys( $tabs );
 				$current  = reset( $tab_keys );
 			}
 			$_REQUEST['tab'] = $current;
 			$_POST['tab']    = $current;
 			$_GET['tab']     = $current;
-			if ( !learn_press_current_user_can_view_profile_section( $current, $user ) ) {
+			if ( ! learn_press_current_user_can_view_profile_section( $current, $user ) ) {
 				learn_press_get_template( 'profile/private-area.php' );
 			} else {
-				if ( !empty( $tabs ) && !empty( $tabs[$current] ) ) :
+				if ( ! empty( $tabs ) && ! empty( $tabs[ $current ] ) ) :
 					learn_press_get_template( 'profile/index.php',
 						array(
 							'user'    => $user,
@@ -501,11 +506,11 @@ class LP_Shortcodes {
 				else:
 					if ( $wp->query_vars['view'] == LP()->settings->get( 'profile_endpoints.profile-order-details' ) ) {
 						$order_id = 0;
-						if ( !empty( $wp->query_vars['id'] ) ) {
+						if ( ! empty( $wp->query_vars['id'] ) ) {
 							$order_id = $wp->query_vars['id'];
 						}
 						$order = learn_press_get_order( $order_id );
-						if ( !$order ) {
+						if ( ! $order ) {
 							learn_press_display_message( __( 'Invalid order!', 'learnpress' ), 'error' );
 						} else {
 							learn_press_get_template( 'profile/order-details.php',
@@ -532,18 +537,20 @@ class LP_Shortcodes {
 			$atts
 		);
 		add_filter( 'login_form_bottom', array( __CLASS__, 'login_form_bottom' ), 10, 2 );
+
 		return self::wrapper_shortcode( learn_press_get_template_content( 'profile/login-form.php', $atts ) );
 	}
 
-	public static function login_form_bottom ($html, $args) {
+	public static function login_form_bottom( $html, $args ) {
 		ob_start();
 		?>
-		<p>
-			<a href="<?php echo wp_lostpassword_url(); ?>"><?php _e( 'Forgot password?', 'learnpress' ); ?></a>
-			&nbsp;|&nbsp;
-			<a href="<?php echo wp_registration_url(); ?>"><?php _e( 'Create new account', 'learnpress' ); ?></a>
-		</p>
+        <p>
+            <a href="<?php echo wp_lostpassword_url(); ?>"><?php _e( 'Forgot password?', 'learnpress' ); ?></a>
+            &nbsp;|&nbsp;
+            <a href="<?php echo wp_registration_url(); ?>"><?php _e( 'Create new account', 'learnpress' ); ?></a>
+        </p>
 		<?php $html .= ob_get_clean();
+
 		return $html;
 	}
 }

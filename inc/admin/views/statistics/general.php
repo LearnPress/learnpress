@@ -23,11 +23,6 @@ $last_sunday_sql	= gmdate( 'Y-m-d H:i:s', $last_sunday );
 $pre_sunday = strtotime('-7 day',$last_sunday);
 $pre_sunday_sql	= gmdate( 'Y-m-d H:i:s', $pre_sunday );
 
-var_dump($last_sunday);
-var_dump($last_sunday_sql);
-var_dump($pre_sunday_sql);
-var_dump($now_mysql);
-
 learn_press_get_chart_general( null, 'days', 7 );
 
 ?>

@@ -4,10 +4,10 @@ Plugin Name: LearnPress
 Plugin URI: http://thimpress.com/learnpress
 Description: LearnPress is a WordPress complete solution for creating a Learning Management System (LMS). It can help you to create courses, lessons and quizzes.
 Author: ThimPress
-Version: 2.1.7
+Version: 2.1.8
 Author URI: http://thimpress.com
 Requires at least: 3.8
-Tested up to: 4.7
+Tested up to: 4.8
 
 Text Domain: learnpress
 Domain Path: /languages/
@@ -17,12 +17,19 @@ Domain Path: /languages/
  */
 defined( 'ABSPATH' ) || exit;
 
-if ( !defined( 'LP_PLUGIN_FILE' ) ) {
+if ( ! defined( 'LP_PLUGIN_FILE' ) ) {
 	define( 'LP_PLUGIN_FILE', __FILE__ );
 	require_once dirname( __FILE__ ) . '/inc/lp-constants.php';
 }
 
-if ( !class_exists( 'LearnPress' ) ) {
+add_action( 'plugins_loaded', function () {
+	error_reporting( E_ALL );
+	ini_set( 'error_reporting', 1 );
+} );
+
+
+
+if ( ! class_exists( 'LearnPress' ) ) {
 
 	/**
 	 * Class LearnPress
@@ -148,16 +155,17 @@ if ( !class_exists( 'LearnPress' ) ) {
 					break;
 				default:
 					if ( strpos( $key, 'tbl_' ) === 0 ) {
-						$return = $this->_table_prefixes[$key];
+						$return = $this->_table_prefixes[ $key ];
 					}
 			}
+
 			return $return;
 		}
 
 		public function set_object( $name, $object, $global = false ) {
 			$this->{$name} = $object;
 			if ( $global ) {
-				$GLOBALS[$name] = $object;
+				$GLOBALS[ $name ] = $object;
 			}
 		}
 
@@ -171,9 +179,10 @@ if ( !class_exists( 'LearnPress' ) ) {
 		 * @author
 		 */
 		public static function instance() {
-			if ( !self::$_instance ) {
+			if ( ! self::$_instance ) {
 				self::$_instance = new self();
 			}
+
 			return self::$_instance;
 		}
 
@@ -195,8 +204,8 @@ if ( !class_exists( 'LearnPress' ) ) {
 				'review_logs'
 			);
 			foreach ( $tables as $short_name ) {
-				$table_name                                  = $wpdb->prefix . LP_TABLE_PREFIX . $short_name;
-				$this->_table_prefixes['tbl_' . $short_name] = $table_name;
+				$table_name                                    = $wpdb->prefix . LP_TABLE_PREFIX . $short_name;
+				$this->_table_prefixes[ 'tbl_' . $short_name ] = $table_name;
 
 				$backward_key          = 'learnpress_' . $short_name;
 				$wpdb->{$backward_key} = $table_name;
@@ -288,7 +297,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 		 */
 		public function init() {
 
-			if ( !empty( $_REQUEST['view-log'] ) ) {
+			if ( ! empty( $_REQUEST['view-log'] ) ) {
 				$log = $_REQUEST['view-log'];
 				echo '<pre>';
 				if ( is_multisite() ) {
@@ -321,12 +330,16 @@ if ( !class_exists( 'LearnPress' ) ) {
 		 * @return mixed
 		 */
 		public function get_session() {
-			if ( !$this->session ) {
+			if ( ! $this->session ) {
 				$session_class = apply_filters( 'learn_press_session_class', 'LP_Session_Handler' );
 				if ( class_exists( $session_class ) ) {
-					$this->session = is_callable( array( $session_class, 'instance' ) ) ? call_user_func( array( $session_class, 'instance' ) ) : new $session_class();
+					$this->session = is_callable( array(
+						$session_class,
+						'instance'
+					) ) ? call_user_func( array( $session_class, 'instance' ) ) : new $session_class();
 				}
 			}
+
 			return $this->session;
 		}
 
@@ -336,16 +349,20 @@ if ( !class_exists( 'LearnPress' ) ) {
 		 * @return mixed
 		 */
 		public function get_cart() {
-			if ( !$this->cart ) {
+			if ( ! $this->cart ) {
 				$cart_class = apply_filters( 'learn_press_cart_class', 'LP_Cart' );
 				if ( is_object( $cart_class ) ) {
 					$this->cart = $cart_class;
 				} else {
 					if ( class_exists( $cart_class ) ) {
-						$this->cart = is_callable( array( $cart_class, 'instance' ) ) ? call_user_func( array( $cart_class, 'instance' ) ) : new $cart_class();
+						$this->cart = is_callable( array(
+							$cart_class,
+							'instance'
+						) ) ? call_user_func( array( $cart_class, 'instance' ) ) : new $cart_class();
 					}
 				}
 			}
+
 			return $this->cart;
 		}
 
@@ -356,21 +373,22 @@ if ( !class_exists( 'LearnPress' ) ) {
 		public function get_user( $user_id = 0 ) {
 			static $users = array();
 			$user = false;
-			if ( !$this->user ) {
+			if ( ! $this->user ) {
 				$this->user = learn_press_get_current_user();
 			}
 			if ( $user_id ) {
 				if ( $user_id == $this->user->id ) {
 					$user = $this->user;
 				} else {
-					if ( empty( $users[$user_id] ) ) {
-						$users[$user_id] = learn_press_get_user( $user_id );
-						$user            = $users[$user_id];
+					if ( empty( $users[ $user_id ] ) ) {
+						$users[ $user_id ] = learn_press_get_user( $user_id );
+						$user              = $users[ $user_id ];
 					}
 				}
 			} else {
 				$user = $this->user;
 			}
+
 			return $user;
 		}
 
@@ -390,7 +408,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 				case 'cron' :
 					return defined( 'DOING_CRON' );
 				case 'frontend' :
-					return ( !is_admin() || defined( 'LP_DOING_AJAX' ) ) && !defined( 'DOING_CRON' );
+					return ( ! is_admin() || defined( 'LP_DOING_AJAX' ) ) && ! defined( 'DOING_CRON' );
 				default:
 					return strtolower( $_SERVER['REQUEST_METHOD'] ) == $type;
 			}
@@ -554,8 +572,10 @@ if ( !class_exists( 'LearnPress' ) ) {
 				} else {
 					include $include;
 				}
+
 				return true;
 			}
+
 			return false;
 		}
 
@@ -572,7 +592,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 		 * Setup courses thumbnail
 		 */
 		public function setup_theme() {
-			if ( !current_theme_supports( 'post-thumbnails' ) ) {
+			if ( ! current_theme_supports( 'post-thumbnails' ) ) {
 				add_theme_support( 'post-thumbnails' );
 			}
 			add_post_type_support( 'lp_course', 'thumbnail' );
@@ -606,12 +626,13 @@ if ( !class_exists( 'LearnPress' ) ) {
 			if ( LP()->settings->get( 'debug' ) !== 'yes' ) {
 				$min = '.min';
 			}
-			if ( !preg_match( '/.js$/', $file ) ) {
+			if ( ! preg_match( '/.js$/', $file ) ) {
 				$file .= '.js';
 			}
 			if ( $min ) {
 				$file = preg_replace( '/.js$/', $min . '.js', $file );
 			}
+
 			return $this->plugin_url( "assets/js/{$file}" );
 		}
 
@@ -627,12 +648,13 @@ if ( !class_exists( 'LearnPress' ) ) {
 			if ( LP()->settings->get( 'debug' ) !== 'yes' ) {
 				$min = '.min';
 			}
-			if ( !preg_match( '/.css/', $file ) ) {
+			if ( ! preg_match( '/.css/', $file ) ) {
 				$file .= '.css';
 			}
 			if ( $min ) {
 				$file = preg_replace( '/.css/', $min . '.css', $file );
 			}
+
 			return $this->plugin_url( "assets/css/{$file}" );
 		}
 
@@ -645,7 +667,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 		 */
 		public function image( $file ) {
 
-			if ( !preg_match( '/.(jpg|png)$/', $file ) ) {
+			if ( ! preg_match( '/.(jpg|png)$/', $file ) ) {
 				$file .= '.jpg';
 			}
 
@@ -674,6 +696,7 @@ function LP() {
  */
 function load_learn_press() {
 	_deprecated_function( __FUNCTION__, '1.1', 'LP' );
+
 	return LP();
 }
 

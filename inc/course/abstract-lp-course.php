@@ -54,7 +54,7 @@ abstract class LP_Abstract_Course {
 	 * Constructor gets the post object and sets the ID for the loaded course.
 	 *
 	 * @param int|LP_Course|object $course Course ID, post object, or course object
-	 * @param int $user
+	 * @param int                  $user
 	 */
 	public function __construct( $course, $user = 0 ) {
 		if ( is_numeric( $course ) ) {
@@ -157,7 +157,7 @@ abstract class LP_Abstract_Course {
 	 * Get course thumbnail, return placeholder if it does not exists
 	 *
 	 * @param string $size
-	 * @param array $attr
+	 * @param array  $attr
 	 *
 	 * @return mixed|null|void
 	 */
@@ -237,6 +237,10 @@ abstract class LP_Abstract_Course {
 		return apply_filters( 'learn_press_is_enrollable', $enrollable, $this );
 	}
 
+	public function is_published() {
+		return $this->exists() && $this->post->post_status === 'publish';
+	}
+
 	/**
 	 * Course is exists if the post is not empty
 	 *
@@ -297,7 +301,7 @@ abstract class LP_Abstract_Course {
 	/**
 	 * Get all curriculum of this course
 	 *
-	 * @param int $section_id
+	 * @param int  $section_id
 	 * @param bool $force
 	 *
 	 * @return mixed
@@ -825,22 +829,27 @@ abstract class LP_Abstract_Course {
 	}
 
 	/**
-	 * Return true if this course can be purchaseable
+	 * Return true if this course can be purchasable
 	 *
 	 * @return mixed
 	 */
 	public function is_purchasable() {
 		// TODO: needs to check more criteria, currently only check if this course is required enrollment
-		$is_purchasable = $this->is_required_enroll() && $this->post->post_status == 'publish';
-		if ( $is_purchasable ) {
-			$max_allowed = $this->max_students;
-			if ( $max_allowed > 0 ) {
-				$count_in_order = $this->count_in_order( array( 'completed', 'processing' ) );
-				$is_purchasable = $is_purchasable && ( $count_in_order < $max_allowed );
-			}
-		}
+		$is_purchasable = $this->is_published() && $this->is_required_enroll() && ! $this->is_reached_limit();
 
 		return apply_filters( 'learn_press_item_is_purchasable', $is_purchasable, $this->id );
+	}
+
+	public function is_reached_limit() {
+		$max_allowed = $this->max_students;
+		$reached     = false;
+		if ( $max_allowed > 0 ) {
+			$count_in_order = $this->count_in_order( array( 'completed', 'processing' ) );
+			$reached        = $count_in_order >= $max_allowed;
+		}
+
+
+		return $reached;
 	}
 
 	public function count_in_order( $statuses = 'completed' ) {
@@ -931,6 +940,7 @@ abstract class LP_Abstract_Course {
 			$permalink  = get_the_permalink( $item_id );
 			$post_types = get_post_types( null, 'objects' );
 			$item_type  = get_post_type( $item_id );
+			$has_query  = false;
 			switch ( $item_type ) {
 				case 'lp_lesson':
 				case 'lp_quiz':
@@ -952,15 +962,22 @@ abstract class LP_Abstract_Course {
 					$slug   = sanitize_title_with_dashes( $slug );
 					$prefix = preg_replace( '!^/!', '', trailingslashit( $slug ) );
 
+					$has_query = strpos( $permalink, '?' ) !== false;
 					if ( '' != get_option( 'permalink_structure' ) && get_post_status( $this->id ) != 'draft' ) {
-						$permalink .= $prefix . $post_name;
+						if ( $has_query ) {
+							$parts     = explode( '?', $permalink );
+							$permalink = $parts[0] . $prefix . $post_name . '?' . $parts[1];
+						} else {
+							$permalink .= $prefix . $post_name;
+						}
+
 					} else {
 						$key       = preg_replace( '!lp_!', '', get_post_type( $item_id ) );
 						$permalink = add_query_arg( array( $key => $post_name ), $permalink );
 					}
 					break;
 			}
-			$permalink          = trailingslashit( $permalink );
+			$permalink          = $has_query ? untrailingslashit( $permalink ) : trailingslashit( $permalink );
 			$item_links[ $key ] = $permalink;
 		}
 
@@ -1045,8 +1062,9 @@ abstract class LP_Abstract_Course {
 		);
 		if ( $next_item = $this->get_next_item( $args ) ) {
 			ob_start();
-			learn_press_get_template( 'content-lesson/next-button.php', array( 'item'   => $next_item,
-			                                                                   'course' => $this
+			learn_press_get_template( 'content-lesson/next-button.php', array(
+				'item'   => $next_item,
+				'course' => $this
 			) );
 
 			return ob_get_clean();
@@ -1066,8 +1084,9 @@ abstract class LP_Abstract_Course {
 		);
 		if ( $next_item = $this->get_next_item( $args ) ) {
 			ob_start();
-			learn_press_get_template( 'content-lesson/prev-button.php', array( 'item'   => $next_item,
-			                                                                   'course' => $this
+			learn_press_get_template( 'content-lesson/prev-button.php', array(
+				'item'   => $next_item,
+				'course' => $this
 			) );
 
 			return ob_get_clean();
@@ -1077,7 +1096,7 @@ abstract class LP_Abstract_Course {
 	}
 
 	/**
-	 * @param int $user_id
+	 * @param int  $user_id
 	 * @param bool $force
 	 *
 	 * @return mixed|null|void
@@ -1131,7 +1150,7 @@ abstract class LP_Abstract_Course {
 	/**
 	 * Calculate course results for user by course results settings
 	 *
-	 * @param int $user_id
+	 * @param int     $user_id
 	 * @param boolean $force
 	 *
 	 * @return mixed|null|void
@@ -1248,7 +1267,7 @@ abstract class LP_Abstract_Course {
 		if ( ! empty( $quizzes_ids ) ) {
 			$format = array_fill( 0, sizeof( $quizzes_ids ), '%d' );
 			$args   = array_merge( $quizzes_ids, array( 'publish', LP_QUESTION_CPT ) );
-			echo $sql = $wpdb->prepare( "
+			$sql    = $wpdb->prepare( "
 				SELECT COUNT(*)
 				FROM {$wpdb->prefix}learnpress_quiz_questions lqq
 				INNER JOIN {$wpdb->posts} p ON lqq.question_id = p.ID
@@ -1310,7 +1329,7 @@ abstract class LP_Abstract_Course {
 	/**
 	 * Calculate results of course by lesson user completed
 	 *
-	 * @param int $user_id
+	 * @param int     $user_id
 	 * @param boolean $force
 	 *
 	 * @return int|mixed|null|void
@@ -1337,7 +1356,7 @@ abstract class LP_Abstract_Course {
 	 * Get number of lessons user has completed
 	 *
 	 * @param        $user_id
-	 * @param bool $force
+	 * @param bool   $force
 	 * @param string $type
 	 *
 	 * @return int|mixed|null|void
@@ -1370,7 +1389,7 @@ abstract class LP_Abstract_Course {
 	}
 
 	/**
-	 * @param int $user_id
+	 * @param int  $user_id
 	 * @param bool $force
 	 *
 	 * @return mixed|void
@@ -1399,7 +1418,7 @@ abstract class LP_Abstract_Course {
 	/**
 	 * Calculate results of course by final quiz
 	 *
-	 * @param int $user_id
+	 * @param int     $user_id
 	 * @param boolean $force
 	 *
 	 * @return mixed|null|void
@@ -1431,7 +1450,7 @@ abstract class LP_Abstract_Course {
 	/**
 	 * Calculate results of course by avg of all quizzes
 	 *
-	 * @param int $user_id
+	 * @param int     $user_id
 	 * @param boolean $force
 	 *
 	 * @return mixed
@@ -1494,12 +1513,11 @@ abstract class LP_Abstract_Course {
 
 
 	/**
-	 * Get course remaining time or message.
+	 * Get course remaining time message
 	 *
-	 * @param int $user_id
-	 * @param null $time
+	 * @param $user_id
 	 *
-	 * @return int|string
+	 * @return string
 	 */
 	public function get_user_duration_html( $user_id = 0, $time = null ) {
 		if ( ! $user_id ) {
@@ -1541,7 +1559,7 @@ abstract class LP_Abstract_Course {
 		$duration    = $this->get_duration();
 		$user        = learn_press_get_user( $user_id );
 		$course_info = $user->get_course_info( $this->id );
-		$start_time  = array_key_exists( 'start_time', $args ) ? $args['start_time'] : intval( strtotime( $course_info['start'] ) );
+		$start_time  = array_key_exists( 'start_time', $args ) ? $args['start_time'] : intval( strtotime( $course_info['start'] ) ) + ( get_option( 'gmt_offset' ) * HOUR_IN_SECONDS );
 		if ( $duration == 0 ) {
 			$duration = DAY_IN_SECONDS * 365 * 100;
 		}
@@ -1556,7 +1574,7 @@ abstract class LP_Abstract_Course {
 	 * @param int $user_id
 	 * @param     mixed
 	 *
-	 * @return mixed|null|void
+	 * @return mixed|null
 	 */
 	public function is_expired( $user_id = 0, $args = array() ) {
 		settype( $args, 'array' );
@@ -1564,7 +1582,9 @@ abstract class LP_Abstract_Course {
 			$user_id = get_current_user_id();
 		}
 
-		return apply_filters( 'learn_press_user_course_expired', $this->get_user_expired_time( $user_id, $args ) - current_time( 'timestamp' ) );
+		$overtime = $this->get_user_expired_time( $user_id, $args ) - current_time( 'timestamp' );
+
+		return apply_filters( 'learn_press_user_course_expired', $overtime, $this->id, $user_id );
 	}
 
 	/**

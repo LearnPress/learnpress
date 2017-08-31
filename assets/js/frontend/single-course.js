@@ -312,7 +312,7 @@ if (typeof LearnPress === 'undefined') {
 			data.items && data.items.forEach(function (item) {
 				var $item = this.$('.course-item.course-item-' + item.id),
 					$status = $item.find('.item-status'),
-					statusClass = ($status[0].className + '').replace(/(item-status-[^\s]*)/g, '').trim();
+					statusClass = $status.length ? ($status[0].className + '').replace(/(item-status-[^\s]*)/g, '').trim() : '';
 				if (!sections[item.section_id]) {
 					sections[item.section_id] = [0, 0];
 				}

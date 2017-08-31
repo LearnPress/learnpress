@@ -39,25 +39,29 @@ $data = array_merge( $user->get_course_info2( get_the_ID() ), $data );
 		<?php learn_press_get_template( 'single-course/content-item.php' ); ?>
 	</div>
 <?php ob_start(); ?>
-	<script>
+	<script type="text/javascript">
+        jQuery(function($){
+            // Ready again!
+            $(document).ready(function () {
+                var windowTarget = (parent.window || window),
+                    data = <?php echo wp_json_encode( $data ); ?>;
 
-		// Ready again!
-		$(document).ready(function () {
-			var windowTarget = (parent.window || window),
-				data = <?php echo wp_json_encode( $data ); ?>;
-			$('html, body').css('opacity', 1);
-			windowTarget.LP.unblockContent();
+                $('#wpadminbar').remove();
+                $('html, body').css('opacity', 1);
+                windowTarget.LP.unblockContent();
 
-			LP.sendMessage(LP.Hook.applyFilters('learn_press_content_item_send_data', data, windowTarget), windowTarget);
-			$('a:not(.js-action)').click(function () {
-				var link = $(this).attr('href');
-				if (link) {
-					windowTarget.open(link, "_blank");
-					return false;
-				}
-			});
-		});
+                LP.sendMessage(LP.Hook.applyFilters('learn_press_content_item_send_data', data, windowTarget), windowTarget);
+                $('a:not(.js-action)').click(function () {
+                    var link = $(this).attr('href');
+                    if (link) {
+                        windowTarget.open(link, "_blank");
+                        return false;
+                    }
+                });
 
+
+            });
+        });
 	</script>
 <?php LP_Assets::add_script_tag( preg_replace( '!</?script>!', '', ob_get_clean() ), '__all' ); ?>
 <?php

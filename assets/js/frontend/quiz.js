@@ -550,7 +550,7 @@
 			this.timeout && clearTimeout(this.timeout);
 			var timer = this.model.inc();
 			this.updateCountdown();
-
+			$(document).triggerHandler('learn-press/quiz-tick');
 			if (timer.remainingTime == 0) {
 				LP.Hook.doAction('learn_press_quiz_timeout', this);
 				this.$('.button-finish-quiz').trigger('click');
