@@ -5,6 +5,8 @@
  * @author  ThimPress
  * @package LearnPress/Templates
  * @version 3.x.x
+ *
+ * @see     learn_press_purchase_course_button()
  */
 
 defined( 'ABSPATH' ) || exit();
@@ -14,16 +16,10 @@ if ( ! isset( $course ) ) {
 }
 
 if ( ! isset( $user ) ) {
-	$user = learn_press_get_current_user();
+	$user = LP_Global::user();
 }
 
-// If user has already finished course
-if ( $user->has( 'finished-course', $course->get_id() ) ) {
-	return;
-}
-
-// If user can not purchase course
-if ( ! $user->can( 'purchase-course', $course->get_id() ) ) {
+if ( ! $course->is_purchasable() || $course->is_free() ) {
 	return;
 }
 

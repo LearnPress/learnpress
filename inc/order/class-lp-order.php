@@ -109,6 +109,10 @@ class LP_Order extends LP_Abstract_Object_Data {
 		return $return;
 	}
 
+	public function get_order_key(){
+		return $this->get_data('order_key');
+	}
+
 	/**
 	 * Set order date.
 	 *

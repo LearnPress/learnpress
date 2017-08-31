@@ -11,8 +11,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$cart                 = learn_press_get_checkout_cart();
-
+$cart = learn_press_get_checkout_cart();
+print_r( LP()->session->get('order_awaiting_payment') );
 ?>
 
 <h4><?php _e( 'Your order', 'learnpress' ) ?></h4>
@@ -20,56 +20,170 @@ $cart                 = learn_press_get_checkout_cart();
 <table class="learn-press-checkout-review-order-table">
     <thead>
     <tr>
+		<?php
+		/**
+		 * @since 3.x.x
+		 */
+		do_action( 'learn-press/review-order/before-heading-row' );
+		?>
+
         <th class="course-name"><?php _e( 'Course', 'learnpress' ); ?></th>
         <th class="course-total"><?php _e( 'Total', 'learnpress' ); ?></th>
+
+		<?php
+		/**
+		 * @since 3.x.x
+		 */
+		do_action( 'learn-press/review-order/after-heading-row' );
+		?>
     </tr>
     </thead>
     <tbody>
 
-	<?php do_action( 'learn_press_review_order_before_cart_contents' ); ?>
+	<?php
+	/**
+	 * @deprecated
+	 */
+	do_action( 'learn_press_review_order_before_cart_contents' );
 
-	<?php if ( $items = $cart->get_items() ) {
-		foreach ( $items as $item_id => $cart_item ) {
-			$cart_item = apply_filters( 'learn_press_cart_item', $cart_item );
+	/**
+	 * @since 3.x.x
+	 */
+
+	do_action( 'learn-press/review-order/before-cart-contents' );
+
+	if ( $items = $cart->get_items() ) {
+		foreach ( $items as $cart_item_key => $cart_item ) {
+
+			$cart_item = apply_filters( 'learn-press/review-order/cart-item', $cart_item );
+			$item_id   = $cart_item['item_id'];
 			$_course   = learn_press_get_course( $item_id );
-			if ( $_course && $cart_item['quantity'] > 0 ) {
+
+			if ( $_course && 0 < $cart_item['quantity'] ) {
 				?>
-                <tr class="<?php echo esc_attr( apply_filters( 'learn_press_cart_item_class', 'cart-item', $cart_item ) ); ?>">
-					<?php do_action( 'learn_press_review_order_before_cart_item', $cart_item ); ?>
+                <tr class="<?php echo esc_attr( apply_filters( 'learn-press/review-order/cart-item-class', 'cart-item', $cart_item, $cart_item_key ) ); ?>">
+
+					<?php
+					/**
+					 * @deprecated
+					 */
+					do_action( 'learn_press_review_order_before_cart_item', $cart_item );
+
+					/**
+					 * @since 3.x.x
+					 */
+					do_action( 'learn-press/review-order/before-cart-item', $cart_item, $cart_item_key );
+					?>
                     <td class="course-name">
-                        <a href="<?php the_permalink( $item_id ) ?>"
-                           style="box-shadow: none"><?php echo apply_filters( 'learn_press_cart_item_name', $_course->get_title(), $cart_item ) . '&nbsp;'; ?></a>
-						<?php echo apply_filters( 'learn_press_cart_item_quantity', ' <strong class="course-quantity">' . sprintf( '&times; %s', $cart_item['quantity'] ) . '</strong>', $cart_item ); ?>
+                        <a href="<?php the_permalink( $item_id ); ?>">
+							<?php echo apply_filters( 'learn-press/review-order/cart-item-name', $_course->get_title(), $cart_item, $cart_item_key ); ?>
+                        </a>
+						<?php echo apply_filters( 'learn-press/review-order/cart-item-quantity', ' <strong class="course-quantity">' . sprintf( '&times; %s', $cart_item['quantity'] ) . '</strong>', $cart_item, $cart_item_key ); ?>
                     </td>
                     <td class="course-total">
-						<?php echo apply_filters( 'learn_press_cart_item_subtotal', $cart->get_item_subtotal( $_course, $cart_item['quantity'] ), $cart_item ); ?>
+						<?php echo apply_filters( 'learn-press/review-order/cart-item-subtotal', $cart->get_item_subtotal( $_course, $cart_item['quantity'] ), $cart_item, $cart_item_key ); ?>
                     </td>
-					<?php do_action( 'learn_press_review_order_after_cart_item', $cart_item ); ?>
+					<?php
+
+					/**
+					 * @since 3.x.x
+					 */
+					do_action( 'learn-press/review-order/after-cart-item', $cart_item, $cart_item_key );
+
+					/**
+					 * @deprecated
+					 */
+					do_action( 'learn_press_review_order_after_cart_item', $cart_item );
+					?>
+
                 </tr>
 				<?php
 			}
 		}
-	} ?>
+	}
 
-	<?php do_action( 'learn_press_review_order_after_cart_contents' ); ?>
+	/**
+	 * @since 3.x.x
+	 */
+
+	do_action( 'learn-press/review-order/after-cart-contents' );
+
+	/**
+	 * @deprecated
+	 */
+	do_action( 'learn_press_review_order_after_cart_contents' );
+
+	?>
 
     </tbody>
 
     <tfoot>
 
     <tr class="cart-subtotal">
+
+		<?php
+		/**
+		 * @since 3.x.x
+		 */
+		do_action( 'learn-press/review-order/before-subtotal-row' );
+		?>
+
         <th><?php _e( 'Subtotal', 'learnpress' ); ?></th>
         <td><?php echo $cart->get_subtotal(); ?></td>
+
+		<?php
+		/**
+		 * @since 3.x.x
+		 */
+		do_action( 'learn-press/review-order/after-subtotal-row' );
+		?>
     </tr>
 
-	<?php do_action( 'learn_press_review_order_before_order_total' ); ?>
+	<?php
+	/**
+	 * @deprecated
+	 */
+	do_action( 'learn_press_review_order_before_order_total' );
+
+	/**
+	 * @since 3.x.x
+	 */
+	do_action( 'learn-press/review-order/before-order-total' );
+
+	?>
 
     <tr class="order-total">
+		<?php
+		/**
+		 * @since 3.x.x
+		 */
+		do_action( 'learn-press/review-order/before-total-row' );
+		?>
+
         <th><?php _e( 'Total', 'learnpress' ); ?></th>
         <td><?php echo $cart->get_total(); ?></td>
+
+		<?php
+		/**
+		 * @since 3.x.x
+		 */
+		do_action( 'learn-press/review-order/after-total-row' );
+		?>
     </tr>
 
-	<?php do_action( 'learn_press_review_order_after_order_total' ); ?>
+	<?php
+
+	/**
+	 * @since 3.x.x
+	 */
+	do_action( 'learn-press/review-order/after-order-total' );
+
+	/**
+	 * @deprecated
+	 */
+	do_action( 'learn_press_review_order_after_order_total' );
+
+	?>
 
     </tfoot>
 

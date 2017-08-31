@@ -85,7 +85,7 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 
 		$this->method_title       = 'Paypal';
 		$this->method_description = 'Make payment via Paypal';
-		$this->icon = 'http://localhost/learnpress/dev/wp-content/plugins/woocommerce/includes/gateways/paypal/assets/images/paypal.png';
+		$this->icon               = 'http://localhost/learnpress/dev/wp-content/plugins/woocommerce/includes/gateways/paypal/assets/images/paypal.png';
 
 		$this->title       = 'Paypal';
 		$this->description = __( 'Pay with Paypal', 'learnpress' );
@@ -469,11 +469,16 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 		return $paypal_payment_url;
 	}
 
+	/**
+	 * @param LP_Order $order
+	 *
+	 * @return array
+	 */
 	public function get_paypal_args( $order ) {
 		$this->prepare_line_items();
 		$user   = learn_press_get_current_user();
 		$nonce  = wp_create_nonce( 'learn-press-paypal-nonce' );
-		$custom = array( 'order_id' => $order->id, 'order_key' => $order->order_key );
+		$custom = array( 'order_id' => $order->get_id(), 'order_key' => $order->get_order_key() );
 
 		$args = array_merge(
 			array(
@@ -490,12 +495,11 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 				//'invoice'       => $order->id,
 				'custom'        => json_encode( $custom ),
 				'notify_url'    => get_site_url() . '/?' . learn_press_get_web_hook( 'paypal' ) . '=1',
-				'email'         => $user->user_email
+				'email'         => $user->get_email()
 			),
 			$this->get_item_lines()
 		);
 
-		//print_r($args);die();
 		return apply_filters( 'learn_press_paypal_args', $args );
 	}
 
@@ -519,6 +523,11 @@ class LP_Gateway_Paypal extends LP_Gateway_Abstract {
 							array(
 								'field'   => '[enable]',
 								'compare' => '=',
+								'value'   => 'yes'
+							),
+							array(
+								'field'   => '[paypal_sandbox]',
+								'compare' => '!=',
 								'value'   => 'yes'
 							)
 						)

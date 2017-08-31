@@ -47,6 +47,8 @@ var LP_Curriculum_i18n_Store = (function (Vue, helpers, data) {
 var LP_Curriculum_Sections_Store = (function (Vue, helpers, data) {
     var state = helpers.cloneObject(data.sections);
 
+    state.statusUpdateSection = {};
+
     var getters = {
         sections: function (state) {
             return state.sections || [];
@@ -62,6 +64,9 @@ var LP_Curriculum_Sections_Store = (function (Vue, helpers, data) {
             var sections = getters['sections'];
 
             return hiddenSections.length === sections.length;
+        },
+        statusUpdateSection: function (state) {
+            return state.statusUpdateSection;
         }
     };
 
@@ -137,6 +142,18 @@ var LP_Curriculum_Sections_Store = (function (Vue, helpers, data) {
 
         'UPDATE_HIDDEN_SECTIONS': function (state, sections) {
             state.hidden_sections = sections;
+        },
+
+        'UPDATE_SECTION_REQUEST': function (state, sectionId) {
+            Vue.set(state.statusUpdateSection, sectionId, 'updating');
+        },
+
+        'UPDATE_SECTION_SUCCESS': function (state, sectionId) {
+            Vue.set(state.statusUpdateSection, sectionId, 'successful');
+        },
+
+        'UPDATE_SECTION_FAILURE': function (state, sectionId) {
+            Vue.set(state.statusUpdateSection, sectionId, 'failed');
         }
     };
 
@@ -178,10 +195,19 @@ var LP_Curriculum_Sections_Store = (function (Vue, helpers, data) {
         },
 
         updateSection: function (context, section) {
-            Vue.http.LPRequest({
-                type: 'update-section',
-                section: section
-            });
+            context.commit('UPDATE_SECTION_REQUEST', section.id);
+
+            Vue.http
+                .LPRequest({
+                    type: 'update-section',
+                    section: JSON.stringify(section)
+                })
+                .then(function () {
+                    context.commit('UPDATE_SECTION_SUCCESS', section.id);
+                })
+                .catch(function () {
+                    context.commit('UPDATE_SECTION_FAILURE', section.id);
+                })
         },
 
         updateSortSections: function (context, orders) {
@@ -558,6 +584,10 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
         newRequest: function (context) {
             context.commit('INCREASE_NUMBER_REQUEST');
             context.commit('UPDATE_STATUS', 'loading');
+
+            window.onbeforeunload = function () {
+                return '';
+            }
         },
 
         requestComplete: function (context, status) {
@@ -565,6 +595,7 @@ var LP_Choose_Items_Modal_Store = (function (exports, Vue, helpers, data) {
 
             if (context.getters.currentRequest === 0) {
                 context.commit('UPDATE_STATUS', status);
+                window.onbeforeunload = null;
             }
         }
     };

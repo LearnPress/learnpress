@@ -63,6 +63,9 @@ class LP_Session_Handler {
 	 * @param mixed $value
 	 */
 	public function __set( $key, $value ) {
+		//if ( $key === 'order_awaiting_payment' ) {
+
+		//}
 		$this->set( $key, $value );
 	}
 

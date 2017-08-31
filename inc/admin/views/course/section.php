@@ -10,7 +10,7 @@ learn_press_admin_view( 'course/new-section-item' );
 
 ?>
 <script type="text/x-template" id="tmpl-lp-section">
-    <div class="section" :class="isOpen ? 'open' : 'close'">
+    <div class="section" :class="[isOpen ? 'open' : 'close', status]">
         <div class="section-head" @dblclick="toggle">
             <span class="movable"></span>
             <input v-model="section.title"
@@ -91,6 +91,9 @@ learn_press_admin_view( 'course/new-section-item' );
                 });
             },
             computed: {
+                status: function () {
+                    return $store.getters['ss/statusUpdateSection'][this.section.id] || '';
+                },
                 isOpen: function () {
                     var section = this.section;
                     var hiddenSections = $store.getters['ss/hiddenSections'];
@@ -186,7 +189,7 @@ learn_press_admin_view( 'course/new-section-item' );
                 },
                 update: function () {
                     this.unsaved = false;
-                    $store.dispatch('ss/updateSection', JSON.stringify(this.section));
+                    $store.dispatch('ss/updateSection', this.section);
                 },
                 openChooseItems: function () {
                     $store.dispatch('ci/open', parseInt(this.section.id));

@@ -637,7 +637,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		/**
 		 * Course payment
 		 *
-		 * @return mixed|null|void
+		 * @return array
 		 */
 		public static function payment_meta_box() {
 
@@ -651,14 +651,14 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				'pages'    => array( LP_COURSE_CPT ),
 				'icon'     => 'dashicons-clipboard',
 				'fields'   => array(
-					array(
-						'name'  => __( 'Course payment', 'learnpress' ),
-						'id'    => "{$prefix}payment",
-						'type'  => 'yes-no',
-						'desc'  => __( '', 'learnpress' ),
-						'std'   => 'no',
-						'class' => 'lp-course-payment-field'
-					)
+//					array(
+//						'name'  => __( 'Course payment', 'learnpress' ),
+//						'id'    => "{$prefix}payment",
+//						'type'  => 'yes-no',
+//						'desc'  => __( '', 'learnpress' ),
+//						'std'   => 'no',
+//						'class' => 'lp-course-payment-field'
+//					)
 				)
 			);
 
@@ -694,14 +694,14 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					};
 				}
 				$conditional = array(
-					'state'       => 'show',
-					'conditional' => array(
-						array(
-							'field'   => "{$prefix}payment",
-							'compare' => '=',
-							'value'   => 'yes'
-						)
-					)
+//					'state'       => 'show',
+//					'conditional' => array(
+//						array(
+//							'field'   => "{$prefix}payment",
+//							'compare' => '=',
+//							'value'   => 'yes'
+//						)
+//					)
 				);
 				array_push(
 					$meta_box['fields'],
@@ -771,7 +771,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				$meta_box['fields'],
 				array(
 					array(
-						'name'       => __( 'Requires enroll', 'learnpress' ),
+						'name'       => __( 'Require enrollment', 'learnpress' ),
 						'id'         => "{$prefix}required_enroll",
 						'type'       => 'yes_no',
 						'desc'       => __( 'Require users logged in to study or public to all.', 'learnpress' ),
@@ -782,7 +782,9 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				)
 			);
 
-			return apply_filters( 'learn_press_course_payment_meta_box_args', $meta_box );
+			$meta_box = apply_filters( 'learn_press_course_payment_meta_box_args', $meta_box );
+
+			return apply_filters( 'learn-press/course-settings/payments', $meta_box );
 		}
 
 		/**
@@ -1117,14 +1119,13 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		private function _update_price() {
 			global $wpdb, $post;
 			$request          = $_POST;
-			$payment          = learn_press_get_request( '_lp_payment' ) == 1;
 			$price            = floatval( $request['_lp_price'] );
 			$sale_price       = $request['_lp_sale_price'];
 			$sale_price_start = $request['_lp_sale_start'];
 			$sale_price_end   = $request['_lp_sale_end'];
 			$keys             = array();
 			// Delete all meta no need anymore
-			if ( ! $payment || $price <= 0 ) {
+			if ( $price <= 0 ) {
 				$keys = array( '_lp_payment', '_lp_price', '_lp_sale_price', '_lp_sale_start', '_lp_sale_end' );
 			} else if ( ( $sale_price == '' ) || ( $sale_price < 0 ) || ( absint( $sale_price ) >= $price ) || ! $this->_validate_sale_price_date() ) {
 				$keys = array( '_lp_sale_price', '_lp_sale_start', '_lp_sale_end' );
@@ -1138,7 +1139,8 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 					AND post_id = %d
 				";
 				$keys[] = $post->ID;
-				$wpdb->query( $wpdb->prepare( $sql, $keys ) );
+				$sql = $wpdb->prepare( $sql, $keys );
+				$wpdb->query( $sql );
 				foreach ( $keys as $key ) {
 					unset( $_REQUEST[ $key ] );
 					unset( $_POST[ $key ] );
@@ -1155,7 +1157,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		 */
 		private function _validate_sale_price_date() {
 			$now              = current_time( 'timestamp' );
-			$sale_price_start = $_REQUEST['_lp_sale_start'];
+			$sale_price_start = learn_press_get_request()['_lp_sale_start'];
 			$sale_price_end   = $_REQUEST['_lp_sale_end'];
 			$end              = strtotime( $sale_price_end );
 			$start            = strtotime( $sale_price_start );
@@ -1447,6 +1449,9 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 			return apply_filters( 'learn_press_course_video_meta_box_args', $meta_box );
 		}
 
+		public function update_payment(){
+			//learn_press_debug($_REQUEST);die();
+		}
 
 		public static function instance() {
 			if ( ! self::$_instance ) {

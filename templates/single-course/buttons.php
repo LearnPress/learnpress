@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-$course = LP()->global['course'];
+$user = LP_Global::user();
 
 ?>
 <div class="lp-course-buttons">
@@ -20,9 +20,9 @@ $course = LP()->global['course'];
 
 	<?php
 	/**
-	 * @hooked learn_press_purchase_course_button - 10
-	 * @hooked learn_press_enroll_course_button - 10
-	 * @hooked learn_press_retake_course_button - 10
+	 * @see learn_press_purchase_course_button - 10
+	 * @see learn_press_enroll_course_button - 10
+	 * @see learn_press_retake_course_button - 10
 	 */
 	do_action( 'learn-press/course-buttons' );
 	?>
