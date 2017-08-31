@@ -46,7 +46,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 * order with post_parent is ID of main order. And, we do not
 		 * want to show these orders in the list.
 		 *
-		 * @param array  $counts
+		 * @param array $counts
 		 * @param string $type
 		 * @param string $perm
 		 *
@@ -299,7 +299,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 				$wpdb->query( $sql );
 			}
 			update_post_meta( $post_id, '_lp_multi_users', 'yes', 'yes' );
-			learn_press_reset_auto_increment( $wpdb->postmeta );
+			learn_press_reset_auto_increment( 'postmeta' );
 		}
 
 		/**
@@ -348,7 +348,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 						$new_order->set_parent_id( $order->get_id() );
 						$new_order->set_user_id( $uid );
 
-						$new_order->set_status(learn_press_get_request( 'order-status' ) );
+						$new_order->set_status( learn_press_get_request( 'order-status' ) );
 						$new_order->save();
 					}
 					$order->set_user_id( $user_id );
@@ -530,7 +530,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		/**
 		 * Custom row's actions.
 		 *
-		 * @param array   $actions
+		 * @param array $actions
 		 * @param WP_Post $post
 		 *
 		 * @since 2.1.7

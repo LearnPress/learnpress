@@ -38,6 +38,7 @@ class LP_Schedules {
 				wp_redirect( get_permalink( $course->get_id() ) );
 			}
 		}
+
 		return $template;
 	}
 
@@ -52,7 +53,7 @@ class LP_Schedules {
 
 	public function delete_user_guest_transient() {
 		global $wpdb;
-		$time  = time();
+		$time = time();
 
 		$sql   = "DELETE a, b FROM $wpdb->options a, $wpdb->options b
 			WHERE a.option_name LIKE %s
@@ -86,7 +87,7 @@ class LP_Schedules {
 				)
 			);
 		}
-		learn_press_reset_auto_increment( $wpdb->options );
+		learn_press_reset_auto_increment( 'options' );
 	}
 
 	public function schedule_update_user_items() {

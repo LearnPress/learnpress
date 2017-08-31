@@ -1,19 +1,13 @@
 <?php
 /**
- * Display order details in user profile.
- *
  * @author        ThimPress
  * @package       LearnPress/Templates
- * @version       3.x.x
+ * @version       1.0
  */
 
-
 defined( 'ABSPATH' ) || exit();
-
-global $profile;
-
-if ( false === ( $order = $profile->get_view_order() ) ) {
-	return;
-}
+global $wp_query;
 
 learn_press_get_template( 'order/order-details.php', array( 'order' => $order ) );
+?>
+<a href="<?php echo learn_press_get_page_link( 'profile' ); ?>"><?php _e( 'My Profile', 'learnpress' ); ?></a>

@@ -1,19 +1,25 @@
 <?php
 /**
- * Template for displaying profile header.
+ * Template for displaying user profile cover image.
  *
  * @author  ThimPress
  * @package LearnPress/Templates
  * @version 3.x.x
  */
 
-defined( 'ABSPATH' ) or exit;
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit;
+?>
 
+<?php
 global $profile;
 
 $user = $profile->get_user();
 learn_press_get_course();
 ?>
+
 <div id="learn-press-profile-header" class="lp-profile-header">
     <div class="lp-profile-cover">
         <div class="lp-profile-avatar">
