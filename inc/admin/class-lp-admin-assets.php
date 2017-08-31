@@ -12,8 +12,14 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 	 */
 	public function __construct() {
 		parent::__construct();
-		add_action( 'learn-press/enqueue-script/learn-press-modal-search-items', array('LP_Modal_Search_Items', 'instance') );
-		add_action( 'learn-press/enqueue-script/learn-press-modal-search-users', array('LP_Modal_Search_Users', 'instance'));
+		add_action( 'learn-press/enqueue-script/learn-press-modal-search-items', array(
+			'LP_Modal_Search_Items',
+			'instance'
+		) );
+		add_action( 'learn-press/enqueue-script/learn-press-modal-search-users', array(
+			'LP_Modal_Search_Users',
+			'instance'
+		) );
 	}
 
 
@@ -51,6 +57,15 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				'lp-vue-resource'        => array(
 					'url' => self::url( 'js/vendor/vue-resource.1.3.4.js' ),
 					'ver' => '1.3.4'
+				),
+				'lp-sortable'            => array(
+					'url' => self::url( 'js/vendor/sortable.1.6.0.js' ),
+					'ver' => '1.6.0'
+				),
+				'lp-vuedraggable'        => array(
+					'url'  => self::url( 'js/vendor/vuedraggable.2.14.1.js' ),
+					'ver'  => '2.14.1',
+					'deps' => array( 'lp-sortable' )
 				),
 				'learn-press-global'     => array(
 					'url'  => $this->url( 'js/global.js' ),
@@ -115,7 +130,8 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 					'deps'    => array(
 						'lp-vue',
 						'lp-vuex',
-						'lp-vue-resource'
+						'lp-vue-resource',
+						'lp-vuedraggable',
 					),
 					'screens' => array( LP_COURSE_CPT )
 				),
@@ -127,7 +143,11 @@ class LP_Admin_Assets extends LP_Abstract_Assets {
 				),
 				'learn-press-meta-box-order'     => array(
 					'url'     => $this->url( 'js/admin/meta-box-order.js' ),
-					'deps'    => array( 'learn-press-global', 'learn-press-modal-search-items','learn-press-modal-search-users' ),
+					'deps'    => array(
+						'learn-press-global',
+						'learn-press-modal-search-items',
+						'learn-press-modal-search-users'
+					),
 					'screens' => array( LP_ORDER_CPT )
 				)
 			)
