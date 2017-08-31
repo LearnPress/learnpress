@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Class LP_Request_Handler
+ * Class LP_Request
  *
  * Process actions by request param
  *
@@ -15,9 +15,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class LP_Request_Handler
+ * Class LP_Request
  */
-class LP_Request_Handler {
+class LP_Request {
 
 	/**
 	 * @var null
@@ -39,19 +39,19 @@ class LP_Request_Handler {
 		add_action( 'save_post', array( __CLASS__, 'clean_cache' ), 1000000 );
 
 		/**
-		 * @see LP_Request_Handler::purchase_course()
+		 * @see LP_Request::purchase_course()
 		 */
-		LP_Request_Handler::register( 'purchase-course', array( __CLASS__, 'purchase_course' ), 20 );
-		LP_Request_Handler::register( 'enroll-course', array( __CLASS__, 'purchase_course' ), 20 );
+		LP_Request::register( 'purchase-course', array( __CLASS__, 'purchase_course' ), 20 );
+		LP_Request::register( 'enroll-course', array( __CLASS__, 'purchase_course' ), 20 );
 
 		/**
-		 * @see LP_Request_Handler::do_checkout()
+		 * @see LP_Request::do_checkout()
 		 */
 		add_action( 'learn-press/purchase-course-handler', array( __CLASS__, 'do_checkout' ), 10, 3 );
 		add_action( 'learn-press/enroll-course-handler', array( __CLASS__, 'do_checkout' ), 10, 3 );
 
 		/**
-		 * @see LP_Request_Handler::do_enroll()
+		 * @see LP_Request::do_enroll()
 		 */
 		add_action( 'learn-press/purchase-course-handler/enroll', array( __CLASS__, 'do_enroll' ), 10, 3 );
 		add_action( 'learn-press/enroll-course-handler/enroll', array( __CLASS__, 'do_enroll' ), 10, 3 );
@@ -72,6 +72,7 @@ class LP_Request_Handler {
 		$course_id = apply_filters( 'learn-press/purchase-course-id', $course_id );
 		$course    = learn_press_get_course( $course_id );
 
+
 		if ( ! $course ) {
 			return false;
 		}
@@ -82,7 +83,6 @@ class LP_Request_Handler {
 		$order         = $user->get_course_order( $course_id );
 		$add_to_cart   = false;
 		$enroll_course = false;
-
 		try {
 			/**
 			 * If there is no order of user related to course.
@@ -99,12 +99,8 @@ class LP_Request_Handler {
 						 * If user has already purchased course but did not finish.
 						 * This mean user has to finish course before purchasing that course itself.
 						 */
-						if ( $order->has_status( array( 'completed' ) ) ) {
-							if ( ! $user->has_course_status( $course->get_id(), array( 'finished' ) ) ) {
-								throw new Exception( __( 'You have purchased course and has not finished.', 'learnpress' ) );
-							} else {
-								$add_to_cart = true;
-							}
+						if ( $order->has_status( array( 'completed' ) ) && ! $user->has_course_status( $course->get_id(), array( 'finished' ) ) ) {
+							throw new Exception( __( 'You have purchased course and has not finished.', 'learnpress' ) );
 						}
 
 						/**
@@ -122,9 +118,8 @@ class LP_Request_Handler {
 						if ( $order->has_status( 'pending' ) ) {
 							// TODO: update order
 							LP()->session->set( 'order_awaiting_payment', $order->get_id() );
-						} else {
-							$add_to_cart = true;
 						}
+						$add_to_cart = true;
 
 						break;
 
@@ -169,18 +164,20 @@ class LP_Request_Handler {
 
 				// If cart is disabled then clean the cart
 				if ( ! learn_press_enable_cart() ) {
+					$order_awaiting_payment = LP()->session->order_awaiting_payment;
 					$cart->empty_cart();
+					LP()->session->order_awaiting_payment = $order_awaiting_payment;
 				}
 
 				if ( $cart_id = $cart->add_to_cart( $course_id, 1, array() ) ) {
 					/**
-					 * @see LP_Request_Handler::do_checkout()
+					 * @see LP_Request::do_checkout()
 					 */
 					do_action( "learn-press/{$action}-handler", $course_id, $cart_id, $action );
 				}
 			} elseif ( $enroll_course ) {
 				/**
-				 * @see LP_Request_Handler::do_enroll()
+				 * @see LP_Request::do_enroll()
 				 */
 				do_action( "learn-press/{$action}-handler/enroll", $course_id, $order->get_id(), $action );
 			}
@@ -195,9 +192,6 @@ class LP_Request_Handler {
 			}
 
 			// TODO: anything here?
-
-			print_r( $e->getMessage() );
-			die();
 
 			return false;
 		}
@@ -246,9 +240,23 @@ class LP_Request_Handler {
 	}
 
 	public static function do_enroll( $course_id, $order_id, $action ) {
-		echo __FUNCTION__;
-		print_r( func_get_args() );
-		die();
+		$curd = new LP_User_CURD();
+		global $wpdb;
+		$order = learn_press_get_order( $order_id );
+		$wpdb->insert(
+			$wpdb->learnpress_user_items,
+			array(
+				'user_id'   => $order->get_user( 'id' ),
+				'item_id'   => $course_id,
+				'item_type' => get_post_type( $course_id ),
+				'status'    => 'enrolled',
+				'ref_id'    => $order_id,
+				'ref_type'  => get_post_type( $order_id ),
+				'parent_id' => 0
+			)
+		);
+		learn_press_add_message(__('CONGRATS! YOU HAVE ENROLLED COURSE'));
+		wp_redirect(get_the_permalink($course_id));
 	}
 
 	/**
@@ -341,6 +349,192 @@ class LP_Request_Handler {
 		add_action( 'learn_press_ajax_handler_' . $action, $function, $priority );
 
 	}
+
+	/**
+	 * Get variable value from Server environment.
+	 *
+	 * @param string $var
+	 * @param mixed  $default
+	 * @param string $type
+	 * @param string $env
+	 *
+	 * @return mixed
+	 */
+	public static function get( $var, $default = false, $type = '', $env = 'request' ) {
+		$env = array();
+		switch ( strtolower( $env ) ) {
+			case 'post':
+				$env = $_POST;
+				break;
+			case 'get':
+				$env = $_GET;
+				break;
+			default:
+				$env = $_REQUEST;
+		}
+		$return = array_key_exists( $var, $env ) ? $env[ $var ] : $default;
+		switch ( $type ) {
+			case 'int':
+				$return = intval( $return );
+				break;
+			case 'float':
+				$return = floatval( $return );
+				break;
+			case 'bool':
+				$return = ! ! $return;
+				break;
+			case 'string':
+				$return = (string) $return;
+				break;
+			case 'array':
+				$return = (array) $return;
+				break;
+		}
+
+		return $return;
+	}
+
+	/**
+	 * Get value int from environment.
+	 *
+	 * @param string $var
+	 * @param mixed  $default
+	 * @param string $env
+	 *
+	 * @return int
+	 */
+	public static function get_int( $var, $default = false, $env = 'request' ) {
+		return self::get( $var, $default, 'int', $env );
+	}
+
+	/**
+	 * Get value float from environment.
+	 *
+	 * @param string $var
+	 * @param mixed  $default
+	 * @param string $env
+	 *
+	 * @return float
+	 */
+	public static function get_float( $var, $default = false, $env = 'request' ) {
+		return self::get( $var, $default, 'float', $env );
+	}
+
+	/**
+	 * Get value bool from environment.
+	 *
+	 * @param string $var
+	 * @param mixed  $default
+	 * @param string $env
+	 *
+	 * @return bool
+	 */
+	public static function get_bool( $var, $default = false, $env = 'request' ) {
+		return self::get( $var, $default, 'bool', $env );
+	}
+
+	/**
+	 * Get value string from environment.
+	 *
+	 * @param string $var
+	 * @param mixed  $default
+	 * @param string $env
+	 *
+	 * @return string
+	 */
+	public static function get_string( $var, $default = false, $env = 'request' ) {
+		return self::get( $var, $default, 'string', $env );
+	}
+
+	/**
+	 * Get value array from environment.
+	 *
+	 * @param string $var
+	 * @param mixed  $default
+	 * @param string $env
+	 *
+	 * @return array
+	 */
+	public static function get_array( $var, $default = false, $env = 'request' ) {
+		return self::get( $var, $default, 'array', $env );
+	}
+
+	/**
+	 * Get value from $_POST.
+	 *
+	 * @param string $var
+	 * @param mixed  $default
+	 *
+	 * @return mixed
+	 */
+	public static function get_post( $var, $default = false, $type = '' ) {
+		return self::get( $var, $default, $type, 'post' );
+	}
+
+	/**
+	 * Get value int from $_POST.
+	 *
+	 * @param string $var
+	 * @param mixed  $default
+	 *
+	 * @return int
+	 */
+	public static function get_post_int( $var, $default = false ) {
+		return self::get_post( $var, $default, 'int' );
+	}
+
+	/**
+	 * Get value float from $_POST.
+	 *
+	 * @param string $var
+	 * @param mixed  $default
+	 *
+	 * @return float
+	 */
+	public static function get_post_float( $var, $default = false ) {
+		return self::get_post( $var, $default, 'float' );
+	}
+
+	/**
+	 * Get value bool from $_POST.
+	 *
+	 * @param string $var
+	 * @param mixed  $default
+	 *
+	 * @return bool
+	 */
+	public static function get_post_bool( $var, $default = false ) {
+		return self::get_post( $var, $default, 'bool' );
+	}
+
+	/**
+	 * Get value string from $_POST.
+	 *
+	 * @param string $var
+	 * @param mixed  $default
+	 *
+	 * @return string
+	 */
+	public static function get_post_string( $var, $default = false ) {
+		return self::get_post( $var, $default, 'string' );
+	}
+
+	/**
+	 * Get value array from $_POST.
+	 *
+	 * @param string $var
+	 * @param mixed  $default
+	 *
+	 * @return array
+	 */
+	public static function get_post_array( $var, $default = false ) {
+		return self::get_post( $var, $default, 'array' );
+	}
 }
 
-LP_Request_Handler::init();
+LP_Request::init();
+
+// Backward compatibility
+class LP_Request_Handler extends LP_Request {
+
+}

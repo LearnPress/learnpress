@@ -116,7 +116,7 @@ class LP_Assets extends LP_Abstract_Assets {
 				switch ( $handle ) {
 					case 'checkout':
 						$enqueue = false;
-						if ( learn_press_is_course() ) {
+						if ( learn_press_is_course() || learn_press_is_checkout() ) {
 							$enqueue = true;
 						}
 

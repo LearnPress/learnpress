@@ -18,6 +18,29 @@ if ( ! function_exists( 'learn_press_purchase_course_button' ) ) {
 	 * Purchase course button
 	 */
 	function learn_press_purchase_course_button() {
+		$course = LP_Global::course();
+		$user   = LP_Global::user();
+
+		// If course is not published
+		if ( ! $course->is_publish() ) {
+			return;
+		}
+
+		// If course is FREE and no require enrollment.
+		if ( $course->is_free() && ! $course->is_require_enrollment() ) {
+			return;
+		}
+
+		// If course is reached limitation.
+		if ( ! $course->is_in_stock() ) {
+			return;
+		}
+
+		// If user has already purchased course but has not finished yet.
+		if ( $user->has_purchased_course( $course->get_id() ) && 'finished' !== $user->get_course_status( $course->get_id() ) ) {
+			return;
+		}
+
 		learn_press_get_template( 'single-course/buttons/purchase.php' );
 	}
 
@@ -1209,6 +1232,13 @@ function learn_press_get_messages( $clear = false ) {
 	return ob_get_clean();
 }
 
+/**
+ * Add new message into queue for displaying.
+ *
+ * @param string $message
+ * @param string $type
+ * @param bool   $autoclose
+ */
 function learn_press_add_message( $message, $type = 'success', $autoclose = false ) {
 	$messages = learn_press_session_get( 'messages' );
 	if ( empty( $messages[ $type ] ) ) {
@@ -1237,6 +1267,21 @@ function learn_press_print_messages( $clear = true ) {
 	if ( $clear ) {
 		learn_press_session_set( 'messages', array() );
 	}
+}
+
+function learn_press_message_count( $type = '' ) {
+	$count    = 0;
+	$messages = learn_press_session_get( 'messages', array() );
+
+	if ( isset( $messages[ $type ] ) ) {
+		$count = absint( sizeof( $messages[ $type ] ) );
+	} elseif ( empty( $type ) ) {
+		foreach ( $messages as $message ) {
+			$count += absint( sizeof( $message ) );
+		}
+	}
+
+	return $count;
 }
 
 /**

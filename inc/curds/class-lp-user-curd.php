@@ -738,4 +738,8 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 		return $data;
 	}
+
+	public function evaluate_course_results(){
+
+	}
 }

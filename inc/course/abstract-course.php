@@ -255,6 +255,10 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 		return LP_COURSE_CPT === get_post_type( $this->get_id() );
 	}
 
+	public function is_publish() {
+		return 'publish' === get_post_status( $this->get_id() );
+	}
+
 	/**
 	 * The course is require enrollment or not
 	 *
@@ -280,7 +284,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	}
 
 	public function get_title() {
-		return apply_filters( 'learn_press_course_title', $this->post ? $this->post->post_title : '', $this );
+		return get_the_title( $this->get_id() );
 	}
 
 	/**
@@ -327,7 +331,6 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 				$curriculum[ $section->section_id ] = new LP_Course_Section( $section );
 			}
 		}
-		//_learn_press_get_course_curriculum( $this->get_id(), $force );
 		$return = false;
 		if ( $section_id ) {
 			if ( ! empty( $curriculum[ $section_id ] ) ) {
@@ -1074,9 +1077,9 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 						$key       = preg_replace( '!lp_!', '', get_post_type( $item_id ) );
 						$permalink = add_query_arg( array( $key => $post_name ), $permalink );
 					}
+					$permalink = $has_query ? untrailingslashit( $permalink ) : trailingslashit( $permalink );
 					break;
 			}
-			$permalink          = $has_query ? untrailingslashit( $permalink ) : trailingslashit( $permalink );
 			$item_links[ $key ] = $permalink;
 		}
 
@@ -1252,7 +1255,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	 * @param int     $user_id
 	 * @param boolean $force
 	 *
-	 * @return mixed|null|void
+	 * @return mixed
 	 */
 	public function evaluate_course_results( $user_id = 0, $force = false ) {
 		if ( ! $user_id ) {
@@ -1261,16 +1264,15 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 
 		$quizzes = $this->get_quizzes();
 
-		if ( ( 'evaluate_lesson' === $this->course_result ) || ! $quizzes ) {
-			//$results = $this->_evaluate_course_by_items( $user_id, $force );
+		if ( ( 'evaluate_lesson' === $this->get_data( 'course_result' ) ) || ! $quizzes ) {
 			$results = $this->_evaluate_course_by_lesson( $user_id, $force );
-		} elseif ( 'evaluate_final_quiz' === $this->course_result ) {
+		} elseif ( 'evaluate_final_quiz' === $this->get_data( 'course_result' ) ) {
 			$results = $this->_evaluate_course_by_quiz( $user_id, $force );
-		} elseif ( 'evaluate_quiz' === $this->course_result ) {
+		} elseif ( 'evaluate_quiz' === $this->get_data( 'course_result' ) ) {
 			$results = $this->_evaluate_course_by_quizzes( $user_id, $force );
-		} elseif ( 'evaluate_quizzes' === $this->course_result ) {
+		} elseif ( 'evaluate_quizzes' === $this->get_data( 'course_result' ) ) {
 			$results = $this->_evaluate_course_by_quizzes_results( $user_id, $force );
-		} elseif ( 'evaluate_passed_quizzes' === $this->course_result ) {
+		} elseif ( 'evaluate_passed_quizzes' === $this->get_data( 'course_result' ) ) {
 			$results = $this->_evaluate_course_by_passed_quizzes_results( $user_id, $force );
 		}
 
@@ -1384,7 +1386,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	}
 
 	public function is_evaluation( $thing ) {
-		return $this->course_result == $thing;
+		return $this->get_data( 'course_result' ) == $thing;
 	}
 
 	/**
@@ -1426,7 +1428,7 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	}
 
 	/**
-	 * Calculate results of course by lesson user completed
+	 * Calculate results of course by lessons user completed.
 	 *
 	 * @param int     $user_id
 	 * @param boolean $force
@@ -1434,6 +1436,9 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	 * @return int|mixed|null|void
 	 */
 	public function _evaluate_course_by_lesson( $user_id, $force = false ) {
+		if ( func_num_args() > 1 ) {
+			_deprecated_argument( '$force', '3.x.x' );
+		}
 		//static $evaluate_course_by_lesson = array();
 		$evaluate_course_by_lesson = LP_Cache::get_evaluate_course_by_lesson( false, array() );
 		$key                       = $user_id . '-' . $this->get_id();

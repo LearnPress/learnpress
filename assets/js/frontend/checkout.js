@@ -77,28 +77,24 @@
                     type: 'post',
                     success: function (response) {
                         response = LP.parseJSON(response);
-                        if (response.result === 'fail') {
-                            if (!response.messages) {
-                                if (response.code && response.code == 30) {
-                                    showMessage('<div class="learn-press-error">' + options.i18n_invalid_field + '</div>');
-                                } else {
-                                    showMessage('<div class="learn-press-error">' + options.i18n_unknown_error + '</div>');
+                        try {
+                            if ('success' === response.result) {
+                                if (response.redirect.match(/https?/)) {
+                                    window.location = response.redirect;
                                 }
+                            } else {
+                                throw "ERROR";
+                            }
+                        } catch (error) {
+                            if (!response.messages) {
+                                showMessage('<div class="learn-press-error">' + options.i18n_invalid_field + '</div>');
                             } else {
                                 showMessage(response.messages);
                             }
-
-                        } else if (response.result === 'success') {
-                            if (response.redirect) {
-                                $buttonCheckout.val(options.i18n_redirecting);
-                                //LP.reload(response.redirect);
-                                return;
-                            }
+                            $buttonCheckout.html(options.i18n_place_order);
+                            $buttonCheckout.prop('disabled', false);
+                            LP.unblockContent();
                         }
-                        $buttonCheckout.html(options.i18n_place_order);
-                        $buttonCheckout.prop('disabled', false);
-                        console.log(123)
-                        LP.unblockContent();
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
                         showMessage('<div class="learn-press-error">' + errorThrown + '</div>');
@@ -149,7 +145,7 @@
             $(document).trigger('learn-press/checkout-error');
         }
 
-        var removeMessage = function(){
+        var removeMessage = function () {
             $('.learn-press-error, .learn-press-notice, .learn-press-message').remove();
         }
 
@@ -158,9 +154,6 @@
          */
         $buttonCheckout.on('click', function (e) {
 
-
-
-
         });
 
         $('.lp-button-guest-checkout').on('click', _guestCheckoutClick);
@@ -168,8 +161,6 @@
         $formCheckout.on('submit', _formSubmit);
 
         $payments.children('.selected').find('input[name="payment_method"]').trigger('select');
-
-        console.log(lpCheckoutSettings, options)
     }
 
     $(document).ready(function () {

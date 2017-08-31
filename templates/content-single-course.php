@@ -16,7 +16,8 @@ if ( post_password_required() ) {
 
 	return;
 }
-
+$user = LP_Global::user();
+print_r($user->get_course_status(get_the_ID()));
 /**
  * @deprecated
  */

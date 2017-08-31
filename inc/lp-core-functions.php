@@ -1876,11 +1876,16 @@ function learn_press_add_endpoints() {
 		 */
 		//return;
 	}
+	$defaults = array(
+		'order_received' => 'lp-order-received'
+	);
 	if ( $endpoints = LP()->settings->get( 'checkout_endpoints' ) ) {
 		foreach ( $endpoints as $endpoint => $value ) {
+
+			$value = $value ? $value : $defaults[$endpoint];
+
 			$endpoint                     = preg_replace( '!_!', '-', $endpoint );
 			LP()->query_vars[ $endpoint ] = $value;
-
 			add_rewrite_endpoint( $value, EP_PAGES );
 		}
 	}
@@ -1962,10 +1967,10 @@ function learn_press_get_log_file_path( $handle ) {
 /**
  * Get the cart object in checkout page
  *
- * @return mixed|null|void
+ * @return LP_Cart
  */
 function learn_press_get_checkout_cart() {
-	return apply_filters( 'learn_press_checkout_cart', LP()->cart );
+	return apply_filters( 'learn_press_checkout_cart', LP()->get_cart() );
 }
 
 function learn_press_front_scripts() {

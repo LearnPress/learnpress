@@ -25,12 +25,12 @@ class LP_Checkout {
 	 *
 	 * @var string
 	 */
-	public $payment_method = '';
+	public $payment_method = null;
 
 	/**
 	 * @var array|mixed|null|void
 	 */
-	public $checkout_fields = array();
+	protected $checkout_fields = array();
 
 	/**
 	 * @var null
@@ -48,16 +48,26 @@ class LP_Checkout {
 	public $order_comment = null;
 
 	/**
+	 * Handle the errors when checking out.
+	 *
+	 * @var array
+	 */
+	public $errors = array();
+
+	/**
 	 * Constructor
 	 */
 	public function __construct() {
+		add_filter( 'learn_press_checkout_validate_field', array( $this, 'validate_fields' ), 10, 3 );
+	}
+
+	public function get_checkout_fields() {
 		if ( ! is_user_logged_in() ) {
 			$this->checkout_fields['user_login']    = __( 'Username', 'learnpress' );
 			$this->checkout_fields['user_password'] = __( 'Password', 'learnpress' );
 		}
 		$this->checkout_fields = apply_filters( 'learn_press_checkout_fields', $this->checkout_fields );
-
-		add_filter( 'learn_press_checkout_validate_field', array( $this, 'validate_fields' ), 10, 3 );
+		return $this->checkout_fields;
 	}
 
 	/**
@@ -211,9 +221,50 @@ class LP_Checkout {
 	}
 
 	/**
-	 * Process checkout
+	 * Validate fields.
 	 *
-	 * @return array|mixed
+	 * @return bool
+	 */
+	public function validate_checkout_fields() {
+		$this->errors = array();
+		if ( $fields = $this->get_checkout_fields() ) {
+			foreach ( $fields as $name => $field ) {
+				$error = apply_filters( 'learn-press/validate-checkout-field', $field );
+				if ( is_wp_error( $error ) ) {
+					$this->errors[ $name ] = $error;
+				}
+			}
+		}
+
+		return ! sizeof( $this->errors );
+	}
+
+	public function validate_payment() {
+		$cart     = LP()->get_cart();
+		$validate = true;
+		if ( $cart->needs_payment() ) {
+
+			if ( ! $this->payment_method instanceof LP_Gateway_Abstract ) {
+				// Payment Method
+				$available_gateways = LP_Gateways::instance()->get_available_payment_gateways();
+				if ( ! isset( $available_gateways[ $this->payment_method ] ) ) {
+					$this->payment_method = '';
+					learn_press_add_message( __( 'Invalid payment method.', 'learnpress' ) );
+				} else {
+					$this->payment_method = $available_gateways[ $this->payment_method ];
+				}
+			}
+			if ( $this->payment_method ) {
+				$validate = $this->payment_method->validate_fields();
+			}
+		}
+
+		return $validate;
+	}
+
+	/**
+	 * Process checkout.
+	 *
 	 * @throws Exception
 	 */
 	public function process_checkout() {
@@ -222,135 +273,122 @@ class LP_Checkout {
 			// Prevent timeout
 			@set_time_limit( 0 );
 
+			/**
+			 * @deprecated
+			 */
 			do_action( 'learn_press_before_checkout_process' );
 
-			$success = true;
-			if ( LP()->cart->is_empty() ) {
-				return apply_filters( 'learn_press_checkout_cart_empty',
-					array(
-						'result'   => 'success',
-						'redirect' => learn_press_get_page_link( 'checkout' )
-					)
-				);
+			/**
+			 * @since 3.x.x
+			 */
+			do_action( 'learn-press/before-checkout' );
+
+			$cart   = LP()->get_cart();
+			$result = false;
+
+			// There is no course in cart
+			if ( $cart->is_empty() ) {
+				throw new Exception( __( 'Your cart currently is empty.', 'learnpress' ) );
 			}
 
-			if ( LP()->cart->needs_payment() && empty( $this->payment_method ) ) {
-				$success = 5;
-				throw new Exception( __( 'Please select a payment method', 'learnpress' ) );
+//			if ( ! is_user_logged_in() && isset( $this->checkout_fields['user_login'] ) && isset( $this->checkout_fields['user_password'] ) ) {
+//				$creds                  = array();
+//				$creds['user_login']    = $this->user_login;
+//				$creds['user_password'] = $this->user_pass;
+//				$creds['remember']      = true;
+//				$user                   = wp_signon( $creds, is_ssl() );
+//				if ( is_wp_error( $user ) ) {
+//					throw new Exception( $user->get_error_message() );
+//					$success = 15;
+//				}
+//			}
+
+			// Validate courses
+			foreach ( $cart->get_items() as $item ) {
+				$course = learn_press_get_course( $item['item_id'] );
+				if ( ! $course || ! $course->is_purchasable() ) {
+					throw new Exception( sprintf( __( 'Item "%s" is not purchasable.', 'learnpress' ), $course->get_title() ) );
+				}
+			}
+
+			// Validate extra fields
+			if ( ! $this->validate_checkout_fields() ) {
+				foreach ( $this->errors as $error ) {
+					learn_press_add_message( $error );
+				}
 			} else {
-				//$this->payment_method = !empty( $_REQUEST['payment_method'] ) ? $_REQUEST['payment_method'] : '';
-				if ( $this->checkout_fields ) {
-					foreach ( $this->checkout_fields as $name => $field ) {
-						if ( ! apply_filters( 'learn_press_checkout_validate_field', true, array(
-							'name' => $name,
-							'text' => $field
-						), $this )
-						) {
-							$success = 10;
-						}
-					}
-				}
-				if ( ! is_user_logged_in() && isset( $this->checkout_fields['user_login'] ) && isset( $this->checkout_fields['user_password'] ) ) {
-					$creds                  = array();
-					$creds['user_login']    = $this->user_login;
-					$creds['user_password'] = $this->user_pass;
-					$creds['remember']      = true;
-					$user                   = wp_signon( $creds, is_ssl() );
-					if ( is_wp_error( $user ) ) {
-						throw new Exception( $user->get_error_message() );
-						$success = 15;
-					}
-				}
-				LP()->session->set( 'chosen_payment_method', $this->payment_method );
-			}
 
-			foreach ( LP()->cart->get_items() as $item ) {
-				$item = LP_Course::get_course( $item['item_id'] );
-				if ( ! $item ) {
-					$success = 20;
-					throw new Exception( __( 'Item %s does not exists.', 'learnpress' ) );
-				} elseif ( ! $item->is_purchasable() ) {
-					throw new Exception( sprintf( __( 'Item "%s" is not purchasable.', 'learnpress' ), get_the_title( $item->id ) ) );
-					$success = 25;
-				}
-			}
-			if ( $success === true && LP()->cart->needs_payment() ) {
+				$this->validate_payment();
 
-				if ( ! $this->payment_method instanceof LP_Gateway_Abstract ) {
-					// Payment Method
-					$available_gateways = LP_Gateways::instance()->get_available_payment_gateways();
-					if ( ! isset( $available_gateways[ $this->payment_method ] ) ) {
-						$this->payment_method = '';
-						learn_press_add_message( __( 'Invalid payment method.', 'learnpress' ) );
-					} else {
-						$this->payment_method = $available_gateways[ $this->payment_method ];
-					}
-				}
-				if ( $this->payment_method ) {
-					$success = $this->payment_method->validate_fields() ? true : 30;
-				}
-			}
-			if ( $success === true ) {
-
+				// Create order
 				$order_id = $this->create_order();
 
 				// allow Third-party hook
-				do_action( 'learn_press_checkout_order_processed', $order_id, $this );
+				do_action( 'learn-press/checkout-order-processed', $order_id, $this );
+
 				if ( $this->payment_method ) {
 					// Store the order is waiting for payment and each payment method should clear it
 					LP()->session->order_awaiting_payment = $order_id;
 					// Process Payment
-					$result  = $this->payment_method->process_payment( $order_id );
-					$success = ! empty( $result['result'] ) ? $result['result'] == 'success' : 35;
+					$result = $this->payment_method->process_payment( $order_id );
+					if ( isset( $result['result'] ) && 'success' === $result['result'] ) {
+						$result = apply_filters( 'learn-press/payment-successful-result', $result, $order_id );
+
+						if ( learn_press_is_ajax() ) {
+							learn_press_send_json( $result );
+						} else {
+							wp_redirect( $result['redirect'] );
+							exit;
+						}
+					}
+					echo '300';
+
 				} else {
 					// ensure that no order is waiting for payment
 					$order = new LP_Order( $order_id );
 					if ( $order && $order->payment_complete() ) {
-						$result = array(
-							'result'   => 'success',
-							'redirect' => $order->get_checkout_order_received_url()
-						);
-					}
-				}
-				// Redirect to success/confirmation/payment page
-				if ( $success === true ) {
-					$result = apply_filters( 'learn_press_checkout_success_result', $result, $order_id );
-					if ( learn_press_is_ajax() ) {
-						learn_press_send_json( $result );
-					} else {
-						wp_redirect( $result['redirect'] );
-						exit;
-					}
 
+						$result = apply_filters( 'learn-press/checkout-no-payment-result',
+							array(
+								'result'   => 'success',
+								'redirect' => $order->get_checkout_order_received_url()
+							)
+						);
+						if ( learn_press_is_ajax() ) {
+							learn_press_send_json( $result );
+						} else {
+							wp_redirect( $result['redirect'] );
+							exit;
+						}
+					}
+					echo '200';
 				}
 			}
-
 		}
 		catch ( Exception $e ) {
 			$has_error = $e->getMessage();
-			learn_press_add_message( $has_error );
-			$success = 40;
+			learn_press_add_message( $has_error, 'error' );
 		}
 		if ( learn_press_is_ajax() ) {
+			$is_error = ! ! learn_press_message_count( 'error' );
 			// Get all messages
 			$error_messages = '';
-			if ( $success !== true ) {
+			if ( $is_error ) {
 				ob_start();
 				learn_press_print_messages();
 				$error_messages = ob_get_clean();
 			}
 
-			$result = array(
-				'result'   => $success === true ? 'success' : 'fail',
-				'code'     => $success,
-				'messages' => $error_messages,
-				'redirect' => ''
+			$result = apply_filters( 'learn-press/checkout-error',
+				array(
+					'result'   => ! $is_error ? 'success' : 'fail',
+					'messages' => $error_messages,
+					'x'        => 100
+				)
 			);
 
 			learn_press_send_json( $result );
 		}
-
-		return $success;
 	}
 
 	/**
