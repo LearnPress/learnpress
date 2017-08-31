@@ -99,7 +99,7 @@ class LP_User_Factory {
 			$id = time();
 			if ( ! is_user_logged_in() ) {
 				learn_press_setcookie( 'learn_press_user_guest_id', $id, time() + self::$_guest_transient );
-				set_transient( 'learn_press_user_guest_' . $id, $id, self::$_guest_transient );
+				//set_transient( 'learn_press_user_guest_' . $id, $id, self::$_guest_transient );
 			}
 		}
 

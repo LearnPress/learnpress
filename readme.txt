@@ -3,7 +3,7 @@ Contributors: thimpress, tunnhn, phonglq.foobla, thongta, kendy73, leehld
 Donate link:  
 Tags: WordPress LMS, LMS, eLearning, e-Learning, Learning Management System, LMS WordPress, Course, Courses, Quiz, Quizzes, Training, Guru, Sell Courses  
 Requires at least: 3.8
-Tested up to: 4.7
+Tested up to: 4.8
 Stable tag: trunk
 License: GPLv2 or later  
 License URI: http://www.gnu.org/licenses/gpl-2.0.html  
@@ -193,6 +193,19 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.  
 
 == Changelog ==
+= 2.1.8 =
+
+= 2.1.7.3 =
+~ Fixed can not save curriculum with SiteOrigin.
+~ Fixed instructor can select lessons/quizzes of an another user when editing course.
+~ Fixed get request var does not exists while updating course.
+~ Fixed can not load lesson with Yoast Seo enabled.
+~ Fixed become a teacher page with page builder.
+~ Fixed eye icon does not show when opening a lesson.
+
+= 2.1.7.2 =
+~ Fixed can add a question to multiple quizzes
+
 = 2.1.7 =
 + Added link to navigate to course in checkout page
 + Updated meta-box lib to latest version

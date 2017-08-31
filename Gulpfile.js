@@ -100,7 +100,7 @@ gulp.task('copy-release', ['clr-release'], function () {
 gulp.task('release', ['copy-release'], function () {
     process.chdir(releasePath);
     var zipPath = releasePath.replace(/learnpress/, '');
-    return gulp.src(zipPath + '/**/learnpress/*')
+    return gulp.src(zipPath + '/**/learnpress/**/*')
         .pipe(zip('learnpress.' + getCurrentVer(true) + '.zip'))
         .pipe(gulp.dest(zipPath));
 });

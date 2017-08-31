@@ -18,29 +18,31 @@ if ( $orders = _learn_press_get_user_profile_orders( $user_id, $page, $limit ) )
 	}
 	if ( $orders['rows'] ) :
 		?>
-		<table class="table-orders">
-			<thead>
-			<th><?php _e( 'Order', 'learnpress' ); ?></th>
-			<th><?php _e( 'Date', 'learnpress' ); ?></th>
-			<th><?php _e( 'Status', 'learnpress' ); ?></th>
-			<th><?php _e( 'Total', 'learnpress' ); ?></th>
-			<th><?php _e( 'Action', 'learnpress' ); ?></th>
-			</thead>
-			<tbody>
+        <table class="table-orders">
+            <thead>
+            <tr>
+                <th><?php _e( 'Order', 'learnpress' ); ?></th>
+                <th><?php _e( 'Date', 'learnpress' ); ?></th>
+                <th><?php _e( 'Status', 'learnpress' ); ?></th>
+                <th><?php _e( 'Total', 'learnpress' ); ?></th>
+                <th><?php _e( 'Action', 'learnpress' ); ?></th>
+            </tr>
+            </thead>
+            <tbody>
 			<?php foreach ( $orders['rows'] as $order ): $order = learn_press_get_order( $order ); ?>
-				<tr>
-					<td><?php echo $order->get_order_number(); ?></td>
-					<td><?php echo date_i18n( get_option( 'date_format' ), strtotime( $order->order_date ) ); ?></td>
-					<td>
+                <tr>
+                    <td><?php echo $order->get_order_number(); ?></td>
+                    <td><?php echo date_i18n( get_option( 'date_format' ), strtotime( $order->order_date ) ); ?></td>
+                    <td>
 						<?php echo $order->get_order_status_html(); ?>
 						<?php
 						if ( $order->has_status( 'pending' ) ) :
 							printf( '(<small><a href="%s" class="%s">%s</a></small>)', $order->get_cancel_order_url(), 'cancel-order', __( 'Cancel', 'learnpress' ) );
 						endif;
 						?>
-					</td>
-					<td><?php echo $order->get_formatted_order_total(); ?></td>
-					<td>
+                    </td>
+                    <td><?php echo $order->get_formatted_order_total(); ?></td>
+                    <td>
 						<?php
 						$actions['view'] = array(
 							'url'  => $order->get_view_order_url(),
@@ -52,11 +54,11 @@ if ( $orders = _learn_press_get_user_profile_orders( $user_id, $page, $limit ) )
 							printf( '<a href="%s">%s</a>', $option['url'], $option['text'] );
 						}
 						?>
-					</td>
-				</tr>
+                    </td>
+                </tr>
 			<?php endforeach; ?>
-			</tbody>
-		</table>
+            </tbody>
+        </table>
 
 		<?php
 		learn_press_paging_nav( array(

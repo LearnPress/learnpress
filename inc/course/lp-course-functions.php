@@ -566,7 +566,6 @@ function learn_press_get_course_sections() {
 		'lp_quiz'
 	) );
 }
-
 function lean_press_get_course_sections() {
 	_deprecated_function( __FUNCTION__, '2.1', 'learn_press_get_course_sections' );
 	return learn_press_get_course_sections();
@@ -597,7 +596,7 @@ if ( !function_exists( 'learn_press_get_sample_link_course_item_url' ) ) {
 			$key       = preg_replace( '!lp_!', '', get_post_type( $item_id ) );
 			$permalink = add_query_arg( array( $key => $post_name ), $permalink );
 		}
-		return $permalink;
+		return $permalink ;
 
 	}
 }

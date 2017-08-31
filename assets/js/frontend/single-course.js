@@ -312,7 +312,7 @@ if (typeof LearnPress === 'undefined') {
 			data.items && data.items.forEach(function (item) {
 				var $item = this.$('.course-item.course-item-' + item.id),
 					$status = $item.find('.item-status'),
-					statusClass = ($status[0].className + '').replace(/(item-status-[^\s]*)/g, '').trim();
+					statusClass = $status.length ? ($status[0].className + '').replace(/(item-status-[^\s]*)/g, '').trim() : '';
 				if (!sections[item.section_id]) {
 					sections[item.section_id] = [0, 0];
 				}
@@ -448,7 +448,8 @@ if (typeof LearnPress === 'undefined') {
 			if (isNew) {
 				$content.attr('src', LP.addQueryVar('content-item-only', 'yes', this.currentItem.get('url')));
 			}
-			$content.unbind('load').load(function () {
+			$content.unbind('load').load( function() {
+				$target.parent().addClass('item-has-status item-viewed');
 				that.itemLoading = 0;
 			});
 		},

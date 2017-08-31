@@ -78,7 +78,7 @@
 				runtimes      : 'html5,flash,silverlight,html4',
 				browse_button : 'lp-upload-photo',
 				container     : $('#lp-user-edit-avatar').get(0),
-				url           : LP_Settings.ajax.addQueryVar('action', 'learnpress_upload-user-avatar'),
+				url           : (LP_Settings.ajax.addQueryVar('action', 'learnpress_upload-user-avatar')).replace(/^[^:]+:/i,''),
 				filters       : {
 					max_file_size: '10mb',
 					mime_types   : [

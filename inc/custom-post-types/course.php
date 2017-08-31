@@ -31,8 +31,10 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			// Map origin methods to another method
 			$this
 				->add_map_method( 'save', 'update_course', false )
-				->add_map_method( 'save', 'before_save_curriculum', false )
+//				->add_map_method( 'save', 'before_save_curriculum', false )
 				->add_map_method( 'before_delete', 'delete_course_sections' );
+
+			add_action( 'save_post', array( $this, 'before_save_curriculum' ), 20 );
 
 			add_action( 'edit_form_after_editor', array( $this, 'curriculum_editor' ), 0 );
 			add_action( 'load-post.php', array( $this, 'post_actions' ) );
@@ -438,9 +440,6 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 * Add meta boxes to course post type page
 		 */
 		public function add_meta_boxes() {
-			if ( LP_COURSE_CPT != learn_press_get_requested_post_type() ) {
-				return;
-			}
 			$default_tabs = array(
 				'settings'   => new RW_Meta_Box( self::settings_meta_box() ),
 				'assessment' => new RW_Meta_Box( self::assessment_meta_box() ),
@@ -553,6 +552,13 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						'std'  => 'no',
 					),
 					array(
+						'name' => __( 'Block Lessons Content', 'learnpress' ),
+						'id'   => "{$prefix}block_lesson_content",
+						'type' => 'yes_no',
+						'desc' => __( 'Block lessons content when course is expired.', 'learnpress' ),
+						'std'  => 'no',
+					),
+					array(
 						'name' => __( 'External link buy course', 'learnpress' ),
 						'id'   => "{$prefix}external_link_buy_course",
 						'type' => 'url',
@@ -580,7 +586,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			}
 			$course_result_desc = "<span id=\"learn-press-toggle-course-results\">{$course_result_desc}</span>";
 			$course_result_desc .= __( 'The method to assess the result of a student for a course.', 'learnpress' );
-			if ( $course_results == 'evaluate_final_quiz' && !get_post_meta( $post_id, '_lp_final_quiz', true ) ) {
+			if ( $course_results == 'evaluate_final_quiz' && ! get_post_meta( $post_id, '_lp_final_quiz', true ) ) {
 				$course_result_desc .= __( '<br /><strong>Note! </strong>No final quiz in course, please add a final quiz', 'learnpress' );
 			}
 			$meta_box = array(
@@ -627,7 +633,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 */
 		public static function payment_meta_box() {
 
-			$course_id = !empty( $_GET['post'] ) ? $_GET['post'] : 0;
+			$course_id = ! empty( $_GET['post'] ) ? $_GET['post'] : 0;
 			$prefix    = '_lp_';
 
 			$meta_box = array(
@@ -640,7 +646,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 						'name'  => __( 'Course payment', 'learnpress' ),
 						'id'    => "{$prefix}payment",
 						'type'  => 'yes_no',
-						'desc'  => __( '', 'learnpress' ),
+						'desc'  => '',
 						'std'   => 'no',
 						'class' => 'lp-course-payment-field'
 					)
@@ -666,7 +672,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 
 						$author = get_userdata( $course->post_author );
 
-						if ( isset( $suggest_price ) && !empty( $author->roles[0] ) && $author->roles[0] === 'lp_teacher' ) {
+						if ( isset( $suggest_price ) && ! empty( $author->roles[0] ) && $author->roles[0] === 'lp_teacher' ) {
 							$message = sprintf( __( 'This course is requires enrollment and the suggested price is <strong>%s</strong>', 'learnpress' ), learn_press_format_price( $suggest_price, true ) );
 							$price   = $suggest_price;
 						}
@@ -1176,7 +1182,7 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 				return;
 			}
 
-			remove_action( 'save_post', array( $this, 'before_save_curriculum' ), 1 );
+			remove_action( 'save_post', array( $this, 'before_save_curriculum' ), 20 );
 			//remove_action( 'rwmb_course_curriculum_before_save_post', array( $this, 'before_save_curriculum' ) );
 
 			$user                  = LP()->user;
@@ -1229,14 +1235,14 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 			$request          = $_POST;
 			$payment          = learn_press_get_request( '_lp_payment' ) == 1;
 			$price            = floatval( $request['_lp_price'] );
-			$sale_price       = $request['_lp_sale_price'];
-			$sale_price_start = $request['_lp_sale_start'];
-			$sale_price_end   = $request['_lp_sale_end'];
+			$sale_price       = learn_press_get_request( '_lp_sale_price' );
+			$sale_price_start = learn_press_get_request( '_lp_sale_start' );
+			$sale_price_end   = learn_press_get_request( '_lp_sale_end' );
 			$keys             = array();
 			// Delete all meta no need anymore
 			if ( !$payment || $price <= 0 ) {
 				$keys = array( '_lp_payment', '_lp_price', '_lp_sale_price', '_lp_sale_start', '_lp_sale_end' );
-			} else if ( ( $sale_price == '' ) || ( $sale_price < 0 ) || ( absint( $sale_price ) >= $price ) || !$this->_validate_sale_price_date() ) {
+			} else if ( ( $sale_price === '' ) || ( $sale_price < 0 ) || ( absint( $sale_price ) >= $price ) || !$this->_validate_sale_price_date() ) {
 				$keys = array( '_lp_sale_price', '_lp_sale_start', '_lp_sale_end' );
 			}
 			if ( $keys ) {
@@ -1264,12 +1270,12 @@ if ( !class_exists( 'LP_Course_Post_Type' ) ) {
 		 */
 		private function _validate_sale_price_date() {
 			$now              = current_time( 'timestamp' );
-			$sale_price_start = $_REQUEST['_lp_sale_start'];
-			$sale_price_end   = $_REQUEST['_lp_sale_end'];
+			$sale_price_start = learn_press_get_request( '_lp_sale_start' );
+			$sale_price_end   = learn_press_get_request( '_lp_sale_end' );
 			$end              = strtotime( $sale_price_end );
 			$start            = strtotime( $sale_price_start );
 
-			return ( ( $now >= $start || !$sale_price_start ) && ( $now <= $end || !$sale_price_end ) || ( !$sale_price_start && !$sale_price_end ) );
+			return ( ( $now <= $end || !$sale_price_end ) || ( !$sale_price_start && !$sale_price_end ) );
 		}
 
 		/**

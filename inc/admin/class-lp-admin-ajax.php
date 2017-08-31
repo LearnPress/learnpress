@@ -1,9 +1,9 @@
 <?php
 
-if ( !defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
-if ( !class_exists( 'LP_Admin_Ajax' ) ) {
+if ( ! class_exists( 'LP_Admin_Ajax' ) ) {
 
 	/**
 	 * Class LP_Admin_Ajax
@@ -55,8 +55,8 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 				'duplicate_question'              => false,
 				// Remove Notice
 				'remove_notice_popup'             => false,
-                // Update order status
-                'update_order_status'             => false,
+				// Update order status
+				'update_order_status'             => false,
 			);
 			foreach ( $ajaxEvents as $ajaxEvent => $nopriv ) {
 				add_action( 'wp_ajax_learnpress_' . $ajaxEvent, array( __CLASS__, $ajaxEvent ) );
@@ -77,7 +77,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 		}
 
 		public static function load_chart() {
-			if ( !class_exists( '' ) ) {
+			if ( ! class_exists( '' ) ) {
 				require_once LP_PLUGIN_PATH . '/inc/admin/sub-menus/statistics.php';
 			}
 			LP_Admin_Submenu_Statistic::instance()->load_chart();
@@ -86,13 +86,13 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 		public static function search_course() {
 			global $wpdb;
 			$sql = "SELECT ID id, post_title text "
-				. " FROM {$wpdb->posts} "
-				. " WHERE post_type='lp_course' "
-				. " AND post_status in ('publish') "
-				. " AND post_title like %s";
+			       . " FROM {$wpdb->posts} "
+			       . " WHERE post_type='lp_course' "
+			       . " AND post_status in ('publish') "
+			       . " AND post_title like %s";
 			if ( current_user_can( LP_TEACHER_ROLE ) ) {
 				$user_id = learn_press_get_current_user_id();
-				$sql .= " AND post_author=" . intval( $user_id ) . " ";
+				$sql     .= " AND post_author=" . intval( $user_id ) . " ";
 			}
 			$s     = '%' . filter_input( INPUT_GET, 'q' ) . '%';
 			$query = $wpdb->prepare( $sql, $s );
@@ -105,10 +105,10 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 		public static function search_course_category() {
 			global $wpdb;
 			$sql   = "SELECT `t`.`term_id` as `id`, "
-				. " `t`.`name` `text` "
-				. " FROM {$wpdb->terms} t "
-				. "		INNER JOIN {$wpdb->term_taxonomy} tt ON t.term_id = tt.term_id AND taxonomy='course_category' "
-				. " WHERE `t`.`name` LIKE %s";
+			         . " `t`.`name` `text` "
+			         . " FROM {$wpdb->terms} t "
+			         . "		INNER JOIN {$wpdb->term_taxonomy} tt ON t.term_id = tt.term_id AND taxonomy='course_category' "
+			         . " WHERE `t`.`name` LIKE %s";
 			$s     = '%' . filter_input( INPUT_GET, 'q' ) . '%';
 			$query = $wpdb->prepare( $sql, $s );
 			$items = $wpdb->get_results( $query );
@@ -138,7 +138,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 		}
 
 		public static function search_users() {
-			if ( !current_user_can( 'edit_lp_orders' ) ) {
+			if ( ! current_user_can( 'edit_lp_orders' ) ) {
 				die( - 1 );
 			}
 
@@ -163,7 +163,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 
 			$customers = $customers_query->get_results();
 
-			if ( !empty( $customers ) ) {
+			if ( ! empty( $customers ) ) {
 				foreach ( $customers as $customer ) {
 					$found_customers[] = array(
 						'label' => $customer->display_name . ' (#' . $customer->ID . ' &ndash; ' . sanitize_email( $customer->user_email ) . ')',
@@ -186,7 +186,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 				$term = like_escape( $term );
 			}
 
-			$query->query_from .= " INNER JOIN {$wpdb->usermeta} AS user_name ON {$wpdb->users}.ID = user_name.user_id AND ( user_name.meta_key = 'first_name' OR user_name.meta_key = 'last_name' ) ";
+			$query->query_from  .= " INNER JOIN {$wpdb->usermeta} AS user_name ON {$wpdb->users}.ID = user_name.user_id AND ( user_name.meta_key = 'first_name' OR user_name.meta_key = 'last_name' ) ";
 			$query->query_where .= $wpdb->prepare( " OR user_name.meta_value LIKE %s ", '%' . $term . '%' );
 		}
 
@@ -230,7 +230,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 		 * @param        $exclude
 		 * @param        $type
 		 * @param string $context
-		 * @param null   $context_id
+		 * @param null $context_id
 		 *
 		 * @return array
 		 */
@@ -253,7 +253,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 				case 'lp_question':
 					$query      = $wpdb->prepare( "
 						SELECT question_id
-						FROM {$wpdb->prefix}learnpress_quiz_questions
+						FROM {$wpdb->prefix}learnpress_quiz_questions qq
 						INNER JOIN {$wpdb->posts} q ON q.ID = qq.quiz_id
 						WHERE %d
 						AND q.post_type = %s
@@ -274,11 +274,11 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 		public static function add_item_to_section() {
 			global $wpdb;
 			$section = learn_press_get_request( 'section' );
-			if ( !$section ) {
+			if ( ! $section ) {
 				wp_die( __( 'Error', 'learnpress' ) );
 			}
 			$items = (array) learn_press_get_request( 'item' );
-			if ( !$items ) {
+			if ( ! $items ) {
 				$max_order = $wpdb->get_var( $wpdb->prepare( "SELECT max() FROM {$wpdb}learnpress_section_items WHERE section_id = %d", $section ) );
 				foreach ( $items as $item ) {
 
@@ -289,98 +289,73 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 		public static function modal_search_items() {
 			global $wpdb;
 
-			$user       = learn_press_get_current_user();
-			$term       = (string) ( stripslashes( learn_press_get_request( 'term' ) ) );
-			$type       = (string) ( stripslashes( learn_press_get_request( 'type' ) ) );
-			$context    = (string) ( stripslashes( learn_press_get_request( 'context' ) ) );
-			$context_id = (string) ( stripslashes( learn_press_get_request( 'context_id' ) ) );
-			$current_items_in_order =  learn_press_get_request( 'current_items' );
-			$current_items = array();
+			$user                   = learn_press_get_current_user();
+			$term                   = (string) ( stripslashes( learn_press_get_request( 'term' ) ) );
+			$type                   = (string) ( stripslashes( learn_press_get_request( 'type' ) ) );
+			$context                = (string) ( stripslashes( learn_press_get_request( 'context' ) ) );
+			$context_id             = (string) ( stripslashes( learn_press_get_request( 'context_id' ) ) );
+			$current_items_in_order = learn_press_get_request( 'current_items' );
+			$current_items          = array();
 
-
-			foreach ($current_items_in_order as $item) {
-			    $sql = "SELECT meta_value
+			foreach ( $current_items_in_order as $item ) {
+				$sql = "SELECT meta_value
                         FROM {$wpdb->prefix}learnpress_order_itemmeta 
                         WHERE meta_key = '_course_id' 
                         AND learnpress_order_item_id = $item";
-			    $id = $wpdb->get_results( $sql, OBJECT );
-			    array_push($current_items, $id[0]->meta_value);
-            }
+				$id  = $wpdb->get_results( $sql, OBJECT );
+				array_push( $current_items, $id[0]->meta_value );
+			}
 
-			$exclude    = array();
+			$exclude = array();
 
-			if ( !empty( $_GET['exclude'] ) ) {
+			if ( ! empty( $_GET['exclude'] ) ) {
 				$exclude = array_map( 'intval', $_GET['exclude'] );
 			}
+
+			$author_id = get_post_field( 'post_author', $context_id );
+
 			$exclude = array_unique( (array) apply_filters( 'learn_press_modal_search_items_exclude', $exclude, $type, $context, $context_id ) );
 			$exclude = array_map( 'intval', $exclude );
-			$args    = array(
+
+			$args = array(
 				'post_type'      => array( $type ),
 				'posts_per_page' => - 1,
 				'post_status'    => 'publish',
 				'order'          => 'ASC',
 				'orderby'        => 'parent title',
+				'author'         => $author_id,
 				'exclude'        => $exclude
 			);
-			if ( !$user->is_admin() ) {
-				$args['author'] = $user->id;
-			}
 
-			if ( $context && $context_id ) {
-				switch ( $context ) {
-					/**
-					 * If is search lesson/quiz for course only search the items of course's author
-					 */
-					case 'course-items':
-						if ( get_post_type( $context_id ) == 'lp_course' ) {
-							$post_author = get_post_field( 'post_author', $context_id );
-							$authors = array($post_author);
-							if($post_author != $user->id ){
-								$authors[] =$user->id;
-							}
-							$args['author'] = $authors;
-						}
-						break;
-					/**
-					 * If is search question for quiz only search the items of course's author
-					 */
-					case 'quiz-items':
-						if ( get_post_type( $context_id ) == 'lp_quiz' ) {
-							$post_author = get_post_field( 'post_author', $context_id );
-							$authors = array($post_author);
-							if($post_author != $user->id ){
-								$authors[] =$user->id;
-							}
-							$args['author'] = $authors;
-							//$args['author'] = get_post_field( 'post_author', $context_id );
-						}
-						break;
-				}
-			}
 			if ( $term ) {
 				$args['s'] = $term;
 			}
-			$args = apply_filters('learn_press_filter_admin_ajax_modal_search_items_args', $args, $context, $context_id  );
+			
+			// allow super admin can search course of other user 
+			if( is_super_admin() && $context == 'course-items' && $type=='lp_course' ) {
+			    unset( $args['author'] );
+			}
+			
+			$args        = apply_filters( 'learn_press_filter_admin_ajax_modal_search_items_args', $args, $context, $context_id );
 			$posts       = get_posts( $args );
 			$found_items = array();
 
-			if ( !empty( $posts ) ) {
-				if ($current_items_in_order) {
-                    foreach ( $posts as $post ) {
-                        if (in_array($post->ID, $current_items)) {
-                            continue;
-                        }
-                        $found_items[$post->ID]             = $post;
-                        $found_items[$post->ID]->post_title = !empty( $post->post_title ) ? $post->post_title : sprintf( '(%s)', __( 'Untitled', 'learnpress' ) );
-                    }
-                } else {
-                    foreach ( $posts as $post ) {
-                        $found_items[$post->ID]             = $post;
-                        $found_items[$post->ID]->post_title = !empty( $post->post_title ) ? $post->post_title : sprintf( '(%s)', __( 'Untitled', 'learnpress' ) );
-                    }
-                }
+			if ( ! empty( $posts ) ) {
+				if ( $current_items_in_order ) {
+					foreach ( $posts as $post ) {
+						if ( in_array( $post->ID, $current_items ) ) {
+							continue;
+						}
+						$found_items[ $post->ID ]             = $post;
+						$found_items[ $post->ID ]->post_title = ! empty( $post->post_title ) ? $post->post_title : sprintf( '(%s)', __( 'Untitled', 'learnpress' ) );
+					}
+				} else {
+					foreach ( $posts as $post ) {
+						$found_items[ $post->ID ]             = $post;
+						$found_items[ $post->ID ]->post_title = ! empty( $post->post_title ) ? $post->post_title : sprintf( '(%s)', __( 'Untitled', 'learnpress' ) );
+					}
+				}
 			}
-
 
 
 			ob_start();
@@ -419,7 +394,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			global $wpdb;
 			$quiz_id     = learn_press_get_request( 'quiz_id' );
 			$question_id = learn_press_get_request( 'question_id' );
-			if ( !wp_verify_nonce( learn_press_get_request( 'remove-nonce' ), 'remove_quiz_question' ) ) {
+			if ( ! wp_verify_nonce( learn_press_get_request( 'remove-nonce' ), 'remove_quiz_question' ) ) {
 				wp_die( __( 'Error', 'learnpress' ) );
 			}
 			$query = $wpdb->prepare( "
@@ -433,10 +408,10 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			$user_id = get_current_user_id();
 			$type    = get_post_meta( $question_id, '_lp_type', true );
 			if ( $type ) {
-				$question_types        = get_user_meta( $user_id, '_learn_press_memorize_question_types', true );
-				$question_types        = !$question_types ? array() : $question_types;
-				$counter               = !empty ( $question_types[$type] ) && $question_types[$type] ? absint( $question_types[$type] ) : 0;
-				$question_types[$type] = $counter ? $counter -- : 0;
+				$question_types          = get_user_meta( $user_id, '_learn_press_memorize_question_types', true );
+				$question_types          = ! $question_types ? array() : $question_types;
+				$counter                 = ! empty ( $question_types[ $type ] ) && $question_types[ $type ] ? absint( $question_types[ $type ] ) : 0;
+				$question_types[ $type ] = $counter ? $counter -- : 0;
 				update_user_meta( $user_id, '_learn_press_memorize_question_types', $question_types );
 			}
 			// end trigger change user memorize question types
@@ -448,13 +423,13 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 
 			$quiz_id = learn_press_get_request( 'quiz_id' );
 			$user    = learn_press_get_current_user();
-			if ( !$user->is_admin() && get_post_field( 'post_author', $quiz_id ) != get_current_user_id() ) {
+			if ( ! $user->is_admin() && get_post_field( 'post_author', $quiz_id ) != get_current_user_id() ) {
 				wp_die( __( 'You have no permission to access this section.', 'learnpress' ) );
 			}
 			$term    = (string) ( stripslashes( learn_press_get_request( 'term' ) ) );
 			$exclude = array();
 
-			if ( !empty( $_GET['exclude'] ) ) {
+			if ( ! empty( $_GET['exclude'] ) ) {
 				$exclude = array_map( 'intval', $_GET['exclude'] );
 			}
 
@@ -478,7 +453,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 				'orderby'        => 'parent title',
 				'exclude'        => $exclude
 			);
-			if ( !$user->is_admin() ) {
+			if ( ! $user->is_admin() ) {
 				$args['author'] = $user->id;
 			}
 			if ( $term ) {
@@ -487,9 +462,9 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			$posts           = get_posts( $args );
 			$found_questions = array();
 
-			if ( !empty( $posts ) ) {
+			if ( ! empty( $posts ) ) {
 				foreach ( $posts as $post ) {
-					$found_questions[$post->ID] = !empty( $post->post_title ) ? $post->post_title : sprintf( '(%s)', __( 'Untitled', 'learnpress' ) );
+					$found_questions[ $post->ID ] = ! empty( $post->post_title ) ? $post->post_title : sprintf( '(%s)', __( 'Untitled', 'learnpress' ) );
 				}
 			}
 
@@ -531,26 +506,26 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 		 */
 		public static function remove_order_item() {
 			// ensure that user has permission
-			if ( !current_user_can( 'edit_lp_orders' ) ) {
+			if ( ! current_user_can( 'edit_lp_orders' ) ) {
 				die( __( 'Permission denied', 'learnpress' ) );
 			}
 
 			// verify nonce
 			$nonce = learn_press_get_request( 'remove_nonce' );
-			if ( !wp_verify_nonce( $nonce, 'remove_order_item' ) ) {
+			if ( ! wp_verify_nonce( $nonce, 'remove_order_item' ) ) {
 				die( __( 'Check nonce failed', 'learnpress' ) );
 			}
 
 			// validate order
 			$order_id = learn_press_get_request( 'order_id' );
-			if ( !is_numeric( $order_id ) || get_post_type( $order_id ) != 'lp_order' ) {
+			if ( ! is_numeric( $order_id ) || get_post_type( $order_id ) != 'lp_order' ) {
 				die( __( 'Order invalid', 'learnpress' ) );
 			}
 
 			// validate item
 			$item_id = learn_press_get_request( 'item_id' );
 			$post    = get_post( learn_press_get_order_item_meta( $item_id, '_course_id' ) );
-			if ( !$post || ( 'lp_course' !== $post->post_type ) ) {
+			if ( ! $post || ( 'lp_course' !== $post->post_type ) ) {
 				die( __( 'Course invalid', 'learnpress' ) );
 			}
 
@@ -576,7 +551,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 		public static function add_item_to_order() {
 
 			// ensure that user has permission
-			if ( !current_user_can( 'edit_lp_orders' ) ) {
+			if ( ! current_user_can( 'edit_lp_orders' ) ) {
 				die( __( 'Permission denied', 'learnpress' ) );
 			}
 
@@ -588,7 +563,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 
 			// validate order
 			$order_id = learn_press_get_request( 'order_id' );
-			if ( !is_numeric( $order_id ) || get_post_type( $order_id ) != 'lp_order' ) {
+			if ( ! is_numeric( $order_id ) || get_post_type( $order_id ) != 'lp_order' ) {
 				die( __( 'Order invalid', 'learnpress' ) );
 			}
 
@@ -602,7 +577,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 //			exit(''.__LINE__);
 			foreach ( $item_ids as $item_id ):
 				$post = get_post( $item_id );
-				if ( !$post || ( 'lp_course' !== $post->post_type ) ) {
+				if ( ! $post || ( 'lp_course' !== $post->post_type ) ) {
 					continue;
 //					die( __( 'Course invalid', 'learnpress' ) );
 				}
@@ -656,7 +631,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 
 		public static function search_courses() {
 			$nonce = learn_press_get_request( 'nonce' );
-			if ( !wp_verify_nonce( $nonce, 'search_item_term' ) ) {
+			if ( ! wp_verify_nonce( $nonce, 'search_item_term' ) ) {
 				LP_Debug::exception( __( 'Verify nonce failed', 'learnpress' ) );
 			}
 
@@ -670,9 +645,9 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 				)
 			);
 			$found_courses = array();
-			if ( !empty( $posts ) ) {
+			if ( ! empty( $posts ) ) {
 				foreach ( $posts as $post ) {
-					$found_courses[$post] = array(
+					$found_courses[ $post ] = array(
 						'title'     => get_the_title( $post ),
 						'permalink' => get_the_permalink( $post )
 					);
@@ -785,7 +760,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 		 * Create a new page with the title passed via $_REQUEST
 		 */
 		public static function create_page() {
-			$page_name = !empty( $_REQUEST['page_name'] ) ? $_REQUEST['page_name'] : '';
+			$page_name = ! empty( $_REQUEST['page_name'] ) ? $_REQUEST['page_name'] : '';
 			$response  = array();
 			if ( $page_name ) {
 				$args    = array(
@@ -801,7 +776,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 					preg_match_all( '!value=\"([0-9]+)\"!', $html, $matches );
 					$response['positions'] = $matches[1];
 					$response['html']      = '<a href="' . get_edit_post_link( $page_id ) . '" target="_blank">' . __( 'Edit Page', 'learnpress' ) . '</a>&nbsp;';
-					$response['html'] .= '<a href="' . get_permalink( $page_id ) . '" target="_blank">' . __( 'View Page', 'learnpress' ) . '</a>';
+					$response['html']      .= '<a href="' . get_permalink( $page_id ) . '" target="_blank">' . __( 'View Page', 'learnpress' ) . '</a>';
 				} else {
 					$response['error'] = __( 'Error! Create page failed. Please try again!', 'learnpress' );
 				}
@@ -824,7 +799,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			);
 			$post     = get_post( $quiz_id );
 			setup_postdata( $post );
-			if ( !$id ) {
+			if ( ! $id ) {
 				$args_item = array(
 					'post_title'  => $name,
 					'post_type'   => LP_QUESTION_CPT,
@@ -855,10 +830,10 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 				$response['html'] = ob_get_clean();
 
 				// trigger change user memorize question types
-				$question_types        = get_user_meta( $user_id, '_learn_press_memorize_question_types', true );
-				$question_types        = !$question_types ? array() : $question_types;
-				$type                  = get_post_meta( $id, '_lp_type', true );
-				$question_types[$type] = !empty ( $question_types[$type] ) ? absint( $question_types[$type] ) + 1 : 1;
+				$question_types          = get_user_meta( $user_id, '_learn_press_memorize_question_types', true );
+				$question_types          = ! $question_types ? array() : $question_types;
+				$type                    = get_post_meta( $id, '_lp_type', true );
+				$question_types[ $type ] = ! empty ( $question_types[ $type ] ) ? absint( $question_types[ $type ] ) + 1 : 1;
 				update_user_meta( $user_id, '_learn_press_memorize_question_types', $question_types );
 				// end trigger change user memorize question types
 			}
@@ -875,10 +850,10 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 				$question = LP_Question_Factory::get_question( $question_id, array( 'type' => $to ) );
 
 				// trigger change user memorize question types
-				$user_id               = get_current_user_id();
-				$question_types        = get_user_meta( $user_id, '_learn_press_memorize_question_types', true );
-				$question_types[$from] = !empty( $question_types[$from] ) && $question_types[$from] ? absint( $question_types[$from] ) - 1 : 0;
-				$question_types[$to]   = !empty( $question_types[$to] ) && $question_types[$to] ? absint( $question_types[$to] ) + 1 : 1;
+				$user_id                 = get_current_user_id();
+				$question_types          = get_user_meta( $user_id, '_learn_press_memorize_question_types', true );
+				$question_types[ $from ] = ! empty( $question_types[ $from ] ) && $question_types[ $from ] ? absint( $question_types[ $from ] ) - 1 : 0;
+				$question_types[ $to ]   = ! empty( $question_types[ $to ] ) && $question_types[ $to ] ? absint( $question_types[ $to ] ) + 1 : 1;
 				update_user_meta( $user_id, '_learn_press_memorize_question_types', $question_types );
 				// end trigger change user memorize question types
 				if ( 'auto-draft' === $question->post->post_status ) {
@@ -903,7 +878,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 		 * Install sample data or dismiss the notice depending on user's option
 		 */
 		public static function install_sample_data() {
-			$yes            = !empty( $_REQUEST['yes'] ) ? $_REQUEST['yes'] : '';
+			$yes            = ! empty( $_REQUEST['yes'] ) ? $_REQUEST['yes'] : '';
 			$response       = array( 'result' => 'fail' );
 			$retry_button   = sprintf( '<a href="" class="button yes" data-action="yes">%s</a>', __( 'Try again!', 'learnpress' ) );
 			$dismiss_button = sprintf( '<a href="" class="button disabled no" data-action="no">%s</a>', __( 'Cancel', 'learnpress' ) );
@@ -954,7 +929,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			include_once( ABSPATH . 'wp-admin/includes/plugin-install.php' ); //for plugins_api..
 			$response = array( 'addons' => array() );
 
-			if ( !current_user_can( 'activate_plugins' ) ) {
+			if ( ! current_user_can( 'activate_plugins' ) ) {
 				$response['error'] = __( 'You do not have sufficient permissions to deactivate plugins for this site.', 'learnpress' );
 			} else {
 
@@ -962,7 +937,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 
 				if ( $add_ons ) {
 					foreach ( $add_ons as $slug ) {
-						$response['addons'][$slug] = learn_press_install_and_active_add_on( $slug );
+						$response['addons'][ $slug ] = learn_press_install_and_active_add_on( $slug );
 					}
 				}
 			}
@@ -975,27 +950,27 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 		public static function bundle_activate_add_on() {
 			$response = array();
 			include_once( ABSPATH . 'wp-admin/includes/plugin-install.php' ); //for plugins_api..
-			if ( !current_user_can( 'activate_plugins' ) ) {
+			if ( ! current_user_can( 'activate_plugins' ) ) {
 				$response['error'] = __( 'You do not have sufficient permissions to deactivate plugins for this site.', 'learnpress' );
 			} else {
-				$slug            = !empty( $_REQUEST['plugin'] ) ? $_REQUEST['plugin'] : null;
-				$response[$slug] = learn_press_install_and_active_add_on( $slug );
+				$slug              = ! empty( $_REQUEST['plugin'] ) ? $_REQUEST['plugin'] : null;
+				$response[ $slug ] = learn_press_install_and_active_add_on( $slug );
 			}
 			learn_press_send_json( $response );
 		}
 
 		public static function plugin_install() {
-			$plugin_name = !empty( $_REQUEST['plugin'] ) ? $_REQUEST['plugin'] : '';
+			$plugin_name = ! empty( $_REQUEST['plugin'] ) ? $_REQUEST['plugin'] : '';
 			$response    = learn_press_install_add_on( $plugin_name );
 			learn_press_send_json( $response );
 			die();
 		}
 
 		public static function update_add_on_status() {
-			$plugin   = !empty( $_REQUEST['plugin'] ) ? $_REQUEST['plugin'] : '';
-			$t        = !empty( $_REQUEST['t'] ) ? $_REQUEST['t'] : '';
+			$plugin   = ! empty( $_REQUEST['plugin'] ) ? $_REQUEST['plugin'] : '';
+			$t        = ! empty( $_REQUEST['t'] ) ? $_REQUEST['t'] : '';
 			$response = array();
-			if ( !current_user_can( 'activate_plugins' ) ) {
+			if ( ! current_user_can( 'activate_plugins' ) ) {
 				$response['error'] = __( 'You do not have sufficient permissions to deactivate plugins for this site.', 'learnpress' );
 			}
 			if ( $plugin && $t ) {
@@ -1016,7 +991,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 		 * Output the image to browser with text and params passed via $_GET
 		 */
 		public static function dummy_image() {
-			$text = !empty( $_REQUEST['text'] ) ? $_REQUEST['text'] : '';
+			$text = ! empty( $_REQUEST['text'] ) ? $_REQUEST['text'] : '';
 			learn_press_text_image( $text, $_GET );
 			die();
 		}
@@ -1025,10 +1000,12 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 		 * Get edit|view link of a page
 		 */
 		public static function get_page_permalink() {
-			$page_id = !empty( $_REQUEST['page_id'] ) ? $_REQUEST['page_id'] : '';
+			$page_id = ! empty( $_REQUEST['page_id'] ) ? $_REQUEST['page_id'] : '';
 			?>
-			<a href="<?php echo get_edit_post_link( $page_id ); ?>" target="_blank"><?php _e( 'Edit Page', 'learnpress' ); ?></a>
-			<a href="<?php echo get_permalink( $page_id ); ?>" target="_blank"><?php _e( 'View Page', 'learnpress' ); ?></a>
+            <a href="<?php echo get_edit_post_link( $page_id ); ?>"
+               target="_blank"><?php _e( 'Edit Page', 'learnpress' ); ?></a>
+            <a href="<?php echo get_permalink( $page_id ); ?>"
+               target="_blank"><?php _e( 'View Page', 'learnpress' ); ?></a>
 			<?php
 			die();
 		}
@@ -1038,8 +1015,8 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 		 *
 		 */
 		public function custom_stats() {
-			$from      = !empty( $_REQUEST['from'] ) ? $_REQUEST['from'] : 0;
-			$to        = !empty( $_REQUEST['to'] ) ? $_REQUEST['to'] : 0;
+			$from      = ! empty( $_REQUEST['from'] ) ? $_REQUEST['from'] : 0;
+			$to        = ! empty( $_REQUEST['to'] ) ? $_REQUEST['to'] : 0;
 			$date_diff = strtotime( $to ) - strtotime( $from );
 			if ( $date_diff <= 0 || $from == 0 || $to == 0 ) {
 				die();
@@ -1120,12 +1097,12 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 		}
 
 		public static function duplicate_course() {
-			if ( empty( $_POST['course_id'] ) || empty( $_POST['_nonce'] ) || !wp_verify_nonce( $_POST['_nonce'], 'lp-duplicate-course' ) ) {
+			if ( empty( $_POST['course_id'] ) || empty( $_POST['_nonce'] ) || ! wp_verify_nonce( $_POST['_nonce'], 'lp-duplicate-course' ) ) {
 				return;
 			}
 			global $wpdb;
 			$course_id = absint( $_POST['course_id'] );
-			$force     = !empty( $_POST['content'] ) && $_POST['content'] ? true : false;
+			$force     = ! empty( $_POST['content'] ) && $_POST['content'] ? true : false;
 
 			$results       = array(
 				'redirect' => admin_url( 'edit.php?post_type=' . LP_COURSE_CPT )
@@ -1143,7 +1120,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 		}
 
 		public static function duplicate_question() {
-			if ( empty( $_POST['_nonce'] ) || !wp_verify_nonce( $_POST['_nonce'], 'duplicate-question' ) ) {
+			if ( empty( $_POST['_nonce'] ) || ! wp_verify_nonce( $_POST['_nonce'], 'duplicate-question' ) ) {
 				return;
 			}
 			global $wpdb;
@@ -1152,7 +1129,7 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 			$user_id     = learn_press_get_current_user_id();
 
 			$new_question_id = learn_press_duplicate_question( $question_id, $quiz_id );
-			if ( !is_wp_error( $new_question_id ) ) {
+			if ( ! is_wp_error( $new_question_id ) ) {
 				ob_start();
 				$question = LP_Question_Factory::get_question( $new_question_id );
 				$post     = get_post( $quiz_id );
@@ -1162,10 +1139,10 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 				$response['html'] = ob_get_clean();
 
 				// trigger change user memorize question types
-				$question_types        = get_user_meta( $user_id, '_learn_press_memorize_question_types', true );
-				$question_types        = !$question_types ? array() : $question_types;
-				$type                  = get_post_meta( $new_question_id, '_lp_type', true );
-				$question_types[$type] = !empty ( $question_types[$type] ) ? absint( $question_types[$type] ) + 1 : 1;
+				$question_types          = get_user_meta( $user_id, '_learn_press_memorize_question_types', true );
+				$question_types          = ! $question_types ? array() : $question_types;
+				$type                    = get_post_meta( $new_question_id, '_lp_type', true );
+				$question_types[ $type ] = ! empty ( $question_types[ $type ] ) ? absint( $question_types[ $type ] ) + 1 : 1;
 				update_user_meta( $user_id, '_learn_press_memorize_question_types', $question_types );
 				// end trigger change user memorize question types
 				learn_press_send_json( $response );
@@ -1178,8 +1155,8 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 		public static function remove_notice_popup() {
 
 			if ( isset( $_POST['action'] ) && $_POST['action'] === 'learnpress_remove_notice_popup'
-				&& isset( $_POST['slug'] ) && !empty( $_POST['slug'] )
-				&& isset( $_POST['user'] ) && !empty( $_POST['user'] )
+			     && isset( $_POST['slug'] ) && ! empty( $_POST['slug'] )
+			     && isset( $_POST['user'] ) && ! empty( $_POST['user'] )
 			) {
 
 				$slug = 'learnpress_notice_' . $_POST['slug'] . '_' . $_POST['user'];
@@ -1191,22 +1168,22 @@ if ( !class_exists( 'LP_Admin_Ajax' ) ) {
 
 		}
 
-		public static function update_order_status () {
-            global $wpdb;
-            $order_id = learn_press_get_request( 'order_id' );
-            $value     = learn_press_get_request( 'value' );
+		public static function update_order_status() {
+			global $wpdb;
+			$order_id = learn_press_get_request( 'order_id' );
+			$value    = learn_press_get_request( 'value' );
 
-            $order = array(
-                'ID'           => $order_id,
-                'post_status'   => $value,
-            );
+			$order = array(
+				'ID'          => $order_id,
+				'post_status' => $value,
+			);
 
-            wp_update_post( $order ) ? $response['success'] = true : $response['success'] = false;
+			wp_update_post( $order ) ? $response['success'] = true : $response['success'] = false;
 
-            learn_press_send_json( $response );
+			learn_press_send_json( $response );
 
-            die();
-        }
+			die();
+		}
 
 	}
 }
