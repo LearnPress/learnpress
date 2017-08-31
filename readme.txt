@@ -193,6 +193,8 @@ https://www.transifex.com/projects/p/learnpress/
 8. Add-ons of LearnPress.  
 
 == Changelog ==
+= 2.1.8 =
+
 = 2.1.7.3 =
 ~ Fixed can not save curriculum with SiteOrigin.
 ~ Fixed instructor can select lessons/quizzes of an another user when editing course.

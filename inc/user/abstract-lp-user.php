@@ -1630,7 +1630,7 @@ class LP_Abstract_User {
 			$results = 0;
 		}
 
-		return apply_filters( 'learn_press_user_has_passed_course', $results * 100 >= $course->passing_condition ? $results : false, $course_id, $this );
+		return apply_filters( 'learn_press_user_has_passed_course', $results >= $course->passing_condition ? $results : false, $course_id, $this );
 	}
 
 	/**
