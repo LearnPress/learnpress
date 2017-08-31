@@ -7,8 +7,8 @@
 ?>
 <script type="text/x-template" id="tmpl-lp-section-item">
     <li :data-item-id="item.id"
-            :class="[item.type, {updating: updating, removing: removing}]"
-            class="section-item">
+        :class="[item.type, {updating: updating, removing: removing}]"
+        class="section-item">
 
         <div class="icon"></div>
         <div class="title">
@@ -39,31 +39,25 @@
         Vue.component('lp-section-item', {
             template: '#tmpl-lp-section-item',
             props: ['item', 'order'],
+            data: function () {
+                return {
+                    unsaved: false,
+                    removing: false
+                };
+            },
             computed: {
                 urlEdit: function () {
                     return $store.getters['ss/urlEdit'] + this.item.id;
                 },
                 updating: function () {
                     return this.removing || this.saving;
+                },
+                status: function () {
+                    return $store.getters['ss/statusUpdateSectionItem'][this.item.id] || '';
+                },
+                saving: function () {
+                    return this.status === 'updating';
                 }
-            },
-            created: function() {
-                var vm = this;
-
-                $store.subscribe(function(mutation) {
-                    if (mutation.type !== 'ss/UPDATE_SECTION_ITEM' ) {
-                        return;
-                    }
-
-                    vm.saving = false;
-                });
-            },
-            data: function () {
-                return {
-                    unsaved: false,
-                    removing: false,
-                    saving: false
-                };
             },
             methods: {
                 onChangeTitle: function () {
@@ -82,7 +76,6 @@
                     }
 
                     this.unsaved = false;
-                    this.saving = true;
                     this.$emit('update', this.item);
                 }
             }

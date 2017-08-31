@@ -48,6 +48,7 @@ var LP_Curriculum_Sections_Store = (function (Vue, helpers, data) {
     var state = helpers.cloneObject(data.sections);
 
     state.statusUpdateSection = {};
+    state.statusUpdateSectionItem = {};
 
     state.sections = state.sections.map(function (section) {
         var hiddenSections = state.hidden_sections;
@@ -84,6 +85,9 @@ var LP_Curriculum_Sections_Store = (function (Vue, helpers, data) {
         },
         statusUpdateSection: function (state) {
             return state.statusUpdateSection;
+        },
+        statusUpdateSectionItem: function (state) {
+            return state.statusUpdateSectionItem;
         }
     };
 
@@ -179,6 +183,18 @@ var LP_Curriculum_Sections_Store = (function (Vue, helpers, data) {
 
         'UPDATE_SECTION_FAILURE': function (state, sectionId) {
             Vue.set(state.statusUpdateSection, sectionId, 'failed');
+        },
+
+        'UPDATE_SECTION_ITEM_REQUEST': function (state, itemId) {
+            Vue.set(state.statusUpdateSectionItem, itemId, 'updating');
+        },
+
+        'UPDATE_SECTION_ITEM_SUCCESS': function (state, itemId) {
+            Vue.set(state.statusUpdateSectionItem, itemId, 'successful');
+        },
+
+        'UPDATE_SECTION_ITEM_FAILURE': function (state, itemId) {
+            Vue.set(state.statusUpdateSectionItem, itemId, 'failed');
         }
     };
 
@@ -286,6 +302,8 @@ var LP_Curriculum_Sections_Store = (function (Vue, helpers, data) {
         },
 
         updateSectionItem: function (context, payload) {
+            context.commit('UPDATE_SECTION_ITEM_REQUEST', payload.item.id);
+
             Vue.http
                 .LPRequest({
                     type: 'update-section-item',
@@ -294,8 +312,9 @@ var LP_Curriculum_Sections_Store = (function (Vue, helpers, data) {
                 })
                 .then(
                     function (response) {
-                        var result = response.body;
+                        context.commit('UPDATE_SECTION_ITEM_SUCCESS', payload.item.id);
 
+                        var result = response.body;
                         if (result.success) {
                             var item = result.data;
 
@@ -306,6 +325,7 @@ var LP_Curriculum_Sections_Store = (function (Vue, helpers, data) {
                         }
                     },
                     function (error) {
+                        context.commit('UPDATE_SECTION_ITEM_FAILURE', payload.item.id);
                         console.error(error);
                     }
                 );
