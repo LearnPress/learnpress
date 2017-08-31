@@ -1160,7 +1160,7 @@ class LP_Abstract_User {
 	public function can_purchase_course( $course_id ) {
 		$course        = learn_press_get_course( $course_id );
 		$course_status = $this->get_course_status( $course_id );
-		$purchasable   = ! $course->is_free() && ! $course->is_reached_limit() && ( ! $this->has_ordered_course( $course_id ) || ( $this->has_ordered_course( $course_id ) && $course_status == 'finished' ) );
+		$purchasable   = $course->is_free() && ! $course->is_reached_limit() && !is_user_logged_in() || ! $course->is_free() && ! $course->is_reached_limit() && ( ! $this->has_ordered_course( $course_id ) || ( $this->has_ordered_course( $course_id ) && $course_status == 'finished' ) );
 
 		return apply_filters( 'learn_press_user_can_purchase_course', $purchasable, $this, $course_id );
 	}
@@ -1183,7 +1183,7 @@ class LP_Abstract_User {
 			$course_status = $this->get_course_status( $course_id );
 			// If user has not bought course
 			if ( ( ! $course_status ) ) {
-				$can = $course->is_free() && $course->is_require_enrollment();
+				$can = $course->is_free() && $course->is_require_enrollment() && is_user_logged_in();
 			} else {
 				$can = $course_status === 'purchased';
 			}

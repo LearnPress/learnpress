@@ -13,7 +13,7 @@ if ( !$course ) {
 	return;
 }
 $status = $user->get( 'course-status', $course->id );
-if ( !$status || !$user->has_purchased_course( $course->id ) ) {
+if ( (!$status || $status =='purchased') || !$user->has_purchased_course( $course->id ) ) {
 	return;
 }
 $force             = isset( $force ) ? $force : false;
