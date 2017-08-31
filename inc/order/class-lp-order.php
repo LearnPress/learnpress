@@ -109,8 +109,8 @@ class LP_Order extends LP_Abstract_Object_Data {
 		return $return;
 	}
 
-	public function get_order_key(){
-		return $this->get_data('order_key');
+	public function get_order_key() {
+		return $this->get_data( 'order_key' );
 	}
 
 	/**
@@ -326,10 +326,9 @@ class LP_Order extends LP_Abstract_Object_Data {
 
 		LP()->session->order_awaiting_payment = null;
 
-		$valid_order_statuses = apply_filters( 'learn_press_valid_order_statuses_for_payment_complete', array(
+		$valid_order_statuses = apply_filters( 'learn-press/valid-order-statuses-for-payment-complete', array(
 			'pending',
-			'processing',
-			'on-hold'
+			'processing'
 		), $this );
 
 		if ( $this->get_id() && $this->has_status( $valid_order_statuses ) ) {
@@ -341,24 +340,38 @@ class LP_Order extends LP_Abstract_Object_Data {
 			}
 
 			do_action( 'learn_press_payment_complete', $this->get_id() );
+
+			/**
+			 * @since 3.x.x
+			 */
+			do_action( 'learn-press/payment-complete', $this->get_id() );
 		} else {
 			do_action( 'learn_press_payment_complete_order_status_' . $this->get_status(), $this->get_id() );
+			/**
+			 * @since 3.x.x
+			 */
+			do_action( 'learn-press/payment-complete-order-status-' . $this->get_status(), $this->get_id() );
 		}
 
 		return true;
 	}
 
 	/**
-	 * Get checkout order success url
+	 * Get checkout order successful url.
 	 *
-	 * @return mixed
+	 * @return string
 	 */
 	public function get_checkout_order_received_url() {
 		$received_url = learn_press_get_endpoint_url( 'lp-order-received', $this->get_id(), learn_press_get_page_link( 'checkout' ) );
 
-		$received_url = add_query_arg( 'key', $this->order_key, $received_url );
+		$received_url = add_query_arg( 'key', $this->get_data( 'order_key' ), $received_url );
 
-		return apply_filters( 'learn_press_get_checkout_order_received_url', $received_url, $this );
+		$received_url = apply_filters( 'learn_press_get_checkout_order_received_url', $received_url, $this );
+
+		/**
+		 * @since 3.x.x
+		 */
+		return apply_filters( 'learn-press/checkout-order-received-url', $received_url, $this );
 	}
 
 	/*********************************/
@@ -577,6 +590,8 @@ class LP_Order extends LP_Abstract_Object_Data {
 	}
 
 	/**
+	 * Add multiple items.
+	 *
 	 * @param array $items
 	 *
 	 * @return array

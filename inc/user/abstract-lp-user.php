@@ -1618,17 +1618,9 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	 * @return bool
 	 */
 	public function has_enrolled_course( $course_id, $force = false ) {
-		_learn_press_parse_user_item_statuses( $this->get_id(), $course_id, $force );
-		if ( $enrolled = $this->has_purchased_course( $course_id ) ) {
-			$item_statuses = LP_Cache::get_item_statuses( false, array() );
-			$key           = sprintf( '%d-%d-%d', $this->get_id(), $course_id, $course_id );
-			$enrolled      = false;
-
-			if ( ! array_key_exists( $key, $item_statuses ) ) {
-				$enrolled = $item_statuses[ $key ] = $this->_has_enrolled_course( $course_id );
-			} elseif ( ! empty( $item_statuses[ $key ] ) && in_array( $item_statuses[ $key ], array('enrolled', 'finished')) ) {
-				//$enrolled = true;
-			}
+		$enrolled = false;
+		if ( 'lp-completed' === $this->get_order_status( $course_id ) ) {
+			$enrolled = $this->has_course_status( $course_id, array( 'enrolled', 'finished' ) );
 		}
 
 		return apply_filters( 'learn_press_user_has_enrolled_course', $enrolled, $this, $course_id );
@@ -1636,14 +1628,14 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 
 	private function _has_enrolled_course( $course_id ) {
 		global $wpdb;
-		$query = $wpdb->prepare( "
+		echo $query = $wpdb->prepare( "
 				SELECT status
 				FROM {$wpdb->prefix}learnpress_user_items
 				WHERE user_id = %d
 				AND item_id = %d
-				AND status <> %s
+				AND status NOT IN(%s, %s)
 				LIMIT 0, 1
-			", $this->get_id(), $course_id, '' );
+			", $this->get_id(), $course_id, '', 'purchased' );
 
 		return $wpdb->get_var( $query ) ? true : false;
 	}

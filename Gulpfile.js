@@ -131,3 +131,28 @@ gulp.task('svn', ['less', 'copy-trunk'], function () {
 });
 
 // end of the world!
+
+gulp.task("compile-sass-to-css", function (project) {
+    return gulp.src([
+        'sources/' + project + '/assets/sass/style.scss',
+        'sources/' + project + '/shortcodes/**/assets/sass/*.scss',
+        '!sources/' + project + '/shortcodes/**/assets/sass/*-options.scss',
+        'sources/' + project + '/inc/widgets/**/assets/sass/*.scss',
+        '!sources/' + project + '/inc/widgets/**/assets/sass/*-options.scss',
+    ])
+
+        .pipe(concat('_tmp-options.scss'))
+        .pipe(gulp.dest('sources/' + project + '/assets/sass/'))
+        .pipe(sourcemaps.init())
+        .pipe(rename('style.unminify.css'))
+        .pipe(sass())
+        .pipe(sourcemaps.write({includeContent: false, sourceRoot: 'src'}))
+        .pipe(lec())
+        .pipe(gulp.dest('sources/' + project + '/'))
+        .pipe(rename('style.css'))
+        .pipe(cssmin())
+        .pipe(lec())
+
+        .pipe(gulp.dest('sources/' + project + '/'))
+        .pipe(livereload());
+});
