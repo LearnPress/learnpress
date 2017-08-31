@@ -49,6 +49,17 @@ var LP_Curriculum_Sections_Store = (function (Vue, helpers, data) {
 
     state.statusUpdateSection = {};
 
+    state.sections = state.sections.map(function (section) {
+        var hiddenSections = state.hidden_sections;
+        var find = hiddenSections.find(function (sectionId) {
+            return parseInt(section.id) === parseInt(sectionId);
+        });
+
+        section.open = !find;
+
+        return section;
+    });
+
     var getters = {
         sections: function (state) {
             return state.sections || [];
@@ -57,7 +68,13 @@ var LP_Curriculum_Sections_Store = (function (Vue, helpers, data) {
             return state.urlEdit;
         },
         hiddenSections: function (state) {
-            return state.hidden_sections;
+            return state.sections
+                .filter(function (section) {
+                    return !section.open;
+                })
+                .map(function (section) {
+                    return parseInt(section.id);
+                });
         },
         isHiddenAllSections: function (state, getters) {
             var hiddenSections = getters['hiddenSections'];
@@ -82,6 +99,7 @@ var LP_Curriculum_Sections_Store = (function (Vue, helpers, data) {
             state.sections = sections;
         },
         'ADD_NEW_SECTION': function (state, section) {
+            section.open = true;
             state.sections.push(section);
         },
         'REMOVE_SECTION': function (state, index) {
@@ -118,30 +136,37 @@ var LP_Curriculum_Sections_Store = (function (Vue, helpers, data) {
 
         },
 
-        'ADD_HIDDEN_SECTION': function (state, section) {
-            var find = state.hidden_sections.find(function (sectionId) {
-                return (parseInt(sectionId) === parseInt(section.id));
+        'CLOSE_SECTION': function (state, section) {
+            state.sections.forEach(function (_section, index) {
+                if (section.id === _section.id) {
+                    state.sections[index].open = false;
+                }
             });
 
-            if (!find) {
-                state.hidden_sections.push(section.id);
-            }
         },
 
-        'REMOVE_HIDDEN_SECTION': function (state, section) {
-            state.hidden_sections.forEach(function (sectionId, index) {
-                if (parseInt(sectionId) === parseInt(section.id)) {
-                    state.hidden_sections.splice(index, 1);
+        'OPEN_SECTION': function (state, section) {
+            state.sections.forEach(function (_section, index) {
+                if (section.id === _section.id) {
+                    state.sections[index].open = true;
                 }
             });
         },
 
-        'EMPTY_HIDDEN_SECTIONS': function (state) {
-            state.hidden_sections = [];
+        'OPEN_ALL_SECTIONS': function (state) {
+            state.sections = state.sections.map(function (_section) {
+                _section.open = true;
+
+                return _section;
+            });
         },
 
-        'UPDATE_HIDDEN_SECTIONS': function (state, sections) {
-            state.hidden_sections = sections;
+        'CLOSE_ALL_SECTIONS': function (state) {
+            state.sections = state.sections.map(function (_section) {
+                _section.open = false;
+
+                return _section;
+            });
         },
 
         'UPDATE_SECTION_REQUEST': function (state, sectionId) {
@@ -310,11 +335,11 @@ var LP_Curriculum_Sections_Store = (function (Vue, helpers, data) {
                 );
         },
 
-        toggleSection: function (context, payload) {
-            if (payload.open) {
-                context.commit('REMOVE_HIDDEN_SECTION', payload.section);
+        toggleSection: function (context, section) {
+            if (section.open) {
+                context.commit('CLOSE_SECTION', section);
             } else {
-                context.commit('ADD_HIDDEN_SECTION', payload.section);
+                context.commit('OPEN_SECTION', section);
             }
 
             Vue.http
@@ -327,12 +352,9 @@ var LP_Curriculum_Sections_Store = (function (Vue, helpers, data) {
             var hidden = context.getters['isHiddenAllSections'];
 
             if (hidden) {
-                context.commit('EMPTY_HIDDEN_SECTIONS');
+                context.commit('OPEN_ALL_SECTIONS');
             } else {
-                var sections = context.getters['sections'].map(function (section) {
-                    return section.id;
-                });
-                context.commit('UPDATE_HIDDEN_SECTIONS', sections);
+                context.commit('CLOSE_ALL_SECTIONS');
             }
 
             Vue.http

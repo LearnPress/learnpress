@@ -27,7 +27,7 @@ learn_press_admin_view( 'course/new-section-item' );
             </div>
         </div>
 
-        <div class="section-collapse">
+        <div class="section-collapse" ref="collapse">
             <div class="section-content">
                 <div class="details">
 
@@ -67,27 +67,24 @@ learn_press_admin_view( 'course/new-section-item' );
 </script>
 
 <script>
-    (function (Vue, $store) {
+    (function (Vue, $store, $) {
 
         Vue.component('lp-section', {
             template: '#tmpl-lp-section',
             props: ['section', 'index'],
             data: function () {
                 return {
-                    open: true,
                     unsaved: false,
                     confirmRemove: false
                 };
             },
-            created: function () {
+            mounted: function () {
                 var vm = this;
 
-                $store.subscribe(function (mutation) {
-                    if (mutation.type !== 'ss/EMPTY_HIDDEN_SECTIONS') {
-                        return;
-                    }
+                this.prepareToggle();
 
-                    vm.open = true;
+                this.$watch('section.open', function (open) {
+                    vm.toggleAnimation(open);
                 });
             },
             computed: {
@@ -95,17 +92,7 @@ learn_press_admin_view( 'course/new-section-item' );
                     return $store.getters['ss/statusUpdateSection'][this.section.id] || '';
                 },
                 isOpen: function () {
-                    var section = this.section;
-                    var hiddenSections = $store.getters['ss/hiddenSections'];
-                    var find = hiddenSections.find(function (sectionId) {
-                        return parseInt(section.id) === parseInt(sectionId);
-                    });
-
-                    if (find) {
-                        this.open = false;
-                    }
-
-                    return this.open;
+                    return this.section.open;
                 },
 
                 items: {
@@ -136,11 +123,22 @@ learn_press_admin_view( 'course/new-section-item' );
             },
             methods: {
                 toggle: function () {
-                    this.open = !this.open;
-                    $store.dispatch('ss/toggleSection', {
-                        open: this.open,
-                        section: this.section
-                    });
+                    $store.dispatch('ss/toggleSection', this.section);
+                },
+                prepareToggle: function () {
+                    var display = 'none';
+                    if (this.isOpen) {
+                        display = 'block';
+                    }
+
+                    this.$refs.collapse.style.display = display;
+                },
+                toggleAnimation: function (open) {
+                    if (open) {
+                        $(this.$refs.collapse).slideDown();
+                    } else {
+                        $(this.$refs.collapse).slideUp();
+                    }
                 },
                 newSectionItem: function (item) {
                     $store.dispatch('ss/newSectionItem', {
@@ -197,5 +195,5 @@ learn_press_admin_view( 'course/new-section-item' );
             }
         });
 
-    })(Vue, LP_Curriculum_Store);
+    })(Vue, LP_Curriculum_Store, jQuery);
 </script>
