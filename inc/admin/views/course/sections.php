@@ -30,22 +30,6 @@ learn_press_admin_view( 'course/section' );
 
         Vue.component('lp-list-sections', {
             template: '#tmpl-lp-list-sections',
-            data: function () {
-                return {
-                    loading: false
-                };
-            },
-            created: function () {
-                var vm = this;
-
-                $store.subscribe(function (mutation, state) {
-                    if (mutation.type !== 'ss/ADD_NEW_SECTION') {
-                        return;
-                    }
-
-                    vm.loading = false;
-                });
-            },
             methods: {
                 updateSortSections: function () {
                     var orders = [];
