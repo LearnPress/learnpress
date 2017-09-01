@@ -991,6 +991,24 @@ if (typeof window.LP == 'undefined') {
             $.alerts.overlayOpacity = 0.5;
         }
 
+        $('.learn-press-message.fixed').each(function () {
+            var $el = $(this),
+                options = $el.data();
+            (function ($el, options) {
+                if (options.delayIn) {
+                    setTimeout(function () {
+                        $el.show().hide().fadeIn();
+                    }, options.delayIn);
+                }
+                if (options.delayOut) {
+                    setTimeout(function () {
+                        $el.fadeOut();
+                    }, options.delayOut + ( options.delayIn || 0));
+                }
+            })($el, options);
+
+        });
+
         $('body')
             .on('click', '.learn-press-nav-tabs li a', function (e) {
                 e.preventDefault();
@@ -998,7 +1016,7 @@ if (typeof window.LP == 'undefined') {
                 $tab.closest('li').addClass('active').siblings().removeClass('active');
                 $($tab.attr('data-tab')).addClass('active').siblings().removeClass('active');
                 //if (!$tab.closest('li').hasClass('default')) {
-                    url = $tab.attr('href');
+                url = $tab.attr('href');
                 //} else {
                 //    url = window.location.href.removeQueryVar('tab');
                 //}

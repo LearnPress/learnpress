@@ -416,6 +416,8 @@ if ( ! class_exists( 'LearnPress' ) ) {
 
 			require_once 'inc/course/abstract-course-item.php';
 			require_once 'inc/course/class-lp-course-section.php';
+			require_once 'inc/user/class-lp-user-item.php';
+			require_once 'inc/user/class-lp-user-course-item.php';
 
 
 			require_once 'inc/lp-deprecated.php';
@@ -728,3 +730,29 @@ class LP_Global {
 	}
 }
 
+add_action( 'learn-press/checkout-no-payment-result', function ( $results, $order_id ) {
+	$order                           = learn_press_get_order( $order_id );
+	if ( $order->is_completed() ) {
+		$order_users = $order->get_users();
+		$users       = array();
+		foreach ( $order->get_items() as $item ) {
+			$course = learn_press_get_course( $item['course_id'] );
+			if ( $course->is_publish() ) {
+				foreach ( $order_users as $user_id ) {
+					if ( empty( $users[ $user_id ] ) ) {
+						$user = learn_press_get_user( $user_id );
+						if ( ! $user->is_exists() ) {
+							continue;
+						}
+
+						$users[ $user_id ] = $user;
+					}
+
+					$users[ $user_id ]->enroll( $course->get_id(), $order->get_id() );
+				}
+			}
+		}
+	}
+
+	return $results;
+}, 10, 2 );

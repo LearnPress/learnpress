@@ -9,42 +9,35 @@
         .order_status {
             span {
                 display: inline-block;
-                width: 18px;
-                height: 18px;
                 &:after {
-                    font-family: dashicons;
+                    font-family: fontawesome;
                     display: inline-block;
                     font-size: 20px;
-                    border-radius: 50%;
                     color: #FFF;
                     text-align: center;
                     line-height: 20px;
-                    width: 18px;
-                    height: 18px;
+                    width: 20px;
+                    height: 20px;
                 }
                 &.completed:after {
-                    content: "\f147";
-                    background: $primary-color;
-                    font-size: 18px;
+                    content: "\f00c";
+                    color: $primary-color;
                 }
                 &.processing:after {
-                    content: "\f321";
+                    content: "\f251";
                     color: #563F7A;
-                    background: transparent;
                 }
                 &.pending:after {
-                    content: "\f534";
+                    content: "\f017";
                     color: #AAA;
-                    background: transparent;
                 }
                 &.cancelled:after {
-                    content: "\f153";
+                    content: "\f057";
                     color: #FF0000;
                 }
                 &.draft:after {
                     content: "\f223";
                     color: #69b391;
-                    background: transparent;
                 }
             }
         }

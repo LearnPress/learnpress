@@ -17,7 +17,9 @@
 @import "course-editor-v2";
 @import "place-holder";
 @import "order";
-
+.tipsy{
+    position: absolute;
+}
 /* Metabox email template field */
 .lp-email-templates {
     overflow: hidden;

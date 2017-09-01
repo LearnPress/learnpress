@@ -50,6 +50,13 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	protected $_curd = null;
 
 	/**
+	 * Post type
+	 *
+	 * @var string
+	 */
+	protected $_post_type = LP_COURSE_CPT;
+
+	/**
 	 * @var array
 	 */
 	protected static $_lessons = array();
@@ -1265,15 +1272,15 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 		$quizzes = $this->get_quizzes();
 
 		if ( ( 'evaluate_lesson' === $this->get_data( 'course_result' ) ) || ! $quizzes ) {
-			$results = $this->_evaluate_course_by_lesson( $user_id, $force );
+			$results = $this->_evaluate_course_by_lesson( $user_id );
 		} elseif ( 'evaluate_final_quiz' === $this->get_data( 'course_result' ) ) {
-			$results = $this->_evaluate_course_by_quiz( $user_id, $force );
+			$results = $this->_evaluate_course_by_quiz( $user_id );
 		} elseif ( 'evaluate_quiz' === $this->get_data( 'course_result' ) ) {
-			$results = $this->_evaluate_course_by_quizzes( $user_id, $force );
+			$results = $this->_evaluate_course_by_quizzes( $user_id );
 		} elseif ( 'evaluate_quizzes' === $this->get_data( 'course_result' ) ) {
-			$results = $this->_evaluate_course_by_quizzes_results( $user_id, $force );
+			$results = $this->_evaluate_course_by_quizzes_results( $user_id );
 		} elseif ( 'evaluate_passed_quizzes' === $this->get_data( 'course_result' ) ) {
-			$results = $this->_evaluate_course_by_passed_quizzes_results( $user_id, $force );
+			$results = $this->_evaluate_course_by_passed_quizzes_results( $user_id );
 		}
 
 		return apply_filters( 'learn_press_evaluation_course_results', $results );

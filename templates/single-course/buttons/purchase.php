@@ -15,16 +15,7 @@ if ( ! isset( $course ) ) {
 	$course = learn_press_get_course();
 }
 
-if ( ! isset( $user ) ) {
-	$user = LP_Global::user();
-}
-
-if ( ! $course->is_purchasable() || $course->is_free() ) {
-	return;
-}
-
 ?>
-
 <?php do_action( 'learn-press/before-purchase-form' ); ?>
 
     <form name="purchase-course" class="purchase-course" method="post" enctype="multipart/form-data">

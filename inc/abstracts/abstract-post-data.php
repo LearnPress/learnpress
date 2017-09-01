@@ -5,6 +5,11 @@
  */
 class LP_Abstract_Post_Data extends LP_Abstract_Object_Data {
 	/**
+	 * @var string
+	 */
+	protected $_post_type = '';
+
+	/**
 	 * LP_Abstract_Post_Data constructor.
 	 *
 	 * @param mixed $post
@@ -32,5 +37,22 @@ class LP_Abstract_Post_Data extends LP_Abstract_Object_Data {
 	 */
 	public function get_status() {
 		return $this->get_data( 'status' );
+	}
+
+	/**
+	 * Check if the post of this instance is exists.
+	 *
+	 * @return bool
+	 */
+	public function is_exists(){
+		return get_post_type($this->get_id()) === $this->_post_type;
+	}
+
+	public function is_trashed(){
+		return get_post_status($this->get_id()) === 'trash';
+	}
+
+	public function is_publish(){
+		return apply_filters('learn-press/' .$this->_post_type . '/is-publish', get_post_status($this->get_id())==='publish');
 	}
 }

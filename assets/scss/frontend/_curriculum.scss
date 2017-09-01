@@ -150,19 +150,29 @@
                         &.has-status {
                             border-color: #DDD;
                             padding-top: 1px;
-                            &.status-started {
-
+                            font-family: fontawesome;
+                            &.item-started {
+                                &:before{
+                                    content: "\f141";
+                                }
                             }
-                            &.status-completed {
-
+                            &.item-completed {
+                                border-color: #00adff;
+                                color: #00adff;
+                                &:before{
+                                    content: "\f00c";
+                                }
                             }
                             &.passed {
                                 border-color: #00adff;
                                 color: #00adff;
                             }
-                            &.failed {
+                            &.item-failed {
                                 border-color: #FF0000;
                                 color: #FF0000;
+                                &:before{
+                                    content: "\f00d";
+                                }
                             }
                         }
                     }

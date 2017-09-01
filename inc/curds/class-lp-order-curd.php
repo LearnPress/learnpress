@@ -23,39 +23,48 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 * @return mixed
 	 */
 	public function create( &$order ) {
+
+		$order->set_order_date( current_time( 'timestamp' ) );
+		$order->set_order_key( 'lp_' . learn_press_generate_order_key() );
+
 		$order_data = array(
-			'post_author' => '1',
-			'post_parent' => $order->get_parent_id(),
-			'post_type'   => LP_ORDER_CPT,
-			'post_status' => 'lp-' . apply_filters( 'learn_press_default_order_status', 'pending' ),
-			'ping_status' => 'closed',
-			'post_title'  => $order->get_title(),
-			'post_date'   => $order->get_order_date()
+			'post_author'   => '1',
+			'post_parent'   => $order->get_parent_id(),
+			'post_type'     => LP_ORDER_CPT,
+			'post_status'   => $order->get_order_status(),
+			'ping_status'   => 'closed',
+			'post_title'    => $order->get_title(),
+			'post_date'     => $order->get_order_date()->toSql( true ),
+			'post_date_gmt' => $order->get_order_date()->toSql( false ),
+			'post_excerpt'  => $order->get_customer_note()
 		);
 
-		$order_data = apply_filters( 'learn-press/new-order-data', $order_data );
+		$order_data = apply_filters( 'learn-press/order/new-data', $order_data );
 
-		$id = wp_insert_post( $order_data );
+		$id = wp_insert_post( $order_data, true );
 
 		if ( $id && ! is_wp_error( $id ) ) {
 			$order->set_id( $id );
 			$this->_updates( $order );
-		}
 
-		/*array(
-			'_order_currency'       => learn_press_get_currency(),
-			'_prices_include_tax'   => 'no',
-			'_user_ip_address'      => learn_press_get_ip(),
-			'_user_agent'           => isset( $_SERVER['HTTP_USER_AGENT'] ) ? $_SERVER['HTTP_USER_AGENT'] : '',
-			'_user_id'              => get_current_user_id(),
-			'_order_subtotal'       => $cart ? $cart->subtotal : 0,
-			'_order_total'          => $cart ? $cart->total : 0,
-			'_order_key'            => learn_press_generate_order_key(),
-			'_payment_method'       => '',
-			'_payment_method_title' => '',
-			'_order_version'        => '1.0',
-			'_created_via'          => 'checkout'
-		);*/
+			$meta_data = array(
+				'_order_currency'       => learn_press_get_currency(),
+				'_prices_include_tax'   => 'no',
+				'_user_ip_address'      => learn_press_get_ip(),
+				'_user_agent'           => isset( $_SERVER['HTTP_USER_AGENT'] ) ? $_SERVER['HTTP_USER_AGENT'] : '',
+				'_user_id'              => $order->get_user_id(),
+				'_order_subtotal'       => $order->get_subtotal(),
+				'_order_total'          => $order->get_total(),
+				'_order_key'            => $order->get_order_key(),
+				'_payment_method'       => '',
+				'_payment_method_title' => '',
+				'_order_version'        => '3.0',
+				'_created_via'          => $order->get_created_via()
+			);
+			foreach ( $meta_data as $key => $value ) {
+				update_post_meta( $id, $key, $value );
+			}
+		}
 
 		return $id;
 	}
@@ -127,12 +136,14 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		$post_data = array(
 			'post_date'     => $order->get_order_date()->toSql( true ),
 			'post_date_gmt' => $order->get_order_date()->toSql(),
-			'post_status'   => 'lp-' . ( $order->get_status() ? $order->get_status() : apply_filters( 'learn-press/default-order-status', 'pending' ) ),
+			'post_status'   => 'lp-' . ( $order->get_status() ? $order->get_status() : learn_press_default_order_status() ),
 			'post_parent'   => $order->get_parent_id(),
 			//'post_excerpt'      => $this->get_post_excerpt( $order ),
 			//'post_modified'     => $order->get_date_modified( ),
 			//'post_modified_gmt' => $order->get_date_modified( ),
 		);
+
+		$post_data = apply_filters( 'learn-press/order/update-data', $post_data, $order->get_id() );
 
 
 		/**
@@ -279,15 +290,17 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		}
 		if ( $post = get_post( $the_id ) ) {
 			$_users = get_post_meta( $order->get_id(), '_user_id' );
-
+			settype( $_users, 'array' );
 			if ( sizeof( $_users ) > 1 ) {
 				$users = array();
 
 				foreach ( $_users as $user ) {
 					$users[] = $user[0];
 				}
-			} else {
+			} elseif ( sizeof( $_users ) == 1 ) {
 				$users = $_users[0];
+			} else {
+				$users = 0;
 			}
 			$order->set_data_via_methods(
 				array(
@@ -295,10 +308,13 @@ class LP_Order_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 					'order_date'    => new LP_Datetime( $post->post_date ),
 					'date_modified' => new LP_Datetime( $post->post_modified ),
 					'status'        => str_replace( 'lp-', '', $post->post_status ),
-					'parent_id'     => $post->post_parent
+					'parent_id'     => $post->post_parent,
+					'created_via'   => get_post_meta( $post->ID, '_created_via', true ),
+					'total'         => get_post_meta( $post->ID, '_order_total', true ),
+					'subtotal'      => get_post_meta( $post->ID, '_order_subtotal', true ),
+					'order_key'     => get_post_meta( $post->ID, '_order_key', true ),
 				)
 			);
-
 			$this->read_items( $order );
 			$order->read_meta();
 		}

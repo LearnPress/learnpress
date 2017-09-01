@@ -67,7 +67,27 @@ class LP_Checkout {
 			$this->checkout_fields['user_password'] = __( 'Password', 'learnpress' );
 		}
 		$this->checkout_fields = apply_filters( 'learn_press_checkout_fields', $this->checkout_fields );
+
 		return $this->checkout_fields;
+	}
+
+	/**
+	 * Check if an order is pending or failed.
+	 *
+	 * @param $order_id
+	 *
+	 * @return LP_Order|bool
+	 */
+	protected function _is_resume_order( $order_id ) {
+		if ( $order_id > 0 && ( $order = learn_press_get_order( $order_id ) ) && $order->has_status( array(
+				'pending',
+				'failed'
+			) )
+		) {
+			return $order;
+		}
+
+		return false;
 	}
 
 	/**
@@ -79,57 +99,69 @@ class LP_Checkout {
 	public function create_order() {
 		global $wpdb;
 		// Third-party can be controls to create a order
-		if ( $order_id = apply_filters( 'learn_press_create_order', null, $this ) ) {
+		$order_id = apply_filters( 'learn-press/checkout/create-order', null, $this );
+
+		// @deprecated
+		$order_id = apply_filters( 'learn_press_create_order', null, $this );
+
+		if ( $order_id ) {
 			return $order_id;
 		}
-
+		$cart = LP()->get_cart();
 		try {
 			// Start transaction if available
-			//$wpdb->query( 'START TRANSACTION' );
+			$wpdb->query( 'START TRANSACTION' );
 
 			$order_data = array(
-				'status'      => apply_filters( 'learn_press_default_order_status', 'pending' ),
+				'status'      => learn_press_default_order_status(),
 				'user_id'     => get_current_user_id(),
 				'user_note'   => $this->order_comment,
 				'created_via' => 'checkout'
 			);
 
 			// Insert or update the post data
-			$order_id = absint( LP()->session->order_awaiting_payment );
-			// Resume the unpaid order if its pending
-			if ( $order_id > 0 && ( $order = learn_press_get_order( $order_id ) ) && $order->has_status( array(
-					'pending',
-					'failed'
-				) )
-			) {
+			$order_id = absint( LP()->session->get( 'order_awaiting_payment' ) );
 
-				$order_data['ID'] = $order_id;
-				$order            = learn_press_update_order( $order_data );
+			// Resume the unpaid order if its pending
+			if ( $order = $this->_is_resume_order( $order_id ) ) {
+
+//				$order_data['ID'] = $order_id;
+//				$order            = learn_press_update_order( $order_data );
 
 				if ( is_wp_error( $order ) ) {
 					throw new Exception( sprintf( __( 'Error %d: Unable to create order. Please try again.', 'learnpress' ), 401 ) );
-				} else {
-					$order->remove_order_items();
-					//do_action( 'learn_press_resume_order', $order_id );
 				}
+
+				$order->remove_order_items();
+				do_action( 'learn-press/checkout/resume-order', $order_id );
 
 			} else {
-				$order = learn_press_create_order( $order_data );
+				$order = new LP_Order();
 				if ( is_wp_error( $order ) ) {
 					throw new Exception( sprintf( __( 'Error %d: Unable to create order. Please try again.', 'learnpress' ), 400 ) );
-				} else {
-					$order_id = $order->id;
-					do_action( 'learn_press_new_order', $order_id );
 				}
+
+				$order_id = $order->get_id();
+				do_action( 'learn-press/checkout/new-order', $order_id );
 			}
 
+			$order->set_customer_note( $this->order_comment );
+			$order->set_status( learn_press_default_order_status( 'lp-' ) );
+			$order->set_total( $cart->total );
+			$order->set_subtotal( $cart->subtotal );
+			$order->set_created_via( 'checkout' );
+			$order->set_user_id( apply_filters( 'learn-press/checkout/default-user', get_current_user_id() ) );
+
+			$order_id = $order->save();
+
 			// Store the line items to the new/resumed order
-			foreach ( LP()->cart->get_items() as $item ) {
+			foreach ( $cart->get_items() as $item ) {
 				if ( empty( $item['order_item_name'] ) && ! empty( $item['item_id'] ) && ( $course = LP_Course::get_course( $item['item_id'] ) ) ) {
 					$item['order_item_name'] = $course->get_title();
 				} else {
 					throw new Exception( sprintf( __( 'Item does not exists!', 'learnpress' ), 402 ) );
 				}
+
 				$item_id = $order->add_item( $item );
 
 				if ( ! $item_id ) {
@@ -138,30 +170,33 @@ class LP_Checkout {
 
 				// Allow plugins to add order item meta
 				do_action( 'learn_press_add_order_item_meta', $item_id, $item );
+
+				// @since 3.x.x
+				do_action( 'learn-press/checkout/add-order-item-meta', $item_id, $item );
 			}
 
 			$order->set_payment_method( $this->payment_method );
 
 			// Update user meta
 			if ( ! empty( $this->user_id ) ) {
-				if ( apply_filters( 'learn_press_checkout_update_user_data', true, $this ) ) {
-					// TODO: update user meta
-				}
-				do_action( 'learn_press_checkout_update_user_meta', $this->user_id, $_REQUEST );
+				do_action( 'learn-press/checkout/update-user-meta', $this->user_id );
 			}
 
 			// Third-party add meta data
-			do_action( 'learn_press_checkout_update_order_meta', $order_id, $_REQUEST );
+			do_action( 'learn-press/checkout/update-order-meta', $order_id );
 
-			//$wpdb->query( 'COMMIT' );
+			if ( ! $order_id || is_wp_error( $order_id ) ) {
+				learn_press_add_message( __( 'Checkout. Create order failed!', 'learnpress' ) );
+			}
+			$wpdb->query( 'COMMIT' );
 
 		}
 		catch ( Exception $e ) {
 			// There was an error adding order data!
 			$wpdb->query( 'ROLLBACK' );
-			echo $e->getMessage();
+			learn_press_add_message( $e->getMessage() );
 
-			return false; //$e->getMessage();
+			return false;
 		}
 
 
@@ -323,6 +358,10 @@ class LP_Checkout {
 				// Create order
 				$order_id = $this->create_order();
 
+				if ( is_wp_error( $order_id ) ) {
+					throw new Exception( $order_id->get_error_message() );
+				}
+
 				// allow Third-party hook
 				do_action( 'learn-press/checkout-order-processed', $order_id, $this );
 
@@ -341,7 +380,6 @@ class LP_Checkout {
 							exit;
 						}
 					}
-					echo '300';
 
 				} else {
 					// ensure that no order is waiting for payment
@@ -352,8 +390,10 @@ class LP_Checkout {
 							array(
 								'result'   => 'success',
 								'redirect' => $order->get_checkout_order_received_url()
-							)
+							),
+							$order->get_id()
 						);
+
 						if ( learn_press_is_ajax() ) {
 							learn_press_send_json( $result );
 						} else {
@@ -361,7 +401,6 @@ class LP_Checkout {
 							exit;
 						}
 					}
-					echo '200';
 				}
 			}
 		}
@@ -369,6 +408,7 @@ class LP_Checkout {
 			$has_error = $e->getMessage();
 			learn_press_add_message( $has_error, 'error' );
 		}
+
 		if ( learn_press_is_ajax() ) {
 			$is_error = ! ! learn_press_message_count( 'error' );
 			// Get all messages
@@ -382,8 +422,7 @@ class LP_Checkout {
 			$result = apply_filters( 'learn-press/checkout-error',
 				array(
 					'result'   => ! $is_error ? 'success' : 'fail',
-					'messages' => $error_messages,
-					'x'        => 100
+					'messages' => $error_messages
 				)
 			);
 

@@ -32,10 +32,14 @@ class LP_Datetime extends DateTime {
 	 * @param   string $date
 	 * @param   mixed  $tz
 	 */
-	public function __construct( $date = 'now', $tz = null ) {
+	public function __construct( $date = '', $tz = null ) {
 		if ( empty( self::$gmt ) || empty( self::$stz ) ) {
 			self::$gmt = new DateTimeZone( 'GMT' );
 			self::$stz = new DateTimeZone( @date_default_timezone_get() );
+		}
+
+		if ( empty( $date ) ) {
+			$date = current_time( 'mysql' );
 		}
 
 		if ( ! ( $tz instanceof DateTimeZone ) ) {
@@ -134,7 +138,7 @@ class LP_Datetime extends DateTime {
 	 *
 	 * @return  string   The date string in the specified format format.
 	 */
-	public function format( $format, $local = false ) {
+	public function format( $format, $local = true ) {
 		if ( $local == false && ! empty( self::$gmt ) ) {
 			parent::setTimezone( self::$gmt );
 		}
@@ -173,7 +177,7 @@ class LP_Datetime extends DateTime {
 	 *
 	 * @return  string
 	 */
-	public function toISO8601( $local = false ) {
+	public function toISO8601( $local = true ) {
 		return $this->format( DateTime::RFC3339, $local );
 	}
 
@@ -184,7 +188,7 @@ class LP_Datetime extends DateTime {
 	 *
 	 * @return  string
 	 */
-	public function toSql( $local = false ) {
+	public function toSql( $local = true ) {
 		return $this->format( 'Y-m-d H:i:s', $local );
 	}
 
@@ -196,7 +200,7 @@ class LP_Datetime extends DateTime {
 	 *
 	 * @return  string
 	 */
-	public function toRFC822( $local = false ) {
+	public function toRFC822( $local = true ) {
 		return $this->format( DateTime::RFC2822, $local );
 	}
 

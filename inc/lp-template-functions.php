@@ -26,8 +26,8 @@ if ( ! function_exists( 'learn_press_purchase_course_button' ) ) {
 			return;
 		}
 
-		// If course is FREE and no require enrollment.
-		if ( $course->is_free() && ! $course->is_require_enrollment() ) {
+		// Course is not require enrolling
+		if ( ! $course->is_required_enroll() || $course->is_free() || $user->has_enrolled_course( $course->get_id() ) ) {
 			return;
 		}
 
@@ -52,6 +52,32 @@ if ( ! function_exists( 'learn_press_enroll_course_button' ) ) {
 	 * Enroll course button
 	 */
 	function learn_press_enroll_course_button() {
+		$user   = LP_Global::user();
+		$course = LP_Global::course();
+
+		// If course is not published
+		if ( ! $course->is_publish() ) {
+			return;
+		}
+
+		// Course is not require enrolling
+		if ( ! $course->is_required_enroll() || ( ! $course->is_free() && $user->has_enrolled_course( $course->get_id() ) ) ) {
+			return;
+		}
+
+		// If user has already finished course
+		if ( $user->has_finished_course( $course->get_id() ) || $user->has_enrolled_course( $course->get_id() ) ) {
+			return;
+		}
+
+		if ( $course->is_free() && ! $course->is_in_stock() ) {
+			return;
+		}
+
+		if ( ! $course->is_free() && ! $user->has_purchased_course( $course->get_id() ) ) {
+			return;
+		}
+
 		learn_press_get_template( 'single-course/buttons/enroll.php' );
 	}
 
@@ -1237,14 +1263,21 @@ function learn_press_get_messages( $clear = false ) {
  *
  * @param string $message
  * @param string $type
- * @param bool   $autoclose
+ * @param array  $options
  */
-function learn_press_add_message( $message, $type = 'success', $autoclose = false ) {
+function learn_press_add_message( $message, $type = 'success', $options = array() ) {
+	if ( ! is_array( $options ) ) {
+
+	}
 	$messages = learn_press_session_get( 'messages' );
 	if ( empty( $messages[ $type ] ) ) {
 		$messages[ $type ] = array();
 	}
-	$messages[ $type ][] = array( 'content' => $message, 'autoclose' => $autoclose );
+	if ( $options ) {
+		$messages[ $type ][] = array( 'content' => $message, 'options' => $options );
+	} else {
+		$messages[ $type ][] = $message;
+	}
 	learn_press_session_set( 'messages', $messages );
 }
 
