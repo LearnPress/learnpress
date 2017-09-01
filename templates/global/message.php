@@ -6,31 +6,47 @@
  */
 
 defined( 'ABSPATH' ) || exit();
-if ( !$messages ) {
+if ( ! $messages ) {
 	return;
 }
 ?>
 <?php foreach ( $messages as $type => $message ) { ?>
 	<?php if ( $message ): foreach ( $message as $content ) { ?>
 		<?php
+		$options = array();
 		if ( is_array( $content ) ) {
-			$content   = $content['content'];
-			$autoclose = !empty( $content['autoclose'] ) ? $content['autoclose'] : false;
-			if ( $autoclose === true ) {
-				$autoclose = 3000;
+			$options = $content['options'];
+			$content = $content['content'];
+			$options = wp_parse_args(
+				$options,
+				array(
+					'position'  => '',
+					'delay-in'  => 0,
+					'delay-out' => 0
+				)
+			);
+		}
+		$classes = array( 'learn-press-message', esc_attr( $type ) );
+		$data    = array();
+		if ( ! empty( $options['position'] ) ) {
+			$classes[] = $options['position'];
+			if ( ! empty( $options['delay-in'] ) ) {
+				$data[] = sprintf( 'data-delay-in="%s"', $options['delay-in'] );
 			}
-		} else {
-			$autoclose = false;
+
+			if ( ! empty( $options['delay-in'] ) ) {
+				$data[] = sprintf( 'data-delay-out="%s"', $options['delay-out'] );
+			}
 		}
 		?>
-		<div class="learn-press-message <?php echo esc_attr( $type ); ?>" <?php echo $autoclose ? 'data-autoclose="' . esc_attr( $autoclose ) . '"' : ''; ?>>
+        <div class="<?php echo join( ' ', $classes ); ?>" <?php echo $data ? join( ' ', $data ) : ''; ?>>
 			<?php
-			if ( !preg_match( '!<p>!', $content ) && !preg_match( '!<div>!', $content ) ) {
-				$content = sprintf( '<p>%s</p>', $content );
-			}
+			//			if ( !preg_match( '!<p>!', $content ) && !preg_match( '!<div>!', $content ) ) {
+			//				$content = sprintf( '<p>%s</p>', $content );
+			//			}
 			?>
 			<?php echo $content; ?>
-		</div>
+        </div>
 	<?php } ?>
 	<?php endif; ?>
 <?php } ?>

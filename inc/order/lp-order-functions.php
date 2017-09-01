@@ -17,7 +17,18 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @return mixed
  */
 function learn_press_generate_order_key() {
-	return apply_filters( 'learn-press/order-key', uniqid( 'order' ) );
+	return apply_filters( 'learn-press/order-key', uniqid( 'order_' ) );
+}
+
+/**
+ * Return default order status when creating new.
+ *
+ * @param string $prefix . Optional
+ *
+ * @return string
+ */
+function learn_press_default_order_status( $prefix = '' ) {
+	return apply_filters( 'learn-press/default-order-status', $prefix . 'pending' );
 }
 
 /**
@@ -31,24 +42,33 @@ function learn_press_generate_order_key() {
  * @type
  * }
  *
- * @return LP_Order instance
+ * @return LP_Order|WP_Error
  */
 function learn_press_create_order( $order_data ) {
+
+	$order = new LP_Order();
+	$order->save();
+	return $order;
+
 	$order_data_defaults = array(
 		'ID'          => 0,
 		'post_author' => '1',
 		'post_parent' => '0',
 		'post_type'   => LP_ORDER_CPT,
-		'post_status' => 'lp-' . apply_filters( 'learn_press_default_order_status', 'pending' ),
+		'post_status' => learn_press_default_order_status( 'lp-' ),
 		'ping_status' => 'closed',
 		'post_title'  => __( 'Order on', 'learnpress' ) . ' ' . current_time( "l jS F Y h:i:s A" )
 	);
+	// @deprecated
 	$order_data_defaults = apply_filters( 'learn_press_defaults_order_data', $order_data_defaults );
+
+	/// @since 3.x.x
+	$order_data_defaults = apply_filters( 'learn-press/order/default-data', $order_data_defaults );
 	$order_data          = wp_parse_args( $order_data, $order_data_defaults );
 
 	if ( isset( $order_data['status'] ) ) {
 		if ( ! in_array( 'lp-' . $order_data['status'], array_keys( learn_press_get_order_statuses() ) ) ) {
-			return new WP_Error( 'learn_press_invalid_order_status', __( 'Invalid order status', 'learnpress' ) );
+			return new WP_Error( 'learn-press/order/invalid-status', __( 'Invalid order status', 'learnpress' ) );
 		}
 		$order_data['post_status'] = 'lp-' . $order_data['status'];
 	}
@@ -58,15 +78,14 @@ function learn_press_create_order( $order_data ) {
 	}
 
 	if ( $order_data['ID'] ) {
-		$order_data = apply_filters( 'learn_press_update_order_data', $order_data );
-		wp_update_post( $order_data );
-		$order_id = $order_data['ID'];
+		$order_data = apply_filters( 'learn-press/order/update-data', $order_data );
+		$order_id   = wp_update_post( $order_data, true );
 	} else {
-		$order_data = apply_filters( 'learn_press_new_order_data', $order_data );
-		$order_id   = wp_insert_post( $order_data );
+		$order_data = apply_filters( 'learn-press/order/new-data', $order_data );
+		$order_id   = wp_insert_post( $order_data, true );
 	}
 
-	if ( $order_id ) {
+	if ( ! is_wp_error( $order_id ) ) {
 
 		$cart = LP()->cart ? LP()->cart : false;
 
@@ -85,35 +104,27 @@ function learn_press_create_order( $order_data ) {
 			'_created_via'          => 'checkout'
 		);
 		$order_meta   = array();
+
 		foreach ( $meta_default as $k => $v ) {
 			if ( array_key_exists( $k, $order_data ) ) {
 				$order_meta[ $k ] = $order_data[ $k ];
 			}
 		}
+
 		$order_meta = wp_parse_args(
 			$order_meta,
 			$meta_default
 		);
+
 		if ( $order_meta = apply_filters( 'learn-press/new-order-meta', $order_meta ) ) {
 			foreach ( $order_meta as $k => $v ) {
 				update_post_meta( $order_id, $k, $v );
 			}
-//			update_post_meta( $order_id, '_order_currency', learn_press_get_currency() );
-//			update_post_meta( $order_id, '_prices_include_tax', 'no' );
-//			update_post_meta( $order_id, '_user_ip_address', learn_press_get_ip() );
-//			update_post_meta( $order_id, '_user_agent', isset( $_SERVER['HTTP_USER_AGENT'] ) ? $_SERVER['HTTP_USER_AGENT'] : '' );
-//			update_post_meta( $order_id, '_user_id', isset( $order_data['user_id'] ) ? $order_data['user_id'] : get_current_user_id() );
-//			update_post_meta( $order_id, '_order_subtotal', LP()->cart->subtotal );
-//			update_post_meta( $order_id, '_order_total', LP()->cart->total );
-//			update_post_meta( $order_id, '_order_key', apply_filters( 'learn_press_generate_order_key', uniqid( 'order' ) ) );
-//			update_post_meta( $order_id, '_payment_method', '' );
-//			update_post_meta( $order_id, '_payment_method_title', '' );
-//			update_post_meta( $order_id, '_order_version', '1.0' );
-//			update_post_meta( $order_id, '_created_via', ! empty( $order_data['created_via'] ) ? $order_data['created_via'] : 'checkout' );
 		}
+		return new LP_Order( $order_id );
 	}
 
-	return new LP_Order( $order_id, true );
+	return $order_id;
 }
 
 /**
@@ -125,6 +136,10 @@ function learn_press_create_order( $order_data ) {
  */
 
 function learn_press_update_order( $order_data ) {
+	if ( empty( $order_data['order_id'] ) ) {
+		throw new Exception( __( 'Invalid order ID when updating.', 'learnpress' ) );
+	}
+
 	return learn_press_create_order( $order_data );
 }
 
@@ -545,7 +560,7 @@ function learn_press_handle_purchase_request() {
 function learn_press_get_orders( $args = array() ) {
 	//_deprecated_function( __FUNCTION__, '3.x.x', 'get_posts' );
 	$args['post_type'] = LP_ORDER_CPT;
-	$orders = get_posts( $args );
+	$orders            = get_posts( $args );
 
 	return apply_filters( 'learn_press_get_orders', $orders, $args );
 }

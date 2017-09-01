@@ -51,18 +51,18 @@ class LP_Shortcode_Checkout extends LP_Abstract_Shortcode {
 		// Get the order
 		$order_id  = absint( $order_id );
 		$order_key = ! empty( $_GET['key'] ) ? $_GET['key'] : '';
+		$order     = null;
 
-		if ( $order_id > 0 && ( $order = learn_press_get_order( $order_id ) ) && $order->get_data( 'post_status' ) != 'trash' ) {
-			if ( $order->order_key != $order_key ) {
-				unset( $order );
+		if ( $order_id > 0 && ( $origin_order = learn_press_get_order( $order_id ) ) && ! $origin_order->is_trashed() ) {
+			if ( $origin_order->get_order_key() == $order_key ) {
+				$order = $origin_order;
 			}
-		} else {
-			learn_press_display_message( __( 'Invalid order!', 'learnpress' ), 'error' );
-
-			return;
 		}
 
-		LP()->session->order_awaiting_payment = null;
+		LP()->session->remove( 'order_awaiting_payment' );
+		LP()->cart->empty_cart();
+
+		learn_press_print_messages();
 
 		learn_press_get_template( 'checkout/order-received.php', array( 'order' => $order ) );
 	}

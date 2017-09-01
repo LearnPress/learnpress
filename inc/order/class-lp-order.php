@@ -10,7 +10,11 @@
 
 defined( 'ABSPATH' ) || exit();
 
-class LP_Order extends LP_Abstract_Object_Data {
+class LP_Order extends LP_Abstract_Post_Data {
+	/**
+	 * @var string
+	 */
+	protected $_post_type = LP_ORDER_CPT;
 
 	/**
 	 * @var array
@@ -22,6 +26,10 @@ class LP_Order extends LP_Abstract_Object_Data {
 		'customer_message' => '',
 		'customer_note'    => '',
 		'status'           => '',
+		'order_key'        => '',
+		'total'            => 0,
+		'subtotal'         => 0,
+		'created_via'      => ''
 	);
 
 	protected $_meta_keys = array(
@@ -78,6 +86,19 @@ class LP_Order extends LP_Abstract_Object_Data {
 	}
 
 	/**
+	 * Set order date.
+	 *
+	 * @param int|string $date
+	 */
+	public function set_order_date( $date ) {
+		if ( is_numeric( $date ) ) {
+			$date = date( 'Y-m-d H:i:s', $date );
+		}
+		$this->set_data_date( 'order_date', $date );
+		//$this->_set_da( 'order_date', $date );
+	}
+
+	/**
 	 * Get date of this order.
 	 *
 	 * @param string $format
@@ -109,20 +130,22 @@ class LP_Order extends LP_Abstract_Object_Data {
 		return $return;
 	}
 
-	public function get_order_key() {
-		return $this->get_data( 'order_key' );
+	/**
+	 * Set order key
+	 *
+	 * @param string $order_key
+	 */
+	public function set_order_key( $order_key ) {
+		$this->_set_data( 'order_key', $order_key );
 	}
 
 	/**
-	 * Set order date.
+	 * Get order key.
 	 *
-	 * @param int|string $date
+	 * @return array|mixed
 	 */
-	public function set_order_date( $date ) {
-		if ( is_numeric( $date ) ) {
-			$date = date( 'Y-m-d H:i:s', $date );
-		}
-		$this->_set_data( 'order_date', $date );
+	public function get_order_key() {
+		return $this->get_data( 'order_key' );
 	}
 
 	/**
@@ -219,13 +242,15 @@ class LP_Order extends LP_Abstract_Object_Data {
 	 * If payment method is an instance of LP_Gateway_Abstract then
 	 * update it to database.
 	 *
-	 * @param LP_Gateway_Abstract $payment_method
+	 * @param LP_Gateway_Abstract|string $payment_method
 	 */
 	public function set_payment_method( $payment_method ) {
-		if ( is_object( $payment_method ) ) {
+
+		if ( $payment_method instanceof LP_Gateway_Abstract ) {
 			update_post_meta( $this->get_id(), '_payment_method', $payment_method->get_id() );
 			update_post_meta( $this->get_id(), '_payment_method_title', $payment_method->get_title() );
 		}
+
 		$this->payment_method = $payment_method;
 	}
 
@@ -364,7 +389,7 @@ class LP_Order extends LP_Abstract_Object_Data {
 	public function get_checkout_order_received_url() {
 		$received_url = learn_press_get_endpoint_url( 'lp-order-received', $this->get_id(), learn_press_get_page_link( 'checkout' ) );
 
-		$received_url = add_query_arg( 'key', $this->get_data( 'order_key' ), $received_url );
+		$received_url = add_query_arg( 'key', $this->get_order_key(), $received_url );
 
 		$received_url = apply_filters( 'learn_press_get_checkout_order_received_url', $received_url, $this );
 
@@ -543,6 +568,40 @@ class LP_Order extends LP_Abstract_Object_Data {
 		return $item_id;
 	}
 
+	/**
+	 * Set total
+	 *
+	 * @param int|float $total
+	 */
+	public function set_total( $total = 0 ) {
+		$this->set_data( 'total', $total );
+	}
+
+	/**
+	 * Get total
+	 *
+	 * @return int|float
+	 */
+	public function get_total() {
+		return $this->get_data( 'total' );
+	}
+
+	/**
+	 * @param float|int $subtotal
+	 */
+	public function set_subtotal( $subtotal = 0 ) {
+		$this->set_data( 'subtotal', $subtotal );
+	}
+
+	/**
+	 * Get subtotal
+	 *
+	 * @return float
+	 */
+	public function get_subtotal() {
+		return $this->get_data( 'subtotal' );
+	}
+
 	public function cln() {
 		return $this->_curd->cln( $this );
 	}
@@ -671,7 +730,7 @@ class LP_Order extends LP_Abstract_Object_Data {
 
 	public function get_payment_method_title() {
 		if ( $this->order_total == 0 ) {
-			$title = __( 'Free Payment', 'learnpress' );
+			$title = __( 'No Payment', 'learnpress' );
 		} else {
 			$title = $this->payment_method_title;
 		}
@@ -901,16 +960,49 @@ class LP_Order extends LP_Abstract_Object_Data {
 		$this->_set_data( 'user_id', $user_id );
 	}
 
+	/**
+	 * Get user's ids of order.
+	 *
+	 * @return array|int
+	 */
 	public function get_user_id() {
 		return $this->get_data( 'user_id' );
 	}
 
+	/**
+	 * Get date modified of order.
+	 *
+	 * @return LP_Datetime
+	 */
 	public function get_date_modified() {
 		return $this->get_data( 'date_modified' );
 	}
 
+	/**
+	 * Set date modified of order.
+	 *
+	 * @param mixed $date
+	 */
 	public function set_date_modified( $date ) {
 		$this->_set_data( 'date_modified', $date );
+	}
+
+	/**
+	 * Set method for creating the order, such as: checkout
+	 *
+	 * @param string $created_via
+	 */
+	public function set_created_via( $created_via ) {
+		$this->_set_data( 'created_via', $created_via );
+	}
+
+	/**
+	 * Get method which order is created, such as: checkout
+	 *
+	 * @return string
+	 */
+	public function get_created_via() {
+		return $this->get_data( 'created_via' );
 	}
 
 	/**
@@ -971,17 +1063,20 @@ class LP_Order extends LP_Abstract_Object_Data {
 	/**
 	 * Save order data.
 	 *
-	 * @return bool|void
+	 * @return mixed
+	 *
 	 * @throws Exception
 	 */
 	public function save() {
 		if ( $this->get_id() ) {
-			$this->_curd->update( $this );
+			$return = $this->_curd->update( $this );
 		} else {
-			$this->_curd->create( $this );
+			$return = $this->_curd->create( $this );
 		}
 
 		$this->_save_status();
+
+		return $return;
 	}
 
 	/**
@@ -1008,5 +1103,16 @@ class LP_Order extends LP_Abstract_Object_Data {
 		$this->_set_data( 'customer_note', $note );
 	}
 
+	public function get_customer_note() {
+		return $this->get_data( 'customer_note' ) . '';
+	}
 
+	/**
+	 * Short function to check order is completed.
+	 *
+	 * @return bool
+	 */
+	public function is_completed() {
+		return preg_replace( '~^lp-~', '', $this->get_order_status() ) === 'completed';
+	}
 }

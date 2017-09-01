@@ -12,11 +12,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 if ( ! isset( $order ) ) {
 	echo __( 'Invalid order', 'learnpress' );
-
 	return;
 }
-?>
 
+?>
 <h2><?php _e( 'Order Details', 'learnpress' ); ?></h2>
 <table class="order_table order_details">
     <thead>

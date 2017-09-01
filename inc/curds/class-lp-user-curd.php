@@ -326,8 +326,8 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			foreach ( $results as $result ) {
 				$user_item_id = $result['item_id'];
 				if ( empty( $items[ $user_item_id ] ) ) {
-					$items[ $user_item_id ] = array();
-					$parent_item['items'][] = $user_item_id;
+					$items[ $user_item_id ]                = array();
+					$parent_item['items'][ $user_item_id ] = $user_item_id;
 				}
 				//$this->_read_item_meta( $result );
 				$meta_ids[] = $result['user_item_id'];
@@ -422,15 +422,17 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 		// Table fields
 		$table_fields = array(
-			'user_id'    => '%d',
-			'item_id'    => '%d',
-			'ref_id'     => '%d',
-			'start_time' => '%s',
-			'end_time'   => '%s',
-			'item_type'  => '%s',
-			'status'     => '%s',
-			'ref_type'   => '%s',
-			'parent_id'  => '%d'
+			'user_id'        => '%d',
+			'item_id'        => '%d',
+			'ref_id'         => '%d',
+			'start_time'     => '%s',
+			'start_time_gmt' => '%s',
+			'end_time'       => '%s',
+			'end_time_gmt'   => '%s',
+			'item_type'      => '%s',
+			'status'         => '%s',
+			'ref_type'       => '%s',
+			'parent_id'      => '%d'
 		);
 
 		// Data and format
@@ -467,6 +469,7 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		}
 
 		$data_format = array_values( $data_format );
+
 		if ( ! $item ) {
 			$wpdb->insert(
 				$wpdb->learnpress_user_items,
@@ -480,11 +483,12 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 			$wpdb->update(
 				$wpdb->learnpress_user_items,
 				$data,
-				$data_format
+				array( 'user_item_id' => $user_item_id ),
+				$data_format,
+				array( '%d' )
 			);
 			$item = array_merge( $item, $data );
 		}
-
 		if ( $user_item_id ) {
 			// Track last status if it is updated new status.
 			if ( $new_status !== false ) {
@@ -739,7 +743,31 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 		return $data;
 	}
 
-	public function evaluate_course_results(){
+	public function update_item( $item ) {
+		global $wpdb;
+		if ( empty( $item['user_item_id'] ) ) {
+			$wpdb->insert(
+				$wpdb->learnpress_user_items,
+				$item
+			);
+		}
+	}
+
+	public function get_current_user_order( $user_id, $course_id ) {
+		global $wpdb;
+		$sql      = $wpdb->prepare( "
+			SELECT MAX(ID) AS order_id
+			FROM {$wpdb->posts} p 
+			INNER JOIN {$wpdb->postmeta} pm_u ON pm_u.post_id = p.ID AND pm_u.meta_key = %s AND pm_u.meta_value = %d
+			INNER JOIN {$wpdb->learnpress_order_items} oi ON oi.order_id = p.id
+			INNER JOIN {$wpdb->learnpress_order_itemmeta} oim ON oim.meta_key = %s and oim.meta_value = %d
+		", '_user_id', $user_id, '_course_id', $course_id );
+		$order_id = $wpdb->get_var( $sql );
+
+		return $order_id;
+	}
+
+	public function evaluate_course_results() {
 
 	}
 }

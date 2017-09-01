@@ -32,16 +32,9 @@ if ( in_array( $item_status, array( 'completed', 'started' ) ) ) {
 	}
 	switch ( $item_status ) {
 		case 'started':
-			$status_classes[] = 'fa-ellipsis-h';
 			break;
 		case 'completed':
-			if ( $item_grade == 'passed' ) {
-				$status_classes[] = 'passed';
-				$status_classes[] = 'fa-check';
-			} else {
-				$status_classes[] = 'failed';
-				$status_classes[] = 'fa-times';
-			}
+				$status_classes[] = $item_grade;
 	}
 	echo '<i class="' . join( ' ', $status_classes ) . '"' . ( $title ? ' title="' . $title . '"' : '' ) . '></i>';
 

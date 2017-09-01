@@ -12,26 +12,6 @@ defined( 'ABSPATH' ) || exit();
 if ( ! isset( $course ) ) {
 	$course = learn_press_get_course();
 }
-
-if ( ! isset( $user ) ) {
-	$user = learn_press_get_current_user();
-}
-
-// Course is not require enrolling
-if ( ! $course->is_required_enroll() || $course->get_price() ) {
-	return;
-}
-
-// If user has already finished course
-if ( $user->has( 'finished-course', $course->get_id() ) ) {
-	return;
-}
-
-// If user has already enrolled course
-if ( $user->has( 'enrolled-course', $course->get_id() ) ) {
-	return;
-}
-
 ?>
 
 <?php do_action( 'learn-press/before-enroll-form' ); ?>

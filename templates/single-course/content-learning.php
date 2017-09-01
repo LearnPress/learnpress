@@ -10,7 +10,19 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
-global $lp_course, $lp_course_item;
+global $wpdb;
+$query = "select id from {$wpdb->users} where id<=48";
+$users = $wpdb->get_col( $query );
+$curd = new LP_User_CURD();
+
+foreach ( $users as $uid ) {
+	$user = learn_press_get_user( $uid );
+	$data = $user->get_course_data( get_the_ID() );
+	learn_press_debug($user->get_id(), $data ->get_status());
+	echo $curd->get_current_user_order($uid, get_the_ID());
+
+}
+
 
 ?>
 

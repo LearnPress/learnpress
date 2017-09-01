@@ -162,7 +162,6 @@ class LP_Query {
 	 */
 	function add_rewrite_rules() {
 
-		flush_rewrite_rules();
 		$rewrite_prefix = get_option( 'learn_press_permalink_structure' );
 		// lesson
 		$course_type  = 'lp_course';

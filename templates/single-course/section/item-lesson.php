@@ -17,7 +17,7 @@ if ( ! isset( $item ) ) {
 ?>
 
 <span href="" class="item-name">
-    <?php echo $item->get_title();?>
+    <?php echo $item->get_title(); ?>
 </span>
 
 <?php

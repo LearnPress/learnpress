@@ -240,23 +240,19 @@ class LP_Request {
 	}
 
 	public static function do_enroll( $course_id, $order_id, $action ) {
-		$curd = new LP_User_CURD();
-		global $wpdb;
-		$order = learn_press_get_order( $order_id );
-		$wpdb->insert(
-			$wpdb->learnpress_user_items,
+		$user = LP_Global::user();
+		$user->enroll( $course_id, $order_id );
+		learn_press_add_message(
+			sprintf( __( 'Congrats! You have enrolled &quot;%s&quot', 'learnpress' ), get_the_title( $course_id ) ),
+			'success',
 			array(
-				'user_id'   => $order->get_user( 'id' ),
-				'item_id'   => $course_id,
-				'item_type' => get_post_type( $course_id ),
-				'status'    => 'enrolled',
-				'ref_id'    => $order_id,
-				'ref_type'  => get_post_type( $order_id ),
-				'parent_id' => 0
+				'position'  => 'fixedInOut',
+				'delay-in'  => 10,
+				'delay-out' => 5000
 			)
 		);
-		learn_press_add_message(__('CONGRATS! YOU HAVE ENROLLED COURSE'));
-		wp_redirect(get_the_permalink($course_id));
+		wp_redirect( get_the_permalink( $course_id ) );
+		exit();
 	}
 
 	/**

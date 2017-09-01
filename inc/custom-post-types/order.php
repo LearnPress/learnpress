@@ -46,7 +46,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		 * order with post_parent is ID of main order. And, we do not
 		 * want to show these orders in the list.
 		 *
-		 * @param array $counts
+		 * @param array  $counts
 		 * @param string $type
 		 * @param string $perm
 		 *
@@ -530,7 +530,7 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 		/**
 		 * Custom row's actions.
 		 *
-		 * @param array $actions
+		 * @param array   $actions
 		 * @param WP_Post $post
 		 *
 		 * @since 2.1.7
@@ -669,6 +669,8 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 							}
 						}
 						echo join( ', ', $outputs );
+					} else {
+						echo __( '(Guest)', 'learnpress' );
 					}
 					break;
 				case
@@ -710,12 +712,14 @@ if ( ! class_exists( 'LP_Order_Post_Type' ) ) {
 					}
 					if ( $count > 1 ) {
 						echo sprintf( '<ol>%s</ol>', join( "", $links ) );
-					} else {
+					} elseif ( 1 == $count ) {
 						echo join( "", $links );
+					} else {
+						echo __( '(No item)', 'learnpress' );
 					}
 					break;
 				case 'order_total' :
-					echo learn_press_format_price( $the_order->order_total, learn_press_get_currency_symbol( $the_order->order_currency ) );
+					echo $the_order->get_formatted_order_total();// learn_press_format_price( $the_order->order_total, learn_press_get_currency_symbol( $the_order->order_currency ) );
 					if ( $title = $the_order->get_payment_method_title() ) {
 						?>
                         <div class="payment-method-title">

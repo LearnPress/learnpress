@@ -3,7 +3,7 @@
 /**
  * Class LP_Session_Handler
  */
-class LP_Session_Handler {
+class LP_Session_Handler implements ArrayAccess {
 
 	/**
 	 * @var int $_customer_id
@@ -317,12 +317,38 @@ class LP_Session_Handler {
 		);
 	}
 
+	/**
+	 * Remove a value from session by key.
+	 *
+	 * @param string $key
+	 */
+	public function remove( $key ) {
+		if ( ! array_key_exists( $key, $this->_data ) ) {
+			return;
+		}
+		unset( $this->_data[ $key ] );
+	}
+
+	/**
+	 * Get session value.
+	 *
+	 * @param string $key
+	 * @param mixed  $default
+	 *
+	 * @return mixed|null
+	 */
 	public function get( $key, $default = null ) {
 		$key = sanitize_key( $key );
 
 		return isset( $this->_data[ $key ] ) ? maybe_unserialize( $this->_data[ $key ] ) : $default;
 	}
 
+	/**
+	 * Set session value.
+	 *
+	 * @param string $key
+	 * @param mixed  $value
+	 */
 	public function set( $key, $value ) {
 		if ( $value !== $this->get( $key ) ) {
 			$this->_data[ sanitize_key( $key ) ] = maybe_serialize( $value );
@@ -344,6 +370,22 @@ class LP_Session_Handler {
 		}
 
 		return self::$_instance;
+	}
+
+	public function offsetExists( $offset ) {
+		return array_key_exists( $offset, $this->_data );
+	}
+
+	public function offsetGet( $offset ) {
+		return $this->get( $offset );
+	}
+
+	public function offsetUnset( $offset ) {
+		$this->remove( $offset );
+	}
+
+	public function offsetSet( $offset, $value ) {
+		$this->set( $offset, $value );
 	}
 }
 
