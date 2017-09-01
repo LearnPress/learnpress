@@ -105,7 +105,6 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 		// Get orders for the user from cache
 		$orders = wp_cache_get( 'user-' . $user_id, 'lp-user-orders' );
-
 		if ( false === $orders ) {
 			$orders                = array();
 			$post_status_in        = learn_press_get_order_statuses( true, true );
@@ -251,17 +250,32 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 		global $wpdb;
 
-		$format = array_fill( 0, sizeof( $fetch_ids ), '%d' );
-		$args   = $fetch_ids;
+		$order_id = $this->get_current_user_order( $user_id, $fetch_ids );
+
+		if ( ! $order_id ) {
+			return false;
+		}
+
+//		$format = array_fill( 0, sizeof( $fetch_ids ), '%d' );
+//		$args   = $fetch_ids;
+//		array_unshift( $args, LP_COURSE_CPT );
+//		$args[] = $user_id;
+//		$query  = $wpdb->prepare( "
+//			SELECT *
+//			FROM {$wpdb->learnpress_user_items}
+//			WHERE item_type = %s
+//			AND item_id IN(" . join( ',', $format ) . ")
+//			AND user_id = %d
+//			ORDER BY item_id, user_item_id DESC
+//		", $args );
+		$format = array_fill( 0, sizeof( $order_id ), '%d' );
+		$args   = $order_id;
 		array_unshift( $args, LP_COURSE_CPT );
-		$args[] = $user_id;
-		$query  = $wpdb->prepare( "
+		echo $query  = $wpdb->prepare( "
 			SELECT *
 			FROM {$wpdb->learnpress_user_items}
 			WHERE item_type = %s
-			AND item_id IN(" . join( ',', $format ) . ")
-			AND user_id = %d
-			ORDER BY item_id, user_item_id DESC
+			AND parent_id IN(" . join( ',', $format ) . ")
 		", $args );
 
 		if ( $results = $wpdb->get_results( $query, ARRAY_A ) ) {
@@ -755,16 +769,67 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 	public function get_current_user_order( $user_id, $course_id ) {
 		global $wpdb;
-		$sql      = $wpdb->prepare( "
-			SELECT MAX(ID) AS order_id
-			FROM {$wpdb->posts} p 
-			INNER JOIN {$wpdb->postmeta} pm_u ON pm_u.post_id = p.ID AND pm_u.meta_key = %s AND pm_u.meta_value = %d
-			INNER JOIN {$wpdb->learnpress_order_items} oi ON oi.order_id = p.id
-			INNER JOIN {$wpdb->learnpress_order_itemmeta} oim ON oim.meta_key = %s and oim.meta_value = %d
-		", '_user_id', $user_id, '_course_id', $course_id );
-		$order_id = $wpdb->get_var( $sql );
+		settype( $course_id, 'array' );
+		$fetch_ids = array();
+		$cached    = false;
+		if ( false != ( $course_orders = wp_cache_get( 'user-course-orders-' . $user_id, 'lp-user-course-orders' ) ) ) {
+			foreach ( $course_id as $cid ) {
+				if ( empty( $course_orders[ $cid ] ) ) {
+					$fetch_ids[] = $cid;
+				}
+			}
+			$cached = true;
+		} else {
+			$fetch_ids = $course_id;
+		}
+		if ( $fetch_ids ) {
 
-		return $order_id;
+
+			$format          = array_fill( 0, sizeof( $fetch_ids ), '%d' );
+			$statuses        = array( 'lp-completed' );
+			$format_statuses = array_fill( 0, sizeof( $statuses ), '%s' );
+			$args            = array_merge( array( '_course_id', '_user_id', $user_id ), $statuses, $fetch_ids );
+			$sql             = $wpdb->prepare( "
+			SELECT MAX(ID) AS order_id, oim.meta_value AS course_id, p.*
+			FROM {$wpdb->posts} p 
+			INNER JOIN {$wpdb->learnpress_order_items} oi ON oi.order_id = p.id 
+			INNER JOIN {$wpdb->learnpress_order_itemmeta} oim ON oim.meta_key = %s AND oim.learnpress_order_item_id = oi.order_item_id
+			INNER JOIN {$wpdb->postmeta} pmu ON pmu.post_id = p.ID AND pmu.meta_key = %s AND pmu.meta_value = %d 
+			WHERE p.post_status IN(" . join( ',', $format_statuses ) . ")
+			GROUP BY pmu.meta_value, oim.meta_value
+			HAVING course_id IN(" . join( ',', $format ) . ")
+			ORDER BY order_id DESC
+		", $args );
+
+			if ( $results = $wpdb->get_results( $sql ) ) {
+				foreach ( $results as $result ) {
+					$course_orders[ $result->course_id ] = $result->order_id;
+
+					$post_data = (object) $result;
+					unset( $post_data->order_id, $post_data->course_id );
+					// Put post into cache to user later ... maybe.
+					$post_data = sanitize_post( $post_data, 'raw' );
+					wp_cache_add( $post_data->ID, $post_data, 'posts' );
+				}
+			}
+			foreach ( $fetch_ids as $cid ) {
+				if ( empty( $course_orders[ $cid ] ) ) {
+					$course_orders[ $cid ] = 0;
+				}
+			}
+			if ( $cached ) {
+				wp_cache_replace( 'user-course-orders-' . $user_id, $course_orders, 'lp-user-course-orders' );
+			} else {
+				wp_cache_set( 'user-course-orders-' . $user_id, $course_orders, 'lp-user-course-orders' );
+			}
+		}
+
+		$return = array();
+		foreach ( $course_id as $cid ) {
+			$return[ $cid ] = $course_orders[ $cid ];
+		}
+
+		return $return;
 	}
 
 	public function evaluate_course_results() {
