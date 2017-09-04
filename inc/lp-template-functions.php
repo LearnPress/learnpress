@@ -722,10 +722,18 @@ if ( ! function_exists( 'learn_press_single_course_content_item' ) ) {
 	 * Display lesson content
 	 */
 	function learn_press_single_course_content_item() {
-		learn_press_get_template( 'single-course/content-item.php' );
+		//learn_press_get_template( 'single-course/content-item.php' );
 	}
 }
 
+if ( ! function_exists( 'learn_press_single_course_content_item_nav' ) ) {
+	/**
+	 * Display lesson content
+	 */
+	function learn_press_single_course_content_item_nav() {
+		learn_press_get_template( 'single-course/content-item-nav.php' );
+	}
+}
 
 if ( ! function_exists( 'learn_press_section_item_meta' ) ) {
 	/**

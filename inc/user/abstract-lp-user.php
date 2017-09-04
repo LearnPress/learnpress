@@ -111,16 +111,16 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 	 *
 	 * @param int $course_id
 	 *
-	 * @return LP_User_Item
+	 * @return LP_User_Course_Item
 	 */
 	public function get_course_data( $course_id ) {
 
 		static $course_data = array();
 
-		if(empty($course_data[$this->get_id()])){
-			$course_data[$this->get_id()] = array();
+		if ( empty( $course_data[ $this->get_id() ] ) ) {
+			$course_data[ $this->get_id() ] = array();
 		}
-		if ( empty( $course_data[$this->get_id()][ $course_id ] ) ) {
+		if ( empty( $course_data[ $this->get_id() ][ $course_id ] ) ) {
 
 			$this->_curd->read_course( $this->get_id(), $course_id );
 
@@ -135,10 +135,10 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 //			}
 			}
 
-			$course_data[$this->get_id()][ $course_id ] = new LP_User_Course_Item( $course_item );
+			$course_data[ $this->get_id() ][ $course_id ] = new LP_User_Course_Item( $course_item );
 		}
 
-		return $course_data[$this->get_id()][ $course_id ];
+		return $course_data[ $this->get_id() ][ $course_id ];
 	}
 
 	/**
@@ -810,7 +810,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 							'status'    => 'started',
 							'ref_id'    => $course_id,
 							'ref_type'  => LP_COURSE_CPT,
-							'parent_id' => $course_data['user_item_id']
+							'parent_id' => $course_data->get_data( 'user_item_id' )
 						)
 					);
 

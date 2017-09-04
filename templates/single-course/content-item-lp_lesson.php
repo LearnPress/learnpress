@@ -8,7 +8,7 @@
  */
 
 defined( 'ABSPATH' ) or die;
-
+$course=LP_Global::course();
 $item = LP_Global::course_item();
 print_r($_REQUEST);
 if ( array_key_exists( 'security', $_REQUEST ) ) {
@@ -34,5 +34,14 @@ if ( array_key_exists( 'security', $_REQUEST ) ) {
 	do_action( 'learn-press/after-content-item-summary/' . $item->get_item_type() );
 
 	?>
+
+    <div id="content-item-nav">
+        <div class="content-item-nav-wrap">
+            <form>
+                <a href="<?php echo $course->get_next_item();?>">Prev</a>
+                <button>Next</button>
+            </form>
+        </div>
+    </div>
 
 </div>

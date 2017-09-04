@@ -7,9 +7,19 @@ class LP_User_Item extends LP_Abstract_Object_Data {
 		parent::__construct( $item );
 		if ( ! empty( $item['item_id'] ) ) {
 			$this->set_id( $item['item_id'] );
+		}
+
+		if ( ! empty( $item['start_time'] ) ) {
 			$this->set_start_time( $item['start_time'] );
+		}
+
+		if ( ! empty( $item['end_time'] ) ) {
 			$this->set_end_time( $item['end_time'] );
 		}
+	}
+
+	public function get_type() {
+		return $this->get_data( 'item_type' );
 	}
 
 	public function set_start_time( $time ) {

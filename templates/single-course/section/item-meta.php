@@ -34,10 +34,9 @@ if ( in_array( $item_status, array( 'completed', 'started' ) ) ) {
 		case 'started':
 			break;
 		case 'completed':
-				$status_classes[] = $item_grade;
+			$status_classes[] = $item_grade;
 	}
 	echo '<i class="' . join( ' ', $status_classes ) . '"' . ( $title ? ' title="' . $title . '"' : '' ) . '></i>';
-
 	?>
 </div>
 

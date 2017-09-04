@@ -36,9 +36,26 @@ class LP_Question_CURD implements LP_Interface_CURD {
 			$type = 'true_or_false';
 		}
 		$question->set_type( $type );
+
+		$mark = $this->_get_question_mark( $question->get_id() );
+		$question->set_data_via_methods(
+			array(
+				'mark' => $mark
+			)
+		);
 	}
 
-	public function update( &$args) {
+	public function _get_question_mark( $question_id ) {
+		$mark = abs( get_post_meta( $question_id, '_lp_mark', true ) );
+		if ( ! $mark ) {
+			$mark = apply_filters( 'learn-press/question/default-mark', 1, $question_id );
+			update_post_meta( $question_id, '_lp_mark', $mark );
+		}
+
+		return $mark;
+	}
+
+	public function update( &$args ) {
 		// TODO: Implement update() method.
 	}
 

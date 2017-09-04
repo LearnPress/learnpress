@@ -7,6 +7,12 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 	 */
 	protected $_meta_type = 'user';
 
+	/**
+	 * LP_User_CURD constructor.
+	 *
+	 * @param int $the_user
+	 * @param int $the_course
+	 */
 	public function __construct( $the_user = 0, $the_course = 0 ) {
 		if ( $the_user || $the_course ) {
 			if ( ! $the_course ) {
@@ -340,7 +346,6 @@ class LP_User_CURD extends LP_Object_Data_CURD implements LP_Interface_CURD {
 
 			foreach ( $items as $user_item_id => $_items ) {
 				$cache_name = sprintf( 'course-item-%d-%d-%d', $parent_item['user_id'], $parent_item['item_id'], $user_item_id );
-
 				// Refresh caching
 				if ( $force ) {
 					wp_cache_delete( $cache_name, 'lp-user-course-items' );

@@ -98,15 +98,6 @@ class LP_Question_True_Or_False extends LP_Question {
 		parent::save( $post_data );
 	}
 
-	public function submit_answer( $quiz_id, $answer ) {
-		$questions = learn_press_get_question_answers( null, $quiz_id );
-		if ( ! is_array( $questions ) ) {
-			$questions = array();
-		}
-		$questions[ $quiz_id ][ $this->get( 'ID' ) ] = is_array( $answer ) ? reset( $answer ) : $answer;
-		learn_press_save_question_answer( null, $quiz_id, $this->get( 'ID' ), is_array( $answer ) ? reset( $answer ) : $answer );
-	}
-
 	public function get_default_answers( $answers = false ) {
 		if ( ! $answers ) {
 			if ( $this->id && $this->post->post_status !== 'auto-draft' ) {
@@ -160,54 +151,6 @@ class LP_Question_True_Or_False extends LP_Question {
 		}
 		$view = learn_press_locate_template( 'content-question/single-choice/answer-options.php' );
 		include $view;
-	}
-
-	public function save_post_action() {
-
-		if ( $post_id = $this->get( 'ID' ) ) {
-			$post_data    = isset( $_POST[ LP_QUESTION_CPT ] ) ? $_POST[ LP_QUESTION_CPT ] : array();
-			$post_answers = array();
-			$post_explain = $post_data[ $post_id ]['explaination'];
-			if ( isset( $post_data[ $post_id ] ) && $post_data = $post_data[ $post_id ] ) {
-
-				//if( LP_QUESTION_CPT != get_post_type( $post_id ) ){
-				try {
-					$ppp = wp_update_post(
-						array(
-							'ID'         => $post_id,
-							'post_title' => $post_data['text'],
-							'post_type'  => LP_QUESTION_CPT
-						)
-					);
-				}
-				catch ( Exception $ex ) {
-					echo "ex:";
-					print_r( $ex );
-				}
-
-				// }else{
-
-				// }
-
-				$index = 0;
-
-				foreach ( $post_data['answer']['text'] as $k => $txt ) {
-					$post_answers[ $index ++ ] = array(
-						'text'    => $txt,
-						'is_true' => $post_data['answer']['is_true'][ $k ]
-					);
-				}
-
-			}
-			$post_data['answer']       = $post_answers;
-			$post_data['type']         = $this->get_type();
-			$post_data['explaination'] = $post_explain;
-			update_post_meta( $post_id, '_lpr_question', $post_data );
-			//print_r($post_data);
-		}
-
-		return $post_id;
-		// die();
 	}
 
 	public function check( $user_answer = null ) {

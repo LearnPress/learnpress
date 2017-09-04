@@ -49,7 +49,9 @@ class LP_Question extends LP_Course_Item {
 	/**
 	 * @var array
 	 */
-	protected $_data = array();
+	protected $_data = array(
+		'mark' => 0
+	);
 
 	/**
 	 * Construct
@@ -63,7 +65,7 @@ class LP_Question extends LP_Course_Item {
 
 		parent::__construct( $the_question, $args );
 
-		$this->_curl = new LP_Question_CURD();
+		$this->_curd = new LP_Question_CURD();
 		if ( is_numeric( $the_question ) && $the_question > 0 ) {
 			$this->set_id( $the_question );
 		} elseif ( $the_question instanceof self ) {
@@ -94,9 +96,16 @@ class LP_Question extends LP_Course_Item {
 	 * @throws Exception
 	 */
 	public function load() {
-		$this->_curl->load( $this );
+		$this->_curd->load( $this );
 	}
 
+	public function get_mark() {
+		return $this->get_data( 'mark' );
+	}
+
+	public function set_mark( $mark ) {
+		$this->_set_data( 'mark', abs( $mark ) );
+	}
 
 	/**
 	 * Get answer options of the question
@@ -454,11 +463,14 @@ class LP_Question extends LP_Course_Item {
 	}
 
 
-	public
-	function _get_default_answers(
-		$answers = false, $q = null
-	) {
-		if ( ! $answers && ( $q && $q->id == $this->id ) ) {
+	/**
+	 * @param mixed       $answers
+	 * @param LP_Question $q
+	 *
+	 * @return array|bool
+	 */
+	public function _get_default_answers( $answers = false, $q = null ) {
+		if ( ! $answers && ( $q && $q->get_id() == $this->get_id() ) ) {
 			$answers = $this->get_default_answers( $answers );
 		}
 
@@ -524,7 +536,7 @@ class LP_Question extends LP_Course_Item {
 							'is_true' => in_array( $post_data['answer']['value'][ $index ], $checked ) ? 'yes' : 'no'
 						),
 						'answer_order' => $index + 1,
-						'question_id'  => $this->id
+						'question_id'  => $this->get_id()
 					);
 					$answers[] = apply_filters( 'learn_press_question_answer_data', $data, $post_data['answer'], $this );
 				}
@@ -543,7 +555,7 @@ class LP_Question extends LP_Course_Item {
 			}
 			if ( $this->mark == 0 ) {
 				$this->mark = 1;
-				update_post_meta( $this->id, '_lp_mark', 1 );
+				update_post_meta( $this->get_id(), '_lp_mark', 1 );
 			}
 		}
 		do_action( 'learn_press_update_question_answer', $this, $post_data );
@@ -560,42 +572,13 @@ class LP_Question extends LP_Course_Item {
 		return $value;
 	}
 
-	public
-	function get_answers(
-		$field = null, $exclude = null
-	) {
+	public function get_answers( $field = null, $exclude = null ) {
 		global $wpdb;
-		$answers = array();
-		/**
-		 * Question post type should be cached
-		 */
-		if ( $question_post = get_post( $this->id ) ) {
-			$answers = ! empty( $question_post->answers ) ? maybe_unserialize( $question_post->answers ) : array();
-		}
+		$answers      = array();
+		$data_answers = wp_cache_get( 'answer-options-' . $this->get_id(), 'lp-questions' );
 
-		if ( $answers && ( $field || $exclude ) ) {
-			if ( $field ) {
-				settype( $field, 'array' );
-			}
-			if ( $exclude ) {
-				settype( $exclude, 'array' );
-			}
-			foreach ( $answers as $k => $v ) {
-				$new_arr = $field ? array() : $v;
-				if ( $field ) {
-					foreach ( $field as $f ) {
-						$new_arr[ $f ] = $v[ $f ];
-					}
-				}
-				if ( $exclude ) {
-					foreach ( $exclude as $f ) {
-						if ( array_key_exists( $f, $new_arr ) ) {
-							unset( $new_arr[ $f ] );
-						}
-					}
-				}
-				$answers[ $k ] = $new_arr;
-			}
+		if ( $data_answers ) {
+			$answers = new LP_Question_Answers( $data_answers );
 		}
 
 		return apply_filters( 'learn_press_question_answers', $answers, $this );
@@ -612,13 +595,22 @@ class LP_Question extends LP_Course_Item {
 	/**
 	 * Prints the question in frontend user
 	 *
-	 * @param unknown
+	 * @param mixed $args
 	 *
 	 * @return void
 	 */
-	public
-	function render() {
-		printf( __( 'Function %s should override from its child', 'learnpress' ), __FUNCTION__ );
+	public function render( $args = '' ) {
+		$args     = wp_parse_args(
+			$args,
+			array(
+				'answered' => null
+			)
+		);
+		$answered = ! empty( $args['answered'] ) ? $args['answered'] : null;
+		if ( null === $answered ) {
+			$answered = $this->get_user_answered( $args );
+		}
+		learn_press_get_template( 'content-question/single-choice/answer-options.php' );
 	}
 
 	public
@@ -757,7 +749,7 @@ class LP_Question extends LP_Course_Item {
 			} else {
 				$question_answers = $progress->question_answers;
 			}
-			$question_answers[ $this->id ] = $answer;
+			$question_answers[ $this->get_id() ] = $answer;
 
 			$question_answers = apply_filters( 'learn_press_update_user_question_answers', $question_answers, $progress->history_id, $user_id, $this, $quiz_id );
 
@@ -805,8 +797,8 @@ class LP_Question extends LP_Course_Item {
 		$answered = null;
 		if ( $args['history_id'] ) {
 			$user_meta = learn_press_get_user_item_meta( $args['history_id'], 'question_answers', true );
-			if ( $user_meta && array_key_exists( $this->id, $user_meta ) ) {
-				$answered = $user_meta[ $this->id ];
+			if ( $user_meta && array_key_exists( $this->get_id(), $user_meta ) ) {
+				$answered = $user_meta[ $this->get_id() ];
 			}
 		} elseif ( $args['quiz_id'] && $args['course_id'] ) {
 			$user    = learn_press_get_current_user();
@@ -815,8 +807,8 @@ class LP_Question extends LP_Course_Item {
 			if ( $history ) {
 				$user_meta = learn_press_get_user_item_meta( $history->history_id, 'question_answers', true );
 
-				if ( $user_meta && array_key_exists( $this->id, $user_meta ) ) {
-					$answered = $user_meta[ $this->id ];
+				if ( $user_meta && array_key_exists( $this->get_id(), $user_meta ) ) {
+					$answered = $user_meta[ $this->get_id() ];
 				}
 			}
 		}

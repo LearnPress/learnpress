@@ -10,7 +10,7 @@
 
 defined( 'ABSPATH' ) || exit();
 
-class LP_Quiz extends LP_Course_Item {
+class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 	/**
 	 * The quiz (post) ID.
 	 *
@@ -63,6 +63,8 @@ class LP_Quiz extends LP_Course_Item {
 	 * @var string
 	 */
 	protected $_item_type = 'lp_quiz';
+
+	protected $_questions = array();
 
 	/**
 	 * Constructor gets the post object and sets the ID for the loaded course.
@@ -671,19 +673,22 @@ class LP_Quiz extends LP_Course_Item {
 	 * @return mixed|void
 	 */
 	public function get_mark( $force = false ) {
-		if ( $this->_mark === null || $force ) {
-			$this->_get_questions();
+		$questions = $this->get_questions();
+		$mark      = 0;
+		foreach ( $questions as $question_id ) {
+			$question = LP_Question_Factory::get_question( $question_id );
+			$mark     += $question->get_mark();
 		}
 
-		return apply_filters( 'learn_press_quiz_mark', $this->_mark, $this->id );
+		return apply_filters( 'learn_press_quiz_mark', $mark, $this->id );
 	}
 
 	public function get_question_link( $question_id = null ) {
-		$course = LP()->global['course'];
+		$course = LP_Global::course();
 
-		$permalink     = $course->get_item_link( $this->id );
+		$permalink     = $course->get_item_link( $this->get_id() );
 		$question_name = get_post_field( 'post_name', $question_id );
-		if ( '' != get_option( 'permalink_structure' ) && get_post_status( $this->id ) != 'draft' ) {
+		if ( '' != get_option( 'permalink_structure' ) && get_post_status( $this->get_id() ) != 'draft' ) {
 			$permalink = $permalink . $question_name;
 		} else {
 			$permalink = add_query_arg( array( 'question', $question_name ), $permalink );
@@ -767,5 +772,31 @@ class LP_Quiz extends LP_Course_Item {
 		$id   = $user->get_current_quiz_question( $this->id, $course_id );
 
 		return LP_Question_Factory::get_question( $id );
+	}
+
+	/**
+	 * @return LP_Question
+	 */
+	public function get_viewing_question() {
+		global $lp_quiz_question;
+
+		return $lp_quiz_question;
+	}
+
+	public function offsetSet( $offset, $value ) {
+		//$this->set_data( $offset, $value );
+		// Do not allow to set value directly!
+	}
+
+	public function offsetUnset( $offset ) {
+		// Do not allow to unset value directly!
+	}
+
+	public function offsetGet( $offset ) {
+		return $this->offsetExists( $offset ) ? $this->_questions[ $offset ] : false;
+	}
+
+	public function offsetExists( $offset ) {
+		return array_key_exists( $offset, $this->_questions );
 	}
 }

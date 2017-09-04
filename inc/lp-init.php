@@ -3,6 +3,8 @@
  * Functions that are used to init a course to reduce SQL queries
  */
 
+
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
@@ -32,6 +34,7 @@ function _learn_press_upgrade_table() {
 		}
 	}
 }
+return;
 
 add_action( 'learn_press_parse_query', '_learn_press_setup_user_course_data' );
 function _learn_press_setup_user_course_data( $query ) {

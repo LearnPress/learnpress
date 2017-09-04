@@ -10,15 +10,14 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
-$user   = learn_press_get_current_user();
-$course = learn_press_get_the_course();
+$user        = learn_press_get_current_user();
+$course      = learn_press_get_the_course();
+$user_course = $user->get_course_data( get_the_ID() );
 
 if ( ! isset( $section ) ) {
 	return;
 }
-
 $title = $section->get_title();
-
 ?>
 
 <div class="section-header">
@@ -32,16 +31,18 @@ $title = $section->get_title();
             <p class="section-desc"><?php echo $description; ?></p>
 		<?php } ?>
     </div>
-	<?php if ( $user->has_enrolled_course( $section->get_course_id() ) ) { ?>
+	<?php if ( $user->has_enrolled_course( $section->get_course_id() ) ) {
+	    $percent = $user_course->get_percent_completed_items( '', $section->get_id() );
+	    ?>
         <div class="section-meta">
-            <div class="section-progress">
+            <div class="section-progress" title="<?php echo intval($percent);?>%">
                 <div class="progress-bg">
-                    <div class="progress-active">
-
+                    <div class="progress-active"
+                         style="left: <?php echo $percent; ?>%;">
                     </div>
                 </div>
             </div>
-            <span class="step"><?php printf( __( '%d/%d', 'learnpress' ), $section->get_completed_items( $user->get_id() ), $section->count_items() ); ?></span>
+            <span class="step"><?php printf( __( '%d/%d', 'learnpress' ), $user_course->get_completed_items( '', false, $section->get_id() ), $section->count_items() ); ?></span>
             <span class="collapse"></span>
         </div>
 	<?php } ?>

@@ -12,6 +12,8 @@ $user   = learn_press_get_current_user();
 if ( ! $course ) {
 	return;
 }
+$data = $user->get_course_data( get_the_ID() );
+
 $status = $user->get( 'course-status', $course->get_id() );
 if ( ! $user->has_enrolled_course( $course->get_id() ) ) {
 	return;
@@ -26,14 +28,14 @@ $heading           = apply_filters( 'learn_press_course_progress_heading', $stat
 $course_items      = sizeof( $course->get_curriculum_items() );
 $completed_items   = $course->count_completed_items();
 $course_results    = $course->evaluate_course_results();
-learn_press_debug($course);
+learn_press_debug( $data->get_results() );
 ?>
 <div class="learn-press-course-results-progress">
     <div class="items-progress">
 		<?php if ( $heading !== false ): ?>
             <h4 class="lp-course-progress-heading"><?php echo esc_html_e( 'Items completed', 'learnpress' ); ?></h4>
 		<?php endif; ?>
-        <span class="number"><?php printf( __( '%d of %d items', 'learnpress' ), $completed_items, $course_items ); ?></span>
+        <span class="number"><?php printf( __( '%d of %d items', 'learnpress' ), $data->get_completed_items(), sizeof( $data->get_items() ) ); ?></span>
         <div class="lp-course-progress">
             <div class="lp-progress-bar">
                 <div class="lp-progress-value"
@@ -51,7 +53,8 @@ learn_press_debug($course);
 			<?php } ?>
         </h4>
         <div class="lp-course-status">
-            <span class="number"><?php echo $current; ?><span class="percentage-sign">%</span></span>
+            <span class="number"><?php echo absint( $data->get_results( 'result' ) ); ?><span
+                        class="percentage-sign">%</span></span>
 			<?php if ( $grade = $user->get_course_grade( $course->get_id() ) ) { ?>
                 <span class="grade <?php echo esc_attr( $grade ); ?>">
 				<?php learn_press_course_grade_html( $grade ); ?>

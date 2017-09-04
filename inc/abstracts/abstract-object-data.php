@@ -158,7 +158,7 @@ abstract class LP_Abstract_Object_Data {
 			foreach ( $key_or_data as $key => $value ) {
 				$this->_set_data( $key, $value, $extra );
 			}
-		} else {
+		} elseif ( $key_or_data ) {
 			$data    = $extra ? $this->_extra_data : $this->_data;
 			$changes = $extra ? $this->_extra_data_changes : $this->_changes;
 			//if ( array_key_exists( $key_or_data, $this->_data ) ) {
@@ -173,11 +173,21 @@ abstract class LP_Abstract_Object_Data {
 					$this->_extra_data[ $key_or_data ] = $value;
 				}
 			} else {
-				// Only change the data is already existed
-				if ( array_key_exists( $key_or_data, $this->_data ) ) {
-					$this->_data[ $key_or_data ] = $value;
-				} else {
-					$this->_extra_data[ $key_or_data ] = $value;
+				try {
+					if ( ! is_string( $key_or_data ) && ! is_numeric( $key_or_data ) ) {
+						throw new Exception( 'error' );
+					}
+					// Only change the data is already existed
+					if ( array_key_exists( $key_or_data, $this->_data ) ) {
+						$this->_data[ $key_or_data ] = $value;
+					} else {
+						$this->_extra_data[ $key_or_data ] = $value;
+					}
+				}
+				catch ( Exception $ex ) {
+					print_r( $key_or_data );
+					print_r( $ex->getMessage() );
+					die();
 				}
 			}
 			//}
@@ -379,10 +389,10 @@ abstract class LP_Abstract_Object_Data {
 		}
 	}
 
-	public function update_meta(){
-		if($this->_meta_data){
-			foreach($this->_meta_data as $meta_data){
-				$this->_curd->update_meta($this, $meta_data);
+	public function update_meta() {
+		if ( $this->_meta_data ) {
+			foreach ( $this->_meta_data as $meta_data ) {
+				$this->_curd->update_meta( $this, $meta_data );
 			}
 		}
 	}

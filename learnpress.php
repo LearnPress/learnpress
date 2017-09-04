@@ -703,7 +703,7 @@ $GLOBALS['LearnPress'] = LP();
 
 class LP_Global {
 	/**
-	 * @return LP_Course_Item
+	 * @return LP_Quiz|LP_Lesson
 	 */
 	public static function course_item() {
 		global $lp_course_item;
@@ -728,10 +728,21 @@ class LP_Global {
 
 		return $lp_user;
 	}
+
+	/**
+	 * Alias of course item for highlighting in dev
+	 *
+	 * @return LP_Quiz
+	 */
+	public static function course_item_quiz() {
+		$item = self::course_item();
+
+		return $item instanceof LP_Quiz ? $item : false;
+	}
 }
 
 add_action( 'learn-press/checkout-no-payment-result', function ( $results, $order_id ) {
-	$order                           = learn_press_get_order( $order_id );
+	$order = learn_press_get_order( $order_id );
 	if ( $order->is_completed() ) {
 		$order_users = $order->get_users();
 		$users       = array();

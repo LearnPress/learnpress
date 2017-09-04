@@ -195,7 +195,7 @@ class LP_Course_Item extends LP_Abstract_Post_Data implements ArrayAccess {
 	/**
 	 * Get instance of an item from post
 	 *
-	 * @param WP_Post $post
+	 * @param WP_Post|int $post
 	 *
 	 * @return LP_Course_Item
 	 */
@@ -225,6 +225,10 @@ class LP_Course_Item extends LP_Abstract_Post_Data implements ArrayAccess {
 		}
 
 		return apply_filters( 'learn-press/get-course-item', $item, $item_type, $item_id );
+	}
+
+	public static function get_question( $post ) {
+		return new LP_Question( $post );
 	}
 
 	public function get_user_status( $user ) {
@@ -308,6 +312,12 @@ class LP_Course_Item extends LP_Abstract_Post_Data implements ArrayAccess {
 		$action = sprintf( '%s-item-%d-%d-%d', $action, $user_id, $course_id, $this->get_id() );
 
 		return wp_verify_nonce( $nonce, $action );
+	}
+
+	public function is_viewing_question( $question_id ) {
+		global $lp_quiz_question;
+
+		return $lp_quiz_question && $lp_quiz_question->get_id() == $question_id;
 	}
 
 	public function offsetExists( $offset ) {

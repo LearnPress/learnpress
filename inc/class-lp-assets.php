@@ -30,8 +30,9 @@ class LP_Assets extends LP_Abstract_Assets {
 		return apply_filters(
 			'learn-press/frontend-default-styles',
 			array(
-				'font-awesome' => self::url( 'css/font-awesome.min.css' ),
-				'learn-press'  => self::url( 'css/learnpress.css' )
+				'font-awesome'     => self::url( 'css/font-awesome.min.css' ),
+				'learn-press'      => self::url( 'css/learnpress.css' ),
+				'jquery-scrollbar' => self::url( 'js/vendor/jquery-scrollbar/jquery.scrollbar.css' )
 			)
 		);
 	}
@@ -57,35 +58,40 @@ class LP_Assets extends LP_Abstract_Assets {
 		return apply_filters(
 			'learn-press/frontend-default-scripts',
 			array(
-				'lp-vue'                 => array(
+
+				'lp-vue'           => array(
 					'url' => self::url( 'js/vendor/vue.js' ),
 					'ver' => '2.4.0'
 				),
-				'lp-vuex'                => array(
+				'lp-vuex'          => array(
 					'url' => self::url( 'js/vendor/vuex.2.3.1.js' ),
 					'ver' => '2.3.1'
 				),
-				'lp-vue-resource'        => array(
+				'lp-vue-resource'  => array(
 					'url' => self::url( 'js/vendor/vue-resource.1.3.4.js' ),
 					'ver' => '1.3.4'
 				),
-				'global'       => array(
+				'global'           => array(
 					'url'  => self::url( 'js/global.js' ),
 					'deps' => array( 'jquery', 'underscore', 'utils', 'backbone' )
 				),
-				'learnpress'   => array(
+				'jquery-scrollbar' => array(
+					'url'  => self::url( 'js/vendor/jquery-scrollbar/jquery.scrollbar.js' ),
+					'deps' => array( 'jquery' )
+				),
+				'learnpress'       => array(
 					'url'  => self::url( 'js/frontend/learnpress.js' ),
 					'deps' => array( 'global' )
 				),
-				'checkout'     => array(
+				'checkout'         => array(
 					'url'  => self::url( 'js/frontend/checkout.js' ),
 					'deps' => array( 'global' )
 				),
-				'course'     => array(
+				'course'           => array(
 					'url'  => self::url( 'js/frontend/course.js' ),
-					'deps' => array( 'global', 'lp-vue' )
+					'deps' => array( 'global', 'lp-vue', 'jquery-scrollbar' )
 				),
-				'profile-user' => array(
+				'profile-user'     => array(
 					'url'  => self::url( 'js/frontend/profile.js' ),
 					'deps' => array(
 						'global',
@@ -121,7 +127,7 @@ class LP_Assets extends LP_Abstract_Assets {
 						}
 
 				}
-				if ($handle=='font-awesome' || $enqueue ) {
+				if ( $handle == 'font-awesome' || $enqueue ) {
 					wp_enqueue_script( $handle );
 				}
 			}

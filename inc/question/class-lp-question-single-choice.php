@@ -35,17 +35,6 @@ class LP_Question_Single_Choice extends LP_Question {
 		return false;
 	}
 
-
-	public function submit_answer( $quiz_id, $answer ) {
-		$questions = learn_press_get_question_answers( null, $quiz_id );
-		if ( ! is_array( $questions ) ) {
-			$questions = array();
-		}
-		$questions[ $quiz_id ][ $this->get( 'ID' ) ] = is_array( $answer ) ? reset( $answer ) : $answer;
-		learn_press_save_question_answer( null, $quiz_id, $this->get( 'ID' ), is_array( $answer ) ? reset( $answer ) : $answer );
-		//print_r($answer);
-	}
-
 	public function get_icon() {
 		return '<img src="' . apply_filters( 'learn_press_question_icon', LP()->plugin_url( 'assets/images/single-choice.png' ), $this ) . '">';
 	}
@@ -79,47 +68,13 @@ class LP_Question_Single_Choice extends LP_Question {
 
 	}
 
-	/**
-	 * @param bool $enqueue
-	 */
-	private function _admin_enqueue_script( $enqueue = true ) {
-		ob_start();
-		$key = 'question_' . $this->get( 'ID' );
-		?>
-        <script type="text/javascript">
-            (function ($) {
-                var $form = $('#post');
-                $form.unbind('learn_press_question_before_update.<?php echo $key;?>').on('learn_press_question_before_update.<?php echo $key;?>', function () {
-                    var $question = $('.lpr-question-single-choice[data-id="<?php echo $this->get( 'ID' );?>"]');
-                    if ($question.length) {
-                        var $input = $('.lpr-is-true-answer input[type="radio"]:checked', $question);
-                        if (0 == $input.length) {
-                            var message = $('.lpr-question-title input', $question).val();
-                            message += ": " + '<?php _e( 'No answer added to question or you must set an answer is correct!', 'learnpress' );?>'
-                            window.learn_press_before_update_quiz_message.push(message);
-                            return false;
-                        }
-                    }
-                });
-            })(jQuery);
-        </script>
-		<?php
-		$script = ob_get_clean();
-		if ( $enqueue ) {
-			$script = preg_replace( '!</?script.*>!', '', $script );
-			learn_press_enqueue_script( $script );
-		} else {
-			echo $script;
-		}
-	}
-
 	public function get_default_answers( $answers = false ) {
 		if ( ! $answers ) {
-			if ( $this->id && $this->post->post_status !== 'auto-draft' ) {
+			if ( $this->get_id() && get_post_status( $this->get_id() ) !== 'auto-draft' ) {
 				global $wpdb;
 				$sql              = $wpdb->prepare( "SELECT * FROM $wpdb->learnpress_question_answers "
 				                                    . " WHERE question_id = %d"
-				                                    . " ORDER BY `answer_order`", $this->id );
+				                                    . " ORDER BY `answer_order`", $this->get_id() );
 				$question_answers = $wpdb->get_results( $sql );
 				$answers          = array();
 				foreach ( $question_answers as $qa ) {
@@ -152,57 +107,11 @@ class LP_Question_Single_Choice extends LP_Question {
 	}
 
 	public function admin_interface( $args = array() ) {
-		return parent::admin_interface($args);
-	}
-
-	public function save_post_action() {
-		if ( $post_id = $this->get( 'ID' ) ) {
-			$post_data    = isset( $_POST[ LP_QUESTION_CPT ] ) ? $_POST[ LP_QUESTION_CPT ] : array();
-			$post_answers = array();
-			$post_explain = $post_data[ $post_id ]['explaination'];
-			if ( isset( $post_data[ $post_id ] ) && $post_data = $post_data[ $post_id ] ) {
-				wp_update_post(
-					array(
-						'ID'         => $post_id,
-						'post_title' => $post_data['text'],
-						'post_type'  => LP_QUESTION_CPT
-					)
-				);
-				$index = 0;
-				if ( ! empty( $post_data['answer']['text'] ) ) {
-					foreach ( $post_data['answer']['text'] as $k => $txt ) {
-						if ( ! $txt ) {
-							continue;
-						}
-						$post_answers[ $index ++ ] = array(
-							'text'    => $txt,
-							'is_true' => $post_data['answer']['is_true'][ $k ]
-						);
-					}
-				}
-			}
-			$post_data['answer']       = $post_answers;
-			$post_data['type']         = $this->get_type();
-			$post_data['explaination'] = $post_explain;
-			update_post_meta( $post_id, '_lpr_question', $post_data );
-		}
-
-		return $post_id;
+		return parent::admin_interface( $args );
 	}
 
 	public function render( $args = null ) {
-		$args     = wp_parse_args(
-			$args,
-			array(
-				'answered' => null
-			)
-		);
-		$answered = ! empty( $args['answered'] ) ? $args['answered'] : null;
-		if ( null === $answered ) {
-			$answered = $this->get_user_answered( $args );
-		}
-		$view = learn_press_locate_template( 'content-question/single-choice/answer-options.php' );
-		include $view;
+
 	}
 
 	public function check( $user_answer = null ) {

@@ -30,15 +30,6 @@ class LP_Question_Multi_Choice extends LP_Question {
 		parent::__construct( $the_question, $options );
 	}
 
-	public function submit_answer( $quiz_id, $answer ) {
-		$questions = learn_press_get_question_answers( null, $quiz_id );
-		if ( ! is_array( $questions ) ) {
-			$questions = array();
-		}
-		$questions[ $quiz_id ][ $this->id ] = is_array( $answer ) ? reset( $answer ) : $answer;
-		learn_press_save_question_answer( null, $quiz_id, $this->id, is_array( $answer ) ? reset( $answer ) : $answer );
-	}
-
 	public function admin_script() {
 		parent::admin_script();
 		?>
@@ -66,41 +57,6 @@ class LP_Question_Multi_Choice extends LP_Question {
 
 	public function get_default_answers( $answers = false ) {
 		return parent::get_default_answers( $answers );
-		if ( ! $answers ) {
-			if ( $this->id && $this->post->post_status !== 'auto-draft' ) {
-				global $wpdb;
-				$sql              = $wpdb->prepare( "SELECT * FROM $wpdb->learnpress_question_answers "
-				                                    . " WHERE question_id = %d"
-				                                    . " ORDER BY `answer_order`", $this->id );
-				$question_answers = $wpdb->get_results( $sql );
-				$answers          = array();
-				foreach ( $question_answers as $qa ) {
-					$answers[] = unserialize( $qa->answer_data );
-				}
-			}
-			if ( ! empty( $answers ) ) {
-				return $answers;
-			}
-			$answers = array(
-				array(
-					'is_true' => 'yes',
-					'value'   => 'option_first',
-					'text'    => __( 'Option First', 'learnpress' )
-				),
-				array(
-					'is_true' => 'no',
-					'value'   => 'option_seconds',
-					'text'    => __( 'Option Seconds', 'learnpress' )
-				),
-				array(
-					'is_true' => 'no',
-					'value'   => 'option_third',
-					'text'    => __( 'Option Third', 'learnpress' )
-				)
-			);
-		}
-
-		return $answers;
 	}
 
 	/**
@@ -111,7 +67,7 @@ class LP_Question_Multi_Choice extends LP_Question {
 	 * @return string
 	 */
 	public function admin_interface( $args = array() ) {
-	    return parent::admin_interface($args);
+		return parent::admin_interface( $args );
 	}
 
 	public function get_icon() {
@@ -124,78 +80,6 @@ class LP_Question_Multi_Choice extends LP_Question {
 
 	public function show_answer() {
 
-	}
-
-	private function _admin_enqueue_script( $enqueue = true ) {
-		ob_start();
-		$key = 'question_' . $this->id;
-		?>
-        <script type="text/javascript">
-            (function ($) {
-                var $form = $('#post');
-
-                $form.unbind('learn_press_question_before_update.<?php echo $key;?>').bind('learn_press_question_before_update.<?php echo $key;?>', function () {
-                    var $question = $('.lpr-question-multi-choice[data-id="<?php echo $this->get( 'ID' );?>"]');
-
-                    if ($question.length) {
-                        var $input = $('.lpr-is-true-answer input[type="checkbox"]:checked', $question);
-
-                        if (0 == $input.length) {
-                            var message = $('.lpr-question-title input', $question).val();
-                            message += ": " + '<?php _e( 'No answer added to question or you must select at least one the answer is correct!', 'learnpress' );?>';
-                            window.learn_press_before_update_quiz_message.push(message);
-
-                            return false;
-                        }
-                    }
-                });
-            })(jQuery);
-        </script>
-		<?php
-		$script = ob_get_clean();
-		if ( $enqueue ) {
-			$script = preg_replace( '!</?script.*>!', '', $script );
-			learn_press_enqueue_script( $script );
-		} else {
-			echo $script;
-		}
-	}
-
-	public function save_post_action() {
-
-		if ( $post_id = $this->id ) {
-			$post_data    = isset( $_POST[ LP_QUESTION_CPT ] ) ? $_POST[ LP_QUESTION_CPT ] : array();
-			$post_answers = array();
-			//$post_explain = $post_data[$post_id]['explanation'];
-			learn_press_debug( $_POST );
-			if ( isset( $post_data[ $post_id ] ) && $post_data = $post_data[ $post_id ] ) {
-				$post_args = array(
-					'ID'         => $post_id,
-					'post_title' => $post_data['text'],
-					'post_type'  => LP_QUESTION_CPT
-				);
-				wp_update_post( $post_args );
-				$index = 0;
-				if ( ! empty( $post_data['answer']['text'] ) ) {
-					foreach ( $post_data['answer']['text'] as $k => $txt ) {
-						if ( ! $txt ) {
-							continue;
-						}
-						$post_answers[ $index ] = array(
-							'text'    => $txt,
-							'is_true' => $post_data['answer']['is_true'][ $k ]
-						);
-						$index ++;
-					}
-				}
-			}
-			$post_data['answer'] = $post_answers;
-			$post_data['type']   = $this->get_type();
-			//$post_data['explanation']  = $post_explain;
-			update_post_meta( $post_id, '_lpr_question', $post_data );
-		}
-
-		return intval( $post_id );
 	}
 
 	public function render( $args = null ) {
@@ -212,8 +96,7 @@ class LP_Question_Multi_Choice extends LP_Question {
 		if ( null === $answered ) {
 			$answered = $this->get_user_answered( $args );
 		}
-		$view = learn_press_locate_template( 'content-question/multi-choice/answer-options.php' );
-		include $view;
+		learn_press_get_template( 'content-question/multi-choice/answer-options.php', array( 'question' => $this ) );
 	}
 
 	public function check( $user_answer = null ) {
@@ -250,7 +133,6 @@ class LP_Question_Multi_Choice extends LP_Question {
 
 		return $return;
 	}
-
 
 
 	/**

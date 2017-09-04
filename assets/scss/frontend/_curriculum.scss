@@ -28,7 +28,7 @@
                 height: 3px;
                 width: 100%;
                 content: '';
-                left:0;
+                left: 0;
             }
         }
     }
@@ -40,12 +40,14 @@
 .course-curriculum {
     .curriculum-sections {
         list-style: none;
+        margin: 0;
         .section {
         }
         .section-header {
             display: table;
             border-bottom: 2px solid #00adff;
             width: 100%;
+            @include box-sizing(border-box);
             .section-left {
                 /*flex: 9;*/
                 display: table-cell;
@@ -86,8 +88,8 @@
                             width: 100%;
                             background: #00adff;
                             position: absolute;
-                            right: 50%;
-
+                            left: 50%;
+                            margin-left: -100%;
                             @include border-radius(5px);
                         }
                     }
@@ -105,26 +107,36 @@
                 background: #FFF;
                 > a {
                     border-bottom: none;
-                    display: block;
+                    /*display: block;*/
+                    display: table;
                     box-shadow: none;
                     outline: none;
-                    height: 50px;
-                    line-height: 50px;
-                    padding: 0px 0 0 30px;
+                    //height: 50px;
+                    //line-height: 50px;
+                    //padding: 0px 0 0 30px;
+                    //margin: 10px 0 10px 0;
+                    width: 100%;
+                    line-height: 1.5;
                     &:before {
-                        font-family: Dashicons;
+                        font-family: fontawesome;
                         font-size: 18px;
-                        position: absolute;
-                        height: 50px;
-                        line-height: 50px;
+                        /*position: absolute;*/
+                        //height: 50px;
+                        //line-height: 50px;
                         left: 0;
                         transition: left linear 0.15s;
+                        display: table-cell;
+                        width: 20px;
+                        padding: 10px 0;
                     }
                     &:hover {
                     }
                 }
                 .item-icon,
                 .item-name {
+                    display: table-cell;
+                    vertical-align: middle;
+                    padding: 10px 10px;
                 }
 
                 .item-icon {
@@ -138,7 +150,11 @@
                 }
 
                 .course-item-meta {
-                    float: right;
+                    display: table-cell;
+                    vertical-align: middle;
+                    white-space: nowrap;
+                    padding: 10px 0;
+                    text-align: right;
                     .course-item-status {
                         width: 20px;
                         height: 20px;
@@ -146,20 +162,22 @@
                         border: 2px solid transparent;
                         text-align: center;
                         color: #DDD;
+                        margin-left: 5px;
                         @include border-radius(50%);
+                        @include box-sizing(border-box);
                         &.has-status {
                             border-color: #DDD;
                             padding-top: 1px;
                             font-family: fontawesome;
                             &.item-started {
-                                &:before{
+                                &:before {
                                     content: "\f141";
                                 }
                             }
                             &.item-completed {
                                 border-color: #00adff;
                                 color: #00adff;
-                                &:before{
+                                &:before {
                                     content: "\f00c";
                                 }
                             }
@@ -170,7 +188,7 @@
                             &.item-failed {
                                 border-color: #FF0000;
                                 color: #FF0000;
-                                &:before{
+                                &:before {
                                     content: "\f00d";
                                 }
                             }
@@ -180,12 +198,12 @@
 
                 &.course-item-lp_quiz {
                     & > a:before {
-                        content: "\f469";
+                        content: "\f017";
                     }
                 }
                 &.course-item-lp_lesson {
                     & > a:before {
-                        content: "\f126";
+                        content: "\f0f6";
                     }
                 }
 
@@ -222,6 +240,7 @@
 body {
     &.course-item-popup {
         overflow: hidden;
+        opacity: 0;
         #learn-press-course-curriculum {
             position: fixed;
             top: 32px;
@@ -255,17 +274,137 @@ body {
             top: 32px;
             left: 400px;
             right: 0;
-            bottom: 0;
-            overflow: auto;
+            bottom: 0px;
+            overflow: hidden;
             .content-item-wrap {
                 margin: 20px auto;
                 max-width: 900px;
             }
         }
+        #content-item-nav {
+            position: fixed;
+            z-index: 99999;
+            left: 400px;
+            right: 0;
+            background: #F5F5F5;
+            bottom: 0;
+            height: 60px;
+            border-top: 1px solid #DDD;
+            .content-item-nav-wrap {
+                max-width: 900px;
+                margin: 10px auto;
+            }
+            button {
+                height: 40px;
+                line-height: 40px;
+                padding: 0 20px;
+            }
+        }
     }
 }
 
-#wpadminbar #wp-admin-bar-edit-course-item > .ab-item:before {
-    content: "\f464";
-    top: 2px;
+#wpadminbar {
+    #wp-admin-bar-edit-lp_quiz,
+    #wp-admin-bar-edit-lp_lesson {
+        .ab-item:before {
+            font-family: fontawesome;
+        }
+    }
+    #wp-admin-bar-edit-lp_quiz {
+        .ab-item:before {
+            content: "\f017";
+            top: 2px;
+        }
+    }
+    #wp-admin-bar-edit-lp_lesson {
+        .ab-item:before {
+            content: "\f0f6";
+            top: 2px;
+        }
+    }
+
+}
+
+.scroll-wrapper {
+    opacity: 0;
+    overflow: hidden;
+    .scroll-element.scroll-y.scroll-scrolly_visible {
+        transition: opacity 0.25s;
+    }
+    &:hover {
+        .scroll-element.scroll-y.scroll-scrolly_visible {
+            opacity: 0.7;
+        }
+    }
+}
+
+.question-numbers {
+    list-style: none;
+    text-align: center;
+    li {
+        display: inline-block;
+        a {
+            display: block;
+            padding: 5px 8px;
+            background: #F5F5F5;
+            line-height: 1;
+            color: #999;
+            border: 1px solid #DDD;
+        }
+        &.current{
+            a{
+                background: #00adff;
+                color: #FFF;
+                border-color: #3880a2;
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 1300px) {
+    body.course-item-popup {
+        #learn-press-course-curriculum{
+            width: 300px;
+        }
+        #content-item-nav,
+        #learn-press-content-item {
+            left: 300px;
+        }
+    }
+}
+
+@media screen and (max-width: 1200px) {
+    body.course-item-popup {
+        #learn-press-course-curriculum{
+            width: 300px;
+        }
+        #content-item-nav,
+        #learn-press-content-item {
+            left: 300px;
+        }
+        #learn-press-content-item {
+            .content-item-nav-wrap,
+            .content-item-wrap{
+                width: 90%;
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 768px) {
+    body.course-item-popup {
+        #learn-press-course-curriculum{
+            width: 200px;
+        }
+        #content-item-nav,
+        #learn-press-content-item {
+            left: 200px;
+        }
+        #learn-press-content-item {
+            .content-item-nav-wrap,
+            .content-item-wrap{
+                width: 90%;
+            }
+        }
+    }
 }

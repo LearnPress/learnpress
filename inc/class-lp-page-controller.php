@@ -33,32 +33,42 @@ class LP_Page_Controller {
 		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ), 10 );
 		add_filter( 'template_include', array( $this, 'template_loader' ) );
 		add_filter( 'template_include', array( $this, 'template_content_item' ) );
-		add_filter( 'the_post', array( $this, 'xxxx' ) );
+		add_filter( 'the_post', array( $this, 'setup_data' ) );
 		add_filter( 'request', array( $this, 'remove_course_post_format' ), 1 );
 
 		add_shortcode( 'learn_press_archive_course', array( $this, 'archive_content' ) );
 	}
 
-	function xxxx( $post ) {
+	function setup_data( $post ) {
 		if ( LP_COURSE_CPT !== get_post_type( $post->ID ) ) {
 			return $post;
 		}
-		global $wp, $lp_course, $lp_course_item;
-
-		if ( empty( $wp->query_vars['course-item'] ) ) {
+		global $wp, $lp_course, $lp_course_item, $lp_quiz_question;
+		$vars = $wp->query_vars;
+		if ( empty( $vars['course-item'] ) ) {
 			return false;
 		}
 
-		if ( ! is_numeric( $wp->query_vars['course-item'] ) ) {
-			$item_type = $wp->query_vars['item-type'];
-			$post      = learn_press_get_post_by_name( $wp->query_vars['course-item'], $item_type );
+		if ( ! is_numeric( $vars['course-item'] ) ) {
+			$item_type = $vars['item-type'];
+			$post      = learn_press_get_post_by_name( $vars['course-item'], $item_type );
 		} else {
-			$post = get_post( absint( $wp->query_vars['course-item'] ) );
+			$post = get_post( absint( $vars['course-item'] ) );
 		}
 
 		$lp_course_item = apply_filters( 'learn-press/single-course-request-item', LP_Course_Item::get_item( $post->ID ) );
 
 		$lp_course->set_viewing_item( $lp_course_item );
+
+		if (  LP_QUIZ_CPT === $item_type && ! empty( $vars['question'] ) ) {
+			$question = learn_press_get_post_by_name( $vars['question'], LP_QUESTION_CPT );
+
+			//print_r( $question );
+
+			$lp_quiz_question = LP_Question_Factory::get_question( $question->ID );
+
+			//$lp_course_item->set_viewing_question( $lp_quiz_question );
+		}
 
 		return $post;
 	}
@@ -66,6 +76,8 @@ class LP_Page_Controller {
 	public function template_content_item( $template ) {
 		global $lp_course, $lp_course_item, $wp_filter;
 		if ( $lp_course_item ) {
+
+
 			if ( ! empty( $wp_filter['learn-press/content-learning-summary'] ) ) {
 				unset( $wp_filter['learn-press/content-learning-summary'] );
 			}
@@ -102,13 +114,22 @@ class LP_Page_Controller {
 				     && $post_type_object->show_in_admin_bar
 				     && $edit_post_link = get_edit_post_link( $lp_course_item->get_id() )
 				) {
+					$type = get_post_type( $lp_course_item->get_id() );
 					$wp_admin_bar->add_menu( array(
-						'id'    => 'edit-course-item',
+						'id'    => 'edit-' . $type,
 						'title' => $post_type_object->labels->edit_item,
 						'href'  => $edit_post_link
 					) );
 				}
 			}, 90 );
+
+//			learn_press_get_template( 'single-course/tabs/curriculum.php' );
+//			learn_press_get_template( 'single-course/content-item.php' );
+//
+//			get_header();
+//
+//			get_footer();
+//			die();
 		}
 
 		return $template;
