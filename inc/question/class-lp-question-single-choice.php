@@ -111,7 +111,20 @@ class LP_Question_Single_Choice extends LP_Question {
 	}
 
 	public function render( $args = null ) {
-
+		$args     = wp_parse_args(
+			$args,
+			array(
+				'answered'   => null,
+				'history_id' => 0,
+				'quiz_id'    => 0,
+				'course_id'  => 0
+			)
+		);
+		$answered = ! empty( $args['answered'] ) ? $args['answered'] : null;
+		if ( null === $answered ) {
+			$answered = $this->get_user_answered( $args );
+		}
+		learn_press_get_template( 'content-question/single-choice/answer-options.php', array( 'question' => $this ) );
 	}
 
 	public function check( $user_answer = null ) {

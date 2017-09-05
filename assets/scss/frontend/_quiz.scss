@@ -8,18 +8,61 @@
         background: #F5F5F5;
         padding: 10px;
         display: flex;
+        overflow: hidden;
+        color: #777;
+        cursor: pointer;
         @include border-radius(4px);
-        input[type="checkbox"] {
-            -webkit-appearance: initial;
-            width: 30px;
-            height: 30px;
-            background: #fff;
-            border-radius: 4px;
-            outline: none;
-            margin: 0 10px 0 0;
-            position: relative;
-            border: 1px solid #eaeaea;
+        @include transition(background linear 0.25s);
+        .option-title {
+            font-size: smaller;
+            display: table-cell;
+            .option-title-content {
+                display: inline-block;
+                vertical-align: middle;
+            }
             &:before {
+                position: absolute;
+                //top: 0;
+                //left: 0;
+                //right: 0;
+                //bottom: 0;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                width: 3px;
+                content: '';
+                background: #DDD;
+                @include transition(background linear 0.25s);
+            }
+        }
+        input[type="checkbox"],
+        input[type="radio"] {
+            -webkit-appearance: initial;
+            //width: 30px;
+            //height: 30px;
+            //background: #fff;
+            //border-radius: 4px;
+            //outline: none;
+            margin: 0 10px 0 3px;
+            position: relative;
+            border: none;
+            background: transparent;
+            //border: 1px solid #eaeaea;
+            z-index: 10;
+            &:before {
+                width: 30px;
+                height: 30px;
+                background: #fff;
+                border-radius: 4px;
+                outline: none;
+                position: relative;
+                border: 1px solid #eaeaea;
+                content: '';
+                display: block;
+                top: 50%;
+                margin-top: -16px;
+            }
+            &:after {
                 content: '';
                 border: 4px solid #00adff;
                 display: inline-block;
@@ -28,33 +71,39 @@
                 border-top: none;
                 border-left: none;
                 position: absolute;
-                top: 3px;
+                top: 50%;
                 left: 8px;
                 box-sizing: content-box;
                 opacity: 0;
-                @include transform(rotate(60deg) scale(2));
+                margin-top: -12px;
+                @include transform(rotate(36deg) scale(0));
                 @include transition(all 0.25s);
             }
             &:checked {
-                + .option-title {
-                    &:before{
-                        position: absolute;
-                        top:0;
-                        left:0;
-                        right: 0;
-                        bottom: 0;
-                        content: '';
-                        background: #FF0000;
+                ~ .option-title {
+                    .option-title-content {
+                        position: relative;
+                    }
+                    &:before {
+                        background: #00adff;
                     }
                 }
-                &:before {
+                &:after {
                     opacity: 1;
                     @include transform(rotate(36deg) scale(1));
                 }
             }
         }
+        input[type="radio"] {
+            &:before {
+                border-radius: 50%;
+            }
+        }
         .option-title {
             margin: 0;
+        }
+        &:hover {
+            background: #e1f5ff;
         }
     }
 }

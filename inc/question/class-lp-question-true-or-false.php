@@ -149,8 +149,7 @@ class LP_Question_True_Or_False extends LP_Question {
 		if ( null === $answered ) {
 			$answered = $this->get_user_answered( $args );
 		}
-		$view = learn_press_locate_template( 'content-question/single-choice/answer-options.php' );
-		include $view;
+		learn_press_get_template( 'content-question/single-choice/answer-options.php', array( 'question' => $this ) );
 	}
 
 	public function check( $user_answer = null ) {

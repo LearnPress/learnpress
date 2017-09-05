@@ -15,16 +15,12 @@ if ( ! $quiz ) {
 $user_item      = $user_course[ $quiz->get_id() ];
 $have_questions = $quiz->get_questions();
 $can_view_item  = $user->can( 'view-item', $quiz->get_id(), $course->get_id() );
-
-$user_course->get_item_at( 1 );
-
-echo 'Mark:';
-print_r( $quiz->get_mark() );
-echo ']';
 ?>
 
 <div class="content-item-summary">
 
+    <h3><?php echo $quiz->get_title();?></h3>
+    <div><?php echo $quiz->get_content();?></div>
 	<?php
 
 
@@ -44,6 +40,7 @@ echo ']';
 	$question->render();
 	//learn_press_debug( $lp_quiz_question );
 	?>
+
 
     <ul class="question-numbers">
 		<?php foreach ( $have_questions as $question_id ) {

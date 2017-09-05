@@ -65,13 +65,16 @@ if ( ! $answers = $question->get_answers() ) {
 		$disabled = '';
 		$id = uniqid( 'option-' );
 		?>
-        <li <?php echo $answer->option_class(); ?>>
+        <li <?php echo $answer->option_class(); ?>  @click="toggle">
             <input type="checkbox"
+                   class="option-check"
                    name="learn-press-question-<?php echo $question->get_id(); ?>[]"
                    value="<?php echo $answer->get_value(); ?>"
-				<?php checked( $question->is_selected_option( $answer, false ) ); ?>
+				<?php checked( $question->is_selected_option( $answer, true ) ); ?>
 				<?php echo $disabled; ?> />
-            <div class="option-title"><?php echo apply_filters( 'learn_press_question_answer_text', $answer->get_title(), $answer, $question ); ?></div>
+            <div class="option-title">
+                <div class="option-title-content"><?php echo apply_filters( 'learn_press_question_answer_text', $answer->get_title(), $answer, $question ); ?></div>
+            </div>
 
 			<?php do_action( 'learn_press_after_question_answer_text', $answer, $question ); ?>
 

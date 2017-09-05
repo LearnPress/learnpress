@@ -146,6 +146,17 @@
                 completeItem: function (event) {
                     event.preventDefault();
                     $(event.target.form).submit();
+                },
+                toggle: function (event) {
+                    var $el = $(event.target),
+                        $chk = false;
+                    if ($el.is('input.option-check')) {
+                        return;
+                    }
+                    $chk = $el.closest('.answer-option').find('input.option-check');
+                    console.log($el, $chk);
+
+                    $chk[0].checked = !$chk[0].checked;
                 }
             }
         });
