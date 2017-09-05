@@ -790,7 +790,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		/**
 		 * Course author
 		 *
-		 * @return mixed|null|void
+		 * @return mixed|null
 		 */
 		public static function author_meta_box() {
 
