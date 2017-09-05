@@ -14,6 +14,13 @@ class LP_Submenu_Addons extends LP_Abstract_Submenu {
 		$this->page_title = __( 'LearnPress Addons', 'learnpress' );
 		$this->priority   = 20;
 
+		add_action( 'plugins_loaded', array( $this, 'add_ons_tabs' ) );
+//
+		//$this->sections = apply_filters( 'learn-press/admin/page-addons/sections', $sections );
+		parent::__construct();
+	}
+
+	public function add_ons_tabs() {
 		$this->tabs = apply_filters(
 			'learn-press/admin/page-addons-tabs',
 			array(
@@ -22,8 +29,6 @@ class LP_Submenu_Addons extends LP_Abstract_Submenu {
 				'themes'    => sprintf( __( 'Themes (%d)', 'learnpress' ), LP_Plugins_Helper::count_themes() )
 			)
 		);
-		//$this->sections = apply_filters( 'learn-press/admin/page-addons/sections', $sections );
-		parent::__construct();
 	}
 
 	public function page_content_installed() {

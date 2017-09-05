@@ -741,7 +741,7 @@ class LP_Global {
 	}
 }
 
-add_action( 'learn-press/checkout-no-payment-result', function ( $results, $order_id ) {
+add_filter( 'learn-press/checkout-no-payment-result', function ( $results, $order_id ) {
 	$order = learn_press_get_order( $order_id );
 	if ( $order->is_completed() ) {
 		$order_users = $order->get_users();

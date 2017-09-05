@@ -45,11 +45,13 @@ class LP_Datetime extends DateTime {
 		if ( ! ( $tz instanceof DateTimeZone ) ) {
 			if ( ( $tz === null ) && $tz = get_option( 'timezone_string' ) ) {
 				$tz = new DateTimeZone( $tz );
-			} elseif ( is_string( $tz ) ) {
+			} elseif ( is_string( $tz ) && $tz ) {
 				$tz = new DateTimeZone( $tz );
 			}
 		}
-
+		if(!$tz){
+			$tz = null;
+		}
 		date_default_timezone_set( 'UTC' );
 		$date = is_numeric( $date ) ? date( 'c', $date ) : $date;
 
