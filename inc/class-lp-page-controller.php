@@ -412,7 +412,6 @@ class LP_Page_Controller {
 			} else {
 				LP()->global['course-item'] = $item_object;
 			}
-
 			return $q;
 		}
 
