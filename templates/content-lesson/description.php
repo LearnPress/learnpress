@@ -1,31 +1,20 @@
 <?php
 /**
+ * Displaying the description of single quiz
+ *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 1.0
+ * @version 3.x.x
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-global $lp_course, $lp_course_item;
-$item = $lp_course_item;
-
-if ( ! $item ) {
+$lesson = LP_Global::course_item();
+if ( ! $content = $lesson->get_content() ) {
 	return;
 }
 ?>
-<div class="course-lesson-description">
 
-	<?php if ( $the_content = apply_filters( 'learn_press_course_lesson_content', $item->get_content() ) ): ?>
-
-		<?php echo $the_content; ?>
-
-	<?php else: ?>
-
-		<?php learn_press_display_message( __( 'This lesson has no content', 'learnpress' ) ); ?>
-
-	<?php endif; ?>
-
-</div>
+<div class="content-item-description lesson-description"><?php echo $content; ?></div>

@@ -11,37 +11,6 @@
 defined( 'ABSPATH' ) || exit();
 
 class LP_Quiz extends LP_Course_Item implements ArrayAccess {
-	/**
-	 * The quiz (post) ID.
-	 *
-	 * @var int
-	 */
-	public $id = 0;
-
-	/**
-	 * $post Stores post data
-	 *
-	 * @var $post WP_Post
-	 *
-	 * @deprecated
-	 */
-	public $post = null;
-
-	/**
-	 * WP_Course object
-	 *
-	 * @var null
-	 *
-	 * @deprecated
-	 */
-	public $course = null;
-
-	/**
-	 * Mark of quiz
-	 *
-	 * @var int
-	 */
-	protected $_mark = null;
 
 	public $content = '';
 
@@ -66,6 +35,13 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 
 	protected $_questions = array();
 
+	protected $_data = array(
+		'retake_count'       => 0,
+		'show_result'        => 'no',
+		'passing_grade_type' => '',
+		'passing_grade'      => 0
+	);
+
 	/**
 	 * Constructor gets the post object and sets the ID for the loaded course.
 	 *
@@ -74,7 +50,7 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 	 */
 	public function __construct( $the_quiz, $args = array() ) {
 
-		parent::__construct( $the_quiz, $args );
+		//parent::__construct( $the_quiz, $args );
 
 		$this->_curd = new LP_Quiz_CURD();
 
@@ -98,6 +74,91 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 		$this->_curd->load( $this );
 	}
 
+	public function set_retake_count( $count ) {
+		$this->_set_data( 'retake_count', $count );
+	}
+
+	public function get_retake_count() {
+		return $this->get_data( 'retake_count' );
+	}
+
+//	public function set_mark( $mark ) {
+//	$this->_set_data( 'mark', $mark );
+//}
+//
+//	public function get_mark() {
+//		$this->get_data( 'mark' );
+//	}
+
+	public function set_show_result( $show_result ) {
+		$this->_set_data( 'show_result', $show_result );
+	}
+
+	public function get_show_result() {
+		return $this->get_data( 'show_result' );
+	}
+
+//	public function set_duration( $duration ) {
+//		$this->_set_data( 'duration', $duration );
+//	}
+//
+//	public function get_duration() {
+//		$this->get_data( 'duration' );
+//	}
+
+	public function set_passing_grade_type( $type ) {
+		$this->_set_data( 'passing_grade_type', $type );
+	}
+
+	public function get_passing_grade_type() {
+		return $this->get_data( 'passing_grade_type' );
+	}
+
+	public function set_passing_grade( $value ) {
+		$this->_set_data( 'passing_grade', $value );
+	}
+
+	public function get_passing_grade() {
+		return $this->get_data( 'passing_grade' );
+	}
+
+	/**
+	 * Return total mark of quiz by calculating total mark of all questions.
+	 *
+	 * @return int
+	 */
+	public function get_mark() {
+		$mark = $this->get_data( 'mark' );
+		if ( false === $mark || '' === $mark ) {
+			$questions = $this->get_questions();
+			$mark      = 0;
+			foreach ( $questions as $question_id ) {
+				$question = LP_Question_Factory::get_question( $question_id );
+				$mark     += $question->get_mark();
+			}
+			$this->_set_data( 'mark', $mark );
+		}
+
+		return apply_filters( 'learn-press/quiz-mark', $mark, $this->get_id() );
+	}
+
+	/**
+	 * Return total mark of quiz by calculating total mark of all questions.
+	 *
+	 * @return LP_Duration
+	 */
+	public function get_duration() {
+		$duration = $this->get_data( 'duration' );
+		if ( false === $duration || '' === $duration ) {
+			if ( $duration = get_post_meta( $this->get_id(), '_lp_duration', true ) ) {
+				$duration = new LP_Duration( $duration );
+			}
+
+			$this->_set_data( 'duration', $duration );
+		}
+
+		return apply_filters( 'learn-press/quiz-duration', $duration, $this->get_id() );
+	}
 
 	/**
 	 * Get quiz questions.
@@ -139,9 +200,9 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 	}
 
 	public function get_duration_html() {
-		$duration = $this->duration;
+		$duration = $this->get_duration();
 		if ( $duration ) {
-			$duration = learn_press_seconds_to_time( $duration );
+			$duration = learn_press_seconds_to_time( $duration->get_seconds() );
 		} else {
 			$duration = __( 'Unlimited', 'learnpress' );
 		}
@@ -150,7 +211,7 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 	}
 
 	public function get_total_questions() {
-		$questions = $this->questions;
+		$questions = $this->get_questions();
 		$count     = 0;
 		if ( $questions ) {
 			$count = count( $questions );
@@ -196,46 +257,46 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 		$user        = learn_press_get_current_user( $user_id );
 		$course      = learn_press_get_course( $course_id );
 		$quiz_params = LP_Cache::get_quiz_params( false, array() );
-		$key         = sprintf( '%d-%d-%d', $user_id, $course_id, $this->id );
+		$key         = sprintf( '%d-%d-%d', $user_id, $course_id, $this->get_id() );
 		if ( ! array_key_exists( $key, $quiz_params ) || $force ) {
 
-			if ( $results = $user->get_quiz_results( $this->id, $course_id, $force ) ) {
+			if ( $results = $user->get_quiz_results( $this->get_id(), $course_id, $force ) ) {
 				$questions = $results->questions;
 			} else {
 				$questions = learn_press_get_quiz_questions();
 				$questions = array_keys( $questions );
 			}
 
-			$current_question_id = $user->get_current_quiz_question( $this->id, $course->get_id() );
+			$current_question_id = $user->get_current_quiz_question( $this->get_id(), $course->get_id() );
 			$question            = LP_Question_Factory::get_question( $current_question_id );
-			$duration            = $this->duration;
-			$remaining           = $user->get_quiz_time_remaining( $this->id, $course_id );
+			$duration            = $this->get_duration();
+			$remaining           = $user->get_quiz_time_remaining( $this->get_id(), $course_id );
 			if ( $remaining === false ) {
-				$remaining = $this->duration;
+				$remaining = $this->get_duration();
 			} elseif ( $remaining < 0 ) {
 				$remaining = 0;
 			}
-			//$r_time              = ( $remaining > 0 ) && !in_array( $user->get_quiz_status( $this->id, $course_id, $force ), array( '', 'completed' ) ) ? $remaining : $this->duration;
+			//$r_time              = ( $remaining > 0 ) && !in_array( $user->get_quiz_status( $this->get_id(), $course_id, $force ), array( '', 'completed' ) ) ? $remaining : $this->duration;
 
 			$js = array(
-				'id'              => $this->id,
+				'id'              => $this->get_id(),
 				'questions'       => array_values( $this->get_question_params( $questions, $current_question_id ) ),
 				//$questions,
-				'status'          => $user->get_quiz_status( $this->id, $course_id, $force ),
+				'status'          => $user->get_quiz_status( $this->get_id(), $course_id, $force ),
 				'permalink'       => get_the_permalink(),
 				'ajaxurl'         => admin_url( 'admin-ajax.php' ),
 				'question'        => $question ? array( 'check_answer' => $question->can_check_answer() ) : false,
-				'totalTime'       => $this->duration,
+				'totalTime'       => $this->get_duration(),
 				'userTime'        => $duration - $remaining,
 				'currentQuestion' => get_post_field( 'post_name', $current_question_id ),
 				'usePermalink'    => get_option( 'permalink' ),
 				'courseId'        => $course_id
 			);
 			if ( $js['status'] == 'completed' ) {
-				$js['result'] = $user->get_quiz_results( $this->id, $course_id, $force );
+				$js['result'] = $user->get_quiz_results( $this->get_id(), $course_id, $force );
 			}
 			if ( $js['status'] == 'started' ) {
-				if ( $history = $user->get_quiz_results( $this->id, $course_id ) ) {
+				if ( $history = $user->get_quiz_results( $this->get_id(), $course_id ) ) {
 					$js['startTime']  = strtotime( $history->start, current_time( 'timestamp' ) );
 					$js['serverTime'] = date( 'Z' ) / 3600;//date_timezone_get( date_default_timezone_get() );// get_option('gmt_offset');
 				}
@@ -262,7 +323,7 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 			$checked_answers   = array();
 			//$show_explanation  = $this->show_explanation;
 			if ( $show_check_answer == 'yes' ) {
-				if ( $history = $user->get_quiz_results( $this->id ) ) {
+				if ( $history = $user->get_quiz_results( $this->get_id() ) ) {
 					$checked_answers = ! empty( $history->checked ) ? (array) $history->checked : array();
 				}
 			}
@@ -324,11 +385,11 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 			}
 		}
 
-		return apply_filters( 'learn_press_quiz_param_questions', $results, $this->id );
+		return apply_filters( 'learn_press_quiz_param_questions', $results, $this->get_id() );
 	}
 
 	public function frontend_assets() {
-		if ( learn_press_is_course() && ( $quiz = LP()->global['course-item'] ) && $quiz->id == $this->id ) {
+		if ( learn_press_is_course() && ( $quiz = LP()->global['course-item'] ) && $quiz->id == $this->get_id() ) {
 			$translate = $this->get_localize();
 			//LP_Assets::add_localize( $translate, false, 'learn-press-single-quiz' );
 			//LP_Assets::add_param( $this->get_settings(), false, 'learn-press-single-quiz' );
@@ -343,7 +404,7 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 	 * @return bool
 	 */
 	public function __isset( $key ) {
-		return metadata_exists( 'post', $this->id, '_' . $key );
+		return metadata_exists( 'post', $this->get_id(), '_' . $key );
 	}
 
 	/**
@@ -354,57 +415,15 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 	 * @return mixed
 	 */
 	public function __get( $key ) {
-		if ( isset( $this->{$key} ) ) {
-			return $this->{$key};
-		}
-		$value = null;
-		switch ( $key ) {
-			case 'ID':
-				$value = $this->id;
-				break;
-			case 'current_question':
-				if ( ( $question = learn_press_get_request( 'question' ) ) && learn_press_is_quiz() ) {
-					$value = LP_Question_Factory::get_question( $question );
-				}
-				break;
-			case 'questions':
-				$value = $this->get_questions();
-				break;
-			case 'permalink':
-				$value = get_the_permalink( $this->id );
-				break;
-				break;
-			case 'title':
-				$value = $this->post->post_title;
-				break;
+		echo '@deprecated[' . $key . ']';
 
-			default:
-				if ( array_key_exists( $key, self::$_meta[ $this->id ] ) ) {
-					$value = self::$_meta[ $this->id ][ $key ];
-				} else {
-					if ( strpos( $key, '_lp_' ) === false ) {
-						$key = '_lp_' . $key;
-					}
-					$value = get_post_meta( $this->id, $key, true );
-					if ( $key == '_lp_duration' ) {
-						$value = learn_press_human_time_to_seconds( $value );
-					} elseif ( $key == '_lp_retake_count' ) {
-						$value = absint( $value );
-					}
-					self::$_meta[ $this->id ][ $key ] = $value;
-				}
-		}
-		if ( ! empty( $value ) ) {
-			$this->$key = $value;
-		}
-
-		return $value;
+		return false;
 	}
 
 	public function get_content() {
-		if ( ! did_action( 'learn_press_get_content_' . $this->id ) ) {
+		if ( ! did_action( 'learn_press_get_content_' . $this->get_id() ) ) {
 			global $post, $wp_query;
-			$post = get_post( $this->id );
+			$post = get_post( $this->get_id() );
 			//$posts = apply_filters( 'the_posts', array( $post ), $wp_query );
 			$posts = apply_filters_ref_array( 'the_posts', array( array( $post ), &$wp_query ) );
 
@@ -416,7 +435,7 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 			the_content();
 			$this->content = ob_get_clean();
 			wp_reset_postdata();
-			do_action( 'learn_press_get_content_' . $this->id );
+			do_action( 'learn_press_get_content_' . $this->get_id() );
 		}
 
 		return $this->content;
@@ -450,7 +469,7 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 				FROM {$wpdb->posts} c
 				INNER JOIN {$wpdb->learnpress_sections} s on c.ID = s.section_course_id
 				INNER JOIN {$wpdb->learnpress_section_items} si on si.section_id = s.section_id AND si.item_id = %d
-				", $this->id );
+				", $this->get_id() );
 			if ( $course_id = $wpdb->get_var( $query ) ) {
 				$this->course = LP_Course::get_course( $course_id );
 			}
@@ -514,7 +533,7 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 			LEFT JOIN {$wpdb->postmeta} pm ON pm.post_id = qq.question_id AND pm.meta_key = %s
 			WHERE qq.quiz_id = %d
 			ORDER BY qq.question_order ASC
-		", 'lp_question', 'lp_quiz', '_lp_mark', $this->id );
+		", 'lp_question', 'lp_quiz', '_lp_mark', $this->get_id() );
 		self::$_meta['mark'] = 0;
 		if ( $questions = $wpdb->get_results( $query, OBJECT_K ) ) {
 			$question_ids = array_keys( $questions );
@@ -578,8 +597,8 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 
 	public function get_questions_( $force = false ) {
 		$questions = LP_Cache::get_quiz_questions( false, array() );
-		if ( ! array_key_exists( 'questions', self::$_meta[ $this->id ] ) || $force ) {
-			self::$_meta[ $this->id ]['questions'] = array();
+		if ( ! array_key_exists( 'questions', self::$_meta[ $this->get_id() ] ) || $force ) {
+			self::$_meta[ $this->get_id() ]['questions'] = array();
 			global $wpdb;
 			/*$query = $wpdb->prepare( "
 					SELECT q.*, qq.params
@@ -587,7 +606,7 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 					INNER JOIN {$wpdb->learnpress_quiz_questions} qq ON qq.question_id = q.ID
 					AND q.post_type = %s
 					AND qq.quiz_id = %d
-				", LP_QUESTION_CPT, $this->id );*/
+				", LP_QUESTION_CPT, $this->get_id() );*/
 
 			$query = $wpdb->prepare( "
 			SELECT qa.question_answer_id, ID as id, pm.meta_value as type, qa.answer_data as answer_data, answer_order
@@ -603,9 +622,9 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 			if ( $this_questions = $wpdb->get_results( $query, OBJECT_K ) ) {
 				$question_ids = array();
 				foreach ( $this_questions as $id => $question ) {
-					$question->params                              = maybe_unserialize( $question->params );
-					self::$_meta[ $this->id ]['questions'][ $id ]  = $question;
-					$GLOBALS['learnpress_question_answers'][ $id ] = array();
+					$question->params                                   = maybe_unserialize( $question->params );
+					self::$_meta[ $this->get_id() ]['questions'][ $id ] = $question;
+					$GLOBALS['learnpress_question_answers'][ $id ]      = array();
 
 					/**
 					 * Add item to 'posts' cache group
@@ -635,10 +654,10 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 				}
 			}
 		} else {
-			$this_questions = self::$_meta[ $this->id ]['questions'];
+			$this_questions = self::$_meta[ $this->get_id() ]['questions'];
 		}
 
-		return apply_filters( 'learn_press_quiz_questions', $this_questions, $this->id, $force );
+		return apply_filters( 'learn_press_quiz_questions', $this_questions, $this->get_id(), $force );
 	}
 
 	public function get_buttons() {
@@ -662,26 +681,9 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 	}
 
 	public function has_question( $question_id ) {
-		return is_array( $this->questions ) && isset( $this->questions[ $question_id ] );
+		return is_array( $this->get_questions() ) && isset( $this->questions[ $question_id ] );
 	}
 
-	/**
-	 * Return total mark of quiz
-	 *
-	 * @param bool $force
-	 *
-	 * @return mixed|void
-	 */
-	public function get_mark( $force = false ) {
-		$questions = $this->get_questions();
-		$mark      = 0;
-		foreach ( $questions as $question_id ) {
-			$question = LP_Question_Factory::get_question( $question_id );
-			$mark     += $question->get_mark();
-		}
-
-		return apply_filters( 'learn_press_quiz_mark', $mark, $this->id );
-	}
 
 	public function get_question_link( $question_id = null ) {
 		$course = LP_Global::course();
@@ -698,7 +700,7 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 	}
 
 	public function get_question_param( $name, $id ) {
-		if ( $this->questions ) {
+		if ( $this->get_questions() ) {
 			if ( ! empty( $this->questions[ $id ] ) ) {
 				return ! empty( $this->questions[ $id ]->params[ $name ] ) ? $this->questions[ $id ]->params[ $name ] : null;
 			}
@@ -715,7 +717,7 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 
 		$user = learn_press_get_user( $user_id );
 
-		$history = $user->get_quiz_results( $this->id );
+		$history = $user->get_quiz_results( $this->get_id() );
 		if ( ! $history ) {
 			return false;
 		}
@@ -734,7 +736,7 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 			$user_id = learn_press_get_current_user_id();
 		}
 		$user = learn_press_get_user( $user_id );
-		if ( $user && $results = $user->get_quiz_results( $this->id ) ) {
+		if ( $user && $results = $user->get_quiz_results( $this->get_id() ) ) {
 			$questions = (array) $results->questions;
 		} else {
 			$questions = (array) $this->get_questions();
@@ -769,7 +771,7 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 
 	public function get_current_question( $user_id = 0, $course_id = 0 ) {
 		$user = learn_press_get_current_user( $user_id );
-		$id   = $user->get_current_quiz_question( $this->id, $course_id );
+		$id   = $user->get_current_quiz_question( $this->get_id(), $course_id );
 
 		return LP_Question_Factory::get_question( $id );
 	}

@@ -109,7 +109,6 @@ abstract class LP_Abstract_Object_Data {
 	 */
 	public function get_data( $name = '', $default = '' ) {
 		if ( is_string( $name ) ) {
-
 			// Check in data first then check in extra data
 			return
 				array_key_exists( $name, $this->_data ) ? $this->_data[ $name ] :

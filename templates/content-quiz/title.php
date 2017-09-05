@@ -4,13 +4,17 @@
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 1.0
+ * @version 3.x.x
  */
 
-if ( !defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
-die(__FILE__);
-?>
 
-<h1 class="quiz-title entry-title"><?php the_title(); ?></h1>
+$quiz = LP_Global::course_item_quiz();
+
+if ( ! $title = $quiz->get_title() ) {
+	return;
+}
+?>
+<h2 class="course-item-title quiz-title"><?php echo $title; ?></h2>

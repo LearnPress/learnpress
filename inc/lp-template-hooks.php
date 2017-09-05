@@ -162,6 +162,25 @@ add_action( 'learn-press/after-content-item-summary/lp_lesson', function () {
 
 add_action( 'learn-press/after-section-loop-item', 'learn_press_section_item_meta', 10, 2 );
 
+/**
+ * @see learn_press_content_item_summary_title()
+ * @see learn_press_content_item_summary_content()
+ */
+add_action( 'learn-press/before-content-item-summary/lp_quiz', 'learn_press_content_item_summary_title', 10 );
+add_action( 'learn-press/before-content-item-summary/lp_quiz', 'learn_press_content_item_summary_intro', 15 );
+add_action( 'learn-press/before-content-item-summary/lp_quiz', 'learn_press_content_item_summary_content', 20 );
+
+/**
+ * @see learn_press_content_item_summary_question()
+ */
+add_action( 'learn-press/content-item-summary/lp_quiz', 'learn_press_content_item_summary_question', 10 );
+
+/**
+ * @see learn_press_content_item_summary_question_numbers()
+ */
+add_action( 'learn-press/after-content-item-summary/lp_quiz', 'learn_press_content_item_summary_question_numbers', 10 );
+
+
 /*********************************************************************************************************/
 /* @see _learn_press_default_course_tabs() */
 //add_filter( 'learn_press_course_tabs', '_learn_press_default_course_tabs', 5 );

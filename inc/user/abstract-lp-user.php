@@ -377,11 +377,11 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 //			$current_time = current_time( 'timestamp' );
 			$current_time   = learn_press_get_current_time();
 			$progress_start = strtotime( $progress->start, $current_time );
-			$remaining      = intval( $quiz->duration ) + $progress_start - $current_time;
+			$remaining      = intval( $quiz->get_duration() ) + $progress_start - $current_time;
 			if ( isset( $_GET['lp_debug'] ) && $_GET['lp_debug'] == 'time_remaining' ) {
 				echo '<hr/>$current_time: ' . $current_time;
 				echo '<hr/>$progress_start: ' . $progress_start;
-				echo '<hr/>$quiz->duration: ' . intval( $quiz->duration );
+				echo '<hr/>$quiz->get_duration(): ' . intval( $quiz->get_duration() );
 				echo '<hr/>$remaining: ' . $remaining;
 			}
 		}
@@ -503,11 +503,11 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 			$start_time = strtotime( $progress->start );
 			// Maximum time spend to do quiz if it finish automatically
 			if ( is_array( $args ) && ! empty( $args['auto_finish'] ) ) {
-				$time = $start_time + $quiz->duration;
+				$time = $start_time + $quiz->get_duration();
 			} else {
 				$time = current_time( 'timestamp' );
-				if ( $time > $start_time + $quiz->duration ) {
-					$time = $start_time + $quiz->duration;
+				if ( $time > $start_time + $quiz->get_duration() ) {
+					$time = $start_time + $quiz->get_duration();
 				}
 			}
 			$updated = learn_press_update_user_item_field(
@@ -563,7 +563,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 		);
 		if ( $return ) {
 			$quiz      = LP_Quiz::get_quiz( $quiz_id );
-			$questions = $quiz->questions;
+			$questions = $quiz->get_questions();
 			if ( is_array( $questions ) ) {
 				$questions = array_keys( $questions );
 				$question  = reset( $questions );
@@ -2136,12 +2136,12 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 			'correct_percent' => 0,
 			'wrong_percent'   => 0,
 			'empty_percent'   => 0,
-			//'quiz_time'       => $quiz->duration,
+			//'quiz_time'       => $quiz->get_duration(),
 			'quiz_mark'       => $quiz->get_mark(),
 			'time'            => 0,
 			'questions'       => array()
 		);
-		$questions = $quiz->questions;
+		$questions = $quiz->get_questions();
 		if ( $questions ) {
 			$questions            = array_keys( $questions );
 			$results['questions'] = $questions;
@@ -2190,7 +2190,7 @@ class LP_Abstract_User extends LP_Abstract_Object_Data {
 		$start = strtotime( $progress->start );
 		$end   = strtotime( $progress->end );
 		if ( $end < $start ) {
-			$end = $start + $quiz->duration;
+			$end = $start + $quiz->get_duration();
 			//learn_press_update_user_quiz_meta( $progress->history_id, 'end', $end );
 		}
 

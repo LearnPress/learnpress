@@ -401,6 +401,55 @@ if ( ! function_exists( 'learn_press_get_course_tabs' ) ) {
 	}
 }
 
+if ( ! function_exists( 'learn_press_content_item_summary_title' ) ) {
+	function learn_press_content_item_summary_title() {
+		$item = LP_Global::course_item();
+		switch ( $item->get_item_type() ) {
+			case LP_QUIZ_CPT:
+				learn_press_get_template( 'content-quiz/title.php' );
+				break;
+			case LP_QUESTION_CPT:
+				learn_press_get_template( 'content-lesson/title.php' );
+				break;
+		}
+	}
+}
+if ( ! function_exists( 'learn_press_content_item_summary_intro' ) ) {
+    function learn_press_content_item_summary_intro(){
+        learn_press_get_template('content-quiz/intro.php');
+    }
+}
+
+if ( ! function_exists( 'learn_press_content_item_summary_content' ) ) {
+
+	function learn_press_content_item_summary_content() {
+		$item = LP_Global::course_item();
+		switch ( $item->get_item_type() ) {
+			case LP_QUIZ_CPT:
+				learn_press_get_template( 'content-quiz/description.php' );
+				break;
+			case LP_QUESTION_CPT:
+				learn_press_get_template( 'content-lesson/description.php' );
+				break;
+		}
+	}
+}
+if ( ! function_exists( 'learn_press_content_item_summary_question' ) ) {
+
+	function learn_press_content_item_summary_question() {
+		$quiz = LP_Global::course_item_quiz();
+
+		if ( $question = $quiz->get_viewing_question() ) {
+			$question->render();
+		}
+	}
+}
+if ( ! function_exists( 'learn_press_content_item_summary_question_numbers' ) ) {
+
+	function learn_press_content_item_summary_question_numbers() {
+		learn_press_get_template( 'content-quiz/question-numbers.php' );
+	}
+}
 /**********************************************/
 /**********************************************/
 /**********************************************/

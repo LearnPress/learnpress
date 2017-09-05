@@ -18,51 +18,30 @@ $can_view_item  = $user->can( 'view-item', $quiz->get_id(), $course->get_id() );
 ?>
 
 <div class="content-item-summary">
-
-    <h3><?php echo $quiz->get_title();?></h3>
-    <div><?php echo $quiz->get_content();?></div>
 	<?php
-
-
 	/**
-	 *
+	 * @see learn_press_content_item_summary_title()
+	 * @see learn_press_content_item_summary_content()
 	 */
 	do_action( 'learn-press/before-content-item-summary/' . $quiz->get_item_type() );
 
+	/**
+	 * @see learn_press_content_item_summary_question()
+	 */
 	do_action( 'learn-press/content-item-summary/' . $quiz->get_item_type() );
 
+	/**
+	 * @see learn_press_content_item_summary_question_numbers()
+	 */
 	do_action( 'learn-press/after-content-item-summary/' . $quiz->get_item_type() );
 
-	$position = 0;
-	global $wp, $lp_quiz_question;
-
-	$question = $quiz->get_viewing_question();
-	$question->render();
-	//learn_press_debug( $lp_quiz_question );
 	?>
-
-
-    <ul class="question-numbers">
-		<?php foreach ( $have_questions as $question_id ) {
-			$position ++; ?>
-            <li<?php echo $quiz->is_viewing_question( $question_id ) ? ' class="current"' : ''; ?> >
-                <a href="<?php echo $quiz->get_question_link( $question_id ); ?>"><?php echo $position; ?></a>
-            </li>
-		<?php } ?>
-    </ul>
-
-    <div id="content-item-nav">
-        <div class="content-item-nav-wrap">
-            <form>
-                <a href="<?php echo $course->get_next_item(); ?>">Prev</a>
-                <button>Next</button>
-            </form>
-        </div>
-    </div>
-
 </div>
 
-<?php return; ?>
+<?php
+
+///////////////////////////
+return; ?>
 <div class="content-item-quiz">
     <div id="content-item-<?php echo $quiz->id; ?>">
         <div class="learn-press-content-item-title content-item-quiz-title">

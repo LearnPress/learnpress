@@ -33,6 +33,16 @@ class LP_Quiz_CURD implements LP_Interface_CURD {
 		if ( ! $the_id || LP_QUIZ_CPT !== get_post_type( $the_id ) ) {
 			throw new Exception( __( 'Invalid quiz.', 'learnpress' ) );
 		}
+
+		$quiz->set_data_via_methods(
+			array(
+				'retake_count'       => get_post_meta( $quiz->get_id(), '_lp_retake_count', true ),
+				'show_result'        => get_post_meta( $quiz->get_id(), '_lp_show_result', true ),
+				'passing_grade_type' => get_post_meta( $quiz->get_id(), '_lp_passing_grade_type', true ),
+				'passing_grade'      => get_post_meta( $quiz->get_id(), '_lp_passing_grade', true )
+			)
+		);
+
 		$this->_load_questions( $quiz );
 		$this->_update_meta_cache( $quiz );
 
@@ -195,7 +205,7 @@ class LP_Quiz_CURD implements LP_Interface_CURD {
 	 * Reorder question by indexed number.
 	 *
 	 * @param LP_Quiz|WP_Post|int $the_quiz
-	 * @param mixed $questions
+	 * @param mixed               $questions
 	 *
 	 * @return mixed
 	 */
@@ -265,7 +275,7 @@ class LP_Quiz_CURD implements LP_Interface_CURD {
 	 *
 	 * @param LP_Quiz|int $the_quiz
 	 * @param             $question_id
-	 * @param array $args
+	 * @param array       $args
 	 *
 	 * @return mixed false on failed
 	 */
@@ -319,7 +329,7 @@ class LP_Quiz_CURD implements LP_Interface_CURD {
 	/**
 	 * Check if a question (or batch of questions) is already added to quiz.
 	 *
-	 * @param int $the_id
+	 * @param int       $the_id
 	 * @param int|array $ids
 	 *
 	 * @return array|bool|null|object
@@ -347,8 +357,8 @@ class LP_Quiz_CURD implements LP_Interface_CURD {
 	 * Remove a question from list of questions
 	 *
 	 * @param LP_Quiz|int $the_quiz
-	 * @param int|array $question_id ID of the question to remove
-	 * @param mixed $args Extra options
+	 * @param int|array   $question_id ID of the question to remove
+	 * @param mixed       $args        Extra options
 	 *
 	 * @return mixed         false on failed
 	 */

@@ -41,7 +41,7 @@ $history = $user->get_quiz_results( $quiz->id );
 			</div>
 		<?php endforeach; ?>
 	</div>
-	<?php if ( $quiz->duration > 0 ): ?>
+	<?php if ( $quiz->get_duration() > 0 ): ?>
 		<p class="quiz-result-time">
 			<?php echo sprintf( __( 'Your time: %s', 'learnpress' ), learn_press_seconds_to_time( $history->time ) ); ?>
 		</p>

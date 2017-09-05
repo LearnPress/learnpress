@@ -1,13 +1,20 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: tu
- * Date: 8/28/17
- * Time: 4:02 PM
+ * Single lesson title
+ *
+ * @author  ThimPress
+ * @package LearnPress/Templates
+ * @version 3.x.x
  */
 
-$item = LP_Global::course_item();
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
+
+$lesson = LP_Global::course_item();
+
+if ( ! $title = $lesson->get_title() ) {
+	return;
+}
 ?>
-<h2 class="item-title">
-	<?php echo $item->get_title(); ?>
-</h2>
+<h2 class="course-item-title quiz-title"><?php echo $title; ?></h2>

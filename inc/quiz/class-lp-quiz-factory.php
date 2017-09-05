@@ -106,8 +106,8 @@ class LP_Quiz_Factory {
 			'id'                => $quiz->id,
 			'show_hint'         => $quiz->show_hint,
 			'show_check_answer' => $quiz->show_check_answer,
-			'duration'          => $quiz->duration,
-			'questions'         => $quiz->questions
+			'duration'          => $quiz->get_duration(),
+			'questions'         => $quiz->get_questions()
 		);
 		$json = apply_filters( 'learn_press_single_quiz_params', $json );
 		?>
@@ -484,12 +484,13 @@ class LP_Quiz_Factory {
 	}
 
 	public static function get_quiz( $the_quiz ) {
-		if ( !$the_quiz instanceof LP_Quiz ) {
+		if ( ! $the_quiz instanceof LP_Quiz ) {
 			if ( $the_quiz instanceof WP_Post ) {
 				$the_quiz = $the_quiz->ID;
 			}
 			$the_quiz = new LP_Quiz( $the_quiz );
 		}
+
 		return $the_quiz;
 	}
 }
