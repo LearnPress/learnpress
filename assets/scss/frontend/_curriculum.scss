@@ -240,7 +240,7 @@
 body {
     &.course-item-popup {
         overflow: hidden;
-        opacity: 0;
+        _opacity: 0;
         #learn-press-course-curriculum {
             position: fixed;
             top: 32px;
@@ -350,9 +350,15 @@ body {
             line-height: 1;
             color: #999;
             border: 1px solid #DDD;
+            font-size: smaller;
+            &:hover {
+                background: #00adff;
+                color: #FFF;
+                border: 1px solid #3880a2;
+            }
         }
-        &.current{
-            a{
+        &.current {
+            a {
                 background: #00adff;
                 color: #FFF;
                 border-color: #3880a2;
@@ -363,7 +369,7 @@ body {
 
 @media screen and (max-width: 1300px) {
     body.course-item-popup {
-        #learn-press-course-curriculum{
+        #learn-press-course-curriculum {
             width: 300px;
         }
         #content-item-nav,
@@ -375,7 +381,7 @@ body {
 
 @media screen and (max-width: 1200px) {
     body.course-item-popup {
-        #learn-press-course-curriculum{
+        #learn-press-course-curriculum {
             width: 300px;
         }
         #content-item-nav,
@@ -384,7 +390,7 @@ body {
         }
         #learn-press-content-item {
             .content-item-nav-wrap,
-            .content-item-wrap{
+            .content-item-wrap {
                 width: 90%;
             }
         }
@@ -393,7 +399,7 @@ body {
 
 @media screen and (max-width: 768px) {
     body.course-item-popup {
-        #learn-press-course-curriculum{
+        #learn-press-course-curriculum {
             width: 200px;
         }
         #content-item-nav,
@@ -402,7 +408,7 @@ body {
         }
         #learn-press-content-item {
             .content-item-nav-wrap,
-            .content-item-wrap{
+            .content-item-wrap {
                 width: 90%;
             }
         }

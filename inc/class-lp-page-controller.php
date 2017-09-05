@@ -60,7 +60,7 @@ class LP_Page_Controller {
 
 		$lp_course->set_viewing_item( $lp_course_item );
 
-		if (  LP_QUIZ_CPT === $item_type && ! empty( $vars['question'] ) ) {
+		if ( LP_QUIZ_CPT === $item_type && ! empty( $vars['question'] ) ) {
 			$question = learn_press_get_post_by_name( $vars['question'], LP_QUESTION_CPT );
 
 			//print_r( $question );
@@ -95,6 +95,44 @@ class LP_Page_Controller {
 				$classes[] = 'course-item-popup viewing-course-item viewing-course-item-' . $lp_course_item->get_id() . ' course-item-' . $lp_course_item->get_item_type();
 
 				return $classes;
+			} );
+
+			add_action( 'wp_print_scripts', function () {
+				?>
+                <style type="text/css">
+                    html, body {
+                        overflow: hidden;
+                    }
+
+                    body{
+                        opacity:0;
+
+                    }
+
+                    body.course-item-popup #learn-press-course-curriculum {
+                        position: fixed;
+                        top: 32px;
+                        bottom: 0;
+                        left: 0;
+                        width: 400px;
+                        background: #FFF;
+                        border-right: 1px solid #DDD;
+                        overflow: auto;
+                        z-index: 99999;
+                    }
+
+                    body.course-item-popup #learn-press-content-item {
+                        position: fixed;
+                        z-index: 99999;
+                        background: #FFF;
+                        top: 32px;
+                        left: 400px;
+                        right: 0;
+                        bottom: 0px;
+                        overflow: hidden;
+                    }
+                </style>
+				<?php
 			} );
 
 

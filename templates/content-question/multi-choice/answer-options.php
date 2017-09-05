@@ -33,7 +33,7 @@ if ( ! $answers = $question->get_answers() ) {
 }
 //learn_press_debug( $answers );
 ?>
-<ul class="learn-press-question-options">
+<ul class="answer-options">
 	<?php
 	foreach ( $answers as $k => $answer ):
 
@@ -63,18 +63,15 @@ if ( ! $answers = $question->get_answers() ) {
 //			$disabled     = ' disabled="disabled"';
 //		}
 		$disabled = '';
+		$id = uniqid( 'option-' );
 		?>
         <li <?php echo $answer->option_class(); ?>>
-			<?php //do_action( 'learn_press_before_question_answer_text', $answer, $question );
-			echo $k;
-			?>
-
-            <label>
-                <input type="checkbox"
-                       name="learn-press-question-<?php echo $question->get_id(); ?>[]" <?php checked( $question->is_selected_option( $answer, false ) ); ?>
-                       value="<?php echo $answer->get_value(); ?>" <?php echo $disabled; ?> />
-                <p class="auto-check-lines option-title"><?php echo apply_filters( 'learn_press_question_answer_text', $answer->get_title(), $answer, $question ); ?></p>
-            </label>
+            <input type="checkbox"
+                   name="learn-press-question-<?php echo $question->get_id(); ?>[]"
+                   value="<?php echo $answer->get_value(); ?>"
+				<?php checked( $question->is_selected_option( $answer, false ) ); ?>
+				<?php echo $disabled; ?> />
+            <div class="option-title"><?php echo apply_filters( 'learn_press_question_answer_text', $answer->get_title(), $answer, $question ); ?></div>
 
 			<?php do_action( 'learn_press_after_question_answer_text', $answer, $question ); ?>
 

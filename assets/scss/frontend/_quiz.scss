@@ -1,0 +1,60 @@
+.answer-options {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    .answer-option {
+        margin: 0 0 20px 0;
+        position: relative;
+        background: #F5F5F5;
+        padding: 10px;
+        display: flex;
+        @include border-radius(4px);
+        input[type="checkbox"] {
+            -webkit-appearance: initial;
+            width: 30px;
+            height: 30px;
+            background: #fff;
+            border-radius: 4px;
+            outline: none;
+            margin: 0 10px 0 0;
+            position: relative;
+            border: 1px solid #eaeaea;
+            &:before {
+                content: '';
+                border: 4px solid #00adff;
+                display: inline-block;
+                width: 10px;
+                height: 15px;
+                border-top: none;
+                border-left: none;
+                position: absolute;
+                top: 3px;
+                left: 8px;
+                box-sizing: content-box;
+                opacity: 0;
+                @include transform(rotate(60deg) scale(2));
+                @include transition(all 0.25s);
+            }
+            &:checked {
+                + .option-title {
+                    &:before{
+                        position: absolute;
+                        top:0;
+                        left:0;
+                        right: 0;
+                        bottom: 0;
+                        content: '';
+                        background: #FF0000;
+                    }
+                }
+                &:before {
+                    opacity: 1;
+                    @include transform(rotate(36deg) scale(1));
+                }
+            }
+        }
+        .option-title {
+            margin: 0;
+        }
+    }
+}
