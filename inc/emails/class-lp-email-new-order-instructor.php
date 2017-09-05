@@ -7,6 +7,10 @@
  * @package LearnPress/Classes
  * @version 3.0
  */
+
+/**
+ * Prevent loading this file directly
+ */
 defined( 'ABSPATH' ) || exit();
 
 if ( ! class_exists( 'LP_Email_New_Order_Instructor' ) ) {
@@ -168,7 +172,7 @@ if ( ! class_exists( 'LP_Email_New_Order_Instructor' ) ) {
 						'desc'  => $this->description
 					),
 					array(
-						'title'   => __( 'Enabled', 'learnpress' ),
+						'title'   => __( 'Enable', 'learnpress' ),
 						'type'    => 'yes-no',
 						'default' => 'no',
 						'id'      => 'emails_new_order_instructor[enable]'

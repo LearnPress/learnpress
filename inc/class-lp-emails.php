@@ -55,9 +55,10 @@ class LP_Emails {
 			return;
 		}
 		LP()->_include( 'emails/class-lp-email.php' );
-		$this->emails['LP_Email_New_Order_Admin']                 = include( 'emails/class-lp-email-new-order-admin.php' );
+		$this->emails['LP_Email_New_Order_Admin']           = include( 'emails/class-lp-email-new-order-admin.php' );
 		$this->emails['LP_Email_New_Order_Customer']        = include( 'emails/class-lp-email-new-order-customer.php' );
 		$this->emails['LP_Email_New_Order_Instructor']      = include( 'emails/class-lp-email-new-order-instructor.php' );
+		$this->emails['LP_Email_Cancelled_Order_Admin']     = include( 'emails/class-lp-email-cancelled-order-admin.php' );
 		$this->emails['LP_Email_User_Order_Completed']      = include( 'emails/class-lp-email-user-order-completed.php' );
 		$this->emails['LP_Email_User_Order_Changed_Status'] = include( 'emails/class-lp-email-user-order-changed-status.php' );
 		$this->emails['LP_Email_New_Course']                = include( 'emails/class-lp-email-new-course.php' );

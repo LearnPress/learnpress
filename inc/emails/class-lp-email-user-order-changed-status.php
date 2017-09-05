@@ -137,7 +137,7 @@ if ( ! class_exists( 'LP_Email_User_Order_Changed_Status' ) ) {
 						'desc'  => $this->description
 					),
 					array(
-						'title'   => __( 'Enabled', 'learnpress' ),
+						'title'   => __( 'Enable', 'learnpress' ),
 						'type'    => 'yes-no',
 						'default' => 'no',
 						'id'      => 'emails_user_order_changed_status[enable]'

@@ -1,11 +1,11 @@
 <?php
 
 /**
- * Class LP_Email_New_Order_Admin
+ * Class LP_Email_Cancelled_Order_Admin
  *
  * @author  ThimPress
  * @package LearnPress/Classes
- * @version 1.0
+ * @version 3.0
  */
 
 /**
@@ -13,22 +13,22 @@
  */
 defined( 'ABSPATH' ) || exit();
 
-if ( ! class_exists( 'LP_Email_New_Order_Admin' ) ) {
+if ( ! class_exists( 'LP_Email_Cancelled_Order_Admin' ) ) {
 
-	class LP_Email_New_Order_Admin extends LP_Email {
+	class LP_Email_Cancelled_Order_Admin extends LP_Email {
 		/**
-		 * LP_Email_New_Order_Admin constructor.
+		 * LP_Email_Cancelled_Order_Admin constructor.
 		 */
 		public function __construct() {
-			$this->id          = 'new_order';
-			$this->title       = __( 'New order admin', 'learnpress' );
-			$this->description = __( 'Send email to admin when new order is placed', 'learnpress' );
+			$this->id          = 'cancelled_order';
+			$this->title       = __( 'Cancelled order admin', 'learnpress' );
+			$this->description = __( 'Send email to admin when order has been cancelled', 'learnpress' );
 
-			$this->template_html  = 'emails/new-order-admin.php';
-			$this->template_plain = 'emails/plain/new-order-admin.php';
+			$this->template_html  = 'emails/cancelled-order.php';
+			$this->template_plain = 'emails/plain/cancelled-order.php';
 
-			$this->default_subject                = __( '[{{site_title}}] New order placed', 'learnpress' );
-			$this->default_heading                = __( 'New order', 'learnpress' );
+			$this->default_subject                = __( '[{{site_title}}] Cancelled order', 'learnpress' );
+			$this->default_heading                = __( 'Cancelled order', 'learnpress' );
 			$this->email_text_message_description = sprintf( '%s {{order_number}}, {{order_total}}, {{order_items_table}}, {{order_view_url}}, {{user_email}}, {{user_name}}, {{user_profile_url}}', __( 'Shortcodes', 'learnpress' ) );
 
 			$this->recipient = LP()->settings->get( 'emails_' . $this->id . '.recipients', get_option( 'admin_email' ) );
@@ -51,14 +51,10 @@ if ( ! class_exists( 'LP_Email_New_Order_Admin' ) ) {
 				'{{order_number}}',
 			);
 
-
-			add_action( 'learn_press_order_status_pending_to_processing_notification', array( $this, 'trigger' ) );
-			add_action( 'learn_press_order_status_pending_to_completed_notification', array( $this, 'trigger' ) );
-			add_action( 'learn_press_order_status_pending_to_on-hold_notification', array( $this, 'trigger' ) );
-
-			add_action( 'learn_press_order_status_failed_to_processing_notification', array( $this, 'trigger' ) );
-			add_action( 'learn_press_order_status_failed_to_completed_notification', array( $this, 'trigger' ) );
-			add_action( 'learn_press_order_status_failed_to_on-hold_notification', array( $this, 'trigger' ) );
+			add_action( 'learn_press_order_status_pending_to_failed_notification', array( $this, 'trigger' ) );
+			add_action( 'learn_press_order_status_processing_to_failed_notification', array( $this, 'trigger' ) );
+			add_action( 'learn_press_order_status_completed_to_failed_notification', array( $this, 'trigger' ) );
+			add_action( 'learn_press_order_status_on-hold_to_failed_notification', array( $this, 'trigger' ) );
 
 			parent::__construct();
 		}
@@ -121,7 +117,7 @@ if ( ! class_exists( 'LP_Email_New_Order_Admin' ) ) {
 		 */
 		public function get_settings() {
 			return apply_filters(
-				'learn-press/email-settings/new-order/settings',
+				'learn-press/email-settings/cancelled-order/settings',
 				array(
 					array(
 						'type'  => 'heading',
@@ -132,19 +128,19 @@ if ( ! class_exists( 'LP_Email_New_Order_Admin' ) ) {
 						'title'   => __( 'Enable', 'learnpress' ),
 						'type'    => 'yes-no',
 						'default' => 'no',
-						'id'      => 'emails_new_order[enable]'
+						'id'      => 'emails_cancelled_order[enable]'
 					),
 					array(
 						'title'      => __( 'Recipient(s)', 'learnpress' ),
 						'type'       => 'text',
 						'default'    => get_option( 'admin_email' ),
-						'id'         => 'emails_new_order[recipients]',
+						'id'         => 'emails_cancelled_order[recipients]',
 						'desc'       => sprintf( __( 'Email recipient(s) (separated by comma), default: <code>%s</code>', 'learnpress' ), get_option( 'admin_email' ) ),
 						'visibility' => array(
 							'state'       => 'show',
 							'conditional' => array(
 								array(
-									'field'   => 'emails_new_order[enable]',
+									'field'   => 'emails_cancelled_order[enable]',
 									'compare' => '=',
 									'value'   => 'yes'
 								)
@@ -155,13 +151,13 @@ if ( ! class_exists( 'LP_Email_New_Order_Admin' ) ) {
 						'title'      => __( 'Subject', 'learnpress' ),
 						'type'       => 'text',
 						'default'    => $this->default_subject,
-						'id'         => 'emails_new_order[subject]',
+						'id'         => 'emails_cancelled_order[subject]',
 						'desc'       => sprintf( __( 'Email subject, default: <code>%s</code>', 'learnpress' ), $this->default_subject ),
 						'visibility' => array(
 							'state'       => 'show',
 							'conditional' => array(
 								array(
-									'field'   => 'emails_new_order[enable]',
+									'field'   => 'emails_cancelled_order[enable]',
 									'compare' => '=',
 									'value'   => 'yes'
 								)
@@ -172,13 +168,13 @@ if ( ! class_exists( 'LP_Email_New_Order_Admin' ) ) {
 						'title'      => __( 'Heading', 'learnpress' ),
 						'type'       => 'text',
 						'default'    => $this->default_heading,
-						'id'         => 'emails_new_order[heading]',
+						'id'         => 'emails_cancelled_order[heading]',
 						'desc'       => sprintf( __( 'Email heading, default: <code>%s</code>', 'learnpress' ), $this->default_heading ),
 						'visibility' => array(
 							'state'       => 'show',
 							'conditional' => array(
 								array(
-									'field'   => 'emails_new_order[enable]',
+									'field'   => 'emails_cancelled_order[enable]',
 									'compare' => '=',
 									'value'   => 'yes'
 								)
@@ -189,7 +185,7 @@ if ( ! class_exists( 'LP_Email_New_Order_Admin' ) ) {
 						'title'                => __( 'Email content', 'learnpress' ),
 						'type'                 => 'email-content',
 						'default'              => '',
-						'id'                   => 'emails_new_order[email_content]',
+						'id'                   => 'emails_cancelled_order[email_content]',
 						'template_base'        => $this->template_base,
 						'template_path'        => $this->template_path,//default learnpress
 						'template_html'        => $this->template_html,
@@ -201,7 +197,7 @@ if ( ! class_exists( 'LP_Email_New_Order_Admin' ) ) {
 							'state'       => 'show',
 							'conditional' => array(
 								array(
-									'field'   => 'emails_new_order[enable]',
+									'field'   => 'emails_cancelled_order[enable]',
 									'compare' => '=',
 									'value'   => 'yes'
 								)
@@ -214,4 +210,4 @@ if ( ! class_exists( 'LP_Email_New_Order_Admin' ) ) {
 	}
 }
 
-return new LP_Email_New_Order_Admin();
+return new LP_Email_Cancelled_Order_Admin();
