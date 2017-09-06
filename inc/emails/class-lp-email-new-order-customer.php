@@ -7,9 +7,13 @@
  * @package LearnPress/Classes
  * @version 1.0
  */
+
+/**
+ * Prevent loading this file directly
+ */
 defined( 'ABSPATH' ) || exit();
 
-if ( !class_exists( 'LP_Email_New_Order_Customer' ) ) {
+if ( ! class_exists( 'LP_Email_New_Order_Customer' ) ) {
 
 	class LP_Email_New_Order_Customer extends LP_Email {
 
@@ -17,9 +21,9 @@ if ( !class_exists( 'LP_Email_New_Order_Customer' ) ) {
 		 * LP_Email_New_Order_Customer constructor.
 		 */
 		public function __construct() {
-			$this->id    = 'new_order_customer';
-			$this->title = __( 'New order customer', 'learnpress' );
-			$this->description=__('Send email to the user who has bought course', 'learnpress');
+			$this->id          = 'new_order_customer';
+			$this->title       = __( 'New order customer', 'learnpress' );
+			$this->description = __( 'Send email to the user who has bought course', 'learnpress' );
 
 			$this->template_html  = 'emails/new-order-customer.php';
 			$this->template_plain = 'emails/plain/new-order-customer.php';
@@ -77,13 +81,13 @@ if ( !class_exists( 'LP_Email_New_Order_Customer' ) ) {
 		/**
 		 * Trigger Email Notification
 		 *
-		 * @param type $order_id
+		 * @param $order_id
 		 *
 		 * @return boolean
 		 */
 		public function trigger( $order_id ) {
-			if ( !$this->enable ) {
-				return;
+			if ( ! $this->enable ) {
+				return false;
 			}
 
 			$order           = learn_press_get_order( $order_id );
@@ -96,8 +100,8 @@ if ( !class_exists( 'LP_Email_New_Order_Customer' ) ) {
 			 *
 			 * In this case we use email enrolled-course
 			 */
-			if ( !$this->recipient || ( count( $items ) === 0 && floatval( $order_total ) == 0 ) ) {
-				return;
+			if ( ! $this->recipient || ( count( $items ) === 0 && floatval( $order_total ) == 0 ) ) {
+				return false;
 			}
 			/**$this->find['site_title']    = '{site_title}';
 			 * $this->replace['site_title'] = $this->get_blogname();*/
@@ -155,7 +159,7 @@ if ( !class_exists( 'LP_Email_New_Order_Customer' ) ) {
 						'desc'  => $this->description
 					),
 					array(
-						'title'   => __( 'Enabled', 'learnpress' ),
+						'title'   => __( 'Enable', 'learnpress' ),
 						'type'    => 'yes-no',
 						'default' => 'no',
 						'id'      => 'emails_new_order_customer[enable]'

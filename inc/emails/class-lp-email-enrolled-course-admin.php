@@ -200,7 +200,7 @@ if ( ! class_exists( 'LP_Email_Enrolled_Course_Admin' ) ) {
 						'desc'  => $this->description
 					),
 					array(
-						'title'   => __( 'Enabled', 'learnpress' ),
+						'title'   => __( 'Enable', 'learnpress' ),
 						'type'    => 'yes-no',
 						'default' => 'no',
 						'id'      => 'emails_enrolled_course_admin[enable]'

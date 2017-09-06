@@ -790,7 +790,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 		/**
 		 * Course author
 		 *
-		 * @return mixed|null|void
+		 * @return mixed|null
 		 */
 		public static function author_meta_box() {
 
@@ -809,7 +809,7 @@ if ( ! class_exists( 'LP_Course_Post_Type' ) ) {
 				$users_by_role = get_users( array( 'role' => $_role ) );
 				if ( $users_by_role ) {
 					foreach ( $users_by_role as $user ) {
-						$include[ $user->get_id() ] = $user->user_login;
+						$include[ $user->get('ID') ] = $user->user_login;
 					}
 				}
 			}

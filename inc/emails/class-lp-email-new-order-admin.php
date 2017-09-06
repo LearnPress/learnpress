@@ -1,30 +1,37 @@
 <?php
+
 /**
- * Class LP_Email_User_Order_Changed_Status
+ * Class LP_Email_New_Order_Admin
  *
  * @author  ThimPress
  * @package LearnPress/Classes
  * @version 1.0
  */
 
-if ( ! class_exists( 'LP_Email_User_Order_Changed_Status' ) ) {
+/**
+ * Prevent loading this file directly
+ */
+defined( 'ABSPATH' ) || exit();
 
-	class LP_Email_User_Order_Changed_Status extends LP_Email {
+if ( ! class_exists( 'LP_Email_New_Order_Admin' ) ) {
 
+	class LP_Email_New_Order_Admin extends LP_Email {
 		/**
-		 * LP_Email_User_Order_Changed_Status constructor.
+		 * LP_Email_New_Order_Admin constructor.
 		 */
 		public function __construct() {
+			$this->id          = 'new_order';
+			$this->title       = __( 'New order admin', 'learnpress' );
+			$this->description = __( 'Send email to admin when new order is placed', 'learnpress' );
 
-			$this->id          = 'user_order_changed_status';
-			$this->title       = __( 'User order changed status', 'learnpress' );
-			$this->description = __( 'Send email to user when the order is changed status', 'learnpress' );
+			$this->template_html  = 'emails/new-order-admin.php';
+			$this->template_plain = 'emails/plain/new-order-admin.php';
 
-			$this->template_html  = 'emails/user-order-changed-status.php';
-			$this->template_plain = 'emails/plain/user-order-changed-status.php';
+			$this->default_subject                = __( '[{{site_title}}] New order placed', 'learnpress' );
+			$this->default_heading                = __( 'New order', 'learnpress' );
+			$this->email_text_message_description = sprintf( '%s {{order_number}}, {{order_total}}, {{order_items_table}}, {{order_view_url}}, {{user_email}}, {{user_name}}, {{user_profile_url}}', __( 'Shortcodes', 'learnpress' ) );
 
-			$this->default_subject = __( 'Your order {{order_date}} has just been changed status', 'learnpress' );
-			$this->default_heading = __( 'Your order {{order_number}} has just been changed status', 'learnpress' );
+			$this->recipient = LP()->settings->get( 'emails_' . $this->id . '.recipients', get_option( 'admin_email' ) );
 
 			$this->support_variables = array(
 				'{{site_url}}',
@@ -39,37 +46,34 @@ if ( ! class_exists( 'LP_Email_User_Order_Changed_Status' ) ) {
 				'{{order_id}}',
 				'{{order_user_id}}',
 				'{{order_user_name}}',
-				'{{order_status}}',
 				'{{order_items_table}}',
-				'{{order_detail_url}}',
+				'{{order_edit_url}}',
 				'{{order_number}}',
 			);
 
-			add_action( 'learn_press_update_order_status', array( $this, 'update_order_status' ), 10, 2 );
+
+			add_action( 'learn_press_order_status_pending_to_processing_notification', array( $this, 'trigger' ) );
+			add_action( 'learn_press_order_status_pending_to_completed_notification', array( $this, 'trigger' ) );
+			add_action( 'learn_press_order_status_pending_to_on-hold_notification', array( $this, 'trigger' ) );
+
+			add_action( 'learn_press_order_status_failed_to_processing_notification', array( $this, 'trigger' ) );
+			add_action( 'learn_press_order_status_failed_to_completed_notification', array( $this, 'trigger' ) );
+			add_action( 'learn_press_order_status_failed_to_on-hold_notification', array( $this, 'trigger' ) );
+
 			parent::__construct();
-		}
-
-		public function update_order_status( $new_status, $order_id ) {
-
-			if ( empty( $new_status ) || $new_status == 'completed' || empty( $order_id ) ) {
-				return;
-			}
-
-			$this->trigger( $new_status, $order_id );
 		}
 
 		/**
 		 * Trigger email
 		 *
-		 * @param $new_status
 		 * @param $order_id
 		 *
-		 * @return bool|void|mixed
+		 * @return bool
 		 */
-		public function trigger( $new_status, $order_id ) {
+		public function trigger( $order_id ) {
 
 			if ( ! $this->enable ) {
-				return;
+				return false;
 			}
 
 			$format = $this->email_format == 'plain_text' ? 'plain' : 'html';
@@ -82,12 +86,11 @@ if ( ! class_exists( 'LP_Email_User_Order_Changed_Status' ) ) {
 					'order_user_id'     => $order->user_id,
 					'order_user_name'   => $order->get_user_name(),
 					'order_items_table' => learn_press_get_template_content( 'emails/' . ( $format == 'plain' ? 'plain/' : '' ) . 'order-items-table.php', array( 'order' => $order ) ),
-					'order_detail_url'  => learn_press_user_profile_link( $order->user_id, 'orders' ),
+					'order_edit_url'    => admin_url( 'post.php?post=' . $order->id . '&action=edit' ),
 					'order_number'      => $order->get_order_number(),
 					'order_subtotal'    => $order->get_formatted_order_subtotal(),
 					'order_total'       => $order->get_formatted_order_total(),
-					'order_date'        => date_i18n( get_option( 'date_format' ), strtotime( $order->order_date ) ),
-					'order_status'      => $new_status
+					'order_date'        => date_i18n( get_option( 'date_format' ), strtotime( $order->order_date ) )
 				)
 			);
 
@@ -100,17 +103,6 @@ if ( ! class_exists( 'LP_Email_User_Order_Changed_Status' ) ) {
 			return $return;
 		}
 
-		/**
-		 * Get recipient.
-		 *
-		 * @return mixed|void
-		 */
-		public function get_recipient() {
-			$user            = learn_press_get_user( $this->object['order']->user_id );
-			$this->recipient = $user->user_email;
-
-			return parent::get_recipient();
-		}
 
 		/**
 		 * Get email plain template.
@@ -129,7 +121,7 @@ if ( ! class_exists( 'LP_Email_User_Order_Changed_Status' ) ) {
 		 */
 		public function get_settings() {
 			return apply_filters(
-				'learn-press/email-settings/user-order-changed-status/settings',
+				'learn-press/email-settings/new-order/settings',
 				array(
 					array(
 						'type'  => 'heading',
@@ -140,19 +132,36 @@ if ( ! class_exists( 'LP_Email_User_Order_Changed_Status' ) ) {
 						'title'   => __( 'Enable', 'learnpress' ),
 						'type'    => 'yes-no',
 						'default' => 'no',
-						'id'      => 'emails_user_order_changed_status[enable]'
+						'id'      => 'emails_new_order[enable]'
+					),
+					array(
+						'title'      => __( 'Recipient(s)', 'learnpress' ),
+						'type'       => 'text',
+						'default'    => get_option( 'admin_email' ),
+						'id'         => 'emails_new_order[recipients]',
+						'desc'       => sprintf( __( 'Email recipient(s) (separated by comma), default: <code>%s</code>', 'learnpress' ), get_option( 'admin_email' ) ),
+						'visibility' => array(
+							'state'       => 'show',
+							'conditional' => array(
+								array(
+									'field'   => 'emails_new_order[enable]',
+									'compare' => '=',
+									'value'   => 'yes'
+								)
+							)
+						)
 					),
 					array(
 						'title'      => __( 'Subject', 'learnpress' ),
 						'type'       => 'text',
 						'default'    => $this->default_subject,
-						'id'         => 'emails_user_order_changed_status[subject]',
+						'id'         => 'emails_new_order[subject]',
 						'desc'       => sprintf( __( 'Email subject, default: <code>%s</code>', 'learnpress' ), $this->default_subject ),
 						'visibility' => array(
 							'state'       => 'show',
 							'conditional' => array(
 								array(
-									'field'   => 'emails_user_order_changed_status[enable]',
+									'field'   => 'emails_new_order[enable]',
 									'compare' => '=',
 									'value'   => 'yes'
 								)
@@ -163,13 +172,13 @@ if ( ! class_exists( 'LP_Email_User_Order_Changed_Status' ) ) {
 						'title'      => __( 'Heading', 'learnpress' ),
 						'type'       => 'text',
 						'default'    => $this->default_heading,
-						'id'         => 'emails_user_order_changed_status[heading]',
+						'id'         => 'emails_new_order[heading]',
 						'desc'       => sprintf( __( 'Email heading, default: <code>%s</code>', 'learnpress' ), $this->default_heading ),
 						'visibility' => array(
 							'state'       => 'show',
 							'conditional' => array(
 								array(
-									'field'   => 'emails_user_order_changed_status[enable]',
+									'field'   => 'emails_new_order[enable]',
 									'compare' => '=',
 									'value'   => 'yes'
 								)
@@ -180,7 +189,7 @@ if ( ! class_exists( 'LP_Email_User_Order_Changed_Status' ) ) {
 						'title'                => __( 'Email content', 'learnpress' ),
 						'type'                 => 'email-content',
 						'default'              => '',
-						'id'                   => 'emails_user_order_changed_status[email_content]',
+						'id'                   => 'emails_new_order[email_content]',
 						'template_base'        => $this->template_base,
 						'template_path'        => $this->template_path,//default learnpress
 						'template_html'        => $this->template_html,
@@ -192,17 +201,17 @@ if ( ! class_exists( 'LP_Email_User_Order_Changed_Status' ) ) {
 							'state'       => 'show',
 							'conditional' => array(
 								array(
-									'field'   => 'emails_user_order_changed_status[enable]',
+									'field'   => 'emails_new_order[enable]',
 									'compare' => '=',
 									'value'   => 'yes'
 								)
 							)
 						)
-					),
+					)
 				)
 			);
 		}
 	}
 }
 
-return new LP_Email_User_Order_Changed_Status();
+return new LP_Email_New_Order_Admin();

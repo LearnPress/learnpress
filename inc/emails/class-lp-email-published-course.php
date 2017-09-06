@@ -122,7 +122,7 @@ if ( ! class_exists( 'LP_Email_Published_Course' ) ) {
 						'desc'  => $this->description
 					),
 					array(
-						'title'   => __( 'Enabled', 'learnpress' ),
+						'title'   => __( 'Enable', 'learnpress' ),
 						'type'    => 'yes-no',
 						'default' => 'no',
 						'id'      => 'emails_published_course[enable]'

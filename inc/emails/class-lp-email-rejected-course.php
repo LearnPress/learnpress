@@ -119,7 +119,7 @@ if ( ! class_exists( 'LP_Email_Rejected_Course' ) ) {
 						'desc'  => $this->description
 					),
 					array(
-						'title'   => __( 'Enabled', 'learnpress' ),
+						'title'   => __( 'Enable', 'learnpress' ),
 						'type'    => 'yes-no',
 						'default' => 'no',
 						'id'      => 'emails_rejected_course[enable]'

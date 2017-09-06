@@ -97,7 +97,7 @@ class LP_Email_Become_An_Instructor extends LP_Email {
 					'desc'  => $this->description
 				),
 				array(
-					'title'   => __( 'Enabled', 'learnpress' ),
+					'title'   => __( 'Enable', 'learnpress' ),
 					'type'    => 'yes-no',
 					'default' => 'no',
 					'id'      => 'emails_become_an_instructor[enable]',

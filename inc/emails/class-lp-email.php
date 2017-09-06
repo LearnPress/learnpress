@@ -263,12 +263,6 @@ class LP_Email extends LP_Abstract_Settings {
 		$this->subject      = LP()->settings->get( 'emails_' . $this->id . '.subject', $this->default_subject );
 		$this->email_format = LP()->settings->get( 'emails_' . $this->id . '.email_format' );
 		$this->enable       = LP()->settings->get( 'emails_' . $this->id . '.enable' ) == 'yes';
-
-		// Process request actions for current email type
-		/*if ( $this->is_current() ) {
-			$this->template_actions();
-			$this->template_actions();
-		}*/
 	}
 
 	public function get_variables_support() {
@@ -310,59 +304,6 @@ class LP_Email extends LP_Abstract_Settings {
 		return $options;
 	}
 
-	/*protected function template_actions() {
-		if (
-			( ! empty( $this->template_html ) || ! empty( $this->template_plain ) )
-			&& ( ! empty( $_GET['move_template'] ) || ! empty( $_GET['delete_template'] ) )
-			&& 'GET' == $_SERVER['REQUEST_METHOD']
-		) {
-			if ( empty( $_GET['_learn_press_email_nonce'] ) || ! wp_verify_nonce( $_GET['_learn_press_email_nonce'], 'learn_press_email_template_nonce' ) ) {
-				return;
-			}
-
-			if ( ! current_user_can( 'edit_themes' ) ) {
-				return;
-			}
-
-			if ( ! empty( $_GET['move_template'] ) ) {
-				$this->move_template( $_GET['move_template'] );
-			}
-
-			if ( ! empty( $_GET['delete_template'] ) ) {
-				$this->delete_template( $_GET['delete_template'] );
-			}
-		}
-	}
-
-	protected function move_template( $type ) {
-		if ( $template = $this->get_template( 'template_' . $type ) ) {
-			if ( ! empty( $template ) ) {
-				$theme_file = $this->get_theme_template_file( $template );
-				if ( wp_mkdir_p( dirname( $theme_file ) ) && ! file_exists( $theme_file ) ) {
-					$template_file = $this->template_base . $template;
-					// Copy template file
-					copy( $template_file, $theme_file );
-					echo '<div class="updated"><p>' . __( 'Template file copied to theme.', 'learnpress' ) . '</p></div>';
-				}
-			}
-		}
-	}
-
-	protected function delete_template( $type ) {
-		if ( $template = $this->get_template( 'template_' . $type ) ) {
-
-			if ( ! empty( $template ) ) {
-
-				$theme_file = $this->get_theme_template_file( $template );
-
-				if ( file_exists( $theme_file ) ) {
-					unlink( $theme_file );
-					echo '<div class="updated"><p>' . __( 'Template file deleted from theme.', 'learnpress' ) . '</p></div>';
-				}
-			}
-		}
-	}
-*/
 	public function format_string( $string ) {
 		$search = $replace = array();
 		if ( is_array( $this->variables ) ) {
@@ -393,14 +334,6 @@ class LP_Email extends LP_Abstract_Settings {
 			$this->_prepare_content_text_message();
 			$email_content = preg_replace( $this->text_search, $this->text_replace, $this->get_content_text_message() );
 		}
-
-		/*$search = array();
-		$replace = array();
-
-		if ( is_array( $this->variables ) ) {
-			$search        = array_keys( $this->variables );
-			$replace       = array_values( $this->variables );
-		}*/
 
 		$email_content = $this->format_string( $email_content );
 
@@ -555,27 +488,6 @@ class LP_Email extends LP_Abstract_Settings {
 
 	protected function save_template( $code, $path ) {
 		return;
-		if ( current_user_can( 'edit_themes' ) && ! empty( $code ) && ! empty( $path ) ) {
-			$saved = false;
-			$file  = trailingslashit( get_stylesheet_directory() ) . trailingslashit( learn_press_template_path() ) . $path;
-			$code  = stripslashes( $code );
-			if ( is_writeable( $file ) ) {
-
-				$f = fopen( $file, 'w+' );
-
-				if ( $f !== false ) {
-					fwrite( $f, $code );
-					fclose( $f );
-					$saved = true;
-				}
-			}
-
-			if ( ! $saved ) {
-				$redirect = add_query_arg( 'learn_press_error', urlencode( __( 'Could not write to template file.', 'learnpress' ) ) );
-				wp_redirect( $redirect );
-				exit;
-			}
-		}
 	}
 
 	public function get_theme_template_file( $template, $template_path = null ) {
