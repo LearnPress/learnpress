@@ -48,6 +48,7 @@ if ( ! class_exists( 'LP_AJAX' ) ) {
 		 * @param $var
 		 */
 		public static function do_ajax( $var ) {
+
 			if ( ! defined( 'LP_DOING_AJAX' ) ) {
 				define( 'LP_DOING_AJAX', true );
 			}

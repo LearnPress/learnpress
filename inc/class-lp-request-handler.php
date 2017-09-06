@@ -314,7 +314,6 @@ class LP_Request {
 				do_action( 'learn_press_request_handler_' . $key, $value, $key );
 			}
 		}
-
 		return $template;
 	}
 
@@ -357,7 +356,6 @@ class LP_Request {
 	 * @return mixed
 	 */
 	public static function get( $var, $default = false, $type = '', $env = 'request' ) {
-		$env = array();
 		switch ( strtolower( $env ) ) {
 			case 'post':
 				$env = $_POST;

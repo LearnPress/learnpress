@@ -12,13 +12,13 @@ defined( 'ABSPATH' ) || exit();
 /**
  * Course buttons
  *
- * @see learn_press_purchase_course_button()
- * @see learn_press_enroll_course_button()
- * @see learn_press_retake_course_button()
+ * @see learn_press_course_purchase_button()
+ * @see learn_press_course_enroll_button()
+ * @see learn_press_course_retake_button()
  */
-add_action( 'learn-press/course-buttons', 'learn_press_purchase_course_button' );
-add_action( 'learn-press/course-buttons', 'learn_press_enroll_course_button' );
-add_action( 'learn-press/course-buttons', 'learn_press_retake_course_button' );
+add_action( 'learn-press/course-buttons', 'learn_press_course_purchase_button' );
+add_action( 'learn-press/course-buttons', 'learn_press_course_enroll_button' );
+add_action( 'learn-press/course-buttons', 'learn_press_course_retake_button' );
 
 /**
  * Course curriculum.
@@ -177,9 +177,19 @@ add_action( 'learn-press/content-item-summary/lp_quiz', 'learn_press_content_ite
 
 /**
  * @see learn_press_content_item_summary_question_numbers()
+ * @see learn_press_content_item_summary_quiz_buttons()
  */
 add_action( 'learn-press/after-content-item-summary/lp_quiz', 'learn_press_content_item_summary_question_numbers', 10 );
+add_action( 'learn-press/after-content-item-summary/lp_quiz', 'learn_press_content_item_summary_quiz_buttons', 15 );
 
+add_action( 'learn-press/quiz-buttons', 'learn_press_quiz_nav_buttons', 10 );
+add_action( 'learn-press/quiz-buttons', 'learn_press_quiz_start_button', 15 );
+add_action( 'learn-press/quiz-buttons', 'learn_press_quiz_complete_button', 20 );
+add_action( 'learn-press/quiz-buttons', 'learn_press_quiz_redo_button', 25 );
+
+
+add_action( 'learn-press/quiz-buttons', 'learn_press_quiz_redo_button', 25 );
+add_action( 'learn-press/course-buttons', 'learn_press_quiz_redo_button', 25 );
 
 /*********************************************************************************************************/
 /* @see _learn_press_default_course_tabs() */

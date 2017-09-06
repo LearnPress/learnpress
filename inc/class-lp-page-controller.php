@@ -53,12 +53,13 @@ class LP_Page_Controller {
 			$item_type = $vars['item-type'];
 			$post      = learn_press_get_post_by_name( $vars['course-item'], $item_type );
 		} else {
-			$post = get_post( absint( $vars['course-item'] ) );
+			$post      = get_post( absint( $vars['course-item'] ) );
+			$item_type = $post->post_type;
 		}
 
 		$lp_course_item = apply_filters( 'learn-press/single-course-request-item', LP_Course_Item::get_item( $post->ID ) );
 
-		$lp_course->set_viewing_item( $lp_course_item );
+		$user_item_id = $lp_course->set_viewing_item( $lp_course_item );
 
 		if ( LP_QUIZ_CPT === $item_type && ! empty( $vars['question'] ) ) {
 			$question = learn_press_get_post_by_name( $vars['question'], LP_QUESTION_CPT );
@@ -66,7 +67,9 @@ class LP_Page_Controller {
 			//print_r( $question );
 
 			$lp_quiz_question = LP_Question_Factory::get_question( $question->ID );
-
+			if ( $user_item_id && learn_press_get_user_item_meta( $user_item_id, '_current_question', true ) != $question->ID ) {
+				learn_press_update_user_item_meta( $user_item_id, '_current_question', $question->ID );
+			}
 			//$lp_course_item->set_viewing_question( $lp_quiz_question );
 		}
 
@@ -104,8 +107,8 @@ class LP_Page_Controller {
                         overflow: hidden;
                     }
 
-                    body{
-                        opacity:0;
+                    body {
+                        opacity: 0;
 
                     }
 

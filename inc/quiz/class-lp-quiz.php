@@ -415,7 +415,7 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 	 * @return mixed
 	 */
 	public function __get( $key ) {
-		echo '@deprecated[' . $key . ']';
+		echo '@deprecated[' . $key . ']';learn_press_debug(debug_backtrace());
 
 		return false;
 	}
@@ -485,7 +485,7 @@ class LP_Quiz extends LP_Course_Item implements ArrayAccess {
 		return $return;
 	}
 
-	public function get_user_id() {
+	public function get_user_id_x() {
 		if ( empty( $this->user_id ) ) {
 			$user_id = get_current_user_id();
 			if ( ! $user_id ) {

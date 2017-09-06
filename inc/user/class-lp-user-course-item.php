@@ -97,6 +97,18 @@ class LP_User_Course_Item extends LP_User_Item implements ArrayAccess {
 	}
 
 	/**
+	 * @return LP_User_Item|bool
+	 */
+	public function get_viewing_item() {
+		$item = LP_Global::course_item();
+		if ( $item ) {
+			return $this[ $item->get_id() ];
+		}
+
+		return false;
+	}
+
+	/**
 	 * Get result of course.
 	 *
 	 * @param string $prop

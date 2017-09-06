@@ -6,7 +6,7 @@
  * @package LearnPress/Templates
  * @version 3.x.x
  *
- * @see     learn_press_purchase_course_button()
+ * @see     learn_press_course_purchase_button()
  */
 
 defined( 'ABSPATH' ) || exit();

@@ -363,14 +363,19 @@ abstract class LP_Abstract_Course extends LP_Abstract_Post_Data {
 	 * Set item is viewing in single course.
 	 *
 	 * @param LP_Course_Item $item
+	 *
+	 * @return int
 	 */
 	public function set_viewing_item( $item ) {
-
+		if ( $this->_viewing_item && $this->_viewing_item->get_id() == $item->get_id() ) {
+			return;
+		}
 		$user = learn_press_get_current_user();
-		$user->maybe_update_item( $item->get_id(), $this->get_id() );
 
 		$this->_viewing_item = $item;
 		$item->set_course( $this );
+
+		return $user->maybe_update_item( $item->get_id(), $this->get_id() );
 	}
 
 	/**

@@ -1,17 +1,15 @@
 <?php
 /**
- * Template for displaying the enroll button
+ * Template for displaying buttons of the course.
  *
  * @author  ThimPress
  * @package LearnPress/Templates
- * @version 2.1.6
+ * @version 3.x.x
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
-
-$user = LP_Global::user();
 
 ?>
 <div class="lp-course-buttons">
@@ -20,9 +18,9 @@ $user = LP_Global::user();
 
 	<?php
 	/**
-	 * @see learn_press_purchase_course_button - 10
-	 * @see learn_press_enroll_course_button - 10
-	 * @see learn_press_retake_course_button - 10
+	 * @see learn_press_course_purchase_button - 10
+	 * @see learn_press_course_enroll_button - 10
+	 * @see learn_press_course_retake_button - 10
 	 */
 	do_action( 'learn-press/course-buttons' );
 	?>

@@ -86,6 +86,7 @@ class LP_User_Factory {
 					foreach ( $items as $item ) {
 						$item = $curd->get_user_item(
 							$user_id,
+							0,
 							$item['course_id']
 						);
 						if ( $item ) {

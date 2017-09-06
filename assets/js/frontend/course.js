@@ -161,6 +161,37 @@
             }
         });
     });
+    $('htmlv').one('click.xxxx', '.course-item', function (e) {
+        var $target = $(e.target),
+            $a = $target.closest('.course-item').find('a');
+
+        jQuery.ajax({
+            url: $a.attr('href'),
+            success: function (res) {
+                var $dom = $(document.createElement("html"));
+                $dom[0].innerHTML = res;
+
+                var $head = $dom.find("head"),
+                    $body = $dom.find("body");
+
+                var $oldHead = $('head'),
+                    $oldBody = $('body');
+
+                jQuery('html').append($head).append($body).load(function(){
+                    alert();
+                });
+                setTimeout(function($a, $b){
+                    $a.remove();
+                    $b.remove();
+                }, 300, $oldHead, $oldBody)
+                //$oldHead.remove();
+                //$oldBody.remove();
+
+                LP.setUrl($a.attr('href'))
+            }
+        });
+        e.preventDefault();
+    })
 
 
 })(jQuery, _, Vue);
